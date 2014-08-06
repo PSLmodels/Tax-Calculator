@@ -356,11 +356,9 @@ def Puf(): #Run this function if it is the PUF file
 	global e02615 
 	e02615 = np.zeros((dim,))
 	global SSIND 
-	SSIND = 0 
+	SSIND = np.zeros((dim,))
 	global e18400 
 	e18400 = np.zeros((dim,))
-	global e18425 
-	e18425 = np.zeros((dim,))
 	global e18800 
 	e18800 = np.zeros((dim,))
 	global e18900 
@@ -389,8 +387,6 @@ def Puf(): #Run this function if it is the PUF file
 	e02600 = np.zeros((dim,))
 	global _exact 
 	_exact = 0
-	global e00200
-	e00200 = np.zeros((dim,))
 	global e11055
 	e11055 = np.zeros((dim,))
 	global e00250
@@ -417,8 +413,6 @@ def Puf(): #Run this function if it is the PUF file
 	PBI = np.zeros((dim,))
 	global SBI 
 	SBI = np.zeros((dim,))
-	global fded
-	fded = np.zeros((dim,))
 	global t04470 
 	t04470 = np.zeros((dim,))
 	global e23250
@@ -431,6 +425,8 @@ def Puf(): #Run this function if it is the PUF file
 	c00650 = np.zeros((dim,))
 	global e24583
 	e24583 = np.zeros((dim,))
+	global _fixup
+	_fixup = np.zeros((dim,))
 
 
 def Comp(puf): 
@@ -438,181 +434,12 @@ def Comp(puf):
 	if puf == True: 
 		Puf()
 
-	# Factors for joint or separate filing #
-
-	_sep = np.where(np.logical_or(MARS == 3, MARS == 6), 2, 1)
-	_txp = np.where(np.logical_or(MARS == 2, MARS == 5), 2, 1)
-
-
-	# Form 2555 #
-
-	_feided = np.maximum(e35300_0, e35600_0, + e35910_0) 
-
-
-	# Adjustments #
-
-	c02900 = e03210 + e03260 + e03270 + e03300 + e03400 + e03500 + e03220 + e03230 + e03240 + e03290 + x03150 + e03600 + e03280 + e03900 + e04000 + e03700 
-	x02900 = c02900
-
-
-	# Capital Gains #
-
-	c23650 = c23250 + e22250 + e23660 
-	c01000 = np.maximum(-3000/_sep, c23650)
-
-	c02700 = np.minimum(_feided, _feimax[2013-FLPDYR] * f2555) 
-
-	_ymod1 = e00200 + e00300 + e00600 + e00700 + e00800 + e00900 + c01000 + e01100 + e01200 + e01400 + e01700 + e02000 + e02100 + e02300 + e02800 + e02610 + e02600 - e02540
-	_ymod2 = e00400 + e02400/2 - c02900
-	_ymod3 = e03210 + e03230 + e03240 + e02615
-	_ymod = _ymod1 + _ymod2 + _ymod3
-
-
-	# Taxation of Social Security Benefits # 
-
-	if SSIND != 0:
-		c02500 = np.where(np.logical_and(MARS >= 3, MARS <= 6), e02500, np.minimum(0.85 * (_ymod - _ssb85[MARS -1]) + 0.50 * np.minimum(e02400, _ssb85[MARS - 1] - _ssb50[MARS-1]), 0.85 * e02400))
-	c02500 = np.where(_ymod < _ssb50[MARS-1], 0, np.minimum(0.85 * (_ymod - _ssb85[MARS-1]) + 0.50 * np.minimum(e02400, _ssb85[MARS-1] - _ssb50[MARS-1]), 0.85 * e02400))
-	c02500 = np.where(np.logical_and(_ymod > _ssb50[MARS-1], _ymod < _ssb85[MARS-1]), 0.5 * np.minimum(_ymod - _ssb50[MARS-1], e02400), np.minimum(0.85 * (_ymod - _ssb85[MARS-1]) + 0.50 * np.minimum(e02400, _ssb85[MARS-1] - _ssb50[MARS-1]), 0.85 * e02400)) 
 
 	
-	# Gross Income #
-
-	c02650 = _ymod1 + c02500 - c02700 + e02615
 
 
-	# Adjusted Gross Income #
-	
-	c00100 = c02650 - c02900
-	_agierr = e00100 - c00100
-	#if _fixup >= 1 then C00100 = C00100 + _agierr
-
-	_posagi = np.maximum(c00100, 0)
-	_ywossbe = e00100 - e02500
-	_ywossbc = c00100 - c02500
-
-
-	# Personal Exemptions (_phaseout smoothed) #
-	_prexmp = XTOT * _amex[FLPDYR - 2013]
-
-
-	if _exact == 1:
-		_ratio = (_posagi - _exmpb[FLPDYR - 2013, MARS -1])/(2500/_sep)
-		_tratio = np.ceil(_ratio)
-		_dispc = np.minimum(1, np.maximum(0, 0.2 * _tratio))
-	else:
-		_dispc = np.minimum(1, np.maximum(0, 0.2 * (_posagi - _exmpb[FLPDYR -2013, MARS - 1])/(2500/_sep)))
-
-	_dispc = np.where(FLPDYR == 2013, 0, _dispc)
-
-	c04600 = _prexmp * (1-_dispc)
-
-
-	# Itemized Deductions #
-
-	# Medical #
-	c17750 = 0.75 * _posagi 
-	c17000 = np.maximum(0, e17500 - c17750)
-	xx = 2
-
-	# State and Local Income Tax, or Sales Tax #
-	_sit1 = np.maximum(e18400, e18425)
-	_sit = np.maximum(_sit1, 0)
-	_statax = np.maximum(_sit, e18450)
-
-	# Other Taxes #
-	c18300 = _statax + e18500 + e18800 + e18900
-
-	# Casulty #
-	c37703 = np.where(e20500 > 0, e20500 + 0.10 * _posagi, 0)
-	c20500 = np.where(e20500 > 0, c37703 - 0.10 * _posagi, 0)
-
-	# Miscellaneous #
-	c20750 = 0.20 * _posagi 
-	if puf == True: 
-		c02400 = e20400
-		c19200 = e19200 
-	else: 
-		c02400 = e20550 + e20600 + e20950
-		c19200 = e19500 + e19570 + e19400 + e19550
-	c20800 = np.maximum(0, c20400 - c20750)
-
-	# Charity (assumes carryover is non-cash) #
-	_lim50 = np.minimum(0.50 * _posagi, e19800)
-	_lim30 = np.minimum(0.30 * _posagi, e20100 + e20200)
-	c19700 = np.where(e19800 + e20100 + e20200 <= 0.20 * _posagi, e19800 + e20100 + e20200, _lim30 + _lim50)
-    #temporary fix!??
-
-
-    # Gross Itemized Deductions #
-
-	c21060 = e20900 + c17000 + c18300 + c19200 + c19700 + c20500 + c20800 + e21000 + e21010
-
-
-    # Itemized Deduction Limitation
-	c04470 = c21060 
-	_phase2 = np.where(MARS == 1, 200000, 300000)
-	_phase2 = np.where(MARS == 4, 250000, 300000)
-
-	_itemlimit = 1
-	_c21060 = c21060
-	_nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
-	_limitratio = _phase2/_sep 
-
-	_itemlimit = np.where(np.logical_and(c21060 > _nonlimited, c00100 > _phase2/_sep), 2, 1)
-	_dedmin = np.where(np.logical_and(c21060 > _nonlimited, c00100 > _phase2/_sep), 0.8 * (c21060 - _nonlimited), 1)
-	_dedpho = np.where(np.logical_and(c21060 > _nonlimited, c00100 > _phase2/_sep), 0.3 * np.maximum(0, _posagi - _phase2/_sep), 1)
-	c04470 = np.where(np.logical_and(c21060 > _nonlimited, c00100 > _phase2/_sep), c21060 - c21040, 0)
     
-    
-	# Earned Income and FICA #
 
-	_sey = e00900 + e02100
-	_fica = np.maximum(0, 153 * np.minimum(_ssmax[FLPDYR - 2013], e00200 + np.maximum(0, _sey) * 0.9235))
-	_setax = np.maximum(0, _fica - 0.153 * e00200)
-	_seyoff = np.where(_setax <= 14204, 0.5751 * _setax, 0.5 * _setax + 10067)
-
-	c11055 = e11055
-
-	_earned = np.maximum(0, e00200 + e00250 + e11055 + e30100 + _sey - _seyoff)
-
-	# Standard Deduction with Aged, Sched L and Real Estate # 
-
-	c15100 = np.where(DSI == 1, np.maximum(300 + _earned, _stded[FLPDYR-2013, 6]), 0)
-	c04100 = np.where(np.logical_or(_compitem, np.logical_and(np.logical_and(3<= MARS, MARS <=6), MIdR == 1)), 0, _stded[FLPDYR-2013, MARS-1])
-
-	c04100 = np.where(DSI == 1, np.minimum(_stded[FLPDYR-2013, MARS-1], c15100), _stded[FLPDYR-2013, MARS-1])
-
-	c04100 = c04100 + e15360
-	_numextra = AGEP + AGES + PBI + SBI 
-
-	_txpyers = np.where(np.logical_or(np.logical_or(MARS == 2, MARS == 3), MARS == 3), 2, 1)
-	c04200 = np.where(np.logical_and(_exact == 1, np.logical_or(MARS == 3, MARS == 5)), e04200, _numextra * _aged[_txpyers -1, FLPDYR - 2013])
-
-	c15200 = c04200
-
-	_standard = np.where(np.logical_and(np.logical_or(MARS == 3, MARS == 6), c04470 > 0), 0, c04100 + c04200)
-
-	_othded = np.where(fded == 1, e04470 - c04470, 0)
-	#c04470 = np.where(np.logical_and(_fixup >= 2, fded == 1), c04470 + _othded, c04470)
-	c04100 = np.where(fded == 1, 0, c04100)
-	c04200 = np.where(fded == 1, 0, c04200)
-	_standard = np.where(fded == 1, 0, _standard)
-
-	c04500 = c00100 - np.maximum(c21060 - c21040, np.maximum(c04100, _standard + e37717))
-	c04800 = np.maximum(0, c04500 - c04600 - e04805)
-	
-	c60000 = np.where(_standard > 0, c00100, c04500)
-	c60000 = c60000 - e04805
-
-	#Some taxpayers iteimize only for AMT, not regular tax
-	_amtstd = 0
-	c60000 = np.where(np.logical_and(np.logical_and(e04470 == 0, t04470 > _amtstd), np.logical_and(f6251 == 1, _exact == 1)), c00100 - t04470, c60000)
-
-	_taxinc = np.where(np.logical_and(c04800 > 0, _feided > 0), c04800 + c02700, c04800)
-	#WHAT IS %TAXER!?
-
-	_feitax = np.zeros((dim,)) #temporaray fix
 
 
 	# Tax Calculated with X, Y, or Z and Schedule D #
@@ -665,7 +492,195 @@ def Comp(puf):
 	c24595 = np.where(np.logical_and(_taxinc > 0, _hasgain ==1), 0.1 * c24590, 0) #SchD 10% Tax Amount
 	_dwks22 = np.where(np.logical_and(_taxinc > 0, _hasgain ==1), np.minimum(_taxinc, c24517), 0)
 
-	np.savetxt(output_filename, c04600, delimiter=',', header = "c04600", fmt = '%i')
+	
 
+def FilingStatus():
+	global _sep
+	global _txp
+	_sep = np.where(np.logical_or(MARS == 3, MARS == 6), 2, 1)
+	_txp = np.where(np.logical_or(MARS == 2, MARS == 5), 2, 1)
+
+def Adj(): 
+	global _feided 
+	global c02900
+	_feided = np.maximum(e35300_0, e35600_0, + e35910_0) #Form 2555
+	c02900 = e03210 + e03260 + e03270 + e03300 + e03400 + e03500 + e03220 + e03230 + e03240 + e03290 + x03150 + e03600 + e03280 + e03900 + e04000 + e03700 #Adjustments
+	x02900 = c02900
+
+def CapGains():
+	global _ymod
+	global _ymod1
+	global c02700
+	c23650 = c23250 + e22250 + e23660 
+	c01000 = np.maximum(-3000/_sep, c23650)
+	c02700 = np.minimum(_feided, _feimax[2013-FLPDYR] * f2555) 
+	_ymod1 = e00200 + e00300 + e00600 + e00700 + e00800 + e00900 + c01000 + e01100 + e01200 + e01400 + e01700 + e02000 + e02100 + e02300 + e02600 + e02610 + e02800 - e02540
+	_ymod2 = e00400 + e02400/2 - c02900
+	_ymod3 = e03210 + e03230 + e03240 + e02615
+	_ymod = _ymod1 + _ymod2 + _ymod3
+	np.savetxt("ymod.csv", _ymod, delimiter=',', header = "ymod", fmt = '%i')
+
+def SSBenefits():
+	global c02500	
+	c02500 = np.where(np.logical_or(SSIND != 0, np.logical_and(MARS >= 3, MARS <= 6)), e02500, np.where(_ymod < _ssb50[MARS-1], 0, np.where(np.logical_and(_ymod >= _ssb50[MARS-1], _ymod < _ssb85[MARS-1]), 0.5 * np.minimum(_ymod - _ssb50[MARS-1], e02400), np.minimum(0.85 * (_ymod - _ssb85[MARS-1]) + 0.50 * np.minimum(e02400, _ssb85[MARS-1] - _ssb50[MARS-1]), 0.85 * e02400)))) 
+
+
+def AGI():	
+	global _posagi
+	global c00100
+	global c04600
+	c02650 = _ymod1 + c02500 - c02700 + e02615 #Gross Income
+
+	c00100 = c02650 - c02900
+	_agierr = e00100 - c00100  #Adjusted Gross Income
+	c00100 = np.where(_fixup >= 1, c00100 + _agierr, c00100)
+
+	_posagi = np.maximum(c00100, 0)
+	_ywossbe = e00100 - e02500
+	_ywossbc = c00100 - c02500
+
+	_prexmp = XTOT * _amex[FLPDYR - 2013] #Personal Exemptions (_phaseout smoothed)
+
+
+	#_ratio = (_posagi - _exmpb[FLPDYR - 2013, MARS -1])/(2500/_sep)
+	#_tratio = np.ceil(_ratio)
+	#_dispc = np.minimum(1, np.maximum(0, 0.2 * _tratio))
 
 	
+	_dispc = np.minimum(1, np.maximum(0, 0.2 * ((_posagi - _exmpb[FLPDYR -2013, MARS - 1])/(2500/_sep))))
+	#This is not being calculated correctly for some data points -- FIND OUT WHY. _posagi, _sep, and the _exmpb array are all correctly inputted so I have no clue why this is happening. 
+
+	c04600 = _prexmp * (1-_dispc)
+	np.savetxt('c04600.csv', c04600, delimiter=',', header = "C04600", fmt = '%1.3f')
+
+def ItemDed(puf): 
+	global c04470
+	global c21060
+	# Medical #
+	c17750 = 0.075 * _posagi 
+	c17000 = np.maximum(0, e17500 - c17750)
+	xx = 2
+
+	# State and Local Income Tax, or Sales Tax #
+	_sit1 = np.maximum(e18400, e18425)
+	_sit = np.maximum(_sit1, 0)
+	_statax = np.maximum(_sit, e18450)
+
+	# Other Taxes #
+	c18300 = _statax + e18500 + e18800 + e18900
+
+	# Casulty #
+	c37703 = np.where(e20500 > 0, e20500 + 0.10 * _posagi, 0)
+	c20500 = np.where(e20500 > 0, c37703 - 0.10 * _posagi, 0)
+
+	# Miscellaneous #
+	c20750 = 0.02 * _posagi 
+	if puf == True: 
+		c20400 = e20400
+		c19200 = e19200 
+	else: 
+		c02400 = e20550 + e20600 + e20950
+		c19200 = e19500 + e19570 + e19400 + e19550
+	c20800 = np.maximum(0, c20400 - c20750)
+
+	# Charity (assumes carryover is non-cash) #
+	_lim50 = np.minimum(0.50 * _posagi, e19800)
+	_lim30 = np.minimum(0.30 * _posagi, e20100 + e20200)
+	c19700 = np.where(e19800 + e20100 + e20200 <= 0.20 * _posagi, e19800 + e20100 + e20200, _lim30 + _lim50)
+    #temporary fix!??
+
+    # Gross Itemized Deductions #
+	c21060 = e20900 + c17000 + c18300 + c19200 + c19700 + c20500 + c20800 + e21000 + e21010
+	np.savetxt('c21060.csv', c21060, delimiter=',', header = "", fmt = '%1.3f')
+	
+
+
+    # Itemized Deduction Limitation
+	_phase2 = np.where(MARS == 1, 200000, np.where(MARS == 4, 250000, 300000))
+
+	_itemlimit = 1
+	_c21060 = c21060
+	_nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
+	_limitratio = _phase2/_sep 
+
+	_itemlimit = np.where(np.logical_and(c21060 > _nonlimited, c00100 > _phase2/_sep), 2, 1)
+	_dedmin = np.where(np.logical_and(c21060 > _nonlimited, c00100 > _phase2/_sep), 0.8 * (c21060 - _nonlimited), 0)
+	_dedpho = np.where(np.logical_and(c21060 > _nonlimited, c00100 > _phase2/_sep), 0.03 * np.maximum(0, _posagi - _phase2/_sep), 0)
+	c21040 = np.where(np.logical_and(c21060 > _nonlimited, c00100 > _phase2/_sep), np.minimum(_dedmin, _dedpho), 0)
+	c04470 = np.where(np.logical_and(c21060 > _nonlimited, c00100 > _phase2/_sep), c21060 - c21040, c21060)
+
+	np.savetxt('c04470.csv', c04470, delimiter=',', header = "", fmt = '%1.3f')
+
+def EI_FICA():    
+	global _earned
+	# Earned Income and FICA #
+	_sey = e00900 + e02100
+	_fica = np.maximum(0, .153 * np.minimum(_ssmax[FLPDYR - 2013], e00200 + np.maximum(0, _sey) * 0.9235))
+	_setax = np.maximum(0, _fica - 0.153 * e00200)
+	_seyoff = np.where(_setax <= 14204, 0.5751 * _setax, 0.5 * _setax + 10067)
+
+	c11055 = e11055
+
+	_earned = np.maximum(0, e00200 + e00250 + e11055 + e30100 + _sey - _seyoff)
+
+	np.savetxt('earned.csv', _earned, delimiter=',', header = "", fmt = '%1.3f')
+
+def StdDed():
+	# Standard Deduction with Aged, Sched L and Real Estate # 
+
+	c15100 = np.where(DSI == 1, np.maximum(300 + _earned, _stded[FLPDYR-2013, 6]), 0)
+
+	c04100 = np.where(DSI == 1, np.minimum(_stded[FLPDYR-2013, MARS-1], c15100), np.where(np.logical_or(_compitem == 1, np.logical_and(np.logical_and(3<= MARS, MARS <=6), MIdR == 1)), 0, _stded[FLPDYR-2013, MARS-1]))
+
+
+	c04100 = c04100 + e15360
+	_numextra = AGEP + AGES + PBI + SBI 
+
+	_txpyers = np.where(np.logical_or(np.logical_or(MARS == 2, MARS == 3), MARS == 3), 2, 1)
+	c04200 = np.where(np.logical_and(_exact == 1, np.logical_or(MARS == 3, MARS == 5)), e04200, _numextra * _aged[_txpyers -1, FLPDYR - 2013])
+
+	c15200 = c04200
+
+	_standard = np.where(np.logical_and(np.logical_or(MARS == 3, MARS == 6), c04470 > 0), 0, c04100 + c04200)
+
+	_othded = np.where(FDED == 1, e04470 - c04470, 0)
+	#c04470 = np.where(np.logical_and(_fixup >= 2, FDED == 1), c04470 + _othded, c04470)
+	c04100 = np.where(FDED == 1, 0, c04100)
+	c04200 = np.where(FDED == 1, 0, c04200)
+	_standard = np.where(FDED == 1, 0, _standard)
+
+	np.savetxt('c04100.csv', c04100, delimiter=',', header = "", fmt = '%1.3f')
+	np.savetxt('c04200.csv', c04200, delimiter=',', header = "", fmt = '%1.3f')
+	np.savetxt('_txpyers.csv', _txpyers, delimiter=',', header = "", fmt = '%1.3f')
+	np.savetxt('c15100.csv', c15100, delimiter=',', header = "", fmt = '%1.3f')
+
+
+
+
+	c04500 = c00100 - np.maximum(c21060 - c21040, np.maximum(c04100, _standard + e37717))
+	c04800 = np.maximum(0, c04500 - c04600 - e04805)
+	
+	c60000 = np.where(_standard > 0, c00100, c04500)
+	c60000 = c60000 - e04805
+
+	#Some taxpayers iteimize only for AMT, not regular tax
+	_amtstd = 0
+	c60000 = np.where(np.logical_and(np.logical_and(e04470 == 0, t04470 > _amtstd), np.logical_and(f6251 == 1, _exact == 1)), c00100 - t04470, c60000)
+
+	_taxinc = np.where(np.logical_and(c04800 > 0, _feided > 0), c04800 + c02700, c04800)
+	#WHAT IS %TAXER!?
+
+	_feitax = np.zeros((dim,)) #temporaray fix
+
+
+def Test(puf):
+	if puf == True:
+		Puf()
+	FilingStatus()
+	Adj()
+	CapGains()
+	SSBenefits()
+	AGI()
+	ItemDed(puf)
+	EI_FICA()
+	StdDed()
