@@ -2,10 +2,18 @@
 # load input data
 
 # load planX
+planX_file_name = ''
+with open(planX_file_name) as planX_file:
+	planX = json.loads(planX_file.read())
 
-# read planY
+# load planY
+planY_file_name = ''
+with open(planY_file_name) as planY_file:
+	user_planY_dict = json.loads(planY_file.read())
 
-# use python dict update to incorporate planY into planX
+print_different_params(planX, user_planY_dict)
+# incorporate planY into planX
+complete_planY = dict(planX, **user_planY_dict)
 
 # one loop iteration (do this for every year)
 # for every row in database:
@@ -22,6 +30,13 @@
 # return table of tax3 - tax1
 
 # go to next row
+
+## functions
+def print_different_params(planX, user_planY):
+	message = 'User passed different param "{param}". Default is {default}'
+	for param in planY:
+		if planX[param] != user_planY[param]:
+			print message.format(param=param, default=planX[param])
 
 
 ## function stubs
