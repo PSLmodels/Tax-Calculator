@@ -31,13 +31,6 @@ complete_planY = dict(planX, **user_planY_dict)
 
 # go to next row
 
-## functions
-def print_different_params(planX, user_planY):
-	message = 'User passed different param "{param}". Default is {default}'
-	for param in planY:
-		if planX[param] != user_planY[param]:
-			print message.format(param=param, default=planX[param])
-
 
 ## function stubs
 
