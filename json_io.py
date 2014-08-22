@@ -20,7 +20,7 @@ def read_plans(planX_file_name, planY_file_name):
     # load planY
     with open(planY_file_name) as planY_file:
         planY = json.loads(planY_file.read())
-    
+
     print_different_params(planX, planY)
     # incorporate planY into planX
     return dict(planX, **planY)
@@ -66,4 +66,4 @@ def print_different_params(planX, user_planY):
 
 if __name__ == '__main__':
     import doctest
-    doctest.testmod(
+    doctest.testmod()
