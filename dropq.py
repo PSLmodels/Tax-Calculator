@@ -47,3 +47,4 @@ def calculate_tax(tax_payer_row, year, plan):
 	As with previous function, details have not yet been fleshed out.
 	'''
 	return tax
+	
