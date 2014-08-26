@@ -579,6 +579,125 @@ def Puf():
 	e26205 = np.zeros((dim,))
 	global e26320 
 	e26320 = np.zeros((dim,))
+	global e87482 
+	e87482 = np.zeros((dim,))
+	global e87487
+	e87487 = np.zeros((dim,))
+	global e87492
+	e87492 = np.zeros((dim,))
+	global e87497
+	e87497 = np.zeros((dim,))
+	global e87526
+	e87526 = np.zeros((dim,))
+	global e87522 
+	e87522 = np.zeros((dim,))
+	global e87524 
+	e87524 = np.zeros((dim,))
+	global e87528
+	e87528 = np.zeros((dim,))
+	global EDCRAGE 
+	EDCRAGE = np.zeros((dim,))
+	global e07960
+	e07960 = np.zeros((dim,))
+	global e07700 
+	e07700 = np.zeros((dim,))
+	global e07250 
+	e07250 = np.zeros((dim,))
+	global t07950
+	t07950 = np.zeros((dim,))
+	global e82882
+	e82882 = np.zeros((dim,))
+	global e82880
+	e82880 = np.zeros((dim,))
+	global x07400
+	x07400 = np.zeros((dim,))
+	global e07500 
+	e07500 = np.zeros((dim,))
+	global e08000 
+	e08000 = np.zeros((dim,))
+	global e08001
+	e08001 = np.zeros((dim,))
+	global e07970 
+	e07970 = np.zeros((dim,))
+	global e07980 
+	e07980 = np.zeros((dim,))
+	global e10000
+	e10000 = np.zeros((dim,))
+	global e10100 
+	e10100 = np.zeros((dim,))
+	global e10050
+	e10050 = np.zeros((dim,))
+	global e10075
+	e10075 = np.zeros((dim,))
+	global e09805 
+	e09805 = np.zeros((dim,))
+	global e09710 
+	e09710 = np.zeros((dim,))
+	global e09720
+	e09720 = np.zeros((dim,))
+	global e87900 
+	e87900 = np.zeros((dim,))
+	global e87905
+	e87905 = np.zeros((dim,))
+	global e87681
+	e87681 = np.zeros((dim,))
+	global e87682 
+	e87682 = np.zeros((dim,))
+	global e11451 
+	e11451 = np.zeros((dim,))
+	global e11452 
+	e11452 = np.zeros((dim,))
+	global e11601
+	e11601 = np.zeros((dim,))
+	global e11602
+	e11602 = np.zeros((dim,))
+	global e60300
+	e60300 = np.zeros((dim,))
+	global e60860
+	e60860 = np.zeros((dim,))
+	global e60100
+	e60100 = np.zeros((dim,))
+	global e60840
+	e60840 = np.zeros((dim,))
+	global e60630
+	e60630 = np.zeros((dim,))
+	global e60550
+	e60550 = np.zeros((dim,))
+	global e60720 
+	e60720 = np.zeros((dim,))
+	global e60430
+	e60430 = np.zeros((dim,))
+	global e60500 
+	e60500 = np.zeros((dim,))
+	global e60340
+	e60340 = np.zeros((dim,))
+	global e60680
+	e60680 = np.zeros((dim,))
+	global e60600
+	e60600 = np.zeros((dim,))
+	global e60405
+	e60405 = np.zeros((dim,))
+	global e60440
+	e60440 = np.zeros((dim,))
+	global e60420 
+	e60420 = np.zeros((dim,))
+	global e60410
+	e60410 = np.zeros((dim,))
+	global e61400 
+	e61400 = np.zeros((dim,))
+	global e60660
+	e60660 = np.zeros((dim,))
+	global e60480 
+	e60480 = np.zeros((dim,))
+	global e62000
+	e62000 = np.zeros((dim,))
+	global e60250
+	e60250 = np.zeros((dim,))
+	global e40223
+	e40223 = np.zeros((dim,))
+	global SOIYR
+	SOIYR = np.zeros((dim,))
+
 
 
 def FilingStatus():
@@ -658,6 +777,10 @@ def ItemDed(puf):
 	global c04470
 	global c21060
 	global c21040
+	global c17000
+	global c18300
+	global c20800
+	global _sit
 
 	# Medical #
 	c17750 = 0.075 * _posagi 
@@ -717,6 +840,8 @@ def ItemDed(puf):
 
 
 def EI_FICA():
+	global _sey
+	global _setax
 	# Earned Income and FICA #    
 	global _earned
 	_sey = e00900 + e02100
@@ -736,6 +861,7 @@ def StdDed():
 	global c60000
 	global _taxinc
 	global _feitax
+	global _standard
 
 	c15100 = np.where(DSI == 1, 
 		np.maximum(300 + _earned, _stded[FLPDYR-2013, 6]), 0)
@@ -803,10 +929,15 @@ def XYZD():
 
 def NonGain():
 	_cglong = np.minimum(c23650, e23250 + e01100)
-	_noncg = np.zeos((dim,))
+	_noncg = np.zeros((dim,))
 
 def TaxGains():
 	global c05750
+	global c24517
+	global _taxbc
+	global c24516
+	global c24520
+	global c05700
 	c24517 = np.zeros((dim,))
 	c24520 = np.zeros((dim,))
 	c24530 = np.zeros((dim,))
@@ -954,8 +1085,11 @@ def MUI(c05750):
 	
 	
 
-def AMTI(c62100):
-	c62100 = c62100
+def AMTI(puf):
+	global c05800
+	global _othtax
+	global _agep
+	global _ages
 	c62720 = c24517 + x62720 
 	c60260 = e00700 + x60260
 	c63100 = np.maximum(0, _taxbc - e07300)
@@ -966,6 +1100,10 @@ def AMTI(c62100):
 	c62730 = e24515 + x62730
 
 	_addamt = np.where(np.logical_or(_exact == 0, np.logical_and(_exact == 1, c60200 + c60220 + c60240 + e60290 > 0)), c60200 + c60240 + c60220 + e60290 - c60130, 0)
+
+
+	c62100 = np.where(_cmp == 1, _addamt + e60300 + e60860 + e60100 + e60840 + e60630 + e60550 + e60720 + e60430 + e60500 + e60340 + e60680 + e60600 + e60405 + e60440 + e60420 + e60410 + e61400 + e60660 - c60260 - e60480 - e62000 + c60000, 0)
+
 
 	c62100 = np.where(_cmp == 1, c62100 - e60250, c62100)
 
@@ -982,8 +1120,8 @@ def AMTI(c62100):
 
 	x62100 = c62100
 
-	_amtsepadd = np.where(np.logical_and(c62100 > _amtsep[FLPDYR-1], np.logical_or(MARS == 3, MARS == 6)), np.maximum(0, np.minimum(_almsep[FLPDYR-2013], 0.25 * (c62100 - _amtsep[FLPDYR-2013]))), 0)
-	c62100 = np.where(np.logical_and(c62100 > _amtsep[FLPDYR-1], np.logical_or(MARS == 3, MARS == 6)), c62100 + _amtsepadd, c62100)
+	_amtsepadd = np.where(np.logical_and(c62100 > _amtsep[FLPDYR-2013], np.logical_or(MARS == 3, MARS == 6)), np.maximum(0, np.minimum(_almsep[FLPDYR-2013], 0.25 * (c62100 - _amtsep[FLPDYR-2013]))), 0)
+	c62100 = np.where(np.logical_and(c62100 > _amtsep[FLPDYR-2013], np.logical_or(MARS == 3, MARS == 6)), c62100 + _amtsepadd, c62100)
 
 	c62600 = np.maximum(0, _amtex[FLPDYR-2013, MARS-1] - 0.25 * np.maximum(0, c62100 - _amtys[MARS-1]))
 
@@ -1031,7 +1169,7 @@ def AMTI(c62100):
 
 	_amt = np.zeros((dim,))
 	_amt = np.where(_ngamty > _brk6[FLPDYR-2013, MARS-1], 0.05 * np.minimum(_alminc, c62740), _amt)
-	_amt = np.where(np.logical_and(_ngamty <= _brk6[FLPDYR-2013, MARS-1], _alminc > _brk6[FLPDYR-2013, MARS-1]), 0.05 * np.minimum(_aliminc - _brk6[FLPDYR-2013, MARS-1], c62740), _amt)
+	_amt = np.where(np.logical_and(_ngamty <= _brk6[FLPDYR-2013, MARS-1], _alminc > _brk6[FLPDYR-2013, MARS-1]), 0.05 * np.minimum(_alminc - _brk6[FLPDYR-2013, MARS-1], c62740), _amt)
 
 	c62800 = np.minimum(c62780, c62745 + _tamt2 - _amtfei)
 	c63000 = c62800 - c62900 
@@ -1045,7 +1183,10 @@ def AMTI(c62100):
 
 	c05800 = _taxbc + c63200
 
-def F2441(_earned):
+def F2441(puf, _earned):
+	global c32880
+	global c32890
+	global _dclim
 	_earned = _earned
 	_earned = np.where(_fixeic == 1, e59560, _earned)
 	c32880 = np.where(np.logical_and(MARS == 2, puf == True), 0.5 * _earned, 0)
@@ -1064,6 +1205,7 @@ def F2441(_earned):
 	c32800 = np.minimum(np.maximum(e32800, e32750 + e32775), _dclim)
 
 def DepCareBen():
+	global c33000
 	#Part III ofdependent care benefits
 	_seywage = np.where(np.logical_and(_cmp == 1, MARS == 2), np.minimum(c32880, np.minimum(c32890, np.minimum(e33420 + e33430 - e33450, e33460))), 0)
 	_seywage = np.where(np.logical_and(_cmp == 1, MARS != 2), np.minimum(c32880, np.minimum(e33420 + e33430 - e33450, e33460)), _seywage)
@@ -1080,19 +1222,22 @@ def DepCareBen():
 
 
 def ExpEarnedInc():
+	global c07180
 	#Expenses limited to earned income
 
 	_tratio  = np.where(_exact == 1, np.ceil(np.maximum((c00100 - _agcmax[FLPDYR-2013])/2000, 0)), 0)
 	c33200 = np.where(_exact == 1, c33000 * 0.01 * np.maximum(20, _pcmax[FLPDYR-2013] - np.minimum(15, _tratio)), 0)
-	c33200 = np.where(_exact != 1, c3300 * 0.01 * np.maximum(20, _pcmax[FLPDYR-2013] - np.maximum((c00100 - _agcmax[FLPDYR-2013])/2000, 0)), c33200)
+	c33200 = np.where(_exact != 1, c33000 * 0.01 * np.maximum(20, _pcmax[FLPDYR-2013] - np.maximum((c00100 - _agcmax[FLPDYR-2013])/2000, 0)), c33200)
 
-	c33400 = np.minimum(np.maximum(0, np.maximum(c05800 - e07300, c33200)))
+	c33400 = np.minimum(np.maximum(0, c05800 - e07300), c33200)
 	#amount of the credit
 
 	c07180 = np.where(e07180 == 0, 0, c33400)
 
 
 def RateRed(c05800):
+	global c59560
+	global c07970
 	#rate reduction credit for 2001 only, is this needed?
 	c05800 = c05800 
 	c07970 = np.zeros((dim,))
@@ -1103,16 +1248,23 @@ def RateRed(c05800):
 	c59560 = np.where(_exact == 1, x59560, _earned)
 
 
-def NumDep():
+def NumDep(puf):
+	global c59660
 	#Number of dependents for EIC 
 
 	_ieic = np.zeros((dim,))
 
-	EICYB1_1 = np.where(EICYB1 < 0, 0, EICYB1)
-	EICYB2_2 = np.where(EICYB2 < 0, 0, EICYB2)
-	EICYB3_3 = np.where(EICYB3 < 0, 0, EICYB3)
+	EICYB1_1 = np.where(EICYB1 < 0, 0.0, EICYB1)
+	EICYB2_2 = np.where(EICYB2 < 0, 0.0, EICYB2)
+	EICYB3_3 = np.where(EICYB3 < 0, 0.0, EICYB3)
 
 	_ieic = np.where(puf == True, EIC, EICYB1_1 + EICYB2_2 + EICYB3_3)
+
+	_ieic = _ieic.astype(int)
+
+	print(_ieic)
+	print(_ieic.dtype)
+
 
 	#Modified AGI only through 2002 
 
@@ -1139,6 +1291,10 @@ def NumDep():
 	c59660 = np.where(np.logical_and(_ieic == 0, np.logical_or(np.logical_or(_agep < 25, _agep >= 65), np.logical_or(_ages < 25, _ages >= 65))), 0, c59660)
 
 def ChildTaxCredit():
+	global _num
+	global c07230
+	global _precrd
+	global _nctcr
 	#Child Tax Credit
 
 	c11070 = np.zeros((dim,))
@@ -1156,15 +1312,214 @@ def ChildTaxCredit():
 	_precrd = np.where(np.logical_and(_ctcagi > _cphase[MARS-1], _exact == 1), np.maximum(0, _precrd - 50 * np.ceil(np.maximum(0, _ctcagi - _cphase[MARS-1])/1000)), 0)
 	_precrd = np.where(np.logical_and(_ctcagi > _cphase[MARS-1], _exact != 1), np.maximum(0, _precrd - 50 * (np.maximum(0, _ctcagi - _cphase[MARS-1]) + 500)/1000), _precrd)
 
-def HopeCredit():
+#def HopeCredit():
 	#Hope credit for 1998-2009, I don't think this is needed 
 	#Leave blank for now, ask Dan
 	#SAS lnies 951 - 972
 
 def AmOppCr():
+	global c87521
 	#American Opportunity Credit 2009+ 
+	c87482 = np.where(_cmp == 1, np.maximum(0, np.minimum(e87482, 4000)), 0)
+	c87487 = np.where(_cmp == 1, np.maximum(0, np.minimum(e87487, 4000)), 0)
+	c87492 = np.where(_cmp == 1, np.maximum(0, np.minimum(e87492, 4000)), 0)
+	c87497 = np.where(_cmp == 1, np.maximum(0, np.minimum(e87497, 4000)), 0)
 
-	
+	c87483 = np.where(np.maximum(0, c87482 - 2000) == 0, c87482, 2000 + 0.25 * np.maximum(0, c87482 - 2000))
+	c87488 = np.where(np.maximum(0, c87487 - 2000) == 0, c87487, 2000 + 0.25 * np.maximum(0, c87487 - 2000))
+	c87493 = np.where(np.maximum(0, c87492 - 2000) == 0, c87492, 2000 + 0.25 * np.maximum(0, c87492 - 2000))
+	c87498 = np.where(np.maximum(0, c87497 - 2000) == 0, c87497, 2000 + 0.25 * np.maximum(0, c87497 - 2000))
+
+	c87521 = c87483 + c87488 + c87493 + c87498
+
+def LLC(puf):
+	#Lifetime Learning Credit
+	global c87550
+
+	c87540 = np.where(puf == True, np.minimum(e87530, _learn[FLPDYR-2013]), 0)
+	c87550 = np.where(puf == True, 0.2 * c87540, 0)
+
+	c87530 = np.where(puf == False, e87526 + e87522 + e87524 + e87528, 0)
+	c87540 = np.where(puf == False, np.minimum(c87530, _learn[FLPDYR-2013]), c87540)
+	c87550 = np.where(puf == False, 0.2 * c87540, c87550)
+
+def RefAmOpp():
+	#Refundable American Opportunity Credit 2009+
+
+	c87668 = np.zeros((dim,))
+
+	c87654 = np.where(np.logical_and(_cmp == 1, c87521 > 0), 90000 * _num, 0)
+	c87656 = np.where(np.logical_and(_cmp == 1, c87521 > 0), c00100, 0)
+	c87658 = np.where(np.logical_and(_cmp == 1, c87521 > 0), np.maximum(0, c87654 - c87656), 0)
+	c87660 = np.where(np.logical_and(_cmp == 1, c87521 > 0), 10000 * _num, 0)
+	c87662 = np.where(np.logical_and(_cmp == 1, c87521 > 0), 1000 * np.minimum(1, c87658/c87660), 0)
+	c87664 = np.where(np.logical_and(_cmp == 1, c87521 > 0), c87662 * c87521/1000, 0)
+	c87666 = np.where(np.logical_and(_cmp == 1, np.logical_and(c87521 > 0, EDCRAGE == 1)), 0, 0.4 * c87664)
+	c10960 = np.where(np.logical_and(_cmp == 1, c87521 > 0), c87666, 0)
+	c87668 = np.where(np.logical_and(_cmp == 1, c87521 > 0), c87664 - c87666, 0)
+	c87681 = np.where(np.logical_and(_cmp == 1, c87521 > 0), c87666, 0)
+
+def NonEdCr(c87550):
+	global c07220
+	#Nonrefundable Education Credits
+
+	#Form 8863 Tentative Education Credits
+	c87560 = c87550
+
+	#Phase Out
+	c87570 = np.where(MARS == 2, _edphhm[FLPDYR-2013] * 1000, _edphhs[FLPDYR-2013] * 1000)
+	c87580 = c00100
+	c87590 = np.maximum(0, c87570 - c87580)
+	c87600 = 10000 * _num
+	c87610 = np.minimum(1, c87590/c87600)
+	c87620 = c87560 * c87610
+
+	_ctc1 = c07180 + e07200 + c07230
+	_ctc2 = np.zeros((dim,))
+
+	_ctc2 = e07240 + e07960 + e07260
+	_regcrd = _ctc1 + _ctc2
+	_exocrd = e07700 + e07250
+	_exocrd = _exocrd + t07950 
+	_ctctax = c05800 - _regcrd - _exocrd
+	c07220 = np.minimum(_precrd, np.maximum(0, _ctctax)) 
+	#lt tax owed
+
+def AddCTC(puf):
+	#Additional Child Tax Credit
+
+	c82940 = np.zeros((dim,))
+
+	#Part I of 2005 form 8812
+	c82925 = np.where(_nctcr > 0, _precrd, 0)
+	c82930 = np.where(_nctcr > 0, c07220, 0)
+	c82935 = np.where(_nctcr > 0, c82925 - c82930, 0)
+	#CTC not applied to tax
+
+	c82880 = np.where(_nctcr > 0, np.maximum(0, e00200 + e82882 + e30100 + np.maximum(0, _sey) - 0.5 * _setax), 0)
+	c82880 = np.where(np.logical_and(_nctcr > 0, _exact == 1), e82880, c82880)
+	h82880 = np.where(_nctcr > 0, c82880, 0)
+	c82885 = np.where(_nctcr > 0, np.maximum(0, c82880 - _ealim[FLPDYR-2013]), 0)
+	c82890 = np.where(_nctcr > 0, _adctcrt[FLPDYR-2013] * c82885, 0)
+
+	#Part II of 2005 form 8812
+	c82900 = np.where(np.logical_and(_nctcr > 2, c82890 < c82935), 0.0765 * np.minimum(_ssmax[FLPDYR-2013], c82880), 0)
+	c82905 = np.where(np.logical_and(_nctcr > 2, c82890 < c82935), e03260 + e09800, 0)
+	c82910 = np.where(np.logical_and(_nctcr > 2, c82890 < c82935), c82900 + c82905, 0)
+	c82915 = np.where(np.logical_and(_nctcr > 2, c82890 < c82935), c59660 + e11200, 0)
+	c82920 = np.where(np.logical_and(_nctcr > 2, c82890 < c82935), np.maximum(0, c82910 - c82915), 0)
+	c82937 = np.where(np.logical_and(_nctcr > 2, c82890 < c82935), np.maximum(c82890, c82920), 0)
+
+	#Part II of 2005 form 8812
+	c82940 = np.where(np.logical_and(_nctcr <= 2, c82890 > 0), np.minimum(c82890, c82935), c82890)
+	c82940 = np.where(np.logical_and(_nctcr > 2, c82890 >= c82935), c82935, c82940)
+	c82940 = np.where(np.logical_and(_nctcr > 2, c82890 < c82935), np.minimum(c82935, c82937), c82940)
+
+	c11070 = c82940
+
+	e59660 = np.where(puf == True, e59680 + e59700 + e59720, 0)
+	_othadd = e11070 - c11070
+
+	c11070 = np.where(_fixup >= 4, c11070 + _othadd, c11070)
+
+	# if c11070 eq 0 then do over _a8812; _a8812 = 0;end;
+	# What does this line mean? -- Ask Dan
+
+def F5405():
+	#Form 5405 First-Time Homebuyer Credit
+	#not needed
+
+	c64450 = np.zeros((dim,))
+
+def C1040(puf):
+	global c08795
+	global c09200
+	global c07100 
+	global _eitc
+	#Credits 1040 line 48
+
+	c07100 = e07180 + e07200 + c07220 + c07230 + e07250 + e07600 + e07600 + e07260 + c07970 + e07300 + x07400 + e07500 + e07700 + e08000
+
+	y07100 = c07100
+
+	c07100 = c07100 + e07240
+	c07100 = c07100 + e08001
+	c07100 = c07100 + e07960 + e07970
+	c07100 = c07100 + e07980
+
+	x07100 = c07100
+	c07100 = np.minimum(c07100, c05800)
+
+	#Tax After credits 1040 line 52
+
+	_eitc = c59660
+	c08795 = np.maximum(0, c05800 - c07100)
+
+	c08800 = c08795
+	e08795 = np.where(puf == True, e08800, 0)
+
+	#Tax before refundable credits
+
+	c09200 = c08795 + e09900 + e09400 + e09800 + e10000 + e10100
+	c09200 = c09200 + e09700
+	c09200 = c09200 + e10050
+	c09200 = c09200 + e10075
+	c09200 = c09200 + e09805
+	c09200 = c09200 + e09710 + e09720
+
+def DEITC():
+	global c59700
+	global c10950
+	#Decomposition of EITC 
+
+	c59680 = np.where(np.logical_and(c08795 > 0, np.logical_and(c59660 > 0, c08795 <= c59660)), c08795, 0)
+	_comb = np.where(np.logical_and(c08795 > 0, np.logical_and(c59660 > 0, c08795 <= c59660)), c59660 - c59680, 0)
+
+	c59680 = np.where(np.logical_and(c08795 > 0, np.logical_and(c59660 > 0, c08795 > c59660)), c59660, c59680)
+	_comb = np.where(np.logical_and(c08795 > 0, np.logical_and(c59660 > 0, c08795 > c59660)), 0, _comb)
+
+	c59700 = np.where(np.logical_and(c08795 > 0, np.logical_and(c59660 > 0, np.logical_and(_comb > 0, np.logical_and(c09200 - c08795 > 0, c09200 - c08795 > _comb)))), _comb, 0)
+	c59700 = np.where(np.logical_and(c08795 > 0, np.logical_and(c59660 > 0, np.logical_and(_comb > 0, np.logical_and(c09200 - c08795 > 0, c09200 - c08795 <= _comb)))), c09200 - c08795, c59700)
+	c59720 = np.where(np.logical_and(c08795 > 0, np.logical_and(c59660 > 0, np.logical_and(_comb > 0, np.logical_and(c09200 - c08795 > 0, c09200 - c08795 <= _comb)))), c59660 - c59680 - c59700, 0)
+
+	c59680 = np.where(np.logical_and(c08795 == 0, c59660 > 0), 0, c59680)
+	c59700 = np.where(np.logical_and(c08795 == 0, np.logical_and(c59660 > 0, np.logical_and(c09200 > 0, c09200 > c59660))), c59660, c59700)
+	c59700 = np.where(np.logical_and(c08795 == 0, np.logical_and(c59660 > 0, c09200 <= 0)), c09200, c59700)
+	c59720 = np.where(np.logical_and(c08795 == 0, np.logical_and(c59660 > 0, c09200 <= 0)), c59660 - c59700, c59720)
+
+	#Ask dan about this section of code! Line 1231 - 1241
+
+	_compb = np.where(np.logical_and(c08795 <= 0, c59660 <= 0), 0, 0)
+	c59680 = np.where(np.logical_and(c08795 <= 0, c59660 <= 0), 0, c59680)
+	c59700 = np.where(np.logical_and(c08795 <= 0, c59660 <= 0), 0, c59700)
+	c59720 = np.where(np.logical_and(c08795 <= 0, c59660 <= 0), 0, c59720)
+
+	c07150 = c07100 + c59680
+	c07150 = c07150 
+	c10950 = np.zeros((dim,))
+
+def SOIT(_eitc):
+	_eitc = _eitc
+
+	#SOI Tax (Tax after non-refunded credits plus tip penalty)
+	c10300 = c09200 - e10000 - e59680 - c59700
+	c10300 = c10300 - e11070
+	c10300 = c10300 - e11550
+	c10300 = c10300 - e11580
+	c10300 = c10300 - e09710 - e09720 - e11581 - e11582
+	c10300 = c10300 - e87900 - e87905 - e87681 - e87682
+	c10300 = c10300 - c10300 - c10950 - e11451 - e11452
+	c10300 = c09200 - e09710 - e09720 - e10000 - e11601 - e11602
+	c10300 = np.maximum(c10300 , 0)
+
+	#Ignore refundable partof _eitc to obtain SOI income tax
+
+	_eitc = np.where(c09200 <= _eitc, c09200, _eitc)
+	c10300 = np.where(c09200 <= _eitc, 0, c10300)
+
+
+
+
 
 
 def Taxer(inc_in, inc_out, MARS):
@@ -1225,6 +1580,22 @@ def Test(puf):
 	NonGain()
 	TaxGains()
 	MUI(c05750 = c05750)
+	AMTI(puf)
+	F2441(puf, _earned = _earned)
+	DepCareBen()
+	ExpEarnedInc()
+	RateRed(c05800 = c05800)
+	NumDep(puf)
+	ChildTaxCredit()
+	AmOppCr()
+	LLC(puf)
+	RefAmOpp()
+	NonEdCr(c87550 = c87550)
+	AddCTC(puf)
+	F5405()
+	C1040(puf)
+	DEITC()
+	SOIT(_eitc = _eitc)
 
 	outputs = (_sep, _txp, _feided, c02900, _ymod, c02700, c02500, _posagi, 
 		c00100, c04600, c04470, c21060, _earned, c04800, c60000, c05750)
