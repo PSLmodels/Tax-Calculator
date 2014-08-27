@@ -13,10 +13,11 @@ def pickle_puf(input_filename, output_filename, protocol=2):
     csv_dataframe = pd.read_csv(input_filename)
     # this code is specific to OSPC processing of the CSV
     narray_dict = {}
-    for col_name in x.columns.values:
-        narray_dict[col_name.upper()] = np.array(csv_dataframe[col_name])
+    for col_name in csv_dataframe.columns.values:
+        new_col = col_name.upper() if col_name.isalpha() else col_name
+        narray_dict[new_col] = np.array(csv_dataframe[col_name])
 
-    with open('y2.picl', 'w') as target:
+    with open(output_filename, 'w') as target:
         cPickle.dump(narray_dict, target, protocol)
 
 def unpicle(f_name):
