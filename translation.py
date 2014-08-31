@@ -16,6 +16,7 @@ AGIR1 = puf_dict['agir1']
 MIdR = puf_dict['MIDR']
 
 
+# import our special function for reading planX and planY (see json_io for details)
 from json_io import read_plans
 
 planX = read_plans('test/planX.json')
@@ -237,6 +238,7 @@ def StdDed():
     c60000 = c60000 - puf_dict['e04805']
 
     #Some taxpayers iteimize only for AMT, not regular tax
+    # IK: why do we need _amtstd and not just compare with zero?
     _amtstd = DIMARRAY
     c60000 = np.where(np.logical_and(np.logical_and(puf_dict['e04470'] == 0, 
         puf_dict['t04470'] > _amtstd), 
@@ -612,7 +614,7 @@ def ChildTaxCredit():
     global _precrd
     global _nctcr
     #Child Tax Credit
-    #This var actually gets used in AddCTC
+    #This var actually gets used in nonedcredit and c1040
     c07230 = DIMARRAY
 
     _num = np.where(puf_dict['MARS'] == 2, 2, 1)
@@ -733,11 +735,11 @@ def AddCTC(puf):
     # if c11070 eq 0 then do over _a8812; _a8812 = 0;end;
     # What does this line mean? -- Ask Dan
 
-def F5405():
+# def F5405():
     #Form 5405 First-Time Homebuyer Credit
     #not needed
 
-    c64450 = DIMARRAY
+    # c64450 = DIMARRAY
 
 def C1040(puf):
     global c08795
@@ -777,7 +779,9 @@ def C1040(puf):
 
 def DEITC():
     global c59700
-    global c10950
+    #check this variable
+    global c10950 
+    c10950 = DIMARRAY
     #Decomposition of EITC 
 
     c59680 = np.where(np.logical_and(c08795 > 0, np.logical_and(c59660 > 0, c08795 <= c59660)), c08795, 0)
@@ -803,8 +807,7 @@ def DEITC():
     c59720 = np.where(np.logical_and(c08795 <= 0, c59660 <= 0), 0, c59720)
 
     c07150 = c07100 + c59680
-    c07150 = c07150 
-    c10950 = DIMARRAY
+    c07150 = c07150
 
 def SOIT(_eitc):
     _eitc = _eitc
