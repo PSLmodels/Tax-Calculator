@@ -12,7 +12,8 @@ def pickle_puf(input_filename, output_filename, protocol=2):
     '''
     csv_dataframe = pd.read_csv(input_filename)
     # this code is specific to OSPC processing of the CSV
-    narray_dict = {}
+    narray_dict = {'PUF DIM': len(csv_dataframe)}
+    # We save the length of the PUF table for processing in calc
     for col_name in csv_dataframe.columns.values:
         new_col = col_name.upper() if col_name.isalpha() else col_name
         narray_dict[new_col] = np.array(csv_dataframe[col_name])
