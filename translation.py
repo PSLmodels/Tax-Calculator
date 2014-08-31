@@ -2,24 +2,17 @@ import pandas as pd
 import math
 import numpy as np
 
-output_filename = 'translationoutput.csv' 
-input_filename = 'puf2.csv'
-x = pd.read_csv(input_filename)
+output_filename = 'translationoutput.csv'
+
+from puf_2_picle import unpicle
+puf_dict = unpicle('y2.pickle')
 
 global dim 
-dim = len(x)
+dim = len(puf_dict)
 
-names = x.columns.values
-namesCap = [str.upper(n) if str.isalpha(n) else n for n in names]
 
-y = {}
-for n in namesCap:
-	y[n] = np.array(x[str.lower(n)])
- 
-locals().update(y)
-
-AGIR1 = agir1
-MIdR = MIDR
+AGIR1 = puf_dict['agir1']
+MIdR = puf_dict['MIDR']
 
 
 
@@ -89,22 +82,22 @@ _learn = np.array([10000])
 #Expense limit for the LLC
 
 _pcmax = np.array([35]) 
-#Maximum Percentage for f2441
+#Maximum Percentage for puf_dict['f2441']
 
 _phase = np.array([172250]) 
 #Phase out for itemized
 
 _rtbase = np.array([[0.0765], [0.3400], [0.4000], [0.4000]]) 
-#EIC base rate
+#puf_dict['EIC'] base rate
 
 _rtless = np.array([[0.0765], [0.1598], [0.2106], [0.2106]]) 
-#EIC _phaseout rate
+#puf_dict['EIC'] _phaseout rate
 
 _ssmax = np.array([115800]) 
 #SS Maximum taxable earnings
 
 _ymax = np.array([[7970], [17530], [17530], [17530]]) 
-#Start of EIC _phaseout
+#Start of puf_dict['EIC'] _phaseout
 
 _rt1 = np.array([0.1]) 
 #10% rate
@@ -507,8 +500,8 @@ def FilingStatus():
 	#Filing based on marital status
 	global _sep
 	global _txp
-	_sep = np.where(np.logical_or(MARS == 3, MARS == 6), 2, 1)
-	_txp = np.where(np.logical_or(MARS == 2, MARS == 5), 2, 1)
+	_sep = np.where(np.logical_or(puf_dict['MARS'] == 3, puf_dict['MARS'] == 6), 2, 1)
+	_txp = np.where(np.logical_or(puf_dict['MARS'] == 2, puf_dict['MARS'] == 5), 2, 1)
 
 
 def Adj(): 
@@ -516,8 +509,8 @@ def Adj():
 	global _feided 
 	global c02900
 	_feided = np.maximum(e35300_0, e35600_0, + e35910_0) #Form 2555
-	c02900 = (e03210 + e03260 + e03270 + e03300 + e03400 + e03500 + e03220 
-	+ e03230 + e03240 + e03290 + x03150 + e03600 + e03280 + e03900 + e04000 
+	c02900 = (puf_dict['e03210'] + puf_dict['e03260'] + puf_dict['e03270'] + puf_dict['e03300'] + puf_dict['e03400'] + puf_dict['e03500'] + puf_dict['e03220'] 
+	+ puf_dict['e03230'] + puf_dict['e03240'] + puf_dict['e03290'] + x03150 + e03600 + e03280 + e03900 + e04000 
 	+ e03700) 
 	x02900 = c02900
 
@@ -531,12 +524,12 @@ def CapGains():
 	global c01000
 	c23650 = c23250 + e22250 + e23660 
 	c01000 = np.maximum(-3000/_sep, c23650)
-	c02700 = np.minimum(_feided, _feimax[2013-FLPDYR] * f2555) 
-	_ymod1 = (e00200 + e00300 + e00600 + e00700 + e00800 + e00900 + c01000 
-		+ e01100 + e01200 + e01400 + e01700 + e02000 + e02100 + e02300 + e02600 
+	c02700 = np.minimum(_feided, _feimax[2013-puf_dict['FLPDYR']] * f2555) 
+	_ymod1 = (puf_dict['e00200'] + puf_dict['e00300'] + puf_dict['e00600'] + puf_dict['e00700'] + puf_dict['e00800'] + puf_dict['e00900'] + c01000 
+		+ puf_dict['e01100'] + puf_dict['e01200'] + puf_dict['e01400'] + puf_dict['e01700'] + puf_dict['e02000'] + puf_dict['e02100'] + puf_dict['e02300'] + e02600 
 		+ e02610 + e02800 - e02540)
-	_ymod2 = e00400 + e02400/2 - c02900
-	_ymod3 = e03210 + e03230 + e03240 + e02615
+	_ymod2 = puf_dict['e00400'] + puf_dict['e02400']/2 - c02900
+	_ymod3 = puf_dict['e03210'] + puf_dict['e03230'] + puf_dict['e03240'] + e02615
 	_ymod = _ymod1 + _ymod2 + _ymod3
 
 
@@ -544,14 +537,14 @@ def SSBenefits():
 	#Social Security Benefit Taxation
 	global c02500	
 	c02500 = np.where(np.logical_or(SSIND != 0, 
-		np.logical_and(MARS >= 3, MARS <= 6)), e02500, 
-		np.where(_ymod < _ssb50[MARS-1], 0, 
-			np.where(np.logical_and(_ymod >= _ssb50[MARS-1], 
-				_ymod < _ssb85[MARS-1]), 
-				0.5 * np.minimum(_ymod - _ssb50[MARS-1], e02400), 
-				np.minimum(0.85 * (_ymod - _ssb85[MARS-1]) + 0.50 * 
-					np.minimum(e02400, _ssb85[MARS-1] - _ssb50[MARS-1]), 
-					0.85 * e02400)))) 
+		np.logical_and(puf_dict['MARS'] >= 3, puf_dict['MARS'] <= 6)), puf_dict['e02500'], 
+		np.where(_ymod < _ssb50[puf_dict['MARS']-1], 0, 
+			np.where(np.logical_and(_ymod >= _ssb50[puf_dict['MARS']-1], 
+				_ymod < _ssb85[puf_dict['MARS']-1]), 
+				0.5 * np.minimum(_ymod - _ssb50[puf_dict['MARS']-1], puf_dict['e02400']), 
+				np.minimum(0.85 * (_ymod - _ssb85[puf_dict['MARS']-1]) + 0.50 * 
+					np.minimum(puf_dict['e02400'], _ssb85[puf_dict['MARS']-1] - _ssb50[puf_dict['MARS']-1]), 
+					0.85 * puf_dict['e02400'])))) 
 
 
 def AGI():
@@ -562,14 +555,14 @@ def AGI():
 	c02650 = _ymod1 + c02500 - c02700 + e02615 #Gross Income
 
 	c00100 = c02650 - c02900
-	_agierr = e00100 - c00100  #Adjusted Gross Income
+	_agierr = puf_dict['e00100'] - c00100  #Adjusted Gross Income
 	c00100 = np.where(_fixup >= 1, c00100 + _agierr, c00100)
 
 	_posagi = np.maximum(c00100, 0)
-	_ywossbe = e00100 - e02500
+	_ywossbe = puf_dict['e00100'] - puf_dict['e02500']
 	_ywossbc = c00100 - c02500
 
-	_prexmp = XTOT * _amex[FLPDYR - 2013] 
+	_prexmp = puf_dict['XTOT'] * _amex[puf_dict['FLPDYR'] - 2013] 
 	#Personal Exemptions (_phaseout smoothed)
 
 	c04600 = _prexmp 
@@ -587,35 +580,35 @@ def ItemDed(puf):
 
 	# Medical #
 	c17750 = 0.075 * _posagi 
-	c17000 = np.maximum(0, e17500 - c17750)
+	c17000 = np.maximum(0, puf_dict['e17500'] - c17750)
 
 	# State and Local Income Tax, or Sales Tax #
-	_sit1 = np.maximum(e18400, e18425)
+	_sit1 = np.maximum(e18400, puf_dict['e18425'])
 	_sit = np.maximum(_sit1, 0)
-	_statax = np.maximum(_sit, e18450)
+	_statax = np.maximum(_sit, puf_dict['e18450'])
 
 	# Other Taxes #
-	c18300 = _statax + e18500 + e18800 + e18900
+	c18300 = _statax + puf_dict['e18500'] + e18800 + e18900
 
 	# Casulty #
-	c37703 = np.where(e20500 > 0, e20500 + 0.10 * _posagi, 0)
-	c20500 = np.where(e20500 > 0, c37703 - 0.10 * _posagi, 0)
+	c37703 = np.where(puf_dict['e20500'] > 0, puf_dict['e20500'] + 0.10 * _posagi, 0)
+	c20500 = np.where(puf_dict['e20500'] > 0, c37703 - 0.10 * _posagi, 0)
 
 	# Miscellaneous #
 	c20750 = 0.02 * _posagi 
 	if puf == True: 
-		c20400 = e20400
-		c19200 = e19200 
+		c20400 = puf_dict['e20400']
+		c19200 = puf_dict['e19200'] 
 	else: 
-		c02400 = e20550 + e20600 + e20950
-		c19200 = e19500 + e19570 + e19400 + e19550
+		c02400 = puf_dict['e20550'] + puf_dict['e20600'] + e20950
+		c19200 = e19500 + e19570 + e19400 + puf_dict['e19550']
 	c20800 = np.maximum(0, c20400 - c20750)
 
 	# Charity (assumes carryover is non-cash) #
-	_lim50 = np.minimum(0.50 * _posagi, e19800)
-	_lim30 = np.minimum(0.30 * _posagi, e20100 + e20200)
-	c19700 = np.where(e19800 + e20100 + e20200 <= 0.20 * _posagi, 
-		e19800 + e20100 + e20200, _lim30 + _lim50)
+	_lim50 = np.minimum(0.50 * _posagi, puf_dict['e19800'])
+	_lim30 = np.minimum(0.30 * _posagi, puf_dict['e20100'] + e20200)
+	c19700 = np.where(puf_dict['e19800'] + puf_dict['e20100'] + e20200 <= 0.20 * _posagi, 
+		puf_dict['e19800'] + puf_dict['e20100'] + e20200, _lim30 + _lim50)
     #temporary fix!??
 
     # Gross Itemized Deductions #
@@ -623,7 +616,7 @@ def ItemDed(puf):
 		+ c20500 + c20800 + e21000 + e21010)
 	
     # Itemized Deduction Limitation
-	_phase2 = np.where(MARS == 1, 200000, np.where(MARS == 4, 250000, 300000))
+	_phase2 = np.where(puf_dict['MARS'] == 1, 200000, np.where(puf_dict['MARS'] == 4, 250000, 300000))
 
 	_itemlimit = 1
 	_c21060 = c21060
@@ -647,15 +640,15 @@ def EI_FICA():
 	global _setax
 	# Earned Income and FICA #    
 	global _earned
-	_sey = e00900 + e02100
-	_fica = np.maximum(0, .153 * np.minimum(_ssmax[FLPDYR - 2013], 
-		e00200 + np.maximum(0, _sey) * 0.9235))
-	_setax = np.maximum(0, _fica - 0.153 * e00200)
+	_sey = puf_dict['e00900'] + puf_dict['e02100']
+	_fica = np.maximum(0, .153 * np.minimum(_ssmax[puf_dict['FLPDYR'] - 2013], 
+		puf_dict['e00200'] + np.maximum(0, _sey) * 0.9235))
+	_setax = np.maximum(0, _fica - 0.153 * puf_dict['e00200'])
 	_seyoff = np.where(_setax <= 14204, 0.5751 * _setax, 0.5 * _setax + 10067)
 
 	c11055 = e11055
 
-	_earned = np.maximum(0, e00200 + e00250 + e11055 + e30100 + _sey - _seyoff)
+	_earned = np.maximum(0, puf_dict['e00200'] + e00250 + e11055 + e30100 + _sey - _seyoff)
 
 
 def StdDed():
@@ -666,35 +659,35 @@ def StdDed():
 	global _feitax
 	global _standard
 
-	c15100 = np.where(DSI == 1, 
-		np.maximum(300 + _earned, _stded[FLPDYR-2013, 6]), 0)
+	c15100 = np.where(puf_dict['DSI'] == 1, 
+		np.maximum(300 + _earned, _stded[puf_dict['FLPDYR']-2013, 6]), 0)
 
-	c04100 = np.where(DSI == 1, np.minimum(_stded[FLPDYR-2013, MARS-1], c15100), 
+	c04100 = np.where(puf_dict['DSI'] == 1, np.minimum(_stded[puf_dict['FLPDYR']-2013, puf_dict['MARS']-1], c15100), 
 		np.where(np.logical_or(_compitem == 1, 
-			np.logical_and(np.logical_and(3<= MARS, MARS <=6), MIdR == 1)), 
-		0, _stded[FLPDYR-2013, MARS-1]))
+			np.logical_and(np.logical_and(3<= puf_dict['MARS'], puf_dict['MARS'] <=6), MIdR == 1)), 
+		0, _stded[puf_dict['FLPDYR']-2013, puf_dict['MARS']-1]))
 
 
 	c04100 = c04100 + e15360
 	_numextra = AGEP + AGES + PBI + SBI 
 
-	_txpyers = np.where(np.logical_or(np.logical_or(MARS == 2, MARS == 3), 
-		MARS == 3), 2, 1)
+	_txpyers = np.where(np.logical_or(np.logical_or(puf_dict['MARS'] == 2, puf_dict['MARS'] == 3), 
+		puf_dict['MARS'] == 3), 2, 1)
 	c04200 = np.where(np.logical_and(_exact == 1, 
-		np.logical_or(MARS == 3, MARS == 5)), 
-		e04200, _numextra * _aged[_txpyers -1, FLPDYR - 2013])
+		np.logical_or(puf_dict['MARS'] == 3, puf_dict['MARS'] == 5)), 
+		e04200, _numextra * _aged[_txpyers -1, puf_dict['FLPDYR'] - 2013])
 
 	c15200 = c04200
 
-	_standard = np.where(np.logical_and(np.logical_or(MARS == 3, MARS == 6), 
+	_standard = np.where(np.logical_and(np.logical_or(puf_dict['MARS'] == 3, puf_dict['MARS'] == 6), 
 		c04470 > 0), 
 		0, c04100 + c04200)
 
-	_othded = np.where(FDED == 1, e04470 - c04470, 0)
-	#c04470 = np.where(np.logical_and(_fixup >= 2, FDED == 1), c04470 + _othded, c04470)
-	c04100 = np.where(FDED == 1, 0, c04100)
-	c04200 = np.where(FDED == 1, 0, c04200)
-	_standard = np.where(FDED == 1, 0, _standard)
+	_othded = np.where(puf_dict['FDED'] == 1, e04470 - c04470, 0)
+	#c04470 = np.where(np.logical_and(_fixup >= 2, puf_dict['FDED'] == 1), c04470 + _othded, c04470)
+	c04100 = np.where(puf_dict['FDED'] == 1, 0, c04100)
+	c04200 = np.where(puf_dict['FDED'] == 1, 0, c04200)
+	_standard = np.where(puf_dict['FDED'] == 1, 0, _standard)
 
 
 	c04500 = c00100 - np.maximum(c21060 - c21040, 
@@ -708,7 +701,7 @@ def StdDed():
 	_amtstd = np.zeros((dim,))
 	c60000 = np.where(np.logical_and(np.logical_and(e04470 == 0, 
 		t04470 > _amtstd), 
-		np.logical_and(f6251 == 1, _exact == 1)), c00100 - t04470, c60000)
+		np.logical_and(puf_dict['f6251'] == 1, _exact == 1)), c00100 - t04470, c60000)
 
 	_taxinc = np.where(np.logical_and(c04800 > 0, _feided > 0), 
 		c04800 + c02700, c04800)
@@ -716,8 +709,8 @@ def StdDed():
 	_feitax = np.zeros((dim,))
 	_oldfei = np.zeros((dim,))
 
-	_feitax = Taxer(inc_in= _feided, inc_out =_feitax, MARS = MARS)
-	_oldfei = Taxer(inc_in = c04800, inc_out = _oldfei, MARS = MARS)
+	_feitax = Taxer(inc_in= _feided, inc_out =_feitax, mars= puf_dict['MARS'])
+	_oldfei = Taxer(inc_in = c04800, inc_out = _oldfei, mars= puf_dict['MARS'])
 
 	_feitax = np.where(np.logical_or(c04800 < 0, _feided < 0), 0, _feitax)
 
@@ -726,12 +719,12 @@ def XYZD():
 	global _xyztax
 	_xyztax = np.zeros((dim,))
 	c05200 = np.zeros((dim,))
-	_xyztax = Taxer(inc_in = _taxinc, inc_out = _xyztax, MARS= MARS)
-	c05200 = Taxer(inc_in = c04800, inc_out = c05200, MARS = MARS)
+	_xyztax = Taxer(inc_in = _taxinc, inc_out = _xyztax, mars= puf_dict['MARS'])
+	c05200 = Taxer(inc_in = c04800, inc_out = c05200, mars= puf_dict['MARS'])
 	
 
 def NonGain():
-	_cglong = np.minimum(c23650, e23250 + e01100)
+	_cglong = np.minimum(c23650, e23250 + puf_dict['e01100'])
 	_noncg = np.zeros((dim,))
 
 def TaxGains():
@@ -752,34 +745,34 @@ def TaxGains():
 
 	_hasgain = np.zeros((dim,))
 
-	_hasgain = np.where(np.logical_or(e01000 > 0, c23650 > 0), 1, _hasgain)
-	_hasgain = np.where(np.logical_or(e23250 > 0, e01100 > 0), 1, _hasgain)
-	_hasgain = np.where(e00650 > 0, 1, _hasgain)
+	_hasgain = np.where(np.logical_or(puf_dict['e01000'] > 0, c23650 > 0), 1, _hasgain)
+	_hasgain = np.where(np.logical_or(e23250 > 0, puf_dict['e01100'] > 0), 1, _hasgain)
+	_hasgain = np.where(puf_dict['e00650'] > 0, 1, _hasgain)
 
 	#significance of sum() function here in original SAS code?	
-	_dwks5 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.maximum(0, e58990 - e58980), 0)
+	_dwks5 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.maximum(0, puf_dict['e58990'] - e58980), 0)
 	c24505 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.maximum(0, c00650 - _dwks5), 0)
-	c24510 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.maximum(0, np.minimum(c23650, e23250)) + e01100, 0)
+	c24510 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.maximum(0, np.minimum(c23650, e23250)) + puf_dict['e01100'], 0)
 	#gain for tax computation
 
-	c24510 = np.where(np.logical_and(_taxinc > 0, np.logical_and(_hasgain == 1, e01100 > 0)), e01100, c24510)
+	c24510 = np.where(np.logical_and(_taxinc > 0, np.logical_and(_hasgain == 1, puf_dict['e01100'] > 0)), puf_dict['e01100'], c24510)
 	#from app f 2008 drf
 
-	_dwks9 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.maximum(0, c24510 - np.minimum(e58990, e58980)), 0)
-	#e24516 gain less invest y 
+	_dwks9 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.maximum(0, c24510 - np.minimum(puf_dict['e58990'], e58980)), 0)
+	#puf_dict['e24516'] gain less invest y 
 
-	c24516 = np.maximum(0, np.minimum(e23250, c23650)) + e01100
+	c24516 = np.maximum(0, np.minimum(e23250, c23650)) + puf_dict['e01100']
 	c24580 = _xyztax
 
 	c24516 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), c24505 + _dwks9, c24516)
-	_dwks12 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.minimum(_dwks9, e24515 + e24518), 0)
+	_dwks12 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.minimum(_dwks9, puf_dict['e24515'] + puf_dict['e24518']), 0)
 	c24517 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), c24516 -_dwks12, 0)
 	#gain less 25% and 28%
 
 	c24520 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.maximum(0, _taxinc -c24517), 0)
 	#tentative TI less schD gain
 
-	c24530 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.minimum(_brk2[FLPDYR-2013, MARS-1], _taxinc), 0)
+	c24530 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.minimum(_brk2[puf_dict['FLPDYR']-2013, puf_dict['MARS']-1], _taxinc), 0)
 	#minimum TI for bracket
 
 	_dwks16 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.minimum(c24520, c24530), 0)
@@ -793,7 +786,7 @@ def TaxGains():
 
 	c24598 = 0.15 * c24597 #actual 15% tax
 
-	_dwks25 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.minimum(_dwks9, e24515), 0)
+	_dwks25 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.minimum(_dwks9, puf_dict['e24515']), 0)
 	_dwks26 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), c24516 + c24540, 0)
 	_dwks28 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.maximum(0, _dwks25 - _taxinc), 0)
 	c24610 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.maximum(0, _dwks25 - _dwks28), 0)
@@ -802,11 +795,11 @@ def TaxGains():
 	c24550 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.maximum(0, _taxinc - _dwks31), 0)
 	c24570 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), 0.28 * c24550, 0)
 	_addtax = np.zeros((dim,))
-	_addtax = np.where(np.logical_and(_taxinc > 0, np.logical_and(_hasgain == 1, c24540 > _brk6[FLPDYR-2013, MARS-1])), 0.05 * c24517, _addtax)
-	_addtax = np.where(np.logical_and(np.logical_and(_taxinc > 0, _hasgain == 1), np.logical_and(c24540 <= _brk6[FLPDYR-2013, MARS-1], _taxinc > _brk6[FLPDYR-2013, MARS-1])), 0.05 * np.minimum(c04800 - _brk6[FLPDYR-2013, MARS-1], c24517), _addtax)
+	_addtax = np.where(np.logical_and(_taxinc > 0, np.logical_and(_hasgain == 1, c24540 > _brk6[puf_dict['FLPDYR']-2013, puf_dict['MARS']-1])), 0.05 * c24517, _addtax)
+	_addtax = np.where(np.logical_and(np.logical_and(_taxinc > 0, _hasgain == 1), np.logical_and(c24540 <= _brk6[puf_dict['FLPDYR']-2013, puf_dict['MARS']-1], _taxinc > _brk6[puf_dict['FLPDYR']-2013, puf_dict['MARS']-1])), 0.05 * np.minimum(c04800 - _brk6[puf_dict['FLPDYR']-2013, puf_dict['MARS']-1], c24517), _addtax)
 
 	c24560 = np.zeros((dim,))
-	c24560 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), Taxer(inc_in = c24540, inc_out = c24560, MARS = MARS), c24560)
+	c24560 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), Taxer(inc_in = c24540, inc_out = c24560, mars= puf_dict['MARS']), c24560)
 
 	_taxspecial = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), c24598 + c24615 + c24570 + c24560 + _addtax, 0)
 
@@ -884,7 +877,7 @@ def MUI(c05750):
 	c05750 = c05750
 	c00100[5] = 100000000
 	c05750[6] = 1234
-	c05750 = np.where(c00100 > _thresx[MARS-1], 0.038 * np.minimum(e00300 + e00600 + np.maximum(0, c01000) + np.maximum(0, e02000), c00100 - _thresx[MARS-1]), c05750)
+	c05750 = np.where(c00100 > _thresx[puf_dict['MARS']-1], 0.038 * np.minimum(puf_dict['e00300'] + puf_dict['e00600'] + np.maximum(0, c01000) + np.maximum(0, puf_dict['e02000']), c00100 - _thresx[puf_dict['MARS']-1]), c05750)
 	
 	
 
@@ -894,13 +887,13 @@ def AMTI(puf):
 	global _agep
 	global _ages
 	c62720 = c24517 + x62720 
-	c60260 = e00700 + x60260
-	c63100 = np.maximum(0, _taxbc - e07300)
+	c60260 = puf_dict['e00700'] + x60260
+	c63100 = np.maximum(0, _taxbc - puf_dict['e07300'])
 	c60200 = np.minimum(c17000, 0.025 * _posagi)
 	c60240 = c18300 + x60240
 	c60220 = c20800 + x60220
 	c60130 = c21040 + x60130 
-	c62730 = e24515 + x62730
+	c62730 = puf_dict['e24515'] + x62730
 
 	_addamt = np.where(np.logical_or(_exact == 0, np.logical_and(_exact == 1, c60200 + c60220 + c60240 + e60290 > 0)), c60200 + c60240 + c60220 + e60290 - c60130, 0)
 
@@ -912,30 +905,30 @@ def AMTI(puf):
 
 	_cmbtp = np.zeros((dim,))
 
-	_edical = np.where(np.logical_and(puf == True, np.logical_or(_standard == 0, np.logical_and(_exact == 1, e04470 > 0))), np.maximum(0, e17500 - np.maximum(0, e00100) * 0.075), 0)
+	_edical = np.where(np.logical_and(puf == True, np.logical_or(_standard == 0, np.logical_and(_exact == 1, e04470 > 0))), np.maximum(0, puf_dict['e17500'] - np.maximum(0, puf_dict['e00100']) * 0.075), 0)
 
-	_cmbtp = np.where(np.logical_and(puf == True, np.logical_and(np.logical_or(_standard == 0, np.logical_and(_exact == 1, e04470 > 0)), f6251 == 1)), -1 * np.minimum(_edical, 0.025 * np.maximum(0, e00100)) + e62100 + c60260 + e04470 + e21040 - _sit - e00100 - e18500 - e20800, _cmbtp)
+	_cmbtp = np.where(np.logical_and(puf == True, np.logical_and(np.logical_or(_standard == 0, np.logical_and(_exact == 1, e04470 > 0)), puf_dict['f6251'] == 1)), -1 * np.minimum(_edical, 0.025 * np.maximum(0, puf_dict['e00100'])) + puf_dict['e62100'] + c60260 + e04470 + puf_dict['e21040'] - _sit - puf_dict['e00100'] - puf_dict['e18500'] - puf_dict['e20800'], _cmbtp)
 
-	c62100 = np.where(np.logical_and(puf == True, np.logical_or(_standard == 0, np.logical_and(_exact == 1, e04470 > 0))), c00100 - c04470 + np.minimum(c17000, 0.025 * np.maximum(0, c00100)) + _sit + e18500 - c60260 + c20800 - c21040 + _cmbtp, c62100)
+	c62100 = np.where(np.logical_and(puf == True, np.logical_or(_standard == 0, np.logical_and(_exact == 1, e04470 > 0))), c00100 - c04470 + np.minimum(c17000, 0.025 * np.maximum(0, c00100)) + _sit + puf_dict['e18500'] - c60260 + c20800 - c21040 + _cmbtp, c62100)
 
-	_cmbtp = np.where(np.logical_and(puf == True, np.logical_and(_standard > 0, f6251 == 1)), e62100 - e00100 + c60260, _cmbtp)
-	c62100 = np.where(np.logical_and(puf == True, np.logical_and(_standard > 0, f6251 == 1)), c00100 - c60260 + _cmbtp, c62100)
+	_cmbtp = np.where(np.logical_and(puf == True, np.logical_and(_standard > 0, puf_dict['f6251'] == 1)), puf_dict['e62100'] - puf_dict['e00100'] + c60260, _cmbtp)
+	c62100 = np.where(np.logical_and(puf == True, np.logical_and(_standard > 0, puf_dict['f6251'] == 1)), c00100 - c60260 + _cmbtp, c62100)
 
 	x62100 = c62100
 
-	_amtsepadd = np.where(np.logical_and(c62100 > _amtsep[FLPDYR-2013], np.logical_or(MARS == 3, MARS == 6)), np.maximum(0, np.minimum(_almsep[FLPDYR-2013], 0.25 * (c62100 - _amtsep[FLPDYR-2013]))), 0)
-	c62100 = np.where(np.logical_and(c62100 > _amtsep[FLPDYR-2013], np.logical_or(MARS == 3, MARS == 6)), c62100 + _amtsepadd, c62100)
+	_amtsepadd = np.where(np.logical_and(c62100 > _amtsep[puf_dict['FLPDYR']-2013], np.logical_or(puf_dict['MARS'] == 3, puf_dict['MARS'] == 6)), np.maximum(0, np.minimum(_almsep[puf_dict['FLPDYR']-2013], 0.25 * (c62100 - _amtsep[puf_dict['FLPDYR']-2013]))), 0)
+	c62100 = np.where(np.logical_and(c62100 > _amtsep[puf_dict['FLPDYR']-2013], np.logical_or(puf_dict['MARS'] == 3, puf_dict['MARS'] == 6)), c62100 + _amtsepadd, c62100)
 
-	c62600 = np.maximum(0, _amtex[FLPDYR-2013, MARS-1] - 0.25 * np.maximum(0, c62100 - _amtys[MARS-1]))
+	c62600 = np.maximum(0, _amtex[puf_dict['FLPDYR']-2013, puf_dict['MARS']-1] - 0.25 * np.maximum(0, c62100 - _amtys[puf_dict['MARS']-1]))
 
-	_agep = np.where(DOBYR > 0, np.ceil((12 * (FLPDYR - DOBYR) - DOBMD/100)/12), 0)
-	_ages = np.where(SDOBYR > 0, np.ceil((12 * (FLPDYR - SDOBYR) - SDOBMD/100)/12), 0)
+	_agep = np.where(DOBYR > 0, np.ceil((12 * (puf_dict['FLPDYR'] - DOBYR) - DOBMD/100)/12), 0)
+	_ages = np.where(SDOBYR > 0, np.ceil((12 * (puf_dict['FLPDYR'] - SDOBYR) - SDOBMD/100)/12), 0)
 
-	c62600 = np.where(np.logical_and(_cmp == 1, np.logical_and(f6251 == 1, _exact == 1)), e62600, c62600)
+	c62600 = np.where(np.logical_and(_cmp == 1, np.logical_and(puf_dict['f6251'] == 1, _exact == 1)), e62600, c62600)
 
 	#_cmp == 1 and _exact == 0 and (_agep < amtage and agep =/= 0)
 
-	c62600 = np.where(np.logical_and(np.logical_and(_cmp == 1, _exact == 0), np.logical_and(_agep < _amtage[FLPDYR-2013], _agep != 0)), np.minimum(c62600, _earned + _almdep[FLPDYR-2013]), c62600)
+	c62600 = np.where(np.logical_and(np.logical_and(_cmp == 1, _exact == 0), np.logical_and(_agep < _amtage[puf_dict['FLPDYR']-2013], _agep != 0)), np.minimum(c62600, _earned + _almdep[puf_dict['FLPDYR']-2013]), c62600)
 
 	c62700 = np.maximum(0, c62100 - c62600)
 
@@ -943,11 +936,11 @@ def AMTI(puf):
 	_amtfei = np.zeros((dim,))
 
 	_alminc = np.where(c02700 > 0, np.maximum(0, c62100 - c62600 + c02700), _alminc)
-	_amtfei = np.where(c02700 > 0, 0.26 * c02700 + 0.02 * np.maximum(0, c02700 - _almsp[FLPDYR-2013]/_sep), _amtfei)
+	_amtfei = np.where(c02700 > 0, 0.26 * c02700 + 0.02 * np.maximum(0, c02700 - _almsp[puf_dict['FLPDYR']-2013]/_sep), _amtfei)
 
-	c62780 = 0.26 * _alminc + 0.02 * np.maximum(0, _alminc - _almsp[FLPDYR-2013]/_sep) - _amtfei
+	c62780 = 0.26 * _alminc + 0.02 * np.maximum(0, _alminc - _almsp[puf_dict['FLPDYR']-2013]/_sep) - _amtfei
 
-	c62900 = np.where(f6251 != 0, e62900, e07300) 
+	c62900 = np.where(puf_dict['f6251'] != 0, puf_dict['e62900'], puf_dict['e07300']) 
 	c63000 = c62780 - c62900
 
 	c62740 = np.minimum(np.maximum(0, c24516 + x62740), c62720 + c62730)
@@ -955,34 +948,34 @@ def AMTI(puf):
 
 	_ngamty = np.maximum(0, _alminc - c62740)
 
-	c62745 = 0.26 * _ngamty + 0.02 * np.maximum(0, _ngamty - _almsp[FLPDYR-2013]/_sep)
-	y62745 = _almsp[FLPDYR-2013]/_sep
+	c62745 = 0.26 * _ngamty + 0.02 * np.maximum(0, _ngamty - _almsp[puf_dict['FLPDYR']-2013]/_sep)
+	y62745 = _almsp[puf_dict['FLPDYR']-2013]/_sep
 	_tamt2 = np.zeros((dim,))
 
 	_amt5pc = np.zeros((dim,))
-	_amt15pc = np.minimum(_alminc, c62720) - _amt5pc - np.minimum(np.maximum(0, _brk2[FLPDYR-2013, MARS-1] - c24520), np.minimum(_alminc, c62720))
-	_amt15pc = np.where(c04800 == 0, np.maximum(0, np.minimum(_alminc, c62720) - _brk2[FLPDYR-2013, MARS-1]), _amt15pc)
+	_amt15pc = np.minimum(_alminc, c62720) - _amt5pc - np.minimum(np.maximum(0, _brk2[puf_dict['FLPDYR']-2013, puf_dict['MARS']-1] - c24520), np.minimum(_alminc, c62720))
+	_amt15pc = np.where(c04800 == 0, np.maximum(0, np.minimum(_alminc, c62720) - _brk2[puf_dict['FLPDYR']-2013, puf_dict['MARS']-1]), _amt15pc)
 	_amt25pc = np.minimum(_alminc, c62740) - np.minimum(_alminc, c62720)
 
 	_amt25pc = np.where(c62730 == 0, 0, _amt25pc)
-	c62747 = _cgrate1[FLPDYR-2013] * _amt5pc
-	c62755 = _cgrate2[FLPDYR-2013] * _amt15pc
+	c62747 = _cgrate1[puf_dict['FLPDYR']-2013] * _amt5pc
+	c62755 = _cgrate2[puf_dict['FLPDYR']-2013] * _amt15pc
 	c62770 = 0.25 * _amt25pc
 	_tamt2 = c62747 + c62755 + c62770
 
 	_amt = np.zeros((dim,))
-	_amt = np.where(_ngamty > _brk6[FLPDYR-2013, MARS-1], 0.05 * np.minimum(_alminc, c62740), _amt)
-	_amt = np.where(np.logical_and(_ngamty <= _brk6[FLPDYR-2013, MARS-1], _alminc > _brk6[FLPDYR-2013, MARS-1]), 0.05 * np.minimum(_alminc - _brk6[FLPDYR-2013, MARS-1], c62740), _amt)
+	_amt = np.where(_ngamty > _brk6[puf_dict['FLPDYR']-2013, puf_dict['MARS']-1], 0.05 * np.minimum(_alminc, c62740), _amt)
+	_amt = np.where(np.logical_and(_ngamty <= _brk6[puf_dict['FLPDYR']-2013, puf_dict['MARS']-1], _alminc > _brk6[puf_dict['FLPDYR']-2013, puf_dict['MARS']-1]), 0.05 * np.minimum(_alminc - _brk6[puf_dict['FLPDYR']-2013, puf_dict['MARS']-1], c62740), _amt)
 
 	c62800 = np.minimum(c62780, c62745 + _tamt2 - _amtfei)
 	c63000 = c62800 - c62900 
-	c63100 = _taxbc - e07300 - c05700 
+	c63100 = _taxbc - puf_dict['e07300'] - c05700 
 	c63100 = c63100 + e10105
 
 	c63100 = np.maximum(0, c63100)
 	c63200 = np.maximum(0, c63000 - c63100)
 	c09600 = c63200
-	_othtax = e05800 - (e05100 + e09600)
+	_othtax = puf_dict['e05800'] - (puf_dict['e05100'] + puf_dict['e09600'])
 
 	c05800 = _taxbc + c63200
 
@@ -991,27 +984,27 @@ def F2441(puf, _earned):
 	global c32890
 	global _dclim
 	_earned = _earned
-	_earned = np.where(_fixeic == 1, e59560, _earned)
-	c32880 = np.where(np.logical_and(MARS == 2, puf == True), 0.5 * _earned, 0)
-	c32890 = np.where(np.logical_and(MARS == 2, puf == True), 0.5 * _earned, 0)
-	c32880 = np.where(np.logical_and(MARS == 2, puf == False), np.maximum(0, e32880), c32880)
-	c32890 = np.where(np.logical_and(MARS == 2, puf == False), np.maximum(0, e32890), c32890)
-	c32880 = np.where(MARS != 2, _earned, c32880)
-	c32890 = np.where(MARS != 2, _earned, c32890)	
+	_earned = np.where(_fixeic == 1, puf_dict['e59560'], _earned)
+	c32880 = np.where(np.logical_and(puf_dict['MARS'] == 2, puf == True), 0.5 * _earned, 0)
+	c32890 = np.where(np.logical_and(puf_dict['MARS'] == 2, puf == True), 0.5 * _earned, 0)
+	c32880 = np.where(np.logical_and(puf_dict['MARS'] == 2, puf == False), np.maximum(0, e32880), c32880)
+	c32890 = np.where(np.logical_and(puf_dict['MARS'] == 2, puf == False), np.maximum(0, e32890), c32890)
+	c32880 = np.where(puf_dict['MARS'] != 2, _earned, c32880)
+	c32890 = np.where(puf_dict['MARS'] != 2, _earned, c32890)	
 
 	_ncu13 = np.zeros((dim,))
-	_ncu13 = np.where(puf == True, f2441, _ncu13)
+	_ncu13 = np.where(puf == True, puf_dict['f2441'], _ncu13)
 	_ncu13 = np.where(np.logical_and(puf == False, CDOB1 > 0), _ncu13 + 1, _ncu13)
 	_ncu13 = np.where(np.logical_and(puf == False, CDOB2 > 0), _ncu13 + 1, _ncu13)
 
-	_dclim = np.minimum(_ncu13, 2) * _dcmax[FLPDYR-2013]
-	c32800 = np.minimum(np.maximum(e32800, e32750 + e32775), _dclim)
+	_dclim = np.minimum(_ncu13, 2) * _dcmax[puf_dict['FLPDYR']-2013]
+	c32800 = np.minimum(np.maximum(puf_dict['e32800'], e32750 + e32775), _dclim)
 
 def DepCareBen():
 	global c33000
 	#Part III ofdependent care benefits
-	_seywage = np.where(np.logical_and(_cmp == 1, MARS == 2), np.minimum(c32880, np.minimum(c32890, np.minimum(e33420 + e33430 - e33450, e33460))), 0)
-	_seywage = np.where(np.logical_and(_cmp == 1, MARS != 2), np.minimum(c32880, np.minimum(e33420 + e33430 - e33450, e33460)), _seywage)
+	_seywage = np.where(np.logical_and(_cmp == 1, puf_dict['MARS'] == 2), np.minimum(c32880, np.minimum(c32890, np.minimum(e33420 + e33430 - e33450, e33460))), 0)
+	_seywage = np.where(np.logical_and(_cmp == 1, puf_dict['MARS'] != 2), np.minimum(c32880, np.minimum(e33420 + e33430 - e33450, e33460)), _seywage)
 
 	c33465 = np.where(_cmp == 1, e33465, 0)
 	c33470 = np.where(_cmp == 1, e33470, 0)
@@ -1020,22 +1013,22 @@ def DepCareBen():
 	c32840 = np.where(_cmp == 1, c33470 + c33475, 0)
 	c32800 = np.where(_cmp == 1, np.minimum(np.maximum(0, _dclim - c32840), np.maximum(0, e32750 + e32775 - c32840)), 0)
 
-	c33000 = np.where(MARS == 2, np.maximum(0, np.minimum(c32800, np.minimum(c32880, c32890))), 0)
-	c33000 = np.where(MARS != 2, np.maximum(0, np.minimum(c32800, _earned)), c33000)
+	c33000 = np.where(puf_dict['MARS'] == 2, np.maximum(0, np.minimum(c32800, np.minimum(c32880, c32890))), 0)
+	c33000 = np.where(puf_dict['MARS'] != 2, np.maximum(0, np.minimum(c32800, _earned)), c33000)
 
 
 def ExpEarnedInc():
 	global c07180
 	#Expenses limited to earned income
 
-	_tratio  = np.where(_exact == 1, np.ceil(np.maximum((c00100 - _agcmax[FLPDYR-2013])/2000, 0)), 0)
-	c33200 = np.where(_exact == 1, c33000 * 0.01 * np.maximum(20, _pcmax[FLPDYR-2013] - np.minimum(15, _tratio)), 0)
-	c33200 = np.where(_exact != 1, c33000 * 0.01 * np.maximum(20, _pcmax[FLPDYR-2013] - np.maximum((c00100 - _agcmax[FLPDYR-2013])/2000, 0)), c33200)
+	_tratio  = np.where(_exact == 1, np.ceil(np.maximum((c00100 - _agcmax[puf_dict['FLPDYR']-2013])/2000, 0)), 0)
+	c33200 = np.where(_exact == 1, c33000 * 0.01 * np.maximum(20, _pcmax[puf_dict['FLPDYR']-2013] - np.minimum(15, _tratio)), 0)
+	c33200 = np.where(_exact != 1, c33000 * 0.01 * np.maximum(20, _pcmax[puf_dict['FLPDYR']-2013] - np.maximum((c00100 - _agcmax[puf_dict['FLPDYR']-2013])/2000, 0)), c33200)
 
-	c33400 = np.minimum(np.maximum(0, c05800 - e07300), c33200)
+	c33400 = np.minimum(np.maximum(0, c05800 - puf_dict['e07300']), c33200)
 	#amount of the credit
 
-	c07180 = np.where(e07180 == 0, 0, c33400)
+	c07180 = np.where(puf_dict['e07180'] == 0, 0, c33400)
 
 
 def RateRed(c05800):
@@ -1053,7 +1046,7 @@ def RateRed(c05800):
 
 def NumDep(puf):
 	global c59660
-	#Number of dependents for EIC 
+	#Number of dependents for puf_dict['EIC'] 
 
 	_ieic = np.zeros((dim,))
 
@@ -1061,7 +1054,7 @@ def NumDep(puf):
 	EICYB2_2 = np.where(EICYB2 < 0, 0.0, EICYB2)
 	EICYB3_3 = np.where(EICYB3 < 0, 0.0, EICYB3)
 
-	_ieic = np.where(puf == True, EIC, EICYB1_1 + EICYB2_2 + EICYB3_3)
+	_ieic = np.where(puf == True, puf_dict['EIC'], EICYB1_1 + EICYB2_2 + EICYB3_3)
 
 	_ieic = _ieic.astype(int)
 
@@ -1071,24 +1064,24 @@ def NumDep(puf):
 
 	#Modified AGI only through 2002 
 
-	_modagi = c00100 + e00400 
+	_modagi = c00100 + puf_dict['e00400'] 
 	c59660 = np.zeros((dim,))
 
-	_val_ymax = np.where(np.logical_and(MARS == 2, _modagi > 0), _ymax[_ieic-1, FLPDYR-2013] + _joint[FLPDYR-2013], 0)
-	_val_ymax = np.where(np.logical_and(_modagi > 0, np.logical_or(MARS == 1, np.logical_or(MARS == 4, np.logical_or(MARS == 5, MARS == 7)))), _ymax[_ieic-1, FLPDYR-2013], _val_ymax)
-	c59660 = np.where(np.logical_and(_modagi > 0, np.logical_or(MARS == 1, np.logical_or(MARS == 4, np.logical_or(MARS == 5, np.logical_or(MARS == 2, MARS == 7))))), np.minimum(_rtbase[_ieic-1, FLPDYR-2013] * c59560, _crmax[_ieic-1, FLPDYR-2013]), c59560)
-	_preeitc =  np.where(np.logical_and(_modagi > 0, np.logical_or(MARS == 1, np.logical_or(MARS == 4, np.logical_or(MARS == 5, np.logical_or(MARS == 2, MARS == 7))))), c59660, 0)
+	_val_ymax = np.where(np.logical_and(puf_dict['MARS'] == 2, _modagi > 0), _ymax[_ieic-1, puf_dict['FLPDYR']-2013] + _joint[puf_dict['FLPDYR']-2013], 0)
+	_val_ymax = np.where(np.logical_and(_modagi > 0, np.logical_or(puf_dict['MARS'] == 1, np.logical_or(puf_dict['MARS'] == 4, np.logical_or(puf_dict['MARS'] == 5, puf_dict['MARS'] == 7)))), _ymax[_ieic-1, puf_dict['FLPDYR']-2013], _val_ymax)
+	c59660 = np.where(np.logical_and(_modagi > 0, np.logical_or(puf_dict['MARS'] == 1, np.logical_or(puf_dict['MARS'] == 4, np.logical_or(puf_dict['MARS'] == 5, np.logical_or(puf_dict['MARS'] == 2, puf_dict['MARS'] == 7))))), np.minimum(_rtbase[_ieic-1, puf_dict['FLPDYR']-2013] * c59560, _crmax[_ieic-1, puf_dict['FLPDYR']-2013]), c59560)
+	_preeitc =  np.where(np.logical_and(_modagi > 0, np.logical_or(puf_dict['MARS'] == 1, np.logical_or(puf_dict['MARS'] == 4, np.logical_or(puf_dict['MARS'] == 5, np.logical_or(puf_dict['MARS'] == 2, puf_dict['MARS'] == 7))))), c59660, 0)
 
-	c59660 = np.where(np.logical_and(np.logical_and(MARS != 3, MARS != 6), np.logical_and(_modagi > 0, np.logical_or(_modagi > _val_ymax, c59560 > _val_ymax))), np.maximum(0, c59660 - _rtless[_ieic-1, FLPDYR-2013] * (np.maximum(_modagi, c59560) - _val_ymax)), c59560)
-	_val_rtbase = np.where(np.logical_and(np.logical_and(MARS != 3, MARS != 6), _modagi > 0), _rtbase[_ieic-1, FLPDYR-2013] * 100, 0)
-	_val_rtless = np.where(np.logical_and(np.logical_and(MARS != 3, MARS != 6), _modagi > 0), _rtless[_ieic-1, FLPDYR-2013] * 100, 0)
+	c59660 = np.where(np.logical_and(np.logical_and(puf_dict['MARS'] != 3, puf_dict['MARS'] != 6), np.logical_and(_modagi > 0, np.logical_or(_modagi > _val_ymax, c59560 > _val_ymax))), np.maximum(0, c59660 - _rtless[_ieic-1, puf_dict['FLPDYR']-2013] * (np.maximum(_modagi, c59560) - _val_ymax)), c59560)
+	_val_rtbase = np.where(np.logical_and(np.logical_and(puf_dict['MARS'] != 3, puf_dict['MARS'] != 6), _modagi > 0), _rtbase[_ieic-1, puf_dict['FLPDYR']-2013] * 100, 0)
+	_val_rtless = np.where(np.logical_and(np.logical_and(puf_dict['MARS'] != 3, puf_dict['MARS'] != 6), _modagi > 0), _rtless[_ieic-1, puf_dict['FLPDYR']-2013] * 100, 0)
 
-	_dy = np.where(np.logical_and(np.logical_and(MARS != 3, MARS != 6), _modagi > 0), e00400 + e83080 + e00300 + e00600 
-		+ np.maximum(0, np.maximum(0, e01000) - np.maximum(0, e40223))
+	_dy = np.where(np.logical_and(np.logical_and(puf_dict['MARS'] != 3, puf_dict['MARS'] != 6), _modagi > 0), puf_dict['e00400'] + e83080 + puf_dict['e00300'] + puf_dict['e00600'] 
+		+ np.maximum(0, np.maximum(0, puf_dict['e01000']) - np.maximum(0, e40223))
 		+ np.maximum(0, np.maximum(0, e25360) - e25430 - e25470 - e25400 - e25500)
-		+ np.maximum(0, e26210 + e26340 + e27200 - np.absolute(e26205) - np.absolute(e26320)), 0)
+		+ np.maximum(0, e26210 + e26340 + puf_dict['e27200'] - np.absolute(e26205) - np.absolute(e26320)), 0)
 
-	c59660 = np.where(np.logical_and(np.logical_and(MARS != 3, MARS != 6), np.logical_and(_modagi > 0, _dy > _dylim[FLPDYR-2013])), 0, c59660)
+	c59660 = np.where(np.logical_and(np.logical_and(puf_dict['MARS'] != 3, puf_dict['MARS'] != 6), np.logical_and(_modagi > 0, _dy > _dylim[puf_dict['FLPDYR']-2013])), 0, c59660)
 
 	c59660 = np.where(np.logical_and(np.logical_and(_cmp == 1, _ieic == 0), np.logical_and(np.logical_and(SOIYR - DOBYR >= 25, SOIYR - DOBYR < 65), np.logical_and(SOIYR - SDOBYR >= 25, SOIYR - SDOBYR < 65))), 0, c59660)
 	c59660 = np.where(np.logical_and(_ieic == 0, np.logical_or(np.logical_or(_agep < 25, _agep >= 65), np.logical_or(_ages < 25, _ages >= 65))), 0, c59660)
@@ -1105,15 +1098,15 @@ def ChildTaxCredit():
 	c07230 = np.zeros((dim,))
 	_precrd = np.zeros((dim,))
 
-	_num = np.where(MARS == 2, 2, 1)
+	_num = np.where(puf_dict['MARS'] == 2, 2, 1)
 
-	_nctcr = n24
+	_nctcr = puf_dict['n24']
 
-	_precrd = _chmax[FLPDYR-2013] * _nctcr 
-	_ctcagi = e00100 + _feided
+	_precrd = _chmax[puf_dict['FLPDYR']-2013] * _nctcr 
+	_ctcagi = puf_dict['e00100'] + _feided
 
-	_precrd = np.where(np.logical_and(_ctcagi > _cphase[MARS-1], _exact == 1), np.maximum(0, _precrd - 50 * np.ceil(np.maximum(0, _ctcagi - _cphase[MARS-1])/1000)), 0)
-	_precrd = np.where(np.logical_and(_ctcagi > _cphase[MARS-1], _exact != 1), np.maximum(0, _precrd - 50 * (np.maximum(0, _ctcagi - _cphase[MARS-1]) + 500)/1000), _precrd)
+	_precrd = np.where(np.logical_and(_ctcagi > _cphase[puf_dict['MARS']-1], _exact == 1), np.maximum(0, _precrd - 50 * np.ceil(np.maximum(0, _ctcagi - _cphase[puf_dict['MARS']-1])/1000)), 0)
+	_precrd = np.where(np.logical_and(_ctcagi > _cphase[puf_dict['MARS']-1], _exact != 1), np.maximum(0, _precrd - 50 * (np.maximum(0, _ctcagi - _cphase[puf_dict['MARS']-1]) + 500)/1000), _precrd)
 
 #def HopeCredit():
 	#Hope credit for 1998-2009, I don't think this is needed 
@@ -1139,11 +1132,11 @@ def LLC(puf):
 	#Lifetime Learning Credit
 	global c87550
 
-	c87540 = np.where(puf == True, np.minimum(e87530, _learn[FLPDYR-2013]), 0)
+	c87540 = np.where(puf == True, np.minimum(puf_dict['e87530'], _learn[puf_dict['FLPDYR']-2013]), 0)
 	c87550 = np.where(puf == True, 0.2 * c87540, 0)
 
 	c87530 = np.where(puf == False, e87526 + e87522 + e87524 + e87528, 0)
-	c87540 = np.where(puf == False, np.minimum(c87530, _learn[FLPDYR-2013]), c87540)
+	c87540 = np.where(puf == False, np.minimum(c87530, _learn[puf_dict['FLPDYR']-2013]), c87540)
 	c87550 = np.where(puf == False, 0.2 * c87540, c87550)
 
 def RefAmOpp():
@@ -1170,17 +1163,17 @@ def NonEdCr(c87550):
 	c87560 = c87550
 
 	#Phase Out
-	c87570 = np.where(MARS == 2, _edphhm[FLPDYR-2013] * 1000, _edphhs[FLPDYR-2013] * 1000)
+	c87570 = np.where(puf_dict['MARS'] == 2, _edphhm[puf_dict['FLPDYR']-2013] * 1000, _edphhs[puf_dict['FLPDYR']-2013] * 1000)
 	c87580 = c00100
 	c87590 = np.maximum(0, c87570 - c87580)
 	c87600 = 10000 * _num
 	c87610 = np.minimum(1, c87590/c87600)
 	c87620 = c87560 * c87610
 
-	_ctc1 = c07180 + e07200 + c07230
+	_ctc1 = c07180 + puf_dict['e07200'] + c07230
 	_ctc2 = np.zeros((dim,))
 
-	_ctc2 = e07240 + e07960 + e07260
+	_ctc2 = puf_dict['e07240'] + e07960 + puf_dict['e07260']
 	_regcrd = _ctc1 + _ctc2
 	_exocrd = e07700 + e07250
 	_exocrd = _exocrd + t07950 
@@ -1199,17 +1192,17 @@ def AddCTC(puf):
 	c82935 = np.where(_nctcr > 0, c82925 - c82930, 0)
 	#CTC not applied to tax
 
-	c82880 = np.where(_nctcr > 0, np.maximum(0, e00200 + e82882 + e30100 + np.maximum(0, _sey) - 0.5 * _setax), 0)
+	c82880 = np.where(_nctcr > 0, np.maximum(0, puf_dict['e00200'] + e82882 + e30100 + np.maximum(0, _sey) - 0.5 * _setax), 0)
 	c82880 = np.where(np.logical_and(_nctcr > 0, _exact == 1), e82880, c82880)
 	h82880 = np.where(_nctcr > 0, c82880, 0)
-	c82885 = np.where(_nctcr > 0, np.maximum(0, c82880 - _ealim[FLPDYR-2013]), 0)
-	c82890 = np.where(_nctcr > 0, _adctcrt[FLPDYR-2013] * c82885, 0)
+	c82885 = np.where(_nctcr > 0, np.maximum(0, c82880 - _ealim[puf_dict['FLPDYR']-2013]), 0)
+	c82890 = np.where(_nctcr > 0, _adctcrt[puf_dict['FLPDYR']-2013] * c82885, 0)
 
 	#Part II of 2005 form 8812
-	c82900 = np.where(np.logical_and(_nctcr > 2, c82890 < c82935), 0.0765 * np.minimum(_ssmax[FLPDYR-2013], c82880), 0)
-	c82905 = np.where(np.logical_and(_nctcr > 2, c82890 < c82935), e03260 + e09800, 0)
+	c82900 = np.where(np.logical_and(_nctcr > 2, c82890 < c82935), 0.0765 * np.minimum(_ssmax[puf_dict['FLPDYR']-2013], c82880), 0)
+	c82905 = np.where(np.logical_and(_nctcr > 2, c82890 < c82935), puf_dict['e03260'] + puf_dict['e09800'], 0)
 	c82910 = np.where(np.logical_and(_nctcr > 2, c82890 < c82935), c82900 + c82905, 0)
-	c82915 = np.where(np.logical_and(_nctcr > 2, c82890 < c82935), c59660 + e11200, 0)
+	c82915 = np.where(np.logical_and(_nctcr > 2, c82890 < c82935), c59660 + puf_dict['e11200'], 0)
 	c82920 = np.where(np.logical_and(_nctcr > 2, c82890 < c82935), np.maximum(0, c82910 - c82915), 0)
 	c82937 = np.where(np.logical_and(_nctcr > 2, c82890 < c82935), np.maximum(c82890, c82920), 0)
 
@@ -1220,8 +1213,8 @@ def AddCTC(puf):
 
 	c11070 = c82940
 
-	e59660 = np.where(puf == True, e59680 + e59700 + e59720, 0)
-	_othadd = e11070 - c11070
+	e59660 = np.where(puf == True, puf_dict['e59680'] + puf_dict['e59700'] + puf_dict['e59720'], 0)
+	_othadd = puf_dict['e11070'] - c11070
 
 	c11070 = np.where(_fixup >= 4, c11070 + _othadd, c11070)
 
@@ -1241,11 +1234,11 @@ def C1040(puf):
 	global _eitc
 	#Credits 1040 line 48
 
-	c07100 = e07180 + e07200 + c07220 + c07230 + e07250 + e07600 + e07600 + e07260 + c07970 + e07300 + x07400 + e07500 + e07700 + e08000
+	c07100 = puf_dict['e07180'] + puf_dict['e07200'] + c07220 + c07230 + e07250 + puf_dict['e07600'] + puf_dict['e07600'] + puf_dict['e07260'] + c07970 + puf_dict['e07300'] + x07400 + e07500 + e07700 + e08000
 
 	y07100 = c07100
 
-	c07100 = c07100 + e07240
+	c07100 = c07100 + puf_dict['e07240']
 	c07100 = c07100 + e08001
 	c07100 = c07100 + e07960 + e07970
 	c07100 = c07100 + e07980
@@ -1259,12 +1252,12 @@ def C1040(puf):
 	c08795 = np.maximum(0, c05800 - c07100)
 
 	c08800 = c08795
-	e08795 = np.where(puf == True, e08800, 0)
+	e08795 = np.where(puf == True, puf_dict['e08800'], 0)
 
 	#Tax before refundable credits
 
-	c09200 = c08795 + e09900 + e09400 + e09800 + e10000 + e10100
-	c09200 = c09200 + e09700
+	c09200 = c08795 + puf_dict['e09900'] + puf_dict['e09400'] + puf_dict['e09800'] + e10000 + e10100
+	c09200 = c09200 + puf_dict['e09700']
 	c09200 = c09200 + e10050
 	c09200 = c09200 + e10075
 	c09200 = c09200 + e09805
@@ -1305,11 +1298,11 @@ def SOIT(_eitc):
 	_eitc = _eitc
 
 	#SOI Tax (Tax after non-refunded credits plus tip penalty)
-	c10300 = c09200 - e10000 - e59680 - c59700
-	c10300 = c10300 - e11070
-	c10300 = c10300 - e11550
-	c10300 = c10300 - e11580
-	c10300 = c10300 - e09710 - e09720 - e11581 - e11582
+	c10300 = c09200 - e10000 - puf_dict['e59680'] - c59700
+	c10300 = c10300 - puf_dict['e11070']
+	c10300 = c10300 - puf_dict['e11550']
+	c10300 = c10300 - puf_dict['e11580']
+	c10300 = c10300 - e09710 - e09720 - puf_dict['e11581'] - puf_dict['e11582']
 	c10300 = c10300 - e87900 - e87905 - e87681 - e87682
 	c10300 = c10300 - c10300 - c10950 - e11451 - e11452
 	c10300 = c09200 - e09710 - e09720 - e10000 - e11601 - e11602
@@ -1325,7 +1318,7 @@ def SOIT(_eitc):
 
 
 
-def Taxer(inc_in, inc_out, MARS):
+def Taxer(inc_in, inc_out, mars):
 	low = np.where(inc_in < 3000, 1, 0)
 	med = np.where(np.logical_and(inc_in >= 3000, inc_in < 100000), 1, 0)
 
@@ -1347,23 +1340,23 @@ def Taxer(inc_in, inc_out, MARS):
 
 	_a6 = np.where(np.logical_or(low==1, med ==1), _a3 + _a5, inc_in)
 
-	inc_out = (_rt1[FLPDYR-2013] * np.minimum(_a6, _brk1[FLPDYR-2013, MARS-1])
-		+ _rt2[FLPDYR-2013] 
-		* np.minimum(_brk2[FLPDYR-2013, MARS-1] - _brk1[FLPDYR-2013, MARS-1],
-			np.maximum(0, _a6 - _brk1[FLPDYR-2013, MARS-1]))
-		+ _rt3[FLPDYR-2013]
-		* np.minimum(_brk3[FLPDYR-2013, MARS-1] - _brk2[FLPDYR-2013, MARS-1],
-			np.maximum(0, _a6 - _brk2[FLPDYR-2013, MARS-1]))
-		+ _rt4[FLPDYR-2013]
-		* np.minimum(_brk4[FLPDYR-2013, MARS-1] - _brk3[FLPDYR-2013, MARS-1],
-			np.maximum(0, _a6 - _brk3[FLPDYR-2013, MARS-1]))
-		+ _rt5[FLPDYR-2013]
-		* np.minimum(_brk5[FLPDYR-2013, MARS-1] - _brk4[FLPDYR-2013, MARS-1],
-			np.maximum(0, _a6 - _brk4[FLPDYR-2013, MARS-1]))
-		+ _rt6[FLPDYR-2013]
-		* np.minimum(_brk6[FLPDYR-2013, MARS-1] - _brk5[FLPDYR-2013, MARS-1],
-			np.maximum(0, _a6 - _brk5[FLPDYR-2013, MARS-1]))
-		+ _rt7[FLPDYR-2013] * np.maximum(0, _a6 -_brk6[FLPDYR-2013, MARS-1]))
+	inc_out = (_rt1[puf_dict['FLPDYR']-2013] * np.minimum(_a6, _brk1[puf_dict['FLPDYR']-2013, mars-1])
+		+ _rt2[puf_dict['FLPDYR']-2013] 
+		* np.minimum(_brk2[puf_dict['FLPDYR']-2013, mars-1] - _brk1[puf_dict['FLPDYR']-2013, mars-1],
+			np.maximum(0, _a6 - _brk1[puf_dict['FLPDYR']-2013, mars-1]))
+		+ _rt3[puf_dict['FLPDYR']-2013]
+		* np.minimum(_brk3[puf_dict['FLPDYR']-2013, mars-1] - _brk2[puf_dict['FLPDYR']-2013, mars-1],
+			np.maximum(0, _a6 - _brk2[puf_dict['FLPDYR']-2013, mars-1]))
+		+ _rt4[puf_dict['FLPDYR']-2013]
+		* np.minimum(_brk4[puf_dict['FLPDYR']-2013, mars-1] - _brk3[puf_dict['FLPDYR']-2013, mars-1],
+			np.maximum(0, _a6 - _brk3[puf_dict['FLPDYR']-2013, mars-1]))
+		+ _rt5[puf_dict['FLPDYR']-2013]
+		* np.minimum(_brk5[puf_dict['FLPDYR']-2013, mars-1] - _brk4[puf_dict['FLPDYR']-2013, mars-1],
+			np.maximum(0, _a6 - _brk4[puf_dict['FLPDYR']-2013, mars-1]))
+		+ _rt6[puf_dict['FLPDYR']-2013]
+		* np.minimum(_brk6[puf_dict['FLPDYR']-2013, mars-1] - _brk5[puf_dict['FLPDYR']-2013, mars-1],
+			np.maximum(0, _a6 - _brk5[puf_dict['FLPDYR']-2013, mars-1]))
+		+ _rt7[puf_dict['FLPDYR']-2013] * np.maximum(0, _a6 -_brk6[puf_dict['FLPDYR']-2013, mars-1]))
 
 	return inc_out
 
