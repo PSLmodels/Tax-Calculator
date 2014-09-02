@@ -17,17 +17,15 @@ MIdR = puf_dict['MIDR']
 
 
 # import our special function for reading planX and planY (see json_io for details)
-from json_io import read_plans
+import json_io
 
-planX = read_plans('test/planX.json')
-
-import json
+planX = json_io.read_plans('test/planX.json')
 
 
 def Puf(master_puf, dim_key='PUF DIM'):
     # dim = len(master_puf)
     with open('test/zeros.json') as defaults_file:
-        default_var_names = json.load(defaults_file)
+        default_var_names = json_io.load(defaults_file)
     dim = master_puf[dim_key]
     default_var_dict = dict((var, np.zeros((dim,))) 
         for var in default_var_names)
@@ -875,6 +873,25 @@ def Taxer(inc_in, inc_out, mars):
     return inc_out
 
 
+def write_out_csv(outputs, out_name):
+    output = np.column_stack(outputs)
+
+    np.savetxt('output.csv', output, delimiter=',', 
+        header = ('_sep, _txp, _feided, c02900, _ymod, c02700, c02500, _posagi,' 
+            'c00100, c04600, c04470, c21060, _earned, c04800, c60000, c05750') 
+        , fmt = '%1.3f')
+
+
+def write_out_json(outputs, out_name):
+    out_labels = (
+        '_sep', '_txp', '_feided', 'c02900', '_ymod', 'c02700', 'c02500', 
+        '_posagi','c00100', 'c04600', 'c04470', 'c21060', '_earned', 'c04800',
+         'c60000', 'c05750')
+    out_dict = dict(zip(out_labels, outputs))
+    with open(out_name, 'w') as out_file:
+        json_io.dump(out_dict, out_file, cls=json_io.NumpyArrayJSON, indent=1)
+
+
 def Test(deficient_puf, puf_dict):
     if deficient_puf:
         puf_dict = Puf(puf_dict)
@@ -902,18 +919,17 @@ def Test(deficient_puf, puf_dict):
     RefAmOpp()
     NonEdCr(c87550 = c87550)
     AddCTC(deficient_puf)
-    F5405()
+    # F5405()
     C1040(deficient_puf)
     DEITC()
     SOIT(_eitc = _eitc)
 
     outputs = (_sep, _txp, _feided, c02900, _ymod, c02700, c02500, _posagi, 
         c00100, c04600, c04470, c21060, _earned, c04800, c60000, c05750)
-    output = np.column_stack(outputs)
 
-    np.savetxt('output.csv', output, delimiter=',', 
-        header = ('_sep, _txp, _feided, c02900, _ymod, c02700, c02500, _posagi,' 
-            'c00100, c04600, c04470, c21060, _earned, c04800, c60000, c05750') 
-        , fmt = '%1.3f')
+    write_out_json(outputs, 'output.json')
+    # write_out_csv(outputs, 'output.csv')
+
+
 
 Test(True, puf_dict)
