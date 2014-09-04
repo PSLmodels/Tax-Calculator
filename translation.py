@@ -833,43 +833,55 @@ def SOIT(eitc):
 
 
 def Taxer(inc_in, inc_out, mars):
-    low = np.where(inc_in < 3000, 1, 0)
-    med = np.where(np.logical_and(inc_in >= 3000, inc_in < 100000), 1, 0)
+    l_and = np.logical_and
+
+    is_low = inc_in < 3000
+    is_med = l_and(inc_in >= 3000, inc_in < 100000)
 
     a1 = inc_in/100
     a2 = np.floor(a1)
     a3 = a2*100
     a4 = (a1 - a2) * 100
 
-    a5 = np.where(np.logical_and(low == 1, a4 < 25), 13, 0)
-    a5 = np.where(np.logical_and(low == 1, np.logical_and(a4 >= 25, a4 < 50)), 38, a5)
-    a5 = np.where(np.logical_and(low == 1, np.logical_and(a4 >= 50, a4 < 75)), 63, a5)
-    a5 = np.where(np.logical_and(low == 1, a4 >= 75), 88, a5)
+    # is_low = low == 1
+    a5 = np.where(l_and(is_low, a4 < 25), 13, 0)
+    a5 = np.where(l_and(is_low, l_and(a4 >= 25, a4 < 50)), 38, a5)
+    a5 = np.where(l_and(is_low, l_and(a4 >= 50, a4 < 75)), 63, a5)
+    a5 = np.where(l_and(is_low, a4 >= 75), 88, a5)
 
-    a5 = np.where(np.logical_and(med == 1, a4 < 50), 25, a5)
-    a5 = np.where(np.logical_and(med == 1, a4 >= 50), 75, a5)
+    a5 = np.where(l_and(med == 1, a4 < 50), 25, a5)
+    a5 = np.where(l_and(med == 1, a4 >= 50), 75, a5)
 
     a5 = np.where(inc_in == 0, 0, a5)
 
-    a6 = np.where(np.logical_or(low==1, med ==1), a3 + a5, inc_in)
+    a6 = np.where(np.logical_or(is_low, med ==1), a3 + a5, inc_in)
 
-    inc_out = (planX['rt1'][puf_dict['FLPDYR']-2013] * np.minimum(a6, planX['brk1'][puf_dict['FLPDYR']-2013, mars-1])
-        + planX['rt2'][puf_dict['FLPDYR']-2013] 
-        * np.minimum(planX['brk2'][puf_dict['FLPDYR']-2013, mars-1] - planX['brk1'][puf_dict['FLPDYR']-2013, mars-1],
-            np.maximum(0, a6 - planX['brk1'][puf_dict['FLPDYR']-2013, mars-1]))
-        + planX['rt3'][puf_dict['FLPDYR']-2013]
-        * np.minimum(planX['brk3'][puf_dict['FLPDYR']-2013, mars-1] - planX['brk2'][puf_dict['FLPDYR']-2013, mars-1],
-            np.maximum(0, a6 - planX['brk2'][puf_dict['FLPDYR']-2013, mars-1]))
-        + planX['rt4'][puf_dict['FLPDYR']-2013]
-        * np.minimum(planX['brk4'][puf_dict['FLPDYR']-2013, mars-1] - planX['brk3'][puf_dict['FLPDYR']-2013, mars-1],
-            np.maximum(0, a6 - planX['brk3'][puf_dict['FLPDYR']-2013, mars-1]))
-        + planX['rt5'][puf_dict['FLPDYR']-2013]
-        * np.minimum(planX['brk5'][puf_dict['FLPDYR']-2013, mars-1] - planX['brk4'][puf_dict['FLPDYR']-2013, mars-1],
-            np.maximum(0, a6 - planX['brk4'][puf_dict['FLPDYR']-2013, mars-1]))
-        + planX['rt6'][puf_dict['FLPDYR']-2013]
-        * np.minimum(planX['brk6'][puf_dict['FLPDYR']-2013, mars-1] - planX['brk5'][puf_dict['FLPDYR']-2013, mars-1],
-            np.maximum(0, a6 - planX['brk5'][puf_dict['FLPDYR']-2013, mars-1]))
-        + planX['rt7'][puf_dict['FLPDYR']-2013] * np.maximum(0, a6 -planX['brk6'][puf_dict['FLPDYR']-2013, mars-1]))
+    local_year = puf_dict['FLPDYR']-2013
+
+    mars_no1 = mars - 1
+
+    brack_names = ('brk' + n for n in map(str, xrange(1, 7)))
+    rel_bracks = dict((b, planX[b][local_year, mars_no1]) for b in brack_names)
+
+    brack_max = lambda brck: np.maximum(0, a6 - rel_bracks[brck])
+
+    inc_out = (planX['rt1'][local_year] * np.minimum(a6, rel_bracks['brk1'])
+        + planX['rt2'][local_year] 
+        * np.minimum(rel_bracks['brk2'] - rel_bracks['brk1'],
+            brack_max('brk1'))
+        + planX['rt3'][local_year]
+        * np.minimum(rel_bracks['brk3'] - rel_bracks['brk2'],
+            brack_max('brk2'))
+        + planX['rt4'][local_year]
+        * np.minimum(rel_bracks['brk4'] - rel_bracks['brk3'],
+            brack_max('brk3'))
+        + planX['rt5'][local_year]
+        * np.minimum(rel_bracks['brk5'] - rel_bracks['brk4'],
+            brack_max('brk4'))
+        + planX['rt6'][local_year]
+        * np.minimum(rel_bracks['brk6'] - rel_bracks['brk5'],
+            brack_max('brk5'))
+        + planX['rt7'][local_year] * brack_max('brk6'))
 
     return inc_out
 
