@@ -1,12 +1,12 @@
-Tax Calc
+Tax Calculator
 =======
-The Tax Calc is a tax calculator for the US federal individual income tax system. In conjunction with micro data that represents US taxpayer characteristics and a set of behavioral assumptions, we use Tax Calc to conduct static revenue scoring and distributional analyses of tax policies. 
+The Tax Calculator is a tax calculator for the US federal individual income tax system. In conjunction with micro data that represents US taxpayer characteristics and a set of behavioral assumptions, we use Tax Calc to conduct static revenue scoring and distributional analyses of tax policies. 
 
-Using Tax Calc
+Using Tax Calculator
 ========
 TK 
 
-Tax Calc Contributors
+Tax Calculator Contributors
 =======
 Tax Cal is heavily based on taxcalc.sas, a program written by Dan Feenberg (NBER) and Inna Shapiro (NBER). Dan Feenberg, Sameer Sarkar, Matt Jensen, and Ilia Kurenkov have contributed to OSPC's Tax Calc. 
 
