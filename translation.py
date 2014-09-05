@@ -100,20 +100,39 @@ def Adj(cd):
 
 def CapGains(cd):
     #Capital Gains
-    global ymod
-    global ymod1
-    global c02700
-    global c23650
-    global c01000
-    c23650 = puf_dict['c23250'] + puf_dict['e22250'] + puf_dict['e23660'] 
-    c01000 = np.maximum(-3000/ cd['sep'], c23650)
-    c02700 = np.minimum(feided, planX['feimax'][2013-puf_dict['FLPDYR']] * puf_dict['f2555']) 
-    ymod1 = (puf_dict['e00200'] + puf_dict['e00300'] + puf_dict['e00600'] + puf_dict['e00700'] + puf_dict['e00800'] + puf_dict['e00900'] + c01000 
-        + puf_dict['e01100'] + puf_dict['e01200'] + puf_dict['e01400'] + puf_dict['e01700'] + puf_dict['e02000'] + puf_dict['e02100'] + puf_dict['e02300'] + puf_dict['e02600'] 
-        + puf_dict['e02610'] + puf_dict['e02800'] - puf_dict['e02540'])
-    ymod2 = puf_dict['e00400'] + puf_dict['e02400']/2 - cd['c02900']
-    ymod3 = puf_dict['e03210'] + puf_dict['e03230'] + puf_dict['e03240'] + puf_dict['e02615']
-    ymod = ymod1 + ymod2 + ymod3
+    
+    cd['c23650'] = puf_dict['c23250'] + puf_dict['e22250'] + puf_dict['e23660'] 
+    cd['c01000'] = np.maximum(-3000/ cd['sep'], cd['c23650'])
+    # feimax = maximum foreign earned income exclusion
+    # this variable is problematic: in the SAS code it's defined as an array
+    # that has 20 members, covering the period of 1993-2013
+    # In our current PlanX, however, it's just a one-member array, having
+    # only retained the last feimax value from before
+    mod_feimax = planX['feimax'][2013-puf_dict['FLPDYR']] * puf_dict['f2555']
+    cd['c02700'] = np.minimum(cd['feided'], mod_feimax) 
+    cd['ymod1'] = (puf_dict['e00200'] 
+        + puf_dict['e00300'] 
+        + puf_dict['e00600'] 
+        + puf_dict['e00700'] 
+        + puf_dict['e00800'] 
+        + puf_dict['e00900'] 
+        + cd['c01000'] 
+        + puf_dict['e01100'] 
+        + puf_dict['e01200'] 
+        + puf_dict['e01400'] 
+        + puf_dict['e01700'] 
+        + puf_dict['e02000'] 
+        + puf_dict['e02100'] 
+        + puf_dict['e02300'] 
+        + puf_dict['e02600'] 
+        + puf_dict['e02610'] 
+        + puf_dict['e02800'] 
+        - puf_dict['e02540'])
+    ymod2 = puf_dict['e00400'] + puf_dict['e02400'] / 2 - cd['c02900']
+    ymod3 = (puf_dict['e03210'] + puf_dict['e03230'] 
+        + puf_dict['e03240'] + puf_dict['e02615'])
+    cd['ymod'] = cd['ymod1'] + ymod2 + ymod3
+    return cd
 
 
 def SSBenefits(cd):
@@ -122,11 +141,11 @@ def SSBenefits(cd):
     mars_sub_1 = cd['mars-1']
     c02500 = np.where(np.logical_or(puf_dict['SSIND'] != 0, 
         np.logical_and(puf_dict['MARS'] >= 3, puf_dict['MARS'] <= 6)), puf_dict['e02500'], 
-        np.where(ymod < planX['ssb50'][mars_sub_1], 0, 
-            np.where(np.logical_and(ymod >= planX['ssb50'][cd['mars-1']], 
-                ymod < planX['ssb85'][mars_sub_1]), 
-                0.5 * np.minimum(ymod - planX['ssb50'][mars_sub_1], puf_dict['e02400']), 
-                np.minimum(0.85 * (ymod - planX['ssb85'][mars_sub_1]) + 0.50 * 
+        np.where(cd['ymod'] < planX['ssb50'][mars_sub_1], 0, 
+            np.where(np.logical_and(cd['ymod'] >= planX['ssb50'][cd['mars-1']], 
+                cd['ymod'] < planX['ssb85'][mars_sub_1]), 
+                0.5 * np.minimum(cd['ymod'] - planX['ssb50'][mars_sub_1], puf_dict['e02400']), 
+                np.minimum(0.85 * (cd['ymod'] - planX['ssb85'][mars_sub_1]) + 0.50 * 
                     np.minimum(puf_dict['e02400'], planX['ssb85'][mars_sub_1] - planX['ssb50'][mars_sub_1]), 
                     0.85 * puf_dict['e02400'])))) 
 
@@ -136,7 +155,7 @@ def AGI(cd):
     global posagi
     global c00100
     global c04600
-    c02650 = ymod1 + c02500 - c02700 + puf_dict['e02615'] #Gross Income
+    c02650 = cd['ymod1'] + c02500 - c02700 + puf_dict['e02615'] #Gross Income
 
     c00100 = c02650 - cd['c02900']
     agierr = puf_dict['e00100'] - c00100  #Adjusted Gross Income
@@ -287,13 +306,13 @@ def StdDed(cd):
         puf_dict['t04470'] > amtstd), 
         np.logical_and(puf_dict['f6251'] == 1, puf_dict['exact'] == 1)), c00100 - puf_dict['t04470'], c60000)
 
-    taxinc = np.where(np.logical_and(c04800 > 0, feided > 0), 
+    taxinc = np.where(np.logical_and(c04800 > 0, cd['feided'] > 0), 
         c04800 + c02700, c04800)
     
-    feitax = Taxer(inc_in= feided, inc_out =[], mars= puf_dict['MARS'])
+    feitax = Taxer(inc_in= cd['feided'], inc_out =[], mars= puf_dict['MARS'])
     oldfei = Taxer(inc_in = c04800, inc_out =[], mars= puf_dict['MARS'])
 
-    feitax = np.where(np.logical_or(c04800 < 0, feided < 0), 0, feitax)
+    feitax = np.where(np.logical_or(c04800 < 0, cd['feided'] < 0), 0, feitax)
 
 def XYZD():
     global c24580
@@ -302,8 +321,8 @@ def XYZD():
     c05200 = Taxer(inc_in = c04800, inc_out =[], mars= puf_dict['MARS'])
     
 
-def NonGain():
-    cglong = np.minimum(c23650, puf_dict['e23250'] + puf_dict['e01100'])
+def NonGain(cd):
+    cglong = np.minimum(cd['c23650'], puf_dict['e23250'] + puf_dict['e01100'])
 
 def TaxGains(cd):
     global c05750
@@ -317,14 +336,14 @@ def TaxGains(cd):
     # c24581 = DIMARRAY
     # c24542 = DIMARRAY
 
-    hasgain = np.where(np.logical_or(puf_dict['e01000'] > 0, c23650 > 0), 1, 0)
+    hasgain = np.where(np.logical_or(puf_dict['e01000'] > 0, cd['c23650'] > 0), 1, 0)
     hasgain = np.where(np.logical_or(puf_dict['e23250'] > 0, puf_dict['e01100'] > 0), 1, hasgain)
     hasgain = np.where(puf_dict['e00650'] > 0, 1, hasgain)
 
     #significance of sum() function here in original SAS code?  
     dwks5 = np.where(np.logical_and(taxinc > 0, hasgain == 1), np.maximum(0, puf_dict['e58990'] - puf_dict['e58980']), 0)
     c24505 = np.where(np.logical_and(taxinc > 0, hasgain == 1), np.maximum(0, puf_dict['c00650'] - dwks5), 0)
-    c24510 = np.where(np.logical_and(taxinc > 0, hasgain == 1), np.maximum(0, np.minimum(c23650, puf_dict['e23250'])) + puf_dict['e01100'], 0)
+    c24510 = np.where(np.logical_and(taxinc > 0, hasgain == 1), np.maximum(0, np.minimum(cd['c23650'], puf_dict['e23250'])) + puf_dict['e01100'], 0)
     #gain for tax computation
 
     c24510 = np.where(np.logical_and(taxinc > 0, np.logical_and(hasgain == 1, puf_dict['e01100'] > 0)), puf_dict['e01100'], c24510)
@@ -333,7 +352,7 @@ def TaxGains(cd):
     dwks9 = np.where(np.logical_and(taxinc > 0, hasgain == 1), np.maximum(0, c24510 - np.minimum(puf_dict['e58990'], puf_dict['e58980'])), 0)
     #puf_dict['e24516'] gain less invest y 
 
-    c24516 = np.maximum(0, np.minimum(puf_dict['e23250'], c23650)) + puf_dict['e01100']
+    c24516 = np.maximum(0, np.minimum(puf_dict['e23250'], cd['c23650'])) + puf_dict['e01100']
     c24580 = xyztax
 
     c24516 = np.where(np.logical_and(taxinc > 0, hasgain == 1), c24505 + dwks9, c24516)
@@ -374,7 +393,7 @@ def TaxGains(cd):
     taxspecial = np.where(np.logical_and(taxinc > 0, hasgain == 1), c24598 + c24615 + c24570 + c24560 + addtax, 0)
 
     c05100 = c24580
-    c05100 = np.where(np.logical_and(c04800 > 0, feided > 0), np.maximum(0, c05100 - feitax), c05100)
+    c05100 = np.where(np.logical_and(c04800 > 0, cd['feided'] > 0), np.maximum(0, c05100 - feitax), c05100)
 
     #Form 4972 - Lump Sum Distributions
 
@@ -446,7 +465,7 @@ def MUI(c05750, cd):
     c05750 = c05750
     c00100[5] = 100000000
     c05750[6] = 1234
-    c05750 = np.where(c00100 > planX['thresx'][cd['mars-1']], 0.038 * np.minimum(puf_dict['e00300'] + puf_dict['e00600'] + np.maximum(0, c01000) + np.maximum(0, puf_dict['e02000']), c00100 - planX['thresx'][cd['mars-1']]), c05750)
+    c05750 = np.where(c00100 > planX['thresx'][cd['mars-1']], 0.038 * np.minimum(puf_dict['e00300'] + puf_dict['e00600'] + np.maximum(0, cd['c01000']) + np.maximum(0, puf_dict['e02000']), c00100 - planX['thresx'][cd['mars-1']]), c05750)
     
     
 
@@ -668,7 +687,7 @@ def ChildTaxCredit(cd):
     nctcr = puf_dict['n24']
 
     precrd = planX['chmax'][puf_dict['FLPDYR']-2013] * nctcr 
-    ctcagi = puf_dict['e00100'] + feided
+    ctcagi = puf_dict['e00100'] + cd['feided']
 
     precrd = np.where(np.logical_and(ctcagi > planX['cphase'][cd['mars-1']], puf_dict['exact'] == 1), np.maximum(0, precrd - 50 * np.ceil(np.maximum(0, ctcagi - planX['cphase'][cd['mars-1']])/1000)), 0)
     precrd = np.where(np.logical_and(ctcagi > planX['cphase'][cd['mars-1']], puf_dict['exact'] != 1), np.maximum(0, precrd - 50 * (np.maximum(0, ctcagi - planX['cphase'][cd['mars-1']]) + 500)/1000), precrd)
@@ -939,7 +958,7 @@ def Test(deficient_puf, puf_dict):
     # calc_dict = {}
     calc_dict = FilingStatus(puf_dict, {})
     calc_dict = Adj(calc_dict)
-    CapGains()
+    calc_dict = CapGains(calc_dict)
     SSBenefits()
     AGI()
     ItemDed(deficient_puf)
@@ -966,7 +985,7 @@ def Test(deficient_puf, puf_dict):
     DEITC()
     SOIT(eitc = eitc)
 
-    outputs = (calc_dict['sep'], txp, feided, calc_dict['c02900'], ymod, c02700, c02500, posagi, 
+    outputs = (calc_dict['sep'], txp, calc_dict['feided'], calc_dict['c02900'], cd['ymod'], c02700, c02500, posagi, 
         c00100, c04600, c04470, c21060, earned, c04800, c60000, c05750)
     output = np.column_stack(outputs)
 
