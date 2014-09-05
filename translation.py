@@ -50,18 +50,55 @@ def FilingStatus(puf_dict, cd):
     return cd
 
 
-def Adj(): 
+def Adj(cd): 
     #Adjustments
-    global feided 
-    global c02900
-    feided = np.maximum(puf_dict['e35300_0'], puf_dict['e35600_0'], + puf_dict['e35910_0']) #Form 2555
-    c02900 = (puf_dict['e03210'] + puf_dict['e03260'] + puf_dict['e03270'] + puf_dict['e03300'] + puf_dict['e03400'] + puf_dict['e03500'] + puf_dict['e03220'] 
-    + puf_dict['e03230'] + puf_dict['e03240'] + puf_dict['e03290'] + puf_dict['x03150'] + puf_dict['e03600'] + puf_dict['e03280'] + puf_dict['e03900'] + puf_dict['e04000'] 
-    + puf_dict['e03700']) 
-    x02900 = c02900
+
+    e356_e359 = puf_dict['e35600_0'] + puf_dict['e35910_0']
+    # IK: What is this? ^^^^
+    cd['feided'] = np.maximum(puf_dict['e35300_0'], e356_e359) #Form 2555
+
+    # c02900 = (puf_dict['e03210'] 
+    # + puf_dict['e03260'] 
+    # + puf_dict['e03270'] 
+    # + puf_dict['e03300'] 
+    # + puf_dict['e03400'] 
+    # + puf_dict['e03500'] 
+    # + puf_dict['e03220'] 
+    # + puf_dict['e03230'] 
+    # + puf_dict['e03240'] 
+    # + puf_dict['e03290'] 
+    # + puf_dict['x03150'] 
+    # + puf_dict['e03600'] 
+    # + puf_dict['e03280'] 
+    # + puf_dict['e03900'] 
+    # + puf_dict['e04000'] 
+    # + puf_dict['e03700'])
+
+    depends_on = ('e03210',
+        'e03260',
+        'e03270',
+        'e03300',
+        'e03400',
+        'e03500',
+        'e03220',
+        'e03230',
+        'e03240',
+        'e03290',
+        'x03150',
+        'e03600',
+        'e03280',
+        'e03900',
+        'e04000',
+        'e03700'
+        )
+    var_matrix = np.array(tuple(puf_dict[var] for var in depends_on))
+    cd['c02900'] = var_matrix.sum(axis=0)
+    # x02900 = c02900  # IK: for now leaving out
+
+    return cd
 
 
-def CapGains():
+def CapGains(cd):
     #Capital Gains
     global ymod
     global ymod1
@@ -74,7 +111,7 @@ def CapGains():
     ymod1 = (puf_dict['e00200'] + puf_dict['e00300'] + puf_dict['e00600'] + puf_dict['e00700'] + puf_dict['e00800'] + puf_dict['e00900'] + c01000 
         + puf_dict['e01100'] + puf_dict['e01200'] + puf_dict['e01400'] + puf_dict['e01700'] + puf_dict['e02000'] + puf_dict['e02100'] + puf_dict['e02300'] + puf_dict['e02600'] 
         + puf_dict['e02610'] + puf_dict['e02800'] - puf_dict['e02540'])
-    ymod2 = puf_dict['e00400'] + puf_dict['e02400']/2 - c02900
+    ymod2 = puf_dict['e00400'] + puf_dict['e02400']/2 - cd['c02900']
     ymod3 = puf_dict['e03210'] + puf_dict['e03230'] + puf_dict['e03240'] + puf_dict['e02615']
     ymod = ymod1 + ymod2 + ymod3
 
@@ -94,14 +131,14 @@ def SSBenefits(cd):
                     0.85 * puf_dict['e02400'])))) 
 
 
-def AGI():
+def AGI(cd):
     #Adjusted Gross Income  
     global posagi
     global c00100
     global c04600
     c02650 = ymod1 + c02500 - c02700 + puf_dict['e02615'] #Gross Income
 
-    c00100 = c02650 - c02900
+    c00100 = c02650 - cd['c02900']
     agierr = puf_dict['e00100'] - c00100  #Adjusted Gross Income
     c00100 = np.where(puf_dict['fixup'] >= 1, c00100 + agierr, c00100)
 
@@ -901,7 +938,7 @@ def Test(deficient_puf, puf_dict):
         puf_dict = Puf(puf_dict)
     # calc_dict = {}
     calc_dict = FilingStatus(puf_dict, {})
-    Adj()
+    calc_dict = Adj(calc_dict)
     CapGains()
     SSBenefits()
     AGI()
@@ -929,7 +966,7 @@ def Test(deficient_puf, puf_dict):
     DEITC()
     SOIT(eitc = eitc)
 
-    outputs = (calc_dict['sep'], txp, feided, c02900, ymod, c02700, c02500, posagi, 
+    outputs = (calc_dict['sep'], txp, feided, calc_dict['c02900'], ymod, c02700, c02500, posagi, 
         c00100, c04600, c04470, c21060, earned, c04800, c60000, c05750)
     output = np.column_stack(outputs)
 
