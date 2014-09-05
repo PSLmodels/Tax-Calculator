@@ -135,19 +135,34 @@ def CapGains(cd):
     return cd
 
 
-def SSBenefits(cd):
+def SSBenefits(cd, l_and=np.logical_and, l_or=np.logical_or):
     #Social Security Benefit Taxation
-    global c02500
+    # Start by setting some oft used variables
     mars_sub_1 = cd['mars-1']
-    c02500 = np.where(np.logical_or(puf_dict['SSIND'] != 0, 
-        np.logical_and(puf_dict['MARS'] >= 3, puf_dict['MARS'] <= 6)), puf_dict['e02500'], 
-        np.where(cd['ymod'] < planX['ssb50'][mars_sub_1], 0, 
-            np.where(np.logical_and(cd['ymod'] >= planX['ssb50'][cd['mars-1']], 
-                cd['ymod'] < planX['ssb85'][mars_sub_1]), 
-                0.5 * np.minimum(cd['ymod'] - planX['ssb50'][mars_sub_1], puf_dict['e02400']), 
-                np.minimum(0.85 * (cd['ymod'] - planX['ssb85'][mars_sub_1]) + 0.50 * 
-                    np.minimum(puf_dict['e02400'], planX['ssb85'][mars_sub_1] - planX['ssb50'][mars_sub_1]), 
-                    0.85 * puf_dict['e02400'])))) 
+    ssb50 = planX['ssb50'][mars_sub_1]
+    ssb85 = planX['ssb85'][mars_sub_1]
+
+    # condition checks if elements of  ymod are between ssb50 and ssb85
+    ymod_between = l_and(ssb50 <= cd['ymod'], cd['ymod'] < ssb85)
+    # I separated this out because it takes up so much space
+    last_option = np.minimum(0.85 * (cd['ymod'] - ssb85) 
+        + 0.5 * np.minimum(puf_dict['e02400'], ssb85 - ssb50),
+        0.85 * puf_dict['e02400'])
+    # calculate innermost np.where vector
+    innermost = np.where(ymod_between,
+                0.5 * np.minimum(cd['ymod'] - ssb50, puf_dict['e02400']), 
+                last_option)
+    # combine this with the next level of np.where
+    inner = np.where(cd['ymod'] < ssb50, 
+            0, 
+            innermost)
+    # check if marital status is in range
+    mars_in_range = l_and(puf_dict['MARS'] >= 3, puf_dict['MARS'] <= 6)
+    # use that and inner to create final np.where vector
+    cd['c02500'] = np.where(l_or(puf_dict['SSIND'] != 0, mars_in_range), 
+        puf_dict['e02500'], 
+        inner)
+    return cd
 
 
 def AGI(cd):
@@ -155,7 +170,7 @@ def AGI(cd):
     global posagi
     global c00100
     global c04600
-    c02650 = cd['ymod1'] + c02500 - c02700 + puf_dict['e02615'] #Gross Income
+    c02650 = cd['ymod1'] + cd['c02500'] - c02700 + puf_dict['e02615'] #Gross Income
 
     c00100 = c02650 - cd['c02900']
     agierr = puf_dict['e00100'] - c00100  #Adjusted Gross Income
@@ -163,7 +178,7 @@ def AGI(cd):
 
     posagi = np.maximum(c00100, 0)
     ywossbe = puf_dict['e00100'] - puf_dict['e02500']
-    ywossbc = c00100 - c02500
+    ywossbc = c00100 - cd['c02500']
 
     prexmp = puf_dict['XTOT'] * planX['amex'][puf_dict['FLPDYR'] - 2013] 
     #Personal Exemptions (phaseout smoothed)
@@ -959,7 +974,7 @@ def Test(deficient_puf, puf_dict):
     calc_dict = FilingStatus(puf_dict, {})
     calc_dict = Adj(calc_dict)
     calc_dict = CapGains(calc_dict)
-    SSBenefits()
+    calc_dict = SSBenefits(calc_dict)
     AGI()
     ItemDed(deficient_puf)
     EI_FICA()
@@ -985,7 +1000,7 @@ def Test(deficient_puf, puf_dict):
     DEITC()
     SOIT(eitc = eitc)
 
-    outputs = (calc_dict['sep'], txp, calc_dict['feided'], calc_dict['c02900'], cd['ymod'], c02700, c02500, posagi, 
+    outputs = (calc_dict['sep'], txp, calc_dict['feided'], calc_dict['c02900'], cd['ymod'], c02700, cd['c02500'], posagi, 
         c00100, c04600, c04470, c21060, earned, c04800, c60000, c05750)
     output = np.column_stack(outputs)
 
