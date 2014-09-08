@@ -53,9 +53,9 @@ def FilingStatus(puf_dict, cd):
 def Adj(cd): 
     #Adjustments
 
-    e356_e359 = puf_dict['e35600_0'] + puf_dict['e35910_0']
+    e356_e359 = e35600_0 + e35910_0
     # IK: What is this? ^^^^
-    cd['feided'] = np.maximum(puf_dict['e35300_0'], e356_e359) #Form 2555
+    cd['feided'] = np.maximum(e35300_0, e356_e359) #Form 2555
 
     # c02900 = (puf_dict['e03210'] 
     # + puf_dict['e03260'] 
