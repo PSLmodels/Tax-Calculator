@@ -8,7 +8,7 @@ import numpy as np
 import json
 
 
-def read_plans(planX_file_name, planY_file_name):
+def read_plans(planX_file_name, planY_file_name=None):
     '''Given file names for the plan X and plan Y files reads them both in 
     (assuming they're formatted in JSON), prints which parameters differ
     between the two and updates plan X with parameters from plan Y.
@@ -17,13 +17,17 @@ def read_plans(planX_file_name, planY_file_name):
     with open(planX_file_name) as planX_file:
         planX = json.load(planX_file, object_hook=list_to_array)
 
-    # load planY
-    with open(planY_file_name) as planY_file:
-        planY = json.loads(planY_file.read())
+    if planY_file_name:
+        # if given, load planY and proceed accordingly
+        with open(planY_file_name) as planY_file:
+            planY = json.loads(planY_file.read())
 
-    print_different_params(planX, planY)
-    # incorporate planY into planX
-    return dict(planX, **planY)
+        print_different_params(planX, planY)
+        # incorporate planY into planX
+        return dict(planX, **planY)
+    else:
+        print 'No plan Y given.'
+        return planX
 
 
 # we define the function for converting lists to numpy arrays
