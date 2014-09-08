@@ -241,7 +241,7 @@ _amtage = np.array([24])
 _amtsep = np.array([232500]) 
 #AMT Exclusion
 
-_almsep = np.array([39275]) 
+_almsep = np.array([39375]) 
 #Extra alminc for married sep
 
 _agcmax = np.array([15000]) 
@@ -355,7 +355,7 @@ _brk1 = np.array([[8925, 17850, 8925, 12750, 17850, 8925],
 	[0, 0, 0, 0, 0, 0]]) 
 #10% tax rate thresholds
 
-_brk2 = np.array([[36250, 72500, 36250, 48600, 72500, 35250], 
+_brk2 = np.array([[36250, 72500, 36250, 48600, 72500, 36250], 
 	[0, 0, 0, 0, 0, 0]])
  #15% tax rate thresholds
 
@@ -482,7 +482,7 @@ def Puf():
 	global _fixup
 	_fixup = np.zeros((dim,))
 	global _cmp 
-	_cmp = np.zeros((dim,))
+	_cmp = np.ones((dim,))
 	global e59440 
 	e59440 = np.zeros((dim,))
 	global e59470
@@ -707,16 +707,32 @@ def FilingStatus():
 	_sep = np.where(np.logical_or(MARS == 3, MARS == 6), 2, 1)
 	_txp = np.where(np.logical_or(MARS == 2, MARS == 5), 2, 1)
 
+	outputs = (_sep, _txp)
+	output = np.column_stack(outputs)
+	np.savetxt('FilingStatus.csv', output, delimiter=',', 
+		header = ('_sep, _txp') 
+		, fmt = '%1.3f')
+
 
 def Adj(): 
 	#Adjustments
 	global _feided 
 	global c02900
 	_feided = np.maximum(e35300_0, e35600_0, + e35910_0) #Form 2555
-	c02900 = (e03210 + e03260 + e03270 + e03300 + e03400 + e03500 + e03220 
-	+ e03230 + e03240 + e03290 + x03150 + e03600 + e03280 + e03900 + e04000 
-	+ e03700) 
+
+	x03150 = e03150
+	c02900 = (x03150 + e03210 + e03600 + e03260 + e03270 + e03300 
+		+ e03400 + e03500 + e03280 + e03900 + e04000 + e03700 
+		+ e03220 + e03230
+		+ e03240
+		+ e03290)
 	x02900 = c02900
+
+	outputs = (_feided, c02900)
+	output = np.column_stack(outputs)
+	np.savetxt('Adj.csv', output, delimiter=',', 
+		header = ('_feided, c02900') 
+		, fmt = '%1.3f')
 
 
 def CapGains():
@@ -732,23 +748,33 @@ def CapGains():
 	_ymod1 = (e00200 + e00300 + e00600 + e00700 + e00800 + e00900 + c01000 
 		+ e01100 + e01200 + e01400 + e01700 + e02000 + e02100 + e02300 + e02600 
 		+ e02610 + e02800 - e02540)
-	_ymod2 = e00400 + e02400/2 - c02900
+	_ymod2 = e00400 + (0.50 * e02400) - c02900
 	_ymod3 = e03210 + e03230 + e03240 + e02615
 	_ymod = _ymod1 + _ymod2 + _ymod3
+
+	outputs = (c23650, c01000, c02700, _ymod1, _ymod2, _ymod3, _ymod)
+	output = np.column_stack(outputs)
+	np.savetxt('CapGains.csv', output, delimiter=',', 
+		header = ('c23650, c01000, c02700, _ymod1, _ymod2, _ymod3, _ymod') 
+		, fmt = '%1.3f')	
 
 
 def SSBenefits():
 	#Social Security Benefit Taxation
 	global c02500	
-	c02500 = np.where(np.logical_or(SSIND != 0, 
-		np.logical_and(MARS >= 3, MARS <= 6)), e02500, 
+	c02500 = np.where(np.logical_or(SSIND != 0, np.logical_or(MARS == 3, MARS == 6)), e02500, 
 		np.where(_ymod < _ssb50[MARS-1], 0, 
-			np.where(np.logical_and(_ymod >= _ssb50[MARS-1], 
-				_ymod < _ssb85[MARS-1]), 
-				0.5 * np.minimum(_ymod - _ssb50[MARS-1], e02400), 
-				np.minimum(0.85 * (_ymod - _ssb85[MARS-1]) + 0.50 * 
-					np.minimum(e02400, _ssb85[MARS-1] - _ssb50[MARS-1]), 
-					0.85 * e02400)))) 
+			np.where(np.logical_and(_ymod >= _ssb50[MARS-1], _ymod < _ssb85[MARS-1]), 0.5 * np.minimum(_ymod - _ssb50[MARS-1], e02400),
+				np.minimum(0.85 * (_ymod - _ssb85[MARS-1]) + 0.50 * np.minimum(e02400, _ssb85[MARS-1] - _ssb50[MARS-1]), 0.85 * e02400
+					))))
+
+	outputs = (c02500, e02500)
+	output = np.column_stack(outputs)
+	np.savetxt('SSBenefits.csv', output, delimiter=',', 
+		header = ('c02500, e02500') 
+		, fmt = '%1.3f')
+
+
 
 
 def AGI():
@@ -769,7 +795,17 @@ def AGI():
 	_prexmp = XTOT * _amex[FLPDYR - 2013] 
 	#Personal Exemptions (_phaseout smoothed)
 
-	c04600 = _prexmp 
+	_dispc = np.zeros((dim,))
+	_dispc = np.minimum(1, np.maximum(0, 0.02 * (_posagi - _exmpb[FLPDYR-2013, MARS-1])/(2500/_sep)))
+
+	c04600 = _prexmp * (1 - _dispc)
+
+	outputs = (c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp, c04600)
+	output = np.column_stack(outputs)
+	np.savetxt('AGI.csv', output, delimiter=',', 
+		header = ('c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp, c04600') 
+		, fmt = '%1.3f')
+
 
 
 def ItemDed(puf): 
@@ -820,12 +856,16 @@ def ItemDed(puf):
 		+ c20500 + c20800 + e21000 + e21010)
 	
     # Itemized Deduction Limitation
-	_phase2 = np.where(MARS == 1, 200000, np.where(MARS == 4, 250000, 300000))
+	_phase2 = np.where(MARS == 1, 200000, 0)
+	_phase2 = np.where(MARS == 4, 250000, _phase2)
+	_phase2 = np.where(np.logical_and(MARS != 1, MARS != 4), 300000, _phase2)
 
-	_itemlimit = 1
+	_itemlimit = np.ones((dim,))
 	_c21060 = c21060
 	_nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
 	_limitratio = _phase2/_sep 
+
+	c04470 = c21060
 
 	_itemlimit = np.where(np.logical_and(c21060 > _nonlimited, 
 		c00100 > _phase2/_sep), 2, 1)
@@ -836,8 +876,13 @@ def ItemDed(puf):
 	c21040 = np.where(np.logical_and(c21060 > _nonlimited, 
 		c00100 > _phase2/_sep), np.minimum(_dedmin, _dedpho), 0)
 	c04470 = np.where(np.logical_and(c21060 > _nonlimited, 
-		c00100 > _phase2/_sep), c21060 - c21040, c21060)
+		c00100 > _phase2/_sep), c21060 - c21040, c04470)
 
+	outputs = (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500, c20750, c20400, c19200, c20800, _lim50, _lim30, c19700, c21060, _phase2, _itemlimit, _nonlimited, _limitratio, c04470, _itemlimit, _dedpho, _dedmin, c21040)
+	output = np.column_stack(outputs)
+	np.savetxt('ItemDed.csv', output, delimiter=',', 
+		header = ('c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500, c20750, c20400, c19200, c20800, _lim50, _lim30, c19700, c21060, _phase2, _itemlimit, _nonlimited, _limitratio, c04470, _itemlimit, _dedpho, _dedmin, c21040') 
+		, fmt = '%1.3f')
 
 def EI_FICA():
 	global _sey
@@ -854,6 +899,14 @@ def EI_FICA():
 
 	_earned = np.maximum(0, e00200 + e00250 + e11055 + e30100 + _sey - _seyoff)
 
+	outputs = (_sey, _fica, _setax, _seyoff, c11055, _earned)
+	output = np.column_stack(outputs)
+	np.savetxt('EIFICA.csv', output, delimiter=',', 
+		header = ('_sey, _fica, _setax, _seyoff, c11055, _earned') 
+		, fmt = '%1.3f')
+
+
+
 
 def StdDed():
 	# Standard Deduction with Aged, Sched L and Real Estate # 
@@ -862,6 +915,7 @@ def StdDed():
 	global _taxinc
 	global _feitax
 	global _standard
+
 
 	c15100 = np.where(DSI == 1, 
 		np.maximum(300 + _earned, _stded[FLPDYR-2013, 6]), 0)
@@ -918,6 +972,12 @@ def StdDed():
 
 	_feitax = np.where(np.logical_or(c04800 < 0, _feided < 0), 0, _feitax)
 
+	SDoutputs = (c15100, c04100, _numextra, _txpyers, c04200, c15200, _standard, _othded, c04100, c04200, _standard, c04500, c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei)
+	SDoutput = np.column_stack(SDoutputs)
+	np.savetxt('StdDed.csv', SDoutput, delimiter=',', 
+		header = ('c15100, c04100, _numextra, _txpyers, c04200, c15200, _standard, _othded, c04100, c04200, _standard, c04500, c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei') 
+		, fmt = '%1.3f')
+
 def XYZD():
 	global c24580
 	global _xyztax
@@ -925,6 +985,8 @@ def XYZD():
 	c05200 = np.zeros((dim,))
 	_xyztax = Taxer(inc_in = _taxinc, inc_out = _xyztax, MARS= MARS)
 	c05200 = Taxer(inc_in = c04800, inc_out = c05200, MARS = MARS)
+
+	
 	
 
 def NonGain():
@@ -953,7 +1015,6 @@ def TaxGains():
 	_hasgain = np.where(np.logical_or(e23250 > 0, e01100 > 0), 1, _hasgain)
 	_hasgain = np.where(e00650 > 0, 1, _hasgain)
 
-	#significance of sum() function here in original SAS code?	
 	_dwks5 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.maximum(0, e58990 - e58980), 0)
 	c24505 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.maximum(0, c00650 - _dwks5), 0)
 	c24510 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.maximum(0, np.minimum(c23650, e23250)) + e01100, 0)
@@ -1079,8 +1140,6 @@ def TaxGains():
 def MUI(c05750):
 	#Additional Medicare tax on unearned Income 
 	c05750 = c05750
-	c00100[5] = 100000000
-	c05750[6] = 1234
 	c05750 = np.where(c00100 > _thresx[MARS-1], 0.038 * np.minimum(e00300 + e00600 + np.maximum(0, c01000) + np.maximum(0, e02000), c00100 - _thresx[MARS-1]), c05750)
 	
 	
@@ -1102,7 +1161,9 @@ def AMTI(puf):
 	_addamt = np.where(np.logical_or(_exact == 0, np.logical_and(_exact == 1, c60200 + c60220 + c60240 + e60290 > 0)), c60200 + c60240 + c60220 + e60290 - c60130, 0)
 
 
-	c62100 = np.where(_cmp == 1, _addamt + e60300 + e60860 + e60100 + e60840 + e60630 + e60550 + e60720 + e60430 + e60500 + e60340 + e60680 + e60600 + e60405 + e60440 + e60420 + e60410 + e61400 + e60660 - c60260 - e60480 - e62000 + c60000, 0)
+	c62100 = np.where(_cmp == 1, (_addamt + e60300 + e60860 + e60100 + e60840 + e60630 + e60550 
+								+ e60720 + e60430 + e60500 + e60340 + e60680 + e60600 + e60405 + e60440 
+								+ e60420 + e60410 + e61400 + e60660 - c60260 - e60480 - e62000 + c60000), 0)
 
 
 	c62100 = np.where(_cmp == 1, c62100 - e60250, c62100)
@@ -1116,7 +1177,7 @@ def AMTI(puf):
 	c62100 = np.where(np.logical_and(puf == True, np.logical_or(_standard == 0, np.logical_and(_exact == 1, e04470 > 0))), c00100 - c04470 + np.minimum(c17000, 0.025 * np.maximum(0, c00100)) + _sit + e18500 - c60260 + c20800 - c21040 + _cmbtp, c62100)
 
 	_cmbtp = np.where(np.logical_and(puf == True, np.logical_and(_standard > 0, f6251 == 1)), e62100 - e00100 + c60260, _cmbtp)
-	c62100 = np.where(np.logical_and(puf == True, np.logical_and(_standard > 0, f6251 == 1)), c00100 - c60260 + _cmbtp, c62100)
+	c62100 = np.where(np.logical_and(puf == True, _standard > 0), c00100 - c60260 + _cmbtp, c62100)
 
 	x62100 = c62100
 
@@ -1182,6 +1243,8 @@ def AMTI(puf):
 	_othtax = e05800 - (e05100 + e09600)
 
 	c05800 = _taxbc + c63200
+
+
 
 def F2441(puf, _earned):
 	global c32880
@@ -1261,10 +1324,6 @@ def NumDep(puf):
 	_ieic = np.where(puf == True, EIC, EICYB1_1 + EICYB2_2 + EICYB3_3)
 
 	_ieic = _ieic.astype(int)
-
-	print(_ieic)
-	print(_ieic.dtype)
-
 
 	#Modified AGI only through 2002 
 
@@ -1547,7 +1606,7 @@ def Taxer(inc_in, inc_out, MARS):
 	inc_out = (_rt1[FLPDYR-2013] * np.minimum(_a6, _brk1[FLPDYR-2013, MARS-1])
 		+ _rt2[FLPDYR-2013] 
 		* np.minimum(_brk2[FLPDYR-2013, MARS-1] - _brk1[FLPDYR-2013, MARS-1],
-			np.maximum(0, _a6 - _brk1[FLPDYR-2013, MARS-1]))
+			np.maximum(0., _a6 - _brk1[FLPDYR-2013, MARS-1]))
 		+ _rt3[FLPDYR-2013]
 		* np.minimum(_brk3[FLPDYR-2013, MARS-1] - _brk2[FLPDYR-2013, MARS-1],
 			np.maximum(0, _a6 - _brk2[FLPDYR-2013, MARS-1]))
@@ -1597,11 +1656,5 @@ def Test(puf):
 	DEITC()
 	SOIT(_eitc = _eitc)
 
-	outputs = (_sep, _txp, _feided, c02900, _ymod, c02700, c02500, _posagi, 
-		c00100, c04600, c04470, c21060, _earned, c04800, c60000, c05750)
-	output = np.column_stack(outputs)
 
-	np.savetxt('output.csv', output, delimiter=',', 
-		header = ('_sep, _txp, _feided, c02900, _ymod, c02700, c02500, _posagi,' 
-			'c00100, c04600, c04470, c21060, _earned, c04800, c60000, c05750') 
-		, fmt = '%1.3f')
+
