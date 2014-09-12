@@ -14,6 +14,7 @@ Tax Calculator Contributors
 =======
 The Tax Calculator is derived from taxcalc.sas, a program written by Dan Feenberg (NBER) and Inna Shapiro (NBER). Dan Feenberg, Sameer Sarkar, Matt Jensen, and Ilia Kurenkov have contributed to OSPC's Tax Calc. 
 
+
 About OSPC
 =======
 The Open-Source Policy Center (OSPC) is a project of the American Enterprise Institute that seeks to make policy analysis more transparent, trustworthy, and collaborative by harnessing open-source methods to build cutting-edge economic models. 
@@ -22,3 +23,11 @@ Policymakers increasingly rely on computer-driven models to predict the budgetar
 
 OSPC's first project is building tools to analyze the budgetary and broader economic impact of taxes. These models are be completely transparent and freely available to researchers across the country, and an easy-to-use online interfaces will allow students, policymakers, journalists, and informed citizens to interact with the models and learn for themselves about the effects of policies. 
 
+
+References
+=======
+Documentation for our peers' revenue estimating models:
+
+Joint Committee on Taxation https://www.jct.gov/publications.html?func=startdown&id=4500
+
+Tax Policy Center http://www.urban.org/publications/411136.html 
