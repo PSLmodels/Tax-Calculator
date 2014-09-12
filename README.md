@@ -2,6 +2,10 @@ Tax Calculator
 =======
 The Tax Calculator is a tax calculator for the US federal individual income tax system. In conjunction with micro data that represents US taxpayer characteristics and a set of behavioral assumptions, we use the Tax Calculator to conduct static revenue scoring and distributional analyses of tax policies. 
 
+Data
+========
+Documentation for the core dataset used by the Tax Calculator is available at http://users.nber.org/~taxsim/gdb/gdb08.pdf. 
+
 Using Tax Calculator
 ========
 TK 
