@@ -1,6 +1,12 @@
 import numpy as np
 import pandas as pd
 
+import cPickle
+import re
+
+import os
+
+
 def check_accuracy(py_answer, gold_std):
     '''The older way of computing accuracy.
     Takes two dictionaries, py_answer with python script's output variables
@@ -17,9 +23,6 @@ def check_accuracy(py_answer, gold_std):
             # n_correct = sum(np.in1d(py_answer[key], gold_array))
             acc_dict[key] = n_correct / test_length
     return acc_dict
-
-
-import os
 
 
 def gen_file_paths(dir_name, filter_func=None):
@@ -40,10 +43,6 @@ def gen_file_paths(dir_name, filter_func=None):
     if filter_func:
         return filter(filter_func, file_paths)    
     return file_paths
-
-
-import cPickle
-import re
 
 
 def main(translation_output_dir, pickled_C_codes):
@@ -110,5 +109,7 @@ def main(translation_output_dir, pickled_C_codes):
     #write it to csv, creating column names
     accuracy_df.to_csv('accuracy.csv', colums=('VarName', 'RatioCorrect'))
 
+
 if __name__ == '__main__':
     main('test/gold_csv', 'test/withc.pickle')
+
