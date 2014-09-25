@@ -400,7 +400,7 @@ def Puf():
 	global c23250 
 	c23250 = np.zeros((dim,))
 	global e22250 
-	e22250 = np.zeros((dim,))
+	e22250 = p22250
 	global e23660 
 	e23660 = np.zeros((dim,))
 	global f2555 
@@ -472,7 +472,7 @@ def Puf():
 	global t04470 
 	t04470 = np.zeros((dim,))
 	global e23250
-	e23250 = np.zeros((dim,))
+	e23250 = p23250
 	global e58980
 	e58980 = np.zeros((dim,))
 	global c00650
@@ -566,7 +566,7 @@ def Puf():
 	global e25430 
 	e25430 = np.zeros((dim,))
 	global e25470 
-	e25470 = np.zeros((dim,))
+	e25470 = p25470
 	global e25400 
 	e25400 = np.zeros((dim,))
 	global e25500 
@@ -742,7 +742,7 @@ def CapGains():
 	global c02700
 	global c23650
 	global c01000
-	c23650 = c23250 + e22250 + e23660 
+	c23650 = e23250 + e22250 + e23660 
 	c01000 = np.maximum(-3000/_sep, c23650)
 	c02700 = np.minimum(_feided, _feimax[2013-FLPDYR] * f2555) 
 	_ymod1 = (e00200 + e00300 + e00600 + e00700 + e00800 + e00900 + c01000 
