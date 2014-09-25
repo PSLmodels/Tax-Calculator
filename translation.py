@@ -1,8 +1,9 @@
 import pandas as pd
 import math
 import numpy as np
+import os.path as op
 
-output_filename = 'translationoutput.csv' 
+output_dir = 'py_output'
 input_filename = 'puf2.csv'
 x = pd.read_csv(input_filename)
 
@@ -400,7 +401,7 @@ def Puf():
 	global c23250 
 	c23250 = np.zeros((dim,))
 	global e22250 
-	e22250 = p22250
+	e22250 = np.zeros((dim,))
 	global e23660 
 	e23660 = np.zeros((dim,))
 	global f2555 
@@ -472,7 +473,7 @@ def Puf():
 	global t04470 
 	t04470 = np.zeros((dim,))
 	global e23250
-	e23250 = p23250
+	e23250 = np.zeros((dim,))
 	global e58980
 	e58980 = np.zeros((dim,))
 	global c00650
@@ -566,7 +567,7 @@ def Puf():
 	global e25430 
 	e25430 = np.zeros((dim,))
 	global e25470 
-	e25470 = p25470
+	e25470 = np.zeros((dim,))
 	global e25400 
 	e25400 = np.zeros((dim,))
 	global e25500 
@@ -707,11 +708,10 @@ def FilingStatus():
 	_sep = np.where(np.logical_or(MARS == 3, MARS == 6), 2, 1)
 	_txp = np.where(np.logical_or(MARS == 2, MARS == 5), 2, 1)
 
-	outputs = (_sep, _txp)
-	output = np.column_stack(outputs)
-	np.savetxt('FilingStatus.csv', output, delimiter=',', 
-		header = ('_sep, _txp') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(('_sep', _sep), ('_txp', _txp))
+		)
+	outputs.to_csv(op.join(output_dir, 'FilingStatus.csv'))
 
 
 def Adj(): 
@@ -728,11 +728,10 @@ def Adj():
 		+ e03290)
 	x02900 = c02900
 
-	outputs = (_feided, c02900)
-	output = np.column_stack(outputs)
-	np.savetxt('Adj.csv', output, delimiter=',', 
-		header = ('_feided, c02900') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(('_feided', _feided), ('c02900', c02900))
+		)
+	outputs.to_csv(op.join(output_dir, 'Adj.csv'))
 
 
 def CapGains():
@@ -742,7 +741,7 @@ def CapGains():
 	global c02700
 	global c23650
 	global c01000
-	c23650 = e23250 + e22250 + e23660 
+	c23650 = c23250 + e22250 + e23660 
 	c01000 = np.maximum(-3000/_sep, c23650)
 	c02700 = np.minimum(_feided, _feimax[2013-FLPDYR] * f2555) 
 	_ymod1 = (e00200 + e00300 + e00600 + e00700 + e00800 + e00900 + c01000 
@@ -751,12 +750,18 @@ def CapGains():
 	_ymod2 = e00400 + (0.50 * e02400) - c02900
 	_ymod3 = e03210 + e03230 + e03240 + e02615
 	_ymod = _ymod1 + _ymod2 + _ymod3
-
-	outputs = (c23650, c01000, c02700, _ymod1, _ymod2, _ymod3, _ymod)
-	output = np.column_stack(outputs)
-	np.savetxt('CapGains.csv', output, delimiter=',', 
-		header = ('c23650, c01000, c02700, _ymod1, _ymod2, _ymod3, _ymod') 
-		, fmt = '%1.3f')	
+	
+	outputs = pd.DataFrame.from_items(
+		(('c23650', c23650), 
+			('c01000', c01000),
+			('c02700', c02700),
+			('_ymod1', _ymod1),
+			('_ymod2', _ymod2),
+			('_ymod3', _ymod3),
+			('_ymod', _ymod)
+			)
+		)
+	outputs.to_csv(op.join(output_dir, 'CapGains.csv'))
 
 
 def SSBenefits():
@@ -768,12 +773,11 @@ def SSBenefits():
 				np.minimum(0.85 * (_ymod - _ssb85[MARS-1]) + 0.50 * np.minimum(e02400, _ssb85[MARS-1] - _ssb50[MARS-1]), 0.85 * e02400
 					))))
 
-	outputs = (c02500, e02500)
-	output = np.column_stack(outputs)
-	np.savetxt('SSBenefits.csv', output, delimiter=',', 
-		header = ('c02500, e02500') 
-		, fmt = '%1.3f')
 
+	outputs = pd.DataFrame.from_items(
+		(('c02500', c02500), ('e02500', e02500))
+		)
+	outputs.to_csv(op.join(output_dir, 'SSBenefits.csv'))
 
 
 
@@ -800,12 +804,18 @@ def AGI():
 
 	c04600 = _prexmp * (1 - _dispc)
 
-	outputs = (c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp, c04600)
-	output = np.column_stack(outputs)
-	np.savetxt('AGI.csv', output, delimiter=',', 
-		header = ('c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp, c04600') 
-		, fmt = '%1.3f')
-
+	outputs = pd.DataFrame.from_items(
+		(('c02650', c02650), 
+			('c00100', c00100),
+			('_agierr', _agierr),
+			('_posagi', _posagi),
+			('_ywossbe', _ywossbe),
+			('_ywossbc', _ywossbc),
+			('_prexmp', _prexmp),
+			('c04600', c04600)
+			)
+		)
+	outputs.to_csv(op.join(output_dir, 'AGI.csv'))
 
 
 def ItemDed(puf): 
@@ -880,11 +890,36 @@ def ItemDed(puf):
 	c04470 = np.where(np.logical_and(c21060 > _nonlimited, 
 		c00100 > _phase2/_sep), c21060 - c21040, c04470)
 
-	outputs = (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500, c20750, c20400, c19200, c20800, _lim50, _lim30, c19700, c21060, _phase2, _itemlimit, _nonlimited, _limitratio, c04470, _itemlimit, _dedpho, _dedmin, c21040)
-	output = np.column_stack(outputs)
-	np.savetxt('ItemDed.csv', output, delimiter=',', 
-		header = ('c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500, c20750, c20400, c19200, c20800, _lim50, _lim30, c19700, c21060, _phase2, _itemlimit, _nonlimited, _limitratio, c04470, _itemlimit, _dedpho, _dedmin, c21040') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(('c17750', c17750), 
+			('c17000', c17000),
+			('_sit1', _sit1),
+			('_sit', _sit),
+			('_statax', _statax),
+			('c18300', c18300),
+			('c37703', c37703),
+			('c20500', c20500),
+			('c20750', c20750),
+			('c20400', c20400),
+			('c19200', c19200),
+			('c20800', c20800),
+			('_lim50', _lim50),
+			('_lim30', _lim30),
+			('c19700', c19700),
+			('c21060', c21060),
+			('_phase2', _phase2),
+			('_itemlimit', _itemlimit),
+			('_nonlimited', _nonlimited),
+			('_limitratio', _limitratio),
+			('c04470', c04470),
+			('_itemlimit', _itemlimit),
+			('_dedpho', _dedpho),
+			('_dedmin', _dedmin),
+			('c21040', c21040)
+			)
+		)
+	outputs.to_csv(op.join(output_dir, 'ItemDed.csv'))
+
 
 def EI_FICA():
 	global _sey
@@ -901,13 +936,16 @@ def EI_FICA():
 
 	_earned = np.maximum(0, e00200 + e00250 + e11055 + e30100 + _sey - _seyoff)
 
-	outputs = (_sey, _fica, _setax, _seyoff, c11055, _earned)
-	output = np.column_stack(outputs)
-	np.savetxt('EIFICA.csv', output, delimiter=',', 
-		header = ('_sey, _fica, _setax, _seyoff, c11055, _earned') 
-		, fmt = '%1.3f')
-
-
+	outputs = pd.DataFrame.from_items(
+		(('_sey', _sey),
+			('_fica', _fica),
+			('_setax', _setax),
+			('_seyoff', _seyoff),
+			('c11055', c11055),
+			('_earned', _earned)
+			)
+		)
+	outputs.to_csv(op.join(output_dir, 'EIFICA.csv'))
 
 
 def StdDed():
@@ -973,11 +1011,29 @@ def StdDed():
 	_oldfei = np.where(np.logical_and(c04800 > 0, _feided > 0), Taxer(inc_in = c04800, inc_out = _oldfei, MARS = MARS), _oldfei)
 
 
-	SDoutputs = (c15100, c04100, _numextra, _txpyers, c04200, c15200, _standard, _othded, c04100, c04200, _standard, c04500, c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei)
-	SDoutput = np.column_stack(SDoutputs)
-	np.savetxt('StdDed.csv', SDoutput, delimiter=',', 
-		header = ('c15100, c04100, _numextra, _txpyers, c04200, c15200, _standard, _othded, c04100, c04200, _standard, c04500, c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(('c15100', c15100),
+			('c04100', c04100),
+			('_numextra', _numextra),
+			('_txpyers', _txpyers),
+			('c04200', c04200),
+			('c15200', c15200),
+			('_standard', _standard),
+			('_othded', _othded),
+			('c04100', c04100),
+			('c04200', c04200),
+			('_standard', _standard),
+			('c04500', c04500),
+			('c04800', c04800),
+			('c60000', c60000),
+			('_amtstd', _amtstd),
+			('_taxinc', _taxinc),
+			('_feitax', _feitax),
+			('_oldfei', _oldfei)
+			)
+		)
+	outputs.to_csv(op.join(output_dir, 'StdDed.csv'))
+
 
 def XYZD():
 	global c24580
@@ -989,22 +1045,21 @@ def XYZD():
 	c05200 = Taxer(inc_in = c04800, inc_out = c05200, MARS = MARS)
 
 
-	outputs = (_xyztax, c05200)
-	output = np.column_stack(outputs)
-	np.savetxt('XYZD.csv', output, delimiter=',', 
-		header = ('_xyztax, c05200') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(('_xyztax', _xyztax), ('c05200', c05200))
+			)
+	outputs.to_csv(op.join(output_dir, 'XYZD.csv'))
 	
 
 def NonGain():
 	_cglong = np.minimum(c23650, e23250) + e01100
 	_noncg = np.zeros((dim,))
 
-	outputs = (_cglong, _noncg)
-	output = np.column_stack(outputs)
-	np.savetxt('NonGain.csv', output, delimiter=',', 
-		header = ('_cglong, _noncg') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(('_cglong', _cglong), ('_noncg', _noncg))
+			)
+	outputs.to_csv(op.join(output_dir, 'NonGain.csv'))
+
 
 def TaxGains():
 	global c05750
@@ -1154,12 +1209,64 @@ def TaxGains():
 	x05750 = c05750 
 
 	
-
-	outputs = (e00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516, c24580, c24516, _dwks12, c24517, c24520, c24530, _dwks16, _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25, _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570, _addtax, c24560, _taxspecial, c05100, c05700, c59430, c59450, c59460, _line17, _line19, _line22, _line30, _line31, _line32, _line36, _line33, _line34, _line35, c59485, c59490, c05700, _s1291, _parents, c05750, _taxbc)
-	output = np.column_stack(outputs)
-	np.savetxt('Taxgains.csv', output, delimiter=',', 
-		header = ('e00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516, c24580, c24516, _dwks12, c24517, c24520, c24530, _dwks16, _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25, _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570, _addtax, c24560, _taxspecial, c05100, c05700, c59430, c59450, c59460, _line17, _line19, _line22, _line30, _line31, _line32, _line36, _line33, _line34, _line35, c59485, c59490, c05700, _s1291, _parents, c05750, _taxbc') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(
+			('e00650', e00650),
+			('_hasgain', _hasgain),
+			('_dwks5', _dwks5),
+			('c24505', c24505),
+			('c24510', c24510),
+			('_dwks9', _dwks9),
+			('c24516', c24516),
+			('c24580', c24580),
+			('c24516', c24516),
+			('_dwks12', _dwks12),
+			('c24517', c24517),
+			('c24520', c24520),
+			('c24530', c24530),
+			('_dwks16',_dwks16),
+			('_dwks17', _dwks17),
+			('c24540', c24540),
+			('c24534', c24534),
+			('_dwks21', _dwks21),
+			('c24597', c24597),
+			('c24598', c24598),
+			('_dwks25', _dwks25),
+			('_dwks26', _dwks26),
+			('_dwks28', _dwks28),
+			('c24610', c24610),
+			('c24615', c24615),
+			('_dwks31', _dwks31),
+			('c24550', c24550),
+			('c24570', c24570),
+			('_addtax', _addtax),
+			('c24560', c24560),
+			('_taxspecial', _taxspecial),
+			('c05100', c05100),
+			('c05700', c05700),
+			('c59430', c59430),
+			('c59450', c59450),
+			('c59460', c59460),
+			('_line17', _line17),
+			('_line19', _line19),
+			('_line22', _line22),
+			('_line30', _line30),
+			('_line31', _line31),
+			('_line32', _line32),
+			('_line36', _line36),
+			('_line33', _line33),
+			('_line34', _line34),
+			('_line35', _line35),
+			('c59485', c59485),
+			('c59490', c59490),
+			('c05700', c05700),
+			('_s1291', _s1291),
+			('_parents', _parents),
+			('c05750', c05750),
+			('_taxbc', _taxbc)
+			)
+		)
+	outputs.to_csv(op.join(output_dir, 'Taxgains.csv'))
 
 	return c05750
 
@@ -1169,11 +1276,10 @@ def MUI(c05750):
 	c05750 = c05750
 	c05750 = np.where(c00100 > _thresx[MARS-1], c05750 + 0.038 * np.minimum(e00300 + e00600 + np.maximum(0, c01000) + np.maximum(0, e02000), c00100 - _thresx[MARS-1]), c05750)
 	
-	outputs = (c05750)
-	output = np.column_stack(outputs)
-	np.savetxt('MUI.csv', c05750, delimiter=',', 
-		header = ('c05750') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(('c05750', c05750),)
+		)
+	outputs.to_csv(op.join(output_dir, 'MUI.csv'))
 	
 
 def AMTI(puf):
@@ -1277,11 +1383,50 @@ def AMTI(puf):
 
 	c05800 = _taxbc + c63200
 
-	outputs = (c62720, c60260, c63100, c60200, c60240, c60220, c60130, c62730, _addamt, c62100, _cmbtp, _edical, _amtsepadd, c62600, _agep, _ages, c62600, c62700, _alminc, _amtfei, c62780, c62900, c63000, c62740, _ngamty, c62745, y62745, _tamt2, _amt5pc, _amt15pc, _amt25pc, c62747, c62755, c62770, _amt, c62800, c09600, _othtax, c05800)
-	output = np.column_stack(outputs)
-	np.savetxt('AMTI.csv', output, delimiter=',', 
-		header = ('c62720, c60260, c63100, c60200, c60240, c60220, c60130, c62730, _addamt, c62100, _cmbtp, _edical, _amtsepadd, c62600, _agep, _ages, c62600, c62700, _alminc, _amtfei, c62780, c62900, c63000, c62740, _ngamty, c62745, y62745, _tamt2, _amt5pc, _amt15pc, _amt25pc, c62747, c62755, c62770, _amt, c62800, c09600, _othtax, c05800') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(('c62720', c62720), 
+			('c60260', c60260), 
+			('c63100', c63100), 
+			('c60200', c60200), 
+			('c60240', c60240), 
+			('c60220', c60220), 
+			('c60130', c60130), 
+			('c62730', c62730), 
+			('_addamt', _addamt), 
+			('c62100', c62100), 
+			('_cmbtp', _cmbtp), 
+			('_edical', _edical), 
+			('_amtsepadd', _amtsepadd), 
+			('c62600', c62600), 
+			('_agep', _agep), 
+			('_ages', _ages), 
+			('c62600', c62600), 
+			('c62700', c62700), 
+			('_alminc', _alminc), 
+			('_amtfei', _amtfei), 
+			('c62780', c62780), 
+			('c62900', c62900), 
+			('c63000', c63000), 
+			('c62740', c62740), 
+			('_ngamty', _ngamty), 
+			('c62745', c62745), 
+			('y62745', y62745), 
+			('_tamt2', _tamt2), 
+			('_amt5pc', _amt5pc), 
+			('_amt15pc', _amt15pc), 
+			('_amt25pc', _amt25pc), 
+			('c62747', c62747), 
+			('c62755', c62755), 
+			('c62770', c62770), 
+			('_amt', _amt), 
+			('c62800', c62800), 
+			('c09600', c09600), 
+			('_othtax', _othtax), 
+			('c05800', c05800)))
+
+	outputs.to_csv(op.join(output_dir, 'AMTI.csv'))
+
+
 
 def F2441(puf, _earned):
 	global c32880
@@ -1305,11 +1450,16 @@ def F2441(puf, _earned):
 	_dclim = np.minimum(_ncu13, 2) * _dcmax[FLPDYR-2013]
 	c32800 = np.minimum(np.maximum(e32800, e32750 + e32775), _dclim)
 
-	outputs = (_earned, c32880, c32890, _ncu13, _dclim, c32800)
-	output = np.column_stack(outputs)
-	np.savetxt('F2441.csv', output, delimiter=',', 
-		header = ('_earned, c32880, c32890, _ncu13, _dclim, c32800') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(('_earned', _earned), 
+			('c32880', c32880), 
+			('c32890', c32890), 
+			('_ncu13', _ncu13), 
+			('_dclim', _dclim), 
+			('c32800', c32800)))
+
+	outputs.to_csv(op.join(output_dir, 'F2441.csv'))
+
 
 def DepCareBen(c32800):
 	global c33000
@@ -1328,11 +1478,17 @@ def DepCareBen(c32800):
 	c33000 = np.where(MARS == 2, np.maximum(0, np.minimum(c32800, np.minimum(c32880, c32890))), 0)
 	c33000 = np.where(MARS != 2, np.maximum(0, np.minimum(c32800, _earned)), c33000)
 
-	outputs = (_seywage, c33465, c33470, c33475, c33480, c32840, c32800, c33000)
-	output = np.column_stack(outputs)
-	np.savetxt('DepCareBen.csv', output, delimiter=',', 
-		header = ('_seywage, c33465, c33470, c33475, c33480, c32840, c32800, c33000') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(('_seywage', _seywage), 
+			('c33465', c33465), 
+			('c33470', c33470), 
+			('c33475', c33475), 
+			('c33480', c33480), 
+			('c32840', c32840), 
+			('c32800', c32800), 
+			('c33000', c33000)))
+	outputs.to_csv(op.join(output_dir, 'DepCareBen.csv'))
+
 
 def ExpEarnedInc():
 	global c07180
@@ -1347,11 +1503,13 @@ def ExpEarnedInc():
 
 	c07180 = np.where(e07180 == 0, 0, c33400)
 
-	outputs = (_tratio, c33200, c33400, c07180)
-	output = np.column_stack(outputs)
-	np.savetxt('ExpEarnedInc.csv', output, delimiter=',', 
-		header = ('_tratio, c33200, c33400, c07180') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(('_tratio', _tratio), 
+			('c33200', c33200), 
+			('c33400', c33400), 
+			('c07180', c07180))
+		)
+	outputs.to_csv(op.join(output_dir, 'ExpEarnedInc.csv'))
 
 
 def RateRed(c05800):
@@ -1366,11 +1524,11 @@ def RateRed(c05800):
 
 	c59560 = np.where(_exact == 1, x59560, _earned)
 
-	outputs = (c07970, c05800, c59560)
-	output = np.column_stack(outputs)
-	np.savetxt('RateRed.csv', output, delimiter=',', 
-		header = ('c07970, c05800, c59560') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(('c07970', c07970), 
+			('c05800', c05800), 
+			('c59560', c59560)))
+	outputs.to_csv(op.join(output_dir, 'RateRed.csv'))
 
 
 
@@ -1412,11 +1570,19 @@ def NumDep(puf):
 	c59660 = np.where(np.logical_and(np.logical_and(_cmp == 1, _ieic == 0), np.logical_and(np.logical_and(SOIYR - DOBYR >= 25, SOIYR - DOBYR < 65), np.logical_and(SOIYR - SDOBYR >= 25, SOIYR - SDOBYR < 65))), 0, c59660)
 	c59660 = np.where(np.logical_and(_ieic == 0, np.logical_or(np.logical_or(_agep < 25, _agep >= 65), np.logical_or(_ages < 25, _ages >= 65))), 0, c59660)
 
-	outputs = (_ieic, EICYB1, EICYB2, EICYB3, _modagi, c59660, _val_ymax, _preeitc, _val_rtbase, _val_rtless, _dy)
-	output = np.column_stack(outputs)
-	np.savetxt('NumDep.csv', output, delimiter=',', 
-		header = ('_ieic, EICYB1, EICYB2, EICYB3, _modagi, c59660, _val_ymax, _preeitc, _val_rtbase, _val_rtless, _dy') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(('_ieic', _ieic), 
+			('EICYB1', EICYB1), 
+			('EICYB2', EICYB2), 
+			('EICYB3', EICYB3), 
+			('_modagi', _modagi), 
+			('c59660', c59660), 
+			('_val_ymax', _val_ymax), 
+			('_preeitc', _preeitc), 
+			('_val_rtbase', _val_rtbase), 
+			('_val_rtless', _val_rtless), 
+			('_dy', _dy)))
+	outputs.to_csv(op.join(output_dir, 'NumDep.csv'))
 
 
 
@@ -1448,12 +1614,18 @@ def ChildTaxCredit():
 	_precrd = np.where(np.logical_and(_ctcagi > _cphase[MARS-1], _exact == 1), np.maximum(0, _precrd - 50 * np.ceil(np.maximum(0, _ctcagi - _cphase[MARS-1])/1000)), 0)
 	_precrd = np.where(np.logical_and(_ctcagi > _cphase[MARS-1], _exact != 1), np.maximum(0, _precrd - 50 * (np.maximum(0, _ctcagi - _cphase[MARS-1]) + 500)/1000), _precrd)
 
-	outputs = (c11070, c07220, c07230, _precrd, _num, _nctcr, _precrd, _ctcagi)
-	output = np.column_stack(outputs)
-	np.savetxt('ChildTaxCredit.csv', output, delimiter=',', 
-		header = ('c11070, c07220, c07230, _precrd, _num, _nctcr, _precrd, _ctcagi') 
-		, fmt = '%1.3f')
-#def HopeCredit():
+	outputs = pd.DataFrame.from_items(
+		(('c11070', c11070), 
+			('c07220', c07220), 
+			('c07230', c07230), 
+			('_precrd', _precrd), 
+			('_num', _num), 
+			('_nctcr', _nctcr), 
+			('_precrd', _precrd), 
+			('_ctcagi', _ctcagi)))
+	outputs.to_csv(op.join(output_dir, 'ChildTaxCredit.csv'))
+
+	#def HopeCredit():
 	#Hope credit for 1998-2009, I don't think this is needed 
 	#Leave blank for now, ask Dan
 	#SAS lnies 951 - 972
@@ -1473,11 +1645,18 @@ def AmOppCr():
 
 	c87521 = c87483 + c87488 + c87493 + c87498
 
-	outputs = (c87482, c87487, c87492, c87497, c87483, c87488, c87493, c87498, c87521)
-	output = np.column_stack(outputs)
-	np.savetxt('AmOppCr.csv', output, delimiter=',', 
-		header = ('c87482, c87487, c87492, c87497, c87483, c87488, c87493, c87498, c87521') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(('c87482', c87482), 
+			('c87487', c87487), 
+			('c87492', c87492), 
+			('c87497', c87497), 
+			('c87483', c87483), 
+			('c87488', c87488), 
+			('c87493', c87493), 
+			('c87498', c87498), 
+			('c87521', c87521)))
+	outputs.to_csv(op.join(output_dir, 'AmOppCr.csv'))
+
 
 def LLC(puf):
 	#Lifetime Learning Credit
@@ -1490,11 +1669,10 @@ def LLC(puf):
 	c87540 = np.where(puf == False, np.minimum(c87530, _learn[FLPDYR-2013]), c87540)
 	c87550 = np.where(puf == False, 0.2 * c87540, c87550)
 
-	outputs = (c87540, c87550, c87530)
-	output = np.column_stack(outputs)
-	np.savetxt('LLC.csv', output, delimiter=',', 
-		header = ('c87540, c87550, c87530') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(('c87540', c87540), ('c87550', c87550), ('c87530', c87530)))
+	outputs.to_csv(op.join(output_dir, 'LLC.csv'))
+
 
 def RefAmOpp():
 	#Refundable American Opportunity Credit 2009+
@@ -1512,11 +1690,18 @@ def RefAmOpp():
 	c87668 = np.where(np.logical_and(_cmp == 1, c87521 > 0), c87664 - c87666, 0)
 	c87681 = np.where(np.logical_and(_cmp == 1, c87521 > 0), c87666, 0)
 
-	outputs = (c87654, c87656, c87658, c87660, c87662, c87664, c87666, c10960, c87668, c87681)
-	output = np.column_stack(outputs)
-	np.savetxt('RefAmOpp.csv', output, delimiter=',', 
-		header = ('c87654, c87656, c87658, c87660, c87662, c87664, c87666, c10960, c87668, c87681') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(('c87654', c87654), 
+			('c87656', c87656), 
+			('c87658', c87658), 
+			('c87660', c87660), 
+			('c87662', c87662), 
+			('c87664', c87664), 
+			('c87666', c87666), 
+			('c10960', c10960), 
+			('c87668', c87668), 
+			('c87681', c87681)))
+	outputs.to_csv(op.join(output_dir, 'RefAmOpp.csv'))
 
 
 def NonEdCr(c87550):
@@ -1545,11 +1730,22 @@ def NonEdCr(c87550):
 	c07220 = np.minimum(_precrd, np.maximum(0, _ctctax)) 
 	#lt tax owed
 
-	outputs = (c87560, c87570, c87580, c87590, c87600, c87610, c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220)
-	output = np.column_stack(outputs)
-	np.savetxt('NonEdCr.csv', output, delimiter=',', 
-		header = ('c87560, c87570, c87580, c87590, c87600, c87610, c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(('c87560', c87560), 
+			('c87570', c87570), 
+			('c87580', c87580), 
+			('c87590', c87590), 
+			('c87600', c87600), 
+			('c87610', c87610), 
+			('c87620', c87620), 
+			('_ctc1', _ctc1), 
+			('_ctc2', _ctc2), 
+			('_regcrd', _regcrd), 
+			('_exocrd', _exocrd), 
+			('_ctctax', _ctctax), 
+			('c07220', c07220)))
+	outputs.to_csv(op.join(output_dir, 'NonEdCr.csv'))
+
 
 def AddCTC(puf):
 	#Additional Child Tax Credit
@@ -1587,22 +1783,37 @@ def AddCTC(puf):
 
 	c11070 = np.where(np.logical_and(_nctcr > 0, _fixup >= 4), c11070 + _othadd, c11070)
 
-	outputs = (c82940, c82925, c82930, c82935, c82880, h82880, c82885, c82890, c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070, e59660, _othadd)
-	output = np.column_stack(outputs)
-	np.savetxt('AddCTC.csv', output, delimiter=',', 
-		header = ('c82940, c82925, c82930, c82935, c82880, h82880, c82885, c82890, c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070, e59660, _othadd') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(('c82940', c82940), 
+			('c82925', c82925), 
+			('c82930', c82930), 
+			('c82935', c82935), 
+			('c82880', c82880), 
+			('h82880', h82880), 
+			('c82885', c82885), 
+			('c82890', c82890), 
+			('c82900', c82900), 
+			('c82905', c82905), 
+			('c82910', c82910), 
+			('c82915', c82915), 
+			('c82920', c82920), 
+			('c82937', c82937), 
+			('c82940', c82940), 
+			('c11070', c11070), 
+			('e59660', e59660), 
+			('_othadd', _othadd)))
+	outputs.to_csv(op.join(output_dir, 'AddCTC.csv'))
+
 
 def F5405():
 	#Form 5405 First-Time Homebuyer Credit
 	#not needed
 
 	c64450 = np.zeros((dim,))
-	outputs = (c64450)
-	output = np.column_stack(outputs)
-	np.savetxt('F4505.csv', c64450, delimiter=',', 
-		header = ('c64450') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(('c64450', c64450),))
+	outputs.to_csv(op.join(output_dir, 'F4505.csv'))
+
 
 def C1040(puf):
 	global c08795
@@ -1643,11 +1854,25 @@ def C1040(puf):
 	c09200 = c09200 + e09805
 	c09200 = c09200 + e09710 + e09720
 
-	outputs = (c07100, y07100, x07100, c08795, c08800, e08795, c09200)
-	output = np.column_stack(outputs)
-	np.savetxt('C1040.csv', output, delimiter=',', 
-		header = ('c07100, y07100, x07100, c08795, c08800, e08795, c09200') 
-		, fmt = '%1.3f')
+	try:
+		outputs = pd.DataFrame.from_items(
+		(
+			('c07100', c07100), 
+			('y07100', y07100), 
+			('x07100', x07100), 
+			('c08795', c08795), 
+			('c08800', c08800), 
+			('e08795', e08795), 
+			('c09200', c09200)
+			)
+		)
+	except:
+		print len(c08795), len(c07100), len(c09200)
+		print type(c08795), type(c07100), type(c09200)
+		print [el for el in c09200 if isinstance(el, collections.Iterable)]
+		raise
+	outputs.to_csv(op.join(output_dir, 'C1040.csv'))
+
 
 def DEITC():
 	global c59700
@@ -1681,11 +1906,15 @@ def DEITC():
 	c07150 = c07150 
 	c10950 = np.zeros((dim,))
 
-	outputs = (c59680, c59700, c59720, _comb, c07150, c10950)
-	output = np.column_stack(outputs)
-	np.savetxt('DEITC.csv', output, delimiter=',', 
-		header = ('c59680, c59700, c59720, _comb, c07150, c10950') 
-		, fmt = '%1.3f')
+	outputs = pd.DataFrame.from_items(
+		(('c59680', c59680), 
+			('c59700', c59700), 
+			('c59720', c59720), 
+			('_comb', _comb), 
+			('c07150', c07150), 
+			('c10950', c10950)))
+	outputs.to_csv(op.join(output_dir, 'DEITC.csv'))
+
 
 def SOIT(_eitc):
 	_eitc = _eitc
@@ -1706,12 +1935,9 @@ def SOIT(_eitc):
 	_eitc = np.where(c09200 <= _eitc, c09200, _eitc)
 	c10300 = np.where(c09200 <= _eitc, 0, c10300)
 
-	outputs = (c10300, _eitc)
-	output = np.column_stack(outputs)
-	np.savetxt('SOIT.csv', output, delimiter=',', 
-		header = ('c10300, _eitc') 
-		, fmt = '%1.3f')
-
+	outputs = pd.DataFrame.from_items(
+		(('c10300', c10300), ('_eitc', _eitc)))
+	outputs.to_csv(op.join(output_dir, 'SOIT.csv'))
 
 
 
