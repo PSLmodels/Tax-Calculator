@@ -19,35 +19,47 @@ def main(sas_codes_path, rerun=False):
     # for now output dir for translation has to be set up separately
     # TO-DO: automate this directory setup
     gold_std = h5.File(sas_codes_path)
-    errors = compute_error(_VARIABLES_OF_INTEREST, 'py_output', gold_std)
+    out_dir = 'py_output'
+    errors = compute_error(gen_file_paths(out_dir), gold_std)
+    errors.columns = ['Error']
+    errors.sort(columns='Error', ascending=False, inplace=True)
+    # errors = compute_error(_VARIABLES_OF_INTEREST, 'py_output', gold_std)
     errors.to_csv('error_values.csv', 
-        header=['Error'],
+        # header=['Error'],
         index_label='Variable'
         )
 
 
-def compute_error(to_look_at, out_dir, gold_std):
+def compute_error(to_look_at, gold_std):
     '''Computes the "error" by looking at a specified list of variables and
     reporting 
     '''
     error = {}
     for file_name in to_look_at:
-        file_vars = pd.read_csv(op.join(out_dir, file_name))
-        for var_name in to_look_at[file_name]:
-            per_taxpayer_diff = file_vars[var_name] - gold_std[var_name]
-            error[var_name] = np.absolute(per_taxpayer_diff).sum()
+        file_vars = pd.read_csv(file_name)
+        # for var_name in to_look_at[file_name]:
+        for var_name in file_vars:
+            if var_name.lower().startswith('c') and var_name not in error:
+                per_taxpayer_diff = file_vars[var_name] - gold_std[var_name]
+                error[var_name] = np.absolute(per_taxpayer_diff).sum()
 
     return pd.DataFrame.from_dict(error, orient='index')
 
 
-def mismatching_records(gold_std, variable, file_path):
+def mismatching_records(gold_std, variable, out_dir):
     '''
     Given a gold standard dictionary, a variable name and a path to the file
     where this variable is stored returns an array of indices for taxpayer
     records where python's output does not match  that of SAS.
     '''
-    py_answer = pd.read_csv(file_path)[variable]
-    mismatches = py_answer != gold_std[variable]
+    for file_path in gen_file_paths(out_dir):
+        temp = pd.read_csv(file_path)
+        if variable in temp:
+            print file_path
+            py_answer = temp[variable]
+            break
+    mismatches = np.array(py_answer != gold_std[variable])
+    # print mismatches[0], type(mismatches)
     all_indices = np.arange(len(mismatches))
     return all_indices[mismatches]
 
@@ -94,10 +106,14 @@ def merge_dicts(sas_codes, taxpayer, python_codes):
     '''
     result = {}
     for variable in sas_codes:
+        sas_taxpayer = sas_codes[variable][taxpayer]
+        lc_v = variable.lower()
         if variable in python_codes:
-            result[key] = (sas_codes[key], python_codes[key])
+            result[variable] = (sas_taxpayer, python_codes[variable])
+        elif lc_v in python_codes:
+            result[lc_v] = (sas_taxpayer, python_codes[lc_v])
         else:
-            result[key] = (sas_codes[key], '')
+            result[variable] = (sas_taxpayer, '')
     return result
 
 
