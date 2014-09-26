@@ -1014,15 +1014,14 @@ def StdDed():
 	outputs = pd.DataFrame.from_items(
 		(('c15100', c15100),
 			('c04100', c04100),
+			('_compitem', _compitem),
+			('DSI', DSI),
 			('_numextra', _numextra),
 			('_txpyers', _txpyers),
 			('c04200', c04200),
 			('c15200', c15200),
 			('_standard', _standard),
 			('_othded', _othded),
-			('c04100', c04100),
-			('c04200', c04200),
-			('_standard', _standard),
 			('c04500', c04500),
 			('c04800', c04800),
 			('c60000', c60000),
@@ -1219,7 +1218,6 @@ def TaxGains():
 			('_dwks9', _dwks9),
 			('c24516', c24516),
 			('c24580', c24580),
-			('c24516', c24516),
 			('_dwks12', _dwks12),
 			('c24517', c24517),
 			('c24520', c24520),
@@ -1259,7 +1257,6 @@ def TaxGains():
 			('_line35', _line35),
 			('c59485', c59485),
 			('c59490', c59490),
-			('c05700', c05700),
 			('_s1291', _s1291),
 			('_parents', _parents),
 			('c05750', c05750),
@@ -1399,8 +1396,7 @@ def AMTI(puf):
 			('_amtsepadd', _amtsepadd), 
 			('c62600', c62600), 
 			('_agep', _agep), 
-			('_ages', _ages), 
-			('c62600', c62600), 
+			('_ages', _ages),
 			('c62700', c62700), 
 			('_alminc', _alminc), 
 			('_amtfei', _amtfei), 
@@ -1615,7 +1611,8 @@ def ChildTaxCredit():
 	_precrd = np.where(np.logical_and(_ctcagi > _cphase[MARS-1], _exact != 1), np.maximum(0, _precrd - 50 * (np.maximum(0, _ctcagi - _cphase[MARS-1]) + 500)/1000), _precrd)
 
 	outputs = pd.DataFrame.from_items(
-		(('c11070', c11070), 
+		(('c11070', c11070),
+			('N24', n24),
 			('c07220', c07220), 
 			('c07230', c07230), 
 			('_precrd', _precrd), 
@@ -1784,7 +1781,9 @@ def AddCTC(puf):
 	c11070 = np.where(np.logical_and(_nctcr > 0, _fixup >= 4), c11070 + _othadd, c11070)
 
 	outputs = pd.DataFrame.from_items(
-		(('c82940', c82940), 
+		(('c82940', c82940),
+			('e00200', e00200),
+			('_exact', _exact),
 			('c82925', c82925), 
 			('c82930', c82930), 
 			('c82935', c82935), 
@@ -1798,7 +1797,6 @@ def AddCTC(puf):
 			('c82915', c82915), 
 			('c82920', c82920), 
 			('c82937', c82937), 
-			('c82940', c82940), 
 			('c11070', c11070), 
 			('e59660', e59660), 
 			('_othadd', _othadd)))
