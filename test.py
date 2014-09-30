@@ -2,7 +2,7 @@
 Testing file for ation.py
 """
 
-from translation import *
+from calculate import *
 
 if __name__ == '__main__':
 
