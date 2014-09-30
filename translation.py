@@ -726,7 +726,6 @@ def Adj():
 		+ e03220 + e03230
 		+ e03240
 		+ e03290)
-	x02900 = c02900
 
 	outputs = (_feided, c02900)
 	output = np.column_stack(outputs)
@@ -840,7 +839,7 @@ def ItemDed(puf):
 		c20400 = e20400
 		c19200 = e19200 
 	else: 
-		c02400 = e20550 + e20600 + e20950
+		c20400 = e20550 + e20600 + e20950
 		c19200 = e19500 + e19570 + e19400 + e19550
 	c20800 = np.maximum(0, c20400 - c20750)
 
@@ -863,7 +862,6 @@ def ItemDed(puf):
 	_phase2 = np.where(np.logical_and(MARS != 1, MARS != 4), 300000, _phase2)
 
 	_itemlimit = np.ones((dim,))
-	_c21060 = c21060
 	_nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
 	_limitratio = _phase2/_sep 
 
@@ -1016,10 +1014,7 @@ def TaxGains():
 	c24517 = np.zeros((dim,))
 	c24520 = np.zeros((dim,))
 	c24530 = np.zeros((dim,))
-	c24553 = np.zeros((dim,))
 	c24540 = np.zeros((dim,))
-	c24581 = np.zeros((dim,))
-	c24542 = np.zeros((dim,)) 
 	_dwks16 = np.zeros((dim,))
 
 	_hasgain = np.zeros((dim,))
@@ -1151,7 +1146,6 @@ def TaxGains():
 	_parents = e83200_0
 	c05750 = np.maximum(c05100 + _parents + c05700, e74400)
 	_taxbc = c05750 
-	x05750 = c05750 
 
 	
 
@@ -1169,8 +1163,6 @@ def MUI(c05750):
 	c05750 = c05750
 	c05750 = np.where(c00100 > _thresx[MARS-1], c05750 + 0.038 * np.minimum(e00300 + e00600 + np.maximum(0, c01000) + np.maximum(0, e02000), c00100 - _thresx[MARS-1]), c05750)
 	
-	outputs = (c05750)
-	output = np.column_stack(outputs)
 	np.savetxt('MUI.csv', c05750, delimiter=',', 
 		header = ('c05750') 
 		, fmt = '%1.3f')
@@ -1210,8 +1202,6 @@ def AMTI(puf):
 
 	_cmbtp = np.where(np.logical_and(puf == True, np.logical_and(_standard > 0, f6251 == 1)), e62100 - e00100 + c60260, _cmbtp)
 	c62100 = np.where(np.logical_and(puf == True, _standard > 0), c00100 - c60260 + _cmbtp, c62100)
-
-	x62100 = c62100
 
 	_amtsepadd = np.where(np.logical_and(c62100 > _amtsep[FLPDYR-2013], np.logical_or(MARS == 3, MARS == 6)), np.maximum(0, np.minimum(_almsep[FLPDYR-2013], 0.25 * (c62100 - _amtsep[FLPDYR-2013]))), 0)
 	c62100 = np.where(np.logical_and(c62100 > _amtsep[FLPDYR-2013], np.logical_or(MARS == 3, MARS == 6)), c62100 + _amtsepadd, c62100)
@@ -1360,7 +1350,6 @@ def RateRed(c05800):
 	#rate reduction credit for 2001 only, is this needed?
 	c05800 = c05800 
 	c07970 = np.zeros((dim,))
-	x07970 = c07970
 
 	c05800 = np.where(_fixup >= 3, c05800 + _othtax, c05800)
 
@@ -1598,8 +1587,7 @@ def F5405():
 	#not needed
 
 	c64450 = np.zeros((dim,))
-	outputs = (c64450)
-	output = np.column_stack(outputs)
+    
 	np.savetxt('F4505.csv', c64450, delimiter=',', 
 		header = ('c64450') 
 		, fmt = '%1.3f')
@@ -1672,7 +1660,6 @@ def DEITC():
 
 	#Ask dan about this section of code! Line 1231 - 1241
 
-	_compb = np.where(np.logical_or(c08795 < 0, c59660 <= 0), 0, 0)
 	c59680 = np.where(np.logical_or(c08795 < 0, c59660 <= 0), 0, c59680)
 	c59700 = np.where(np.logical_or(c08795 < 0, c59660 <= 0), 0, c59700)
 	c59720 = np.where(np.logical_or(c08795 < 0, c59660 <= 0), 0, c59720)
