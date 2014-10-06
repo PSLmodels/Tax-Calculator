@@ -1293,7 +1293,9 @@ def AMTI(puf):
 	c60130 = c21040 + x60130 
 	c62730 = e24515 + x62730
 
-	_addamt = np.where(np.logical_or(_exact == 0, np.logical_and(_exact == 1, c60200 + c60220 + c60240 + e60290 > 0)), c60200 + c60240 + c60220 + e60290 - c60130, 0)
+	_amtded = c60200 + c60220 + c60240
+	_amtded = np.where(c60000 <= 0, np.maximum(0, _amtded + c60000), _amtded)
+	_addamt = np.where(np.logical_or(_exact == 0, np.logical_and(_exact == 1, _amtded + e60290 > 0)), _amtded + e60290 - c60130, 0)
 
 
 	c62100 = np.where(_cmp == 1, (_addamt + e60300 + e60860 + e60100 + e60840 + e60630 + e60550 
