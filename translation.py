@@ -450,8 +450,6 @@ def Puf():
 	e00250 = np.zeros((dim,))
 	global e30100
 	e30100 = np.zeros((dim,))
-	global _compitem 
-	_compitem = np.zeros((dim,))
 	global e15360
 	e15360 = np.zeros((dim,))
 	global e04200
@@ -698,6 +696,8 @@ def Puf():
 	SOIYR = np.zeros((dim,))
 	global xtxcr1xtxcr10
 	xtxcr1xtxcr10 = np.zeros((dim,))
+    global _compitem 
+    _compitem = np.where(np.logical_and(e04470 > 0, e04470 < _stded[FLPDYR-2013, MARS-1]), 1, 0)
 
 
 
