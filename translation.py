@@ -860,7 +860,7 @@ def ItemDed(puf):
 	_lim30 = np.where(e19800 + e20100 + e20200 <= 0.20 * _posagi, 0, np.minimum(0.30 * _posagi, e20100 + e20200))
 
 	c19700 = np.where(e19800 + e20100 + e20200 <= 0.20 * _posagi, 
-		e19800 + e20100 + e20200, _lim30 + _lim50)
+		e19800 + e20100 + e20200, np.minimum(0.5 * _posagi, _lim30 + _lim50))
     #temporary fix!??
 
     # Gross Itemized Deductions #
