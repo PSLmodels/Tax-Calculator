@@ -75,7 +75,7 @@ def mismatching_records(gold_std, variable, out_dir='py_output'):
     return all_indices[mismatches]
 
 
-def report_accuracy(python_output_dir, sas_codes, indx):
+def report_accuracy(sas_codes, indx, python_output_dir='py_output'):
     '''Our current implementation of accuracy testing.
     expects directory with results of sameer's python translation as well as 
     a c-codes dictionary and the index which to use
