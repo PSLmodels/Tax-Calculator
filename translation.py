@@ -693,7 +693,7 @@ def Puf():
     global e40223
     e40223 = np.zeros((dim,))
     global SOIYR
-    SOIYR = np.zeros((dim,))
+    SOIYR = np.repeat(2008, dim)
     global xtxcr1xtxcr10
     xtxcr1xtxcr10 = np.zeros((dim,))
     global _compitem 
@@ -1609,7 +1609,7 @@ def ChildTaxCredit():
     _precrd = _chmax[FLPDYR-2013] * _nctcr 
     _ctcagi = c00100 + _feided
 
-    _precrd = np.where(np.logical_and(_ctcagi > _cphase[MARS-1], _exact == 1), np.maximum(0, _precrd - 50 * np.ceil(np.maximum(0, _ctcagi - _cphase[MARS-1])/1000)), 0)
+    _precrd = np.where(np.logical_and(_ctcagi > _cphase[MARS-1], _exact == 1), np.maximum(0, _precrd - 50 * np.ceil((_ctcagi - _cphase[MARS-1])/1000)), _precrd)
     _precrd = np.where(np.logical_and(_ctcagi > _cphase[MARS-1], _exact != 1), np.maximum(0, _precrd - 50 * (np.maximum(0, _ctcagi - _cphase[MARS-1]) + 500)/1000), _precrd)
 
     outputs = pd.DataFrame.from_items(
@@ -1617,7 +1617,6 @@ def ChildTaxCredit():
             ('N24', n24),
             ('c07220', c07220), 
             ('c07230', c07230), 
-            ('_precrd', _precrd), 
             ('_num', _num), 
             ('_nctcr', _nctcr), 
             ('_precrd', _precrd), 
