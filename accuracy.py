@@ -60,15 +60,15 @@ def mismatching_records(gold_std, variable, out_dir='py_output'):
             py_answer = temp[variable]
             break
     
-    if not py_answer.any():
+    if len(py_answer) == 0:
         print 'Variable was not found, returning empty series!'
         return py_answer
     
     mismatches = np.array(np.absolute(py_answer - gold_std[variable]) > 0)
 
     if not mismatches.any():
-        print 'No cells satisfied the condition, returning empty series'
-        return pd.Series(mismatches)
+        print 'No cells satisfied the condition, returning series as is'
+        return mismatches
 
     # print mismatches[0], type(mismatches)
     all_indices = np.arange(len(mismatches))
