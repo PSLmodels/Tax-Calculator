@@ -8,9 +8,9 @@ install:
   - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
-  - conda config --set always_yes yes --set changeps1 no
   - conda update conda
-  - conda install -n test-environment pandas
+  - conda create -n test-environment python=$TRAVIS_PYTHON_VERSION pytest numpy pandas
+  - conda config --set always_yes yes --set changeps1 no
   - source activate test-environment
   - python setup.py install
 
