@@ -610,8 +610,8 @@ def Puf():
     e82880 = np.zeros((dim,))
     global e07500 
     e07500 = np.zeros((dim,))
-    global e08000 
-    e08000 = np.zeros((dim,))
+    global e08000
+    e08000 = p08000
     global e08001
     e08001 = np.zeros((dim,))
     global e07970 
