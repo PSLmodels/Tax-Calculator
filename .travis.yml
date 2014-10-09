@@ -1,0 +1,20 @@
+language: python
+python:
+  - "3.4"
+  - "2.7"
+
+install:
+  # Install conda
+  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update conda
+  - conda create -n test-environment python=$TRAVIS_PYTHON_VERSION pytest numpy pandas
+  - source activate test-environment
+  - python setup.py install
+
+
+# command to run tests, e.g. python setup.py test
+script:
+  - python -c "import taxcalc"
