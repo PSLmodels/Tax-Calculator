@@ -105,7 +105,7 @@ def gen_file_paths(dir_name, filter_func=None):
     :type dir_name: string
     :param filter_func: optional name of function to filter file names by
     :type filter_func: None by default, function if passed
-    :returns: iterator over paths for files in *dir_name*
+    :returns: sequence of paths for files in *dir_name*
     '''
     file_paths = tuple(op.join(dir_name, file_name) 
         for file_name in os.listdir(dir_name))
@@ -121,6 +121,7 @@ def merge_dicts(sas_codes, taxpayer, python_codes):
     result = {}
     for variable in sas_codes:
         sas_taxpayer = sas_codes[variable][taxpayer]
+        # occasionally Python's versions of the variable name are lowercase
         lc_v = variable.lower()
         if variable in python_codes:
             result[variable] = (sas_taxpayer, python_codes[variable])
@@ -135,11 +136,12 @@ if __name__ == '__main__':
 
     from argparse import ArgumentParser
     parser = ArgumentParser('Testing script')
-    parser.add_argument('SASCODESPATH',
+    parser.add_argument('sas_codes_path', name='SAS Variable file path',
         help='path to HDF5 file with SAS codes')
-    parser.add_argument('rerun', nargs='?', default=False,
-        help=('pass any integer other than 0 to rerun taxcalc, '
-            'otherwise do not pass anything'))
+    parser.add_argument('py_out_dir', name='Python output dir',
+        help='path to folder with Python-generated values')
+    parser.add_argument('-r',
+        help=('pass this flag to generate Python data'))
 
     cmd_input = parser.parse_args()
-    main(cmd_input.SASCODESPATH, bool(cmd_input.rerun))
+    main(cmd_input.sas_codes_path, cmd_input.py_output_dir, bool(cmd_input.rerun))
