@@ -47,22 +47,25 @@ def compute_error(files_to_look_at, gold_std):
     return pd.DataFrame.from_dict(error, orient='index')
 
 
-def mismatching_records(gold_std, variable, out_dir='py_output'):
+def mismatching_records(gold_std, variable, py_out_dir='py_output'):
     '''
-    Given a gold standard dictionary, a variable name and a path to the file
-    where this variable is stored returns an array of indices for taxpayer
-    records where python's output does not match  that of SAS.
+    Given gold_std as a mapping of variable names to their values according to
+    SAS and the name of one particular variable as well as a folder containing
+    the CSVs produced by our Python script attempts to create a list of
+    indeces (which represent taxpayer records) where SAS values for variable
+    do not match its Python values.
     '''
-    py_answer = pd.Series()
-    for file_path in gen_file_paths(out_dir):
+    # first we need to find the python values for this variable
+    py_answer = None
+    for file_path in gen_file_paths(py_out_dir):
         temp = pd.read_csv(file_path)
         if variable in temp:
-            print file_path
+            print 'Found in file: {}'.format(file_path)
             py_answer = temp[variable]
             break
     
-    if len(py_answer) == 0:
-        print 'Variable was not found, returning empty series!'
+    if not py_answer:
+        print 'Variable was not found, returning None. Beware!'
         return py_answer
     
     mismatches = np.array(np.absolute(py_answer - gold_std[variable]) > 0)
@@ -71,7 +74,6 @@ def mismatching_records(gold_std, variable, out_dir='py_output'):
         print 'No cells satisfied the condition, returning series as is'
         return mismatches
 
-    # print mismatches[0], type(mismatches)
     all_indices = np.arange(len(mismatches))
     return all_indices[mismatches]
 
