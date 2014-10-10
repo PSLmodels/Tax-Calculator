@@ -6,26 +6,26 @@ import os
 import os.path as op
 
 
-_VARIABLES_OF_INTEREST = {
-    'AGI.csv' : ['c00100'],
-    'ItemDed.csv' : ['c04470']
-}
+def main(sas_output_path, py_output_dir, rerun=False):
+    '''If this module is run directly it calculates per variable difference
+    between the SAS output read from sas_output_path and Python output
+    read from CSV files contained in py_output_dir.
 
-
-def main(sas_codes_path, rerun=False):
+    If the arg "rerun" is anything but False, taxcalc gets imported and its Test
+    function run, thus regenerating the python output.
+    '''
     if rerun:
+        cwd = os.getcwd()
         import translation
+        os.chdir(python_output_dir)
         translation.Test(True)
-    # for now output dir for translation has to be set up separately
-    # TO-DO: automate this directory setup
+        os.chdir(cwd)
+    
     gold_std = h5.File(sas_codes_path)
-    out_dir = 'py_output'
-    errors = compute_error(gen_file_paths(out_dir), gold_std)
+    errors = compute_error(gen_file_paths(py_output_dir), gold_std)
     errors.columns = ['Error']
     errors.sort(columns='Error', ascending=False, inplace=True)
-    # errors = compute_error(_VARIABLES_OF_INTEREST, 'py_output', gold_std)
-    errors.to_csv('error_values.csv', 
-        # header=['Error'],
+    errors.to_csv('errors_by_variable.csv',
         index_label='Variable'
         )
 
