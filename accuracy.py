@@ -79,19 +79,19 @@ def mismatching_records(gold_std, variable, py_out_dir='py_output'):
 
 
 def report_accuracy(sas_codes, indx, python_output_dir='py_output'):
-    '''Our current implementation of accuracy testing.
-    expects directory with results of sameer's python translation as well as 
-    a c-codes dictionary and the index which to use
+    '''Generates a csv for one taxpayer specified by indx.
+    This csv contains variable names as row labels and corresponding SAS output
+    compared with Python output.
     '''
-    accuracies = {}
+    value_comparison = {}
     for var_file_path in gen_file_paths(python_output_dir):
-        var_df = pd.read_csv(var_file_path)
+        python_variables_df = pd.read_csv(var_file_path)
+        # select all records in index row and update accuracy dict
+        value_comparison.update(python_variables_df.iloc[indx].to_dict())
 
-        accuracies.update(var_df.iloc[indx].to_dict())
-
-    accuracies = merge_dicts(sas_codes, indx, accuracies)
-    accuracy_df = pd.DataFrame.from_dict(accuracies, orient='index')
-    accuracy_df.to_csv('accuracy.csv')
+    value_comparison = merge_dicts(sas_codes, indx, value_comparison)
+    value_comp_df = pd.DataFrame.from_dict(value_comparison, orient='index')
+    value_comp_df.to_csv('accuracy.csv')
 
 
 def gen_file_paths(dir_name, filter_func=None):
