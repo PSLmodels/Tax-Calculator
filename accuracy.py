@@ -14,9 +14,9 @@ _VARIABLES_OF_INTEREST = {
 
 def main(sas_codes_path, rerun=False):
     if rerun:
-        import translation
-        translation.Test(True)
-    # for now output dir for translation has to be set up separately
+        import test
+        test.run(True)
+    # for now output dir for calculate has to be set up separately
     # TO-DO: automate this directory setup
     gold_std = h5.File(sas_codes_path)
     out_dir = 'py_output'
@@ -77,7 +77,7 @@ def mismatching_records(gold_std, variable, out_dir='py_output'):
 
 def report_accuracy(sas_codes, indx, python_output_dir='py_output'):
     '''Our current implementation of accuracy testing.
-    expects directory with results of sameer's python translation as well as 
+    expects directory with results of sameer's python calculate as well as 
     a c-codes dictionary and the index which to use
     '''
     accuracies = {}
