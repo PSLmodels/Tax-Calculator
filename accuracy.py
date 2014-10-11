@@ -136,12 +136,12 @@ if __name__ == '__main__':
 
     from argparse import ArgumentParser
     parser = ArgumentParser('Testing script')
-    parser.add_argument('sas_codes_path', name='SAS Variable file path',
+    parser.add_argument('sas_codes_path',
         help='path to HDF5 file with SAS codes')
-    parser.add_argument('py_out_dir', name='Python output dir',
+    parser.add_argument('py_out_dir',
         help='path to folder with Python-generated values')
-    parser.add_argument('-r',
-        help=('pass this flag to generate Python data'))
+    parser.add_argument('-r', dest='rerun', action='store_true',
+        help=('pass this flag to regenerate Python data'))
 
     cmd_input = parser.parse_args()
-    main(cmd_input.sas_codes_path, cmd_input.py_output_dir, bool(cmd_input.rerun))
+    main(cmd_input.sas_codes_path, cmd_input.py_output_dir, cmd_input.rerun)
