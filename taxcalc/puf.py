@@ -6,7 +6,8 @@ import pandas as pd
 import numpy as np
 import os.path
 
-input_filename = os.path.realpath('puf2.csv')
+parent_dir = os.path.split(os.getcwd())[0]
+input_filename = os.path.join(parent_dir, 'puf2.csv')
 x = pd.read_csv(input_filename)
 
 dim = len(x)
@@ -260,10 +261,10 @@ _exact = np.zeros((dim,))
 e11055 = np.zeros((dim,))
 e00250 = np.zeros((dim,))
 e30100 = np.zeros((dim,))
-_compitem = np.zeros((dim,))
+
 e15360 = np.zeros((dim,))
 e04200 = np.zeros((dim,))
-e04470 = np.zeros((dim,))
+e04470 = p04470
 e37717 = np.zeros((dim,))
 e04805 = np.zeros((dim,))
 AGEP = np.zeros((dim,))
@@ -341,7 +342,7 @@ t07950 = np.zeros((dim,))
 e82882 = np.zeros((dim,))
 e82880 = np.zeros((dim,))
 e07500 = np.zeros((dim,))
-e08000 = np.zeros((dim,))
+e08000 = p08000
 e08001 = np.zeros((dim,))
 e07970 = np.zeros((dim,))
 e07980 = np.zeros((dim,))
@@ -362,7 +363,7 @@ e11601 = np.zeros((dim,))
 e11602 = np.zeros((dim,))
 e60300 = np.zeros((dim,))
 e60860 = np.zeros((dim,))
-e60100 = np.zeros((dim,))
+e60100 = p60100
 e60840 = np.zeros((dim,))
 e60630 = np.zeros((dim,))
 e60550 = np.zeros((dim,))
@@ -382,8 +383,9 @@ e60480 = np.zeros((dim,))
 e62000 = np.zeros((dim,))
 e60250 = np.zeros((dim,))
 e40223 = np.zeros((dim,))
-SOIYR = np.zeros((dim,))
+SOIYR = np.repeat(2008, dim)
 xtxcr1xtxcr10 = np.zeros((dim,))
+
 
 
 __all__ = [x for x in locals() if "__" not in x]

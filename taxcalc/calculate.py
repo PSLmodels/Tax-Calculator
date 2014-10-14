@@ -1,12 +1,12 @@
 import pandas as pd
-from pandas import DataFrame, Series
+from pandas import DataFrame
 import math
 import numpy as np
 
 output_filename = 'translationoutput.csv' 
 
-from taxcalc.puf import *
 from taxcalc.constants import *
+from taxcalc.puf import *
 
 def FilingStatus():
     # Filing based on marital status
@@ -30,7 +30,6 @@ def Adj():
               + e03220 + e03230
               + e03240
               + e03290)
-
 
     return DataFrame(data=np.column_stack((_feided, c02900)),
                      columns=['_feided', 'c02900'])
@@ -223,6 +222,8 @@ def StdDed():
     c15100 = np.where(DSI == 1,
                       np.maximum(300 + _earned, _stded[FLPDYR - 2013, 6]), 0)
 
+    _compitem = np.where(np.logical_and(e04470 > 0, e04470 < _stded[FLPDYR-2013, MARS-1]), 1, 0)
+    
     c04100 = np.where(DSI == 1, np.minimum(_stded[FLPDYR - 2013, MARS - 1], c15100),
                       np.where(np.logical_or(_compitem == 1,
                                              np.logical_and(np.logical_and(3 <= MARS, MARS <= 6), MIdR == 1)),
@@ -554,13 +555,10 @@ def MUI(c05750):
     c05750 = c05750
     c05750 = np.where(c00100 > _thresx[MARS - 1], c05750 + 0.038 * np.minimum(
         e00300 + e00600 + np.maximum(0, c01000) + np.maximum(0, e02000), c00100 - _thresx[MARS - 1]), c05750)
+	
+    return DataFrame(data=np.column_stack((c05750,)),
+                     columns=['c05750'])
     
-    # np.savetxt('MUI.csv', c05750, delimiter=',', 
-    # header = ('c05750') 
-    # , fmt = '%1.3f')
-    
-    return Series(c05750)
-
 
 def AMTI(puf):
     global c05800
@@ -602,6 +600,8 @@ def AMTI(puf):
         _standard > 0, f6251 == 1)), e62100 - e00100 + c60260, _cmbtp)
     c62100 = np.where(
         np.logical_and(puf == True, _standard > 0), c00100 - c60260 + _cmbtp, c62100)
+
+    x62100 = c62100
 
     _amtsepadd = np.where(np.logical_and(c62100 > _amtsep[FLPDYR - 2013], np.logical_or(MARS == 3, MARS == 6)), np.maximum(
         0, np.minimum(_almsep[FLPDYR - 2013], 0.25 * (c62100 - _amtsep[FLPDYR - 2013]))), 0)
@@ -1154,6 +1154,7 @@ def DEITC():
 
     # Ask dan about this section of code! Line 1231 - 1241
 
+    _compb = np.where(np.logical_or(c08795 < 0, c59660 <= 0), 0, 0)
     c59680 = np.where(np.logical_or(c08795 < 0, c59660 <= 0), 0, c59680)
     c59700 = np.where(np.logical_or(c08795 < 0, c59660 <= 0), 0, c59700)
     c59720 = np.where(np.logical_or(c08795 < 0, c59660 <= 0), 0, c59720)
