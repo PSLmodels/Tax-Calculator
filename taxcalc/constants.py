@@ -159,12 +159,4 @@ _brk6 = np.array([[400000, 450000, 225000, 425000, 450000, 225000],
 	[0, 0, 0, 0, 0, 0]]) 
 #25% tax rate thresholds
 
-__all__ = [l for l in locals() if "__" not in l]
-# __all__ = [_adctcrt, _aged, _almdep, _almsp, _amex, _amtage, _amtsep,
-           # _almsep, _agcmax, _cgrate1, _cgrate2, _chmax, _crmax, _dcmax,
-           # _dylim, _ealim, _edphhs, _edphhm, _feimax, _joint, _learn,
-           # _pcmax, _phase, _rtbase, _rtless, _ssmax, _ymax, _rt1, _rt2,
-           # _rt3, _rt4, _rt5, _rt6, _rt7, _amtys, _cphase, _thresx, _ssb50,
-           # _ssb85, _amtex, _exmpb, _stded, _brk1, _brk2, _brk3, _brk4,
-           # _brk5, _brk6]
-
+__all__ = [loc for loc in locals().keys() if "__" not in loc]
