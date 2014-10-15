@@ -3,709 +3,10 @@ from pandas import DataFrame
 import math
 import numpy as np
 
-output_filename = 'translationoutput.csv'
-input_filename = 'puf2.csv'
-x = pd.read_csv(input_filename)
+output_filename = 'translationoutput.csv' 
 
-global dim
-dim = len(x)
-
-names = x.columns.values
-
-y = {}
-
-for n in names:
-    y[n] = np.array(x[n])
-
-AGIR1 = y['agir1']
-DSI = y['dsi']
-EFI = y['efi']
-EIC = y['eic']
-ELECT = y['elect']
-FDED = y['fded']
-FLPDYR = y['flpdyr']
-FLPDMO = y['flpdmo']
-f2441 = y['f2441']
-f3800 = y['f3800']
-f6251 = y['f6251']
-f8582 = y['f8582']
-f8606 = y['f8606']
-IE = y['ie']
-MARS = y['mars']
-MIdR = y['midr']
-n20 = y['n20']
-n24 = y['n24']
-n25 = y['n25']
-PREP = y['prep']
-SCHB = y['schb']
-SCHCF = y['schcf']
-SCHE = y['sche']
-STATE = y['state']
-TFORM = y['tform']
-TXST = y['txst']
-XFPT = y['xfpt']
-XFST = y['xfst']
-XOCAH = y['xocah']
-XOCAWH = y['xocawh']
-XOODEP = y['xoodep']
-XOPAR = y['xopar']
-XTOT = y['xtot']
-e00200 = y['e00200']
-e00300 = y['e00300']
-e00400 = y['e00400']
-e00600 = y['e00600']
-e00650 = y['e00650']
-e00700 = y['e00700']
-e00800 = y['e00800']
-e00900 = y['e00900']
-e01000 = y['e01000']
-e01100 = y['e01100']
-e01200 = y['e01200']
-e01400 = y['e01400']
-e01500 = y['e01500']
-e01700 = y['e01700']
-e02000 = y['e02000']
-e02100 = y['e02100']
-e02300 = y['e02300']
-e02400 = y['e02400']
-e02500 = y['e02500']
-e03150 = y['e03150']
-e03210 = y['e03210']
-e03220 = y['e03220']
-e03230 = y['e03230']
-e03260 = y['e03260']
-e03270 = y['e03270']
-e03240 = y['e03240']
-e03290 = y['e03290']
-e03300 = y['e03300']
-e03400 = y['e03400']
-e03500 = y['e03500']
-e00100 = y['e00100']
-p04470 = y['p04470']
-e04250 = y['e04250']
-e04600 = y['e04600']
-e04800 = y['e04800']
-e05100 = y['e05100']
-e05200 = y['e05200']
-e05800 = y['e05800']
-e06000 = y['e06000']
-e06200 = y['e06200']
-e06300 = y['e06300']
-e09600 = y['e09600']
-e07180 = y['e07180']
-e07200 = y['e07200']
-e07220 = y['e07220']
-e07230 = y['e07230']
-e07240 = y['e07240']
-e07260 = y['e07260']
-e07300 = y['e07300']
-e07400 = y['e07400']
-e07600 = y['e07600']
-p08000 = y['p08000']
-e07150 = y['e07150']
-e06500 = y['e06500']
-e08800 = y['e08800']
-e09400 = y['e09400']
-e09700 = y['e09700']
-e09800 = y['e09800']
-e09900 = y['e09900']
-e10300 = y['e10300']
-e10700 = y['e10700']
-e10900 = y['e10900']
-e59560 = y['e59560']
-e59680 = y['e59680']
-e59700 = y['e59700']
-e59720 = y['e59720']
-e11550 = y['e11550']
-e11070 = y['e11070']
-e11100 = y['e11100']
-e11200 = y['e11200']
-e11300 = y['e11300']
-e11400 = y['e11400']
-e11570 = y['e11570']
-e11580 = y['e11580']
-e11581 = y['e11581']
-e11582 = y['e11582']
-e11583 = y['e11583']
-e10605 = y['e10605']
-e11900 = y['e11900']
-e12000 = y['e12000']
-e12200 = y['e12200']
-e17500 = y['e17500']
-e18425 = y['e18425']
-e18450 = y['e18450']
-e18500 = y['e18500']
-e19200 = y['e19200']
-e19550 = y['e19550']
-e19800 = y['e19800']
-e20100 = y['e20100']
-e19700 = y['e19700']
-e20550 = y['e20550']
-e20600 = y['e20600']
-e20400 = y['e20400']
-e20800 = y['e20800']
-e20500 = y['e20500']
-e21040 = y['e21040']
-p22250 = y['p22250']
-e22320 = y['e22320']
-e22370 = y['e22370']
-p23250 = y['p23250']
-e24515 = y['e24515']
-e24516 = y['e24516']
-e24518 = y['e24518']
-e24535 = y['e24535']
-e24560 = y['e24560']
-e24598 = y['e24598']
-e24615 = y['e24615']
-e24570 = y['e24570']
-p25350 = y['p25350']
-e25370 = y['e25370']
-e25380 = y['e25380']
-p25470 = y['p25470']
-p25700 = y['p25700']
-e25820 = y['e25820']
-e25850 = y['e25850']
-e25860 = y['e25860']
-e25940 = y['e25940']
-e25980 = y['e25980']
-e25920 = y['e25920']
-e25960 = y['e25960']
-e26110 = y['e26110']
-e26170 = y['e26170']
-e26190 = y['e26190']
-e26160 = y['e26160']
-e26180 = y['e26180']
-e26270 = y['e26270']
-e26100 = y['e26100']
-e26390 = y['e26390']
-e26400 = y['e26400']
-e27200 = y['e27200']
-e30400 = y['e30400']
-e30500 = y['e30500']
-e32800 = y['e32800']
-e33000 = y['e33000']
-e53240 = y['e53240']
-e53280 = y['e53280']
-e53410 = y['e53410']
-e53300 = y['e53300']
-e53317 = y['e53317']
-e53458 = y['e53458']
-e58950 = y['e58950']
-e58990 = y['e58990']
-p60100 = y['p60100']
-p61850 = y['p61850']
-e60000 = y['e60000']
-e62100 = y['e62100']
-e62900 = y['e62900']
-e62720 = y['e62720']
-e62730 = y['e62730']
-e62740 = y['e62740']
-p65300 = y['p65300']
-p65400 = y['p65400']
-e68000 = y['e68000']
-e82200 = y['e82200']
-t27800 = y['t27800']
-e27860 = y['s27860']
-p27895 = y['p27895']
-e87500 = y['e87500']
-e87510 = y['e87510']
-e87520 = y['e87520']
-e87530 = y['e87530']
-e87540 = y['e87540']
-e87550 = y['e87550']
-RECID = y['recid']
-s006 = y['s006']
-s008 = y['s008']
-s009 = y['s009']
-WSAMP = y['wsamp']
-TXRT = y['txrt']
-
-
-_adctcrt = np.array([0.15])
-# Rate for additional ctc
-
-_aged = np.array([[1500], [1200]])
-# Extra std. ded. for aged
-
-_almdep = np.array([6950])
-# Child AMT Exclusion base
-
-_almsp = np.array([179500])
-# AMT bracket
-
-_amex = np.array([3900])
-# Personal Exemption
-
-_amtage = np.array([24])
-# Age for full AMT exclusion
-
-_amtsep = np.array([232500])
-# AMT Exclusion
-
-_almsep = np.array([39375])
-# Extra alminc for married sep
-
-_agcmax = np.array([15000])
-#??
-
-_cgrate1 = np.array([0.10])
-# Initial rate on long term gains
-
-_cgrate2 = np.array([0.20])
-# Normal rate on long term gains
-
-_chmax = np.array([1000])
-# Max Child Tax Credit per child
-
-_crmax = np.array([[487], [3250], [5372], [6044]])
-# Max earned income credit
-
-_dcmax = np.array([3000])
-# Max dependent care expenses
-
-_dylim = np.array([3300])
-# Limits for Disqualified Income
-
-_ealim = np.array([3000])
-# Max earn ACTC
-
-_edphhs = np.array([63])
-# End of educ phaseout - singles
-
-_edphhm = np.array([126])
-# End of educ phaseout - married
-
-_feimax = np.array([97600])
-# Maximum foreign earned income exclusion
-
-#_hopelm = np.array([1200])
-
-_joint = np.array([0])
-# Extra to ymax for joint
-
-_learn = np.array([10000])
-# Expense limit for the LLC
-
-_pcmax = np.array([35])
-# Maximum Percentage for f2441
-
-_phase = np.array([172250])
-# Phase out for itemized
-
-_rtbase = np.array([[0.0765], [0.3400], [0.4000], [0.4000]])
-# EIC base rate
-
-_rtless = np.array([[0.0765], [0.1598], [0.2106], [0.2106]])
-# EIC _phaseout rate
-
-_ssmax = np.array([115800])
-# SS Maximum taxable earnings
-
-_ymax = np.array([[7970], [17530], [17530], [17530]])
-# Start of EIC _phaseout
-
-_rt1 = np.array([0.1])
-#10% rate
-
-_rt2 = np.array([0.15])
-#15% rate
-
-_rt3 = np.array([0.25])
-#25% rate
-
-_rt4 = np.array([0.28])
-#28% rate
-
-_rt5 = np.array([0.33])
-#33% rate
-
-_rt6 = np.array([0.35])
-#35% rate
-
-_rt7 = np.array([0.396])
-#39.6% rate
-
-_amtys = np.array([112500, 150000, 75000, 112500, 150000, 75000])
-# AMT Phaseout Start
-
-_cphase = np.array([75000, 110000, 55000, 75000, 75000, 55000])
-# Child Tax Credit Phase-Out
-
-_thresx = np.array([200000, 250000, 125000, 200000, 250000, 125000])
-# Threshold for add medicare
-
-_ssb50 = np.array([25000, 32000, 0, 25000, 25000, 0])
-# SS 50% taxability threshold
-
-_ssb85 = np.array([34000, 44000, 0, 34000, 34000, 0])
-# SS 85% taxability threshold
-
-_amtex = np.array([[51900, 80750, 40375, 51900, 80750, 40375],
-                   [0, 0, 0, 0, 0, 0]])
-# AMT Exclusion
-
-_exmpb = np.array([[200000, 300000, 150000, 250000, 300000, 150000],
-                   [0, 0, 0, 0, 0, 0]])
-# Personal Exemption Amount
-
-_stded = np.array([[6100, 12200, 6100, 8950, 12200, 6100, 1000],
-                   [0, 0, 0, 0, 0, 0, 0]])
-# Standard Deduction
-
-_brk1 = np.array([[8925, 17850, 8925, 12750, 17850, 8925],
-                  [0, 0, 0, 0, 0, 0]])
-# 10% tax rate thresholds
-
-_brk2 = np.array([[36250, 72500, 36250, 48600, 72500, 36250],
-                  [0, 0, 0, 0, 0, 0]])
-# 15% tax rate thresholds
-
-_brk3 = np.array([[87850, 146400, 73200, 125450, 146400, 73200],
-                  [0, 0, 0, 0, 0, 0]])
-# 25% tax rate thresholds
-
-_brk4 = np.array([[183250, 223050, 111525, 203150, 223050, 111525],
-                  [0, 0, 0, 0, 0, 0]])
-# 28% tax rate thresholds
-
-_brk5 = np.array([[398350, 398350, 199175, 398350, 398350, 199175],
-                  [0, 0, 0, 0, 0, 0]])
-# 33% tax rate thresholds
-
-_brk6 = np.array([[400000, 450000, 225000, 425000, 450000, 225000],
-                  [0, 0, 0, 0, 0, 0]])
-# 25% tax rate thresholds
-
-def to_csv(fname, df):
-    """
-    Save this dataframe to a CSV file with name 'fname' and containing
-    a header with the column names of the dataframe.
-    """
-    df.to_csv(fname, float_format= '%1.3f', sep=',', header=True, index=False)
-
-def Puf():
-    # Run this function data input is the PUF file
-
-    global e35300_0
-    e35300_0 = np.zeros((dim,))
-    global e35600_0
-    e35600_0 = np.zeros((dim,))
-    global e35910_0
-    e35910_0 = np.zeros((dim,))
-    global x03150
-    x03150 = np.zeros((dim,))
-    global e03600
-    e03600 = np.zeros((dim,))
-    global e03280
-    e03280 = np.zeros((dim,))
-    global e03900
-    e03900 = np.zeros((dim,))
-    global e04000
-    e04000 = np.zeros((dim,))
-    global e03700
-    e03700 = np.zeros((dim,))
-    global c23250
-    c23250 = np.zeros((dim,))
-    global e22250
-    e22250 = p22250
-    global e23660
-    e23660 = np.zeros((dim,))
-    global f2555
-    f2555 = np.zeros((dim,))
-    global e02800
-    e02800 = np.zeros((dim,))
-    global e02610
-    e02610 = np.zeros((dim,))
-    global e02540
-    e02540 = np.zeros((dim,))
-    global e02615
-    e02615 = np.zeros((dim,))
-    global SSIND
-    SSIND = np.zeros((dim,))
-    global e18400
-    e18400 = np.zeros((dim,))
-    global e18800
-    e18800 = np.zeros((dim,))
-    global e18900
-    e18900 = np.zeros((dim,))
-    global e20950
-    e20950 = np.zeros((dim,))
-    global e19500
-    e19500 = np.zeros((dim,))
-    global e19570
-    e19570 = np.zeros((dim,))
-    global e19400
-    e19400 = np.zeros((dim,))
-    global c20400
-    c20400 = np.zeros((dim,))
-    global e20200
-    e20200 = np.zeros((dim,))
-    global e20900
-    e20900 = np.zeros((dim,))
-    global e21000
-    e21000 = np.zeros((dim,))
-    global e21010
-    e21010 = np.zeros((dim,))
-    global e02600
-    e02600 = np.zeros((dim,))
-    global _exact
-    _exact = np.zeros((dim,))
-    global e11055
-    e11055 = np.zeros((dim,))
-    global e00250
-    e00250 = np.zeros((dim,))
-    global e30100
-    e30100 = np.zeros((dim,))
-    global e15360
-    e15360 = np.zeros((dim,))
-    global e04200
-    e04200 = np.zeros((dim,))
-    global e04470
-    e04470 = p04470
-    global e37717
-    e37717 = np.zeros((dim,))
-    global e04805
-    e04805 = np.zeros((dim,))
-    global AGEP
-    AGEP = np.zeros((dim,))
-    global AGES
-    AGES = np.zeros((dim,))
-    global PBI
-    PBI = np.zeros((dim,))
-    global SBI
-    SBI = np.zeros((dim,))
-    global t04470
-    t04470 = np.zeros((dim,))
-    global e23250
-    e23250 = p23250
-    global e58980
-    e58980 = np.zeros((dim,))
-    global c00650
-    c00650 = np.zeros((dim,))
-    global e24583
-    e24583 = np.zeros((dim,))
-    global _fixup
-    _fixup = np.zeros((dim,))
-    global _cmp
-    _cmp = np.zeros((dim,))
-    global e59440
-    e59440 = np.zeros((dim,))
-    global e59470
-    e59470 = np.zeros((dim,))
-    global e59400
-    e59400 = np.zeros((dim,))
-    global e10105
-    e10105 = np.zeros((dim,))
-    global e83200_0
-    e83200_0 = np.zeros((dim,))
-    global e59410
-    e59410 = np.zeros((dim,))
-    global e59420
-    e59420 = np.zeros((dim,))
-    global e74400
-    e74400 = np.zeros((dim,))
-    global x62720
-    x62720 = np.zeros((dim,))
-    global x60260
-    x60260 = np.zeros((dim,))
-    global x60240
-    x60240 = np.zeros((dim,))
-    global x60220
-    x60220 = np.zeros((dim,))
-    global x60130
-    x60130 = np.zeros((dim,))
-    global x62730
-    x62730 = np.zeros((dim,))
-    global e60290
-    e60290 = np.zeros((dim,))
-    global DOBYR
-    DOBYR = np.zeros((dim,))
-    global SDOBYR
-    SDOBYR = np.zeros((dim,))
-    global DOBMD
-    DOBMD = np.zeros((dim,))
-    global SDOBMD
-    SDOBMD = np.zeros((dim,))
-    global e62600
-    e62600 = np.zeros((dim,))
-    global x62740
-    x62740 = np.zeros((dim,))
-    global _fixeic
-    _fixeic = np.zeros((dim,))
-    global e32880
-    e32880 = np.zeros((dim,))
-    global e32890
-    e32890 = np.zeros((dim,))
-    global CDOB1
-    CDOB1 = np.zeros((dim,))
-    global CDOB2
-    CDOB2 = np.zeros((dim,))
-    global e32750
-    e32750 = np.zeros((dim,))
-    global e32775
-    e32775 = np.zeros((dim,))
-    global e33420
-    e33420 = np.zeros((dim,))
-    global e33430
-    e33430 = np.zeros((dim,))
-    global e33450
-    e33450 = np.zeros((dim,))
-    global e33460
-    e33460 = np.zeros((dim,))
-    global e33465
-    e33465 = np.zeros((dim,))
-    global e33470
-    e33470 = np.zeros((dim,))
-    global x59560
-    x59560 = np.zeros((dim,))
-    global EICYB1
-    EICYB1 = np.zeros((dim,))
-    global EICYB2
-    EICYB2 = np.zeros((dim,))
-    global EICYB3
-    EICYB3 = np.zeros((dim,))
-    global e83080
-    e83080 = np.zeros((dim,))
-    global e25360
-    e25360 = np.zeros((dim,))
-    global e25430
-    e25430 = np.zeros((dim,))
-    global e25470
-    e25470 = p25470
-    global e25400
-    e25400 = np.zeros((dim,))
-    global e25500
-    e25500 = np.zeros((dim,))
-    global e26210
-    e26210 = np.zeros((dim,))
-    global e26340
-    e26340 = np.zeros((dim,))
-    global e26205
-    e26205 = np.zeros((dim,))
-    global e26320
-    e26320 = np.zeros((dim,))
-    global e87482
-    e87482 = np.zeros((dim,))
-    global e87487
-    e87487 = np.zeros((dim,))
-    global e87492
-    e87492 = np.zeros((dim,))
-    global e87497
-    e87497 = np.zeros((dim,))
-    global e87526
-    e87526 = np.zeros((dim,))
-    global e87522
-    e87522 = np.zeros((dim,))
-    global e87524
-    e87524 = np.zeros((dim,))
-    global e87528
-    e87528 = np.zeros((dim,))
-    global EDCRAGE
-    EDCRAGE = np.zeros((dim,))
-    global e07960
-    e07960 = np.zeros((dim,))
-    global e07700
-    e07700 = np.zeros((dim,))
-    global e07250
-    e07250 = np.zeros((dim,))
-    global t07950
-    t07950 = np.zeros((dim,))
-    global e82882
-    e82882 = np.zeros((dim,))
-    global e82880
-    e82880 = np.zeros((dim,))
-    global e07500
-    e07500 = np.zeros((dim,))
-    global e08000
-    e08000 = p08000
-    global e08001
-    e08001 = np.zeros((dim,))
-    global e07970
-    e07970 = np.zeros((dim,))
-    global e07980
-    e07980 = np.zeros((dim,))
-    global e10000
-    e10000 = np.zeros((dim,))
-    global e10100
-    e10100 = np.zeros((dim,))
-    global e10050
-    e10050 = np.zeros((dim,))
-    global e10075
-    e10075 = np.zeros((dim,))
-    global e09805
-    e09805 = np.zeros((dim,))
-    global e09710
-    e09710 = np.zeros((dim,))
-    global e09720
-    e09720 = np.zeros((dim,))
-    global e87900
-    e87900 = np.zeros((dim,))
-    global e87905
-    e87905 = np.zeros((dim,))
-    global e87681
-    e87681 = np.zeros((dim,))
-    global e87682
-    e87682 = np.zeros((dim,))
-    global e11451
-    e11451 = np.zeros((dim,))
-    global e11452
-    e11452 = np.zeros((dim,))
-    global e11601
-    e11601 = np.zeros((dim,))
-    global e11602
-    e11602 = np.zeros((dim,))
-    global e60300
-    e60300 = np.zeros((dim,))
-    global e60860
-    e60860 = np.zeros((dim,))
-    global e60100
-    e60100 = p60100
-    global e60840
-    e60840 = np.zeros((dim,))
-    global e60630
-    e60630 = np.zeros((dim,))
-    global e60550
-    e60550 = np.zeros((dim,))
-    global e60720
-    e60720 = np.zeros((dim,))
-    global e60430
-    e60430 = np.zeros((dim,))
-    global e60500
-    e60500 = np.zeros((dim,))
-    global e60340
-    e60340 = np.zeros((dim,))
-    global e60680
-    e60680 = np.zeros((dim,))
-    global e60600
-    e60600 = np.zeros((dim,))
-    global e60405
-    e60405 = np.zeros((dim,))
-    global e60440
-    e60440 = np.zeros((dim,))
-    global e60420
-    e60420 = np.zeros((dim,))
-    global e60410
-    e60410 = np.zeros((dim,))
-    global e61400
-    e61400 = np.zeros((dim,))
-    global e60660
-    e60660 = np.zeros((dim,))
-    global e60480
-    e60480 = np.zeros((dim,))
-    global e62000
-    e62000 = np.zeros((dim,))
-    global e60250
-    e60250 = np.zeros((dim,))
-    global e40223
-    e40223 = np.zeros((dim,))
-    global SOIYR
-    SOIYR = np.repeat(2008, dim)
-    global xtxcr1xtxcr10
-    xtxcr1xtxcr10 = np.zeros((dim,))
-    global _compitem 
-    _compitem = np.where(np.logical_and(e04470 > 0, e04470 < _stded[FLPDYR-2013, MARS-1]), 1, 0)
-
-
+from taxcalc.constants import *
+from taxcalc.puf import *
 
 def FilingStatus():
     # Filing based on marital status
@@ -713,7 +14,7 @@ def FilingStatus():
     global _txp
     _sep = np.where(np.logical_or(MARS == 3, MARS == 6), 2, 1)
     _txp = np.where(np.logical_or(MARS == 2, MARS == 5), 2, 1)
-
+    
     return DataFrame(data=np.column_stack((_sep, _txp)),
                      columns=['_sep', '_txp'])
 
@@ -729,7 +30,6 @@ def Adj():
               + e03220 + e03230
               + e03240
               + e03290)
-    x02900 = c02900
 
     return DataFrame(data=np.column_stack((_feided, c02900)),
                      columns=['_feided', 'c02900'])
@@ -835,7 +135,7 @@ def ItemDed(puf):
         c20400 = e20400
         c19200 = e19200
     else:
-        c02400 = e20550 + e20600 + e20950
+        c20400 = e20550 + e20600 + e20950
         c19200 = e19500 + e19570 + e19400 + e19550
     c20800 = np.maximum(0, c20400 - c20750)
 
@@ -853,16 +153,15 @@ def ItemDed(puf):
 # Gross Itemized Deductions #
     c21060 = (e20900 + c17000 + c18300 + c19200 + c19700
               + c20500 + c20800 + e21000 + e21010)
-
-# Itemized Deduction Limitation
+    
+    # Itemized Deduction Limitation
     _phase2 = np.where(MARS == 1, 200000, 0)
     _phase2 = np.where(MARS == 4, 250000, _phase2)
     _phase2 = np.where(np.logical_and(MARS != 1, MARS != 4), 300000, _phase2)
 
     _itemlimit = np.ones((dim,))
-    _c21060 = c21060
     _nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
-    _limitratio = _phase2 / _sep
+    _limitratio = _phase2/_sep 
 
     c04470 = c21060
 
@@ -909,7 +208,7 @@ def EI_FICA():
     outputs = (_sey, _fica, _setax, _seyoff, c11055, _earned)
     header = ['_sey', '_fica', '_setax', '_seyoff', 'c11055', '_earned']
 
-    return DataFrame(data=np.column_stack(outputs), columns=header)
+    return DataFrame(data=np.column_stack(outputs), columns=header), _earned
                      
 
 def StdDed():
@@ -923,6 +222,8 @@ def StdDed():
     c15100 = np.where(DSI == 1,
                       np.maximum(300 + _earned, _stded[FLPDYR - 2013, 6]), 0)
 
+    _compitem = np.where(np.logical_and(e04470 > 0, e04470 < _stded[FLPDYR-2013, MARS-1]), 1, 0)
+    
     c04100 = np.where(DSI == 1, np.minimum(_stded[FLPDYR - 2013, MARS - 1], c15100),
                       np.where(np.logical_or(_compitem == 1,
                                              np.logical_and(np.logical_and(3 <= MARS, MARS <= 6), MIdR == 1)),
@@ -1017,10 +318,7 @@ def TaxGains():
     c24517 = np.zeros((dim,))
     c24520 = np.zeros((dim,))
     c24530 = np.zeros((dim,))
-    c24553 = np.zeros((dim,))
     c24540 = np.zeros((dim,))
-    c24581 = np.zeros((dim,))
-    c24542 = np.zeros((dim,))
     _dwks16 = np.zeros((dim,))
 
     _hasgain = np.zeros((dim,))
@@ -1227,7 +525,6 @@ def TaxGains():
     _parents = e83200_0
     c05750 = np.maximum(c05100 + _parents + c05700, e74400)
     _taxbc = c05750
-    x05750 = c05750
 
     outputs = (e00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
                c24580, c24516, _dwks12, c24517, c24520, c24530, _dwks16,
@@ -1250,7 +547,7 @@ def TaxGains():
               '_taxbc']
 
     return DataFrame(data=np.column_stack(outputs),
-                     columns=header)
+                     columns=header) , c05750
 
 
 def MUI(c05750):
@@ -1258,10 +555,10 @@ def MUI(c05750):
     c05750 = c05750
     c05750 = np.where(c00100 > _thresx[MARS - 1], c05750 + 0.038 * np.minimum(
         e00300 + e00600 + np.maximum(0, c01000) + np.maximum(0, e02000), c00100 - _thresx[MARS - 1]), c05750)
-
+	
     return DataFrame(data=np.column_stack((c05750,)),
                      columns=['c05750'])
-
+    
 
 def AMTI(puf):
     global c05800
@@ -1400,8 +697,8 @@ def AMTI(puf):
               'c09600', '_othtax', 'c05800']
 
     return DataFrame(data=np.column_stack(outputs),
-                     columns=header)
-
+                     columns=header), c05800
+    
 
 def F2441(puf, _earned):
     global c32880
@@ -1432,7 +729,7 @@ def F2441(puf, _earned):
     outputs = (_earned, c32880, c32890, _ncu13, _dclim, c32800)
     header = ['_earned', 'c32880', 'c32890', '_ncu13', '_dclim', 'c32800']
 
-    return DataFrame(data=np.column_stack(outputs), columns=header)
+    return DataFrame(data=np.column_stack(outputs), columns=header), c32800
 
 
 def DepCareBen(c32800):
@@ -1493,7 +790,6 @@ def RateRed(c05800):
     # rate reduction credit for 2001 only, is this needed?
     c05800 = c05800
     c07970 = np.zeros((dim,))
-    x07970 = c07970
 
     c05800 = np.where(_fixup >= 3, c05800 + _othtax, c05800)
 
@@ -1647,7 +943,7 @@ def LLC(puf):
 
     outputs = (c87540, c87550, c87530)
     header = ['c87540', 'c87550', 'c87530']
-    return DataFrame(data=np.column_stack(outputs), columns=header)
+    return DataFrame(data=np.column_stack(outputs), columns=header), c87550
 
 
 def RefAmOpp():
@@ -1673,7 +969,6 @@ def RefAmOpp():
 
     outputs = (c87654, c87656, c87658, c87660, c87662,
                c87664, c87666, c10960, c87668, c87681)
-    output = np.column_stack(outputs)
     header = ['c87654', 'c87656', 'c87658', 'c87660', 'c87662', 'c87664',
               'c87666', 'c10960', 'c87668', 'c87681']
     return DataFrame(data=np.column_stack(outputs), columns=header)
@@ -1822,7 +1117,7 @@ def C1040(puf):
     outputs = (c07100, y07100, x07100, c08795, c08800, e08795, c09200)
     header = ['c07100', 'y07100', 'x07100', 'c08795', 'c08800', 'e08795',
               'c09200']
-    return DataFrame(data=np.column_stack(outputs), columns=header)
+    return DataFrame(data=np.column_stack(outputs), columns=header), _eitc
 
 
 def DEITC():
@@ -1865,7 +1160,7 @@ def DEITC():
     c59720 = np.where(np.logical_or(c08795 < 0, c59660 <= 0), 0, c59720)
 
     c07150 = c07100 + c59680
-    c07150 = c07150
+    c07150 = c07150 
     c10950 = np.zeros((dim,))
 
     outputs = (c59680, c59700, c59720, _comb, c07150, c10950)
@@ -1945,34 +1240,4 @@ def Taxer(inc_in, inc_out, MARS):
     return inc_out
 
 
-def Test(puf):
-    if puf == True:
-        Puf()
-    to_csv('FilingStatus.csv', FilingStatus())
-    to_csv('Adj.csv', Adj())
-    to_csv('CapGains.csv', CapGains())
-    to_csv('SSBenefits.csv', SSBenefits())
-    to_csv('AGI.csv', AGI())
-    to_csv('ItemDed.csv', ItemDed(puf))
-    to_csv('EIFICA.csv', EI_FICA())
-    to_csv('StdDed.csv', StdDed())
-    to_csv('XYZD.csv', XYZD())
-    to_csv('NonGain.csv', NonGain())
-    to_csv('Taxgains.csv', TaxGains())
-    to_csv('MUI.csv', MUI(c05750=c05750))
-    to_csv('AMTI.csv', AMTI(puf))
-    to_csv('F2441.csv', F2441(puf, _earned=_earned))
-    to_csv('DepCareBen.csv', DepCareBen(c32800=c32800))
-    to_csv('ExpEarnedInc.csv', ExpEarnedInc())
-    to_csv('RateRed.csv', RateRed(c05800=c05800))
-    to_csv('NumDep.csv', NumDep(puf))
-    to_csv('ChildTaxCredit.csv', ChildTaxCredit())
-    to_csv('AmOppCr.csv', AmOppCr())
-    to_csv('LLC.csv', LLC(puf))
-    to_csv('RefAmOpp.csv', RefAmOpp())
-    to_csv('NonEdCr.csv', NonEdCr(c87550=c87550))
-    to_csv('AddCTC.csv', AddCTC(puf))
-    to_csv('F5405.csv', F5405())
-    to_csv('C1040.csv', C1040(puf))
-    to_csv('DEITC.csv', DEITC())
-    to_csv('SOIT.csv', SOIT(_eitc=_eitc))
+
