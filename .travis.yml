@@ -11,10 +11,11 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update conda
   - conda create -n test-environment python=$TRAVIS_PYTHON_VERSION pytest numpy pandas
+  - conda install -n test-environment numba
   - source activate test-environment
   - python setup.py install
 
 
 # command to run tests, e.g. python setup.py test
 script:
-  - python -c "import taxcalc"
+  - python -c "import taxcalc"; py.test
