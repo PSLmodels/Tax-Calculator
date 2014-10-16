@@ -47,28 +47,3 @@ def dataframe_vectorize(dtype_args):
             return ans
         return wrapper
     return make_wrapper
-
-
-@extract_array
-@vectorize(['int32(int32)'])
-def fnvec_ifelse_df(inc_in):
-    ans = -42
-    if inc_in < 5:
-        ans = -42
-    if inc_in >= 5 and inc_in < 8:
-        ans = 42
-    if inc_in >= 8:
-        ans = 99
-    return ans
-
-
-@dataframe_vectorize(['int32(int32)'])
-def fnvec_ifelse_df2(inc_in):
-    ans = -42
-    if inc_in < 5:
-        ans = -42
-    if inc_in >= 5 and inc_in < 8:
-        ans = 42
-    if inc_in >= 8:
-        ans = 99
-    return ans
