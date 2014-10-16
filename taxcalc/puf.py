@@ -6,8 +6,7 @@ import pandas as pd
 import numpy as np
 import os.path
 
-cur_path = os.path.abspath(os.path.dirname(__file__))
-input_filename = os.path.join(cur_path, '..', 'puf2.csv')
+input_filename = os.path.join(os.getcwd(), 'puf2.csv')
 x = pd.read_csv(input_filename)
 
 dim = len(x)
