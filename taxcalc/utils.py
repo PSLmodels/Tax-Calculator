@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from numba import jit, vectorize, guvectorize
+from functools import wraps
 
 
 def extract_array(f):
@@ -23,6 +24,7 @@ def dataframe_guvectorize(dtype_args, dtype_sig):
     def make_wrapper(func):
         vecd_f = guvectorize(dtype_args, dtype_sig)(func)
 
+        @wraps(func)
         def wrapper(*args, **kwargs):
             # np_arrays = [getattr(args[0], i).values for i in theargs]
             arrays = [arg.values for arg in args]
@@ -40,6 +42,7 @@ def dataframe_vectorize(dtype_args):
     def make_wrapper(func):
         vecd_f = vectorize(dtype_args)(func)
 
+        @wraps(func)
         def wrapper(*args, **kwargs):
             # np_arrays = [getattr(args[0], i).values for i in theargs]
             arrays = [arg.values for arg in args]
