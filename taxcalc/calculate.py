@@ -8,12 +8,16 @@ output_filename = 'translationoutput.csv'
 from taxcalc.constants import *
 from taxcalc.puf import *
 
-def FilingStatus():
+def FilingStatus(puf):
     # Filing based on marital status
     global _sep
     global _txp
-    _sep = np.where(np.logical_or(MARS == 3, MARS == 6), 2, 1)
-    _txp = np.where(np.logical_or(MARS == 2, MARS == 5), 2, 1)
+    if puf.MARS in (3, 6):
+        _sep = 2
+        _txp = 2
+    else:
+        _sep = 1
+        _txp = 1
     
     return DataFrame(data=np.column_stack((_sep, _txp)),
                      columns=['_sep', '_txp'])
