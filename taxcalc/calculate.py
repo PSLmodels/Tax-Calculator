@@ -2,6 +2,7 @@ import pandas as pd
 from pandas import DataFrame
 import math
 import numpy as np
+from .utils import *
 
 from taxcalc.constants import *
 
@@ -65,19 +66,26 @@ def CapGains():
                      columns=['c23650', 'c01000', 'c02700', '_ymod1', '_ymod2',
                                '_ymod3', '_ymod'])
 
+#@dataframe_vectorize(['float64(float64,int64,int64,float64,int64,float64)'], nopython=True)
+@vectorize(['float64(float64,int64,int64,float64,int64,float64)'], nopython=True)
+def SSBenefits_vec(SSIND, MARS, e02500, _ymod, e02400, c02500):
+    if SSIND !=0 or MARS == 3 or MARS == 6:
+        c02500 = e02500
+    elif _ymod < _ssb50[MARS-1]:
+        c02500 = 0
+    elif _ymod >= _ssb50[MARS-1] and _ymod < _ssb85[MARS-1]:
+        c02500 = 0.5 * np.minimum(_ymod - _ssb50[MARS-1], e02400)
+    else:
+        c02500 = np.minimum(0.85 * (_ymod - _ssb85[MARS-1]) + 0.50 * np.minimum(e02400, _ssb85[MARS-1] - _ssb50[MARS-1]), 0.85 * e02400)
+    return c02500
 
 def SSBenefits():
     # Social Security Benefit Taxation
     global c02500
-    c02500 = np.where(np.logical_or(SSIND != 0, np.logical_or(MARS == 3, MARS == 6)), e02500,
-                      np.where(_ymod < _ssb50[MARS - 1], 0,
-                               np.where(np.logical_and(_ymod >= _ssb50[MARS - 1], _ymod < _ssb85[MARS - 1]), 0.5 * np.minimum(_ymod - _ssb50[MARS - 1], e02400),
-                                        np.minimum(0.85 * (_ymod - _ssb85[MARS - 1]) + 0.50 * np.minimum(e02400, _ssb85[MARS - 1] - _ssb50[MARS - 1]), 0.85 * e02400
-                                                   ))))
-
+    c02500 = np.zeros(len(e02500))
+    c02500 = SSBenefits_vec(SSIND, MARS, e02500, _ymod, e02400, c02500)
     return DataFrame(data=np.column_stack((c02500,e02500)),
                      columns=['c02500', 'e02500'])
-
 
 
 def AGI():
