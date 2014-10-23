@@ -3,10 +3,18 @@ from pandas import DataFrame
 import math
 import numpy as np
 
-output_filename = 'translationoutput.csv' 
-
 from taxcalc.constants import *
-from taxcalc.puf import *
+
+
+class Calculator(object):
+
+    def __init__(self, input_filename):
+        self.tax_data = pd.read_csv(input_filename)
+
+
+def update_global_namespace(calc):
+    globals().update(vars(calc))
+
 
 def FilingStatus():
     # Filing based on marital status
