@@ -17,15 +17,16 @@ def update_global_namespace(calc):
     globals().update(vars(calc))
 
 
-def FilingStatus():
+@vectorize(['int32(int32)'])
+def FilingStatus(MARS):
     # Filing based on marital status
-    global _sep
-    global _txp
-    _sep = np.where(np.logical_or(MARS == 3, MARS == 6), 2, 1)
-    _txp = np.where(np.logical_or(MARS == 2, MARS == 5), 2, 1)
+    if MARS in (3, 6):
+        sep = 2
+    else:
+        sep = 1
+
+    return sep
     
-    return DataFrame(data=np.column_stack((_sep, _txp)),
-                     columns=['_sep', '_txp'])
 
 def Adj():
     # Adjustments
