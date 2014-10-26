@@ -4,7 +4,7 @@ import math
 import numpy as np
 from .utils import *
 
-from taxcalc.constants import *
+from .constants import *
 
 
 class Calculator(object):
@@ -13,8 +13,12 @@ class Calculator(object):
         self.tax_data = pd.read_csv(input_filename)
 
 
-def update_global_namespace(calc):
+def update_globals_from_calculator(calc):
     globals().update(vars(calc))
+
+
+def update_calculator_from_module(calc, mod):
+    calc.__dict__.update(vars(mod))
 
 
 def FilingStatus():

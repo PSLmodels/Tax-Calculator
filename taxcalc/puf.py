@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 import os.path
 
-def prepare_calculator(calc):
+def set_input_data(calc):
     x = calc.tax_data
     dim = len(x)
     calc.dim = dim
