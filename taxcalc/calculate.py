@@ -26,23 +26,25 @@ def FilingStatus(MARS):
         sep = 1
 
     return sep
+
+
+@vectorize(['float64(float64, float64, float64'])
+def foreign_income_ded(e35300_0, e35600_0, e35910_0):
+    _feided = max(e35300_0, e35600_0 + e35910_0)  # Form 2555
     
+    return _feided
+
 
 def Adj():
     # Adjustments
-    global _feided
-    global c02900
-    _feided = np.maximum(e35300_0, e35600_0, + e35910_0)  # Form 2555
-
-    x03150 = e03150
-    c02900 = (x03150 + e03210 + e03600 + e03260 + e03270 + e03300
+    c02900 = (e03150 + e03210 + e03600 + e03260 + e03270 + e03300
               + e03400 + e03500 + e03280 + e03900 + e04000 + e03700
               + e03220 + e03230
               + e03240
               + e03290)
 
-    return DataFrame(data=np.column_stack((_feided, c02900)),
-                     columns=['_feided', 'c02900'])
+    return DataFrame(data=c02900, columns=['c02900'])
+
 
 def CapGains():
     # Capital Gains
