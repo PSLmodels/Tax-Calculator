@@ -25,7 +25,8 @@ def run(puf=True):
     to the DataFrame to be printed, one line saves the dataFrame to be printed 
     first, and then saves the variable to be used by a following function second. 
     """
-    calc = Calculator("puf2.csv")
+    tax_dta = pd.read_csv("puf2.csv")
+    calc = Calculator(tax_dta)
     set_input_data(calc)
     update_globals_from_calculator(calc)
     update_calculator_from_module(calc, constants)
