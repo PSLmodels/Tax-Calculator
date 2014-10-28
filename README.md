@@ -12,7 +12,7 @@ TK
 
 Tax Calculator Contributors
 =======
-The Tax Calculator is derived from taxcalc.sas, a program written by Dan Feenberg (NBER) and Inna Shapiro (NBER). Dan Feenberg, Sameer Sarkar, Matt Jensen, and Ilia Kurenkov have contributed to OSPC's Tax Calc. 
+The Tax Calculator is derived from taxcalc.sas, a program written by Dan Feenberg (NBER) and Inna Shapiro (NBER). Dan Feenberg, Sameer Sarkar, Matt Jensen, Ilia Kurenkov, and T.J. Alumbaugh have contributed to OSPC's Tax Calculator. 
 
 
 About OSPC
