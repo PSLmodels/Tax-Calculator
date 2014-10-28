@@ -10,7 +10,7 @@ from taxcalc import *
 
 
 def test_make_Calculator():
-    tax_dta = pd.read_csv("../../puf2.csv")
+    tax_dta = pd.read_csv(os.path.join(cur_path, "../../puf2.csv"))
     calc = Calculator(tax_dta)
 
 
