@@ -4,17 +4,30 @@ import math
 import numpy as np
 from .utils import *
 
-from taxcalc.constants import *
+from .constants import *
 
 
 class Calculator(object):
 
-    def __init__(self, input_filename):
-        self.tax_data = pd.read_csv(input_filename)
+    def __init__(self, data):
+        self.tax_data = data
 
 
-def update_global_namespace(calc):
+def update_globals_from_calculator(calc):
     globals().update(vars(calc))
+
+
+def update_calculator_from_module(calc, mod):
+    calc_vals_overwrite = dict(list(vars(mod).items()) +
+                               list(calc.__dict__.items()))
+    calc.__dict__.update(calc_vals_overwrite)
+
+
+def calculator(data, **kwargs):
+    calc = Calculator(data)
+    if kwargs:
+        calc.__dict__.update(kwargs)
+    return calc
 
 
 def FilingStatus():
