@@ -4,47 +4,57 @@ import math
 import numpy as np
 from .utils import *
 
-from taxcalc.constants import *
+from .constants import *
 
 
 class Calculator(object):
 
-    def __init__(self, input_filename):
-        self.tax_data = pd.read_csv(input_filename)
+    def __init__(self, data):
+        self.tax_data = data
 
 
-def update_global_namespace(calc):
+def update_globals_from_calculator(calc):
     globals().update(vars(calc))
 
 
-@vectorize(['int32(int32)'])
-def FilingStatus(MARS):
+def update_calculator_from_module(calc, mod):
+    calc_vals_overwrite = dict(list(vars(mod).items()) +
+                               list(calc.__dict__.items()))
+    calc.__dict__.update(calc_vals_overwrite)
+
+
+def calculator(data, **kwargs):
+    calc = Calculator(data)
+    if kwargs:
+        calc.__dict__.update(kwargs)
+    return calc
+
+
+def FilingStatus():
     # Filing based on marital status
-    if MARS in (3, 6):
-        sep = 2
-    else:
-        sep = 1
-
-    return sep
-
-
-@vectorize(['float64(float64, float64, float64'])
-def foreign_income_ded(e35300_0, e35600_0, e35910_0):
-    _feided = max(e35300_0, e35600_0 + e35910_0)  # Form 2555
+    global _sep
+    global _txp
+    _sep = np.where(np.logical_or(MARS == 3, MARS == 6), 2, 1)
+    _txp = np.where(np.logical_or(MARS == 2, MARS == 5), 2, 1)
     
-    return _feided
-
+    return DataFrame(data=np.column_stack((_sep, _txp)),
+                     columns=['_sep', '_txp'])
 
 def Adj():
     # Adjustments
-    c02900 = (e03150 + e03210 + e03600 + e03260 + e03270 + e03300
+    global _feided
+    global c02900
+    _feided = np.maximum(e35300_0, e35600_0, + e35910_0)  # Form 2555
+
+    x03150 = e03150
+    c02900 = (x03150 + e03210 + e03600 + e03260 + e03270 + e03300
               + e03400 + e03500 + e03280 + e03900 + e04000 + e03700
               + e03220 + e03230
               + e03240
               + e03290)
 
-    return DataFrame(data=c02900, columns=['c02900'])
-
+    return DataFrame(data=np.column_stack((_feided, c02900)),
+                     columns=['_feided', 'c02900'])
 
 def CapGains():
     # Capital Gains

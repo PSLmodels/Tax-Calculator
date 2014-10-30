@@ -5,6 +5,8 @@ Testing file for calculate.py
 from pandas import DataFrame
 from taxcalc.calculate import *
 from taxcalc.puf import *
+from taxcalc.constants import *
+import taxcalc.constants as constants
 
 
 def to_csv(fname, df):
@@ -23,9 +25,11 @@ def run(puf=True):
     to the DataFrame to be printed, one line saves the dataFrame to be printed 
     first, and then saves the variable to be used by a following function second. 
     """
-    calc = Calculator("puf2.csv")
-    prepare_calculator(calc)
-    update_global_namespace(calc)
+    tax_dta = pd.read_csv("puf2.csv")
+    calc = Calculator(tax_dta)
+    set_input_data(calc)
+    update_globals_from_calculator(calc)
+    update_calculator_from_module(calc, constants)
 
     to_csv('FilingStatus.csv', FilingStatus())
     to_csv('Adj.csv', Adj())
