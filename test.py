@@ -111,6 +111,7 @@ def run(puf=True):
     calculated = concat([calculated, Adj()], axis=1)
     calculated = concat([calculated, CapGains()], axis=1)
     calculated = concat([calculated, SSBenefits()], axis=1)
+    calculated = concat([calculated, AGI()], axis=1)
     calculated = concat([calculated, ItemDed(puf)], axis=1)
     df_EI_FICA, _earned = EI_FICA()
     calculated = concat([calculated, df_EI_FICA], axis=1)
