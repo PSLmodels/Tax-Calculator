@@ -6,11 +6,13 @@ from .utils import *
 
 from .constants import *
 
+DEFAULT_YR = 2013
 
 class Calculator(object):
 
-    def __init__(self, data):
+    def __init__(self, data, default_year=2013):
         self.tax_data = data
+        self.DEFAULT_YR = default_year
 
 
 def update_globals_from_calculator(calc):
@@ -65,7 +67,7 @@ def CapGains():
     global c01000
     c23650 = e23250 + e22250 + e23660
     c01000 = np.maximum(-3000 / _sep, c23650)
-    c02700 = np.minimum(_feided, _feimax[2013 - FLPDYR] * f2555)
+    c02700 = np.minimum(_feided, _feimax[DEFAULT_YR - FLPDYR] * f2555)
     _ymod1 = (e00200 + e00300 + e00600 + e00700 + e00800 + e00900 + c01000
               + e01100 + e01200 + e01400 + e01700 +
               e02000 + e02100 + e02300 + e02600
@@ -116,12 +118,12 @@ def AGI():
     _ywossbe = e00100 - e02500
     _ywossbc = c00100 - c02500
 
-    _prexmp = XTOT * _amex[FLPDYR - 2013]
+    _prexmp = XTOT * _amex[FLPDYR - DEFAULT_YR]
     # Personal Exemptions (_phaseout smoothed)
 
     _dispc = np.zeros((dim,))
     _dispc = np.minimum(1, np.maximum(
-        0, 0.02 * (_posagi - _exmpb[FLPDYR - 2013, MARS - 1]) / (2500 / _sep)))
+        0, 0.02 * (_posagi - _exmpb[FLPDYR - DEFAULT_YR, MARS - 1]) / (2500 / _sep)))
 
     c04600 = _prexmp * (1 - _dispc)
 
@@ -225,7 +227,7 @@ def EI_FICA():
     # Earned Income and FICA #
     global _earned
     _sey = e00900 + e02100
-    _fica = np.maximum(0, .153 * np.minimum(_ssmax[FLPDYR - 2013],
+    _fica = np.maximum(0, .153 * np.minimum(_ssmax[FLPDYR - DEFAULT_YR],
                                             e00200 + np.maximum(0, _sey) * 0.9235))
     _setax = np.maximum(0, _fica - 0.153 * e00200)
     _seyoff = np.where(_setax <= 14204, 0.5751 * _setax, 0.5 * _setax + 10067)
@@ -249,14 +251,14 @@ def StdDed():
     global _standard
 
     c15100 = np.where(DSI == 1,
-                      np.maximum(300 + _earned, _stded[FLPDYR - 2013, 6]), 0)
+                      np.maximum(300 + _earned, _stded[FLPDYR - DEFAULT_YR, 6]), 0)
 
-    _compitem = np.where(np.logical_and(e04470 > 0, e04470 < _stded[FLPDYR-2013, MARS-1]), 1, 0)
+    _compitem = np.where(np.logical_and(e04470 > 0, e04470 < _stded[FLPDYR-DEFAULT_YR, MARS-1]), 1, 0)
     
-    c04100 = np.where(DSI == 1, np.minimum(_stded[FLPDYR - 2013, MARS - 1], c15100),
+    c04100 = np.where(DSI == 1, np.minimum(_stded[FLPDYR - DEFAULT_YR, MARS - 1], c15100),
                       np.where(np.logical_or(_compitem == 1,
                                              np.logical_and(np.logical_and(3 <= MARS, MARS <= 6), MIdR == 1)),
-                               0, _stded[FLPDYR - 2013, MARS - 1]))
+                               0, _stded[FLPDYR - DEFAULT_YR, MARS - 1]))
 
     c04100 = c04100 + e15360
     _numextra = AGEP + AGES + PBI + SBI
@@ -265,7 +267,7 @@ def StdDed():
                                       MARS == 3), 2, 1)
     c04200 = np.where(np.logical_and(_exact == 1,
                                      np.logical_or(MARS == 3, MARS == 5)),
-                      e04200, _numextra * _aged[_txpyers - 1, FLPDYR - 2013])
+                      e04200, _numextra * _aged[_txpyers - 1, FLPDYR - DEFAULT_YR])
 
     c15200 = c04200
 
@@ -390,7 +392,7 @@ def TaxGains():
     # tentative TI less schD gain
 
     c24530 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.minimum(
-        _brk2[FLPDYR - 2013, MARS - 1], _taxinc), 0)
+        _brk2[FLPDYR - DEFAULT_YR, MARS - 1], _taxinc), 0)
     # minimum TI for bracket
 
     _dwks16 = np.where(
@@ -428,9 +430,9 @@ def TaxGains():
         np.logical_and(_taxinc > 0, _hasgain == 1), 0.28 * c24550, 0)
     _addtax = np.zeros((dim,))
     _addtax = np.where(np.logical_and(_taxinc > 0, np.logical_and(
-        _hasgain == 1, c24540 > _brk6[FLPDYR - 2013, MARS - 1])), 0.05 * c24517, _addtax)
+        _hasgain == 1, c24540 > _brk6[FLPDYR - DEFAULT_YR, MARS - 1])), 0.05 * c24517, _addtax)
     _addtax = np.where(np.logical_and(np.logical_and(_taxinc > 0, _hasgain == 1), np.logical_and(c24540 <= _brk6[
-                       FLPDYR - 2013, MARS - 1], _taxinc > _brk6[FLPDYR - 2013, MARS - 1])), 0.05 * np.minimum(c04800 - _brk6[FLPDYR - 2013, MARS - 1], c24517), _addtax)
+                       FLPDYR - DEFAULT_YR, MARS - 1], _taxinc > _brk6[FLPDYR - DEFAULT_YR, MARS - 1])), 0.05 * np.minimum(c04800 - _brk6[FLPDYR - DEFAULT_YR, MARS - 1], c24517), _addtax)
 
     c24560 = np.zeros((dim,))
     c24560 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), Taxer(
@@ -632,13 +634,13 @@ def AMTI(puf):
 
     x62100 = c62100
 
-    _amtsepadd = np.where(np.logical_and(c62100 > _amtsep[FLPDYR - 2013], np.logical_or(MARS == 3, MARS == 6)), np.maximum(
-        0, np.minimum(_almsep[FLPDYR - 2013], 0.25 * (c62100 - _amtsep[FLPDYR - 2013]))), 0)
+    _amtsepadd = np.where(np.logical_and(c62100 > _amtsep[FLPDYR - DEFAULT_YR], np.logical_or(MARS == 3, MARS == 6)), np.maximum(
+        0, np.minimum(_almsep[FLPDYR - DEFAULT_YR], 0.25 * (c62100 - _amtsep[FLPDYR - DEFAULT_YR]))), 0)
     c62100 = np.where(np.logical_and(c62100 > _amtsep[
-                      FLPDYR - 2013], np.logical_or(MARS == 3, MARS == 6)), c62100 + _amtsepadd, c62100)
+                      FLPDYR - DEFAULT_YR], np.logical_or(MARS == 3, MARS == 6)), c62100 + _amtsepadd, c62100)
 
     c62600 = np.maximum(0, _amtex[
-                        FLPDYR - 2013, MARS - 1] - 0.25 * np.maximum(0, c62100 - _amtys[MARS - 1]))
+                        FLPDYR - DEFAULT_YR, MARS - 1] - 0.25 * np.maximum(0, c62100 - _amtys[MARS - 1]))
 
     _agep = np.where(
         DOBYR > 0, np.ceil((12 * (FLPDYR - DOBYR) - DOBMD / 100) / 12), 0)
@@ -649,7 +651,7 @@ def AMTI(puf):
         _cmp == 1, np.logical_and(f6251 == 1, _exact == 1)), e62600, c62600)
 
     c62600 = np.where(np.logical_and(np.logical_and(_cmp == 1, _exact == 0), np.logical_and(
-        _agep < _amtage[FLPDYR - 2013], _agep != 0)), np.minimum(c62600, _earned + _almdep[FLPDYR - 2013]), c62600)
+        _agep < _amtage[FLPDYR - DEFAULT_YR], _agep != 0)), np.minimum(c62600, _earned + _almdep[FLPDYR - DEFAULT_YR]), c62600)
 
     c62700 = np.maximum(0, c62100 - c62600)
 
@@ -659,10 +661,10 @@ def AMTI(puf):
     _alminc = np.where(
         c02700 > 0, np.maximum(0, c62100 - c62600 + c02700), _alminc)
     _amtfei = np.where(c02700 > 0, 0.26 * c02700 + 0.02 *
-                       np.maximum(0, c02700 - _almsp[FLPDYR - 2013] / _sep), _amtfei)
+                       np.maximum(0, c02700 - _almsp[FLPDYR - DEFAULT_YR] / _sep), _amtfei)
 
     c62780 = 0.26 * _alminc + 0.02 * \
-        np.maximum(0, _alminc - _almsp[FLPDYR - 2013] / _sep) - _amtfei
+        np.maximum(0, _alminc - _almsp[FLPDYR - DEFAULT_YR] / _sep) - _amtfei
 
     c62900 = np.where(f6251 != 0, e62900, e07300)
     c63000 = c62780 - c62900
@@ -673,28 +675,28 @@ def AMTI(puf):
     _ngamty = np.maximum(0, _alminc - c62740)
 
     c62745 = 0.26 * _ngamty + 0.02 * \
-        np.maximum(0, _ngamty - _almsp[FLPDYR - 2013] / _sep)
-    y62745 = _almsp[FLPDYR - 2013] / _sep
+        np.maximum(0, _ngamty - _almsp[FLPDYR - DEFAULT_YR] / _sep)
+    y62745 = _almsp[FLPDYR - DEFAULT_YR] / _sep
     _tamt2 = np.zeros((dim,))
 
     _amt5pc = np.zeros((dim,))
     _amt15pc = np.minimum(_alminc, c62720) - _amt5pc - np.minimum(np.maximum(
-        0, _brk2[FLPDYR - 2013, MARS - 1] - c24520), np.minimum(_alminc, c62720))
+        0, _brk2[FLPDYR - DEFAULT_YR, MARS - 1] - c24520), np.minimum(_alminc, c62720))
     _amt15pc = np.where(c04800 == 0, np.maximum(
-        0, np.minimum(_alminc, c62720) - _brk2[FLPDYR - 2013, MARS - 1]), _amt15pc)
+        0, np.minimum(_alminc, c62720) - _brk2[FLPDYR - DEFAULT_YR, MARS - 1]), _amt15pc)
     _amt25pc = np.minimum(_alminc, c62740) - np.minimum(_alminc, c62720)
 
     _amt25pc = np.where(c62730 == 0, 0, _amt25pc)
-    c62747 = _cgrate1[FLPDYR - 2013] * _amt5pc
-    c62755 = _cgrate2[FLPDYR - 2013] * _amt15pc
+    c62747 = _cgrate1[FLPDYR - DEFAULT_YR] * _amt5pc
+    c62755 = _cgrate2[FLPDYR - DEFAULT_YR] * _amt15pc
     c62770 = 0.25 * _amt25pc
     _tamt2 = c62747 + c62755 + c62770
 
     _amt = np.zeros((dim,))
     _amt = np.where(_ngamty > _brk6[
-                    FLPDYR - 2013, MARS - 1], 0.05 * np.minimum(_alminc, c62740), _amt)
-    _amt = np.where(np.logical_and(_ngamty <= _brk6[FLPDYR - 2013, MARS - 1], _alminc > _brk6[
-                    FLPDYR - 2013, MARS - 1]), 0.05 * np.minimum(_alminc - _brk6[FLPDYR - 2013, MARS - 1], c62740), _amt)
+                    FLPDYR - DEFAULT_YR, MARS - 1], 0.05 * np.minimum(_alminc, c62740), _amt)
+    _amt = np.where(np.logical_and(_ngamty <= _brk6[FLPDYR - DEFAULT_YR, MARS - 1], _alminc > _brk6[
+                    FLPDYR - DEFAULT_YR, MARS - 1]), 0.05 * np.minimum(_alminc - _brk6[FLPDYR - DEFAULT_YR, MARS - 1], c62740), _amt)
 
     _tamt2 = _tamt2 + _amt
 
@@ -752,7 +754,7 @@ def F2441(puf, _earned):
     _ncu13 = np.where(
         np.logical_and(puf == False, CDOB2 > 0), _ncu13 + 1, _ncu13)
 
-    _dclim = np.minimum(_ncu13, 2) * _dcmax[FLPDYR - 2013]
+    _dclim = np.minimum(_ncu13, 2) * _dcmax[FLPDYR - DEFAULT_YR]
     c32800 = np.minimum(np.maximum(e32800, e32750 + e32775), _dclim)
 
     outputs = (_earned, c32880, c32890, _ncu13, _dclim, c32800)
@@ -799,11 +801,11 @@ def ExpEarnedInc():
     # Expenses limited to earned income
 
     _tratio = np.where(_exact == 1, np.ceil(
-        np.maximum((c00100 - _agcmax[FLPDYR - 2013]) / 2000, 0)), 0)
+        np.maximum((c00100 - _agcmax[FLPDYR - DEFAULT_YR]) / 2000, 0)), 0)
     c33200 = np.where(_exact == 1, c33000 * 0.01 * np.maximum(20,
-                                                              _pcmax[FLPDYR - 2013] - np.minimum(15, _tratio)), 0)
+                                                              _pcmax[FLPDYR - DEFAULT_YR] - np.minimum(15, _tratio)), 0)
     c33200 = np.where(_exact != 1, c33000 * 0.01 * np.maximum(20, _pcmax[
-                      FLPDYR - 2013] - np.maximum((c00100 - _agcmax[FLPDYR - 2013]) / 2000, 0)), c33200)
+                      FLPDYR - DEFAULT_YR] - np.maximum((c00100 - _agcmax[FLPDYR - DEFAULT_YR]) / 2000, 0)), c33200)
 
     c33400 = np.minimum(np.maximum(0, c05800 - e07300), c33200)
     # amount of the credit
@@ -848,20 +850,20 @@ def NumDep(puf):
     c59660 = np.zeros((dim,))
 
     _val_ymax = np.where(np.logical_and(MARS == 2, _modagi > 0), _ymax[
-                         _ieic, FLPDYR - 2013] + _joint[FLPDYR - 2013], 0)
+                         _ieic, FLPDYR - DEFAULT_YR] + _joint[FLPDYR - DEFAULT_YR], 0)
     _val_ymax = np.where(np.logical_and(_modagi > 0, np.logical_or(MARS == 1, np.logical_or(
-        MARS == 4, np.logical_or(MARS == 5, MARS == 7)))), _ymax[_ieic, FLPDYR - 2013], _val_ymax)
+        MARS == 4, np.logical_or(MARS == 5, MARS == 7)))), _ymax[_ieic, FLPDYR - DEFAULT_YR], _val_ymax)
     c59660 = np.where(np.logical_and(_modagi > 0, np.logical_or(MARS == 1, np.logical_or(MARS == 4, np.logical_or(MARS == 5, np.logical_or(
-        MARS == 2, MARS == 7))))), np.minimum(_rtbase[_ieic, FLPDYR - 2013] * c59560, _crmax[_ieic, FLPDYR - 2013]), c59660)
+        MARS == 2, MARS == 7))))), np.minimum(_rtbase[_ieic, FLPDYR - DEFAULT_YR] * c59560, _crmax[_ieic, FLPDYR - DEFAULT_YR]), c59660)
     _preeitc = np.where(np.logical_and(_modagi > 0, np.logical_or(MARS == 1, np.logical_or(
         MARS == 4, np.logical_or(MARS == 5, np.logical_or(MARS == 2, MARS == 7))))), c59660, 0)
 
     c59660 = np.where(np.logical_and(np.logical_and(MARS != 3, MARS != 6), np.logical_and(_modagi > 0, np.logical_or(
-        _modagi > _val_ymax, c59560 > _val_ymax))), np.maximum(0, c59660 - _rtless[_ieic, FLPDYR - 2013] * (np.maximum(_modagi, c59560) - _val_ymax)), c59660)
+        _modagi > _val_ymax, c59560 > _val_ymax))), np.maximum(0, c59660 - _rtless[_ieic, FLPDYR - DEFAULT_YR] * (np.maximum(_modagi, c59560) - _val_ymax)), c59660)
     _val_rtbase = np.where(np.logical_and(np.logical_and(
-        MARS != 3, MARS != 6), _modagi > 0), _rtbase[_ieic, FLPDYR - 2013] * 100, 0)
+        MARS != 3, MARS != 6), _modagi > 0), _rtbase[_ieic, FLPDYR - DEFAULT_YR] * 100, 0)
     _val_rtless = np.where(np.logical_and(np.logical_and(
-        MARS != 3, MARS != 6), _modagi > 0), _rtless[_ieic, FLPDYR - 2013] * 100, 0)
+        MARS != 3, MARS != 6), _modagi > 0), _rtless[_ieic, FLPDYR - DEFAULT_YR] * 100, 0)
 
     _dy = np.where(np.logical_and(np.logical_and(MARS != 3, MARS != 6), _modagi > 0), e00400 + e83080 + e00300 + e00600
                    +
@@ -871,7 +873,7 @@ def NumDep(puf):
                    + np.maximum(0, e26210 + e26340 + e27200 - np.absolute(e26205) - np.absolute(e26320)), 0)
 
     c59660 = np.where(np.logical_and(np.logical_and(MARS != 3, MARS != 6), np.logical_and(
-        _modagi > 0, _dy > _dylim[FLPDYR - 2013])), 0, c59660)
+        _modagi > 0, _dy > _dylim[FLPDYR - DEFAULT_YR])), 0, c59660)
 
     c59660 = np.where(np.logical_and(np.logical_and(_cmp == 1, _ieic == 0), np.logical_and(np.logical_and(
         SOIYR - DOBYR >= 25, SOIYR - DOBYR < 65), np.logical_and(SOIYR - SDOBYR >= 25, SOIYR - SDOBYR < 65))), 0, c59660)
@@ -905,11 +907,11 @@ def ChildTaxCredit():
     _nctcr = np.zeros((dim,))
     _nctcr = np.where(SOIYR >= 2002, n24, _nctcr)
     _nctcr = np.where(
-        np.logical_and(SOIYR < 2002, _chmax[FLPDYR - 2013] > 0), xtxcr1xtxcr10, _nctcr)
+        np.logical_and(SOIYR < 2002, _chmax[FLPDYR - DEFAULT_YR] > 0), xtxcr1xtxcr10, _nctcr)
     _nctcr = np.where(
-        np.logical_and(SOIYR < 2002, _chmax[FLPDYR - 2013] <= 0), XOCAH, _nctcr)
+        np.logical_and(SOIYR < 2002, _chmax[FLPDYR - DEFAULT_YR] <= 0), XOCAH, _nctcr)
 
-    _precrd = _chmax[FLPDYR - 2013] * _nctcr
+    _precrd = _chmax[FLPDYR - DEFAULT_YR] * _nctcr
     _ctcagi = c00100 + _feided
 
     _precrd = np.where(np.logical_and(_ctcagi > _cphase[MARS - 1], _exact == 1), np.maximum(
@@ -962,12 +964,12 @@ def LLC(puf):
     global c87550
 
     c87540 = np.where(
-        puf == True, np.minimum(e87530, _learn[FLPDYR - 2013]), 0)
+        puf == True, np.minimum(e87530, _learn[FLPDYR - DEFAULT_YR]), 0)
     c87550 = np.where(puf == True, 0.2 * c87540, 0)
 
     c87530 = np.where(puf == False, e87526 + e87522 + e87524 + e87528, 0)
     c87540 = np.where(
-        puf == False, np.minimum(c87530, _learn[FLPDYR - 2013]), c87540)
+        puf == False, np.minimum(c87530, _learn[FLPDYR - DEFAULT_YR]), c87540)
     c87550 = np.where(puf == False, 0.2 * c87540, c87550)
 
     outputs = (c87540, c87550, c87530)
@@ -1012,7 +1014,7 @@ def NonEdCr(c87550):
 
     # Phase Out
     c87570 = np.where(
-        MARS == 2, _edphhm[FLPDYR - 2013] * 1000, _edphhs[FLPDYR - 2013] * 1000)
+        MARS == 2, _edphhm[FLPDYR - DEFAULT_YR] * 1000, _edphhs[FLPDYR - DEFAULT_YR] * 1000)
     c87580 = c00100
     c87590 = np.maximum(0, c87570 - c87580)
     c87600 = 10000 * _num
@@ -1054,12 +1056,12 @@ def AddCTC(puf):
     c82880 = np.where(np.logical_and(_nctcr > 0, _exact == 1), e82880, c82880)
     h82880 = np.where(_nctcr > 0, c82880, 0)
     c82885 = np.where(
-        _nctcr > 0, np.maximum(0, c82880 - _ealim[FLPDYR - 2013]), 0)
-    c82890 = np.where(_nctcr > 0, _adctcrt[FLPDYR - 2013] * c82885, 0)
+        _nctcr > 0, np.maximum(0, c82880 - _ealim[FLPDYR - DEFAULT_YR]), 0)
+    c82890 = np.where(_nctcr > 0, _adctcrt[FLPDYR - DEFAULT_YR] * c82885, 0)
 
     # Part II of 2005 form 8812
     c82900 = np.where(np.logical_and(_nctcr > 2, c82890 < c82935),
-                      0.0765 * np.minimum(_ssmax[FLPDYR - 2013], c82880), 0)
+                      0.0765 * np.minimum(_ssmax[FLPDYR - DEFAULT_YR], c82880), 0)
     c82905 = np.where(
         np.logical_and(_nctcr > 2, c82890 < c82935), e03260 + e09800, 0)
     c82910 = np.where(
@@ -1248,23 +1250,23 @@ def Taxer(inc_in, inc_out, MARS):
 
     _a6 = inc_in
 
-    inc_out = (_rt1[FLPDYR - 2013] * np.minimum(_a6, _brk1[FLPDYR - 2013, MARS - 1])
-               + _rt2[FLPDYR - 2013]
-               * np.minimum(_brk2[FLPDYR - 2013, MARS - 1] - _brk1[FLPDYR - 2013, MARS - 1],
-                            np.maximum(0., _a6 - _brk1[FLPDYR - 2013, MARS - 1]))
-               + _rt3[FLPDYR - 2013]
-               * np.minimum(_brk3[FLPDYR - 2013, MARS - 1] - _brk2[FLPDYR - 2013, MARS - 1],
-                            np.maximum(0., _a6 - _brk2[FLPDYR - 2013, MARS - 1]))
-               + _rt4[FLPDYR - 2013]
-               * np.minimum(_brk4[FLPDYR - 2013, MARS - 1] - _brk3[FLPDYR - 2013, MARS - 1],
-                            np.maximum(0., _a6 - _brk3[FLPDYR - 2013, MARS - 1]))
-               + _rt5[FLPDYR - 2013]
-               * np.minimum(_brk5[FLPDYR - 2013, MARS - 1] - _brk4[FLPDYR - 2013, MARS - 1],
-                            np.maximum(0., _a6 - _brk4[FLPDYR - 2013, MARS - 1]))
-               + _rt6[FLPDYR - 2013]
-               * np.minimum(_brk6[FLPDYR - 2013, MARS - 1] - _brk5[FLPDYR - 2013, MARS - 1],
-                            np.maximum(0., _a6 - _brk5[FLPDYR - 2013, MARS - 1]))
-               + _rt7[FLPDYR - 2013] * np.maximum(0., _a6 - _brk6[FLPDYR - 2013, MARS - 1]))
+    inc_out = (_rt1[FLPDYR - DEFAULT_YR] * np.minimum(_a6, _brk1[FLPDYR - DEFAULT_YR, MARS - 1])
+               + _rt2[FLPDYR - DEFAULT_YR]
+               * np.minimum(_brk2[FLPDYR - DEFAULT_YR, MARS - 1] - _brk1[FLPDYR - DEFAULT_YR, MARS - 1],
+                            np.maximum(0., _a6 - _brk1[FLPDYR - DEFAULT_YR, MARS - 1]))
+               + _rt3[FLPDYR - DEFAULT_YR]
+               * np.minimum(_brk3[FLPDYR - DEFAULT_YR, MARS - 1] - _brk2[FLPDYR - DEFAULT_YR, MARS - 1],
+                            np.maximum(0., _a6 - _brk2[FLPDYR - DEFAULT_YR, MARS - 1]))
+               + _rt4[FLPDYR - DEFAULT_YR]
+               * np.minimum(_brk4[FLPDYR - DEFAULT_YR, MARS - 1] - _brk3[FLPDYR - DEFAULT_YR, MARS - 1],
+                            np.maximum(0., _a6 - _brk3[FLPDYR - DEFAULT_YR, MARS - 1]))
+               + _rt5[FLPDYR - DEFAULT_YR]
+               * np.minimum(_brk5[FLPDYR - DEFAULT_YR, MARS - 1] - _brk4[FLPDYR - DEFAULT_YR, MARS - 1],
+                            np.maximum(0., _a6 - _brk4[FLPDYR - DEFAULT_YR, MARS - 1]))
+               + _rt6[FLPDYR - DEFAULT_YR]
+               * np.minimum(_brk6[FLPDYR - DEFAULT_YR, MARS - 1] - _brk5[FLPDYR - DEFAULT_YR, MARS - 1],
+                            np.maximum(0., _a6 - _brk5[FLPDYR - DEFAULT_YR, MARS - 1]))
+               + _rt7[FLPDYR - DEFAULT_YR] * np.maximum(0., _a6 - _brk6[FLPDYR - DEFAULT_YR, MARS - 1]))
 
     return inc_out
 
