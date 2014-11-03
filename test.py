@@ -133,7 +133,6 @@ def run(puf=True):
     calculated = concat([calculated, AmOppCr()], axis=1)
     df_LLC, c87550 = LLC(puf)
     calculated = concat([calculated, df_LLC], axis=1)
-    to_csv('LLC.csv', df_LLC)
     calculated = concat([calculated, RefAmOpp()], axis=1)
     calculated = concat([calculated, NonEdCr(c87550)], axis=1)
     calculated = concat([calculated, AddCTC(puf)], axis=1)
