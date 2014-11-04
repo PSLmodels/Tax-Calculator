@@ -80,3 +80,17 @@ def test_with_dataframe_vec():
     assert fnvec_ifelse_df2.__name__ == 'fnvec_ifelse_df2'
     assert fnvec_ifelse_df2.__doc__ == 'Docstring'
     assert np.all(np.array([-42, 42, 99], dtype='i4') == z)
+
+
+@dataframe_wrap_guvectorize(["void(int32[:],int32[:])"], "(x) -> (x)")
+def fnvec_copy_dfw(x, y):
+    for i in range(x.shape[0]):
+        y[i] = x[i]
+
+
+def test_with_dataframe_wrap_guvectorize():
+    x = np.array([4, 5, 9], dtype='i4')
+    y = np.array([0, 0, 0], dtype='i4')
+    df = pd.DataFrame(data=np.column_stack((x, y)), columns=['x', 'y'])
+    fnvec_copy_dfw(df)
+    assert(np.all(df.x == df.y))
