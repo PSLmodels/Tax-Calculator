@@ -10,6 +10,7 @@ from taxcalc import *
 
 
 all_cols = set()
+tax_dta = pd.read_csv(os.path.join(cur_path, "../../tax_all91_puf.gz"), compression='gzip')
 
 def add_df(alldfs, df):
     for col in df.columns:
@@ -19,7 +20,6 @@ def add_df(alldfs, df):
 
 def run(puf=True):
     cur_path = os.path.abspath(os.path.dirname(__file__))
-    tax_dta = pd.read_csv(os.path.join(cur_path, "../../tax_all91_puf.gz"), compression='gzip')
     calc = Calculator(tax_dta, default_year=91)
     set_input_data(calc)
     update_globals_from_calculator(calc)
@@ -86,13 +86,11 @@ def test_sequence():
     run()
 
 def test_make_Calculator():
-    tax_dta = pd.read_csv(os.path.join(cur_path, "../../puf2.csv"))
     calc = Calculator(tax_dta)
 
 
 def test_make_Calculator_mods():
     cur_path = os.path.abspath(os.path.dirname(__file__))
-    tax_dta = pd.read_csv(os.path.join(cur_path, "../../puf2.csv"))
     calc1 = calculator(tax_dta)
     calc2 = calculator(tax_dta, _amex=np.array([4000]))
     update_calculator_from_module(calc2, constants)
