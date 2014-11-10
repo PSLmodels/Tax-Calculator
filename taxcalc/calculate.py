@@ -32,15 +32,22 @@ def calculator(data, **kwargs):
     return calc
 
 
+@vectorize('int64(int64)', nopython=True)
+def filing_status_sep(MARS):
+    if MARS == 3 or MARS == 6:
+        return 2
+    return 1
+
+
 def FilingStatus():
     # Filing based on marital status
+    # TODO: get rid of _txp in tests
     global _sep
-    global _txp
-    _sep = np.where(np.logical_or(MARS == 3, MARS == 6), 2, 1)
-    _txp = np.where(np.logical_or(MARS == 2, MARS == 5), 2, 1)
-    
-    return DataFrame(data=np.column_stack((_sep, _txp)),
-                     columns=['_sep', '_txp'])
+    _sep = filing_status_sep(MARS)
+    return DataFrame(data=_sep,
+                     columns=['_sep', ])
+
+
 
 def Adj():
     # Adjustments
@@ -132,7 +139,26 @@ def AGI():
                                            c04600)),
                      columns=['c02650', 'c00100', '_agierr', '_posagi',
                               '_ywossbe', '_ywossbc', '_prexmp', 'c04600'])
-                              
+
+
+@vectorize('float64(float64, float64, float64)', nopython=True)
+def casulty(controller_var, output_var, posagi):
+    if controller_var > 0:
+        return output_var + 0.1 * posagi
+    return 0
+
+
+@vectorize('float64(float64, float64, float64, float64)', nopython=True)
+def charity(e19800, e20100, e20200, posagi):
+    base_charity = e19800 + e20100 + e20200
+    if base_charity <= 0.2 * posagi:
+        return base_charity
+    else:
+        lim50 = min(0.50 * posagi, e19800)
+        lim30 = min(0.30 * posagi, e20100 + e20200)
+        return min(0.5 * posagi, lim30 + lim50)
+
+
 
 def ItemDed(puf):
     # Itemized Deductions
@@ -157,8 +183,8 @@ def ItemDed(puf):
     c18300 = _statax + e18500 + e18800 + e18900
 
     # Casulty #
-    c37703 = np.where(e20500 > 0, e20500 + 0.10 * _posagi, 0)
-    c20500 = np.where(e20500 > 0, c37703 - 0.10 * _posagi, 0)
+    c37703 = casulty(e20500, e20500, _posagi)
+    c20500 = casulty(e20500, c37703, _posagi)
 
     # Miscellaneous #
     c20750 = 0.02 * _posagi
@@ -170,15 +196,8 @@ def ItemDed(puf):
         c19200 = e19500 + e19570 + e19400 + e19550
     c20800 = np.maximum(0, c20400 - c20750)
 
-    # Charity (assumes carryover is non-cash) #
-
-    _lim50 = np.where(e19800 + e20100 + e20200 <= 0.20 *
-                      _posagi, 0, np.minimum(0.50 * _posagi, e19800))
-    _lim30 = np.where(e19800 + e20100 + e20200 <= 0.20 *
-                      _posagi, 0, np.minimum(0.30 * _posagi, e20100 + e20200))
-
-    c19700 = np.where(e19800 + e20100 + e20200 <= 0.20 * _posagi, 
-        e19800 + e20100 + e20200, np.minimum(0.5 * _posagi, _lim30 + _lim50))
+    # Charity (assumes carryover is non-cash)
+    c19700 = charity(e19800, e20100, e20200, _posagi)
     # temporary fix!??
 
 # Gross Itemized Deductions #
@@ -208,13 +227,13 @@ def ItemDed(puf):
                                      c00100 > _phase2 / _sep), c21060 - c21040, c04470)
 
     outputs = (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500,
-               c20750, c20400, c19200, c20800, _lim50, _lim30, c19700, c21060,
+               c20750, c20400, c19200, c20800, c19700, c21060,
                _phase2, _itemlimit, _nonlimited, _limitratio, c04470,
                _itemlimit, _dedpho, _dedmin, c21040)
-               
+
     header= ['c17750', 'c17000', '_sit1', '_sit', '_statax', 'c18300', 'c37703',
-             'c20500', 'c20750', 'c20400', 'c19200', 'c20800', '_lim50',
-             '_lim30', 'c19700', 'c21060', '_phase2', '_itemlimit',
+             'c20500', 'c20750', 'c20400', 'c19200', 'c20800', 'c19700',
+             'c21060', '_phase2', '_itemlimit',
              '_nonlimited', '_limitratio', 'c04470', '_itemlimit', '_dedpho',
              '_dedmin', 'c21040']
 
