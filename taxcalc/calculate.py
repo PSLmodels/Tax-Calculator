@@ -172,6 +172,31 @@ def charity(e19800, e20100, e20200, posagi):
         return min(0.5 * posagi, lim30 + lim50)
 
 
+@vectorize('int64(int64)')
+def phase2(MARS):
+    if MARS == 1:
+        return 200000
+    elif MARS == 4:
+        return 250000
+    else:
+        return 300000
+
+
+@vectorize('float64(float64, float64, float64, float64)')
+def item_ded_limit(c21060, c00100, nonlimited, limitratio):
+    if c21060 > nonlimited and c00100 > limitratio:
+        dedmin = 0.8 * (c21060 - nonlimited)
+        dedpho = 0.03 * max(0, posagi - limitratio)
+        return min(dedmin, dedpho)
+    return 0.0
+
+
+@vectorize('float64(float64, float64, float64, float64, float64)')
+def item_ded_vec(c21060, c00100, nonlimited, limitratio, c21040):
+    if c21060 > nonlimited and c00100 > limitratio:
+        return c21060 - c21040
+    return c21060
+
 
 def ItemDed(puf):
     # Itemized Deductions
@@ -213,42 +238,27 @@ def ItemDed(puf):
     c19700 = charity(e19800, e20100, e20200, _posagi)
     # temporary fix!??
 
-# Gross Itemized Deductions #
+    # Gross Itemized Deductions #
     c21060 = (e20900 + c17000 + c18300 + c19200 + c19700
               + c20500 + c20800 + e21000 + e21010)
 
     # Itemized Deduction Limitation
-    _phase2 = np.where(MARS == 1, 200000, 0)
-    _phase2 = np.where(MARS == 4, 250000, _phase2)
-    _phase2 = np.where(np.logical_and(MARS != 1, MARS != 4), 300000, _phase2)
+    _phase2 = phase2(MARS)
 
-    _itemlimit = np.ones((dim,))
     _nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
     _limitratio = _phase2/_sep
 
-    c04470 = c21060
-
-    _itemlimit = np.where(np.logical_and(c21060 > _nonlimited,
-                                         c00100 > _phase2 / _sep), 2, 1)
-    _dedmin = np.where(np.logical_and(c21060 > _nonlimited,
-                                      c00100 > _phase2 / _sep), 0.8 * (c21060 - _nonlimited), 0)
-    _dedpho = np.where(np.logical_and(c21060 > _nonlimited,
-                                      c00100 > _phase2 / _sep), 0.03 * np.maximum(0, _posagi - _phase2 / _sep), 0)
-    c21040 = np.where(np.logical_and(c21060 > _nonlimited,
-                                     c00100 > _phase2 / _sep), np.minimum(_dedmin, _dedpho), 0)
-    c04470 = np.where(np.logical_and(c21060 > _nonlimited,
-                                     c00100 > _phase2 / _sep), c21060 - c21040, c04470)
+    c21040 = item_ded_limit(c21060, c00100, _nonlimited, _limitratio)
+    c04470 = item_ded_vec(c21060, c00100, _nonlimited, _limitratio, c21040)
 
     outputs = (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500,
                c20750, c20400, c19200, c20800, c19700, c21060,
-               _phase2, _itemlimit, _nonlimited, _limitratio, c04470,
-               _itemlimit, _dedpho, _dedmin, c21040)
+               _phase2, _nonlimited, _limitratio, c04470, c21040)
 
     header= ['c17750', 'c17000', '_sit1', '_sit', '_statax', 'c18300', 'c37703',
              'c20500', 'c20750', 'c20400', 'c19200', 'c20800', 'c19700',
-             'c21060', '_phase2', '_itemlimit',
-             '_nonlimited', '_limitratio', 'c04470', '_itemlimit', '_dedpho',
-             '_dedmin', 'c21040']
+             'c21060', '_phase2',
+             '_nonlimited', '_limitratio', 'c04470', 'c21040']
 
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
