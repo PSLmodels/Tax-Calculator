@@ -78,10 +78,12 @@ def CapGains():
     c23650 = e23250 + e22250 + e23660
     c01000 = np.maximum(-3000 / _sep, c23650)
     c02700 = np.minimum(_feided, _feimax[DEFAULT_YR - FLPDYR] * f2555)
-    _ymod1 = (e00200 + e00300 + e00600 + e00700 + e00800 + e00900 + c01000
-              + e01100 + e01200 + e01400 + e01700 +
-              e02000 + e02100 + e02300 + e02600
-              + e02610 + e02800 - e02540)
+    _ymod1 = (e00200 + e00300 + e00600
+            + e00700 + e00800 + e00900
+            + c01000 + e01100 + e01200
+            + e01400 + e01700 + e02000
+            + e02100 + e02300 + e02600
+            + e02610 + e02800 - e02540)
     _ymod2 = e00400 + (0.50 * e02400) - c02900
     _ymod3 = e03210 + e03230 + e03240 + e02615
     _ymod = _ymod1 + _ymod2 + _ymod3
@@ -103,6 +105,7 @@ def SSBenefits_vec(SSIND, MARS, e02500, _ymod, e02400, c02500):
     else:
         c02500 = np.minimum(0.85 * (_ymod - _ssb85[MARS-1]) + 0.50 * np.minimum(e02400, _ssb85[MARS-1] - _ssb50[MARS-1]), 0.85 * e02400)
     return c02500
+
 
 def SSBenefits():
     # Social Security Benefit Taxation
@@ -213,7 +216,7 @@ def ItemDed(puf):
 # Gross Itemized Deductions #
     c21060 = (e20900 + c17000 + c18300 + c19200 + c19700
               + c20500 + c20800 + e21000 + e21010)
-    
+
     # Itemized Deduction Limitation
     _phase2 = np.where(MARS == 1, 200000, 0)
     _phase2 = np.where(MARS == 4, 250000, _phase2)
@@ -221,7 +224,7 @@ def ItemDed(puf):
 
     _itemlimit = np.ones((dim,))
     _nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
-    _limitratio = _phase2/_sep 
+    _limitratio = _phase2/_sep
 
     c04470 = c21060
 
@@ -269,7 +272,7 @@ def EI_FICA():
     header = ['_sey', '_fica', '_setax', '_seyoff', 'c11055', '_earned']
 
     return DataFrame(data=np.column_stack(outputs), columns=header), _earned
-                     
+
 
 def StdDed():
     # Standard Deduction with Aged, Sched L and Real Estate #
@@ -283,7 +286,7 @@ def StdDed():
                       np.maximum(300 + _earned, _stded[FLPDYR - DEFAULT_YR, 6]), 0)
 
     _compitem = np.where(np.logical_and(e04470 > 0, e04470 < _stded[FLPDYR-DEFAULT_YR, MARS-1]), 1, 0)
-    
+
     c04100 = np.where(DSI == 1, np.minimum(_stded[FLPDYR - DEFAULT_YR, MARS - 1], c15100),
                       np.where(np.logical_or(_compitem == 1,
                                              np.logical_and(np.logical_and(3 <= MARS, MARS <= 6), MIdR == 1)),
@@ -337,7 +340,7 @@ def StdDed():
     SDoutputs = (c15100, c04100, _numextra, _txpyers, c04200, c15200,
                  _standard, _othded, c04100, c04200, _standard, c04500,
                  c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei)
-                 
+
     header = ['c15100', 'c04100', '_numextra', '_txpyers', 'c04200', 'c15200',
               '_standard', '_othded', 'c04100', 'c04200', '_standard',
               'c04500', 'c04800', 'c60000', '_amtstd', '_taxinc', '_feitax',
@@ -615,10 +618,10 @@ def MUI(c05750):
     c05750 = c05750
     c05750 = np.where(c00100 > _thresx[MARS - 1], c05750 + 0.038 * np.minimum(
         e00300 + e00600 + np.maximum(0, c01000) + np.maximum(0, e02000), c00100 - _thresx[MARS - 1]), c05750)
-	
+
     return DataFrame(data=np.column_stack((c05750,)),
                      columns=['c05750'])
-    
+
 
 def AMTI(puf):
     global c05800
@@ -747,7 +750,7 @@ def AMTI(puf):
                c62900, c63000, c62740, _ngamty, c62745, y62745, _tamt2,
                _amt5pc, _amt15pc, _amt25pc, c62747, c62755, c62770, _amt,
                c62800, c09600, _othtax, c05800)
-               
+
     header = ['c62720', 'c60260', 'c63100', 'c60200', 'c60240', 'c60220',
               'c60130', 'c62730', '_addamt', 'c62100', '_cmbtp', '_edical',
               '_amtsepadd', 'c62600', '_agep', '_ages', 'c62600', 'c62700',
@@ -758,7 +761,7 @@ def AMTI(puf):
 
     return DataFrame(data=np.column_stack(outputs),
                      columns=header), c05800
-    
+
 
 def F2441(puf, _earned):
     global c32880
@@ -1220,7 +1223,7 @@ def DEITC():
     c59720 = np.where(np.logical_or(c08795 < 0, c59660 <= 0), 0, c59720)
 
     c07150 = c07100 + c59680
-    c07150 = c07150 
+    c07150 = c07150
     c10950 = np.zeros((dim,))
 
     outputs = (c59680, c59700, c59720, _comb, c07150, c10950)
