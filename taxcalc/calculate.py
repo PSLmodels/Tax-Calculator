@@ -48,15 +48,17 @@ def FilingStatus():
                      columns=['_sep', ])
 
 
+@vectorize('float64(float64, float64, float64)', nopython=True)
+def feided_vec(e35300_0, e35600_0, e35910_0):
+    return max(e35300_0, e35600_0 + e35910_0)
+
 
 def Adj():
     # Adjustments
-    global _feided
-    global c02900
-    _feided = np.maximum(e35300_0, e35600_0, + e35910_0)  # Form 2555
+    global _feided, c02900
+    _feided = feided_vec(e35300_0, e35600_0, e35910_0)  # Form 2555
 
-    x03150 = e03150
-    c02900 = (x03150 + e03210 + e03600 + e03260 + e03270 + e03300
+    c02900 = (e03150 + e03210 + e03600 + e03260 + e03270 + e03300
               + e03400 + e03500 + e03280 + e03900 + e04000 + e03700
               + e03220 + e03230
               + e03240
@@ -64,6 +66,7 @@ def Adj():
 
     return DataFrame(data=np.column_stack((_feided, c02900)),
                      columns=['_feided', 'c02900'])
+
 
 def CapGains():
     # Capital Gains
@@ -110,6 +113,13 @@ def SSBenefits():
                      columns=['c02500', 'e02500'])
 
 
+@vectorize('float64(float64, float64, float64)', nopython=True)
+def conditional_agi(fixup, c00100, agierr):
+    if fixup >= 1:
+        return c00100 + agierr
+    return c00100
+
+
 def AGI():
     # Adjusted Gross Income
     global _posagi
@@ -119,7 +129,7 @@ def AGI():
 
     c00100 = c02650 - c02900
     _agierr = e00100 - c00100  # Adjusted Gross Income
-    c00100 = np.where(_fixup >= 1, c00100 + _agierr, c00100)
+    c00100 = conditional_agi(_fixup, c00100, _agierr)
 
     _posagi = np.maximum(c00100, 0)
     _ywossbe = e00100 - e02500
@@ -128,9 +138,9 @@ def AGI():
     _prexmp = XTOT * _amex[FLPDYR - DEFAULT_YR]
     # Personal Exemptions (_phaseout smoothed)
 
-    _dispc = np.zeros((dim,))
-    _dispc = np.minimum(1, np.maximum(
-        0, 0.02 * (_posagi - _exmpb[FLPDYR - DEFAULT_YR, MARS - 1]) / (2500 / _sep)))
+    _dispc_numer = 0.02 * (_posagi - _exmpb[FLPDYR - DEFAULT_YR, MARS - 1])
+    _dispc_denom = (2500 / _sep)
+    _dispc = np.minimum(1, np.maximum(0, _dispc_numer / _dispc_denom ))
 
     c04600 = _prexmp * (1 - _dispc)
 
