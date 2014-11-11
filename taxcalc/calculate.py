@@ -32,24 +32,33 @@ def calculator(data, **kwargs):
     return calc
 
 
+@vectorize('int64(int64)', nopython=True)
+def filing_status_sep(MARS):
+    if MARS == 3 or MARS == 6:
+        return 2
+    return 1
+
+
 def FilingStatus():
     # Filing based on marital status
+    # TODO: get rid of _txp in tests
     global _sep
-    global _txp
-    _sep = np.where(np.logical_or(MARS == 3, MARS == 6), 2, 1)
-    _txp = np.where(np.logical_or(MARS == 2, MARS == 5), 2, 1)
-    
-    return DataFrame(data=np.column_stack((_sep, _txp)),
-                     columns=['_sep', '_txp'])
+    _sep = filing_status_sep(MARS)
+    return DataFrame(data=_sep,
+                     columns=['_sep', ])
+
+
+@vectorize('float64(float64, float64, float64)', nopython=True)
+def feided_vec(e35300_0, e35600_0, e35910_0):
+    return max(e35300_0, e35600_0 + e35910_0)
+
 
 def Adj():
     # Adjustments
-    global _feided
-    global c02900
-    _feided = np.maximum(e35300_0, e35600_0, + e35910_0)  # Form 2555
+    global _feided, c02900
+    _feided = feided_vec(e35300_0, e35600_0, e35910_0)  # Form 2555
 
-    x03150 = e03150
-    c02900 = (x03150 + e03210 + e03600 + e03260 + e03270 + e03300
+    c02900 = (e03150 + e03210 + e03600 + e03260 + e03270 + e03300
               + e03400 + e03500 + e03280 + e03900 + e04000 + e03700
               + e03220 + e03230
               + e03240
@@ -57,6 +66,7 @@ def Adj():
 
     return DataFrame(data=np.column_stack((_feided, c02900)),
                      columns=['_feided', 'c02900'])
+
 
 def CapGains():
     # Capital Gains
@@ -68,10 +78,12 @@ def CapGains():
     c23650 = e23250 + e22250 + e23660
     c01000 = np.maximum(-3000 / _sep, c23650)
     c02700 = np.minimum(_feided, _feimax[DEFAULT_YR - FLPDYR] * f2555)
-    _ymod1 = (e00200 + e00300 + e00600 + e00700 + e00800 + e00900 + c01000
-              + e01100 + e01200 + e01400 + e01700 +
-              e02000 + e02100 + e02300 + e02600
-              + e02610 + e02800 - e02540)
+    _ymod1 = (e00200 + e00300 + e00600
+            + e00700 + e00800 + e00900
+            + c01000 + e01100 + e01200
+            + e01400 + e01700 + e02000
+            + e02100 + e02300 + e02600
+            + e02610 + e02800 - e02540)
     _ymod2 = e00400 + (0.50 * e02400) - c02900
     _ymod3 = e03210 + e03230 + e03240 + e02615
     _ymod = _ymod1 + _ymod2 + _ymod3
@@ -94,6 +106,7 @@ def SSBenefits_vec(SSIND, MARS, e02500, _ymod, e02400, c02500):
         c02500 = np.minimum(0.85 * (_ymod - _ssb85[MARS-1]) + 0.50 * np.minimum(e02400, _ssb85[MARS-1] - _ssb50[MARS-1]), 0.85 * e02400)
     return c02500
 
+
 def SSBenefits():
     # Social Security Benefit Taxation
     global c02500
@@ -101,6 +114,13 @@ def SSBenefits():
     c02500 = SSBenefits_vec(SSIND, MARS, e02500, _ymod, e02400, c02500)
     return DataFrame(data=np.column_stack((c02500,e02500)),
                      columns=['c02500', 'e02500'])
+
+
+@vectorize('float64(float64, float64, float64)', nopython=True)
+def conditional_agi(fixup, c00100, agierr):
+    if fixup >= 1:
+        return c00100 + agierr
+    return c00100
 
 
 def AGI():
@@ -112,7 +132,7 @@ def AGI():
 
     c00100 = c02650 - c02900
     _agierr = e00100 - c00100  # Adjusted Gross Income
-    c00100 = np.where(_fixup >= 1, c00100 + _agierr, c00100)
+    c00100 = conditional_agi(_fixup, c00100, _agierr)
 
     _posagi = np.maximum(c00100, 0)
     _ywossbe = e00100 - e02500
@@ -121,9 +141,9 @@ def AGI():
     _prexmp = XTOT * _amex[FLPDYR - DEFAULT_YR]
     # Personal Exemptions (_phaseout smoothed)
 
-    _dispc = np.zeros((dim,))
-    _dispc = np.minimum(1, np.maximum(
-        0, 0.02 * (_posagi - _exmpb[FLPDYR - DEFAULT_YR, MARS - 1]) / (2500 / _sep)))
+    _dispc_numer = 0.02 * (_posagi - _exmpb[FLPDYR - DEFAULT_YR, MARS - 1])
+    _dispc_denom = (2500 / _sep)
+    _dispc = np.minimum(1, np.maximum(0, _dispc_numer / _dispc_denom ))
 
     c04600 = _prexmp * (1 - _dispc)
 
@@ -132,7 +152,51 @@ def AGI():
                                            c04600)),
                      columns=['c02650', 'c00100', '_agierr', '_posagi',
                               '_ywossbe', '_ywossbc', '_prexmp', 'c04600'])
-                              
+
+
+@vectorize('float64(float64, float64, float64)', nopython=True)
+def casulty(controller_var, output_var, posagi):
+    if controller_var > 0:
+        return output_var + 0.1 * posagi
+    return 0
+
+
+@vectorize('float64(float64, float64, float64, float64)', nopython=True)
+def charity(e19800, e20100, e20200, posagi):
+    base_charity = e19800 + e20100 + e20200
+    if base_charity <= 0.2 * posagi:
+        return base_charity
+    else:
+        lim50 = min(0.50 * posagi, e19800)
+        lim30 = min(0.30 * posagi, e20100 + e20200)
+        return min(0.5 * posagi, lim30 + lim50)
+
+
+@vectorize('int64(int64)')
+def phase2(MARS):
+    if MARS == 1:
+        return 200000
+    elif MARS == 4:
+        return 250000
+    else:
+        return 300000
+
+
+@vectorize('float64(float64, float64, float64, float64)')
+def item_ded_limit(c21060, c00100, nonlimited, limitratio):
+    if c21060 > nonlimited and c00100 > limitratio:
+        dedmin = 0.8 * (c21060 - nonlimited)
+        dedpho = 0.03 * max(0, posagi - limitratio)
+        return min(dedmin, dedpho)
+    return 0.0
+
+
+@vectorize('float64(float64, float64, float64, float64, float64)')
+def item_ded_vec(c21060, c00100, nonlimited, limitratio, c21040):
+    if c21060 > nonlimited and c00100 > limitratio:
+        return c21060 - c21040
+    return c21060
+
 
 def ItemDed(puf):
     # Itemized Deductions
@@ -157,8 +221,8 @@ def ItemDed(puf):
     c18300 = _statax + e18500 + e18800 + e18900
 
     # Casulty #
-    c37703 = np.where(e20500 > 0, e20500 + 0.10 * _posagi, 0)
-    c20500 = np.where(e20500 > 0, c37703 - 0.10 * _posagi, 0)
+    c37703 = casulty(e20500, e20500, _posagi)
+    c20500 = casulty(e20500, c37703, _posagi)
 
     # Miscellaneous #
     c20750 = 0.02 * _posagi
@@ -170,53 +234,31 @@ def ItemDed(puf):
         c19200 = e19500 + e19570 + e19400 + e19550
     c20800 = np.maximum(0, c20400 - c20750)
 
-    # Charity (assumes carryover is non-cash) #
-
-    _lim50 = np.where(e19800 + e20100 + e20200 <= 0.20 *
-                      _posagi, 0, np.minimum(0.50 * _posagi, e19800))
-    _lim30 = np.where(e19800 + e20100 + e20200 <= 0.20 *
-                      _posagi, 0, np.minimum(0.30 * _posagi, e20100 + e20200))
-
-    c19700 = np.where(e19800 + e20100 + e20200 <= 0.20 * _posagi, 
-        e19800 + e20100 + e20200, np.minimum(0.5 * _posagi, _lim30 + _lim50))
+    # Charity (assumes carryover is non-cash)
+    c19700 = charity(e19800, e20100, e20200, _posagi)
     # temporary fix!??
 
-# Gross Itemized Deductions #
+    # Gross Itemized Deductions #
     c21060 = (e20900 + c17000 + c18300 + c19200 + c19700
               + c20500 + c20800 + e21000 + e21010)
-    
+
     # Itemized Deduction Limitation
-    _phase2 = np.where(MARS == 1, 200000, 0)
-    _phase2 = np.where(MARS == 4, 250000, _phase2)
-    _phase2 = np.where(np.logical_and(MARS != 1, MARS != 4), 300000, _phase2)
+    _phase2 = phase2(MARS)
 
-    _itemlimit = np.ones((dim,))
     _nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
-    _limitratio = _phase2/_sep 
+    _limitratio = _phase2/_sep
 
-    c04470 = c21060
-
-    _itemlimit = np.where(np.logical_and(c21060 > _nonlimited,
-                                         c00100 > _phase2 / _sep), 2, 1)
-    _dedmin = np.where(np.logical_and(c21060 > _nonlimited,
-                                      c00100 > _phase2 / _sep), 0.8 * (c21060 - _nonlimited), 0)
-    _dedpho = np.where(np.logical_and(c21060 > _nonlimited,
-                                      c00100 > _phase2 / _sep), 0.03 * np.maximum(0, _posagi - _phase2 / _sep), 0)
-    c21040 = np.where(np.logical_and(c21060 > _nonlimited,
-                                     c00100 > _phase2 / _sep), np.minimum(_dedmin, _dedpho), 0)
-    c04470 = np.where(np.logical_and(c21060 > _nonlimited,
-                                     c00100 > _phase2 / _sep), c21060 - c21040, c04470)
+    c21040 = item_ded_limit(c21060, c00100, _nonlimited, _limitratio)
+    c04470 = item_ded_vec(c21060, c00100, _nonlimited, _limitratio, c21040)
 
     outputs = (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500,
-               c20750, c20400, c19200, c20800, _lim50, _lim30, c19700, c21060,
-               _phase2, _itemlimit, _nonlimited, _limitratio, c04470,
-               _itemlimit, _dedpho, _dedmin, c21040)
-               
+               c20750, c20400, c19200, c20800, c19700, c21060,
+               _phase2, _nonlimited, _limitratio, c04470, c21040)
+
     header= ['c17750', 'c17000', '_sit1', '_sit', '_statax', 'c18300', 'c37703',
-             'c20500', 'c20750', 'c20400', 'c19200', 'c20800', '_lim50',
-             '_lim30', 'c19700', 'c21060', '_phase2', '_itemlimit',
-             '_nonlimited', '_limitratio', 'c04470', '_itemlimit', '_dedpho',
-             '_dedmin', 'c21040']
+             'c20500', 'c20750', 'c20400', 'c19200', 'c20800', 'c19700',
+             'c21060', '_phase2',
+             '_nonlimited', '_limitratio', 'c04470', 'c21040']
 
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
@@ -240,7 +282,7 @@ def EI_FICA():
     header = ['_sey', '_fica', '_setax', '_seyoff', 'c11055', '_earned']
 
     return DataFrame(data=np.column_stack(outputs), columns=header), _earned
-                     
+
 
 def StdDed():
     # Standard Deduction with Aged, Sched L and Real Estate #
@@ -254,7 +296,7 @@ def StdDed():
                       np.maximum(300 + _earned, _stded[FLPDYR - DEFAULT_YR, 6]), 0)
 
     _compitem = np.where(np.logical_and(e04470 > 0, e04470 < _stded[FLPDYR-DEFAULT_YR, MARS-1]), 1, 0)
-    
+
     c04100 = np.where(DSI == 1, np.minimum(_stded[FLPDYR - DEFAULT_YR, MARS - 1], c15100),
                       np.where(np.logical_or(_compitem == 1,
                                              np.logical_and(np.logical_and(3 <= MARS, MARS <= 6), MIdR == 1)),
@@ -308,7 +350,7 @@ def StdDed():
     SDoutputs = (c15100, c04100, _numextra, _txpyers, c04200, c15200,
                  _standard, _othded, c04100, c04200, _standard, c04500,
                  c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei)
-                 
+
     header = ['c15100', 'c04100', '_numextra', '_txpyers', 'c04200', 'c15200',
               '_standard', '_othded', 'c04100', 'c04200', '_standard',
               'c04500', 'c04800', 'c60000', '_amtstd', '_taxinc', '_feitax',
@@ -586,10 +628,10 @@ def MUI(c05750):
     c05750 = c05750
     c05750 = np.where(c00100 > _thresx[MARS - 1], c05750 + 0.038 * np.minimum(
         e00300 + e00600 + np.maximum(0, c01000) + np.maximum(0, e02000), c00100 - _thresx[MARS - 1]), c05750)
-	
+
     return DataFrame(data=np.column_stack((c05750,)),
                      columns=['c05750'])
-    
+
 
 def AMTI(puf):
     global c05800
@@ -718,7 +760,7 @@ def AMTI(puf):
                c62900, c63000, c62740, _ngamty, c62745, y62745, _tamt2,
                _amt5pc, _amt15pc, _amt25pc, c62747, c62755, c62770, _amt,
                c62800, c09600, _othtax, c05800)
-               
+
     header = ['c62720', 'c60260', 'c63100', 'c60200', 'c60240', 'c60220',
               'c60130', 'c62730', '_addamt', 'c62100', '_cmbtp', '_edical',
               '_amtsepadd', 'c62600', '_agep', '_ages', 'c62600', 'c62700',
@@ -729,7 +771,7 @@ def AMTI(puf):
 
     return DataFrame(data=np.column_stack(outputs),
                      columns=header), c05800
-    
+
 
 def F2441(puf, _earned):
     global c32880
@@ -1191,7 +1233,7 @@ def DEITC():
     c59720 = np.where(np.logical_or(c08795 < 0, c59660 <= 0), 0, c59720)
 
     c07150 = c07100 + c59680
-    c07150 = c07150 
+    c07150 = c07150
     c10950 = np.zeros((dim,))
 
     outputs = (c59680, c59700, c59720, _comb, c07150, c10950)
