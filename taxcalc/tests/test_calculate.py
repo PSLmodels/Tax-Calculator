@@ -5,6 +5,7 @@ sys.path.append(os.path.join(cur_path, "../../"))
 sys.path.append(os.path.join(cur_path, "../"))
 import numpy as np
 import pandas as pd
+import networkx as nx
 from numba import jit, vectorize, guvectorize
 from taxcalc import *
 
@@ -70,12 +71,20 @@ def run(puf=True):
 
     assert(exp_set == cur_set)
 
+    json_file_path = os.path.join(cur_path, 'variable_graph.json')
+    checker = ErrorChecker(exp_results, totaldf, json_file_path)
+
     for label in exp_results.columns:
-        lhs = exp_results[label].values.reshape(len(exp_results))
-        rhs = totaldf[label].values.reshape(len(exp_results))
-        res = np.allclose(lhs, rhs, atol=1e-02)
-        if not res:
-            raise TaxCalcError('Problem found in var:{}'.format(label))
+        if label in checker:
+            checker.check_for_errors(label)
+        else:
+            lhs = exp_results[label].values.reshape(len(exp_results))
+            rhs = totaldf[label].values.reshape(len(exp_results))
+            res = np.allclose(lhs, rhs, atol=1e-02)
+            if not res:
+                print('Problem found in: ', label)
+                # raise TaxCalcError('Problem found in var:{}'.format(label))
+                raise
 
 def test_sequence():
     run()
@@ -94,10 +103,56 @@ def test_make_Calculator_mods():
 
 
 
-class TaxCalcError(Exception):
+class TaxCalcMismatchError(Exception):
 
     def __init__(self, variable_label):
         self.var_label = variable_label
+        self.ancest = ancestors
+        self.descend = descendants
+        self.message = (
+            'Mismatch from gold standard in {0}\n'
+            'The following variables might have caused it:\n{1}\n'
+            'The following variables may be affected by it:\n{2}\n'
+            )
 
     def __str__(self):
-        return "Problem found in variable: {}".format(self.var_label)
+        return self.message.format(self.var_label, self.ancest, self.descend)
+
+
+class ErrorChecker(object):
+    """Class checks labels for errors"""
+    def __init__(self, exp_results, totaldf, graph_file):
+        self.exp_results = exp_results
+        self.reshape_len = len(exp_results)
+        self.totaldf = totaldf
+        from networkx.readwrite import json_graph
+        import json
+        json_data = json.load(open(graph_file))
+        self.Graph = json_graph.node_link_graph(json_data)
+
+    def __contains__(self, label):
+        return self.Graph.has_node(label)
+
+    def check_for_errors(self, label):
+        if not self.check_match(label):
+            ancestors = self.look_up_relatives(label, nx.ancestors, True)
+            descendants = self.look_up_relatives(label, nx.descendants, True)
+            raise TaxCalcMismatchError(label, ancestors, descendants)
+
+    def check_match(self, label):
+        lhs = self.exp_results[label].values.reshape(self.reshape_len)
+        rhs = self.totaldf[label].values.reshape(self.reshape_len)
+        return np.allclose(lhs, rhs, atol=1e-02)
+
+    def look_up_relatives(self, label, method, original=False):
+        relatives = []
+        if original:
+            for rel_lbl in method(self.Graph, label):
+                relatives += self.look_up_relatives(rel_lbl, method)
+        else:
+            match = self.check_match(label)
+            if not match:
+                relatives.append(label)
+                for rel_lbl in method(self.Graph, label):
+                    relatives += self.look_up_relatives(rel_lbl, method)
+        return relatives
