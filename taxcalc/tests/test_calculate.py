@@ -80,7 +80,8 @@ def run(puf=True):
         lhs = exp_results[label].values.reshape(len(exp_results))
         rhs = totaldf[label].values.reshape(len(exp_results))
         res = np.allclose(lhs, rhs, atol=1e-02)
-        assert(res)
+        if not res:
+            raise TaxCalcError('Problem found in var:{}'.format(label))
 
 def test_sequence():
     run()
@@ -99,3 +100,10 @@ def test_make_Calculator_mods():
 
 
 
+class TaxCalcError(Exception):
+
+    def __init__(self, variable_label):
+        self.var_label = variable_label
+
+    def __str__(self):
+        return "Problem found in variable: {}".format(self.var_label)
