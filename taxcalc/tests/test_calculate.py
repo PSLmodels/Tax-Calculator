@@ -70,13 +70,7 @@ def run(puf=True):
 
     assert(exp_set == cur_set)
 
-    for label in totaldf.columns:
-        if label not in exp_results.columns:
-            print("this: ", label, " is not in the expected results!")
-
     for label in exp_results.columns:
-        if label not in totaldf.columns:
-            print(label, " was supposed to be in answer!")
         lhs = exp_results[label].values.reshape(len(exp_results))
         rhs = totaldf[label].values.reshape(len(exp_results))
         res = np.allclose(lhs, rhs, atol=1e-02)
