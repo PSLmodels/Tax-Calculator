@@ -12,7 +12,7 @@ config = {
     'download_url': 'https://github.com/OpenSourcePolicyCenter/Tax-Calculator',
     'description':'taxcalc',
     'long_description':longdesc,
-    'install_requires': [],
+    'install_requires': ["pandas", "numpy"],
     'version': '0.0',
     'license': 'MIT',
     'packages': ['taxcalc'],
