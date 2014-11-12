@@ -93,7 +93,6 @@ def CapGains():
                      columns=['c23650', 'c01000', 'c02700', '_ymod1', '_ymod2',
                                '_ymod3', '_ymod'])
 
-#@dataframe_vectorize(['float64(float64,int64,int64,float64,int64,float64)'], nopython=True)
 @vectorize(['float64(float64,int64,int64,float64,int64,float64)'], nopython=True)
 def SSBenefits_vec(SSIND, MARS, e02500, _ymod, e02400, c02500):
     if SSIND !=0 or MARS == 3 or MARS == 6:
@@ -182,8 +181,8 @@ def phase2(MARS):
         return 300000
 
 
-@vectorize('float64(float64, float64, float64, float64)')
-def item_ded_limit(c21060, c00100, nonlimited, limitratio):
+@vectorize('float64(float64, float64, float64, float64, float64)', nopython=True)
+def item_ded_limit(c21060, c00100, nonlimited, limitratio, posagi):
     if c21060 > nonlimited and c00100 > limitratio:
         dedmin = 0.8 * (c21060 - nonlimited)
         dedpho = 0.03 * max(0, posagi - limitratio)
@@ -248,7 +247,7 @@ def ItemDed(puf):
     _nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
     _limitratio = _phase2/_sep
 
-    c21040 = item_ded_limit(c21060, c00100, _nonlimited, _limitratio)
+    c21040 = item_ded_limit(c21060, c00100, _nonlimited, _limitratio, _posagi)
     c04470 = item_ded_vec(c21060, c00100, _nonlimited, _limitratio, c21040)
 
     outputs = (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500,
@@ -633,6 +632,113 @@ def MUI(c05750):
                      columns=['c05750'])
 
 
+@vectorize('float64(float64, float64, float64, float64)', nopython=True)
+def AMTI_amtded(c60200, c60220, c60240, c60000):
+    amtded = c60200 + c60220 + c60240
+    if c60000 <= 0:
+        amtded = max(0, amtded + c60000)
+    return amtded
+
+@vectorize('float64(float64, float64, float64, float64)', nopython=True)
+def AMTI_addamt(_exact, e60290, c60130, _amtded):
+    #_addamt = np.where(np.logical_or(_exact == 0, np.logical_and(_exact == 1, _amtded + e60290 > 0)), _amtded + e60290 - c60130, 0)
+    if _exact == 0 or (_exact == 1 and ((_amtded + e60290) > 0)):
+        return _amtded + e60290 - c60130
+    else:
+        return 0
+
+@vectorize('float64(' + 24*'float64, ' + 'float64)', nopython=True)
+def AMTI_c62100(_addamt, e60300, e60860, e60100, e60840, e60630, e60550,
+                e60720, e60430, e60500, e60340, e60680, e60600, e60405,
+                e60440, e60420, e60410, e61400, e60660, c60260, e60480,
+                e62000, c60000, e60250, _cmp):
+    if _cmp == 1:
+        return (_addamt + e60300 + e60860 + e60100 + e60840 + e60630 + e60550
+               + e60720 + e60430 + e60500 + e60340 + e60680 + e60600 + e60405
+               + e60440 + e60420 + e60410 + e61400 + e60660 - c60260 - e60480
+               - e62000 + c60000 - e60250)
+    else:
+        return 0
+
+
+@vectorize('float64(' + 5*'float64, ' + 'float64)', nopython=True)
+def AMTI_edical(puf, _standard, _exact, e04470, e17500, e00100):
+    if (puf and (_standard == 0 or (_exact == 1 and e04470 > 0))):
+        return max(0, e17500 - max(0, e00100) * 0.075)
+    else:
+        return 0
+
+@vectorize('float64(' + 12*'float64, ' + 'float64)', nopython=True)
+def AMTI_cmbtp(puf, _standard, _exact, e04470, f6251, _edical, e00100,
+              e62100, c60260, e21040, _sit, e18500, e20800):
+    if (puf and ((_standard == 0 or (_exact == 1 and e04470 > 0))
+        and f6251 == 1)):
+        return (-1 * min(_edical, 0.025 * max(0, e00100)) + e62100 + c60260
+               + e04470 + e21040 - _sit - e00100 - e18500 - e20800)
+    else:
+        return 0
+
+
+@vectorize('float64(' + 13*'float64, ' + 'float64)', nopython=True)
+def AMTI_c62100_2(puf, _standard, _exact, e04470, c00100, c04470, c17000,
+                  e18500, c60260, c20800, c21040, _cmbtp, c62100, _sit):
+    if (puf == True and ((_standard == 0 or (_exact == 1 and e04470 > 0)))):
+        return (c00100 - c04470 + min(c17000, 0.025 * max(0, c00100)) + _sit
+               + e18500 - c60260 + c20800 - c21040 + _cmbtp)
+    else:
+        return c62100
+
+@vectorize('float64(' + 6*'float64, ' + 'float64)', nopython=True)
+def AMTI_cmbtp_2(puf, _standard, f6251, e62100, e00100, c60260, _cmbtp):
+    if (puf == True and ((_standard > 0 and f6251 == 1))):
+        return e62100 - e00100 + c60260
+    else:
+        return _cmbtp
+
+
+@vectorize('float64(' + 5*'float64, ' + 'float64)', nopython=True)
+def AMTI_c62100_3(puf, _standard, c00100, c60260, _cmbtp, c62100):
+    if (puf == True and _standard > 0):
+        return (c00100 - c60260 + _cmbtp)
+    else:
+        return c62100
+
+
+@vectorize('float64(' + 2*'float64, ' + 'float64)', nopython=True)
+def AMTI_agep(DOBYR, FLPDYR, DOBMD):
+    #_agep = np.where(
+    #    DOBYR > 0, np.ceil((12 * (FLPDYR - DOBYR) - DOBMD / 100) / 12), 0)
+    if DOBYR > 0:
+        return np.ceil((12 * (FLPDYR - DOBYR) - DOBMD / 100) / 12)
+    else:
+        return 0
+
+
+@vectorize('float64(' + 2*'float64, ' + 'float64)', nopython=True)
+def AMTI_ages(SDOBYR, FLPDYR, SDOBMD):
+    #_ages = np.where(
+    #    SDOBYR > 0, np.ceil((12 * (FLPDYR - SDOBYR) - SDOBMD / 100) / 12), 0)
+    if SDOBYR > 0:
+        return np.ceil((12 * (FLPDYR - SDOBYR) - SDOBMD / 100) / 12)
+    else:
+        return 0
+
+@vectorize('float64(' + 4*'float64, ' + 'float64)', nopython=True)
+def AMTI_c62600(_cmp, f6251, _exact, e62600, c62600):
+    if (_cmp == 1 and f6251 == 1 and _exact == 1):
+        return e62600
+    else:
+        return c62600
+
+
+@vectorize('float64(' + 3*'float64, ' + 'float64)', nopython=True)
+def AMTI_alminc(c62100, c62600, c02700, _alminc):
+    if (c02700 > 0):
+        return max(0, c62100 - c62600 + c02700)
+    else:
+        return _alminc
+
+
 def AMTI(puf):
     global c05800
     global _othtax
@@ -647,51 +753,45 @@ def AMTI(puf):
     c60130 = c21040 + x60130
     c62730 = e24515 + x62730
 
-    _amtded = c60200 + c60220 + c60240
-    _amtded = np.where(c60000 <= 0, np.maximum(0, _amtded + c60000), _amtded)
-    _addamt = np.where(np.logical_or(_exact == 0, np.logical_and(_exact == 1, _amtded + e60290 > 0)), _amtded + e60290 - c60130, 0)
+    _amtded = AMTI_amtded(c60200, c60220, c60240, c60000)
+    _addamt = AMTI_addamt(_exact, e60290, c60130, _amtded)
 
-    c62100 = np.where(_cmp == 1, (_addamt + e60300 + e60860 + e60100 + e60840 + e60630 + e60550
-                                                            + e60720 + e60430 + e60500 + e60340 +
-                                  e60680 + e60600 + e60405 + e60440
-                                                            + e60420 + e60410 + e61400 + e60660 - c60260 - e60480 - e62000 + c60000), 0)
+    c62100 = AMTI_c62100(_addamt, e60300, e60860, e60100, e60840, e60630, e60550,
+                e60720, e60430, e60500, e60340, e60680, e60600, e60405,
+                e60440, e60420, e60410, e61400, e60660, c60260, e60480,
+                e62000, c60000, _cmp, e60250)
 
-    c62100 = np.where(_cmp == 1, c62100 - e60250, c62100)
 
-    _cmbtp = np.zeros((dim,))
+    _edical = AMTI_edical(puf, _standard, _exact, e04470, e17500, e00100)
 
-    _edical = np.where(np.logical_and(puf == True, np.logical_or(_standard == 0, np.logical_and(
-        _exact == 1, e04470 > 0))), np.maximum(0, e17500 - np.maximum(0, e00100) * 0.075), 0)
+    _cmbtp = AMTI_cmbtp(puf, _standard, _exact, e04470, f6251, _edical, e00100,
+              e62100, c60260, e21040, _sit, e18500, e20800)
 
-    _cmbtp = np.where(np.logical_and(puf == True, np.logical_and(np.logical_or(_standard == 0, np.logical_and(_exact == 1, e04470 > 0)), f6251 == 1)
-                                     ), -1 * np.minimum(_edical, 0.025 * np.maximum(0, e00100)) + e62100 + c60260 + e04470 + e21040 - _sit - e00100 - e18500 - e20800, _cmbtp)
+    c62100 = AMTI_c62100_2(puf, _standard, _exact, e04470, c00100, c04470, c17000,
+                  e18500, c60260, c20800, c21040, _cmbtp, c62100, _sit)
 
-    c62100 = np.where(np.logical_and(puf == True, np.logical_or(_standard == 0, np.logical_and(_exact == 1, e04470 > 0))),
-                      c00100 - c04470 + np.minimum(c17000, 0.025 * np.maximum(0, c00100)) + _sit + e18500 - c60260 + c20800 - c21040 + _cmbtp, c62100)
+    _cmbtp = AMTI_cmbtp_2(puf, _standard, f6251, e62100, e00100, c60260, _cmbtp)
+    c62100 = AMTI_c62100_3(puf, _standard, c00100, c60260, _cmbtp, c62100)
 
-    _cmbtp = np.where(np.logical_and(puf == True, np.logical_and(
-        _standard > 0, f6251 == 1)), e62100 - e00100 + c60260, _cmbtp)
-    c62100 = np.where(
-        np.logical_and(puf == True, _standard > 0), c00100 - c60260 + _cmbtp, c62100)
-
-    x62100 = c62100
-
+    #TODO
     _amtsepadd = np.where(np.logical_and(c62100 > _amtsep[FLPDYR - DEFAULT_YR], np.logical_or(MARS == 3, MARS == 6)), np.maximum(
         0, np.minimum(_almsep[FLPDYR - DEFAULT_YR], 0.25 * (c62100 - _amtsep[FLPDYR - DEFAULT_YR]))), 0)
+
+    #TODO
     c62100 = np.where(np.logical_and(c62100 > _amtsep[
                       FLPDYR - DEFAULT_YR], np.logical_or(MARS == 3, MARS == 6)), c62100 + _amtsepadd, c62100)
 
+    #TODO
     c62600 = np.maximum(0, _amtex[
                         FLPDYR - DEFAULT_YR, MARS - 1] - 0.25 * np.maximum(0, c62100 - _amtys[MARS - 1]))
 
-    _agep = np.where(
-        DOBYR > 0, np.ceil((12 * (FLPDYR - DOBYR) - DOBMD / 100) / 12), 0)
-    _ages = np.where(
-        SDOBYR > 0, np.ceil((12 * (FLPDYR - SDOBYR) - SDOBMD / 100) / 12), 0)
+    _agep = AMTI_agep(DOBYR, FLPDYR, DOBMD)
 
-    c62600 = np.where(np.logical_and(
-        _cmp == 1, np.logical_and(f6251 == 1, _exact == 1)), e62600, c62600)
+    _ages = AMTI_ages(SDOBYR, FLPDYR, SDOBMD)
 
+    c62600 = AMTI_c62600(_cmp, f6251, _exact, e62600, c62600)
+
+    #TODO
     c62600 = np.where(np.logical_and(np.logical_and(_cmp == 1, _exact == 0), np.logical_and(
         _agep < _amtage[FLPDYR - DEFAULT_YR], _agep != 0)), np.minimum(c62600, _earned + _almdep[FLPDYR - DEFAULT_YR]), c62600)
 
@@ -700,11 +800,13 @@ def AMTI(puf):
     _alminc = c62700
     _amtfei = np.zeros((dim,))
 
-    _alminc = np.where(
-        c02700 > 0, np.maximum(0, c62100 - c62600 + c02700), _alminc)
+    _alminc = AMTI_alminc(c62100, c62600, c02700, _alminc)
+
+    #TODO
     _amtfei = np.where(c02700 > 0, 0.26 * c02700 + 0.02 *
                        np.maximum(0, c02700 - _almsp[FLPDYR - DEFAULT_YR] / _sep), _amtfei)
 
+    #TODO
     c62780 = 0.26 * _alminc + 0.02 * \
         np.maximum(0, _alminc - _almsp[FLPDYR - DEFAULT_YR] / _sep) - _amtfei
 
@@ -722,8 +824,10 @@ def AMTI(puf):
     _tamt2 = np.zeros((dim,))
 
     _amt5pc = np.zeros((dim,))
+    #TODO
     _amt15pc = np.minimum(_alminc, c62720) - _amt5pc - np.minimum(np.maximum(
         0, _brk2[FLPDYR - DEFAULT_YR, MARS - 1] - c24520), np.minimum(_alminc, c62720))
+    #TODO
     _amt15pc = np.where(c04800 == 0, np.maximum(
         0, np.minimum(_alminc, c62720) - _brk2[FLPDYR - DEFAULT_YR, MARS - 1]), _amt15pc)
     _amt25pc = np.minimum(_alminc, c62740) - np.minimum(_alminc, c62720)
@@ -735,8 +839,10 @@ def AMTI(puf):
     _tamt2 = c62747 + c62755 + c62770
 
     _amt = np.zeros((dim,))
+    #TODO
     _amt = np.where(_ngamty > _brk6[
                     FLPDYR - DEFAULT_YR, MARS - 1], 0.05 * np.minimum(_alminc, c62740), _amt)
+    #TODO
     _amt = np.where(np.logical_and(_ngamty <= _brk6[FLPDYR - DEFAULT_YR, MARS - 1], _alminc > _brk6[
                     FLPDYR - DEFAULT_YR, MARS - 1]), 0.05 * np.minimum(_alminc - _brk6[FLPDYR - DEFAULT_YR, MARS - 1], c62740), _amt)
 
