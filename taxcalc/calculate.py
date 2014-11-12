@@ -182,8 +182,8 @@ def phase2(MARS):
         return 300000
 
 
-@vectorize('float64(float64, float64, float64, float64)')
-def item_ded_limit(c21060, c00100, nonlimited, limitratio):
+@vectorize('float64(float64, float64, float64, float64, float64)', nopython=True)
+def item_ded_limit(c21060, c00100, nonlimited, limitratio, posagi):
     if c21060 > nonlimited and c00100 > limitratio:
         dedmin = 0.8 * (c21060 - nonlimited)
         dedpho = 0.03 * max(0, posagi - limitratio)
@@ -248,7 +248,7 @@ def ItemDed(puf):
     _nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
     _limitratio = _phase2/_sep
 
-    c21040 = item_ded_limit(c21060, c00100, _nonlimited, _limitratio)
+    c21040 = item_ded_limit(c21060, c00100, _nonlimited, _limitratio, _posagi)
     c04470 = item_ded_vec(c21060, c00100, _nonlimited, _limitratio, c21040)
 
     outputs = (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500,
