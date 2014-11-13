@@ -3,8 +3,8 @@ from pandas import DataFrame
 import math
 import numpy as np
 from .utils import *
-
 from .constants import *
+from numba import *
 
 DEFAULT_YR = 2013
 
@@ -339,438 +339,795 @@ def NonGain():
                      columns=['_cglong', '_noncg'])
 
 
-@vectorize(['int64(float64,float64,float64,\
-    float64,float64)'], nopython=True)
-def _hasgain_vecc(e01000, c23650, e23250,
- e01100, e00650):
-    
-    if e01000 > 0 or c23650 > 0 or e23250 > 0 or e01100 > 0 or e00650 > 0:
+
+# @jit(i8(i8[:,:], i8, i8, i8), nopython = True)
+# def bracket(bracket, FLPDYR, DEFAULT_YR, MARS):
+#     bracket = bracket[FLPDYR - DEFAULT_YR, MARS - 1]
+#     return bracket
+
+# @jit(i8(i8[:], i8, i8), nopython = True)
+# def rate(rate, FLPDYR, DEFAULT_YR):
+#     rate = rate[FLPDYR - DEFAULT_YR]
+#     return rate
+
+
+@autojit(nopython = True)
+def TaxGains0_jit(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
+    e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6,  _xyztax, _feided, _feitax, _cmp,
+e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400 ):
+
+    _hasgain = 0.
+    _dwks5 = 0.
+    c24505 = 0.
+    c24510 = 0.
+    _dwks9 = 0.
+    c24516 = 0.
+    _dwks12 = 0.
+    _dwks17 = 0.
+    c24517 = 0.
+    c24520 = 0.
+    _dwks16 = 0.
+    c24540 = 0.
+    c24534 = 0. 
+    _dwks21 = 0.
+    c24598 = 0.
+    c24597 = 0. 
+    _dwks25 = 0.
+    _dwks26 = 0.
+    _dwks28 = 0.
+    c24610 = 0.
+    c24615 = 0.
+    _dwks31 = 0.
+    c24550 = 0.
+    c24570 = 0.
+    _addtax = 0.
+    c24530 = 0.
+    c00650 = e00650 
+
+    c24560 = 0.
+
+    _taxspecial = 0.
+    c05100 = 0.
+    c59430 = 0.
+    c59450 = 0.
+    c59460 = 0.
+    _line17 = 0.
+    _line19 = 0.
+    _line22 = 0.
+    _line30 = 0.
+    _line31 = 0.
+    _line32 = 0.
+    _line33 = 0.
+    _line36 = 0.
+    _line34 = 0.
+    _line35 = 0.
+    c59485 = 0.
+    c59490 = 0.
+    c05700 = 0.
+    _parents = 0.
+    _s1291 = 0.
+    c05750 = 0.
+    _taxbc = 0.
+    c24580 = _xyztax
+
+
+
+    if e01000 > 0 or c23650 > 0. or e23250 > 0. or e01100 > 0. or e00650 > 0.:
         
-        _hasgain = 1
+        _hasgain = 1.
+    
+    if _taxinc > 0. and _hasgain == 1.:
 
-    else: _hasgain = 0 
+        _dwks5 = max(0., e58990 - e58980)
 
-    return _hasgain
+        c24505 = max(0., c00650 - _dwks5)
 
-
-@vectorize(['float64(int64,float64,float64,\
-    float64,float64)'], nopython = True)
-def c24505_vecc(_hasgain, _taxinc, e00650,
-    e58980, e58990):
-
-    c00650 = e00650
-    _dwks5 = 0
-    c24505 = 0
-
-    if _taxinc > 0 and _hasgain == 1:
-
-        _dwks5 = max(0, e58990 - e58980)
-
-        c24505 = max(0, c00650 - _dwks5)
-
-    return c24505
-
-@vectorize(['float64(int64,float64,float64,\
-    float64,float64)'], nopython = True)
-def c24510_vecc(_hasgain, _taxinc, c23650, 
-    e23250, e01100):
-    c24510 = 0
-
-    if _taxinc > 0 and _hasgain == 1: 
-
-        c24510 = max(0, min(c23650, e23250)) + e01100
+        c24510 = max(0., min(c23650, e23250)) + e01100
         
         # gain for tax computation
         
-        if e01100 > 0:    
+        if e01100 > 0.:    
 
             c24510 = e01100 
 
-    return c24510
-
-@vectorize(['float64(int64,float64,float64,\
-    float64,float64)'], nopython = True)
-def _dwks9_vecc(_hasgain, _taxinc, c24510,
- e58990, e58980):
-    _dwks9 = 0
-    
-    if _taxinc > 0 and _hasgain == 1: 
-
         _dwks9 = max(0, c24510 - min(e58990, e58980))
-
-    return _dwks9
-
-
-# e24516 gain less invest y
-@vectorize(['float64(int64,float64,float64,\
-    float64,float64,float64,float64)'], nopython = True)
-def c24516_vecc(_hasgain, _taxinc, c23650,
- e23250, e01100, c24505, _dwks9):
-    
-    c24516 = 0
-
-    if _taxinc > 0 and _hasgain == 1: 
 
         c24516 = c24505 + _dwks9
     
-    else: c24516 = max(0, min(e23250, c23650)) + e01100 
+    else: c24516 = max(0., min(e23250, c23650)) + e01100 
 
-    return c24516
 
-@vectorize(['float64(int64, float64, float64,\
-    float64, float64, float64)'], nopython = True)
-def c24517_vecc(_hasgain, _taxinc, _dwks9, 
-    e24515, e24518, c24516):
-
-    c24517 = 0
-
-    if _taxinc > 0 and _hasgain == 1: 
+    if _taxinc > 0. and _hasgain == 1.: 
         
         _dwks12 = min(_dwks9, e24515 + e24518)
         
         c24517 = c24516 - _dwks12
 
-    return c24517
+        c24520 = max(0., _taxinc - c24517)
 
-# gain less 25% and 28%
-@vectorize(['float64(int64, float64, float64)'], nopython = True)
-def c24520_vecc(_hasgain, _taxinc, c24517):
+
+
+     # tentative TI less schD gain   
     
-    c24520 = 0
 
-    if _taxinc > 0 and _hasgain == 1:
-
-        c24520 = max(0, _taxinc - c24517)
-
-    return c24520
-
-#THIS IS COMMENTED OUT BECAUSE I'M NOT SURE HOW TO DEAL W _brk2
-# @vectorize(['float64(int64, float64, int64, int64,\
-#     int64, int64)'], nopython = True)    
-# def c24530_vecc(_hasgain, _taxinc, _brk2, FLPDYR, 
-#     DEFAULT_YR, MARS):    
-#      # tentative TI less schD gain   
-#     c24530 = 0 
-
-#     if _taxinc > 0 and _hasgain == 1:
-
-#         c24530 = min(_brk2[FLPDYR - DEFAULT_YR, MARS - 1], _taxinc)
+        c24530 = min(_brk2[FLPDYR - DEFAULT_YR, MARS - 1], _taxinc)
     
-#     return c24530
 
-@vectorize(['float64(int64, float64, float64, float64)'], nopython = True)
-def _dwks16_vecc(_hasgain, _taxinc, c24520, c24530):
-    
-    _dwks16 = 0 
-
-    if _taxinc > 0 and _hasgain == 1:
+    if _taxinc > 0. and _hasgain == 1.: 
 
         _dwks16 = min(c24520, c24530)
 
-    return _dwks16
- 
-@vectorize(['float64(int64, float64, float64, float64)'], nopython = True) 
-def c24540_vecc(_hasgain, _taxinc, _dwks16, c24516):    
-    # minimum TI for bracket
-    c24540 = 0
 
-    if _taxinc > 0 and _hasgain == 1:
 
-        _dwks17 = max(0, _taxinc - c24516)
+        _dwks17 = max(0., _taxinc - c24516)
 
         c24540 = max(_dwks16, _dwks17)
 
-    return c24540
-
-@vectorize(['float64(int64, float64, float64, float64)'], nopython = True)
-def c24534_vecc(_hasgain, _taxinc, c24530, _dwks16):
-    c24534 = 0 
-
-    if _taxinc > 0 and _hasgain == 1:
 
         c24534 = c24530 - _dwks16
 
-    return c24534
-
-@vectorize(['float64(int64, float64, float64, float64)'], nopython = True)
-def c24597_vecc(_hasgain, _taxinc, c24517, c24534):    
-    c24597 = 0 
-
-    if _taxinc > 0 and _hasgain == 1:
-
         _dwks21 = min(_taxinc, c24517)
     
-        c24597 = max(0, _dwks21 - c24534)
-    
-    return c24597
+        c24597 = max(0., _dwks21 - c24534)
 
-@vectorize(['float64(float64)'], nopython = True)
-def c24598_vecc(c24597):
+
     # income subject to 15% tax
     c24598 = 0.15 * c24597  # actual 15% tax
 
-    return c24598
-
-@vectorize(['float64(int64, float64, float64, float64, float64, float64)'], nopython = True)
-def c24610_vecc(_hasgain, _taxinc, _dwks9, e24515, c24516, c24540): 
-    
-    c24610 = 0
-
-    if _taxinc > 0 and _hasgain == 1:
+    if _taxinc > 0. and _hasgain == 1.:
 
         _dwks25 = min(_dwks9, e24515)
     
         _dwks26 = c24516 + c24540
     
-        _dwks28 = max(0, _dwks26 - _taxinc)
+        _dwks28 = max(0., _dwks26 - _taxinc)
 
-        c24610 = max(0, _dwks25 - _dwks28)
-
-    return c24610
-
-@vectorize(['float64(int64, float64, float64)'], nopython = True)
-def c24615_vecc(_hasgain, _taxinc, c24610):  
-
-    c24615 = 0
-
-    if _taxinc > 0 and _hasgain == 1:
+        c24610 = max(0., _dwks25 - _dwks28)
 
         c24615 = 0.25 * c24610
-    
-    return c24615
-
-
-
-@vectorize(['float64(int64, float64, float64, float64, float64, float64)'], nopython = True)
-def c24570_vecc(_hasgain, _taxinc, c24540, c24534, c24597, c24610):
-    c24570 = 0
-
-    if _taxinc > 0 and _hasgain == 1:
 
         _dwks31 = c24540 + c24534 + c24597 + c24610
 
-        c24550 = max(0, _taxinc - _dwks31)
+        c24550 = max(0., _taxinc - _dwks31)
 
         c24570 = 0.28 * c24550 
 
-    return c24570
 
-#THIS IS COMMENTED OUT BECAUSE I'M NOT SURE HOW TO DEAL W _brk6
-# @vectorize(['float64(int64, float64, float64, int64,\
-#  int64, int64, int64, float64, float64)'], nopython = True)
-# def _addtax(_hasgain, _taxinc, c24540, _brk6,
-#  FLPDYR, DEFAULT_YR, MARS, c24517, c04800):
-
-#     _addtax = 0
-
-#     if _taxinc > 0 and _hasgain == 1:
-
-#         if c24540 > _brk6[FLPDYR - DEFAULT_YR, MARS - 1]:
-#             _addtax = 0.05 * c24517
+        if c24540 > _brk6[FLPDYR - DEFAULT_YR, MARS - 1]:
+            _addtax = 0.05 * c24517
         
-#         else: 
-#             _addtax = 0.05 * min(c24517, c04800 - _brk6[FLPDYR - DEFAULT_YR, MARS - 1])
-
-#     return _addtax
+        elif c24540<= _brk6[FLPDYR - DEFAULT_YR, MARS - 1] and _taxinc > _brk6[FLPDYR - DEFAULT_YR, MARS - 1]:
+            _addtax = 0.05 * min(c24517, c04800 - _brk6[FLPDYR - DEFAULT_YR, MARS - 1])
 
 
+        c24560 = Taxer_i(c24540, c24560, MARS, FLPDYR, DEFAULT_YR)   
 
-#c24560 comes here
-#c24560 = np.where(np.logical_and(_taxinc>0, _hasgain ==1), Taxer(inc_in=c24540, inc_out=c24560, MARS=MARS), 0)
-
-@vectorize(['float64(int64, float64, float64, float64,\
- float64, float64, float64, float64, float64, float64,  float64)'], nopython = True)
-def c05100_vecc(_hasgain, _taxinc, c24598, c24615,
- c24570, c24560, _addtax, c04800, _xyztax, _feided,  _feitax ):      
-    
-
-    if _taxinc > 0 and _hasgain == 1:
         _taxspecial = c24598 + c24615 + c24570 + c24560 + _addtax
 
         c24580 = min(_taxspecial, _xyztax)
 
-    else: c24580 = _xyztax
     
-    if c04800 > 0 and _feided > 0:
+    if c04800 > 0. and _feided > 0.:
 
-        c05100 = max(0, c24580 - _feitax)
+        c05100 = max(0., c24580 - _feitax)
 
     else: c05100 = c24580 
     
 
-    return c05100
-  
-
-@vectorize(['float64(float64, float64, float64, float64,\
- float64, float64)'], nopython = True)
-def c05700(_cmp, e59410, e59420, e59440, e59470, e59400):
-
-    c05700 = 0
     # Form 4972 - Lump Sum Distributions
-    if _cmp == 1:
-        c59430 = max(0, e59410 - e59420)
+    if _cmp == 1.:
+        c59430 = max(0., e59410 - e59420)
 
         c59450 = c59430 + e59440 # income plus lump sum
 
-        c59460 = max(0, min(0.5 * c59450, 10000)) - 0.2 * max(0, 59450 - 20000)
+        c59460 = max(0., min(0.5 * c59450, 10000.)) - 0.2 * max(0., 59450. - 20000.)
      
         _line17 = c59450 - c59460
 
-        _line19 = c59450 - c59460 -e59470
+        _line19 = c59450 - c59460 - e59470
 
-        if c59450 > 0:
-            _line22 = max(0, e59440 - e59440*c59460/c59450)
+        _line22 = 0.
+        if c59450 > 0.:
+            _line22 = max(0., e59440 - e59440*c59460/c59450)
 
-        _line30 = 0.1 * max(0, c59450 - c59460 - e59470)
+        _line30 = 0.1 * max(0., c59450 - c59460 - e59470)
 
 
-        _line31 = 0.11 * min(_line30, 1190)\
-                + 0.12 * min(2270 - 1190, max(0, _line30 - 1190))\
-                + 0.14 * min(4530 - 2270, max(0, _line30 - 2270))\
-                + 0.15 * min(6690 - 4530, max(0, _line30 - 4530))\
-                + 0.16 * min(9170 - 6690, max(0, _line30 - 6690))\
-                + 0.18 * min(11440 - 9170, max(0, _line30 - 9170))\
-                + 0.20 * min(13710 - 11440, max(0, _line30 - 11440))\
-                + 0.23 * min(17160 - 13710, max(0, _line30 - 13710))\
-                + 0.26 * min(22880 - 17160, max(0, _line30 - 17160))\
-                + 0.30 * min(28600 - 22880, max(0, _line30 - 22880))\
-                + 0.34 * min(34320 - 28600, max(0, _line30 - 28600))\
-                + 0.38 * min(42300 - 34320, max(0, _line30 - 34320))\
-                + 0.42 * min(57190 - 42300, max(0, _line30 - 42300))\
-                + 0.48 * min(85790 - 57190, max(0, _line30 - 57190))
+        _line31 = 0.11 * min(_line30, 1190.)\
+                + 0.12 * min(2270. - 1190., max(0, _line30 - 1190.))\
+                + 0.14 * min(4530. - 2270., max(0., _line30 - 2270.))\
+                + 0.15 * min(6690. - 4530., max(0., _line30 - 4530.))\
+                + 0.16 * min(9170. - 6690., max(0., _line30 - 6690.))\
+                + 0.18 * min(11440. - 9170., max(0., _line30 - 9170.))\
+                + 0.20 * min(13710. - 11440., max(0., _line30 - 11440.))\
+                + 0.23 * min(17160. - 13710., max(0., _line30 - 13710.))\
+                + 0.26 * min(22880. - 17160., max(0., _line30 - 17160.))\
+                + 0.30 * min(28600. - 22880., max(0., _line30 - 22880.))\
+                + 0.34 * min(34320. - 28600., max(0., _line30 - 28600.))\
+                + 0.38 * min(42300. - 34320., max(0., _line30 - 34320.))\
+                + 0.42 * min(57190. - 42300., max(0., _line30 - 42300.))\
+                + 0.48 * min(85790. - 57190., max(0., _line30 - 57190.))
 
-        _line32 = 10 * _line31
+        _line32 = 10. * _line31
         
-        if e59440 == 0: 
+        _line36 =0.
+        if e59440 == 0.: 
             _line36 = _line32
 
-        if e59440 > 0:
+        _line33 = 0.
+        _line34 = 0.
+        _line35 = 0.
+        _line36 = 0.    
+        if e59440 > 0.:
             _line33 = 0.1 * _line22
 
-            _line34 = 0.11 * min(_line30, 1190)\
-                    + 0.12 * min(2270 - 1190, max(0, _line30 - 1190))\
-                    + 0.14 * min(4530 - 2270, max(0, _line30 - 2270))\
-                    + 0.15 * min(6690 - 4530, max(0, _line30 - 4530))\
-                    + 0.16 * min(9170 - 6690, max(0, _line30 - 6690))\
-                    + 0.18 * min(11440 - 9170, max(0, _line30 - 9170))\
-                    + 0.20 * min(13710 - 11440, max(0, _line30 - 11440))\
-                    + 0.23 * min(17160 - 13710, max(0, _line30 - 13710))\
-                    + 0.26 * min(22880 - 17160, max(0, _line30 - 17160))\
-                    + 0.30 * min(28600 - 22880, max(0, _line30 - 22880))\
-                    + 0.34 * min(34320 - 28600, max(0, _line30 - 28600))\
-                    + 0.38 * min(42300 - 34320, max(0, _line30 - 34320))\
-                    + 0.42 * min(57190 - 42300, max(0, _line30 - 42300))\
-                    + 0.48 * min(85790 - 57190, max(0, _line30 - 57190))
+            _line34 = 0.11 * min(_line30, 1190.)\
+                    + 0.12 * min(2270. - 1190., max(0., _line30 - 1190.))\
+                    + 0.14 * min(4530. - 2270., max(0., _line30 - 2270.))\
+                    + 0.15 * min(6690. - 4530., max(0., _line30 - 4530.))\
+                    + 0.16 * min(9170. - 6690., max(0., _line30 - 6690.))\
+                    + 0.18 * min(11440. - 9170., max(0., _line30 - 9170.))\
+                    + 0.20 * min(13710. - 11440., max(0., _line30 - 11440.))\
+                    + 0.23 * min(17160. - 13710., max(0., _line30 - 13710.))\
+                    + 0.26 * min(22880. - 17160., max(0., _line30 - 17160.))\
+                    + 0.30 * min(28600. - 22880., max(0., _line30 - 22880.))\
+                    + 0.34 * min(34320. - 28600., max(0., _line30 - 28600.))\
+                    + 0.38 * min(42300. - 34320., max(0., _line30 - 34320.))\
+                    + 0.42 * min(57190. - 42300., max(0., _line30 - 42300.))\
+                    + 0.48 * min(85790. - 57190., max(0., _line30 - 57190.))
 
-            _line35 = 10 * _line34
+            _line35 = 10. * _line34
 
-            _line36 = max(0, _line32 - _line35)    
+            _line36 = max(0., _line32 - _line35)    
     
     # tax saving from 10 yr option
         c59485 = _line36
         
-        c59490 = c59485 + 0.2 * max(0, e59400)
+        c59490 = c59485 + 0.2 * max(0., e59400)
     
     # pension gains tax plus
         c05700 = c59490
 
-    return c05700
-
-@vectorize(['float64( float64, float64, float64, float64)'], nopython = True)
-def c05750_vecc(e83200_0, c05100, c05700, e74400):
     _parents = e83200_0
-    
-    c05750 = max(c05100 + _parents + c05700, e74400)
 
-    return c05750
-  
-
-def TaxGains():
-    global c05750 # at the end
-    global c24517 # got it 
-    global _taxbc # at the end
-    global c24516 # got it
-    global c24520 # got it
-    global c05700 # got it
-
-
-
-    _hasgain = _hasgain_vecc(e01000, c23650, e23250, e01100, e00650)
-    
-    c24505 = c24505_vecc(_hasgain, _taxinc, e00650,
-    e58980, e58990)
-    
-    c24510 = c24510_vecc(_hasgain, _taxinc, c23650, 
-    e23250, e01100)
-
-    _dwks9 = _dwks9_vecc(_hasgain, _taxinc, c24510,
-    e58990, e58980)
-    
-    c24516 = c24516_vecc(_hasgain, _taxinc, c23650,
-    e23250, e01100, c24505, _dwks9)
-
-    c24517 = c24517_vecc(_hasgain, _taxinc, _dwks9, e24515, e24518, c24516)
-    
-    c24520 = c24520_vecc(_hasgain, _taxinc, c24517)
-    
-    # c24530 = c24530_vecc(_hasgain, _taxinc, _brk2, FLPDYR, 
-    # DEFAULT_YR, MARS)
-    c24530 = np.where(np.logical_and(_taxinc > 0, _hasgain == 1), np.minimum(
-        _brk2[FLPDYR - DEFAULT_YR, MARS - 1], _taxinc), 0)
-
-    _dwks16 = _dwks16_vecc(_hasgain, _taxinc, c24520, c24530)
-
-    c24540 = c24540_vecc(_hasgain, _taxinc, _dwks16, c24516)
-
-    c24534 = c24534_vecc(_hasgain, _taxinc, c24530, _dwks16)
-
-    c24597 = c24597_vecc(_hasgain, _taxinc, c24517, c24534)
-
-    c24598 = c24598_vecc(c24597)
-
-    c24610 = c24610_vecc(_hasgain, _taxinc, _dwks9, e24515, c24516, c24540 )
-
-    c24615 = c24615_vecc(_hasgain, _taxinc, c24610)
-
-    c24570 = c24570_vecc(_hasgain, _taxinc, c24540, c24534, c24597, c24610)
-
-    #_addtax = _addtax(_hasgain, _taxinc, c24540, _brk6, FLPDYR, DEFAULT_YR, MARS, c24517, c04800)
-    _addtax = np.zeros((dim,))
-    _addtax = np.where(np.logical_and(_taxinc > 0, np.logical_and(
-    _hasgain == 1, c24540 > _brk6[FLPDYR - DEFAULT_YR, MARS - 1])), 0.05 * c24517, _addtax)
-    _addtax = np.where(np.logical_and(np.logical_and(_taxinc > 0, _hasgain == 1), np.logical_and(c24540 <= _brk6[
-                       FLPDYR - DEFAULT_YR, MARS - 1], _taxinc > _brk6[FLPDYR - DEFAULT_YR, MARS - 1])), 0.05 * np.minimum(c04800 - _brk6[FLPDYR - DEFAULT_YR, MARS - 1], c24517), _addtax)
-
-
-    c24560 = np.zeros((dim,))
-    c24560 = np.where(np.logical_and(_taxinc>0, _hasgain ==1), Taxer(inc_in=c24540, inc_out=c24560, MARS=MARS), 0)
-    
-    c05100 = c05100_vecc(_hasgain, _taxinc, c24598, c24615,
- c24570, c24560, _addtax, c04800, _xyztax, _feided,  _feitax )
-
-    c05700 = c05700(_cmp, e59410, e59420, e59440, e59470, e59400)
-    
-    c05750 = c05750_vecc(e83200_0, c05100, c05700, e74400)
-    
-    #what is this stuff; why don't we use c05750?
     _s1291 = e10105
+
+    c05750 = max(c05100 + _parents + c05700, e74400)
 
     _taxbc = c05750
 
+    return (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
+            c24580, c24516, _dwks12, c24517, c24520, c24530, _dwks16,
+            _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
+            _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
+            _addtax, c24560, _taxspecial, c05100, c05700, c59430,
+            c59450, c59460, _line17, _line19, _line22, _line30, _line31,
+            _line32, _line36, _line33, _line34, _line35, c59485, c59490,
+            c05700, _s1291, _parents, _taxbc, c05750)
 
 
-    outputs = ( _hasgain, c24505, c24510, _dwks9, c24516, c24517, c24520, 
-                c24530, c24540, c24534, c24597, c24598, c24610, c24615, 
-                c24570, _addtax, c24560, c05100, c05700, c05750, _s1291, 
-                _taxbc, _dwks16)
+@jit(nopython = True)
+def apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
+    e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6,  _xyztax, _feided, _feitax, _cmp,
+    e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400):
+    
+    c00650 =  np.zeros(len(_taxinc))
+    _hasgain = np.zeros(len(_taxinc))
+    _dwks5 = np.zeros(len(_taxinc))
+    c24505 = np.zeros(len(_taxinc))
+    c24510 = np.zeros(len(_taxinc))
+    _dwks9 = np.zeros(len(_taxinc))
+    c24516 = np.zeros(len(_taxinc))
+    _dwks12 = np.zeros(len(_taxinc))
+    c24517 = np.zeros(len(_taxinc))
+    c24520 = np.zeros(len(_taxinc))
+    c24530 = np.zeros(len(_taxinc))
+    _dwks16 = np.zeros(len(_taxinc))
+    _dwks17 = np.zeros(len(_taxinc))
+    c24540 = np.zeros(len(_taxinc))
+    c24534 = np.zeros(len(_taxinc))
+    _dwks21 = np.zeros(len(_taxinc))
+    c24597 = np.zeros(len(_taxinc))
+    c24598 = np.zeros(len(_taxinc))
+    _dwks25 = np.zeros(len(_taxinc))
+    _dwks26 = np.zeros(len(_taxinc))
+    _dwks28 = np.zeros(len(_taxinc))
+    c24610 = np.zeros(len(_taxinc))
+    c24615 = np.zeros(len(_taxinc))
+    _dwks31 = np.zeros(len(_taxinc))
+    c24550 = np.zeros(len(_taxinc))
+    c24570 = np.zeros(len(_taxinc))
+    _addtax = np.zeros(len(_taxinc))
 
-    header = [  '_hasgain', 'c24505', 'c24510', '_dwks9', 'c24516', 'c24517', 'c24520', 
-                'c24530', 'c24540', 'c24534', 'c24597', 'c24598', 'c24610', 'c24615', 
-                'c24570', '_addtax', 'c24560', 'c05100', 'c05700', 'c05750', '_s1291', 
-                '_taxbc', '_dwks16']
+    c24560 = np.zeros(len(_taxinc))
+
+    _taxspecial = np.zeros(len(_taxinc))
+    c24580 = np.zeros(len(_taxinc))
+    c05100 = np.zeros(len(_taxinc))
+    c05700 = np.zeros(len(_taxinc))
+    c59430 = np.zeros(len(_taxinc))
+    c59450 = np.zeros(len(_taxinc))
+    c59460 = np.zeros(len(_taxinc))
+    _line17 = np.zeros(len(_taxinc))
+    _line19 = np.zeros(len(_taxinc))
+    _line22 = np.zeros(len(_taxinc))
+    _line30 = np.zeros(len(_taxinc))
+    _line31 = np.zeros(len(_taxinc))
+    _line32 = np.zeros(len(_taxinc))
+    _line36 = np.zeros(len(_taxinc))
+    _line33 = np.zeros(len(_taxinc))
+    _line34 = np.zeros(len(_taxinc))
+    _line35 = np.zeros(len(_taxinc))
+    c59485 = np.zeros(len(_taxinc))
+    c59490 = np.zeros(len(_taxinc))
+    c05700 = np.zeros(len(_taxinc))
+    _s1291 = np.zeros(len(_taxinc))
+    _parents = np.zeros(len(_taxinc))
+    c05750 = np.zeros(len(_taxinc))
+    _taxbc = np.zeros(len(_taxinc)) 
+
+
+    for i in range(len(_taxinc)):
+        (c00650[i], _hasgain[i], _dwks5[i], c24505[i], c24510[i], _dwks9[i], c24516[i],
+        c24580[i], c24516[i], _dwks12[i], c24517[i], c24520[i], c24530[i], _dwks16[i],
+        _dwks17[i], c24540[i], c24534[i], _dwks21[i], c24597[i], c24598[i], _dwks25[i],
+        _dwks26[i], _dwks28[i], c24610[i], c24615[i], _dwks31[i], c24550[i], c24570[i],
+        _addtax[i], c24560[i], _taxspecial[i], c05100[i], c05700[i], c59430[i],
+        c59450[i], c59460[i], _line17[i], _line19[i], _line22[i], _line30[i], _line31[i],
+        _line32[i], _line36[i], _line33[i], _line34[i], _line35[i], c59485[i], c59490[i],
+        c05700[i], _s1291[i], _parents[i], _taxbc[i], c05750[i]) = \
+        TaxGains0_jit(e00650[i], c04800[i], e01000[i], c23650[i], e23250[i], e01100[i],
+        e58990[i], e58980[i], e24515[i], e24518[i], _brk2, FLPDYR[i], DEFAULT_YR, 
+        MARS[i], _taxinc[i], _brk6,  _xyztax[i], _feided[i], _feitax[i], 
+        _cmp[i], e59410[i], e59420[i], e59440[i], e59470[i], e59400[i], e83200_0[i], 
+        e10105[i], e74400[i])
+
+    return  (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
+            c24580, c24516, _dwks12, c24517, c24520, c24530, _dwks16,
+            _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
+            _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
+            _addtax, c24560, _taxspecial, c05100, c05700, c59430,
+            c59450, c59460, _line17, _line19, _line22, _line30, _line31,
+            _line32, _line36, _line33, _line34, _line35, c59485, c59490,
+            c05700, _s1291, _parents, _taxbc, c05750)
+
+
+
+
+
+# #@autojit(nopython = True)
+# def TaxGains1_jit(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
+#     e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6 ): 
+    
+#     _hasgain = 0.
+#     _dwks5 = 0.
+#     c24505 = 0.
+#     c24510 = 0.
+#     _dwks9 = 0.
+#     c24516 = 0.
+#     _dwks12 = 0.
+#     _dwks17 = 0.
+#     c24517 = 0.
+#     c24520 = 0.
+#     _dwks16 = 0.
+#     c24540 = 0.
+#     c24534 = 0. 
+#     _dwks21 = 0.
+#     c24598 = 0.
+#     c24597 = 0. 
+#     _dwks25 = 0.
+#     _dwks26 = 0.
+#     _dwks28 = 0.
+#     c24610 = 0.
+#     c24615 = 0.
+#     _dwks31 = 0.
+#     c24550 = 0.
+#     c24570 = 0.
+#     _addtax = 0.
+#     c24530 = 0.
+#     c00650 = e00650 
+
+
+
+
+#     if e01000 > 0 or c23650 > 0. or e23250 > 0. or e01100 > 0. or e00650 > 0.:
+        
+#         _hasgain = 1.
+    
+#     if _taxinc > 0. and _hasgain == 1.:
+
+#         _dwks5 = max(0., e58990 - e58980)
+
+#         c24505 = max(0., c00650 - _dwks5)
+
+#         c24510 = max(0., min(c23650, e23250)) + e01100
+        
+#         # gain for tax computation
+        
+#         if e01100 > 0.:    
+
+#             c24510 = e01100 
+
+#         _dwks9 = max(0, c24510 - min(e58990, e58980))
+
+#         c24516 = c24505 + _dwks9
+    
+#     else: c24516 = max(0., min(e23250, c23650)) + e01100 
+
+
+#     if _taxinc > 0. and _hasgain == 1.: 
+        
+#         _dwks12 = min(_dwks9, e24515 + e24518)
+        
+#         c24517 = c24516 - _dwks12
+
+#         c24520 = max(0., _taxinc - c24517)
+
+
+
+#      # tentative TI less schD gain   
+    
+
+#         c24530 = min(_brk2[FLPDYR - DEFAULT_YR, MARS - 1], _taxinc)
+    
+
+#     if _taxinc > 0. and _hasgain == 1.: 
+
+#         _dwks16 = min(c24520, c24530)
+
+
+
+#         _dwks17 = max(0., _taxinc - c24516)
+
+#         c24540 = max(_dwks16, _dwks17)
+
+
+#         c24534 = c24530 - _dwks16
+
+#         _dwks21 = min(_taxinc, c24517)
+    
+#         c24597 = max(0., _dwks21 - c24534)
+
+
+#     # income subject to 15% tax
+#     c24598 = 0.15 * c24597  # actual 15% tax
+
+#     if _taxinc > 0. and _hasgain == 1.:
+
+#         _dwks25 = min(_dwks9, e24515)
+    
+#         _dwks26 = c24516 + c24540
+    
+#         _dwks28 = max(0., _dwks26 - _taxinc)
+
+#         c24610 = max(0., _dwks25 - _dwks28)
+
+#         c24615 = 0.25 * c24610
+
+#         _dwks31 = c24540 + c24534 + c24597 + c24610
+
+#         c24550 = max(0., _taxinc - _dwks31)
+
+#         c24570 = 0.28 * c24550 
+
+
+#         if c24540 > _brk6[FLPDYR - DEFAULT_YR, MARS - 1]:
+#             _addtax = 0.05 * c24517
+        
+#         elif c24540<= _brk6[FLPDYR - DEFAULT_YR, MARS - 1] and _taxinc > _brk6[FLPDYR - DEFAULT_YR, MARS - 1]:
+#             _addtax = 0.05 * min(c24517, c04800 - _brk6[FLPDYR - DEFAULT_YR, MARS - 1])
+
+        
+
+#     return  c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,\
+#             _dwks12, c24517, c24520, c24530, _dwks16,\
+#             _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,\
+#             _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,\
+#             _addtax
+
+
+# #c24560 comes here
+# #c24560 = np.where(np.logical_and(_taxinc>0, _hasgain ==1), Taxer(inc_in=c24540, inc_out=c24560, MARS=MARS), 0)
+
+# #@jit(nopython = True) 
+# def TaxGains2_jit( c04800, _taxinc, _hasgain, c24598, c24615, c24570, c24560, _addtax, _xyztax, _feided, _feitax, _cmp,
+# e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400 ):
+
+#     _taxspecial = 0.
+#     c05100 = 0.
+#     c59430 = 0.
+#     c59450 = 0.
+#     c59460 = 0.
+#     _line17 = 0.
+#     _line19 = 0.
+#     _line22 = 0.
+#     _line30 = 0.
+#     _line31 = 0.
+#     _line32 = 0.
+#     _line33 = 0.
+#     _line36 = 0.
+#     _line34 = 0.
+#     _line35 = 0.
+#     c59485 = 0.
+#     c59490 = 0.
+#     c05700 = 0.
+#     _parents = 0.
+#     _s1291 = 0.
+#     c05750 = 0.
+#     _taxbc = 0.
+#     c24580 = _xyztax
+
+
+#     if _taxinc > 0. and _hasgain == 1.:
+
+#         _taxspecial = c24598 + c24615 + c24570 + c24560 + _addtax
+
+#         c24580 = min(_taxspecial, _xyztax)
+
+    
+#     if c04800 > 0. and _feided > 0.:
+
+#         c05100 = max(0., c24580 - _feitax)
+
+#     else: c05100 = c24580 
+    
+
+#     # Form 4972 - Lump Sum Distributions
+#     if _cmp == 1.:
+#         c59430 = max(0., e59410 - e59420)
+
+#         c59450 = c59430 + e59440 # income plus lump sum
+
+#         c59460 = max(0., min(0.5 * c59450, 10000.)) - 0.2 * max(0., 59450. - 20000.)
+     
+#         _line17 = c59450 - c59460
+
+#         _line19 = c59450 - c59460 - e59470
+
+#         _line22 = 0.
+#         if c59450 > 0.:
+#             _line22 = max(0., e59440 - e59440*c59460/c59450)
+
+#         _line30 = 0.1 * max(0., c59450 - c59460 - e59470)
+
+
+#         _line31 = 0.11 * min(_line30, 1190.)\
+#                 + 0.12 * min(2270. - 1190., max(0, _line30 - 1190.))\
+#                 + 0.14 * min(4530. - 2270., max(0., _line30 - 2270.))\
+#                 + 0.15 * min(6690. - 4530., max(0., _line30 - 4530.))\
+#                 + 0.16 * min(9170. - 6690., max(0., _line30 - 6690.))\
+#                 + 0.18 * min(11440. - 9170., max(0., _line30 - 9170.))\
+#                 + 0.20 * min(13710. - 11440., max(0., _line30 - 11440.))\
+#                 + 0.23 * min(17160. - 13710., max(0., _line30 - 13710.))\
+#                 + 0.26 * min(22880. - 17160., max(0., _line30 - 17160.))\
+#                 + 0.30 * min(28600. - 22880., max(0., _line30 - 22880.))\
+#                 + 0.34 * min(34320. - 28600., max(0., _line30 - 28600.))\
+#                 + 0.38 * min(42300. - 34320., max(0., _line30 - 34320.))\
+#                 + 0.42 * min(57190. - 42300., max(0., _line30 - 42300.))\
+#                 + 0.48 * min(85790. - 57190., max(0., _line30 - 57190.))
+
+#         _line32 = 10. * _line31
+        
+#         _line36 =0.
+#         if e59440 == 0.: 
+#             _line36 = _line32
+
+#         _line33 = 0.
+#         _line34 = 0.
+#         _line35 = 0.
+#         _line36 = 0.    
+#         if e59440 > 0.:
+#             _line33 = 0.1 * _line22
+
+#             _line34 = 0.11 * min(_line30, 1190.)\
+#                     + 0.12 * min(2270. - 1190., max(0., _line30 - 1190.))\
+#                     + 0.14 * min(4530. - 2270., max(0., _line30 - 2270.))\
+#                     + 0.15 * min(6690. - 4530., max(0., _line30 - 4530.))\
+#                     + 0.16 * min(9170. - 6690., max(0., _line30 - 6690.))\
+#                     + 0.18 * min(11440. - 9170., max(0., _line30 - 9170.))\
+#                     + 0.20 * min(13710. - 11440., max(0., _line30 - 11440.))\
+#                     + 0.23 * min(17160. - 13710., max(0., _line30 - 13710.))\
+#                     + 0.26 * min(22880. - 17160., max(0., _line30 - 17160.))\
+#                     + 0.30 * min(28600. - 22880., max(0., _line30 - 22880.))\
+#                     + 0.34 * min(34320. - 28600., max(0., _line30 - 28600.))\
+#                     + 0.38 * min(42300. - 34320., max(0., _line30 - 34320.))\
+#                     + 0.42 * min(57190. - 42300., max(0., _line30 - 42300.))\
+#                     + 0.48 * min(85790. - 57190., max(0., _line30 - 57190.))
+
+#             _line35 = 10. * _line34
+
+#             _line36 = max(0., _line32 - _line35)    
+    
+#     # tax saving from 10 yr option
+#         c59485 = _line36
+        
+#         c59490 = c59485 + 0.2 * max(0., e59400)
+    
+#     # pension gains tax plus
+#         c05700 = c59490
+
+#     _parents = e83200_0
+
+#     _s1291 = e10105
+
+#     c05750 = max(c05100 + _parents + c05700, e74400)
+
+#     _taxbc = c05750
+
+#     return _taxspecial, c24580, c05100,  c59430,\
+#             c59450, c59460, _line17, _line19, _line22, _line30, _line31,\
+#             _line32, _line36, _line33, _line34, _line35, c59485, c59490,\
+#             c05700, _s1291, _parents, c05750, _taxbc
+  
+
+
+# #@jit
+# def apply_TaxGains1(e00650, c04800, e01000, c23650, e23250,e01100,e58990, 
+#     e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6):
+    
+#     c00650 =  np.zeros(len(_taxinc))
+#     _hasgain = np.zeros(len(_taxinc))
+#     _dwks5 = np.zeros(len(_taxinc))
+#     c24505 = np.zeros(len(_taxinc))
+#     c24510 = np.zeros(len(_taxinc))
+#     _dwks9 = np.zeros(len(_taxinc))
+#     c24516 = np.zeros(len(_taxinc))
+#     _dwks12 = np.zeros(len(_taxinc))
+#     c24517 = np.zeros(len(_taxinc))
+#     c24520 = np.zeros(len(_taxinc))
+#     c24530 = np.zeros(len(_taxinc))
+#     _dwks16 = np.zeros(len(_taxinc))
+#     _dwks17 = np.zeros(len(_taxinc))
+#     c24540 = np.zeros(len(_taxinc))
+#     c24534 = np.zeros(len(_taxinc))
+#     _dwks21 = np.zeros(len(_taxinc))
+#     c24597 = np.zeros(len(_taxinc))
+#     c24598 = np.zeros(len(_taxinc))
+#     _dwks25 = np.zeros(len(_taxinc))
+#     _dwks26 = np.zeros(len(_taxinc))
+#     _dwks28 = np.zeros(len(_taxinc))
+#     c24610 = np.zeros(len(_taxinc))
+#     c24615 = np.zeros(len(_taxinc))
+#     _dwks31 = np.zeros(len(_taxinc))
+#     c24550 = np.zeros(len(_taxinc))
+#     c24570 = np.zeros(len(_taxinc))
+#     _addtax = np.zeros(len(_taxinc))
+
+#     for i in range(len(_taxinc)):
+#         c00650[i], _hasgain[i], _dwks5[i], c24505[i], c24510[i], _dwks9[i],\
+#         c24516[i], _dwks12[i], c24517[i], c24520[i], c24530[i], _dwks16[i],\
+#         _dwks17[i], c24540[i], c24534[i], _dwks21[i], c24597[i], c24598[i], _dwks25[i],\
+#         _dwks26[i], _dwks28[i], c24610[i], c24615[i], _dwks31[i], c24550[i], c24570[i],\
+#         _addtax[i] = TaxGains1_jit(e00650[i],c04800[i], e01000[i], c23650[i], e23250[i], e01100[i], e58990[i], 
+#                         e58980[i], e24515[i], e24518[i], _brk2, FLPDYR[i], DEFAULT_YR, MARS[i], _taxinc[i], _brk6)
+
+    
+#     return  c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,\
+#             _dwks12, c24517, c24520, c24530, _dwks16,\
+#             _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,\
+#             _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,\
+#             _addtax
+
+
+# #@jit
+# def apply_TaxGains2(  c04800, _taxinc, _hasgain, c24598, c24615, c24570, c24560, _addtax, _xyztax, _feided, _feitax, _cmp,
+# e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400):
+    
+
+#     _taxspecial = np.zeros(len(_taxinc))
+#     c24580 = np.zeros(len(_taxinc))
+#     c05100 = np.zeros(len(_taxinc))
+#     c05700 = np.zeros(len(_taxinc))
+#     c59430 = np.zeros(len(_taxinc))
+#     c59450 = np.zeros(len(_taxinc))
+#     c59460 = np.zeros(len(_taxinc))
+#     _line17 = np.zeros(len(_taxinc))
+#     _line19 = np.zeros(len(_taxinc))
+#     _line22 = np.zeros(len(_taxinc))
+#     _line30 = np.zeros(len(_taxinc))
+#     _line31 = np.zeros(len(_taxinc))
+#     _line32 = np.zeros(len(_taxinc))
+#     _line36 = np.zeros(len(_taxinc))
+#     _line33 = np.zeros(len(_taxinc))
+#     _line34 = np.zeros(len(_taxinc))
+#     _line35 = np.zeros(len(_taxinc))
+#     c59485 = np.zeros(len(_taxinc))
+#     c59490 = np.zeros(len(_taxinc))
+#     c05700 = np.zeros(len(_taxinc))
+#     _s1291 = np.zeros(len(_taxinc))
+#     _parents = np.zeros(len(_taxinc))
+#     c05750 = np.zeros(len(_taxinc))
+#     _taxbc = np.zeros(len(_taxinc)) 
+
+
+#     for i in range(len(_taxinc)):
+#         _taxspecial[i], c24580[i], c05100[i], c59430[i],\
+#         c59450[i], c59460[i], _line17[i], _line19[i], _line22[i], _line30[i], _line31[i],\
+#         _line32[i], _line36[i], _line33[i], _line34[i], _line35[i], c59485[i], c59490[i],\
+#         c05700[i], _s1291[i], _parents[i], c05750[i], _taxbc[i] = TaxGains2_jit( 
+#             c04800[i], _taxinc[i], _hasgain[i], c24598[i], c24615[i], c24570[i], c24560[i], 
+#             _addtax[i], _xyztax[i], _feided[i], _feitax[i], _cmp[i],
+#             e59410[i], e59420[i], e59440[i], e59470[i], e59400[i], e83200_0[i], e10105[i], e74400[i])
+
+
+    
+#     return  _taxspecial, c24580, c05100, c59430,\
+#             c59450, c59460, _line17, _line19, _line22, _line30, _line31,\
+#             _line32, _line36, _line33, _line34, _line35, c59485, c59490,\
+#             c05700, _s1291, _parents, c05750, _taxbc
+
+
+
+def TaxGains():
+    global c24517 # got it 
+    global c24516 # got it
+    global c24520 # got it
+    global c05750 # at the end
+    global _taxbc # at the end
+    global c05700 # got it
+
+    # c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,\
+    # _dwks12, c24517, c24520, c24530, _dwks16,\
+    # _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,\
+    # _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,\
+    # _addtax =\
+    # apply_TaxGains1(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
+    # e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6)
+
+
+    # c24560 = np.zeros(len(_taxinc))
+    # c24560 = np.where(np.logical_and(_taxinc>0., _hasgain ==1.), Taxer(inc_in=c24540, inc_out=c24560, MARS=MARS), 0.)
+
+    # _taxspecial, c24580, c05100, c59430,\
+    # c59450, c59460, _line17, _line19, _line22, _line30, _line31,\
+    # _line32, _line36, _line33, _line34, _line35, c59485, c59490,\
+    # c05700, _s1291, _parents, c05750, _taxbc = \
+    # apply_TaxGains2( c04800, _taxinc, _hasgain, c24598, c24615, c24570, c24560, _addtax, _xyztax, _feided, _feitax, _cmp,
+    # e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400)
+
+
+    (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
+    c24580, c24516, _dwks12, c24517, c24520, c24530, _dwks16,
+    _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
+    _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
+    _addtax, c24560, _taxspecial, c05100, c05700, c59430,
+    c59450, c59460, _line17, _line19, _line22, _line30, _line31,
+    _line32, _line36, _line33, _line34, _line35, c59485, c59490,
+    c05700, _s1291, _parents, _taxbc, c05750) = \
+    apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
+    e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6,  _xyztax, _feided, _feitax, _cmp,
+    e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400)
+
+
+
+
+    outputs =   (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
+                c24580, c24516, _dwks12, c24517, c24520, c24530, _dwks16,
+                _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
+                _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
+                _addtax, c24560, _taxspecial, c05100, c05700, c59430,
+                c59450, c59460, _line17, _line19, _line22, _line30, _line31,
+                _line32, _line36, _line33, _line34, _line35, c59485, c59490,
+                c05700, _s1291, _parents, _taxbc, c05750)
+
+    header = ['e00650', '_hasgain', '_dwks5', 'c24505', 'c24510', '_dwks9', #Note weirdness w e00650
+              'c24516', 'c24580', 'c24516', '_dwks12', 'c24517', 'c24520',
+              'c24530', '_dwks16', '_dwks17', 'c24540', 'c24534', '_dwks21',
+              'c24597', 'c24598', '_dwks25', '_dwks26', '_dwks28', 'c24610',
+              'c24615', '_dwks31', 'c24550', 'c24570', '_addtax', 'c24560',
+              '_taxspecial', 'c05100', 'c05700', 'c59430', 'c59450', 'c59460',
+              '_line17', '_line19', '_line22', '_line30', '_line31',
+              '_line32', '_line36', '_line33', '_line34', '_line35',
+              'c59485', 'c59490', 'c05700', '_s1291', '_parents',
+              '_taxbc', 'c05750']
+
 
     return DataFrame(data=np.column_stack(outputs),
                      columns=header) , c05750
+
+
+
+
 
 
 def MUI(c05750):
@@ -1462,5 +1819,71 @@ def Taxer(inc_in, inc_out, MARS):
 
     return inc_out
 
+@jit(f8(f8, f8, i8, i8, i8), nopython = True)
+def Taxer_i(inc_in, inc_out, MARS, FLPDYR, DEFAULT_YR):
+    # low = 0 
+    # med = 0
+
+    # if inc_in < 3000:
+    #     low = 1 
+
+    # elif inc_in >=3000 and inc_in < 100000:
+    #     med = 1 
+
+    # _a1 = inc_in * 0.01
+
+    # # if _a1 < 0:
+    # #     _a2 = math.floor(_a1) - 1 
+    # # else: _a2 = math.floor(_a1)
+    # _a2 = math.floor(_a1)
+
+    # _a3 = _a2 * 100
+
+    # _a4 = (_a1 - _a2) * 100
+
+    # _a5 = 0
+
+    # if low == 1 and _a4 < 25:
+    #     _a5 = 13
+    # elif low == 1 and (25 <= _a4 < 50):
+    #     _a5 = 38
+    # elif low == 1 and (50 <= _a4 < 75):
+    #     _a5 = 63
+    # elif low == 1 and _a4 >= 75:
+    #     _a5 = 88
+    # elif med == 1 and _a4 < 50:
+    #     _a5 = 25
+    # elif med == 1 and _a4 >= 50: 
+    #     _a5 = 75
+    # if inc_in == 0:
+    #     _a5 = 0
+
+    # if low == 1 or med == 1:
+    #     _a6 = _a3 + _a5 
+    # else: _a6 = inc_in
+
+    _a6 = inc_in
+
+    inc_out = (_rt1[FLPDYR - DEFAULT_YR] * min(_a6, _brk1[FLPDYR - DEFAULT_YR, MARS - 1])
+               + _rt2[FLPDYR - DEFAULT_YR]
+               * min(_brk2[FLPDYR - DEFAULT_YR, MARS - 1] - _brk1[FLPDYR - DEFAULT_YR, MARS - 1],
+                            max(0., _a6 - _brk1[FLPDYR - DEFAULT_YR, MARS - 1]))
+               + _rt3[FLPDYR - DEFAULT_YR]
+               * min(_brk3[FLPDYR - DEFAULT_YR, MARS - 1] - _brk2[FLPDYR - DEFAULT_YR, MARS - 1],
+                            max(0., _a6 - _brk2[FLPDYR - DEFAULT_YR, MARS - 1]))
+               + _rt4[FLPDYR - DEFAULT_YR]
+               * min(_brk4[FLPDYR - DEFAULT_YR, MARS - 1] - _brk3[FLPDYR - DEFAULT_YR, MARS - 1],
+                            max(0., _a6 - _brk3[FLPDYR - DEFAULT_YR, MARS - 1]))
+               + _rt5[FLPDYR - DEFAULT_YR]
+               * min(_brk5[FLPDYR - DEFAULT_YR, MARS - 1] - _brk4[FLPDYR - DEFAULT_YR, MARS - 1],
+                            max(0., _a6 - _brk4[FLPDYR - DEFAULT_YR, MARS - 1]))
+               + _rt6[FLPDYR - DEFAULT_YR]
+               * min(_brk6[FLPDYR - DEFAULT_YR, MARS - 1] - _brk5[FLPDYR - DEFAULT_YR, MARS - 1],
+                            max(0., _a6 - _brk5[FLPDYR - DEFAULT_YR, MARS - 1]))
+               + _rt7[FLPDYR - DEFAULT_YR] * max(0., _a6 - _brk6[FLPDYR - DEFAULT_YR, MARS - 1]))
+
+    return inc_out
+
+#export('Taxer_i f8(f8, f8, i8, i8, i8)')(Taxer_i)
 
 

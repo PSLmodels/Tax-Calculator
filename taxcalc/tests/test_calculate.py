@@ -5,18 +5,17 @@ sys.path.append(os.path.join(cur_path, "../../"))
 sys.path.append(os.path.join(cur_path, "../"))
 import numpy as np
 import pandas as pd
-from numba import jit, vectorize, guvectorize
+from numba import autojit, jit, vectorize, guvectorize
 from taxcalc import *
 
 
 
-ignore_list =   ['_dwks5', '_dwks12', 'e00650', 'c24580',  '_dwks17', 
-                '_dwks21', '_dwks25', '_dwks26', '_dwks28',
-                '_dwks31', 'c24550', '_taxspecial',
-                'c59430', 'c59450', 'c59460', '_line17', 
-                '_line19', '_line22', '_line30', '_line31',
-                '_line32', '_line36', '_line33', '_line34', 
-                '_line35','c59485', 'c59490', '_parents'] #delete stuff on this line; for testing]
+
+ignore_list = []
+# ['c82940', 'c82930', 'c82935', 'c82900', 'c82905', 'c82910', 'c82915', 
+# 'c82920', 'c82937', '_othadd', 'c63100','c09600', 'c05800','c07100', 'y07100', 'x07100', 'c08795', 
+# 'c08800', 'c09200', 'c07150', 'c33400', '_ctctax', 'c10300', 'c05750', 'c24580', 'c05100', '_taxbc']
+
 
 all_cols = set()
 tax_dta = pd.read_csv(os.path.join(cur_path, "../../tax_all91_puf.gz"), compression='gzip')
@@ -46,7 +45,7 @@ def run(puf=True):
     add_df(all_dfs, StdDed())
     add_df(all_dfs, XYZD())
     add_df(all_dfs, NonGain())
-    df_Tax_Gains, c05750 = TaxGains()
+    df_Tax_Gains, c05750 = TaxGains()  
     add_df(all_dfs, df_Tax_Gains)
     add_df(all_dfs, MUI(c05750))
     df_AMTI, c05800 = AMTI(puf)
