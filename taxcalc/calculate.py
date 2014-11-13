@@ -93,7 +93,6 @@ def CapGains():
                      columns=['c23650', 'c01000', 'c02700', '_ymod1', '_ymod2',
                                '_ymod3', '_ymod'])
 
-#@dataframe_vectorize(['float64(float64,int64,int64,float64,int64,float64)'], nopython=True)
 @vectorize(['float64(float64,int64,int64,float64,int64,float64)'], nopython=True)
 def SSBenefits_vec(SSIND, MARS, e02500, _ymod, e02400, c02500):
     if SSIND !=0 or MARS == 3 or MARS == 6:
@@ -182,8 +181,8 @@ def phase2(MARS):
         return 300000
 
 
-@vectorize('float64(float64, float64, float64, float64)')
-def item_ded_limit(c21060, c00100, nonlimited, limitratio):
+@vectorize('float64(float64, float64, float64, float64, float64)', nopython=True)
+def item_ded_limit(c21060, c00100, nonlimited, limitratio, posagi):
     if c21060 > nonlimited and c00100 > limitratio:
         dedmin = 0.8 * (c21060 - nonlimited)
         dedpho = 0.03 * max(0, posagi - limitratio)
@@ -248,7 +247,7 @@ def ItemDed(puf):
     _nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
     _limitratio = _phase2/_sep
 
-    c21040 = item_ded_limit(c21060, c00100, _nonlimited, _limitratio)
+    c21040 = item_ded_limit(c21060, c00100, _nonlimited, _limitratio, _posagi)
     c04470 = item_ded_vec(c21060, c00100, _nonlimited, _limitratio, c21040)
 
     outputs = (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500,
@@ -284,6 +283,83 @@ def EI_FICA():
     return DataFrame(data=np.column_stack(outputs), columns=header), _earned
 
 
+@vectorize(["float64(float64, int64, int64, int64)"], nopython=True)
+def StdDed_c15100(_earned, DSI, FLPDYR, DEFAULT_YR):
+    if DSI == 1:
+        return np.maximum(300 + _earned, _stded[FLPDYR - DEFAULT_YR, 6])
+    else:
+        return 0
+
+
+@vectorize(["float64(int64, int64, float64, int64, float64, float64, int64)"], nopython=True)
+def StdDed_c04100(DSI, MARS, c15100, FLPDYR, MIdR, _earned, _compitem):
+    if (DSI == 1):
+        #v1 = np.minimum( _stded[FLPDYR - DEFAULT_YR, MARS-1], c15100)
+        v1 = np.minimum( _stded[0, MARS-1], c15100)
+    elif _compitem == 1 or (3 <= MARS and MARS <=6 and MIdR == 1):
+        v1 = 0
+    else:
+        #v1 = _stded[FLPDYR - DEFAULT_YR, MARS - 1]
+        v1 = _stded[0, MARS - 1]
+    return v1
+
+
+@vectorize(["int64(int64)"], nopython=True)
+def StdDed_txpyers(MARS):
+    if MARS == 2 or MARS == 3:
+        return 2
+    else:
+        return 1
+
+
+@vectorize(["float64(int64, float64, float64, float64, int64)"], nopython=True)
+def StdDed_c04200(MARS, e04200, _numextra, _exact, _txpyers):
+
+    if _exact == 1 and MARS == 3 or MARS == 5:
+        return e04200
+    else:
+        return _numextra * _aged[_txpyers - 1, 0]
+
+@vectorize(["float64(int64, float64, float64, float64)"], nopython=True)
+def StdDed_standard(MARS, c04100, c04470, c04200):
+    if (MARS == 3 or MARS == 6) and (c04470 > 0):
+        return 0
+    else:
+        return c04100 + c04200
+
+
+@vectorize(["float64(float64, float64, float64, int64, float64, float64, float64)"], nopython=True)
+def StdDed_c60000(e04470, t04470, _amtstd, f6251, _exact, c00100, c60000):
+    if (e04470 == 0 and (t04470 > _amtstd) and f6251 == 1 and _exact == 1):
+        return c00100 - t04470
+    else:
+        return c60000
+
+
+@vectorize(["float64(float64, float64, float64)"], nopython=True)
+def StdDed_taxinc(c04800, _feided, c02700):
+
+    if (c04800 > 0 and _feided > 0):
+        return c04800 + c02700
+    else:
+        return c04800
+
+
+@vectorize(["float64(float64, float64, float64, float64)"], nopython=True)
+def StdDed_feitax(c04800, _feided, taxer, _feitax):
+    if (c04800 > 0 and _feided > 0):
+        return taxer
+    else:
+        return _feitax
+
+@vectorize(["float64(float64, float64, float64, float64)"], nopython=True)
+def StdDed_oldfei(c04800, _feided, taxer, _oldfei):
+    if (c04800 > 0 and _feided > 0):
+        return taxer
+    else:
+        return _oldfei
+
+
 def StdDed():
     # Standard Deduction with Aged, Sched L and Real Estate #
     global c04800
@@ -292,33 +368,23 @@ def StdDed():
     global _feitax
     global _standard
 
-    c15100 = np.where(DSI == 1,
-                      np.maximum(300 + _earned, _stded[FLPDYR - DEFAULT_YR, 6]), 0)
+    c15100 = StdDed_c15100(_earned, DSI, FLPDYR, DEFAULT_YR)
 
     _compitem = np.where(np.logical_and(e04470 > 0, e04470 < _stded[FLPDYR-DEFAULT_YR, MARS-1]), 1, 0)
-
-    c04100 = np.where(DSI == 1, np.minimum(_stded[FLPDYR - DEFAULT_YR, MARS - 1], c15100),
-                      np.where(np.logical_or(_compitem == 1,
-                                             np.logical_and(np.logical_and(3 <= MARS, MARS <= 6), MIdR == 1)),
-                               0, _stded[FLPDYR - DEFAULT_YR, MARS - 1]))
+    
+    c04100 = StdDed_c04100(DSI, MARS, c15100, FLPDYR, MIdR, _earned, _compitem)
 
     c04100 = c04100 + e15360
     _numextra = AGEP + AGES + PBI + SBI
+    _txpyers = StdDed_txpyers(MARS)
 
-    _txpyers = np.where(np.logical_or(np.logical_or(MARS == 2, MARS == 3),
-                                      MARS == 3), 2, 1)
-    c04200 = np.where(np.logical_and(_exact == 1,
-                                     np.logical_or(MARS == 3, MARS == 5)),
-                      e04200, _numextra * _aged[_txpyers - 1, FLPDYR - DEFAULT_YR])
+    c04200 = StdDed_c04200(MARS, e04200, _numextra, _exact, _txpyers)
 
     c15200 = c04200
 
-    _standard = np.where(np.logical_and(np.logical_or(MARS == 3, MARS == 6),
-                                        c04470 > 0),
-                         0, c04100 + c04200)
+    _standard = StdDed_standard(MARS, c04100, c04470, c04200)
 
     _othded = np.where(FDED == 1, e04470 - c04470, 0)
-    #c04470 = np.where(np.logical_and(_fixup >= 2, FDED == 1), c04470 + _othded, c04470)
     c04100 = np.where(FDED == 1, 0, c04100)
     c04200 = np.where(FDED == 1, 0, c04200)
     _standard = np.where(FDED == 1, 0, _standard)
@@ -332,20 +398,17 @@ def StdDed():
 
     # Some taxpayers iteimize only for AMT, not regular tax
     _amtstd = np.zeros((dim,))
-    c60000 = np.where(np.logical_and(np.logical_and(e04470 == 0,
-                                                    t04470 > _amtstd),
-                                     np.logical_and(f6251 == 1, _exact == 1)), c00100 - t04470, c60000)
-
-    _taxinc = np.where(np.logical_and(c04800 > 0, _feided > 0),
-                       c04800 + c02700, c04800)
+    c60000 = StdDed_c60000(e04470, t04470, _amtstd, f6251, _exact, c00100, c60000)
+    _taxinc = StdDed_taxinc(c04800, _feided, c02700)
 
     _feitax = np.zeros((dim,))
     _oldfei = np.zeros((dim,))
 
-    _feitax = np.where(np.logical_and(c04800 > 0, _feided > 0), Taxer(
-        inc_in=_feided, inc_out=_feitax, MARS=MARS), _feitax)
-    _oldfei = np.where(np.logical_and(c04800 > 0, _feided > 0), Taxer(
-        inc_in=c04800, inc_out=_oldfei, MARS=MARS), _oldfei)
+    taxer1 = Taxer(inc_in=_feided, inc_out=_feitax, MARS=MARS)
+    _feitax = StdDed_feitax(c04800, _feided, taxer1, _feitax)
+
+    taxer2 = Taxer(inc_in=c04800, inc_out=_oldfei, MARS=MARS)
+    _oldfei = StdDed_oldfei(c04800, _feided, taxer2, _oldfei)
 
     SDoutputs = (c15100, c04100, _numextra, _txpyers, c04200, c15200,
                  _standard, _othded, c04100, c04200, _standard, c04500,
