@@ -351,7 +351,7 @@ def NonGain():
 #     return rate
 
 
-@autojit(nopython = True)
+@jit(nopython = True)
 def TaxGains0_jit(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
     e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6,  _xyztax, _feided, _feitax, _cmp,
 e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400 ):
@@ -584,7 +584,6 @@ e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400 ):
         c59485 = _line36
         
         c59490 = c59485 + 0.2 * max(0., e59400)
-    
     # pension gains tax plus
         c05700 = c59490
 
@@ -606,7 +605,7 @@ e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400 ):
             c05700, _s1291, _parents, _taxbc, c05750)
 
 
-@jit(nopython = True)
+@jit
 def apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
     e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6,  _xyztax, _feided, _feitax, _cmp,
     e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400):
