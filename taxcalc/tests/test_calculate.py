@@ -97,17 +97,8 @@ def test_make_Calculator_mods():
 
 
 
-class TaxCalcMismatchError(Exception):
-
-    def __init__(self, variable_label):
-        self.var_label = variable_label
-        self.ancest = ancestors
-        self.descend = descendants
-        self.message = (
-            'Mismatch from gold standard in {0}\n'
-            'The following variables might have caused it:\n{1}\n'
-            'The following variables may be affected by it:\n{2}\n'
-            )
-
-    def __str__(self):
-        return self.message.format(self.var_label, self.ancest, self.descend)
+class TaxCalcError(Exception):
+    '''I've stripped this down to a simple extension of the basic Exception for
+    now. We can add functionality later as we see fit.
+    '''
+    pass
