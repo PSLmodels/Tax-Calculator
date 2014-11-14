@@ -71,23 +71,17 @@ def run(puf=True):
 
     assert(exp_set == cur_set)
 
-    json_file_path = os.path.join(cur_path, 'variable_graph.json')
-    checker = TaxCalcErrorChecker(exp_results, totaldf, json_file_path)
-
     for label in exp_results.columns:
-        if label in checker:
-            checker.check_for_errors(label)
-        else:
-            lhs = exp_results[label].values.reshape(len(exp_results))
-            rhs = totaldf[label].values.reshape(len(exp_results))
-            res = np.allclose(lhs, rhs, atol=1e-02)
-            if not res:
-                print('Problem found in: ', label)
-                # raise TaxCalcError('Problem found in var:{}'.format(label))
-                raise
+        lhs = exp_results[label].values.reshape(len(exp_results))
+        rhs = totaldf[label].values.reshape(len(exp_results))
+        res = np.allclose(lhs, rhs, atol=1e-02)
+        if not res:
+            print('Problem found in: ', label)
+
 
 def test_sequence():
     run()
+
 
 def test_make_Calculator():
     calc = Calculator(tax_dta)
@@ -117,76 +111,3 @@ class TaxCalcMismatchError(Exception):
 
     def __str__(self):
         return self.message.format(self.var_label, self.ancest, self.descend)
-
-
-class TaxCalcErrorChecker(object):
-    """Class used for checking labels for errors with use of a directed graph.
-    TODO: set np.allclose as local."""
-
-    def __init__(self, exp_results, totaldf, graph_file):
-        # set up the DFs for comparison
-        self.gold_std = exp_results
-        self.reshape_len = len(exp_results)
-        self.new_results = totaldf
-
-        # read in network graph
-        from networkx.readwrite import json_graph
-        import json
-        json_data = json.load(open(graph_file))
-        self.Graph = json_graph.node_link_graph(json_data)
-
-        # set up related node lookup functions
-        self.ancestors = self.look_up_relatives(nx.ancestors)
-        self.descendants = self.look_up_relatives(nx.descendants)
-
-    def __contains__(self, label):
-        return self.Graph.has_node(label)
-
-    def check_for_errors(self, label, tol=1e-02):
-        '''Checks a particular label for errors against the setup used to
-        initiate the class.
-        Naturally expects some label as argument. Optionally accepts custom
-        tolerance cutoff value.
-        '''
-        if not self.check_match(label, tol):
-            ancestors = self.ancestors(label, True, tol=tol)
-            descendants = self.descendants(label, True, tol=tol)
-            raise TaxCalcMismatchError(label, ancestors, descendants)
-
-    def check_match(self, label, tol=1e-02):
-        '''Function checks if values for a label in the gold standard
-        match those in a new set of results within the tolerance threshold
-        set by tol.
-        '''
-        lhs = self.gold_std[label].values.reshape(self.reshape_len)
-        rhs = self.new_results[label].values.reshape(self.reshape_len)
-        return np.allclose(lhs, rhs, atol=tol)
-
-    def look_up_relatives(self, method):
-        '''This function simply sets up a way to lookup relatives of a node
-        in a graph.
-        It currrently accepts any valid networkx tree traversal method
-        such as networkx.ancestors or networkx.descendants
-        '''
-
-        def lookup_inner(label, original=False, tol=1e-02):
-            '''This function actually does the work of recursively searching
-            the graph and building a list of related nodes.
-            '''
-            if original:
-                relatives = []
-                match = False
-            else:
-                match = self.check_match(label, tol)
-                if match:
-                    return []
-                else:
-                    relatives = [match]
-
-            if not match:
-                for rel_lbl in method(self.Graph, label):
-                    relatives += self.lookup_inner(rel_lbl, tol=tol)
-
-            return relatives
-
-        return lookup_inner
