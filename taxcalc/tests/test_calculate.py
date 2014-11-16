@@ -1,17 +1,15 @@
 import os
 import sys
-cur_path = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(cur_path, "../../"))
-sys.path.append(os.path.join(cur_path, "../"))
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(CUR_PATH, "../../"))
 import numpy as np
 import pandas as pd
-import networkx as nx
 from numba import jit, vectorize, guvectorize
 from taxcalc import *
 
 
 all_cols = set()
-tax_dta = pd.read_csv(os.path.join(cur_path, "../../tax_all91_puf.gz"), compression='gzip')
+tax_dta = pd.read_csv(os.path.join(CUR_PATH, "../../tax_all91_puf.gz"), compression='gzip')
 
 def add_df(alldfs, df):
     for col in df.columns:
@@ -20,7 +18,6 @@ def add_df(alldfs, df):
             alldfs.append(df[col])
 
 def run(puf=True):
-    cur_path = os.path.abspath(os.path.dirname(__file__))
     calc = Calculator(tax_dta, default_year=91)
     set_input_data(calc)
     update_globals_from_calculator(calc)
@@ -65,7 +62,7 @@ def run(puf=True):
     #drop duplicates
     totaldf = totaldf.T.groupby(level=0).first().T
 
-    exp_results = pd.read_csv(os.path.join(cur_path, "../../exp_results.csv.gz"), compression='gzip')
+    exp_results = pd.read_csv(os.path.join(CUR_PATH, "../../exp_results.csv.gz"), compression='gzip')
     exp_set = set(exp_results.columns)
     cur_set = set(totaldf.columns)
 
@@ -88,7 +85,6 @@ def test_make_Calculator():
 
 
 def test_make_Calculator_mods():
-    cur_path = os.path.abspath(os.path.dirname(__file__))
     calc1 = calculator(tax_dta)
     calc2 = calculator(tax_dta, _amex=np.array([4000]))
     update_calculator_from_module(calc2, constants)
