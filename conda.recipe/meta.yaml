@@ -1,0 +1,22 @@
+package:
+  name: taxcalc
+  version: 0.1
+
+requirements:
+  build:
+    - pytest
+    - setuptools
+    - python
+    - numpy
+    - pandas
+    - numba
+  run:
+    - pytest
+    - setuptools
+    - python
+    - numpy
+    - pandas
+    - numba
+
+about:
+  home: http://www.github.com/OpenSourcePolicyCenter
