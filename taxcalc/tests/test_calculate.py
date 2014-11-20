@@ -94,6 +94,15 @@ def test_make_Calculator_mods():
     assert all(calc2._amex == np.array([4000]))
 
 
+def test_make_Calculator_json():
+    user_mods = '{ "_aged": [[1500], [1200]] }'
+    calc2 = calculator(tax_dta, mods=user_mods, _amex=np.array([4000]))
+    update_calculator_from_module(calc2, constants)
+    update_globals_from_calculator(calc2)
+    assert all(calc2._amex == np.array([4000]))
+    assert all(calc2._aged == np.array([[1500], [1200]]))
+
+
 
 class TaxCalcError(Exception):
     '''I've stripped this down to a simple extension of the basic Exception for

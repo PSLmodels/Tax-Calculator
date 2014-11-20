@@ -25,7 +25,13 @@ def update_calculator_from_module(calc, mod):
     calc.__dict__.update(calc_vals_overwrite)
 
 
-def calculator(data, **kwargs):
+def calculator(data, mods="", **kwargs):
+    if mods:
+        import json
+        dd = json.loads(mods)
+        dd = {k:np.array(v) for k,v in dd.items() if type(v) == list}
+        kwargs.update(dd)
+
     calc = Calculator(data)
     if kwargs:
         calc.__dict__.update(kwargs)
