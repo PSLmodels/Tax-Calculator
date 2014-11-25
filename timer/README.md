@@ -1,9 +1,11 @@
---------------
-Timer Utils Example usage 
---------------
 
-(with the taxcalc package from latest master):
+Timer Utils Example usage 
 ========
+
+
+--------------
+With the taxcalc package from latest master:
+--------------
 
 *Each necessary new line of code includes comments above it*
 
@@ -66,9 +68,9 @@ C) To time the entire run() function at the highest level
         *
         *
 
-
-(timing initial code before taxcalc refactoring):
-========
+--------------
+Timing initial code before taxcalc refactoring:
+--------------
 
 git clone the repo to temporary local directory
 
