@@ -1,6 +1,9 @@
 --------------
-Timer Utils Example usage (with the taxcalc package from latest master):
+Timer Utils Example usage 
 --------------
+
+(with the taxcalc package from latest master):
+========
 
 *Each necessary new line of code includes comments above it*
 
@@ -64,16 +67,20 @@ C) To time the entire run() function at the highest level
         *
 
 
---------------
-Timer Utils Example usage (timing initial code before taxcalc refactoring):
---------------
+(timing initial code before taxcalc refactoring):
+========
 
 git clone the repo to temporary local directory
-    git clone https://github.com/OpenSourcePolicyCenter/Tax-Calculator temp_dir_name
-checkout to repo to commit before refactoring ('PEP8 fixes' commit)
-    git checkout -b new_branch 4cdc5841fefc5d175c9e5e538c7fd9c670fe35d1
-copy timer from original master directory to the new cloned branch
-    cp ~/user/.../Tax-Calculator/timer/* ~/user/.../temp_dir_name/timer/
 
-decorate the Test() function with @time_this (same as step C) above)
+    'git clone https://github.com/OpenSourcePolicyCenter/Tax-Calculator temp_dir_name'
+    
+checkout to repo to commit before refactoring ('PEP8 fixes' commit)
+
+    'git checkout -b new_branch 4cdc5841fefc5d175c9e5e538c7fd9c670fe35d1'
+    
+copy timer from original master directory to the new cloned branch
+
+    'cp ~/user/.../Tax-Calculator/timer/* ~/user/.../temp_dir_name/timer/'
+
+decorate the Test() function with @time_this, same as step C) above
 *note this includes CSV input/output, comment out #np.savetxt() calls to time explicit func calculation time
