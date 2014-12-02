@@ -45,7 +45,7 @@ def run(puf=True):
     calculated = concat([calculated, StdDed(calc)], axis=1)
     calculated = concat([calculated, XYZD(calc)], axis=1)
     calculated = concat([calculated, NonGain()], axis=1)
-    df_Tax_Gains, c05750 = TaxGains(calc)
+    df_Tax_Gains, c05750 = TaxGains()
     calculated = concat([calculated, df_Tax_Gains], axis=1)
     calculated = concat([calculated, MUI(c05750, calc)], axis=1)
     df_AMTI, c05800 = AMTI(puf, calc)
