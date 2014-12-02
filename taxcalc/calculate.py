@@ -545,7 +545,7 @@ e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400 ):
         
         if e01100 > 0.:    
 
-            c24510 = e01100 
+            c24510 = float(e01100)
 
         _dwks9 = max(0, c24510 - min(e58990, e58980))
 
@@ -725,9 +725,61 @@ e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400 ):
 @jit
 def apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
     e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6,  _xyztax, _feided, _feitax, _cmp,
-    e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400):
-    
-    c00650 =  np.zeros(len(_taxinc))
+    e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400,
+    c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516, _dwks12,
+    c24517, c24520, c24530, _dwks16, _dwks17 ,c24540 ,c24534,
+    _dwks21, c24597 , c24598, _dwks25 , _dwks26 , _dwks28,
+    c24610, c24615 , _dwks31 , c24550 , c24570 , _addtax ,
+    c24560, _taxspecial , c24580 , c05100 , c05700 , c59430 ,
+    c59450, c59460 , _line17, _line19 , _line22 , _line30,
+    _line31, _line32, _line36, _line33, _line34, _line35,
+    c59485, c59490 , _s1291, _parents, c05750, _taxbc):
+
+
+
+
+
+    for i in range(len(_taxinc)):
+        (c00650[i], _hasgain[i], _dwks5[i], c24505[i], c24510[i], _dwks9[i], c24516[i],
+        c24580[i], c24516[i], _dwks12[i], c24517[i], c24520[i], c24530[i], _dwks16[i],
+        _dwks17[i], c24540[i], c24534[i], _dwks21[i], c24597[i], c24598[i], _dwks25[i],
+        _dwks26[i], _dwks28[i], c24610[i], c24615[i], _dwks31[i], c24550[i], c24570[i],
+        _addtax[i], c24560[i], _taxspecial[i], c05100[i], c05700[i], c59430[i],
+        c59450[i], c59460[i], _line17[i], _line19[i], _line22[i], _line30[i], _line31[i],
+        _line32[i], _line36[i], _line33[i], _line34[i], _line35[i], c59485[i], c59490[i],
+        c05700[i], _s1291[i], _parents[i], _taxbc[i], c05750[i]) = \
+        TaxGains0_jit(e00650[i], c04800[i], e01000[i], c23650[i], e23250[i], e01100[i],
+        e58990[i], e58980[i], e24515[i], e24518[i], _brk2, FLPDYR[i], DEFAULT_YR,
+        MARS[i], _taxinc[i], _brk6,  _xyztax[i], _feided[i], _feitax[i],
+        _cmp[i], e59410[i], e59420[i], e59440[i], e59470[i], e59400[i], e83200_0[i],
+        e10105[i], e74400[i])
+
+
+
+    return  (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
+            c24580, c24516, _dwks12, c24517, c24520, c24530, _dwks16,
+            _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
+            _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
+            _addtax, c24560, _taxspecial, c05100, c05700, c59430,
+            c59450, c59460, _line17, _line19, _line22, _line30, _line31,
+            _line32, _line36, _line33, _line34, _line35, c59485, c59490,
+            c05700, _s1291, _parents, _taxbc, c05750)
+
+
+
+
+
+
+
+def TaxGains():
+    global c24517 # got it
+    global c24516 # got it
+    global c24520 # got it
+    global c05750 # at the end
+    global _taxbc # at the end
+    global c05700 # got it
+
+    c00650 = np.zeros(len(_taxinc))
     _hasgain = np.zeros(len(_taxinc))
     _dwks5 = np.zeros(len(_taxinc))
     c24505 = np.zeros(len(_taxinc))
@@ -760,7 +812,6 @@ def apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
     _taxspecial = np.zeros(len(_taxinc))
     c24580 = np.zeros(len(_taxinc))
     c05100 = np.zeros(len(_taxinc))
-    c05700 = np.zeros(len(_taxinc))
     c59430 = np.zeros(len(_taxinc))
     c59450 = np.zeros(len(_taxinc))
     c59460 = np.zeros(len(_taxinc))
@@ -780,46 +831,9 @@ def apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
     _s1291 = np.zeros(len(_taxinc))
     _parents = np.zeros(len(_taxinc))
     c05750 = np.zeros(len(_taxinc))
-    _taxbc = np.zeros(len(_taxinc)) 
+    _taxbc = np.zeros(len(_taxinc))
 
 
-    for i in range(len(_taxinc)):
-        (c00650[i], _hasgain[i], _dwks5[i], c24505[i], c24510[i], _dwks9[i], c24516[i],
-        c24580[i], c24516[i], _dwks12[i], c24517[i], c24520[i], c24530[i], _dwks16[i],
-        _dwks17[i], c24540[i], c24534[i], _dwks21[i], c24597[i], c24598[i], _dwks25[i],
-        _dwks26[i], _dwks28[i], c24610[i], c24615[i], _dwks31[i], c24550[i], c24570[i],
-        _addtax[i], c24560[i], _taxspecial[i], c05100[i], c05700[i], c59430[i],
-        c59450[i], c59460[i], _line17[i], _line19[i], _line22[i], _line30[i], _line31[i],
-        _line32[i], _line36[i], _line33[i], _line34[i], _line35[i], c59485[i], c59490[i],
-        c05700[i], _s1291[i], _parents[i], _taxbc[i], c05750[i]) = \
-        TaxGains0_jit(e00650[i], c04800[i], e01000[i], c23650[i], e23250[i], e01100[i],
-        e58990[i], e58980[i], e24515[i], e24518[i], _brk2, FLPDYR[i], DEFAULT_YR, 
-        MARS[i], _taxinc[i], _brk6,  _xyztax[i], _feided[i], _feitax[i], 
-        _cmp[i], e59410[i], e59420[i], e59440[i], e59470[i], e59400[i], e83200_0[i], 
-        e10105[i], e74400[i])
-
-    return  (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
-            c24580, c24516, _dwks12, c24517, c24520, c24530, _dwks16,
-            _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
-            _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
-            _addtax, c24560, _taxspecial, c05100, c05700, c59430,
-            c59450, c59460, _line17, _line19, _line22, _line30, _line31,
-            _line32, _line36, _line33, _line34, _line35, c59485, c59490,
-            c05700, _s1291, _parents, _taxbc, c05750)
-
-
-
-
-
-
-
-def TaxGains():
-    global c24517 # got it 
-    global c24516 # got it
-    global c24520 # got it
-    global c05750 # at the end
-    global _taxbc # at the end
-    global c05700 # got it
 
 
     (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
@@ -830,9 +844,17 @@ def TaxGains():
     c59450, c59460, _line17, _line19, _line22, _line30, _line31,
     _line32, _line36, _line33, _line34, _line35, c59485, c59490,
     c05700, _s1291, _parents, _taxbc, c05750) = \
-    apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
+    apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
     e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6,  _xyztax, _feided, _feitax, _cmp,
-    e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400)
+    e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400,
+    c00650 , _hasgain, _dwks5, c24505, c24510, _dwks9, c24516, _dwks12,
+    c24517 , c24520, c24530, _dwks16, _dwks17 ,c24540 ,c24534,
+    _dwks21 , c24597 , c24598, _dwks25 , _dwks26 , _dwks28,
+    c24610 , c24615 , _dwks31 , c24550 , c24570 , _addtax ,
+    c24560 , _taxspecial , c24580 , c05100 , c05700 , c59430 ,
+    c59450 , c59460 , _line17, _line19 , _line22 , _line30,
+    _line31 , _line32 , _line36 ,_line33 , _line34 , _line35,
+    c59485 , c59490, _s1291, _parents, c05750, _taxbc)
 
 
 
