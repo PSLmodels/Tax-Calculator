@@ -1,0 +1,201 @@
+{
+ "directed": true, 
+ "graph": [], 
+ "nodes": [
+  {
+   "id": "c05750"
+  }, 
+  {
+   "id": "c24520"
+  }, 
+  {
+   "id": "c24505"
+  }, 
+  {
+   "id": "c04100"
+  }, 
+  {
+   "id": "c04800"
+  }, 
+  {
+   "id": "_alminc"
+  }, 
+  {
+   "id": "c24580"
+  }, 
+  {
+   "id": "c10300"
+  }, 
+  {
+   "id": "c07220"
+  }, 
+  {
+   "id": "_dwks16"
+  }, 
+  {
+   "id": "c21060"
+  }, 
+  {
+   "id": "c82925"
+  }, 
+  {
+   "id": "c63000"
+  }, 
+  {
+   "id": "c62100"
+  }, 
+  {
+   "id": "c62800"
+  }, 
+  {
+   "id": "c05100"
+  }, 
+  {
+   "id": "_standard"
+  }, 
+  {
+   "id": "c07100"
+  }, 
+  {
+   "id": "c24517"
+  }, 
+  {
+   "id": "c09200"
+  }, 
+  {
+   "id": "c04500"
+  }, 
+  {
+   "id": "c24516"
+  }, 
+  {
+   "id": "_compitem"
+  }, 
+  {
+   "id": "_precrd"
+  }, 
+  {
+   "id": "c19700"
+  }, 
+  {
+   "id": "c82935"
+  }, 
+  {
+   "id": "_taxbc"
+  }, 
+  {
+   "id": "c62700"
+  }, 
+  {
+   "id": "c04470"
+  }, 
+  {
+   "id": "_nctcr"
+  }, 
+  {
+   "id": "c62780"
+  }, 
+  {
+   "id": "c63100"
+  }
+ ], 
+ "links": [
+  {
+   "source": 0, 
+   "target": 26
+  }, 
+  {
+   "source": 1, 
+   "target": 9
+  }, 
+  {
+   "source": 2, 
+   "target": 21
+  }, 
+  {
+   "source": 3, 
+   "target": 20
+  }, 
+  {
+   "source": 5, 
+   "target": 30
+  }, 
+  {
+   "source": 6, 
+   "target": 15
+  }, 
+  {
+   "source": 8, 
+   "target": 17
+  }, 
+  {
+   "source": 11, 
+   "target": 25
+  }, 
+  {
+   "source": 13, 
+   "target": 27
+  }, 
+  {
+   "source": 14, 
+   "target": 12
+  }, 
+  {
+   "source": 15, 
+   "target": 0
+  }, 
+  {
+   "source": 16, 
+   "target": 13
+  }, 
+  {
+   "source": 18, 
+   "target": 1
+  }, 
+  {
+   "source": 19, 
+   "target": 7
+  }, 
+  {
+   "source": 20, 
+   "target": 4
+  }, 
+  {
+   "source": 21, 
+   "target": 18
+  }, 
+  {
+   "source": 22, 
+   "target": 3
+  }, 
+  {
+   "source": 23, 
+   "target": 8
+  }, 
+  {
+   "source": 24, 
+   "target": 10
+  }, 
+  {
+   "source": 26, 
+   "target": 31
+  }, 
+  {
+   "source": 27, 
+   "target": 5
+  }, 
+  {
+   "source": 28, 
+   "target": 16
+  }, 
+  {
+   "source": 29, 
+   "target": 23
+  }, 
+  {
+   "source": 30, 
+   "target": 14
+  }
+ ], 
+ "multigraph": false
+}
