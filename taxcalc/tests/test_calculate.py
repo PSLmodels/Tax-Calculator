@@ -23,7 +23,7 @@ def run(puf=True):
     calc = Calculator(tax_dta, default_year=91)
     set_input_data(calc)
     update_globals_from_calculator(calc)
-    update_calculator_from_module(calc, constants)
+    update_calculator_from_module(calc, parameters)
 
     all_dfs = []
     add_df(all_dfs, FilingStatus(calc))
@@ -89,7 +89,7 @@ def test_make_Calculator():
 def test_make_Calculator_mods():
     calc1 = calculator(tax_dta)
     calc2 = calculator(tax_dta, _amex=np.array([4000]))
-    update_calculator_from_module(calc2, constants)
+    update_calculator_from_module(calc2, parameters)
     update_globals_from_calculator(calc2)
     assert all(calc2._amex == np.array([4000]))
 
@@ -97,7 +97,7 @@ def test_make_Calculator_mods():
 def test_make_Calculator_json():
     user_mods = '{ "_aged": [[1500], [1200]] }'
     calc2 = calculator(tax_dta, mods=user_mods, _amex=np.array([4000]))
-    update_calculator_from_module(calc2, constants)
+    update_calculator_from_module(calc2, parameters)
     update_globals_from_calculator(calc2)
     assert all(calc2._amex == np.array([4000]))
     assert all(calc2._aged == np.array([[1500], [1200]]))

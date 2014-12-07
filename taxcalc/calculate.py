@@ -4,7 +4,7 @@ import math
 import numpy as np
 from .utils import *
 
-from .constants import *
+from .parameters import *
 
 DEFAULT_YR = 2013
 
@@ -82,7 +82,7 @@ def CapGains(p):
     global c01000
     c23650 = e23250 + e22250 + e23660
     c01000 = np.maximum(-3000 / p._sep, c23650)
-    c02700 = np.minimum(_feided, p._feimax[p.DEFAULT_YR - FLPDYR] * f2555)
+    c02700 = np.minimum(_feided, p._feimax[FLPDYR - p.DEFAULT_YR] * f2555)
     _ymod1 = (e00200 + e00300 + e00600
             + e00700 + e00800 + e00900
             + c01000 + e01100 + e01200
@@ -179,16 +179,6 @@ def charity(e19800, e20100, e20200, posagi):
         return min(0.5 * posagi, lim30 + lim50)
 
 
-@vectorize('int64(int64)')
-def phase2(MARS):
-    if MARS == 1:
-        return 200000
-    elif MARS == 4:
-        return 250000
-    else:
-        return 300000
-
-
 @vectorize('float64(float64, float64, float64, float64, float64)', nopython=True)
 def item_ded_limit(c21060, c00100, nonlimited, limitratio, posagi):
     if c21060 > nonlimited and c00100 > limitratio:
@@ -250,7 +240,7 @@ def ItemDed(puf, p):
               + c20500 + c20800 + e21000 + e21010)
 
     # Itemized Deduction Limitation
-    _phase2 = phase2(MARS)
+    _phase2 = p._phase2[FLPDYR-p.DEFAULT_YR, MARS-1] # Eventually, get rid of _phase2
 
     _nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
     _limitratio = _phase2/p._sep
@@ -319,13 +309,13 @@ def StdDed_txpyers(MARS):
         return 1
 
 
-@jit("void(float64[:], int64[:], float64[:], float64[:], float64[:], int64[:], int64[:,:])", nopython=True)
-def StdDed_c04200(c04200, MARS, e04200, _numextra, _exact, _txpyers, _aged):
+@jit("void(float64[:], int64[:], float64[:], float64[:], float64[:], int64[:], int64, int64[:], int64[:,:])", nopython=True)
+def StdDed_c04200(c04200, MARS, e04200, _numextra, _exact, _txpyers, DEFAULT_YR, FLPDYR, _aged):
     for i in range(MARS.shape[0]):
         if _exact[i] == 1 and MARS[i] == 3 or MARS[i] == 5:
             c04200[i] = e04200[i]
         else:
-            c04200[i] = _numextra[i] * _aged[_txpyers[i] - 1, 0]
+            c04200[i] = _numextra[i] * _aged[FLPDYR[i] - DEFAULT_YR, _txpyers[i] - 1]
 
 
 @vectorize(["float64(int64, float64, float64, float64)"], nopython=True)
@@ -390,7 +380,7 @@ def StdDed(p):
     _txpyers = StdDed_txpyers(MARS)
 
     c04200 = np.zeros((dim,))
-    StdDed_c04200(c04200, MARS, e04200, _numextra, _exact, _txpyers, p._aged)
+    StdDed_c04200(c04200, MARS, e04200, _numextra, _exact, _txpyers, p.DEFAULT_YR, FLPDYR, p._aged)
 
     c15200 = c04200
 
@@ -859,7 +849,7 @@ def AMTI(puf, p):
 
     #TODO
     c62600 = np.maximum(0, p._amtex[
-                        FLPDYR - p.DEFAULT_YR, MARS - 1] - 0.25 * np.maximum(0, c62100 - p._amtys[MARS - 1]))
+                        FLPDYR - p.DEFAULT_YR, MARS - 1] - 0.25 * np.maximum(0, c62100 - p._amtys[FLPDYR - p.DEFAULT_YR, MARS - 1]))
 
     _agep = AMTI_agep(DOBYR, FLPDYR, DOBMD)
 
@@ -1074,20 +1064,20 @@ def NumDep(puf, p):
     c59660 = np.zeros((dim,))
 
     _val_ymax = np.where(np.logical_and(MARS == 2, _modagi > 0), p._ymax[
-                         _ieic, FLPDYR - p.DEFAULT_YR] + p._joint[FLPDYR - p.DEFAULT_YR], 0)
+                         _ieic, FLPDYR - p.DEFAULT_YR] + p._joint[FLPDYR - p.DEFAULT_YR, _ieic], 0)
     _val_ymax = np.where(np.logical_and(_modagi > 0, np.logical_or(MARS == 1, np.logical_or(
         MARS == 4, np.logical_or(MARS == 5, MARS == 7)))), p._ymax[_ieic, FLPDYR - p.DEFAULT_YR], _val_ymax)
     c59660 = np.where(np.logical_and(_modagi > 0, np.logical_or(MARS == 1, np.logical_or(MARS == 4, np.logical_or(MARS == 5, np.logical_or(
-        MARS == 2, MARS == 7))))), np.minimum(p._rtbase[_ieic, FLPDYR - p.DEFAULT_YR] * c59560, p._crmax[_ieic, FLPDYR - p.DEFAULT_YR]), c59660)
+        MARS == 2, MARS == 7))))), np.minimum(p._rtbase[FLPDYR - p.DEFAULT_YR, _ieic] * c59560, p._crmax[FLPDYR - p.DEFAULT_YR, _ieic]), c59660)
     _preeitc = np.where(np.logical_and(_modagi > 0, np.logical_or(MARS == 1, np.logical_or(
         MARS == 4, np.logical_or(MARS == 5, np.logical_or(MARS == 2, MARS == 7))))), c59660, 0)
 
     c59660 = np.where(np.logical_and(np.logical_and(MARS != 3, MARS != 6), np.logical_and(_modagi > 0, np.logical_or(
-        _modagi > _val_ymax, c59560 > _val_ymax))), np.maximum(0, c59660 - p._rtless[_ieic, FLPDYR - p.DEFAULT_YR] * (np.maximum(_modagi, c59560) - _val_ymax)), c59660)
+        _modagi > _val_ymax, c59560 > _val_ymax))), np.maximum(0, c59660 - p._rtless[FLPDYR - p.DEFAULT_YR, _ieic] * (np.maximum(_modagi, c59560) - _val_ymax)), c59660)
     _val_rtbase = np.where(np.logical_and(np.logical_and(
-        MARS != 3, MARS != 6), _modagi > 0), p._rtbase[_ieic, FLPDYR - p.DEFAULT_YR] * 100, 0)
+        MARS != 3, MARS != 6), _modagi > 0), p._rtbase[FLPDYR - p.DEFAULT_YR, _ieic] * 100, 0)
     _val_rtless = np.where(np.logical_and(np.logical_and(
-        MARS != 3, MARS != 6), _modagi > 0), p._rtless[_ieic, FLPDYR - p.DEFAULT_YR] * 100, 0)
+        MARS != 3, MARS != 6), _modagi > 0), p._rtless[FLPDYR - p.DEFAULT_YR, _ieic] * 100, 0)
 
     _dy = np.where(np.logical_and(np.logical_and(MARS != 3, MARS != 6), _modagi > 0), e00400 + e83080 + e00300 + e00600
                    +
@@ -1151,9 +1141,8 @@ def ChildTaxCredit(p):
 
 
 # def HopeCredit():
-    # Hope credit for 1998-2009, I don't think this is needed
-    # Leave blank for now, ask Dan
-    # SAS lnies 951 - 972
+    # W/o congressional action, Hope Credit will replace 
+    # American opportunities credit in 2018. NEED TO ADD LOGIC!!!
 
 
 def AmOppCr():
