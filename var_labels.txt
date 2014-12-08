@@ -324,4 +324,15 @@ E87570 = Form 8863: Form 8863 Maximum AGI Threshold
 E87580 = Form 8863: AGI Amt.
 E87590 = Form 8863: Form 8863 AGI Limit Amt.
 E87600 = Form 8863: Form 8863 Limit Amt.
+E87668 = Gross Nonrefundable Education credit
+E87654 = Refundable American Opportunity Credit Maximum AGI Threshold
+E87656 = Form 1040 AGI
+E87658 = Maximum AGI Threshold Less AGI (?check?)
+E87660 = Refundable American Opportunity Credit Limit
+E87662 = Refundable American Opportunity Credit Decimal
+E87664 = Tentative American Opportunity Credit 
+E87666 = Refundable American Opportunity Credit
+E10960 = Refundable Education Credit
+E87668 = Gross Nonrefundable Education Credit
+E87681 = Refundable Education Credit Used to Offset Income Tax Before (?check?
 ;
