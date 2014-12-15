@@ -468,187 +468,126 @@ def NonGain():
 #     return rate
 
 
-@jit
-def TaxGains0_jit(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
-    e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6,  _xyztax, _feided, _feitax, _cmp,
-e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400 ):
+@njit
+def TaxGains0_jit(e00650, c04800, e01000, c23650, e23250, e01100, e58990, e58980, e24515,
+    e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6, _xyztax, _feided, _feitax,
+    _cmp, e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400):
 
-    _hasgain = 0.
-    _dwks5 = 0.
-    c24505 = 0.
-    c24510 = 0.
-    _dwks9 = 0.
-    c24516 = 0.
-    _dwks12 = 0.
-    _dwks17 = 0.
-    c24517 = 0.
-    c24520 = 0.
-    _dwks16 = 0.
-    c24540 = 0.
-    c24534 = 0. 
-    _dwks21 = 0.
-    c24598 = 0.
-    c24597 = 0. 
-    _dwks25 = 0.
-    _dwks26 = 0.
-    _dwks28 = 0.
-    c24610 = 0.
-    c24615 = 0.
-    _dwks31 = 0.
-    c24550 = 0.
-    c24570 = 0.
-    _addtax = 0.
-    c24530 = 0.
-    c00650 = e00650 
-
-    c24560 = 0.
-
-    _taxspecial = 0.
-    c05100 = 0.
-    c59430 = 0.
-    c59450 = 0.
-    c59460 = 0.
-    _line17 = 0.
-    _line19 = 0.
-    _line22 = 0.
-    _line30 = 0.
-    _line31 = 0.
-    _line32 = 0.
-    _line33 = 0.
-    _line36 = 0.
-    _line34 = 0.
-    _line35 = 0.
-    c59485 = 0.
-    c59490 = 0.
-    c05700 = 0.
-    _parents = 0.
-    _s1291 = 0.
-    c05750 = 0.
-    _taxbc = 0.
-    c24580 = _xyztax
-
-
+    c00650 = e00650
 
     if e01000 > 0 or c23650 > 0. or e23250 > 0. or e01100 > 0. or e00650 > 0.:
-        
         _hasgain = 1.
-    
+    else:
+        _hasgain = 0.
+
+
     if _taxinc > 0. and _hasgain == 1.:
-
+        #if/else 1
         _dwks5 = max(0., e58990 - e58980)
-
         c24505 = max(0., c00650 - _dwks5)
 
-        c24510 = max(0., min(c23650, e23250)) + e01100
-        
         # gain for tax computation
-        
-        if e01100 > 0.:    
-
+        if e01100 > 0.:
             c24510 = float(e01100)
+        else:
+            c24510 = max(0., min(c23650, e23250)) + e01100
 
         _dwks9 = max(0, c24510 - min(e58990, e58980))
-
         c24516 = c24505 + _dwks9
-    
-    else: c24516 = max(0., min(e23250, c23650)) + e01100 
 
-
-    if _taxinc > 0. and _hasgain == 1.: 
-        
+        #if/else 2
         _dwks12 = min(_dwks9, e24515 + e24518)
-        
         c24517 = c24516 - _dwks12
-
         c24520 = max(0., _taxinc - c24517)
-
-
-
-     # tentative TI less schD gain   
-    
-
+        # tentative TI less schD gain
         c24530 = min(_brk2[FLPDYR - DEFAULT_YR, MARS - 1], _taxinc)
-    
 
-    if _taxinc > 0. and _hasgain == 1.: 
-
+        #if/else 3
         _dwks16 = min(c24520, c24530)
-
-
-
         _dwks17 = max(0., _taxinc - c24516)
-
         c24540 = max(_dwks16, _dwks17)
-
-
         c24534 = c24530 - _dwks16
-
         _dwks21 = min(_taxinc, c24517)
-    
         c24597 = max(0., _dwks21 - c24534)
 
-
-    # income subject to 15% tax
-    c24598 = 0.15 * c24597  # actual 15% tax
-
-    if _taxinc > 0. and _hasgain == 1.:
-
+        #if/else 4
+        # income subject to 15% tax
+        c24598 = 0.15 * c24597  # actual 15% tax
         _dwks25 = min(_dwks9, e24515)
-    
         _dwks26 = c24516 + c24540
-    
         _dwks28 = max(0., _dwks26 - _taxinc)
-
         c24610 = max(0., _dwks25 - _dwks28)
-
         c24615 = 0.25 * c24610
-
         _dwks31 = c24540 + c24534 + c24597 + c24610
-
         c24550 = max(0., _taxinc - _dwks31)
-
-        c24570 = 0.28 * c24550 
-
+        c24570 = 0.28 * c24550
 
         if c24540 > _brk6[FLPDYR - DEFAULT_YR, MARS - 1]:
             _addtax = 0.05 * c24517
-        
+
         elif c24540<= _brk6[FLPDYR - DEFAULT_YR, MARS - 1] and _taxinc > _brk6[FLPDYR - DEFAULT_YR, MARS - 1]:
             _addtax = 0.05 * min(c24517, c04800 - _brk6[FLPDYR - DEFAULT_YR, MARS - 1])
 
-
-        c24560 = Taxer_i(c24540, c24560, MARS, FLPDYR, DEFAULT_YR)   
+        c24560 = Taxer_i(c24540, MARS, FLPDYR, DEFAULT_YR)
 
         _taxspecial = c24598 + c24615 + c24570 + c24560 + _addtax
-
         c24580 = min(_taxspecial, _xyztax)
 
-    
+    else:
+        ## these variables only be used to check accuracy? unused in calcs. (except c24580)
+        _dwks5 = 0.
+        _dwks9 = 0.
+        c24505 = 0.
+        c24510 = 0.
+        c24516 = max(0., min(e23250, c23650)) + e01100
+
+        _dwks12 = 0.
+        c24517 = 0.
+        c24520 = 0.
+        c24530 = 0.
+
+        _dwks16 = 0.
+        _dwks17 = 0.
+        c24540 = 0.
+        c24534 = 0.
+        _dwks21 = 0.
+        c24597 = 0.
+
+        c24598 = 0.
+        _dwks25 = 0.
+        _dwks26 = 0.
+        _dwks28 = 0.
+        c24610 = 0.
+        c24615 = 0.
+        _dwks31 = 0.
+        c24550 = 0.
+        c24570 = 0.
+        _addtax = 0.
+        c24560 = 0.
+        _taxspecial = 0.
+        c24580 = _xyztax
+
+
     if c04800 > 0. and _feided > 0.:
-
         c05100 = max(0., c24580 - _feitax)
+    else:
+        c05100 = c24580
 
-    else: c05100 = c24580 
-    
 
     # Form 4972 - Lump Sum Distributions
     if _cmp == 1.:
         c59430 = max(0., e59410 - e59420)
-
         c59450 = c59430 + e59440 # income plus lump sum
-
         c59460 = max(0., min(0.5 * c59450, 10000.)) - 0.2 * max(0., 59450. - 20000.)
-     
         _line17 = c59450 - c59460
-
         _line19 = c59450 - c59460 - e59470
 
-        _line22 = 0.
         if c59450 > 0.:
             _line22 = max(0., e59440 - e59440*c59460/c59450)
+        else:
+            _line22 = 0.
 
         _line30 = 0.1 * max(0., c59450 - c59460 - e59470)
-
 
         _line31 = 0.11 * min(_line30, 1190.)\
                 + 0.12 * min(2270. - 1190., max(0, _line30 - 1190.))\
@@ -666,16 +605,15 @@ e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400 ):
                 + 0.48 * min(85790. - 57190., max(0., _line30 - 57190.))
 
         _line32 = 10. * _line31
-        
-        _line36 =0.
-        if e59440 == 0.: 
-            _line36 = _line32
 
-        _line33 = 0.
-        _line34 = 0.
-        _line35 = 0.
-        _line36 = 0.    
-        if e59440 > 0.:
+        if e59440 == 0.:
+            _line36 = _line32
+            ## below are unused in calcs
+            _line33 = 0.
+            _line34 = 0.
+            _line35 = 0.
+
+        elif e59440 > 0.:
             _line33 = 0.1 * _line22
 
             _line34 = 0.11 * min(_line30, 1190.)\
@@ -694,22 +632,40 @@ e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400 ):
                     + 0.48 * min(85790. - 57190., max(0., _line30 - 57190.))
 
             _line35 = 10. * _line34
+            _line36 = max(0., _line32 - _line35)
 
-            _line36 = max(0., _line32 - _line35)    
-    
-    # tax saving from 10 yr option
+        else:
+            _line33 = 0.
+            _line34 = 0.
+            _line35 = 0.
+            _line36 = 0.
+
+        # tax saving from 10 yr option
         c59485 = _line36
-        
+
         c59490 = c59485 + 0.2 * max(0., e59400)
-    # pension gains tax plus
+        # pension gains tax plus
         c05700 = c59490
 
+    else:
+        # all but one unused in calcs
+        c59430 = 0.
+        c59450 = 0.
+        c59460 = 0.
+        _line17 = 0.
+        _line19 = 0.
+        _line22 = 0.
+        _line30 = 0.
+        _line31 = 0.
+        _line32 = 0.
+        _line33 = 0.
+        _line34 = 0.
+        _line35 = 0.
+        _line36 = 0.
+
     _parents = e83200_0
-
     _s1291 = e10105
-
     c05750 = max(c05100 + _parents + c05700, e74400)
-
     _taxbc = c05750
 
     return (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
@@ -722,7 +678,8 @@ e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400 ):
             c05700, _s1291, _parents, _taxbc, c05750)
 
 
-@jit
+
+@njit
 def apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
     e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6,  _xyztax, _feided, _feitax, _cmp,
     e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400,
@@ -734,9 +691,6 @@ def apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
     c59450, c59460 , _line17, _line19 , _line22 , _line30,
     _line31, _line32, _line36, _line33, _line34, _line35,
     c59485, c59490 , _s1291, _parents, c05750, _taxbc):
-
-
-
 
 
     for i in range(len(_taxinc)):
@@ -767,107 +721,30 @@ def apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 
 
 
-
-
-
-
-def TaxGains():
+def TaxGains(p):
     global c24517 # got it
     global c24516 # got it
     global c24520 # got it
     global c05750 # at the end
     global _taxbc # at the end
     global c05700 # got it
-
-    c00650 = np.zeros(len(_taxinc))
-    _hasgain = np.zeros(len(_taxinc))
-    _dwks5 = np.zeros(len(_taxinc))
-    c24505 = np.zeros(len(_taxinc))
-    c24510 = np.zeros(len(_taxinc))
-    _dwks9 = np.zeros(len(_taxinc))
-    c24516 = np.zeros(len(_taxinc))
-    _dwks12 = np.zeros(len(_taxinc))
-    c24517 = np.zeros(len(_taxinc))
-    c24520 = np.zeros(len(_taxinc))
-    c24530 = np.zeros(len(_taxinc))
-    _dwks16 = np.zeros(len(_taxinc))
-    _dwks17 = np.zeros(len(_taxinc))
-    c24540 = np.zeros(len(_taxinc))
-    c24534 = np.zeros(len(_taxinc))
-    _dwks21 = np.zeros(len(_taxinc))
-    c24597 = np.zeros(len(_taxinc))
-    c24598 = np.zeros(len(_taxinc))
-    _dwks25 = np.zeros(len(_taxinc))
-    _dwks26 = np.zeros(len(_taxinc))
-    _dwks28 = np.zeros(len(_taxinc))
-    c24610 = np.zeros(len(_taxinc))
-    c24615 = np.zeros(len(_taxinc))
-    _dwks31 = np.zeros(len(_taxinc))
-    c24550 = np.zeros(len(_taxinc))
-    c24570 = np.zeros(len(_taxinc))
-    _addtax = np.zeros(len(_taxinc))
-
-    c24560 = np.zeros(len(_taxinc))
-
-    _taxspecial = np.zeros(len(_taxinc))
-    c24580 = np.zeros(len(_taxinc))
-    c05100 = np.zeros(len(_taxinc))
-    c59430 = np.zeros(len(_taxinc))
-    c59450 = np.zeros(len(_taxinc))
-    c59460 = np.zeros(len(_taxinc))
-    _line17 = np.zeros(len(_taxinc))
-    _line19 = np.zeros(len(_taxinc))
-    _line22 = np.zeros(len(_taxinc))
-    _line30 = np.zeros(len(_taxinc))
-    _line31 = np.zeros(len(_taxinc))
-    _line32 = np.zeros(len(_taxinc))
-    _line36 = np.zeros(len(_taxinc))
-    _line33 = np.zeros(len(_taxinc))
-    _line34 = np.zeros(len(_taxinc))
-    _line35 = np.zeros(len(_taxinc))
-    c59485 = np.zeros(len(_taxinc))
-    c59490 = np.zeros(len(_taxinc))
-    c05700 = np.zeros(len(_taxinc))
-    _s1291 = np.zeros(len(_taxinc))
-    _parents = np.zeros(len(_taxinc))
-    c05750 = np.zeros(len(_taxinc))
-    _taxbc = np.zeros(len(_taxinc))
+    global c04800, _taxinc, _xyztax, _feitax
 
 
+    outputs = apply_TaxGains0(p.e00650, c04800, p.e01000, p.c23650, p.e23250, p.e01100, p.e58990,
+    p.e58980, p.e24515, p.e24518, p._brk2, p.FLPDYR, p.DEFAULT_YR, p.MARS, _taxinc, p._brk6,  _xyztax, p._feided, _feitax, p._cmp,
+    p.e59410, p.e59420, p.e59440, p.e59470, p.e59400, p.e83200_0, p.e10105, p.e74400,
+    p.c00650 , p._hasgain, p._dwks5, p.c24505, p.c24510, p._dwks9, p.c24516, p._dwks12,
+    p.c24517 , p.c24520, p.c24530, p._dwks16, p._dwks17, p.c24540, p.c24534,
+    p._dwks21 , p.c24597 , p.c24598, p._dwks25 , p._dwks26 , p._dwks28,
+    p.c24610 , p.c24615 , p._dwks31 , p.c24550 , p.c24570 , p._addtax ,
+    p.c24560 , p._taxspecial , p.c24580 , p.c05100 , p.c05700 , p.c59430 ,
+    p.c59450 , p.c59460 , p._line17, p._line19 , p._line22 , p._line30,
+    p._line31 , p._line32 , p._line36 ,p._line33 , p._line34 , p._line35,
+    p.c59485 , p.c59490, p._s1291, p._parents, p.c05750, p._taxbc)
 
 
-    (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
-    c24580, c24516, _dwks12, c24517, c24520, c24530, _dwks16,
-    _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
-    _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
-    _addtax, c24560, _taxspecial, c05100, c05700, c59430,
-    c59450, c59460, _line17, _line19, _line22, _line30, _line31,
-    _line32, _line36, _line33, _line34, _line35, c59485, c59490,
-    c05700, _s1291, _parents, _taxbc, c05750) = \
-    apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
-    e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6,  _xyztax, _feided, _feitax, _cmp,
-    e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400,
-    c00650 , _hasgain, _dwks5, c24505, c24510, _dwks9, c24516, _dwks12,
-    c24517 , c24520, c24530, _dwks16, _dwks17 ,c24540 ,c24534,
-    _dwks21 , c24597 , c24598, _dwks25 , _dwks26 , _dwks28,
-    c24610 , c24615 , _dwks31 , c24550 , c24570 , _addtax ,
-    c24560 , _taxspecial , c24580 , c05100 , c05700 , c59430 ,
-    c59450 , c59460 , _line17, _line19 , _line22 , _line30,
-    _line31 , _line32 , _line36 ,_line33 , _line34 , _line35,
-    c59485 , c59490, _s1291, _parents, c05750, _taxbc)
-
-
-
-
-    outputs =   (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
-                c24580, c24516, _dwks12, c24517, c24520, c24530, _dwks16,
-                _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
-                _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
-                _addtax, c24560, _taxspecial, c05100, c05700, c59430,
-                c59450, c59460, _line17, _line19, _line22, _line30, _line31,
-                _line32, _line36, _line33, _line34, _line35, c59485, c59490,
-                c05700, _s1291, _parents, _taxbc, c05750)
-
+    ## Note var c24516 is being printed twice. On purpose?
     header = ['e00650', '_hasgain', '_dwks5', 'c24505', 'c24510', '_dwks9', #Note weirdness w e00650
               'c24516', 'c24580', 'c24516', '_dwks12', 'c24517', 'c24520',
               'c24530', '_dwks16', '_dwks17', 'c24540', 'c24534', '_dwks21',
@@ -882,9 +759,6 @@ def TaxGains():
 
     return DataFrame(data=np.column_stack(outputs),
                      columns=header) , c05750
-
-
-
 
 
 
@@ -1683,8 +1557,10 @@ def Taxer(inc_in, inc_out, MARS, p):
 
     return inc_out
 
-@jit(f8(f8, f8, i8, i8, i8), nopython = True)
-def Taxer_i(inc_in, inc_out, MARS, FLPDYR, DEFAULT_YR):
+@jit(f8(f8, i8, i8, i8), nopython = True)
+def Taxer_i(inc_in, MARS, FLPDYR, DEFAULT_YR):
+    ## note still should pass in all globals being used, including _rt1-_rt7 and _brk1-_brk6
+
     # low = 0 
     # med = 0
 
