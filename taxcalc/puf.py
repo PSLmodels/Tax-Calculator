@@ -458,3 +458,19 @@ def set_input_data(calc):
     calc._parents = np.zeros(dim)
     calc.c05750 = np.zeros(dim)
     calc._taxbc = np.zeros(dim)
+    
+    """
+    Previously defined in ItemDed()
+    """
+    calc.c17750 = np.zeros(dim)
+    calc._sit1 = np.zeros(dim)
+    calc._statax = np.zeros(dim)
+    calc.c37703 = np.zeros(dim)
+    calc.c20500 = np.zeros(dim)
+    calc.c20750 = np.zeros(dim)
+    calc.c20400 = np.zeros(dim)
+    calc.c19200 = np.zeros(dim)
+    calc.c19700 = np.zeros(dim)
+    calc._nonlimited = np.zeros(dim)
+    calc._phase2 = np.zeros(dim)
+    calc._limitratio = np.zeros(dim)

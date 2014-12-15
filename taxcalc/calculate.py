@@ -270,6 +270,140 @@ def ItemDed(puf, p):
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
+@njit
+def ItemDed_calc(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
+                 e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
+                 e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
+                 MARS, _sep, c00100, puf):
+
+    # Medical #
+    c17750 = 0.075 * _posagi
+    c17000 = max(0, e17500 - c17750)
+
+    # State and Local Income Tax, or Sales Tax #
+    _sit1 = max(e18400, e18425)
+    _sit = max(_sit1, 0)
+    _statax =  max(_sit, e18450)
+
+    # Other Taxes #
+    c18300 = _statax + e18500 + e18800 + e18900
+
+    # Casulty #
+    if e20500 > 0:
+        c37703 = e20500 + 0.1 * _posagi
+        c20500 = c37703 + 0.1 * _posagi
+    else:
+        c37703 = 0.
+        c20500 = 0.
+
+    # Miscellaneous #
+    c20750 = 0.02 * _posagi
+    if puf == True:
+        c20400 = e20400
+        c19200 = e19200
+    else:
+        c20400 = e20550 + e20600 + e20950
+        c19200 = e19500 + e19570 + e19400 + e19550
+    c20800 = max(0, c20400 - c20750)
+
+    # Charity (assumes carryover is non-cash)
+    base_charity = e19800 + e20100 + e20200
+    if base_charity <= 0.2 * _posagi:
+        c19700 = base_charity
+    else:
+        lim50 = min(0.50 * _posagi, e19800)
+        lim30 = min(0.30 * _posagi, e20100 + e20200)
+        c19700 = min(0.5 * _posagi, lim30 + lim50)
+    # temporary fix!??
+
+    # Gross Itemized Deductions #
+    c21060 = (e20900 + c17000 + c18300 + c19200 + c19700
+              + c20500 + c20800 + e21000 + e21010)
+
+    # Itemized Deduction Limitation
+    if MARS == 1:
+        _phase2 = 200000
+    elif MARS == 4:
+        _phase2 = 250000
+    else:
+        _phase2 = 300000
+
+    _nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
+    _limitratio = _phase2/_sep
+
+
+    if c21060 > _nonlimited and c00100 > _limitratio:
+        dedmin = 0.8 * (c21060 - _nonlimited)
+        dedpho = 0.03 * max(0, _posagi - _limitratio)
+        c21040 = min(dedmin, dedpho)
+    else:
+        c21040 = 0.0
+
+
+    if c21060 > _nonlimited and c00100 > _limitratio:
+        c04470 = c21060 - c21040
+    else:
+        c04470 = c21060
+
+
+    # the variables that are casted as floats below can be either floats or ints depending
+    # on which if/else branches they follow in the above code. they need to always be the same type
+    return (c17750, c17000, _sit1, _sit, _statax, c18300, float(c37703), float(c20500),
+            c20750, float(c20400), float(c19200), c20800, c19700, c21060,
+            _phase2, _nonlimited, _limitratio, c04470, c21040)
+
+
+@njit
+def ItemDed_apply(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
+            e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
+            e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
+            MARS, _sep, c00100, puf,
+            c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500, c20750, c20400, c19200,
+            c20800, c19700, c21060, _phase2, _nonlimited, _limitratio, c04470, c21040):
+
+    for i in range(len(_posagi)):
+        (c17750[i], c17000[i], _sit1[i], _sit[i], _statax[i], c18300[i], c37703[i], c20500[i],
+        c20750[i], c20400[i], c19200[i], c20800[i], c19700[i], c21060[i], _phase2[i],
+        _nonlimited[i], _limitratio[i], c04470[i], c21040[i]
+        ) = ItemDed_calc(
+            _posagi[i], e17500[i], e18400[i], e18425[i], e18450[i], e18500[i], e18800[i], e18900[i],
+            e20500[i], e20400[i], e19200[i], e20550[i], e20600[i], e20950[i], e19500[i], e19570[i],
+            e19400[i], e19550[i], e19800[i], e20100[i], e20200[i], e20900[i], e21000[i], e21010[i],
+            MARS[i], _sep[i], c00100[i], puf
+            )
+
+
+    return (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500,
+                c20750, c20400, c19200, c20800, c19700, c21060,
+                _phase2, _nonlimited, _limitratio, c04470, c21040)
+
+
+def ItemDed_calc_apply(puf, p):
+    global c04470
+    global c21060
+    global c21040
+    global c17000
+    global c18300
+    global c20800
+    global _sit
+
+
+    outputs = ItemDed_apply(p._posagi, p.e17500, p.e18400, p.e18425, p.e18450, p.e18500,
+            p.e18800, p.e18900, p.e20500, p.e20400, p.e19200, p.e20550, p.e20600, p.e20950,
+            p.e19500, p.e19570, p.e19400, p.e19550, p.e19800, p.e20100, p.e20200, p.e20900,
+            p.e21000, p.e21010, p.MARS, p._sep, p.c00100, puf,
+            p.c17750, c17000, p._sit1, _sit, p._statax, c18300, p.c37703, p.c20500, p.c20750, p.c20400, p.c19200,
+            c20800, p.c19700, c21060, p._phase2, p._nonlimited, p._limitratio, c04470, c21040)
+
+
+    header= ['c17750', 'c17000', '_sit1', '_sit', '_statax', 'c18300', 'c37703',
+             'c20500', 'c20750', 'c20400', 'c19200', 'c20800', 'c19700',
+             'c21060', '_phase2',
+             '_nonlimited', '_limitratio', 'c04470', 'c21040']
+
+    return DataFrame(data=np.column_stack(outputs), columns=header)
+
+
 def EI_FICA(p):
     global _sey
     global _setax
