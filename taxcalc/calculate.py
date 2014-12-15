@@ -161,114 +161,6 @@ def AGI(p):
                               '_ywossbe', '_ywossbc', '_prexmp', 'c04600'])
 
 
-@vectorize('float64(float64, float64, float64)', nopython=True)
-def casulty(controller_var, output_var, posagi):
-    if controller_var > 0:
-        return output_var + 0.1 * posagi
-    return 0
-
-
-@vectorize('float64(float64, float64, float64, float64)', nopython=True)
-def charity(e19800, e20100, e20200, posagi):
-    base_charity = e19800 + e20100 + e20200
-    if base_charity <= 0.2 * posagi:
-        return base_charity
-    else:
-        lim50 = min(0.50 * posagi, e19800)
-        lim30 = min(0.30 * posagi, e20100 + e20200)
-        return min(0.5 * posagi, lim30 + lim50)
-
-
-@vectorize('int64(int64)')
-def phase2(MARS):
-    if MARS == 1:
-        return 200000
-    elif MARS == 4:
-        return 250000
-    else:
-        return 300000
-
-
-@vectorize('float64(float64, float64, float64, float64, float64)', nopython=True)
-def item_ded_limit(c21060, c00100, nonlimited, limitratio, posagi):
-    if c21060 > nonlimited and c00100 > limitratio:
-        dedmin = 0.8 * (c21060 - nonlimited)
-        dedpho = 0.03 * max(0, posagi - limitratio)
-        return min(dedmin, dedpho)
-    return 0.0
-
-
-@vectorize('float64(float64, float64, float64, float64, float64)')
-def item_ded_vec(c21060, c00100, nonlimited, limitratio, c21040):
-    if c21060 > nonlimited and c00100 > limitratio:
-        return c21060 - c21040
-    return c21060
-
-
-def ItemDed(puf, p):
-    # Itemized Deductions
-    global c04470
-    global c21060
-    global c21040
-    global c17000
-    global c18300
-    global c20800
-    global _sit
-
-    # Medical #
-    c17750 = 0.075 * _posagi
-    c17000 = np.maximum(0, e17500 - c17750)
-
-    # State and Local Income Tax, or Sales Tax #
-    _sit1 = np.maximum(e18400, e18425)
-    _sit = np.maximum(_sit1, 0)
-    _statax = np.maximum(_sit, e18450)
-
-    # Other Taxes #
-    c18300 = _statax + e18500 + e18800 + e18900
-
-    # Casulty #
-    c37703 = casulty(e20500, e20500, _posagi)
-    c20500 = casulty(e20500, c37703, _posagi)
-
-    # Miscellaneous #
-    c20750 = 0.02 * _posagi
-    if puf == True:
-        c20400 = e20400
-        c19200 = e19200
-    else:
-        c20400 = e20550 + e20600 + e20950
-        c19200 = e19500 + e19570 + e19400 + e19550
-    c20800 = np.maximum(0, c20400 - c20750)
-
-    # Charity (assumes carryover is non-cash)
-    c19700 = charity(e19800, e20100, e20200, _posagi)
-    # temporary fix!??
-
-    # Gross Itemized Deductions #
-    c21060 = (e20900 + c17000 + c18300 + c19200 + c19700
-              + c20500 + c20800 + e21000 + e21010)
-
-    # Itemized Deduction Limitation
-    _phase2 = phase2(MARS)
-
-    _nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
-    _limitratio = _phase2/p._sep
-
-    c21040 = item_ded_limit(c21060, c00100, _nonlimited, _limitratio, _posagi)
-    c04470 = item_ded_vec(c21060, c00100, _nonlimited, _limitratio, c21040)
-
-    outputs = (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500,
-               c20750, c20400, c19200, c20800, c19700, c21060,
-               _phase2, _nonlimited, _limitratio, c04470, c21040)
-
-    header= ['c17750', 'c17000', '_sit1', '_sit', '_statax', 'c18300', 'c37703',
-             'c20500', 'c20750', 'c20400', 'c19200', 'c20800', 'c19700',
-             'c21060', '_phase2',
-             '_nonlimited', '_limitratio', 'c04470', 'c21040']
-
-    return DataFrame(data=np.column_stack(outputs), columns=header)
-
 
 @njit
 def ItemDed_calc(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
@@ -378,7 +270,7 @@ def ItemDed_apply(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e1890
                 _phase2, _nonlimited, _limitratio, c04470, c21040)
 
 
-def ItemDed_calc_apply(puf, p):
+def ItemDed(puf, p):
     global c04470
     global c21060
     global c21040
