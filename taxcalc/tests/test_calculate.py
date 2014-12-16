@@ -45,7 +45,7 @@ def run(puf=True):
     add_df(all_dfs, StdDed(calc))
     add_df(all_dfs, XYZD(calc))
     add_df(all_dfs, NonGain())
-    df_Tax_Gains, c05750 = TaxGains()  
+    df_Tax_Gains, c05750 = TaxGains(calc)
     add_df(all_dfs, df_Tax_Gains)
     add_df(all_dfs, MUI(c05750, calc))
     df_AMTI, c05800 = AMTI(puf, calc)
