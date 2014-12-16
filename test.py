@@ -5,8 +5,8 @@ Testing file for calculate.py
 from pandas import DataFrame, concat
 from taxcalc.calculate import *
 from taxcalc.puf import *
-from taxcalc.constants import *
-import taxcalc.constants as constants
+from taxcalc.parameters import *
+import taxcalc.parameters as parameters
 
 
 def to_csv(fname, df):
@@ -30,7 +30,7 @@ def run(puf=True):
     calc = Calculator(tax_dta)
     set_input_data(calc)
     update_globals_from_calculator(calc)
-    update_calculator_from_module(calc, constants)
+    update_calculator_from_module(calc, parameters)
 
     calculated = DataFrame()
 
