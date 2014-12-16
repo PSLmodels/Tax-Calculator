@@ -1,6 +1,8 @@
 """
-Replaces each function called in test.run() with the
-equivalent function decorated with @time_this(main_timer)
+Replaces functions called in test.run() with versions decorated with '@time_this(main_timer)'
+
+This calls a cumulative timer that is ran for each of the functions below,
+raw calculation time can be printed by calling 'print(main_timer)' at the end of the testing script
 """
 
 
@@ -14,6 +16,7 @@ main_timer = cumulative_timer("All Fuctions, no CSV calls, no concat calls")
 # Below are the functions called in the run() method in test.py
 # this is equivalent to decorating each function in taxcalc.calculate with @time_this(main_timer)
 # to time a single function, not as a running total, use decorator simply as @time_this or func = time_this(func)
+
 
 Calculator = time_this(Calculator, main_timer)
 set_input_data = time_this(set_input_data, main_timer)
@@ -48,3 +51,5 @@ F5405 = time_this(F5405, main_timer)
 C1040 = time_this(C1040, main_timer)
 DEITC = time_this(DEITC, main_timer)
 SOIT = time_this(SOIT, main_timer)
+
+

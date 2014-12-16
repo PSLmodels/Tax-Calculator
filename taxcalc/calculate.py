@@ -965,9 +965,11 @@ def AMTI(puf, p):
 
     _alminc = c62700
 
+    #TODO
     _amtfei = np.zeros((dim,))
-    _alminc = np.where(
-        c02700 > 0, np.maximum(0, c62100 - c62600 + c02700), _alminc)
+    # _alminc = np.where(
+    #     c02700 > 0, np.maximum(0, c62100 - c62600 + c02700), _alminc)
+    _alminc = AMTI_alminc(c62100, c62600, c02700, _alminc)
     _amtfei = np.where(c02700 > 0, 0.26 * c02700 + 0.02 *
                        np.maximum(0, c02700 - p._almsp[FLPDYR - p.DEFAULT_YR] / p._sep), _amtfei)
 

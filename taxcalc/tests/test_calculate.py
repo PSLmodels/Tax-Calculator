@@ -4,16 +4,8 @@ CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, "../../"))
 import numpy as np
 import pandas as pd
-from numba import autojit, jit, vectorize, guvectorize
+from numba import jit, vectorize, guvectorize
 from taxcalc import *
-
-
-
-
-ignore_list = []
-# ['c82940', 'c82930', 'c82935', 'c82900', 'c82905', 'c82910', 'c82915', 
-# 'c82920', 'c82937', '_othadd', 'c63100','c09600', 'c05800','c07100', 'y07100', 'x07100', 'c08795', 
-# 'c08800', 'c09200', 'c07150', 'c33400', '_ctctax', 'c10300', 'c05750', 'c24580', 'c05100', '_taxbc']
 
 
 all_cols = set()
@@ -76,19 +68,15 @@ def run(puf=True):
     exp_set = set(exp_results.columns)
     cur_set = set(totaldf.columns)
 
-    #assert(exp_set == cur_set)
+    assert(exp_set == cur_set)
 
     for label in exp_results.columns:
-        if label not in totaldf.columns:
-            print(label, " was supposed to be in answer!")
-        if label not in ignore_list:
-            lhs = exp_results[label].values.reshape(len(exp_results))
-            rhs = totaldf[label].values.reshape(len(exp_results))
-            res = np.allclose(lhs, rhs, atol=1e-02)
-            if not res:
-                print(lhs)
-                print(rhs)
-                raise TaxCalcError('Problem found in var:{}'.format(label))
+        lhs = exp_results[label].values.reshape(len(exp_results))
+        rhs = totaldf[label].values.reshape(len(exp_results))
+        res = np.allclose(lhs, rhs, atol=1e-02)
+        if not res:
+            print('Problem found in: ', label)
+
 
 def test_sequence():
     run()
@@ -105,13 +93,16 @@ def test_make_Calculator_mods():
     update_globals_from_calculator(calc2)
     assert all(calc2._amex == np.array([4000]))
 
-class TaxCalcError(Exception):
 
-    def __init__(self, variable_label):
-        self.var_label = variable_label
+def test_make_Calculator_json():
+    user_mods = '{ "_aged": [[1500], [1200]] }'
+    calc2 = calculator(tax_dta, mods=user_mods, _amex=np.array([4000]))
+    update_calculator_from_module(calc2, constants)
+    update_globals_from_calculator(calc2)
+    assert all(calc2._amex == np.array([4000]))
+    assert all(calc2._aged == np.array([[1500], [1200]]))
 
-    def __str__(self):
-        return "Problem found in variable: {}".format(self.var_label)
+
 
 class TaxCalcError(Exception):
     '''I've stripped this down to a simple extension of the basic Exception for

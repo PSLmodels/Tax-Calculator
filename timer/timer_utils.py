@@ -8,18 +8,20 @@ class cumulative_timer(object):
     Timer for use with timing specific lines of code and accumulating the same timer in multiple places
 
     ex.
-    Declaration:        example_timer = Cumulative_Timer("Insert description to be printed")
+    Declaration:        example_timer_name = Cumulative_Timer("Insert description to be printed")
 
-    Timing:             with example_timer.time():
+    Timing:             with example_timer_name.time():
+
                             ## everything inside indentation will be timed
                             ## code block #1
 
                         do_not_time_this_function()
 
-                        with example_timer.time():
+
+                        with example_timer_name.time():
                             ## code block #2 to be timed
 
-    Print results:      print(example_timer)
+    Print results:      print(example_timer_name)
                         ## will print the combined time of code block #1 & #2, along with timer description
     """
     def __init__(self, name):
@@ -40,10 +42,13 @@ class cumulative_timer(object):
 
 def time_this(function, running_timer=None):
     """
-    Decorator that prints the execution time of a function by default, or adds the time to a running timer
+    Decorator that prints the execution time of a function, optionally adds the time to a running timer
 
-    :param running_timer:   by defualt will print time for the called function only
-                            if Cumulative_Timer passed in, will add the time of current function to the timer
+    example usage:     @time_this or @time_this(timer_name)
+
+    :param function:        the function to be timed
+    :param running_timer:   an optional cumulative_timer, of which to add the time elapsed of the passed function
+                            Set to None by default, prints time for the called function only
     """
     @wraps(function)
     def wrapper (*args, **kwargs):
