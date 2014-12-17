@@ -472,5 +472,5 @@ def set_input_data(calc):
     calc.c19200 = np.zeros(dim)
     calc.c19700 = np.zeros(dim)
     calc._nonlimited = np.zeros(dim)
-    calc._phase2 = np.zeros(dim)
+    calc._phase2_i = np.zeros(dim)
     calc._limitratio = np.zeros(dim)

@@ -1,0 +1,2 @@
+include versioneer.py
+include taxcalc/_version.py

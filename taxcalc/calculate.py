@@ -3,8 +3,8 @@ from pandas import DataFrame
 import math
 import numpy as np
 from .utils import *
-from .constants import *
-from numba import *
+
+from .parameters import *
 
 DEFAULT_YR = 2013
 
@@ -82,7 +82,7 @@ def CapGains(p):
     global c01000
     c23650 = e23250 + e22250 + e23660
     c01000 = np.maximum(-3000 / p._sep, c23650)
-    c02700 = np.minimum(_feided, p._feimax[p.DEFAULT_YR - FLPDYR] * f2555)
+    c02700 = np.minimum(_feided, p._feimax[FLPDYR - p.DEFAULT_YR] * f2555)
     _ymod1 = (e00200 + e00300 + e00600
             + e00700 + e00800 + e00900
             + c01000 + e01100 + e01200
@@ -162,11 +162,11 @@ def AGI(p):
 
 
 
-@njit
+@jit(nopython=True)
 def ItemDed_calc(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
                  e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
                  e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
-                 MARS, _sep, c00100, puf):
+                 MARS, _sep, c00100, puf, _phase2_arr, FLPDYR, DEFAULT_YR):
 
     # Medical #
     c17750 = 0.075 * _posagi
@@ -212,17 +212,10 @@ def ItemDed_calc(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900
     c21060 = (e20900 + c17000 + c18300 + c19200 + c19700
               + c20500 + c20800 + e21000 + e21010)
 
-    # Itemized Deduction Limitation
-    if MARS == 1:
-        _phase2 = 200000
-    elif MARS == 4:
-        _phase2 = 250000
-    else:
-        _phase2 = 300000
+    _phase2_i = _phase2_arr[FLPDYR-DEFAULT_YR, MARS-1]
 
     _nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
-    _limitratio = _phase2/_sep
-
+    _limitratio = _phase2_i/_sep
 
     if c21060 > _nonlimited and c00100 > _limitratio:
         dedmin = 0.8 * (c21060 - _nonlimited)
@@ -242,32 +235,33 @@ def ItemDed_calc(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900
     # on which if/else branches they follow in the above code. they need to always be the same type
     return (c17750, c17000, _sit1, _sit, _statax, c18300, float(c37703), float(c20500),
             c20750, float(c20400), float(c19200), c20800, c19700, c21060,
-            _phase2, _nonlimited, _limitratio, c04470, c21040)
+            _phase2_i, _nonlimited, _limitratio, c04470, c21040)
 
 
-@njit
+@jit(nopython=True)
 def ItemDed_apply(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
             e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
             e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
-            MARS, _sep, c00100, puf,
+            MARS, _sep, c00100, puf, DEFAULT_YR, FLPDYR,
             c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500, c20750, c20400, c19200,
-            c20800, c19700, c21060, _phase2, _nonlimited, _limitratio, c04470, c21040):
+            c20800, c19700, c21060, _phase2, _phase2_i, _nonlimited, _limitratio, c04470, c21040):
+
 
     for i in range(len(_posagi)):
         (c17750[i], c17000[i], _sit1[i], _sit[i], _statax[i], c18300[i], c37703[i], c20500[i],
-        c20750[i], c20400[i], c19200[i], c20800[i], c19700[i], c21060[i], _phase2[i],
+        c20750[i], c20400[i], c19200[i], c20800[i], c19700[i], c21060[i], _phase2_i[i],
         _nonlimited[i], _limitratio[i], c04470[i], c21040[i]
         ) = ItemDed_calc(
             _posagi[i], e17500[i], e18400[i], e18425[i], e18450[i], e18500[i], e18800[i], e18900[i],
             e20500[i], e20400[i], e19200[i], e20550[i], e20600[i], e20950[i], e19500[i], e19570[i],
             e19400[i], e19550[i], e19800[i], e20100[i], e20200[i], e20900[i], e21000[i], e21010[i],
-            MARS[i], _sep[i], c00100[i], puf
+            MARS[i], _sep[i], c00100[i], puf, _phase2, FLPDYR[i], DEFAULT_YR
             )
 
 
     return (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500,
                 c20750, c20400, c19200, c20800, c19700, c21060,
-                _phase2, _nonlimited, _limitratio, c04470, c21040)
+                _phase2_i, _nonlimited, _limitratio, c04470, c21040)
 
 
 def ItemDed(puf, p):
@@ -279,13 +273,12 @@ def ItemDed(puf, p):
     global c20800
     global _sit
 
-
-    outputs = ItemDed_apply(p._posagi, p.e17500, p.e18400, p.e18425, p.e18450, p.e18500,
-            p.e18800, p.e18900, p.e20500, p.e20400, p.e19200, p.e20550, p.e20600, p.e20950,
-            p.e19500, p.e19570, p.e19400, p.e19550, p.e19800, p.e20100, p.e20200, p.e20900,
-            p.e21000, p.e21010, p.MARS, p._sep, p.c00100, puf,
+    outputs = ItemDed_apply(_posagi, e17500, e18400, e18425, e18450, e18500,
+            e18800, e18900, e20500, e20400, e19200, e20550, e20600, e20950,
+            e19500, e19570, e19400, e19550, e19800, e20100, e20200, e20900,
+            e21000, e21010, MARS, p._sep, c00100, puf, p.DEFAULT_YR, FLPDYR,
             p.c17750, c17000, p._sit1, _sit, p._statax, c18300, p.c37703, p.c20500, p.c20750, p.c20400, p.c19200,
-            c20800, p.c19700, c21060, p._phase2, p._nonlimited, p._limitratio, c04470, c21040)
+            c20800, p.c19700, c21060, p._phase2, p._phase2_i, p._nonlimited, p._limitratio, c04470, c21040)
 
 
     header= ['c17750', 'c17000', '_sit1', '_sit', '_statax', 'c18300', 'c37703',
@@ -345,13 +338,13 @@ def StdDed_txpyers(MARS):
         return 1
 
 
-@jit("void(float64[:], int64[:], float64[:], float64[:], float64[:], int64[:], int64[:,:])", nopython=True)
-def StdDed_c04200(c04200, MARS, e04200, _numextra, _exact, _txpyers, _aged):
+@jit("void(float64[:], int64[:], float64[:], float64[:], float64[:], int64[:], int64, int64[:], int64[:,:])", nopython=True)
+def StdDed_c04200(c04200, MARS, e04200, _numextra, _exact, _txpyers, DEFAULT_YR, FLPDYR, _aged):
     for i in range(MARS.shape[0]):
         if _exact[i] == 1 and MARS[i] == 3 or MARS[i] == 5:
             c04200[i] = e04200[i]
         else:
-            c04200[i] = _numextra[i] * _aged[_txpyers[i] - 1, 0]
+            c04200[i] = _numextra[i] * _aged[FLPDYR[i] - DEFAULT_YR, _txpyers[i] - 1]
 
 
 @vectorize(["float64(int64, float64, float64, float64)"], nopython=True)
@@ -416,7 +409,7 @@ def StdDed(p):
     _txpyers = StdDed_txpyers(MARS)
 
     c04200 = np.zeros((dim,))
-    StdDed_c04200(c04200, MARS, e04200, _numextra, _exact, _txpyers, p._aged)
+    StdDed_c04200(c04200, MARS, e04200, _numextra, _exact, _txpyers, p.DEFAULT_YR, FLPDYR, p._aged)
 
     c15200 = c04200
 
@@ -494,7 +487,7 @@ def NonGain():
 #     return rate
 
 
-@njit
+@jit(nopython=True)
 def TaxGains0_jit(e00650, c04800, e01000, c23650, e23250, e01100, e58990, e58980, e24515,
     e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6, _xyztax, _feided, _feitax,
     _cmp, e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400):
@@ -705,7 +698,7 @@ def TaxGains0_jit(e00650, c04800, e01000, c23650, e23250, e01100, e58990, e58980
 
 
 
-@njit
+@jit(nopython=True)
 def apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
     e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6,  _xyztax, _feided, _feitax, _cmp,
     e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400,
@@ -757,17 +750,18 @@ def TaxGains(p):
     global c04800, _taxinc, _xyztax, _feitax
 
 
-    outputs = apply_TaxGains0(p.e00650, c04800, p.e01000, p.c23650, p.e23250, p.e01100, p.e58990,
-    p.e58980, p.e24515, p.e24518, p._brk2, p.FLPDYR, p.DEFAULT_YR, p.MARS, _taxinc, p._brk6,  _xyztax, p._feided, _feitax, p._cmp,
-    p.e59410, p.e59420, p.e59440, p.e59470, p.e59400, p.e83200_0, p.e10105, p.e74400,
-    p.c00650 , p._hasgain, p._dwks5, p.c24505, p.c24510, p._dwks9, p.c24516, p._dwks12,
-    p.c24517 , p.c24520, p.c24530, p._dwks16, p._dwks17, p.c24540, p.c24534,
-    p._dwks21 , p.c24597 , p.c24598, p._dwks25 , p._dwks26 , p._dwks28,
-    p.c24610 , p.c24615 , p._dwks31 , p.c24550 , p.c24570 , p._addtax ,
-    p.c24560 , p._taxspecial , p.c24580 , p.c05100 , p.c05700 , p.c59430 ,
-    p.c59450 , p.c59460 , p._line17, p._line19 , p._line22 , p._line30,
-    p._line31 , p._line32 , p._line36 ,p._line33 , p._line34 , p._line35,
-    p.c59485 , p.c59490, p._s1291, p._parents, p.c05750, p._taxbc)
+    outputs = apply_TaxGains0(
+                e00650, c04800, e01000, c23650, e23250, e01100, e58990,
+                e58980, e24515, e24518, p._brk2, FLPDYR, p.DEFAULT_YR, MARS, _taxinc, p._brk6,  _xyztax, _feided, _feitax, _cmp,
+                e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400,
+                p.c00650 , p._hasgain, p._dwks5, p.c24505, p.c24510, p._dwks9, p.c24516, p._dwks12,
+                p.c24517 , p.c24520, p.c24530, p._dwks16, p._dwks17, p.c24540, p.c24534,
+                p._dwks21 , p.c24597 , p.c24598, p._dwks25 , p._dwks26 , p._dwks28,
+                p.c24610 , p.c24615 , p._dwks31 , p.c24550 , p.c24570 , p._addtax ,
+                p.c24560 , p._taxspecial , p.c24580 , p.c05100 , p.c05700 , p.c59430 ,
+                p.c59450 , p.c59460 , p._line17, p._line19 , p._line22 , p._line30,
+                p._line31 , p._line32 , p._line36 ,p._line33 , p._line34 , p._line35,
+                p.c59485 , p.c59490, p._s1291, p._parents, p.c05750, p._taxbc)
 
 
     ## Note var c24516 is being printed twice. On purpose?
@@ -949,7 +943,7 @@ def AMTI(puf, p):
 
     #TODO
     c62600 = np.maximum(0, p._amtex[
-                        FLPDYR - p.DEFAULT_YR, MARS - 1] - 0.25 * np.maximum(0, c62100 - p._amtys[MARS - 1]))
+                        FLPDYR - p.DEFAULT_YR, MARS - 1] - 0.25 * np.maximum(0, c62100 - p._amtys[FLPDYR - p.DEFAULT_YR, MARS - 1]))
 
     _agep = AMTI_agep(DOBYR, FLPDYR, DOBMD)
 
@@ -1165,20 +1159,20 @@ def NumDep(puf, p):
     c59660 = np.zeros((dim,))
 
     _val_ymax = np.where(np.logical_and(MARS == 2, _modagi > 0), p._ymax[
-                         _ieic, FLPDYR - p.DEFAULT_YR] + p._joint[FLPDYR - p.DEFAULT_YR], 0)
+                         _ieic, FLPDYR - p.DEFAULT_YR] + p._joint[FLPDYR - p.DEFAULT_YR, _ieic], 0)
     _val_ymax = np.where(np.logical_and(_modagi > 0, np.logical_or(MARS == 1, np.logical_or(
         MARS == 4, np.logical_or(MARS == 5, MARS == 7)))), p._ymax[_ieic, FLPDYR - p.DEFAULT_YR], _val_ymax)
     c59660 = np.where(np.logical_and(_modagi > 0, np.logical_or(MARS == 1, np.logical_or(MARS == 4, np.logical_or(MARS == 5, np.logical_or(
-        MARS == 2, MARS == 7))))), np.minimum(p._rtbase[_ieic, FLPDYR - p.DEFAULT_YR] * c59560, p._crmax[_ieic, FLPDYR - p.DEFAULT_YR]), c59660)
+        MARS == 2, MARS == 7))))), np.minimum(p._rtbase[FLPDYR - p.DEFAULT_YR, _ieic] * c59560, p._crmax[FLPDYR - p.DEFAULT_YR, _ieic]), c59660)
     _preeitc = np.where(np.logical_and(_modagi > 0, np.logical_or(MARS == 1, np.logical_or(
         MARS == 4, np.logical_or(MARS == 5, np.logical_or(MARS == 2, MARS == 7))))), c59660, 0)
 
     c59660 = np.where(np.logical_and(np.logical_and(MARS != 3, MARS != 6), np.logical_and(_modagi > 0, np.logical_or(
-        _modagi > _val_ymax, c59560 > _val_ymax))), np.maximum(0, c59660 - p._rtless[_ieic, FLPDYR - p.DEFAULT_YR] * (np.maximum(_modagi, c59560) - _val_ymax)), c59660)
+        _modagi > _val_ymax, c59560 > _val_ymax))), np.maximum(0, c59660 - p._rtless[FLPDYR - p.DEFAULT_YR, _ieic] * (np.maximum(_modagi, c59560) - _val_ymax)), c59660)
     _val_rtbase = np.where(np.logical_and(np.logical_and(
-        MARS != 3, MARS != 6), _modagi > 0), p._rtbase[_ieic, FLPDYR - p.DEFAULT_YR] * 100, 0)
+        MARS != 3, MARS != 6), _modagi > 0), p._rtbase[FLPDYR - p.DEFAULT_YR, _ieic] * 100, 0)
     _val_rtless = np.where(np.logical_and(np.logical_and(
-        MARS != 3, MARS != 6), _modagi > 0), p._rtless[_ieic, FLPDYR - p.DEFAULT_YR] * 100, 0)
+        MARS != 3, MARS != 6), _modagi > 0), p._rtless[FLPDYR - p.DEFAULT_YR, _ieic] * 100, 0)
 
     _dy = np.where(np.logical_and(np.logical_and(MARS != 3, MARS != 6), _modagi > 0), e00400 + e83080 + e00300 + e00600
                    +
@@ -1242,9 +1236,8 @@ def ChildTaxCredit(p):
 
 
 # def HopeCredit():
-    # Hope credit for 1998-2009, I don't think this is needed
-    # Leave blank for now, ask Dan
-    # SAS lnies 951 - 972
+    # W/o congressional action, Hope Credit will replace 
+    # American opportunities credit in 2018. NEED TO ADD LOGIC!!!
 
 
 def AmOppCr():
@@ -1585,7 +1578,7 @@ def Taxer(inc_in, inc_out, MARS, p):
 
     return inc_out
 
-@jit(f8(f8, i8, i8, i8), nopython = True)
+@jit('float64(float64, int64, int64, int64)', nopython = True)
 def Taxer_i(inc_in, MARS, FLPDYR, DEFAULT_YR):
     ## note still should pass in all globals being used, including _rt1-_rt7 and _brk1-_brk6
 
