@@ -3,8 +3,8 @@ from pandas import DataFrame
 import math
 import numpy as np
 from .utils import *
-from .constants import *
-from numba import *
+
+from .parameters import *
 
 DEFAULT_YR = 2013
 
@@ -25,31 +25,45 @@ def update_calculator_from_module(calc, mod):
     calc.__dict__.update(calc_vals_overwrite)
 
 
-def calculator(data, **kwargs):
+def calculator(data, mods="", **kwargs):
+    if mods:
+        import json
+        dd = json.loads(mods)
+        dd = {k:np.array(v) for k,v in dd.items() if type(v) == list}
+        kwargs.update(dd)
+
     calc = Calculator(data)
     if kwargs:
         calc.__dict__.update(kwargs)
     return calc
 
 
-def FilingStatus():
+@vectorize('int64(int64)', nopython=True)
+def filing_status_sep(MARS):
+    if MARS == 3 or MARS == 6:
+        return 2
+    return 1
+
+
+def FilingStatus(p):
     # Filing based on marital status
-    global _sep
-    global _txp
-    _sep = np.where(np.logical_or(MARS == 3, MARS == 6), 2, 1)
-    _txp = np.where(np.logical_or(MARS == 2, MARS == 5), 2, 1)
-    
-    return DataFrame(data=np.column_stack((_sep, _txp)),
-                     columns=['_sep', '_txp'])
+    # TODO: get rid of _txp in tests
+    p._sep = filing_status_sep(MARS)
+    return DataFrame(data=p._sep,
+                     columns=['_sep', ])
+
+
+@vectorize('float64(float64, float64, float64)', nopython=True)
+def feided_vec(e35300_0, e35600_0, e35910_0):
+    return max(e35300_0, e35600_0 + e35910_0)
+
 
 def Adj():
     # Adjustments
-    global _feided
-    global c02900
-    _feided = np.maximum(e35300_0, e35600_0, + e35910_0)  # Form 2555
+    global _feided, c02900
+    _feided = feided_vec(e35300_0, e35600_0, e35910_0)  # Form 2555
 
-    x03150 = e03150
-    c02900 = (x03150 + e03210 + e03600 + e03260 + e03270 + e03300
+    c02900 = (e03150 + e03210 + e03600 + e03260 + e03270 + e03300
               + e03400 + e03500 + e03280 + e03900 + e04000 + e03700
               + e03220 + e03230
               + e03240
@@ -58,7 +72,8 @@ def Adj():
     return DataFrame(data=np.column_stack((_feided, c02900)),
                      columns=['_feided', 'c02900'])
 
-def CapGains():
+
+def CapGains(p):
     # Capital Gains
     global _ymod
     global _ymod1
@@ -66,12 +81,14 @@ def CapGains():
     global c23650
     global c01000
     c23650 = e23250 + e22250 + e23660
-    c01000 = np.maximum(-3000 / _sep, c23650)
-    c02700 = np.minimum(_feided, _feimax[DEFAULT_YR - FLPDYR] * f2555)
-    _ymod1 = (e00200 + e00300 + e00600 + e00700 + e00800 + e00900 + c01000
-              + e01100 + e01200 + e01400 + e01700 +
-              e02000 + e02100 + e02300 + e02600
-              + e02610 + e02800 - e02540)
+    c01000 = np.maximum(-3000 / p._sep, c23650)
+    c02700 = np.minimum(_feided, p._feimax[FLPDYR - p.DEFAULT_YR] * f2555)
+    _ymod1 = (e00200 + e00300 + e00600
+            + e00700 + e00800 + e00900
+            + c01000 + e01100 + e01200
+            + e01400 + e01700 + e02000
+            + e02100 + e02300 + e02600
+            + e02610 + e02800 - e02540)
     _ymod2 = e00400 + (0.50 * e02400) - c02900
     _ymod3 = e03210 + e03230 + e03240 + e02615
     _ymod = _ymod1 + _ymod2 + _ymod3
@@ -81,29 +98,39 @@ def CapGains():
                      columns=['c23650', 'c01000', 'c02700', '_ymod1', '_ymod2',
                                '_ymod3', '_ymod'])
 
-#@dataframe_vectorize(['float64(float64,int64,int64,float64,int64,float64)'], nopython=True)
-@vectorize(['float64(float64,int64,int64,float64,int64,float64)'], nopython=True)
-def SSBenefits_vec(SSIND, MARS, e02500, _ymod, e02400, c02500):
-    if SSIND !=0 or MARS == 3 or MARS == 6:
-        c02500 = e02500
-    elif _ymod < _ssb50[MARS-1]:
-        c02500 = 0
-    elif _ymod >= _ssb50[MARS-1] and _ymod < _ssb85[MARS-1]:
-        c02500 = 0.5 * np.minimum(_ymod - _ssb50[MARS-1], e02400)
-    else:
-        c02500 = np.minimum(0.85 * (_ymod - _ssb85[MARS-1]) + 0.50 * np.minimum(e02400, _ssb85[MARS-1] - _ssb50[MARS-1]), 0.85 * e02400)
-    return c02500
+@jit('void(float64[:], int64[:], int64[:], float64[:], int64[:], int64[:], int64[:], float64[:])', nopython=True)
+def SSBenefits_c02500(SSIND, MARS, e02500, _ymod, e02400, _ssb50, _ssb85, c02500):
 
-def SSBenefits():
+    for i in range(0, MARS.shape[0]):
+        if SSIND[i] !=0 or MARS[i] == 3 or MARS[i] == 6:
+            c02500[i] = e02500[i]
+        elif _ymod[i] < _ssb50[MARS[i]-1]:
+            c02500[i] = 0
+        elif _ymod[i] >= _ssb50[MARS[i]-1] and _ymod[i] < _ssb85[MARS[i]-1]:
+            c02500[i] = 0.5 * np.minimum(_ymod[i] - _ssb50[MARS[i]-1], e02400[i])
+        else:
+            c02500[i] = np.minimum(0.85 * (_ymod[i] - _ssb85[MARS[i]-1]) +
+                        0.50 * np.minimum(e02400[i], _ssb85[MARS[i]-1] -
+                        _ssb50[MARS[i]-1]), 0.85 * e02400[i])
+
+
+def SSBenefits(p):
     # Social Security Benefit Taxation
     global c02500
     c02500 = np.zeros(len(e02500))
-    c02500 = SSBenefits_vec(SSIND, MARS, e02500, _ymod, e02400, c02500)
+    SSBenefits_c02500(SSIND, MARS, e02500, _ymod, e02400, p._ssb50, p._ssb85, c02500)
     return DataFrame(data=np.column_stack((c02500,e02500)),
                      columns=['c02500', 'e02500'])
 
 
-def AGI():
+@vectorize('float64(float64, float64, float64)', nopython=True)
+def conditional_agi(fixup, c00100, agierr):
+    if fixup >= 1:
+        return c00100 + agierr
+    return c00100
+
+
+def AGI(p):
     # Adjusted Gross Income
     global _posagi
     global c00100
@@ -112,18 +139,18 @@ def AGI():
 
     c00100 = c02650 - c02900
     _agierr = e00100 - c00100  # Adjusted Gross Income
-    c00100 = np.where(_fixup >= 1, c00100 + _agierr, c00100)
+    c00100 = conditional_agi(_fixup, c00100, _agierr)
 
     _posagi = np.maximum(c00100, 0)
     _ywossbe = e00100 - e02500
     _ywossbc = c00100 - c02500
 
-    _prexmp = XTOT * _amex[FLPDYR - DEFAULT_YR]
+    _prexmp = XTOT * p._amex[FLPDYR - p.DEFAULT_YR]
     # Personal Exemptions (_phaseout smoothed)
 
-    _dispc = np.zeros((dim,))
-    _dispc = np.minimum(1, np.maximum(
-        0, 0.02 * (_posagi - _exmpb[FLPDYR - DEFAULT_YR, MARS - 1]) / (2500 / _sep)))
+    _dispc_numer = 0.02 * (_posagi - p._exmpb[FLPDYR - p.DEFAULT_YR, MARS - 1])
+    _dispc_denom = (2500 / p._sep)
+    _dispc = np.minimum(1, np.maximum(0, _dispc_numer / _dispc_denom ))
 
     c04600 = _prexmp * (1 - _dispc)
 
@@ -132,33 +159,34 @@ def AGI():
                                            c04600)),
                      columns=['c02650', 'c00100', '_agierr', '_posagi',
                               '_ywossbe', '_ywossbc', '_prexmp', 'c04600'])
-                              
 
-def ItemDed(puf):
-    # Itemized Deductions
-    global c04470
-    global c21060
-    global c21040
-    global c17000
-    global c18300
-    global c20800
-    global _sit
+
+
+@jit(nopython=True)
+def ItemDed_calc(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
+                 e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
+                 e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
+                 MARS, _sep, c00100, puf, _phase2_arr, FLPDYR, DEFAULT_YR):
 
     # Medical #
     c17750 = 0.075 * _posagi
-    c17000 = np.maximum(0, e17500 - c17750)
+    c17000 = max(0, e17500 - c17750)
 
     # State and Local Income Tax, or Sales Tax #
-    _sit1 = np.maximum(e18400, e18425)
-    _sit = np.maximum(_sit1, 0)
-    _statax = np.maximum(_sit, e18450)
+    _sit1 = max(e18400, e18425)
+    _sit = max(_sit1, 0)
+    _statax =  max(_sit, e18450)
 
     # Other Taxes #
     c18300 = _statax + e18500 + e18800 + e18900
 
     # Casulty #
-    c37703 = np.where(e20500 > 0, e20500 + 0.10 * _posagi, 0)
-    c20500 = np.where(e20500 > 0, c37703 - 0.10 * _posagi, 0)
+    if e20500 > 0:
+        c37703 = e20500 + 0.1 * _posagi
+        c20500 = c37703 + 0.1 * _posagi
+    else:
+        c37703 = 0.
+        c20500 = 0.
 
     # Miscellaneous #
     c20750 = 0.02 * _posagi
@@ -168,66 +196,106 @@ def ItemDed(puf):
     else:
         c20400 = e20550 + e20600 + e20950
         c19200 = e19500 + e19570 + e19400 + e19550
-    c20800 = np.maximum(0, c20400 - c20750)
+    c20800 = max(0, c20400 - c20750)
 
-    # Charity (assumes carryover is non-cash) #
-
-    _lim50 = np.where(e19800 + e20100 + e20200 <= 0.20 *
-                      _posagi, 0, np.minimum(0.50 * _posagi, e19800))
-    _lim30 = np.where(e19800 + e20100 + e20200 <= 0.20 *
-                      _posagi, 0, np.minimum(0.30 * _posagi, e20100 + e20200))
-
-    c19700 = np.where(e19800 + e20100 + e20200 <= 0.20 * _posagi, 
-        e19800 + e20100 + e20200, np.minimum(0.5 * _posagi, _lim30 + _lim50))
+    # Charity (assumes carryover is non-cash)
+    base_charity = e19800 + e20100 + e20200
+    if base_charity <= 0.2 * _posagi:
+        c19700 = base_charity
+    else:
+        lim50 = min(0.50 * _posagi, e19800)
+        lim30 = min(0.30 * _posagi, e20100 + e20200)
+        c19700 = min(0.5 * _posagi, lim30 + lim50)
     # temporary fix!??
 
-# Gross Itemized Deductions #
+    # Gross Itemized Deductions #
     c21060 = (e20900 + c17000 + c18300 + c19200 + c19700
               + c20500 + c20800 + e21000 + e21010)
-    
-    # Itemized Deduction Limitation
-    _phase2 = np.where(MARS == 1, 200000, 0)
-    _phase2 = np.where(MARS == 4, 250000, _phase2)
-    _phase2 = np.where(np.logical_and(MARS != 1, MARS != 4), 300000, _phase2)
 
-    _itemlimit = np.ones((dim,))
+    _phase2_i = _phase2_arr[FLPDYR-DEFAULT_YR, MARS-1]
+
     _nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
-    _limitratio = _phase2/_sep 
+    _limitratio = _phase2_i/_sep
 
-    c04470 = c21060
+    if c21060 > _nonlimited and c00100 > _limitratio:
+        dedmin = 0.8 * (c21060 - _nonlimited)
+        dedpho = 0.03 * max(0, _posagi - _limitratio)
+        c21040 = min(dedmin, dedpho)
+    else:
+        c21040 = 0.0
 
-    _itemlimit = np.where(np.logical_and(c21060 > _nonlimited,
-                                         c00100 > _phase2 / _sep), 2, 1)
-    _dedmin = np.where(np.logical_and(c21060 > _nonlimited,
-                                      c00100 > _phase2 / _sep), 0.8 * (c21060 - _nonlimited), 0)
-    _dedpho = np.where(np.logical_and(c21060 > _nonlimited,
-                                      c00100 > _phase2 / _sep), 0.03 * np.maximum(0, _posagi - _phase2 / _sep), 0)
-    c21040 = np.where(np.logical_and(c21060 > _nonlimited,
-                                     c00100 > _phase2 / _sep), np.minimum(_dedmin, _dedpho), 0)
-    c04470 = np.where(np.logical_and(c21060 > _nonlimited,
-                                     c00100 > _phase2 / _sep), c21060 - c21040, c04470)
 
-    outputs = (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500,
-               c20750, c20400, c19200, c20800, _lim50, _lim30, c19700, c21060,
-               _phase2, _itemlimit, _nonlimited, _limitratio, c04470,
-               _itemlimit, _dedpho, _dedmin, c21040)
-               
+    if c21060 > _nonlimited and c00100 > _limitratio:
+        c04470 = c21060 - c21040
+    else:
+        c04470 = c21060
+
+
+    # the variables that are casted as floats below can be either floats or ints depending
+    # on which if/else branches they follow in the above code. they need to always be the same type
+    return (c17750, c17000, _sit1, _sit, _statax, c18300, float(c37703), float(c20500),
+            c20750, float(c20400), float(c19200), c20800, c19700, c21060,
+            _phase2_i, _nonlimited, _limitratio, c04470, c21040)
+
+
+@jit(nopython=True)
+def ItemDed_apply(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
+            e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
+            e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
+            MARS, _sep, c00100, puf, DEFAULT_YR, FLPDYR,
+            c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500, c20750, c20400, c19200,
+            c20800, c19700, c21060, _phase2, _phase2_i, _nonlimited, _limitratio, c04470, c21040):
+
+
+    for i in range(len(_posagi)):
+        (c17750[i], c17000[i], _sit1[i], _sit[i], _statax[i], c18300[i], c37703[i], c20500[i],
+        c20750[i], c20400[i], c19200[i], c20800[i], c19700[i], c21060[i], _phase2_i[i],
+        _nonlimited[i], _limitratio[i], c04470[i], c21040[i]
+        ) = ItemDed_calc(
+            _posagi[i], e17500[i], e18400[i], e18425[i], e18450[i], e18500[i], e18800[i], e18900[i],
+            e20500[i], e20400[i], e19200[i], e20550[i], e20600[i], e20950[i], e19500[i], e19570[i],
+            e19400[i], e19550[i], e19800[i], e20100[i], e20200[i], e20900[i], e21000[i], e21010[i],
+            MARS[i], _sep[i], c00100[i], puf, _phase2, FLPDYR[i], DEFAULT_YR
+            )
+
+
+    return (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500,
+                c20750, c20400, c19200, c20800, c19700, c21060,
+                _phase2_i, _nonlimited, _limitratio, c04470, c21040)
+
+
+def ItemDed(puf, p):
+    global c04470
+    global c21060
+    global c21040
+    global c17000
+    global c18300
+    global c20800
+    global _sit
+
+    outputs = ItemDed_apply(_posagi, e17500, e18400, e18425, e18450, e18500,
+            e18800, e18900, e20500, e20400, e19200, e20550, e20600, e20950,
+            e19500, e19570, e19400, e19550, e19800, e20100, e20200, e20900,
+            e21000, e21010, MARS, p._sep, c00100, puf, p.DEFAULT_YR, FLPDYR,
+            p.c17750, c17000, p._sit1, _sit, p._statax, c18300, p.c37703, p.c20500, p.c20750, p.c20400, p.c19200,
+            c20800, p.c19700, c21060, p._phase2, p._phase2_i, p._nonlimited, p._limitratio, c04470, c21040)
+
+
     header= ['c17750', 'c17000', '_sit1', '_sit', '_statax', 'c18300', 'c37703',
-             'c20500', 'c20750', 'c20400', 'c19200', 'c20800', '_lim50',
-             '_lim30', 'c19700', 'c21060', '_phase2', '_itemlimit',
-             '_nonlimited', '_limitratio', 'c04470', '_itemlimit', '_dedpho',
-             '_dedmin', 'c21040']
+             'c20500', 'c20750', 'c20400', 'c19200', 'c20800', 'c19700',
+             'c21060', '_phase2',
+             '_nonlimited', '_limitratio', 'c04470', 'c21040']
 
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
-def EI_FICA():
+def EI_FICA(p):
     global _sey
     global _setax
     # Earned Income and FICA #
     global _earned
     _sey = e00900 + e02100
-    _fica = np.maximum(0, .153 * np.minimum(_ssmax[FLPDYR - DEFAULT_YR],
+    _fica = np.maximum(0, .153 * np.minimum(p._ssmax[FLPDYR - p.DEFAULT_YR],
                                             e00200 + np.maximum(0, _sey) * 0.9235))
     _setax = np.maximum(0, _fica - 0.153 * e00200)
     _seyoff = np.where(_setax <= 14204, 0.5751 * _setax, 0.5 * _setax + 10067)
@@ -240,9 +308,86 @@ def EI_FICA():
     header = ['_sey', '_fica', '_setax', '_seyoff', 'c11055', '_earned']
 
     return DataFrame(data=np.column_stack(outputs), columns=header), _earned
-                     
 
-def StdDed():
+
+@jit("void(float64[:], int64[:], int64[:], int64, int64[:,:], float64[:])", nopython=True)
+def StdDed_c15100(_earned, DSI, FLPDYR, default_yr, _stded, c15100):
+    for i in range(0, FLPDYR.shape[0]):
+        if DSI[i] == 1:
+            c15100[i] = np.maximum(300 + _earned[i], _stded[FLPDYR[i] - default_yr, 6])
+        else:
+            c15100[i] = 0
+
+
+@jit("void(int64[:], int64[:], float64[:], int64[:], int64[:], float64[:], int64[:], int64, int64[:,:], float64[:])", nopython=True)
+def StdDed_c04100(DSI, MARS, c15100, FLPDYR, MIdR, _earned, _compitem, default_yr, _stded, c04100):
+    for i in range(0, MARS.shape[0]):
+        if (DSI[i] == 1):
+            c04100[i] = np.minimum( _stded[FLPDYR[i] - default_yr, MARS[i]-1], c15100[i])
+        elif _compitem[i] == 1 or (3 <= MARS[i] and MARS[i] <=6 and MIdR[i] == 1):
+            c04100[i] = 0
+        else:
+            c04100[i] = _stded[FLPDYR[i] - default_yr, MARS[i] - 1]
+
+
+@vectorize(["int64(int64)"], nopython=True)
+def StdDed_txpyers(MARS):
+    if MARS == 2 or MARS == 3:
+        return 2
+    else:
+        return 1
+
+
+@jit("void(float64[:], int64[:], float64[:], float64[:], float64[:], int64[:], int64, int64[:], int64[:,:])", nopython=True)
+def StdDed_c04200(c04200, MARS, e04200, _numextra, _exact, _txpyers, DEFAULT_YR, FLPDYR, _aged):
+    for i in range(MARS.shape[0]):
+        if _exact[i] == 1 and MARS[i] == 3 or MARS[i] == 5:
+            c04200[i] = e04200[i]
+        else:
+            c04200[i] = _numextra[i] * _aged[FLPDYR[i] - DEFAULT_YR, _txpyers[i] - 1]
+
+
+@vectorize(["float64(int64, float64, float64, float64)"], nopython=True)
+def StdDed_standard(MARS, c04100, c04470, c04200):
+    if (MARS == 3 or MARS == 6) and (c04470 > 0):
+        return 0
+    else:
+        return c04100 + c04200
+
+
+@vectorize(["float64(float64, float64, float64, int64, float64, float64, float64)"], nopython=True)
+def StdDed_c60000(e04470, t04470, _amtstd, f6251, _exact, c00100, c60000):
+    if (e04470 == 0 and (t04470 > _amtstd) and f6251 == 1 and _exact == 1):
+        return c00100 - t04470
+    else:
+        return c60000
+
+
+@vectorize(["float64(float64, float64, float64)"], nopython=True)
+def StdDed_taxinc(c04800, _feided, c02700):
+
+    if (c04800 > 0 and _feided > 0):
+        return c04800 + c02700
+    else:
+        return c04800
+
+
+@vectorize(["float64(float64, float64, float64, float64)"], nopython=True)
+def StdDed_feitax(c04800, _feided, taxer, _feitax):
+    if (c04800 > 0 and _feided > 0):
+        return taxer
+    else:
+        return _feitax
+
+@vectorize(["float64(float64, float64, float64, float64)"], nopython=True)
+def StdDed_oldfei(c04800, _feided, taxer, _oldfei):
+    if (c04800 > 0 and _feided > 0):
+        return taxer
+    else:
+        return _oldfei
+
+
+def StdDed(p):
     # Standard Deduction with Aged, Sched L and Real Estate #
     global c04800
     global c60000
@@ -250,33 +395,27 @@ def StdDed():
     global _feitax
     global _standard
 
-    c15100 = np.where(DSI == 1,
-                      np.maximum(300 + _earned, _stded[FLPDYR - DEFAULT_YR, 6]), 0)
+    c15100 = np.zeros((dim,))
+    StdDed_c15100(_earned, DSI, FLPDYR, p.DEFAULT_YR, p._stded, c15100)
 
-    _compitem = np.where(np.logical_and(e04470 > 0, e04470 < _stded[FLPDYR-DEFAULT_YR, MARS-1]), 1, 0)
-    
-    c04100 = np.where(DSI == 1, np.minimum(_stded[FLPDYR - DEFAULT_YR, MARS - 1], c15100),
-                      np.where(np.logical_or(_compitem == 1,
-                                             np.logical_and(np.logical_and(3 <= MARS, MARS <= 6), MIdR == 1)),
-                               0, _stded[FLPDYR - DEFAULT_YR, MARS - 1]))
+    _compitem = np.where(np.logical_and(e04470 > 0, e04470 < p._stded[FLPDYR-p.DEFAULT_YR, MARS-1]), 1, 0)
+
+    c04100 = np.zeros((dim,))
+    StdDed_c04100(DSI, MARS, c15100, FLPDYR, MIdR, _earned, _compitem,
+                          p.DEFAULT_YR, p._stded, c04100)
 
     c04100 = c04100 + e15360
     _numextra = AGEP + AGES + PBI + SBI
+    _txpyers = StdDed_txpyers(MARS)
 
-    _txpyers = np.where(np.logical_or(np.logical_or(MARS == 2, MARS == 3),
-                                      MARS == 3), 2, 1)
-    c04200 = np.where(np.logical_and(_exact == 1,
-                                     np.logical_or(MARS == 3, MARS == 5)),
-                      e04200, _numextra * _aged[_txpyers - 1, FLPDYR - DEFAULT_YR])
+    c04200 = np.zeros((dim,))
+    StdDed_c04200(c04200, MARS, e04200, _numextra, _exact, _txpyers, p.DEFAULT_YR, FLPDYR, p._aged)
 
     c15200 = c04200
 
-    _standard = np.where(np.logical_and(np.logical_or(MARS == 3, MARS == 6),
-                                        c04470 > 0),
-                         0, c04100 + c04200)
+    _standard = StdDed_standard(MARS, c04100, c04470, c04200)
 
     _othded = np.where(FDED == 1, e04470 - c04470, 0)
-    #c04470 = np.where(np.logical_and(_fixup >= 2, FDED == 1), c04470 + _othded, c04470)
     c04100 = np.where(FDED == 1, 0, c04100)
     c04200 = np.where(FDED == 1, 0, c04200)
     _standard = np.where(FDED == 1, 0, _standard)
@@ -290,25 +429,22 @@ def StdDed():
 
     # Some taxpayers iteimize only for AMT, not regular tax
     _amtstd = np.zeros((dim,))
-    c60000 = np.where(np.logical_and(np.logical_and(e04470 == 0,
-                                                    t04470 > _amtstd),
-                                     np.logical_and(f6251 == 1, _exact == 1)), c00100 - t04470, c60000)
-
-    _taxinc = np.where(np.logical_and(c04800 > 0, _feided > 0),
-                       c04800 + c02700, c04800)
+    c60000 = StdDed_c60000(e04470, t04470, _amtstd, f6251, _exact, c00100, c60000)
+    _taxinc = StdDed_taxinc(c04800, _feided, c02700)
 
     _feitax = np.zeros((dim,))
     _oldfei = np.zeros((dim,))
 
-    _feitax = np.where(np.logical_and(c04800 > 0, _feided > 0), Taxer(
-        inc_in=_feided, inc_out=_feitax, MARS=MARS), _feitax)
-    _oldfei = np.where(np.logical_and(c04800 > 0, _feided > 0), Taxer(
-        inc_in=c04800, inc_out=_oldfei, MARS=MARS), _oldfei)
+    taxer1 = Taxer(inc_in=_feided, inc_out=_feitax, MARS=MARS, p=p)
+    _feitax = StdDed_feitax(c04800, _feided, taxer1, _feitax)
+
+    taxer2 = Taxer(inc_in=c04800, inc_out=_oldfei, MARS=MARS, p=p)
+    _oldfei = StdDed_oldfei(c04800, _feided, taxer2, _oldfei)
 
     SDoutputs = (c15100, c04100, _numextra, _txpyers, c04200, c15200,
                  _standard, _othded, c04100, c04200, _standard, c04500,
                  c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei)
-                 
+
     header = ['c15100', 'c04100', '_numextra', '_txpyers', 'c04200', 'c15200',
               '_standard', '_othded', 'c04100', 'c04200', '_standard',
               'c04500', 'c04800', 'c60000', '_amtstd', '_taxinc', '_feitax',
@@ -318,14 +454,14 @@ def StdDed():
                      columns=header)
 
 
-def XYZD():
+def XYZD(p):
     global c24580
     global _xyztax
 
     _xyztax = np.zeros((dim,))
     c05200 = np.zeros((dim,))
-    _xyztax = Taxer(inc_in=_taxinc, inc_out=_xyztax, MARS=MARS)
-    c05200 = Taxer(inc_in=c04800, inc_out=c05200, MARS=MARS)
+    _xyztax = Taxer(inc_in=_taxinc, inc_out=_xyztax, MARS=MARS, p=p)
+    c05200 = Taxer(inc_in=c04800, inc_out=c05200, MARS=MARS, p=p)
 
     return DataFrame(data=np.column_stack((_xyztax, c05200)),
                      columns=['_xyztax', 'c05200'])
@@ -351,187 +487,126 @@ def NonGain():
 #     return rate
 
 
-@jit(nopython = True)
-def TaxGains0_jit(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
-    e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6,  _xyztax, _feided, _feitax, _cmp,
-e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400 ):
+@jit(nopython=True)
+def TaxGains0_jit(e00650, c04800, e01000, c23650, e23250, e01100, e58990, e58980, e24515,
+    e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6, _xyztax, _feided, _feitax,
+    _cmp, e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400):
 
-    _hasgain = 0.
-    _dwks5 = 0.
-    c24505 = 0.
-    c24510 = 0.
-    _dwks9 = 0.
-    c24516 = 0.
-    _dwks12 = 0.
-    _dwks17 = 0.
-    c24517 = 0.
-    c24520 = 0.
-    _dwks16 = 0.
-    c24540 = 0.
-    c24534 = 0. 
-    _dwks21 = 0.
-    c24598 = 0.
-    c24597 = 0. 
-    _dwks25 = 0.
-    _dwks26 = 0.
-    _dwks28 = 0.
-    c24610 = 0.
-    c24615 = 0.
-    _dwks31 = 0.
-    c24550 = 0.
-    c24570 = 0.
+    c00650 = e00650
     _addtax = 0.
-    c24530 = 0.
-    c00650 = e00650 
-
-    c24560 = 0.
-
-    _taxspecial = 0.
-    c05100 = 0.
-    c59430 = 0.
-    c59450 = 0.
-    c59460 = 0.
-    _line17 = 0.
-    _line19 = 0.
-    _line22 = 0.
-    _line30 = 0.
-    _line31 = 0.
-    _line32 = 0.
-    _line33 = 0.
-    _line36 = 0.
-    _line34 = 0.
-    _line35 = 0.
-    c59485 = 0.
-    c59490 = 0.
-    c05700 = 0.
-    _parents = 0.
-    _s1291 = 0.
-    c05750 = 0.
-    _taxbc = 0.
-    c24580 = _xyztax
-
-
 
     if e01000 > 0 or c23650 > 0. or e23250 > 0. or e01100 > 0. or e00650 > 0.:
-        
         _hasgain = 1.
-    
+    else:
+        _hasgain = 0.
+
     if _taxinc > 0. and _hasgain == 1.:
-
+        #if/else 1
         _dwks5 = max(0., e58990 - e58980)
-
         c24505 = max(0., c00650 - _dwks5)
 
-        c24510 = max(0., min(c23650, e23250)) + e01100
-        
         # gain for tax computation
-        
-        if e01100 > 0.:    
-
-            c24510 = e01100 
+        if e01100 > 0.:
+            c24510 = float(e01100)
+        else:
+            c24510 = max(0., min(c23650, e23250)) + e01100
 
         _dwks9 = max(0, c24510 - min(e58990, e58980))
-
         c24516 = c24505 + _dwks9
-    
-    else: c24516 = max(0., min(e23250, c23650)) + e01100 
 
-
-    if _taxinc > 0. and _hasgain == 1.: 
-        
+        #if/else 2
         _dwks12 = min(_dwks9, e24515 + e24518)
-        
         c24517 = c24516 - _dwks12
-
         c24520 = max(0., _taxinc - c24517)
-
-
-
-     # tentative TI less schD gain   
-    
-
+        # tentative TI less schD gain
         c24530 = min(_brk2[FLPDYR - DEFAULT_YR, MARS - 1], _taxinc)
-    
 
-    if _taxinc > 0. and _hasgain == 1.: 
-
+        #if/else 3
         _dwks16 = min(c24520, c24530)
-
-
-
         _dwks17 = max(0., _taxinc - c24516)
-
         c24540 = max(_dwks16, _dwks17)
-
-
         c24534 = c24530 - _dwks16
-
         _dwks21 = min(_taxinc, c24517)
-    
         c24597 = max(0., _dwks21 - c24534)
 
-
-    # income subject to 15% tax
-    c24598 = 0.15 * c24597  # actual 15% tax
-
-    if _taxinc > 0. and _hasgain == 1.:
-
+        #if/else 4
+        # income subject to 15% tax
+        c24598 = 0.15 * c24597  # actual 15% tax
         _dwks25 = min(_dwks9, e24515)
-    
         _dwks26 = c24516 + c24540
-    
         _dwks28 = max(0., _dwks26 - _taxinc)
-
         c24610 = max(0., _dwks25 - _dwks28)
-
         c24615 = 0.25 * c24610
-
         _dwks31 = c24540 + c24534 + c24597 + c24610
-
         c24550 = max(0., _taxinc - _dwks31)
-
-        c24570 = 0.28 * c24550 
-
+        c24570 = 0.28 * c24550
 
         if c24540 > _brk6[FLPDYR - DEFAULT_YR, MARS - 1]:
             _addtax = 0.05 * c24517
-        
+
         elif c24540<= _brk6[FLPDYR - DEFAULT_YR, MARS - 1] and _taxinc > _brk6[FLPDYR - DEFAULT_YR, MARS - 1]:
             _addtax = 0.05 * min(c24517, c04800 - _brk6[FLPDYR - DEFAULT_YR, MARS - 1])
 
-
-        c24560 = Taxer_i(c24540, c24560, MARS, FLPDYR, DEFAULT_YR)   
+        c24560 = Taxer_i(c24540, MARS, FLPDYR, DEFAULT_YR)
 
         _taxspecial = c24598 + c24615 + c24570 + c24560 + _addtax
-
         c24580 = min(_taxspecial, _xyztax)
 
-    
+    else:
+        ## these variables only be used to check accuracy? unused in calcs. (except c24580)
+        _dwks5 = 0.
+        _dwks9 = 0.
+        c24505 = 0.
+        c24510 = 0.
+        c24516 = max(0., min(e23250, c23650)) + e01100
+
+        _dwks12 = 0.
+        c24517 = 0.
+        c24520 = 0.
+        c24530 = 0.
+
+        _dwks16 = 0.
+        _dwks17 = 0.
+        c24540 = 0.
+        c24534 = 0.
+        _dwks21 = 0.
+        c24597 = 0.
+
+        c24598 = 0.
+        _dwks25 = 0.
+        _dwks26 = 0.
+        _dwks28 = 0.
+        c24610 = 0.
+        c24615 = 0.
+        _dwks31 = 0.
+        c24550 = 0.
+        c24570 = 0.
+        _addtax = 0.
+        c24560 = 0.
+        _taxspecial = 0.
+        c24580 = _xyztax
+
+
     if c04800 > 0. and _feided > 0.:
-
         c05100 = max(0., c24580 - _feitax)
+    else:
+        c05100 = c24580
 
-    else: c05100 = c24580 
-    
 
     # Form 4972 - Lump Sum Distributions
     if _cmp == 1.:
         c59430 = max(0., e59410 - e59420)
-
         c59450 = c59430 + e59440 # income plus lump sum
-
         c59460 = max(0., min(0.5 * c59450, 10000.)) - 0.2 * max(0., 59450. - 20000.)
-     
         _line17 = c59450 - c59460
-
         _line19 = c59450 - c59460 - e59470
 
-        _line22 = 0.
         if c59450 > 0.:
             _line22 = max(0., e59440 - e59440*c59460/c59450)
+        else:
+            _line22 = 0.
 
         _line30 = 0.1 * max(0., c59450 - c59460 - e59470)
-
 
         _line31 = 0.11 * min(_line30, 1190.)\
                 + 0.12 * min(2270. - 1190., max(0, _line30 - 1190.))\
@@ -549,16 +624,15 @@ e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400 ):
                 + 0.48 * min(85790. - 57190., max(0., _line30 - 57190.))
 
         _line32 = 10. * _line31
-        
-        _line36 =0.
-        if e59440 == 0.: 
-            _line36 = _line32
 
-        _line33 = 0.
-        _line34 = 0.
-        _line35 = 0.
-        _line36 = 0.    
-        if e59440 > 0.:
+        if e59440 == 0.:
+            _line36 = _line32
+            ## below are unused in calcs
+            _line33 = 0.
+            _line34 = 0.
+            _line35 = 0.
+
+        elif e59440 > 0.:
             _line33 = 0.1 * _line22
 
             _line34 = 0.11 * min(_line30, 1190.)\
@@ -577,22 +651,40 @@ e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400 ):
                     + 0.48 * min(85790. - 57190., max(0., _line30 - 57190.))
 
             _line35 = 10. * _line34
+            _line36 = max(0., _line32 - _line35)
 
-            _line36 = max(0., _line32 - _line35)    
-    
-    # tax saving from 10 yr option
+        else:
+            _line33 = 0.
+            _line34 = 0.
+            _line35 = 0.
+            _line36 = 0.
+
+        # tax saving from 10 yr option
         c59485 = _line36
-        
+
         c59490 = c59485 + 0.2 * max(0., e59400)
-    # pension gains tax plus
+        # pension gains tax plus
         c05700 = c59490
 
+    else:
+        # all but one unused in calcs
+        c59430 = 0.
+        c59450 = 0.
+        c59460 = 0.
+        _line17 = 0.
+        _line19 = 0.
+        _line22 = 0.
+        _line30 = 0.
+        _line31 = 0.
+        _line32 = 0.
+        _line33 = 0.
+        _line34 = 0.
+        _line35 = 0.
+        _line36 = 0.
+
     _parents = e83200_0
-
     _s1291 = e10105
-
     c05750 = max(c05100 + _parents + c05700, e74400)
-
     _taxbc = c05750
 
     return (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
@@ -605,65 +697,18 @@ e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400 ):
             c05700, _s1291, _parents, _taxbc, c05750)
 
 
-@jit
+@jit(nopython=True)
 def apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
     e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6,  _xyztax, _feided, _feitax, _cmp,
-    e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400):
-    
-    c00650 =  np.zeros(len(_taxinc))
-    _hasgain = np.zeros(len(_taxinc))
-    _dwks5 = np.zeros(len(_taxinc))
-    c24505 = np.zeros(len(_taxinc))
-    c24510 = np.zeros(len(_taxinc))
-    _dwks9 = np.zeros(len(_taxinc))
-    c24516 = np.zeros(len(_taxinc))
-    _dwks12 = np.zeros(len(_taxinc))
-    c24517 = np.zeros(len(_taxinc))
-    c24520 = np.zeros(len(_taxinc))
-    c24530 = np.zeros(len(_taxinc))
-    _dwks16 = np.zeros(len(_taxinc))
-    _dwks17 = np.zeros(len(_taxinc))
-    c24540 = np.zeros(len(_taxinc))
-    c24534 = np.zeros(len(_taxinc))
-    _dwks21 = np.zeros(len(_taxinc))
-    c24597 = np.zeros(len(_taxinc))
-    c24598 = np.zeros(len(_taxinc))
-    _dwks25 = np.zeros(len(_taxinc))
-    _dwks26 = np.zeros(len(_taxinc))
-    _dwks28 = np.zeros(len(_taxinc))
-    c24610 = np.zeros(len(_taxinc))
-    c24615 = np.zeros(len(_taxinc))
-    _dwks31 = np.zeros(len(_taxinc))
-    c24550 = np.zeros(len(_taxinc))
-    c24570 = np.zeros(len(_taxinc))
-    _addtax = np.zeros(len(_taxinc))
-
-    c24560 = np.zeros(len(_taxinc))
-
-    _taxspecial = np.zeros(len(_taxinc))
-    c24580 = np.zeros(len(_taxinc))
-    c05100 = np.zeros(len(_taxinc))
-    c05700 = np.zeros(len(_taxinc))
-    c59430 = np.zeros(len(_taxinc))
-    c59450 = np.zeros(len(_taxinc))
-    c59460 = np.zeros(len(_taxinc))
-    _line17 = np.zeros(len(_taxinc))
-    _line19 = np.zeros(len(_taxinc))
-    _line22 = np.zeros(len(_taxinc))
-    _line30 = np.zeros(len(_taxinc))
-    _line31 = np.zeros(len(_taxinc))
-    _line32 = np.zeros(len(_taxinc))
-    _line36 = np.zeros(len(_taxinc))
-    _line33 = np.zeros(len(_taxinc))
-    _line34 = np.zeros(len(_taxinc))
-    _line35 = np.zeros(len(_taxinc))
-    c59485 = np.zeros(len(_taxinc))
-    c59490 = np.zeros(len(_taxinc))
-    c05700 = np.zeros(len(_taxinc))
-    _s1291 = np.zeros(len(_taxinc))
-    _parents = np.zeros(len(_taxinc))
-    c05750 = np.zeros(len(_taxinc))
-    _taxbc = np.zeros(len(_taxinc)) 
+    e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400,
+    c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516, _dwks12,
+    c24517, c24520, c24530, _dwks16, _dwks17 ,c24540 ,c24534,
+    _dwks21, c24597 , c24598, _dwks25 , _dwks26 , _dwks28,
+    c24610, c24615 , _dwks31 , c24550 , c24570 , _addtax ,
+    c24560, _taxspecial , c24580 , c05100 , c05700 , c59430 ,
+    c59450, c59460 , _line17, _line19 , _line22 , _line30,
+    _line31, _line32, _line36, _line33, _line34, _line35,
+    c59485, c59490 , _s1291, _parents, c05750, _taxbc):
 
 
     for i in range(len(_taxinc)):
@@ -676,10 +721,12 @@ def apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
         _line32[i], _line36[i], _line33[i], _line34[i], _line35[i], c59485[i], c59490[i],
         c05700[i], _s1291[i], _parents[i], _taxbc[i], c05750[i]) = \
         TaxGains0_jit(e00650[i], c04800[i], e01000[i], c23650[i], e23250[i], e01100[i],
-        e58990[i], e58980[i], e24515[i], e24518[i], _brk2, FLPDYR[i], DEFAULT_YR, 
-        MARS[i], _taxinc[i], _brk6,  _xyztax[i], _feided[i], _feitax[i], 
-        _cmp[i], e59410[i], e59420[i], e59440[i], e59470[i], e59400[i], e83200_0[i], 
+        e58990[i], e58980[i], e24515[i], e24518[i], _brk2, FLPDYR[i], DEFAULT_YR,
+        MARS[i], _taxinc[i], _brk6,  _xyztax[i], _feided[i], _feitax[i],
+        _cmp[i], e59410[i], e59420[i], e59440[i], e59470[i], e59400[i], e83200_0[i],
         e10105[i], e74400[i])
+
+
 
     return  (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
             c24580, c24516, _dwks12, c24517, c24520, c24530, _dwks16,
@@ -688,47 +735,34 @@ def apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
             _addtax, c24560, _taxspecial, c05100, c05700, c59430,
             c59450, c59460, _line17, _line19, _line22, _line30, _line31,
             _line32, _line36, _line33, _line34, _line35, c59485, c59490,
-            c05700, _s1291, _parents, _taxbc, c05750)
+            c05700, _s1291, _parents, c05750, _taxbc)
 
 
 
-
-
-
-
-def TaxGains():
-    global c24517 # got it 
+def TaxGains(p):
+    global c24517 # got it
     global c24516 # got it
     global c24520 # got it
     global c05750 # at the end
     global _taxbc # at the end
-    global c05700 # got it
+    global c04800, _taxinc, _xyztax, _feitax
 
 
-    (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
-    c24580, c24516, _dwks12, c24517, c24520, c24530, _dwks16,
-    _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
-    _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
-    _addtax, c24560, _taxspecial, c05100, c05700, c59430,
-    c59450, c59460, _line17, _line19, _line22, _line30, _line31,
-    _line32, _line36, _line33, _line34, _line35, c59485, c59490,
-    c05700, _s1291, _parents, _taxbc, c05750) = \
-    apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
-    e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6,  _xyztax, _feided, _feitax, _cmp,
-    e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400)
+    outputs = apply_TaxGains0(
+                e00650, c04800, e01000, c23650, e23250, e01100, e58990,
+                e58980, e24515, e24518, p._brk2, FLPDYR, p.DEFAULT_YR, MARS, _taxinc, p._brk6,  _xyztax, _feided, _feitax, _cmp,
+                e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400,
+                p.c00650 , p._hasgain, p._dwks5, p.c24505, p.c24510, p._dwks9, p.c24516, p._dwks12,
+                p.c24517 , p.c24520, p.c24530, p._dwks16, p._dwks17, p.c24540, p.c24534,
+                p._dwks21 , p.c24597 , p.c24598, p._dwks25 , p._dwks26 , p._dwks28,
+                p.c24610 , p.c24615 , p._dwks31 , p.c24550 , p.c24570 , p._addtax ,
+                p.c24560 , p._taxspecial , p.c24580 , p.c05100 , p.c05700 , p.c59430 ,
+                p.c59450 , p.c59460 , p._line17, p._line19 , p._line22 , p._line30,
+                p._line31 , p._line32 , p._line36 ,p._line33 , p._line34 , p._line35,
+                p.c59485 , p.c59490, p._s1291, p._parents, p.c05750, p._taxbc)
 
 
-
-
-    outputs =   (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
-                c24580, c24516, _dwks12, c24517, c24520, c24530, _dwks16,
-                _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
-                _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
-                _addtax, c24560, _taxspecial, c05100, c05700, c59430,
-                c59450, c59460, _line17, _line19, _line22, _line30, _line31,
-                _line32, _line36, _line33, _line34, _line35, c59485, c59490,
-                c05700, _s1291, _parents, _taxbc, c05750)
-
+    ## Note var c24516 is being printed twice. On purpose? e00650 should be c00650?
     header = ['e00650', '_hasgain', '_dwks5', 'c24505', 'c24510', '_dwks9', #Note weirdness w e00650
               'c24516', 'c24580', 'c24516', '_dwks12', 'c24517', 'c24520',
               'c24530', '_dwks16', '_dwks17', 'c24540', 'c24534', '_dwks21',
@@ -738,7 +772,7 @@ def TaxGains():
               '_line17', '_line19', '_line22', '_line30', '_line31',
               '_line32', '_line36', '_line33', '_line34', '_line35',
               'c59485', 'c59490', 'c05700', '_s1291', '_parents',
-              '_taxbc', 'c05750']
+              'c05750', '_taxbc']
 
 
     return DataFrame(data=np.column_stack(outputs),
@@ -746,20 +780,124 @@ def TaxGains():
 
 
 
-
-
-
-def MUI(c05750):
+def MUI(c05750, p):
     # Additional Medicare tax on unearned Income
     c05750 = c05750
-    c05750 = np.where(c00100 > _thresx[MARS - 1], c05750 + 0.038 * np.minimum(
-        e00300 + e00600 + np.maximum(0, c01000) + np.maximum(0, e02000), c00100 - _thresx[MARS - 1]), c05750)
-	
+    c05750 = np.where(c00100 > p._thresx[MARS - 1], c05750 + 0.038 * np.minimum(
+        e00300 + e00600 + np.maximum(0, c01000) + np.maximum(0, e02000), c00100 - p._thresx[MARS - 1]), c05750)
+
     return DataFrame(data=np.column_stack((c05750,)),
                      columns=['c05750'])
-    
 
-def AMTI(puf):
+
+@vectorize('float64(float64, float64, float64, float64)', nopython=True)
+def AMTI_amtded(c60200, c60220, c60240, c60000):
+    amtded = c60200 + c60220 + c60240
+    if c60000 <= 0:
+        amtded = max(0, amtded + c60000)
+    return amtded
+
+@vectorize('float64(float64, float64, float64, float64)', nopython=True)
+def AMTI_addamt(_exact, e60290, c60130, _amtded):
+    #_addamt = np.where(np.logical_or(_exact == 0, np.logical_and(_exact == 1, _amtded + e60290 > 0)), _amtded + e60290 - c60130, 0)
+    if _exact == 0 or (_exact == 1 and ((_amtded + e60290) > 0)):
+        return _amtded + e60290 - c60130
+    else:
+        return 0
+
+@vectorize('float64(' + 24*'float64, ' + 'float64)', nopython=True)
+def AMTI_c62100(_addamt, e60300, e60860, e60100, e60840, e60630, e60550,
+                e60720, e60430, e60500, e60340, e60680, e60600, e60405,
+                e60440, e60420, e60410, e61400, e60660, c60260, e60480,
+                e62000, c60000, e60250, _cmp):
+    if _cmp == 1:
+        return (_addamt + e60300 + e60860 + e60100 + e60840 + e60630 + e60550
+               + e60720 + e60430 + e60500 + e60340 + e60680 + e60600 + e60405
+               + e60440 + e60420 + e60410 + e61400 + e60660 - c60260 - e60480
+               - e62000 + c60000 - e60250)
+    else:
+        return 0
+
+
+@vectorize('float64(' + 5*'float64, ' + 'float64)', nopython=True)
+def AMTI_edical(puf, _standard, _exact, e04470, e17500, e00100):
+    if (puf and (_standard == 0 or (_exact == 1 and e04470 > 0))):
+        return max(0, e17500 - max(0, e00100) * 0.075)
+    else:
+        return 0
+
+@vectorize('float64(' + 12*'float64, ' + 'float64)', nopython=True)
+def AMTI_cmbtp(puf, _standard, _exact, e04470, f6251, _edical, e00100,
+              e62100, c60260, e21040, _sit, e18500, e20800):
+    if (puf and ((_standard == 0 or (_exact == 1 and e04470 > 0))
+        and f6251 == 1)):
+        return (-1 * min(_edical, 0.025 * max(0, e00100)) + e62100 + c60260
+               + e04470 + e21040 - _sit - e00100 - e18500 - e20800)
+    else:
+        return 0
+
+
+@vectorize('float64(' + 13*'float64, ' + 'float64)', nopython=True)
+def AMTI_c62100_2(puf, _standard, _exact, e04470, c00100, c04470, c17000,
+                  e18500, c60260, c20800, c21040, _cmbtp, c62100, _sit):
+    if (puf == True and ((_standard == 0 or (_exact == 1 and e04470 > 0)))):
+        return (c00100 - c04470 + min(c17000, 0.025 * max(0, c00100)) + _sit
+               + e18500 - c60260 + c20800 - c21040 + _cmbtp)
+    else:
+        return c62100
+
+@vectorize('float64(' + 6*'float64, ' + 'float64)', nopython=True)
+def AMTI_cmbtp_2(puf, _standard, f6251, e62100, e00100, c60260, _cmbtp):
+    if (puf == True and ((_standard > 0 and f6251 == 1))):
+        return e62100 - e00100 + c60260
+    else:
+        return _cmbtp
+
+
+@vectorize('float64(' + 5*'float64, ' + 'float64)', nopython=True)
+def AMTI_c62100_3(puf, _standard, c00100, c60260, _cmbtp, c62100):
+    if (puf == True and _standard > 0):
+        return (c00100 - c60260 + _cmbtp)
+    else:
+        return c62100
+
+
+@vectorize('float64(' + 2*'float64, ' + 'float64)', nopython=True)
+def AMTI_agep(DOBYR, FLPDYR, DOBMD):
+    #_agep = np.where(
+    #    DOBYR > 0, np.ceil((12 * (FLPDYR - DOBYR) - DOBMD / 100) / 12), 0)
+    if DOBYR > 0:
+        return np.ceil((12 * (FLPDYR - DOBYR) - DOBMD / 100) / 12)
+    else:
+        return 0
+
+
+@vectorize('float64(' + 2*'float64, ' + 'float64)', nopython=True)
+def AMTI_ages(SDOBYR, FLPDYR, SDOBMD):
+    #_ages = np.where(
+    #    SDOBYR > 0, np.ceil((12 * (FLPDYR - SDOBYR) - SDOBMD / 100) / 12), 0)
+    if SDOBYR > 0:
+        return np.ceil((12 * (FLPDYR - SDOBYR) - SDOBMD / 100) / 12)
+    else:
+        return 0
+
+@vectorize('float64(' + 4*'float64, ' + 'float64)', nopython=True)
+def AMTI_c62600(_cmp, f6251, _exact, e62600, c62600):
+    if (_cmp == 1 and f6251 == 1 and _exact == 1):
+        return e62600
+    else:
+        return c62600
+
+
+@vectorize('float64(' + 3*'float64, ' + 'float64)', nopython=True)
+def AMTI_alminc(c62100, c62600, c02700, _alminc):
+    if (c02700 > 0):
+        return max(0, c62100 - c62600 + c02700)
+    else:
+        return _alminc
+
+
+def AMTI(puf, p):
     global c05800
     global _othtax
     global _agep
@@ -773,66 +911,63 @@ def AMTI(puf):
     c60130 = c21040 + x60130
     c62730 = e24515 + x62730
 
-    _amtded = c60200 + c60220 + c60240
-    _amtded = np.where(c60000 <= 0, np.maximum(0, _amtded + c60000), _amtded)
-    _addamt = np.where(np.logical_or(_exact == 0, np.logical_and(_exact == 1, _amtded + e60290 > 0)), _amtded + e60290 - c60130, 0)
+    _amtded = AMTI_amtded(c60200, c60220, c60240, c60000)
+    _addamt = AMTI_addamt(_exact, e60290, c60130, _amtded)
 
-    c62100 = np.where(_cmp == 1, (_addamt + e60300 + e60860 + e60100 + e60840 + e60630 + e60550
-                                                            + e60720 + e60430 + e60500 + e60340 +
-                                  e60680 + e60600 + e60405 + e60440
-                                                            + e60420 + e60410 + e61400 + e60660 - c60260 - e60480 - e62000 + c60000), 0)
+    c62100 = AMTI_c62100(_addamt, e60300, e60860, e60100, e60840, e60630, e60550,
+                e60720, e60430, e60500, e60340, e60680, e60600, e60405,
+                e60440, e60420, e60410, e61400, e60660, c60260, e60480,
+                e62000, c60000, _cmp, e60250)
 
-    c62100 = np.where(_cmp == 1, c62100 - e60250, c62100)
 
-    _cmbtp = np.zeros((dim,))
+    _edical = AMTI_edical(puf, _standard, _exact, e04470, e17500, e00100)
 
-    _edical = np.where(np.logical_and(puf == True, np.logical_or(_standard == 0, np.logical_and(
-        _exact == 1, e04470 > 0))), np.maximum(0, e17500 - np.maximum(0, e00100) * 0.075), 0)
+    _cmbtp = AMTI_cmbtp(puf, _standard, _exact, e04470, f6251, _edical, e00100,
+              e62100, c60260, e21040, _sit, e18500, e20800)
 
-    _cmbtp = np.where(np.logical_and(puf == True, np.logical_and(np.logical_or(_standard == 0, np.logical_and(_exact == 1, e04470 > 0)), f6251 == 1)
-                                     ), -1 * np.minimum(_edical, 0.025 * np.maximum(0, e00100)) + e62100 + c60260 + e04470 + e21040 - _sit - e00100 - e18500 - e20800, _cmbtp)
+    c62100 = AMTI_c62100_2(puf, _standard, _exact, e04470, c00100, c04470, c17000,
+                  e18500, c60260, c20800, c21040, _cmbtp, c62100, _sit)
 
-    c62100 = np.where(np.logical_and(puf == True, np.logical_or(_standard == 0, np.logical_and(_exact == 1, e04470 > 0))),
-                      c00100 - c04470 + np.minimum(c17000, 0.025 * np.maximum(0, c00100)) + _sit + e18500 - c60260 + c20800 - c21040 + _cmbtp, c62100)
+    _cmbtp = AMTI_cmbtp_2(puf, _standard, f6251, e62100, e00100, c60260, _cmbtp)
+    c62100 = AMTI_c62100_3(puf, _standard, c00100, c60260, _cmbtp, c62100)
 
-    _cmbtp = np.where(np.logical_and(puf == True, np.logical_and(
-        _standard > 0, f6251 == 1)), e62100 - e00100 + c60260, _cmbtp)
-    c62100 = np.where(
-        np.logical_and(puf == True, _standard > 0), c00100 - c60260 + _cmbtp, c62100)
+    #TODO
+    _amtsepadd = np.where(np.logical_and(c62100 > p._amtsep[FLPDYR - p.DEFAULT_YR], np.logical_or(MARS == 3, MARS == 6)), np.maximum(
+        0, np.minimum(p._almsep[FLPDYR - p.DEFAULT_YR], 0.25 * (c62100 - p._amtsep[FLPDYR - p.DEFAULT_YR]))), 0)
 
-    x62100 = c62100
+    #TODO
+    c62100 = np.where(np.logical_and(c62100 > p._amtsep[
+                      FLPDYR - p.DEFAULT_YR], np.logical_or(MARS == 3, MARS == 6)), c62100 + _amtsepadd, c62100)
 
-    _amtsepadd = np.where(np.logical_and(c62100 > _amtsep[FLPDYR - DEFAULT_YR], np.logical_or(MARS == 3, MARS == 6)), np.maximum(
-        0, np.minimum(_almsep[FLPDYR - DEFAULT_YR], 0.25 * (c62100 - _amtsep[FLPDYR - DEFAULT_YR]))), 0)
-    c62100 = np.where(np.logical_and(c62100 > _amtsep[
-                      FLPDYR - DEFAULT_YR], np.logical_or(MARS == 3, MARS == 6)), c62100 + _amtsepadd, c62100)
+    #TODO
+    c62600 = np.maximum(0, p._amtex[
+                        FLPDYR - p.DEFAULT_YR, MARS - 1] - 0.25 * np.maximum(0, c62100 - p._amtys[FLPDYR - p.DEFAULT_YR, MARS - 1]))
 
-    c62600 = np.maximum(0, _amtex[
-                        FLPDYR - DEFAULT_YR, MARS - 1] - 0.25 * np.maximum(0, c62100 - _amtys[MARS - 1]))
+    _agep = AMTI_agep(DOBYR, FLPDYR, DOBMD)
 
-    _agep = np.where(
-        DOBYR > 0, np.ceil((12 * (FLPDYR - DOBYR) - DOBMD / 100) / 12), 0)
-    _ages = np.where(
-        SDOBYR > 0, np.ceil((12 * (FLPDYR - SDOBYR) - SDOBMD / 100) / 12), 0)
+    _ages = AMTI_ages(SDOBYR, FLPDYR, SDOBMD)
 
-    c62600 = np.where(np.logical_and(
-        _cmp == 1, np.logical_and(f6251 == 1, _exact == 1)), e62600, c62600)
+    c62600 = AMTI_c62600(_cmp, f6251, _exact, e62600, c62600)
 
+    #TODO
     c62600 = np.where(np.logical_and(np.logical_and(_cmp == 1, _exact == 0), np.logical_and(
-        _agep < _amtage[FLPDYR - DEFAULT_YR], _agep != 0)), np.minimum(c62600, _earned + _almdep[FLPDYR - DEFAULT_YR]), c62600)
+        _agep < p._amtage[FLPDYR - p.DEFAULT_YR], _agep != 0)), np.minimum(c62600, _earned + p._almdep[FLPDYR - p.DEFAULT_YR]), c62600)
 
     c62700 = np.maximum(0, c62100 - c62600)
 
     _alminc = c62700
 
+    #TODO
     _amtfei = np.zeros((dim,))
-    _alminc = np.where(
-        c02700 > 0, np.maximum(0, c62100 - c62600 + c02700), _alminc)
+    # _alminc = np.where(
+    #     c02700 > 0, np.maximum(0, c62100 - c62600 + c02700), _alminc)
+    _alminc = AMTI_alminc(c62100, c62600, c02700, _alminc)
     _amtfei = np.where(c02700 > 0, 0.26 * c02700 + 0.02 *
-                       np.maximum(0, c02700 - _almsp[FLPDYR - DEFAULT_YR] / _sep), _amtfei)
+                       np.maximum(0, c02700 - p._almsp[FLPDYR - p.DEFAULT_YR] / p._sep), _amtfei)
 
+    #TODO
     c62780 = 0.26 * _alminc + 0.02 * \
-        np.maximum(0, _alminc - _almsp[FLPDYR - DEFAULT_YR] / _sep) - _amtfei
+        np.maximum(0, _alminc - p._almsp[FLPDYR - p.DEFAULT_YR] / p._sep) - _amtfei
 
     c62900 = np.where(f6251 != 0, e62900, e07300)
     c63000 = c62780 - c62900
@@ -843,34 +978,38 @@ def AMTI(puf):
     _ngamty = np.maximum(0, _alminc - c62740)
 
     c62745 = 0.26 * _ngamty + 0.02 * \
-        np.maximum(0, _ngamty - _almsp[FLPDYR - DEFAULT_YR] / _sep)
-    y62745 = _almsp[FLPDYR - DEFAULT_YR] / _sep
+        np.maximum(0, _ngamty - p._almsp[FLPDYR - p.DEFAULT_YR] / p._sep)
+    y62745 = p._almsp[FLPDYR - p.DEFAULT_YR] / p._sep
     _tamt2 = np.zeros((dim,))
 
     _amt5pc = np.zeros((dim,))
+    #TODO
     _amt15pc = np.minimum(_alminc, c62720) - _amt5pc - np.minimum(np.maximum(
-        0, _brk2[FLPDYR - DEFAULT_YR, MARS - 1] - c24520), np.minimum(_alminc, c62720))
+        0, p._brk2[FLPDYR - p.DEFAULT_YR, MARS - 1] - c24520), np.minimum(_alminc, c62720))
+    #TODO
     _amt15pc = np.where(c04800 == 0, np.maximum(
-        0, np.minimum(_alminc, c62720) - _brk2[FLPDYR - DEFAULT_YR, MARS - 1]), _amt15pc)
+        0, np.minimum(_alminc, c62720) - p._brk2[FLPDYR - p.DEFAULT_YR, MARS - 1]), _amt15pc)
     _amt25pc = np.minimum(_alminc, c62740) - np.minimum(_alminc, c62720)
 
     _amt25pc = np.where(c62730 == 0, 0, _amt25pc)
-    c62747 = _cgrate1[FLPDYR - DEFAULT_YR] * _amt5pc
-    c62755 = _cgrate2[FLPDYR - DEFAULT_YR] * _amt15pc
+    c62747 = p._cgrate1[FLPDYR - p.DEFAULT_YR] * _amt5pc
+    c62755 = p._cgrate2[FLPDYR - p.DEFAULT_YR] * _amt15pc
     c62770 = 0.25 * _amt25pc
     _tamt2 = c62747 + c62755 + c62770
 
     _amt = np.zeros((dim,))
-    _amt = np.where(_ngamty > _brk6[
-                    FLPDYR - DEFAULT_YR, MARS - 1], 0.05 * np.minimum(_alminc, c62740), _amt)
-    _amt = np.where(np.logical_and(_ngamty <= _brk6[FLPDYR - DEFAULT_YR, MARS - 1], _alminc > _brk6[
-                    FLPDYR - DEFAULT_YR, MARS - 1]), 0.05 * np.minimum(_alminc - _brk6[FLPDYR - DEFAULT_YR, MARS - 1], c62740), _amt)
+    #TODO
+    _amt = np.where(_ngamty > p._brk6[
+                    FLPDYR - p.DEFAULT_YR, MARS - 1], 0.05 * np.minimum(_alminc, c62740), _amt)
+    #TODO
+    _amt = np.where(np.logical_and(_ngamty <= p._brk6[FLPDYR - p.DEFAULT_YR, MARS - 1], _alminc > p._brk6[
+                    FLPDYR - p.DEFAULT_YR, MARS - 1]), 0.05 * np.minimum(_alminc - p._brk6[FLPDYR - p.DEFAULT_YR, MARS - 1], c62740), _amt)
 
     _tamt2 = _tamt2 + _amt
 
     c62800 = np.minimum(c62780, c62745 + _tamt2 - _amtfei)
     c63000 = c62800 - c62900
-    c63100 = _taxbc - e07300 - c05700
+    c63100 = _taxbc - e07300 - p.c05700
     c63100 = c63100 + e10105
 
     c63100 = np.maximum(0, c63100)
@@ -886,7 +1025,7 @@ def AMTI(puf):
                c62900, c63000, c62740, _ngamty, c62745, y62745, _tamt2,
                _amt5pc, _amt15pc, _amt25pc, c62747, c62755, c62770, _amt,
                c62800, c09600, _othtax, c05800)
-               
+
     header = ['c62720', 'c60260', 'c63100', 'c60200', 'c60240', 'c60220',
               'c60130', 'c62730', '_addamt', 'c62100', '_cmbtp', '_edical',
               '_amtsepadd', 'c62600', '_agep', '_ages', 'c62600', 'c62700',
@@ -897,9 +1036,9 @@ def AMTI(puf):
 
     return DataFrame(data=np.column_stack(outputs),
                      columns=header), c05800
-    
 
-def F2441(puf, _earned):
+
+def F2441(puf, _earned, p):
     global c32880
     global c32890
     global c32800
@@ -922,7 +1061,7 @@ def F2441(puf, _earned):
     _ncu13 = np.where(
         np.logical_and(puf == False, CDOB2 > 0), _ncu13 + 1, _ncu13)
 
-    _dclim = np.minimum(_ncu13, 2) * _dcmax[FLPDYR - DEFAULT_YR]
+    _dclim = np.minimum(_ncu13, 2) * p._dcmax[FLPDYR - p.DEFAULT_YR]
     c32800 = np.minimum(np.maximum(e32800, e32750 + e32775), _dclim)
 
     outputs = (_earned, c32880, c32890, _ncu13, _dclim, c32800)
@@ -931,7 +1070,7 @@ def F2441(puf, _earned):
     return DataFrame(data=np.column_stack(outputs), columns=header), c32800
 
 
-def DepCareBen(c32800):
+def DepCareBen(c32800, p):
     global c33000
     c32800 = c32800
     # Part III ofdependent care benefits
@@ -943,7 +1082,7 @@ def DepCareBen(c32800):
     c33465 = np.where(_cmp == 1, e33465, 0)
     c33470 = np.where(_cmp == 1, e33470, 0)
     c33475 = np.where(
-        _cmp == 1, np.maximum(0, np.minimum(_seywage, 5000 / _sep) - c33470), 0)
+        _cmp == 1, np.maximum(0, np.minimum(_seywage, 5000 / p._sep) - c33470), 0)
     c33480 = np.where(
         _cmp == 1, np.maximum(0, e33420 + e33430 - e33450 - c33465 - c33475), 0)
     c32840 = np.where(_cmp == 1, c33470 + c33475, 0)
@@ -964,16 +1103,16 @@ def DepCareBen(c32800):
                      columns=header)
 
 
-def ExpEarnedInc():
+def ExpEarnedInc(p):
     global c07180
     # Expenses limited to earned income
 
     _tratio = np.where(_exact == 1, np.ceil(
-        np.maximum((c00100 - _agcmax[FLPDYR - DEFAULT_YR]) / 2000, 0)), 0)
+        np.maximum((c00100 - p._agcmax[FLPDYR - p.DEFAULT_YR]) / 2000, 0)), 0)
     c33200 = np.where(_exact == 1, c33000 * 0.01 * np.maximum(20,
-                                                              _pcmax[FLPDYR - DEFAULT_YR] - np.minimum(15, _tratio)), 0)
+                                                              _pcmax[FLPDYR - p.DEFAULT_YR] - np.minimum(15, _tratio)), 0)
     c33200 = np.where(_exact != 1, c33000 * 0.01 * np.maximum(20, _pcmax[
-                      FLPDYR - DEFAULT_YR] - np.maximum((c00100 - _agcmax[FLPDYR - DEFAULT_YR]) / 2000, 0)), c33200)
+                      FLPDYR - p.DEFAULT_YR] - np.maximum((c00100 - p._agcmax[FLPDYR - p.DEFAULT_YR]) / 2000, 0)), c33200)
 
     c33400 = np.minimum(np.maximum(0, c05800 - e07300), c33200)
     # amount of the credit
@@ -998,7 +1137,7 @@ def RateRed(c05800):
                      columns=['c07970', 'c05800', 'c59560'])
 
 
-def NumDep(puf):
+def NumDep(puf, p):
     global c59660
     # Number of dependents for EIC
 
@@ -1017,21 +1156,21 @@ def NumDep(puf):
     _modagi = c00100 + e00400
     c59660 = np.zeros((dim,))
 
-    _val_ymax = np.where(np.logical_and(MARS == 2, _modagi > 0), _ymax[
-                         _ieic, FLPDYR - DEFAULT_YR] + _joint[FLPDYR - DEFAULT_YR], 0)
+    _val_ymax = np.where(np.logical_and(MARS == 2, _modagi > 0), p._ymax[
+                         _ieic, FLPDYR - p.DEFAULT_YR] + p._joint[FLPDYR - p.DEFAULT_YR, _ieic], 0)
     _val_ymax = np.where(np.logical_and(_modagi > 0, np.logical_or(MARS == 1, np.logical_or(
-        MARS == 4, np.logical_or(MARS == 5, MARS == 7)))), _ymax[_ieic, FLPDYR - DEFAULT_YR], _val_ymax)
+        MARS == 4, np.logical_or(MARS == 5, MARS == 7)))), p._ymax[_ieic, FLPDYR - p.DEFAULT_YR], _val_ymax)
     c59660 = np.where(np.logical_and(_modagi > 0, np.logical_or(MARS == 1, np.logical_or(MARS == 4, np.logical_or(MARS == 5, np.logical_or(
-        MARS == 2, MARS == 7))))), np.minimum(_rtbase[_ieic, FLPDYR - DEFAULT_YR] * c59560, _crmax[_ieic, FLPDYR - DEFAULT_YR]), c59660)
+        MARS == 2, MARS == 7))))), np.minimum(p._rtbase[FLPDYR - p.DEFAULT_YR, _ieic] * c59560, p._crmax[FLPDYR - p.DEFAULT_YR, _ieic]), c59660)
     _preeitc = np.where(np.logical_and(_modagi > 0, np.logical_or(MARS == 1, np.logical_or(
         MARS == 4, np.logical_or(MARS == 5, np.logical_or(MARS == 2, MARS == 7))))), c59660, 0)
 
     c59660 = np.where(np.logical_and(np.logical_and(MARS != 3, MARS != 6), np.logical_and(_modagi > 0, np.logical_or(
-        _modagi > _val_ymax, c59560 > _val_ymax))), np.maximum(0, c59660 - _rtless[_ieic, FLPDYR - DEFAULT_YR] * (np.maximum(_modagi, c59560) - _val_ymax)), c59660)
+        _modagi > _val_ymax, c59560 > _val_ymax))), np.maximum(0, c59660 - p._rtless[FLPDYR - p.DEFAULT_YR, _ieic] * (np.maximum(_modagi, c59560) - _val_ymax)), c59660)
     _val_rtbase = np.where(np.logical_and(np.logical_and(
-        MARS != 3, MARS != 6), _modagi > 0), _rtbase[_ieic, FLPDYR - DEFAULT_YR] * 100, 0)
+        MARS != 3, MARS != 6), _modagi > 0), p._rtbase[FLPDYR - p.DEFAULT_YR, _ieic] * 100, 0)
     _val_rtless = np.where(np.logical_and(np.logical_and(
-        MARS != 3, MARS != 6), _modagi > 0), _rtless[_ieic, FLPDYR - DEFAULT_YR] * 100, 0)
+        MARS != 3, MARS != 6), _modagi > 0), p._rtless[FLPDYR - p.DEFAULT_YR, _ieic] * 100, 0)
 
     _dy = np.where(np.logical_and(np.logical_and(MARS != 3, MARS != 6), _modagi > 0), e00400 + e83080 + e00300 + e00600
                    +
@@ -1041,7 +1180,7 @@ def NumDep(puf):
                    + np.maximum(0, e26210 + e26340 + e27200 - np.absolute(e26205) - np.absolute(e26320)), 0)
 
     c59660 = np.where(np.logical_and(np.logical_and(MARS != 3, MARS != 6), np.logical_and(
-        _modagi > 0, _dy > _dylim[FLPDYR - DEFAULT_YR])), 0, c59660)
+        _modagi > 0, _dy > p._dylim[FLPDYR - p.DEFAULT_YR])), 0, c59660)
 
     c59660 = np.where(np.logical_and(np.logical_and(_cmp == 1, _ieic == 0), np.logical_and(np.logical_and(
         SOIYR - DOBYR >= 25, SOIYR - DOBYR < 65), np.logical_and(SOIYR - SDOBYR >= 25, SOIYR - SDOBYR < 65))), 0, c59660)
@@ -1056,7 +1195,7 @@ def NumDep(puf):
 
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
-def ChildTaxCredit():
+def ChildTaxCredit(p):
     global _num
     global c07230
     global _precrd
@@ -1075,17 +1214,17 @@ def ChildTaxCredit():
     _nctcr = np.zeros((dim,))
     _nctcr = np.where(SOIYR >= 2002, n24, _nctcr)
     _nctcr = np.where(
-        np.logical_and(SOIYR < 2002, _chmax[FLPDYR - DEFAULT_YR] > 0), xtxcr1xtxcr10, _nctcr)
+        np.logical_and(SOIYR < 2002, p._chmax[FLPDYR - p.DEFAULT_YR] > 0), xtxcr1xtxcr10, _nctcr)
     _nctcr = np.where(
-        np.logical_and(SOIYR < 2002, _chmax[FLPDYR - DEFAULT_YR] <= 0), XOCAH, _nctcr)
+        np.logical_and(SOIYR < 2002, p._chmax[FLPDYR - p.DEFAULT_YR] <= 0), XOCAH, _nctcr)
 
-    _precrd = _chmax[FLPDYR - DEFAULT_YR] * _nctcr
+    _precrd = p._chmax[FLPDYR - p.DEFAULT_YR] * _nctcr
     _ctcagi = c00100 + _feided
 
-    _precrd = np.where(np.logical_and(_ctcagi > _cphase[MARS - 1], _exact == 1), np.maximum(
-        0, _precrd - 50 * np.ceil(_ctcagi - _cphase[MARS - 1]) / 1000), _precrd)
-    _precrd = np.where(np.logical_and(_ctcagi > _cphase[MARS - 1], _exact != 1), np.maximum(
-        0, _precrd - 50 * (np.maximum(0, _ctcagi - _cphase[MARS - 1]) + 500) / 1000), _precrd)
+    _precrd = np.where(np.logical_and(_ctcagi > p._cphase[MARS - 1], _exact == 1), np.maximum(
+        0, _precrd - 50 * np.ceil(_ctcagi - p._cphase[MARS - 1]) / 1000), _precrd)
+    _precrd = np.where(np.logical_and(_ctcagi > p._cphase[MARS - 1], _exact != 1), np.maximum(
+        0, _precrd - 50 * (np.maximum(0, _ctcagi - p._cphase[MARS - 1]) + 500) / 1000), _precrd)
 
     outputs = (c11070, c07220, c07230, _precrd, _num, _nctcr, _precrd, _ctcagi)
     header = ['c11070', 'c07220', 'c07230', '_precrd', '_num', '_nctcr',
@@ -1095,9 +1234,8 @@ def ChildTaxCredit():
 
 
 # def HopeCredit():
-    # Hope credit for 1998-2009, I don't think this is needed
-    # Leave blank for now, ask Dan
-    # SAS lnies 951 - 972
+    # W/o congressional action, Hope Credit will replace 
+    # American opportunities credit in 2018. NEED TO ADD LOGIC!!!
 
 
 def AmOppCr():
@@ -1127,17 +1265,17 @@ def AmOppCr():
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
-def LLC(puf):
+def LLC(puf, p):
     # Lifetime Learning Credit
     global c87550
 
     c87540 = np.where(
-        puf == True, np.minimum(e87530, _learn[FLPDYR - DEFAULT_YR]), 0)
+        puf == True, np.minimum(e87530, p._learn[FLPDYR - p.DEFAULT_YR]), 0)
     c87550 = np.where(puf == True, 0.2 * c87540, 0)
 
     c87530 = np.where(puf == False, e87526 + e87522 + e87524 + e87528, 0)
     c87540 = np.where(
-        puf == False, np.minimum(c87530, _learn[FLPDYR - DEFAULT_YR]), c87540)
+        puf == False, np.minimum(c87530, p._learn[FLPDYR - p.DEFAULT_YR]), c87540)
     c87550 = np.where(puf == False, 0.2 * c87540, c87550)
 
     outputs = (c87540, c87550, c87530)
@@ -1173,7 +1311,7 @@ def RefAmOpp():
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
-def NonEdCr(c87550):
+def NonEdCr(c87550, p):
     global c07220
     # Nonrefundable Education Credits
 
@@ -1182,7 +1320,7 @@ def NonEdCr(c87550):
 
     # Phase Out
     c87570 = np.where(
-        MARS == 2, _edphhm[FLPDYR - DEFAULT_YR] * 1000, _edphhs[FLPDYR - DEFAULT_YR] * 1000)
+        MARS == 2, _edphhm[FLPDYR - p.DEFAULT_YR] * 1000, p._edphhs[FLPDYR - p.DEFAULT_YR] * 1000)
     c87580 = c00100
     c87590 = np.maximum(0, c87570 - c87580)
     c87600 = 10000 * _num
@@ -1208,7 +1346,7 @@ def NonEdCr(c87550):
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
-def AddCTC(puf):
+def AddCTC(puf, p):
     # Additional Child Tax Credit
 
     c82940 = np.zeros((dim,))
@@ -1224,12 +1362,12 @@ def AddCTC(puf):
     c82880 = np.where(np.logical_and(_nctcr > 0, _exact == 1), e82880, c82880)
     h82880 = np.where(_nctcr > 0, c82880, 0)
     c82885 = np.where(
-        _nctcr > 0, np.maximum(0, c82880 - _ealim[FLPDYR - DEFAULT_YR]), 0)
-    c82890 = np.where(_nctcr > 0, _adctcrt[FLPDYR - DEFAULT_YR] * c82885, 0)
+        _nctcr > 0, np.maximum(0, c82880 - p._ealim[FLPDYR - p.DEFAULT_YR]), 0)
+    c82890 = np.where(_nctcr > 0, p._adctcrt[FLPDYR - p.DEFAULT_YR] * c82885, 0)
 
     # Part II of 2005 form 8812
     c82900 = np.where(np.logical_and(_nctcr > 2, c82890 < c82935),
-                      0.0765 * np.minimum(_ssmax[FLPDYR - DEFAULT_YR], c82880), 0)
+                      0.0765 * np.minimum(p._ssmax[FLPDYR - p.DEFAULT_YR], c82880), 0)
     c82905 = np.where(
         np.logical_and(_nctcr > 2, c82890 < c82935), e03260 + e09800, 0)
     c82910 = np.where(
@@ -1359,7 +1497,7 @@ def DEITC():
     c59720 = np.where(np.logical_or(c08795 < 0, c59660 <= 0), 0, c59720)
 
     c07150 = c07100 + c59680
-    c07150 = c07150 
+    c07150 = c07150
     c10950 = np.zeros((dim,))
 
     outputs = (c59680, c59700, c59720, _comb, c07150, c10950)
@@ -1392,7 +1530,7 @@ def SOIT(_eitc):
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
-def Taxer(inc_in, inc_out, MARS):
+def Taxer(inc_in, inc_out, MARS, p):
     low = np.where(inc_in < 3000, 1, 0)
     med = np.where(np.logical_and(inc_in >= 3000, inc_in < 100000), 1, 0)
 
@@ -1418,28 +1556,30 @@ def Taxer(inc_in, inc_out, MARS):
 
     _a6 = inc_in
 
-    inc_out = (_rt1[FLPDYR - DEFAULT_YR] * np.minimum(_a6, _brk1[FLPDYR - DEFAULT_YR, MARS - 1])
-               + _rt2[FLPDYR - DEFAULT_YR]
-               * np.minimum(_brk2[FLPDYR - DEFAULT_YR, MARS - 1] - _brk1[FLPDYR - DEFAULT_YR, MARS - 1],
-                            np.maximum(0., _a6 - _brk1[FLPDYR - DEFAULT_YR, MARS - 1]))
-               + _rt3[FLPDYR - DEFAULT_YR]
-               * np.minimum(_brk3[FLPDYR - DEFAULT_YR, MARS - 1] - _brk2[FLPDYR - DEFAULT_YR, MARS - 1],
-                            np.maximum(0., _a6 - _brk2[FLPDYR - DEFAULT_YR, MARS - 1]))
-               + _rt4[FLPDYR - DEFAULT_YR]
-               * np.minimum(_brk4[FLPDYR - DEFAULT_YR, MARS - 1] - _brk3[FLPDYR - DEFAULT_YR, MARS - 1],
-                            np.maximum(0., _a6 - _brk3[FLPDYR - DEFAULT_YR, MARS - 1]))
-               + _rt5[FLPDYR - DEFAULT_YR]
-               * np.minimum(_brk5[FLPDYR - DEFAULT_YR, MARS - 1] - _brk4[FLPDYR - DEFAULT_YR, MARS - 1],
-                            np.maximum(0., _a6 - _brk4[FLPDYR - DEFAULT_YR, MARS - 1]))
-               + _rt6[FLPDYR - DEFAULT_YR]
-               * np.minimum(_brk6[FLPDYR - DEFAULT_YR, MARS - 1] - _brk5[FLPDYR - DEFAULT_YR, MARS - 1],
-                            np.maximum(0., _a6 - _brk5[FLPDYR - DEFAULT_YR, MARS - 1]))
-               + _rt7[FLPDYR - DEFAULT_YR] * np.maximum(0., _a6 - _brk6[FLPDYR - DEFAULT_YR, MARS - 1]))
+    inc_out = (p._rt1[FLPDYR - p.DEFAULT_YR] * np.minimum(_a6, p._brk1[FLPDYR - p.DEFAULT_YR, MARS - 1])
+               + p._rt2[FLPDYR - p.DEFAULT_YR]
+               * np.minimum(p._brk2[FLPDYR - p.DEFAULT_YR, MARS - 1] - p._brk1[FLPDYR - p.DEFAULT_YR, MARS - 1],
+                            np.maximum(0., _a6 - p._brk1[FLPDYR - p.DEFAULT_YR, MARS - 1]))
+               + p._rt3[FLPDYR - p.DEFAULT_YR]
+               * np.minimum(p._brk3[FLPDYR - p.DEFAULT_YR, MARS - 1] - p._brk2[FLPDYR - p.DEFAULT_YR, MARS - 1],
+                            np.maximum(0., _a6 - p._brk2[FLPDYR - p.DEFAULT_YR, MARS - 1]))
+               + p._rt4[FLPDYR - p.DEFAULT_YR]
+               * np.minimum(p._brk4[FLPDYR - p.DEFAULT_YR, MARS - 1] - p._brk3[FLPDYR - p.DEFAULT_YR, MARS - 1],
+                            np.maximum(0., _a6 - p._brk3[FLPDYR - p.DEFAULT_YR, MARS - 1]))
+               + p._rt5[FLPDYR - p.DEFAULT_YR]
+               * np.minimum(p._brk5[FLPDYR - p.DEFAULT_YR, MARS - 1] - p._brk4[FLPDYR - p.DEFAULT_YR, MARS - 1],
+                            np.maximum(0., _a6 - p._brk4[FLPDYR - p.DEFAULT_YR, MARS - 1]))
+               + p._rt6[FLPDYR - p.DEFAULT_YR]
+               * np.minimum(p._brk6[FLPDYR - p.DEFAULT_YR, MARS - 1] - p._brk5[FLPDYR - p.DEFAULT_YR, MARS - 1],
+                            np.maximum(0., _a6 - p._brk5[FLPDYR - p.DEFAULT_YR, MARS - 1]))
+               + p._rt7[FLPDYR - p.DEFAULT_YR] * np.maximum(0., _a6 - p._brk6[FLPDYR - p.DEFAULT_YR, MARS - 1]))
 
     return inc_out
 
-@jit(f8(f8, f8, i8, i8, i8), nopython = True)
-def Taxer_i(inc_in, inc_out, MARS, FLPDYR, DEFAULT_YR):
+@jit('float64(float64, int64, int64, int64)', nopython = True)
+def Taxer_i(inc_in, MARS, FLPDYR, DEFAULT_YR):
+    ## note still should pass in all globals being used, including _rt1-_rt7 and _brk1-_brk6
+
     # low = 0 
     # med = 0
 
