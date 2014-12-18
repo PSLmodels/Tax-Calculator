@@ -493,12 +493,12 @@ def TaxGains0_jit(e00650, c04800, e01000, c23650, e23250, e01100, e58990, e58980
     _cmp, e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400):
 
     c00650 = e00650
+    _addtax = 0.
 
     if e01000 > 0 or c23650 > 0. or e23250 > 0. or e01100 > 0. or e00650 > 0.:
         _hasgain = 1.
     else:
         _hasgain = 0.
-
 
     if _taxinc > 0. and _hasgain == 1.:
         #if/else 1
@@ -697,7 +697,6 @@ def TaxGains0_jit(e00650, c04800, e01000, c23650, e23250, e01100, e58990, e58980
             c05700, _s1291, _parents, _taxbc, c05750)
 
 
-
 @jit(nopython=True)
 def apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
     e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6,  _xyztax, _feided, _feitax, _cmp,
@@ -736,7 +735,7 @@ def apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
             _addtax, c24560, _taxspecial, c05100, c05700, c59430,
             c59450, c59460, _line17, _line19, _line22, _line30, _line31,
             _line32, _line36, _line33, _line34, _line35, c59485, c59490,
-            c05700, _s1291, _parents, _taxbc, c05750)
+            c05700, _s1291, _parents, c05750, _taxbc)
 
 
 
@@ -746,7 +745,6 @@ def TaxGains(p):
     global c24520 # got it
     global c05750 # at the end
     global _taxbc # at the end
-    global c05700 # got it
     global c04800, _taxinc, _xyztax, _feitax
 
 
@@ -764,7 +762,7 @@ def TaxGains(p):
                 p.c59485 , p.c59490, p._s1291, p._parents, p.c05750, p._taxbc)
 
 
-    ## Note var c24516 is being printed twice. On purpose?
+    ## Note var c24516 is being printed twice. On purpose? e00650 should be c00650?
     header = ['e00650', '_hasgain', '_dwks5', 'c24505', 'c24510', '_dwks9', #Note weirdness w e00650
               'c24516', 'c24580', 'c24516', '_dwks12', 'c24517', 'c24520',
               'c24530', '_dwks16', '_dwks17', 'c24540', 'c24534', '_dwks21',
@@ -774,7 +772,7 @@ def TaxGains(p):
               '_line17', '_line19', '_line22', '_line30', '_line31',
               '_line32', '_line36', '_line33', '_line34', '_line35',
               'c59485', 'c59490', 'c05700', '_s1291', '_parents',
-              '_taxbc', 'c05750']
+              'c05750', '_taxbc']
 
 
     return DataFrame(data=np.column_stack(outputs),
@@ -1011,7 +1009,7 @@ def AMTI(puf, p):
 
     c62800 = np.minimum(c62780, c62745 + _tamt2 - _amtfei)
     c63000 = c62800 - c62900
-    c63100 = _taxbc - e07300 - c05700
+    c63100 = _taxbc - e07300 - p.c05700
     c63100 = c63100 + e10105
 
     c63100 = np.maximum(0, c63100)
