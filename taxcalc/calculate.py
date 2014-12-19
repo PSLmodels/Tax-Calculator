@@ -488,7 +488,7 @@ def NonGain():
 
 
 @jit(nopython=True)
-def TaxGains0_jit(e00650, c04800, e01000, c23650, e23250, e01100, e58990, e58980, e24515,
+def TaxGains_calc(e00650, c04800, e01000, c23650, e23250, e01100, e58990, e58980, e24515,
     e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6, _xyztax, _feided, _feitax,
     _cmp, e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400):
 
@@ -698,7 +698,7 @@ def TaxGains0_jit(e00650, c04800, e01000, c23650, e23250, e01100, e58990, e58980
 
 
 @jit(nopython=True)
-def apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
+def TaxGains_apply(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
     e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6,  _xyztax, _feided, _feitax, _cmp,
     e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400,
     c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516, _dwks12,
@@ -720,7 +720,7 @@ def apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
         c59450[i], c59460[i], _line17[i], _line19[i], _line22[i], _line30[i], _line31[i],
         _line32[i], _line36[i], _line33[i], _line34[i], _line35[i], c59485[i], c59490[i],
         c05700[i], _s1291[i], _parents[i], _taxbc[i], c05750[i]) = \
-        TaxGains0_jit(e00650[i], c04800[i], e01000[i], c23650[i], e23250[i], e01100[i],
+        TaxGains_calc(e00650[i], c04800[i], e01000[i], c23650[i], e23250[i], e01100[i],
         e58990[i], e58980[i], e24515[i], e24518[i], _brk2, FLPDYR[i], DEFAULT_YR,
         MARS[i], _taxinc[i], _brk6,  _xyztax[i], _feided[i], _feitax[i],
         _cmp[i], e59410[i], e59420[i], e59440[i], e59470[i], e59400[i], e83200_0[i],
@@ -748,7 +748,7 @@ def TaxGains(p):
     global c04800, _taxinc, _xyztax, _feitax
 
 
-    outputs = apply_TaxGains0(
+    outputs = TaxGains_apply(
                 e00650, c04800, e01000, c23650, e23250, e01100, e58990,
                 e58980, e24515, e24518, p._brk2, FLPDYR, p.DEFAULT_YR, MARS, _taxinc, p._brk6,  _xyztax, _feided, _feitax, _cmp,
                 e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400,
