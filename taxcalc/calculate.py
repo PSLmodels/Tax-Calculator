@@ -1860,7 +1860,7 @@ def AddCTC_calc(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
 
         c82885 = max(0, c82880 - _ealim[FLPDYR - DEFAULT_YR])
 
-        c82890 = _adctcrt[FLPDYR - DEFAULT_YR]
+        c82890 = _adctcrt[FLPDYR - DEFAULT_YR] * c82885
     else:
         c82925, c82930, c82935, c82880, h82880, c82885, c82890 = (0, 0, 0, 
             0, 0, 0, 0)
