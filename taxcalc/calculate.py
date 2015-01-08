@@ -747,19 +747,30 @@ def TaxGains(p):
     global c24520
     global c05700
 
-    outputs = apply_TaxGains0(
-                e00650, c04800, e01000, c23650, e23250, e01100, e58990,
-                e58980, e24515, e24518, p._brk2, FLPDYR, p.DEFAULT_YR, MARS, 
-                _taxinc, p._brk6,  _xyztax, _feided, _feitax, _cmp,
-                e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, 
-                e74400, p.c00650 , p._hasgain, p._dwks5, p.c24505, p.c24510, 
-                p._dwks9, p.c24516, p._dwks12, p.c24517 , p.c24520, p.c24530, 
-                p._dwks16, p._dwks17, p.c24540, p.c24534, p._dwks21 , p.c24597, 
-                p.c24598, p._dwks25, p._dwks26, p._dwks28, p.c24610, p.c24615,
-                p._dwks31 , p.c24550 , p.c24570 , p._addtax ,p.c24560 , p._taxspecial , p.c24580 , p.c05100 , p.c05700 , p.c59430 ,
-                p.c59450 , p.c59460 , p._line17, p._line19 , p._line22 , p._line30,
-                p._line31 , p._line32 , p._line36 ,p._line33 , p._line34 , p._line35,
-                p.c59485 , p.c59490, p._s1291, p._parents, p.c05750, p._taxbc)
+
+    outputs = \
+        (p.c00650, p._hasgain, p._dwks5, p.c24505, p.c24510, p._dwks9, p.c24516,
+         p.c24580, p.c24516, p._dwks12, p.c24517, p.c24520, p.c24530, p._dwks16,
+         p._dwks17, p.c24540, p.c24534, p._dwks21, p.c24597, p.c24598, p._dwks25,
+         p._dwks26, p._dwks28, p.c24610, p.c24615, p._dwks31, p.c24550, p.c24570,
+         p._addtax, p.c24560, p._taxspecial, p.c05100, p.c05700, p.c59430,
+         p.c59450, p.c59460, p._line17, p._line19, p._line22, p._line30, p._line31,
+         p._line32, p._line36, p._line33, p._line34, p._line35, p.c59485, p.c59490,
+         p.c05700, p._s1291, p._parents, p.c05750, p._taxbc) = \
+                apply_TaxGains0(
+                    e00650, c04800, e01000, c23650, e23250, e01100, e58990,
+                    e58980, e24515, e24518, p._brk2, FLPDYR, p.DEFAULT_YR, MARS,
+                    _taxinc, p._brk6,  _xyztax, _feided, _feitax, _cmp,
+                    e59410, e59420, e59440, e59470, e59400, e83200_0, e10105,
+                    e74400, p.c00650 , p._hasgain, p._dwks5, p.c24505, p.c24510,
+                    p._dwks9, p.c24516, p._dwks12, p.c24517 , p.c24520, p.c24530,
+                    p._dwks16, p._dwks17, p.c24540, p.c24534, p._dwks21 , p.c24597,
+                    p.c24598, p._dwks25, p._dwks26, p._dwks28, p.c24610, p.c24615,
+                    p._dwks31 , p.c24550 , p.c24570 , p._addtax, p.c24560, p._taxspecial,
+                    p.c24580 , p.c05100 , p.c05700 , p.c59430 ,
+                    p.c59450 , p.c59460 , p._line17, p._line19 , p._line22 , p._line30,
+                    p._line31 , p._line32 , p._line36 ,p._line33 , p._line34 , p._line35,
+                    p.c59485 , p.c59490, p._s1291, p._parents, p.c05750, p._taxbc)
 
 
     ## Note var c24516 is being printed twice. On purpose? e00650 should be c00650?
@@ -776,9 +787,10 @@ def TaxGains(p):
 
 
     return DataFrame(data=np.column_stack(outputs),
-                     columns=header) 
+                     columns=header) , c05750
 
 
+@jit(nopython=True)
 def MUI_calc(c00100, _thresx, MARS, c05750, e00300, e00600, c01000, e02000):
     # Additional Medicare tax on unearned Income
     if c00100 > _thresx[MARS - 1]:
@@ -786,6 +798,7 @@ def MUI_calc(c00100, _thresx, MARS, c05750, e00300, e00600, c01000, e02000):
                 + max(0, e02000), c00100 - _thresx[MARS - 1]))
     return c05750
 
+@jit(nopython=True)
 def MUI_apply(c00100, _thresx, MARS, c05750, e00300, e00600, c01000, e02000):
     
     for i in range(len(_taxinc)):
@@ -795,12 +808,12 @@ def MUI_apply(c00100, _thresx, MARS, c05750, e00300, e00600, c01000, e02000):
 
 def MUI(c05750, p):
     # Additional Medicare tax on unearned Income
-    outputs = MUI_apply(c00100, p._thresx, MARS, c05750, e00300, e00600, c01000, 
+    c05750 = MUI_apply(c00100, p._thresx, MARS, c05750, e00300, e00600, c01000,
                         e02000)
 
     header = ['c05750']
 
-    return DataFrame(data=outputs,
+    return DataFrame(data=c05750,
                      columns=header) 
 
 
@@ -912,7 +925,7 @@ def MUI(c05750, p):
 #     else:
 #         return _alminc
 
-
+@jit(nopython=True)
 def AMTI_calc(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
                 e60300, e60860, e60100, e60840, e60630, e60550,
                 e60720, e60430, e60500, e60340, e60680, e60600, e60405,
@@ -926,11 +939,11 @@ def AMTI_calc(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
                 _brk6, MARS, _sep, _brk2, _almdep, _cgrate1,
                 _cgrate2, _amtys, _amtsep, x62720, e00700, c24516, 
                 c24520, c04800, e10105, c05700, e05800, e05100, e09600, 
-                _amtage, x62740, e62900, _almsep):
+                _amtage, x62740, e62900, _almsep, _earned, e62600):
 
     c62720 = c24517 + x62720
     c60260 = e00700 + x60260
-    c63100 = max(0, _taxbc - e07300)
+    c63100 = max(0., _taxbc - e07300)
     c60200 = min(c17000, 0.025 * _posagi)
     c60240 = c18300 + x60240
     c60220 = c20800 + x60220
@@ -939,7 +952,7 @@ def AMTI_calc(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     _amtded = c60200 + c60220 + c60240
     if c60000 <= 0:
-        _amtded = max(0, _amtded + c60000)
+        _amtded = max(0., _amtded + c60000)
    
     if _exact == 0 or (_exact == 1 and ((_amtded + e60290) > 0)):
         _addamt = _amtded + e60290 - c60130
@@ -953,17 +966,17 @@ def AMTI_calc(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
 
     if (puf and (_standard == 0 or (_exact == 1 and e04470 > 0))):
-        _edical = max(0, e17500 - max(0, e00100) * 0.075)
-    else: _edical = 0
+        _edical = max(0., e17500 - max(0., e00100) * 0.075)
+    else: _edical = 0.
 
     if (puf and ((_standard == 0 or (_exact == 1 and e04470 > 0))
         and f6251 == 1)):
-        _cmbtp = (-1 * min(_edical, 0.025 * max(0, e00100)) + e62100 + c60260
+        _cmbtp = (-1 * min(_edical, 0.025 * max(0., e00100)) + e62100 + c60260
                + e04470 + e21040 - _sit - e00100 - e18500 - e20800)
-    else: _cmbtp = 0
+    else: _cmbtp = 0.
 
     if (puf == True and ((_standard == 0 or (_exact == 1 and e04470 > 0)))):
-        c62100 = (c00100 - c04470 + min(c17000, 0.025 * max(0, c00100)) + _sit
+        c62100 = (c00100 - c04470 + min(c17000, 0.025 * max(0., c00100)) + _sit
                + e18500 - c60260 + c20800 - c21040 + _cmbtp)
 
 
@@ -976,11 +989,11 @@ def AMTI_calc(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
  
 
     if (c62100 > _amtsep[FLPDYR - DEFAULT_YR]) and (MARS == 3 or MARS == 6):
-        _amtsepadd = max(0, min(_almsep[FLPDYR-DEFAULT_YR], 0.25 * (c62100 - _amtsep[FLPDYR - DEFAULT_YR])))
-    else: _amtsepadd = 0
+        _amtsepadd = max(0., min(_almsep[FLPDYR-DEFAULT_YR], 0.25 * (c62100 - _amtsep[FLPDYR - DEFAULT_YR])))
+    else: _amtsepadd = 0.
     c62100 = c62100 + _amtsepadd
 
-    c62600 = max(0, _amtex[FLPDYR - DEFAULT_YR, MARS - 1] - 0.25 * max(0, c62100 - _amtys[FLPDYR - DEFAULT_YR, MARS - 1]))
+    c62600 = max(0., _amtex[FLPDYR - DEFAULT_YR, MARS - 1] - 0.25 * max(0., c62100 - _amtys[FLPDYR - DEFAULT_YR, MARS - 1]))
 
     if DOBYR > 0:
         _agep = math.ceil((12 * (FLPDYR - DOBYR) - DOBMD / 100) / 12)
@@ -989,7 +1002,7 @@ def AMTI_calc(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     if SDOBYR > 0:
         _ages = np.ceil((12 * (FLPDYR - SDOBYR) - SDOBMD / 100) / 12)
-    else: _ages = 0
+    else: _ages = 0.
 
     if (_cmp == 1 and f6251 == 1 and _exact == 1):
         c62600 = e62600
@@ -1004,7 +1017,7 @@ def AMTI_calc(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     if (c02700 > 0):
         _alminc = max(0., c62100 - c62600 + c02700)
 
-        _amtfei = 0.26 * c02700 + 0.02 * max(0, c02700 - _almsp[FLPDYR - DEFAULT_YR] / _sep)
+        _amtfei = 0.26 * c02700 + 0.02 * max(0., c02700 - _almsp[FLPDYR - DEFAULT_YR] / _sep)
     else:
         _alminc = c62700
 
@@ -1012,25 +1025,25 @@ def AMTI_calc(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
 
     c62780 = 0.26 * _alminc + 0.02 * \
-        max(0, _alminc - _almsp[FLPDYR - DEFAULT_YR] / _sep) - _amtfei
+        max(0., _alminc - _almsp[FLPDYR - DEFAULT_YR] / _sep) - _amtfei
 
     if f6251 != 0:
-        c62900 = e62900
+        c62900 = float(e62900)
     else: 
-        c62900 = e07300
+        c62900 = float(e07300)
     
     c63000 = c62780 - c62900
 
     if c24516 == 0:
         c62740 = c62720 + c62730
     else: 
-        c62740 = min(max(0, c24516 + x62740), c62720 + c62730)
+        c62740 = min(max(0., c24516 + x62740), c62720 + c62730)
     
     
-    _ngamty = max(0, _alminc - c62740)
+    _ngamty = max(0., _alminc - c62740)
 
     c62745 = 0.26 * _ngamty + 0.02 * \
-        max(0, _ngamty - _almsp[FLPDYR - DEFAULT_YR] / _sep)
+        max(0., _ngamty - _almsp[FLPDYR - DEFAULT_YR] / _sep)
 
     y62745 = _almsp[FLPDYR - DEFAULT_YR] / _sep
 
@@ -1042,7 +1055,7 @@ def AMTI_calc(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     _amt15pc = min(_alminc, c62720) - _amt5pc - min(max(
         0., _brk2[FLPDYR - DEFAULT_YR, MARS - 1] - c24520), min(_alminc, c62720))
     if c04800 == 0:
-        _amt15pc = max(0, min(_alminc, c62720) - _brk2[FLPDYR - DEFAULT_YR, MARS - 1])
+        _amt15pc = max(0., min(_alminc, c62720) - _brk2[FLPDYR - DEFAULT_YR, MARS - 1])
     
    
     _amt25pc = min(_alminc, c62740) - min(_alminc, c62720)
@@ -1096,7 +1109,7 @@ def AMTI_calc(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
               _amt25pc, c62747, c62755, c62770, _amt, c62800,
               c09600, _othtax, c05800)    
 
-
+@jit(nopython=True)
 def AMTI_apply( c62720, c60260, c63100, c60200, c60240, c60220,
                 c60130, c62730, _addamt, c62100, _cmbtp, _edical,
                 _amtsepadd, c62600, _agep, _ages, c62700,
@@ -1116,7 +1129,7 @@ def AMTI_apply( c62720, c60260, c63100, c60200, c60240, c60220,
                 _brk6, MARS, _sep, _brk2, _almdep, _cgrate1,
                 _cgrate2, _amtys, _amtsep, x62720, e00700, c24516, 
                 c24520, c04800, e10105, c05700, e05800, e05100, e09600, _amtage, 
-                x62740, e62900, _almsep):
+                x62740, e62900, _almsep, _earned, e62600):
 
 
     for i in range(len(_taxinc)):  
@@ -1140,7 +1153,7 @@ def AMTI_apply( c62720, c60260, c63100, c60200, c60240, c60220,
             _brk6, MARS[i], _sep[i], _brk2, _almdep, _cgrate1, _cgrate2, _amtys,
             _amtsep, x62720[i], e00700[i], c24516[i], c24520[i], c04800[i], 
             e10105[i], c05700[i], e05800[i], e05100[i], e09600[i], _amtage, 
-            x62740[i], e62900[i], _almsep)
+            x62740[i], e62900[i], _almsep, _earned[i], e62600[i])
      
     return   (c62720, c60260, c63100, c60200, c60240, c60220,
               c60130, c62730, _addamt, c62100, _cmbtp, _edical,
@@ -1151,31 +1164,34 @@ def AMTI_apply( c62720, c60260, c63100, c60200, c60240, c60220,
               c09600, _othtax, c05800)
 
 def AMTI(puf, p):
-    global c05800
-    global _othtax
-    global _agep
-    global _ages
 
-
-    outputs = AMTI_apply( p.c62720, p.c60260, p.c63100, p.c60200, p.c60240, 
-                p.c60220,
-                p.c60130, p.c62730, p._addamt, p.c62100, p._cmbtp, p._edical,
-                p._amtsepadd, p.c62600, p._agep, p._ages,  p.c62700, p._alminc, 
-                p._amtfei, p.c62780, p.c62900, p.c63000, p.c62740, p._ngamty, 
-                p.c62745, p.y62745, p._tamt2, p._amt5pc, p._amt15pc, p._amt25pc,
-                p.c62747, p.c62755, p.c62770, p._amt, p.c62800, p.c09600, 
-                p._othtax, p.c05800, c60000, _exact, e60290, _posagi, e07300, 
-                x60260, c24517, e60300, e60860, e60100, e60840, e60630, e60550,
-                e60720, e60430, e60500, e60340, e60680, e60600, e60405, e60440, 
-                e60420, e60410, e61400, e60660, e60480, e62000, e60250, _cmp, 
-                puf, _standard,  e04470, e17500, f6251,  e62100, e21040, _sit, 
-                e20800, c00100, c04470, c17000, e18500, c20800, c21040,   
-                DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD,  c02700, e00100,  e24515, 
-                x62730, x60130, x60220, x60240, c18300, p._taxbc, DEFAULT_YR, 
-                p._almsp, p._brk6, MARS, p._sep, p._brk2, p._almdep, p._cgrate1,
-                p._cgrate2, p._amtys, p._amtsep, x62720, e00700, c24516, 
-                c24520, c04800, e10105, c05700, e05800, e05100, e09600, 
-                p._amtage, x62740, e62900, p._almsep)
+    outputs = \
+        (p.c62720, p.c60260, p.c63100, p.c60200, p.c60240, p.c60220,
+         p.c60130, p.c62730, p._addamt, p.c62100, p._cmbtp, p._edical,
+         p._amtsepadd, p.c62600, p._agep, p._ages, p.c62700,
+         p._alminc, p._amtfei, p.c62780, p.c62900, p.c63000, p.c62740,
+         p._ngamty, p.c62745, p.y62745, p._tamt2, p._amt5pc, p._amt15pc,
+         p._amt25pc, p.c62747, p.c62755, p.c62770, p._amt, p.c62800,
+         p.c09600, p._othtax, p.c05800) = \
+                AMTI_apply(
+                    p.c62720, p.c60260, p.c63100, p.c60200, p.c60240, p.c60220,
+                    p.c60130, p.c62730, p._addamt, p.c62100, p._cmbtp, p._edical,
+                    p._amtsepadd, p.c62600, p._agep, p._ages,  p.c62700, p._alminc,
+                    p._amtfei, p.c62780, p.c62900, p.c63000, p.c62740, p._ngamty,
+                    p.c62745, p.y62745, p._tamt2, p._amt5pc, p._amt15pc, p._amt25pc,
+                    p.c62747, p.c62755, p.c62770, p._amt, p.c62800, p.c09600,
+                    p._othtax, p.c05800, c60000, _exact, e60290, _posagi, e07300,
+                    x60260, c24517, e60300, e60860, e60100, e60840, e60630, e60550,
+                    e60720, e60430, e60500, e60340, e60680, e60600, e60405, e60440,
+                    e60420, e60410, e61400, e60660, e60480, e62000, e60250, _cmp,
+                    puf, _standard,  e04470, e17500, f6251,  e62100, e21040, _sit,
+                    e20800, c00100, c04470, c17000, e18500, c20800, c21040,
+                    DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD,  c02700, e00100,  e24515,
+                    x62730, x60130, x60220, x60240, c18300, p._taxbc, DEFAULT_YR,
+                    p._almsp, p._brk6, MARS, p._sep, p._brk2, p._almdep, p._cgrate1,
+                    p._cgrate2, p._amtys, p._amtsep, x62720, e00700, c24516,
+                    c24520, c04800, e10105, c05700, e05800, e05100, e09600,
+                    p._amtage, x62740, e62900, p._almsep, p._earned, p.e62600)
 
     header = ['c62720', 'c60260', 'c63100', 'c60200', 'c60240', 'c60220',
               'c60130', 'c62730', '_addamt', 'c62100', '_cmbtp', '_edical',
@@ -1186,16 +1202,12 @@ def AMTI(puf, p):
               'c09600', '_othtax', 'c05800'] 
 
     return DataFrame(data=np.column_stack(outputs),
-                     columns=header), c05800
+                     columns=header), p.c05800
 
 
-
-
-
-
+@jit(nopython=True)
 def F2441_calc(_earned, _fixeic, e59560, MARS, puf, f2441, _dcmax, FLPDYR, 
-    DEFAULT_YR, e32800, e32750 , e32775 ):
-    _earned = _earned
+               DEFAULT_YR, e32800, e32750 , e32775, CDOB1, CDOB2, e32890, e32880):
 
     if _fixeic == 1: 
         _earned = e59560
@@ -1203,11 +1215,11 @@ def F2441_calc(_earned, _fixeic, e59560, MARS, puf, f2441, _dcmax, FLPDYR,
     if MARS == 2 and puf == True:
         c32880 = 0.5 * _earned
         c32890 = 0.5 * _earned
-    else: c32880, c32890 = 0, 0 
+    else: c32880, c32890 = 0., 0.
 
     if MARS == 2 and puf == False:
-        c32880 = max(0, e32880)
-        c32890 = max(0, e32890)
+        c32880 = max(0., e32880)
+        c32890 = max(0., e32890)
 
     if MARS != 2:
         c32880 = _earned
@@ -1223,49 +1235,53 @@ def F2441_calc(_earned, _fixeic, e59560, MARS, puf, f2441, _dcmax, FLPDYR,
     if puf == False and CDOB2 > 0:
         _ncu13 += 1    
 
-    _dclim = min(_ncu13, 2) * _dcmax[FLPDYR - DEFAULT_YR]
+    _dclim = min(_ncu13, 2.) * _dcmax[FLPDYR - DEFAULT_YR]
     
     c32800 = min(max(e32800, e32750 + e32775), _dclim)
 
-    return _earned, c32880, c32890, _ncu13, _dclim, c32800
+    return float(_earned), float(c32880), float(c32890), float(_ncu13), _dclim, c32800
 
+
+@jit(nopython=True)
 def F2441_apply(c32880, c32890, _ncu13, _dclim, c32800, 
                 _earned, _fixeic, e59560, MARS, puf, f2441, _dcmax, FLPDYR, 
-                DEFAULT_YR, e32800, e32750, e32775):
+                DEFAULT_YR, e32800, e32750, e32775, CDOB1, CDOB2, e32890, e32880):
     
     for i in range(len(_taxinc)):
         (_earned[i], c32880[i], c32890[i], _ncu13[i], _dclim[i], 
         c32800[i]) = F2441_calc(_earned[i], _fixeic[i], e59560[i], MARS[i], 
         puf, f2441[i], _dcmax, FLPDYR[i], DEFAULT_YR, e32800[i], e32750[i], 
-        e32775[i] )
+        e32775[i], CDOB1[i], CDOB2[i], e32890[i], e32880[i])
 
     return _earned, c32880, c32890, _ncu13, _dclim, c32800
     
 
-def F2441(puf, _earned, p):
-    global c32880
-    global c32890
-    global c32800
-    global _dclim
+def F2441(puf, p):
 
+    outputs = \
+        p._earned, p.c32880, p.c32890, p._ncu13, p._dclim, p.c32800 = \
+            F2441_apply(
+                p.c32880, p.c32890, p._ncu13, p._dclim, p.c32800,
+                p._earned, _fixeic, e59560, MARS, puf, p.f2441, p._dcmax, FLPDYR,
+                p.DEFAULT_YR, e32800, e32750, e32775, p.CDOB1, p.CDOB2, p.e32890,
+                p.e32880)
 
-    outputs = F2441_apply(p.c32880, p.c32890, p._ncu13, p._dclim, p.c32800, 
-                _earned, _fixeic, e59560, MARS, puf, f2441, p._dcmax, FLPDYR, 
-                p.DEFAULT_YR, e32800, e32750, e32775)
     header = ['_earned', 'c32880', 'c32890', '_ncu13', '_dclim', 'c32800']
 
-    return DataFrame(data=np.column_stack(outputs), columns=header), c32800
+    return DataFrame(data=np.column_stack(outputs), columns=header)
 
+
+@jit(nopython=True)
 def DepCareBen_calc(c32800, _cmp, MARS, c32880, c32890, e33420, e33430, e33450, 
                     e33460, e33465, e33470, _sep, _dclim, e32750, e32775, 
                     _earned):
 
-    c32800 = c32800
+    # c32800 = c32800
     # Part III ofdependent care benefits
     if _cmp == 1  and MARS == 2:
         _seywage = min(c32880, c32890, e33420 + e33430 - e33450, e33460)
     else: 
-        _seywage = 0 
+        _seywage = 0.
 
     if _cmp == 1 and MARS != 2:  #this is same as above, why?
         _seywage = min(c32880, c32890, e33420 + e33430 - e33450, e33460)
@@ -1276,7 +1292,7 @@ def DepCareBen_calc(c32800, _cmp, MARS, c32880, c32890, e33420, e33430, e33450,
         c33475 = max(0., min(_seywage, 5000 / _sep) - c33470)
         c33480 = max(0., e33420 + e33430 - e33450 - c33465 - c33475)
         c32840 = c33470 + c33475
-        c32800 = min(max(0., _dclim - c32840), max(0, e32750 + e32775 - c32840))
+        c32800 = min(max(0., _dclim - c32840), max(0., e32750 + e32775 - c32840))
 
     else: 
         c33465, c33470, c33475, c33480, c32840 = 0.,0.,0.,0.,0.
@@ -1289,6 +1305,8 @@ def DepCareBen_calc(c32800, _cmp, MARS, c32880, c32890, e33420, e33430, e33450,
 
     return _seywage, c33465, c33470, c33475, c33480, c32840, c32800, c33000
 
+
+@jit(nopython=True)
 def DepCareBen_apply(   _seywage, c33465, c33470, c33475, c33480, c32840, 
                         c33000, c32800, _cmp, MARS, c32880, c32890, 
                         e33420, e33430, e33450, e33460, e33465, e33470, _sep, 
@@ -1298,20 +1316,22 @@ def DepCareBen_apply(   _seywage, c33465, c33470, c33475, c33480, c32840,
         (_seywage[i], c33465[i], c33470[i], c33475[i], c33480[i], c32840[i], 
         c32800[i], c33000[i]) = DepCareBen_calc(c32800[i], _cmp[i], MARS[i], 
         c32880[i], c32890[i], e33420[i], e33430[i], e33450[i], e33460[i], 
-        e33465[i], e33470[i], _sep, _dclim[i], e32750[i], e32775[i], _earned[i])
+        e33465[i], e33470[i], _sep[i], _dclim[i], e32750[i], e32775[i], _earned[i])
 
     return _seywage, c33465, c33470, c33475, c33480, c32840, c32800, c33000
 
 
 
-def DepCareBen(c32800, p):
-    global c33000
+def DepCareBen(p):
 
-    outputs = DepCareBen_apply( p._seywage, p.c33465, p.c33470, p.c33475, 
-                                p.c33480, p.c32840, p.c33000, c32800, _cmp, 
-                                MARS, c32880, c32890, e33420, e33430, e33450, 
-                                e33460, e33465, e33470, p._sep, _dclim, e32750, 
-                                e32775, _earned)
+    outputs = \
+        p._seywage, p.c33465, p.c33470, p.c33475, p.c33480, p.c32840, p.c32800, p.c33000 = \
+            DepCareBen_apply(
+                p._seywage, p.c33465, p.c33470, p.c33475,
+                p.c33480, p.c32840, p.c33000, c32800, p._cmp,
+                MARS, c32880, p.c32890, e33420, e33430, e33450,
+                e33460, e33465, e33470, p._sep, p._dclim, e32750,
+                e32775, p._earned)
 
     header = ['_seywage', 'c33465', 'c33470', 'c33475', 'c33480', 'c32840',
               'c32800', 'c33000']
@@ -1319,7 +1339,7 @@ def DepCareBen(c32800, p):
     return DataFrame(data=np.column_stack(outputs),
                      columns=header)
 
-
+@jit(nopython=True)
 def ExpEarnedInc_calc(  _exact, c00100, _agcmax, _pcmax, FLPDYR, DEFAULT_YR, 
                         c33000, c05800, e07300, e07180):
     # Expenses limited to earned income
@@ -1327,28 +1347,30 @@ def ExpEarnedInc_calc(  _exact, c00100, _agcmax, _pcmax, FLPDYR, DEFAULT_YR,
     if _exact == 1: 
 
         _tratio = math.ceil(max((c00100 - _agcmax[FLPDYR - DEFAULT_YR]) 
-                / 2000, 0))
+                / 2000, 0.))
 
-        c33200 = c33000 * 0.01 * max(20, _pcmax[FLPDYR - DEFAULT_YR] 
-                - min(15, _tratio))
+        c33200 = c33000 * 0.01 * max(20., _pcmax[FLPDYR - DEFAULT_YR]
+                - min(15., _tratio))
     
     else: 
-        _tratio = 0
+        _tratio = 0.
 
-        c33200 = c33000 * 0.01 * max(20, _pcmax[FLPDYR - DEFAULT_YR] 
-                - max((c00100 - _agcmax[FLPDYR - DEFAULT_YR]) / 2000, 0))
+        c33200 = c33000 * 0.01 * max(20., _pcmax[FLPDYR - DEFAULT_YR]
+                - max((c00100 - _agcmax[FLPDYR - DEFAULT_YR]) / 2000, 0.))
 
-    c33400 = min(max(0, c05800 - e07300), c33200)
+    c33400 = min(max(0., c05800 - e07300), c33200)
 
     # amount of the credit
 
     if e07180 == 0:
-        c07180 = 0
+        c07180 = 0.
     else: 
         c07180 = c33400
 
     return _tratio, c33200, c33400, c07180
 
+
+@jit(nopython=True)
 def ExpEarnedInc_apply( _tratio, c33200, c33400, c07180, _exact, c00100, 
                         _agcmax, _pcmax, FLPDYR, DEFAULT_YR, 
                         c33000, c05800, e07300, e07180):
@@ -1362,13 +1384,14 @@ def ExpEarnedInc_apply( _tratio, c33200, c33400, c07180, _exact, c00100,
 
 
 def ExpEarnedInc(p):
-    global c07180
 
-
-    outputs = ExpEarnedInc_apply(   p._tratio, p.c33200, p.c33400, p.c07180, 
-                                    _exact, c00100, p._agcmax, p._pcmax, FLPDYR, 
-                                    p.DEFAULT_YR, c33000, c05800, e07300, 
-                                    e07180)
+    outputs = \
+        p._tratio, p.c33200, p.c33400, p.c07180 = \
+            ExpEarnedInc_apply(
+                p._tratio, p.c33200, p.c33400, p.c07180,
+                _exact, c00100, p._agcmax, p._pcmax, FLPDYR,
+                p.DEFAULT_YR, c33000, c05800, e07300,
+                e07180)
 
     header = ['_tratio', 'c33200', 'c33400', 'c07180']
 
@@ -1861,6 +1884,7 @@ def AddCTC_calc(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
         c82885 = max(0, c82880 - _ealim[FLPDYR - DEFAULT_YR])
 
         c82890 = _adctcrt[FLPDYR - DEFAULT_YR] * c82885
+
     else:
         c82925, c82930, c82935, c82880, h82880, c82885, c82890 = (0, 0, 0, 
             0, 0, 0, 0)
@@ -2301,4 +2325,5 @@ def Taxer_i(inc_in, MARS, FLPDYR, DEFAULT_YR):
     return inc_out
 
 #export('Taxer_i f8(f8, f8, i8, i8, i8)')(Taxer_i)
+
 
