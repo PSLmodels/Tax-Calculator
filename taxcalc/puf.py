@@ -474,3 +474,219 @@ def set_input_data(calc):
     calc._nonlimited = np.zeros(dim)
     calc._phase2_i = np.zeros(dim)
     calc._limitratio = np.zeros(dim)
+
+    """
+    Previously defined in AMTI()
+    """
+    calc.c62720 = np.zeros(dim)
+    calc.c60260 = np.zeros(dim)
+    calc.c63100 = np.zeros(dim)
+    calc.c60200 = np.zeros(dim)
+    calc.c60240 = np.zeros(dim)
+    calc.c60220 = np.zeros(dim)
+    calc.c60130 = np.zeros(dim)
+    calc.c62730 = np.zeros(dim)
+    calc._addamt = np.zeros(dim)
+    calc.c62100 = np.zeros(dim)
+    calc._cmbtp = np.zeros(dim)
+    calc._edical = np.zeros(dim)
+    calc._amtsepadd = np.zeros(dim)
+    calc.c62600 = np.zeros(dim)
+    calc._agep = np.zeros(dim)
+    calc._ages = np.zeros(dim)
+    calc.c62700 = np.zeros(dim)
+    calc._alminc = np.zeros(dim)
+    calc._amtfei = np.zeros(dim)
+    calc.c62780 = np.zeros(dim)
+    calc.c62900 = np.zeros(dim)
+    calc.c63000 = np.zeros(dim)
+    calc.c62740 = np.zeros(dim)
+    calc._ngamty = np.zeros(dim)
+    calc.c62745 = np.zeros(dim)
+    calc.y62745 = np.zeros(dim)
+    calc._tamt2 = np.zeros(dim)
+    calc._amt5pc = np.zeros(dim)
+    calc._amt15pc = np.zeros(dim)
+    calc._amt25pc = np.zeros(dim)
+    calc.c62747 = np.zeros(dim)
+    calc.c62755 = np.zeros(dim)
+    calc.c62770 = np.zeros(dim)
+    calc._amt = np.zeros(dim)
+    calc.c62800 = np.zeros(dim)
+    calc.c09600 = np.zeros(dim)
+    calc._othtax = np.zeros(dim)
+    calc.c05800 = np.zeros(dim)
+
+    """ 
+    Previously defined in f2441()
+    """
+    calc.c32880 = np.zeros(dim) 
+    calc.c32890 = np.zeros(dim)
+    calc._ncu13 = np.zeros(dim)
+    calc._dclim = np.zeros(dim)
+    calc.c32800 = np.zeros(dim)
+
+    """
+    Previously defined in DepCareBen()
+    """
+
+    calc._seywage = np.zeros(dim) 
+    calc.c33465 = np.zeros(dim) 
+    calc.c33470 = np.zeros(dim) 
+    calc.c33475 = np.zeros(dim) 
+    calc.c33480 = np.zeros(dim) 
+    calc.c32840 = np.zeros(dim) 
+    calc.c33000 = np.zeros(dim) 
+
+    """
+    Previously defined in ExpEarnedInc()
+    """
+    calc._tratio = np.zeros(dim)
+    calc.c33200 = np.zeros(dim)
+    calc.c33400 = np.zeros(dim)
+    calc.c07180 = np.zeros(dim)
+
+    """
+    Previously defined in RateRed()
+    """
+    calc.c07970 = np.zeros(dim)
+    calc.c59560 = np.zeros(dim)
+
+    """
+    Previously defined in NumDep()
+    """
+    calc._ieic = np.zeros(dim)
+    calc._modagi = np.zeros(dim)
+    calc.c59660 = np.zeros(dim)
+    calc._val_ymax = np.zeros(dim)
+    calc._preeitc = np.zeros(dim)
+    calc._val_rtbase = np.zeros(dim)
+    calc._val_rtless = np.zeros(dim)
+    calc._dy = np.zeros(dim)
+    calc.EICYB1_1 = np.zeros(dim)
+    calc.EICYB2_2 = np.zeros(dim) 
+    calc.EICYB3_3 = np.zeros(dim) 
+
+    """
+    Previously defined in ChildTaxCredit()
+    """
+    calc.c11070 = np.zeros(dim) 
+    calc.c07220 = np.zeros(dim) 
+    calc.c07230 = np.zeros(dim) 
+    calc._num = np.zeros(dim) 
+    calc._nctcr = np.zeros(dim) 
+    calc._precrd = np.zeros(dim) 
+    calc._ctcagi = np.zeros(dim) 
+
+    """
+    Previously defined in AmOppCr()
+    """
+    calc.c87482 = np.zeros(dim) 
+    calc.c87487 = np.zeros(dim) 
+    calc.c87492 = np.zeros(dim) 
+    calc.c87497 = np.zeros(dim) 
+    calc.c87483 = np.zeros(dim) 
+    calc.c87488 = np.zeros(dim) 
+    calc.c87493 = np.zeros(dim) 
+    calc.c87498 = np.zeros(dim) 
+    calc.c87521 = np.zeros(dim) 
+
+    """
+    Previously defined in LLC()
+    """
+    calc.c87540 = np.zeros(dim) 
+    calc.c87550 = np.zeros(dim) 
+    calc.c87530 = np.zeros(dim) 
+
+    """
+    Previously defined in RefAmOpp()
+    """
+    calc.c87654 = np.zeros(dim) 
+    calc.c87656 = np.zeros(dim) 
+    calc.c87658 = np.zeros(dim) 
+    calc.c87660 = np.zeros(dim) 
+    calc.c87662 = np.zeros(dim) 
+    calc.c87664 = np.zeros(dim) 
+    calc.c87666 = np.zeros(dim) 
+    calc.c10960 = np.zeros(dim) 
+    calc.c87668 = np.zeros(dim) 
+    calc.c87681 = np.zeros(dim) 
+
+    """
+    Previously defined in NonEdCr()
+    """
+
+    calc.c87560 = np.zeros(dim) 
+    calc.c87570 = np.zeros(dim) 
+    calc.c87580 = np.zeros(dim) 
+    calc.c87590 = np.zeros(dim) 
+    calc.c87600 = np.zeros(dim) 
+    calc.c87610 = np.zeros(dim) 
+    calc.c87620 = np.zeros(dim) 
+    calc._ctc1 = np.zeros(dim) 
+    calc._ctc2 = np.zeros(dim) 
+    calc._regcrd = np.zeros(dim) 
+    calc._exocrd = np.zeros(dim) 
+    calc._ctctax = np.zeros(dim) 
+    calc.c07220 = np.zeros(dim) 
+
+    """
+    Previously defined in AddCTC()
+    """
+    calc.c82940 = np.zeros(dim) 
+    calc.c82925 = np.zeros(dim) 
+    calc.c82930 = np.zeros(dim) 
+    calc.c82935 = np.zeros(dim) 
+    calc.c82880 = np.zeros(dim) 
+    calc.h82880 = np.zeros(dim) 
+    calc.c82885 = np.zeros(dim) 
+    calc.c82890 = np.zeros(dim) 
+    calc.c82900 = np.zeros(dim) 
+    calc.c82905 = np.zeros(dim) 
+    calc.c82910 = np.zeros(dim) 
+    calc.c82915 = np.zeros(dim) 
+    calc.c82920 = np.zeros(dim) 
+    calc.c82937 = np.zeros(dim) 
+    calc.c82940 = np.zeros(dim) 
+    calc.c11070 = np.zeros(dim) 
+    calc.e59660 = np.zeros(dim) 
+    calc._othadd = np.zeros(dim) 
+
+    """
+    Previously defined in C1040()
+    """
+    calc.c07100 = np.zeros(dim) 
+    calc.y07100 = np.zeros(dim) 
+    calc.x07100 = np.zeros(dim) 
+    calc.c08795 = np.zeros(dim) 
+    calc.c08800 = np.zeros(dim) 
+    calc.e08795 = np.zeros(dim) 
+    calc.c09200 = np.zeros(dim) 
+    calc.x07400 = np.zeros(dim) 
+    calc._eitc = np.zeros(dim)
+
+    """
+    Previously defined in DEITC()
+    """
+    calc.c59680 = np.zeros(dim) 
+    calc.c59700 = np.zeros(dim) 
+    calc.c59720 = np.zeros(dim) 
+    calc._comb = np.zeros(dim) 
+    calc.c07150 = np.zeros(dim) 
+    calc.c10950 = np.zeros(dim) 
+
+    """
+    Previously defined in SOIT()
+    """
+    calc.c10300 = np.zeros(dim)
+
+
+
+
+
+
+
+
+
+
+
