@@ -14,15 +14,11 @@ tax_dta = pd.read_csv(os.path.join(CUR_PATH, "../../tax_all91_puf.gz"), compress
 tax_dta['midr'] = tax_dta['midr'].astype('int64')
 
 def add_df(alldfs, df):
-    try:
-        for col in df.columns:
-            if col not in all_cols:
-                all_cols.add(col)
-                alldfs.append(df[col])
-    except AttributeError:
-        import pdb
-        pdb.set_trace()
-        pass
+    for col in df.columns:
+        if col not in all_cols:
+            all_cols.add(col)
+            alldfs.append(df[col])
+
 
 def run(puf=True):
     calc = Calculator(tax_dta, default_year=91)
@@ -37,26 +33,17 @@ def run(puf=True):
     add_df(all_dfs, SSBenefits(calc))
     add_df(all_dfs, AGI(calc))
     add_df(all_dfs, ItemDed(puf, calc))
-    df_EI_FICA, _earned = EI_FICA(calc)
-    add_df(all_dfs, df_EI_FICA)
+    add_df(all_dfs, EI_FICA(calc))
     add_df(all_dfs, StdDed(calc))
     add_df(all_dfs, XYZD(calc))
     add_df(all_dfs, NonGain())
-    df_Tax_Gains, c05750 = TaxGains(calc)
-    add_df(all_dfs, df_Tax_Gains)
-    add_df(all_dfs, MUI(c05750, calc))
-    df_AMTI, c05800 = AMTI(puf, calc)
-    add_df(all_dfs, df_AMTI)
-
-    # df_F2441, c32800 = F2441(puf, _earned, calc)
-    # add_df(all_dfs, df_F2441)
-    # add_df(all_dfs, DepCareBen(c32800, calc))
-
+    add_df(all_dfs, TaxGains(calc))
+    add_df(all_dfs, MUI(calc))
+    add_df(all_dfs, AMTI(puf, calc))
     add_df(all_dfs, F2441(puf, calc))
     add_df(all_dfs, DepCareBen(calc))
-
     add_df(all_dfs, ExpEarnedInc(calc))
-    add_df(all_dfs, RateRed(c05800, calc))
+    add_df(all_dfs, RateRed(calc))
     add_df(all_dfs, NumDep(puf, calc))
     add_df(all_dfs, ChildTaxCredit(calc))
     add_df(all_dfs, AmOppCr(calc))

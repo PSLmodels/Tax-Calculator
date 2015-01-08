@@ -681,6 +681,15 @@ def set_input_data(calc):
     calc.c10300 = np.zeros(dim)
 
 
+    """
+    Previously global vars
+    """
+    calc.c04800 = np.zeros(dim)
+    calc._xyztax = np.zeros(dim)
+    calc._feitax = np.zeros(dim)
+    calc._standard = np.zeros(dim)
+
+
 
 
 
