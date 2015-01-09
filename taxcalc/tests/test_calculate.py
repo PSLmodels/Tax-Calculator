@@ -47,16 +47,14 @@ def run(puf=True):
     add_df(all_dfs, NumDep(puf, calc))
     add_df(all_dfs, ChildTaxCredit(calc))
     add_df(all_dfs, AmOppCr(calc))
-    df_LLC, c87550 = LLC(puf, calc)
-    add_df(all_dfs, df_LLC)
+    add_df(all_dfs, LLC(puf, calc))
     add_df(all_dfs, RefAmOpp(calc))
-    add_df(all_dfs, NonEdCr(c87550, calc))
+    add_df(all_dfs, NonEdCr(calc))
     add_df(all_dfs, AddCTC(puf, calc))
     add_df(all_dfs, F5405())
-    df_C1040, _eitc = C1040(puf, calc)
-    add_df(all_dfs, df_C1040)
+    add_df(all_dfs, C1040(puf, calc))
     add_df(all_dfs, DEITC(calc))
-    add_df(all_dfs, SOIT(_eitc, calc))
+    add_df(all_dfs, SOIT(calc))
     totaldf = pd.concat(all_dfs, axis=1)
     #drop duplicates
     totaldf = totaldf.T.groupby(level=0).first().T
@@ -66,6 +64,7 @@ def run(puf=True):
     cur_set = set(totaldf.columns)
 
     assert(exp_set == cur_set)
+
 
     for label in exp_results.columns:
         lhs = exp_results[label].values.reshape(len(exp_results))

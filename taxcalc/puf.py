@@ -573,7 +573,7 @@ def set_input_data(calc):
     calc.c11070 = np.zeros(dim) 
     calc.c07220 = np.zeros(dim) 
     calc.c07230 = np.zeros(dim) 
-    calc._num = np.zeros(dim) 
+    calc._num = np.ones(dim)
     calc._nctcr = np.zeros(dim) 
     calc._precrd = np.zeros(dim) 
     calc._ctcagi = np.zeros(dim) 
@@ -627,7 +627,7 @@ def set_input_data(calc):
     calc._ctc2 = np.zeros(dim) 
     calc._regcrd = np.zeros(dim) 
     calc._exocrd = np.zeros(dim) 
-    calc._ctctax = np.zeros(dim) 
+    calc._ctctax = np.zeros(dim)
     calc.c07220 = np.zeros(dim) 
 
     """
