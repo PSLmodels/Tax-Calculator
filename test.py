@@ -39,7 +39,7 @@ def run(puf=True):
     calculated = DataFrame()
 
     calculated = concat([calculated, FilingStatus(calc)], axis=1)
-    calculated = concat([calculated, Adj()], axis=1)
+    calculated = concat([calculated, Adj(calc)], axis=1)
     calculated = concat([calculated, CapGains(calc)], axis = 1)
     calculated = concat([calculated, SSBenefits(calc)], axis=1)
     calculated = concat([calculated, AGI(calc)], axis=1)
@@ -47,7 +47,7 @@ def run(puf=True):
     calculated = concat([calculated, EI_FICA(calc)], axis=1)
     calculated = concat([calculated, StdDed(calc)], axis=1)
     calculated = concat([calculated, XYZD(calc)], axis=1)
-    calculated = concat([calculated, NonGain()], axis=1)
+    calculated = concat([calculated, NonGain(calc)], axis=1)
     calculated = concat([calculated, TaxGains(calc)], axis=1)
     calculated = concat([calculated, MUI(calc)], axis=1)
     calculated = concat([calculated, AMTI(puf, calc)], axis=1)

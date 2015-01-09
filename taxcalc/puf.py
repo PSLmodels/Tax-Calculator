@@ -406,6 +406,73 @@ def set_input_data(calc):
     calc.xtxcr1xtxcr10 = np.zeros((dim,))
 
     """
+    Previously defined in CapGains()
+    """
+    calc._ymod2 = np.zeros(dim)
+    calc._ymod3 = np.zeros(dim)
+
+    """
+    Previously defined in SSBenefits()
+    """
+    calc.c02500 = np.zeros(dim)
+
+    """
+    Previously defined in AGI()
+    """
+    calc.c02650 = np.zeros(dim)
+    calc.c00100 = np.zeros(dim)
+    calc._agierr = np.zeros(dim)
+    calc._posagi = np.zeros(dim)
+    calc._ywossbe = np.zeros(dim)
+    calc._ywossbc = np.zeros(dim)
+    calc._prexmp = np.zeros(dim)
+    calc.c04600 = np.zeros(dim)
+
+    """ 
+    Previously defined in EI_FICA()
+    """
+    calc._sey = np.zeros(dim)
+    calc._fica = np.zeros(dim)
+    calc._setax = np.zeros(dim)
+    calc._seyoff = np.zeros(dim)
+    calc.c11055 = np.zeros(dim)
+    calc._earned = np.zeros(dim)
+
+    """
+    Previously defined in StdDed()
+    """
+    calc.c15100 = np.zeros(dim)
+    calc.c04100 = np.zeros(dim)
+    calc._numextra = np.zeros(dim)
+    calc._txpyers = np.zeros(dim)
+    calc.c04200 = np.zeros(dim)
+    calc.c15200 = np.zeros(dim)
+    calc._standard = np.zeros(dim)
+    calc._othded = np.zeros(dim)
+    calc.c04100 = np.zeros(dim)
+    calc.c04200 = np.zeros(dim)
+    calc._standard = np.zeros(dim)
+    calc.c04500 = np.zeros(dim)
+    calc.c04800 = np.zeros(dim)
+    calc.c60000 = np.zeros(dim)
+    calc._amtstd = np.zeros(dim)
+    calc._taxinc = np.zeros(dim)
+    calc._feitax = np.zeros(dim)
+    calc._oldfei = np.zeros(dim)
+
+    """
+    Previously defined in XYZD()
+    """
+    calc._xyztax = np.zeros(dim)
+    calc.c05200 = np.zeros(dim)
+
+    """
+    Previously defined in nongain()
+    """
+    calc._cglong = np.zeros(dim)
+    calc._noncg = np.zeros(dim)
+
+    """
     Previously defined in TaxGain()
     """
     calc._hasgain = np.zeros(dim)
@@ -572,7 +639,7 @@ def set_input_data(calc):
     """
     calc.c11070 = np.zeros(dim) 
     calc.c07220 = np.zeros(dim) 
-    calc.c07230 = np.zeros(dim) 
+    calc.c07230 = np.zeros(dim)
     calc._num = np.ones(dim)
     calc._nctcr = np.zeros(dim) 
     calc._precrd = np.zeros(dim) 
@@ -626,7 +693,7 @@ def set_input_data(calc):
     calc._ctc1 = np.zeros(dim) 
     calc._ctc2 = np.zeros(dim) 
     calc._regcrd = np.zeros(dim) 
-    calc._exocrd = np.zeros(dim) 
+    calc._exocrd = np.zeros(dim)
     calc._ctctax = np.zeros(dim)
     calc.c07220 = np.zeros(dim) 
 
@@ -680,7 +747,6 @@ def set_input_data(calc):
     """
     calc.c10300 = np.zeros(dim)
 
-
     """
     Previously global vars
     """
@@ -688,7 +754,6 @@ def set_input_data(calc):
     calc._xyztax = np.zeros(dim)
     calc._feitax = np.zeros(dim)
     calc._standard = np.zeros(dim)
-
 
 
 
