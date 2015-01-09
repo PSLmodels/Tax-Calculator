@@ -27,7 +27,7 @@ def run(puf=True):
 
     all_dfs = []
     add_df(all_dfs, FilingStatus(calc))
-    add_df(all_dfs, Adj())
+    add_df(all_dfs, Adj(calc))
     add_df(all_dfs, CapGains(calc))
     add_df(all_dfs, SSBenefits(calc))
     add_df(all_dfs, AGI(calc))
@@ -36,7 +36,7 @@ def run(puf=True):
     add_df(all_dfs, df_EI_FICA)
     add_df(all_dfs, StdDed(calc))
     add_df(all_dfs, XYZD(calc))
-    add_df(all_dfs, NonGain())
+    add_df(all_dfs, NonGain(calc))
     df_Tax_Gains = TaxGains(calc)
     add_df(all_dfs, df_Tax_Gains)
     add_df(all_dfs, MUI(df_Tax_Gains.c05750, calc))
