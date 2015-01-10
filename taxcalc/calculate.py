@@ -98,7 +98,8 @@ def CapGains(p):
                      columns=['c23650', 'c01000', 'c02700', '_ymod1', '_ymod2',
                                '_ymod3', '_ymod'])
 
-@jit('void(float64[:], int64[:], int64[:], float64[:], int64[:], int64[:], int64[:], float64[:])', nopython=True)
+# @jit('void(float64[:], int64[:], int64[:], float64[:], int64[:], int64[:], int64[:], float64[:])', nopython=True)
+@jit(nopython=True)
 def SSBenefits_c02500(SSIND, MARS, e02500, _ymod, e02400, _ssb50, _ssb85, c02500):
 
     for i in range(0, MARS.shape[0]):
@@ -310,7 +311,8 @@ def EI_FICA(p):
     return DataFrame(data=np.column_stack(outputs), columns=header), _earned
 
 
-@jit("void(float64[:], int64[:], int64[:], int64, int64[:,:], float64[:])", nopython=True)
+# @jit("void(float64[:], int64[:], int64[:], int64, int64[:,:], float64[:])", nopython=True)
+@jit(nopython=True)
 def StdDed_c15100(_earned, DSI, FLPDYR, default_yr, _stded, c15100):
     for i in range(0, FLPDYR.shape[0]):
         if DSI[i] == 1:
@@ -319,7 +321,8 @@ def StdDed_c15100(_earned, DSI, FLPDYR, default_yr, _stded, c15100):
             c15100[i] = 0
 
 
-@jit("void(int64[:], int64[:], float64[:], int64[:], int64[:], float64[:], int64[:], int64, int64[:,:], float64[:])", nopython=True)
+# @jit("void(int64[:], int64[:], float64[:], int64[:], int64[:], float64[:], int64[:], int64, int64[:,:], float64[:])", nopython=True)
+@jit(nopython=True)
 def StdDed_c04100(DSI, MARS, c15100, FLPDYR, MIdR, _earned, _compitem, default_yr, _stded, c04100):
     for i in range(0, MARS.shape[0]):
         if (DSI[i] == 1):
@@ -338,7 +341,8 @@ def StdDed_txpyers(MARS):
         return 1
 
 
-@jit("void(float64[:], int64[:], float64[:], float64[:], float64[:], int64[:], int64, int64[:], int64[:,:])", nopython=True)
+# @jit("void(float64[:], int64[:], float64[:], float64[:], float64[:], int64[:], int64, int64[:], int64[:,:])", nopython=True)
+@jit(nopython=True)
 def StdDed_c04200(c04200, MARS, e04200, _numextra, _exact, _txpyers, DEFAULT_YR, FLPDYR, _aged):
     for i in range(MARS.shape[0]):
         if _exact[i] == 1 and MARS[i] == 3 or MARS[i] == 5:
@@ -698,7 +702,7 @@ def TaxGains0_jit(e00650, c04800, e01000, c23650, e23250, e01100, e58990, e58980
 
 
 @jit(nopython=True)
-def apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
+def apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
     e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6,  _xyztax, _feided, _feitax, _cmp,
     e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400,
     c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516, _dwks12,
@@ -1234,7 +1238,7 @@ def ChildTaxCredit(p):
 
 
 # def HopeCredit():
-    # W/o congressional action, Hope Credit will replace 
+    # W/o congressional action, Hope Credit will replace
     # American opportunities credit in 2018. NEED TO ADD LOGIC!!!
 
 
@@ -1576,23 +1580,24 @@ def Taxer(inc_in, inc_out, MARS, p):
 
     return inc_out
 
-@jit('float64(float64, int64, int64, int64)', nopython = True)
+# @jit('float64(float64, int64, int64, int64)', nopython = True)
+@jit(nopython=True)
 def Taxer_i(inc_in, MARS, FLPDYR, DEFAULT_YR):
     ## note still should pass in all globals being used, including _rt1-_rt7 and _brk1-_brk6
 
-    # low = 0 
+    # low = 0
     # med = 0
 
     # if inc_in < 3000:
-    #     low = 1 
+    #     low = 1
 
     # elif inc_in >=3000 and inc_in < 100000:
-    #     med = 1 
+    #     med = 1
 
     # _a1 = inc_in * 0.01
 
     # # if _a1 < 0:
-    # #     _a2 = math.floor(_a1) - 1 
+    # #     _a2 = math.floor(_a1) - 1
     # # else: _a2 = math.floor(_a1)
     # _a2 = math.floor(_a1)
 
@@ -1612,13 +1617,13 @@ def Taxer_i(inc_in, MARS, FLPDYR, DEFAULT_YR):
     #     _a5 = 88
     # elif med == 1 and _a4 < 50:
     #     _a5 = 25
-    # elif med == 1 and _a4 >= 50: 
+    # elif med == 1 and _a4 >= 50:
     #     _a5 = 75
     # if inc_in == 0:
     #     _a5 = 0
 
     # if low == 1 or med == 1:
-    #     _a6 = _a3 + _a5 
+    #     _a6 = _a3 + _a5
     # else: _a6 = inc_in
 
     _a6 = inc_in
