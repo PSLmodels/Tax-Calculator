@@ -56,7 +56,7 @@ def FilingStatus_apply(MARS, _sep):
 def FilingStatus(p):
     # Filing based on marital status
     # TODO: get rid of _txp in tests
-    outputs = p._sep = FilingStatus_apply(p.MARS, p._sep)
+    outputs = p._sep = FilingStatus_apply(MARS, p._sep)
     header = ['_sep']
     return DataFrame(data=(outputs), columns=header)
 
@@ -182,7 +182,7 @@ def SSBenefits_calc(SSIND, MARS, e02500, _ymod, e02400, _ssb50, _ssb85):
                     0.50 * min(e02400, _ssb85[MARS-1] -
                     _ssb50[MARS-1]), 0.85 * e02400)
 
-    return (int(c02500), e02500)
+    return (float(c02500), e02500)
 
 
 @jit(nopython=True)
@@ -567,7 +567,6 @@ def StdDed_apply(c15100, _numextra, _txpyers, c15200,
 
 def StdDed(p):
     # Standard Deduction with Aged, Sched L and Real Estate #
-
     outputs = \
         (p.c15100, p._numextra, p._txpyers, p.c15200,
          p._othded, p.c04100, p.c04200, p._standard, p.c04500,
@@ -580,6 +579,7 @@ def StdDed(p):
                 p.MARS, p.MIdR, p.e15360, p.AGEP, p.AGES, p.PBI, p.SBI, p._exact, p.e04200,
                 p._aged, p.c04470, p.c00100, p.c21060, p.c21040, p.e37717, p.c04600, p.e04805,
                 p.t04470, p.f6251, p._feided, p.c02700, p.FDED)
+
 
     header = ['c15100', '_numextra', '_txpyers', 'c15200',
               '_othded', 'c04100', 'c04200', '_standard',
@@ -860,13 +860,13 @@ def TaxGains_calc(e00650, c04800, e01000, c23650, e23250, e01100, e58990, e58980
     _taxbc = c05750
 
     return (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
-            c24580, c24516, _dwks12, c24517, c24520, c24530, _dwks16,
+            c24580, _dwks12, c24517, c24520, c24530, _dwks16,
             _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
             _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
             _addtax, c24560, _taxspecial, c05100, c05700, c59430,
             c59450, c59460, _line17, _line19, _line22, _line30, _line31,
             _line32, _line36, _line33, _line34, _line35, c59485, c59490,
-            c05700, _s1291, _parents, _taxbc, c05750)
+            _s1291, _parents, _taxbc, c05750)
 
 
 @jit(nopython=True)
@@ -885,13 +885,13 @@ def TaxGains_apply(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 
     for i in range(len(_taxinc)):
         (c00650[i], _hasgain[i], _dwks5[i], c24505[i], c24510[i], _dwks9[i], c24516[i],
-        c24580[i], c24516[i], _dwks12[i], c24517[i], c24520[i], c24530[i], _dwks16[i],
+        c24580[i], _dwks12[i], c24517[i], c24520[i], c24530[i], _dwks16[i],
         _dwks17[i], c24540[i], c24534[i], _dwks21[i], c24597[i], c24598[i], _dwks25[i],
         _dwks26[i], _dwks28[i], c24610[i], c24615[i], _dwks31[i], c24550[i], c24570[i],
         _addtax[i], c24560[i], _taxspecial[i], c05100[i], c05700[i], c59430[i],
         c59450[i], c59460[i], _line17[i], _line19[i], _line22[i], _line30[i], _line31[i],
         _line32[i], _line36[i], _line33[i], _line34[i], _line35[i], c59485[i], c59490[i],
-        c05700[i], _s1291[i], _parents[i], _taxbc[i], c05750[i]) = \
+        _s1291[i], _parents[i], _taxbc[i], c05750[i]) = \
         TaxGains_calc(e00650[i], c04800[i], e01000[i], c23650[i], e23250[i], e01100[i],
         e58990[i], e58980[i], e24515[i], e24518[i], _brk2, FLPDYR[i], DEFAULT_YR,
         MARS[i], _taxinc[i], _brk6,  _xyztax[i], _feided[i], _feitax[i],
@@ -901,26 +901,26 @@ def TaxGains_apply(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 
 
     return  (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
-            c24580, c24516, _dwks12, c24517, c24520, c24530, _dwks16,
+            c24580, _dwks12, c24517, c24520, c24530, _dwks16,
             _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
             _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
             _addtax, c24560, _taxspecial, c05100, c05700, c59430,
             c59450, c59460, _line17, _line19, _line22, _line30, _line31,
             _line32, _line36, _line33, _line34, _line35, c59485, c59490,
-            c05700, _s1291, _parents, c05750, _taxbc)
+            _s1291, _parents, c05750, _taxbc)
 
 
 
 def TaxGains(p):
     outputs = \
         (p.c00650, p._hasgain, p._dwks5, p.c24505, p.c24510, p._dwks9, p.c24516,
-         p.c24580, p.c24516, p._dwks12, p.c24517, p.c24520, p.c24530, p._dwks16,
+         p.c24580, p._dwks12, p.c24517, p.c24520, p.c24530, p._dwks16,
          p._dwks17, p.c24540, p.c24534, p._dwks21, p.c24597, p.c24598, p._dwks25,
          p._dwks26, p._dwks28, p.c24610, p.c24615, p._dwks31, p.c24550, p.c24570,
          p._addtax, p.c24560, p._taxspecial, p.c05100, p.c05700, p.c59430,
          p.c59450, p.c59460, p._line17, p._line19, p._line22, p._line30, p._line31,
          p._line32, p._line36, p._line33, p._line34, p._line35, p.c59485, p.c59490,
-         p.c05700, p._s1291, p._parents, p.c05750, p._taxbc) = \
+         p._s1291, p._parents, p.c05750, p._taxbc) = \
                 TaxGains_apply(
                     p.e00650, p.c04800, p.e01000, p.c23650, p.e23250, p.e01100, p.e58990,
                     p.e58980, p.e24515, p.e24518, p._brk2, p.FLPDYR, p.DEFAULT_YR, p.MARS,
@@ -939,14 +939,14 @@ def TaxGains(p):
 
     ## Note var c24516 is being printed twice. On purpose? e00650 should be c00650?
     header = ['e00650', '_hasgain', '_dwks5', 'c24505', 'c24510', '_dwks9', #Note weirdness w e00650
-              'c24516', 'c24580', 'c24516', '_dwks12', 'c24517', 'c24520',
+              'c24516', 'c24580', '_dwks12', 'c24517', 'c24520',
               'c24530', '_dwks16', '_dwks17', 'c24540', 'c24534', '_dwks21',
               'c24597', 'c24598', '_dwks25', '_dwks26', '_dwks28', 'c24610',
               'c24615', '_dwks31', 'c24550', 'c24570', '_addtax', 'c24560',
               '_taxspecial', 'c05100', 'c05700', 'c59430', 'c59450', 'c59460',
               '_line17', '_line19', '_line22', '_line30', '_line31',
               '_line32', '_line36', '_line33', '_line34', '_line35',
-              'c59485', 'c59490', 'c05700', '_s1291', '_parents',
+              'c59485', 'c59490', '_s1291', '_parents',
               'c05750', '_taxbc']
 
 
