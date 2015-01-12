@@ -159,28 +159,36 @@ def CapGains(p):
     header = ['c23650', 'c01000', 'c02700', '_ymod1', '_ymod2', '_ymod3', '_ymod']
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
-# @jit('void(float64[:], int64[:], int64[:], float64[:], int64[:], int64[:], int64[:], float64[:])', nopython=True)
-def SSBenefits_c02500(SSIND, MARS, e02500, _ymod, e02400, _ssb50, _ssb85, c02500):
 
-    for i in range(0, MARS.shape[0]):
-        if SSIND[i] !=0 or MARS[i] == 3 or MARS[i] == 6:
-            c02500[i] = e02500[i]
-        elif _ymod[i] < _ssb50[MARS[i]-1]:
-            c02500[i] = 0
-        elif _ymod[i] >= _ssb50[MARS[i]-1] and _ymod[i] < _ssb85[MARS[i]-1]:
-            c02500[i] = 0.5 * np.minimum(_ymod[i] - _ssb50[MARS[i]-1], e02400[i])
-        else:
-            c02500[i] = np.minimum(0.85 * (_ymod[i] - _ssb85[MARS[i]-1]) +
-                        0.50 * np.minimum(e02400[i], _ssb85[MARS[i]-1] -
-                        _ssb50[MARS[i]-1]), 0.85 * e02400[i])
+def SSBenefits_calc(SSIND, MARS, e02500, _ymod, e02400, _ssb50, _ssb85):
+    if SSIND !=0 or MARS == 3 or MARS == 6:
+        return e02500
+    elif _ymod < _ssb50[MARS-1]:
+        return 0
+    elif _ymod >= _ssb50[MARS-1] and _ymod < _ssb85[MARS-1]:
+        return 0.5 * min(_ymod - _ssb50[MARS-1], e02400)
+    else:
+        return min(0.85 * (_ymod - _ssb85[MARS-1])
+            + 0.50 * min(e02400, _ssb85[MARS-1] - _ssb50[MARS-1]),
+            0.85 * e02400)
+
+
+# @jit('void(float64[:], int64[:], int64[:], float64[:], int64[:], int64[:], int64[:], float64[:])', nopython=True)
+def SSBenefits_apply(SSIND, MARS, e02500, _ymod, e02400, _ssb50, _ssb85, c02500):
+
+    for i in range(len(e02500)):
+        c02500[i] = SSBenefits_calc(SSIND[i], MARS[i], e02500[i], _ymod[i],
+            e02400[i], _ssb50, _ssb85)
+
+    return c02500
 
 
 def SSBenefits(p):
     # Social Security Benefit Taxation
     global c02500
-    c02500 = np.zeros(len(e02500))
-    SSBenefits_c02500(SSIND, MARS, e02500, _ymod, e02400, p._ssb50, p._ssb85, c02500)
-    return DataFrame(data=np.column_stack((c02500,e02500)),
+    c02500 = SSBenefits_apply(SSIND, MARS, e02500, _ymod, e02400, p._ssb50, p._ssb85, c02500)
+
+    return DataFrame(data=np.column_stack((c02500, e02500)),
                      columns=['c02500', 'e02500'])
 
 
