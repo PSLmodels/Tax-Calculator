@@ -366,6 +366,7 @@ def StdDed(p):
     global _feitax
     global _standard
 
+
     c15100 = np.zeros((dim,))
     StdDed_c15100(_earned, DSI, FLPDYR, p.DEFAULT_YR, p._stded, c15100)
 
@@ -412,12 +413,13 @@ def StdDed(p):
     taxer2 = Taxer(inc_in=c04800, inc_out=_oldfei, MARS=MARS, p=p)
     _oldfei = StdDed_oldfei(c04800, _feided, taxer2, _oldfei)
 
-    SDoutputs = (c15100, c04100, _numextra, _txpyers, c04200, c15200,
-                 _standard, _othded, c04100, c04200, _standard, c04500,
+
+    SDoutputs = (c15100, _numextra, _txpyers, c15200,
+                 _othded, c04100, c04200, _standard, c04500,
                  c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei)
 
-    header = ['c15100', 'c04100', '_numextra', '_txpyers', 'c04200', 'c15200',
-              '_standard', '_othded', 'c04100', 'c04200', '_standard',
+    header = ['c15100', '_numextra', '_txpyers', 'c15200',
+              '_othded', 'c04100', 'c04200', '_standard',
               'c04500', 'c04800', 'c60000', '_amtstd', '_taxinc', '_feitax',
               '_oldfei']
 
@@ -665,23 +667,23 @@ def TaxGains(p):
     _taxbc = c05750
 
     outputs = (e00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
-               c24580, c24516, _dwks12, c24517, c24520, c24530, _dwks16,
+               c24580, _dwks12, c24517, c24520, c24530, _dwks16,
                _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
                _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
                _addtax, c24560, _taxspecial, c05100, c05700, c59430,
                c59450, c59460, _line17, _line19, _line22, _line30, _line31,
                _line32, _line36, _line33, _line34, _line35, c59485, c59490,
-               c05700, _s1291, _parents, c05750, _taxbc)
+               _s1291, _parents, c05750, _taxbc)
 
     header = ['e00650', '_hasgain', '_dwks5', 'c24505', 'c24510', '_dwks9',
-              'c24516', 'c24580', 'c24516', '_dwks12', 'c24517', 'c24520',
+              'c24516', 'c24580', '_dwks12', 'c24517', 'c24520',
               'c24530', '_dwks16', '_dwks17', 'c24540', 'c24534', '_dwks21',
               'c24597', 'c24598', '_dwks25', '_dwks26', '_dwks28', 'c24610',
               'c24615', '_dwks31', 'c24550', 'c24570', '_addtax', 'c24560',
               '_taxspecial', 'c05100', 'c05700', 'c59430', 'c59450', 'c59460',
               '_line17', '_line19', '_line22', '_line30', '_line31',
               '_line32', '_line36', '_line33', '_line34', '_line35',
-              'c59485', 'c59490', 'c05700', '_s1291', '_parents', 'c05750',
+              'c59485', 'c59490', '_s1291', '_parents', 'c05750',
               '_taxbc']
 
     return DataFrame(data=np.column_stack(outputs),
@@ -927,7 +929,7 @@ def AMTI(puf, p):
     c05800 = _taxbc + c63200
 
     outputs = (c62720, c60260, c63100, c60200, c60240, c60220, c60130,
-               c62730, _addamt, c62100, _cmbtp, _edical, _amtsepadd, c62600,
+               c62730, _addamt, c62100, _cmbtp, _edical, _amtsepadd,
                _agep, _ages, c62600, c62700, _alminc, _amtfei, c62780,
                c62900, c63000, c62740, _ngamty, c62745, y62745, _tamt2,
                _amt5pc, _amt15pc, _amt25pc, c62747, c62755, c62770, _amt,
@@ -935,7 +937,7 @@ def AMTI(puf, p):
 
     header = ['c62720', 'c60260', 'c63100', 'c60200', 'c60240', 'c60220',
               'c60130', 'c62730', '_addamt', 'c62100', '_cmbtp', '_edical',
-              '_amtsepadd', 'c62600', '_agep', '_ages', 'c62600', 'c62700',
+              '_amtsepadd', '_agep', '_ages', 'c62600', 'c62700',
               '_alminc', '_amtfei', 'c62780', 'c62900', 'c63000', 'c62740',
               '_ngamty', 'c62745', 'y62745', '_tamt2', '_amt5pc', '_amt15pc',
               '_amt25pc', 'c62747', 'c62755', 'c62770', '_amt', 'c62800',
@@ -1301,11 +1303,11 @@ def AddCTC(puf, p):
     c11070 = np.where(
         np.logical_and(_nctcr > 0, _fixup >= 4), c11070 + _othadd, c11070)
 
-    outputs = (c82940, c82925, c82930, c82935, c82880, h82880, c82885, c82890,
+    outputs = (c82925, c82930, c82935, c82880, h82880, c82885, c82890,
                c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070,
                e59660, _othadd)
 
-    header = ['c82940', 'c82925', 'c82930', 'c82935', 'c82880', 'h82880',
+    header = ['c82925', 'c82930', 'c82935', 'c82880', 'h82880',
               'c82885', 'c82890', 'c82900', 'c82905', 'c82910', 'c82915',
               'c82920', 'c82937', 'c82940', 'c11070', 'e59660', '_othadd']
 
