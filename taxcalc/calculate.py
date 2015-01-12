@@ -73,16 +73,16 @@ def Adj():
                      columns=['_feided', 'c02900'])
 
 
-def CapGains(p):
-    # Capital Gains
-    global _ymod
-    global _ymod1
-    global c02700
-    global c23650
-    global c01000
+@jit(nopython=True)
+def CapGains_calc(c23650, c01000, c02700, _ymod, _ymod1, _ymod2, _ymod3, _sep, _feimax, _feided,
+    DEFAULT_YR, FLPDYR, e23250, e22250, e23660, e00200, e00300, e00400, e00600,
+    e00700, e00800, e00900, e01100, e01200, e01400, e01700, e02000, e02100,
+    e02300, e02400, e02600, e02610, e02800, e02540, c02900, e03210, e03220,
+    e03230, e03240, e02615, f2555):
+
     c23650 = e23250 + e22250 + e23660
-    c01000 = np.maximum(-3000 / p._sep, c23650)
-    c02700 = np.minimum(_feided, p._feimax[FLPDYR - p.DEFAULT_YR] * f2555)
+    c01000 = max(-3000 / _sep, c23650)
+    c02700 = min(_feided, _feimax[FLPDYR - DEFAULT_YR] * f2555)
     _ymod1 = (e00200 + e00300 + e00600
             + e00700 + e00800 + e00900
             + c01000 + e01100 + e01200
@@ -93,10 +93,48 @@ def CapGains(p):
     _ymod3 = e03210 + e03230 + e03240 + e02615
     _ymod = _ymod1 + _ymod2 + _ymod3
 
-    return DataFrame(data=np.column_stack((c23650, c01000, c02700, _ymod1,
-                                           _ymod2, _ymod3, _ymod)),
-                     columns=['c23650', 'c01000', 'c02700', '_ymod1', '_ymod2',
-                               '_ymod3', '_ymod'])
+    return (c23650, c01000, c02700, _ymod1, _ymod2, _ymod3, _ymod)
+
+
+@jit(nopython=True)
+def CapGains_apply(c23650, c01000, c02700, _ymod, _ymod1, _ymod2, _ymod3, _sep,
+    _feimax, _feided, DEFAULT_YR, FLPDYR, e23250, e22250, e23660, e00200,
+    e00300, e00400, e00600, e00700, e00800, e00900, e01100, e01200, e01400,
+    e01700, e02000, e02100, e02300, e02400, e02600, e02610, e02800, e02540,
+    c02900, e03210, e03220, e03230, e03240, e02615, f2555):
+
+    for i in xrange(len(e23250)):
+        (c23650[i], c01000[i], c02700[i], _ymod1[i],
+            _ymod2[i], _ymod3[i], _ymod[i]) = CapGains_calc(c23650[i], c01000[i],
+            c02700[i], _ymod[i], _ymod1[i], _ymod2[i], _ymod3[i], _sep[i],
+            _feimax, _feided[i], DEFAULT_YR, FLPDYR[i], e23250[i], e22250[i],
+            e23660[i], e00200[i], e00300[i], e00400[i], e00600[i], e00700[i],
+            e00800[i], e00900[i], e01100[i], e01200[i], e01400[i], e01700[i],
+            e02000[i], e02100[i], e02300[i], e02400[i], e02600[i], e02610[i],
+            e02800[i], e02540[i], c02900[i], e03210[i], e03220[i], e03230[i],
+            e03240[i], e02615[i], f2555[i])
+
+    return (c23650, c01000, c02700, _ymod1, _ymod2, _ymod3, _ymod)
+
+
+def CapGains(p):
+    # Capital Gains
+    global _ymod
+    global _ymod1
+    global _ymod2
+    global _ymod3
+    global c02700
+    global c23650
+    global c01000
+
+    outputs = CapGains_apply(c23650, c01000, c02700, _ymod, _ymod1, _ymod2, _ymod3,
+        p._sep, p._feimax, _feided, p.DEFAULT_YR, FLPDYR, e23250, e22250, e23660, e00200,
+        e00300, e00400, e00600, e00700, e00800, e00900, e01100, e01200, e01400,
+        e01700, e02000, e02100, e02300, e02400, e02600, e02610, e02800, e02540,
+        c02900, e03210, e03220, e03230, e03240, e02615, f2555)
+
+    header = ['c23650', 'c01000', 'c02700', '_ymod1', '_ymod2', '_ymod3', '_ymod']
+    return DataFrame(data=np.column_stack(outputs), columns=header)
 
 # @jit('void(float64[:], int64[:], int64[:], float64[:], int64[:], int64[:], int64[:], float64[:])', nopython=True)
 @jit(nopython=True)
