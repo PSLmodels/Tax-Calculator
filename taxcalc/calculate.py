@@ -38,14 +38,12 @@ def calculator(data, mods="", **kwargs):
     return calc
 
 
-@jit(nopython=True)
 def FilingStatus_calc(MARS):
     if MARS == 3 or MARS == 6:
         return 2
     return 1
 
 
-@jit(nopython=True)
 def FilingStatus_apply(MARS, _sep):
     for i in xrange(len(MARS)):
         _sep[i] = FilingStatus_calc(MARS[i])
@@ -85,7 +83,6 @@ def Adj():
                      columns=['_feided', 'c02900'])
 
 
-@jit(nopython=True)
 def CapGains_calc(c23650, c01000, c02700, _ymod, _ymod1, _ymod2, _ymod3, _sep, _feimax, _feided,
     DEFAULT_YR, FLPDYR, e23250, e22250, e23660, e00200, e00300, e00400, e00600,
     e00700, e00800, e00900, e01100, e01200, e01400, e01700, e02000, e02100,
@@ -108,7 +105,6 @@ def CapGains_calc(c23650, c01000, c02700, _ymod, _ymod1, _ymod2, _ymod3, _sep, _
     return (c23650, c01000, c02700, _ymod1, _ymod2, _ymod3, _ymod)
 
 
-@jit(nopython=True)
 def CapGains_apply(c23650, c01000, c02700, _ymod, _ymod1, _ymod2, _ymod3, _sep,
     _feimax, _feided, DEFAULT_YR, FLPDYR, e23250, e22250, e23660, e00200,
     e00300, e00400, e00600, e00700, e00800, e00900, e01100, e01200, e01400,
@@ -149,7 +145,6 @@ def CapGains(p):
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
 # @jit('void(float64[:], int64[:], int64[:], float64[:], int64[:], int64[:], int64[:], float64[:])', nopython=True)
-@jit(nopython=True)
 def SSBenefits_c02500(SSIND, MARS, e02500, _ymod, e02400, _ssb50, _ssb85, c02500):
 
     for i in range(0, MARS.shape[0]):
@@ -213,7 +208,6 @@ def AGI(p):
 
 
 
-@jit(nopython=True)
 def ItemDed_calc(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
                  e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
                  e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
@@ -289,7 +283,6 @@ def ItemDed_calc(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900
             _phase2_i, _nonlimited, _limitratio, c04470, c21040)
 
 
-@jit(nopython=True)
 def ItemDed_apply(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
             e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
             e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
@@ -362,7 +355,6 @@ def EI_FICA(p):
 
 
 # @jit("void(float64[:], int64[:], int64[:], int64, int64[:,:], float64[:])", nopython=True)
-@jit(nopython=True)
 def StdDed_c15100(_earned, DSI, FLPDYR, default_yr, _stded, c15100):
     for i in range(0, FLPDYR.shape[0]):
         if DSI[i] == 1:
@@ -372,7 +364,6 @@ def StdDed_c15100(_earned, DSI, FLPDYR, default_yr, _stded, c15100):
 
 
 # @jit("void(int64[:], int64[:], float64[:], int64[:], int64[:], float64[:], int64[:], int64, int64[:,:], float64[:])", nopython=True)
-@jit(nopython=True)
 def StdDed_c04100(DSI, MARS, c15100, FLPDYR, MIdR, _earned, _compitem, default_yr, _stded, c04100):
     for i in range(0, MARS.shape[0]):
         if (DSI[i] == 1):
@@ -392,7 +383,6 @@ def StdDed_txpyers(MARS):
 
 
 # @jit("void(float64[:], int64[:], float64[:], float64[:], float64[:], int64[:], int64, int64[:], int64[:,:])", nopython=True)
-@jit(nopython=True)
 def StdDed_c04200(c04200, MARS, e04200, _numextra, _exact, _txpyers, DEFAULT_YR, FLPDYR, _aged):
     for i in range(MARS.shape[0]):
         if _exact[i] == 1 and MARS[i] == 3 or MARS[i] == 5:
