@@ -45,7 +45,7 @@ def FilingStatus_calc(MARS):
 
 
 def FilingStatus_apply(MARS, _sep):
-    for i in xrange(len(MARS)):
+    for i in range(len(MARS)):
         _sep[i] = FilingStatus_calc(MARS[i])
 
     return _sep
@@ -77,7 +77,7 @@ def Adj_calc(e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
 def Adj_apply(_feided, c02900, e35300_0, e35600_0, e35910_0, e03150, e03210,
     e03600, e03260, e03270, e03300, e03400, e03500, e03280, e03900, e04000,
     e03700, e03220, e03230, e03240, e03290):
-    for i in xrange(len(c02900)):
+    for i in range(len(c02900)):
         (_feided[i], c02900[i]) = Adj_calc(e35300_0[i],
             e35600_0[i], e35910_0[i], e03150[i], e03210[i], e03600[i], e03260[i],
             e03270[i], e03300[i], e03400[i], e03500[i], e03280[i], e03900[i],
@@ -126,7 +126,7 @@ def CapGains_apply(c23650, c01000, c02700, _ymod, _ymod1, _ymod2, _ymod3, _sep,
     e01700, e02000, e02100, e02300, e02400, e02600, e02610, e02800, e02540,
     c02900, e03210, e03220, e03230, e03240, e02615, f2555):
 
-    for i in xrange(len(e23250)):
+    for i in range(len(e23250)):
         (c23650[i], c01000[i], c02700[i], _ymod1[i],
             _ymod2[i], _ymod3[i], _ymod[i]) = CapGains_calc(c23650[i], c01000[i],
             c02700[i], _ymod[i], _ymod1[i], _ymod2[i], _ymod3[i], _sep[i],
