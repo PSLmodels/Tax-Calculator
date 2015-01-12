@@ -376,23 +376,45 @@ def ItemDed(puf, p):
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
+def EI_FICA_calc(e00900, e02100, _ssmax, FLPDYR, DEFAULT_YR, e00200,
+    e00250, e11055, e30100):
+    _sey = e00900 + e02100
+    _fica = max(0, .153 * min(_ssmax[FLPDYR - DEFAULT_YR], e00200 + max(0, _sey) * 0.9235))
+    _setax = max(0, _fica - 0.153 * e00200)
+
+    if _setax <= 14204:
+        _seyoff = 0.5751 * _setax
+    else:
+        _seyoff = 0.5 * _setax + 10067
+
+    _earned = max(0, e00200 + e00250 + e11055 + e30100 + _sey - _seyoff)
+    return (_sey, _fica, _setax, _seyoff, _earned)
+
+
+def EI_FICA_apply(e00900, e02100, _ssmax, FLPDYR, DEFAULT_YR, e00200, _earned,
+    e00250, e11055, e30100, _sey, _fica, _setax, _seyoff):
+    for i in range(len(_sey)):
+        (_sey[i], _fica[i], _setax[i], _seyoff[i], _earned[i]) = EI_FICA_calc(e00900[i],
+            e02100[i], _ssmax, FLPDYR[i], DEFAULT_YR, e00200[i], e00250[i],
+            e11055[i], e30100[i])
+
+    return (_sey, _fica, _setax, _seyoff, _earned)
+
+
 def EI_FICA(p):
     global _sey
     global _setax
     # Earned Income and FICA #
     global _earned
-    _sey = e00900 + e02100
-    _fica = np.maximum(0, .153 * np.minimum(p._ssmax[FLPDYR - p.DEFAULT_YR],
-                                            e00200 + np.maximum(0, _sey) * 0.9235))
-    _setax = np.maximum(0, _fica - 0.153 * e00200)
-    _seyoff = np.where(_setax <= 14204, 0.5751 * _setax, 0.5 * _setax + 10067)
-
+    # fica, seyoff, c11055 are only used in this function
+    _fica = np.zeros((len(_sey)))
+    _seyoff = np.zeros((len(_sey)))
     c11055 = e11055
 
-    _earned = np.maximum(0, e00200 + e00250 + e11055 + e30100 + _sey - _seyoff)
-
-    outputs = (_sey, _fica, _setax, _seyoff, c11055, _earned)
-    header = ['_sey', '_fica', '_setax', '_seyoff', 'c11055', '_earned']
+    outputs = EI_FICA_apply(e00900, e02100, p._ssmax, FLPDYR, p.DEFAULT_YR, e00200,
+        _earned, e00250, e11055, e30100, _sey, _fica, _setax, _seyoff)
+    outputs += (c11055,)
+    header = ['_sey', '_fica', '_setax', '_seyoff', '_earned', 'c11055']
 
     return DataFrame(data=np.column_stack(outputs), columns=header), _earned
 
