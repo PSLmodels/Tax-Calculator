@@ -38,17 +38,29 @@ def calculator(data, mods="", **kwargs):
     return calc
 
 
-@vectorize('int64(int64)', nopython=True)
-def filing_status_sep(MARS):
+@jit(nopython=True)
+def FilingStatus_calc(MARS):
     if MARS == 3 or MARS == 6:
         return 2
     return 1
 
 
+@jit(nopython=True)
+def FilingStatus_apply(MARS, _sep):
+    for i in xrange(len(MARS)):
+        _sep[i] = FilingStatus_calc(MARS[i])
+
+    return _sep
+
+
 def FilingStatus(p):
     # Filing based on marital status
-    # TODO: get rid of _txp in tests
-    p._sep = filing_status_sep(MARS)
+    # IK: I wonder if it makes sense to compute _sep as part of reading in
+    # the PUF file since a) the computation is simple and b) it seems to me
+    # strange to consider it as a "parameter" when it depends solely on the
+    # PUF
+    global _sep
+    p._sep = FilingStatus_apply(MARS, _sep)
     return DataFrame(data=p._sep,
                      columns=['_sep', ])
 
