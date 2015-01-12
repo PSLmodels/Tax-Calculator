@@ -38,51 +38,75 @@ def calculator(data, mods="", **kwargs):
     return calc
 
 
-@vectorize('int64(int64)', nopython=True)
-def filing_status_sep(MARS):
+def FilingStatus_calc(MARS):
     if MARS == 3 or MARS == 6:
         return 2
     return 1
 
 
+def FilingStatus_apply(MARS, _sep):
+    for i in range(len(MARS)):
+        _sep[i] = FilingStatus_calc(MARS[i])
+
+    return _sep
+
+
 def FilingStatus(p):
     # Filing based on marital status
-    # TODO: get rid of _txp in tests
-    p._sep = filing_status_sep(MARS)
+    # IK: I wonder if it makes sense to compute _sep as part of reading in
+    # the PUF file since a) the computation is simple and b) it seems to me
+    # strange to consider it as a "parameter" when it depends solely on the
+    # PUF
+    global _sep
+    p._sep = FilingStatus_apply(MARS, _sep)
     return DataFrame(data=p._sep,
                      columns=['_sep', ])
 
 
-@vectorize('float64(float64, float64, float64)', nopython=True)
-def feided_vec(e35300_0, e35600_0, e35910_0):
-    return max(e35300_0, e35600_0 + e35910_0)
+def Adj_calc(e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
+    e03270, e03300, e03400, e03500, e03280, e03900, e04000, e03700, e03220,
+    e03230, e03240, e03290):
+    _feided = max(e35300_0, e35600_0 + e35910_0)
+
+    c02900 = (e03150 + e03210 + e03600 + e03260 + e03270 + e03300 + e03400 + e03500
+        + e03280 + e03900 + e04000 + e03700 + e03220 + e03230 + e03240 + e03290)
+
+    return (_feided, c02900)
+
+
+def Adj_apply(_feided, c02900, e35300_0, e35600_0, e35910_0, e03150, e03210,
+    e03600, e03260, e03270, e03300, e03400, e03500, e03280, e03900, e04000,
+    e03700, e03220, e03230, e03240, e03290):
+    for i in range(len(c02900)):
+        (_feided[i], c02900[i]) = Adj_calc(e35300_0[i],
+            e35600_0[i], e35910_0[i], e03150[i], e03210[i], e03600[i], e03260[i],
+            e03270[i], e03300[i], e03400[i], e03500[i], e03280[i], e03900[i],
+            e04000[i], e03700[i], e03220[i], e03230[i], e03240[i], e03290[i])
+
+    return (_feided, c02900)
 
 
 def Adj():
     # Adjustments
     global _feided, c02900
-    _feided = feided_vec(e35300_0, e35600_0, e35910_0)  # Form 2555
 
-    c02900 = (e03150 + e03210 + e03600 + e03260 + e03270 + e03300
-              + e03400 + e03500 + e03280 + e03900 + e04000 + e03700
-              + e03220 + e03230
-              + e03240
-              + e03290)
+    outputs = Adj_apply(_feided, c02900, e35300_0, e35600_0, e35910_0, e03150,
+        e03210, e03600, e03260, e03270, e03300, e03400, e03500, e03280, e03900,
+        e04000, e03700, e03220, e03230, e03240, e03290)
 
-    return DataFrame(data=np.column_stack((_feided, c02900)),
-                     columns=['_feided', 'c02900'])
+    return DataFrame(data=np.column_stack(outputs),
+        columns=['_feided', 'c02900'])
 
 
-def CapGains(p):
-    # Capital Gains
-    global _ymod
-    global _ymod1
-    global c02700
-    global c23650
-    global c01000
+def CapGains_calc(c23650, c01000, c02700, _ymod, _ymod1, _ymod2, _ymod3, _sep, _feimax, _feided,
+    DEFAULT_YR, FLPDYR, e23250, e22250, e23660, e00200, e00300, e00400, e00600,
+    e00700, e00800, e00900, e01100, e01200, e01400, e01700, e02000, e02100,
+    e02300, e02400, e02600, e02610, e02800, e02540, c02900, e03210, e03220,
+    e03230, e03240, e02615, f2555):
+
     c23650 = e23250 + e22250 + e23660
-    c01000 = np.maximum(-3000 / p._sep, c23650)
-    c02700 = np.minimum(_feided, p._feimax[FLPDYR - p.DEFAULT_YR] * f2555)
+    c01000 = max(-3000 / _sep, c23650)
+    c02700 = min(_feided, _feimax[FLPDYR - DEFAULT_YR] * f2555)
     _ymod1 = (e00200 + e00300 + e00600
             + e00700 + e00800 + e00900
             + c01000 + e01100 + e01200
@@ -93,41 +117,123 @@ def CapGains(p):
     _ymod3 = e03210 + e03230 + e03240 + e02615
     _ymod = _ymod1 + _ymod2 + _ymod3
 
-    return DataFrame(data=np.column_stack((c23650, c01000, c02700, _ymod1,
-                                           _ymod2, _ymod3, _ymod)),
-                     columns=['c23650', 'c01000', 'c02700', '_ymod1', '_ymod2',
-                               '_ymod3', '_ymod'])
+    return (c23650, c01000, c02700, _ymod1, _ymod2, _ymod3, _ymod)
 
-@jit('void(float64[:], int64[:], int64[:], float64[:], int64[:], int64[:], int64[:], float64[:])', nopython=True)
-def SSBenefits_c02500(SSIND, MARS, e02500, _ymod, e02400, _ssb50, _ssb85, c02500):
 
-    for i in range(0, MARS.shape[0]):
-        if SSIND[i] !=0 or MARS[i] == 3 or MARS[i] == 6:
-            c02500[i] = e02500[i]
-        elif _ymod[i] < _ssb50[MARS[i]-1]:
-            c02500[i] = 0
-        elif _ymod[i] >= _ssb50[MARS[i]-1] and _ymod[i] < _ssb85[MARS[i]-1]:
-            c02500[i] = 0.5 * np.minimum(_ymod[i] - _ssb50[MARS[i]-1], e02400[i])
-        else:
-            c02500[i] = np.minimum(0.85 * (_ymod[i] - _ssb85[MARS[i]-1]) +
-                        0.50 * np.minimum(e02400[i], _ssb85[MARS[i]-1] -
-                        _ssb50[MARS[i]-1]), 0.85 * e02400[i])
+def CapGains_apply(c23650, c01000, c02700, _ymod, _ymod1, _ymod2, _ymod3, _sep,
+    _feimax, _feided, DEFAULT_YR, FLPDYR, e23250, e22250, e23660, e00200,
+    e00300, e00400, e00600, e00700, e00800, e00900, e01100, e01200, e01400,
+    e01700, e02000, e02100, e02300, e02400, e02600, e02610, e02800, e02540,
+    c02900, e03210, e03220, e03230, e03240, e02615, f2555):
+
+    for i in range(len(e23250)):
+        (c23650[i], c01000[i], c02700[i], _ymod1[i],
+            _ymod2[i], _ymod3[i], _ymod[i]) = CapGains_calc(c23650[i], c01000[i],
+            c02700[i], _ymod[i], _ymod1[i], _ymod2[i], _ymod3[i], _sep[i],
+            _feimax, _feided[i], DEFAULT_YR, FLPDYR[i], e23250[i], e22250[i],
+            e23660[i], e00200[i], e00300[i], e00400[i], e00600[i], e00700[i],
+            e00800[i], e00900[i], e01100[i], e01200[i], e01400[i], e01700[i],
+            e02000[i], e02100[i], e02300[i], e02400[i], e02600[i], e02610[i],
+            e02800[i], e02540[i], c02900[i], e03210[i], e03220[i], e03230[i],
+            e03240[i], e02615[i], f2555[i])
+
+    return (c23650, c01000, c02700, _ymod1, _ymod2, _ymod3, _ymod)
+
+
+def CapGains(p):
+    # Capital Gains
+    global _ymod
+    global _ymod1
+    global _ymod2
+    global _ymod3
+    global c02700
+    global c23650
+    global c01000
+
+    outputs = CapGains_apply(c23650, c01000, c02700, _ymod, _ymod1, _ymod2, _ymod3,
+        p._sep, p._feimax, _feided, p.DEFAULT_YR, FLPDYR, e23250, e22250, e23660, e00200,
+        e00300, e00400, e00600, e00700, e00800, e00900, e01100, e01200, e01400,
+        e01700, e02000, e02100, e02300, e02400, e02600, e02610, e02800, e02540,
+        c02900, e03210, e03220, e03230, e03240, e02615, f2555)
+
+    header = ['c23650', 'c01000', 'c02700', '_ymod1', '_ymod2', '_ymod3', '_ymod']
+    return DataFrame(data=np.column_stack(outputs), columns=header)
+
+
+def SSBenefits_calc(SSIND, MARS, e02500, _ymod, e02400, _ssb50, _ssb85):
+    if SSIND !=0 or MARS == 3 or MARS == 6:
+        return e02500
+    elif _ymod < _ssb50[MARS-1]:
+        return 0
+    elif _ymod >= _ssb50[MARS-1] and _ymod < _ssb85[MARS-1]:
+        return 0.5 * min(_ymod - _ssb50[MARS-1], e02400)
+    else:
+        return min(0.85 * (_ymod - _ssb85[MARS-1])
+            + 0.50 * min(e02400, _ssb85[MARS-1] - _ssb50[MARS-1]),
+            0.85 * e02400)
+
+
+# @jit('void(float64[:], int64[:], int64[:], float64[:], int64[:], int64[:], int64[:], float64[:])', nopython=True)
+def SSBenefits_apply(SSIND, MARS, e02500, _ymod, e02400, _ssb50, _ssb85, c02500):
+
+    for i in range(len(e02500)):
+        c02500[i] = SSBenefits_calc(SSIND[i], MARS[i], e02500[i], _ymod[i],
+            e02400[i], _ssb50, _ssb85)
+
+    return c02500
 
 
 def SSBenefits(p):
     # Social Security Benefit Taxation
     global c02500
-    c02500 = np.zeros(len(e02500))
-    SSBenefits_c02500(SSIND, MARS, e02500, _ymod, e02400, p._ssb50, p._ssb85, c02500)
-    return DataFrame(data=np.column_stack((c02500,e02500)),
+    c02500 = SSBenefits_apply(SSIND, MARS, e02500, _ymod, e02400, p._ssb50, p._ssb85, c02500)
+
+    return DataFrame(data=np.column_stack((c02500, e02500)),
                      columns=['c02500', 'e02500'])
 
 
-@vectorize('float64(float64, float64, float64)', nopython=True)
-def conditional_agi(fixup, c00100, agierr):
-    if fixup >= 1:
-        return c00100 + agierr
-    return c00100
+def AGI_calc(c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp,
+    c04600, _ymod1, c02700, e02615, c02900, e00100, e02500, c02500, XTOT,
+    _amex, FLPDYR, DEFAULT_YR, _exmpb, MARS, _sep, _fixup):
+
+    c02650 = _ymod1 + c02500 - c02700 + e02615  # Gross Income
+
+    c00100 = c02650 - c02900
+    _agierr = e00100 - c00100  # Adjusted Gross Income
+    if _fixup >= 1:
+        c00100 += agierr
+
+    _posagi = max(c00100, 0)
+    _ywossbe = e00100 - e02500
+    _ywossbc = c00100 - c02500
+
+    _prexmp = XTOT * _amex[FLPDYR - DEFAULT_YR]
+    # Personal Exemptions (_phaseout smoothed)
+
+    _dispc_numer = 0.02 * (_posagi - _exmpb[FLPDYR - DEFAULT_YR, MARS - 1])
+    _dispc_denom = (2500 / _sep)
+    _dispc = min(1, max(0, _dispc_numer / _dispc_denom ))
+
+    c04600 = _prexmp * (1 - _dispc)
+
+    return (c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp, c04600)
+
+
+def AGI_apply(c00100, _posagi, c04600, _ymod1, c02700, e02615, c02900, e00100,
+    e02500, c02500, XTOT, _amex, FLPDYR, DEFAULT_YR, _exmpb, MARS, _sep, _fixup):
+    c02650 = np.zeros(len(c00100))
+    _agierr = np.zeros(len(c00100))
+    _ywossbe = np.zeros(len(c00100))
+    _ywossbc = np.zeros(len(c00100))
+    _prexmp = np.zeros(len(c00100))
+    for i in range(len(c00100)):
+        (c02650[i], c00100[i], _agierr[i], _posagi[i], _ywossbe[i], _ywossbc[i],
+            _prexmp[i], c04600[i]) = AGI_calc(c02650[i], c00100[i], _agierr[i],
+            _posagi[i], _ywossbe[i], _ywossbc[i], _prexmp[i], c04600[i],
+            _ymod1[i], c02700[i], e02615[i], c02900[i], e00100[i], e02500[i],
+            c02500[i], XTOT[i], _amex, FLPDYR[i], DEFAULT_YR, _exmpb, MARS[i],
+            _sep[i], _fixup[i])
+    return (c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp, c04600)
 
 
 def AGI(p):
@@ -135,34 +241,16 @@ def AGI(p):
     global _posagi
     global c00100
     global c04600
-    c02650 = _ymod1 + c02500 - c02700 + e02615  # Gross Income
 
-    c00100 = c02650 - c02900
-    _agierr = e00100 - c00100  # Adjusted Gross Income
-    c00100 = conditional_agi(_fixup, c00100, _agierr)
+    outputs = AGI_apply(c00100, _posagi, c04600, _ymod1, c02700, e02615, c02900,
+        e00100, e02500, c02500, XTOT, p._amex, FLPDYR, p.DEFAULT_YR, p._exmpb,
+        MARS, p._sep, _fixup)
 
-    _posagi = np.maximum(c00100, 0)
-    _ywossbe = e00100 - e02500
-    _ywossbc = c00100 - c02500
-
-    _prexmp = XTOT * p._amex[FLPDYR - p.DEFAULT_YR]
-    # Personal Exemptions (_phaseout smoothed)
-
-    _dispc_numer = 0.02 * (_posagi - p._exmpb[FLPDYR - p.DEFAULT_YR, MARS - 1])
-    _dispc_denom = (2500 / p._sep)
-    _dispc = np.minimum(1, np.maximum(0, _dispc_numer / _dispc_denom ))
-
-    c04600 = _prexmp * (1 - _dispc)
-
-    return DataFrame(data=np.column_stack((c02650, c00100, _agierr, _posagi,
-                                           _ywossbe, _ywossbc, _prexmp,
-                                           c04600)),
+    return DataFrame(data=np.column_stack(outputs),
                      columns=['c02650', 'c00100', '_agierr', '_posagi',
                               '_ywossbe', '_ywossbc', '_prexmp', 'c04600'])
 
 
-
-@jit(nopython=True)
 def ItemDed_calc(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
                  e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
                  e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
@@ -238,7 +326,6 @@ def ItemDed_calc(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900
             _phase2_i, _nonlimited, _limitratio, c04470, c21040)
 
 
-@jit(nopython=True)
 def ItemDed_apply(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
             e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
             e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
@@ -289,28 +376,50 @@ def ItemDed(puf, p):
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
+def EI_FICA_calc(e00900, e02100, _ssmax, FLPDYR, DEFAULT_YR, e00200,
+    e00250, e11055, e30100):
+    _sey = e00900 + e02100
+    _fica = max(0, .153 * min(_ssmax[FLPDYR - DEFAULT_YR], e00200 + max(0, _sey) * 0.9235))
+    _setax = max(0, _fica - 0.153 * e00200)
+
+    if _setax <= 14204:
+        _seyoff = 0.5751 * _setax
+    else:
+        _seyoff = 0.5 * _setax + 10067
+
+    _earned = max(0, e00200 + e00250 + e11055 + e30100 + _sey - _seyoff)
+    return (_sey, _fica, _setax, _seyoff, _earned)
+
+
+def EI_FICA_apply(e00900, e02100, _ssmax, FLPDYR, DEFAULT_YR, e00200, _earned,
+    e00250, e11055, e30100, _sey, _fica, _setax, _seyoff):
+    for i in range(len(_sey)):
+        (_sey[i], _fica[i], _setax[i], _seyoff[i], _earned[i]) = EI_FICA_calc(e00900[i],
+            e02100[i], _ssmax, FLPDYR[i], DEFAULT_YR, e00200[i], e00250[i],
+            e11055[i], e30100[i])
+
+    return (_sey, _fica, _setax, _seyoff, _earned)
+
+
 def EI_FICA(p):
     global _sey
     global _setax
     # Earned Income and FICA #
     global _earned
-    _sey = e00900 + e02100
-    _fica = np.maximum(0, .153 * np.minimum(p._ssmax[FLPDYR - p.DEFAULT_YR],
-                                            e00200 + np.maximum(0, _sey) * 0.9235))
-    _setax = np.maximum(0, _fica - 0.153 * e00200)
-    _seyoff = np.where(_setax <= 14204, 0.5751 * _setax, 0.5 * _setax + 10067)
-
+    # fica, seyoff, c11055 are only used in this function
+    _fica = np.zeros((len(_sey)))
+    _seyoff = np.zeros((len(_sey)))
     c11055 = e11055
 
-    _earned = np.maximum(0, e00200 + e00250 + e11055 + e30100 + _sey - _seyoff)
-
-    outputs = (_sey, _fica, _setax, _seyoff, c11055, _earned)
-    header = ['_sey', '_fica', '_setax', '_seyoff', 'c11055', '_earned']
+    outputs = EI_FICA_apply(e00900, e02100, p._ssmax, FLPDYR, p.DEFAULT_YR, e00200,
+        _earned, e00250, e11055, e30100, _sey, _fica, _setax, _seyoff)
+    outputs += (c11055,)
+    header = ['_sey', '_fica', '_setax', '_seyoff', '_earned', 'c11055']
 
     return DataFrame(data=np.column_stack(outputs), columns=header), _earned
 
 
-@jit("void(float64[:], int64[:], int64[:], int64, int64[:,:], float64[:])", nopython=True)
+# @jit("void(float64[:], int64[:], int64[:], int64, int64[:,:], float64[:])", nopython=True)
 def StdDed_c15100(_earned, DSI, FLPDYR, default_yr, _stded, c15100):
     for i in range(0, FLPDYR.shape[0]):
         if DSI[i] == 1:
@@ -319,7 +428,7 @@ def StdDed_c15100(_earned, DSI, FLPDYR, default_yr, _stded, c15100):
             c15100[i] = 0
 
 
-@jit("void(int64[:], int64[:], float64[:], int64[:], int64[:], float64[:], int64[:], int64, int64[:,:], float64[:])", nopython=True)
+# @jit("void(int64[:], int64[:], float64[:], int64[:], int64[:], float64[:], int64[:], int64, int64[:,:], float64[:])", nopython=True)
 def StdDed_c04100(DSI, MARS, c15100, FLPDYR, MIdR, _earned, _compitem, default_yr, _stded, c04100):
     for i in range(0, MARS.shape[0]):
         if (DSI[i] == 1):
@@ -338,7 +447,7 @@ def StdDed_txpyers(MARS):
         return 1
 
 
-@jit("void(float64[:], int64[:], float64[:], float64[:], float64[:], int64[:], int64, int64[:], int64[:,:])", nopython=True)
+# @jit("void(float64[:], int64[:], float64[:], float64[:], float64[:], int64[:], int64, int64[:], int64[:,:])", nopython=True)
 def StdDed_c04200(c04200, MARS, e04200, _numextra, _exact, _txpyers, DEFAULT_YR, FLPDYR, _aged):
     for i in range(MARS.shape[0]):
         if _exact[i] == 1 and MARS[i] == 3 or MARS[i] == 5:
@@ -698,7 +807,7 @@ def TaxGains0_jit(e00650, c04800, e01000, c23650, e23250, e01100, e58990, e58980
 
 
 @jit(nopython=True)
-def apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
+def apply_TaxGains0(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
     e58980, e24515, e24518, _brk2, FLPDYR, DEFAULT_YR, MARS, _taxinc, _brk6,  _xyztax, _feided, _feitax, _cmp,
     e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400,
     c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516, _dwks12,
@@ -1234,7 +1343,7 @@ def ChildTaxCredit(p):
 
 
 # def HopeCredit():
-    # W/o congressional action, Hope Credit will replace 
+    # W/o congressional action, Hope Credit will replace
     # American opportunities credit in 2018. NEED TO ADD LOGIC!!!
 
 
@@ -1576,23 +1685,24 @@ def Taxer(inc_in, inc_out, MARS, p):
 
     return inc_out
 
-@jit('float64(float64, int64, int64, int64)', nopython = True)
+# @jit('float64(float64, int64, int64, int64)', nopython = True)
+@jit(nopython=True)
 def Taxer_i(inc_in, MARS, FLPDYR, DEFAULT_YR):
     ## note still should pass in all globals being used, including _rt1-_rt7 and _brk1-_brk6
 
-    # low = 0 
+    # low = 0
     # med = 0
 
     # if inc_in < 3000:
-    #     low = 1 
+    #     low = 1
 
     # elif inc_in >=3000 and inc_in < 100000:
-    #     med = 1 
+    #     med = 1
 
     # _a1 = inc_in * 0.01
 
     # # if _a1 < 0:
-    # #     _a2 = math.floor(_a1) - 1 
+    # #     _a2 = math.floor(_a1) - 1
     # # else: _a2 = math.floor(_a1)
     # _a2 = math.floor(_a1)
 
@@ -1612,13 +1722,13 @@ def Taxer_i(inc_in, MARS, FLPDYR, DEFAULT_YR):
     #     _a5 = 88
     # elif med == 1 and _a4 < 50:
     #     _a5 = 25
-    # elif med == 1 and _a4 >= 50: 
+    # elif med == 1 and _a4 >= 50:
     #     _a5 = 75
     # if inc_in == 0:
     #     _a5 = 0
 
     # if low == 1 or med == 1:
-    #     _a6 = _a3 + _a5 
+    #     _a6 = _a3 + _a5
     # else: _a6 = inc_in
 
     _a6 = inc_in

@@ -474,3 +474,9 @@ def set_input_data(calc):
     calc._nonlimited = np.zeros(dim)
     calc._phase2_i = np.zeros(dim)
     calc._limitratio = np.zeros(dim)
+
+    """
+    Introduced in CapGains()
+    """
+    calc._ymod2 = np.zeros(dim)
+    calc._ymod3 = np.zeros(dim)
