@@ -63,24 +63,39 @@ def FilingStatus(p):
                      columns=['_sep', ])
 
 
-@vectorize('float64(float64, float64, float64)', nopython=True)
-def feided_vec(e35300_0, e35600_0, e35910_0):
-    return max(e35300_0, e35600_0 + e35910_0)
+def Adj_calc(e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
+    e03270, e03300, e03400, e03500, e03280, e03900, e04000, e03700, e03220,
+    e03230, e03240, e03290):
+    _feided = max(e35300_0, e35600_0 + e35910_0)
+
+    c02900 = (e03150 + e03210 + e03600 + e03260 + e03270 + e03300 + e03400 + e03500
+        + e03280 + e03900 + e04000 + e03700 + e03220 + e03230 + e03240 + e03290)
+
+    return (_feided, c02900)
+
+
+def Adj_apply(_feided, c02900, e35300_0, e35600_0, e35910_0, e03150, e03210,
+    e03600, e03260, e03270, e03300, e03400, e03500, e03280, e03900, e04000,
+    e03700, e03220, e03230, e03240, e03290):
+    for i in xrange(len(c02900)):
+        (_feided[i], c02900[i]) = Adj_calc(e35300_0[i],
+            e35600_0[i], e35910_0[i], e03150[i], e03210[i], e03600[i], e03260[i],
+            e03270[i], e03300[i], e03400[i], e03500[i], e03280[i], e03900[i],
+            e04000[i], e03700[i], e03220[i], e03230[i], e03240[i], e03290[i])
+
+    return (_feided, c02900)
 
 
 def Adj():
     # Adjustments
     global _feided, c02900
-    _feided = feided_vec(e35300_0, e35600_0, e35910_0)  # Form 2555
 
-    c02900 = (e03150 + e03210 + e03600 + e03260 + e03270 + e03300
-              + e03400 + e03500 + e03280 + e03900 + e04000 + e03700
-              + e03220 + e03230
-              + e03240
-              + e03290)
+    outputs = Adj_apply(_feided, c02900, e35300_0, e35600_0, e35910_0, e03150,
+        e03210, e03600, e03260, e03270, e03300, e03400, e03500, e03280, e03900,
+        e04000, e03700, e03220, e03230, e03240, e03290)
 
-    return DataFrame(data=np.column_stack((_feided, c02900)),
-                     columns=['_feided', 'c02900'])
+    return DataFrame(data=np.column_stack(outputs),
+        columns=['_feided', 'c02900'])
 
 
 def CapGains_calc(c23650, c01000, c02700, _ymod, _ymod1, _ymod2, _ymod3, _sep, _feimax, _feided,
