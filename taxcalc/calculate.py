@@ -192,11 +192,48 @@ def SSBenefits(p):
                      columns=['c02500', 'e02500'])
 
 
-@vectorize('float64(float64, float64, float64)', nopython=True)
-def conditional_agi(fixup, c00100, agierr):
-    if fixup >= 1:
-        return c00100 + agierr
-    return c00100
+def AGI_calc(c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp,
+    c04600, _ymod1, c02700, e02615, c02900, e00100, e02500, c02500, XTOT,
+    _amex, FLPDYR, DEFAULT_YR, _exmpb, MARS, _sep, _fixup):
+
+    c02650 = _ymod1 + c02500 - c02700 + e02615  # Gross Income
+
+    c00100 = c02650 - c02900
+    _agierr = e00100 - c00100  # Adjusted Gross Income
+    if _fixup >= 1:
+        c00100 += agierr
+
+    _posagi = max(c00100, 0)
+    _ywossbe = e00100 - e02500
+    _ywossbc = c00100 - c02500
+
+    _prexmp = XTOT * _amex[FLPDYR - DEFAULT_YR]
+    # Personal Exemptions (_phaseout smoothed)
+
+    _dispc_numer = 0.02 * (_posagi - _exmpb[FLPDYR - DEFAULT_YR, MARS - 1])
+    _dispc_denom = (2500 / _sep)
+    _dispc = min(1, max(0, _dispc_numer / _dispc_denom ))
+
+    c04600 = _prexmp * (1 - _dispc)
+
+    return (c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp, c04600)
+
+
+def AGI_apply(c00100, _posagi, c04600, _ymod1, c02700, e02615, c02900, e00100,
+    e02500, c02500, XTOT, _amex, FLPDYR, DEFAULT_YR, _exmpb, MARS, _sep, _fixup):
+    c02650 = np.zeros(len(c00100))
+    _agierr = np.zeros(len(c00100))
+    _ywossbe = np.zeros(len(c00100))
+    _ywossbc = np.zeros(len(c00100))
+    _prexmp = np.zeros(len(c00100))
+    for i in range(len(c00100)):
+        (c02650[i], c00100[i], _agierr[i], _posagi[i], _ywossbe[i], _ywossbc[i],
+            _prexmp[i], c04600[i]) = AGI_calc(c02650[i], c00100[i], _agierr[i],
+            _posagi[i], _ywossbe[i], _ywossbc[i], _prexmp[i], c04600[i],
+            _ymod1[i], c02700[i], e02615[i], c02900[i], e00100[i], e02500[i],
+            c02500[i], XTOT[i], _amex, FLPDYR[i], DEFAULT_YR, _exmpb, MARS[i],
+            _sep[i], _fixup[i])
+    return (c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp, c04600)
 
 
 def AGI(p):
@@ -204,31 +241,14 @@ def AGI(p):
     global _posagi
     global c00100
     global c04600
-    c02650 = _ymod1 + c02500 - c02700 + e02615  # Gross Income
 
-    c00100 = c02650 - c02900
-    _agierr = e00100 - c00100  # Adjusted Gross Income
-    c00100 = conditional_agi(_fixup, c00100, _agierr)
+    outputs = AGI_apply(c00100, _posagi, c04600, _ymod1, c02700, e02615, c02900,
+        e00100, e02500, c02500, XTOT, p._amex, FLPDYR, p.DEFAULT_YR, p._exmpb,
+        MARS, p._sep, _fixup)
 
-    _posagi = np.maximum(c00100, 0)
-    _ywossbe = e00100 - e02500
-    _ywossbc = c00100 - c02500
-
-    _prexmp = XTOT * p._amex[FLPDYR - p.DEFAULT_YR]
-    # Personal Exemptions (_phaseout smoothed)
-
-    _dispc_numer = 0.02 * (_posagi - p._exmpb[FLPDYR - p.DEFAULT_YR, MARS - 1])
-    _dispc_denom = (2500 / p._sep)
-    _dispc = np.minimum(1, np.maximum(0, _dispc_numer / _dispc_denom ))
-
-    c04600 = _prexmp * (1 - _dispc)
-
-    return DataFrame(data=np.column_stack((c02650, c00100, _agierr, _posagi,
-                                           _ywossbe, _ywossbc, _prexmp,
-                                           c04600)),
+    return DataFrame(data=np.column_stack(outputs),
                      columns=['c02650', 'c00100', '_agierr', '_posagi',
                               '_ywossbe', '_ywossbc', '_prexmp', 'c04600'])
-
 
 
 def ItemDed_calc(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
