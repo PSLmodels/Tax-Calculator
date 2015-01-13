@@ -19,10 +19,13 @@ class PUF(object):
     Advancing years is done through a member function
     """
 
-    def __init__(self, puf_file="puf2.csv", current_year=2012):
+    def __init__(self, puf_file="puf2.csv", current_year=None):
 
-        self._current_year = current_year
         self.read(puf_file)
+        if (current_year):
+            self._current_year = current_year
+        else:
+            self._current_year = self.FLPDYR[0]
 
     @property
     def current_year(self):
@@ -30,6 +33,7 @@ class PUF(object):
 
     def increment_year(self):
         self._current_year += 1
+        self.FLPDYR += 1
 
     def read(self, puf_file):
         tax_dta = pd.read_csv(puf_file)
@@ -258,7 +262,7 @@ class PUF(object):
                         'c18300', 'c20800', 'c02900', 'c02700', 'c23650',
                         'c01000', 'c02500', 'e24583', '_fixup', '_cmp',
                         'e59440', 'e59470', 'e59400', 'e10105', 'e83200_0',
-                        'e59410', 'e59420', 'e74400', 'x62720 ', 'x60260',
+                        'e59410', 'e59420', 'e74400', 'x62720', 'x60260',
                         'x60240', 'x60220', 'x60130', 'x62730', 'e60290',
                         'DOBYR', 'SDOBYR', 'DOBMD', 'SDOBMD', 'e62600',
                         'x62740', '_fixeic', 'e32880', 'e32890', 'CDOB1',
@@ -279,7 +283,12 @@ class PUF(object):
                         'e60410', 'e61400', 'e60660', 'e60480', 'e62000',
                         'e60250', 'e40223', '_sep', '_earned', '_sey',
                         '_setax', '_feided', '_ymod', '_ymod1', '_posagi',
-                        '_sit', 'xtxcr1xtxcr10',]
+                        '_sit', 'xtxcr1xtxcr10', '_earned', '_xyztax',
+                        '_taxinc', 'c04800', '_feitax', 'c05750', 'c24517',
+                        '_taxbc', 'c60000', '_standard', 'c24516', 'c25420',
+                        'c05700', 'c32880', 'c32890', '_dclim', 'c32800',
+                        'c33000', 'c05800', '_othtax', 'c59560', '_agep',
+                        '_ages']
                         
         for name in zeroed_names:
             setattr(self, name, np.zeros((self.dim,)))

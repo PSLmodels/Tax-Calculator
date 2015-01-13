@@ -19,24 +19,20 @@ class Calculator(object):
         CapGains(self.parameters, self.puf)
         SSBenefits(self.parameters, self.puf)
         AGI(self.parameters, self.puf)
-        #ItemDed(puf, calc)], axis=1)
-        """EI_FICA(calc)
-        df_EI_FICA], axis=1)
-        StdDed(calc)], axis=1)
-        XYZD(calc)], axis=1)
-        NonGain()], axis=1)
-        TaxGains(calc)
-        df_Tax_Gains], axis=1)
-        MUI(c05750, calc)], axis=1)
-        AMTI(puf, calc)
-        df_AMTI], axis=1)
-        F2441(puf, _earned, calc)
-        df_F2441], axis=1)
-        DepCareBen(c32800, calc)], axis=1)
-        ExpEarnedInc(calc)], axis=1)
-        RateRed(c05800)], axis=1)
-        NumDep(puf, calc)], axis=1)
-        ChildTaxCredit(calc)], axis=1)
+        ItemDed(self.parameters, self.puf)
+        EI_FICA(self.parameters, self.puf)
+        StdDed(self.parameters, self.puf)
+        XYZD(self.parameters, self.puf)
+        NonGain(self.parameters, self.puf)
+        TaxGains(self.parameters, self.puf)
+        MUI(self.parameters, self.puf)
+        AMTI(self.parameters, self.puf)
+        F2441(self.parameters, self.puf)
+        DepCareBen(self.parameters, self.puf)
+        ExpEarnedInc(self.parameters, self.puf)
+        RateRed(self.parameters, self.puf)
+        NumDep(self.parameters, self.puf)
+        """ChildTaxCredit(calc)], axis=1)
         AmOppCr()], axis=1)
         LLC(puf, calc)
         df_LLC], axis=1)
@@ -55,12 +51,6 @@ class Calculator(object):
     @property
     def current_year(self):
         return self.parameters.current_year
-
-"""class Calculator(object):
-
-    def __init__(self, data, default_year=2013):
-        self.tax_data = data
-        self.DEFAULT_YR = default_year"""
 
 
 def calculator(data, mods="", **kwargs):

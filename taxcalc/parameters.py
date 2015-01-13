@@ -4,7 +4,7 @@ from .utils import expand_array
 
 class Parameters(object):
 
-    def __init__(self, cur_year=2012, start_year=2012, budget_years=10,
+    def __init__(self, cur_year=2013, start_year=2013, budget_years=10,
                  inflation_rate=0.2):
         self._current_year = cur_year
         self._start_year = start_year
@@ -69,6 +69,10 @@ class Parameters(object):
     @property
     def current_year(self):
         return self._current_year
+
+    @property
+    def start_year(self):
+        return self._start_year
 
     def increment_year(self):
         self._current_year += 1
