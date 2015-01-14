@@ -1135,8 +1135,8 @@ def ChildTaxCredit(p):
     _precrd = np.where(np.logical_and(_ctcagi > p._cphase[MARS - 1], _exact != 1), np.maximum(
         0, _precrd - 50 * (np.maximum(0, _ctcagi - p._cphase[MARS - 1]) + 500) / 1000), _precrd)
 
-    outputs = (c11070, c07220, c07230, _precrd, _num, _nctcr, _precrd, _ctcagi)
-    header = ['c11070', 'c07220', 'c07230', '_precrd', '_num', '_nctcr',
+    outputs = (c11070, c07220, c07230, _num, _nctcr, _precrd, _ctcagi)
+    header = ['c11070', 'c07220', 'c07230', '_num', '_nctcr',
               '_precrd', '_ctcagi']
 
     return DataFrame(data=np.column_stack(outputs), columns=header)
