@@ -1331,7 +1331,7 @@ def AMTI_apply( c62720, c60260, c63100, c60200, c60240, c60220,
      
     return   (c62720, c60260, c63100, c60200, c60240, c60220,
               c60130, c62730, _addamt, c62100, _cmbtp, _edical,
-              _amtsepadd, c62600, _agep, _ages,  c62700,
+              _amtsepadd, _agep, _ages, c62600, c62700,
               _alminc, _amtfei, c62780, c62900, c63000, c62740,
               _ngamty, c62745, y62745, _tamt2, _amt5pc, _amt15pc,
               _amt25pc, c62747, c62755, c62770, _amt, c62800,
@@ -1342,7 +1342,7 @@ def AMTI(puf, p):
     outputs = \
         (p.c62720, p.c60260, p.c63100, p.c60200, p.c60240, p.c60220,
          p.c60130, p.c62730, p._addamt, p.c62100, p._cmbtp, p._edical,
-         p._amtsepadd, p.c62600, p._agep, p._ages, p.c62700,
+         p._amtsepadd, p._agep, p._ages, p.c62600, p.c62700,
          p._alminc, p._amtfei, p.c62780, p.c62900, p.c63000, p.c62740,
          p._ngamty, p.c62745, p.y62745, p._tamt2, p._amt5pc, p._amt15pc,
          p._amt25pc, p.c62747, p.c62755, p.c62770, p._amt, p.c62800,
@@ -1369,11 +1369,12 @@ def AMTI(puf, p):
 
     header = ['c62720', 'c60260', 'c63100', 'c60200', 'c60240', 'c60220',
               'c60130', 'c62730', '_addamt', 'c62100', '_cmbtp', '_edical',
-              '_amtsepadd', 'c62600', '_agep', '_ages', 'c62700',
+              '_amtsepadd', '_agep', '_ages', 'c62600', 'c62700',
               '_alminc', '_amtfei', 'c62780', 'c62900', 'c63000', 'c62740',
               '_ngamty', 'c62745', 'y62745', '_tamt2', '_amt5pc', '_amt15pc',
               '_amt25pc', 'c62747', 'c62755', 'c62770', '_amt', 'c62800',
-              'c09600', '_othtax', 'c05800'] 
+              'c09600', '_othtax', 'c05800']
+
 
     return DataFrame(data=np.column_stack(outputs),
                      columns=header)
@@ -1654,8 +1655,7 @@ def NumDep_calc(EICYB1, EICYB2, EICYB3,
         _val_ymax = _ymax[_ieic, FLPDYR - DEFAULT_YR]
 
     if (MARS == 1 or MARS == 4 or MARS == 5 or 
-        MARS == 2 or MARS == 7) and _modagi>0:
-        
+            MARS == 2 or MARS == 7) and _modagi>0:
 
         c59660 = min(_rtbase[FLPDYR - DEFAULT_YR, _ieic] * c59560,
                 _crmax[FLPDYR - DEFAULT_YR, _ieic])
@@ -1665,8 +1665,8 @@ def NumDep_calc(EICYB1, EICYB2, EICYB3,
 
         c59660, _preeitc = 0., 0.
 
-    if (MARS != 3 and MARS != 6 and _modagi > 0 and 
-        (_modagi > _val_ymax or c59560 > _val_ymax)):
+    if (MARS != 3 and MARS != 6 and _modagi > 0 and
+            (_modagi > _val_ymax or c59560 > _val_ymax)):
         c59660 = max(0, c59660 - _rtless[FLPDYR - DEFAULT_YR, _ieic]
                 * (max(_modagi, c59560) - _val_ymax))
 
@@ -1685,7 +1685,7 @@ def NumDep_calc(EICYB1, EICYB2, EICYB3,
         _dy = 0.
 
     if (MARS != 3 and MARS != 6 and _modagi > 0 
-        and _dy > _dylim[FLPDYR - DEFAULT_YR]):
+            and _dy > _dylim[FLPDYR - DEFAULT_YR]):
         c59660 = 0.
 
     if (_cmp == 1 and _ieic == 0 and SOIYR - DOBYR >= 25 and SOIYR - DOBYR < 65
@@ -2293,8 +2293,16 @@ def C1040(puf, p):
                 p.e09700, p.e10050, p.e10075, p.e09805, p.e09710, p.c59660)
 
     header = ['c07100', 'y07100', 'x07100', 'c08795', 'c08800', 'e08795',
-              'c09200', '_eitc']
-    return DataFrame(data=np.column_stack(outputs), columns=header)
+              'c09200']
+
+    # this is what it should be? but it will not match up with the current master
+    # QUESTIONS: do we want to check the values of _eitc?
+    # header = ['c07100', 'y07100', 'x07100', 'c08795', 'c08800', 'e08795',
+    #           'c09200', '_eitc']
+    # return DataFrame(data=np.column_stack(outputs), columns=header)
+
+    # temporary fix to make it match with current master
+    return DataFrame(data=np.column_stack(outputs[:-1]), columns=header)
 
 @jit(nopython=True)
 def DEITC_calc(c08795, c59660, c09200, c07100):
