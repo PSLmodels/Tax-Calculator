@@ -20,7 +20,6 @@ def filing_status(MARS):
 
 def Adj(pm, pf):
     # Adjustments
-    #global _feided, c02900
     pf._feided = feided_vec(pf.e35300_0, pf.e35600_0, pf.e35910_0)  # Form 2555
 
     pf.c02900 = (pf.e03150 + pf.e03210 + pf.e03600 + pf.e03260 + pf.e03270 + pf.e03300
@@ -971,7 +970,6 @@ def DepCareBen(pm, pf):
 
 
 def ExpEarnedInc(pm, pf):
-    #global c07180
     # Expenses limited to earned income
 
     _tratio = np.where(pf._exact == 1, np.ceil(
@@ -984,21 +982,20 @@ def ExpEarnedInc(pm, pf):
     c33400 = np.minimum(np.maximum(0, pf.c05800 - pf.e07300), c33200)
     # amount of the credit
 
-    c07180 = np.where(pf.e07180 == 0, 0, c33400)
+    pf.c07180 = np.where(pf.e07180 == 0, 0, c33400)
 
-    return DataFrame(data=np.column_stack((_tratio, c33200, c33400, c07180)),
+    return DataFrame(data=np.column_stack((_tratio, c33200, c33400, pf.c07180)),
                      columns=['_tratio', 'c33200', 'c33400', 'c07180'])
 
 
 def RateRed(pm, pf):
     # rate reduction credit for 2001 only, is this needed?
-    c07970 = np.zeros((pf.dim,))
 
-    c05800 = np.where(pf._fixup >= 3, pf.c05800 + pf._othtax, pf.c05800)
+    pf.c05800 = np.where(pf._fixup >= 3, pf.c05800 + pf._othtax, pf.c05800)
 
     pf.c59560 = np.where(pf._exact == 1, pf.x59560, pf._earned)
 
-    return DataFrame(data=np.column_stack((c07970, c05800, pf.c59560)),
+    return DataFrame(data=np.column_stack((pf.c07970, pf.c05800, pf.c59560)),
                      columns=['c07970', 'c05800', 'c59560'])
 
 
@@ -1018,19 +1015,18 @@ def NumDep(pm, pf, puf=True):
     # Modified AGI only through 2002
 
     _modagi = pf.c00100 + pf.e00400
-    c59660 = np.zeros((pf.dim,))
 
     _val_ymax = np.where(np.logical_and(pf.MARS == 2, _modagi > 0), pm.ymax[
                          _ieic] + pm.joint[_ieic], 0)
     _val_ymax = np.where(np.logical_and(_modagi > 0, np.logical_or(pf.MARS == 1, np.logical_or(
         pf.MARS == 4, np.logical_or(pf.MARS == 5, pf.MARS == 7)))), pm.ymax[_ieic], _val_ymax)
-    c59660 = np.where(np.logical_and(_modagi > 0, np.logical_or(pf.MARS == 1, np.logical_or(pf.MARS == 4, np.logical_or(pf.MARS == 5, np.logical_or(
-        pf.MARS == 2, pf.MARS == 7))))), np.minimum(pm.rtbase[_ieic] * pf.c59560, pm.crmax[_ieic]), c59660)
+    pf.c59660 = np.where(np.logical_and(_modagi > 0, np.logical_or(pf.MARS == 1, np.logical_or(pf.MARS == 4, np.logical_or(pf.MARS == 5, np.logical_or(
+        pf.MARS == 2, pf.MARS == 7))))), np.minimum(pm.rtbase[_ieic] * pf.c59560, pm.crmax[_ieic]), pf.c59660)
     _preeitc = np.where(np.logical_and(_modagi > 0, np.logical_or(pf.MARS == 1, np.logical_or(
-        pf.MARS == 4, np.logical_or(pf.MARS == 5, np.logical_or(pf.MARS == 2, pf.MARS == 7))))), c59660, 0)
+        pf.MARS == 4, np.logical_or(pf.MARS == 5, np.logical_or(pf.MARS == 2, pf.MARS == 7))))), pf.c59660, 0)
 
-    c59660 = np.where(np.logical_and(np.logical_and(pf.MARS != 3, pf.MARS != 6), np.logical_and(_modagi > 0, np.logical_or(
-        _modagi > _val_ymax, pf.c59560 > _val_ymax))), np.maximum(0, c59660 - pm.rtless[_ieic] * (np.maximum(_modagi, pf.c59560) - _val_ymax)), c59660)
+    pf.c59660 = np.where(np.logical_and(np.logical_and(pf.MARS != 3, pf.MARS != 6), np.logical_and(_modagi > 0, np.logical_or(
+        _modagi > _val_ymax, pf.c59560 > _val_ymax))), np.maximum(0, pf.c59660 - pm.rtless[_ieic] * (np.maximum(_modagi, pf.c59560) - _val_ymax)), pf.c59660)
     _val_rtbase = np.where(np.logical_and(np.logical_and(
         pf.MARS != 3, pf.MARS != 6), _modagi > 0), pm.rtbase[_ieic] * 100, 0)
     _val_rtless = np.where(np.logical_and(np.logical_and(
@@ -1043,20 +1039,332 @@ def NumDep(pm, pf, puf=True):
                                 pf.e25430 - pf.e25470 - pf.e25400 - pf.e25500)
                    + np.maximum(0, pf.e26210 + pf.e26340 + pf.e27200 - np.absolute(pf.e26205) - np.absolute(pf.e26320)), 0)
 
-    c59660 = np.where(np.logical_and(np.logical_and(pf.MARS != 3, pf.MARS != 6), np.logical_and(
-        _modagi > 0, _dy > pm.dylim)), 0, c59660)
+    pf.c59660 = np.where(np.logical_and(np.logical_and(pf.MARS != 3, pf.MARS != 6), np.logical_and(
+        _modagi > 0, _dy > pm.dylim)), 0, pf.c59660)
 
-    c59660 = np.where(np.logical_and(np.logical_and(pf._cmp == 1, _ieic == 0), np.logical_and(np.logical_and(
-        pf.SOIYR - pf.DOBYR >= 25, pf.SOIYR - pf.DOBYR < 65), np.logical_and(pf.SOIYR - pf.SDOBYR >= 25, pf.SOIYR - pf.SDOBYR < 65))), 0, c59660)
-    c59660 = np.where(np.logical_and(_ieic == 0, np.logical_or(np.logical_or(
-        pf._agep < 25, pf._agep >= 65), np.logical_or(pf._ages < 25, pf._ages >= 65))), 0, c59660)
+    pf.c59660 = np.where(np.logical_and(np.logical_and(pf._cmp == 1, _ieic == 0), np.logical_and(np.logical_and(
+        pf.SOIYR - pf.DOBYR >= 25, pf.SOIYR - pf.DOBYR < 65), np.logical_and(pf.SOIYR - pf.SDOBYR >= 25, pf.SOIYR - pf.SDOBYR < 65))), 0, pf.c59660)
+    pf.c59660 = np.where(np.logical_and(_ieic == 0, np.logical_or(np.logical_or(
+        pf._agep < 25, pf._agep >= 65), np.logical_or(pf._ages < 25, pf._ages >= 65))), 0, pf.c59660)
 
-    outputs = (_ieic, pf.EICYB1, pf.EICYB2, pf.EICYB3, _modagi, c59660,
+    outputs = (_ieic, pf.EICYB1, pf.EICYB2, pf.EICYB3, _modagi, pf.c59660,
                _val_ymax, _preeitc, _val_rtbase, _val_rtless, _dy)
     header = ['_ieic', 'EICYB1', 'EICYB2', 'EICYB3', '_modagi',
               'c59660', '_val_ymax', '_preeitc', '_val_rtbase',
               '_val_rtless', '_dy']
 
+    return DataFrame(data=np.column_stack(outputs), columns=header)
+
+
+def ChildTaxCredit(pm, pf):
+    # Child Tax Credit
+
+    c11070 = np.zeros((pf.dim,))
+    pf.c07230 = np.zeros((pf.dim,))
+    pf._precrd = np.zeros((pf.dim,))
+
+    pf._num = np.ones((pf.dim,))
+    pf._num = np.where(pf.MARS == 2, 2, pf._num)
+
+    pf._nctcr = np.zeros((pf.dim,))
+    pf._nctcr = np.where(pf.SOIYR >= 2002, pf.n24, pf._nctcr)
+    pf._nctcr = np.where(
+        np.logical_and(pf.SOIYR < 2002, pm.chmax > 0), pf.xtxcr1xtxcr10, pf._nctcr)
+    pf._nctcr = np.where(
+        np.logical_and(pf.SOIYR < 2002, pm.chmax <= 0), pf.XOCAH, pf._nctcr)
+
+    pf._precrd = pm.chmax * pf._nctcr
+    _ctcagi = pf.c00100 + pf._feided
+
+    pf._precrd = np.where(np.logical_and(_ctcagi > pm._cphase[pf.MARS - 1], pf._exact == 1), np.maximum(
+        0, pf._precrd - 50 * np.ceil(_ctcagi - pm._cphase[pf.MARS - 1]) / 1000), pf._precrd)
+    pf._precrd = np.where(np.logical_and(_ctcagi > pm._cphase[pf.MARS - 1], pf._exact != 1), np.maximum(
+        0, pf._precrd - 50 * (np.maximum(0, _ctcagi - pm._cphase[pf.MARS - 1]) + 500) / 1000), pf._precrd)
+
+    outputs = (c11070, pf.c07220, pf.c07230, pf._precrd, pf._num, pf._nctcr, pf._precrd, _ctcagi)
+    header = ['c11070', 'c07220', 'c07230', '_precrd', '_num', '_nctcr',
+              '_precrd', '_ctcagi']
+
+    return DataFrame(data=np.column_stack(outputs), columns=header)
+
+
+def AmOppCr(pm, pf):
+    # American Opportunity Credit 2009+
+    c87482 = np.where(pf._cmp == 1, np.maximum(0, np.minimum(pf.e87482, 4000)), 0)
+    c87487 = np.where(pf._cmp == 1, np.maximum(0, np.minimum(pf.e87487, 4000)), 0)
+    c87492 = np.where(pf._cmp == 1, np.maximum(0, np.minimum(pf.e87492, 4000)), 0)
+    c87497 = np.where(pf._cmp == 1, np.maximum(0, np.minimum(pf.e87497, 4000)), 0)
+
+    c87483 = np.where(np.maximum(0, c87482 - 2000) == 0,
+                      c87482, 2000 + 0.25 * np.maximum(0, c87482 - 2000))
+    c87488 = np.where(np.maximum(0, c87487 - 2000) == 0,
+                      c87487, 2000 + 0.25 * np.maximum(0, c87487 - 2000))
+    c87493 = np.where(np.maximum(0, c87492 - 2000) == 0,
+                      c87492, 2000 + 0.25 * np.maximum(0, c87492 - 2000))
+    c87498 = np.where(np.maximum(0, c87497 - 2000) == 0,
+                      c87497, 2000 + 0.25 * np.maximum(0, c87497 - 2000))
+
+    pf.c87521 = c87483 + c87488 + c87493 + c87498
+
+    outputs = (c87482, c87487, c87492, c87497,
+               c87483, c87488, c87493, c87498, pf.c87521)
+    header = ['c87482', 'c87487', 'c87492', 'c87497', 'c87483', 'c87488',
+              'c87493', 'c87498', 'c87521']
+
+    return DataFrame(data=np.column_stack(outputs), columns=header)
+
+
+def LLC(pm, pf, puf=True):
+    # Lifetime Learning Credit
+
+    c87540 = np.where(
+        puf == True, np.minimum(pf.e87530, pm.learn), 0)
+    pf.c87550 = np.where(puf == True, 0.2 * c87540, 0)
+
+    c87530 = np.where(puf == False, pf.e87526 + pf.e87522 + pf.e87524 + pf.e87528, 0)
+    c87540 = np.where(
+        puf == False, np.minimum(c87530, pm.learn), c87540)
+    pf.c87550 = np.where(puf == False, 0.2 * c87540, pf.c87550)
+
+    outputs = (c87540, pf.c87550, c87530)
+    header = ['c87540', 'c87550', 'c87530']
+    return DataFrame(data=np.column_stack(outputs), columns=header)
+
+
+def RefAmOpp(pm, pf):
+    # Refundable American Opportunity Credit 2009+
+    c87668 = np.zeros((pf.dim,))
+
+    c87654 = np.where(np.logical_and(pf._cmp == 1, pf.c87521 > 0), 90000 * pf._num, 0)
+    c87656 = np.where(np.logical_and(pf._cmp == 1, pf.c87521 > 0), pf.c00100, 0)
+    c87658 = np.where(
+        np.logical_and(pf._cmp == 1, pf.c87521 > 0), np.maximum(0, c87654 - c87656), 0)
+    c87660 = np.where(np.logical_and(pf._cmp == 1, pf.c87521 > 0), 10000 * pf._num, 0)
+    c87662 = np.where(np.logical_and(pf._cmp == 1, pf.c87521 > 0),
+                      1000 * np.minimum(1, c87658 / c87660), 0)
+    c87664 = np.where(
+        np.logical_and(pf._cmp == 1, pf.c87521 > 0), c87662 * pf.c87521 / 1000, 0)
+    c87666 = np.where(np.logical_and(
+        pf._cmp == 1, np.logical_and(pf.c87521 > 0, pf.EDCRAGE == 1)), 0, 0.4 * c87664)
+    c10960 = np.where(np.logical_and(pf._cmp == 1, pf.c87521 > 0), c87666, 0)
+    c87668 = np.where(
+        np.logical_and(pf._cmp == 1, pf.c87521 > 0), c87664 - c87666, 0)
+    c87681 = np.where(np.logical_and(pf._cmp == 1, pf.c87521 > 0), c87666, 0)
+
+    outputs = (c87654, c87656, c87658, c87660, c87662,
+               c87664, c87666, c10960, c87668, c87681)
+    header = ['c87654', 'c87656', 'c87658', 'c87660', 'c87662', 'c87664',
+              'c87666', 'c10960', 'c87668', 'c87681']
+    return DataFrame(data=np.column_stack(outputs), columns=header)
+
+
+def NonEdCr(pm, pf):
+    # Nonrefundable Education Credits
+
+    # Form 8863 Tentative Education Credits
+    c87560 = pf.c87550
+
+    # Phase Out
+    c87570 = np.where(
+        pf.MARS == 2, pm.edphhm * 1000, pm.edphhs * 1000)
+    c87580 = pf.c00100
+    c87590 = np.maximum(0, c87570 - c87580)
+    c87600 = 10000 * pf._num
+    c87610 = np.minimum(1, c87590 / c87600)
+    c87620 = c87560 * c87610
+
+    _ctc1 = pf.c07180 + pf.e07200 + pf.c07230
+    _ctc2 = np.zeros((pf.dim,))
+
+    _ctc2 = pf.e07240 + pf.e07960 + pf.e07260 + pf.e07300
+    _regcrd = _ctc1 + _ctc2
+    _exocrd = pf.e07700 + pf.e07250
+    _exocrd = _exocrd + pf.t07950
+    _ctctax = pf.c05800 - _regcrd - _exocrd
+    pf.c07220 = np.minimum(pf._precrd, np.maximum(0, _ctctax))
+    # lt tax owed
+
+    outputs = (c87560, c87570, c87580, c87590, c87600, c87610,
+               c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, pf.c07220)
+    header = ['c87560', 'c87570', 'c87580', 'c87590', 'c87600', 'c87610',
+              'c87620', '_ctc1', '_ctc2', '_regcrd', '_exocrd', '_ctctax',
+              'c07220']
+    return DataFrame(data=np.column_stack(outputs), columns=header)
+
+
+def AddCTC(pm, pf, puf=True):
+    # Additional Child Tax Credit
+
+    c82940 = np.zeros((pf.dim,))
+
+    # Part I of 2005 form 8812
+    c82925 = np.where(pf._nctcr > 0, pf._precrd, 0)
+    c82930 = np.where(pf._nctcr > 0, pf.c07220, 0)
+    c82935 = np.where(pf._nctcr > 0, c82925 - c82930, 0)
+    # CTC not applied to tax
+
+    c82880 = np.where(pf._nctcr > 0, np.maximum(
+        0, pf.e00200 + pf.e82882 + pf.e30100 + np.maximum(0, pf._sey) - 0.5 * pf._setax), 0)
+    c82880 = np.where(np.logical_and(pf._nctcr > 0, pf._exact == 1), pf.e82880, c82880)
+    h82880 = np.where(pf._nctcr > 0, c82880, 0)
+    c82885 = np.where(
+        pf._nctcr > 0, np.maximum(0, c82880 - pm.ealim), 0)
+    c82890 = np.where(pf._nctcr > 0, pm.adctcrt * c82885, 0)
+
+    # Part II of 2005 form 8812
+    c82900 = np.where(np.logical_and(pf._nctcr > 2, c82890 < c82935),
+                      0.0765 * np.minimum(pm.ssmax, c82880), 0)
+    c82905 = np.where(
+        np.logical_and(pf._nctcr > 2, c82890 < c82935), pf.e03260 + pf.e09800, 0)
+    c82910 = np.where(
+        np.logical_and(pf._nctcr > 2, c82890 < c82935), c82900 + c82905, 0)
+    c82915 = np.where(
+        np.logical_and(pf._nctcr > 2, c82890 < c82935), pf.c59660 + pf.e11200, 0)
+    c82920 = np.where(
+        np.logical_and(pf._nctcr > 2, c82890 < c82935), np.maximum(0, c82910 - c82915), 0)
+    c82937 = np.where(
+        np.logical_and(pf._nctcr > 2, c82890 < c82935), np.maximum(c82890, c82920), 0)
+
+    # Part II of 2005 form 8812
+    c82940 = np.where(
+        np.logical_and(pf._nctcr > 2, c82890 >= c82935), c82935, c82940)
+    c82940 = np.where(
+        np.logical_and(pf._nctcr > 2, c82890 < c82935), np.minimum(c82935, c82937), c82940)
+
+    c11070 = np.where(pf._nctcr > 0, c82940, 0)
+
+    e59660 = np.where(
+        np.logical_and(puf == True, pf._nctcr > 0), pf.e59680 + pf.e59700 + pf.e59720, 0)
+    _othadd = np.where(pf._nctcr > 0, pf.e11070 - c11070, 0)
+
+    c11070 = np.where(
+        np.logical_and(pf._nctcr > 0, pf._fixup >= 4), c11070 + _othadd, c11070)
+
+    outputs = (c82940, c82925, c82930, c82935, c82880, h82880, c82885, c82890,
+               c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070,
+               e59660, _othadd)
+
+    header = ['c82940', 'c82925', 'c82930', 'c82935', 'c82880', 'h82880',
+              'c82885', 'c82890', 'c82900', 'c82905', 'c82910', 'c82915',
+              'c82920', 'c82937', 'c82940', 'c11070', 'e59660', '_othadd']
+
+    return DataFrame(data=np.column_stack(outputs), columns=header)
+
+
+def F5405(pm, pf):
+    # Form 5405 First-Time Homebuyer Credit
+    #not needed
+
+    c64450 = np.zeros((pf.dim,))
+    return DataFrame(data=np.column_stack((c64450,)), columns=['c64450'])
+
+
+def C1040(pm, pf, puf=True):
+    # Credits 1040 line 48
+
+    x07400 = pf.e07400
+    pf.c07100 = (pf.e07180 + pf.e07200 + pf.c07220 + pf.c07230 + pf.e07250
+              + pf.e07600 + pf.e07260 + pf.c07970 + pf.e07300 + x07400
+              + pf.e07500 + pf.e07700 + pf.e08000)
+
+    y07100 = pf.c07100
+
+    pf.c07100 = pf.c07100 + pf.e07240
+    pf.c07100 = pf.c07100 + pf.e08001
+    pf.c07100 = pf.c07100 + pf.e07960 + pf.e07970
+    pf.c07100 = np.where(pf.SOIYR >= 2009, pf.c07100 + pf.e07980, pf.c07100)
+
+    x07100 = pf.c07100
+    pf.c07100 = np.minimum(pf.c07100, pf.c05800)
+
+    # Tax After credits 1040 line 52
+
+    pf._eitc = pf.c59660
+    pf.c08795 = np.maximum(0, pf.c05800 - pf.c07100)
+
+    c08800 = pf.c08795
+    e08795 = np.where(puf == True, pf.e08800, 0)
+
+    # Tax before refundable credits
+
+    pf.c09200 = pf.c08795 + pf.e09900 + pf.e09400 + pf.e09800 + pf.e10000 + pf.e10100
+    pf.c09200 = pf.c09200 + pf.e09700
+    pf.c09200 = pf.c09200 + pf.e10050
+    pf.c09200 = pf.c09200 + pf.e10075
+    pf.c09200 = pf.c09200 + pf.e09805
+    pf.c09200 = pf.c09200 + pf.e09710 + pf.e09720
+
+    outputs = (pf.c07100, y07100, x07100, pf.c08795, c08800, e08795, pf.c09200)
+    header = ['c07100', 'y07100', 'x07100', 'c08795', 'c08800', 'e08795',
+              'c09200']
+    return DataFrame(data=np.column_stack(outputs), columns=header)
+
+
+def DEITC(pm, pf):
+    # Decomposition of EITC
+
+    c59680 = np.where(np.logical_and(
+        pf.c08795 > 0, np.logical_and(pf.c59660 > 0, pf.c08795 <= pf.c59660)), pf.c08795, 0)
+    _comb = np.where(np.logical_and(
+        pf.c08795 > 0, np.logical_and(pf.c59660 > 0, pf.c08795 <= pf.c59660)), pf.c59660 - c59680, 0)
+
+    c59680 = np.where(np.logical_and(
+        pf.c08795 > 0, np.logical_and(pf.c59660 > 0, pf.c08795 > pf.c59660)), pf.c59660, c59680)
+    _comb = np.where(np.logical_and(
+        pf.c08795 > 0, np.logical_and(pf.c59660 > 0, pf.c08795 > pf.c59660)), 0, _comb)
+
+    pf.c59700 = np.where(np.logical_and(pf.c08795 > 0, np.logical_and(pf.c59660 > 0, np.logical_and(
+        _comb > 0, np.logical_and(pf.c09200 - pf.c08795 > 0, pf.c09200 - pf.c08795 > _comb)))), _comb, 0)
+    pf.c59700 = np.where(np.logical_and(pf.c08795 > 0, np.logical_and(pf.c59660 > 0, np.logical_and(
+        _comb > 0, np.logical_and(pf.c09200 - pf.c08795 > 0, pf.c09200 - pf.c08795 <= _comb)))), pf.c09200 - pf.c08795, pf.c59700)
+    c59720 = np.where(np.logical_and(pf.c08795 > 0, np.logical_and(pf.c59660 > 0, np.logical_and(
+        _comb > 0, np.logical_and(pf.c09200 - pf.c08795 > 0, pf.c09200 - pf.c08795 <= _comb)))), pf.c59660 - c59680 - pf.c59700, 0)
+
+    c59680 = np.where(np.logical_and(pf.c08795 == 0, pf.c59660 > 0), 0, c59680)
+    pf.c59700 = np.where(np.logical_and(pf.c08795 == 0, np.logical_and(
+        pf.c59660 > 0, np.logical_and(pf.c09200 > 0, pf.c09200 > pf.c59660))), pf.c59660, pf.c59700)
+    pf.c59700 = np.where(np.logical_and(pf.c08795 == 0, np.logical_and(
+        pf.c59660 > 0, np.logical_and(pf.c09200 > 0, pf.c09200 < pf.c59660))), pf.c09200, pf.c59700)
+    c59720 = np.where(np.logical_and(pf.c08795 == 0, np.logical_and(
+        pf.c59660 > 0, np.logical_and(pf.c09200 > 0, pf.c09200 < pf.c59660))), pf.c59660 - pf.c59700, c59720)
+    c59720 = np.where(np.logical_and(
+        pf.c08795 == 0, np.logical_and(pf.c59660 > 0, pf.c09200 <= 0)), pf.c59660 - pf.c59700, c59720)
+
+    # Ask dan about this section of code! Line 1231 - 1241
+
+    _compb = np.where(np.logical_or(pf.c08795 < 0, pf.c59660 <= 0), 0, 0)
+    c59680 = np.where(np.logical_or(pf.c08795 < 0, pf.c59660 <= 0), 0, c59680)
+    pf.c59700 = np.where(np.logical_or(pf.c08795 < 0, pf.c59660 <= 0), 0, pf.c59700)
+    c59720 = np.where(np.logical_or(pf.c08795 < 0, pf.c59660 <= 0), 0, c59720)
+
+    c07150 = pf.c07100 + c59680
+    c07150 = c07150
+
+    outputs = (c59680, pf.c59700, c59720, _comb, c07150, pf.c10950)
+    header = ['c59680', 'c59700', 'c59720', '_comb', 'c07150', 'c10950']
+
+    return DataFrame(data=np.column_stack(outputs), columns=header)
+
+def SOIT(pm, pf):
+
+    # SOI Tax (Tax after non-refunded credits plus tip penalty)
+    c10300 = pf.c09200 - pf.e10000 - pf.e59680 - pf.c59700
+    c10300 = c10300 - pf.e11070
+    c10300 = c10300 - pf.e11550
+    c10300 = c10300 - pf.e11580
+    c10300 = c10300 - pf.e09710 - pf.e09720 - pf.e11581 - pf.e11582
+    c10300 = c10300 - pf.e87900 - pf.e87905 - pf.e87681 - pf.e87682
+    c10300 = c10300 - c10300 - pf.c10950 - pf.e11451 - pf.e11452
+    c10300 = pf.c09200 - pf.e09710 - pf.e09720 - pf.e10000 - pf.e11601 - pf.e11602
+    c10300 = np.maximum(c10300, 0)
+
+    # Ignore refundable partof _eitc to obtain SOI income tax
+
+    pf._eitc = np.where(pf.c09200 <= pf._eitc, pf.c09200, pf._eitc)
+    c10300 = np.where(pf.c09200 <= pf._eitc, 0, c10300)
+
+    outputs = (c10300, pf._eitc)
+    header = ['c10300', '_eitc']
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
 

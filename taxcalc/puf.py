@@ -19,7 +19,7 @@ class PUF(object):
     Advancing years is done through a member function
     """
 
-    def __init__(self, puf_file="puf2.csv", current_year=None):
+    def __init__(self, puf_data="puf2.csv", current_year=None):
 
         self.read(puf_file)
         if (current_year):
@@ -35,8 +35,11 @@ class PUF(object):
         self._current_year += 1
         self.FLPDYR += 1
 
-    def read(self, puf_file):
-        tax_dta = pd.read_csv(puf_file)
+    def read(self, puf_data):
+        if isinstance(puf_data, pandas.core.frame.DataFrame):
+            tax_dta = puf_data
+        else:
+            tax_dta = pd.read_csv(puf_data)
 
         # pairs of 'name of attribute', 'column name' - often the same
         names = [('AGIR1', 'agir1'),
@@ -288,7 +291,10 @@ class PUF(object):
                         '_taxbc', 'c60000', '_standard', 'c24516', 'c25420',
                         'c05700', 'c32880', 'c32890', '_dclim', 'c32800',
                         'c33000', 'c05800', '_othtax', 'c59560', '_agep',
-                        '_ages']
+                        '_ages', 'c87521', '_num', 'c87550', 'c07180',
+                        'c07230', '_precrd', 'c07220', 'c59660', 'c07970',
+                        'c08795', 'c09200', 'c07100', '_eitc', 'c59700',
+                        'c10950']
                         
         for name in zeroed_names:
             setattr(self, name, np.zeros((self.dim,)))

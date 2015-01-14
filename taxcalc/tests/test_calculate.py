@@ -20,10 +20,15 @@ def add_df(alldfs, df):
             alldfs.append(df[col])
 
 def run(puf=True):
-    calc = Calculator(tax_dta, default_year=91)
-    set_input_data(calc)
-    update_globals_from_calculator(calc)
-    update_calculator_from_module(calc, parameters)
+
+    #Create a Parameters object
+    params = Parameters()
+
+    #Create a Public Use File object
+    puf = PUF(tax_dta)
+
+    #Create a Calculator
+    calc = Calculator(parameters=params, puf=puf)
 
     all_dfs = []
     add_df(all_dfs, FilingStatus(calc))
