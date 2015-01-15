@@ -21,7 +21,7 @@ class PUF(object):
 
     def __init__(self, puf_data="puf2.csv", current_year=None):
 
-        self.read(puf_file)
+        self.read(puf_data)
         if (current_year):
             self._current_year = current_year
         else:
@@ -36,7 +36,7 @@ class PUF(object):
         self.FLPDYR += 1
 
     def read(self, puf_data):
-        if isinstance(puf_data, pandas.core.frame.DataFrame):
+        if isinstance(puf_data, pd.core.frame.DataFrame):
             tax_dta = puf_data
         else:
             tax_dta = pd.read_csv(puf_data)

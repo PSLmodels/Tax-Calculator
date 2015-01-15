@@ -6,6 +6,27 @@ from .utils import *
 #from .parameters import *
 from .functions import *
 
+
+all_cols = set()
+def add_df(alldfs, df):
+    for col in df.columns:
+        if col not in all_cols:
+            all_cols.add(col)
+            alldfs.append(df[col])
+
+
+def calculator(parameters, puf, mods="", **kwargs):
+    if mods:
+        import json
+        dd = json.loads(mods)
+        dd = {k:np.array(v) for k,v in dd.items() if type(v) == list}
+        kwargs.update(dd)
+
+    calc = Calculator(parameters, puf)
+    if kwargs:
+        calc.__dict__.update(kwargs)
+    return calc
+
 class Calculator(object):
 
     def __init__(self, parameters, puf):
@@ -43,6 +64,39 @@ class Calculator(object):
         DEITC(self.parameters, self.puf)
         SOIT(self.parameters, self.puf)
 
+    def calc_all_test(self):
+        all_dfs = []
+        add_df(all_dfs, FilingStatus(self.parameters, self.puf))
+        add_df(all_dfs, Adj(self.parameters, self.puf))
+        add_df(all_dfs, CapGains(self.parameters, self.puf))
+        add_df(all_dfs, SSBenefits(self.parameters, self.puf))
+        add_df(all_dfs, AGI(self.parameters, self.puf))
+        add_df(all_dfs, ItemDed(self.parameters, self.puf))
+        add_df(all_dfs, EI_FICA(self.parameters, self.puf))
+        add_df(all_dfs, StdDed(self.parameters, self.puf))
+        add_df(all_dfs, XYZD(self.parameters, self.puf))
+        add_df(all_dfs, NonGain(self.parameters, self.puf))
+        add_df(all_dfs, TaxGains(self.parameters, self.puf))
+        add_df(all_dfs, MUI(self.parameters, self.puf))
+        add_df(all_dfs, AMTI(self.parameters, self.puf))
+        add_df(all_dfs, F2441(self.parameters, self.puf))
+        add_df(all_dfs, DepCareBen(self.parameters, self.puf))
+        add_df(all_dfs, ExpEarnedInc(self.parameters, self.puf))
+        add_df(all_dfs, RateRed(self.parameters, self.puf))
+        add_df(all_dfs, NumDep(self.parameters, self.puf))
+        add_df(all_dfs, ChildTaxCredit(self.parameters, self.puf))
+        add_df(all_dfs, AmOppCr(self.parameters, self.puf))
+        add_df(all_dfs, LLC(self.parameters, self.puf))
+        add_df(all_dfs, RefAmOpp(self.parameters, self.puf))
+        add_df(all_dfs, NonEdCr(self.parameters, self.puf))
+        add_df(all_dfs, AddCTC(self.parameters, self.puf))
+        add_df(all_dfs, F5405(self.parameters, self.puf))
+        add_df(all_dfs, C1040(self.parameters, self.puf))
+        add_df(all_dfs, DEITC(self.parameters, self.puf))
+        add_df(all_dfs, SOIT(self.parameters, self.puf))
+        totaldf = pd.concat(all_dfs, axis=1)
+        return totaldf
+
     def increment_year(self):
         self.puf.increment_year()
         self.parameters.increment_year()
@@ -50,16 +104,3 @@ class Calculator(object):
     @property
     def current_year(self):
         return self.parameters.current_year
-
-
-def calculator(data, mods="", **kwargs):
-    if mods:
-        import json
-        dd = json.loads(mods)
-        dd = {k:np.array(v) for k,v in dd.items() if type(v) == list}
-        kwargs.update(dd)
-
-    calc = Calculator(data)
-    if kwargs:
-        calc.__dict__.update(kwargs)
-    return calc

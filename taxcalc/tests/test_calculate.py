@@ -22,50 +22,15 @@ def add_df(alldfs, df):
 def run(puf=True):
 
     #Create a Parameters object
-    params = Parameters()
+    params = Parameters(start_year=91)
 
     #Create a Public Use File object
     puf = PUF(tax_dta)
 
     #Create a Calculator
     calc = Calculator(parameters=params, puf=puf)
+    totaldf = calc.calc_all_test()
 
-    all_dfs = []
-    add_df(all_dfs, FilingStatus(calc))
-    add_df(all_dfs, Adj())
-    add_df(all_dfs, CapGains(calc))
-    add_df(all_dfs, SSBenefits(calc))
-    add_df(all_dfs, AGI(calc))
-    add_df(all_dfs, ItemDed(puf, calc))
-    df_EI_FICA, _earned = EI_FICA(calc)
-    add_df(all_dfs, df_EI_FICA)
-    add_df(all_dfs, StdDed(calc))
-    add_df(all_dfs, XYZD(calc))
-    add_df(all_dfs, NonGain())
-    df_Tax_Gains, c05750 = TaxGains(calc)
-    add_df(all_dfs, df_Tax_Gains)
-    add_df(all_dfs, MUI(c05750, calc))
-    df_AMTI, c05800 = AMTI(puf, calc)
-    add_df(all_dfs, df_AMTI)
-    df_F2441, c32800 = F2441(puf, _earned, calc)
-    add_df(all_dfs, df_F2441)
-    add_df(all_dfs, DepCareBen(c32800, calc))
-    add_df(all_dfs, ExpEarnedInc(calc))
-    add_df(all_dfs, RateRed(c05800))
-    add_df(all_dfs, NumDep(puf, calc))
-    add_df(all_dfs, ChildTaxCredit(calc))
-    add_df(all_dfs, AmOppCr())
-    df_LLC, c87550 = LLC(puf, calc)
-    add_df(all_dfs, df_LLC)
-    add_df(all_dfs, RefAmOpp())
-    add_df(all_dfs, NonEdCr(c87550, calc))
-    add_df(all_dfs, AddCTC(puf, calc))
-    add_df(all_dfs, F5405())
-    df_C1040, _eitc = C1040(puf)
-    add_df(all_dfs, df_C1040)
-    add_df(all_dfs, DEITC())
-    add_df(all_dfs, SOIT(_eitc))
-    totaldf = pd.concat(all_dfs, axis=1)
     #drop duplicates
     totaldf = totaldf.T.groupby(level=0).first().T
 
@@ -88,22 +53,37 @@ def test_sequence():
 
 
 def test_make_Calculator():
-    calc = Calculator(tax_dta)
+    #Create a Parameters object
+    params = Parameters(start_year=91)
+
+    #Create a Public Use File object
+    puf = PUF(tax_dta)
+
+    calc = Calculator(params, puf)
 
 
 def test_make_Calculator_mods():
-    calc1 = calculator(tax_dta)
-    calc2 = calculator(tax_dta, _amex=np.array([4000]))
-    update_calculator_from_module(calc2, parameters)
-    update_globals_from_calculator(calc2)
+
+    #Create a Parameters object
+    params = Parameters(start_year=91)
+
+    #Create a Public Use File object
+    puf = PUF(tax_dta)
+
+    calc2 = calculator(params, puf, _amex=np.array([4000]))
     assert all(calc2._amex == np.array([4000]))
 
 
 def test_make_Calculator_json():
+
+    #Create a Parameters object
+    params = Parameters(start_year=91)
+
+    #Create a Public Use File object
+    puf = PUF(tax_dta)
+
     user_mods = '{ "_aged": [[1500], [1200]] }'
-    calc2 = calculator(tax_dta, mods=user_mods, _amex=np.array([4000]))
-    update_calculator_from_module(calc2, parameters)
-    update_globals_from_calculator(calc2)
+    calc2 = calculator(params, puf, mods=user_mods, _amex=np.array([4000]))
     assert all(calc2._amex == np.array([4000]))
     assert all(calc2._aged == np.array([[1500], [1200]]))
 

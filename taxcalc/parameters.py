@@ -4,9 +4,9 @@ from .utils import expand_array
 
 class Parameters(object):
 
-    def __init__(self, cur_year=2013, start_year=2013, budget_years=10,
+    def __init__(self, start_year=2013, budget_years=10,
                  inflation_rate=0.2):
-        self._current_year = cur_year
+        self._current_year = start_year
         self._start_year = start_year
 
         # READ IN DATA - could read file here
@@ -64,7 +64,7 @@ class Parameters(object):
              inflation_rate=inflation_rate, num_years=budget_years))
              for name, val in self._vals]
 
-        self.set_year(cur_year)
+        self.set_year(start_year)
 
     @property
     def current_year(self):

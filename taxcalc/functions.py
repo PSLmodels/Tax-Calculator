@@ -221,7 +221,7 @@ def EI_FICA(pm, pf):
     outputs = (pf._sey, _fica, pf._setax, _seyoff, c11055, pf._earned)
     header = ['_sey', '_fica', '_setax', '_seyoff', 'c11055', '_earned']
 
-    return DataFrame(data=np.column_stack(outputs), columns=header),
+    return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
 def StdDed(pm, pf):
