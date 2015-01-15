@@ -1168,7 +1168,7 @@ def AMTI_calc(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     c62600 = max(0., _amtex[FLPDYR - DEFAULT_YR, MARS - 1] - 0.25 * max(0., c62100 - _amtys[FLPDYR - DEFAULT_YR, MARS - 1]))
 
     if DOBYR > 0:
-        _agep = math.ceil((12 * (FLPDYR - DOBYR) - DOBMD / 100) / 12)
+        _agep = float(math.ceil((12 * (FLPDYR - DOBYR) - DOBMD / 100) / 12))
     else:
         _agep = 0.
 
@@ -1527,9 +1527,8 @@ def ExpEarnedInc_calc(  _exact, c00100, _agcmax, _pcmax, FLPDYR, DEFAULT_YR,
 
     if _exact == 1: 
 
-        _tratio = math.ceil(max((c00100 - _agcmax[FLPDYR - DEFAULT_YR]) 
-
-                / 2000, 0.))
+        _tratio = float(math.ceil(max((c00100 - _agcmax[FLPDYR - DEFAULT_YR])
+                / 2000, 0.)))
 
         c33200 = c33000 * 0.01 * max(20., _pcmax[FLPDYR - DEFAULT_YR]
                 - min(15., _tratio))
@@ -1647,13 +1646,13 @@ def NumDep_calc(EICYB1, EICYB2, EICYB3,
 
 
     if MARS == 2 and _modagi > 0:
-        _val_ymax = (_ymax[_ieic, FLPDYR - DEFAULT_YR] 
-                    + _joint[FLPDYR - DEFAULT_YR, _ieic])
+        _val_ymax = float((_ymax[_ieic, FLPDYR - DEFAULT_YR]
+                    + _joint[FLPDYR - DEFAULT_YR, _ieic]))
 
-    else: _val_ymax = int(0.0)
+    else: _val_ymax = 0.
 
     if (MARS == 1 or MARS == 4 or MARS == 5 or MARS == 7) and _modagi > 0:
-        _val_ymax = _ymax[_ieic, FLPDYR - DEFAULT_YR]
+        _val_ymax = float(_ymax[_ieic, FLPDYR - DEFAULT_YR])
 
 
     if (MARS == 1 or MARS == 4 or MARS == 5 or 
