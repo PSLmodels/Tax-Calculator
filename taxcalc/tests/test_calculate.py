@@ -19,6 +19,7 @@ def add_df(alldfs, df):
             all_cols.add(col)
             alldfs.append(df[col])
 
+
 def run(puf=True):
     calc = Calculator(tax_dta, default_year=91)
     set_input_data(calc)
@@ -27,39 +28,33 @@ def run(puf=True):
 
     all_dfs = []
     add_df(all_dfs, FilingStatus(calc))
-    add_df(all_dfs, Adj())
+    add_df(all_dfs, Adj(calc))
     add_df(all_dfs, CapGains(calc))
     add_df(all_dfs, SSBenefits(calc))
     add_df(all_dfs, AGI(calc))
     add_df(all_dfs, ItemDed(puf, calc))
-    df_EI_FICA, _earned = EI_FICA(calc)
-    add_df(all_dfs, df_EI_FICA)
+    add_df(all_dfs, EI_FICA(calc))
     add_df(all_dfs, StdDed(calc))
     add_df(all_dfs, XYZD(calc))
-    add_df(all_dfs, NonGain())
-    df_Tax_Gains, c05750 = TaxGains(calc)
-    add_df(all_dfs, df_Tax_Gains)
-    add_df(all_dfs, MUI(c05750, calc))
-    df_AMTI, c05800 = AMTI(puf, calc)
-    add_df(all_dfs, df_AMTI)
-    df_F2441, c32800 = F2441(puf, _earned, calc)
-    add_df(all_dfs, df_F2441)
-    add_df(all_dfs, DepCareBen(c32800, calc))
+    add_df(all_dfs, NonGain(calc))
+    add_df(all_dfs, TaxGains(calc))
+    add_df(all_dfs, MUI(calc))
+    add_df(all_dfs, AMTI(puf, calc))
+    add_df(all_dfs, F2441(puf, calc))
+    add_df(all_dfs, DepCareBen(calc))
     add_df(all_dfs, ExpEarnedInc(calc))
-    add_df(all_dfs, RateRed(c05800))
+    add_df(all_dfs, RateRed(calc))
     add_df(all_dfs, NumDep(puf, calc))
     add_df(all_dfs, ChildTaxCredit(calc))
-    add_df(all_dfs, AmOppCr())
-    df_LLC, c87550 = LLC(puf, calc)
-    add_df(all_dfs, df_LLC)
-    add_df(all_dfs, RefAmOpp())
-    add_df(all_dfs, NonEdCr(c87550, calc))
+    add_df(all_dfs, AmOppCr(calc))
+    add_df(all_dfs, LLC(puf, calc))
+    add_df(all_dfs, RefAmOpp(calc))
+    add_df(all_dfs, NonEdCr(calc))
     add_df(all_dfs, AddCTC(puf, calc))
     add_df(all_dfs, F5405())
-    df_C1040, _eitc = C1040(puf)
-    add_df(all_dfs, df_C1040)
-    add_df(all_dfs, DEITC())
-    add_df(all_dfs, SOIT(_eitc))
+    add_df(all_dfs, C1040(puf, calc))
+    add_df(all_dfs, DEITC(calc))
+    add_df(all_dfs, SOIT(calc))
     totaldf = pd.concat(all_dfs, axis=1)
     #drop duplicates
     totaldf = totaldf.T.groupby(level=0).first().T
@@ -69,6 +64,7 @@ def run(puf=True):
     cur_set = set(totaldf.columns)
 
     assert(exp_set == cur_set)
+
 
     for label in exp_results.columns:
         lhs = exp_results[label].values.reshape(len(exp_results))
