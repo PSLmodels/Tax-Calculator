@@ -1612,12 +1612,13 @@ def RateRed_apply(  c07970, c59560, c05800, _fixup, _othtax, _exact, x59560,
 
 def RateRed(p):
     outputs = \
-        p.c07970, p.c59560, p.c05800 = \
+        p.c07970, p.c05800, p.c59560 = \
             RateRed_apply(
                 p.c07970, p.c59560, p.c05800, p._fixup, p._othtax,
                 p._exact, p.x59560, p._earned )
 
     header = ['c07970', 'c05800', 'c59560']
+
 
     return DataFrame(data=np.column_stack((outputs)),
                      columns=header)
@@ -1654,8 +1655,9 @@ def NumDep_calc(EICYB1, EICYB2, EICYB3,
     if (MARS == 1 or MARS == 4 or MARS == 5 or MARS == 7) and _modagi > 0:
         _val_ymax = _ymax[_ieic, FLPDYR - DEFAULT_YR]
 
+
     if (MARS == 1 or MARS == 4 or MARS == 5 or 
-            MARS == 2 or MARS == 7) and _modagi>0:
+            MARS == 2 or MARS == 7) and _modagi > 0:
 
         c59660 = min(_rtbase[FLPDYR - DEFAULT_YR, _ieic] * c59560,
                 _crmax[FLPDYR - DEFAULT_YR, _ieic])
