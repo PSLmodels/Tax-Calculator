@@ -273,14 +273,14 @@ def StdDed(pm, pf):
     taxer2 = Taxer(inc_in=pf.c04800, inc_out=_oldfei, MARS=pf.MARS, pm=pm, pf=pf)
     _oldfei = StdDed_oldfei(pf.c04800, pf._feided, taxer2, _oldfei)
 
-    SDoutputs = (c15100, c04100, _numextra, _txpyers, c04200, c15200,
-                 pf._standard, _othded, c04100, c04200, pf._standard, c04500,
-                 pf.c04800, pf.c60000, _amtstd, pf._taxinc, pf._feitax, _oldfei)
+    SDoutputs = (c15100, _numextra, _txpyers, c15200,
+                 _othded, c04100, c04200, pf._standard, c04500,
+                  pf.c04800, pf.c60000, _amtstd, pf._taxinc, pf._feitax, _oldfei)
 
-    header = ['c15100', 'c04100', '_numextra', '_txpyers', 'c04200', 'c15200',
-              '_standard', '_othded', 'c04100', 'c04200', '_standard',
+    header = ['c15100', '_numextra', '_txpyers', 'c15200',
+              '_othded', 'c04100', 'c04200', '_standard',
               'c04500', 'c04800', 'c60000', '_amtstd', '_taxinc', '_feitax',
-              '_oldfei']
+               '_oldfei']
 
     return DataFrame(data=np.column_stack(SDoutputs),
                      columns=header)
@@ -639,23 +639,23 @@ def TaxGains(pm, pf):
     pf._taxbc = pf.c05750
 
     outputs = (pf.e00650, _hasgain, _dwks5, c24505, c24510, _dwks9, pf.c24516,
-               c24580, pf.c24516, _dwks12, pf.c24517, pf.c24520, c24530, _dwks16,
+               c24580, _dwks12, pf.c24517, pf.c24520, c24530, _dwks16,
                _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
                _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
                _addtax, c24560, _taxspecial, c05100, pf.c05700, c59430,
                c59450, c59460, _line17, _line19, _line22, _line30, _line31,
                _line32, _line36, _line33, _line34, _line35, c59485, c59490,
-               pf.c05700, _s1291, _parents, pf.c05750, pf._taxbc)
+               _s1291, _parents, pf.c05750, pf._taxbc)
 
     header = ['e00650', '_hasgain', '_dwks5', 'c24505', 'c24510', '_dwks9',
-              'c24516', 'c24580', 'c24516', '_dwks12', 'c24517', 'c24520',
+              'c24516', 'c24580', '_dwks12', 'c24517', 'c24520',
               'c24530', '_dwks16', '_dwks17', 'c24540', 'c24534', '_dwks21',
               'c24597', 'c24598', '_dwks25', '_dwks26', '_dwks28', 'c24610',
               'c24615', '_dwks31', 'c24550', 'c24570', '_addtax', 'c24560',
               '_taxspecial', 'c05100', 'c05700', 'c59430', 'c59450', 'c59460',
               '_line17', '_line19', '_line22', '_line30', '_line31',
               '_line32', '_line36', '_line33', '_line34', '_line35',
-              'c59485', 'c59490', 'c05700', '_s1291', '_parents', 'c05750',
+              'c59485', 'c59490', '_s1291', '_parents', 'c05750',
               '_taxbc']
 
     return DataFrame(data=np.column_stack(outputs),
@@ -892,7 +892,7 @@ def AMTI(pm, pf, puf=True):
     pf.c05800 = pf._taxbc + c63200
 
     outputs = (c62720, c60260, c63100, c60200, c60240, c60220, c60130,
-               c62730, _addamt, c62100, _cmbtp, _edical, _amtsepadd, c62600,
+               c62730, _addamt, c62100, _cmbtp, _edical, _amtsepadd,
                pf._agep, pf._ages, c62600, c62700, _alminc, _amtfei, c62780,
                c62900, c63000, c62740, _ngamty, c62745, y62745, _tamt2,
                _amt5pc, _amt15pc, _amt25pc, c62747, c62755, c62770, _amt,
@@ -900,7 +900,7 @@ def AMTI(pm, pf, puf=True):
 
     header = ['c62720', 'c60260', 'c63100', 'c60200', 'c60240', 'c60220',
               'c60130', 'c62730', '_addamt', 'c62100', '_cmbtp', '_edical',
-              '_amtsepadd', 'c62600', '_agep', '_ages', 'c62600', 'c62700',
+              '_amtsepadd', '_agep', '_ages', 'c62600', 'c62700',
               '_alminc', '_amtfei', 'c62780', 'c62900', 'c63000', 'c62740',
               '_ngamty', 'c62745', 'y62745', '_tamt2', '_amt5pc', '_amt15pc',
               '_amt25pc', 'c62747', 'c62755', 'c62770', '_amt', 'c62800',
@@ -1081,8 +1081,8 @@ def ChildTaxCredit(pm, pf):
     pf._precrd = np.where(np.logical_and(_ctcagi > pm._cphase[pf.MARS - 1], pf._exact != 1), np.maximum(
         0, pf._precrd - 50 * (np.maximum(0, _ctcagi - pm._cphase[pf.MARS - 1]) + 500) / 1000), pf._precrd)
 
-    outputs = (c11070, pf.c07220, pf.c07230, pf._precrd, pf._num, pf._nctcr, pf._precrd, _ctcagi)
-    header = ['c11070', 'c07220', 'c07230', '_precrd', '_num', '_nctcr',
+    outputs = (c11070, pf.c07220, pf.c07230, pf._num, pf._nctcr, pf._precrd, _ctcagi)
+    header = ['c11070', 'c07220', 'c07230', '_num', '_nctcr',
               '_precrd', '_ctcagi']
 
     return DataFrame(data=np.column_stack(outputs), columns=header)
@@ -1240,11 +1240,11 @@ def AddCTC(pm, pf, puf=True):
     c11070 = np.where(
         np.logical_and(pf._nctcr > 0, pf._fixup >= 4), c11070 + _othadd, c11070)
 
-    outputs = (c82940, c82925, c82930, c82935, c82880, h82880, c82885, c82890,
+    outputs = (c82925, c82930, c82935, c82880, h82880, c82885, c82890,
                c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070,
                e59660, _othadd)
 
-    header = ['c82940', 'c82925', 'c82930', 'c82935', 'c82880', 'h82880',
+    header = ['c82925', 'c82930', 'c82935', 'c82880', 'h82880',
               'c82885', 'c82890', 'c82900', 'c82905', 'c82910', 'c82915',
               'c82920', 'c82937', 'c82940', 'c11070', 'e59660', '_othadd']
 
