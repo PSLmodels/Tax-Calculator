@@ -4,7 +4,7 @@ The Tax Calculator is a calculator for the US federal individual income tax syst
 
 Data
 ========
-Documentation for many of the core variables used by the Tax Calculator is available at http://users.nber.org/~taxsim/gdb/gdb08.pdf. Labels for the Tax Calculator variables are available at https://www.dropbox.com/s/cho8igi4jxu609s/labels.sas?dl=0. 
+Documentation for many of the core variables used by the Tax Calculator is available at http://users.nber.org/~taxsim/gdb/gdb08.pdf. 
 
 Disclaimer
 ========
