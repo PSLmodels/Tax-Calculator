@@ -294,8 +294,33 @@ class PUF(object):
                         '_ages', 'c87521', '_num', 'c87550', 'c07180',
                         'c07230', '_precrd', 'c07220', 'c59660', 'c07970',
                         'c08795', 'c09200', 'c07100', '_eitc', 'c59700',
-                        'c10950']
+                        'c10950', '_ymod2', '_ymod3', 'c02650', '_agierr',
+                        '_ywossbe', '_ywossbc', '_prexmp', 'c17750', '_sit1',
+                        '_statax', 'c37703', 'c20500', 'c20750', 'c19200',
+                        'c19700', '_nonlimited', '_limitratio', '_phase2_i',
+                        '_fica', '_seyoff', 'c11055', 'c15100', '_numextra',
+                        '_txpyers', 'c15200', '_othded', 'c04100', 'c04200',
+                        'c04500', '_amtstd', '_oldfei', 'c05200', '_cglong',
+                        '_noncg', '_hasgain', '_dwks9', '_dwks5', '_dwks12',
+                        '_dwks16', '_dwks17', '_dwks21', '_dwks25', '_dwks26',
+                        '_dwks28', '_dwks31', 'c24505', 'c24510', 'c24520',
+                        'c24530', 'c24540', 'c24534', 'c24597', 'c24598',
+                        'c24610', 'c24615', 'c24550', 'c24570', '_addtax',
+                        'c24560', '_taxspecial', 'c24580', 'c05100', 'c05700',
+                        'c59430', 'c59450', 'c59460', '_line17', '_line19',
+                        '_line22', '_line30', '_line31', '_line32', '_line36',
+                        '_line33', '_line34', '_line35', 'c59485', 'c59490',
+                        '_s1291', '_parents', 'c62720', 'c60260', 'c63100',
+                        'c60200', 'c60240', 'c60220', 'c60130', 'c62730',
+                        '_addamt', 'c62100', '_cmbtp', '_edical', '_amtsepadd',
+                        '_agep', '_ages', 'c62600', 'c62700', '_alminc',
+                        '_amtfei','c62780', 'c62900', 'c63000', 'c62740',
+                        '_ngamty', 'c62745', 'y62745', '_tamt2', '_amt5pc',
+                        '_amt15pc', '_amt25pc', 'c62747', 'c62755', 'c62770',
+                        '_amt', 'c62800', 'c09600', 'c05800', '_ncu13']  
                         
+                        
+
         for name in zeroed_names:
             setattr(self, name, np.zeros((self.dim,)))
 

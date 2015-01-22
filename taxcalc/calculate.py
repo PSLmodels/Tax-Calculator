@@ -3,7 +3,6 @@ from pandas import DataFrame
 import math
 import numpy as np
 from .utils import *
-#from .parameters import *
 from .functions import *
 
 

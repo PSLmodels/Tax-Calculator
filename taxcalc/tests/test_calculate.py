@@ -19,6 +19,7 @@ def add_df(alldfs, df):
             all_cols.add(col)
             alldfs.append(df[col])
 
+
 def run(puf=True):
 
     #Create a Parameters object
@@ -39,6 +40,7 @@ def run(puf=True):
     cur_set = set(totaldf.columns)
 
     assert(exp_set == cur_set)
+
 
     for label in exp_results.columns:
         lhs = exp_results[label].values.reshape(len(exp_results))

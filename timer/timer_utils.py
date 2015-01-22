@@ -11,10 +11,12 @@ class cumulative_timer(object):
     Declaration:        example_timer_name = Cumulative_Timer("Insert description to be printed")
 
     Timing:             with example_timer_name.time():
+
                             ## everything inside indentation will be timed
                             ## code block #1
 
                         do_not_time_this_function()
+
 
                         with example_timer_name.time():
                             ## code block #2 to be timed
@@ -60,6 +62,4 @@ def time_this(function, running_timer=None):
         print ("~function: '{}' takes : {}s".format(function.__name__, end-start))
         return result
     return wrapper
-
-
 
