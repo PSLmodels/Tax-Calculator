@@ -1627,8 +1627,8 @@ def ExpEarnedInc_calc(  _exact, c00100, agcmax, pcmax,
 
     if _exact == 1: 
 
-        _tratio = float(math.ceil(max((c00100 - agcmax
-                / 2000, 0.))))
+        _tratio = float(math.ceil(max((c00100 - agcmax)
+                / 2000, 0.)))
 
         c33200 = c33000 * 0.01 * max(20., pcmax - min(15., _tratio))
 
@@ -1727,10 +1727,10 @@ def RateRed(pm, pf):
 @jit(nopython=True)
 def NumDep_calc(EICYB1, EICYB2, EICYB3,
                 puf, EIC, c00100, e00400, MARS, 
-                _ymax, joint, _rtbase, c59560, _crmax,
-                _rtless, e83080, e00300, e00600, e01000, e40223, 
+                ymax, joint, rtbase, c59560, crmax,
+                rtless, e83080, e00300, e00600, e01000, e40223, 
                 e25360, e25430, e25470, e25400, e25500, e26210,
-                e26340, e27200, e26205, e26320, _dylim, _cmp, SOIYR, 
+                e26340, e27200, e26205, e26320, dylim, _cmp, SOIYR, 
                 DOBYR, SDOBYR, _agep, _ages, c59660):
 
     EICYB1 = max(0.0, EICYB1)
@@ -1754,7 +1754,7 @@ def NumDep_calc(EICYB1, EICYB2, EICYB3,
     else: _val_ymax = 0.
 
     if (MARS == 1 or MARS == 4 or MARS == 5 or MARS == 7) and _modagi > 0:
-        _val_ymax = float(_ymax[_ieic])
+        _val_ymax = float(ymax[_ieic])
 
 
     if (MARS == 1 or MARS == 4 or MARS == 5 or 
@@ -1805,9 +1805,9 @@ def NumDep_calc(EICYB1, EICYB2, EICYB3,
 @jit(nopython=True)
 def NumDep_apply(_ieic, _modagi, c59660, _val_ymax, _preeitc,
                  _val_rtbase, _val_rtless, _dy, EICYB1, EICYB2,
-                 EICYB3, puf, EIC, c00100, e00400, MARS, _ymax,
+                 EICYB3, puf, EIC, c00100, e00400, MARS, ymax,
                  joint, rtbase, c59560,
-                 _crmax, rtless, e83080, e00300, e00600, e01000,
+                 crmax, rtless, e83080, e00300, e00600, e01000,
                  e40223, e25360, e25430, e25470, e25400, e25500,
                  e26210, e26340, e27200, e26205, e26320, dylim,
                  _cmp, SOIYR, DOBYR, SDOBYR, _agep, _ages):
@@ -1817,8 +1817,8 @@ def NumDep_apply(_ieic, _modagi, c59660, _val_ymax, _preeitc,
         _val_ymax[i], _preeitc[i], _val_rtbase[i], 
         _val_rtless[i], _dy[i]) =  NumDep_calc(EICYB1[i], EICYB2[i], EICYB3[i],
         puf, EIC[i], c00100[i], e00400[i], MARS[i], 
-        _ymax, joint, _rtbase, c59560[i], _crmax,
-        _rtless, e83080[i], e00300[i], e00600[i], e01000[i], e40223[i], 
+        ymax, joint, rtbase, c59560[i], crmax,
+        rtless, e83080[i], e00300[i], e00600[i], e01000[i], e40223[i], 
         e25360[i], e25430[i], e25470[i], e25400[i], e25500[i], e26210[i],
         e26340[i], e27200[i], e26205[i], e26320[i], dylim, _cmp[i], SOIYR[i],
         DOBYR[i], SDOBYR[i], _agep[i], _ages[i], c59660[i])
@@ -1956,7 +1956,7 @@ def AmOppCr_apply(  c87482, c87487, c87492, c87497, c87483, c87488, c87493,
                c87483, c87488, c87493, c87498, c87521)
 
 
-def AmOppCr(p):
+def AmOppCr(pm, pf):
     outputs = \
         (pf.c87482, pf.c87487, pf.c87492, pf.c87497, pf.c87483, pf.c87488,
          pf.c87493, pf.c87498, pf.c87521 )= \
@@ -1975,7 +1975,7 @@ def AmOppCr(p):
 
 @jit(nopython=True)
 def LLC_calc(puf, e87530, learn,
-        e87526, e87522, e87524, e87528):
+        e87526, e87522, e87524, e87528, c87540, c87550):
 
     # Lifetime Learning Credit
 
@@ -1998,7 +1998,8 @@ def LLC_apply(c87540, c87550, c87530, puf, e87530, learn,
 
     for i in range(len(c87540)):
         (c87540[i], c87550[i], c87530[i]) = LLC_calc(puf, e87530[i], learn, 
-            FLPDYR[i], DEFAULT_YR, e87526[i], e87522[i], e87524[i], e87528[i])
+            e87526[i], e87522[i], e87524[i], e87528[i],
+            c87540[i], c87550[i])
 
     return (c87540, c87550, c87530)
 
@@ -2009,7 +2010,7 @@ def LLC(pm, pf, puf=True):
         pf.c87540, pf.c87550, pf.c87530 = \
             LLC_apply(
                 pf.c87540, pf.c87550, pf.c87530, puf, pf.e87530, pm.learn,
-                pf.FLPDYR, pf.DEFAULT_YR, pf.e87526, pf.e87522, pf.e87524, pf.e87528)
+                pf.e87526, pf.e87522, pf.e87524, pf.e87528)
 
     header = ['c87540', 'c87550', 'c87530']
     return DataFrame(data=np.column_stack(outputs), columns=header)
@@ -2083,24 +2084,23 @@ def NonEdCr_calc(c87550, MARS, edphhm, c00100, _num,
     e07700, e07250, t07950, c05800, _precrd, edphhs):
 
     # Nonrefundable Education Credits
-
     # Form 8863 Tentative Education Credits
     c87560 = c87550
 
     # Phase Out
     if MARS == 2:
-        c87570 = edphhm * 1000
+        c87570 = float(edphhm * 1000)
     else:
-        c87570 = edphhs * 1000
+        c87570 = float(edphhs * 1000)
 
-    c87580 = c00100
+    c87580 = float(c00100)
 
 
     c87590 = max(0., c87570 - c87580)
 
-    c87600 = 10000 * _num
+    c87600 = 10000.0 * _num
 
-    c87610 = min(1., c87590 / c87600)
+    c87610 = min(1., float(c87590 / c87600))
 
     c87620 = c87560 * c87610
 
@@ -2118,6 +2118,7 @@ def NonEdCr_calc(c87550, MARS, edphhm, c00100, _num,
 
     c07220 = min(_precrd, max(0., _ctctax))
     # lt tax owed
+    
     return (c87560, c87570, c87580, c87590, c87600, c87610,
                c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220)
 
@@ -2134,8 +2135,8 @@ def NonEdCr_apply(  c87560, c87570, c87580, c87590, c87600, c87610,
 
         (   c87560[i], c87570[i], c87580[i], c87590[i], c87600[i], c87610[i], 
             c87620[i], _ctc1[i], _ctc2[i], _regcrd[i], _exocrd[i], _ctctax[i], 
-            c07220[i]) = NonEdCr_calc(c87550[i], MARS[i], edphhm, FLPDYR[i],
-            DEFAULT_YR, c00100[i], _num[i], c07180[i], e07200[i], c07230[i],
+            c07220[i]) = NonEdCr_calc(c87550[i], MARS[i], edphhm,
+            c00100[i], _num[i], c07180[i], e07200[i], c07230[i],
             e07240[i], e07960[i], e07260[i], e07300[i], e07700[i], e07250[i],
             t07950[i], c05800[i], _precrd[i], edphhs)
 
@@ -2151,10 +2152,11 @@ def NonEdCr(pm, pf):
             NonEdCr_apply(
                 pf.c87560, pf.c87570, pf.c87580, pf.c87590, pf.c87600,
                 pf.c87610, pf.c87620, pf._ctc1, pf._ctc2, pf._regcrd, pf._exocrd,
-                pf._ctctax, pf.c07220, pf.c87550, pf.MARS, pm.edphhm, pf.FLPDYR,
-                pf.DEFAULT_YR, pf.c00100, pf._num, pf.c07180, pf.e07200, pf.c07230, pf.e07240,
-                pf.e07960, pf.e07260, pf.e07300, pf.e07700, pf.e07250, pf.t07950, pf.c05800, pf._precrd,
-                pm.edphhs)
+                pf._ctctax, pf.c07220, pf.c87550, pf.MARS, pm.edphhm,
+                pf.c00100, pf._num, pf.c07180, pf.e07200, pf.c07230, pf.e07240,
+                pf.e07960, pf.e07260, pf.e07300, pf.e07700, pf.e07250, pf.t07950,
+                pf.c05800, pf._precrd, pm.edphhs)
+                
 
     header = ['c87560', 'c87570', 'c87580', 'c87590', 'c87600', 'c87610',
               'c87620', '_ctc1', '_ctc2', '_regcrd', '_exocrd', '_ctctax',
