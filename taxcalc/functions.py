@@ -26,7 +26,6 @@ def FilingStatus(pm, pf):
     header = ['_sep']
     return DataFrame(data=(outputs), columns=header)
 
-##done
 
 @jit(nopython=True)
 def Adj_calc(   e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
@@ -71,7 +70,6 @@ def Adj(pm, pf):
     return DataFrame(data=np.column_stack(outputs),
                      columns=header)
 
-#done
 
 @jit(nopython=True)
 def CapGains_calc(  e23250, e22250, e23660, _sep, _feided, feimax,
@@ -136,7 +134,6 @@ def CapGains(pm, pf):
     return DataFrame(data=np.column_stack(outputs),
                      columns=header)
 
-#done
 
 @jit(nopython=True)
 def SSBenefits_calc(SSIND, MARS, e02500, _ymod, e02400, _ssb50, _ssb85):
@@ -180,7 +177,6 @@ def SSBenefits(pm, pf):
     return DataFrame(data=np.column_stack(outputs),
                      columns=['c02500', 'e02500']) # why return e02500?
 
-#done
 
 
 @jit(nopython=True)
@@ -244,7 +240,6 @@ def AGI(pm, pf):
     return DataFrame(data=np.column_stack(outputs),
                      columns=header)
 
-#done 
 
 @jit(nopython=True)
 def ItemDed_calc(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
@@ -370,7 +365,6 @@ def ItemDed(pm, pf, puf=True):
 
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
-#done
 
 @jit(nopython=True)
 def EI_FICA_calc(   e00900, e02100, ssmax, e00200,
@@ -420,7 +414,6 @@ def EI_FICA(pm, pf):
 
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
-#done
 
 @jit(nopython=True)
 def StdDed_calc( DSI, _earned, stded, e04470, 
@@ -565,9 +558,6 @@ def StdDed(pm, pf):
     return DataFrame(data=np.column_stack(outputs),
                      columns=header)
 
-#done
-
-#not done
 
 @jit(nopython=True)
 def XYZD_calc(_taxinc, c04800, MARS, rt1, rt2, rt3, rt4, rt5, rt6, rt7, brk1, brk2, brk3, brk4, brk5, brk6):
@@ -600,7 +590,6 @@ def XYZD(pm, pf):
     return DataFrame(data=np.column_stack(outputs),
                      columns=header)
 
-#done
 
 @jit(nopython=True)
 def NonGain_calc(c23650, e23250, e01100):
@@ -621,240 +610,6 @@ def NonGain(pm, pf):
         NonGain_apply(pf._cglong, pf._noncg, pf.c23650, pf.e23250, pf.e01100)
 
     header = ['_cglong', '_noncg']
-
-    return DataFrame(data=np.column_stack(outputs),
-                     columns=header)
-#done
-
-
-def TaxGains(pm, pf):
-    c24530 = np.zeros((pf.dim,))
-    c24540 = np.zeros((pf.dim,))
-    _dwks16 = np.zeros((pf.dim,))
-
-    _hasgain = np.zeros((pf.dim,))
-
-    _hasgain = np.where(np.logical_or(pf.e01000 > 0, pf.c23650 > 0), 1, _hasgain)
-    _hasgain = np.where(np.logical_or(pf.e23250 > 0, pf.e01100 > 0), 1, _hasgain)
-    _hasgain = np.where(pf.e00650 > 0, 1, _hasgain)
-
-    _dwks5 = np.where(
-        np.logical_and(pf._taxinc > 0, _hasgain == 1), np.maximum(0, pf.e58990 - pf.e58980), 0)
-
-    c00650 = pf.e00650
-    c24505 = np.where(
-        np.logical_and(pf._taxinc > 0, _hasgain == 1), np.maximum(0, pf.c00650 - _dwks5), 0)
-    c24510 = np.where(np.logical_and(pf._taxinc > 0, _hasgain == 1), np.maximum(
-        0, np.minimum(pf.c23650, pf.e23250)) + pf.e01100, 0)
-    # gain for tax computation
-
-    c24510 = np.where(np.logical_and(
-        pf._taxinc > 0, np.logical_and(_hasgain == 1, pf.e01100 > 0)), pf.e01100, c24510)
-    # from app f 2008 drf
-
-    _dwks9 = np.where(np.logical_and(pf._taxinc > 0, _hasgain == 1), np.maximum(
-        0, c24510 - np.minimum(pf.e58990, pf.e58980)), 0)
-    # e24516 gain less invest y
-
-    pf.c24516 = np.maximum(0, np.minimum(pf.e23250, pf.c23650)) + pf.e01100
-    c24580 = pf._xyztax
-
-    pf.c24516 = np.where(
-        np.logical_and(pf._taxinc > 0, _hasgain == 1), c24505 + _dwks9, pf.c24516)
-    _dwks12 = np.where(np.logical_and(
-        pf._taxinc > 0, _hasgain == 1), np.minimum(_dwks9, pf.e24515 + pf.e24518), 0)
-    pf.c24517 = np.where(
-        np.logical_and(pf._taxinc > 0, _hasgain == 1), pf.c24516 - _dwks12, 0)
-    # gain less 25% and 28%
-
-    pf.c24520 = np.where(
-        np.logical_and(pf._taxinc > 0, _hasgain == 1), np.maximum(0, pf._taxinc - pf.c24517), 0)
-    # tentative TI less schD gain
-
-    c24530 = np.where(np.logical_and(pf._taxinc > 0, _hasgain == 1), np.minimum(
-        pm.brk2[pf.MARS - 1], pf._taxinc), 0)
-    # minimum TI for bracket
-
-    _dwks16 = np.where(
-        np.logical_and(pf._taxinc > 0, _hasgain == 1), np.minimum(pf.c24520, c24530), 0)
-    _dwks17 = np.where(
-        np.logical_and(pf._taxinc > 0, _hasgain == 1), np.maximum(0, pf._taxinc - pf.c24516), 0)
-    c24540 = np.where(
-        np.logical_and(pf._taxinc > 0, _hasgain == 1), np.maximum(_dwks16, _dwks17), 0)
-
-    c24534 = np.where(
-        np.logical_and(pf._taxinc > 0, _hasgain == 1), c24530 - _dwks16, 0)
-    _dwks21 = np.where(
-        np.logical_and(pf._taxinc > 0, _hasgain == 1), np.minimum(pf._taxinc, pf.c24517), 0)
-    c24597 = np.where(
-        np.logical_and(pf._taxinc > 0, _hasgain == 1), np.maximum(0, _dwks21 - c24534), 0)
-    # income subject to 15% tax
-
-    c24598 = 0.15 * c24597  # actual 15% tax
-
-    _dwks25 = np.where(
-        np.logical_and(pf._taxinc > 0, _hasgain == 1), np.minimum(_dwks9, pf.e24515), 0)
-    _dwks26 = np.where(
-        np.logical_and(pf._taxinc > 0, _hasgain == 1), pf.c24516 + c24540, 0)
-    _dwks28 = np.where(
-        np.logical_and(pf._taxinc > 0, _hasgain == 1), np.maximum(0, _dwks26 - pf._taxinc), 0)
-    c24610 = np.where(
-        np.logical_and(pf._taxinc > 0, _hasgain == 1), np.maximum(0, _dwks25 - _dwks28), 0)
-    c24615 = np.where(
-        np.logical_and(pf._taxinc > 0, _hasgain == 1), 0.25 * c24610, 0)
-    _dwks31 = np.where(np.logical_and(
-        pf._taxinc > 0, _hasgain == 1), c24540 + c24534 + c24597 + c24610, 0)
-    c24550 = np.where(
-        np.logical_and(pf._taxinc > 0, _hasgain == 1), np.maximum(0, pf._taxinc - _dwks31), 0)
-    c24570 = np.where(
-        np.logical_and(pf._taxinc > 0, _hasgain == 1), 0.28 * c24550, 0)
-    _addtax = np.zeros((pf.dim,))
-    _addtax = np.where(np.logical_and(pf._taxinc > 0, np.logical_and(
-        _hasgain == 1, c24540 > pm.brk6[pf.MARS - 1])), 0.05 * pf.c24517, _addtax)
-    _addtax = np.where(np.logical_and(np.logical_and(pf._taxinc > 0, _hasgain == 1), np.logical_and(c24540 <= pm.brk6[
-                       pf.MARS - 1], pf._taxinc > pm.brk6[pf.MARS - 1])), 0.05 * np.minimum(pf.c04800 - pm.brk6[pf.MARS - 1], pf.c24517), _addtax)
-
-    c24560 = np.zeros((pf.dim,))
-    c24560 = np.where(np.logical_and(pf._taxinc > 0, _hasgain == 1), Taxer(
-        inc_in=c24540, inc_out=c24560, MARS=pf.MARS, pm=pm, pf=pf), c24560)
-
-    _taxspecial = np.where(np.logical_and(
-        pf._taxinc > 0, _hasgain == 1), c24598 + c24615 + c24570 + c24560 + _addtax, 0)
-
-    c24580 = np.where(np.logical_and(pf._taxinc > 0, _hasgain == 1), np.minimum(
-        _taxspecial, pf._xyztax), c24580)
-    # e24580 schedule D tax
-
-    c05100 = c24580
-    c05100 = np.where(np.logical_and(
-        pf.c04800 > 0, pf._feided > 0), np.maximum(0, c05100 - pf._feitax), c05100)
-
-    # Form 4972 - Lump Sum Distributions
-
-    c59430 = np.where(pf._cmp == 1, np.maximum(0, pf.e59410 - pf.e59420), 0)
-    c59450 = np.where(pf._cmp == 1, c59430 + pf.e59440, 0)  # income plus lump sum
-    c59460 = np.where(pf._cmp == 1, np.maximum(
-        0, np.minimum(0.5 * c59450, 10000)) - 0.2 * np.maximum(0, c59450 - 20000), 0)
-    _line17 = np.where(pf._cmp == 1, c59450 - c59460, 0)
-    _line19 = np.where(pf._cmp == 1, c59450 - c59460 - pf.e59470, 0)
-    _line22 = np.where(np.logical_and(pf._cmp == 1, c59450 > 0), np.maximum(
-        0, pf.e59440 - pf.e59440 * c59460 / c59450), 0)
-
-    _line30 = np.where(
-        pf._cmp == 1, 0.1 * np.maximum(0, c59450 - c59460 - pf.e59470), 0)
-
-    _line31 = np.where(pf._cmp == 1,
-                       0.11 * np.minimum(_line30, 1190)
-                       + 0.12 *
-                       np.minimum(2270 - 1190, np.maximum(0, _line30 - 1190))
-                       + 0.14 *
-                       np.minimum(4530 - 2270, np.maximum(0, _line30 - 2270))
-                       + 0.15 *
-                       np.minimum(6690 - 4530, np.maximum(0, _line30 - 4530))
-                       + 0.16 *
-                       np.minimum(9170 - 6690, np.maximum(0, _line30 - 6690))
-                       + 0.18 *
-                       np.minimum(11440 - 9170, np.maximum(0, _line30 - 9170))
-                       + 0.20 *
-                       np.minimum(
-                           13710 - 11440, np.maximum(0, _line30 - 11440))
-                       + 0.23 *
-                       np.minimum(
-                           17160 - 13710, np.maximum(0, _line30 - 13710))
-                       + 0.26 *
-                       np.minimum(
-                           22880 - 17160, np.maximum(0, _line30 - 17160))
-                       + 0.30 *
-                       np.minimum(
-                           28600 - 22880, np.maximum(0, _line30 - 22880))
-                       + 0.34 *
-                       np.minimum(
-                           34320 - 28600, np.maximum(0, _line30 - 28600))
-                       + 0.38 *
-                       np.minimum(
-                           42300 - 34320, np.maximum(0, _line30 - 34320))
-                       + 0.42 *
-                       np.minimum(
-                           57190 - 42300, np.maximum(0, _line30 - 42300))
-                       + 0.48 *
-                       np.minimum(
-                           85790 - 57190, np.maximum(0, _line30 - 57190)),
-                       0)
-
-    _line32 = np.where(pf._cmp == 1, 10 * _line31, 0)
-    _line36 = np.where(np.logical_and(pf._cmp == 1, pf.e59440 == 0), _line32, 0)
-    _line33 = np.where(np.logical_and(pf._cmp == 1, pf.e59440 > 0), 0.1 * _line22, 0)
-    _line34 = np.where(np.logical_and(pf._cmp == 1, pf.e59440 > 0),
-                       0.11 * np.minimum(_line30, 1190)
-                       + 0.12 *
-                       np.minimum(2270 - 1190, np.maximum(0, _line30 - 1190))
-                       + 0.14 *
-                       np.minimum(4530 - 2270, np.maximum(0, _line30 - 2270))
-                       + 0.15 *
-                       np.minimum(6690 - 4530, np.maximum(0, _line30 - 4530))
-                       + 0.16 *
-                       np.minimum(9170 - 6690, np.maximum(0, _line30 - 6690))
-                       + 0.18 *
-                       np.minimum(11440 - 9170, np.maximum(0, _line30 - 9170))
-                       + 0.20 *
-                       np.minimum(
-                           13710 - 11440, np.maximum(0, _line30 - 11440))
-                       + 0.23 *
-                       np.minimum(
-                           17160 - 13710, np.maximum(0, _line30 - 13710))
-                       + 0.26 *
-                       np.minimum(
-                           22880 - 17160, np.maximum(0, _line30 - 17160))
-                       + 0.30 *
-                       np.minimum(
-                           28600 - 22880, np.maximum(0, _line30 - 22880))
-                       + 0.34 *
-                       np.minimum(
-                           34320 - 28600, np.maximum(0, _line30 - 28600))
-                       + 0.38 *
-                       np.minimum(
-                           42300 - 34320, np.maximum(0, _line30 - 34320))
-                       + 0.42 *
-                       np.minimum(
-                           57190 - 42300, np.maximum(0, _line30 - 42300))
-                       + 0.48 *
-                       np.minimum(
-                           85790 - 57190, np.maximum(0, _line30 - 57190)),
-                       0)
-    _line35 = np.where(np.logical_and(pf._cmp == 1, pf.e59440 > 0), 10 * _line34, 0)
-    _line36 = np.where(
-        np.logical_and(pf._cmp == 1, pf.e59440 > 0), np.maximum(0, _line32 - _line35), 0)
-    # tax saving from 10 yr option
-    c59485 = np.where(pf._cmp == 1, _line36, 0)
-    c59490 = np.where(pf._cmp == 1, c59485 + 0.2 * np.maximum(0, pf.e59400), 0)
-    # pension gains tax plus
-
-    pf.c05700 = np.where(pf._cmp == 1, c59490, 0)
-
-    _s1291 = pf.e10105
-    _parents = pf.e83200_0
-    pf.c05750 = np.maximum(c05100 + _parents + pf.c05700, pf.e74400)
-    pf._taxbc = pf.c05750
-
-    outputs = (pf.e00650, _hasgain, _dwks5, c24505, c24510, _dwks9, pf.c24516,
-               c24580, _dwks12, pf.c24517, pf.c24520, c24530, _dwks16,
-               _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
-               _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
-               _addtax, c24560, _taxspecial, c05100, pf.c05700, c59430,
-               c59450, c59460, _line17, _line19, _line22, _line30, _line31,
-               _line32, _line36, _line33, _line34, _line35, c59485, c59490,
-               _s1291, _parents, pf.c05750, pf._taxbc)
-
-    header = ['e00650', '_hasgain', '_dwks5', 'c24505', 'c24510', '_dwks9',
-              'c24516', 'c24580', '_dwks12', 'c24517', 'c24520',
-              'c24530', '_dwks16', '_dwks17', 'c24540', 'c24534', '_dwks21',
-              'c24597', 'c24598', '_dwks25', '_dwks26', '_dwks28', 'c24610',
-              'c24615', '_dwks31', 'c24550', 'c24570', '_addtax', 'c24560',
-              '_taxspecial', 'c05100', 'c05700', 'c59430', 'c59450', 'c59460',
-              '_line17', '_line19', '_line22', '_line30', '_line31',
-              '_line32', '_line36', '_line33', '_line34', '_line35',
-              'c59485', 'c59490', '_s1291', '_parents', 'c05750',
-              '_taxbc']
 
     return DataFrame(data=np.column_stack(outputs),
                      columns=header)
@@ -1159,7 +914,6 @@ def TaxGains(pm, pf):
                      columns=header)
 
 
-#done
 
 @jit(nopython=True)
 def MUI_calc(c00100, _thresx, MARS, c05750, e00300, e00600, c01000, e02000):
@@ -1189,7 +943,6 @@ def MUI(pm, pf):
     return DataFrame(data=pf.c05750,
                      columns=header) 
 
-#done
 
 @jit(nopython=True)
 def AMTI_calc(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
@@ -1479,7 +1232,6 @@ def AMTI(pm, pf, puf=True):
     return DataFrame(data=np.column_stack(outputs),
                      columns=header)
 
-#done
 
 @jit(nopython=True)
 def F2441_calc(_earned, _fixeic, e59560, MARS, puf, f2441, dcmax,
@@ -1549,7 +1301,6 @@ def F2441(pm, pf, puf=True):
 
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
-#done
 @jit(nopython=True)
 def DepCareBen_calc(c32800, _cmp, MARS, c32880, c32890, e33420, e33430, e33450, 
                     e33460, e33465, e33470, _sep, _dclim, e32750, e32775, 
@@ -1619,7 +1370,6 @@ def DepCareBen(pm, pf):
     return DataFrame(data=np.column_stack(outputs),
                      columns=header)
 
-#done
 @jit(nopython=True)
 def ExpEarnedInc_calc(  _exact, c00100, agcmax, pcmax,
                         c33000, c05800, e07300, e07180):
@@ -1679,7 +1429,6 @@ def ExpEarnedInc(pm, pf):
     return DataFrame(data=np.column_stack((outputs)),
                      columns=header)
 
-#done
 
 @jit(nopython=True)
 def RateRed_calc(c05800, _fixup, _othtax, _exact, x59560, _earned):
@@ -1723,7 +1472,6 @@ def RateRed(pm, pf):
     return DataFrame(data=np.column_stack((outputs)),
                      columns=header)
 
-#done
 @jit(nopython=True)
 def NumDep_calc(EICYB1, EICYB2, EICYB3,
                 puf, EIC, c00100, e00400, MARS, 
@@ -1847,7 +1595,6 @@ def NumDep(pm, pf, puf=True):
 
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
-#done
 @jit(nopython=True)
 def ChildTaxCredit_calc(n24, MARS, chmax, c00100, _feided,
                         _cphase, _exact, c11070, c07220, c07230, _num, _precrd, _nctcr):
@@ -1897,7 +1644,6 @@ def ChildTaxCredit(pm, pf):
 
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
-#done
 
 # def HopeCredit():
     # W/o congressional action, Hope Credit will replace 
@@ -1971,7 +1717,6 @@ def AmOppCr(pm, pf):
 
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
-#done
 
 @jit(nopython=True)
 def LLC_calc(puf, e87530, learn,
@@ -2015,7 +1760,6 @@ def LLC(pm, pf, puf=True):
     header = ['c87540', 'c87550', 'c87530']
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
-#done
 
 @jit(nopython=True)
 def RefAmOpp_calc(_cmp, c87521, _num, c00100, EDCRAGE, c87668):
@@ -2076,7 +1820,6 @@ def RefAmOpp(pm, pf):
               'c87666', 'c10960', 'c87668', 'c87681']
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
-#done
 
 @jit(nopython=True)
 def NonEdCr_calc(c87550, MARS, edphhm, c00100, _num,
@@ -2164,7 +1907,6 @@ def NonEdCr(pm, pf):
 
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
-#done
 
 @jit(nopython=True)
 def AddCTC_calc(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax, 
@@ -2303,7 +2045,6 @@ def AddCTC(pm, pf, puf=True):
 
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
-#done
 
 def F5405(pm, pf):
     # Form 5405 First-Time Homebuyer Credit
@@ -2312,7 +2053,6 @@ def F5405(pm, pf):
     c64450 = np.zeros((pf.dim,))
     return DataFrame(data=np.column_stack((c64450,)), columns=['c64450'])
 
-#done
 
 @jit(nopython=True)
 def C1040_calc( e07400, e07180, e07200, c07220, c07230, e07250,
@@ -2413,7 +2153,6 @@ def C1040(pm, pf, puf=True):
     # temporary fix to make it match with current master
     return DataFrame(data=np.column_stack(outputs[:-1]), columns=header)
 
-#done
 
 @jit(nopython=True)
 def DEITC_calc(c08795, c59660, c09200, c07100):
@@ -2500,7 +2239,6 @@ def DEITC(pm, pf):
 
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
-#done
 
 @jit(nopython=True)
 def SOIT_calc(   c09200, e10000, e59680, c59700,e11070, e11550, e11580,e09710, 
