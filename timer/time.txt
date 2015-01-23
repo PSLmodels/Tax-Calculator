@@ -1,0 +1,35 @@
+~function: 'Calculator' takes : 2.19345092773e-05s
+~function: 'set_input_data' takes : 0.13848900795s
+~function: 'update_globals_from_calculator' takes : 4.19616699219e-05s
+~function: 'update_calculator_from_module' takes : 0.000101089477539s
+~function: 'FilingStatus' takes : 0.00130391120911s
+~function: 'Adj' takes : 0.0110931396484s
+~function: 'CapGains' takes : 0.030709028244s
+~function: 'SSBenefits' takes : 0.00382208824158s
+~function: 'AGI' takes : 0.0250899791718s
+~function: 'ItemDed' takes : 0.0616750717163s
+~function: 'EI_FICA' takes : 0.0186879634857s
+~function: 'StdDed' takes : 0.176918029785s
+~function: 'XYZD' takes : 0.108458042145s
+~function: 'NonGain' takes : 0.00237488746643s
+~function: 'TaxGains' takes : 2.49164199829s
+~function: 'MUI' takes : 0.00558090209961s
+~function: 'AMTI' takes : 0.190351963043s
+~function: 'F2441' takes : 0.0226891040802s
+~function: 'DepCareBen' takes : 0.0336360931396s
+~function: 'ExpEarnedInc' takes : 0.0139570236206s
+~function: 'RateRed' takes : 0.00379395484924s
+~function: 'NumDep' takes : 0.0868489742279s
+~function: 'ChildTaxCredit' takes : 0.0230519771576s
+~function: 'AmOppCr' takes : 0.0302939414978s
+~function: 'LLC' takes : 0.00820803642273s
+~function: 'RefAmOpp' takes : 0.0267889499664s
+~function: 'NonEdCr' takes : 0.0439701080322s
+~function: 'AddCTC' takes : 0.0724079608917s
+~function: 'F5405' takes : 0.000774145126343s
+~function: 'C1040' takes : 0.022794008255s
+~function: 'DEITC' takes : 0.0212540626526s
+~function: 'SOIT' takes : 0.0162680149078s
+~function: 'run' takes : 51.0172870159s
+~~~ No CSV Timer takes 13.116232872s
+~~~ All Fuctions, no CSV calls, no concat calls takes 3.69226717949s

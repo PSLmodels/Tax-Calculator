@@ -94,3 +94,33 @@ def test_with_dataframe_wrap_guvectorize():
     df = pd.DataFrame(data=np.column_stack((x, y)), columns=['x', 'y'])
     fnvec_copy_dfw(df)
     assert(np.all(df.x == df.y))
+
+
+def test_expand_1D_short_array():
+    x = np.array([4, 5, 9], dtype='i4')
+    exp2 = np.array([9.0 * math.pow(1.02, i) for i in range(1, 8)])
+    exp1 = np.array([4, 5, 9])
+    exp = np.zeros(10)
+    exp[:3] = exp1
+    exp[3:] = exp2
+    res = expand_1D(x)
+    assert(np.allclose(exp.astype(x.dtype, casting='unsafe'), res))
+
+
+def test_expand_1D_scalar():
+    x = 10.0
+    exp = np.array([10.0 * math.pow(1.02, i) for i in range(0, 10)])
+    res = expand_1D(x)
+    assert(np.allclose(exp, res))
+
+
+def test_expand_2D_short_array():
+    x = np.array([[1, 2, 3]], dtype='f8')
+    val = np.array([1, 2, 3], dtype='f8')
+    exp2 = np.array([val * math.pow(1.02, i) for i in range(1, 5)])
+    exp1 = np.array([1, 2, 3], dtype='f8')
+    exp = np.zeros((5, 3))
+    exp[:1] = exp1
+    exp[1:] = exp2
+    res = expand_2D(x, num_years=5)
+    assert(np.allclose(exp, res))
