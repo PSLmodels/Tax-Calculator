@@ -2351,7 +2351,7 @@ def Taxer(inc_in, inc_out, MARS, pm, pf):
 
     return inc_out
 
-@jit('float64(float64, int64, int64, int64)', nopython = True)
+#@jit('float64(float64, int64, int64, int64)', nopython = True)
 @jit(nopython=True)
 def Taxer_i(inc_in, MARS, rt1, rt2, rt3, rt4, rt5, rt6, rt7, brk1, brk2, brk3,
         brk4, brk5, brk6):
