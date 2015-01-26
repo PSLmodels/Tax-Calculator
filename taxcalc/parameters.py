@@ -58,7 +58,24 @@ class Parameters(object):
                       ('_amtys', [[115400, 153900, 76950, 115400, 153900, 76950], [117300, 156500, 78250, 117300, 156500, 78250], [119200, 158900, 79450, 119200, 158900, 79450]]),
                       ('_cphase', [75000, 110000, 55000, 75000, 75000, 55000, ]),
                       ('_chmax', [1000, 1000, 1000, 1000, 1000, 500, ]),
-                      ('_amtage', [24, ])]
+                      ('_amtage', [24, ]),
+                      ('_FICA_trt', [0.153,]),
+                      ('_SS_percentage1', [0.5,]),
+                      ('_SS_percentage2', [0.85,]),
+                      ('_II_prt', [0.02,]),
+                      ('_ID_Medical_frt', [0.075,]),
+                      ('_ID_Casualty_frt', [0.1,]),
+                      ('_ID_Miscellaneous_frt', [0.02,]),
+                      ('_ID_Charity_crt_Cash', [0.5,]),
+                      ('_ID_Charity_crt_Asset', [0.3,]),
+                      ('_ID_prt', [0.03,]),
+                      ('_ID_crt', [0.8,]),
+                      ('_AMED_trt', [0.038,]),
+                      ('_AMT_prt', [0.025,]),
+                      ('_AMT_trt1', [0.26,]),
+                      ('_AMT_trt2', [0.02,]),
+                      ('_CTC_prt', [0.05,]),
+                      ('_ACTC_ChildNum', [4,])]
         # INITIALIZE
         [setattr(self, name, expand_array(np.array(val),
              inflation_rate=inflation_rate, num_years=budget_years))
