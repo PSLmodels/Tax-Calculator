@@ -9,9 +9,11 @@ from taxcalc import *
 
 
 all_cols = set()
-tax_dta = pd.read_csv(os.path.join(CUR_PATH, "../../tax_all91_puf.gz"), compression='gzip')
-#Fix-up. MIdR needs to be type int64 to match PUF 
+tax_dta = pd.read_csv(os.path.join(CUR_PATH, "../../tax_all91_puf.gz"),
+                      compression='gzip')
+# Fix-up. MIdR needs to be type int64 to match PUF
 tax_dta['midr'] = tax_dta['midr'].astype('int64')
+
 
 def add_df(alldfs, df):
     for col in df.columns:
@@ -22,17 +24,17 @@ def add_df(alldfs, df):
 
 def run(puf=True):
 
-    #Create a Parameters object
+    # Create a Parameters object
     params = Parameters(start_year=91)
 
-    #Create a Public Use File object
+    # Create a Public Use File object
     puf = PUF(tax_dta)
 
-    #Create a Calculator
+    # Create a Calculator
     calc = Calculator(parameters=params, puf=puf)
     totaldf = calc.calc_all_test()
 
-    #drop duplicates
+    # drop duplicates
     totaldf = totaldf.T.groupby(level=0).first().T
 
     exp_results = pd.read_csv(os.path.join(CUR_PATH, "../../exp_results.csv.gz"), compression='gzip')
@@ -55,10 +57,10 @@ def test_sequence():
 
 
 def test_make_Calculator():
-    #Create a Parameters object
+    # Create a Parameters object
     params = Parameters(start_year=91)
 
-    #Create a Public Use File object
+    # Create a Public Use File object
     puf = PUF(tax_dta)
 
     calc = Calculator(params, puf)
@@ -66,10 +68,10 @@ def test_make_Calculator():
 
 def test_make_Calculator_mods():
 
-    #Create a Parameters object
+    # Create a Parameters object
     params = Parameters(start_year=91)
 
-    #Create a Public Use File object
+    # Create a Public Use File object
     puf = PUF(tax_dta)
 
     calc2 = calculator(params, puf, _amex=np.array([4000]))
@@ -78,10 +80,10 @@ def test_make_Calculator_mods():
 
 def test_make_Calculator_json():
 
-    #Create a Parameters object
+    # Create a Parameters object
     params = Parameters(start_year=91)
 
-    #Create a Public Use File object
+    # Create a Public Use File object
     puf = PUF(tax_dta)
 
     user_mods = '{ "_aged": [[1500], [1200]] }'
@@ -89,6 +91,24 @@ def test_make_Calculator_json():
     assert all(calc2._amex == np.array([4000]))
     assert all(calc2._aged == np.array([[1500], [1200]]))
 
+
+def test_Calculator_attr_access_to_params():
+
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+
+    # Create a Public Use File object
+    puf = PUF(tax_dta)
+
+    # Create a Calculator
+    calc = Calculator(parameters=params, puf=puf)
+
+    # PUF data
+    assert hasattr(calc, 'c01000')
+    # Parameter data
+    assert hasattr(calc, '_almdep')
+    # local attribute
+    assert hasattr(calc, 'parameters')
 
 
 class TaxCalcError(Exception):

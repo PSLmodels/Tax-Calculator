@@ -33,6 +33,20 @@ class Calculator(object):
         self.puf = puf
         assert puf.current_year == parameters.current_year
 
+    def __getattr__(self, val):
+
+        if val in self.__dict__:
+            return self.__dict__[val]
+        else:
+            try:
+                return getattr(self.parameters, val)
+            except AttributeError:
+                try:
+                    return getattr(self.puf, val)
+                except AttributeError:
+                    raise
+
+
     def calc_all(self):
         FilingStatus(self.parameters, self.puf)
         Adj(self.parameters, self.puf)
