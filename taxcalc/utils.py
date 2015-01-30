@@ -143,7 +143,7 @@ def apply_jit(dtype_sig_out, dtype_sig_in, **kwargs):
                 else:
                     out_arrays.append(getattr(args[1], farg))
 
-            final_array = in_arrays + out_arrays
+            final_array = out_arrays + in_arrays
             ans = jitted_apply(*final_array)
             return ans
 

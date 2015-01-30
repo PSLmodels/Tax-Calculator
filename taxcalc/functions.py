@@ -27,7 +27,9 @@ def FilingStatus(pm, pf):
     return DataFrame(data=(outputs), columns=header)
 
 
-@jit(nopython=True)
+@apply_jit("_feided, c02900", """"e35300_0, e35600_0, e35910_0, e03150, e03210, 
+                e03600, e03260, e03270, e03300, e03400, e03500, e03280, e03900, 
+                e04000, e03700, e03220, e03230, e03240, e03290""", nopython=True)
 def Adj_calc(   e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
                 e03270, e03300, e03400, e03500, e03280, e03900, e04000,
                 e03700, e03220, e03230, e03240, e03290 ):
@@ -43,33 +45,18 @@ def Adj_calc(   e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
     return (_feided, c02900)
 
 
-@jit(nopython=True)
-def Adj_apply(  _feided, c02900, e35300_0, e35600_0, e35910_0, e03150, e03210, 
-                e03600, e03260, e03270, e03300, e03400, e03500, e03280, e03900, 
-                e04000, e03700, e03220, e03230, e03240, e03290 ):
-    for i in range(len(_feided)):
-        (_feided[i], c02900[i]) = Adj_calc(e35300_0[i], e35600_0[i], 
-        e35910_0[i], e03150[i], e03210[i], e03600[i], e03260[i], e03270[i], 
-        e03300[i], e03400[i], e03500[i], e03280[i], e03900[i], e04000[i], 
-        e03700[i], e03220[i], e03230[i], e03240[i], e03290[i] )
-
-    return (_feided, c02900)
-
 def Adj(pm, pf):
     # Adjustments
     outputs = \
-        pf._feided, pf.c02900 = \
-            Adj_apply(    
-                pf._feided, pf.c02900, pf.e35300_0, pf.e35600_0, pf.e35910_0,
-                pf.e03150, pf.e03210, pf.e03600, pf.e03260, pf.e03270, pf.e03300,
-                pf.e03400, pf.e03500, pf.e03280, pf.e03900, pf.e04000, pf.e03700,
-                pf.e03220, pf.e03230, pf.e03240, pf.e03290)
-
+        pf._feided, pf.c02900 = Adj_calc(pm, pf)
+          
     header = ['_feided', 'c02900']
 
-    return DataFrame(data=np.column_stack(outputs),
+    ans = DataFrame(data=np.column_stack(outputs),
                      columns=header)
 
+    ans.to_csv("adj_new.csv", float_format= '%1.3f', sep=',', header=True, index=False)
+    return ans
 
 @jit(nopython=True)
 def CapGains_calc(  e23250, e22250, e23660, _sep, _feided, feimax,
