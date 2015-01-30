@@ -3,7 +3,7 @@ import pandas as pd
 import inspect
 from numba import jit, vectorize, guvectorize
 from functools import wraps
-from io import StringIO
+from six import StringIO
 
 
 def extract_array(f):
@@ -109,7 +109,7 @@ def create_apply_function_string(sigout, sigin):
     s.write("jitted_f(" + ",".join(in_index) + ")\n")
     s.write("  return " + ",".join(out_args) + "\n")
 
-    return s.getvalue()
+    return s.getvalue().encode("utf-8")
 
 
 def apply_jit(dtype_sig_out, dtype_sig_in, **kwargs):
