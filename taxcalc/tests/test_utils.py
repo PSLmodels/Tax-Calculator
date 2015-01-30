@@ -5,9 +5,9 @@ sys.path.append(os.path.join(cur_path, "../../"))
 sys.path.append(os.path.join(cur_path, "../"))
 import numpy as np
 import pandas as pd
+from pandas.util.testing import assert_frame_equal
 from numba import jit, vectorize, guvectorize
 from taxcalc import *
-
 
 @extract_array
 @vectorize(['int32(int32)'])
@@ -124,3 +124,37 @@ def test_expand_2D_short_array():
     exp[1:] = exp2
     res = expand_2D(x, num_years=5)
     assert(np.allclose(exp, res))
+
+
+@apply_jit("a, b", "x, y, z", nopython=True)
+def Magic_calc(x, y, z):
+    a = x + y
+    b = x + y + z
+    return (a, b)
+
+
+def Magic(pm, pf):
+    # Adjustments
+    outputs = \
+        pf.a, pf.b = \
+            Magic_calc(pm, pf)
+
+    header = ['a', 'b']
+    return DataFrame(data=np.column_stack(outputs),
+                     columns=header)
+
+class Foo(object):
+    pass
+
+
+def test_magic():
+    pm = Foo()
+    pf = Foo()
+    pm.a = np.ones((5,))
+    pm.b = np.ones((5,))
+    pf.x = np.ones((5,))
+    pf.y = np.ones((5,))
+    pf.z = np.ones((5,))
+    xx = Magic(pm, pf)
+    exp = DataFrame(data=[[2.0, 3.0]] * 5, columns=["a", "b"])
+    assert_frame_equal(xx, exp)
