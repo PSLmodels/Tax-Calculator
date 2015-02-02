@@ -28,45 +28,20 @@ def run(puf=True):
     to the DataFrame to be printed, one line saves the dataFrame to be printed 
     first, and then saves the variable to be used by a following function second. 
     """
+
+    # Create a Parameters object
+    params = Parameters()
+
+    # Create a Public Use File object
     tax_dta = pd.read_csv("puf2.csv")
+    puf = PUF(tax_dta)
 
-    calc = Calculator(tax_dta)
-    set_input_data(calc)
-    update_globals_from_calculator(calc)
+    # Create a Calculator
+    calc = Calculator(parameters=params, puf=puf)
+    totaldf = calc.calc_all_test()
 
-    update_calculator_from_module(calc, parameters)
-
-    calculated = DataFrame()
-
-    calculated = concat([calculated, FilingStatus(calc)], axis=1)
-    calculated = concat([calculated, Adj(calc)], axis=1)
-    calculated = concat([calculated, CapGains(calc)], axis = 1)
-    calculated = concat([calculated, SSBenefits(calc)], axis=1)
-    calculated = concat([calculated, AGI(calc)], axis=1)
-    calculated = concat([calculated, ItemDed(puf, calc)], axis=1)
-    calculated = concat([calculated, EI_FICA(calc)], axis=1)
-    calculated = concat([calculated, StdDed(calc)], axis=1)
-    calculated = concat([calculated, XYZD(calc)], axis=1)
-    calculated = concat([calculated, NonGain(calc)], axis=1)
-    calculated = concat([calculated, TaxGains(calc)], axis=1)
-    calculated = concat([calculated, MUI(calc)], axis=1)
-    calculated = concat([calculated, AMTI(puf, calc)], axis=1)
-    calculated = concat([calculated, F2441(puf, calc)], axis=1)
-    calculated = concat([calculated, DepCareBen(calc)], axis=1)
-    calculated = concat([calculated, ExpEarnedInc(calc)], axis=1)
-    calculated = concat([calculated, RateRed(calc)], axis=1)
-    calculated = concat([calculated, NumDep(puf, calc)], axis=1)
-    calculated = concat([calculated, ChildTaxCredit(calc)], axis=1)
-    calculated = concat([calculated, AmOppCr(calc)], axis=1)
-    calculated = concat([calculated, LLC(puf, calc)], axis=1)
-    calculated = concat([calculated, RefAmOpp(calc)], axis=1)
-    calculated = concat([calculated, NonEdCr(calc)], axis=1)
-    calculated = concat([calculated, AddCTC(puf, calc)], axis=1)
-    calculated = concat([calculated, F5405()], axis=1)
-    calculated = concat([calculated, C1040(puf, calc)], axis=1)
-    calculated = concat([calculated, DEITC(calc)], axis=1)
-    calculated = concat([calculated, SOIT(calc)], axis=1)
-    to_csv("results.csv", calculated)
+    # drop duplicates
+    totaldf = totaldf.T.groupby(level=0).first().T
 
 
 if __name__ == '__main__':
