@@ -92,6 +92,29 @@ def test_make_Calculator_json():
     assert all(calc2._aged == np.array([[1500], [1200]]))
 
 
+def test_make_Parameters_credit_udfs():
+
+
+    user_mods = '{ "credit_udf_0": [[100], [200], [300]] }'
+    params = parameters(mods=user_mods)
+    #calc2 = calculator(params, puf, mods=user_mods, _amex=np.array([4000]))
+    assert all(params.udf_credit0 == np.array([100]))
+    assert all(params.udf_credit1 == np.array([200]))
+    assert all(params.udf_credit2 == np.array([300]))
+
+
+def test_make_Parameters_credit_udfs_and_run():
+    user_mods = '{ "credit_udf_0": [[100], [200], [300]] }'
+    params = parameters(mods=user_mods, start_year=91)
+
+    # Create a Public Use File object
+    puf = PUF(tax_dta)
+
+    # Create a Calculator
+    calc = Calculator(parameters=params, puf=puf)
+    totaldf = calc.calc_all()
+
+
 def test_Calculator_attr_access_to_params():
 
     # Create a Parameters object

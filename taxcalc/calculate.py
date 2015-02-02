@@ -67,6 +67,8 @@ class Calculator(object):
         RateRed(self.parameters, self.puf)
         NumDep(self.parameters, self.puf)
         ChildTaxCredit(self.parameters, self.puf)
+        if (hasattr(self.parameters, 'udf_credit0')):
+            Credit_UDF(self.parameters, self.puf)
         AmOppCr(self.parameters, self.puf)
         LLC(self.parameters, self.puf)
         RefAmOpp(self.parameters, self.puf)
@@ -98,6 +100,9 @@ class Calculator(object):
         add_df(all_dfs, RateRed(self.parameters, self.puf))
         add_df(all_dfs, NumDep(self.parameters, self.puf))
         add_df(all_dfs, ChildTaxCredit(self.parameters, self.puf))
+        if (hasattr(self.parameters, 'udf_credit0')):
+            add_df(all_dfs, Credit_UDF(self.parameters, self.puf))
+
         add_df(all_dfs, AmOppCr(self.parameters, self.puf))
         add_df(all_dfs, LLC(self.parameters, self.puf))
         add_df(all_dfs, RefAmOpp(self.parameters, self.puf))

@@ -2296,6 +2296,35 @@ def SOIT(pm, pf):
     header = ['c10300', '_eitc']
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
+@jit(nopython=True)
+def Credit_UDF_calc(_precrd, udf_credit0, udf_credit1, udf_credit2):
+
+    for i in range(len(udf_credit0)):
+        _precrd += udf_credit0[i] + udf_credit1[i] + udf_credit2[i]
+    return _precrd
+
+
+@jit(nopython=True)
+def Credit_UDF_apply(_precrd, udf_credit0, udf_credit1, udf_credit2):
+
+    for i in range(len(_precrd)):
+        _precrd[i] = Credit_UDF_calc(_precrd[i], udf_credit0, udf_credit1, udf_credit2)
+
+    return _precrd
+
+def Credit_UDF(pm, pf):
+
+    outputs = pf._precrd = Credit_UDF_apply(pf._precrd, pm.udf_credit0, pm.udf_credit1,
+                                      pm.udf_credit2)
+
+
+    import pdb
+    pdb.set_trace()
+    header = ['_precrd']
+
+    return DataFrame(data=pf._precrd, columns=header)
+
+
 
 def Taxer(inc_in, inc_out, MARS, pm, pf):
     low = np.where(inc_in < 3000, 1, 0)
