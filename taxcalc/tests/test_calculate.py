@@ -3,7 +3,9 @@ import sys
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, "../../"))
 import numpy as np
+from numpy.testing import assert_array_equal
 import pandas as pd
+import pytest
 from numba import jit, vectorize, guvectorize
 from taxcalc import *
 
@@ -110,6 +112,25 @@ def test_Calculator_attr_access_to_params():
     assert hasattr(calc, '_almdep')
     # local attribute
     assert hasattr(calc, 'parameters')
+
+
+def test_Calculator_set_attr_passes_through():
+
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+    # Create a Public Use File object
+    puf = PUF(tax_dta)
+    # Create a Calculator
+    calc = Calculator(parameters=params, puf=puf)
+
+    assert id(calc.e00200) == id(calc.puf.e00200)
+    calc.e00200 = calc.e00200 + 100
+    assert id(calc.e00200) == id(calc.puf.e00200)
+    assert_array_equal( calc.e00200, calc.puf.e00200)
+
+    with pytest.raises(AttributeError):
+        calc.foo == 14
+
 
 
 class TaxCalcError(Exception):
