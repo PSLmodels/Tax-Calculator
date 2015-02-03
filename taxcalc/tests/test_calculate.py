@@ -3,7 +3,9 @@ import sys
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, "../../"))
 import numpy as np
+from numpy.testing import assert_array_equal
 import pandas as pd
+import pytest
 from numba import jit, vectorize, guvectorize
 from taxcalc import *
 
@@ -13,6 +15,7 @@ tax_dta = pd.read_csv(os.path.join(CUR_PATH, "../../tax_all91_puf.gz"),
                       compression='gzip')
 # Fix-up. MIdR needs to be type int64 to match PUF
 tax_dta['midr'] = tax_dta['midr'].astype('int64')
+tax_dta['s006'] = np.arange(0,len(tax_dta['s006']))
 
 
 def add_df(alldfs, df):
@@ -90,6 +93,7 @@ def test_make_Calculator_json():
     calc2 = calculator(params, puf, mods=user_mods, _amex=np.array([4000]))
     assert all(calc2._amex == np.array([4000]))
     assert all(calc2._aged == np.array([[1500], [1200]]))
+    assert all(calc2.aged == np.array([1500]))
 
 
 def test_Calculator_attr_access_to_params():
@@ -109,6 +113,63 @@ def test_Calculator_attr_access_to_params():
     assert hasattr(calc, '_almdep')
     # local attribute
     assert hasattr(calc, 'parameters')
+
+
+def test_Calculator_set_attr_passes_through():
+
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+    # Create a Public Use File object
+    puf = PUF(tax_dta)
+    # Create a Calculator
+    calc = Calculator(parameters=params, puf=puf)
+
+    assert id(calc.e00200) == id(calc.puf.e00200)
+    calc.e00200 = calc.e00200 + 100
+    assert id(calc.e00200) == id(calc.puf.e00200)
+    assert_array_equal( calc.e00200, calc.puf.e00200)
+
+    with pytest.raises(AttributeError):
+        calc.foo == 14
+
+
+def test_Calculator_create_distribution_table():
+
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+    # Create a Public Use File object
+    puf = PUF(tax_dta)
+    # Create a Calculator
+    calc = Calculator(parameters=params, puf=puf)
+    calc.calc_all()
+
+    t1 = create_distribution_table(calc, groupby="weighted_deciles")
+    t2 = create_distribution_table(calc, groupby="agi_bins")
+    assert type(t1) == DataFrame
+    assert type(t2) == DataFrame
+
+def test_Calculator_create_difference_table():
+
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+    # Create a Public Use File object
+    puf = PUF(tax_dta)
+    # Create a Calculator
+    calc = Calculator(parameters=params, puf=puf)
+    calc.calc_all()
+
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+    # Create a Public Use File object
+    puf = PUF(tax_dta)
+    user_mods = '{ "_rt7": [0.45] }'
+    calc2 = calculator(params, puf, mods=user_mods)
+
+    t1 = create_difference_table(calc, calc2, groupby="weighted_deciles")
+    t2 = create_difference_table(calc, calc2, groupby="agi_bins")
+    assert type(t1) == DataFrame
+    assert type(t2) == DataFrame
+
 
 
 class TaxCalcError(Exception):

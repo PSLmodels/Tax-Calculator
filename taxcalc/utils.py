@@ -256,6 +256,39 @@ def results(c):
     return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
 
 
+def create_distribution_table(calc, groupby):
+    res = results(calc)
+    if groupby == "weighted_deciles":
+        gp = groupby_weighted_decile(res)
+    elif groupby == "agi_bins":
+        gp = groupby_income_bins(res)
+    else:
+        err = "groupby must be either 'weighted_deciles' or 'agi_bins'"
+        raise ValueError(err)
+
+    return gp[TABLE_COLUMNS].mean()
+
+def create_difference_table(calc1, calc2, groupby):
+    res1 = results(calc1)
+    res2 = results(calc2)
+    if groupby == "weighted_deciles":
+        gp = groupby_weighted_decile(res2)
+    elif groupby == "agi_bins":
+        gp = groupby_income_bins(res2)
+    else:
+        err = "groupby must be either 'weighted_deciles' or 'agi_bins'"
+        raise ValueError(err)
+
+
+    # Difference in plans
+    # Positive values are the magnitude of the tax increase
+    # Negative values are the magnitude of the tax decrease
+    res2['tax_diff'] = res2['c05200'] - res1['c05200']
+
+    diffs = means_and_comparisons(res2, 'tax_diff', gp)
+    return diffs
+
+
 def create_tables(calc1, calc2):
 
     # where do the results differ..
