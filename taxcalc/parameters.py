@@ -5,7 +5,7 @@ from .utils import expand_array
 class Parameters(object):
 
     def __init__(self, start_year=2013, budget_years=10,
-                 inflation_rate=0.2):
+                 inflation_rate=0.02):
         self._current_year = start_year
         self._start_year = start_year
 
