@@ -139,26 +139,11 @@ def expand_array(x, inflation_rate=0.02, num_years=10):
 
 
 def count_gt_zero(agg):
-        return sum([1 for a in agg if a > 0])
+    return sum([1 for a in agg if a > 0])
 
 
 def count_lt_zero(agg):
-        return sum([1 for a in agg if a < 0])
-
-
-def groupby_decile(df):
-    """
-
-    Group by each 10% of AGI
-
-    """
-
-    # Groupby c00100 deciles
-    decile_bins = list(range(1, 11))
-    df['c00100'].replace(to_replace=0, value=np.nan, inplace=True)
-    df['decs'] = pd.qcut(df['c00100'], 10, labels=decile_bins)
-
-    return df.groupby('decs')
+    return sum([1 for a in agg if a < 0])
 
 
 def groupby_weighted_decile(df):
@@ -221,32 +206,6 @@ def means_and_comparisons(df, col_name, gp):
     diffs['share_of_change'] = diffs['tot_change']/(df[col_name].sum())
 
     return diffs
-
-
-def groupby_means_and_comparisons(df1, df2):
-    """
-    df1 is the standard plan X, mask, and X'
-    df2 is the user-specified plan (Plan Y)
-    """
-
-    #Group first
-    gp2_dec = groupby_weighted_decile(df2)
-    gp2_bin = groupby_income_bins(df2)
-
-    # Difference in plans
-    # Positive values are the magnitude of the tax increase
-    # Negative values are the magnitude of the tax decrease
-    df2['tax_diff'] = df2['c05200'] - df1['c05200']
-
-
-    diffs_dec = means_and_comparisons(df2, 'tax_diff', gp2_dec)
-    diffs_bin = means_and_comparisons(df2, 'tax_diff', gp2_bin)
-
-    #       upper left    upper right   lower left   lower right
-    return (gp2_dec.mean(),
-            diffs_dec,
-            gp2_bin.mean(),
-            diffs_bin)
 
 
 def results(c):
