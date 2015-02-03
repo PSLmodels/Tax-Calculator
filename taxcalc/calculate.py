@@ -24,6 +24,11 @@ def calculator(parameters, puf, mods="", **kwargs):
     calc = Calculator(parameters, puf)
     if kwargs:
         calc.__dict__.update(kwargs)
+        for name, vals in kwargs.items():
+            if name.startswith("_"):
+                arr = getattr(calc, name)
+                setattr(calc, name[1:], arr[0])
+
     return calc
 
 class Calculator(object):

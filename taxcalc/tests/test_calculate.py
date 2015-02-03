@@ -90,6 +90,7 @@ def test_make_Calculator_json():
     calc2 = calculator(params, puf, mods=user_mods, _amex=np.array([4000]))
     assert all(calc2._amex == np.array([4000]))
     assert all(calc2._aged == np.array([[1500], [1200]]))
+    assert all(calc2.aged == np.array([1500]))
 
 
 def test_Calculator_attr_access_to_params():
