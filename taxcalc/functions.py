@@ -2318,8 +2318,6 @@ def Credit_UDF(pm, pf):
                                       pm.udf_credit2)
 
 
-    import pdb
-    pdb.set_trace()
     header = ['_precrd']
 
     return DataFrame(data=pf._precrd, columns=header)
