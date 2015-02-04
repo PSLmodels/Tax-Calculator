@@ -28,15 +28,21 @@ def run(puf=True):
     to the DataFrame to be printed, one line saves the dataFrame to be printed 
     first, and then saves the variable to be used by a following function second. 
     """
-    tax_dta = pd.read_csv("puf2.csv")
+
+    # Create a Parameters object
     params = Parameters()
 
     # Create a Public Use File object
+    tax_dta = pd.read_csv("puf2.csv")
     puf = PUF(tax_dta)
 
     # Create a Calculator
     calc = Calculator(parameters=params, puf=puf)
     totaldf = calc.calc_all_test()
+
+    # drop duplicates
+    totaldf = totaldf.T.groupby(level=0).first().T
+
     to_csv("results.csv", totaldf)
 
 if __name__ == '__main__':
