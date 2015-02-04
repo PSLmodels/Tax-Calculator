@@ -148,6 +148,12 @@ class Calculator(object):
 
 
     def mtr(self, income_type_string, diff = 100):
+        """
+        This method calculates the marginal tax rate for every record. 
+        In order to avoid kinks, we find the marginal rates associated with 
+        both a tax increase and a tax decrease and use the more modest of 
+        the two. 
+        """
 
         income_type = getattr(self, income_type_string)
         
