@@ -24,27 +24,55 @@ def calculator(parameters, puf, mods="", **kwargs):
     calc = Calculator(parameters, puf)
     if kwargs:
         calc.__dict__.update(kwargs)
+        for name, vals in kwargs.items():
+            if name.startswith("_"):
+                arr = getattr(calc, name)
+                setattr(calc, name[1:], arr[0])
+
     return calc
 
 class Calculator(object):
 
     def __init__(self, parameters, puf):
-        self.parameters = parameters
-        self.puf = puf
+        self._parameters = parameters
+        self._puf = puf
         assert puf.current_year == parameters.current_year
 
-    def __getattr__(self, val):
+    @property
+    def parameters(self):
+        return self._parameters
 
-        if val in self.__dict__:
-            return self.__dict__[val]
+    @property
+    def puf(self):
+        return self._puf
+
+    def __getattr__(self, name):
+        """
+        Only allowed attributes on a Calculator are 'parameters' and 'puf'
+        """
+
+        if hasattr(self.parameters, name):
+            return getattr(self.parameters, name)
+        elif hasattr(self.puf, name):
+            return getattr(self.puf, name)
         else:
-            try:
-                return getattr(self.parameters, val)
-            except AttributeError:
-                try:
-                    return getattr(self.puf, val)
-                except AttributeError:
-                    raise
+            raise AttributeError(name + " not found")
+
+    def __setattr__(self, name, val):
+        """
+        Only allowed attributes on a Calculator are 'parameters' and 'puf'
+        """
+
+        if name == "_parameters" or name == "_puf":
+            self.__dict__[name] = val
+            return
+
+        if hasattr(self.parameters, name):
+            return setattr(self.parameters, name, val)
+        elif hasattr(self.puf, name):
+            return setattr(self.puf, name, val)
+        else:
+            self.__setattr__(name, val)
 
 
     def calc_all(self):
