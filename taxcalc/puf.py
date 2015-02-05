@@ -19,9 +19,13 @@ class PUF(object):
     Advancing years is done through a member function
     """
 
-    def __init__(self, puf_data="puf2.csv", current_year=None):
+    def __init__(   self, puf_data="puf2.csv", 
+                    blowup_factors="StageIFactors.csv",
+                    weights="WEIGHTS.csv",
+                    current_year=None):
 
-        self.read(puf_data)
+        self.read_puf(puf_data)
+        self.read_blowup(blowup_factors)
         if (current_year):
             self._current_year = current_year
         else:
@@ -31,11 +35,224 @@ class PUF(object):
     def current_year(self):
         return self._current_year
 
+    @property
+    def blowup(self):
+    
+
+        self.e00200  =   self.e00200  *   self.BF.AWAGE[self._current_year]
+        self.e00300  =   self.e00300  *   self.BF.AINTS[self._current_year]
+        self.e00400  =   self.e00400  *   self.BF.AINTS[self._current_year]
+        self.e00600  =   self.e00600  *   self.BF.ADIVS[self._current_year]
+        self.e00650  =   self.e00650  *   self.BF.ADIVS[self._current_year]
+        self.e00700  =   self.e00700  *   self.BF.ATXPY[self._current_year]
+        self.e00800  =   self.e00800  *   self.BF.ATXPY[self._current_year]
+        self.e00900  =   np.where(self.e00900 >= 0,
+                         self.e00900  *   self.BF.ASCHCI[self._current_year],
+                         self.e00900  *   self.BF.ASCHCL[self._current_year]
+                         )
+        self.e01000  =   np.where(self.e01000 >= 0.,
+                         self.e01000  *   self.BF.ACGNS[self._current_year],
+                         self.e01000
+                         )
+        self.e01100  =   self.e01100  *   self.BF.ACGNS[self._current_year]
+        self.e01200  =   self.e01200  *   self.BF.ACGNS[self._current_year]
+        self.e01400  =   self.e01400  *   self.BF.ATXPY[self._current_year]
+        self.e01500  =   self.e01500  *   self.BF.ATXPY[self._current_year]
+        self.e01700  =   self.e01700  *   self.BF.ATXPY[self._current_year]
+        self.e02000  =   np.where(self.e00200 >= 0, 
+                         self.e02000  *  self.BF.ASCHEI[self._current_year], 
+                         self.e02000  *  self.BF.ASCHEL[self._current_year]
+                         )
+        self.e02100  =   self.e02100  *   self.BF.ASCHF[self._current_year]
+        self.e02300  =   self.e02300  *   self.BF.AUCOMP[self._current_year]
+        self.e02400  =   self.e02400  *   self.BF.ASOCSEC[self._current_year]
+        self.e02500  =   self.e02500  *   self.BF.ASOCSEC[self._current_year] # Taxable Social Security is a calculated field
+        self.e03150  =   self.e03150  *   self.BF.ATXPY[self._current_year]
+        self.e03210  =   self.e03210  *   self.BF.ATXPY[self._current_year]
+        self.e03220  =   self.e03220  *   self.BF.ATXPY[self._current_year]
+        self.e03230  =   self.e03230  *   self.BF.ATXPY[self._current_year]
+        self.e03260  =   self.e03260  *   self.BF.ASCHCI[self._current_year]
+        self.e03270  =   self.e03270  *   self.BF.ACPIM[self._current_year]
+        self.e03240  =   self.e03240  *   self.BF.AGDPN[self._current_year]
+        self.e03290  =   self.e03290  *   self.BF.ACPIM[self._current_year]
+        self.e03300  =   self.e03300  *   self.BF.ATXPY[self._current_year]
+        self.e03400  =   self.e03400  *   self.BF.ATXPY[self._current_year]
+        self.e03500  =   self.e03500  *   self.BF.ATXPY[self._current_year]
+        self.e00100  =   self.e00100  *   1. # Adjusted Gross Income is a calculated field
+        self.p04470  =   self.p04470  *   1.
+        self.e04250  =   self.e04250  *   1.
+        self.e04600  =   self.e04600  *   1.
+        self.e04800  =   self.e04800  *   1.
+        self.e05100  =   self.e05100  *   1.
+        self.e05200  =   self.e05200  *   1.
+        self.e05800  =   self.e05800  *   1.
+        self.e06000  =   self.e06000  *   1.
+        self.e06200  =   self.e06200  *   1.
+        self.e06300  =   self.e06300  *   1.
+        self.e09600  =   self.e09600  *   1.
+        self.e07180  =   self.e07180  *   1.
+        self.e07200  =   self.e07200  *   1.
+        self.e07220  =   self.e07220  *   1.
+        self.e07230  =   self.e07230  *   self.BF.ATXPY[self._current_year]
+        self.e07240  =   self.e07240  *   self.BF.ATXPY[self._current_year]
+        self.e07260  =   self.e07260  *   self.BF.ATXPY[self._current_year]
+        self.e07300  =   self.e07300  *   self.BF.ABOOK[self._current_year]
+        self.e07400  =   self.e07400  *   self.BF.ABOOK[self._current_year]
+        self.e07600  =   self.e07600  *   1.
+        self.p08000  =   self.p08000  *   self.BF.ATXPY[self._current_year]
+        self.e07150  =   self.e07150  *   1.
+        self.e06500  =   self.e06500  *   1.
+        self.e08800  =   self.e08800  *   1.
+        self.e09400  =   self.e09400  *   1.
+        self.e09700  =   self.e09700  *   self.BF.ATXPY[self._current_year]
+        self.e09800  =   self.e09800  *   self.BF.ATXPY[self._current_year]
+        self.e09900  =   self.e09900  *   self.BF.ATXPY[self._current_year]
+        self.e10300  =   self.e10300  *   1.
+        self.e10700  =   self.e10700  *   self.BF.ATXPY[self._current_year]
+        self.e10900  =   self.e10900  *   self.BF.ATXPY[self._current_year]
+        self.e59560  =   self.e59560  *   self.BF.ATXPY[self._current_year]
+        self.e59680  =   self.e59680  *   self.BF.ATXPY[self._current_year]
+        self.e59700  =   self.e59700  *   self.BF.ATXPY[self._current_year]
+        self.e59720  =   self.e59720  *   self.BF.ATXPY[self._current_year]
+        self.e11550  =   self.e11550  *   self.BF.ATXPY[self._current_year]
+        self.e11070  =   self.e11070  *   self.BF.ATXPY[self._current_year]
+        self.e11100  =   self.e11100  *   self.BF.ATXPY[self._current_year]
+        self.e11200  =   self.e11200  *   self.BF.ATXPY[self._current_year]
+        self.e11300  =   self.e11300  *   self.BF.ATXPY[self._current_year]
+        self.e11400  =   self.e11400  *   self.BF.ATXPY[self._current_year]
+        self.e11570  =   self.e11570  *   self.BF.ATXPY[self._current_year]
+        self.e11580  =   self.e11580  *   self.BF.ATXPY[self._current_year]
+        self.e11581  =   self.e11581  *   self.BF.ATXPY[self._current_year]
+        self.e11582  =   self.e11582  *   self.BF.ATXPY[self._current_year]
+        self.e11583  =   self.e11583  *   self.BF.ATXPY[self._current_year]
+        self.e10605  =   self.e10605  *   self.BF.ATXPY[self._current_year]
+        self.e11900  =   self.e11900  *   1.
+        self.e12000  =   self.e12000  *   1.
+        self.e12200  =   self.e12200  *   1.
+        """  ITeMIZeD DeDUCTIONS """
+        self.e17500  =   self.e17500  *   self.BF.ACPIM[self._current_year]
+        self.e18425  =   self.e18425  *   self.BF.ATXPY[self._current_year]
+        self.e18450  =   self.e18450  *   self.BF.ATXPY[self._current_year]
+        self.e18500  =   self.e18500  *   self.BF.ATXPY[self._current_year]
+        self.e19200  =   self.e19200  *   self.BF.ATXPY[self._current_year]
+        self.e19550  =   self.e19550  *   self.BF.ATXPY[self._current_year]
+        self.e19800  =   self.e19800  *   self.BF.ATXPY[self._current_year]
+        self.e20100  =   self.e20100  *   self.BF.ATXPY[self._current_year]
+        self.e19700  =   self.e19700  *   self.BF.ATXPY[self._current_year]
+        self.e20550  =   self.e20550  *   self.BF.ATXPY[self._current_year]
+        self.e20600  =   self.e20600  *   self.BF.ATXPY[self._current_year]
+        self.e20400  =   self.e20400  *   self.BF.ATXPY[self._current_year]
+        self.e20800  =   self.e20800  *   self.BF.ATXPY[self._current_year]
+        self.e20500  =   self.e20500  *   self.BF.ATXPY[self._current_year]
+        self.e21040  =   self.e21040  *   self.BF.ATXPY[self._current_year]
+        """  CAPITAL GAINS   """
+        self.p22250  =   self.p22250  *   self.BF.ACGNS[self._current_year]
+        self.e22320  =   self.e22320  *   self.BF.ACGNS[self._current_year]
+        self.e22370  =   self.e22370  *   self.BF.ACGNS[self._current_year]
+        self.p23250  =   self.p23250  *   self.BF.ACGNS[self._current_year]
+        self.e24515  =   self.e24515  *   self.BF.ACGNS[self._current_year]
+        self.e24516  =   self.e24516  *   self.BF.ACGNS[self._current_year]
+        self.e24518  =   self.e24518  *   self.BF.ACGNS[self._current_year]
+        self.e24535  =   self.e24535  *   self.BF.ACGNS[self._current_year]
+        self.e24560  =   self.e24560  *   self.BF.ACGNS[self._current_year]
+        self.e24598  =   self.e24598  *   self.BF.ACGNS[self._current_year]
+        self.e24615  =   self.e24615  *   self.BF.ACGNS[self._current_year]
+        self.e24570  =   self.e24570  *   self.BF.ACGNS[self._current_year]
+        """  SCHeDULe e  """
+        self.p25350  =   self.p25350  *   self.BF.ASCHEI[self._current_year]
+        self.e25370  =   self.e25370  *   self.BF.ASCHEI[self._current_year]
+        self.e25380  =   self.e25380  *   self.BF.ASCHEI[self._current_year]
+        self.p25470  =   self.p25470  *   self.BF.ASCHEI[self._current_year]
+        self.p25700  =   self.p25700  *   self.BF.ASCHEI[self._current_year]
+        self.e25820  =   self.e25820  *   self.BF.ASCHEI[self._current_year]
+        self.e25850  =   self.e25850  *   self.BF.ASCHEI[self._current_year]
+        self.e25860  =   self.e25860  *   self.BF.ASCHEI[self._current_year]
+        self.e25940  =   self.e25940  *   self.BF.ASCHEI[self._current_year]
+        self.e25980  =   self.e25980  *   self.BF.ASCHEI[self._current_year]
+        self.e25920  =   self.e25920  *   self.BF.ASCHEI[self._current_year]
+        self.e25960  =   self.e25960  *   self.BF.ASCHEI[self._current_year]
+        self.e26110  =   self.e26110  *   self.BF.ASCHEI[self._current_year]
+        self.e26170  =   self.e26170  *   self.BF.ASCHEI[self._current_year]
+        self.e26190  =   self.e26190  *   self.BF.ASCHEI[self._current_year]
+        self.e26160  =   self.e26160  *   self.BF.ASCHEI[self._current_year]
+        self.e26180  =   self.e26180  *   self.BF.ASCHEI[self._current_year]
+        self.e26270  =   self.e26270  *   self.BF.ASCHEI[self._current_year]
+        self.e26100  =   self.e26100  *   self.BF.ASCHEI[self._current_year]
+        self.e26390  =   self.e26390  *   self.BF.ASCHEI[self._current_year]
+        self.e26400  =   self.e26400  *   self.BF.ASCHEI[self._current_year]
+        self.e27200  =   self.e27200  *   self.BF.ASCHEI[self._current_year]
+        """  MISCeLLANOUS SCHeDULeS"""
+        self.e30400  =   self.e30400  *   self.BF.ASCHCI[self._current_year]
+        self.e30500  =   self.e30500  *   self.BF.ASCHCI[self._current_year]
+        self.e32800  =   self.e32800  *   self.BF.ATXPY[self._current_year]
+        self.e33000  =   self.e33000  *   self.BF.ATXPY[self._current_year]
+        self.e53240  =   self.e53240  *   self.BF.ATXPY[self._current_year]
+        self.e53280  =   self.e53280  *   self.BF.ATXPY[self._current_year]
+        self.e53410  =   self.e53410  *   self.BF.ATXPY[self._current_year]
+        self.e53300  =   self.e53300  *   self.BF.ATXPY[self._current_year]
+        self.e53317  =   self.e53317  *   self.BF.ATXPY[self._current_year]
+        self.e53458  =   self.e53458  *   self.BF.ATXPY[self._current_year]
+        self.e58950  =   self.e58950  *   self.BF.ATXPY[self._current_year]
+        self.e58990  =   self.e58990  *   self.BF.ATXPY[self._current_year]
+        self.p60100  =   self.p60100  *   self.BF.ATXPY[self._current_year]
+        self.p61850  =   self.p61850  *   self.BF.ATXPY[self._current_year]
+        self.e60000  =   self.e60000  *   self.BF.ATXPY[self._current_year]
+        self.e62100  =   self.e62100  *   self.BF.ATXPY[self._current_year]
+        self.e62900  =   self.e62900  *   self.BF.ATXPY[self._current_year]
+        self.e62720  =   self.e62720  *   self.BF.ATXPY[self._current_year]
+        self.e62730  =   self.e62730  *   self.BF.ATXPY[self._current_year]
+        self.e62740  =   self.e62740  *   self.BF.ATXPY[self._current_year]
+        self.p65300  =   self.p65300  *   self.BF.ATXPY[self._current_year]
+        self.p65400  =   self.p65400  *   self.BF.ATXPY[self._current_year]
+        self.e68000  =   self.e68000  *   self.BF.ATXPY[self._current_year]
+        self.e82200  =   self.e82200  *   self.BF.ATXPY[self._current_year]
+        self.t27800  =   self.t27800  *   self.BF.ATXPY[self._current_year]
+        self.s27860  =   self.s27860  *   self.BF.ATXPY[self._current_year]
+        self.p27895  =   self.p27895  *   self.BF.ATXPY[self._current_year]
+        self.e87500  =   self.e87500  *   self.BF.ATXPY[self._current_year]
+        self.e87510  =   self.e87510  *   self.BF.ATXPY[self._current_year]
+        self.e87520  =   self.e87520  *   self.BF.ATXPY[self._current_year]
+        self.e87530  =   self.e87530  *   self.BF.ATXPY[self._current_year]
+        self.e87540  =   self.e87540  *   self.BF.ATXPY[self._current_year]
+        self.e87550  =   self.e87550  *   self.BF.ATXPY[self._current_year]
+        self.RECID   =   self.RECID   *   1.
+        self.s006    =   self.s006    *   1.
+        self.s008    =   self.s008    *   1.
+        self.s009    =   self.s009    *   1.
+        self.WSAMP   =   self.WSAMP   *   1.
+        self.TXRT    =   self.TXRT    *   1.
+
     def increment_year(self):
         self._current_year += 1
         self.FLPDYR += 1
+        self.blowup
 
-    def read(self, puf_data):
+    def read_blowup(self, blowup_factors):
+        if isinstance(blowup_factors, pd.core.frame.DataFrame):
+            BF = blowup_factors
+        else:
+            BF = pd.read_csv(blowup_factors, index_col='YEAR')
+
+        BF.AGDPN = BF.AGDPN / BF.APOPN
+        BF.ATXPY = BF. ATXPY / BF. APOPN
+        BF.AWAGE = BF.AWAGE / BF.APOPN
+        BF.ASCHCI = BF.ASCHCI / BF.APOPN
+        BF.ASCHCL = BF.ASCHCL / BF.APOPN
+        BF.ASCHF = BF.ASCHF / BF.APOPN
+        BF.AINTS = BF.AINTS / BF.APOPN
+        BF.ADIVS = BF.ADIVS / BF.APOPN
+        BF.ASCHEI = BF.ASCHEI / BF.APOPN
+        BF.ASCHEL = BF.ASCHEL / BF.APOPN
+        BF.ACGNS = BF.ACGNS / BF.APOPN
+        BF.ABOOK = BF.ABOOK / BF.APOPN
+        BF.ASOCSEC = BF.ASOCSEC / BF.APOPN 
+
+        BF = 1 + BF.pct_change()
+
+        setattr(self, 'BF', BF)
+
+
+    def read_puf(self, puf_data):
         if isinstance(puf_data, pd.core.frame.DataFrame):
             tax_dta = puf_data
         else:
@@ -230,7 +447,7 @@ class PUF(object):
                  ('e68000', 'e68000'),
                  ('e82200', 'e82200'),
                  ('t27800', 't27800'),
-                 ('e27860', 's27860'),
+                 ('s27860', 's27860'),
                  ('p27895', 'p27895'),
                  ('e87500', 'e87500'),
                  ('e87510', 'e87510'),
@@ -249,7 +466,7 @@ class PUF(object):
         self.dim = len(tax_dta)
 
         for attrname, varname in names:
-            setattr(self, attrname, tax_dta[varname].values)
+            setattr(self, attrname, tax_dta[varname])
 
         # zero'd out "nonconst" data
         zeroed_names = ['e35300_0', 'e35600_0', 'e35910_0', 'x03150', 'e03600',
@@ -350,4 +567,5 @@ class PUF(object):
         self.e25470 = self.p25470
         self.e08000 = self.p08000
         self.e60100 = self.p60100
+        self.e27860 = self.s27860
         self.SOIYR = np.repeat(2008, self.dim)
