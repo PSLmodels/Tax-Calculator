@@ -290,7 +290,7 @@ def StdDed_calc( DSI, _earned, stded, e04470,
     if _exact == 1 and MARS == 3 or MARS == 5:
         c04200 = e04200
     else:
-        c04200 = _numextra * aged[_txpyers - 1]
+        c04200 = _numextra * aged[int(_txpyers - 1)]
 
     c15200 = c04200
 
