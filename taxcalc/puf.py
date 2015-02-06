@@ -35,6 +35,12 @@ class PUF(object):
     def current_year(self):
         return self._current_year
 
+    def increment_year(self):
+        self._current_year += 1
+        self.FLPDYR += 1
+        self.blowup
+
+
     @property
     def blowup(self):
     
@@ -129,7 +135,7 @@ class PUF(object):
         self.e11900  =   self.e11900  *   1.
         self.e12000  =   self.e12000  *   1.
         self.e12200  =   self.e12200  *   1.
-        """  ITeMIZeD DeDUCTIONS """
+        """  ITEMIZED DEDUCTIONS """
         self.e17500  =   self.e17500  *   self.BF.ACPIM[self._current_year]
         self.e18425  =   self.e18425  *   self.BF.ATXPY[self._current_year]
         self.e18450  =   self.e18450  *   self.BF.ATXPY[self._current_year]
@@ -158,7 +164,7 @@ class PUF(object):
         self.e24598  =   self.e24598  *   self.BF.ACGNS[self._current_year]
         self.e24615  =   self.e24615  *   self.BF.ACGNS[self._current_year]
         self.e24570  =   self.e24570  *   self.BF.ACGNS[self._current_year]
-        """  SCHeDULe e  """
+        """  SCHEDULE E  """
         self.p25350  =   self.p25350  *   self.BF.ASCHEI[self._current_year]
         self.e25370  =   self.e25370  *   self.BF.ASCHEI[self._current_year]
         self.e25380  =   self.e25380  *   self.BF.ASCHEI[self._current_year]
@@ -181,7 +187,7 @@ class PUF(object):
         self.e26390  =   self.e26390  *   self.BF.ASCHEI[self._current_year]
         self.e26400  =   self.e26400  *   self.BF.ASCHEI[self._current_year]
         self.e27200  =   self.e27200  *   self.BF.ASCHEI[self._current_year]
-        """  MISCeLLANOUS SCHeDULeS"""
+        """  MISCELLANOUS SCHEDULES"""
         self.e30400  =   self.e30400  *   self.BF.ASCHCI[self._current_year]
         self.e30500  =   self.e30500  *   self.BF.ASCHCI[self._current_year]
         self.e32800  =   self.e32800  *   self.BF.ATXPY[self._current_year]
@@ -222,16 +228,19 @@ class PUF(object):
         self.WSAMP   =   self.WSAMP   *   1.
         self.TXRT    =   self.TXRT    *   1.
 
-    def increment_year(self):
-        self._current_year += 1
-        self.FLPDYR += 1
-        self.blowup
 
     def read_blowup(self, blowup_factors):
         if isinstance(blowup_factors, pd.core.frame.DataFrame):
             BF = blowup_factors
         else:
-            BF = pd.read_csv(blowup_factors, index_col='YEAR')
+            try:
+                BF = pd.read_csv(blowup_factors, index_col='YEAR')
+            except IOError:
+                print "Missing a csv file with blowup factors. \
+Please pass such a csv as PUF(blowup_factors='[FILENAME]') ."
+                raise
+                # TODO, we will need to pass this to the Calculator once 
+                # we proceed with github issue #117. 
 
         BF.AGDPN = BF.AGDPN / BF.APOPN
         BF.ATXPY = BF. ATXPY / BF. APOPN
