@@ -19,13 +19,15 @@ class PUF(object):
     Advancing years is done through a member function
     """
 
-    def __init__(   self, puf_data="puf2.csv", 
+    def __init__(   self, 
+                    puf_data="puf2.csv", 
                     blowup_factors="StageIFactors.csv",
                     weights="WEIGHTS.csv",
                     current_year=None):
 
         self.read_puf(puf_data)
         self.read_blowup(blowup_factors)
+        self.read_weights(weights)
         if (current_year):
             self._current_year = current_year
         else:
@@ -38,13 +40,14 @@ class PUF(object):
     def increment_year(self):
         self._current_year += 1
         self.FLPDYR += 1
+        # Implement Stage 1 Extrapolation blowup factors
         self.blowup
+        # Implement Stage 2 Extrapolation reweighting. 
+        self.s006 = self.WT["WT"+str(self.current_year)]
 
 
     @property
     def blowup(self):
-    
-
         self.e00200  =   self.e00200  *   self.BF.AWAGE[self._current_year]
         self.e00300  =   self.e00300  *   self.BF.AINTS[self._current_year]
         self.e00400  =   self.e00400  *   self.BF.AINTS[self._current_year]
@@ -228,6 +231,21 @@ class PUF(object):
         self.WSAMP   =   self.WSAMP   *   1.
         self.TXRT    =   self.TXRT    *   1.
 
+    def read_weights(self, weights):
+        if isinstance(weights, pd.core.frame.DataFrame):
+            WT = weights 
+        else: 
+            try:
+                WT = pd.read_csv(weights)
+            except IOError:
+                print "Missing a csv file with weights from the second \
+stage data of the data extrapolation. Please pass such a file as \
+PUF(weights='[FILENAME]')."
+                raise
+                # TODO, we will need to pass the csv to the Calculator once 
+                # we proceed with github issue #117. 
+
+        setattr(self, 'WT', WT)
 
     def read_blowup(self, blowup_factors):
         if isinstance(blowup_factors, pd.core.frame.DataFrame):
@@ -237,9 +255,9 @@ class PUF(object):
                 BF = pd.read_csv(blowup_factors, index_col='YEAR')
             except IOError:
                 print "Missing a csv file with blowup factors. \
-Please pass such a csv as PUF(blowup_factors='[FILENAME]') ."
+Please pass such a csv as PUF(blowup_factors='[FILENAME]')."
                 raise
-                # TODO, we will need to pass this to the Calculator once 
+                # TODO, we will need to pass the csv to the Calculator once 
                 # we proceed with github issue #117. 
 
         BF.AGDPN = BF.AGDPN / BF.APOPN
