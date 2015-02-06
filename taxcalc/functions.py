@@ -2,35 +2,18 @@ import pandas as pd
 from pandas import DataFrame
 import math
 import numpy as np
-from .utils import *
+from .decorators import *
 
-@jit(nopython=True)
-def FilingStatus_calc(MARS):
+@iterate_jit(nopython=True)
+def FilingStatus(MARS):
     if MARS == 3 or MARS == 6:
         _sep = 2
     else: _sep = 1
 
     return _sep 
 
-@jit(nopython=True)
-def FilingStatus_apply(MARS, _sep):
-    for i in range(len(MARS)):
-        _sep[i] = FilingStatus_calc(MARS[i])
-
-    return _sep
-
-def FilingStatus(pm, pf):
-    # Filing based on marital status
-    # TODO: get rid of _txp in tests
-    outputs = pf._sep = FilingStatus_apply(pf.MARS, pf._sep)
-    header = ['_sep']
-    return DataFrame(data=(outputs), columns=header)
-
-
-@apply_jit("_feided, c02900", """"e35300_0, e35600_0, e35910_0, e03150, e03210, 
-                e03600, e03260, e03270, e03300, e03400, e03500, e03280, e03900, 
-                e04000, e03700, e03220, e03230, e03240, e03290""", nopython=True)
-def Adj_calc(   e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
+@iterate_jit(nopython=True)
+def Adj(   e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
                 e03270, e03300, e03400, e03500, e03280, e03900, e04000,
                 e03700, e03220, e03230, e03240, e03290 ):
     # Adjustments
@@ -45,21 +28,8 @@ def Adj_calc(   e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
     return (_feided, c02900)
 
 
-def Adj(pm, pf):
-    # Adjustments
-    outputs = \
-        pf._feided, pf.c02900 = Adj_calc(pm, pf)
-          
-    header = ['_feided', 'c02900']
-
-    ans = DataFrame(data=np.column_stack(outputs),
-                     columns=header)
-
-    ans.to_csv("adj_new.csv", float_format= '%1.3f', sep=',', header=True, index=False)
-    return ans
-
-@jit(nopython=True)
-def CapGains_calc(  e23250, e22250, e23660, _sep, _feided, feimax,
+@iterate_jit(parameters=['feimax'], nopython=True)
+def CapGains(  e23250, e22250, e23660, _sep, _feided, feimax,
                     f2555, e00200, e00300, e00600, e00700, e00800,
                     e00900, e01100, e01200, e01400, e01700, e02000, e02100,
                     e02300, e02600, e02610, e02800, e02540, e00400, e02400,
@@ -81,49 +51,9 @@ def CapGains_calc(  e23250, e22250, e23660, _sep, _feided, feimax,
 
     return (c23650, c01000, c02700, _ymod1, _ymod2, _ymod3, _ymod)
 
-@jit(nopython=True)
-def CapGains_apply( c23650, c01000, c02700, _ymod1, _ymod2, _ymod3, _ymod, 
-                    e23250, e22250, e23660, _sep, _feided, _feimax,
-                    f2555, e00200, e00300, e00600, e00700, e00800,
-                    e00900, e01100, e01200, e01400, e01700, e02000, e02100,
-                    e02300, e02600, e02610, e02800, e02540, e00400, e02400,
-                    c02900, e03210, e03230, e03240, e02615):
-    for i in range(len(c23650)):
-        (   c23650[i], c01000[i], c02700[i], _ymod1[i], _ymod2[i], _ymod3[i], 
-            _ymod[i]) = CapGains_calc(  e23250[i], e22250[i], e23660[i], 
-            _sep[i], _feided[i], _feimax, f2555[i], 
-            e00200[i], e00300[i], e00600[i], e00700[i], e00800[i], e00900[i], 
-            e01100[i], e01200[i], e01400[i], e01700[i], e02000[i], e02100[i],
-            e02300[i], e02600[i], e02610[i], e02800[i], e02540[i], e00400[i], 
-            e02400[i], c02900[i], e03210[i], e03230[i], e03240[i], e02615[i])
 
-    return (c23650, c01000, c02700, _ymod1, _ymod2, _ymod3, _ymod)
-
-def CapGains(pm, pf):
-    # Capital Gains
-
-    outputs = \
-        (pf.c23650, pf.c01000, pf.c02700, pf._ymod1,
-         pf._ymod2, pf._ymod3, pf._ymod) = \
-            CapGains_apply(
-                pf.c23650, pf.c01000, pf.c02700, pf._ymod1,
-                pf._ymod2, pf._ymod3, pf._ymod, pf.e23250, pf.e22250,
-                pf.e23660, pf._sep, pf._feided, pm.feimax,
-                pf.f2555, pf.e00200, pf.e00300, pf.e00600,
-                pf.e00700, pf.e00800, pf.e00900, pf.e01100, pf.e01200, pf.e01400,
-                pf.e01700, pf.e02000, pf.e02100, pf.e02300, pf.e02600, pf.e02610,
-                pf.e02800, pf.e02540, pf.e00400, pf.e02400, pf.c02900, pf.e03210,
-                pf.e03230, pf.e03240, pf.e02615)
-
-    header = ['c23650', 'c01000', 'c02700', '_ymod1', '_ymod2',
-                               '_ymod3', '_ymod']
-
-    return DataFrame(data=np.column_stack(outputs),
-                     columns=header)
-
-
-@jit(nopython=True)
-def SSBenefits_calc(SSIND, MARS, e02500, _ymod, e02400, _ssb50, _ssb85):
+@iterate_jit(parameters=["_ssb50", "_ssb85"], nopython=True)
+def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, _ssb50, _ssb85):
 
     if SSIND !=0 or MARS == 3 or MARS == 6:
         c02500 = e02500
@@ -135,39 +65,13 @@ def SSBenefits_calc(SSIND, MARS, e02500, _ymod, e02400, _ssb50, _ssb85):
         c02500 = min(0.85 * (_ymod - _ssb85[MARS-1]) +
                     0.50 * min(e02400, _ssb85[MARS-1] -
                     _ssb50[MARS-1]), 0.85 * e02400)
+    c02500 = float(c02500)
 
-    return (float(c02500), e02500)
-
-
-@jit(nopython=True)
-def SSBenefits_apply(   SSIND, MARS, e02500, _ymod, e02400, _ssb50, _ssb85, 
-                        c02500):
-
-    for i in range(len(SSIND)):
-        (c02500[i], e02500[i]) = SSBenefits_calc(SSIND[i], MARS[i], e02500[i],
-        _ymod[i], e02400[i], _ssb50, _ssb85)
-
-    return (c02500, e02500)    
+    return (c02500, e02500)
 
 
-def SSBenefits(pm, pf):
-    # Social Security Benefit Taxation
-
-    outputs = \
-        pf.c02500, pf.e02500 = \
-            SSBenefits_apply(
-                pf.SSIND, pf.MARS, pf.e02500, pf._ymod, pf.e02400, pm._ssb50,
-                pm._ssb85, pf.c02500)
-
-    header = ['c02500', 'e02500']
-
-    return DataFrame(data=np.column_stack(outputs),
-                     columns=['c02500', 'e02500']) # why return e02500?
-
-
-
-@jit(nopython=True)
-def AGI_calc(   _ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT, 
+@iterate_jit(parameters=["amex", "exmpb"], nopython=True)
+def AGI(   _ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT, 
                 amex, exmpb, MARS, _sep, _fixup):
 
     # Adjusted Gross Income
@@ -193,39 +97,7 @@ def AGI_calc(   _ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
 
     c04600 = _prexmp * (1 - _dispc)
     
-    return (c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp, 
-            c04600)
-
-@jit(nopython=True)
-def AGI_apply(  _ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT, 
-                amex, exmpb, MARS, _sep, _fixup, c02650, 
-                c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp, c04600):
-    for i in range(len(_posagi)):
-        (   c02650[i], c00100[i], _agierr[i], _posagi[i], _ywossbe[i], 
-            _ywossbc[i], _prexmp[i], c04600[i]) = AGI_calc(_ymod1[i], c02500[i], 
-            c02700[i], e02615[i], c02900[i], e00100[i], e02500[i], XTOT[i], 
-            amex, exmpb, MARS[i], _sep[i], _fixup[i])
-
-    return (c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp, 
-            c04600)
-
-def AGI(pm, pf):
-    # Adjusted Gross Income
-
-    outputs = \
-        (pf.c02650, pf.c00100, pf._agierr, pf._posagi,
-         pf._ywossbe, pf._ywossbc, pf._prexmp, pf.c04600) = \
-            AGI_apply(
-                pf._ymod1, pf.c02500, pf.c02700, pf.e02615, pf.c02900, pf.e00100,
-                pf.e02500, pf.XTOT, pm.amex, pm.exmpb,
-                pf.MARS, pf._sep, pf._fixup, pf.c02650, pf.c00100, pf._agierr, pf._posagi,
-                pf._ywossbe, pf._ywossbc, pf._prexmp, pf.c04600)
-
-    header = [  'c02650', 'c00100', '_agierr', '_posagi', '_ywossbe', 
-                '_ywossbc', '_prexmp', 'c04600']
-
-    return DataFrame(data=np.column_stack(outputs),
-                     columns=header)
+    return (c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp, c04600)
 
 
 @jit(nopython=True)
@@ -296,11 +168,18 @@ def ItemDed_calc(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900
     else:
         c04470 = c21060
 
+    c20400 = float(c20400)
 
     # the variables that are casted as floats below can be either floats or ints depending
     # on which if/else branches they follow in the above code. they need to always be the same type
-    return (c17750, c17000, _sit1, _sit, _statax, c18300, float(c37703), float(c20500),
-            c20750, float(c20400), float(c19200), c20800, c19700, c21060, _phase2_i,
+
+    c20400 = float(c20400)
+    c19200 = float(c19200)
+    c37703 = float(c37703)
+    c20500 = float(c20500)
+
+    return (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500,
+            c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
             _nonlimited, _limitratio, c04470, c21040)
 
 
@@ -353,8 +232,8 @@ def ItemDed(pm, pf, puf=True):
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
-@jit(nopython=True)
-def EI_FICA_calc(   e00900, e02100, ssmax, e00200,
+@iterate_jit(parameters=["ssmax"], nopython=True)
+def EI_FICA(   e00900, e02100, ssmax, e00200,
                     e11055, e00250, e30100):
     # Earned Income and FICA #
 
@@ -372,34 +251,6 @@ def EI_FICA_calc(   e00900, e02100, ssmax, e00200,
     _earned = max(0, e00200 + e00250 + e11055 + e30100 + _sey - _seyoff)
 
     return (_sey, _fica, _setax, _seyoff, c11055, _earned)
-
-
-@jit(nopython=True)
-def EI_FICA_apply(  _sey, _fica, _setax, _seyoff, c11055, _earned, e00900, 
-                    e02100, ssmax, e00200,
-                    e11055, e00250, e30100):
-
-    for i in range(len(_sey)):
-        (_sey[i], _fica[i], _setax[i], _seyoff[i], c11055[i], _earned[i]
-            ) = EI_FICA_calc(
-                e00900[i], e02100[i], ssmax, e00200[i],
-                e11055[i], e00250[i], e30100[i])
-
-    return (_sey, _fica, _setax, _seyoff, c11055, _earned)
-
-
-def EI_FICA(pm, pf):
-
-    outputs =  \
-        pf._sey, pf._fica, pf._setax, pf._seyoff, pf.c11055, pf._earned = \
-            EI_FICA_apply(
-                pf._sey, pf._fica, pf._setax, pf._seyoff, pf.c11055, pf._earned, pf.e00900,
-                pf.e02100, pm.ssmax, pf.e00200, pf.e11055,
-                pf.e00250, pf.e30100)
-
-    header = ['_sey', '_fica', '_setax', '_seyoff', 'c11055', '_earned']
-
-    return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
 @jit(nopython=True)

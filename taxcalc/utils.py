@@ -1,9 +1,4 @@
 import numpy as np
-import pandas as pd
-import inspect
-from numba import jit, vectorize, guvectorize
-from functools import wraps
-from six import StringIO
 
 
 def extract_array(f):
@@ -16,62 +11,6 @@ def extract_array(f):
         arrays = [arg.values for arg in args]
         return f(*arrays)
     return wrapper
-
-
-def dataframe_guvectorize(dtype_args, dtype_sig):
-    """
-    Extracts numpy arrays from caller arguments and passes them
-    to guvectorized numba functions
-    """
-    def make_wrapper(func):
-        vecd_f = guvectorize(dtype_args, dtype_sig)(func)
-
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            # np_arrays = [getattr(args[0], i).values for i in theargs]
-            arrays = [arg.values for arg in args]
-            ans = vecd_f(*arrays)
-            return ans
-        return wrapper
-    return make_wrapper
-
-
-def dataframe_vectorize(dtype_args):
-    """
-    Extracts numpy arrays from caller arguments and passes them
-    to vectorized numba functions
-    """
-    def make_wrapper(func):
-        vecd_f = vectorize(dtype_args)(func)
-
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            # np_arrays = [getattr(args[0], i).values for i in theargs]
-            arrays = [arg.values for arg in args]
-            ans = vecd_f(*arrays)
-            return ans
-        return wrapper
-    return make_wrapper
-
-
-def dataframe_wrap_guvectorize(dtype_args, dtype_sig):
-    """
-    Extracts particular numpy arrays from caller argments and passes
-    them to guvectorize. Goes one step further than dataframe_guvectorize
-    by looking for the column names in the dataframe and just extracting those
-    """
-    def make_wrapper(func):
-        theargs = inspect.getargspec(func).args
-        vecd_f = guvectorize(dtype_args, dtype_sig)(func)
-
-        def wrapper(*args, **kwargs):
-            np_arrays = [getattr(args[0], i).values for i in theargs]
-            ans = vecd_f(*np_arrays)
-            return ans
-        return wrapper
-    return make_wrapper
-
-
 
 
 def expand_1D(x, inflation_rate=0.02, num_years=10):
@@ -92,63 +31,6 @@ def expand_1D(x, inflation_rate=0.02, num_years=10):
             return ans.astype(x.dtype, casting='unsafe')
 
     return expand_1D(np.array([x]))
-
-
-def create_apply_function_string(sigout, sigin):
-    s = StringIO()
-    total_len = len(sigout) + len(sigin)
-    out_args = ["x_" + str(i) for i in range(0, len(sigout))]
-    in_args = ["x_" + str(i) for i in range(len(sigout), total_len)]
-
-    s.write("def ap_func({0}):\n".format(",".join(out_args + in_args)))
-    s.write("  for i in range(len(x_0)):\n")
-
-    out_index = [x + "[i]" for x in out_args]
-    in_index = [x + "[i]" for x in in_args]
-    s.write("    " + ",".join(out_index) + " = ")
-    s.write("jitted_f(" + ",".join(in_index) + ")\n")
-    s.write("  return " + ",".join(out_args) + "\n")
-
-    return s.getvalue().encode("utf-8")
-
-
-def apply_jit(dtype_sig_out, dtype_sig_in, **kwargs):
-    """
-    make a decorator that takes in a _calc-style function, handle the apply step
-    """
-    dtype_sig_out = [s.strip() for s in dtype_sig_out.split(",")]
-    dtype_sig_in = [s.strip() for s in dtype_sig_in.split(",")]
-    dtype_sigs = dtype_sig_out + dtype_sig_in
-    def make_wrapper(func):
-        theargs = inspect.getargspec(func).args
-        jitted_f = jit(**kwargs)(func)
-        apfunc = create_apply_function_string(dtype_sig_out, dtype_sig_in)
-        func_code = compile(apfunc, "<string>", "exec")
-        fakeglobals = {}
-        eval(func_code, {"jitted_f": jitted_f}, fakeglobals)
-        jitted_apply = jit(**kwargs)(fakeglobals['ap_func'])
-
-        def wrapper(*args, **kwargs):
-            in_arrays = []
-            out_arrays = []
-            for farg in theargs:
-                if hasattr(args[0], farg):
-                    in_arrays.append(getattr(args[0], farg))
-                else:
-                    in_arrays.append(getattr(args[1], farg))
-
-            for farg in dtype_sig_out:
-                if hasattr(args[0], farg):
-                    out_arrays.append(getattr(args[0], farg))
-                else:
-                    out_arrays.append(getattr(args[1], farg))
-
-            final_array = out_arrays + in_arrays
-            ans = jitted_apply(*final_array)
-            return ans
-
-        return wrapper
-    return make_wrapper
 
 
 def expand_2D(x, inflation_rate=0.02, num_years=10):
