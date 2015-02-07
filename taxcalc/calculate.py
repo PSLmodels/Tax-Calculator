@@ -74,6 +74,21 @@ class Calculator(object):
         else:
             self.__setattr__(name, val)
 
+    def __getitem__(self, val):
+
+        if val in self.__dict__:
+            return self.__dict__[val]
+        else:
+            try:
+                return getattr(self.parameters, val)
+            except AttributeError:
+                try:
+                    return getattr(self.puf, val)
+                except AttributeError:
+                    raise
+
+
+
 
     def calc_all(self):
         FilingStatus(self.parameters, self.puf)

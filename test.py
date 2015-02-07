@@ -43,8 +43,7 @@ def run(puf=True):
     # drop duplicates
     totaldf = totaldf.T.groupby(level=0).first().T
 
-    to_csv("results_new.csv", totaldf)
-
+    to_csv("results.csv", totaldf)
 
 if __name__ == '__main__':
     run()
