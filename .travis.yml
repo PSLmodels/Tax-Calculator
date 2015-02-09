@@ -13,7 +13,7 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update conda
   - conda create -n test-environment python=$TRAVIS_PYTHON_VERSION pytest numpy pandas
-  - conda install -n test-environment numba networkx
+  - conda install -n test-environment numba networkx six
   - source activate test-environment
   - python setup.py install
 
