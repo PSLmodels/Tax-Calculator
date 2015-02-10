@@ -4,7 +4,19 @@ import inspect
 from numba import jit, vectorize, guvectorize
 from functools import wraps
 from six import StringIO
+import ast
 
+
+class GetReturnNode(ast.NodeVisitor):
+    """
+    A Visitor to get the return tuple names from a calc-style
+    function
+    """
+    def visit_Return(self, node):
+        if isinstance(node.value, ast.Tuple):
+            return [e.id for e in node.value.elts]
+        else: 
+            return [node.value.id]
 
 def dataframe_guvectorize(dtype_args, dtype_sig):
     """
@@ -249,29 +261,17 @@ def iterate_jit(parameters=None, **kwargs):
         src = inspect.getsourcelines(func)[0]
 
 
-        # Discover the return arguments from the function
-        # through parsing source - BOO!
-        return_line = None
-        begin_idx = None
+        # Discover the return arguments by walking
+        # the AST of the function
         all_returned_vals = []
-        for line in reversed(src):
-            idx = line.rfind('return')
-            all_returned_vals.append(line)
-            if (idx >= 0):
-                return_line = line
+        gnr = GetReturnNode()
+        all_out_args = None
+        for node in ast.walk(ast.parse(''.join(src))):
+            all_out_args = gnr.visit(node)
+            if all_out_args:
                 break
 
-        if return_line is not None:
-            #edit out 'return'
-            all_returned_vals[-1] = return_line[idx+6:].strip(" ,()\n")
-            all_out_args = []
-            for ret_line in all_returned_vals:
-                out_args = [out.strip() for out in
-                        ret_line.strip(" ,()\n").split(",")]
-                out_args.extend(all_out_args)
-                all_out_args = out_args
-
-        else:
+        if not all_out_args:
             raise ValueError("Can't find return statement in function!")
 
         # Now create the apply jitted function
