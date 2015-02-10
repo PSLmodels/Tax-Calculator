@@ -2,6 +2,35 @@ import numpy as np
 from .utils import expand_array
 
 
+def parameters(mods="", **kwargs):
+    udf_cred0 = list()
+    udf_cred1 = list()
+    udf_cred2 = list()
+    if mods:
+        import json
+        dd = json.loads(mods)
+        dd = {k:np.array(v) for k,v in dd.items() if type(v) == list}
+        if "credit_udf_0" in dd:
+            udf_count = 0
+            udf_count_key = "credit_udf_" + str(udf_count)
+            while udf_count_key in dd:
+                cred0, cred1, cred2 = dd[udf_count_key]
+                udf_cred0.extend(cred0)
+                udf_cred1.extend(cred1)
+                udf_cred2.extend(cred2)
+                udf_count += 1
+                udf_count_key = "credit_udf_" + str(udf_count)
+
+
+    pm = Parameters(**kwargs)
+    if udf_cred0:
+        pm.__dict__.update({'udf_credit0': np.array(udf_cred0),
+                              'udf_credit1': np.array(udf_cred1),
+                              'udf_credit2': np.array(udf_cred2)})
+    return pm
+
+
+
 class Parameters(object):
 
     def __init__(self, start_year=2013, budget_years=10,
