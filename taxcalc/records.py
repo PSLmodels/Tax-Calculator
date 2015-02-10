@@ -7,21 +7,24 @@ import numpy as np
 import os.path
 
 
-class PUF(object):
+class Records(object):
     """
-    This class represents the data from a Public Use File.
-    Instances of this class hold all of the data from a PUF file in memory
+    This class represents the data for a collection of tax records. Typically,
+    this would come from a Public Use File. Much of the current implementation
+    is based on reading a PUF file, although other types of records could
+    be read.
+    Instances of this class hold all of the record data in memory
     to be used by the Calculator. Each pieces of member data represents
     a column of the data. Each entry in the column is the value of the data
     attribute for a particular taxpayer record.
-    A federal tax year is assumed. The year can be given to the PUF
+    A federal tax year is assumed. The year can be given to the Record
     constructor.
     Advancing years is done through a member function
     """
 
-    def __init__(self, puf_data="puf2.csv", current_year=None):
+    def __init__(self, data="puf2.csv", current_year=None):
 
-        self.read(puf_data)
+        self.read(data)
         if (current_year):
             self._current_year = current_year
         else:
@@ -35,11 +38,11 @@ class PUF(object):
         self._current_year += 1
         self.FLPDYR += 1
 
-    def read(self, puf_data):
-        if isinstance(puf_data, pd.core.frame.DataFrame):
-            tax_dta = puf_data
+    def read(self, data):
+        if isinstance(data, pd.core.frame.DataFrame):
+            tax_dta = data
         else:
-            tax_dta = pd.read_csv(puf_data)
+            tax_dta = pd.read_csv(data)
 
         # pairs of 'name of attribute', 'column name' - often the same
         names = [('AGIR1', 'agir1'),

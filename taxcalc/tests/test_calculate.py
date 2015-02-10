@@ -31,10 +31,10 @@ def run(puf=True):
     params = Parameters(start_year=91)
 
     # Create a Public Use File object
-    puf = PUF(tax_dta)
+    puf = Records(tax_dta)
 
     # Create a Calculator
-    calc = Calculator(parameters=params, puf=puf)
+    calc = Calculator(parameters=params, records=puf)
     totaldf = calc.calc_all_test()
 
     # drop duplicates
@@ -64,7 +64,7 @@ def test_make_Calculator():
     params = Parameters(start_year=91)
 
     # Create a Public Use File object
-    puf = PUF(tax_dta)
+    puf = Records(tax_dta)
 
     calc = Calculator(params, puf)
 
@@ -75,7 +75,7 @@ def test_make_Calculator_mods():
     params = Parameters(start_year=91)
 
     # Create a Public Use File object
-    puf = PUF(tax_dta)
+    puf = Records(tax_dta)
 
     calc2 = calculator(params, puf, _amex=np.array([4000]))
     assert all(calc2._amex == np.array([4000]))
@@ -87,7 +87,7 @@ def test_make_Calculator_json():
     params = Parameters(start_year=91)
 
     # Create a Public Use File object
-    puf = PUF(tax_dta)
+    puf = Records(tax_dta)
 
     user_mods = '{ "_aged": [[1500], [1200]] }'
     calc2 = calculator(params, puf, mods=user_mods, _amex=np.array([4000]))
@@ -102,12 +102,12 @@ def test_Calculator_attr_access_to_params():
     params = Parameters(start_year=91)
 
     # Create a Public Use File object
-    puf = PUF(tax_dta)
+    puf = Records(tax_dta)
 
     # Create a Calculator
-    calc = Calculator(parameters=params, puf=puf)
+    calc = Calculator(parameters=params, records=puf)
 
-    # PUF data
+    # Records data
     assert hasattr(calc, 'c01000')
     # Parameter data
     assert hasattr(calc, '_almdep')
@@ -120,14 +120,14 @@ def test_Calculator_set_attr_passes_through():
     # Create a Parameters object
     params = Parameters(start_year=91)
     # Create a Public Use File object
-    puf = PUF(tax_dta)
+    puf = Records(tax_dta)
     # Create a Calculator
-    calc = Calculator(parameters=params, puf=puf)
+    calc = Calculator(parameters=params, records=puf)
 
-    assert id(calc.e00200) == id(calc.puf.e00200)
+    assert id(calc.e00200) == id(calc.records.e00200)
     calc.e00200 = calc.e00200 + 100
-    assert id(calc.e00200) == id(calc.puf.e00200)
-    assert_array_equal( calc.e00200, calc.puf.e00200)
+    assert id(calc.e00200) == id(calc.records.e00200)
+    assert_array_equal( calc.e00200, calc.records.e00200)
 
     with pytest.raises(AttributeError):
         calc.foo == 14
@@ -138,9 +138,9 @@ def test_Calculator_create_distribution_table():
     # Create a Parameters object
     params = Parameters(start_year=91)
     # Create a Public Use File object
-    puf = PUF(tax_dta)
+    puf = Records(tax_dta)
     # Create a Calculator
-    calc = Calculator(parameters=params, puf=puf)
+    calc = Calculator(parameters=params, records=puf)
     calc.calc_all()
 
     t1 = create_distribution_table(calc, groupby="weighted_deciles")
@@ -153,15 +153,15 @@ def test_Calculator_create_difference_table():
     # Create a Parameters object
     params = Parameters(start_year=91)
     # Create a Public Use File object
-    puf = PUF(tax_dta)
+    puf = Records(tax_dta)
     # Create a Calculator
-    calc = Calculator(parameters=params, puf=puf)
+    calc = Calculator(parameters=params, records=puf)
     calc.calc_all()
 
     # Create a Parameters object
     params = Parameters(start_year=91)
     # Create a Public Use File object
-    puf = PUF(tax_dta)
+    puf = Records(tax_dta)
     user_mods = '{ "_rt7": [0.45] }'
     calc2 = calculator(params, puf, mods=user_mods)
 
