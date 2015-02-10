@@ -15,6 +15,7 @@ tax_dta = pd.read_csv(os.path.join(CUR_PATH, "../../tax_all91_puf.gz"),
                       compression='gzip')
 # Fix-up. MIdR needs to be type int64 to match PUF
 tax_dta['midr'] = tax_dta['midr'].astype('int64')
+tax_dta['s006'] = np.arange(0,len(tax_dta['s006']))
 
 
 def add_df(alldfs, df):
@@ -130,6 +131,44 @@ def test_Calculator_set_attr_passes_through():
 
     with pytest.raises(AttributeError):
         calc.foo == 14
+
+
+def test_Calculator_create_distribution_table():
+
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+    # Create a Public Use File object
+    puf = PUF(tax_dta)
+    # Create a Calculator
+    calc = Calculator(parameters=params, puf=puf)
+    calc.calc_all()
+
+    t1 = create_distribution_table(calc, groupby="weighted_deciles")
+    t2 = create_distribution_table(calc, groupby="agi_bins")
+    assert type(t1) == DataFrame
+    assert type(t2) == DataFrame
+
+def test_Calculator_create_difference_table():
+
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+    # Create a Public Use File object
+    puf = PUF(tax_dta)
+    # Create a Calculator
+    calc = Calculator(parameters=params, puf=puf)
+    calc.calc_all()
+
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+    # Create a Public Use File object
+    puf = PUF(tax_dta)
+    user_mods = '{ "_rt7": [0.45] }'
+    calc2 = calculator(params, puf, mods=user_mods)
+
+    t1 = create_difference_table(calc, calc2, groupby="weighted_deciles")
+    t2 = create_difference_table(calc, calc2, groupby="agi_bins")
+    assert type(t1) == DataFrame
+    assert type(t2) == DataFrame
 
 
 

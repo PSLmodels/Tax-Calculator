@@ -28,7 +28,6 @@ def calculator(parameters, puf, mods="", **kwargs):
             if name.startswith("_"):
                 arr = getattr(calc, name)
                 setattr(calc, name[1:], arr[0])
-
     return calc
 
 class Calculator(object):
@@ -56,7 +55,10 @@ class Calculator(object):
         elif hasattr(self.puf, name):
             return getattr(self.puf, name)
         else:
-            raise AttributeError(name + " not found")
+            try:
+                self.__dict__[name]
+            except KeyError:
+                raise AttributeError(name + " not found")
 
     def __setattr__(self, name, val):
         """
@@ -72,7 +74,7 @@ class Calculator(object):
         elif hasattr(self.puf, name):
             return setattr(self.puf, name, val)
         else:
-            self.__setattr__(name, val)
+            self.__dict__[name] = val
 
     def __getitem__(self, val):
 
