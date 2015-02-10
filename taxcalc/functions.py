@@ -208,20 +208,20 @@ def ItemDed_apply(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e1890
                 _nonlimited, _limitratio, c04470, c21040)
 
 
-def ItemDed(pm, pf, puf=True):
+def ItemDed(pm, rc, puf=True):
 
     outputs = \
-        (pf.c17750, pf.c17000, pf._sit1, pf._sit, pf._statax, pf.c18300, pf.c37703,
-         pf.c20500, pf.c20750, pf.c20400, pf.c19200, pf.c20800, pf.c19700, pf.c21060,
-         pf._phase2_i, pf._nonlimited, pf._limitratio, pf.c04470, pf.c21040) = \
+        (rc.c17750, rc.c17000, rc._sit1, rc._sit, rc._statax, rc.c18300, rc.c37703,
+         rc.c20500, rc.c20750, rc.c20400, rc.c19200, rc.c20800, rc.c19700, rc.c21060,
+         rc._phase2_i, rc._nonlimited, rc._limitratio, rc.c04470, rc.c21040) = \
             ItemDed_apply(
-                pf._posagi, pf.e17500, pf.e18400, pf.e18425, pf.e18450, pf.e18500,
-                pf.e18800, pf.e18900, pf.e20500, pf.e20400, pf.e19200, pf.e20550, pf.e20600, pf.e20950,
-                pf.e19500, pf.e19570, pf.e19400, pf.e19550, pf.e19800, pf.e20100, pf.e20200, pf.e20900,
-                pf.e21000, pf.e21010, pf.MARS, pf._sep, pf.c00100, puf,
-                pf.c17750, pf.c17000, pf._sit1, pf._sit, pf._statax, pf.c18300, pf.c37703,
-                pf.c20500, pf.c20750, pf.c20400, pf.c19200, pf.c20800, pf.c19700, pf.c21060,
-                pm.phase2, pf._phase2_i, pf._nonlimited, pf._limitratio, pf.c04470, pf.c21040)
+                rc._posagi, rc.e17500, rc.e18400, rc.e18425, rc.e18450, rc.e18500,
+                rc.e18800, rc.e18900, rc.e20500, rc.e20400, rc.e19200, rc.e20550, rc.e20600, rc.e20950,
+                rc.e19500, rc.e19570, rc.e19400, rc.e19550, rc.e19800, rc.e20100, rc.e20200, rc.e20900,
+                rc.e21000, rc.e21010, rc.MARS, rc._sep, rc.c00100, puf,
+                rc.c17750, rc.c17000, rc._sit1, rc._sit, rc._statax, rc.c18300, rc.c37703,
+                rc.c20500, rc.c20750, rc.c20400, rc.c19200, rc.c20800, rc.c19700, rc.c21060,
+                pm.phase2, rc._phase2_i, rc._nonlimited, rc._limitratio, rc.c04470, rc.c21040)
 
 
     header= ['c17750', 'c17000', '_sit1', '_sit', '_statax', 'c18300', 'c37703',
@@ -372,20 +372,20 @@ def StdDed_apply(c15100, _numextra, _txpyers, c15200,
             _othded, c04100, c04200, _standard, c04500,
             c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei)
 
-def StdDed(pm, pf):
+def StdDed(pm, rc):
     # Standard Deduction with Aged, Sched L and Real Estate #
     outputs = \
-        (pf.c15100, pf._numextra, pf._txpyers, pf.c15200,
-         pf._othded, pf.c04100, pf.c04200, pf._standard, pf.c04500,
-         pf.c04800, pf.c60000, pf._amtstd, pf._taxinc, pf._feitax, pf._oldfei) = \
+        (rc.c15100, rc._numextra, rc._txpyers, rc.c15200,
+         rc._othded, rc.c04100, rc.c04200, rc._standard, rc.c04500,
+         rc.c04800, rc.c60000, rc._amtstd, rc._taxinc, rc._feitax, rc._oldfei) = \
             StdDed_apply(
-                pf.c15100, pf._numextra, pf._txpyers, pf.c15200,
-                pf._othded, pf.c04100, pf.c04200, pf._standard, pf.c04500,
-                pf.c04800, pf.c60000, pf._amtstd, pf._taxinc, pf._feitax, pf._oldfei, pf.DSI,
-                pf._earned, pm.stded, pf.e04470,
-                pf.MARS, pf.MIdR, pf.e15360, pf.AGEP, pf.AGES, pf.PBI, pf.SBI, pf._exact, pf.e04200,
-                pm.aged, pf.c04470, pf.c00100, pf.c21060, pf.c21040, pf.e37717, pf.c04600, pf.e04805,
-                pf.t04470, pf.f6251, pf._feided, pf.c02700, pf.FDED, pm.rt1, pm.rt2, pm.rt3, pm.rt4, pm.rt5, pm.rt6, pm.rt7, pm.brk1, pm.brk2, pm.brk3, pm.brk4, pm.brk5, pm.brk6) 
+                rc.c15100, rc._numextra, rc._txpyers, rc.c15200,
+                rc._othded, rc.c04100, rc.c04200, rc._standard, rc.c04500,
+                rc.c04800, rc.c60000, rc._amtstd, rc._taxinc, rc._feitax, rc._oldfei, rc.DSI,
+                rc._earned, pm.stded, rc.e04470,
+                rc.MARS, rc.MIdR, rc.e15360, rc.AGEP, rc.AGES, rc.PBI, rc.SBI, rc._exact, rc.e04200,
+                pm.aged, rc.c04470, rc.c00100, rc.c21060, rc.c21040, rc.e37717, rc.c04600, rc.e04805,
+                rc.t04470, rc.f6251, rc._feided, rc.c02700, rc.FDED, pm.rt1, pm.rt2, pm.rt3, pm.rt4, pm.rt5, pm.rt6, pm.rt7, pm.brk1, pm.brk2, pm.brk3, pm.brk4, pm.brk5, pm.brk6) 
 
 
     header = ['c15100', '_numextra', '_txpyers', 'c15200',
@@ -417,11 +417,11 @@ def XYZD_apply(_xyztax, c05200, _taxinc, c04800, MARS, rt1, rt2, rt3, rt4, rt5, 
     return (_xyztax, c05200)
 
 
-def XYZD(pm, pf):
+def XYZD(pm, rc):
     
     outputs = \
-         pf._xyztax, pf.c05200 = \
-            XYZD_apply(pf._xyztax, pf.c05200, pf._taxinc, pf.c04800, pf.MARS, pm.rt1, pm.rt2, pm.rt3, pm.rt4, pm.rt5, pm.rt6, pm.rt7, pm.brk1, pm.brk2, pm.brk3, pm.brk4, pm.brk5, pm.brk6)
+         rc._xyztax, rc.c05200 = \
+            XYZD_apply(rc._xyztax, rc.c05200, rc._taxinc, rc.c04800, rc.MARS, pm.rt1, pm.rt2, pm.rt3, pm.rt4, pm.rt5, pm.rt6, pm.rt7, pm.brk1, pm.brk2, pm.brk3, pm.brk4, pm.brk5, pm.brk6)
     
     header = ['_xyztax', 'c05200']
 
@@ -442,10 +442,10 @@ def NonGain_apply(_cglong, _noncg, c23650, e23250, e01100):
     
     return (_cglong, _noncg)
 
-def NonGain(pm, pf):
+def NonGain(pm, rc):
 
-    outputs = pf._cglong, pf._noncg = \
-        NonGain_apply(pf._cglong, pf._noncg, pf.c23650, pf.e23250, pf.e01100)
+    outputs = rc._cglong, rc._noncg = \
+        NonGain_apply(rc._cglong, rc._noncg, rc.c23650, rc.e23250, rc.e01100)
 
     header = ['_cglong', '_noncg']
 
@@ -709,30 +709,30 @@ def TaxGains_apply(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 
 
 
-def TaxGains(pm, pf):
+def TaxGains(pm, rc):
     outputs = \
-        (pf.c00650, pf._hasgain, pf._dwks5, pf.c24505, pf.c24510, pf._dwks9, pf.c24516,
-         pf.c24580, pf._dwks12, pf.c24517, pf.c24520, pf.c24530, pf._dwks16,
-         pf._dwks17, pf.c24540, pf.c24534, pf._dwks21, pf.c24597, pf.c24598, pf._dwks25,
-         pf._dwks26, pf._dwks28, pf.c24610, pf.c24615, pf._dwks31, pf.c24550, pf.c24570,
-         pf._addtax, pf.c24560, pf._taxspecial, pf.c05100, pf.c05700, pf.c59430,
-         pf.c59450, pf.c59460, pf._line17, pf._line19, pf._line22, pf._line30, pf._line31,
-         pf._line32, pf._line36, pf._line33, pf._line34, pf._line35, pf.c59485, pf.c59490,
-         pf._s1291, pf._parents, pf.c05750, pf._taxbc) = \
+        (rc.c00650, rc._hasgain, rc._dwks5, rc.c24505, rc.c24510, rc._dwks9, rc.c24516,
+         rc.c24580, rc._dwks12, rc.c24517, rc.c24520, rc.c24530, rc._dwks16,
+         rc._dwks17, rc.c24540, rc.c24534, rc._dwks21, rc.c24597, rc.c24598, rc._dwks25,
+         rc._dwks26, rc._dwks28, rc.c24610, rc.c24615, rc._dwks31, rc.c24550, rc.c24570,
+         rc._addtax, rc.c24560, rc._taxspecial, rc.c05100, rc.c05700, rc.c59430,
+         rc.c59450, rc.c59460, rc._line17, rc._line19, rc._line22, rc._line30, rc._line31,
+         rc._line32, rc._line36, rc._line33, rc._line34, rc._line35, rc.c59485, rc.c59490,
+         rc._s1291, rc._parents, rc.c05750, rc._taxbc) = \
                 TaxGains_apply(
-                    pf.e00650, pf.c04800, pf.e01000, pf.c23650, pf.e23250, pf.e01100, pf.e58990,
-                    pf.e58980, pf.e24515, pf.e24518, pm.brk2, pf.MARS,
-                    pf._taxinc, pm.brk6, pf._xyztax, pf._feided, pf._feitax, pf._cmp,
-                    pf.e59410, pf.e59420, pf.e59440, pf.e59470, pf.e59400, pf.e83200_0, pf.e10105,
-                    pf.e74400, pf.c00650 , pf._hasgain, pf._dwks5, pf.c24505, pf.c24510,
-                    pf._dwks9, pf.c24516, pf._dwks12, pf.c24517 , pf.c24520, pf.c24530,
-                    pf._dwks16, pf._dwks17, pf.c24540, pf.c24534, pf._dwks21 , pf.c24597,
-                    pf.c24598, pf._dwks25, pf._dwks26, pf._dwks28, pf.c24610, pf.c24615,
-                    pf._dwks31 , pf.c24550 , pf.c24570 , pf._addtax, pf.c24560, pf._taxspecial,
-                    pf.c24580 , pf.c05100 , pf.c05700 , pf.c59430 ,
-                    pf.c59450 , pf.c59460 , pf._line17, pf._line19 , pf._line22 , pf._line30,
-                    pf._line31 , pf._line32 , pf._line36 ,pf._line33 , pf._line34 , pf._line35,
-                    pf.c59485 , pf.c59490, pf._s1291, pf._parents, pf.c05750, pf._taxbc, pm.rt1, pm.rt2, pm.rt3, pm.rt4, pm.rt5, pm.rt6, pm.rt7, pm.brk1, pm.brk2, pm.brk3, pm.brk4, pm.brk5, pm.brk6)
+                    rc.e00650, rc.c04800, rc.e01000, rc.c23650, rc.e23250, rc.e01100, rc.e58990,
+                    rc.e58980, rc.e24515, rc.e24518, pm.brk2, rc.MARS,
+                    rc._taxinc, pm.brk6, rc._xyztax, rc._feided, rc._feitax, rc._cmp,
+                    rc.e59410, rc.e59420, rc.e59440, rc.e59470, rc.e59400, rc.e83200_0, rc.e10105,
+                    rc.e74400, rc.c00650 , rc._hasgain, rc._dwks5, rc.c24505, rc.c24510,
+                    rc._dwks9, rc.c24516, rc._dwks12, rc.c24517 , rc.c24520, rc.c24530,
+                    rc._dwks16, rc._dwks17, rc.c24540, rc.c24534, rc._dwks21 , rc.c24597,
+                    rc.c24598, rc._dwks25, rc._dwks26, rc._dwks28, rc.c24610, rc.c24615,
+                    rc._dwks31 , rc.c24550 , rc.c24570 , rc._addtax, rc.c24560, rc._taxspecial,
+                    rc.c24580 , rc.c05100 , rc.c05700 , rc.c59430 ,
+                    rc.c59450 , rc.c59460 , rc._line17, rc._line19 , rc._line22 , rc._line30,
+                    rc._line31 , rc._line32 , rc._line36 ,rc._line33 , rc._line34 , rc._line35,
+                    rc.c59485 , rc.c59490, rc._s1291, rc._parents, rc.c05750, rc._taxbc, pm.rt1, pm.rt2, pm.rt3, pm.rt4, pm.rt5, pm.rt6, pm.rt7, pm.brk1, pm.brk2, pm.brk3, pm.brk4, pm.brk5, pm.brk6)
 
 
     ## Note var c24516 is being printed twice. On purpose? e00650 should be c00650?
@@ -770,15 +770,15 @@ def MUI_apply(c00100, _thresx, MARS, c05750, e00300, e00600, c01000, e02000):
                     e00600[i], c01000[i], e02000[i])
     return c05750
 
-def MUI(pm, pf):
+def MUI(pm, rc):
     # Additional Medicare tax on unearned Income
 
-    pf.c05750 = MUI_apply(pf.c00100, pm._thresx, pf.MARS, pf.c05750, pf.e00300, pf.e00600, pf.c01000,
-                        pf.e02000)
+    rc.c05750 = MUI_apply(rc.c00100, pm._thresx, rc.MARS, rc.c05750, rc.e00300, rc.e00600, rc.c01000,
+                        rc.e02000)
 
     header = ['c05750']
 
-    return DataFrame(data=pf.c05750,
+    return DataFrame(data=rc.c05750,
                      columns=header) 
 
 
@@ -1028,35 +1028,35 @@ def AMTI_apply( c62720, c60260, c63100, c60200, c60240, c60220,
               c09600, _othtax, c05800)
 
 
-def AMTI(pm, pf, puf=True):
+def AMTI(pm, rc, puf=True):
 
     outputs = \
-        (pf.c62720, pf.c60260, pf.c63100, pf.c60200, pf.c60240, pf.c60220,
-         pf.c60130, pf.c62730, pf._addamt, pf.c62100, pf._cmbtp, pf._edical,
-         pf._amtsepadd, pf._agep, pf._ages, pf.c62600, pf.c62700,
-         pf._alminc, pf._amtfei, pf.c62780, pf.c62900, pf.c63000, pf.c62740,
-         pf._ngamty, pf.c62745, pf.y62745, pf._tamt2, pf._amt5pc, pf._amt15pc,
-         pf._amt25pc, pf.c62747, pf.c62755, pf.c62770, pf._amt, pf.c62800,
-         pf.c09600, pf._othtax, pf.c05800) = \
+        (rc.c62720, rc.c60260, rc.c63100, rc.c60200, rc.c60240, rc.c60220,
+         rc.c60130, rc.c62730, rc._addamt, rc.c62100, rc._cmbtp, rc._edical,
+         rc._amtsepadd, rc._agep, rc._ages, rc.c62600, rc.c62700,
+         rc._alminc, rc._amtfei, rc.c62780, rc.c62900, rc.c63000, rc.c62740,
+         rc._ngamty, rc.c62745, rc.y62745, rc._tamt2, rc._amt5pc, rc._amt15pc,
+         rc._amt25pc, rc.c62747, rc.c62755, rc.c62770, rc._amt, rc.c62800,
+         rc.c09600, rc._othtax, rc.c05800) = \
                 AMTI_apply(
-                    pf.c62720, pf.c60260, pf.c63100, pf.c60200, pf.c60240, pf.c60220,
-                    pf.c60130, pf.c62730, pf._addamt, pf.c62100, pf._cmbtp, pf._edical,
-                    pf._amtsepadd, pf.c62600, pf._agep, pf._ages,  pf.c62700, pf._alminc,
-                    pf._amtfei, pf.c62780, pf.c62900, pf.c63000, pf.c62740, pf._ngamty,
-                    pf.c62745, pf.y62745, pf._tamt2, pf._amt5pc, pf._amt15pc, pf._amt25pc,
-                    pf.c62747, pf.c62755, pf.c62770, pf._amt, pf.c62800, pf.c09600,
-                    pf._othtax, pf.c05800, pf.c60000, pf._exact, pf.e60290, pf._posagi, pf.e07300,
-                    pf.x60260, pf.c24517, pf.e60300, pf.e60860, pf.e60100, pf.e60840, pf.e60630, pf.e60550,
-                    pf.e60720, pf.e60430, pf.e60500, pf.e60340, pf.e60680, pf.e60600, pf.e60405, pf.e60440,
-                    pf.e60420, pf.e60410, pf.e61400, pf.e60660, pf.e60480, pf.e62000, pf.e60250, pf._cmp,
-                    puf, pf._standard, pf.e04470, pf.e17500, pf.f6251, pf.e62100, pf.e21040, pf._sit,
-                    pf.e20800, pf.c00100, pf.c04470, pf.c17000, pf.e18500, pf.c20800, pf.c21040,
-                    pf.DOBYR, pf.FLPDYR, pf.DOBMD, pf.SDOBYR, pf.SDOBMD, pf.c02700, pf.e00100, pf.e24515,
-                    pf.x62730, pf.x60130, pf.x60220, pf.x60240, pf.c18300, pf._taxbc,
-                    pm.almsp, pm.brk6, pf.MARS, pf._sep, pm.brk2, pm.almdep, pm.cgrate1,
-                    pm.cgrate2, pm.amtys, pm.amtsep, pf.x62720, pf.e00700, pf.c24516,
-                    pf.c24520, pf.c04800, pf.e10105, pf.c05700, pf.e05800, pf.e05100, pf.e09600,
-                    pm.amtage, pf.x62740, pf.e62900, pm.almsep, pf._earned, pf.e62600, pm.amtex)
+                    rc.c62720, rc.c60260, rc.c63100, rc.c60200, rc.c60240, rc.c60220,
+                    rc.c60130, rc.c62730, rc._addamt, rc.c62100, rc._cmbtp, rc._edical,
+                    rc._amtsepadd, rc.c62600, rc._agep, rc._ages,  rc.c62700, rc._alminc,
+                    rc._amtfei, rc.c62780, rc.c62900, rc.c63000, rc.c62740, rc._ngamty,
+                    rc.c62745, rc.y62745, rc._tamt2, rc._amt5pc, rc._amt15pc, rc._amt25pc,
+                    rc.c62747, rc.c62755, rc.c62770, rc._amt, rc.c62800, rc.c09600,
+                    rc._othtax, rc.c05800, rc.c60000, rc._exact, rc.e60290, rc._posagi, rc.e07300,
+                    rc.x60260, rc.c24517, rc.e60300, rc.e60860, rc.e60100, rc.e60840, rc.e60630, rc.e60550,
+                    rc.e60720, rc.e60430, rc.e60500, rc.e60340, rc.e60680, rc.e60600, rc.e60405, rc.e60440,
+                    rc.e60420, rc.e60410, rc.e61400, rc.e60660, rc.e60480, rc.e62000, rc.e60250, rc._cmp,
+                    puf, rc._standard, rc.e04470, rc.e17500, rc.f6251, rc.e62100, rc.e21040, rc._sit,
+                    rc.e20800, rc.c00100, rc.c04470, rc.c17000, rc.e18500, rc.c20800, rc.c21040,
+                    rc.DOBYR, rc.FLPDYR, rc.DOBMD, rc.SDOBYR, rc.SDOBMD, rc.c02700, rc.e00100, rc.e24515,
+                    rc.x62730, rc.x60130, rc.x60220, rc.x60240, rc.c18300, rc._taxbc,
+                    pm.almsp, pm.brk6, rc.MARS, rc._sep, pm.brk2, pm.almdep, pm.cgrate1,
+                    pm.cgrate2, pm.amtys, pm.amtsep, rc.x62720, rc.e00700, rc.c24516,
+                    rc.c24520, rc.c04800, rc.e10105, rc.c05700, rc.e05800, rc.e05100, rc.e09600,
+                    pm.amtage, rc.x62740, rc.e62900, pm.almsep, rc._earned, rc.e62600, pm.amtex)
 
     header = ['c62720', 'c60260', 'c63100', 'c60200', 'c60240', 'c60220',
               'c60130', 'c62730', '_addamt', 'c62100', '_cmbtp', '_edical',
@@ -1125,15 +1125,15 @@ def F2441_apply(c32880, c32890, _ncu13, _dclim, c32800,
     
 
 
-def F2441(pm, pf, puf=True):
+def F2441(pm, rc, puf=True):
 
     outputs = \
-        pf._earned, pf.c32880, pf.c32890, pf._ncu13, pf._dclim, pf.c32800 = \
+        rc._earned, rc.c32880, rc.c32890, rc._ncu13, rc._dclim, rc.c32800 = \
             F2441_apply(
-                pf.c32880, pf.c32890, pf._ncu13, pf._dclim, pf.c32800,
-                pf._earned, pf._fixeic, pf.e59560, pf.MARS, puf, pf.f2441, pm.dcmax,
-                pf.e32800, pf.e32750, pf.e32775, pf.CDOB1, pf.CDOB2, pf.e32890,
-                pf.e32880)
+                rc.c32880, rc.c32890, rc._ncu13, rc._dclim, rc.c32800,
+                rc._earned, rc._fixeic, rc.e59560, rc.MARS, puf, rc.f2441, pm.dcmax,
+                rc.e32800, rc.e32750, rc.e32775, rc.CDOB1, rc.CDOB2, rc.e32890,
+                rc.e32880)
 
     header = ['_earned', 'c32880', 'c32890', '_ncu13', '_dclim', 'c32800']
 
@@ -1191,16 +1191,16 @@ def DepCareBen_apply(   _seywage, c33465, c33470, c33475, c33480, c32840,
     return _seywage, c33465, c33470, c33475, c33480, c32840, c32800, c33000
 
 
-def DepCareBen(pm, pf):
+def DepCareBen(pm, rc):
 
     outputs = \
-        pf._seywage, pf.c33465, pf.c33470, pf.c33475, pf.c33480, pf.c32840, pf.c32800, pf.c33000 = \
+        rc._seywage, rc.c33465, rc.c33470, rc.c33475, rc.c33480, rc.c32840, rc.c32800, rc.c33000 = \
             DepCareBen_apply(
-                pf._seywage, pf.c33465, pf.c33470, pf.c33475,
-                pf.c33480, pf.c32840, pf.c33000, pf.c32800, pf._cmp,
-                pf.MARS, pf.c32880, pf.c32890, pf.e33420, pf.e33430, pf.e33450,
-                pf.e33460, pf.e33465, pf.e33470, pf._sep, pf._dclim, pf.e32750,
-                pf.e32775, pf._earned)
+                rc._seywage, rc.c33465, rc.c33470, rc.c33475,
+                rc.c33480, rc.c32840, rc.c33000, rc.c32800, rc._cmp,
+                rc.MARS, rc.c32880, rc.c32890, rc.e33420, rc.e33430, rc.e33450,
+                rc.e33460, rc.e33465, rc.e33470, rc._sep, rc._dclim, rc.e32750,
+                rc.e32775, rc._earned)
 
     header = ['_seywage', 'c33465', 'c33470', 'c33475', 'c33480', 'c32840',
               'c32800', 'c33000']
@@ -1252,15 +1252,15 @@ def ExpEarnedInc_apply( _tratio, c33200, c33400, c07180, _exact, c00100,
     return _tratio, c33200, c33400, c07180
 
 
-def ExpEarnedInc(pm, pf):
+def ExpEarnedInc(pm, rc):
 
     outputs = \
-        pf._tratio, pf.c33200, pf.c33400, pf.c07180 = \
+        rc._tratio, rc.c33200, rc.c33400, rc.c07180 = \
             ExpEarnedInc_apply(
-                pf._tratio, pf.c33200, pf.c33400, pf.c07180,
-                pf._exact, pf.c00100, pm.agcmax, pm.pcmax,
-                pf.c33000, pf.c05800, pf.e07300,
-                pf.e07180)
+                rc._tratio, rc.c33200, rc.c33400, rc.c07180,
+                rc._exact, rc.c00100, pm.agcmax, pm.pcmax,
+                rc.c33000, rc.c05800, rc.e07300,
+                rc.e07180)
 
     header = ['_tratio', 'c33200', 'c33400', 'c07180']
 
@@ -1297,12 +1297,12 @@ def RateRed_apply(  c07970, c59560, c05800, _fixup, _othtax, _exact, x59560,
     return c07970, c05800, c59560
 
 
-def RateRed(pm, pf):
+def RateRed(pm, rc):
     outputs = \
-        pf.c07970, pf.c05800, pf.c59560 = \
+        rc.c07970, rc.c05800, rc.c59560 = \
             RateRed_apply(
-                pf.c07970, pf.c59560, pf.c05800, pf._fixup, pf._othtax,
-                pf._exact, pf.x59560, pf._earned )
+                rc.c07970, rc.c59560, rc.c05800, rc._fixup, rc._othtax,
+                rc._exact, rc.x59560, rc._earned )
 
     header = ['c07970', 'c05800', 'c59560']
 
@@ -1412,20 +1412,20 @@ def NumDep_apply(_ieic, _modagi, c59660, _val_ymax, _preeitc,
     return (_ieic, EICYB1, EICYB2, EICYB3, _modagi, c59660,
                _val_ymax, _preeitc, _val_rtbase, _val_rtless, _dy)
 
-def NumDep(pm, pf, puf=True):
+def NumDep(pm, rc, puf=True):
 
     outputs =  \
-        (pf._ieic, pf.EICYB1, pf.EICYB2, pf.EICYB3, pf._modagi, pf.c59660,
-         pf._val_ymax, pf._preeitc, pf._val_rtbase, pf._val_rtless, pf._dy) = \
+        (rc._ieic, rc.EICYB1, rc.EICYB2, rc.EICYB3, rc._modagi, rc.c59660,
+         rc._val_ymax, rc._preeitc, rc._val_rtbase, rc._val_rtless, rc._dy) = \
             NumDep_apply(
-                pf._ieic, pf._modagi, pf.c59660, pf._val_ymax, pf._preeitc,
-                pf._val_rtbase, pf._val_rtless, pf._dy, pf.EICYB1, pf.EICYB2,
-                pf.EICYB3, puf, pf.EIC, pf.c00100, pf.e00400, pf.MARS, pm.ymax,
-                pm.joint, pm.rtbase, pf.c59560,
-                pm.crmax, pm.rtless, pf.e83080, pf.e00300, pf.e00600, pf.e01000,
-                pf.e40223, pf.e25360, pf.e25430, pf.e25470, pf.e25400, pf.e25500,
-                pf.e26210, pf.e26340, pf.e27200, pf.e26205, pf.e26320, pm.dylim,
-                pf._cmp, pf.SOIYR, pf.DOBYR, pf.SDOBYR, pf._agep, pf._ages)
+                rc._ieic, rc._modagi, rc.c59660, rc._val_ymax, rc._preeitc,
+                rc._val_rtbase, rc._val_rtless, rc._dy, rc.EICYB1, rc.EICYB2,
+                rc.EICYB3, puf, rc.EIC, rc.c00100, rc.e00400, rc.MARS, pm.ymax,
+                pm.joint, pm.rtbase, rc.c59560,
+                pm.crmax, pm.rtless, rc.e83080, rc.e00300, rc.e00600, rc.e01000,
+                rc.e40223, rc.e25360, rc.e25430, rc.e25470, rc.e25400, rc.e25500,
+                rc.e26210, rc.e26340, rc.e27200, rc.e26205, rc.e26320, pm.dylim,
+                rc._cmp, rc.SOIYR, rc.DOBYR, rc.SDOBYR, rc._agep, rc._ages)
 
     header = ['_ieic', 'EICYB1', 'EICYB2', 'EICYB3', '_modagi',
               'c59660', '_val_ymax', '_preeitc', '_val_rtbase',
@@ -1469,13 +1469,13 @@ def ChildTaxCredit_apply(   c11070, c07220, c07230,  _num, _nctcr,
     return (c11070, c07220, c07230,  _num, _nctcr, _precrd, _ctcagi)
 
 
-def ChildTaxCredit(pm, pf):
+def ChildTaxCredit(pm, rc):
     outputs = \
-        pf.c11070, pf.c07220, pf.c07230, pf._num, pf._nctcr, pf._precrd, pf._ctcagi = \
+        rc.c11070, rc.c07220, rc.c07230, rc._num, rc._nctcr, rc._precrd, rc._ctcagi = \
             ChildTaxCredit_apply(
-                pf.c11070, pf.c07220, pf.c07230, pf._num, pf._nctcr, pf._precrd, pf._ctcagi,
-                pf.n24, pf.MARS, pm.chmax, pf.c00100, pf._feided,
-                pm._cphase, pf._exact )
+                rc.c11070, rc.c07220, rc.c07230, rc._num, rc._nctcr, rc._precrd, rc._ctcagi,
+                rc.n24, rc.MARS, pm.chmax, rc.c00100, rc._feided,
+                pm._cphase, rc._exact )
 
     header = ['c11070', 'c07220', 'c07230', '_num', '_nctcr',
               '_precrd', '_ctcagi']
@@ -1540,14 +1540,14 @@ def AmOppCr_apply(  c87482, c87487, c87492, c87497, c87483, c87488, c87493,
                c87483, c87488, c87493, c87498, c87521)
 
 
-def AmOppCr(pm, pf):
+def AmOppCr(pm, rc):
     outputs = \
-        (pf.c87482, pf.c87487, pf.c87492, pf.c87497, pf.c87483, pf.c87488,
-         pf.c87493, pf.c87498, pf.c87521 )= \
+        (rc.c87482, rc.c87487, rc.c87492, rc.c87497, rc.c87483, rc.c87488,
+         rc.c87493, rc.c87498, rc.c87521 )= \
             AmOppCr_apply(
-                pf.c87482, pf.c87487, pf.c87492, pf.c87497, pf.c87483, pf.c87488,
-                pf.c87493, pf.c87498, pf.c87521, pf._cmp, pf.e87482, pf.e87487,
-                pf.e87492, pf.e87497)
+                rc.c87482, rc.c87487, rc.c87492, rc.c87497, rc.c87483, rc.c87488,
+                rc.c87493, rc.c87498, rc.c87521, rc._cmp, rc.e87482, rc.e87487,
+                rc.e87492, rc.e87497)
 
 
     header = ['c87482', 'c87487', 'c87492', 'c87497', 'c87483', 'c87488',
@@ -1586,14 +1586,14 @@ def LLC_apply(c87540, c87550, c87530, puf, e87530, learn,
 
     return (c87540, c87550, c87530)
 
-def LLC(pm, pf, puf=True):
+def LLC(pm, rc, puf=True):
     # Lifetime Learning Credit
 
     outputs = \
-        pf.c87540, pf.c87550, pf.c87530 = \
+        rc.c87540, rc.c87550, rc.c87530 = \
             LLC_apply(
-                pf.c87540, pf.c87550, pf.c87530, puf, pf.e87530, pm.learn,
-                pf.e87526, pf.e87522, pf.e87524, pf.e87528)
+                rc.c87540, rc.c87550, rc.c87530, puf, rc.e87530, pm.learn,
+                rc.e87526, rc.e87522, rc.e87524, rc.e87528)
 
     header = ['c87540', 'c87550', 'c87530']
     return DataFrame(data=np.column_stack(outputs), columns=header)
@@ -1644,15 +1644,15 @@ def RefAmOpp_apply( c87654, c87656, c87658, c87660, c87662, c87664, c87666,
     return (c87654, c87656, c87658, c87660, c87662,
                c87664, c87666, c10960, c87668, c87681)
 
-def RefAmOpp(pm, pf):
+def RefAmOpp(pm, rc):
     outputs = \
-        (pf.c87654, pf.c87656, pf.c87658, pf.c87660, pf.c87662, pf.c87664, pf.c87666,
-         pf.c10960, pf.c87668, pf.c87681) = \
+        (rc.c87654, rc.c87656, rc.c87658, rc.c87660, rc.c87662, rc.c87664, rc.c87666,
+         rc.c10960, rc.c87668, rc.c87681) = \
             RefAmOpp_apply(
-                pf.c87654, pf.c87656, pf.c87658, pf.c87660,
-                pf.c87662, pf.c87664, pf.c87666, pf.c10960,
-                pf.c87668, pf.c87681, pf._cmp, pf.c87521, pf._num,
-                pf.c00100, pf.EDCRAGE)
+                rc.c87654, rc.c87656, rc.c87658, rc.c87660,
+                rc.c87662, rc.c87664, rc.c87666, rc.c10960,
+                rc.c87668, rc.c87681, rc._cmp, rc.c87521, rc._num,
+                rc.c00100, rc.EDCRAGE)
 
     header = ['c87654', 'c87656', 'c87658', 'c87660', 'c87662', 'c87664',
               'c87666', 'c10960', 'c87668', 'c87681']
@@ -1725,18 +1725,18 @@ def NonEdCr_apply(  c87560, c87570, c87580, c87590, c87600, c87610,
                c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220)    
 
 
-def NonEdCr(pm, pf):
+def NonEdCr(pm, rc):
     outputs = \
-        (pf.c87560, pf.c87570, pf.c87580, pf.c87590, pf.c87600,
-         pf.c87610, pf.c87620, pf._ctc1, pf._ctc2, pf._regcrd, pf._exocrd,
-         pf._ctctax, pf.c07220) = \
+        (rc.c87560, rc.c87570, rc.c87580, rc.c87590, rc.c87600,
+         rc.c87610, rc.c87620, rc._ctc1, rc._ctc2, rc._regcrd, rc._exocrd,
+         rc._ctctax, rc.c07220) = \
             NonEdCr_apply(
-                pf.c87560, pf.c87570, pf.c87580, pf.c87590, pf.c87600,
-                pf.c87610, pf.c87620, pf._ctc1, pf._ctc2, pf._regcrd, pf._exocrd,
-                pf._ctctax, pf.c07220, pf.c87550, pf.MARS, pm.edphhm,
-                pf.c00100, pf._num, pf.c07180, pf.e07200, pf.c07230, pf.e07240,
-                pf.e07960, pf.e07260, pf.e07300, pf.e07700, pf.e07250, pf.t07950,
-                pf.c05800, pf._precrd, pm.edphhs)
+                rc.c87560, rc.c87570, rc.c87580, rc.c87590, rc.c87600,
+                rc.c87610, rc.c87620, rc._ctc1, rc._ctc2, rc._regcrd, rc._exocrd,
+                rc._ctctax, rc.c07220, rc.c87550, rc.MARS, pm.edphhm,
+                rc.c00100, rc._num, rc.c07180, rc.e07200, rc.c07230, rc.e07240,
+                rc.e07960, rc.e07260, rc.e07300, rc.e07700, rc.e07250, rc.t07950,
+                rc.c05800, rc._precrd, pm.edphhs)
                 
 
     header = ['c87560', 'c87570', 'c87580', 'c87590', 'c87600', 'c87610',
@@ -1862,20 +1862,20 @@ def AddCTC_apply(c82925, c82930, c82935, c82880, h82880, c82885, c82890,
             e59660, _othadd)
 
 
-def AddCTC(pm, pf, puf=True):
+def AddCTC(pm, rc, puf=True):
 
     outputs = \
-        (pf.c82925, pf.c82930, pf.c82935, pf.c82880, pf.h82880, pf.c82885, pf.c82890, pf.c82900, pf.c82905,
-         pf.c82910, pf.c82915, pf.c82920, pf.c82937, pf.c82940, pf.c11070, pf.e59660, pf._othadd) = \
+        (rc.c82925, rc.c82930, rc.c82935, rc.c82880, rc.h82880, rc.c82885, rc.c82890, rc.c82900, rc.c82905,
+         rc.c82910, rc.c82915, rc.c82920, rc.c82937, rc.c82940, rc.c11070, rc.e59660, rc._othadd) = \
             AddCTC_apply(
-                pf.c82925, pf.c82930, pf.c82935, pf.c82880,
-                pf.h82880, pf.c82885, pf.c82890, pf.c82900, pf.c82905,
-                pf.c82910, pf.c82915, pf.c82920, pf.c82937, pf.c82940,
-                pf.c11070, pf.e59660, pf._othadd, pf._nctcr, pf._precrd,
-                pf.c07220, pf.e00200, pf.e82882, pf.e30100, pf._sey, pf._setax,
-                pf._exact, pf.e82880, pm.ealim,
-                pm.adctcrt, pm.ssmax, pf.e03260, pf.e09800, pf.c59660,
-                pf.e11200, puf, pf.e59680, pf.e59700, pf.e59720, pf._fixup, pf.e11070)
+                rc.c82925, rc.c82930, rc.c82935, rc.c82880,
+                rc.h82880, rc.c82885, rc.c82890, rc.c82900, rc.c82905,
+                rc.c82910, rc.c82915, rc.c82920, rc.c82937, rc.c82940,
+                rc.c11070, rc.e59660, rc._othadd, rc._nctcr, rc._precrd,
+                rc.c07220, rc.e00200, rc.e82882, rc.e30100, rc._sey, rc._setax,
+                rc._exact, rc.e82880, pm.ealim,
+                pm.adctcrt, pm.ssmax, rc.e03260, rc.e09800, rc.c59660,
+                rc.e11200, puf, rc.e59680, rc.e59700, rc.e59720, rc._fixup, rc.e11070)
 
     header = ['c82925', 'c82930', 'c82935', 'c82880', 'h82880',
               'c82885', 'c82890', 'c82900', 'c82905', 'c82910', 'c82915',
@@ -1884,11 +1884,11 @@ def AddCTC(pm, pf, puf=True):
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
-def F5405(pm, pf):
+def F5405(pm, rc):
     # Form 5405 First-Time Homebuyer Credit
     #not needed
 
-    c64450 = np.zeros((pf.dim,))
+    c64450 = np.zeros((rc.dim,))
     return DataFrame(data=np.column_stack((c64450,)), columns=['c64450'])
 
 
@@ -1965,19 +1965,19 @@ def C1040_apply(c07100, y07100, x07100, c08795, c08800, e08795, c09200, _eitc,
 
     return (c07100, y07100, x07100, c08795, c08800, e08795, c09200, _eitc)
 
-def C1040(pm, pf, puf=True):
+def C1040(pm, rc, puf=True):
 
     outputs = \
-        (pf.c07100, pf.y07100, pf.x07100, pf.c08795, pf.c08800, 
-         pf.e08795, pf.c09200, pf._eitc) = \
+        (rc.c07100, rc.y07100, rc.x07100, rc.c08795, rc.c08800, 
+         rc.e08795, rc.c09200, rc._eitc) = \
             C1040_apply(
-                pf.c07100, pf.y07100, pf.x07100, pf.c08795, pf.c08800, 
-                pf.e08795, pf.c09200, pf._eitc, pf.e07400, pf.e07180, pf.e07200,
-                pf.c07220, pf.c07230, pf.e07250, pf.e07600, pf.e07260, pf.c07970, pf.e07300,
-                pf.x07400, pf.e09720, pf.e07500, pf.e07700, pf.e08000, pf.e07240,
-                pf.e08001, pf.e07960, pf.e07970, pf.SOIYR, pf.e07980, pf.c05800, puf,
-                pf.e08800, pf.e09900, pf.e09400, pf.e09800, pf.e10000, pf.e10100,
-                pf.e09700, pf.e10050, pf.e10075, pf.e09805, pf.e09710, pf.c59660)
+                rc.c07100, rc.y07100, rc.x07100, rc.c08795, rc.c08800, 
+                rc.e08795, rc.c09200, rc._eitc, rc.e07400, rc.e07180, rc.e07200,
+                rc.c07220, rc.c07230, rc.e07250, rc.e07600, rc.e07260, rc.c07970, rc.e07300,
+                rc.x07400, rc.e09720, rc.e07500, rc.e07700, rc.e08000, rc.e07240,
+                rc.e08001, rc.e07960, rc.e07970, rc.SOIYR, rc.e07980, rc.c05800, puf,
+                rc.e08800, rc.e09900, rc.e09400, rc.e09800, rc.e10000, rc.e10100,
+                rc.e09700, rc.e10050, rc.e10075, rc.e09805, rc.e09710, rc.c59660)
 
     header = ['c07100', 'y07100', 'x07100', 'c08795', 'c08800', 'e08795',
               'c09200']
@@ -2066,13 +2066,13 @@ def DEITC_apply(c59680, c59700, c59720, _comb, c07150, c10950, c08795, c59660,
     return (c59680, c59700, c59720, _comb, c07150, c10950)
 
 
-def DEITC(pm, pf):
+def DEITC(pm, rc):
 
     outputs = \
-        pf.c59680, pf.c59700, pf.c59720, pf._comb, pf.c07150, pf.c10950 = \
+        rc.c59680, rc.c59700, rc.c59720, rc._comb, rc.c07150, rc.c10950 = \
             DEITC_apply(
-                pf.c59680, pf.c59700, pf.c59720, pf._comb, pf.c07150,
-                pf.c10950, pf.c08795, pf.c59660, pf.c09200, pf.c07100)
+                rc.c59680, rc.c59700, rc.c59720, rc._comb, rc.c07150,
+                rc.c10950, rc.c08795, rc.c59660, rc.c09200, rc.c07100)
     header = ['c59680', 'c59700', 'c59720', '_comb', 'c07150', 'c10950']
 
     return DataFrame(data=np.column_stack(outputs), columns=header)
@@ -2121,21 +2121,21 @@ def SOIT_apply( c10300, c09200, e10000, e59680, c59700, e11070, e11550,
     return (c10300, _eitc)
 
 
-def SOIT(pm, pf):
+def SOIT(pm, rc):
 
     outputs = \
-        pf.c10300, pf._eitc = \
+        rc.c10300, rc._eitc = \
             SOIT_apply(
-                pf.c10300, pf.c09200, pf.e10000, pf.e59680, pf.c59700,
-                pf.e11070, pf.e11550, pf.e11580, pf.e09710, pf.e09720, pf.e11581,
-                pf.e11582, pf.e87900, pf.e87905, pf.e87681, pf.e87682, pf.c10950,
-                pf.e11451, pf.e11452, pf.e11601, pf.e11602, pf._eitc)
+                rc.c10300, rc.c09200, rc.e10000, rc.e59680, rc.c59700,
+                rc.e11070, rc.e11550, rc.e11580, rc.e09710, rc.e09720, rc.e11581,
+                rc.e11582, rc.e87900, rc.e87905, rc.e87681, rc.e87682, rc.c10950,
+                rc.e11451, rc.e11452, rc.e11601, rc.e11602, rc._eitc)
 
     header = ['c10300', '_eitc']
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
-def Taxer(inc_in, inc_out, MARS, pm, pf):
+def Taxer(inc_in, inc_out, MARS, pm, rc):
     low = np.where(inc_in < 3000, 1, 0)
     med = np.where(np.logical_and(inc_in >= 3000, inc_in < 100000), 1, 0)
 
@@ -2144,7 +2144,7 @@ def Taxer(inc_in, inc_out, MARS, pm, pf):
     _a3 = _a2 * 100
     _a4 = (_a1 - _a2) * 100
 
-    _a5 = np.zeros((pf.dim,))
+    _a5 = np.zeros((rc.dim,))
     _a5 = np.where(np.logical_and(low == 1, _a4 < 25), 13, _a5)
     _a5 = np.where(
         np.logical_and(low == 1, np.logical_and(_a4 >= 25, _a4 < 50)), 38, _a5)
