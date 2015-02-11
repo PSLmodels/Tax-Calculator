@@ -7,18 +7,22 @@ import numpy as np
 import os.path
 
 
-class PUF(object):
+class Records(object):
     """
-    This class represents the data from a Public Use File.
-    Instances of this class hold all of the data from a PUF file in memory
+    This class represents the data for a collection of tax records. Typically,
+    this would come from a Public Use File. Much of the current implementation
+    is based on reading a PUF file, although other types of records could
+    be read.
+    Instances of this class hold all of the record data in memory
     to be used by the Calculator. Each pieces of member data represents
     a column of the data. Each entry in the column is the value of the data
     attribute for a particular taxpayer record.
-    A federal tax year is assumed. The year can be given to the PUF
+    A federal tax year is assumed. The year can be given to the Record
     constructor.
     Advancing years is done through a member function
     """
 
+<<<<<<< HEAD:taxcalc/puf.py
     def __init__(   self, 
                     puf_data="puf2.csv", 
                     blowup_factors="StageIFactors.csv",
@@ -28,6 +32,11 @@ class PUF(object):
         self.read_puf(puf_data)
         self.read_blowup(blowup_factors)
         self.read_weights(weights)
+=======
+    def __init__(self, data="puf2.csv", current_year=None):
+
+        self.read(data)
+>>>>>>> upstream/master:taxcalc/records.py
         if (current_year):
             self._current_year = current_year
         else:
@@ -45,6 +54,7 @@ class PUF(object):
         # Implement Stage 2 Extrapolation reweighting. 
         self.s006 = self.WT["WT"+str(self.current_year)]
 
+<<<<<<< HEAD:taxcalc/puf.py
 
     @property
     def blowup(self):
@@ -282,8 +292,13 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]')."
     def read_puf(self, puf_data):
         if isinstance(puf_data, pd.core.frame.DataFrame):
             tax_dta = puf_data
+=======
+    def read(self, data):
+        if isinstance(data, pd.core.frame.DataFrame):
+            tax_dta = data
+>>>>>>> upstream/master:taxcalc/records.py
         else:
-            tax_dta = pd.read_csv(puf_data)
+            tax_dta = pd.read_csv(data)
 
         # pairs of 'name of attribute', 'column name' - often the same
         names = [('AGIR1', 'agir1'),
