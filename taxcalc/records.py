@@ -242,9 +242,9 @@ class Records(object):
             try:
                 WT = pd.read_csv(weights)
             except IOError:
-                print "Missing a csv file with weights from the second \
+                print("Missing a csv file with weights from the second \
 stage data of the data extrapolation. Please pass such a file as \
-PUF(weights='[FILENAME]')."
+PUF(weights='[FILENAME]').")
                 raise
                 # TODO, we will need to pass the csv to the Calculator once 
                 # we proceed with github issue #117. 
@@ -258,8 +258,8 @@ PUF(weights='[FILENAME]')."
             try:
                 BF = pd.read_csv(blowup_factors, index_col='YEAR')
             except IOError:
-                print "Missing a csv file with blowup factors. \
-Please pass such a csv as PUF(blowup_factors='[FILENAME]')."
+                print("Missing a csv file with blowup factors. \
+Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
                 raise
                 # TODO, we will need to pass the csv to the Calculator once 
                 # we proceed with github issue #117. 
