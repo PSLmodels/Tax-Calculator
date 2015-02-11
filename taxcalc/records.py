@@ -22,21 +22,16 @@ class Records(object):
     Advancing years is done through a member function
     """
 
-<<<<<<< HEAD:taxcalc/puf.py
+
     def __init__(   self, 
-                    puf_data="puf2.csv", 
+                    data="puf2.csv", 
                     blowup_factors="StageIFactors.csv",
                     weights="WEIGHTS.csv",
                     current_year=None):
 
-        self.read_puf(puf_data)
+        self.read(data)
         self.read_blowup(blowup_factors)
         self.read_weights(weights)
-=======
-    def __init__(self, data="puf2.csv", current_year=None):
-
-        self.read(data)
->>>>>>> upstream/master:taxcalc/records.py
         if (current_year):
             self._current_year = current_year
         else:
@@ -54,7 +49,6 @@ class Records(object):
         # Implement Stage 2 Extrapolation reweighting. 
         self.s006 = self.WT["WT"+str(self.current_year)]
 
-<<<<<<< HEAD:taxcalc/puf.py
 
     @property
     def blowup(self):
@@ -289,14 +283,10 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]')."
         setattr(self, 'BF', BF)
 
 
-    def read_puf(self, puf_data):
-        if isinstance(puf_data, pd.core.frame.DataFrame):
-            tax_dta = puf_data
-=======
+
     def read(self, data):
         if isinstance(data, pd.core.frame.DataFrame):
             tax_dta = data
->>>>>>> upstream/master:taxcalc/records.py
         else:
             tax_dta = pd.read_csv(data)
 
