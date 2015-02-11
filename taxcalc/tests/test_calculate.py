@@ -16,6 +16,8 @@ tax_dta = pd.read_csv(os.path.join(CUR_PATH, "../../tax_all91_puf.gz"),
 # Fix-up. MIdR needs to be type int64 to match PUF
 tax_dta['midr'] = tax_dta['midr'].astype('int64')
 tax_dta['s006'] = np.arange(0,len(tax_dta['s006']))
+blowup_factors = pd.read_csv(os.path.join(CUR_PATH, "../../StageIFactors.csv"))
+weights = pd.read_csv(os.path.join(CUR_PATH, "../../WEIGHTS.csv"))
 
 
 def add_df(alldfs, df):
@@ -31,7 +33,7 @@ def run(puf=True):
     params = Parameters(start_year=91)
 
     # Create a Public Use File object
-    puf = Records(tax_dta)
+    puf = Records(tax_dta, blowup_factors, weights)
 
     # Create a Calculator
     calc = Calculator(parameters=params, records=puf)
@@ -64,7 +66,7 @@ def test_make_Calculator():
     params = Parameters(start_year=91)
 
     # Create a Public Use File object
-    puf = Records(tax_dta)
+    puf = Records(tax_dta, blowup_factors, weights)
 
     calc = Calculator(params, puf)
 
@@ -75,7 +77,7 @@ def test_make_Calculator_mods():
     params = Parameters(start_year=91)
 
     # Create a Public Use File object
-    puf = Records(tax_dta)
+    puf = Records(tax_dta, blowup_factors, weights)
 
     calc2 = calculator(params, puf, _amex=np.array([4000]))
     assert all(calc2._amex == np.array([4000]))
@@ -87,7 +89,7 @@ def test_make_Calculator_json():
     params = Parameters(start_year=91)
 
     # Create a Public Use File object
-    puf = Records(tax_dta)
+    puf = Records(tax_dta, blowup_factors, weights)
 
     user_mods = '{ "_aged": [[1500], [1200]] }'
     calc2 = calculator(params, puf, mods=user_mods, _amex=np.array([4000]))
@@ -102,7 +104,7 @@ def test_Calculator_attr_access_to_params():
     params = Parameters(start_year=91)
 
     # Create a Public Use File object
-    puf = Records(tax_dta)
+    puf = Records(tax_dta, blowup_factors, weights)
 
     # Create a Calculator
     calc = Calculator(parameters=params, records=puf)
@@ -120,7 +122,7 @@ def test_Calculator_set_attr_passes_through():
     # Create a Parameters object
     params = Parameters(start_year=91)
     # Create a Public Use File object
-    puf = Records(tax_dta)
+    puf = Records(tax_dta, blowup_factors, weights)
     # Create a Calculator
     calc = Calculator(parameters=params, records=puf)
 
@@ -138,7 +140,7 @@ def test_Calculator_create_distribution_table():
     # Create a Parameters object
     params = Parameters(start_year=91)
     # Create a Public Use File object
-    puf = Records(tax_dta)
+    puf = Records(tax_dta, blowup_factors, weights)
     # Create a Calculator
     calc = Calculator(parameters=params, records=puf)
     calc.calc_all()
@@ -153,7 +155,7 @@ def test_Calculator_create_difference_table():
     # Create a Parameters object
     params = Parameters(start_year=91)
     # Create a Public Use File object
-    puf = Records(tax_dta)
+    puf = Records(tax_dta, blowup_factors, weights)
     # Create a Calculator
     calc = Calculator(parameters=params, records=puf)
     calc.calc_all()
@@ -161,7 +163,7 @@ def test_Calculator_create_difference_table():
     # Create a Parameters object
     params = Parameters(start_year=91)
     # Create a Public Use File object
-    puf = Records(tax_dta)
+    puf = Records(tax_dta, blowup_factors, weights)
     user_mods = '{ "_rt7": [0.45] }'
     calc2 = calculator(params, puf, mods=user_mods)
 
