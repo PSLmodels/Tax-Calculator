@@ -4,7 +4,7 @@ Testing file for calculate.py
 
 from pandas import DataFrame, concat
 from taxcalc.calculate import *
-from taxcalc.puf import *
+from taxcalc.records import *
 from taxcalc.parameters import *
 import taxcalc.parameters as parameters
 #from timer.timed_calculate import *
@@ -34,10 +34,10 @@ def run(puf=True):
 
     # Create a Public Use File object
     tax_dta = pd.read_csv("puf2.csv")
-    puf = PUF(tax_dta)
+    puf = Records(tax_dta)
 
     # Create a Calculator
-    calc = Calculator(parameters=params, puf=puf)
+    calc = Calculator(parameters=params, records=puf)
     totaldf = calc.calc_all_test()
 
     # drop duplicates
