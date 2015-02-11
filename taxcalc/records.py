@@ -498,7 +498,7 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]')."
         self.dim = len(tax_dta)
 
         for attrname, varname in names:
-            setattr(self, attrname, tax_dta[varname])
+            setattr(self, attrname, tax_dta[varname].values)
 
         # zero'd out "nonconst" data
         zeroed_names = ['e35300_0', 'e35600_0', 'e35910_0', 'x03150', 'e03600',
