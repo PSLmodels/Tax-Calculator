@@ -27,7 +27,8 @@ class Records(object):
                     data="puf2.csv", 
                     blowup_factors="StageIFactors.csv",
                     weights="WEIGHTS.csv",
-                    current_year=None):
+                    current_year=None,
+                    puf=True):
 
         self.read(data)
         self.read_blowup(blowup_factors)
@@ -36,6 +37,7 @@ class Records(object):
             self._current_year = current_year
         else:
             self._current_year = self.FLPDYR[0]
+        self.puf = puf
 
     @property
     def current_year(self):
