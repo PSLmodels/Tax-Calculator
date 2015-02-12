@@ -361,49 +361,12 @@ def XYZD(_taxinc, c04800, MARS, rt1, rt2, rt3, rt4, rt5, rt6, rt7, brk1,
     return (_xyztax, c05200)
 
 
-# @jit(nopython=True)
-# def XYZD_apply(_xyztax, c05200, _taxinc, c04800, MARS, rt1, rt2, rt3, rt4, rt5, rt6, rt7, brk1, brk2, brk3, brk4, brk5, brk6):
-#     for i in range(len(_xyztax)):
-#         (_xyztax[i], c05200[i]) = XYZD_calc(
-#                                 _taxinc[i], c04800[i], MARS[i], rt1, rt2, rt3, rt4, rt5, rt6, rt7, brk1, brk2, brk3, brk4, brk5, brk6)
-
-#     return (_xyztax, c05200)
-
-
-# def XYZD(pm, rc):
-    
-#     outputs = \
-#          rc._xyztax, rc.c05200 = \
-#             XYZD_apply(rc._xyztax, rc.c05200, rc._taxinc, rc.c04800, rc.MARS, pm.rt1, pm.rt2, pm.rt3, pm.rt4, pm.rt5, pm.rt6, pm.rt7, pm.brk1, pm.brk2, pm.brk3, pm.brk4, pm.brk5, pm.brk6)
-    
-#     header = ['_xyztax', 'c05200']
-
-#     return DataFrame(data=np.column_stack(outputs),
-#                      columns=header)
-
-
-@jit(nopython=True)
-def NonGain_calc(c23650, e23250, e01100):
+@iterate_jit(nopython=True)
+def NonGain(c23650, e23250, e01100):
     _cglong = min(c23650, e23250) + e01100
     _noncg = 0
     return (_cglong, _noncg)
 
-@jit(nopython=True)
-def NonGain_apply(_cglong, _noncg, c23650, e23250, e01100):
-    for i in range(len(_cglong)):
-        (_cglong[i], _noncg[i]) = NonGain_calc(c23650[i], e23250[i], e01100[i])
-    
-    return (_cglong, _noncg)
-
-def NonGain(pm, rc):
-
-    outputs = rc._cglong, rc._noncg = \
-        NonGain_apply(rc._cglong, rc._noncg, rc.c23650, rc.e23250, rc.e01100)
-
-    header = ['_cglong', '_noncg']
-
-    return DataFrame(data=np.column_stack(outputs),
-                     columns=header)
 
 
 @jit(nopython=True)
