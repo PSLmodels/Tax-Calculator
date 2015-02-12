@@ -1223,8 +1223,8 @@ def ChildTaxCredit(n24, MARS, chmax, c00100, _feided, _cphase, _exact,
     # American opportunities credit in 2018. NEED TO ADD LOGIC!!!
 
 
-@jit(nopython=True)
-def AmOppCr_calc(_cmp, e87482, e87487, e87492, e87497):
+@iterate_jit(nopython=True)
+def AmOppCr(_cmp, e87482, e87487, e87492, e87497):
     # American Opportunity Credit 2009+
 
     if _cmp == 1:
@@ -1262,33 +1262,6 @@ def AmOppCr_calc(_cmp, e87482, e87487, e87492, e87497):
     return (c87482, c87487, c87492, c87497,
                c87483, c87488, c87493, c87498, c87521)
 
-
-@jit(nopython=True)
-def AmOppCr_apply(  c87482, c87487, c87492, c87497, c87483, c87488, c87493, 
-                    c87498, c87521, _cmp, e87482, e87487, e87492, e87497):
-    for i in range(len(c87482)):
-        (   c87482[i], c87487[i], c87492[i], c87497[i], c87483[i], c87488[i], 
-        c87493[i], c87498[i], c87521[i]) = AmOppCr_calc(_cmp[i], e87482[i], 
-                                            e87487[i], e87492[i], e87497[i])
-    
-    return (c87482, c87487, c87492, c87497,
-               c87483, c87488, c87493, c87498, c87521)
-
-
-def AmOppCr(pm, rc):
-    outputs = \
-        (rc.c87482, rc.c87487, rc.c87492, rc.c87497, rc.c87483, rc.c87488,
-         rc.c87493, rc.c87498, rc.c87521 )= \
-            AmOppCr_apply(
-                rc.c87482, rc.c87487, rc.c87492, rc.c87497, rc.c87483, rc.c87488,
-                rc.c87493, rc.c87498, rc.c87521, rc._cmp, rc.e87482, rc.e87487,
-                rc.e87492, rc.e87497)
-
-
-    header = ['c87482', 'c87487', 'c87492', 'c87497', 'c87483', 'c87488',
-              'c87493', 'c87498', 'c87521']
-
-    return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
 @jit(nopython=True)
