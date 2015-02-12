@@ -369,10 +369,14 @@ def NonGain(c23650, e23250, e01100):
 
 
 
-@jit(nopython=True)
-def TaxGains_calc(e00650, c04800, e01000, c23650, e23250, e01100, e58990, e58980, e24515,
-    e24518, _brk2, MARS, _taxinc, _brk6, _xyztax, _feided, _feitax,
-    _cmp, e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400, rt1, rt2, rt3, rt4, rt5, rt6, rt7, brk1, brk2, brk3, brk4, brk5, brk6):
+@iterate_jit(parameters=[ "rt1", "rt2", "rt3", "rt4", "rt5", "rt6", "rt7", 
+             "brk1", "brk2", "brk3", "brk4", "brk5", "brk6"], nopython=True)
+
+def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
+                  e58980, e24515, e24518, MARS, _taxinc, _xyztax, _feided, 
+                  _feitax, _cmp, e59410, e59420, e59440, e59470, e59400, 
+                  e83200_0, e10105, e74400, rt1, rt2, rt3, rt4, rt5, rt6, rt7, 
+                  brk1, brk2, brk3, brk4, brk5, brk6):
 
     c00650 = e00650
     _addtax = 0.
@@ -429,7 +433,8 @@ def TaxGains_calc(e00650, c04800, e01000, c23650, e23250, e01100, e58990, e58980
         elif c24540<= brk6[MARS - 1] and _taxinc > brk6[MARS - 1]:
             _addtax = 0.05 * min(c24517, c04800 - brk6[MARS - 1])
 
-        c24560 = Taxer_i(c24540, MARS, rt1, rt2, rt3, rt4, rt5, rt6, rt7, brk1, brk2, brk3, brk4, brk5, brk6)
+        c24560 = Taxer_i(c24540, MARS, rt1, rt2, rt3, rt4, rt5, rt6, rt7, 
+                         brk1, brk2, brk3, brk4, brk5, brk6)
 
         _taxspecial = c24598 + c24615 + c24570 + c24560 + _addtax
         c24580 = min(_taxspecial, _xyztax)
@@ -573,7 +578,7 @@ def TaxGains_calc(e00650, c04800, e01000, c23650, e23250, e01100, e58990, e58980
     c05750 = max(c05100 + _parents + c05700, e74400)
     _taxbc = c05750
 
-    return (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
+    return (e00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
             c24580, _dwks12, c24517, c24520, c24530, _dwks16,
             _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
             _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
@@ -582,90 +587,8 @@ def TaxGains_calc(e00650, c04800, e01000, c23650, e23250, e01100, e58990, e58980
             _line32, _line36, _line33, _line34, _line35, c59485, c59490,
             _s1291, _parents, _taxbc, c05750)
 
+# TODO should we be returning c00650 instead of e00650??? Would need to change tests
 
-@jit(nopython=True)
-def TaxGains_apply(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
-    e58980, e24515, e24518, _brk2, MARS, _taxinc, _brk6,  _xyztax, _feided, _feitax, _cmp,
-    e59410, e59420, e59440, e59470, e59400, e83200_0, e10105, e74400,
-    c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516, _dwks12,
-    c24517, c24520, c24530, _dwks16, _dwks17 ,c24540 ,c24534,
-    _dwks21, c24597 , c24598, _dwks25 , _dwks26 , _dwks28,
-    c24610, c24615 , _dwks31 , c24550 , c24570 , _addtax ,
-    c24560, _taxspecial , c24580 , c05100 , c05700 , c59430 ,
-    c59450, c59460 , _line17, _line19 , _line22 , _line30,
-    _line31, _line32, _line36, _line33, _line34, _line35,
-    c59485, c59490 , _s1291, _parents, c05750, _taxbc, rt1, rt2, rt3, rt4, rt5, rt6, rt7, brk1, brk2, brk3, brk4, brk5, brk6):
-
-
-    for i in range(len(_taxinc)):
-        (c00650[i], _hasgain[i], _dwks5[i], c24505[i], c24510[i], _dwks9[i], c24516[i],
-        c24580[i], _dwks12[i], c24517[i], c24520[i], c24530[i], _dwks16[i],
-        _dwks17[i], c24540[i], c24534[i], _dwks21[i], c24597[i], c24598[i], _dwks25[i],
-        _dwks26[i], _dwks28[i], c24610[i], c24615[i], _dwks31[i], c24550[i], c24570[i],
-        _addtax[i], c24560[i], _taxspecial[i], c05100[i], c05700[i], c59430[i],
-        c59450[i], c59460[i], _line17[i], _line19[i], _line22[i], _line30[i], _line31[i],
-        _line32[i], _line36[i], _line33[i], _line34[i], _line35[i], c59485[i], c59490[i],
-        _s1291[i], _parents[i], _taxbc[i], c05750[i]) = \
-        TaxGains_calc(e00650[i], c04800[i], e01000[i], c23650[i], e23250[i], e01100[i],
-        e58990[i], e58980[i], e24515[i], e24518[i], _brk2,
-        MARS[i], _taxinc[i], _brk6,  _xyztax[i], _feided[i], _feitax[i],
-        _cmp[i], e59410[i], e59420[i], e59440[i], e59470[i], e59400[i], e83200_0[i],
-        e10105[i], e74400[i], rt1, rt2, rt3, rt4, rt5, rt6, rt7, brk1, brk2, brk3, brk4, brk5, brk6)
-
-
-
-    return  (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
-            c24580, _dwks12, c24517, c24520, c24530, _dwks16,
-            _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
-            _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
-            _addtax, c24560, _taxspecial, c05100, c05700, c59430,
-            c59450, c59460, _line17, _line19, _line22, _line30, _line31,
-            _line32, _line36, _line33, _line34, _line35, c59485, c59490,
-            _s1291, _parents, c05750, _taxbc)
-
-
-
-def TaxGains(pm, rc):
-    outputs = \
-        (rc.c00650, rc._hasgain, rc._dwks5, rc.c24505, rc.c24510, rc._dwks9, rc.c24516,
-         rc.c24580, rc._dwks12, rc.c24517, rc.c24520, rc.c24530, rc._dwks16,
-         rc._dwks17, rc.c24540, rc.c24534, rc._dwks21, rc.c24597, rc.c24598, rc._dwks25,
-         rc._dwks26, rc._dwks28, rc.c24610, rc.c24615, rc._dwks31, rc.c24550, rc.c24570,
-         rc._addtax, rc.c24560, rc._taxspecial, rc.c05100, rc.c05700, rc.c59430,
-         rc.c59450, rc.c59460, rc._line17, rc._line19, rc._line22, rc._line30, rc._line31,
-         rc._line32, rc._line36, rc._line33, rc._line34, rc._line35, rc.c59485, rc.c59490,
-         rc._s1291, rc._parents, rc.c05750, rc._taxbc) = \
-                TaxGains_apply(
-                    rc.e00650, rc.c04800, rc.e01000, rc.c23650, rc.e23250, rc.e01100, rc.e58990,
-                    rc.e58980, rc.e24515, rc.e24518, pm.brk2, rc.MARS,
-                    rc._taxinc, pm.brk6, rc._xyztax, rc._feided, rc._feitax, rc._cmp,
-                    rc.e59410, rc.e59420, rc.e59440, rc.e59470, rc.e59400, rc.e83200_0, rc.e10105,
-                    rc.e74400, rc.c00650 , rc._hasgain, rc._dwks5, rc.c24505, rc.c24510,
-                    rc._dwks9, rc.c24516, rc._dwks12, rc.c24517 , rc.c24520, rc.c24530,
-                    rc._dwks16, rc._dwks17, rc.c24540, rc.c24534, rc._dwks21 , rc.c24597,
-                    rc.c24598, rc._dwks25, rc._dwks26, rc._dwks28, rc.c24610, rc.c24615,
-                    rc._dwks31 , rc.c24550 , rc.c24570 , rc._addtax, rc.c24560, rc._taxspecial,
-                    rc.c24580 , rc.c05100 , rc.c05700 , rc.c59430 ,
-                    rc.c59450 , rc.c59460 , rc._line17, rc._line19 , rc._line22 , rc._line30,
-                    rc._line31 , rc._line32 , rc._line36 ,rc._line33 , rc._line34 , rc._line35,
-                    rc.c59485 , rc.c59490, rc._s1291, rc._parents, rc.c05750, rc._taxbc, pm.rt1, pm.rt2, pm.rt3, pm.rt4, pm.rt5, pm.rt6, pm.rt7, pm.brk1, pm.brk2, pm.brk3, pm.brk4, pm.brk5, pm.brk6)
-
-
-    ## Note var c24516 is being printed twice. On purpose? e00650 should be c00650?
-    header = ['e00650', '_hasgain', '_dwks5', 'c24505', 'c24510', '_dwks9', #Note weirdness w e00650
-              'c24516', 'c24580', '_dwks12', 'c24517', 'c24520',
-              'c24530', '_dwks16', '_dwks17', 'c24540', 'c24534', '_dwks21',
-              'c24597', 'c24598', '_dwks25', '_dwks26', '_dwks28', 'c24610',
-              'c24615', '_dwks31', 'c24550', 'c24570', '_addtax', 'c24560',
-              '_taxspecial', 'c05100', 'c05700', 'c59430', 'c59450', 'c59460',
-              '_line17', '_line19', '_line22', '_line30', '_line31',
-              '_line32', '_line36', '_line33', '_line34', '_line35',
-              'c59485', 'c59490', '_s1291', '_parents',
-              'c05750', '_taxbc']
-
-
-    return DataFrame(data=np.column_stack(outputs),
-                     columns=header)
 
 
 
