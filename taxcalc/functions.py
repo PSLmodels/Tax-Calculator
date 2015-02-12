@@ -1694,8 +1694,8 @@ def DEITC(c08795, c59660, c09200, c07100):
 
 
 
-@jit(nopython=True)
-def SOIT_calc(   c09200, e10000, e59680, c59700,e11070, e11550, e11580,e09710, 
+@iterate_jit(nopython=True)
+def SOIT(   c09200, e10000, e59680, c59700,e11070, e11550, e11580,e09710, 
             e09720, e11581, e11582, e87900, e87905, e87681, e87682, c10950, 
             e11451, e11452, e11601, e11602, _eitc ):
 
@@ -1722,33 +1722,33 @@ def SOIT_calc(   c09200, e10000, e59680, c59700,e11070, e11550, e11580,e09710,
 
     return (c10300, _eitc)
 
-@jit(nopython=True)
-def SOIT_apply( c10300, c09200, e10000, e59680, c59700, e11070, e11550, 
-                e11580, e09710, e09720, e11581, e11582, e87900, e87905, e87681, 
-                e87682, c10950, e11451, e11452, e11601, e11602, _eitc):
+# @jit(nopython=True)
+# def SOIT_apply( c10300, c09200, e10000, e59680, c59700, e11070, e11550, 
+#                 e11580, e09710, e09720, e11581, e11582, e87900, e87905, e87681, 
+#                 e87682, c10950, e11451, e11452, e11601, e11602, _eitc):
 
 
-    for i in range(len(c10300)):
-        (   c10300[i], _eitc[i]) = SOIT_calc(c09200[i], e10000[i], e59680[i], 
-            c59700[i],e11070[i], e11550[i], e11580[i],e09710[i], e09720[i], 
-            e11581[i], e11582[i], e87900[i], e87905[i], e87681[i], e87682[i], 
-            c10950[i], e11451[i], e11452[i], e11601[i], e11602[i], _eitc[i] )
+#     for i in range(len(c10300)):
+#         (   c10300[i], _eitc[i]) = SOIT_calc(c09200[i], e10000[i], e59680[i], 
+#             c59700[i],e11070[i], e11550[i], e11580[i],e09710[i], e09720[i], 
+#             e11581[i], e11582[i], e87900[i], e87905[i], e87681[i], e87682[i], 
+#             c10950[i], e11451[i], e11452[i], e11601[i], e11602[i], _eitc[i] )
 
-    return (c10300, _eitc)
+#     return (c10300, _eitc)
 
 
-def SOIT(pm, rc):
+# def SOIT(pm, rc):
 
-    outputs = \
-        rc.c10300, rc._eitc = \
-            SOIT_apply(
-                rc.c10300, rc.c09200, rc.e10000, rc.e59680, rc.c59700,
-                rc.e11070, rc.e11550, rc.e11580, rc.e09710, rc.e09720, rc.e11581,
-                rc.e11582, rc.e87900, rc.e87905, rc.e87681, rc.e87682, rc.c10950,
-                rc.e11451, rc.e11452, rc.e11601, rc.e11602, rc._eitc)
+#     outputs = \
+#         rc.c10300, rc._eitc = \
+#             SOIT_apply(
+#                 rc.c10300, rc.c09200, rc.e10000, rc.e59680, rc.c59700,
+#                 rc.e11070, rc.e11550, rc.e11580, rc.e09710, rc.e09720, rc.e11581,
+#                 rc.e11582, rc.e87900, rc.e87905, rc.e87681, rc.e87682, rc.c10950,
+#                 rc.e11451, rc.e11452, rc.e11601, rc.e11602, rc._eitc)
 
-    header = ['c10300', '_eitc']
-    return DataFrame(data=np.column_stack(outputs), columns=header)
+#     header = ['c10300', '_eitc']
+#     return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
 def Taxer(inc_in, inc_out, MARS, pm, rc):
