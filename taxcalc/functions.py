@@ -592,8 +592,8 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 
 
 
-@jit(nopython=True)
-def MUI_calc(c00100, _thresx, MARS, c05750, e00300, e00600, c01000, e02000):
+@iterate_jit(parameters=["_thresx"], nopython=True)
+def MUI(c00100, _thresx, MARS, c05750, e00300, e00600, c01000, e02000):
     # Additional Medicare tax on unearned Income
     if c00100 > _thresx[MARS - 1]:
         c05750  = (c05750 + 0.038 * min(e00300 + e00600 + max(0, c01000)
@@ -601,24 +601,24 @@ def MUI_calc(c00100, _thresx, MARS, c05750, e00300, e00600, c01000, e02000):
     return c05750
 
 
-@jit(nopython=True)
-def MUI_apply(c00100, _thresx, MARS, c05750, e00300, e00600, c01000, e02000):
+# @jit(nopython=True)
+# def MUI_apply(c00100, _thresx, MARS, c05750, e00300, e00600, c01000, e02000):
     
-    for i in range(len(c00100)):
-        c05750[i] = MUI_calc(c00100[i], _thresx, MARS[i], c05750[i], e00300[i], 
-                    e00600[i], c01000[i], e02000[i])
-    return c05750
+#     for i in range(len(c00100)):
+#         c05750[i] = MUI_calc(c00100[i], _thresx, MARS[i], c05750[i], e00300[i], 
+#                     e00600[i], c01000[i], e02000[i])
+#     return c05750
 
-def MUI(pm, rc):
-    # Additional Medicare tax on unearned Income
+# def MUI(pm, rc):
+#     # Additional Medicare tax on unearned Income
 
-    rc.c05750 = MUI_apply(rc.c00100, pm._thresx, rc.MARS, rc.c05750, rc.e00300, rc.e00600, rc.c01000,
-                        rc.e02000)
+#     rc.c05750 = MUI_apply(rc.c00100, pm._thresx, rc.MARS, rc.c05750, rc.e00300, rc.e00600, rc.c01000,
+#                         rc.e02000)
 
-    header = ['c05750']
+#     header = ['c05750']
 
-    return DataFrame(data=rc.c05750,
-                     columns=header) 
+#     return DataFrame(data=rc.c05750,
+#                      columns=header) 
 
 
 @jit(nopython=True)
