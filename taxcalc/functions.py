@@ -1337,38 +1337,9 @@ def RefAmOpp(_cmp, c87521, _num, c00100, EDCRAGE, c87668):
                c87664, c87666, c10960, c87668, c87681)
 
 
-# @jit(nopython=True)
-# def RefAmOpp_apply( c87654, c87656, c87658, c87660, c87662, c87664, c87666, 
-#                     c10960, c87668, c87681, _cmp, c87521, _num, c00100, 
-#                     EDCRAGE): 
-    
 
-#     for i in range(len(c87654)):
-
-#         (   c87654[i], c87656[i], c87658[i], c87660[i], c87662[i], c87664[i], 
-#             c87666[i], c10960[i], c87668[i], c87681[i]) = RefAmOpp_calc(_cmp[i], 
-#             c87521[i], _num[i], c00100[i], EDCRAGE[i], c87668[i])
-    
-#     return (c87654, c87656, c87658, c87660, c87662,
-#                c87664, c87666, c10960, c87668, c87681)
-
-# def RefAmOpp(pm, rc):
-#     outputs = \
-#         (rc.c87654, rc.c87656, rc.c87658, rc.c87660, rc.c87662, rc.c87664, rc.c87666,
-#          rc.c10960, rc.c87668, rc.c87681) = \
-#             RefAmOpp_apply(
-#                 rc.c87654, rc.c87656, rc.c87658, rc.c87660,
-#                 rc.c87662, rc.c87664, rc.c87666, rc.c10960,
-#                 rc.c87668, rc.c87681, rc._cmp, rc.c87521, rc._num,
-#                 rc.c00100, rc.EDCRAGE)
-
-#     header = ['c87654', 'c87656', 'c87658', 'c87660', 'c87662', 'c87664',
-#               'c87666', 'c10960', 'c87668', 'c87681']
-#     return DataFrame(data=np.column_stack(outputs), columns=header)
-
-
-@jit(nopython=True)
-def NonEdCr_calc(c87550, MARS, edphhm, c00100, _num,
+@iterate_jit(parameters=["edphhm", "edphhs"], nopython=True)
+def NonEdCr(c87550, MARS, edphhm, c00100, _num,
     c07180, e07200, c07230, e07240, e07960, e07260, e07300,
     e07700, e07250, t07950, c05800, _precrd, edphhs):
 
@@ -1411,47 +1382,6 @@ def NonEdCr_calc(c87550, MARS, edphhm, c00100, _num,
     return (c87560, c87570, c87580, c87590, c87600, c87610,
                c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220)
 
-
-@jit(nopython=True)
-def NonEdCr_apply(  c87560, c87570, c87580, c87590, c87600, c87610,
-                    c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220,
-                    c87550, MARS, edphhm, c00100, _num, 
-                    c07180, e07200, c07230, e07240, e07960, e07260, e07300,
-                    e07700, e07250, t07950, c05800, _precrd, edphhs ):
-
-
-    for i in range(len(c87560)):
-
-        (   c87560[i], c87570[i], c87580[i], c87590[i], c87600[i], c87610[i], 
-            c87620[i], _ctc1[i], _ctc2[i], _regcrd[i], _exocrd[i], _ctctax[i], 
-            c07220[i]) = NonEdCr_calc(c87550[i], MARS[i], edphhm,
-            c00100[i], _num[i], c07180[i], e07200[i], c07230[i],
-            e07240[i], e07960[i], e07260[i], e07300[i], e07700[i], e07250[i],
-            t07950[i], c05800[i], _precrd[i], edphhs)
-
-    return (c87560, c87570, c87580, c87590, c87600, c87610,
-               c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220)    
-
-
-def NonEdCr(pm, rc):
-    outputs = \
-        (rc.c87560, rc.c87570, rc.c87580, rc.c87590, rc.c87600,
-         rc.c87610, rc.c87620, rc._ctc1, rc._ctc2, rc._regcrd, rc._exocrd,
-         rc._ctctax, rc.c07220) = \
-            NonEdCr_apply(
-                rc.c87560, rc.c87570, rc.c87580, rc.c87590, rc.c87600,
-                rc.c87610, rc.c87620, rc._ctc1, rc._ctc2, rc._regcrd, rc._exocrd,
-                rc._ctctax, rc.c07220, rc.c87550, rc.MARS, pm.edphhm,
-                rc.c00100, rc._num, rc.c07180, rc.e07200, rc.c07230, rc.e07240,
-                rc.e07960, rc.e07260, rc.e07300, rc.e07700, rc.e07250, rc.t07950,
-                rc.c05800, rc._precrd, pm.edphhs)
-                
-
-    header = ['c87560', 'c87570', 'c87580', 'c87590', 'c87600', 'c87610',
-              'c87620', '_ctc1', '_ctc2', '_regcrd', '_exocrd', '_ctctax',
-              'c07220']
-
-    return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
 @jit(nopython=True)
