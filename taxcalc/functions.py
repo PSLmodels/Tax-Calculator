@@ -1307,8 +1307,8 @@ def LLC(pm, rc, puf=True):
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
-@jit(nopython=True)
-def RefAmOpp_calc(_cmp, c87521, _num, c00100, EDCRAGE, c87668):
+@iterate_jit(nopython=True)
+def RefAmOpp(_cmp, c87521, _num, c00100, EDCRAGE, c87668):
     # Refundable American Opportunity Credit 2009+
 
     if _cmp == 1 and c87521 > 0: 
@@ -1337,34 +1337,34 @@ def RefAmOpp_calc(_cmp, c87521, _num, c00100, EDCRAGE, c87668):
                c87664, c87666, c10960, c87668, c87681)
 
 
-@jit(nopython=True)
-def RefAmOpp_apply( c87654, c87656, c87658, c87660, c87662, c87664, c87666, 
-                    c10960, c87668, c87681, _cmp, c87521, _num, c00100, 
-                    EDCRAGE): 
+# @jit(nopython=True)
+# def RefAmOpp_apply( c87654, c87656, c87658, c87660, c87662, c87664, c87666, 
+#                     c10960, c87668, c87681, _cmp, c87521, _num, c00100, 
+#                     EDCRAGE): 
     
 
-    for i in range(len(c87654)):
+#     for i in range(len(c87654)):
 
-        (   c87654[i], c87656[i], c87658[i], c87660[i], c87662[i], c87664[i], 
-            c87666[i], c10960[i], c87668[i], c87681[i]) = RefAmOpp_calc(_cmp[i], 
-            c87521[i], _num[i], c00100[i], EDCRAGE[i], c87668[i])
+#         (   c87654[i], c87656[i], c87658[i], c87660[i], c87662[i], c87664[i], 
+#             c87666[i], c10960[i], c87668[i], c87681[i]) = RefAmOpp_calc(_cmp[i], 
+#             c87521[i], _num[i], c00100[i], EDCRAGE[i], c87668[i])
     
-    return (c87654, c87656, c87658, c87660, c87662,
-               c87664, c87666, c10960, c87668, c87681)
+#     return (c87654, c87656, c87658, c87660, c87662,
+#                c87664, c87666, c10960, c87668, c87681)
 
-def RefAmOpp(pm, rc):
-    outputs = \
-        (rc.c87654, rc.c87656, rc.c87658, rc.c87660, rc.c87662, rc.c87664, rc.c87666,
-         rc.c10960, rc.c87668, rc.c87681) = \
-            RefAmOpp_apply(
-                rc.c87654, rc.c87656, rc.c87658, rc.c87660,
-                rc.c87662, rc.c87664, rc.c87666, rc.c10960,
-                rc.c87668, rc.c87681, rc._cmp, rc.c87521, rc._num,
-                rc.c00100, rc.EDCRAGE)
+# def RefAmOpp(pm, rc):
+#     outputs = \
+#         (rc.c87654, rc.c87656, rc.c87658, rc.c87660, rc.c87662, rc.c87664, rc.c87666,
+#          rc.c10960, rc.c87668, rc.c87681) = \
+#             RefAmOpp_apply(
+#                 rc.c87654, rc.c87656, rc.c87658, rc.c87660,
+#                 rc.c87662, rc.c87664, rc.c87666, rc.c10960,
+#                 rc.c87668, rc.c87681, rc._cmp, rc.c87521, rc._num,
+#                 rc.c00100, rc.EDCRAGE)
 
-    header = ['c87654', 'c87656', 'c87658', 'c87660', 'c87662', 'c87664',
-              'c87666', 'c10960', 'c87668', 'c87681']
-    return DataFrame(data=np.column_stack(outputs), columns=header)
+#     header = ['c87654', 'c87656', 'c87658', 'c87660', 'c87662', 'c87664',
+#               'c87666', 'c10960', 'c87668', 'c87681']
+#     return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
 @jit(nopython=True)
