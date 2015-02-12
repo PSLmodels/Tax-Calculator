@@ -978,8 +978,8 @@ def F2441(pm, rc, puf=True):
 
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
-@jit(nopython=True)
-def DepCareBen_calc(c32800, _cmp, MARS, c32880, c32890, e33420, e33430, e33450, 
+@iterate_jit(nopython=True)
+def DepCareBen(c32800, _cmp, MARS, c32880, c32890, e33420, e33430, e33450, 
                     e33460, e33465, e33470, _sep, _dclim, e32750, e32775, 
                     _earned):
 
@@ -1014,38 +1014,7 @@ def DepCareBen_calc(c32800, _cmp, MARS, c32880, c32890, e33420, e33430, e33450,
     return _seywage, c33465, c33470, c33475, c33480, c32840, c32800, c33000
 
 
-@jit(nopython=True)
-def DepCareBen_apply(   _seywage, c33465, c33470, c33475, c33480, c32840, 
-                        c33000, c32800, _cmp, MARS, c32880, c32890, 
-                        e33420, e33430, e33450, e33460, e33465, e33470, _sep, 
-                        _dclim, e32750, e32775, _earned):
-    
 
-    for i in range(len(_seywage)):
-        (_seywage[i], c33465[i], c33470[i], c33475[i], c33480[i], c32840[i], 
-        c32800[i], c33000[i]) = DepCareBen_calc(c32800[i], _cmp[i], MARS[i], 
-        c32880[i], c32890[i], e33420[i], e33430[i], e33450[i], e33460[i], 
-        e33465[i], e33470[i], _sep[i], _dclim[i], e32750[i], e32775[i], _earned[i])
-
-    return _seywage, c33465, c33470, c33475, c33480, c32840, c32800, c33000
-
-
-def DepCareBen(pm, rc):
-
-    outputs = \
-        rc._seywage, rc.c33465, rc.c33470, rc.c33475, rc.c33480, rc.c32840, rc.c32800, rc.c33000 = \
-            DepCareBen_apply(
-                rc._seywage, rc.c33465, rc.c33470, rc.c33475,
-                rc.c33480, rc.c32840, rc.c33000, rc.c32800, rc._cmp,
-                rc.MARS, rc.c32880, rc.c32890, rc.e33420, rc.e33430, rc.e33450,
-                rc.e33460, rc.e33465, rc.e33470, rc._sep, rc._dclim, rc.e32750,
-                rc.e32775, rc._earned)
-
-    header = ['_seywage', 'c33465', 'c33470', 'c33475', 'c33480', 'c32840',
-              'c32800', 'c33000']
-
-    return DataFrame(data=np.column_stack(outputs),
-                     columns=header)
 
 @jit(nopython=True)
 def ExpEarnedInc_calc(  _exact, c00100, agcmax, pcmax,
