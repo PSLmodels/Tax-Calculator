@@ -253,8 +253,9 @@ def EI_FICA(   e00900, e02100, ssmax, e00200,
     return (_sey, _fica, _setax, _seyoff, c11055, _earned)
 
 
-@jit(nopython=True)
-def StdDed_calc( DSI, _earned, stded, e04470, 
+@iterate_jit(parameters=["stded", "aged", "rt1", "rt2", "rt3", "rt4", "rt5", "rt6", "rt7",
+            "brk1", "brk2", "brk3", "brk4", "brk5", "brk6"], nopython=True)
+def StdDed( DSI, _earned, stded, e04470, 
             MARS, MIdR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200, aged,
             c04470, c00100, c21060, c21040, e37717, c04600, e04805, t04470,
             f6251, _feided, c02700, FDED, rt1, rt2, rt3, rt4, rt5, rt6, rt7,
@@ -345,56 +346,56 @@ def StdDed_calc( DSI, _earned, stded, e04470,
                   _othded, c04100, c04200, _standard, c04500,
                  c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei)
 
-@jit(nopython=True)
-def StdDed_apply(c15100, _numextra, _txpyers, c15200,
-                _othded, c04100, c04200, _standard, c04500,
-                 c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei, DSI, 
-                 _earned, stded, e04470,  
-                 MARS, MIdR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200, 
-                 aged, c04470, c00100, c21060, c21040, e37717, c04600, e04805, 
-                 t04470, f6251, _feided, c02700, FDED, rt1, rt2, rt3, rt4, rt5,
-                 rt6, rt7, brk1, brk2, brk3, brk4, brk5, brk6):
+# @jit(nopython=True)
+# def StdDed_apply(c15100, _numextra, _txpyers, c15200,
+#                 _othded, c04100, c04200, _standard, c04500,
+#                  c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei, DSI, 
+#                  _earned, stded, e04470,  
+#                  MARS, MIdR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200, 
+#                  aged, c04470, c00100, c21060, c21040, e37717, c04600, e04805, 
+#                  t04470, f6251, _feided, c02700, FDED, rt1, rt2, rt3, rt4, rt5,
+#                  rt6, rt7, brk1, brk2, brk3, brk4, brk5, brk6):
     
-    for i in range(len(c15100)):
-        (c15100[i], _numextra[i], _txpyers[i], c15200[i],
-         _othded[i], c04100[i], c04200[i], _standard[i], c04500[i],
-        c04800[i], c60000[i], _amtstd[i], _taxinc[i], _feitax[i], _oldfei[i]
-        ) = StdDed_calc( 
-            DSI[i], _earned[i], stded, e04470[i], 
-            MARS[i], MIdR[i], e15360[i], AGEP[i], AGES[i], PBI[i], SBI[i], 
-            _exact[i], e04200[i], aged, c04470[i], c00100[i], c21060[i], 
-            c21040[i], e37717[i], c04600[i], e04805[i], t04470[i],
-            f6251[i], _feided[i], c02700[i], FDED[i], rt1, rt2, rt3, rt4, rt5, rt6, rt7,
-            brk1, brk2, brk3, brk4, brk5, brk6)
+#     for i in range(len(c15100)):
+#         (c15100[i], _numextra[i], _txpyers[i], c15200[i],
+#          _othded[i], c04100[i], c04200[i], _standard[i], c04500[i],
+#         c04800[i], c60000[i], _amtstd[i], _taxinc[i], _feitax[i], _oldfei[i]
+#         ) = StdDed_calc( 
+#             DSI[i], _earned[i], stded, e04470[i], 
+#             MARS[i], MIdR[i], e15360[i], AGEP[i], AGES[i], PBI[i], SBI[i], 
+#             _exact[i], e04200[i], aged, c04470[i], c00100[i], c21060[i], 
+#             c21040[i], e37717[i], c04600[i], e04805[i], t04470[i],
+#             f6251[i], _feided[i], c02700[i], FDED[i], rt1, rt2, rt3, rt4, rt5, rt6, rt7,
+#             brk1, brk2, brk3, brk4, brk5, brk6)
 
 
-    return (c15100, _numextra, _txpyers, c15200,
-            _othded, c04100, c04200, _standard, c04500,
-            c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei)
+#     return (c15100, _numextra, _txpyers, c15200,
+#             _othded, c04100, c04200, _standard, c04500,
+#             c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei)
 
-def StdDed(pm, rc):
-    # Standard Deduction with Aged, Sched L and Real Estate #
-    outputs = \
-        (rc.c15100, rc._numextra, rc._txpyers, rc.c15200,
-         rc._othded, rc.c04100, rc.c04200, rc._standard, rc.c04500,
-         rc.c04800, rc.c60000, rc._amtstd, rc._taxinc, rc._feitax, rc._oldfei) = \
-            StdDed_apply(
-                rc.c15100, rc._numextra, rc._txpyers, rc.c15200,
-                rc._othded, rc.c04100, rc.c04200, rc._standard, rc.c04500,
-                rc.c04800, rc.c60000, rc._amtstd, rc._taxinc, rc._feitax, rc._oldfei, rc.DSI,
-                rc._earned, pm.stded, rc.e04470,
-                rc.MARS, rc.MIdR, rc.e15360, rc.AGEP, rc.AGES, rc.PBI, rc.SBI, rc._exact, rc.e04200,
-                pm.aged, rc.c04470, rc.c00100, rc.c21060, rc.c21040, rc.e37717, rc.c04600, rc.e04805,
-                rc.t04470, rc.f6251, rc._feided, rc.c02700, rc.FDED, pm.rt1, pm.rt2, pm.rt3, pm.rt4, pm.rt5, pm.rt6, pm.rt7, pm.brk1, pm.brk2, pm.brk3, pm.brk4, pm.brk5, pm.brk6) 
+# def StdDed(pm, rc):
+#     # Standard Deduction with Aged, Sched L and Real Estate #
+#     outputs = \
+#         (rc.c15100, rc._numextra, rc._txpyers, rc.c15200,
+#          rc._othded, rc.c04100, rc.c04200, rc._standard, rc.c04500,
+#          rc.c04800, rc.c60000, rc._amtstd, rc._taxinc, rc._feitax, rc._oldfei) = \
+#             StdDed_apply(
+#                 rc.c15100, rc._numextra, rc._txpyers, rc.c15200,
+#                 rc._othded, rc.c04100, rc.c04200, rc._standard, rc.c04500,
+#                 rc.c04800, rc.c60000, rc._amtstd, rc._taxinc, rc._feitax, rc._oldfei, rc.DSI,
+#                 rc._earned, pm.stded, rc.e04470,
+#                 rc.MARS, rc.MIdR, rc.e15360, rc.AGEP, rc.AGES, rc.PBI, rc.SBI, rc._exact, rc.e04200,
+#                 pm.aged, rc.c04470, rc.c00100, rc.c21060, rc.c21040, rc.e37717, rc.c04600, rc.e04805,
+#                 rc.t04470, rc.f6251, rc._feided, rc.c02700, rc.FDED, pm.rt1, pm.rt2, pm.rt3, pm.rt4, pm.rt5, pm.rt6, pm.rt7, pm.brk1, pm.brk2, pm.brk3, pm.brk4, pm.brk5, pm.brk6) 
 
 
-    header = ['c15100', '_numextra', '_txpyers', 'c15200',
-              '_othded', 'c04100', 'c04200', '_standard',
-              'c04500', 'c04800', 'c60000', '_amtstd', '_taxinc', '_feitax',
-              '_oldfei']
+#     header = ['c15100', '_numextra', '_txpyers', 'c15200',
+#               '_othded', 'c04100', 'c04200', '_standard',
+#               'c04500', 'c04800', 'c60000', '_amtstd', '_taxinc', '_feitax',
+#               '_oldfei']
 
-    return DataFrame(data=np.column_stack(outputs),
-                     columns=header)
+#     return DataFrame(data=np.column_stack(outputs),
+#                      columns=header)
 
 
 @jit(nopython=True)
