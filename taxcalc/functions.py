@@ -1630,8 +1630,8 @@ def C1040(pm, rc, puf=True):
     return DataFrame(data=np.column_stack(outputs[:-1]), columns=header)
 
 
-@jit(nopython=True)
-def DEITC_calc(c08795, c59660, c09200, c07100):
+@iterate_jit(nopython=True)
+def DEITC(c08795, c59660, c09200, c07100):
 
 
     # Decomposition of EITC
@@ -1692,28 +1692,6 @@ def DEITC_calc(c08795, c59660, c09200, c07100):
 
     return (c59680, c59700, c59720, _comb, c07150, c10950)
 
-
-@jit(nopython=True)
-def DEITC_apply(c59680, c59700, c59720, _comb, c07150, c10950, c08795, c59660, 
-                c09200, c07100 ):
-
-    for i in range(len(c59680)):
-        (   c59680[i], c59700[i], c59720[i], _comb[i], c07150[i], 
-            c10950[i]) = DEITC_calc(c08795[i], c59660[i], c09200[i], c07100[i])
-
-    return (c59680, c59700, c59720, _comb, c07150, c10950)
-
-
-def DEITC(pm, rc):
-
-    outputs = \
-        rc.c59680, rc.c59700, rc.c59720, rc._comb, rc.c07150, rc.c10950 = \
-            DEITC_apply(
-                rc.c59680, rc.c59700, rc.c59720, rc._comb, rc.c07150,
-                rc.c10950, rc.c08795, rc.c59660, rc.c09200, rc.c07100)
-    header = ['c59680', 'c59700', 'c59720', '_comb', 'c07150', 'c10950']
-
-    return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
 @jit(nopython=True)
