@@ -1016,8 +1016,8 @@ def DepCareBen(c32800, _cmp, MARS, c32880, c32890, e33420, e33430, e33450,
 
 
 
-@jit(nopython=True)
-def ExpEarnedInc_calc(  _exact, c00100, agcmax, pcmax,
+@iterate_jit(parameters=["pcmax", "agcmax"], nopython=True)
+def ExpEarnedInc(  _exact, c00100, agcmax, pcmax,
                         c33000, c05800, e07300, e07180):
     # Expenses limited to earned income
 
@@ -1048,32 +1048,32 @@ def ExpEarnedInc_calc(  _exact, c00100, agcmax, pcmax,
     return _tratio, c33200, c33400, c07180
 
 
-@jit(nopython=True)
-def ExpEarnedInc_apply( _tratio, c33200, c33400, c07180, _exact, c00100, 
-                        agcmax, _pcmax, c33000, c05800, e07300, e07180):
+# @jit(nopython=True)
+# def ExpEarnedInc_apply( _tratio, c33200, c33400, c07180, _exact, c00100, 
+#                         agcmax, _pcmax, c33000, c05800, e07300, e07180):
 
-    for i in range(len(_tratio)):
-        _tratio[i], c33200[i], c33400[i], c07180[i] = ExpEarnedInc_calc( 
-        _exact[i], c00100[i], agcmax, _pcmax, c33000[i],
-        c05800[i], e07300[i], e07180[i])
+#     for i in range(len(_tratio)):
+#         _tratio[i], c33200[i], c33400[i], c07180[i] = ExpEarnedInc_calc( 
+#         _exact[i], c00100[i], agcmax, _pcmax, c33000[i],
+#         c05800[i], e07300[i], e07180[i])
 
-    return _tratio, c33200, c33400, c07180
+#     return _tratio, c33200, c33400, c07180
 
 
-def ExpEarnedInc(pm, rc):
+# def ExpEarnedInc(pm, rc):
 
-    outputs = \
-        rc._tratio, rc.c33200, rc.c33400, rc.c07180 = \
-            ExpEarnedInc_apply(
-                rc._tratio, rc.c33200, rc.c33400, rc.c07180,
-                rc._exact, rc.c00100, pm.agcmax, pm.pcmax,
-                rc.c33000, rc.c05800, rc.e07300,
-                rc.e07180)
+#     outputs = \
+#         rc._tratio, rc.c33200, rc.c33400, rc.c07180 = \
+#             ExpEarnedInc_apply(
+#                 rc._tratio, rc.c33200, rc.c33400, rc.c07180,
+#                 rc._exact, rc.c00100, pm.agcmax, pm.pcmax,
+#                 rc.c33000, rc.c05800, rc.e07300,
+#                 rc.e07180)
 
-    header = ['_tratio', 'c33200', 'c33400', 'c07180']
+#     header = ['_tratio', 'c33200', 'c33400', 'c07180']
 
-    return DataFrame(data=np.column_stack((outputs)),
-                     columns=header)
+#     return DataFrame(data=np.column_stack((outputs)),
+#                      columns=header)
 
 
 @jit(nopython=True)
