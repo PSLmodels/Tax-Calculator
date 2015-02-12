@@ -1048,36 +1048,9 @@ def ExpEarnedInc(  _exact, c00100, agcmax, pcmax,
     return _tratio, c33200, c33400, c07180
 
 
-# @jit(nopython=True)
-# def ExpEarnedInc_apply( _tratio, c33200, c33400, c07180, _exact, c00100, 
-#                         agcmax, _pcmax, c33000, c05800, e07300, e07180):
 
-#     for i in range(len(_tratio)):
-#         _tratio[i], c33200[i], c33400[i], c07180[i] = ExpEarnedInc_calc( 
-#         _exact[i], c00100[i], agcmax, _pcmax, c33000[i],
-#         c05800[i], e07300[i], e07180[i])
-
-#     return _tratio, c33200, c33400, c07180
-
-
-# def ExpEarnedInc(pm, rc):
-
-#     outputs = \
-#         rc._tratio, rc.c33200, rc.c33400, rc.c07180 = \
-#             ExpEarnedInc_apply(
-#                 rc._tratio, rc.c33200, rc.c33400, rc.c07180,
-#                 rc._exact, rc.c00100, pm.agcmax, pm.pcmax,
-#                 rc.c33000, rc.c05800, rc.e07300,
-#                 rc.e07180)
-
-#     header = ['_tratio', 'c33200', 'c33400', 'c07180']
-
-#     return DataFrame(data=np.column_stack((outputs)),
-#                      columns=header)
-
-
-@jit(nopython=True)
-def RateRed_calc(c05800, _fixup, _othtax, _exact, x59560, _earned):
+@iterate_jit(nopython=True)
+def RateRed(c05800, _fixup, _othtax, _exact, x59560, _earned):
 
     # rate reduction credit for 2001 only, is this needed?
     c05800 = c05800
@@ -1094,29 +1067,6 @@ def RateRed_calc(c05800, _fixup, _othtax, _exact, x59560, _earned):
 
     return c07970, c05800, c59560
 
-@jit(nopython=True)
-def RateRed_apply(  c07970, c59560, c05800, _fixup, _othtax, _exact, x59560, 
-                    _earned ):
-
-    for i in range(len(c07970)):
-        c07970[i], c05800[i], c59560[i] = RateRed_calc(c05800[i], _fixup[i], 
-        _othtax[i], _exact[i], x59560[i], _earned[i])
- 
-    return c07970, c05800, c59560
-
-
-def RateRed(pm, rc):
-    outputs = \
-        rc.c07970, rc.c05800, rc.c59560 = \
-            RateRed_apply(
-                rc.c07970, rc.c59560, rc.c05800, rc._fixup, rc._othtax,
-                rc._exact, rc.x59560, rc._earned )
-
-    header = ['c07970', 'c05800', 'c59560']
-
-
-    return DataFrame(data=np.column_stack((outputs)),
-                     columns=header)
 
 @jit(nopython=True)
 def NumDep_calc(EICYB1, EICYB2, EICYB3,
