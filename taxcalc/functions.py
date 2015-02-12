@@ -601,25 +601,6 @@ def MUI(c00100, _thresx, MARS, c05750, e00300, e00600, c01000, e02000):
     return c05750
 
 
-# @jit(nopython=True)
-# def MUI_apply(c00100, _thresx, MARS, c05750, e00300, e00600, c01000, e02000):
-    
-#     for i in range(len(c00100)):
-#         c05750[i] = MUI_calc(c00100[i], _thresx, MARS[i], c05750[i], e00300[i], 
-#                     e00600[i], c01000[i], e02000[i])
-#     return c05750
-
-# def MUI(pm, rc):
-#     # Additional Medicare tax on unearned Income
-
-#     rc.c05750 = MUI_apply(rc.c00100, pm._thresx, rc.MARS, rc.c05750, rc.e00300, rc.e00600, rc.c01000,
-#                         rc.e02000)
-
-#     header = ['c05750']
-
-#     return DataFrame(data=rc.c05750,
-#                      columns=header) 
-
 
 @jit(nopython=True)
 def AMTI_calc(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
@@ -1722,82 +1703,9 @@ def SOIT(   c09200, e10000, e59680, c59700,e11070, e11550, e11580,e09710,
 
     return (c10300, _eitc)
 
-# @jit(nopython=True)
-# def SOIT_apply( c10300, c09200, e10000, e59680, c59700, e11070, e11550, 
-#                 e11580, e09710, e09720, e11581, e11582, e87900, e87905, e87681, 
-#                 e87682, c10950, e11451, e11452, e11601, e11602, _eitc):
 
 
-#     for i in range(len(c10300)):
-#         (   c10300[i], _eitc[i]) = SOIT_calc(c09200[i], e10000[i], e59680[i], 
-#             c59700[i],e11070[i], e11550[i], e11580[i],e09710[i], e09720[i], 
-#             e11581[i], e11582[i], e87900[i], e87905[i], e87681[i], e87682[i], 
-#             c10950[i], e11451[i], e11452[i], e11601[i], e11602[i], _eitc[i] )
 
-#     return (c10300, _eitc)
-
-
-# def SOIT(pm, rc):
-
-#     outputs = \
-#         rc.c10300, rc._eitc = \
-#             SOIT_apply(
-#                 rc.c10300, rc.c09200, rc.e10000, rc.e59680, rc.c59700,
-#                 rc.e11070, rc.e11550, rc.e11580, rc.e09710, rc.e09720, rc.e11581,
-#                 rc.e11582, rc.e87900, rc.e87905, rc.e87681, rc.e87682, rc.c10950,
-#                 rc.e11451, rc.e11452, rc.e11601, rc.e11602, rc._eitc)
-
-#     header = ['c10300', '_eitc']
-#     return DataFrame(data=np.column_stack(outputs), columns=header)
-
-
-def Taxer(inc_in, inc_out, MARS, pm, rc):
-    low = np.where(inc_in < 3000, 1, 0)
-    med = np.where(np.logical_and(inc_in >= 3000, inc_in < 100000), 1, 0)
-
-    _a1 = inc_in * 0.01
-    _a2 = np.floor(_a1)
-    _a3 = _a2 * 100
-    _a4 = (_a1 - _a2) * 100
-
-    _a5 = np.zeros((rc.dim,))
-    _a5 = np.where(np.logical_and(low == 1, _a4 < 25), 13, _a5)
-    _a5 = np.where(
-        np.logical_and(low == 1, np.logical_and(_a4 >= 25, _a4 < 50)), 38, _a5)
-    _a5 = np.where(
-        np.logical_and(low == 1, np.logical_and(_a4 >= 50, _a4 < 75)), 63, _a5)
-    _a5 = np.where(np.logical_and(low == 1, _a4 >= 75), 88, _a5)
-
-    _a5 = np.where(np.logical_and(med == 1, _a4 < 50), 25, _a5)
-    _a5 = np.where(np.logical_and(med == 1, _a4 >= 50), 75, _a5)
-
-    _a5 = np.where(inc_in == 0, 0, _a5)
-
-    _a6 = np.where(np.logical_or(low == 1, med == 1), _a3 + _a5, inc_in)
-
-    _a6 = inc_in
-
-    inc_out = (pm.rt1 * np.minimum(_a6, pm.brk1[MARS - 1])
-               + pm.rt2
-               * np.minimum(pm.brk2[MARS - 1] - pm.brk1[MARS - 1],
-                            np.maximum(0., _a6 - pm.brk1[MARS - 1]))
-               + pm.rt3
-               * np.minimum(pm.brk3[MARS - 1] - pm.brk2[MARS - 1],
-                            np.maximum(0., _a6 - pm.brk2[MARS - 1]))
-               + pm.rt4
-               * np.minimum(pm.brk4[MARS - 1] - pm.brk3[MARS - 1],
-                            np.maximum(0., _a6 - pm.brk3[MARS - 1]))
-               + pm.rt5
-               * np.minimum(pm.brk5[MARS - 1] - pm.brk4[MARS - 1],
-                            np.maximum(0., _a6 - pm.brk4[MARS - 1]))
-               + pm.rt6
-               * np.minimum(pm.brk6[MARS - 1] - pm.brk5[MARS - 1],
-                            np.maximum(0., _a6 - pm.brk5[MARS - 1]))
-               + pm.rt7 * np.maximum(0., _a6 - pm.brk6[MARS - 1]))
-
-    return inc_out
-
-#@jit('float64(float64, int64, int64, int64)', nopython = True)
 @jit(nopython=True)
 def Taxer_i(inc_in, MARS, rt1, rt2, rt3, rt4, rt5, rt6, rt7, brk1, brk2, brk3,
         brk4, brk5, brk6):
