@@ -1191,9 +1191,9 @@ def NumDep(pm, rc, puf=True):
 
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
-@jit(nopython=True)
-def ChildTaxCredit_calc(n24, MARS, chmax, c00100, _feided,
-                        _cphase, _exact, c11070, c07220, c07230, _num, _precrd, _nctcr):
+@iterate_jit(parameters=["_cphase", "chmax"], nopython=True)
+def ChildTaxCredit(n24, MARS, chmax, c00100, _feided, _cphase, _exact, 
+                        c11070, c07220, c07230, _num, _precrd, _nctcr):
 
     # Child Tax Credit
     if MARS == 2:
@@ -1206,40 +1206,17 @@ def ChildTaxCredit_calc(n24, MARS, chmax, c00100, _feided,
     _ctcagi = c00100 + _feided
 
     if _ctcagi > _cphase[MARS - 1] and _exact == 1:
-        _precrd = max(0., _precrd - 50 * math.ceil(_ctcagi - _cphase[MARS - 1]) / 1000)
+        _precrd = max(0., _precrd - 50 * 
+                    math.ceil(_ctcagi - _cphase[MARS - 1]) / 1000)
 
     if _ctcagi > _cphase[MARS - 1] and _exact != 1:
-        _precrd = max(0., _precrd - 50 * (max(0., _ctcagi - _cphase[MARS - 1]) + 500) / 1000)
+        _precrd = max(0., _precrd - 50 * 
+                    (max(0., _ctcagi - _cphase[MARS - 1]) + 500) / 1000)
 
-    return (c11070, c07220, c07230, _num, _nctcr, float(_precrd), _ctcagi)
+    #TODO get rid of this type declaration
+    _precrd = float(_precrd)
 
-@jit(nopython=True)
-def ChildTaxCredit_apply(   c11070, c07220, c07230,  _num, _nctcr, 
-                            _precrd, _ctcagi, n24, MARS, _chmax,
-                            c00100, _feided, _cphase, _exact ):
-
-    for i in range(len(c11070)):
-        (c11070[i], c07220[i], c07230[i], _num[i], _nctcr[i], 
-        _precrd[i], _ctcagi[i]) = ChildTaxCredit_calc(n24[i], MARS[i], _chmax, 
-        c00100[i], _feided[i], _cphase, _exact[i],
-        c11070[i], c07220[i], c07230[i], _num[i], _precrd[i], _nctcr[i])
-
-    return (c11070, c07220, c07230,  _num, _nctcr, _precrd, _ctcagi)
-
-
-def ChildTaxCredit(pm, rc):
-    outputs = \
-        rc.c11070, rc.c07220, rc.c07230, rc._num, rc._nctcr, rc._precrd, rc._ctcagi = \
-            ChildTaxCredit_apply(
-                rc.c11070, rc.c07220, rc.c07230, rc._num, rc._nctcr, rc._precrd, rc._ctcagi,
-                rc.n24, rc.MARS, pm.chmax, rc.c00100, rc._feided,
-                pm._cphase, rc._exact )
-
-    header = ['c11070', 'c07220', 'c07230', '_num', '_nctcr',
-              '_precrd', '_ctcagi']
-
-    return DataFrame(data=np.column_stack(outputs), columns=header)
-
+    return (c11070, c07220, c07230, _num, _nctcr, _precrd, _ctcagi)
 
 # def HopeCredit():
     # W/o congressional action, Hope Credit will replace 
