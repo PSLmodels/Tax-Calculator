@@ -1037,9 +1037,8 @@ def AmOppCr(_cmp, e87482, e87487, e87492, e87497):
 
 
 
-@jit(nopython=True)
-def LLC_calc(puf, e87530, learn,
-        e87526, e87522, e87524, e87528, c87540, c87550):
+@iterate_jit(parameters=['learn', 'puf'], nopython=True, puf=True)
+def LLC(e87530, learn, e87526, e87522, e87524, e87528, c87540, c87550, puf):
 
     # Lifetime Learning Credit
 
@@ -1056,28 +1055,6 @@ def LLC_calc(puf, e87530, learn,
 
     return (c87540, c87550, c87530)
 
-@jit(nopython=True)
-def LLC_apply(c87540, c87550, c87530, puf, e87530, learn,
-        e87526, e87522, e87524, e87528):
-
-    for i in range(len(c87540)):
-        (c87540[i], c87550[i], c87530[i]) = LLC_calc(puf, e87530[i], learn, 
-            e87526[i], e87522[i], e87524[i], e87528[i],
-            c87540[i], c87550[i])
-
-    return (c87540, c87550, c87530)
-
-def LLC(pm, rc, puf=True):
-    # Lifetime Learning Credit
-
-    outputs = \
-        rc.c87540, rc.c87550, rc.c87530 = \
-            LLC_apply(
-                rc.c87540, rc.c87550, rc.c87530, puf, rc.e87530, pm.learn,
-                rc.e87526, rc.e87522, rc.e87524, rc.e87528)
-
-    header = ['c87540', 'c87550', 'c87530']
-    return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
 @iterate_jit(nopython=True)
@@ -1157,11 +1134,12 @@ def NonEdCr(c87550, MARS, edphhm, c00100, _num,
 
 
 
-@jit(nopython=True)
-def AddCTC_calc(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax, 
+@iterate_jit(parameters=['adctcrt', 'ssmax', 'ealim', 'puf'],
+                        nopython=True, puf=True)
+def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax, 
                 _exact, e82880, ealim, adctcrt, ssmax,
-                e03260, e09800, c59660, e11200, puf, e59680, e59700, e59720,
-                _fixup, e11070):
+                e03260, e09800, c59660, e11200, e59680, e59700, e59720,
+                _fixup, e11070, puf):
 
     # Additional Child Tax Credit
 
@@ -1247,52 +1225,6 @@ def AddCTC_calc(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
     return ( c82925, c82930, c82935, c82880, h82880, c82885, c82890,
             c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070,
             e59660, _othadd)
-
-@jit(nopython=True)
-def AddCTC_apply(c82925, c82930, c82935, c82880, h82880, c82885, c82890,
-            c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070,
-            e59660, _othadd, _nctcr, _precrd, c07220, e00200, e82882, e30100,
-            _sey, _setax, _exact, e82880, ealim, adctcrt,
-            ssmax, e03260, e09800, c59660, e11200, puf, e59680, e59700, e59720,
-            _fixup, e11070 ):
-
-    for i in range(len(c82925)):
-        (   c82925[i], c82930[i], c82935[i], c82880[i], h82880[i],
-            c82885[i], c82890[i], c82900[i], c82905[i], c82910[i], c82915[i],
-            c82920[i], c82937[i], c82940[i], c11070[i], e59660[i],
-            _othadd[i]) = AddCTC_calc(_nctcr[i], _precrd[i], c07220[i],
-            e00200[i], e82882[i], e30100[i], _sey[i], _setax[i], _exact[i],
-            e82880[i], ealim, adctcrt, ssmax,
-            e03260[i], e09800[i], c59660[i], e11200[i], puf, e59680[i],
-            e59700[i], e59720[i], _fixup[i], e11070[i])
-
-
-
-    return (c82925, c82930, c82935, c82880, h82880, c82885, c82890,
-            c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070,
-            e59660, _othadd)
-
-
-def AddCTC(pm, rc, puf=True):
-
-    outputs = \
-        (rc.c82925, rc.c82930, rc.c82935, rc.c82880, rc.h82880, rc.c82885, rc.c82890, rc.c82900, rc.c82905,
-         rc.c82910, rc.c82915, rc.c82920, rc.c82937, rc.c82940, rc.c11070, rc.e59660, rc._othadd) = \
-            AddCTC_apply(
-                rc.c82925, rc.c82930, rc.c82935, rc.c82880,
-                rc.h82880, rc.c82885, rc.c82890, rc.c82900, rc.c82905,
-                rc.c82910, rc.c82915, rc.c82920, rc.c82937, rc.c82940,
-                rc.c11070, rc.e59660, rc._othadd, rc._nctcr, rc._precrd,
-                rc.c07220, rc.e00200, rc.e82882, rc.e30100, rc._sey, rc._setax,
-                rc._exact, rc.e82880, pm.ealim,
-                pm.adctcrt, pm.ssmax, rc.e03260, rc.e09800, rc.c59660,
-                rc.e11200, puf, rc.e59680, rc.e59700, rc.e59720, rc._fixup, rc.e11070)
-
-    header = ['c82925', 'c82930', 'c82935', 'c82880', 'h82880',
-              'c82885', 'c82890', 'c82900', 'c82905', 'c82910', 'c82915',
-              'c82920', 'c82937', 'c82940', 'c11070', 'e59660', '_othadd']
-
-    return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
 def F5405(pm, rc):
