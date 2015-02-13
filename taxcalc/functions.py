@@ -1235,12 +1235,13 @@ def F5405(pm, rc):
     return DataFrame(data=np.column_stack((c64450,)), columns=['c64450'])
 
 
-@jit(nopython=True)
-def C1040_calc( e07400, e07180, e07200, c07220, c07230, e07250,
+@iterate_jit(parameters=['puf'], nopython=True, puf=True)
+def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
                 e07600, e07260, c07970, e07300, x07400, e09720,
                 e07500, e07700, e08000, e07240, e08001, e07960, e07970,
-                SOIYR, e07980, c05800, puf, e08800, e09900, e09400, e09800, 
-                e10000, e10100, e09700, e10050, e10075, e09805, e09710, c59660 ):
+                SOIYR, e07980, c05800, e08800, e09900, e09400, e09800, 
+                e10000, e10100, e09700, e10050, e10075, e09805, e09710, 
+                c59660, puf ):
 
     # Credits 1040 line 48
 
@@ -1286,53 +1287,6 @@ def C1040_calc( e07400, e07180, e07200, c07220, c07230, e07250,
 
     return (c07100, y07100, x07100, c08795, c08800, e08795, c09200, _eitc)
 
-
-@jit(nopython=True)
-def C1040_apply(c07100, y07100, x07100, c08795, c08800, e08795, c09200, _eitc, 
-                e07400, e07180, e07200, c07220, c07230, e07250,
-                e07600, e07260, c07970, e07300, x07400, e09720,
-                e07500, e07700, e08000, e07240, e08001, e07960, e07970,
-                SOIYR, e07980, c05800, puf, e08800, e09900, e09400, e09800, 
-                e10000, e10100, e09700, e10050, e10075, e09805, e09710, c59660): 
-    
-
-    for i in range(len(c07100)):
-        (   c07100[i], y07100[i], x07100[i], c08795[i], c08800[i], e08795[i], 
-            c09200[i], _eitc[i]) = C1040_calc( e07400[i], e07180[i], e07200[i], 
-            c07220[i], c07230[i], e07250[i], e07600[i], e07260[i], c07970[i], 
-            e07300[i], x07400[i], e09720[i], e07500[i], e07700[i], e08000[i], 
-            e07240[i], e08001[i], e07960[i], e07970[i], SOIYR[i], e07980[i], 
-            c05800[i], puf, e08800[i], e09900[i], e09400[i], e09800[i], 
-            e10000[i], e10100[i], e09700[i], e10050[i], e10075[i], e09805[i], 
-            e09710[i], c59660[i])
-
-    return (c07100, y07100, x07100, c08795, c08800, e08795, c09200, _eitc)
-
-def C1040(pm, rc, puf=True):
-
-    outputs = \
-        (rc.c07100, rc.y07100, rc.x07100, rc.c08795, rc.c08800, 
-         rc.e08795, rc.c09200, rc._eitc) = \
-            C1040_apply(
-                rc.c07100, rc.y07100, rc.x07100, rc.c08795, rc.c08800, 
-                rc.e08795, rc.c09200, rc._eitc, rc.e07400, rc.e07180, rc.e07200,
-                rc.c07220, rc.c07230, rc.e07250, rc.e07600, rc.e07260, rc.c07970, rc.e07300,
-                rc.x07400, rc.e09720, rc.e07500, rc.e07700, rc.e08000, rc.e07240,
-                rc.e08001, rc.e07960, rc.e07970, rc.SOIYR, rc.e07980, rc.c05800, puf,
-                rc.e08800, rc.e09900, rc.e09400, rc.e09800, rc.e10000, rc.e10100,
-                rc.e09700, rc.e10050, rc.e10075, rc.e09805, rc.e09710, rc.c59660)
-
-    header = ['c07100', 'y07100', 'x07100', 'c08795', 'c08800', 'e08795',
-              'c09200']
-
-    # this is what it should be? but it will not match up with the current master
-    # QUESTIONS: do we want to check the values of _eitc?
-    # header = ['c07100', 'y07100', 'x07100', 'c08795', 'c08800', 'e08795',
-    #           'c09200', '_eitc']
-    # return DataFrame(data=np.column_stack(outputs), columns=header)
-
-    # temporary fix to make it match with current master
-    return DataFrame(data=np.column_stack(outputs[:-1]), columns=header)
 
 
 @iterate_jit(nopython=True)
