@@ -4,6 +4,8 @@ import math
 import numpy as np
 from .utils import *
 from .functions import *
+from .parameters import Parameters
+from .records import Records
 
 
 all_cols = set()
@@ -31,6 +33,23 @@ def calculator(parameters, records, mods="", **kwargs):
     return calc
 
 class Calculator(object):
+
+    @classmethod
+    def from_files(cls, pfname, rfname, **kwargs):
+        """
+        Create a Calculator object from a Parameters JSON file and a
+        Records file
+
+        Parameters
+        ----------
+        pfname: filename for Parameters
+
+        rfname: filename for Records
+        """
+        params = Parameters.from_file(pfname, **kwargs)
+        recs = Records.from_file(rfname, **kwargs)
+        return cls(params, recs)
+
 
     def __init__(self, parameters, records):
         self._parameters = parameters
