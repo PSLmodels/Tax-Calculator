@@ -51,10 +51,14 @@ class Calculator(object):
         return cls(params, recs)
 
 
-    def __init__(self, parameters, records):
-        self._parameters = parameters
-        self._records = records
-        assert records.current_year == parameters.current_year
+    def __init__(self, parameters, records, **kwargs):
+        self._parameters = (parameters if not isinstance(parameters, str) else
+                            Parameters.from_file(parameters, **kwargs))
+
+        self._records = (records if not isinstance(records, str) else
+                         Records.from_file(records, **kwargs))
+
+        assert self._parameters.current_year == self._records.current_year
 
     @property
     def parameters(self):

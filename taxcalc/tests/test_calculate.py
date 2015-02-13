@@ -88,6 +88,12 @@ def test_make_Calculator():
 
 def test_make_Calculator_from_files(paramsfile):
     calc = Calculator.from_files(paramsfile.name, tax_dta_path, start_year=91)
+    assert calc
+
+
+def test_make_Calculator_files_to_ctor(paramsfile):
+    calc = Calculator(parameters=paramsfile.name, records=tax_dta_path, start_year=91)
+    assert calc
 
 
 def test_make_Calculator_mods():
