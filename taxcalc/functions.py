@@ -748,107 +748,10 @@ def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
               _amt25pc, c62747, c62755, c62770, _amt, c62800,
               c09600, _othtax, c05800)    
 
-# @jit(nopython=True)
-# def AMTI_apply( c62720, c60260, c63100, c60200, c60240, c60220,
-#                 c60130, c62730, _addamt, c62100, _cmbtp, _edical,
-#                 _amtsepadd, c62600, _agep, _ages, c62700,
-#                 _alminc, _amtfei, c62780, c62900, c63000, c62740,
-#                 _ngamty, c62745, y62745, _tamt2, _amt5pc, _amt15pc,
-#                 _amt25pc, c62747, c62755, c62770, _amt, c62800,
-#                 c09600, _othtax, c05800, c60000, _exact, e60290, _posagi, 
-#                 e07300, x60260, c24517, e60300, e60860, e60100, e60840, e60630, 
-#                 e60550, e60720, e60430, e60500, e60340, e60680, e60600, e60405,
-#                 e60440, e60420, e60410, e61400, e60660, e60480,
-#                 e62000,  e60250, _cmp, puf, _standard,  e04470, e17500, 
-#                 f6251,  e62100, e21040, _sit, e20800, c00100, 
-#                 c04470, c17000, e18500, c20800, c21040,   
-#                 DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD,  c02700, 
-#                 e00100,  e24515, x62730, x60130, 
-#                 x60220, x60240, c18300, _taxbc, almsp, 
-#                 brk6, MARS, _sep, brk2, almdep, cgrate1,
-#                 cgrate2, amtys, amtsep, x62720, e00700, c24516, 
-#                 c24520, c04800, e10105, c05700, e05800, e05100, e09600, amtage, 
-#                 x62740, e62900, almsep, _earned, e62600, amtex):
 
-
-#     for i in range(len(c62720)):
-#         (   c62720[i], c60260[i], c63100[i], c60200[i], c60240[i], c60220[i], 
-#             c60130[i], c62730[i], _addamt[i], c62100[i], _cmbtp[i], _edical[i], 
-#             _amtsepadd[i], c62600[i], _agep[i], _ages[i], c62700[i], _alminc[i], 
-#             _amtfei[i], c62780[i], c62900[i], c63000[i], c62740[i], _ngamty[i], 
-#             c62745[i], y62745[i], _tamt2[i], _amt5pc[i], _amt15pc[i], 
-#             _amt25pc[i], c62747[i], c62755[i], c62770[i], _amt[i],
-#             c62800[i], c09600[i], _othtax[i], c05800[i]) = AMTI_calc(
-#             c60000[i], _exact[i], e60290[i], _posagi[i], e07300[i], x60260[i], 
-#             c24517[i], e60300[i], e60860[i], e60100[i], e60840[i], e60630[i], 
-#             e60550[i], e60720[i], e60430[i], e60500[i], e60340[i], e60680[i], 
-#             e60600[i], e60405[i], e60440[i], e60420[i], e60410[i], e61400[i], 
-#             e60660[i],  e60480[i], e62000[i], e60250[i], _cmp[i], puf, 
-#             _standard[i],  e04470[i], e17500[i], f6251[i], e62100[i], e21040[i],
-#             _sit[i], e20800[i], c00100[i], c04470[i], c17000[i], e18500[i], 
-#             c20800[i], c21040[i], DOBYR[i], FLPDYR[i], DOBMD[i], SDOBYR[i], 
-#             SDOBMD[i], c02700[i], e00100[i], e24515[i], x62730[i], x60130[i], 
-#             x60220[i], x60240[i], c18300[i], _taxbc[i], almsp, 
-#             brk6, MARS[i], _sep[i], brk2, almdep, cgrate1, cgrate2, amtys,
-#             amtsep, x62720[i], e00700[i], c24516[i], c24520[i], c04800[i], 
-#             e10105[i], c05700[i], e05800[i], e05100[i], e09600[i], amtage, 
-#             x62740[i], e62900[i], almsep, _earned[i], e62600[i], amtex)
-     
-#     return   (c62720, c60260, c63100, c60200, c60240, c60220,
-#               c60130, c62730, _addamt, c62100, _cmbtp, _edical,
-#               _amtsepadd, _agep, _ages, c62600, c62700,
-#               _alminc, _amtfei, c62780, c62900, c63000, c62740,
-#               _ngamty, c62745, y62745, _tamt2, _amt5pc, _amt15pc,
-#               _amt25pc, c62747, c62755, c62770, _amt, c62800,
-#               c09600, _othtax, c05800)
-
-
-# def AMTI(pm, rc, puf=True):
-
-#     outputs = \
-#         (rc.c62720, rc.c60260, rc.c63100, rc.c60200, rc.c60240, rc.c60220,
-#          rc.c60130, rc.c62730, rc._addamt, rc.c62100, rc._cmbtp, rc._edical,
-#          rc._amtsepadd, rc._agep, rc._ages, rc.c62600, rc.c62700,
-#          rc._alminc, rc._amtfei, rc.c62780, rc.c62900, rc.c63000, rc.c62740,
-#          rc._ngamty, rc.c62745, rc.y62745, rc._tamt2, rc._amt5pc, rc._amt15pc,
-#          rc._amt25pc, rc.c62747, rc.c62755, rc.c62770, rc._amt, rc.c62800,
-#          rc.c09600, rc._othtax, rc.c05800) = \
-#                 AMTI_apply(
-#                     rc.c62720, rc.c60260, rc.c63100, rc.c60200, rc.c60240, rc.c60220,
-#                     rc.c60130, rc.c62730, rc._addamt, rc.c62100, rc._cmbtp, rc._edical,
-#                     rc._amtsepadd, rc.c62600, rc._agep, rc._ages,  rc.c62700, rc._alminc,
-#                     rc._amtfei, rc.c62780, rc.c62900, rc.c63000, rc.c62740, rc._ngamty,
-#                     rc.c62745, rc.y62745, rc._tamt2, rc._amt5pc, rc._amt15pc, rc._amt25pc,
-#                     rc.c62747, rc.c62755, rc.c62770, rc._amt, rc.c62800, rc.c09600,
-#                     rc._othtax, rc.c05800, rc.c60000, rc._exact, rc.e60290, rc._posagi, rc.e07300,
-#                     rc.x60260, rc.c24517, rc.e60300, rc.e60860, rc.e60100, rc.e60840, rc.e60630, rc.e60550,
-#                     rc.e60720, rc.e60430, rc.e60500, rc.e60340, rc.e60680, rc.e60600, rc.e60405, rc.e60440,
-#                     rc.e60420, rc.e60410, rc.e61400, rc.e60660, rc.e60480, rc.e62000, rc.e60250, rc._cmp,
-#                     puf, rc._standard, rc.e04470, rc.e17500, rc.f6251, rc.e62100, rc.e21040, rc._sit,
-#                     rc.e20800, rc.c00100, rc.c04470, rc.c17000, rc.e18500, rc.c20800, rc.c21040,
-#                     rc.DOBYR, rc.FLPDYR, rc.DOBMD, rc.SDOBYR, rc.SDOBMD, rc.c02700, rc.e00100, rc.e24515,
-#                     rc.x62730, rc.x60130, rc.x60220, rc.x60240, rc.c18300, rc._taxbc,
-#                     pm.almsp, pm.brk6, rc.MARS, rc._sep, pm.brk2, pm.almdep, pm.cgrate1,
-#                     pm.cgrate2, pm.amtys, pm.amtsep, rc.x62720, rc.e00700, rc.c24516,
-#                     rc.c24520, rc.c04800, rc.e10105, rc.c05700, rc.e05800, rc.e05100, rc.e09600,
-#                     pm.amtage, rc.x62740, rc.e62900, pm.almsep, rc._earned, rc.e62600, pm.amtex)
-
-#     header = ['c62720', 'c60260', 'c63100', 'c60200', 'c60240', 'c60220',
-#               'c60130', 'c62730', '_addamt', 'c62100', '_cmbtp', '_edical',
-#               '_amtsepadd', '_agep', '_ages', 'c62600', 'c62700',
-#               '_alminc', '_amtfei', 'c62780', 'c62900', 'c63000', 'c62740',
-#               '_ngamty', 'c62745', 'y62745', '_tamt2', '_amt5pc', '_amt15pc',
-#               '_amt25pc', 'c62747', 'c62755', 'c62770', '_amt', 'c62800',
-#               'c09600', '_othtax', 'c05800']
-
-
-#     return DataFrame(data=np.column_stack(outputs),
-#                      columns=header)
-
-
-@jit(nopython=True)
-def F2441_calc(_earned, _fixeic, e59560, MARS, puf, f2441, dcmax,
-               e32800, e32750 , e32775, CDOB1, CDOB2, e32890, e32880):
+@iterate_jit(parameters=["dcmax", "puf"], nopython=True, puf=True)
+def F2441(_earned, _fixeic, e59560, MARS, f2441, dcmax,
+               e32800, e32750 , e32775, CDOB1, CDOB2, e32890, e32880, puf):
 
     if _fixeic == 1: 
         _earned = e59560
@@ -881,38 +784,43 @@ def F2441_calc(_earned, _fixeic, e59560, MARS, puf, f2441, dcmax,
     
     c32800 = min(max(e32800, e32750 + e32775), _dclim)
 
-
-    return float(_earned), float(c32880), float(c32890), float(_ncu13), _dclim, c32800
-
-
-@jit(nopython=True)
-def F2441_apply(c32880, c32890, _ncu13, _dclim, c32800, 
-                _earned, _fixeic, e59560, MARS, puf, f2441, dcmax,
-                e32800, e32750, e32775, CDOB1, CDOB2, e32890, e32880):
-    
-    for i in range(len(c32880)):
-        (_earned[i], c32880[i], c32890[i], _ncu13[i], _dclim[i], 
-        c32800[i]) = F2441_calc(_earned[i], _fixeic[i], e59560[i], MARS[i], 
-        puf, f2441[i], dcmax, e32800[i], e32750[i], 
-        e32775[i], CDOB1[i], CDOB2[i], e32890[i], e32880[i])
+    #TODO deal with these types
+    _earned = float(_earned)
+    c32880 = float(c32880)
+    c32890 = float(c32890)
+    _ncu13 = float(_ncu13)
 
     return _earned, c32880, c32890, _ncu13, _dclim, c32800
+
+
+# @jit(nopython=True)
+# def F2441_apply(c32880, c32890, _ncu13, _dclim, c32800, 
+#                 _earned, _fixeic, e59560, MARS, puf, f2441, dcmax,
+#                 e32800, e32750, e32775, CDOB1, CDOB2, e32890, e32880):
+    
+#     for i in range(len(c32880)):
+#         (_earned[i], c32880[i], c32890[i], _ncu13[i], _dclim[i], 
+#         c32800[i]) = F2441_calc(_earned[i], _fixeic[i], e59560[i], MARS[i], 
+#         puf, f2441[i], dcmax, e32800[i], e32750[i], 
+#         e32775[i], CDOB1[i], CDOB2[i], e32890[i], e32880[i])
+
+#     return _earned, c32880, c32890, _ncu13, _dclim, c32800
     
 
 
-def F2441(pm, rc, puf=True):
+# def F2441(pm, rc, puf=True):
 
-    outputs = \
-        rc._earned, rc.c32880, rc.c32890, rc._ncu13, rc._dclim, rc.c32800 = \
-            F2441_apply(
-                rc.c32880, rc.c32890, rc._ncu13, rc._dclim, rc.c32800,
-                rc._earned, rc._fixeic, rc.e59560, rc.MARS, puf, rc.f2441, pm.dcmax,
-                rc.e32800, rc.e32750, rc.e32775, rc.CDOB1, rc.CDOB2, rc.e32890,
-                rc.e32880)
+#     outputs = \
+#         rc._earned, rc.c32880, rc.c32890, rc._ncu13, rc._dclim, rc.c32800 = \
+#             F2441_apply(
+#                 rc.c32880, rc.c32890, rc._ncu13, rc._dclim, rc.c32800,
+#                 rc._earned, rc._fixeic, rc.e59560, rc.MARS, puf, rc.f2441, pm.dcmax,
+#                 rc.e32800, rc.e32750, rc.e32775, rc.CDOB1, rc.CDOB2, rc.e32890,
+#                 rc.e32880)
 
-    header = ['_earned', 'c32880', 'c32890', '_ncu13', '_dclim', 'c32800']
+#     header = ['_earned', 'c32880', 'c32890', '_ncu13', '_dclim', 'c32800']
 
-    return DataFrame(data=np.column_stack(outputs), columns=header)
+#     return DataFrame(data=np.column_stack(outputs), columns=header)
 
 @iterate_jit(nopython=True)
 def DepCareBen(c32800, _cmp, MARS, c32880, c32890, e33420, e33430, e33450, 
