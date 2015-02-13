@@ -23,6 +23,10 @@ class Records(object):
     """
 
 
+    @classmethod
+    def from_file(cls, path, **kwargs):
+        return cls(path, **kwargs)
+
     def __init__(   self, 
                     data="puf2.csv", 
                     blowup_factors="StageIFactors.csv",
@@ -34,8 +38,6 @@ class Records(object):
         self.read_weights(weights)
         if (current_year):
             self._current_year = current_year
-        else:
-            self._current_year = self.FLPDYR[0]
 
     @property
     def current_year(self):
@@ -287,6 +289,8 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
     def read(self, data):
         if isinstance(data, pd.core.frame.DataFrame):
             tax_dta = data
+        elif data.endswith("gz"):
+            tax_dta = pd.read_csv(data, compression='gzip')
         else:
             tax_dta = pd.read_csv(data)
 

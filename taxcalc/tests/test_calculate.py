@@ -5,19 +5,36 @@ sys.path.append(os.path.join(CUR_PATH, "../../"))
 import numpy as np
 from numpy.testing import assert_array_equal
 import pandas as pd
+import tempfile
 import pytest
 from numba import jit, vectorize, guvectorize
 from taxcalc import *
 
 
 all_cols = set()
-tax_dta = pd.read_csv(os.path.join(CUR_PATH, "../../tax_all91_puf.gz"),
-                      compression='gzip')
+tax_dta_path = os.path.join(CUR_PATH, "../../tax_all91_puf.gz")
+tax_dta = pd.read_csv(tax_dta_path, compression='gzip')
+                      
 # Fix-up. MIdR needs to be type int64 to match PUF
 tax_dta['midr'] = tax_dta['midr'].astype('int64')
 tax_dta['s006'] = np.arange(0,len(tax_dta['s006']))
 blowup_factors = pd.read_csv(os.path.join(CUR_PATH, "../../StageIFactors.csv"))
 weights = pd.read_csv(os.path.join(CUR_PATH, "../../WEIGHTS.csv"))
+
+@pytest.yield_fixture
+def paramsfile():
+
+    txt = """{"_almdep": {"value": [7150, 7250, 7400]},
+             "_almsep": {"value": [40400, 41050]},
+             "_rt5": {"value": [0.33 ]},
+             "_rt7": {"value": [0.396]}}"""
+
+    f = tempfile.NamedTemporaryFile(mode="a", delete=False)
+    f.write(txt + "\n")
+    f.close()
+    # Must close and then yield for Windows platform
+    yield f
+    os.remove(f.name)
 
 
 def add_df(alldfs, df):
@@ -69,6 +86,16 @@ def test_make_Calculator():
     puf = Records(tax_dta, blowup_factors, weights)
 
     calc = Calculator(params, puf)
+
+
+def test_make_Calculator_from_files(paramsfile):
+    calc = Calculator.from_files(paramsfile.name, tax_dta_path, start_year=91)
+    assert calc
+
+
+def test_make_Calculator_files_to_ctor(paramsfile):
+    calc = Calculator(parameters=paramsfile.name, records=tax_dta_path, start_year=91)
+    assert calc
 
 
 def test_make_Calculator_mods():
