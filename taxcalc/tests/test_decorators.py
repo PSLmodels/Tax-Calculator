@@ -257,3 +257,40 @@ def test_ret_everything_iterate_jit():
     exp = DataFrame(data=[[2.0, 2.0, 2.0, 2.0]] * 5,
                     columns=["c", "d", "e", "f"])
     assert_frame_equal(ans, exp)
+
+
+@iterate_jit(parameters=['puf'], nopython=True, puf=True)
+def Magic_calc3(x, y, z, puf):
+    a = x + y
+    if (puf):
+        b = x + y + z
+    else:
+        b = 42
+    return (a, b)
+
+
+def test_function_takes_kwarg():
+    pm = Foo()
+    pf = Foo()
+    pm.a = np.ones((5,))
+    pm.b = np.ones((5,))
+    pf.x = np.ones((5,))
+    pf.y = np.ones((5,))
+    pf.z = np.ones((5,))
+    ans = Magic_calc3(pm, pf)
+    exp = DataFrame(data=[[2.0, 3.0]] * 5,
+                    columns=["a", "b"])
+    assert_frame_equal(ans, exp)
+
+def test_function_takes_kwarg_nondefault_value():
+    pm = Foo()
+    pf = Foo()
+    pm.a = np.ones((5,))
+    pm.b = np.ones((5,))
+    pf.x = np.ones((5,))
+    pf.y = np.ones((5,))
+    pf.z = np.ones((5,))
+    ans = Magic_calc3(pm, pf, puf=False)
+    exp = DataFrame(data=[[2.0, 42.0]] * 5,
+                    columns=["a", "b"])
+    assert_frame_equal(ans, exp)
