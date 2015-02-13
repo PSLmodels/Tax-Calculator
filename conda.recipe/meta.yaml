@@ -10,6 +10,7 @@ requirements:
     - numpy
     - pandas
     - numba
+    - toolz
   run:
     - pytest
     - setuptools
@@ -17,6 +18,7 @@ requirements:
     - numpy
     - pandas
     - numba
+    - toolz
 
 about:
   home: http://www.github.com/OpenSourcePolicyCenter
