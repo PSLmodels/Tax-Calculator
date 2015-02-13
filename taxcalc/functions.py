@@ -99,13 +99,16 @@ def AGI(   _ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
     
     return (c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp, c04600)
 
-
-@jit(nopython=True)
-def ItemDed_calc(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
+@iterate_jit(parameters=["puf", "phase2", "_phase2_i"], nopython=True, puf=True)
+def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
                  e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
                  e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
-                 MARS, _sep, c00100, puf, phase2, _phase2_i):
-
+                 MARS, _sep, c00100, phase2, _phase2_i, puf):
+    """
+    WARNING: Any additional keyword args, such as 'puf=True' here, must be passed
+    to the function at the END of the argument list. If you stick the argument
+    somewhere in the middle of the signature, you will get errors.
+    """
     # Medical #
     c17750 = 0.075 * _posagi
     c17000 = max(0, e17500 - c17750)
@@ -181,55 +184,6 @@ def ItemDed_calc(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900
     return (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500,
             c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
             _nonlimited, _limitratio, c04470, c21040)
-
-
-@jit(nopython=True)
-def ItemDed_apply(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
-            e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
-            e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
-            MARS, _sep, c00100, puf,
-            c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500, c20750, c20400, c19200,
-            c20800, c19700, c21060, phase2, _phase2_i, _nonlimited, _limitratio, c04470, c21040):
-
-
-    for i in range(len(_posagi)):
-        (c17750[i], c17000[i], _sit1[i], _sit[i], _statax[i], c18300[i], c37703[i], c20500[i],
-        c20750[i], c20400[i], c19200[i], c20800[i], c19700[i], c21060[i], _phase2_i[i],
-        _nonlimited[i], _limitratio[i], c04470[i], c21040[i]
-        ) = ItemDed_calc(
-            _posagi[i], e17500[i], e18400[i], e18425[i], e18450[i], e18500[i], e18800[i], e18900[i],
-            e20500[i], e20400[i], e19200[i], e20550[i], e20600[i], e20950[i], e19500[i], e19570[i],
-            e19400[i], e19550[i], e19800[i], e20100[i], e20200[i], e20900[i], e21000[i], e21010[i],
-            MARS[i], _sep[i], c00100[i], puf, phase2, _phase2_i)
-
-
-    return (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500,
-                c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
-                _nonlimited, _limitratio, c04470, c21040)
-
-
-def ItemDed(pm, rc, puf=True):
-
-    outputs = \
-        (rc.c17750, rc.c17000, rc._sit1, rc._sit, rc._statax, rc.c18300, rc.c37703,
-         rc.c20500, rc.c20750, rc.c20400, rc.c19200, rc.c20800, rc.c19700, rc.c21060,
-         rc._phase2_i, rc._nonlimited, rc._limitratio, rc.c04470, rc.c21040) = \
-            ItemDed_apply(
-                rc._posagi, rc.e17500, rc.e18400, rc.e18425, rc.e18450, rc.e18500,
-                rc.e18800, rc.e18900, rc.e20500, rc.e20400, rc.e19200, rc.e20550, rc.e20600, rc.e20950,
-                rc.e19500, rc.e19570, rc.e19400, rc.e19550, rc.e19800, rc.e20100, rc.e20200, rc.e20900,
-                rc.e21000, rc.e21010, rc.MARS, rc._sep, rc.c00100, puf,
-                rc.c17750, rc.c17000, rc._sit1, rc._sit, rc._statax, rc.c18300, rc.c37703,
-                rc.c20500, rc.c20750, rc.c20400, rc.c19200, rc.c20800, rc.c19700, rc.c21060,
-                pm.phase2, rc._phase2_i, rc._nonlimited, rc._limitratio, rc.c04470, rc.c21040)
-
-
-    header= ['c17750', 'c17000', '_sit1', '_sit', '_statax', 'c18300', 'c37703',
-             'c20500', 'c20750', 'c20400', 'c19200', 'c20800', 'c19700',
-             'c21060', '_phase2',
-             '_nonlimited', '_limitratio', 'c04470', 'c21040']
-
-    return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
 @iterate_jit(parameters=["ssmax"], nopython=True)
