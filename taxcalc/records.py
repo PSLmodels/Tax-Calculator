@@ -22,11 +22,15 @@ class Records(object):
     Advancing years is done through a member function
     """
 
-    def __init__(self, data="puf2.csv", current_year=None):
+    @classmethod
+    def from_file(cls, path, **kwargs):
+        return cls(path, **kwargs)
+
+    def __init__(self, data="puf2.csv", start_year=None):
 
         self.read(data)
-        if (current_year):
-            self._current_year = current_year
+        if (start_year):
+            self._current_year = start_year
         else:
             self._current_year = self.FLPDYR[0]
 
@@ -41,6 +45,8 @@ class Records(object):
     def read(self, data):
         if isinstance(data, pd.core.frame.DataFrame):
             tax_dta = data
+        elif data.endswith("gz"):
+            tax_dta = pd.read_csv(data, compression='gzip')
         else:
             tax_dta = pd.read_csv(data)
 

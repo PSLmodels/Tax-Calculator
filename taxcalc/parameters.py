@@ -4,13 +4,40 @@ from .utils import expand_array
 
 class Parameters(object):
 
+    @classmethod
+    def from_file(cls, file_name, **kwargs):
+        import json
+        with open(file_name) as f:
+            params = json.loads(f.read())
+
+        params_list = [ (k, v['value']) for k, v in params.items()]
+
+        return cls(data=params_list, **kwargs)
+
+
     def __init__(self, start_year=2013, budget_years=10,
-                 inflation_rate=0.02):
+                 inflation_rate=0.02, data=None):
         self._current_year = start_year
         self._start_year = start_year
 
-        # READ IN DATA - could read file here
-        self._vals = [('_almdep', [7150, 7250, 7400]),
+        if data:
+            self._vals = data
+        else:
+            self._vals = self._default_data()
+
+        # INITIALIZE
+        [setattr(self, name, expand_array(np.array(val),
+             inflation_rate=inflation_rate, num_years=budget_years))
+             for name, val in self._vals]
+
+        self.set_year(start_year)
+
+
+
+    def _default_data(self):
+        """ Set of default parameters, if no file specified """
+
+        paramdata = [('_almdep', [7150, 7250, 7400]),
                       ('_almsep', [40400, 41050, ]),
                       ('_rt5', [0.33, ]),
                       ('_rt7', [0.396, ]),
@@ -59,12 +86,8 @@ class Parameters(object):
                       ('_cphase', [75000, 110000, 55000, 75000, 75000, 55000, ]),
                       ('_chmax', [1000, 1000, 1000, 1000, 1000, 500, ]),
                       ('_amtage', [24, ])]
-        # INITIALIZE
-        [setattr(self, name, expand_array(np.array(val),
-             inflation_rate=inflation_rate, num_years=budget_years))
-             for name, val in self._vals]
 
-        self.set_year(start_year)
+        return paramdata
 
     @property
     def current_year(self):
