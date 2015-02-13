@@ -274,19 +274,17 @@ def iterate_jit(parameters=None, **kwargs):
 
     def make_wrapper(func):
 
-        func_kws = inspect.getargspec(func).args
-        jit_kws = inspect.getargspec(jit).args + ['nopython']
-
-        kwargs_for_func = toolz.keyfilter(func_kws.__contains__, kwargs)
-        kwargs_for_jit = toolz.keyfilter(jit_kws.__contains__, kwargs)
-
         # Step 1. Wrap this function in apply_jit
         # from apply_jit
 
         # Get the input arguments from the function
         in_args = inspect.getargspec(func).args
-        src = inspect.getsourcelines(func)[0]
+        jit_args = inspect.getargspec(jit).args + ['nopython']
 
+        kwargs_for_func = toolz.keyfilter(in_args.__contains__, kwargs)
+        kwargs_for_jit = toolz.keyfilter(jit_args.__contains__, kwargs)
+
+        src = inspect.getsourcelines(func)[0]
 
         # Discover the return arguments by walking
         # the AST of the function
