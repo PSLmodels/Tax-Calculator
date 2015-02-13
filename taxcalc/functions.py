@@ -793,34 +793,6 @@ def F2441(_earned, _fixeic, e59560, MARS, f2441, dcmax,
     return _earned, c32880, c32890, _ncu13, _dclim, c32800
 
 
-# @jit(nopython=True)
-# def F2441_apply(c32880, c32890, _ncu13, _dclim, c32800, 
-#                 _earned, _fixeic, e59560, MARS, puf, f2441, dcmax,
-#                 e32800, e32750, e32775, CDOB1, CDOB2, e32890, e32880):
-    
-#     for i in range(len(c32880)):
-#         (_earned[i], c32880[i], c32890[i], _ncu13[i], _dclim[i], 
-#         c32800[i]) = F2441_calc(_earned[i], _fixeic[i], e59560[i], MARS[i], 
-#         puf, f2441[i], dcmax, e32800[i], e32750[i], 
-#         e32775[i], CDOB1[i], CDOB2[i], e32890[i], e32880[i])
-
-#     return _earned, c32880, c32890, _ncu13, _dclim, c32800
-    
-
-
-# def F2441(pm, rc, puf=True):
-
-#     outputs = \
-#         rc._earned, rc.c32880, rc.c32890, rc._ncu13, rc._dclim, rc.c32800 = \
-#             F2441_apply(
-#                 rc.c32880, rc.c32890, rc._ncu13, rc._dclim, rc.c32800,
-#                 rc._earned, rc._fixeic, rc.e59560, rc.MARS, puf, rc.f2441, pm.dcmax,
-#                 rc.e32800, rc.e32750, rc.e32775, rc.CDOB1, rc.CDOB2, rc.e32890,
-#                 rc.e32880)
-
-#     header = ['_earned', 'c32880', 'c32890', '_ncu13', '_dclim', 'c32800']
-
-#     return DataFrame(data=np.column_stack(outputs), columns=header)
 
 @iterate_jit(nopython=True)
 def DepCareBen(c32800, _cmp, MARS, c32880, c32890, e33420, e33430, e33450, 
@@ -912,14 +884,15 @@ def RateRed(c05800, _fixup, _othtax, _exact, x59560, _earned):
     return c07970, c05800, c59560
 
 
-@jit(nopython=True)
-def NumDep_calc(EICYB1, EICYB2, EICYB3,
-                puf, EIC, c00100, e00400, MARS, 
+@iterate_jit(parameters=["joint", "rtbase", "crmax", "rtless", "dylim", 
+                         "ymax", "puf"], nopython=True, puf=True)
+def NumDep(EICYB1, EICYB2, EICYB3,
+                EIC, c00100, e00400, MARS, 
                 ymax, joint, rtbase, c59560, crmax,
                 rtless, e83080, e00300, e00600, e01000, e40223, 
                 e25360, e25430, e25470, e25400, e25500, e26210,
                 e26340, e27200, e26205, e26320, dylim, _cmp, SOIYR, 
-                DOBYR, SDOBYR, _agep, _ages, c59660):
+                DOBYR, SDOBYR, _agep, _ages, c59660, puf):
 
     EICYB1 = max(0.0, EICYB1)
     EICYB2 = max(0.0, EICYB2)
@@ -990,50 +963,6 @@ def NumDep_calc(EICYB1, EICYB2, EICYB3,
     return (_ieic, EICYB1, EICYB2, EICYB3, _modagi, c59660,
                _val_ymax, _preeitc, _val_rtbase, _val_rtless, _dy)
 
-@jit(nopython=True)
-def NumDep_apply(_ieic, _modagi, c59660, _val_ymax, _preeitc,
-                 _val_rtbase, _val_rtless, _dy, EICYB1, EICYB2,
-                 EICYB3, puf, EIC, c00100, e00400, MARS, ymax,
-                 joint, rtbase, c59560,
-                 crmax, rtless, e83080, e00300, e00600, e01000,
-                 e40223, e25360, e25430, e25470, e25400, e25500,
-                 e26210, e26340, e27200, e26205, e26320, dylim,
-                 _cmp, SOIYR, DOBYR, SDOBYR, _agep, _ages):
-    
-    for i in range(len(_ieic)):
-        (_ieic[i], EICYB1[i], EICYB2[i], EICYB3[i], _modagi[i], c59660[i],
-        _val_ymax[i], _preeitc[i], _val_rtbase[i], 
-        _val_rtless[i], _dy[i]) =  NumDep_calc(EICYB1[i], EICYB2[i], EICYB3[i],
-        puf, EIC[i], c00100[i], e00400[i], MARS[i], 
-        ymax, joint, rtbase, c59560[i], crmax,
-        rtless, e83080[i], e00300[i], e00600[i], e01000[i], e40223[i], 
-        e25360[i], e25430[i], e25470[i], e25400[i], e25500[i], e26210[i],
-        e26340[i], e27200[i], e26205[i], e26320[i], dylim, _cmp[i], SOIYR[i],
-        DOBYR[i], SDOBYR[i], _agep[i], _ages[i], c59660[i])
-    
-    return (_ieic, EICYB1, EICYB2, EICYB3, _modagi, c59660,
-               _val_ymax, _preeitc, _val_rtbase, _val_rtless, _dy)
-
-def NumDep(pm, rc, puf=True):
-
-    outputs =  \
-        (rc._ieic, rc.EICYB1, rc.EICYB2, rc.EICYB3, rc._modagi, rc.c59660,
-         rc._val_ymax, rc._preeitc, rc._val_rtbase, rc._val_rtless, rc._dy) = \
-            NumDep_apply(
-                rc._ieic, rc._modagi, rc.c59660, rc._val_ymax, rc._preeitc,
-                rc._val_rtbase, rc._val_rtless, rc._dy, rc.EICYB1, rc.EICYB2,
-                rc.EICYB3, puf, rc.EIC, rc.c00100, rc.e00400, rc.MARS, pm.ymax,
-                pm.joint, pm.rtbase, rc.c59560,
-                pm.crmax, pm.rtless, rc.e83080, rc.e00300, rc.e00600, rc.e01000,
-                rc.e40223, rc.e25360, rc.e25430, rc.e25470, rc.e25400, rc.e25500,
-                rc.e26210, rc.e26340, rc.e27200, rc.e26205, rc.e26320, pm.dylim,
-                rc._cmp, rc.SOIYR, rc.DOBYR, rc.SDOBYR, rc._agep, rc._ages)
-
-    header = ['_ieic', 'EICYB1', 'EICYB2', 'EICYB3', '_modagi',
-              'c59660', '_val_ymax', '_preeitc', '_val_rtbase',
-              '_val_rtless', '_dy']
-
-    return DataFrame(data=np.column_stack(outputs), columns=header)
 
 @iterate_jit(parameters=["_cphase", "chmax"], nopython=True)
 def ChildTaxCredit(n24, MARS, chmax, c00100, _feided, _cphase, _exact, 
