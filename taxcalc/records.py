@@ -6,7 +6,6 @@ import pandas as pd
 import numpy as np
 import os.path
 
-
 class Records(object):
     """
     This class represents the data for a collection of tax records. Typically,
@@ -22,19 +21,27 @@ class Records(object):
     Advancing years is done through a member function
     """
 
+    CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+    blowup_factors_path = os.path.join(CUR_PATH, "../StageIFactors.csv")
+    weights_path = os.path.join(CUR_PATH, "../WEIGHTS.csv")
+
+
+    @classmethod
+    def from_file(cls, path, **kwargs):
+        return cls(path, **kwargs)
 
     def __init__(   self, 
                     data="puf2.csv", 
-                    blowup_factors="StageIFactors.csv",
-                    weights="WEIGHTS.csv",
-                    current_year=None):
+                    blowup_factors=blowup_factors_path,
+                    weights=weights_path,
+                    start_year=None):
 
         self.read(data)
         self.read_blowup(blowup_factors)
         self.read_weights(weights)
-        if (current_year):
-            self._current_year = current_year
-        else:
+        if (start_year):
+            self._current_year = start_year
+        else: 
             self._current_year = self.FLPDYR[0]
 
     @property
@@ -287,6 +294,8 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
     def read(self, data):
         if isinstance(data, pd.core.frame.DataFrame):
             tax_dta = data
+        elif data.endswith("gz"):
+            tax_dta = pd.read_csv(data, compression='gzip')
         else:
             tax_dta = pd.read_csv(data)
 
