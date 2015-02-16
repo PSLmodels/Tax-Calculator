@@ -34,7 +34,10 @@ def run(puf=True):
 
     # Create a Public Use File object
     tax_dta = pd.read_csv("puf2.csv")
-    puf = Records(tax_dta)
+    blowup_factors = "./taxcalc/StageIFactors.csv"
+    weights = "./taxcalc/WEIGHTS.csv"
+
+    puf = Records(tax_dta, blowup_factors, weights)
 
     # Create a Calculator
     calc = Calculator(parameters=params, records=puf)
