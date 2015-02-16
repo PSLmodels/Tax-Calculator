@@ -1,2 +1,4 @@
 include versioneer.py
 include taxcalc/_version.py
+include StageIFactors.csv
+include WEIGHTS.csv
