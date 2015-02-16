@@ -20,9 +20,9 @@ class Records(object):
     constructor.
     Advancing years is done through a member function
     """
-
-    blowup_factors_path = "StageIFactors.csv"
-    weights_path = "WEIGHTS.csv"
+    CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+    weights_path = os.path.join(CUR_PATH, "WEIGHTS.csv")
+    blowup_factors_path = os.path.join(CUR_PATH, "StageIFactors.csv")
 
 
 
