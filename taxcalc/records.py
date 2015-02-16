@@ -21,8 +21,8 @@ class Records(object):
     Advancing years is done through a member function
     """
 
-    blowup_factors_path = "./StageIFactors.csv"
-    weights_path = "./WEIGHTS.csv"
+    blowup_factors_path = "StageIFactors.csv"
+    weights_path = "WEIGHTS.csv"
 
 
 
