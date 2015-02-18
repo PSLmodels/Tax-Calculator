@@ -185,3 +185,43 @@ class Calculator(object):
     @property
     def current_year(self):
         return self.parameters.current_year
+
+
+    def mtr(self, income_type_string, diff = 100):
+        """
+        This method calculates the marginal tax rate for every record. 
+        In order to avoid kinks, we find the marginal rates associated with 
+        both a tax increase and a tax decrease and use the more modest of 
+        the two. 
+        """
+
+        income_type = getattr(self, income_type_string)
+        
+        # Calculate the base level of taxes. 
+        self.calc_all()
+        taxes_base = np.copy(self.c05200)
+
+        # Calculate the tax change with a marginal increase in income.
+        setattr(self, income_type_string, income_type + diff)
+        self.calc_all()
+        delta_taxes_up = self.c05200 - taxes_base
+
+        # Calculate the tax change with a marginal decrease in income.
+        setattr(self, income_type_string, income_type - diff)
+        self.calc_all()
+        delta_taxes_down = taxes_base - self.c05200
+
+        # Reset the income_type to its starting point to avoid 
+        # unintended consequences. 
+        setattr(self, income_type_string, income_type)
+
+        # Choose the more modest effect of either adding or subtracting income.
+        delta_taxes = np.where( np.absolute(delta_taxes_up) <= 
+                            np.absolute(delta_taxes_down), 
+                            delta_taxes_up , delta_taxes_down)
+
+        # Calculate the marginal tax rate
+        mtr = delta_taxes / diff
+
+        return mtr
+

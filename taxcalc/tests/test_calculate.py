@@ -19,6 +19,7 @@ tax_dta = pd.read_csv(tax_dta_path, compression='gzip')
 tax_dta['midr'] = tax_dta['midr'].astype('int64')
 tax_dta['s006'] = np.arange(0,len(tax_dta['s006']))
 
+
 @pytest.yield_fixture
 def paramsfile():
 
