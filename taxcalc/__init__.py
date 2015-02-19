@@ -1,5 +1,6 @@
 from .calculate import *
 from .parameters import *
+from .behavior import *
 from .records import *
 from .utils import *
 from .decorators import *
