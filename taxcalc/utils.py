@@ -102,7 +102,7 @@ def weighted_count(agg):
 
 
 def weighted_mean(agg):
-    return (agg['tax_diff']*agg['s006']).sum() / agg['s006'].sum()
+    return float((agg['tax_diff']*agg['s006']).sum()) / float(agg['s006'].sum())
 
 
 def weighted_sum(agg):
@@ -110,15 +110,15 @@ def weighted_sum(agg):
 
 
 def weighted_perc_inc(agg):
-    return weighted_count_gt_zero(agg) / weighted_count(agg)
+    return float(weighted_count_gt_zero(agg)) / float(weighted_count(agg))
 
 
 def weighted_perc_dec(agg):
-    return weighted_count_lt_zero(agg) / weighted_count(agg)
+    return float(weighted_count_lt_zero(agg)) / float(weighted_count(agg))
 
 
 def weighted_share_of_total(agg, total):
-    return weighted_sum(agg) / total
+    return float(weighted_sum(agg)) / float(total)
 
 
 def groupby_weighted_decile(df):
