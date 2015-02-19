@@ -5,9 +5,18 @@ sys.path.append(os.path.join(cur_path, "../../"))
 sys.path.append(os.path.join(cur_path, "../"))
 import numpy as np
 import pandas as pd
+from pandas import DataFrame, Series
 from pandas.util.testing import assert_frame_equal
+from pandas.util.testing import assert_series_equal
 from numba import jit, vectorize, guvectorize
 from taxcalc import *
+
+
+data = [[1.0, 2, 'a'],
+        [-1.0, 4, 'a'],
+        [3.0, 6, 'a'],
+        [2.0, 4, 'b'],
+        [3.0, 6, 'b']]
 
 
 def test_expand_1D_short_array():
@@ -39,6 +48,7 @@ def test_expand_2D_short_array():
     res = expand_2D(x, num_years=5)
     assert(np.allclose(exp, res))
 
+
 def test_create_tables():
     # Default Plans
     #Create a Public Use File object
@@ -63,4 +73,66 @@ def test_create_tables():
     tdiff = create_difference_table(calc1, calc2, groupby="agi_bins")
 
 
+def test_weighted_count_lt_zero():
+    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    grped = df.groupby('label')
+    diffs = grped.apply(weighted_count_lt_zero)
+    exp = Series(data=[4, 0], index=['a', 'b'])
+    assert_series_equal(exp, diffs)
+
+
+def test_weighted_count_gt_zero():
+    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    grped = df.groupby('label')
+    diffs = grped.apply(weighted_count_gt_zero)
+    exp = Series(data=[8, 10], index=['a', 'b'])
+    assert_series_equal(exp, diffs)
+ 
+
+def test_weighted_count():
+    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    grped = df.groupby('label')
+    diffs = grped.apply(weighted_count)
+    exp = Series(data=[12, 10], index=['a', 'b'])
+    assert_series_equal(exp, diffs)
+ 
+
+def test_weighted_mean():
+    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    grped = df.groupby('label')
+    diffs = grped.apply(weighted_mean)
+    exp = Series(data=[16.0/12.0, 26.0/10.0], index=['a', 'b'])
+    assert_series_equal(exp, diffs)
+ 
+
+def test_weighted_sum():
+    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    grped = df.groupby('label')
+    diffs = grped.apply(weighted_sum)
+    exp = Series(data=[16.0, 26.0], index=['a', 'b'])
+    assert_series_equal(exp, diffs)
+ 
+
+def test_weighted_perc_inc():
+    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    grped = df.groupby('label')
+    diffs = grped.apply(weighted_perc_inc)
+    exp = Series(data=[8./12., 1.0], index=['a', 'b'])
+    assert_series_equal(exp, diffs)
+
+
+def test_weighted_perc_dec():
+    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    grped = df.groupby('label')
+    diffs = grped.apply(weighted_perc_dec)
+    exp = Series(data=[4./12., 0.0], index=['a', 'b'])
+    assert_series_equal(exp, diffs)
+
+
+def test_weighted_share_of_total():
+    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    grped = df.groupby('label')
+    diffs = grped.apply(weighted_share_of_total, 42.0)
+    exp = Series(data=[16.0/42., 26.0/42.0], index=['a', 'b'])
+    assert_series_equal(exp, diffs)
  
