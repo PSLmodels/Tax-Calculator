@@ -143,7 +143,7 @@ class Calculator(object):
         F5405(self.parameters, self.records)
         C1040(self.parameters, self.records)
         DEITC(self.parameters, self.records)
-        SOIT(self.parameters, self.records)
+        OSPC_TAX(self.parameters, self.records)
 
     def calc_all_test(self):
         all_dfs = []
@@ -174,7 +174,7 @@ class Calculator(object):
         add_df(all_dfs, F5405(self.parameters, self.records))
         add_df(all_dfs, C1040(self.parameters, self.records))
         add_df(all_dfs, DEITC(self.parameters, self.records))
-        add_df(all_dfs, SOIT(self.parameters, self.records))
+        add_df(all_dfs, OSPC_TAX(self.parameters, self.records))
         totaldf = pd.concat(all_dfs, axis=1)
         return totaldf
 
