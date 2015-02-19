@@ -189,15 +189,3 @@ def create_difference_table(calc1, calc2, groupby):
 
     diffs = means_and_comparisons(res2, 'tax_diff', gp)
     return diffs
-
-
-def create_tables(calc1, calc2):
-
-    # where do the results differ..
-    soit1 = results(calc1)
-    soit2 = results(calc2)
-
-    meansY_dec, diffs_dec, meansY_bins, diffs_bins = \
-        groupby_means_and_comparisons(soit1, soit2)
-
-    return meansY_dec, diffs_dec, meansY_bins, diffs_bins

@@ -38,3 +38,29 @@ def test_expand_2D_short_array():
     exp[1:] = exp2
     res = expand_2D(x, num_years=5)
     assert(np.allclose(exp, res))
+
+def test_create_tables():
+    # Default Plans
+    #Create a Public Use File object
+    cur_path = os.path.abspath(os.path.dirname(__file__))
+    tax_dta_path = os.path.join(cur_path, "../../tax_all91_puf.gz")
+    # Create a default Parameters object
+    params1 = Parameters(start_year=91)
+    records1 = Records(tax_dta_path)
+    # Create a Calculator
+    calc1 = Calculator(parameters=params1, records=records1)
+    calc1.calc_all()
+
+    # User specified Plans
+    user_mods = '{"_rt4": [0.56]}'
+    params2 = Parameters(start_year=91)
+    records2 = Records(tax_dta_path)
+    # Create a Calculator
+    calc2 = calculator(parameters=params2, records=records2, mods=user_mods)
+    calc2.calc_all()
+
+    t2 = create_distribution_table(calc2, groupby="agi_bins")
+    tdiff = create_difference_table(calc1, calc2, groupby="agi_bins")
+
+
+ 
