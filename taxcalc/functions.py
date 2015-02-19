@@ -1354,11 +1354,13 @@ def DEITC(c08795, c59660, c09200, c07100):
 
 
 @iterate_jit(nopython=True)
-def OSPC_TAX( c09200, c59660, c11070, c10960 , _eitc ):
+def OSPC_TAX( c09200, c59660, c11070, c10960, c11600, c10950 , _eitc, e11580,
+              e11450, e11500, e82040):
 
-    _refund = c59660 + c11070 + c10960
+    _refund = (c59660 + c11070 + c11600 + c10960 + c10950 + e11580 + e11450 +
+               e11500)
     
-    _ospctax = c09200 - _refund
+    _ospctax = c09200 - _refund - e82040
 
     c10300 = max(0, _ospctax)
 

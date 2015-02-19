@@ -593,7 +593,7 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
                         'c82940', 'c11070', 'e59660', '_othadd', 'y07100',
                         'x07100', 'c08800', 'e08795', 'x07400', 'c59680',
                         'c59720', '_comb', 'c07150', 'c10300', '_ospctax',
-                        '_refund']
+                        '_refund', 'c11600', 'e11450', 'e82040', 'e11500']
                         
                         
 
