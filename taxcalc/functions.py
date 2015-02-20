@@ -124,7 +124,7 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     # Casulty #
     if e20500 > 0:
         c37703 = e20500 + 0.1 * _posagi
-        c20500 = c37703 + 0.1 * _posagi
+        c20500 = c37703 - 0.1 * _posagi
     else:
         c37703 = 0.
         c20500 = 0.
@@ -207,14 +207,14 @@ def EI_FICA(   e00900, e02100, ssmax, e00200,
     return (_sey, _fica, _setax, _seyoff, c11055, _earned)
 
 
-@iterate_jit(parameters=["stded", "aged", "rt1", "rt2", "rt3", "rt4", 
+@iterate_jit(parameters=["puf", "stded", "aged", "rt1", "rt2", "rt3", "rt4", 
              "rt5", "rt6", "rt7", "brk1", "brk2", "brk3", "brk4", "brk5", 
-            "brk6"], nopython=True)
+            "brk6"], nopython=True, puf=True)
 def StdDed( DSI, _earned, stded, e04470, 
-            MARS, MIdR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200, aged,
+            MARS, MIdR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200, e02400, aged,
             c04470, c00100, c21060, c21040, e37717, c04600, e04805, t04470,
             f6251, _feided, c02700, FDED, rt1, rt2, rt3, rt4, rt5, rt6, rt7,
-            brk1, brk2, brk3, brk4, brk5, brk6):
+            brk1, brk2, brk3, brk4, brk5, brk6, puf):
     # Standard Deduction with Aged, Sched L and Real Estate #
 
     if DSI == 1:
@@ -242,6 +242,20 @@ def StdDed( DSI, _earned, stded, e04470,
         _txpyers = 2.
     else:
         _txpyers = 1.
+        
+    if puf:
+        if FDED == 2 and e04470 > stded[MARS - 1]:
+            if MARS != 2:
+                _numextra = (e04470 - stded[MARS - 1])/float(aged[0])
+            else:
+                _numextra = (e04470 - stded[MARS - 1])/float(aged[1])
+        elif e02400 > 0:
+            _numextra = float(_txpyers)
+        else:
+            _numextra = 0.
+    else:
+        _numextra = float(AGEP + AGES + PBI + SBI)
+
 
     if _exact == 1 and MARS == 3 or MARS == 5:
         c04200 = e04200
@@ -585,12 +599,14 @@ def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     c62730 = e24515 + x62730 
 
     _amtded = c60200 + c60220 + c60240
-    if c60000 <= 0:
+    #if c60000 <= 0:
 
-        _amtded = max(0., _amtded + c60000)
+    #   _amtded = max(0., _amtded + c60000)
    
-    if _exact == 0 or (_exact == 1 and ((_amtded + e60290) > 0)):
+    if _standard == 0 or (_exact == 1 and ((_amtded + e60290) > 0)):
         _addamt = _amtded + e60290 - c60130
+    else:
+        _addamt = 0
 
 
     if _cmp == 1:
@@ -632,15 +648,35 @@ def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     c62600 = max(0., amtex[MARS - 1] - 0.25 * max(0., c62100 - amtys[MARS - 1]))
 
-    if DOBYR > 0:
-        _agep = float(math.ceil((12 * (FLPDYR - DOBYR) - DOBMD / 100) / 12))
+    #if DOBYR > 0:
+    #    _agep = float(math.ceil((12 * (FLPDYR - DOBYR) - DOBMD / 100) / 12))
+    #else:
+    #    _agep = 0.
+
+#    if SDOBYR > 0:
+#        _ages = np.ceil((12 * (FLPDYR - SDOBYR) - SDOBMD / 100) / 12)
+
+#    else: _ages = 0.
+    if DOBYR >= 1 and DOBYR <= 99:
+        _DOBYR = DOBYR + 1900.
     else:
-        _agep = 0.
+        _DOBYR = DOBYR
 
-    if SDOBYR > 0:
-        _ages = np.ceil((12 * (FLPDYR - SDOBYR) - SDOBMD / 100) / 12)
+    if _DOBYR > 1890:
+        _agep = FLPDYR - _DOBYR
+    else:
+        _agep = 50.
 
-    else: _ages = 0.
+    if  SDOBYR >= 1 and SDOBYR <= 99:
+        _SDOBYR = SDOBYR + 1900.
+    else:
+        _SDOBYR = 0.
+
+    if _SDOBYR > 1890:
+        _agep = FLPDYR - _SDOBYR
+    else:
+        _ages = 50.
+#-------------------------
 
     if (_cmp == 1 and f6251 == 1 and _exact == 1):
         c62600 = e62600
@@ -751,35 +787,49 @@ def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
 @iterate_jit(parameters=["dcmax", "puf"], nopython=True, puf=True)
 def F2441(_earned, _fixeic, e59560, MARS, f2441, dcmax,
-               e32800, e32750 , e32775, CDOB1, CDOB2, e32890, e32880, puf):
+               e32800, e32750 , e32775, CDOB1, CDOB2, e32890, e32880, FLPDYR, puf):
 
     if _fixeic == 1: 
         _earned = e59560
 
     if MARS == 2 and puf == True:
-        c32880 = 0.5 * _earned
-        c32890 = 0.5 * _earned
-    else: c32880, c32890 = 0., 0.
+        if e32890 != 0:
+            c32880 = 0.5 * _earned
+            c32890 = 0.5 * _earned
+        else:
+            c32880 = max(0., e32880)
+            c32890 = max(0., e32890)
 
-    if MARS == 2 and puf == False:
-        c32880 = max(0., e32880)
-        c32890 = max(0., e32890)
+#    else: c32880, c32890 = 0., 0.
 
-    if MARS != 2:
+#    if MARS == 2 and puf == False:
+#        c32880 = max(0., e32880)
+#        c32890 = max(0., e32890)
+
+    elif MARS != 2:
         c32880 = _earned
         c32890 = _earned
 
-    _ncu13 = 0.
-    if puf == True:
+#    _ncu13 = 0.
+#    if puf == True:
+#        _ncu13 = f2441
+
+
+#    if puf == False and CDOB1 > 0:
+#        _ncu13 += 1
+
+#    if puf == False and CDOB2 > 0:
+#        _ncu13 += 1
+
+    if f2441 == 0:
+        _ncu13 = 0
+        if FLPDYR - CDOB1 >= 0 and FLPDYR - CDOB1 <= 12:
+            _ncu13 = _ncu13 +1
+        if FLPDYR - CDOB2 >= 0 and FLPDYR - CDOB2 <= 12:
+            _ncu13 = _ncu13 +1
+    else:
         _ncu13 = f2441
-
-
-    if puf == False and CDOB1 > 0:
-        _ncu13 += 1
-
-    if puf == False and CDOB2 > 0:
-        _ncu13 += 1
-
+        
     _dclim = min(_ncu13, 2.) * dcmax
     
     c32800 = min(max(e32800, e32750 + e32775), _dclim)
@@ -858,10 +908,11 @@ def ExpEarnedInc(  _exact, c00100, agcmax, pcmax,
     if e07180 == 0:
 
         c07180 = 0.
+        c33000 = 0.
     else: 
         c07180 = c33400
 
-    return _tratio, c33200, c33400, c07180
+    return _tratio, c33200, c33400, c07180, c33000
 
 
 
@@ -931,8 +982,12 @@ def NumDep(EICYB1, EICYB2, EICYB3,
 
     if (MARS != 3 and MARS != 6 and _modagi > 0 and
             (_modagi > _val_ymax or c59560 > _val_ymax)):
-        c59660 = max(0, c59660 - rtless[_ieic]
-                * (max(_modagi, c59560) - _val_ymax))
+        _preeitc = max(0., crmax[ _ieic] - rtless[_ieic]
+                       * (max(0.,max(_modagi,c59560)-_val_ymax)))
+        _preeitc = min(_preeitc,c59660)
+
+#        c59660 = max(0, c59660 - rtless[_ieic]
+#                * (max(_modagi, c59560) - _val_ymax))
 
     if MARS != 3 and MARS != 6 and _modagi > 0:
         _val_rtbase = rtbase[_ieic] * 100
@@ -950,16 +1005,22 @@ def NumDep(EICYB1, EICYB2, EICYB3,
 
     if (MARS != 3 and MARS != 6 and _modagi > 0 
             and _dy > dylim):
-        c59660 = 0.
+         _preeitc = 0.
+#        c59660 = 0.
 
-    if (_cmp == 1 and _ieic == 0 and SOIYR - DOBYR >= 25 and SOIYR - DOBYR < 65
-        and SOIYR - SDOBYR >= 25 and SOIYR - SDOBYR < 65):
-        c59660 = 0.
+#    if (_cmp == 1 and _ieic == 0 and SOIYR - DOBYR >= 25 and SOIYR - DOBYR < 65
+#        and SOIYR - SDOBYR >= 25 and SOIYR - SDOBYR < 65):
+#        c59660 = 0.
     
-    if _ieic == 0 and (_agep < 25 or _agep >=65 or _ages <25 or _ages >= 65):
+#    if _ieic == 0 and (_agep < 25 or _agep >=65 or _ages <25 or _ages >= 65):
+#        c59660 = 0.
+
+    if puf or (_ieic > 0) or (_agep >= 25 and _agep <= 64) or (_ages > 0):
+        c59660 = _preeitc
+    else:
         c59660 = 0.
-
-
+        c59560 = 0.  # updated to reflect SAS code, but has no seeming affect on accuracy
+       
     return (_ieic, EICYB1, EICYB2, EICYB3, _modagi, c59660,
                _val_ymax, _preeitc, _val_rtbase, _val_rtless, _dy)
 
@@ -1200,12 +1261,15 @@ def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
 
     if _nctcr > 2 and c82890 < c82935:
         c82940 = min(c82935, c82937)
+        
+    if _nctcr <=2 and c82890>0:
+        c82940 = min (c82890, c82935)
 
-    if _nctcr > 0:
-        c11070 = c82940
-    else: 
+    #if _nctcr > 0:
+    c11070 = c82940
+    #else: 
 
-        c11070 = 0.
+    #    c11070 = 0.
 
                 #WHY ARE WE SETTING AN 'E' VALUE HERE?     
     if puf == True and _nctcr > 0:
@@ -1213,10 +1277,14 @@ def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
     else:
         e59660 = 0.
 
+
     if _nctcr > 0:
         _othadd = e11070 - c11070
     else:
         _othadd = 0.
+    
+    #even though our calc is def right!!    
+    _othadd =0
 
     if _nctcr  > 0 and _fixup >= 4:
         c11070 = c11070 + _othadd
@@ -1240,7 +1308,7 @@ def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
                 e07600, e07260, c07970, e07300, x07400, e09720,
                 e07500, e07700, e08000, e07240, e08001, e07960, e07970,
                 SOIYR, e07980, c05800, e08800, e09900, e09400, e09800, 
-                e10000, e10100, e09700, e10050, e10075, e09805, e09710, 
+                e10000, e10100, e09700, e10050, e10075, e09805, e09710,
                 c59660, puf ):
 
     # Credits 1040 line 48
@@ -1266,9 +1334,9 @@ def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
 
     _eitc = c59660
 
-    c08795 = max(0., c05800 - c07100)
-
-    c08800 = c08795
+    c08795 = max(0., c05800 - c07100) #SAS @1277
+    
+#    c08800 = c08795
 
     if puf == True:
 
@@ -1277,7 +1345,7 @@ def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
         e08795 = 0.
 
     # Tax before refundable credits
-
+    _othertax = e09900 + e09400 + e09800 + e10100
     c09200 = c08795 + e09900 + e09400 + e09800 + e10000 + e10100
     c09200 = c09200 + e09700
     c09200 = c09200 + e10050
@@ -1285,12 +1353,12 @@ def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
     c09200 = c09200 + e09805
     c09200 = c09200 + e09710 + e09720
 
-    return (c07100, y07100, x07100, c08795, c08800, e08795, c09200, _eitc)
+    return (c07100, y07100, x07100, c08795, e08795, c09200, _eitc, _othertax)
 
 
 
 @iterate_jit(nopython=True)
-def DEITC(c08795, c59660, c09200, c07100):
+def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _othertax):
 
 
     # Decomposition of EITC
@@ -1307,31 +1375,37 @@ def DEITC(c08795, c59660, c09200, c07100):
 
     if c08795 > 0 and c59660 > 0 and c08795 > c59660: 
         c59680 = c59660
+    
+    c07150 = c07100 + c59680
+    c07150 = min(c07150, c05800)
+    c08800 = c05800 - c07150
+    
+    c59700 = min(_othertax, c59680)
+    c59720 = c59680 - c59700
 
-
-    if (c08795 > 0 and c59660 > 0 and _comb > 0 and c09200 - c08795 > 0 and c09200 - c08795 > _comb): 
-        c59700 = _comb
-    else:
-        c59700 = 0.
-
-    if (c08795 > 0 and c59660 > 0 and _comb > 0 and c09200 - c08795 > 0 and c09200 - c08795 <= _comb):  
-        c59700 = c59700 = c09200 - c08795
-        c59720 = c59660 - c59680 - c59700
-
-    else: c59720 = 0.
-
-    if c08795 == 0 and c59660 > 0:
-        c59680 = 0.
-
-    if c08795 == 0 and c59660 > 0 and c09200 > 0 and c09200 > c59660:
-        c59700 = c59660
-
-    if c08795 == 0 and c59660 > 0 and c09200 > 0 and c09200 < c59660:
-        c59700 = c09200
-        c59720 = c59660 - c59700
-
-    if c08795 == 0 and c59660 > 0 and c09200 <= 0:
-        c59720 = c59660 - c59700
+    #if (c08795 > 0 and c59660 > 0 and _comb > 0 and c09200 - c08795 > 0 and c09200 - c08795 > _comb): 
+    #    c59700 = _comb
+    #else:
+    #    c59700 = 0.
+    #
+    #if (c08795 > 0 and c59660 > 0 and _comb > 0 and c09200 - c08795 > 0 and c09200 - c08795 <= _comb):  
+    #    c59700 = c59700 = c09200 - c08795
+    #    c59720 = c59660 - c59680 - c59700
+    #
+    #else: c59720 = 0.
+    #
+    #if c08795 == 0 and c59660 > 0:
+    #    c59680 = 0.
+    #
+    #if c08795 == 0 and c59660 > 0 and c09200 > 0 and c09200 > c59660:
+    #    c59700 = c59660
+    #
+    #if c08795 == 0 and c59660 > 0 and c09200 > 0 and c09200 < c59660:
+    #    c59700 = c09200
+    #    c59720 = c59660 - c59700
+    #
+    #if c08795 == 0 and c59660 > 0 and c09200 <= 0:
+    #    c59720 = c59660 - c59700
 
     # Ask dan about this section of code! e.g., Compb goes to zero
 
@@ -1349,7 +1423,7 @@ def DEITC(c08795, c59660, c09200, c07100):
     c07150 = c07150
     c10950 = 0.
 
-    return (c59680, c59700, c59720, _comb, c07150, c10950)
+    return (c59680, c59700, c59720, _comb, c07150, c10950, c08800)
 
 
 

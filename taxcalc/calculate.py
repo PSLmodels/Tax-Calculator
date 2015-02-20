@@ -14,6 +14,9 @@ def add_df(alldfs, df):
         if col not in all_cols:
             all_cols.add(col)
             alldfs.append(df[col])
+        else:
+            dup_index = [i for i,series in enumerate(alldfs) if series.name == col][0]
+            alldfs[dup_index] = df[col]
 
 
 def calculator(parameters, records, mods="", **kwargs):
