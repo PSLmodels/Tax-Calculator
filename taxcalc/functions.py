@@ -648,15 +648,6 @@ def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     c62600 = max(0., amtex[MARS - 1] - 0.25 * max(0., c62100 - amtys[MARS - 1]))
 
-    #if DOBYR > 0:
-    #    _agep = float(math.ceil((12 * (FLPDYR - DOBYR) - DOBMD / 100) / 12))
-    #else:
-    #    _agep = 0.
-
-#    if SDOBYR > 0:
-#        _ages = np.ceil((12 * (FLPDYR - SDOBYR) - SDOBMD / 100) / 12)
-
-#    else: _ages = 0.
     if DOBYR >= 1 and DOBYR <= 99:
         _DOBYR = DOBYR + 1900.
     else:
@@ -676,7 +667,6 @@ def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
         _agep = FLPDYR - _SDOBYR
     else:
         _ages = 50.
-#-------------------------
 
     if (_cmp == 1 and f6251 == 1 and _exact == 1):
         c62600 = e62600
@@ -800,26 +790,9 @@ def F2441(_earned, _fixeic, e59560, MARS, f2441, dcmax,
             c32880 = max(0., e32880)
             c32890 = max(0., e32890)
 
-#    else: c32880, c32890 = 0., 0.
-
-#    if MARS == 2 and puf == False:
-#        c32880 = max(0., e32880)
-#        c32890 = max(0., e32890)
-
     elif MARS != 2:
         c32880 = _earned
         c32890 = _earned
-
-#    _ncu13 = 0.
-#    if puf == True:
-#        _ncu13 = f2441
-
-
-#    if puf == False and CDOB1 > 0:
-#        _ncu13 += 1
-
-#    if puf == False and CDOB2 > 0:
-#        _ncu13 += 1
 
     if f2441 == 0:
         _ncu13 = 0
@@ -1006,14 +979,6 @@ def NumDep(EICYB1, EICYB2, EICYB3,
     if (MARS != 3 and MARS != 6 and _modagi > 0 
             and _dy > dylim):
          _preeitc = 0.
-#        c59660 = 0.
-
-#    if (_cmp == 1 and _ieic == 0 and SOIYR - DOBYR >= 25 and SOIYR - DOBYR < 65
-#        and SOIYR - SDOBYR >= 25 and SOIYR - SDOBYR < 65):
-#        c59660 = 0.
-    
-#    if _ieic == 0 and (_agep < 25 or _agep >=65 or _ages <25 or _ages >= 65):
-#        c59660 = 0.
 
     if puf or (_ieic > 0) or (_agep >= 25 and _agep <= 64) or (_ages > 0):
         c59660 = _preeitc
@@ -1200,7 +1165,7 @@ def NonEdCr(c87550, MARS, edphhm, c00100, _num,
 def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax, 
                 _exact, e82880, ealim, adctcrt, ssmax,
                 e03260, e09800, c59660, e11200, e59680, e59700, e59720,
-                _fixup, e11070, puf):
+                _fixup, e11070, e82915, e82940, c82940, puf):
 
     # Additional Child Tax Credit
 
@@ -1278,15 +1243,13 @@ def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
         e59660 = 0.
 
 
-    if _nctcr > 0:
+    if e82915 > 0 and abs(e82940 - c82940)>100:
         _othadd = e11070 - c11070
     else:
         _othadd = 0.
-    
-    #even though our calc is def right!!    
-    _othadd =0
 
-    if _nctcr  > 0 and _fixup >= 4:
+
+    if e82915 > 0 and abs(e82940 - c82940) > 100 and _fixup >= 4:
         c11070 = c11070 + _othadd
 
 
@@ -1383,33 +1346,6 @@ def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _othertax):
     c59700 = min(_othertax, c59680)
     c59720 = c59680 - c59700
 
-    #if (c08795 > 0 and c59660 > 0 and _comb > 0 and c09200 - c08795 > 0 and c09200 - c08795 > _comb): 
-    #    c59700 = _comb
-    #else:
-    #    c59700 = 0.
-    #
-    #if (c08795 > 0 and c59660 > 0 and _comb > 0 and c09200 - c08795 > 0 and c09200 - c08795 <= _comb):  
-    #    c59700 = c59700 = c09200 - c08795
-    #    c59720 = c59660 - c59680 - c59700
-    #
-    #else: c59720 = 0.
-    #
-    #if c08795 == 0 and c59660 > 0:
-    #    c59680 = 0.
-    #
-    #if c08795 == 0 and c59660 > 0 and c09200 > 0 and c09200 > c59660:
-    #    c59700 = c59660
-    #
-    #if c08795 == 0 and c59660 > 0 and c09200 > 0 and c09200 < c59660:
-    #    c59700 = c09200
-    #    c59720 = c59660 - c59700
-    #
-    #if c08795 == 0 and c59660 > 0 and c09200 <= 0:
-    #    c59720 = c59660 - c59700
-
-    # Ask dan about this section of code! e.g., Compb goes to zero
-
-
     if c08795 < 0 or c59660 <= 0:
         _compb = 0.
         c59680 = 0.
@@ -1429,20 +1365,23 @@ def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _othertax):
 
 @iterate_jit(nopython=True)
 def OSPC_TAX( c09200, c59660, c11070, c10960, c11600, c10950 , _eitc, e11580,
-              e11450, e11500, e82040):
+              e11450, e11500, e82040, e09900, e11400, e11300, e11200, e11100,
+              e11550, e09710, e09720):
 
     _refund = (c59660 + c11070 + c11600 + c10960 + c10950 + e11580 + e11450 +
                e11500)
     
     _ospctax = c09200 - _refund - e82040
+    
+    _payments = e09900 + e11500 + e11400 + e11300 + e11200 + e11100 + e11550 + e11450
 
-    c10300 = max(0, _ospctax)
+    c10300 = max(0, _ospctax-e09710-e09720-_payments)
 
 
     # Ignore refundable partof _eitc
     #TODO Remove this _eitc
-    if c09200 <= _eitc:
-        _eitc = c09200
+    #if c09200 <= _eitc:
+    _eitc = c59660
 
 
     return (c10300, _eitc, _refund, _ospctax)
