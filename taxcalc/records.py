@@ -496,12 +496,12 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
                  ('e87530', 'e87530'),
                  ('e87540', 'e87540'),
                  ('e87550', 'e87550'),
-                 ('e22250', 'e22250'),
-                 ('e23250', 'e23250'),
-                 ('e04470', 'e04470'),
-                 ('e25470', 'e25470'),
-                 ('e08000', 'e08000'),
-                 ('e60100', 'e60100'),
+                 #('e22250', 'e22250'),
+                 #('e23250', 'e23250'),
+                 #('e04470', 'e04470'),
+                 #('e25470', 'e25470'),
+                 #('e08000', 'e08000'),
+                 #('e60100', 'e60100'),
                  ('RECID', 'recid'),
                  ('s006', 's006'),
                  ('s008', 's008'),
@@ -610,11 +610,11 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
         self._num = np.ones((self.dim,))
 
         # Aliases
-        #self.e22250 = self.p22250
-        #self.e04470 = self.p04470
-        #self.e23250 = self.p23250
-        #self.e25470 = self.p25470
-        #self.e08000 = self.p08000
-        #self.e60100 = self.p60100
+        self.e22250 = self.p22250
+        self.e04470 = self.p04470
+        self.e23250 = self.p23250
+        self.e25470 = self.p25470
+        self.e08000 = self.p08000
+        self.e60100 = self.p60100
         self.e27860 = self.s27860
         self.SOIYR = np.repeat(2008, self.dim)
