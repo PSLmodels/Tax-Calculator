@@ -199,17 +199,17 @@ class Calculator(object):
         
         # Calculate the base level of taxes. 
         self.calc_all()
-        taxes_base = np.copy(self.c05200)
+        taxes_base = np.copy(self._ospctax)
 
         # Calculate the tax change with a marginal increase in income.
         setattr(self, income_type_string, income_type + diff)
         self.calc_all()
-        delta_taxes_up = self.c05200 - taxes_base
+        delta_taxes_up = self._ospctax - taxes_base
 
         # Calculate the tax change with a marginal decrease in income.
         setattr(self, income_type_string, income_type - diff)
         self.calc_all()
-        delta_taxes_down = taxes_base - self.c05200
+        delta_taxes_down = taxes_base - self._ospctax
 
         # Reset the income_type to its starting point to avoid 
         # unintended consequences. 
