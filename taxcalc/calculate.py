@@ -214,6 +214,7 @@ class Calculator(object):
         # Reset the income_type to its starting point to avoid 
         # unintended consequences. 
         setattr(self, income_type_string, income_type)
+        self.calc_all()
 
         # Choose the more modest effect of either adding or subtracting income.
         delta_taxes = np.where( np.absolute(delta_taxes_up) <= 
