@@ -580,7 +580,7 @@ def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
                 e62000,  e60250, _cmp, _standard,  e04470, e17500, 
                 f6251,  e62100, e21040, _sit, e20800, c00100, 
                 c04470, c17000, e18500, c20800, c21040,   
-                DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD,  c02700, 
+                DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700, 
                 e00100,  e24515, x62730, x60130, 
                 x60220, x60240, c18300, _taxbc, almsp, 
                 brk6, MARS, _sep, brk2, almdep, cgrate1,
@@ -661,7 +661,7 @@ def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     if  SDOBYR >= 1 and SDOBYR <= 99:
         _SDOBYR = SDOBYR + 1900.
     else:
-        _SDOBYR = 0.
+        _SDOBYR = SFOBYR
 
     if _SDOBYR > 1890:
         _agep = FLPDYR - _SDOBYR
