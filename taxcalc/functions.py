@@ -52,27 +52,27 @@ def CapGains(  e23250, e22250, e23660, _sep, _feided, feimax,
     return (c23650, c01000, c02700, _ymod1, _ymod2, _ymod3, _ymod)
 
 
-@iterate_jit(parameters=["_ssb50", "_ssb85"], nopython=True)
-def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, _ssb50, _ssb85):
+@iterate_jit(parameters=["_ssb50", "_ssb85", "SS_percentage1", "SS_percentage2"], nopython=True)
+def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, _ssb50, _ssb85, SS_percentage1, SS_percentage2):
 
     if SSIND !=0 or MARS == 3 or MARS == 6:
         c02500 = e02500
     elif _ymod < _ssb50[MARS-1]:
         c02500 = 0.
     elif _ymod >= _ssb50[MARS-1] and _ymod < _ssb85[MARS-1]:
-        c02500 = 0.5 * min(_ymod - _ssb50[MARS-1], e02400)
+        c02500 = SS_percentage1 * min(_ymod - _ssb50[MARS-1], e02400)
     else:
-        c02500 = min(0.85 * (_ymod - _ssb85[MARS-1]) +
-                    0.50 * min(e02400, _ssb85[MARS-1] -
-                    _ssb50[MARS-1]), 0.85 * e02400)
+        c02500 = min(SS_percentage2 * (_ymod - _ssb85[MARS-1]) +
+                    SS_percentage1 * min(e02400, _ssb85[MARS-1] -
+                    _ssb50[MARS-1]), SS_percentage2 * e02400)
     c02500 = float(c02500)
 
     return (c02500, e02500)
 
 
-@iterate_jit(parameters=["amex", "exmpb"], nopython=True)
+@iterate_jit(parameters=["amex", "exmpb", "II_prt"], nopython=True)
 def AGI(   _ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT, 
-                amex, exmpb, MARS, _sep, _fixup):
+                amex, exmpb, MARS, _sep, _fixup, II_prt):
 
     # Adjusted Gross Income
 
@@ -91,7 +91,7 @@ def AGI(   _ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
     _prexmp = XTOT * amex
     # Personal Exemptions (_phaseout smoothed)
 
-    _dispc_numer = 0.02 * (_posagi - exmpb[MARS - 1])
+    _dispc_numer = II_prt * (_posagi - exmpb[MARS - 1])
     _dispc_denom = (2500 / _sep)
     _dispc = min(1, max(0, _dispc_numer / _dispc_denom ))
 
@@ -99,18 +99,20 @@ def AGI(   _ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
     
     return (c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp, c04600)
 
-@iterate_jit(parameters=["puf", "phase2"], nopython=True, puf=True)
+@iterate_jit(parameters=["puf", "phase2","ID_Medical_frt", "ID_Casualty_frt", "ID_Miscellaneous_frt",
+                         "ID_Charity_crt_Cash","ID_Charity_crt_Asset", "ID_prt", "ID_crt"], nopython=True, puf=True)
 def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
                  e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
                  e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
-                 MARS, _sep, c00100, phase2, puf):
+                 MARS, _sep, c00100, phase2,ID_Medical_frt, ID_Casualty_frt, ID_Miscellaneous_frt,
+                 ID_Charity_crt_Cash, ID_Charity_crt_Asset, ID_prt, ID_crt, puf):
     """
     WARNING: Any additional keyword args, such as 'puf=True' here, must be passed
     to the function at the END of the argument list. If you stick the argument
     somewhere in the middle of the signature, you will get errors.
     """
     # Medical #
-    c17750 = 0.075 * _posagi
+    c17750 = ID_Medical_frt * _posagi
     c17000 = max(0, e17500 - c17750)
 
     # State and Local Income Tax, or Sales Tax #
@@ -123,14 +125,14 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
 
     # Casulty #
     if e20500 > 0:
-        c37703 = e20500 + 0.1 * _posagi
-        c20500 = c37703 - 0.1 * _posagi
+        c37703 = e20500 + ID_Casualty_frt * _posagi
+        c20500 = c37703 - ID_Casualty_frt* _posagi
     else:
         c37703 = 0.
         c20500 = 0.
 
     # Miscellaneous #
-    c20750 = 0.02 * _posagi
+    c20750 = ID_Miscellaneous_frt * _posagi
     if puf == True:
         c20400 = e20400
         c19200 = e19200
@@ -144,8 +146,8 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     if base_charity <= 0.2 * _posagi:
         c19700 = base_charity
     else:
-        lim50 = min(0.50 * _posagi, e19800)
-        lim30 = min(0.30 * _posagi, e20100 + e20200)
+        lim50 = min(ID_Charity_crt_Cash * _posagi, e19800)
+        lim30 = min(ID_Charity_crt_Asset * _posagi, e20100 + e20200)
         c19700 = min(0.5 * _posagi, lim30 + lim50)
     # temporary fix!??
 
@@ -159,8 +161,8 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     _limitratio = _phase2_i/_sep
 
     if c21060 > _nonlimited and c00100 > _limitratio:
-        dedmin = 0.8 * (c21060 - _nonlimited)
-        dedpho = 0.03 * max(0, _posagi - _limitratio)
+        dedmin = ID_crt * (c21060 - _nonlimited)
+        dedpho = ID_prt * max(0, _posagi - _limitratio)
         c21040 = min(dedmin, dedpho)
     else:
         c21040 = 0.0
@@ -186,14 +188,14 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
             _nonlimited, _limitratio, c04470, c21040)
 
 
-@iterate_jit(parameters=["ssmax"], nopython=True)
+@iterate_jit(parameters=["ssmax", "FICA_trt"], nopython=True)
 def EI_FICA(   e00900, e02100, ssmax, e00200,
-                    e11055, e00250, e30100):
+                    e11055, e00250, e30100, FICA_trt):
     # Earned Income and FICA #
 
     _sey = e00900 + e02100
-    _fica = max(0, .153 * min(ssmax, e00200 + max(0, _sey) * 0.9235))
-    _setax = max(0, _fica - 0.153 * e00200)
+    _fica = max(0, FICA_trt * min(ssmax, e00200 + max(0, _sey) * 0.9235))
+    _setax = max(0, _fica - FICA_trt * e00200)
     
     if _setax <= 14204:
         _seyoff = 0.5751 * _setax
@@ -560,11 +562,11 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 
 
 
-@iterate_jit(parameters=["_thresx"], nopython=True)
-def MUI(c00100, _thresx, MARS, c05750, e00300, e00600, c01000, e02000):
+@iterate_jit(parameters=["_thresx", "NIIT_trt"], nopython=True)
+def MUI(c00100, _thresx, MARS, c05750, e00300, e00600, c01000, e02000, NIIT_trt):
     # Additional Medicare tax on unearned Income
     if c00100 > _thresx[MARS - 1]:
-        c05750  = (c05750 + 0.038 * min(e00300 + e00600 + max(0, c01000)
+        c05750  = (c05750 + NIIT_trt * min(e00300 + e00600 + max(0, c01000)
                 + max(0, e02000), c00100 - _thresx[MARS - 1]))
     return c05750
 
@@ -572,7 +574,8 @@ def MUI(c00100, _thresx, MARS, c05750, e00300, e00600, c01000, e02000):
 
 @iterate_jit(parameters=["almsp", "brk6", "brk2", "almdep", "cgrate1", 
                          "cgrate2", "amtys", "amtsep", "amtage", "almsep", 
-                         "amtex", "puf"], nopython=True, puf=True)
+                         "amtex", "AMT_prt","AMT_trt1", "AMT_trt2", "puf"],
+             nopython=True, puf=True)
 def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
                 e60300, e60860, e60100, e60840, e60630, e60550,
                 e60720, e60430, e60500, e60340, e60680, e60600, e60405,
@@ -586,7 +589,8 @@ def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
                 brk6, MARS, _sep, brk2, almdep, cgrate1,
                 cgrate2, amtys, amtsep, x62720, e00700, c24516, 
                 c24520, c04800, e10105, c05700, e05800, e05100, e09600, 
-                amtage, x62740, e62900, almsep, _earned, e62600, amtex, puf):
+                amtage, x62740, e62900, almsep, _earned, e62600, amtex,
+                AMT_prt, AMT_trt1, AMT_trt2, puf):
 
     c62720 = c24517 + x62720
     c60260 = e00700 + x60260
@@ -646,7 +650,7 @@ def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     else: _amtsepadd = 0.
     c62100 = c62100 + _amtsepadd
 
-    c62600 = max(0., amtex[MARS - 1] - 0.25 * max(0., c62100 - amtys[MARS - 1]))
+    c62600 = max(0., amtex[MARS - 1] - AMT_prt * max(0., c62100 - amtys[MARS - 1]))
 
     if DOBYR >= 1 and DOBYR <= 99:
         _DOBYR = DOBYR + 1900.
@@ -682,7 +686,7 @@ def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     if (c02700 > 0):
         _alminc = max(0., c62100 - c62600 + c02700)
 
-        _amtfei = 0.26 * c02700 + 0.02 * max(0., c02700 - almsp / _sep)
+        _amtfei = AMT_trt1 * c02700 + AMT_trt2 * max(0., c02700 - almsp / _sep)
     else:
         _alminc = c62700
 
@@ -990,9 +994,9 @@ def NumDep(EICYB1, EICYB2, EICYB3,
                _val_ymax, _preeitc, _val_rtbase, _val_rtless, _dy)
 
 
-@iterate_jit(parameters=["_cphase", "chmax"], nopython=True)
+@iterate_jit(parameters=["_cphase", "chmax", "CTC_prt"], nopython=True)
 def ChildTaxCredit(n24, MARS, chmax, c00100, _feided, _cphase, _exact, 
-                        c11070, c07220, c07230, _num, _precrd, _nctcr):
+                        c11070, c07220, c07230, _num, _precrd, _nctcr, CTC_prt):
 
     # Child Tax Credit
     if MARS == 2:
@@ -1005,12 +1009,12 @@ def ChildTaxCredit(n24, MARS, chmax, c00100, _feided, _cphase, _exact,
     _ctcagi = c00100 + _feided
 
     if _ctcagi > _cphase[MARS - 1] and _exact == 1:
-        _precrd = max(0., _precrd - 50 * 
-                    math.ceil(_ctcagi - _cphase[MARS - 1]) / 1000)
+        _precrd = max(0., _precrd - CTC_prt* 
+                    math.ceil(_ctcagi - _cphase[MARS - 1]))
 
     if _ctcagi > _cphase[MARS - 1] and _exact != 1:
-        _precrd = max(0., _precrd - 50 * 
-                    (max(0., _ctcagi - _cphase[MARS - 1]) + 500) / 1000)
+        _precrd = max(0., _precrd - CTC_prt * 
+                    (max(0., _ctcagi - _cphase[MARS - 1]) + 500))
 
     #TODO get rid of this type declaration
     _precrd = float(_precrd)
@@ -1160,12 +1164,12 @@ def NonEdCr(c87550, MARS, edphhm, c00100, _num,
 
 
 
-@iterate_jit(parameters=['adctcrt', 'ssmax', 'ealim', 'puf'],
+@iterate_jit(parameters=['adctcrt', 'ssmax', 'ealim', 'puf', 'ACTC_ChildNum'],
                         nopython=True, puf=True)
 def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax, 
                 _exact, e82880, ealim, adctcrt, ssmax,
                 e03260, e09800, c59660, e11200, e59680, e59700, e59720,
-                _fixup, e11070, e82915, e82940, c82940, puf):
+                _fixup, e11070, e82915, e82940, c82940, ACTC_ChildNum, puf):
 
     # Additional Child Tax Credit
 
@@ -1249,7 +1253,7 @@ def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
         _othadd = 0.
 
 
-    if e82915 > 0 and abs(e82940 - c82940) > 100 and _fixup >= 4:
+    if e82915 > 0 and abs(e82940 - c82940) > 100 and _fixup >= ACTC_ChildNum:
         c11070 = c11070 + _othadd
 
 
