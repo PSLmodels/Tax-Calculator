@@ -1,9 +1,9 @@
 import numpy as np
 import copy
 
-def update_income(effect, calcY):  
+def update_income(behavioral_effect, calcY):  
 	delta_inc = np.where(calcY.c00100 > 0 ,
-				effect, 0)
+				behavioral_effect, 0)
 
 	# Attribute the behavioral effects across itemized deductions, 
 	# wages, and other income. 
