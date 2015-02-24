@@ -199,9 +199,7 @@ def test_Calculator_create_difference_table():
     calc2 = calculator(params, puf, mods=user_mods)
 
     t1 = create_difference_table(calc, calc2, groupby="weighted_deciles")
-    t2 = create_difference_table(calc, calc2, groupby="agi_bins")
     assert type(t1) == DataFrame
-    assert type(t2) == DataFrame
 
 
 

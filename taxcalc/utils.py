@@ -89,6 +89,38 @@ def count_lt_zero(agg):
     return sum([1 for a in agg if a < 0])
 
 
+def weighted_count_lt_zero(agg):
+    return agg[agg['tax_diff'] < 0]['s006'].sum()
+
+
+def weighted_count_gt_zero(agg):
+    return agg[agg['tax_diff'] > 0]['s006'].sum()
+
+
+def weighted_count(agg):
+    return agg['s006'].sum()
+
+
+def weighted_mean(agg):
+    return float((agg['tax_diff']*agg['s006']).sum()) / float(agg['s006'].sum())
+
+
+def weighted_sum(agg):
+    return (agg['tax_diff']*agg['s006']).sum()
+
+
+def weighted_perc_inc(agg):
+    return float(weighted_count_gt_zero(agg)) / float(weighted_count(agg))
+
+
+def weighted_perc_dec(agg):
+    return float(weighted_count_lt_zero(agg)) / float(weighted_count(agg))
+
+
+def weighted_share_of_total(agg, total):
+    return float(weighted_sum(agg)) / float(total)
+
+
 def groupby_weighted_decile(df):
     """
 
@@ -127,7 +159,7 @@ def groupby_income_bins(df):
     return df.groupby('bins')
 
 
-def means_and_comparisons(df, col_name, gp):
+def means_and_comparisons(df, col_name, gp, weighted_total):
     """
 
     Using grouped values, perform aggregate operations
@@ -138,22 +170,21 @@ def means_and_comparisons(df, col_name, gp):
     """
 
     # Who has a tax cut, and who has a tax increase
-    diffs = gp[col_name].agg([('tax_cut', count_lt_zero),
-                                ('tax_inc', count_gt_zero),
-                                ('count', 'count'),
-                                ('mean', 'mean'),
-                                ('tot_change', 'sum')])
-
-    diffs['perc_inc'] = diffs['tax_inc']/diffs['count']
-    diffs['perc_cut'] = diffs['tax_cut']/diffs['count']
-    diffs['share_of_change'] = diffs['tot_change']/(df[col_name].sum())
+    diffs = gp.apply(weighted_count_lt_zero)
+    diffs = DataFrame(data=diffs, columns=['tax_cut'])
+    diffs['tax_inc'] = gp.apply(weighted_count_gt_zero)
+    diffs['count'] = gp.apply(weighted_count)
+    diffs['mean'] = gp.apply(weighted_mean)
+    diffs['tot_change'] = gp.apply(weighted_sum)
+    diffs['perc_inc'] = gp.apply(weighted_perc_inc)
+    diffs['perc_cut'] = gp.apply(weighted_perc_dec)
+    diffs['share_of_change'] = gp.apply(weighted_share_of_total,
+                                        weighted_total)
 
     return diffs
 
 
 def results(c):
-    c._refund = c.c59660 + c.c11070 + c.c10960
-    c._ospctax = c.c09200 - c._refund
     outputs = [getattr(c, col) for col in STATS_COLUMNS]
     return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
 
@@ -185,19 +216,8 @@ def create_difference_table(calc1, calc2, groupby):
     # Difference in plans
     # Positive values are the magnitude of the tax increase
     # Negative values are the magnitude of the tax decrease
-    res2['tax_diff'] = res2['c05200'] - res1['c05200']
+    res2['tax_diff'] = res2['_ospctax'] - res1['_ospctax']
 
-    diffs = means_and_comparisons(res2, 'tax_diff', gp)
+    diffs = means_and_comparisons(res2, 'tax_diff', gp,
+                                 (res2['tax_diff']*res2['s006']).sum())
     return diffs
-
-
-def create_tables(calc1, calc2):
-
-    # where do the results differ..
-    soit1 = results(calc1)
-    soit2 = results(calc2)
-
-    meansY_dec, diffs_dec, meansY_bins, diffs_bins = \
-        groupby_means_and_comparisons(soit1, soit2)
-
-    return meansY_dec, diffs_dec, meansY_bins, diffs_bins
