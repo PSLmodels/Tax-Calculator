@@ -8,6 +8,7 @@ import pandas as pd
 import pytest
 import tempfile
 from numba import jit, vectorize, guvectorize
+import taxcalc
 from taxcalc import *
 from taxcalc.utils import expand_array
 
@@ -37,3 +38,7 @@ def test_create_parameters_from_file(paramsfile):
     assert_array_equal(p._almsep, expand_array(np.array([40400, 41050])))
     assert_array_equal(p._rt5, expand_array(np.array([0.33])))
     assert_array_equal(p._rt7, expand_array(np.array([0.396])))
+
+def test_parameters_get_default(paramsfile):
+    paramdata = taxcalc.parameters.default_data()
+    assert paramdata['_agcmax'] == [15000]
