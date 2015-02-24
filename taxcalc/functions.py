@@ -12,15 +12,20 @@ def FilingStatus(MARS):
 
     return _sep 
 
-@iterate_jit(nopython=True)
+@iterate_jit(parameters=["ALD_StudentLoan_HC", "ALD_SelfEmploymentTax_HC", "ALD_SelfEmp_HealthIns_HC",
+                         "ALD_KEOGH_SEP_HC", "ALD_EarlyWithdraw_HC", "ALD_Alimony_HC"], nopython=True)
 def Adj(   e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
                 e03270, e03300, e03400, e03500, e03280, e03900, e04000,
-                e03700, e03220, e03230, e03240, e03290 ):
+                e03700, e03220, e03230, e03240, e03290, ALD_StudentLoan_HC,
+                ALD_SelfEmploymentTax_HC, ALD_SelfEmp_HealthIns_HC,ALD_KEOGH_SEP_HC,
+                ALD_EarlyWithdraw_HC, ALD_Alimony_HC):
     # Adjustments
     _feided = max(e35300_0, e35600_0 + e35910_0)  # Form 2555
 
-    c02900 = (e03150 + e03210 + e03600 + e03260 + e03270 + e03300
-              + e03400 + e03500 + e03280 + e03900 + e04000 + e03700
+    c02900 = (e03150 + (1-ALD_StudentLoan_HC)*e03210 + e03600 + (1-ALD_SelfEmploymentTax_HC)*e03260
+              + (1-ALD_SelfEmp_HealthIns_HC)*e03270 + (1-ALD_KEOGH_SEP_HC)*e03300
+              + (1-ALD_EarlyWithdraw_HC)*e03400 + (1-ALD_Alimony_HC)*e03500
+              +e03280 + e03900 + e04000 + e03700
               + e03220 + e03230
               + e03240
               + e03290)

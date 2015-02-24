@@ -1051,6 +1051,90 @@
         
         "col_label": "NA",
         "value":     [4]        
+    },
+    "_ALD_StudentLoan_HC":{
+        "long_name": "Student Load Interest Deduction",
+	"description": "",
+        "irs_ref": "Form , line , ",
+        "notes": "HC",
+        "start_year": 2013,
+        "col_var": "NA",
+        "row_var": "NA",
+        "row_label": "NA",
+        "cpi_inflated": false,
+        
+        "col_label": "NA",
+        "value":     [0]        
+    },
+    "_ALD_SelfEmploymentTax_HC":{
+        "long_name": "Deduction for self-employment tax",
+	"description": "",
+        "irs_ref": "Form , line , ",
+        "notes": "HC",
+        "start_year": 2013,
+        "col_var": "NA",
+        "row_var": "NA",
+        "row_label": "NA",
+        "cpi_inflated": false,
+        
+        "col_label": "NA",
+        "value":     [0]        
+    },
+    "_ALD_SelfEmp_HealthIns_HC":{
+        "long_name": "Deduction for Self Employed Health Insurance",
+	"description": "",
+        "irs_ref": "Form , line , ",
+        "notes": "HC",
+        "start_year": 2013,
+        "col_var": "NA",
+        "row_var": "NA",
+        "row_label": "NA",
+        "cpi_inflated": false,
+        
+        "col_label": "NA",
+        "value":     [0]        
+    },
+    "_ALD_KEOGH_SEP_HC":{
+        "long_name": "Payment to KEOGH plan and SEP deduction",
+	"description": "",
+        "irs_ref": "Form , line , ",
+        "notes": "HC",
+        "start_year": 2013,
+        "col_var": "NA",
+        "row_var": "NA",
+        "row_label": "NA",
+        "cpi_inflated": false,
+        
+        "col_label": "NA",
+        "value":     [0]        
+    },
+    "_ALD_EarlyWithdraw_HC":{
+        "long_name": "Forfeited interest Penalty = Early Withdrawl of Saving",
+	"description": "",
+        "irs_ref": "Form , line , ",
+        "notes": "HC",
+        "start_year": 2013,
+        "col_var": "NA",
+        "row_var": "NA",
+        "row_label": "NA",
+        "cpi_inflated": false,
+        
+        "col_label": "NA",
+        "value":     [0]        
+    },
+    "_ALD_Alimony_HC":{
+        "long_name": "Alimony Paid",
+	"description": "",
+        "irs_ref": "Form , line , ",
+        "notes": "HC",
+        "start_year": 2013,
+        "col_var": "NA",
+        "row_var": "NA",
+        "row_label": "NA",
+        "cpi_inflated": false,
+        
+        "col_label": "NA",
+        "value":     [0]        
     }
     
 }
