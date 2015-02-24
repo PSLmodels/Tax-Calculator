@@ -62,6 +62,9 @@ def run(puf=True):
     # Fix-up to bad column name in expected data
     exp_results.rename(columns=lambda x: x.replace('_phase2', '_phase2_i'), inplace=True)
     exp_set = set(exp_results.columns)
+    # Add new col names to exp_set
+    exp_set.add('_ospctax')
+    exp_set.add('_refund')
     cur_set = set(totaldf.columns)
 
     assert(exp_set == cur_set)

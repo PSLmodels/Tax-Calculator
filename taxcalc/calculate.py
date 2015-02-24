@@ -143,7 +143,7 @@ class Calculator(object):
         F5405(self.parameters, self.records)
         C1040(self.parameters, self.records)
         DEITC(self.parameters, self.records)
-        SOIT(self.parameters, self.records)
+        OSPC_TAX(self.parameters, self.records)
 
     def calc_all_test(self):
         all_dfs = []
@@ -174,7 +174,7 @@ class Calculator(object):
         add_df(all_dfs, F5405(self.parameters, self.records))
         add_df(all_dfs, C1040(self.parameters, self.records))
         add_df(all_dfs, DEITC(self.parameters, self.records))
-        add_df(all_dfs, SOIT(self.parameters, self.records))
+        add_df(all_dfs, OSPC_TAX(self.parameters, self.records))
         totaldf = pd.concat(all_dfs, axis=1)
         return totaldf
 
@@ -199,21 +199,22 @@ class Calculator(object):
         
         # Calculate the base level of taxes. 
         self.calc_all()
-        taxes_base = np.copy(self.c05200)
+        taxes_base = np.copy(self._ospctax)
 
         # Calculate the tax change with a marginal increase in income.
         setattr(self, income_type_string, income_type + diff)
         self.calc_all()
-        delta_taxes_up = self.c05200 - taxes_base
+        delta_taxes_up = self._ospctax - taxes_base
 
         # Calculate the tax change with a marginal decrease in income.
         setattr(self, income_type_string, income_type - diff)
         self.calc_all()
-        delta_taxes_down = taxes_base - self.c05200
+        delta_taxes_down = taxes_base - self._ospctax
 
         # Reset the income_type to its starting point to avoid 
         # unintended consequences. 
         setattr(self, income_type_string, income_type)
+        self.calc_all()
 
         # Choose the more modest effect of either adding or subtracting income.
         delta_taxes = np.where( np.absolute(delta_taxes_up) <= 

@@ -1354,32 +1354,24 @@ def DEITC(c08795, c59660, c09200, c07100):
 
 
 @iterate_jit(nopython=True)
-def SOIT(   c09200, e10000, e59680, c59700,e11070, e11550, e11580,e09710, 
-            e09720, e11581, e11582, e87900, e87905, e87681, e87682, c10950, 
-            e11451, e11452, e11601, e11602, _eitc ):
+def OSPC_TAX( c09200, c59660, c11070, c10960, c11600, c10950 , _eitc, e11580,
+              e11450, e11500, e82040):
 
-    # SOI Tax (Tax after non-refunded credits plus tip penalty)
-    # QUESTION, why not consolidate into one line??
-    c10300 = c09200 - e10000 - e59680 - c59700
-    c10300 = c10300 - e11070
-    c10300 = c10300 - e11550
-    c10300 = c10300 - e11580
-    c10300 = c10300 - e09710 - e09720 - e11581 - e11582
-    c10300 = c10300 - e87900 - e87905 - e87681 - e87682
-    # QUESTION 'c10300 - c10300'a typo?
-    c10300 = c10300 - c10300 - c10950 - e11451 - e11452
-    c10300 = c09200 - e09710 - e09720 - e10000 - e11601 - e11602
+    _refund = (c59660 + c11070 + c11600 + c10960 + c10950 + e11580 + e11450 +
+               e11500)
+    
+    _ospctax = c09200 - _refund - e82040
 
-    c10300 = max(c10300, 0.)
+    c10300 = max(0, _ospctax)
 
-    # Ignore refundable partof _eitc to obtain SOI income tax
 
+    # Ignore refundable partof _eitc
+    #TODO Remove this _eitc
     if c09200 <= _eitc:
         _eitc = c09200
 
-        c10300 = 0.
 
-    return (c10300, _eitc)
+    return (c10300, _eitc, _refund, _ospctax)
 
 
 
