@@ -864,14 +864,14 @@ def DepCareBen(c32800, _cmp, MARS, c32880, c32890, e33420, e33430, e33450,
 
 
 
-@iterate_jit(parameters=["CDCC_crt", "agcmax"], nopython=True)
-def ExpEarnedInc(  _exact, c00100, agcmax, CDCC_crt,
+@iterate_jit(parameters=["CDCC_crt", "CDCC_ps"], nopython=True)
+def ExpEarnedInc(  _exact, c00100, CDCC_ps, CDCC_crt,
                         c33000, c05800, e07300, e07180):
     # Expenses limited to earned income
 
     if _exact == 1: 
 
-        _tratio = float(math.ceil(max((c00100 - agcmax)
+        _tratio = float(math.ceil(max((c00100 - CDCC_ps)
                 / 2000, 0.)))
 
         c33200 = c33000 * 0.01 * max(20., CDCC_crt - min(15., _tratio))
@@ -881,7 +881,7 @@ def ExpEarnedInc(  _exact, c00100, agcmax, CDCC_crt,
         _tratio = 0.
 
         c33200 = c33000 * 0.01 * max(20., CDCC_crt
-                - max((c00100 - agcmax) / 2000, 0.))
+                - max((c00100 - CDCC_ps) / 2000, 0.))
 
     c33400 = min(max(0., c05800 - e07300), c33200)
 

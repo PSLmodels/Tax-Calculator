@@ -1121,7 +1121,7 @@
         "col_label": "NA",
         "value":     [0]        
     },
-    "_agcmax":{
+    "_CDCC_ps":{
         "long_name": "NA",
 	"description": "NA",
         "start_year": 2013,
