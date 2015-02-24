@@ -185,8 +185,6 @@ def means_and_comparisons(df, col_name, gp, weighted_total):
 
 
 def results(c):
-    c._refund = c.c59660 + c.c11070 + c.c10960
-    c._ospctax = c.c09200 - c._refund
     outputs = [getattr(c, col) for col in STATS_COLUMNS]
     return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
 
