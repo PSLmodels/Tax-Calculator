@@ -1,6 +1,7 @@
 import numpy as np
 from .utils import expand_array
 import os
+import json
 
 
 class Parameters(object):
@@ -11,7 +12,6 @@ class Parameters(object):
 
     @classmethod
     def from_file(cls, file_name, **kwargs):
-        import json
         with open(file_name) as f:
             params = json.loads(f.read())
 
@@ -28,7 +28,7 @@ class Parameters(object):
         if data:
             self._vals = data
         else:
-            self._vals = self._default_data()
+            self._vals = default_data()
 
         # INITIALIZE
         [setattr(self, name, expand_array(np.array(val),
@@ -36,18 +36,6 @@ class Parameters(object):
              for name, val in self._vals.items()]
 
         self.set_year(start_year)
-
-
-
-    def _default_data(self):
-        """ Set of default parameters, if no file specified """
-        import json
-        with open(self.params_path) as f:
-            paramfile = json.load(f)
-
-        paramdata = { k: v['value'] for k,v in paramfile.items()}
-
-        return paramdata
 
     @property
     def current_year(self):
@@ -65,3 +53,14 @@ class Parameters(object):
         for name, vals in self._vals.items():
             arr = getattr(self, name)
             setattr(self, name[1:], arr[yr-self._start_year])
+
+
+def default_data():
+    """ Retreive of default parameters """
+    with open(Parameters.params_path) as f:
+        paramfile = json.load(f)
+
+    paramdata = { k: v['value'] for k,v in paramfile.items()}
+    return paramdata
+
+
