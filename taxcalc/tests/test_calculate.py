@@ -144,7 +144,7 @@ def test_Calculator_attr_access_to_params():
     # Records data
     assert hasattr(calc, 'c01000')
     # Parameter data
-    assert hasattr(calc, '_almdep')
+    assert hasattr(calc, '_AMT_Child_em')
     # local attribute
     assert hasattr(calc, 'parameters')
 
