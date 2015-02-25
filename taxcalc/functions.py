@@ -957,8 +957,6 @@ def NumDep(EICYB1, EICYB2, EICYB3,
                        * (max(0.,max(_modagi,c59560)-_val_ymax)))
         _preeitc = min(_preeitc,c59660)
 
-#        c59660 = max(0, c59660 - rtless[_ieic]
-#                * (max(_modagi, c59560) - _val_ymax))
 
     if MARS != 3 and MARS != 6 and _modagi > 0:
         _val_rtbase = rtbase[_ieic] * 100
@@ -983,6 +981,9 @@ def NumDep(EICYB1, EICYB2, EICYB3,
     else:
         c59660 = 0.
         c59560 = 0.  # updated to reflect SAS code, but has no seeming affect on accuracy
+
+    # QUESTION: is here according to SAS code, although is also in new OSPC_TAX() method. Where is correct?
+    # _eitc = c59660
        
     return (_ieic, EICYB1, EICYB2, EICYB3, _modagi, c59660,
                _val_ymax, _preeitc, _val_rtbase, _val_rtless, _dy)
