@@ -923,10 +923,7 @@ def NumDep(EICYB1, EICYB2, EICYB3,
     EICYB2 = max(0.0, EICYB2)
     EICYB3 = max(0.0, EICYB3)
 
-    if puf == True:
-        _ieic = EIC
-    else: 
-        _ieic = int(EICYB1 + EICYB2 + EICYB3)
+    _ieic = int( max(EIC, EICYB1) + EICYB2 + EICYB3)
 
     # Modified AGI only through 2002
 
