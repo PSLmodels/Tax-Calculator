@@ -15,8 +15,6 @@ class Parameters(object):
         with open(file_name) as f:
             params = json.loads(f.read())
 
-        params = { k: v['value'] for k, v in params.items()}
-
         return cls(data=params, **kwargs)
 
 
@@ -28,12 +26,15 @@ class Parameters(object):
         if data:
             self._vals = data
         else:
-            self._vals = default_data()
+            self._vals = default_data(metadata=True)
 
         # INITIALIZE
-        [setattr(self, name, expand_array(np.array(val),
-             inflation_rate=inflation_rate, num_years=budget_years))
-             for name, val in self._vals.items()]
+        for name, data in self._vals.items():
+            cpi_inflated =  data.get('cpi_inflated', False)
+            values = data['value']
+            setattr(self, name, expand_array(np.array(values),
+                inflate=cpi_inflated, inflation_rate=inflation_rate,
+                num_years=budget_years))
 
         self.set_year(start_year)
 
@@ -55,12 +56,12 @@ class Parameters(object):
             setattr(self, name[1:], arr[yr-self._start_year])
 
 
-def default_data():
+def default_data(metadata=False):
     """ Retreive of default parameters """
     with open(Parameters.params_path) as f:
         paramfile = json.load(f)
 
-    paramdata = { k: v['value'] for k,v in paramfile.items()}
-    return paramdata
-
-
+    if (metadata):
+        return paramfile
+    else:
+        return { k: v['value'] for k,v in paramfile.items()}
