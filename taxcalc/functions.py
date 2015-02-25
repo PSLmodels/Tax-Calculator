@@ -236,9 +236,7 @@ def StdDed( DSI, _earned, stded, e04470,
 
     c04100 = c04100 + e15360
 
-    _numextra = AGEP + AGES + PBI + SBI
-
-    if MARS == 2 or MARS == 3:
+    if MARS == 2 or MARS == 3 or MARS == 6:
         _txpyers = 2.
     else:
         _txpyers = 1.
@@ -280,6 +278,9 @@ def StdDed( DSI, _earned, stded, e04470,
     c04500 = c00100 - max(c21060 - c21040,
                                  max(c04100, _standard + e37717))
     c04800 = max(0., c04500 - c04600 - e04805)
+
+    # if f6251 == 0 and e04470 == 0:
+    #     c04500 = c00100 - x04500
 
     #why is this here, c60000 is reset many times? 
     if _standard > 0:
