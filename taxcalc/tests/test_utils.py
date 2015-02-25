@@ -26,14 +26,14 @@ def test_expand_1D_short_array():
     exp = np.zeros(10)
     exp[:3] = exp1
     exp[3:] = exp2
-    res = expand_1D(x)
+    res = expand_1D(x, inflate=True, inflation_rate=0.02, num_years=10)
     assert(np.allclose(exp.astype(x.dtype, casting='unsafe'), res))
 
 
 def test_expand_1D_scalar():
     x = 10.0
     exp = np.array([10.0 * math.pow(1.02, i) for i in range(0, 10)])
-    res = expand_1D(x)
+    res = expand_1D(x, inflate=True, inflation_rate=0.02, num_years=10)
     assert(np.allclose(exp, res))
 
 
@@ -45,7 +45,7 @@ def test_expand_2D_short_array():
     exp = np.zeros((5, 3))
     exp[:1] = exp1
     exp[1:] = exp2
-    res = expand_2D(x, num_years=5)
+    res = expand_2D(x, inflate=True, inflation_rate=0.02, num_years=5)
     assert(np.allclose(exp, res))
 
 

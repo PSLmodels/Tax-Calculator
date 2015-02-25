@@ -24,7 +24,7 @@ def extract_array(f):
     return wrapper
 
 
-def expand_1D(x, inflation_rate=0.02, num_years=10):
+def expand_1D(x, inflate, inflation_rate, num_years):
     """
     Expand the given data to account for the given number of budget years.
     If necessary, pad out additional years by increasing the last given
@@ -36,15 +36,20 @@ def expand_1D(x, inflation_rate=0.02, num_years=10):
         else:
             ans = np.zeros(num_years)
             ans[:len(x)] = x
-            extra = [float(x[-1])*pow(1. + inflation_rate, i) for i in
-                     range(1, num_years - len(x) + 1)]
+            if inflate:
+                extra = [float(x[-1])*pow(1. + inflation_rate, i) for i in
+                         range(1, num_years - len(x) + 1)]
+            else:
+                extra = [float(x[-1]) for i in
+                         range(1, num_years - len(x) + 1)]
+
             ans[len(x):] = extra
             return ans.astype(x.dtype, casting='unsafe')
 
-    return expand_1D(np.array([x]))
+    return expand_1D(np.array([x]), inflate, inflation_rate, num_years)
 
 
-def expand_2D(x, inflation_rate=0.02, num_years=10):
+def expand_2D(x, inflate, inflation_rate, num_years):
     """
     Expand the given data to account for the given number of budget years.
     For 2D arrays, we expand out the number of rows until we have num_years
@@ -58,23 +63,45 @@ def expand_2D(x, inflation_rate=0.02, num_years=10):
         else:
             ans = np.zeros((num_years, x.shape[1]))
             ans[:len(x), :] = x
-            extra = [x[-1, :]*pow(1. + inflation_rate, i) for i in
+            if inflate:
+                extra = [x[-1, :]*pow(1. + inflation_rate, i) for i in
                      range(1, num_years - len(x) + 1)]
+            else:
+                extra = [x[-1, :] for i in
+                     range(1, num_years - len(x) + 1)]
+
             ans[len(x):, :] = extra
             return ans.astype(x.dtype, casting='unsafe')
 
-    return expand_2D(np.array([x]))
+    return expand_2D(np.array([x]), inflate, inflation_rate, num_years)
 
 
-def expand_array(x, inflation_rate=0.02, num_years=10):
+def expand_array(x, inflate, inflation_rate=0.02, num_years=10):
     """
     Dispatch to either expand_1D or expand2D depending on the dimension of x
+
+    Parameters:
+    -----------
+    x : value to expand
+
+    inflate: Boolean
+    As we expand, inflate values if this is True, otherwise, just copy
+
+    inflation_rate: float
+    Yearly inflation reate
+
+    num_years: int
+    Number of budget years to expand
+
+    Returns:
+    --------
+    expanded numpy array
     """
     try:
         if len(x.shape) == 1:
-            return expand_1D(x)
+            return expand_1D(x, inflate, inflation_rate, num_years)
         elif len(x.shape) == 2:
-            return expand_2D(x)
+            return expand_2D(x, inflate, inflation_rate, num_years)
         else:
             raise ValueError("Need a 1D or 2D array")
     except AttributeError as ae:
