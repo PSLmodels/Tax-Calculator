@@ -236,6 +236,16 @@ def StdDed( DSI, _earned, stded, e04470,
 
     c04100 = c04100 + e15360
 
+    # QUESTION: where does e6000 come from?
+    ## UNCOMMENT TODO(c60000)
+    # if f6251 == 0 and e04470 == 0:
+    #     x04500 = e00100 - e60000
+    # else:
+    #     x04500 = 0.
+    #
+    # if f6251 == 0 and e04470 == 0:
+    #     c04500 = c00100 - x04500
+
     if MARS == 2 or MARS == 3 or MARS == 6:
         _txpyers = 2.
     else:
@@ -279,12 +289,10 @@ def StdDed( DSI, _earned, stded, e04470,
                                  max(c04100, _standard + e37717))
     c04800 = max(0., c04500 - c04600 - e04805)
 
-    # if f6251 == 0 and e04470 == 0:
-    #     c04500 = c00100 - x04500
-
     #why is this here, c60000 is reset many times? 
     if _standard > 0:
         c60000 = c00100
+        #c60000 = c00100 - x04500 ##TODO(c60000) UNCOMMENT ME AFTER x04500 is defined
     else:
         c60000 = c04500
 
@@ -296,7 +304,6 @@ def StdDed( DSI, _earned, stded, e04470,
 
     if (e04470 == 0 and (t04470 > _amtstd) and f6251 == 1 and _exact == 1):
         c60000 = c00100 - t04470
-   
 
     if (c04800 > 0 and _feided > 0):
         _taxinc = c04800 + c02700
