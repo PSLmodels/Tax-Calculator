@@ -58,6 +58,9 @@ class Calculator(object):
         self._records = (records if not isinstance(records, str) else
                          Records.from_file(records, **kwargs))
 
+        while self._records.current_year < self._parameters.current_year:
+            self._records.increment_year()
+
         assert self._parameters.current_year == self._records.current_year
 
     @property
