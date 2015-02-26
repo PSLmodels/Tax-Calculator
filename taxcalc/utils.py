@@ -116,36 +116,36 @@ def count_lt_zero(agg):
     return sum([1 for a in agg if a < 0])
 
 
-def weighted_count_lt_zero(agg):
-    return agg[agg['tax_diff'] < 0]['s006'].sum()
+def weighted_count_lt_zero(agg, col_name):
+    return agg[agg[col_name] < 0]['s006'].sum()
 
 
-def weighted_count_gt_zero(agg):
-    return agg[agg['tax_diff'] > 0]['s006'].sum()
+def weighted_count_gt_zero(agg, col_name):
+    return agg[agg[col_name] > 0]['s006'].sum()
 
 
 def weighted_count(agg):
     return agg['s006'].sum()
 
 
-def weighted_mean(agg):
-    return float((agg['tax_diff']*agg['s006']).sum()) / float(agg['s006'].sum())
+def weighted_mean(agg, col_name):
+    return float((agg[col_name]*agg['s006']).sum()) / float(agg['s006'].sum())
 
 
-def weighted_sum(agg):
-    return (agg['tax_diff']*agg['s006']).sum()
+def weighted_sum(agg, col_name):
+    return (agg[col_name]*agg['s006']).sum()
 
 
-def weighted_perc_inc(agg):
-    return float(weighted_count_gt_zero(agg)) / float(weighted_count(agg))
+def weighted_perc_inc(agg, col_name):
+    return float(weighted_count_gt_zero(agg, col_name)) / float(weighted_count(agg))
 
 
-def weighted_perc_dec(agg):
-    return float(weighted_count_lt_zero(agg)) / float(weighted_count(agg))
+def weighted_perc_dec(agg, col_name):
+    return float(weighted_count_lt_zero(agg, col_name)) / float(weighted_count(agg))
 
 
-def weighted_share_of_total(agg, total):
-    return float(weighted_sum(agg)) / float(total)
+def weighted_share_of_total(agg, col_name, total):
+    return float(weighted_sum(agg, col_name)) / float(total)
 
 
 def groupby_weighted_decile(df):
@@ -197,16 +197,16 @@ def means_and_comparisons(df, col_name, gp, weighted_total):
     """
 
     # Who has a tax cut, and who has a tax increase
-    diffs = gp.apply(weighted_count_lt_zero)
+    diffs = gp.apply(weighted_count_lt_zero, col_name)
     diffs = DataFrame(data=diffs, columns=['tax_cut'])
-    diffs['tax_inc'] = gp.apply(weighted_count_gt_zero)
+    diffs['tax_inc'] = gp.apply(weighted_count_gt_zero, col_name)
     diffs['count'] = gp.apply(weighted_count)
-    diffs['mean'] = gp.apply(weighted_mean)
-    diffs['tot_change'] = gp.apply(weighted_sum)
-    diffs['perc_inc'] = gp.apply(weighted_perc_inc)
-    diffs['perc_cut'] = gp.apply(weighted_perc_dec)
+    diffs['mean'] = gp.apply(weighted_mean, col_name)
+    diffs['tot_change'] = gp.apply(weighted_sum, col_name)
+    diffs['perc_inc'] = gp.apply(weighted_perc_inc, col_name)
+    diffs['perc_cut'] = gp.apply(weighted_perc_dec, col_name)
     diffs['share_of_change'] = gp.apply(weighted_share_of_total,
-                                        weighted_total)
+                                        col_name, weighted_total)
 
     return diffs
 
