@@ -210,11 +210,11 @@ def EI_FICA(   e00900, e02100, ssmax, e00200,
 @iterate_jit(parameters=["puf", "stded", "aged", "rt1", "rt2", "rt3", "rt4", 
              "rt5", "rt6", "rt7", "brk1", "brk2", "brk3", "brk4", "brk5", 
             "brk6"], nopython=True, puf=True)
-def StdDed( DSI, _earned, stded, e04470, 
+def StdDed( DSI, _earned, stded, e04470, e00100, e60000,
             MARS, MIdR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200, e02400, aged,
             c04470, c00100, c21060, c21040, e37717, c04600, e04805, t04470,
             f6251, _feided, c02700, FDED, rt1, rt2, rt3, rt4, rt5, rt6, rt7,
-            brk1, brk2, brk3, brk4, brk5, brk6, puf):
+            brk1, brk2, brk3, brk4, brk5, brk6, puf ):
     # Standard Deduction with Aged, Sched L and Real Estate #
 
     if DSI == 1:
@@ -236,15 +236,13 @@ def StdDed( DSI, _earned, stded, e04470,
 
     c04100 = c04100 + e15360
 
-    # QUESTION: where does e6000 come from?
-    ## UNCOMMENT TODO(c60000)
-    # if f6251 == 0 and e04470 == 0:
-    #     x04500 = e00100 - e60000
-    # else:
-    #     x04500 = 0.
-    #
-    # if f6251 == 0 and e04470 == 0:
-    #     c04500 = c00100 - x04500
+    if f6251 == 0 and e04470 == 0:
+        x04500 = e00100 - e60000
+    else:
+        x04500 = 0.
+
+    if f6251 == 0 and e04470 == 0:
+        c04500 = c00100 - x04500
 
     if MARS == 2 or MARS == 3 or MARS == 6:
         _txpyers = 2.
@@ -291,8 +289,7 @@ def StdDed( DSI, _earned, stded, e04470,
 
     #why is this here, c60000 is reset many times? 
     if _standard > 0:
-        c60000 = c00100
-        #c60000 = c00100 - x04500 ##TODO(c60000) UNCOMMENT ME AFTER x04500 is defined
+        c60000 = c00100 - x04500
     else:
         c60000 = c04500
 
@@ -1283,6 +1280,7 @@ def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
     # Credits 1040 line 48
 
     x07400 = e07400
+
     c07100 = (e07180 + e07200 + c07220 + c07230 + e07250
               + e07600 + e07260 + c07970 + e07300 + x07400
               + e07500 + e07700 + e08000)
@@ -1295,7 +1293,7 @@ def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
 
     if SOIYR >= 2009:
         c07100 = c07100 + e07980
- 
+
     x07100 = c07100
     c07100 = min(c07100, c05800)
 
