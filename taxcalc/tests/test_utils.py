@@ -76,7 +76,7 @@ def test_create_tables():
 def test_weighted_count_lt_zero():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
-    diffs = grped.apply(weighted_count_lt_zero)
+    diffs = grped.apply(weighted_count_lt_zero, 'tax_diff')
     exp = Series(data=[4, 0], index=['a', 'b'])
     assert_series_equal(exp, diffs)
 
@@ -84,7 +84,7 @@ def test_weighted_count_lt_zero():
 def test_weighted_count_gt_zero():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
-    diffs = grped.apply(weighted_count_gt_zero)
+    diffs = grped.apply(weighted_count_gt_zero, 'tax_diff')
     exp = Series(data=[8, 10], index=['a', 'b'])
     assert_series_equal(exp, diffs)
  
@@ -100,7 +100,7 @@ def test_weighted_count():
 def test_weighted_mean():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
-    diffs = grped.apply(weighted_mean)
+    diffs = grped.apply(weighted_mean, 'tax_diff')
     exp = Series(data=[16.0/12.0, 26.0/10.0], index=['a', 'b'])
     assert_series_equal(exp, diffs)
  
@@ -108,7 +108,7 @@ def test_weighted_mean():
 def test_weighted_sum():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
-    diffs = grped.apply(weighted_sum)
+    diffs = grped.apply(weighted_sum, 'tax_diff')
     exp = Series(data=[16.0, 26.0], index=['a', 'b'])
     assert_series_equal(exp, diffs)
  
@@ -116,7 +116,7 @@ def test_weighted_sum():
 def test_weighted_perc_inc():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
-    diffs = grped.apply(weighted_perc_inc)
+    diffs = grped.apply(weighted_perc_inc, 'tax_diff')
     exp = Series(data=[8./12., 1.0], index=['a', 'b'])
     assert_series_equal(exp, diffs)
 
@@ -124,7 +124,7 @@ def test_weighted_perc_inc():
 def test_weighted_perc_dec():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
-    diffs = grped.apply(weighted_perc_dec)
+    diffs = grped.apply(weighted_perc_dec, 'tax_diff')
     exp = Series(data=[4./12., 0.0], index=['a', 'b'])
     assert_series_equal(exp, diffs)
 
@@ -132,7 +132,7 @@ def test_weighted_perc_dec():
 def test_weighted_share_of_total():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
-    diffs = grped.apply(weighted_share_of_total, 42.0)
+    diffs = grped.apply(weighted_share_of_total, 'tax_diff', 42.0)
     exp = Series(data=[16.0/42., 26.0/42.0], index=['a', 'b'])
     assert_series_equal(exp, diffs)
  

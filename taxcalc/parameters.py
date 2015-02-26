@@ -2,13 +2,14 @@ import numpy as np
 from .utils import expand_array
 import os
 import json
-
+from pkg_resources import resource_stream, Requirement
 
 class Parameters(object):
 
 
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-    params_path = os.path.join(CUR_PATH, "params.json")
+    PARAM_FILENAME = "params.json"
+    params_path = os.path.join(CUR_PATH, PARAM_FILENAME)
 
     @classmethod
     def from_file(cls, file_name, **kwargs):
@@ -58,10 +59,18 @@ class Parameters(object):
 
 def default_data(metadata=False):
     """ Retreive of default parameters """
-    with open(Parameters.params_path) as f:
-        paramfile = json.load(f)
+    parampath = Parameters.params_path
+    if not os.path.exists(parampath):
+        path_in_egg = os.path.join("taxcalc", Parameters.PARAM_FILENAME)
+        buf = resource_stream(Requirement.parse("taxcalc"), path_in_egg)
+        _bytes = buf.read()
+        as_string = _bytes.decode("utf-8")
+        params = json.loads(as_string)
+    else:
+        with open(Parameters.params_path) as f:
+            params = json.load(f)
 
     if (metadata):
-        return paramfile
+        return params
     else:
-        return { k: v['value'] for k,v in paramfile.items()}
+        return { k: v['value'] for k,v in params.items()}
