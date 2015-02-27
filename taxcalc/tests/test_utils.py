@@ -147,3 +147,9 @@ def test_groupby_income_bins():
 
     for g, num in zip(grps, bins[1:-1]):
         assert g[0].endswith(str(num) + "]")
+
+    grpdl = groupby_income_bins(df, bins, right=False)
+    grps = [grp for grp in grpdl]
+
+    for g, num in zip(grps, bins[1:-1]):
+        assert g[0].endswith(str(num) + ")")

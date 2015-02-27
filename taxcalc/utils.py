@@ -191,7 +191,7 @@ def groupby_income_bins(df, bins=None, right=True):
                 200000, 1e14]
 
     # Groupby c00100 bins
-    df['bins'] = pd.cut(df['c00100'], bins)
+    df['bins'] = pd.cut(df['c00100'], bins, right=right)
     return df.groupby('bins')
 
 
