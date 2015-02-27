@@ -1275,24 +1275,38 @@ def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
                 e07500, e07700, e08000, e07240, e08001, e07960, e07970,
                 SOIYR, e07980, c05800, e08800, e09900, e09400, e09800, 
                 e10000, e10100, e09700, e10050, e10075, e09805, e09710,
-                c59660, puf ):
+                c59660, c07180, _eitc, c59680, puf ):
+
+    # Allocate credits to tax in order on the tax form
+    _avail = c05800
+    c07180 = min(c07180,_avail)
+    _avail = _avail - c07180
+    _avail = max(0,_avail - e07200)
+    c07300 = min(e07300,_avail)
+    _avail = _avail - c07300
+    c07230 = min(c07230,_avail)
+    _avail = _avail - c07230
+    c07240 = min(e07240,_avail)
+    _avail = _avail - c07240
+    c07220 = min(c07220,_avail)
+    _avail = _avail - c07220
+    c07600 = min(e07600,_avail)
+    _avail = _avail - c07600
+    c07260 = min(e07260,_avail)
+    _avail = _avail-c07260
+
+    c59680 = min(_eitc,_avail)
 
     # Credits 1040 line 48
 
     x07400 = e07400
 
-    c07100 = (e07180 + e07200 + c07220 + c07230 + e07250
-              + e07600 + e07260 + c07970 + e07300 + x07400
-              + e07500 + e07700 + e08000)
+    c07100 = (e07180 + e07200 + e07600 + c07300 + x07400
+               + e07980 + c07220 + e07500 + e08000)
 
     y07100 = c07100
 
-    c07100 = c07100 + e07240
-    c07100 = c07100 + e08001
-    c07100 = c07100 + e07960 + e07970
-
-    if SOIYR >= 2009:
-        c07100 = c07100 + e07980
+    c07100 += e07700 + c07230 + c07970 + e07240 + e07260 + e08001 + e07960
 
     x07100 = c07100
     c07100 = min(c07100, c05800)
