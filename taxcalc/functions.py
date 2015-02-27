@@ -238,11 +238,9 @@ def StdDed( DSI, _earned, stded, e04470, e00100, e60000,
 
     if f6251 == 0 and e04470 == 0:
         x04500 = e00100 - e60000
+        c04500 = c00100 - x04500
     else:
         x04500 = 0.
-
-    if f6251 == 0 and e04470 == 0:
-        c04500 = c00100 - x04500
 
     if MARS == 2 or MARS == 3 or MARS == 6:
         _txpyers = 2.
@@ -921,7 +919,7 @@ def NumDep(EICYB1, EICYB2, EICYB3,
                 rtless, e83080, e00300, e00600, e01000, e40223, 
                 e25360, e25430, e25470, e25400, e25500, e26210,
                 e26340, e27200, e26205, e26320, dylim, _cmp, SOIYR, 
-                DOBYR, SDOBYR, _agep, _ages, c59660, puf):
+                DOBYR, SDOBYR, _agep, _ages, c59660, _eitc, puf):
 
     EICYB1 = max(0.0, EICYB1)
     EICYB2 = max(0.0, EICYB2)
@@ -986,8 +984,7 @@ def NumDep(EICYB1, EICYB2, EICYB3,
         c59660 = 0.
         c59560 = 0.  # updated to reflect SAS code, but has no seeming affect on accuracy
 
-    # QUESTION: is here according to SAS code, although is also in new OSPC_TAX() method. Where is correct?
-    # _eitc = c59660
+    _eitc = c59660
        
     return (_ieic, EICYB1, EICYB2, EICYB3, _modagi, c59660,
                _val_ymax, _preeitc, _val_rtbase, _val_rtless, _dy)
@@ -1312,8 +1309,6 @@ def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
     c07100 = min(c07100, c05800)
 
     # Tax After credits 1040 line 52
-
-    _eitc = c59660
 
     c08795 = max(0., c05800 - c07100) #SAS @1277
     
