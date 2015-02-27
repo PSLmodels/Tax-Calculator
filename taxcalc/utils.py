@@ -170,19 +170,28 @@ def groupby_weighted_decile(df):
     return df.groupby('wdecs')
 
 
-def groupby_income_bins(df):
+def groupby_income_bins(df, bins=None, right=True):
     """
 
     Group by income bins of AGI
 
+    bins: iterable of scalars
+            AGI income breakpoints. Follows pandas convention. The
+            breakpoint is inclusive if right=True
+
+    right : bool, optional
+            Indicates whether the bins include the rightmost edge or not.
+            If right == True (the default), then the bins [1,2,3,4]
+            indicate (1,2], (2,3], (3,4].
+
     """
 
-    income_bins = ["negative", "lt10", "lt20", "lt30", "lt40", "lt50", "lt75",
-                   "lt100", "lt200", "200plut"]
+    if not bins:
+        bins = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+                200000, 1e14]
 
     # Groupby c00100 bins
-    bins = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999, 200000, 1e14]
-    df['bins'] = pd.cut(df['c00100'], bins)
+    df['bins'] = pd.cut(df['c00100'], bins, right=right)
     return df.groupby('bins')
 
 

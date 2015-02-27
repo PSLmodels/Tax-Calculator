@@ -135,4 +135,21 @@ def test_weighted_share_of_total():
     diffs = grped.apply(weighted_share_of_total, 'tax_diff', 42.0)
     exp = Series(data=[16.0/42., 26.0/42.0], index=['a', 'b'])
     assert_series_equal(exp, diffs)
- 
+
+
+def test_groupby_income_bins():
+    data = np.arange(1,1e6, 5000)
+    df = DataFrame(data=data, columns=['c00100'])
+    bins = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+            200000, 1e14]
+    grpd = groupby_income_bins(df, bins)
+    grps = [grp for grp in grpd]
+
+    for g, num in zip(grps, bins[1:-1]):
+        assert g[0].endswith(str(num) + "]")
+
+    grpdl = groupby_income_bins(df, bins, right=False)
+    grps = [grp for grp in grpdl]
+
+    for g, num in zip(grps, bins[1:-1]):
+        assert g[0].endswith(str(num) + ")")
