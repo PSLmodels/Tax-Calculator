@@ -34,6 +34,7 @@ def run(puf=True):
 
     # Create a Public Use File object
     tax_dta = pd.read_csv("puf2.csv")
+
     blowup_factors = "./taxcalc/StageIFactors.csv"
     weights = "./taxcalc/WEIGHTS.csv"
 
@@ -46,7 +47,7 @@ def run(puf=True):
     # drop duplicates
     totaldf = totaldf.T.groupby(level=0).first().T
 
-    to_csv("results.csv", totaldf)
+    to_csv("results_puf.csv", totaldf)
 
 if __name__ == '__main__':
     run()
