@@ -30,11 +30,10 @@ def run(puf=True):
     """
 
     # Create a Parameters object
-    params = Parameters.from_file("testing.json")
+    params = Parameters()
 
     # Create a Public Use File object
-    tax_dta = pd.read_csv("exall.csv")
-    tax_dta.columns = [x.lower() for x in tax_dta.columns.tolist()]
+    tax_dta = pd.read_csv("puf2.csv")
 
     blowup_factors = "./taxcalc/StageIFactors.csv"
     weights = "./taxcalc/WEIGHTS.csv"
