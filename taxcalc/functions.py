@@ -456,6 +456,7 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 
 
     # Form 4972 - Lump Sum Distributions
+    # separate this lump Sum Distribution into a different function
     if _cmp == 1.:
         c59430 = max(0., e59410 - e59420)
         c59450 = c59430 + e59440 # income plus lump sum
@@ -463,7 +464,7 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
         _line17 = c59450 - c59460
         _line19 = c59450 - c59460 - e59470
 
-        if c59450 > 0.:
+        if c59450 >= 0.:
             _line22 = max(0., e59440 - e59440*c59460/c59450)
         else:
             _line22 = 0.
