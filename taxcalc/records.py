@@ -5,6 +5,8 @@ This file reads input csv file and saves the variables
 import pandas as pd
 import numpy as np
 import os.path
+import os
+from pkg_resources import resource_stream, Requirement
 
 class Records(object):
     """
@@ -21,8 +23,10 @@ class Records(object):
     Advancing years is done through a member function
     """
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-    weights_path = os.path.join(CUR_PATH, "WEIGHTS.csv")
-    blowup_factors_path = os.path.join(CUR_PATH, "StageIFactors.csv")
+    WEIGHTS_FILENAME = "WEIGHTS.csv"
+    weights_path = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
+    BLOWUP_FACTORS_FILENAME = "StageIFactors.csv"
+    blowup_factors_path = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
 
 
 
@@ -247,6 +251,10 @@ class Records(object):
             WT = weights 
         else: 
             try:
+                if not os.path.exists(weights):
+                    #grab weights out of EGG distribution
+                    path_in_egg = os.path.join("taxcalc", self.WEIGHTS_FILENAME)
+                    weights = resource_stream(Requirement.parse("taxcalc"), path_in_egg)
                 WT = pd.read_csv(weights)
             except IOError:
                 print("Missing a csv file with weights from the second \
@@ -263,6 +271,11 @@ PUF(weights='[FILENAME]').")
             BF = blowup_factors
         else:
             try:
+                if not os.path.exists(blowup_factors):
+                    #grab blowup factors out of EGG distribution
+                    path_in_egg = os.path.join("taxcalc", self.BLOWUP_FACTORS_FILENAME)
+                    blowup_factors = resource_stream(Requirement.parse("taxcalc"), path_in_egg)
+
                 BF = pd.read_csv(blowup_factors, index_col='YEAR')
             except IOError:
                 print("Missing a csv file with blowup factors. \

@@ -18,7 +18,7 @@
                       [52800,    82100,   41050,      52800,               82100,   41050],
                       [53600,    83400,   41700,      53600,               83400,   41700]]
     },
-    "_EITC_c": {        
+    "_EITC_c": {
         "long_name": "Maximum Earned Income Tax Credit",
 	    "description": "",
         "irs_ref": "IRS reference: form 1040, line 66a&b, instruction (table).",
@@ -337,7 +337,7 @@
     },
     "_ETC_pe_Married":{
         "long_name": "Education Tax Credit Phaseout Ends (Married)",
-	"description": "The education tax credit will be zero for those tax payers of married filing status with modified AGI level (in thousands) higher than this level.",
+]	"description": "The education tax credit will be zero for those tax payers of married filing status with modified AGI level (in thousands) higher than this level.",
         "irs_ref": "Form 8863, line 13, inline.",
         "notes": "",
         "start_year": 2013,

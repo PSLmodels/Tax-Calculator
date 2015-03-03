@@ -8,6 +8,7 @@ import pandas as pd
 import pytest
 import tempfile
 from numba import jit, vectorize, guvectorize
+import taxcalc
 from taxcalc import *
 from taxcalc.utils import expand_array
 
@@ -15,10 +16,17 @@ from taxcalc.utils import expand_array
 @pytest.yield_fixture
 def paramsfile():
 
-    txt = """{"_almdep": {"value": [7150, 7250, 7400]},
-             "_almsep": {"value": [40400, 41050]},
-             "_rt5": {"value": [0.33 ]},
-             "_rt7": {"value": [0.396]}}"""
+    txt = """{"_almdep": {"value": [7150, 7250, 7400],
+                          "cpi_inflated": true},
+
+             "_almsep": {"value": [40400, 41050],
+                         "cpi_inflated": true},
+
+             "_rt5": {"value": [0.33 ],
+                      "cpi_inflated": false},
+
+             "_rt7": {"value": [0.396],
+                      "cpi_inflated": false}}"""
 
     f = tempfile.NamedTemporaryFile(mode="a", delete=False)
     f.write(txt + "\n")
@@ -33,7 +41,11 @@ def test_create_parameters():
 
 def test_create_parameters_from_file(paramsfile):
     p = Parameters.from_file(paramsfile.name)
-    assert_array_equal(p._almdep, expand_array(np.array([7150, 7250, 7400])))
-    assert_array_equal(p._almsep, expand_array(np.array([40400, 41050])))
-    assert_array_equal(p._rt5, expand_array(np.array([0.33])))
-    assert_array_equal(p._rt7, expand_array(np.array([0.396])))
+    assert_array_equal(p._almdep, expand_array(np.array([7150, 7250, 7400]), inflate=True))
+    assert_array_equal(p._almsep, expand_array(np.array([40400, 41050]), inflate=True))
+    assert_array_equal(p._rt5, expand_array(np.array([0.33]), inflate=False))
+    assert_array_equal(p._rt7, expand_array(np.array([0.396]), inflate=False))
+
+def test_parameters_get_default(paramsfile):
+    paramdata = taxcalc.parameters.default_data()
+    assert paramdata['_agcmax'] == [15000]

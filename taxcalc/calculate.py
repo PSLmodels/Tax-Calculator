@@ -207,7 +207,7 @@ class Calculator(object):
         # Calculate the tax change with a marginal increase in income.
         setattr(self, income_type_string, income_type + diff)
         self.calc_all()
-        delta_taxes_up = self._ospctax- taxes_base
+        delta_taxes_up = self._ospctax - taxes_base
 
         # Calculate the tax change with a marginal decrease in income.
         setattr(self, income_type_string, income_type - diff)

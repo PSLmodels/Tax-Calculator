@@ -222,7 +222,6 @@ def StdDed( DSI, _earned, STD, e04470,
             c04470, c00100, c21060, c21040, e37717, c04600, e04805, t04470,
             f6251, _feided, c02700, FDED, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
             II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, puf):
-    # Standard Deduction with Aged, Sched L and Real Estate #
 
     if DSI == 1:
         c15100 = max(300 + _earned, STD[6])
@@ -243,9 +242,13 @@ def StdDed( DSI, _earned, STD, e04470,
 
     c04100 = c04100 + e15360
 
-    _numextra = AGEP + AGES + PBI + SBI
+    if f6251 == 0 and e04470 == 0:
+        x04500 = e00100 - e60000
+        c04500 = c00100 - x04500
+    else:
+        x04500 = 0.
 
-    if MARS == 2 or MARS == 3:
+    if MARS == 2 or MARS == 3 or MARS == 6:
         _txpyers = 2.
     else:
         _txpyers = 1.
@@ -290,7 +293,7 @@ def StdDed( DSI, _earned, STD, e04470,
 
     #why is this here, c60000 is reset many times? 
     if _standard > 0:
-        c60000 = c00100
+        c60000 = c00100 - x04500
     else:
         c60000 = c04500
 
@@ -302,7 +305,6 @@ def StdDed( DSI, _earned, STD, e04470,
 
     if (e04470 == 0 and (t04470 > _amtstd) and f6251 == 1 and _exact == 1):
         c60000 = c00100 - t04470
-   
 
     if (c04800 > 0 and _feided > 0):
         _taxinc = c04800 + c02700
@@ -932,10 +934,7 @@ def NumDep(EICYB1, EICYB2, EICYB3,
     EICYB2 = max(0.0, EICYB2)
     EICYB3 = max(0.0, EICYB3)
 
-    if puf == True:
-        _ieic = EIC
-    else: 
-        _ieic = int(EICYB1 + EICYB2 + EICYB3)
+    _ieic = int( max(EIC, EICYB1) + EICYB2 + EICYB3)
 
     # Modified AGI only through 2002
 
@@ -969,8 +968,6 @@ def NumDep(EICYB1, EICYB2, EICYB3,
                        * (max(0.,max(_modagi,c59560)-_val_ymax)))
         _preeitc = min(_preeitc,c59660)
 
-#        c59660 = max(0, c59660 - rtless[_ieic]
-#                * (max(_modagi, c59560) - _val_ymax))
 
     if MARS != 3 and MARS != 6 and _modagi > 0:
         _val_rtbase = EITC_rt[_ieic] * 100
@@ -995,6 +992,8 @@ def NumDep(EICYB1, EICYB2, EICYB3,
     else:
         c59660 = 0.
         c59560 = 0.  # updated to reflect SAS code, but has no seeming affect on accuracy
+
+    _eitc = c59660
        
     return (_ieic, EICYB1, EICYB2, EICYB3, _modagi, c59660,
                _val_ymax, _preeitc, _val_rtbase, _val_rtless, _dy)
@@ -1282,30 +1281,43 @@ def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
                 e07500, e07700, e08000, e07240, e08001, e07960, e07970,
                 SOIYR, e07980, c05800, e08800, e09900, e09400, e09800, 
                 e10000, e10100, e09700, e10050, e10075, e09805, e09710,
-                c59660, puf ):
+                c59660, c07180, _eitc, c59680, puf ):
+
+    # Allocate credits to tax in order on the tax form
+    _avail = c05800
+    c07180 = min(c07180,_avail)
+    _avail = _avail - c07180
+    _avail = max(0,_avail - e07200)
+    c07300 = min(e07300,_avail)
+    _avail = _avail - c07300
+    c07230 = min(c07230,_avail)
+    _avail = _avail - c07230
+    c07240 = min(e07240,_avail)
+    _avail = _avail - c07240
+    c07220 = min(c07220,_avail)
+    _avail = _avail - c07220
+    c07600 = min(e07600,_avail)
+    _avail = _avail - c07600
+    c07260 = min(e07260,_avail)
+    _avail = _avail-c07260
+
+    c59680 = min(_eitc,_avail)
 
     # Credits 1040 line 48
 
     x07400 = e07400
-    c07100 = (e07180 + e07200 + c07220 + c07230 + e07250
-              + e07600 + e07260 + c07970 + e07300 + x07400
-              + e07500 + e07700 + e08000)
+
+    c07100 = (e07180 + e07200 + e07600 + c07300 + x07400
+               + e07980 + c07220 + e07500 + e08000)
 
     y07100 = c07100
 
-    c07100 = c07100 + e07240
-    c07100 = c07100 + e08001
-    c07100 = c07100 + e07960 + e07970
+    c07100 += e07700 + c07230 + c07970 + e07240 + e07260 + e08001 + e07960
 
-    if SOIYR >= 2009:
-        c07100 = c07100 + e07980
- 
     x07100 = c07100
     c07100 = min(c07100, c05800)
 
     # Tax After credits 1040 line 52
-
-    _eitc = c59660
 
     c08795 = max(0., c05800 - c07100) #SAS @1277
     
@@ -1319,12 +1331,10 @@ def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
 
     # Tax before refundable credits
     _othertax = e09900 + e09400 + e09800 + e10100
-    c09200 = c08795 + e09900 + e09400 + e09800 + e10000 + e10100
-    c09200 = c09200 + e09700
-    c09200 = c09200 + e10050
-    c09200 = c09200 + e10075
-    c09200 = c09200 + e09805
-    c09200 = c09200 + e09710 + e09720
+    c09200 = _othertax + c08795 + e10000
+
+    #assuming year (FLPDYR) > 2009
+    c09200 = c09200 + e09700 + e10050 + e10075 + e09805 + e09710 + e09720
 
     return (c07100, y07100, x07100, c08795, e08795, c09200, _eitc, _othertax)
 
