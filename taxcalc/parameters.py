@@ -10,9 +10,8 @@ class Parameters(object):
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
     PARAM_FILENAME = "params.json"
     params_path = os.path.join(CUR_PATH, PARAM_FILENAME)
-    __rates = [0.011, 0.022, 0.023, 0.024, 0.024, 0.024,
-               0.024, 0.024, 0.024, 0.024, 0.024, 0.024]
-
+    __rates = [0.015, 0.020, 0.022, 0.020, 0.021, 0.022,
+               0.023, 0.024, 0.024, 0.024, 0.024, 0.024]
 
     @classmethod
     def from_file(cls, file_name, **kwargs):
