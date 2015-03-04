@@ -337,7 +337,7 @@
     },
     "_ETC_pe_Married":{
         "long_name": "Education Tax Credit Phaseout Ends (Married)",
-]	"description": "The education tax credit will be zero for those tax payers of married filing status with modified AGI level (in thousands) higher than this level.",
+	"description": "The education tax credit will be zero for those tax payers of married filing status with modified AGI level (in thousands) higher than this level.",
         "irs_ref": "Form 8863, line 13, inline.",
         "notes": "",
         "start_year": 2013,

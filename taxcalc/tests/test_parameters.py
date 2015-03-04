@@ -48,4 +48,4 @@ def test_create_parameters_from_file(paramsfile):
 
 def test_parameters_get_default(paramsfile):
     paramdata = taxcalc.parameters.default_data()
-    assert paramdata['_agcmax'] == [15000]
+    assert paramdata['_CDCC_ps'] == [15000]

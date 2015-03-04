@@ -111,8 +111,8 @@ def test_make_Calculator_mods():
     # Create a Public Use File object
     puf = Records(tax_dta)
 
-    calc2 = calculator(params, puf, _amex=np.array([4000]))
-    assert all(calc2._amex == np.array([4000]))
+    calc2 = calculator(params, puf, _II_em = np.array([4000]))
+    assert all(calc2._II_em == np.array([4000]))
 
 
 def test_make_Calculator_json():
@@ -123,11 +123,11 @@ def test_make_Calculator_json():
     # Create a Public Use File object
     puf = Records(tax_dta)
 
-    user_mods = '{ "_aged": [[1500], [1200]] }'
-    calc2 = calculator(params, puf, mods=user_mods, _amex=np.array([4000]))
-    assert all(calc2._amex == np.array([4000]))
-    assert all(calc2._aged == np.array([[1500], [1200]]))
-    assert all(calc2.aged == np.array([1500]))
+    user_mods = '{ "_STD_Aged": [[1500], [1200]] }'
+    calc2 = calculator(params, puf, mods=user_mods, _II_em=np.array([4000]))
+    assert all(calc2.II_em == np.array([4000]))
+    assert all(calc2._STD_Aged == np.array([[1500], [1200]]))
+    assert all(calc2.STD_Aged == np.array([1500]))
 
 
 def test_Calculator_attr_access_to_params():
