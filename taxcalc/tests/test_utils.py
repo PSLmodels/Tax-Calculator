@@ -26,14 +26,31 @@ def test_expand_1D_short_array():
     exp = np.zeros(10)
     exp[:3] = exp1
     exp[3:] = exp2
-    res = expand_1D(x, inflate=True, inflation_rate=0.02, num_years=10)
+    res = expand_1D(x, inflate=True, inflation_rates=[0.02]*10, num_years=10)
+    assert(np.allclose(exp.astype(x.dtype, casting='unsafe'), res))
+
+def test_expand_1D_variable_rates():
+    x = np.array([4, 5, 9], dtype='f4')
+    irates = [0.02, 0.02, 0.02, 0.03, 0.035]
+    exp2 = []
+    cur = 9.0
+    for i in range(1, 3):
+        idx = i + len(x) - 1
+        cur *= (1.0 + irates[idx])
+        exp2.append(cur)
+
+    exp1 = np.array([4, 5, 9])
+    exp = np.zeros(5)
+    exp[:3] = exp1
+    exp[3:] = exp2
+    res = expand_1D(x, inflate=True, inflation_rates=irates, num_years=5)
     assert(np.allclose(exp.astype(x.dtype, casting='unsafe'), res))
 
 
 def test_expand_1D_scalar():
     x = 10.0
     exp = np.array([10.0 * math.pow(1.02, i) for i in range(0, 10)])
-    res = expand_1D(x, inflate=True, inflation_rate=0.02, num_years=10)
+    res = expand_1D(x, inflate=True, inflation_rates=[0.02]*10, num_years=10)
     assert(np.allclose(exp, res))
 
 
@@ -45,8 +62,30 @@ def test_expand_2D_short_array():
     exp = np.zeros((5, 3))
     exp[:1] = exp1
     exp[1:] = exp2
-    res = expand_2D(x, inflate=True, inflation_rate=0.02, num_years=5)
+    res = expand_2D(x, inflate=True, inflation_rates=[0.02]*5, num_years=5)
     assert(np.allclose(exp, res))
+
+
+def test_expand_2D_variable_rates():
+    x = np.array([[1, 2, 3]], dtype='f8')
+    cur = np.array([1, 2, 3], dtype='f8')
+    irates = [0.02, 0.02, 0.02, 0.03, 0.035]
+
+    exp2 = []
+    for i in range(1, 5):
+        idx = i + len(x) - 1
+        cur = np.array(cur*(1.0 + irates[idx]))
+        print("cur is ", cur)
+        exp2.append(cur)
+
+    #exp2 = np.array([val * math.pow(1.02, i) for i in range(1, 5)])
+    exp1 = np.array([1, 2, 3], dtype='f8')
+    exp = np.zeros((5, 3))
+    exp[:1] = exp1
+    exp[1:] = exp2
+    res = expand_2D(x, inflate=True, inflation_rates=irates, num_years=5)
+    assert(np.allclose(exp, res))
+
 
 
 def test_create_tables():
