@@ -62,7 +62,7 @@ def test_create_tables():
     calc1.calc_all()
 
     # User specified Plans
-    user_mods = '{"_rt4": [0.56]}'
+    user_mods = '{"_II_rt4": [0.56]}'
     params2 = Parameters(start_year=91)
     records2 = Records(tax_dta_path)
     # Create a Calculator
