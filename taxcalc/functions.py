@@ -999,8 +999,8 @@ def NumDep(EICYB1, EICYB2, EICYB3,
                _val_ymax, _preeitc, _val_rtbase, _val_rtless, _dy)
 
 
-@iterate_jit(parameters=["_CTC_pe", "CTC_c", "CTC_prt"], nopython=True)
-def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, _CTC_pe, _exact, 
+@iterate_jit(parameters=["_CTC_ps", "CTC_c", "CTC_prt"], nopython=True)
+def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, _CTC_ps, _exact, 
                         c11070, c07220, c07230, _num, _precrd, _nctcr, CTC_prt):
 
     # Child Tax Credit
@@ -1013,13 +1013,13 @@ def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, _CTC_pe, _exact,
 
     _ctcagi = c00100 + _feided
 
-    if _ctcagi > _CTC_pe[MARS - 1] and _exact == 1:
+    if _ctcagi > _CTC_ps[MARS - 1] and _exact == 1:
         _precrd = max(0., _precrd - CTC_prt* 
-                    math.ceil(_ctcagi - _CTC_pe[MARS - 1]))
+                    math.ceil(_ctcagi - _CTC_ps[MARS - 1]))
 
-    if _ctcagi > _CTC_pe[MARS - 1] and _exact != 1:
+    if _ctcagi > _CTC_ps[MARS - 1] and _exact != 1:
         _precrd = max(0., _precrd - CTC_prt * 
-                    (max(0., _ctcagi - _CTC_pe[MARS - 1]) + 500))
+                    (max(0., _ctcagi - _CTC_ps[MARS - 1]) + 500))
 
     #TODO get rid of this type declaration
     _precrd = float(_precrd)

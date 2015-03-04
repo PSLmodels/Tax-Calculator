@@ -629,7 +629,7 @@
                     [117300, 156500, 78250, 117300, 156500, 78250],
                     [119200, 158900, 79450, 119200, 158900, 79450]]
     },
-    "_CTC_pe":{
+    "_CTC_ps":{
         "long_name": "Child Tax Credit Phaseout Start",
 	    "description": "Child tax credit begins to decrease when taxpayers MAGI goes above this level.",
         "irs_ref": "Form 1040, line 52, instruction (Worksheet).",
