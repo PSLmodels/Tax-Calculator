@@ -35,7 +35,7 @@ class Records(object):
         return cls(path, **kwargs)
 
     def __init__(   self, 
-                    data="puf2.csv", 
+                    data="puf.csv", 
                     blowup_factors=blowup_factors_path,
                     weights=weights_path,
                     start_year=None):

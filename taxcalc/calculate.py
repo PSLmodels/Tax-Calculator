@@ -54,7 +54,8 @@ class Calculator(object):
         return cls(params, recs)
 
 
-    def __init__(self, parameters=None, records=None, **kwargs):
+
+    def __init__(self, parameters=None, records=None, sync_years=True, **kwargs):
 
         if isinstance(parameters, Parameters):
             self._parameters = parameters
@@ -67,7 +68,16 @@ class Calculator(object):
         self._records = (records if not isinstance(records, str) else
                          Records.from_file(records, **kwargs))
 
+        if sync_years and self._records.current_year==2008:
+            print("You loaded data for "+str(self._records.current_year)+'.')
+
+            while self._records.current_year < self._parameters.current_year:
+                self._records.increment_year()
+
+            print("Your data have beeen extrapolated to "+str(self._records.current_year)+".")
+
         assert self._parameters.current_year == self._records.current_year
+
 
     @property
     def parameters(self):
