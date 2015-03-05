@@ -55,7 +55,7 @@ class Calculator(object):
 
 
 
-    def __init__(self, parameters=None, records=None,, sync_years=True, **kwargs):
+    def __init__(self, parameters=None, records=None, sync_years=True, **kwargs):
 
         if isinstance(parameters, Parameters):
             self._parameters = parameters
@@ -73,7 +73,7 @@ class Calculator(object):
 
             while self._records.current_year < self._parameters.current_year:
                 self._records.increment_year()
-                
+
             print("Your data have beeen extrapolated to "+str(self._records.current_year)+".")
 
         assert self._parameters.current_year == self._records.current_year
