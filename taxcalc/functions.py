@@ -281,9 +281,11 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
 
     if FDED == 1:
         _othded = e04470 - c04470
-        c04100 = 0.
-        c04200 = 0.
-        _standard = 0.
+        if _fixup>=2:
+            c04470 = c04470 + _othded;
+            c04100 = 0.
+            c04200 = 0.
+            _standard = 0.
     else: 
         _othded = 0.
 
