@@ -14,6 +14,9 @@ def add_df(alldfs, df):
         if col not in all_cols:
             all_cols.add(col)
             alldfs.append(df[col])
+        else:
+            dup_index = [i for i,series in enumerate(alldfs) if series.name == col][0]
+            alldfs[dup_index] = df[col]
 
 
 def calculator(parameters, records, mods="", **kwargs):
@@ -51,17 +54,26 @@ class Calculator(object):
         return cls(params, recs)
 
 
-    def __init__(self, parameters, records, sync_years = True, **kwargs):
-        self._parameters = (parameters if not isinstance(parameters, str) else
-                            Parameters.from_file(parameters, **kwargs))
+
+    def __init__(self, parameters=None, records=None,, sync_years=True, **kwargs):
+
+        if isinstance(parameters, Parameters):
+            self._parameters = parameters
+        else:
+            self._parameters = Parameters.from_file(parameters, **kwargs)
+
+        if records is None:
+            raise ValueError("Must supply tax records path or Records object")
 
         self._records = (records if not isinstance(records, str) else
                          Records.from_file(records, **kwargs))
 
         if sync_years and self._records.current_year==2008:
             print("You loaded data for "+str(self._records.current_year)+'.')
+
             while self._records.current_year < self._parameters.current_year:
                 self._records.increment_year()
+                
             print("Your data have beeen extrapolated to "+str(self._records.current_year)+".")
 
         assert self._parameters.current_year == self._records.current_year

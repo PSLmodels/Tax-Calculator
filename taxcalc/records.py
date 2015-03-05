@@ -5,6 +5,8 @@ This file reads input csv file and saves the variables
 import pandas as pd
 import numpy as np
 import os.path
+import os
+from pkg_resources import resource_stream, Requirement
 
 class Records(object):
     """
@@ -21,8 +23,10 @@ class Records(object):
     Advancing years is done through a member function
     """
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-    weights_path = os.path.join(CUR_PATH, "WEIGHTS.csv")
-    blowup_factors_path = os.path.join(CUR_PATH, "StageIFactors.csv")
+    WEIGHTS_FILENAME = "WEIGHTS.csv"
+    weights_path = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
+    BLOWUP_FACTORS_FILENAME = "StageIFactors.csv"
+    blowup_factors_path = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
 
 
 
@@ -247,6 +251,10 @@ class Records(object):
             WT = weights 
         else: 
             try:
+                if not os.path.exists(weights):
+                    #grab weights out of EGG distribution
+                    path_in_egg = os.path.join("taxcalc", self.WEIGHTS_FILENAME)
+                    weights = resource_stream(Requirement.parse("taxcalc"), path_in_egg)
                 WT = pd.read_csv(weights)
             except IOError:
                 print("Missing a csv file with weights from the second \
@@ -263,6 +271,11 @@ PUF(weights='[FILENAME]').")
             BF = blowup_factors
         else:
             try:
+                if not os.path.exists(blowup_factors):
+                    #grab blowup factors out of EGG distribution
+                    path_in_egg = os.path.join("taxcalc", self.BLOWUP_FACTORS_FILENAME)
+                    blowup_factors = resource_stream(Requirement.parse("taxcalc"), path_in_egg)
+
                 BF = pd.read_csv(blowup_factors, index_col='YEAR')
             except IOError:
                 print("Missing a csv file with blowup factors. \
@@ -496,6 +509,12 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
                  ('e87530', 'e87530'),
                  ('e87540', 'e87540'),
                  ('e87550', 'e87550'),
+                 #('e22250', 'e22250'),
+                 #('e23250', 'e23250'),
+                 #('e04470', 'e04470'),
+                 #('e25470', 'e25470'),
+                 #('e08000', 'e08000'),
+                 #('e60100', 'e60100'),
                  ('RECID', 'recid'),
                  ('s006', 's006'),
                  ('s008', 's008'),
@@ -592,6 +611,7 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
                         'c82905', 'c82910', 'c82915',  'c82920', 'c82937',
                         'c82940', 'c11070', 'e59660', '_othadd', 'y07100',
                         'x07100', 'c08800', 'e08795', 'x07400', 'c59680',
+	                '_othertax', 'e82915', 'e82940', 'SFOBYR',
                         'c59720', '_comb', 'c07150', 'c10300', '_ospctax',
                         '_refund', 'c11600', 'e11450', 'e82040', 'e11500']
                         

@@ -24,21 +24,29 @@ def extract_array(f):
     return wrapper
 
 
-def expand_1D(x, inflate, inflation_rate, num_years):
+def expand_1D(x, inflate, inflation_rates, num_years):
     """
     Expand the given data to account for the given number of budget years.
     If necessary, pad out additional years by increasing the last given
     year at the provided inflation rate.
     """
+
+    assert len(inflation_rates) == num_years
+
+
     if isinstance(x, np.ndarray):
         if len(x) >= num_years:
             return x
         else:
-            ans = np.zeros(num_years)
+            ans = np.zeros(num_years, dtype='f8')
             ans[:len(x)] = x
             if inflate:
-                extra = [float(x[-1])*pow(1. + inflation_rate, i) for i in
-                         range(1, num_years - len(x) + 1)]
+                extra = []
+                cur = x[-1]
+                for i in range(1, num_years - len(x) + 1):
+                    inf_idx = i + len(x) - 1
+                    cur *= (1. + inflation_rates[inf_idx])
+                    extra.append(cur)
             else:
                 extra = [float(x[-1]) for i in
                          range(1, num_years - len(x) + 1)]
@@ -46,10 +54,10 @@ def expand_1D(x, inflate, inflation_rate, num_years):
             ans[len(x):] = extra
             return ans.astype(x.dtype, casting='unsafe')
 
-    return expand_1D(np.array([x]), inflate, inflation_rate, num_years)
+    return expand_1D(np.array([x]), inflate, inflation_rates, num_years)
 
 
-def expand_2D(x, inflate, inflation_rate, num_years):
+def expand_2D(x, inflate, inflation_rates, num_years):
     """
     Expand the given data to account for the given number of budget years.
     For 2D arrays, we expand out the number of rows until we have num_years
@@ -64,8 +72,12 @@ def expand_2D(x, inflate, inflation_rate, num_years):
             ans = np.zeros((num_years, x.shape[1]))
             ans[:len(x), :] = x
             if inflate:
-                extra = [x[-1, :]*pow(1. + inflation_rate, i) for i in
-                     range(1, num_years - len(x) + 1)]
+                extra = []
+                cur = x[-1]
+                for i in range(1, num_years - len(x) + 1):
+                    inf_idx = i + len(x) - 1
+                    cur = np.array(cur*(1. + inflation_rates[inf_idx]))
+                    extra.append(cur)
             else:
                 extra = [x[-1, :] for i in
                      range(1, num_years - len(x) + 1)]
@@ -73,10 +85,10 @@ def expand_2D(x, inflate, inflation_rate, num_years):
             ans[len(x):, :] = extra
             return ans.astype(x.dtype, casting='unsafe')
 
-    return expand_2D(np.array([x]), inflate, inflation_rate, num_years)
+    return expand_2D(np.array([x]), inflate, inflation_rates, num_years)
 
 
-def expand_array(x, inflate, inflation_rate=0.02, num_years=10):
+def expand_array(x, inflate, inflation_rates, num_years):
     """
     Dispatch to either expand_1D or expand2D depending on the dimension of x
 
@@ -99,9 +111,9 @@ def expand_array(x, inflate, inflation_rate=0.02, num_years=10):
     """
     try:
         if len(x.shape) == 1:
-            return expand_1D(x, inflate, inflation_rate, num_years)
+            return expand_1D(x, inflate, inflation_rates, num_years)
         elif len(x.shape) == 2:
-            return expand_2D(x, inflate, inflation_rate, num_years)
+            return expand_2D(x, inflate, inflation_rates, num_years)
         else:
             raise ValueError("Need a 1D or 2D array")
     except AttributeError as ae:
@@ -116,36 +128,36 @@ def count_lt_zero(agg):
     return sum([1 for a in agg if a < 0])
 
 
-def weighted_count_lt_zero(agg):
-    return agg[agg['tax_diff'] < 0]['s006'].sum()
+def weighted_count_lt_zero(agg, col_name):
+    return agg[agg[col_name] < 0]['s006'].sum()
 
 
-def weighted_count_gt_zero(agg):
-    return agg[agg['tax_diff'] > 0]['s006'].sum()
+def weighted_count_gt_zero(agg, col_name):
+    return agg[agg[col_name] > 0]['s006'].sum()
 
 
 def weighted_count(agg):
     return agg['s006'].sum()
 
 
-def weighted_mean(agg):
-    return float((agg['tax_diff']*agg['s006']).sum()) / float(agg['s006'].sum())
+def weighted_mean(agg, col_name):
+    return float((agg[col_name]*agg['s006']).sum()) / float(agg['s006'].sum())
 
 
-def weighted_sum(agg):
-    return (agg['tax_diff']*agg['s006']).sum()
+def weighted_sum(agg, col_name):
+    return (agg[col_name]*agg['s006']).sum()
 
 
-def weighted_perc_inc(agg):
-    return float(weighted_count_gt_zero(agg)) / float(weighted_count(agg))
+def weighted_perc_inc(agg, col_name):
+    return float(weighted_count_gt_zero(agg, col_name)) / float(weighted_count(agg))
 
 
-def weighted_perc_dec(agg):
-    return float(weighted_count_lt_zero(agg)) / float(weighted_count(agg))
+def weighted_perc_dec(agg, col_name):
+    return float(weighted_count_lt_zero(agg, col_name)) / float(weighted_count(agg))
 
 
-def weighted_share_of_total(agg, total):
-    return float(weighted_sum(agg)) / float(total)
+def weighted_share_of_total(agg, col_name, total):
+    return float(weighted_sum(agg, col_name)) / float(total)
 
 
 def groupby_weighted_decile(df):
@@ -170,19 +182,28 @@ def groupby_weighted_decile(df):
     return df.groupby('wdecs')
 
 
-def groupby_income_bins(df):
+def groupby_income_bins(df, bins=None, right=True):
     """
 
     Group by income bins of AGI
 
+    bins: iterable of scalars
+            AGI income breakpoints. Follows pandas convention. The
+            breakpoint is inclusive if right=True
+
+    right : bool, optional
+            Indicates whether the bins include the rightmost edge or not.
+            If right == True (the default), then the bins [1,2,3,4]
+            indicate (1,2], (2,3], (3,4].
+
     """
 
-    income_bins = ["negative", "lt10", "lt20", "lt30", "lt40", "lt50", "lt75",
-                   "lt100", "lt200", "200plut"]
+    if not bins:
+        bins = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+                200000, 1e14]
 
     # Groupby c00100 bins
-    bins = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999, 200000, 1e14]
-    df['bins'] = pd.cut(df['c00100'], bins)
+    df['bins'] = pd.cut(df['c00100'], bins, right=right)
     return df.groupby('bins')
 
 
@@ -197,16 +218,16 @@ def means_and_comparisons(df, col_name, gp, weighted_total):
     """
 
     # Who has a tax cut, and who has a tax increase
-    diffs = gp.apply(weighted_count_lt_zero)
+    diffs = gp.apply(weighted_count_lt_zero, col_name)
     diffs = DataFrame(data=diffs, columns=['tax_cut'])
-    diffs['tax_inc'] = gp.apply(weighted_count_gt_zero)
+    diffs['tax_inc'] = gp.apply(weighted_count_gt_zero, col_name)
     diffs['count'] = gp.apply(weighted_count)
-    diffs['mean'] = gp.apply(weighted_mean)
-    diffs['tot_change'] = gp.apply(weighted_sum)
-    diffs['perc_inc'] = gp.apply(weighted_perc_inc)
-    diffs['perc_cut'] = gp.apply(weighted_perc_dec)
+    diffs['mean'] = gp.apply(weighted_mean, col_name)
+    diffs['tot_change'] = gp.apply(weighted_sum, col_name)
+    diffs['perc_inc'] = gp.apply(weighted_perc_inc, col_name)
+    diffs['perc_cut'] = gp.apply(weighted_perc_dec, col_name)
     diffs['share_of_change'] = gp.apply(weighted_share_of_total,
-                                        weighted_total)
+                                        col_name, weighted_total)
 
     return diffs
 

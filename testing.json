@@ -1,9 +1,7 @@
 {
     "_AMT_em":{
         "long_name": "AMT exemption",
-	    "description": "The amount of AMTI exempted from AMT.",
-        "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
-        "notes": "",
+	"description": "The amount of AMTI exempted from AMT. IRS reference: form 1040, line 45, instruction (Worksheet).",
         "start_year": 2013,
         "col_var": "MARS",
         "row_var": "FLPDYR",
@@ -14,23 +12,21 @@
 
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
         "value":
-                     [[51900,    80800,   40400,      51900,               80800,   40400],
+                     [[51900,    80750,   40375,      51900,               80750,   40375],
                       [52800,    82100,   41050,      52800,               82100,   41050],
                       [53600,    83400,   41700,      53600,               83400,   41700]]
     },
     "_EITC_c": {
+                
         "long_name": "Maximum Earned Income Tax Credit",
-	    "description": "",
-        "irs_ref": "IRS reference: form 1040, line 66a&b, instruction (table).",
-        "notes": "",
+	"description": "IRS reference: form 1040, line 66a&b, instruction (table)",
         "start_year": 2013,
         "col_var": "ChildNum",
         "row_var": "FLPDYR",
         "row_label": [2013,
                       2014,
                       2015],
-        "cpi_inflated": true, 
-
+        "cpi_inflated": true,       
         "col_label": ["0 kids", "1 kid", "2 kids", "3 kids"],
          "value":    [ [487,    3250,       5372,      6044],
                        [496,    3305,       5460,      6143],
@@ -39,9 +35,7 @@
     },
     "_SS_thd50":{
         "long_name": "Starting Threshold for 50% Taxability",
-	"description": "50% of combined income in range starting at this threshold is subject to social security tax.",
-        "irs_ref": "Form 1040, line 20a&b, calculation (Worksheet, add line 10 to line 8 amounts.)",
-        "notes": "",
+	"description": "50% of combined income in range starting at this threshold is subject to social security tax. IRS reference: form 1040, line 20a&b, calculation (Worksheet, add line 10 to line 8 amounts.)",
         "start_year": 2013,
         "col_var": "MARS",
         "row_var": "NA",
@@ -54,9 +48,7 @@
     },
      "_SS_thd85":{
         "long_name": "Starting Threshold for 85% Taxability",
-	    "description": "50% of combined income in range starting at this threshold is subject to social security tax.",
-        "irs_ref": "Form 1040, line 20a&b, calculation (Worksheet, add line 10 values to line 8).",
-        "notes": "",
+	"description": "50% of combined income in range starting at this threshold is subject to social security tax. IRS reference: form 1040, line 20a&b, calculation (Worksheet, add line 10 values to line 8).",
         "start_year": 2013,
         "col_var": "MARS",
         "row_var": "NA",
@@ -69,24 +61,33 @@
     },
      "_ACTC_rt":{
         "long_name": "Additional Child Tax Credit Rate",
-	"description": "AKA rate for refundable portion of CTC; Apply this rate to earned income in excess of $3000*, to get the ACTC amount, which is capped at the amount of unclaimed nonrefundable CTC.",
-        "irs_ref": "Form 8812, line 6, inline.",
-        "notes": "",
+	"description": "AKA rate for refundable portion of CTC; Apply this rate to earned income in excess of $3000*, to get the ACTC amount, which is capped at the amount of unclaimed nonrefundable CTC. IRS reference: form 8812, line 6, inline.",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-
+        
         "col_label": "NA",
         "value":      [0.15]
         
     },
+     "_CDCC_ps":{
+        "long_name": "NA",
+	"description": "NA",
+        "start_year": 2013,
+        "col_var": "NA",
+        "row_var": "NA",
+        "row_label": "NA",
+        "cpi_inflated": false,
+        
+        "col_label": "NA",
+        "value":      [15000]
+        
+    },
      "_STD_Aged":{
         "long_name": "Additional Standard Deduction for Aged",
-	"description": "Add this value to regular standard deduction to get standard deduction for aged individual.",
-        "irs_ref": "Form 1040, line 40, calculation (the difference of the two tables given in the instruction).",
-        "notes": "",
+	"description": "Add this value to regular standard deduction to get standard deduction for aged individual. IRS reference: form 1040, line 40, calculation (the difference of the two tables given in the instruction).",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "FLPDYR",
@@ -103,9 +104,7 @@
     },
      "_AMT_Child_em":{
         "long_name": "Child AMT Exemption Additional Income Base",
-	"description": "Add this amount to one child's income to get the total income base for exemption.",
-        "irs_ref": "Form 6251, line 29, instruction.",
-        "notes": "",
+	"description": "Add this amount to one child's income to get the total income base for exemption. IRS reference: form 6251, line 29, instruction.",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "FLPDYR",
@@ -122,9 +121,7 @@
     },
     "_AMT_thd_MarriedS":{
         "long_name": "Extra alminc for married sep",
-	    "description": "",
-        "irs_ref": "Form 6251, line 28, instruction.",
-        "notes": "",
+	"description": "IRS reference: form 6251, line 28, instruction.",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "FLPDYR",
@@ -133,15 +130,13 @@
         "cpi_inflated": true,
         
         "col_label": "NA",
-        "value":  [40400,
+        "value":  [39375,
 		   41050]
         
     },
      "_AMT_tthd":{
         "long_name": "AMT Tax Income Threshold",
-	    "description": "This threshold separates the 26%* and 28%* AMT tax rates: in order to get tentative minimum tax, income below this level is subject to 26% tax rate and above this level subject at 28%.",
-        "irs_ref": "Form 6251, line 31, instruction.",
-        "notes": "",
+	"description": "This threshold separates the 26%* and 28%* AMT tax rates: in order to get tentative minimum tax, income below this level is subject to 26% tax rate and above this level subject at 28%. IRS reference: form 6251, line 31, instruction.",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "FLPDYR",
@@ -158,9 +153,7 @@
     },
      "_II_em":{
         "long_name": "Personal and Dependent Exemption Amount",
-	    "description": "Personal exemption is equal to this amount; Dependency exemption is equal to this amount mutiplied by the number of qualified dependents.",
-        "irs_ref": "IRS reference: form 1040, line 42, instruction.",
-        "notes": "",
+	"description": "Personal exemption is equal to this amount; Dependency exemption is equal to this amount mutiplied by the number of qualified dependents. IRS reference: form 1040, line 42, instruction. ",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "FLPDYR",
@@ -177,9 +170,7 @@
     },
      "_KT_c_Age":{
         "long_name": "Maximum Age subject to Kiddie Tax",
-	"description": "Under this age, the individual is subject to either AMT or Kiddie Tax.",
-        "irs_ref": "Form 6251, line 28, instruction.",
-        "notes": "",
+	"description": "Under this age, the individual is subject to either AMT or Kiddie Tax. IRS reference: form 6251, line 28, instruction. ",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
@@ -192,54 +183,48 @@
     },
      "_AMT_em_pe":{
         "long_name": "AMT Exemption Phaseout ending AMTI (Married filling Separately)",
-	    "description": "Individuals with AMTI higher than this level are not eligible for any AMT exemption in their tentative minimum tax calculation.",
-        "irs_ref": "Form 6251, line 28, instruction.",
-        "notes": "",
+	"description": "Individuals with AMTI higher than this level are not eligible for any AMT exemption in their tentative minimum tax calculation. IRS reference: form 6251, line 28, instruction. ",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "FLPDYR",
         "row_label": ["2013",
 		      "2014"],
         "cpi_inflated": true,
-
+        
         "col_label": "NA",
-        "value":   [238550,
+        "value":   [232500,
                     242450]
         
     },
      "_cgrate1":{
         "long_name": "",
-	    "description": "",
-        "irs_ref": "form , line , ",
-        "notes": "",
+	"description": "IRS reference: form , line , ",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
         "row_label": "",
         "cpi_inflated": false,
+        
         "col_label": [],
         "value": [0.10]
         
     },	
      "_cgrate2":{
         "long_name": "",
-	    "description": "",
-        "irs_ref": "form , line , ",
-        "notes": "",
+	"description": "IRS reference: form , line , ",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
         "row_label": "",
         "cpi_inflated": false,
+        
         "col_label": [],
         "value": [0.20]
         
     },	
      "_CTC_c":{
         "long_name": "Max Child Tax Credit per child",
-	"description": "Scheduled to decrease to 500 in 2018.",
-        "irs_ref": "IRS reference: form 1040, line ,",
-        "notes": "",
+	"description": "Scheduled to decrease to 500 in 2018. IRS reference: form 1040, line , ",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "FLPDYR",
@@ -250,6 +235,7 @@
 		      "2017",
 		      "2018"],
         "cpi_inflated": false,
+	
         "col_label": "NA",
         "value": [ 1000,
                    1000,
@@ -261,23 +247,20 @@
     },	
     "_DCC_c":{
         "long_name": "Max Dependent Care Credit",
-	    "description": "",
-        "irs_ref": "Form 2441, line 3c, in-line.",
-        "notes": "",
+	"description": "IRS reference: form 2441, line 3c, in-line",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
+        
         "col_label": "NA",
         "value":     [3000]
         
     },
      "_EITC_InvestIncome_c":{
         "long_name": "Max Disqualifying Income for EITC",
-	    "description": "The earned income credit may not be claimed by taxpayers whose investment income exceeds this limit.",
-        "irs_ref": "Form 1040, line 66a&b, instruction(step2)",
-        "notes": "",
+	"description": "The earned income credit may not be claimed by taxpayers whose investment income exceeds this limit. IRS reference: form 1040, line 66a&b, instruction(step2)",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "FLPDYR",
@@ -293,9 +276,7 @@
     },	
      "_ACTC_Income_thd":{
         "long_name": "ACTC Income Threshold",
-	    "description": "The portion of earned income below this threshold does not count as base for earned income credit.",
-        "irs_ref": "Form 2441, line 3, in-line.",
-        "notes": "",
+	"description": "The portion of earned income below this threshold does not count as base for earned income credit. IRS reference: form 2441, line 3, in-line",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "FLPDYR",
@@ -318,9 +299,7 @@
     },	
     "_ETC_pe_Single":{
         "long_name": "Education Tax Credit Phaseout Ends (Single)",
-	"description": "The education tax credit will be zero for those tax payers of single filing status with modified AGI level (in thousands) higher than this level.",
-        "irs_ref": "Form 8863, line 13, inline.",
-        "notes": "",
+	"description": "The education tax credit will be zero for those tax payers of single filing status with modified AGI level (in thousands) higher than this level. IRS reference: form 8863, line 13, inline.",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "FLPDYR",
@@ -337,9 +316,7 @@
     },
     "_ETC_pe_Married":{
         "long_name": "Education Tax Credit Phaseout Ends (Married)",
-	"description": "The education tax credit will be zero for those tax payers of married filing status with modified AGI level (in thousands) higher than this level.",
-        "irs_ref": "Form 8863, line 13, inline.",
-        "notes": "",
+	"description": "The education tax credit will be zero for those tax payers of married filing status with modified AGI level (in thousands) higher than this level. IRS reference: form 8863, line 13, inline.",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "FLPDYR",
@@ -356,9 +333,7 @@
     },	
      "_FEI_ec_c":{
         "long_name": "Max Foreign Earned Income Exclusion",
-	    "description": "This amount is the maximum foreign earned income one individual could exclude from gross income.",
-        "irs_ref": "Form 2555, line 29b, instruction.",
-        "notes": "",
+	"description": "This amount is the maximum foreign earned income one individual could exclude from gross income. IRS reference: form 2555, line 29b, instruction",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "FLPDYR",
@@ -375,9 +350,7 @@
     },	
      "_EITC_ps_MarriedJ":{
         "long_name": "EITC Phastout Starting* AGI (Married filling Jointly)",
-	    "description": "Starting: this amount the difference between the phaseout starting AGI of taxpayers with filling status of married filling jointly and other filling status (single, surviving spouse or head of household);  This amount can also apply to the phaseout ending AGI.",
-        "irs_ref": "Form 1040, line 66a&b, calcuation (the difference btw EIC phaseout bases of married jointly fillers and other fillers).",
-        "notes": "",
+	"description": "Starting: this amount the difference between the phaseout starting AGI of taxpayers with filling status of married filling jointly and other filling status (single, surviving spouse or head of household);  This amount can also apply to the phaseout ending AGI. IRS reference: form 1040, line 66a&b, calcuation (the difference btw EIC phaseout bases of married jointly fillers and other fillers).",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "FLPDYR",
@@ -387,16 +360,14 @@
         "cpi_inflated": true,
         
         "col_label":"0kids 1kid  2kids 3+kids",
-        "value":  [ [5340, 5340, 5340, 5340],
+        "value":  [ [0,    0,    0,    0],
                     [5430, 5430, 5430, 5430],
                     [5510, 5520, 5520, 5520]]
         
     },
      "_LLC_Expense_c":{
         "long_name": "Lifetime Learning Credit Expense Limit",
-	    "description": "The maximum expense eligible for lifetime learning credit.",
-        "irs_ref": "Form 8863, line 11, in-line.",
-        "notes": "",
+	"description": "The maximum expense eligible for lifetime learning credit. IRS reference: form 8863, line 11, in-line",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
@@ -409,9 +380,7 @@
     },	
      "_CDCC_crt":{
         "long_name": "Maximum Child and Dependent Care Credit Rate",
-	    "description": "This rate is the maximum rate that applied on AGI for child and dependent care credit; This rate decreases as AGI goes up.",
-        "irs_ref": "Form 2241, line 8, in-line.",
-        "notes": "",
+	"description": "This rate is the maximum rate that applied on AGI for child and dependent care credit; This rate decreases as AGI goes up. IRS reference: form 2241, line 8, in-line",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
@@ -424,9 +393,7 @@
     },	
     "_ID_pe":{
         "long_name": "Itemized Deduction Phaseout Ending Income",
-	    "description": "Itemized deduction will be zero for taxpayers with income higher than this level.",
-        "irs_ref": "Form 1040, line 42, instruction (table).",
-        "notes": "",
+	"description": "Itemized deduction will be zero for taxpayers with income higher than this level. IRS reference: form 1040, line 42, instruction (table).",
         "start_year": 2013,
         "col_var": "MARS",
         "row_var": "FLPDYR",
@@ -436,15 +403,13 @@
         "cpi_inflated": true,
 
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
-        "value":    [[250000, 	300000,   150000,     275000, 		  300000,  150000],
+        "value":    [[200000, 	300000,   300000,     250000, 		  300000,  300000],
                     [254200, 	305050,   152525,     279650, 		  305050,  152525],
                     [258250, 	309900,   154950,     284050, 		  309900,  154950]]
     },
      "_EITC_rt":{
         "long_name": "Earned Income Credit Rate",
-	    "description": "Apply this rate on Income.",
-        "irs_ref": "Form 1040, line 66a&b, calculation (table: Max_EIC/Max_EIC_base_income).",
-        "notes": "",
+	"description": "Apply this rate on Income. IRS reference: form 1040, line 66a&b, calculation (table: Max_EIC/Max_EIC_base_income).",
         "start_year": 2013,
         "col_var": "_ieic",
         "row_var": "NA",
@@ -456,9 +421,7 @@
     },	
      "_EITC_prt":{
         "long_name": "Earned Income Credit phaseout rate",
-	    "description": "Earned income credit will decrease at the this rate when earned income goes up in the phaseout range.",
-        "irs_ref": "Form 1040, line 66a&b, calculation (table: Max_EIC_base_income/Phaseout_Base).",
-        "notes": "",
+	"description": "Earned income credit will decrease at the this rate when earned income goes up in the phaseout range. IRS reference: form 1040, line 66a&b, calculation (table: Max_EIC_base_income/Phaseout_Base).",
         "start_year": 2013,
         "col_var": "_ieic",
         "row_var": "NA",
@@ -470,9 +433,7 @@
     },
     "_SS_Income_c":{
         "long_name": "Max Taxable AGI for Social Security",
-	    "description": "Taxpayers with income higher than this maximum are not subjected to social security tax.",
-        "irs_ref": "form , lines",
-        "notes": "",
+	"description": "Taxpayers with income higher than this maximum are not subjected to social security tax. IRS reference: form , lines",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "FLPDYR",
@@ -482,16 +443,14 @@
         "cpi_inflated": true,
         
         "col_label": "NA",
-        "value": [ 113700,
+        "value": [ 115800,
                    117000,
                    118500]
         
     },	
      "_EITC_ps":{
         "long_name": "EITC Phastout Starting* AGI",
-	    "description": "Beyond this level of AGI, the amount of EITC starts to decrease as AGI goes up.. ",
-        "irs_ref": "Form 1040, line 66a&b, instructions.",
-        "notes": "",
+	"description": "Beyond this level of AGI, the amount of EITC starts to decrease as AGI goes up.. IRS reference: form 1040, line 66a&b, instructions.",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "FLPDYR",
@@ -508,9 +467,7 @@
     },
      "_II_rt1":{
         "long_name": "Personal Income Tax Rate 1",
-	    "description": "",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
-        "notes": "",
+	"description": "IRS reference: form 1040, line 44, instruction (Schedule X)",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
@@ -523,9 +480,7 @@
     },	
      "_II_rt2":{
         "long_name": "Personal Income Tax Rate 2",
-	    "description": "",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
-        "notes": "",
+	"description": "IRS reference: form 1040, line 44, instruction (Schedule X)",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
@@ -538,9 +493,7 @@
     },	
      "_II_rt3":{
         "long_name": "Personal Income Tax Rate 3",
-	    "description": "",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
-        "notes": "",
+	"description": "IRS reference: form 1040, line 44, instruction (Schedule X)",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
@@ -553,9 +506,7 @@
     },	
      "_II_rt4":{
         "long_name": "Personal Income Tax Rate 4",
-	    "description": "",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
-        "notes": "",
+	"description": "IRS reference: form 1040, line 44, instruction (Schedule X)",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
@@ -568,9 +519,7 @@
     },	
      "_II_rt5":{
         "long_name": "Personal Income Tax Rate 5",
-	    "description": "",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
-        "notes": "",
+	"description": "IRS reference: form 1040, line 44, instruction (Schedule X)",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
@@ -582,9 +531,7 @@
     },	
      "_II_rt6":{
         "long_name": "Personal Income Tax Rate 6",
-	    "description": "",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
-        "notes": "",
+	"description": "IRS reference: form 1040, line 44, instruction (Schedule X)",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
@@ -597,9 +544,7 @@
     },	
      "_II_rt7":{
         "long_name": "Personal Income Tax Rate 7",
-	    "description": "",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
-        "notes": "",
+	"description": "IRS reference: form 1040, line 44, instruction (Schedule X)",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
@@ -612,9 +557,7 @@
     },	
     "_AMT_em_ps":{
         "long_name": "AMT exemption Phaseout Start",
-	    "description": "AMT exemption starts to decrease when AMTI goes beyond this threshold.",
-        "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
-        "notes": "",
+	"description": "AMT exemption starts to decrease when AMTI goes beyond this threshold. IRS reference: form 1040, line 45, instruction (Worksheet).",
         "start_year": 2013,
         "col_var": "MARS",
         "row_var": "FLPDYR",
@@ -625,15 +568,13 @@
 
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
         "value":
-                    [[115400, 153900, 76950, 115400, 153900, 76950],
+                    [[112500, 150000, 75000, 112500, 150000, 75000],
                     [117300, 156500, 78250, 117300, 156500, 78250],
                     [119200, 158900, 79450, 119200, 158900, 79450]]
     },
-    "_CTC_ps":{
+    "_CTC_pe":{
         "long_name": "Child Tax Credit Phaseout Start",
-	    "description": "Child tax credit begins to decrease when taxpayers MAGI goes above this level.",
-        "irs_ref": "Form 1040, line 52, instruction (Worksheet).",
-        "notes": "",
+	"description": "Child tax credit begins to decrease when taxpayers MAGI goes above this level. IRS reference: form 1040, line 52, instruction (Worksheet).",
         "start_year": 2013,
         "col_var": "MARS",
         "row_var": "NA",
@@ -644,22 +585,18 @@
     },
     "_NIIT_thd":{
         "long_name": "Additional Medicare Tax Income Threshold",
-	    "description": "If the amount of your wages, self-employment income and railroad retirement compensation is more than this threshold, you are subject to the additional medicare tax at 0.9%.",
-        "irs_ref": "",
-        "notes": "",
+	"description": "If the amount of your wages, self-employment income and railroad retirement compensation is more than this threshold, you are subject to the additional medicare tax at 0.9%. IRS reference.",
         "start_year": 2013,
         "col_var": "MARS",
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
-        "value":     [200000, 250000, 125000, 200000, 250000, 125000]
+        "value":     [200000, 250000, 125000, 200000, 200000, 125000]
     },
     "_II_em_ps":{
         "long_name": "Personal Exemption Phaseout Starting Income",
-	    "description": "Personal exemption starts to decrease beyond this income level.",
-        "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
-        "notes": "",
+	"description": "TPersonal exemption starts to decrease beyond this income level. IRS reference: form 1040, line 45, instruction (Worksheet).",
         "start_year": 2013,
         "col_var": "MARS",
         "row_var": "FLPDYR",
@@ -676,9 +613,7 @@
      },
     "_STD":{
         "long_name": "Standard Deduction Amount",
-	    "description": "",
-        "irs_ref": "form 1040, line 40, instruction (Formside notes).",
-        "notes": "",
+	"description": "IRS reference: form 1040, line 40, instruction (Formside notes).",
         "start_year": 2013,
         "col_var": "MARS",
         "row_var": "FLPDYR",
@@ -695,9 +630,7 @@
      },
      "_II_brk1":{
         "long_name": "Personal Income taxable bracket 1",
-	    "description": "",
-        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
-        "notes": "",
+	"description": "IRS reference: form 1040, line 40, in-line (Formside notes).",
         "start_year": 2013,
         "col_var": "MARS",
         "row_var": "FLPDYR",
@@ -713,9 +646,8 @@
      },
      "_II_brk2":{
         "long_name": "Personal Income taxable bracket 2",
-        "description": "",
-        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
-        "notes": "",        "start_year": 2013,
+	"description": "IRS reference: form 1040, line 40, in-line (Formside notes).",
+        "start_year": 2013,
         "col_var": "MARS",
         "row_var": "FLPDYR",
         "row_label": ["2013",
@@ -730,9 +662,8 @@
      },
      "_II_brk3":{
         "long_name": "Personal Income taxable bracket 3",
-        "description": "",
-        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
-        "notes": "",        "start_year": 2013,
+	"description": "IRS reference: form 1040, line 40, in-line (Formside notes).",
+        "start_year": 2013,
         "col_var": "MARS",
         "row_var": "FLPDYR",
         "row_label": ["2013",
@@ -747,9 +678,8 @@
      },
      "_II_brk4":{
         "long_name": "Personal Income taxable bracket 4",
-        "description": "",
-        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
-        "notes": "",        "start_year": 2013,
+	"description": "IRS reference: form 1040, line 40, in-line (Formside notes).",
+        "start_year": 2013,
         "col_var": "MARS",
         "row_var": "FLPDYR",
         "row_label": ["2013",
@@ -764,9 +694,8 @@
      },
      "_II_brk5":{
         "long_name": "Personal Income taxable bracket 5",
-        "description": "",
-        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
-        "notes": "",        "start_year": 2013,
+	"description": "IRS reference: form 1040, line 40, in-line (Formside notes).",
+        "start_year": 2013,
         "col_var": "MARS",
         "row_var": "FLPDYR",
         "row_label": ["2013",
@@ -781,9 +710,8 @@
      },
      "_II_brk6":{
         "long_name": "Personal Income taxable bracket 6",
-        "description": "",
-        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
-        "notes": "",        "start_year": 2013,
+	"description": "IRS reference: form 1040, line 40, in-line (Formside notes).",
+        "start_year": 2013,
         "col_var": "MARS",
         "row_var": "FLPDYR",
         "row_label": ["2013",
@@ -796,7 +724,7 @@
                     [406750, 457600, 228800, 432200, 457600, 228800],
                     [413200, 464850, 223425, 439000, 464850, 223425]]
      },
-     "_FICA_trt":{
+    "_FICA_trt":{
         "long_name": "Combined FICA rate",
 	"description": "sum of social security and medicare tax rate, including both employer and employee",
         "irs_ref": "Form , line , ",
@@ -1120,19 +1048,5 @@
         
         "col_label": "NA",
         "value":     [0]        
-    },
-    "_CDCC_ps":{
-        "long_name": "NA",
-	"description": "NA",
-        "start_year": 2013,
-        "col_var": "NA",
-        "row_var": "NA",
-        "row_label": "NA",
-        "cpi_inflated": false,
-        
-        "col_label": "NA",
-        "value":      [15000]
-        
     }
-    
 }

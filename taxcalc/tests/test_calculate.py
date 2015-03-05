@@ -65,6 +65,7 @@ def run(puf=True):
     # Add new col names to exp_set
     exp_set.add('_ospctax')
     exp_set.add('_refund')
+    exp_set.add('_othertax')
     cur_set = set(totaldf.columns)
 
     assert(exp_set == cur_set)
@@ -82,13 +83,12 @@ def test_sequence():
     run()
 
 
+# Create a basic Records object using Public Use File
+puf = Records(tax_dta)
+
 def test_make_Calculator():
     # Create a Parameters object
     params = Parameters(start_year=91)
-
-    # Create a Public Use File object
-    puf = Records(tax_dta)
-
     calc = Calculator(params, puf)
 
 
@@ -110,8 +110,8 @@ def test_make_Calculator_mods():
     # Create a Public Use File object
     puf = Records(tax_dta)
 
-    calc2 = calculator(params, puf, _amex=np.array([4000]))
-    assert all(calc2._amex == np.array([4000]))
+    calc2 = calculator(params, puf, _II_em = np.array([4000]))
+    assert all(calc2._II_em == np.array([4000]))
 
 
 def test_make_Calculator_json():
@@ -122,11 +122,18 @@ def test_make_Calculator_json():
     # Create a Public Use File object
     puf = Records(tax_dta)
 
-    user_mods = '{ "_aged": [[1500], [1200]] }'
-    calc2 = calculator(params, puf, mods=user_mods, _amex=np.array([4000]))
-    assert all(calc2._amex == np.array([4000]))
-    assert all(calc2._aged == np.array([[1500], [1200]]))
-    assert all(calc2.aged == np.array([1500]))
+    user_mods = '{ "_STD_Aged": [[1500], [1200]] }'
+    calc2 = calculator(params, puf, mods=user_mods, _II_em=np.array([4000]))
+    assert all(calc2.II_em == np.array([4000]))
+    assert all(calc2._STD_Aged == np.array([[1500], [1200]]))
+    assert all(calc2.STD_Aged == np.array([1500]))
+
+
+def test_make_Calculator_empty_params_is_default_params():
+    # Create a Public Use File object
+    puf_basic = Records(tax_dta, start_year=2013)
+    calc_basic = Calculator(records=puf_basic)
+    assert calc_basic
 
 
 def test_Calculator_attr_access_to_params():
@@ -143,7 +150,7 @@ def test_Calculator_attr_access_to_params():
     # Records data
     assert hasattr(calc, 'c01000')
     # Parameter data
-    assert hasattr(calc, '_almdep')
+    assert hasattr(calc, '_AMT_Child_em')
     # local attribute
     assert hasattr(calc, 'parameters')
 

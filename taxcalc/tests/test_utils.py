@@ -26,14 +26,31 @@ def test_expand_1D_short_array():
     exp = np.zeros(10)
     exp[:3] = exp1
     exp[3:] = exp2
-    res = expand_1D(x, inflate=True, inflation_rate=0.02, num_years=10)
+    res = expand_1D(x, inflate=True, inflation_rates=[0.02]*10, num_years=10)
+    assert(np.allclose(exp.astype(x.dtype, casting='unsafe'), res))
+
+def test_expand_1D_variable_rates():
+    x = np.array([4, 5, 9], dtype='f4')
+    irates = [0.02, 0.02, 0.02, 0.03, 0.035]
+    exp2 = []
+    cur = 9.0
+    for i in range(1, 3):
+        idx = i + len(x) - 1
+        cur *= (1.0 + irates[idx])
+        exp2.append(cur)
+
+    exp1 = np.array([4, 5, 9])
+    exp = np.zeros(5)
+    exp[:3] = exp1
+    exp[3:] = exp2
+    res = expand_1D(x, inflate=True, inflation_rates=irates, num_years=5)
     assert(np.allclose(exp.astype(x.dtype, casting='unsafe'), res))
 
 
 def test_expand_1D_scalar():
     x = 10.0
     exp = np.array([10.0 * math.pow(1.02, i) for i in range(0, 10)])
-    res = expand_1D(x, inflate=True, inflation_rate=0.02, num_years=10)
+    res = expand_1D(x, inflate=True, inflation_rates=[0.02]*10, num_years=10)
     assert(np.allclose(exp, res))
 
 
@@ -45,8 +62,30 @@ def test_expand_2D_short_array():
     exp = np.zeros((5, 3))
     exp[:1] = exp1
     exp[1:] = exp2
-    res = expand_2D(x, inflate=True, inflation_rate=0.02, num_years=5)
+    res = expand_2D(x, inflate=True, inflation_rates=[0.02]*5, num_years=5)
     assert(np.allclose(exp, res))
+
+
+def test_expand_2D_variable_rates():
+    x = np.array([[1, 2, 3]], dtype='f8')
+    cur = np.array([1, 2, 3], dtype='f8')
+    irates = [0.02, 0.02, 0.02, 0.03, 0.035]
+
+    exp2 = []
+    for i in range(1, 5):
+        idx = i + len(x) - 1
+        cur = np.array(cur*(1.0 + irates[idx]))
+        print("cur is ", cur)
+        exp2.append(cur)
+
+    #exp2 = np.array([val * math.pow(1.02, i) for i in range(1, 5)])
+    exp1 = np.array([1, 2, 3], dtype='f8')
+    exp = np.zeros((5, 3))
+    exp[:1] = exp1
+    exp[1:] = exp2
+    res = expand_2D(x, inflate=True, inflation_rates=irates, num_years=5)
+    assert(np.allclose(exp, res))
+
 
 
 def test_create_tables():
@@ -62,7 +101,7 @@ def test_create_tables():
     calc1.calc_all()
 
     # User specified Plans
-    user_mods = '{"_rt4": [0.56]}'
+    user_mods = '{"_II_rt4": [0.56]}'
     params2 = Parameters(start_year=91)
     records2 = Records(tax_dta_path)
     # Create a Calculator
@@ -76,7 +115,7 @@ def test_create_tables():
 def test_weighted_count_lt_zero():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
-    diffs = grped.apply(weighted_count_lt_zero)
+    diffs = grped.apply(weighted_count_lt_zero, 'tax_diff')
     exp = Series(data=[4, 0], index=['a', 'b'])
     assert_series_equal(exp, diffs)
 
@@ -84,7 +123,7 @@ def test_weighted_count_lt_zero():
 def test_weighted_count_gt_zero():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
-    diffs = grped.apply(weighted_count_gt_zero)
+    diffs = grped.apply(weighted_count_gt_zero, 'tax_diff')
     exp = Series(data=[8, 10], index=['a', 'b'])
     assert_series_equal(exp, diffs)
  
@@ -100,7 +139,7 @@ def test_weighted_count():
 def test_weighted_mean():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
-    diffs = grped.apply(weighted_mean)
+    diffs = grped.apply(weighted_mean, 'tax_diff')
     exp = Series(data=[16.0/12.0, 26.0/10.0], index=['a', 'b'])
     assert_series_equal(exp, diffs)
  
@@ -108,7 +147,7 @@ def test_weighted_mean():
 def test_weighted_sum():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
-    diffs = grped.apply(weighted_sum)
+    diffs = grped.apply(weighted_sum, 'tax_diff')
     exp = Series(data=[16.0, 26.0], index=['a', 'b'])
     assert_series_equal(exp, diffs)
  
@@ -116,7 +155,7 @@ def test_weighted_sum():
 def test_weighted_perc_inc():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
-    diffs = grped.apply(weighted_perc_inc)
+    diffs = grped.apply(weighted_perc_inc, 'tax_diff')
     exp = Series(data=[8./12., 1.0], index=['a', 'b'])
     assert_series_equal(exp, diffs)
 
@@ -124,7 +163,7 @@ def test_weighted_perc_inc():
 def test_weighted_perc_dec():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
-    diffs = grped.apply(weighted_perc_dec)
+    diffs = grped.apply(weighted_perc_dec, 'tax_diff')
     exp = Series(data=[4./12., 0.0], index=['a', 'b'])
     assert_series_equal(exp, diffs)
 
@@ -132,7 +171,24 @@ def test_weighted_perc_dec():
 def test_weighted_share_of_total():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
-    diffs = grped.apply(weighted_share_of_total, 42.0)
+    diffs = grped.apply(weighted_share_of_total, 'tax_diff', 42.0)
     exp = Series(data=[16.0/42., 26.0/42.0], index=['a', 'b'])
     assert_series_equal(exp, diffs)
- 
+
+
+def test_groupby_income_bins():
+    data = np.arange(1,1e6, 5000)
+    df = DataFrame(data=data, columns=['c00100'])
+    bins = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+            200000, 1e14]
+    grpd = groupby_income_bins(df, bins)
+    grps = [grp for grp in grpd]
+
+    for g, num in zip(grps, bins[1:-1]):
+        assert g[0].endswith(str(num) + "]")
+
+    grpdl = groupby_income_bins(df, bins, right=False)
+    grps = [grp for grp in grpdl]
+
+    for g, num in zip(grps, bins[1:-1]):
+        assert g[0].endswith(str(num) + ")")
