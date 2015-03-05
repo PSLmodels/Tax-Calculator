@@ -54,9 +54,15 @@ class Calculator(object):
         return cls(params, recs)
 
 
-    def __init__(self, parameters, records, **kwargs):
-        self._parameters = (parameters if not isinstance(parameters, str) else
-                            Parameters.from_file(parameters, **kwargs))
+    def __init__(self, parameters=None, records=None, **kwargs):
+
+        if isinstance(parameters, Parameters):
+            self._parameters = parameters
+        else:
+            self._parameters = Parameters.from_file(parameters, **kwargs)
+
+        if records is None:
+            raise ValueError("Must supply tax records path or Records object")
 
         self._records = (records if not isinstance(records, str) else
                          Records.from_file(records, **kwargs))

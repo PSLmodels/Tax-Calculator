@@ -83,13 +83,12 @@ def test_sequence():
     run()
 
 
+# Create a basic Records object using Public Use File
+puf = Records(tax_dta)
+
 def test_make_Calculator():
     # Create a Parameters object
     params = Parameters(start_year=91)
-
-    # Create a Public Use File object
-    puf = Records(tax_dta)
-
     calc = Calculator(params, puf)
 
 
@@ -128,6 +127,13 @@ def test_make_Calculator_json():
     assert all(calc2.II_em == np.array([4000]))
     assert all(calc2._STD_Aged == np.array([[1500], [1200]]))
     assert all(calc2.STD_Aged == np.array([1500]))
+
+
+def test_make_Calculator_empty_params_is_default_params():
+    # Create a Public Use File object
+    puf_basic = Records(tax_dta, start_year=2013)
+    calc_basic = Calculator(records=puf_basic)
+    assert calc_basic
 
 
 def test_Calculator_attr_access_to_params():
