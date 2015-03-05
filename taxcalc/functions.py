@@ -218,7 +218,7 @@ def EI_FICA(   e00900, e02100, SS_Income_c, e00200,
              "II_rt5", "II_rt6", "II_rt7", "II_brk1", "II_brk2", "II_brk3", "II_brk4", "II_brk5", 
             "II_brk6"], nopython=True, puf=True)
 def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
-            MARS, MIdR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200, e02400, STD_Aged,
+            MARS, MIDR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200, e02400, STD_Aged,
             c04470, c00100, c21060, c21040, e37717, c04600, e04805, t04470, 
             f6251, _feided, c02700, FDED, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
             II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, puf):
@@ -235,7 +235,7 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
 
     if (DSI == 1):
         c04100 = min( STD[MARS-1], c15100)
-    elif _compitem == 1 or (3 <= MARS and MARS <=6 and MIdR == 1):
+    elif _compitem == 1 or (3 <= MARS and MARS <=6 and MIDR == 1):
         c04100 = 0.
     else:
         c04100 = STD[MARS - 1]
@@ -274,7 +274,7 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
 
     c15200 = c04200
 
-    if (MARS == 3 or MARS == 6) and (c04470 > 0):
+    if (MARS == 3 or MARS == 6) and (MIDR==1):
         _standard = 0.
     else:
         _standard = c04100 + c04200
