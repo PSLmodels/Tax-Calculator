@@ -287,8 +287,7 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
     else: 
         _othded = 0.
 
-    c04500 = c00100 - max(c21060 - c21040,
-                                 max(c04100, _standard + e37717))
+    c04500 = c00100 - max(c04470, max(c04100, _standard + e37717))
     c04800 = max(0., c04500 - c04600 - e04805)
 
     #why is this here, c60000 is reset many times? 
