@@ -66,6 +66,7 @@ def run(puf=True):
     exp_set.add('_ospctax')
     exp_set.add('_refund')
     exp_set.add('_othertax')
+    exp_set.add('NIIT')
     cur_set = set(totaldf.columns)
 
     assert(exp_set == cur_set)

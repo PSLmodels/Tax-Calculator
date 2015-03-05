@@ -571,12 +571,12 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 
 
 @iterate_jit(parameters=["_NIIT_thd", "NIIT_trt"], nopython=True)
-def MUI(c00100, _NIIT_thd, MARS, c05750, e00300, e00600, c01000, e02000, NIIT_trt):
+def MUI(c00100, _NIIT_thd, MARS, c05750, e00300, e00600, c01000, e02000, NIIT_trt, NIIT):
     # Additional Medicare tax on unearned Income
     if c00100 > _NIIT_thd[MARS - 1]:
-        c05750  = (c05750 + NIIT_trt * min(e00300 + e00600 + max(0, c01000)
-                + max(0, e02000), c00100 - _NIIT_thd[MARS - 1]))
-    return c05750
+        NIIT  = NIIT_trt * min(e00300 + e00600 + max(0, c01000)
+                + max(0, e02000), c00100 - _NIIT_thd[MARS - 1])
+    return NIIT
 
 
 
@@ -1281,7 +1281,7 @@ def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
                 e07500, e07700, e08000, e07240, e08001, e07960, e07970,
                 SOIYR, e07980, c05800, e08800, e09900, e09400, e09800, 
                 e10000, e10100, e09700, e10050, e10075, e09805, e09710,
-                c59660, c07180, _eitc, c59680, puf ):
+                c59660, c07180, _eitc, c59680, NIIT, puf ):
 
     # Allocate credits to tax in order on the tax form
     _avail = c05800
@@ -1330,7 +1330,7 @@ def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
         e08795 = 0.
 
     # Tax before refundable credits
-    _othertax = e09900 + e09400 + e09800 + e10100
+    _othertax = e09900 + e09400 + e09800 + e10100 + NIIT
     c09200 = _othertax + c08795 + e10000
 
     #assuming year (FLPDYR) > 2009
