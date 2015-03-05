@@ -62,7 +62,7 @@ class Calculator(object):
             print("You loaded data for "+str(self._records.current_year)+'.')
             while self._records.current_year < self._parameters.current_year:
                 self._records.increment_year()
-            print("Your data have beeen extrapolated to "+str(self._records.current_year)+'.'
+            print("Your data have beeen extrapolated to "+str(self._records.current_year)+".")
 
         assert self._parameters.current_year == self._records.current_year
 
