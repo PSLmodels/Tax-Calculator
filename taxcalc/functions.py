@@ -569,18 +569,6 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 # TODO should we be returning c00650 instead of e00650??? Would need to change tests
 
 
-
-
-@iterate_jit(parameters=["_NIIT_thd", "NIIT_trt"], nopython=True)
-def MUI(c00100, _NIIT_thd, MARS, c05750, e00300, e00600, c01000, e02000, NIIT_trt):
-    # Additional Medicare tax on unearned Income
-    if c00100 > _NIIT_thd[MARS - 1]:
-        c05750  = (c05750 + NIIT_trt * min(e00300 + e00600 + max(0, c01000)
-                + max(0, e02000), c00100 - _NIIT_thd[MARS - 1]))
-    return c05750
-
-
-
 @iterate_jit(parameters=["AMT_tthd", "II_brk6", "II_brk2", "AMT_Child_em", "cgrate1", 
                          "cgrate2", "AMT_em_ps", "AMT_em_pe", "KT_c_Age", "AMT_thd_MarriedS", 
                          "AMT_em", "AMT_prt","AMT_trt1", "AMT_trt2", "puf"],
@@ -770,7 +758,7 @@ def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     c62800 = min(c62780, c62745 + _tamt2 - _amtfei)
     c63000 = c62800 - c62900
     c63100 = _taxbc - e07300 - c05700
-    c63100 = c63100 + e10105
+    c63100 = c63100 + e10105 
     c63100 = max(0., c63100)
 
     c63200 = max(0., c63000 - c63100)
@@ -787,6 +775,13 @@ def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
               _amt25pc, c62747, c62755, c62770, _amt, c62800,
               c09600, _othtax, c05800)    
 
+@iterate_jit(parameters=["_NIIT_thd", "NIIT_trt"], nopython=True)
+def MUI(c00100, _NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt, NIIT):
+    # Additional Medicare tax on unearned Income
+    if c00100 > _NIIT_thd[MARS - 1]:
+        NIIT  = NIIT_trt * min(e00300 + e00600 + max(0, c01000)
+                + max(0, e02000), c00100 - _NIIT_thd[MARS - 1])
+    return NIIT
 
 @iterate_jit(parameters=["DCC_c", "puf"], nopython=True, puf=True)
 def F2441(_earned, _fixeic, e59560, MARS, f2441, DCC_c,
@@ -1282,7 +1277,7 @@ def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
                 e07500, e07700, e08000, e07240, e08001, e07960, e07970,
                 SOIYR, e07980, c05800, e08800, e09900, e09400, e09800, 
                 e10000, e10100, e09700, e10050, e10075, e09805, e09710,
-                c59660, c07180, _eitc, c59680, puf ):
+                c59660, c07180, _eitc, c59680, NIIT, puf ):
 
     # Allocate credits to tax in order on the tax form
     _avail = c05800
@@ -1331,7 +1326,7 @@ def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
         e08795 = 0.
 
     # Tax before refundable credits
-    _othertax = e09900 + e09400 + e09800 + e10100
+    _othertax = e09900 + e09400 + e09800 + e10100 + NIIT
     c09200 = _othertax + c08795 + e10000
 
     #assuming year (FLPDYR) > 2009
