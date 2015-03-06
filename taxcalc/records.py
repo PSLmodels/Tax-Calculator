@@ -328,7 +328,7 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
                  ('f8606', 'f8606'),
                  ('IE', 'ie'),
                  ('MARS', 'mars'),
-                 ('MIdR', 'midr'),
+                 ('MIDR', 'midr'),
                  ('n20', 'n20'),
                  ('n24', 'n24'),
                  ('n25', 'n25'),

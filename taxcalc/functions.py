@@ -218,13 +218,13 @@ def EI_FICA(   e00900, e02100, SS_Income_c, e00200,
              "II_rt5", "II_rt6", "II_rt7", "II_brk1", "II_brk2", "II_brk3", "II_brk4", "II_brk5", 
             "II_brk6"], nopython=True, puf=True)
 def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
-            MARS, MIdR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200, e02400, STD_Aged,
+            MARS, MIDR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200, e02400, STD_Aged,
             c04470, c00100, c21060, c21040, e37717, c04600, e04805, t04470, 
             f6251, _feided, c02700, FDED, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
-            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, puf):
+            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, _fixup, puf):
 
     if DSI == 1:
-        c15100 = max(300 + _earned, STD[6])
+        c15100 = max(350 + _earned, STD[6])
     else:
         c15100 = 0.
 
@@ -235,7 +235,7 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
 
     if (DSI == 1):
         c04100 = min( STD[MARS-1], c15100)
-    elif _compitem == 1 or (3 <= MARS and MARS <=6 and MIdR == 1):
+    elif _compitem == 1 or (3 <= MARS and MARS <=6 and MIDR == 1):
         c04100 = 0.
     else:
         c04100 = STD[MARS - 1]
@@ -274,21 +274,22 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
 
     c15200 = c04200
 
-    if (MARS == 3 or MARS == 6) and (c04470 > 0):
+    if (MARS == 3 or MARS == 6) and (MIDR==1):
         _standard = 0.
     else:
         _standard = c04100 + c04200
 
     if FDED == 1:
         _othded = e04470 - c04470
-        c04100 = 0.
-        c04200 = 0.
-        _standard = 0.
+        if _fixup>=2:
+            c04470 = c04470 + _othded;
+            c04100 = 0.
+            c04200 = 0.
+            _standard = 0.
     else: 
         _othded = 0.
 
-    c04500 = c00100 - max(c21060 - c21040,
-                                 max(c04100, _standard + e37717))
+    c04500 = c00100 - max(c04470, max(c04100, _standard + e37717))
     c04800 = max(0., c04500 - c04600 - e04805)
 
     #why is this here, c60000 is reset many times? 
