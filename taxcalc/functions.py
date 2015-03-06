@@ -775,7 +775,7 @@ def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
               c09600, _othtax, c05800)    
 
 @iterate_jit(parameters=["_NIIT_thd", "NIIT_trt"], nopython=True)
-def MUI(c00100, _NIIT_thd, MARS, c05750, e00300, e00600, c01000, e02000, NIIT_trt, NIIT):
+def MUI(c00100, _NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt, NIIT):
     # Additional Medicare tax on unearned Income
     if c00100 > _NIIT_thd[MARS - 1]:
         NIIT  = NIIT_trt * min(e00300 + e00600 + max(0, c01000)
