@@ -613,7 +613,8 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
                         'x07100', 'c08800', 'e08795', 'x07400', 'c59680',
 	                '_othertax', 'e82915', 'e82940', 'SFOBYR', 'NIIT',
                         'c59720', '_comb', 'c07150', 'c10300', '_ospctax',
-                        '_refund', 'c11600', 'e11450', 'e82040', 'e11500']
+                        '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
+                        '_compitem']
                         
                         
 

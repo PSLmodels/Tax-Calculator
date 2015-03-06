@@ -1288,5 +1288,18 @@
         
         "col_label": "NA",
         "value": [0]
-    }
+    },
+
+        "_std2008":{
+        "long_name": "2008 std",
+         "description": "NA",
+        "start_year": 2013,
+        "col_var": "NA",
+        "row_var": "NA",
+        "row_label": "NA",
+        "cpi_inflated": false,
+        
+        "col_label": "NA",
+        "value": [[5450, 10900, 5450, 8000, 10900, 5450, 900]]    
+        }
 }
