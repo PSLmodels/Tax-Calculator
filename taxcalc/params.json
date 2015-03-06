@@ -1024,8 +1024,8 @@
         "value":     [0.05]        
     },
     "_ACTC_ChildNum":{
-        "long_name": "AMT: Tax Rate on AMTI",
-	"description": "",
+        "long_name": "Additional Child Tax Credit Qualified Children Number",
+	"description": "Only families with this number of qualified children or more, are qualified for additional child tax credit",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -1038,7 +1038,7 @@
         "value":     [4]        
     },
     "_ALD_StudentLoan_HC":{
-        "long_name": "Student Load Interest Deduction",
+        "long_name": "Hair Cut on Student Loan Interest Deduction",
 	"description": "",
         "irs_ref": "Form , line , ",
         "notes": "HC",
@@ -1052,7 +1052,7 @@
         "value":     [0]        
     },
     "_ALD_SelfEmploymentTax_HC":{
-        "long_name": "Deduction for self-employment tax",
+        "long_name": "Hair Cut on Deduction for self-employment tax",
 	"description": "",
         "irs_ref": "Form , line , ",
         "notes": "HC",
@@ -1066,7 +1066,7 @@
         "value":     [0]        
     },
     "_ALD_SelfEmp_HealthIns_HC":{
-        "long_name": "Deduction for Self Employed Health Insurance",
+        "long_name": "Hair Cut on Deduction for Self Employed Health Insurance",
 	"description": "",
         "irs_ref": "Form , line , ",
         "notes": "HC",
@@ -1080,7 +1080,7 @@
         "value":     [0]        
     },
     "_ALD_KEOGH_SEP_HC":{
-        "long_name": "Payment to KEOGH plan and SEP deduction",
+        "long_name": "Hoir Cut on Deduction for Payment to KEOGH plan and SEP",
 	"description": "",
         "irs_ref": "Form , line , ",
         "notes": "HC",
@@ -1094,7 +1094,7 @@
         "value":     [0]        
     },
     "_ALD_EarlyWithdraw_HC":{
-        "long_name": "Forfeited interest Penalty = Early Withdrawl of Saving",
+        "long_name": "Hair Cut on Forfeited interest Penalty",
 	"description": "",
         "irs_ref": "Form , line , ",
         "notes": "HC",
@@ -1108,7 +1108,7 @@
         "value":     [0]        
     },
     "_ALD_Alimony_HC":{
-        "long_name": "Alimony Paid",
+        "long_name": "Hair Cut on Alimony Paid",
 	"description": "",
         "irs_ref": "Form , line , ",
         "notes": "HC",
