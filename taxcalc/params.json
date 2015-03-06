@@ -843,7 +843,7 @@
     },
     "_II_prt":{
         "long_name": "Personal Exemption Phaseout Rate",
-	"description": "",
+	"description": "Personal Exemption amount will decrease by this rate for each dollor of AGI exceeding certain thresholds.",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -982,7 +982,7 @@
         "value":     [0.25]        
     },
     "_AMT_trt1":{
-        "long_name": "AMT: Tax Rate on AMTI",
+        "long_name": "AMT rate for AMTI under the threshold",
 	"description": "",
         "irs_ref": "Form , line , ",
         "notes": "HC",
@@ -996,7 +996,7 @@
         "value":     [0.26]        
     },
     "_AMT_trt2":{
-        "long_name": "AMT: Tax Rate on AMTI",
+        "long_name": "Additional AMT rate for AMTI above the threshold",
 	"description": "",
         "irs_ref": "Form , line , ",
         "notes": "HC; the additional tax rate (on top of .26) above certain threshold",
