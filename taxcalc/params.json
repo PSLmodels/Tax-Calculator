@@ -955,7 +955,7 @@
     },
     "_NIIT_trt":{
         "long_name": "Net Investment Income Tax Rate",
-	"description": "",
+	"description": "AKA Unearned Income Medicare Distribution Tax. Taxed on net investment income of individuals with MAGI higher than certain thresholds.",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -968,8 +968,8 @@
         "value":     [0.038]        
     },
     "_AMT_prt":{
-        "long_name": "AMT: Phaseout Rate",
-	"description": "",
+        "long_name": "AMT Exemption Phaseout Rate",
+	"description": "AMT exemtion will decrease by this amount for each dollor exceeding certain AMTI thresholds",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -997,7 +997,7 @@
     },
     "_AMT_trt2":{
         "long_name": "Additional AMT rate for AMTI above the threshold",
-	"description": "",
+	"description": "Add this rate to the tax rate for AMTI under the threshold to get the actual above threshold tax rate.",
         "irs_ref": "Form , line , ",
         "notes": "HC; the additional tax rate (on top of .26) above certain threshold",
         "start_year": 2013,
@@ -1010,8 +1010,8 @@
         "value":     [0.02]        
     },
     "_CTC_prt":{
-        "long_name": "CTC Phaseout Rate",
-	"description": "",
+        "long_name": "Child Tax Credit Phaseout Rate",
+	"description": "The amount of credit starts to decrease after MAGI hits certain threshold, at this rate.",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
