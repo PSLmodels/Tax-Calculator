@@ -628,23 +628,23 @@ def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
         _edical = max(0., e17500 - max(0., e00100) * 0.075)
     else: _edical = 0.
 
-    if (puf and ((_standard == 0 or (_exact == 1 and e04470 > 0))
-        and f6251 == 1)):
-        _cmbtp = (-1 * min(_edical, 0.025 * max(0., e00100)) + e62100 + c60260
-               + e04470 + e21040 - _sit - e00100 - e18500 - e20800)
-    else: _cmbtp = 0.
+    # if (puf and ((_standard == 0 or (_exact == 1 and e04470 > 0))
+    #     and f6251 == 1)):
+    #     _cmbtp = (-1 * min(_edical, 0.025 * max(0., e00100)) + e62100 + c60260
+    #            + e04470 + e21040 - _sit - e00100 - e18500 - e20800)
+    # else: _cmbtp = 0.
 
     if (puf == True and ((_standard == 0 or (_exact == 1 and e04470 > 0)))):
         c62100 = (c00100 - c04470 + min(c17000, 0.025 * max(0., c00100)) + _sit
-               + e18500 - c60260 + c20800 - c21040 + _cmbtp)
+               + e18500 - c60260 + c20800 - c21040 ) # + _cmbtp
 
 
-    if (puf == True and ((_standard > 0 and f6251 == 1))):
-        _cmbtp = e62100 - e00100 + c60260
+    # if (puf == True and ((_standard > 0 and f6251 == 1))):
+    #     _cmbtp = e62100 - e00100 + c60260
 
 
     if (puf == True and _standard > 0):
-        c62100 = (c00100 - c60260 + _cmbtp)
+        c62100 = (c00100 - c60260 ) # + _cmbtp
  
 
 
@@ -774,12 +774,12 @@ def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     c05800 = _taxbc + c63200
 
     return   (c62720, c60260, c63100, c60200, c60240, c60220,
-              c60130, c62730, _addamt, c62100, _cmbtp, _edical,
+              c60130, c62730, _addamt, c62100, _edical,
               _amtsepadd, c62600, _agep, _ages,  c62700,
               _alminc, _amtfei, c62780, c62900, c63000, c62740,
               _ngamty, c62745, y62745, _tamt2, _amt5pc, _amt15pc,
               _amt25pc, c62747, c62755, c62770, _amt, c62800,
-              c09600, _othtax, c05800)    
+              c09600, _othtax, c05800) #, _cmbtp   
 
 @iterate_jit(parameters=["_NIIT_thd", "NIIT_trt"], nopython=True)
 def MUI(c00100, _NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt, NIIT):
