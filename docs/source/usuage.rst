@@ -104,6 +104,6 @@ For example usuage, you can view our sample notebooks:
 .. _`Tax Calculator's github page`: https://github.com/OpenSourcePolicyCenter/Tax-Calculator
 .. _`Github Flow`: https://guides.github.com/introduction/flow/    
 .. _`10 Minues To TaxCalc`: http://nbviewer.ipython.org/github/OpenSourcePolicyCenter/Tax-Calculator/blob/master/docs/10_Minutes_to_Taxcalc.ipynb
-.. _`Behavior Example`: https://github.com/OpenSourcePolicyCenter/Tax-Calculator/blob/master/docs/Behavioral_example.ipynb
+.. _`Behavior Example`: http://nbviewer.ipython.org/github/OpenSourcePolicyCenter/Tax-Calculator/blob/master/docs/Behavioral_example.ipynb
 
 
