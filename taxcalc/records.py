@@ -1,7 +1,8 @@
 """
 This file reads input csv file and saves the variables 
 """
-
+import math
+import copy
 import pandas as pd
 import numpy as np
 import os.path
@@ -47,6 +48,14 @@ class Records(object):
             self._current_year = start_year
         else: 
             self._current_year = self.FLPDYR[0]
+
+        # Imputations
+        self._cmbtp_itemizer = (-1 * np.minimum(np.maximum(0., self.e17500 - np.maximum(0., self.e00100) * 0.075), 0.025 * np.maximum(0., self.e00100)) 
+                        + self.e62100 + self.e00700 + self.e04470 + self.e21040 
+                        - np.maximum(0, self.e18400, self.e18425) - self.e00100 - self.e18500 
+                        - self.e20800)
+        self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
+
 
     @property
     def current_year(self):
@@ -157,7 +166,7 @@ class Records(object):
         self.e17500  =   self.e17500  *   self.BF.ACPIM[self._current_year]
         self.e18425  =   self.e18425  *   self.BF.ATXPY[self._current_year]
         self.e18450  =   self.e18450  *   self.BF.ATXPY[self._current_year]
-        self.e18500  =   self.e18500  *   self.BF.ATXPY[self._current_year]
+        self.e18500  =   self.e18500  *   self.BF.ATXPY[self._current_year] 
         self.e19200  =   self.e19200  *   self.BF.ATXPY[self._current_year]
         self.e19550  =   self.e19550  *   self.BF.ATXPY[self._current_year]
         self.e19800  =   self.e19800  *   self.BF.ATXPY[self._current_year]
@@ -245,6 +254,8 @@ class Records(object):
         self.s009    =   self.s009    *   1.
         self.WSAMP   =   self.WSAMP   *   1.
         self.TXRT    =   self.TXRT    *   1.
+        self._cmbtp_itemizer  =   self._cmbtp_itemizer  *   self.BF.ATXPY[self._current_year]
+        self._cmbtp_standard  =   self._cmbtp_standard  *   self.BF.ATXPY[self._current_year]
 
     def read_weights(self, weights):
         if isinstance(weights, pd.core.frame.DataFrame):

@@ -228,7 +228,7 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
     else:
         c15100 = 0.
 
-           
+    # std2008a = [5450, 10900, 5450, 8000, 10900, 5450, 900]     
     if FDED==1 and (e04470 < std2008[MARS-1]): #TODO should be 2008 vals, not current law.  
         _compitem = 1.
     else:
@@ -329,7 +329,7 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
 
     return (c15100, _numextra, _txpyers, c15200,
                   _othded, c04100, c04200, _standard, c04500,
-                 c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei, _compitem)
+                 c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei)
 
 
 @iterate_jit(parameters=["II_rt1", "II_rt2", "II_rt3", "II_rt4", "II_rt5", "II_rt6", "II_rt7",
@@ -579,7 +579,7 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
                          "cgrate2", "AMT_em_ps", "AMT_em_pe", "KT_c_Age", "AMT_thd_MarriedS", 
                          "AMT_em", "AMT_prt","AMT_trt1", "AMT_trt2", "puf"],
              nopython=True, puf=True)
-def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
+def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
                 e60300, e60860, e60100, e60840, e60630, e60550,
                 e60720, e60430, e60500, e60340, e60680, e60600, e60405,
                 e60440, e60420, e60410, e61400, e60660, e60480,
@@ -593,7 +593,7 @@ def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
                 cgrate2, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516, 
                 c24520, c04800, e10105, c05700, e05800, e05100, e09600, 
                 KT_c_Age, x62740, e62900, AMT_thd_MarriedS, _earned, e62600, AMT_em,
-                AMT_prt, AMT_trt1, AMT_trt2, puf):
+                AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer, _cmbtp_standard, puf):
 
     c62720 = c24517 + x62720
     c60260 = e00700 + x60260
@@ -628,23 +628,29 @@ def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
         _edical = max(0., e17500 - max(0., e00100) * 0.075)
     else: _edical = 0.
 
-    # if (puf and ((_standard == 0 or (_exact == 1 and e04470 > 0))
-    #     and f6251 == 1)):
-    #     _cmbtp = (-1 * min(_edical, 0.025 * max(0., e00100)) + e62100 + c60260
-    #            + e04470 + e21040 - _sit - e00100 - e18500 - e20800)
-    # else: _cmbtp = 0.
+    if (puf and ((_standard == 0 or (_exact == 1 and e04470 > 0))
+        and f6251 == 1)):
+        _cmbtp = _cmbtp_itemizer
+        # (-1 * min(_edical, 0.025 * max(0., e00100)) + e62100 + c60260
+        #        + e04470 + e21040 - _sit - e00100 - s18500 - e20800)
+    else: _cmbtp = 0.
+
 
     if (puf == True and ((_standard == 0 or (_exact == 1 and e04470 > 0)))):
         c62100 = (c00100 - c04470 + min(c17000, 0.025 * max(0., c00100)) + _sit
-               + e18500 - c60260 + c20800 - c21040 ) # + _cmbtp
+               + e18500 - c60260 + c20800 - c21040 ) 
+        c62100 += _cmbtp
 
 
-    # if (puf == True and ((_standard > 0 and f6251 == 1))):
-    #     _cmbtp = e62100 - e00100 + c60260
+    if (puf == True and ((_standard > 0 and f6251 == 1))):
+        _cmbtp = _cmbtp_standard
+        #  s62100 - e00100 + e00700
+    else: _cmbtp = 0
 
 
     if (puf == True and _standard > 0):
-        c62100 = (c00100 - c60260 ) # + _cmbtp
+        c62100 = (c00100 - c60260 ) 
+        c62100 += _cmbtp
  
 
 
@@ -779,7 +785,7 @@ def AMTI(  c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
               _alminc, _amtfei, c62780, c62900, c63000, c62740,
               _ngamty, c62745, y62745, _tamt2, _amt5pc, _amt15pc,
               _amt25pc, c62747, c62755, c62770, _amt, c62800,
-              c09600, _othtax, c05800) #, _cmbtp   
+              c09600, _othtax, c05800, _cmbtp)  
 
 @iterate_jit(parameters=["_NIIT_thd", "NIIT_trt"], nopython=True)
 def MUI(c00100, _NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt, NIIT):
