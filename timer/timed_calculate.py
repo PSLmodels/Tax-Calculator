@@ -10,8 +10,14 @@ from taxcalc.calculate import *
 from taxcalc.puf import *
 from .timer_utils import cumulative_timer, time_this
 
+from timer_utils import cumulative_timer, time_this
 
 main_timer = cumulative_timer("All Fuctions, no CSV calls, no concat calls")
+
+# Below are the functions called in the run() method in test.py
+# this is equivalent to decorating each function in taxcalc.calculate with @time_this(main_timer)
+# to time a single function, not as a running total, use decorator simply as @time_this or func = time_this(func)
+
 
 Calculator = time_this(Calculator, main_timer)
 set_input_data = time_this(set_input_data, main_timer)

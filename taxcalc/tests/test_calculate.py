@@ -3,15 +3,38 @@ import sys
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, "../../"))
 import numpy as np
+from numpy.testing import assert_array_equal
 import pandas as pd
+import tempfile
+import pytest
 from numba import jit, vectorize, guvectorize
 from taxcalc import *
 
 
 all_cols = set()
-tax_dta = pd.read_csv(os.path.join(CUR_PATH, "../../tax_all91_puf.gz"), compression='gzip')
-#Fix-up. MIdR needs to be type int64 to match PUF 
+tax_dta_path = os.path.join(CUR_PATH, "../../tax_all91_puf.gz")
+tax_dta = pd.read_csv(tax_dta_path, compression='gzip')
+                      
+# Fix-up. MIdR needs to be type int64 to match PUF
 tax_dta['midr'] = tax_dta['midr'].astype('int64')
+tax_dta['s006'] = np.arange(0,len(tax_dta['s006']))
+
+
+@pytest.yield_fixture
+def paramsfile():
+
+    txt = """{"_almdep": {"value": [7150, 7250, 7400]},
+             "_almsep": {"value": [40400, 41050]},
+             "_rt5": {"value": [0.33 ]},
+             "_rt7": {"value": [0.396]}}"""
+
+    f = tempfile.NamedTemporaryFile(mode="a", delete=False)
+    f.write(txt + "\n")
+    f.close()
+    # Must close and then yield for Windows platform
+    yield f
+    os.remove(f.name)
+
 
 def add_df(alldfs, df):
     for col in df.columns:
@@ -19,56 +42,35 @@ def add_df(alldfs, df):
             all_cols.add(col)
             alldfs.append(df[col])
 
-def run(puf=True):
-    calc = Calculator(tax_dta, default_year=91)
-    set_input_data(calc)
-    update_globals_from_calculator(calc)
-    update_calculator_from_module(calc, parameters)
 
-    all_dfs = []
-    add_df(all_dfs, FilingStatus(calc))
-    add_df(all_dfs, Adj())
-    add_df(all_dfs, CapGains(calc))
-    add_df(all_dfs, SSBenefits(calc))
-    add_df(all_dfs, AGI(calc))
-    add_df(all_dfs, ItemDed(puf, calc))
-    df_EI_FICA, _earned = EI_FICA(calc)
-    add_df(all_dfs, df_EI_FICA)
-    add_df(all_dfs, StdDed(calc))
-    add_df(all_dfs, XYZD(calc))
-    add_df(all_dfs, NonGain())
-    df_Tax_Gains, c05750 = TaxGains(calc)
-    add_df(all_dfs, df_Tax_Gains)
-    add_df(all_dfs, MUI(c05750, calc))
-    df_AMTI, c05800 = AMTI(puf, calc)
-    add_df(all_dfs, df_AMTI)
-    df_F2441, c32800 = F2441(puf, _earned, calc)
-    add_df(all_dfs, df_F2441)
-    add_df(all_dfs, DepCareBen(c32800, calc))
-    add_df(all_dfs, ExpEarnedInc(calc))
-    add_df(all_dfs, RateRed(c05800))
-    add_df(all_dfs, NumDep(puf, calc))
-    add_df(all_dfs, ChildTaxCredit(calc))
-    add_df(all_dfs, AmOppCr())
-    df_LLC, c87550 = LLC(puf, calc)
-    add_df(all_dfs, df_LLC)
-    add_df(all_dfs, RefAmOpp())
-    add_df(all_dfs, NonEdCr(c87550, calc))
-    add_df(all_dfs, AddCTC(puf, calc))
-    add_df(all_dfs, F5405())
-    df_C1040, _eitc = C1040(puf)
-    add_df(all_dfs, df_C1040)
-    add_df(all_dfs, DEITC())
-    add_df(all_dfs, SOIT(_eitc))
-    totaldf = pd.concat(all_dfs, axis=1)
-    #drop duplicates
+def run(puf=True):
+
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+
+    # Create a Public Use File object
+    puf = Records(tax_dta)
+
+    # Create a Calculator
+    calc = Calculator(parameters=params, records=puf)
+    totaldf = calc.calc_all_test()
+
+    # drop duplicates
     totaldf = totaldf.T.groupby(level=0).first().T
 
     exp_results = pd.read_csv(os.path.join(CUR_PATH, "../../exp_results.csv.gz"), compression='gzip')
+    # Fix-up to bad column name in expected data
+    exp_results.rename(columns=lambda x: x.replace('_phase2', '_phase2_i'), inplace=True)
     exp_set = set(exp_results.columns)
+    # Add new col names to exp_set
+    exp_set.add('_ospctax')
+    exp_set.add('_refund')
+    exp_set.add('_othertax')
+    exp_set.add('NIIT')
     cur_set = set(totaldf.columns)
 
     assert(exp_set == cur_set)
+
 
     for label in exp_results.columns:
         lhs = exp_results[label].values.reshape(len(exp_results))
@@ -82,25 +84,130 @@ def test_sequence():
     run()
 
 
+# Create a basic Records object using Public Use File
+puf = Records(tax_dta)
+
 def test_make_Calculator():
-    calc = Calculator(tax_dta)
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+    calc = Calculator(params, puf)
+
+
+def test_make_Calculator_from_files(paramsfile):
+    calc = Calculator.from_files(paramsfile.name, tax_dta_path, start_year=91)
+    assert calc
+
+
+def test_make_Calculator_files_to_ctor(paramsfile):
+    calc = Calculator(parameters=paramsfile.name, records=tax_dta_path, start_year=91)
+    assert calc
 
 
 def test_make_Calculator_mods():
-    calc1 = calculator(tax_dta)
-    calc2 = calculator(tax_dta, _amex=np.array([4000]))
-    update_calculator_from_module(calc2, parameters)
-    update_globals_from_calculator(calc2)
-    assert all(calc2._amex == np.array([4000]))
+
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+
+    # Create a Public Use File object
+    puf = Records(tax_dta)
+
+    calc2 = calculator(params, puf, _II_em = np.array([4000]))
+    assert all(calc2._II_em == np.array([4000]))
 
 
 def test_make_Calculator_json():
-    user_mods = '{ "_aged": [[1500], [1200]] }'
-    calc2 = calculator(tax_dta, mods=user_mods, _amex=np.array([4000]))
-    update_calculator_from_module(calc2, parameters)
-    update_globals_from_calculator(calc2)
-    assert all(calc2._amex == np.array([4000]))
-    assert all(calc2._aged == np.array([[1500], [1200]]))
+
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+
+    # Create a Public Use File object
+    puf = Records(tax_dta)
+
+    user_mods = '{ "_STD_Aged": [[1500], [1200]] }'
+    calc2 = calculator(params, puf, mods=user_mods, _II_em=np.array([4000]))
+    assert all(calc2.II_em == np.array([4000]))
+    assert all(calc2._STD_Aged == np.array([[1500], [1200]]))
+    assert all(calc2.STD_Aged == np.array([1500]))
+
+
+def test_make_Calculator_empty_params_is_default_params():
+    # Create a Public Use File object
+    puf_basic = Records(tax_dta, start_year=2013)
+    calc_basic = Calculator(records=puf_basic)
+    assert calc_basic
+
+
+def test_Calculator_attr_access_to_params():
+
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+
+    # Create a Public Use File object
+    puf = Records(tax_dta)
+
+    # Create a Calculator
+    calc = Calculator(parameters=params, records=puf)
+
+    # Records data
+    assert hasattr(calc, 'c01000')
+    # Parameter data
+    assert hasattr(calc, '_AMT_Child_em')
+    # local attribute
+    assert hasattr(calc, 'parameters')
+
+
+def test_Calculator_set_attr_passes_through():
+
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+    # Create a Public Use File object
+    puf = Records(tax_dta)
+    # Create a Calculator
+    calc = Calculator(parameters=params, records=puf)
+
+    assert id(calc.e00200) == id(calc.records.e00200)
+    calc.e00200 = calc.e00200 + 100
+    assert id(calc.e00200) == id(calc.records.e00200)
+    assert_array_equal( calc.e00200, calc.records.e00200)
+
+    with pytest.raises(AttributeError):
+        calc.foo == 14
+
+
+def test_Calculator_create_distribution_table():
+
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+    # Create a Public Use File object
+    puf = Records(tax_dta)
+    # Create a Calculator
+    calc = Calculator(parameters=params, records=puf)
+    calc.calc_all()
+
+    t1 = create_distribution_table(calc, groupby="weighted_deciles")
+    t2 = create_distribution_table(calc, groupby="agi_bins")
+    assert type(t1) == DataFrame
+    assert type(t2) == DataFrame
+
+def test_Calculator_create_difference_table():
+
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+    # Create a Public Use File object
+    puf = Records(tax_dta)
+    # Create a Calculator
+    calc = Calculator(parameters=params, records=puf)
+    calc.calc_all()
+
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+    # Create a Public Use File object
+    puf = Records(tax_dta)
+    user_mods = '{ "_rt7": [0.45] }'
+    calc2 = calculator(params, puf, mods=user_mods)
+
+    t1 = create_difference_table(calc, calc2, groupby="weighted_deciles")
+    assert type(t1) == DataFrame
 
 
 

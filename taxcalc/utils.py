@@ -1,8 +1,15 @@
 import numpy as np
 import pandas as pd
-import inspect
-from numba import jit, vectorize, guvectorize
-from functools import wraps
+from pandas import DataFrame
+
+STATS_COLUMNS = ['c00100', 'c04100', 'c04470', 'c04800', 'c05200',
+                 'c09600', 'c07100', 'c09200', '_refund', '_ospctax',
+                 'c10300', 'e00100', 's006']
+
+TABLE_COLUMNS = ['c00100', 'c04100', 'c04470', 'c04800', 'c05200',
+                 'c09600', 'c07100', 'c09200', '_refund', '_ospctax',
+                 'c10300']
+
 
 
 def extract_array(f):
@@ -17,55 +24,248 @@ def extract_array(f):
     return wrapper
 
 
-def dataframe_guvectorize(dtype_args, dtype_sig):
+def expand_1D(x, inflate, inflation_rates, num_years):
     """
-    Extracts numpy arrays from caller arguments and passes them
-    to guvectorized numba functions
+    Expand the given data to account for the given number of budget years.
+    If necessary, pad out additional years by increasing the last given
+    year at the provided inflation rate.
     """
-    def make_wrapper(func):
-        vecd_f = guvectorize(dtype_args, dtype_sig)(func)
 
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            # np_arrays = [getattr(args[0], i).values for i in theargs]
-            arrays = [arg.values for arg in args]
-            ans = vecd_f(*arrays)
-            return ans
-        return wrapper
-    return make_wrapper
+    assert len(inflation_rates) == num_years
 
 
-def dataframe_vectorize(dtype_args):
+    if isinstance(x, np.ndarray):
+        if len(x) >= num_years:
+            return x
+        else:
+            ans = np.zeros(num_years, dtype='f8')
+            ans[:len(x)] = x
+            if inflate:
+                extra = []
+                cur = x[-1]
+                for i in range(1, num_years - len(x) + 1):
+                    inf_idx = i + len(x) - 1
+                    cur *= (1. + inflation_rates[inf_idx])
+                    extra.append(cur)
+            else:
+                extra = [float(x[-1]) for i in
+                         range(1, num_years - len(x) + 1)]
+
+            ans[len(x):] = extra
+            return ans.astype(x.dtype, casting='unsafe')
+
+    return expand_1D(np.array([x]), inflate, inflation_rates, num_years)
+
+
+def expand_2D(x, inflate, inflation_rates, num_years):
     """
-    Extracts numpy arrays from caller arguments and passes them
-    to vectorized numba functions
+    Expand the given data to account for the given number of budget years.
+    For 2D arrays, we expand out the number of rows until we have num_years
+    number of rows. For each expanded row, we inflate by the given inflation
+    rate.
     """
-    def make_wrapper(func):
-        vecd_f = vectorize(dtype_args)(func)
 
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            # np_arrays = [getattr(args[0], i).values for i in theargs]
-            arrays = [arg.values for arg in args]
-            ans = vecd_f(*arrays)
-            return ans
-        return wrapper
-    return make_wrapper
+    if isinstance(x, np.ndarray):
+        if x.shape[0] >= num_years:
+            return x
+        else:
+            ans = np.zeros((num_years, x.shape[1]))
+            ans[:len(x), :] = x
+            if inflate:
+                extra = []
+                cur = x[-1]
+                for i in range(1, num_years - len(x) + 1):
+                    inf_idx = i + len(x) - 1
+                    cur = np.array(cur*(1. + inflation_rates[inf_idx]))
+                    extra.append(cur)
+            else:
+                extra = [x[-1, :] for i in
+                     range(1, num_years - len(x) + 1)]
+
+            ans[len(x):, :] = extra
+            return ans.astype(x.dtype, casting='unsafe')
+
+    return expand_2D(np.array([x]), inflate, inflation_rates, num_years)
 
 
-def dataframe_wrap_guvectorize(dtype_args, dtype_sig):
+def expand_array(x, inflate, inflation_rates, num_years):
     """
-    Extracts particular numpy arrays from caller argments and passes
-    them to guvectorize. Goes one step further than dataframe_guvectorize
-    by looking for the column names in the dataframe and just extracting those
-    """
-    def make_wrapper(func):
-        theargs = inspect.getargspec(func).args
-        vecd_f = guvectorize(dtype_args, dtype_sig)(func)
+    Dispatch to either expand_1D or expand2D depending on the dimension of x
 
-        def wrapper(*args, **kwargs):
-            np_arrays = [getattr(args[0], i).values for i in theargs]
-            ans = vecd_f(*np_arrays)
-            return ans
-        return wrapper
-    return make_wrapper
+    Parameters:
+    -----------
+    x : value to expand
+
+    inflate: Boolean
+    As we expand, inflate values if this is True, otherwise, just copy
+
+    inflation_rate: float
+    Yearly inflation reate
+
+    num_years: int
+    Number of budget years to expand
+
+    Returns:
+    --------
+    expanded numpy array
+    """
+    try:
+        if len(x.shape) == 1:
+            return expand_1D(x, inflate, inflation_rates, num_years)
+        elif len(x.shape) == 2:
+            return expand_2D(x, inflate, inflation_rates, num_years)
+        else:
+            raise ValueError("Need a 1D or 2D array")
+    except AttributeError as ae:
+        raise ValueError("Must pass a numpy array")
+
+
+def count_gt_zero(agg):
+    return sum([1 for a in agg if a > 0])
+
+
+def count_lt_zero(agg):
+    return sum([1 for a in agg if a < 0])
+
+
+def weighted_count_lt_zero(agg, col_name):
+    return agg[agg[col_name] < 0]['s006'].sum()
+
+
+def weighted_count_gt_zero(agg, col_name):
+    return agg[agg[col_name] > 0]['s006'].sum()
+
+
+def weighted_count(agg):
+    return agg['s006'].sum()
+
+
+def weighted_mean(agg, col_name):
+    return float((agg[col_name]*agg['s006']).sum()) / float(agg['s006'].sum())
+
+
+def weighted_sum(agg, col_name):
+    return (agg[col_name]*agg['s006']).sum()
+
+
+def weighted_perc_inc(agg, col_name):
+    return float(weighted_count_gt_zero(agg, col_name)) / float(weighted_count(agg))
+
+
+def weighted_perc_dec(agg, col_name):
+    return float(weighted_count_lt_zero(agg, col_name)) / float(weighted_count(agg))
+
+
+def weighted_share_of_total(agg, col_name, total):
+    return float(weighted_sum(agg, col_name)) / float(total)
+
+
+def groupby_weighted_decile(df):
+    """
+
+    Group by each 10% of AGI, weighed by s006
+
+    """
+
+    #First, sort by AGI
+    df.sort('c00100', inplace=True)
+    #Next, do a cumulative sum by the weights
+    df['cumsum_weights'] = np.cumsum(df['s006'].values)
+    #Max value of cum sum of weights
+    max_ = df['cumsum_weights'].values[-1]
+    #Create 10 bins and labels based on this cumulative weight
+    bins = [0] + list(np.arange(1,11)*(max_/10.0))
+    labels = [range(1,11)]
+    # Groupby weighted deciles
+    decile_bins = list(range(1, 11))
+    df['wdecs'] = pd.cut(df['cumsum_weights'], bins, labels)
+    return df.groupby('wdecs')
+
+
+def groupby_income_bins(df, bins=None, right=True):
+    """
+
+    Group by income bins of AGI
+
+    bins: iterable of scalars
+            AGI income breakpoints. Follows pandas convention. The
+            breakpoint is inclusive if right=True
+
+    right : bool, optional
+            Indicates whether the bins include the rightmost edge or not.
+            If right == True (the default), then the bins [1,2,3,4]
+            indicate (1,2], (2,3], (3,4].
+
+    """
+
+    if not bins:
+        bins = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+                200000, 1e14]
+
+    # Groupby c00100 bins
+    df['bins'] = pd.cut(df['c00100'], bins, right=right)
+    return df.groupby('bins')
+
+
+def means_and_comparisons(df, col_name, gp, weighted_total):
+    """
+
+    Using grouped values, perform aggregate operations
+    to populate
+    df: DataFrame for full results of calculation
+    col_name: the column name to calculate against
+    gp: grouped DataFrame
+    """
+
+    # Who has a tax cut, and who has a tax increase
+    diffs = gp.apply(weighted_count_lt_zero, col_name)
+    diffs = DataFrame(data=diffs, columns=['tax_cut'])
+    diffs['tax_inc'] = gp.apply(weighted_count_gt_zero, col_name)
+    diffs['count'] = gp.apply(weighted_count)
+    diffs['mean'] = gp.apply(weighted_mean, col_name)
+    diffs['tot_change'] = gp.apply(weighted_sum, col_name)
+    diffs['perc_inc'] = gp.apply(weighted_perc_inc, col_name)
+    diffs['perc_cut'] = gp.apply(weighted_perc_dec, col_name)
+    diffs['share_of_change'] = gp.apply(weighted_share_of_total,
+                                        col_name, weighted_total)
+
+    return diffs
+
+
+def results(c):
+    outputs = [getattr(c, col) for col in STATS_COLUMNS]
+    return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
+
+
+def create_distribution_table(calc, groupby):
+    res = results(calc)
+    if groupby == "weighted_deciles":
+        gp = groupby_weighted_decile(res)
+    elif groupby == "agi_bins":
+        gp = groupby_income_bins(res)
+    else:
+        err = "groupby must be either 'weighted_deciles' or 'agi_bins'"
+        raise ValueError(err)
+
+    return gp[TABLE_COLUMNS].mean()
+
+def create_difference_table(calc1, calc2, groupby):
+    res1 = results(calc1)
+    res2 = results(calc2)
+    if groupby == "weighted_deciles":
+        gp = groupby_weighted_decile(res2)
+    elif groupby == "agi_bins":
+        gp = groupby_income_bins(res2)
+    else:
+        err = "groupby must be either 'weighted_deciles' or 'agi_bins'"
+        raise ValueError(err)
+
+
+    # Difference in plans
+    # Positive values are the magnitude of the tax increase
+    # Negative values are the magnitude of the tax decrease
+    res2['tax_diff'] = res2['_ospctax'] - res1['_ospctax']
+
+    diffs = means_and_comparisons(res2, 'tax_diff', gp,
+                                 (res2['tax_diff']*res2['s006']).sum())
+    return diffs
