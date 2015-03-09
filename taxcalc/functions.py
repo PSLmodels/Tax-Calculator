@@ -1212,7 +1212,7 @@ def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
 
     # Part II of 2005 form 8812
 
-    if _nctcr > 2 and c82890 < c82935:
+    if _nctcr >= ACTC_ChildNum and c82890 < c82935:
         c82900 = 0.0765 * min(SS_Income_c, c82880)
 
 
@@ -1260,7 +1260,7 @@ def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
         _othadd = 0.
 
 
-    if e82915 > 0 and abs(e82940 - c82940) > 100 and _fixup >= ACTC_ChildNum:
+    if e82915 > 0 and abs(e82940 - c82940) > 100 and _fixup >= 4:
         c11070 = c11070 + _othadd
 
 
