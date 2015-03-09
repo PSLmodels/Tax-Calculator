@@ -35,7 +35,7 @@ class Records(object):
         return cls(path, **kwargs)
 
     def __init__(   self, 
-                    data="puf2.csv", 
+                    data="puf.csv", 
                     blowup_factors=blowup_factors_path,
                     weights=weights_path,
                     start_year=None):
@@ -328,7 +328,7 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
                  ('f8606', 'f8606'),
                  ('IE', 'ie'),
                  ('MARS', 'mars'),
-                 ('MIdR', 'midr'),
+                 ('MIDR', 'midr'),
                  ('n20', 'n20'),
                  ('n24', 'n24'),
                  ('n25', 'n25'),
@@ -611,7 +611,7 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
                         'c82905', 'c82910', 'c82915',  'c82920', 'c82937',
                         'c82940', 'c11070', 'e59660', '_othadd', 'y07100',
                         'x07100', 'c08800', 'e08795', 'x07400', 'c59680',
-	                '_othertax', 'e82915', 'e82940', 'SFOBYR',
+	                '_othertax', 'e82915', 'e82940', 'SFOBYR', 'NIIT',
                         'c59720', '_comb', 'c07150', 'c10300', '_ospctax',
                         '_refund', 'c11600', 'e11450', 'e82040', 'e11500']
                         

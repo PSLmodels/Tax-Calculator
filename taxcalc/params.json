@@ -659,9 +659,9 @@
                       "2015"],
         "cpi_inflated": true,
 
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate", "dependent"],        
         "value":
-		 [ [6100, 12200, 6100, 8950, 12200, 6100, 1000], 
+		          [ [6100, 12200, 6100, 8950, 12200, 6100, 1000], 
                     [6200, 12400, 6200, 9100, 12400, 6200, 1000],
                     [6300, 12600, 6300, 9250, 12600, 6300, 1050]]  
      },
@@ -1007,7 +1007,7 @@
         "cpi_inflated": false,
         
         "col_label": "NA",
-        "value":     [4]        
+        "value":     [3]        
     },
     "_ALD_StudentLoan_HC":{
         "long_name": "Hair Cut on Student Loan Interest Deduction",
@@ -1188,18 +1188,6 @@
         
         "col_label": "NA",
         "value": [0]
-    },
-        "_CG_thd3":{
-        "long_name": "Capital Gain Threshold 3 (Coming Soon.......)",
-	"description": "NA",
-        "start_year": 2013,
-        "col_var": "NA",
-        "row_var": "NA",
-        "row_label": "NA",
-        "cpi_inflated": false,
-        
-        "col_label": "NA",
-        "value": [0] 
     },
 	"_Dividend_rt1":{
         "long_name": "Dividend rate 1 (Coming Soon.......)",

@@ -10,19 +10,37 @@ class Parameters(object):
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
     PARAM_FILENAME = "params.json"
     params_path = os.path.join(CUR_PATH, PARAM_FILENAME)
+    __rates = [0.015, 0.020, 0.022, 0.020, 0.021, 0.022,
+               0.023, 0.024, 0.024, 0.024, 0.024, 0.024]
 
     @classmethod
     def from_file(cls, file_name, **kwargs):
-        with open(file_name) as f:
-            params = json.loads(f.read())
+        if file_name:
+            with open(file_name) as f:
+                params = json.loads(f.read())
+        else:
+            params = None
 
         return cls(data=params, **kwargs)
 
 
-    def __init__(self, start_year=2013, budget_years=10,
-                 inflation_rate=0.02, data=None):
+    def __init__(self, start_year=2013, budget_years=12, inflation_rate=None,
+                 inflation_rates=None, data=None):
+
+        if inflation_rate and inflation_rates:
+            raise ValueError("Can only specify either one constant inflation"
+                             " rate or a list of inflation rates")
+
+        if inflation_rate:
+            self._inflation_rates = [inflation_rate] * budget_years
+
+        if inflation_rates:
+            assert len(inflation_rates) == budget_years
+            self._inflation_rates = inflation_rates
+
         self._current_year = start_year
         self._start_year = start_year
+
 
         if data:
             self._vals = data
@@ -34,7 +52,7 @@ class Parameters(object):
             cpi_inflated =  data.get('cpi_inflated', False)
             values = data['value']
             setattr(self, name, expand_array(np.array(values),
-                inflate=cpi_inflated, inflation_rate=inflation_rate,
+                inflate=cpi_inflated, inflation_rates=self.__rates,
                 num_years=budget_years))
 
         self.set_year(start_year)
