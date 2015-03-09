@@ -394,8 +394,8 @@
         "value":     [35]
         
     },	
-    "_ID_pe":{
-        "long_name": "Itemized Deduction Phaseout Ending Income",
+    "_ID_ps":{
+        "long_name": "Itemized Deduction Phaseout Start",
 	"description": "Itemized deduction will be zero for taxpayers with income higher than this level.",
         "irs_ref": "Form 1040, line 42, instruction (table).",
         "notes": "",
@@ -829,7 +829,7 @@
     },
      "_ID_Medical_frt":{
         "long_name": "Itemized Deduction: Medical Deduction Floor (%, floor)",
-	"description": "",
+	"description": "You are eligible to deduct your medical expense when it exceeds this percentage of AGI.",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -842,8 +842,8 @@
         "value":     [0.075]        
     },
      "_ID_Casualty_frt":{
-        "long_name": "Itemized Deduction: Casualty Deduction Floor(%, floor)",
-	"description": "",
+        "long_name": "Itemized Deduction: Casualty Deduction Floor (%, floor)",
+	"description": "The deductable amount of casualty loss would be the portion exceeding this percentage of AGI.",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -857,7 +857,7 @@
     },
      "_ID_Miscellaneous_frt":{
         "long_name": "Itemized Deduction: Miscellaneous Deduction Floor(%, AGI)",
-	"description": "",
+	"description": "The deductable amount of miscellaneous itemized deduction is the portion of expense exceeding this percentage of AGI.",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -871,7 +871,7 @@
     },
      "_ID_Charity_crt_Cash":{
         "long_name": "Itemized Deduction: Charity Deduction ceiling for Cash (%, AGI)",
-	"description": "",
+	"description": "The deduction for Charity in form of cash is capped at this percentage of AGI. ",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -885,7 +885,7 @@
     },
     "_ID_Charity_crt_Asset":{
         "long_name": "Itemized Deduction: Charity Deduction ceiling for Asset (%, AGI)",
-	"description": "",
+	"description": "The deduction for Charity contributed in the form of assets is capped at this percentage of AGI. ",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -899,7 +899,7 @@
     },
     "_ID_prt":{
         "long_name": "Itemized Deduction: Phaseout rate",
-	"description": "",
+	"description": "Your itemized deduction amount will be reduced at this rate for each dollar exceeding certain thresholds. This reduction is capped at 80% of total itemized deduction under the current law. ",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -912,8 +912,8 @@
         "value":     [0.03]        
     },
     "_ID_crt":{
-        "long_name": "Itemized Deduction: Maximum Percentage for Deductions",
-	"description": "deductions include medical expenses, investment interest, casualty and threft losses and wagering losses",
+        "long_name": "Maximum Percentage for Phaseout amount of Itemized Deduction",
+	"description": "The phaseout amount is capped at this percentage of total deduction amount. The phaseout does not apply to deductions on medical expenses, investment interest, casualty and threft losses and wagering losses",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
