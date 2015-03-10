@@ -1,13 +1,13 @@
 Installation 
 ======================
 
-The taxcalc package is installable via 
+While developing, you can install taxcalc including the most recent local changes via 
 
 .. code-block:: python
 
 	>>> python setup.py install 
 
-We currently test against Python 2.7 and 3.4. You can install the latest conda package via
+For our latest deployed version, we keep the `latest version`_ for Python 2.7 and 3.4 under the ospc channel on binstar. To install 
 
 .. code-block:: python
 
@@ -21,6 +21,5 @@ which will grab the latest taxcalc package from binstar.org. Currently, we host 
 
 To learn more about the conda package manager, go to the `conda docs`_.
 
-
-
-.. _`conda docs`: conda.pydata.org 
+.. _`conda docs`: conda.pydata.org
+.. _`latest version`: https://binstar.org/ospc/taxcalc 

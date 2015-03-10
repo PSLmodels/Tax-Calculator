@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Tax Calculator documentation build configuration file, created by
-# sphinx-quickstart on Mon Mar  9 12:29:25 2015.
+# sphinx-quickstart on Mon Mar  9 17:06:10 2015.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -14,11 +14,13 @@
 
 import sys
 import os
+sys.path.insert(0, os.path.abspath('../..'))
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
+
 
 # -- General configuration ------------------------------------------------
 
@@ -29,9 +31,17 @@ import os
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinx.ext.autodoc',
+    'sphinxcontrib.napoleon',
     'sphinx.ext.pngmath',
     'sphinx.ext.viewcode',
 ]
+
+# The napoleon extension supports both numpy and google style docstrings. 
+# For more information, including additional settings visit: 
+# http://sphinxcontrib-napoleon.readthedocs.org/en/latest/
+
+napoleon_include_private_with_doc = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

@@ -1,5 +1,3 @@
-.. Comments are inserted in this notation
-
 Tax Calculator 
 ==========================================
 
@@ -18,6 +16,7 @@ Contents:
    installation.rst
    disclaimer.rst
    license.rst
+   code.rst
 
 
 Indices and tables

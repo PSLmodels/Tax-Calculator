@@ -14,6 +14,7 @@ OSPC's Tax Calculator Contributors
 * `Jake Lyons`_
 * `Amy Xu`_
 
+
 .. _`NBER`: http://www.nber.org/
 .. _`Dan Feenberg`: https://github.com/feenberg
 .. _`Sameer Sarkar`: https://github.com/SameerSarkar
