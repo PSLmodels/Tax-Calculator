@@ -216,12 +216,12 @@ def EI_FICA(   e00900, e02100, SS_Income_c, e00200,
 
 @iterate_jit(parameters=["puf", "STD", "STD_Aged", "II_rt1", "II_rt2", "II_rt3", "II_rt4", 
              "II_rt5", "II_rt6", "II_rt7", "II_brk1", "II_brk2", "II_brk3", "II_brk4", "II_brk5", 
-            "II_brk6", "std2008"], nopython=True, puf=True)
+            "II_brk6", "std2008", "STD_Aged_2008"], nopython=True, puf=True)
 def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
             MARS, MIDR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200, e02400, STD_Aged,
             c04470, c00100, c21060, c21040, e37717, c04600, e04805, t04470, 
             f6251, _feided, c02700, FDED, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
-            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, _fixup, std2008, puf):
+            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, _fixup, std2008, STD_Aged_2008, puf):
 
     if DSI == 1:
         c15100 = max(350 + _earned, STD[6])
@@ -255,11 +255,11 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
         _txpyers = 1.
         
     if puf:
-        if FDED == 2 and e04470 > STD[MARS - 1]:
-            if MARS != 2:
-                _numextra = (e04470 - STD[MARS - 1])/float(STD_Aged[0])
+        if FDED == 2 and e04470 > std2008[MARS - 1]:
+            if MARS != 2 and MARS != 3:
+                _numextra = (e04470 - std2008[MARS - 1])/float(STD_Aged_2008[0])
             else:
-                _numextra = (e04470 - STD[MARS - 1])/float(STD_Aged[1])
+                _numextra = (e04470 - std2008[MARS - 1])/float(STD_Aged_2008[1])
         elif e02400 > 0:
             _numextra = float(_txpyers)
         else:
