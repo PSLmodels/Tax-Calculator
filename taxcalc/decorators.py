@@ -279,7 +279,11 @@ def iterate_jit(parameters=None, **kwargs):
 
         # Get the input arguments from the function
         in_args = inspect.getargspec(func).args
-        jit_args = inspect.getargspec(jit).args + ['nopython']
+        try:
+            jit_args = inspect.getargspec(jit).args + ['nopython']
+        except TypeError:
+            print "This should only be seen in RTD, if not install numba!"
+            return func
 
         kwargs_for_func = toolz.keyfilter(in_args.__contains__, kwargs)
         kwargs_for_jit = toolz.keyfilter(jit_args.__contains__, kwargs)
