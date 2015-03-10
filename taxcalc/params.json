@@ -867,7 +867,7 @@
         "cpi_inflated": false,
         
         "col_label": "NA",
-        "value":     [0.075]        
+        "value":     [0.1]        
     },
      "_ID_Casualty_frt":{
         "long_name": "Itemized Deduction: Casualty Deduction Floor(%, floor)",
