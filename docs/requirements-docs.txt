@@ -1,6 +1,10 @@
+## ReadTheDocs pip requirements file for creating a virualenv
+
 # for building the TaxCalc package API
+numpy
 pandas
-numpy >= 1.7
+llvmlite
+argparse
 numba
 six
 toolz
