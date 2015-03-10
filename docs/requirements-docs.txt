@@ -1,10 +1,9 @@
 ## ReadTheDocs pip requirements file for creating a virualenv
 
 # for building the TaxCalc package API
+mock  # used to mock llvmlite numba dependency
 numpy
 pandas
-llvmlite
-argparse
 numba
 six
 toolz

@@ -106,6 +106,21 @@ pygments_style = 'sphinx'
 # If true, keep warnings as "system message" paragraphs in the built documents.
 #keep_warnings = False
 
+# below is import for python >= 3.3
+# from unittest.mock import MagicMock
+
+from mock import Mock as MagicMock
+
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+            return Mock()
+
+#MOCK_MODULES = ['pygtk', 'gtk', 'gobject', 'argparse', 'numpy', 'pandas']
+MOCK_MODULES = ['llvmlite']
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+
+
 
 # -- Options for HTML output ----------------------------------------------
 
