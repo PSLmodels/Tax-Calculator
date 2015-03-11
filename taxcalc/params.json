@@ -1035,7 +1035,7 @@
         "cpi_inflated": false,
         
         "col_label": "NA",
-        "value":     [4]        
+        "value":     [3]        
     },
     "_ALD_StudentLoan_HC":{
         "long_name": "Student Load Interest Deduction",
