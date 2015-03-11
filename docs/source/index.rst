@@ -10,13 +10,13 @@ Contents:
    :maxdepth: 2
    
    about_ospc.rst
-   data.rst
-   usuage.rst
-   contributors.rst
    installation.rst
+   usuage.rst
+   code.rst
+   data.rst
    disclaimer.rst
    license.rst
-   code.rst
+   contributors.rst
 
 
 Indices and tables

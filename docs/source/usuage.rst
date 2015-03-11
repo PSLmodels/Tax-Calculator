@@ -98,7 +98,7 @@ For example usuage, you can view our sample notebooks:
 
 
 .. _`quant econ`: http://quant-econ.net/py/learning_python.html
-.. _github: www.github.com
+.. _github: http://www.github.com
 .. _`git setup`: https://help.github.com/articles/set-up-git/
 .. _`password setup`: https://help.github.com/articles/caching-your-github-password-in-git/
 .. _`Tax Calculator's github page`: https://github.com/OpenSourcePolicyCenter/Tax-Calculator

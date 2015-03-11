@@ -21,5 +21,5 @@ which will grab the latest taxcalc package from binstar.org. Currently, we host 
 
 To learn more about the conda package manager, go to the `conda docs`_.
 
-.. _`conda docs`: conda.pydata.org
+.. _`conda docs`: http://conda.pydata.org
 .. _`latest version`: https://binstar.org/ospc/taxcalc 

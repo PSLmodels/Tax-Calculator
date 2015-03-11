@@ -15,6 +15,8 @@ These are the methods used by the TaxCalc package.
 .. automodule:: taxcalc.parameters
     :members:
 
+.. automodule:: taxcalc.functions
+    :members:
 
 .. automodule:: taxcalc.decorators
     :members:

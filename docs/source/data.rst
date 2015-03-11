@@ -1,5 +1,6 @@
-Data
-====
+Public Data
+===========
+
 This project uses publicly available tax information. 
 
 Documentation
