@@ -11,7 +11,6 @@
                       2014,
                       2015],
         "cpi_inflated": true,
-
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
         "value":
                      [[51900,    80800,   40400,      51900,               80800,   40400],
@@ -29,8 +28,7 @@
         "row_label": [2013,
                       2014,
                       2015],
-        "cpi_inflated": true, 
-
+        "cpi_inflated": true,
         "col_label": ["0 kids", "1 kid", "2 kids", "3 kids"],
          "value":    [ [487,    3250,       5372,      6044],
                        [496,    3305,       5460,      6143],
@@ -39,7 +37,7 @@
     },
     "_SS_thd50":{
         "long_name": "Starting Threshold for 50% Taxability",
-	"description": "50% of combined income in range starting at this threshold is subject to social security tax.",
+	    "description": "50% of combined income in range starting at this threshold is subject to social security tax.",
         "irs_ref": "Form 1040, line 20a&b, calculation (Worksheet, add line 10 to line 8 amounts.)",
         "notes": "",
         "start_year": 2013,
@@ -47,7 +45,6 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
         "value":      [25000,    32000,   0,          25000,               25000,   0]
         
@@ -62,14 +59,13 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
         "value":      [34000,    44000,   0,          34000,               34000,   0]
         
     },
      "_ACTC_rt":{
         "long_name": "Additional Child Tax Credit Rate",
-	"description": "AKA rate for refundable portion of CTC; Apply this rate to earned income in excess of $3000*, to get the ACTC amount, which is capped at the amount of unclaimed nonrefundable CTC.",
+	    "description": "AKA rate for refundable portion of CTC; Apply this rate to earned income in excess of $3000*, to get the ACTC amount, which is capped at the amount of unclaimed nonrefundable CTC.",
         "irs_ref": "Form 8812, line 6, inline.",
         "notes": "",
         "start_year": 2013,
@@ -77,7 +73,6 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-
         "col_label": "NA",
         "value":      [0.15]
         
@@ -94,7 +89,6 @@
 		      2014,
 		      2015],
         "cpi_inflated": true,
-        
         "col_label": ["Unmarried", "Married"],
         "value":      [[1500, 1200],
 		       [1550, 1200],
@@ -117,7 +111,7 @@
 
      "_AMT_Child_em":{
         "long_name": "Child AMT Exemption Additional Income Base",
-	"description": "Add this amount to one child's income to get the total income base for exemption.",
+	    "description": "Add this amount to one child's income to get the total income base for exemption.",
         "irs_ref": "Form 6251, line 29, instruction.",
         "notes": "",
         "start_year": 2013,
@@ -127,7 +121,6 @@
 		      2014,
 		      2015],
         "cpi_inflated": true,
-        
         "col_label": "NA",
         "value":  [7150,
                    7250,
@@ -145,7 +138,6 @@
         "row_label": [2013,
 		      2014],
         "cpi_inflated": true,
-        
         "col_label": "NA",
         "value":  [40400,
 		   41050]
@@ -163,7 +155,6 @@
 		      2014,
 		      2015],
         "cpi_inflated": true,
-        
         "col_label": "NA",
         "value": [179500,
                   182500,
@@ -182,7 +173,6 @@
 		      "2014",
 		      "2015"],
         "cpi_inflated": true,
-        
         "col_label": "NA",
         "value":   [3900,
                     3950,
@@ -191,7 +181,7 @@
     },
      "_KT_c_Age":{
         "long_name": "Maximum Age subject to Kiddie Tax",
-	"description": "Under this age, the individual is subject to either AMT or Kiddie Tax.",
+	    "description": "Under this age, the individual is subject to either AMT or Kiddie Tax.",
         "irs_ref": "Form 6251, line 28, instruction.",
         "notes": "",
         "start_year": 2013,
@@ -199,14 +189,13 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value": [24]
         
     },
      "_AMT_em_pe":{
         "long_name": "AMT Exemption Phaseout ending AMTI (Married filling Separately)",
-	"description": "Individuals with married filing separately need to add extra amount to AMTI beyond this AMTI level",
+	    "description": "Individuals with married filing separately need to add extra amount to AMTI beyond this AMTI level",
         "irs_ref": "Form 6251, line 28, instruction.",
         "notes": "",
         "start_year": 2013,
@@ -215,43 +204,14 @@
         "row_label": ["2013",
 		      "2014"],
         "cpi_inflated": true,
-
         "col_label": "NA",
         "value":   [238550,
                     242450]
         
-    },
-     "_cgrate1":{
-        "long_name": "",
-	    "description": "",
-        "irs_ref": "form , line , ",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "",
-        "row_label": "",
-        "cpi_inflated": false,
-        "col_label": [],
-        "value": [0.10]
-        
-    },	
-     "_cgrate2":{
-        "long_name": "",
-	    "description": "",
-        "irs_ref": "form , line , ",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "",
-        "row_label": "",
-        "cpi_inflated": false,
-        "col_label": [],
-        "value": [0.20]
-        
     },	
      "_CTC_c":{
         "long_name": "Max Child Tax Credit per child",
-	"description": "Scheduled to decrease to 500 in 2018.",
+	    "description": "Scheduled to decrease to 500 in 2018.",
         "irs_ref": "IRS reference: form 1040, line ,",
         "notes": "",
         "start_year": 2013,
@@ -299,7 +259,6 @@
 		      "2014",
 		      "2015"],
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":  [ 3300,
                     3350,
@@ -320,7 +279,6 @@
 		      "2017",
 		      "2018"],
         "cpi_inflated": true,
-        
         "col_label": "NA",
         "value": [ 3000,
                     3000,
@@ -332,7 +290,7 @@
     },	
     "_ETC_pe_Single":{
         "long_name": "Education Tax Credit Phaseout Ends (Single)",
-	"description": "The education tax credit will be zero for those tax payers of single filing status with modified AGI level (in thousands) higher than this level.",
+	    "description": "The education tax credit will be zero for those tax payers of single filing status with modified AGI level (in thousands) higher than this level.",
         "irs_ref": "Form 8863, line 13, inline.",
         "notes": "",
         "start_year": 2013,
@@ -342,7 +300,6 @@
 		      "2014",
 		      "2015"],
         "cpi_inflated": true,
-        
         "col_label": "NA",
         "value":   [63,
                     64,
@@ -351,7 +308,7 @@
     },
     "_ETC_pe_Married":{
         "long_name": "Education Tax Credit Phaseout Ends (Married)",
-	"description": "The education tax credit will be zero for those tax payers of married filing status with modified AGI level (in thousands) higher than this level.",
+	    "description": "The education tax credit will be zero for those tax payers of married filing status with modified AGI level (in thousands) higher than this level.",
         "irs_ref": "Form 8863, line 13, inline.",
         "notes": "",
         "start_year": 2013,
@@ -361,7 +318,6 @@
 		      "2014",
 		      "2015"],
         "cpi_inflated": true,
-        
         "col_label": "NA",
         "value":   [126,
                     128,
@@ -380,7 +336,6 @@
 		      "2014",
 		      "2015"],
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value": [97600,
                   99200,
@@ -399,7 +354,6 @@
 		      "2014",
 		      "2015"],
         "cpi_inflated": true,
-        
         "col_label":"0kids 1kid  2kids 3+kids",
         "value":  [ [5340, 5340, 5340, 5340],
                     [5430, 5430, 5430, 5430],
@@ -416,7 +370,6 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [10000]
         
@@ -431,13 +384,12 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [35]
         
     },	
-    "_ID_pe":{
-        "long_name": "Itemized Deduction Phaseout Ending Income",
+    "_ID_ps":{
+        "long_name": "Itemized Deduction Phaseout Start",
 	    "description": "Itemized deduction will be zero for taxpayers with income higher than this level.",
         "irs_ref": "Form 1040, line 42, instruction (table).",
         "notes": "",
@@ -448,7 +400,6 @@
                       "2014",
                       "2015"],
         "cpi_inflated": true,
-
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
         "value":    [[250000, 	300000,   150000,     275000, 		  300000,  150000],
                     [254200, 	305050,   152525,     279650, 		  305050,  152525],
@@ -464,7 +415,6 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label":["0kids", "1kid", "2kids", "3+kids"],
         "value":    [[0.0765, 0.3400, 0.4000, 0.4500]]        
     },	
@@ -478,7 +428,6 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label":["0kids", "1kid", "2kids", "3+kids"],
         "value":    [[0.0765, 0.1598, 0.2106, 0.2106]]        
     },
@@ -494,7 +443,6 @@
 		      "2014",
 		      "2015"],
         "cpi_inflated": true,
-        
         "col_label": "NA",
         "value": [ 113700,
                    117000,
@@ -513,7 +461,6 @@
 		      "2014",
 		      "2015"],
         "cpi_inflated": true,
-        
         "col_label":"0kids 1kid  2kids 3+kids",
         "value":[  [7970, 17530, 17530, 17530],
                     [8110, 17830, 17830, 17830],
@@ -530,7 +477,6 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.1]
         
@@ -545,7 +491,6 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.15]
         
@@ -560,7 +505,6 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.25]
         
@@ -575,7 +519,6 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.28]
         
@@ -590,7 +533,6 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.33]
     },	
@@ -604,7 +546,6 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.35]
         
@@ -619,7 +560,6 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.396]
         
@@ -636,7 +576,6 @@
                       "2014",
                       "2015"],
         "cpi_inflated": true,
-
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
         "value":
                     [[115400, 153900, 76950, 115400, 153900, 76950],
@@ -681,7 +620,6 @@
                       "2014",
                       "2015"],
         "cpi_inflated": true,
-
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
         "value":
 		  [ [250000, 300000, 150000, 275000, 300000, 150000], 
@@ -700,7 +638,6 @@
                       "2014",
                       "2015"],
         "cpi_inflated": true,
-
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate", "dependent"],        
         "value":
 		          [ [6100, 12200, 6100, 8950, 12200, 6100, 1000], 
@@ -719,7 +656,6 @@
                       "2014",
                       "2015"],
         "cpi_inflated": true,
-
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
         "value":[  [8925, 17850, 8925, 12750, 17850, 8925], 
                     [9075, 18150, 9075, 12950, 18150, 9075],
@@ -736,7 +672,6 @@
                       "2014",
                       "2015"],
         "cpi_inflated": true,
-
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
         "value":[  [36250, 72500, 36250, 48600, 72500, 36250], 
                     [36900, 73800, 36900, 49400, 73800, 36900],
@@ -753,7 +688,6 @@
                       "2014",
                       "2015"],
         "cpi_inflated": true,
-
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
         "value":[  [87850, 146400, 73200, 125450, 146400, 73200], 
                     [89350, 148850, 74425, 127550, 148850, 74425],
@@ -770,7 +704,6 @@
                       "2014",
                       "2015"],
         "cpi_inflated": true,
-
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
         "value":[  [183250, 223050, 111525, 203150, 223050, 111525], 
                     [186350, 226850, 113425, 206600, 226850, 113425],
@@ -787,7 +720,6 @@
                       "2014",
                       "2015"],
         "cpi_inflated": true,
-
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
         "value":[  [398350, 398350, 199175, 398350, 398350, 199175], 
                     [405100, 405100, 202550, 405100, 405100, 202550],
@@ -804,7 +736,6 @@
                       "2014",
                       "2015"],
         "cpi_inflated": true,
-
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
         "value":[  [400000, 450000, 225000, 425000, 450000, 225000],
                     [406750, 457600, 228800, 432200, 457600, 228800],
@@ -812,7 +743,7 @@
      },
      "_FICA_ss_trt":{
         "long_name": "Social Security FICA rate",
-	"description": "social security  tax rate, including both employer and employee",
+	    "description": "social security  tax rate, including both employer and employee",
         "irs_ref": "Form , line , ",
         "notes": "We do not calculate payroll tax liability, but use this for eligibility for some tax items.",
         "start_year": 2013,
@@ -820,7 +751,6 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.124]
         
@@ -828,7 +758,7 @@
     },
      "_FICA_mc_trt":{
         "long_name": "Medicare FICA rate",
-    "description": " medicare tax rate, including both employer and employee",
+        "description": " medicare tax rate, including both employer and employee",
         "irs_ref": "Form , line , ",
         "notes": "We do not calculate payroll tax liability, but use this for eligibility for some tax items.",
         "start_year": 2013,
@@ -836,16 +766,14 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.029]
-        
     },
 
 
     "_SS_percentage1":{
         "long_name": "Social Security Taxable Income Percentage",
-	"description": "This percentage of income in range 25k - 34k is taxable for the filing status of Single under current law",
+	    "description": "This percentage of income in range 25k - 34k is taxable for the filing status of Single under current law",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -853,14 +781,13 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.5]
         
     },
     "_SS_percentage2":{
         "long_name": "Social Security Taxable Income Percentage",
-	"description": "This percentage of income in range 34k+ is taxable for the filing status of Single under current law",
+	    "description": "This percentage of income in range 34k+ is taxable for the filing status of Single under current law",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -868,14 +795,13 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.85]
         
     },
     "_II_prt":{
         "long_name": "Personal Exemption Phaseout Rate",
-	"description": "Personal Exemption amount will decrease by this rate for each dollor of AGI exceeding certain thresholds.",
+	    "description": "Personal Exemption amount will decrease by this rate for each dollor of AGI exceeding certain thresholds.",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -883,13 +809,12 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.02]        
     },
      "_ID_Medical_frt":{
         "long_name": "Itemized Deduction: Medical Deduction Floor (%, floor)",
-	"description": "",
+	    "description": "You are eligible to deduct your medical expense when it exceeds this percentage of AGI.",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -897,13 +822,12 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.1]        
     },
      "_ID_Casualty_frt":{
-        "long_name": "Itemized Deduction: Casualty Deduction Floor(%, floor)",
-	"description": "",
+        "long_name": "Itemized Deduction: Casualty Deduction Floor (%, floor)",
+	    "description": "The deductable amount of casualty loss would be the portion exceeding this percentage of AGI.",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -911,13 +835,12 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.1]        
     },
      "_ID_Miscellaneous_frt":{
         "long_name": "Itemized Deduction: Miscellaneous Deduction Floor(%, AGI)",
-	"description": "",
+	    "description": "The deductable amount of miscellaneous itemized deduction is the portion of expense exceeding this percentage of AGI.",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -925,13 +848,12 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.02]        
     },
      "_ID_Charity_crt_Cash":{
         "long_name": "Itemized Deduction: Charity Deduction ceiling for Cash (%, AGI)",
-	"description": "",
+	    "description": "The deduction for Charity in form of cash is capped at this percentage of AGI. ",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -939,13 +861,12 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.5]        
     },
     "_ID_Charity_crt_Asset":{
         "long_name": "Itemized Deduction: Charity Deduction ceiling for Asset (%, AGI)",
-	"description": "",
+	    "description": "The deduction for Charity contributed in the form of assets is capped at this percentage of AGI. ",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -953,13 +874,12 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.3]        
     },
     "_ID_prt":{
         "long_name": "Itemized Deduction: Phaseout rate",
-	"description": "",
+	    "description": "Your itemized deduction amount will be reduced at this rate for each dollar exceeding certain thresholds. This reduction is capped at 80% of total itemized deduction under the current law. ",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -967,13 +887,12 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.03]        
     },
     "_ID_crt":{
-        "long_name": "Itemized Deduction: Maximum Percentage for Deductions",
-	"description": "deductions include medical expenses, investment interest, casualty and threft losses and wagering losses",
+        "long_name": "Maximum Percentage for Phaseout amount of Itemized Deduction",
+	    "description": "The phaseout amount is capped at this percentage of total deduction amount. The phaseout does not apply to deductions on medical expenses, investment interest, casualty and threft losses and wagering losses",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -981,13 +900,12 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.8]        
     },
     "_NIIT_trt":{
         "long_name": "Net Investment Income Tax Rate",
-	"description": "",
+	    "description": "AKA Unearned Income Medicare Distribution Tax. Taxed on net investment income of individuals with MAGI higher than certain thresholds.",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -995,13 +913,12 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.038]        
     },
     "_AMT_prt":{
-        "long_name": "AMT: Phaseout Rate",
-	"description": "",
+        "long_name": "AMT Exemption Phaseout Rate",
+	    "description": "AMT exemtion will decrease by this amount for each dollor exceeding certain AMTI thresholds. ",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -1009,13 +926,12 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.25]        
     },
     "_AMT_trt1":{
         "long_name": "AMT rate for AMTI under the threshold",
-	"description": "",
+	    "description": "The tax rate applied to the portion of AMT income below the threshold. ",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -1023,27 +939,25 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.26]        
     },
     "_AMT_trt2":{
         "long_name": "Additional AMT rate for AMTI above the threshold",
-	"description": "The sum of this rate and the tax rate for AMTI below the threshold would the actual tax rate for ",
+	    "description": "Add this rate to the tax rate for AMT income under the threshold to get the actual above threshold tax rate.",
         "irs_ref": "Form , line , ",
-        "notes": "HC; the additional tax rate (on top of .26) above certain threshold",
+        "notes": "This is the additional tax rate (on top of .26) for AMT income above certain threshold",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.02]        
     },
     "_CTC_prt":{
-        "long_name": "CTC Phaseout Rate",
-	"description": "",
+        "long_name": "Child Tax Credit Phaseout Rate",
+	    "description": "The amount of credit starts to decrease after MAGI hits certain threshold, at this rate.",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -1051,13 +965,12 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0.05]        
     },
     "_ACTC_ChildNum":{
-        "long_name": "AMT: Tax Rate on AMTI",
-	"description": "",
+        "long_name": "Additional Child Tax Credit Qualified Children Number",
+	    "description": "Only families with this number of qualified children or more, are qualified for additional child tax credit",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -1065,57 +978,53 @@
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [3]        
     },
     "_ALD_StudentLoan_HC":{
-        "long_name": "Student Load Interest Deduction",
-	"description": "",
+        "long_name": "Hair Cut on Student Loan Interest Deduction",
+	    "description": "This pencentage can be applied to reduce the student loan interest deduction. Student loan interest is deducted at full amount from gross income. ",
         "irs_ref": "Form , line , ",
-        "notes": "HC",
+        "notes": "The deduction amount will be (1- Hair Cut) * Student Loan Interest. ",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0]        
     },
     "_ALD_SelfEmploymentTax_HC":{
-        "long_name": "Deduction for self-employment tax",
-	"description": "",
+        "long_name": "Hair Cut on Deduction for self-employment tax",
+	    "description": "This percentage reduces the employer equivalent portion of self-employment deduction before AGI. ",
         "irs_ref": "Form , line , ",
-        "notes": "HC",
+        "notes": "The final deduction amount would be (1 - Hair Cut) * Self Employment Tax Deduction",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0]        
     },
     "_ALD_SelfEmp_HealthIns_HC":{
-        "long_name": "Deduction for Self Employed Health Insurance",
-	"description": "",
+        "long_name": "Hair Cut on Deduction for Self Employed Health Insurance",
+	    "description": "This percentage reduces the health insurance deduction for self-employed taxpayers. ",
         "irs_ref": "Form , line , ",
-        "notes": "HC",
+        "notes": "The final deduction amount would be (1 - Hair Cut) * Current deduction for self employed health insurance. ",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value":     [0]        
     },
     "_ALD_KEOGH_SEP_HC":{
-        "long_name": "Payment to KEOGH plan and SEP deduction",
-	"description": "",
+        "long_name": "Hoir Cut on Deduction for Payment to either KEOGH or SEP plan",
+	    "description": "The percentage you can impose to reduce deductions for Keogh or SEP plan payments. Under the current law, payments to Keogh or SEP plans can be fully deducted from gross income.",
         "irs_ref": "Form , line , ",
-        "notes": "HC",
+        "notes": "The final deduction amount is (1 - Hair Cut) * KEOGH/SEP plan payments",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
@@ -1126,8 +1035,8 @@
         "value":     [0]        
     },
     "_ALD_EarlyWithdraw_HC":{
-        "long_name": "Forfeited interest Penalty = Early Withdrawl of Saving",
-	"description": "",
+        "long_name": "Hair Cut on Forfeited Interest Penalty",
+	    "description": "You can reduce this percentage of early withdraw penalty dedeuction from adjustments. Under the current law, early withdraw penalty can be fully deducted from gross income. ",
         "irs_ref": "Form , line , ",
         "notes": "HC",
         "start_year": 2013,
@@ -1140,10 +1049,10 @@
         "value":     [0]        
     },
     "_ALD_Alimony_HC":{
-        "long_name": "Alimony Paid",
-	"description": "",
+        "long_name": "Hair Cut on Alimony Payments",
+	    "description": "The percentage you can impose to reduce Alimony Payments adjustment amount. Under the current law, the full amount of alimony payment is taken as a deduction from gross income in arriving at AGI.",
         "irs_ref": "Form , line , ",
-        "notes": "HC",
+        "notes": "The final adjustment amount would be (1 - Hair Cut) * Alimony Payments",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
@@ -1155,7 +1064,7 @@
     },
     "_CDCC_ps":{
         "long_name": "Child and Dependent Care Credit phaseout start",
-	"description": "NA",
+	    "description": "For taxpayers with AGI over this amount, the credit, under the current law, is reduced by one percentage point each $2000 of AGI over this amount. ",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
@@ -1189,7 +1098,7 @@
     },
     "_CG_rt1":{
         "long_name": "Captal Gain rate1 (Coming Soon.......)",
-	"description": "NA",
+	    "description": "NA",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
@@ -1201,7 +1110,7 @@
     },
     "_CG_rt2":{
         "long_name": "Capital Gain rate2 (Coming Soon.......)",
-	"description": "NA",
+	    "description": "NA",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
@@ -1213,31 +1122,29 @@
     },
         "_CG_rt3":{
         "long_name": "Capital Gain Rate 3 (Coming Soon.......)",
-	"description": "NA",
+	    "description": "NA",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value": [0] 
     },
         "_CG_thd1":{
         "long_name": "Capital Gain Threshold 1 (Coming Soon.......)",
-	"description": "NA",
+	    "description": "NA",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value": [0] 
     },
         "_CG_thd2":{
         "long_name": "Capital Gain Threshold 2 (Coming Soon.......)",
-	"description": "NA",
+	    "description": "NA",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
@@ -1249,7 +1156,7 @@
     },
 	"_Dividend_rt1":{
         "long_name": "Dividend rate 1 (Coming Soon.......)",
-	"description": "NA",
+	    "description": "NA",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
@@ -1261,19 +1168,18 @@
     },
 	"_Dividend_rt2":{
         "long_name": "Dividend rate 2 (Coming Soon.......)",
-	"description": "NA",
+	    "description": "NA",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value": [0]
     },    
     	"_Dividend_rt3":{
         "long_name": "Dividend Rate 3 (Coming Soon.......)",
-	"description": "NA",
+	    "description": "NA",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
@@ -1285,7 +1191,7 @@
     },
     	"_Dividend_thd1":{
         "long_name": "Dividend Threshold 1 (Coming Soon.......)",
-	"description": "NA",
+	    "description": "NA",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
@@ -1297,7 +1203,7 @@
     },
     	"_Dividend_thd2":{
         "long_name": "Dividend Threshold 2 (Coming Soon.......)",
-	"description": "NA",
+	    "description": "NA",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
@@ -1309,27 +1215,36 @@
     },
     	"_Dividend_thd3":{
         "long_name": "Dividend Threshold 3 (Coming Soon.......)",
-	"description": "NA",
+	    "description": "NA",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
         "value": [0]
     },
 
-        "_std2008":{
-        "long_name": "2008 std",
-         "description": "NA",
+        "_cgrate1":{
+        "long_name": "Dividend Threshold 2 (Coming Soon.......)",
+	    "description": "NA",
         "start_year": 2013,
         "col_var": "NA",
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
-        
         "col_label": "NA",
-        "value": [[5450, 10900, 5450, 8000, 10900, 5450, 900]]    
-        }
+        "value": [0.1]
+    },
+        "_cgrate2":{
+        "long_name": "Dividend Threshold 2 (Coming Soon.......)",
+	    "description": "NA",
+        "start_year": 2013,
+        "col_var": "NA",
+        "row_var": "NA",
+        "row_label": "NA",
+        "cpi_inflated": false,
+        "col_label": "NA",
+        "value": [0.2]
+    }
 }
