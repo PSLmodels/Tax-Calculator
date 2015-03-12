@@ -68,6 +68,7 @@ def run(puf=True):
     exp_set.add('_othertax')
     exp_set.add('NIIT')
     exp_set.add('_amed')
+    exp_set.add('_compitem')
     cur_set = set(totaldf.columns)
 
     assert(exp_set == cur_set)

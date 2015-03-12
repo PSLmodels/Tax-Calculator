@@ -236,18 +236,13 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
             MARS, MIDR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200, e02400, STD_Aged,
             c04470, c00100, c21060, c21040, e37717, c04600, e04805, t04470, 
             f6251, _feided, c02700, FDED, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
-            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, _fixup, std2008, STD_Aged_2008, puf):
+            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, _fixup, 
+            std2008, STD_Aged_2008, _compitem, _txpyers, _numextra,  puf):
 
     if DSI == 1:
         c15100 = max(350 + _earned, STD[6])
     else:
         c15100 = 0.
-
-    # std2008a = [5450, 10900, 5450, 8000, 10900, 5450, 900]     
-    if FDED==1 and (e04470 < std2008[MARS-1]): #TODO should be 2008 vals, not current law.  
-        _compitem = 1.
-    else:
-        _compitem = 0.
 
     if (DSI == 1):
         c04100 = min( STD[MARS-1], c15100)
@@ -264,21 +259,8 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
     else:
         x04500 = 0.
 
-    if MARS == 2 or MARS == 3 or MARS == 6:
-        _txpyers = 2.
-    else:
-        _txpyers = 1.
-        
     if puf:
-        if FDED == 2 and e04470 > std2008[MARS - 1]:
-            if MARS != 2 and MARS != 3:
-                _numextra = (e04470 - std2008[MARS - 1])/float(STD_Aged_2008[0])
-            else:
-                _numextra = (e04470 - std2008[MARS - 1])/float(STD_Aged_2008[1])
-        elif e02400 > 0:
-            _numextra = float(_txpyers)
-        else:
-            _numextra = 0.
+        _numextra = _numextra
     else:
         _numextra = float(AGEP + AGES + PBI + SBI)
 
@@ -344,7 +326,7 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
 
     return (c15100, _numextra, _txpyers, c15200,
                   _othded, c04100, c04200, _standard, c04500,
-                 c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei)
+                 c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei, _compitem)
 
 
 @iterate_jit(parameters=["II_rt1", "II_rt2", "II_rt3", "II_rt4", "II_rt5", "II_rt6", "II_rt7",
