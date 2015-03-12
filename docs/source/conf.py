@@ -106,10 +106,12 @@ pygments_style = 'sphinx'
 # If true, keep warnings as "system message" paragraphs in the built documents.
 #keep_warnings = False
 
-# below is import for python >= 3.3
-# from unittest.mock import MagicMock
-
-from mock import Mock as MagicMock
+if sys.version_info[0] == 3:
+    from unittest.mock import MagicMock
+elif sys.version_info[0] == 2:
+    from mock import Mock as MagicMock
+else:
+    print("Please install or update python to at least version 2.x")
 
 class Mock(MagicMock):
     @classmethod
