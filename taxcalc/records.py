@@ -68,11 +68,12 @@ class Records(object):
         # Number of extra standard deductions for aged
         self._numextra = np.where(np.logical_and(self.FDED==2, self.e04470<std2008[self.MARS-1]),
                                 np.where(np.logical_and(self.MARS!=2,self.MARS!=3), 
-                                    self.e04470 - std2008[self.MARS - 1]/STD_Aged_2008[0], 
-                                    self.e04470 - std2008[self.MARS - 1]/STD_Aged_2008[1]), 
+                                    (self.e04470 - std2008[self.MARS - 1])/STD_Aged_2008[0], 
+                                    (self.e04470 - std2008[self.MARS - 1])/STD_Aged_2008[1]), 
                                 np.where(self.e02400>0, 
                                     self._txpyers, 
                                     0))
+
 
     @property
     def current_year(self):
