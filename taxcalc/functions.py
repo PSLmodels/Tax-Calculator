@@ -231,13 +231,13 @@ def AMED(e00200, MARS, AMED_thd, _sey, AMED_trt, FICA_mc_trt, FICA_ss_trt):
 
 @iterate_jit(parameters=["puf", "STD", "STD_Aged", "II_rt1", "II_rt2", "II_rt3", "II_rt4", 
              "II_rt5", "II_rt6", "II_rt7", "II_brk1", "II_brk2", "II_brk3", "II_brk4", "II_brk5", 
-            "II_brk6", "std2008", "STD_Aged_2008"], nopython=True, puf=True)
+            "II_brk6"], nopython=True, puf=True)
 def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
             MARS, MIDR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200, e02400, STD_Aged,
             c04470, c00100, c21060, c21040, e37717, c04600, e04805, t04470, 
             f6251, _feided, c02700, FDED, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
             II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, _fixup, 
-            std2008, STD_Aged_2008, _compitem, _txpyers, _numextra,  puf):
+            _compitem, _txpyers, _numextra,  puf):
 
     if DSI == 1:
         c15100 = max(350 + _earned, STD[6])
