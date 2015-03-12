@@ -1226,7 +1226,7 @@
     },
 
         "_cgrate1":{
-        "long_name": "Dividend Threshold 2 (Coming Soon.......)",
+        "long_name": "Capital gains rate 1",
 	    "description": "NA",
         "start_year": 2013,
         "col_var": "NA",
@@ -1234,10 +1234,10 @@
         "row_label": "NA",
         "cpi_inflated": false,
         "col_label": "NA",
-        "value": [0.1]
+        "value": [0.0]
     },
         "_cgrate2":{
-        "long_name": "Dividend Threshold 2 (Coming Soon.......)",
+        "long_name": "Capital gains rate 2",
 	    "description": "NA",
         "start_year": 2013,
         "col_var": "NA",
@@ -1245,6 +1245,6 @@
         "row_label": "NA",
         "cpi_inflated": false,
         "col_label": "NA",
-        "value": [0.2]
+        "value": [0.15]
     }
 }
