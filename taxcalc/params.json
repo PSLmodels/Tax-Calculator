@@ -95,19 +95,6 @@
 		       [1550, 1250]]
 
     },
-    "_STD_Aged_2008":{
-        "long_name": "Additional Standard Deduction for Aged, 2008 value for imputation",
-        "description": "Add this value to regular standard deduction to get standard deduction for aged individual.",
-        "irs_ref": "Form 1040, line 40, calculation (the difference of the two tables given in the instruction).",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "NA",
-        "row_var": "FLPDYR",
-        "row_label": [2013],
-        "cpi_inflated": false,
-        "col_label": ["Unmarried", "Married"],
-        "value":      [[1350, 1050]]
-    },
 
      "_AMT_Child_em":{
         "long_name": "Child AMT Exemption Additional Income Base",
