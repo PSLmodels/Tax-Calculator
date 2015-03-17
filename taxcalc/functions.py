@@ -294,6 +294,8 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
     if c04470 > _standard:
         _standard = 0
 
+    if c04470 <= _standard:
+        c04470 = 0
 
     #why is this here, c60000 is reset many times? 
     if _standard > 0:
@@ -324,7 +326,7 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
     else:
         _feitax, _oldfei = 0., 0.
 
-    return (c15100, _numextra, _txpyers, c15200,
+    return (c15100, _numextra, _txpyers, c15200, c04470,
                   _othded, c04100, c04200, _standard, c04500,
                  c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei, _compitem)
 
