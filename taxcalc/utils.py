@@ -92,21 +92,21 @@ def expand_array(x, inflate, inflation_rates, num_years):
     """
     Dispatch to either expand_1D or expand2D depending on the dimension of x
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     x : value to expand
 
     inflate: Boolean
-    As we expand, inflate values if this is True, otherwise, just copy
+        As we expand, inflate values if this is True, otherwise, just copy
 
     inflation_rate: float
-    Yearly inflation reate
+        Yearly inflation reate
 
     num_years: int
-    Number of budget years to expand
+        Number of budget years to expand
 
-    Returns:
-    --------
+    Returns
+    -------
     expanded numpy array
     """
     try:
