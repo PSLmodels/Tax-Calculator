@@ -213,7 +213,7 @@ def test_Calculator_create_difference_table():
     t1 = create_difference_table(calc, calc2, groupby="weighted_deciles")
     assert type(t1) == DataFrame
     
-def test_baseline_table():
+def test_diagnostic_table():
     # we need the records' year at 2008 for blow up step. So param's year needs to be 2008 to past the test
     
     
@@ -226,7 +226,7 @@ def test_baseline_table():
     
     calc = Calculator(parameters=params, records=puf, sync_years=False)
 
-    calc.baseline_table()
+    calc.diagnostic_table()
 
 
 

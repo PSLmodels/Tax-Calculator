@@ -245,7 +245,7 @@ class Calculator(object):
 
         return mtr
 
-    def baseline_table(self, num_years = 5):
+    def diagnostic_table(self, num_years = 5):
        table = []
        row_years = []
        calc = copy.deepcopy(self)
@@ -327,5 +327,5 @@ class Calculator(object):
                "ospctax ($b)"])
        df = df.transpose()
        pd.options.display.float_format = '{:8,.1f}'.format
-       df.to_csv('baseline.csv')
+
        return df
