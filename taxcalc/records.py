@@ -1,7 +1,8 @@
 """
 This file reads input csv file and saves the variables 
 """
-
+import math
+import copy
 import pandas as pd
 import numpy as np
 import os.path
@@ -30,6 +31,7 @@ class Records(object):
 
 
 
+
     @classmethod
     def from_file(cls, path, **kwargs):
         return cls(path, **kwargs)
@@ -47,6 +49,31 @@ class Records(object):
             self._current_year = start_year
         else: 
             self._current_year = self.FLPDYR[0]
+
+        """Imputations"""  # TODO Move these into a separate script with a decorator
+        self._cmbtp_itemizer = (-1 * np.minimum(np.maximum(0., self.e17500 - np.maximum(0., self.e00100) * 0.075), 0.025 * np.maximum(0., self.e00100)) 
+                        + self.e62100 + self.e00700 + self.e04470 + self.e21040 
+                        - np.maximum(0, np.maximum( self.e18400, self.e18425)) - self.e00100 - self.e18500 
+                        - self.e20800)
+        self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
+
+        # Standard deduction amount in 2008
+        std2008 = np.array([5450, 10900, 5450, 8000, 10900, 5450, 900])
+        # Additional standard deduction for aged 2008
+        STD_Aged_2008 = np.array([1350., 1050.])
+        # Compulsory itemizers
+        self._compitem = np.where(np.logical_and(self.FDED==1, self.e04470 < std2008[self.MARS-1]), 1, 0)
+        # Number of taxpayers
+        self._txpyers = np.where(np.logical_or(self.MARS==2, np.logical_or(self.MARS==3, self.MARS==6)),2.,1.)
+        # Number of extra standard deductions for aged
+        self._numextra = np.where(np.logical_and(self.FDED==2, self.e04470<std2008[self.MARS-1]),
+                                np.where(np.logical_and(self.MARS!=2,self.MARS!=3), 
+                                    (self.e04470 - std2008[self.MARS - 1])/STD_Aged_2008[0], 
+                                    (self.e04470 - std2008[self.MARS - 1])/STD_Aged_2008[1]), 
+                                np.where(self.e02400>0, 
+                                    self._txpyers, 
+                                    0))
+
 
     @property
     def current_year(self):
@@ -157,7 +184,7 @@ class Records(object):
         self.e17500  =   self.e17500  *   self.BF.ACPIM[self._current_year]
         self.e18425  =   self.e18425  *   self.BF.ATXPY[self._current_year]
         self.e18450  =   self.e18450  *   self.BF.ATXPY[self._current_year]
-        self.e18500  =   self.e18500  *   self.BF.ATXPY[self._current_year]
+        self.e18500  =   self.e18500  *   self.BF.ATXPY[self._current_year] 
         self.e19200  =   self.e19200  *   self.BF.ATXPY[self._current_year]
         self.e19550  =   self.e19550  *   self.BF.ATXPY[self._current_year]
         self.e19800  =   self.e19800  *   self.BF.ATXPY[self._current_year]
@@ -245,6 +272,8 @@ class Records(object):
         self.s009    =   self.s009    *   1.
         self.WSAMP   =   self.WSAMP   *   1.
         self.TXRT    =   self.TXRT    *   1.
+        self._cmbtp_itemizer  =   self._cmbtp_itemizer  *   self.BF.ATXPY[self._current_year]
+        self._cmbtp_standard  =   self._cmbtp_standard  *   self.BF.ATXPY[self._current_year]
 
     def read_weights(self, weights):
         if isinstance(weights, pd.core.frame.DataFrame):
@@ -613,7 +642,8 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
                         'x07100', 'c08800', 'e08795', 'x07400', 'c59680',
 	                '_othertax', 'e82915', 'e82940', 'SFOBYR', 'NIIT',
                         'c59720', '_comb', 'c07150', 'c10300', '_ospctax',
-                        '_refund', 'c11600', 'e11450', 'e82040', 'e11500']
+                        '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
+                         '_amed']
                         
                         
 
