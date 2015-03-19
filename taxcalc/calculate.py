@@ -21,10 +21,13 @@ def add_df(alldfs, df):
 
 def calculator(parameters, records, mods="", **kwargs):
     if mods:
-        import json
-        dd = json.loads(mods)
-        dd = {k:np.array(v) for k,v in dd.items() if type(v) == list}
-        kwargs.update(dd)
+        if isinstance(mods, str):
+            import json
+            dd = json.loads(mods)
+            dd = {k:np.array(v) for k,v in dd.items() if type(v) == list}
+            kwargs.update(dd)
+        else:
+            kwargs.update(mods)
 
     calc = Calculator(parameters, records)
     if kwargs:
