@@ -9,7 +9,11 @@ import tempfile
 import pytest
 from numba import jit, vectorize, guvectorize
 from taxcalc import *
+import copy
 
+WEIGHTS_FILENAME = "../../WEIGHTS_testing.csv"
+weights_path = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
+weights = pd.read_csv(weights_path)
 
 all_cols = set()
 tax_dta_path = os.path.join(CUR_PATH, "../../tax_all91_puf.gz")
@@ -208,6 +212,21 @@ def test_Calculator_create_difference_table():
 
     t1 = create_difference_table(calc, calc2, groupby="weighted_deciles")
     assert type(t1) == DataFrame
+    
+def test_baseline_table():
+    # we need the records' year at 2008 for blow up step. So param's year needs to be 2008 to past the test
+    
+    
+    # Create a Parameters object
+    params = Parameters(start_year=2008)
+    # Create a Public Use File object
+    tax_dta.flpdyr +=1917 
+    puf = Records(tax_dta, weights = weights)
+    # Create a Calculator
+    
+    calc = Calculator(parameters=params, records=puf, sync_years=False)
+
+    calc.baseline_table()
 
 
 
