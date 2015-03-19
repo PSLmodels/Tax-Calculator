@@ -132,6 +132,22 @@ def test_make_Calculator_json():
     assert all(calc2.STD_Aged == np.array([1500]))
 
 
+def test_make_Calculator_user_mods_as_dict():
+
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+
+    # Create a Public Use File object
+    puf = Records(tax_dta)
+
+    user_mods = { "_STD_Aged": [[1400, 1200]] }
+    user_mods['_II_em'] = [3925, 4000, 4100]
+    calc2 = calculator(params, puf, mods=user_mods)
+    assert calc2.II_em == 3925
+    assert all(calc2._II_em == np.array([3925, 4000, 4100]))
+    assert all(calc2.STD_Aged == np.array([1400, 1200]))
+
+
 def test_make_Calculator_empty_params_is_default_params():
     # Create a Public Use File object
     puf_basic = Records(tax_dta, start_year=2013)
@@ -210,7 +226,6 @@ def test_Calculator_create_difference_table():
 
     t1 = create_difference_table(calc, calc2, groupby="weighted_deciles")
     assert type(t1) == DataFrame
-
 
 
 class TaxCalcError(Exception):
