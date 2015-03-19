@@ -95,6 +95,14 @@ def test_make_Calculator():
     calc = Calculator(params, puf)
 
 
+def test_make_Calculator_deepcopy():
+    import copy
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+    calc = Calculator(params, puf)
+    calc2 = copy.deepcopy(calc)
+
+
 def test_make_Calculator_from_files(paramsfile):
     calc = Calculator.from_files(paramsfile.name, tax_dta_path, start_year=91)
     assert calc
