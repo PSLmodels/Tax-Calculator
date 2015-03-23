@@ -5,95 +5,18 @@ sys.path.append(os.path.join(cur_path, "../../"))
 sys.path.append(os.path.join(cur_path, "../"))
 import numpy as np
 import pandas as pd
+from pandas import DataFrame, Series
+from pandas.util.testing import assert_frame_equal
+from pandas.util.testing import assert_series_equal
 from numba import jit, vectorize, guvectorize
 from taxcalc import *
 
 
-@extract_array
-@vectorize(['int32(int32)'])
-def fnvec_ifelse_df(inc_in):
-    ans = -42
-    if inc_in < 5:
-        ans = -42
-    if inc_in >= 5 and inc_in < 8:
-        ans = 42
-    if inc_in >= 8:
-        ans = 99
-    return ans
-
-
-@dataframe_vectorize(['int32(int32)'])
-def fnvec_ifelse_df2(inc_in):
-    """Docstring"""
-    ans = -42
-    if inc_in < 5:
-        ans = -42
-    if inc_in >= 5 and inc_in < 8:
-        ans = 42
-    if inc_in >= 8:
-        ans = 99
-    return ans
-
-
-@extract_array
-@guvectorize(["void(int32[:],int32[:])"], "(x) -> (x)")
-def fnvec_copy_df(inc_in, inc_out):
-    for i in range(inc_in.shape[0]):
-        inc_out[i] = inc_in[i]
-
-
-@dataframe_guvectorize(["void(int32[:],int32[:])"], "(x) -> (x)")
-def fnvec_copy_df2(inc_in, inc_out):
-    """Docstring"""
-    for i in range(inc_in.shape[0]):
-        inc_out[i] = inc_in[i]
-
-
-def test_with_df_wrapper():
-    x = np.array([4, 5, 9], dtype='i4')
-    y = np.array([0, 0, 0], dtype='i4')
-    df = pd.DataFrame(data=np.column_stack((x, y)), columns=['x', 'y'])
-
-    fnvec_copy_df(df.x, df.y)
-    assert np.all(df.x.values == df.y.values)
-
-    z = fnvec_ifelse_df(df.x)
-    assert np.all(np.array([-42, 42, 99], dtype='i4') == z)
-
-
-def test_with_dataframe_guvec():
-    x = np.array([4, 5, 9], dtype='i4')
-    y = np.array([0, 0, 0], dtype='i4')
-    df = pd.DataFrame(data=np.column_stack((x, y)), columns=['x', 'y'])
-    fnvec_copy_df2(df.x, df.y)
-    assert fnvec_copy_df2.__name__ == 'fnvec_copy_df2'
-    assert fnvec_copy_df2.__doc__ == 'Docstring'
-    assert np.all(df.x.values == df.y.values)
-
-
-def test_with_dataframe_vec():
-    x = np.array([4, 5, 9], dtype='i4')
-    y = np.array([0, 0, 0], dtype='i4')
-    df = pd.DataFrame(data=np.column_stack((x, y)), columns=['x', 'y'])
-
-    z = fnvec_ifelse_df2(df.x)
-    assert fnvec_ifelse_df2.__name__ == 'fnvec_ifelse_df2'
-    assert fnvec_ifelse_df2.__doc__ == 'Docstring'
-    assert np.all(np.array([-42, 42, 99], dtype='i4') == z)
-
-
-@dataframe_wrap_guvectorize(["void(int32[:],int32[:])"], "(x) -> (x)")
-def fnvec_copy_dfw(x, y):
-    for i in range(x.shape[0]):
-        y[i] = x[i]
-
-
-def test_with_dataframe_wrap_guvectorize():
-    x = np.array([4, 5, 9], dtype='i4')
-    y = np.array([0, 0, 0], dtype='i4')
-    df = pd.DataFrame(data=np.column_stack((x, y)), columns=['x', 'y'])
-    fnvec_copy_dfw(df)
-    assert(np.all(df.x == df.y))
+data = [[1.0, 2, 'a'],
+        [-1.0, 4, 'a'],
+        [3.0, 6, 'a'],
+        [2.0, 4, 'b'],
+        [3.0, 6, 'b']]
 
 
 def test_expand_1D_short_array():
@@ -103,14 +26,31 @@ def test_expand_1D_short_array():
     exp = np.zeros(10)
     exp[:3] = exp1
     exp[3:] = exp2
-    res = expand_1D(x)
+    res = expand_1D(x, inflate=True, inflation_rates=[0.02]*10, num_years=10)
+    assert(np.allclose(exp.astype(x.dtype, casting='unsafe'), res))
+
+def test_expand_1D_variable_rates():
+    x = np.array([4, 5, 9], dtype='f4')
+    irates = [0.02, 0.02, 0.02, 0.03, 0.035]
+    exp2 = []
+    cur = 9.0
+    for i in range(1, 3):
+        idx = i + len(x) - 1
+        cur *= (1.0 + irates[idx])
+        exp2.append(cur)
+
+    exp1 = np.array([4, 5, 9])
+    exp = np.zeros(5)
+    exp[:3] = exp1
+    exp[3:] = exp2
+    res = expand_1D(x, inflate=True, inflation_rates=irates, num_years=5)
     assert(np.allclose(exp.astype(x.dtype, casting='unsafe'), res))
 
 
 def test_expand_1D_scalar():
     x = 10.0
     exp = np.array([10.0 * math.pow(1.02, i) for i in range(0, 10)])
-    res = expand_1D(x)
+    res = expand_1D(x, inflate=True, inflation_rates=[0.02]*10, num_years=10)
     assert(np.allclose(exp, res))
 
 
@@ -122,5 +62,136 @@ def test_expand_2D_short_array():
     exp = np.zeros((5, 3))
     exp[:1] = exp1
     exp[1:] = exp2
-    res = expand_2D(x, num_years=5)
+    res = expand_2D(x, inflate=True, inflation_rates=[0.02]*5, num_years=5)
     assert(np.allclose(exp, res))
+
+
+def test_expand_2D_variable_rates():
+    x = np.array([[1, 2, 3]], dtype='f8')
+    cur = np.array([1, 2, 3], dtype='f8')
+    irates = [0.02, 0.02, 0.02, 0.03, 0.035]
+
+    exp2 = []
+    for i in range(1, 5):
+        idx = i + len(x) - 1
+        cur = np.array(cur*(1.0 + irates[idx]))
+        print("cur is ", cur)
+        exp2.append(cur)
+
+    #exp2 = np.array([val * math.pow(1.02, i) for i in range(1, 5)])
+    exp1 = np.array([1, 2, 3], dtype='f8')
+    exp = np.zeros((5, 3))
+    exp[:1] = exp1
+    exp[1:] = exp2
+    res = expand_2D(x, inflate=True, inflation_rates=irates, num_years=5)
+    assert(np.allclose(exp, res))
+
+
+
+def test_create_tables():
+    # Default Plans
+    #Create a Public Use File object
+    cur_path = os.path.abspath(os.path.dirname(__file__))
+    tax_dta_path = os.path.join(cur_path, "../../tax_all91_puf.gz")
+    # Create a default Parameters object
+    params1 = Parameters(start_year=91)
+    records1 = Records(tax_dta_path)
+    # Create a Calculator
+    calc1 = Calculator(parameters=params1, records=records1)
+    calc1.calc_all()
+
+    # User specified Plans
+    user_mods = '{"_II_rt4": [0.56]}'
+    params2 = Parameters(start_year=91)
+    records2 = Records(tax_dta_path)
+    # Create a Calculator
+    calc2 = calculator(parameters=params2, records=records2, mods=user_mods)
+    calc2.calc_all()
+
+    t2 = create_distribution_table(calc2, groupby="soi_agi_bins", result_type = "weighted_sum")
+    tdiff = create_difference_table(calc1, calc2, groupby="tpc_agi_bins")
+
+
+def test_weighted_count_lt_zero():
+    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    grped = df.groupby('label')
+    diffs = grped.apply(weighted_count_lt_zero, 'tax_diff')
+    exp = Series(data=[4, 0], index=['a', 'b'])
+    assert_series_equal(exp, diffs)
+
+
+def test_weighted_count_gt_zero():
+    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    grped = df.groupby('label')
+    diffs = grped.apply(weighted_count_gt_zero, 'tax_diff')
+    exp = Series(data=[8, 10], index=['a', 'b'])
+    assert_series_equal(exp, diffs)
+ 
+
+def test_weighted_count():
+    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    grped = df.groupby('label')
+    diffs = grped.apply(weighted_count)
+    exp = Series(data=[12, 10], index=['a', 'b'])
+    assert_series_equal(exp, diffs)
+ 
+
+def test_weighted_mean():
+    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    grped = df.groupby('label')
+    diffs = grped.apply(weighted_mean, 'tax_diff')
+    exp = Series(data=[16.0/12.0, 26.0/10.0], index=['a', 'b'])
+    assert_series_equal(exp, diffs)
+ 
+
+def test_weighted_sum():
+    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    grped = df.groupby('label')
+    diffs = grped.apply(weighted_sum, 'tax_diff')
+    exp = Series(data=[16.0, 26.0], index=['a', 'b'])
+    assert_series_equal(exp, diffs)
+ 
+
+def test_weighted_perc_inc():
+    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    grped = df.groupby('label')
+    diffs = grped.apply(weighted_perc_inc, 'tax_diff')
+    exp = Series(data=[8./12., 1.0], index=['a', 'b'])
+    assert_series_equal(exp, diffs)
+
+
+def test_weighted_perc_dec():
+    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    grped = df.groupby('label')
+    diffs = grped.apply(weighted_perc_dec, 'tax_diff')
+    exp = Series(data=[4./12., 0.0], index=['a', 'b'])
+    assert_series_equal(exp, diffs)
+
+
+def test_weighted_share_of_total():
+    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    grped = df.groupby('label')
+    diffs = grped.apply(weighted_share_of_total, 'tax_diff', 42.0)
+    exp = Series(data=[16.0/42., 26.0/42.0], index=['a', 'b'])
+    assert_series_equal(exp, diffs)
+
+
+def test_groupby_income_bins():
+    data = np.arange(1,1e6, 5000)
+    df = DataFrame(data=data, columns=['c00100'])
+    bins = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+            200000, 1e14]
+    grpd = groupby_income_bins(df, compare_with ="tpc", bins = None)
+    grpd = grpd.groupby('bins')
+    grps = [grp for grp in grpd]
+
+    for g, num in zip(grps, bins[1:-1]):
+        print g[0]
+        assert g[0].endswith(str(num) + "]")
+
+    grpdl = groupby_income_bins(df, compare_with ="tpc", bins = None, right=False)
+    grpdl = grpdl.groupby('bins')
+    grps = [grp for grp in grpdl]
+
+    for g, num in zip(grps, bins[1:-1]):
+        assert g[0].endswith(str(num) + ")")
