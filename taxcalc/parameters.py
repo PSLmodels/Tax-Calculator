@@ -35,17 +35,17 @@ class Parameters(object):
             self._inflation_rates = [inflation_rate] * budget_years
 
         if inflation_rates:
-	    assert len(inflation_rates) == budget_years
-	    self._inflation_rates = inflation_rates
+            assert len(inflation_rates) == budget_years
+            self._inflation_rates = inflation_rates
 
-	self._current_year = start_year
-	self._start_year = start_year
+        self._current_year = start_year
+        self._start_year = start_year
 
 
-	if data:
-	    self._vals = data
-	else:
-	    self._vals = default_data(metadata=True)
+        if data:
+            self._vals = data
+        else:
+            self._vals = default_data(metadata=True)
 
         # INITIALIZE
         for name, data in self._vals.items():
