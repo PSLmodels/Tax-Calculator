@@ -116,6 +116,7 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
                  ID_Casualty_frt, ID_Miscellaneous_frt, ID_Charity_crt_Cash, 
                  ID_Charity_crt_Asset, ID_prt, ID_crt, ID_StateLocalTax_HC, 
                  puf):
+
     """
     WARNING: Any additional keyword args, such as 'puf=True' here, must be passed
     to the function at the END of the argument list. If you stick the argument
@@ -165,7 +166,7 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     c21060 = (e20900 + c17000 + (1-ID_StateLocalTax_HC)*c18300 + c19200 + 
               c19700 + c20500 + c20800 + e21000 + e21010)
 
-    _phase2_i = ID_pe[MARS-1]
+    _phase2_i = ID_ps[MARS-1]
 
     _nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
     _limitratio = _phase2_i/_sep
@@ -198,14 +199,21 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
             _nonlimited, _limitratio, c04470, c21040)
 
 
-@iterate_jit(parameters=["SS_Income_c", "FICA_trt"], nopython=True)
+@iterate_jit(parameters=["SS_Income_c", "FICA_ss_trt", "FICA_mc_trt"], 
+    nopython=True)
 def EI_FICA(   e00900, e02100, SS_Income_c, e00200,
-                    e11055, e00250, e30100, FICA_trt):
+                    e11055, e00250, e30100, FICA_ss_trt, FICA_mc_trt):
     # Earned Income and FICA #
 
     _sey = e00900 + e02100
-    _fica = max(0, FICA_trt * min(SS_Income_c, e00200 + max(0, _sey) * 0.9235))
-    _setax = max(0, _fica - FICA_trt * e00200)
+    _fica_ss = max(0, FICA_ss_trt * min(SS_Income_c, e00200
+                 + max(0, _sey) * (1 - 0.5 * (FICA_mc_trt+FICA_ss_trt))))
+    _fica_mc = max(0, FICA_mc_trt * (e00200 + max(0, _sey))
+                *(1 - 0.5 * (FICA_mc_trt+FICA_ss_trt)))
+
+    _fica = _fica_mc + _fica_ss
+
+    _setax = max(0, _fica - (FICA_ss_trt+FICA_mc_trt) * e00200)
     
     if _setax <= 14204:
         _seyoff = 0.5751 * _setax
@@ -218,26 +226,29 @@ def EI_FICA(   e00900, e02100, SS_Income_c, e00200,
 
     return (_sey, _fica, _setax, _seyoff, c11055, _earned)
 
+@iterate_jit(parameters=["AMED_thd", "AMED_trt", "FICA_ss_trt", 
+                         "FICA_mc_trt"], nopython=True)
+def AMED(e00200, MARS, AMED_thd, _sey, AMED_trt, FICA_mc_trt, FICA_ss_trt):
+    _amed = AMED_trt * max(0, e00200 
+                + max(0, _sey) * (1 - 0.5 * (FICA_mc_trt+FICA_ss_trt))
+                - AMED_thd[MARS-1]) 
+
+    return _amed
 
 @iterate_jit(parameters=["puf", "STD", "STD_Aged", "II_rt1", "II_rt2", "II_rt3", "II_rt4", 
              "II_rt5", "II_rt6", "II_rt7", "II_brk1", "II_brk2", "II_brk3", "II_brk4", "II_brk5", 
-            "II_brk6", "std2008"], nopython=True, puf=True)
+            "II_brk6"], nopython=True, puf=True)
 def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
             MARS, MIDR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200, e02400, STD_Aged,
             c04470, c00100, c21060, c21040, e37717, c04600, e04805, t04470, 
             f6251, _feided, c02700, FDED, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
-            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, _fixup, std2008, puf):
+            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, _fixup, 
+            _compitem, _txpyers, _numextra,  puf):
 
     if DSI == 1:
         c15100 = max(350 + _earned, STD[6])
     else:
         c15100 = 0.
-
-    # std2008a = [5450, 10900, 5450, 8000, 10900, 5450, 900]     
-    if FDED==1 and (e04470 < std2008[MARS-1]): #TODO should be 2008 vals, not current law.  
-        _compitem = 1.
-    else:
-        _compitem = 0.
 
     if (DSI == 1):
         c04100 = min( STD[MARS-1], c15100)
@@ -254,21 +265,8 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
     else:
         x04500 = 0.
 
-    if MARS == 2 or MARS == 3 or MARS == 6:
-        _txpyers = 2.
-    else:
-        _txpyers = 1.
-        
     if puf:
-        if FDED == 2 and e04470 > STD[MARS - 1]:
-            if MARS != 2:
-                _numextra = (e04470 - STD[MARS - 1])/float(STD_Aged[0])
-            else:
-                _numextra = (e04470 - STD[MARS - 1])/float(STD_Aged[1])
-        elif e02400 > 0:
-            _numextra = float(_txpyers)
-        else:
-            _numextra = 0.
+        _numextra = _numextra
     else:
         _numextra = float(AGEP + AGES + PBI + SBI)
 
@@ -302,6 +300,8 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
     if c04470 > _standard:
         _standard = 0
 
+    if c04470 <= _standard:
+        c04470 = 0
 
     #why is this here, c60000 is reset many times? 
     if _standard > 0:
@@ -332,9 +332,9 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
     else:
         _feitax, _oldfei = 0., 0.
 
-    return (c15100, _numextra, _txpyers, c15200,
+    return (c15100, _numextra, _txpyers, c15200, c04470,
                   _othded, c04100, c04200, _standard, c04500,
-                 c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei)
+                 c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei, _compitem)
 
 
 @iterate_jit(parameters=["II_rt1", "II_rt2", "II_rt3", "II_rt4", "II_rt5", "II_rt6", "II_rt7",
@@ -647,6 +647,7 @@ def AMTI(   c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
         c62100 = (c00100 - c04470 + min(c17000, 0.025 * max(0., c00100))  # medical should only be for over 65
                 + (1-ID_StateLocalTax_HC)*_sit + e18500 - c60260 + c20800 
                 - c21040 ) 
+
         # c62100 += _cmbtp
 
 
@@ -1296,7 +1297,7 @@ def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
                 e07500, e07700, e08000, e07240, e08001, e07960, e07970,
                 SOIYR, e07980, c05800, e08800, e09900, e09400, e09800, 
                 e10000, e10100, e09700, e10050, e10075, e09805, e09710,
-                c59660, c07180, _eitc, c59680, NIIT, puf ):
+                c59660, c07180, _eitc, c59680, NIIT,_amed, puf ):
 
     # Allocate credits to tax in order on the tax form
     _avail = c05800
@@ -1345,8 +1346,8 @@ def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
         e08795 = 0.
 
     # Tax before refundable credits
-    _othertax = e09900 + e09400 + e09800 + e10100 + NIIT
-    c09200 = _othertax + c08795 + e10000
+    _othertax = e09900 + e09400 + e09800 + e10100 + NIIT + _amed
+    c09200 = _othertax + c08795 + e10000 
 
     #assuming year (FLPDYR) > 2009
     c09200 = c09200 + e09700 + e10050 + e10075 + e09805 + e09710 + e09720
@@ -1427,48 +1428,7 @@ def OSPC_TAX( c09200, c59660, c11070, c10960, c11600, c10950 , _eitc, e11580,
 @jit(nopython=True)
 def Taxer_i(inc_in, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
             II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
-    ## note still should pass in all globals being used, including _rt1-_rt7 and _brk1-_brk6
-
-    # low = 0 
-    # med = 0
-
-    # if inc_in < 3000:
-    #     low = 1 
-
-    # elif inc_in >=3000 and inc_in < 100000:
-    #     med = 1 
-
-    # _a1 = inc_in * 0.01
-
-    # # if _a1 < 0:
-    # #     _a2 = math.floor(_a1) - 1 
-    # # else: _a2 = math.floor(_a1)
-    # _a2 = math.floor(_a1)
-
-    # _a3 = _a2 * 100
-
-    # _a4 = (_a1 - _a2) * 100
-
-    # _a5 = 0
-
-    # if low == 1 and _a4 < 25:
-    #     _a5 = 13
-    # elif low == 1 and (25 <= _a4 < 50):
-    #     _a5 = 38
-    # elif low == 1 and (50 <= _a4 < 75):
-    #     _a5 = 63
-    # elif low == 1 and _a4 >= 75:
-    #     _a5 = 88
-    # elif med == 1 and _a4 < 50:
-    #     _a5 = 25
-    # elif med == 1 and _a4 >= 50: 
-    #     _a5 = 75
-    # if inc_in == 0:
-    #     _a5 = 0
-
-    # if low == 1 or med == 1:
-    #     _a6 = _a3 + _a5 
-    # else: _a6 = inc_in
+   
 
     _a6 = inc_in
 
