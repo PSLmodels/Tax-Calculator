@@ -41,7 +41,7 @@ class Parameters(object):
         self._current_year = start_year
         self._start_year = start_year
         
-	if data:
+        if data:
             self._vals = data
         else:
             self._vals = default_data(metadata=True)
