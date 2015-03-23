@@ -107,12 +107,12 @@ def AGI(   _ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
 
 @iterate_jit(parameters=["puf", "ID_pe","ID_Medical_frt", "ID_Casualty_frt",
                          "ID_Miscellaneous_frt", "ID_Charity_crt_Cash",
-                         "ID_Charity_crt_Asset", "ID_prt", "ID_crt", 
+                         "ID_Charity_crt_Asset", "ID_prt", "ID_crt", "ID_ps", 
                          "ID_StateLocalTax_HC"], nopython=True, puf=True)
 def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
                  e20500, e20400, e19200, e20550, e20600, e20950, e19500, 
                  e19570, e19400, e19550, e19800, e20100, e20200, e20900, 
-                 e21000, e21010, MARS, _sep, c00100, ID_pe,ID_Medical_frt, 
+                 e21000, e21010, MARS, _sep, c00100, ID_ps,ID_Medical_frt, 
                  ID_Casualty_frt, ID_Miscellaneous_frt, ID_Charity_crt_Cash, 
                  ID_Charity_crt_Asset, ID_prt, ID_crt, ID_StateLocalTax_HC, 
                  puf):
