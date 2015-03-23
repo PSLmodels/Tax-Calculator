@@ -186,7 +186,6 @@ def test_groupby_income_bins():
     grps = [grp for grp in grpd]
 
     for g, num in zip(grps, bins[1:-1]):
-        print g[0]
         assert g[0].endswith(str(num) + "]")
 
     grpdl = groupby_income_bins(df, compare_with ="tpc", bins = None, right=False)
