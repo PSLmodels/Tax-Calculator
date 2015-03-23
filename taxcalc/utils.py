@@ -269,12 +269,12 @@ def create_distribution_table(calc, groupby, result_type):
     
     if groupby == "weighted_deciles":
         df = groupby_weighted_decile(res)
-    elif groupby == "soi_agi_bins":       
+    elif groupby == "small_agi_bins":       
         df = groupby_income_bins(res, "soi")
-    elif groupby == "tpc_agi_bins":
+    elif groupby == "large_agi_bins":
         df = groupby_income_bins(res, "tpc")
     else:
-        err = "groupby must be either 'weighted_deciles' or 'soi_agi_bins' or 'tpc_agi_bins'"
+        err = "groupby must be either 'weighted_deciles' or 'small_agi_bins' or 'large_agi_bins'"
         raise ValueError(err)
     
     pd.options.display.float_format = '{:8,.0f}'.format
@@ -289,12 +289,12 @@ def create_difference_table(calc1, calc2, groupby):
     res2 = results(calc2)
     if groupby == "weighted_deciles":
         df = groupby_weighted_decile(res2)
-    elif groupby == "soi_agi_bins":
-        df = groupby_income_bins(res2)
-    elif groupby == "tpc_agi_bins":
-        df = groupby_income_bins(res2)
+    elif groupby == "small_agi_bins":
+        df = groupby_income_bins(res2, "soi")
+    elif groupby == "large_agi_bins":
+        df = groupby_income_bins(res2, "tpc")
     else:
-        err = "groupby must be either 'weighted_deciles' or 'agi_bins'"
+        err = "groupby must be either 'weighted_deciles' or 'small_agi_bins' or 'large_agi_bins'"
         raise ValueError(err)
 
 

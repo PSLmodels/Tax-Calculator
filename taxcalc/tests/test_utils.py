@@ -108,8 +108,8 @@ def test_create_tables():
     calc2 = calculator(parameters=params2, records=records2, mods=user_mods)
     calc2.calc_all()
 
-    t2 = create_distribution_table(calc2, groupby="soi_agi_bins", result_type = "weighted_sum")
-    tdiff = create_difference_table(calc1, calc2, groupby="tpc_agi_bins")
+    t2 = create_distribution_table(calc2, groupby="small_agi_bins", result_type = "weighted_sum")
+    tdiff = create_difference_table(calc1, calc2, groupby="large_agi_bins")
 
 
 def test_weighted_count_lt_zero():
