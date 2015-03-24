@@ -268,7 +268,7 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
     if _exact == 1 and MARS == 3 or MARS == 5:
         c04200 = e04200
     else:
-        c04200 = _numextra * STD_Aged[int(_txpyers - 1)]
+        c04200 = _numextra * STD_Aged[MARS-1]
 
     c15200 = c04200
 
@@ -1022,7 +1022,7 @@ def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
 
     if _ctcagi > CTC_ps[MARS - 1] and _exact == 1:
         _precrd = max(0., _precrd - CTC_prt* 
-                    math.ceil(_ctcagi - _CTC_ps[MARS - 1]))
+                    math.ceil(_ctcagi - CTC_ps[MARS - 1]))
 
     if _ctcagi > CTC_ps[MARS - 1] and _exact != 1:
         _precrd = max(0., _precrd - CTC_prt * 

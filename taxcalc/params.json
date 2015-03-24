@@ -89,10 +89,10 @@
 		      2014,
 		      2015],
         "cpi_inflated": true,
-        "col_label": ["Unmarried", "Married"],
-        "value":      [[1500, 1200],
-		       [1550, 1200],
-		       [1550, 1250]]
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value":      [[1500, 1200, 1200, 1500, 1500, 1200 ],
+		               [1550, 1200, 1200, 1500, 1550, 1200],
+		               [1550, 1250, 1250, 1550, 1550, 1250]]
 
     },
 
