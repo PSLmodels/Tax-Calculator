@@ -46,7 +46,7 @@
         "row_label": "NA",
         "cpi_inflated": false,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value":      [25000,    32000,   0,          25000,               25000,   0]
+        "value":      [[25000,    32000,   0,          25000,               25000,   0]]
         
     },
      "_SS_thd85":{
@@ -60,7 +60,7 @@
         "row_label": "NA",
         "cpi_inflated": false,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value":      [34000,    44000,   0,          34000,               34000,   0]
+        "value":      [[34000,    44000,   0,          34000,               34000,   0]]
         
     },
      "_ACTC_rt":{
@@ -580,7 +580,7 @@
         "row_label": "NA",
         "cpi_inflated": false,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
-        "value":     [75000,     110000,  55000,      75000,               75000,   55000]
+        "value":     [[75000,     110000,  55000,      75000,               75000,   55000]]
     },
     "_NIIT_thd":{
         "long_name": "Additional Medicare Tax Income Threshold",
@@ -593,7 +593,7 @@
         "row_label": "NA",
         "cpi_inflated": false,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
-        "value":     [200000, 250000, 125000, 200000, 250000, 125000]
+        "value":     [[200000, 250000, 125000, 200000, 250000, 125000]]
     },
     "_II_em_ps":{
         "long_name": "Personal Exemption Phaseout Starting Income",
