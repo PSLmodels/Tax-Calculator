@@ -57,7 +57,6 @@ class Calculator(object):
         return cls(params, recs)
 
 
-
     def __init__(self, parameters=None, records=None, sync_years=True, **kwargs):
 
         if isinstance(parameters, Parameters):
@@ -81,6 +80,11 @@ class Calculator(object):
 
         assert self._parameters.current_year == self._records.current_year
 
+    def __deepcopy__(self, memo):
+        import copy
+        params = copy.deepcopy(self._parameters)
+        recs = copy.deepcopy(self._records)
+        return Calculator(params, recs)
 
     @property
     def parameters(self):
