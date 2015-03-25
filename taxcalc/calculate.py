@@ -21,10 +21,13 @@ def add_df(alldfs, df):
 
 def calculator(parameters, records, mods="", **kwargs):
     if mods:
-        import json
-        dd = json.loads(mods)
-        dd = {k:np.array(v) for k,v in dd.items() if type(v) == list}
-        kwargs.update(dd)
+        if isinstance(mods, str):
+            import json
+            dd = json.loads(mods)
+            dd = {k:np.array(v) for k,v in dd.items() if type(v) == list}
+            kwargs.update(dd)
+        else:
+            kwargs.update(mods)
 
     calc = Calculator(parameters, records)
     if kwargs:
@@ -54,7 +57,6 @@ class Calculator(object):
         return cls(params, recs)
 
 
-
     def __init__(self, parameters=None, records=None, sync_years=True, **kwargs):
 
         if isinstance(parameters, Parameters):
@@ -78,6 +80,11 @@ class Calculator(object):
 
         assert self._parameters.current_year == self._records.current_year
 
+    def __deepcopy__(self, memo):
+        import copy
+        params = copy.deepcopy(self._parameters)
+        recs = copy.deepcopy(self._records)
+        return Calculator(params, recs)
 
     @property
     def parameters(self):
@@ -142,6 +149,7 @@ class Calculator(object):
         AGI(self.parameters, self.records)
         ItemDed(self.parameters, self.records)
         EI_FICA(self.parameters, self.records)
+        AMED(self.parameters, self.records)
         StdDed(self.parameters, self.records)
         XYZD(self.parameters, self.records)
         NonGain(self.parameters, self.records)
@@ -173,6 +181,7 @@ class Calculator(object):
         add_df(all_dfs, AGI(self.parameters, self.records))
         add_df(all_dfs, ItemDed(self.parameters, self.records))
         add_df(all_dfs, EI_FICA(self.parameters, self.records))
+        add_df(all_dfs, AMED(self.parameters, self.records))
         add_df(all_dfs, StdDed(self.parameters, self.records))
         add_df(all_dfs, XYZD(self.parameters, self.records))
         add_df(all_dfs, NonGain(self.parameters, self.records))

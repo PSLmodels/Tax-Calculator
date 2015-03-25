@@ -71,6 +71,8 @@ def run(puf=True):
     exp_set.add('_refund')
     exp_set.add('_othertax')
     exp_set.add('NIIT')
+    exp_set.add('_amed')
+    exp_set.add('_compitem')
     cur_set = set(totaldf.columns)
 
     assert(exp_set == cur_set)
@@ -95,6 +97,14 @@ def test_make_Calculator():
     # Create a Parameters object
     params = Parameters(start_year=91)
     calc = Calculator(params, puf)
+
+
+def test_make_Calculator_deepcopy():
+    import copy
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+    calc = Calculator(params, puf)
+    calc2 = copy.deepcopy(calc)
 
 
 def test_make_Calculator_from_files(paramsfile):
@@ -132,6 +142,22 @@ def test_make_Calculator_json():
     assert all(calc2.II_em == np.array([4000]))
     assert all(calc2._STD_Aged == np.array([[1500], [1200]]))
     assert all(calc2.STD_Aged == np.array([1500]))
+
+
+def test_make_Calculator_user_mods_as_dict():
+
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+
+    # Create a Public Use File object
+    puf = Records(tax_dta)
+
+    user_mods = { "_STD_Aged": [[1400, 1200]] }
+    user_mods['_II_em'] = [3925, 4000, 4100]
+    calc2 = calculator(params, puf, mods=user_mods)
+    assert calc2.II_em == 3925
+    assert all(calc2._II_em == np.array([3925, 4000, 4100]))
+    assert all(calc2.STD_Aged == np.array([1400, 1200]))
 
 
 def test_make_Calculator_empty_params_is_default_params():
@@ -227,7 +253,6 @@ def test_diagnostic_table():
     calc = Calculator(parameters=params, records=puf, sync_years=False)
 
     calc.diagnostic_table()
-
 
 
 class TaxCalcError(Exception):
