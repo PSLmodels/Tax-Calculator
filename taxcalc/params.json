@@ -64,7 +64,7 @@
         
     },
      "_ACTC_rt":{
-        "long_name": "Additiol Child Tax Credit Rate",
+        "long_name": "Additional child tax credit rate",
 	    "description": "AKA rate for refundable portion of CTC; Apply this rate to earned income in excess of $3000*, to get the ACTC amount, which is capped at the amount of unclaimed nonrefundable CTC.",
         "irs_ref": "Form 8812, line 6, inline.",
         "notes": "",
@@ -97,7 +97,7 @@
     },
 
      "_AMT_Child_em":{
-        "long_name": "Child AMT Exemption Additiol Income Base",
+        "long_name": "Child AMT exemption additional income base",
 	    "description": "Add this amount to one child's income to get the total income base for exemption.",
         "irs_ref": "Form 6251, line 29, instruction.",
         "notes": "",
@@ -167,7 +167,7 @@
         
     },
      "_KT_c_Age":{
-        "long_name": "Maximum Age subject to Kiddie Tax",
+        "long_name": "Maximum age subject to Kiddie Tax",
 	    "description": "Under this age, the individual is subject to either AMT or Kiddie Tax.",
         "irs_ref": "Form 6251, line 28, instruction.",
         "notes": "",
@@ -181,7 +181,7 @@
         
     },
      "_AMT_em_pe":{
-        "long_name": "AMT Exemption Phaseout ending AMTI (Married filling Separately)",
+        "long_name": "AMT exemption phaseout ending AMTI (Married filling Separately)",
 	    "description": "Individuals with married filing separately need to add extra amount to AMTI beyond this AMTI level",
         "irs_ref": "Form 6251, line 28, instruction.",
         "notes": "",
@@ -221,7 +221,7 @@
         
     },	
     "_DCC_c":{
-        "long_name": "Max Dependent Care Credit",
+        "long_name": "Max dependent care credit",
 	    "description": "",
         "irs_ref": "Form 2441, line 3c, in-line.",
         "notes": "",
@@ -235,7 +235,7 @@
         
     },
      "_EITC_InvestIncome_c":{
-        "long_name": "Max Disqualifying Income for EITC",
+        "long_name": "Max disqualifying income for EITC",
 	    "description": "The earned income credit may not be claimed by taxpayers whose investment income exceeds this limit.",
         "irs_ref": "Form 1040, line 66a&b, instruction(step2)",
         "notes": "",
@@ -252,7 +252,7 @@
                     3400]    
     },	
      "_ACTC_Income_thd":{
-        "long_name": "ACTC Income Threshold",
+        "long_name": "ACTC income threshold",
 	    "description": "The portion of earned income below this threshold does not count as base for earned income credit.",
         "irs_ref": "Form 2441, line 3, in-line.",
         "notes": "",
@@ -276,7 +276,7 @@
         
     },	
     "_ETC_pe_Single":{
-        "long_name": "Education Tax Credit Phaseout Ends (Single)",
+        "long_name": "Education tax credit phaseout ends (Single)",
 	    "description": "The education tax credit will be zero for those tax payers of single filing status with modified AGI level (in thousands) higher than this level.",
         "irs_ref": "Form 8863, line 13, inline.",
         "notes": "",
@@ -294,7 +294,7 @@
         
     },
     "_ETC_pe_Married":{
-        "long_name": "Education Tax Credit Phaseout Ends (Married)",
+        "long_name": "Education tax credit phaseout ends (Married)",
 	    "description": "The education tax credit will be zero for those tax payers of married filing status with modified AGI level (in thousands) higher than this level.",
         "irs_ref": "Form 8863, line 13, inline.",
         "notes": "",
@@ -348,7 +348,7 @@
         
     },
      "_LLC_Expense_c":{
-        "long_name": "Lifetime Learning Credit Expense Limit",
+        "long_name": "Lifetime learning credit expense limit",
 	    "description": "The maximum expense eligible for lifetime learning credit.",
         "irs_ref": "Form 8863, line 11, in-line.",
         "notes": "",
@@ -362,7 +362,7 @@
         
     },	
      "_CDCC_crt":{
-        "long_name": "Maximum Child and Dependent Care Credit Rate",
+        "long_name": "Maximum child and dependent care credit rate",
 	    "description": "This rate is the maximum rate that applied on AGI for child and dependent care credit; This rate decreases as AGI goes up.",
         "irs_ref": "Form 2241, line 8, in-line.",
         "notes": "",
@@ -933,7 +933,7 @@
         "long_name": "Additional AMT rate for AMTI above the surtax threshold",
 	    "description": "Add this rate to the tax rate for AMT income under the threshold to get the actual above threshold tax rate.",
         "irs_ref": "Form , line , ",
-        "notes": "This is the additiol tax rate (on top of .26) for AMT income above certain threshold",
+        "notes": "This is the additional tax rate (on top of .26) for AMT income above certain threshold",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -1050,7 +1050,7 @@
         "value":     [0]        
     },
     "_CDCC_ps":{
-        "long_name": "Child and Dependent Care Credit phaseout start",
+        "long_name": "Child and dependent care credit phaseout start",
 	    "description": "For taxpayers with AGI over this amount, the credit, under the current law, is reduced by one percentage point each $2000 of AGI over this amount. ",
         "start_year": 2013,
         "col_var": "",
@@ -1062,7 +1062,7 @@
         "value":      [15000]        
     },
     "_AMED_thd":{
-        "long_name": "Additiol Medicare Threshold",
+        "long_name": "Additional medicare threshold",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
@@ -1073,7 +1073,7 @@
         "value":[    [200000,    250000,  125000,     200000,              200000, 125000]]
     },
     "_AMED_trt":{
-        "long_name": "Additiol Medicare tax rate",
+        "long_name": "Additional medicare tax rate",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
@@ -1096,7 +1096,7 @@
         "value": [0] 
     },
     "_CG_rt2":{
-        "long_name": "Capital Gain rate2 (Coming Soon.......)",
+        "long_name": "Capital gain rate2 (Coming Soon.......)",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
@@ -1108,7 +1108,7 @@
         "value": [0]
     },
         "_CG_rt3":{
-        "long_name": "Capital Gain Rate 3 (Coming Soon.......)",
+        "long_name": "Capital gain rate 3 (Coming Soon.......)",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
@@ -1119,7 +1119,7 @@
         "value": [0] 
     },
         "_CG_thd1":{
-        "long_name": "Capital Gain Threshold 1 (Coming Soon.......)",
+        "long_name": "Capital gain threshold 1 (Coming Soon.......)",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
@@ -1130,7 +1130,7 @@
         "value": [0] 
     },
         "_CG_thd2":{
-        "long_name": "Capital Gain Threshold 2 (Coming Soon.......)",
+        "long_name": "Capital gain threshold 2 (Coming Soon.......)",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
@@ -1165,7 +1165,7 @@
         "value": [0]
     },    
     	"_Dividend_rt3":{
-        "long_name": "Dividend Rate 3 (Coming Soon.......)",
+        "long_name": "Dividend rate 3 (Coming Soon.......)",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
@@ -1177,7 +1177,7 @@
         "value": [0]
     },
     	"_Dividend_thd1":{
-        "long_name": "Dividend Threshold 1 (Coming Soon.......)",
+        "long_name": "Dividend threshold 1 (Coming Soon.......)",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
@@ -1189,7 +1189,7 @@
         "value": [0]
     },
     	"_Dividend_thd2":{
-        "long_name": "Dividend Threshold 2 (Coming Soon.......)",
+        "long_name": "Dividend threshold 2 (Coming Soon.......)",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
@@ -1201,7 +1201,7 @@
         "value": [0]
     },
     	"_Dividend_thd3":{
-        "long_name": "Dividend Threshold 3 (Coming Soon.......)",
+        "long_name": "Dividend threshold 3 (Coming Soon.......)",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
