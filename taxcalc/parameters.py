@@ -40,6 +40,7 @@ class Parameters(object):
 
         self._current_year = start_year
         self._start_year = start_year
+        self._budget_years = budget_years
 
 
         if data:
@@ -56,6 +57,27 @@ class Parameters(object):
                 num_years=budget_years))
 
         self.set_year(start_year)
+
+    def update(self, mods):
+        """
+        Take a dictionary of modifications and set them on this Parameters object.
+        'mods' is a dictionary of key:value pairs and key_cpi:Bool pairs. The key_cpi:Bool
+        pairs indicate if the value for 'key' should be inflated
+
+        Parameters:
+        ----------
+        mods: dict
+        """
+        for name, values in mods.items():
+            if name.endswith("_cpi"):
+                continue
+            cpi_inflated = mods.get(name + "_cpi", False)
+            setattr(self, name, expand_array(np.array(values),
+                inflate=cpi_inflated, inflation_rates=self.__rates,
+                num_years=self._budget_years))
+
+        # Set up the '_X = [a, b,...]' variables as 'X = a'
+        self.set_year(self._current_year)
 
     @property
     def current_year(self):

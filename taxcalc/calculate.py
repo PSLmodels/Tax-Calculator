@@ -20,22 +20,20 @@ def add_df(alldfs, df):
 
 
 def calculator(parameters, records, mods="", **kwargs):
+    update_mods = {}
     if mods:
         if isinstance(mods, str):
             import json
             dd = json.loads(mods)
             dd = {k:np.array(v) for k,v in dd.items() if type(v) == list}
-            kwargs.update(dd)
+            update_mods.update(dd)
         else:
-            kwargs.update(mods)
+            update_mods.update(mods)
 
+    update_mods.update(kwargs)
+    parameters.update(update_mods)
     calc = Calculator(parameters, records)
-    if kwargs:
-        calc.__dict__.update(kwargs)
-        for name, vals in kwargs.items():
-            if name.startswith("_"):
-                arr = getattr(calc, name)
-                setattr(calc, name[1:], arr[0])
+
     return calc
 
 class Calculator(object):
