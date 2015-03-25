@@ -95,6 +95,14 @@ def test_make_Calculator():
     calc = Calculator(params, puf)
 
 
+def test_make_Calculator_deepcopy():
+    import copy
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+    calc = Calculator(params, puf)
+    calc2 = copy.deepcopy(calc)
+
+
 def test_make_Calculator_from_files(paramsfile):
     calc = Calculator.from_files(paramsfile.name, tax_dta_path, start_year=91)
     assert calc
@@ -125,11 +133,13 @@ def test_make_Calculator_json():
     # Create a Public Use File object
     puf = Records(tax_dta)
 
-    user_mods = '{ "_STD_Aged": [[1500], [1200]] }'
+    user_mods = '{ "_STD_Aged": [[1500, 1250, 1200, 1500, 1500, 1200 ]] }'
     calc2 = calculator(params, puf, mods=user_mods, _II_em=np.array([4000]))
-    assert all(calc2.II_em == np.array([4000]))
-    assert all(calc2._STD_Aged == np.array([[1500], [1200]]))
-    assert all(calc2.STD_Aged == np.array([1500]))
+    assert calc2.II_em == 4000
+    assert_array_equal(calc2._II_em, np.array([4000]*12))
+    exp_STD_Aged = [[1500, 1250, 1200, 1500, 1500, 1200 ]] * 12
+    assert_array_equal(calc2._STD_Aged, np.array(exp_STD_Aged))
+    assert_array_equal(calc2.STD_Aged, np.array([1500, 1250, 1200, 1500, 1500, 1200 ]))
 
 
 def test_make_Calculator_user_mods_as_dict():
@@ -144,8 +154,36 @@ def test_make_Calculator_user_mods_as_dict():
     user_mods['_II_em'] = [3925, 4000, 4100]
     calc2 = calculator(params, puf, mods=user_mods)
     assert calc2.II_em == 3925
-    assert all(calc2._II_em == np.array([3925, 4000, 4100]))
-    assert all(calc2.STD_Aged == np.array([1400, 1200]))
+    exp_II_em = [3925, 4000] + [4100] * 10
+    assert_array_equal(calc2._II_em, np.array(exp_II_em))
+    assert_array_equal(calc2.STD_Aged, np.array([1400, 1200]))
+
+
+def test_make_Calculator_user_mods_with_cpi_flags(paramsfile):
+
+    calc = Calculator(parameters=paramsfile.name,
+                      records=tax_dta_path, start_year=91)
+
+    user_mods = {"_almdep": [7150, 7250, 7400],
+                 "_almdep_cpi": True,
+                 "_almsep": [40400, 41050],
+                 "_almsep_cpi": False,
+                 "_rt5": [0.33 ],
+                 "_rt7": [0.396]}
+
+    # Create a Parameters object
+    params = Parameters(start_year=91)
+    irates = Parameters._Parameters__rates
+    calc2 = calculator(params, puf, mods=user_mods)
+
+    exp_almdep = expand_array(np.array([7150, 7250, 7400]), inflate=True,
+                       inflation_rates=irates, num_years=12)
+
+    exp_almsep_values = [40400] + [41050] * 11
+    exp_almsep = np.array(exp_almsep_values)
+
+    assert_array_equal(calc2._almdep, exp_almdep)
+    assert_array_equal(calc2._almsep, exp_almsep)
 
 
 def test_make_Calculator_empty_params_is_default_params():
