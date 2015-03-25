@@ -133,14 +133,13 @@ def test_make_Calculator_json():
     # Create a Public Use File object
     puf = Records(tax_dta)
 
-    user_mods = '{ "_STD_Aged": [[1500], [1200]] }'
+    user_mods = '{ "_STD_Aged": [[1500, 1250, 1200, 1500, 1500, 1200 ]] }'
     calc2 = calculator(params, puf, mods=user_mods, _II_em=np.array([4000]))
     assert calc2.II_em == 4000
-
     assert_array_equal(calc2._II_em, np.array([4000]*12))
-    exp_STD_Aged = [[1500]] + [[1200]] * 11
+    exp_STD_Aged = [[1500, 1250, 1200, 1500, 1500, 1200 ]] * 12
     assert_array_equal(calc2._STD_Aged, np.array(exp_STD_Aged))
-    assert_array_equal(calc2.STD_Aged, np.array([1500]))
+    assert_array_equal(calc2.STD_Aged, np.array([1500, 1250, 1200, 1500, 1500, 1200 ]))
 
 
 def test_make_Calculator_user_mods_as_dict():
