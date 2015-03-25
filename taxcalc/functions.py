@@ -58,20 +58,19 @@ def CapGains(  e23250, e22250, e23660, _sep, _feided, FEI_ec_c,
     return (c23650, c01000, c02700, _ymod1, _ymod2, _ymod3, _ymod)
 
 
-
-@iterate_jit(parameters=["_SS_thd50", "_SS_thd85", "SS_percentage1", "SS_percentage2"], nopython=True)
-def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, _SS_thd50, _SS_thd85, SS_percentage1, SS_percentage2):
+@iterate_jit(parameters=["SS_thd50", "SS_thd85", "SS_percentage1", "SS_percentage2"], nopython=True)
+def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, SS_thd50, SS_thd85, SS_percentage1, SS_percentage2):
 
     if SSIND !=0 or MARS == 3 or MARS == 6:
         c02500 = e02500
-    elif _ymod < _SS_thd50[MARS-1]:
+    elif _ymod < SS_thd50[MARS-1]:
         c02500 = 0.
-    elif _ymod >= _SS_thd50[MARS-1] and _ymod < _SS_thd85[MARS-1]:
-        c02500 = SS_percentage1 * min(_ymod - _SS_thd50[MARS-1], e02400)
+    elif _ymod >= SS_thd50[MARS-1] and _ymod < SS_thd85[MARS-1]:
+        c02500 = SS_percentage1 * min(_ymod - SS_thd50[MARS-1], e02400)
     else:
-        c02500 = min(SS_percentage2 * (_ymod - _SS_thd85[MARS-1]) +
-                    SS_percentage1 * min(e02400, _SS_thd85[MARS-1] -
-                    _SS_thd50[MARS-1]), SS_percentage2 * e02400)
+        c02500 = min(SS_percentage2 * (_ymod - SS_thd85[MARS-1]) +
+                    SS_percentage1 * min(e02400, SS_thd85[MARS-1] -
+                    SS_thd50[MARS-1]), SS_percentage2 * e02400)
     c02500 = float(c02500)
 
     return (c02500, e02500)
@@ -270,7 +269,7 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
     if _exact == 1 and MARS == 3 or MARS == 5:
         c04200 = e04200
     else:
-        c04200 = _numextra * STD_Aged[int(_txpyers - 1)]
+        c04200 = _numextra * STD_Aged[MARS-1]
 
     c15200 = c04200
 
@@ -789,12 +788,12 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
               _amt25pc, c62747, c62755, c62770, _amt, c62800,
               c09600, _othtax, c05800, _cmbtp)  
 
-@iterate_jit(parameters=["_NIIT_thd", "NIIT_trt"], nopython=True)
-def MUI(c00100, _NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt, NIIT):
+@iterate_jit(parameters=["NIIT_thd", "NIIT_trt"], nopython=True)
+def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt, NIIT):
     # Additional Medicare tax on unearned Income
-    if c00100 > _NIIT_thd[MARS - 1]:
+    if c00100 > NIIT_thd[MARS - 1]:
         NIIT  = NIIT_trt * min(e00300 + e00600 + max(0, c01000)
-                + max(0, e02000), c00100 - _NIIT_thd[MARS - 1])
+                + max(0, e02000), c00100 - NIIT_thd[MARS - 1])
     return NIIT
 
 @iterate_jit(parameters=["DCC_c", "puf"], nopython=True, puf=True)
@@ -1009,8 +1008,8 @@ def NumDep(EICYB1, EICYB2, EICYB3,
                _val_ymax, _preeitc, _val_rtbase, _val_rtless, _dy)
 
 
-@iterate_jit(parameters=["_CTC_ps", "CTC_c", "CTC_prt"], nopython=True)
-def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, _CTC_ps, _exact, 
+@iterate_jit(parameters=["CTC_ps", "CTC_c", "CTC_prt"], nopython=True)
+def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact, 
                         c11070, c07220, c07230, _num, _precrd, _nctcr, CTC_prt):
 
     # Child Tax Credit
@@ -1023,13 +1022,13 @@ def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, _CTC_ps, _exact,
 
     _ctcagi = c00100 + _feided
 
-    if _ctcagi > _CTC_ps[MARS - 1] and _exact == 1:
+    if _ctcagi > CTC_ps[MARS - 1] and _exact == 1:
         _precrd = max(0., _precrd - CTC_prt* 
-                    math.ceil(_ctcagi - _CTC_ps[MARS - 1]))
+                    math.ceil(_ctcagi - CTC_ps[MARS - 1]))
 
-    if _ctcagi > _CTC_ps[MARS - 1] and _exact != 1:
+    if _ctcagi > CTC_ps[MARS - 1] and _exact != 1:
         _precrd = max(0., _precrd - CTC_prt * 
-                    (max(0., _ctcagi - _CTC_ps[MARS - 1]) + 500))
+                    (max(0., _ctcagi - CTC_ps[MARS - 1]) + 500))
 
     #TODO get rid of this type declaration
     _precrd = float(_precrd)
