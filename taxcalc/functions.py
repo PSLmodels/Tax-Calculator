@@ -824,8 +824,8 @@ def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt, NIIT, 
         if c00100 > NIIT_thd[MARS - 1]:
             NIIT  = NIIT_trt * min(e00300 + e00600 + max(0, c01000)
                     + max(0, e02000), c00100 - NIIT_thd[MARS - 1])
-        else:
-            NIIT  = 0
+    else:
+        NIIT  = 0
     return NIIT
 
 @iterate_jit(parameters=["DCC_c", "puf"], nopython=True, puf=True)
