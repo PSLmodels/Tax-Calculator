@@ -75,9 +75,9 @@ def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, SS_thd50, SS_thd85, SS_percen
     return (c02500, e02500)
 
 
-@iterate_jit(parameters=["II_em", "II_em_ps", "II_prt"], nopython=True)
+@iterate_jit(parameters=["II_em", "II_em_ps", "II_prt", "switch_PersonalExemption_Phaseout"], nopython=True)
 def AGI(   _ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT, 
-                II_em, II_em_ps, MARS, _sep, _fixup, II_prt):
+                II_em, II_em_ps, MARS, _sep, _fixup, II_prt, switch_PersonalExemption_Phaseout):
 
     # Adjusted Gross Income
 
@@ -94,23 +94,29 @@ def AGI(   _ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
     _ywossbc = c00100 - c02500
 
     _prexmp = XTOT * II_em
+    
     # Personal Exemptions (_phaseout smoothed)
-
-    _dispc_numer = II_prt * (_posagi - II_em_ps[MARS - 1])
-    _dispc_denom = (2500 / _sep)
-    _dispc = min(1, max(0, _dispc_numer / _dispc_denom ))
+    
+    # Personal Exemption phaseout came into effect in 2013.
+    # Switch by default is off for 2011 and 2012, and on for 2013 onwards.
+    if switch_PersonalExemption_Phaseout:   
+        _dispc_numer = II_prt * (_posagi - II_em_ps[MARS - 1])
+        _dispc_denom = (2500 / _sep)
+        _dispc = min(1, max(0, _dispc_numer / _dispc_denom ))
+    else:
+        _dispc = 0
 
     c04600 = _prexmp * (1 - _dispc)
     
     return (c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp, c04600)
 
 @iterate_jit(parameters=["puf", "ID_ps","ID_Medical_frt", "ID_Casualty_frt", "ID_Miscellaneous_frt",
-                         "ID_Charity_crt_Cash","ID_Charity_crt_Asset", "ID_prt", "ID_crt"], nopython=True, puf=True)
+                         "ID_Charity_crt_Cash","ID_Charity_crt_Asset", "ID_prt", "ID_crt", "switch_ID_limitation"], nopython=True, puf=True)
 def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
                  e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
                  e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
                  MARS, _sep, c00100, ID_ps,ID_Medical_frt, ID_Casualty_frt, ID_Miscellaneous_frt,
-                 ID_Charity_crt_Cash, ID_Charity_crt_Asset, ID_prt, ID_crt, puf):
+                 ID_Charity_crt_Cash, ID_Charity_crt_Asset, ID_prt, ID_crt, switch_ID_limitation, puf):
     """
     WARNING: Any additional keyword args, such as 'puf=True' here, must be passed
     to the function at the END of the argument list. If you stick the argument
@@ -159,26 +165,28 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     # Gross Itemized Deductions #
     c21060 = (e20900 + c17000 + c18300 + c19200 + c19700
               + c20500 + c20800 + e21000 + e21010)
-
-    _phase2_i = ID_ps[MARS-1]
-
-    _nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
-    _limitratio = _phase2_i/_sep
-
-    if c21060 > _nonlimited and c00100 > _limitratio:
-        dedmin = ID_crt * (c21060 - _nonlimited)
-        dedpho = ID_prt * max(0, _posagi - _limitratio)
-        c21040 = min(dedmin, dedpho)
+    
+    # Limitation for Itemized Deduction (Pease) starting in 2013
+    # The switch by default is off for 2011 and 2012, and on for 2013 onwards
+    if switch_ID_limitation:
+        _phase2_i = ID_ps[MARS-1]
+    
+        _nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
+        _limitratio = _phase2_i/_sep
+    
+        if c21060 > _nonlimited and c00100 > _limitratio:
+            dedmin = ID_crt * (c21060 - _nonlimited)
+            dedpho = ID_prt * max(0, _posagi - _limitratio)
+            c21040 = min(dedmin, dedpho)
+        else:
+            c21040 = 0.0
     else:
-        c21040 = 0.0
-
-
-    if c21060 > _nonlimited and c00100 > _limitratio:
-        c04470 = c21060 - c21040
-    else:
-        c04470 = c21060
-
-    c20400 = float(c20400)
+        c21040 = 0
+    
+    # Final Itemized Deduction amount
+    c04470 = c21060 - c21040
+                
+    
 
     # the variables that are casted as floats below can be either floats or ints depending
     # on which if/else branches they follow in the above code. they need to always be the same type
@@ -239,31 +247,39 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
             II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, _fixup, 
             _compitem, _txpyers, _numextra,  puf):
 
+
+    # Check whether this taxpayer is a dependent. If so, apply the dependent deduction
     if DSI == 1:
         c15100 = max(350 + _earned, STD[6])
     else:
         c15100 = 0.
 
+    # First make sure the dependent deduction is capped at the regular standard deduction amount
+    # Then Married filing Jointly taxpayers should use itemized dedecion if their spouse filed Itemized Deduction #assumption
+    #      Exclude the compulsory itemizers
+    # Apply the standard deduction
     if (DSI == 1):
         c04100 = min( STD[MARS-1], c15100)
     elif _compitem == 1 or (3 <= MARS and MARS <=6 and MIDR == 1):
         c04100 = 0.
     else:
         c04100 = STD[MARS - 1]
-
+    
+    # Deduct Motor Vehicle Tax
     c04100 = c04100 + e15360
 
+    # ?
     if f6251 == 0 and e04470 == 0:
         x04500 = e00100 - e60000
         c04500 = c00100 - x04500
     else:
         x04500 = 0.
-
+    
+    # Add extra deductions for aged and blind
     if puf:
         _numextra = _numextra
     else:
         _numextra = float(AGEP + AGES + PBI + SBI)
-
 
     if _exact == 1 and MARS == 3 or MARS == 5:
         c04200 = e04200
@@ -272,6 +288,8 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
 
     c15200 = c04200
 
+    # Married filing Jointly taxpayers should use itemized dedecion if their spouse filed Itemized Deduction
+    # Get the standard deduction amount
     if (MARS == 3 or MARS == 6) and (MIDR==1):
         _standard = 0.
     else:
@@ -353,22 +371,25 @@ def NonGain(c23650, e23250, e01100):
 
 
 @iterate_jit(parameters=[ "II_rt1", "II_rt2", "II_rt3", "II_rt4", "II_rt5", "II_rt6", "II_rt7", 
-             "II_brk1", "II_brk2", "II_brk3", "II_brk4", "II_brk5", "II_brk6"], nopython=True)
+             "II_brk1", "II_brk2", "II_brk3", "II_brk4", "II_brk5", "II_brk6", "CG_rt1", "CG_rt2", "CG_rt3"], nopython=True)
 
 def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
                   e58980, e24515, e24518, MARS, _taxinc, _xyztax, _feided, 
                   _feitax, _cmp, e59410, e59420, e59440, e59470, e59400, 
                   e83200_0, e10105, e74400, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, 
-                  II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
-
+                  II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, CG_rt3, CG_rt2, CG_rt1):
+    # Capital Gain tax calculation for regular tax
+       
     c00650 = e00650
     _addtax = 0.
 
+    # check whether this taxpayer has any long-term cap gain or qualified dividends
     if e01000 > 0 or c23650 > 0. or e23250 > 0. or e01100 > 0. or e00650 > 0.:
         _hasgain = 1.
     else:
         _hasgain = 0.
 
+    # calculate cap gain and qualified dividends tax (Form 1040, Schedule D Tax Worksheet)
     if _taxinc > 0. and _hasgain == 1.:
         #if/else 1
         _dwks5 = max(0., e58990 - e58980)
@@ -395,12 +416,13 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
         _dwks17 = max(0., _taxinc - c24516)
         c24540 = max(_dwks16, _dwks17)
         c24534 = c24530 - _dwks16
+        lowest_rate_tax = CG_rt1 * c24534
         _dwks21 = min(_taxinc, c24517)
         c24597 = max(0., _dwks21 - c24534)
 
         #if/else 4
         # income subject to 15% tax
-        c24598 = 0.15 * c24597  # actual 15% tax
+        c24598 = CG_rt2 * c24597  # actual 15% tax
         _dwks25 = min(_dwks9, e24515)
         _dwks26 = c24516 + c24540
         _dwks28 = max(0., _dwks26 - _taxinc)
@@ -411,15 +433,15 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
         c24570 = 0.28 * c24550
 
         if c24540 > II_brk6[MARS - 1]:
-            _addtax = 0.05 * c24517
+            _addtax = (CG_rt3 - CG_rt2) * c24517
 
         elif c24540<= II_brk6[MARS - 1] and _taxinc > II_brk6[MARS - 1]:
-            _addtax = 0.05 * min(c24517, c04800 - II_brk6[MARS - 1])
+            _addtax = (CG_rt3 - CG_rt2) * min(c24517, c04800 - II_brk6[MARS - 1])
 
         c24560 = Taxer_i(c24540, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, 
                          II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6)
 
-        _taxspecial = c24598 + c24615 + c24570 + c24560 + _addtax
+        _taxspecial =  lowest_rate_tax + c24598 + c24615 + c24570 + c24560 + _addtax
         c24580 = min(_taxspecial, _xyztax)
 
     else:
@@ -574,8 +596,8 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 # TODO should we be returning c00650 instead of e00650??? Would need to change tests
 
 
-@iterate_jit(parameters=["AMT_tthd", "II_brk6", "II_brk2", "AMT_Child_em", "cgrate1", 
-                         "cgrate2", "AMT_em_ps", "AMT_em_pe", "KT_c_Age", "AMT_thd_MarriedS", 
+@iterate_jit(parameters=["AMT_tthd", "II_brk6", "II_brk2", "AMT_Child_em", "CG_rt1", 
+                         "CG_rt2", "CG_rt3", "AMT_em_ps", "AMT_em_pe", "KT_c_Age", "AMT_thd_MarriedS", 
                          "AMT_em", "AMT_prt","AMT_trt1", "AMT_trt2", "puf"],
              nopython=True, puf=True)
 def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
@@ -588,8 +610,8 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
                 DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700, 
                 e00100,  e24515, x62730, x60130, 
                 x60220, x60240, c18300, _taxbc, AMT_tthd, 
-                II_brk6, MARS, _sep, II_brk2, AMT_Child_em, cgrate1,
-                cgrate2, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516, 
+                II_brk6, MARS, _sep, II_brk2, AMT_Child_em, CG_rt1,
+                CG_rt2, CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516, 
                 c24520, c04800, e10105, c05700, e05800, e05100, e09600, 
                 KT_c_Age, x62740, e62900, AMT_thd_MarriedS, _earned, e62600, AMT_em,
                 AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer, _cmbtp_standard, puf):
@@ -701,7 +723,7 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
         _amtfei = 0.
 
 
-    c62780 = 0.26 * _alminc + 0.02 * \
+    c62780 = AMT_trt1 * _alminc + AMT_trt2 * \
         max(0., _alminc - AMT_tthd / _sep) - _amtfei
 
     if f6251 != 0:
@@ -719,7 +741,7 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     
     _ngamty = max(0., _alminc - c62740)
 
-    c62745 = 0.26 * _ngamty + 0.02 * \
+    c62745 = AMT_trt1 * _ngamty + AMT_trt2 * \
         max(0., _ngamty - AMT_tthd / _sep)
 
     y62745 = AMT_tthd / _sep
@@ -742,10 +764,10 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     else: 
         _amt25pc = min(_alminc, c62740) - min(_alminc, c62720)
   
-    c62747 = cgrate1 * _amt5pc
+    c62747 = CG_rt1 * _amt5pc
 
     
-    c62755 = cgrate2* _amt15pc
+    c62755 = CG_rt2* _amt15pc
     
     c62770 = 0.25 * _amt25pc
     
@@ -755,12 +777,12 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     _amt = 0.
   
     if _ngamty > II_brk6[MARS - 1]:
-        _amt = 0.05 * min(_alminc, c62740)
+        _amt = (CG_rt3 - CG_rt2) * min(_alminc, c62740)
     else: 
         _amt = 0.
     
     if _ngamty <= II_brk6[MARS - 1] and _alminc > II_brk6[MARS - 1]:
-        _amt = 0.05 * min(_alminc - II_brk6[MARS - 1], c62740)
+        _amt = (CG_rt3 - CG_rt2) * min(_alminc - II_brk6[MARS - 1], c62740)
 
 
     _tamt2 = _tamt2 + _amt
