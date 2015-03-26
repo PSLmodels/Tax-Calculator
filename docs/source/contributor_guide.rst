@@ -73,7 +73,6 @@ Notes: Different versions of the code are stored on different branches of one re
 3. MAKE LOCAL CHANGES! 
 
 
-
 4. As you go, frequently test that your changes have not introduced bugs and/or degraded the accuracy of the tax calculator by running the following from inside ..\tax-calculator\taxcalc
 
 .. code-block:: python
