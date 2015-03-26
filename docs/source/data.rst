@@ -5,7 +5,7 @@ This project relies on a micro dataset that closely reproduces the multivariate 
 
 Documentation
 -------------
-For additional documentation on the core variables used by the Tax Calculator, refer to the `general decription booklet`_.
+For additional documentation on the core variables used by the Tax Calculator, refer to the `general description booklet`_.
 
 
 .. _`CBO forecasts`: https://www.cbo.gov/publication/45066

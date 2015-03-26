@@ -24,4 +24,4 @@ OSPC's Tax Calculator Contributors
 .. _`T.J. Alumbaugh`: https://github.com/talumbau
 .. _`Jake Lyons`: https://github.com/jlyons871
 .. _`Amy Xu`: https://github.com/Amy-Xu
-.. _`John OHare`: http://quantria.com/#team
+.. _`John O'Hare`: http://quantria.com/#team

@@ -1,7 +1,7 @@
 Installation 
 ======================
 
-We recommend that you first install the Anaconda distribution of Python for free from _`Continuum Analytics` 
+We recommend that you first install the Anaconda distribution of Python for free from `Continuum Analytics`_. 
 
 For general users, we keep the `latest version`_ for Python 2.7 and 3.4 under the ospc channel on binstar. To install 
 
@@ -18,7 +18,7 @@ While developing, you can install taxcalc including the most recent local change
 	>>> python setup.py install 
 
 
- For contributors, the conda recipe is located in the ``conda.recipe`` directory. You can build the conda package via the ``conda build`` command:
+For contributors, the conda recipe is located in the ``conda.recipe`` directory. You can build the conda package via the ``conda build`` command:
 
 .. code-block:: python 
 
@@ -28,4 +28,4 @@ To learn more about the conda package manager, go to the `conda docs`_.
 
 .. _`conda docs`: http://conda.pydata.org
 .. _`latest version`: https://binstar.org/ospc/taxcalc 
-.. _`Continuum Analytics`: https://store.continuum.io/cshop/anaconda/
+.. _`Continuum Analytics`: http://continuum.io/downloads
