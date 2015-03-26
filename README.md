@@ -33,7 +33,8 @@ The taxcalc package is installable via `python setup.py install`. We currently t
 conda install -c ospc taxcalc
 ```
 
-which will grab the latest taxcalc package from binstar.org. Currently, we host Python 3.4 packages for Linux and OS X.
+which will grab the latest taxcalc package from binstar.org. Currently, we host Python 2.7 and 3.4 packages for Linux, OS X, and Windows.
+
 For contributors, the conda recipe is located in the `conda.recipe` directory. You can build the conda package via the `conda build` command:
 
 ```
