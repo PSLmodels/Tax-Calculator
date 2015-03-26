@@ -752,6 +752,10 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     _tamt2 = c62747 + c62755 + c62770
  
 
+    #NOTICE: for after 2013 only, original SAS code:
+    #if FLPDYR eq 2013 then do;
+    #    if _ngamty gt _brk6{FLPDYR,MARS} then...
+
     _amt = 0.
   
     if _ngamty > II_brk6[MARS - 1]:
@@ -770,6 +774,10 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     c63000 = c62800 - c62900
     c63100 = _taxbc - e07300 - c05700
     c63100 = c63100 + e10105 
+
+    #NOTICE: will need to change here, original SAS code:
+    #if FLPDYR ge 2011 then c63100 = c63100 + e10105;
+
     c63100 = max(0., c63100)
 
     c63200 = max(0., c63000 - c63100)
@@ -786,12 +794,16 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
               _amt25pc, c62747, c62755, c62770, _amt, c62800,
               c09600, _othtax, c05800, _cmbtp)  
 
-@iterate_jit(parameters=["NIIT_thd", "NIIT_trt"], nopython=True)
-def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt, NIIT):
+@iterate_jit(parameters=["NIIT_thd", "NIIT_trt", "switch_MUI"], nopython=True)
+def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt, NIIT, switch_MUI):
     # Additional Medicare tax on unearned Income
-    if c00100 > NIIT_thd[MARS - 1]:
-        NIIT  = NIIT_trt * min(e00300 + e00600 + max(0, c01000)
-                + max(0, e02000), c00100 - NIIT_thd[MARS - 1])
+    #Updated code
+    if switch_MUI:
+        if c00100 > NIIT_thd[MARS - 1]:
+            NIIT  = NIIT_trt * min(e00300 + e00600 + max(0, c01000)
+                    + max(0, e02000), c00100 - NIIT_thd[MARS - 1])
+        else:
+            NIIT  = 0
     return NIIT
 
 @iterate_jit(parameters=["DCC_c", "puf"], nopython=True, puf=True)
@@ -1133,7 +1145,7 @@ def RefAmOpp(_cmp, c87521, _num, c00100, EDCRAGE, c87668):
 @iterate_jit(parameters=["ETC_pe_Married", "ETC_pe_Single"], nopython=True)
 def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num,
     c07180, e07200, c07230, e07240, e07960, e07260, e07300,
-    e07700, e07250, t07950, c05800, _precrd, ETC_pe_Single):
+    e07700, e07250, t07950, c05800, _precrd, ETC_pe_Single, c87668, FLPDYR):
 
     # Nonrefundable Education Credits
     # Form 8863 Tentative Education Credits
@@ -1147,7 +1159,6 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num,
 
     c87580 = float(c00100)
 
-
     c87590 = max(0., c87570 - c87580)
 
     c87600 = 10000.0 * _num
@@ -1155,6 +1166,20 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num,
     c87610 = min(1., float(c87590 / c87600))
 
     c87620 = c87560 * c87610
+
+    #NOTICE: may need to change. Original SAS code:
+    #else if FLPDYR eq 2010 or FLPDYR eq 2011 then do;
+    #_xlin4 = max(0,c05800 - (e07300 + c07180 + e07200));...
+    #Updated code
+
+    if FLPDYR == 2011:
+        _xlin4 = max(0,c05800 - (e07300 + c07180 + e07200));
+        _xlin5 = min(c87620,_xlin4);
+        _xlin8 = e07300 + c07180 + e07200 + _xlin5;
+        _xlin9 = max(0,c05800 - (e07300 + c07180 + e07200 + _xlin5));
+        _xlin10 = min(c87668,_xlin9);
+        c87680 = _xlin5 + _xlin10;
+        c07230 = c87680
 
     _ctc1 = c07180 + e07200 + c07230
 
@@ -1172,7 +1197,7 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num,
     # lt tax owed
     
     return (c87560, c87570, c87580, c87590, c87600, c87610,
-               c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220)
+               c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220, c07230)
 
 
 
@@ -1189,7 +1214,7 @@ def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
     c82940 = 0.
 
     # Part I of 2005 form 8812
-    if _nctcr > 0:
+    if _nctcr > 0:  #line 3
         c82925 = _precrd
 
         c82930 = c07220
@@ -1292,37 +1317,44 @@ def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
 
     # Allocate credits to tax in order on the tax form
     _avail = c05800
-    c07180 = min(c07180,_avail)
+    c07180 = min(c07180,_avail) #child care credit
     _avail = _avail - c07180
     _avail = max(0,_avail - e07200)
-    c07300 = min(e07300,_avail)
+    c07300 = min(e07300,_avail) #foreign tax credit
     _avail = _avail - c07300
-    c07230 = min(c07230,_avail)
+    c07230 = min(c07230,_avail) #education credit
     _avail = _avail - c07230
-    c07240 = min(e07240,_avail)
+    c07240 = min(e07240,_avail) #retirement savings credit
     _avail = _avail - c07240
-    c07220 = min(c07220,_avail)
+    c07220 = min(c07220,_avail) #child tax credit
     _avail = _avail - c07220
-    c07600 = min(e07600,_avail)
+    c07600 = min(e07600,_avail) #prior year min tax credit
     _avail = _avail - c07600
-    c07260 = min(e07260,_avail)
+    c07260 = min(e07260,_avail) #res energy credit
     _avail = _avail-c07260
 
-    c59680 = min(_eitc,_avail)
+    c59680 = min(_eitc,_avail) 
 
     # Credits 1040 line 48
 
-    x07400 = e07400
+    x07400 = e07400 #General business credit
 
-    c07100 = (e07180 + e07200 + e07600 + c07300 + x07400
+    c07100 = (e07180 + e07200 + e07600 + c07300 + x07400 
                + e07980 + c07220 + e07500 + e08000)
+    #total credits
+    #=childcare, elderly, disabled, prior year, foreign
+    # ?, child tax credit, empowerment zone, other credit
 
     y07100 = c07100
 
     c07100 += e07700 + c07230 + c07970 + e07240 + e07260 + e08001 + e07960
+    #total credits
+    #+=mortgage int, education, alt. vehi, retirement savings, res energy, 
+    #alt motor vehi, elec vehi
 
     x07100 = c07100
-    c07100 = min(c07100, c05800)
+    c07100 = min(c07100, c05800) 
+    #total credits can't be more than adj income tax before credits
 
     # Tax After credits 1040 line 52
 
@@ -1333,6 +1365,7 @@ def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
     if puf == True:
 
         e08795 = float(e08800)
+        #income tax after credits
     else:
         e08795 = 0.
 
@@ -1348,7 +1381,7 @@ def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
 
 
 @iterate_jit(nopython=True)
-def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _othertax):
+def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _othertax, e11601, FLPDYR):
 
 
     # Decomposition of EITC
@@ -1383,6 +1416,11 @@ def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _othertax):
         _compb = 0.
 
     c07150 = c07100 + c59680
+    #NOTICE: may need to change, original SAS code: 
+    #if FLPDYR in(2011:2012) then c07150 = c07100 + e11601;
+    #Updated code
+    if (FLPDYR == 2011 | FLPDYR == 2012):
+        c07150 = c07100 + e11601
     c07150 = c07150
     c10950 = 0.
 
@@ -1414,13 +1452,12 @@ def OSPC_TAX( c09200, c59660, c11070, c10960, c11600, c10950 , _eitc, e11580,
     return (c10300, _eitc, _refund, _ospctax)
 
 
-
-
 @jit(nopython=True)
 def Taxer_i(inc_in, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
             II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
    
-
+#NOTICE: Will need to change, II_brk6 and II_rt7 do not exist for 2011/2013
+#updated code
     _a6 = inc_in
 
     inc_out = (II_rt1 * min(_a6, II_brk1[MARS - 1])

@@ -254,3 +254,80 @@ class Calculator(object):
 
         return mtr
 
+    def baseline_table(self, num_years = 5):
+        table = []
+        row_years = []
+        for i in range(0,num_years):
+            self.calc_all()
+            row_years.append(self.current_year)
+            #totoal number of records
+            returns = self.s006.sum()
+            
+            #AGI
+            agi = (self.c00100*self.s006).sum()
+            
+            #number of itemizers
+            ID1= self.c04470 * self.s006
+            STD1 = self._standard * self.s006
+            NumItemizer1 = self.s006[ID1>STD1].sum()
+            
+            #itemized deduction
+            ID = ID1[STD1<ID1].sum()
+            
+            #number of standardizers
+            NumSTD = self.s006[self._standard > self.c04470].sum()
+            
+            #standard deduction
+            STD = (self._standard * self.s006).sum()
+            
+            #personal exemption
+            PE = (self.c04600*self.s006).sum()
+            
+            #taxable income
+            taxinc = (self.c04800*self.s006).sum()
+            
+            #regular tax
+            regular_tax = (self.c05200*self.s006).sum()
+            
+            #AMT income
+            AMTI = (self.c62100 * self.s006).sum()
+            
+            #total AMTs
+            AMT = (self.c09600*self.s006).sum()
+            
+            #number of people paying AMT
+            NumAMT1 = self.s006[self.c09600>0].sum()
+            
+            
+            #tax before nonrefundable credits 09200
+            tax_bf_credits = (self.c05800 * self.s006).sum()
+            
+            #refundable credits
+            refundable = (self._refund * self.s006).sum()
+            
+            #nonrefuncable credits
+            nonrefundable = (self.c07100 * self.s006).sum()
+            
+            #ospc_tax
+            revenue1 = (self._ospctax * self.s006).sum()
+            
+            
+            table.append([returns/math.pow(10,6),agi/math.pow(10,9),NumItemizer1/math.pow(10,6), 
+                          ID/math.pow(10,9), NumSTD/math.pow(10,6), STD/math.pow(10,9),  
+                          PE/math.pow(10,9), taxinc/math.pow(10,9), 
+                          regular_tax/math.pow(10,9), AMTI/math.pow(10,9), AMT/math.pow(10,9), NumAMT1/math.pow(10,6), 
+                          tax_bf_credits/math.pow(10,9),refundable/math.pow(10,9), 
+                          nonrefundable/math.pow(10,9), revenue1/math.pow(10,9)])
+            
+            self.increment_year()
+          
+        df = DataFrame(table, row_years, 
+               ["Returns (#m)", "AGI ($b)", "Itemizers (#m)", "Itemized Deduction ($b)", "Standard Deduction Filers (#m)", 
+                "Standard Deduction ($b)", "Personal Exemption ($b)", "Taxable income ($b)", 
+                "Regular Tax ($b)", "AMTI ($b)", "AMT amount ($b)", "AMT number (#m)", "Tax before credits ($b)", 
+                "refundable credits ($b)", "nonrefundable credits ($b)",
+                "ospctax ($b)"])
+        df = df.transpose()
+        pd.options.display.float_format = '{:8,.1f}'.format
+        df.to_csv('baseline.csv')
+        return df
