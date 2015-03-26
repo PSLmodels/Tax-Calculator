@@ -13,6 +13,7 @@ OSPC's Tax Calculator Contributors
 * `T.J. Alumbaugh`_
 * `Jake Lyons`_
 * `Amy Xu`_
+* `John O'Hare`_
 
 
 .. _`NBER`: http://www.nber.org/
@@ -23,3 +24,4 @@ OSPC's Tax Calculator Contributors
 .. _`T.J. Alumbaugh`: https://github.com/talumbau
 .. _`Jake Lyons`: https://github.com/jlyons871
 .. _`Amy Xu`: https://github.com/Amy-Xu
+.. _`John OHare`: http://quantria.com/#team
