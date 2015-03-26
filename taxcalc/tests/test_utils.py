@@ -5,6 +5,7 @@ sys.path.append(os.path.join(cur_path, "../../"))
 sys.path.append(os.path.join(cur_path, "../"))
 import numpy as np
 import pandas as pd
+import pytest
 from pandas import DataFrame, Series
 from pandas.util.testing import assert_frame_equal
 from pandas.util.testing import assert_series_equal
@@ -108,8 +109,8 @@ def test_create_tables():
     calc2 = calculator(parameters=params2, records=records2, mods=user_mods)
     calc2.calc_all()
 
-    t2 = create_distribution_table(calc2, groupby="agi_bins")
-    tdiff = create_difference_table(calc1, calc2, groupby="agi_bins")
+    t2 = create_distribution_table(calc2, groupby="small_agi_bins", result_type = "weighted_sum")
+    tdiff = create_difference_table(calc1, calc2, groupby="large_agi_bins")
 
 
 def test_weighted_count_lt_zero():
@@ -176,19 +177,80 @@ def test_weighted_share_of_total():
     assert_series_equal(exp, diffs)
 
 
-def test_groupby_income_bins():
+def test_add_income_bins():
     data = np.arange(1,1e6, 5000)
     df = DataFrame(data=data, columns=['c00100'])
     bins = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
             200000, 1e14]
-    grpd = groupby_income_bins(df, bins)
+    df = add_income_bins(df, compare_with ="tpc", bins=None)
+    grpd = df.groupby('bins')
     grps = [grp for grp in grpd]
 
     for g, num in zip(grps, bins[1:-1]):
         assert g[0].endswith(str(num) + "]")
 
-    grpdl = groupby_income_bins(df, bins, right=False)
+    grpdl = add_income_bins(df, compare_with ="tpc", bins=None, right=False)
+    grpdl = grpdl.groupby('bins')
     grps = [grp for grp in grpdl]
 
     for g, num in zip(grps, bins[1:-1]):
         assert g[0].endswith(str(num) + ")")
+
+
+def test_add_income_bins_soi():
+    data = np.arange(1,1e6, 5000)
+    df = DataFrame(data=data, columns=['c00100'])
+
+    bins = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
+            49999, 74999, 99999, 199999, 499999, 999999, 1499999,
+            1999999, 4999999, 9999999, 1e14]
+
+    df = add_income_bins(df, compare_with ="soi", bins=None)
+    grpd = df.groupby('bins')
+    grps = [grp for grp in grpd]
+
+    for g, num in zip(grps, bins[1:-1]):
+        assert g[0].endswith(str(num) + "]")
+
+    grpdl = add_income_bins(df, compare_with ="soi", bins=None, right=False)
+    grpdl = grpdl.groupby('bins')
+    grps = [grp for grp in grpdl]
+
+    for g, num in zip(grps, bins[1:-1]):
+        assert g[0].endswith(str(num) + ")")
+
+
+def test_add_income_bins_specify_bins():
+    data = np.arange(1,1e6, 5000)
+    df = DataFrame(data=data, columns=['c00100'])
+
+    bins = [-1e14, 0, 4999, 9999, 14999, 19999, 29999, 32999, 43999,
+            1e14]
+
+    df = add_income_bins(df, bins=bins)
+    grpd = df.groupby('bins')
+    grps = [grp for grp in grpd]
+
+    for g, num in zip(grps, bins[1:-1]):
+        assert g[0].endswith(str(num) + "]")
+
+    grpdl = add_income_bins(df, bins=bins, right=False)
+    grpdl = grpdl.groupby('bins')
+    grps = [grp for grp in grpdl]
+
+    for g, num in zip(grps, bins[1:-1]):
+        assert g[0].endswith(str(num) + ")")
+
+
+def test_add_income_bins_raises():
+    data = np.arange(1,1e6, 5000)
+    df = DataFrame(data=data, columns=['c00100'])
+
+    with pytest.raises(ValueError):
+        df = add_income_bins(df, compare_with ="stuff")
+
+def test_add_weighted_decile_bins():
+
+    df = DataFrame(data=data, columns=['c00100', 's006', 'label'])
+    df = add_weighted_decile_bins(df)
+    assert 'bins' in df
