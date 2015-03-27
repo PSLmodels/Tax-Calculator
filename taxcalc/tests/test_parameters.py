@@ -44,16 +44,16 @@ def test_create_parameters_from_file(paramsfile):
     irates = Parameters._Parameters__rates
     assert_array_equal(p._almdep,
                        expand_array(np.array([7150, 7250, 7400]), inflate=True,
-                                    inflation_rates=irates, num_years=12))
+                                    inflation_rates=irates, num_years=14))
     assert_array_equal(p._almsep,
                        expand_array(np.array([40400, 41050]), inflate=True,
-                                    inflation_rates=irates, num_years=12))
+                                    inflation_rates=irates, num_years=14))
     assert_array_equal(p._rt5,
                        expand_array(np.array([0.33]), inflate=False,
-                                    inflation_rates=irates, num_years=12))
+                                    inflation_rates=irates, num_years=14))
     assert_array_equal(p._rt7,
                        expand_array(np.array([0.396]), inflate=False,
-                                    inflation_rates=irates, num_years=12))
+                                    inflation_rates=irates, num_years=14))
 
 def test_parameters_get_default(paramsfile):
     paramdata = taxcalc.parameters.default_data()

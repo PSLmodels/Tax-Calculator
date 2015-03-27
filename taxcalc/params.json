@@ -148,7 +148,7 @@
                     37225,
                     39375,
                     40400,
-                        41050]
+                    41050]
         
     },
      "_AMT_tthd":{
@@ -156,14 +156,14 @@
         "description": "This threshold separates the 26%* and 28%* AMT tax rates: in order to get tentative minimum tax, income below this level is subject to 26% tax rate and above this level subject at 28%.",
         "irs_ref": "Form 6251, line 31, instruction.",
         "notes": "",
-        "start_year": 2012,
+        "start_year": 2011,
         "col_var": "NA",
         "row_var": "FLPDYR",
-        "row_label": [2011,
-              2012,
-              2013,
-              2014,
-              2015],
+        "row_label":   [2011,
+			2012,
+			2013,
+			2014,
+			2015],
         "cpi_inflated": true,
         "col_label": "NA",
         "value": [175000,

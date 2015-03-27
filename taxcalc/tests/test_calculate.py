@@ -136,8 +136,8 @@ def test_make_Calculator_json():
     user_mods = '{ "_STD_Aged": [[1500, 1250, 1200, 1500, 1500, 1200 ]] }'
     calc2 = calculator(params, puf, mods=user_mods, _II_em=np.array([4000]))
     assert calc2.II_em == 4000
-    assert_array_equal(calc2._II_em, np.array([4000]*12))
-    exp_STD_Aged = [[1500, 1250, 1200, 1500, 1500, 1200 ]] * 12
+    assert_array_equal(calc2._II_em, np.array([4000]*14))
+    exp_STD_Aged = [[1500, 1250, 1200, 1500, 1500, 1200 ]] * 14
     assert_array_equal(calc2._STD_Aged, np.array(exp_STD_Aged))
     assert_array_equal(calc2.STD_Aged, np.array([1500, 1250, 1200, 1500, 1500, 1200 ]))
 
@@ -154,7 +154,7 @@ def test_make_Calculator_user_mods_as_dict():
     user_mods['_II_em'] = [3925, 4000, 4100]
     calc2 = calculator(params, puf, mods=user_mods)
     assert calc2.II_em == 3925
-    exp_II_em = [3925, 4000] + [4100] * 10
+    exp_II_em = [3925, 4000] + [4100] * 12
     assert_array_equal(calc2._II_em, np.array(exp_II_em))
     assert_array_equal(calc2.STD_Aged, np.array([1400, 1200]))
 
@@ -177,9 +177,9 @@ def test_make_Calculator_user_mods_with_cpi_flags(paramsfile):
     calc2 = calculator(params, puf, mods=user_mods)
 
     exp_almdep = expand_array(np.array([7150, 7250, 7400]), inflate=True,
-                       inflation_rates=irates, num_years=12)
+                       inflation_rates=irates, num_years=14)
 
-    exp_almsep_values = [40400] + [41050] * 11
+    exp_almsep_values = [40400] + [41050] * 13
     exp_almsep = np.array(exp_almsep_values)
 
     assert_array_equal(calc2._almdep, exp_almdep)

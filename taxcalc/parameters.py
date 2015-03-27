@@ -10,8 +10,8 @@ class Parameters(object):
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
     PARAM_FILENAME = "params.json"
     params_path = os.path.join(CUR_PATH, PARAM_FILENAME)
-    __rates = [0.015, 0.020, 0.022, 0.020, 0.021, 0.022,
-               0.023, 0.024, 0.024, 0.024, 0.024, 0.024]
+    __rates = [0.032, 0.021, 0.015, 0.020, 0.022, 0.020, 0.021,
+    0.022, 0.023, 0.024, 0.024, 0.024, 0.024, 0.024]
 
     @classmethod
     def from_file(cls, file_name, **kwargs):
@@ -24,7 +24,7 @@ class Parameters(object):
         return cls(data=params, **kwargs)
 
 
-    def __init__(self, start_year=2013, budget_years=12, inflation_rate=None,
+    def __init__(self, start_year=2013, budget_years=14, inflation_rate=None,
                  inflation_rates=None, data=None):
 
         if inflation_rate and inflation_rates:
