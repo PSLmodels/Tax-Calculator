@@ -1,6 +1,6 @@
 {
     "_AMT_em":{
-        "long_name": "AMT exemption",
+        "long_name": "AMT exemption amount",
         "description": "The amount of AMTI exempted from AMT.",
         "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
         "notes": "",
@@ -22,7 +22,7 @@
                       [53600,    83400,   41700,      53600,               83400,   41700]]
     },
     "_EITC_c": {
-        "long_name": "Maximum Earned Income Tax Credit",
+        "long_name": "Maximum earned income credit",
         "description": "",
         "irs_ref": "IRS reference: form 1040, line 66a&b, instruction (table).",
         "notes": "",
@@ -44,8 +44,8 @@
     
     },
     "_SS_thd50":{
-        "long_name": "Starting Threshold for 50% Taxability",
-        "description": "50% of combined income in range starting at this threshold is subject to social security tax.",
+        "long_name": "Threshold for social security taxability 1",
+        "description": "Under current law, 50% of combined income in range starting at this threshold is subject to social security tax.",
         "irs_ref": "Form 1040, line 20a&b, calculation (Worksheet, add line 10 to line 8 amounts.)",
         "notes": "",
         "start_year": 2011,
@@ -58,8 +58,8 @@
         
     },
      "_SS_thd85":{
-        "long_name": "Starting Threshold for 85% Taxability",
-        "description": "50% of combined income in range starting at this threshold is subject to social security tax.",
+        "long_name": "Threshold for social security taxability 2",
+        "description": "Under current law, 85% of combined income in range starting at this threshold is subject to social security tax.",
         "irs_ref": "Form 1040, line 20a&b, calculation (Worksheet, add line 10 values to line 8).",
         "notes": "",
         "start_year": 2011,
@@ -72,7 +72,7 @@
         
     },
      "_ACTC_rt":{
-        "long_name": "Additional Child Tax Credit Rate",
+        "long_name": "Additional child tax credit rate",
         "description": "AKA rate for refundable portion of CTC; Apply this rate to earned income in excess of $3000*, to get the ACTC amount, which is capped at the amount of unclaimed nonrefundable CTC.",
         "irs_ref": "Form 8812, line 6, inline.",
         "notes": "",
@@ -86,7 +86,7 @@
         
     },
      "_STD_Aged":{
-        "long_name": "Additional Standard Deduction for Aged",
+        "long_name": "Additional standard deduction for blind and aged",
         "description": "Add this value to regular standard deduction to get standard deduction for aged individual.",
         "irs_ref": "Form 1040, line 40, calculation (the difference of the two tables given in the instruction).",
         "notes": "",
@@ -109,7 +109,7 @@
     },
 
      "_AMT_Child_em":{
-        "long_name": "Child AMT Exemption Additional Income Base",
+        "long_name": "Child AMT exemption additional income base",
         "description": "Add this amount to one child's income to get the total income base for exemption.",
         "irs_ref": "Form 6251, line 29, instruction.",
         "notes": "",
@@ -152,7 +152,7 @@
         
     },
      "_AMT_tthd":{
-        "long_name": "AMT Tax Income Threshold",
+        "long_name": "AMT surtax threshold",
         "description": "This threshold separates the 26%* and 28%* AMT tax rates: in order to get tentative minimum tax, income below this level is subject to 26% tax rate and above this level subject at 28%.",
         "irs_ref": "Form 6251, line 31, instruction.",
         "notes": "",
@@ -174,7 +174,7 @@
         
     },
      "_II_em":{
-        "long_name": "Personal and Dependent Exemption Amount",
+        "long_name": "Personal and dependent exemption amount",
         "description": "Personal exemption is equal to this amount; Dependency exemption is equal to this amount mutiplied by the number of qualified dependents.",
         "irs_ref": "IRS reference: form 1040, line 42, instruction.",
         "notes": "",
@@ -196,7 +196,7 @@
         
     },
      "_KT_c_Age":{
-        "long_name": "Maximum Age subject to Kiddie Tax",
+        "long_name": "Maximum age subject to Kiddie Tax",
         "description": "Under this age, the individual is subject to either AMT or Kiddie Tax.",
         "irs_ref": "Form 6251, line 28, instruction.",
         "notes": "",
@@ -210,7 +210,7 @@
         
     },
      "_AMT_em_pe":{
-        "long_name": "AMT Exemption Phaseout ending AMTI (Married filling Separately)",
+        "long_name": "AMT exemption phaseout ending AMTI (Married filling Separately)",
         "description": "Individuals with married filing separately need to add extra amount to AMTI beyond this AMTI level",
         "irs_ref": "Form 6251, line 28, instruction.",
         "notes": "",
@@ -230,7 +230,7 @@
         
     },  
      "_CTC_c":{
-        "long_name": "Max Child Tax Credit per child",
+        "long_name": "Max child tax credit per child",
         "description": "Scheduled to decrease to 500 in 2018.",
         "irs_ref": "IRS reference: form 1040, line ,",
         "notes": "",
@@ -258,7 +258,7 @@
         
     },  
     "_DCC_c":{
-        "long_name": "Max Dependent Care Credit",
+        "long_name": "Max dependent care credit",
         "description": "",
         "irs_ref": "Form 2441, line 3c, in-line.",
         "notes": "",
@@ -272,7 +272,7 @@
         
     },
      "_EITC_InvestIncome_c":{
-        "long_name": "Max Disqualifying Income for EITC",
+        "long_name": "Max disqualifying income for EITC",
         "description": "The earned income credit may not be claimed by taxpayers whose investment income exceeds this limit.",
         "irs_ref": "Form 1040, line 66a&b, instruction(step2)",
         "notes": "",
@@ -293,7 +293,7 @@
                     3400]
     },  
      "_ACTC_Income_thd":{
-        "long_name": "ACTC Income Threshold",
+        "long_name": "ACTC income threshold",
         "description": "The portion of earned income below this threshold does not count as base for earned income credit.",
         "irs_ref": "Schedule 8812, line 5, in-line.",
         "notes": "",
@@ -321,7 +321,7 @@
         
     },  
     "_ETC_pe_Single":{
-        "long_name": "Education Tax Credit Phaseout Ends (Single)",
+        "long_name": "Education tax credit phaseout Ends (Single)",
         "description": "The education tax credit will be zero for those tax payers of single filing status with modified AGI level (in thousands) higher than this level.",
         "irs_ref": "Form 8863, line 13, inline.",
         "notes": "",
@@ -343,7 +343,7 @@
         
     },
     "_ETC_pe_Married":{
-        "long_name": "Education Tax Credit Phaseout Ends (Married)",
+        "long_name": "Education tax credit phaseout ends (Married)",
         "description": "The education tax credit will be zero for those tax payers of married filing status with modified AGI level (in thousands) higher than this level.",
         "irs_ref": "Form 8863, line 13, inline.",
         "notes": "",
@@ -365,7 +365,7 @@
         
     },  
      "_FEI_ec_c":{
-        "long_name": "Max Foreign Earned Income Exclusion",
+        "long_name": "Maximum foreign earned income exclusion",
         "description": "This amount is the maximum foreign earned income one individual could exclude from gross income.",
         "irs_ref": "Form 2555, line 29b, instruction.",
         "notes": "",
@@ -409,7 +409,7 @@
         
     },
      "_LLC_Expense_c":{
-        "long_name": "Lifetime Learning Credit Expense Limit",
+        "long_name": "Lifetime learning credit expense limit",
         "description": "The maximum expense eligible for lifetime learning credit.",
         "irs_ref": "Form 8863, line 11, in-line.",
         "notes": "",
@@ -423,7 +423,7 @@
         
     },  
      "_CDCC_crt":{
-        "long_name": "Maximum Child and Dependent Care Credit Rate",
+        "long_name": "Maximum child and dependent care credit rate",
         "description": "This rate is the maximum rate that applied on AGI for child and dependent care credit; This rate decreases as AGI goes up.",
         "irs_ref": "Form 2241, line 8, in-line.",
         "notes": "",
@@ -437,7 +437,7 @@
         
     },  
     "_ID_ps":{
-        "long_name": "Itemized Deduction Phaseout Start",
+        "long_name": "Itemized deduction phaseout AGI start (Pease)",
         "description": "Itemized deduction will be zero for taxpayers with income higher than this level.",
         "irs_ref": "Form 1040, line 42, instruction (table).",
         "notes": "",
@@ -454,7 +454,7 @@
                     [258250,    309900,   154950,     284050,         309900,  154950]]
     },
      "_EITC_rt":{
-        "long_name": "Earned Income Credit Rate",
+        "long_name": "Earned income credit rate",
         "description": "Apply this rate on Income.",
         "irs_ref": "Form 1040, line 66a&b, calculation (table: Max_EIC/Max_EIC_base_income).",
         "notes": "",
@@ -467,7 +467,7 @@
         "value":    [[0.0765, 0.3400, 0.4000, 0.4500]]       
     },  
      "_EITC_prt":{
-        "long_name": "Earned Income Credit phaseout rate",
+        "long_name": "Earned income credit phaseout rate",
         "description": "Earned income credit will decrease at the this rate when earned income goes up in the phaseout range.",
         "irs_ref": "Form 1040, line 66a&b, calculation (table: Max_EIC_base_income/Phaseout_Base).",
         "notes": "",
@@ -480,7 +480,7 @@
         "value":    [[0.0765, 0.1598, 0.2106, 0.2106]]     
     },
     "_SS_Income_c":{
-        "long_name": "Max Taxable AGI for Social Security",
+        "long_name": "Max taxable AGI for social security",
         "description": "Taxpayers with income higher than this maximum are not subjected to social security tax.",
         "irs_ref": "form , lines",
         "notes": "",
@@ -502,8 +502,8 @@
         
     },  
      "_EITC_ps":{
-        "long_name": "EITC Phastout Starting* AGI",
-        "description": "Beyond this level of AGI, the amount of EITC starts to decrease as AGI goes up.. ",
+        "long_name": "Earned income credit phaseout AGI start",
+        "description": "Beyond this level of AGI, the amount of EITC starts to decrease as AGI goes up. ",
         "irs_ref": "Form 1040, line 66a&b, instructions.",
         "notes": "",
         "start_year": 2011,
@@ -524,7 +524,7 @@
         
     },
      "_II_rt1":{
-        "long_name": "Personal Income Tax Rate 1",
+        "long_name": "Personal income tax rate 1",
         "description": "",
         "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
         "notes": "",
@@ -538,7 +538,7 @@
         
     },  
      "_II_rt2":{
-        "long_name": "Personal Income Tax Rate 2",
+        "long_name": "Personal income tax rate 2",
         "description": "",
         "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
         "notes": "",
@@ -552,7 +552,7 @@
         
     },  
      "_II_rt3":{
-        "long_name": "Personal Income Tax Rate 3",
+        "long_name": "Personal income tax rate 3",
         "description": "",
         "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
         "notes": "",
@@ -566,7 +566,7 @@
         
     },  
      "_II_rt4":{
-        "long_name": "Personal Income Tax Rate 4",
+        "long_name": "Personal income tax rate 4",
         "description": "",
         "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
         "notes": "",
@@ -580,7 +580,7 @@
         
     },  
      "_II_rt5":{
-        "long_name": "Personal Income Tax Rate 5",
+        "long_name": "Personal income tax rate 5",
         "description": "",
         "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
         "notes": "",
@@ -593,7 +593,7 @@
         "value":     [0.33]
     },  
      "_II_rt6":{
-        "long_name": "Personal Income Tax Rate 6",
+        "long_name": "Personal income tax rate 6",
         "description": "",
         "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
         "notes": "",
@@ -607,7 +607,7 @@
         
     },  
      "_II_rt7":{
-        "long_name": "Personal Income Tax Rate 7",
+        "long_name": "Personal income tax rate 7",
         "description": "",
         "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
         "notes": "",
@@ -624,7 +624,7 @@
 		      0.396]
     },  
     "_AMT_em_ps":{
-        "long_name": "AMT exemption Phaseout Start",
+        "long_name": "AMT exemption phaseout start",
         "description": "AMT exemption starts to decrease when AMTI goes beyond this threshold.",
         "irs_ref": "Form 1040, line 45, instruction (Worksheet). Or else form 6251, line 20, instruction",
         "notes": "",
@@ -646,7 +646,7 @@
                     [119200, 158900, 79450, 119200, 158900, 79450]]
     },
     "_CTC_ps":{
-        "long_name": "Child Tax Credit Phaseout Start",
+        "long_name": "Child tax credit phaseout MAGI start",
         "description": "Child tax credit begins to decrease when taxpayers MAGI goes above this level.",
         "irs_ref": "Form 1040, line 52, instruction (Worksheet).",
         "notes": "",
@@ -659,7 +659,7 @@
         "value":     [[75000,     110000,  55000,      75000,               75000,   55000]]
     },
     "_NIIT_thd":{
-        "long_name": "Additional Medicare Tax Income Threshold",
+        "long_name": "Net Investment Income Tax income threshold (UIMC)",
         "description": "If the amount of your wages, self-employment income and railroad retirement compensation is more than this threshold, you are subject to the additional medicare tax at 0.9%.",
         "irs_ref": "Form 8959, line 5, in-line",
         "notes": "",
@@ -672,7 +672,7 @@
         "value":     [[200000, 250000, 125000, 200000, 250000, 125000]]
     },
     "_II_em_ps":{
-        "long_name": "Personal Exemption Phaseout Starting Income",
+        "long_name": "Personal exemption phaseout starting income",
         "description": "Personal exemption starts to decrease beyond this income level.",
         "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
         "notes": "",
@@ -690,7 +690,7 @@
                     [258250, 309900, 154950, 284040, 309900, 154950]]    
      },
     "_STD":{
-        "long_name": "Standard Deduction Amount",
+        "long_name": "Standard deduction amount",
         "description": "",
         "irs_ref": "form 1040, line 40, instruction (Formside notes).",
         "notes": "",
@@ -712,7 +712,7 @@
                     [6300, 12600, 6300, 9250, 12600, 6300, 1050]]  
      },
      "_II_brk1":{
-        "long_name": "Personal Income taxable bracket 1",
+        "long_name": "Personal income tax bracket (upper threshold) 1",
         "description": "",
         "irs_ref": "Form 1040, line 40, schedule X.",
         "notes": "",
@@ -733,7 +733,7 @@
                     [9225, 18450, 9225, 13150, 18450, 9225]]
      },
      "_II_brk2":{
-        "long_name": "Personal Income taxable bracket 2",
+        "long_name": "Personal income tax bracket (upper threshold) 2",
         "description": "",
         "irs_ref": "Form 1040, line 40, schedule X.",
         "notes": "",        
@@ -754,7 +754,7 @@
                     [37450, 74900, 37450, 50200, 74900, 37450]]
      },
      "_II_brk3":{
-        "long_name": "Personal Income taxable bracket 3",
+        "long_name": "Personal income tax bracket (upper threshold) 3",
         "description": "",
         "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
         "notes": "",        
@@ -775,7 +775,7 @@
                     [90750, 151200, 75600, 129600, 151200, 75600]]
      },
      "_II_brk4":{
-        "long_name": "Personal Income taxable bracket 4",
+        "long_name": "Personal income tax bracket (upper threshold) 4",
         "description": "",
         "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
         "notes": "",        
@@ -796,7 +796,7 @@
                     [189300, 230450, 115225, 209850, 230450, 115225]]
      },
      "_II_brk5":{
-        "long_name": "Personal Income taxable bracket 5",
+        "long_name": "Personal income tax bracket (upper threshold) 5",
         "description": "",
         "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
         "notes": "",
@@ -817,7 +817,7 @@
                     [411500, 411500, 205750, 411500, 411500, 205750]]
      },
      "_II_brk6":{
-        "long_name": "Personal Income taxable bracket 6",
+        "long_name": "Personal income tax bracket (upper threshold) 6",
         "description": "",
         "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
         "notes": "",        
@@ -838,7 +838,7 @@
                     [413200, 464850, 223425, 439000, 464850, 223425]]
      },
      "_FICA_ss_trt":{
-        "long_name": "Social Security FICA rate",
+        "long_name": "Social security FICA rate",
         "description": "social security  tax rate, including both employer and employee",
         "irs_ref": "Form 4137, line 11, calculation: 2x number shown",
         "notes": "We do not calculate payroll tax liability, but use this for eligibility for some tax items.",
@@ -874,7 +874,7 @@
 
 
     "_SS_percentage1":{
-        "long_name": "Social Security Taxable Income Percentage",
+        "long_name": "Social security taxable income percentage 1",
         "description": "This percentage of income in range 25k - 34k is taxable for the filing status of Single under current law",
         "irs_ref": "Form 1040, instructions, Lines 20a&b, social security benefits worksheet, line 2",
         "notes": "HC",
@@ -888,7 +888,7 @@
         
     },
     "_SS_percentage2":{
-        "long_name": "Social Security Taxable Income Percentage",
+        "long_name": "Social security taxable income percentage 2",
         "description": "This percentage of income in range 34k+ is taxable for the filing status of Single under current law",
         "irs_ref": "Form 1040, instructions, Lines 20a&b, social security benefits worksheet",
         "notes": "HC",
@@ -902,7 +902,7 @@
         
     },
     "_II_prt":{
-        "long_name": "Personal Exemption Phaseout Rate",
+        "long_name": "Personal exemption phaseout rate",
         "description": "Personal Exemption amount will decrease by this rate for each dollar of AGI exceeding certain thresholds.",
         "irs_ref": "IRS publication 17, Section 3, Worksheet for Determining the Deduction for Exemptions, Line 7",
         "notes": "HC",
@@ -915,7 +915,7 @@
         "value":     [0.02]        
     },
      "_ID_Medical_frt":{
-        "long_name": "Itemized Deduction: Medical Deduction Floor (%, floor)",
+        "long_name": "Deduction for medical expenses; floor as a percent of AGI",
         "description": "You are eligible to deduct your medical expense when it exceeds this percentage of AGI.",
         "irs_ref": "Form 1040 Schedule A, line 3, in-line",
         "notes": "HC",
@@ -936,7 +936,7 @@
                       0.1]   
     },
      "_ID_Casualty_frt":{
-        "long_name": "Itemized Deduction: Casualty Deduction Floor (%, floor)",
+        "long_name": "Deduction for casualty loss; floor as a percent of AGI",
         "description": "The deductable amount of casualty loss would be the portion exceeding this percentage of AGI.",
         "irs_ref": "Form 1040 Schedule A, line 20, instruction",
         "notes": "HC",
@@ -949,7 +949,7 @@
         "value":     [0.1]        
     },
      "_ID_Miscellaneous_frt":{
-        "long_name": "Itemized Deduction: Miscellaneous Deduction Floor(%, AGI)",
+        "long_name": "Deduction for miscellaneous expenses; floor as a percent of AGI",
         "description": "The deductable amount of miscellaneous itemized deduction is the portion of expense exceeding this percentage of AGI.",
         "irs_ref": "Form 1040 Schedule A, line 21, instruction",
         "notes": "HC",
@@ -962,7 +962,7 @@
         "value":     [0.02]        
     },
      "_ID_Charity_crt_Cash":{
-        "long_name": "Itemized Deduction: Charity Deduction ceiling for Cash (%, AGI)",
+        "long_name": "Deduction for charitable cash contributions; ceiling as a percent of AGI",
         "description": "The deduction for Charity in form of cash is capped at this percentage of AGI. ",
         "irs_ref": "IRS publication 526, 'Limits on Deductions'",
         "notes": "HC",
@@ -975,7 +975,7 @@
         "value":     [0.5]        
     },
     "_ID_Charity_crt_Asset":{
-        "long_name": "Itemized Deduction: Charity Deduction ceiling for Asset (%, AGI)",
+        "long_name": "Deduction for charitable asset contributions; ceiling as a percent of AGI",
         "description": "The deduction for Charity contributed in the form of assets is capped at this percentage of AGI. ",
         "irs_ref": "IRS publication 526, 'Limits on Deductions'",
         "notes": "HC",
@@ -988,7 +988,7 @@
         "value":     [0.3]        
     },
     "_ID_prt":{
-        "long_name": "Itemized Deduction: Phaseout rate",
+        "long_name": "Itemized deduction phaseout rate (Pease)",
         "description": "Your itemized deduction amount will be reduced at this rate for each dollar exceeding certain thresholds. This reduction is capped at 80% of total itemized deduction under the current law. ",
         "irs_ref": "IRS publication 17, section 29,'How do you figure out the limit?'",
         "notes": "HC",
@@ -1001,7 +1001,7 @@
         "value":     [0.03]        
     },
     "_ID_crt":{
-        "long_name": "Maximum Percentage for Phaseout amount of Itemized Deduction",
+        "long_name": "Itemized deduction maximum phaseout as a percent of total itemized deductions (Pease)",
         "description": "The phaseout amount is capped at this percentage of total deduction amount. The phaseout does not apply to deductions on medical expenses, investment interest, casualty and threft losses and wagering losses",
         "irs_ref": "IRS publication 17, section 29,'How do you figure out the limit?'",
         "notes": "HC",
@@ -1014,7 +1014,7 @@
         "value":     [0.8]        
     },
     "_NIIT_trt":{
-        "long_name": "Net Investment Income Tax Rate",
+        "long_name": "Net Investment Income Tax rate (UIMC)",
         "description": "AKA Unearned Income Medicare Distribution Tax. Taxed on net investment income of individuals with MAGI higher than certain thresholds.",
         "irs_ref": "Form 8960, line 17, inline",
         "notes": "HC",
@@ -1027,7 +1027,7 @@
         "value":     [0.038]        
     },
     "_AMT_prt":{
-        "long_name": "AMT Exemption Phaseout Rate",
+        "long_name": "AMT exemption phaseout rate",
         "description": "AMT exemtion will decrease by this amount for each dollor exceeding certain AMTI thresholds. ",
         "irs_ref": "Form 6251, line 61, inline",
         "notes": "HC",
@@ -1040,7 +1040,7 @@
         "value":     [0.25]        
     },
     "_AMT_trt1":{
-        "long_name": "AMT rate for AMTI under the threshold",
+        "long_name": "AMT rate for AMTI under the surtax threshold",
         "description": "The tax rate applied to the portion of AMT income below the threshold. ",
         "irs_ref": "Form 6251, line 31, inline",
         "notes": "HC",
@@ -1053,7 +1053,7 @@
         "value":     [0.26]        
     },
     "_AMT_trt2":{
-        "long_name": "Additional AMT rate for AMTI above the threshold",
+        "long_name": "Additional AMT rate for AMTI above the surtax threshold",
         "description": "Add this rate to the tax rate for AMT income under the threshold to get the actual above threshold tax rate.",
         "irs_ref": "Form 6251, line 31, inline, calculation: subtract rates",
         "notes": "This is the additional tax rate (on top of .26) for AMT income above certain threshold",
@@ -1066,7 +1066,7 @@
         "value":     [0.02]        
     },
     "_CTC_prt":{
-        "long_name": "Child Tax Credit Phaseout Rate",
+        "long_name": "Child tax credit phaseout rate",
         "description": "The amount of credit starts to decrease after MAGI hits certain threshold, at this rate.",
         "irs_ref": "Form 1040, instructions, Child Tax Credit Worksheet, line 5",
         "notes": "HC",
@@ -1079,7 +1079,7 @@
         "value":     [0.05]        
     },
     "_ACTC_ChildNum":{
-        "long_name": "Additional Child Tax Credit Qualified Children Number",
+        "long_name": "Additional child tax credit minimum number of qualified children",
         "description": "Only families with this number of qualified children or more, are qualified for additional child tax credit",
         "irs_ref": "Schedule 8812",
         "notes": "HC",
@@ -1092,7 +1092,7 @@
         "value": [3]        
     },
     "_ALD_StudentLoan_HC":{
-        "long_name": "Hair Cut on Student Loan Interest Deduction",
+        "long_name": "Deduction for student loan interest haircut",
         "description": "This pencentage can be applied to reduce the student loan interest deduction. Student loan interest is deducted at full amount from gross income. ",
         "irs_ref": "Form , line , ",
         "notes": "The deduction amount will be (1- Hair Cut) * Student Loan Interest. ",
@@ -1105,7 +1105,7 @@
         "value":     [0]        
     },
     "_ALD_SelfEmploymentTax_HC":{
-        "long_name": "Hair Cut on Deduction for self-employment tax",
+        "long_name": "Deduction for self-employment tax haircut",
         "description": "This percentage reduces the employer equivalent portion of self-employment deduction before AGI. ",
         "irs_ref": "Form , line , ",
         "notes": "The final deduction amount would be (1 - Hair Cut) * Self Employment Tax Deduction",
@@ -1118,7 +1118,7 @@
         "value":     [0]        
     },
     "_ALD_SelfEmp_HealthIns_HC":{
-        "long_name": "Hair Cut on Deduction for Self Employed Health Insurance",
+        "long_name": "Deduction for self employed health insurance haircut",
         "description": "This percentage reduces the health insurance deduction for self-employed taxpayers. ",
         "irs_ref": "Form , line , ",
         "notes": "The final deduction amount would be (1 - Hair Cut) * Current deduction for self employed health insurance. ",
@@ -1131,7 +1131,7 @@
         "value":     [0]        
     },
     "_ALD_KEOGH_SEP_HC":{
-        "long_name": "Hair Cut on Deduction for Payment to either KEOGH or SEP plan",
+        "long_name": "Deduction for payment to either KEOGH or SEP plan haircut",
         "description": "The percentage you can impose to reduce deductions for Keogh or SEP plan payments. Under the current law, payments to Keogh or SEP plans can be fully deducted from gross income.",
         "irs_ref": "Form , line , ",
         "notes": "The final deduction amount is (1 - Hair Cut) * KEOGH/SEP plan payments",
@@ -1145,7 +1145,7 @@
         "value":     [0]        
     },
     "_ALD_EarlyWithdraw_HC":{
-        "long_name": "Hair Cut on Forfeited Interest Penalty",
+        "long_name": "Deduction for forfeited interest penalty haircut",
         "description": "You can reduce this percentage of early withdraw penalty dedeuction from adjustments. Under the current law, early withdraw penalty can be fully deducted from gross income. ",
         "irs_ref": "Form , line , ",
         "notes": "HC",
@@ -1159,7 +1159,7 @@
         "value":     [0]        
     },
     "_ALD_Alimony_HC":{
-        "long_name": "Hair Cut on Alimony Payments",
+        "long_name": "Deduction for alimony payment haircut",
         "description": "The percentage you can impose to reduce Alimony Payments adjustment amount. Under the current law, the full amount of alimony payment is taken as a deduction from gross income in arriving at AGI.",
         "irs_ref": "Form , line , ",
         "notes": "The final adjustment amount would be (1 - Hair Cut) * Alimony Payments",
@@ -1173,7 +1173,7 @@
         "value":     [0]        
     },
     "_CDCC_ps":{
-        "long_name": "Child and Dependent Care Credit phaseout start",
+        "long_name": "Child and dependent care credit phaseout start",
         "description": "For taxpayers with AGI over this amount, the credit, under the current law, is reduced by one percentage point each $2000 of AGI over this amount. ",
         "irs_ref": "Form 2441, line 8, inline",
         "start_year": 2011,
@@ -1186,7 +1186,7 @@
         "value":      [15000]        
     },
     "_AMED_thd":{
-        "long_name": "Additional Medicare Threshold",
+        "long_name": "Additional medicare threshold",
         "description": "NA",
         "irs_ref": "Form 8959, line 5, inline",
         "start_year": 2011,
@@ -1198,7 +1198,7 @@
         "value":    [[200000,    250000,  125000,     200000,              200000, 125000]]
     },
     "_AMED_trt":{
-        "long_name": "Additional Medicare tax rate",
+        "long_name": "Additional medicare tax rate",
         "description": "NA",
         "irs_ref": "Form 8959, line 7, inline",
         "start_year": 2011,
