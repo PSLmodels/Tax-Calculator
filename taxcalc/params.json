@@ -440,8 +440,8 @@
         "long_name": "Itemized deduction phaseout AGI start (Pease)",
         "description": "Itemized deduction will be zero for taxpayers with income higher than this level.",
         "irs_ref": "Form 1040, line 42, instruction (table).",
-        "notes": "",
-        "start_year": 2013,
+        "notes": "There's no phaseout before 2013. The number for 2011 and 2012 are temp fixes",
+        "start_year": 2011,
         "col_var": "MARS",
         "row_var": "FLPDYR",
         "row_label": ["2013",
@@ -449,7 +449,9 @@
                       "2015"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
-        "value":   [[250000,    300000,   150000,     275000,         300000,  150000],
+        "value":   [[10e20, 10e20, 10e20, 10e20, 10e20, 10e20],
+		    [10e20, 10e20, 10e20, 10e20, 10e20, 10e20],
+		    [250000,    300000,   150000,     275000,         300000,  150000],
                     [254200,    305050,   152525,     279650,         305050,  152525],
                     [258250,    309900,   154950,     284050,         309900,  154950]]
     },
@@ -611,7 +613,7 @@
         "description": "",
         "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
         "notes": "",
-        "start_year": 2013,
+        "start_year": 2011,
         "col_var": ["2011",
 		    "2012",
 		    "2013"],
@@ -663,20 +665,22 @@
         "description": "If the amount of your wages, self-employment income and railroad retirement compensation is more than this threshold, you are subject to the additional medicare tax at 0.9%.",
         "irs_ref": "Form 8959, line 5, in-line",
         "notes": "",
-        "start_year": 2013,
+        "start_year": 2011,
         "col_var": "MARS",
         "row_var": "NA",
         "row_label": "NA",
         "cpi_inflated": false,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
-        "value":     [[200000, 250000, 125000, 200000, 250000, 125000]]
+        "value":     [[10e20, 10e20, 10e20, 10e20, 10e20, 10e20],
+		      [10e20, 10e20, 10e20, 10e20, 10e20, 10e20],
+		      [200000, 250000, 125000, 200000, 250000, 125000]]
     },
     "_II_em_ps":{
         "long_name": "Personal exemption phaseout starting income",
         "description": "Personal exemption starts to decrease beyond this income level.",
         "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
         "notes": "",
-        "start_year": 2013,
+        "start_year": 2011,
         "col_var": "MARS",
         "row_var": "FLPDYR",
         "row_label": ["2013",
@@ -685,9 +689,11 @@
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
         "value":
-          [ [250000, 300000, 150000, 275000, 300000, 150000], 
-                    [254200, 305050, 152525, 279650, 305050, 152525],
-                    [258250, 309900, 154950, 284040, 309900, 154950]]    
+          [[10e20, 10e20, 10e20, 10e20, 10e20, 10e20],
+	   [10e20, 10e20, 10e20, 10e20, 10e20, 10e20],
+	   [250000, 300000, 150000, 275000, 300000, 150000], 
+	   [254200, 305050, 152525, 279650, 305050, 152525],
+	   [258250, 309900, 154950, 284040, 309900, 154950]]    
      },
     "_STD":{
         "long_name": "Standard deduction amount",
@@ -833,9 +839,9 @@
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
         "value":[[10e20, 10e20, 10e20, 10e20, 10e20, 10e20],
 		 [10e20, 10e20, 10e20, 10e20, 10e20, 10e20],
-		    [400000, 450000, 225000, 425000, 450000, 225000],
-                    [406750, 457600, 228800, 432200, 457600, 228800],
-                    [413200, 464850, 223425, 439000, 464850, 223425]]
+		[400000, 450000, 225000, 425000, 450000, 225000],
+		[406750, 457600, 228800, 432200, 457600, 228800],
+		[413200, 464850, 223425, 439000, 464850, 223425]]
      },
      "_FICA_ss_trt":{
         "long_name": "Social security FICA rate",
