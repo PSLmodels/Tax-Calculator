@@ -10,9 +10,6 @@ Disclaimer
 ========
 The Tax-Calculator is currently under development. Users should be forewarned that the API could change significantly. Additionally, the implementation is subject to wild change. Therefore, there is NO GUARANTEE OF ACCURACY. THE CODE SHOULD NOT CURRENTLY BE USED FOR PUBLICATIONS, JOURNAL ARTICLES, OR RESEARCH PURPOSES.  Essentially, you should assume the calculations are unreliable until we finish the code re-architecture and have checked the results against other existing implementations of the tax code. The package will have released versions, which will be checked against existing code prior to release. Stay tuned for an upcoming release!
 
-Disclaimer
-========
-The Tax-Calculator is currently under development. Users should be forewarned that the API could change significantly. Additionally, the implementation is subject to wild change. Therefore, there is NO GUARANTEE OF ACCURACY. THE CODE SHOULD NOT CURRENTLY BE USED FOR PUBLICATIONS, JOURNAL ARTICLES, OR RESEARCH PURPOSES.  Essentially, you should assume the calculations are unreliable until we finish the code re-architecture and have checked the results against other existing implementations of the tax code. The package will have released versions, which will be checked against existing code prior to release. Stay tuned for an upcoming release!
 
 Using Tax Calculator
 ========
@@ -20,7 +17,7 @@ TK
 
 Tax Calculator Contributors
 =======
-The Tax Calculator is derived from taxcalc.sas, a program written by Dan Feenberg (NBER) and Inna Shapiro (NBER). Dan Feenberg, Sameer Sarkar, Matt Jensen, Ilia Kurenkov, T.J. Alumbaugh, Jake Lyons, and Amy Xu have contributed to OSPC's Tax Calculator. 
+The Tax Calculator is derived from taxcalc.sas, a program written by Dan Feenberg (NBER) and Inna Shapiro (NBER). Dan Feenberg, Sameer Sarkar, Matt Jensen, Ilia Kurenkov, T.J. Alumbaugh, Jake Lyons, John O'Hare, and Amy Xu have contributed to OSPC's Tax Calculator. 
 
 
 About OSPC
@@ -36,7 +33,8 @@ The taxcalc package is installable via `python setup.py install`. We currently t
 conda install -c ospc taxcalc
 ```
 
-which will grab the latest taxcalc package from binstar.org. Currently, we host Python 3.4 packages for Linux and OS X.
+which will grab the latest taxcalc package from binstar.org. Currently, we host Python 2.7 and 3.4 packages for Linux, OS X, and Windows.
+
 For contributors, the conda recipe is located in the `conda.recipe` directory. You can build the conda package via the `conda build` command:
 
 ```

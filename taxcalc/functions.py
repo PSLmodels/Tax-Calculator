@@ -1,3 +1,4 @@
+
 import pandas as pd
 from pandas import DataFrame
 import math
@@ -279,7 +280,7 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
     if _exact == 1 and MARS == 3 or MARS == 5:
         c04200 = e04200
     else:
-        c04200 = _numextra * STD_Aged[int(_txpyers - 1)]
+        c04200 = _numextra * STD_Aged[MARS-1]
 
     c15200 = c04200
 
@@ -585,6 +586,7 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 # TODO should we be returning c00650 instead of e00650??? Would need to change tests
 
 
+
 @iterate_jit(parameters=["AMT_tthd", "II_brk6", "II_brk2", "AMT_Child_em", 
                          "cgrate1", "cgrate2", "AMT_em_ps", "AMT_em_pe", 
                          "KT_c_Age", "AMT_thd_MarriedS", "AMT_em", "AMT_prt",
@@ -607,12 +609,16 @@ def AMTI(   c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
             AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer, _cmbtp_standard, 
             puf):
 
+
     c62720 = c24517 + x62720
     c60260 = e00700 + x60260
     ## QUESTION: c63100 variable is reassigned below before use, is this a BUG?
     c63100 = max(0., _taxbc - e07300)
+    
     c60200 = min(c17000, 0.025 * _posagi)
     c60240 = (1-ID_StateLocalTax_HC)*c18300 + x60240
+
+
     c60220 = c20800 + x60220
     c60130 = c21040 + x60130
     c62730 = e24515 + x62730 
@@ -1188,8 +1194,6 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num,
     return (c87560, c87570, c87580, c87590, c87600, c87610,
                c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220)
 
-
-
 @iterate_jit(parameters=['ACTC_rt', 'SS_Income_c', 'ACTC_Income_thd', 'puf', 'ACTC_ChildNum'],
                         nopython=True, puf=True)
 def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax, 
@@ -1286,7 +1290,6 @@ def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
     return ( c82925, c82930, c82935, c82880, h82880, c82885, c82890,
             c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070,
             e59660, _othadd)
-
 
 def F5405(pm, rc):
     # Form 5405 First-Time Homebuyer Credit

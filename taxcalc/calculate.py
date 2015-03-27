@@ -21,22 +21,20 @@ def add_df(alldfs, df):
 
 
 def calculator(parameters, records, mods="", **kwargs):
+    update_mods = {}
     if mods:
         if isinstance(mods, str):
             import json
             dd = json.loads(mods)
             dd = {k:np.array(v) for k,v in dd.items() if type(v) == list}
-            kwargs.update(dd)
+            update_mods.update(dd)
         else:
-            kwargs.update(mods)
+            update_mods.update(mods)
 
+    update_mods.update(kwargs)
+    parameters.update(update_mods)
     calc = Calculator(parameters, records)
-    if kwargs:
-        calc.__dict__.update(kwargs)
-        for name, vals in kwargs.items():
-            if name.startswith("_"):
-                arr = getattr(calc, name)
-                setattr(calc, name[1:], arr[0])
+
     return calc
 
 class Calculator(object):
@@ -56,7 +54,6 @@ class Calculator(object):
         params = Parameters.from_file(pfname, **kwargs)
         recs = Records.from_file(rfname, **kwargs)
         return cls(params, recs)
-
 
 
     def __init__(self, parameters=None, records=None, sync_years=True, **kwargs):
@@ -82,6 +79,11 @@ class Calculator(object):
 
         assert self._parameters.current_year == self._records.current_year
 
+    def __deepcopy__(self, memo):
+        import copy
+        params = copy.deepcopy(self._parameters)
+        recs = copy.deepcopy(self._records)
+        return Calculator(params, recs)
 
     @property
     def parameters(self):

@@ -11,7 +11,7 @@ Contents:
    
    about_ospc.rst
    installation.rst
-   usuage.rst
+   contributor_guide.rst
    code.rst
    data.rst
    disclaimer.rst
