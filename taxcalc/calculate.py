@@ -251,3 +251,4 @@ class Calculator(object):
         mtr = delta_taxes / diff
 
         return mtr
+    
