@@ -1,16 +1,21 @@
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
+import copy
 
-STATS_COLUMNS = ['c00100', '_standard', 'c04470', 'c04600', 'c04800', 'c05200',
-                 'c09600', 'c05800', 'c09200', '_refund', 'c07100', '_ospctax',
-                 's006']
+STATS_COLUMNS = ['s006', 'c00100', 'c04470', '_standard', 'c04600', 'c04800', 'c05200',
+                 'c09600', 'c05800', 'c09200', '_refund', 'c07100', '_ospctax']
 
-TABLE_COLUMNS = ['c00100', 'num_returns_StandardDed', '_standard',
-                 'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'c05200',
+
+TABLE_COLUMNS = ['s006', 'c00100', 'num_returns_ItemDed', 'c04470', 
+                 'num_returns_StandardDed', '_standard', 'c04600', 'c04800', 'c05200',
                  'num_returns_AMT', 'c09600', 'c05800', 'c09200', '_refund',
-                 'c07100', '_ospctax', 's006']
+                 'c07100', '_ospctax']
 
+TABLE_LABELS = ['Returns', 'AGI', 'Itemizers', 'Itemized Deductions',
+                'Standard deduction Filers', 'Standard Deduction', 'Personal Exemptions',
+                'Taxable Income', 'Regular Tax', 'AMTI', 'AMT amount', 'AMT number',
+                'Tax before credits', 'refundable credit', 'nonrefundable credit', 'ospctax']
 
 def extract_array(f):
     """
@@ -180,6 +185,7 @@ def add_weighted_decile_bins(df):
     labels = [range(1, 11)]
     #  Groupby weighted deciles
     df['bins'] = pd.cut(df['cumsum_weights'], bins, labels)
+    del df['cumsum_weights']
     return df
 
 
@@ -263,33 +269,36 @@ def results(c):
 
 
 def weighted_avg_allcols(df, cols):
-    diff = DataFrame(df.groupby('bins').apply(weighted_mean, "c00100"),
-                     columns=['c00100'])
+    diff = DataFrame(df.groupby('bins')['s006'].sum(), columns=['s006'])
 
     for col in cols:
-        if (col == "s006" or col == 'num_returns_StandardDed' or
+        if (col == 'num_returns_StandardDed' or
            col == 'num_returns_ItemDed' or col == 'num_returns_AMT'):
             diff[col] = df.groupby('bins')[col].sum()
-        elif col != "c00100":
+        elif(col != 's006'):
             diff[col] = df.groupby('bins').apply(weighted_mean, col)
-
+        
+    diff.columns = TABLE_LABELS
     return diff
 
 
 def create_distribution_table(calc, groupby, result_type):
+    
     res = results(calc)
+    
+    res['c04470'] = res['c04470'].where(res['c00100']>0,0)
+    res['_standard'] = res['_standard'].where(res['c00100']>0,0)
+    
+    
+    res.insert(2, 'num_returns_ItemDed', res['s006'].where(((res['c00100'] > 0) &
+                                                   (res['c04470'] > 0)), 0))
+    
+    res.insert(4, 'num_returns_StandardDed', res['s006'].where(((res['c00100'] > 0) &
+                                                       (res['_standard'] > 0)), 0))
 
-    res['c04470'] = res['c04470'].where(((res['c00100'] > 0) &
-                                        (res['c04470'] > res['_standard'])), 0)
+    res.insert(12, 'num_returns_AMT', res['s006'].where(res['c09600'] > 0, 0))
 
-    res['num_returns_ItemDed'] = res['s006'].where(((res['c00100'] > 0) &
-                                                   (res['c04470'] > 0)), 0)
-
-    res['num_returns_StandardDed'] = res['s006'].where(((res['c00100'] > 0) &
-                                                       (res['_standard'] > 0)), 0)
-
-    res['num_returns_AMT'] = res['s006'].where(res['c09600'] > 0, 0)
-
+    
     if groupby == "weighted_deciles":
         df = add_weighted_decile_bins(res)
     elif groupby == "small_agi_bins":
@@ -301,10 +310,14 @@ def create_distribution_table(calc, groupby, result_type):
                "or 'large_agi_bins'")
         raise ValueError(err)
 
-    pd.options.display.float_format = '{:8,.0f}'.format
+    pd.options.display.float_format = '{:14,.0f}'.format
+    pd.set_option('precision',4)
     if result_type == "weighted_sum":
         df = weighted(df, STATS_COLUMNS)
-        return df.groupby('bins')[TABLE_COLUMNS].sum()
+        temp = copy.deepcopy(TABLE_LABELS)
+        temp.append('bins')
+        df.columns = temp
+        return df.groupby('bins')[TABLE_LABELS].sum()
     elif result_type == "weighted_avg":
         return weighted_avg_allcols(df, TABLE_COLUMNS)
 
