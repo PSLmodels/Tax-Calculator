@@ -148,7 +148,6 @@ def test_make_Calculator_json():
                      "_STD_Aged_cpi": false}}"""
 
     calc2 = calculator(params, puf, mods=user_mods, _II_em=np.array([4000]))
-    import pdb;pdb.set_trace()
     assert calc2.II_em == 4000
     assert_array_equal(calc2._II_em, np.array([4000]*12))
     exp_STD_Aged = [[1500, 1250, 1200, 1500, 1500, 1200 ]] * 12
