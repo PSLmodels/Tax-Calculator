@@ -314,8 +314,10 @@ def create_distribution_table(calc, groupby, result_type):
     pd.set_option('precision',4)
     if result_type == "weighted_sum":
         df = weighted(df, STATS_COLUMNS)
-        temp = copy.deepcopy(TABLE_LABELS)
-        temp.append('bins')
+        #temp = copy.deepcopy(TABLE_LABELS)
+        #temp.append('bins')
+        temp = TABLE_LABELS
+        temp = temp + ['bins']
         df.columns = temp
         return df.groupby('bins')[TABLE_LABELS].sum()
     elif result_type == "weighted_avg":
