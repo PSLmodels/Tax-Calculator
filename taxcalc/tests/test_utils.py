@@ -19,6 +19,9 @@ data = [[1.0, 2, 'a'],
         [2.0, 4, 'b'],
         [3.0, 6, 'b']]
 
+irates = {1991:0.015, 1992:0.020, 1993:0.022, 1994:0.020, 1995:0.021,
+          1996:0.022, 1997:0.023, 1998:0.024, 1999:0.024, 2000:0.024,
+          2001:0.024, 2002:0.024}
 
 def test_expand_1D_short_array():
     x = np.array([4, 5, 9], dtype='i4')
@@ -93,20 +96,21 @@ def test_create_tables():
     # Default Plans
     #Create a Public Use File object
     cur_path = os.path.abspath(os.path.dirname(__file__))
-    tax_dta_path = os.path.join(cur_path, "../../tax_all91_puf.gz")
+    tax_dta_path = os.path.join(cur_path, "../../tax_all1991_puf.gz")
     # Create a default Parameters object
-    params1 = Parameters(start_year=91)
+    params1 = Parameters(start_year=1991, inflation_rates=irates)
     records1 = Records(tax_dta_path)
     # Create a Calculator
     calc1 = Calculator(parameters=params1, records=records1)
     calc1.calc_all()
 
     # User specified Plans
-    user_mods = '{"_II_rt4": [0.56]}'
-    params2 = Parameters(start_year=91)
+    user_mods = '{"1991": {"_II_rt4": [0.56]}}'
+    params2 = Parameters(start_year=1991, inflation_rates=irates)
     records2 = Records(tax_dta_path)
     # Create a Calculator
     calc2 = calculator(parameters=params2, records=records2, mods=user_mods)
+
     calc2.calc_all()
 
     t2 = create_distribution_table(calc2, groupby="small_agi_bins", result_type = "weighted_sum")

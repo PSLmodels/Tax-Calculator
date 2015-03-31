@@ -25,15 +25,37 @@ def calculator(parameters, records, mods="", **kwargs):
         if isinstance(mods, str):
             import json
             dd = json.loads(mods)
-            dd = {k:np.array(v) for k,v in dd.items() if type(v) == list}
+            dd = {int(k):(np.array(v) if type(v) == list else v) for k,v in dd.items()} 
             update_mods.update(dd)
         else:
             update_mods.update(mods)
 
-    update_mods.update(kwargs)
-    parameters.update(update_mods)
-    calc = Calculator(parameters, records)
+    final_mods = toolz.merge_with(toolz.merge, update_mods, {parameters.current_year: kwargs})
 
+    if not all(isinstance(yr, int) for yr in final_mods):
+        raise ValueError("All keys in mods must be years")
+    if final_mods:
+        max_yr = max(yr for yr in final_mods)
+    else:
+        max_yr = 0
+    if (parameters.current_year < max_yr):
+        msg = ("Modifications are for year {0} and Parameters are for"
+               " year {1}. Parameters will be advanced to year {0}")
+        print(msg.format(max_yr, parameters.current_year))
+
+    while parameters.current_year < max_yr:
+        parameters.increment_year()
+
+    if (parameters.current_year < max_yr):
+        msg = ("Modifications are for year {0} and Records are for"
+               " year {1}. Records will be advanced to year {0}")
+        print(msg.format(max_yr, parameters.current_year))
+
+    while records.current_year < max_yr:
+        records.increment_year()
+
+    parameters.update(final_mods)
+    calc = Calculator(parameters, records)
     return calc
 
 class Calculator(object):
