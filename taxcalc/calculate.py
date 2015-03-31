@@ -46,10 +46,10 @@ def calculator(parameters, records, mods="", **kwargs):
     while parameters.current_year < max_yr:
         parameters.increment_year()
 
-    if (parameters.current_year < max_yr):
+    if (records.current_year < max_yr):
         msg = ("Modifications are for year {0} and Records are for"
                " year {1}. Records will be advanced to year {0}")
-        print(msg.format(max_yr, parameters.current_year))
+        print(msg.format(max_yr, records.current_year))
 
     while records.current_year < max_yr:
         records.increment_year()
