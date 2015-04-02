@@ -3,13 +3,13 @@ import pandas as pd
 from pandas import DataFrame
 
 STATS_COLUMNS = ['c00100', '_standard', 'c04470', 'c04600', 'c04800', 'c05200',
-                 'c09600', 'c05800', 'c09200', '_refund', 'c07100', '_ospctax',
-                 's006']
+                 'c62100','c09600', 'c05800', 'c09200', '_refund', 'c07100',
+                 '_ospctax','s006']
 
-TABLE_COLUMNS = ['c00100', 'num_returns_StandardDed', '_standard',
+TABLE_COLUMNS = ['s006','c00100', 'num_returns_StandardDed', '_standard',
                  'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'c05200',
-                 'num_returns_AMT', 'c09600', 'c05800', 'c09200', '_refund',
-                 'c07100', '_ospctax', 's006']
+                 'c62100','num_returns_AMT', 'c09600', 'c05800',  '_refund','c09200',
+                 'c07100', '_ospctax']
 
 
 def extract_array(f):
