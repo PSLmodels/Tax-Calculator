@@ -190,9 +190,8 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     c20500 = float(c20500)
 
     return (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500,
-            c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
-            _nonlimited, _limitratio, c04470, c21040)
-
+                c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
+                _nonlimited, _limitratio, c04470, c21040)
 
 @iterate_jit(parameters=["SS_Income_c", "FICA_ss_trt", "FICA_mc_trt"], 
     nopython=True)
@@ -575,7 +574,6 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 # TODO should we be returning c00650 instead of e00650??? Would need to change tests
 
 
-    
 @iterate_jit(parameters=["AMT_tthd", "II_brk6", "II_brk2", "AMT_Child_em", "cgrate1", 
                          "cgrate2", "AMT_em_ps", "AMT_em_pe", "KT_c_Age", "AMT_thd_MarriedS", 
                          "AMT_em", "AMT_prt","AMT_trt1", "AMT_trt2", "puf"],
