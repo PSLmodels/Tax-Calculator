@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
+from collections import defaultdict
 
 STATS_COLUMNS = ['c00100', '_standard', 'c04470', 'c04600', 'c04800', 'c05200',
                  'c09600', 'c05800', 'c09200', '_refund', 'c07100', '_ospctax',
@@ -257,6 +258,23 @@ def weighted(df, X):
     return agg
 
 
+def get_sums(df):
+    """
+    Gets the unweighted sum of each column, saving the col name and the corresponding sum
+
+    Returns
+    -------
+    pandas.Series
+    """
+    sums = defaultdict(lambda: 0)
+
+    for col in df.columns.tolist():
+        if col != 'bins':
+            sums[col] = (df[col]).sum()
+
+    return pd.Series(sums, name='sums')
+
+
 def results(c):
     outputs = [getattr(c, col) for col in STATS_COLUMNS]
     return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
@@ -304,7 +322,9 @@ def create_distribution_table(calc, groupby, result_type):
     pd.options.display.float_format = '{:8,.0f}'.format
     if result_type == "weighted_sum":
         df = weighted(df, STATS_COLUMNS)
-        return df.groupby('bins')[TABLE_COLUMNS].sum()
+        gp_mean = df.groupby('bins')[TABLE_COLUMNS].sum()
+        sum_row = get_sums(df)[TABLE_COLUMNS]
+        return gp_mean.append(sum_row)
     elif result_type == "weighted_avg":
         return weighted_avg_allcols(df, TABLE_COLUMNS)
 
@@ -331,6 +351,9 @@ def create_difference_table(calc1, calc2, groupby):
     diffs = means_and_comparisons(res2, 'tax_diff', df.groupby('bins'),
                                   (res2['tax_diff']*res2['s006']).sum())
 
+    sum_row = get_sums(diffs)[diffs.columns.tolist()]
+    diffs = diffs.append(sum_row)
+
     pd.options.display.float_format = '{:8,.0f}'.format
     srs_inc = ["{0:.2f}%".format(val * 100) for val in diffs['perc_inc']]
     diffs['perc_inc'] = pd.Series(srs_inc, index=diffs.index)
@@ -340,4 +363,10 @@ def create_difference_table(calc1, calc2, groupby):
 
     srs_change = ["{0:.2f}%".format(val * 100) for val in diffs['share_of_change']]
     diffs['share_of_change'] = pd.Series(srs_change, index=diffs.index)
+
+    # columns containing weighted values relative to the binning mechanism
+    non_sum_cols = [x for x in diffs.columns.tolist() if 'mean' in x or 'perc' in x]
+    for col in non_sum_cols:
+        diffs.loc['sums', col] = 'n/a'
+
     return diffs
