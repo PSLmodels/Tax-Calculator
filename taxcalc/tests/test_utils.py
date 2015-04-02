@@ -274,6 +274,10 @@ def test_dist_table_sum_row():
     t2 = create_distribution_table(calc1, groupby="large_agi_bins", result_type="weighted_sum")
     assert(np.allclose(t1[-1:], t2[-1:]))
 
+    t3 = create_distribution_table(calc1, groupby="small_agi_bins", result_type="weighted_avg")
+    for col in t3:
+        assert(t3.loc['sums', col] == 'n/a')
+
 
 def test_diff_table_sum_row():
     cur_path = os.path.abspath(os.path.dirname(__file__))

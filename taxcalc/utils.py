@@ -258,7 +258,7 @@ def weighted(df, X):
     return agg
 
 
-def get_sums(df):
+def get_sums(df, na=False):
     """
     Gets the unweighted sum of each column, saving the col name and the corresponding sum
 
@@ -270,7 +270,10 @@ def get_sums(df):
 
     for col in df.columns.tolist():
         if col != 'bins':
-            sums[col] = (df[col]).sum()
+            if na == True:
+                sums[col] = 'n/a'
+            else:
+                sums[col] = (df[col]).sum()
 
     return pd.Series(sums, name='sums')
 
@@ -324,9 +327,11 @@ def create_distribution_table(calc, groupby, result_type):
         df = weighted(df, STATS_COLUMNS)
         gp_mean = df.groupby('bins')[TABLE_COLUMNS].sum()
         sum_row = get_sums(df)[TABLE_COLUMNS]
-        return gp_mean.append(sum_row)
     elif result_type == "weighted_avg":
-        return weighted_avg_allcols(df, TABLE_COLUMNS)
+        gp_mean = weighted_avg_allcols(df, TABLE_COLUMNS)
+        sum_row = get_sums(df, na=True)[TABLE_COLUMNS]
+
+    return gp_mean.append(sum_row)
 
 
 def create_difference_table(calc1, calc2, groupby):
