@@ -20,6 +20,13 @@ TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Tax before Refundable Credits', 'Refundable Credits',
                 'Revenue']
 
+DIFF_TABLE_LABELS = ["Inds. w/ Tax Cut", "Inds. w/ Tax Increase", "Count",
+                     "Mean Tax Difference", "Total Tax Difference",
+                     "%age Tax Increase", "%age Tax Decrease",
+                     "Share of Overall Change"]
+
+
+
 LARGE_AGI_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                   200000, 1e14]
 
