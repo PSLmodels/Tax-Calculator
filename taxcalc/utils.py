@@ -4,13 +4,13 @@ from pandas import DataFrame
 from collections import defaultdict
 
 STATS_COLUMNS = ['c00100', '_standard', 'c04470', 'c04600', 'c04800', 'c05200',
-                 'c09600', 'c05800', 'c09200', '_refund', 'c07100', '_ospctax',
-                 's006']
+                 'c62100','c09600', 'c05800', 'c09200', '_refund', 'c07100',
+                 '_ospctax','s006']
 
-TABLE_COLUMNS = ['c00100', 'num_returns_StandardDed', '_standard',
+TABLE_COLUMNS = ['s006','c00100', 'num_returns_StandardDed', '_standard',
                  'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'c05200',
-                 'num_returns_AMT', 'c09600', 'c05800', 'c09200', '_refund',
-                 'c07100', '_ospctax', 's006']
+                 'c62100','num_returns_AMT', 'c09600', 'c05800',  'c07100','c09200',
+                 '_refund','_ospctax']
 
 
 def extract_array(f):
@@ -66,26 +66,87 @@ def expand_2D(x, inflate, inflation_rates, num_years):
     """
 
     if isinstance(x, np.ndarray):
-        if x.shape[0] >= num_years:
+
+        #Look for -1s and create masks if present
+        last_good_row = -1
+        keep_user_data_mask = []
+        keep_calc_data_mask = []
+        has_nones = False
+        for row in x:
+            keep_user_data_mask.append([1 if i != -1 else 0 for i in row])
+            keep_calc_data_mask.append([0 if i != -1 else 1 for i in row])
+            if not np.any(row == -1):
+                last_good_row += 1
+            else:
+                has_nones = True
+
+        if x.shape[0] >= num_years and not has_nones:
             return x
         else:
-            ans = np.zeros((num_years, x.shape[1]))
-            ans[:len(x), :] = x
+
+            if has_nones:
+                c = x[:last_good_row+1]
+                keep_user_data_mask = np.array(keep_user_data_mask)
+                keep_calc_data_mask = np.array(keep_calc_data_mask)
+
+            else:
+                c = x
+
+            ans = np.zeros((num_years, c.shape[1]))
+            ans[:len(c), :] = c
             if inflate:
                 extra = []
-                cur = x[-1]
-                for i in range(1, num_years - len(x) + 1):
-                    inf_idx = i + len(x) - 1
+                cur = c[-1]
+                for i in range(0, num_years - len(c)):
+                    inf_idx = i + len(c) - 1
                     cur = np.array(cur*(1. + inflation_rates[inf_idx]))
                     extra.append(cur)
             else:
-                extra = [x[-1, :] for i in
-                         range(1, num_years - len(x) + 1)]
+                extra = [c[-1, :] for i in
+                         range(1, num_years - len(c) + 1)]
 
-            ans[len(x):, :] = extra
-            return ans.astype(x.dtype, casting='unsafe')
+            ans[len(c):, :] = extra
 
-    return expand_2D(np.array([x]), inflate, inflation_rates, num_years)
+            if has_nones:
+                # Use masks to "mask in" provided data and "mask out"
+                # data we don't need (produced in rows with a None value)
+                ans = ans * keep_calc_data_mask
+                user_vals = x * keep_user_data_mask
+                ans = ans + user_vals
+
+            return ans.astype(c.dtype, casting='unsafe')
+
+    return expand_2D(np.array(x), inflate, inflation_rates, num_years)
+
+
+def strip_Nones(x):
+    """
+    Takes a list of scalar values or a list of lists.
+    If it is a list of scalar values, when None is encountered, we
+    return everything encountered before. If a list of lists, we
+    replace None with -1 and return
+
+    Parameters:
+    -----------
+    x: list
+
+    Returns:
+    --------
+    list
+    """
+    accum = []
+    for val in x:
+        if val is None:
+            return accum
+        if not isinstance(val, list):
+            accum.append(val)
+        else:
+            for i, v in enumerate(val):
+                if v is None:
+                    val[i] = -1
+            accum.append(val)
+
+    return accum
 
 
 def expand_array(x, inflate, inflation_rates, num_years):
@@ -109,6 +170,7 @@ def expand_array(x, inflate, inflation_rates, num_years):
     -------
     expanded numpy array
     """
+    x = np.array(strip_Nones(x))
     try:
         if len(x.shape) == 1:
             return expand_1D(x, inflate, inflation_rates, num_years)

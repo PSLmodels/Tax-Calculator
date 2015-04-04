@@ -6,6 +6,7 @@ sys.path.append(os.path.join(cur_path, "../"))
 import numpy as np
 import pandas as pd
 import pytest
+import numpy.testing as npt
 from pandas import DataFrame, Series
 from pandas.util.testing import assert_frame_equal
 from pandas.util.testing import assert_series_equal
@@ -48,7 +49,7 @@ def test_expand_1D_variable_rates():
     exp[:3] = exp1
     exp[3:] = exp2
     res = expand_1D(x, inflate=True, inflation_rates=irates, num_years=5)
-    assert(np.allclose(exp.astype(x.dtype, casting='unsafe'), res))
+    assert(np.allclose(exp.astype('f4', casting='unsafe'), res))
 
 
 def test_expand_1D_scalar():
@@ -56,6 +57,25 @@ def test_expand_1D_scalar():
     exp = np.array([10.0 * math.pow(1.02, i) for i in range(0, 10)])
     res = expand_1D(x, inflate=True, inflation_rates=[0.02]*10, num_years=10)
     assert(np.allclose(exp, res))
+
+
+def test_expand_1D_accept_None():
+    x = [4., 5., None]
+    irates = [0.02, 0.02, 0.02, 0.03, 0.035]
+    exp2 = []
+    cur = 5.0
+    short_x = np.array([4, 5])
+    for i in range(1, 4):
+        idx = i + len(short_x) - 1
+        cur *= (1.0 + irates[idx])
+        exp2.append(cur)
+
+    exp1 = np.array([4, 5])
+    exp = np.zeros(5)
+    exp[:2] = exp1
+    exp[2:] = exp2
+    res = expand_array(x, inflate=True, inflation_rates=irates, num_years=5)
+    assert(np.allclose(exp.astype('f4', casting='unsafe'), res))
 
 
 def test_expand_2D_short_array():
@@ -76,7 +96,7 @@ def test_expand_2D_variable_rates():
     irates = [0.02, 0.02, 0.02, 0.03, 0.035]
 
     exp2 = []
-    for i in range(1, 5):
+    for i in range(0, 4):
         idx = i + len(x) - 1
         cur = np.array(cur*(1.0 + irates[idx]))
         print("cur is ", cur)
@@ -88,6 +108,7 @@ def test_expand_2D_variable_rates():
     exp[:1] = exp1
     exp[1:] = exp2
     res = expand_2D(x, inflate=True, inflation_rates=irates, num_years=5)
+    npt.assert_array_equal(res, np.array(exp).astype('f8', casting='unsafe'))
     assert(np.allclose(exp, res))
 
 
@@ -305,3 +326,115 @@ def test_diff_table_sum_row():
 
     assert(np.allclose(tdiff1[digit_cols][-1:], tdiff2[digit_cols][-1:]))
     assert(np.array_equal(tdiff1[non_digit_cols][-1:], tdiff2[non_digit_cols][-1:]))
+
+
+def test_expand_2D_already_filled():
+
+    _II_brk2 =  [[36000, 72250, 36500, 48600, 72500, 36250],
+                 [38000, 74000, 36900, 49400, 73800, 36900],
+                 [40000, 74900, 37450, 50200, 74900, 37450]]
+
+    res = expand_2D(_II_brk2, inflate=True, inflation_rates=[0.02]*5, num_years=3)
+
+    npt.assert_array_equal(res, np.array(_II_brk2))
+
+def test_expand_2D_partial_expand():
+
+    _II_brk2 =  [[36000, 72250, 36500, 48600, 72500, 36250],
+                 [38000, 74000, 36900, 49400, 73800, 36900],
+                 [40000, 74900, 37450, 50200, 74900, 37450]]
+
+    # We have three years worth of data, need 4 years worth,
+    # but we only need the inflation rate for year 3 to go
+    # from year 3 -> year 4
+    inf_rates = [0.02, 0.02, 0.03]
+
+    exp1 = 40000*1.03
+    exp2 = 74900*1.03
+    exp3 = 37450*1.03
+    exp4 = 50200*1.03
+    exp5 = 74900*1.03
+    exp6 = 37450*1.03
+
+    exp =  [[36000, 72250, 36500, 48600, 72500, 36250],
+            [38000, 74000, 36900, 49400, 73800, 36900],
+            [40000, 74900, 37450, 50200, 74900, 37450],
+            [exp1, exp2, exp3, exp4, exp5, exp6]]
+
+    exp = np.array(exp).astype('i4', casting='unsafe')
+
+    res = expand_2D(_II_brk2, inflate=True, inflation_rates=inf_rates, num_years=4)
+
+    npt.assert_array_equal(res, exp)
+
+
+def test_strip_Nones():
+
+    x = [None, None]
+    assert strip_Nones(x) == []
+
+    x = [1, 2, None]
+    assert strip_Nones(x) == [1, 2]
+
+    x = [[1, 2, 3], [4, None, None]]
+    assert strip_Nones(x) == [[1, 2, 3], [4, -1, -1]]
+
+
+def test_expand_2D_accept_None():
+
+    _II_brk2 =  [[36000, 72250, 36500, 48600, 72500, 36250],
+                 [38000, 74000, 36900, 49400, 73800, 36900],
+                 [40000, 74900, 37450, 50200, 74900, 37450],
+                 [41000, None, None, None, None, None]]
+
+    exp1 = 74900*1.02
+    exp2 = 37450*1.02
+    exp3 = 50200*1.02
+    exp4 = 74900*1.02
+    exp5 = 37450*1.02
+
+    exp =  [[36000, 72250, 36500, 48600, 72500, 36250],
+            [38000, 74000, 36900, 49400, 73800, 36900],
+            [40000, 74900, 37450, 50200, 74900, 37450],
+            [41000, exp1, exp2, exp3, exp4, exp5]]
+
+    exp = np.array(exp).astype('i4', casting='unsafe')
+
+    res = expand_array(_II_brk2, inflate=True, inflation_rates=[0.02]*5, num_years=4)
+
+    npt.assert_array_equal(res, exp)
+
+
+def test_expand_2D_accept_None_additional_row():
+
+    _II_brk2 =  [[36000, 72250, 36500, 48600, 72500, 36250],
+                 [38000, 74000, 36900, 49400, 73800, 36900],
+                 [40000, 74900, 37450, 50200, 74900, 37450],
+                 [41000, None, None, None, None, None],
+                 [43000, None, None, None, None, None]]
+
+    exp1 = 74900*1.02
+    exp2 = 37450*1.02
+    exp3 = 50200*1.02
+    exp4 = 74900*1.02
+    exp5 = 37450*1.02
+
+    exp6 = exp1*1.03
+    exp7 = exp2*1.03
+    exp8 = exp3*1.03
+    exp9 = exp4*1.03
+    exp10 = exp5*1.03
+
+    exp =  [[36000, 72250, 36500, 48600, 72500, 36250],
+            [38000, 74000, 36900, 49400, 73800, 36900],
+            [40000, 74900, 37450, 50200, 74900, 37450],
+            [41000, exp1, exp2, exp3, exp4, exp5],
+            [43000, exp6, exp7, exp8, exp9, exp10]]
+
+    exp = np.array(exp).astype('i4', casting='unsafe')
+
+    inflation_rates = [0.015, 0.02, 0.02, 0.03]
+
+    res = expand_array(_II_brk2, inflate=True, inflation_rates=inflation_rates, num_years=5)
+
+    npt.assert_array_equal(res, exp)
