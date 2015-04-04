@@ -12,6 +12,30 @@ TABLE_COLUMNS = ['s006','c00100', 'num_returns_StandardDed', '_standard',
                  'c62100','num_returns_AMT', 'c09600', 'c05800',  'c07100','c09200',
                  '_refund','_ospctax']
 
+TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
+                'Standard Deduction', 'Itemizers',
+                'Itemized Deduction', 'Personal Exemption',
+                'Taxable Income', 'Regular Tax', 'AMTI', 'AMT Filers', 'AMT',
+                'Tax before Credits', 'Non-refundable Credits',
+                'Tax before Refundable Credits', 'Refundable Credits',
+                'Revenue']
+
+DIFF_TABLE_LABELS = ["Inds. w/ Tax Cut", "Inds. w/ Tax Increase", "Count",
+                     "Mean Tax Difference", "Total Tax Difference",
+                     "%age Tax Increase", "%age Tax Decrease",
+                     "Share of Overall Change"]
+
+
+
+LARGE_AGI_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+                  200000, 1e14]
+
+SMALL_AGI_BINS = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
+                   49999, 74999, 99999, 199999, 499999, 999999, 1499999,
+                   1999999, 4999999, 9999999, 1e14]
+
+WEBAPP_AGI_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+                   199999, 499999, 1000000, 1e14]
 
 def extract_array(f):
     """
@@ -270,13 +294,13 @@ def add_income_bins(df, compare_with="soi", bins=None, right=True):
     """
     if not bins:
         if compare_with == "tpc":
-            bins = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
-                    200000, 1e14]
+            bins = LARGE_AGI_BINS
 
         elif compare_with == "soi":
-            bins = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
-                    49999, 74999, 99999, 199999, 499999, 999999, 1499999,
-                    1999999, 4999999, 9999999, 1e14]
+            bins = SMALL_AGI_BINS
+
+        elif compare_with == "webapp":
+            bins = WEBAPP_AGI_BINS
 
         else:
             msg = "Unknown compare_with arg {0}".format(compare_with)
@@ -379,9 +403,11 @@ def create_distribution_table(calc, groupby, result_type):
         df = add_income_bins(res, compare_with="soi")
     elif groupby == "large_agi_bins":
         df = add_income_bins(res, compare_with="tpc")
+    elif groupby == "webapp_agi_bins":
+        df = add_income_bins(res, compare_with="webapp")
     else:
         err = ("groupby must be either 'weighted_deciles' or 'small_agi_bins'"
-               "or 'large_agi_bins'")
+               "or 'large_agi_bins' or 'webapp_agi_bins'")
         raise ValueError(err)
 
     pd.options.display.float_format = '{:8,.0f}'.format
@@ -405,9 +431,11 @@ def create_difference_table(calc1, calc2, groupby):
         df = add_income_bins(res2, compare_with="soi")
     elif groupby == "large_agi_bins":
         df = add_income_bins(res2, compare_with="tpc")
+    elif groupby == "webapp_agi_bins":
+        df = add_income_bins(res2, compare_with="webapp")
     else:
         err = ("groupby must be either 'weighted_deciles' or 'small_agi_bins'"
-               "or 'large_agi_bins'")
+               "or 'large_agi_bins' or 'webapp_agi_bins'")
         raise ValueError(err)
 
     # Difference in plans
