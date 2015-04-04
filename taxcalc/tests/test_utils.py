@@ -135,7 +135,10 @@ def test_create_tables():
     calc2.calc_all()
 
     t2 = create_distribution_table(calc2, groupby="small_agi_bins", result_type = "weighted_sum")
+    #make large agi bins table
     tdiff = create_difference_table(calc1, calc2, groupby="large_agi_bins")
+    #make webapp agi bins table
+    tdiff_webapp = create_difference_table(calc1, calc2, groupby="webapp_agi_bins")
 
 
 def test_weighted_count_lt_zero():
