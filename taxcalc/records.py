@@ -40,7 +40,8 @@ class Records(object):
                     data="puf.csv", 
                     blowup_factors=blowup_factors_path,
                     weights=weights_path,
-                    start_year=None):
+                    start_year=None,
+                    **kwargs):
 
         self.read(data)
         self.read_blowup(blowup_factors)
@@ -87,12 +88,11 @@ class Records(object):
         self._current_year += 1
         self.FLPDYR += 1
         # Implement Stage 1 Extrapolation blowup factors
-        self.blowup
+        self.blowup()
         # Implement Stage 2 Extrapolation reweighting. 
         self.s006 = self.WT["WT"+str(self.current_year)]
 
 
-    @property
     def blowup(self):
         self.e00200  =   self.e00200  *   self.BF.AWAGE[self._current_year]
         self.e00300  =   self.e00300  *   self.BF.AINTS[self._current_year]

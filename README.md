@@ -2,27 +2,15 @@ Tax Calculator
 =======
 The Tax Calculator is a calculator for the US federal individual income tax system. In conjunction with micro data that represents US taxpayer characteristics and a set of behavioral assumptions, we use the Tax Calculator to conduct revenue scoring and distributional analyses of tax policies. 
 
-Data
-========
-Documentation for many of the core variables used by the Tax Calculator is available at http://users.nber.org/~taxsim/gdb/gdb08.pdf. 
-
-Disclaimer
-========
-The Tax-Calculator is currently under development. Users should be forewarned that the API could change significantly. Additionally, the implementation is subject to wild change. Therefore, there is NO GUARANTEE OF ACCURACY. THE CODE SHOULD NOT CURRENTLY BE USED FOR PUBLICATIONS, JOURNAL ARTICLES, OR RESEARCH PURPOSES.  Essentially, you should assume the calculations are unreliable until we finish the code re-architecture and have checked the results against other existing implementations of the tax code. The package will have released versions, which will be checked against existing code prior to release. Stay tuned for an upcoming release!
-
-
-Using Tax Calculator
-========
-TK 
-
-Tax Calculator Contributors
-=======
-The Tax Calculator is derived from taxcalc.sas, a program written by Dan Feenberg (NBER) and Inna Shapiro (NBER). Dan Feenberg, Sameer Sarkar, Matt Jensen, Ilia Kurenkov, T.J. Alumbaugh, Jake Lyons, John O'Hare, and Amy Xu have contributed to OSPC's Tax Calculator. 
-
+Documentation for the Tax calculator is available at http://taxcalc.readthedocs.org/en/latest/.
 
 About OSPC
 =======
 The Open-Source Policy Center (OSPC) seeks to make policy analysis more transparent, trustworthy, and collaborative by harnessing open-source methods to build cutting-edge economic models. 
+
+Disclaimer
+========
+The Tax-Calculator is currently under development. Users should be forewarned that the API could change significantly. Additionally, the implementation is subject to wild change. Therefore, there is NO GUARANTEE OF ACCURACY. THE CODE SHOULD NOT CURRENTLY BE USED FOR PUBLICATIONS, JOURNAL ARTICLES, OR RESEARCH PURPOSES.  Essentially, you should assume the calculations are unreliable until we finish the code re-architecture and have checked the results against other existing implementations of the tax code. The package will have released versions, which will be checked against existing code prior to release. Stay tuned for an upcoming release!
 
 
 Installation
@@ -43,10 +31,3 @@ conda build --python 3.4 conda.recipe/
 
 To learn more about the conda package manager, go to conda.pydata.org.
 
-References
-=======
-Documentation for our peers' revenue estimating models:
-
-Joint Committee on Taxation https://www.jct.gov/publications.html?func=startdown&id=4500
-
-Tax Policy Center http://www.urban.org/publications/411136.html 

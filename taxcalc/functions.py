@@ -201,9 +201,8 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     c20500 = float(c20500)
 
     return (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500,
-            c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
-            _nonlimited, _limitratio, c04470, c21040)
-
+                c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
+                _nonlimited, _limitratio, c04470, c21040)
 
 @iterate_jit(parameters=["SS_Income_c", "FICA_ss_trt", "FICA_mc_trt"], 
     nopython=True)
@@ -608,7 +607,6 @@ def AMTI(   c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
             x62740, e62900, AMT_thd_MarriedS, _earned, e62600, AMT_em, 
             AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer, _cmbtp_standard, 
             puf):
-
 
     c62720 = c24517 + x62720
     c60260 = e00700 + x60260
