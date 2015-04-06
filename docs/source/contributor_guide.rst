@@ -118,7 +118,7 @@ Example Code
 
 For example usage, you can view our sample notebooks:
 
-* `10 Minues To TaxCalc`_
+* `10 Minutes To TaxCalc`_
 * `Behavior Example`_ 
 
 
@@ -133,7 +133,7 @@ For example usage, you can view our sample notebooks:
 .. _`push`: https://help.github.com/articles/github-glossary/#push
 .. _`pull`: https://help.github.com/articles/github-glossary/#pull
 .. _`Github Flow`: https://guides.github.com/introduction/flow/    
-.. _`10 Minues To TaxCalc`: http://nbviewer.ipython.org/github/OpenSourcePolicyCenter/Tax-Calculator/blob/master/docs/notebooks/10_Minutes_to_Taxcalc.ipynb
+.. _`10 Minutes To TaxCalc`: http://nbviewer.ipython.org/github/OpenSourcePolicyCenter/Tax-Calculator/blob/master/docs/notebooks/10_Minutes_to_Taxcalc.ipynb
 .. _`Behavior Example`: http://nbviewer.ipython.org/github/OpenSourcePolicyCenter/Tax-Calculator/blob/master/docs/notebooks/Behavioral_example.ipynb
 .. _`Continuum Analytics`: http://www.continuum.io/downloads
 .. _`remote`: https://help.github.com/articles/github-glossary/#remote
