@@ -1133,7 +1133,7 @@ def RefAmOpp(_cmp, c87521, _num, c00100, EDCRAGE, c87668):
 @iterate_jit(parameters=["ETC_pe_Married", "ETC_pe_Single"], nopython=True)
 def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num,
     c07180, e07200, c07230, e07240, e07960, e07260, e07300,
-    e07700, e07250, t07950, c05800, _precrd, ETC_pe_Single):
+    e07700, e07250, t07950, c05800, _precrd, ETC_pe_Single, _xlin3, _xlin6, c87668, c87620):
 
     # Nonrefundable Education Credits
     # Form 8863 Tentative Education Credits
