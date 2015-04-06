@@ -1176,7 +1176,7 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num,
     # lt tax owed
     
     return (c87560, c87570, c87580, c87590, c87600, c87610,
-               c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220)
+               c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220, c07230)
 
 @iterate_jit(parameters=['ACTC_rt', 'SS_Income_c', 'ACTC_Income_thd', 'puf', 'ACTC_ChildNum'],
                         nopython=True, puf=True)
