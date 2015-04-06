@@ -207,19 +207,19 @@ def expand_array(x, inflate, inflation_rates, num_years):
 
 
 def count_gt_zero(agg):
-    return sum([1 for a in agg if a > 0])
+    return sum([1 for a in agg if a > 0.0001])
 
 
 def count_lt_zero(agg):
-    return sum([1 for a in agg if a < 0])
+    return sum([1 for a in agg if a < -0.0001])
 
 
 def weighted_count_lt_zero(agg, col_name):
-    return agg[agg[col_name] < 0]['s006'].sum()
+    return agg[agg[col_name] < -0.0001]['s006'].sum()
 
 
 def weighted_count_gt_zero(agg, col_name):
-    return agg[agg[col_name] > 0]['s006'].sum()
+    return agg[agg[col_name] > 0.0001]['s006'].sum()
 
 
 def weighted_count(agg):
