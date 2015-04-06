@@ -353,13 +353,13 @@ def NonGain(c23650, e23250, e01100):
 
 
 @iterate_jit(parameters=[ "II_rt1", "II_rt2", "II_rt3", "II_rt4", "II_rt5", "II_rt6", "II_rt7", 
-             "II_brk1", "II_brk2", "II_brk3", "II_brk4", "II_brk5", "II_brk6"], nopython=True)
+             "II_brk1", "II_brk2", "II_brk3", "II_brk4", "II_brk5", "II_brk6", "CG_rt2", "CG_rt3"], nopython=True)
 
 def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
                   e58980, e24515, e24518, MARS, _taxinc, _xyztax, _feided, 
                   _feitax, _cmp, e59410, e59420, e59440, e59470, e59400, 
                   e83200_0, e10105, e74400, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, 
-                  II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
+                  II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, CG_rt3, CG_rt2):
 
     c00650 = e00650
     _addtax = 0.
@@ -411,10 +411,10 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
         c24570 = 0.28 * c24550
 
         if c24540 > II_brk6[MARS - 1]:
-            _addtax = 0.05 * c24517
+            _addtax = (CG_rt3 - CG_rt2) * c24517
 
         elif c24540<= II_brk6[MARS - 1] and _taxinc > II_brk6[MARS - 1]:
-            _addtax = 0.05 * min(c24517, c04800 - II_brk6[MARS - 1])
+            _addtax = (CG_rt3 - CG_rt2) * min(c24517, c04800 - II_brk6[MARS - 1])
 
         c24560 = Taxer_i(c24540, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, 
                          II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6)
@@ -574,8 +574,8 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 # TODO should we be returning c00650 instead of e00650??? Would need to change tests
 
 
-@iterate_jit(parameters=["AMT_tthd", "II_brk6", "II_brk2", "AMT_Child_em", "cgrate1", 
-                         "cgrate2", "AMT_em_ps", "AMT_em_pe", "KT_c_Age", "AMT_thd_MarriedS", 
+@iterate_jit(parameters=["AMT_tthd", "II_brk6", "II_brk2", "AMT_Child_em", "CG_rt1", 
+                         "CG_rt2", "AMT_em_ps", "AMT_em_pe", "KT_c_Age", "AMT_thd_MarriedS", 
                          "AMT_em", "AMT_prt","AMT_trt1", "AMT_trt2", "puf"],
              nopython=True, puf=True)
 def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
@@ -588,8 +588,8 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
                 DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700, 
                 e00100,  e24515, x62730, x60130, 
                 x60220, x60240, c18300, _taxbc, AMT_tthd, 
-                II_brk6, MARS, _sep, II_brk2, AMT_Child_em, cgrate1,
-                cgrate2, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516, 
+                II_brk6, MARS, _sep, II_brk2, AMT_Child_em, CG_rt1,
+                CG_rt2, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516, 
                 c24520, c04800, e10105, c05700, e05800, e05100, e09600, 
                 KT_c_Age, x62740, e62900, AMT_thd_MarriedS, _earned, e62600, AMT_em,
                 AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer, _cmbtp_standard, puf):
@@ -742,10 +742,10 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     else: 
         _amt25pc = min(_alminc, c62740) - min(_alminc, c62720)
   
-    c62747 = cgrate1 * _amt5pc
+    c62747 = CG_rt1 * _amt5pc
 
     
-    c62755 = cgrate2* _amt15pc
+    c62755 = CG_rt2* _amt15pc
     
     c62770 = 0.25 * _amt25pc
     
@@ -1133,7 +1133,7 @@ def RefAmOpp(_cmp, c87521, _num, c00100, EDCRAGE, c87668):
 @iterate_jit(parameters=["ETC_pe_Married", "ETC_pe_Single"], nopython=True)
 def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num,
     c07180, e07200, c07230, e07240, e07960, e07260, e07300,
-    e07700, e07250, t07950, c05800, _precrd, ETC_pe_Single):
+    e07700, e07250, t07950, c05800, _precrd, ETC_pe_Single, _xlin3, _xlin6, c87668, c87620):
 
     # Nonrefundable Education Credits
     # Form 8863 Tentative Education Credits
@@ -1155,6 +1155,10 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num,
     c87610 = min(1., float(c87590 / c87600))
 
     c87620 = c87560 * c87610
+    
+    _xlin3 = c87668 + c87620
+    _xlin6 = max(0,c05800 - (e07300 + c07180 + e07200))
+    c07230 = min(_xlin3, _xlin6)
 
     _ctc1 = c07180 + e07200 + c07230
 
