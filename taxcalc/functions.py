@@ -1155,6 +1155,10 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num,
     c87610 = min(1., float(c87590 / c87600))
 
     c87620 = c87560 * c87610
+    
+    _xlin3 = c87668 + c87620
+    _xlin6 = max(0,c05800 - (e07300 + c07180 + e07200))
+    c07230 = min(_xlin3, _xlin6)
 
     _ctc1 = c07180 + e07200 + c07230
 
