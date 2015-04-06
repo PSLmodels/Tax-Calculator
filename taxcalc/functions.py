@@ -1,3 +1,4 @@
+
 import pandas as pd
 from pandas import DataFrame
 import math
@@ -189,9 +190,8 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     c20500 = float(c20500)
 
     return (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500,
-            c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
-            _nonlimited, _limitratio, c04470, c21040)
-
+                c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
+                _nonlimited, _limitratio, c04470, c21040)
 
 @iterate_jit(parameters=["SS_Income_c", "FICA_ss_trt", "FICA_mc_trt"], 
     nopython=True)
@@ -598,7 +598,7 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     c60260 = e00700 + x60260
     ## QUESTION: c63100 variable is reassigned below before use, is this a BUG?
     c63100 = max(0., _taxbc - e07300)
-    c60200 = min(c17000, 0.025 * _posagi)
+    c60200 = min(c17000, AMT_prt * _posagi)
     c60240 = c18300 + x60240
     c60220 = c20800 + x60220
     c60130 = c21040 + x60130
@@ -1174,8 +1174,6 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num,
     return (c87560, c87570, c87580, c87590, c87600, c87610,
                c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220)
 
-
-
 @iterate_jit(parameters=['ACTC_rt', 'SS_Income_c', 'ACTC_Income_thd', 'puf', 'ACTC_ChildNum'],
                         nopython=True, puf=True)
 def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax, 
@@ -1272,7 +1270,6 @@ def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
     return ( c82925, c82930, c82935, c82880, h82880, c82885, c82890,
             c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070,
             e59660, _othadd)
-
 
 def F5405(pm, rc):
     # Form 5405 First-Time Homebuyer Credit
