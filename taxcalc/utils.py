@@ -4,7 +4,7 @@ from pandas import DataFrame
 from collections import defaultdict
 
 STATS_COLUMNS = ['c00100', '_standard', 'c04470', 'c04600', 'c04800', 'c05200',
-                 'c09600', 'c05800', 'c09200', '_refund', 'c07100', '_ospctax',
+                 'c62100','c09600', 'c05800', 'c09200', '_refund', 'c07100', '_ospctax',
                  's006']
 
 TABLE_COLUMNS = ['c00100', 'num_returns_StandardDed', '_standard',
