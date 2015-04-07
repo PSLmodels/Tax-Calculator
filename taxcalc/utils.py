@@ -37,6 +37,8 @@ SMALL_AGI_BINS = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
 WEBAPP_AGI_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                    199999, 499999, 1000000, 1e14]
 
+tolerance = 0.001
+
 def extract_array(f):
     """
     A sanity check decorator. When combined with numba.vectorize
@@ -215,11 +217,11 @@ def count_lt_zero(agg):
 
 
 def weighted_count_lt_zero(agg, col_name):
-    return agg[agg[col_name] < -0.0001]['s006'].sum()
+    return agg[agg[col_name] < -(tolerance)]['s006'].sum()
 
 
 def weighted_count_gt_zero(agg, col_name):
-    return agg[agg[col_name] > 0.0001]['s006'].sum()
+    return agg[agg[col_name] > tolerance]['s006'].sum()
 
 
 def weighted_count(agg):
