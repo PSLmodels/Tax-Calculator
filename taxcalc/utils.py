@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
+from collections import defaultdict
 
 STATS_COLUMNS = ['c00100', '_standard', 'c04470', 'c04600', 'c04800', 'c05200',
                  'c09600', 'c05800', 'c09200', '_refund', 'c07100', '_ospctax',
@@ -8,9 +9,33 @@ STATS_COLUMNS = ['c00100', '_standard', 'c04470', 'c04600', 'c04800', 'c05200',
 
 TABLE_COLUMNS = ['c00100', 'num_returns_StandardDed', '_standard',
                  'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'c05200',
-                 'num_returns_AMT', 'c09600', 'c05800', 'c09200', '_refund',
-                 'c07100', '_ospctax', 's006']
+                 'c62100','num_returns_AMT', 'c09600', 'c05800',  'c07100','c09200',
+                 '_refund','_ospctax']
 
+TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
+                'Standard Deduction', 'Itemizers',
+                'Itemized Deduction', 'Personal Exemption',
+                'Taxable Income', 'Regular Tax', 'AMTI', 'AMT Filers', 'AMT',
+                'Tax before Credits', 'Non-refundable Credits',
+                'Tax before Refundable Credits', 'Refundable Credits',
+                'Revenue']
+
+DIFF_TABLE_LABELS = ["Inds. w/ Tax Cut", "Inds. w/ Tax Increase", "Count",
+                     "Mean Tax Difference", "Total Tax Difference",
+                     "%age Tax Increase", "%age Tax Decrease",
+                     "Share of Overall Change"]
+
+
+
+LARGE_AGI_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+                  200000, 1e14]
+
+SMALL_AGI_BINS = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
+                   49999, 74999, 99999, 199999, 499999, 999999, 1499999,
+                   1999999, 4999999, 9999999, 1e14]
+
+WEBAPP_AGI_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+                   199999, 499999, 1000000, 1e14]
 
 def extract_array(f):
     """
@@ -65,26 +90,87 @@ def expand_2D(x, inflate, inflation_rates, num_years):
     """
 
     if isinstance(x, np.ndarray):
-        if x.shape[0] >= num_years:
+
+        #Look for -1s and create masks if present
+        last_good_row = -1
+        keep_user_data_mask = []
+        keep_calc_data_mask = []
+        has_nones = False
+        for row in x:
+            keep_user_data_mask.append([1 if i != -1 else 0 for i in row])
+            keep_calc_data_mask.append([0 if i != -1 else 1 for i in row])
+            if not np.any(row == -1):
+                last_good_row += 1
+            else:
+                has_nones = True
+
+        if x.shape[0] >= num_years and not has_nones:
             return x
         else:
-            ans = np.zeros((num_years, x.shape[1]))
-            ans[:len(x), :] = x
+
+            if has_nones:
+                c = x[:last_good_row+1]
+                keep_user_data_mask = np.array(keep_user_data_mask)
+                keep_calc_data_mask = np.array(keep_calc_data_mask)
+
+            else:
+                c = x
+
+            ans = np.zeros((num_years, c.shape[1]))
+            ans[:len(c), :] = c
             if inflate:
                 extra = []
-                cur = x[-1]
-                for i in range(1, num_years - len(x) + 1):
-                    inf_idx = i + len(x) - 1
+                cur = c[-1]
+                for i in range(0, num_years - len(c)):
+                    inf_idx = i + len(c) - 1
                     cur = np.array(cur*(1. + inflation_rates[inf_idx]))
                     extra.append(cur)
             else:
-                extra = [x[-1, :] for i in
-                         range(1, num_years - len(x) + 1)]
+                extra = [c[-1, :] for i in
+                         range(1, num_years - len(c) + 1)]
 
-            ans[len(x):, :] = extra
-            return ans.astype(x.dtype, casting='unsafe')
+            ans[len(c):, :] = extra
 
-    return expand_2D(np.array([x]), inflate, inflation_rates, num_years)
+            if has_nones:
+                # Use masks to "mask in" provided data and "mask out"
+                # data we don't need (produced in rows with a None value)
+                ans = ans * keep_calc_data_mask
+                user_vals = x * keep_user_data_mask
+                ans = ans + user_vals
+
+            return ans.astype(c.dtype, casting='unsafe')
+
+    return expand_2D(np.array(x), inflate, inflation_rates, num_years)
+
+
+def strip_Nones(x):
+    """
+    Takes a list of scalar values or a list of lists.
+    If it is a list of scalar values, when None is encountered, we
+    return everything encountered before. If a list of lists, we
+    replace None with -1 and return
+
+    Parameters:
+    -----------
+    x: list
+
+    Returns:
+    --------
+    list
+    """
+    accum = []
+    for val in x:
+        if val is None:
+            return accum
+        if not isinstance(val, list):
+            accum.append(val)
+        else:
+            for i, v in enumerate(val):
+                if v is None:
+                    val[i] = -1
+            accum.append(val)
+
+    return accum
 
 
 def expand_array(x, inflate, inflation_rates, num_years):
@@ -108,6 +194,7 @@ def expand_array(x, inflate, inflation_rates, num_years):
     -------
     expanded numpy array
     """
+    x = np.array(strip_Nones(x))
     try:
         if len(x.shape) == 1:
             return expand_1D(x, inflate, inflation_rates, num_years)
@@ -207,13 +294,13 @@ def add_income_bins(df, compare_with="soi", bins=None, right=True):
     """
     if not bins:
         if compare_with == "tpc":
-            bins = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
-                    200000, 1e14]
+            bins = LARGE_AGI_BINS
 
         elif compare_with == "soi":
-            bins = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
-                    49999, 74999, 99999, 199999, 499999, 999999, 1499999,
-                    1999999, 4999999, 9999999, 1e14]
+            bins = SMALL_AGI_BINS
+
+        elif compare_with == "webapp":
+            bins = WEBAPP_AGI_BINS
 
         else:
             msg = "Unknown compare_with arg {0}".format(compare_with)
@@ -257,6 +344,26 @@ def weighted(df, X):
     return agg
 
 
+def get_sums(df, na=False):
+    """
+    Gets the unweighted sum of each column, saving the col name and the corresponding sum
+
+    Returns
+    -------
+    pandas.Series
+    """
+    sums = defaultdict(lambda: 0)
+
+    for col in df.columns.tolist():
+        if col != 'bins':
+            if na == True:
+                sums[col] = 'n/a'
+            else:
+                sums[col] = (df[col]).sum()
+
+    return pd.Series(sums, name='sums')
+
+
 def results(c):
     outputs = [getattr(c, col) for col in STATS_COLUMNS]
     return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
@@ -296,17 +403,23 @@ def create_distribution_table(calc, groupby, result_type):
         df = add_income_bins(res, compare_with="soi")
     elif groupby == "large_agi_bins":
         df = add_income_bins(res, compare_with="tpc")
+    elif groupby == "webapp_agi_bins":
+        df = add_income_bins(res, compare_with="webapp")
     else:
         err = ("groupby must be either 'weighted_deciles' or 'small_agi_bins'"
-               "or 'large_agi_bins'")
+               "or 'large_agi_bins' or 'webapp_agi_bins'")
         raise ValueError(err)
 
     pd.options.display.float_format = '{:8,.0f}'.format
     if result_type == "weighted_sum":
         df = weighted(df, STATS_COLUMNS)
-        return df.groupby('bins')[TABLE_COLUMNS].sum()
+        gp_mean = df.groupby('bins')[TABLE_COLUMNS].sum()
+        sum_row = get_sums(df)[TABLE_COLUMNS]
     elif result_type == "weighted_avg":
-        return weighted_avg_allcols(df, TABLE_COLUMNS)
+        gp_mean = weighted_avg_allcols(df, TABLE_COLUMNS)
+        sum_row = get_sums(df, na=True)[TABLE_COLUMNS]
+
+    return gp_mean.append(sum_row)
 
 
 def create_difference_table(calc1, calc2, groupby):
@@ -318,9 +431,11 @@ def create_difference_table(calc1, calc2, groupby):
         df = add_income_bins(res2, compare_with="soi")
     elif groupby == "large_agi_bins":
         df = add_income_bins(res2, compare_with="tpc")
+    elif groupby == "webapp_agi_bins":
+        df = add_income_bins(res2, compare_with="webapp")
     else:
         err = ("groupby must be either 'weighted_deciles' or 'small_agi_bins'"
-               "or 'large_agi_bins'")
+               "or 'large_agi_bins' or 'webapp_agi_bins'")
         raise ValueError(err)
 
     # Difference in plans
@@ -331,6 +446,9 @@ def create_difference_table(calc1, calc2, groupby):
     diffs = means_and_comparisons(res2, 'tax_diff', df.groupby('bins'),
                                   (res2['tax_diff']*res2['s006']).sum())
 
+    sum_row = get_sums(diffs)[diffs.columns.tolist()]
+    diffs = diffs.append(sum_row)
+
     pd.options.display.float_format = '{:8,.0f}'.format
     srs_inc = ["{0:.2f}%".format(val * 100) for val in diffs['perc_inc']]
     diffs['perc_inc'] = pd.Series(srs_inc, index=diffs.index)
@@ -340,4 +458,10 @@ def create_difference_table(calc1, calc2, groupby):
 
     srs_change = ["{0:.2f}%".format(val * 100) for val in diffs['share_of_change']]
     diffs['share_of_change'] = pd.Series(srs_change, index=diffs.index)
+
+    # columns containing weighted values relative to the binning mechanism
+    non_sum_cols = [x for x in diffs.columns.tolist() if 'mean' in x or 'perc' in x]
+    for col in non_sum_cols:
+        diffs.loc['sums', col] = 'n/a'
+
     return diffs

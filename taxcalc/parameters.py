@@ -62,7 +62,7 @@ class Parameters(object):
         for name, data in self._vals.items():
             cpi_inflated =  data.get('cpi_inflated', False)
             values = data['value']
-            setattr(self, name, expand_array(np.array(values),
+            setattr(self, name, expand_array(values,
                 inflate=cpi_inflated, inflation_rates=self._inflation_rates,
                 num_years=budget_years))
 
@@ -92,7 +92,7 @@ class Parameters(object):
                 cpi_inflated = mods.get(name + "_cpi", False)
 
                 if year == self.start_year and year == self.current_year:
-                    nval = expand_array(np.array(values),
+                    nval = expand_array(values,
                                         inflate=cpi_inflated,
                                         inflation_rates=self._inflation_rates,
                                         num_years=num_years_to_expand)
@@ -105,7 +105,7 @@ class Parameters(object):
                     inf_rates = [self.__rates[year + i]
                                  for i in range(0, num_years_to_expand)]
 
-                    nval = expand_array(np.array(values),
+                    nval = expand_array(values,
                                         inflate=cpi_inflated,
                                         inflation_rates=inf_rates,
                                         num_years=num_years_to_expand)
@@ -114,8 +114,8 @@ class Parameters(object):
 
                 else: # year > current_year
                     msg = ("Can't specify a parameter for a year that is in the"
-                          " future because we don't know how to fill in the "
-                          " values for the years between {0} and {1}.")
+                           " future because we don't know how to fill in the "
+                           " values for the years between {0} and {1}.")
                     raise ValueError(msg.format(self.current_year, year))
 
 
