@@ -670,7 +670,8 @@
         "long_name": "Personal income tax bracket (upper threshold) 3",
         "description": "",
         "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
-        "notes": "",        "start_year": 2013,
+        "notes": "",        
+        "start_year": 2013,
         "col_var": "MARS",
         "row_var": "FLPDYR",
         "row_label": ["2013",
@@ -1235,12 +1236,12 @@
         "long_name": "Haircut for the state and local tax deduction.",
         "description": "",
         "start_year": 2013,
-        "col_var": "NA",
-        "row_var": "NA",
-        "row_label": "NA",
+        "col_var": "",
+        "row_var": "",
+        "row_label": "",
         "cpi_inflated": false,
-        "col_label": "NA",
-        "value": [0]
+        "col_label": "",
+        "value": [1]
     },
 
         "_cgrate1":{

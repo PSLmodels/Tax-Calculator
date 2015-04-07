@@ -149,11 +149,9 @@ def strip_Nones(x):
     If it is a list of scalar values, when None is encountered, we
     return everything encountered before. If a list of lists, we
     replace None with -1 and return
-
     Parameters:
     -----------
     x: list
-
     Returns:
     --------
     list
@@ -176,20 +174,15 @@ def strip_Nones(x):
 def expand_array(x, inflate, inflation_rates, num_years):
     """
     Dispatch to either expand_1D or expand2D depending on the dimension of x
-
     Parameters
     ----------
     x : value to expand
-
     inflate: Boolean
         As we expand, inflate values if this is True, otherwise, just copy
-
     inflation_rate: float
         Yearly inflation reate
-
     num_years: int
         Number of budget years to expand
-
     Returns
     -------
     expanded numpy array
@@ -250,10 +243,8 @@ def weighted_share_of_total(agg, col_name, total):
 
 def add_weighted_decile_bins(df):
     """
-
     Add a column of income bins based on each 10% of AGI, weighted by s006.
     This will server as a "grouper" later on.
-
     """
 
     # First, sort by AGI
@@ -272,25 +263,19 @@ def add_weighted_decile_bins(df):
 
 def add_income_bins(df, compare_with="soi", bins=None, right=True):
     """
-
     Add a column of income bins of AGI using pandas 'cut'. This will
     serve as a "grouper" later on.
-
     df: DataFrame to group
-
     compare_with: string, optional
             Some names to specify certain pre-defined bins
-
     bins: iterable of scalars, optional
             AGI income breakpoints. Follows pandas convention. The
             breakpoint is inclusive if right=True. This argument
             overrides any choice of compare_with
-
     right : bool, optional
             Indicates whether the bins include the rightmost edge or not.
             If right == True (the default), then the bins [1,2,3,4]
             indicate (1,2], (2,3], (3,4].
-
     """
     if not bins:
         if compare_with == "tpc":
@@ -313,7 +298,6 @@ def add_income_bins(df, compare_with="soi", bins=None, right=True):
 
 def means_and_comparisons(df, col_name, gp, weighted_total):
     """
-
     Using grouped values, perform aggregate operations
     to populate
     df: DataFrame for full results of calculation
@@ -347,7 +331,6 @@ def weighted(df, X):
 def get_sums(df, na=False):
     """
     Gets the unweighted sum of each column, saving the col name and the corresponding sum
-
     Returns
     -------
     pandas.Series

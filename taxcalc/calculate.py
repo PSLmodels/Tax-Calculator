@@ -8,6 +8,7 @@ from .parameters import Parameters
 from .records import Records
 import copy
 
+
 all_cols = set()
 def add_df(alldfs, df):
     for col in df.columns:
@@ -358,3 +359,4 @@ class Calculator(object):
        pd.options.display.float_format = '{:8,.1f}'.format
 
        return df
+

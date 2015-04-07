@@ -51,7 +51,9 @@ class Records(object):
         else: 
             self._current_year = self.FLPDYR[0]
 
+
         """Imputations"""  # TODO Move these into a separate script with a decorator
+
         self._cmbtp_itemizer = (-1 * np.minimum(np.maximum(0., self.e17500 - np.maximum(0., self.e00100) * 0.075), 0.025 * np.maximum(0., self.e00100)) 
                         + self.e62100 + self.e00700 + self.e04470 + self.e21040 
                         - np.maximum(0, np.maximum( self.e18400, self.e18425)) - self.e00100 - self.e18500 
@@ -74,6 +76,8 @@ class Records(object):
                                 np.where(self.e02400>0, 
                                     self._txpyers, 
                                     0))
+
+
 
 
     @property
