@@ -105,17 +105,22 @@ def AGI(   _ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
     
     return (c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp, c04600)
 
-@iterate_jit(parameters=["puf", "ID_ps","ID_Medical_frt", "ID_Casualty_frt", "ID_Miscellaneous_frt",
-                         "ID_Charity_crt_Cash","ID_Charity_crt_Asset", "ID_prt", "ID_crt", "ID_StateLocalTax_HC"], nopython=True, puf=True)
+@iterate_jit(parameters=["puf", "ID_ps","ID_Medical_frt", "ID_Casualty_frt", 
+                         "ID_Miscellaneous_frt", "ID_Charity_crt_Cash",
+                         "ID_Charity_crt_Asset", "ID_prt", "ID_crt", 
+                         "ID_StateLocalTax_HC"], nopython=True, puf=True)
+
 def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
-                 e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
-                 e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
-                 MARS, _sep, c00100, ID_ps,ID_Medical_frt, ID_Casualty_frt, ID_Miscellaneous_frt,
-                 ID_Charity_crt_Cash, ID_Charity_crt_Asset, ID_prt, ID_crt, ID_StateLocalTax_HC, puf):
+                 e20500, e20400, e19200, e20550, e20600, e20950, e19500, 
+                 e19570, e19400, e19550, e19800, e20100, e20200, e20900, 
+                 e21000, e21010, MARS, _sep, c00100, ID_ps,ID_Medical_frt, 
+                 ID_Casualty_frt, ID_Miscellaneous_frt, ID_Charity_crt_Cash, 
+                 ID_Charity_crt_Asset, ID_prt, ID_crt, ID_StateLocalTax_HC, 
+                 puf):
     """
-    WARNING: Any additional keyword args, such as 'puf=True' here, must be passed
-    to the function at the END of the argument list. If you stick the argument
-    somewhere in the middle of the signature, you will get errors.
+    WARNING: Any additional keyword args, such as 'puf=True' here, must be 
+    passed to the function at the END of the argument list. If you stick the 
+    argument somewhere in the middle of the signature, you will get errors.
     """
     # Medical #
     c17750 = ID_Medical_frt * _posagi
@@ -158,8 +163,8 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     # temporary fix!??
 
     # Gross Itemized Deductions #
-    c21060 = (e20900 + c17000 + (1-ID_StateLocalTax_HC)*c18300 + c19200 + c19700
-              + c20500 + c20800 + e21000 + e21010)
+    c21060 = (e20900 + c17000 + (1-ID_StateLocalTax_HC)*c18300 + c19200
+           + c19700 + c20500 + c20800 + e21000 + e21010)
 
     _phase2_i = ID_ps[MARS-1]
 
@@ -574,9 +579,11 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 # TODO should we be returning c00650 instead of e00650??? Would need to change tests
 
 
-@iterate_jit(parameters=["AMT_tthd", "II_brk6", "II_brk2", "AMT_Child_em", "cgrate1", 
-                         "cgrate2", "AMT_em_ps", "AMT_em_pe", "KT_c_Age", "AMT_thd_MarriedS", 
-                         "AMT_em", "AMT_prt","AMT_trt1", "AMT_trt2", "ID_StateLocalTax_HC", "puf"],
+@iterate_jit(parameters=["AMT_tthd", "II_brk6", "II_brk2", "AMT_Child_em", 
+                         "cgrate1", "cgrate2", "AMT_em_ps", "AMT_em_pe", 
+                         "KT_c_Age", "AMT_thd_MarriedS", "AMT_em", "AMT_prt",
+                         "AMT_trt1", "AMT_trt2", "ID_StateLocalTax_HC", 
+                         "puf"],
              nopython=True, puf=True)
 def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
                 e60300, e60860, e60100, e60840, e60630, e60550,
@@ -591,8 +598,9 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
                 II_brk6, MARS, _sep, II_brk2, AMT_Child_em, cgrate1,
                 cgrate2, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516, 
                 c24520, c04800, e10105, c05700, e05800, e05100, e09600, 
-                KT_c_Age, x62740, e62900, AMT_thd_MarriedS, _earned, e62600, AMT_em,
-                AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer, _cmbtp_standard, ID_StateLocalTax_HC, puf):
+                KT_c_Age, x62740, e62900, AMT_thd_MarriedS, _earned, e62600, 
+                AMT_em, AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer, 
+                _cmbtp_standard, ID_StateLocalTax_HC, puf):
 
     c62720 = c24517 + x62720
     c60260 = e00700 + x60260
@@ -616,10 +624,10 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
 
     if _cmp == 1:
-        c62100 = (_addamt + e60300 + e60860 + e60100 + e60840 + e60630 + e60550
-               + e60720 + e60430 + e60500 + e60340 + e60680 + e60600 + e60405
-               + e60440 + e60420 + e60410 + e61400 + e60660 - c60260 - e60480
-               - e62000 + c60000 - e60250)
+        c62100 = (_addamt + e60300 + e60860 + e60100 + e60840 + e60630 
+               + e60550 + e60720 + e60430 + e60500 + e60340 + e60680 + e60600 
+               + e60405 + e60440 + e60420 + e60410 + e61400 + e60660 - c60260 
+               - e60480 - e62000 + c60000 - e60250)
 
 
     if (puf and (_standard == 0 or (_exact == 1 and e04470 > 0))):
@@ -636,8 +644,8 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
 
     if (puf == True and ((_standard == 0 or (_exact == 1 and e04470 > 0)))):
-        c62100 = (c00100 - c04470 + min(c17000, 0.025 * max(0., c00100)) + (1-ID_StateLocalTax_HC)*_sit
-               + e18500 - c60260 + c20800 - c21040 ) 
+        c62100 = (c00100 - c04470 + min(c17000, 0.025 * max(0., c00100)) + 
+            (1-ID_StateLocalTax_HC)*_sit + e18500 - c60260 + c20800 - c21040 ) 
         # c62100 += _cmbtp
 
 
