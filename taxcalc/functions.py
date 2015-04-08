@@ -108,7 +108,8 @@ def AGI(   _ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
 @iterate_jit(parameters=["puf", "ID_ps","ID_Medical_frt", "ID_Casualty_frt", 
                          "ID_Miscellaneous_frt", "ID_Charity_crt_Cash",
                          "ID_Charity_crt_Asset", "ID_prt", "ID_crt", 
-                         "ID_StateLocalTax_HC"], nopython=True, puf=True)
+                         "ID_Charity_frt", "ID_StateLocalTax_HC"], 
+                         nopython=True, puf=True)
 
 def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
                  e20500, e20400, e19200, e20550, e20600, e20950, e19500, 
@@ -116,7 +117,8 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
                  e21000, e21010, MARS, _sep, c00100, ID_ps,ID_Medical_frt, 
                  ID_Casualty_frt, ID_Miscellaneous_frt, ID_Charity_crt_Cash, 
                  ID_Charity_crt_Asset, ID_prt, ID_crt, ID_StateLocalTax_HC, 
-                 puf):
+                 ID_Charity_frt, puf):
+
     """
     WARNING: Any additional keyword args, such as 'puf=True' here, must be 
     passed to the function at the END of the argument list. If you stick the 
@@ -160,7 +162,10 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
         lim50 = min(ID_Charity_crt_Cash * _posagi, e19800)
         lim30 = min(ID_Charity_crt_Asset * _posagi, e20100 + e20200)
         c19700 = min(0.5 * _posagi, lim30 + lim50)
-    # temporary fix!??
+
+    charity_floor = ID_Charity_frt * _posagi # frt is zero in present law
+    c19700 = max(0, c19700 - charity_floor)
+ 
 
     # Gross Itemized Deductions #
     c21060 = (e20900 + c17000 + (1-ID_StateLocalTax_HC)*c18300 + c19200
@@ -186,8 +191,9 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
 
     c20400 = float(c20400)
 
-    # the variables that are casted as floats below can be either floats or ints depending
-    # on which if/else branches they follow in the above code. they need to always be the same type
+    # the variables that are casted as floats below can be either floats or 
+    # ints depending n which if/else branches they follow in the above code. 
+    # they need to always be the same type
 
     c20400 = float(c20400)
     c19200 = float(c19200)
