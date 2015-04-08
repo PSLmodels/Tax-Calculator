@@ -117,19 +117,19 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     to the function at the END of the argument list. If you stick the argument
     somewhere in the middle of the signature, you will get errors.
     """
-    # Medical 
+    # Medical #
     c17750 = ID_Medical_frt * _posagi
     c17000 = max(0, e17500 - c17750)
 
-    # State and Local Income Tax, or Sales Tax 
+    # State and Local Income Tax, or Sales Tax #
     _sit1 = max(e18400, e18425)
     _sit = max(_sit1, 0)
     _statax =  max(_sit, e18450)
 
-    # Other Taxes 
+    # Other Taxes #
     c18300 = _statax + e18500 + e18800 + e18900
 
-    # Casulty 
+    # Casulty #
     if e20500 > 0:
         c37703 = e20500 + ID_Casualty_frt * _posagi
         c20500 = c37703 - ID_Casualty_frt* _posagi
@@ -137,7 +137,7 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
         c37703 = 0.
         c20500 = 0.
 
-    # Miscellaneous 
+    # Miscellaneous #
     c20750 = ID_Miscellaneous_frt * _posagi
     if puf == True:
         c20400 = e20400
