@@ -890,10 +890,10 @@
         "col_label": "",
         "value":     [0.8]        
     },
-        "_ID_StateLocalTax_HC":{
+    "_ID_StateLocalTax_HC":{
         "long_name": "Deduction for state and local taxes haircut.",
         "description": "This percentage reduces the state and local tax deduction." ,
-        "irs_ref": ,
+        "irs_ref": "",
         "notes": "This parameter allows for the implementation of Option 51 from https://www.cbo.gov/sites/default/files/cbofiles/attachments/49638-BudgetOptions.pdf.",
         "start_year": 2013,
         "col_var": "",
