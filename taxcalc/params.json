@@ -814,16 +814,16 @@
 
     },
      "_ID_Charity_frt":{
-        "long_name": "Itemized Deduction: Charitable Deduction Floor (%, floor)",
+        "long_name": "Deduction for charitable contributions; floor as a percent of AGI",
         "description": "You are eligible to deduct your charitable expense when it exceeds this percentage of AGI.",
         "irs_ref": "Form , line , ",
         "notes": "This parameter allows for implementation of Option 52 from https://www.cbo.gov/sites/default/files/cbofiles/attachments/49638-BudgetOptions.pdf.",
         "start_year": 2013,
-        "col_var": "NA",
-        "row_var": "NA",
-        "row_label": "NA",
+        "col_var": "",
+        "row_var": "",
+        "row_label": "",
         "cpi_inflated": false,
-        "col_label": "NA",
+        "col_label": "",
         "value":     [0.0]        
             
     },
