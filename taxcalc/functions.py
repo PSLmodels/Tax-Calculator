@@ -414,7 +414,7 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
             _addtax = 0.05 * c24517
 
         elif c24540<= II_brk6[MARS - 1] and _taxinc > II_brk6[MARS - 1]:
-            _addtax = 0.05 * min(c24517, c04800 - II_brk6[MARS - 1])
+            _addtax = 0.05 * min(_dwks21, _taxinc - II_brk6[MARS - 1])
 
         c24560 = Taxer_i(c24540, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, 
                          II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6)
