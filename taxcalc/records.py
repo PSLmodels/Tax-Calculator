@@ -185,7 +185,7 @@ class Records(object):
         self.e18425  =   self.e18425  *   self.BF.ATXPY[self._current_year]
         self.e18450  =   self.e18450  *   self.BF.ATXPY[self._current_year]
         self.e18500  =   self.e18500  *   self.BF.ATXPY[self._current_year] 
-        self.e19200  =   self.e19200  *   self.BF.ATXPY[self._current_year]
+        self.e19200  =   self.e19200  *   self.BF.AIPD[self._current_year]
         self.e19550  =   self.e19550  *   self.BF.ATXPY[self._current_year]
         self.e19800  =   self.e19800  *   self.BF.ATXPY[self._current_year]
         self.e20100  =   self.e20100  *   self.BF.ATXPY[self._current_year]
