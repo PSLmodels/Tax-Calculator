@@ -20,6 +20,16 @@ data = [[1.0, 2, 'a'],
         [2.0, 4, 'b'],
         [3.0, 6, 'b']]
 
+data_float = [[1.0, 2, 'a'],
+              [-1.0, 4, 'a'],
+              [0.0000000001, 3, 'a'],
+              [-0.0000000001, 1, 'a'],
+              [3.0, 6, 'a'],
+              [2.0, 4, 'b'],
+              [0.0000000001, 3, 'b'],
+              [-0.0000000001, 1, 'b'],
+              [3.0, 6, 'b']]
+
 irates = {1991:0.015, 1992:0.020, 1993:0.022, 1994:0.020, 1995:0.021,
           1996:0.022, 1997:0.023, 1998:0.024, 1999:0.024, 2000:0.024,
           2001:0.024, 2002:0.024}
@@ -142,16 +152,26 @@ def test_create_tables():
 
 
 def test_weighted_count_lt_zero():
-    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
-    grped = df.groupby('label')
+    df1 = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    grped = df1.groupby('label')
+    diffs = grped.apply(weighted_count_lt_zero, 'tax_diff')
+    exp = Series(data=[4, 0], index=['a', 'b'])
+    assert_series_equal(exp, diffs)
+    df2 = DataFrame(data=data_float, columns=['tax_diff', 's006', 'label'])
+    grped = df2.groupby('label')
     diffs = grped.apply(weighted_count_lt_zero, 'tax_diff')
     exp = Series(data=[4, 0], index=['a', 'b'])
     assert_series_equal(exp, diffs)
 
 
 def test_weighted_count_gt_zero():
-    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
-    grped = df.groupby('label')
+    df1 = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    grped = df1.groupby('label')
+    diffs = grped.apply(weighted_count_gt_zero, 'tax_diff')
+    exp = Series(data=[8, 10], index=['a', 'b'])
+    assert_series_equal(exp, diffs)
+    df2 = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    grped = df2.groupby('label')
     diffs = grped.apply(weighted_count_gt_zero, 'tax_diff')
     exp = Series(data=[8, 10], index=['a', 'b'])
     assert_series_equal(exp, diffs)

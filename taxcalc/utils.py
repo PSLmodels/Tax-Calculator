@@ -214,12 +214,12 @@ def count_lt_zero(agg):
     return sum([1 for a in agg if a < 0])
 
 
-def weighted_count_lt_zero(agg, col_name):
-    return agg[agg[col_name] < 0]['s006'].sum()
+def weighted_count_lt_zero(agg, col_name, tolerance=-0.001):
+    return agg[agg[col_name] < tolerance]['s006'].sum()
 
 
-def weighted_count_gt_zero(agg, col_name):
-    return agg[agg[col_name] > 0]['s006'].sum()
+def weighted_count_gt_zero(agg, col_name, tolerance=0.001):
+    return agg[agg[col_name] > tolerance]['s006'].sum()
 
 
 def weighted_count(agg):
