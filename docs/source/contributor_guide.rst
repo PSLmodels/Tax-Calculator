@@ -30,7 +30,6 @@ Setup Git
 	.. code-block:: python
 
    		>>> git clone https://github.com/[github-username]/tax-calculator.git
-..
 
 7. From your command line or terminal, navigate to your local tax-calculator directory.
 
@@ -53,8 +52,8 @@ Workflow
 The following text describes a typical workflow for the Tax Calculator package. Different workflows may be necessary in some situations, in which case other contributors are here to help. 
 
 1. Before you edit the calculator on your machine, make sure you have the latest version of the OSPC Tax Calculator:
-	
-	* Download all of the content from the main OSPC Tax Calculator repo by entering the text below at the command line from your local tax-calculator directory.
+
+	* Download all of the content from the main OSPC Tax Calculator repo. Navigate to your local tax-calculator directory and enter the following text at the command line.
 
 	.. code-block:: python 
 	
@@ -81,8 +80,9 @@ The following text describes a typical workflow for the Tax Calculator package. 
 
 		>>> git checkout -b [new-branch-name]
 
-3. :doc:`Click here </make_local_change>` for an example showing how to make changes in your tax-calculator directory.
+3. See :doc:`Making changes in your local tax-calculator directory </make_local_change>` for examples showing you how to do just that.
 
+..
 4. As you go, frequently check that your changes do not introduce bugs and/or degrade the accuracy of the Tax Calculator. To do this, run the following at the command line from inside /tax-calculator/taxcalc. If the tests do not pass, try to fix the issue by using the information provided by the error message. If this isn’t possible or doesn’t work, we are here to help.
 
 	.. code-block:: python
@@ -110,8 +110,6 @@ The following text describes a typical workflow for the Tax Calculator package. 
 
 ..
 8. If this is your first time, wait for feedback and instructions on how to proceed. Most likely, the other contributors will ask you to `fetch`_ and merge and new changes from `upstream`_/master and then open a `pull request`_.  
-
-TODO, discuss: taxcalc/.DS_Store
 	
 Example Code
 ------------
