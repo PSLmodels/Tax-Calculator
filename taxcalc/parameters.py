@@ -4,6 +4,8 @@ import os
 import json
 from pkg_resources import resource_stream, Requirement
 
+DEFAULT_START_YEAR = 2013
+
 class Parameters(object):
 
 
@@ -27,8 +29,9 @@ class Parameters(object):
         return cls(data=params, **kwargs)
 
 
-    def __init__(self, start_year=2013, budget_years=12, inflation_rate=None,
-                 inflation_rates=None, data=None, **kwargs):
+    def __init__(self, start_year=DEFAULT_START_YEAR, budget_years=12,
+                 inflation_rate=None, inflation_rates=None, data=None,
+                 **kwargs):
 
         if inflation_rate and inflation_rates:
             raise ValueError("Can only specify either one constant inflation"
@@ -144,7 +147,7 @@ class Parameters(object):
             setattr(self, name[1:], arr[yr-self._start_year])
 
 
-def default_data(metadata=False):
+def default_data(metadata=False, start_year=None):
     """ Retreive of default parameters """
     parampath = Parameters.params_path
     if not os.path.exists(parampath):
@@ -156,6 +159,44 @@ def default_data(metadata=False):
     else:
         with open(Parameters.params_path) as f:
             params = json.load(f)
+
+    if start_year:
+        for k, v in params.items():
+            first_year = v.get('start_year', DEFAULT_START_YEAR)
+            assert isinstance(first_year, int)
+
+            if start_year < first_year:
+                msg = "Can't set a start year of {0}, because it is before {1}"
+                raise ValueError(msg.format(start_year, first_year))
+
+            #Set the new start year:
+            v['start_year'] = start_year
+
+            #Work with the values
+            vals = v['value']
+            last_year_for_data = first_year + len(vals) - 1
+
+            if last_year_for_data < start_year:
+                if v['row_label']:
+                    v['row_label'] = ["2015"]
+                #Need to produce new values
+                new_val = vals[-1]
+                if v['cpi_inflated'] is True:
+                    if isinstance(new_val, list):
+                        for y in range(last_year_for_data, start_year):
+                            new_val = [x * (1.0 + Parameters._Parameters__rates[y]) for x in new_val]
+                    else:
+                        for y in range(last_year_for_data, start_year):
+                            new_val *= 1.0 + Parameters._Parameters__rates[y]
+                #Set the new values
+                v['value'] = [new_val]
+
+            else:
+                #Need to get rid of [first_year, ..., start_year-1] values
+                years_to_chop = start_year - first_year
+                if v['row_label']:
+                    v['row_label'] = v['row_label'][years_to_chop:]
+                v['value'] = v['value'][years_to_chop:]
 
     if (metadata):
         return params

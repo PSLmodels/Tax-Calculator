@@ -94,3 +94,37 @@ def test_update_Parameters_increment_until_mod_year():
     assert_array_equal(p.STD_Aged, np.array([1400, 1100, 1100, 1400, 1400, 1199]))
 
 
+def test_parameters_get_default_start_year():
+    paramdata = taxcalc.parameters.default_data(start_year=2015, metadata=True)
+    #1D data, has 2015 values
+    meta_II_em = paramdata['_II_em']
+    assert meta_II_em['start_year'] == 2015
+    assert meta_II_em['row_label'] == ["2015"]
+    assert meta_II_em['value'] == [4000]
+
+    #2D data, has 2015 values
+    meta_std_aged = paramdata['_STD_Aged']
+    assert meta_std_aged['start_year'] == 2015
+    assert meta_std_aged['row_label'] == ["2015"]
+    assert meta_std_aged['value'] == [[1550, 1250, 1250, 1550, 1550, 1250]]
+
+    #1D data, doesn't have 2015 values, is CPI inflated
+    meta_amt_thd_marrieds = paramdata['_AMT_thd_MarriedS']
+    assert meta_amt_thd_marrieds['start_year'] == 2015
+    assert meta_amt_thd_marrieds['row_label'] == ["2015"]
+    #Take the 2014 rate and multiply by inflation for that year
+    assert meta_amt_thd_marrieds['value'] == [41050 * (1.0 + Parameters._Parameters__rates[2014])]
+
+    #1D data, doesn't have 2015 values, is not CPI inflated
+    meta_kt_c_age = paramdata['_KT_c_Age']
+    assert meta_kt_c_age['start_year'] == 2015
+    assert meta_kt_c_age['row_label'] == ""
+    assert meta_kt_c_age['value'] == [24]
+
+    #1D data, does have 2015 values, goes up to 2018
+    meta_ctc_c = paramdata['_CTC_c']
+    assert meta_ctc_c['start_year'] == 2015
+    assert meta_ctc_c['row_label'] == ["2015", "2016", "2017", "2018"]
+    assert meta_ctc_c['value'] == [1000, 1000, 1000, 500]
+
+
