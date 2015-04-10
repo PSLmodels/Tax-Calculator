@@ -148,11 +148,15 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     c20750 = ID_Miscellaneous_frt * _posagi
     if puf == True:
         c20400 = e20400
-        c19200 = e19200
     else:
         c20400 = e20550 + e20600 + e20950
-        c19200 = e19500 + e19570 + e19400 + e19550
     c20800 = max(0, c20400 - c20750)
+
+    # Interest Paid Deductions
+    if puf == True:
+        c19200 = e19200
+    else:
+        c19200 = e19500 + e19570 + e19400 + e19550
 
     # Charity (assumes carryover is non-cash)
     base_charity = e19800 + e20100 + e20200
