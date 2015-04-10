@@ -34,8 +34,8 @@ def Adj(   e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
     return (_feided, c02900)
 
 
-@iterate_jit(parameters=['FEI_ec_c'], nopython=True)
-def CapGains(  e23250, e22250, e23660, _sep, _feided, FEI_ec_c,
+@iterate_jit(parameters=['FEI_ec_c', 'ALD_StudentLoan_HC'], nopython=True)
+def CapGains(  e23250, e22250, e23660, _sep, _feided, FEI_ec_c, ALD_StudentLoan_HC,
                     f2555, e00200, e00300, e00600, e00700, e00800,
                     e00900, e01100, e01200, e01400, e01700, e02000, e02100,
                     e02300, e02600, e02610, e02800, e02540, e00400, e02400,
@@ -52,7 +52,7 @@ def CapGains(  e23250, e22250, e23660, _sep, _feided, FEI_ec_c,
             + e02100 + e02300 + e02600
             + e02610 + e02800 - e02540)
     _ymod2 = e00400 + (0.50 * e02400) - c02900
-    _ymod3 = e03210 + e03230 + e03240 + e02615
+    _ymod3 = (1-ALD_StudentLoan_HC)* e03210 + e03230 + e03240 + e02615
     _ymod = _ymod1 + _ymod2 + _ymod3
 
     return (c23650, c01000, c02700, _ymod1, _ymod2, _ymod3, _ymod)
@@ -1193,10 +1193,11 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num,
     return (c87560, c87570, c87580, c87590, c87600, c87610,
                c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220, c07230)
 
-@iterate_jit(parameters=['ACTC_rt', 'SS_Income_c', 'ACTC_Income_thd', 'puf', 'ACTC_ChildNum'],
+@iterate_jit(parameters=['ACTC_rt', 'SS_Income_c', 'ACTC_Income_thd', 'puf', 'ACTC_ChildNum',
+                         'ALD_SelfEmploymentTax_HC'],
                         nopython=True, puf=True)
 def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax, 
-                _exact, e82880, ACTC_Income_thd, ACTC_rt, SS_Income_c,
+                _exact, e82880, ACTC_Income_thd, ACTC_rt, SS_Income_c, ALD_SelfEmploymentTax_HC,
                 e03260, e09800, c59660, e11200, e59680, e59700, e59720,
                 _fixup, e11070, e82915, e82940, c82940, ACTC_ChildNum, puf):
 
@@ -1238,7 +1239,7 @@ def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
         c82900 = 0.0765 * min(SS_Income_c, c82880)
 
 
-        c82905 = float(e03260 + e09800)
+        c82905 = float((1-ALD_SelfEmploymentTax_HC)*e03260 + e09800)
 
         c82910 = c82900 + c82905
         
