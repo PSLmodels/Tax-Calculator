@@ -148,11 +148,15 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     c20750 = ID_Miscellaneous_frt * _posagi
     if puf == True:
         c20400 = e20400
-        c19200 = e19200
     else:
         c20400 = e20550 + e20600 + e20950
-        c19200 = e19500 + e19570 + e19400 + e19550
     c20800 = max(0, c20400 - c20750)
+
+    # Interest Paid Deductions
+    if puf == True:
+        c19200 = e19200
+    else:
+        c19200 = e19500 + e19570 + e19400 + e19550
 
     # Charity (assumes carryover is non-cash)
     base_charity = e19800 + e20100 + e20200
@@ -651,8 +655,9 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     if (puf == True and ((_standard == 0 or (_exact == 1 and e04470 > 0)))):
         c62100 = (c00100 - c04470 + min(c17000, 0.025 * max(0., c00100)) + 
-            (1-ID_StateLocalTax_HC)*_sit + e18500 - c60260 + c20800 - c21040 ) 
-        # c62100 += _cmbtp
+            (1-ID_StateLocalTax_HC)*_sit + e18500 - c60260 + c20800 - c21040 )
+        c62100 += _cmbtp
+
 
 
     if (puf == True and ((_standard > 0 and f6251 == 1))):
@@ -663,7 +668,7 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     if (puf == True and _standard > 0):
         c62100 = (c00100 - c60260 ) 
-        # c62100 += _cmbtp
+        c62100 += _cmbtp
  
 
 
