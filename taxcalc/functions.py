@@ -368,13 +368,15 @@ def NonGain(c23650, e23250, e01100):
 
 
 @iterate_jit(parameters=[ "II_rt1", "II_rt2", "II_rt3", "II_rt4", "II_rt5", "II_rt6", "II_rt7", 
-             "II_brk1", "II_brk2", "II_brk3", "II_brk4", "II_brk5", "II_brk6"], nopython=True)
+             "II_brk1", "II_brk2", "II_brk3", "II_brk4", "II_brk5", "II_brk6",
+             "CG_rt1", "CG_rt2", "CG_rt3", "CG_thd1", "CG_thd2"], nopython=True)
 
 def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
                   e58980, e24515, e24518, MARS, _taxinc, _xyztax, _feided, 
                   _feitax, _cmp, e59410, e59420, e59440, e59470, e59400, 
                   e83200_0, e10105, e74400, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, 
-                  II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
+                  II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6,
+                  CG_rt1, CG_rt2, CG_rt3, CG_thd1, CG_thd2):
 
     c00650 = e00650
     _addtax = 0.
@@ -403,19 +405,20 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
         c24517 = c24516 - _dwks12
         c24520 = max(0., _taxinc - c24517)
         # tentative TI less schD gain
-        c24530 = min(II_brk2[MARS - 1], _taxinc)
+        c24530 = min(CG_thd1[MARS - 1], _taxinc)
 
         #if/else 3
         _dwks16 = min(c24520, c24530)
         _dwks17 = max(0., _taxinc - c24516)
         c24540 = max(_dwks16, _dwks17)
         c24534 = c24530 - _dwks16
+        lowest_rate_tax = CG_rt1 * c24534
         _dwks21 = min(_taxinc, c24517)
         c24597 = max(0., _dwks21 - c24534)
 
         #if/else 4
         # income subject to 15% tax
-        c24598 = 0.15 * c24597  # actual 15% tax
+        c24598 = CG_rt2 * c24597  # actual 15% tax
         _dwks25 = min(_dwks9, e24515)
         _dwks26 = c24516 + c24540
         _dwks28 = max(0., _dwks26 - _taxinc)
@@ -425,16 +428,16 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
         c24550 = max(0., _taxinc - _dwks31)
         c24570 = 0.28 * c24550
 
-        if c24540 > II_brk6[MARS - 1]:
-            _addtax = 0.05 * c24517
+        if c24540 > CG_thd2[MARS - 1]:
+            _addtax = (CG_rt3 - CG_rt2) * c24517
 
-        elif c24540<= II_brk6[MARS - 1] and _taxinc > II_brk6[MARS - 1]:
-            _addtax = 0.05 * min(_dwks21, _taxinc - II_brk6[MARS - 1])
+        elif c24540<= CG_thd2[MARS - 1] and _taxinc > CG_thd2[MARS - 1]:
+            _addtax = (CG_rt3 - CG_rt2) * min(_dwks21, _taxinc - CG_thd2[MARS - 1])
 
         c24560 = Taxer_i(c24540, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, 
                          II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6)
 
-        _taxspecial = c24598 + c24615 + c24570 + c24560 + _addtax
+        _taxspecial = lowest_rate_tax + c24598 + c24615 + c24570 + c24560 + _addtax
         c24580 = min(_taxspecial, _xyztax)
 
     else:
@@ -590,7 +593,8 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 
 
 @iterate_jit(parameters=["AMT_tthd", "II_brk6", "II_brk2", "AMT_Child_em", 
-                         "cgrate1", "cgrate2", "AMT_em_ps", "AMT_em_pe", 
+                         "AMT_CG_rt1", "AMT_CG_rt2", "AMT_CG_rt3","AMT_CG_thd1",
+                         "AMT_em_ps", "AMT_em_pe", "AMT_CG_thd2",
                          "KT_c_Age", "AMT_thd_MarriedS", "AMT_em", "AMT_prt",
                          "AMT_trt1", "AMT_trt2", "ID_StateLocalTax_HC", 
                          "puf"],
@@ -604,9 +608,9 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
                 c04470, c17000, e18500, c20800, c21040,   
                 DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700, 
                 e00100,  e24515, x62730, x60130, 
-                x60220, x60240, c18300, _taxbc, AMT_tthd, 
-                II_brk6, MARS, _sep, II_brk2, AMT_Child_em, cgrate1,
-                cgrate2, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516, 
+                x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
+                II_brk6, MARS, _sep, II_brk2, AMT_Child_em, AMT_CG_rt1,
+                AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516, 
                 c24520, c04800, e10105, c05700, e05800, e05100, e09600, 
                 KT_c_Age, x62740, e62900, AMT_thd_MarriedS, _earned, e62600, 
                 AMT_em, AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer, 
@@ -749,9 +753,9 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
   
     _amt15pc = min(_alminc, c62720) - _amt5pc - min(max(
-        0., II_brk2[MARS - 1] - c24520), min(_alminc, c62720))
+        0., AMT_CG_thd1[MARS - 1] - c24520), min(_alminc, c62720))
     if c04800 == 0:
-        _amt15pc = max(0., min(_alminc, c62720) - II_brk2[MARS - 1])
+        _amt15pc = max(0., min(_alminc, c62720) - AMT_CG_thd1[MARS - 1])
     
    
     _amt25pc = min(_alminc, c62740) - min(_alminc, c62720)
@@ -761,10 +765,10 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     else: 
         _amt25pc = min(_alminc, c62740) - min(_alminc, c62720)
   
-    c62747 = cgrate1 * _amt5pc
+    c62747 = AMT_CG_rt1 * _amt5pc
 
     
-    c62755 = cgrate2* _amt15pc
+    c62755 = AMT_CG_rt2* _amt15pc
     
     c62770 = 0.25 * _amt25pc
     
@@ -773,13 +777,13 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     _amt = 0.
   
-    if _ngamty > II_brk6[MARS - 1]:
-        _amt = 0.05 * min(_alminc, c62740)
+    if _ngamty > AMT_CG_thd2[MARS - 1]:
+        _amt = (AMT_CG_rt3 - AMT_CG_rt2) * min(_alminc, c62740)
     else: 
         _amt = 0.
     
-    if _ngamty <= II_brk6[MARS - 1] and _alminc > II_brk6[MARS - 1]:
-        _amt = 0.05 * min(_alminc - II_brk6[MARS - 1], c62740)
+    if _ngamty <= AMT_CG_thd2[MARS - 1] and _alminc > AMT_CG_thd2[MARS - 1]:
+        _amt = (AMT_CG_rt3 - AMT_CG_rt2) * min(_alminc - AMT_CG_thd2[MARS - 1], c62740)
 
 
     _tamt2 = _tamt2 + _amt
