@@ -1160,7 +1160,7 @@
                     [37450, 74900, 37450, 50200, 74900, 37450]] 
     },
         "_CG_thd2":{
-        "long_name": "Capital gain threshold 2 (Coming Soon.......)",
+        "long_name": "Capital gain threshold 2",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
@@ -1209,7 +1209,7 @@
         "value": [0.20] 
     },
         "_AMT_CG_thd1":{
-        "long_name": "Capital gain threshold 1 (Coming Soon.......)",
+        "long_name": "Capital gain threshold 1",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
@@ -1222,7 +1222,7 @@
                     [37450, 74900, 37450, 50200, 74900, 37450]]
     },
         "_AMT_CG_thd2":{
-        "long_name": "Capital gain threshold 2 (Coming Soon.......)",
+        "long_name": "Capital gain threshold 2",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
