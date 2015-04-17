@@ -418,9 +418,9 @@
         "col_label":["0kids", "1kid", "2kids", "3+kids"],
         "value":    [[0.0765, 0.1598, 0.2106, 0.2106]]        
     },
-    "_SS_Income_c":{
-        "long_name": "Max Taxable AGI for Social Security",
-	    "description": "Taxpayers with income higher than this maximum are not subjected to social security tax.",
+    "_SS_Earnings_c":{
+        "long_name": "Max Taxable Earnings for Social Security",
+	    "description": "Taxpayers with earnings higher than this maximum are not subjected to social security tax.",
         "irs_ref": "form , lines",
         "notes": "",
         "start_year": 2013,

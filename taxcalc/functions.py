@@ -208,14 +208,14 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
                 c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
                 _nonlimited, _limitratio, c04470, c21040)
 
-@iterate_jit(parameters=["SS_Income_c", "FICA_ss_trt", "FICA_mc_trt"], 
+@iterate_jit(parameters=["SS_Earnings_c", "FICA_ss_trt", "FICA_mc_trt"], 
     nopython=True)
-def EI_FICA(   e00900, e02100, SS_Income_c, e00200,
+def EI_FICA(   e00900, e02100, SS_Earnings_c, e00200,
                     e11055, e00250, e30100, FICA_ss_trt, FICA_mc_trt):
     # Earned Income and FICA #
 
     _sey = e00900 + e02100
-    _fica_ss = max(0, FICA_ss_trt * min(SS_Income_c, e00200
+    _fica_ss = max(0, FICA_ss_trt * min(SS_Earnings_c, e00200
                  + max(0, _sey) * (1 - 0.5 * (FICA_mc_trt+FICA_ss_trt))))
     _fica_mc = max(0, FICA_mc_trt * (e00200 + max(0, _sey))
                 *(1 - 0.5 * (FICA_mc_trt+FICA_ss_trt)))
@@ -1201,11 +1201,11 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num,
     return (c87560, c87570, c87580, c87590, c87600, c87610,
                c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220, c07230)
 
-@iterate_jit(parameters=['ACTC_rt', 'SS_Income_c', 'ACTC_Income_thd', 'puf', 'ACTC_ChildNum',
+@iterate_jit(parameters=['ACTC_rt', 'SS_Earnings_c', 'ACTC_Income_thd', 'puf', 'ACTC_ChildNum',
                          'ALD_SelfEmploymentTax_HC'],
                         nopython=True, puf=True)
 def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax, 
-                _exact, e82880, ACTC_Income_thd, ACTC_rt, SS_Income_c, ALD_SelfEmploymentTax_HC,
+                _exact, e82880, ACTC_Income_thd, ACTC_rt, SS_Earnings_c, ALD_SelfEmploymentTax_HC,
                 e03260, e09800, c59660, e11200, e59680, e59700, e59720,
                 _fixup, e11070, e82915, e82940, c82940, ACTC_ChildNum, puf):
 
@@ -1244,7 +1244,7 @@ def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
     # Part II of 2005 form 8812
 
     if _nctcr >= ACTC_ChildNum and c82890 < c82935:
-        c82900 = 0.0765 * min(SS_Income_c, c82880)
+        c82900 = 0.0765 * min(SS_Earnings_c, c82880)
 
 
         c82905 = float((1-ALD_SelfEmploymentTax_HC)*e03260 + e09800)
