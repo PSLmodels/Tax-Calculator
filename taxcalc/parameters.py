@@ -113,7 +113,12 @@ class Parameters(object):
                                         inflation_rates=inf_rates,
                                         num_years=num_years_to_expand)
 
-                    setattr(self, name, nval[num_years_to_skip:])
+                    if self.current_year > self.start_year:
+                        cur_val = getattr(self, name)
+                        offset = self.current_year - self.start_year
+                        cur_val[offset:] = nval[num_years_to_skip:]
+                    else:
+                        setattr(self, name, nval[num_years_to_skip:])
 
                 else: # year > current_year
                     msg = ("Can't specify a parameter for a year that is in the"
