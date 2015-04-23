@@ -37,7 +37,7 @@ In this example, we make a simple change in the file that stores the Tax Calcula
 Example 2. Add a tax parameter to the Tax Calculator: A floor rate for the charitable deduction
 ------------------------------------------------------------------------------------------------
 
-Some changes to the Tax Calculator require edits to the code in more than one place and in more than one file. In this example, we show how to add a tax parameter, a floor rate for the charitable deduction, to the calculator.
+Some changes to the Tax Calculator require edits to the code in more than one place and in more than one file. In this example, we show how to add a tax parameter - a floor rate for the charitable deduction - to the calculator.
 
 ..
 **1. Open the tax parameters file.**
@@ -51,9 +51,9 @@ Some changes to the Tax Calculator require edits to the code in more than one pl
 	tax-calculator/taxcalc/params.json
 
 ..
-**2. Declare the new parameter.**
+**2. Add the new parameter.**
 
-   The following code outlines the syntax and requirements for declaring a new itemized deduction parameter in params.json. This code uses JavaScript Object Notation (JSON). You don’t need to be familiar with JSON to perform this task - just copy the following code, paste it anywhere in params.json [1]_, and fill out the relevant information between the Asterix.
+   The following code outlines the syntax and requirements for adding a new itemized deduction parameter in params.json. This code uses JavaScript Object Notation (JSON). You don’t need to be familiar with JSON to perform this task - just copy the following code, paste it anywhere in params.json [1]_, and fill out the relevant information between the Asterix.
 
    .. code-block:: python
 
@@ -63,17 +63,16 @@ Some changes to the Tax Calculator require edits to the code in more than one pl
    	   "irs_ref": “Form *IRS form number*, line *IRS line number*, ",
    	   "notes": “*Relevant comments or links to clarify the deduction.*”,
   	   "start_year": *Four-digit year for when the deduction first becomes part of the tax code*,
-   	   "col_var": “*Name of the value’s columns if applicable*”,
-   	   "row_var": “*Name of the values’s rows if applicable*”,
-   	   "row_label": [“*Labels of the value’s rows if applicable*”],
+   	   "col_var": “*Name of the value’s column variable if applicable*”,
+   	   "row_var": “FLPDYR”, #1
+   	   "row_label": [“2013”], #2
    	   "cpi_inflated": Boolean *true* if the deduction is annually adjusted for inflation or boolean *false*,
    	   "col_label": [“*Labels of the value’s columns if applicable*”],
    	   "value":     [*The parameter’s value(s)*]
 	},
 ..
 
-
-The completed code for the charitable deduction floor rate looks like this:
+   Treat the strings at points #1 and #2 as given. The completed code for the charitable deduction floor rate looks like this:
 
    .. code-block:: python
 
@@ -84,8 +83,8 @@ The completed code for the charitable deduction floor rate looks like this:
            "notes": "This parameter allows for implementation of Option 52 from https://www.cbo.gov/sites/default/files/cbofiles/attachments/49638-BudgetOptions.pdf.",
            "start_year": 2013,
            "col_var": "",
-           "row_var": “”,
-           "row_label": “”,
+           "row_var": “FLPDYR”,
+           "row_label": [“2013”],
            "cpi_inflated": false,
            "col_label": "",
            "value":     [0.0]       
@@ -94,14 +93,14 @@ The completed code for the charitable deduction floor rate looks like this:
 
    The new parameter’s name consists of _ID (for Itemized Deduction), the deduction’s name (_Charity), and the parameter’s type (_frt for floor rate). For other parameter name and type abbreviations, see :doc:`parameter taxonomy </parameter_taxonomy>`.
 
-   The parameter has several attributes; it first becomes part of the tax code in 2013 and it is not adjusted for inflation. The charitable deduction floor rate is zero, because this parameter doesn’t exist in the current tax code - so, as of 2013, you are eligible to deduct your charitable expense when it exceeds 0% of your Adjusted Gross Income.
+   The parameter has several attributes; the first year that we have a value for is 2013 and it is not adjusted for inflation. The charitable deduction floor rate is zero, because this parameter doesn’t exist in the current tax code - so, as of 2013, you are eligible to deduct your eligible charitable expense when it exceeds 0% of your Adjusted Gross Income.
 
-   We leave blank the attributes “irs_ref”, “col_var”, “col_label”, “row_var”, and “row_label” as there is no reference to our new parameter in the IRS forms, there is only one column in the “value” attribute, and there is only one row in the “value” attribute.
+   We leave blank the attributes “irs_ref”, “col_var”, and “col_label” as there is no reference to our new parameter in the IRS forms and there is only one column in the “value” attribute.
 
 ..
 **3. Open the functions file.**
 
-   Now that we’ve defined the new parameter in params.json, we need to tell the Tax Calculator to take into account that new parameter when the calculator runs. The calculator’s functions that work with the tax parameters are in the file functions.py. Starting from your tax-calculator directory, the path to functions.py is: 
+   Now that we’ve defined the new parameter in params.json, we need to tell the Tax Calculator to take into account that new parameter when it calculates taxes. The calculator’s functions that model tax logic and work with the tax parameters are in the file functions.py. Starting from your tax-calculator directory, the path to functions.py is: 
 
    .. code-block:: python
 	
@@ -110,9 +109,9 @@ The completed code for the charitable deduction floor rate looks like this:
 
 **4. Tell the calculator to perform the relevant function on the new tax parameter.**
 
-   Find the function that works with the charitable deduction in functions.py by using the `Excel file`_ which documents the core data variables. First, search for the word charity and identify the core variables that handle charity data: E19700, E19800, E20100, and E20200. Second, search for the *numerical* portions of those variable names in functions.py and identify the function where they appear: ItemDed() (if you’re unfamiliar with Python, identify a function by the syntax “def FunctionName()”). The function ItemDed() calculates the total itemized deduction amount.
+   Find the function that works with the charitable deduction in functions.py by using `this spreadsheet`_ which documents the core data variables. First, search for the word charity and identify the core variables that handle charity data: E19700, E19800, E20100, and E20200. Second, search for the *numerical* portions of those variable names in functions.py and identify the function where they appear: ItemDed() (if you’re unfamiliar with Python, identify a function by the syntax “def FunctionName()”). The function ItemDed() calculates the total itemized deduction amount.
 
-   We add the parameter name that we defined in params.json to *both* the ItemDed() function and the @iterate_jit() decorator that is located above that function. Note that the parameter name is surrounded by quotes in @iterate_jit() and is not surrounded by quotes in def ItemDed().
+   We add the parameter name that we defined in params.json to *both* the ItemDed() function and the @iterate_jit() decorator that is located above that function. Note that the parameter name is surrounded by quotes in @iterate_jit() and is not surrounded by quotes in def ItemDed(). Also note that in ItemDed(), “puf” must come last if it appears in the argument list.
 
    .. image:: images/make_local_change_eg2_1.png
 ..
@@ -138,5 +137,5 @@ The completed code for the charitable deduction floor rate looks like this:
 ..
 .. [1] Currently, the tax parameters in params.json are in no particular order. This undefined layout is likely to change in the future as we move to organize the file.
 
-.. _`Excel file`: https://docs.google.com/spreadsheets/d/1WlgbgEAMwhjMI8s9eG117bBEKFioXUY0aUTfKwHwXdA/edit#gid=1029315862
+.. _`this spreadsheet`: https://docs.google.com/spreadsheets/d/1WlgbgEAMwhjMI8s9eG117bBEKFioXUY0aUTfKwHwXdA/edit#gid=1029315862
  
