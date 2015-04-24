@@ -132,7 +132,7 @@ def test_make_Calculator_mods():
     # Create a Public Use File object
     puf = Records(tax_dta)
 
-    calc2 = calculator(params, puf, _II_em = np.array([4000]))
+    calc2 = calculator(params, puf, _II_em = np.array([4000]), _II_em_cpi=False)
     assert all(calc2._II_em == np.array([4000]))
 
 
@@ -147,7 +147,7 @@ def test_make_Calculator_json():
     user_mods = """{"1991": { "_STD_Aged": [[1500, 1250, 1200, 1500, 1500, 1200 ]],
                      "_STD_Aged_cpi": false}}"""
 
-    calc2 = calculator(params, puf, mods=user_mods, _II_em=np.array([4000]))
+    calc2 = calculator(params, puf, mods=user_mods, _II_em_cpi=False, _II_em=np.array([4000]))
     assert calc2.II_em == 4000
     assert_array_equal(calc2._II_em, np.array([4000]*12))
     exp_STD_Aged = [[1500, 1250, 1200, 1500, 1500, 1200 ]] * 12
@@ -165,6 +165,7 @@ def test_make_Calculator_user_mods_as_dict():
 
     user_mods = {1991: { "_STD_Aged": [[1400, 1200]] }}
     user_mods[1991]['_II_em'] = [3925, 4000, 4100]
+    user_mods[1991]['_II_em_cpi'] = False
     calc2 = calculator(params, puf, mods=user_mods)
     assert calc2.II_em == 3925
     exp_II_em = [3925, 4000] + [4100] * 10

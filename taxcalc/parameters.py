@@ -86,13 +86,18 @@ class Parameters(object):
         if not all(isinstance(k, int) for k in year_mods.keys()):
             raise ValueError("Every key must be a year, e.g. 2011, 2012, etc.")
 
+        defaults = default_data(metadata=True)
         for year, mods in year_mods.items():
 
             num_years_to_expand = (self.start_year + self.budget_years) - year
             for name, values in mods.items():
                 if name.endswith("_cpi"):
                     continue
-                cpi_inflated = mods.get(name + "_cpi", False)
+                if name in defaults:
+                    default_cpi = defaults[name].get('cpi_inflated', False)
+                else:
+                    default_cpi = False
+                cpi_inflated = mods.get(name + "_cpi", default_cpi)
 
                 if year == self.start_year and year == self.current_year:
                     nval = expand_array(values,
