@@ -85,6 +85,18 @@ def test_update_Parameters_raises_on_future_year():
         user_mods = {2015: { "_STD_Aged": [[1400, 1100, 1100, 1400, 1400, 1199]] }}
         p.update(user_mods)
 
+def test_update_Parameters_maintains_default_cpi_flags():
+    p = Parameters(start_year=2013)
+    p.increment_year()
+    p.increment_year()
+    user_mods = {2015: { "_II_em": [4300]}}
+    p.update(user_mods)
+    #_II_em has a default cpi_flag of True, so by incrementing the year,
+    #the current year value should increase, and therefore not be 4300
+    p.increment_year()
+    assert p.II_em != 4300
+
+
 def test_update_Parameters_increment_until_mod_year():
     p = Parameters(start_year=2013)
     p.increment_year()
