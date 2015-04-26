@@ -86,13 +86,18 @@ class Parameters(object):
         if not all(isinstance(k, int) for k in year_mods.keys()):
             raise ValueError("Every key must be a year, e.g. 2011, 2012, etc.")
 
+        defaults = default_data(metadata=True)
         for year, mods in year_mods.items():
 
             num_years_to_expand = (self.start_year + self.budget_years) - year
             for name, values in mods.items():
                 if name.endswith("_cpi"):
                     continue
-                cpi_inflated = mods.get(name + "_cpi", False)
+                if name in defaults:
+                    default_cpi = defaults[name].get('cpi_inflated', False)
+                else:
+                    default_cpi = False
+                cpi_inflated = mods.get(name + "_cpi", default_cpi)
 
                 if year == self.start_year and year == self.current_year:
                     nval = expand_array(values,
@@ -113,7 +118,12 @@ class Parameters(object):
                                         inflation_rates=inf_rates,
                                         num_years=num_years_to_expand)
 
-                    setattr(self, name, nval[num_years_to_skip:])
+                    if self.current_year > self.start_year:
+                        cur_val = getattr(self, name)
+                        offset = self.current_year - self.start_year
+                        cur_val[offset:] = nval[num_years_to_skip:]
+                    else:
+                        setattr(self, name, nval[num_years_to_skip:])
 
                 else: # year > current_year
                     msg = ("Can't specify a parameter for a year that is in the"
