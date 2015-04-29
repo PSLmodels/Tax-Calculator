@@ -21,15 +21,15 @@ Setup Git
 
 3. Tell Git to remember your GitHub password by following steps 1-4 on `password setup`_. 
 
-4. Create your own `remote`_ `repository`_ (repo) of OSPC's tax calculator by clicking `Fork`_ in the upper right corner of the `Tax Calculator's GitHub page`_. Select your username when asked, “Where should we fork this repository?”
+4. Sign in to GitHub and create your own `remote`_ `repository`_ (repo) of OSPC's tax calculator by clicking `Fork`_ in the upper right corner of the `Tax Calculator's GitHub page`_. Select your username when asked, “Where should we fork this repository?”
 
-5. From your command line or terminal, navigate to the directory on your computer where you would like your local repo to live.
+5. From your command line, navigate to the directory on your computer where you would like your local repo to live.
 
-6. Create a local repo by entering the code below. This step creates a folder called tax-calculator in the directory that you specified in step 5.
+6. Create a local repo by entering at the command line the text after the $. [1]_ This step creates a folder called tax-calculator in the directory that you specified in step 5.
 
 	.. code-block:: python
 
-   		>>> git clone https://github.com/[github-username]/tax-calculator.git
+   		$ git clone https://github.com/[github-username]/tax-calculator.git
 
 7. From your command line or terminal, navigate to your local tax-calculator directory.
 
@@ -37,8 +37,23 @@ Setup Git
 
 	.. code-block:: python
 
-   		>>> git remote add origin https://github.com/[github-username]/tax-calculator.git
-   		>>> git remote add upstream https://github.com/opensourcepolicycenter/tax-calculator.git
+   		$ git remote add upstream https://github.com/opensourcepolicycenter/tax-calculator.git
+..
+
+9. To check that everything is working properly, navigate to /tax-calculator/taxcalc and run the following at the command line.
+
+	.. code-block:: python
+
+		$ py.test
+..
+
+   If the tests pass, you’re good to go. If they don’t pass, enter the following updates at the command line and then try running py.test again. If the tests still don’t pass, please contact us.
+
+	.. code-block:: python
+
+		$ conda update conda
+		$ conda update numba
+		$ conda update pandas
 ..
 
 If you’ve made it here, you’ve successfully made a remote copy (a fork) of OSPC’s repo. That remote repo is hosted on GitHub.com. You’ve also created a local repo (a `clone`_) that lives on your machine and only you can see; you will make your changes to the Tax Calculator by editing the files in the tax-calculator directory on your machine and then submitting those changes to your local repo. As a new contributor, you will push your changes from your local repo to your remote repo when you’re ready to share that work with the team.
@@ -57,28 +72,28 @@ The following text describes a typical workflow for the Tax Calculator package. 
 
 	.. code-block:: python 
 	
-		>>> git fetch upstream
+		$ git fetch upstream
 
 	
 	* Tell Git to switch to the master branch in your local repo.
 
 	.. code-block:: python
 	
-		>>> git checkout master 
+		$ git checkout master 
 
 	
 	* Update your local master branch to contain the latest content of the OSPC master branch using `merge`_. This step ensures that you are working with the latest version of the Tax Calculator.
 
 	.. code-block:: python
 	
-		>>> git merge upstream/master
+		$ git merge upstream/master
 ..
 
 2. Create a new `branch`_ on your local machine. Think of your branches as a way to organize your projects. If you want to work on this documentation, for example, create a separate branch for that work. If you want to change the maximum child care tax credit in the Tax Calculator, create a different branch for that project. 
 
 	.. code-block:: python 
 
-		>>> git checkout -b [new-branch-name]
+		$ git checkout -b [new-branch-name]
 
 3. See :doc:`Making changes in your local tax-calculator directory </make_local_change>` for examples showing you how to do just that.
 
@@ -87,7 +102,7 @@ The following text describes a typical workflow for the Tax Calculator package. 
 
 	.. code-block:: python
 
-		>>> py.test
+		$ py.test
 
 5. Now you’re ready to `commit`_ your changes to your local repo using the code below. The first line of code tells Git to track a file. Use “git status” to find all the files you’ve edited, and “git add” each of the files that you’d like Git to track. As a rule, do not add large files. If you’d like to add a file that is > 25 MB, please contact the other contributors and ask how to proceed. The second line of code commits your changes to your local repo and allows you to create a commit message; this should be a short description of your changes.
 
@@ -95,21 +110,21 @@ The following text describes a typical workflow for the Tax Calculator package. 
 
 	.. code-block:: python
 
-		>>> git add [filename]
-		>>> git commit -m '[description-of-your-commit]'
+		$ git add [filename]
+		$ git commit -m '[description-of-your-commit]'
 ..
 
 6. When you’re ready for other team members to review your code, make your final commit and push your local branch to your remote repo (this repo is also called the origin). 
 
 	.. code-block:: python
 
-		>>> git push origin [new-branch-name]
+		$ git push origin [new-branch-name]
 ..
 
 7. Ask other team members to review your changes by directing them to: github.com/[Github Username]/Tax-Calculator/[new-branch-name]. 
 
 ..
-8. If this is your first time, wait for feedback and instructions on how to proceed. Most likely, the other contributors will ask you to `fetch`_ and merge and new changes from `upstream`_/master and then open a `pull request`_.  
+8. If this is your first time, wait for feedback and instructions on how to proceed. Most likely, the other contributors will ask you to `fetch`_ and merge new changes from `upstream`_/master and then open a `pull request`_.  
 	
 Example Code
 ------------
@@ -117,8 +132,8 @@ Example Code
 For example usage, you can view our sample notebooks:
 
 * `10 Minutes To TaxCalc`_
-* `Behavior Example`_ 
 
+.. [1] The dollar sign is the end of the command prompt on a Mac. If you’re on Windows, this is usually the right angle bracket (>). No matter the symbol, you don’t need to type it at the command line before you enter a command - the symbol should already be there.
 
 .. _`Git`: https://help.github.com/articles/github-glossary/#git
 .. _`quant econ`: http://quant-econ.net/py/learning_python.html
