@@ -71,6 +71,7 @@ def run(puf=True):
     exp_results.rename(columns=lambda x: x.replace('_phase2', '_phase2_i'), inplace=True)
     exp_set = set(exp_results.columns)
     # Add new col names to exp_set
+    exp_set.add('_expanded_income')
     exp_set.add('_ospctax')
     exp_set.add('_refund')
     exp_set.add('_othertax')
