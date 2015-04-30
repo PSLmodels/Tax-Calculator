@@ -3,7 +3,7 @@ import pandas as pd
 from pandas import DataFrame
 from collections import defaultdict
 
-STATS_COLUMNS = ['c00100', '_standard', 'c04470', 'c04600', 'c04800', 'c05200',
+STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600', 'c04800', 'c05200',
                  'c62100','c09600', 'c05800', 'c09200', '_refund', 'c07100',
                  '_ospctax','s006']
 
@@ -248,16 +248,19 @@ def weighted_share_of_total(agg, col_name, total):
     return float(weighted_sum(agg, col_name)) / float(total)
 
 
-def add_weighted_decile_bins(df):
+def add_weighted_decile_bins(df, income_measure='_expanded_income'):
     """
 
-    Add a column of income bins based on each 10% of AGI, weighted by s006.
-    This will server as a "grouper" later on.
+    Add a column of income bins based on each 10% of the income_measure, weighted by s006.
+
+    The default income_measure is `expanded_income`, but `c00100` also works.
+
+    This function will server as a "grouper" later on.
 
     """
 
-    # First, sort by AGI
-    df.sort('c00100', inplace=True)
+    # First, sort by income_measure
+    df.sort(income_measure, inplace=True)
     # Next, do a cumulative sum by the weights
     df['cumsum_weights'] = np.cumsum(df['s006'].values)
     # Max value of cum sum of weights
@@ -270,10 +273,10 @@ def add_weighted_decile_bins(df):
     return df
 
 
-def add_income_bins(df, compare_with="soi", bins=None, right=True):
+def add_income_bins(df, compare_with="soi", bins=None, right=True, income_measure='_expanded_income'):
     """
 
-    Add a column of income bins of AGI using pandas 'cut'. This will
+    Add a column of income bins of income_measure using pandas 'cut'. This will
     serve as a "grouper" later on.
 
     df: DataFrame to group
@@ -306,8 +309,8 @@ def add_income_bins(df, compare_with="soi", bins=None, right=True):
             msg = "Unknown compare_with arg {0}".format(compare_with)
             raise ValueError(msg)
 
-    # Groupby c00100 bins
-    df['bins'] = pd.cut(df['c00100'], bins, right=right)
+    # Groupby income_measure bins
+    df['bins'] = pd.cut(df[income_measure], bins, right=right)
     return df
 
 
@@ -369,21 +372,21 @@ def results(c):
     return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
 
 
-def weighted_avg_allcols(df, cols):
-    diff = DataFrame(df.groupby('bins').apply(weighted_mean, "c00100"),
-                     columns=['c00100'])
+def weighted_avg_allcols(df, cols, income_measure='_expanded_income'):
+    diff = DataFrame(df.groupby('bins').apply(weighted_mean, income_measure),
+                     columns=[income_measure])
 
     for col in cols:
         if (col == "s006" or col == 'num_returns_StandardDed' or
            col == 'num_returns_ItemDed' or col == 'num_returns_AMT'):
             diff[col] = df.groupby('bins')[col].sum()
-        elif col != "c00100":
+        elif col != income_measure:
             diff[col] = df.groupby('bins').apply(weighted_mean, col)
 
     return diff
 
 
-def create_distribution_table(calc, groupby, result_type):
+def create_distribution_table(calc, groupby, result_type, income_measure='_expanded_income'):
     res = results(calc)
 
     res['c04470'] = res['c04470'].where(((res['c00100'] > 0) &
@@ -398,13 +401,13 @@ def create_distribution_table(calc, groupby, result_type):
     res['num_returns_AMT'] = res['s006'].where(res['c09600'] > 0, 0)
 
     if groupby == "weighted_deciles":
-        df = add_weighted_decile_bins(res)
+        df = add_weighted_decile_bins(res, income_measure=income_measure)
     elif groupby == "small_agi_bins":
-        df = add_income_bins(res, compare_with="soi")
+        df = add_income_bins(res, compare_with="soi", income_measure=income_measure)
     elif groupby == "large_agi_bins":
-        df = add_income_bins(res, compare_with="tpc")
+        df = add_income_bins(res, compare_with="tpc", income_measure=income_measure)
     elif groupby == "webapp_agi_bins":
-        df = add_income_bins(res, compare_with="webapp")
+        df = add_income_bins(res, compare_with="webapp", income_measure=income_measure)
     else:
         err = ("groupby must be either 'weighted_deciles' or 'small_agi_bins'"
                "or 'large_agi_bins' or 'webapp_agi_bins'")
@@ -416,7 +419,7 @@ def create_distribution_table(calc, groupby, result_type):
         gp_mean = df.groupby('bins')[TABLE_COLUMNS].sum()
         sum_row = get_sums(df)[TABLE_COLUMNS]
     elif result_type == "weighted_avg":
-        gp_mean = weighted_avg_allcols(df, TABLE_COLUMNS)
+        gp_mean = weighted_avg_allcols(df, TABLE_COLUMNS, income_measure=income_measure)
         sum_row = get_sums(df, na=True)[TABLE_COLUMNS]
 
     return gp_mean.append(sum_row)
