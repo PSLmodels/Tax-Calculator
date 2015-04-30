@@ -425,17 +425,17 @@ def create_distribution_table(calc, groupby, result_type, income_measure='_expan
     return gp_mean.append(sum_row)
 
 
-def create_difference_table(calc1, calc2, groupby):
+def create_difference_table(calc1, calc2, groupby, income_measure='_expanded_income'):
     res1 = results(calc1)
     res2 = results(calc2)
     if groupby == "weighted_deciles":
-        df = add_weighted_decile_bins(res2)
+        df = add_weighted_decile_bins(res2, income_measure=income_measure)
     elif groupby == "small_income_bins":
-        df = add_income_bins(res2, compare_with="soi")
+        df = add_income_bins(res2, compare_with="soi", income_measure=income_measure)
     elif groupby == "large_income_bins":
-        df = add_income_bins(res2, compare_with="tpc")
+        df = add_income_bins(res2, compare_with="tpc", income_measure=income_measure)
     elif groupby == "webapp_income_bins":
-        df = add_income_bins(res2, compare_with="webapp")
+        df = add_income_bins(res2, compare_with="webapp", income_measure=income_measure)
     else:
         err = ("groupby must be either 'weighted_deciles' or 'small_income_bins'"
                "or 'large_income_bins' or 'webapp_income_bins'")
