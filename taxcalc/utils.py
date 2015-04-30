@@ -27,14 +27,14 @@ DIFF_TABLE_LABELS = ["Inds. w/ Tax Cut", "Inds. w/ Tax Increase", "Count",
 
 
 
-LARGE_AGI_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+LARGE_INCOME_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                   200000, 1e14]
 
-SMALL_AGI_BINS = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
+SMALL_INCOME_BINS = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
                    49999, 74999, 99999, 199999, 499999, 999999, 1499999,
                    1999999, 4999999, 9999999, 1e14]
 
-WEBAPP_AGI_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+WEBAPP_INCOME_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                    199999, 499999, 1000000, 1e14]
 
 def extract_array(f):
@@ -285,7 +285,7 @@ def add_income_bins(df, compare_with="soi", bins=None, right=True, income_measur
             Some names to specify certain pre-defined bins
 
     bins: iterable of scalars, optional
-            AGI income breakpoints. Follows pandas convention. The
+            income breakpoints. Follows pandas convention. The
             breakpoint is inclusive if right=True. This argument
             overrides any choice of compare_with
 
@@ -297,13 +297,13 @@ def add_income_bins(df, compare_with="soi", bins=None, right=True, income_measur
     """
     if not bins:
         if compare_with == "tpc":
-            bins = LARGE_AGI_BINS
+            bins = LARGE_INCOME_BINS
 
         elif compare_with == "soi":
-            bins = SMALL_AGI_BINS
+            bins = SMALL_INCOME_BINS
 
         elif compare_with == "webapp":
-            bins = WEBAPP_AGI_BINS
+            bins = WEBAPP_INCOME_BINS
 
         else:
             msg = "Unknown compare_with arg {0}".format(compare_with)
@@ -402,15 +402,15 @@ def create_distribution_table(calc, groupby, result_type, income_measure='_expan
 
     if groupby == "weighted_deciles":
         df = add_weighted_decile_bins(res, income_measure=income_measure)
-    elif groupby == "small_agi_bins":
+    elif groupby == "small_income_bins":
         df = add_income_bins(res, compare_with="soi", income_measure=income_measure)
-    elif groupby == "large_agi_bins":
+    elif groupby == "large_income_bins":
         df = add_income_bins(res, compare_with="tpc", income_measure=income_measure)
-    elif groupby == "webapp_agi_bins":
+    elif groupby == "webapp_income_bins":
         df = add_income_bins(res, compare_with="webapp", income_measure=income_measure)
     else:
-        err = ("groupby must be either 'weighted_deciles' or 'small_agi_bins'"
-               "or 'large_agi_bins' or 'webapp_agi_bins'")
+        err = ("groupby must be either 'weighted_deciles' or 'small_income_bins'"
+               "or 'large_income_bins' or 'webapp_income_bins'")
         raise ValueError(err)
 
     pd.options.display.float_format = '{:8,.0f}'.format
@@ -430,15 +430,15 @@ def create_difference_table(calc1, calc2, groupby):
     res2 = results(calc2)
     if groupby == "weighted_deciles":
         df = add_weighted_decile_bins(res2)
-    elif groupby == "small_agi_bins":
+    elif groupby == "small_income_bins":
         df = add_income_bins(res2, compare_with="soi")
-    elif groupby == "large_agi_bins":
+    elif groupby == "large_income_bins":
         df = add_income_bins(res2, compare_with="tpc")
-    elif groupby == "webapp_agi_bins":
+    elif groupby == "webapp_income_bins":
         df = add_income_bins(res2, compare_with="webapp")
     else:
-        err = ("groupby must be either 'weighted_deciles' or 'small_agi_bins'"
-               "or 'large_agi_bins' or 'webapp_agi_bins'")
+        err = ("groupby must be either 'weighted_deciles' or 'small_income_bins'"
+               "or 'large_income_bins' or 'webapp_income_bins'")
         raise ValueError(err)
 
     # Difference in plans

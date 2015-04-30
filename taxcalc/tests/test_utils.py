@@ -144,11 +144,11 @@ def test_create_tables():
 
     calc2.calc_all()
 
-    t2 = create_distribution_table(calc2, groupby="small_agi_bins", result_type = "weighted_sum")
-    #make large agi bins table
-    tdiff = create_difference_table(calc1, calc2, groupby="large_agi_bins")
-    #make webapp agi bins table
-    tdiff_webapp = create_difference_table(calc1, calc2, groupby="webapp_agi_bins")
+    t2 = create_distribution_table(calc2, groupby="small_income_bins", result_type = "weighted_sum")
+    #make large income bins table
+    tdiff = create_difference_table(calc1, calc2, groupby="large_income_bins")
+    #make webapp income bins table
+    tdiff_webapp = create_difference_table(calc1, calc2, groupby="webapp_income_bins")
 
 
 def test_weighted_count_lt_zero():
@@ -314,11 +314,11 @@ def test_dist_table_sum_row():
     calc1 = Calculator(parameters=params1, records=records1)
     calc1.calc_all()
 
-    t1 = create_distribution_table(calc1, groupby="small_agi_bins", result_type="weighted_sum")
-    t2 = create_distribution_table(calc1, groupby="large_agi_bins", result_type="weighted_sum")
+    t1 = create_distribution_table(calc1, groupby="small_income_bins", result_type="weighted_sum")
+    t2 = create_distribution_table(calc1, groupby="large_income_bins", result_type="weighted_sum")
     assert(np.allclose(t1[-1:], t2[-1:]))
 
-    t3 = create_distribution_table(calc1, groupby="small_agi_bins", result_type="weighted_avg")
+    t3 = create_distribution_table(calc1, groupby="small_income_bins", result_type="weighted_avg")
 #    for col in t3:
 #        assert(t3.loc['sums', col] == 'n/a')
 
@@ -341,8 +341,8 @@ def test_diff_table_sum_row():
     calc2 = calculator(parameters=params2, records=records2, mods=user_mods)
     calc2.calc_all()
 
-    tdiff1 = create_difference_table(calc1, calc2, groupby="small_agi_bins")
-    tdiff2 = create_difference_table(calc1, calc2, groupby="large_agi_bins")
+    tdiff1 = create_difference_table(calc1, calc2, groupby="small_income_bins")
+    tdiff2 = create_difference_table(calc1, calc2, groupby="large_income_bins")
 
     non_digit_cols = ['mean', 'perc_inc', 'perc_cut', 'share_of_change']
     digit_cols = [x for x in tdiff1.columns.tolist() if x not in non_digit_cols]

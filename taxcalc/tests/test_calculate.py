@@ -257,7 +257,7 @@ def test_Calculator_create_distribution_table():
     calc.calc_all()
 
     t1 = create_distribution_table(calc, groupby="weighted_deciles", result_type = "weighted_sum")
-    t2 = create_distribution_table(calc, groupby="small_agi_bins", result_type ="weighted_avg")
+    t2 = create_distribution_table(calc, groupby="small_income_bins", result_type ="weighted_avg")
     assert type(t1) == DataFrame
     assert type(t2) == DataFrame
 
