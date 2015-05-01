@@ -111,7 +111,13 @@ Some changes to the Tax Calculator require edits to the code in more than one pl
 
    Find the function that works with the charitable deduction in functions.py by using `this spreadsheet`_ which documents the core data variables. First, search for the word charity and identify the core variables that handle charity data: E19700, E19800, E20100, and E20200. Second, search for the *numerical* portions of those variable names in functions.py and identify the function where they appear: ItemDed() (if you’re unfamiliar with Python, identify a function by the syntax “def FunctionName()”). The function ItemDed() calculates the total itemized deduction amount.
 
-   We add the parameter name that we defined in params.json to *both* the ItemDed() function and the @iterate_jit() decorator that is located above that function. Note that the parameter name is surrounded by quotes in @iterate_jit() and is not surrounded by quotes in def ItemDed(). Also note that in ItemDed(), “puf” must come last if it appears in the argument list.
+   We add the parameter name that we defined in params.json to *both* the ItemDed() function and the @iterate_jit() decorator that is located above that function. There are several things to note when you do this:
+
+   * Surround the parameter name with quotes in @iterate_jit(). Do not surround the parameter name with quotes in def ItemDed().
+
+   * If the word “puf” appears the argument list of def ItemDed() make sure it comes last. 
+
+   * Parameter names in params.json begin with an underscore. Do not include that underscore in functions.py; _ID_Charity_frt in params.json becomes ID_Charity_frt in functions.py.
 
    .. image:: images/make_local_change_eg2_1.png
 ..
