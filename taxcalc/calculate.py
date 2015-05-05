@@ -114,52 +114,6 @@ class Calculator(object):
     def records(self):
         return self._records
 
-    # def __getattr__(self, name):
-    #     """
-    #     Only allowed attributes on a Calculator are 'parameters' and 'records'
-    #     """
-
-    #     if hasattr(self.params, name):
-    #         return getattr(self.params, name)
-    #     elif hasattr(self.records, name):
-    #         return getattr(self.records, name)
-    #     else:
-    #         try:
-    #             self.__dict__[name]
-    #         except KeyError:
-    #             raise AttributeError(name + " not found")
-
-    # def __setattr__(self, name, val):
-    #     """
-    #     Only allowed attributes on a Calculator are 'parameters' and 'records'
-    #     """
-
-    #     if name == "_params" or name == "_records":
-    #         self.__dict__[name] = val
-    #         return
-
-    #     if hasattr(self.params, name):
-    #         return setattr(self.params, name, val)
-    #     elif hasattr(self.records, name):
-    #         return setattr(self.records, name, val)
-    #     else:
-    #         self.__dict__[name] = val
-
-    # def __getitem__(self, val):
-
-    #     if val in self.__dict__:
-    #         return self.__dict__[val]
-    #     else:
-    #         try:
-    #             return getattr(self.params, val)
-    #         except AttributeError:
-    #             try:
-    #                 return getattr(self.records, val)
-    #             except AttributeError:
-    #                 raise
-
-
-
 
     def calc_all(self):
         FilingStatus(self.params, self.records)
