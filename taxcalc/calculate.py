@@ -114,49 +114,49 @@ class Calculator(object):
     def records(self):
         return self._records
 
-    def __getattr__(self, name):
-        """
-        Only allowed attributes on a Calculator are 'parameters' and 'records'
-        """
+    # def __getattr__(self, name):
+    #     """
+    #     Only allowed attributes on a Calculator are 'parameters' and 'records'
+    #     """
 
-        if hasattr(self.params, name):
-            return getattr(self.params, name)
-        elif hasattr(self.records, name):
-            return getattr(self.records, name)
-        else:
-            try:
-                self.__dict__[name]
-            except KeyError:
-                raise AttributeError(name + " not found")
+    #     if hasattr(self.params, name):
+    #         return getattr(self.params, name)
+    #     elif hasattr(self.records, name):
+    #         return getattr(self.records, name)
+    #     else:
+    #         try:
+    #             self.__dict__[name]
+    #         except KeyError:
+    #             raise AttributeError(name + " not found")
 
-    def __setattr__(self, name, val):
-        """
-        Only allowed attributes on a Calculator are 'parameters' and 'records'
-        """
+    # def __setattr__(self, name, val):
+    #     """
+    #     Only allowed attributes on a Calculator are 'parameters' and 'records'
+    #     """
 
-        if name == "_params" or name == "_records":
-            self.__dict__[name] = val
-            return
+    #     if name == "_params" or name == "_records":
+    #         self.__dict__[name] = val
+    #         return
 
-        if hasattr(self.params, name):
-            return setattr(self.params, name, val)
-        elif hasattr(self.records, name):
-            return setattr(self.records, name, val)
-        else:
-            self.__dict__[name] = val
+    #     if hasattr(self.params, name):
+    #         return setattr(self.params, name, val)
+    #     elif hasattr(self.records, name):
+    #         return setattr(self.records, name, val)
+    #     else:
+    #         self.__dict__[name] = val
 
-    def __getitem__(self, val):
+    # def __getitem__(self, val):
 
-        if val in self.__dict__:
-            return self.__dict__[val]
-        else:
-            try:
-                return getattr(self.params, val)
-            except AttributeError:
-                try:
-                    return getattr(self.records, val)
-                except AttributeError:
-                    raise
+    #     if val in self.__dict__:
+    #         return self.__dict__[val]
+    #     else:
+    #         try:
+    #             return getattr(self.params, val)
+    #         except AttributeError:
+    #             try:
+    #                 return getattr(self.records, val)
+    #             except AttributeError:
+    #                 raise
 
 
 
@@ -282,61 +282,61 @@ class Calculator(object):
        for i in range(0,num_years):
            calc.calc_all()
            
-           row_years.append(calc._current_year)
+           row_years.append(calc.params._current_year)
 
            #totoal number of records
-           returns = calc.s006.sum()
+           returns = calc.records.s006.sum()
 
            #AGI
-           agi = (calc.c00100*calc.s006).sum()
+           agi = (calc.records.c00100*calc.records.s006).sum()
 
            #number of itemizers
-           ID1= calc.c04470 * calc.s006
-           STD1 = calc._standard*calc.s006
-           deduction = np.maximum(calc.c04470, calc._standard)
+           ID1= calc.records.c04470 * calc.records.s006
+           STD1 = calc.records._standard*calc.records.s006
+           deduction = np.maximum(calc.records.c04470, calc.records._standard)
 
            #STD1 = (calc.c04100 + calc.c04200)*calc.s006
-           NumItemizer1 = calc.s006[(calc.c04470>0) * (calc.c00100>0)].sum()
+           NumItemizer1 = calc.records.s006[(calc.records.c04470>0) * (calc.records.c00100>0)].sum()
 
            #itemized deduction
-           ID = ID1[calc.c04470>0].sum()
+           ID = ID1[calc.records.c04470>0].sum()
 
-           NumSTD = calc.s006[(calc._standard>0) * (calc.c00100>0)].sum()
+           NumSTD = calc.records.s006[(calc.records._standard>0) * (calc.records.c00100>0)].sum()
            #standard deduction
-           STD = STD1[(calc._standard>0) * (calc.c00100>0)].sum()
+           STD = STD1[(calc.records._standard>0) * (calc.records.c00100>0)].sum()
 
            #personal exemption
-           PE = (calc.c04600*calc.s006)[calc.c00100>0].sum()
+           PE = (calc.records.c04600*calc.records.s006)[calc.records.c00100>0].sum()
 
            #taxable income
-           taxinc = (calc.c04800*calc.s006).sum()
+           taxinc = (calc.records.c04800*calc.records.s006).sum()
 
            #regular tax
-           regular_tax = (calc.c05200*calc.s006).sum()
+           regular_tax = (calc.records.c05200*calc.records.s006).sum()
 
            #AMT income
-           AMTI = (calc.c62100*calc.s006).sum()
+           AMTI = (calc.records.c62100*calc.records.s006).sum()
 
            #total AMTs
-           AMT = (calc.c09600*calc.s006).sum()
+           AMT = (calc.records.c09600*calc.records.s006).sum()
 
            #number of people paying AMT
-           NumAMT1 = calc.s006[calc.c09600>0].sum()
+           NumAMT1 = calc.records.s006[calc.records.c09600>0].sum()
 
            #tax before credits 
-           tax_bf_credits = (calc.c05800*calc.s006).sum()
+           tax_bf_credits = (calc.records.c05800*calc.records.s006).sum()
 
            #tax before nonrefundable credits 09200
-           tax_bf_nonrefundable = (calc.c09200*calc.s006).sum()
+           tax_bf_nonrefundable = (calc.records.c09200*calc.records.s006).sum()
 
            #refundable credits
-           refundable = (calc._refund*calc.s006).sum()
+           refundable = (calc.records._refund*calc.records.s006).sum()
 
            #nonrefuncable credits
-           nonrefundable = (calc.c07100*calc.s006).sum()
+           nonrefundable = (calc.records.c07100*calc.records.s006).sum()
 
            #ospc_tax
-           revenue1 = (calc._ospctax * calc.s006).sum()
+           revenue1 = (calc.records._ospctax * calc.records.s006).sum()
 
 
            table.append([returns/math.pow(10,6),agi/math.pow(10,9),NumItemizer1/math.pow(10,6), 

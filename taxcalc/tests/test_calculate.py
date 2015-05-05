@@ -133,7 +133,7 @@ def test_make_Calculator_mods():
     puf = Records(tax_dta)
 
     calc2 = calculator(params, puf, _II_em = np.array([4000]), _II_em_cpi=False)
-    assert all(calc2._II_em == np.array([4000]))
+    assert all(calc2.params._II_em == np.array([4000]))
 
 
 def test_make_Calculator_json():
@@ -148,11 +148,11 @@ def test_make_Calculator_json():
                      "_STD_Aged_cpi": false}}"""
 
     calc2 = calculator(params, puf, mods=user_mods, _II_em_cpi=False, _II_em=np.array([4000]))
-    assert calc2.II_em == 4000
-    assert_array_equal(calc2._II_em, np.array([4000]*12))
+    assert calc2.params.II_em == 4000
+    assert_array_equal(calc2.params._II_em, np.array([4000]*12))
     exp_STD_Aged = [[1500, 1250, 1200, 1500, 1500, 1200 ]] * 12
-    assert_array_equal(calc2._STD_Aged, np.array(exp_STD_Aged))
-    assert_array_equal(calc2.STD_Aged, np.array([1500, 1250, 1200, 1500, 1500, 1200 ]))
+    assert_array_equal(calc2.params._STD_Aged, np.array(exp_STD_Aged))
+    assert_array_equal(calc2.params.STD_Aged, np.array([1500, 1250, 1200, 1500, 1500, 1200 ]))
 
 
 def test_make_Calculator_user_mods_as_dict():
@@ -167,10 +167,10 @@ def test_make_Calculator_user_mods_as_dict():
     user_mods[1991]['_II_em'] = [3925, 4000, 4100]
     user_mods[1991]['_II_em_cpi'] = False
     calc2 = calculator(params, puf, mods=user_mods)
-    assert calc2.II_em == 3925
+    assert calc2.params.II_em == 3925
     exp_II_em = [3925, 4000] + [4100] * 10
-    assert_array_equal(calc2._II_em, np.array(exp_II_em))
-    assert_array_equal(calc2.STD_Aged, np.array([1400, 1200]))
+    assert_array_equal(calc2.params._II_em, np.array(exp_II_em))
+    assert_array_equal(calc2.params.STD_Aged, np.array([1400, 1200]))
 
 
 def test_make_Calculator_user_mods_with_cpi_flags(paramsfile):
@@ -197,8 +197,8 @@ def test_make_Calculator_user_mods_with_cpi_flags(paramsfile):
     exp_almsep_values = [40400] + [41050] * 11
     exp_almsep = np.array(exp_almsep_values)
 
-    assert_array_equal(calc2._almdep, exp_almdep)
-    assert_array_equal(calc2._almsep, exp_almsep)
+    assert_array_equal(calc2.params._almdep, exp_almdep)
+    assert_array_equal(calc2.params._almsep, exp_almsep)
 
 
 def test_make_Calculator_empty_params_is_default_params():
@@ -220,29 +220,13 @@ def test_Calculator_attr_access_to_params():
     calc = Calculator(params=params, records=puf)
 
     # Records data
-    assert hasattr(calc, 'c01000')
+    assert hasattr(calc.records, 'c01000')
     # Parameter data
-    assert hasattr(calc, '_AMT_Child_em')
+    assert hasattr(calc.params, '_AMT_Child_em')
     # local attribute
     assert hasattr(calc, 'params')
 
 
-def test_Calculator_set_attr_passes_through():
-
-    # Create a Parameters object
-    params = Params(start_year=1991, inflation_rates=irates)
-    # Create a Public Use File object
-    puf = Records(tax_dta)
-    # Create a Calculator
-    calc = Calculator(params=params, records=puf)
-
-    assert id(calc.e00200) == id(calc.records.e00200)
-    calc.e00200 = calc.e00200 + 100
-    assert id(calc.e00200) == id(calc.records.e00200)
-    assert_array_equal( calc.e00200, calc.records.e00200)
-
-    with pytest.raises(AttributeError):
-        calc.foo == 14
 
 
 def test_Calculator_create_distribution_table():
