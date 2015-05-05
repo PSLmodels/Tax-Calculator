@@ -6,7 +6,7 @@ from pkg_resources import resource_stream, Requirement
 
 DEFAULT_START_YEAR = 2013
 
-class Parameters(object):
+class Params(object):
 
 
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
@@ -73,7 +73,7 @@ class Parameters(object):
 
     def update(self, year_mods):
         """
-        Take a dictionary of year: {name:val} mods and set them on this Parameters object.
+        Take a dictionary of year: {name:val} mods and set them on this Params object.
         'year_mods' is a dictionary of year: mods where mods is a dict of key:value pairs
         and key_cpi:Bool pairs. The key_cpi:Bool pairs indicate if the value for 'key'
         should be inflated
@@ -159,15 +159,15 @@ class Parameters(object):
 
 def default_data(metadata=False, start_year=None):
     """ Retreive of default parameters """
-    parampath = Parameters.params_path
+    parampath = Params.params_path
     if not os.path.exists(parampath):
-        path_in_egg = os.path.join("taxcalc", Parameters.PARAM_FILENAME)
+        path_in_egg = os.path.join("taxcalc", Params.PARAM_FILENAME)
         buf = resource_stream(Requirement.parse("taxcalc"), path_in_egg)
         _bytes = buf.read()
         as_string = _bytes.decode("utf-8")
         params = json.loads(as_string)
     else:
-        with open(Parameters.params_path) as f:
+        with open(Params.params_path) as f:
             params = json.load(f)
 
     if start_year:
@@ -194,10 +194,10 @@ def default_data(metadata=False, start_year=None):
                 if v['cpi_inflated'] is True:
                     if isinstance(new_val, list):
                         for y in range(last_year_for_data, start_year):
-                            new_val = [x * (1.0 + Parameters._Parameters__rates[y]) for x in new_val]
+                            new_val = [x * (1.0 + Params._Params__rates[y]) for x in new_val]
                     else:
                         for y in range(last_year_for_data, start_year):
-                            new_val *= 1.0 + Parameters._Parameters__rates[y]
+                            new_val *= 1.0 + Params._Params__rates[y]
                 #Set the new values
                 v['value'] = [new_val]
 

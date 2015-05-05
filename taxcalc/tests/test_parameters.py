@@ -36,14 +36,14 @@ def paramsfile():
     os.remove(f.name)
 
 
-def test_create_parameters():
-    p = Parameters()
+def test_create_params():
+    p = Params()
     assert p
 
 
-def test_create_parameters_from_file(paramsfile):
-    p = Parameters.from_file(paramsfile.name)
-    irates = Parameters._Parameters__rates
+def test_create_params_from_file(paramsfile):
+    p = Params.from_file(paramsfile.name)
+    irates = Params._Params__rates
     inf_rates = [irates[2013 + i] for i in range(0, 12)]
 
     assert_array_equal(p._almdep,
@@ -60,33 +60,33 @@ def test_create_parameters_from_file(paramsfile):
                                     inflation_rates=inf_rates, num_years=12))
 
 
-def test_parameters_get_default(paramsfile):
+def test_params_get_default(paramsfile):
     paramdata = taxcalc.parameters.default_data()
     assert paramdata['_CDCC_ps'] == [15000]
 
 
-def test_update_Parameters_raises_on_no_year(paramsfile):
-    p = Parameters.from_file(paramsfile.name)
+def test_update_Params_raises_on_no_year(paramsfile):
+    p = Params.from_file(paramsfile.name)
     user_mods = { "_STD_Aged": [[1400, 1200]] }
     with pytest.raises(ValueError):
         p.update(user_mods)
 
 
-def test_update_Parameters_update_current_year():
-    p = Parameters(start_year=2013)
+def test_update_Params_update_current_year():
+    p = Params(start_year=2013)
     user_mods = {2013: { "_STD_Aged": [[1400, 1100, 1100, 1400, 1400, 1199]] }}
     p.update(user_mods)
     assert_array_equal(p.STD_Aged, np.array([1400, 1100, 1100, 1400, 1400, 1199]))
 
 
-def test_update_Parameters_raises_on_future_year():
-    p = Parameters(start_year=2013)
+def test_update_Params_raises_on_future_year():
+    p = Params(start_year=2013)
     with pytest.raises(ValueError):
         user_mods = {2015: { "_STD_Aged": [[1400, 1100, 1100, 1400, 1400, 1199]] }}
         p.update(user_mods)
 
-def test_update_Parameters_maintains_default_cpi_flags():
-    p = Parameters(start_year=2013)
+def test_update_Params_maintains_default_cpi_flags():
+    p = Params(start_year=2013)
     p.increment_year()
     p.increment_year()
     user_mods = {2015: { "_II_em": [4300]}}
@@ -97,16 +97,16 @@ def test_update_Parameters_maintains_default_cpi_flags():
     assert p.II_em != 4300
 
 
-def test_update_Parameters_increment_until_mod_year():
-    p = Parameters(start_year=2013)
+def test_update_Params_increment_until_mod_year():
+    p = Params(start_year=2013)
     p.increment_year()
     p.increment_year()
     user_mods = {2015: { "_STD_Aged": [[1400, 1100, 1100, 1400, 1400, 1199]] }}
     p.update(user_mods)
     assert_array_equal(p.STD_Aged, np.array([1400, 1100, 1100, 1400, 1400, 1199]))
 
-def test_increment_Parameters_increment_and_then_update():
-    p = Parameters(start_year=2013)
+def test_increment_Params_increment_and_then_update():
+    p = Params(start_year=2013)
     p.increment_year()
     p.increment_year()
     user_mods = {2015: { "_II_em": [4400], "_II_em_cpi": True}}
@@ -114,7 +114,7 @@ def test_increment_Parameters_increment_and_then_update():
     assert_array_equal(p._II_em[:3], np.array([3900, 3950, 4400]))
     assert p.II_em == 4400
 
-def test_parameters_get_default_start_year():
+def test_params_get_default_start_year():
     paramdata = taxcalc.parameters.default_data(start_year=2015, metadata=True)
     #1D data, has 2015 values
     meta_II_em = paramdata['_II_em']
@@ -133,7 +133,7 @@ def test_parameters_get_default_start_year():
     assert meta_amt_thd_marrieds['start_year'] == 2015
     assert meta_amt_thd_marrieds['row_label'] == ["2015"]
     #Take the 2014 rate and multiply by inflation for that year
-    assert meta_amt_thd_marrieds['value'] == [41050 * (1.0 + Parameters._Parameters__rates[2014])]
+    assert meta_amt_thd_marrieds['value'] == [41050 * (1.0 + Params._Params__rates[2014])]
 
     #1D data, doesn't have 2015 values, is not CPI inflated
     meta_kt_c_age = paramdata['_KT_c_Age']
