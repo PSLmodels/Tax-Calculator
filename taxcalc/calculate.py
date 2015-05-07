@@ -100,11 +100,7 @@ class Calculator(object):
 
         assert self._params.current_year == self._records.current_year
 
-    def __deepcopy__(self, memo):
-        import copy
-        params = copy.deepcopy(self._params)
-        recs = copy.deepcopy(self._records)
-        return Calculator(params, recs)
+ 
 
     @property
     def params(self):
