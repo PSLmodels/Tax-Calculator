@@ -4,7 +4,7 @@ import math
 import numpy as np
 from .utils import *
 from .functions import *
-from .parameters import Params
+from .parameters import Parameters
 from .records import Records
 import copy
 
@@ -72,17 +72,17 @@ class Calculator(object):
 
         rfname: filename for Records
         """
-        params = Params.from_file(pfname, **kwargs)
+        params = Parameters.from_file(pfname, **kwargs)
         recs = Records.from_file(rfname, **kwargs)
         return cls(params, recs)
 
 
     def __init__(self, params=None, records=None, sync_years=True, **kwargs):
 
-        if isinstance(params, Params):
+        if isinstance(params, Parameters):
             self._params = params
         else:
-            self._params = Params.from_file(params, **kwargs)
+            self._params = Parameters.from_file(params, **kwargs)
 
         if records is None:
             raise ValueError("Must supply tax records path or Records object")

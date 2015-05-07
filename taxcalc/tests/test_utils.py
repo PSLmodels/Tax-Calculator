@@ -128,8 +128,8 @@ def test_create_tables():
     #Create a Public Use File object
     cur_path = os.path.abspath(os.path.dirname(__file__))
     tax_dta_path = os.path.join(cur_path, "../../tax_all1991_puf.gz")
-    # Create a default Params object
-    params1 = Params(start_year=1991, inflation_rates=irates)
+    # Create a default Parameters object
+    params1 = Parameters(start_year=1991, inflation_rates=irates)
     records1 = Records(tax_dta_path)
     # Create a Calculator
     calc1 = Calculator(params=params1, records=records1)
@@ -137,7 +137,7 @@ def test_create_tables():
 
     # User specified Plans
     user_mods = '{"1991": {"_II_rt4": [0.56]}}'
-    params2 = Params(start_year=1991, inflation_rates=irates)
+    params2 = Parameters(start_year=1991, inflation_rates=irates)
     records2 = Records(tax_dta_path)
     # Create a Calculator
     calc2 = calculator(params=params2, records=records2, mods=user_mods)
@@ -308,7 +308,7 @@ def test_dist_table_sum_row():
     cur_path = os.path.abspath(os.path.dirname(__file__))
     tax_dta_path = os.path.join(cur_path, "../../tax_all1991_puf.gz")
     # Create a default Parameters object
-    params1 = Params(start_year=1991, inflation_rates=irates)
+    params1 = Parameters(start_year=1991, inflation_rates=irates)
     records1 = Records(tax_dta_path)
     # Create a Calculator
     calc1 = Calculator(params=params1, records=records1)
@@ -327,7 +327,7 @@ def test_diff_table_sum_row():
     cur_path = os.path.abspath(os.path.dirname(__file__))
     tax_dta_path = os.path.join(cur_path, "../../tax_all1991_puf.gz")
     # Create a default Parameters object
-    params1 = Params(start_year=1991, inflation_rates=irates)
+    params1 = Parameters(start_year=1991, inflation_rates=irates)
     records1 = Records(tax_dta_path)
     # Create a Calculator
     calc1 = Calculator(params=params1, records=records1)
@@ -335,7 +335,7 @@ def test_diff_table_sum_row():
 
     # User specified Plans
     user_mods = '{"1991": {"_II_rt4": [0.56]}}'
-    params2 = Params(start_year=1991, inflation_rates=irates)
+    params2 = Parameters(start_year=1991, inflation_rates=irates)
     records2 = Records(tax_dta_path)
     # Create a Calculator
     calc2 = calculator(params=params2, records=records2, mods=user_mods)

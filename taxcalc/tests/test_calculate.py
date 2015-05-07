@@ -54,7 +54,7 @@ def run(puf=True):
 
     # Create a Parameters object
 
-    params = Params(start_year=1991, inflation_rates=irates)
+    params = Parameters(start_year=1991, inflation_rates=irates)
 
     # Create a Public Use File object
     puf = Records(tax_dta)
@@ -99,14 +99,14 @@ puf = Records(tax_dta)
 
 def test_make_Calculator():
     # Create a Params object
-    params = Params(start_year=1991, inflation_rates=irates)
+    params = Parameters(start_year=1991, inflation_rates=irates)
     calc = Calculator(params, puf)
 
 
 def test_make_Calculator_deepcopy():
     import copy
     # Create a Params object
-    params = Params(start_year=1991, inflation_rates=irates)
+    params = Parameters(start_year=1991, inflation_rates=irates)
     calc = Calculator(params, puf)
     calc2 = copy.deepcopy(calc)
 
@@ -127,7 +127,7 @@ def test_make_Calculator_files_to_ctor(paramsfile):
 def test_make_Calculator_mods():
 
     # Create a Params object
-    params = Params(start_year=1991, inflation_rates=irates)
+    params = Parameters(start_year=1991, inflation_rates=irates)
 
     # Create a Public Use File object
     puf = Records(tax_dta)
@@ -139,7 +139,7 @@ def test_make_Calculator_mods():
 def test_make_Calculator_json():
 
     # Create a Params object
-    params = Params(start_year=1991, inflation_rates=irates)
+    params = Parameters(start_year=1991, inflation_rates=irates)
 
     # Create a Public Use File object
     puf = Records(tax_dta)
@@ -158,7 +158,7 @@ def test_make_Calculator_json():
 def test_make_Calculator_user_mods_as_dict():
 
     # Create a Params object
-    params = Params(start_year=1991, inflation_rates=irates)
+    params = Parameters(start_year=1991, inflation_rates=irates)
 
     # Create a Public Use File object
     puf = Records(tax_dta)
@@ -187,8 +187,8 @@ def test_make_Calculator_user_mods_with_cpi_flags(paramsfile):
                  "_rt7": [0.396]}}
 
     inf_rates = [irates[1991 + i] for i in range(0, 12)]
-    # Create a Params object
-    params = Params(start_year=1991, inflation_rates=irates)
+    # Create a Parameters object
+    params = Parameters(start_year=1991, inflation_rates=irates)
     calc2 = calculator(params, puf, mods=user_mods)
 
     exp_almdep = expand_array(np.array([7150, 7250, 7400]), inflate=True,
@@ -211,7 +211,7 @@ def test_make_Calculator_empty_params_is_default_params():
 def test_Calculator_attr_access_to_params():
 
     # Create a Parameters object
-    params = Params(start_year=1991, inflation_rates=irates)
+    params = Parameters(start_year=1991, inflation_rates=irates)
 
     # Create a Public Use File object
     puf = Records(tax_dta)
@@ -232,7 +232,7 @@ def test_Calculator_attr_access_to_params():
 def test_Calculator_create_distribution_table():
 
     # Create a Parameters object
-    params = Params(start_year=1991, inflation_rates=irates)
+    params = Parameters(start_year=1991, inflation_rates=irates)
     # Create a Public Use File object
     puf = Records(tax_dta)
     # Create a Calculator
@@ -247,7 +247,7 @@ def test_Calculator_create_distribution_table():
 def test_Calculator_create_difference_table():
 
     # Create a Parameters object
-    params = Params(start_year=1991, inflation_rates=irates)
+    params = Parameters(start_year=1991, inflation_rates=irates)
     # Create a Public Use File object
     puf = Records(tax_dta)
     # Create a Calculator
@@ -255,7 +255,7 @@ def test_Calculator_create_difference_table():
     calc.calc_all()
 
     # Create a Parameters object
-    params = Params(start_year=1991, inflation_rates=irates)
+    params = Parameters(start_year=1991, inflation_rates=irates)
     # Create a Public Use File object
     puf = Records(tax_dta)
     user_mods = '{"1991": { "_rt7": [0.45] }}'
@@ -271,7 +271,7 @@ def test_diagnostic_table():
           2018:0.024, 2019:0.024}
 
     # Create a Parameters object
-    params = Params(start_year=2008, inflation_rates=irates)
+    params = Parameters(start_year=2008, inflation_rates=irates)
     # Create a Public Use File object
     tax_dta.flpdyr += 17
     puf = Records(tax_dta, weights = weights)
