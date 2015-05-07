@@ -107,7 +107,7 @@ def test_create_apply_function_string():
     assert ans == exp
 
 
-def test_create_apply_function_string_with_parameters():
+def test_create_apply_function_string_with_params():
     ans = create_apply_function_string(['a', 'b', 'c'], ['d', 'e'], ['d'])
     exp = ("def ap_func(x_0,x_1,x_2,x_3,x_4):\n"
            "  for i in range(len(x_0)):\n"
