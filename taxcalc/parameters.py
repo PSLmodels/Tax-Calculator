@@ -73,7 +73,7 @@ class Parameters(object):
 
     def update(self, year_mods):
         """
-        Take a dictionary of year: {name:val} mods and set them on this Parameters object.
+        Take a dictionary of year: {name:val} mods and set them on this Params object.
         'year_mods' is a dictionary of year: mods where mods is a dict of key:value pairs
         and key_cpi:Bool pairs. The key_cpi:Bool pairs indicate if the value for 'key'
         should be inflated
@@ -161,7 +161,7 @@ def default_data(metadata=False, start_year=None):
     """ Retreive of default parameters """
     parampath = Parameters.params_path
     if not os.path.exists(parampath):
-        path_in_egg = os.path.join("taxcalc", Parameters.PARAM_FILENAME)
+        path_in_egg = os.path.join("taxcalc", Params.PARAM_FILENAME)
         buf = resource_stream(Requirement.parse("taxcalc"), path_in_egg)
         _bytes = buf.read()
         as_string = _bytes.decode("utf-8")

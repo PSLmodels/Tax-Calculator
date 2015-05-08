@@ -368,7 +368,7 @@ def get_sums(df, na=False):
 
 
 def results(c):
-    outputs = [getattr(c, col) for col in STATS_COLUMNS]
+    outputs = [getattr(c.records, col) for col in STATS_COLUMNS]
     return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
 
 
