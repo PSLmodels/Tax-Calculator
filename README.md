@@ -10,7 +10,7 @@ The Open-Source Policy Center (OSPC) seeks to make policy analysis more transpar
 
 Disclaimer
 ========
-DISCLAIMER: The Tax-Calculator is currently under development. Therefore, there is NO GUARANTEE OF ACCURACY. THE CODE SHOULD NOT CURRENTLY BE USED FOR PUBLICATIONS, JOURNAL ARTICLES, OR RESEARCH PURPOSES. DO NOT CITE. Furthermore, users should be forewarned that the interface could change significantly, and the implementation is subject to wild change. The code is currently available for testing purposes only.
+The Tax-Calculator is currently under development. Therefore, there is NO GUARANTEE OF ACCURACY. THE CODE SHOULD NOT CURRENTLY BE USED FOR PUBLICATIONS, JOURNAL ARTICLES, OR RESEARCH PURPOSES. DO NOT CITE. Furthermore, users should be forewarned that the interface could change significantly, and the implementation is subject to wild change. The code is currently available for testing purposes only.
 
 
 Installation
