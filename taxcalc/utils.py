@@ -422,6 +422,7 @@ def create_distribution_table(calc, groupby, result_type):
     if result_type == "weighted_sum":
         df = weighted(df, STATS_COLUMNS)
         gp_mean = df.groupby('bins', as_index=False)[TABLE_COLUMNS].sum()
+        gp_mean.drop('bins', axis=1, inplace=True)
         sum_row = get_sums(df)[TABLE_COLUMNS]
     elif result_type == "weighted_avg":
         gp_mean = weighted_avg_allcols(df, TABLE_COLUMNS)
