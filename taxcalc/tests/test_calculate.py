@@ -239,8 +239,17 @@ def test_Calculator_create_distribution_table():
     calc = Calculator(params=params, records=puf)
     calc.calc_all()
 
+    DIST_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
+                    'Standard Deduction', 'Itemizers',
+                    'Itemized Deduction', 'Personal Exemption',
+                    'Taxable Income', 'Regular Tax', 'AMTI', 'AMT Filers', 'AMT',
+                    'Tax before Credits', 'Non-refundable Credits',
+                    'Tax before Refundable Credits', 'Refundable Credits',
+                    'Revenue']
     t1 = create_distribution_table(calc, groupby="weighted_deciles", result_type = "weighted_sum")
+    t1.columns = DIST_LABELS
     t2 = create_distribution_table(calc, groupby="small_agi_bins", result_type ="weighted_avg")
+    t1.columns = DIST_LABELS
     assert type(t1) == DataFrame
     assert type(t2) == DataFrame
 
