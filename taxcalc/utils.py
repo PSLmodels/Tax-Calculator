@@ -365,7 +365,15 @@ def get_sums(df, na=False):
 
 
 def results(c):
-    outputs = [getattr(c.records, col) for col in STATS_COLUMNS]
+    outputs = []
+    for col in STATS_COLUMNS:
+       if hasattr(c, 'records') and hasattr(c, 'params'):
+            if hasattr(c.params, col):
+                outputs.append(getattr(c.params, col))
+            else:
+                outputs.append(getattr(c.records, col))
+       else:
+            outputs.append(getattr(c, col))
     return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
 
 
