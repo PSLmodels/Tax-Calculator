@@ -370,15 +370,15 @@ def results(c):
 
 
 def weighted_avg_allcols(df, cols):
-    diff = DataFrame(df.groupby('bins').apply(weighted_mean, "c00100"),
+    diff = DataFrame(df.groupby('bins', as_index=False).apply(weighted_mean, "c00100"),
                      columns=['c00100'])
 
     for col in cols:
         if (col == "s006" or col == 'num_returns_StandardDed' or
            col == 'num_returns_ItemDed' or col == 'num_returns_AMT'):
-            diff[col] = df.groupby('bins')[col].sum()
+            diff[col] = df.groupby('bins', as_index=False)[col].sum()[col]
         elif col != "c00100":
-            diff[col] = df.groupby('bins').apply(weighted_mean, col)
+            diff[col] = df.groupby('bins', as_index=False).apply(weighted_mean, col)
 
     return diff
 
@@ -413,7 +413,7 @@ def create_distribution_table(calc, groupby, result_type):
     pd.options.display.float_format = '{:8,.0f}'.format
     if result_type == "weighted_sum":
         df = weighted(df, STATS_COLUMNS)
-        gp_mean = df.groupby('bins')[TABLE_COLUMNS].sum()
+        gp_mean = df.groupby('bins', as_index=False)[TABLE_COLUMNS].sum()
         sum_row = get_sums(df)[TABLE_COLUMNS]
     elif result_type == "weighted_avg":
         gp_mean = weighted_avg_allcols(df, TABLE_COLUMNS)
@@ -443,7 +443,7 @@ def create_difference_table(calc1, calc2, groupby):
     # Negative values are the magnitude of the tax decrease
     res2['tax_diff'] = res2['_ospctax'] - res1['_ospctax']
 
-    diffs = means_and_comparisons(res2, 'tax_diff', df.groupby('bins'),
+    diffs = means_and_comparisons(res2, 'tax_diff', df.groupby('bins', as_index=False),
                                   (res2['tax_diff']*res2['s006']).sum())
 
     sum_row = get_sums(diffs)[diffs.columns.tolist()]

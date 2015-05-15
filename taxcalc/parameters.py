@@ -161,7 +161,7 @@ def default_data(metadata=False, start_year=None):
     """ Retreive of default parameters """
     parampath = Parameters.params_path
     if not os.path.exists(parampath):
-        path_in_egg = os.path.join("taxcalc", Params.PARAM_FILENAME)
+        path_in_egg = os.path.join("taxcalc", Parameters.PARAM_FILENAME)
         buf = resource_stream(Requirement.parse("taxcalc"), path_in_egg)
         _bytes = buf.read()
         as_string = _bytes.decode("utf-8")
