@@ -327,10 +327,7 @@ def test_dist_table_sum_row():
     t1 = create_distribution_table(calc1, groupby="small_agi_bins", result_type="weighted_sum")
     t2 = create_distribution_table(calc1, groupby="large_agi_bins", result_type="weighted_sum")
 
-    #'bins' row has Nan, so get rid of it for comparison
-    lastrow1 = np.array(t1[-1:].values[0,1:], dtype='f8')
-    lastrow2 = np.array(t2[-1:].values[0,1:], dtype='f8')
-    assert(np.allclose(lastrow1,lastrow2))
+    assert(np.allclose(t1[-1:], t2[-1:]))
 
     t3 = create_distribution_table(calc1, groupby="small_agi_bins", result_type="weighted_avg")
     for col in t3:
