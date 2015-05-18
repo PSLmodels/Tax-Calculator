@@ -339,7 +339,7 @@ def means_and_comparisons(df, col_name, gp, weighted_total):
 def weighted(df, X):
     agg = df
     for colname in X:
-        if colname != 's006':
+        if not colname.startswith('s006'):
             agg[colname] = df[colname]*df['s006']
     return agg
 
