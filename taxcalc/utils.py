@@ -20,9 +20,9 @@ TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Tax before Refundable Credits', 'Refundable Credits',
                 'Revenue']
 
-DIFF_TABLE_LABELS = ["Inds. w/ Tax Cut", "Inds. w/ Tax Increase", "Count",
-                     "Mean Tax Difference", "Total Tax Difference",
-                     "%age Tax Increase", "%age Tax Decrease",
+DIFF_TABLE_LABELS = ["Tax Units with Tax Cut", "Tax Units with Tax Increase", "Count",
+                     "Average Tax Change", "Total Tax Difference",
+                     "Percent with Tax Increase", "Percent with Tax Decrease",
                      "Share of Overall Change"]
 
 
