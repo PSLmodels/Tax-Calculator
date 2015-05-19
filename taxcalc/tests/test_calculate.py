@@ -16,13 +16,16 @@ weights_path = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
 weights = pd.read_csv(weights_path)
 
 all_cols = set()
-tax_dta_path = os.path.join(CUR_PATH, "../../tax_all91_puf.gz")
+tax_dta_path = os.path.join(CUR_PATH, "../../tax_all1991_puf.gz")
 tax_dta = pd.read_csv(tax_dta_path, compression='gzip')
                       
 # Fix-up. MIdR needs to be type int64 to match PUF
 tax_dta['midr'] = tax_dta['midr'].astype('int64')
 tax_dta['s006'] = np.arange(0,len(tax_dta['s006']))
 
+irates = {1991:0.015, 1992:0.020, 1993:0.022, 1994:0.020, 1995:0.021,
+          1996:0.022, 1997:0.023, 1998:0.024, 1999:0.024, 2000:0.024,
+          2001:0.024, 2002:0.024, 2003:0.032, 2004:0.021}
 
 @pytest.yield_fixture
 def paramsfile():
@@ -50,13 +53,14 @@ def add_df(alldfs, df):
 def run(puf=True):
 
     # Create a Parameters object
-    params = Parameters(start_year=91)
+
+    params = Parameters(start_year=1991, inflation_rates=irates)
 
     # Create a Public Use File object
     puf = Records(tax_dta)
 
     # Create a Calculator
-    calc = Calculator(parameters=params, records=puf)
+    calc = Calculator(params=params, records=puf)
     totaldf = calc.calc_all_test()
 
     # drop duplicates
@@ -94,105 +98,112 @@ def test_sequence():
 puf = Records(tax_dta)
 
 def test_make_Calculator():
-    # Create a Parameters object
-    params = Parameters(start_year=91)
+    # Create a Params object
+    params = Parameters(start_year=1991, inflation_rates=irates)
     calc = Calculator(params, puf)
 
 
 def test_make_Calculator_deepcopy():
     import copy
-    # Create a Parameters object
-    params = Parameters(start_year=91)
+    # Create a Params object
+    params = Parameters(start_year=1991, inflation_rates=irates)
     calc = Calculator(params, puf)
     calc2 = copy.deepcopy(calc)
 
 
 def test_make_Calculator_from_files(paramsfile):
-    calc = Calculator.from_files(paramsfile.name, tax_dta_path, start_year=91)
+    calc = Calculator.from_files(paramsfile.name, tax_dta_path,
+                                 start_year=1991,
+                                 inflation_rates=irates)
     assert calc
 
 
 def test_make_Calculator_files_to_ctor(paramsfile):
-    calc = Calculator(parameters=paramsfile.name, records=tax_dta_path, start_year=91)
+    calc = Calculator(params=paramsfile.name, records=tax_dta_path,
+                      start_year=1991, inflation_rates=irates)
     assert calc
 
 
 def test_make_Calculator_mods():
 
-    # Create a Parameters object
-    params = Parameters(start_year=91)
+    # Create a Params object
+    params = Parameters(start_year=1991, inflation_rates=irates)
 
     # Create a Public Use File object
     puf = Records(tax_dta)
 
-    calc2 = calculator(params, puf, _II_em = np.array([4000]))
-    assert all(calc2._II_em == np.array([4000]))
+    calc2 = calculator(params, puf, _II_em = np.array([4000]), _II_em_cpi=False)
+    assert all(calc2.params._II_em == np.array([4000]))
 
 
 def test_make_Calculator_json():
 
-    # Create a Parameters object
-    params = Parameters(start_year=91)
+    # Create a Params object
+    params = Parameters(start_year=1991, inflation_rates=irates)
 
     # Create a Public Use File object
     puf = Records(tax_dta)
 
-    user_mods = '{ "_STD_Aged": [[1500, 1250, 1200, 1500, 1500, 1200 ]] }'
-    calc2 = calculator(params, puf, mods=user_mods, _II_em=np.array([4000]))
-    assert calc2.II_em == 4000
-    assert_array_equal(calc2._II_em, np.array([4000]*14))
+    user_mods = """{"1991": { "_STD_Aged": [[1500, 1250, 1200, 1500, 1500, 1200 ]],
+                     "_STD_Aged_cpi": false}}"""
+
+    calc2 = calculator(params, puf, mods=user_mods, _II_em_cpi=False, _II_em=np.array([4000]))
+    assert calc2.params.II_em == 4000
+    assert_array_equal(calc2.params._II_em, np.array([4000]*14))
     exp_STD_Aged = [[1500, 1250, 1200, 1500, 1500, 1200 ]] * 14
-    assert_array_equal(calc2._STD_Aged, np.array(exp_STD_Aged))
-    assert_array_equal(calc2.STD_Aged, np.array([1500, 1250, 1200, 1500, 1500, 1200 ]))
+    assert_array_equal(calc2.params._STD_Aged, np.array(exp_STD_Aged))
+    assert_array_equal(calc2.params.STD_Aged, np.array([1500, 1250, 1200, 1500, 1500, 1200 ]))
 
 
 def test_make_Calculator_user_mods_as_dict():
 
-    # Create a Parameters object
-    params = Parameters(start_year=91)
+    # Create a Params object
+    params = Parameters(start_year=1991, inflation_rates=irates)
 
     # Create a Public Use File object
     puf = Records(tax_dta)
 
-    user_mods = { "_STD_Aged": [[1400, 1200]] }
-    user_mods['_II_em'] = [3925, 4000, 4100]
+    user_mods = {1991: { "_STD_Aged": [[1400, 1200]] }}
+    user_mods[1991]['_II_em'] = [3925, 4000, 4100]
+    user_mods[1991]['_II_em_cpi'] = False
     calc2 = calculator(params, puf, mods=user_mods)
-    assert calc2.II_em == 3925
+    assert calc2.params.II_em == 3925
     exp_II_em = [3925, 4000] + [4100] * 12
-    assert_array_equal(calc2._II_em, np.array(exp_II_em))
-    assert_array_equal(calc2.STD_Aged, np.array([1400, 1200]))
+    assert_array_equal(calc2.params._II_em, np.array(exp_II_em))
+    assert_array_equal(calc2.params.STD_Aged, np.array([1400, 1200]))
 
 
 def test_make_Calculator_user_mods_with_cpi_flags(paramsfile):
 
-    calc = Calculator(parameters=paramsfile.name,
-                      records=tax_dta_path, start_year=91)
+    calc = Calculator(params=paramsfile.name,
+                      records=tax_dta_path, start_year=1991,
+                      inflation_rates=irates)
 
-    user_mods = {"_almdep": [7150, 7250, 7400],
+    user_mods = {1991: {"_almdep": [7150, 7250, 7400],
                  "_almdep_cpi": True,
                  "_almsep": [40400, 41050],
                  "_almsep_cpi": False,
                  "_rt5": [0.33 ],
-                 "_rt7": [0.396]}
+                 "_rt7": [0.396]}}
 
+    inf_rates = [irates[1991 + i] for i in range(0, 14)]
     # Create a Parameters object
-    params = Parameters(start_year=91)
-    irates = Parameters._Parameters__rates
+    params = Parameters(start_year=1991, inflation_rates=irates)
     calc2 = calculator(params, puf, mods=user_mods)
 
     exp_almdep = expand_array(np.array([7150, 7250, 7400]), inflate=True,
-                       inflation_rates=irates, num_years=14)
+                       inflation_rates=inf_rates, num_years=14)
 
     exp_almsep_values = [40400] + [41050] * 13
     exp_almsep = np.array(exp_almsep_values)
 
-    assert_array_equal(calc2._almdep, exp_almdep)
-    assert_array_equal(calc2._almsep, exp_almsep)
+    assert_array_equal(calc2.params._almdep, exp_almdep)
+    assert_array_equal(calc2.params._almsep, exp_almsep)
 
 
 def test_make_Calculator_empty_params_is_default_params():
     # Create a Public Use File object
-    puf_basic = Records(tax_dta, start_year=2013)
+    puf_basic = Records(tax_dta, start_year=2011)
     calc_basic = Calculator(records=puf_basic)
     assert calc_basic
 
@@ -200,70 +211,63 @@ def test_make_Calculator_empty_params_is_default_params():
 def test_Calculator_attr_access_to_params():
 
     # Create a Parameters object
-    params = Parameters(start_year=91)
+    params = Parameters(start_year=1991, inflation_rates=irates)
 
     # Create a Public Use File object
     puf = Records(tax_dta)
 
     # Create a Calculator
-    calc = Calculator(parameters=params, records=puf)
+    calc = Calculator(params=params, records=puf)
 
     # Records data
-    assert hasattr(calc, 'c01000')
+    assert hasattr(calc.records, 'c01000')
     # Parameter data
-    assert hasattr(calc, '_AMT_Child_em')
+    assert hasattr(calc.params, '_AMT_Child_em')
     # local attribute
-    assert hasattr(calc, 'parameters')
+    assert hasattr(calc, 'params')
 
 
-def test_Calculator_set_attr_passes_through():
-
-    # Create a Parameters object
-    params = Parameters(start_year=91)
-    # Create a Public Use File object
-    puf = Records(tax_dta)
-    # Create a Calculator
-    calc = Calculator(parameters=params, records=puf)
-
-    assert id(calc.e00200) == id(calc.records.e00200)
-    calc.e00200 = calc.e00200 + 100
-    assert id(calc.e00200) == id(calc.records.e00200)
-    assert_array_equal( calc.e00200, calc.records.e00200)
-
-    with pytest.raises(AttributeError):
-        calc.foo == 14
 
 
 def test_Calculator_create_distribution_table():
 
     # Create a Parameters object
-    params = Parameters(start_year=91)
+    params = Parameters(start_year=1991, inflation_rates=irates)
     # Create a Public Use File object
     puf = Records(tax_dta)
     # Create a Calculator
-    calc = Calculator(parameters=params, records=puf)
+    calc = Calculator(params=params, records=puf)
     calc.calc_all()
 
+    DIST_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
+                    'Standard Deduction', 'Itemizers',
+                    'Itemized Deduction', 'Personal Exemption',
+                    'Taxable Income', 'Regular Tax', 'AMTI', 'AMT Filers', 'AMT',
+                    'Tax before Credits', 'Non-refundable Credits',
+                    'Tax before Refundable Credits', 'Refundable Credits',
+                    'Revenue']
     t1 = create_distribution_table(calc, groupby="weighted_deciles", result_type = "weighted_sum")
+    t1.columns = DIST_LABELS
     t2 = create_distribution_table(calc, groupby="small_agi_bins", result_type ="weighted_avg")
+    t1.columns = DIST_LABELS
     assert type(t1) == DataFrame
     assert type(t2) == DataFrame
 
 def test_Calculator_create_difference_table():
 
     # Create a Parameters object
-    params = Parameters(start_year=91)
+    params = Parameters(start_year=1991, inflation_rates=irates)
     # Create a Public Use File object
     puf = Records(tax_dta)
     # Create a Calculator
-    calc = Calculator(parameters=params, records=puf)
+    calc = Calculator(params=params, records=puf)
     calc.calc_all()
 
     # Create a Parameters object
-    params = Parameters(start_year=91)
+    params = Parameters(start_year=1991, inflation_rates=irates)
     # Create a Public Use File object
     puf = Records(tax_dta)
-    user_mods = '{ "_rt7": [0.45] }'
+    user_mods = '{"1991": { "_rt7": [0.45] }}'
     calc2 = calculator(params, puf, mods=user_mods)
 
     t1 = create_difference_table(calc, calc2, groupby="weighted_deciles")
@@ -271,16 +275,18 @@ def test_Calculator_create_difference_table():
     
 def test_diagnostic_table():
     # we need the records' year at 2008 for blow up step. So param's year needs to be 2008 to past the test
-    
-    
+    irates = {2008:0.015, 2009:0.020, 2010:0.022, 2011:0.020, 2012:0.021,
+          2013:0.022, 2014:0.023, 2015:0.024, 2016:0.024, 2017:0.024,
+          2018:0.024, 2019:0.024, 2020:0.032, 2021:0.021}
+
     # Create a Parameters object
-    params = Parameters(start_year=2008)
+    params = Parameters(start_year=2008, inflation_rates=irates)
     # Create a Public Use File object
-    tax_dta.flpdyr +=1917 
+    tax_dta.flpdyr += 17
     puf = Records(tax_dta, weights = weights)
     # Create a Calculator
     
-    calc = Calculator(parameters=params, records=puf, sync_years=False)
+    calc = Calculator(params=params, records=puf, sync_years=False)
 
     calc.diagnostic_table()
 

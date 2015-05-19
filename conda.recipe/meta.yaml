@@ -8,9 +8,10 @@ requirements:
     - setuptools
     - python
     - numpy
-    - pandas
+    - pandas <=0.16.1
     - numba
     - toolz
+    - six
   run:
     - pytest
     - setuptools
@@ -19,6 +20,7 @@ requirements:
     - pandas
     - numba
     - toolz
+    - six
 
 about:
   home: http://www.github.com/OpenSourcePolicyCenter
