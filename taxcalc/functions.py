@@ -202,7 +202,7 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
         
         ID_Charity_frt : Deduction for charitable contributions; floor as a percent of AGI
     
-    Taxpayer Charateristics:
+    Taxpayer Characteristics:
         e17500 : Medical expense
         
         e18425 : Income taxes
@@ -226,7 +226,7 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
         e20600 : Tax preparation fee
                 
         
-    Intermediate Variabbles:
+    Intermediate Variables:
         _posagi: positive AGI
     
     
@@ -364,7 +364,7 @@ def AMED(e00200, MARS, AMED_thd, _sey, AMED_trt, FICA_mc_trt, FICA_ss_trt):
     
     Notes
     -----
-    Tax Low Parameters:    
+    Tax Law Parameters:    
         AMED_thd : Additional medicare threshold
         
         AMED_trt : Additional medicare tax rate
@@ -421,7 +421,7 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
         II_rt* : Personal income tax rates: range 1-7, respectively for lowest income bracket to the highest
     
     
-    Taxpayer Charateristics:
+    Taxpayer Characteristics:
         _earned : (F2441) Earned income amount
         
         e02400 : Gross social Security Benefit
