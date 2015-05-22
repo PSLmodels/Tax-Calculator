@@ -34,7 +34,7 @@ def run(puf=True):
 
     # Create a Public Use File object
 
-    tax_dta = pd.read_csv("puf.csv")
+    tax_dta = pd.read_csv("/Users/Amy/Documents/puf.csv")
 
     blowup_factors = "./taxcalc/StageIFactors.csv"
     weights = "./taxcalc/WEIGHTS.csv"
@@ -43,6 +43,12 @@ def run(puf=True):
 
     # Create a Calculator
     calc = Calculator(parameters=params, records=puf)
+    #calc.records.e18400 = calc.records.e18400 - calc.records.e18400
+    #calc.records.e18425 = calc.records.e18425 - calc.records.e18425
+    #calc.records.e18450 = calc.records.e18450 - calc.records.e18450
+    #calc.records.e18500 = calc.records.e18500 - calc.records.e18500
+    #calc.records.e18800 = calc.records.e18800 - calc.records.e18800
+    #calc.records.e18900 = calc.records.e18900 - calc.records.e18900
     totaldf = calc.calc_all_test()
 
     # drop duplicates
