@@ -196,6 +196,8 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
             c21040 = min(dedmin, dedpho)
         else:
             c21040 = 0.0
+    else:
+        c21040 = 0.0
     
     # Final Itemized Deduction amount
     c04470 = c21060 - c21040
