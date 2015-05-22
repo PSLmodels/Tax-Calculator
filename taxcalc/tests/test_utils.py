@@ -132,7 +132,7 @@ def test_create_tables():
     params1 = Parameters(start_year=1991, inflation_rates=irates)
     records1 = Records(tax_dta_path)
     # Create a Calculator
-    calc1 = Calculator(parameters=params1, records=records1)
+    calc1 = Calculator(params=params1, records=records1)
     calc1.calc_all()
 
     # User specified Plans
@@ -140,7 +140,7 @@ def test_create_tables():
     params2 = Parameters(start_year=1991, inflation_rates=irates)
     records2 = Records(tax_dta_path)
     # Create a Calculator
-    calc2 = calculator(parameters=params2, records=records2, mods=user_mods)
+    calc2 = calculator(params=params2, records=records2, mods=user_mods)
 
     calc2.calc_all()
 
@@ -156,11 +156,13 @@ def test_weighted_count_lt_zero():
     grped = df1.groupby('label')
     diffs = grped.apply(weighted_count_lt_zero, 'tax_diff')
     exp = Series(data=[4, 0], index=['a', 'b'])
+    exp.index.name = 'label'
     assert_series_equal(exp, diffs)
     df2 = DataFrame(data=data_float, columns=['tax_diff', 's006', 'label'])
     grped = df2.groupby('label')
     diffs = grped.apply(weighted_count_lt_zero, 'tax_diff')
     exp = Series(data=[4, 0], index=['a', 'b'])
+    exp.index.name = 'label'
     assert_series_equal(exp, diffs)
 
 
@@ -169,11 +171,13 @@ def test_weighted_count_gt_zero():
     grped = df1.groupby('label')
     diffs = grped.apply(weighted_count_gt_zero, 'tax_diff')
     exp = Series(data=[8, 10], index=['a', 'b'])
+    exp.index.name = 'label'
     assert_series_equal(exp, diffs)
     df2 = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df2.groupby('label')
     diffs = grped.apply(weighted_count_gt_zero, 'tax_diff')
     exp = Series(data=[8, 10], index=['a', 'b'])
+    exp.index.name = 'label'
     assert_series_equal(exp, diffs)
  
 
@@ -182,6 +186,7 @@ def test_weighted_count():
     grped = df.groupby('label')
     diffs = grped.apply(weighted_count)
     exp = Series(data=[12, 10], index=['a', 'b'])
+    exp.index.name = 'label'
     assert_series_equal(exp, diffs)
  
 
@@ -190,6 +195,7 @@ def test_weighted_mean():
     grped = df.groupby('label')
     diffs = grped.apply(weighted_mean, 'tax_diff')
     exp = Series(data=[16.0/12.0, 26.0/10.0], index=['a', 'b'])
+    exp.index.name = 'label'
     assert_series_equal(exp, diffs)
  
 
@@ -198,6 +204,7 @@ def test_weighted_sum():
     grped = df.groupby('label')
     diffs = grped.apply(weighted_sum, 'tax_diff')
     exp = Series(data=[16.0, 26.0], index=['a', 'b'])
+    exp.index.name = 'label'
     assert_series_equal(exp, diffs)
  
 
@@ -206,6 +213,7 @@ def test_weighted_perc_inc():
     grped = df.groupby('label')
     diffs = grped.apply(weighted_perc_inc, 'tax_diff')
     exp = Series(data=[8./12., 1.0], index=['a', 'b'])
+    exp.index.name = 'label'
     assert_series_equal(exp, diffs)
 
 
@@ -214,6 +222,7 @@ def test_weighted_perc_dec():
     grped = df.groupby('label')
     diffs = grped.apply(weighted_perc_dec, 'tax_diff')
     exp = Series(data=[4./12., 0.0], index=['a', 'b'])
+    exp.index.name = 'label'
     assert_series_equal(exp, diffs)
 
 
@@ -222,6 +231,7 @@ def test_weighted_share_of_total():
     grped = df.groupby('label')
     diffs = grped.apply(weighted_share_of_total, 'tax_diff', 42.0)
     exp = Series(data=[16.0/42., 26.0/42.0], index=['a', 'b'])
+    exp.index.name = 'label'
     assert_series_equal(exp, diffs)
 
 
@@ -311,11 +321,12 @@ def test_dist_table_sum_row():
     params1 = Parameters(start_year=1991, inflation_rates=irates)
     records1 = Records(tax_dta_path)
     # Create a Calculator
-    calc1 = Calculator(parameters=params1, records=records1)
+    calc1 = Calculator(params=params1, records=records1)
     calc1.calc_all()
 
     t1 = create_distribution_table(calc1, groupby="small_agi_bins", result_type="weighted_sum")
     t2 = create_distribution_table(calc1, groupby="large_agi_bins", result_type="weighted_sum")
+
     assert(np.allclose(t1[-1:], t2[-1:]))
 
     t3 = create_distribution_table(calc1, groupby="small_agi_bins", result_type="weighted_avg")
@@ -330,7 +341,7 @@ def test_diff_table_sum_row():
     params1 = Parameters(start_year=1991, inflation_rates=irates)
     records1 = Records(tax_dta_path)
     # Create a Calculator
-    calc1 = Calculator(parameters=params1, records=records1)
+    calc1 = Calculator(params=params1, records=records1)
     calc1.calc_all()
 
     # User specified Plans
@@ -338,7 +349,7 @@ def test_diff_table_sum_row():
     params2 = Parameters(start_year=1991, inflation_rates=irates)
     records2 = Records(tax_dta_path)
     # Create a Calculator
-    calc2 = calculator(parameters=params2, records=records2, mods=user_mods)
+    calc2 = calculator(params=params2, records=records2, mods=user_mods)
     calc2.calc_all()
 
     tdiff1 = create_difference_table(calc1, calc2, groupby="small_agi_bins")

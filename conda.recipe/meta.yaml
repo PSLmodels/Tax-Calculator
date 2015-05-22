@@ -8,7 +8,7 @@ requirements:
     - setuptools
     - python
     - numpy
-    - pandas
+    - pandas <=0.16.1
     - numba
     - toolz
     - six

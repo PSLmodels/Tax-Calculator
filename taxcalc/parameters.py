@@ -73,7 +73,7 @@ class Parameters(object):
 
     def update(self, year_mods):
         """
-        Take a dictionary of year: {name:val} mods and set them on this Parameters object.
+        Take a dictionary of year: {name:val} mods and set them on this Params object.
         'year_mods' is a dictionary of year: mods where mods is a dict of key:value pairs
         and key_cpi:Bool pairs. The key_cpi:Bool pairs indicate if the value for 'key'
         should be inflated
