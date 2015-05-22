@@ -29,7 +29,7 @@ def ascii_output():
     #csv file, only rows in list will be recorded in final output
     #if left as [], results in entire file being converted to ascii
     #must put in order from smallest to largest
-    recid_list = []
+    recid_list = [1,2,3]
     #recid_list = [33180, 64023, 68020, 74700, 84723, 98001, 107039, 107298, 108820]
 
     #Number of characters in each column
