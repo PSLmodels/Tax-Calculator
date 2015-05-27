@@ -20,9 +20,9 @@ TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Tax before Refundable Credits', 'Refundable Credits',
                 'Revenue']
 
-DIFF_TABLE_LABELS = ["Inds. w/ Tax Cut", "Inds. w/ Tax Increase", "Count",
-                     "Mean Tax Difference", "Total Tax Difference",
-                     "%age Tax Increase", "%age Tax Decrease",
+DIFF_TABLE_LABELS = ["Tax Units with Tax Cut", "Tax Units with Tax Increase", "Count",
+                     "Average Tax Change", "Total Tax Difference",
+                     "Percent with Tax Increase", "Percent with Tax Decrease",
                      "Share of Overall Change"]
 
 
@@ -342,7 +342,7 @@ def means_and_comparisons(df, col_name, gp, weighted_total):
 def weighted(df, X):
     agg = df
     for colname in X:
-        if colname != 's006':
+        if not colname.startswith('s006'):
             agg[colname] = df[colname]*df['s006']
     return agg
 
@@ -368,20 +368,28 @@ def get_sums(df, na=False):
 
 
 def results(c):
-    outputs = [getattr(c.records, col) for col in STATS_COLUMNS]
+    outputs = []
+    for col in STATS_COLUMNS:
+       if hasattr(c, 'records') and hasattr(c, 'params'):
+            if hasattr(c.params, col):
+                outputs.append(getattr(c.params, col))
+            else:
+                outputs.append(getattr(c.records, col))
+       else:
+            outputs.append(getattr(c, col))
     return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
 
 
-def weighted_avg_allcols(df, cols, income_measure='_expanded_income'):
-    diff = DataFrame(df.groupby('bins').apply(weighted_mean, income_measure),
-                     columns=[income_measure])
 
+def weighted_avg_allcols(df, cols, income_measure='_expanded_income'):
+    diff = DataFrame(df.groupby('bins', as_index=False).apply(weighted_mean, income_measure),
+                     columns=[income_measure])
     for col in cols:
         if (col == "s006" or col == 'num_returns_StandardDed' or
            col == 'num_returns_ItemDed' or col == 'num_returns_AMT'):
-            diff[col] = df.groupby('bins')[col].sum()
+            diff[col] = df.groupby('bins', as_index=False)[col].sum()[col]
         elif col != income_measure:
-            diff[col] = df.groupby('bins').apply(weighted_mean, col)
+            diff[col] = df.groupby('bins', as_index=False).apply(weighted_mean, col)
 
     return diff
 
@@ -416,7 +424,8 @@ def create_distribution_table(calc, groupby, result_type, income_measure='_expan
     pd.options.display.float_format = '{:8,.0f}'.format
     if result_type == "weighted_sum":
         df = weighted(df, STATS_COLUMNS)
-        gp_mean = df.groupby('bins')[TABLE_COLUMNS].sum()
+        gp_mean = df.groupby('bins', as_index=False)[TABLE_COLUMNS].sum()
+        gp_mean.drop('bins', axis=1, inplace=True)
         sum_row = get_sums(df)[TABLE_COLUMNS]
     elif result_type == "weighted_avg":
         gp_mean = weighted_avg_allcols(df, TABLE_COLUMNS, income_measure=income_measure)
@@ -446,7 +455,7 @@ def create_difference_table(calc1, calc2, groupby, income_measure='_expanded_inc
     # Negative values are the magnitude of the tax decrease
     res2['tax_diff'] = res2['_ospctax'] - res1['_ospctax']
 
-    diffs = means_and_comparisons(res2, 'tax_diff', df.groupby('bins'),
+    diffs = means_and_comparisons(res2, 'tax_diff', df.groupby('bins', as_index=False),
                                   (res2['tax_diff']*res2['s006']).sum())
 
     sum_row = get_sums(diffs)[diffs.columns.tolist()]
