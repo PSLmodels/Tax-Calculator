@@ -426,7 +426,7 @@ def create_distribution_table(calc, groupby, result_type):
 
         c00100 : AGI (Defecit)
         
-        c09600 : Alternative minimum tax
+        c09600 : Alternative minimum tax (AMT)
         
         s006 : used to weight population
 
@@ -438,15 +438,19 @@ def create_distribution_table(calc, groupby, result_type):
 
     res = results(calc)
 
+    # weight of returns with positive AGI and itemized deduction greater than standard deduction
     res['c04470'] = res['c04470'].where(((res['c00100'] > 0) &
                                         (res['c04470'] > res['_standard'])), 0)
 
+    # weight of returns with positive AGI and itemized deduction
     res['num_returns_ItemDed'] = res['s006'].where(((res['c00100'] > 0) &
                                                    (res['c04470'] > 0)), 0)
 
+    # weight of returns with positive AGI and standard deduction
     res['num_returns_StandardDed'] = res['s006'].where(((res['c00100'] > 0) &
                                                        (res['_standard'] > 0)), 0)
 
+    # weight of returns with positive Alternative Minimum Tax (AMT)
     res['num_returns_AMT'] = res['s006'].where(res['c09600'] > 0, 0)
 
     # sorts the data
@@ -487,9 +491,9 @@ def create_difference_table(calc1, calc2, groupby):
 
     Parameters
     ----------
-    calc1, the first Calculator object
-    calc2, the other Calculator object
-    groupby, String object
+    calc1 : the first Calculator object
+    calc2 : the other Calculator object
+    groupby : String object
         options for input: 'weighted_deciles', 'small_agi_bins', 'large_agi_bins', 'webapp_agi_bins'
         determines how the columns in the resulting DataFrame are sorted
 
