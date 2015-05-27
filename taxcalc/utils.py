@@ -152,11 +152,11 @@ def strip_Nones(x):
     return everything encountered before. If a list of lists, we
     replace None with -1 and return
 
-    Parameters:
+    Parameters
     -----------
     x: list
 
-    Returns:
+    Returns
     --------
     list
     """
@@ -274,24 +274,31 @@ def add_weighted_decile_bins(df):
 
 def add_income_bins(df, compare_with="soi", bins=None, right=True):
     """
-
     Add a column of income bins of AGI using pandas 'cut'. This will
     serve as a "grouper" later on.
 
-    df: DataFrame to group
 
-    compare_with: string, optional
-            Some names to specify certain pre-defined bins
+    Parameters
+    ----------
+    df: DataFrame object
+
+    compare_with: String, optional
+        Some names to specify certain pre-defined bins
 
     bins: iterable of scalars, optional
-            AGI income breakpoints. Follows pandas convention. The
-            breakpoint is inclusive if right=True. This argument
-            overrides any choice of compare_with
+        AGI income breakpoints. Follows pandas convention. The
+        breakpoint is inclusive if right=True. This argument
+        overrides any choice of compare_with
 
     right : bool, optional
-            Indicates whether the bins include the rightmost edge or not.
-            If right == True (the default), then the bins [1,2,3,4]
-            indicate (1,2], (2,3], (3,4].
+        Indicates whether the bins include the rightmost edge or not.
+        If right == True (the default), then the bins [1,2,3,4]
+        indicate (1,2], (2,3], (3,4].
+
+    Returns
+    -------
+    df: DataFrame object
+        altered input
 
     """
     if not bins:
@@ -370,8 +377,8 @@ def results(c):
     """
     Gets the results from the tax calculator and organizes them into a table
 
-    Args
-    ----
+    Parameters
+    ----------
     c : Calculator object
 
     Returns
@@ -415,7 +422,7 @@ def create_distribution_table(calc, groupby, result_type):
     groupby : String object
         options for input: 'weighted_deciles', 'small_agi_bins', 'large_agi_bins', 'webapp_agi_bins'
         determines how the columns in the resulting DataFrame are sorted
-    result_type, String object
+    result_type: String object
         options for input: 'weighted_sum' or 'weighted_avg'
         determines how the data should be maniuplated
 
@@ -491,8 +498,8 @@ def create_difference_table(calc1, calc2, groupby):
 
     Parameters
     ----------
-    calc1 : the first Calculator object
-    calc2 : the other Calculator object
+    calc1 : Calculator object
+    calc2 : Calculator object
     groupby : String object
         options for input: 'weighted_deciles', 'small_agi_bins', 'large_agi_bins', 'webapp_agi_bins'
         determines how the columns in the resulting DataFrame are sorted
