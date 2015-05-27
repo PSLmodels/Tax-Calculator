@@ -7,6 +7,8 @@ STATS_COLUMNS = ['c00100', '_standard', 'c04470', 'c04600', 'c04800', 'c05200',
                  'c62100','c09600', 'c05800', 'c09200', '_refund', 'c07100',
                  '_ospctax','s006']
 
+# each entry in this array corresponds to the same entry in the array TABLE_LABELS below
+# this allows us to use TABLE_LABELS to map a label to the correct column in our distribution table
 TABLE_COLUMNS = ['s006','c00100', 'num_returns_StandardDed', '_standard',
                  'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'c05200',
                  'c62100','num_returns_AMT', 'c09600', 'c05800',  'c07100','c09200',
@@ -251,7 +253,7 @@ def weighted_share_of_total(agg, col_name, total):
 def add_weighted_decile_bins(df):
     """
 
-    Add a column of income bins based on each 10% of AGI, weighted by s006.
+    Add a column of income bins to the df based on each 10% of AGI, weighted by s006.
     This will server as a "grouper" later on.
 
     """
@@ -365,6 +367,17 @@ def get_sums(df, na=False):
 
 
 def results(c):
+    """
+    Gets the results from the tax calculator and organizes them into a table
+
+    Args
+    ----
+    c : Calculator object
+
+    Returns
+    -------
+    DataFrame object 
+    """
     outputs = []
     for col in STATS_COLUMNS:
        if hasattr(c, 'records') and hasattr(c, 'params'):
@@ -392,6 +405,37 @@ def weighted_avg_allcols(df, cols):
 
 
 def create_distribution_table(calc, groupby, result_type):
+    """
+    Gets results given by the tax calculator, sorts them based on groupby, and
+        manipulates them based on result_type. Returns these as a table
+
+    Parameters
+    ----------
+    calc : the Calculator object
+    groupby : String object
+        options for input: 'weighted_deciles', 'small_agi_bins', 'large_agi_bins', 'webapp_agi_bins'
+        determines how the columns in the resulting DataFrame are sorted
+    result_type, String object
+        options for input: 'weighted_sum' or 'weighted_avg'
+        determines how the data should be maniuplated
+
+    Notes
+    -----
+    Taxpayer Characteristics:
+        c04470 : Total itemized deduction
+
+        c00100 : AGI (Defecit)
+        
+        c09600 : Alternative minimum tax
+        
+        s006 : used to weight population
+
+
+    Returns
+    -------
+    DataFrame object
+    """
+
     res = results(calc)
 
     res['c04470'] = res['c04470'].where(((res['c00100'] > 0) &
@@ -405,6 +449,7 @@ def create_distribution_table(calc, groupby, result_type):
 
     res['num_returns_AMT'] = res['s006'].where(res['c09600'] > 0, 0)
 
+    # sorts the data
     if groupby == "weighted_deciles":
         df = add_weighted_decile_bins(res)
     elif groupby == "small_agi_bins":
@@ -418,6 +463,7 @@ def create_distribution_table(calc, groupby, result_type):
                "or 'large_agi_bins' or 'webapp_agi_bins'")
         raise ValueError(err)
 
+    # manipulates the data
     pd.options.display.float_format = '{:8,.0f}'.format
     if result_type == "weighted_sum":
         df = weighted(df, STATS_COLUMNS)
@@ -427,11 +473,32 @@ def create_distribution_table(calc, groupby, result_type):
     elif result_type == "weighted_avg":
         gp_mean = weighted_avg_allcols(df, TABLE_COLUMNS)
         sum_row = get_sums(df, na=True)[TABLE_COLUMNS]
+    else:
+        err = ("result_type must be either 'weighted_sum' or 'weighted_avg")
+        raise ValueError(err)
 
     return gp_mean.append(sum_row)
 
 
 def create_difference_table(calc1, calc2, groupby):
+    """
+    Gets results given by the two different tax calculators and outputs a table that compares
+        the differing results. The table is sorted according the the groupby input
+
+    Parameters
+    ----------
+    calc1, the first Calculator object
+    calc2, the other Calculator object
+    groupby, String object
+        options for input: 'weighted_deciles', 'small_agi_bins', 'large_agi_bins', 'webapp_agi_bins'
+        determines how the columns in the resulting DataFrame are sorted
+
+
+    Returns
+    -------
+    DataFrame object
+    """
+
     res1 = results(calc1)
     res2 = results(calc2)
     if groupby == "weighted_deciles":
