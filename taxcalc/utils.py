@@ -22,11 +22,11 @@ TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Tax before Refundable Credits', 'Refundable Credits',
                 'Revenue']
 
+# used in our difference table to label the columns
 DIFF_TABLE_LABELS = ["Tax Units with Tax Cut", "Tax Units with Tax Increase", "Count",
                      "Average Tax Change", "Total Tax Difference",
                      "Percent with Tax Increase", "Percent with Tax Decrease",
                      "Share of Overall Change"]
-
 
 
 LARGE_AGI_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
@@ -254,7 +254,7 @@ def add_weighted_decile_bins(df):
     """
 
     Add a column of income bins to the df based on each 10% of AGI, weighted by s006.
-    This will server as a "grouper" later on.
+    This will serve as a "grouper" later on.
 
     """
 
@@ -281,9 +281,12 @@ def add_income_bins(df, compare_with="soi", bins=None, right=True):
     Parameters
     ----------
     df: DataFrame object
+        the object to which we are adding bins
 
     compare_with: String, optional
-        Some names to specify certain pre-defined bins
+        options for input: 'tpc', 'soi', 'webapp'
+        determines which types of bins will be added
+        default: 'soi'
 
     bins: iterable of scalars, optional
         AGI income breakpoints. Follows pandas convention. The
@@ -298,7 +301,7 @@ def add_income_bins(df, compare_with="soi", bins=None, right=True):
     Returns
     -------
     df: DataFrame object
-        altered input
+        the original input that bins have been added to
 
     """
     if not bins:
