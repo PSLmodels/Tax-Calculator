@@ -87,6 +87,8 @@ def AGI(   _ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
     c00100 = c02650 - c02900
     _agierr = e00100 - c00100  # Adjusted Gross Income
     
+
+    # want to get rid of this
     if _fixup >= 1:
         c00100 = c00100 + _agierr
 
@@ -294,6 +296,8 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
 
     if FDED == 1:
         _othded = e04470 - c04470
+
+        #get rid of the fixup code
         if _fixup>=2:
             c04470 = c04470 + _othded;
             c04100 = 0.
@@ -940,6 +944,7 @@ def RateRed(c05800, _fixup, _othtax, _exact, x59560, _earned):
     c07970 = 0.
 
 
+    # want to get rid of this
     if _fixup >= 3:
         c05800 = c05800 + _othtax
 
@@ -1291,7 +1296,7 @@ def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
     else:
         _othadd = 0.
 
-
+        # get rid of the fixup code
     if e82915 > 0 and abs(e82940 - c82940) > 100 and _fixup >= 4:
         c11070 = c11070 + _othadd
 

@@ -51,12 +51,11 @@ class Records(object):
         else: 
             self._current_year = self.FLPDYR[0]
 
-        """Imputations"""  # TODO Move these into a separate script with a decorator
-        self._cmbtp_itemizer = (-1 * np.minimum(np.maximum(0., self.e17500 - np.maximum(0., self.e00100) * 0.075), 0.025 * np.maximum(0., self.e00100)) 
-                        + self.e62100 + self.e00700 + self.e04470 + self.e21040 
-                        - np.maximum(0, np.maximum( self.e18400, self.e18425)) - self.e00100 - self.e18500 
-                        - self.e20800)
-        self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
+        """Imputations"""
+        self._cmbtp_itemizer = None
+        self._cmbtp_standard = None
+        self.imputations()
+
 
         # Standard deduction amount in 2008
         std2008 = np.array([5450, 10900, 5450, 8000, 10900, 5450, 900])
@@ -79,6 +78,25 @@ class Records(object):
     @property
     def current_year(self):
         return self._current_year
+
+
+    @iterate_jit(nopython=True)
+    def imputations(self):
+
+        """
+        Initializes self._cmbtp_itemizer and self._cmbtp_standard
+        """
+
+        # temp variables to make it easier to read, all values will be >= 0.
+        x = np.maximum(0., self.e17500 - np.maximum(0., self.e00100) * 0.075)
+        y = np.minimum(x, 0.025 * np.maximum(0., self.e00100))
+        z = np.maximum(0, np.maximum( self.e18400, self.e18425))
+
+        self._cmbtp_itemizer = (-1 * y + self.e62100 + self.e00700 + self.e04470
+                     + self.e21040 - z - self.e00100 - self.e18500 - self.e20800)
+        
+        self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
+
 
     def increment_year(self):
         self._current_year += 1
