@@ -659,12 +659,13 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
         self.SOIYR = np.repeat(2008, self.dim)
 
     def mutate_imputations(self):
-        self._cmbtp_itemizer = imputation(self.e17500, self.e00100, 
+        self._cmbtp_itemizer = imputation(self.e17500, self.e00100,
             self.e18400, self.e18425, self.e62100, self.e00700,
             self.e04470, self.e21040, self.e18500, self.e20800)
 
 
-@vectorize([float64(float64, float64, float64, float64, float64, float64, float64, float64, float64, float64)])
+@vectorize([float64(float64, float64, float64, float64, float64, float64,
+            float64, float64, float64, float64)])
 def imputation(e17500, e00100, e18400, e18425, e62100, e00700, e04470,
                e21040, e18500, e20800):
 
@@ -672,12 +673,12 @@ def imputation(e17500, e00100, e18400, e18425, e62100, e00700, e04470,
     Calculates _cmbtp_itemizer
     """
 
-    # temp variables to make it easier to read, all values will be >= 0
+    # temp variables to make it easier to read
     x = max(0., e17500 - max(0., e00100) * 0.075)
-    y = min(x, 0.025 * max(0., e00100))
+    y = -1 * min(x, 0.025 * max(0., e00100))
     z = max(0, max(e18400, e18425))
 
-    _cmbtp_itemizer = (-1 * y + e62100 + e00700 + e04470 + e21040
-                       - z - e00100 - e18500 - e20800)
+    _cmbtp_itemizer = (y + e62100 + e00700 + e04470 + e21040 - z - e00100
+                       - e18500 - e20800)
 
     return _cmbtp_itemizer

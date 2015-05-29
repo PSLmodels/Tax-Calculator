@@ -3,17 +3,17 @@ import pandas as pd
 from pandas import DataFrame
 from collections import defaultdict
 
-STATS_COLUMNS = ['c00100', '_standard', 'c04470', 'c04600', 'c04800', 
-                 'c05200', 'c62100','c09600', 'c05800', 'c09200', '_refund',
-                 'c07100', '_ospctax','s006']
+STATS_COLUMNS = ['c00100', '_standard', 'c04470', 'c04600', 'c04800',
+                 'c05200', 'c62100', 'c09600', 'c05800', 'c09200', '_refund',
+                 'c07100', '_ospctax', 's006']
 
-# each entry in this array corresponds to the same entry in the array 
+# each entry in this array corresponds to the same entry in the array
 # TABLE_LABELS below. this allows us to use TABLE_LABELS to map a
 # label to the correct column in our distribution table
-TABLE_COLUMNS = ['s006','c00100', 'num_returns_StandardDed', '_standard',
+TABLE_COLUMNS = ['s006', 'c00100', 'num_returns_StandardDed', '_standard',
                  'num_returns_ItemDed', 'c04470', 'c04600', 'c04800',
-                 'c05200','c62100','num_returns_AMT', 'c09600', 'c05800', 
-                 'c07100','c09200','_refund','_ospctax']
+                 'c05200', 'c62100', 'num_returns_AMT', 'c09600', 'c05800',
+                 'c07100', 'c09200', '_refund', '_ospctax']
 
 TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Standard Deduction', 'Itemizers',
@@ -33,8 +33,8 @@ LARGE_AGI_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                   200000, 1e14]
 
 SMALL_AGI_BINS = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
-                   49999, 74999, 99999, 199999, 499999, 999999, 1499999,
-                   1999999, 4999999, 9999999, 1e14]
+                  49999, 74999, 99999, 199999, 499999, 999999, 1499999,
+                  1999999, 4999999, 9999999, 1e14]
 
 WEBAPP_AGI_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                    199999, 499999, 1000000, 1e14]
@@ -377,16 +377,16 @@ def results(c):
 
     Returns
     -------
-    DataFrame object 
+    DataFrame object
     """
     outputs = []
     for col in STATS_COLUMNS:
-       if hasattr(c, 'records') and hasattr(c, 'params'):
+        if hasattr(c, 'records') and hasattr(c, 'params'):
             if hasattr(c.params, col):
                 outputs.append(getattr(c.params, col))
             else:
                 outputs.append(getattr(c.records, col))
-       else:
+        else:
             outputs.append(getattr(c, col))
     return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
 
@@ -414,7 +414,8 @@ def create_distribution_table(calc, groupby, result_type):
     ----------
     calc : the Calculator object
     groupby : String object
-        options for input: 'weighted_deciles', 'small_agi_bins', 'large_agi_bins', 'webapp_agi_bins'
+        options for input: 'weighted_deciles', 'small_agi_bins',
+                           'large_agi_bins', 'webapp_agi_bins'
         determines how the columns in the resulting DataFrame are sorted
     result_type, String object
         options for input: 'weighted_sum' or 'weighted_avg'
@@ -426,9 +427,9 @@ def create_distribution_table(calc, groupby, result_type):
         c04470 : Total itemized deduction
 
         c00100 : AGI (Defecit)
-        
+
         c09600 : Alternative minimum tax
-        
+
         s006 : used to weight population
 
 
@@ -484,7 +485,7 @@ def create_distribution_table(calc, groupby, result_type):
 def create_difference_table(calc1, calc2, groupby):
     """
     Gets results given by the two different tax calculators and outputs
-        a table that compares the differing results. 
+        a table that compares the differing results.
         The table is sorted according the the groupby input.
 
     Parameters
