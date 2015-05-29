@@ -86,7 +86,6 @@ def AGI(   _ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
 
     c00100 = c02650 - c02900
     _agierr = e00100 - c00100  # Adjusted Gross Income
-    
 
     # want to get rid of this
     if _fixup >= 1:

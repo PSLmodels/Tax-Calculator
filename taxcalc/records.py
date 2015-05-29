@@ -1,5 +1,5 @@
 """
-This file reads input csv file and saves the variables 
+This file reads input csv file and saves the variables
 """
 import math
 import copy
@@ -7,7 +7,11 @@ import pandas as pd
 import numpy as np
 import os.path
 import os
+from numba import vectorize, float64
+from .parameters import Parameters
 from pkg_resources import resource_stream, Requirement
+from .decorators import *
+
 
 class Records(object):
     """
@@ -29,33 +33,30 @@ class Records(object):
     BLOWUP_FACTORS_FILENAME = "StageIFactors.csv"
     blowup_factors_path = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
 
-
-
-
     @classmethod
     def from_file(cls, path, **kwargs):
         return cls(path, **kwargs)
 
-    def __init__(   self, 
-                    data="puf.csv", 
-                    blowup_factors=blowup_factors_path,
-                    weights=weights_path,
-                    start_year=None,
-                    **kwargs):
+    def __init__(self,
+                 data="puf.csv",
+                 blowup_factors=blowup_factors_path,
+                 weights=weights_path,
+                 start_year=None,
+                 **kwargs):
 
         self.read(data)
         self.read_blowup(blowup_factors)
         self.read_weights(weights)
         if (start_year):
             self._current_year = start_year
-        else: 
+        else:
             self._current_year = self.FLPDYR[0]
 
+        self.params = Parameters(start_year=2013)
         """Imputations"""
         self._cmbtp_itemizer = None
-        self._cmbtp_standard = None
-        self.imputations()
-
+        self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
+        self.mutate_imputations()
 
         # Standard deduction amount in 2008
         std2008 = np.array([5450, 10900, 5450, 8000, 10900, 5450, 900])
@@ -74,38 +75,17 @@ class Records(object):
                                     self._txpyers, 
                                     0))
 
-
     @property
     def current_year(self):
         return self._current_year
-
-
-    @iterate_jit(nopython=True)
-    def imputations(self):
-
-        """
-        Initializes self._cmbtp_itemizer and self._cmbtp_standard
-        """
-
-        # temp variables to make it easier to read, all values will be >= 0.
-        x = np.maximum(0., self.e17500 - np.maximum(0., self.e00100) * 0.075)
-        y = np.minimum(x, 0.025 * np.maximum(0., self.e00100))
-        z = np.maximum(0, np.maximum( self.e18400, self.e18425))
-
-        self._cmbtp_itemizer = (-1 * y + self.e62100 + self.e00700 + self.e04470
-                     + self.e21040 - z - self.e00100 - self.e18500 - self.e20800)
-        
-        self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
-
 
     def increment_year(self):
         self._current_year += 1
         self.FLPDYR += 1
         # Implement Stage 1 Extrapolation blowup factors
         self.blowup()
-        # Implement Stage 2 Extrapolation reweighting. 
+        # Implement Stage 2 Extrapolation reweighting.
         self.s006 = self.WT["WT"+str(self.current_year)]
-
 
     def blowup(self):
         self.e00200  =   self.e00200  *   self.BF.AWAGE[self._current_year]
@@ -308,8 +288,8 @@ class Records(object):
 stage data of the data extrapolation. Please pass such a file as \
 PUF(weights='[FILENAME]').")
                 raise
-                # TODO, we will need to pass the csv to the Calculator once 
-                # we proceed with github issue #117. 
+                # TODO, we will need to pass the csv to the Calculator once
+                # we proceed with github issue #117.
 
         setattr(self, 'WT', WT)
 
@@ -319,17 +299,19 @@ PUF(weights='[FILENAME]').")
         else:
             try:
                 if not os.path.exists(blowup_factors):
-                    #grab blowup factors out of EGG distribution
-                    path_in_egg = os.path.join("taxcalc", self.BLOWUP_FACTORS_FILENAME)
-                    blowup_factors = resource_stream(Requirement.parse("taxcalc"), path_in_egg)
+                    # grab blowup factors out of EGG distribution
+                    path_in_egg = os.path.join("taxcalc",
+                                               self.BLOWUP_FACTORS_FILENAME)
+                    blowup_factors = resource_stream(Requirement.parse("taxcalc"),
+                                                     path_in_egg)
 
                 BF = pd.read_csv(blowup_factors, index_col='YEAR')
             except IOError:
                 print("Missing a csv file with blowup factors. \
 Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
                 raise
-                # TODO, we will need to pass the csv to the Calculator once 
-                # we proceed with github issue #117. 
+                # TODO, we will need to pass the csv to the Calculator once
+                # we proceed with github issue #117.
 
         BF.AGDPN = BF.AGDPN / BF.APOPN
         BF.ATXPY = BF. ATXPY / BF. APOPN
@@ -343,13 +325,11 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
         BF.ASCHEL = BF.ASCHEL / BF.APOPN
         BF.ACGNS = BF.ACGNS / BF.APOPN
         BF.ABOOK = BF.ABOOK / BF.APOPN
-        BF.ASOCSEC = BF.ASOCSEC / BF.APOPN 
+        BF.ASOCSEC = BF.ASOCSEC / BF.APOPN
 
         BF = 1 + BF.pct_change()
 
         setattr(self, 'BF', BF)
-
-
 
     def read(self, data):
         if isinstance(data, pd.core.frame.DataFrame):
@@ -556,19 +536,18 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
                  ('e87530', 'e87530'),
                  ('e87540', 'e87540'),
                  ('e87550', 'e87550'),
-                 #('e22250', 'e22250'),
-                 #('e23250', 'e23250'),
-                 #('e04470', 'e04470'),
-                 #('e25470', 'e25470'),
-                 #('e08000', 'e08000'),
-                 #('e60100', 'e60100'),
+                 # ('e22250', 'e22250'),
+                 # ('e23250', 'e23250'),
+                 # ('e04470', 'e04470'),
+                 # ('e25470', 'e25470'),
+                 # ('e08000', 'e08000'),
+                 # ('e60100', 'e60100'),
                  ('RECID', 'recid'),
                  ('s006', 's006'),
                  ('s008', 's008'),
                  ('s009', 's009'),
                  ('WSAMP', 'wsamp'),
-                 ('TXRT', 'txrt'),
-                ]
+                 ('TXRT', 'txrt'), ]
 
         self.dim = len(tax_dta)
 
@@ -638,7 +617,7 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
                         'c60200', 'c60240', 'c60220', 'c60130', 'c62730',
                         '_addamt', 'c62100', '_cmbtp', '_edical', '_amtsepadd',
                         '_agep', '_ages', 'c62600', 'c62700', '_alminc',
-                        '_amtfei','c62780', 'c62900', 'c63000', 'c62740',
+                        '_amtfei', 'c62780', 'c62900', 'c63000', 'c62740',
                         '_ngamty', 'c62745', 'y62745', '_tamt2', '_amt5pc',
                         '_amt15pc', '_amt25pc', 'c62747', 'c62755', 'c62770',
                         '_amt', 'c62800', 'c09600', 'c05800', '_ncu13',
@@ -658,12 +637,11 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
                         'c82905', 'c82910', 'c82915',  'c82920', 'c82937',
                         'c82940', 'c11070', 'e59660', '_othadd', 'y07100',
                         'x07100', 'c08800', 'e08795', 'x07400', 'c59680',
-	                '_othertax', 'e82915', 'e82940', 'SFOBYR', 'NIIT',
+                        '_othertax', 'e82915', 'e82940', 'SFOBYR', 'NIIT',
                         'c59720', '_comb', 'c07150', 'c10300', '_ospctax',
                         '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
-                         '_amed', '_xlin3', '_xlin6']
-                        
-                        
+                        '_amed', '_xlin3', '_xlin6', '_cmbtp_itemizer',
+                        '_cmbtp_standard']
 
         for name in zeroed_names:
             setattr(self, name, np.zeros((self.dim,)))
@@ -679,3 +657,27 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
         self.e60100 = self.p60100
         self.e27860 = self.s27860
         self.SOIYR = np.repeat(2008, self.dim)
+
+    def mutate_imputations(self):
+        self._cmbtp_itemizer = imputation(self.e17500, self.e00100, 
+            self.e18400, self.e18425, self.e62100, self.e00700,
+            self.e04470, self.e21040, self.e18500, self.e20800)
+
+
+@vectorize([float64(float64, float64, float64, float64, float64, float64, float64, float64, float64, float64)])
+def imputation(e17500, e00100, e18400, e18425, e62100, e00700, e04470,
+               e21040, e18500, e20800):
+
+    """
+    Calculates _cmbtp_itemizer
+    """
+
+    # temp variables to make it easier to read, all values will be >= 0
+    x = max(0., e17500 - max(0., e00100) * 0.075)
+    y = min(x, 0.025 * max(0., e00100))
+    z = max(0, max(e18400, e18425))
+
+    _cmbtp_itemizer = (-1 * y + e62100 + e00700 + e04470 + e21040
+                       - z - e00100 - e18500 - e20800)
+
+    return _cmbtp_itemizer

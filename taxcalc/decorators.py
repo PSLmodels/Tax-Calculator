@@ -10,14 +10,25 @@ import toolz
 
 class GetReturnNode(ast.NodeVisitor):
     """
-    A Visitor to get the return tuple names from a calc-style
-    function
+    A Visitor to get the return tuple names from a calc-style function
     """
     def visit_Return(self, node):
         if isinstance(node.value, ast.Tuple):
             return [e.id for e in node.value.elts]
-        else: 
+        else:
             return [node.value.id]
+
+
+# class GetReturnNodeRecords(ast.NodeVisitor):
+#     """
+#     A Visitor to get the return tuple names from a records-style function
+#     """
+#     def visit_Return(self, node):
+#         if isinstance(node.value, ast.Tuple):
+#             return [e for e in node.value.elts]
+#         else:
+#             return [node.value]
+
 
 def dataframe_guvectorize(dtype_args, dtype_sig):
     """
@@ -80,7 +91,7 @@ def create_apply_function_string(sigout, sigin, parameters):
                  x_0[i], ... = jitted_f(x_j[i],....)
             return x_0[i], ...
     where the specific args to jitted_f and the number of
-    values to return is destermined by sigout and signn
+    values to return is destermined by sigout and sign
 
     Parameters
     ----------
@@ -96,7 +107,6 @@ def create_apply_function_string(sigout, sigin, parameters):
     -------
     a String representing the function
     """
-
 
     s = StringIO()
     total_len = len(sigout) + len(sigin)
@@ -126,9 +136,9 @@ def create_toplevel_function_string(args_out, args_in, pm_or_pf,
 
             header = [...]
             return DataFrame(data, columns=header)
-            
+
     where the specific args to jitted_f and the number of
-    values to return is destermined by sigout and signn
+    values to return is destermined by sigout and sigin
 
     Parameters
     ----------
@@ -147,9 +157,8 @@ def create_toplevel_function_string(args_out, args_in, pm_or_pf,
 
     s = StringIO()
 
-
     s.write("def hl_func(pm, pf")
-    
+
     if kwargs_for_func:
         kwargs = ",".join(str(k) + "=" + str(v) for k, v in
                           kwargs_for_func.items())
@@ -232,6 +241,7 @@ def apply_jit(dtype_sig_out, dtype_sig_in, parameters=None, **kwargs):
     """
     if not parameters:
         parameters = []
+
     def make_wrapper(func):
         theargs = inspect.getargspec(func).args
         jitted_f = jit(**kwargs)(func)
@@ -322,9 +332,8 @@ def iterate_jit(parameters=None, **kwargs):
                 elif hasattr(args[1], farg):
                     in_arrays.append(getattr(args[1], farg))
                     pm_or_pf.append("pf")
-                elif not farg in kwargs_for_func:
+                elif farg not in kwargs_for_func:
                     raise ValueError("Unknown arg: " + farg)
-
 
             # Create the high level function
             high_level_func = create_toplevel_function_string(all_out_args,
@@ -337,6 +346,108 @@ def iterate_jit(parameters=None, **kwargs):
             high_level_fn = fakeglobals['hl_func']
 
             ans = high_level_fn(*args, **kwargs)
+            return ans
+
+        return wrapper
+
+    return make_wrapper
+
+
+def iterate_jit_records(parameters=None, **kwargs):
+    """
+    make a decorator that takes in a records-style function, create a
+    function that handles the "high-level" function and the "_apply"
+    style function
+
+
+    use create_apply_function_string
+
+
+    """
+    if not parameters:
+        parameters = []
+
+    def make_wrapper(func):
+
+        # Step 1. Wrap this function in apply_jit
+        # from apply_jit
+
+        # Get the input arguments from the function
+        in_args = inspect.getargspec(func).args
+        try:
+            jit_args = inspect.getargspec(jit).args + ['nopython']
+        except TypeError:
+            print ("This should only be seen in RTD, if not install numba!")
+            return func
+
+        # filter keys in dictionary kwargs, keeps them if they're in in_args
+        kwargs_for_func = toolz.keyfilter(in_args.__contains__, kwargs)
+        # filter keys in dictionary kwargs, keeps them if they're in jit_args
+        kwargs_for_jit = toolz.keyfilter(jit_args.__contains__, kwargs)
+
+        # Return a list of source lines and starting line number for the func.
+        # Returned as a list of the lines corresponding to the func and the line
+        # number indicates where in the original source file the first line
+        # of code was found
+        # This is the first line of the function
+        src = inspect.getsourcelines(func)[0]
+
+        # Discover the return arguments by walking
+        # the AST of the function
+        all_returned_vals = []
+        gnr = GetReturnNode()
+        all_out_args = None
+        for node in ast.walk(ast.parse(''.join(src))):
+            all_out_args = gnr.visit(node)
+            if all_out_args:
+                break
+
+        if not all_out_args:
+            raise ValueError("Can't find return statement in function!")
+
+        # Now create the apply jitted function
+
+# Have questions on how this applies to a calc function only
+# I think this is the function that will need to be generalized
+        applied_jitted_f = make_apply_function(func,
+                                               list(reversed(all_out_args)),
+                                               in_args,
+                                               parameters=parameters,
+                                               do_jit=True,
+                                               **kwargs_for_jit)
+
+        def wrapper(*args, **kwargs):
+            in_arrays = []
+            out_arrays = []
+            pm_or_pf = []
+
+# this also confuses me a little bit and this is where we saw errors
+# when trying to apply to a records object
+            for farg in all_out_args + in_args:
+                if hasattr(args[0], farg):
+                    in_arrays.append(getattr(args[0], farg))
+                    pm_or_pf.append("pm")
+                elif hasattr(args[1], farg):
+                    in_arrays.append(getattr(args[1], farg))
+                    pm_or_pf.append("pf")
+                elif farg not in kwargs_for_func:
+                    raise ValueError("Unknown arg: " + farg)
+
+            # Create the high level function
+
+# should work regardless of what object is used (calc or records)
+            high_level_func = create_toplevel_function_string(all_out_args,
+                                                              list(in_args),
+                                                              pm_or_pf,
+                                                              kwargs_for_func)
+
+            # everything below this should stay this same
+            func_code = compile(high_level_func, "<string>", "exec")
+            fakeglobals = {}
+            eval(func_code, {"applied_f": applied_jitted_f}, fakeglobals)
+            high_level_fn = fakeglobals['hl_func']
+
+            ans = high_level_fn(*args)
             return ans
 
         return wrapper
