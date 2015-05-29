@@ -25,11 +25,6 @@ def test_create_records_from_file():
 
 
 def test_imputation():
-	"""
-	Just tests the imputation function on scalars
-	"""
-
-    # Randomly chosen values for testing
     e17500 = 20.
     e00100 = 40.
     e18400 = 25.
@@ -55,7 +50,14 @@ def test_imputation():
     """
 
     test_itemizer = records.imputation(e17500, e00100, e18400, e18425,
-    	                               e62100, e00700, e04470,
+                                       e62100, e00700, e04470,
                                        e21040, e18500, e20800)
 
     assert(cmbtp_itemizer == test_itemizer)
+
+
+@vectorize
+def g(a, b): return a * b
+
+def test_vectorize():
+	assert(g(2.2,3.) == 6.6)

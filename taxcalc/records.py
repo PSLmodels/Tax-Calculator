@@ -52,11 +52,10 @@ class Records(object):
         else:
             self._current_year = self.FLPDYR[0]
 
-        self.params = Parameters(start_year=2013)
         """Imputations"""
         self._cmbtp_itemizer = None
         self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
-        self.mutate_imputations()
+        self.mutate_imputations()  # Updates the self._cmbtp_itemizer variable
 
         # Standard deduction amount in 2008
         std2008 = np.array([5450, 10900, 5450, 8000, 10900, 5450, 900])
@@ -671,6 +670,8 @@ def imputation(e17500, e00100, e18400, e18425, e62100, e00700, e04470,
 
     """
     Calculates _cmbtp_itemizer
+    Uses vectorize decorator to speed-up calculation process
+    with NumPy data structures
     """
 
     # temp variables to make it easier to read
