@@ -8,9 +8,7 @@ import numpy as np
 import os.path
 import os
 from numba import vectorize, float64
-from .parameters import Parameters
 from pkg_resources import resource_stream, Requirement
-from .decorators import *
 
 
 class Records(object):
@@ -269,8 +267,10 @@ class Records(object):
         self.s009    =   self.s009    *   1.
         self.WSAMP   =   self.WSAMP   *   1.
         self.TXRT    =   self.TXRT    *   1.
-        self._cmbtp_itemizer  =   self._cmbtp_itemizer  *   self.BF.ATXPY[self._current_year]
-        self._cmbtp_standard  =   self._cmbtp_standard  *   self.BF.ATXPY[self._current_year]
+        self._cmbtp_itemizer  =   (self._cmbtp_itemizer
+                                  * self.BF.ATXPY[self._current_year])
+        self._cmbtp_standard  =   (self._cmbtp_standard 
+                                  * self.BF.ATXPY[self._current_year])
 
     def read_weights(self, weights):
         if isinstance(weights, pd.core.frame.DataFrame):
@@ -280,12 +280,13 @@ class Records(object):
                 if not os.path.exists(weights):
                     #grab weights out of EGG distribution
                     path_in_egg = os.path.join("taxcalc", self.WEIGHTS_FILENAME)
-                    weights = resource_stream(Requirement.parse("taxcalc"), path_in_egg)
+                    weights = resource_stream(Requirement.parse("taxcalc"),
+                                              path_in_egg)
                 WT = pd.read_csv(weights)
             except IOError:
-                print("Missing a csv file with weights from the second \
-stage data of the data extrapolation. Please pass such a file as \
-PUF(weights='[FILENAME]').")
+                print("Missing a csv file with weights from the second stage "
+                      "data of the data extrapolation. Please pass such a "
+                      "file as PUF(weights='[FILENAME]').")
                 raise
                 # TODO, we will need to pass the csv to the Calculator once
                 # we proceed with github issue #117.
@@ -306,8 +307,8 @@ PUF(weights='[FILENAME]').")
 
                 BF = pd.read_csv(blowup_factors, index_col='YEAR')
             except IOError:
-                print("Missing a csv file with blowup factors. \
-Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
+                print("Missing a csv file with blowup factors. Please pass "
+                      "such a csv as PUF(blowup_factors='[FILENAME]').")
                 raise
                 # TODO, we will need to pass the csv to the Calculator once
                 # we proceed with github issue #117.
@@ -659,8 +660,8 @@ Please pass such a csv as PUF(blowup_factors='[FILENAME]').")
 
     def mutate_imputations(self):
         self._cmbtp_itemizer = imputation(self.e17500, self.e00100,
-            self.e18400, self.e18425, self.e62100, self.e00700,
-            self.e04470, self.e21040, self.e18500, self.e20800)
+                self.e18400, self.e18425, self.e62100, self.e00700,
+                self.e04470, self.e21040, self.e18500, self.e20800)
 
 
 @vectorize([float64(float64, float64, float64, float64, float64, float64,
@@ -676,10 +677,10 @@ def imputation(e17500, e00100, e18400, e18425, e62100, e00700, e04470,
 
     # temp variables to make it easier to read
     x = max(0., e17500 - max(0., e00100) * 0.075)
-    y = -1 * min(x, 0.025 * max(0., e00100))
-    z = max(0, max(e18400, e18425))
+    medical_adjustment = min(x, 0.025 * max(0., e00100))
+    state_adjustment = max(0, max(e18400, e18425))
 
-    _cmbtp_itemizer = (y + e62100 + e00700 + e04470 + e21040 - z - e00100
-                       - e18500 - e20800)
+    _cmbtp_itemizer = (e62100 - medical_adjustment + e00700 + e04470 + e21040
+                       - state_adjustment - e00100 - e18500 - e20800)
 
     return _cmbtp_itemizer

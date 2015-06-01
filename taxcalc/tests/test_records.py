@@ -25,39 +25,33 @@ def test_create_records_from_file():
 
 
 def test_imputation():
-    e17500 = 20.
-    e00100 = 40.
-    e18400 = 25.
-    e18425 = 42.
-    e62100 = 75.
-    e00700 = 43.3
-    e04470 = 21.2
-    e21040 = 45.9
-    e18500 = 33.1
-    e20800 = 0.9
+    e17500 = np.array([20., 4.4, 5.])
+    e00100 = np.array([40., 8.1, 90.1])
+    e18400 = np.array([25., 34., 10.])
+    e18425 = np.array([42., 20.3, 49.])
+    e62100 = np.array([75., 12.4, 84.])
+    e00700 = np.array([43.3, 34.1, 3.4])
+    e04470 = np.array([21.2, 12., 13.1])
+    e21040 = np.array([45.9, 3., 45.])
+    e18500 = np.array([33.1, 18.2, 39.])
+    e20800 = np.array([0.9, 32., 52.1])
 
-    cmbtp_itemizer = 68.4
+    cmbtp_itemizer = np.array([68.4, -31.0025, -84.7])
 
     """
     Test case values:
 
-    x = max(0., e17500 - max(0., e00100) * 0.075) = 17.
-    y = -1 * min(x, 0.025 * max(0., e00100)) = -1.
-    z = max(0, max(e18400, e18425)) = 42.
+    x = max(0., e17500 - max(0., e00100) * 0.075) = [17., 3.7925, 0]
+    medical_adjustment = min(x, 0.025 * max(0.,e00100)) = [-1.,-.2025,0]
+    state_adjustment = max(0, max(e18400, e18425)) = [42., 34., 49.]
 
-    _cmbtp_itemizer = (y + e62100 + e00700 + e04470 + e21040 - z - e00100
-                       - e18500 - e20800) = 68.4
+    _cmbtp_itemizer = (e62100 - medical_adjustment + e00700 + e04470 + e21040
+                       - z - e00100 - e18500 - e20800)
+                    = [68.4, -31.0025 ,-84.7]
     """
 
     test_itemizer = records.imputation(e17500, e00100, e18400, e18425,
                                        e62100, e00700, e04470,
                                        e21040, e18500, e20800)
 
-    assert(cmbtp_itemizer == test_itemizer)
-
-
-@vectorize
-def g(a, b): return a * b
-
-def test_vectorize():
-	assert(g(2.2,3.) == 6.6)
+    assert(np.allclose(cmbtp_itemizer, test_itemizer))
