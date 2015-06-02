@@ -329,9 +329,16 @@ def means_and_comparisons(df, col_name, gp, weighted_total):
 
     Using grouped values, perform aggregate operations
     to populate
+
+    Parameters
+    ----------
     df: DataFrame for full results of calculation
+
     col_name: the column name to calculate against
+
     gp: grouped DataFrame
+
+    weighted_total: 
     """
 
     # Who has a tax cut, and who has a tax increase
@@ -506,9 +513,9 @@ def create_difference_table(calc1, calc2, groupby):
 
     Parameters
     ----------
-    calc1, the first Calculator object
-    calc2, the other Calculator object
-    groupby, String object
+    calc1 : the first Calculator object
+    calc2 : the other Calculator object
+    groupby : String object
         options for input: 'weighted_deciles', 'small_agi_bins',
         'large_agi_bins', 'webapp_agi_bins'
         determines how the columns in the resulting DataFrame are sorted

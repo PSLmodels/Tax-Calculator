@@ -1160,9 +1160,41 @@ def RefAmOpp(_cmp, c87521, _num, c00100, EDCRAGE, c87668):
 def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num,
     c07180, e07200, c07230, e07240, e07960, e07260, e07300,
     e07700, e07250, t07950, c05800, _precrd, ETC_pe_Single, _xlin3, _xlin6, c87668, c87620):
+    """
+    Nonrefundable Education Credits
+    Form 8863 Tentative Education Credits
 
-    # Nonrefundable Education Credits
-    # Form 8863 Tentative Education Credits
+    Notes
+    -----
+    Tax Law Parameters:
+
+        e07180 : Child Care Credit
+
+        e07200 : Credit for Elderly or Disabled
+
+        e07240 : Retirement Savings Contribution Credit
+
+        e07960 : Qualified Electric Vehicle Credit
+
+        e07260 : Residential Energy Credit
+
+        e07300 : Foreign Tax Credit
+
+        e07700 : Mortgage Int. Credit
+
+        e07250 : Adoption Credit Amt.
+
+    Intermediate Variables:
+
+        _num : filing status, number of people filing jointly
+
+        c87668 : nonrefundable Education Credit
+
+    Returns
+    -------
+
+    """
+
     c87560 = c87550
 
     # Phase Out
