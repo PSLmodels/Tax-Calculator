@@ -26,4 +26,4 @@ OSPC's Tax Calculator Contributors
 .. _`Jake Lyons`: https://github.com/jlyons871
 .. _`Amy Xu`: https://github.com/Amy-Xu
 .. _`John O'Hare`: http://quantria.com/#team
-.. _`Regan Kuchan`: http://github.com/rkuchan
+.. _`Regan Kuchan`: https://github.com/rkuchan

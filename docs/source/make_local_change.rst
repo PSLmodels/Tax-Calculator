@@ -143,5 +143,5 @@ Some changes to the Tax Calculator require edits to the code in more than one pl
 ..
 .. [1] Currently, the tax parameters in params.json are in no particular order. This undefined layout is likely to change in the future as we move to organize the file.
 
-.. _`this spreadsheet`: https://docs.google.com/spreadsheets/d/1WlgbgEAMwhjMI8s9eG117bBEKFioXUY0aUTfKwHwXdA/edit#gid=1029315862
+.. _`this spreadsheet`: https://docs.google.com/spreadsheets/d/1WlgbgEAMwhjMI8s9eG117bBEKFioXUY0aUTfKwHwXdA/edit
  

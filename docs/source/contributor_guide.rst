@@ -137,7 +137,7 @@ For example usage, you can view our sample notebooks:
 
 .. _`Git`: https://help.github.com/articles/github-glossary/#git
 .. _`quant econ`: http://quant-econ.net/py/learning_python.html
-.. _`GitHub`: http://www.github.com
+.. _`GitHub`: https://github.com/
 .. _`Git setup`: https://help.github.com/articles/set-up-git/
 .. _`Fork`: https://help.github.com/articles/github-glossary/#fork
 .. _`password setup`: https://help.github.com/articles/caching-your-github-password-in-git/

@@ -27,5 +27,5 @@ For contributors, the conda recipe is located in the ``conda.recipe`` directory.
 To learn more about the conda package manager, go to the `conda docs`_.
 
 .. _`conda docs`: http://conda.pydata.org
-.. _`latest version`: https://binstar.org/ospc/taxcalc 
+.. _`latest version`: https://binstar.org/ospc
 .. _`Continuum Analytics`: http://continuum.io/downloads
