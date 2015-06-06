@@ -389,7 +389,7 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
     else:
         _hasgain = 0.
 
-    if _taxinc > 0. and _hasgain == 1.:
+    if _hasgain == 1.:
         #if/else 1
         _dwks5 = max(0., e58990 - e58980)
         c24505 = max(0., c00650 - _dwks5)
