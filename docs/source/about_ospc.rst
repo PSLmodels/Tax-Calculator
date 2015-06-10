@@ -1,5 +1,5 @@
 About OSPC
-========================
+==========
 
 The Open Source Policy Center (OSPC) seeks to make policy analysis
 more transparent, trustworthy, and collaborative by harnessing
@@ -11,7 +11,7 @@ Background
 Policymakers increasingly rely on computer-driven models to predict
 the budgetary and broader economic impacts of current and proposed
 policies, especially those involving taxes and entitlements. Estimates
-from these models often determine a bill’s success or failure in the
+from these models often determine a bill's success or failure in the
 legislative process and public sphere.
 
 Projects

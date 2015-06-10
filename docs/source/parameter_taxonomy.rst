@@ -1,16 +1,16 @@
 :orphan:
 
-Parameter taxonomy
-===================
+Parameter Taxonomy
+==================
 
 Parameter names have two fixed components; the first component is the
 tax category abbreviation and the second is the abbreviation for the
-function of the parameter’s value. In some cases, parameter names have
+function of the parameter's value. In some cases, parameter names have
 a subcategory that conveys additional information about the parameter
 (see examples).
 
 Tax categories
----------------
+--------------
 
 Tax categories are uppercase:
 
@@ -40,7 +40,7 @@ Tax categories are uppercase:
 
    **ID**: Itemized Deduction
 
-   **II**: Individual Income (Including personal exemptions and tax brackets)
+   **II**: Individual Income (including personal exemptions and tax brackets)
 
    **KT**: Kiddie Tax
 
@@ -54,8 +54,8 @@ Tax categories are uppercase:
 
    **STD**: Standard Deduction
 
-Functions of the parameter’s value
------------------------------------
+Functions of the parameter's value
+----------------------------------
 
 Functions of the parameter’s value are lowercase:
 
@@ -101,5 +101,5 @@ Examples
 
 
 .. [1] Currently, the abbreviation for haircuts is uppercase in the
-       Tax Calculator; we will be changing it to lowercase and will
-       update this page accordingly.
+       Tax Calculator; we will be changing it to lowercase in the
+       future and will update this page accordingly.
