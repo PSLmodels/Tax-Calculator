@@ -84,7 +84,7 @@ Functions of the parameter's value are lowercase:
 Combine functions to create additional functions: frt = floor rate.
 
 Examples
----------
+--------
 
    **_AMT_em**: Alternative Minimum Tax exemption amount
 
