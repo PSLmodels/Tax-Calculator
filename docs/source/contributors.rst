@@ -1,7 +1,8 @@
 Authors
 =======
 
-The Tax Calculator is derived from taxcalc.sas, a program written by Dan Feenberg (`NBER`_), and Inna Shapiro (`NBER`_).
+The Tax Calculator is derived from taxcalc.sas, a program written by
+Dan Feenberg (`NBER`_) and Inna Shapiro (`NBER`_).
 
 OSPC's Tax Calculator Contributors
 ----------------------------------
