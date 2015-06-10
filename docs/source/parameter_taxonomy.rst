@@ -57,7 +57,7 @@ Tax categories are uppercase:
 Functions of the parameter's value
 ----------------------------------
 
-Functions of the parameter’s value are lowercase:
+Functions of the parameter's value are lowercase:
 
    **c**: ceiling
 
