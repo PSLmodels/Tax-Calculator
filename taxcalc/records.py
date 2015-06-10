@@ -72,6 +72,9 @@ class Records(object):
                                     self._txpyers, 
                                     0))
 
+        """Setting Variables for Corporate Income Tax"""
+        self.set_vars_for_corp_tax()
+
     @property
     def current_year(self):
         return self._current_year
@@ -659,9 +662,32 @@ class Records(object):
         self.SOIYR = np.repeat(2008, self.dim)
 
     def mutate_imputations(self):
+        """
+        Calculates self._cmbtp_itemizer for this record
+        """
         self._cmbtp_itemizer = imputation(self.e17500, self.e00100,
                 self.e18400, self.e18425, self.e62100, self.e00700,
                 self.e04470, self.e21040, self.e18500, self.e20800)
+
+    def set_vars_for_corp_tax(self):
+        """
+        Sets the variables used in distributing the corporate income tax
+        """
+        (comp, divs, capgains, bonds) = Vars_Corp_Income_Tax(self.FICA_ss_trt,
+                                                      self.SS_Earnings_c,
+                                                      self.e00200, self.e00650,
+                                                      self.FICA_mc_trt,
+                                                      self.e02400, self.e00250,
+                                                      self.e33420, self.e07240,
+                                                      self.e00600, self.e23250,
+                                                      self.e22250, self.e23660,
+                                                      self.e00400, self.e00300,
+                                                      self.e03600)
+
+        setattr(self, 'compensation', comp)
+        setattr(self, 'dividends', divs)
+        setattr(self, 'netcapgains', capgains)
+        setattr(self, 'bonds', bonds)
 
 
 @vectorize([float64(float64, float64, float64, float64, float64, float64,
@@ -684,3 +710,67 @@ def imputation(e17500, e00100, e18400, e18425, e62100, e00700, e04470,
                        - state_adjustment - e00100 - e18500 - e20800)
 
     return _cmbtp_itemizer
+
+
+@vectorize([[float64(float64, float64, float64, float64, float64, float64,
+            float64, float64, float64, float64, float64, float64, float64,
+            float64, float64, float64)]])
+def Vars_Corp_Income_Tax(FICA_ss_trt, SS_Earnings_c, e00200, e00650,
+                         FICA_mc_trt, e02400, e00250, e33420, e07240,
+                         e00600, e00400, e00300, e03600, e23250,
+                         e22250, e23660):
+    """
+    Calculates the variables used to distribute the corporate income tax
+
+    Parameters
+    ----------
+
+
+    Returns
+    -------
+    compensation: float
+        the sume of wages, payroll tax, employer contribution to insurance,
+        and untaxed voluntary contribution to retirement plans
+    dividends: float
+        the individual's dividends received
+    netcapgains: float
+        the individual's net capital gains earnings
+    bonds: float
+        the individual's total bonds (taxable and untaxable)
+    """
+
+# Lacking data for:
+    # IRA distribution
+# TODO:
+    # do I add "partnership and S Corporation?"
+
+    employer_share_fica = (max(0, FICA_ss_trt * min(SS_Earnings_c, e00200)
+                           + FICA_mc_trt * e00200))
+
+    # unsure whether to use in compensation
+    ss_benefits = e02400
+
+    # the individual's compensation package
+    # used to calculate share from labor
+    # = sum of wages (e00200 + e00250), payroll taxes (employer_share_fica),
+    # employer contrib's to insurance (e33420 and archer MSA, e03600),
+    # and untaxed voluntary contrib's to retirement plans (e07240, not sure if
+    # from employer or voluntary)
+# TODO: not sure if we have good data on insurance or retirment
+# e00250: other dependent income (not sure whether to include)
+    compensation = e00200 + e00250 + employer_share_fica + e33420 + e03600 + e07240
+
+    # individual's share of the dividends received
+    dividends = e00650 + e00600  # need to check
+
+# JTC thinks that dividends are enough to measure stock ownership,
+# but TPC thinks both capgains and dividends should be included
+    # individual's share of the capital gains received
+    # c23650 = long term + short term + both (calculated in CapGains fn)
+    netcapgains = e23250 + e22250 + e23660
+
+    # bonds = tax-exempt interest + taxable interest
+    # indidividual's share of total bonds
+    bonds = e00400 + e00300
+
+    return compensation, dividends, netcapgains, bonds

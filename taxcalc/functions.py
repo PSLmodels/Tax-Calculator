@@ -389,7 +389,8 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
     else:
         _hasgain = 0.
 
-    if _taxinc > 0. and _hasgain == 1.:
+    # _taxinc > 0. and
+    if  _hasgain == 1.:
         #if/else 1
         _dwks5 = max(0., e58990 - e58980)
         c24505 = max(0., c00650 - _dwks5)
@@ -1483,3 +1484,77 @@ def Taxer_i(inc_in, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6,
                + II_rt7 * max(0., _a6 - II_brk6[MARS - 1]))
 
     return inc_out
+
+
+@iterate_jit(parameters=['revenue_collected', 'percent_labor',
+                         'percent_supernormal', 'percent_normal',
+                         'agg_dividends', 'agg_capgains', 'agg_bonds',
+                         'agg_self_employed', 'total_compensation'],
+             nopython=True, puf=True)
+def Dist_Corp_Inc_Tax(revenue_collected, percent_labor, percent_supernormal,
+                      percent_normal, agg_dividends, agg_capgains, agg_bonds,
+                      agg_self_employed, total_compensation, dividends,
+                      netcapgains, bonds, e09400):
+    """
+    This function calculates the burden of the corporate income tax borne
+    by an individual in the economy. It also incorporates this burden into
+    our measure of the individual's expanded income.
+
+    Parameters
+    ----------
+    revenue_collected : float
+        value of yearly revenue estimated to be collected in aggregate from the
+        corporate income tax assigned by the user
+    percent_labor : float
+        percent of the burden that will be borne by labor
+    percent_normal : float
+        percent of the burden that will be borne by normal returns
+    percent_supernormal : float
+        percent of the burden that will be borne by supernormal returns
+
+    Returns
+    -------
+    corp_tax_burden : float
+        individual's share of the corporate income tax
+    expanded_income : float
+        the updated expanded income
+    """
+
+    # self-employment (e09400)
+    # individual's share of total self-employment
+    self_employed = e09400 / agg_self_employed
+
+    share_of_divs = dividends / agg_dividends
+    share_of_capgains = netcapgains / agg_capgains
+
+    # adapted from the JCT
+    share_from_labor = (percent_labor * revenue_collected *
+                        compensation / total_compensation)
+
+    # adapted from the JCT and TPC
+    share_from_normal = ((percent_normal * revenue_collected) *
+                         (share_of_divs * .4 + share_of_capgains * .4 +
+                          self_employed * .4 + bonds / agg_bonds))
+
+    share_from_supernormal = (percent_supernormal * revenue_collected
+                              * (share_of_divs * .6 + share_of_capgains * .6))
+
+    # individual's share of the corporate income tax
+    corp_tax_burden = share_from_labor + share_from_normal + share_from_supernormal
+
+    # incorporating the burden into our measure of expanded income
+    expanded_income = expanded_income + corp_tax_burden
+
+    return corp_tax_burden, expanded_income
+
+
+
+
+
+
+
+
+
+
+
+
