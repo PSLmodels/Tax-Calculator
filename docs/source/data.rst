@@ -1,5 +1,11 @@
 Data
-===========
+====
+
+The Tax Calculator simulates federal income taxes for each tax filing
+unit in a sample that is representative of the US population.
+
+Description
+-----------
 
 This project relies on a micro dataset that closely reproduces the
 multivariate distribution of income, deduction and credit items in
