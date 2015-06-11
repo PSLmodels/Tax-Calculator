@@ -7,7 +7,7 @@ tax-calculator/taxcalc directory.
 
 Here we provide a high-level view of the taxcalc package that provides
 links to the source code.  This high-level view is organized around
-the modules that comprise the taxcalc package.  Below is a full list
+the modules that compose the taxcalc package.  Below is a full list
 of the taxcalc package modules (in alphabetical order) with
 documentation about how to call each member of the module.  There is
 also a link to the complete source code for each member in the list.
