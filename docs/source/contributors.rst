@@ -1,5 +1,5 @@
-Authors
-=======
+Contributors
+============
 
 Many people have contributed to the Tax Calculator, and we hope this
 list continues to grow.
