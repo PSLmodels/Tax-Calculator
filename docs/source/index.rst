@@ -1,5 +1,5 @@
-Tax Calculator 
-==============
+OSPC Tax Calculator 
+===================
 
 The Tax Calculator simulates the US federal individual income tax
 system.  In conjunction with micro data that represent the US
