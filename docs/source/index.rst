@@ -1,14 +1,15 @@
 Tax Calculator 
-==========================================
+==============
 
-The Tax Calculator is a calculator for the US federal individual
-income tax system. In conjunction with micro data that represents US
-taxpayer characteristics and a set of behavioral assumptions, we use
-the Tax Calculator to conduct revenue scoring and distributional
-analyses of tax policies.
+The Tax Calculator simulates the US federal individual income tax
+system.  In conjunction with micro data that represent the US
+population and a set of behavioral assumptions, the Tax Calculator can
+be used to conduct revenue scoring and distributional analyses of tax
+policies.  The Tax Calculator is written in Python, an interpreted
+language that can execute on Windows, Mac, or Linux.
 
-Contents:
----------
+Contents
+--------
 
 .. toctree::
    :maxdepth: 2
@@ -21,11 +22,8 @@ Contents:
    license.rst
    contributors.rst
 
+Search
+------
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+:ref:`search`
 
