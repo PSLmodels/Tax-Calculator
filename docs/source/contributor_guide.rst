@@ -95,7 +95,8 @@ The following text describes a typical workflow for the Tax Calculator package. 
 
 		$ git checkout -b [new-branch-name]
 
-3. See :doc:`Making changes in your local tax-calculator directory </make_local_change>` for examples showing you how to do just that.
+3. See :doc:`Making changes to your local copy of the Tax Calculator
+   </make_local_change>` for examples showing you how to do just that.
 
 ..
 4. As you go, frequently check that your changes do not introduce bugs and/or degrade the accuracy of the Tax Calculator. To do this, run the following at the command line from inside /tax-calculator/taxcalc. If the tests do not pass, try to fix the issue by using the information provided by the error message. If this isn’t possible or doesn’t work, we are here to help.
