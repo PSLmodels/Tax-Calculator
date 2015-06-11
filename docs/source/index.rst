@@ -14,7 +14,6 @@ Contents:
    :maxdepth: 2
    
    about_ospc.rst
-   installation.rst
    contributor_guide.rst
    code.rst
    data.rst
