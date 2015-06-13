@@ -74,12 +74,12 @@ def dataframe_wrap_guvectorize(dtype_args, dtype_sig):
 
 def create_apply_function_string(sigout, sigin, parameters):
     """
-    Create a string for a function of the form
-      def ap_fuc(x_0, x_1, x_2, ...):
-        for i in range(len(x_0)):
-          x_0[i], ... = jitted_f(x_j[i], ...)
+    Create a string for a function of the form::
 
-        return x_0[i], ...
+        def ap_fuc(x_0, x_1, x_2, ...):
+            for i in range(len(x_0)):
+                x_0[i], ... = jitted_f(x_j[i], ...)
+            return x_0[i], ...
 
     where the specific args to jitted_f and the number of
     values to return is determined by sigout and sigin
@@ -121,10 +121,10 @@ def create_apply_function_string(sigout, sigin, parameters):
 def create_toplevel_function_string(args_out, args_in, pm_or_pf,
                                     kwargs_for_func={}):
     """
-    Create a string for a function of the form:
+    Create a string for a function of the form::
+
         def hl_func(x_0, x_1, x_2, ...):
             outputs = (...) = calc_func(...)
-
             header = [...]
             return DataFrame(data, columns=header)
 
