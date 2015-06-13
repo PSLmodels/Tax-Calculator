@@ -155,11 +155,11 @@ def strip_Nones(x):
     replace None with -1 and return
 
     Parameters
-    -----------
+    ----------
     x: list
 
     Returns
-    --------
+    -------
     list
     """
     accum = []
@@ -426,7 +426,7 @@ def create_distribution_table(calc, groupby, result_type):
     calc : the Calculator object
     groupby : String object
         options for input: 'weighted_deciles', 'small_agi_bins',
-                           'large_agi_bins', 'webapp_agi_bins'
+        'large_agi_bins', 'webapp_agi_bins'
         determines how the columns in the resulting DataFrame are sorted
     result_type: String object
         options for input: 'weighted_sum' or 'weighted_avg'
@@ -442,7 +442,6 @@ def create_distribution_table(calc, groupby, result_type):
         c09600 : Alternative minimum tax
 
         s006 : used to weight population
-
 
     Returns
     -------
