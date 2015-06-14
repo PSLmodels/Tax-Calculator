@@ -58,15 +58,17 @@ Setup Git
 
    .. code-block:: python
 
-      $ git remote add upstream https://github.com/opensourcepolicycenter/tax-calculator.git
+      $ cd tax-calculator
+      tax-calculator$ git remote add upstream https://github.com/opensourcepolicycenter/tax-calculator.git
 
 9. To check that everything is working properly, navigate to the
-   tax-calculator/taxcalc directory and run the following at the
-   command line.
+   tax-calculator/taxcalc directory and run the tax-calculator tests
+   from the command line as follows:
 
    .. code-block:: python
 
-      $ py.test
+      tax-calculator$ cd taxcalc
+      tax-calculator/taxcalc$ py.test
 
    If all the tests pass, you're good to go. If they don't pass, enter
    the following updates at the command line and then try running
@@ -74,8 +76,8 @@ Setup Git
 
    .. code-block:: python
 
-      $ conda update conda
-      $ conda update python
+      tax-calculator$ conda update conda
+      tax-calculator$ conda update python
 
 If you've made it this far, you've successfully made a remote copy (a
 fork) of OSPC Tax Calculator repo. That remote repo is hosted on
@@ -110,13 +112,13 @@ situations, in which case other contributors are here to help.
 
       .. code-block:: python
 
-         $ git fetch upstream
+         tax-calculator$ git fetch upstream
 
    b. Tell Git to switch to the master branch in your local repo.
 
       .. code-block:: python
 
-         $ git checkout master
+         tax-calculator$ git checkout master
 
    c. Update your local master branch to contain the latest content of
       the OSPC master branch using `merge`_. This step ensures that
@@ -124,7 +126,7 @@ situations, in which case other contributors are here to help.
 
       .. code-block:: python
 
-         $ git merge upstream/master
+         tax-calculator$ git merge upstream/master
 
 2. Create a new `branch`_ on your local machine. Think of your
    branches as a way to organize your projects. If you want to work on
@@ -134,7 +136,7 @@ situations, in which case other contributors are here to help.
 
    .. code-block:: python
 
-      $ git checkout -b [new-branch-name]
+      tax-calculator$ git checkout -b [new-branch-name]
 
 3. See :doc:`Making changes to your local copy of the Tax Calculator
    </make_local_change>` for examples showing you how to do just that.
@@ -149,7 +151,7 @@ situations, in which case other contributors are here to help.
 
    .. code-block:: python
 
-      $ py.test
+      tax-calculator/taxcalc$ py.test
 
 5. Now you're ready to `commit`_ your changes to your local repo using
    the code below. The first line of code tells Git to track a
@@ -167,8 +169,8 @@ situations, in which case other contributors are here to help.
 
    .. code-block:: python
 
-      $ git add [filename]
-      $ git commit -m '[description-of-your-commit]'
+      tax-calculator$ git add [filename]
+      tax-calculator$ git commit -m "[description-of-your-commit]"
 
 6. When you're ready for other team members to review your code, make
    your final commit and push your local branch to your remote repo
@@ -176,10 +178,10 @@ situations, in which case other contributors are here to help.
 
    .. code-block:: python
 
-      $ git push origin [new-branch-name]
+      tax-calculator$ git push origin [new-branch-name]
 
 7. Ask other team members to review your changes by directing them to:
-   github.com/[github-username]/Tax-Calculator/[new-branch-name].
+   **github.com/[github-username]/Tax-Calculator/[new-branch-name]**.
 
 8. If this is your first time, wait for feedback and instructions on
    how to proceed. Most likely, the other contributors will ask you to
@@ -194,32 +196,78 @@ values and without adding a new tax parameter), you can view our code
 sample notebook: `10 Minutes To TaxCalc`_.
 
 
-.. [1] The dollar sign is the end of the command prompt on a Mac. If
-       you're on Windows, this is usually the right angle bracket
-       (>). No matter the symbol, you don't need to type it (or
-       anything to its left) at the command line before you enter a
-       command; the prompt symbol should already be there.
+.. [1] The dollar sign is the end of the command prompt on a Mac.  If
+       you're on Windows, this is usually the right angle bracket (>).
+       No matter the symbol, you don't need to type it (or anything to
+       its left, which shows the current working directory) at the
+       command line before you enter a command; the prompt symbol and
+       preceding characters should already be there.
 
 
-.. _`Git`: https://help.github.com/articles/github-glossary/#git
-.. _`quant econ`: http://quant-econ.net/py/learning_python.html
-.. _`GitHub`: https://github.com/
-.. _`Git setup`: https://help.github.com/articles/set-up-git/
-.. _`Fork`: https://help.github.com/articles/github-glossary/#fork
-.. _`password setup`: https://help.github.com/articles/caching-your-github-password-in-git/
-.. _`Tax Calculator's GitHub page`: https://github.com/OpenSourcePolicyCenter/Tax-Calculator
-.. _`repository`: https://help.github.com/articles/github-glossary/#repository
-.. _`push`: https://help.github.com/articles/github-glossary/#push
-.. _`pull`: https://help.github.com/articles/github-glossary/#pull
-.. _`Github Flow`: https://guides.github.com/introduction/flow/    
-.. _`10 Minutes To TaxCalc`: http://nbviewer.ipython.org/github/OpenSourcePolicyCenter/Tax-Calculator/blob/master/docs/notebooks/10_Minutes_to_Taxcalc.ipynb
-.. _`Behavior Example`: http://nbviewer.ipython.org/github/OpenSourcePolicyCenter/Tax-Calculator/blob/master/docs/notebooks/Behavioral_example.ipynb
-.. _`Continuum Analytics`: http://www.continuum.io/downloads
-.. _`remote`: https://help.github.com/articles/github-glossary/#remote
-.. _`clone`: https://help.github.com/articles/github-glossary/#clone
-.. _`branch`: https://help.github.com/articles/github-glossary/#branch
-.. _`merge`: https://help.github.com/articles/github-glossary/#merge
-.. _`commit`: https://help.github.com/articles/github-glossary/#commit
-.. _`fetch`: https://help.github.com/articles/github-glossary/#fetch
-.. _`upstream`: https://help.github.com/articles/github-glossary/#upstream
-.. _`pull request`: https://help.github.com/articles/github-glossary/#pull-request
+.. _`Git`:
+   https://help.github.com/articles/github-glossary/#git
+
+.. _`quant econ`:
+   http://quant-econ.net/py/learning_python.html
+
+.. _`GitHub`:
+   https://github.com/
+
+.. _`Git setup`:
+   https://help.github.com/articles/set-up-git/
+
+.. _`Fork`:
+   https://help.github.com/articles/github-glossary/#fork
+
+.. _`password setup`:
+   https://help.github.com/articles/caching-your-github-password-in-git/
+
+.. _`Tax Calculator's GitHub page`: 
+   https://github.com/OpenSourcePolicyCenter/Tax-Calculator
+
+.. _`repository`:
+   https://help.github.com/articles/github-glossary/#repository
+
+.. _`push`:
+   https://help.github.com/articles/github-glossary/#push
+
+.. _`pull`:
+   https://help.github.com/articles/github-glossary/#pull
+
+.. _`Github Flow`:
+   https://guides.github.com/introduction/flow/
+
+.. _`10 Minutes To TaxCalc`:
+   http://nbviewer.ipython.org/github/OpenSourcePolicyCenter/Tax-Calculator/
+   blob/master/docs/notebooks/10_Minutes_to_Taxcalc.ipynb
+
+.. _`Behavior Example`:
+   http://nbviewer.ipython.org/github/OpenSourcePolicyCenter/Tax-Calculator/
+   blob/master/docs/notebooks/Behavioral_example.ipynb
+
+.. _`Continuum Analytics`:
+   http://www.continuum.io/downloads
+
+.. _`remote`:
+   https://help.github.com/articles/github-glossary/#remote
+
+.. _`clone`:
+   https://help.github.com/articles/github-glossary/#clone
+
+.. _`branch`:
+   https://help.github.com/articles/github-glossary/#branch
+
+.. _`merge`:
+   https://help.github.com/articles/github-glossary/#merge
+
+.. _`commit`:
+   https://help.github.com/articles/github-glossary/#commit
+
+.. _`fetch`:
+   https://help.github.com/articles/github-glossary/#fetch
+
+.. _`upstream`:
+   https://help.github.com/articles/github-glossary/#upstream
+
+.. _`pull request`:
+   https://help.github.com/articles/github-glossary/#pull-request
