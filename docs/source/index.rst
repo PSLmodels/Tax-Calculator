@@ -22,8 +22,3 @@ Contents
    license.rst
    contributors.rst
 
-Search
-------
-
-:ref:`search`
-
