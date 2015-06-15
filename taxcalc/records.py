@@ -712,7 +712,7 @@ class Records(object):
                              self.e03600 + self.e07240)
 
         # individual's share of the dividends received
-        self.dividends = self.e00650
+        self.dividends = self.e0060x0
 
     # JTC thinks that dividends are enough to measure stock ownership,
     # but TPC thinks both capgains and dividends should be included
