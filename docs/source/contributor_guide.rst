@@ -82,7 +82,7 @@ Setup Git
    .. code-block:: python
 
       tax-calculator$ conda update conda
-      tax-calculator$ conda update python
+      tax-calculator$ conda update anaconda
 
 If you've made it this far, you've successfully made a remote copy (a
 fork) of OSPC Tax Calculator repo. That remote repo is hosted on
