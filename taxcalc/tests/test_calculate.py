@@ -272,7 +272,8 @@ def test_Calculator_create_difference_table():
 
     t1 = create_difference_table(calc, calc2, groupby="weighted_deciles")
     assert type(t1) == DataFrame
-    
+
+
 def test_diagnostic_table():
     # we need the records' year at 2008 for blow up step. So param's year needs to be 2008 to past the test
     irates = {2008:0.015, 2009:0.020, 2010:0.022, 2011:0.020, 2012:0.021,
@@ -285,10 +286,45 @@ def test_diagnostic_table():
     tax_dta.flpdyr += 17
     puf = Records(tax_dta, weights = weights)
     # Create a Calculator
-    
+
     calc = Calculator(params=params, records=puf, sync_years=False)
 
     calc.diagnostic_table()
+
+
+def test_aggregate_corporate_income_tax_vals():
+    # we need the records' year at 2008 for blow up step. So param's year needs to be 2008 to past the test
+    irates = {2008:0.015, 2009:0.020, 2010:0.022, 2011:0.020, 2012:0.021,
+          2013:0.022, 2014:0.023, 2015:0.024, 2016:0.024, 2017:0.024,
+          2018:0.024, 2019:0.024}
+    params = Parameters(start_year=2008, inflation_rates=irates)
+    # Create a Public Use File object
+    puf = Records(tax_dta)
+    # Create a Calculator
+    calc = Calculator(params=params, records=puf)
+
+    agg_dividends = (calc.records.e00600 * calc.records.s006).sum()
+
+    agg_capgains = ((calc.records.e23250 * calc.records.s006).sum() +
+                    (calc.records.e22250 * calc.records.s006).sum() +
+                    (calc.records.e23660 * calc.records.s006).sum())
+
+    agg_bonds = ((calc.records.e00400 * calc.records.s006).sum()
+                 + (calc.records.e00300 * calc.records.s006).sum())
+
+    agg_compensation = ((calc.records.e00200 * calc.records.s006).sum() +
+                        (calc.records.e00250 * calc.records.s006).sum() +
+                        (calc.records.e33420 * calc.records.s006).sum() +
+                        (calc.records.e03600 * calc.records.s006).sum() +
+                        (calc.records.e07240 * calc.records.s006).sum())
+
+    (total_comp, total_dividends, total_capgains,
+     total_bonds, total_self_employed) = calc.aggregate_measures()
+
+    assert abs(total_comp - agg_compensation) < .001
+    assert abs(total_bonds - agg_bonds) < .001
+    assert abs(total_capgains - agg_capgains) < .001
+    assert abs(total_dividends - agg_dividends) < .001
 
 
 class TaxCalcError(Exception):

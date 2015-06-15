@@ -181,9 +181,38 @@ class Calculator(object):
         self.records.increment_year()
         self.params.increment_year()
 
+        """
+        TODO: Corporate Income Tax
+
+        Change the json parameters for percent_labor, etc.
+        For example, percent_labor is given to be 25%, but it is a long
+        term affect for labor to bear the buren of this tax, so year 1
+        it should be 0 percent and then smoothly transition to 25 percent
+        over the 10-year budget window
+        """
+
     @property
     def current_year(self):
         return self.params.current_year
+
+    def aggregate_measures(self):
+        """
+        Calculates the aggregate dividends, capital gains, bonds, self-employed
+        income, and compensation for this calculator
+        """
+
+        total_self_employed = (self.records.e09400 * self.records.s006).sum()
+
+        total_bonds = (self.records.bonds * self.records.s006).sum()
+
+        total_comp = (self.records.compensation * self.records.s006).sum()
+
+        total_capgains = (self.records.netcapgains * self.records.s006).sum()
+
+        total_dividends = (self.records.dividends * self.records.s006).sum()
+
+        return (total_comp, total_dividends, total_capgains,
+                total_bonds, total_self_employed)
 
     def mtr(self, income_type_string, diff=100):
         """

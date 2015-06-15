@@ -214,6 +214,9 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
 def EI_FICA(   e00900, e02100, SS_Earnings_c, e00200,
                     e11055, e00250, e30100, FICA_ss_trt, FICA_mc_trt):
     # Earned Income and FICA #
+    
+    # employer_share_fica = (max(0, FICA_ss_trt * min(SS_Earnings_c, e00200)
+    #                        + FICA_mc_trt * e00200))
 
     _sey = e00900 + e02100
     _fica_ss = max(0, FICA_ss_trt * min(SS_Earnings_c, e00200
@@ -1487,14 +1490,12 @@ def Taxer_i(inc_in, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6,
 
 
 @iterate_jit(parameters=['revenue_collected', 'percent_labor',
-                         'percent_supernormal', 'percent_normal',
-                         'agg_dividends', 'agg_capgains', 'agg_bonds',
-                         'agg_self_employed', 'total_compensation'],
+                         'percent_supernormal', 'percent_normal'],
              nopython=True, puf=True)
 def Dist_Corp_Inc_Tax(revenue_collected, percent_labor, percent_supernormal,
-                      percent_normal, agg_dividends, agg_capgains, agg_bonds,
-                      agg_self_employed, total_compensation, dividends,
-                      netcapgains, bonds, e09400):
+                      percent_normal, agg_comp, agg_dividends, agg_capgains,
+                      agg_bonds, agg_self_employed, corp_tax_burden,
+                      dividends, netcapgains, bonds, compensation, e09400):
     """
     This function calculates the burden of the corporate income tax borne
     by an individual in the economy. It also incorporates this burden into
@@ -1529,7 +1530,7 @@ def Dist_Corp_Inc_Tax(revenue_collected, percent_labor, percent_supernormal,
 
     # adapted from the JCT
     share_from_labor = (percent_labor * revenue_collected *
-                        compensation / total_compensation)
+                        compensation / agg_comp)
 
     # adapted from the JCT and TPC
     share_from_normal = ((percent_normal * revenue_collected) *
@@ -1540,21 +1541,9 @@ def Dist_Corp_Inc_Tax(revenue_collected, percent_labor, percent_supernormal,
                               * (share_of_divs * .6 + share_of_capgains * .6))
 
     # individual's share of the corporate income tax
-    corp_tax_burden = share_from_labor + share_from_normal + share_from_supernormal
+    share_corptax_burden = share_from_labor + share_from_normal + share_from_supernormal
 
     # incorporating the burden into our measure of expanded income
-    expanded_income = expanded_income + corp_tax_burden
+    # expanded_income = expanded_income + corp_tax_burden
 
-    return corp_tax_burden, expanded_income
-
-
-
-
-
-
-
-
-
-
-
-
+    return share_corptax_burden

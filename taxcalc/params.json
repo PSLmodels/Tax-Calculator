@@ -1113,7 +1113,7 @@
     },
     "_CG_rt1":{
         "long_name": "Captal Gain rate1",
-	"description": "",
+	    "description": "",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -1146,7 +1146,7 @@
         "col_label": "",
         "value": [0.20] 
     },
-        "_CG_thd1":{
+    "_CG_thd1":{
         "long_name": "Capital gain threshold 1",
 	    "description": "",
         "start_year": 2013,
@@ -1208,7 +1208,7 @@
         "col_label": "",
         "value": [0.20] 
     },
-        "_AMT_CG_thd1":{
+    "_AMT_CG_thd1":{
         "long_name": "Capital gain threshold 1",
 	    "description": "",
         "start_year": 2013,
@@ -1233,5 +1233,49 @@
         "value": [  [400000, 450000, 225000, 425000, 450000, 225000],
                     [406750, 457600, 228800, 432200, 457600, 228800],
                     [413200, 464850, 223425, 439000, 464850, 223425]]
+    }, 
+        "revenue_collected":{
+        "long_name": "Yearly Revnue Collected by the Corporate Income Tax",
+	    "description": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": "",
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [20000]
+    },
+    "percent_labor":{
+        "long_name": "Percent of the Corporate Income Tax allocated to Labor",
+	    "description": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": "",
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.20]
+    },
+    "percent_supernormal":{
+        "long_name": "Percent of the Corporate Income Tax allocated to Supernormal Returns",
+	    "description": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": "",
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.60]
+    },
+    "percent_normal":{
+        "long_name": "Percent of the Corporate Income Tax allocated to Normal Returns",
+	    "description": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": "",
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.20]
     }
 }
