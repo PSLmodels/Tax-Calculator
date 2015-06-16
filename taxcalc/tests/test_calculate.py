@@ -18,7 +18,7 @@ weights = pd.read_csv(weights_path)
 all_cols = set()
 tax_dta_path = os.path.join(CUR_PATH, "../../tax_all1991_puf.gz")
 tax_dta = pd.read_csv(tax_dta_path, compression='gzip')
-                      
+
 # Fix-up. MIdR needs to be type int64 to match PUF
 tax_dta['midr'] = tax_dta['midr'].astype('int64')
 tax_dta['s006'] = np.arange(0,len(tax_dta['s006']))
@@ -302,6 +302,10 @@ def test_aggregate_corporate_income_tax_vals():
     puf = Records(tax_dta)
     # Create a Calculator
     calc = Calculator(params=params, records=puf)
+
+    agg_e_and_p = ((calc.records.e25350 * calc.records.s006).sum()
+                   + (calc.records.e25360 * calc.records.s006).sum()
+                   + (calc.records.e09400 * calc.records.s006).sum())
 
     agg_dividends = (calc.records.e00600 * calc.records.s006).sum()
 

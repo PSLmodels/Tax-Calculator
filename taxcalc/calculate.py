@@ -201,7 +201,7 @@ class Calculator(object):
         income, and compensation for this calculator
         """
 
-        total_self_employed = (self.records.e09400 * self.records.s006).sum()
+        total_self_employed_and_passthrough = (self.records.e_and_p * self.records.s006).sum()
 
         total_bonds = (self.records.bonds * self.records.s006).sum()
 
@@ -212,7 +212,7 @@ class Calculator(object):
         total_dividends = (self.records.dividends * self.records.s006).sum()
 
         return (total_comp, total_dividends, total_capgains,
-                total_bonds, total_self_employed)
+                total_bonds, total_self_employed_and_passthrough)
 
     def mtr(self, income_type_string, diff=100):
         """

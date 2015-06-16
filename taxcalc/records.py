@@ -78,6 +78,7 @@ class Records(object):
         self.dividends = None
         self.netcapgains = None
         self.bonds = None
+        self.e_and_p = None
         self.share_corptax_burden = None  # get's calculated in functions.py
         # actually sets the values
         self.set_vars_for_corp_tax()
@@ -723,6 +724,10 @@ class Records(object):
         # bonds = tax-exempt interest + taxable interest
         # indidividual's share of total bonds
         self.bonds = self.e00400 + self.e00300
+
+        # self-employment (E09400) and pass-through income
+        # E25350 - rents received, E25360 - royalties received
+        self.e_and_p = self.e25350 + self.e25360 + self.e09400
 
 
 @vectorize([float64(float64, float64, float64, float64, float64, float64,
