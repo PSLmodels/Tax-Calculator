@@ -303,8 +303,7 @@ def test_aggregate_corporate_income_tax_vals():
     # Create a Calculator
     calc = Calculator(params=params, records=puf)
 
-    agg_e_and_p = ((calc.records.e25350 * calc.records.s006).sum()
-                   + (calc.records.e25360 * calc.records.s006).sum()
+    agg_e_and_p = ((calc.records.e02000 * calc.records.s006).sum()
                    + (calc.records.e09400 * calc.records.s006).sum())
 
     agg_dividends = (calc.records.e00600 * calc.records.s006).sum()

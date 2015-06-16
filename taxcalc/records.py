@@ -725,9 +725,8 @@ class Records(object):
         # indidividual's share of total bonds
         self.bonds = self.e00400 + self.e00300
 
-        # self-employment (E09400) and pass-through income
-        # E25350 - rents received, E25360 - royalties received
-        self.e_and_p = self.e25350 + self.e25360 + self.e09400
+        # self-employment (E09400) and pass-through income (E02000)
+        self.e_and_p = self.e09400 + self.e02000
 
 
 @vectorize([float64(float64, float64, float64, float64, float64, float64,
