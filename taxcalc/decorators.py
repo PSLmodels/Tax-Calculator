@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import inspect
+from .parameters import default_data
 from numba import jit, vectorize, guvectorize
 from functools import wraps
 from six import StringIO
@@ -288,6 +289,16 @@ def iterate_jit(parameters=None, **kwargs):
         kwargs_for_func = toolz.keyfilter(in_args.__contains__, kwargs)
         kwargs_for_jit = toolz.keyfilter(jit_args.__contains__, kwargs)
 
+        # Any name that is a taxcalc parameter (or the special case 'puf'
+        # Boolean flag is given special treatment. Identify those names here
+        allowed_parameters = list(default_data(metadata=True).keys())
+        allowed_parameters += list(arg[1:] for arg in  default_data(metadata=True).keys())
+        allowed_parameters.append("puf")
+        additional_parameters = [arg for arg in in_args if arg in allowed_parameters]
+        additional_parameters += parameters
+        # Remote duplicates
+        all_parameters = list(set(additional_parameters))
+
         src = inspect.getsourcelines(func)[0]
 
         # Discover the return arguments by walking
@@ -307,7 +318,7 @@ def iterate_jit(parameters=None, **kwargs):
         applied_jitted_f = make_apply_function(func,
                                                list(reversed(all_out_args)),
                                                in_args,
-                                               parameters=parameters,
+                                               parameters=all_parameters,
                                                do_jit=True,
                                                **kwargs_for_jit)
 
