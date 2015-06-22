@@ -231,7 +231,7 @@ class Calculator(object):
                 self.records.e_and_p, self.records.netcapgains, self.records.bonds,
                 self.records.compensation)
 
-        print self.records.share_corptax_burden
+        # print self.records.share_corptax_burden
 
     def mtr(self, income_type_string, diff=100):
         """
