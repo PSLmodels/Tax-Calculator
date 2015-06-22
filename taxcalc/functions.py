@@ -13,8 +13,7 @@ def FilingStatus(MARS):
 
     return _sep 
 
-@iterate_jit(parameters=["ALD_StudentLoan_HC", "ALD_SelfEmploymentTax_HC", "ALD_SelfEmp_HealthIns_HC",
-                         "ALD_KEOGH_SEP_HC", "ALD_EarlyWithdraw_HC", "ALD_Alimony_HC"], nopython=True)
+@iterate_jit(nopython=True)
 def Adj(   e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
                 e03270, e03300, e03400, e03500, e03280, e03900, e04000,
                 e03700, e03220, e03230, e03240, e03290, ALD_StudentLoan_HC,
@@ -34,7 +33,7 @@ def Adj(   e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
     return (_feided, c02900)
 
 
-@iterate_jit(parameters=['FEI_ec_c', 'ALD_StudentLoan_HC'], nopython=True)
+@iterate_jit(nopython=True)
 def CapGains(  e23250, e22250, e23660, _sep, _feided, FEI_ec_c, ALD_StudentLoan_HC,
                     f2555, e00200, e00300, e00600, e00700, e00800,
                     e00900, e01100, e01200, e01400, e01700, e02000, e02100,
@@ -58,7 +57,7 @@ def CapGains(  e23250, e22250, e23660, _sep, _feided, FEI_ec_c, ALD_StudentLoan_
     return (c23650, c01000, c02700, _ymod1, _ymod2, _ymod3, _ymod)
 
 
-@iterate_jit(parameters=["SS_thd50", "SS_thd85", "SS_percentage1", "SS_percentage2"], nopython=True)
+@iterate_jit(nopython=True)
 def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, SS_thd50, SS_thd85, SS_percentage1, SS_percentage2):
 
     if SSIND !=0 or MARS == 3 or MARS == 6:
@@ -76,8 +75,8 @@ def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, SS_thd50, SS_thd85, SS_percen
     return (c02500, e02500)
 
 
-@iterate_jit(parameters=["II_em", "II_em_ps", "II_prt"], nopython=True)
-def AGI(   _ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT, 
+@iterate_jit(nopython=True)
+def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT, 
                 II_em, II_em_ps, MARS, _sep, _fixup, II_prt):
 
     # Adjusted Gross Income
@@ -106,12 +105,7 @@ def AGI(   _ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
     
     return (c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp, c04600)
 
-@iterate_jit(parameters=["puf", "ID_ps","ID_Medical_frt", "ID_Casualty_frt", 
-                         "ID_Miscellaneous_frt", "ID_Charity_crt_Cash",
-                         "ID_Charity_crt_Asset", "ID_prt", "ID_crt", 
-                         "ID_Charity_frt", "ID_StateLocalTax_HC"], 
-                         nopython=True, puf=True)
-
+@iterate_jit(nopython=True, puf=True)
 def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
                  e20500, e20400, e19200, e20550, e20600, e20950, e19500, 
                  e19570, e19400, e19550, e19800, e20100, e20200, e20900, 
@@ -209,8 +203,7 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
                 c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
                 _nonlimited, _limitratio, c04470, c21040)
 
-@iterate_jit(parameters=["SS_Earnings_c", "FICA_ss_trt", "FICA_mc_trt"], 
-    nopython=True)
+@iterate_jit(nopython=True)
 def EI_FICA(   e00900, e02100, SS_Earnings_c, e00200,
                     e11055, e00250, e30100, FICA_ss_trt, FICA_mc_trt):
     # Earned Income and FICA #
@@ -239,8 +232,7 @@ def EI_FICA(   e00900, e02100, SS_Earnings_c, e00200,
 
     return (_sey, _fica, _setax, _seyoff, c11055, _earned)
 
-@iterate_jit(parameters=["AMED_thd", "AMED_trt", "FICA_ss_trt", 
-                         "FICA_mc_trt"], nopython=True)
+@iterate_jit(nopython=True)
 def AMED(e00200, MARS, AMED_thd, _sey, AMED_trt, FICA_mc_trt, FICA_ss_trt):
     _amed = AMED_trt * max(0, e00200 
                 + max(0, _sey) * (1 - 0.5 * (FICA_mc_trt+FICA_ss_trt))
@@ -248,9 +240,7 @@ def AMED(e00200, MARS, AMED_thd, _sey, AMED_trt, FICA_mc_trt, FICA_ss_trt):
 
     return _amed
 
-@iterate_jit(parameters=["puf", "STD", "STD_Aged", "II_rt1", "II_rt2", "II_rt3", "II_rt4", 
-             "II_rt5", "II_rt6", "II_rt7", "II_brk1", "II_brk2", "II_brk3", "II_brk4", "II_brk5", 
-            "II_brk6"], nopython=True, puf=True)
+@iterate_jit(nopython=True, puf=True)
 def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
             MARS, MIDR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200, e02400, STD_Aged,
             c04470, c00100, c21060, c21040, e37717, c04600, e04805, t04470, 
@@ -352,8 +342,7 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
                  c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei, _compitem)
 
 
-@iterate_jit(parameters=["II_rt1", "II_rt2", "II_rt3", "II_rt4", "II_rt5", "II_rt6", "II_rt7",
-             "II_brk1", "II_brk2", "II_brk3", "II_brk4", "II_brk5", "II_brk6"],nopython=True)
+@iterate_jit(nopython=True)
 def XYZD(_taxinc, c04800, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
          II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
 
@@ -372,11 +361,7 @@ def NonGain(c23650, e23250, e01100):
     return (_cglong, _noncg)
 
 
-
-@iterate_jit(parameters=[ "II_rt1", "II_rt2", "II_rt3", "II_rt4", "II_rt5", "II_rt6", "II_rt7", 
-             "II_brk1", "II_brk2", "II_brk3", "II_brk4", "II_brk5", "II_brk6",
-             "CG_rt1", "CG_rt2", "CG_rt3", "CG_thd1", "CG_thd2"], nopython=True)
-
+@iterate_jit(nopython=True)
 def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
                   e58980, e24515, e24518, MARS, _taxinc, _xyztax, _feided, 
                   _feitax, _cmp, e59410, e59420, e59440, e59470, e59400, 
@@ -392,8 +377,8 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
     else:
         _hasgain = 0.
 
-    # _taxinc > 0. and
-    if  _hasgain == 1.:
+
+    if _hasgain == 1.:
         #if/else 1
         _dwks5 = max(0., e58990 - e58980)
         c24505 = max(0., c00650 - _dwks5)
@@ -599,29 +584,23 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 # TODO should we be returning c00650 instead of e00650??? Would need to change tests
 
 
-@iterate_jit(parameters=["AMT_tthd", "II_brk6", "II_brk2", "AMT_Child_em", 
-                         "AMT_CG_rt1", "AMT_CG_rt2", "AMT_CG_rt3","AMT_CG_thd1",
-                         "AMT_em_ps", "AMT_em_pe", "AMT_CG_thd2",
-                         "KT_c_Age", "AMT_thd_MarriedS", "AMT_em", "AMT_prt",
-                         "AMT_trt1", "AMT_trt2", "ID_StateLocalTax_HC", 
-                         "puf"],
-             nopython=True, puf=True)
-def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
-                e60300, e60860, e60100, e60840, e60630, e60550,
-                e60720, e60430, e60500, e60340, e60680, e60600, e60405,
-                e60440, e60420, e60410, e61400, e60660, e60480,
-                e62000,  e60250, _cmp, _standard,  e04470, e17500, 
-                f6251,  e62100, e21040, _sit, e20800, c00100, 
-                c04470, c17000, e18500, c20800, c21040,   
-                DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700, 
-                e00100,  e24515, x62730, x60130, 
-                x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
-                II_brk6, MARS, _sep, II_brk2, AMT_Child_em, AMT_CG_rt1,
-                AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516, 
-                c24520, c04800, e10105, c05700, e05800, e05100, e09600, 
-                KT_c_Age, x62740, e62900, AMT_thd_MarriedS, _earned, e62600, 
-                AMT_em, AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer, 
-                _cmbtp_standard, ID_StateLocalTax_HC, puf):
+@iterate_jit(nopython=True, puf=True)
+def AMTI(   c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
+            e60300, e60860, e60100, e60840, e60630, e60550,
+            e60720, e60430, e60500, e60340, e60680, e60600, e60405,
+            e60440, e60420, e60410, e61400, e60660, e60480,
+            e62000,  e60250, _cmp, _standard,  e04470, e17500, 
+            f6251,  e62100, e21040, _sit, e20800, c00100, 
+            c04470, c17000, e18500, c20800, c21040,   
+            DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700, 
+            e00100,  e24515, x62730, x60130, 
+            x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
+            II_brk6, MARS, _sep, II_brk2, AMT_Child_em, AMT_CG_rt1,
+            AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516, 
+            c24520, c04800, e10105, c05700, e05800, e05100, e09600, 
+            KT_c_Age, x62740, e62900, AMT_thd_MarriedS, _earned, e62600, 
+            AMT_em, AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer, 
+            _cmbtp_standard, ID_StateLocalTax_HC, puf):
 
     c62720 = c24517 + x62720
     c60260 = e00700 + x60260
@@ -816,7 +795,7 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
               _amt25pc, c62747, c62755, c62770, _amt, c62800,
               c09600, _othtax, c05800, _cmbtp)  
 
-@iterate_jit(parameters=["NIIT_thd", "NIIT_trt"], nopython=True)
+@iterate_jit(nopython=True)
 def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt, NIIT):
     # Additional Medicare tax on unearned Income
     if c00100 > NIIT_thd[MARS - 1]:
@@ -825,7 +804,7 @@ def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt, NIIT):
     else: NIIT = 0
     return NIIT
 
-@iterate_jit(parameters=["DCC_c", "puf"], nopython=True, puf=True)
+@iterate_jit(nopython=True, puf=True)
 def F2441(_earned, _fixeic, e59560, MARS, f2441, DCC_c,
                e32800, e32750 , e32775, CDOB1, CDOB2, e32890, e32880, FLPDYR, puf):
 
@@ -905,7 +884,7 @@ def DepCareBen(c32800, _cmp, MARS, c32880, c32890, e33420, e33430, e33450,
 
 
 
-@iterate_jit(parameters=["CDCC_crt", "CDCC_ps"], nopython=True)
+@iterate_jit(nopython=True)
 def ExpEarnedInc(  _exact, c00100, CDCC_ps, CDCC_crt,
                         c33000, c05800, e07300, e07180):
     # Expenses limited to earned income
@@ -959,8 +938,7 @@ def RateRed(c05800, _fixup, _othtax, _exact, x59560, _earned):
     return c07970, c05800, c59560
 
 
-@iterate_jit(parameters=["EITC_ps_MarriedJ", "EITC_rt", "EITC_c", "EITC_prt", "EITC_InvestIncome_c", 
-                         "EITC_ps", "puf"], nopython=True, puf=True)
+@iterate_jit(nopython=True, puf=True)
 def NumDep(EICYB1, EICYB2, EICYB3,
                 EIC, c00100, e00400, MARS, 
                 EITC_ps, EITC_ps_MarriedJ, EITC_rt, c59560, EITC_c,
@@ -1038,7 +1016,7 @@ def NumDep(EICYB1, EICYB2, EICYB3,
                _val_ymax, _preeitc, _val_rtbase, _val_rtless, _dy)
 
 
-@iterate_jit(parameters=["CTC_ps", "CTC_c", "CTC_prt"], nopython=True)
+@iterate_jit(nopython=True)
 def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact, 
                         c11070, c07220, c07230, _num, _precrd, _nctcr, CTC_prt):
 
@@ -1111,7 +1089,7 @@ def AmOppCr(_cmp, e87482, e87487, e87492, e87497):
 
 
 
-@iterate_jit(parameters=['LLC_Expense_c', 'puf'], nopython=True, puf=True)
+@iterate_jit(nopython=True, puf=True)
 def LLC(e87530, LLC_Expense_c, e87526, e87522, e87524, e87528, c87540, c87550, puf):
 
     # Lifetime Learning Credit
@@ -1160,7 +1138,7 @@ def RefAmOpp(_cmp, c87521, _num, c00100, EDCRAGE, c87668):
                c87664, c87666, c10960, c87668, c87681)
 
 
-@iterate_jit(parameters=["ETC_pe_Married", "ETC_pe_Single"], nopython=True)
+@iterate_jit(nopython=True)
 def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num,
     c07180, e07200, c07230, e07240, e07960, e07260, e07300,
     e07700, e07250, t07950, c05800, _precrd, ETC_pe_Single, _xlin3, _xlin6, c87668, c87620):
@@ -1241,9 +1219,7 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num,
             c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220, c07230)
 
 
-@iterate_jit(parameters=['ACTC_rt', 'SS_Earnings_c', 'ACTC_Income_thd', 'puf',
-                         'ACTC_ChildNum', 'ALD_SelfEmploymentTax_HC'],
-             nopython=True, puf=True)
+@iterate_jit(nopython=True, puf=True)
 def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
            _exact, e82880, ACTC_Income_thd, ACTC_rt, SS_Earnings_c,
            ALD_SelfEmploymentTax_HC, e03260, e09800, c59660, e11200, e59680,
@@ -1344,7 +1320,7 @@ def F5405(pm, rc):
     return DataFrame(data=np.column_stack((c64450,)), columns=['c64450'])
 
 
-@iterate_jit(parameters=['puf'], nopython=True, puf=True)
+@iterate_jit(nopython=True, puf=True)
 def C1040(e07400, e07180, e07200, c07220, c07230, e07250,
           e07600, e07260, c07970, e07300, x07400, e09720,
           e07500, e07700, e08000, e07240, e08001, e07960, e07970,

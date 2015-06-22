@@ -1112,7 +1112,7 @@
         "value": [0.009]
     },
     "_CG_rt1":{
-        "long_name": "Captal Gain rate1",
+        "long_name": "Long term capital gain and qualified dividends rate 1",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
@@ -1124,7 +1124,7 @@
         "value": [0.0] 
     },
     "_CG_rt2":{
-        "long_name": "Capital gain rate2",
+        "long_name": "Long term capital gain and qualified dividends rate 2",
 	"description": "",
         "start_year": 2013,
         "col_var": "",
@@ -1136,7 +1136,7 @@
         "value": [0.15]
     },
     "_CG_rt3":{
-        "long_name": "Capital gain rate 3",
+        "long_name": "Long term capital gain and qualified dividends rate 3",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
@@ -1147,7 +1147,7 @@
         "value": [0.20] 
     },
     "_CG_thd1":{
-        "long_name": "Capital gain threshold 1",
+        "long_name": "Long term capital gain and qualified dividends threshold 1",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
@@ -1160,7 +1160,7 @@
                     [37450, 74900, 37450, 50200, 74900, 37450]] 
     },
         "_CG_thd2":{
-        "long_name": "Capital gain threshold 2",
+        "long_name": "Long term capital gain and qualified dividend threshold 2",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
@@ -1174,7 +1174,7 @@
                     [413200, 464850, 223425, 439000, 464850, 223425]]
     },
      "_AMT_CG_rt1":{
-        "long_name": "Captal Gain rate1",
+        "long_name": "Long term capital gain and qualified dividend rate1",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
@@ -1186,7 +1186,7 @@
         "value": [0.0] 
     },
     "_AMT_CG_rt2":{
-        "long_name": "Capital gain rate2",
+        "long_name": "Long term capital gain and qualified dividend rate2",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
@@ -1198,7 +1198,7 @@
         "value": [0.15]
     },
     "_AMT_CG_rt3":{
-        "long_name": "Capital gain rate 3",
+        "long_name": "Long term capital gain and qualified dividend rate 3",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
@@ -1209,7 +1209,7 @@
         "value": [0.20] 
     },
     "_AMT_CG_thd1":{
-        "long_name": "Capital gain threshold 1",
+        "long_name": "Long term capital gain and qualified dividend threshold 1",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
@@ -1222,7 +1222,7 @@
                     [37450, 74900, 37450, 50200, 74900, 37450]]
     },
         "_AMT_CG_thd2":{
-        "long_name": "Capital gain threshold 2",
+        "long_name": "Long term capital gain and qualified dividend threshold 2",
 	    "description": "",
         "start_year": 2013,
         "col_var": "",
