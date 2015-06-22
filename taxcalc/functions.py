@@ -1489,13 +1489,10 @@ def Taxer_i(inc_in, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6,
     return inc_out
 
 
-@iterate_jit(parameters=['revenue_collected', 'percent_labor',
-                         'percent_supernormal', 'percent_normal'],
-             nopython=True, puf=True)
 def Dist_Corp_Inc_Tax(revenue_collected, percent_labor, percent_supernormal,
                       percent_normal, agg_comp, agg_dividends, agg_capgains,
-                      agg_bonds, agg_self_employed_and_pt, corp_tax_burden,
-                      dividends, netcapgains, bonds, compensation, e09400):
+                      agg_bonds, agg_self_employed_and_pt, share_corptax_burden,
+                      dividends, e_and_p, netcapgains, bonds, compensation):
     """
     This function calculates the burden of the corporate income tax borne
     by an individual in the economy. It also incorporates this burden into
@@ -1515,15 +1512,13 @@ def Dist_Corp_Inc_Tax(revenue_collected, percent_labor, percent_supernormal,
 
     Returns
     -------
-    corp_tax_burden : float
+    share_corptax_burden : float
         individual's share of the corporate income tax
-    expanded_income : float
-        the updated expanded income
     """
 
     # self-employment (e09400)
     # individual's share of total self-employment
-    self_employed_and_passthrough =  e_and_p / agg_self_employed_and_pt
+    self_employed_and_pt =  e_and_p / agg_self_employed_and_pt
 
     share_of_divs = dividends / agg_dividends
     share_of_capgains = netcapgains / agg_capgains
@@ -1535,7 +1530,7 @@ def Dist_Corp_Inc_Tax(revenue_collected, percent_labor, percent_supernormal,
     # adapted from the JCT and TPC
     share_from_normal = ((percent_normal * revenue_collected) *
                          (share_of_divs * .4 + share_of_capgains * .4 +
-                          self_employed_and_passthrough * .4 + bonds / agg_bonds))
+                          self_employed_and_pt * .4 + bonds / agg_bonds))
 
     share_from_supernormal = (percent_supernormal * revenue_collected
                               * (share_of_divs * .6 + share_of_capgains * .6))

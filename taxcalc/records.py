@@ -83,6 +83,12 @@ class Records(object):
         # actually sets the values
         self.set_vars_for_corp_tax()
 
+        self.agg_comp = None
+        self.agg_dividends = None
+        self.agg_capgains = None
+        self.agg_bonds = None
+        self.agg_self_employed_and_pt = None
+
     @property
     def current_year(self):
         return self._current_year
@@ -713,7 +719,7 @@ class Records(object):
                              self.e03600 + self.e07240)
 
         # individual's share of the dividends received
-        self.dividends = self.e0060x0
+        self.dividends = self.e00600
 
     # JTC thinks that dividends are enough to measure stock ownership,
     # but TPC thinks both capgains and dividends should be included

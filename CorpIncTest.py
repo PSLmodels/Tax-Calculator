@@ -8,6 +8,7 @@ from taxcalc.functions import *
 from taxcalc.records import *
 from taxcalc.parameters import *
 import taxcalc.parameters as parameters
+import numpy as np
 #from timer.timed_calculate import *
 
 
@@ -45,11 +46,8 @@ def run(puf=True):
     # Create a Calculator
     calc = Calculator(parameters=params, records=puf)
     # Dist_Corp_Inc_Tax(calc.params, calc.records)
-    (agg_comp, agg_dividends, agg_capgains,
-     agg_bonds, agg_self_employed) = calc.aggregate_measures()
 
-    Dist_Corp_Inc_Tax(agg_comp, agg_dividends, agg_capgains,
-                      agg_bonds, agg_self_employed, calc.params, calc.records)
+    calc.corp_inc_tax()
 
 
 if __name__ == '__main__':

@@ -195,24 +195,39 @@ class Calculator(object):
     def current_year(self):
         return self.params.current_year
 
-    def aggregate_measures(self):
+    def corp_inc_tax(self):
         """
         Calculates the aggregate dividends, capital gains, bonds, self-employed
         income, and compensation for this calculator
         """
 
-        total_self_employed_and_passthrough = (self.records.e_and_p * self.records.s006).sum()
+        self.records.agg_self_employed_and_pt = (self.records.e_and_p * self.records.s006).sum()
 
-        total_bonds = (self.records.bonds * self.records.s006).sum()
+        self.records.agg_bonds = (self.records.bonds * self.records.s006).sum()
 
-        total_comp = (self.records.compensation * self.records.s006).sum()
+        self.records.agg_comp = (self.records.compensation * self.records.s006).sum()
 
-        total_capgains = (self.records.netcapgains * self.records.s006).sum()
+        self.records.agg_capgains = (self.records.netcapgains * self.records.s006).sum()
 
-        total_dividends = (self.records.dividends * self.records.s006).sum()
+        self.records.agg_dividends = (self.records.dividends * self.records.s006).sum()
 
-        return (total_comp, total_dividends, total_capgains,
-                total_bonds, total_self_employed_and_passthrough)
+        myfunc = np.vectorize(Dist_Corp_Inc_Tax)
+
+        revenue_collected = 1000000000000.
+        percent_labor = .2
+        percent_supernormal = .6
+        percent_normal = .2
+
+        self.records.share_corptax_burden = myfunc(revenue_collected,
+                percent_labor, percent_supernormal,
+                percent_normal, self.records.agg_comp, self.records.agg_dividends,
+                self.records.agg_capgains, self.records.agg_bonds,
+                self.records.agg_self_employed_and_pt,
+                self.records.share_corptax_burden, self.records.dividends,
+                self.records.e_and_p, self.records.netcapgains, self.records.bonds,
+                self.records.compensation)
+
+        print self.records.share_corptax_burden
 
     def mtr(self, income_type_string, diff=100):
         """
