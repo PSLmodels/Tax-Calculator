@@ -102,6 +102,8 @@ class Calculator(object):
             print("Your data have beeen extrapolated to "
                   + str(self._records.current_year) + ".")
 
+        self.corp_inc_tax()
+
         assert self._params.current_year == self._records.current_year
 
     @property
@@ -142,6 +144,7 @@ class Calculator(object):
         C1040(self.params, self.records)
         DEITC(self.params, self.records)
         OSPC_TAX(self.params, self.records)
+        self.corp_inc_tax()
 
     def calc_all_test(self):
         all_dfs = []
@@ -174,6 +177,7 @@ class Calculator(object):
         add_df(all_dfs, C1040(self.params, self.records))
         add_df(all_dfs, DEITC(self.params, self.records))
         add_df(all_dfs, OSPC_TAX(self.params, self.records))
+        self.corp_inc_tax()
         totaldf = pd.concat(all_dfs, axis=1)
         return totaldf
 

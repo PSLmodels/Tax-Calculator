@@ -321,13 +321,10 @@ def test_aggregate_corporate_income_tax_vals():
                         (calc.records.e03600 * calc.records.s006).sum() +
                         (calc.records.e07240 * calc.records.s006).sum())
 
-    (total_comp, total_dividends, total_capgains,
-     total_bonds, total_self_employed) = calc.aggregate_measures()
-
-    assert abs(total_comp - agg_compensation) < .001
-    assert abs(total_bonds - agg_bonds) < .001
-    assert abs(total_capgains - agg_capgains) < .001
-    assert abs(total_dividends - agg_dividends) < .001
+    assert abs(calc.records.agg_comp - agg_compensation) < .001
+    assert abs(calc.records.agg_bonds - agg_bonds) < .001
+    assert abs(calc.records.agg_capgains - agg_capgains) < .001
+    assert abs(calc.records.agg_dividends - agg_dividends) < .001
 
 
 class TaxCalcError(Exception):
