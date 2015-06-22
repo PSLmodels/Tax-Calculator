@@ -39,3 +39,13 @@ The second way is to access the Tax Calculator through our web
 application, [TaxBrain](http://www.ospc.org/).  Do this by emailing
 [Matt Jensen](mailto:matt.jensen@aei.org) about becoming a TaxBrain
 beta tester.
+
+Conda Package for Advanced Anaconda Users
+=========================================
+
+Conda taxcalc packages are created for every release of the Tax
+Calculator.  We use them to install taxcalc on Amazon Web Services
+(AWS) instances that run the TaxBrain web application.  You can get
+the latest release of the taxcalc package to run on your computer via
+the command `conda install -c ospc taxcalc`.  Note that this package
+does not include a micro data set that represents the US population.
