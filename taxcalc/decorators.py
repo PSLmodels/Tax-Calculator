@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import inspect
+from .parameters import default_data
 from numba import jit, vectorize, guvectorize
 from functools import wraps
 from six import StringIO
@@ -10,14 +11,14 @@ import toolz
 
 class GetReturnNode(ast.NodeVisitor):
     """
-    A Visitor to get the return tuple names from a calc-style
-    function
+    A Visitor to get the return tuple names from a calc-style function
     """
     def visit_Return(self, node):
         if isinstance(node.value, ast.Tuple):
             return [e.id for e in node.value.elts]
-        else: 
+        else:
             return [node.value.id]
+
 
 def dataframe_guvectorize(dtype_args, dtype_sig):
     """
@@ -80,7 +81,7 @@ def create_apply_function_string(sigout, sigin, parameters):
                  x_0[i], ... = jitted_f(x_j[i],....)
             return x_0[i], ...
     where the specific args to jitted_f and the number of
-    values to return is destermined by sigout and signn
+    values to return is destermined by sigout and sign
 
     Parameters
     ----------
@@ -96,7 +97,6 @@ def create_apply_function_string(sigout, sigin, parameters):
     -------
     a String representing the function
     """
-
 
     s = StringIO()
     total_len = len(sigout) + len(sigin)
@@ -126,9 +126,9 @@ def create_toplevel_function_string(args_out, args_in, pm_or_pf,
 
             header = [...]
             return DataFrame(data, columns=header)
-            
+
     where the specific args to jitted_f and the number of
-    values to return is destermined by sigout and signn
+    values to return is destermined by sigout and sigin
 
     Parameters
     ----------
@@ -147,9 +147,8 @@ def create_toplevel_function_string(args_out, args_in, pm_or_pf,
 
     s = StringIO()
 
-
     s.write("def hl_func(pm, pf")
-    
+
     if kwargs_for_func:
         kwargs = ",".join(str(k) + "=" + str(v) for k, v in
                           kwargs_for_func.items())
@@ -232,6 +231,7 @@ def apply_jit(dtype_sig_out, dtype_sig_in, parameters=None, **kwargs):
     """
     if not parameters:
         parameters = []
+
     def make_wrapper(func):
         theargs = inspect.getargspec(func).args
         jitted_f = jit(**kwargs)(func)
@@ -268,6 +268,8 @@ def iterate_jit(parameters=None, **kwargs):
     make a decorator that takes in a _calc-style function, create a
     function that handles the "high-level" function and the "_apply"
     style function
+
+    Note: perhaps a better "bigger picture" description of what this does?
     """
     if not parameters:
         parameters = []
@@ -288,6 +290,16 @@ def iterate_jit(parameters=None, **kwargs):
         kwargs_for_func = toolz.keyfilter(in_args.__contains__, kwargs)
         kwargs_for_jit = toolz.keyfilter(jit_args.__contains__, kwargs)
 
+        # Any name that is a taxcalc parameter (or the special case 'puf'
+        # Boolean flag is given special treatment. Identify those names here
+        allowed_parameters = list(default_data(metadata=True).keys())
+        allowed_parameters += list(arg[1:] for arg in  default_data(metadata=True).keys())
+        allowed_parameters.append("puf")
+        additional_parameters = [arg for arg in in_args if arg in allowed_parameters]
+        additional_parameters += parameters
+        # Remote duplicates
+        all_parameters = list(set(additional_parameters))
+
         src = inspect.getsourcelines(func)[0]
 
         # Discover the return arguments by walking
@@ -307,7 +319,7 @@ def iterate_jit(parameters=None, **kwargs):
         applied_jitted_f = make_apply_function(func,
                                                list(reversed(all_out_args)),
                                                in_args,
-                                               parameters=parameters,
+                                               parameters=all_parameters,
                                                do_jit=True,
                                                **kwargs_for_jit)
 
@@ -322,9 +334,8 @@ def iterate_jit(parameters=None, **kwargs):
                 elif hasattr(args[1], farg):
                     in_arrays.append(getattr(args[1], farg))
                     pm_or_pf.append("pf")
-                elif not farg in kwargs_for_func:
+                elif farg not in kwargs_for_func:
                     raise ValueError("Unknown arg: " + farg)
-
 
             # Create the high level function
             high_level_func = create_toplevel_function_string(all_out_args,
