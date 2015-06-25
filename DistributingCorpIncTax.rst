@@ -17,10 +17,18 @@ OSPC’s model for labor is limited by lack of information regarding payroll tax
 
 Say the United States collects $100 in corporate tax revenue one year and person 1 receives $60.34 in wages, $20.50 in pass-through income, $2.00 in dividends, $5.50 in net capital gains, and $34.20 in bond revenue in that year. Person 2 receives $82.30 in wages, $15.00 in pass-through income, $20.00 in dividends, $20.25 in net capital gains, and $13.70 in that year. For the purposes of this example, we make the assumption that 20% of the tax is distributed to labor, 20% to normal returns, and 60% to supernormal returns for that year. From this example and using the logic for distributing the corporate income tax outlined above, person 1 will bear 27.29% (8.46% for labor, 9.70% for normal returns, and 9.13% for supernormal returns) and person 2 will bear 72.71% (11.54% for labor, 10.30% for normal returns, and 50.87%) of the burden of the corporate income tax. Thus person 1 pays $27.29 and person 2 pays $72.71 of that $100 revenue.
 
+
+------------------------------------------------------------------------------------------------------
 ..[#] Following assumptions made by the Joint Committee on Taxation.
+
 ..[#]This sum is calculated in the initialization for a Record object in records.py.
+
 ..[#]Aggregate compensation is calculated in the method aggregate_measures in calculate.py (along with all aggregate measures used).
+
 ..[#]Calculated in the method Dist_Corp_Inc_Tax in functions.py
+
 ..[#]This measure is modeled after that done by the JCT. Calculated in the method Dist_Corp_Inc_Tax in functions.py
+
 ..[#]Discernment between assets that have a certain percentage from normal returns and supernormal returns was adapted from the Tax Policy Center.
+
 ..[#]This measure is modeled after that done by the JCT. Calculated in the method Dist_Corp_Inc_Tax in functions.py
