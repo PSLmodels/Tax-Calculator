@@ -145,6 +145,7 @@ class Calculator(object):
         DEITC(self.params, self.records)
         OSPC_TAX(self.params, self.records)
         self.corp_inc_tax()
+        ExpandIncome(self.params, self.records)
 
     def calc_all_test(self):
         all_dfs = []
@@ -178,6 +179,7 @@ class Calculator(object):
         add_df(all_dfs, DEITC(self.params, self.records))
         add_df(all_dfs, OSPC_TAX(self.params, self.records))
         self.corp_inc_tax()
+        add_df(all_dfs, ExpandIncome(self.params, self.records))
         totaldf = pd.concat(all_dfs, axis=1)
         return totaldf
 

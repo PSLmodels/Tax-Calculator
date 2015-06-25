@@ -662,7 +662,8 @@ class Records(object):
                         '_amed', '_xlin3', '_xlin6', 'share_corptax_burden',
                         'expanded_income', 'agg_self_employed', 'netcapgains',
                         'agg_capgains', 'total_compensation', 'dividends',
-                        'agg_dividends', 'bonds', 'compensation', 'agg_bonds']
+                        'agg_dividends', 'bonds', 'compensation', 'agg_bonds',
+                        '_expanded_income']
 
         for name in zeroed_names:
             setattr(self, name, np.zeros((self.dim,)))

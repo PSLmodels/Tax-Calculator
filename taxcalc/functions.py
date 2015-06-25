@@ -1520,3 +1520,22 @@ def Dist_Corp_Inc_Tax(revenue_collected, percent_labor, percent_supernormal,
     # expanded_income = expanded_income + corp_tax_burden
 
     return share_corptax_burden
+
+
+@iterate_jit(nopython=True, parameters=['FICA_ss_trt', 'SS_Earnings_c', 
+                                        'FICA_mc_trt'])
+def ExpandIncome(FICA_ss_trt, SS_Earnings_c, e00200, FICA_mc_trt, e02400, 
+                c02500,  c00100, e00400):
+
+    employer_share_fica = (max(0, FICA_ss_trt * min(SS_Earnings_c, e00200) 
+                        + FICA_mc_trt * e00200))
+
+    non_taxable_ss_benefits = (e02400 - c02500)
+
+    _expanded_income = (c00100 # AGI
+                     + e00400 # Non-taxable interest
+                     + non_taxable_ss_benefits
+                     + employer_share_fica)
+     
+
+    return (_expanded_income)
