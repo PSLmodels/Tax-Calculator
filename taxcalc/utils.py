@@ -451,7 +451,7 @@ def create_distribution_table(calc, groupby, result_type):
         return gp_mean.append(sum_row)
 
 
-def create_diagnostic_table(calc, num_years=12):
+def create_diagnostic_table(calc, num_years=12, make_copy=True):
     """
     Create a table of important tax variables over multiple years. 
     Does not mutate the calculator. 
@@ -467,8 +467,10 @@ def create_diagnostic_table(calc, num_years=12):
     -------
     DataFrame where columns are years and rows are aggregated tax variables. 
     """
-
-    calc = copy.deepcopy(calc)
+    if make_copy:
+        calc = copy.deepcopy(calc)
+    else: 
+        calc = calc
     frames = []
     row_years =[]
     for i in range(num_years):

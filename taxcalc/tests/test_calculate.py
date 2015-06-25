@@ -292,6 +292,30 @@ def test_Calculator_create_diagnostic_table():
 
     difference_table = create_diagnostic_table(calc)
 
+    # reset tax_dta.flpdyr 
+    tax_dta.flpdyr -= 22
+
+    assert type(difference_table) == DataFrame
+
+def test_Calculator_create_diagnostic_table_nocopy():
+    rates =   {2013:0.015, 2014:0.020, 2015:0.022, 2016:0.020, 2017:0.021,
+               2018:0.022, 2019:0.023, 2020:0.024, 2021:0.024, 2022:0.024,
+               2023:0.024, 2024:0.024}
+
+    # Create a Parameters object
+    params = Parameters(start_year=2013, inflation_rates=rates)
+    # Create a Public Use File object
+    tax_dta.flpdyr += 22
+    puf = Records(tax_dta, weights = weights)
+    # Create a Calculator
+    
+    calc = Calculator(params=params, records=puf)
+
+    difference_table = create_diagnostic_table(calc, make_copy=False)
+
+    # reset tax_dta.flpdyr 
+    tax_dta.flpdyr -= 22
+
     assert type(difference_table) == DataFrame
 
 
