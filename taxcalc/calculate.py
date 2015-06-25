@@ -15,7 +15,8 @@ def add_df(alldfs, df):
             all_cols.add(col)
             alldfs.append(df[col])
         else:
-            dup_index = [i for i,series in enumerate(alldfs) if series.name == col][0]
+            dup_index = [i for i,
+                         series in enumerate(alldfs) if series.name == col][0]
             alldfs[dup_index] = df[col]
 
 
@@ -25,12 +26,14 @@ def calculator(params, records, mods="", **kwargs):
         if isinstance(mods, str):
             import json
             dd = json.loads(mods)
-            dd = {int(k):(np.array(v) if type(v) == list else v) for k,v in dd.items()} 
+            dd = {int(k): (np.array(v) if type(v) == list else v)
+                  for k, v in dd.items()}
             update_mods.update(dd)
         else:
             update_mods.update(mods)
 
-    final_mods = toolz.merge_with(toolz.merge, update_mods, {params.current_year: kwargs})
+    final_mods = toolz.merge_with(toolz.merge, update_mods,
+                                  {params.current_year: kwargs})
 
     if not all(isinstance(yr, int) for yr in final_mods):
         raise ValueError("All keys in mods must be years")
@@ -58,6 +61,7 @@ def calculator(params, records, mods="", **kwargs):
     calc = Calculator(params, records)
     return calc
 
+
 class Calculator(object):
 
     @classmethod
@@ -76,7 +80,6 @@ class Calculator(object):
         recs = Records.from_file(rfname, **kwargs)
         return cls(params, recs)
 
-
     def __init__(self, params=None, records=None, sync_years=True, **kwargs):
 
         if isinstance(params, Parameters):
@@ -90,17 +93,16 @@ class Calculator(object):
         self._records = (records if not isinstance(records, str) else
                          Records.from_file(records, **kwargs))
 
-        if sync_years and self._records.current_year==2008:
+        if sync_years and self._records.current_year == 2008:
             print("You loaded data for "+str(self._records.current_year)+'.')
 
             while self._records.current_year < self._params.current_year:
                 self._records.increment_year()
 
-            print("Your data have beeen extrapolated to "+str(self._records.current_year)+".")
+            print("Your data have beeen extrapolated to "
+                  + str(self._records.current_year) + ".")
 
         assert self._params.current_year == self._records.current_year
-
- 
 
     @property
     def params(self):
@@ -109,7 +111,6 @@ class Calculator(object):
     @property
     def records(self):
         return self._records
-
 
     def calc_all(self):
         FilingStatus(self.params, self.records)
@@ -141,6 +142,7 @@ class Calculator(object):
         C1040(self.params, self.records)
         DEITC(self.params, self.records)
         OSPC_TAX(self.params, self.records)
+        ExpandIncome(self.params, self.records)
 
     def calc_all_test(self):
         all_dfs = []
@@ -173,6 +175,7 @@ class Calculator(object):
         add_df(all_dfs, C1040(self.params, self.records))
         add_df(all_dfs, DEITC(self.params, self.records))
         add_df(all_dfs, OSPC_TAX(self.params, self.records))
+        add_df(all_dfs, ExpandIncome(self.params, self.records))
         totaldf = pd.concat(all_dfs, axis=1)
         return totaldf
 
@@ -184,18 +187,17 @@ class Calculator(object):
     def current_year(self):
         return self.params.current_year
 
-
-    def mtr(self, income_type_string, diff = 100):
+    def mtr(self, income_type_string, diff=100):
         """
-        This method calculates the marginal tax rate for every record. 
-        In order to avoid kinks, we find the marginal rates associated with 
-        both a tax increase and a tax decrease and use the more modest of 
-        the two. 
+        This method calculates the marginal tax rate for every record.
+        In order to avoid kinks, we find the marginal rates associated with
+        both a tax increase and a tax decrease and use the more modest of
+        the two.
         """
 
         income_type = getattr(self, income_type_string)
-        
-        # Calculate the base level of taxes. 
+
+        # Calculate the base level of taxes.
         self.calc_all()
         taxes_base = np.copy(self._ospctax)
 
@@ -209,15 +211,15 @@ class Calculator(object):
         self.calc_all()
         delta_taxes_down = taxes_base - self._ospctax
 
-        # Reset the income_type to its starting point to avoid 
-        # unintended consequences. 
+        # Reset the income_type to its starting point to avoid
+        # unintended consequences.
         setattr(self, income_type_string, income_type)
         self.calc_all()
 
-        # Choose the more modest effect of either adding or subtracting income.
-        delta_taxes = np.where( np.absolute(delta_taxes_up) <= 
-                            np.absolute(delta_taxes_down), 
-                            delta_taxes_up , delta_taxes_down)
+        # Choose the more modest effect of either adding or subtracting income
+        delta_taxes = np.where(np.absolute(delta_taxes_up) <=
+                               np.absolute(delta_taxes_down),
+                               delta_taxes_up, delta_taxes_down)
 
         # Calculate the marginal tax rate
         mtr = delta_taxes / diff

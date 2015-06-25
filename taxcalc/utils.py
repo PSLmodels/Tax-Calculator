@@ -4,9 +4,13 @@ from pandas import DataFrame
 from collections import defaultdict
 import copy
 
-STATS_COLUMNS = ['c00100', '_standard', 'c04470', 'c04600', 'c04800', 'c05200',
+STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600', 'c04800', 'c05200',
                  'c62100','c09600', 'c05800', 'c09200', '_refund', 'c07100',
                  '_ospctax','s006']
+
+# each entry in this array corresponds to the same entry in the array
+# TABLE_LABELS below. this allows us to use TABLE_LABELS to map a
+# label to the correct column in our distribution table
 
 TABLE_COLUMNS = ['s006','c00100', 'num_returns_StandardDed', '_standard',
                  'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'c05200',
@@ -21,21 +25,21 @@ TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Tax before Refundable Credits', 'Refundable Credits',
                 'Revenue']
 
-DIFF_TABLE_LABELS = ["Tax Units with Tax Cut", "Tax Units with Tax Increase", "Count",
-                     "Average Tax Change", "Total Tax Difference",
+# used in our difference table to label the columns
+DIFF_TABLE_LABELS = ["Tax Units with Tax Cut", "Tax Units with Tax Increase",
+                     "Count", "Average Tax Change", "Total Tax Difference",
                      "Percent with Tax Increase", "Percent with Tax Decrease",
                      "Share of Overall Change"]
 
 
-
-LARGE_AGI_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+LARGE_INCOME_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                   200000, 1e14]
 
-SMALL_AGI_BINS = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
+SMALL_INCOME_BINS = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
                    49999, 74999, 99999, 199999, 499999, 999999, 1499999,
                    1999999, 4999999, 9999999, 1e14]
 
-WEBAPP_AGI_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+WEBAPP_INCOME_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                    199999, 499999, 1000000, 1e14]
 
 EVERYONE_BIN= [-1e14, 1e14]
@@ -94,7 +98,7 @@ def expand_2D(x, inflate, inflation_rates, num_years):
 
     if isinstance(x, np.ndarray):
 
-        #Look for -1s and create masks if present
+        # Look for -1s and create masks if present
         last_good_row = -1
         keep_user_data_mask = []
         keep_calc_data_mask = []
@@ -153,11 +157,11 @@ def strip_Nones(x):
     return everything encountered before. If a list of lists, we
     replace None with -1 and return
 
-    Parameters:
+    Parameters
     -----------
     x: list
 
-    Returns:
+    Returns
     --------
     list
     """
@@ -251,16 +255,20 @@ def weighted_share_of_total(agg, col_name, total):
     return float(weighted_sum(agg, col_name)) / float(total)
 
 
-def add_weighted_decile_bins(df):
+def add_weighted_decile_bins(df, income_measure='_expanded_income'):
     """
 
-    Add a column of income bins based on each 10% of AGI, weighted by s006.
-    This will server as a "grouper" later on.
+    Add a column of income bins based on each 10% of the income_measure, 
+    weighted by s006.
+
+    The default income_measure is `expanded_income`, but `c00100` also works.
+
+    This function will server as a "grouper" later on.
 
     """
 
-    # First, sort by AGI
-    df.sort('c00100', inplace=True)
+    # First, sort by income_measure
+    df.sort(income_measure, inplace=True)
     # Next, do a cumulative sum by the weights
     df['cumsum_weights'] = np.cumsum(df['s006'].values)
     # Max value of cum sum of weights
@@ -273,37 +281,48 @@ def add_weighted_decile_bins(df):
     return df
 
 
-def add_income_bins(df, compare_with="soi", bins=None, right=True):
+def add_income_bins(df, compare_with="soi", bins=None, right=True, income_measure='_expanded_income'):
     """
 
-    Add a column of income bins of AGI using pandas 'cut'. This will
-    serve as a "grouper" later on.
+    Add a column of income bins of income_measure using pandas 'cut'.
+    This will serve as a "grouper" later on.
 
-    df: DataFrame to group
 
-    compare_with: string, optional
-            Some names to specify certain pre-defined bins
+    Parameters
+    ----------
+    df: DataFrame object
+        the object to which we are adding bins
 
-    bins: iterable of scalars, optional
-            AGI income breakpoints. Follows pandas convention. The
-            breakpoint is inclusive if right=True. This argument
-            overrides any choice of compare_with
+    compare_with: String, optional
+        options for input: 'tpc', 'soi', 'webapp'
+        determines which types of bins will be added
+        default: 'soi'
+
+    bins: iterable of scalars, optional income breakpoints. 
+            Follows pandas convention. The breakpoint is inclusive if 
+            right=True. This argument overrides any choice of compare_with.
+
 
     right : bool, optional
-            Indicates whether the bins include the rightmost edge or not.
-            If right == True (the default), then the bins [1,2,3,4]
-            indicate (1,2], (2,3], (3,4].
+        Indicates whether the bins include the rightmost edge or not.
+        If right == True (the default), then the bins [1,2,3,4]
+        indicate (1,2], (2,3], (3,4].
+
+    Returns
+    -------
+    df: DataFrame object
+        the original input that bins have been added to
 
     """
     if not bins:
         if compare_with == "tpc":
-            bins = LARGE_AGI_BINS
+            bins = LARGE_INCOME_BINS
 
         elif compare_with == "soi":
-            bins = SMALL_AGI_BINS
+            bins = SMALL_INCOME_BINS
 
         elif compare_with == "webapp":
-            bins = WEBAPP_AGI_BINS
+            bins = WEBAPP_INCOME_BINS
 
         elif compare_with == "everyone":
             bins = EVERYONE_BIN
@@ -312,8 +331,8 @@ def add_income_bins(df, compare_with="soi", bins=None, right=True):
             msg = "Unknown compare_with arg {0}".format(compare_with)
             raise ValueError(msg)
 
-    # Groupby c00100 bins
-    df['bins'] = pd.cut(df['c00100'], bins, right=right)
+    # Groupby income_measure bins
+    df['bins'] = pd.cut(df[income_measure], bins, right=right)
     return df
 
 
@@ -352,7 +371,8 @@ def weighted(df, X):
 
 def get_sums(df, na=False):
     """
-    Gets the unweighted sum of each column, saving the col name and the corresponding sum
+    Gets the unweighted sum of each column, saving the col name
+    and the corresponding sum
 
     Returns
     -------
@@ -362,7 +382,7 @@ def get_sums(df, na=False):
 
     for col in df.columns.tolist():
         if col != 'bins':
-            if na == True:
+            if na:
                 sums[col] = 'n/a'
             else:
                 sums[col] = (df[col]).sum()
@@ -371,14 +391,25 @@ def get_sums(df, na=False):
 
 
 def results(c):
+    """
+    Gets the results from the tax calculator and organizes them into a table
+
+    Parameters
+    ----------
+    c : Calculator object
+
+    Returns
+    -------
+    DataFrame object
+    """
     outputs = []
     for col in STATS_COLUMNS:
-       if hasattr(c, 'records') and hasattr(c, 'params'):
+        if hasattr(c, 'records') and hasattr(c, 'params'):
             if hasattr(c.params, col):
                 outputs.append(getattr(c.params, col))
             else:
                 outputs.append(getattr(c.records, col))
-       else:
+        else:
             outputs.append(getattr(c, col))
 
     res = DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
@@ -402,39 +433,88 @@ def results(c):
     return res
 
 
-def weighted_avg_allcols(df, cols):
-    diff = DataFrame(df.groupby('bins', as_index=False).apply(weighted_mean, "c00100"),
-                     columns=['c00100'])
 
+def weighted_avg_allcols(df, cols, income_measure='_expanded_income'):
+    diff = DataFrame(df.groupby('bins', as_index=False).apply(weighted_mean, income_measure),
+                     columns=[income_measure])
     for col in cols:
         if (col == "s006" or col == 'num_returns_StandardDed' or
            col == 'num_returns_ItemDed' or col == 'num_returns_AMT'):
             diff[col] = df.groupby('bins', as_index=False)[col].sum()[col]
-        elif col != "c00100":
+        elif col != income_measure:
             diff[col] = df.groupby('bins', as_index=False).apply(weighted_mean, col)
 
     return diff
 
+def create_distribution_table(calc, groupby, result_type, 
+                                income_measure='_expanded_income'):
+    """
+    Gets results given by the tax calculator, sorts them based on groupby, and
+        manipulates them based on result_type. Returns these as a table
 
-def create_distribution_table(calc, groupby, result_type):
+    Parameters
+    ----------
+    calc : the Calculator object
+    groupby : String object
+        options for input: 'weighted_deciles', 'small_income_bins',
+                           'large_income_bins', 'webapp_income_bins'
+        determines how the columns in the resulting DataFrame are sorted
+    result_type: String object
+        options for input: 'weighted_sum' or 'weighted_avg'
+        determines how the data should be maniuplated
+
+    Notes
+    -----
+    Taxpayer Characteristics:
+        c04470 : Total itemized deduction
+
+        c00100 : AGI (Defecit)
+
+        c09600 : Alternative minimum tax
+
+        s006 : used to weight population
+
+
+    Returns
+    -------
+    DataFrame object
+    """
 
     res = results(calc)
 
+    # weight of returns with positive AGI and 
+    # itemized deduction greater than standard deduction
+    res['c04470'] = res['c04470'].where(((res['c00100'] > 0) &
+                                        (res['c04470'] > res['_standard'])), 0)
+
+    # weight of returns with positive AGI and itemized deduction
+    res['num_returns_ItemDed'] = res['s006'].where(((res['c00100'] > 0) &
+                                                   (res['c04470'] > 0)), 0)
+
+    # weight of returns with positive AGI and standard deduction
+    res['num_returns_StandardDed'] = res['s006'].where(((res['c00100'] > 0) &
+                                                       (res['_standard'] > 0)), 0)
+
+    # weight of returns with positive Alternative Minimum Tax (AMT)
+    res['num_returns_AMT'] = res['s006'].where(res['c09600'] > 0, 0)
+
+    # sorts the data
     if groupby == "weighted_deciles":
-        df = add_weighted_decile_bins(res)
-    elif groupby == "small_agi_bins":
-        df = add_income_bins(res, compare_with="soi")
-    elif groupby == "large_agi_bins":
-        df = add_income_bins(res, compare_with="tpc")
-    elif groupby == "webapp_agi_bins":
-        df = add_income_bins(res, compare_with="webapp")
+        df = add_weighted_decile_bins(res, income_measure=income_measure)
+    elif groupby == "small_income_bins":
+        df = add_income_bins(res, compare_with="soi", income_measure=income_measure)
+    elif groupby == "large_income_bins":
+        df = add_income_bins(res, compare_with="tpc", income_measure=income_measure)
+    elif groupby == "webapp_income_bins":
+        df = add_income_bins(res, compare_with="webapp", income_measure=income_measure)
     elif groupby == "everyone":
         df = add_income_bins(res, compare_with="everyone" )
     else:
-        err = ("groupby must be either 'weighted_deciles' or 'small_agi_bins'"
-               "or 'large_agi_bins' or 'webapp_agi_bins'")
+        err = ("groupby must be either 'weighted_deciles' or 'small_income_bins'"
+               "or 'large_income_bins' or 'webapp_income_bins' or 'everyone'")
         raise ValueError(err)
 
+    # manipulates the data
     pd.options.display.float_format = '{:8,.0f}'.format
     if result_type == "weighted_sum":
         df = weighted(df, STATS_COLUMNS)
@@ -442,8 +522,11 @@ def create_distribution_table(calc, groupby, result_type):
         gp_mean.drop('bins', axis=1, inplace=True)
         sum_row = get_sums(df)[TABLE_COLUMNS]
     elif result_type == "weighted_avg":
-        gp_mean = weighted_avg_allcols(df, TABLE_COLUMNS)
+        gp_mean = weighted_avg_allcols(df, TABLE_COLUMNS, income_measure=income_measure)
         sum_row = get_sums(df, na=True)[TABLE_COLUMNS]
+    else:
+        err = ("result_type must be either 'weighted_sum' or 'weighted_avg")
+        raise ValueError(err)
 
     if groupby == "everyone":
         return gp_mean.append(sum_row).ix[1:]
@@ -490,20 +573,41 @@ def create_diagnostic_table(calc, num_years=12, make_copy=True):
     diagnostic_table_df.columns = row_years
     return diagnostic_table_df
 
-def create_difference_table(calc1, calc2, groupby):
+def create_difference_table(calc1, calc2, groupby, 
+                                income_measure='_expanded_income'):
+    """
+    Gets results given by the two different tax calculators and outputs
+        a table that compares the differing results.
+        The table is sorted according the the groupby input.
+
+    Parameters
+    ----------
+    calc1, the first Calculator object
+    calc2, the other Calculator object
+    groupby, String object
+        options for input: 'weighted_deciles', 'small_income_bins',
+        'large_income_bins', 'webapp_income_bins'
+        determines how the columns in the resulting DataFrame are sorted
+
+
+    Returns
+    -------
+    DataFrame object
+    """
+
     res1 = results(calc1)
     res2 = results(calc2)
     if groupby == "weighted_deciles":
-        df = add_weighted_decile_bins(res2)
-    elif groupby == "small_agi_bins":
-        df = add_income_bins(res2, compare_with="soi")
-    elif groupby == "large_agi_bins":
-        df = add_income_bins(res2, compare_with="tpc")
-    elif groupby == "webapp_agi_bins":
-        df = add_income_bins(res2, compare_with="webapp")
+        df = add_weighted_decile_bins(res2, income_measure=income_measure)
+    elif groupby == "small_income_bins":
+        df = add_income_bins(res2, compare_with="soi", income_measure=income_measure)
+    elif groupby == "large_income_bins":
+        df = add_income_bins(res2, compare_with="tpc", income_measure=income_measure)
+    elif groupby == "webapp_income_bins":
+        df = add_income_bins(res2, compare_with="webapp", income_measure=income_measure)
     else:
-        err = ("groupby must be either 'weighted_deciles' or 'small_agi_bins'"
-               "or 'large_agi_bins' or 'webapp_agi_bins'")
+        err = ("groupby must be either 'weighted_deciles' or 'small_income_bins'"
+               "or 'large_income_bins' or 'webapp_income_bins'")
         raise ValueError(err)
 
     # Difference in plans
@@ -511,7 +615,8 @@ def create_difference_table(calc1, calc2, groupby):
     # Negative values are the magnitude of the tax decrease
     res2['tax_diff'] = res2['_ospctax'] - res1['_ospctax']
 
-    diffs = means_and_comparisons(res2, 'tax_diff', df.groupby('bins', as_index=False),
+    diffs = means_and_comparisons(res2, 'tax_diff',
+                                  df.groupby('bins', as_index=False),
                                   (res2['tax_diff']*res2['s006']).sum())
 
     sum_row = get_sums(diffs)[diffs.columns.tolist()]
@@ -524,11 +629,13 @@ def create_difference_table(calc1, calc2, groupby):
     srs_cut = ["{0:.2f}%".format(val * 100) for val in diffs['perc_cut']]
     diffs['perc_cut'] = pd.Series(srs_cut, index=diffs.index)
 
-    srs_change = ["{0:.2f}%".format(val * 100) for val in diffs['share_of_change']]
+    srs_change = ["{0:.2f}%".format(val * 100)
+                  for val in diffs['share_of_change']]
     diffs['share_of_change'] = pd.Series(srs_change, index=diffs.index)
 
     # columns containing weighted values relative to the binning mechanism
-    non_sum_cols = [x for x in diffs.columns.tolist() if 'mean' in x or 'perc' in x]
+    non_sum_cols = [x for x in diffs.columns.tolist()
+                    if 'mean' in x or 'perc' in x]
     for col in non_sum_cols:
         diffs.loc['sums', col] = 'n/a'
 
