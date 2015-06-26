@@ -468,7 +468,7 @@ def create_distribution_table(calc, groupby, result_type,
     Taxpayer Characteristics:
         c04470 : Total itemized deduction
 
-        c00100 : AGI (Defecit)
+        c00100 : AGI (Deficit)
 
         c09600 : Alternative minimum tax
 
@@ -546,6 +546,8 @@ def create_diagnostic_table(calc, num_years=12, make_copy=True):
     num_years : Number of years to include in the diagnostic table. 
                 Default is set to 12 to include 2013 to 2024.
 
+    make_copy: Set to True to create a deepcopy, set to False to mutate calc. 
+
     Returns
     -------
     DataFrame where columns are years and rows are aggregated tax variables. 
@@ -571,6 +573,7 @@ def create_diagnostic_table(calc, num_years=12, make_copy=True):
     diagnostic_table_df = diagnostic_table_df.transpose() 
     diagnostic_table_df.index = TABLE_LABELS
     diagnostic_table_df.columns = row_years
+    pd.options.display.float_format = '{:8,.1f}'.format
     return diagnostic_table_df
 
 def create_difference_table(calc1, calc2, groupby, 
