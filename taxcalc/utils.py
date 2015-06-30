@@ -8,7 +8,7 @@ STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470',
                  'c62100', 'c09600', 'c05800', 'c09200', '_refund', 'c07100',
                  '_ospctax', 's006', 'share_corptax_burden']
 
-# Used 
+# Used in the table for the corporate income tax
 CORP_TABLE = ['s006', '_expanded_income', 'c00100', 'share_corptax_burden']
 
 # each entry in this array corresponds to the same entry in the array
@@ -26,7 +26,7 @@ TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Taxable Income', 'Regular Tax', 'AMTI', 'AMT Filers', 'AMT',
                 'Tax before Credits', 'Non-refundable Credits',
                 'Tax before Refundable Credits', 'Refundable Credits',
-                'Revenue', "Share of the Corporate Income Tax"]
+                'Revenue', 'Share of the Corporate Income Tax']
 
 # used in our difference table to label the columns
 DIFF_TABLE_LABELS = ["Tax Units with Tax Cut", "Tax Units with Tax Increase",

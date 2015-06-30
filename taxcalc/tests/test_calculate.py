@@ -246,7 +246,7 @@ def test_Calculator_create_distribution_table():
                     'Taxable Income', 'Regular Tax', 'AMTI', 'AMT Filers', 'AMT',
                     'Tax before Credits', 'Non-refundable Credits',
                     'Tax before Refundable Credits', 'Refundable Credits',
-                    'Revenue']
+                    'Revenue', 'Share of the Corporate Income Tax']
     t1 = create_distribution_table(calc, groupby="weighted_deciles", result_type="weighted_sum")
     t1.columns = DIST_LABELS
     t2 = create_distribution_table(calc, groupby="small_income_bins", result_type="weighted_avg")
