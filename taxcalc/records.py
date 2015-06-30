@@ -79,7 +79,7 @@ class Records(object):
         self.netcapgains = None
         self.bonds = None
         self.e_and_p = None
-        self.share_corptax_burden = None  # get's calculated in functions.py
+        self.share_corptax_burden = None  # get's calculated for a calc object
         # actually sets the values
         self.set_vars_for_corp_tax()
 

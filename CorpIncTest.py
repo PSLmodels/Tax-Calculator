@@ -49,6 +49,8 @@ def run(puf=True):
 
     calc.corp_inc_tax()
 
+    create_corpinctax_table(calc, "weighted_deciles", "weighted_sum")
+
 
 if __name__ == '__main__':
     run()

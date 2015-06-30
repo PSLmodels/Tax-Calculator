@@ -204,7 +204,9 @@ class Calculator(object):
     def corp_inc_tax(self):
         """
         Calculates the aggregate dividends, capital gains, bonds, self-employed
-        income, and compensation for this calculator
+        income, and compensation for this calculator's Records attribute
+        Once calculated, uses these values to determine this caclulator's
+        Records's shares of the corporate income tax burden
         """
 
         self.records.agg_self_employed_and_pt = (self.records.e_and_p * self.records.s006).sum()

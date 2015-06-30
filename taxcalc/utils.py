@@ -3,18 +3,22 @@ import pandas as pd
 from pandas import DataFrame
 from collections import defaultdict
 
-STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600', 'c04800', 'c05200',
-                 'c62100','c09600', 'c05800', 'c09200', '_refund', 'c07100',
-                 '_ospctax','s006']
+STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470',
+                 'c04600', 'c04800', 'c05200',
+                 'c62100', 'c09600', 'c05800', 'c09200', '_refund', 'c07100',
+                 '_ospctax', 's006', 'share_corptax_burden']
+
+# Used 
+CORP_TABLE = ['s006', '_expanded_income', 'c00100', 'share_corptax_burden']
 
 # each entry in this array corresponds to the same entry in the array
 # TABLE_LABELS below. this allows us to use TABLE_LABELS to map a
 # label to the correct column in our distribution table
 
-TABLE_COLUMNS = ['s006','c00100', 'num_returns_StandardDed', '_standard',
+TABLE_COLUMNS = ['s006', 'c00100', 'num_returns_StandardDed', '_standard',
                  'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'c05200',
-                 'c62100','num_returns_AMT', 'c09600', 'c05800',  'c07100','c09200',
-                 '_refund','_ospctax']
+                 'c62100', 'num_returns_AMT', 'c09600', 'c05800', 'c07100',
+                 'c09200', '_refund', '_ospctax', 'share_corptax_burden']
 
 TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Standard Deduction', 'Itemizers',
@@ -22,7 +26,7 @@ TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Taxable Income', 'Regular Tax', 'AMTI', 'AMT Filers', 'AMT',
                 'Tax before Credits', 'Non-refundable Credits',
                 'Tax before Refundable Credits', 'Refundable Credits',
-                'Revenue']
+                'Revenue', "Share of the Corporate Income Tax"]
 
 # used in our difference table to label the columns
 DIFF_TABLE_LABELS = ["Tax Units with Tax Cut", "Tax Units with Tax Increase",
@@ -32,14 +36,14 @@ DIFF_TABLE_LABELS = ["Tax Units with Tax Cut", "Tax Units with Tax Increase",
 
 
 LARGE_INCOME_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
-                  200000, 1e14]
+                     200000, 1e14]
 
 SMALL_INCOME_BINS = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
-                   49999, 74999, 99999, 199999, 499999, 999999, 1499999,
-                   1999999, 4999999, 9999999, 1e14]
+                     49999, 74999, 99999, 199999, 499999, 999999, 1499999,
+                     1999999, 4999999, 9999999, 1e14]
 
 WEBAPP_INCOME_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
-                   199999, 499999, 1000000, 1e14]
+                      199999, 499999, 1000000, 1e14]
 
 
 def extract_array(f):
@@ -581,3 +585,58 @@ def create_difference_table(calc1, calc2, groupby,
         diffs.loc['sums', col] = 'n/a'
 
     return diffs
+
+
+def create_corpinctax_table(calc, groupby, result_type,
+                            income_measure='_expanded_income'):
+    res = results(calc)
+
+    # weight of returns with positive AGI and
+    # itemized deduction greater than standard deduction
+    res['c04470'] = res['c04470'].where(((res['c00100'] > 0) &
+                                        (res['c04470'] > res['_standard'])), 0)
+
+    # weight of returns with positive AGI and itemized deduction
+    res['num_returns_ItemDed'] = res['s006'].where(((res['c00100'] > 0) &
+                                                   (res['c04470'] > 0)), 0)
+
+    # weight of returns with positive AGI and standard deduction
+    res['num_returns_StandardDed'] = res['s006'].where(((res['c00100'] > 0) &
+                                                    (res['_standard'] > 0)),0)
+
+    # weight of returns with positive Alternative Minimum Tax (AMT)
+    res['num_returns_AMT'] = res['s006'].where(res['c09600'] > 0, 0)
+
+    # sorts the data
+    if groupby == "weighted_deciles":
+        df = add_weighted_decile_bins(res, income_measure=income_measure)
+    elif groupby == "small_income_bins":
+        df = add_income_bins(res, compare_with="soi",
+                             income_measure=income_measure)
+    elif groupby == "large_income_bins":
+        df = add_income_bins(res, compare_with="tpc",
+                             income_measure=income_measure)
+    elif groupby == "webapp_income_bins":
+        df = add_income_bins(res, compare_with="webapp",
+                             income_measure=income_measure)
+    else:
+        err = ("groupby must be either 'weighted_deciles' or 'small_income_bins'"
+               "or 'large_income_bins' or 'webapp_income_bins'")
+        raise ValueError(err)
+
+    # manipulates the data
+    pd.options.display.float_format = '{:8,.0f}'.format
+    if result_type == "weighted_sum":
+        df = weighted(df, STATS_COLUMNS)
+        gp_mean = df.groupby('bins', as_index=False)[CORP_TABLE].sum()
+        gp_mean.drop('bins', axis=1, inplace=True)
+        sum_row = get_sums(df)[CORP_TABLE]
+    elif result_type == "weighted_avg":
+        gp_mean = weighted_avg_allcols(df, CORP_TABLE,
+                                       income_measure=income_measure)
+        sum_row = get_sums(df, na=True)[CORP_TABLE]
+    else:
+        err = ("result_type must be either 'weighted_sum' or 'weighted_avg")
+        raise ValueError(err)
+
+    return gp_mean.append(sum_row)
