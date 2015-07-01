@@ -52,7 +52,7 @@ Setup Git
 
 	.. code-block:: python
 
-   		$ source activate tax
+   		$ source activate taxcalc-dev
 ..
 
 
