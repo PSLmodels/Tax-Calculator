@@ -1,4 +1,4 @@
-name: tax
+name: taxcalc-dev
 dependencies:
 - pytest
 - setuptools
