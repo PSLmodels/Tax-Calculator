@@ -13,16 +13,66 @@ def FilingStatus(MARS):
 
     return _sep 
 
-@iterate_jit(parameters=["ALD_StudentLoan_HC", "ALD_SelfEmploymentTax_HC", "ALD_SelfEmp_HealthIns_HC",
-                         "ALD_KEOGH_SEP_HC", "ALD_EarlyWithdraw_HC", "ALD_Alimony_HC"], nopython=True)
+@iterate_jit(nopython=True)
 def Adj(   e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
                 e03270, e03300, e03400, e03500, e03280, e03900, e04000,
                 e03700, e03220, e03230, e03240, e03290, ALD_StudentLoan_HC,
                 ALD_SelfEmploymentTax_HC, ALD_SelfEmp_HealthIns_HC,ALD_KEOGH_SEP_HC,
                 ALD_EarlyWithdraw_HC, ALD_Alimony_HC):
-    # Adjustments
-    _feided = max(e35300_0, e35600_0 + e35910_0)  # Form 2555
+    """
+    
+    Adjustments: Form 1040, Form 2555. Calculates foreign earned income and total adjustments
 
+    Notes
+    -----
+    Taxpayer characteristics:
+        e03210 : Student loan interst deduction
+        
+        e03220 : Education Expense deduction
+        
+        e03150 : Total deduction IRS payments
+        
+        e03230 : Education credit adjustments
+        
+        e03240 : Domestic Production Activity Deduction
+        
+        e03270 : Self employed health insurance deduction
+        
+        e03290 : HSA deduction computer amount
+        
+        e03300 : Payments to a KEOGH plan and SEP deduction
+        
+        e03400 : Forfeited interest penalty early withdraw
+        
+        e03500 : Alimony withdraw
+
+    Tax law parameters:
+        ALD_StudentLoan_HC : Deduction for student loan interest haircut
+        
+        ALD_SelfEmploymentTax_HC : Deduction for self-employment tax haircut
+        
+        ALD_SelfEmp_HealthIns_HC : Deduction for self employed health insurance haircut
+        
+        ALD_KEOGH_SEP_HC : Deduction for payment to either KEOGH or SEP plan haircut
+        
+        ALD_EarlyWithdraw_HC : Deduction for forfeited interest penalty haricut
+        
+        ALD_Alimony_HC : Deduction for alimony payment haircut
+                        
+    
+    Returns
+    -------
+    _feided
+        Foreign earned income deduction
+    c02900
+        total adjustments
+    
+    
+    """
+    # Form 2555: Foreign earned income
+    _feided = max(e35300_0, e35600_0 + e35910_0)  
+
+    # For 1040: adjustments
     c02900 = (e03150 + (1-ALD_StudentLoan_HC)*e03210 + e03600 + (1-ALD_SelfEmploymentTax_HC)*e03260
               + (1-ALD_SelfEmp_HealthIns_HC)*e03270 + (1-ALD_KEOGH_SEP_HC)*e03300
               + (1-ALD_EarlyWithdraw_HC)*e03400 + (1-ALD_Alimony_HC)*e03500
@@ -34,17 +84,24 @@ def Adj(   e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
     return (_feided, c02900)
 
 
-@iterate_jit(parameters=['FEI_ec_c', 'ALD_StudentLoan_HC'], nopython=True)
+@iterate_jit(nopython=True)
 def CapGains(  e23250, e22250, e23660, _sep, _feided, FEI_ec_c, ALD_StudentLoan_HC,
                     f2555, e00200, e00300, e00600, e00700, e00800,
                     e00900, e01100, e01200, e01400, e01700, e02000, e02100,
                     e02300, e02600, e02610, e02800, e02540, e00400, e02400,
                     c02900, e03210, e03230, e03240, e02615):
     # Capital Gains
-
+    
+    # Net capital gain (long term + short term) before exclusion
     c23650 = e23250 + e22250 + e23660
+    
+    # Limitation for capital loss
     c01000 = max(-3000 / _sep, c23650)
+    
+    # Foreign earned income exclusion
     c02700 = min(_feided, FEI_ec_c * f2555)
+    
+    # 
     _ymod1 = (e00200 + e00300 + e00600
             + e00700 + e00800 + e00900
             + c01000 + e01100 + e01200
@@ -58,9 +115,10 @@ def CapGains(  e23250, e22250, e23660, _sep, _feided, FEI_ec_c, ALD_StudentLoan_
     return (c23650, c01000, c02700, _ymod1, _ymod2, _ymod3, _ymod)
 
 
-@iterate_jit(parameters=["SS_thd50", "SS_thd85", "SS_percentage1", "SS_percentage2"], nopython=True)
+@iterate_jit(nopython=True)
 def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, SS_thd50, SS_thd85, SS_percentage1, SS_percentage2):
-
+    
+    
     if SSIND !=0 or MARS == 3 or MARS == 6:
         c02500 = e02500
     elif _ymod < SS_thd50[MARS-1]:
@@ -76,8 +134,8 @@ def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, SS_thd50, SS_thd85, SS_percen
     return (c02500, e02500)
 
 
-@iterate_jit(parameters=["II_em", "II_em_ps", "II_prt"], nopython=True)
-def AGI(   _ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT, 
+@iterate_jit(nopython=True)
+def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT, 
                 II_em, II_em_ps, MARS, _sep, _fixup, II_prt):
 
     # Adjusted Gross Income
@@ -86,7 +144,8 @@ def AGI(   _ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
 
     c00100 = c02650 - c02900
     _agierr = e00100 - c00100  # Adjusted Gross Income
-    
+
+    # want to get rid of this
     if _fixup >= 1:
         c00100 = c00100 + _agierr
 
@@ -105,12 +164,7 @@ def AGI(   _ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
     
     return (c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp, c04600)
 
-@iterate_jit(parameters=["puf", "ID_ps","ID_Medical_frt", "ID_Casualty_frt", 
-                         "ID_Miscellaneous_frt", "ID_Charity_crt_Cash",
-                         "ID_Charity_crt_Asset", "ID_prt", "ID_crt", 
-                         "ID_Charity_frt", "ID_StateLocalTax_HC"], 
-                         nopython=True, puf=True)
-
+@iterate_jit(nopython=True, puf=True)
 def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
                  e20500, e20400, e19200, e20550, e20600, e20950, e19500, 
                  e19570, e19400, e19550, e19800, e20100, e20200, e20900, 
@@ -120,23 +174,82 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
                  ID_Charity_frt, puf):
 
     """
-    WARNING: Any additional keyword args, such as 'puf=True' here, must be 
+    Itemized Deduction; Form 1040, Schedule A
+    
+    Notes
+    -----
+    Tax Law Parameters:
+        ID_ps : Itemized deduction phaseout AGI start (Pease)
+        
+        ID_crt : Itemized deduction maximum phaseout as a percent of total itemized deduction (Pease)
+        
+        ID_prt : Itemized deduction phaseout rate (Pease)
+        
+        ID_Medical_frt : Deduction for medical expenses; floor as a percent of AGI
+        
+        ID_Casualty_frt : Deduction for casualty loss; floor as a percent of AGI
+        
+        ID_Miscellaneous_frt : Deduction for miscellaneous expenses; floor as a percent of AGI
+        
+        ID_Charity_crt_Cash : Deduction for charitable cash contributions; ceiling as a percent of AGI
+        
+        ID_Charity_crt_Asset : Deduction for charitable asset contributions; ceiling as a percent of AGI
+        
+        ID_Charity_frt : Deduction for charitable contributions; floor as a percent of AGI
+    
+    Taxpayer Characteristics:
+        e17500 : Medical expense
+        
+        e18425 : Income taxes
+        
+        e18450 : General Sales Tax
+        
+        e18500 : Real Estate tax
+        
+        e19200 : Total interest deduction
+        
+        e19800 : Cash Contribution
+        
+        e19550 : Qualified Mortgage Insurance Premiums
+        
+        e20100 : Charity non-cash contribution
+        
+        e20400 : Total Miscellaneous expense
+        
+        e20550 : Unreimbursed employee business Expense
+        
+        e20600 : Tax preparation fee
+                
+        
+    Intermediate Variables:
+        _posagi: positive AGI
+    
+    
+    Returns
+    -------    
+    c04470 : Itemized deduction amount
+    
+    
+    Warning
+    -------
+    Any additional keyword args, such as 'puf=True' here, must be 
     passed to the function at the END of the argument list. If you stick the 
     argument somewhere in the middle of the signature, you will get errors.
+
     """
-    # Medical #
+    # Medical
     c17750 = ID_Medical_frt * _posagi
     c17000 = max(0, e17500 - c17750)
 
-    # State and Local Income Tax, or Sales Tax #
+    # State and Local Income Tax, or Sales Tax
     _sit1 = max(e18400, e18425)
     _sit = max(_sit1, 0)
     _statax =  max(_sit, e18450)
 
-    # Other Taxes #
+    # Other Taxes (including state and local)
     c18300 = _statax + e18500 + e18800 + e18900
 
-    # Casulty #
+    # Casulty
     if e20500 > 0:
         c37703 = e20500 + ID_Casualty_frt * _posagi
         c20500 = c37703 - ID_Casualty_frt* _posagi
@@ -144,15 +257,15 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
         c37703 = 0.
         c20500 = 0.
 
-    # Miscellaneous #
+    # Miscellaneous
     c20750 = ID_Miscellaneous_frt * _posagi
     if puf == True:
         c20400 = e20400
     else:
         c20400 = e20550 + e20600 + e20950
     c20800 = max(0, c20400 - c20750)
-
-    # Interest Paid Deductions
+    
+    # Interest paid deduction
     if puf == True:
         c19200 = e19200
     else:
@@ -171,13 +284,16 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     c19700 = max(0, c19700 - charity_floor)
  
 
-    # Gross Itemized Deductions #
+    # Gross Itemized Deductions #   
+
     c21060 = (e20900 + c17000 + (1-ID_StateLocalTax_HC)*c18300 + c19200
            + c19700 + c20500 + c20800 + e21000 + e21010)
 
+    # Limitations on deductions excluding medical, charity etc
     _phase2_i = ID_ps[MARS-1]
 
     _nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
+    _phase2_i = ID_ps[MARS - 1]
     _limitratio = _phase2_i/_sep
 
     if c21060 > _nonlimited and c00100 > _limitratio:
@@ -188,17 +304,16 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
         c21040 = 0.0
 
 
-    if c21060 > _nonlimited and c00100 > _limitratio:
-        c04470 = c21060 - c21040
-    else:
-        c04470 = c21060
+    # Itemized deductions amount after limitation if any
+    c04470 = c21060 - c21040
 
-    c20400 = float(c20400)
+    
 
     # the variables that are casted as floats below can be either floats or 
     # ints depending n which if/else branches they follow in the above code. 
     # they need to always be the same type
-
+    
+    c20400 = float(c20400)
     c20400 = float(c20400)
     c19200 = float(c19200)
     c37703 = float(c37703)
@@ -208,8 +323,7 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
                 c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
                 _nonlimited, _limitratio, c04470, c21040)
 
-@iterate_jit(parameters=["SS_Earnings_c", "FICA_ss_trt", "FICA_mc_trt"], 
-    nopython=True)
+@iterate_jit(nopython=True)
 def EI_FICA(   e00900, e02100, SS_Earnings_c, e00200,
                     e11055, e00250, e30100, FICA_ss_trt, FICA_mc_trt):
     # Earned Income and FICA #
@@ -235,18 +349,43 @@ def EI_FICA(   e00900, e02100, SS_Earnings_c, e00200,
 
     return (_sey, _fica, _setax, _seyoff, c11055, _earned)
 
-@iterate_jit(parameters=["AMED_thd", "AMED_trt", "FICA_ss_trt", 
-                         "FICA_mc_trt"], nopython=True)
+@iterate_jit(nopython=True)
 def AMED(e00200, MARS, AMED_thd, _sey, AMED_trt, FICA_mc_trt, FICA_ss_trt):
+    """
+    Additional Medicare Tax as a part of FICA
+    
+    
+    Notes
+    -----
+    Tax Law Parameters:    
+        AMED_thd : Additional medicare threshold
+        
+        AMED_trt : Additional medicare tax rate
+        
+        FICA_ss_trt : FICA social security tax rate
+        
+        FICA_mc_trt : FICA medicare tax rate
+    
+    Taxpayer Charateristics:     
+        e00200 : Total wages and salaries
+        
+        _sey : Business and Farm net income/loss
+    
+    Returns
+    -------
+    _amed : Additional medicare tax amount
+    
+    
+    """
+    
+    # ratio of income subject to AMED tax = (1 - 0.5 * (FICA_mc_trt+FICA_ss_trt)
     _amed = AMED_trt * max(0, e00200 
                 + max(0, _sey) * (1 - 0.5 * (FICA_mc_trt+FICA_ss_trt))
                 - AMED_thd[MARS-1]) 
 
     return _amed
 
-@iterate_jit(parameters=["puf", "STD", "STD_Aged", "II_rt1", "II_rt2", "II_rt3", "II_rt4", 
-             "II_rt5", "II_rt6", "II_rt7", "II_brk1", "II_brk2", "II_brk3", "II_brk4", "II_brk5", 
-            "II_brk6"], nopython=True, puf=True)
+@iterate_jit(nopython=True, puf=True)
 def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
             MARS, MIDR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200, e02400, STD_Aged,
             c04470, c00100, c21060, c21040, e37717, c04600, e04805, t04470, 
@@ -254,31 +393,96 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
             II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, _fixup, 
             _compitem, _txpyers, _numextra,  puf):
 
+    """
+    
+    Standard Deduction; Form 1040
+    
+    
+    This function calculates standard deduction, including standard deduction for dependents, aged and bind.
+    
+    Notes
+    -----
+    Tax Law Parameters:
+        STD : Standard deduction amount, filing status dependent
+        
+        STD_Aged : Additional standard deduction for blind and aged
+        
+        II_brk* : Personal income tax bracket upper thresholds: range 1-6
+        
+        II_rt* : Personal income tax rates: range 1-7, respectively for lowest income bracket to the highest
+    
+    
+    Taxpayer Characteristics:
+        _earned : (F2441) Earned income amount
+        
+        e02400 : Gross social Security Benefit
+        
+        e60000 : AMT taxable income
+        
+        DSI : Dependent Status Indicator:
+            0 - not being claimed as a dependent
+            1 - claimed as a dependent
+        
+        MIDR : Married filing separately itemized deductions requirement indicator:
+            0 - not necessary to itemize because of filing status
+            1 - necessary to itemize when filing separately
+        
+        FDED : Form of deduction
+            0 - itemized deductions
+            1 - standard deduction
+            2 - taxpayer did not use itemized or standard deduction
+            
+    Intermediate Variable: 
+        c00100 : AGI
+        
+        c04470 : Itemized deduction amount: set to zero if not itemizer
+        
+        c04800 : Taxable Income. 
+        
+        _taxinc : Taxable income less limited exemptions
+        
+
+
+        
+    Returns
+    -------
+    _standard
+        Standard deduction amount for each taxpayer who files standard deduction.
+        Otherwise value is zero.
+                
+    
+    """
+    
+    
+    # Calculate deduction for dependents
     if DSI == 1:
         c15100 = max(350 + _earned, STD[6])
     else:
         c15100 = 0.
-
+    
+    # Apply regular standard deductions if not dependents or compulsory itemizers
     if (DSI == 1):
         c04100 = min( STD[MARS-1], c15100)
     elif _compitem == 1 or (3 <= MARS and MARS <=6 and MIDR == 1):
         c04100 = 0.
     else:
         c04100 = STD[MARS - 1]
-
+    
+    # Add motor vehicle tax to standard deduction
     c04100 = c04100 + e15360
-
+    
+    # ??
     if f6251 == 0 and e04470 == 0:
         x04500 = e00100 - e60000
         c04500 = c00100 - x04500
     else:
         x04500 = 0.
-
+    
+    # Calculate the extra deduction for aged and blind
     if puf:
         _numextra = _numextra
     else:
         _numextra = float(AGEP + AGES + PBI + SBI)
-
 
     if _exact == 1 and MARS == 3 or MARS == 5:
         c04200 = e04200
@@ -286,14 +490,19 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
         c04200 = _numextra * STD_Aged[MARS-1]
 
     c15200 = c04200
-
+    
+    
+    # Compute the total standard deduction
     if (MARS == 3 or MARS == 6) and (MIDR==1):
         _standard = 0.
     else:
         _standard = c04100 + c04200
 
+    # ???
     if FDED == 1:
         _othded = e04470 - c04470
+
+        #get rid of the fixup code
         if _fixup>=2:
             c04470 = c04470 + _othded;
             c04100 = 0.
@@ -346,8 +555,7 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
                  c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei, _compitem)
 
 
-@iterate_jit(parameters=["II_rt1", "II_rt2", "II_rt3", "II_rt4", "II_rt5", "II_rt6", "II_rt7",
-             "II_brk1", "II_brk2", "II_brk3", "II_brk4", "II_brk5", "II_brk6"],nopython=True)
+@iterate_jit(nopython=True)
 def XYZD(_taxinc, c04800, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
          II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
 
@@ -366,11 +574,7 @@ def NonGain(c23650, e23250, e01100):
     return (_cglong, _noncg)
 
 
-
-@iterate_jit(parameters=[ "II_rt1", "II_rt2", "II_rt3", "II_rt4", "II_rt5", "II_rt6", "II_rt7", 
-             "II_brk1", "II_brk2", "II_brk3", "II_brk4", "II_brk5", "II_brk6",
-             "CG_rt1", "CG_rt2", "CG_rt3", "CG_thd1", "CG_thd2"], nopython=True)
-
+@iterate_jit(nopython=True)
 def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990, 
                   e58980, e24515, e24518, MARS, _taxinc, _xyztax, _feided, 
                   _feitax, _cmp, e59410, e59420, e59440, e59470, e59400, 
@@ -386,7 +590,7 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
     else:
         _hasgain = 0.
 
-    if _taxinc > 0. and _hasgain == 1.:
+    if _hasgain == 1.:
         #if/else 1
         _dwks5 = max(0., e58990 - e58980)
         c24505 = max(0., c00650 - _dwks5)
@@ -592,29 +796,23 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 # TODO should we be returning c00650 instead of e00650??? Would need to change tests
 
 
-@iterate_jit(parameters=["AMT_tthd", "II_brk6", "II_brk2", "AMT_Child_em", 
-                         "AMT_CG_rt1", "AMT_CG_rt2", "AMT_CG_rt3","AMT_CG_thd1",
-                         "AMT_em_ps", "AMT_em_pe", "AMT_CG_thd2",
-                         "KT_c_Age", "AMT_thd_MarriedS", "AMT_em", "AMT_prt",
-                         "AMT_trt1", "AMT_trt2", "ID_StateLocalTax_HC", 
-                         "puf"],
-             nopython=True, puf=True)
-def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
-                e60300, e60860, e60100, e60840, e60630, e60550,
-                e60720, e60430, e60500, e60340, e60680, e60600, e60405,
-                e60440, e60420, e60410, e61400, e60660, e60480,
-                e62000,  e60250, _cmp, _standard,  e04470, e17500, 
-                f6251,  e62100, e21040, _sit, e20800, c00100, 
-                c04470, c17000, e18500, c20800, c21040,   
-                DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700, 
-                e00100,  e24515, x62730, x60130, 
-                x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
-                II_brk6, MARS, _sep, II_brk2, AMT_Child_em, AMT_CG_rt1,
-                AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516, 
-                c24520, c04800, e10105, c05700, e05800, e05100, e09600, 
-                KT_c_Age, x62740, e62900, AMT_thd_MarriedS, _earned, e62600, 
-                AMT_em, AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer, 
-                _cmbtp_standard, ID_StateLocalTax_HC, puf):
+@iterate_jit(nopython=True, puf=True)
+def AMTI(   c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
+            e60300, e60860, e60100, e60840, e60630, e60550,
+            e60720, e60430, e60500, e60340, e60680, e60600, e60405,
+            e60440, e60420, e60410, e61400, e60660, e60480,
+            e62000,  e60250, _cmp, _standard,  e04470, e17500, 
+            f6251,  e62100, e21040, _sit, e20800, c00100, 
+            c04470, c17000, e18500, c20800, c21040,   
+            DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700, 
+            e00100,  e24515, x62730, x60130, 
+            x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
+            II_brk6, MARS, _sep, II_brk2, AMT_Child_em, AMT_CG_rt1,
+            AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516, 
+            c24520, c04800, e10105, c05700, e05800, e05100, e09600, 
+            KT_c_Age, x62740, e62900, AMT_thd_MarriedS, _earned, e62600, 
+            AMT_em, AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer, 
+            _cmbtp_standard, ID_StateLocalTax_HC, puf):
 
     c62720 = c24517 + x62720
     c60260 = e00700 + x60260
@@ -729,17 +927,17 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     if f6251 != 0:
         c62900 = float(e62900)
-    else: 
+    else:
         c62900 = float(e07300)
-    
+
     c63000 = c62780 - c62900
 
     if c24516 == 0:
         c62740 = c62720 + c62730
     else: 
         c62740 = min(max(0., c24516 + x62740), c62720 + c62730)
-    
-    
+
+
     _ngamty = max(0., _alminc - c62740)
 
     c62745 = 0.26 * _ngamty + 0.02 * \
@@ -809,7 +1007,7 @@ def AMTI(       c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
               _amt25pc, c62747, c62755, c62770, _amt, c62800,
               c09600, _othtax, c05800, _cmbtp)  
 
-@iterate_jit(parameters=["NIIT_thd", "NIIT_trt"], nopython=True)
+@iterate_jit(nopython=True)
 def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt, NIIT):
     # Additional Medicare tax on unearned Income
     if c00100 > NIIT_thd[MARS - 1]:
@@ -818,7 +1016,7 @@ def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt, NIIT):
     else: NIIT = 0
     return NIIT
 
-@iterate_jit(parameters=["DCC_c", "puf"], nopython=True, puf=True)
+@iterate_jit(nopython=True, puf=True)
 def F2441(_earned, _fixeic, e59560, MARS, f2441, DCC_c,
                e32800, e32750 , e32775, CDOB1, CDOB2, e32890, e32880, FLPDYR, puf):
 
@@ -898,7 +1096,7 @@ def DepCareBen(c32800, _cmp, MARS, c32880, c32890, e33420, e33430, e33450,
 
 
 
-@iterate_jit(parameters=["CDCC_crt", "CDCC_ps"], nopython=True)
+@iterate_jit(nopython=True)
 def ExpEarnedInc(  _exact, c00100, CDCC_ps, CDCC_crt,
                         c33000, c05800, e07300, e07180):
     # Expenses limited to earned income
@@ -940,6 +1138,7 @@ def RateRed(c05800, _fixup, _othtax, _exact, x59560, _earned):
     c07970 = 0.
 
 
+    # want to get rid of this
     if _fixup >= 3:
         c05800 = c05800 + _othtax
 
@@ -951,8 +1150,7 @@ def RateRed(c05800, _fixup, _othtax, _exact, x59560, _earned):
     return c07970, c05800, c59560
 
 
-@iterate_jit(parameters=["EITC_ps_MarriedJ", "EITC_rt", "EITC_c", "EITC_prt", "EITC_InvestIncome_c", 
-                         "EITC_ps", "puf"], nopython=True, puf=True)
+@iterate_jit(nopython=True, puf=True)
 def NumDep(EICYB1, EICYB2, EICYB3,
                 EIC, c00100, e00400, MARS, 
                 EITC_ps, EITC_ps_MarriedJ, EITC_rt, c59560, EITC_c,
@@ -1030,7 +1228,7 @@ def NumDep(EICYB1, EICYB2, EICYB3,
                _val_ymax, _preeitc, _val_rtbase, _val_rtless, _dy)
 
 
-@iterate_jit(parameters=["CTC_ps", "CTC_c", "CTC_prt"], nopython=True)
+@iterate_jit(nopython=True)
 def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact, 
                         c11070, c07220, c07230, _num, _precrd, _nctcr, CTC_prt):
 
@@ -1064,8 +1262,14 @@ def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
 
 @iterate_jit(nopython=True)
 def AmOppCr(_cmp, e87482, e87487, e87492, e87497):
-    # American Opportunity Credit 2009+
-
+    """American Opportunity Credit 2009+; Form 8863"""
+    
+    """
+    This function calculates American Opportunity Credit for up to four eligible students
+    
+    """
+    
+    # Expense should not exceed the cap of $4000.
     if _cmp == 1:
 
         c87482 = max(0., min(e87482, 4000.))
@@ -1075,6 +1279,7 @@ def AmOppCr(_cmp, e87482, e87487, e87492, e87497):
     else: 
         c87482, c87487, c87492, c87497 = 0.,0.,0.,0.
 
+    # Credit calculated as 100% of the first $2000 expense plus 25% of amount exceeding $2000.
     if max(0, c87482 - 2000) == 0:
         c87483 = c87482
     else: 
@@ -1095,7 +1300,7 @@ def AmOppCr(_cmp, e87482, e87487, e87492, e87497):
     else: 
         c87498 = 2000 + 0.25 * max(0, c87497 - 2000)
 
-
+    # Sum of credits of all four students.
     c87521 = c87483 + c87488 + c87493 + c87498
 
     return (c87482, c87487, c87492, c87497,
@@ -1103,10 +1308,32 @@ def AmOppCr(_cmp, e87482, e87487, e87492, e87497):
 
 
 
-@iterate_jit(parameters=['LLC_Expense_c', 'puf'], nopython=True, puf=True)
+@iterate_jit(nopython=True, puf=True)
 def LLC(e87530, LLC_Expense_c, e87526, e87522, e87524, e87528, c87540, c87550, puf):
 
-    # Lifetime Learning Credit
+    """
+    
+    Notes
+    -----
+    Lifetime Learning Credit; Form 8863
+    
+    Tax Law Parameters:
+    
+        LLC_Expense_c : Lifetime Learning Credit expense limit
+        
+        0.2 : Lifetime Learning Credit ratio against expense: TODO NEED TO PARAMETERIZE
+    
+    Taxpayer Charateristics:
+    
+        e87530 : Total expense
+    
+    
+    Returns:
+    --------
+    c87550
+        Nonrefundable Education Credit 
+    
+    """
 
 
     if puf == True:
@@ -1122,11 +1349,42 @@ def LLC(e87530, LLC_Expense_c, e87526, e87522, e87524, e87528, c87540, c87550, p
     return (c87540, c87550, c87530)
 
 
-
 @iterate_jit(nopython=True)
 def RefAmOpp(_cmp, c87521, _num, c00100, EDCRAGE, c87668):
-    # Refundable American Opportunity Credit 2009+
+    """
 
+    Refundable American Opportunity Credit 2009+; Form 8863    
+    
+    This function checks the previously calculated American Opportunity credit with the phaseout range and then apply the 0.4 refundable rate
+    
+    Notes
+    -----    
+    Tax Law Parameters:
+    
+        90000 : American Opportunity Credit phaseout income base: TODO NEED TO PARAMETERIZE
+        
+        10000 : American Opportunity Credit phaseout income range length: TODO NEED TO PARAMETERIZE
+        
+        1/1000 : American Opportunity Credit phaseout rate
+    
+    Intermediate Variables:
+    
+        c87521 : American Opportunity Credit
+        
+        _num : filing status, number of people filing jointly
+        
+        EDCRAGE : Education credit age from CPS: NEED TO BE CONFIRMED!!!!!!
+        
+        c87668 : nonrefundable Education Credit
+            
+    
+    Returns
+    -------
+        c87666 : Refundable part of American Opportunity Credit
+        
+    """
+    
+    # Phase out the credit for income range [80k,90k].
     if _cmp == 1 and c87521 > 0: 
         c87654 = 90000 * _num 
         c87656 = c00100
@@ -1134,12 +1392,13 @@ def RefAmOpp(_cmp, c87521, _num, c00100, EDCRAGE, c87668):
         c87660 = 10000 * _num
         c87662 = 1000 * np.minimum(1., c87658 / c87660)
         c87664 = c87662 * c87521 / 1000.0
-    else: 
+    else:
         c87654, c87656, c87658, c87660, c87662, c87664 = 0., 0., 0., 0., 0., 0.
-
+    
+    # Up to 40% of American Opportunity credit is Refundable.
     if _cmp == 1 and c87521 > 0 and EDCRAGE == 1: 
         c87666 = 0.
-    else: 
+    else:
         c87666 = 0.4 * c87664
 
     if c87521 > 0 and _cmp == 1:
@@ -1153,8 +1412,7 @@ def RefAmOpp(_cmp, c87521, _num, c00100, EDCRAGE, c87668):
                c87664, c87666, c10960, c87668, c87681)
 
 
-
-@iterate_jit(parameters=["ETC_pe_Married", "ETC_pe_Single"], nopython=True)
+@iterate_jit(nopython=True)
 def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num,
     c07180, e07200, c07230, e07240, e07960, e07260, e07300,
     e07700, e07250, t07950, c05800, _precrd, ETC_pe_Single, _xlin3, _xlin6, c87668, c87620):
@@ -1198,20 +1456,19 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num,
 
     c07220 = min(_precrd, max(0., _ctctax))
     # lt tax owed
-    
-    return (c87560, c87570, c87580, c87590, c87600, c87610,
-               c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220, c07230)
 
-@iterate_jit(parameters=['ACTC_rt', 'SS_Earnings_c', 'ACTC_Income_thd', 'puf', 'ACTC_ChildNum',
-                         'ALD_SelfEmploymentTax_HC'],
-                        nopython=True, puf=True)
-def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax, 
-                _exact, e82880, ACTC_Income_thd, ACTC_rt, SS_Earnings_c, ALD_SelfEmploymentTax_HC,
-                e03260, e09800, c59660, e11200, e59680, e59700, e59720,
-                _fixup, e11070, e82915, e82940, c82940, ACTC_ChildNum, puf):
+    return (c87560, c87570, c87580, c87590, c87600, c87610,
+            c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220, c07230)
+
+
+@iterate_jit(nopython=True, puf=True)
+def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
+           _exact, e82880, ACTC_Income_thd, ACTC_rt, SS_Earnings_c,
+           ALD_SelfEmploymentTax_HC, e03260, e09800, c59660, e11200, e59680,
+           e59700, e59720, _fixup, e11070, e82915, e82940, c82940,
+           ACTC_ChildNum, puf):
 
     # Additional Child Tax Credit
-
 
     c82940 = 0.
 
@@ -1225,9 +1482,8 @@ def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
 
         # CTC not applied to tax
 
-
         c82880 = max(0., e00200 + e82882 + e30100
-                        + max(0., _sey) - 0.5 * _setax)
+                     + max(0., _sey) - 0.5 * _setax)
         if _exact == 1:
             c82880 = e82880
 
@@ -1239,25 +1495,23 @@ def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
         c82890 = ACTC_rt * c82885
 
     else:
-        c82925, c82930, c82935, c82880, h82880, c82885, c82890 = (0.,0., 0.,
-            0., 0., 0., 0.)
+        c82925, c82930, c82935, c82880, h82880, c82885, c82890 = (0., 0., 0.,
+                                                              0., 0., 0., 0.)
 
     # Part II of 2005 form 8812
 
     if _nctcr >= ACTC_ChildNum and c82890 < c82935:
         c82900 = 0.0765 * min(SS_Earnings_c, c82880)
 
-
         c82905 = float((1-ALD_SelfEmploymentTax_HC)*e03260 + e09800)
 
         c82910 = c82900 + c82905
-        
+
         c82915 = c59660 + e11200
 
 
         c82920 = max(0., c82910 - c82915)
         c82937 = max(c82890, c82920)
-
 
     else:
 
@@ -1279,7 +1533,7 @@ def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
 
     #    c11070 = 0.
 
-                #WHY ARE WE SETTING AN 'E' VALUE HERE?     
+                #WHY ARE WE SETTING AN 'E' VALUE HERE?
     if puf == True and _nctcr > 0:
         e59660 = float(e59680 + e59700 + e59720)
     else:
@@ -1291,57 +1545,57 @@ def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
     else:
         _othadd = 0.
 
-
+        # get rid of the fixup code
     if e82915 > 0 and abs(e82940 - c82940) > 100 and _fixup >= 4:
         c11070 = c11070 + _othadd
 
-
-    return ( c82925, c82930, c82935, c82880, h82880, c82885, c82890,
+    return (c82925, c82930, c82935, c82880, h82880, c82885, c82890,
             c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070,
             e59660, _othadd)
 
+
 def F5405(pm, rc):
     # Form 5405 First-Time Homebuyer Credit
-    #not needed
+    # not needed
 
     c64450 = np.zeros((rc.dim,))
     return DataFrame(data=np.column_stack((c64450,)), columns=['c64450'])
 
 
-@iterate_jit(parameters=['puf'], nopython=True, puf=True)
-def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
-                e07600, e07260, c07970, e07300, x07400, e09720,
-                e07500, e07700, e08000, e07240, e08001, e07960, e07970,
-                SOIYR, e07980, c05800, e08800, e09900, e09400, e09800, 
-                e10000, e10100, e09700, e10050, e10075, e09805, e09710,
-                c59660, c07180, _eitc, c59680, NIIT,_amed, puf ):
+@iterate_jit(nopython=True, puf=True)
+def C1040(e07400, e07180, e07200, c07220, c07230, e07250,
+          e07600, e07260, c07970, e07300, x07400, e09720,
+          e07500, e07700, e08000, e07240, e08001, e07960, e07970,
+          SOIYR, e07980, c05800, e08800, e09900, e09400, e09800,
+          e10000, e10100, e09700, e10050, e10075, e09805, e09710,
+          c59660, c07180, _eitc, c59680, NIIT, _amed, puf):
 
     # Allocate credits to tax in order on the tax form
     _avail = c05800
-    c07180 = min(c07180,_avail)
+    c07180 = min(c07180, _avail)
     _avail = _avail - c07180
-    _avail = max(0,_avail - e07200)
-    c07300 = min(e07300,_avail)
+    _avail = max(0, _avail - e07200)
+    c07300 = min(e07300, _avail)
     _avail = _avail - c07300
-    c07230 = min(c07230,_avail)
+    c07230 = min(c07230, _avail)
     _avail = _avail - c07230
-    c07240 = min(e07240,_avail)
+    c07240 = min(e07240, _avail)
     _avail = _avail - c07240
-    c07220 = min(c07220,_avail)
+    c07220 = min(c07220, _avail)
     _avail = _avail - c07220
-    c07600 = min(e07600,_avail)
+    c07600 = min(e07600, _avail)
     _avail = _avail - c07600
-    c07260 = min(e07260,_avail)
-    _avail = _avail-c07260
+    c07260 = min(e07260, _avail)
+    _avail = _avail - c07260
 
-    c59680 = min(_eitc,_avail)
+    c59680 = min(_eitc, _avail)
 
     # Credits 1040 line 48
 
     x07400 = e07400
 
     c07100 = (e07180 + e07200 + e07600 + c07300 + x07400
-               + e07980 + c07220 + e07500 + e08000)
+              + e07980 + c07220 + e07500 + e08000)
 
     y07100 = c07100
 
@@ -1352,50 +1606,47 @@ def C1040( e07400, e07180, e07200, c07220, c07230, e07250,
 
     # Tax After credits 1040 line 52
 
-    c08795 = max(0., c05800 - c07100) #SAS @1277
-    
+    c08795 = max(0., c05800 - c07100)  # SAS @1277
+
 #    c08800 = c08795
 
-    if puf == True:
-
+    if puf:
         e08795 = float(e08800)
     else:
         e08795 = 0.
 
     # Tax before refundable credits
     _othertax = e09900 + e09400 + e09800 + e10100 + NIIT + _amed
-    c09200 = _othertax + c08795 + e10000 
+    c09200 = _othertax + c08795 + e10000
 
-    #assuming year (FLPDYR) > 2009
+    # assuming year (FLPDYR) > 2009
     c09200 = c09200 + e09700 + e10050 + e10075 + e09805 + e09710 + e09720
 
     return (c07100, y07100, x07100, c08795, e08795, c09200, _eitc, _othertax)
 
 
-
 @iterate_jit(nopython=True)
 def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _othertax):
-
 
     # Decomposition of EITC
 
     if c08795 > 0 and c59660 > 0 and c08795 <= c59660:
-       c59680 = c08795
+        c59680 = c08795
 
-       _comb = c59660 - c59680
+        _comb = c59660 - c59680
 
-    else:   
+    else:
 
         c59680 = 0.
         _comb = 0.
 
-    if c08795 > 0 and c59660 > 0 and c08795 > c59660: 
+    if c08795 > 0 and c59660 > 0 and c08795 > c59660:
         c59680 = c59660
-    
+
     c07150 = c07100 + c59680
     c07150 = min(c07150, c05800)
     c08800 = c05800 - c07150
-    
+
     c59700 = min(_othertax, c59680)
     c59720 = c59680 - c59700
 
@@ -1415,37 +1666,33 @@ def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _othertax):
     return (c59680, c59700, c59720, _comb, c07150, c10950, c08800)
 
 
-
 @iterate_jit(nopython=True)
-def OSPC_TAX( c09200, c59660, c11070, c10960, c11600, c10950 , _eitc, e11580,
-              e11450, e11500, e82040, e09900, e11400, e11300, e11200, e11100,
-              e11550, e09710, e09720):
+def OSPC_TAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
+             e11450, e11500, e82040, e09900, e11400, e11300, e11200, e11100,
+             e11550, e09710, e09720):
 
     _refund = (c59660 + c11070 + c11600 + c10960 + c10950 + e11580 + e11450 +
                e11500)
-    
+
     _ospctax = c09200 - _refund - e82040
-    
-    _payments = e09900 + e11500 + e11400 + e11300 + e11200 + e11100 + e11550 + e11450
+
+    _payments = (e09900 + e11500 + e11400 + e11300 + e11200 + e11100 + e11550
+                 + e11450)
 
     c10300 = max(0, _ospctax-e09710-e09720-_payments)
 
 
     # Ignore refundable partof _eitc
-    #TODO Remove this _eitc
-    #if c09200 <= _eitc:
+    # TODO Remove this _eitc
+    # if c09200 <= _eitc:
     _eitc = c59660
-
 
     return (c10300, _eitc, _refund, _ospctax)
 
 
-
-
 @jit(nopython=True)
-def Taxer_i(inc_in, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
-            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
-   
+def Taxer_i(inc_in, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6,
+            II_rt7, II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
 
     _a6 = inc_in
 
@@ -1458,3 +1705,23 @@ def Taxer_i(inc_in, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7
                + II_rt7 * max(0., _a6 - II_brk6[MARS - 1]))
 
     return inc_out
+
+
+@iterate_jit(nopython=True, parameters=['FICA_ss_trt', 'SS_Earnings_c', 
+                                        'FICA_mc_trt'])
+def ExpandIncome(FICA_ss_trt, SS_Earnings_c, e00200, FICA_mc_trt, e02400, 
+                c02500,  c00100, e00400):
+
+    employer_share_fica = (max(0, FICA_ss_trt * min(SS_Earnings_c, e00200) 
+                        + FICA_mc_trt * e00200))
+
+    non_taxable_ss_benefits = (e02400 - c02500)
+
+    _expanded_income = (c00100 # AGI
+                     + e00400 # Non-taxable interest
+                     + non_taxable_ss_benefits
+                     + employer_share_fica)
+     
+
+    return (_expanded_income)
+
