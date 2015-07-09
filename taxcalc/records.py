@@ -325,7 +325,7 @@ class Records(object):
         BF.ASCHEL = BF.ASCHEL / BF.APOPN
         BF.ACGNS = BF.ACGNS / BF.APOPN
         BF.ABOOK = BF.ABOOK / BF.APOPN
-        BF.ASOCSEC = BF.ASOCSEC / BF.APOPN
+        BF.ASOCSEC = BF.ASOCSEC / BF.APOPSNR
 
         BF = 1 + BF.pct_change()
 
