@@ -605,11 +605,13 @@ def AMTI(   c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     c60200 = min(c17000, AMT_prt * _posagi)
     c60240 = (1-ID_StateLocalTax_HC)*c18300 + x60240
     c60220 = c20800 + x60220
-    c60130 = c21040 + x60130  # not calculated right!!
-    # c60130 should check if c00100 is over a certain amt (based on filing status)
-    # if over this certain amount, then it should be - (e18300)
-    # else: 0
-    c62730 = e24515 + x62730 
+
+    if c00100 >  ID_ps[MARS-1]:
+        c60130 = -(e18300)
+    else:
+        c60130 = 0
+
+    c62730 = e24515 + x62730
 
     _amtded = c60200 + c60220 + c60240
     #if c60000 <= 0:
