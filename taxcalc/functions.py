@@ -606,10 +606,19 @@ def AMTI(   c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     c60240 = (1-ID_StateLocalTax_HC)*c18300 + x60240
     c60220 = c20800 + x60220
 
-    if c00100 >  ID_ps[MARS-1]:
-        c60130 = -(e18300)
+    c60130 = 0.
+    check_agi = 0.
+    if MARS == 1:
+        check_agi = 254200.
+    elif MARS == 2:
+        check_agi = 305050.
+    elif MARS == 3:
+        check_agi = 152525.
     else:
-        c60130 = 0
+        check_agi = 279650.
+
+    if c00100 > check_agi:
+        c60130 = -(c18300)
 
     c62730 = e24515 + x62730
 
