@@ -243,11 +243,7 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     # Other Taxes (including state and local)
     c18300 = _statax + e18500 + e18800 + e18900
 
-<<<<<<< HEAD
     # Casualty #
-=======
-    # Casulty
->>>>>>> 3a8bccff771b628ba87cd126044aab7d9e48cc44
     if e20500 > 0:
         c37703 = e20500 + ID_Casualty_frt * _posagi
         c20500 = c37703 - ID_Casualty_frt * _posagi  # why not just set to e20500?
