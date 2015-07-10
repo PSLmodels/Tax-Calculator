@@ -84,6 +84,22 @@ Setup Git
 
 11. To check that everything is working properly, navigate to tax-calculator/ and run the following at the command line.
 
+	.. code-block:: python
+
+   		$ cd Tax-Calculator; conda env create
+..
+
+
+10. This will create a conda environment called "tax". Activate the environment:
+
+	.. code-block:: python
+
+   		$ source activate taxcalc-dev
+..
+
+
+11. To check that everything is working properly, navigate to tax-calculator/ and run the following at the command line.
+
    .. code-block:: python
 
       tax-calculator$ cd taxcalc

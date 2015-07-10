@@ -1,0 +1,12 @@
+name: taxcalc-dev
+dependencies:
+- pytest
+- setuptools
+- python
+- numpy
+- pandas <=0.16.1
+- numba
+- toolz
+- six
+- ipython
+- ipython-notebook
