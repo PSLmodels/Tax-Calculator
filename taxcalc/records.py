@@ -7,8 +7,15 @@ import pandas as pd
 import numpy as np
 import os.path
 import os
+import json
 from numba import vectorize, float64
 from pkg_resources import resource_stream, Requirement
+
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+WEIGHTS_FILENAME = "WEIGHTS.csv"
+weights_path = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
+BLOWUP_FACTORS_FILENAME = "StageIFactors.csv"
+blowup_factors_path = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
 
 
 class Records(object):
@@ -25,30 +32,176 @@ class Records(object):
     constructor.
     Advancing years is done through a member function
     """
-    CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-    WEIGHTS_FILENAME = "WEIGHTS.csv"
-    weights_path = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
-    BLOWUP_FACTORS_FILENAME = "StageIFactors.csv"
-    blowup_factors_path = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
 
     @classmethod
     def from_file(cls, path, **kwargs):
         return cls(path, **kwargs)
 
-    def __init__(self,
-                 data="puf.csv",
-                 blowup_factors=blowup_factors_path,
-                 weights=weights_path,
-                 start_year=None,
+    def __init__(self, data=None, blowup_factors=blowup_factors_path,
+                 weights=weights_path, start_year=None, dims=None,
                  **kwargs):
 
-        self.read(data)
-        self.read_blowup(blowup_factors)
-        self.read_weights(weights)
+        self.BF = read_blowup(blowup_factors)
+        self.WT = read_weights(weights)
+
+        attr = ['AGIR1', 'DSI', 'EFI', 'EIC', 'ELECT', 'e04600',
+                'FDED', 'FLPDYR', 'FLPDMO', 'f2441', 'e04250',
+                'f3800', 'f6251', 'f8582', 'f8606', 'IE',
+                'MARS', 'MIDR', 'n20', 'n24', 'n25', 'PREP',
+                'SCHB', 'SCHCF', 'SCHE', 'STATE', 'TFORM',
+                'TXST', 'XFPT', 'XFST', 'XOCAH', 'XOCAWH',
+                'XOODEP', 'XOPAR', 'XTOT', 'e00200', 'e00300',
+                'e00400', 'e00600', 'e00650', 'e00700', 'e00800',
+                'e00900', 'e01000', 'e01100', 'e01200', 'e01400',
+                'e01500', 'e01700', 'e02000', 'e02100', 'e02300',
+                'e02400', 'e02500', 'e03150', 'e03210', 'e03220',
+                'e03230', 'e03260', 'e03270', 'e03240', 'e03290',
+                'e03300', 'e03400', 'e03500', 'e00100', 'p04470',
+                'e04800', 'e05100', 'e05200', 'e05800', 'e06000',
+                'e06200', 'e06300', 'e09600', 'e07180', 'e07200',
+                'e07220', 'e07230', 'e07240', 'e07260', 'e07300',
+                'e07400', 'e07600', 'p08000', 'e07150', 'e06500',
+                'e08800', 'e09400', 'e09700', 'e09800', 'e09900',
+                'e10300', 'e10700', 'e10900', 'e59560', 'e59680',
+                'e59700', 'e59720', 'e11550', 'e11070', 'e11100',
+                'e11200', 'e11300', 'e11400', 'e11570', 'e11580',
+                'e11581', 'e11582', 'e11583', 'e10605', 'e11900',
+                'e12000', 'e12200', 'e17500', 'e18425', 'e18450',
+                'e18500', 'e19200', 'e19550', 'e19800', 'e20100',
+                'e19700', 'e20550', 'e20600', 'e20400', 'e20800',
+                'e20500', 'e21040', 'p22250', 'e22320', 'e22370',
+                'p23250', 'e24515', 'e24516', 'e24518', 'e24535',
+                'e24560', 'e24598', 'e24615', 'e24570', 'e25820',
+                'p25350', 'e25370', 'e25380', 'p25470', 'p25700',
+                'e25850', 'e25860', 'e25940', 'e25980', 'e25980',
+                'e25920', 'e25960', 'e26110', 'e26170', 'e26190',
+                'e26160', 'e26180', 'e26270', 'e26100', 'e26390',
+                'e26400', 'e27200', 'e30400', 'e30500', 'e32800',
+                'e33000', 'e53240', 'e53280', 'e53410', 'e53300',
+                'e53317', 'e53458', 'e58950', 'e58990', 'p60100',
+                'p61850', 'e60000', 'e62100', 'e62900', 'e62720',
+                'e62730', 'e62740', 'p65300', 'p65400', 'e68000',
+                'e82200', 't27800', 's27860', 'p27895', 'e87500',
+                'e87510', 'e87520', 'e87530', 'e87540', 'e87550',
+                'RECID', 's006', 's008', 's009', 'WSAMP', 'TXRT']
+
+        zero = ['e35300_0', 'e35600_0', 'e35910_0', 'x03150', 'e03600',
+                'e03280', 'e03900', 'e04000', 'e03700', 'c23250',
+                'e23660', 'f2555', 'e02800', 'e02610', 'e02540',
+                'e02615', 'SSIND', 'e18400', 'e18800', 'e18900',
+                'e20950', 'e19500', 'e19570', 'e19400', 'c20400',
+                'e20200', 'e20900', 'e21000', 'e21010', 'e02600',
+                '_exact', 'e11055', 'e00250', 'e30100', 'e15360',
+                'e04200', 'e37717', 'e04805', 'AGEP', 'AGES', 'PBI',
+                'SBI', 't04470', 'e58980', 'c00650', 'c00100',
+                'c04470', 'c04600', 'c21060', 'c21040', 'c17000',
+                'c18300', 'c20800', 'c02900', 'c02700', 'c23650',
+                'c01000', 'c02500', 'e24583', '_fixup', '_cmp',
+                'e59440', 'e59470', 'e59400', 'e10105', 'e83200_0',
+                'e59410', 'e59420', 'e74400', 'x62720', 'x60260',
+                'x60240', 'x60220', 'x60130', 'x62730', 'e60290',
+                'DOBYR', 'SDOBYR', 'DOBMD', 'SDOBMD', 'e62600',
+                'x62740', '_fixeic', 'e32880', 'e32890', 'CDOB1',
+                'CDOB2', 'e32750', 'e32775', 'e33420', 'e33430',
+                'e33450', 'e33460', 'e33465', 'e33470', 'x59560',
+                'EICYB1', 'EICYB2', 'EICYB3', 'e83080', 'e25360',
+                'e25430', 'e25400', 'e25500', 'e26210', 'e26340',
+                'e26205', 'e26320', 'e87482', 'e87487', 'e87492',
+                'e87497', 'e87526', 'e87522', 'e87524', 'e87528',
+                'EDCRAGE', 'e07960', 'e07700', 'e07250', 't07950',
+                'e82882', 'e82880', 'e07500', 'e08001', 'e07970',
+                'e07980', 'e10000', 'e10100', 'e10050', 'e10075',
+                'e09805', 'e09710', 'e09720', 'e87900', 'e87905',
+                'e87681', 'e87682', 'e11451', 'e11452', 'e11601',
+                'e11602', 'e60300', 'e60860', 'e60840', 'e60630',
+                'e60550', 'e60720', 'e60430', 'e60500', 'e60340',
+                'e60680', 'e60600', 'e60405', 'e60440', 'e60420',
+                'e60410', 'e61400', 'e60660', 'e60480', 'e62000',
+                'e60250', 'e40223', '_sep', '_earned', '_sey',
+                '_setax', '_feided', '_ymod', '_ymod1', '_posagi',
+                '_sit', 'xtxcr1xtxcr10', '_earned', '_xyztax',
+                '_taxinc', 'c04800', '_feitax', 'c05750', 'c24517',
+                '_taxbc', 'c60000', '_standard', 'c24516', 'c25420',
+                'c05700', 'c32880', 'c32890', '_dclim', 'c32800',
+                'c33000', 'c05800', '_othtax', 'c59560', '_agep',
+                '_ages', 'c87521', 'c87550', 'c07180',
+                'c07230', '_precrd', 'c07220', 'c59660', 'c07970',
+                'c08795', 'c09200', 'c07100', '_eitc', 'c59700',
+                'c10950', '_ymod2', '_ymod3', 'c02650', '_agierr',
+                '_ywossbe', '_ywossbc', '_prexmp', 'c17750', '_sit1',
+                '_statax', 'c37703', 'c20500', 'c20750', 'c19200',
+                'c19700', '_nonlimited', '_limitratio', '_phase2_i',
+                '_fica', '_seyoff', 'c11055', 'c15100', '_numextra',
+                '_txpyers', 'c15200', '_othded', 'c04100', 'c04200',
+                'c04500', '_amtstd', '_oldfei', 'c05200', '_cglong',
+                '_noncg', '_hasgain', '_dwks9', '_dwks5', '_dwks12',
+                '_dwks16', '_dwks17', '_dwks21', '_dwks25', '_dwks26',
+                '_dwks28', '_dwks31', 'c24505', 'c24510', 'c24520',
+                'c24530', 'c24540', 'c24534', 'c24597', 'c24598',
+                'c24610', 'c24615', 'c24550', 'c24570', '_addtax',
+                'c24560', '_taxspecial', 'c24580', 'c05100', 'c05700',
+                'c59430', 'c59450', 'c59460', '_line17', '_line19',
+                '_line22', '_line30', '_line31', '_line32', '_line36',
+                '_line33', '_line34', '_line35', 'c59485', 'c59490',
+                '_s1291', '_parents', 'c62720', 'c60260', 'c63100',
+                'c60200', 'c60240', 'c60220', 'c60130', 'c62730',
+                '_addamt', 'c62100', '_cmbtp', '_edical', '_amtsepadd',
+                '_agep', '_ages', 'c62600', 'c62700', '_alminc',
+                '_amtfei', 'c62780', 'c62900', 'c63000', 'c62740',
+                '_ngamty', 'c62745', 'y62745', '_tamt2', '_amt5pc',
+                '_amt15pc', '_amt25pc', 'c62747', 'c62755', 'c62770',
+                '_amt', 'c62800', 'c09600', 'c05800', '_ncu13',
+                '_seywage', 'c33465', 'c33470', 'c33475', 'c33480',
+                'c32840', '_tratio', 'c33200', 'c33400', 'c07180',
+                '_ieic', 'EICYB1', 'EICYB2', 'EICYB3', '_modagi',
+                '_val_ymax', '_preeitc', '_val_rtbase', '_val_rtless',
+                '_dy', 'c11070', '_nctcr', '_ctcagi', 'c87482',
+                'c87487', 'c87492', 'c87497', 'c87483', 'c87488',
+                'c87493', 'c87498', 'c87540', 'c87530', 'c87654',
+                'c87656', 'c87658', 'c87660', 'c87662', 'c87664',
+                'c87666', 'c10960', 'c87668', 'c87681', 'c87560',
+                'c87570', 'c87580', 'c87590', 'c87600', 'c87610',
+                'c87620', '_ctc1', '_ctc2', '_regcrd', '_exocrd',
+                '_ctctax', 'c07220', 'c82925', 'c82930', 'c82935',
+                'c82880', 'h82880', 'c82885', 'c82890', 'c82900',
+                'c82905', 'c82910', 'c82915',  'c82920', 'c82937',
+                'c82940', 'c11070', 'e59660', '_othadd', 'y07100',
+                'x07100', 'c08800', 'e08795', 'x07400', 'c59680',
+                '_othertax', 'e82915', 'e82940', 'SFOBYR', 'NIIT',
+                'c59720', '_comb', 'c07150', 'c10300', '_ospctax',
+                '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
+                '_amed', '_xlin3', '_xlin6', 'share_corptax_burden',
+                'expanded_income', 'agg_self_employed', 'netcapgains',
+                'agg_capgains', 'total_compensation', 'dividends',
+                'agg_dividends', 'bonds', 'compensation', 'agg_bonds']
+
+        if data is not None:
+            self.read(data)
+        else:
+            assert type(dims) is not None
+            self.dim = dims
+            for name in attr:
+                setattr(self, name, np.zeros((self.dim,)))
+
         if (start_year):
             self._current_year = start_year
         else:
             self._current_year = self.FLPDYR[0]
+
+        self._num = np.ones((self.dim,))
+
+        for name in zero:
+            setattr(self, name, np.zeros((self.dim,)))
+
+        # Aliases
+        self.e22250 = self.p22250
+        self.e04470 = self.p04470
+        self.e23250 = self.p23250
+        self.e25470 = self.p25470
+        self.e08000 = self.p08000
+        self.e60100 = self.p60100
+        self.e27860 = self.s27860
+        self.SOIYR = np.repeat(2008, self.dim)
 
         """Imputations"""
         self._cmbtp_itemizer = None
@@ -60,17 +213,40 @@ class Records(object):
         # Additional standard deduction for aged 2008
         STD_Aged_2008 = np.array([1350., 1050.])
         # Compulsory itemizers
-        self._compitem = np.where(np.logical_and(self.FDED==1, self.e04470 < std2008[self.MARS-1]), 1, 0)
+        self._compitem = np.where(np.logical_and(self.FDED == 1, self.e04470
+                                                 < std2008[self.MARS-1]),
+                                  1, 0)
         # Number of taxpayers
-        self._txpyers = np.where(np.logical_or(self.MARS==2, np.logical_or(self.MARS==3, self.MARS==6)),2.,1.)
+        self._txpyers = np.where(np.logical_or(self.MARS == 2,
+                                               np.logical_or(self.MARS == 3,
+                                                             self.MARS == 6)),
+                                 2., 1.)
         # Number of extra standard deductions for aged
-        self._numextra = np.where(np.logical_and(self.FDED==2, self.e04470<std2008[self.MARS-1]),
-                                np.where(np.logical_and(self.MARS!=2,self.MARS!=3), 
-                                    (self.e04470 - std2008[self.MARS - 1])/STD_Aged_2008[0], 
-                                    (self.e04470 - std2008[self.MARS - 1])/STD_Aged_2008[1]), 
-                                np.where(self.e02400>0, 
-                                    self._txpyers, 
-                                    0))
+        self._numextra = np.where(np.logical_and(self.FDED == 2, self.e04470
+                                                 < std2008[self.MARS-1]),
+                                  np.where(np.logical_and(self.MARS != 2,
+                                                          self.MARS != 3),
+                                  ((self.e04470 - std2008[self.MARS - 1])
+                                   / STD_Aged_2008[0]),
+                                   (self.e04470 - std2008[self.MARS - 1])
+                                   / STD_Aged_2008[1]),
+                                  np.where(self.e02400 > 0, self._txpyers, 0))
+
+        """Setting Variables for Corporate Income Tax"""
+        self.compensation = None
+        self.dividends = None
+        self.netcapgains = None
+        self.bonds = None
+        self.e_and_p = None
+        self.share_corptax_burden = None  # get's calculated in functions.py
+        # actually sets the values
+        self.set_vars_for_corp_tax()
+
+        self.agg_comp = None
+        self.agg_dividends = None
+        self.agg_capgains = None
+        self.agg_bonds = None
+        self.agg_self_employed_and_pt = None
 
     @property
     def current_year(self):
@@ -267,69 +443,13 @@ class Records(object):
         self.s009    =   self.s009    *   1.
         self.WSAMP   =   self.WSAMP   *   1.
         self.TXRT    =   self.TXRT    *   1.
-        self._cmbtp_itemizer  =   (self._cmbtp_itemizer
-                                  * self.BF.ATXPY[self._current_year])
-        self._cmbtp_standard  =   (self._cmbtp_standard 
-                                  * self.BF.ATXPY[self._current_year])
 
-    def read_weights(self, weights):
-        if isinstance(weights, pd.core.frame.DataFrame):
-            WT = weights 
-        else: 
-            try:
-                if not os.path.exists(weights):
-                    #grab weights out of EGG distribution
-                    path_in_egg = os.path.join("taxcalc", self.WEIGHTS_FILENAME)
-                    weights = resource_stream(Requirement.parse("taxcalc"),
-                                              path_in_egg)
-                WT = pd.read_csv(weights)
-            except IOError:
-                print("Missing a csv file with weights from the second stage "
-                      "data of the data extrapolation. Please pass such a "
-                      "file as PUF(weights='[FILENAME]').")
-                raise
-                # TODO, we will need to pass the csv to the Calculator once
-                # we proceed with github issue #117.
+        """     Imputations     """
+        self.mutate_imputations()
+        self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
 
-        setattr(self, 'WT', WT)
-
-    def read_blowup(self, blowup_factors):
-        if isinstance(blowup_factors, pd.core.frame.DataFrame):
-            BF = blowup_factors
-        else:
-            try:
-                if not os.path.exists(blowup_factors):
-                    # grab blowup factors out of EGG distribution
-                    path_in_egg = os.path.join("taxcalc",
-                                               self.BLOWUP_FACTORS_FILENAME)
-                    blowup_factors = resource_stream(Requirement.parse("taxcalc"),
-                                                     path_in_egg)
-
-                BF = pd.read_csv(blowup_factors, index_col='YEAR')
-            except IOError:
-                print("Missing a csv file with blowup factors. Please pass "
-                      "such a csv as PUF(blowup_factors='[FILENAME]').")
-                raise
-                # TODO, we will need to pass the csv to the Calculator once
-                # we proceed with github issue #117.
-
-        BF.AGDPN = BF.AGDPN / BF.APOPN
-        BF.ATXPY = BF. ATXPY / BF. APOPN
-        BF.AWAGE = BF.AWAGE / BF.APOPN
-        BF.ASCHCI = BF.ASCHCI / BF.APOPN
-        BF.ASCHCL = BF.ASCHCL / BF.APOPN
-        BF.ASCHF = BF.ASCHF / BF.APOPN
-        BF.AINTS = BF.AINTS / BF.APOPN
-        BF.ADIVS = BF.ADIVS / BF.APOPN
-        BF.ASCHEI = BF.ASCHEI / BF.APOPN
-        BF.ASCHEL = BF.ASCHEL / BF.APOPN
-        BF.ACGNS = BF.ACGNS / BF.APOPN
-        BF.ABOOK = BF.ABOOK / BF.APOPN
-        BF.ASOCSEC = BF.ASOCSEC / BF.APOPSNR
-
-        BF = 1 + BF.pct_change()
-
-        setattr(self, 'BF', BF)
+        """ Corporate Income Tax Update """
+        self.set_vars_for_corp_tax()
 
     def read(self, data):
         if isinstance(data, pd.core.frame.DataFrame):
@@ -640,8 +760,10 @@ class Records(object):
                         '_othertax', 'e82915', 'e82940', 'SFOBYR', 'NIIT',
                         'c59720', '_comb', 'c07150', 'c10300', '_ospctax',
                         '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
-                        '_amed', '_xlin3', '_xlin6', '_cmbtp_itemizer',
-                        '_cmbtp_standard', '_expanded_income']
+                        '_amed', '_xlin3', '_xlin6', 'share_corptax_burden',
+                        'expanded_income', 'agg_self_employed', 'netcapgains',
+                        'agg_capgains', 'total_compensation', 'dividends',
+                        'agg_dividends', 'bonds', 'compensation', 'agg_bonds']
 
         for name in zeroed_names:
             setattr(self, name, np.zeros((self.dim,)))
@@ -659,9 +781,59 @@ class Records(object):
         self.SOIYR = np.repeat(2008, self.dim)
 
     def mutate_imputations(self):
+        """
+        Calculates self._cmbtp_itemizer for this record
+        """
         self._cmbtp_itemizer = imputation(self.e17500, self.e00100,
                 self.e18400, self.e18425, self.e62100, self.e00700,
                 self.e04470, self.e21040, self.e18500, self.e20800)
+
+    def set_vars_for_corp_tax(self):
+        """
+        Calculates the variables used to distribute the corporate income tax
+
+        compensation: float
+            the sum of wages, payroll tax, employer contribution to insurance,
+            and untaxed voluntary contribution to retirement plans
+        dividends: float
+            the individual's dividends received
+        netcapgains: float
+            the individual's net capital gains earnings
+        bonds: float
+            the individual's total bonds (taxable and untaxable)
+        """
+
+        # unsure whether to use in compensation
+        ss_benefits = self.e02400
+
+        # the individual's compensation package
+        # used to calculate share from labor
+        # = sum of wages (e00200 + e00250),
+        # payroll taxes (employer_share_fica? should I add this? how else?),
+        # employer contrib's to insurance (e33420 and archer MSA, e03600),
+        # and untaxed voluntary contrib's to retirement plans
+        # (e07240, not sure if from employer or voluntary)
+
+    # TODO: not sure if we have good data on insurance or retirment
+    # e00250: other dependent income (not sure whether to include)
+        self.compensation = (self.e00200 + self.e00250 + self.e33420 +
+                             self.e03600 + self.e07240)
+
+        # individual's share of the dividends received
+        self.dividends = self.e00600
+
+    # JTC thinks that dividends are enough to measure stock ownership,
+    # but TPC thinks both capgains and dividends should be included
+        # individual's share of the capital gains received
+        # c23650 = long term + short term + both (calculated in CapGains fn)
+        self.netcapgains = self.e23250 + self.e22250 + self.e23660
+
+        # bonds = tax-exempt interest + taxable interest
+        # indidividual's share of total bonds
+        self.bonds = self.e00400 + self.e00300
+
+        # self-employment (E09400) and pass-through income (E02000)
+        self.e_and_p = self.e09400 + self.e02000
 
 
 @vectorize([float64(float64, float64, float64, float64, float64, float64,
@@ -684,3 +856,64 @@ def imputation(e17500, e00100, e18400, e18425, e62100, e00700, e04470,
                        - state_adjustment - e00100 - e18500 - e20800)
 
     return _cmbtp_itemizer
+
+
+def read_blowup(blowup_factors):
+    if isinstance(blowup_factors, pd.core.frame.DataFrame):
+        BF = blowup_factors
+    else:
+        try:
+            if not os.path.exists(blowup_factors):
+                # grab blowup factors out of EGG distribution
+                path_in_egg = os.path.join("taxcalc",
+                                           BLOWUP_FACTORS_FILENAME)
+                blowup_factors = resource_stream(Requirement.parse("taxcalc"),
+                                                 path_in_egg)
+
+            BF = pd.read_csv(blowup_factors, index_col='YEAR')
+        except IOError:
+            print("Missing a csv file with blowup factors. Please pass "
+                  "such a csv as PUF(blowup_factors='[FILENAME]').")
+            raise
+            # TODO, we will need to pass the csv to the Calculator once
+            # we proceed with github issue #117.
+
+    BF.AGDPN = BF.AGDPN / BF.APOPN
+    BF.ATXPY = BF. ATXPY / BF. APOPN
+    BF.AWAGE = BF.AWAGE / BF.APOPN
+    BF.ASCHCI = BF.ASCHCI / BF.APOPN
+    BF.ASCHCL = BF.ASCHCL / BF.APOPN
+    BF.ASCHF = BF.ASCHF / BF.APOPN
+    BF.AINTS = BF.AINTS / BF.APOPN
+    BF.ADIVS = BF.ADIVS / BF.APOPN
+    BF.ASCHEI = BF.ASCHEI / BF.APOPN
+    BF.ASCHEL = BF.ASCHEL / BF.APOPN
+    BF.ACGNS = BF.ACGNS / BF.APOPN
+    BF.ABOOK = BF.ABOOK / BF.APOPN
+    BF.ASOCSEC = BF.ASOCSEC / BF.APOPN
+
+    BF = 1 + BF.pct_change()
+
+    return BF
+
+
+def read_weights(weights):
+    if isinstance(weights, pd.core.frame.DataFrame):
+        WT = weights
+    else:
+        try:
+            if not os.path.exists(weights):
+                # grab weights out of EGG distribution
+                path_in_egg = os.path.join("taxcalc", WEIGHTS_FILENAME)
+                weights = resource_stream(Requirement.parse("taxcalc"),
+                                          path_in_egg)
+            WT = pd.read_csv(weights)
+        except IOError:
+            print("Missing a csv file with weights from the second stage "
+                  "data of the data extrapolation. Please pass such a "
+                  "file as PUF(weights='[FILENAME]').")
+            raise
+            # TODO, we will need to pass the csv to the Calculator once
+            # we proceed with github issue #117.
+
+    return WT
