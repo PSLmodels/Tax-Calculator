@@ -806,7 +806,7 @@ def AMTI(   c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
             c24520, c04800, e10105, c05700, e05800, e05100, e09600, 
             KT_c_Age, x62740, e62900, AMT_thd_MarriedS, _earned, e62600, 
             AMT_em, AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer, 
-            _cmbtp_standard, ID_StateLocalTax_HC, puf):
+            _cmbtp_standard, ID_StateLocalTax_HC, ID_ps, puf):
 
     c62720 = c24517 + x62720
     c60260 = e00700 + x60260
@@ -817,17 +817,7 @@ def AMTI(   c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     c60220 = c20800 + x60220
 
     c60130 = 0.
-    check_agi = 0.
-    if MARS == 1:
-        check_agi = 254200.
-    elif MARS == 2:
-        check_agi = 305050.
-    elif MARS == 3:
-        check_agi = 152525.
-    else:
-        check_agi = 279650.
-
-    if c00100 > check_agi:
+    if c00100 > ID_ps[MARS-1]:
         c60130 = -(c18300)
 
     c62730 = e24515 + x62730
