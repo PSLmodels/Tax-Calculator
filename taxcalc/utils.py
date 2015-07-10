@@ -156,11 +156,11 @@ def strip_Nones(x):
     replace None with -1 and return
 
     Parameters
-    -----------
+    ----------
     x: list
 
     Returns
-    --------
+    -------
     list
     """
     accum = []
@@ -451,7 +451,6 @@ def create_distribution_table(calc, groupby, result_type,
         c09600 : Alternative minimum tax
 
         s006 : used to weight population
-
 
     Returns
     -------

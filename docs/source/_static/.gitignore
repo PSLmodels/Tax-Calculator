@@ -1,0 +1,4 @@
+# The docs/source/_static directory must be present to avoid Sphinx
+# warning when executing 'make html' in the docs directory.
+# Note: usually .png files would be placed here, but an earlier OSPC
+#       decision has placed them in the docs/source/images directory.
