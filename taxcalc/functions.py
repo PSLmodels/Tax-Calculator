@@ -838,7 +838,7 @@ def AMTI(   c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     #   _amtded = max(0., _amtded + c60000)
    
     if _standard == 0 or (_exact == 1 and ((_amtded + e60290) > 0)):
-        _addamt = _amtded + e60290 - c60130
+        _addamt = _amtded + e60290 + c60130
     else:
         _addamt = 0
 
@@ -865,10 +865,9 @@ def AMTI(   c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     if (puf == True and ((_standard == 0 or (_exact == 1 and e04470 > 0)))):
         c62100 = (c00100 - c04470 + max(0., min(c17000, 0.025 * c00100)) +
-                 (1-ID_StateLocalTax_HC)*_sit + c18300 - c60260 + c20800
+                 (1-ID_StateLocalTax_HC)*_sit + c60240 - c60260 + c20800
                   - c21040 + c60130)
         c62100 += _cmbtp
-
 
 
     if (puf == True and ((_standard > 0 and f6251 == 1))):
@@ -880,7 +879,6 @@ def AMTI(   c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     if (puf == True and _standard > 0):
         c62100 = (c00100 - c60260 ) 
         c62100 += _cmbtp
- 
 
 
     if (c62100 > AMT_em_pe) and (MARS == 3 or MARS == 6):
