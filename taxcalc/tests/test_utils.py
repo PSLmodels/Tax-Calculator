@@ -1,5 +1,7 @@
 import os
 import sys
+import filecmp
+import tempfile
 cur_path = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(cur_path, "../../"))
 sys.path.append(os.path.join(cur_path, "../"))
@@ -12,6 +14,7 @@ from pandas.util.testing import assert_frame_equal
 from pandas.util.testing import assert_series_equal
 from numba import jit, vectorize, guvectorize
 from taxcalc import *
+from csv_to_ascii import ascii_output
 
 
 data = [[1.0, 2, 'a'],
@@ -471,3 +474,44 @@ def test_expand_2D_accept_None_additional_row():
     res = expand_array(_II_brk2, inflate=True, inflation_rates=inflation_rates, num_years=5)
 
     npt.assert_array_equal(res, exp)
+
+@pytest.yield_fixture
+def csvfile():
+
+    txt = """A,B,C,D,EFGH
+    1,2,3,4,0
+    5,6,7,8,0
+    9,10,11,12,0
+    100,200,300,400,500
+    123.45,678.912,000.000,87,92"""
+
+    f = tempfile.NamedTemporaryFile(mode="a", delete=False)
+    f.write(txt + "\n")
+    f.close()
+    # Must close and then yield for Windows platform
+    yield f
+    os.remove(f.name)
+
+@pytest.yield_fixture
+def asciifile():
+
+     txt = ("A              \t            1.0\t          100.0\t         123.45\n"
+           "B              \t            2.0\t          200.0\t        678.912\n"
+           "C              \t            3.0\t          300.0\t            0.0\n"
+           "D              \t            4.0\t          400.0\t           87.0\n"
+           "EFGH           \t            0.0\t          500.0\t           92.0"
+        )
+    f = tempfile.NamedTemporaryFile(mode="a", delete=False)
+    f.write(txt + "\n")
+    f.close()
+    # Must close and then yield for Windows platform
+    yield f
+    os.remove(f.name)
+
+def test_csv_to_ascii(csvfile, asciifile):
+
+    output_test = tempfile.NamedTemporaryFile(mode="a", delete=False)
+    ascii_output(csv_results=csvfile.name, ascii_results=output_test.name)
+    assert(filecmp.cmp(output_test.name, asciifile.name))
+    output_test.close()
+    os.remove(output_test.name)
