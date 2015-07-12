@@ -516,3 +516,4 @@ def test_csv_to_ascii(csvfile, asciifile):
     assert(filecmp.cmp(output_test.name, asciifile.name))
     output_test.close()
     os.remove(output_test.name)
+    
