@@ -9,10 +9,10 @@ import pandas as pd
 def ascii_output(csv_results="", ascii_results=""):
     
     if csv_results == "":
-        print "no csv file given!"
+        print("no csv file given!")
         exit(0)
     if ascii_results == "":
-        print "no output file name given!"
+        print("no output file name given!")
         exit(0)
 
     #list of integers corresponding to the number(s) of the row(s) in the
@@ -41,4 +41,3 @@ def ascii_output(csv_results="", ascii_results=""):
     out = out.applymap(fstring.format)
 
     out.to_csv(ascii_results, header=False, index=False, delim_whitespace=True, sep='\t')
-    
