@@ -1328,10 +1328,9 @@ def LLC(e87530, LLC_Expense_c, e87526, e87522, e87524, e87528, c87540, c87550, p
         e87530 : Total expense
     
     
-    Returns:
-    --------
-    c87550
-        Nonrefundable Education Credit 
+    Returns
+    -------
+    c87550 : Nonrefundable Education Credit 
     
     """
 

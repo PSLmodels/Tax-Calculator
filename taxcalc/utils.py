@@ -435,11 +435,11 @@ def create_distribution_table(calc, groupby, result_type,
     calc : the Calculator object
     groupby : String object
         options for input: 'weighted_deciles', 'small_income_bins',
-                           'large_income_bins', 'webapp_income_bins'
+        'large_income_bins', 'webapp_income_bins';
         determines how the columns in the resulting DataFrame are sorted
-    result_type: String object
-        options for input: 'weighted_sum' or 'weighted_avg'
-        determines how the data should be maniuplated
+    result_type : String object
+        options for input: 'weighted_sum' or 'weighted_avg';
+        determines how the data should be manipulated
 
     Notes
     -----
