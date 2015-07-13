@@ -24,6 +24,8 @@ Contributors include the following individuals:
 * `Amy Xu`_
 * `John O'Hare`_
 * `Regan Kuchan`_
+* `Maria Messick`_
+* `Martin Holmer`_
 
 
 .. _`NBER`: http://www.nber.org/
@@ -36,3 +38,5 @@ Contributors include the following individuals:
 .. _`Amy Xu`: https://github.com/Amy-Xu
 .. _`John O'Hare`: http://quantria.com/#team
 .. _`Regan Kuchan`: https://github.com/rkuchan
+.. _`Maria Messick`: https://github.com/mmessick
+.. _`Martin Holmer`: http://www.polsim.com/MRH_vita.pdf
