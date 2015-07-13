@@ -439,7 +439,7 @@ def create_distribution_table(calc, groupby, result_type,
         determines how the columns in the resulting DataFrame are sorted
     result_type : String object
         options for input: 'weighted_sum' or 'weighted_avg';
-        determines how the data should be maniuplated
+        determines how the data should be manipulated
 
     Notes
     -----
