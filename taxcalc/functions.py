@@ -826,7 +826,7 @@ def AMTI(   c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     #if c60000 <= 0:
 
     #   _amtded = max(0., _amtded + c60000)
-   
+
     if _standard == 0 or (_exact == 1 and ((_amtded + e60290) > 0)):
         _addamt = _amtded + e60290 + c60130
     else:
