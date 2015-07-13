@@ -40,4 +40,6 @@ def ascii_output(csv_results="", ascii_results=""):
     fstring = '{:' + str(col_size) + '}'
     out = out.applymap(fstring.format)
 
+    print(out)
+
     out.to_csv(ascii_results, header=False, index=False, delim_whitespace=True, sep='\t')

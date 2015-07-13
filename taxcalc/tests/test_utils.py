@@ -478,12 +478,12 @@ def test_expand_2D_accept_None_additional_row():
 @pytest.yield_fixture
 def csvfile():
 
-    txt = """A,B,C,D,EFGH
-    1,2,3,4,0
-    5,6,7,8,0
-    9,10,11,12,0
-    100,200,300,400,500
-    123.45,678.912,000.000,87,92"""
+    txt = ("A,B,C,D,EFGH\n"
+           "1,2,3,4,0\n"
+           "5,6,7,8,0\n"
+           "9,10,11,12,0\n"
+           "100,200,300,400,500\n"
+           "123.45,678.912,000.000,87,92")
 
     f = tempfile.NamedTemporaryFile(mode="a", delete=False)
     f.write(txt + "\n")
