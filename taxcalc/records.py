@@ -253,6 +253,9 @@ class Records(object):
     def current_year(self):
         return self._current_year
 
+    def set_attr(self, name, value):
+        return setattr(self, name, value)
+
     def increment_year(self):
         self._current_year += 1
         self.FLPDYR += 1
