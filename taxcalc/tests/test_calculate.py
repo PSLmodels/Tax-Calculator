@@ -66,7 +66,7 @@ def run(puf=True):
     # drop duplicates
     totaldf = totaldf.T.groupby(level=0).first().T
 
-    exp_results = pd.read_csv(os.path.join(CUR_PATH, "../exp_results.csv.gz"), compression='gzip')
+    exp_results = pd.read_csv(os.path.join(CUR_PATH, "../../exp_results.csv.gz"), compression='gzip')
     # Fix-up to bad column name in expected data
     exp_results.rename(columns=lambda x: x.replace('_phase2', '_phase2_i'), inplace=True)
     exp_set = set(exp_results.columns)

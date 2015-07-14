@@ -11,12 +11,6 @@ import json
 from numba import vectorize, float64
 from pkg_resources import resource_stream, Requirement
 
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-WEIGHTS_FILENAME = "WEIGHTS.csv"
-weights_path = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
-BLOWUP_FACTORS_FILENAME = "StageIFactors.csv"
-blowup_factors_path = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
-
 # zeroed out names, "constant" data
 ZEROED_NAMES = ['e35300_0', 'e35600_0', 'e35910_0', 'x03150', 'e03600',
                 'e03280', 'e03900', 'e04000', 'e03700', 'c23250',
@@ -329,6 +323,12 @@ class Records(object):
     Advancing years is done through a member function
     """
 
+    CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+    WEIGHTS_FILENAME = "WEIGHTS.csv"
+    weights_path = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
+    BLOWUP_FACTORS_FILENAME = "StageIFactors.csv"
+    blowup_factors_path = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
+
     @classmethod
     def from_file(cls, path, **kwargs):
         return cls(path, **kwargs)
@@ -337,8 +337,8 @@ class Records(object):
                  weights=weights_path, start_year=None, dims=None,
                  **kwargs):
 
-        self.BF = read_blowup(blowup_factors)
-        self.WT = read_weights(weights)
+        self.BF = self.read_blowup(blowup_factors)
+        self.WT = self.read_weights(weights)
 
         if data is not None:
             self.read(data)
@@ -702,6 +702,62 @@ class Records(object):
         # self-employment (E09400) and pass-through income (E02000)
         self.e_and_p = self.e09400 + self.e02000
 
+    def read_blowup(self, blowup_factors):
+        if isinstance(blowup_factors, pd.core.frame.DataFrame):
+            BF = blowup_factors
+        else:
+            try:
+                if not os.path.exists(blowup_factors):
+                    # grab blowup factors out of EGG distribution
+                    path_in_egg = os.path.join("taxcalc",
+                                               self.BLOWUP_FACTORS_FILENAME)
+                    blowup_factors = resource_stream(Requirement.parse("taxcalc"),
+                                                     path_in_egg)
+
+                BF = pd.read_csv(blowup_factors, index_col='YEAR')
+            except IOError:
+                print("Missing a csv file with blowup factors. Please pass "
+                      "such a csv as PUF(blowup_factors='[FILENAME]').")
+                raise
+
+        BF.AGDPN = BF.AGDPN / BF.APOPN
+        BF.ATXPY = BF. ATXPY / BF. APOPN
+        BF.AWAGE = BF.AWAGE / BF.APOPN
+        BF.ASCHCI = BF.ASCHCI / BF.APOPN
+        BF.ASCHCL = BF.ASCHCL / BF.APOPN
+        BF.ASCHF = BF.ASCHF / BF.APOPN
+        BF.AINTS = BF.AINTS / BF.APOPN
+        BF.ADIVS = BF.ADIVS / BF.APOPN
+        BF.ASCHEI = BF.ASCHEI / BF.APOPN
+        BF.ASCHEL = BF.ASCHEL / BF.APOPN
+        BF.ACGNS = BF.ACGNS / BF.APOPN
+        BF.ABOOK = BF.ABOOK / BF.APOPN
+        BF.ASOCSEC = BF.ASOCSEC / BF.APOPN
+
+        BF = 1 + BF.pct_change()
+
+        return BF
+
+
+    def read_weights(self, weights):
+        if isinstance(weights, pd.core.frame.DataFrame):
+            WT = weights
+        else:
+            try:
+                if not os.path.exists(weights):
+                    # grab weights out of EGG distribution
+                    path_in_egg = os.path.join("taxcalc", self.WEIGHTS_FILENAME)
+                    weights = resource_stream(Requirement.parse("taxcalc"),
+                                              path_in_egg)
+                WT = pd.read_csv(weights)
+            except IOError:
+                print("Missing a csv file with weights from the second stage "
+                      "data of the data extrapolation. Please pass such a "
+                      "file as PUF(weights='[FILENAME]').")
+                raise
+
+        return WT
+
 
 @vectorize([float64(float64, float64, float64, float64, float64, float64,
             float64, float64, float64, float64)])
@@ -723,60 +779,3 @@ def imputation(e17500, e00100, e18400, e18425, e62100, e00700, e04470,
                        - state_adjustment - e00100 - e18500 - e20800)
 
     return _cmbtp_itemizer
-
-
-def read_blowup(blowup_factors):
-    if isinstance(blowup_factors, pd.core.frame.DataFrame):
-        BF = blowup_factors
-    else:
-        try:
-            if not os.path.exists(blowup_factors):
-                # grab blowup factors out of EGG distribution
-                path_in_egg = os.path.join("taxcalc",
-                                           BLOWUP_FACTORS_FILENAME)
-                blowup_factors = resource_stream(Requirement.parse("taxcalc"),
-                                                 path_in_egg)
-
-            BF = pd.read_csv(blowup_factors, index_col='YEAR')
-        except IOError:
-            print("Missing a csv file with blowup factors. Please pass "
-                  "such a csv as PUF(blowup_factors='[FILENAME]').")
-            raise
-
-    BF.AGDPN = BF.AGDPN / BF.APOPN
-    BF.ATXPY = BF. ATXPY / BF. APOPN
-    BF.AWAGE = BF.AWAGE / BF.APOPN
-    BF.ASCHCI = BF.ASCHCI / BF.APOPN
-    BF.ASCHCL = BF.ASCHCL / BF.APOPN
-    BF.ASCHF = BF.ASCHF / BF.APOPN
-    BF.AINTS = BF.AINTS / BF.APOPN
-    BF.ADIVS = BF.ADIVS / BF.APOPN
-    BF.ASCHEI = BF.ASCHEI / BF.APOPN
-    BF.ASCHEL = BF.ASCHEL / BF.APOPN
-    BF.ACGNS = BF.ACGNS / BF.APOPN
-    BF.ABOOK = BF.ABOOK / BF.APOPN
-    BF.ASOCSEC = BF.ASOCSEC / BF.APOPN
-
-    BF = 1 + BF.pct_change()
-
-    return BF
-
-
-def read_weights(weights):
-    if isinstance(weights, pd.core.frame.DataFrame):
-        WT = weights
-    else:
-        try:
-            if not os.path.exists(weights):
-                # grab weights out of EGG distribution
-                path_in_egg = os.path.join("taxcalc", WEIGHTS_FILENAME)
-                weights = resource_stream(Requirement.parse("taxcalc"),
-                                          path_in_egg)
-            WT = pd.read_csv(weights)
-        except IOError:
-            print("Missing a csv file with weights from the second stage "
-                  "data of the data extrapolation. Please pass such a "
-                  "file as PUF(weights='[FILENAME]').")
-            raise
-
-    return WT
