@@ -11,12 +11,12 @@ from numba import jit, vectorize, guvectorize
 from taxcalc import *
 import copy
 
-WEIGHTS_FILENAME = "../WEIGHTS_testing.csv"
+WEIGHTS_FILENAME = "../../WEIGHTS_testing.csv"
 weights_path = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
 weights = pd.read_csv(weights_path)
 
 all_cols = set()
-tax_dta_path = os.path.join(CUR_PATH, "../tax_all1991_puf.gz")
+tax_dta_path = os.path.join(CUR_PATH, "../../tax_all1991_puf.gz")
 tax_dta = pd.read_csv(tax_dta_path, compression='gzip')
                       
 # Fix-up. MIdR needs to be type int64 to match PUF

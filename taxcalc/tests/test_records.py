@@ -11,7 +11,7 @@ from numba import jit, vectorize, guvectorize
 from taxcalc import *
 from taxcalc.utils import expand_array
 
-tax_dta_path = os.path.join(CUR_PATH, "../tax_all1991_puf.gz")
+tax_dta_path = os.path.join(CUR_PATH, "../../tax_all1991_puf.gz")
 
 
 def test_create_records():
