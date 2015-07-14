@@ -340,10 +340,12 @@ class Records(object):
         self.BF = self.read_blowup(blowup_factors)
         self.WT = self.read_weights(weights)
 
+        if data is None and dims is None:
+            raise ValueError("both data and dims cannot be None")
+
         if data is not None:
             self.read(data)
         else:
-            assert dims is not None
             self.dim = dims
             for name in NAMES:
                 setattr(self, name[0], np.zeros((self.dim,)))
