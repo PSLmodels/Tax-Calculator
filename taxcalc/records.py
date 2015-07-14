@@ -348,7 +348,7 @@ class Records(object):
         else:
             self.dim = dims
             for name in NAMES:
-                setattr(self, name[0], np.zeros((self.dim,)))
+                setattr(self, name[0], np.zeros((self.dim,), dtype=np.int8))
 
         if (start_year):
             self._current_year = start_year
