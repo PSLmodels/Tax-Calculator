@@ -495,11 +495,11 @@ def csvfile():
 @pytest.yield_fixture
 def asciifile():
 
-    txt = ("A              \t            1.0\t          100.0\t         123.45\n"
-           "B              \t            2.0\t          200.0\t        678.912\n"
-           "C              \t            3.0\t          300.0\t            0.0\n"
-           "D              \t            4.0\t          400.0\t           87.0\n"
-           "EFGH           \t            0.0\t          500.0\t           92.0"
+    txt = ("A              \t1              \t100            \t123.45         \n"
+           "B              \t2              \t200            \t678.912        \n"
+           "C              \t3              \t300            \t000.000        \n"
+           "D              \t4              \t400            \t87             \n"
+           "EFGH           \t0              \t500            \t92             "
         )
 
     f = tempfile.NamedTemporaryFile(mode="a", delete=False)

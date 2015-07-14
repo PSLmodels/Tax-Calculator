@@ -25,7 +25,7 @@ def ascii_output(csv_results="", ascii_results=""):
     #Number of characters in each column, must be whole nonnegative integer
     col_size = 15
     
-    df = pd.read_csv(csv_results)
+    df = pd.read_csv(csv_results, dtype=object)
     
     #keeps only listed recid's
     if recids != []:
