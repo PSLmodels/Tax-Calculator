@@ -41,6 +41,75 @@ def test_create_parameters():
     assert p
 
 
+def test_constant_inflation_rate_without_reform():
+    irate = 0.08
+    syr = 2013
+    p = Parameters(start_year=syr, budget_years=10, inflation_rate=irate)
+    assert p._II_em[2013 - syr] == 3900
+    # no reform
+    # check implied inflation rate at end of budget years that end in 2022
+    grate = float(p._II_em[2022 - syr]) / float(p._II_em[2021 - syr]) - 1.0
+    assert round(grate, 3) == round(irate, 3)
+
+
+def test_constant_inflation_rate_with_reform():
+    irate = 0.08
+    syr = 2013
+    p = Parameters(start_year=syr, budget_years=10, inflation_rate=irate)
+    # implement reform in 2021 which is the year before the last year = 2022
+    for yr in range(0, 8):
+        p.increment_year()
+    assert p.current_year == 2021
+    reform = {2021: {"_II_em": [20000]}}
+    p.update(reform)
+    # check implied inflation rate just before reform
+    grate = float(p._II_em[2020 - syr]) / float(p._II_em[2019 - syr]) - 1.0
+    assert round(grate, 3) == round(irate, 3)
+    # check implied inflation rate just after reform
+    grate = float(p._II_em[2022 - syr]) / float(p._II_em[2021 - syr]) - 1.0
+    assert round(grate, 3) == round(irate, 3)
+
+
+def test_variable_inflation_rate_without_reform():
+    irates = {2013: 0.04, 2014: 0.04, 2015: 0.04, 2016: 0.04, 2017: 0.04,
+              2018: 0.04, 2019: 0.04, 2020: 0.04, 2021: 0.04, 2022: 0.08}
+    syr = 2013
+    p = Parameters(start_year=syr, budget_years=10, inflation_rates=irates)
+    assert p._II_em[2013 - syr] == 3900
+    # no reform
+    # check implied inflation rate between 2020 and 2021
+    grate = float(p._II_em[2021 - syr]) / float(p._II_em[2020 - syr]) - 1.0
+    assert round(grate, 3) == round(0.04, 3)
+    # check implied inflation rate between 2021 and 2022
+    grate = float(p._II_em[2022 - syr]) / float(p._II_em[2021 - syr]) - 1.0
+    assert round(grate, 3) == round(0.08, 3)
+    # Note: above assert shows that inflation indexing of policy parameters
+    # works like this:  param(t) = param(t-1) * ( 1 + inflation_rate(t) ).
+
+
+def test_variable_inflation_rate_with_reform():
+    irates = {2013: 0.04, 2014: 0.04, 2015: 0.04, 2016: 0.04, 2017: 0.04,
+              2018: 0.04, 2019: 0.04, 2020: 0.04, 2021: 0.04, 2022: 0.08}
+    syr = 2013
+    p = Parameters(start_year=syr, budget_years=10, inflation_rates=irates)
+    assert p._II_em[2013 - syr] == 3900
+    # implement reform in 2020 which is two years before the last year, 2022
+    for yr in range(0, 2020 - syr):
+        p.increment_year()
+    assert p.current_year == 2020
+    reform = {2020: {"_II_em": [20000]}}
+    p.update(reform)
+    # check implied inflation rate between 2018 and 2019 (before the reform)
+    grate = float(p._II_em[2019 - syr]) / float(p._II_em[2018 - syr]) - 1.0
+    assert round(grate, 3) == round(0.04, 3)
+    # check implied inflation rate between 2020 and 2021 (after then reform)
+    grate = float(p._II_em[2021 - syr]) / float(p._II_em[2020 - syr]) - 1.0
+    assert round(grate, 3) == round(0.04, 3)
+    # check implied inflation rate between 2021 and 2022 (after then reform)
+    grate = float(p._II_em[2022 - syr]) / float(p._II_em[2021 - syr]) - 1.0
+    assert round(grate, 3) == round(0.08, 3)
+
+
 def test_create_parameters_from_file(paramsfile):
     p = Parameters.from_file(paramsfile.name)
     irates = Parameters._Parameters__rates
