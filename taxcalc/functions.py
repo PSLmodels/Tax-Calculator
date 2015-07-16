@@ -505,7 +505,7 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
     else: 
         _othded = 0.
 
-    c04500 = c00100 - max(c04470, max(c04100, _standard + e37717))
+    c04500 = c00100 - max(c04470, max(c04100, _standard + e37717))  # why add e37717
     c04800 = max(0., c04500 - c04600 - e04805)
 
     #Check with Dan whether this is right!
@@ -806,7 +806,7 @@ def AMTI(   c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
             c24520, c04800, e10105, c05700, e05800, e05100, e09600, 
             KT_c_Age, x62740, e62900, AMT_thd_MarriedS, _earned, e62600, 
             AMT_em, AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer, 
-            _cmbtp_standard, ID_StateLocalTax_HC, ID_ps, puf):
+            _cmbtp_standard, ID_StateLocalTax_HC, RECID, ID_ps, puf):
 
     c62720 = c24517 + x62720
     c60260 = e00700 + x60260
@@ -867,7 +867,7 @@ def AMTI(   c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
 
     if (puf == True and _standard > 0):
-        c62100 = (c00100 - c60260 ) 
+        c62100 = (c00100 - c60260) 
         c62100 += _cmbtp
 
 
