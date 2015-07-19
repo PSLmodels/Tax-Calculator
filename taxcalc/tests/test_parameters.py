@@ -103,8 +103,8 @@ def test_variable_inflation_rate_with_reform():
 
 def test_create_parameters_from_file(paramsfile):
     p = Parameters.from_file(paramsfile.name)
-    irates = Parameters._Parameters__rates
-    inf_rates = [irates[p.start_year + i] for i in range(0, p.budget_years)]
+    inf_rates = [Parameters.default_inflation_rate(p.start_year + i)
+                 for i in range(0, p.budget_years)]
     assert_array_equal(p._almdep,
                        expand_array(np.array([7150, 7250, 7400]),
                                     inflate=True,
@@ -209,7 +209,7 @@ def test_parameters_get_default_start_year():
     assert meta_amt_thd_marrieds['row_label'] == ["2015"]
     # multiply 2014 value by 2015 default inflation rate to get 2015 value
     v2014 = 41050
-    v2015 = v2014 * (1.0 + Parameters._Parameters__rates[2014])
+    v2015 = v2014 * (1.0 + Parameters.default_inflation_rate(2014))
     assert meta_amt_thd_marrieds['value'] == [v2015]
 
     # 1D data, doesn't have 2015 values, is not CPI inflated
