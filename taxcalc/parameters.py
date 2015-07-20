@@ -1,5 +1,6 @@
 """ OSPC Tax-Calculator taxcalc Parameters class.
-
+"""
+"""
 PYLINT USAGE: pylint --disable=locally-disabled parameters.py
 """
 from .utils import expand_array
@@ -11,13 +12,45 @@ DEFAULT_START_YEAR = 2013
 
 
 class Parameters(object):
-    """ Class that contains federal income tax parameters.
+    """ Constructor for class that contains federal income tax parameters.
+
+    If both **inflation_rate** and **inflation_rates** are None, the
+    built-in default inflation rates are used.
+
+    Parameters
+    ----------
+    start_year: integer
+        first calendar year for policy parameters.
+
+    budget_years: integer
+        number of calendar years for which to specify policy parameter
+        values beginning with start_year.
+
+    inflation_rate: float
+        constant inflation rate used to project future policy parameter
+        values.
+
+    inflation_rates: dictionary of YEAR:RATE pairs
+        variable inflation rates used to project future policy parameter
+        values.
+
+    data: dictionary
+        dictionary of policy parameters; if data=None, policy parameters
+        are read from the params.json file.
+
+    Raises
+    ------
+    ValueError:
+        if **inflation_rate** is not None and **inflation_rates** is not None.
+
+    Returns
+    -------
+    class instance: Parameters
     """
 
-    CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-    PARAM_FILENAME = "params.json"
-    params_path = os.path.join(CUR_PATH, PARAM_FILENAME)
-
+    CURRENT_PATH = os.path.abspath(os.path.dirname(__file__))
+    PARAMS_FILENAME = "params.json"
+    params_path = os.path.join(CURRENT_PATH, PARAMS_FILENAME)
 
     # default inflation rates by year
     __rates = {2013:0.015, 2014:0.020, 2015:0.022, 2016:0.020, 2017:0.021,
@@ -28,13 +61,23 @@ class Parameters(object):
     @classmethod
     def default_inflation_rate(cls, calyear):
         """ Return default inflation rate for specified calendar year.
+
+        Parameters
+        ----------
+        calyear: integer
+            calendar year (for example, 2013).
+
+        Returns
+        -------
+        default inflation rate: float
+            decimal (not percentage) annual inflation rate for calyear.
         """
         return cls.__rates[calyear]
 
 
     @classmethod
     def from_file(cls, file_name, **kwargs):
-        """ Read policy parameters from specified JSON file.
+        """ Read policy parameters from JSON file with specified file_name.
         """
         if file_name:
             with open(file_name) as pfile:
@@ -85,13 +128,14 @@ class Parameters(object):
                     expand_array(values, inflate=cpi_inflated,
                                  inflation_rates=self._inflation_rates,
                                  num_years=budget_years))
-
         self.set_year(start_year)
 
 
     def update(self, year_mods):
-        """Apply year_mods policy-parameter-reform dictionary to parameters.
+        """ Apply year_mods policy-parameter-reform dictionary to parameters.
 
+        Notes
+        -----
         This method implements a policy reform, the provisions of
         which are specified in the year_mods dictionary, that changes
         the values of some policy parameters in this Parameters
@@ -132,11 +176,11 @@ class Parameters(object):
         Parameters
         ----------
         year_mods: dictionary of YEAR:MODS pairs
+            see Notes above for details on dictionary structure.
 
         Returns
         -------
-        nothing
-
+        nothing: void
         """
         #pylint: disable=too-many-locals
 
@@ -214,7 +258,7 @@ class Parameters(object):
 
 
     def increment_year(self):
-        """ Move policy parameters to next year.
+        """ Increase current_year by one and set parameters for that year.
         """
         self._current_year += 1
         self.set_year(self._current_year)
@@ -229,13 +273,13 @@ class Parameters(object):
 
 
 def default_data(metadata=False, start_year=None):
-    """ Retrieve default parameters from default parameters file.
+    """ Retrieve current-law policy parameters from params.json file.
     """
     #pylint: disable=too-many-locals,too-many-branches
 
     if not os.path.exists(Parameters.params_path):
         from pkg_resources import resource_stream, Requirement
-        path_in_egg = os.path.join("taxcalc", Parameters.PARAM_FILENAME)
+        path_in_egg = os.path.join("taxcalc", Parameters.PARAMS_FILENAME)
         buf = resource_stream(Requirement.parse("taxcalc"), path_in_egg)
         _bytes = buf.read()
         as_string = _bytes.decode("utf-8")
