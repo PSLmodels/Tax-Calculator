@@ -37,8 +37,8 @@
     },
     "_SS_thd50":{
         "long_name": "Threshold for social security taxability 1",
-	    "description": "Under current law, 50% of combined income in range starting at this threshold is subject to social security tax.",
-        "irs_ref": "Form 1040, line 20a&b, calculation (Worksheet, add line 10 to line 8 amounts.)",
+	    "description": "The first threshold for social security benefit taxability: if your provisional income is greater than this threshold, your social security benefit will be taxed.",
+        "irs_ref": "Form 1040, line 20a&b, calculation (Worksheet, line 8.)",
         "notes": "",
         "start_year": 2013,
         "col_var": "MARS",
@@ -51,7 +51,7 @@
     },
      "_SS_thd85":{
         "long_name": "Threshold for social security taxability 2",
-	    "description": "Under current law, 85% of combined income in range starting at this threshold is subject to social security tax.",
+	    "description": "The second threshold for social security taxability: if your provisional income is greater than this threshold, your social security benefit will be taxed at a higher rate.",
         "irs_ref": "Form 1040, line 20a&b, calculation (Worksheet, add line 10 values to line 8).",
         "notes": "",
         "start_year": 2013,
@@ -420,9 +420,9 @@
     },
     "_SS_Earnings_c":{
         "long_name": "Max Taxable Earnings for Social Security",
-	    "description": "Taxpayers with earnings higher than this maximum are not subjected to social security tax.",
-        "irs_ref": "form , lines",
-        "notes": "",
+	    "description": "Only taxpayers with earnings lower than this maximum amount are subjected to social security tax (payroll tax).",
+        "irs_ref": "W-2, Box 4, instructions",
+        "notes": "Payroll tax is not calculated in this calculator.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -760,8 +760,8 @@
 
     "_SS_percentage1":{
         "long_name": "Social security taxable income percentage 1",
-	    "description": "Under current law, this percentage of income in range 25k - 34k is taxable for the filing status of single.",
-        "irs_ref": "Form , line , ",
+	    "description": "Under current law if your provisional income is above the first threshold for social security taxability but below the second threshold, you need to apply this percentage to both the excess of your provisonal income over the first threshold and your social security benefits, and then include the smaller one in your AGI.",
+        "irs_ref": "Form 1040, line 20b, instructions (Social Security Worksheets, line 2 & 13)",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -774,8 +774,8 @@
     },
     "_SS_percentage2":{
         "long_name": "Social security taxable income percentage 2",
-	    "description": "Under current law, this percentage of income in range 34k+ is taxable for the filing status of Single under.",
-        "irs_ref": "Form , line , ",
+	    "description": "Under current law if your provisional income is above the second threshold for social security taxability, you need to apply this percentage to both the excess of your provisional income over the second threshold and your social secuirty benefits, and then include the smaller one in your AGI.",
+        "irs_ref": "Form 1040, line 20b, instructions (Social Security Worksheets, line 15)",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
