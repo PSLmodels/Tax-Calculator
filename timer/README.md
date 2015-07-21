@@ -2,6 +2,16 @@
 Timer Utils Example usage 
 ========
 
+--------------
+Using the time_it.py file:
+--------------
+The script can be ran by calling:  `python time_it.py`
+
+This will print the average time for each function, calling the `run()` method 5 times and 
+disregarding the time it takes to compile the `@jit` functions. It does not save the results into 
+a csv file, so it is much quicker for strictly timing usage.  
+
+
 
 --------------
 With the taxcalc package from latest master:
@@ -67,6 +77,7 @@ C) To time the entire run() function at the highest level
         *
         *
         *
+        
 
 --------------
 Timing initial code before taxcalc refactoring:

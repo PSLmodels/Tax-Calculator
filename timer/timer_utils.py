@@ -24,9 +24,11 @@ class cumulative_timer(object):
     Print results:      print(example_timer_name)
                         ## will print the combined time of code block #1 & #2, along with timer description
     """
-    def __init__(self, name):
+    def __init__(self, name, avg_time=False):
         self.name = name
         self.duration = 0
+        self.times_called = 0
+        self.average = avg_time
 
     @contextmanager
     def time(self):
@@ -34,10 +36,20 @@ class cumulative_timer(object):
         yield
         te = timer()
         self.duration += te - ts
+        self.times_called += 1
+
+    def is_avg(self):
+        return self.average
 
     def __repr__(self):
-        return "~~~ {name} takes {duration}s".format(name=self.name,
-                                                     duration=self.duration)
+        if self.average == True:
+            avg_duration = self.duration / self.times_called
+            return "~~~ {name} called {num} times on average takes {duration}s".format(name=self.name,
+                                                                                       num = self.times_called,
+                                                                                       duration=avg_duration)
+        else:
+            return "~~~ {name} takes {duration}s".format(name=self.name,
+                                                         duration=self.duration)
 
 
 def time_this(function, running_timer=None):
@@ -52,6 +64,7 @@ def time_this(function, running_timer=None):
     """
     @wraps(function)
     def wrapper (*args, **kwargs):
+
         start = timer()
         if  running_timer != None:
             with running_timer.time():
@@ -59,7 +72,12 @@ def time_this(function, running_timer=None):
         else:
             result = function(*args, **kwargs)
         end = timer()
-        print ("~function: '{}' takes : {}s".format(function.__name__, end-start))
+
+        if running_timer is None:
+            print ("~function: '{}' takes : {}s".format(function.__name__, end-start))
+        elif not running_timer.is_avg():
+            print ("~function: '{}' takes : {}s".format(function.__name__, end-start))
+
         return result
     return wrapper
 
