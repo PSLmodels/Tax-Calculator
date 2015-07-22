@@ -139,21 +139,22 @@ class Parameters(object):
         This method implements a policy reform, the provisions of
         which are specified in the year_mods dictionary, that changes
         the values of some policy parameters in this Parameters
-        object.  This year_modes dictionary contains YEAR:MODS pairs,
-        where the integer YEAR key indicates the calendar year for
-        which the reform provisions in the MODS dictionary are
-        implemented.  The MODS dictionary contains PARAM:VALUE pairs
-        in which the PARAM is a string specifying the policy parameter
-        (as used in the params.json default parameter file) and the
-        VALUE is a Python list of of post-reform values for that
-        PARAM.  Beginning in the year following the implementation of
-        a reform provision, the parameter whose value has been changed
-        by the reform continues to be inflation indexed or not be
-        inflation indexed according to that parameter's cpi_inflated
-        value in the params.json file.  But a reform can change the
-        indexing status of a parameter by including in the MODS
-        dictionary a PARAM_cpi:BOOLEAN pair that specifies the
-        post-reform indexing status of the parameter.
+        object.  This year_modes dictionary contains exactly one
+        YEAR:MODS pair, where the integer YEAR key indicates the
+        calendar year for which the reform provisions in the MODS
+        dictionary are implemented.  The MODS dictionary contains
+        PARAM:VALUE pairs in which the PARAM is a string specifying
+        the policy parameter (as used in the params.json default
+        parameter file) and the VALUE is a Python list of post-reform
+        values for that PARAM in that YEAR.  Beginning in the year
+        following the implementation of a reform provision, the
+        parameter whose value has been changed by the reform continues
+        to be inflation indexed or not be inflation indexed according
+        to that parameter's cpi_inflated value in the params.json
+        file.  But a reform can change the indexing status of a
+        parameter by including in the MODS dictionary a term that is a
+        PARAM_cpi:BOOLEAN pair specifying the post-reform indexing
+        status of the parameter.
 
         So, for example, to raise the OASDI (i.e., Old-Age, Survivors,
         and Disability Insurance) maximum taxable earnings beginning
@@ -163,19 +164,19 @@ class Parameters(object):
         {2018: {"_SS_Earnings_c":[500000]}}.
 
         But to raise the maximum taxable earnings in 2018 to $500,000
-        without any subsequent indexing in subsequent years, the
-        YEAR:MODS dictionary would be as follows:
+        without any indexing in subsequent years, the YEAR:MODS
+        dictionary would be as follows:
         {2018: {"_SS_Earnings_c":[500000], "_SS_Earnings_c_cpi":False}}.
 
         And to raise in 2018 the starting AGI for EITC phaseout for
-        married filing jointly filing status (which can varies by
-        number of children from zero to three of more and is inflation
+        married filing jointly filing status (which varies by the
+        number of children from zero to three or more and is inflation
         indexed), the YEAR:MODS dictionary would be as follows:
         {2018: {"_EITC_ps_MarriedJ":[8000, 8500, 9000, 9500]}}.
 
         Parameters
         ----------
-        year_mods: dictionary of YEAR:MODS pairs
+        year_mods: dictionary of a single YEAR:MODS pair
             see Notes above for details on dictionary structure.
 
         Returns
