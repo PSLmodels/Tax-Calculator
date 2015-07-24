@@ -200,28 +200,34 @@ class Parameters(object):
                    'with a single YEAR:MODS pair where YEAR is an integer '
                    '--- not this [{}] value.')
             raise ValueError(msg.format(year))
+        if year != self.current_year:
+            msg = ('Parameters.update method requires year_mods dictionary '
+                   'with a single YEAR:MODS pair where YEAR is equal to '
+                   'current_year={} --- not {} year.')
+            raise ValueError(msg.format(self.current_year, year))
         mods = year_mods[year]
 
-        defaults = self._vals #TODO: requires __init__(...,data=None)
+        paramvals = self._vals #TODO: requires __init__(...,data=None)
 
         num_years_to_expand = (self.start_year + self.budget_years) - year
+
         for name, values in mods.items():
             if name.endswith("_cpi"):
                 continue
-            if name in defaults:
-                default_cpi = defaults[name].get('cpi_inflated', False)
+            if name in paramvals:
+                default_cpi = paramvals[name].get('cpi_inflated', False)
             else:
                 default_cpi = False
             cpi_inflated = mods.get(name + "_cpi", default_cpi)
 
-            if year == self.start_year and year == self.current_year:
+            if year == self.start_year:
                 nval = expand_array(values,
                                     inflate=cpi_inflated,
                                     inflation_rates=self._inflation_rates,
                                     num_years=num_years_to_expand)
                 setattr(self, name, nval)
 
-            elif year <= self.current_year and year >= self.start_year:
+            elif year >= self.start_year:
                 # advance until parameters are in line with current year
                 offset_year = year - self.start_year
                 inf_rates = [self._inflation_rates[offset_year + i]
@@ -240,13 +246,6 @@ class Parameters(object):
                 else:
                     setattr(self, name, nval[num_years_to_skip:])
 
-            else: # year > current_year
-                msg = ("Can't specify a parameter for a year that is in"
-                       " the future because we don't know how to fill in"
-                       " the values for the years between {0} and {1}.")
-                raise ValueError(msg.format(self.current_year, year))
-
-        # set up the '_X = [a, b,...]' variables as 'X = a'
         self.set_year(self._current_year)
 
 
