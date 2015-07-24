@@ -100,11 +100,11 @@ def main():
             },
             2017: {
                 '_AMT_thd_MarriedS': [80000],
-                '_SS_Earnings_c': [500000]
+                '_SS_Earnings_c': [500000], '_SS_Earnings_c_cpi': False
             },
             2019: {
                 '_II_em': [9000],
-                '_SS_Earnings_c': [700000]
+                '_SS_Earnings_c': [700000], '_SS_Earnings_c_cpi': True
             }
         }
 
@@ -217,11 +217,11 @@ def check_ss_earnings_c(ppo, reform, ifactors):
     assert actual[2016] == e2016
     e2017 = reform[2017]['_SS_Earnings_c'][0]
     assert actual[2017] == e2017
-    e2018 = int(round(ifactors[2018] * actual[2017]))
+    e2018 = actual[2017] # no indexing after 2017
     assert actual[2018] == e2018
     e2019 = reform[2019]['_SS_Earnings_c'][0]
     assert actual[2019] == e2019
-    e2020 = int(round(ifactors[2020] * actual[2019]))
+    e2020 = int(round(ifactors[2020] * actual[2019])) # indexing after 2019
     assert actual[2020] == e2020
     e2021 = int(round(ifactors[2021] * actual[2020]))
     assert actual[2021] == e2021
