@@ -205,12 +205,22 @@ class Parameters(object):
                    'with a single YEAR:MODS pair where YEAR is equal to '
                    'current_year={} --- not {} year.')
             raise ValueError(msg.format(self.current_year, year))
-        mods = year_mods[year]
+        if year < self.start_year:
+            msg = ('Parameters.update method requires year_mods dictionary '
+                   'with a single YEAR:MODS pair where YEAR is not less '
+                   'than start__year={} --- not {} year.')
+            raise ValueError(msg.format(self.start_year, year))
+        last_year = self.start_year + self.budget_years
+        if year > last_year:
+            msg = ('Parameters.update method requires year_mods dictionary '
+                   'with a single YEAR:MODS pair where YEAR is not greater '
+                   'than start_year+budget_years={} --- not {} year.')
+            raise ValueError(msg.format(last_year, year))
 
-        paramvals = self._vals #TODO: requires __init__(...,data=None)
-
+        # implement reform provisions included in the single YEAR:MODS pair
         num_years_to_expand = (self.start_year + self.budget_years) - year
-
+        paramvals = self._vals #TODO: requires __init__(...,data=None)
+        mods = year_mods[year]
         for name, values in mods.items():
             if name.endswith("_cpi"):
                 continue
@@ -226,18 +236,14 @@ class Parameters(object):
                                     inflation_rates=self._inflation_rates,
                                     num_years=num_years_to_expand)
                 setattr(self, name, nval)
-
-            elif year >= self.start_year:
-                # advance until parameters are in line with current year
+            else: # if year > self.start_year
                 offset_year = year - self.start_year
                 inf_rates = [self._inflation_rates[offset_year + i]
                              for i in range(0, num_years_to_expand)]
-
                 nval = expand_array(values,
                                     inflate=cpi_inflated,
                                     inflation_rates=inf_rates,
                                     num_years=num_years_to_expand)
-
                 num_years_to_skip = self.current_year - year
                 if self.current_year > self.start_year:
                     cur_val = getattr(self, name)
