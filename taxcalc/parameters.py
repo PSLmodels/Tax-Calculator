@@ -1,8 +1,7 @@
 """ OSPC Tax-Calculator taxcalc Parameters class.
 """
-"""
-PYLINT USAGE: pylint --disable=locally-disabled parameters.py
-"""
+# PYLINT USAGE: pylint --disable=locally-disabled parameters.py
+
 from .utils import expand_array
 import os
 import json
@@ -185,56 +184,70 @@ class Parameters(object):
         """
         #pylint: disable=too-many-locals
 
-        if not all(isinstance(key, int) for key in year_mods.keys()):
-            raise ValueError("Every key must be a year, e.g. 2011, 2012, etc.")
+        # check YEAR value in the single YEAR:MODS dictionary parameter
+        if not isinstance(year_mods, dict):
+            msg = ('Parameters.update method requires year_mods dictionary '
+                   'as its only parameter.')
+            raise ValueError(msg)
+        year_mods_key_list = year_mods.keys()
+        if len(year_mods_key_list) != 1:
+            msg = ('Parameters.update method requires year_mods dictionary '
+                   'with a single YEAR:MODS pair --- not {} pairs.')
+            raise ValueError(msg.format(len(year_mods_key_list)))
+        year = year_mods_key_list[0]
+        if not isinstance(year, int):
+            msg = ('Parameters.update method requires year_mods dictionary '
+                   'with a single YEAR:MODS pair where YEAR is an integer '
+                   '--- not this [{}] value.')
+            raise ValueError(msg.format(year))
+        mods = year_mods[year]
 
-        defaults = default_data(metadata=True)
-        for year, mods in year_mods.items():
+        defaults = self._vals #TODO: requires __init__(...,data=None)
 
-            num_years_to_expand = (self.start_year + self.budget_years) - year
-            for name, values in mods.items():
-                if name.endswith("_cpi"):
-                    continue
-                if name in defaults:
-                    default_cpi = defaults[name].get('cpi_inflated', False)
+        num_years_to_expand = (self.start_year + self.budget_years) - year
+        for name, values in mods.items():
+            if name.endswith("_cpi"):
+                continue
+            if name in defaults:
+                default_cpi = defaults[name].get('cpi_inflated', False)
+            else:
+                default_cpi = False
+            cpi_inflated = mods.get(name + "_cpi", default_cpi)
+
+            if year == self.start_year and year == self.current_year:
+                nval = expand_array(values,
+                                    inflate=cpi_inflated,
+                                    inflation_rates=self._inflation_rates,
+                                    num_years=num_years_to_expand)
+                setattr(self, name, nval)
+
+            elif year <= self.current_year and year >= self.start_year:
+                # advance until parameters are in line with current year
+                offset_year = year - self.start_year
+                inf_rates = [self._inflation_rates[offset_year + i]
+                             for i in range(0, num_years_to_expand)]
+
+                nval = expand_array(values,
+                                    inflate=cpi_inflated,
+                                    inflation_rates=inf_rates,
+                                    num_years=num_years_to_expand)
+
+                num_years_to_skip = self.current_year - year
+                if self.current_year > self.start_year:
+                    cur_val = getattr(self, name)
+                    offset = self.current_year - self.start_year
+                    cur_val[offset:] = nval[num_years_to_skip:]
                 else:
-                    default_cpi = False
-                cpi_inflated = mods.get(name + "_cpi", default_cpi)
+                    setattr(self, name, nval[num_years_to_skip:])
 
-                if year == self.start_year and year == self.current_year:
-                    nval = expand_array(values,
-                                        inflate=cpi_inflated,
-                                        inflation_rates=self._inflation_rates,
-                                        num_years=num_years_to_expand)
-                    setattr(self, name, nval)
+            else: # year > current_year
+                msg = ("Can't specify a parameter for a year that is in"
+                       " the future because we don't know how to fill in"
+                       " the values for the years between {0} and {1}.")
+                raise ValueError(msg.format(self.current_year, year))
 
-                elif year <= self.current_year and year >= self.start_year:
-                    # advance until parameters are in line with current year
-                    offset_year = year - self.start_year
-                    inf_rates = [self._inflation_rates[offset_year + i]
-                                 for i in range(0, num_years_to_expand)]
-
-                    nval = expand_array(values,
-                                        inflate=cpi_inflated,
-                                        inflation_rates=inf_rates,
-                                        num_years=num_years_to_expand)
-
-                    num_years_to_skip = self.current_year - year
-                    if self.current_year > self.start_year:
-                        cur_val = getattr(self, name)
-                        offset = self.current_year - self.start_year
-                        cur_val[offset:] = nval[num_years_to_skip:]
-                    else:
-                        setattr(self, name, nval[num_years_to_skip:])
-
-                else: # year > current_year
-                    msg = ("Can't specify a parameter for a year that is in"
-                           " the future because we don't know how to fill in"
-                           " the values for the years between {0} and {1}.")
-                    raise ValueError(msg.format(self.current_year, year))
-
-            # set up the '_X = [a, b,...]' variables as 'X = a'
-            self.set_year(self._current_year)
+        # set up the '_X = [a, b,...]' variables as 'X = a'
+        self.set_year(self._current_year)
 
 
     @property
