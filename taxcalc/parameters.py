@@ -182,19 +182,16 @@ class Parameters(object):
         -------
         nothing: void
         """
-        #pylint: disable=too-many-locals
-
         # check YEAR value in the single YEAR:MODS dictionary parameter
         if not isinstance(year_mods, dict):
             msg = ('Parameters.update method requires year_mods dictionary '
                    'as its only parameter.')
             raise ValueError(msg)
-        year_mods_key_list = year_mods.keys()
-        if len(year_mods_key_list) != 1:
+        if len(year_mods.keys()) != 1:
             msg = ('Parameters.update method requires year_mods dictionary '
                    'with a single YEAR:MODS pair --- not {} pairs.')
-            raise ValueError(msg.format(len(year_mods_key_list)))
-        year = year_mods_key_list[0]
+            raise ValueError(msg.format(len(year_mods.keys())))
+        year = year_mods.keys()[0]
         if not isinstance(year, int):
             msg = ('Parameters.update method requires year_mods dictionary '
                    'with a single YEAR:MODS pair where YEAR is an integer '
@@ -214,8 +211,7 @@ class Parameters(object):
         # implement reform provisions included in the single YEAR:MODS pair
         num_years_to_expand = (self.start_year + self.budget_years) - year
         paramvals = self._vals #TODO: requires __init__(...,data=None)
-        mods = year_mods[year]
-        for name, values in mods.items():
+        for name, values in year_mods[year].items():
             # determine indexing status of parameter with name
             if name.endswith('_cpi'):
                 continue
@@ -223,10 +219,9 @@ class Parameters(object):
                 default_cpi = paramvals[name].get('cpi_inflated', False)
             else:
                 default_cpi = False
-            cpi_inflated = mods.get(name + '_cpi', default_cpi)
+            cpi_inflated = year_mods[year].get(name + '_cpi', default_cpi)
             # set post-reform values of parameter with name
-            offset_year = year - self.start_year
-            inf_rates = [self._inflation_rates[offset_year + i]
+            inf_rates = [self._inflation_rates[(year - self.start_year) + i]
                          for i in range(0, num_years_to_expand)]
             nval = expand_array(values,
                                 inflate=cpi_inflated,
@@ -234,11 +229,9 @@ class Parameters(object):
                                 num_years=num_years_to_expand)
             if self.current_year > self.start_year:
                 cur_val = getattr(self, name)
-                offset = self.current_year - self.start_year
-                cur_val[offset:] = nval
+                cur_val[(self.current_year - self.start_year):] = nval
             else:
                 setattr(self, name, nval)
-
         self.set_year(self._current_year)
 
 
