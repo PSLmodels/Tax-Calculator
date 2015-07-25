@@ -210,18 +210,13 @@ class Parameters(object):
                    'with a single YEAR:MODS pair where YEAR is not less '
                    'than start__year={} --- not {} year.')
             raise ValueError(msg.format(self.start_year, year))
-        last_year = self.start_year + self.budget_years
-        if year > last_year:
-            msg = ('Parameters.update method requires year_mods dictionary '
-                   'with a single YEAR:MODS pair where YEAR is not greater '
-                   'than start_year+budget_years={} --- not {} year.')
-            raise ValueError(msg.format(last_year, year))
 
         # implement reform provisions included in the single YEAR:MODS pair
         num_years_to_expand = (self.start_year + self.budget_years) - year
         paramvals = self._vals #TODO: requires __init__(...,data=None)
         mods = year_mods[year]
         for name, values in mods.items():
+            # determine indexing status of parameter with name
             if name.endswith('_cpi'):
                 continue
             if name in paramvals:
@@ -229,7 +224,7 @@ class Parameters(object):
             else:
                 default_cpi = False
             cpi_inflated = mods.get(name + '_cpi', default_cpi)
-
+            # set post-reform values of parameter with name
             offset_year = year - self.start_year
             inf_rates = [self._inflation_rates[offset_year + i]
                          for i in range(0, num_years_to_expand)]
