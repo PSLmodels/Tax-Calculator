@@ -55,12 +55,22 @@ def main():
     ppo = Parameters(start_year=syr, budget_years=nyrs, inflation_rates=irates)
 
     # confirm that parameters have current-law values
-    assert_array_equal(ppo._II_em, #pylint: disable=no-member,protected-access
+    assert_array_equal(getattr(ppo, '_AMT_thd_MarriedS'),
+                       expand_array(np.array( #pylint: disable=no-member
+                           [40400, 41050]),
+                                    inflate=True, inflation_rates=iratelist,
+                                    num_years=nyrs))
+    assert_array_equal(getattr(ppo, '_II_em'),
                        expand_array(np.array( #pylint: disable=no-member
                            [3900, 3950, 4000]),
                                     inflate=True, inflation_rates=iratelist,
                                     num_years=nyrs))
-    assert_array_equal(ppo._EITC_c, #pylint: disable=no-member,protected-access
+    assert_array_equal(getattr(ppo, '_SS_Earnings_c'),
+                       expand_array(np.array( #pylint: disable=no-member
+                           [113700, 117000, 118500]),
+                                    inflate=True, inflation_rates=iratelist,
+                                    num_years=nyrs))
+    assert_array_equal(getattr(ppo, '_EITC_c'),
                        expand_array(np.array( #pylint: disable=no-member
                            [[487, 3250, 5372, 6044],
                             [496, 3305, 5460, 6143],
@@ -148,9 +158,9 @@ def check_amt_thd_marrieds(ppo, reform, ifactors):
     Compare actual and expected _AMT_thd_MarriedS parameter values.
     """
     actual = {}
+    arr = getattr(ppo, '_AMT_thd_MarriedS')
     for i in range(0, ppo.budget_years):
-        act = ppo._AMT_thd_MarriedS[i] #pylint: disable=no-member,protected-access
-        actual[ppo.start_year + i] = act
+        actual[ppo.start_year + i] = arr[i]
     assert actual[2013] == 40400
     assert actual[2014] == 41050
     e2015 = reform[2015]['_AMT_thd_MarriedS'][0]
@@ -180,9 +190,9 @@ def check_ii_em(ppo, reform, ifactors):
     Compare actual and expected _II_em parameter values.
     """
     actual = {}
+    arr = getattr(ppo, '_II_em')
     for i in range(0, ppo.budget_years):
-        act = ppo._II_em[i] #pylint: disable=no-member,protected-access
-        actual[ppo.start_year + i] = act
+        actual[ppo.start_year + i] = arr[i]
     assert actual[2013] == 3900
     assert actual[2014] == 3950
     assert actual[2015] == 4000
@@ -207,9 +217,9 @@ def check_ss_earnings_c(ppo, reform, ifactors):
     Compare actual and expected _SS_Earnings_c parameter values.
     """
     actual = {}
+    arr = getattr(ppo, '_SS_Earnings_c')
     for i in range(0, ppo.budget_years):
-        act = ppo._SS_Earnings_c[i] #pylint: disable=no-member,protected-access
-        actual[ppo.start_year + i] = act
+        actual[ppo.start_year + i] = arr[i]
     assert actual[2013] == 113700
     assert actual[2014] == 117000
     assert actual[2015] == 118500
