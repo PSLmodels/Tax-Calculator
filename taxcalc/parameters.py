@@ -211,9 +211,11 @@ class Parameters(object):
 
         # implement reform provisions included in the single YEAR:MODS pair
         num_years_to_expand = (self.start_year + self.budget_years) - year
+        inf_rates = [self._inflation_rates[(year - self.start_year) + i]
+                     for i in range(0, num_years_to_expand)]
         paramvals = self._vals #TODO: requires __init__(...,data=None)
         for name, values in year_mods[year].items():
-            # determine indexing status of parameter with name
+            # determine inflation indexing status of parameter with name
             if name.endswith('_cpi'):
                 continue
             if name in paramvals:
@@ -222,17 +224,16 @@ class Parameters(object):
                 default_cpi = False
             cpi_inflated = year_mods[year].get(name + '_cpi', default_cpi)
             # set post-reform values of parameter with name
-            inf_rates = [self._inflation_rates[(year - self.start_year) + i]
-                         for i in range(0, num_years_to_expand)]
             nval = expand_array(values,
                                 inflate=cpi_inflated,
                                 inflation_rates=inf_rates,
                                 num_years=num_years_to_expand)
             if self.current_year > self.start_year:
-                cur_val = getattr(self, name)
-                cur_val[(self.current_year - self.start_year):] = nval
+                cval = getattr(self, name)
+                cval[(self.current_year - self.start_year):] = nval
+                setattr(self, name, cval)
             else:
-                setattr(self, name, nval)
+                setattr(self, name, nval) #TODO: eliminate this branch
         self.set_year(self._current_year)
 
 
