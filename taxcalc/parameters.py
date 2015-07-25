@@ -228,12 +228,9 @@ class Parameters(object):
                                 inflate=cpi_inflated,
                                 inflation_rates=inf_rates,
                                 num_years=num_years_to_expand)
-            if self.current_year > self.start_year:
-                cval = getattr(self, name)
-                cval[(self.current_year - self.start_year):] = nval
-                setattr(self, name, cval)
-            else:
-                setattr(self, name, nval) #TODO: eliminate this branch
+            cval = getattr(self, name)
+            cval[(self.current_year - self.start_year):] = nval
+            setattr(self, name, cval)
         self.set_year(self._current_year)
 
 
