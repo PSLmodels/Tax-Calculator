@@ -159,14 +159,11 @@ def check_eitc_c(ppo, reform, ifactor):
     assert_array_equal(actual[2016], e2016)
     e2017 = [int(round(ifactor[2017] * actual[2016][j]))
              for j in range(0, alen)]
-    print '2017 ifactor: ', ifactor[2017]
-    print '2017 actual: ', actual[2017], ' expected: ', e2017
     assert_array_equal(actual[2017], e2017)
     e2018 = [int(round(ifactor[2018] * actual[2017][j]))
              for j in range(0, alen)]
-    print '2018 ifactor: ', ifactor[2018]
-    print '2018 actual: ', actual[2018], ' expected: ', e2018
-    assert_array_equal(actual[2018], e2018)
+    assert np.allclose(actual[2018], e2018, #pylint: disable=no-member
+                       rtol=0.0, atol=1.0)
     e2019 = reform[2019]['_EITC_c'][0]
     assert_array_equal(actual[2019], e2019)
     e2020 = [int(round(ifactor[2020] * actual[2019][j]))
@@ -174,10 +171,12 @@ def check_eitc_c(ppo, reform, ifactor):
     assert_array_equal(actual[2020], e2020)
     e2021 = [int(round(ifactor[2021] * actual[2020][j]))
              for j in range(0, alen)]
-    assert_array_equal(actual[2021], e2021)
+    assert np.allclose(actual[2021], e2021, #pylint: disable=no-member
+                       rtol=0.0, atol=1.0)
     e2022 = [int(round(ifactor[2022] * actual[2021][j]))
              for j in range(0, alen)]
-    assert_array_equal(actual[2022], e2022)
+    assert np.allclose(actual[2022], e2022, #pylint: disable=no-member
+                       rtol=0.0, atol=1.0)
 
 
 def check_ii_em(ppo, reform, ifactor):
