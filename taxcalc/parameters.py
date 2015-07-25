@@ -92,9 +92,14 @@ class Parameters(object):
         """
         #pylint: disable=too-many-arguments
 
+        if budget_years < 1:
+            raise ValueError(('Parameters(): budget_years must be '
+                              'at least one.'))
+
         if inflation_rate and inflation_rates:
-            raise ValueError("Can only specify either one constant inflation"
-                             " rate or a list of inflation rates")
+            raise ValueError(('Parameters(): can specify either one constant '
+                              'inflation rate or a list of inflation rates; '
+                              'not both.'))
 
         self._inflation_rates = None
 
@@ -113,6 +118,7 @@ class Parameters(object):
         self._current_year = start_year
         self._start_year = start_year
         self._budget_years = budget_years
+        self._end_year = start_year + budget_years - 1
 
         if data:
             self._vals = data
@@ -184,29 +190,24 @@ class Parameters(object):
         """
         # check YEAR value in the single YEAR:MODS dictionary parameter
         if not isinstance(year_mods, dict):
-            msg = ('Parameters.update method requires year_mods dictionary '
-                   'as its only parameter.')
-            raise ValueError(msg)
+            msg = ('Parameters.update() requires year_mods dictionary '
+                   'as its only parameter --- not a {} type.')
+            raise ValueError(msg.format(type(year_mods)))
         if len(year_mods.keys()) != 1:
-            msg = ('Parameters.update method requires year_mods dictionary '
+            msg = ('Parameters.update() requires year_mods dictionary '
                    'with a single YEAR:MODS pair --- not {} pairs.')
             raise ValueError(msg.format(len(year_mods.keys())))
         year = year_mods.keys()[0]
         if not isinstance(year, int):
-            msg = ('Parameters.update method requires year_mods dictionary '
+            msg = ('Parameters.update() requires year_mods dictionary '
                    'with a single YEAR:MODS pair where YEAR is an integer '
-                   '--- not this [{}] value.')
-            raise ValueError(msg.format(year))
+                   '--- not a {} type.')
+            raise ValueError(msg.format(type(year)))
         if year != self.current_year:
-            msg = ('Parameters.update method requires year_mods dictionary '
+            msg = ('Parameters.update() requires year_mods dictionary '
                    'with a single YEAR:MODS pair where YEAR is equal to '
                    'current_year={} --- not {} year.')
             raise ValueError(msg.format(self.current_year, year))
-        if year < self.start_year:
-            msg = ('Parameters.update method requires year_mods dictionary '
-                   'with a single YEAR:MODS pair where YEAR is not less '
-                   'than start__year={} --- not {} year.')
-            raise ValueError(msg.format(self.start_year, year))
 
         # implement reform provisions included in the single YEAR:MODS pair
         num_years_to_expand = (self.start_year + self.budget_years) - year
@@ -256,6 +257,13 @@ class Parameters(object):
         return self._budget_years
 
 
+    @property
+    def end_year(self):
+        """ Last policy parameter year property.
+        """
+        return self._end_year
+
+
     def increment_year(self):
         """ Increase current_year by one and set parameters for that year.
         """
@@ -266,6 +274,9 @@ class Parameters(object):
     def set_year(self, year):
         """ Set policy parameters to values for specified year.
         """
+        if year < self.start_year or year > self.end_year:
+            msg = 'Parameters.set_year(): year must be in [{},{}] range.'
+            raise ValueError(msg.format(self.start_year, self.end_year))
         for name in self._vals:
             arr = getattr(self, name)
             setattr(self, name[1:], arr[year-self._start_year])
