@@ -222,35 +222,27 @@ class Parameters(object):
         paramvals = self._vals #TODO: requires __init__(...,data=None)
         mods = year_mods[year]
         for name, values in mods.items():
-            if name.endswith("_cpi"):
+            if name.endswith('_cpi'):
                 continue
             if name in paramvals:
                 default_cpi = paramvals[name].get('cpi_inflated', False)
             else:
                 default_cpi = False
-            cpi_inflated = mods.get(name + "_cpi", default_cpi)
+            cpi_inflated = mods.get(name + '_cpi', default_cpi)
 
-            if year == self.start_year:
-                nval = expand_array(values,
-                                    inflate=cpi_inflated,
-                                    inflation_rates=self._inflation_rates,
-                                    num_years=num_years_to_expand)
+            offset_year = year - self.start_year
+            inf_rates = [self._inflation_rates[offset_year + i]
+                         for i in range(0, num_years_to_expand)]
+            nval = expand_array(values,
+                                inflate=cpi_inflated,
+                                inflation_rates=inf_rates,
+                                num_years=num_years_to_expand)
+            if self.current_year > self.start_year:
+                cur_val = getattr(self, name)
+                offset = self.current_year - self.start_year
+                cur_val[offset:] = nval
+            else:
                 setattr(self, name, nval)
-            else: # if year > self.start_year
-                offset_year = year - self.start_year
-                inf_rates = [self._inflation_rates[offset_year + i]
-                             for i in range(0, num_years_to_expand)]
-                nval = expand_array(values,
-                                    inflate=cpi_inflated,
-                                    inflation_rates=inf_rates,
-                                    num_years=num_years_to_expand)
-                num_years_to_skip = self.current_year - year
-                if self.current_year > self.start_year:
-                    cur_val = getattr(self, name)
-                    offset = self.current_year - self.start_year
-                    cur_val[offset:] = nval[num_years_to_skip:]
-                else:
-                    setattr(self, name, nval[num_years_to_skip:])
 
         self.set_year(self._current_year)
 
