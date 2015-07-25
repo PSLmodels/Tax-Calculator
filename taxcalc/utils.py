@@ -126,7 +126,7 @@ def expand_2D(x, inflate, inflation_rates, num_years):
             if inflate:
                 extra = []
                 cur = c[-1]
-                for i in range(0, num_years - len(c)):
+                for i in range(1, num_years - len(c) + 1):
                     inf_idx = i + len(c) - 1
                     cur = np.array(cur*(1. + inflation_rates[inf_idx]))
                     extra.append(cur)
