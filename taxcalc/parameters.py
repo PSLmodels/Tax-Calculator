@@ -173,11 +173,15 @@ class Parameters(object):
         dictionary would be as follows:
         {2018: {"_SS_Earnings_c":[500000], "_SS_Earnings_c_cpi":False}}.
 
-        And to raise in 2018 the starting AGI for EITC phaseout for
-        married filing jointly filing status (which varies by the
-        number of children from zero to three or more and is inflation
-        indexed), the YEAR:MODS dictionary would be as follows:
-        {2018: {"_EITC_ps_MarriedJ":[8000, 8500, 9000, 9500]}}.
+        And to raise in 2019 the starting AGI for EITC phaseout for
+        married filing jointly filing status (which is a two-dimensional
+        policy parameter that varies by the number of children from zero
+        to three or more and is inflation indexed), the YEAR:MODS dictionary
+        would be as follows:
+        {2019: {"_EITC_ps_MarriedJ":[[8000, 8500, 9000, 9500]]}}.
+        Notice the pair of double square brackets around the four values
+        for 2019.  The one-dimensional parameters above require only a pair
+        of single square brackets.
 
         Parameters
         ----------
