@@ -201,7 +201,7 @@ class Parameters(object):
             msg = ('Parameters.update() requires year_mods dictionary '
                    'with a single YEAR:MODS pair --- not {} pairs.')
             raise ValueError(msg.format(len(year_mods.keys())))
-        year = year_mods.keys()[0]
+        year = list(year_mods.keys())[0]
         if not isinstance(year, int):
             msg = ('Parameters.update() requires year_mods dictionary '
                    'with a single YEAR:MODS pair where YEAR is an integer '
