@@ -175,31 +175,24 @@ def test_make_Calculator_user_mods_as_dict():
 
 
 def test_make_Calculator_user_mods_with_cpi_flags(paramsfile):
-
-    calc = Calculator(params=paramsfile.name,
-                      records=tax_dta_path, start_year=1991,
-                      inflation_rates=irates)
-
-    user_mods = {1991: {"_almdep": [7150, 7250, 7400],
-                 "_almdep_cpi": True,
-                 "_almsep": [40400, 41050],
-                 "_almsep_cpi": False,
-                 "_rt5": [0.33 ],
-                 "_rt7": [0.396]}}
-
+    calc = Calculator(params=paramsfile.name, records=tax_dta_path,
+                      start_year=1991, inflation_rates=irates)
+    user_mods = {
+        1991: {"_almdep": [7150, 7250, 7400],
+               "_almdep_cpi": True,
+               "_almsep": [40400, 41050],
+               "_almsep_cpi": False,
+               "_rt5": [0.330],
+               "_rt7": [0.396]}
+    }
+    calc.params.update(user_mods)
     inf_rates = [irates[1991 + i] for i in range(0, 12)]
-    # Create a Parameters object
-    params = Parameters(start_year=1991, inflation_rates=irates)
-    calc2 = calculator(params, puf, mods=user_mods)
-
     exp_almdep = expand_array(np.array([7150, 7250, 7400]), inflate=True,
                        inflation_rates=inf_rates, num_years=12)
-
     exp_almsep_values = [40400] + [41050] * 11
     exp_almsep = np.array(exp_almsep_values)
-
-    assert_array_equal(calc2.params._almdep, exp_almdep)
-    assert_array_equal(calc2.params._almsep, exp_almsep)
+    assert_array_equal(calc.params._almdep, exp_almdep)
+    assert_array_equal(calc.params._almsep, exp_almsep)
 
 
 def test_make_Calculator_empty_params_is_default_params():
