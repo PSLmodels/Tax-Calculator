@@ -267,7 +267,7 @@ def test_Calculator_create_difference_table():
     params = Parameters(start_year=1991, inflation_rates=irates)
     # Create a Public Use File object
     puf = Records(tax_dta)
-    user_mods = '{"1991": { "_rt7": [0.45] }}'
+    user_mods = '{"1991": { "_II_rt7": [0.45] }}'
     calc2 = calculator(params, puf, mods=user_mods)
 
     t1 = create_difference_table(calc, calc2, groupby="weighted_deciles")
