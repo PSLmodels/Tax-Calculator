@@ -1,4 +1,5 @@
-""" OSPC Tax-Calculator taxcalc Parameters class.
+"""
+OSPC Tax-Calculator policy Parameters class.
 """
 # PYLINT USAGE: pylint --disable=locally-disabled parameters.py
 
@@ -11,10 +12,8 @@ DEFAULT_START_YEAR = 2013
 
 
 class Parameters(object):
-    """ Constructor for class that contains federal income tax parameters.
-
-    If both **inflation_rate** and **inflation_rates** are None, the
-    built-in default inflation rates are used.
+    """
+    Constructor for class that contains federal income tax policy parameters.
 
     Parameters
     ----------
@@ -40,6 +39,8 @@ class Parameters(object):
     Raises
     ------
     ValueError:
+        if **budget_years** is less than one.
+    ValueError:
         if **inflation_rate** is not None and **inflation_rates** is not None.
 
     Returns
@@ -59,7 +60,8 @@ class Parameters(object):
 
     @classmethod
     def default_inflation_rate(cls, calyear):
-        """ Return default inflation rate for specified calendar year.
+        """
+        Return default inflation rate for specified calendar year.
 
         Parameters
         ----------
@@ -76,7 +78,8 @@ class Parameters(object):
 
     @classmethod
     def from_file(cls, file_name, **kwargs):
-        """ Read policy parameters from JSON file with specified file_name.
+        """
+        Read policy parameters from JSON file with specified file_name.
         """
         if file_name:
             with open(file_name) as pfile:
@@ -88,18 +91,17 @@ class Parameters(object):
 
     def __init__(self, start_year=DEFAULT_START_YEAR, budget_years=12,
                  inflation_rate=None, inflation_rates=None, data=None):
-        """ Parameters class constructor.
+        """
+        Parameters class constructor.
         """
         #pylint: disable=too-many-arguments
 
         if budget_years < 1:
-            raise ValueError(('Parameters(): budget_years must be '
-                              'at least one.'))
+            raise ValueError('budget_years cannot be less than one')
 
         if inflation_rate and inflation_rates:
-            raise ValueError(('Parameters(): can specify either one constant '
-                              'inflation rate or a list of inflation rates; '
-                              'not both.'))
+            raise ValueError(('can specify either one constant inflation '
+                              'rate or a list of inflation rates; not both'))
 
         self._inflation_rates = None
 
@@ -137,7 +139,22 @@ class Parameters(object):
 
 
     def update(self, year_mods):
-        """ Apply year_mods policy-parameter-reform dictionary to parameters.
+        """
+        Apply year_mods policy-parameter-reform dictionary to parameters.
+
+        Parameters
+        ----------
+        year_mods: dictionary of a single YEAR:MODS pair
+            see Notes below for details on dictionary structure.
+
+        Raises
+        ------
+        ValueError:
+            if **year_mods** is not a dictionary of the expected structure.
+
+        Returns
+        -------
+        nothing: void
 
         Notes
         -----
@@ -182,36 +199,21 @@ class Parameters(object):
         Notice the pair of double square brackets around the four values
         for 2019.  The one-dimensional parameters above require only a pair
         of single square brackets.
-
-        Parameters
-        ----------
-        year_mods: dictionary of a single YEAR:MODS pair
-            see Notes above for details on dictionary structure.
-
-        Returns
-        -------
-        nothing: void
         """
         # check YEAR value in the single YEAR:MODS dictionary parameter
         if not isinstance(year_mods, dict):
-            msg = ('Parameters.update() requires year_mods dictionary '
-                   'as its only parameter --- not a {} type.')
-            raise ValueError(msg.format(type(year_mods)))
+            msg = 'year_mods is not a dictionary'
+            raise ValueError(msg)
         if len(year_mods.keys()) != 1:
-            msg = ('Parameters.update() requires year_mods dictionary '
-                   'with a single YEAR:MODS pair --- not {} pairs.')
-            raise ValueError(msg.format(len(year_mods.keys())))
+            msg = 'year_mods dictionary must contain a single YEAR:MODS pair'
+            raise ValueError(msg)
         year = list(year_mods.keys())[0]
         if not isinstance(year, int):
-            msg = ('Parameters.update() requires year_mods dictionary '
-                   'with a single YEAR:MODS pair where YEAR is an integer '
-                   '--- not a {} type.')
-            raise ValueError(msg.format(type(year)))
+            msg = 'YEAR in the YEAR:MODS pair in year_mods is not an integer'
+            raise ValueError(msg)
         if year != self.current_year:
-            msg = ('Parameters.update() requires year_mods dictionary '
-                   'with a single YEAR:MODS pair where YEAR is equal to '
-                   'current_year={} --- not {} year.')
-            raise ValueError(msg.format(self.current_year, year))
+            msg = 'YEAR={} in year_mods is not equal to current_year={}'
+            raise ValueError(msg.format(year, self.current_year))
 
         # implement reform provisions included in the single YEAR:MODS pair
         num_years_to_expand = (self.start_year + self.budget_years) - year
@@ -240,44 +242,64 @@ class Parameters(object):
 
     @property
     def current_year(self):
-        """ Current policy parameter year property.
+        """
+        Current policy parameter year property.
         """
         return self._current_year
 
 
     @property
     def start_year(self):
-        """ First policy parameter year property.
+        """
+        First policy parameter year property.
         """
         return self._start_year
 
 
     @property
     def budget_years(self):
-        """ Number of policy parameter years property.
+        """
+        Number of policy parameter years property.
         """
         return self._budget_years
 
 
     @property
     def end_year(self):
-        """ Last policy parameter year property.
+        """
+        Last policy parameter year property.
         """
         return self._end_year
 
 
     def increment_year(self):
-        """ Increase current_year by one and set parameters for that year.
+        """
+        Increase current_year by one and set parameters for that year.
         """
         self._current_year += 1
         self.set_year(self._current_year)
 
 
     def set_year(self, year):
-        """ Set policy parameters to values for specified year.
+        """
+        Set policy parameters to values for specified calendar year.
+
+        Parameters
+        ----------
+        year: int
+            calendar year for which to set parameters.
+
+        Raises
+        ------
+        ValueError:
+            if **year** is not in [**start_year** , **end_year**] range.
+
+        Returns
+        -------
+        nothing: void
         """
         if year < self.start_year or year > self.end_year:
-            msg = 'Parameters.set_year(): year must be in [{},{}] range.'
+            msg = 'year passed to set_year() must be in [{},{}] range.'
             raise ValueError(msg.format(self.start_year, self.end_year))
         for name in self._vals:
             arr = getattr(self, name)
@@ -285,7 +307,8 @@ class Parameters(object):
 
 
 def default_data(metadata=False, start_year=None):
-    """ Retrieve current-law policy parameters from params.json file.
+    """
+    Retrieve current-law policy parameters from params.json file.
     """
     #pylint: disable=too-many-locals,too-many-branches
 
