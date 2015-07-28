@@ -2,6 +2,8 @@
 Turns csv output of tax calculator to ascii output with uniform columns
 and transposes data so columns are rows, rows are columns
 
+In ipython notebook, you can import this script as a module, and then use the function from the module.
+
 """
 
 import pandas as pd
