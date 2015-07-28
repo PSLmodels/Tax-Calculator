@@ -82,9 +82,7 @@ def test_variable_inflation_rate_without_reform():
     assert round(grate, 3) == round(0.04, 3)
     # check implied inflation rate between 2021 and 2022
     grate = float(p._II_em[2022 - syr]) / float(p._II_em[2021 - syr]) - 1.0
-    assert round(grate, 3) == round(0.08, 3)
-    # Note: above assert shows that inflation indexing of policy parameters
-    # works like this:  param(t) = param(t-1) * ( 1 + inflation_rate(t) ).
+    assert round(grate, 3) == round(0.04, 3)
 
 
 def test_variable_inflation_rate_with_reform():
@@ -107,7 +105,7 @@ def test_variable_inflation_rate_with_reform():
     assert round(grate, 3) == round(0.04, 3)
     # check implied inflation rate between 2021 and 2022 (after then reform)
     grate = float(p._II_em[2022 - syr]) / float(p._II_em[2021 - syr]) - 1.0
-    assert round(grate, 3) == round(0.08, 3)
+    assert round(grate, 3) == round(0.04, 3)
 
 
 def test_create_parameters_from_file(paramsfile):
