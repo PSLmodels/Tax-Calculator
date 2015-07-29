@@ -584,7 +584,7 @@
     },
     "_NIIT_thd":{
         "long_name": "Net Investment Income Tax income threshold (UIMC)",
-	"description": "If your MAGI (modified AGI) is more than this threshold, you are subject to the additiol medicare tax. ",
+	"description": "If your MAGI (modified AGI) is more than this threshold, you are subject to the additional medicare tax. ",
         "irs_ref": "Form 8960, line 14, instructions. ",
         "notes": "",
         "start_year": 2013,
@@ -597,7 +597,7 @@
     },
     "_II_em_ps":{
         "long_name": "Personal exemption phaseout starting income",
-	    "description": "If your AGI is above this level, your personal exemption will start to decrease at the personal exemption phaseout rate.",
+	"description": "If your AGI is above this level, your personal exemption will start to decrease at the personal exemption phaseout rate (PEP provision). ",
         "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
         "notes": "",
         "start_year": 2013,
@@ -729,7 +729,7 @@
                     [413200, 464850, 223425, 439000, 464850, 223425]]
      },
      "_FICA_ss_trt":{
-        "long_name": "Social security FICA rate",
+        "long_name": "Social security payroll rate",
 	"description": "Social security  tax rate, including both employer and employee.",
         "irs_ref": "Form , line , ",
         "notes": "We do not calculate payroll tax liability, but use this for eligibility for some tax items.",
@@ -760,7 +760,7 @@
 
     "_SS_percentage1":{
         "long_name": "Social security taxable income percentage 1",
-	    "description": "Under current law if your provisional income is above the first threshold for social security taxability but below the second threshold, you need to apply this percentage to both the excess of your provisonal income over the first threshold and your social security benefits, and then include the smaller one in your AGI.",
+	"description": "Under current law if your provisional income is above the first threshold for social security taxability but below the second threshold, you need to apply this percentage to both the excess of your provisonal income over the first threshold and your social security benefits, and then include the smaller one in your AGI.",
         "irs_ref": "Form 1040, line 20b, instructions (Social Security Worksheets, line 2 & 13)",
         "notes": "",
         "start_year": 2013,
@@ -774,7 +774,7 @@
     },
     "_SS_percentage2":{
         "long_name": "Social security taxable income percentage 2",
-	    "description": "Under current law if your provisional income is above the second threshold for social security taxability, you need to apply this percentage to both the excess of your provisional income over the second threshold and your social secuirty benefits, and then include the smaller one in your AGI.",
+	"description": "Under current law if your provisional income is above the second threshold for social security taxability, you need to apply this percentage to both the excess of your provisional income over the second threshold and your social secuirty benefits, and then include the smaller one in your AGI.",
         "irs_ref": "Form 1040, line 20b, instructions (Social Security Worksheets, line 15)",
         "notes": "",
         "start_year": 2013,
@@ -788,7 +788,7 @@
     },
     "_II_prt":{
         "long_name": "Personal exemption phaseout rate",
-	    "description": "Personal exemption amount will decrease by this rate for each dollor of AGI exceeding exemption phaseout start.",
+	"description": "Personal exemption amount will decrease by this rate for each dollor of AGI exceeding exemption phaseout start.",
         "irs_ref": "Form , line , ",
         "notes": "",
         "start_year": 2013,
@@ -801,7 +801,7 @@
     },
      "_ID_Medical_frt":{
         "long_name": "Deduction for medical expenses; floor as a percent of AGI",
-	    "description": "You are eligible to deduct the portion of your medical expense exceeding this percentage of AGI.",
+	"description": "You are eligible to deduct the portion of your medical expense exceeding this percentage of AGI.",
         "irs_ref": "Form 1040 Schedule A, line 3, in-line. ",
         "notes": "This rate cannot be decreased to lower than .1 due to limited data on non-itemizers.",
         "start_year": 2013,
@@ -815,7 +815,7 @@
     },
      "_ID_Charity_frt":{
         "long_name": "Deduction for charitable contributions; floor as a percent of AGI",
-        "description": "You are eligible to deduct the portion of your charitable expense exceeding this percentage of AGI.",
+        "description": "Taxpayers are eligible to deduct the portion of their charitable expense exceeding this percentage of AGI.",
         "irs_ref": "",
         "notes": "This parameter allows for implementation of Option 52 from https://www.cbo.gov/sites/default/files/cbofiles/attachments/49638-BudgetOptions.pdf.",
         "start_year": 2013,
@@ -829,9 +829,9 @@
     },
      "_ID_Casualty_frt":{
         "long_name": "Deduction for casualty loss; floor as a percent of AGI",
-	    "description": "You are eligible to deduct the portion of your casualty loss exceeding this percentage of AGI.",
+	"description": "You are eligible to deduct the portion of your casualty loss exceeding this percentage of AGI.",
         "irs_ref": "Form 4684, line 17, in-line.",
-        "notes": "This rate cannot be decreased to lower than 0.1 due to limited data on non-itemizers. ",
+        "notes": "This rate cannot be decreased to lower than 0.1 due to lack of data. ",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -842,9 +842,9 @@
     },
      "_ID_Miscellaneous_frt":{
         "long_name": "Deduction for miscellaneous expenses; floor as a percent of AGI",
-	    "description": "You are eligible to deduct the portion of your miscellaneous expense exceeding this percentage of AGI.",
+	"description": "Taxpayers are eligible to deduct the portion of their miscellaneous expense exceeding this percentage of AGI.",
         "irs_ref": "Form 1040 Schedule A, line 28, instructions. ",
-        "notes": "This rate cannot be decreased to lower than 0.02 due to limited data on non-itemizers.",
+        "notes": "This rate cannot be decreased to lower than 0.02 due to lack of data. ",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -855,9 +855,9 @@
     },
      "_ID_Charity_crt_Cash":{
         "long_name": "Deduction for charitable cash contributions; ceiling as a percent of AGI",
-	    "description": "The deduction for Charity in form of cash is capped at this percentage of AGI. ",
+	"description": "The deduction for Charity in form of cash is capped at this percentage of AGI. ",
         "irs_ref": "Pub. 526, Limits on Deductions: 50% Limit Organizations. ",
-        "notes": "This rate cannot be increased to higher 0.5 due to limited data on non-itemizers. ",
+        "notes": "This rate cannot be increased to higher 0.5 due to lack of data. ",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -870,7 +870,7 @@
         "long_name": "Deduction for charitable asset contributions; ceiling as a percent of AGI",
 	    "description": "The deduction for Charity contributed in the form of assets is capped at this percentage of AGI. ",
         "irs_ref": "Pub 526, Limits on Deductions: Special 30% Limit for Capital Gain Property.",
-        "notes": "This rate cannot be increased to higher than 0.3 due to limited data on non-itemizers. ",
+        "notes": "This rate cannot be increased to higher than 0.3 due to lack of data. ",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -920,7 +920,7 @@
     },
     "_NIIT_trt":{
         "long_name": "Net Investment Income Tax rate (UIMC)",
-	"description": "Also called Unearned Income Medicare Distribution Tax. You will be taxed at this rate if your MAGI is higher than NIIT threshold.",
+	"description": "Also called Unearned Income Medicare Contribution Tax. You will be taxed at this rate if your MAGI is higher than NIIT threshold.",
         "irs_ref": "Form 8960, line 21, in-line. ",
         "notes": "",
         "start_year": 2013,
@@ -985,9 +985,9 @@
     },
     "_ACTC_ChildNum":{
         "long_name": "Additional child tax credit minimum number of qualified children",
-	"description": "Only families with this number of qualified children or more, are qualified for additional child tax credit",
-        "irs_ref": "Form , line , ",
-        "notes": "HC",
+	"description": "Families with this number of qualified children or more, are qualified for an alternative way to calculate additional child tax credit",
+        "irs_ref": "Form 8812, Part III. ",
+        "notes": "",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -997,10 +997,10 @@
         "value":     [3]        
     },
     "_ALD_StudentLoan_HC":{
-        "long_name": "Deduction for student loan interest haircut",
-	"description": "This pencentage can be applied to limit the student loan interest deduction allowed. ",
+        "long_name": "Adjustment for student loan interest haircut",
+	"description": "This pencentage can be applied to limit the student loan interest adjustment allowed. ",
         "irs_ref": "Form 1040, line 33",
-        "notes": "The final deduction amount will be (1- Haircut) * Student Loan Interest. ",
+        "notes": "The final adjustment amount will be (1- Haircut) * Student Loan Interest. ",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -1010,10 +1010,10 @@
         "value":     [0]        
     },
     "_ALD_SelfEmploymentTax_HC":{
-        "long_name": "Deduction for self-employment tax haircut",
-	"description": "This percentage would limit the employer equivalent portion of self-employment deduction if greater than zero ",
+        "long_name": "Adjustment for self-employment tax haircut",
+	"description": "This percentage would limit the employer equivalent portion of self-employment adjustment if greater than zero ",
         "irs_ref": "Form 1040, line 27",
-        "notes": "The final deduction amount would be (1 - Haircut) * Self Employment Tax Deduction. ",
+        "notes": "The final adjustment amount would be (1 - Haircut) * Self Employment Tax Adjustment. ",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -1023,10 +1023,10 @@
         "value":     [0]        
     },
     "_ALD_SelfEmp_HealthIns_HC":{
-        "long_name": "Deduction for self employed health insurance haircut",
-	    "description": "This percentage would limit the health insurance deduction for self-employed taxpayers. ",
+        "long_name": "Adjustment for self employed health insurance haircut",
+	"description": "This percentage would limit the health insurance adjustment for self-employed taxpayers. ",
         "irs_ref": "Form 1040, line 29",
-        "notes": "The final deduction amount would be (1 - Haircut) * self-employed health insurance deduction. ",
+        "notes": "The final adjustment amount would be (1 - Haircut) * self-employed health insurance adjustment. ",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -1036,10 +1036,10 @@
         "value":     [0]        
     },
     "_ALD_KEOGH_SEP_HC":{
-        "long_name": "Deduction for payment to either KEOGH or SEP plan haircut",
-	    "description": "Under current law, payments to Keogh or SEP plans can be fully deducted from gross income. You can use this haircut to limit the deduction allowed. ",
+        "long_name": "Adjustment for payment to either KEOGH or SEP plan haircut",
+	"description": "Under current law, payments to Keogh or SEP plans can be fully deducted from gross income. You can use this haircut to limit the adjustment allowed. ",
         "irs_ref": "Form 1040, line 25",
-        "notes": "The final deduction amount is (1 - Haircut) * KEOGH/SEP plan payments",
+        "notes": "The final adjustment amount is (1 - Haircut) * KEOGH/SEP plan payments",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -1050,10 +1050,10 @@
         "value":     [0]        
     },
     "_ALD_EarlyWithdraw_HC":{
-        "long_name": "Deduction for forfeited interest penalty haircut",
-	    "description": "Under current law, early withdraw penalty can be fully deducted from gross income. You can use this haircut to limit the deduction allowed.",
+        "long_name": "Adjustment for forfeited interest penalty haircut",
+	"description": "Under current law, early withdraw penalty can be fully deducted from gross income. You can use this haircut to limit the adjustment allowed.",
         "irs_ref": "Form 1040, line 30",
-        "notes": "HC",
+        "notes": "The final adjustment amount is (1 - Haircut) * Early withdraw penalty",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -1064,10 +1064,10 @@
         "value":     [0]        
     },
     "_ALD_Alimony_HC":{
-        "long_name": "Deduction for alimony payment haircut",
-	"description": "Under current law, the full amount of alimony payment is taken as a deduction from gross income in arriving at AGI. You can use this hair cut to limit the deduction allowed.",
+        "long_name": "Adjustment for alimony payment haircut",
+	"description": "Under current law, the full amount of alimony payment is taken as an adjustment from gross income in arriving at AGI. You can use this hair cut to limit the deduction allowed.",
         "irs_ref": "Form 1040, line 31",
-        "notes": "The fil adjustment amount would be (1 - Haircut) * Alimony Payments",
+        "notes": "The final adjustment amount would be (1 - Haircut) * Alimony Payments",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -1182,7 +1182,7 @@
     },
      "_AMT_CG_rt1":{
         "long_name": "Long term capital gain and qualified dividend rate1",
-	"description": "Capital gain and qualified dividend (stacked on top of regular income) below threshold 1 will be taxed at this rate. ",
+	"description": "Capital gain and qualified dividends (stacked on top of regular income) below threshold 1 will be taxed at this rate. ",
 	"irs_ref": "Form 6251, line 46, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -1220,7 +1220,7 @@
     },
         "_AMT_CG_thd1":{
         "long_name": "Long term capital gain and qualified dividend threshold 1",
-	"description": "The capital gain and dividends (stacked on top of regular income) below this threshold would be taxed at capital gain rate 1.",
+	"description": "The capital gain plus dividends portion, stacked last, of income below this threshold is taxed at capital gain rate 1.",
 	"irs_ref": "Form 6251, line 43, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -1234,7 +1234,7 @@
     },
         "_AMT_CG_thd2":{
         "long_name": "Long term capital gain and qualified dividend threshold 2",
-	"description": "The capital gain and dividends (stacked on top of regular income) above this threshold would be taxed at capital gain rate 3.",
+	"description": "The capital gain plus dividends portion, stacked last, of income above this threshold is taxed at capital gain rate 3.",
 	"irs_ref": "Form 6251, line 49, in-line. ",
         "start_year": 2013,
         "col_var": "",
