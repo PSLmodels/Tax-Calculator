@@ -37,7 +37,7 @@
     },
     "_SS_thd50":{
         "long_name": "Threshold for social security taxability 1",
-	"description": "The first threshold for social security benefit taxability: if your provisional income is greater than this threshold, your social security benefit will be taxed.",
+	"description": "The first threshold for social security benefit taxability: if your provisional income is greater than this threshold, your social security benefit will be subject to tax.",
         "irs_ref": "Form 1040, line 20a&b, calculation (Worksheet, line 8.)",
         "notes": "",
         "start_year": 2013,
@@ -51,7 +51,7 @@
     },
      "_SS_thd85":{
         "long_name": "Threshold for social security taxability 2",
-	"description": "The second threshold for social security taxability: if your provisional income is greater than this threshold, your social security benefit will be taxed at a higher rate.",
+	"description": "The second threshold for social security taxability: if your provisional income is greater than this threshold, your social security benefit will be subject to tax.",
         "irs_ref": "Form 1040, line 20a&b, calculation (Worksheet, add line 10 values to line 8).",
         "notes": "",
         "start_year": 2013,
@@ -65,7 +65,7 @@
     },
      "_ACTC_rt":{
         "long_name": "Additional child tax credit rate",
-	"description": "This rate  is for the refundable portion of CTC.",
+	"description": "This is the fraction of earning used in the calculation ACTC.",
         "irs_ref": "Form 8812, line 6, inline.",
         "notes": "",
         "start_year": 2013,
@@ -98,7 +98,7 @@
 
      "_AMT_Child_em":{
         "long_name": "Child AMT exemption additional income base",
-	"description": "Add this amount to one child's income to get the total income base for exemption.",
+	"description": "The child's AMT exemption is capped by this amount plus the child's earned income.",
         "irs_ref": "Form 6251, line 29, instruction.",
         "notes": "",
         "start_year": 2013,
@@ -150,7 +150,7 @@
     },
      "_II_em":{
         "long_name": "Personal and dependent exemption amount",
-	"description": "This is the unit amount to be exempted from tax. Total exemption would also depend on the number of exemptions you're eligible.",
+	"description":  "Subtracted from AGI in the calculation of taxable income, per taxpayer and dependent.",
         "irs_ref": "IRS reference: form 1040, line 42. ",
         "notes": "",
         "start_year": 2013,
@@ -168,7 +168,7 @@
     },
      "_KT_c_Age":{
         "long_name": "Maximum age subject to Kiddie Tax",
-	"description": "Under this age, the individual is subject to either AMT or Kiddie Tax.",
+	"description": "At or under this age, the individual is subject to Kiddie Tax.",
         "irs_ref": "Form 6251, line 28, instruction.",
         "notes": "",
         "start_year": 2013,
@@ -221,7 +221,7 @@
         
     },	
     "_DCC_c":{
-        "long_name": "Max dependent care credit",
+        "long_name": "Max dependent care credit per dependent",
 	"description": "",
         "irs_ref": "Form 2441, line 3c, in-line.",
         "notes": "",
@@ -253,7 +253,7 @@
     },	
      "_ACTC_Income_thd":{
         "long_name": "ACTC income threshold",
-	"description": "The portion of earned income below this threshold does not count as base for the additional earned income credit.",
+	"description": "The portion of earned income below this threshold does not count as base for the additional child tax credit.",
         "irs_ref": "Form 2441, line 3, in-line.",
         "notes": "",
         "start_year": 2013,
@@ -349,7 +349,7 @@
     },
      "_LLC_Expense_c":{
         "long_name": "Lifetime learning credit expense limit",
-	"description": "The maximum expense eligible for lifetime learning credit.",
+	"description": "The maximum expense eligible for lifetime learning credit, per child.",
         "irs_ref": "Form 8863, line 11, in-line.",
         "notes": "",
         "start_year": 2013,
@@ -376,8 +376,8 @@
         
     },	
     "_ID_ps":{
-        "long_name": "Itemized deduction phaseout AGI start (Pease)",
-	"description": "The deductible amount of itemizer deduction will be reduced for taxpayers with AGI higher than this level.",
+        "long_name": "Itemized deduction phaseout AGI start (Pease provision)",
+	"description": "The itemized deductions will be reduced for taxpayers with AGI higher than this level.",
         "irs_ref": "Form 1040, line 42, instruction (table).",
         "notes": "",
         "start_year": 2013,
@@ -407,7 +407,7 @@
     },	
      "_EITC_prt":{
         "long_name": "Earned income credit phaseout rate",
-	"description": "Earned income credit will decrease at the this rate when AGI is higher than EIC phaseout start. ",
+	"description": "Earned income credit will decrease at the this rate when AGI is higher than EITC phaseout start. ",
         "irs_ref": "Form 1040, line 66a&b, calculation (table: Max_EIC_base_income/Phaseout_Base).",
         "notes": "",
         "start_year": 2013,
@@ -420,7 +420,7 @@
     },
     "_SS_Earnings_c":{
         "long_name": "Max Taxable Earnings for Social Security",
-	"description": "Only taxpayers with earnings lower than this maximum amount are subjected to social security tax (payroll tax).",
+	"description": "Only earnings lower than this maximum amount are subjected to social security tax (OASDI tax).",
         "irs_ref": "W-2, Box 4, instructions",
         "notes": "Payroll tax is not calculated in this calculator.",
         "start_year": 2013,
