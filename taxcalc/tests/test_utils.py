@@ -49,18 +49,10 @@ def test_expand_1D_short_array():
 
 def test_expand_1D_variable_rates():
     x = np.array([4, 5, 9], dtype='f4')
-    irates = [0.02, 0.02, 0.02, 0.03, 0.035]
+    irates = [0.02, 0.02, 0.03, 0.035]
     exp2 = []
     cur = 9.0
-    for i in range(1, 3):
-        idx = i + len(x) - 1
-        cur *= (1.0 + irates[idx])
-        exp2.append(cur)
-
-    exp1 = np.array([4, 5, 9])
-    exp = np.zeros(5)
-    exp[:3] = exp1
-    exp[3:] = exp2
+    exp = np.array([4, 5, 9, 9*1.03, 9*1.03*1.035])
     res = expand_1D(x, inflate=True, inflation_rates=irates, num_years=5)
     assert(np.allclose(exp.astype('f4', casting='unsafe'), res))
 
@@ -74,19 +66,15 @@ def test_expand_1D_scalar():
 
 def test_expand_1D_accept_None():
     x = [4., 5., None]
-    irates = [0.02, 0.02, 0.02, 0.03, 0.035]
-    exp2 = []
-    cur = 5.0
-    short_x = np.array([4, 5])
-    for i in range(1, 4):
-        idx = i + len(short_x) - 1
-        cur *= (1.0 + irates[idx])
-        exp2.append(cur)
-
-    exp1 = np.array([4, 5])
-    exp = np.zeros(5)
-    exp[:2] = exp1
-    exp[2:] = exp2
+    irates = [0.02, 0.02, 0.03, 0.035]
+    exp = []
+    cur = 5.0 * 1.02
+    exp = [4., 5., cur]
+    cur *= 1.03
+    exp.append(cur)
+    cur *= 1.035
+    exp.append(cur)
+    exp = np.array(exp)
     res = expand_array(x, inflate=True, inflation_rates=irates, num_years=5)
     assert(np.allclose(exp.astype('f4', casting='unsafe'), res))
 
