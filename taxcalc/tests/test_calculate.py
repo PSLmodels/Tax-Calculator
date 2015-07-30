@@ -182,7 +182,9 @@ def test_make_Calculator_increment_years_first():
     params = Parameters(start_year=2008, inflation_rates=irates,
                         budget_years=len(irates))
     # Create a Public Use File object
-    puf = Records(tax_dta, start_year=2008)
+
+    tax_dta2 = pd.read_csv(tax_dta_path, compression='gzip')
+    puf = Records(tax_dta2, start_year=2008)
     # specify reform in user_mods dictionary
     user_mods = {2010: { "_STD_Aged": [[1501, 1202, 1502, 1203, 1504, 1204]]}}
     user_mods[2010]['_II_em'] = [5000, 6000]
@@ -190,7 +192,6 @@ def test_make_Calculator_increment_years_first():
 
     # create Calculator object with params as modified by user_mods
     calc = calculator(params, puf, mods=user_mods)
-
 
     exp_STD_Aged = np.array([[1500, 1200, 1200, 1500, 1500, 1200],
                           [1550, 1200, 1200, 1550, 1550, 1200],
