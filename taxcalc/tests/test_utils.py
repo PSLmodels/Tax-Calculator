@@ -497,10 +497,14 @@ def csvfile():
 @pytest.yield_fixture
 def asciifile():
 
-    txt = ("A              \t1              \t100            \t123.45         \n"
-           "B              \t2              \t200            \t678.912        \n"
-           "C              \t3              \t300            \t000.000        \n"
-           "D              \t4              \t400            \t87             \n"
+    txt = ("A              \t1              \t100            \t123.45"
+           "         \n"
+           "B              \t2              \t200            \t678.912"
+           "        \n"
+           "C              \t3              \t300            \t000.000"
+           "        \n"
+           "D              \t4              \t400            \t87"
+           "             \n"
            "EFGH           \t0              \t500            \t92             "
            )
 
