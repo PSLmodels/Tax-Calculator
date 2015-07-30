@@ -710,11 +710,11 @@ def vcs_function(vcs, suffix):
 
 def get_versions(default=DEFAULT, verbose=False):
     # returns dict with two keys: 'version' and 'full'
-    assert versionfile_source is not None,
-    "please set versioneer.versionfile_source"
+    assert (versionfile_source is not None,
+            "please set versioneer.versionfile_source")
     assert tag_prefix is not None, "please set versioneer.tag_prefix"
-    assert parentdir_prefix is not None,
-    "please set versioneer.parentdir_prefix"
+    assert (parentdir_prefix is not None,
+            "please set versioneer.parentdir_prefix")
     assert VCS is not None, "please set versioneer.VCS"
 
     # I am in versioneer.py, which must live at the top of the source tree,
