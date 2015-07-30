@@ -9,5 +9,4 @@ six
 toolz
 
 # for ReadTheDocs
-sphinx
-sphinxcontrib-napoleon==0.2.11
+sphinx>=1.3

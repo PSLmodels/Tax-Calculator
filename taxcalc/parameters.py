@@ -109,7 +109,8 @@ class Parameters(object):
                     # advance until the parameter is in line with the current
                     # year
                     num_years_to_skip=self.current_year - year
-                    inf_rates = [self.__rates[year + i]
+                    offset_year = year - self.start_year
+                    inf_rates = [self._inflation_rates[offset_year + i]
                                  for i in range(0, num_years_to_expand)]
 
                     nval = expand_array(values,
