@@ -97,7 +97,7 @@ def test_expand_2D_variable_rates():
     irates = [0.02, 0.02, 0.02, 0.03, 0.035]
 
     exp2 = []
-    for i in range(0, 4):
+    for i in range(1, 5):
         idx = i + len(x) - 1
         cur = np.array(cur*(1.0 + irates[idx]))
         print("cur is ", cur)
@@ -368,10 +368,16 @@ def test_expand_2D_partial_expand():
                  [38000, 74000, 36900, 49400, 73800, 36900],
                  [40000, 74900, 37450, 50200, 74900, 37450]]
 
+    # NOTE: the following comment is false as can be seen in the
+    #       test_variable_inflation_rate_without_reform() test in
+    #       test_parameters.py; an inf_rates list of only three rates
+    #       avoids an index error only when the expand_2D() function
+    #       incorrectly uses a different indexing scheme than the
+    #       expand_1D() function.
     # We have three years worth of data, need 4 years worth,
     # but we only need the inflation rate for year 3 to go
     # from year 3 -> year 4
-    inf_rates = [0.02, 0.02, 0.03]
+    inf_rates = [0.0, 0.02, 0.02, 0.03]
 
     exp1 = 40000*1.03
     exp2 = 74900*1.03
@@ -457,7 +463,7 @@ def test_expand_2D_accept_None_additional_row():
 
     exp = np.array(exp).astype('i4', casting='unsafe')
 
-    inflation_rates = [0.015, 0.02, 0.02, 0.03]
+    inflation_rates = [0.0, 0.015, 0.02, 0.02, 0.03]
 
     res = expand_array(_II_brk2, inflate=True, inflation_rates=inflation_rates, num_years=5)
 

@@ -157,49 +157,44 @@ def test_make_Calculator_json():
 
 
 def test_make_Calculator_user_mods_as_dict():
-
-    # Create a Params object
+    # create a Params object
     params = Parameters(start_year=1991, inflation_rates=irates)
-
-    # Create a Public Use File object
+    # create a Public Use File object
     puf = Records(tax_dta)
-
-    user_mods = {1991: { "_STD_Aged": [[1400, 1200]] }}
+    # specify reform in user_mods dictionary
+    user_mods = {1991: {'_STD_Aged': [[1400, 1200, 1000, 1000, 1000, 1000]]}}
     user_mods[1991]['_II_em'] = [3925, 4000, 4100]
     user_mods[1991]['_II_em_cpi'] = False
-    calc2 = calculator(params, puf, mods=user_mods)
-    assert calc2.params.II_em == 3925
+    # create Calculator object with params as modified by user_mods
+    calc = calculator(params, puf, mods=user_mods)
+    # check that calc.params values are equal to expected post-reform values
+    assert calc.params.II_em == 3925
     exp_II_em = [3925, 4000] + [4100] * 10
-    assert_array_equal(calc2.params._II_em, np.array(exp_II_em))
-    assert_array_equal(calc2.params.STD_Aged, np.array([1400, 1200]))
+    assert_array_equal(calc.params._II_em,
+                       np.array(exp_II_em))
+    assert_array_equal(calc.params.STD_Aged,
+                       np.array([1400, 1200, 1000, 1000, 1000, 1000]))
 
 
 def test_make_Calculator_user_mods_with_cpi_flags(paramsfile):
-
-    calc = Calculator(params=paramsfile.name,
-                      records=tax_dta_path, start_year=1991,
-                      inflation_rates=irates)
-
-    user_mods = {1991: {"_almdep": [7150, 7250, 7400],
-                 "_almdep_cpi": True,
-                 "_almsep": [40400, 41050],
-                 "_almsep_cpi": False,
-                 "_rt5": [0.33 ],
-                 "_rt7": [0.396]}}
-
+    calc = Calculator(params=paramsfile.name, records=tax_dta_path,
+                      start_year=1991, inflation_rates=irates)
+    user_mods = {
+        1991: {"_almdep": [7150, 7250, 7400],
+               "_almdep_cpi": True,
+               "_almsep": [40400, 41050],
+               "_almsep_cpi": False,
+               "_rt5": [0.330],
+               "_rt7": [0.396]}
+    }
+    calc.params.update(user_mods)
     inf_rates = [irates[1991 + i] for i in range(0, 12)]
-    # Create a Parameters object
-    params = Parameters(start_year=1991, inflation_rates=irates)
-    calc2 = calculator(params, puf, mods=user_mods)
-
     exp_almdep = expand_array(np.array([7150, 7250, 7400]), inflate=True,
                        inflation_rates=inf_rates, num_years=12)
-
     exp_almsep_values = [40400] + [41050] * 11
     exp_almsep = np.array(exp_almsep_values)
-
-    assert_array_equal(calc2.params._almdep, exp_almdep)
-    assert_array_equal(calc2.params._almsep, exp_almsep)
+    assert_array_equal(calc.params._almdep, exp_almdep)
+    assert_array_equal(calc.params._almsep, exp_almsep)
 
 
 def test_make_Calculator_empty_params_is_default_params():
@@ -267,7 +262,7 @@ def test_Calculator_create_difference_table():
     params = Parameters(start_year=1991, inflation_rates=irates)
     # Create a Public Use File object
     puf = Records(tax_dta)
-    user_mods = '{"1991": { "_rt7": [0.45] }}'
+    user_mods = '{"1991": { "_II_rt7": [0.45] }}'
     calc2 = calculator(params, puf, mods=user_mods)
 
     t1 = create_difference_table(calc, calc2, groupby="weighted_deciles")
