@@ -39,29 +39,29 @@ def update_income(behavioral_effect, calcY):
 
 def behavior(calcX, calcY, elast_wrt_atr=0.4, inc_effect=0.15,
              update_income=update_income):
-	"""
+    """
     Modify plan Y records to account for micro-feedback effect that arrise
     from moving from plan X to plan Y.
     """
 
     # Calculate marginal tax rates for plan x and plan y.
-	mtrX = calcX.mtr('e00200')
+    mtrX = calcX.mtr('e00200')
 
-	mtrY = calcY.mtr('e00200')
+    mtrY = calcY.mtr('e00200')
 
-	# Calculate the percent change in after-tax rate.
-	pct_diff_atr = ((1-mtrY) - (1-mtrX))/(1-mtrX)
+    # Calculate the percent change in after-tax rate.
+    pct_diff_atr = ((1-mtrY) - (1-mtrX))/(1-mtrX)
 
-	calcY_behavior = copy.deepcopy(calcY)
+    calcY_behavior = copy.deepcopy(calcY)
 
-	# Calculate the magnitude of the substitution and income effects. 
-	substitution_effect = (elast_wrt_atr * pct_diff_atr * 
-							(calcX._ospctax))
+    # Calculate the magnitude of the substitution and income effects.
+    substitution_effect = (elast_wrt_atr * pct_diff_atr *
+                           (calcX._ospctax))
 
-	calcY_behavior = update_income(substitution_effect, calcY_behavior)
+    calcY_behavior = update_income(substitution_effect, calcY_behavior)
 
-	income_effect = inc_effect * (calcY_behavior._ospctax - calcX._ospctax)
+    income_effect = inc_effect * (calcY_behavior._ospctax - calcX._ospctax)
 
-	calcY_behavior = update_income(income_effect, calcY_behavior)
+    calcY_behavior = update_income(income_effect, calcY_behavior)
 
-	return calcY_behavior
+    return calcY_behavior
