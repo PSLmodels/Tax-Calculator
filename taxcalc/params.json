@@ -65,7 +65,7 @@
     },
      "_ACTC_rt":{
         "long_name": "Additional child tax credit rate",
-	"description": "This is the fraction of earning used in the calculation ACTC.",
+	"description": "This is the fraction of earning used in calculating ACTC. ",
         "irs_ref": "Form 8812, line 6, inline.",
         "notes": "",
         "start_year": 2013,
@@ -277,7 +277,7 @@
     },	
     "_ETC_pe_Single":{
         "long_name": "Education tax credit phaseout ends (Single)",
-	"description": "The education tax credit will be zero for those tax payers of single filing status with modified AGI level (in thousands) higher than this level.",
+	"description": "The education tax credit will be zero for those taxpayers of single filing status with modified AGI (in thousands) higher than this level.",
         "irs_ref": "Form 8863, line 13, inline.",
         "notes": "",
         "start_year": 2013,
@@ -295,7 +295,7 @@
     },
     "_ETC_pe_Married":{
         "long_name": "Education tax credit phaseout ends (Married)",
-	"description": "The education tax credit will be zero for those tax payers of married filing status with modified AGI level (in thousands) higher than this level.",
+	"description": "The education tax credit will be zero for those taxpayers of married filing status with modified AGI level (in thousands) higher than this level.",
         "irs_ref": "Form 8863, line 13, inline.",
         "notes": "",
         "start_year": 2013,
@@ -313,7 +313,7 @@
     },	
      "_FEI_ec_c":{
         "long_name": "Maximum foreign earned income exclusion",
-	"description": "This amount is the maximum foreign earned income one individual could exclude from gross income.",
+	"description": "This amount is the maximum foreign earned income taxpayers could exclude from gross income.",
         "irs_ref": "Form 2555, line 29b, instruction.",
         "notes": "",
         "start_year": 2013,
@@ -394,7 +394,7 @@
     },
      "_EITC_rt":{
         "long_name": "Earned income credit rate",
-	"description": "If your AGI is below AGI phaseout start, you can apply this rate to your earned income to calculate the credit amount eligible. ",
+	"description": "If one taxpayer's AGI is below AGI phaseout start, he or she can apply this rate to your earned income to calculate the credit amount eligible. ",
         "irs_ref": "Form 1040, line 66a&b, calculation (table: Max_EIC/Max_EIC_base_income).",
         "notes": "Range of this parameter is between zero and one. ",
         "start_year": 2013,
