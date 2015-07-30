@@ -2,6 +2,7 @@
 # it so I'm keeping it in this separate module for now in case we ever want
 # it back.
 
+
 class TaxCalcErrorChecker(object):
     """Class used for checking labels for errors with use of a directed graph.
     TODO: set np.allclose as local."""
