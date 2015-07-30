@@ -102,10 +102,6 @@ class Calculator(object):
             print("Your data have beeen extrapolated to "
                   + str(self._records.current_year) + ".")
 
-        if self._params.current_year != self._records.current_year:
-            import pdb;pdb.set_trace()
-            print "uh oh"
-
         assert self._params.current_year == self._records.current_year
 
     @property
