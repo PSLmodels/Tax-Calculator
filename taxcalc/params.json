@@ -553,7 +553,7 @@
     },	
     "_AMT_em_ps":{
         "long_name": "AMT exemption phaseout start",
-	    "description": "AMT exemption starts to decrease when AMTI goes beyond this threshold.",
+	"description": "AMT exemption starts to decrease when AMTI goes beyond this threshold.",
         "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
         "notes": "",
         "start_year": 2013,
@@ -584,7 +584,7 @@
     },
     "_NIIT_thd":{
         "long_name": "Net Investment Income Tax income threshold (UIMC)",
-	"description": "If your MAGI (modified AGI) is more than this threshold, you are subject to the additional medicare tax. ",
+	"description": "If one taxpayer's MAGI (modified AGI) is more than this threshold, he or she is subject to the additional medicare tax. ",
         "irs_ref": "Form 8960, line 14, instructions. ",
         "notes": "",
         "start_year": 2013,
@@ -617,7 +617,7 @@
         "long_name": "Standard deduction amount",
 	"description": "",
         "irs_ref": "form 1040, line 40, instruction (Formside notes).",
-        "notes": "",
+        "notes": "This parameter cannot be decreased due to lack of data.",
         "start_year": 2013,
         "col_var": "MARS",
         "row_var": "FLPDYR",
