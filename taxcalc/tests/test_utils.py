@@ -2,9 +2,6 @@ import os
 import sys
 import filecmp
 import tempfile
-cur_path = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(cur_path, "../../"))
-sys.path.append(os.path.join(cur_path, "../"))
 import numpy as np
 import pandas as pd
 import pytest
@@ -15,6 +12,9 @@ from pandas.util.testing import assert_series_equal
 from numba import jit, vectorize, guvectorize
 from taxcalc import *
 from csv_to_ascii import ascii_output
+cur_path = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(cur_path, "../../"))
+sys.path.append(os.path.join(cur_path, "../"))
 
 
 data = [[1.0, 2, 'a'],
