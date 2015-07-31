@@ -1,7 +1,5 @@
 import os
 import sys
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, "../../"))
 import numpy as np
 from numpy.testing import assert_array_equal
 import pandas as pd
@@ -10,6 +8,8 @@ import pytest
 from numba import jit, vectorize, guvectorize
 from taxcalc import *
 import copy
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(CUR_PATH, "../../"))
 
 WEIGHTS_FILENAME = "../../WEIGHTS_testing.csv"
 weights_path = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
@@ -305,3 +305,8 @@ class TaxCalcError(Exception):
     now. We can add functionality later as we see fit.
     '''
     pass
+
+
+if __name__ == '__main__' and __package__ is None:
+    from os import sys, path
+    sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
