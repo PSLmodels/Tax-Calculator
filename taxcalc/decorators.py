@@ -286,7 +286,7 @@ def iterate_jit(parameters=None, **kwargs):
         try:
             jit_args = inspect.getargspec(jit).args + ['nopython']
         except TypeError:
-            #print ("This should only be seen in RTD, if not install numba!")
+            # print ("This should only be seen in RTD, if not install numba!")
             return func
 
         kwargs_for_func = toolz.keyfilter(in_args.__contains__, kwargs)
@@ -295,9 +295,11 @@ def iterate_jit(parameters=None, **kwargs):
         # Any name that is a taxcalc parameter (or the special case 'puf'
         # Boolean flag is given special treatment. Identify those names here
         allowed_parameters = list(default_data(metadata=True).keys())
-        allowed_parameters += list(arg[1:] for arg in  default_data(metadata=True).keys())
+        allowed_parameters += (list(arg[1:] for arg in
+                               default_data(metadata=True).keys()))
         allowed_parameters.append("puf")
-        additional_parameters = [arg for arg in in_args if arg in allowed_parameters]
+        additional_parameters = [arg for arg in in_args if
+                                 arg in allowed_parameters]
         additional_parameters += parameters
         # Remote duplicates
         all_parameters = list(set(additional_parameters))
