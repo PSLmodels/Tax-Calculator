@@ -1,14 +1,14 @@
 import os
 import sys
-cur_path = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(cur_path, "../../"))
-sys.path.append(os.path.join(cur_path, "../"))
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
 from pandas.util.testing import assert_frame_equal
 from numba import jit, vectorize, guvectorize
 from taxcalc import *
+cur_path = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(cur_path, "../../"))
+sys.path.append(os.path.join(cur_path, "../"))
 
 
 @extract_array
