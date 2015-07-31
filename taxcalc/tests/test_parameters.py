@@ -1,16 +1,15 @@
 import os
 import sys
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, "../../"))
 import numpy as np
 from numpy.testing import assert_array_equal
 import pandas as pd
 import pytest
 import tempfile
 from numba import jit, vectorize, guvectorize
-import taxcalc
 from taxcalc import *
 from taxcalc.utils import expand_array
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(CUR_PATH, "../../"))
 
 
 @pytest.yield_fixture
@@ -128,7 +127,7 @@ def test_create_parameters_from_file(paramsfile):
 
 
 def test_parameters_get_default(paramsfile):
-    paramdata = taxcalc.parameters.default_data()
+    paramdata = parameters.default_data()
     assert paramdata['_CDCC_ps'] == [15000]
 
 
@@ -188,7 +187,7 @@ def test_increment_Parameters_increment_and_then_update():
 
 
 def test_parameters_get_default_start_year():
-    paramdata = taxcalc.parameters.default_data(start_year=2015, metadata=True)
+    paramdata = parameters.default_data(start_year=2015, metadata=True)
     # 1D data, has 2015 values
     meta_II_em = paramdata['_II_em']
     assert meta_II_em['start_year'] == 2015
