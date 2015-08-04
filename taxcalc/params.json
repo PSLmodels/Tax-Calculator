@@ -881,7 +881,7 @@
     },
     "_ID_prt":{
         "long_name": "Itemized deduction phaseout rate (Pease)",
-	    "description": "You will not be eligible to deduct the full amount of itemized deduction if your AGI is above the phaseout start. The deductible portion would be decreased at this rate for each dollor exceeding the start.",
+	    "description": "You will not be eligible to deduct the full amount of itemized deduction if your AGI is above the phaseout start. The deductible portion would be decreased at this rate for each dollar exceeding the start.",
         "irs_ref": "Schedule A, line 29, instructions. ",
         "notes": "This phaseout rate cannot be lower than 0.03 for each dollar, due to limited data on non-itemizers.",
         "start_year": 2013,
@@ -933,7 +933,7 @@
     },
     "_AMT_prt":{
         "long_name": "AMT exemption phaseout rate",
-	"description": "AMT exemption will decrease at this rate for each dollor of AMTI exceeding AMT phaseout start. ",
+	"description": "AMT exemption will decrease at this rate for each dollar of AMTI exceeding AMT phaseout start. ",
         "irs_ref": "Form 6251, line 29, instructions. ",
         "notes": "",
         "start_year": 2013,
