@@ -816,7 +816,7 @@
      "_ID_Charity_frt":{
         "long_name": "Deduction for charitable contributions; floor as a percent of AGI",
         "description": "You are eligible to deduct your charitable expense when it exceeds this percentage of AGI.",
-        "irs_ref": "Form , line , ",
+        "irs_ref": "SCHEDULE A, Form 1040, Line 16&17, instruction (Gifts to Charity: Amounts You Can Deduct: 1. The amount of any money contributed and a description (but not value) of any property donated.)",
         "notes": "This parameter allows for implementation of Option 52 from https://www.cbo.gov/sites/default/files/cbofiles/attachments/49638-BudgetOptions.pdf.",
         "start_year": 2013,
         "col_var": "",
@@ -855,8 +855,8 @@
     },
      "_ID_Charity_crt_Cash":{
         "long_name": "Deduction for charitable cash contributions; ceiling as a percent of AGI",
-	    "description": "The deduction for Charity in form of cash is capped at this percentage of AGI. ",
-        "irs_ref": "Form , line , ",
+	    "description": "The deduction for Charity in form of cash is capped at this percentage of AGI.",
+        "irs_ref": "SCHEDULE A, Form 1040, Line 16, Pub. 526 (Limits on Deductions: 50% Limit Organizations.)",
         "notes": "HC",
         "start_year": 2013,
         "col_var": "",
@@ -869,7 +869,7 @@
     "_ID_Charity_crt_Asset":{
         "long_name": "Deduction for charitable asset contributions; ceiling as a percent of AGI",
 	    "description": "The deduction for Charity contributed in the form of assets is capped at this percentage of AGI. ",
-        "irs_ref": "Form , line , ",
+        "irs_ref": "SCHEDULE A, Form 1040, Line 17, Pub. 526 (Limits on Deductions: Special 30% Limit for Capital Gain Property.)",
         "notes": "HC",
         "start_year": 2013,
         "col_var": "",

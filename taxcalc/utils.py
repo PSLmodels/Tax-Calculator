@@ -65,8 +65,6 @@ def expand_1D(x, inflate, inflation_rates, num_years):
     year at the provided inflation rate.
     """
 
-    assert len(inflation_rates) == num_years
-
     if isinstance(x, np.ndarray):
         if len(x) >= num_years:
             return x
@@ -76,7 +74,7 @@ def expand_1D(x, inflate, inflation_rates, num_years):
             if inflate:
                 extra = []
                 cur = x[-1]
-                for i in range(1, num_years - len(x) + 1):
+                for i in range(0, num_years - len(x)):
                     inf_idx = i + len(x) - 1
                     cur *= (1. + inflation_rates[inf_idx])
                     extra.append(cur)

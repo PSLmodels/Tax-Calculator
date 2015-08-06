@@ -136,7 +136,7 @@ def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, SS_thd50, SS_thd85, SS_percen
 
 @iterate_jit(nopython=True)
 def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT, 
-                II_em, II_em_ps, MARS, _sep, _fixup, II_prt):
+                II_em, II_em_ps, MARS, _sep, II_prt):
 
     # Adjusted Gross Income
 
@@ -145,9 +145,6 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
     c00100 = c02650 - c02900
     _agierr = e00100 - c00100  # Adjusted Gross Income
 
-    # want to get rid of this
-    if _fixup >= 1:
-        c00100 = c00100 + _agierr
 
     _posagi = max(c00100, 0)
     _ywossbe = e00100 - e02500
@@ -393,7 +390,7 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
             MARS, MIDR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200, e02400, STD_Aged,
             c04470, c00100, c21060, c21040, e37717, c04600, e04805, t04470, 
             f6251, _feided, c02700, FDED, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
-            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, _fixup, 
+            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6,
             _compitem, _txpyers, _numextra,  puf):
 
     """
@@ -504,13 +501,6 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
     # ???
     if FDED == 1:
         _othded = e04470 - c04470
-
-        #get rid of the fixup code
-        if _fixup>=2:
-            c04470 = c04470 + _othded;
-            c04100 = 0.
-            c04200 = 0.
-            _standard = 0.
     else: 
         _othded = 0.
 
@@ -1135,16 +1125,13 @@ def ExpEarnedInc(  _exact, c00100, CDCC_ps, CDCC_crt,
 
 
 @iterate_jit(nopython=True)
-def RateRed(c05800, _fixup, _othtax, _exact, x59560, _earned):
+def RateRed(c05800, _othtax, _exact, x59560, _earned):
 
     # rate reduction credit for 2001 only, is this needed?
     c05800 = c05800
     c07970 = 0.
 
 
-    # want to get rid of this
-    if _fixup >= 3:
-        c05800 = c05800 + _othtax
 
     if _exact == 1:
         c59560 = x59560
@@ -1500,7 +1487,7 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num,
 def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
            _exact, e82880, ACTC_Income_thd, ACTC_rt, SS_Earnings_c,
            ALD_SelfEmploymentTax_HC, e03260, e09800, c59660, e11200, e59680,
-           e59700, e59720, _fixup, e11070, e82915, e82940, c82940,
+           e59700, e59720, e11070, e82915, e82940, c82940,
            ACTC_ChildNum, puf):
 
     # Additional Child Tax Credit
@@ -1579,10 +1566,6 @@ def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
         _othadd = e11070 - c11070
     else:
         _othadd = 0.
-
-        # get rid of the fixup code
-    if e82915 > 0 and abs(e82940 - c82940) > 100 and _fixup >= 4:
-        c11070 = c11070 + _othadd
 
     return (c82925, c82930, c82935, c82880, h82880, c82885, c82890,
             c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070,

@@ -42,5 +42,3 @@ Jim Nunns. 2012. “How TPC Distributes the Corporate Income Tax.” Tax Policy 
 Julie-Anne Cronin, Emily Y. Lin, Laura Power, and Michael Cooper. 2012. “Distributing the Corporate Income Tax: Revised U.S. Treasury Methodology.” The Department of the Treasury.http://www.treasury.gov/resource-center/tax-policy/tax-analysis/Documents/OTA-T2012-05-Distributing-the-Corporate-Income-Tax-Methodology-May-2012.pdf.
 
 The Staff of the Joint Committee on Taxation. 2013. “Modeling the Distribution of Taxes on Business Income.” The Joint Committee on Taxation. https://www.jct.gov/publications.html?func=showdown&id=4528.
-
-
