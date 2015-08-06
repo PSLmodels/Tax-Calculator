@@ -102,6 +102,8 @@ class Calculator(object):
             print("Your data have beeen extrapolated to "
                   + str(self._records.current_year) + ".")
 
+        self.corp_inc_tax()
+
         assert self._params.current_year == self._records.current_year
 
     @property
@@ -142,6 +144,7 @@ class Calculator(object):
         C1040(self.params, self.records)
         DEITC(self.params, self.records)
         OSPC_TAX(self.params, self.records)
+        self.corp_inc_tax()
         ExpandIncome(self.params, self.records)
 
     def calc_all_test(self):
@@ -175,6 +178,7 @@ class Calculator(object):
         add_df(all_dfs, C1040(self.params, self.records))
         add_df(all_dfs, DEITC(self.params, self.records))
         add_df(all_dfs, OSPC_TAX(self.params, self.records))
+        self.corp_inc_tax()
         add_df(all_dfs, ExpandIncome(self.params, self.records))
         totaldf = pd.concat(all_dfs, axis=1)
         return totaldf
@@ -183,9 +187,54 @@ class Calculator(object):
         self.records.increment_year()
         self.params.increment_year()
 
+        """
+        TODO: Corporate Income Tax
+
+        Change the json parameters for percent_labor, etc.
+        For example, percent_labor is given to be 25%, but it is a long
+        term affect for labor to bear the buren of this tax, so year 1
+        it should be 0 percent and then smoothly transition to 25 percent
+        over the 10-year budget window
+        """
+
     @property
     def current_year(self):
         return self.params.current_year
+
+    def corp_inc_tax(self):
+        """
+        Calculates the aggregate dividends, capital gains, bonds, self-employed
+        income, and compensation for this calculator's Records attribute
+        Once calculated, uses these values to determine this caclulator's
+        Records's shares of the corporate income tax burden
+        """
+
+        self.records.agg_self_employed_and_pt = (self.records.e_and_p * self.records.s006).sum()
+
+        self.records.agg_bonds = (self.records.bonds * self.records.s006).sum()
+
+        self.records.agg_comp = (self.records.compensation * self.records.s006).sum()
+
+        self.records.agg_capgains = (self.records.netcapgains * self.records.s006).sum()
+
+        self.records.agg_dividends = (self.records.dividends * self.records.s006).sum()
+
+        myfunc = np.vectorize(Dist_Corp_Inc_Tax)
+
+        revenue_collected = 1000000000000.
+        percent_labor = .2
+        percent_supernormal = .6
+        percent_normal = .2
+
+        self.records.share_corptax_burden = myfunc(revenue_collected,
+                percent_labor, percent_supernormal,
+                percent_normal, self.records.agg_comp, self.records.agg_dividends,
+                self.records.agg_capgains, self.records.agg_bonds,
+                self.records.agg_self_employed_and_pt,
+                self.records.share_corptax_burden, self.records.dividends,
+                self.records.e_and_p, self.records.netcapgains, self.records.bonds,
+                self.records.compensation)
+
 
     def mtr(self, income_type_string, diff=100):
         """

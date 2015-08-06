@@ -324,6 +324,9 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
 def EI_FICA(   e00900, e02100, SS_Earnings_c, e00200,
                     e11055, e00250, e30100, FICA_ss_trt, FICA_mc_trt):
     # Earned Income and FICA #
+    
+    # employer_share_fica = (max(0, FICA_ss_trt * min(SS_Earnings_c, e00200)
+    #                        + FICA_mc_trt * e00200))
 
     _sey = e00900 + e02100
     _fica_ss = max(0, FICA_ss_trt * min(SS_Earnings_c, e00200
@@ -579,6 +582,7 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
         _hasgain = 1.
     else:
         _hasgain = 0.
+
 
     if _hasgain == 1.:
         #if/else 1
@@ -1402,9 +1406,41 @@ def RefAmOpp(_cmp, c87521, _num, c00100, EDCRAGE, c87668):
 def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num,
     c07180, e07200, c07230, e07240, e07960, e07260, e07300,
     e07700, e07250, t07950, c05800, _precrd, ETC_pe_Single, _xlin3, _xlin6, c87668, c87620):
+    """
+    Nonrefundable Education Credits
+    Form 8863 Tentative Education Credits
 
-    # Nonrefundable Education Credits
-    # Form 8863 Tentative Education Credits
+    Notes
+    -----
+    Tax Law Parameters:
+
+        e07180 : Child Care Credit
+
+        e07200 : Credit for Elderly or Disabled
+
+        e07240 : Retirement Savings Contribution Credit
+
+        e07960 : Qualified Electric Vehicle Credit
+
+        e07260 : Residential Energy Credit
+
+        e07300 : Foreign Tax Credit
+
+        e07700 : Mortgage Int. Credit
+
+        e07250 : Adoption Credit Amt.
+
+    Intermediate Variables:
+
+        _num : filing status, number of people filing jointly
+
+        c87668 : nonrefundable Education Credit
+
+    Returns
+    -------
+
+    """
+
     c87560 = c87550
 
     # Phase Out
@@ -1689,6 +1725,63 @@ def Taxer_i(inc_in, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6,
     return inc_out
 
 
+def Dist_Corp_Inc_Tax(revenue_collected, percent_labor, percent_supernormal,
+                      percent_normal, agg_comp, agg_dividends, agg_capgains,
+                      agg_bonds, agg_self_employed_and_pt, share_corptax_burden,
+                      dividends, e_and_p, netcapgains, bonds, compensation):
+    """
+    This function calculates the burden of the corporate income tax borne
+    by an individual in the economy. It also incorporates this burden into
+    our measure of the individual's expanded income.
+
+    Parameters
+    ----------
+    revenue_collected : float
+        value of yearly revenue estimated to be collected in aggregate from the
+        corporate income tax assigned by the user
+    percent_labor : float
+        percent of the burden that will be borne by labor
+    percent_normal : float
+        percent of the burden that will be borne by normal returns
+    percent_supernormal : float
+        percent of the burden that will be borne by supernormal returns
+
+    Returns
+    -------
+    share_corptax_burden : float
+        individual's share of the corporate income tax
+    """
+
+    # self-employment (e09400)
+    # individual's share of total self-employment
+    self_employed_and_pt =  e_and_p / agg_self_employed_and_pt
+
+    share_of_divs = dividends / agg_dividends
+    share_of_capgains = netcapgains / agg_capgains
+
+    # adapted from the JCT
+    share_from_labor = (percent_labor * revenue_collected *
+                        compensation / agg_comp)
+
+    # adapted from the JCT and TPC
+    share_from_normal = ((percent_normal * revenue_collected) *
+                         (share_of_divs * .4 + share_of_capgains * .4 +
+                         self_employed_and_pt * .4 + bonds / agg_bonds)
+                         / 2.2)
+
+    share_from_supernormal = (percent_supernormal * revenue_collected
+                              * (share_of_divs * .6 + share_of_capgains * .6)
+                              / 1.2)
+
+    # individual's share of the corporate income tax
+    share_corptax_burden = share_from_labor + share_from_normal + share_from_supernormal
+
+    # incorporating the burden into our measure of expanded income
+    # expanded_income = expanded_income + corp_tax_burden
+
+    return share_corptax_burden
+
+
 @iterate_jit(nopython=True, parameters=['FICA_ss_trt', 'SS_Earnings_c', 
                                         'FICA_mc_trt'])
 def ExpandIncome(FICA_ss_trt, SS_Earnings_c, e00200, FICA_mc_trt, e02400, 
@@ -1706,4 +1799,3 @@ def ExpandIncome(FICA_ss_trt, SS_Earnings_c, e00200, FICA_mc_trt, e02400,
      
 
     return (_expanded_income)
-
