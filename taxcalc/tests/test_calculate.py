@@ -181,8 +181,8 @@ def test_make_Calculator_user_mods_as_dict():
 
 
 def test_make_Calculator_increment_years_first():
-    irates = {2008:0.021, 2009:0.022, 2010:0.021,
-              2011:0.022}
+    irates = {2008: 0.021, 2009: 0.022, 2010: 0.021,
+              2011: 0.022}
 
     # create a Params object
     params = Parameters(start_year=2008, inflation_rates=irates,
@@ -192,7 +192,7 @@ def test_make_Calculator_increment_years_first():
     tax_dta2 = pd.read_csv(tax_dta_path, compression='gzip')
     puf = Records(tax_dta2, start_year=2008)
     # specify reform in user_mods dictionary
-    user_mods = {2010: { "_STD_Aged": [[1501, 1202, 1502, 1203, 1504, 1204]]}}
+    user_mods = {2010: {"_STD_Aged": [[1501, 1202, 1502, 1203, 1504, 1204]]}}
     user_mods[2010]['_II_em'] = [5000, 6000]
     user_mods[2010]['_II_em_cpi'] = False
 
@@ -200,9 +200,9 @@ def test_make_Calculator_increment_years_first():
     calc = calculator(params, puf, mods=user_mods)
 
     exp_STD_Aged = np.array([[1500, 1200, 1200, 1500, 1500, 1200],
-                          [1550, 1200, 1200, 1550, 1550, 1200],
-                          [1501, 1202, 1502, 1203, 1504, 1204],
-                          [1532, 1227, 1533, 1228, 1535, 1229]])
+                            [1550, 1200, 1200, 1550, 1550, 1200],
+                            [1501, 1202, 1502, 1203, 1504, 1204],
+                            [1532, 1227, 1533, 1228, 1535, 1229]])
     exp_cur_STD_Aged = np.array([1501, 1202, 1502, 1203, 1504, 1204])
 
     exp_II_em = np.array([3900, 3950, 5000, 6000])
