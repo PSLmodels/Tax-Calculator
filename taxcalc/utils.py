@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from pandas import DataFrame
 from collections import defaultdict
+import copy
 
 STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600', 'c04800', 'c05200',
                  'c62100','c09600', 'c05800', 'c09200', '_refund', 'c07100',
@@ -41,6 +42,7 @@ SMALL_INCOME_BINS = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
 WEBAPP_INCOME_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                    199999, 499999, 1000000, 1e14]
 
+EVERYONE_BIN= [-1e14, 1e14]
 
 def extract_array(f):
     """
@@ -320,6 +322,9 @@ def add_income_bins(df, compare_with="soi", bins=None, right=True, income_measur
         elif compare_with == "webapp":
             bins = WEBAPP_INCOME_BINS
 
+        elif compare_with == "everyone":
+            bins = EVERYONE_BIN
+
         else:
             msg = "Unknown compare_with arg {0}".format(compare_with)
             raise ValueError(msg)
@@ -404,7 +409,26 @@ def results(c):
                 outputs.append(getattr(c.records, col))
         else:
             outputs.append(getattr(c, col))
-    return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
+
+    res = DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
+
+    # Keep itemized deductions (c04470) where itemized deductions reduce AGI
+    # and where itemized deductions are greater than the standard deduction
+
+    res['c04470'] = res['c04470'].where(((res['c00100'] > 0) &
+                                        (res['c04470'] > res['_standard'])), 
+                                         0)
+
+    res['num_returns_ItemDed'] = res['s006'].where(((res['c00100'] > 0) &
+                                                   (res['c04470'] > 0)), 0)
+
+    res['num_returns_StandardDed'] = res['s006'].where(((res['c00100'] > 0) &
+                                                       (res['_standard'] > 0)),
+                                                        0)
+
+    res['num_returns_AMT'] = res['s006'].where(res['c09600'] > 0, 0)
+
+    return res
 
 
 
@@ -419,8 +443,6 @@ def weighted_avg_allcols(df, cols, income_measure='_expanded_income'):
             diff[col] = df.groupby('bins', as_index=False).apply(weighted_mean, col)
 
     return diff
-
-
 
 def create_distribution_table(calc, groupby, result_type, 
                                 income_measure='_expanded_income'):
@@ -444,7 +466,7 @@ def create_distribution_table(calc, groupby, result_type,
     Taxpayer Characteristics:
         c04470 : Total itemized deduction
 
-        c00100 : AGI (Defecit)
+        c00100 : AGI (Deficit)
 
         c09600 : Alternative minimum tax
 
@@ -482,9 +504,11 @@ def create_distribution_table(calc, groupby, result_type,
         df = add_income_bins(res, compare_with="tpc", income_measure=income_measure)
     elif groupby == "webapp_income_bins":
         df = add_income_bins(res, compare_with="webapp", income_measure=income_measure)
+    elif groupby == "everyone":
+        df = add_income_bins(res, compare_with="everyone" )
     else:
         err = ("groupby must be either 'weighted_deciles' or 'small_income_bins'"
-               "or 'large_income_bins' or 'webapp_income_bins'")
+               "or 'large_income_bins' or 'webapp_income_bins' or 'everyone'")
         raise ValueError(err)
 
     # manipulates the data
@@ -501,8 +525,53 @@ def create_distribution_table(calc, groupby, result_type,
         err = ("result_type must be either 'weighted_sum' or 'weighted_avg")
         raise ValueError(err)
 
-    return gp_mean.append(sum_row)
+    if groupby == "everyone":
+        return gp_mean.append(sum_row).ix[1:]
+    else:
+        return gp_mean.append(sum_row)
 
+
+def create_diagnostic_table(calc, num_years=12, make_copy=True):
+    """
+    Create a table of important tax variables over multiple years. 
+    Does not mutate the calculator. 
+
+    Parameters
+    ----------
+    calc : Calculator to create a diagnostic table from. 
+
+    num_years : Number of years to include in the diagnostic table. 
+                Default is set to 12 to include 2013 to 2024.
+
+    make_copy: Set to True to create a deepcopy, set to False to mutate calc. 
+
+    Returns
+    -------
+    DataFrame where columns are years and rows are aggregated tax variables. 
+    """
+    if make_copy:
+        calc = copy.deepcopy(calc)
+    else: 
+        calc = calc
+    frames = []
+    row_years =[]
+    for i in range(num_years):
+        calc.calc_all()
+        row_years.append(str(calc.params._current_year))
+        everyone_table=create_distribution_table(calc, 
+                                                 "everyone", 
+                                                 "weighted_sum")
+        frames.append(everyone_table)
+        # We cannot increment year beyond 2024 
+        # given our default blowup factors and weights
+        if calc.params._current_year <= 2023: 
+            calc.increment_year()
+    diagnostic_table_df = pd.concat(frames)
+    diagnostic_table_df = diagnostic_table_df.transpose() 
+    diagnostic_table_df.index = TABLE_LABELS
+    diagnostic_table_df.columns = row_years
+    pd.options.display.float_format = '{:8,.1f}'.format
+    return diagnostic_table_df
 
 def create_difference_table(calc1, calc2, groupby, 
                                 income_measure='_expanded_income'):

@@ -27,6 +27,8 @@ irates = {1991:0.015, 1992:0.020, 1993:0.022, 1994:0.020, 1995:0.021,
           1996:0.022, 1997:0.023, 1998:0.024, 1999:0.024, 2000:0.024,
           2001:0.024, 2002:0.024}
 
+
+
 @pytest.yield_fixture
 def paramsfile():
 
@@ -307,22 +309,48 @@ def test_Calculator_create_difference_table():
     t1 = create_difference_table(calc, calc2, groupby="weighted_deciles")
     assert type(t1) == DataFrame
     
-def test_diagnostic_table():
-    # we need the records' year at 2008 for blow up step. So param's year needs to be 2008 to past the test
-    irates = {2008:0.015, 2009:0.020, 2010:0.022, 2011:0.020, 2012:0.021,
-          2013:0.022, 2014:0.023, 2015:0.024, 2016:0.024, 2017:0.024,
-          2018:0.024, 2019:0.024}
+def test_Calculator_create_diagnostic_table():
+
+    rates =   {2013:0.015, 2014:0.020, 2015:0.022, 2016:0.020, 2017:0.021,
+               2018:0.022, 2019:0.023, 2020:0.024, 2021:0.024, 2022:0.024,
+               2023:0.024, 2024:0.024}
 
     # Create a Parameters object
-    params = Parameters(start_year=2008, inflation_rates=irates)
+    params = Parameters(start_year=2013, inflation_rates=rates)
     # Create a Public Use File object
-    tax_dta.flpdyr += 17
+    tax_dta.flpdyr += 22
     puf = Records(tax_dta, weights = weights)
     # Create a Calculator
     
-    calc = Calculator(params=params, records=puf, sync_years=False)
+    calc = Calculator(params=params, records=puf)
 
-    calc.diagnostic_table()
+    difference_table = create_diagnostic_table(calc)
+
+    # reset tax_dta.flpdyr 
+    tax_dta.flpdyr -= 22
+
+    assert type(difference_table) == DataFrame
+
+def test_Calculator_create_diagnostic_table_nocopy():
+    rates =   {2013:0.015, 2014:0.020, 2015:0.022, 2016:0.020, 2017:0.021,
+               2018:0.022, 2019:0.023, 2020:0.024, 2021:0.024, 2022:0.024,
+               2023:0.024, 2024:0.024}
+
+    # Create a Parameters object
+    params = Parameters(start_year=2013, inflation_rates=rates)
+    # Create a Public Use File object
+    tax_dta.flpdyr += 22
+    puf = Records(tax_dta, weights = weights)
+    # Create a Calculator
+    
+    calc = Calculator(params=params, records=puf)
+
+    difference_table = create_diagnostic_table(calc, make_copy=False)
+
+    # reset tax_dta.flpdyr 
+    tax_dta.flpdyr -= 22
+
+    assert type(difference_table) == DataFrame
 
 
 class TaxCalcError(Exception):
