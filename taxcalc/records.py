@@ -80,8 +80,13 @@ class Records(object):
         self.bonds = None
         self.e_and_p = None
         self.share_corptax_burden = None  # get's calculated for a calc object
+        self.normal = None
+        self.supernormal = None
         # actually sets the values
         self.set_vars_for_corp_tax()
+
+        self.agg_normal = None
+        self.agg_supernormal = None
 
         self.agg_comp = None
         self.agg_dividends = None
@@ -663,7 +668,8 @@ class Records(object):
                         'expanded_income', 'agg_self_employed', 'netcapgains',
                         'agg_capgains', 'total_compensation', 'dividends',
                         'agg_dividends', 'bonds', 'compensation', 'agg_bonds',
-                        '_expanded_income']
+                        '_expanded_income', 'agg_supernormal', 'agg_normal',
+                        'normal', 'supernormal']
 
         for name in zeroed_names:
             setattr(self, name, np.zeros((self.dim,)))
@@ -734,6 +740,11 @@ class Records(object):
 
         # self-employment (E09400) and pass-through income (E02000)
         self.e_and_p = self.e09400 + self.e02000
+
+        self.normal = (self.dividends * .4 + self.netcapgains * .4
+                       + self.e_and_p * .4 + self.bonds)
+
+        self.supernormal = self.netcapgains * .6 + self.dividends * .6
 
 
 @vectorize([float64(float64, float64, float64, float64, float64, float64,

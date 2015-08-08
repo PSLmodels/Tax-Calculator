@@ -1727,7 +1727,8 @@ def Taxer_i(inc_in, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6,
 
 def Dist_Corp_Inc_Tax(revenue_collected, percent_labor, percent_supernormal,
                       percent_normal, agg_comp, agg_dividends, agg_capgains,
-                      agg_bonds, agg_self_employed_and_pt, share_corptax_burden,
+                      agg_bonds, agg_self_employed_and_pt, agg_normal, normal,
+                      agg_supernormal, share_corptax_burden, supernormal,
                       dividends, e_and_p, netcapgains, bonds, compensation):
     """
     This function calculates the burden of the corporate income tax borne
@@ -1752,26 +1753,15 @@ def Dist_Corp_Inc_Tax(revenue_collected, percent_labor, percent_supernormal,
         individual's share of the corporate income tax
     """
 
-    # self-employment (e09400)
-    # individual's share of total self-employment
-    self_employed_and_pt =  e_and_p / agg_self_employed_and_pt
-
-    share_of_divs = dividends / agg_dividends
-    share_of_capgains = netcapgains / agg_capgains
-
     # adapted from the JCT
     share_from_labor = (percent_labor * revenue_collected *
                         compensation / agg_comp)
 
     # adapted from the JCT and TPC
-    share_from_normal = ((percent_normal * revenue_collected) *
-                         (share_of_divs * .4 + share_of_capgains * .4 +
-                         self_employed_and_pt * .4 + bonds / agg_bonds)
-                         / 2.2)
+    share_from_normal = (percent_normal * normal / agg_normal)
 
-    share_from_supernormal = (percent_supernormal * revenue_collected
-                              * (share_of_divs * .6 + share_of_capgains * .6)
-                              / 1.2)
+    share_from_supernormal = (percent_supernormal * supernormal
+                              / agg_supernormal)
 
     # individual's share of the corporate income tax
     share_corptax_burden = share_from_labor + share_from_normal + share_from_supernormal

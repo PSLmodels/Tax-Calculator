@@ -219,6 +219,14 @@ class Calculator(object):
 
         self.records.agg_dividends = (self.records.dividends * self.records.s006).sum()
 
+        self.records.agg_normal = ((self.records.dividends * self.records.s006).sum() * .4
+                                    + (self.records.netcapgains * self.records.s006).sum() * .4
+                                    + (self.records.e_and_p * self.records.s006).sum() * .4
+                                    + (self.records.bonds * self.records.s006).sum())
+
+        self.records.agg_supernormal = ((self.records.netcapgains * self.records.s006).sum() * .6
+                                        + (self.records.dividends * self.records.s006).sum() * .6)
+
         myfunc = np.vectorize(Dist_Corp_Inc_Tax)
 
         revenue_collected = 1000000000000.
@@ -230,9 +238,11 @@ class Calculator(object):
                 percent_labor, percent_supernormal,
                 percent_normal, self.records.agg_comp, self.records.agg_dividends,
                 self.records.agg_capgains, self.records.agg_bonds,
-                self.records.agg_self_employed_and_pt,
-                self.records.share_corptax_burden, self.records.dividends,
-                self.records.e_and_p, self.records.netcapgains, self.records.bonds,
+                self.records.agg_self_employed_and_pt, self.records.agg_normal,
+                self.records.normal, self.records.agg_supernormal,
+                self.records.share_corptax_burden, self.records.supernormal,
+                self.records.dividends, self.records.e_and_p,
+                self.records.netcapgains, self.records.bonds,
                 self.records.compensation)
 
 
