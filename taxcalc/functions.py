@@ -1758,10 +1758,11 @@ def Dist_Corp_Inc_Tax(revenue_collected, percent_labor, percent_supernormal,
                         compensation / agg_comp)
 
     # adapted from the JCT and TPC
-    share_from_normal = (percent_normal * normal / agg_normal)
+    share_from_normal = (percent_normal * revenue_collected
+                         * normal / agg_normal)
 
-    share_from_supernormal = (percent_supernormal * supernormal
-                              / agg_supernormal)
+    share_from_supernormal = (percent_supernormal * revenue_collected
+                              * supernormal / agg_supernormal)
 
     # individual's share of the corporate income tax
     share_corptax_burden = share_from_labor + share_from_normal + share_from_supernormal
