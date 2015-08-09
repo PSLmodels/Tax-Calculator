@@ -35,7 +35,8 @@ def ascii_output(csv_results="", ascii_results=""):
     # keeps only listed recid's
     if recids != []:
 
-        def f(x): return x - 1
+        def f(x):
+            return x - 1
         recids = map(f, recids)  # maps recids to correct index in df
         df = df.ix[recids]
 
