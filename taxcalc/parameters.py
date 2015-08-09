@@ -6,17 +6,17 @@ from pkg_resources import resource_stream, Requirement
 
 DEFAULT_START_YEAR = 2013
 
-class Parameters(object):
 
+class Parameters(object):
 
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
     PARAM_FILENAME = "params.json"
     params_path = os.path.join(CUR_PATH, PARAM_FILENAME)
 
-    #Mapping of year to inflation rate
-    __rates = {2013:0.015, 2014:0.020, 2015:0.022, 2016:0.020, 2017:0.021,
-               2018:0.022, 2019:0.023, 2020:0.024, 2021:0.024, 2022:0.024,
-               2023:0.024, 2024:0.024}
+    # Mapping of year to inflation rate
+    __rates = {2013: 0.015, 2014: 0.020, 2015: 0.022, 2016: 0.020, 2017: 0.021,
+               2018: 0.022, 2019: 0.023, 2020: 0.024, 2021: 0.024, 2022: 0.024,
+               2023: 0.024, 2024: 0.024}
 
     @classmethod
     def from_file(cls, file_name, **kwargs):
@@ -27,7 +27,6 @@ class Parameters(object):
             params = None
 
         return cls(data=params, **kwargs)
-
 
     def __init__(self, start_year=DEFAULT_START_YEAR, budget_years=12,
                  inflation_rate=None, inflation_rates=None, data=None,
@@ -47,7 +46,6 @@ class Parameters(object):
             self._inflation_rates = [inflation_rates[start_year + i]
                                      for i in range(0, budget_years)]
 
-
         if not self._inflation_rates:
             self._inflation_rates = [self.__rates[start_year + i]
                                      for i in range(0, budget_years)]
@@ -63,19 +61,23 @@ class Parameters(object):
 
         # INITIALIZE
         for name, data in self._vals.items():
-            cpi_inflated =  data.get('cpi_inflated', False)
+            cpi_inflated = data.get('cpi_inflated', False)
             values = data['value']
-            setattr(self, name, expand_array(values,
-                inflate=cpi_inflated, inflation_rates=self._inflation_rates,
-                num_years=budget_years))
+            setattr(self,
+                    name, expand_array(values,
+                                       inflate=cpi_inflated,
+                                       inflation_rates=self._inflation_rates,
+                                       num_years=budget_years))
 
         self.set_year(start_year)
 
     def update(self, year_mods):
         """
-        Take a dictionary of year: {name:val} mods and set them on this Params object.
-        'year_mods' is a dictionary of year: mods where mods is a dict of key:value pairs
-        and key_cpi:Bool pairs. The key_cpi:Bool pairs indicate if the value for 'key'
+        Take a dictionary of year: {name:val} mods
+        and set them on this Params object.
+        'year_mods' is a dictionary of year: mods where
+        mods is a dict of key: value pairs and key_cpi:Bool pairs.
+        The key_cpi:Bool pairs indicate if the value for 'key'
         should be inflated
 
         Parameters:
@@ -109,7 +111,7 @@ class Parameters(object):
                 elif year <= self.current_year and year >= self.start_year:
                     # advance until the parameter is in line with the current
                     # year
-                    num_years_to_skip=self.current_year - year
+                    num_years_to_skip = self.current_year - year
                     offset_year = year - self.start_year
                     inf_rates = [self._inflation_rates[offset_year + i]
                                  for i in range(0, num_years_to_expand)]
@@ -126,12 +128,12 @@ class Parameters(object):
                     else:
                         setattr(self, name, nval[num_years_to_skip:])
 
-                else: # year > current_year
-                    msg = ("Can't specify a parameter for a year that is in the"
-                           " future because we don't know how to fill in the "
+                else:  # year > current_year
+                    msg = (" Can't specify a parameter "
+                           " for a year that is in the future"
+                           " because we don't know how to fill in the "
                            " values for the years between {0} and {1}.")
                     raise ValueError(msg.format(self.current_year, year))
-
 
             # Set up the '_X = [a, b,...]' variables as 'X = a'
             self.set_year(self._current_year)
@@ -180,30 +182,33 @@ def default_data(metadata=False, start_year=None):
                 msg = "Can't set a start year of {0}, because it is before {1}"
                 raise ValueError(msg.format(start_year, first_year))
 
-            #Set the new start year:
+            # Set the new start year:
             v['start_year'] = start_year
 
-            #Work with the values
+            # Work with the values
             vals = v['value']
             last_year_for_data = first_year + len(vals) - 1
 
             if last_year_for_data < start_year:
                 if v['row_label']:
                     v['row_label'] = ["2015"]
-                #Need to produce new values
+                # Need to produce new values
                 new_val = vals[-1]
                 if v['cpi_inflated'] is True:
                     if isinstance(new_val, list):
                         for y in range(last_year_for_data, start_year):
-                            new_val = [x * (1.0 + Parameters._Parameters__rates[y]) for x in new_val]
+                            new_val = [x *
+                                       (1.0 +
+                                        Parameters._Parameters__rates[y]) for
+                                       x in new_val]
                     else:
                         for y in range(last_year_for_data, start_year):
                             new_val *= 1.0 + Parameters._Parameters__rates[y]
-                #Set the new values
+                # Set the new values
                 v['value'] = [new_val]
 
             else:
-                #Need to get rid of [first_year, ..., start_year-1] values
+                # Need to get rid of [first_year, ..., start_year-1] values
                 years_to_chop = start_year - first_year
                 if v['row_label']:
                     v['row_label'] = v['row_label'][years_to_chop:]
@@ -212,4 +217,4 @@ def default_data(metadata=False, start_year=None):
     if (metadata):
         return params
     else:
-        return { k: v['value'] for k,v in params.items()}
+        return {k: v['value'] for k, v in params.items()}

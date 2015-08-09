@@ -9,6 +9,8 @@ from .records import Records
 import copy
 
 all_cols = set()
+
+
 def add_df(alldfs, df):
     for col in df.columns:
         if col not in all_cols:
@@ -99,8 +101,8 @@ class Calculator(object):
             while self._records.current_year < self._params.current_year:
                 self._records.increment_year()
 
-            print("Your data have beeen extrapolated to "
-                  + str(self._records.current_year) + ".")
+            print("Your data have beeen extrapolated to " +
+                  str(self._records.current_year) + ".")
 
         assert self._params.current_year == self._records.current_year
 
@@ -248,21 +250,21 @@ class Calculator(object):
             deduction = np.maximum(calc.records.c04470, calc.records._standard)
 
             # S TD1 = (calc.c04100 + calc.c04200)*calc.s006
-            NumItemizer1 = calc.records.s006[(calc.records.c04470 > 0)
-                                             * (calc.records.c00100 > 0)].sum()
+            NumItemizer1 = (calc.records.s006[(calc.records.c04470 > 0) *
+                            (calc.records.c00100 > 0)].sum())
 
             # itemized deduction
             ID = ID1[calc.records.c04470 > 0].sum()
 
-            NumSTD = calc.records.s006[(calc.records._standard > 0)
-                                       * (calc.records.c00100 > 0)].sum()
+            NumSTD = calc.records.s006[(calc.records._standard > 0) *
+                                       (calc.records.c00100 > 0)].sum()
             # standard deduction
-            STD = STD1[(calc.records._standard > 0)
-                       * (calc.records.c00100 > 0)].sum()
+            STD = STD1[(calc.records._standard > 0) *
+                       (calc.records.c00100 > 0)].sum()
 
             # personal exemption
-            PE = (calc.records.c04600
-                  * calc.records.s006)[calc.records.c00100 > 0].sum()
+            PE = (calc.records.c04600 *
+                  calc.records.s006)[calc.records.c00100 > 0].sum()
 
             # taxable income
             taxinc = (calc.records.c04800 * calc.records.s006).sum()
@@ -280,16 +282,17 @@ class Calculator(object):
             NumAMT1 = calc.records.s006[calc.records.c09600 > 0].sum()
 
             # tax before credits
-            tax_bf_credits = (calc.records.c05800*calc.records.s006).sum()
+            tax_bf_credits = (calc.records.c05800 * calc.records.s006).sum()
 
             # tax before nonrefundable credits 09200
-            tax_bf_nonrefundable = (calc.records.c09200*calc.records.s006).sum()
+            tax_bf_nonrefundable = (calc.records.c09200 *
+                                    calc.records.s006).sum()
 
             # refundable credits
-            refundable = (calc.records._refund*calc.records.s006).sum()
+            refundable = (calc.records._refund * calc.records.s006).sum()
 
             # nonrefuncable credits
-            nonrefundable = (calc.records.c07100*calc.records.s006).sum()
+            nonrefundable = (calc.records.c07100 * calc.records.s006).sum()
 
             # ospc_tax
             revenue1 = (calc.records._ospctax * calc.records.s006).sum()
@@ -308,11 +311,14 @@ class Calculator(object):
 
         df = DataFrame(table, row_years,
                        ["Returns (#m)", "AGI ($b)", "Itemizers (#m)",
-                        "Itemized Deduction ($b)", "Standard Deduction Filers (#m)",
+                        "Itemized Deduction ($b)",
+                        "Standard Deduction Filers (#m)",
                         "Standard Deduction ($b)", "Personal Exemption ($b)",
-                        "Taxable income ($b)", "Regular Tax ($b)", "AMT income ($b)",
-                        "AMT amount ($b)", "AMT number (#m)", "Tax before credits ($b)",
-                        "refundable credits ($b)", "nonrefundable credits ($b)",
+                        "Taxable income ($b)", "Regular Tax ($b)",
+                        "AMT income ($b)", "AMT amount ($b)",
+                        "AMT number (#m)", "Tax before credits ($b)",
+                        "refundable credits ($b)",
+                        "nonrefundable credits ($b)",
                         "ospctax ($b)"])
         df = df.transpose()
         pd.options.display.float_format = '{:8,.1f}'.format
