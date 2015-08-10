@@ -66,6 +66,6 @@ def time_this(function, running_timer=None):
             result = function(*args, **kwargs)
         end = timer()
         print ("~function: '{}' takes : {}s".format(function.__name__,
-                                                    end-start))
+                                                    end - start))
         return result
     return wrapper
