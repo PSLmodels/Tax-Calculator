@@ -82,7 +82,7 @@ def Adj(e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
               (1 - ALD_SelfEmploymentTax_HC) * e03260 +
               (1 - ALD_SelfEmp_HealthIns_HC) * e03270 +
               (1 - ALD_KEOGH_SEP_HC) * e03300 + (1 - ALD_EarlyWithdraw_HC) *
-              e03400 + (1 - ALD _ Alimony_HC) * e03500 + e03280 + e03900 +
+              e03400 + (1 - ALD_Alimony_HC) * e03500 + e03280 + e03900 +
               e04000 + e03700 + e03220 + e03230 + e03240 + e03290)
 
     return (_feided, c02900)

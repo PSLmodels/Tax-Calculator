@@ -230,8 +230,8 @@ def weighted_count(agg):
 
 
 def weighted_mean(agg, col_name):
-    return float((agg[col_name] * agg['s006']).sum()) /
-    float(agg['s006'].sum())
+    return (float((agg[col_name] * agg['s006']).sum()) /
+            float(agg['s006'].sum()))
 
 
 def weighted_sum(agg, col_name):
