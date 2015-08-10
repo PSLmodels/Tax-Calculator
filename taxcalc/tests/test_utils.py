@@ -45,7 +45,7 @@ def test_expand_1D_short_array():
     exp = np.zeros(10)
     exp[:3] = exp1
     exp[3:] = exp2
-    res = expand_1D(x, inflate=True, inflation_rates=[0.02]*10, num_years=10)
+    res = expand_1D(x, inflate=True, inflation_rates=[0.02] * 10, num_years=10)
     assert(np.allclose(exp.astype(x.dtype, casting='unsafe'), res))
 
 
@@ -54,7 +54,7 @@ def test_expand_1D_variable_rates():
     irates = [0.02, 0.02, 0.03, 0.035]
     exp2 = []
     cur = 9.0
-    exp = np.array([4, 5, 9, 9*1.03, 9*1.03*1.035])
+    exp = np.array([4, 5, 9, 9 * 1.03, 9 * 1.03 * 1.035])
     res = expand_1D(x, inflate=True, inflation_rates=irates, num_years=5)
     assert(np.allclose(exp.astype('f4', casting='unsafe'), res))
 
@@ -62,7 +62,7 @@ def test_expand_1D_variable_rates():
 def test_expand_1D_scalar():
     x = 10.0
     exp = np.array([10.0 * math.pow(1.02, i) for i in range(0, 10)])
-    res = expand_1D(x, inflate=True, inflation_rates=[0.02]*10, num_years=10)
+    res = expand_1D(x, inflate=True, inflation_rates=[0.02] * 10, num_years=10)
     assert(np.allclose(exp, res))
 
 
@@ -89,7 +89,7 @@ def test_expand_2D_short_array():
     exp = np.zeros((5, 3))
     exp[:1] = exp1
     exp[1:] = exp2
-    res = expand_2D(x, inflate=True, inflation_rates=[0.02]*5, num_years=5)
+    res = expand_2D(x, inflate=True, inflation_rates=[0.02] * 5, num_years=5)
     assert(np.allclose(exp, res))
 
 
@@ -101,7 +101,7 @@ def test_expand_2D_variable_rates():
     exp2 = []
     for i in range(0, 4):
         idx = i + len(x) - 1
-        cur = np.array(cur*(1.0 + irates[idx]))
+        cur = np.array(cur * (1.0 + irates[idx]))
         print("cur is ", cur)
         exp2.append(cur)
 
@@ -188,7 +188,7 @@ def test_weighted_mean():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
     diffs = grped.apply(weighted_mean, 'tax_diff')
-    exp = Series(data=[16.0/12.0, 26.0/10.0], index=['a', 'b'])
+    exp = Series(data=[16.0 / 12.0, 26.0 / 10.0], index=['a', 'b'])
     exp.index.name = 'label'
     assert_series_equal(exp, diffs)
 
@@ -206,7 +206,7 @@ def test_weighted_perc_inc():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
     diffs = grped.apply(weighted_perc_inc, 'tax_diff')
-    exp = Series(data=[8./12., 1.0], index=['a', 'b'])
+    exp = Series(data=[8. / 12., 1.0], index=['a', 'b'])
     exp.index.name = 'label'
     assert_series_equal(exp, diffs)
 
@@ -215,7 +215,7 @@ def test_weighted_perc_dec():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
     diffs = grped.apply(weighted_perc_dec, 'tax_diff')
-    exp = Series(data=[4./12., 0.0], index=['a', 'b'])
+    exp = Series(data=[4. / 12., 0.0], index=['a', 'b'])
     exp.index.name = 'label'
     assert_series_equal(exp, diffs)
 
@@ -224,7 +224,7 @@ def test_weighted_share_of_total():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
     diffs = grped.apply(weighted_share_of_total, 'tax_diff', 42.0)
-    exp = Series(data=[16.0/42., 26.0/42.0], index=['a', 'b'])
+    exp = Series(data=[16.0 / 42., 26.0 / 42.0], index=['a', 'b'])
     exp.index.name = 'label'
     assert_series_equal(exp, diffs)
 
@@ -365,7 +365,7 @@ def test_expand_2D_already_filled():
                 [38000, 74000, 36900, 49400, 73800, 36900],
                 [40000, 74900, 37450, 50200, 74900, 37450]]
 
-    res = expand_2D(_II_brk2, inflate=True, inflation_rates=[0.02]*5,
+    res = expand_2D(_II_brk2, inflate=True, inflation_rates=[0.02] * 5,
                     num_years=3)
 
     npt.assert_array_equal(res, np.array(_II_brk2))
@@ -382,12 +382,12 @@ def test_expand_2D_partial_expand():
     # from year 3 -> year 4
     inf_rates = [0.02, 0.02, 0.03]
 
-    exp1 = 40000*1.03
-    exp2 = 74900*1.03
-    exp3 = 37450*1.03
-    exp4 = 50200*1.03
-    exp5 = 74900*1.03
-    exp6 = 37450*1.03
+    exp1 = 40000 * 1.03
+    exp2 = 74900 * 1.03
+    exp3 = 37450 * 1.03
+    exp4 = 50200 * 1.03
+    exp5 = 74900 * 1.03
+    exp6 = 37450 * 1.03
 
     exp = [[36000, 72250, 36500, 48600, 72500, 36250],
            [38000, 74000, 36900, 49400, 73800, 36900],
@@ -421,11 +421,11 @@ def test_expand_2D_accept_None():
                 [40000, 74900, 37450, 50200, 74900, 37450],
                 [41000, None, None, None, None, None]]
 
-    exp1 = 74900*1.02
-    exp2 = 37450*1.02
-    exp3 = 50200*1.02
-    exp4 = 74900*1.02
-    exp5 = 37450*1.02
+    exp1 = 74900 * 1.02
+    exp2 = 37450 * 1.02
+    exp3 = 50200 * 1.02
+    exp4 = 74900 * 1.02
+    exp5 = 37450 * 1.02
 
     exp = [[36000, 72250, 36500, 48600, 72500, 36250],
            [38000, 74000, 36900, 49400, 73800, 36900],
@@ -434,7 +434,7 @@ def test_expand_2D_accept_None():
 
     exp = np.array(exp).astype('i4', casting='unsafe')
 
-    res = expand_array(_II_brk2, inflate=True, inflation_rates=[0.02]*5,
+    res = expand_array(_II_brk2, inflate=True, inflation_rates=[0.02] * 5,
                        num_years=4)
 
     npt.assert_array_equal(res, exp)
@@ -448,17 +448,17 @@ def test_expand_2D_accept_None_additional_row():
                 [41000, None, None, None, None, None],
                 [43000, None, None, None, None, None]]
 
-    exp1 = 74900*1.02
-    exp2 = 37450*1.02
-    exp3 = 50200*1.02
-    exp4 = 74900*1.02
-    exp5 = 37450*1.02
+    exp1 = 74900 * 1.02
+    exp2 = 37450 * 1.02
+    exp3 = 50200 * 1.02
+    exp4 = 74900 * 1.02
+    exp5 = 37450 * 1.02
 
-    exp6 = exp1*1.03
-    exp7 = exp2*1.03
-    exp8 = exp3*1.03
-    exp9 = exp4*1.03
-    exp10 = exp5*1.03
+    exp6 = exp1 * 1.03
+    exp7 = exp2 * 1.03
+    exp8 = exp3 * 1.03
+    exp9 = exp4 * 1.03
+    exp10 = exp5 * 1.03
 
     exp = [[36000, 72250, 36500, 48600, 72500, 36250],
            [38000, 74000, 36900, 49400, 73800, 36900],

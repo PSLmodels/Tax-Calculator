@@ -96,7 +96,8 @@ class Calculator(object):
                          Records.from_file(records, **kwargs))
 
         if sync_years and self._records.current_year == 2008:
-            print("You loaded data for "+str(self._records.current_year)+'.')
+            print("You loaded data for " +
+                  str(self._records.current_year) + '.')
 
             while self._records.current_year < self._params.current_year:
                 self._records.increment_year()
@@ -297,16 +298,17 @@ class Calculator(object):
             # ospc_tax
             revenue1 = (calc.records._ospctax * calc.records.s006).sum()
 
-            table.append([returns/math.pow(10, 6), agi/math.pow(10, 9),
-                          NumItemizer1/math.pow(10, 6), ID/math.pow(10, 9),
-                          NumSTD/math.pow(10, 6), STD/math.pow(10, 9),
-                          PE/math.pow(10, 9), taxinc/math.pow(10, 9),
-                          regular_tax/math.pow(10, 9), AMTI/math.pow(10, 9),
-                          AMT/math.pow(10, 9), NumAMT1/math.pow(10, 6),
-                          tax_bf_credits/math.pow(10, 9),
-                          refundable/math.pow(10, 9),
-                          nonrefundable/math.pow(10, 9),
-                          revenue1/math.pow(10, 9)])
+            table.append([returns / math.pow(10, 6), agi / math.pow(10, 9),
+                          NumItemizer1 / math.pow(10, 6), ID / math.pow(10, 9),
+                          NumSTD / math.pow(10, 6), STD / math.pow(10, 9),
+                          PE / math.pow(10, 9), taxinc / math.pow(10, 9),
+                          regular_tax / math.pow(10, 9),
+                          AMTI / math.pow(10, 9), AMT / math.pow(10, 9),
+                          NumAMT1 / math.pow(10, 6),
+                          tax_bf_credits / math.pow(10, 9),
+                          refundable / math.pow(10, 9),
+                          nonrefundable / math.pow(10, 9),
+                          revenue1 / math.pow(10, 9)])
             calc.increment_year()
 
         df = DataFrame(table, row_years,

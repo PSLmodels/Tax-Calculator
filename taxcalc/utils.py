@@ -13,7 +13,7 @@ STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600',
 
 TABLE_COLUMNS = ['s006', 'c00100', 'num_returns_StandardDed', '_standard',
                  'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'c05200',
-                 'c62100', 'num_returns_AMT', 'c09600', 'c05800',  'c07100',
+                 'c62100', 'num_returns_AMT', 'c09600', 'c05800', 'c07100',
                  'c09200', '_refund', '_ospctax']
 
 TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
@@ -112,7 +112,7 @@ def expand_2D(x, inflate, inflation_rates, num_years):
         else:
 
             if has_nones:
-                c = x[:last_good_row+1]
+                c = x[:last_good_row + 1]
                 keep_user_data_mask = np.array(keep_user_data_mask)
                 keep_calc_data_mask = np.array(keep_calc_data_mask)
 
@@ -126,7 +126,7 @@ def expand_2D(x, inflate, inflation_rates, num_years):
                 cur = c[-1]
                 for i in range(0, num_years - len(c)):
                     inf_idx = i + len(c) - 1
-                    cur = np.array(cur*(1. + inflation_rates[inf_idx]))
+                    cur = np.array(cur * (1. + inflation_rates[inf_idx]))
                     extra.append(cur)
             else:
                 extra = [c[-1, :] for i in
@@ -230,11 +230,12 @@ def weighted_count(agg):
 
 
 def weighted_mean(agg, col_name):
-    return float((agg[col_name]*agg['s006']).sum()) / float(agg['s006'].sum())
+    return float((agg[col_name] * agg['s006']).sum()) /
+    float(agg['s006'].sum())
 
 
 def weighted_sum(agg, col_name):
-    return (agg[col_name]*agg['s006']).sum()
+    return (agg[col_name] * agg['s006']).sum()
 
 
 def weighted_perc_inc(agg, col_name):
@@ -270,7 +271,7 @@ def add_weighted_decile_bins(df, income_measure='_expanded_income'):
     # Max value of cum sum of weights
     max_ = df['cumsum_weights'].values[-1]
     # Create 10 bins and labels based on this cumulative weight
-    bins = [0] + list(np.arange(1, 11)*(max_/10.0))
+    bins = [0] + list(np.arange(1, 11) * (max_ / 10.0))
     labels = [range(1, 11)]
     #  Groupby weighted deciles
     df['bins'] = pd.cut(df['cumsum_weights'], bins, labels)
@@ -360,7 +361,7 @@ def weighted(df, X):
     agg = df
     for colname in X:
         if not colname.startswith('s006'):
-            agg[colname] = df[colname]*df['s006']
+            agg[colname] = df[colname] * df['s006']
     return agg
 
 
@@ -560,7 +561,7 @@ def create_difference_table(calc1, calc2, groupby,
 
     diffs = means_and_comparisons(res2, 'tax_diff',
                                   df.groupby('bins', as_index=False),
-                                  (res2['tax_diff']*res2['s006']).sum())
+                                  (res2['tax_diff'] * res2['s006']).sum())
 
     sum_row = get_sums(diffs)[diffs.columns.tolist()]
     diffs = diffs.append(sum_row)

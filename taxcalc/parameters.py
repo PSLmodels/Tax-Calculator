@@ -157,7 +157,7 @@ class Parameters(object):
     def set_year(self, yr):
         for name, vals in self._vals.items():
             arr = getattr(self, name)
-            setattr(self, name[1:], arr[yr-self._start_year])
+            setattr(self, name[1:], arr[yr - self._start_year])
 
 
 def default_data(metadata=False, start_year=None):

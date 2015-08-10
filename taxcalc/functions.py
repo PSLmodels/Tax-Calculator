@@ -78,12 +78,12 @@ def Adj(e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
     _feided = max(e35300_0, e35600_0 + e35910_0)
 
     # For 1040: adjustments
-    c02900 = (e03150 + (1-ALD_StudentLoan_HC) * e03210 + e03600 +
-              (1-ALD_SelfEmploymentTax_HC) * e03260 +
-              (1-ALD_SelfEmp_HealthIns_HC) * e03270 +
-              (1-ALD_KEOGH_SEP_HC) * e03300 + (1-ALD_EarlyWithdraw_HC) *
-              e03400 + (1-ALD_Alimony_HC) * e03500 + e03280 + e03900 + e04000 +
-              e03700 + e03220 + e03230 + e03240 + e03290)
+    c02900 = (e03150 + (1 - ALD_StudentLoan_HC) * e03210 + e03600 +
+              (1 - ALD_SelfEmploymentTax_HC) * e03260 +
+              (1 - ALD_SelfEmp_HealthIns_HC) * e03270 +
+              (1 - ALD_KEOGH_SEP_HC) * e03300 + (1 - ALD_EarlyWithdraw_HC) *
+              e03400 + (1 - ALD _ Alimony_HC) * e03500 + e03280 + e03900 +
+              e04000 + e03700 + e03220 + e03230 + e03240 + e03290)
 
     return (_feided, c02900)
 
@@ -111,7 +111,7 @@ def CapGains(e23250, e22250, e23660, _sep, _feided, FEI_ec_c,
               e01100 + e01200 + e01400 + e01700 + e02000 + e02100 + e02300 +
               e02600 + e02610 + e02800 - e02540)
     _ymod2 = e00400 + (0.50 * e02400) - c02900
-    _ymod3 = (1-ALD_StudentLoan_HC) * e03210 + e03230 + e03240 + e02615
+    _ymod3 = (1 - ALD_StudentLoan_HC) * e03210 + e03230 + e03240 + e02615
     _ymod = _ymod1 + _ymod2 + _ymod3
 
     return (c23650, c01000, c02700, _ymod1, _ymod2, _ymod3, _ymod)
@@ -123,14 +123,14 @@ def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, SS_thd50, SS_thd85,
 
     if SSIND != 0 or MARS == 3 or MARS == 6:
         c02500 = e02500
-    elif _ymod < SS_thd50[MARS-1]:
+    elif _ymod < SS_thd50[MARS - 1]:
         c02500 = 0.
-    elif _ymod >= SS_thd50[MARS-1] and _ymod < SS_thd85[MARS-1]:
-        c02500 = SS_percentage1 * min(_ymod - SS_thd50[MARS-1], e02400)
+    elif _ymod >= SS_thd50[MARS - 1] and _ymod < SS_thd85[MARS - 1]:
+        c02500 = SS_percentage1 * min(_ymod - SS_thd50[MARS - 1], e02400)
     else:
-        c02500 = min(SS_percentage2 * (_ymod - SS_thd85[MARS-1]) +
-                     SS_percentage1 * min(e02400, SS_thd85[MARS-1] -
-                     SS_thd50[MARS-1]), SS_percentage2 * e02400)
+        c02500 = min(SS_percentage2 * (_ymod - SS_thd85[MARS - 1]) +
+                     SS_percentage1 * min(e02400, SS_thd85[MARS - 1] -
+                     SS_thd50[MARS - 1]), SS_percentage2 * e02400)
     c02500 = float(c02500)
 
     return (c02500, e02500)
@@ -291,15 +291,15 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
 
     # Gross Itemized Deductions
 
-    c21060 = (e20900 + c17000 + (1-ID_StateLocalTax_HC) * c18300 + c19200 +
+    c21060 = (e20900 + c17000 + (1 - ID_StateLocalTax_HC) * c18300 + c19200 +
               c19700 + c20500 + c20800 + e21000 + e21010)
 
     # Limitations on deductions excluding medical, charity etc
-    _phase2_i = ID_ps[MARS-1]
+    _phase2_i = ID_ps[MARS - 1]
 
     _nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
     _phase2_i = ID_ps[MARS - 1]
-    _limitratio = _phase2_i/_sep
+    _limitratio = _phase2_i / _sep
 
     if c21060 > _nonlimited and c00100 > _limitratio:
         dedmin = ID_crt * (c21060 - _nonlimited)
@@ -333,13 +333,13 @@ def EI_FICA(e00900, e02100, SS_Earnings_c, e00200, e11055, e00250, e30100,
 
     _sey = e00900 + e02100
     _fica_ss = max(0, FICA_ss_trt * min(SS_Earnings_c, e00200 + max(0, _sey) *
-                   (1 - 0.5 * (FICA_mc_trt+FICA_ss_trt))))
+                   (1 - 0.5 * (FICA_mc_trt + FICA_ss_trt))))
     _fica_mc = max(0, FICA_mc_trt * (e00200 + max(0, _sey)) *
-                   (1 - 0.5 * (FICA_mc_trt+FICA_ss_trt)))
+                   (1 - 0.5 * (FICA_mc_trt + FICA_ss_trt)))
 
     _fica = _fica_mc + _fica_ss
 
-    _setax = max(0, _fica - (FICA_ss_trt+FICA_mc_trt) * e00200)
+    _setax = max(0, _fica - (FICA_ss_trt + FICA_mc_trt) * e00200)
 
     if _setax <= 14204:
         _seyoff = 0.5751 * _setax
@@ -385,8 +385,8 @@ def AMED(e00200, MARS, AMED_thd, _sey, AMED_trt, FICA_mc_trt, FICA_ss_trt):
     # ratio of income subject to AMED tax = (1 - 0.5*(FICA_mc_trt+FICA_ss_trt)
     _amed = AMED_trt * max(0, e00200 +
                            max(0, _sey) * (1 - 0.5 *
-                                           (FICA_mc_trt+FICA_ss_trt)) -
-                           AMED_thd[MARS-1])
+                                           (FICA_mc_trt + FICA_ss_trt)) -
+                           AMED_thd[MARS - 1])
 
     return _amed
 
@@ -397,7 +397,7 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
            STD_Aged, c04470, c00100, c21060, c21040, e37717, c04600, e04805,
            t04470, f6251, _feided, c02700, FDED, II_rt1, II_rt2, II_rt3,
            II_rt4, II_rt5, II_rt6, II_rt7, II_brk1, II_brk2, II_brk3, II_brk4,
-           II_brk5, II_brk6, _compitem, _txpyers, _numextra,  puf):
+           II_brk5, II_brk6, _compitem, _txpyers, _numextra, puf):
 
     """
 
@@ -470,7 +470,7 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
 
     # Apply regular standard deduction if not dependent or compulsory itemizer
     if (DSI == 1):
-        c04100 = min(STD[MARS-1], c15100)
+        c04100 = min(STD[MARS - 1], c15100)
     elif _compitem == 1 or (3 <= MARS and MARS <= 6 and MIDR == 1):
         c04100 = 0.
     else:
@@ -495,7 +495,7 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
     if _exact == 1 and MARS == 3 or MARS == 5:
         c04200 = e04200
     else:
-        c04200 = _numextra * STD_Aged[MARS-1]
+        c04200 = _numextra * STD_Aged[MARS - 1]
 
     c15200 = c04200
 
@@ -702,7 +702,7 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
         _line19 = c59450 - c59460 - e59470
 
         if c59450 >= 0.:
-            _line22 = max(0., e59440 - e59440*c59460/c59450)
+            _line22 = max(0., e59440 - e59440 * c59460 / c59450)
         else:
             _line22 = 0.
 
@@ -807,11 +807,11 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
          e60300, e60860, e60100, e60840, e60630, e60550,
          e60720, e60430, e60500, e60340, e60680, e60600, e60405,
          e60440, e60420, e60410, e61400, e60660, e60480,
-         e62000,  e60250, _cmp, _standard,  e04470, e17500,
-         f6251,  e62100, e21040, _sit, e20800, c00100,
+         e62000, e60250, _cmp, _standard, e04470, e17500,
+         f6251, e62100, e21040, _sit, e20800, c00100,
          c04470, c17000, e18500, c20800, c21040,
          DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700,
-         e00100,  e24515, x62730, x60130,
+         e00100, e24515, x62730, x60130,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
          II_brk6, MARS, _sep, II_brk2, AMT_Child_em, AMT_CG_rt1,
          AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516,
@@ -825,7 +825,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     # QUESTION: c63100 variable is reassigned below before use, is this a BUG?
     c63100 = max(0., _taxbc - e07300)
     c60200 = min(c17000, AMT_prt * _posagi)
-    c60240 = (1-ID_StateLocalTax_HC)*c18300 + x60240
+    c60240 = (1 - ID_StateLocalTax_HC) * c18300 + x60240
     c60220 = c20800 + x60220
     c60130 = c21040 + x60130
     c62730 = e24515 + x62730
@@ -862,7 +862,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     if (puf and ((_standard == 0 or (_exact == 1 and e04470 > 0)))):
         c62100 = (c00100 - c04470 + min(c17000, 0.025 * max(0., c00100)) +
-                  (1-ID_StateLocalTax_HC)*_sit + e18500 - c60260 + c20800 -
+                  (1 - ID_StateLocalTax_HC) * _sit + e18500 - c60260 + c20800 -
                   c21040)
         c62100 += _cmbtp
 
@@ -998,7 +998,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     return (c62720, c60260, c63100, c60200, c60240, c60220,
             c60130, c62730, _addamt, c62100, _edical,
-            _amtsepadd, c62600, _agep, _ages,  c62700,
+            _amtsepadd, c62600, _agep, _ages, c62700,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
             _ngamty, c62745, y62745, _tamt2, _amt5pc, _amt15pc,
             _amt25pc, c62747, c62755, c62770, _amt, c62800,
@@ -1180,7 +1180,7 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, e00400, MARS, EITC_ps,
     if (MARS != 3 and MARS != 6 and _modagi > 0 and
             (_modagi > _val_ymax or c59560 > _val_ymax)):
         _preeitc = max(0., EITC_c[_ieic] - EITC_prt[_ieic] *
-                       (max(0., max(_modagi, c59560)-_val_ymax)))
+                       (max(0., max(_modagi, c59560) - _val_ymax)))
         _preeitc = min(_preeitc, c59660)
 
     if MARS != 3 and MARS != 6 and _modagi > 0:
@@ -1487,7 +1487,7 @@ def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
     if _nctcr >= ACTC_ChildNum and c82890 < c82935:
         c82900 = 0.0765 * min(SS_Earnings_c, c82880)
 
-        c82905 = float((1-ALD_SelfEmploymentTax_HC)*e03260 + e09800)
+        c82905 = float((1 - ALD_SelfEmploymentTax_HC) * e03260 + e09800)
 
         c82910 = c82900 + c82905
 
@@ -1657,7 +1657,7 @@ def OSPC_TAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
     _payments = (e09900 + e11500 + e11400 + e11300 + e11200 + e11100 + e11550 +
                  e11450)
 
-    c10300 = max(0, _ospctax-e09710-e09720-_payments)
+    c10300 = max(0, _ospctax - e09710 - e09720 - _payments)
 
     # Ignore refundable partof _eitc
     # TODO Remove this _eitc
@@ -1692,7 +1692,7 @@ def Taxer_i(inc_in, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6,
 @iterate_jit(nopython=True, parameters=['FICA_ss_trt', 'SS_Earnings_c',
                                         'FICA_mc_trt'])
 def ExpandIncome(FICA_ss_trt, SS_Earnings_c, e00200, FICA_mc_trt, e02400,
-                 c02500,  c00100, e00400):
+                 c02500, c00100, e00400):
 
     employer_share_fica = (max(0, FICA_ss_trt * min(SS_Earnings_c, e00200) +
                            FICA_mc_trt * e00200))

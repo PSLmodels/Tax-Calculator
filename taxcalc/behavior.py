@@ -50,7 +50,7 @@ def behavior(calcX, calcY, elast_wrt_atr=0.4, inc_effect=0.15,
     mtrY = calcY.mtr('e00200')
 
     # Calculate the percent change in after-tax rate.
-    pct_diff_atr = ((1-mtrY) - (1-mtrX))/(1-mtrX)
+    pct_diff_atr = ((1 - mtrY) - (1 - mtrX)) / (1 - mtrX)
 
     calcY_behavior = copy.deepcopy(calcY)
 

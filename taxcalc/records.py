@@ -62,7 +62,7 @@ class Records(object):
         # Compulsory itemizers
         self._compitem = np.where(np.logical_and(self.FDED == 1,
                                                  self.e04470 <
-                                                 std2008[self.MARS-1]), 1, 0)
+                                                 std2008[self.MARS - 1]), 1, 0)
         # Number of taxpayers
         self._txpyers = np.where(np.logical_or(self.MARS == 2,
                                                np.logical_or(self.MARS == 3,
@@ -70,12 +70,15 @@ class Records(object):
                                  2., 1.)
         # Number of extra standard deductions for aged
         self._numextra = np.where(np.logical_and(self.FDED == 2, self.e04470 <
-                                  std2008[self.MARS-1]),
+                                  std2008[self.MARS - 1]),
                                   np.where(
-         np.logical_and(self.MARS != 2, self.MARS != 3),
-         (self.e04470 - std2008[self.MARS - 1]) / STD_Aged_2008[0],
-         (self.e04470 - std2008[self.MARS - 1]) / STD_Aged_2008[1]),
-         np.where(self.e02400 > 0, self._txpyers, 0))
+                                  np.logical_and(self.MARS != 2,
+                                                 self.MARS != 3),
+                                  (self.e04470 - std2008[self.MARS - 1]) /
+                                  STD_Aged_2008[0],
+                                  (self.e04470 - std2008[self.MARS - 1]) /
+                                  STD_Aged_2008[1]),
+                                  np.where(self.e02400 > 0, self._txpyers, 0))
 
     @property
     def current_year(self):
@@ -87,7 +90,7 @@ class Records(object):
         # Implement Stage 1 Extrapolation blowup factors
         self.blowup()
         # Implement Stage 2 Extrapolation reweighting.
-        self.s006 = self.WT["WT"+str(self.current_year)]
+        self.s006 = self.WT["WT" + str(self.current_year)]
 
     def blowup(self):
         self.e00200 = self.e00200 * self.BF.AWAGE[self._current_year]
@@ -643,7 +646,7 @@ class Records(object):
                         'c87620', '_ctc1', '_ctc2', '_regcrd', '_exocrd',
                         '_ctctax', 'c07220', 'c82925', 'c82930', 'c82935',
                         'c82880', 'h82880', 'c82885', 'c82890', 'c82900',
-                        'c82905', 'c82910', 'c82915',  'c82920', 'c82937',
+                        'c82905', 'c82910', 'c82915', 'c82920', 'c82937',
                         'c82940', 'c11070', 'e59660', '_othadd', 'y07100',
                         'x07100', 'c08800', 'e08795', 'x07400', 'c59680',
                         '_othertax', 'e82915', 'e82940', 'SFOBYR', 'NIIT',
