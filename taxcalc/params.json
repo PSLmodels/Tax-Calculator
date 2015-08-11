@@ -36,8 +36,8 @@
     
     },
     "_SS_thd50":{
-        "long_name": "Threshold for social security taxability 1",
-	"description": "The first threshold for social security benefit taxability: if your provisional income is greater than this threshold, your social security benefit will be subject to tax.",
+        "long_name": "Threshold for Social Security benefit taxability 1",
+	"description": "The first threshold for Social Security benefit taxability: if your provisional income is greater than this threshold, up to 50% of your Social Security benefit will be subject to tax under current law.",
         "irs_ref": "Form 1040, line 20a&b, calculation (Worksheet, line 8.)",
         "notes": "",
         "start_year": 2013,
@@ -50,8 +50,8 @@
         
     },
      "_SS_thd85":{
-        "long_name": "Threshold for social security taxability 2",
-	"description": "The second threshold for social security taxability: if your provisional income is greater than this threshold, your social security benefit will be subject to tax.",
+        "long_name": "Threshold for Social Security benefit taxability 2",
+	"description": "The second threshold for Social Security taxability: if your provisional income is greater than this threshold, up to 85% of your Social Security benefit will be subject to tax under current law.",
         "irs_ref": "Form 1040, line 20a&b, calculation (Worksheet, add line 10 values to line 8).",
         "notes": "",
         "start_year": 2013,
@@ -420,7 +420,7 @@
     },
     "_SS_Earnings_c":{
         "long_name": "Max Taxable Earnings for Social Security",
-	"description": "Only earnings lower than this maximum amount are subjected to social security tax (OASDI tax).",
+	"description": "Only earnings lower than this maximum amount are subjected to Social Security tax (OASDI tax).",
         "irs_ref": "W-2, Box 4, instructions",
         "notes": "Payroll tax is not calculated in this calculator.",
         "start_year": 2013,
@@ -584,7 +584,7 @@
     },
     "_NIIT_thd":{
         "long_name": "Net Investment Income Tax income threshold (UIMC)",
-	"description": "If one taxpayer's MAGI (modified AGI) is more than this threshold, he or she is subject to the additional medicare tax. ",
+	"description": "If one taxpayer's MAGI (modified AGI) is more than this threshold, he or she is subject to the additional Medicare tax. ",
         "irs_ref": "Form 8960, line 14, instructions. ",
         "notes": "",
         "start_year": 2013,
@@ -729,8 +729,8 @@
                     [413200, 464850, 223425, 439000, 464850, 223425]]
      },
      "_FICA_ss_trt":{
-        "long_name": "Social security payroll rate",
-	"description": "Social security  tax rate, including both employer and employee.",
+        "long_name": "Social Security payroll rate",
+	"description": "Social Security  tax rate, including both employer and employee.",
         "irs_ref": "Form , line , ",
         "notes": "We do not calculate payroll tax liability, but use this for eligibility for some tax items.",
         "start_year": 2013,
@@ -759,8 +759,8 @@
 
 
     "_SS_percentage1":{
-        "long_name": "Social security taxable income percentage 1",
-	"description": "Under current law if your provisional income is above the first threshold for social security taxability but below the second threshold, you need to apply this percentage to both the excess of your provisonal income over the first threshold and your social security benefits, and then include the smaller one in your AGI.",
+        "long_name": "Social Security taxable income percentage 1",
+	"description": "Under current law if your provisional income is above the first threshold for Social Security taxability but below the second threshold, you need to apply this percentage to both the excess of your provisonal income over the first threshold and your Social Security benefits, and then include the smaller one in your AGI.",
         "irs_ref": "Form 1040, line 20b, instructions (Social Security Worksheets, line 2 & 13)",
         "notes": "",
         "start_year": 2013,
@@ -773,8 +773,8 @@
         
     },
     "_SS_percentage2":{
-        "long_name": "Social security taxable income percentage 2",
-	"description": "Under current law if your provisional income is above the second threshold for social security taxability, you need to apply this percentage to both the excess of your provisional income over the second threshold and your social secuirty benefits, and then include the smaller one in your AGI.",
+        "long_name": "Social Security taxable income percentage 2",
+	"description": "Under current law if your provisional income is above the second threshold for Social Security taxability, you need to apply this percentage to both the excess of your provisional income over the second threshold and your social secuirty benefits, and then include the smaller one in your AGI.",
         "irs_ref": "Form 1040, line 20b, instructions (Social Security Worksheets, line 15)",
         "notes": "",
         "start_year": 2013,
@@ -1090,8 +1090,8 @@
         "value":      [15000]        
     },
     "_AMED_thd":{
-        "long_name": "Additional medicare threshold",
-	"description": "If your medicare wages, RRTA compensation and self-employment income is above this threshold, you are subject to additional medicare tax. ",
+        "long_name": "Additional Medicare threshold",
+	"description": "If your Medicare wages, RRTA compensation and self-employment income is above this threshold, you are subject to additional Medicare tax. ",
 	"irs_ref": "Form 8959, line 5, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -1102,8 +1102,8 @@
         "value":[    [200000,    250000,  125000,     200000,              200000, 125000]]
     },
     "_AMED_trt":{
-        "long_name": "Additional medicare tax rate",
-	"description": "This is the rate applied to the portion of your medicare wages, RRTA compensation and self-employment income exceeding additional medicare threshold. ",
+        "long_name": "Additional Medicare tax rate",
+	"description": "This is the rate applied to the portion of your Medicare wages, RRTA compensation and self-employment income exceeding additional Medicare threshold. ",
 	"irs_ref": "Form 8959, line 7, in-line. ",
         "start_year": 2013,
         "col_var": "",
