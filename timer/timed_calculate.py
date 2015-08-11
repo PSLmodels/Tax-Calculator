@@ -1,8 +1,10 @@
 """
-Replaces functions called in test.run() with versions decorated with '@time_this(main_timer)'
+Replaces functions called in test.run()
+with versions decorated with '@time_this(main_timer)'
 
 This calls a cumulative timer that is ran for each of the functions below,
-raw calculation time can be printed by calling 'print(main_timer)' at the end of the testing script
+raw calculation time can be printed by calling
+'print(main_timer)' at the end of the testing script.
 """
 
 
@@ -14,15 +16,19 @@ from timer_utils import cumulative_timer, time_this
 
 main_timer = cumulative_timer("All Fuctions, no CSV calls, no concat calls")
 
-# Below are the functions called in the run() method in test.py
-# this is equivalent to decorating each function in taxcalc.calculate with @time_this(main_timer)
-# to time a single function, not as a running total, use decorator simply as @time_this or func = time_this(func)
+# Below are the functions called in the run() method in test.py.
+# This is equivalent to decorating each function in taxcalc.calculate
+# with @time_this(main_timer).
+# To time a single function, not as a running total,
+# use decorator simply as @time_this or func = time_this(func).
 
 
 Calculator = time_this(Calculator, main_timer)
 set_input_data = time_this(set_input_data, main_timer)
-update_globals_from_calculator = time_this(update_globals_from_calculator, main_timer)
-update_calculator_from_module = time_this(update_calculator_from_module, main_timer)
+update_globals_from_calculator = time_this(update_globals_from_calculator,
+                                           main_timer)
+update_calculator_from_module = time_this(update_calculator_from_module,
+                                          main_timer)
 
 FilingStatus = time_this(FilingStatus, main_timer)
 Adj = time_this(Adj, main_timer)
@@ -52,5 +58,3 @@ F5405 = time_this(F5405, main_timer)
 C1040 = time_this(C1040, main_timer)
 DEITC = time_this(DEITC, main_timer)
 SOIT = time_this(SOIT, main_timer)
-
-
