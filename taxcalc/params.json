@@ -182,7 +182,7 @@
     },
      "_AMT_em_pe":{
         "long_name": "AMT exemption phaseout ending AMTI (Married filling Separately)",
-	"description": "Individuals with married filing separately need to add extra amount to AMTI beyond this AMTI level",
+	"description": "The AMT exemption is entirely disallowed beyond this AMTI level for individuals who are married but filing separately.",
         "irs_ref": "Form 6251, line 28, instruction.",
         "notes": "",
         "start_year": 2013,
