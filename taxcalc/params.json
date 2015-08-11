@@ -19,7 +19,7 @@
     },
     "_EITC_c": {
         "long_name": "Maximum earned income credit",
-	"description": "This the maximum amound of earned income credit you're eligible, depending on how many kids you have. ",
+	"description": "This is the maximum amount of earned income credit you're eligible for; it depends on how many kids you have. ",
         "irs_ref": "IRS reference: form 1040, line 66a&b, instruction (table).",
         "notes": "",
         "start_year": 2013,
@@ -394,7 +394,7 @@
     },
      "_EITC_rt":{
         "long_name": "Earned income credit rate",
-	"description": "If one taxpayer's AGI is below AGI phaseout start, he or she can apply this rate to your earned income to calculate the credit amount eligible. ",
+	"description": "If one taxpayer's AGI is below AGI phaseout start, he can apply this rate to his earned income to calculate the credit amount eligible. ",
         "irs_ref": "Form 1040, line 66a&b, calculation (table: Max_EIC/Max_EIC_base_income).",
         "notes": "Range of this parameter is between zero and one. ",
         "start_year": 2013,
@@ -788,7 +788,7 @@
     },
     "_II_prt":{
         "long_name": "Personal exemption phaseout rate",
-	"description": "Personal exemption amount will decrease by this rate for each dollor of AGI exceeding exemption phaseout start.",
+	"description": "Personal exemption amount will decrease by this rate for each dollar of AGI exceeding exemption phaseout start.",
         "irs_ref": "Form , line , ",
         "notes": "",
         "start_year": 2013,
@@ -881,7 +881,7 @@
     },
     "_ID_prt":{
         "long_name": "Itemized deduction phaseout rate (Pease)",
-	    "description": "You will not be eligible to deduct the full amount of itemized deduction if your AGI is above the phaseout start. The deductible portion would be decreased at this rate for each dollor exceeding the start.",
+	    "description": "You will not be eligible to deduct the full amount of itemized deduction if your AGI is above the phaseout start. The deductible portion would be decreased at this rate for each dollar exceeding the start.",
         "irs_ref": "Schedule A, line 29, instructions. ",
         "notes": "This phaseout rate cannot be lower than 0.03 for each dollar, due to limited data on non-itemizers.",
         "start_year": 2013,
@@ -920,7 +920,7 @@
     },
     "_NIIT_trt":{
         "long_name": "Net Investment Income Tax rate (UIMC)",
-	"description": "Also called Unearned Income Medicare Contribution Tax. You will be taxed at this rate if your MAGI is higher than NIIT threshold.",
+	"description": "Also called the Unearned Income Medicare Contribution. The lessor of net investment income and the amount by which MAGI exceeds a threshold is taxed at this rate.",
         "irs_ref": "Form 8960, line 21, in-line. ",
         "notes": "",
         "start_year": 2013,
@@ -933,7 +933,7 @@
     },
     "_AMT_prt":{
         "long_name": "AMT exemption phaseout rate",
-	"description": "AMT exemption will decrease at this rate for each dollor of AMTI exceeding AMT phaseout start. ",
+	"description": "AMT exemption will decrease at this rate for each dollar of AMTI exceeding AMT phaseout start. ",
         "irs_ref": "Form 6251, line 29, instructions. ",
         "notes": "",
         "start_year": 2013,
@@ -985,7 +985,7 @@
     },
     "_ACTC_ChildNum":{
         "long_name": "Additional child tax credit minimum number of qualified children",
-	"description": "Families with this number of qualified children or more, are qualified for an alternative way to calculate additional child tax credit",
+	"description": "Families with this number of qualified children or more are qualified for an alternative way to calculate additional child tax credit",
         "irs_ref": "Form 8812, Part III. ",
         "notes": "",
         "start_year": 2013,
@@ -1011,7 +1011,7 @@
     },
     "_ALD_SelfEmploymentTax_HC":{
         "long_name": "Adjustment for self-employment tax haircut",
-	"description": "This percentage would limit the employer equivalent portion of self-employment adjustment if greater than zero ",
+	"description": "This percentage, if greater than zero, reduces the employer equivalent portion of self-employment adjustment. ",
         "irs_ref": "Form 1040, line 27",
         "notes": "The final adjustment amount would be (1 - Haircut) * Self Employment Tax Adjustment. ",
         "start_year": 2013,
@@ -1024,7 +1024,7 @@
     },
     "_ALD_SelfEmp_HealthIns_HC":{
         "long_name": "Adjustment for self employed health insurance haircut",
-	"description": "This percentage would limit the health insurance adjustment for self-employed taxpayers. ",
+	"description": "This percentage, if greater than zero, reduces the health insurance adjustment for self-employed taxpayers. ",
         "irs_ref": "Form 1040, line 29",
         "notes": "The final adjustment amount would be (1 - Haircut) * self-employed health insurance adjustment. ",
         "start_year": 2013,
@@ -1065,7 +1065,7 @@
     },
     "_ALD_Alimony_HC":{
         "long_name": "Adjustment for alimony payment haircut",
-	"description": "Under current law, the full amount of alimony payment is taken as an adjustment from gross income in arriving at AGI. You can use this hair cut to limit the deduction allowed.",
+	"description": "Under current law, the full amount of alimony payment is taken as an adjustment from gross income in arriving at AGI. You can use this haircut to limit the deduction allowed.",
         "irs_ref": "Form 1040, line 31",
         "notes": "The final adjustment amount would be (1 - Haircut) * Alimony Payments",
         "start_year": 2013,
@@ -1115,7 +1115,7 @@
     },
     "_CG_rt1":{
         "long_name": "Long term capital gain and qualified dividends rate 1",
-	"description": "The capital gain and dividends (stacked on top of regular income) that are below threshold 1 will be tax at this rate. ",
+	"description": "The capital gain and dividends (stacked on top of regular income) that are below threshold 1 are taxed at this rate. ",
 	"irs_ref": "Form 1040 Schedule D tax worksheet, line 20, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -1128,7 +1128,7 @@
     },
     "_CG_rt2":{
         "long_name": "Long term capital gain and qualified dividends rate 2",
-	"description": "The capital gain and dividends (stacked on top of regular income) that are below threshold 2 and above threshold 1 will be taxed at this rate. ",
+	"description": "The capital gain and dividends (stacked on top of regular income) that are below threshold 2 and above threshold 1 are taxed at this rate. ",
 	"irs_ref": "Form 1040 Schedule D tax worksheet, line 29, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -1141,7 +1141,7 @@
     },
     "_CG_rt3":{
         "long_name": "Long term capital gain and qualified dividends rate 3",
-	"description": "The capital gain and dividends (stacked on top of regular income) that are above threshold 2 will be taxed at this rate. ",
+	"description": "The capital gain and dividends (stacked on top of regular income) that are above threshold 2 are taxed at this rate. ",
 	"irs_ref": "Form 1040 Schedule D tax worksheet, line 32, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -1153,7 +1153,7 @@
     },
         "_CG_thd1":{
         "long_name": "Long term capital gain and qualified dividends threshold 1",
-	"description": "The capital gain and dividends (stacked on top of regular income)  below this threshold would be taxed at capital gain rate 1. ",
+	"description": "The capital gain and dividends (stacked on top of regular income)  below this threshold are taxed at capital gain rate 1. ",
 	"irs_ref": "Form 1040 Schedule D tax worksheet, line 15, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -1167,7 +1167,7 @@
     },
         "_CG_thd2":{
         "long_name": "Long term capital gain and qualified dividend threshold 2",
-	"description": "The capital gain and dividends (stacked on top of regular income)  above this threshold would be taxed at capital gain rate 3.",
+	"description": "The capital gain and dividends (stacked on top of regular income)  above this threshold are taxed at capital gain rate 3.",
 	"irs_ref": "Form 1040 Schedule D tax worksheet, line 24, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -1182,7 +1182,7 @@
     },
      "_AMT_CG_rt1":{
         "long_name": "Long term capital gain and qualified dividend rate1",
-	"description": "Capital gain and qualified dividends (stacked on top of regular income) below threshold 1 will be taxed at this rate. ",
+	"description": "Capital gain and qualified dividends (stacked on top of regular income) below threshold 1 are taxed at this rate. ",
 	"irs_ref": "Form 6251, line 46, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -1195,7 +1195,7 @@
     },
     "_AMT_CG_rt2":{
         "long_name": "Long term capital gain and qualified dividend rate2",
-	"description": "Capital gain and qualified dividend (stacked on top of regular income) below threshold 2 and above threshold 1 will be taxed at this rate.",
+	"description": "Capital gain and qualified dividend (stacked on top of regular income) below threshold 2 and above threshold 1 are taxed at this rate.",
 	"irs_ref": "Form 6251, line 55, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -1208,7 +1208,7 @@
     },
     "_AMT_CG_rt3":{
         "long_name": "Long term capital gain and qualified dividend rate 3",
-	"description": "The capital gain and qualified dividend (stacked on top of regular income) above threshold 2 would be taxed at this rate.",
+	"description": "The capital gain and qualified dividend (stacked on top of regular income) above threshold 2 are taxed at this rate.",
 	"irs_ref": "Form 6251, line 57, in-line. ",
         "start_year": 2013,
         "col_var": "",
