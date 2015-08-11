@@ -11,8 +11,8 @@ def main(sas_output_path, py_output_dir, rerun=False):
     between the SAS output read from sas_output_path and Python output
     read from CSV files contained in py_output_dir.
 
-    If the arg "rerun" is anything but False, taxcalc gets imported and its Test
-    function run, thus regenerating the python output.
+    If the arg "rerun" is anything but False, taxcalc gets imported and its
+    Test function run, thus regenerating the python output.
     '''
     if rerun:
         cwd = os.getcwd()
@@ -20,14 +20,13 @@ def main(sas_output_path, py_output_dir, rerun=False):
         os.chdir(python_output_dir)
         translation.Test(True)
         os.chdir(cwd)
-    
+
     gold_std = h5.File(sas_codes_path)
     errors = compute_error(gen_file_paths(py_output_dir), gold_std)
     errors.columns = ['Error']
     errors.sort(columns='Error', ascending=False, inplace=True)
     errors.to_csv('errors_by_variable.csv',
-        index_label='Variable'
-        )
+                  index_label='Variable')
 
 
 def compute_error(files_to_look_at, gold_std):
@@ -63,11 +62,11 @@ def mismatching_records(gold_std, variable, py_out_dir='py_output'):
             print 'Found in file: {}'.format(file_path)
             py_answer = temp[variable]
             break
-    
+
     if not py_answer:
         print 'Variable was not found, returning None. Beware!'
         return py_answer
-    
+
     mismatches = np.array(np.absolute(py_answer - gold_std[variable]) > 0)
 
     if not mismatches.any():
@@ -98,7 +97,7 @@ def gen_file_paths(dir_name, filter_func=None):
     '''A function for wrapping all the os.path commands involved in listing files
     in a directory, then turning file names into file paths by concatenating
     them with the directory name.
-    
+
     This also optionally supports filtering file names using filter_func.
 
     :param dir_name: name of directory to list files in
@@ -107,10 +106,10 @@ def gen_file_paths(dir_name, filter_func=None):
     :type filter_func: None by default, function if passed
     :returns: sequence of paths for files in *dir_name*
     '''
-    file_paths = tuple(op.join(dir_name, file_name) 
-        for file_name in os.listdir(dir_name))
+    file_paths = tuple(op.join(dir_name, file_name) for
+                       file_name in os.listdir(dir_name))
     if filter_func:
-        return filter(filter_func, file_paths)    
+        return filter(filter_func, file_paths)
     return file_paths
 
 
@@ -137,11 +136,11 @@ if __name__ == '__main__':
     from argparse import ArgumentParser
     parser = ArgumentParser('Testing script')
     parser.add_argument('sas_codes_path',
-        help='path to HDF5 file with SAS codes')
+                        help='path to HDF5 file with SAS codes')
     parser.add_argument('py_out_dir',
-        help='path to folder with Python-generated values')
+                        help='path to folder with Python-generated values')
     parser.add_argument('-r', dest='rerun', action='store_true',
-        help=('pass this flag to regenerate Python data'))
+                        help=('pass this flag to regenerate Python data'))
 
     cmd_input = parser.parse_args()
     main(cmd_input.sas_codes_path, cmd_input.py_output_dir, cmd_input.rerun)

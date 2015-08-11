@@ -11,7 +11,9 @@ The Versioneer
 * License: Public Domain
 * Compatible With: python2.6, 2.7, 3.2, 3.3, 3.4, and pypy
 
-[![Build Status](https://travis-ci.org/warner/python-versioneer.png?branch=master)](https://travis-ci.org/warner/python-versioneer)
+[![Build Status]
+(https://travis-ci.org/warner/python-versioneer.png?branch=master)]
+(https://travis-ci.org/warner/python-versioneer)
 
 This is a tool for managing a recorded version number in distutils-based
 python projects. The goal is to remove the tedious and error-prone "update
@@ -147,7 +149,8 @@ To versioneer-enable your project:
         versioneer.versionfile_source = 'src/myproject/_version.py'
         versioneer.versionfile_build = 'myproject/_version.py'
         versioneer.tag_prefix = '' # tags are like 1.2.0
-        versioneer.parentdir_prefix = 'myproject-' # dirname like 'myproject-1.2.0'
+        versioneer.parentdir_prefix = (
+        'myproject-' # dirname like 'myproject-1.2.0')
 
 * 3: add the following arguments to the setup() call in your setup.py:
 
@@ -272,7 +275,11 @@ domain.
 
 """
 
-import os, sys, re, subprocess, errno
+import os
+import sys
+import re
+import subprocess
+import errno
 from distutils.core import Command
 from distutils.command.sdist import sdist as _sdist
 from distutils.command.build import build as _build
@@ -287,6 +294,7 @@ VCS = None
 
 # these dictionaries contain VCS-specific tools
 LONG_VERSION_PY = {}
+
 
 def run_command(commands, args, cwd=None, verbose=False, hide_stderr=False):
     assert isinstance(commands, list)
@@ -378,8 +386,9 @@ def versions_from_parentdir(parentdir_prefix, root, verbose=False):
     dirname = os.path.basename(root)
     if not dirname.startswith(parentdir_prefix):
         if verbose:
-            print("guessing rootdir is '%%s', but '%%s' doesn't start with prefix '%%s'" %%
-                  (root, dirname, parentdir_prefix))
+            print("guessing rootdir is '%%s',
+                   but '%%s' doesn't start with prefix '%%s'" %%
+                   (root, dirname, parentdir_prefix))
         return None
     return {"version": dirname[len(parentdir_prefix):], "full": ""}
 
@@ -466,7 +475,8 @@ def git_versions_from_vcs(tag_prefix, root, verbose=False):
         return {}
     if not stdout.startswith(tag_prefix):
         if verbose:
-            print("tag '%%s' doesn't start with prefix '%%s'" %% (stdout, tag_prefix))
+            print("tag '%%s' doesn't start with prefix
+                  '%%s'" %% (stdout, tag_prefix))
         return {}
     tag = stdout[len(tag_prefix):]
     stdout = run_command(GITS, ["rev-parse", "HEAD"], cwd=root)
@@ -504,6 +514,7 @@ def get_versions(default={"version": "unknown", "full": ""}, verbose=False):
             or default)
 '''
 
+
 def git_get_keywords(versionfile_abs):
     # the code embedded in _version.py can just fetch the value of these
     # keywords. When used from setup.py, we don't want to import _version.py,
@@ -511,7 +522,7 @@ def git_get_keywords(versionfile_abs):
     # _version.py.
     keywords = {}
     try:
-        f = open(versionfile_abs,"r")
+        f = open(versionfile_abs, "r")
         for line in f.readlines():
             if line.strip().startswith("git_refnames ="):
                 mo = re.search(r'=\s*"(.*)"', line)
@@ -526,14 +537,15 @@ def git_get_keywords(versionfile_abs):
         pass
     return keywords
 
+
 def git_versions_from_keywords(keywords, tag_prefix, verbose=False):
     if not keywords:
-        return {} # keyword-finding function failed to find keywords
+        return {}  # keyword-finding function failed to find keywords
     refnames = keywords["refnames"].strip()
     if refnames.startswith("$Format"):
         if verbose:
             print("keywords are unexpanded, not using")
-        return {} # unexpanded, so not in an unpacked git-archive tarball
+        return {}  # unexpanded, so not in an unpacked git-archive tarball
     refs = set([r.strip() for r in refnames.strip("()").split(",")])
     # starting in git-1.8.3, tags are listed as "tag: foo-1.0" instead of
     # just "foo-1.0". If we see a "tag: " prefix, prefer those.
@@ -549,7 +561,7 @@ def git_versions_from_keywords(keywords, tag_prefix, verbose=False):
         # "stabilization", as well as "HEAD" and "master".
         tags = set([r for r in refs if re.search(r'\d', r)])
         if verbose:
-            print("discarding '%s', no digits" % ",".join(refs-tags))
+            print("discarding '%s', no digits" % ",".join(refs - tags))
     if verbose:
         print("likely tags: %s" % ",".join(sorted(tags)))
     for ref in sorted(tags):
@@ -558,13 +570,13 @@ def git_versions_from_keywords(keywords, tag_prefix, verbose=False):
             r = ref[len(tag_prefix):]
             if verbose:
                 print("picking %s" % r)
-            return { "version": r,
-                     "full": keywords["full"].strip() }
+            return {"version": r,
+                    "full": keywords["full"].strip()}
     # no suitable tags, so we use the full revision id
     if verbose:
         print("no suitable tags, using full revision id")
-    return { "version": keywords["full"].strip(),
-             "full": keywords["full"].strip() }
+    return {"version": keywords["full"].strip(),
+            "full": keywords["full"].strip()}
 
 
 def git_versions_from_vcs(tag_prefix, root, verbose=False):
@@ -587,7 +599,8 @@ def git_versions_from_vcs(tag_prefix, root, verbose=False):
         return {}
     if not stdout.startswith(tag_prefix):
         if verbose:
-            print("tag '%s' doesn't start with prefix '%s'" % (stdout, tag_prefix))
+            print("tag '%s' doesn't start with prefix '%s'"
+                  % (stdout, tag_prefix))
         return {}
     tag = stdout[len(tag_prefix):]
     stdout = run_command(GITS, ["rev-parse", "HEAD"], cwd=root)
@@ -631,13 +644,15 @@ def do_vcs_install(manifest_in, versionfile_source, ipy):
         files.append(".gitattributes")
     run_command(GITS, ["add", "--"] + files)
 
+
 def versions_from_parentdir(parentdir_prefix, root, verbose=False):
     # Source tarballs conventionally unpack into a directory that includes
     # both the project name and a version string.
     dirname = os.path.basename(root)
     if not dirname.startswith(parentdir_prefix):
         if verbose:
-            print("guessing rootdir is '%s', but '%s' doesn't start with prefix '%s'" %
+            print("guessing rootdir is '%s',"
+                  "but '%s' doesn't start with prefix '%s'" %
                   (root, dirname, parentdir_prefix))
         return None
     return {"version": dirname[len(parentdir_prefix):], "full": ""}
@@ -657,6 +672,7 @@ def get_versions(default={}, verbose=False):
 
 DEFAULT = {"version": "unknown", "full": "unknown"}
 
+
 def versions_from_file(filename):
     versions = {}
     try:
@@ -673,6 +689,7 @@ def versions_from_file(filename):
 
     return versions
 
+
 def write_to_version_file(filename, versions):
     with open(filename, "w") as f:
         f.write(SHORT_VERSION_PY % versions)
@@ -686,14 +703,18 @@ def get_root():
     except NameError:
         return os.path.dirname(os.path.abspath(sys.argv[0]))
 
+
 def vcs_function(vcs, suffix):
     return getattr(sys.modules[__name__], '%s_%s' % (vcs, suffix), None)
 
+
 def get_versions(default=DEFAULT, verbose=False):
     # returns dict with two keys: 'version' and 'full'
-    assert versionfile_source is not None, "please set versioneer.versionfile_source"
+    assert (versionfile_source is not None,
+            "please set versioneer.versionfile_source")
     assert tag_prefix is not None, "please set versioneer.tag_prefix"
-    assert parentdir_prefix is not None, "please set versioneer.parentdir_prefix"
+    assert (parentdir_prefix is not None,
+            "please set versioneer.parentdir_prefix")
     assert VCS is not None, "please set versioneer.VCS"
 
     # I am in versioneer.py, which must live at the top of the source tree,
@@ -716,40 +737,51 @@ def get_versions(default=DEFAULT, verbose=False):
         vcs_keywords = get_keywords_f(versionfile_abs)
         ver = versions_from_keywords_f(vcs_keywords, tag_prefix)
         if ver:
-            if verbose: print("got version from expanded keyword %s" % ver)
+            if verbose:
+                print("got version from expanded keyword %s" % ver)
             return ver
 
     ver = versions_from_file(versionfile_abs)
     if ver:
-        if verbose: print("got version from file %s %s" % (versionfile_abs,ver))
+        if verbose:
+            print("got version from file %s %s"
+                  % (versionfile_abs, ver))
         return ver
 
     versions_from_vcs_f = vcs_function(VCS, "versions_from_vcs")
     if versions_from_vcs_f:
         ver = versions_from_vcs_f(tag_prefix, root, verbose)
         if ver:
-            if verbose: print("got version from VCS %s" % ver)
+            if verbose:
+                print("got version from VCS %s" % ver)
             return ver
 
     ver = versions_from_parentdir(parentdir_prefix, root, verbose)
     if ver:
-        if verbose: print("got version from parentdir %s" % ver)
+        if verbose:
+            print("got version from parentdir %s" % ver)
         return ver
 
-    if verbose: print("got version from default %s" % default)
+    if verbose:
+        print("got version from default %s" % default)
     return default
+
 
 def get_version(verbose=False):
     return get_versions(verbose=verbose)["version"]
+
 
 class cmd_version(Command):
     description = "report generated version string"
     user_options = []
     boolean_options = []
+
     def initialize_options(self):
         pass
+
     def finalize_options(self):
         pass
+
     def run(self):
         ver = get_version(verbose=True)
         print("Version is currently: %s" % ver)
@@ -762,7 +794,8 @@ class cmd_build(_build):
         # now locate _version.py in the new build/ directory and replace it
         # with an updated value
         if versionfile_build:
-            target_versionfile = os.path.join(self.build_lib, versionfile_build)
+            target_versionfile = os.path.join(self.build_lib,
+                                              versionfile_build)
             print("UPDATING %s" % target_versionfile)
             os.unlink(target_versionfile)
             with open(target_versionfile, "w") as f:
@@ -791,6 +824,7 @@ if 'cx_Freeze' in sys.modules:  # cx_freeze enabled?
                                 "VERSIONFILE_SOURCE": versionfile_source,
                                 })
 
+
 class cmd_sdist(_sdist):
     def run(self):
         versions = get_versions(verbose=True)
@@ -815,14 +849,19 @@ __version__ = get_versions()['version']
 del get_versions
 """
 
+
 class cmd_update_files(Command):
-    description = "install/upgrade Versioneer files: __init__.py SRC/_version.py"
+    description = ("install/upgrade Versioneer files:"
+                   "__init__.py SRC/_version.py")
     user_options = []
     boolean_options = []
+
     def initialize_options(self):
         pass
+
     def finalize_options(self):
         pass
+
     def run(self):
         print(" creating %s" % versionfile_source)
         with open(versionfile_source, "w") as f:
@@ -887,6 +926,7 @@ class cmd_update_files(Command):
         # .gitattributes to mark _version.py for export-time keyword
         # substitution.
         do_vcs_install(manifest_in, versionfile_source, ipy)
+
 
 def get_cmdclass():
     cmds = {'version': cmd_version,
