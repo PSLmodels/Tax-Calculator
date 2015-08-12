@@ -89,18 +89,6 @@ class Parameters(object):
         """
         return cls.__rates
 
-    @classmethod
-    def from_file(cls, file_name, **kwargs):
-        """
-        Read policy parameters from JSON file with specified file_name.
-        """
-        if file_name:
-            with open(file_name) as pfile:
-                params = json.loads(pfile.read())
-        else:
-            params = None
-        return cls(parameter_dict=params, **kwargs)
-
     def __init__(self, parameter_dict=None,
                  start_year=2013,
                  num_years=12,
