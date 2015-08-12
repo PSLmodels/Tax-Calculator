@@ -10,9 +10,6 @@ import os
 import json
 
 
-DEFAULT_START_YEAR = 2013
-
-
 class Parameters(object):
     """
     Constructor for federal income tax policy parameters class.
@@ -46,10 +43,6 @@ class Parameters(object):
     -------
     class instance: Parameters
     """
-
-    CURRENT_PATH = os.path.abspath(os.path.dirname(__file__))
-    PARAMS_FILENAME = "params.json"
-    params_path = os.path.join(CURRENT_PATH, PARAMS_FILENAME)
 
     # default inflation rates by year
     __rates = {2013: 0.015, 2014: 0.020, 2015: 0.022, 2016: 0.020, 2017: 0.021,
@@ -99,7 +92,7 @@ class Parameters(object):
         if parameter_dict:
             self._vals = parameter_dict
         else:  # if None, read current-law parameters
-            self._vals = default_data(metadata=True)
+            self._vals = self._params_dict_from_json_file()
 
         if num_years < 1:
             raise ValueError('num_years < 1')
@@ -241,6 +234,35 @@ class Parameters(object):
 
     # ----- begin private methods of Parameters class -----
 
+    @classmethod
+    def _params_dict_from_json_file(cls):
+        """
+        Read params.json file and return complete params dictionary.
+
+        Parameters
+        ----------
+        nothing: void
+
+        Returns
+        -------
+        params: dictionary
+            containing complete contents of params.json file.
+        """
+        current_path = os.path.abspath(os.path.dirname(__file__))
+        params_filename = 'params.json'
+        params_path = os.path.join(current_path, params_filename)
+        if os.path.exists(params_path):
+            with open(params_path) as pfile:
+                params = json.load(pfile)
+        else:
+            from pkg_resources import resource_stream, Requirement
+            path_in_egg = os.path.join('taxcalc', params_filename)
+            buf = resource_stream(Requirement.parse('taxcalc'), path_in_egg)
+            as_bytes = buf.read()
+            as_string = as_bytes.decode("utf-8")
+            params = json.loads(as_string)
+        return params
+
     def _update(self, year_mods):
         """
         Apply year_mods policy-parameter-reform dictionary to parameters.
@@ -342,7 +364,16 @@ class Parameters(object):
             setattr(self, name, cval)
         self.set_year(self._current_year)
 
+    # TODO: eventually remove the following three variables that
+    #       are used only in the global default_data() function below
+    CURRENT_PATH = os.path.abspath(os.path.dirname(__file__))
+    PARAMS_FILENAME = "params.json"
+    params_path = os.path.join(CURRENT_PATH, PARAMS_FILENAME)
+
 # end Parameters class
+
+
+DEFAULT_START_YEAR = 2013
 
 
 def default_data(metadata=False, start_year=None):
