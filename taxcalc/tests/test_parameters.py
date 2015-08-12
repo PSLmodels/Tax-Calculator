@@ -66,7 +66,7 @@ def test_constant_inflation_rate_with_reform():
         ppo.increment_year()
     assert ppo.current_year == 2021
     reform = {2021: {"_II_em": [20000]}}
-    ppo.update(reform)
+    ppo.implement_reform(reform)
     # check implied inflation rate just before reform
     grate = float(ppo._II_em[2020 - syr]) / float(ppo._II_em[2019 - syr]) - 1.0
     assert round(grate, 3) == round(irate, 3)
@@ -101,7 +101,7 @@ def test_variable_inflation_rate_with_reform():
         ppo.increment_year()
     assert ppo.current_year == 2020
     reform = {2020: {"_II_em": [20000]}}
-    ppo.update(reform)
+    ppo.implement_reform(reform)
     # check implied inflation rate between 2018 and 2019 (before the reform)
     grate = float(ppo._II_em[2019 - syr]) / float(ppo._II_em[2018 - syr]) - 1.0
     assert round(grate, 3) == round(0.04, 3)
@@ -354,58 +354,53 @@ def test_parameters_get_default(paramsfile):
 
 
 def test_reform_with_no_year():
-    user_mods = {"_STD_Aged": [[1400, 1200]]}
+    reform = {"_STD_Aged": [[1400, 1200]]}
     ppo = Parameters()
     with pytest.raises(ValueError):
-        ppo.implement_reform(user_mods)
+        ppo.implement_reform(reform)
 
 
-def test_update_Parameters_update_current_year():
-    p = Parameters(start_year=2013)
-    user_mods = {2013: {"_STD_Aged": [[1400, 1100, 1100, 1400, 1400, 1199]]}}
-    p.update(user_mods)
-    assert_array_equal(p.STD_Aged,
+def test_Parameters_reform_in_start_year():
+    ppo = Parameters(start_year=2013)
+    reform = {2013: {"_STD_Aged": [[1400, 1100, 1100, 1400, 1400, 1199]]}}
+    ppo.implement_reform(reform)
+    assert_array_equal(ppo.STD_Aged,
                        np.array([1400, 1100, 1100, 1400, 1400, 1199]))
 
 
-def test_update_Parameters_raises_on_future_year():
-    p = Parameters(start_year=2013)
+def test_Parameters_reform_before_start_year():
+    ppo = Parameters(start_year=2013)
     with pytest.raises(ValueError):
-        user_mods = {2015:
-                     {"_STD_Aged": [[1400, 1100, 1100, 1400, 1400, 1199]]}}
-        p.update(user_mods)
+        reform = {2010: {"_STD_Aged": [[1400, 1100, 1100, 1400, 1400, 1199]]}}
+        ppo.implement_reform(reform)
 
 
-def test_update_Parameters_maintains_default_cpi_flags():
-    p = Parameters(start_year=2013)
-    p.increment_year()
-    p.increment_year()
-    user_mods = {2015: {"_II_em": [4300]}}
-    p.update(user_mods)
-    # _II_em has a default cpi_flag of True, so by incrementing the year,
-    # the current year value should increase, and therefore not be 4300
-    p.increment_year()
-    assert p.II_em != 4300
+def test_Parameters_reform_with_default_cpi_flags():
+    ppo = Parameters(start_year=2013)
+    reform = {2015: {"_II_em": [4300]}}
+    ppo.implement_reform(reform)
+    # '_II_em' has a default cpi_flag of True, so
+    # in 2016 its value should be greater than 4300
+    ppo.set_year(2016)
+    assert ppo.II_em > 4300
 
 
-def test_update_Parameters_increment_until_mod_year():
-    p = Parameters(start_year=2013)
-    p.increment_year()
-    p.increment_year()
-    user_mods = {2015: {"_STD_Aged": [[1400, 1100, 1100, 1400, 1400, 1199]]}}
-    p.update(user_mods)
-    assert_array_equal(p.STD_Aged,
+def test_Parameters_reform_after_start_year():
+    ppo = Parameters(start_year=2013)
+    reform = {2015: {"_STD_Aged": [[1400, 1100, 1100, 1400, 1400, 1199]]}}
+    ppo.implement_reform(reform)
+    ppo.set_year(2015)
+    assert_array_equal(ppo.STD_Aged,
                        np.array([1400, 1100, 1100, 1400, 1400, 1199]))
 
 
-def test_increment_Parameters_increment_and_then_update():
-    p = Parameters(start_year=2013)
-    p.increment_year()
-    p.increment_year()
-    user_mods = {2015: {"_II_em": [4400], "_II_em_cpi": True}}
-    p.update(user_mods)
-    assert_array_equal(p._II_em[:3], np.array([3900, 3950, 4400]))
-    assert p.II_em == 4400
+def test_Parameters_reform_makes_no_changes_before_year():
+    ppo = Parameters(start_year=2013)
+    reform = {2015: {"_II_em": [4400], "_II_em_cpi": True}}
+    ppo.implement_reform(reform)
+    ppo.set_year(2015)
+    assert_array_equal(ppo._II_em[:3], np.array([3900, 3950, 4400]))
+    assert ppo.II_em == 4400
 
 
 def test_parameters_get_default_start_year():
