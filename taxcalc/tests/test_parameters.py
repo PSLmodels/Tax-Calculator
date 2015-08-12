@@ -62,9 +62,6 @@ def test_constant_inflation_rate_with_reform():
     irates = {(syr + i): irate for i in range(0, nyrs)}
     ppo = Parameters(start_year=syr, num_years=nyrs, inflation_rates=irates)
     # implement reform in 2021 which is the year before the last year = 2022
-    for yr in range(0, 8):
-        ppo.increment_year()
-    assert ppo.current_year == 2021
     reform = {2021: {"_II_em": [20000]}}
     ppo.implement_reform(reform)
     # check implied inflation rate just before reform
@@ -97,11 +94,10 @@ def test_variable_inflation_rate_with_reform():
     ppo = Parameters(start_year=syr, num_years=10, inflation_rates=irates)
     assert ppo._II_em[2013 - syr] == 3900
     # implement reform in 2020 which is two years before the last year, 2022
-    for yr in range(0, 2020 - syr):
-        ppo.increment_year()
-    assert ppo.current_year == 2020
     reform = {2020: {"_II_em": [20000]}}
     ppo.implement_reform(reform)
+    ppo.set_year(2020)
+    assert ppo.current_year == 2020
     # check implied inflation rate between 2018 and 2019 (before the reform)
     grate = float(ppo._II_em[2019 - syr]) / float(ppo._II_em[2018 - syr]) - 1.0
     assert round(grate, 3) == round(0.04, 3)
