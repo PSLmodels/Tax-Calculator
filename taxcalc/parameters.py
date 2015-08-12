@@ -204,13 +204,6 @@ class Parameters(object):
         """
         return self._end_year
 
-    def increment_year(self):
-        """
-        Increase current_year by one and set parameters for that year.
-        """
-        self._current_year += 1
-        self.set_year(self._current_year)
-
     def set_year(self, year):
         """
         Set policy parameters to values for specified calendar year.
@@ -228,6 +221,14 @@ class Parameters(object):
         Returns
         -------
         nothing: void
+
+        Notes
+        -----
+        To increment the current year, use the following statement:
+
+        ppo.set_year(ppo.current_year + 1)
+
+        where ppo is a policy Parameters object.
         """
         if year < self.start_year or year > self.end_year:
             msg = 'year passed to set_year() must be in [{},{}] range.'
