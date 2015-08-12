@@ -59,7 +59,7 @@ def calculator(params, records, mods="", **kwargs):
     while records.current_year < max_yr:
         records.increment_year()
 
-    params.update(final_mods)
+    params.implement_reform(final_mods)
     calc = Calculator(params, records)
     return calc
 
