@@ -170,14 +170,15 @@ def test_make_Calculator_user_mods_as_dict():
     # Create a Public Use File object
     puf = Records(tax_dta)
 
-    user_mods = {1991: {"_STD_Aged": [[1400, 1200]]}}
+    user_mods = {1991: {"_STD_Aged": [[1400, 1200, 1000, 1000, 1000, 1000]]}}
     user_mods[1991]['_II_em'] = [3925, 4000, 4100]
     user_mods[1991]['_II_em_cpi'] = False
     calc2 = calculator(params, puf, mods=user_mods)
     assert calc2.params.II_em == 3925
     exp_II_em = [3925, 4000] + [4100] * 10
     assert_array_equal(calc2.params._II_em, np.array(exp_II_em))
-    assert_array_equal(calc2.params.STD_Aged, np.array([1400, 1200]))
+    assert_array_equal(calc2.params.STD_Aged,
+                       np.array([1400, 1200, 1000, 1000, 1000, 1000]))
 
 
 def test_make_Calculator_increment_years_first():
