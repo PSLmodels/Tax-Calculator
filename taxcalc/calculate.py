@@ -66,34 +66,31 @@ def calculator(params, records, mods="", **kwargs):
 
 class Calculator(object):
 
-    @classmethod
-    def from_files(cls, pfname, rfname, **kwargs):
-        """
-        Create a Calculator object from a Parameters JSON file and a
-        Records file
-
-        Parameters
-        ----------
-        pfname: filename for Parameters
-
-        rfname: filename for Records
-        """
-        params = Parameters.from_file(pfname, **kwargs)
-        recs = Records.from_file(rfname, **kwargs)
-        return cls(params, recs)
-
     def __init__(self, params=None, records=None, sync_years=True, **kwargs):
 
-        if isinstance(params, Parameters):
+        if params is None:
+            msg = 'Must supply tax parameters file path or Parameters object'
+            raise ValueError(msg)
+        elif isinstance(params, Parameters):
             self._params = params
+        elif isinstance(params, str):
+            import json
+            with open(params) as pfile:
+                self._params = json.load(pfile)
         else:
-            self._params = Parameters.from_file(params, **kwargs)
+            msg = 'params is neither a string nor a Parameters object'
+            raise ValueError(msg)
 
         if records is None:
-            raise ValueError("Must supply tax records path or Records object")
-
-        self._records = (records if not isinstance(records, str) else
-                         Records.from_file(records, **kwargs))
+            msg = 'Must supply tax records file path or Records object'
+            raise ValueError(msg)
+        elif isinstance(records, Records):
+            self._records = records
+        elif isinstance(records, str):
+            self._records = Records.from_file(records, **kwargs)
+        else:
+            msg = 'records is neither a string nor a Records object'
+            raise ValueError(msg)
 
         if sync_years and self._records.current_year == 2008:
             print("You loaded data for " +
