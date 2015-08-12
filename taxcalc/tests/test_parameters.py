@@ -346,11 +346,11 @@ def test_parameters_get_default(paramsfile):
     assert paramdata['_CDCC_ps'] == [15000]
 
 
-def test_update_Parameters_raises_on_no_year(paramsfile):
-    p = Parameters.from_file(paramsfile.name)
+def test_reform_with_no_year():
     user_mods = {"_STD_Aged": [[1400, 1200]]}
+    ppo = Parameters()
     with pytest.raises(ValueError):
-        p.update(user_mods)
+        ppo.implement_reform(user_mods)
 
 
 def test_update_Parameters_update_current_year():
