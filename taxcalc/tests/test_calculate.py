@@ -215,7 +215,6 @@ def test_make_Calculator_increment_years_first():
 
 
 def test_make_Calculator_user_mods_with_cpi_flags(paramsfile):
-
     calc = Calculator(params=paramsfile.name,
                       records=tax_dta_path, start_year=1991,
                       inflation_rates=irates)
@@ -226,20 +225,17 @@ def test_make_Calculator_user_mods_with_cpi_flags(paramsfile):
                         "_almsep_cpi": False,
                         "_rt5": [0.33],
                         "_rt7": [0.396]}}
+    calc.params.implement_reform(user_mods)
 
     inf_rates = [irates[1991 + i] for i in range(0, 12)]
-    # Create a Parameters object
-    params = Parameters(start_year=1991, inflation_rates=irates)
-    calc2 = calculator(params, puf, mods=user_mods)
-
     exp_almdep = expand_array(np.array([7150, 7250, 7400]), inflate=True,
                               inflation_rates=inf_rates, num_years=12)
-
+    act_almdep = getattr(calc.params, '_almdep')
+    assert_array_equal(act_almdep, exp_almdep)
     exp_almsep_values = [40400] + [41050] * 11
     exp_almsep = np.array(exp_almsep_values)
-
-    assert_array_equal(calc2.params._almdep, exp_almdep)
-    assert_array_equal(calc2.params._almsep, exp_almsep)
+    act_almsep = getattr(calc.params, '_almsep')
+    assert_array_equal(act_almsep, exp_almsep)
 
 
 def test_make_Calculator_empty_params_is_default_params():
