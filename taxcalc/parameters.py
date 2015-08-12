@@ -173,10 +173,74 @@ class Parameters(object):
         for year in reform_years:
             if year != self.start_year:
                 self.set_year(year)
-            self.update({year: reform[year]})
+            self._update({year: reform[year]})
         self.set_year(self.start_year)
 
-    def update(self, year_mods):
+    @property
+    def current_year(self):
+        """
+        Current policy parameter year property.
+        """
+        return self._current_year
+
+    @property
+    def start_year(self):
+        """
+        First policy parameter year property.
+        """
+        return self._start_year
+
+    @property
+    def num_years(self):
+        """
+        Number of policy parameter years property.
+        """
+        return self._num_years
+
+    @property
+    def end_year(self):
+        """
+        Last policy parameter year property.
+        """
+        return self._end_year
+
+    def increment_year(self):
+        """
+        Increase current_year by one and set parameters for that year.
+        """
+        self._current_year += 1
+        self.set_year(self._current_year)
+
+    def set_year(self, year):
+        """
+        Set policy parameters to values for specified calendar year.
+
+        Parameters
+        ----------
+        year: int
+            calendar year for which to current_year and parameter values
+
+        Raises
+        ------
+        ValueError:
+            if year is not in [start_year, end_year] range.
+
+        Returns
+        -------
+        nothing: void
+        """
+        if year < self.start_year or year > self.end_year:
+            msg = 'year passed to set_year() must be in [{},{}] range.'
+            raise ValueError(msg.format(self.start_year, self.end_year))
+        self._current_year = year
+        year_zero_indexed = year - self._start_year
+        for name in self._vals:
+            arr = getattr(self, name)
+            setattr(self, name[1:], arr[year_zero_indexed])
+
+    # ----- begin private methods of Parameters class -----
+
+    def _update(self, year_mods):
         """
         Apply year_mods policy-parameter-reform dictionary to parameters.
 
@@ -277,67 +341,7 @@ class Parameters(object):
             setattr(self, name, cval)
         self.set_year(self._current_year)
 
-    @property
-    def current_year(self):
-        """
-        Current policy parameter year property.
-        """
-        return self._current_year
-
-    @property
-    def start_year(self):
-        """
-        First policy parameter year property.
-        """
-        return self._start_year
-
-    @property
-    def num_years(self):
-        """
-        Number of policy parameter years property.
-        """
-        return self._num_years
-
-    @property
-    def end_year(self):
-        """
-        Last policy parameter year property.
-        """
-        return self._end_year
-
-    def increment_year(self):
-        """
-        Increase current_year by one and set parameters for that year.
-        """
-        self._current_year += 1
-        self.set_year(self._current_year)
-
-    def set_year(self, year):
-        """
-        Set policy parameters to values for specified calendar year.
-
-        Parameters
-        ----------
-        year: int
-            calendar year for which to current_year and parameter values
-
-        Raises
-        ------
-        ValueError:
-            if year is not in [start_year, end_year] range.
-
-        Returns
-        -------
-        nothing: void
-        """
-        if year < self.start_year or year > self.end_year:
-            msg = 'year passed to set_year() must be in [{},{}] range.'
-            raise ValueError(msg.format(self.start_year, self.end_year))
-        self._current_year = year
-        year_zero_indexed = year - self._start_year
-        for name in self._vals:
-            arr = getattr(self, name)
-            setattr(self, name[1:], arr[year_zero_indexed])
+# end Parameters class
 
 
 def default_data(metadata=False, start_year=None):
