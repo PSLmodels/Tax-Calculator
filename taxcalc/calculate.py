@@ -49,7 +49,7 @@ def calculator(params, records, mods="", **kwargs):
         print(msg.format(max_yr, params.current_year))
 
     while params.current_year < max_yr:
-        params.increment_year()
+        params.set_year(params.current_year + 1)
 
     if (records.current_year < max_yr):
         msg = ("Modifications are for year {0} and Records are for"
@@ -171,7 +171,7 @@ class Calculator(object):
 
     def increment_year(self):
         self.records.increment_year()
-        self.params.increment_year()
+        self.params.set_year(self.params.current_year + 1)
 
     @property
     def current_year(self):
