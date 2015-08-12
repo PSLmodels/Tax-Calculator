@@ -177,16 +177,15 @@ class Parameters(object):
             self.set_year(self.start_year)
         if not reform:
             return  # no reform to implement
-        reform_years_list = sorted(list(reform.keys()))
-        last_reform_year = max(reform_years_list)
+        reform_years = sorted(list(reform.keys()))
+        last_reform_year = max(reform_years)
         if last_reform_year > self.end_year:
             msg = 'reform provision in year={} > end_year={}'
             ValueError(msg.format(last_reform_year, self.end_year))
-        while self.current_year < last_reform_year:
-            self.set_year(self.current_year + 1)
-            if self.current_year in reform_years_list:
-                year_mods = {self.current_year: reform[self.current_year]}
-                self.update(year_mods)
+        for year in reform_years:
+            if year != self.start_year:
+                self.set_year(year)
+            self.update({year: reform[year]})
         self.set_year(self.start_year)
 
     def update(self, year_mods):
