@@ -172,25 +172,14 @@ def test_multi_year_reform():
         }
     }
 
-    # implement multi-year reform using Parameters class update method
+    # implement multi-year reform
+    ppo.implement_reform(reform)
     assert ppo.current_year == syr
-    reform_years_list = reform.keys()
-    last_reform_year = max(reform_years_list)
-    assert last_reform_year == 2019
-    while ppo.current_year < last_reform_year:
-        ppo.increment_year()
-        if ppo.current_year in reform_years_list:
-            year_provisions = {ppo.current_year: reform[ppo.current_year]}
-            ppo.update(year_provisions)
 
-    # move policy Parameters object back in time so current_year is syr+2
+    # move policy Parameters object forward in time so current_year is syr+2
     #   Note: this would be typical usage because the first budget year
     #         is greater than Parameters start_year.
-    ppo._current_year = ppo.start_year  # pylint: disable=protected-access
-    ppo.set_year(ppo.start_year)
-    assert ppo.current_year == ppo.start_year
-    ppo.increment_year()
-    ppo.increment_year()
+    ppo.set_year(ppo.start_year + 2)
     assert ppo.current_year == syr + 2
 
     # confirm that actual parameters have expected post-reform values
