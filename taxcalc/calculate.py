@@ -68,28 +68,18 @@ class Calculator(object):
 
     def __init__(self, params=None, records=None, sync_years=True, **kwargs):
 
-        if params is None:
-            msg = 'Must supply tax parameters file path or Parameters object'
-            raise ValueError(msg)
-        elif isinstance(params, Parameters):
+        if isinstance(params, Parameters):
             self._params = params
-        elif isinstance(params, str):
-            import json
-            with open(params) as pfile:
-                self._params = json.load(pfile)
         else:
-            msg = 'params is neither a string nor a Parameters object'
+            msg = 'Must supply tax parameters as a Parameters object'
             raise ValueError(msg)
 
-        if records is None:
-            msg = 'Must supply tax records file path or Records object'
-            raise ValueError(msg)
-        elif isinstance(records, Records):
+        if isinstance(records, Records):
             self._records = records
         elif isinstance(records, str):
             self._records = Records.from_file(records, **kwargs)
         else:
-            msg = 'records is neither a string nor a Records object'
+            msg = 'Must supply tax records as a file path or Records object'
             raise ValueError(msg)
 
         if sync_years and self._records.current_year == 2008:
