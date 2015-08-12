@@ -2,6 +2,7 @@ import os
 import sys
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, "../../"))
+import json
 import numpy as np
 from numpy.testing import assert_array_equal
 import pandas as pd
@@ -323,22 +324,28 @@ def check_ss_earnings_c(ppo, reform, ifactor):
 
 
 def test_create_parameters_from_file(paramsfile):
-    p = Parameters.from_file(paramsfile.name)
-    irates = Parameters._Parameters__rates
-    inf_rates = [irates[2013 + i] for i in range(0, 12)]
+    with open(paramsfile.name) as pfile:
+        params = json.load(pfile)
+    ppo = Parameters(parameter_dict=params)
+    irates = Parameters.default_inflation_rates()
+    inf_rates = [irates[ppo.start_year + i] for i in range(0, ppo.num_years)]
 
-    assert_array_equal(p._almdep,
-                       expand_array(np.array([7150, 7250, 7400]), inflate=True,
-                                    inflation_rates=inf_rates, num_years=12))
-    assert_array_equal(p._almsep,
-                       expand_array(np.array([40400, 41050]), inflate=True,
-                                    inflation_rates=inf_rates, num_years=12))
-    assert_array_equal(p._rt5,
-                       expand_array(np.array([0.33]), inflate=False,
-                                    inflation_rates=inf_rates, num_years=12))
-    assert_array_equal(p._rt7,
-                       expand_array(np.array([0.396]), inflate=False,
-                                    inflation_rates=inf_rates, num_years=12))
+    assert_array_equal(ppo._almdep,
+                       expand_array(np.array([7150, 7250, 7400]),
+                                    inflate=True, inflation_rates=inf_rates,
+                                    num_years=ppo.num_years))
+    assert_array_equal(ppo._almsep,
+                       expand_array(np.array([40400, 41050]),
+                                    inflate=True, inflation_rates=inf_rates,
+                                    num_years=ppo.num_years))
+    assert_array_equal(ppo._rt5,
+                       expand_array(np.array([0.33]),
+                                    inflate=False, inflation_rates=inf_rates,
+                                    num_years=ppo.num_years))
+    assert_array_equal(ppo._rt7,
+                       expand_array(np.array([0.396]),
+                                    inflate=False, inflation_rates=inf_rates,
+                                    num_years=ppo.num_years))
 
 
 def test_parameters_get_default(paramsfile):
