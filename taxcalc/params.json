@@ -19,7 +19,7 @@
     },
     "_EITC_c": {
         "long_name": "Maximum earned income credit",
-	"description": "This is the maximum amount of earned income credit you're eligible for; it depends on how many kids you have. ",
+	"description": "This is the maximum amount of earned income credit taxpayers are eligible for; it depends on how many kids they have. ",
         "irs_ref": "IRS reference: form 1040, line 66a&b, instruction (table).",
         "notes": "",
         "start_year": 2013,
@@ -37,7 +37,7 @@
     },
     "_SS_thd50":{
         "long_name": "Threshold for Social Security benefit taxability 1",
-	"description": "The first threshold for Social Security benefit taxability: if your provisional income is greater than this threshold, up to 50% of your Social Security benefit will be subject to tax under current law.",
+	"description": "The first threshold for Social Security benefit taxability: if taxpayers have provisional income greater than this threshold, up to 50% of their Social Security benefit will be subject to tax under current law.",
         "irs_ref": "Form 1040, line 20a&b, calculation (Worksheet, line 8.)",
         "notes": "",
         "start_year": 2013,
@@ -51,7 +51,7 @@
     },
      "_SS_thd85":{
         "long_name": "Threshold for Social Security benefit taxability 2",
-	"description": "The second threshold for Social Security taxability: if your provisional income is greater than this threshold, up to 85% of your Social Security benefit will be subject to tax under current law.",
+	"description": "The second threshold for Social Security taxability: if taxpayers have provisional income greater than this threshold, up to 85% of their Social Security benefit will be subject to tax under current law.",
         "irs_ref": "Form 1040, line 20a&b, calculation (Worksheet, add line 10 values to line 8).",
         "notes": "",
         "start_year": 2013,
@@ -79,7 +79,7 @@
     },
      "_STD_Aged":{
         "long_name": "Additional standard deduction for blind and aged",
-	"description": "To get the standard deduction for aged or blind individuals, you need to add this value to regular standard deduction",
+	"description": "To get the standard deduction for aged or blind individuals, taxpayers need to add this value to regular standard deduction",
         "irs_ref": "Form 1040, line 40, calculation (the difference of the two tables given in the instruction).",
         "notes": "",
         "start_year": 2013,
@@ -438,7 +438,7 @@
     },	
      "_EITC_ps":{
         "long_name": "Earned income credit phaseout AGI start",
-	"description": "If your AGI is higher than this threshold, the amount of EITC will start to decrease. ",
+	"description": "If AGI is higher than this threshold, the amount of EITC will start to decrease. ",
         "irs_ref": "Form 1040, line 66a&b, instructions.",
         "notes": "",
         "start_year": 2013,
@@ -597,7 +597,7 @@
     },
     "_II_em_ps":{
         "long_name": "Personal exemption phaseout starting income",
-	"description": "If your AGI is above this level, your personal exemption will start to decrease at the personal exemption phaseout rate (PEP provision). ",
+	"description": "If taxpayers' AGI is above this level, their personal exemption will start to decrease at the personal exemption phaseout rate (PEP provision). ",
         "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
         "notes": "",
         "start_year": 2013,
@@ -760,7 +760,7 @@
 
     "_SS_percentage1":{
         "long_name": "Social Security taxable income percentage 1",
-	"description": "Under current law if your provisional income is above the first threshold for Social Security taxability but below the second threshold, you need to apply this percentage to both the excess of your provisonal income over the first threshold and your Social Security benefits, and then include the smaller one in your AGI.",
+	"description": "Under current law if their provisional income is above the first threshold for Social Security taxability but below the second threshold, taxpayers need to apply this percentage to both the excess of their provisonal income over the first threshold and their Social Security benefits, and then include the smaller one in their AGI.",
         "irs_ref": "Form 1040, line 20b, instructions (Social Security Worksheets, line 2 & 13)",
         "notes": "",
         "start_year": 2013,
@@ -774,7 +774,7 @@
     },
     "_SS_percentage2":{
         "long_name": "Social Security taxable income percentage 2",
-	"description": "Under current law if your provisional income is above the second threshold for Social Security taxability, you need to apply this percentage to both the excess of your provisional income over the second threshold and your social secuirty benefits, and then include the smaller one in your AGI.",
+	"description": "Under current law if their provisional income is above the second threshold for Social Security taxability, taxpayers need to apply this percentage to both the excess of their provisional income over the second threshold and their social secuirty benefits, and then include the smaller one in their AGI.",
         "irs_ref": "Form 1040, line 20b, instructions (Social Security Worksheets, line 15)",
         "notes": "",
         "start_year": 2013,
@@ -801,7 +801,7 @@
     },
      "_ID_Medical_frt":{
         "long_name": "Deduction for medical expenses; floor as a percent of AGI",
-	"description": "You are eligible to deduct the portion of your medical expense exceeding this percentage of AGI.",
+	"description": "Taxpayers are eligible to deduct the portion of their medical expense exceeding this percentage of AGI.",
         "irs_ref": "Form 1040 Schedule A, line 3, in-line. ",
         "notes": "This rate cannot be decreased to lower than .1 due to limited data on non-itemizers.",
         "start_year": 2013,
@@ -829,7 +829,7 @@
     },
      "_ID_Casualty_frt":{
         "long_name": "Deduction for casualty loss; floor as a percent of AGI",
-	"description": "You are eligible to deduct the portion of your casualty loss exceeding this percentage of AGI.",
+	"description": "Taxpayers are eligible to deduct the portion of their casualty loss exceeding this percentage of AGI.",
         "irs_ref": "Form 4684, line 17, in-line.",
         "notes": "This rate cannot be decreased to lower than 0.1 due to lack of data. ",
         "start_year": 2013,
@@ -881,7 +881,7 @@
     },
     "_ID_prt":{
         "long_name": "Itemized deduction phaseout rate (Pease)",
-	    "description": "You will not be eligible to deduct the full amount of itemized deduction if your AGI is above the phaseout start. The deductible portion would be decreased at this rate for each dollar exceeding the start.",
+	    "description": "Taxpayers will not be eligible to deduct the full amount of itemized deduction if their AGI is above the phaseout start. The deductible portion would be decreased at this rate for each dollar exceeding the start.",
         "irs_ref": "Schedule A, line 29, instructions. ",
         "notes": "This phaseout rate cannot be lower than 0.03 for each dollar, due to limited data on non-itemizers.",
         "start_year": 2013,
@@ -1037,7 +1037,7 @@
     },
     "_ALD_KEOGH_SEP_HC":{
         "long_name": "Adjustment for payment to either KEOGH or SEP plan haircut",
-	"description": "Under current law, payments to Keogh or SEP plans can be fully deducted from gross income. You can use this haircut to limit the adjustment allowed. ",
+	"description": "Under current law, payments to Keogh or SEP plans can be fully deducted from gross income. Taxpayers can use this haircut to limit the adjustment allowed. ",
         "irs_ref": "Form 1040, line 25",
         "notes": "The final adjustment amount is (1 - Haircut) * KEOGH/SEP plan payments",
         "start_year": 2013,
@@ -1051,7 +1051,7 @@
     },
     "_ALD_EarlyWithdraw_HC":{
         "long_name": "Adjustment for forfeited interest penalty haircut",
-	"description": "Under current law, early withdraw penalty can be fully deducted from gross income. You can use this haircut to limit the adjustment allowed.",
+	"description": "Under current law, early withdraw penalty can be fully deducted from gross income. Taxpayers can use this haircut to limit the adjustment allowed.",
         "irs_ref": "Form 1040, line 30",
         "notes": "The final adjustment amount is (1 - Haircut) * Early withdraw penalty",
         "start_year": 2013,
@@ -1065,7 +1065,7 @@
     },
     "_ALD_Alimony_HC":{
         "long_name": "Adjustment for alimony payment haircut",
-	"description": "Under current law, the full amount of alimony payment is taken as an adjustment from gross income in arriving at AGI. You can use this haircut to limit the deduction allowed.",
+	"description": "Under current law, the full amount of alimony payment is taken as an adjustment from gross income in arriving at AGI. Taxpayers can use this haircut to limit the deduction allowed.",
         "irs_ref": "Form 1040, line 31",
         "notes": "The final adjustment amount would be (1 - Haircut) * Alimony Payments",
         "start_year": 2013,
@@ -1091,7 +1091,7 @@
     },
     "_AMED_thd":{
         "long_name": "Additional Medicare threshold",
-	"description": "If your Medicare wages, RRTA compensation and self-employment income is above this threshold, you are subject to additional Medicare tax. ",
+	"description": "If their Medicare wages, RRTA compensation and self-employment income is above this threshold, taxpayers are subject to additional Medicare tax. ",
 	"irs_ref": "Form 8959, line 5, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -1103,7 +1103,7 @@
     },
     "_AMED_trt":{
         "long_name": "Additional Medicare tax rate",
-	"description": "This is the rate applied to the portion of your Medicare wages, RRTA compensation and self-employment income exceeding additional Medicare threshold. ",
+	"description": "This is the rate applied to the portion of Medicare wages, RRTA compensation and self-employment income exceeding additional Medicare threshold. ",
 	"irs_ref": "Form 8959, line 7, in-line. ",
         "start_year": 2013,
         "col_var": "",
