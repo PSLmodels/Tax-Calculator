@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, "../../"))
 import numpy as np
@@ -117,14 +118,21 @@ def test_make_Calculator_deepcopy():
 
 
 def test_make_Calculator_from_files(paramsfile):
-    calc = Calculator.from_files(paramsfile.name, tax_dta_path,
-                                 start_year=1991,
-                                 inflation_rates=irates)
+    with open(paramsfile.name) as pfile:
+        params = json.load(pfile)
+    ppo = Parameters(parameter_dict=params, start_year=1991,
+                     num_years=len(irates), inflation_rates=irates)
+    calc = Calculator(params=ppo, records=tax_dta_path,
+                      start_year=1991, inflation_rates=irates)
     assert calc
 
 
 def test_make_Calculator_files_to_ctor(paramsfile):
-    calc = Calculator(params=paramsfile.name, records=tax_dta_path,
+    with open(paramsfile.name) as pfile:
+        params = json.load(pfile)
+    ppo = Parameters(parameter_dict=params, start_year=1991,
+                     num_years=len(irates), inflation_rates=irates)    
+    calc = Calculator(params=ppo, records=tax_dta_path,
                       start_year=1991, inflation_rates=irates)
     assert calc
 
@@ -221,8 +229,11 @@ def test_make_Calculator_with_reform_after_first_year():
 
 
 def test_make_Calculator_user_mods_with_cpi_flags(paramsfile):
-    calc = Calculator(params=paramsfile.name,
-                      records=tax_dta_path, start_year=1991,
+    with open(paramsfile.name) as pfile:
+        params = json.load(pfile)
+    ppo = Parameters(parameter_dict=params, start_year=1991,
+                     num_years=len(irates), inflation_rates=irates)    
+    calc = Calculator(params=ppo, records=tax_dta_path, start_year=1991,
                       inflation_rates=irates)
 
     user_mods = {1991: {"_almdep": [7150, 7250, 7400],
@@ -245,10 +256,10 @@ def test_make_Calculator_user_mods_with_cpi_flags(paramsfile):
 
 
 def test_make_Calculator_empty_params_is_default_params():
-    # Create a Public Use File object
-    puf_basic = Records(tax_dta, start_year=2013)
-    calc_basic = Calculator(records=puf_basic)
-    assert calc_basic
+    ppo = Parameters()
+    rec = Records(tax_dta, start_year=2013)
+    calc = Calculator(params=ppo, records=rec)
+    assert calc
 
 
 def test_Calculator_attr_access_to_params():
