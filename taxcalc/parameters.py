@@ -142,6 +142,53 @@ class Parameters(object):
                                  num_years=self._num_years))
         self.set_year(self._start_year)
 
+    def implement_reform(self, reform):
+        """
+        Implement multi-year parameters reform and set current_year=start_year.
+
+        Parameters
+        ----------
+        reform: dictionary of YEAR:MODS pairs
+            see Notes to _update function below for MODS structure.
+
+        Raises
+        ------
+        ValueError:
+            if maximum YEAR in the YEAR:MODS pairs is greater than end_year.
+
+        Returns
+        -------
+        nothing: void
+
+        Notes
+        -----
+        Given a reform_dict, typical usage of the Parameters class is
+        as follows:
+
+        ppo = Parameters().implement_reform(reform_dict)
+
+        In the above statement, the Parameters() call instantiates a
+        policy parameters object (ppo) containing current-law policy
+        parameters, and the implement_reform(reform_dict) call applies
+        the (possibly multi-year) reform specified in reform_dict and
+        after doing that sets the current_year to start_year.
+        """
+        if self.current_year != self.start_year:
+            self.set_year(self.start_year)
+        if not reform:
+            return  # no reform to implement
+        reform_years_list = sorted(list(reform.keys()))
+        last_reform_year = max(reform_years_list)
+        if last_reform_year > self.end_year:
+            msg = 'reform provision in year={} > end_year={}'
+            ValueError(msg.format(last_reform_year, self.end_year))
+        while self.current_year < last_reform_year:
+            self.set_year(self.current_year + 1)
+            if self.current_year in reform_years_list:
+                year_mods = {self.current_year: reform[self.current_year]}
+                self.update(year_mods)
+        self.set_year(self.start_year)
+
     def update(self, year_mods):
         """
         Apply year_mods policy-parameter-reform dictionary to parameters.
