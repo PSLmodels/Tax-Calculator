@@ -344,7 +344,7 @@ def test_create_parameters_from_file(paramsfile):
                                     num_years=ppo.num_years))
 
 
-def test_parameters_get_default(paramsfile):
+def test_parameters_get_default():
     paramdata = taxcalc.parameters.default_data()
     assert paramdata['_CDCC_ps'] == [15000]
 
