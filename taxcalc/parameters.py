@@ -21,7 +21,7 @@ class Parameters(object):
         parameters are read from the params.json file.
 
     start_year: integer
-        first calendar year for policy parameters.
+        first calendar year for historical policy parameters.
 
     num_years: integer
         number of calendar years for which to specify policy parameter
@@ -29,20 +29,25 @@ class Parameters(object):
 
     inflation_rates: dictionary of YEAR:RATE pairs
         variable inflation rates used to project future policy parameter
-        values; if None, then use default inflation rates specified
-        here.
+        values; if None, default inflation rates (specified below) are used.
 
     Raises
     ------
     ValueError:
         if num_years is less than one.
         if len(inflation_rates) is not equal to num_years.
-        if min(inflation_rates.keys()) is not equal to num_years.
+        if min(inflation_rates.keys()) is not equal to start_year.
 
     Returns
     -------
     class instance: Parameters
     """
+
+    PARAMS_FILENAME = 'params.json'
+    IRATES_FILENAME = 'irates.json'  # TODO: move __rates there & add wages
+    JSON_START_YEAR = 2013  # remains the same unless earlier data added
+    FIRST_BUDGET_YEAR = 2015  # increases by one every calendar year
+    DEFAULT_NUM_YEARS = 10 + FIRST_BUDGET_YEAR - JSON_START_YEAR
 
     # default inflation rates by year
     __rates = {2013: 0.015, 2014: 0.020, 2015: 0.022, 2016: 0.020, 2017: 0.021,
@@ -82,12 +87,9 @@ class Parameters(object):
         """
         return cls.__rates
 
-    JSON_FILE_NAME = 'params.json'
-    JSON_START_YEAR = 2013
-
     def __init__(self, parameter_dict=None,
                  start_year=JSON_START_YEAR,
-                 num_years=12,
+                 num_years=DEFAULT_NUM_YEARS,
                  inflation_rates=None):
         """
         Parameters class constructor.
@@ -146,16 +148,17 @@ class Parameters(object):
 
         Notes
         -----
-        Given a reform_dict, typical usage of the Parameters class is
-        as follows:
+        Given a reform dictionary, typical usage of the Parameters class
+        is as follows:
 
-        ppo = Parameters().implement_reform(reform_dict)
+        ppo = Parameters()
+        ppo.implement_reform(reform)
 
-        In the above statement, the Parameters() call instantiates a
+        In the above statements, the Parameters() call instantiates a
         policy parameters object (ppo) containing current-law policy
-        parameters, and the implement_reform(reform_dict) call applies
-        the (possibly multi-year) reform specified in reform_dict and
-        after doing that sets the current_year to start_year.
+        parameters, and the implement_reform(reform) call applies the
+        (possibly multi-year) reform specified in reform and then sets
+        the current_year to start_year with parameters set for that year.
         """
         if self.current_year != self.start_year:
             self.set_year(self.start_year)
@@ -259,7 +262,7 @@ class Parameters(object):
 
         if first_value_year:  # if first_value_year is specified
             f_v_year_string = '{}'.format(first_value_year)
-            for name,pdv in params.items():  # pdv = parameter dictionary value
+            for name, pdv in params.items():  # pdv=parameter dictionary value
                 s_year = pdv.get('start_year', Parameters.JSON_START_YEAR)
                 assert isinstance(s_year, int)
                 if first_value_year < s_year:
@@ -315,13 +318,13 @@ class Parameters(object):
             containing complete contents of params.json file.
         """
         params_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                   Parameters.JSON_FILE_NAME)
+                                   Parameters.PARAMS_FILENAME)
         if os.path.exists(params_path):
             with open(params_path) as pfile:
                 params = json.load(pfile)
         else:
             from pkg_resources import resource_stream, Requirement
-            path_in_egg = os.path.join('taxcalc', Parameters.JSON_FILE_NAME)
+            path_in_egg = os.path.join('taxcalc', Parameters.PARAMS_FILENAME)
             buf = resource_stream(Requirement.parse('taxcalc'), path_in_egg)
             as_bytes = buf.read()
             as_string = as_bytes.decode("utf-8")
@@ -429,10 +432,10 @@ class Parameters(object):
             setattr(self, name, cval)
         self.set_year(self._current_year)
 
-    # TODO: eventually remove the following variable that
-    #       is used only in the global default_data() function below
+    # TODO: eventually remove the following variable that is used
+    #       only in the depreciated global default_data() function
     PARAMS_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                               JSON_FILE_NAME)
+                               PARAMS_FILENAME)
 
 # end Parameters class
 
@@ -445,7 +448,7 @@ def default_data(metadata=False, start_year=None):
 
     if not os.path.exists(Parameters.PARAMS_PATH):
         from pkg_resources import resource_stream, Requirement
-        path_in_egg = os.path.join("taxcalc", Parameters.JSON_FILE_NAME)
+        path_in_egg = os.path.join("taxcalc", Parameters.PARAMS_FILENAME)
         buf = resource_stream(Requirement.parse("taxcalc"), path_in_egg)
         _bytes = buf.read()
         as_string = _bytes.decode("utf-8")
