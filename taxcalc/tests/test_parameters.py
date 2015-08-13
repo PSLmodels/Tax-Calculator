@@ -42,6 +42,13 @@ def test_create_parameters():
     assert p
 
 
+def test_params_json_start_year_values():
+    ppo = Parameters()
+    for name, data in ppo._vals.items():
+      param_start_year = data.get('start_year')
+      assert param_start_year == Parameters.JSON_START_YEAR
+
+
 def test_constant_inflation_rate_without_reform():
     syr = 2013
     nyrs = 10
