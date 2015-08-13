@@ -345,7 +345,11 @@ def test_create_parameters_from_file(paramsfile):
 
 
 def test_parameters_get_default():
-    paramdata = taxcalc.parameters.default_data()
+    use_classmethod = True
+    if use_classmethod:
+        paramdata = Parameters.default_data()
+    else:  # use legacy global default_data function
+        paramdata = taxcalc.parameters.default_data()
     assert paramdata['_CDCC_ps'] == [15000]
 
 
@@ -400,7 +404,13 @@ def test_Parameters_reform_makes_no_changes_before_year():
 
 
 def test_parameters_get_default_start_year():
-    paramdata = taxcalc.parameters.default_data(start_year=2015, metadata=True)
+    use_classmethod = True
+    if use_classmethod:
+        paramdata = Parameters.default_data(metadata=True,
+                                            first_value_year=2015)
+    else:  # use legacy global default_data function
+        paramdata = taxcalc.parameters.default_data(metadata=True,
+                                                    start_year=2015)
     # 1D data, has 2015 values
     meta_II_em = paramdata['_II_em']
     assert meta_II_em['start_year'] == 2015
