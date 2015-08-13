@@ -46,6 +46,7 @@ def test_params_json_start_year_values():
     ppo = Parameters()
     for name, data in ppo._vals.items():
       param_start_year = data.get('start_year')
+      assert isinstance(param_start_year, int)
       assert param_start_year == Parameters.JSON_START_YEAR
 
 
