@@ -82,8 +82,11 @@ class Parameters(object):
         """
         return cls.__rates
 
+    JSON_FILE_NAME = 'params.json'
+    JSON_START_YEAR = 2013
+
     def __init__(self, parameter_dict=None,
-                 start_year=2013,
+                 start_year=JSON_START_YEAR,
                  num_years=12,
                  inflation_rates=None):
         """
@@ -232,6 +235,69 @@ class Parameters(object):
             arr = getattr(self, name)
             setattr(self, name[1:], arr[year_zero_indexed])
 
+    @classmethod
+    def default_data(cls, metadata=False, first_value_year=None):
+        """
+        Return current-law policy data read from params.json file.
+
+        Parameters
+        ----------
+        metadata: boolean
+
+        first_value_year: int
+
+        Raises
+        ------
+        ValueError:
+            if first_value_year is not in [start_year, end_year] range.
+
+        Returns
+        -------
+        params: dictionary of params.json information
+        """
+        params = cls._params_dict_from_json_file()
+
+        if first_value_year:  # if first_value_year is specified
+            f_v_year_string = '{}'.format(first_value_year)
+            for name,pdv in params.items():  # pdv = parameter dictionary value
+                s_year = pdv.get('start_year', Parameters.JSON_START_YEAR)
+                assert isinstance(s_year, int)
+                if first_value_year < s_year:
+                    msg = "first_value_year={} < start_year={} for {}"
+                    raise ValueError(msg.format(first_value_year,
+                                                s_year, name))
+                # set the new start year:
+                pdv['start_year'] = first_value_year
+                # work with the values
+                vals = pdv['value']
+                last_year_for_data = s_year + len(vals) - 1
+                if last_year_for_data < first_value_year:
+                    if pdv['row_label']:
+                        pdv['row_label'] = [f_v_year_string]
+                    # need to produce new values
+                    new_val = vals[-1]
+                    if pdv['cpi_inflated'] is True:
+                        for cyr in range(last_year_for_data, first_value_year):
+                            irate = Parameters.default_inflation_rate(cyr)
+                            ifactor = 1.0 + irate
+                        if isinstance(new_val, list):
+                            new_val = [x * ifactor for x in new_val]
+                        else:
+                            new_val *= ifactor
+                    # set the new values
+                    pdv['value'] = [new_val]
+                else:
+                    # get rid of [s_year, ..., first_value_year-1] values
+                    years_to_chop = first_value_year - s_year
+                    if pdv['row_label']:
+                        pdv['row_label'] = pdv['row_label'][years_to_chop:]
+                    pdv['value'] = pdv['value'][years_to_chop:]
+
+        if metadata:
+            return params
+        else:
+            return {key: val['value'] for key, val in params.items()}
+
     # ----- begin private methods of Parameters class -----
 
     @classmethod
@@ -248,15 +314,14 @@ class Parameters(object):
         params: dictionary
             containing complete contents of params.json file.
         """
-        current_path = os.path.abspath(os.path.dirname(__file__))
-        params_filename = 'params.json'
-        params_path = os.path.join(current_path, params_filename)
+        params_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                   Parameters.JSON_FILE_NAME)
         if os.path.exists(params_path):
             with open(params_path) as pfile:
                 params = json.load(pfile)
         else:
             from pkg_resources import resource_stream, Requirement
-            path_in_egg = os.path.join('taxcalc', params_filename)
+            path_in_egg = os.path.join('taxcalc', Parameters.JSON_FILE_NAME)
             buf = resource_stream(Requirement.parse('taxcalc'), path_in_egg)
             as_bytes = buf.read()
             as_string = as_bytes.decode("utf-8")
@@ -364,16 +429,12 @@ class Parameters(object):
             setattr(self, name, cval)
         self.set_year(self._current_year)
 
-    # TODO: eventually remove the following three variables that
-    #       are used only in the global default_data() function below
-    CURRENT_PATH = os.path.abspath(os.path.dirname(__file__))
-    PARAMS_FILENAME = "params.json"
-    params_path = os.path.join(CURRENT_PATH, PARAMS_FILENAME)
+    # TODO: eventually remove the following variable that
+    #       is used only in the global default_data() function below
+    PARAMS_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                               JSON_FILE_NAME)
 
 # end Parameters class
-
-
-DEFAULT_START_YEAR = 2013
 
 
 def default_data(metadata=False, start_year=None):
@@ -382,20 +443,20 @@ def default_data(metadata=False, start_year=None):
     """
     # pylint: disable=too-many-locals,too-many-branches
 
-    if not os.path.exists(Parameters.params_path):
+    if not os.path.exists(Parameters.PARAMS_PATH):
         from pkg_resources import resource_stream, Requirement
-        path_in_egg = os.path.join("taxcalc", Parameters.PARAMS_FILENAME)
+        path_in_egg = os.path.join("taxcalc", Parameters.JSON_FILE_NAME)
         buf = resource_stream(Requirement.parse("taxcalc"), path_in_egg)
         _bytes = buf.read()
         as_string = _bytes.decode("utf-8")
         params = json.loads(as_string)
     else:
-        with open(Parameters.params_path) as pfile:
+        with open(Parameters.PARAMS_PATH) as pfile:
             params = json.load(pfile)
 
     if start_year:
         for pdv in params.values():  # pdv = parameter dictionary value
-            first_year = pdv.get('start_year', DEFAULT_START_YEAR)
+            first_year = pdv.get('start_year', Parameters.JSON_START_YEAR)
             assert isinstance(first_year, int)
 
             if start_year < first_year:
