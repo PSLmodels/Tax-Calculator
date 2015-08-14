@@ -261,25 +261,25 @@ class Parameters(object):
         params = cls._params_dict_from_json_file()
 
         if first_value_year:  # if first_value_year is specified
-            f_v_year_string = '{}'.format(first_value_year)
-            for name, pdv in params.items():  # pdv=parameter dictionary value
-                s_year = pdv.get('start_year', Parameters.JSON_START_YEAR)
+            first_value_year_str = '{}'.format(first_value_year)
+            for name, data in params.items():
+                s_year = data.get('start_year', Parameters.JSON_START_YEAR)
                 assert isinstance(s_year, int)
                 if first_value_year < s_year:
                     msg = "first_value_year={} < start_year={} for {}"
                     raise ValueError(msg.format(first_value_year,
                                                 s_year, name))
                 # set the new start year:
-                pdv['start_year'] = first_value_year
+                data['start_year'] = first_value_year
                 # work with the values
-                vals = pdv['value']
+                vals = data['value']
                 last_year_for_data = s_year + len(vals) - 1
                 if last_year_for_data < first_value_year:
-                    if pdv['row_label']:
-                        pdv['row_label'] = [f_v_year_string]
+                    if data['row_label']:
+                        data['row_label'] = [first_value_year_str]
                     # need to produce new values
                     new_val = vals[-1]
-                    if pdv['cpi_inflated'] is True:
+                    if data['cpi_inflated'] is True:
                         for cyr in range(last_year_for_data, first_value_year):
                             irate = Parameters.default_inflation_rate(cyr)
                             ifactor = 1.0 + irate
@@ -288,13 +288,13 @@ class Parameters(object):
                         else:
                             new_val *= ifactor
                     # set the new values
-                    pdv['value'] = [new_val]
+                    data['value'] = [new_val]
                 else:
                     # get rid of [s_year, ..., first_value_year-1] values
                     years_to_chop = first_value_year - s_year
-                    if pdv['row_label']:
-                        pdv['row_label'] = pdv['row_label'][years_to_chop:]
-                    pdv['value'] = pdv['value'][years_to_chop:]
+                    if data['row_label']:
+                        data['row_label'] = data['row_label'][years_to_chop:]
+                    data['value'] = data['value'][years_to_chop:]
 
         if metadata:
             return params
