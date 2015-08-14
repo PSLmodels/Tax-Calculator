@@ -47,7 +47,8 @@ class Parameters(object):
     IRATES_FILENAME = 'irates.json'  # TODO: move __rates there & add wages
     JSON_START_YEAR = 2013  # remains the same unless earlier data added
     FIRST_BUDGET_YEAR = 2015  # increases by one every calendar year
-    DEFAULT_NUM_YEARS = 10 + FIRST_BUDGET_YEAR - JSON_START_YEAR
+    NUM_BUDGET_YEARS = 10  # fixed by federal government budgeting rules
+    DEFAULT_NUM_YEARS = NUM_BUDGET_YEARS + FIRST_BUDGET_YEAR - JSON_START_YEAR
 
     # default inflation rates by year
     __rates = {2013: 0.015, 2014: 0.020, 2015: 0.022, 2016: 0.020, 2017: 0.021,
