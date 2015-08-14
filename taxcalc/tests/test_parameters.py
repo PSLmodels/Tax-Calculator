@@ -42,12 +42,29 @@ def test_create_parameters():
     assert p
 
 
-def test_params_json_start_year_values():
+def test_params_json_content():
     ppo = Parameters()
-    for name, data in ppo._vals.items():
-      param_start_year = data.get('start_year')
-      assert isinstance(param_start_year, int)
-      assert param_start_year == Parameters.JSON_START_YEAR
+    params = getattr(ppo, '_vals')
+    num_parameters = 0
+    num_missing_row_labels = 0
+    for name, data in params.items():
+        num_parameters += 1
+        start_year = data.get('start_year')
+        assert isinstance(start_year, int)
+        assert start_year == Parameters.JSON_START_YEAR
+        row_label = data.get('row_label')
+        if isinstance(row_label, list):
+            value = data.get('value')
+            expected = [str(start_year + i) for i in range(len(value))]
+            assert row_label == expected
+        else:
+            num_missing_row_labels += 1
+    if num_missing_row_labels != 0:
+        msg = 'num_parameters_in_total={}\n'
+        sys.stdout.write(msg.format(num_parameters))
+        msg = 'num_without_row_label_list={}\n'
+        sys.stdout.write(msg.format(num_missing_row_labels))
+        # assert num_missing_row_labels == 0
 
 
 def test_constant_inflation_rate_without_reform():
