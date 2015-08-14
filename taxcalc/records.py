@@ -80,9 +80,9 @@ class Records(object):
         self._current_year += 1
         self.FLPDYR += 1
         # Implement Stage 1 Extrapolation blowup factors
-        #self.blowup()
+        self.blowup()
         # Implement Stage 2 Extrapolation reweighting.
-        #self.s006 = self.WT["WT"+str(self.current_year)]
+        self.s006 = self.WT["WT"+str(self.current_year)]
 
     def blowup(self):
         self.e00200  =   self.e00200  *   self.BF.AWAGE[self._current_year]

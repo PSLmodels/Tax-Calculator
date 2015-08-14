@@ -134,7 +134,7 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
 
     # Adjusted Gross Income
 
-    c02650 = _ymod1 + c02500 - c02700 + e02615  # Gross Income, why no e02600?
+    c02650 = _ymod1 + c02500 - c02700 + e02615  # Gross Income
 
     c00100 = c02650 - c02900
     _agierr = e00100 - c00100  # Adjusted Gross Income
@@ -246,7 +246,7 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     # Casualty #
     if e20500 > 0:
         c37703 = e20500 + ID_Casualty_frt * _posagi
-        c20500 = c37703 - ID_Casualty_frt * _posagi  # why not just set to e20500?
+        c20500 = c37703 - ID_Casualty_frt * _posagi
     else:
         c37703 = 0.
         c20500 = 0.
@@ -270,7 +270,6 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     if base_charity <= 0.2 * _posagi:
         c19700 = base_charity
     else:
-        # where do these limits come from?
         lim50 = min(ID_Charity_crt_Cash * _posagi, e19800)
         lim30 = min(ID_Charity_crt_Asset * _posagi, e20100 + e20200)
         c19700 = min(0.5 * _posagi, lim30 + lim50)
@@ -505,7 +504,7 @@ def StdDed( DSI, _earned, STD, e04470, e00100, e60000,
     else: 
         _othded = 0.
 
-    c04500 = c00100 - max(c04470, max(c04100, _standard + e37717))  # why add e37717
+    c04500 = c00100 - max(c04470, max(c04100, _standard + e37717))
     c04800 = max(0., c04500 - c04600 - e04805)
 
     #Check with Dan whether this is right!
@@ -852,9 +851,9 @@ def AMTI(   c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
 
     if (puf == True and ((_standard == 0 or (_exact == 1 and e04470 > 0)))):
-        c62100 = (c00100 - c04470 + max(0., min(c17000, 0.025 * c00100)) +
-                 (1-ID_StateLocalTax_HC)*_sit + c60240 - c60260 + c20800
-                  - c21040 + c60130)
+        c62100 = ((c00100 - c04470 + max(0., min(c17000, 0.025 * c00100)) +
+                  (1-ID_StateLocalTax_HC)*c60240 - c60260 + c20800 -
+                   c21040 + c60130))
         c62100 += _cmbtp
 
 
