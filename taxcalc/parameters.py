@@ -444,6 +444,7 @@ def default_data(metadata=False, start_year=None):
     """ Retreive of default parameters """
     parampath = Parameters.params_path
     if not os.path.exists(parampath):
+        from pkg_resources import resource_stream, Requirement
         path_in_egg = os.path.join("taxcalc", Parameters.PARAMS_FILENAME)
         buf = resource_stream(Requirement.parse("taxcalc"), path_in_egg)
         _bytes = buf.read()
