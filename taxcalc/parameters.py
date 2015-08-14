@@ -240,7 +240,7 @@ class Parameters(object):
             setattr(self, name[1:], arr[year_zero_indexed])
 
     @classmethod
-    def default_data(cls, metadata=False, value_year=None):
+    def default_data(cls, metadata=False, start_year=None):
         """
         Return current-law policy data read from params.json file.
 
@@ -248,30 +248,44 @@ class Parameters(object):
         ----------
         metadata: boolean
 
-        value_year: int
+        start_year: int
 
         Returns
         -------
         params: dictionary of params.json data
         """
-        # extract different data from params.json depending on value_year
-        if value_year:  # if value_year is not None
+        # extract different data from params.json depending on start_year
+        if start_year:  # if start_year is not None
             import numpy.core as np
-            num_yrs = value_year - Parameters.JSON_START_YEAR + 1
-            ppo = Parameters(num_years=num_yrs)
-            ppo.set_year(value_year)
-            value_year_str = '{}'.format(value_year)
+            nyrs = start_year - Parameters.JSON_START_YEAR + 1
+            ppo = Parameters(num_years=nyrs)
+            ppo.set_year(start_year)
+            start_year_str = '{}'.format(start_year)
             params = getattr(ppo, '_vals')
             for name, data in params.items():
-                data['start_year'] = value_year
-                data['row_label'] = [value_year_str]
-                rawval = getattr(ppo, name[1:])
-                if isinstance(rawval, np.ndarray):
-                    val = rawval.tolist()
-                else:
-                    val = rawval
-                data['value'] = [val]
-        else:  # if value_year is None
+                data['start_year'] = start_year
+                values = data['value']
+                num_values = len(values)
+                if num_values <= nyrs:
+                    # val should be the single start_year value
+                    rawval = getattr(ppo, name[1:])
+                    if isinstance(rawval, np.ndarray):
+                        val = rawval.tolist()
+                    else:
+                        val = rawval
+                    data['value'] = [val]
+                    if isinstance(data['row_label'], list):
+                        data['row_label'] = [start_year_str]
+                    else:
+                        data['row_label'] = ""
+                else:  # if num_values > nyrs
+                    # val should extend beyond the start_year value
+                    data['value'] = data['value'][(nyrs - 1):]
+                    if isinstance(data['row_label'], list):
+                        data['row_label'] = data['row_label'][(nyrs - 1):]
+                    else:
+                        data['row_label'] = ""
+        else:  # if start_year is None
             params = cls._params_dict_from_json_file()
         # return different data from params dict depending on metadata value
         if metadata:
