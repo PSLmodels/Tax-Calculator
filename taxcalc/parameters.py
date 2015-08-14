@@ -434,68 +434,67 @@ class Parameters(object):
 
     # TODO: eventually remove the following variable that is used
     #       only in the depreciated global default_data() function
-    PARAMS_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+    params_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                PARAMS_FILENAME)
 
 # end Parameters class
 
 
 def default_data(metadata=False, start_year=None):
-    """
-    Retrieve current-law policy parameters from params.json file.
-    """
-    # pylint: disable=too-many-locals,too-many-branches
-
-    if not os.path.exists(Parameters.PARAMS_PATH):
-        from pkg_resources import resource_stream, Requirement
+    """ Retreive of default parameters """
+    parampath = Parameters.params_path
+    if not os.path.exists(parampath):
         path_in_egg = os.path.join("taxcalc", Parameters.PARAMS_FILENAME)
         buf = resource_stream(Requirement.parse("taxcalc"), path_in_egg)
         _bytes = buf.read()
         as_string = _bytes.decode("utf-8")
         params = json.loads(as_string)
     else:
-        with open(Parameters.PARAMS_PATH) as pfile:
-            params = json.load(pfile)
+        with open(Parameters.params_path) as f:
+            params = json.load(f)
 
     if start_year:
-        for pdv in params.values():  # pdv = parameter dictionary value
-            first_year = pdv.get('start_year', Parameters.JSON_START_YEAR)
+        for k, v in params.items():
+            first_year = v.get('start_year', Parameters.JSON_START_YEAR)
             assert isinstance(first_year, int)
 
             if start_year < first_year:
                 msg = "Can't set a start year of {0}, because it is before {1}"
                 raise ValueError(msg.format(start_year, first_year))
 
-            # set the new start year:
-            pdv['start_year'] = start_year
+            # Set the new start year:
+            v['start_year'] = start_year
 
-            # work with the values
-            vals = pdv['value']
+            # Work with the values
+            vals = v['value']
             last_year_for_data = first_year + len(vals) - 1
 
             if last_year_for_data < start_year:
-                if pdv['row_label']:
-                    pdv['row_label'] = ["2015"]
-                # need to produce new values
+                if v['row_label']:
+                    v['row_label'] = ["2015"]
+                # Need to produce new values
                 new_val = vals[-1]
-                if pdv['cpi_inflated'] is True:
-                    for cyr in range(last_year_for_data, start_year):
-                        ifactor = 1.0 + Parameters.default_inflation_rate(cyr)
-                        if isinstance(new_val, list):
-                            new_val = [x * ifactor for x in new_val]
-                        else:
-                            new_val *= ifactor
-                # set the new values
-                pdv['value'] = [new_val]
+                if v['cpi_inflated'] is True:
+                    if isinstance(new_val, list):
+                        for y in range(last_year_for_data, start_year):
+                            new_val = [x *
+                                       (1.0 +
+                                        Parameters._Parameters__rates[y]) for
+                                       x in new_val]
+                    else:
+                        for y in range(last_year_for_data, start_year):
+                            new_val *= 1.0 + Parameters._Parameters__rates[y]
+                # Set the new values
+                v['value'] = [new_val]
 
             else:
-                # need to get rid of [first_year, ..., start_year-1] values
+                # Need to get rid of [first_year, ..., start_year-1] values
                 years_to_chop = start_year - first_year
-                if pdv['row_label']:
-                    pdv['row_label'] = pdv['row_label'][years_to_chop:]
-                pdv['value'] = pdv['value'][years_to_chop:]
+                if v['row_label']:
+                    v['row_label'] = v['row_label'][years_to_chop:]
+                v['value'] = v['value'][years_to_chop:]
 
-    if metadata:
+    if (metadata):
         return params
     else:
-        return {key: val['value'] for key, val in params.items()}
+        return {k: v['value'] for k, v in params.items()}
