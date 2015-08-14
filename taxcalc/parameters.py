@@ -136,7 +136,7 @@ class Parameters(object):
         Parameters
         ----------
         reform: dictionary of YEAR:MODS pairs
-            see Notes to _update function below for MODS structure.
+            see Notes to _update function for details on MODS structure.
 
         Raises
         ------
@@ -150,16 +150,42 @@ class Parameters(object):
         Notes
         -----
         Given a reform dictionary, typical usage of the Parameters class
-        is as follows:
+        is as follows::
 
-        ppo = Parameters()
-        ppo.implement_reform(reform)
+            ppo = Parameters()
+            ppo.implement_reform(reform)
 
         In the above statements, the Parameters() call instantiates a
         policy parameters object (ppo) containing current-law policy
         parameters, and the implement_reform(reform) call applies the
         (possibly multi-year) reform specified in reform and then sets
         the current_year to start_year with parameters set for that year.
+
+        An example of a multi-year, multi-parameter reform is as follows::
+
+            reform = {
+                2015: {
+                    '_AMT_thd_MarriedS': [60000]
+                },
+                2016: {
+                    '_EITC_c': [[900, 5000, 8000, 9000]],
+                    '_II_em': [7000],
+                    '_SS_Earnings_c': [300000]
+                },
+                2017: {
+                    '_AMT_thd_MarriedS': [80000],
+                    '_SS_Earnings_c': [500000], '_SS_Earnings_c_cpi': False
+                },
+                2019: {
+                    '_EITC_c': [[1200, 7000, 10000, 12000]],
+                    '_II_em': [9000],
+                    '_SS_Earnings_c': [700000], '_SS_Earnings_c_cpi': True
+                }
+            }
+
+        Notice that each of the four YEAR:MODS pairs is specified as
+        required by the private _update() method, whose documentation
+        provides several MODS dictionary examples.
         """
         if self.current_year != self.start_year:
             self.set_year(self.start_year)
@@ -253,47 +279,82 @@ class Parameters(object):
         Returns
         -------
         params: dictionary of params.json data
+
+        Notes
+        -----
+        This is a replacement for the legacy default_data() global function.
         """
         # extract different data from params.json depending on start_year
         if start_year:  # if start_year is not None
-            import numpy.core as np
             nyrs = start_year - Parameters.JSON_START_YEAR + 1
             ppo = Parameters(num_years=nyrs)
             ppo.set_year(start_year)
-            start_year_str = '{}'.format(start_year)
-            params = getattr(ppo, '_vals')
-            for name, data in params.items():
-                data['start_year'] = start_year
-                values = data['value']
-                num_values = len(values)
-                if num_values <= nyrs:
-                    # val should be the single start_year value
-                    rawval = getattr(ppo, name[1:])
-                    if isinstance(rawval, np.ndarray):
-                        val = rawval.tolist()
-                    else:
-                        val = rawval
-                    data['value'] = [val]
-                    if isinstance(data['row_label'], list):
-                        data['row_label'] = [start_year_str]
-                    else:
-                        data['row_label'] = ""
-                else:  # if num_values > nyrs
-                    # val should extend beyond the start_year value
-                    data['value'] = data['value'][(nyrs - 1):]
-                    if isinstance(data['row_label'], list):
-                        data['row_label'] = data['row_label'][(nyrs - 1):]
-                    else:
-                        data['row_label'] = ""
+            parms = getattr(ppo, '_vals')
+            params = cls._revised_default_data(parms, start_year, nyrs, ppo)
         else:  # if start_year is None
             params = cls._params_dict_from_json_file()
         # return different data from params dict depending on metadata value
         if metadata:
             return params
         else:
-            return {key: data['value'] for key, data in params.items()}
+            return {name: data['value'] for name, data in params.items()}
 
     # ----- begin private methods of Parameters class -----
+
+    @classmethod
+    def _revised_default_data(cls, params, start_year, nyrs, ppo):
+        """
+        Return revised default parameter data.
+
+        Parameters
+        ----------
+        params: dictionary of NAME:DATA pairs for each parameter
+            as defined in calling default_data classmethod.
+
+        start_year: int
+            as defined in calling default_data classmethod.
+
+        nyrs: int
+            as defined in calling default_data classmethod.
+
+        ppo: Parameters object
+            as defined in calling default_data classmethod.
+
+        Returns
+        -------
+        params: dictionary of revised parameter data
+
+        Notes
+        -----
+        This classmethod is called from default_data classmethod in
+        order to reduce the complexity of the default_data classmethod.
+        """
+        import numpy.core as np
+        start_year_str = '{}'.format(start_year)
+        for name, data in params.items():
+            data['start_year'] = start_year
+            values = data['value']
+            num_values = len(values)
+            if num_values <= nyrs:
+                # val should be the single start_year value
+                rawval = getattr(ppo, name[1:])
+                if isinstance(rawval, np.ndarray):
+                    val = rawval.tolist()
+                else:
+                    val = rawval
+                data['value'] = [val]
+                if isinstance(data['row_label'], list):
+                    data['row_label'] = [start_year_str]
+                else:
+                    data['row_label'] = ""
+            else:  # if num_values > nyrs
+                # val should extend beyond the start_year value
+                data['value'] = data['value'][(nyrs - 1):]
+                if isinstance(data['row_label'], list):
+                    data['row_label'] = data['row_label'][(nyrs - 1):]
+                else:
+                    data['row_label'] = ""
+        return params
 
     @classmethod
     def _params_dict_from_json_file(cls):
@@ -343,10 +404,15 @@ class Parameters(object):
 
         Notes
         -----
-        This method implements a policy reform, the provisions of
+        This is a private method that should never be used by clients
+        of the Parameters class.  Instead, always use the public 
+        implement_reform method.  The _update function is a private
+        method that helps the implement_reform method do its job.
+
+        This private method implements a policy reform, the provisions of
         which are specified in the year_mods dictionary, that changes
         the values of some policy parameters in this Parameters
-        object.  This year_modes dictionary contains exactly one
+        object.  This year_mods dictionary contains exactly one
         YEAR:MODS pair, where the integer YEAR key indicates the
         calendar year for which the reform provisions in the MODS
         dictionary are implemented.  The MODS dictionary contains
@@ -367,20 +433,24 @@ class Parameters(object):
         and Disability Insurance) maximum taxable earnings beginning
         in 2018 to $500,000 and to continue indexing it in subsequent
         years as in current-law policy, the YEAR:MODS dictionary would
-        be as follows:
-        {2018: {"_SS_Earnings_c":[500000]}}.
+        be as follows::
+
+            {2018: {"_SS_Earnings_c":[500000]}}
 
         But to raise the maximum taxable earnings in 2018 to $500,000
         without any indexing in subsequent years, the YEAR:MODS
-        dictionary would be as follows:
-        {2018: {"_SS_Earnings_c":[500000], "_SS_Earnings_c_cpi":False}}.
+        dictionary would be as follows::
+
+            {2018: {"_SS_Earnings_c":[500000], "_SS_Earnings_c_cpi":False}}
 
         And to raise in 2019 the starting AGI for EITC phaseout for
         married filing jointly filing status (which is a two-dimensional
         policy parameter that varies by the number of children from zero
         to three or more and is inflation indexed), the YEAR:MODS dictionary
-        would be as follows:
-        {2019: {"_EITC_ps_MarriedJ":[[8000, 8500, 9000, 9500]]}}.
+        would be as follows::
+
+            {2019: {"_EITC_ps_MarriedJ":[[8000, 8500, 9000, 9500]]}}
+
         Notice the pair of double square brackets around the four values
         for 2019.  The one-dimensional parameters above require only a pair
         of single square brackets.
@@ -432,6 +502,7 @@ class Parameters(object):
 # end Parameters class
 
 
+# the following legacy default_data function is depreciated
 def default_data(metadata=False, start_year=None):
     """ Retreive of default parameters """
     parampath = Parameters.params_path
