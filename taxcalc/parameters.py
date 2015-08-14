@@ -240,7 +240,7 @@ class Parameters(object):
             setattr(self, name[1:], arr[year_zero_indexed])
 
     @classmethod
-    def default_data(cls, metadata=False, first_value_year=None):
+    def default_data(cls, metadata=False, value_year=None):
         """
         Return current-law policy data read from params.json file.
 
@@ -248,59 +248,36 @@ class Parameters(object):
         ----------
         metadata: boolean
 
-        first_value_year: int
-
-        Raises
-        ------
-        ValueError:
-            if first_value_year is not in [start_year, end_year] range.
+        value_year: int
 
         Returns
         -------
-        params: dictionary of params.json information
+        params: dictionary of params.json data
         """
-        params = cls._params_dict_from_json_file()
-
-        if first_value_year:  # if first_value_year is specified
-            first_value_year_str = '{}'.format(first_value_year)
+        # extract different data from params.json depending on value_year
+        if value_year:  # if value_year is not None
+            import numpy.core as np
+            num_yrs = value_year - Parameters.JSON_START_YEAR + 1
+            ppo = Parameters(num_years=num_yrs)
+            ppo.set_year(value_year)
+            value_year_str = '{}'.format(value_year)
+            params = getattr(ppo, '_vals')
             for name, data in params.items():
-                s_year = data.get('start_year', Parameters.JSON_START_YEAR)
-                assert isinstance(s_year, int)
-                if first_value_year < s_year:
-                    msg = "first_value_year={} < start_year={} for {}"
-                    raise ValueError(msg.format(first_value_year,
-                                                s_year, name))
-                # set the new start year:
-                data['start_year'] = first_value_year
-                # work with the values
-                vals = data['value']
-                last_year_for_data = s_year + len(vals) - 1
-                if last_year_for_data < first_value_year:
-                    if data['row_label']:
-                        data['row_label'] = [first_value_year_str]
-                    # need to produce new values
-                    new_val = vals[-1]
-                    if data['cpi_inflated'] is True:
-                        for cyr in range(last_year_for_data, first_value_year):
-                            irate = Parameters.default_inflation_rate(cyr)
-                            ifactor = 1.0 + irate
-                        if isinstance(new_val, list):
-                            new_val = [x * ifactor for x in new_val]
-                        else:
-                            new_val *= ifactor
-                    # set the new values
-                    data['value'] = [new_val]
+                data['start_year'] = value_year
+                data['row_label'] = [value_year_str]
+                rawval = getattr(ppo, name[1:])
+                if isinstance(rawval, np.ndarray):
+                    val = rawval.tolist()
                 else:
-                    # get rid of [s_year, ..., first_value_year-1] values
-                    years_to_chop = first_value_year - s_year
-                    if data['row_label']:
-                        data['row_label'] = data['row_label'][years_to_chop:]
-                    data['value'] = data['value'][years_to_chop:]
-
+                    val = rawval
+                data['value'] = [val]
+        else:  # if value_year is None
+            params = cls._params_dict_from_json_file()
+        # return different data from params dict depending on metadata value
         if metadata:
             return params
         else:
-            return {key: val['value'] for key, val in params.items()}
+            return {key: data['value'] for key, data in params.items()}
 
     # ----- begin private methods of Parameters class -----
 
