@@ -1,5 +1,5 @@
 """
-OSPC Tax-Calculator policy Parameters class.
+OSPC Tax-Calculator federal tax policy Parameters class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 parameters.py
@@ -12,7 +12,7 @@ import json
 
 class Parameters(object):
     """
-    Constructor for federal income tax policy parameters class.
+    Constructor for the federal tax policy parameters class.
 
     Parameters
     ----------
@@ -54,23 +54,6 @@ class Parameters(object):
     __rates = {2013: 0.015, 2014: 0.020, 2015: 0.022, 2016: 0.020, 2017: 0.021,
                2018: 0.022, 2019: 0.023, 2020: 0.024, 2021: 0.024, 2022: 0.024,
                2023: 0.024, 2024: 0.024}
-
-    @classmethod
-    def default_inflation_rate(cls, calyear):
-        """
-        Return default inflation rate for specified calendar year.
-
-        Parameters
-        ----------
-        calyear: integer
-            calendar year (for example, 2013).
-
-        Returns
-        -------
-        default inflation rate: float
-            decimal (not percentage) annual inflation rate for calyear.
-        """
-        return cls.__rates[calyear]
 
     @classmethod
     def default_inflation_rates(cls):
@@ -135,7 +118,7 @@ class Parameters(object):
 
         Parameters
         ----------
-        reform: dictionary of YEAR:MODS pairs
+        reform: dictionary of one or more YEAR:MODS pairs
             see Notes to _update function for details on MODS structure.
 
         Raises
@@ -184,7 +167,7 @@ class Parameters(object):
             }
 
         Notice that each of the four YEAR:MODS pairs is specified as
-        required by the private _update() method, whose documentation
+        required by the private _update method, whose documentation
         provides several MODS dictionary examples.
         """
         if self.current_year != self.start_year:
@@ -250,9 +233,9 @@ class Parameters(object):
 
         Notes
         -----
-        To increment the current year, use the following statement:
+        To increment the current year, use the following statement::
 
-        ppo.set_year(ppo.current_year + 1)
+            ppo.set_year(ppo.current_year + 1)
 
         where ppo is a policy Parameters object.
         """
@@ -385,12 +368,11 @@ class Parameters(object):
         return params
 
     def _update(self, year_mods):
-        """
-        Apply year_mods policy-parameter-reform dictionary to parameters.
+        """Private method used **only** by the public implement_reform method.
 
         Parameters
         ----------
-        year_mods: dictionary of a single YEAR:MODS pair
+        year_mods: dictionary containing a single YEAR:MODS pair
             see Notes below for details on dictionary structure.
 
         Raises
@@ -404,10 +386,10 @@ class Parameters(object):
 
         Notes
         -----
-        This is a private method that should never be used by clients
-        of the Parameters class.  Instead, always use the public 
-        implement_reform method.  The _update function is a private
-        method that helps the implement_reform method do its job.
+        This is a private method that should **never** be used by clients
+        of the Parameters class.  Instead, always use the public
+        implement_reform method.  This is a private method that helps
+        the public implement_reform method do its job.
 
         This private method implements a policy reform, the provisions of
         which are specified in the year_mods dictionary, that changes
