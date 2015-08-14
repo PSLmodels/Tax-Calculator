@@ -131,7 +131,7 @@ def test_make_Calculator_files_to_ctor(paramsfile):
     with open(paramsfile.name) as pfile:
         params = json.load(pfile)
     ppo = Parameters(parameter_dict=params, start_year=1991,
-                     num_years=len(irates), inflation_rates=irates)    
+                     num_years=len(irates), inflation_rates=irates)
     calc = Calculator(params=ppo, records=tax_dta_path,
                       start_year=1991, inflation_rates=irates)
     assert calc
@@ -232,7 +232,7 @@ def test_make_Calculator_user_mods_with_cpi_flags(paramsfile):
     with open(paramsfile.name) as pfile:
         params = json.load(pfile)
     ppo = Parameters(parameter_dict=params, start_year=1991,
-                     num_years=len(irates), inflation_rates=irates)    
+                     num_years=len(irates), inflation_rates=irates)
     calc = Calculator(params=ppo, records=tax_dta_path, start_year=1991,
                       inflation_rates=irates)
 
