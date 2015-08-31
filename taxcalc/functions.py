@@ -248,8 +248,7 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     c17000 = max(0, e17500 - c17750)
 
     # State and Local Income Tax, or Sales Tax
-    _sit1 = max(e18400, e18425)
-    _sit = max(_sit1, 0)
+    _sit = max(e18400, 0)
     _statax = max(_sit, e18450)
 
     # Other Taxes (including state and local)

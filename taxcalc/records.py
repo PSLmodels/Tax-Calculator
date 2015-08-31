@@ -375,7 +375,7 @@ class Records(object):
                  ('SCHB', 'schb'),
                  ('SCHCF', 'schcf'),
                  ('SCHE', 'sche'),
-                 ('STATE', 'state'),
+                 #('STATE', 'state'),
                  ('TFORM', 'tform'),
                  ('TXST', 'txst'),
                  ('XFPT', 'xfpt'),
@@ -467,8 +467,9 @@ class Records(object):
                  ('e12000', 'e12000'),
                  ('e12200', 'e12200'),
                  ('e17500', 'e17500'),
-                 ('e18425', 'e18425'),
-                 ('e18450', 'e18450'),
+                 ('e18400', 'e18400'),
+                 #('e18425', 'e18425'),
+                 #('e18450', 'e18450'),
                  ('e18500', 'e18500'),
                  ('e19200', 'e19200'),
                  ('e19550', 'e19550'),
@@ -494,8 +495,8 @@ class Records(object):
                  ('e24615', 'e24615'),
                  ('e24570', 'e24570'),
                  ('p25350', 'p25350'),
-                 ('e25370', 'e25370'),
-                 ('e25380', 'e25380'),
+                 #('e25370', 'e25370'),
+                 ('e25380', 'p25380'),
                  ('p25470', 'p25470'),
                  ('p25700', 'p25700'),
                  ('e25820', 'e25820'),
@@ -542,11 +543,11 @@ class Records(object):
                  ('t27800', 't27800'),
                  ('s27860', 's27860'),
                  ('p27895', 'p27895'),
-                 ('e87500', 'e87500'),
-                 ('e87510', 'e87510'),
-                 ('e87520', 'e87520'),
+                 #('e87500', 'e87500'),
+                 #('e87510', 'e87510'),
+                 #('e87520', 'e87520'),
                  ('e87530', 'e87530'),
-                 ('e87540', 'e87540'),
+                 #('e87540', 'e87540'),
                  ('e87550', 'e87550'),
                  # ('e22250', 'e22250'),
                  # ('e23250', 'e23250'),
@@ -570,7 +571,7 @@ class Records(object):
         zeroed_names = ['e35300_0', 'e35600_0', 'e35910_0', 'x03150', 'e03600',
                         'e03280', 'e03900', 'e04000', 'e03700', 'c23250',
                         'e23660', 'f2555', 'e02800', 'e02610', 'e02540',
-                        'e02615', 'SSIND', 'e18400', 'e18800', 'e18900',
+                        'e02615', 'SSIND', 'e18800', 'e18900',
                         'e20950', 'e19500', 'e19570', 'e19400', 'c20400',
                         'e20200', 'e20900', 'e21000', 'e21010', 'e02600',
                         '_exact', 'e11055', 'e00250', 'e30100', 'e15360',
@@ -672,15 +673,15 @@ class Records(object):
 
     def mutate_imputations(self):
         self._cmbtp_itemizer = imputation(self.e17500, self.e00100,
-                                          self.e18400, self.e18425,
+                                          self.e18400, 
                                           self.e62100, self.e00700,
                                           self.e04470, self.e21040,
                                           self.e18500, self.e20800)
 
 
-@vectorize([float64(float64, float64, float64, float64, float64, float64,
+@vectorize([float64(float64, float64, float64, float64, float64,
             float64, float64, float64, float64)])
-def imputation(e17500, e00100, e18400, e18425, e62100, e00700, e04470,
+def imputation(e17500, e00100, e18400, e62100, e00700, e04470,
                e21040, e18500, e20800):
 
     """
@@ -692,7 +693,7 @@ def imputation(e17500, e00100, e18400, e18425, e62100, e00700, e04470,
     # temp variables to make it easier to read
     x = max(0., e17500 - max(0., e00100) * 0.075)
     medical_adjustment = min(x, 0.025 * max(0., e00100))
-    state_adjustment = max(0, max(e18400, e18425))
+    state_adjustment = max(0, e18400)
 
     _cmbtp_itemizer = (e62100 - medical_adjustment + e00700 + e04470 + e21040 -
                        state_adjustment - e00100 - e18500 - e20800)

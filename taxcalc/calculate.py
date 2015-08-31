@@ -95,7 +95,7 @@ class Calculator(object):
         self._records = (records if not isinstance(records, str) else
                          Records.from_file(records, **kwargs))
 
-        if sync_years and self._records.current_year == 2008:
+        if sync_years and self._records.current_year == 2009:
             print("You loaded data for " +
                   str(self._records.current_year) + '.')
 
