@@ -248,8 +248,8 @@ class Parameters(object):
             arr = getattr(self, name)
             setattr(self, name[1:], arr[year_zero_indexed])
 
-    @classmethod
-    def default_data(cls, metadata=False, start_year=None):
+    @staticmethod
+    def default_data(metadata=False, start_year=None):
         """
         Return current-law policy data read from params.json file.
 
@@ -262,10 +262,6 @@ class Parameters(object):
         Returns
         -------
         params: dictionary of params.json data
-
-        Notes
-        -----
-        This is a replacement for the legacy default_data() global function.
         """
         # extract different data from params.json depending on start_year
         if start_year:  # if start_year is not None
@@ -273,9 +269,10 @@ class Parameters(object):
             ppo = Parameters(num_years=nyrs)
             ppo.set_year(start_year)
             parms = getattr(ppo, '_vals')
-            params = cls._revised_default_data(parms, start_year, nyrs, ppo)
+            params = Parameters._revised_default_data(parms, start_year,
+                                                      nyrs, ppo)
         else:  # if start_year is None
-            params = cls._params_dict_from_json_file()
+            params = Parameters._params_dict_from_json_file()
         # return different data from params dict depending on metadata value
         if metadata:
             return params
@@ -284,24 +281,24 @@ class Parameters(object):
 
     # ----- begin private methods of Parameters class -----
 
-    @classmethod
-    def _revised_default_data(cls, params, start_year, nyrs, ppo):
+    @staticmethod
+    def _revised_default_data(params, start_year, nyrs, ppo):
         """
         Return revised default parameter data.
 
         Parameters
         ----------
         params: dictionary of NAME:DATA pairs for each parameter
-            as defined in calling default_data classmethod.
+            as defined in calling default_data staticmethod.
 
         start_year: int
-            as defined in calling default_data classmethod.
+            as defined in calling default_data staticmethod.
 
         nyrs: int
-            as defined in calling default_data classmethod.
+            as defined in calling default_data staticmethod.
 
         ppo: Parameters object
-            as defined in calling default_data classmethod.
+            as defined in calling default_data staticmethod.
 
         Returns
         -------
@@ -309,8 +306,8 @@ class Parameters(object):
 
         Notes
         -----
-        This classmethod is called from default_data classmethod in
-        order to reduce the complexity of the default_data classmethod.
+        This staticmethod is called from default_data staticmethod in
+        order to reduce the complexity of the default_data staticmethod.
         """
         import numpy.core as np
         start_year_str = '{}'.format(start_year)
