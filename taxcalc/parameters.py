@@ -339,8 +339,8 @@ class Parameters(object):
                     data['row_label'] = ""
         return params
 
-    @classmethod
-    def _params_dict_from_json_file(cls):
+    @staticmethod
+    def _params_dict_from_json_file():
         """
         Read params.json file and return complete params dictionary.
 
