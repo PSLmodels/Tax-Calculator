@@ -470,7 +470,6 @@ class Parameters(object):
                                 num_years=num_years_to_expand)
             cval = getattr(self, name)
             cval[(self.current_year - self.start_year):] = nval
-            setattr(self, name, cval)
         self.set_year(self._current_year)
 
     # TODO: eventually remove the following variable that is used
