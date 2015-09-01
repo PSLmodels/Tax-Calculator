@@ -45,26 +45,15 @@ def test_create_parameters():
 def test_params_json_content():
     ppo = Parameters()
     params = getattr(ppo, '_vals')
-    num_parameters = 0
-    num_missing_row_labels = 0
     for name, data in params.items():
-        num_parameters += 1
         start_year = data.get('start_year')
         assert isinstance(start_year, int)
         assert start_year == Parameters.JSON_START_YEAR
         row_label = data.get('row_label')
-        if isinstance(row_label, list):
-            value = data.get('value')
-            expected = [str(start_year + i) for i in range(len(value))]
-            assert row_label == expected
-        else:
-            num_missing_row_labels += 1
-    if num_missing_row_labels != 0:
-        msg = 'num_parameters_in_total={}\n'
-        sys.stdout.write(msg.format(num_parameters))
-        msg = 'num_without_row_label_list={}\n'
-        sys.stdout.write(msg.format(num_missing_row_labels))
-        # assert num_missing_row_labels == 0
+        assert isinstance(row_label, list)
+        value = data.get('value')
+        expected_row_label = [str(start_year + i) for i in range(len(value))]
+        assert row_label == expected_row_label
 
 
 def test_constant_inflation_rate_without_reform():
@@ -458,7 +447,7 @@ def test_parameters_get_default_start_year():
     # 1D data, doesn't have 2015 values, is not CPI inflated
     meta_kt_c_age = paramdata['_KT_c_Age']
     assert meta_kt_c_age['start_year'] == 2015
-    assert meta_kt_c_age['row_label'] == ""
+    assert meta_kt_c_age['row_label'] == ["2015"]
     assert meta_kt_c_age['value'] == [24]
 
     # 1D data, does have 2015 values, goes up to 2018
