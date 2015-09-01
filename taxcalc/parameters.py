@@ -55,8 +55,8 @@ class Parameters(object):
                2018: 0.022, 2019: 0.023, 2020: 0.024, 2021: 0.024, 2022: 0.024,
                2023: 0.024, 2024: 0.024}
 
-    @classmethod
-    def default_inflation_rates(cls):
+    @staticmethod
+    def default_inflation_rates():
         """
         Return complete default inflation rate dictionary.
 
@@ -69,7 +69,7 @@ class Parameters(object):
         default inflation rates: dict
             decimal (not percentage) annual inflation rate by calyear.
         """
-        return cls.__rates
+        return Parameters.__rates
 
     def __init__(self, parameter_dict=None,
                  start_year=JSON_START_YEAR,
