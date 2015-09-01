@@ -323,17 +323,11 @@ class Parameters(object):
                 else:
                     val = rawval
                 data['value'] = [val]
-                if isinstance(data['row_label'], list):
-                    data['row_label'] = [start_year_str]
-                else:
-                    data['row_label'] = ""
+                data['row_label'] = [start_year_str]
             else:  # if num_values > nyrs
                 # val should extend beyond the start_year value
                 data['value'] = data['value'][(nyrs - 1):]
-                if isinstance(data['row_label'], list):
-                    data['row_label'] = data['row_label'][(nyrs - 1):]
-                else:
-                    data['row_label'] = ""
+                data['row_label'] = data['row_label'][(nyrs - 1):]
         return params
 
     @staticmethod
