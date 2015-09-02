@@ -188,8 +188,9 @@ class Records(object):
         self.e12200 = self.e12200 * 1.
         """  ITEMIZED DEDUCTIONS """
         self.e17500 = self.e17500 * self.BF.ACPIM[self._current_year]
-        self.e18425 = self.e18425 * self.BF.ATXPY[self._current_year]
-        self.e18450 = self.e18450 * self.BF.ATXPY[self._current_year]
+        self.e18400 = self.e18400 * self.BF.ATXPY[self._current_year]
+        #self.e18425 = self.e18425 * self.BF.ATXPY[self._current_year]
+        #self.e18450 = self.e18450 * self.BF.ATXPY[self._current_year]
         self.e18500 = self.e18500 * self.BF.ATXPY[self._current_year]
         self.e19200 = self.e19200 * self.BF.AIPD[self._current_year]
         self.e19550 = self.e19550 * self.BF.ATXPY[self._current_year]
@@ -217,7 +218,7 @@ class Records(object):
         self.e24570 = self.e24570 * self.BF.ACGNS[self._current_year]
         """  SCHEDULE E  """
         self.p25350 = self.p25350 * self.BF.ASCHEI[self._current_year]
-        self.e25370 = self.e25370 * self.BF.ASCHEI[self._current_year]
+        #self.e25370 = self.e25370 * self.BF.ASCHEI[self._current_year]
         self.e25380 = self.e25380 * self.BF.ASCHEI[self._current_year]
         self.p25470 = self.p25470 * self.BF.ASCHEI[self._current_year]
         self.p25700 = self.p25700 * self.BF.ASCHEI[self._current_year]
@@ -266,11 +267,11 @@ class Records(object):
         self.t27800 = self.t27800 * self.BF.ATXPY[self._current_year]
         self.s27860 = self.s27860 * self.BF.ATXPY[self._current_year]
         self.p27895 = self.p27895 * self.BF.ATXPY[self._current_year]
-        self.e87500 = self.e87500 * self.BF.ATXPY[self._current_year]
-        self.e87510 = self.e87510 * self.BF.ATXPY[self._current_year]
-        self.e87520 = self.e87520 * self.BF.ATXPY[self._current_year]
+        #self.e87500 = self.e87500 * self.BF.ATXPY[self._current_year]
+        #self.e87510 = self.e87510 * self.BF.ATXPY[self._current_year]
+        #self.e87520 = self.e87520 * self.BF.ATXPY[self._current_year]
         self.e87530 = self.e87530 * self.BF.ATXPY[self._current_year]
-        self.e87540 = self.e87540 * self.BF.ATXPY[self._current_year]
+        #self.e87540 = self.e87540 * self.BF.ATXPY[self._current_year]
         self.e87550 = self.e87550 * self.BF.ATXPY[self._current_year]
         self.RECID = self.RECID * 1.
         self.s006 = self.s006 * 1.

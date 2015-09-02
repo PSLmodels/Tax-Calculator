@@ -165,7 +165,7 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
 
 
 @iterate_jit(nopython=True, puf=True)
-def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
+def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900,
             e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
             e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
             MARS, _sep, c00100, ID_ps, ID_Medical_frt, ID_Casualty_frt,
@@ -248,8 +248,7 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     c17000 = max(0, e17500 - c17750)
 
     # State and Local Income Tax, or Sales Tax
-    _sit = max(e18400, 0)
-    _statax = max(_sit, e18450)
+    _statax = max(e18400, 0)
 
     # Other Taxes (including state and local)
     c18300 = _statax + e18500 + e18800 + e18900
@@ -320,7 +319,7 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     c37703 = float(c37703)
     c20500 = float(c20500)
 
-    return (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500,
+    return (c17750, c17000, _statax, c18300, c37703, c20500,
             c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
             _nonlimited, _limitratio, c04470, c21040)
 
