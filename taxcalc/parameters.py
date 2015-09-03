@@ -172,9 +172,20 @@ class Parameters(object):
         """
         if self.current_year != self.start_year:
             self.set_year(self.start_year)
+        if not isinstance(reform, dict):
+            msg = 'reform passed to implement_reform is not a dictionary'
+            ValueError(msg)
         if not reform:
             return  # no reform to implement
         reform_years = sorted(list(reform.keys()))
+        for year in reform_years:
+            if not isinstance(year, int):
+                msg = 'key={} in reform is not an integer calendar year'
+                raise ValueError(msg.format(year))
+        first_reform_year = min(reform_years)
+        if first_reform_year < self.start_year:
+            msg = 'reform provision in year={} < start_year={}'
+            ValueError(msg.format(first_reform_year, self.start_year))
         last_reform_year = max(reform_years)
         if last_reform_year > self.end_year:
             msg = 'reform provision in year={} > end_year={}'
@@ -436,9 +447,6 @@ class Parameters(object):
             msg = 'year_mods dictionary must contain a single YEAR:MODS pair'
             raise ValueError(msg)
         year = list(year_mods.keys())[0]
-        if not isinstance(year, int):
-            msg = 'YEAR in the YEAR:MODS pair in year_mods is not an integer'
-            raise ValueError(msg)
         if year != self.current_year:
             msg = 'YEAR={} in year_mods is not equal to current_year={}'
             raise ValueError(msg.format(year, self.current_year))
