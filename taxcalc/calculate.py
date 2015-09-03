@@ -37,8 +37,8 @@ def calculator(params, records, mods="", **kwargs):
     final_mods = toolz.merge_with(toolz.merge, update_mods,
                                   {params.current_year: kwargs})
 
-    if not all(isinstance(yr, int) for yr in final_mods):
-        raise ValueError("All keys in mods must be years")
+    params.implement_reform(final_mods)
+
     if final_mods:
         max_yr = max(yr for yr in final_mods)
     else:
@@ -59,7 +59,6 @@ def calculator(params, records, mods="", **kwargs):
     while records.current_year < max_yr:
         records.increment_year()
 
-    params.implement_reform(final_mods)
     calc = Calculator(params, records)
     return calc
 
