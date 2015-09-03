@@ -124,6 +124,9 @@ class Parameters(object):
         Raises
         ------
         ValueError:
+            if reform is not a dictionary.
+            if each YEAR in reform is not an integer.
+            if minimum YEAR in the YEAR:MODS pairs is less than start_year.
             if maximum YEAR in the YEAR:MODS pairs is greater than end_year.
 
         Returns
