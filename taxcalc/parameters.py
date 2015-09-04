@@ -34,6 +34,7 @@ class Parameters(object):
     Raises
     ------
     ValueError:
+        if parameter_dict is neither None nor a dictionary.
         if num_years is less than one.
         if len(inflation_rates) is not equal to num_years.
         if min(inflation_rates.keys()) is not equal to start_year.
@@ -79,6 +80,8 @@ class Parameters(object):
         Parameters class constructor.
         """
         if parameter_dict:
+            if not isinstance(parameter_dict, dict):
+                raise ValueError('parameter_dict is not a dictionary')
             self._vals = parameter_dict
         else:  # if None, read current-law parameters
             self._vals = self._params_dict_from_json_file()
