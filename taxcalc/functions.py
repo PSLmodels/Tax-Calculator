@@ -89,7 +89,7 @@ def Adj(e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
 
 
 @iterate_jit(nopython=True)
-def CapGains(e23250, e22250, e23660, _sep, _feided, FEI_ec_c,
+def CapGains(p23250, p22250, e23660, _sep, _feided, FEI_ec_c,
              ALD_StudentLoan_HC, f2555, e00200, e00300, e00600, e00700, e00800,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
              e02300, e02600, e02610, e02800, e02540, e00400, e02400,
@@ -98,7 +98,7 @@ def CapGains(e23250, e22250, e23660, _sep, _feided, FEI_ec_c,
     # Capital Gains
 
     # Net capital gain (long term + short term) before exclusion
-    c23650 = e23250 + e22250 + e23660
+    c23650 = p23250 + p22250 + e23660
 
     # Limitation for capital loss
     c01000 = max(-3000 / _sep, c23650)
@@ -569,14 +569,14 @@ def XYZD(_taxinc, c04800, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6,
 
 
 @iterate_jit(nopython=True)
-def NonGain(c23650, e23250, e01100):
-    _cglong = min(c23650, e23250) + e01100
+def NonGain(c23650, p23250, e01100):
+    _cglong = min(c23650, p23250) + e01100
     _noncg = 0
     return (_cglong, _noncg)
 
 
 @iterate_jit(nopython=True)
-def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
+def TaxGains(e00650, c04800, e01000, c23650, p23250, e01100, e58990,
              e58980, e24515, e24518, MARS, _taxinc, _xyztax, _feided,
              _feitax, _cmp, e59410, e59420, e59440, e59470, e59400,
              e83200_0, e10105, e74400, II_rt1, II_rt2, II_rt3, II_rt4,
@@ -587,7 +587,7 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
     c00650 = e00650
     _addtax = 0.
 
-    if e01000 > 0 or c23650 > 0. or e23250 > 0. or e01100 > 0. or e00650 > 0.:
+    if e01000 > 0 or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
         _hasgain = 1.
     else:
         _hasgain = 0.
@@ -601,7 +601,7 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
         if e01100 > 0.:
             c24510 = float(e01100)
         else:
-            c24510 = max(0., min(c23650, e23250)) + e01100
+            c24510 = max(0., min(c23650, p23250)) + e01100
 
         _dwks9 = max(0, c24510 - min(e58990, e58980))
         c24516 = c24505 + _dwks9
@@ -656,7 +656,7 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
         _dwks9 = 0.
         c24505 = 0.
         c24510 = 0.
-        c24516 = max(0., min(e23250, c23650)) + e01100
+        c24516 = max(0., min(p23250, c23650)) + e01100
 
         _dwks12 = 0.
         c24517 = 0.

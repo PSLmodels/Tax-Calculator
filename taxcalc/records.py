@@ -676,7 +676,7 @@ class Records(object):
         self._cmbtp_itemizer = imputation(self.e17500, self.e00100,
                                           self.e18400, 
                                           self.e62100, self.e00700,
-                                          self.e04470, self.e21040,
+                                          self.p04470, self.e21040,
                                           self.e18500, self.e20800)
 
 
