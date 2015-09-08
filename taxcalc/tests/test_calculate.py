@@ -117,16 +117,6 @@ def test_make_Calculator_deepcopy():
     calc2 = copy.deepcopy(calc)
 
 
-def test_make_Calculator_from_files(paramsfile):
-    with open(paramsfile.name) as pfile:
-        params = json.load(pfile)
-    ppo = Parameters(parameter_dict=params, start_year=1991,
-                     num_years=len(irates), inflation_rates=irates)
-    calc = Calculator(params=ppo, records=tax_dta_path,
-                      start_year=1991, inflation_rates=irates)
-    assert calc
-
-
 def test_make_Calculator_files_to_ctor(paramsfile):
     with open(paramsfile.name) as pfile:
         params = json.load(pfile)
@@ -255,11 +245,10 @@ def test_make_Calculator_user_mods_with_cpi_flags(paramsfile):
     assert_array_equal(act_almsep, exp_almsep)
 
 
-def test_make_Calculator_empty_params_is_default_params():
-    ppo = Parameters()
+def test_make_Calculator_raises_on_no_params():
     rec = Records(tax_dta, start_year=2013)
-    calc = Calculator(params=ppo, records=rec)
-    assert calc
+    with pytest.raises(ValueError):
+        calc = Calculator(records=rec)
 
 
 def test_Calculator_attr_access_to_params():
