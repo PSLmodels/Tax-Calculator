@@ -576,7 +576,7 @@ def NonGain(c23650, p23250, e01100):
 
 
 @iterate_jit(nopython=True)
-def TaxGains(e00650, c04800, e01000, c23650, p23250, e01100, e58990,
+def TaxGains(e00650, c04800, e01000, c23650, p23250, e23250, e01100, e58990,
              e58980, e24515, e24518, MARS, _taxinc, _xyztax, _feided,
              _feitax, _cmp, e59410, e59420, e59440, e59470, e59400,
              e83200_0, e10105, e74400, II_rt1, II_rt2, II_rt3, II_rt4,
@@ -601,7 +601,7 @@ def TaxGains(e00650, c04800, e01000, c23650, p23250, e01100, e58990,
         if e01100 > 0.:
             c24510 = float(e01100)
         else:
-            c24510 = max(0., min(c23650, p23250)) + e01100
+            c24510 = max(0., min(c23650, e23250)) + e01100
 
         _dwks9 = max(0, c24510 - min(e58990, e58980))
         c24516 = c24505 + _dwks9
@@ -656,7 +656,7 @@ def TaxGains(e00650, c04800, e01000, c23650, p23250, e01100, e58990,
         _dwks9 = 0.
         c24505 = 0.
         c24510 = 0.
-        c24516 = max(0., min(p23250, c23650)) + e01100
+        c24516 = max(0., min(e23250, c23650)) + e01100
 
         _dwks12 = 0.
         c24517 = 0.
@@ -806,10 +806,10 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
          e60720, e60430, e60500, e60340, e60680, e60600, e60405,
          e60440, e60420, e60410, e61400, e60660, e60480,
          e62000, e60250, _cmp, _standard, e04470, e17500,
-         f6251, e62100, e21040, _sit, e20800, c00100,
+         f6251, e62100, e21040, e20800, c00100,
          c04470, c17000, e18500, c20800, c21040,
          DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700,
-         e00100, e24515, x62730, x60130,
+         e00100, e24515, x62730, x60130, e18400,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
          II_brk6, MARS, _sep, II_brk2, AMT_Child_em, AMT_CG_rt1,
          AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516,
@@ -860,7 +860,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     if (puf and ((_standard == 0 or (_exact == 1 and e04470 > 0)))):
         c62100 = (c00100 - c04470 + min(c17000, 0.025 * max(0., c00100)) +
-                  (1 - ID_StateLocalTax_HC) * _sit + e18500 - c60260 + c20800 -
+                  (1 - ID_StateLocalTax_HC) * max(0, e18400) + e18500 - c60260 + c20800 -
                   c21040)
         c62100 += _cmbtp
 
@@ -994,7 +994,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     c05800 = _taxbc + c63200
 
-    return (c62720, c60260, c63100, c60200, c60240, c60220,
+    return (c62720, c60260, c63100, c60200, c60240, c60220, c63200,
             c60130, c62730, _addamt, c62100, _edical,
             _amtsepadd, c62600, _agep, _ages, c62700,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
