@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, "../../"))
 import numpy as np
@@ -117,14 +118,21 @@ def test_make_Calculator_deepcopy():
 
 
 def test_make_Calculator_from_files(paramsfile):
-    calc = Calculator.from_files(paramsfile.name, tax_dta_path,
-                                 start_year=1991,
-                                 inflation_rates=irates)
+    with open(paramsfile.name) as pfile:
+        params = json.load(pfile)
+    ppo = Parameters(parameter_dict=params, start_year=1991,
+                     num_years=len(irates), inflation_rates=irates)
+    calc = Calculator(params=ppo, records=tax_dta_path,
+                      start_year=1991, inflation_rates=irates)
     assert calc
 
 
 def test_make_Calculator_files_to_ctor(paramsfile):
-    calc = Calculator(params=paramsfile.name, records=tax_dta_path,
+    with open(paramsfile.name) as pfile:
+        params = json.load(pfile)
+    ppo = Parameters(parameter_dict=params, start_year=1991,
+                     num_years=len(irates), inflation_rates=irates)
+    calc = Calculator(params=ppo, records=tax_dta_path,
                       start_year=1991, inflation_rates=irates)
     assert calc
 
@@ -170,54 +178,62 @@ def test_make_Calculator_user_mods_as_dict():
     # Create a Public Use File object
     puf = Records(tax_dta)
 
-    user_mods = {1991: {"_STD_Aged": [[1400, 1200]]}}
+    user_mods = {1991: {"_STD_Aged": [[1400, 1200, 1000, 1000, 1000, 1000]]}}
     user_mods[1991]['_II_em'] = [3925, 4000, 4100]
     user_mods[1991]['_II_em_cpi'] = False
     calc2 = calculator(params, puf, mods=user_mods)
     assert calc2.params.II_em == 3925
     exp_II_em = [3925, 4000] + [4100] * 10
     assert_array_equal(calc2.params._II_em, np.array(exp_II_em))
-    assert_array_equal(calc2.params.STD_Aged, np.array([1400, 1200]))
+    assert_array_equal(calc2.params.STD_Aged,
+                       np.array([1400, 1200, 1000, 1000, 1000, 1000]))
 
 
-def test_make_Calculator_increment_years_first():
-    irates = {2008: 0.021, 2009: 0.022, 2010: 0.021,
-              2011: 0.022}
+def test_make_Calculator_with_reform_after_first_year():
+    fyr = 2008
 
-    # create a Params object
-    params = Parameters(start_year=2008, inflation_rates=irates,
-                        budget_years=len(irates))
-    # Create a Public Use File object
-
-    tax_dta2 = pd.read_csv(tax_dta_path, compression='gzip')
-    puf = Records(tax_dta2, start_year=2008)
-    # specify reform in user_mods dictionary
+    # specify reform in in 2010
     user_mods = {2010: {"_STD_Aged": [[1501, 1202, 1502, 1203, 1504, 1204]]}}
     user_mods[2010]['_II_em'] = [5000, 6000]
     user_mods[2010]['_II_em_cpi'] = False
 
-    # create Calculator object with params as modified by user_mods
-    calc = calculator(params, puf, mods=user_mods)
+    # create a Parameters object
+    irates = {2008: 0.021, 2009: 0.022, 2010: 0.021, 2011: 0.022}
+    params = Parameters(start_year=fyr, inflation_rates=irates,
+                        num_years=len(irates))
+    params.implement_reform(user_mods)
 
+    # create a Records object
+    tax_dta2 = pd.read_csv(tax_dta_path, compression='gzip')
+    rec = Records(tax_dta2, start_year=fyr)
+
+    # create Calculator object with params and rec objects
+    calc = Calculator(params, rec)
+
+    # compare actual and expected parameter values over all years
     exp_STD_Aged = np.array([[1500, 1200, 1200, 1500, 1500, 1200],
-                            [1550, 1200, 1200, 1550, 1550, 1200],
-                            [1501, 1202, 1502, 1203, 1504, 1204],
-                            [1532, 1227, 1533, 1228, 1535, 1229]])
-    exp_cur_STD_Aged = np.array([1501, 1202, 1502, 1203, 1504, 1204])
-
-    exp_II_em = np.array([3900, 3950, 5000, 6000])
-    exp_cur_II_em = 5000
-
+                             [1550, 1200, 1200, 1550, 1550, 1200],
+                             [1501, 1202, 1502, 1203, 1504, 1204],
+                             [1532, 1227, 1533, 1228, 1535, 1229]])
     assert_array_equal(calc.params._STD_Aged, exp_STD_Aged)
+    exp_II_em = np.array([3900, 3950, 5000, 6000])
     assert_array_equal(calc.params._II_em, exp_II_em)
-    assert_array_equal(calc.params.STD_Aged, exp_cur_STD_Aged)
-    assert_array_equal(calc.params.II_em, exp_cur_II_em)
+
+    # compare actual and expected values for 2010
+    calc.increment_year()
+    calc.increment_year()
+    exp_2010_II_em = 5000
+    assert_array_equal(calc.params.II_em, exp_2010_II_em)
+    exp_2010_STD_Aged = np.array([1501, 1202, 1502, 1203, 1504, 1204])
+    assert_array_equal(calc.params.STD_Aged, exp_2010_STD_Aged)
 
 
 def test_make_Calculator_user_mods_with_cpi_flags(paramsfile):
-
-    calc = Calculator(params=paramsfile.name,
-                      records=tax_dta_path, start_year=1991,
+    with open(paramsfile.name) as pfile:
+        params = json.load(pfile)
+    ppo = Parameters(parameter_dict=params, start_year=1991,
+                     num_years=len(irates), inflation_rates=irates)
+    calc = Calculator(params=ppo, records=tax_dta_path, start_year=1991,
                       inflation_rates=irates)
 
     user_mods = {1991: {"_almdep": [7150, 7250, 7400],
@@ -226,27 +242,24 @@ def test_make_Calculator_user_mods_with_cpi_flags(paramsfile):
                         "_almsep_cpi": False,
                         "_rt5": [0.33],
                         "_rt7": [0.396]}}
+    calc.params.implement_reform(user_mods)
 
     inf_rates = [irates[1991 + i] for i in range(0, 12)]
-    # Create a Parameters object
-    params = Parameters(start_year=1991, inflation_rates=irates)
-    calc2 = calculator(params, puf, mods=user_mods)
-
     exp_almdep = expand_array(np.array([7150, 7250, 7400]), inflate=True,
                               inflation_rates=inf_rates, num_years=12)
-
+    act_almdep = getattr(calc.params, '_almdep')
+    assert_array_equal(act_almdep, exp_almdep)
     exp_almsep_values = [40400] + [41050] * 11
     exp_almsep = np.array(exp_almsep_values)
-
-    assert_array_equal(calc2.params._almdep, exp_almdep)
-    assert_array_equal(calc2.params._almsep, exp_almsep)
+    act_almsep = getattr(calc.params, '_almsep')
+    assert_array_equal(act_almsep, exp_almsep)
 
 
 def test_make_Calculator_empty_params_is_default_params():
-    # Create a Public Use File object
-    puf_basic = Records(tax_dta, start_year=2013)
-    calc_basic = Calculator(records=puf_basic)
-    assert calc_basic
+    ppo = Parameters()
+    rec = Records(tax_dta, start_year=2013)
+    calc = Calculator(params=ppo, records=rec)
+    assert calc
 
 
 def test_Calculator_attr_access_to_params():
@@ -308,7 +321,7 @@ def test_Calculator_create_difference_table():
     params = Parameters(start_year=1991, inflation_rates=irates)
     # Create a Public Use File object
     puf = Records(tax_dta)
-    user_mods = '{"1991": { "_rt7": [0.45] }}'
+    user_mods = '{"1991": { "_II_rt7": [0.45] }}'
     calc2 = calculator(params, puf, mods=user_mods)
 
     t1 = create_difference_table(calc, calc2, groupby="weighted_deciles")
@@ -332,6 +345,39 @@ def test_diagnostic_table():
     calc = Calculator(params=params, records=puf, sync_years=False)
 
     calc.diagnostic_table()
+
+
+def test_make_Calculator_increment_years_first():
+    irates = {2008: 0.021, 2009: 0.022, 2010: 0.021, 2011: 0.022}
+
+    # create a Params object
+    params = Parameters(start_year=2008, inflation_rates=irates,
+                        num_years=len(irates))
+    # Create a Public Use File object
+
+    tax_dta2 = pd.read_csv(tax_dta_path, compression='gzip')
+    puf = Records(tax_dta2, start_year=2008)
+    # specify reform in user_mods dictionary
+    user_mods = {2010: {"_STD_Aged": [[1501, 1202, 1502, 1203, 1504, 1204]]}}
+    user_mods[2010]['_II_em'] = [5000, 6000]
+    user_mods[2010]['_II_em_cpi'] = False
+
+    # create Calculator object with params as modified by user_mods
+    calc = calculator(params, puf, mods=user_mods)
+
+    exp_STD_Aged = np.array([[1500, 1200, 1200, 1500, 1500, 1200],
+                             [1550, 1200, 1200, 1550, 1550, 1200],
+                             [1501, 1202, 1502, 1203, 1504, 1204],
+                             [1532, 1227, 1533, 1228, 1535, 1229]])
+    exp_cur_STD_Aged = np.array([1501, 1202, 1502, 1203, 1504, 1204])
+
+    exp_II_em = np.array([3900, 3950, 5000, 6000])
+    exp_cur_II_em = 5000
+
+    assert_array_equal(calc.params._STD_Aged, exp_STD_Aged)
+    assert_array_equal(calc.params._II_em, exp_II_em)
+    assert_array_equal(calc.params.STD_Aged, exp_cur_STD_Aged)
+    assert_array_equal(calc.params.II_em, exp_cur_II_em)
 
 
 class TaxCalcError(Exception):
