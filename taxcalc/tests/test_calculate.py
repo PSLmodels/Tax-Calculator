@@ -63,7 +63,7 @@ def run(puf=True):
     # Create a Calculator
     calc = Calculator(params=params, records=puf)
     totaldf = calc.calc_all_test()
-
+    
     # drop duplicates
     totaldf = totaldf.T.groupby(level=0).first().T
 
@@ -71,17 +71,7 @@ def run(puf=True):
                                            "../../exp_results.csv.gz"),
                               compression='gzip')
     # Fix-up to bad column name in expected data
-    exp_results.rename(columns=lambda x: x.replace('_phase2', '_phase2_i'),
-                       inplace=True)
     exp_set = set(exp_results.columns)
-    # Add new col names to exp_set
-    exp_set.add('_expanded_income')
-    exp_set.add('_ospctax')
-    exp_set.add('_refund')
-    exp_set.add('_othertax')
-    exp_set.add('NIIT')
-    exp_set.add('_amed')
-    exp_set.add('_compitem')
     cur_set = set(totaldf.columns)
 
     assert(exp_set == cur_set)
