@@ -49,7 +49,7 @@ class Records(object):
             self._current_year = start_year
         else:
             self._current_year = self.FLPDYR[0]
-        
+
         """Imputations"""
         self._cmbtp_itemizer = None
         self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
@@ -92,7 +92,7 @@ class Records(object):
         self.blowup(self._current_year)
         # Implement Stage 2 Extrapolation reweighting.
         self.s006 = self.WT["WT" + str(self.current_year)]/100
-    
+
     def extrapolate_09_puf(self):
         self.BF.AGDPN[self._puf_year] = 1
         self.BF.ATXPY[self._puf_year] = 1
@@ -370,10 +370,10 @@ class Records(object):
             tax_dta = pd.read_csv(data, compression='gzip')
         else:
             tax_dta = pd.read_csv(data)
-        
+
         # removed the aggregated record from 09 PUF
-        tax_dta = tax_dta[tax_dta.recid !=999999]
-        
+        tax_dta = tax_dta[tax_dta.recid != 999999]
+
         # pairs of 'name of attribute', 'column name' - often the same
         names = [('AGIR1', 'agir1'),
                  ('DSI', 'dsi'),
@@ -620,7 +620,7 @@ class Records(object):
                         'c07230', '_precrd', 'c07220', 'c59660', 'c07970',
                         'c08795', 'c09200', 'c07100', '_eitc', 'c59700',
                         'c10950', '_ymod2', '_ymod3', 'c02650', '_agierr',
-                        '_ywossbe', '_ywossbc', '_prexmp', 'c17750', 
+                        '_ywossbe', '_ywossbc', '_prexmp', 'c17750',
                         '_statax', 'c37703', 'c20500', 'c20750', 'c19200',
                         'c19700', '_nonlimited', '_limitratio', '_phase2_i',
                         '_fica', '_seyoff', 'c11055', 'c15100', '_numextra',
@@ -682,7 +682,7 @@ class Records(object):
 
     def mutate_imputations(self):
         self._cmbtp_itemizer = imputation(self.e17500, self.e00100,
-                                          self.e18400, 
+                                          self.e18400,
                                           self.e62100, self.e00700,
                                           self.p04470, self.e21040,
                                           self.e18500, self.e20800)

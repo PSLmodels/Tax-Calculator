@@ -98,9 +98,9 @@ class Calculator(object):
         if sync_years and self._records.current_year == 2009:
             print("You loaded data for " +
                   str(self._records.current_year) + '.')
-            
+
             self.records.extrapolate_09_puf()
-            
+
             while self._records.current_year < self._params.current_year:
                 self._records.increment_year()
 

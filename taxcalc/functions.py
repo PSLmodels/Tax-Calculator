@@ -860,8 +860,8 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     if (puf and ((_standard == 0 or (_exact == 1 and e04470 > 0)))):
         c62100 = (c00100 - c04470 + min(c17000, 0.025 * max(0., c00100)) +
-                  (1 - ID_StateLocalTax_HC) * max(0, e18400) + e18500 - c60260 + c20800 -
-                  c21040)
+                  (1 - ID_StateLocalTax_HC) * max(0, e18400) +
+                  e18500 - c60260 + c20800 - c21040)
         c62100 += _cmbtp
 
     if (puf and ((_standard > 0 and f6251 == 1))):

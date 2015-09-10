@@ -63,7 +63,7 @@ def run(puf=True):
     # Create a Calculator
     calc = Calculator(params=params, records=puf)
     totaldf = calc.calc_all_test()
-    
+
     # drop duplicates
     totaldf = totaldf.T.groupby(level=0).first().T
 
