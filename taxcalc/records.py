@@ -91,7 +91,7 @@ class Records(object):
         # Implement Stage 1 Extrapolation blowup factors
         self.blowup(self._current_year)
         # Implement Stage 2 Extrapolation reweighting.
-        self.s006 = self.WT["WT" + str(self.current_year)]/100
+        self.s006 = self.WT["WT" + str(self.current_year)] / 100
 
     def extrapolate_09_puf(self):
         self.BF.AGDPN[self._puf_year] = 1
@@ -116,7 +116,7 @@ class Records(object):
         self.BF.APOPSNR[self._puf_year] = 1
         self.BF.AIPD[self._puf_year] = 1
         self.blowup(self._puf_year)
-        self.s006 = self.WT["WT" + str(self._puf_year)]/100
+        self.s006 = self.WT["WT" + str(self._puf_year)] / 100
 
     def blowup(self, year):
         self.e00200 = self.e00200 * self.BF.AWAGE[year]
