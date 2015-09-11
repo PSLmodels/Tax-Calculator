@@ -37,8 +37,8 @@ def calculator(params, records, mods="", **kwargs):
     final_mods = toolz.merge_with(toolz.merge, update_mods,
                                   {params.current_year: kwargs})
 
-    if not all(isinstance(yr, int) for yr in final_mods):
-        raise ValueError("All keys in mods must be years")
+    params.implement_reform(final_mods)
+
     if final_mods:
         max_yr = max(yr for yr in final_mods)
     else:
@@ -49,7 +49,7 @@ def calculator(params, records, mods="", **kwargs):
         print(msg.format(max_yr, params.current_year))
 
     while params.current_year < max_yr:
-        params.increment_year()
+        params.set_year(params.current_year + 1)
 
     if (records.current_year < max_yr):
         msg = ("Modifications are for year {0} and Records are for"
@@ -59,41 +59,27 @@ def calculator(params, records, mods="", **kwargs):
     while records.current_year < max_yr:
         records.increment_year()
 
-    params.update(final_mods)
     calc = Calculator(params, records)
     return calc
 
 
 class Calculator(object):
 
-    @classmethod
-    def from_files(cls, pfname, rfname, **kwargs):
-        """
-        Create a Calculator object from a Parameters JSON file and a
-        Records file
-
-        Parameters
-        ----------
-        pfname: filename for Parameters
-
-        rfname: filename for Records
-        """
-        params = Parameters.from_file(pfname, **kwargs)
-        recs = Records.from_file(rfname, **kwargs)
-        return cls(params, recs)
-
     def __init__(self, params=None, records=None, sync_years=True, **kwargs):
 
         if isinstance(params, Parameters):
             self._params = params
         else:
-            self._params = Parameters.from_file(params, **kwargs)
+            msg = 'Must supply tax parameters as a Parameters object'
+            raise ValueError(msg)
 
-        if records is None:
-            raise ValueError("Must supply tax records path or Records object")
-
-        self._records = (records if not isinstance(records, str) else
-                         Records.from_file(records, **kwargs))
+        if isinstance(records, Records):
+            self._records = records
+        elif isinstance(records, str):
+            self._records = Records.from_file(records, **kwargs)
+        else:
+            msg = 'Must supply tax records as a file path or Records object'
+            raise ValueError(msg)
 
         if sync_years and self._records.current_year == 2008:
             print("You loaded data for " +
@@ -184,7 +170,7 @@ class Calculator(object):
 
     def increment_year(self):
         self.records.increment_year()
-        self.params.increment_year()
+        self.params.set_year(self.params.current_year + 1)
 
     @property
     def current_year(self):
