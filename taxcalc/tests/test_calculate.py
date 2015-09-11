@@ -307,6 +307,20 @@ def test_Calculator_create_distribution_table():
     assert type(t2) == DataFrame
 
 
+def test_calculator_calculate_mtr():
+    # Create a Parameters object
+    params = Parameters(start_year=1991, inflation_rates=irates)
+
+    # Create a Public Use File object
+    puf = Records(tax_dta)
+
+    # Create a Calculator
+    calc = Calculator(params=params, records=puf)
+
+    mtr = calc.mtr('e00200')
+    assert type(mtr) == np.ndarray
+
+
 def test_Calculator_create_difference_table():
 
     # Create a Parameters object
