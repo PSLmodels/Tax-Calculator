@@ -307,7 +307,7 @@ def test_Calculator_create_distribution_table():
     assert type(t2) == DataFrame
 
 
-def test_calculator_calculate_mtr():
+def test_Calculator_calculate_mtr():
     # Create a Parameters object
     params = Parameters(start_year=1991, inflation_rates=irates)
 
