@@ -60,7 +60,8 @@ def behavior(calcX, calcY, elast_wrt_atr=0.4, inc_effect=0.15,
 
     calcY_behavior = update_income(substitution_effect, calcY_behavior)
 
-    income_effect = inc_effect * (calcY_behavior.records._ospctax - calcX.records._ospctax)
+    income_effect = inc_effect * (calcY_behavior.records._ospctax -
+                                  calcX.records._ospctax)
 
     calcY_behavior = update_income(income_effect, calcY_behavior)
 
