@@ -139,7 +139,7 @@ class Records(object):
         self.e01400 = self.e01400 * self.BF.ATXPY[year]
         self.e01500 = self.e01500 * self.BF.ATXPY[year]
         self.e01700 = self.e01700 * self.BF.ATXPY[year]
-        self.e02000 = np.where(self.e00200 >= 0,
+        self.e02000 = np.where(self.e02000 >= 0,
                                self.e02000 *
                                self.BF.ASCHEI[year],
                                self.e02000 *
