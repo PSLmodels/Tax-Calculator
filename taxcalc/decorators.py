@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import inspect
-from .parameters import default_data
+from .parameters import Parameters
 from numba import jit, vectorize, guvectorize
 from functools import wraps
 from six import StringIO
@@ -75,13 +75,15 @@ def dataframe_wrap_guvectorize(dtype_args, dtype_sig):
 
 def create_apply_function_string(sigout, sigin, parameters):
     """
-    Create a string for a function of the form:
+    Create a string for a function of the form::
+
         def ap_fuc(x_0, x_1, x_2, ...):
             for i in range(len(x_0)):
-                 x_0[i], ... = jitted_f(x_j[i],....)
+                x_0[i], ... = jitted_f(x_j[i], ...)
             return x_0[i], ...
+
     where the specific args to jitted_f and the number of
-    values to return is destermined by sigout and sign
+    values to return is determined by sigout and sigin
 
     Parameters
     ----------
@@ -120,10 +122,10 @@ def create_apply_function_string(sigout, sigin, parameters):
 def create_toplevel_function_string(args_out, args_in, pm_or_pf,
                                     kwargs_for_func={}):
     """
-    Create a string for a function of the form:
+    Create a string for a function of the form::
+
         def hl_func(x_0, x_1, x_2, ...):
             outputs = (...) = calc_func(...)
-
             header = [...]
             return DataFrame(data, columns=header)
 
@@ -284,7 +286,7 @@ def iterate_jit(parameters=None, **kwargs):
         try:
             jit_args = inspect.getargspec(jit).args + ['nopython']
         except TypeError:
-            print ("This should only be seen in RTD, if not install numba!")
+            # print ("This should only be seen in RTD, if not install numba!")
             return func
 
         kwargs_for_func = toolz.keyfilter(in_args.__contains__, kwargs)
@@ -292,10 +294,12 @@ def iterate_jit(parameters=None, **kwargs):
 
         # Any name that is a taxcalc parameter (or the special case 'puf'
         # Boolean flag is given special treatment. Identify those names here
-        allowed_parameters = list(default_data(metadata=True).keys())
-        allowed_parameters += list(arg[1:] for arg in  default_data(metadata=True).keys())
+        dd_key_list = list(Parameters.default_data(metadata=True).keys())
+        allowed_parameters = dd_key_list
+        allowed_parameters += list(arg[1:] for arg in dd_key_list)
         allowed_parameters.append("puf")
-        additional_parameters = [arg for arg in in_args if arg in allowed_parameters]
+        additional_parameters = [arg for arg in in_args if
+                                 arg in allowed_parameters]
         additional_parameters += parameters
         # Remote duplicates
         all_parameters = list(set(additional_parameters))

@@ -5,10 +5,12 @@ from functools import wraps
 
 class cumulative_timer(object):
     """
-    Timer for use with timing specific lines of code and accumulating the same timer in multiple places
+    Timer for use with timing specific lines of code and accumulating the same
+    timer in multiple places
 
     ex.
-    Declaration:        example_timer_name = Cumulative_Timer("Insert description to be printed")
+    Declaration:        example_timer_name = (
+                        Cumulative_Timer("Insert description to be printed"))
 
     Timing:             with example_timer_name.time():
 
@@ -22,7 +24,8 @@ class cumulative_timer(object):
                             ## code block #2 to be timed
 
     Print results:      print(example_timer_name)
-                        ## will print the combined time of code block #1 & #2, along with timer description
+                        # will print the combined time of code block
+                        # #1 & #2, along with timer description
     """
     def __init__(self, name):
         self.name = name
@@ -42,24 +45,27 @@ class cumulative_timer(object):
 
 def time_this(function, running_timer=None):
     """
-    Decorator that prints the execution time of a function, optionally adds the time to a running timer
+    Decorator that prints the execution time of a function,
+    optionally adds the time to a running timer
 
     example usage:     @time_this or @time_this(timer_name)
 
     :param function:        the function to be timed
-    :param running_timer:   an optional cumulative_timer, of which to add the time elapsed of the passed function
-                            Set to None by default, prints time for the called function only
+    :param running_timer:   an optional cumulative_timer, of which
+                            to add the time elapsed of the passed function
+                            Set to None by default,
+                            prints time for the called function only
     """
     @wraps(function)
-    def wrapper (*args, **kwargs):
+    def wrapper(*args, **kwargs):
         start = timer()
-        if  running_timer != None:
+        if running_timer is not None:
             with running_timer.time():
                 result = function(*args, **kwargs)
         else:
             result = function(*args, **kwargs)
         end = timer()
-        print ("~function: '{}' takes : {}s".format(function.__name__, end-start))
+        print ("~function: '{}' takes : {}s".format(function.__name__,
+                                                    end - start))
         return result
     return wrapper
-

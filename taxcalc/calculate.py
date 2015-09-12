@@ -9,6 +9,8 @@ from .records import Records
 import copy
 
 all_cols = set()
+
+
 def add_df(alldfs, df):
     for col in df.columns:
         if col not in all_cols:
@@ -35,8 +37,8 @@ def calculator(params, records, mods="", **kwargs):
     final_mods = toolz.merge_with(toolz.merge, update_mods,
                                   {params.current_year: kwargs})
 
-    if not all(isinstance(yr, int) for yr in final_mods):
-        raise ValueError("All keys in mods must be years")
+    params.implement_reform(final_mods)
+
     if final_mods:
         max_yr = max(yr for yr in final_mods)
     else:
@@ -47,7 +49,7 @@ def calculator(params, records, mods="", **kwargs):
         print(msg.format(max_yr, params.current_year))
 
     while params.current_year < max_yr:
-        params.increment_year()
+        params.set_year(params.current_year + 1)
 
     if (records.current_year < max_yr):
         msg = ("Modifications are for year {0} and Records are for"
@@ -57,50 +59,37 @@ def calculator(params, records, mods="", **kwargs):
     while records.current_year < max_yr:
         records.increment_year()
 
-    params.update(final_mods)
     calc = Calculator(params, records)
     return calc
 
 
 class Calculator(object):
 
-    @classmethod
-    def from_files(cls, pfname, rfname, **kwargs):
-        """
-        Create a Calculator object from a Parameters JSON file and a
-        Records file
-
-        Parameters
-        ----------
-        pfname: filename for Parameters
-
-        rfname: filename for Records
-        """
-        params = Parameters.from_file(pfname, **kwargs)
-        recs = Records.from_file(rfname, **kwargs)
-        return cls(params, recs)
-
     def __init__(self, params=None, records=None, sync_years=True, **kwargs):
 
         if isinstance(params, Parameters):
             self._params = params
         else:
-            self._params = Parameters.from_file(params, **kwargs)
+            msg = 'Must supply tax parameters as a Parameters object'
+            raise ValueError(msg)
 
-        if records is None:
-            raise ValueError("Must supply tax records path or Records object")
-
-        self._records = (records if not isinstance(records, str) else
-                         Records.from_file(records, **kwargs))
+        if isinstance(records, Records):
+            self._records = records
+        elif isinstance(records, str):
+            self._records = Records.from_file(records, **kwargs)
+        else:
+            msg = 'Must supply tax records as a file path or Records object'
+            raise ValueError(msg)
 
         if sync_years and self._records.current_year == 2008:
-            print("You loaded data for "+str(self._records.current_year)+'.')
+            print("You loaded data for " +
+                  str(self._records.current_year) + '.')
 
             while self._records.current_year < self._params.current_year:
                 self._records.increment_year()
 
-            print("Your data have beeen extrapolated to "
-                  + str(self._records.current_year) + ".")
+            print("Your data have beeen extrapolated to " +
+                  str(self._records.current_year) + ".")
 
         assert self._params.current_year == self._records.current_year
 
@@ -181,7 +170,7 @@ class Calculator(object):
 
     def increment_year(self):
         self.records.increment_year()
-        self.params.increment_year()
+        self.params.set_year(self.params.current_year + 1)
 
     @property
     def current_year(self):
@@ -248,21 +237,21 @@ class Calculator(object):
             deduction = np.maximum(calc.records.c04470, calc.records._standard)
 
             # S TD1 = (calc.c04100 + calc.c04200)*calc.s006
-            NumItemizer1 = calc.records.s006[(calc.records.c04470 > 0)
-                                             * (calc.records.c00100 > 0)].sum()
+            NumItemizer1 = (calc.records.s006[(calc.records.c04470 > 0) *
+                            (calc.records.c00100 > 0)].sum())
 
             # itemized deduction
             ID = ID1[calc.records.c04470 > 0].sum()
 
-            NumSTD = calc.records.s006[(calc.records._standard > 0)
-                                       * (calc.records.c00100 > 0)].sum()
+            NumSTD = calc.records.s006[(calc.records._standard > 0) *
+                                       (calc.records.c00100 > 0)].sum()
             # standard deduction
-            STD = STD1[(calc.records._standard > 0)
-                       * (calc.records.c00100 > 0)].sum()
+            STD = STD1[(calc.records._standard > 0) *
+                       (calc.records.c00100 > 0)].sum()
 
             # personal exemption
-            PE = (calc.records.c04600
-                  * calc.records.s006)[calc.records.c00100 > 0].sum()
+            PE = (calc.records.c04600 *
+                  calc.records.s006)[calc.records.c00100 > 0].sum()
 
             # taxable income
             taxinc = (calc.records.c04800 * calc.records.s006).sum()
@@ -280,39 +269,44 @@ class Calculator(object):
             NumAMT1 = calc.records.s006[calc.records.c09600 > 0].sum()
 
             # tax before credits
-            tax_bf_credits = (calc.records.c05800*calc.records.s006).sum()
+            tax_bf_credits = (calc.records.c05800 * calc.records.s006).sum()
 
             # tax before nonrefundable credits 09200
-            tax_bf_nonrefundable = (calc.records.c09200*calc.records.s006).sum()
+            tax_bf_nonrefundable = (calc.records.c09200 *
+                                    calc.records.s006).sum()
 
             # refundable credits
-            refundable = (calc.records._refund*calc.records.s006).sum()
+            refundable = (calc.records._refund * calc.records.s006).sum()
 
             # nonrefuncable credits
-            nonrefundable = (calc.records.c07100*calc.records.s006).sum()
+            nonrefundable = (calc.records.c07100 * calc.records.s006).sum()
 
             # ospc_tax
             revenue1 = (calc.records._ospctax * calc.records.s006).sum()
 
-            table.append([returns/math.pow(10, 6), agi/math.pow(10, 9),
-                          NumItemizer1/math.pow(10, 6), ID/math.pow(10, 9),
-                          NumSTD/math.pow(10, 6), STD/math.pow(10, 9),
-                          PE/math.pow(10, 9), taxinc/math.pow(10, 9),
-                          regular_tax/math.pow(10, 9), AMTI/math.pow(10, 9),
-                          AMT/math.pow(10, 9), NumAMT1/math.pow(10, 6),
-                          tax_bf_credits/math.pow(10, 9),
-                          refundable/math.pow(10, 9),
-                          nonrefundable/math.pow(10, 9),
-                          revenue1/math.pow(10, 9)])
+            table.append([returns / math.pow(10, 6), agi / math.pow(10, 9),
+                          NumItemizer1 / math.pow(10, 6), ID / math.pow(10, 9),
+                          NumSTD / math.pow(10, 6), STD / math.pow(10, 9),
+                          PE / math.pow(10, 9), taxinc / math.pow(10, 9),
+                          regular_tax / math.pow(10, 9),
+                          AMTI / math.pow(10, 9), AMT / math.pow(10, 9),
+                          NumAMT1 / math.pow(10, 6),
+                          tax_bf_credits / math.pow(10, 9),
+                          refundable / math.pow(10, 9),
+                          nonrefundable / math.pow(10, 9),
+                          revenue1 / math.pow(10, 9)])
             calc.increment_year()
 
         df = DataFrame(table, row_years,
                        ["Returns (#m)", "AGI ($b)", "Itemizers (#m)",
-                        "Itemized Deduction ($b)", "Standard Deduction Filers (#m)",
+                        "Itemized Deduction ($b)",
+                        "Standard Deduction Filers (#m)",
                         "Standard Deduction ($b)", "Personal Exemption ($b)",
-                        "Taxable income ($b)", "Regular Tax ($b)", "AMT income ($b)",
-                        "AMT amount ($b)", "AMT number (#m)", "Tax before credits ($b)",
-                        "refundable credits ($b)", "nonrefundable credits ($b)",
+                        "Taxable income ($b)", "Regular Tax ($b)",
+                        "AMT income ($b)", "AMT amount ($b)",
+                        "AMT number (#m)", "Tax before credits ($b)",
+                        "refundable credits ($b)",
+                        "nonrefundable credits ($b)",
                         "ospctax ($b)"])
         df = df.transpose()
         pd.options.display.float_format = '{:8,.1f}'.format
