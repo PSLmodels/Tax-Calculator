@@ -326,23 +326,23 @@ class Records(object):
         self.e00700 *= self.BF.ATXPY[year]
         self.e00800 *= self.BF.ATXPY[year]
         self.e00900[:] = np.where(self.e00900 >= 0,
-                               self.e00900 *
-                               self.BF.ASCHCI[year],
-                               self.e00900 *
-                               self.BF.ASCHCL[year])
+                                  self.e00900 *
+                                  self.BF.ASCHCI[year],
+                                  self.e00900 *
+                                  self.BF.ASCHCL[year])
         self.e01000[:] = np.where(self.e01000 >= 0.,
-                               self.e01000 * self.BF.ACGNS[year],
-                               self.e01000)
+                                  self.e01000 * self.BF.ACGNS[year],
+                                  self.e01000)
         self.e01100 *= self.BF.ACGNS[year]
         self.e01200 *= self.BF.ACGNS[year]
         self.e01400 *= self.BF.ATXPY[year]
         self.e01500 *= self.BF.ATXPY[year]
         self.e01700 *= self.BF.ATXPY[year]
         self.e02000[:] = np.where(self.e02000 >= 0,
-                               self.e02000 *
-                               self.BF.ASCHEI[year],
-                               self.e02000 *
-                               self.BF.ASCHEL[year])
+                                  self.e02000 *
+                                  self.BF.ASCHEI[year],
+                                  self.e02000 *
+                                  self.BF.ASCHEL[year])
         self.e02100 *= self.BF.ASCHF[year]
         self.e02300 *= self.BF.AUCOMP[year]
         self.e02400 *= self.BF.ASOCSEC[year]
