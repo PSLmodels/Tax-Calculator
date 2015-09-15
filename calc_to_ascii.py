@@ -1,11 +1,4 @@
-import math
-import copy
 import pandas as pd
-import numpy as np
-import os.path
-import os
-from numba import vectorize, float64
-from pkg_resources import resource_stream, Requirement
 
 def calc_to_ascii(calc, ascii_results=""):
     '''
@@ -21,7 +14,7 @@ def calc_to_ascii(calc, ascii_results=""):
     #if left as [], results in entire file being converted to ascii
     #put in order from smallest to largest, for example:
     #recids = [33180, 64023, 68020, 74700, 84723, 98001, 107039, 107298, 108820]
-    recids = [1,4,5]
+    recids = [1, 4, 5]
     
     #Number of characters in each column, must be whole nonnegative integer
     col_size = 15
@@ -37,18 +30,21 @@ def calc_to_ascii(calc, ascii_results=""):
             if (value.shape == rshape):
                 df[attr] = value
 
-    #keeps only listed recid's
+    # keeps only listed recid's
     if recids != []:
-        f = lambda x : x - 1
-        recids = map(f, recids) #maps recids to correct index in df
+
+        def f(x):
+            return x - 1
+        recids = map(f, recids)  # maps recids to correct index in df
         df = df.ix[recids]
 
-    #does transposition
+    # does transposition
     out = df.T.reset_index()
 
-    #formats data into uniform columns
+    # formats data into uniform columns
     fstring = '{:' + str(col_size) + '}'
     out = out.applymap(fstring.format)
 
-    out.to_csv(ascii_results, header=False, index=False, delim_whitespace=True, sep='\t')
+    out.to_csv(ascii_results, header=False, index=False,
+               delim_whitespace=True, sep='\t')
 
