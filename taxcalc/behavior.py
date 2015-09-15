@@ -13,15 +13,15 @@ def update_income(behavioral_effect, calcY):
     # TODO, verify that this is needed.
 
     delta_wages = (delta_inc * calcY.records.e00200 /
-                   (calcY.records.c00100 + _itemized + .001))
+                   (calcY.records.c00100 + _itemized))
 
     other_inc = calcY.records.c00100 - calcY.records.e00200
 
     delta_other_inc = (delta_inc * other_inc /
-                       (calcY.records.c00100 + _itemized + .001))
+                       (calcY.records.c00100 + _itemized))
 
     delta_itemized = (delta_inc * _itemized /
-                      (calcY.records.c00100 + _itemized + .001))
+                      (calcY.records.c00100 + _itemized))
 
     calcY.records.e00200 = calcY.records.e00200 + delta_wages
 
