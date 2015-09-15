@@ -14,10 +14,10 @@ def calc_to_ascii(calc, ascii_results=""):
     # csv file, only rows in list will be recorded in final output
     # if left as [], results in entire file being converted to ascii
     # put in order from smallest to largest, for example:
-    # recids = [33180, 64023, 68020, 74700, 84723, 98001, 107039, 107298, 
+    # recids = [33180, 64023, 68020, 74700, 84723, 98001, 107039, 107298,
     #           108820]
     recids = [1, 4, 5]
-    
+
     # Number of characters in each column, must be whole nonnegative integer
     col_size = 15
 
@@ -49,4 +49,3 @@ def calc_to_ascii(calc, ascii_results=""):
 
     out.to_csv(ascii_results, header=False, index=False,
                delim_whitespace=True, sep='\t')
-
