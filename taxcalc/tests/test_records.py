@@ -24,6 +24,19 @@ def test_create_records_from_file():
     assert r
 
 
+def test_blow_up():
+    tax_dta = pd.read_csv(tax_dta_path, compression='gzip')
+    tax_dta.flpdyr += 22
+
+    params1 = Parameters(start_year=2013)
+    records1 = Records(tax_dta)
+
+    calc1 = Calculator(records=records1, params=params1)
+
+    assert calc1.records.e23250.sum() == calc1.records.p23250.sum()
+    assert calc1.records.e22250.sum() == calc1.records.p22250.sum()
+
+
 def test_imputation():
     e17500 = np.array([20., 4.4, 5.])
     e00100 = np.array([40., 8.1, 90.1])
