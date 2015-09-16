@@ -97,11 +97,9 @@ ZEROED_NAMES = ['e35300_0', 'e35600_0', 'e35910_0', 'x03150', 'e03600',
                 '_othertax', 'e82915', 'e82940', 'SFOBYR', 'NIIT',
                 'c59720', '_comb', 'c07150', 'c10300', '_ospctax',
                 '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
-                '_amed', '_xlin3', '_xlin6', 'share_corptax_burden',
-                'expanded_income', 'agg_self_employed', 'netcapgains',
-                'agg_capgains', 'total_compensation', 'dividends',
-                'agg_dividends', 'bonds', 'compensation', 'agg_bonds',
-                '_expanded_income']
+                '_amed', '_xlin3', '_xlin6', 'expanded_income',
+                '_expanded_income', '_current_year', '_cmbtp_itemizer',
+                '_cmbtp_standard']
 
 # pairs of 'name of attribute', 'column name' - often the same
 NAMES = [('AGIR1', 'agir1'),
@@ -350,15 +348,15 @@ class Records(object):
             for name in NAMES:
                 setattr(self, name[0], np.zeros((self.dim,), dtype=np.int8))
 
-        if (start_year):
-            self._current_year = start_year
-        else:
-            self._current_year = self.FLPDYR[0]
-
         self._num = np.ones((self.dim,))
 
         for name in ZEROED_NAMES:
             setattr(self, name, np.zeros((self.dim,)))
+
+        if (start_year):
+            self._current_year = start_year
+        else:
+            self._current_year = self.FLPDYR[0]
 
         # Aliases
         self.e22250 = self.p22250
@@ -400,22 +398,6 @@ class Records(object):
                                    (self.e04470 - std2008[self.MARS - 1])
                                    / STD_Aged_2008[1]),
                                   np.where(self.e02400 > 0, self._txpyers, 0))
-
-        """Setting Variables for Corporate Income Tax"""
-        self.compensation = None
-        self.dividends = None
-        self.netcapgains = None
-        self.bonds = None
-        self.e_and_p = None
-        self.share_corptax_burden = None  # get's calculated in functions.py
-        # actually sets the values
-        self.set_vars_for_corp_tax()
-
-        self.agg_comp = None
-        self.agg_dividends = None
-        self.agg_capgains = None
-        self.agg_bonds = None
-        self.agg_self_employed_and_pt = None
 
     @property
     def current_year(self):
@@ -623,8 +605,6 @@ class Records(object):
         self.mutate_imputations()
         self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
 
-        """ Corporate Income Tax Update """
-        self.set_vars_for_corp_tax()
 
     def read(self, data):
         if isinstance(data, pd.core.frame.DataFrame):
@@ -704,53 +684,6 @@ class Records(object):
         self._cmbtp_itemizer = imputation(self.e17500, self.e00100,
                 self.e18400, self.e18425, self.e62100, self.e00700,
                 self.e04470, self.e21040, self.e18500, self.e20800)
-
-    def set_vars_for_corp_tax(self):
-        """
-        Calculates the variables used to distribute the corporate income tax
-
-        compensation: float
-            the sum of wages, payroll tax, employer contribution to insurance,
-            and untaxed voluntary contribution to retirement plans
-        dividends: float
-            the individual's dividends received
-        netcapgains: float
-            the individual's net capital gains earnings
-        bonds: float
-            the individual's total bonds (taxable and untaxable)
-        """
-
-        # unsure whether to use in compensation
-        ss_benefits = self.e02400
-
-        # the individual's compensation package
-        # used to calculate share from labor
-        # = sum of wages (e00200 + e00250),
-        # payroll taxes (employer_share_fica? should I add this? how else?),
-        # employer contrib's to insurance (e33420 and archer MSA, e03600),
-        # and untaxed voluntary contrib's to retirement plans
-        # (e07240, not sure if from employer or voluntary)
-
-        # TODO: not sure if we have good data on insurance or retirment
-        # e00250: other dependent income (not sure whether to include)
-        self.compensation = (self.e00200 + self.e00250 + self.e33420 +
-                             self.e03600 + self.e07240)
-
-        # individual's share of the dividends received
-        self.dividends = self.e00600
-
-        # JTC thinks that dividends are enough to measure stock ownership,
-        # but TPC thinks both capgains and dividends should be included
-        # individual's share of the capital gains received
-        # c23650 = long term + short term + both (calculated in CapGains fn)
-        self.netcapgains = self.e23250 + self.e22250 + self.e23660
-
-        # bonds = tax-exempt interest + taxable interest
-        # indidividual's share of total bonds
-        self.bonds = self.e00400 + self.e00300
-
-        # self-employment (E09400) and pass-through income (E02000)
-        self.e_and_p = self.e09400 + self.e02000
 
     def read_blowup(self, blowup_factors):
         if isinstance(blowup_factors, pd.core.frame.DataFrame):
