@@ -315,7 +315,7 @@
         "long_name": "Maximum foreign earned income exclusion",
 	"description": "This amount is the maximum foreign earned income taxpayers could exclude from gross income.",
         "irs_ref": "Form 2555, line 29b, instruction.",
-        "notes": "",
+        "notes": "This parameter cannot be decreased due to lack of data. ",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
