@@ -10,11 +10,12 @@ import tempfile
 from numba import jit, vectorize, guvectorize
 from taxcalc import *
 from taxcalc.utils import expand_array
+from taxcalc.records import NAMES
 
 tax_dta_path = os.path.join(CUR_PATH, "../../tax_all1991_puf.gz")
 
 
-def test_create_records():
+def test_create_records_withdata():
     r = Records(tax_dta_path)
     assert r
 
@@ -22,6 +23,19 @@ def test_create_records():
 def test_create_records_from_file():
     r = Records.from_file(tax_dta_path)
     assert r
+
+
+def test_create_blank_records():
+    r = Records(dims=1)
+    assert r
+    for attr in NAMES:
+        assert getattr(r, attr[0]) == 0
+
+
+def test_create_personal_record():
+    r = Records(dims=1)
+    r.set_attr("e00100", 1000)
+    assert r.e00100 == 1000
 
 
 def test_imputation():
