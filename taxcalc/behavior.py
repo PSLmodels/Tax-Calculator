@@ -12,16 +12,22 @@ def update_income(behavioral_effect, calcY):
                          0,
                          calcY.records.c04470)
 
-    delta_wages = (delta_inc * calcY.records.e00200 /
-                   (calcY.records.c00100 + _itemized))
+    delta_wages = np.where(calcY.records.c00100 + _itemized > 0,
+                           (delta_inc * calcY.records.e00200 /
+                            (calcY.records.c00100 + _itemized)),
+                           0)
 
     other_inc = calcY.records.c00100 - calcY.records.e00200
 
-    delta_other_inc = (delta_inc * other_inc /
-                       (calcY.records.c00100 + _itemized))
+    delta_other_inc = np.where(calcY.records.c00100 + _itemized > 0,
+                               (delta_inc * other_inc /
+                                (calcY.records.c00100 + _itemized)),
+                               0)
 
-    delta_itemized = (delta_inc * _itemized /
-                      (calcY.records.c00100 + _itemized))
+    delta_itemized = np.where(calcY.records.c00100 + _itemized > 0,
+                              (delta_inc * _itemized /
+                               (calcY.records.c00100 + _itemized)),
+                              0)
 
     calcY.records.e00200 = calcY.records.e00200 + delta_wages
 
@@ -58,10 +64,11 @@ def behavior(calcX, calcY, elast_wrt_atr=0.4, inc_effect=0.15,
 
     income_effect = inc_effect * (calcY.records._ospctax -
                                   calcX.records._ospctax)
-
     calcY_behavior = copy.deepcopy(calcY)
 
-    calcY_behavior = update_income(income_effect + substituion_effect,
+    combined_behavioral_effect = income_effect + substitution_effect
+
+    calcY_behavior = update_income(combined_behavioral_effect,
                                    calcY_behavior)
 
     return calcY_behavior
