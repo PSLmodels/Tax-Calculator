@@ -9,8 +9,8 @@ def update_income(behavioral_effect, calcY):
     # wages, and other income.
 
     _itemized = np.where(calcY.records.c04470 < calcY.records._standard,
-                         0, calcY.records.c04470)
-    # TODO, verify that this is needed.
+                         0,
+                         calcY.records.c04470)
 
     delta_wages = (delta_inc * calcY.records.e00200 /
                    (calcY.records.c00100 + _itemized))
@@ -52,17 +52,16 @@ def behavior(calcX, calcY, elast_wrt_atr=0.4, inc_effect=0.15,
     # Calculate the percent change in after-tax rate.
     pct_diff_atr = ((1 - mtrY) - (1 - mtrX)) / (1 - mtrX)
 
-    calcY_behavior = copy.deepcopy(calcY)
-
     # Calculate the magnitude of the substitution and income effects.
     substitution_effect = (elast_wrt_atr * pct_diff_atr *
-                           (calcX.records._ospctax))
+                           (calcX.records.c04800))
 
-    calcY_behavior = update_income(substitution_effect, calcY_behavior)
-
-    income_effect = inc_effect * (calcY_behavior.records._ospctax -
+    income_effect = inc_effect * (calcY.records._ospctax -
                                   calcX.records._ospctax)
 
-    calcY_behavior = update_income(income_effect, calcY_behavior)
+    calcY_behavior = copy.deepcopy(calcY)
+
+    calcY_behavior = update_income(income_effect + substituion_effect,
+                                   calcY_behavior)
 
     return calcY_behavior
