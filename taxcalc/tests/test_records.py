@@ -24,11 +24,23 @@ def test_create_records_from_file():
     assert r
 
 
+def test_blow_up():
+    tax_dta = pd.read_csv(tax_dta_path, compression='gzip')
+    tax_dta.flpdyr += 22
+
+    params1 = Parameters(start_year=2013)
+    records1 = Records(tax_dta)
+
+    calc1 = Calculator(records=records1, params=params1)
+
+    assert calc1.records.e23250.sum() == calc1.records.p23250.sum()
+    assert calc1.records.e22250.sum() == calc1.records.p22250.sum()
+
+
 def test_imputation():
     e17500 = np.array([20., 4.4, 5.])
     e00100 = np.array([40., 8.1, 90.1])
     e18400 = np.array([25., 34., 10.])
-    e18425 = np.array([42., 20.3, 49.])
     e62100 = np.array([75., 12.4, 84.])
     e00700 = np.array([43.3, 34.1, 3.4])
     e04470 = np.array([21.2, 12., 13.1])
@@ -36,21 +48,21 @@ def test_imputation():
     e18500 = np.array([33.1, 18.2, 39.])
     e20800 = np.array([0.9, 32., 52.1])
 
-    cmbtp_itemizer = np.array([68.4, -31.0025, -84.7])
+    cmbtp_itemizer = np.array([85.4, -31.0025, -45.7])
 
     """
     Test case values:
 
     x = max(0., e17500 - max(0., e00100) * 0.075) = [17., 3.7925, 0]
     medical_adjustment = min(x, 0.025 * max(0.,e00100)) = [-1.,-.2025,0]
-    state_adjustment = max(0, max(e18400, e18425)) = [42., 34., 49.]
+    state_adjustment = max(0, e18400) = [42., 34., 49.]
 
     _cmbtp_itemizer = (e62100 - medical_adjustment + e00700 + e04470 + e21040
                        - z - e00100 - e18500 - e20800)
                     = [68.4, -31.0025 ,-84.7]
     """
 
-    test_itemizer = records.imputation(e17500, e00100, e18400, e18425,
+    test_itemizer = records.imputation(e17500, e00100, e18400,
                                        e62100, e00700, e04470,
                                        e21040, e18500, e20800)
 
