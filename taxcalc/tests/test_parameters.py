@@ -461,7 +461,7 @@ def test_params_to_json():
     p = Parameters()
     vals_as_json = p.params_to_json()
     temporary_file = tempfile.NamedTemporaryFile(delete=False)
-    with open(temporary_file.name,'w') as t:
+    with open(temporary_file.name, 'w') as t:
         t.write(vals_as_json)
     p2 = Parameters(parameter_dict=json.load(open(temporary_file.name)))
     assert json.loads(p2.params_to_json()) == json.loads(vals_as_json)
