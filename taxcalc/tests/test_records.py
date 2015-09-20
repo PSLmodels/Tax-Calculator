@@ -36,7 +36,7 @@ def test_blow_up():
     calc1 = Calculator(records=records1, params=params1)
     assert calc1.current_year == 2013
 
-    # have e aliases of p variables have been maintained after several blowups
+    # have e aliases of p variables been maintained after several blowups?
     assert calc1.records.e23250.sum() == calc1.records.p23250.sum()
     assert calc1.records.e22250.sum() == calc1.records.p22250.sum()
 
