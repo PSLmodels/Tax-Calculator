@@ -822,7 +822,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     c60260 = e00700 + x60260
     # QUESTION: c63100 variable is reassigned below before use, is this a BUG?
     c63100 = max(0., _taxbc - e07300)
-    c60200 = min(c17000, AMT_prt * _posagi)
+    c60200 = min(c17000, 0.025 * _posagi)
     c60240 = (1 - ID_StateLocalTax_HC) * c18300 + x60240
     c60220 = c20800 + x60220
     c60130 = c21040 + x60130
@@ -924,7 +924,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
         _amtfei = 0.
 
-    c62780 = 0.26 * _alminc + 0.02 * \
+    c62780 = AMT_trt1 * _alminc + AMT_trt2 * \
         max(0., _alminc - AMT_tthd / _sep) - _amtfei
 
     if f6251 != 0:
@@ -941,11 +941,13 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     _ngamty = max(0., _alminc - c62740)
 
-    c62745 = 0.26 * _ngamty + 0.02 * \
+    c62745 = AMT_trt1 * _ngamty + AMT_trt2 * \
         max(0., _ngamty - AMT_tthd / _sep)
 
     y62745 = AMT_tthd / _sep
 
+    # Capital Gain for AMT
+    
     _tamt2 = 0.
 
     _amt5pc = 0.0
