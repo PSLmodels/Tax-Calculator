@@ -947,7 +947,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     y62745 = AMT_tthd / _sep
 
     # Capital Gain for AMT
-    
+
     _tamt2 = 0.
 
     _amt5pc = 0.0
