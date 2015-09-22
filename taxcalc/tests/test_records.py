@@ -26,13 +26,17 @@ def test_create_records_from_file():
 
 def test_blow_up():
     tax_dta = pd.read_csv(tax_dta_path, compression='gzip')
-    tax_dta.flpdyr += 22
+    tax_dta.flpdyr += 18  # 1991 + 18 = 2009 to emulate using 2009 PUF
 
     params1 = Parameters(start_year=2013)
     records1 = Records(tax_dta)
+    assert records1.current_year == 2009
+    # r.current_year == 2009 implies Calculator ctor will call r.blowup()
 
     calc1 = Calculator(records=records1, params=params1)
+    assert calc1.current_year == 2013
 
+    # have e aliases of p variables been maintained after several blowups?
     assert calc1.records.e23250.sum() == calc1.records.p23250.sum()
     assert calc1.records.e22250.sum() == calc1.records.p22250.sum()
 
