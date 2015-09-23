@@ -168,9 +168,11 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
 def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900,
             e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
             e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
-            MARS, _sep, c00100, ID_ps, ID_Medical_frt, ID_Casualty_frt,
-            ID_Miscellaneous_frt, ID_Charity_crt_Cash, ID_Charity_crt_Asset,
-            ID_prt, ID_crt, ID_StateLocalTax_HC, ID_Charity_frt, puf):
+            MARS, _sep, c00100, ID_ps, ID_Medical_frt, ID_Medical_HC,
+            ID_Casualty_frt, ID_Casualty_HC, ID_Miscellaneous_frt,
+            ID_Miscellaneous_HC, ID_Charity_crt_Cash, ID_Charity_crt_Asset,
+            ID_prt, ID_crt, ID_StateLocalTax_HC, ID_Charity_frt,
+            ID_Charity_HC, ID_Mortgage_HC, puf):
 
     """
     Itemized Deduction; Form 1040, Schedule A
@@ -253,7 +255,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900,
     # Other Taxes (including state and local)
     c18300 = _statax + e18500 + e18800 + e18900
 
-    # Casulty
+    # Casualty
     if e20500 > 0:
         c37703 = e20500 + ID_Casualty_frt * _posagi
         c20500 = c37703 - ID_Casualty_frt * _posagi
@@ -289,14 +291,14 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900,
 
     # Gross Itemized Deductions
 
-    c21060 = (e20900 + c17000 + (1 - ID_StateLocalTax_HC) * c18300 + c19200 +
-              c19700 + c20500 + c20800 + e21000 + e21010)
+    c21060 = (e20900 + (1- ID_Medical_HC) * c17000 +
+             (1 - ID_StateLocalTax_HC) * c18300 + (1 - ID_Mortgage_HC) * c19200 +
+             (1 - ID_Casualty_HC) * c19700 + (1 - ID_Casualty_HC) * c20500 +
+             (1 - ID_Miscellaneous_HC) * c20800 + e21000 + e21010)
 
     # Limitations on deductions excluding medical, charity etc
     _phase2_i = ID_ps[MARS - 1]
-
     _nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
-    _phase2_i = ID_ps[MARS - 1]
     _limitratio = _phase2_i / _sep
 
     if c21060 > _nonlimited and c00100 > _limitratio:
