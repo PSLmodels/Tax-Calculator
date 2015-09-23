@@ -291,10 +291,13 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900,
 
     # Gross Itemized Deductions
 
-    c21060 = (e20900 + (1- ID_Medical_HC) * c17000 +
-             (1 - ID_StateLocalTax_HC) * c18300 + (1 - ID_Mortgage_HC) * c19200 +
-             (1 - ID_Casualty_HC) * c19700 + (1 - ID_Casualty_HC) * c20500 +
-             (1 - ID_Miscellaneous_HC) * c20800 + e21000 + e21010)
+    c21060 = (e20900 + (1 - ID_Medical_HC) * c17000 +
+              (1 - ID_StateLocalTax_HC) * c18300 +
+              (1 - ID_Mortgage_HC) * c19200 +
+              (1 - ID_Casualty_HC) * c19700 +
+              (1 - ID_Casualty_HC) * c20500 +
+              (1 - ID_Miscellaneous_HC) * c20800 +
+              e21000 + e21010)
 
     # Limitations on deductions excluding medical, charity etc
     _phase2_i = ID_ps[MARS - 1]

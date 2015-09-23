@@ -384,16 +384,19 @@ class Calculator(object):
             nonrefundable = (calc.records.c07100 * calc.records.s006).sum()
 
             # ospc_tax
-            tax_diff = np.where(calc.records._ospctax - base_calc.records._ospctax > 0,
-                                calc.records._ospctax - base_calc.records._ospctax, 0)
+            tax_diff = np.where(calc.records._ospctax -
+                                base_calc.records._ospctax > 0,
+                                calc.records._ospctax -
+                                base_calc.records._ospctax,
+                                0)
             cap = calc.params.ID_DeductionBenefit_crt * calc.records.c00100
-            
+
             if calc.params.ID_DeductionBenefit_crt != 0:
                 calc.records._ospctax = np.where(tax_diff < cap,
-                                                 tax_diff + calc.records._ospctax,
+                                                 tax_diff +
+                                                 calc.records._ospctax,
                                                  cap + calc.records._ospctax)
-            
-            
+
             revenue1 = (calc.records._ospctax * calc.records.s006).sum()
 
             table.append([returns / math.pow(10, 6), agi / math.pow(10, 9),
