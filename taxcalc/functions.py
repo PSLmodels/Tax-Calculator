@@ -346,10 +346,11 @@ def EI_FICA(e00900, e02100, SS_Earnings_c, e00200, e11055, e00250, e30100,
 
     _setax = max(0, _fica - (FICA_ss_trt + FICA_mc_trt) * e00200)
 
+    _seyoff = 0.5 * _setax
     # if _setax <= 14204:
     #    _seyoff = 0.5751 * _setax
     # else:
-    _seyoff = 0.5 * _setax  # + 10067
+    # _seyoff = 0.5 * _setax + 10067
 
     c11055 = e11055
 
@@ -487,11 +488,11 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
     c04100 = c04100 + e15360
 
     # ??
-    if f6251 == 0 and e04470 == 0:
-        x04500 = e00100 - e60000
-        c04500 = c00100 - x04500
-    else:
-        x04500 = 0.
+    # if f6251 == 0 and e04470 == 0:
+    #    x04500 = e00100 - e60000
+    #    c04500 = c00100 - x04500
+    # else:
+    #   x04500 = 0.
 
     # Calculate the extra deduction for aged and blind
     if puf:
@@ -521,16 +522,16 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
     c04500 = c00100 - max(c04470, max(c04100, _standard + e37717))
     c04800 = max(0., c04500 - c04600 - e04805)
 
-    # if (MARS == 3 or MARS == 6) and (MIDR == 1):
-    if (MARS == 3 or MARS == 6) and (c04470 > 0):
+    # if (MARS == 3 or MARS == 6) and (c04470>0):
+    if (MARS == 3 or MARS == 6) and (MIDR == 1):
         _standard = 0.
 
     # Check with Dan whether this is right!
-    # if c04470 > _standard:
-    #    _standard = 0
+    if c04470 > _standard:
+        _standard = 0
 
-    # if c04470 <= _standard:
-    #    c04470 = 0
+    if c04470 <= _standard:
+        c04470 = 0
 
     # why is this here, c60000 is reset many times?
     if _standard > 0:
@@ -597,7 +598,7 @@ def NonGain(c23650, e23250, e01100):
 
 
 @iterate_jit(nopython=True)
-def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
+def TaxGains(e00650, c01000, c04800, e01000, c23650, e23250, e01100, e58990,
              e58980, e24515, e24518, MARS, _taxinc, _xyztax, _feided,
              _feitax, _cmp, e59410, e59420, e59440, e59470, e59400,
              e83200_0, e10105, e74400, II_rt1, II_rt2, II_rt3, II_rt4,
@@ -607,18 +608,17 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 
     c00650 = e00650
     _addtax = 0.
-    _hasgain = 1.
-    _dwks5 = max(0., e58990 - e58980)
 
-    # if e01000 > 0 or c23650 > 0. or e23250 > 0.
-    # or e01100 > 0. or e00650 > 0.:
-    #    _hasgain = 1.
-    # else:
-    #    _hasgain = 0.
+    if c01000 > 0 or c23650 > 0. or e23250 > 0. or e01100 > 0. or e00650 > 0.:
+        _hasgain = 1.
+    else:
+        _hasgain = 0.
+
+    _hasgain = 1
 
     if _hasgain == 1.:
         # if/else 1
-        # _dwks5 = max(0., e58990 - e58980)
+        _dwks5 = max(0., e58990 - e58980)
         c24505 = max(0., c00650 - _dwks5)
 
         # gain for tax computation
@@ -676,7 +676,7 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 
     else:
         # these vars only to check accuracy? unused in calcs. (except c24580)
-        # _dwks5 = 0.
+        _dwks5 = 0.
         _dwks9 = 0.
         c24505 = 0.
         c24510 = 0.
@@ -684,7 +684,7 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 
         _dwks12 = 0.
         c24517 = 0.
-        # c24520 = 0.
+        c24520 = 0.
         c24530 = 0.
 
         _dwks16 = 0.
@@ -824,6 +824,18 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 # TODO should we return c00650 instead of e00650?? Would need to change tests
 
 
+@iterate_jit(nopython=True)
+def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
+        NIIT):
+    # Additional Medicare tax on unearned Income
+    if c00100 > NIIT_thd[MARS - 1]:
+        NIIT = NIIT_trt * min(e00300 + e00600 + max(0, c01000) +
+                              max(0, e02000), c00100 - NIIT_thd[MARS - 1])
+    else:
+        NIIT = 0
+    return NIIT
+
+
 @iterate_jit(nopython=True, puf=True)
 def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
          e60300, e60860, e60100, e60840, e60630, e60550,
@@ -831,7 +843,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
          e60440, e60420, e60410, e61400, e60660, e60480,
          e62000, e60250, _cmp, _standard, e04470, e17500,
          f6251, e62100, e21040, _statax, e20800, c00100,
-         c04470, c17000, e18500, c20800, c21040,
+         c04470, c17000, e18500, c20800, c21040, NIIT,
          DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700,
          e00100, e24515, x62730, x60130,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
@@ -846,7 +858,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     c60260 = e00700 + x60260
     # QUESTION: c63100 variable is reassigned below before use, is this a BUG?
     c63100 = max(0., _taxbc - e07300)
-    c60200 = min(c17000, AMT_prt * _posagi)
+    c60200 = min(c17000, 0.025 * _posagi)
     c60240 = (1 - ID_StateLocalTax_HC) * c18300 + x60240
     c60220 = c20800 + x60220
     c60130 = c21040 + x60130
@@ -928,7 +940,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
         _SDOBYR = SFOBYR
 
     if _SDOBYR > 1890:
-        _agep = FLPDYR - _SDOBYR
+        _ages = FLPDYR - _SDOBYR
     else:
         _ages = 50.
 
@@ -1015,7 +1027,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     c63000 = c62800 - c62900
     c63100 = _taxbc - e07300 - c05700
     c63100 = c63100 + e10105
-    c63100 = max(0., c63100)
+    c63100 = max(0., c63100) + NIIT
     c63200 = max(0., c63000 - c63100)
     c09600 = c63200
     _othtax = e05800 - (e05100 + c09600)
@@ -1029,18 +1041,6 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
             _ngamty, c62745, y62745, _tamt2, _amt5pc, _amt15pc,
             _amt25pc, c62747, c62755, c62770, _amt, c62800,
             c09600, _othtax, c05800, _cmbtp)
-
-
-@iterate_jit(nopython=True)
-def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
-        NIIT):
-    # Additional Medicare tax on unearned Income
-    if c00100 > NIIT_thd[MARS - 1]:
-        NIIT = NIIT_trt * min(e00300 + e00600 + max(0, c01000) +
-                              max(0, e02000), c00100 - NIIT_thd[MARS - 1])
-    else:
-        NIIT = 0
-    return NIIT
 
 
 @iterate_jit(nopython=True, puf=True)
@@ -1095,15 +1095,15 @@ def DepCareBen(c32800, _cmp, MARS, c32880, c32890, e33420, e33430, e33450,
                e33460, e33465, e33470, _sep, _dclim, e32750, e32775,
                _earned, f2441):
 
-    # Part III ofdependent care benefits
-    if f2441 == 1 and MARS == 2:
+    # Part III of dependent care benefits
+    if f2441 != 0 and MARS == 2:
         _seywage = min(c32880, c32890, e33420 + e33430 - e33450, e33460)
-    elif f2441 == 1 and MARS != 2:
+    elif f2441 != 0 and MARS != 2:
         _seywage = min(c32880, e33420 + e33430 - e33450, e33460)
     else:
         _seywage = 0.
 
-    if f2441 == 1:
+    if f2441 != 0:
         c33465 = e33465
         c33470 = e33470
         c33475 = max(0., min(_seywage, 5000 / _sep) - c33470)
