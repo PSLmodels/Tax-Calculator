@@ -138,7 +138,7 @@ def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, SS_thd50, SS_thd85,
 
 @iterate_jit(nopython=True)
 def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
-        II_em, II_em_ps, MARS, _sep, II_prt):
+        II_em, II_em_ps, MARS, _sep, II_prt, DSI):
 
     # Adjusted Gross Income
 
@@ -150,6 +150,9 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
     _posagi = max(c00100, 0)
     _ywossbe = e00100 - e02500
     _ywossbc = c00100 - c02500
+
+    if DSI:
+        XTOT = 0
 
     _prexmp = XTOT * II_em
     # Personal Exemptions (_phaseout smoothed)
@@ -165,7 +168,7 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
 
 
 @iterate_jit(nopython=True, puf=True)
-def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900,
+def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
             e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
             e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
             MARS, _sep, c00100, ID_ps, ID_Medical_frt, ID_Casualty_frt,
@@ -249,6 +252,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900,
 
     # State and Local Income Tax, or Sales Tax
     _statax = max(e18400, 0)
+    # _statax = max(e18450, e18425)
 
     # Other Taxes (including state and local)
     c18300 = _statax + e18500 + e18800 + e18900
@@ -277,7 +281,9 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900,
 
     # Charity (assumes carryover is non-cash)
     base_charity = e19800 + e20100 + e20200
-    if base_charity <= 0.2 * _posagi:
+    if puf:
+        c19700 = e19700
+    elif base_charity <= 0.2 * _posagi:
         c19700 = base_charity
     else:
         lim50 = min(ID_Charity_crt_Cash * _posagi, e19800)
@@ -332,17 +338,18 @@ def EI_FICA(e00900, e02100, SS_Earnings_c, e00200, e11055, e00250, e30100,
     _sey = e00900 + e02100
     _fica_ss = max(0, FICA_ss_trt * min(SS_Earnings_c, e00200 + max(0, _sey) *
                    (1 - 0.5 * (FICA_mc_trt + FICA_ss_trt))))
-    _fica_mc = max(0, FICA_mc_trt * (e00200 + max(0, _sey)) *
-                   (1 - 0.5 * (FICA_mc_trt + FICA_ss_trt)))
+    _fica_mc = max(0, FICA_mc_trt * (e00200 + max(0, _sey) *
+                   (1 - 0.5 * (FICA_mc_trt + FICA_ss_trt))))
 
     _fica = _fica_mc + _fica_ss
 
     _setax = max(0, _fica - (FICA_ss_trt + FICA_mc_trt) * e00200)
 
-    if _setax <= 14204:
-        _seyoff = 0.5751 * _setax
-    else:
-        _seyoff = 0.5 * _setax + 10067
+    # if _setax <= 14204:
+    #    _seyoff = 0.5751 * _setax
+    # else:
+    #    _seyoff = 0.5 * _setax + 10067
+    _seyoff = 0.5 * _setax
 
     c11055 = e11055
 
@@ -352,7 +359,8 @@ def EI_FICA(e00900, e02100, SS_Earnings_c, e00200, e11055, e00250, e30100,
 
 
 @iterate_jit(nopython=True)
-def AMED(e00200, MARS, AMED_thd, _sey, AMED_trt, FICA_mc_trt, FICA_ss_trt):
+def AMED(_fica, e00200, MARS, AMED_thd, _sey, AMED_trt,
+         FICA_mc_trt, FICA_ss_trt):
     """
     Additional Medicare Tax as a part of FICA
 
@@ -385,8 +393,9 @@ def AMED(e00200, MARS, AMED_thd, _sey, AMED_trt, FICA_mc_trt, FICA_ss_trt):
                            max(0, _sey) * (1 - 0.5 *
                                            (FICA_mc_trt + FICA_ss_trt)) -
                            AMED_thd[MARS - 1])
+    _fica = _fica + _amed
 
-    return _amed
+    return (_amed, _fica)
 
 
 @iterate_jit(nopython=True, puf=True)
@@ -478,11 +487,11 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
     c04100 = c04100 + e15360
 
     # ??
-    if f6251 == 0 and e04470 == 0:
-        x04500 = e00100 - e60000
-        c04500 = c00100 - x04500
-    else:
-        x04500 = 0.
+    # if f6251 == 0 and e04470 == 0:
+    #    x04500 = e00100 - e60000
+    #    c04500 = c00100 - x04500
+    # else:
+    #    x04500 = 0.
 
     # Calculate the extra deduction for aged and blind
     if puf:
@@ -498,10 +507,10 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
     c15200 = c04200
 
     # Compute the total standard deduction
-    if (MARS == 3 or MARS == 6) and (MIDR == 1):
-        _standard = 0.
-    else:
-        _standard = c04100 + c04200
+    # if (MARS == 3 or MARS == 6) and (MIDR == 1):
+    #    _standard = 0.
+    # else:
+    _standard = c04100 + c04200
 
     # ???
     if FDED == 1:
@@ -512,6 +521,9 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
     c04500 = c00100 - max(c04470, max(c04100, _standard + e37717))
     c04800 = max(0., c04500 - c04600 - e04805)
 
+    if (MARS == 3 or MARS == 6) and (MIDR == 1):
+        _standard = 0.
+
     # Check with Dan whether this is right!
     if c04470 > _standard:
         _standard = 0
@@ -521,7 +533,7 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
 
     # why is this here, c60000 is reset many times?
     if _standard > 0:
-        c60000 = c00100 - x04500
+        c60000 = c00100  # c60000 = c00100 - x04500
     else:
         c60000 = c04500
 
@@ -576,7 +588,7 @@ def NonGain(c23650, e23250, e01100):
 
 
 @iterate_jit(nopython=True)
-def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
+def TaxGains(e00650, c01000, c04800, e01000, c23650, e23250, e01100, e58990,
              e58980, e24515, e24518, MARS, _taxinc, _xyztax, _feided,
              _feitax, _cmp, e59410, e59420, e59440, e59470, e59400,
              e83200_0, e10105, e74400, II_rt1, II_rt2, II_rt3, II_rt4,
@@ -587,10 +599,12 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
     c00650 = e00650
     _addtax = 0.
 
-    if e01000 > 0 or c23650 > 0. or e23250 > 0. or e01100 > 0. or e00650 > 0.:
+    if c01000 > 0 or c23650 > 0. or e23250 > 0. or e01100 > 0. or e00650 > 0.:
         _hasgain = 1.
     else:
         _hasgain = 0.
+
+    _hasgain = 1.  # hasgain switch is off in SAS
 
     if _hasgain == 1.:
         # if/else 1
@@ -799,6 +813,16 @@ def TaxGains(e00650, c04800, e01000, c23650, e23250, e01100, e58990,
 
 # TODO should we return c00650 instead of e00650?? Would need to change tests
 
+@iterate_jit(nopython=True)
+def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
+        NIIT):
+    # Additional Medicare tax on unearned Income
+    if c00100 > NIIT_thd[MARS - 1]:
+        NIIT = NIIT_trt * min(e00300 + e00600 + max(0, c01000) +
+                              max(0, e02000), c00100 - NIIT_thd[MARS - 1])
+    else:
+        NIIT = 0
+    return NIIT
 
 @iterate_jit(nopython=True, puf=True)
 def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
@@ -806,8 +830,8 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
          e60720, e60430, e60500, e60340, e60680, e60600, e60405,
          e60440, e60420, e60410, e61400, e60660, e60480,
          e62000, e60250, _cmp, _standard, e04470, e17500,
-         f6251, e62100, e21040, e20800, c00100,
-         c04470, c17000, e18500, c20800, c21040,
+         f6251, e62100, e21040, e20800, c00100, _statax,
+         c04470, c17000, e18500, c20800, c21040, NIIT,
          DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700,
          e00100, e24515, x62730, x60130, e18400,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
@@ -852,7 +876,9 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     if (puf and ((_standard == 0 or (_exact == 1 and e04470 > 0)) and
                  f6251 == 1)):
-        _cmbtp = _cmbtp_itemizer
+        _cmbtp = (-1 * min(_edical, 0.025 * max(0., e00100)) + e62100 +
+                  c60260 + e04470 + e21040 - _statax -
+                  e00100 - e18500 - e20800)
         # (-1 * min(_edical, 0.025 * max(0., e00100)) + e62100 + c60260
         #        + e04470 + e21040 - _sit - e00100 - s18500 - e20800)
     else:
@@ -860,7 +886,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     if (puf and ((_standard == 0 or (_exact == 1 and e04470 > 0)))):
         c62100 = (c00100 - c04470 + min(c17000, 0.025 * max(0., c00100)) +
-                  (1 - ID_StateLocalTax_HC) * max(0, e18400) +
+                  (1 - ID_StateLocalTax_HC) * _statax +
                   e18500 - c60260 + c20800 - c21040)
         c62100 += _cmbtp
 
@@ -874,7 +900,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
         c62100 = (c00100 - c60260)
         c62100 += _cmbtp
 
-    if (c62100 > AMT_em_pe) and (MARS == 3 or MARS == 6):
+    if (MARS == 3 or MARS == 6):
         _amtsepadd = max(0.,
                          min(AMT_thd_MarriedS, 0.25 * (c62100 - AMT_em_pe)))
     else:
@@ -900,7 +926,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
         _SDOBYR = SFOBYR
 
     if _SDOBYR > 1890:
-        _agep = FLPDYR - _SDOBYR
+        _ages = FLPDYR - _SDOBYR
     else:
         _ages = 50.
 
@@ -989,10 +1015,10 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     c63000 = c62800 - c62900
     c63100 = _taxbc - e07300 - c05700
     c63100 = c63100 + e10105
-    c63100 = max(0., c63100)
+    c63100 = max(0., c63100) + NIIT
     c63200 = max(0., c63000 - c63100)
     c09600 = c63200
-    _othtax = e05800 - (e05100 + e09600)
+    _othtax = e05800 - (e05100 + c09600)
 
     c05800 = _taxbc + c63200
 
@@ -1005,18 +1031,6 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
             c09600, _othtax, c05800, _cmbtp)
 
 
-@iterate_jit(nopython=True)
-def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
-        NIIT):
-    # Additional Medicare tax on unearned Income
-    if c00100 > NIIT_thd[MARS - 1]:
-        NIIT = NIIT_trt * min(e00300 + e00600 + max(0, c01000) +
-                              max(0, e02000), c00100 - NIIT_thd[MARS - 1])
-    else:
-        NIIT = 0
-    return NIIT
-
-
 @iterate_jit(nopython=True, puf=True)
 def F2441(_earned, _fixeic, e59560, MARS, f2441, DCC_c,
           e32800, e32750, e32775, CDOB1, CDOB2, e32890, e32880, FLPDYR, puf):
@@ -1025,14 +1039,9 @@ def F2441(_earned, _fixeic, e59560, MARS, f2441, DCC_c,
         _earned = e59560
 
     if MARS == 2 and puf:
-        if e32890 != 0:
-            c32880 = 0.5 * _earned
-            c32890 = 0.5 * _earned
-        else:
-            c32880 = max(0., e32880)
-            c32890 = max(0., e32890)
-
-    elif MARS != 2:
+        c32880 = 0.5 * _earned
+        c32890 = 0.5 * _earned
+    else:
         c32880 = _earned
         c32890 = _earned
 
@@ -1061,10 +1070,10 @@ def F2441(_earned, _fixeic, e59560, MARS, f2441, DCC_c,
 @iterate_jit(nopython=True)
 def DepCareBen(c32800, _cmp, MARS, c32880, c32890, e33420, e33430, e33450,
                e33460, e33465, e33470, _sep, _dclim, e32750, e32775,
-               _earned):
+               _earned, f2441):
 
     # Part III ofdependent care benefits
-    if _cmp == 1 and MARS == 2:
+    if f2441 != 0 and MARS == 2:
         _seywage = min(c32880, c32890, e33420 + e33430 - e33450, e33460)
     else:
 
@@ -1073,7 +1082,7 @@ def DepCareBen(c32800, _cmp, MARS, c32880, c32890, e33420, e33430, e33450,
     if _cmp == 1 and MARS != 2:  # this is same as above, why?
         _seywage = min(c32880, c32890, e33420 + e33430 - e33450, e33460)
 
-    if _cmp == 1:
+    if _f2441 != 0:
         c33465 = e33465
         c33470 = e33470
         c33475 = max(0., min(_seywage, 5000 / _sep) - c33470)
@@ -1087,17 +1096,14 @@ def DepCareBen(c32800, _cmp, MARS, c32880, c32890, e33420, e33430, e33450,
         c33465, c33470, c33475, c33480, c32840 = 0., 0., 0., 0., 0.
         c32800 = c32800
 
-    if MARS == 2:
-        c33000 = max(0, min(c32800, min(c32880, c32890)))
-    else:
-        c33000 = max(0, min(c32800, _earned))
+    c33000 = max(0, min(c32800, min(c32880, c32890)))
 
     return _seywage, c33465, c33470, c33475, c33480, c32840, c32800, c33000
 
 
 @iterate_jit(nopython=True)
 def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt,
-                 c33000, c05800, e07300, e07180):
+                 c33000, c05800, e07300, e07180, f2441):
     # Expenses limited to earned income
 
     if _exact == 1:
@@ -1116,8 +1122,7 @@ def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt,
 
     # amount of the credit
 
-    if e07180 == 0:
-
+    if f2441 == 0:
         c07180 = 0.
         c33000 = 0.
     else:
@@ -1127,22 +1132,29 @@ def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt,
 
 
 @iterate_jit(nopython=True)
-def RateRed(c05800, _othtax, _exact, x59560, _earned):
+def RateRed(c05800, _othtax, _exact, x59560, _earned, c59660):
 
     # rate reduction credit for 2001 only, is this needed?
     c05800 = c05800
     c07970 = 0.
 
+    if _exact and x59560 == 0:
+        c59560 = 0
+
     if _exact == 1:
-        c59560 = x59560
+        if x59560 > 0:
+            c59560 = _earned
+        else:
+            c59560 = 0
     else:
-        c59560 = _earned
+        if c59660 == 0:
+            c59560 = 0
 
     return c07970, c05800, c59560
 
 
 @iterate_jit(nopython=True, puf=True)
-def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, e00400, MARS, EITC_ps,
+def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
            EITC_ps_MarriedJ, EITC_rt, c59560, EITC_c, EITC_prt, e83080, e00300,
            e00600, e01000, e40223, e25360, e25430, e25470, e25400, e25500,
            e26210, e26340, e27200, e26205, e26320, EITC_InvestIncome_c, _cmp,
@@ -1158,14 +1170,12 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, e00400, MARS, EITC_ps,
 
     _modagi = c00100 + e00400
 
-    if MARS == 2 and _modagi > 0:
+    if MARS == 2:
         _val_ymax = float((EITC_ps[_ieic] + EITC_ps_MarriedJ[_ieic]))
-
+    elif (MARS == 1 or MARS == 4 or MARS == 5 or MARS == 7):
+        _val_ymax = float(EITC_ps[_ieic])
     else:
         _val_ymax = 0.
-
-    if (MARS == 1 or MARS == 4 or MARS == 5 or MARS == 7) and _modagi > 0:
-        _val_ymax = float(EITC_ps[_ieic])
 
     if (MARS == 1 or MARS == 4 or MARS == 5 or
             MARS == 2 or MARS == 7) and _modagi > 0:
@@ -1183,13 +1193,13 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, e00400, MARS, EITC_ps,
                        (max(0., max(_modagi, c59560) - _val_ymax)))
         _preeitc = min(_preeitc, c59660)
 
-    if MARS != 3 and MARS != 6 and _modagi > 0:
+    if MARS != 3 and MARS != 6:
         _val_rtbase = EITC_rt[_ieic] * 100
         _val_rtless = EITC_prt[_ieic] * 100
-        _dy = (e00400 + e83080 + e00300 + e00600 + max(0., max(0., e01000) -
+        _dy = (e00400 + e83080 + e00300 + e00600 + max(0., max(0., c01000) -
                max(0., e40223)) + max(0., max(0., e25360) - e25430 - e25470 -
                e25400 - e25500) + max(0., e26210 + e26340 + e27200 -
-               math.fabs(e26205) - math.fabs(e26320)))
+               e26205 - e26320))
     else:
         _val_rtbase = 0.
         _val_rtless = 0.

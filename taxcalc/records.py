@@ -268,7 +268,7 @@ class Records(object):
                                                              self.MARS == 6)),
                                  2., 1.)
         # Number of extra standard deductions for aged
-        self._numextra = np.where(np.logical_and(self.FDED == 2, self.e04470 <
+        self._numextra = np.where(np.logical_and(self.FDED == 2, self.e04470 >
                                   std2009[self.MARS - 1]),
                                   np.where(
                                   np.logical_and(self.MARS != 2,
