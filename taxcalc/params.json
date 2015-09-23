@@ -995,6 +995,19 @@
         "col_label": "",
         "value":     [0.0] 
     },
+    "_ID_DeductionBenefit_crt":{
+        "long_name": "Deduction tax benefit cap, ceiling as a percent of AGI",
+	"description": "This percentage is used to cap the tax benefit from deductions. Users can specify what deductions they want to apply to. ",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [0.0] 
+    },
     "_NIIT_trt":{
         "long_name": "Net Investment Income Tax rate (UIMC)",
 	"description": "Also called the Unearned Income Medicare Contribution. The lessor of net investment income and the amount by which MAGI exceeds a threshold is taxed at this rate.",

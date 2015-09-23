@@ -314,3 +314,114 @@ class Calculator(object):
         pd.options.display.float_format = '{:8,.1f}'.format
 
         return df
+
+    def diagnostic_table_special_reform(self, base_calc, num_years=5):
+        table = []
+        row_years = []
+        calc = copy.deepcopy(self)
+        base_calc = copy.deepcopy(base_calc)
+
+        for i in range(0, num_years):
+            calc.calc_all()
+            base_calc.calc_all()
+
+            row_years.append(calc.params._current_year)
+
+            # totoal number of records
+            returns = calc.records.s006.sum()
+
+            # AGI
+            agi = (calc.records.c00100 * calc.records.s006).sum()
+
+            # number of itemizers
+            ID1 = calc.records.c04470 * calc.records.s006
+            STD1 = calc.records._standard * calc.records.s006
+            deduction = np.maximum(calc.records.c04470, calc.records._standard)
+
+            # S TD1 = (calc.c04100 + calc.c04200)*calc.s006
+            NumItemizer1 = (calc.records.s006[(calc.records.c04470 > 0) *
+                            (calc.records.c00100 > 0)].sum())
+
+            # itemized deduction
+            ID = ID1[calc.records.c04470 > 0].sum()
+
+            NumSTD = calc.records.s006[(calc.records._standard > 0) *
+                                       (calc.records.c00100 > 0)].sum()
+            # standard deduction
+            STD = STD1[(calc.records._standard > 0) *
+                       (calc.records.c00100 > 0)].sum()
+
+            # personal exemption
+            PE = (calc.records.c04600 *
+                  calc.records.s006)[calc.records.c00100 > 0].sum()
+
+            # taxable income
+            taxinc = (calc.records.c04800 * calc.records.s006).sum()
+
+            # regular tax
+            regular_tax = (calc.records.c05200 * calc.records.s006).sum()
+
+            # AMT income
+            AMTI = (calc.records.c62100 * calc.records.s006).sum()
+
+            # total AMTs
+            AMT = (calc.records.c09600 * calc.records.s006).sum()
+
+            # number of people paying AMT
+            NumAMT1 = calc.records.s006[calc.records.c09600 > 0].sum()
+
+            # tax before credits
+            tax_bf_credits = (calc.records.c05800 * calc.records.s006).sum()
+
+            # tax before nonrefundable credits 09200
+            tax_bf_nonrefundable = (calc.records.c09200 *
+                                    calc.records.s006).sum()
+
+            # refundable credits
+            refundable = (calc.records._refund * calc.records.s006).sum()
+
+            # nonrefuncable credits
+            nonrefundable = (calc.records.c07100 * calc.records.s006).sum()
+
+            # ospc_tax
+            tax_diff = np.where(calc.records._ospctax - base_calc.records._ospctax > 0,
+                                calc.records._ospctax - base_calc.records._ospctax, 0)
+            cap = calc.params.ID_DeductionBenefit_crt * calc.records.c00100
+            
+            if calc.params.ID_DeductionBenefit_crt != 0:
+                calc.records._ospctax = np.where(tax_diff < cap,
+                                                 tax_diff + calc.records._ospctax,
+                                                 cap + calc.records._ospctax)
+            
+            
+            revenue1 = (calc.records._ospctax * calc.records.s006).sum()
+
+            table.append([returns / math.pow(10, 6), agi / math.pow(10, 9),
+                          NumItemizer1 / math.pow(10, 6), ID / math.pow(10, 9),
+                          NumSTD / math.pow(10, 6), STD / math.pow(10, 9),
+                          PE / math.pow(10, 9), taxinc / math.pow(10, 9),
+                          regular_tax / math.pow(10, 9),
+                          AMTI / math.pow(10, 9), AMT / math.pow(10, 9),
+                          NumAMT1 / math.pow(10, 6),
+                          tax_bf_credits / math.pow(10, 9),
+                          refundable / math.pow(10, 9),
+                          nonrefundable / math.pow(10, 9),
+                          revenue1 / math.pow(10, 9)])
+            calc.increment_year()
+            base_calc.increment_year()
+
+        df = DataFrame(table, row_years,
+                       ["Returns (#m)", "AGI ($b)", "Itemizers (#m)",
+                        "Itemized Deduction ($b)",
+                        "Standard Deduction Filers (#m)",
+                        "Standard Deduction ($b)", "Personal Exemption ($b)",
+                        "Taxable income ($b)", "Regular Tax ($b)",
+                        "AMT income ($b)", "AMT amount ($b)",
+                        "AMT number (#m)", "Tax before credits ($b)",
+                        "refundable credits ($b)",
+                        "nonrefundable credits ($b)",
+                        "ospctax ($b)"])
+        df = df.transpose()
+        pd.options.display.float_format = '{:8,.1f}'.format
+
+        return df
