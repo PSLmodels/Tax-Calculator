@@ -1410,7 +1410,7 @@ def RefAmOpp(_cmp, c87521, _num, c00100, EDCRAGE, c87668):
 @iterate_jit(nopython=True)
 def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
             e07240, e07960, e07260, e07300, e07700, e07250, t07950, c05800,
-            _precrd, ETC_pe_Single, _xlin3, _xlin6, c87668, c87620):
+            _precrd, ETC_pe_Single, _xlin3, _xlin6, c87668, c87620, e07220):
 
     # Nonrefundable Education Credits
     # Form 8863 Tentative Education Credits
@@ -1434,7 +1434,7 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
 
     _xlin3 = c87668 + c87620
     _xlin6 = max(0, c05800 - (e07300 + c07180 + e07200))
-    c07230 = min(_xlin3, _xlin6)
+    # c07230 = min(_xlin3, _xlin6)
 
     _ctc1 = c07180 + e07200 + c07230
 
@@ -1451,13 +1451,31 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
     c07220 = min(_precrd, max(0., _ctctax))
     # lt tax owed
 
-    return (c87560, c87570, c87580, c87590, c87600, c87610,
+    _avail = c05800
+    c07180 = min(c07180, _avail)
+    _avail = _avail - c07180
+    _avail = max(0, _avail - e07200)
+    c07300 = min(e07300, _avail)
+    _avail = _avail - c07300
+    c07230 = min(c07230, _avail)
+    _avail = _avail - c07230
+    c07240 = min(e07240, _avail)
+    _avail = _avail - c07240
+    c07260 = min(e07260, _avail)
+    _avail = _avail - c07260
+    c07600 = min(e07600, _avail)
+    _avail = _avail - c07600
+    c07220 = min(e07220, _avail)
+    _avail = _avail - c07220
+    # Allocate credits to tax in order on the tax form
+
+    return (c87560, c87570, c87580, c87590, c87600, c87610, c07300, c07600,
             c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220, c07230)
 
 
 @iterate_jit(nopython=True, puf=True)
-def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
-           _exact, e82880, ACTC_Income_thd, ACTC_rt, SS_Earnings_c,
+def AddCTC(_nctcr, _precrd, _earned, c07220, e00200, e82882, e30100, _sey,
+           _setax, _exact, e82880, ACTC_Income_thd, ACTC_rt, SS_Earnings_c,
            ALD_SelfEmploymentTax_HC, e03260, e09800, c59660, e11200, e59680,
            e59700, e59720, e11070, e82915, e82940, c82940,
            ACTC_ChildNum, puf):
@@ -1469,77 +1487,49 @@ def AddCTC(_nctcr, _precrd, c07220, e00200, e82882, e30100, _sey, _setax,
     # Part I of 2005 form 8812
     if _nctcr > 0:
         c82925 = _precrd
-
         c82930 = c07220
-
         c82935 = c82925 - c82930
-
         # CTC not applied to tax
-
         c82880 = max(0., e00200 + e82882 + e30100 + max(0., _sey) -
                      0.5 * _setax)
+        c82880 = max(0, _earned)
         if _exact == 1:
             c82880 = e82880
-
         h82880 = c82880
-
         c82885 = max(0., c82880 - ACTC_Income_thd)
-
         c82890 = ACTC_rt * c82885
-
-    else:
-        c82925, c82930, c82935, c82880, h82880, c82885, c82890 = (0., 0., 0.,
-                                                                  0., 0., 0.,
-                                                                  0.)
+    # else:
+    #    c82925, c82930, c82935, c82880, h82880, c82885, c82890 = (0., 0., 0.,
+    #                                                              0., 0., 0.,
+    #                                                              0.)
 
     # Part II of 2005 form 8812
 
     if _nctcr >= ACTC_ChildNum and c82890 < c82935:
         c82900 = 0.0765 * min(SS_Earnings_c, c82880)
-
         c82905 = float((1 - ALD_SelfEmploymentTax_HC) * e03260 + e09800)
-
         c82910 = c82900 + c82905
-
         c82915 = c59660 + e11200
-
         c82920 = max(0., c82910 - c82915)
         c82937 = max(c82890, c82920)
-
-    else:
-
-        c82900, c82905, c82910, c82915, c82920, c82937 = 0., 0., 0., 0., 0., 0.
+    # else:
+    #   c82900, c82905, c82910, c82915, c82920, c82937 = 0., 0., 0., 0., 0., 0.
 
     # Part II of 2005 form 8812
-    if _nctcr > 2 and c82890 >= c82935:
-        c82940 = c82935
-
-    if _nctcr > 2 and c82890 < c82935:
-        c82940 = min(c82935, c82937)
-
-    if _nctcr <= 2 and c82890 > 0:
-        c82940 = min(c82890, c82935)
-
-    # if _nctcr > 0:
-    c11070 = c82940
-    # else:
-
-    #    c11070 = 0.
-
-    # WHY ARE WE SETTING AN 'E' VALUE HERE?
-    if puf and _nctcr > 0:
-        e59660 = float(e59680 + e59700 + e59720)
-    else:
-        e59660 = 0.
-
+        if _nctcr <= 2 and c82890 > 0:
+            c82940 = min(c82890, c82935)
+        if _nctcr > 2:
+            if c82890 >= c82935:
+                c82940 = c82935
+            else:
+                c82940 = min(c82935, c82937)
+        c11070 = c82940
     if e82915 > 0 and abs(e82940 - c82940) > 100:
         _othadd = e11070 - c11070
-    else:
-        _othadd = 0.
 
     return (c82925, c82930, c82935, c82880, h82880, c82885, c82890,
             c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070,
-            e59660, _othadd)
+            _othadd)
 
 
 def F5405(pm, rc):
@@ -1551,32 +1541,12 @@ def F5405(pm, rc):
 
 
 @iterate_jit(nopython=True, puf=True)
-def C1040(e07400, e07180, e07200, c07220, c07230, e07250,
-          e07600, e07260, c07970, e07300, x07400, e09720,
+def C1040(e07400, e07180, e07200, c07220, c07230, e07250, c07300,
+          e07600, e07260, c07970, e07300, x07400, e09720, c07600,
           e07500, e07700, e08000, e07240, e08001, e07960, e07970,
           SOIYR, e07980, c05800, e08800, e09900, e09400, e09800,
           e10000, e10100, e09700, e10050, e10075, e09805, e09710,
           c59660, c07180, _eitc, c59680, NIIT, _amed, puf):
-
-    # Allocate credits to tax in order on the tax form
-    _avail = c05800
-    c07180 = min(c07180, _avail)
-    _avail = _avail - c07180
-    _avail = max(0, _avail - e07200)
-    c07300 = min(e07300, _avail)
-    _avail = _avail - c07300
-    c07230 = min(c07230, _avail)
-    _avail = _avail - c07230
-    c07240 = min(e07240, _avail)
-    _avail = _avail - c07240
-    c07220 = min(c07220, _avail)
-    _avail = _avail - c07220
-    c07600 = min(e07600, _avail)
-    _avail = _avail - c07600
-    c07260 = min(e07260, _avail)
-    _avail = _avail - c07260
-
-    c59680 = min(_eitc, _avail)
 
     # Credits 1040 line 48
 
@@ -1604,8 +1574,8 @@ def C1040(e07400, e07180, e07200, c07220, c07230, e07250,
         e08795 = 0.
 
     # Tax before refundable credits
-    _othertax = e09900 + e09400 + e09800 + e10100 + NIIT + _amed
-    c09200 = _othertax + c08795 + e10000
+    _othertax = e09900 + e09400 + e09800 + e10000 + e10100 + NIIT
+    c09200 = _othertax + c08795
 
     # assuming year (FLPDYR) > 2009
     c09200 = c09200 + e09700 + e10050 + e10075 + e09805 + e09710 + e09720
@@ -1657,17 +1627,15 @@ def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _othertax):
 @iterate_jit(nopython=True)
 def OSPC_TAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
              e11450, e11500, e82040, e09900, e11400, e11300, e11200, e11100,
-             e11550, e09710, e09720):
+             e11550, e09710, e09720, e10000):
 
-    _refund = (c59660 + c11070 + c11600 + c10960 + c10950 + e11580 + e11450 +
-               e11500)
+    _refund = c59660 + c11070 + c10960 + c10950 + e11580
 
-    _ospctax = c09200 - _refund - e82040
+    _ospctax = c09200 - _refund
 
-    _payments = (e09900 + e11500 + e11400 + e11300 + e11200 + e11100 + e11550 +
-                 e11450)
+    _payments = e09710 + e09720 + e10000 + e11550
 
-    c10300 = max(0, _ospctax - e09710 - e09720 - _payments)
+    c10300 = max(0, _ospctax - _payments)
 
     # Ignore refundable partof _eitc
     # TODO Remove this _eitc
