@@ -55,7 +55,8 @@ def add_df(alldfs, df):
 def run():
     parm = Parameters()
     assert parm.current_year == 2013
-    recs = Records(tax_dta, start_year=2009)  # old PUF data emulates 2009 PUF
+    recs = Records(tax_dta, weights=WEIGHTS,
+                   start_year=2009)  # old PUF data emulates 2009 PUF
     calc = Calculator(params=parm, records=recs)
     assert calc.current_year == 2013
     totaldf = calc.calc_all_test()
@@ -80,7 +81,7 @@ def test_sequence():
 def test_make_Calculator():
     parm = Parameters()
     assert parm.current_year == 2013
-    recs = Records(tax_dta, start_year=2009)
+    recs = Records(tax_dta, weights=WEIGHTS, start_year=2009)
     calc = Calculator(params=parm, records=recs)
     assert calc.current_year == 2013
 
@@ -88,7 +89,7 @@ def test_make_Calculator():
 def test_make_Calculator_deepcopy():
     import copy
     parm = Parameters()
-    recs = Records(tax_dta, start_year=2009)
+    recs = Records(tax_dta, weights=WEIGHTS, start_year=2009)
     calc1 = Calculator(params=parm, records=recs)
     calc2 = copy.deepcopy(calc1)
 
@@ -109,7 +110,7 @@ def test_make_Calculator_with_policy_reform1():
     reform1 = {2013: {'_II_em': np.array([4000]), '_II_em_cpi': False}}
     params1.implement_reform(reform1)
     # create a Calculator object using this policy-reform
-    puf = Records(tax_dta, start_year=2009)
+    puf = Records(tax_dta, weights=WEIGHTS, start_year=2009)
     calc2 = Calculator(params=params1, records=puf)
     # check that Parameters object embedded in Calculator object is correct
     assert all(calc2.params._II_em == np.array([4000]))
@@ -123,7 +124,7 @@ def test_make_Calculator_with_policy_reform2():
                       "_STD_Aged_cpi": False}}
     params2.implement_reform(reform2)
     # create a Calculator object using this policy-reform
-    puf = Records(tax_dta, start_year=2009)
+    puf = Records(tax_dta, weights=WEIGHTS, start_year=2009)
     calc2 = Calculator(params=params2, records=puf)
     # check that Parameters object embedded in Calculator object is correct
     assert calc2.current_year == 2013
@@ -145,7 +146,7 @@ def test_make_Calculator_with_policy_reform3():
     reform3[2016]['_II_em_cpi'] = False
     params3.implement_reform(reform3)
     # create a Calculator object using this policy-reform
-    puf = Records(tax_dta, start_year=2009)
+    puf = Records(tax_dta, weights=WEIGHTS, start_year=2009)
     calc3 = Calculator(params=params3, records=puf)
     # check that Parameters object embedded in Calculator object is correct
     assert calc3.current_year == 2013
@@ -173,7 +174,7 @@ def test_make_Calculator_with_reform_after_start_year():
     reform[2016]['_II_em_cpi'] = False
     parm.implement_reform(reform)
     tax_dta = pd.read_csv(tax_dta_path, compression='gzip')
-    recs = Records(tax_dta, start_year=2009)
+    recs = Records(tax_dta, weights=WEIGHTS, start_year=2009)
     calc = Calculator(params=parm, records=recs)
     # compare actual and expected parameter values over all years
     exp_STD_Aged = np.array([[1500, 1200, 1200, 1500, 1500, 1200],
@@ -222,23 +223,23 @@ def test_make_Calculator_user_mods_with_cpi_flags(paramsfile):
 
 
 def test_make_Calculator_raises_on_no_params():
-    rec = Records(tax_dta, start_year=2013)
+    rec = Records(tax_dta, weights=WEIGHTS, start_year=2013)
     with pytest.raises(ValueError):
         calc = Calculator(records=rec)
 
 
 def test_Calculator_attr_access_to_params():
     params = Parameters()
-    puf = Records(tax_dta, start_year=2009)
+    puf = Records(tax_dta, weights=WEIGHTS, start_year=2009)
     calc = Calculator(params=params, records=puf)
     assert hasattr(calc.records, 'c01000')
     assert hasattr(calc.params, '_AMT_Child_em')
     assert hasattr(calc, 'params')
 
 
-def xtest_Calculator_create_distribution_table():
+def test_Calculator_create_distribution_table():
     params = Parameters()
-    puf = Records(tax_dta, start_year=2009)
+    puf = Records(tax_dta, weights=WEIGHTS, start_year=2009)
     calc = Calculator(params=params, records=puf)
     calc.calc_all()
     DIST_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
@@ -257,17 +258,17 @@ def xtest_Calculator_create_distribution_table():
     assert type(t2) == DataFrame
 
 
-def xtest_Calculator_create_difference_table():
+def test_Calculator_create_difference_table():
     # create current-law Parameters object and use to create Calculator calc1
     params1 = Parameters()
-    puf1 = Records(tax_dta, start_year=2009)
+    puf1 = Records(tax_dta, weights=WEIGHTS, start_year=2009)
     calc1 = Calculator(params=params1, records=puf1)
     calc1.calc_all()
     # create policy-reform Parameters object and use to create Calculator calc2
     params2 = Parameters()
     reform = {2013: {'_II_rt7': [0.45]}}
     params2.implement_reform(reform)
-    puf2 = Records(tax_dta, start_year=2009)
+    puf2 = Records(tax_dta, weights=WEIGHTS, start_year=2009)
     calc2 = Calculator(params=params2, records=puf2)
     # create difference table and check that it is a Pandas DataFrame
     dtable = create_difference_table(calc1, calc2, groupby="weighted_deciles")
