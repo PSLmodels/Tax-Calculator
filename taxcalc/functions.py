@@ -4,7 +4,7 @@ from pandas import DataFrame
 import math
 import numpy as np
 from .decorators import *
-
+import copy
 
 @iterate_jit(nopython=True)
 def FilingStatus(MARS):
@@ -1710,3 +1710,25 @@ def ExpandIncome(FICA_ss_trt, SS_Earnings_c, e00200, FICA_mc_trt, e02400,
                         employer_share_fica)
 
     return (_expanded_income)
+
+
+def BenefitCap(calc):
+    if calc.params.ID_DeductionBenefit_crt != 0:
+        nobenefits_calc = copy.deepcopy(calc)
+        
+        # hard code the reform
+        nobenefits_calc.params.ID_Medical_HC = nobenefits_calc.params.ID_BenefitCap_Switch[0]
+        nobenefits_calc.params.ID_StateLocalTax_HC = nobenefits_calc.params.ID_BenefitCap_Switch[1]
+        nobenefits_calc.params.ID_casualty_HC = nobenefits_calc.params.ID_BenefitCap_Switch[2]
+        nobenefits_calc.params.ID_Miscellaneous_HC = nobenefits_calc.params.ID_BenefitCap_Switch[3]
+        nobenefits_calc.params.ID_Mortgage_HC = nobenefits_calc.params.ID_BenefitCap_Switch[4]
+        nobenefits_calc.params.ID_Charity_HC = nobenefits_calc.params.ID_BenefitCap_Switch[5]
+        
+        nobenefits_calc.calc_one_year()
+        
+        tax_diff = np.where(nobenefits_calc.records._ospctax - calc.records._ospctax > 0, 
+                            nobenefits_calc.records._ospctax - calc.records._ospctax, 0)
+        cap = nobenefits_calc.params.ID_DeductionBenefit_crt * nobenefits_calc.records.c00100
+        calc.records._ospctax =  np.where(tax_diff < cap, 
+                                          tax_diff + calc.records._ospctax, 
+                                          cap + calc.records._ospctax)
