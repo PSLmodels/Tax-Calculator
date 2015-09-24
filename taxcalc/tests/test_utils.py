@@ -116,31 +116,25 @@ def test_expand_2D_variable_rates():
 
 
 def test_create_tables():
-    # Default Plans
-    # Create a Public Use File object
+    # create a Public Use File object
     cur_path = os.path.abspath(os.path.dirname(__file__))
     tax_dta_path = os.path.join(cur_path, "../../tax_all1991_puf.gz")
-    # Create a default Parameters object
-    params1 = Parameters(start_year=1991, inflation_rates=irates)
-    records1 = Records(tax_dta_path)
-    # Create a Calculator
+    # create a current-law Parameters object and Calculator object calc1
+    params1 = Parameters()
+    records1 = Records(tax_dta_path, start_year=2013)
     calc1 = Calculator(params=params1, records=records1)
     calc1.calc_all()
-
-    # User specified Plans
-    user_mods = '{"1991": {"_II_rt4": [0.56]}}'
-    params2 = Parameters(start_year=1991, inflation_rates=irates)
-    records2 = Records(tax_dta_path)
-    # Create a Calculator
-    calc2 = calculator(params=params2, records=records2, mods=user_mods)
-
+    # create a policy-reform Parameters object and Calculator object calc2
+    reform = {2013: {'_II_rt4': [0.56]}}
+    params2 = Parameters()
+    params2.implement_reform(reform)
+    records2 = Records(tax_dta_path, start_year=2013)
+    calc2 = Calculator(params=params2, records=records2)
     calc2.calc_all()
-
+    # create various distribution tables
     t2 = create_distribution_table(calc2, groupby="small_income_bins",
                                    result_type="weighted_sum")
-    # make large income bins table
     tdiff = create_difference_table(calc1, calc2, groupby="large_income_bins")
-    # make webapp income bins table
     tdiff_webapp = create_difference_table(calc1, calc2,
                                            groupby="webapp_income_bins")
 
@@ -312,8 +306,8 @@ def test_dist_table_sum_row():
     cur_path = os.path.abspath(os.path.dirname(__file__))
     tax_dta_path = os.path.join(cur_path, "../../tax_all1991_puf.gz")
     # Create a default Parameters object
-    params1 = Parameters(start_year=1991, inflation_rates=irates)
-    records1 = Records(tax_dta_path)
+    params1 = Parameters()
+    records1 = Records(tax_dta_path, start_year=2013)
     # Create a Calculator
     calc1 = Calculator(params=params1, records=records1)
     calc1.calc_all()
@@ -321,42 +315,35 @@ def test_dist_table_sum_row():
                                    result_type="weighted_sum")
     t2 = create_distribution_table(calc1, groupby="large_income_bins",
                                    result_type="weighted_sum")
-    assert(np.allclose(t1[-1:], t2[-1:]))
-
+    assert np.allclose(t1[-1:], t2[-1:])
     t3 = create_distribution_table(calc1, groupby="small_income_bins",
                                    result_type="weighted_avg")
-#    for col in t3:
-#        assert(t3.loc['sums', col] == 'n/a')
 
 
 def test_diff_table_sum_row():
     cur_path = os.path.abspath(os.path.dirname(__file__))
     tax_dta_path = os.path.join(cur_path, "../../tax_all1991_puf.gz")
-    # Create a default Parameters object
-    params1 = Parameters(start_year=1991, inflation_rates=irates)
-    records1 = Records(tax_dta_path)
-    # Create a Calculator
+    # create a current-law Parameters object and Calculator calc1
+    params1 = Parameters()
+    records1 = Records(tax_dta_path, start_year=2013)
     calc1 = Calculator(params=params1, records=records1)
     calc1.calc_all()
-
-    # User specified Plans
-    user_mods = '{"1991": {"_II_rt4": [0.56]}}'
-    params2 = Parameters(start_year=1991, inflation_rates=irates)
-    records2 = Records(tax_dta_path)
-    # Create a Calculator
-    calc2 = calculator(params=params2, records=records2, mods=user_mods)
+    # create a policy-reform Parameters object and Calculator calc2
+    reform = {2013: {'_II_rt4': [0.56]}}
+    params2 = Parameters()
+    params2.implement_reform(reform)
+    records2 = Records(tax_dta_path, start_year=2013)
+    calc2 = Calculator(params=params2, records=records2)
     calc2.calc_all()
-
+    # create two difference tables and compare their content
     tdiff1 = create_difference_table(calc1, calc2, groupby="small_income_bins")
     tdiff2 = create_difference_table(calc1, calc2, groupby="large_income_bins")
-
     non_digit_cols = ['mean', 'perc_inc', 'perc_cut', 'share_of_change']
     digit_cols = [x for x in tdiff1.columns.tolist() if
                   x not in non_digit_cols]
-
-    assert(np.allclose(tdiff1[digit_cols][-1:], tdiff2[digit_cols][-1:]))
-    assert(np.array_equal(tdiff1[non_digit_cols][-1:],
-           tdiff2[non_digit_cols][-1:]))
+    assert np.allclose(tdiff1[digit_cols][-1:], tdiff2[digit_cols][-1:])
+    assert np.array_equal(tdiff1[non_digit_cols][-1:],
+                          tdiff2[non_digit_cols][-1:])
 
 
 def test_expand_2D_already_filled():
