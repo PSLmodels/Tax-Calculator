@@ -8,9 +8,8 @@ from numpy.testing import assert_array_equal
 import pandas as pd
 import tempfile
 import pytest
-from numba import jit, vectorize, guvectorize
-from taxcalc import *
-import copy
+from taxcalc import Parameters, Records, Calculator, expand_array
+from taxcalc import create_distribution_table, create_difference_table
 
 
 # use simulated 1991 PUF to emulate private 2009 PUF
@@ -83,6 +82,7 @@ def test_make_Calculator_deepcopy():
     recs = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
     calc1 = Calculator(params=parm, records=recs)
     calc2 = copy.deepcopy(calc1)
+    assert isinstance(calc2, Calculator)
 
 
 def test_make_Calculator_files_to_ctor(paramsfile):
@@ -118,11 +118,10 @@ def test_make_Calculator_with_policy_reform():
 def test_make_Calculator_with_multiyear_reform():
     # create a Parameters object and apply a policy reform
     params3 = Parameters()
-    reform3 = {2015: {}, 2016: {}}
+    reform3 = {2015: {}}
     reform3[2015]['_STD_Aged'] = [[1600, 1300, 1600, 1300, 1600, 1300]]
-    reform3[2015]['_II_em'] = [5000]
-    reform3[2016]['_II_em'] = [6000]
-    reform3[2016]['_II_em_cpi'] = False
+    reform3[2015]['_II_em'] = [5000, 6000]  # reform values for 2015 and 2016
+    reform3[2015]['_II_em_cpi'] = False
     params3.implement_reform(reform3)
     # create a Calculator object using this policy-reform
     puf = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
@@ -220,20 +219,20 @@ def test_Calculator_create_distribution_table():
     puf = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
     calc = Calculator(params=params, records=puf)
     calc.calc_all()
-    DIST_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
+    dist_labels = ['Returns', 'AGI', 'Standard Deduction Filers',
                    'Standard Deduction', 'Itemizers',
                    'Itemized Deduction', 'Personal Exemption',
                    'Taxable Income', 'Regular Tax', 'AMTI', 'AMT Filers',
                    'AMT', 'Tax before Credits', 'Non-refundable Credits',
                    'Tax before Refundable Credits', 'Refundable Credits',
                    'Revenue']
-    t1 = create_distribution_table(calc, groupby="weighted_deciles",
-                                   result_type="weighted_sum")
-    t1.columns = DIST_LABELS
-    t2 = create_distribution_table(calc, groupby="small_income_bins",
-                                   result_type="weighted_avg")
-    assert type(t1) == DataFrame
-    assert type(t2) == DataFrame
+    dt1 = create_distribution_table(calc, groupby="weighted_deciles",
+                                    result_type="weighted_sum")
+    dt1.columns = dist_labels
+    dt2 = create_distribution_table(calc, groupby="small_income_bins",
+                                    result_type="weighted_avg")
+    assert isinstance(dt1, pd.DataFrame)
+    assert isinstance(dt2, pd.DataFrame)
 
 
 def test_Calculator_create_difference_table():
@@ -250,7 +249,7 @@ def test_Calculator_create_difference_table():
     calc2 = Calculator(params=params2, records=puf2)
     # create difference table and check that it is a Pandas DataFrame
     dtable = create_difference_table(calc1, calc2, groupby="weighted_deciles")
-    assert type(dtable) == DataFrame
+    assert isinstance(dtable, pd.DataFrame)
 
 
 def test_diagnostic_table():
