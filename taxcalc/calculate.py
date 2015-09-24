@@ -186,25 +186,25 @@ class Calculator(object):
         the two.
         """
 
-        income_type = getattr(self, income_type_string)
+        income_type = getattr(self.records, income_type_string)
 
         # Calculate the base level of taxes.
         self.calc_all()
-        taxes_base = np.copy(self._ospctax)
+        taxes_base = np.copy(self.records._ospctax)
 
         # Calculate the tax change with a marginal increase in income.
-        setattr(self, income_type_string, income_type + diff)
+        setattr(self.records, income_type_string, income_type + diff)
         self.calc_all()
-        delta_taxes_up = self._ospctax - taxes_base
+        delta_taxes_up = self.records._ospctax - taxes_base
 
         # Calculate the tax change with a marginal decrease in income.
-        setattr(self, income_type_string, income_type - diff)
+        setattr(self.records, income_type_string, income_type - diff)
         self.calc_all()
-        delta_taxes_down = taxes_base - self._ospctax
+        delta_taxes_down = taxes_base - self.records._ospctax
 
         # Reset the income_type to its starting point to avoid
         # unintended consequences.
-        setattr(self, income_type_string, income_type)
+        setattr(self.records, income_type_string, income_type)
         self.calc_all()
 
         # Choose the more modest effect of either adding or subtracting income
