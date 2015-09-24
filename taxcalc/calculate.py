@@ -22,47 +22,6 @@ def add_df(alldfs, df):
             alldfs[dup_index] = df[col]
 
 
-def calculator(params, records, mods="", **kwargs):
-    update_mods = {}
-    if mods:
-        if isinstance(mods, str):
-            import json
-            dd = json.loads(mods)
-            dd = {int(k): (np.array(v) if type(v) == list else v)
-                  for k, v in dd.items()}
-            update_mods.update(dd)
-        else:
-            update_mods.update(mods)
-
-    final_mods = toolz.merge_with(toolz.merge, update_mods,
-                                  {params.current_year: kwargs})
-
-    params.implement_reform(final_mods)
-
-    if final_mods:
-        max_yr = max(yr for yr in final_mods)
-    else:
-        max_yr = 0
-    if (params.current_year < max_yr):
-        msg = ("Modifications are for year {0} and Parameters are for"
-               " year {1}. Parameters will be advanced to year {0}")
-        print(msg.format(max_yr, params.current_year))
-
-    while params.current_year < max_yr:
-        params.set_year(params.current_year + 1)
-
-    if (records.current_year < max_yr):
-        msg = ("Modifications are for year {0} and Records are for"
-               " year {1}. Records will be advanced to year {0}")
-        print(msg.format(max_yr, records.current_year))
-
-    while records.current_year < max_yr:
-        records.increment_year()
-
-    calc = Calculator(params, records)
-    return calc
-
-
 class Calculator(object):
 
     def __init__(self, params=None, records=None, sync_years=True, **kwargs):
