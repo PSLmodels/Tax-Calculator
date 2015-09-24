@@ -13,12 +13,12 @@ from taxcalc import *
 import copy
 
 
-# use 1991 PUF to emulate private 2009 PUF
+# use simulated 1991 PUF to emulate private 2009 PUF
 TAX_DTA_PATH = os.path.join(CUR_PATH, '../../tax_all1991_puf.gz')
 TAX_DTA = pd.read_csv(TAX_DTA_PATH, compression='gzip')
 # PUF-fix-up: MIdR needs to be type int64 to match PUF
 TAX_DTA['midr'] = TAX_DTA['midr'].astype('int64')
-# specify WEIGHTS appropriate for 1991 PUF
+# specify WEIGHTS appropriate for simulated 1991 PUF
 WEIGHTS_FILENAME = '../../WEIGHTS_testing.csv'
 WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
 WEIGHTS = pd.read_csv(WEIGHTS_PATH)
@@ -284,7 +284,7 @@ def test_make_Calculator_increment_years_first():
     reform[2016]['_II_em'] = [6000]
     reform[2016]['_II_em_cpi'] = False
     params.implement_reform(reform)
-    # create Records object by reading old PUF and saying it is 2009 data
+    # create Records object by reading 1991 data and saying it is 2009 data
     tax_dta = pd.read_csv(TAX_DTA_PATH, compression='gzip')
     puf = Records(tax_dta, weights=WEIGHTS, start_year=2009)
     # create Calculator object with Parameters object as modified by reform
