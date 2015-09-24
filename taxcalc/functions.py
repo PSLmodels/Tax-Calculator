@@ -813,6 +813,7 @@ def TaxGains(e00650, c01000, c04800, e01000, c23650, e23250, e01100, e58990,
 
 # TODO should we return c00650 instead of e00650?? Would need to change tests
 
+
 @iterate_jit(nopython=True)
 def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
         NIIT):
@@ -823,6 +824,7 @@ def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
     else:
         NIIT = 0
     return NIIT
+
 
 @iterate_jit(nopython=True, puf=True)
 def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
@@ -1068,11 +1070,11 @@ def F2441(_earned, _fixeic, e59560, MARS, f2441, DCC_c,
 
 
 @iterate_jit(nopython=True)
-def DepCareBen(c32800, _cmp, MARS, c32880, c32890, e33420, e33430, e33450,
-               e33460, e33465, e33470, _sep, _dclim, e32750, e32775,
-               _earned, f2441):
+def DepCareBen(c32800, _cmp, f2441, MARS, c32880, c32890, e33420, e33430,
+               e33450, e33460, e33465, e33470, _sep, _dclim, e32750, e32775,
+               _earned):
 
-    # Part III ofdependent care benefits
+    # Part III of dependent care benefits
     if f2441 != 0 and MARS == 2:
         _seywage = min(c32880, c32890, e33420 + e33430 - e33450, e33460)
     else:
@@ -1082,7 +1084,7 @@ def DepCareBen(c32800, _cmp, MARS, c32880, c32890, e33420, e33430, e33450,
     if _cmp == 1 and MARS != 2:  # this is same as above, why?
         _seywage = min(c32880, c32890, e33420 + e33430 - e33450, e33460)
 
-    if _f2441 != 0:
+    if f2441 != 0:
         c33465 = e33465
         c33470 = e33470
         c33475 = max(0., min(_seywage, 5000 / _sep) - c33470)
@@ -1409,8 +1411,9 @@ def RefAmOpp(_cmp, c87521, _num, c00100, EDCRAGE, c87668):
 
 @iterate_jit(nopython=True)
 def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
-            e07240, e07960, e07260, e07300, e07700, e07250, t07950, c05800,
-            _precrd, ETC_pe_Single, _xlin3, _xlin6, c87668, c87620, e07220):
+            e07600, e07240, e07960, e07260, e07300, e07700, e07250, t07950,
+            c05800, _precrd, ETC_pe_Single, _xlin3, _xlin6, c87668, c87620,
+            e07220):
 
     # Nonrefundable Education Credits
     # Form 8863 Tentative Education Credits
@@ -1470,7 +1473,8 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
     # Allocate credits to tax in order on the tax form
 
     return (c87560, c87570, c87580, c87590, c87600, c87610, c07300, c07600,
-            c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220, c07230)
+            c07240, c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220,
+            c07230)
 
 
 @iterate_jit(nopython=True, puf=True)
@@ -1541,7 +1545,7 @@ def F5405(pm, rc):
 
 
 @iterate_jit(nopython=True, puf=True)
-def C1040(e07400, e07180, e07200, c07220, c07230, e07250, c07300,
+def C1040(e07400, e07180, e07200, c07220, c07230, e07250, c07300, c07240,
           e07600, e07260, c07970, e07300, x07400, e09720, c07600,
           e07500, e07700, e08000, e07240, e08001, e07960, e07970,
           SOIYR, e07980, c05800, e08800, e09900, e09400, e09800,
