@@ -121,7 +121,7 @@ def CapGains(e23250, e22250, e23660, _sep, _feided, FEI_ec_c,
 def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, SS_thd50, SS_thd85,
                SS_percentage1, SS_percentage2):
 
-    if SSIND != 0 or MARS == 3 or MARS == 6:
+    if SSIND == 2 or MARS == 3 or MARS == 6:
         c02500 = e02500
     elif _ymod < SS_thd50[MARS - 1]:
         c02500 = 0.
@@ -353,7 +353,7 @@ def EI_FICA(e00900, e02100, SS_Earnings_c, e00200, e11055, e00250, e30100,
 
     c11055 = e11055
 
-    _earned = max(0, e00200 + e00250 + e11055 + e30100 + _sey - _seyoff)
+    _earned = max(0, e00200 + e00250 + c11055 + e30100 + _sey - _seyoff)
 
     return (_sey, _fica, _setax, _seyoff, c11055, _earned)
 
@@ -1045,14 +1045,14 @@ def F2441(_earned, _fixeic, e59560, MARS, f2441, DCC_c,
         c32880 = _earned
         c32890 = _earned
 
-    if f2441 == 0:
-        _ncu13 = 0
-        if FLPDYR - CDOB1 >= 0 and FLPDYR - CDOB1 <= 12:
-            _ncu13 = _ncu13 + 1
-        if FLPDYR - CDOB2 >= 0 and FLPDYR - CDOB2 <= 12:
-            _ncu13 = _ncu13 + 1
-    else:
-        _ncu13 = f2441
+    # if f2441 == 0:
+    #    _ncu13 = 0
+    #    if FLPDYR - CDOB1 >= 0 and FLPDYR - CDOB1 <= 12:
+    #        _ncu13 = _ncu13 + 1
+    #    if FLPDYR - CDOB2 >= 0 and FLPDYR - CDOB2 <= 12:
+    #        _ncu13 = _ncu13 + 1
+    # else:
+    _ncu13 = f2441
 
     _dclim = min(_ncu13, 2.) * DCC_c
 
@@ -1465,7 +1465,7 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
     _avail = _avail - c07260
     c07600 = min(e07600, _avail)
     _avail = _avail - c07600
-    c07220 = min(e07220, _avail)
+    c07220 = min(c07220, _avail)
     _avail = _avail - c07220
     # Allocate credits to tax in order on the tax form
 
@@ -1557,7 +1557,7 @@ def C1040(e07400, e07180, e07200, c07220, c07230, e07250, c07300,
 
     y07100 = c07100
 
-    c07100 += e07700 + c07230 + c07970 + e07240 + e07260 + e08001 + e07960
+    c07100 += e07700 + c07230 + c07970 + c07240 + e07260 + e08001 + e07960
 
     x07100 = c07100
     c07100 = min(c07100, c05800)
