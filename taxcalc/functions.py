@@ -165,7 +165,7 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
 
 
 @iterate_jit(nopython=True, puf=True)
-def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
+def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900,
             e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
             e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
             MARS, _sep, c00100, ID_ps, ID_Medical_frt, ID_Casualty_frt,
@@ -248,9 +248,7 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     c17000 = max(0, e17500 - c17750)
 
     # State and Local Income Tax, or Sales Tax
-    _sit1 = max(e18400, e18425)
-    _sit = max(_sit1, 0)
-    _statax = max(_sit, e18450)
+    _statax = max(e18400, 0)
 
     # Other Taxes (including state and local)
     c18300 = _statax + e18500 + e18800 + e18900
@@ -321,7 +319,7 @@ def ItemDed(_posagi, e17500, e18400, e18425, e18450, e18500, e18800, e18900,
     c37703 = float(c37703)
     c20500 = float(c20500)
 
-    return (c17750, c17000, _sit1, _sit, _statax, c18300, c37703, c20500,
+    return (c17750, c17000, _statax, c18300, c37703, c20500,
             c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
             _nonlimited, _limitratio, c04470, c21040)
 
@@ -808,10 +806,10 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
          e60720, e60430, e60500, e60340, e60680, e60600, e60405,
          e60440, e60420, e60410, e61400, e60660, e60480,
          e62000, e60250, _cmp, _standard, e04470, e17500,
-         f6251, e62100, e21040, _sit, e20800, c00100,
+         f6251, e62100, e21040, e20800, c00100,
          c04470, c17000, e18500, c20800, c21040,
          DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700,
-         e00100, e24515, x62730, x60130,
+         e00100, e24515, x62730, x60130, e18400,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
          II_brk6, MARS, _sep, II_brk2, AMT_Child_em, AMT_CG_rt1,
          AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516,
@@ -824,7 +822,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     c60260 = e00700 + x60260
     # QUESTION: c63100 variable is reassigned below before use, is this a BUG?
     c63100 = max(0., _taxbc - e07300)
-    c60200 = min(c17000, AMT_prt * _posagi)
+    c60200 = min(c17000, 0.025 * _posagi)
     c60240 = (1 - ID_StateLocalTax_HC) * c18300 + x60240
     c60220 = c20800 + x60220
     c60130 = c21040 + x60130
@@ -862,8 +860,8 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     if (puf and ((_standard == 0 or (_exact == 1 and e04470 > 0)))):
         c62100 = (c00100 - c04470 + min(c17000, 0.025 * max(0., c00100)) +
-                  (1 - ID_StateLocalTax_HC) * _sit + e18500 - c60260 + c20800 -
-                  c21040)
+                  (1 - ID_StateLocalTax_HC) * max(0, e18400) +
+                  e18500 - c60260 + c20800 - c21040)
         c62100 += _cmbtp
 
     if (puf and ((_standard > 0 and f6251 == 1))):
@@ -926,7 +924,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
         _amtfei = 0.
 
-    c62780 = 0.26 * _alminc + 0.02 * \
+    c62780 = AMT_trt1 * _alminc + AMT_trt2 * \
         max(0., _alminc - AMT_tthd / _sep) - _amtfei
 
     if f6251 != 0:
@@ -943,10 +941,12 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     _ngamty = max(0., _alminc - c62740)
 
-    c62745 = 0.26 * _ngamty + 0.02 * \
+    c62745 = AMT_trt1 * _ngamty + AMT_trt2 * \
         max(0., _ngamty - AMT_tthd / _sep)
 
     y62745 = AMT_tthd / _sep
+
+    # Capital Gain for AMT
 
     _tamt2 = 0.
 

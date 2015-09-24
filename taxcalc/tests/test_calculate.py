@@ -72,17 +72,7 @@ def run(puf=True):
                                            "../../exp_results.csv.gz"),
                               compression='gzip')
     # Fix-up to bad column name in expected data
-    exp_results.rename(columns=lambda x: x.replace('_phase2', '_phase2_i'),
-                       inplace=True)
     exp_set = set(exp_results.columns)
-    # Add new col names to exp_set
-    exp_set.add('_expanded_income')
-    exp_set.add('_ospctax')
-    exp_set.add('_refund')
-    exp_set.add('_othertax')
-    exp_set.add('NIIT')
-    exp_set.add('_amed')
-    exp_set.add('_compitem')
     cur_set = set(totaldf.columns)
 
     assert(exp_set == cur_set)
@@ -115,16 +105,6 @@ def test_make_Calculator_deepcopy():
     params = Parameters(start_year=1991, inflation_rates=irates)
     calc = Calculator(params, puf)
     calc2 = copy.deepcopy(calc)
-
-
-def test_make_Calculator_from_files(paramsfile):
-    with open(paramsfile.name) as pfile:
-        params = json.load(pfile)
-    ppo = Parameters(parameter_dict=params, start_year=1991,
-                     num_years=len(irates), inflation_rates=irates)
-    calc = Calculator(params=ppo, records=tax_dta_path,
-                      start_year=1991, inflation_rates=irates)
-    assert calc
 
 
 def test_make_Calculator_files_to_ctor(paramsfile):
@@ -255,11 +235,10 @@ def test_make_Calculator_user_mods_with_cpi_flags(paramsfile):
     assert_array_equal(act_almsep, exp_almsep)
 
 
-def test_make_Calculator_empty_params_is_default_params():
-    ppo = Parameters()
+def test_make_Calculator_raises_on_no_params():
     rec = Records(tax_dta, start_year=2013)
-    calc = Calculator(params=ppo, records=rec)
-    assert calc
+    with pytest.raises(ValueError):
+        calc = Calculator(records=rec)
 
 
 def test_Calculator_attr_access_to_params():
