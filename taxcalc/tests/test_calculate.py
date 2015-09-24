@@ -95,19 +95,7 @@ def test_make_Calculator_files_to_ctor(paramsfile):
     assert calc
 
 
-def test_make_Calculator_with_policy_reform1():
-    # create a Parameters object and apply a policy reform
-    params1 = Parameters()
-    reform1 = {2013: {'_II_em': np.array([4000]), '_II_em_cpi': False}}
-    params1.implement_reform(reform1)
-    # create a Calculator object using this policy-reform
-    puf = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
-    calc2 = Calculator(params=params1, records=puf)
-    # check that Parameters object embedded in Calculator object is correct
-    assert all(calc2.params._II_em == np.array([4000]))
-
-
-def test_make_Calculator_with_policy_reform2():
+def test_make_Calculator_with_policy_reform():
     # create a Parameters object and apply a policy reform
     params2 = Parameters()
     reform2 = {2013: {'_II_em': np.array([4000]), '_II_em_cpi': False,
@@ -127,7 +115,7 @@ def test_make_Calculator_with_policy_reform2():
                        np.array([1600, 1300, 1300, 1600, 1600, 1300]))
 
 
-def test_make_Calculator_with_policy_reform3():
+def test_make_Calculator_with_multiyear_reform():
     # create a Parameters object and apply a policy reform
     params3 = Parameters()
     reform3 = {2015: {}, 2016: {}}
