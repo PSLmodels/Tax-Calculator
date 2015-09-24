@@ -116,9 +116,10 @@ def test_expand_2D_variable_rates():
 
 
 def test_create_tables():
-    # create a Public Use File object
+    # specify filename of 1991 PUF that is used to emulate a more recent PUF
     cur_path = os.path.abspath(os.path.dirname(__file__))
     tax_dta_path = os.path.join(cur_path, "../../tax_all1991_puf.gz")
+
     # create a current-law Parameters object and Calculator object calc1
     params1 = Parameters()
     records1 = Records(tax_dta_path, start_year=2013)
