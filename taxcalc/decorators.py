@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import inspect
 from .parameters import Parameters
+from .records import Records
 from numba import jit, vectorize, guvectorize
 from functools import wraps
 from six import StringIO
@@ -265,7 +266,7 @@ def apply_jit(dtype_sig_out, dtype_sig_in, parameters=None, **kwargs):
     return make_wrapper
 
 
-def iterate_jit(parameters=None, **kwargs):
+def iterate_jit(parameters=None, first_arg=None, second_arg=None, **kwargs):
     """
     make a decorator that takes in a _calc-style function, create a
     function that handles the "high-level" function and the "_apply"
@@ -276,7 +277,18 @@ def iterate_jit(parameters=None, **kwargs):
     if not parameters:
         parameters = []
 
+    if first_arg:
+        first_arg = set(first_arg)
+    else:
+        first_arg = set()
+
+    if second_arg:
+        second_arg = set(second_arg)
+    else:
+        second_arg = set()
+
     def make_wrapper(func):
+
 
         # Step 1. Wrap this function in apply_jit
         # from apply_jit
@@ -327,30 +339,34 @@ def iterate_jit(parameters=None, **kwargs):
                                                do_jit=True,
                                                **kwargs_for_jit)
 
+        #in_arrays = []
+        #out_arrays = []
+        pm_or_pf = []
+        param_inst = Parameters()
+        rec_names = set((name[0] for name in Records.NAMES)) | set((name for name in Records.ZEROED_NAMES)) | set(['e22250', 'e04470', 'e23250', 'e25470', 'e08000', 'e60100', 'e27860', 'SOIYR', '_cmbtp_itemizer', 'cmbtp_standard', '_compitem', '_txpyers', '_num_extra', '_puf_year', '_num']) | second_arg
+        for farg in all_out_args + in_args:
+            if hasattr(param_inst, farg) or farg in first_arg:
+                #in_arrays.append(getattr(args[0], farg))
+                pm_or_pf.append("pm")
+                #elif hasattr(rec_inst, farg):
+            elif farg in rec_names:
+                #in_arrays.append(getattr(args[1], farg))
+                pm_or_pf.append("pf")
+            elif farg not in kwargs_for_func:
+                raise ValueError("Unknown arg: " + farg)
+
+        # Create the high level function
+        high_level_func = create_toplevel_function_string(all_out_args,
+                                                            list(in_args),
+                                                            pm_or_pf,
+                                                            kwargs_for_func)
+        func_code = compile(high_level_func, "<string>", "exec")
+        fakeglobals = {}
+        eval(func_code, {"applied_f": applied_jitted_f}, fakeglobals)
+        high_level_fn = fakeglobals['hl_func']
+
+
         def wrapper(*args, **kwargs):
-            in_arrays = []
-            out_arrays = []
-            pm_or_pf = []
-            for farg in all_out_args + in_args:
-                if hasattr(args[0], farg):
-                    in_arrays.append(getattr(args[0], farg))
-                    pm_or_pf.append("pm")
-                elif hasattr(args[1], farg):
-                    in_arrays.append(getattr(args[1], farg))
-                    pm_or_pf.append("pf")
-                elif farg not in kwargs_for_func:
-                    raise ValueError("Unknown arg: " + farg)
-
-            # Create the high level function
-            high_level_func = create_toplevel_function_string(all_out_args,
-                                                              list(in_args),
-                                                              pm_or_pf,
-                                                              kwargs_for_func)
-            func_code = compile(high_level_func, "<string>", "exec")
-            fakeglobals = {}
-            eval(func_code, {"applied_f": applied_jitted_f}, fakeglobals)
-            high_level_fn = fakeglobals['hl_func']
-
             ans = high_level_fn(*args, **kwargs)
             return ans
 
