@@ -179,7 +179,7 @@ def Magic(pm, pf):
                      columns=header)
 
 
-@iterate_jit(nopython=True)
+@iterate_jit(second_arg=['x', 'y', 'z'], first_arg=['a', 'b'], nopython=True)
 def Magic_calc2(x, y, z):
     a = x + y
     b = x + y + z
@@ -199,7 +199,7 @@ def bar(MARS):
     return _sep
 
 
-@iterate_jit(nopython=True)
+@iterate_jit(second_arg=['a', 'b', 'c', 'd', 'e', 'f'], nopython=True)
 def ret_everything(a, b, c, d, e, f):
 
     c = a + b
@@ -262,7 +262,8 @@ def test_ret_everything_iterate_jit():
     assert_frame_equal(ans, exp)
 
 
-@iterate_jit(parameters=['puf'], nopython=True, puf=True)
+#@iterate_jit(parameters=['puf'], nopython=True, puf=True)
+@iterate_jit(parameters=['puf'], second_arg=['x','y','z'], first_arg=['a','b'], nopython=True, puf=True)
 def Magic_calc3(x, y, z, puf):
     a = x + y
     if (puf):
@@ -300,7 +301,7 @@ def test_function_takes_kwarg_nondefault_value():
     assert_frame_equal(ans, exp)
 
 
-@iterate_jit(nopython=True, puf=True)
+@iterate_jit(first_arg=['a', 'b'], second_arg=['x', 'y', 'z'], nopython=True, puf=True)
 def Magic_calc4(x, y, z, puf):
     a = x + y
     if (puf):
@@ -324,7 +325,7 @@ def test_function_no_parameters_listed():
     assert_frame_equal(ans, exp)
 
 
-@iterate_jit(parameters=['w'], nopython=True, puf=True)
+@iterate_jit(parameters=['w'], first_arg=['a', 'b', 'w'], second_arg=['x', 'y', 'z'], nopython=True, puf=True)
 def Magic_calc5(w, x, y, z, puf):
     a = x + y
     if (puf):
