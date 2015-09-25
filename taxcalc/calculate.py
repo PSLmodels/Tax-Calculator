@@ -134,7 +134,7 @@ class Calculator(object):
         DEITC(self.params, self.records)
         OSPC_TAX(self.params, self.records)
         ExpandIncome(self.params, self.records)
-    
+
     def calc_all(self):
         self.calc_one_year()
         BenefitCap(self)
