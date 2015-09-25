@@ -404,7 +404,7 @@
         "row_label": ["2013"],
         "cpi_inflated": true,
         "col_label": ["Medical", "StateLocal", "Casualty", "Miscellaneous", "Interest", "Charity"],        
-        "value":    [[1, 	   1,             1,             1,             1,         1]]
+        "value":    [[true, 	   true,           true,          true,           true,      true]]
     },
      "_EITC_rt":{
         "long_name": "Earned income credit rate",
@@ -1019,7 +1019,7 @@
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value":     [1] 
+        "value":     [1.0] 
     },
     "_NIIT_trt":{
         "long_name": "Net Investment Income Tax rate (UIMC)",

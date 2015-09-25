@@ -1719,18 +1719,19 @@ def BenefitCap(calc):
 
         # hard code the reform
         nobenefits_calc.params.ID_Medical_HC = \
-            nobenefits_calc.params.ID_BenefitCap_Switch[0]
+            int(nobenefits_calc.params.ID_BenefitCap_Switch[0])
         nobenefits_calc.params.ID_StateLocalTax_HC = \
-            nobenefits_calc.params.ID_BenefitCap_Switch[1]
+            int(nobenefits_calc.params.ID_BenefitCap_Switch[1])
         nobenefits_calc.params.ID_casualty_HC = \
-            nobenefits_calc.params.ID_BenefitCap_Switch[2]
+            int(nobenefits_calc.params.ID_BenefitCap_Switch[2])
         nobenefits_calc.params.ID_Miscellaneous_HC = \
-            nobenefits_calc.params.ID_BenefitCap_Switch[3]
+            int(nobenefits_calc.params.ID_BenefitCap_Switch[3])
         nobenefits_calc.params.ID_Mortgage_HC = \
-            nobenefits_calc.params.ID_BenefitCap_Switch[4]
+            int(nobenefits_calc.params.ID_BenefitCap_Switch[4])
         nobenefits_calc.params.ID_Charity_HC = \
-            nobenefits_calc.params.ID_BenefitCap_Switch[5]
+            int(nobenefits_calc.params.ID_BenefitCap_Switch[5])
 
+        print(nobenefits_calc.params._ID_DeductionBenefit_crt)
         nobenefits_calc.calc_one_year()
 
         tax_diff = np.where(nobenefits_calc.records._ospctax -
@@ -1738,7 +1739,7 @@ def BenefitCap(calc):
                             nobenefits_calc.records._ospctax -
                             calc.records._ospctax, 0)
 
-        cap = nobenefits_calc.params.ID_DeductionBenefit_crt * \
+        cap = nobenefits_calc.params.ID_DeductionBenefit_crt *\
             nobenefits_calc.records.c00100
 
         calc.records._ospctax = np.where(tax_diff < cap,
