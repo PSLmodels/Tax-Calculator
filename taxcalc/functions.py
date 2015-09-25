@@ -507,10 +507,10 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
     c15200 = c04200
 
     # Compute the total standard deduction
-    # if (MARS == 3 or MARS == 6) and (MIDR == 1):
-    #    _standard = 0.
-    # else:
-    _standard = c04100 + c04200
+    if (MARS == 3 or MARS == 6) and (MIDR == 1):
+        _standard = 0.
+    else:
+        _standard = c04100 + c04200
 
     # ???
     if FDED == 1:
@@ -520,9 +520,6 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
 
     c04500 = c00100 - max(c04470, max(c04100, _standard + e37717))
     c04800 = max(0., c04500 - c04600 - e04805)
-
-    if (MARS == 3 or MARS == 6) and (MIDR == 1):
-        _standard = 0.
 
     # Check with Dan whether this is right!
     if c04470 > _standard:
@@ -828,7 +825,7 @@ def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
 
 @iterate_jit(nopython=True, puf=True)
 def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
-         e60300, e60860, e60100, e60840, e60630, e60550,
+         e60300, e60860, e60100, e60840, e60630, e60550, FDED,
          e60720, e60430, e60500, e60340, e60680, e60600, e60405,
          e60440, e60420, e60410, e61400, e60660, e60480,
          e62000, e60250, _cmp, _standard, e04470, e17500,
@@ -859,7 +856,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     #   _amtded = max(0., _amtded + c60000)
 
-    if _standard == 0 or (_exact == 1 and ((_amtded + e60290) > 0)):
+    if FDED == 1 or ((_amtded + e60290) > 0):
         _addamt = _amtded + e60290 - c60130
     else:
         _addamt = 0
@@ -935,7 +932,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     if (_cmp == 1 and f6251 == 1 and _exact == 1):
         c62600 = e62600
 
-    if _cmp == 1 and _exact == 0 and _agep < KT_c_Age and _agep != 0:
+    if _agep < KT_c_Age and _agep != 0:
         c62600 = min(c62600, _earned + AMT_Child_em)
 
     c62700 = max(0., c62100 - c62600)
