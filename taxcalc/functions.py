@@ -1731,7 +1731,6 @@ def BenefitCap(calc):
         nobenefits_calc.params.ID_Charity_HC = \
             int(nobenefits_calc.params.ID_BenefitCap_Switch[5])
 
-        print(nobenefits_calc.params._ID_DeductionBenefit_crt)
         nobenefits_calc.calc_one_year()
 
         tax_diff = np.where(nobenefits_calc.records._ospctax -
