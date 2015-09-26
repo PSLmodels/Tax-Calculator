@@ -1,11 +1,8 @@
 """
 This file reads input csv file and saves the variables
 """
-import math
-import copy
 import pandas as pd
 import numpy as np
-import os.path
 import os
 from numba import vectorize, float64
 from pkg_resources import resource_stream, Requirement
@@ -238,17 +235,17 @@ class Records(object):
                  data="puf.csv",
                  blowup_factors=blowup_factors_path,
                  weights=weights_path,
-                 start_year=None,
-                 **kwargs):
-
-        self.read(data)
-        self.read_blowup(blowup_factors)
-        self.read_weights(weights)
-        if (start_year):
+                 start_year=None):
+        """
+        Records class constructor
+        """
+        self._read_data(data)
+        self._read_blowup(blowup_factors)
+        self._read_weights(weights)
+        if start_year:
             self._current_year = start_year
         else:
             self._current_year = self.FLPDYR[0]
-
         if self._current_year == 2009:
             self._impute_variables()
 
@@ -260,7 +257,7 @@ class Records(object):
         self._current_year += 1
         self.FLPDYR += 1
         # Implement Stage 1 Extrapolation blowup factors
-        self.blowup(self._current_year)
+        self._blowup(self._current_year)
         # Implement Stage 2 Extrapolation reweighting.
         self.s006 = self.WT["WT" + str(self.current_year)] / 100
 
@@ -286,12 +283,12 @@ class Records(object):
         self.BF.AUCOMP[self._puf_year] = 1.0034
         self.BF.APOPSNR[self._puf_year] = 1
         self.BF.AIPD[self._puf_year] = 1
-        self.blowup(self._puf_year)
+        self._blowup(self._puf_year)
         self.s006 = self.WT["WT" + str(self._puf_year)] / 100
 
     # --- begin private methods of Records class --- #
 
-    def blowup(self, year):
+    def _blowup(self, year):
         self.e00200 *= self.BF.AWAGE[year]
         self.e00300 *= self.BF.AINTS[year]
         self.e00400 *= self.BF.AINTS[year]
@@ -474,7 +471,7 @@ class Records(object):
         self._cmbtp_itemizer *= self.BF.ATXPY[year]
         self._cmbtp_standard *= self.BF.ATXPY[year]
 
-    def read_weights(self, weights):
+    def _read_weights(self, weights):
         if isinstance(weights, pd.core.frame.DataFrame):
             WT = weights
         else:
@@ -496,7 +493,7 @@ class Records(object):
 
         setattr(self, 'WT', WT)
 
-    def read_blowup(self, blowup_factors):
+    def _read_blowup(self, blowup_factors):
         if isinstance(blowup_factors, pd.core.frame.DataFrame):
             BF = blowup_factors
         else:
@@ -505,8 +502,8 @@ class Records(object):
                     # grab blowup factors out of EGG distribution
                     path_in_egg = os.path.join("taxcalc",
                                                self.BLOWUP_FACTORS_FILENAME)
-                    blowup_factors = resource_stream(Requirement.parse(
-                                                     "taxcalc"), path_in_egg)
+                    blowup_factors = resource_stream(
+                        Requirement.parse("taxcalc"), path_in_egg)
 
                 BF = pd.read_csv(blowup_factors, index_col='YEAR')
             except IOError:
@@ -534,7 +531,7 @@ class Records(object):
 
         setattr(self, 'BF', BF)
 
-    def read(self, data):
+    def _read_data(self, data):
         if isinstance(data, pd.core.frame.DataFrame):
             tax_dta = data
         elif data.endswith("gz"):
@@ -695,7 +692,7 @@ class Records(object):
 
 
 @vectorize([float64(float64, float64, float64, float64, float64,
-            float64, float64, float64, float64)])
+                    float64, float64, float64, float64)])
 def imputation(e17500, e00100, e18400, e62100, e00700, e04470,
                e21040, e18500, e20800):
 
