@@ -235,7 +235,8 @@ class Records(object):
                  data="puf.csv",
                  blowup_factors=blowup_factors_path,
                  weights=weights_path,
-                 start_year=None):
+                 start_year=None,
+                 **kwargs):
         """
         Records class constructor
         """
