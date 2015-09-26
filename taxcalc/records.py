@@ -652,11 +652,11 @@ class Records(object):
         self.SOIYR = np.repeat(2008, self.dim)
 
     def _impute_variables(self):
-        """Imputations"""
-        self._cmbtp_itemizer = None
+        """
+        Impute variables in 2009 PUF Records data
+        """
+        self._cmbtp_itemizer = self._imputed_cmbtp_itemizer()
         self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
-        self.mutate_imputations()  # Updates the self._cmbtp_itemizer variable
-
         # Standard deduction amount in 2009
         std2009 = np.array([5700, 11400, 5700, 8350, 11400, 5700, 950])
         # Additional standard deduction for aged 2009
@@ -683,31 +683,27 @@ class Records(object):
                                   np.where(self.e02400 > 0, self._txpyers, 0))
         self._puf_year = 2009
 
-    def mutate_imputations(self):
-        self._cmbtp_itemizer = imputation(self.e17500, self.e00100,
-                                          self.e18400,
-                                          self.e62100, self.e00700,
-                                          self.p04470, self.e21040,
-                                          self.e18500, self.e20800)
+    def _imputed_cmbtp_itemizer(self):
+        return imputed_cmbtp_itemizer(self.e17500, self.e00100, self.e18400,
+                                      self.e62100, self.e00700,
+                                      self.p04470, self.e21040,
+                                      self.e18500, self.e20800)
 
 
-@vectorize([float64(float64, float64, float64, float64, float64,
-                    float64, float64, float64, float64)])
-def imputation(e17500, e00100, e18400, e62100, e00700, e04470,
-               e21040, e18500, e20800):
-
+@vectorize([float64(float64, float64, float64,
+                    float64, float64,
+                    float64, float64,
+                    float64, float64)])
+def imputed_cmbtp_itemizer(e17500, e00100, e18400,
+                           e62100, e00700,
+                           e04470, e21040,
+                           e18500, e20800):
     """
-    Calculates _cmbtp_itemizer
-    Uses vectorize decorator to speed-up calculation process
-    with NumPy data structures
+    Calculates _cmbtp_itemizer values
+    Uses vectorize decorator to speed-up calculations with NumPy arrays
     """
-
-    # temp variables to make it easier to read
-    x = max(0., e17500 - max(0., e00100) * 0.075)
-    medical_adjustment = min(x, 0.025 * max(0., e00100))
+    medical_limited = max(0., e17500 - max(0., e00100) * 0.075)
+    medical_adjustment = min(medical_limited, 0.025 * max(0., e00100))
     state_adjustment = max(0, e18400)
-
-    _cmbtp_itemizer = (e62100 - medical_adjustment + e00700 + e04470 + e21040 -
-                       state_adjustment - e00100 - e18500 - e20800)
-
-    return _cmbtp_itemizer
+    return (e62100 - medical_adjustment + e00700 + e04470 + e21040 -
+            state_adjustment - e00100 - e18500 - e20800)
