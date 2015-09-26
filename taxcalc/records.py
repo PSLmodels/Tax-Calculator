@@ -249,36 +249,37 @@ class Records(object):
         else:
             self._current_year = self.FLPDYR[0]
 
-        """Imputations"""
-        self._cmbtp_itemizer = None
-        self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
-        self.mutate_imputations()  # Updates the self._cmbtp_itemizer variable
+        if self._current_year == 2009:
+            """Imputations"""
+            self._cmbtp_itemizer = None
+            self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
+            self.mutate_imputations()  # Updates the self._cmbtp_itemizer variable
 
-        # Standard deduction amount in 2009
-        std2009 = np.array([5700, 11400, 5700, 8350, 11400, 5700, 950])
-        # Additional standard deduction for aged 2009
-        STD_Aged_2009 = np.array([1400., 1100.])
-        # Compulsory itemizers
-        self._compitem = np.where(np.logical_and(self.FDED == 1,
-                                                 self.e04470 <
-                                                 std2009[self.MARS - 1]), 1, 0)
-        # Number of taxpayers
-        self._txpyers = np.where(np.logical_or(self.MARS == 2,
-                                               np.logical_or(self.MARS == 3,
-                                                             self.MARS == 6)),
-                                 2., 1.)
-        # Number of extra standard deductions for aged
-        self._numextra = np.where(np.logical_and(self.FDED == 2, self.e04470 <
-                                  std2009[self.MARS - 1]),
-                                  np.where(
-                                  np.logical_and(self.MARS != 2,
-                                                 self.MARS != 3),
-                                  (self.e04470 - std2009[self.MARS - 1]) /
-                                  STD_Aged_2009[0],
-                                  (self.e04470 - std2009[self.MARS - 1]) /
-                                  STD_Aged_2009[1]),
-                                  np.where(self.e02400 > 0, self._txpyers, 0))
-        self._puf_year = 2009
+            # Standard deduction amount in 2009
+            std2009 = np.array([5700, 11400, 5700, 8350, 11400, 5700, 950])
+            # Additional standard deduction for aged 2009
+            STD_Aged_2009 = np.array([1400., 1100.])
+            # Compulsory itemizers
+            self._compitem = np.where(np.logical_and(self.FDED == 1,
+                                                     self.e04470 <
+                                                     std2009[self.MARS - 1]), 1, 0)
+            # Number of taxpayers
+            self._txpyers = np.where(np.logical_or(self.MARS == 2,
+                                                   np.logical_or(self.MARS == 3,
+                                                                 self.MARS == 6)),
+                                     2., 1.)
+            # Number of extra standard deductions for aged
+            self._numextra = np.where(np.logical_and(self.FDED == 2, self.e04470 <
+                                                     std2009[self.MARS - 1]),
+                                      np.where(
+                                          np.logical_and(self.MARS != 2,
+                                                         self.MARS != 3),
+                                          (self.e04470 - std2009[self.MARS - 1]) /
+                                          STD_Aged_2009[0],
+                                          (self.e04470 - std2009[self.MARS - 1]) /
+                                          STD_Aged_2009[1]),
+                                      np.where(self.e02400 > 0, self._txpyers, 0))
+            self._puf_year = 2009
 
     @property
     def current_year(self):
