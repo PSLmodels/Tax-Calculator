@@ -41,7 +41,7 @@ def test_blow_up():
     assert calc1.records.e22250.sum() == calc1.records.p22250.sum()
 
 
-def test_imputation():
+def test_imputation_of_cmbtp_itemizer():
     e17500 = np.array([20., 4.4, 5.])
     e00100 = np.array([40., 8.1, 90.1])
     e18400 = np.array([25., 34., 10.])
@@ -66,8 +66,7 @@ def test_imputation():
                     = [68.4, -31.0025 ,-84.7]
     """
 
-    test_itemizer = records.imputation(e17500, e00100, e18400,
-                                       e62100, e00700, e04470,
-                                       e21040, e18500, e20800)
-
-    assert(np.allclose(cmbtp_itemizer, test_itemizer))
+    test_itemizer = records.imputed_cmbtp_itemizer(e17500, e00100, e18400,
+                                                   e62100, e00700, e04470,
+                                                   e21040, e18500, e20800)
+    assert np.allclose(cmbtp_itemizer, test_itemizer)
