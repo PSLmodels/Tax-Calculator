@@ -262,29 +262,30 @@ class Records(object):
         self.s006 = self.WT["WT" + str(self.current_year)] / 100
 
     def extrapolate_09_puf(self):
-        self.BF.AGDPN[self._puf_year] = 1
-        self.BF.ATXPY[self._puf_year] = 1
-        self.BF.AWAGE[self._puf_year] = 1.0053
-        self.BF.ASCHCI[self._puf_year] = 1.0041
-        self.BF.ASCHCL[self._puf_year] = 1.1629
-        self.BF.ASCHF[self._puf_year] = 1
-        self.BF.AINTS[self._puf_year] = 1.0357
-        self.BF.ADIVS[self._puf_year] = 1.0606
-        self.BF.ASCHEI[self._puf_year] = 1.1089
-        self.BF.ASCHEL[self._puf_year] = 1.2953
-        self.BF.ACGNS[self._puf_year] = 1.1781
-        self.BF.ABOOK[self._puf_year] = 1
-        self.BF.ARETS[self._puf_year] = 1.0026
-        self.BF.APOPN[self._puf_year] = 1
-        self.BF.ACPIU[self._puf_year] = 1
-        self.BF.APOPDEP[self._puf_year] = 1
-        self.BF.ASOCSEC[self._puf_year] = 0.9941
-        self.BF.ACPIM[self._puf_year] = 1
-        self.BF.AUCOMP[self._puf_year] = 1.0034
-        self.BF.APOPSNR[self._puf_year] = 1
-        self.BF.AIPD[self._puf_year] = 1
-        self._blowup(self._puf_year)
-        self.s006 = self.WT["WT" + str(self._puf_year)] / 100
+        year = 2009
+        self.BF.AGDPN[year] = 1
+        self.BF.ATXPY[year] = 1
+        self.BF.AWAGE[year] = 1.0053
+        self.BF.ASCHCI[year] = 1.0041
+        self.BF.ASCHCL[year] = 1.1629
+        self.BF.ASCHF[year] = 1
+        self.BF.AINTS[year] = 1.0357
+        self.BF.ADIVS[year] = 1.0606
+        self.BF.ASCHEI[year] = 1.1089
+        self.BF.ASCHEL[year] = 1.2953
+        self.BF.ACGNS[year] = 1.1781
+        self.BF.ABOOK[year] = 1
+        self.BF.ARETS[year] = 1.0026
+        self.BF.APOPN[year] = 1
+        self.BF.ACPIU[year] = 1
+        self.BF.APOPDEP[year] = 1
+        self.BF.ASOCSEC[year] = 0.9941
+        self.BF.ACPIM[year] = 1
+        self.BF.AUCOMP[year] = 1.0034
+        self.BF.APOPSNR[year] = 1
+        self.BF.AIPD[year] = 1
+        self._blowup(year)
+        self.s006 = self.WT["WT" + str(year)] / 100
 
     # --- begin private methods of Records class --- #
 
@@ -681,7 +682,6 @@ class Records(object):
                                       (self.e04470 - std2009[self.MARS - 1]) /
                                       STD_Aged_2009[1]),
                                   np.where(self.e02400 > 0, self._txpyers, 0))
-        self._puf_year = 2009
 
     def _imputed_cmbtp_itemizer(self):
         return imputed_cmbtp_itemizer(self.e17500, self.e00100, self.e18400,
