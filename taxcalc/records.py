@@ -250,36 +250,7 @@ class Records(object):
             self._current_year = self.FLPDYR[0]
 
         if self._current_year == 2009:
-            """Imputations"""
-            self._cmbtp_itemizer = None
-            self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
-            self.mutate_imputations()  # Updates the self._cmbtp_itemizer variable
-
-            # Standard deduction amount in 2009
-            std2009 = np.array([5700, 11400, 5700, 8350, 11400, 5700, 950])
-            # Additional standard deduction for aged 2009
-            STD_Aged_2009 = np.array([1400., 1100.])
-            # Compulsory itemizers
-            self._compitem = np.where(np.logical_and(self.FDED == 1,
-                                                     self.e04470 <
-                                                     std2009[self.MARS - 1]), 1, 0)
-            # Number of taxpayers
-            self._txpyers = np.where(np.logical_or(self.MARS == 2,
-                                                   np.logical_or(self.MARS == 3,
-                                                                 self.MARS == 6)),
-                                     2., 1.)
-            # Number of extra standard deductions for aged
-            self._numextra = np.where(np.logical_and(self.FDED == 2, self.e04470 <
-                                                     std2009[self.MARS - 1]),
-                                      np.where(
-                                          np.logical_and(self.MARS != 2,
-                                                         self.MARS != 3),
-                                          (self.e04470 - std2009[self.MARS - 1]) /
-                                          STD_Aged_2009[0],
-                                          (self.e04470 - std2009[self.MARS - 1]) /
-                                          STD_Aged_2009[1]),
-                                      np.where(self.e02400 > 0, self._txpyers, 0))
-            self._puf_year = 2009
+            self._impute_variables()
 
     @property
     def current_year(self):
@@ -317,6 +288,8 @@ class Records(object):
         self.BF.AIPD[self._puf_year] = 1
         self.blowup(self._puf_year)
         self.s006 = self.WT["WT" + str(self._puf_year)] / 100
+
+    # --- begin private methods of Records class --- #
 
     def blowup(self, year):
         self.e00200 *= self.BF.AWAGE[year]
@@ -680,6 +653,38 @@ class Records(object):
         self.e60100 = self.p60100
         self.e27860 = self.s27860
         self.SOIYR = np.repeat(2008, self.dim)
+
+    def _impute_variables(self):
+        """Imputations"""
+        self._cmbtp_itemizer = None
+        self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
+        self.mutate_imputations()  # Updates the self._cmbtp_itemizer variable
+
+        # Standard deduction amount in 2009
+        std2009 = np.array([5700, 11400, 5700, 8350, 11400, 5700, 950])
+        # Additional standard deduction for aged 2009
+        STD_Aged_2009 = np.array([1400., 1100.])
+        # Compulsory itemizers
+        self._compitem = np.where(np.logical_and(self.FDED == 1,
+                                                 self.e04470 <
+                                                 std2009[self.MARS - 1]), 1, 0)
+        # Number of taxpayers
+        self._txpyers = np.where(np.logical_or(self.MARS == 2,
+                                               np.logical_or(self.MARS == 3,
+                                                             self.MARS == 6)),
+                                 2., 1.)
+        # Number of extra standard deductions for aged
+        self._numextra = np.where(np.logical_and(self.FDED == 2, self.e04470 <
+                                                 std2009[self.MARS - 1]),
+                                  np.where(
+                                      np.logical_and(self.MARS != 2,
+                                                     self.MARS != 3),
+                                      (self.e04470 - std2009[self.MARS - 1]) /
+                                      STD_Aged_2009[0],
+                                      (self.e04470 - std2009[self.MARS - 1]) /
+                                      STD_Aged_2009[1]),
+                                  np.where(self.e02400 > 0, self._txpyers, 0))
+        self._puf_year = 2009
 
     def mutate_imputations(self):
         self._cmbtp_itemizer = imputation(self.e17500, self.e00100,
