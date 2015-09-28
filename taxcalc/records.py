@@ -50,13 +50,15 @@ class Records(object):
     parameters of the constructor, and therefore, imputed variables
     are generated to augment the data and initial-year blowup factors
     are applied to the data. Explicitly setting start_year to some
-    value other than 2009 will cause this variable-imputation and
-    initial-year-blowup logic to be skipped.  There are situations in
+    value other than CURRENT_PUF_YEAR will cause this variable-imputation
+    and initial-year-blowup logic to be skipped.  There are situations in
     which this is exactly what is desired, but more often than not,
     skipping the imputation and blowup logic would be a mistake.  In
     other words, do not explicitly specify start_year in the Records
     class constructor unless you know exactly what you are doing.
     """
+
+    CURRENT_PUF_YEAR = 2009
 
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
     WEIGHTS_FILENAME = "WEIGHTS.csv"
@@ -279,11 +281,15 @@ class Records(object):
         self._read_data(data)
         self._read_blowup(blowup_factors)
         self._read_weights(weights)
-        if start_year:
+        if start_year is None:
+            self._current_year = self.FLPDYR[0]
+        elif isinstance(start_year, int):
             self._current_year = start_year
         else:
-            self._current_year = self.FLPDYR[0]
-        if self._current_year == 2009:
+            msg = ('Records.constructor start_year is neither None nor '
+                   'an integer')
+            raise ValueError(msg)
+        if self._current_year == Records.CURRENT_PUF_YEAR:
             self._impute_variables()
 
     @property
@@ -626,7 +632,7 @@ class Records(object):
         self.e60100 = self.p60100
         self.e27860 = self.s27860
         # specify SOIYR
-        self.SOIYR = np.repeat(2009, self.dim)
+        self.SOIYR = np.repeat(Records.CURRENT_PUF_YEAR, self.dim)
 
     def _read_weights(self, weights):
         if isinstance(weights, pd.core.frame.DataFrame):
