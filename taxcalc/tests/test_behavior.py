@@ -26,27 +26,32 @@ def test_make_behavioral_Calculator():
     calc_x = Calculator(params=params_x, records=records_x)
     calc_y = Calculator(params=params_y, records=records_y)
     # Implement a plan Y reform
-    reform = {2013: {"_II_rt7": [0.496],
-                     "_BE_sub": [0.4],
-                     "_BE_inc": [0.15]
-                     }
-              }
+    reform = {
+        2013: {
+            "_II_rt7": [0.496],
+            "_BE_sub": [0.4],
+            "_BE_inc": [0.15]
+        }
+    }
     params_y.implement_reform(reform)
     # Create behavioral calculators and vary substitution and income effects.
     calc_y_behavior1 = behavior(calc_x, calc_y)
-    reform = {2013: {
-                     "_II_rt7": [0.496],
-                     "_BE_sub": [0.5],
-                     "_BE_inc": [0.15]
-                     }
-              }
+    reform = {
+        2013: {
+            "_II_rt7": [0.496],
+            "_BE_sub": [0.5],
+            "_BE_inc": [0.15]
+        }
+    }
     params_y.implement_reform(reform)
     calc_y_behavior2 = behavior(calc_x, calc_y)
-    reform = {2013: {"_II_rt7": [0.496],
-                     "_BE_sub": [0.4],
-                     "_BE_inc": [0.0]
-                     }
-              }
+    reform = {
+        2013: {
+            "_II_rt7": [0.496],
+            "_BE_sub": [0.4],
+            "_BE_inc": [0.0]
+        }
+    }
     params_y.implement_reform(reform)
     calc_y_behavior3 = behavior(calc_x, calc_y)
     assert (calc_y_behavior1.records._ospctax.sum() !=
