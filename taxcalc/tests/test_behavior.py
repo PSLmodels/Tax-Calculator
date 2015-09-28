@@ -38,15 +38,24 @@ def test_make_behavioral_Calculator():
     calcX = Calculator(params_x, records_x)
     calcY = Calculator(params_y, records_y)
     # Implement a plan Y reform
-    reform = {1991: {"_II_rt7": [0.496]}}
+    reform = {1991: {"_II_rt7": [0.496],
+                     "_BE_sub": [0.4],
+                     "_BE_inc": [0.15]}}
     params_y.implement_reform(reform)
     # Create behavioral calculators and vary both kwargs.
-    calcY_behavior1 = behavior(calcX, calcY,
-                               elast_wrt_atr=0.4, inc_effect=0.15)
-    calcY_behavior2 = behavior(calcX, calcY,
-                               elast_wrt_atr=0.5, inc_effect=0.15)
-    calcY_behavior3 = behavior(calcX, calcY,
-                               elast_wrt_atr=0.4, inc_effect=0)
+    calcY_behavior1 = behavior(calcX, calcY)
+    reform = {1991: {
+                     "_II_rt7": [0.496],
+                     "_BE_sub": [0.5],
+                     "_BE_inc": [0.15]
+              }}
+    params_y.implement_reform(reform)
+    calcY_behavior2 = behavior(calcX, calcY)
+    reform = {1991: {"_II_rt7": [0.496],
+                     "_BE_sub": [0.4],
+                     "_BE_inc": [0.0]}}
+    params_y.implement_reform(reform)
+    calcY_behavior3 = behavior(calcX, calcY)
     assert (calcY_behavior1.records._ospctax.sum() !=
             calcY_behavior2.records._ospctax.sum() !=
             calcY_behavior3.records._ospctax.sum())

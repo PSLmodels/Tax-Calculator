@@ -43,8 +43,7 @@ def update_income(behavioral_effect, calcY):
     return calcY
 
 
-def behavior(calcX, calcY, elast_wrt_atr=0.4, inc_effect=0.15,
-             update_income=update_income):
+def behavior(calcX, calcY, update_income=update_income):
     """
     Modify plan Y records to account for micro-feedback effect that arrise
     from moving from plan X to plan Y.
@@ -59,11 +58,11 @@ def behavior(calcX, calcY, elast_wrt_atr=0.4, inc_effect=0.15,
     pct_diff_atr = ((1 - mtrY) - (1 - mtrX)) / (1 - mtrX)
 
     # Calculate the magnitude of the substitution and income effects.
-    substitution_effect = (elast_wrt_atr * pct_diff_atr *
+    substitution_effect = (calcY.params.BE_sub * pct_diff_atr *
                            (calcX.records.c04800))
 
-    income_effect = inc_effect * (calcY.records._ospctax -
-                                  calcX.records._ospctax)
+    income_effect = calcY.params.BE_inc * (calcY.records._ospctax -
+                                           calcX.records._ospctax)
     calcY_behavior = copy.deepcopy(calcY)
 
     combined_behavioral_effect = income_effect + substitution_effect
