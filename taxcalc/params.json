@@ -1284,18 +1284,9 @@
         "col_label": "",
         "value": [0.0]
     },
-       "_BE_cg_per":{
+       "_BE_CG_per":{
         "start_year": 2013,
         "long_name": "Persistent",
-        "description": "Behavior effect",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0]
-    },
-       "_BE_cg_trn":{
-        "start_year": 2013,
-        "long_name": "Transitory",
         "description": "Behavior effect",
         "row_label": ["2013"],
         "cpi_inflated": false,
