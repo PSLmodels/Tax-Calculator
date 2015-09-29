@@ -16,12 +16,12 @@ from numba import jit, vectorize, guvectorize
 from taxcalc import *
 from csv_to_ascii import ascii_output
 
-# use simulated 1991 PUF to emulate private 2009 PUF
+# use 1991 PUF-like data to emulate current PUF, which is private
 TAX_DTA_PATH = os.path.join(CUR_PATH, '../../tax_all1991_puf.gz')
 TAX_DTA = pd.read_csv(TAX_DTA_PATH, compression='gzip')
 # PUF-fix-up: MIdR needs to be type int64 to match PUF
 TAX_DTA['midr'] = TAX_DTA['midr'].astype('int64')
-# specify WEIGHTS appropriate for simulated 1991 PUF
+# specify WEIGHTS appropriate for 1991 data
 WEIGHTS_FILENAME = '../../WEIGHTS_testing.csv'
 WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
 WEIGHTS = pd.read_csv(WEIGHTS_PATH)
