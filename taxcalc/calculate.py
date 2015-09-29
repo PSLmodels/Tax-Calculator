@@ -40,11 +40,12 @@ class Calculator(object):
             msg = 'Must supply tax records as a file path or Records object'
             raise ValueError(msg)
 
-        if sync_years and self._records.current_year == 2009:
+        if sync_years and self._records.current_year == Records.PUF_YEAR:
             print("You loaded data for " +
                   str(self._records.current_year) + '.')
 
-            self.records.extrapolate_09_puf()
+            if self._records.current_year == 2009:
+                self.records.extrapolate_2009_puf()
 
             while self._records.current_year < self._params.current_year:
                 self._records.increment_year()

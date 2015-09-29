@@ -1,11 +1,8 @@
 """
-This file reads input csv file and saves the variables
+OSPC Tax-Calculator tax-filing-unit Records class.
 """
-import math
-import copy
 import pandas as pd
 import numpy as np
-import os.path
 import os
 from numba import vectorize, float64
 from pkg_resources import resource_stream, Requirement
@@ -13,23 +10,61 @@ from pkg_resources import resource_stream, Requirement
 
 class Records(object):
     """
-    This class represents the data for a collection of tax records. Typically,
-    this would come from a Public Use File. Much of the current implementation
-    is based on reading a PUF file, although other types of records could
-    be read.
-    Instances of this class hold all of the record data in memory
-    to be used by the Calculator. Each pieces of member data represents
-    a column of the data. Each entry in the column is the value of the data
-    attribute for a particular taxpayer record.
-    A federal tax year is assumed. The year can be given to the Record
-    constructor.
-    Advancing years is done through a member function
+    Constructor for the tax-filing-unit records class.
+
+    Parameters
+    ----------
+    data: string or Pandas DataFrame
+        string describes CSV file in which records data reside
+        DataFrame already contains records data
+        default value is the string 'puf.csv'
+
+    blowup_factors: string or Pandas DataFrame
+        string describes CSV file in which blowup factors reside
+        DataFrame already contains blowup factors
+        default value is filename of the default blowup factors
+
+    weights: string or Pandas DataFrame
+        string describes CSV file in which weights reside
+        DataFrame already contains weights
+        default value is filename of the default weights
+
+    start_year: None or integer
+        None implies current_year is set to value of FLPDYR for first unit
+        integer implies current_year is set to start_year
+        default value is None
+
+    Raises
+    ------
+    ValueError:
+        if parameters are not the appropriate type.
+        if files cannot be found.
+
+    Returns
+    -------
+    class instance: Records
+
+    Notes
+    -----
+    Typical usage is "recs = Records()", which uses all the default
+    parameters of the constructor, and therefore, imputed variables
+    are generated to augment the data and initial-year blowup factors
+    are applied to the data. Explicitly setting start_year to some
+    value other than Records.PUF_YEAR will cause this variable-imputation
+    and initial-year-blowup logic to be skipped.  There are situations in
+    which this is exactly what is desired, but more often than not,
+    skipping the imputation and blowup logic would be a mistake.  In
+    other words, do not explicitly specify start_year in the Records
+    class constructor unless you know exactly what you are doing.
     """
+
+    PUF_YEAR = 2009
+
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
     WEIGHTS_FILENAME = "WEIGHTS.csv"
-    weights_path = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
+    WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
     BLOWUP_FACTORS_FILENAME = "StageIFactors.csv"
-    blowup_factors_path = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
+    BLOWUP_FACTORS_PATH = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
 
     @classmethod
     def from_file(cls, path, **kwargs):
@@ -236,49 +271,26 @@ class Records(object):
 
     def __init__(self,
                  data="puf.csv",
-                 blowup_factors=blowup_factors_path,
-                 weights=weights_path,
+                 blowup_factors=BLOWUP_FACTORS_PATH,
+                 weights=WEIGHTS_PATH,
                  start_year=None,
                  **kwargs):
-
-        self.read(data)
-        self.read_blowup(blowup_factors)
-        self.read_weights(weights)
-        if (start_year):
+        """
+        Records class constructor
+        """
+        self._read_data(data)
+        self._read_blowup(blowup_factors)
+        self._read_weights(weights)
+        if start_year is None:
+            self._current_year = self.FLPDYR[0]
+        elif isinstance(start_year, int):
             self._current_year = start_year
         else:
-            self._current_year = self.FLPDYR[0]
-
-        """Imputations"""
-        self._cmbtp_itemizer = None
-        self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
-        self.mutate_imputations()  # Updates the self._cmbtp_itemizer variable
-
-        # Standard deduction amount in 2009
-        std2009 = np.array([5700, 11400, 5700, 8350, 11400, 5700, 950])
-        # Additional standard deduction for aged 2009
-        STD_Aged_2009 = np.array([1400., 1100.])
-        # Compulsory itemizers
-        self._compitem = np.where(np.logical_and(self.FDED == 1,
-                                                 self.e04470 <
-                                                 std2009[self.MARS - 1]), 1, 0)
-        # Number of taxpayers
-        self._txpyers = np.where(np.logical_or(self.MARS == 2,
-                                               np.logical_or(self.MARS == 3,
-                                                             self.MARS == 6)),
-                                 2., 1.)
-        # Number of extra standard deductions for aged
-        self._numextra = np.where(np.logical_and(self.FDED == 2, self.e04470 <
-                                  std2009[self.MARS - 1]),
-                                  np.where(
-                                  np.logical_and(self.MARS != 2,
-                                                 self.MARS != 3),
-                                  (self.e04470 - std2009[self.MARS - 1]) /
-                                  STD_Aged_2009[0],
-                                  (self.e04470 - std2009[self.MARS - 1]) /
-                                  STD_Aged_2009[1]),
-                                  np.where(self.e02400 > 0, self._txpyers, 0))
-        self._puf_year = 2009
+            msg = ('Records.constructor start_year is neither None nor '
+                   'an integer')
+            raise ValueError(msg)
+        if self._current_year == Records.PUF_YEAR:
+            self._impute_variables()
 
     @property
     def current_year(self):
@@ -288,36 +300,39 @@ class Records(object):
         self._current_year += 1
         self.FLPDYR += 1
         # Implement Stage 1 Extrapolation blowup factors
-        self.blowup(self._current_year)
+        self._blowup(self._current_year)
         # Implement Stage 2 Extrapolation reweighting.
         self.s006 = self.WT["WT" + str(self.current_year)] / 100
 
-    def extrapolate_09_puf(self):
-        self.BF.AGDPN[self._puf_year] = 1
-        self.BF.ATXPY[self._puf_year] = 1
-        self.BF.AWAGE[self._puf_year] = 1.0053
-        self.BF.ASCHCI[self._puf_year] = 1.0041
-        self.BF.ASCHCL[self._puf_year] = 1.1629
-        self.BF.ASCHF[self._puf_year] = 1
-        self.BF.AINTS[self._puf_year] = 1.0357
-        self.BF.ADIVS[self._puf_year] = 1.0606
-        self.BF.ASCHEI[self._puf_year] = 1.1089
-        self.BF.ASCHEL[self._puf_year] = 1.2953
-        self.BF.ACGNS[self._puf_year] = 1.1781
-        self.BF.ABOOK[self._puf_year] = 1
-        self.BF.ARETS[self._puf_year] = 1.0026
-        self.BF.APOPN[self._puf_year] = 1
-        self.BF.ACPIU[self._puf_year] = 1
-        self.BF.APOPDEP[self._puf_year] = 1
-        self.BF.ASOCSEC[self._puf_year] = 0.9941
-        self.BF.ACPIM[self._puf_year] = 1
-        self.BF.AUCOMP[self._puf_year] = 1.0034
-        self.BF.APOPSNR[self._puf_year] = 1
-        self.BF.AIPD[self._puf_year] = 1
-        self.blowup(self._puf_year)
-        self.s006 = self.WT["WT" + str(self._puf_year)] / 100
+    def extrapolate_2009_puf(self):
+        year = 2009
+        self.BF.AGDPN[year] = 1
+        self.BF.ATXPY[year] = 1
+        self.BF.AWAGE[year] = 1.0053
+        self.BF.ASCHCI[year] = 1.0041
+        self.BF.ASCHCL[year] = 1.1629
+        self.BF.ASCHF[year] = 1
+        self.BF.AINTS[year] = 1.0357
+        self.BF.ADIVS[year] = 1.0606
+        self.BF.ASCHEI[year] = 1.1089
+        self.BF.ASCHEL[year] = 1.2953
+        self.BF.ACGNS[year] = 1.1781
+        self.BF.ABOOK[year] = 1
+        self.BF.ARETS[year] = 1.0026
+        self.BF.APOPN[year] = 1
+        self.BF.ACPIU[year] = 1
+        self.BF.APOPDEP[year] = 1
+        self.BF.ASOCSEC[year] = 0.9941
+        self.BF.ACPIM[year] = 1
+        self.BF.AUCOMP[year] = 1.0034
+        self.BF.APOPSNR[year] = 1
+        self.BF.AIPD[year] = 1
+        self._blowup(year)
+        self.s006 = self.WT["WT" + str(year)] / 100
 
-    def blowup(self, year):
+    # --- begin private methods of Records class --- #
+
+    def _blowup(self, year):
         self.e00200 *= self.BF.AWAGE[year]
         self.e00300 *= self.BF.AINTS[year]
         self.e00400 *= self.BF.AINTS[year]
@@ -500,83 +515,25 @@ class Records(object):
         self._cmbtp_itemizer *= self.BF.ATXPY[year]
         self._cmbtp_standard *= self.BF.ATXPY[year]
 
-    def read_weights(self, weights):
-        if isinstance(weights, pd.core.frame.DataFrame):
-            WT = weights
-        else:
-            try:
-                if not os.path.exists(weights):
-                    # grab weights out of EGG distribution
-                    path_in_egg = os.path.join("taxcalc",
-                                               self.WEIGHTS_FILENAME)
-                    weights = resource_stream(Requirement.parse("taxcalc"),
-                                              path_in_egg)
-                WT = pd.read_csv(weights)
-            except IOError:
-                print("Missing a csv file with weights from the second stage "
-                      "data of the data extrapolation. Please pass such a "
-                      "file as PUF(weights='[FILENAME]').")
-                raise
-                # TODO, we will need to pass the csv to the Calculator once
-                # we proceed with github issue #117.
-
-        setattr(self, 'WT', WT)
-
-    def read_blowup(self, blowup_factors):
-        if isinstance(blowup_factors, pd.core.frame.DataFrame):
-            BF = blowup_factors
-        else:
-            try:
-                if not os.path.exists(blowup_factors):
-                    # grab blowup factors out of EGG distribution
-                    path_in_egg = os.path.join("taxcalc",
-                                               self.BLOWUP_FACTORS_FILENAME)
-                    blowup_factors = resource_stream(Requirement.parse(
-                                                     "taxcalc"), path_in_egg)
-
-                BF = pd.read_csv(blowup_factors, index_col='YEAR')
-            except IOError:
-                print("Missing a csv file with blowup factors. Please pass "
-                      "such a csv as PUF(blowup_factors='[FILENAME]').")
-                raise
-                # TODO, we will need to pass the csv to the Calculator once
-                # we proceed with github issue #117.
-
-        BF.AGDPN = BF.AGDPN / BF.APOPN
-        BF.ATXPY = BF. ATXPY / BF. APOPN
-        BF.AWAGE = BF.AWAGE / BF.APOPN
-        BF.ASCHCI = BF.ASCHCI / BF.APOPN
-        BF.ASCHCL = BF.ASCHCL / BF.APOPN
-        BF.ASCHF = BF.ASCHF / BF.APOPN
-        BF.AINTS = BF.AINTS / BF.APOPN
-        BF.ADIVS = BF.ADIVS / BF.APOPN
-        BF.ASCHEI = BF.ASCHEI / BF.APOPN
-        BF.ASCHEL = BF.ASCHEL / BF.APOPN
-        BF.ACGNS = BF.ACGNS / BF.APOPN
-        BF.ABOOK = BF.ABOOK / BF.APOPN
-        BF.ASOCSEC = BF.ASOCSEC / BF.APOPSNR
-
-        BF = 1 + BF.pct_change()
-
-        setattr(self, 'BF', BF)
-
-    def read(self, data):
+    def _read_data(self, data):
         if isinstance(data, pd.core.frame.DataFrame):
             tax_dta = data
-        elif data.endswith("gz"):
-            tax_dta = pd.read_csv(data, compression='gzip')
+        elif isinstance(data, str):
+            if data.endswith("gz"):
+                tax_dta = pd.read_csv(data, compression='gzip')
+            else:
+                tax_dta = pd.read_csv(data)
         else:
-            tax_dta = pd.read_csv(data)
-
-        # removed the aggregated record from 09 PUF
+            msg = ('Records.constructor data is neither a string nor '
+                   'a Pandas DataFrame')
+            raise ValueError(msg)
+        # remove the aggregated record from 2009 PUF
         tax_dta = tax_dta[tax_dta.recid != 999999]
-
         self.dim = len(tax_dta)
-
+        # create variables in NAMES list
         for attrname, varname in Records.NAMES:
             setattr(self, attrname, tax_dta[varname].values)
-
-        # zero'd out "nonconst" data
+        # list of zeroed-out "nonconst" variables
         zeroed_names = ['e35300_0', 'e35600_0', 'e35910_0', 'x03150', 'e03600',
                         'e03280', 'e03900', 'e04000', 'e03700', 'c23250',
                         'e23660', 'f2555', 'e02800', 'e02610', 'e02540',
@@ -664,13 +621,11 @@ class Records(object):
                         '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
                         '_amed', '_xlin3', '_xlin6', '_cmbtp_itemizer',
                         '_cmbtp_standard', '_expanded_income']
-
+        # create zeroed_names variables
         for name in zeroed_names:
             setattr(self, name, np.zeros((self.dim,)))
-
         self._num = np.ones((self.dim,))
-
-        # Aliases
+        # specify eNNNNN aliases for several pNNNNN and sNNNNN variables
         self.e22250 = self.p22250
         self.e04470 = self.p04470
         self.e23250 = self.p23250
@@ -678,33 +633,118 @@ class Records(object):
         self.e08000 = self.p08000
         self.e60100 = self.p60100
         self.e27860 = self.s27860
-        self.SOIYR = np.repeat(2008, self.dim)
+        # specify SOIYR
+        self.SOIYR = np.repeat(Records.PUF_YEAR, self.dim)
 
-    def mutate_imputations(self):
-        self._cmbtp_itemizer = imputation(self.e17500, self.e00100,
-                                          self.e18400,
-                                          self.e62100, self.e00700,
-                                          self.p04470, self.e21040,
-                                          self.e18500, self.e20800)
+    def _read_weights(self, weights):
+        if isinstance(weights, pd.core.frame.DataFrame):
+            WT = weights
+        elif isinstance(weights, str):
+            try:
+                if not os.path.exists(weights):
+                    # grab weights out of EGG distribution
+                    path_in_egg = os.path.join("taxcalc",
+                                               self.WEIGHTS_FILENAME)
+                    weights = resource_stream(Requirement.parse("taxcalc"),
+                                              path_in_egg)
+                WT = pd.read_csv(weights)
+            except IOError:
+                msg = 'could not find weights file'
+                ValueError(msg)
+        else:
+            msg = ('Records.constructor blowup_factors is neither a string '
+                   'nore a Pandas DataFrame')
+            raise ValueError(msg)
+        setattr(self, 'WT', WT)
+
+    def _read_blowup(self, blowup_factors):
+        if isinstance(blowup_factors, pd.core.frame.DataFrame):
+            BF = blowup_factors
+        elif isinstance(blowup_factors, str):
+            try:
+                if not os.path.exists(blowup_factors):
+                    # grab blowup factors out of EGG distribution
+                    path_in_egg = os.path.join("taxcalc",
+                                               self.BLOWUP_FACTORS_FILENAME)
+                    blowup_factors = resource_stream(
+                        Requirement.parse("taxcalc"), path_in_egg)
+                BF = pd.read_csv(blowup_factors, index_col='YEAR')
+            except IOError:
+                msg = 'could not find blowup_factors file'
+                ValueError(msg)
+        else:
+            msg = ('Records.constructor blowup_factors is neither a string '
+                   'nore a Pandas DataFrame')
+            raise ValueError(msg)
+        BF.AGDPN = BF.AGDPN / BF.APOPN
+        BF.ATXPY = BF. ATXPY / BF. APOPN
+        BF.AWAGE = BF.AWAGE / BF.APOPN
+        BF.ASCHCI = BF.ASCHCI / BF.APOPN
+        BF.ASCHCL = BF.ASCHCL / BF.APOPN
+        BF.ASCHF = BF.ASCHF / BF.APOPN
+        BF.AINTS = BF.AINTS / BF.APOPN
+        BF.ADIVS = BF.ADIVS / BF.APOPN
+        BF.ASCHEI = BF.ASCHEI / BF.APOPN
+        BF.ASCHEL = BF.ASCHEL / BF.APOPN
+        BF.ACGNS = BF.ACGNS / BF.APOPN
+        BF.ABOOK = BF.ABOOK / BF.APOPN
+        BF.ASOCSEC = BF.ASOCSEC / BF.APOPSNR
+        BF = 1 + BF.pct_change()
+        setattr(self, 'BF', BF)
+
+    def _impute_variables(self):
+        """
+        Impute variables in 2009 PUF Records data
+        """
+        self._cmbtp_itemizer = self._imputed_cmbtp_itemizer()
+        self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
+        # standard deduction amount in 2009
+        std_2009 = np.array([5700, 11400, 5700, 8350, 11400, 5700, 950])
+        # additional standard deduction for aged 2009
+        std_aged_2009 = np.array([1400., 1100.])
+        # create imputed compulsory itemizer variable
+        self._compitem = np.where(np.logical_and(self.FDED == 1,
+                                                 self.e04470 <
+                                                 std_2009[self.MARS - 1]),
+                                  1, 0)
+        # impute number of taxpayers
+        self._txpyers = np.where(np.logical_or(self.MARS == 2,
+                                               np.logical_or(self.MARS == 3,
+                                                             self.MARS == 6)),
+                                 2., 1.)
+        # impute number of extra standard deductions for aged
+        self._numextra = np.where(np.logical_and(self.FDED == 2, self.e04470 <
+                                                 std_2009[self.MARS - 1]),
+                                  np.where(
+                                      np.logical_and(self.MARS != 2,
+                                                     self.MARS != 3),
+                                      (self.e04470 - std_2009[self.MARS - 1]) /
+                                      std_aged_2009[0],
+                                      (self.e04470 - std_2009[self.MARS - 1]) /
+                                      std_aged_2009[1]),
+                                  np.where(self.e02400 > 0, self._txpyers, 0))
+
+    def _imputed_cmbtp_itemizer(self):
+        return imputed_cmbtp_itemizer(self.e17500, self.e00100, self.e18400,
+                                      self.e62100, self.e00700,
+                                      self.p04470, self.e21040,
+                                      self.e18500, self.e20800)
 
 
-@vectorize([float64(float64, float64, float64, float64, float64,
-            float64, float64, float64, float64)])
-def imputation(e17500, e00100, e18400, e62100, e00700, e04470,
-               e21040, e18500, e20800):
-
+@vectorize([float64(float64, float64, float64,
+                    float64, float64,
+                    float64, float64,
+                    float64, float64)])
+def imputed_cmbtp_itemizer(e17500, e00100, e18400,
+                           e62100, e00700,
+                           e04470, e21040,
+                           e18500, e20800):
     """
-    Calculates _cmbtp_itemizer
-    Uses vectorize decorator to speed-up calculation process
-    with NumPy data structures
+    Calculates _cmbtp_itemizer values
+    Uses vectorize decorator to speed-up calculations with NumPy arrays
     """
-
-    # temp variables to make it easier to read
-    x = max(0., e17500 - max(0., e00100) * 0.075)
-    medical_adjustment = min(x, 0.025 * max(0., e00100))
+    medical_limited = max(0., e17500 - max(0., e00100) * 0.075)
+    medical_adjustment = min(medical_limited, 0.025 * max(0., e00100))
     state_adjustment = max(0, e18400)
-
-    _cmbtp_itemizer = (e62100 - medical_adjustment + e00700 + e04470 + e21040 -
-                       state_adjustment - e00100 - e18500 - e20800)
-
-    return _cmbtp_itemizer
+    return (e62100 - medical_adjustment + e00700 + e04470 + e21040 -
+            state_adjustment - e00100 - e18500 - e20800)
