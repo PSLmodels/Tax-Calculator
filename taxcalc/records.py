@@ -295,7 +295,50 @@ class Records(object):
     @property
     def current_year(self):
         return self._current_year
+    
+    def factor_adjustment(self, percentage, year):
+        self.BF.AGDPN[year] += percentage * abs(self.BF.AGDPN[year] - 1)
+        self.BF.ATXPY[year] += percentage * abs(self.BF.ATXPY[year] - 1)
+        self.BF.AWAGE[year] += percentage * abs(self.BF.AWAGE[year] - 1)
+        self.BF.ASCHCI[year] += percentage * abs(self.BF.ASCHCI[year] - 1)
+        self.BF.ASCHCL[year] += percentage * abs(self.BF.ASCHCL[year] - 1)
+        self.BF.ASCHF[year] += percentage * abs(self.BF.ASCHF[year] - 1)
+        self.BF.AINTS[year] += percentage * abs(self.BF.AINTS[year] - 1)
+        self.BF.ADIVS[year] += percentage * abs(self.BF.ADIVS[year] - 1)
+        self.BF.ACGNS[year] += percentage * abs(self.BF.ACGNS[year] - 1)
+        self.BF.ASCHEI[year] += percentage * abs(self.BF.ASCHEI[year] - 1)
+        self.BF.ASCHEL[year] += percentage * abs(self.BF.ASCHEL[year] - 1)
+        self.BF.ABOOK[year] += percentage * abs(self.BF.ABOOK[year] - 1)
+        self.BF.ACPIU[year] += percentage * abs(self.BF.ACPIU[year] - 1)
+        self.BF.ACPIM[year] += percentage * abs(self.BF.ACPIM[year] - 1)
+        self.BF.ASOCSEC[year] += percentage * abs(self.BF.ASOCSEC[year] - 1)
+        self.BF.AUCOMP[year] += percentage * abs(self.BF.AUCOMP[year] - 1)
+        self.BF.AIPD[year] += percentage * abs(self.BF.AIPD[year] - 1)
 
+    def factor_target(self, target, year):
+        if target != 0:
+            # user inputs theoretically should be based on GDP
+            ratio = target/abs(self.BF.AGDPN[year] - 1)
+    
+            # apply this ratio to all the dollar amount factors
+            self.BF.AGDPN[year] = ratio * abs(self.BF.AGDPN[year] - 1) + 1
+            self.BF.ATXPY[year] = ratio * abs(self.BF.ATXPY[year] - 1) + 1
+            self.BF.AWAGE[year] = ratio * abs(self.BF.AWAGE[year] - 1) + 1
+            self.BF.ASCHCI[year] = ratio * abs(self.BF.ASCHCI[year] - 1) + 1
+            self.BF.ASCHCL[year] = ratio * abs(self.BF.ASCHCL[year] - 1) + 1
+            self.BF.ASCHF[year] = ratio * abs(self.BF.ASCHF[year] - 1) + 1
+            self.BF.AINTS[year] = ratio * abs(self.BF.AINTS[year] - 1) + 1
+            self.BF.ADIVS[year] = ratio * abs(self.BF.ADIVS[year] - 1) + 1
+            self.BF.ACGNS[year] = ratio * abs(self.BF.ACGNS[year] - 1) + 1
+            self.BF.ASCHEI[year] = ratio * abs(self.BF.ASCHEI[year] - 1) + 1
+            self.BF.ASCHEL[year] = ratio * abs(self.BF.ASCHEL[year] - 1) + 1
+            self.BF.ABOOK[year] = ratio * abs(self.BF.ABOOK[year] - 1) + 1
+            self.BF.ACPIU[year] = ratio * abs(self.BF.ACPIU[year] - 1) + 1
+            self.BF.ACPIM[year] = ratio * abs(self.BF.ACPIM[year] - 1) + 1
+            self.BF.ASOCSEC[year] = ratio * abs(self.BF.ASOCSEC[year] - 1) + 1
+            self.BF.AUCOMP[year] = ratio * abs(self.BF.AUCOMP[year] - 1) + 1
+            self.BF.AIPD[year] = ratio * abs(self.BF.AIPD[year] - 1) + 1
+        
     def increment_year(self):
         self._current_year += 1
         self.FLPDYR += 1

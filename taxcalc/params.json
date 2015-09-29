@@ -1265,5 +1265,31 @@
         "value": [  [400000, 450000, 225000, 425000, 450000, 225000],
                     [406750, 457600, 228800, 432200, 457600, 228800],
                     [413200, 464850, 223425, 439000, 464850, 223425]]
+    },
+        "_factor_adjustment":{
+        "long_name": "",
+	"description": "",
+	"irs_ref": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [[0.0],
+		  [0.0]] 
+    },
+        "_factor_target":{
+        "long_name": "",
+	"description": "",
+	"irs_ref": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [[0.0],
+		  [0.0]] 
     }
 }

@@ -131,6 +131,10 @@ class Calculator(object):
         return totaldf
 
     def increment_year(self):
+        self.records.factor_adjustment(self.params.factor_adjustment,
+                                       self.records.current_year + 1)
+        self.records.factor_target(self.params.factor_target,
+                                   self.records.current_year + 1)
         self.records.increment_year()
         self.params.set_year(self.params.current_year + 1)
 
