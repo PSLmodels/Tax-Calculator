@@ -268,7 +268,7 @@ class Records(object):
                                                              self.MARS == 6)),
                                  2., 1.)
         # Number of extra standard deductions for aged
-        self._numextra = np.where(np.logical_and(self.FDED == 2, self.e04470 <
+        self._numextra = np.where(np.logical_and(self.FDED == 2, self.e04470 >
                                   std2009[self.MARS - 1]),
                                   np.where(
                                   np.logical_and(self.MARS != 2,
@@ -663,7 +663,8 @@ class Records(object):
                         'c59720', '_comb', 'c07150', 'c10300', '_ospctax',
                         '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
                         '_amed', '_xlin3', '_xlin6', '_cmbtp_itemizer',
-                        '_cmbtp_standard', '_expanded_income']
+                        '_cmbtp_standard', '_expanded_income', 'c07300',
+                        'c07600', 'c07240']
 
         for name in zeroed_names:
             setattr(self, name, np.zeros((self.dim,)))
