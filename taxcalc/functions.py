@@ -298,21 +298,20 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
               c19700 + c20500 + c20800 + e21000 + e21010)
 
     # Limitations on deductions excluding medical, charity etc
-    _phase2_i = ID_ps[MARS - 1]
-
     _nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
     _phase2_i = ID_ps[MARS - 1]
     _limitratio = _phase2_i / _sep
+
+    # Itemized deductions amount after limitation if any
+    c04470 = c21060
 
     if c21060 > _nonlimited and c00100 > _limitratio:
         dedmin = ID_crt * (c21060 - _nonlimited)
         dedpho = ID_prt * max(0, _posagi - _limitratio)
         c21040 = min(dedmin, dedpho)
+        c04470 = c21060 - c21040
     else:
         c21040 = 0.0
-
-    # Itemized deductions amount after limitation if any
-    c04470 = c21060 - c21040
 
     # the variables that are casted as floats below can be either floats or
     # ints depending n which if/else branches they follow in the above code.
@@ -506,25 +505,28 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
     # Compute the total standard deduction
     _standard = c04100 + c04200
 
-    # ???
-    if FDED == 1:
-        _othded = e04470 - c04470
-    else:
-        _othded = 0.
-
     if (MARS == 3 or MARS == 6) and (MIDR == 1):
         _standard = 0.
 
-    c04500 = c00100 - max(c04470, max(c04100, _standard + e37717))
-    # c04500 = c00100 - max(c21060 - c21040, _standard + e37717))
+    # c04500 = c00100 - max(c04470, max(c04100, _standard + e37717))
+    c04500 = c00100 - max(c21060 - c21040, _standard + e37717)
+
+    if FDED == 1:
+        _othded = e04470 - c04470
+        c04100 = 0.
+        c04200 = 0.
+        _standard = 0.
+    else:
+        _othded = 0.
+
     c04800 = max(0., c04500 - c04600 - e04805)
 
     # Check with Dan whether this is right!
     if c04470 > _standard:
-        _standard = 0
+        _standard = 0.
 
     if c04470 <= _standard:
-        c04470 = 0
+        c04470 = 0.
 
     # why is this here, c60000 is reset many times?
     if _standard > 0:
@@ -822,13 +824,13 @@ def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
 
 
 @iterate_jit(nopython=True, puf=True)
-def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
-         e60300, e60860, e60100, e60840, e60630, e60550, FDED,
-         e60720, e60430, e60500, e60340, e60680, e60600, e60405,
+def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
+         e60300, e60860, e60100, e60840, e60630, e60550, FDED, e62740,
+         e60720, e60430, e60500, e60340, e60680, e60600, e60405, e24516,
          e60440, e60420, e60410, e61400, e60660, e60480, c21060,
          e62000, e60250, _cmp, _standard, e04470, e17500, c04600,
          f6251, e62100, e21040, e20800, c00100, _statax, e60000,
-         c04470, c17000, e18500, c20800, c21040, NIIT,
+         c04470, c17000, e18500, c20800, c21040, NIIT, e62730,
          DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700,
          e00100, e24515, x62730, x60130, e18400,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
@@ -847,6 +849,9 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     c60240 = (1 - ID_StateLocalTax_HC) * c18300 + x60240
     c60220 = c20800 + x60220
     c60130 = c21040 + x60130
+    # imputation for x62730
+    if e62730 != 0 and e24515 > 0:
+        x62730 = e62730 - e24515
     c62730 = e24515 + x62730
 
     _amtded = c60200 + c60220 + c60240
@@ -854,12 +859,12 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     _prefnot = c21060 - c21040 - _prefded
     _totded = _prefded + _prefnot
     _useded = min(_totded, max(0, c00100 - c04600))
-    # c04500 = c00100 - max(_useded, _standard + e37717)
-    # if FDED == 1:
-    #    c60000 = c00100 - _useded
-    # else:
-    #    c60000 = c00100
-    # c60000 = c00100 - _useded
+    c04500 = c00100 - max(_useded, _standard + e37717)
+    if FDED == 1:
+        c60000 = c00100 - _useded
+    else:
+        c60000 = c00100
+    c60000 = c00100 - _useded
     _amtded = min(_prefded, max(0, _useded - _prefnot))
     # if c60000 <= 0:
 
@@ -958,8 +963,8 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
         _amtfei = 0.
 
-    c62780 = AMT_trt1 * _alminc + AMT_trt2 * \
-        max(0., _alminc - AMT_tthd / _sep) - _amtfei
+    c62780 = (AMT_trt1 * _alminc + AMT_trt2 *
+              max(0., _alminc - AMT_tthd / _sep) - _amtfei)
 
     if f6251 != 0:
         c62900 = float(e62900)
@@ -967,6 +972,10 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
         c62900 = float(e07300)
 
     c63000 = c62780 - c62900
+
+    # imputation for x62740
+    if e62740 != 0 and e24516 > 0:
+        x62740 = e62740 - e24516
 
     if c24516 == 0:
         c62740 = c62720 + c62730
@@ -993,11 +1002,6 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     _amt25pc = min(_alminc, c62740) - min(_alminc, c62720)
 
-    if c62730 == 0:
-        _amt25pc = 0.
-    else:
-        _amt25pc = min(_alminc, c62740) - min(_alminc, c62720)
-
     c62747 = AMT_CG_rt1 * _amt5pc
 
     c62755 = AMT_CG_rt2 * _amt15pc
@@ -1006,16 +1010,13 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
 
     _tamt2 = c62747 + c62755 + c62770
 
-    _amt = 0.
-
     if _ngamty > AMT_CG_thd2[MARS - 1]:
         _amt = (AMT_CG_rt3 - AMT_CG_rt2) * min(_alminc, c62740)
-    else:
-        _amt = 0.
-
-    if _ngamty <= AMT_CG_thd2[MARS - 1] and _alminc > AMT_CG_thd2[MARS - 1]:
+    elif _alminc > AMT_CG_thd2[MARS - 1]:
         _amt = ((AMT_CG_rt3 - AMT_CG_rt2) *
                 min(_alminc - AMT_CG_thd2[MARS - 1], c62740))
+    else:
+        _amt = 0.
 
     _tamt2 = _tamt2 + _amt
 
@@ -1033,7 +1034,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     c05800 = _taxbc + c63200
 
     return (c62720, c60260, c63100, c60200, c60240, c60220, c60000,
-            c60130, c62730, _addamt, c62100, _edical,
+            c60130, c62730, _addamt, c62100, _edical, c04500,
             _amtsepadd, c62600, _agep, _ages, c62700,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
             _ngamty, c62745, y62745, _tamt2, _amt5pc, _amt15pc,
