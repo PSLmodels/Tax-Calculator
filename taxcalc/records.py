@@ -50,7 +50,7 @@ class Records(object):
     parameters of the constructor, and therefore, imputed variables
     are generated to augment the data and initial-year blowup factors
     are applied to the data. Explicitly setting start_year to some
-    value other than CURRENT_PUF_YEAR will cause this variable-imputation
+    value other than Records.PUF_YEAR will cause this variable-imputation
     and initial-year-blowup logic to be skipped.  There are situations in
     which this is exactly what is desired, but more often than not,
     skipping the imputation and blowup logic would be a mistake.  In
@@ -58,7 +58,7 @@ class Records(object):
     class constructor unless you know exactly what you are doing.
     """
 
-    CURRENT_PUF_YEAR = 2009
+    PUF_YEAR = 2009
 
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
     WEIGHTS_FILENAME = "WEIGHTS.csv"
@@ -289,7 +289,7 @@ class Records(object):
             msg = ('Records.constructor start_year is neither None nor '
                    'an integer')
             raise ValueError(msg)
-        if self._current_year == Records.CURRENT_PUF_YEAR:
+        if self._current_year == Records.PUF_YEAR:
             self._impute_variables()
 
     @property
@@ -304,7 +304,7 @@ class Records(object):
         # Implement Stage 2 Extrapolation reweighting.
         self.s006 = self.WT["WT" + str(self.current_year)] / 100
 
-    def extrapolate_09_puf(self):
+    def extrapolate_2009_puf(self):
         year = 2009
         self.BF.AGDPN[year] = 1
         self.BF.ATXPY[year] = 1
@@ -527,12 +527,13 @@ class Records(object):
             msg = ('Records.constructor data is neither a string nor '
                    'a Pandas DataFrame')
             raise ValueError(msg)
-        # removed the aggregated record from 09 PUF
+        # remove the aggregated record from 2009 PUF
         tax_dta = tax_dta[tax_dta.recid != 999999]
         self.dim = len(tax_dta)
+        # create variables in NAMES list
         for attrname, varname in Records.NAMES:
             setattr(self, attrname, tax_dta[varname].values)
-        # zero'd out "nonconst" data
+        # list of zeroed-out "nonconst" variables
         zeroed_names = ['e35300_0', 'e35600_0', 'e35910_0', 'x03150', 'e03600',
                         'e03280', 'e03900', 'e04000', 'e03700', 'c23250',
                         'e23660', 'f2555', 'e02800', 'e02610', 'e02540',
@@ -620,6 +621,7 @@ class Records(object):
                         '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
                         '_amed', '_xlin3', '_xlin6', '_cmbtp_itemizer',
                         '_cmbtp_standard', '_expanded_income']
+        # create zeroed_names variables
         for name in zeroed_names:
             setattr(self, name, np.zeros((self.dim,)))
         self._num = np.ones((self.dim,))
@@ -632,7 +634,7 @@ class Records(object):
         self.e60100 = self.p60100
         self.e27860 = self.s27860
         # specify SOIYR
-        self.SOIYR = np.repeat(Records.CURRENT_PUF_YEAR, self.dim)
+        self.SOIYR = np.repeat(Records.PUF_YEAR, self.dim)
 
     def _read_weights(self, weights):
         if isinstance(weights, pd.core.frame.DataFrame):
@@ -696,29 +698,30 @@ class Records(object):
         """
         self._cmbtp_itemizer = self._imputed_cmbtp_itemizer()
         self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
-        # Standard deduction amount in 2009
-        std2009 = np.array([5700, 11400, 5700, 8350, 11400, 5700, 950])
-        # Additional standard deduction for aged 2009
-        STD_Aged_2009 = np.array([1400., 1100.])
-        # Compulsory itemizers
+        # standard deduction amount in 2009
+        std_2009 = np.array([5700, 11400, 5700, 8350, 11400, 5700, 950])
+        # additional standard deduction for aged 2009
+        std_aged_2009 = np.array([1400., 1100.])
+        # create imputed compulsory itemizer variable
         self._compitem = np.where(np.logical_and(self.FDED == 1,
                                                  self.e04470 <
-                                                 std2009[self.MARS - 1]), 1, 0)
-        # Number of taxpayers
+                                                 std_2009[self.MARS - 1]),
+                                  1, 0)
+        # impute number of taxpayers
         self._txpyers = np.where(np.logical_or(self.MARS == 2,
                                                np.logical_or(self.MARS == 3,
                                                              self.MARS == 6)),
                                  2., 1.)
-        # Number of extra standard deductions for aged
+        # impute number of extra standard deductions for aged
         self._numextra = np.where(np.logical_and(self.FDED == 2, self.e04470 <
-                                                 std2009[self.MARS - 1]),
+                                                 std_2009[self.MARS - 1]),
                                   np.where(
                                       np.logical_and(self.MARS != 2,
                                                      self.MARS != 3),
-                                      (self.e04470 - std2009[self.MARS - 1]) /
-                                      STD_Aged_2009[0],
-                                      (self.e04470 - std2009[self.MARS - 1]) /
-                                      STD_Aged_2009[1]),
+                                      (self.e04470 - std_2009[self.MARS - 1]) /
+                                      std_aged_2009[0],
+                                      (self.e04470 - std_2009[self.MARS - 1]) /
+                                      std_aged_2009[1]),
                                   np.where(self.e02400 > 0, self._txpyers, 0))
 
     def _imputed_cmbtp_itemizer(self):
