@@ -295,7 +295,7 @@ class Records(object):
     @property
     def current_year(self):
         return self._current_year
-    
+
     def factor_adjustment(self, percentage, year):
         self.BF.AGDPN[year] += percentage * abs(self.BF.AGDPN[year] - 1)
         self.BF.ATXPY[year] += percentage * abs(self.BF.ATXPY[year] - 1)
@@ -319,7 +319,7 @@ class Records(object):
         if target != 0:
             # user inputs theoretically should be based on GDP
             ratio = target/abs(self.BF.AGDPN[year] - 1)
-    
+
             # apply this ratio to all the dollar amount factors
             self.BF.AGDPN[year] = ratio * abs(self.BF.AGDPN[year] - 1) + 1
             self.BF.ATXPY[year] = ratio * abs(self.BF.ATXPY[year] - 1) + 1
@@ -338,7 +338,7 @@ class Records(object):
             self.BF.ASOCSEC[year] = ratio * abs(self.BF.ASOCSEC[year] - 1) + 1
             self.BF.AUCOMP[year] = ratio * abs(self.BF.AUCOMP[year] - 1) + 1
             self.BF.AIPD[year] = ratio * abs(self.BF.AIPD[year] - 1) + 1
-        
+
     def increment_year(self):
         self._current_year += 1
         self.FLPDYR += 1
