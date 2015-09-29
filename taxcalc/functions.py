@@ -252,7 +252,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
 
     # State and Local Income Tax, or Sales Tax
     _statax = max(e18400, 0)
-    # _statax = max(e18450, e18425)
+    # _statax = max(e18450, max(e18400, e18425))
 
     # Other Taxes (including state and local)
     c18300 = _statax + e18500 + e18800 + e18900
@@ -286,9 +286,8 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
     elif base_charity <= 0.2 * _posagi:
         c19700 = base_charity
     else:
-        lim50 = min(ID_Charity_crt_Cash * _posagi, e19800)
         lim30 = min(ID_Charity_crt_Asset * _posagi, e20100 + e20200)
-        c19700 = min(0.5 * _posagi, lim30 + lim50)
+        c19700 = min(0.5 * _posagi, lim30 + e19800)
 
     charity_floor = ID_Charity_frt * _posagi  # frt is zero in present law
     c19700 = max(0, c19700 - charity_floor)
@@ -478,7 +477,7 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
     # Apply regular standard deduction if not dependent or compulsory itemizer
     if (DSI == 1):
         c04100 = min(STD[MARS - 1], c15100)
-    elif _compitem == 1 or (3 <= MARS and MARS <= 6 and MIDR == 1):
+    elif MIDR == 1:
         c04100 = 0.
     else:
         c04100 = STD[MARS - 1]
@@ -487,11 +486,9 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
     c04100 = c04100 + e15360
 
     # ??
-    # if f6251 == 0 and e04470 == 0:
-    #    x04500 = e00100 - e60000
-    #    c04500 = c00100 - x04500
-    # else:
-    #    x04500 = 0.
+    x04500 = 0.
+    if f6251 == 0 and e04470 == 0:
+        x04500 = e00100 - e60000
 
     # Calculate the extra deduction for aged and blind
     if puf:
@@ -507,10 +504,7 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
     c15200 = c04200
 
     # Compute the total standard deduction
-    if (MARS == 3 or MARS == 6) and (MIDR == 1):
-        _standard = 0.
-    else:
-        _standard = c04100 + c04200
+    _standard = c04100 + c04200
 
     # ???
     if FDED == 1:
@@ -518,7 +512,11 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
     else:
         _othded = 0.
 
+    if (MARS == 3 or MARS == 6) and (MIDR == 1):
+        _standard = 0.
+
     c04500 = c00100 - max(c04470, max(c04100, _standard + e37717))
+    # c04500 = c00100 - max(c21060 - c21040, _standard + e37717))
     c04800 = max(0., c04500 - c04600 - e04805)
 
     # Check with Dan whether this is right!
@@ -530,7 +528,7 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
 
     # why is this here, c60000 is reset many times?
     if _standard > 0:
-        c60000 = c00100  # c60000 = c00100 - x04500
+        c60000 = c00100 - x04500
     else:
         c60000 = c04500
 
@@ -827,9 +825,9 @@ def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
 def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
          e60300, e60860, e60100, e60840, e60630, e60550, FDED,
          e60720, e60430, e60500, e60340, e60680, e60600, e60405,
-         e60440, e60420, e60410, e61400, e60660, e60480,
-         e62000, e60250, _cmp, _standard, e04470, e17500,
-         f6251, e62100, e21040, e20800, c00100, _statax,
+         e60440, e60420, e60410, e61400, e60660, e60480, c21060,
+         e62000, e60250, _cmp, _standard, e04470, e17500, c04600,
+         f6251, e62100, e21040, e20800, c00100, _statax, e60000,
          c04470, c17000, e18500, c20800, c21040, NIIT,
          DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700,
          e00100, e24515, x62730, x60130, e18400,
@@ -852,6 +850,17 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     c62730 = e24515 + x62730
 
     _amtded = c60200 + c60220 + c60240
+    _prefded = c60200 + c60220 + c60240
+    _prefnot = c21060 - c21040 - _prefded
+    _totded = _prefded + _prefnot
+    _useded = min(_totded, max(0, c00100 - c04600))
+    # c04500 = c00100 - max(_useded, _standard + e37717)
+    # if FDED == 1:
+    #    c60000 = c00100 - _useded
+    # else:
+    #    c60000 = c00100
+    # c60000 = c00100 - _useded
+    _amtded = min(_prefded, max(0, _useded - _prefnot))
     # if c60000 <= 0:
 
     #   _amtded = max(0., _amtded + c60000)
@@ -940,7 +949,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     _alminc = c62700
 
     if (c02700 > 0):
-        _alminc = max(0., c62100 - c62600 + c02700)
+        _alminc = max(0., c62100 - c62600)
 
         _amtfei = (AMT_trt1 * c02700 + AMT_trt2 *
                    max(0., c02700 - AMT_tthd / _sep))
@@ -1018,10 +1027,12 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517,
     c63200 = max(0., c63000 - c63100)
     c09600 = c63200
     _othtax = e05800 - (e05100 + c09600)
-
+    if c09600 == 0 and e60000 == 0:
+        c60000 = 0.
+        c62100 = 0.
     c05800 = _taxbc + c63200
 
-    return (c62720, c60260, c63100, c60200, c60240, c60220,
+    return (c62720, c60260, c63100, c60200, c60240, c60220, c60000,
             c60130, c62730, _addamt, c62100, _edical,
             _amtsepadd, c62600, _agep, _ages, c62700,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
@@ -1075,7 +1086,6 @@ def DepCareBen(c32800, _cmp, f2441, MARS, c32880, c32890, e33420, e33430,
     if f2441 != 0 and MARS == 2:
         _seywage = min(c32880, c32890, e33420 + e33430 - e33450, e33460)
     else:
-
         _seywage = 0.
 
     if _cmp == 1 and MARS != 2:  # this is same as above, why?
@@ -1087,7 +1097,6 @@ def DepCareBen(c32800, _cmp, f2441, MARS, c32880, c32890, e33420, e33430,
         c33475 = max(0., min(_seywage, 5000 / _sep) - c33470)
         c33480 = max(0., e33420 + e33430 - e33450 - c33465 - c33475)
         c32840 = c33470 + c33475
-
         c32800 = min(max(0., _dclim - c32840),
                      max(0., e32750 + e32775 - c32840))
 
@@ -1630,11 +1639,11 @@ def OSPC_TAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
              e11450, e11500, e82040, e09900, e11400, e11300, e11200, e11100,
              e11550, e09710, e09720, e10000):
 
-    _refund = c59660 + c11070 + c10960 + c10950 + e11580
+    _refund = c59660 + c11070 + c10960 + c10950 + e10000
 
     _ospctax = c09200 - _refund
 
-    _payments = e09710 + e09720 + e10000 + e11550
+    _payments = e09710 + e09720 + e11580 + e11550 + e11450
 
     c10300 = max(0, _ospctax - _payments)
 
