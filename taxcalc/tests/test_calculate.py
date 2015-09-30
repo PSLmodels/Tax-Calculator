@@ -74,6 +74,7 @@ def run(puf=True):
     # Fix-up to bad column name in expected data
     exp_set = set(exp_results.columns)
     cur_set = set(totaldf.columns)
+    _exp_set.add('_avail')
 
     assert(exp_set == cur_set)
 

@@ -1252,8 +1252,8 @@ def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
     # American opportunities credit in 2018. NEED TO ADD LOGIC!!!
 
 
-@iterate_jit(nopython=True)
-def AmOppCr(_cmp, e87482, e87487, e87492, e87497):
+@iterate_jit(nopython=True, puf=True)
+def AmOppCr(_cmp, e87482, e87487, e87492, e87497, e87521, puf):
     """American Opportunity Credit 2009+; Form 8863"""
 
     """
@@ -1263,14 +1263,10 @@ def AmOppCr(_cmp, e87482, e87487, e87492, e87497):
     """
 
     # Expense should not exceed the cap of $4000.
-    if _cmp == 1:
-
-        c87482 = max(0., min(e87482, 4000.))
-        c87487 = max(0., min(e87487, 4000.))
-        c87492 = max(0., min(e87492, 4000.))
-        c87497 = max(0., min(e87497, 4000.))
-    else:
-        c87482, c87487, c87492, c87497 = 0., 0., 0., 0.
+    c87482 = max(0., min(e87482, 4000.))
+    c87487 = max(0., min(e87487, 4000.))
+    c87492 = max(0., min(e87492, 4000.))
+    c87497 = max(0., min(e87497, 4000.))
 
     # Credit calculated as 100% of the first $2000 expense plus
     # 25% of amount exceeding $2000.
@@ -1296,6 +1292,9 @@ def AmOppCr(_cmp, e87482, e87487, e87492, e87497):
 
     # Sum of credits of all four students.
     c87521 = c87483 + c87488 + c87493 + c87498
+
+    if puf:
+        c87521 = e87521
 
     return (c87482, c87487, c87492, c87497, c87483, c87488, c87493, c87498,
             c87521)
@@ -1380,7 +1379,7 @@ def RefAmOpp(_cmp, c87521, _num, c00100, EDCRAGE, c87668):
     """
 
     # Phase out the credit for income range [80k,90k].
-    if _cmp == 1 and c87521 > 0:
+    if c87521 > 0:
         c87654 = 90000 * _num
         c87656 = c00100
         c87658 = np.maximum(0., c87654 - c87656)
@@ -1396,11 +1395,10 @@ def RefAmOpp(_cmp, c87521, _num, c00100, EDCRAGE, c87668):
     else:
         c87666 = 0.4 * c87664
 
-    if c87521 > 0 and _cmp == 1:
+    if c87521 > 0:
         c10960 = c87666
         c87668 = c87664 - c87666
         c87681 = c87666
-
     else:
         c10960, c87668, c87681 = 0., 0., 0.
 
@@ -1473,7 +1471,7 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
 
     return (c87560, c87570, c87580, c87590, c87600, c87610, c07300, c07600,
             c07240, c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220,
-            c07230)
+            c07230, _avail)
 
 
 @iterate_jit(nopython=True, puf=True)
@@ -1553,7 +1551,7 @@ def C1040(e07400, e07180, e07200, c07220, c07230, e07250, c07300, c07240,
 
     x07400 = e07400
 
-    c07100 = (e07180 + e07200 + e07600 + c07300 + x07400 + e07980 + c07220 +
+    c07100 = (c07180 + e07200 + c07600 + c07300 + x07400 + e07980 + c07220 +
               e07500 + e08000)
 
     y07100 = c07100
@@ -1585,42 +1583,20 @@ def C1040(e07400, e07180, e07200, c07220, c07230, e07250, c07300, c07240,
 
 
 @iterate_jit(nopython=True)
-def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _othertax):
+def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _avail, _othertax):
 
     # Decomposition of EITC
-
-    if c08795 > 0 and c59660 > 0 and c08795 <= c59660:
-        c59680 = c08795
-
-        _comb = c59660 - c59680
-
-    else:
-
-        c59680 = 0.
-        _comb = 0.
-
-    if c08795 > 0 and c59660 > 0 and c08795 > c59660:
-        c59680 = c59660
+    _comb = 0
+    c10950 = 0
+    c59680 = min(c59660, max(0, _avail))
+    _avail = _avail - c59680
+    _avail = _avail + _othertax
+    c59700 = min(_avail, c59660 - c59680)
+    c59720 = c59660 - c59680 - c59700
 
     c07150 = c07100 + c59680
     c07150 = min(c07150, c05800)
     c08800 = c05800 - c07150
-
-    c59700 = min(_othertax, c59680)
-    c59720 = c59680 - c59700
-
-    if c08795 < 0 or c59660 <= 0:
-        _compb = 0.
-        c59680 = 0.
-        c59700 = 0.
-        c59720 = 0.
-
-    else:
-        _compb = 0.
-
-    c07150 = c07100 + c59680
-    c07150 = c07150
-    c10950 = 0.
 
     return (c59680, c59700, c59720, _comb, c07150, c10950, c08800)
 
