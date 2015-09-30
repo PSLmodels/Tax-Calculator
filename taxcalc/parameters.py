@@ -477,11 +477,14 @@ class Parameters(object):
                 default_cpi = False
             cpi_inflated = year_mods[year].get(name + '_cpi', default_cpi)
             # set post-reform values of parameter with name
+            cval = getattr(self, name, None)
+            if cval is None:
+                # it is a behavior parameter instead
+                continue
             nval = expand_array(values,
                                 inflate=cpi_inflated,
                                 inflation_rates=inf_rates,
                                 num_years=num_years_to_expand)
-            cval = getattr(self, name)
             cval[(self.current_year - self.start_year):] = nval
         self.set_year(self._current_year)
 
