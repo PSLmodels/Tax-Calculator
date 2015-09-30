@@ -622,7 +622,6 @@ class Records(object):
                         '_amed', '_xlin3', '_xlin6', '_cmbtp_itemizer',
                         '_cmbtp_standard', '_expanded_income', '_surtax']
 
-
         # create zeroed_names variables
         for name in zeroed_names:
             setattr(self, name, np.zeros((self.dim,)))
