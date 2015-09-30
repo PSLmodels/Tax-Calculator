@@ -22,47 +22,6 @@ def add_df(alldfs, df):
             alldfs[dup_index] = df[col]
 
 
-def calculator(params, records, mods="", **kwargs):
-    update_mods = {}
-    if mods:
-        if isinstance(mods, str):
-            import json
-            dd = json.loads(mods)
-            dd = {int(k): (np.array(v) if type(v) == list else v)
-                  for k, v in dd.items()}
-            update_mods.update(dd)
-        else:
-            update_mods.update(mods)
-
-    final_mods = toolz.merge_with(toolz.merge, update_mods,
-                                  {params.current_year: kwargs})
-
-    params.implement_reform(final_mods)
-
-    if final_mods:
-        max_yr = max(yr for yr in final_mods)
-    else:
-        max_yr = 0
-    if (params.current_year < max_yr):
-        msg = ("Modifications are for year {0} and Parameters are for"
-               " year {1}. Parameters will be advanced to year {0}")
-        print(msg.format(max_yr, params.current_year))
-
-    while params.current_year < max_yr:
-        params.set_year(params.current_year + 1)
-
-    if (records.current_year < max_yr):
-        msg = ("Modifications are for year {0} and Records are for"
-               " year {1}. Records will be advanced to year {0}")
-        print(msg.format(max_yr, records.current_year))
-
-    while records.current_year < max_yr:
-        records.increment_year()
-
-    calc = Calculator(params, records)
-    return calc
-
-
 class Calculator(object):
 
     def __init__(self, params=None, records=None, sync_years=True, **kwargs):
@@ -81,11 +40,12 @@ class Calculator(object):
             msg = 'Must supply tax records as a file path or Records object'
             raise ValueError(msg)
 
-        if sync_years and self._records.current_year == 2009:
+        if sync_years and self._records.current_year == Records.PUF_YEAR:
             print("You loaded data for " +
                   str(self._records.current_year) + '.')
 
-            self.records.extrapolate_09_puf()
+            if self._records.current_year == 2009:
+                self.records.extrapolate_2009_puf()
 
             while self._records.current_year < self._params.current_year:
                 self._records.increment_year()
@@ -190,25 +150,25 @@ class Calculator(object):
         the two.
         """
 
-        income_type = getattr(self, income_type_string)
+        income_type = getattr(self.records, income_type_string)
 
         # Calculate the base level of taxes.
         self.calc_all()
-        taxes_base = np.copy(self._ospctax)
+        taxes_base = np.copy(self.records._ospctax)
 
         # Calculate the tax change with a marginal increase in income.
-        setattr(self, income_type_string, income_type + diff)
+        setattr(self.records, income_type_string, income_type + diff)
         self.calc_all()
-        delta_taxes_up = self._ospctax - taxes_base
+        delta_taxes_up = self.records._ospctax - taxes_base
 
         # Calculate the tax change with a marginal decrease in income.
-        setattr(self, income_type_string, income_type - diff)
+        setattr(self.records, income_type_string, income_type - diff)
         self.calc_all()
-        delta_taxes_down = taxes_base - self._ospctax
+        delta_taxes_down = taxes_base - self.records._ospctax
 
         # Reset the income_type to its starting point to avoid
         # unintended consequences.
-        setattr(self, income_type_string, income_type)
+        setattr(self.records, income_type_string, income_type)
         self.calc_all()
 
         # Choose the more modest effect of either adding or subtracting income
