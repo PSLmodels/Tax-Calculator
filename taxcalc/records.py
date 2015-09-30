@@ -318,7 +318,7 @@ class Records(object):
     def factor_target(self, target, year):
         if target != 0:
             # user inputs theoretically should be based on GDP
-            ratio = target/abs(self.BF.AGDPN[year] - 1)
+            ratio = target / abs(self.BF.AGDPN[year] - 1)
 
             # apply this ratio to all the dollar amount factors
             self.BF.AGDPN[year] = ratio * abs(self.BF.AGDPN[year] - 1) + 1
