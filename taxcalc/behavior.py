@@ -157,6 +157,9 @@ class Behavior(object):
 
     def implement_reform(self, reform):
         self.set_default_vals()
+        if self.current_year != self.start_year:
+            self.set_year(self.start_year)
+        
         for year in reform:
             if year != self.start_year:
                 self.set_year(year)
@@ -173,7 +176,7 @@ class Behavior(object):
                                     num_years=num_years_to_expand)
                 
                 cval[(self.current_year - self.start_year):] = nval
-        self.set_year(self._current_year)
+        self.set_year(self.start_year)
 
     def set_year(self, year):
         """
