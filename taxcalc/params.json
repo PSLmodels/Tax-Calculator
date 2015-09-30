@@ -393,8 +393,8 @@
                     [254200, 	305050,   152525,     279650, 		  305050,  152525],
                     [258250, 	309900,   154950,     284050, 		  309900,  154950]]
     },
-    "_ID_BenefitCap_Switch":{
-        "long_name": "Switch for manipulating itemized deduction benefit cap",
+    "_ID_BenefitSurtax_Switch":{
+        "long_name": "Switch for manipulating itemized deduction benefit surtax",
 	"description": "This parameter is specified by items and year. ",
         "irs_ref": "",
         "notes": "",
@@ -1008,8 +1008,8 @@
         "col_label": "",
         "value":     [0.0] 
     },
-    "_ID_DeductionBenefit_crt":{
-        "long_name": "Deduction tax benefit cap, ceiling as a percent of AGI",
+    "_ID_BenefitSurtax_trt":{
+        "long_name": "Deduction tax benefit surtax rate, ceiling as a percent of AGI",
 	"description": "This percentage is used to cap the tax benefit from deductions. Users can specify what deductions they want to apply to. ",
         "irs_ref": "",
         "notes": "",

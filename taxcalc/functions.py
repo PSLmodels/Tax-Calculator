@@ -1713,23 +1713,23 @@ def ExpandIncome(FICA_ss_trt, SS_Earnings_c, e00200, FICA_mc_trt, e02400,
     return (_expanded_income)
 
 
-def BenefitCap(calc):
-    if calc.params.ID_DeductionBenefit_crt != 1:
+def BenefitSurtax(calc):
+    if calc.params.ID_BenefitSurtax_trt != 1:
         nobenefits_calc = copy.deepcopy(calc)
 
         # hard code the reform
         nobenefits_calc.params.ID_Medical_HC = \
-            int(nobenefits_calc.params.ID_BenefitCap_Switch[0])
+            int(nobenefits_calc.params.ID_BenefitSurtax_Switch[0])
         nobenefits_calc.params.ID_StateLocalTax_HC = \
-            int(nobenefits_calc.params.ID_BenefitCap_Switch[1])
+            int(nobenefits_calc.params.ID_BenefitSurtax_Switch[1])
         nobenefits_calc.params.ID_casualty_HC = \
-            int(nobenefits_calc.params.ID_BenefitCap_Switch[2])
+            int(nobenefits_calc.params.ID_BenefitSurtax_Switch[2])
         nobenefits_calc.params.ID_Miscellaneous_HC = \
-            int(nobenefits_calc.params.ID_BenefitCap_Switch[3])
+            int(nobenefits_calc.params.ID_BenefitSurtax_Switch[3])
         nobenefits_calc.params.ID_Mortgage_HC = \
-            int(nobenefits_calc.params.ID_BenefitCap_Switch[4])
+            int(nobenefits_calc.params.ID_BenefitSurtax_Switch[4])
         nobenefits_calc.params.ID_Charity_HC = \
-            int(nobenefits_calc.params.ID_BenefitCap_Switch[5])
+            int(nobenefits_calc.params.ID_BenefitSurtax_Switch[5])
 
         nobenefits_calc.calc_one_year()
 
@@ -1738,9 +1738,11 @@ def BenefitCap(calc):
                             nobenefits_calc.records._ospctax -
                             calc.records._ospctax, 0)
 
-        cap = nobenefits_calc.params.ID_DeductionBenefit_crt *\
+        surtax_cap = nobenefits_calc.params.ID_BenefitSurtax_trt *\
             nobenefits_calc.records.c00100
 
-        calc.records._ospctax = np.where(tax_diff < cap,
-                                         tax_diff + calc.records._ospctax,
-                                         cap + calc.records._ospctax)
+        calc.records._surtax = np.where(tax_diff < surtax_cap,
+                                        tax_diff,
+                                        surtax_cap)
+        
+        calc.records._ospctax += calc.records._surtax

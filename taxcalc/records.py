@@ -663,7 +663,7 @@ class Records(object):
                         'c59720', '_comb', 'c07150', 'c10300', '_ospctax',
                         '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
                         '_amed', '_xlin3', '_xlin6', '_cmbtp_itemizer',
-                        '_cmbtp_standard', '_expanded_income']
+                        '_cmbtp_standard', '_expanded_income', '_surtax']
 
         for name in zeroed_names:
             setattr(self, name, np.zeros((self.dim,)))
