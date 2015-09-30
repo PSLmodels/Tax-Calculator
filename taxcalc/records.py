@@ -315,10 +315,12 @@ class Records(object):
         self.BF.AUCOMP[year] += percentage * abs(self.BF.AUCOMP[year] - 1)
         self.BF.AIPD[year] += percentage * abs(self.BF.AIPD[year] - 1)
 
-    def factor_target(self, target, year):
-        if target != 0:
+    def factor_target(self, target, inflation, year):
+        # 2013 is the start year of all parameter arrays. Hard coded for now.
+        # Need to be fixed later
+        if year >= 2013 and target[year - 2013] != 0:
             # user inputs theoretically should be based on GDP
-            ratio = target / abs(self.BF.AGDPN[year] - 1)
+            ratio = (target[year - 2013] + inflation[year]) / abs(self.BF.AGDPN[year] - 1)
 
             # apply this ratio to all the dollar amount factors
             self.BF.AGDPN[year] = ratio * abs(self.BF.AGDPN[year] - 1) + 1
