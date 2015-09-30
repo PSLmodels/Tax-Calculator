@@ -1141,23 +1141,17 @@ def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt,
 
 
 @iterate_jit(nopython=True)
-def RateRed(c05800, _othtax, _exact, x59560, _earned, c59660):
+def RateRed(c05800, _othtax, _exact, e59560, _earned, c59660):
 
     # rate reduction credit for 2001 only, is this needed?
     c05800 = c05800
     c07970 = 0.
-
-    if _exact and x59560 == 0:
-        c59560 = 0
+    c59560 = 0.
 
     if _exact == 1:
-        if x59560 > 0:
-            c59560 = _earned
-        else:
-            c59560 = 0
+        c59560 = e59560
     else:
-        if c59660 == 0:
-            c59560 = 0
+        c59560 = _earned
 
     return c07970, c05800, c59560
 
@@ -1172,7 +1166,7 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
     EICYB1 = max(0.0, EICYB1)
     EICYB2 = max(0.0, EICYB2)
     EICYB3 = max(0.0, EICYB3)
-
+    _preeitc = 0.
     _ieic = int(max(EIC, EICYB1) + EICYB2 + EICYB3)
 
     # Modified AGI only through 2002
@@ -1186,17 +1180,11 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
     else:
         _val_ymax = 0.
 
-    if (MARS == 1 or MARS == 4 or MARS == 5 or
-            MARS == 2 or MARS == 7) and _modagi > 0:
-
+    if (MARS == 1 or MARS == 4 or MARS == 5 or MARS == 2 or MARS == 7):
         c59660 = min(EITC_rt[_ieic] * c59560, EITC_c[_ieic])
-
         _preeitc = c59660
-    else:
 
-        c59660, _preeitc = 0., 0.
-
-    if (MARS != 3 and MARS != 6 and _modagi > 0 and
+    if (MARS != 3 and MARS != 6 and
             (_modagi > _val_ymax or c59560 > _val_ymax)):
         _preeitc = max(0., EITC_c[_ieic] - EITC_prt[_ieic] *
                        (max(0., max(_modagi, c59560) - _val_ymax)))
@@ -1214,17 +1202,21 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
         _val_rtless = 0.
         _dy = 0.
 
-    if (MARS != 3 and MARS != 6 and _modagi > 0 and _dy > EITC_InvestIncome_c):
+    if (MARS != 3 and MARS != 6 and _dy > EITC_InvestIncome_c):
         _preeitc = 0.
 
     if puf or (_ieic > 0) or (_agep >= 25 and _agep <= 64) or (_ages > 0):
         c59660 = _preeitc
     else:
         c59660 = 0.
+        c59560 = 0.
+
+    if c59660 == 0:
+        c59560 = 0.
 
     _eitc = c59660
 
-    return (_ieic, EICYB1, EICYB2, EICYB3, _modagi, c59660, _val_ymax,
+    return (_ieic, EICYB1, EICYB2, EICYB3, _modagi, c59560, c59660, _val_ymax,
             _preeitc, _val_rtbase, _val_rtless, _dy)
 
 
