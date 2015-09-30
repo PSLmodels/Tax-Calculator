@@ -1493,12 +1493,10 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, e00200, e82882, e30100, _sey,
         c82930 = c07220
         c82935 = c82925 - c82930
         # CTC not applied to tax
-        c82880 = max(0., e00200 + e82882 + e30100 + max(0., _sey) -
-                     0.5 * _setax)
         c82880 = max(0, _earned)
         if _exact == 1:
             c82880 = e82880
-        h82880 = c82880
+        h82880 = 0
         c82885 = max(0., c82880 - ACTC_Income_thd)
         c82890 = ACTC_rt * c82885
     # else:
@@ -1519,14 +1517,14 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, e00200, e82882, e30100, _sey,
     #   c82900, c82905, c82910, c82915, c82920, c82937 = 0., 0., 0., 0., 0., 0.
 
     # Part II of 2005 form 8812
-        if _nctcr <= 2 and c82890 > 0:
-            c82940 = min(c82890, c82935)
-        if _nctcr > 2:
-            if c82890 >= c82935:
-                c82940 = c82935
-            else:
-                c82940 = min(c82935, c82937)
-        c11070 = c82940
+    if _nctcr > 0 and _nctcr <= 2 and c82890 > 0:
+        c82940 = min(c82890, c82935)
+    if _nctcr > 2:
+        if c82890 >= c82935:
+            c82940 = c82935
+        else:
+            c82940 = min(c82935, c82937)
+    c11070 = c82940
     if e82915 > 0 and abs(e82940 - c82940) > 100:
         _othadd = e11070 - c11070
 
