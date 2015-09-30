@@ -286,7 +286,7 @@ class Calculator(object):
 
             # nonrefuncable credits
             nonrefundable = (calc.records.c07100 * calc.records.s006).sum()
-            
+
             # Misc. Surtax
             surtax = (calc.records._surtax * calc.records.s006).sum()
 

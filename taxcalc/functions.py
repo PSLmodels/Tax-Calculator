@@ -1744,5 +1744,5 @@ def BenefitSurtax(calc):
         calc.records._surtax = np.where(tax_diff < surtax_cap,
                                         tax_diff,
                                         surtax_cap)
-        
+
         calc.records._ospctax += calc.records._surtax
