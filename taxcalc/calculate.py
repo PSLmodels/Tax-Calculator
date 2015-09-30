@@ -47,10 +47,10 @@ class Calculator(object):
             if self._records.current_year == 2009:
                 self.records.extrapolate_2009_puf()
 
+            inflation = self.params.default_inflation_rates()
             while self._records.current_year < self._params.current_year:
-
                 self._records.factor_target(self.params._factor_target,
-                                            self.params.default_inflation_rates(),
+                                            inflation,
                                             self.records.current_year + 1)
                 self._records.increment_year()
 

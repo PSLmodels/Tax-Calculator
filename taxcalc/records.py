@@ -320,7 +320,8 @@ class Records(object):
         # Need to be fixed later
         if year >= 2013 and target[year - 2013] != 0:
             # user inputs theoretically should be based on GDP
-            ratio = (target[year - 2013] + inflation[year]) / abs(self.BF.AGDPN[year] - 1)
+            g = abs(self.BF.AGDPN[year] - 1)
+            ratio = (target[year - 2013] + inflation[year]) / g
 
             # apply this ratio to all the dollar amount factors
             self.BF.AGDPN[year] = ratio * abs(self.BF.AGDPN[year] - 1) + 1
