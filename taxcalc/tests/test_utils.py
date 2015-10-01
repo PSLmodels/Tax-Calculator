@@ -2,9 +2,9 @@ import os
 import sys
 import filecmp
 import tempfile
-cur_path = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(cur_path, "../../"))
-sys.path.append(os.path.join(cur_path, "../"))
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(CUR_PATH, "../../"))
+sys.path.append(os.path.join(CUR_PATH, "../"))
 import numpy as np
 import pandas as pd
 import pytest
@@ -16,6 +16,15 @@ from numba import jit, vectorize, guvectorize
 from taxcalc import *
 from csv_to_ascii import ascii_output
 
+# use 1991 PUF-like data to emulate current PUF, which is private
+TAX_DTA_PATH = os.path.join(CUR_PATH, '../../tax_all1991_puf.gz')
+TAX_DTA = pd.read_csv(TAX_DTA_PATH, compression='gzip')
+# PUF-fix-up: MIdR needs to be type int64 to match PUF
+TAX_DTA['midr'] = TAX_DTA['midr'].astype('int64')
+# specify WEIGHTS appropriate for 1991 data
+WEIGHTS_FILENAME = '../../WEIGHTS_testing.csv'
+WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
+WEIGHTS = pd.read_csv(WEIGHTS_PATH)
 
 data = [[1.0, 2, 'a'],
         [-1.0, 4, 'a'],
@@ -32,10 +41,6 @@ data_float = [[1.0, 2, 'a'],
               [0.0000000001, 3, 'b'],
               [-0.0000000001, 1, 'b'],
               [3.0, 6, 'b']]
-
-irates = {1991: 0.015, 1992: 0.020, 1993: 0.022, 1994: 0.020, 1995: 0.021,
-          1996: 0.022, 1997: 0.023, 1998: 0.024, 1999: 0.024, 2000: 0.024,
-          2001: 0.024, 2002: 0.024}
 
 
 def test_expand_1D_short_array():
@@ -116,31 +121,22 @@ def test_expand_2D_variable_rates():
 
 
 def test_create_tables():
-    # Default Plans
-    # Create a Public Use File object
-    cur_path = os.path.abspath(os.path.dirname(__file__))
-    tax_dta_path = os.path.join(cur_path, "../../tax_all1991_puf.gz")
-    # Create a default Parameters object
-    params1 = Parameters(start_year=1991, inflation_rates=irates)
-    records1 = Records(tax_dta_path)
-    # Create a Calculator
+    # create a current-law Parameters object and Calculator object calc1
+    params1 = Parameters()
+    records1 = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
     calc1 = Calculator(params=params1, records=records1)
     calc1.calc_all()
-
-    # User specified Plans
-    user_mods = '{"1991": {"_II_rt4": [0.56]}}'
-    params2 = Parameters(start_year=1991, inflation_rates=irates)
-    records2 = Records(tax_dta_path)
-    # Create a Calculator
-    calc2 = calculator(params=params2, records=records2, mods=user_mods)
-
+    # create a policy-reform Parameters object and Calculator object calc2
+    reform = {2013: {'_II_rt4': [0.56]}}
+    params2 = Parameters()
+    params2.implement_reform(reform)
+    records2 = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
+    calc2 = Calculator(params=params2, records=records2)
     calc2.calc_all()
-
+    # create various distribution tables
     t2 = create_distribution_table(calc2, groupby="small_income_bins",
                                    result_type="weighted_sum")
-    # make large income bins table
     tdiff = create_difference_table(calc1, calc2, groupby="large_income_bins")
-    # make webapp income bins table
     tdiff_webapp = create_difference_table(calc1, calc2,
                                            groupby="webapp_income_bins")
 
@@ -309,11 +305,9 @@ def test_add_weighted_decile_bins():
 
 
 def test_dist_table_sum_row():
-    cur_path = os.path.abspath(os.path.dirname(__file__))
-    tax_dta_path = os.path.join(cur_path, "../../tax_all1991_puf.gz")
     # Create a default Parameters object
-    params1 = Parameters(start_year=1991, inflation_rates=irates)
-    records1 = Records(tax_dta_path)
+    params1 = Parameters()
+    records1 = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
     # Create a Calculator
     calc1 = Calculator(params=params1, records=records1)
     calc1.calc_all()
@@ -321,42 +315,33 @@ def test_dist_table_sum_row():
                                    result_type="weighted_sum")
     t2 = create_distribution_table(calc1, groupby="large_income_bins",
                                    result_type="weighted_sum")
-    assert(np.allclose(t1[-1:], t2[-1:]))
-
+    assert np.allclose(t1[-1:], t2[-1:])
     t3 = create_distribution_table(calc1, groupby="small_income_bins",
                                    result_type="weighted_avg")
-#    for col in t3:
-#        assert(t3.loc['sums', col] == 'n/a')
 
 
 def test_diff_table_sum_row():
-    cur_path = os.path.abspath(os.path.dirname(__file__))
-    tax_dta_path = os.path.join(cur_path, "../../tax_all1991_puf.gz")
-    # Create a default Parameters object
-    params1 = Parameters(start_year=1991, inflation_rates=irates)
-    records1 = Records(tax_dta_path)
-    # Create a Calculator
+    # create a current-law Parameters object and Calculator calc1
+    params1 = Parameters()
+    records1 = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
     calc1 = Calculator(params=params1, records=records1)
     calc1.calc_all()
-
-    # User specified Plans
-    user_mods = '{"1991": {"_II_rt4": [0.56]}}'
-    params2 = Parameters(start_year=1991, inflation_rates=irates)
-    records2 = Records(tax_dta_path)
-    # Create a Calculator
-    calc2 = calculator(params=params2, records=records2, mods=user_mods)
+    # create a policy-reform Parameters object and Calculator calc2
+    reform = {2013: {'_II_rt4': [0.56]}}
+    params2 = Parameters()
+    params2.implement_reform(reform)
+    records2 = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
+    calc2 = Calculator(params=params2, records=records2)
     calc2.calc_all()
-
+    # create two difference tables and compare their content
     tdiff1 = create_difference_table(calc1, calc2, groupby="small_income_bins")
     tdiff2 = create_difference_table(calc1, calc2, groupby="large_income_bins")
-
     non_digit_cols = ['mean', 'perc_inc', 'perc_cut', 'share_of_change']
     digit_cols = [x for x in tdiff1.columns.tolist() if
                   x not in non_digit_cols]
-
-    assert(np.allclose(tdiff1[digit_cols][-1:], tdiff2[digit_cols][-1:]))
-    assert(np.array_equal(tdiff1[non_digit_cols][-1:],
-           tdiff2[non_digit_cols][-1:]))
+    assert np.allclose(tdiff1[digit_cols][-1:], tdiff2[digit_cols][-1:])
+    assert np.array_equal(tdiff1[non_digit_cols][-1:],
+                          tdiff2[non_digit_cols][-1:])
 
 
 def test_expand_2D_already_filled():
