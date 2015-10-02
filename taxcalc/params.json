@@ -1008,8 +1008,8 @@
         "col_label": "",
         "value":     [0.0] 
     },
-    "_ID_BenefitSurtax_trt":{
-        "long_name": "Deduction tax benefit surtax rate, ceiling as a percent of AGI",
+    "_ID_BenefitSurtax_cap":{
+        "long_name": "Deduction tax benefit surtax cap rate, ceiling as a percent of AGI",
 	"description": "This percentage is used to cap the tax benefit from deductions. Users can specify what deductions they want to apply to. ",
         "irs_ref": "",
         "notes": "",
