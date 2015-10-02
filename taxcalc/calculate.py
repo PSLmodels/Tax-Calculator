@@ -138,7 +138,7 @@ class Calculator(object):
     def current_year(self):
         return self.params.current_year
 
-    def mtr(self, income_type_string, diff=100):
+    def mtr(self, income_type_string, diff=1):
         """
         Calculates the marginal tax rate for every record.
         Avoids kinks in the tax schedule by finding the marginal rates
