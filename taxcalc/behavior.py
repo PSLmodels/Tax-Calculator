@@ -158,7 +158,7 @@ class Behavior(object):
             behavior = json.loads(as_string)
         return behavior
 
-    def implement_reform(self, reform):
+    def update_behavior(self, reform):
         self.set_default_vals()
         if self.current_year != self.start_year:
             self.set_year(self.start_year)
