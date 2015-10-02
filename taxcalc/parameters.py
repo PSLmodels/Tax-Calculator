@@ -86,6 +86,11 @@ class Parameters(object):
         else:  # if None, read current-law parameters
             self._vals = self._params_dict_from_json_file()
 
+        if parameter_dict is None and start_year < Parameters.JSON_START_YEAR:
+            msg = 'start_year={} < JSON_START_YEAR={}'
+            raise ValueError(msg.format(start_year,
+                                        Parameters.JSON_START_YEAR))
+
         if num_years < 1:
             raise ValueError('num_years < 1')
 

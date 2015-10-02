@@ -367,7 +367,7 @@ def test_parameters_get_default():
     assert paramdata['_CDCC_ps'] == [15000]
 
 
-def test_reform_with_no_year():
+def test_implement_reform_Parameters_raises_on_no_year():
     reform = {"_STD_Aged": [[1400, 1200]]}
     ppo = Parameters()
     with pytest.raises(ValueError):
@@ -382,7 +382,7 @@ def test_Parameters_reform_in_start_year():
                        np.array([1400, 1100, 1100, 1400, 1400, 1199]))
 
 
-def test_Parameters_reform_before_start_year():
+def test_implement_reform_Parameters_raises_on_future_year():
     ppo = Parameters(start_year=2013)
     with pytest.raises(ValueError):
         reform = {2010: {"_STD_Aged": [[1400, 1100, 1100, 1400, 1400, 1199]]}}
