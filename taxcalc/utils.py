@@ -280,7 +280,6 @@ def add_weighted_decile_bins(df, income_measure='_expanded_income'):
 
 def add_income_bins(df, compare_with="soi", bins=None, right=True,
                     income_measure='_expanded_income'):
-
     """
 
     Add a column of income bins of income_measure using pandas 'cut'.
@@ -416,7 +415,7 @@ def weighted_avg_allcols(df, cols, income_measure='_expanded_income'):
                      columns=[income_measure])
     for col in cols:
         if (col == "s006" or col == 'num_returns_StandardDed' or
-           col == 'num_returns_ItemDed' or col == 'num_returns_AMT'):
+                col == 'num_returns_ItemDed' or col == 'num_returns_AMT'):
             diff[col] = df.groupby('bins', as_index=False)[col].sum()[col]
         elif col != income_measure:
             diff[col] = df.groupby('bins', as_index=False).apply(weighted_mean,
@@ -463,11 +462,13 @@ def create_distribution_table(calc, groupby, result_type,
     # weight of returns with positive AGI and
     # itemized deduction greater than standard deduction
     res['c04470'] = res['c04470'].where(((res['c00100'] > 0) &
-                                        (res['c04470'] > res['_standard'])), 0)
+                                        (res['c04470'] > res['_standard'])),
+                                        0)
 
     # weight of returns with positive AGI and itemized deduction
     res['num_returns_ItemDed'] = res['s006'].where(((res['c00100'] > 0) &
-                                                   (res['c04470'] > 0)), 0)
+                                                   (res['c04470'] > 0)),
+                                                   0)
 
     # weight of returns with positive AGI and standard deduction
     res['num_returns_StandardDed'] = res['s006'].where(((res['c00100'] > 0) &

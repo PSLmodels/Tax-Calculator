@@ -11,7 +11,9 @@ import json
 from .utils import expand_array
 from .parameters_base import ParametersBase
 
+
 class Parameters(ParametersBase):
+
     """
     Constructor for the federal tax policy parameters class.
 
@@ -191,7 +193,6 @@ class Parameters(ParametersBase):
             self._update({year: reform[year]})
         self.set_year(self.start_year)
 
-
     @staticmethod
     def default_data(metadata=False, start_year=None):
         """
@@ -207,7 +208,8 @@ class Parameters(ParametersBase):
         -------
         params: dictionary of current_law_policy.json data
         """
-        # extract different data from current_law_policy.json depending on start_year
+        # extract different data from current_law_policy.json depending on
+        # start_year
         if start_year:  # if start_year is not None
             nyrs = start_year - Parameters.JSON_START_YEAR + 1
             ppo = Parameters(num_years=nyrs)

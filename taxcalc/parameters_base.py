@@ -4,6 +4,7 @@ from .utils import expand_array
 
 
 class ParametersBase(object):
+
     '''Inherit from this class for Parameters, Behavior,
     and other groups of parameters that need to have
     a set_year option.  Override the __init__ method
@@ -103,7 +104,7 @@ class ParametersBase(object):
             msg = 'DEFAULTS_FILENAME must be overrriden by inheriting class'
             raise NotImplementedError(msg)
         path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                   cls.DEFAULTS_FILENAME)
+                            cls.DEFAULTS_FILENAME)
         if os.path.exists(path):
             with open(path) as pfile:
                 params_dict = json.load(pfile)
@@ -141,7 +142,7 @@ class ParametersBase(object):
         This is a private method that helps
         the public methods work.
 
-        This private method implements a policy reform or behavior modification,
+        This method implements a policy reform or behavior modification,
         the provisions of which are specified in the year_mods dictionary,
         that changes the values of some policy parameters in objects of
         inheriting classes.  This year_mods dictionary contains exactly one
