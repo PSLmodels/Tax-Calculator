@@ -3,7 +3,6 @@
         "long_name": "Income effect",
         "description": "Behavior effect",
         "row_label": ["2013"],
-        "cpi_inflated": false,
         "col_label": "",
         "value": [0.0]
     },
@@ -12,7 +11,6 @@
         "long_name": "Substitution effect",
         "description": "Behavior effect",
         "row_label": ["2013"],
-        "cpi_inflated": false,
         "col_label": "",
         "value": [0.0]
     },
@@ -21,7 +19,6 @@
         "long_name": "Persistent",
         "description": "Behavior effect",
         "row_label": ["2013"],
-        "cpi_inflated": false,
         "col_label": "",
         "value": [0.0]
     }

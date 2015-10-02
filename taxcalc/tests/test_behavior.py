@@ -24,7 +24,7 @@ def test_make_behavioral_Calculator():
     params_x = Parameters()
     params_y = Parameters()
     # create two Calculators
-    behavior_y = Behavior(start_year=2009)
+    behavior_y = Behavior()
     calc_x = Calculator(params=params_x, records=records_x)
     calc_y = Calculator(params=params_y, records=records_y, behavior=behavior_y)
     # Implement a plan Y reform

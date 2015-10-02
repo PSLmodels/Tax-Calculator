@@ -137,7 +137,7 @@ class Calculator(object):
     def increment_year(self):
         self.records.increment_year()
         self.params.set_year(self.params.current_year + 1)
-        self.behavior.set_year(self.behavior.current_year + 1)
+        self.behavior.set_year(self.params.current_year)
 
     @property
     def current_year(self):
