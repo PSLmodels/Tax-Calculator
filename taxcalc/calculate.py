@@ -1,12 +1,13 @@
+import math
+import copy
+import numpy as np
 import pandas as pd
 from pandas import DataFrame
-import math
-import numpy as np
 from .utils import *
 from .functions import *
 from .parameters import Parameters
 from .records import Records
-import copy
+from .behavior import Behavior
 
 all_cols = set()
 
@@ -24,13 +25,18 @@ def add_df(alldfs, df):
 
 class Calculator(object):
 
-    def __init__(self, params=None, records=None, sync_years=True, **kwargs):
+    def __init__(self, params=None, records=None,
+                 sync_years=True, behavior=None, **kwargs):
 
         if isinstance(params, Parameters):
             self._params = params
         else:
             msg = 'Must supply tax parameters as a Parameters object'
             raise ValueError(msg)
+        if isinstance(behavior, Behavior):
+            self.behavior = behavior
+        else:
+            self.behavior = Behavior(start_year=params.start_year)
 
         if isinstance(records, Records):
             self._records = records
@@ -133,6 +139,7 @@ class Calculator(object):
     def increment_year(self):
         self.records.increment_year()
         self.params.set_year(self.params.current_year + 1)
+        self.behavior.set_year(self.params.current_year)
 
     @property
     def current_year(self):
