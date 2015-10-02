@@ -3,3 +3,4 @@ include taxcalc/_version.py
 include taxcalc/StageIFactors.csv
 include taxcalc/WEIGHTS.csv
 include taxcalc/params.json
+include taxcalc/behavior.json
