@@ -5,6 +5,7 @@ import numpy as np
 from .parameters import Parameters
 from .utils import expand_array
 
+
 def update_income(behavioral_effect, calc_y):
     delta_inc = np.where(calc_y.records.c00100 > 0, behavioral_effect, 0)
 
@@ -65,7 +66,7 @@ def behavior(calc_x, calc_y, update_income=update_income):
                            (calc_x.records.c04800))
 
     income_effect = calc_y.behavior.BE_inc * (calc_y.records._ospctax -
-                                            calc_x.records._ospctax)
+                                              calc_x.records._ospctax)
     calc_y_behavior = copy.deepcopy(calc_y)
 
     combined_behavioral_effect = income_effect + substitution_effect
@@ -74,6 +75,7 @@ def behavior(calc_x, calc_y, update_income=update_income):
                                     calc_y_behavior)
 
     return calc_y_behavior
+
 
 class Behavior(object):
 
@@ -111,18 +113,18 @@ class Behavior(object):
                                  num_years=self._num_years))
         self.set_year(self._start_year)
 
-    @property 
+    @property
     def num_years(self):
         return self._num_years
 
     @property
     def current_year(self):
         return self._current_year
-    
+
     @property
     def end_year(self):
         return self._end_year
-    
+
     @property
     def start_year(self):
         return self._start_year
@@ -141,8 +143,9 @@ class Behavior(object):
         params: dictionary
             containing complete contents of params.json file.
         """
-        behavior_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                   Behavior.BEHAVIOR_FILENAME)
+        behavior_path = os.path.join(os.path.abspath(
+                                     os.path.dirname(__file__)),
+                                     Behavior.BEHAVIOR_FILENAME)
         if os.path.exists(behavior_path):
             with open(behavior_path) as pfile:
                 behavior = json.load(pfile)
@@ -159,7 +162,7 @@ class Behavior(object):
         self.set_default_vals()
         if self.current_year != self.start_year:
             self.set_year(self.start_year)
-        
+
         for year in reform:
             if year != self.start_year:
                 self.set_year(year)
@@ -174,7 +177,7 @@ class Behavior(object):
                                     inflate=False,
                                     inflation_rates=None,
                                     num_years=num_years_to_expand)
-                
+
                 cval[(self.current_year - self.start_year):] = nval
         self.set_year(self.start_year)
 
@@ -212,4 +215,3 @@ class Behavior(object):
         for name in self._vals:
             arr = getattr(self, name)
             setattr(self, name[1:], arr[year_zero_indexed])
-

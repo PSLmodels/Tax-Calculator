@@ -25,7 +25,8 @@ def add_df(alldfs, df):
 
 class Calculator(object):
 
-    def __init__(self, params=None, records=None, sync_years=True, behavior=None, **kwargs):
+    def __init__(self, params=None, records=None,
+                 sync_years=True, behavior=None, **kwargs):
 
         if isinstance(params, Parameters):
             self._params = params
