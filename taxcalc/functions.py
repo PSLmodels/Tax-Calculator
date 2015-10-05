@@ -1714,7 +1714,7 @@ def ExpandIncome(FICA_ss_trt, SS_Earnings_c, e00200, FICA_mc_trt, e02400,
 
 
 def BenefitSurtax(calc):
-    if calc.params.ID_BenefitSurtax_trt != 1:
+    if calc.params.ID_BenefitSurtax_crt != 1:
         nobenefits_calc = copy.deepcopy(calc)
 
         # hard code the reform
@@ -1738,11 +1738,11 @@ def BenefitSurtax(calc):
                             nobenefits_calc.records._ospctax -
                             calc.records._ospctax, 0)
 
-        surtax_cap = nobenefits_calc.params.ID_BenefitSurtax_trt *\
+        surtax_cap = nobenefits_calc.params.ID_BenefitSurtax_crt *\
             nobenefits_calc.records.c00100
 
         calc.records._surtax = np.where(tax_diff > surtax_cap,
                                         tax_diff - surtax_cap,
-                                        0)
+                                        0) * calc.params.ID_BenefitSurtax_trt
 
         calc.records._ospctax += calc.records._surtax
