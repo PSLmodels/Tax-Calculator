@@ -1,9 +1,10 @@
 import os
 import sys
+import numpy as np
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, "../../"))
 import pandas as pd
-from taxcalc import Parameters, Records, Calculator, behavior
+from taxcalc import Parameters, Records, Calculator, behavior, Behavior
 
 
 WEIGHTS_FILENAME = "../../WEIGHTS_testing.csv"
@@ -23,18 +24,65 @@ def test_make_behavioral_Calculator():
     params_x = Parameters()
     params_y = Parameters()
     # create two Calculators
+    behavior_y = Behavior()
     calc_x = Calculator(params=params_x, records=records_x)
-    calc_y = Calculator(params=params_y, records=records_y)
-    # implement a plan Y reform
-    reform = {2013: {"_II_rt7": [0.496]}}
+    calc_y = Calculator(params=params_y, records=records_y,
+                        behavior=behavior_y)
+    # Implement a plan Y reform
+    reform = {
+        2013: {
+            "_II_rt7": [0.496]
+        }
+    }
     params_y.implement_reform(reform)
-    # Create behavioral calculators and vary both kwargs.
-    calc_y_behavior1 = behavior(calc_x, calc_y,
-                                elast_wrt_atr=0.4, inc_effect=0.15)
-    calc_y_behavior2 = behavior(calc_x, calc_y,
-                                elast_wrt_atr=0.5, inc_effect=0.15)
-    calc_y_behavior3 = behavior(calc_x, calc_y,
-                                elast_wrt_atr=0.4, inc_effect=0)
+
+    # Update behavior from defaults
+    new_behavior = {
+        2013: {
+            "_BE_sub": [0.4],
+            "_BE_inc": [0.15]
+        }
+    }
+
+    behavior_y.update_behavior(new_behavior)
+
+    # Create behavioral calculators and vary substitution and income effects.
+    calc_y_behavior1 = behavior(calc_x, calc_y)
+
+    new_behavior = {
+        2013: {
+            "_BE_sub": [0.5],
+            "_BE_inc": [0.15]
+        }
+    }
+
+    behavior_y.update_behavior(new_behavior)
+
+    calc_y_behavior2 = behavior(calc_x, calc_y)
+
+    new_behavior = {
+        2013: {
+            "_BE_sub": [0.4],
+            "_BE_inc": [0.0]
+        }
+    }
+
+    behavior_y.update_behavior(new_behavior)
+    calc_y_behavior3 = behavior(calc_x, calc_y)
+
     assert (calc_y_behavior1.records._ospctax.sum() !=
             calc_y_behavior2.records._ospctax.sum() !=
             calc_y_behavior3.records._ospctax.sum())
+
+
+def test_update_behavior():
+    b = Behavior(start_year=2013)
+    b.update_behavior({2014: {'_BE_sub': [0.5], '_II_rt7': [0.3]}})
+    should_be = np.full((12,), 0.5)
+    should_be[0] = 0.0
+    assert np.allclose(b._BE_sub, should_be, rtol=0.0)
+    assert np.allclose(b._BE_inc, np.zeros((12,)), rtol=0.0)
+    b.set_year(2015)
+    assert b.current_year == 2015
+    assert b.BE_sub == 0.5
+    assert b.BE_inc == 0.0
