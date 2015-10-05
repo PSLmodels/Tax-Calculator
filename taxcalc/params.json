@@ -1009,8 +1009,8 @@
         "value":     [0.0] 
     },
     "_ID_BenefitSurtax_crt":{
-        "long_name": "Deduction tax benefit surtax cap rate, ceiling as a percent of AGI",
-	"description": "This percentage is used to cap the tax benefit from deductions. Users can specify what deductions they want to apply to. ",
+        "long_name": "Credit on itemized deduction benefit surtax (percent of AGI)",
+	"description": "The surtax on specified itemized deductions applies to benefits in excess of this percent of AGI. In http://www.nber.org/papers/w16921, Feldstein, Feenberg, and MacGuineas propose a credit of 2% of AGI against a 100% tax rate; in their proposal, however, a broader set of tax benefits, including the employer provided health exclusion, would be taxed.",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
@@ -1022,8 +1022,8 @@
         "value":     [1.0] 
     },
     "_ID_BenefitSurtax_trt":{
-        "long_name": "Deduction tax benefit surtax rate",
-	"description": " ",
+        "long_name": "Surtax rate on the benefits from specified itemized deductions",
+	"description": "The benefit from specified itemized deductions exceeding the credit is taxed at this rate. A surtax rate of 1 strictly limits the benefit from specified itemized deductions to the specified credit. In http://www.nber.org/papers/w16921, Feldstein, Feenberg, and MacGuineas propose a credit of 2% of AGI against a 100% tax rate; in their proposal, however, a broader set of tax benefits, including the employer provided health exclusion, would be taxed.",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
