@@ -1028,6 +1028,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
     c63200 = max(0., c63000 - c63100)
     c09600 = c63200
     _othtax = e05800 - (e05100 + c09600)
+    c62100_everyone = c62100
     if c09600 == 0 and e60000 == 0:
         c60000 = 0.
         c62100 = 0.
@@ -1039,7 +1040,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
             _ngamty, c62745, y62745, _tamt2, _amt5pc, _amt15pc,
             _amt25pc, c62747, c62755, c62770, _amt, c62800,
-            c09600, _othtax, c05800, _cmbtp)
+            c09600, _othtax, c05800, _cmbtp, c62100_everyone)
 
 
 @iterate_jit(nopython=True, puf=True)

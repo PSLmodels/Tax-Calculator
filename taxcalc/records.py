@@ -624,7 +624,7 @@ class Records(object):
                         '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
                         '_amed', '_xlin3', '_xlin6', '_cmbtp_itemizer',
                         '_cmbtp_standard', '_expanded_income', 'c07300',
-                        'c07600', 'c07240', '_avail']
+                        'c07600', 'c07240', '_avail', 'c62100_everyone']
 
         for name in zeroed_names:
             setattr(self, name, np.zeros((self.dim,)))
