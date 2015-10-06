@@ -1141,35 +1141,23 @@ def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt,
     return _tratio, c33200, c33400, c07180, c33000
 
 
-@iterate_jit(nopython=True)
-def RateRed(c05800, _othtax, _exact, e59560, _earned, c59660):
-
-    # rate reduction credit for 2001 only, is this needed?
-    c05800 = c05800
-    c07970 = 0.
-    c59560 = 0.
-
-    if _exact == 1:
-        c59560 = e59560
-    else:
-        c59560 = _earned
-
-    return c07970, c05800, c59560
-
-
 @iterate_jit(nopython=True, puf=True)
 def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
            EITC_ps_MarriedJ, EITC_rt, c59560, EITC_c, EITC_prt, e83080, e00300,
            e00600, e01000, e40223, e25360, e25430, e25470, e25400, e25500,
            e26210, e26340, e27200, e26205, e26320, EITC_InvestIncome_c, _cmp,
-           SOIYR, DOBYR, SDOBYR, _agep, _ages, c59660, puf):
+           SOIYR, DOBYR, SDOBYR, _agep, _ages, _earned, c59660, _exact, e59560,
+           puf):
 
     EICYB1 = max(0.0, EICYB1)
     EICYB2 = max(0.0, EICYB2)
     EICYB3 = max(0.0, EICYB3)
     _preeitc = 0.
     _ieic = int(max(EIC, EICYB1) + EICYB2 + EICYB3)
-
+    if _exact == 1:
+        c59560 = e59560
+    else:
+        c59560 = _earned
     # Modified AGI only through 2002
 
     _modagi = c00100 + e00400
@@ -1580,7 +1568,8 @@ def C1040(e07400, e07180, e07200, c07220, c07230, e07250, c07300, c07240,
     # assuming year (FLPDYR) > 2009
     c09200 = c09200 + e09700 + e10050 + e10075 + e09805 + e09710 + e09720
 
-    return (c07100, y07100, x07100, c08795, e08795, c09200, _eitc, _othertax)
+    return (c07100, c07970, y07100, x07100, c08795, e08795, c09200, _eitc,
+            _othertax)
 
 
 @iterate_jit(nopython=True)
