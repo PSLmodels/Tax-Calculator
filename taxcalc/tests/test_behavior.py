@@ -4,7 +4,7 @@ import numpy as np
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, "../../"))
 import pandas as pd
-from taxcalc import Parameters, Records, Calculator, behavior, Behavior
+from taxcalc import Policy, Records, Calculator, behavior, Behavior
 
 
 WEIGHTS_FILENAME = "../../WEIGHTS_testing.csv"
@@ -21,12 +21,12 @@ def test_make_behavioral_Calculator():
     # create a Records and Params object
     records_x = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
     records_y = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
-    params_x = Parameters()
-    params_y = Parameters()
+    policy_x = Policy()
+    policy_y = Policy()
     # create two Calculators
     behavior_y = Behavior()
-    calc_x = Calculator(params=params_x, records=records_x)
-    calc_y = Calculator(params=params_y, records=records_y,
+    calc_x = Calculator(policy=policy_x, records=records_x)
+    calc_y = Calculator(policy=policy_y, records=records_y,
                         behavior=behavior_y)
     # Implement a plan Y reform
     reform = {
@@ -34,7 +34,7 @@ def test_make_behavioral_Calculator():
             "_II_rt7": [0.496]
         }
     }
-    params_y.implement_reform(reform)
+    policy_y.implement_reform(reform)
 
     # Update behavior from defaults
     new_behavior = {

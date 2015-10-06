@@ -15,7 +15,7 @@ from taxcalc.utils import expand_array
 
 
 @pytest.yield_fixture
-def paramsfile():
+def policyfile():
 
     txt = """{"_almdep": {"value": [7150, 7250, 7400],
                           "cpi_inflated": true},
@@ -38,17 +38,17 @@ def paramsfile():
 
 
 def test_create_parameters():
-    p = Parameters()
+    p = Policy()
     assert p
 
 
-def test_params_json_content():
-    ppo = Parameters()
-    params = getattr(ppo, '_vals')
-    for name, data in params.items():
+def test_policy_json_content():
+    ppo = Policy()
+    policy = getattr(ppo, '_vals')
+    for name, data in policy.items():
         start_year = data.get('start_year')
         assert isinstance(start_year, int)
-        assert start_year == Parameters.JSON_START_YEAR
+        assert start_year == Policy.JSON_START_YEAR
         row_label = data.get('row_label')
         assert isinstance(row_label, list)
         value = data.get('value')
@@ -61,7 +61,7 @@ def test_constant_inflation_rate_without_reform():
     nyrs = 10
     irate = 0.08
     irates = {(syr + i): irate for i in range(0, nyrs)}
-    ppo = Parameters(start_year=syr, num_years=nyrs, inflation_rates=irates)
+    ppo = Policy(start_year=syr, num_years=nyrs, inflation_rates=irates)
     assert ppo._II_em[2013 - syr] == 3900
     # no reform
     # check implied inflation rate at end of years
@@ -74,7 +74,7 @@ def test_constant_inflation_rate_with_reform():
     nyrs = 10
     irate = 0.08
     irates = {(syr + i): irate for i in range(0, nyrs)}
-    ppo = Parameters(start_year=syr, num_years=nyrs, inflation_rates=irates)
+    ppo = Policy(start_year=syr, num_years=nyrs, inflation_rates=irates)
     # implement reform in 2021 which is the year before the last year = 2022
     reform = {2021: {"_II_em": [20000]}}
     ppo.implement_reform(reform)
@@ -90,7 +90,7 @@ def test_variable_inflation_rate_without_reform():
     syr = 2013
     irates = {2013: 0.04, 2014: 0.04, 2015: 0.04, 2016: 0.04, 2017: 0.04,
               2018: 0.04, 2019: 0.04, 2020: 0.04, 2021: 0.08, 2022: 0.08}
-    ppo = Parameters(start_year=syr, num_years=10, inflation_rates=irates)
+    ppo = Policy(start_year=syr, num_years=10, inflation_rates=irates)
     assert ppo._II_em[2013 - syr] == 3900
     # no reform
     # check implied inflation rate between 2020 and 2021
@@ -105,7 +105,7 @@ def test_variable_inflation_rate_with_reform():
     syr = 2013
     irates = {2013: 0.04, 2014: 0.04, 2015: 0.04, 2016: 0.04, 2017: 0.04,
               2018: 0.04, 2019: 0.04, 2020: 0.04, 2021: 0.08, 2022: 0.08}
-    ppo = Parameters(start_year=syr, num_years=10, inflation_rates=irates)
+    ppo = Policy(start_year=syr, num_years=10, inflation_rates=irates)
     assert ppo._II_em[2013 - syr] == 3900
     # implement reform in 2020 which is two years before the last year, 2022
     reform = {2020: {"_II_em": [20000]}}
@@ -127,7 +127,7 @@ def test_multi_year_reform():
     """
     Test multi-year reform involving 1D and 2D parameters.
     """
-    # specify dimensions of policy Parameters object
+    # specify dimensions of policy Policy object
     syr = 2013
     nyrs = 10
 
@@ -139,8 +139,8 @@ def test_multi_year_reform():
         ifactor[syr + i] = 1.0 + irates[syr + i]
     iratelist = [irates[syr + i] for i in range(0, nyrs)]
 
-    # instantiate policy Parameters object
-    ppo = Parameters(start_year=syr, num_years=nyrs, inflation_rates=irates)
+    # instantiate policy Policy object
+    ppo = Policy(start_year=syr, num_years=nyrs, inflation_rates=irates)
 
     # confirm that parameters have current-law values
     assert_array_equal(getattr(ppo, '_AMT_thd_MarriedS'),
@@ -187,9 +187,9 @@ def test_multi_year_reform():
     ppo.implement_reform(reform)
     assert ppo.current_year == syr
 
-    # move policy Parameters object forward in time so current_year is syr+2
+    # move policy Policy object forward in time so current_year is syr+2
     #   Note: this would be typical usage because the first budget year
-    #         is greater than Parameters start_year.
+    #         is greater than Policy start_year.
     ppo.set_year(ppo.start_year + 2)
     assert ppo.current_year == syr + 2
 
@@ -333,11 +333,11 @@ def check_ss_earnings_c(ppo, reform, ifactor):
         assert actual[2022] == e2022
 
 
-def test_create_parameters_from_file(paramsfile):
-    with open(paramsfile.name) as pfile:
-        params = json.load(pfile)
-    ppo = Parameters(parameter_dict=params)
-    irates = Parameters.default_inflation_rates()
+def test_create_parameters_from_file(policyfile):
+    with open(policyfile.name) as pfile:
+        policy = json.load(pfile)
+    ppo = Policy(parameter_dict=policy)
+    irates = Policy.default_inflation_rates()
     inf_rates = [irates[ppo.start_year + i] for i in range(0, ppo.num_years)]
 
     assert_array_equal(ppo._almdep,
@@ -361,36 +361,36 @@ def test_create_parameters_from_file(paramsfile):
 def test_parameters_get_default():
     use_classmethod = True
     if use_classmethod:
-        paramdata = Parameters.default_data()
+        paramdata = Policy.default_data()
     else:  # use legacy global default_data function
         paramdata = taxcalc.parameters.default_data()
     assert paramdata['_CDCC_ps'] == [15000]
 
 
-def test_implement_reform_Parameters_raises_on_no_year():
+def test_implement_reform_Policy_raises_on_no_year():
     reform = {"_STD_Aged": [[1400, 1200]]}
-    ppo = Parameters()
+    ppo = Policy()
     with pytest.raises(ValueError):
         ppo.implement_reform(reform)
 
 
-def test_Parameters_reform_in_start_year():
-    ppo = Parameters(start_year=2013)
+def test_Policy_reform_in_start_year():
+    ppo = Policy(start_year=2013)
     reform = {2013: {"_STD_Aged": [[1400, 1100, 1100, 1400, 1400, 1199]]}}
     ppo.implement_reform(reform)
     assert_array_equal(ppo.STD_Aged,
                        np.array([1400, 1100, 1100, 1400, 1400, 1199]))
 
 
-def test_implement_reform_Parameters_raises_on_future_year():
-    ppo = Parameters(start_year=2013)
+def test_implement_reform_Policy_raises_on_future_year():
+    ppo = Policy(start_year=2013)
     with pytest.raises(ValueError):
         reform = {2010: {"_STD_Aged": [[1400, 1100, 1100, 1400, 1400, 1199]]}}
         ppo.implement_reform(reform)
 
 
-def test_Parameters_reform_with_default_cpi_flags():
-    ppo = Parameters(start_year=2013)
+def test_Policy_reform_with_default_cpi_flags():
+    ppo = Policy(start_year=2013)
     reform = {2015: {"_II_em": [4300]}}
     ppo.implement_reform(reform)
     # '_II_em' has a default cpi_flag of True, so
@@ -399,8 +399,8 @@ def test_Parameters_reform_with_default_cpi_flags():
     assert ppo.II_em > 4300
 
 
-def test_Parameters_reform_after_start_year():
-    ppo = Parameters(start_year=2013)
+def test_Policy_reform_after_start_year():
+    ppo = Policy(start_year=2013)
     reform = {2015: {"_STD_Aged": [[1400, 1100, 1100, 1400, 1400, 1199]]}}
     ppo.implement_reform(reform)
     ppo.set_year(2015)
@@ -408,8 +408,8 @@ def test_Parameters_reform_after_start_year():
                        np.array([1400, 1100, 1100, 1400, 1400, 1199]))
 
 
-def test_Parameters_reform_makes_no_changes_before_year():
-    ppo = Parameters(start_year=2013)
+def test_Policy_reform_makes_no_changes_before_year():
+    ppo = Policy(start_year=2013)
     reform = {2015: {"_II_em": [4400], "_II_em_cpi": True}}
     ppo.implement_reform(reform)
     ppo.set_year(2015)
@@ -420,7 +420,7 @@ def test_Parameters_reform_makes_no_changes_before_year():
 def test_parameters_get_default_start_year():
     use_classmethod = True
     if use_classmethod:
-        paramdata = Parameters.default_data(metadata=True, start_year=2015)
+        paramdata = Policy.default_data(metadata=True, start_year=2015)
     else:  # use legacy global default_data function
         paramdata = taxcalc.parameters.default_data(metadata=True,
                                                     start_year=2015)
@@ -442,7 +442,7 @@ def test_parameters_get_default_start_year():
     assert meta_amt_thd_marrieds['row_label'] == ["2015"]
     # Take the 2014 rate and multiply by inflation for that year
     assert meta_amt_thd_marrieds['value'] == (
-        [41050 * (1.0 + Parameters._Parameters__rates[2014])])
+        [41050 * (1.0 + Policy._Policy__rates[2014])])
 
     # 1D data, doesn't have 2015 values, is not CPI inflated
     meta_kt_c_age = paramdata['_KT_c_Age']

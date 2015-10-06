@@ -2,7 +2,7 @@ import copy
 import json
 import os
 import numpy as np
-from .parameters import Parameters
+from .policy import Policy
 from .parameters_base import ParametersBase
 from .utils import expand_array
 
@@ -80,9 +80,9 @@ def behavior(calc_x, calc_y, update_income=update_income):
 
 class Behavior(ParametersBase):
 
-    JSON_START_YEAR = Parameters.JSON_START_YEAR
+    JSON_START_YEAR = Policy.JSON_START_YEAR
     DEFAULTS_FILENAME = 'behavior.json'
-    DEFAULT_NUM_YEARS = Parameters.DEFAULT_NUM_YEARS
+    DEFAULT_NUM_YEARS = Policy.DEFAULT_NUM_YEARS
 
     def __init__(self, behavior_dict=None,
                  start_year=JSON_START_YEAR,
@@ -92,7 +92,7 @@ class Behavior(ParametersBase):
             if not isinstance(behavior_dict, dict):
                 raise ValueError('behavior_dict is not a dictionary')
             self._vals = behavior_dict
-        else:  # if None, read current-law parameters
+        else:  # if None, read defaults
             self._vals = self._params_dict_from_json_file()
 
         self.initialize(start_year, num_years)

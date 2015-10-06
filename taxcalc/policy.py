@@ -1,5 +1,5 @@
 """
-OSPC Tax-Calculator federal tax policy Parameters class.
+OSPC Tax-Calculator federal tax policy Policy class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 parameters.py
@@ -12,7 +12,7 @@ from .utils import expand_array
 from .parameters_base import ParametersBase
 
 
-class Parameters(ParametersBase):
+class Policy(ParametersBase):
 
     """
     Constructor for the federal tax policy parameters class.
@@ -44,7 +44,7 @@ class Parameters(ParametersBase):
 
     Returns
     -------
-    class instance: Parameters
+    class instance: Policy
     """
 
     DEFAULTS_FILENAME = 'current_law_policy.json'
@@ -73,14 +73,14 @@ class Parameters(ParametersBase):
         default inflation rates: dict
             decimal (not percentage) annual inflation rate by calyear.
         """
-        return Parameters.__rates
+        return Policy.__rates
 
     def __init__(self, parameter_dict=None,
                  start_year=JSON_START_YEAR,
                  num_years=DEFAULT_NUM_YEARS,
                  inflation_rates=None):
         """
-        Parameters class constructor.
+        Policy class constructor.
         """
         if parameter_dict:
             if not isinstance(parameter_dict, dict):
@@ -89,10 +89,10 @@ class Parameters(ParametersBase):
         else:  # if None, read current-law parameters
             self._vals = self._params_dict_from_json_file()
 
-        if parameter_dict is None and start_year < Parameters.JSON_START_YEAR:
+        if parameter_dict is None and start_year < Policy.JSON_START_YEAR:
             msg = 'start_year={} < JSON_START_YEAR={}'
             raise ValueError(msg.format(start_year,
-                                        Parameters.JSON_START_YEAR))
+                                        Policy.JSON_START_YEAR))
 
         if inflation_rates:
             if len(inflation_rates) != num_years:
@@ -129,13 +129,13 @@ class Parameters(ParametersBase):
 
         Notes
         -----
-        Given a reform dictionary, typical usage of the Parameters class
+        Given a reform dictionary, typical usage of the Policy class
         is as follows::
 
-            ppo = Parameters()
+            ppo = Policy()
             ppo.implement_reform(reform)
 
-        In the above statements, the Parameters() call instantiates a
+        In the above statements, the Policy() call instantiates a
         policy parameters object (ppo) containing current-law policy
         parameters, and the implement_reform(reform) call applies the
         (possibly multi-year) reform specified in reform and then sets
@@ -211,21 +211,21 @@ class Parameters(ParametersBase):
         # extract different data from current_law_policy.json depending on
         # start_year
         if start_year:  # if start_year is not None
-            nyrs = start_year - Parameters.JSON_START_YEAR + 1
-            ppo = Parameters(num_years=nyrs)
+            nyrs = start_year - Policy.JSON_START_YEAR + 1
+            ppo = Policy(num_years=nyrs)
             ppo.set_year(start_year)
             parms = getattr(ppo, '_vals')
-            params = Parameters._revised_default_data(parms, start_year,
+            params = Policy._revised_default_data(parms, start_year,
                                                       nyrs, ppo)
         else:  # if start_year is None
-            params = Parameters._params_dict_from_json_file()
+            params = Policy._params_dict_from_json_file()
         # return different data from params dict depending on metadata value
         if metadata:
             return params
         else:
             return {name: data['value'] for name, data in params.items()}
 
-    # ----- begin private methods of Parameters class -----
+    # ----- begin private methods of Policy class -----
 
     @staticmethod
     def _revised_default_data(params, start_year, nyrs, ppo):
@@ -243,7 +243,7 @@ class Parameters(ParametersBase):
         nyrs: int
             as defined in calling default_data staticmethod.
 
-        ppo: Parameters object
+        ppo: Policy object
             as defined in calling default_data staticmethod.
 
         Returns

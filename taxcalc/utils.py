@@ -399,9 +399,9 @@ def results(c):
     """
     outputs = []
     for col in STATS_COLUMNS:
-        if hasattr(c, 'records') and hasattr(c, 'params'):
-            if hasattr(c.params, col):
-                outputs.append(getattr(c.params, col))
+        if hasattr(c, 'records') and hasattr(c, 'policy'):
+            if hasattr(c.policy, col):
+                outputs.append(getattr(c.policy, col))
             else:
                 outputs.append(getattr(c.records, col))
         else:

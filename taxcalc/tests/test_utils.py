@@ -121,17 +121,17 @@ def test_expand_2D_variable_rates():
 
 
 def test_create_tables():
-    # create a current-law Parameters object and Calculator object calc1
-    params1 = Parameters()
+    # create a current-law Policy object and Calculator object calc1
+    policy1 = Policy()
     records1 = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
-    calc1 = Calculator(params=params1, records=records1)
+    calc1 = Calculator(policy=policy1, records=records1)
     calc1.calc_all()
-    # create a policy-reform Parameters object and Calculator object calc2
+    # create a policy-reform Policy object and Calculator object calc2
     reform = {2013: {'_II_rt4': [0.56]}}
-    params2 = Parameters()
-    params2.implement_reform(reform)
+    policy2 = Policy()
+    policy2.implement_reform(reform)
     records2 = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
-    calc2 = Calculator(params=params2, records=records2)
+    calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
     # create various distribution tables
     t2 = create_distribution_table(calc2, groupby="small_income_bins",
@@ -305,11 +305,11 @@ def test_add_weighted_decile_bins():
 
 
 def test_dist_table_sum_row():
-    # Create a default Parameters object
-    params1 = Parameters()
+    # Create a default Policy object
+    policy1 = Policy()
     records1 = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
     # Create a Calculator
-    calc1 = Calculator(params=params1, records=records1)
+    calc1 = Calculator(policy=policy1, records=records1)
     calc1.calc_all()
     t1 = create_distribution_table(calc1, groupby="small_income_bins",
                                    result_type="weighted_sum")
@@ -321,17 +321,17 @@ def test_dist_table_sum_row():
 
 
 def test_diff_table_sum_row():
-    # create a current-law Parameters object and Calculator calc1
-    params1 = Parameters()
+    # create a current-law Policy object and Calculator calc1
+    policy1 = Policy()
     records1 = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
-    calc1 = Calculator(params=params1, records=records1)
+    calc1 = Calculator(policy=policy1, records=records1)
     calc1.calc_all()
-    # create a policy-reform Parameters object and Calculator calc2
+    # create a policy-reform Policy object and Calculator calc2
     reform = {2013: {'_II_rt4': [0.56]}}
-    params2 = Parameters()
-    params2.implement_reform(reform)
+    policy2 = Policy()
+    policy2.implement_reform(reform)
     records2 = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
-    calc2 = Calculator(params=params2, records=records2)
+    calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
     # create two difference tables and compare their content
     tdiff1 = create_difference_table(calc1, calc2, groupby="small_income_bins")

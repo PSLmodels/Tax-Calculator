@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, "../../"))
-from taxcalc import Records, imputed_cmbtp_itemizer, Parameters, Calculator
+from taxcalc import Records, imputed_cmbtp_itemizer, Policy, Calculator
 
 # use 1991 PUF-like data to emulate current PUF, which is private
 TAX_DTA_PATH = os.path.join(CUR_PATH, '../../tax_all1991_puf.gz')
@@ -45,12 +45,12 @@ def test_blow_up():
     tax_dta = pd.read_csv(TAX_DTA_PATH, compression='gzip')
     extra_years = Records.PUF_YEAR - 1991
     tax_dta.flpdyr += extra_years
-    parms = Parameters()
+    parms = Policy()
     parms_start_year = parms.current_year
     recs = Records(data=tax_dta)
     assert recs.current_year == Records.PUF_YEAR
     # r.current_year == PUF_YEAR implies Calculator ctor will call r.blowup()
-    calc = Calculator(params=parms, records=recs)
+    calc = Calculator(policy=parms, records=recs)
     assert calc.current_year == parms_start_year
     # have e aliases of p variables been maintained after several blowups?
     assert calc.records.e23250.sum() == calc.records.p23250.sum()
