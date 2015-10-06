@@ -818,7 +818,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
          e60440, e60420, e60410, e61400, e60660, e60480, c21060,
          e62000, e60250, _cmp, _standard, e04470, e17500, c04600,
          f6251, e62100, e21040, e20800, c00100, _statax, e60000,
-         c04470, c17000, e18500, c20800, c21040, e62730,
+         c04470, c17000, e18500, c20800, c21040, NIIT, e62730,
          DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700,
          e00100, e24515, x62730, x60130, e18400,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
@@ -1034,7 +1034,6 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
 @iterate_jit(nopython=True)
 def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
         NIIT):
-    # Additional Medicare tax on unearned Income
     if c00100 > NIIT_thd[MARS - 1]:
         NIIT = NIIT_trt * min(e00300 + e00600 + max(0, c01000) +
                               max(0, e02000), c00100 - NIIT_thd[MARS - 1])
