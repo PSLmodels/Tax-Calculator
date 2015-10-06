@@ -898,9 +898,9 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
         _cmbtp = 0.
 
     if (puf and ((_standard == 0 or (_exact == 1 and e04470 > 0)))):
-        c62100 = (c00100 - c04470 + min(c17000, 0.025 * max(0., c00100)) +
-                  (1 - ID_StateLocalTax_HC) * _statax +
-                  e18500 - c60260 + c20800 - c21040)
+        c62100 = (c00100 - c04470 + max(0., min(c17000, 0.025 * c00100)) +
+                  (1 - ID_StateLocalTax_HC) * _statax + e18500 -
+                  c60260 + c20800 - c21040)
         c62100 += _cmbtp
 
     if (puf and ((_standard > 0 and f6251 == 1))):
@@ -1606,13 +1606,15 @@ def OSPC_TAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
              e11450, e11500, e82040, e09900, e11400, e11300, e11200, e11100,
              e11550, e09710, e09720, e10000):
 
-    _refund = c59660 + c11070 + c10960 + c10950 + e10000
+    _refund = (c59660 + c11070 + c10960 + c10950 + c11600 + e11580 + e11450 +
+               e11500)
 
-    _ospctax = c09200 - _refund
+    _ospctax = c09200 - _refund - e82040
 
-    _payments = e09710 + e09720 + e11580 + e11550 + e11450
+    _payments = (c59660 + c10950 + c10960 + c11070 + e10000 + e11550 + e11580 +
+                 e11450)
 
-    c10300 = max(0, _ospctax - _payments)
+    c10300 = max(0, c09200 - _payments)
 
     # Ignore refundable partof _eitc
     # TODO Remove this _eitc
