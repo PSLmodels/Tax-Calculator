@@ -995,9 +995,9 @@
         "col_label": "",
         "value": [0]
     },
-     "_ID_Mortgage_HC":{
-        "long_name": "Mortgage interest deduction haircut",
-	"description": "This percentage can be applied to limit the amount of mortgage interest deduction allowed.",
+     "_ID_InterestPaid_HC":{
+        "long_name": "Interest deduction haircut",
+	"description": "This percentage can be applied to limit the amount of interest deduction allowed.",
         "irs_ref": "",
         "notes": "This parameter is currently used to eliminate this part of itemized deduction. ",
         "start_year": 2013,
