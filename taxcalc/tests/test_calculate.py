@@ -89,7 +89,7 @@ def test_make_Calculator_files_to_ctor(policyfile):
     with open(policyfile.name) as pfile:
         policy = json.load(pfile)
     ppo = Policy(parameter_dict=policy, start_year=1991,
-                     num_years=len(IRATES), inflation_rates=IRATES)
+                 num_years=len(IRATES), inflation_rates=IRATES)
     calc = Calculator(policy=ppo, records=TAX_DTA_PATH,
                       start_year=1991, inflation_rates=IRATES)
     assert calc
@@ -143,7 +143,7 @@ def test_make_Calculator_with_reform_after_start_year():
     # create Policy object using custom indexing rates
     irates = {2013: 0.01, 2014: 0.01, 2015: 0.02, 2016: 0.01, 2017: 0.03}
     parm = Policy(start_year=2013, num_years=len(irates),
-                      inflation_rates=irates)
+                  inflation_rates=irates)
     # specify reform in 2015, which is two years after Policy start_year
     reform = {2015: {}, 2016: {}}
     reform[2015]['_STD_Aged'] = [[1600, 1300, 1600, 1300, 1600, 1300]]
@@ -177,7 +177,7 @@ def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
     with open(policyfile.name) as pfile:
         policy = json.load(pfile)
     ppo = Policy(parameter_dict=policy, start_year=1991,
-                     num_years=len(IRATES), inflation_rates=IRATES)
+                 num_years=len(IRATES), inflation_rates=IRATES)
     calc = Calculator(policy=ppo, records=TAX_DTA_PATH, start_year=1991,
                       inflation_rates=IRATES)
     user_mods = {1991: {"_almdep": [7150, 7250, 7400],
@@ -264,7 +264,7 @@ def test_make_Calculator_increment_years_first():
     # create Policy object with custom indexing rates and policy reform
     irates = {2013: 0.01, 2014: 0.01, 2015: 0.02, 2016: 0.01, 2017: 0.03}
     policy = Policy(start_year=2013, inflation_rates=irates,
-                        num_years=len(irates))
+                    num_years=len(irates))
     reform = {2015: {}, 2016: {}}
     reform[2015]['_STD_Aged'] = [[1600, 1300, 1600, 1300, 1600, 1300]]
     reform[2015]['_II_em'] = [5000]

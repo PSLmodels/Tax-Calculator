@@ -216,7 +216,7 @@ class Policy(ParametersBase):
             ppo.set_year(start_year)
             parms = getattr(ppo, '_vals')
             params = Policy._revised_default_data(parms, start_year,
-                                                      nyrs, ppo)
+                                                  nyrs, ppo)
         else:  # if start_year is None
             params = Policy._params_dict_from_json_file()
         # return different data from params dict depending on metadata value
