@@ -877,11 +877,10 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
 
     if (puf and ((_standard == 0 or (_exact == 1 and e04470 > 0)) and
                  f6251 == 1)):
-        _cmbtp = (-1 * min(_edical, 0.025 * max(0., e00100)) + e62100 +
-                  c60260 + e04470 + e21040 - _statax -
-                  e00100 - e18500 - e20800)
-        # (-1 * min(_edical, 0.025 * max(0., e00100)) + e62100 + c60260
-        #        + e04470 + e21040 - _sit - e00100 - s18500 - e20800)
+        _cmbtp = _cmbtp_itemizer
+        # (-1 * min(_edical, 0.025 * max(0., e00100)) + e62100 +
+        #          c60260 + e04470 + e21040 - _statax -
+        #          e00100 - e18500 - e20800)
     else:
         _cmbtp = 0.
 
