@@ -4,6 +4,7 @@ from pandas import DataFrame
 import math
 import numpy as np
 from .decorators import *
+import copy
 
 
 @iterate_jit(nopython=True)
@@ -171,9 +172,11 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
 def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
             e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
             e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
-            MARS, _sep, c00100, ID_ps, ID_Medical_frt, ID_Casualty_frt,
-            ID_Miscellaneous_frt, ID_Charity_crt_Cash, ID_Charity_crt_Asset,
-            ID_prt, ID_crt, ID_StateLocalTax_HC, ID_Charity_frt, puf):
+            MARS, _sep, c00100, ID_ps, ID_Medical_frt, ID_Medical_HC,
+            ID_Casualty_frt, ID_Casualty_HC, ID_Miscellaneous_frt,
+            ID_Miscellaneous_HC, ID_Charity_crt_Cash, ID_Charity_crt_Asset,
+            ID_prt, ID_crt, ID_StateLocalTax_HC, ID_Charity_frt,
+            ID_Charity_HC, ID_InterestPaid_HC, puf):
 
     """
     Itemized Deduction; Form 1040, Schedule A
@@ -257,7 +260,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
     # Other Taxes (including state and local)
     c18300 = _statax + e18500 + e18800 + e18900
 
-    # Casulty
+    # Casualty
     if e20500 > 0:
         c37703 = e20500 + ID_Casualty_frt * _posagi
         c20500 = c37703 - ID_Casualty_frt * _posagi
@@ -294,12 +297,19 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
 
     # Gross Itemized Deductions
 
-    c21060 = (e20900 + c17000 + (1 - ID_StateLocalTax_HC) * c18300 + c19200 +
-              c19700 + c20500 + c20800 + e21000 + e21010)
+    c21060 = (e20900 + (1 - ID_Medical_HC) * c17000 +
+              (1 - ID_StateLocalTax_HC) * c18300 +
+              (1 - ID_InterestPaid_HC) * c19200 +
+              (1 - ID_Charity_HC) * c19700 +
+              (1 - ID_Casualty_HC) * c20500 +
+              (1 - ID_Miscellaneous_HC) * c20800 +
+              e21000 + e21010)
 
     # Limitations on deductions excluding medical, charity etc
-    _nonlimited = c17000 + c20500 + e19570 + e21010 + e20900
     _phase2_i = ID_ps[MARS - 1]
+    _nonlimited = ((1 - ID_Medical_HC) * c17000 +
+                   (1 - ID_Casualty_HC) * c20500 +
+                   e19570 + e21010 + e20900)
     _limitratio = _phase2_i / _sep
 
     # Itemized deductions amount after limitation if any
@@ -827,15 +837,16 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
          c24520, c04800, e10105, c05700, e05800, e05100, e09600,
          KT_c_Age, x62740, e62900, AMT_thd_MarriedS, _earned, e62600,
          AMT_em, AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer,
-         _cmbtp_standard, ID_StateLocalTax_HC, puf):
+         _cmbtp_standard, ID_StateLocalTax_HC, ID_Medical_HC,
+         ID_Miscellaneous_HC, puf):
 
     c62720 = c24517 + x62720
     c60260 = e00700 + x60260
     # QUESTION: c63100 variable is reassigned below before use, is this a BUG?
     c63100 = max(0., _taxbc - e07300)
-    c60200 = min(c17000, 0.025 * _posagi)
+    c60200 = min((1 - ID_Medical_HC) * c17000, 0.025 * _posagi)
     c60240 = (1 - ID_StateLocalTax_HC) * c18300 + x60240
-    c60220 = c20800 + x60220
+    c60220 = (1 - ID_Miscellaneous_HC) * c20800 + x60220
     c60130 = c21040 + x60130
     # imputation for x62730
     if e62730 != 0 and e24515 > 0:
@@ -885,9 +896,10 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
         _cmbtp = 0.
 
     if (puf and ((_standard == 0 or (_exact == 1 and e04470 > 0)))):
-        c62100 = (c00100 - c04470 + max(0., min(c17000, 0.025 * c00100)) +
-                  (1 - ID_StateLocalTax_HC) * _statax + e18500 -
-                  c60260 + c20800 - c21040)
+        c62100 = (c00100 - c04470 + max(0., min((1 - ID_Medical_HC) * c17000,
+                  0.025 * c00100)) +
+                  (1 - ID_StateLocalTax_HC) * max(0, e18400) + e18500 -
+                  c60260 + (1 - ID_Miscellaneous_HC) * c20800 - c21040)
         c62100 += _cmbtp
 
     if (puf and ((_standard > 0 and f6251 == 1))):
@@ -1650,3 +1662,38 @@ def ExpandIncome(FICA_ss_trt, SS_Earnings_c, e00200, FICA_mc_trt, e02400,
                         employer_share_fica)
 
     return (_expanded_income)
+
+
+def BenefitSurtax(calc):
+    if calc.params.ID_BenefitSurtax_crt != 1:
+        nobenefits_calc = copy.deepcopy(calc)
+
+        # hard code the reform
+        nobenefits_calc.params.ID_Medical_HC = \
+            int(nobenefits_calc.params.ID_BenefitSurtax_Switch[0])
+        nobenefits_calc.params.ID_StateLocalTax_HC = \
+            int(nobenefits_calc.params.ID_BenefitSurtax_Switch[1])
+        nobenefits_calc.params.ID_casualty_HC = \
+            int(nobenefits_calc.params.ID_BenefitSurtax_Switch[2])
+        nobenefits_calc.params.ID_Miscellaneous_HC = \
+            int(nobenefits_calc.params.ID_BenefitSurtax_Switch[3])
+        nobenefits_calc.params.ID_InterestPaid_HC = \
+            int(nobenefits_calc.params.ID_BenefitSurtax_Switch[4])
+        nobenefits_calc.params.ID_Charity_HC = \
+            int(nobenefits_calc.params.ID_BenefitSurtax_Switch[5])
+
+        nobenefits_calc.calc_one_year()
+
+        tax_diff = np.where(nobenefits_calc.records._ospctax -
+                            calc.records._ospctax > 0,
+                            nobenefits_calc.records._ospctax -
+                            calc.records._ospctax, 0)
+
+        surtax_cap = nobenefits_calc.params.ID_BenefitSurtax_crt *\
+            nobenefits_calc.records.c00100
+
+        calc.records._surtax = np.where(tax_diff > surtax_cap,
+                                        tax_diff - surtax_cap,
+                                        0) * calc.params.ID_BenefitSurtax_trt
+
+        calc.records._ospctax += calc.records._surtax
