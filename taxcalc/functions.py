@@ -287,7 +287,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
         c19700 = base_charity
     else:
         lim30 = min(ID_Charity_crt_Asset * _posagi, e20100 + e20200)
-        c19700 = min(0.5 * _posagi, lim30 + e19800)
+        c19700 = min(ID_Charity_crt_Cash * _posagi, lim30 + e19800)
 
     charity_floor = ID_Charity_frt * _posagi  # frt is zero in present law
     c19700 = max(0, c19700 - charity_floor)
