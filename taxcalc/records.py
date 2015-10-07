@@ -255,6 +255,8 @@ class Records(object):
              ('e62740', 'e62740'),
              ('p65300', 'p65300'),
              ('p65400', 'p65400'),
+             ('e87482', 'p87482'),
+             ('e87521', 'p87521'),
              ('e68000', 'e68000'),
              ('e82200', 'e82200'),
              ('t27800', 't27800'),
@@ -275,6 +277,7 @@ class Records(object):
                  weights=WEIGHTS_PATH,
                  start_year=None,
                  **kwargs):
+
         """
         Records class constructor
         """
@@ -555,7 +558,7 @@ class Records(object):
                         'e33450', 'e33460', 'e33465', 'e33470', 'x59560',
                         'EICYB1', 'EICYB2', 'EICYB3', 'e83080', 'e25360',
                         'e25430', 'e25400', 'e25500', 'e26210', 'e26340',
-                        'e26205', 'e26320', 'e87482', 'e87487', 'e87492',
+                        'e26205', 'e26320', 'e87487', 'e87492',
                         'e87497', 'e87526', 'e87522', 'e87524', 'e87528',
                         'EDCRAGE', 'e07960', 'e07700', 'e07250', 't07950',
                         'e82882', 'e82880', 'e07500', 'e08001', 'e07970',
@@ -568,7 +571,7 @@ class Records(object):
                         'e60410', 'e61400', 'e60660', 'e60480', 'e62000',
                         'e60250', 'e40223', '_sep', '_earned', '_sey',
                         '_setax', '_feided', '_ymod', '_ymod1', '_posagi',
-                        'xtxcr1xtxcr10', '_earned', '_xyztax',
+                        'xtxcr1xtxcr10', '_earned', '_xyztax', '_avail',
                         '_taxinc', 'c04800', '_feitax', 'c05750', 'c24517',
                         '_taxbc', 'c60000', '_standard', 'c24516', 'c25420',
                         'c05700', 'c32880', 'c32890', '_dclim', 'c32800',
@@ -620,9 +623,10 @@ class Records(object):
                         'c59720', '_comb', 'c07150', 'c10300', '_ospctax',
                         '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
                         '_amed', '_xlin3', '_xlin6', '_cmbtp_itemizer',
-                        '_cmbtp_standard', '_expanded_income', '_surtax']
+                        '_cmbtp_standard', '_expanded_income', 'c07300',
+                        'c07600', 'c07240', '_avail', 'c62100_everyone',
+                        '_surtax']
 
-        # create zeroed_names variables
         for name in zeroed_names:
             setattr(self, name, np.zeros((self.dim,)))
         self._num = np.ones((self.dim,))
@@ -701,8 +705,10 @@ class Records(object):
         self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
         # standard deduction amount in 2009
         std_2009 = np.array([5700, 11400, 5700, 8350, 11400, 5700, 950])
-        # additional standard deduction for aged 2009
+        # std_2009 = np.array([6100, 12200, 6100, 8950, 12200, 6100, 1000])
+        # Additional standard deduction for aged 2009
         std_aged_2009 = np.array([1400., 1100.])
+        # std_aged_2009 = np.array([1500., 1200.])
         # create imputed compulsory itemizer variable
         self._compitem = np.where(np.logical_and(self.FDED == 1,
                                                  self.e04470 <
@@ -714,7 +720,7 @@ class Records(object):
                                                              self.MARS == 6)),
                                  2., 1.)
         # impute number of extra standard deductions for aged
-        self._numextra = np.where(np.logical_and(self.FDED == 2, self.e04470 <
+        self._numextra = np.where(np.logical_and(self.FDED == 2, self.e04470 >
                                                  std_2009[self.MARS - 1]),
                                   np.where(
                                       np.logical_and(self.MARS != 2,
