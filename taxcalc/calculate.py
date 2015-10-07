@@ -69,7 +69,7 @@ class Calculator(object):
     def records(self):
         return self._records
 
-    def calc_all(self):
+    def calc_one_year(self):
         FilingStatus(self.params, self.records)
         Adj(self.params, self.records)
         CapGains(self.params, self.records)
@@ -100,6 +100,10 @@ class Calculator(object):
         DEITC(self.params, self.records)
         OSPC_TAX(self.params, self.records)
         ExpandIncome(self.params, self.records)
+
+    def calc_all(self):
+        self.calc_one_year()
+        BenefitSurtax(self)
 
     def calc_all_test(self):
         all_dfs = []
@@ -250,6 +254,9 @@ class Calculator(object):
             # nonrefuncable credits
             nonrefundable = (calc.records.c07100 * calc.records.s006).sum()
 
+            # Misc. Surtax
+            surtax = (calc.records._surtax * calc.records.s006).sum()
+
             # ospc_tax
             revenue1 = (calc.records._ospctax * calc.records.s006).sum()
 
@@ -263,6 +270,7 @@ class Calculator(object):
                           tax_bf_credits / math.pow(10, 9),
                           refundable / math.pow(10, 9),
                           nonrefundable / math.pow(10, 9),
+                          surtax / math.pow(10, 9),
                           revenue1 / math.pow(10, 9)])
             calc.increment_year()
 
@@ -276,6 +284,7 @@ class Calculator(object):
                         "AMT number (#m)", "Tax before credits ($b)",
                         "refundable credits ($b)",
                         "nonrefundable credits ($b)",
+                        "Misc. Surtax ($b)",
                         "ospctax ($b)"])
         df = df.transpose()
         pd.options.display.float_format = '{:8,.1f}'.format
