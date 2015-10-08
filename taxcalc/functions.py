@@ -75,9 +75,6 @@ def Adj(e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
         total adjustments
 
     """
-    # Form 2555: Foreign earned income
-    _feided = max(e35300_0, e35600_0 + e35910_0)
-
     # For 1040: adjustments
     c02900 = (e03150 + (1 - ALD_StudentLoan_HC) * e03210 + e03600 +
               (1 - ALD_SelfEmploymentTax_HC) * e03260 +
@@ -86,11 +83,11 @@ def Adj(e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
               e03400 + (1 - ALD_Alimony_HC) * e03500 + e03280 + e03900 +
               e04000 + e03700 + e03220 + e03230 + e03240 + e03290)
 
-    return (_feided, c02900)
+    return (c02900)
 
 
 @iterate_jit(nopython=True)
-def CapGains(e23250, e22250, e23660, _sep, _feided, FEI_ec_c,
+def CapGains(e23250, e22250, e23660, _sep, FEI_ec_c, TXST,
              ALD_StudentLoan_HC, f2555, e00200, e00300, e00600, e00700, e00800,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
              e02300, e02600, e02610, e02800, e02540, e00400, e02400,
@@ -105,7 +102,9 @@ def CapGains(e23250, e22250, e23660, _sep, _feided, FEI_ec_c,
     c01000 = max(-3000 / _sep, c23650)
 
     # Foreign earned income exclusion
-    c02700 = min(_feided, FEI_ec_c * f2555)
+    if TXST == 10:
+        f2555 = 1
+    c02700 = min(e00200, FEI_ec_c * f2555)
 
     #
     _ymod1 = (e00200 + e00300 + e00600 + e00700 + e00800 + e00900 + c01000 +

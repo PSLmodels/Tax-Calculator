@@ -51,6 +51,7 @@ def run():
     assert calc.current_year == 2013
     totaldf = calc.calc_all_test()
     totaldf = totaldf.T.groupby(level=0).first().T  # drop duplicates
+    #totaldf.to_csv("exp_results.csv", index=False)
     exp_results_file = os.path.join(CUR_PATH, '../../exp_results.csv.gz')
     exp_results = pd.read_csv(exp_results_file, compression='gzip')
     exp_set = set(exp_results.columns)  # fix-up to bad colname in exp_results
