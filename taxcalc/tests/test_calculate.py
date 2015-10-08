@@ -241,10 +241,10 @@ def test_Calculator_create_distribution_table():
 
 def test_Calculator_calculate_mtr():
     # Create a Parameters object
-    params = Parameters(start_year=1991, inflation_rates=irates)
+    params = Parameters()
 
     # Create a Public Use File object
-    puf = Records(tax_dta)
+    puf = Records(TAX_DTA, weights=WEIGHTS, start_year=2009)
 
     # Create a Calculator
     calc = Calculator(params=params, records=puf)
