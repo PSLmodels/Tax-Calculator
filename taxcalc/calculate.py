@@ -211,7 +211,7 @@ class Calculator(object):
             new_taxes_down += _ospctax_down
         if FICA:
             new_taxes_down += _fica_down
-        delta_taxes_down = new_taxes_down - taxes_base
+        delta_taxes_down = taxes_base - new_taxes_down
 
         # Reset the income_type to its starting point to avoid
         # unintended consequences.
@@ -236,7 +236,7 @@ class Calculator(object):
         if income_type_string == 'e00200':
             employer_fica_adjustment = np.where(up_down == "up",
                                                 0.5 * _fica_up - _fica_base,
-                                                0.5 * _fica_down - _fica_base)
+                                                0.5 * _fica_base - _fica_down)
         else:
             employer_fica_adjustment = np.zeros(self.records._ospctax.shape)
 
