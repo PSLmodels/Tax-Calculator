@@ -11,7 +11,6 @@ import tempfile
 from numba import jit, vectorize, guvectorize
 import taxcalc
 from taxcalc import *
-from taxcalc.utils import expand_array
 
 
 @pytest.yield_fixture
@@ -144,21 +143,21 @@ def test_multi_year_reform():
 
     # confirm that parameters have current-law values
     assert_array_equal(getattr(ppo, '_AMT_thd_MarriedS'),
-                       expand_array(np.array([40400, 41050]),
+                       Policy.expand_array(np.array([40400, 41050]),
                                     inflate=True, inflation_rates=iratelist,
                                     num_years=nyrs))
     assert_array_equal(getattr(ppo, '_EITC_c'),
-                       expand_array(np.array([[487, 3250, 5372, 6044],
+                       Policy.expand_array(np.array([[487, 3250, 5372, 6044],
                                               [496, 3305, 5460, 6143],
                                               [503, 3359, 5548, 6242]]),
                                     inflate=True, inflation_rates=iratelist,
                                     num_years=nyrs))
     assert_array_equal(getattr(ppo, '_II_em'),
-                       expand_array(np.array([3900, 3950, 4000]),
+                       Policy.expand_array(np.array([3900, 3950, 4000]),
                                     inflate=True, inflation_rates=iratelist,
                                     num_years=nyrs))
     assert_array_equal(getattr(ppo, '_SS_Earnings_c'),
-                       expand_array(np.array([113700, 117000, 118500]),
+                       Policy.expand_array(np.array([113700, 117000, 118500]),
                                     inflate=True, inflation_rates=iratelist,
                                     num_years=nyrs))
 
@@ -341,19 +340,19 @@ def test_create_parameters_from_file(policyfile):
     inf_rates = [irates[ppo.start_year + i] for i in range(0, ppo.num_years)]
 
     assert_array_equal(ppo._almdep,
-                       expand_array(np.array([7150, 7250, 7400]),
+                       Policy.expand_array(np.array([7150, 7250, 7400]),
                                     inflate=True, inflation_rates=inf_rates,
                                     num_years=ppo.num_years))
     assert_array_equal(ppo._almsep,
-                       expand_array(np.array([40400, 41050]),
+                       Policy.expand_array(np.array([40400, 41050]),
                                     inflate=True, inflation_rates=inf_rates,
                                     num_years=ppo.num_years))
     assert_array_equal(ppo._rt5,
-                       expand_array(np.array([0.33]),
+                       Policy.expand_array(np.array([0.33]),
                                     inflate=False, inflation_rates=inf_rates,
                                     num_years=ppo.num_years))
     assert_array_equal(ppo._rt7,
-                       expand_array(np.array([0.396]),
+                       Policy.expand_array(np.array([0.396]),
                                     inflate=False, inflation_rates=inf_rates,
                                     num_years=ppo.num_years))
 

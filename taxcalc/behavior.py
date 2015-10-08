@@ -4,7 +4,6 @@ import os
 import numpy as np
 from .policy import Policy
 from .parameters_base import ParametersBase
-from .utils import expand_array
 
 
 def update_income(behavioral_effect, calc_y):

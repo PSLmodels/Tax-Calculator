@@ -8,7 +8,6 @@ OSPC Tax-Calculator federal tax policy Policy class.
 
 import os
 import json
-from .utils import expand_array
 from .parameters_base import ParametersBase
 
 

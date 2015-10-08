@@ -8,7 +8,7 @@ from numpy.testing import assert_array_equal
 import pandas as pd
 import tempfile
 import pytest
-from taxcalc import Policy, Records, Calculator, expand_array
+from taxcalc import Policy, Records, Calculator
 from taxcalc import create_distribution_table, create_difference_table
 
 
@@ -189,7 +189,7 @@ def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
     calc.policy.implement_reform(user_mods)
 
     inf_rates = [IRATES[1991 + i] for i in range(0, 12)]
-    exp_almdep = expand_array(np.array([7150, 7250, 7400]), inflate=True,
+    exp_almdep = Policy.expand_array(np.array([7150, 7250, 7400]), inflate=True,
                               inflation_rates=inf_rates, num_years=12)
     act_almdep = getattr(calc.policy, '_almdep')
     assert_array_equal(act_almdep, exp_almdep)
