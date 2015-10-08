@@ -239,7 +239,7 @@ def test_Calculator_create_distribution_table():
     assert isinstance(dt2, pd.DataFrame)
 
 
-def test_Calculator_calculate_mtr():
+def test_calculate_mtr():
     # Create a Parameters object
     params = Parameters()
 
@@ -255,6 +255,20 @@ def test_Calculator_calculate_mtr():
     assert type(mtr) == np.ndarray
     assert np.array_equal(mtr, mtr_FICA) == False
     assert np.array_equal(mtr_FICA, mtr_IIT) == False
+
+
+def test_calculate_mtr_raises_on_no_tax():
+    # Create a Parameters object
+    params = Parameters()
+
+    # Create a Public Use File object
+    puf = Records(TAX_DTA, weights=WEIGHTS, start_year=2009)
+
+    # Create a Calculator
+    calc = Calculator(params=params, records=puf)
+
+    with pytest.raises(ValueError):
+        mtr = calc.mtr('e00200', FICA=False, IIT=False)
 
 
 def test_Calculator_create_difference_table():

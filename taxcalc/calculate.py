@@ -172,6 +172,11 @@ class Calculator(object):
 
         """
 
+        # Verify that the mtr calculation is for either FICA or IIT
+        if FICA is False and IIT is False:
+            msg = "mtr must be calculated for either FICA, IIT, or both."
+            raise ValueError(msg)
+
         income_type = getattr(self.records, income_type_string)
 
         # Calculate the base level of taxes.
