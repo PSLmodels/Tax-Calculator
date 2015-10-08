@@ -55,7 +55,11 @@ def run():
     exp_results = pd.read_csv(exp_results_file, compression='gzip')
     exp_set = set(exp_results.columns)  # fix-up to bad colname in exp_results
     cur_set = set(totaldf.columns)
-    assert exp_set == cur_set
+    exp_set.add('_avail')
+    exp_set.add('c62100_everyone')
+
+    assert(exp_set == cur_set)
+
     for label in exp_results.columns:
         lhs = exp_results[label].values.reshape(len(exp_results))
         rhs = totaldf[label].values.reshape(len(exp_results))
