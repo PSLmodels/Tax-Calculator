@@ -1,0 +1,647 @@
+"""
+OSPC taxcalc package simple tax input-output class.
+"""
+# CODING-STYLE CHECKS:
+# pep8 --ignore=E402 simpletaxio.py
+# pylint --disable=locally-disabled simpletaxio.py
+
+import os
+import sys
+import json
+import re
+import numpy.core as np
+from numpy.core import int32 as np_int32
+import pandas as pd
+from .parameters import Parameters
+from .records import Records
+from .calculate import Calculator
+
+
+class SimpleTaxIO(object):
+    """
+    Constructor for the simple tax input-output class.
+
+    Parameters
+    ----------
+    input_filename: string
+        name of required INPUT file.
+
+    reform_filename: string or None
+        name of optional REFORM file with None implying current-law policy.
+
+    Raises
+    ------
+    ValueError:
+        if file with input_filename does not exist.
+        if earliest INPUT year before simtax start year.
+        if latest INPUT year after simtax end year.
+
+    Returns
+    -------
+    class instance: SimpleTaxIO
+    """
+
+    def __init__(self, input_filename, reform_filename):
+        """
+        SimpleTaxIO class constructor.
+        """
+        # construct output_filename and delete old output file if it exists
+        self._output_filename = '{}.out-simtax'.format(input_filename)
+        if os.access(self._output_filename, os.F_OK):
+            os.remove(self._output_filename)
+        # check for existence of file named input_filename
+        if not os.access(input_filename, os.F_OK):
+            msg = 'INPUT file named {} could not be found'
+            raise ValueError(msg.format(input_filename))
+        # read input file contents into self._input dictionary
+        self._read_input(input_filename)
+        self._params = Parameters()
+        # implement reform if reform file is specified
+        if reform_filename:
+            reform = SimpleTaxIO.dictionary_from_reform_file(reform_filename)
+            self._params.implement_reform(reform)
+        # validate input variable values
+        self._validate_input()
+        self._calc = self._calc_object()
+        self._output = {}
+
+    def calculate(self, write_marginal_tax_rates=False):
+        """
+        Calculate taxes for all INPUT lines and write OUTPUT to file.
+
+        Parameters
+        ----------
+        nothing: void
+
+        Returns
+        -------
+        nothing: void
+        """
+        # loop through self._year_set doing tax calculations and saving output
+        mtr = write_marginal_tax_rates
+        for calcyear in self._year_set:
+            if calcyear != self._calc.params.current_year:
+                self._calc.params.set_year(calcyear)
+            self._calc.calc_all()
+            for idx in range(0, self._calc.records.dim):
+                # pylint: disable=no-member
+                indyr = self._calc.records.FLPDYR[idx]
+                if indyr == calcyear:
+                    lnum = idx + 1
+                    ovar = SimpleTaxIO._extract_output(self._calc.records, idx,
+                                                       self._input[lnum], mtr)
+                    self._output[lnum] = ovar
+        # write contents of self._output
+        self._write_output_file()
+
+    @staticmethod
+    def dictionary_from_reform_file(reform_filename):
+        """
+        Read reform file, strip //-comments, and return dict based on JSON.
+        The reform file is JSON with string policy-parameter primary keys and
+           string years as secondary keys.
+        Returned dictionary has integer years as primary keys and
+           string policy-parameters as secondary keys.
+        The returned dictionary is suitable as the argument to the Parameters
+           class implement_reform(reform_dict) method.
+        """
+        # check existence of specified reform file
+        if not os.access(reform_filename, os.F_OK):
+            msg = 'simtax REFORM file {} could not be found'
+            raise ValueError(msg.format(reform_filename))
+        # read contents of reform file and remove // comments
+        with open(reform_filename, 'r') as reform_file:
+            json_with_comments = reform_file.read()
+            json_without_comments = re.sub('//.*', '', json_with_comments)
+        # convert JSON text into a dictionary with year skeys as strings
+        try:
+            reform_dict_raw = json.loads(json_without_comments)
+        except ValueError:
+            msg = 'simtax REFORM file {} contains invalid JSON'
+            line = '----------------------------------------------------------'
+            txt = ('TO FIND FIRST JSON SYNTAX ERROR,\n'
+                   'COPY TEXT BETWEEN LINES AND '
+                   'PASTE INTO BOX AT jsonlint.com')
+            sys.stderr.write(txt + '\n')
+            sys.stderr.write(line + '\n')
+            sys.stderr.write(json_without_comments.strip() + '\n')
+            sys.stderr.write(line + '\n')
+            raise ValueError(msg.format(reform_filename))
+        # convert year skey strings to integers and lists into np.arrays
+        reform_pkey_param = {}
+        for pkey, sdict in reform_dict_raw.items():
+            if not isinstance(pkey, basestring):
+                msg = 'pkey {} in reform is not a string'
+                raise ValueError(msg.format(pkey))
+            rdict = {}
+            for skey, val in sdict.items():
+                if not isinstance(skey, basestring):
+                    msg = 'skey {} in reform is not a string'
+                    raise ValueError(msg.format(skey))
+                else:
+                    year = int(skey)
+                rdict[year] = (np.array(val) if isinstance(val, list) else val)
+            reform_pkey_param[pkey] = rdict
+        # convert reform_pkey_param dictionary to reform_pkey_year dictionary
+        return SimpleTaxIO.reform_pkey_year(reform_pkey_param)
+
+    @staticmethod
+    def reform_pkey_year(reform_pkey_param):
+        """
+        The input reform_pkey_param dictionary has string policy-parameter
+           primary keys and integer years as secondary keys.
+        Returned dictionary has integer years as primary keys and
+           string policy-parameters as secondary keys.
+        The returned dictionary is suitable as the argument to the Parameters
+           class implement_reform(reform_dict) method.
+        """
+        years = set()
+        reform_pk_yr = {}
+        for param, sdict in reform_pkey_param.items():
+            if not isinstance(param, basestring):
+                msg = 'pkey {} in reform is not a string'
+                raise ValueError(msg.format(param))
+            elif not isinstance(sdict, dict):
+                msg = 'pkey {} value {} is not a dictionary'
+                raise ValueError(msg.format(param, sdict))
+            for year, val in sdict.items():
+                if not isinstance(year, int):
+                    msg = 'year skey {} in reform is not an integer'
+                    raise ValueError(msg.format(year))
+                if year not in years:
+                    years.add(year)
+                    reform_pk_yr[year] = {}
+                reform_pk_yr[year][param] = val
+        return reform_pk_yr
+
+    @staticmethod
+    def show_iovar_definitions():
+        """
+        Write definitions of INPUT and OUTPUT variables to stdout.
+
+        Parameters
+        ----------
+        none: void
+
+        Returns
+        -------
+        nothing: void
+        """
+        ivd = ('**** SimpleTaxIO INPUT variables in Internet TAXSIM format:\n'
+               'Note that each INPUT variable must be an integer.\n'
+               '(NEG) notation means that variable can be negative;\n'
+               '      otherwise variable must be non-negative.\n'
+               '[ 1] arbitrary id of income tax filing unit\n'
+               '[ 2] calendar year of income tax filing\n'
+               '[ 3] state code [MUST BE ZERO]\n'
+               '[ 4] filing status [MUST BE 1, 2, or 3]\n'
+               '     1=single, 2=married_filing_jointly, 3=head_of_household\n'
+               '[ 5] total number of dependents\n'
+               '[ 6] number of taxpayer/spouse who are age 65+\n'
+               '[ 7] taxpayer wage, salary, plus self-employed income (NEG)\n'
+               '[ 8] spouse wage, salary, plus self-employed income (NEG)\n'
+               '[ 9] qualified dividend income\n'
+               '[10] other property income (NEG)\n'
+               '[11] pension benefits that are federally taxable\n'
+               '[12] total social security (OASDI) benefits\n'
+               '[13] other non-fed-taxable transfer income [MUST BE ZERO]\n'
+               '[14] rent paid [MUST BE ZERO]\n'
+               '[15] real-estate taxes paid: an AMT-preference item\n'
+               '[16] other itemized deductions that are AMT-preference items\n'
+               '[17] child care expenses\n'
+               '[18] unemployment (UI) benefits received\n'
+               '[19] number of dependents under age 17\n'
+               '[20] itemized deductions that are not AMT-preference items\n'
+               '[21] short-term capital gains or losses (NEG)\n'
+               '[22] long-term capital gains or losses (NEG)\n')
+        sys.stdout.write(ivd)
+        ovd = ('**** SimpleTaxIO OUTPUT variables in Internet TAXSIM format:\n'
+               '(ZERO) notation means that variable is not computed in this\n'
+               '       version of SimpleTaxIO and is given a zero value.\n'
+               '[ 1] arbitrary id of income tax filing unit\n'
+               '[ 2] calendar year of income tax filing\n'
+               '[ 3] state code [ALWAYS ZERO]\n'
+               '[ 4] federal income tax liability\n'
+               '[ 5] state income tax liability [ALWAYS ZERO]\n'
+               '[ 6] FICA (OASDI+HI) tax liability (sum of ee and er share)\n'
+               '[ 7] marginal federal income tax rate as percent (ZERO)\n'
+               '[ 8] marginal state income tax rate [ALWAYS ZERO]\n'
+               '[ 9] marginal FICA tax rate as percent (ZERO)\n'
+               '[10] federal adjusted gross income, AGI\n'
+               '[11] unemployment (UI) benefits included in AGI\n'
+               '[12] social security (OASDI) benefits included in AGI\n'
+               '[13] zero-bracket amount (ZERO)\n'
+               '[14] personal exemption after phase-out\n'
+               '[15] phased-out (i.e., disallowed) personal exemption\n'
+               '[16] phased-out (i.e., disallowed) itemized deduction\n'
+               '[17] itemized deduction after phase-out '
+               '(zero for non-itemizer)\n'
+               '[18] federal regular taxable income\n'
+               '[19] regular tax on regular taxable income\n'
+               '[20] [ALWAYS ZERO]\n'
+               '[21] [ALWAYS ZERO]\n'
+               '[22] child tax credit (adjusted)\n'
+               '[23] child tax credit (refunded)\n'
+               '[24] credit for child care expenses\n'
+               '[25] federal earned income tax credit, EITC\n'
+               '[26] federal AMT taxable income\n'
+               '[27] federal AMT liability\n'
+               '[28] federal income tax (excluding AMT) before credits\n')
+        sys.stdout.write(ovd)
+
+    # --- begin private methods of SimpleTaxIO class --- #
+
+    IVAR_NUM = 22
+    IVAR_NONNEG = {1: True, 2: True, 3: True, 4: True, 5: True,
+                   6: True, 7: False, 8: False, 9: True, 10: False,
+                   11: True, 12: True, 13: True, 14: True, 15: True,
+                   16: True, 17: True, 18: True, 19: True, 20: True,
+                   21: False, 22: False}  # True ==> value must be non-negative
+
+    def _read_input(self, input_filename):
+        """
+        Read INPUT and save input variables in self._input dictionary.
+
+        Parameters
+        ----------
+        input_filename: string
+            name of simtax INPUT file.
+
+        Raises
+        ------
+        ValueError:
+            if INPUT variables are not in Internet TAXSIM format.
+            if INPUT variables have improper numeric type or value.
+
+        Returns
+        -------
+        nothing: void
+
+        Notes
+        -----
+        The integer value of each input variable is stored in the
+        self._input dictionary, which is indexed by INPUT file line
+        number and by INPUT file variable number (where both indexes
+        begin with one).
+        """
+        self._input = {}  # indexed by line number and by variable number
+        lnum = 0
+        used_var1_strings = set()
+        with open(input_filename, 'r') as input_file:
+            for line in input_file:
+                lnum += 1
+                istrlist = line.split()
+                if len(istrlist) != SimpleTaxIO.IVAR_NUM:
+                    msg = ('simtax INPUT line {} has {} not '
+                           '{} space-delimited variables')
+                    raise ValueError(msg.format(lnum, len(istrlist),
+                                                SimpleTaxIO.IVAR_NUM))
+                vnum = 0
+                vardict = {}
+                for istr in istrlist:
+                    vnum += 1
+                    # convert istr to integer value
+                    try:
+                        val = int(istr)
+                    except:
+                        msg = ('simtax INPUT line {} variable {} has '
+                               'value {} that is not an integer')
+                        raise ValueError(msg.format(lnum, vnum, istr))
+                    # check val for proper value range
+                    if SimpleTaxIO.IVAR_NONNEG[vnum]:
+                        if val < 0:
+                            msg = ('var[{}]={} on line {} of simtax INPUT has '
+                                   'a negative value')
+                            raise ValueError(msg.format(vnum, val, lnum))
+                    # check that var[1] is unique in INPUT file
+                    if vnum == 1:
+                        if istr in used_var1_strings:
+                            msg = ('var[1]={} on line {} of simtax INPUT has '
+                                   'already been used')
+                            raise ValueError(msg.format(istr, lnum))
+                        else:
+                            used_var1_strings.add(istr)
+                    # add val for vnum to vardict
+                    vardict[vnum] = val
+                # add lnum:vardict pair to self._input dictionary
+                self._input[lnum] = vardict
+
+    def _validate_input(self):
+        """
+        Validate INPUT variable values stored in self._input dictionary.
+
+        Parameters
+        ----------
+        none: void
+
+        Raises
+        ------
+        ValueError:
+            if INPUT variable values are not in proper range of values.
+
+        Returns
+        -------
+        nothing: void
+
+        Notes
+        -----
+        The integer value of each input variable is stored in the
+        self._input dictionary, which is indexed by INPUT file line
+        number and by INPUT file variable number (where both indexes
+        begin with one).
+        """
+        self._year_set = set()
+        min_year = self._params.start_year
+        max_year = self._params.end_year
+        for lnum in range(1, len(self._input) + 1):
+            var = self._input[lnum]
+            year = var[2]
+            if year < min_year or year > max_year:
+                msg = ('var[2]={} on line {} of simtax INPUT is not in '
+                       '[{},{}] Parameters start-year, end-year range')
+                raise ValueError(msg.format(year, lnum, min_year, max_year))
+            if year not in self._year_set:
+                self._year_set.add(year)
+            state = var[3]
+            if state != 0:
+                msg = ('var[3]={} on line {} of simtax INPUT is not zero '
+                       'to indicate no state income tax calculations')
+                raise ValueError(msg.format(state, lnum))
+            filing_status = var[4]
+            if filing_status < 1 or filing_status > 3:
+                msg = ('var[4]={} on line {} of simtax INPUT is not '
+                       'in [1,3] filing-status range')
+                raise ValueError(msg.format(filing_status, lnum))
+            num_all_dependents = var[5]
+            if filing_status == 3 and num_all_dependents == 0:
+                msg = ('var[5]={} on line {} of simtax INPUT is not '
+                       'positive when var[4] equals 3')
+                raise ValueError(msg.format(num_all_dependents, lnum))
+            num_aged = var[6]
+            if filing_status == 2:
+                if num_aged > 2:
+                    msg = ('var[6]={} on line {} of simtax INPUT is not '
+                           'less than or equal to two')
+                    raise ValueError(msg.format(num_aged, lnum))
+            else:  # if filing_status is 1=single or 3=head_of_household
+                if num_aged > 1:
+                    msg = ('var[6]={} on line {} of simtax INPUT is not '
+                           'less than or equal to one')
+                    raise ValueError(msg.format(num_aged, lnum))
+            tran = var[13]
+            if tran != 0:
+                msg = ('var[13]={} on line {} of simtax INPUT is not zero '
+                       'to indicate no state income tax calculations')
+            rent = var[14]
+            if rent != 0:
+                msg = ('var[14]={} on line {} of simtax INPUT is not zero '
+                       'to indicate no state income tax calculations')
+                raise ValueError(msg.format(rent, lnum))
+            num_young_dependents = var[19]
+            if num_young_dependents > num_all_dependents:
+                msg = ('var[19]={} on line {} of simtax INPUT is not less '
+                       'than or equal to var[5]={}')
+                raise ValueError(msg.format(num_young_dependents, lnum,
+                                            num_all_dependents))
+
+    def _calc_object(self):
+        """
+        Create and return Calculator object to conduct the tax calculations.
+
+        Parameters
+        ----------
+        none: void
+
+        Returns
+        -------
+        calc: Calculator
+        """
+        # create all-zeros dictionary and then list of all-zero dictionaries
+        zero_dict = {}
+        for names in Records.NAMES:
+            zero_dict[names[1]] = 0
+        dict_list = [zero_dict for _ in range(0, len(self._input))]
+        # use dict_list to create a Pandas DataFrame and Records object
+        recsdf = pd.DataFrame(dict_list, dtype=np_int32)
+        recs = Records(data=recsdf, start_year=2013)
+        assert recs.dim == len(self._input)
+        # add imputed variables to Records object
+        zeros = np.zeros((recs.dim,))
+        setattr(recs, '_compitem', zeros)  # compulsory itemizer
+        # specify input for each tax filing unit in Records object
+        lnum = 0
+        for idx in range(0, recs.dim):
+            lnum += 1
+            SimpleTaxIO._specify_input(recs, idx, self._input[lnum])
+        # create Calculator object for 2013 containing all tax filing units
+        assert recs.current_year == 2013
+        assert self._params.current_year == 2013
+        return Calculator(params=self._params, records=recs)
+
+    @staticmethod
+    def _specify_input(recs, idx, ivar):
+        """
+        Specifies recs values for index idx using ivar input variables.
+
+        Parameters
+        ----------
+        recs: Records
+            Records object containing a row for each tax filing unit.
+
+        idx: integer
+            recs index of the tax filing unit whose input is in ivar.
+
+        ivar: dictionary
+            input variables for a single tax filing unit.
+
+        Returns
+        -------
+        nothing: void
+        """
+        # no use of ivar[1], id value
+        recs.FLPDYR[idx] = ivar[2]  # tax year
+        # no use of ivar[3], state code
+        if ivar[4] == 3:  # head-of-household is 3 in SimpleTaxIO INPUT file
+            mars_value = 4  # head-of-household is MARS=4 in taxcalc
+            num_taxpayers = 1
+        else:  # if ivar[4] is 1=single or 2=married_filing_jointly
+            mars_value = ivar[4]
+            num_taxpayers = ivar[4]
+        recs.MARS[idx] = mars_value  # income tax filing status
+        num_dependents = ivar[5]  # total number of dependents
+        num_eitc_qualified_kids = num_dependents  # simplifying assumption
+        recs.EIC[idx] = min(num_eitc_qualified_kids, 3)
+        total_num_exemptions = num_taxpayers + num_dependents
+        recs.XTOT[idx] = total_num_exemptions
+        # pylint: disable=protected-access
+        recs._numextra[idx] = ivar[6]  # number of taxpayers age 65+
+        recs.e00200[idx] = ivar[7]  # wage+sal+se income of txpyer (+/-)
+        # recs.[idx] = ivar[8]  # wage+sal+se income of spouse (+/-)
+        # need separate taxpayer & spouse earnings variables to do above lines
+        recs.e00650[idx] = ivar[9]  # qualified dividend income
+        recs.e00600[idx] = ivar[9]  # qual.div. included in ordinary dividends
+        recs.e00300[idx] = ivar[10]  # other property income (+/-)
+        recs.e01700[idx] = ivar[11]  # federally taxable pensions
+        recs.e02400[idx] = ivar[12]  # gross social security benefits
+        recs.e00400[idx] = ivar[13]  # federal tax-exempt interest
+        # no use of ivar[14] because no state income tax calculations
+        recs.e18500[idx] = ivar[15]  # real-estate (property) taxes paid
+        recs.e18400[idx] = ivar[16]  # other AMT-preferred deductions
+        recs.e32800[idx] = ivar[17]  # child care expenses
+        recs.e02300[idx] = ivar[18]  # unemployment compensation received
+        recs.n24[idx] = ivar[19]  # number dependents under age 17
+        recs.f2441[idx] = ivar[19]  # simplifying assumption
+        recs.e19200[idx] = ivar[20]  # AMT-nonpreferred deductions
+        recs.p22250[idx] = ivar[21]  # short-term capital gains (+/-)
+        recs.p23250[idx] = ivar[22]  # long-term capital gains (+/-)
+        # specify values of imputed variables
+        recs._compitem[idx] = 0
+
+    OVAR_NUM = 28
+
+    @staticmethod
+    def _extract_output(crecs, idx, ivar, write_marginal_tax_rates):
+        """
+        Extracts tax output from crecs object and ivar dictionary.
+
+        Parameters
+        ----------
+        crecs: Records
+            Records object embedded in Calculator object.
+
+        idx: integer
+            crecs object index of tax filing unit whose input is in ivar.
+
+        ivar: dictionary
+            input variables for a single tax filing unit.
+
+        write_marginal_tax_rates: boolean
+            if true, extract federal and FICA marginal tax rates;
+            if false, set those two marginal tax rates to zero.
+
+        Returns
+        -------
+        ovar: dictionary of output variables indexed from 1 to OVAR_NUM.
+
+        Notes
+        -----
+        The value of each output variable is stored in the ovar dictionary,
+        which is indexed as Internet TAXSIM output variables are (where the
+        index begins with one).
+        """
+        ovar = {}
+        ovar[1] = ivar[1]
+        ovar[2] = ivar[2]
+        ovar[3] = ivar[3]
+        # pylint: disable=protected-access
+        ovar[4] = crecs._ospctax[idx]  # federal income tax liability
+        ovar[5] = 0.0  # no state income tax calculation
+        ovar[6] = crecs._fica[idx]  # FICA taxes (ee+er) for OASDI+HI
+        if write_marginal_tax_rates:
+            ovar[7] = 0.0  # ADD: federal marginal tax rate as percent
+            ovar[9] = 0.0  # ADD: FICA marginal tax rate as percent
+        else:
+            ovar[7] = 0.0
+            ovar[9] = 0.0
+        ovar[8] = 0.0  # no state income tax calculation
+        ovar[10] = crecs.c00100[idx]  # federal AGI
+        ovar[11] = crecs.e02300[idx]  # UI benefits in AGI
+        ovar[12] = crecs.c02500[idx]  # OASDI benefits in AGI
+        ovar[13] = 0.0  # ADD: zero bracket amount
+        pre_phase_out_pe = crecs._prexmp[idx]
+        post_phase_out_pe = crecs.c04600[idx]
+        phased_out_pe = pre_phase_out_pe - post_phase_out_pe
+        ovar[14] = post_phase_out_pe  # post-phase-out personal exemption
+        ovar[15] = phased_out_pe  # personal exemption that is phased out
+        # ovar[16] can be positive for non-itemizer:
+        ovar[16] = crecs.c21040[idx]  # itemized deduction that is phased out
+        # ovar[17] is zero for non-itemizer:
+        ovar[17] = crecs.c04470[idx]  # post-phase-out itemized deduction
+        ovar[18] = crecs.c04800[idx]  # federal regular taxable income
+        ovar[19] = crecs.c05200[idx]  # regular tax on taxable income
+        ovar[20] = 0.0  # always set exemption surtax to zero
+        ovar[21] = 0.0  # always set general tax credit to zero
+        ovar[22] = crecs.c07220[idx]  # child tax credit (adjusted)
+        ovar[23] = crecs.c11070[idx]  # extra child tax credit (refunded)
+        ovar[24] = crecs.c07180[idx]  # child care credit
+        ovar[25] = crecs._eitc[idx]  # federal EITC
+        ovar[26] = crecs.c62100_everyone[idx]  # federal AMT taxable income
+        amt_liability = crecs.c09600[idx]  # federal AMT liability
+        ovar[27] = amt_liability
+        # ovar[28] is federal income tax before credits; the taxcalc
+        # crecs.c05800[idx] is this concept but includes AMT liability
+        # while TAXSIM ovar[28] explicitly excludes AMT liability, so
+        # we have the following:
+        ovar[28] = crecs.c05800[idx] - amt_liability
+        return ovar
+
+    def _write_output_file(self):
+        """
+        Write all OUTPUT to output_file.
+
+        Parameters
+        ----------
+        none: void
+
+        Returns
+        -------
+        nothing: void
+        """
+        assert len(self._output) == len(self._input)
+        with open(self._output_filename, 'w') as output_file:
+            for lnum in range(1, len(self._output) + 1):
+                SimpleTaxIO._write_output_line(self._output[lnum], output_file)
+
+    OVAR_FMT = {1: '{:d}.',  # add decimal point to replicate TAXSIM output
+                2: ' {:d}',
+                3: ' {:d}',
+                4: ' {:.2f}',
+                5: ' {:.2f}',
+                6: ' {:.2f}',
+                7: ' {:.2f}',
+                8: ' {:.2f}',
+                9: ' {:.2f}',
+                10: ' {:.2f}',
+                11: ' {:.2f}',
+                12: ' {:.2f}',
+                13: ' {:.2f}',
+                14: ' {:.2f}',
+                15: ' {:.2f}',
+                16: ' {:.2f}',
+                17: ' {:.2f}',
+                18: ' {:.2f}',
+                19: ' {:.2f}',
+                20: ' {:.2f}',
+                21: ' {:.2f}',
+                22: ' {:.2f}',
+                23: ' {:.2f}',
+                24: ' {:.2f}',
+                25: ' {:.2f}',
+                26: ' {:.2f}',
+                27: ' {:.2f}',
+                28: ' {:.2f}'}
+
+    @staticmethod
+    def _write_output_line(output_dict, output_file):
+        """
+        Write line of OUTPUT in output_dict to output_file.
+
+        Parameters
+        ----------
+        output_dict: dictionary
+            calculated output values indexed from 1 to OVAR_NUM.
+
+        output_file: file handle
+            output text file.
+
+        Returns
+        -------
+        nothing: void
+        """
+        for vnum in range(1, SimpleTaxIO.OVAR_NUM + 1):
+            ostr = SimpleTaxIO.OVAR_FMT[vnum].format(output_dict[vnum])
+            output_file.write(ostr)
+        output_file.write('\n')
+
+
+# end SimpleTaxIO class
