@@ -1694,8 +1694,9 @@ def Taxer_i(inc_in, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6,
 def ExpandIncome(FICA_ss_trt, SS_Earnings_c, e00200, FICA_mc_trt, e02400,
                  c02500, c00100, e00400):
 
-    employer_share_fica = (max(0, FICA_ss_trt * min(SS_Earnings_c, e00200) +
-                           FICA_mc_trt * e00200))
+    employer_share_fica = (max(0,
+                           0.5 * FICA_ss_trt * min(SS_Earnings_c, e00200) +
+                           0.5 * FICA_mc_trt * e00200))
 
     non_taxable_ss_benefits = (e02400 - c02500)
 
