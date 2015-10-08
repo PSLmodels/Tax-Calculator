@@ -250,7 +250,11 @@ def test_Calculator_calculate_mtr():
     calc = Calculator(params=params, records=puf)
 
     mtr = calc.mtr('e00200')
+    mtr_FICA = calc.mtr('e00200', IIT=False)
+    mtr_IIT = calc.mtr('e00200', FICA=False)
     assert type(mtr) == np.ndarray
+    assert np.array_equal(mtr, mtr_FICA) == False
+    assert np.array_equal(mtr_FICA, mtr_IIT) == False
 
 
 def test_Calculator_create_difference_table():
