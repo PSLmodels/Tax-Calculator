@@ -182,29 +182,35 @@ class Calculator(object):
         # Calculate the base level of taxes.
         self.calc_all()
         taxes_base = np.zeros(self.records._ospctax.shape)
+        _ospctax_base = self.records._ospctax
+        _fica_base = self.records._fica
         if IIT:
-            taxes_base += np.copy(self.records._ospctax)
+            taxes_base += _ospctax_base
         if FICA:
-            taxes_base += np.copy(self.records._fica)
+            taxes_base += _fica_base
 
         # Calculate the tax change with a marginal increase in income.
         setattr(self.records, income_type_string, income_type + finite_diff)
         self.calc_all()
         new_taxes_up = np.zeros(self.records._ospctax.shape)
+        _ospctax_up = self.records._ospctax
+        _fica_up = self.records._fica
         if IIT:
-            new_taxes_up += self.records._ospctax
+            new_taxes_up += _ospctax_up
         if FICA:
-            new_taxes_up += self.records._fica
+            new_taxes_up += _fica_up
         delta_taxes_up = new_taxes_up - taxes_base
 
         # Calculate the tax change with a marginal decrease in income.
         setattr(self.records, income_type_string, income_type - finite_diff)
         self.calc_all()
         new_taxes_down = np.zeros(self.records._ospctax.shape)
+        _ospctax_down = self.records._ospctax
+        _fica_down = self.records._fica
         if IIT:
-            new_taxes_down += self.records._ospctax
+            new_taxes_down += _ospctax_down
         if FICA:
-            new_taxes_down += self.records._fica
+            new_taxes_down += _fica_down
         delta_taxes_down = new_taxes_down - taxes_base
 
         # Reset the income_type to its starting point to avoid
@@ -217,8 +223,24 @@ class Calculator(object):
                                np.absolute(delta_taxes_down),
                                delta_taxes_up, delta_taxes_down)
 
-        # Calculate the marginal tax rate
-        mtr = delta_taxes / finite_diff
+        # Record whether we took the down or up version for the purpose
+        # of adding the right employer-side fica to to finite_diff
+        up_down = np.where(delta_taxes == delta_taxes_up, "up", "down")
+
+        # Calculate the marginal tax rate.
+        # The rate we want is the "after-tax share of tax in compensation".
+        # Since only half of the social security tax is including in wages for
+        # income tax purposes, we need to increase the denominator by the
+        # excluded portion of FICA.
+
+        if income_type_string == 'e00200':
+            employer_fica_adjustment = np.where(up_down == "up",
+                                                0.5 * _fica_up - _fica_base,
+                                                0.5 * _fica_down - _fica_base)
+        else:
+            employer_fica_adjustment = np.zeros(self.records._ospctax.shape)
+
+        mtr = delta_taxes / (finite_diff + employer_fica_adjustment)
 
         return mtr
 
