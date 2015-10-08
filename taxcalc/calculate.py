@@ -153,6 +153,7 @@ class Calculator(object):
         Avoids kinks in the tax schedule by finding the marginal rates
         associated with both an income increase and an income decrease and
         then uses the more modest of the two.
+        By default, both FICA and IIT are included in the MTR calculation.
 
         Parameters
         ----------
@@ -160,6 +161,10 @@ class Calculator(object):
 
         diff: the marginal amount to be added or subtracted from income in
             order to calculate the marginal tax rate.
+
+        FICA: boolean to indicate whether the MTR calculation includes FICA.
+
+        IIT: boolean to indicate whether the MTR calculation includes IIT.
 
         Returns
         -------
