@@ -147,7 +147,7 @@ class Calculator(object):
     def current_year(self):
         return self.params.current_year
 
-    def mtr(self, income_type_string, diff=1, FICA=True, IIT=True):
+    def mtr(self, income_type_string, finite_diff=1, FICA=True, IIT=True):
         """
         Calculates the marginal tax rate for every record.
         Avoids kinks in the tax schedule by finding the marginal rates
@@ -159,8 +159,8 @@ class Calculator(object):
         ----------
         income_type_string: string of an income attribute on the Records class.
 
-        diff: the marginal amount to be added or subtracted from income in
-            order to calculate the marginal tax rate.
+        finite_diff: the marginal amount to be added or subtracted from income
+            in order to calculate the marginal tax rate.
 
         FICA: boolean to indicate whether the MTR calculation includes FICA.
 
@@ -188,7 +188,7 @@ class Calculator(object):
             taxes_base += np.copy(self.records._fica)
 
         # Calculate the tax change with a marginal increase in income.
-        setattr(self.records, income_type_string, income_type + diff)
+        setattr(self.records, income_type_string, income_type + finite_diff)
         self.calc_all()
         new_taxes_up = np.zeros(self.records._ospctax.shape)
         if IIT:
@@ -198,7 +198,7 @@ class Calculator(object):
         delta_taxes_up = new_taxes_up - taxes_base
 
         # Calculate the tax change with a marginal decrease in income.
-        setattr(self.records, income_type_string, income_type - diff)
+        setattr(self.records, income_type_string, income_type - finite_diff)
         self.calc_all()
         new_taxes_down = np.zeros(self.records._ospctax.shape)
         if IIT:
@@ -218,7 +218,7 @@ class Calculator(object):
                                delta_taxes_up, delta_taxes_down)
 
         # Calculate the marginal tax rate
-        mtr = delta_taxes / diff
+        mtr = delta_taxes / finite_diff
 
         return mtr
 
