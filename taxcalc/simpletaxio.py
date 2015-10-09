@@ -83,9 +83,9 @@ class SimpleTaxIO(object):
             if calcyear != self._calc.params.current_year:
                 self._calc.params.set_year(calcyear)
             self._calc.calc_all()
+            calc_records_tax_year = getattr(self._calc.records, 'FLPDYR')
             for idx in range(0, self._calc.records.dim):
-                # pylint: disable=no-member
-                indyr = self._calc.records.FLPDYR[idx]
+                indyr = calc_records_tax_year[idx]
                 if indyr == calcyear:
                     lnum = idx + 1
                     ovar = SimpleTaxIO._extract_output(self._calc.records, idx,
