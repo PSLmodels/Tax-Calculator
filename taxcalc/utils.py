@@ -53,6 +53,7 @@ def extract_array(f):
         return f(*arrays)
     return wrapper
 
+
 def count_gt_zero(agg):
     return sum([1 for a in agg if a > 0])
 
