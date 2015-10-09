@@ -708,12 +708,6 @@ class Records(object):
         # std_2009 = np.array([6100, 12200, 6100, 8950, 12200, 6100, 1000])
         # Additional standard deduction for aged 2009
         std_aged_2009 = np.array([1400., 1100.])
-        # std_aged_2009 = np.array([1500., 1200.])
-        # create imputed compulsory itemizer variable
-        self._compitem = np.where(np.logical_and(self.FDED == 1,
-                                                 self.e04470 <
-                                                 std_2009[self.MARS - 1]),
-                                  1, 0)
         # impute number of taxpayers
         self._txpyers = np.where(np.logical_or(self.MARS == 2,
                                                np.logical_or(self.MARS == 3,
