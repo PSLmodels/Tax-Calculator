@@ -69,7 +69,7 @@ class Calculator(object):
     def records(self):
         return self._records
 
-    def calc_all(self):
+    def calc_one_year(self):
         FilingStatus(self.policy, self.records)
         Adj(self.policy, self.records)
         CapGains(self.policy, self.records)
@@ -87,7 +87,6 @@ class Calculator(object):
         F2441(self.policy, self.records)
         DepCareBen(self.policy, self.records)
         ExpEarnedInc(self.policy, self.records)
-        RateRed(self.policy, self.records)
         NumDep(self.policy, self.records)
         ChildTaxCredit(self.policy, self.records)
         AmOppCr(self.policy, self.records)
@@ -100,6 +99,10 @@ class Calculator(object):
         DEITC(self.policy, self.records)
         OSPC_TAX(self.policy, self.records)
         ExpandIncome(self.policy, self.records)
+
+    def calc_all(self):
+        self.calc_one_year()
+        BenefitSurtax(self)
 
     def calc_all_test(self):
         all_dfs = []
@@ -120,7 +123,6 @@ class Calculator(object):
         add_df(all_dfs, F2441(self.policy, self.records))
         add_df(all_dfs, DepCareBen(self.policy, self.records))
         add_df(all_dfs, ExpEarnedInc(self.policy, self.records))
-        add_df(all_dfs, RateRed(self.policy, self.records))
         add_df(all_dfs, NumDep(self.policy, self.records))
         add_df(all_dfs, ChildTaxCredit(self.policy, self.records))
         add_df(all_dfs, AmOppCr(self.policy, self.records))
@@ -250,6 +252,9 @@ class Calculator(object):
             # nonrefuncable credits
             nonrefundable = (calc.records.c07100 * calc.records.s006).sum()
 
+            # Misc. Surtax
+            surtax = (calc.records._surtax * calc.records.s006).sum()
+
             # ospc_tax
             revenue1 = (calc.records._ospctax * calc.records.s006).sum()
 
@@ -263,6 +268,7 @@ class Calculator(object):
                           tax_bf_credits / math.pow(10, 9),
                           refundable / math.pow(10, 9),
                           nonrefundable / math.pow(10, 9),
+                          surtax / math.pow(10, 9),
                           revenue1 / math.pow(10, 9)])
             calc.increment_year()
 
@@ -276,6 +282,7 @@ class Calculator(object):
                         "AMT number (#m)", "Tax before credits ($b)",
                         "refundable credits ($b)",
                         "nonrefundable credits ($b)",
+                        "Misc. Surtax ($b)",
                         "ospctax ($b)"])
         df = df.transpose()
         pd.options.display.float_format = '{:8,.1f}'.format
