@@ -412,7 +412,7 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
            STD_Aged, c04470, c00100, c21060, c21040, e37717, c04600, e04805,
            t04470, f6251, _feided, c02700, FDED, II_rt1, II_rt2, II_rt3,
            II_rt4, II_rt5, II_rt6, II_rt7, II_brk1, II_brk2, II_brk3, II_brk4,
-           II_brk5, II_brk6, _compitem, _txpyers, _numextra, puf):
+           II_brk5, II_brk6, _txpyers, _numextra, puf):
 
     """
 
@@ -570,7 +570,7 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
 
     return (c15100, _numextra, _txpyers, c15200, c04470, _othded, c04100,
             c04200, _standard, c04500, c04800, c60000, _amtstd, _taxinc,
-            _feitax, _oldfei, _compitem)
+            _feitax, _oldfei)
 
 
 @iterate_jit(nopython=True)
