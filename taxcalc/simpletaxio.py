@@ -425,9 +425,6 @@ class SimpleTaxIO(object):
         recsdf = pd.DataFrame(dict_list, dtype=np_int32)
         recs = Records(data=recsdf, start_year=2013)
         assert recs.dim == len(self._input)
-        # add imputed variables to Records object
-        zeros = np.zeros((recs.dim,))
-        setattr(recs, '_compitem', zeros)  # compulsory itemizer
         # specify input for each tax filing unit in Records object
         lnum = 0
         for idx in range(0, recs.dim):
@@ -494,8 +491,6 @@ class SimpleTaxIO(object):
         recs.e19200[idx] = ivar[20]  # AMT-nonpreferred deductions
         recs.p22250[idx] = ivar[21]  # short-term capital gains (+/-)
         recs.p23250[idx] = ivar[22]  # long-term capital gains (+/-)
-        # specify values of imputed variables
-        recs._compitem[idx] = 0
 
     OVAR_NUM = 28
 
