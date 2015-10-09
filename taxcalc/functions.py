@@ -340,12 +340,18 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
 
 @iterate_jit(nopython=True)
 def EI_FICA(e00900, e02100, SS_Earnings_c, e00200, e11055, e00250, e30100,
-            FICA_ss_trt, FICA_mc_trt):
+            FICA_ss_trt, FICA_mc_trt, _earning_split):
     # Earned Income and FICA #
 
     _sey = e00900 + e02100
-    _fica_ss = max(0, FICA_ss_trt * min(SS_Earnings_c, e00200 + max(0, _sey) *
-                   (1 - 0.5 * (FICA_mc_trt + FICA_ss_trt))))
+    _fica_ss_head = max(0, FICA_ss_trt * min(SS_Earnings_c,
+                        e00200 * _earning_split + max(0, _sey) *
+                        (1 - 0.5 * (FICA_mc_trt + FICA_ss_trt))))
+    _fica_ss_spouse = max(0, FICA_ss_trt * min(SS_Earnings_c,
+                          e00200 * (1 - _earning_split) + max(0, _sey) *
+                          (1 - 0.5 * (FICA_mc_trt + FICA_ss_trt))))
+
+    _fica_ss = _fica_ss_head + _fica_ss_spouse
     _fica_mc = max(0, FICA_mc_trt * (e00200 + max(0, _sey) *
                    (1 - 0.5 * (FICA_mc_trt + FICA_ss_trt))))
 

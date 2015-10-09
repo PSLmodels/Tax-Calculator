@@ -265,6 +265,8 @@ class Records(object):
              ('e87530', 'e87530'),
              ('e87550', 'e87550'),
              ('RECID', 'recid'),
+             ('wage_head', 'wage_head'),
+             ('wage_spouse', 'wage_spouse'),
              ('s006', 's006'),
              ('s008', 's008'),
              ('s009', 's009'),
@@ -730,6 +732,11 @@ class Records(object):
                                       (self.e04470 - std_2009[self.MARS - 1]) /
                                       std_aged_2009[1]),
                                   np.where(self.e02400 > 0, self._txpyers, 0))
+
+        # impute the ratio of household head in total household income
+        total = self.wage_head + self.wage_spouse
+        self._earning_split = np.where(total != 0,
+                                       self.wage_head / total, 1)
 
     def _imputed_cmbtp_itemizer(self):
         return imputed_cmbtp_itemizer(self.e17500, self.e00100, self.e18400,
