@@ -734,7 +734,9 @@ class Records(object):
                                   np.where(self.e02400 > 0, self._txpyers, 0))
 
         # impute the ratio of household head in total household income
-        total = self.wage_head + self.wage_spouse
+        total = np.where(self.MARS == 2,
+                         self.wage_head + self.wage_spouse,
+                         0)
         self._earning_split = np.where(total != 0,
                                        self.wage_head / total, 1)
 
