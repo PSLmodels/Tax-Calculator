@@ -393,6 +393,19 @@
                     [254200, 	305050,   152525,     279650, 		  305050,  152525],
                     [258250, 	309900,   154950,     284050, 		  309900,  154950]]
     },
+    "_ID_BenefitSurtax_Switch":{
+        "long_name": "Switch for manipulating itemized deduction benefit surtax",
+	"description": "This parameter is specified by items and year. ",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": true,
+        "col_label": ["Medical", "StateLocal", "Casualty", "Miscellaneous", "Interest", "Charity"],        
+        "value":    [[true, 	   true,           true,          true,           true,      true]]
+    },
      "_EITC_rt":{
         "long_name": "Earned income credit rate",
 	"description": "If one taxpayer's AGI is below AGI phaseout start, he can apply this rate to his earned income to calculate the credit amount eligible. ",
@@ -821,6 +834,19 @@
         "value":     [0.1],
 	"validations": {"min": "default"}
     },
+     "_ID_Medical_HC":{
+        "long_name": "Medical expense deduction haircut",
+	"description": "This percentage can be applied to limit the amount of medical expense deduction allowed.",
+        "irs_ref": "",
+        "notes": "This parameter is currently used to eliminate this part of itemized deduction. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [0.0] 
+    },
      "_ID_Charity_frt":{
         "long_name": "Deduction for charitable contributions; floor as a percent of AGI",
         "description": "Taxpayers are eligible to deduct the portion of their charitable expense exceeding this percentage of AGI.",
@@ -834,6 +860,19 @@
         "col_label": "",
         "value":     [0.0],
         "validations": {"min": "default"}
+    },
+    "_ID_Charity_HC":{
+        "long_name": "Charity expense deduction haircut",
+	"description": "This percentage can be applied to limit the amount of charity expense deduction allowed.",
+        "irs_ref": "",
+        "notes": "This parameter is currently used to eliminate this part of itemized deduction. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [0.0] 
     },
      "_ID_Casualty_frt":{
         "long_name": "Deduction for casualty loss; floor as a percent of AGI",
@@ -849,6 +888,19 @@
         "value":     [0.1],
 	"validations": {"min": "default"}
     },
+    "_ID_Casualty_HC":{
+        "long_name": "Casualty expense deduction haircut",
+	"description": "This percentage can be applied to limit the amount of casualty expense deduction allowed.",
+        "irs_ref": "",
+        "notes": "This parameter is currently used to eliminate this part of itemized deduction. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [0.0] 
+    },
      "_ID_Miscellaneous_frt":{
         "long_name": "Deduction for miscellaneous expenses; floor as a percent of AGI",
 	"description": "Taxpayers are eligible to deduct the portion of their miscellaneous expense exceeding this percentage of AGI.",
@@ -862,6 +914,19 @@
         "col_label": "",
         "value":     [0.02],
 	"validations": {"min": "default"}
+    },
+     "_ID_Miscellaneous_HC":{
+        "long_name": "Miscellaneous expense deduction haircut",
+	"description": "This percentage can be applied to limit the amount of miscellaneous expense deduction allowed.",
+        "irs_ref": "",
+        "notes": "This parameter is currently used to eliminate this part of itemized deduction. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [0.0] 
     },
      "_ID_Charity_crt_Cash":{
         "long_name": "Deduction for charitable cash contributions; ceiling as a percent of AGI",
@@ -906,7 +971,7 @@
     },
     "_ID_crt":{
         "long_name": "Itemized deduction maximum phaseout as a percent of total itemized deductions (Pease)",
-	    "description": "The phaseout amount is capped at this percentage of the original total deduction. ",
+	"description": "The phaseout amount is capped at this percentage of the original total deduction. ",
         "irs_ref": "Form 1040 Schedule A, line 29, instructions. ",
         "notes": "The ceiling rate cannot be increased above 0.8 due to limited data on non-itemizers.",
         "start_year": 2013,
@@ -929,6 +994,45 @@
         "cpi_inflated": false,
         "col_label": "",
         "value": [0]
+    },
+     "_ID_InterestPaid_HC":{
+        "long_name": "Interest deduction haircut",
+	"description": "This percentage can be applied to limit the amount of interest deduction allowed.",
+        "irs_ref": "",
+        "notes": "This parameter is currently used to eliminate this part of itemized deduction. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [0.0] 
+    },
+    "_ID_BenefitSurtax_crt":{
+        "long_name": "Credit on itemized deduction benefit surtax (percent of AGI)",
+	"description": "The surtax on specified itemized deductions applies to benefits in excess of this percent of AGI. In http://www.nber.org/papers/w16921, Feldstein, Feenberg, and MacGuineas propose a credit of 2% of AGI against a 100% tax rate; in their proposal, however, a broader set of tax benefits, including the employer provided health exclusion, would be taxed.",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [1.0] 
+    },
+    "_ID_BenefitSurtax_trt":{
+        "long_name": "Surtax rate on the benefits from specified itemized deductions",
+	"description": "The benefit from specified itemized deductions exceeding the credit is taxed at this rate. A surtax rate of 1 strictly limits the benefit from specified itemized deductions to the specified credit. In http://www.nber.org/papers/w16921, Feldstein, Feenberg, and MacGuineas propose a credit of 2% of AGI against a 100% tax rate; in their proposal, however, a broader set of tax benefits, including the employer provided health exclusion, would be taxed.",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [1.0] 
     },
     "_NIIT_trt":{
         "long_name": "Net Investment Income Tax rate (UIMC)",

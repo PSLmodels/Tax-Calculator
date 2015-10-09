@@ -21,15 +21,15 @@ def test_create_records_with_correct_start_year():
     recs = Records(data=TAX_DTA, weights=WEIGHTS,
                    start_year=Records.PUF_YEAR)
     assert recs
-    assert hasattr(recs, '_compitem') == True
+    assert np.any(recs._numextra != 0)
 
 
 def test_create_records_with_wrong_start_year():
     recs = Records(data=TAX_DTA, weights=WEIGHTS,
                    start_year=2001)
     assert recs
-    assert hasattr(recs, '_compitem') == False
-    # absence of imputed recs._compitem variable will raise
+    assert np.all(recs._numextra == 0)
+    # absence of non-zero values for imputed recs._numextra variable will raise
     # an error when Calculator.calc_all() is called, guarding
     # against accidentally specifying wrong start_year
 
@@ -38,7 +38,7 @@ def test_create_records_from_file():
     recs = Records.from_file(TAX_DTA_PATH, weigths=WEIGHTS,
                              start_year=Records.PUF_YEAR)
     assert recs
-    assert hasattr(recs, '_compitem') == True
+    assert hasattr(recs, '_numextra') == True
 
 
 def test_blow_up():
@@ -81,3 +81,17 @@ def test_imputation_of_cmbtp_itemizer():
                                            e62100, e00700, e04470,
                                            e21040, e18500, e20800)
     assert np.allclose(cmbtp_itemizer, test_itemizer)
+
+
+def test_for_duplicate_names():
+    var_names = set()
+    inp_names = set()
+    for var_name, inp_name in Records.NAMES:
+        assert var_name not in var_names
+        var_names.add(var_name)
+        assert inp_name not in inp_names
+        inp_names.add(inp_name)
+    zero_names = set()
+    for zero_name in Records.ZEROED_NAMES:
+        assert zero_name not in zero_names
+        zero_names.add(zero_name)
