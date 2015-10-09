@@ -104,7 +104,11 @@ def CapGains(e23250, e22250, e23660, _sep, FEI_ec_c, TXST,
     # Foreign earned income exclusion
     if TXST == 10:
         f2555 = 1
-    c02700 = min(e00200, FEI_ec_c * f2555)
+
+    if puf:
+        c02700 = min(e00200, FEI_ec_c * f2555)
+    else:
+        c02700 = min(e02900, FEI_ec_c * f2555)
 
     #
     _ymod1 = (e00200 + e00300 + e00600 + e00700 + e00800 + e00900 + c01000 +
