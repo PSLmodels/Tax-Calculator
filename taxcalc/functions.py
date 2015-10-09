@@ -86,12 +86,12 @@ def Adj(e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
     return (c02900)
 
 
-@iterate_jit(nopython=True)
+@iterate_jit(nopython=True, puf=True)
 def CapGains(e23250, e22250, e23660, _sep, FEI_ec_c, TXST,
              ALD_StudentLoan_HC, f2555, e00200, e00300, e00600, e00700, e00800,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
              e02300, e02600, e02610, e02800, e02540, e00400, e02400,
-             c02900, e03210, e03230, e03240, e02615):
+             c02900, e03210, e03230, e03240, e02615, e02900, puf):
 
     # Capital Gains
 
@@ -415,7 +415,7 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
            STD_Aged, c04470, c00100, c21060, c21040, e37717, c04600, e04805,
            t04470, f6251, _feided, c02700, FDED, II_rt1, II_rt2, II_rt3,
            II_rt4, II_rt5, II_rt6, II_rt7, II_brk1, II_brk2, II_brk3, II_brk4,
-           II_brk5, II_brk6, _compitem, _txpyers, _numextra, puf):
+           II_brk5, II_brk6, _txpyers, _numextra, puf):
 
     """
 
@@ -573,7 +573,7 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
 
     return (c15100, _numextra, _txpyers, c15200, c04470, _othded, c04100,
             c04200, _standard, c04500, c04800, c60000, _amtstd, _taxinc,
-            _feitax, _oldfei, _compitem)
+            _feitax, _oldfei)
 
 
 @iterate_jit(nopython=True)
