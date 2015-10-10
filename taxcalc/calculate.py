@@ -252,8 +252,6 @@ class Calculator(object):
         mtr_iit = delta_ospctax / (finite_diff + employer_fica_adjustment)
         mtr_combined = delta_combined_taxes / (finite_diff +
                                                employer_fica_adjustment)
-        print mtr_fica
-        print mtr_iit
 
         return (mtr_fica, mtr_iit, mtr_combined)
 
