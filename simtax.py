@@ -60,7 +60,7 @@ def main():
         return 0
     # instantiate SimpleTaxIO object and do tax calculations
     simtax = SimpleTaxIO(args.INPUT, args.reform)
-    simtax.calculate(args.mtr)
+    simtax.calculate(calc_marginal_tax_rates=args.mtr)
     # return no-error exit code
     return 0
 # end of main function code
