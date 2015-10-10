@@ -80,7 +80,6 @@ class SimpleTaxIO(object):
         nothing: void
         """
         # loop through self._year_set doing tax calculations and saving output
-        mtr = calc_marginal_tax_rates
         for calcyear in self._year_set:
             if calcyear != self._calc.params.current_year:
                 self._calc.params.set_year(calcyear)
@@ -91,8 +90,16 @@ class SimpleTaxIO(object):
                 if indyr == calcyear:
                     lnum = idx + 1
                     ovar = SimpleTaxIO._extract_output(self._calc.records, idx,
-                                                       self._input[lnum], mtr)
+                                                       self._input[lnum])
                     self._output[lnum] = ovar
+            if calc_marginal_tax_rates:
+                (mtr_fica, mtr_itax, _) = self._calc.mtr('e00200')
+                for idx in range(0, self._calc.records.dim):
+                    indyr = calc_records_tax_year[idx]
+                    if indyr == calcyear:
+                        lnum = idx + 1
+                        self._output[lnum][7] = 100 * mtr_itax[idx]
+                        self._output[lnum][9] = 100 * mtr_fica[idx]
         # write contents of self._output
         if write_output_file:
             self._write_output_file()
@@ -233,17 +240,15 @@ class SimpleTaxIO(object):
                '[22] long-term capital gains or losses (NEG)\n')
         sys.stdout.write(ivd)
         ovd = ('**** SimpleTaxIO OUTPUT variables in Internet TAXSIM format:\n'
-               '(ZERO) notation means that variable is not computed in this\n'
-               '       version of SimpleTaxIO and is given a zero value.\n'
                '[ 1] arbitrary id of income tax filing unit\n'
                '[ 2] calendar year of income tax filing\n'
                '[ 3] state code [ALWAYS ZERO]\n'
                '[ 4] federal income tax liability\n'
                '[ 5] state income tax liability [ALWAYS ZERO]\n'
                '[ 6] FICA (OASDI+HI) tax liability (sum of ee and er share)\n'
-               '[ 7] marginal federal income tax rate as percent (ZERO)\n'
+               '[ 7] marginal federal income tax rate as percent\n'
                '[ 8] marginal state income tax rate [ALWAYS ZERO]\n'
-               '[ 9] marginal FICA tax rate as percent (ZERO)\n'
+               '[ 9] marginal FICA tax rate as percent\n'
                '[10] federal adjusted gross income, AGI\n'
                '[11] unemployment (UI) benefits included in AGI\n'
                '[12] social security (OASDI) benefits included in AGI\n'
@@ -512,7 +517,7 @@ class SimpleTaxIO(object):
     OVAR_NUM = 28
 
     @staticmethod
-    def _extract_output(crecs, idx, ivar, write_marginal_tax_rates):
+    def _extract_output(crecs, idx, ivar):
         """
         Extracts tax output from crecs object and ivar dictionary.
 
@@ -526,10 +531,6 @@ class SimpleTaxIO(object):
 
         ivar: dictionary
             input variables for a single tax filing unit.
-
-        write_marginal_tax_rates: boolean
-            if true, extract federal and FICA marginal tax rates;
-            if false, set those two marginal tax rates to zero.
 
         Returns
         -------
@@ -549,13 +550,9 @@ class SimpleTaxIO(object):
         ovar[4] = crecs._ospctax[idx]  # federal income tax liability
         ovar[5] = 0.0  # no state income tax calculation
         ovar[6] = crecs._fica[idx]  # FICA taxes (ee+er) for OASDI+HI
-        if write_marginal_tax_rates:
-            ovar[7] = 0.0  # ADD: federal marginal tax rate as percent
-            ovar[9] = 0.0  # ADD: FICA marginal tax rate as percent
-        else:
-            ovar[7] = 0.0
-            ovar[9] = 0.0
+        ovar[7] = 0.0  # marginal federal income tax rate as percent
         ovar[8] = 0.0  # no state income tax calculation
+        ovar[9] = 0.0  # marginal FICA tax rate as percent
         ovar[10] = crecs.c00100[idx]  # federal AGI
         ovar[11] = crecs.e02300[idx]  # UI benefits in AGI
         ovar[12] = crecs.c02500[idx]  # OASDI benefits in AGI
