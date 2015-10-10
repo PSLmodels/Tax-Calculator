@@ -65,20 +65,22 @@ class SimpleTaxIO(object):
         self._calc = self._calc_object()
         self._output = {}
 
-    def calculate(self, write_marginal_tax_rates=False):
+    def calculate(self, calc_marginal_tax_rates=False, write_output_file=True):
         """
         Calculate taxes for all INPUT lines and write OUTPUT to file.
 
         Parameters
         ----------
-        nothing: void
+        calc_marginal_tax_rates: boolean
+
+        write_output_file: boolean
 
         Returns
         -------
         nothing: void
         """
         # loop through self._year_set doing tax calculations and saving output
-        mtr = write_marginal_tax_rates
+        mtr = calc_marginal_tax_rates
         for calcyear in self._year_set:
             if calcyear != self._calc.params.current_year:
                 self._calc.params.set_year(calcyear)
@@ -92,7 +94,22 @@ class SimpleTaxIO(object):
                                                        self._input[lnum], mtr)
                     self._output[lnum] = ovar
         # write contents of self._output
-        self._write_output_file()
+        if write_output_file:
+            self._write_output_file()
+
+    def number_input_lines(self):
+        """
+        Return number of lines read from INPUT file.
+
+        Parameters
+        ----------
+        none: void
+
+        Returns
+        -------
+        number_of_input_lines_read: int
+        """
+        return len(self._input)
 
     @staticmethod
     def dictionary_from_reform_file(reform_filename):
