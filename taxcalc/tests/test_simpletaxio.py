@@ -40,5 +40,5 @@ def test1(input_file):  # pylint: disable=redefined-outer-name
     """
     reform_file_name = None
     simtax = SimpleTaxIO(input_file.name, reform_file_name)
-    simtax.calculate(write_output_file=False)
+    # simtax.calculate(write_output_file=False)
     assert simtax.number_input_lines() == INPUT_LINES
