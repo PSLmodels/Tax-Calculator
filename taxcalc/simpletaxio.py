@@ -107,14 +107,6 @@ class SimpleTaxIO(object):
     def number_input_lines(self):
         """
         Return number of lines read from INPUT file.
-
-        Parameters
-        ----------
-        none: void
-
-        Returns
-        -------
-        number_of_input_lines_read: int
         """
         return len(self._input)
 
