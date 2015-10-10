@@ -54,9 +54,9 @@ def behavior(calc_x, calc_y, update_income=update_income):
     """
 
     # Calculate marginal tax rates for plan x and plan y.
-    mtrX = calc_x.mtr('e00200')
+    mtrX = calc_x.mtr('e00200')[2]
 
-    mtrY = calc_y.mtr('e00200')
+    mtrY = calc_y.mtr('e00200')[2]
 
     # Calculate the percent change in after-tax rate.
     pct_diff_atr = ((1 - mtrY) - (1 - mtrX)) / (1 - mtrX)

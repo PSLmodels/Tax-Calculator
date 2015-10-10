@@ -249,26 +249,10 @@ def test_calculate_mtr():
     # Create a Calculator
     calc = Calculator(params=params, records=puf)
 
-    mtr = calc.mtr('e00200')
-    mtr_FICA = calc.mtr('e00200', IIT=False)
-    mtr_IIT = calc.mtr('e00200', FICA=False)
+    (mtr_FICA, mtr_IIT, mtr) = calc.mtr('e00200')
     assert type(mtr) == np.ndarray
     assert np.array_equal(mtr, mtr_FICA) == False
     assert np.array_equal(mtr_FICA, mtr_IIT) == False
-
-
-def test_calculate_mtr_raises_on_no_tax():
-    # Create a Parameters object
-    params = Parameters()
-
-    # Create a Public Use File object
-    puf = Records(TAX_DTA, weights=WEIGHTS, start_year=2009)
-
-    # Create a Calculator
-    calc = Calculator(params=params, records=puf)
-
-    with pytest.raises(ValueError):
-        mtr = calc.mtr('e00200', FICA=False, IIT=False)
 
 
 def test_Calculator_create_difference_table():
