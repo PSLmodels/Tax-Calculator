@@ -352,6 +352,9 @@ class Parameters(object):
                 data['row_label'] = data['row_label'][(nyrs - 1):]
         return params
 
+    def params_to_json(self):
+        return json.dumps(self._vals)
+
     @staticmethod
     def _params_dict_from_json_file():
         """
