@@ -247,7 +247,7 @@ class SimpleTaxIO(object):
                '[10] federal adjusted gross income, AGI\n'
                '[11] unemployment (UI) benefits included in AGI\n'
                '[12] social security (OASDI) benefits included in AGI\n'
-               '[13] zero-bracket amount (ZERO)\n'
+               '[13] [ALWAYS ZERO]\n'
                '[14] personal exemption after phase-out\n'
                '[15] phased-out (i.e., disallowed) personal exemption\n'
                '[16] phased-out (i.e., disallowed) itemized deduction\n'
@@ -559,7 +559,7 @@ class SimpleTaxIO(object):
         ovar[10] = crecs.c00100[idx]  # federal AGI
         ovar[11] = crecs.e02300[idx]  # UI benefits in AGI
         ovar[12] = crecs.c02500[idx]  # OASDI benefits in AGI
-        ovar[13] = 0.0  # ADD: zero bracket amount
+        ovar[13] = 0.0  # always set zero-bracket amount to zero
         pre_phase_out_pe = crecs._prexmp[idx]
         post_phase_out_pe = crecs.c04600[idx]
         phased_out_pe = pre_phase_out_pe - post_phase_out_pe
