@@ -14,10 +14,10 @@ import pytest
 import tempfile
 
 
-INPUT_LINES = 2
-INPUT = (
+NUM_INPUT_LINES = 2
+INPUT_CONTENTS = (
     '1 2014 0 1 0 0 95000 0 5000 0     0     0 0 0 0 0 0 0 0 0 9000 -1000\n'
-    '2 2013 0 2 0 1 15000 0    0 0 50000 70000 0 0 0 0 0 0 0 0    0 -3000'
+    '2 2013 0 2 0 1 15000 0    0 0 50000 70000 0 0 0 0 0 0 0 0    0 -3000\n'
 )
 
 
@@ -27,7 +27,7 @@ def input_file():
     Temporary input file for SimpleTaxIO constructor.
     """
     ifile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    ifile.write(INPUT + '\n')
+    ifile.write(INPUT_CONTENTS)
     ifile.close()
     # must close and then yield for Windows platform
     yield ifile
@@ -36,9 +36,8 @@ def input_file():
 
 def test1(input_file):  # pylint: disable=redefined-outer-name
     """
-    Test SimpleTaxIO operation with no policy reform and no output writing.
+    Test SimpleTaxIO contructor with no policy reform.
     """
     reform_file_name = None
     simtax = SimpleTaxIO(input_file.name, reform_file_name)
-    # simtax.calculate(write_output_file=False)
-    assert simtax.number_input_lines() == INPUT_LINES
+    assert simtax.number_input_lines() == NUM_INPUT_LINES
