@@ -149,11 +149,10 @@ class Calculator(object):
 
     def mtr(self, income_type_string, finite_diff=1.):
         """
-        Calculates the marginal tax rate for every record.
-        Avoids kinks in the tax schedule by finding the marginal rates
-        associated with both an income increase and an income decrease and
-        then uses the more modest of the two.
-        By default, both FICA and IIT are included in the MTR calculation.
+        Calculates the individual income tax, FICA, and combined marginal tax
+        rates for every record. Avoids kinks in the tax schedule by finding
+        the marginal rates associated with both an income increase and an
+        income decrease and then uses the more modest of the two.
 
         Parameters
         ----------
@@ -161,10 +160,6 @@ class Calculator(object):
 
         finite_diff: the marginal amount to be added or subtracted from income
             in order to calculate the marginal tax rate.
-
-        FICA: boolean to indicate whether the MTR calculation includes FICA.
-
-        IIT: boolean to indicate whether the MTR calculation includes IIT.
 
         Returns
         -------
