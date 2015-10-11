@@ -27,11 +27,10 @@ class ParametersBase(object):
         for name, data in self._vals.items():
             cpi_inflated = data.get('cpi_inflated', False)
             values = data['value']
+            i_rates = getattr(self, '_inflation_rates', None),
             setattr(self, name,
                     self.expand_array(values, inflate=cpi_inflated,
-                                      inflation_rates=getattr(self,
-                                                              '_inflation_rates',
-                                                              None),
+                                      inflation_rates=i_rates,
                                       num_years=self._num_years))
         self.set_year(self._start_year)
 
@@ -258,15 +257,16 @@ class ParametersBase(object):
                 ans[len(x):] = extra
                 return ans.astype(x.dtype, casting='unsafe')
 
-        return ParametersBase.expand_1D(np.array([x]), inflate, inflation_rates, num_years)
+        return ParametersBase.expand_1D(np.array([x]),
+                                        inflate, inflation_rates, num_years)
 
     @staticmethod
     def expand_2D(x, inflate, inflation_rates, num_years):
         """
         Expand the given data to account for the given number of budget years.
         For 2D arrays, we expand out the number of rows until we have num_years
-        number of rows. For each expanded row, we inflate by the given inflation
-        rate.
+        number of rows. For each expanded row, we inflate by the given
+        inflation rate.
         """
 
         if isinstance(x, np.ndarray):
@@ -320,7 +320,8 @@ class ParametersBase(object):
 
                 return ans.astype(c.dtype, casting='unsafe')
 
-        return ParametersBase.expand_2D(np.array(x), inflate, inflation_rates, num_years)
+        return ParametersBase.expand_2D(np.array(x), inflate,
+                                        inflation_rates, num_years)
 
     @staticmethod
     def strip_Nones(x):
@@ -355,7 +356,8 @@ class ParametersBase(object):
     @staticmethod
     def expand_array(x, inflate, inflation_rates, num_years):
         """
-        Dispatch to either expand_1D or expand2D depending on the dimension of x
+        Dispatch to either expand_1D or expand2D depending on
+        the dimension of x
 
         Parameters
         ----------
@@ -377,9 +379,11 @@ class ParametersBase(object):
         x = np.array(ParametersBase.strip_Nones(x))
         try:
             if len(x.shape) == 1:
-                return ParametersBase.expand_1D(x, inflate, inflation_rates, num_years)
+                return ParametersBase.expand_1D(x, inflate,
+                                                inflation_rates, num_years)
             elif len(x.shape) == 2:
-                return ParametersBase.expand_2D(x, inflate, inflation_rates, num_years)
+                return ParametersBase.expand_2D(x, inflate,
+                                                inflation_rates, num_years)
             else:
                 raise ValueError("Need a 1D or 2D array")
         except AttributeError:
