@@ -238,7 +238,9 @@ class Calculator(object):
         # income tax purposes, we need to increase the denominator by the
         # excluded portion of FICA.
 
-        if income_type_string == "e00200":
+        if (income_type_string == "e00200" or
+                income_type_string == "e00200s" or
+                income_type_string == "e00200p"):
             employer_fica_adjustment = np.where(self.records.e00200 <
                                                 self.params.SS_Earnings_c,
                                                 0.5 * self.params.FICA_ss_trt +
