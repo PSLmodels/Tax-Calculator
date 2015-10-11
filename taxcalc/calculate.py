@@ -178,7 +178,7 @@ class Calculator(object):
         _combined_taxes_base = _ospctax_base + _fica_base
 
         # Calculate the tax change with a marginal increase in income.
-        self.records.e00200 += finite_diff
+        setattr(self.records, income_type_string, income_type + finite_diff)
         self.calc_all()
 
         _ospctax_up = copy.deepcopy(self.records._ospctax)
@@ -190,7 +190,8 @@ class Calculator(object):
         delta_combined_taxes_up = _combined_taxes_up - _combined_taxes_base
 
         # Calculate the tax change with a marginal decrease in income.
-        self.records.e00200 -= 2 * finite_diff
+        setattr(self.records, income_type_string,
+                income_type - 2 * finite_diff)
         self.calc_all()
 
         _ospctax_down = copy.deepcopy(self.records._ospctax)
@@ -199,16 +200,16 @@ class Calculator(object):
 
         # We never take the downward version
         # when the taxpayer's wages are sent negative.
-        delta_fica_down = np.where(self.records.e00200 >=
+        delta_fica_down = np.where(income_type >=
                                    finite_diff,
                                    _fica_base - _fica_down,
                                    delta_fica_up)
-        delta_ospctax_down = np.where(self.records.e00200 >=
+        delta_ospctax_down = np.where(income_type >=
                                       finite_diff,
                                       _ospctax_base - _ospctax_down,
                                       delta_ospctax_up)
 
-        delta_combined_taxes_down = np.where(self.records.e00200 >=
+        delta_combined_taxes_down = np.where(income_type >=
                                              finite_diff,
                                              _combined_taxes_base -
                                              _combined_taxes_down,
@@ -216,7 +217,7 @@ class Calculator(object):
 
         # Reset the income_type to its starting point to avoid
         # unintended consequences.
-        self.records.e00200 += finite_diff
+        setattr(self.records, income_type_string, income_type + finite_diff)
         self.calc_all()
 
         # Choose the more modest effect of either adding or subtracting income
@@ -237,11 +238,14 @@ class Calculator(object):
         # income tax purposes, we need to increase the denominator by the
         # excluded portion of FICA.
 
-        employer_fica_adjustment = np.where(self.records.e00200 <
-                                            self.params.SS_Earnings_c,
-                                            0.5 * self.params.FICA_ss_trt +
-                                            0.5 * self.params.FICA_mc_trt,
-                                            0.5 * self.params.FICA_mc_trt)
+        if income_type_string == "e00200":
+            employer_fica_adjustment = np.where(self.records.e00200 <
+                                                self.params.SS_Earnings_c,
+                                                0.5 * self.params.FICA_ss_trt +
+                                                0.5 * self.params.FICA_mc_trt,
+                                                0.5 * self.params.FICA_mc_trt)
+        else:
+            employer_fica_adjustment == 0.
 
         mtr_fica = delta_fica / (finite_diff + employer_fica_adjustment)
         mtr_iit = delta_ospctax / (finite_diff + employer_fica_adjustment)
