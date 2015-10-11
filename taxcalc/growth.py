@@ -66,7 +66,7 @@ def adjustment(calc, percentage, year):
 
 
 def get_adjustment(self, year):
-    return int(self._factor_adjustment[year-2013])
+    return int(self._factor_adjustment[year - 2013])
 
 
 def growth(calc_x, calc_y):
