@@ -39,7 +39,7 @@ class Calculator(object):
             self.behavior = behavior
         else:
             self.behavior = Behavior(start_year=policy.start_year)
-        
+
         if isinstance(growth, Growth):
             self.growth = growth
         else:
@@ -146,6 +146,11 @@ class Calculator(object):
         return totaldf
 
     def increment_year(self):
+        adjustment(self, self.growth.factor_adjustment,
+                   self.policy.current_year + 1)
+        target(self, self.growth._factor_target,
+               self.policy._inflation_rates,
+               self.policy.current_year + 1)
         self.records.increment_year()
         self.policy.set_year(self.policy.current_year + 1)
         self.behavior.set_year(self.policy.current_year)
