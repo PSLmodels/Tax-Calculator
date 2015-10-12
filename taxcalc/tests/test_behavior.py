@@ -4,7 +4,7 @@ import numpy as np
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, "../../"))
 import pandas as pd
-from taxcalc import Policy, Records, Calculator, behavior, Behavior
+from taxcalc import Policy, Records, Calculator, behavior, Behavior, Growth
 
 
 WEIGHTS_FILENAME = "../../WEIGHTS_testing.csv"

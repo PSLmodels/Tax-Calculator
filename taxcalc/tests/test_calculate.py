@@ -8,7 +8,7 @@ from numpy.testing import assert_array_equal
 import pandas as pd
 import tempfile
 import pytest
-from taxcalc import Policy, Records, Calculator
+from taxcalc import Policy, Records, Calculator, Growth
 from taxcalc import create_distribution_table, create_difference_table
 
 
