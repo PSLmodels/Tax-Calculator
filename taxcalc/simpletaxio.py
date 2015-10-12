@@ -79,14 +79,14 @@ class SimpleTaxIO(object):
         nothing: void
         """
         # loop through self._year_set doing tax calculations and saving output
-        for calcyear in self._year_set:
-            if calcyear != self._calc.policy.current_year:
-                self._calc.policy.set_year(calcyear)
+        for calcyr in self._year_set:
+            if calcyr != self._calc.policy.current_year:
+                self._calc.policy.set_year(calcyr)
             self._calc.calc_all()
-            calc_records_tax_year = getattr(self._calc.records, 'FLPDYR')
+            cr_taxyr = self._calc.records.FLPDYR  # pylint: disable=no-member
             for idx in range(0, self._calc.records.dim):
-                indyr = calc_records_tax_year[idx]
-                if indyr == calcyear:
+                indyr = cr_taxyr[idx]
+                if indyr == calcyr:
                     lnum = idx + 1
                     ovar = SimpleTaxIO._extract_output(self._calc.records, idx,
                                                        self._input[lnum])
@@ -94,8 +94,8 @@ class SimpleTaxIO(object):
             if calc_marginal_tax_rates:
                 mtr_fica, mtr_itax, _ = self._calc.mtr('e00200')
                 for idx in range(0, self._calc.records.dim):
-                    indyr = calc_records_tax_year[idx]
-                    if indyr == calcyear:
+                    indyr = cr_taxyr[idx]
+                    if indyr == calcyr:
                         lnum = idx + 1
                         self._output[lnum][7] = 100 * mtr_itax[idx]
                         self._output[lnum][9] = 100 * mtr_fica[idx]
