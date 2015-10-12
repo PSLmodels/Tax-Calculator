@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import inspect
-from .parameters import Parameters
+from .policy import Policy
 from numba import jit, vectorize, guvectorize
 from functools import wraps
 from six import StringIO
@@ -294,7 +294,7 @@ def iterate_jit(parameters=None, **kwargs):
 
         # Any name that is a taxcalc parameter (or the special case 'puf'
         # Boolean flag is given special treatment. Identify those names here
-        dd_key_list = list(Parameters.default_data(metadata=True).keys())
+        dd_key_list = list(Policy.default_data(metadata=True).keys())
         allowed_parameters = dd_key_list
         allowed_parameters += list(arg[1:] for arg in dd_key_list)
         allowed_parameters.append("puf")

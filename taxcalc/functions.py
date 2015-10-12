@@ -1666,22 +1666,22 @@ def ExpandIncome(FICA_ss_trt, SS_Earnings_c, e00200, FICA_mc_trt, e02400,
 
 
 def BenefitSurtax(calc):
-    if calc.params.ID_BenefitSurtax_crt != 1:
+    if calc.policy.ID_BenefitSurtax_crt != 1:
         nobenefits_calc = copy.deepcopy(calc)
 
         # hard code the reform
-        nobenefits_calc.params.ID_Medical_HC = \
-            int(nobenefits_calc.params.ID_BenefitSurtax_Switch[0])
-        nobenefits_calc.params.ID_StateLocalTax_HC = \
-            int(nobenefits_calc.params.ID_BenefitSurtax_Switch[1])
-        nobenefits_calc.params.ID_casualty_HC = \
-            int(nobenefits_calc.params.ID_BenefitSurtax_Switch[2])
-        nobenefits_calc.params.ID_Miscellaneous_HC = \
-            int(nobenefits_calc.params.ID_BenefitSurtax_Switch[3])
-        nobenefits_calc.params.ID_InterestPaid_HC = \
-            int(nobenefits_calc.params.ID_BenefitSurtax_Switch[4])
-        nobenefits_calc.params.ID_Charity_HC = \
-            int(nobenefits_calc.params.ID_BenefitSurtax_Switch[5])
+        nobenefits_calc.policy.ID_Medical_HC = \
+            int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[0])
+        nobenefits_calc.policy.ID_StateLocalTax_HC = \
+            int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[1])
+        nobenefits_calc.policy.ID_casualty_HC = \
+            int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[2])
+        nobenefits_calc.policy.ID_Miscellaneous_HC = \
+            int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[3])
+        nobenefits_calc.policy.ID_InterestPaid_HC = \
+            int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[4])
+        nobenefits_calc.policy.ID_Charity_HC = \
+            int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[5])
 
         nobenefits_calc.calc_one_year()
 
@@ -1690,11 +1690,11 @@ def BenefitSurtax(calc):
                             nobenefits_calc.records._ospctax -
                             calc.records._ospctax, 0)
 
-        surtax_cap = nobenefits_calc.params.ID_BenefitSurtax_crt *\
+        surtax_cap = nobenefits_calc.policy.ID_BenefitSurtax_crt *\
             nobenefits_calc.records.c00100
 
         calc.records._surtax = np.where(tax_diff > surtax_cap,
                                         tax_diff - surtax_cap,
-                                        0) * calc.params.ID_BenefitSurtax_trt
+                                        0) * calc.policy.ID_BenefitSurtax_trt
 
         calc.records._ospctax += calc.records._surtax
