@@ -402,10 +402,11 @@ class SimpleTaxIO(object):
                     msg = ('var[6]={} on line {} of simtax INPUT is not '
                            'less than or equal to one')
                     raise ValueError(msg.format(num_aged, lnum))
-            tran = var[13]
-            if tran != 0:
+            transfers = var[13]
+            if transfers != 0:
                 msg = ('var[13]={} on line {} of simtax INPUT is not zero '
                        'to indicate no state income tax calculations')
+                raise ValueError(msg.format(transfers, lnum))
             rent = var[14]
             if rent != 0:
                 msg = ('var[14]={} on line {} of simtax INPUT is not zero '
