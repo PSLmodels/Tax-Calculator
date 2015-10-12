@@ -396,7 +396,7 @@ class Records(object):
         # Implement Stage 1 Extrapolation blowup factors
         self._blowup(self._current_year)
         # Implement Stage 2 Extrapolation reweighting.
-        self.s006 = self.WT["WT" + str(self.current_year)] / 100
+        self.s006 = (self.WT["WT" + str(self.current_year)] / 100).values
 
     def extrapolate_2009_puf(self):
         year = 2009
