@@ -242,10 +242,10 @@ class Calculator(object):
                 income_type_string == "e00200s" or
                 income_type_string == "e00200p"):
             employer_fica_adjustment = np.where(self.records.e00200 <
-                                                self.params.SS_Earnings_c,
-                                                0.5 * self.params.FICA_ss_trt +
-                                                0.5 * self.params.FICA_mc_trt,
-                                                0.5 * self.params.FICA_mc_trt)
+                                                self.policy.SS_Earnings_c,
+                                                0.5 * self.policy.FICA_ss_trt +
+                                                0.5 * self.policy.FICA_mc_trt,
+                                                0.5 * self.policy.FICA_mc_trt)
         else:
             employer_fica_adjustment == 0.
 

@@ -242,13 +242,13 @@ def test_Calculator_create_distribution_table():
 
 def test_calculate_mtr():
     # Create a Parameters object
-    params = Parameters()
+    policy = Policy()
 
     # Create a Public Use File object
     puf = Records(TAX_DTA, weights=WEIGHTS, start_year=2009)
 
     # Create a Calculator
-    calc = Calculator(params=params, records=puf)
+    calc = Calculator(policy=policy, records=puf)
 
     (mtr_FICA, mtr_IIT, mtr) = calc.mtr('e00200')
     assert type(mtr) == np.ndarray
