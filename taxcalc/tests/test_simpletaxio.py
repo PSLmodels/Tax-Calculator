@@ -93,7 +93,11 @@ def input_file():
     ifile.close()
     # must close and then yield for Windows platform
     yield ifile
-
+    if os.path.isfile(ifile.name):
+        try:
+            os.remove(ifile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
 
 @pytest.yield_fixture
 def reform_file():
@@ -105,7 +109,11 @@ def reform_file():
     rfile.close()
     # must close and then yield for Windows platform
     yield rfile
-
+    if os.path.isfile(rfile.name):
+        try:
+            os.remove(rfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
 
 def test_1(input_file):  # pylint: disable=redefined-outer-name
     """
@@ -123,19 +131,3 @@ def test_2(input_file,  # pylint: disable=redefined-outer-name
     """
     simtax = SimpleTaxIO(input_file.name, reform_file.name)
     assert simtax.number_input_lines() == NUM_INPUT_LINES
-
-
-def test_cleanup(input_file,  # pylint: disable=redefined-outer-name
-                 reform_file):  # pylint: disable=redefined-outer-name
-    """
-    Remove temporary files after completing all the tests.
-    """
-    try:
-        os.remove(input_file.name)
-    except OSError:
-        assert 1 == 2
-    try:
-        os.remove(reform_file.name)
-    except OSError:
-        assert 3 == 4
-    assert 0 == 0
