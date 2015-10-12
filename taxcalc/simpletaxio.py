@@ -12,7 +12,7 @@ import re
 import numpy.core as np
 from numpy.core import int32 as np_int32
 import pandas as pd
-from .parameters import Parameters
+from .policy import Policy
 from .records import Records
 from .calculate import Calculator
 
@@ -55,11 +55,11 @@ class SimpleTaxIO(object):
             raise ValueError(msg.format(input_filename))
         # read input file contents into self._input dictionary
         self._read_input(input_filename)
-        self._params = Parameters()
+        self._policy = Policy()
         # implement reform if reform file is specified
         if reform_filename:
             reform = SimpleTaxIO.dictionary_from_reform_file(reform_filename)
-            self._params.implement_reform(reform)
+            self._policy.implement_reform(reform)
         # validate input variable values
         self._validate_input()
         self._calc = self._calc_object()
@@ -81,8 +81,8 @@ class SimpleTaxIO(object):
         """
         # loop through self._year_set doing tax calculations and saving output
         for calcyear in self._year_set:
-            if calcyear != self._calc.params.current_year:
-                self._calc.params.set_year(calcyear)
+            if calcyear != self._calc.policy.current_year:
+                self._calc.policy.set_year(calcyear)
             self._calc.calc_all()
             calc_records_tax_year = getattr(self._calc.records, 'FLPDYR')
             for idx in range(0, self._calc.records.dim):
@@ -118,7 +118,7 @@ class SimpleTaxIO(object):
            string years as secondary keys.
         Returned dictionary has integer years as primary keys and
            string policy-parameters as secondary keys.
-        The returned dictionary is suitable as the argument to the Parameters
+        The returned dictionary is suitable as the argument to the Policy
            class implement_reform(reform_dict) method.
         """
         # check existence of specified reform file
@@ -168,7 +168,7 @@ class SimpleTaxIO(object):
            primary keys and integer years as secondary keys.
         Returned dictionary has integer years as primary keys and
            string policy-parameters as secondary keys.
-        The returned dictionary is suitable as the argument to the Parameters
+        The returned dictionary is suitable as the argument to the Policy
            class implement_reform(reform_dict) method.
         """
         years = set()
@@ -365,14 +365,14 @@ class SimpleTaxIO(object):
         begin with one).
         """
         self._year_set = set()
-        min_year = self._params.start_year
-        max_year = self._params.end_year
+        min_year = self._policy.start_year
+        max_year = self._policy.end_year
         for lnum in range(1, len(self._input) + 1):
             var = self._input[lnum]
             year = var[2]
             if year < min_year or year > max_year:
                 msg = ('var[2]={} on line {} of simtax INPUT is not in '
-                       '[{},{}] Parameters start-year, end-year range')
+                       '[{},{}] Policy start-year, end-year range')
                 raise ValueError(msg.format(year, lnum, min_year, max_year))
             if year not in self._year_set:
                 self._year_set.add(year)
@@ -446,8 +446,8 @@ class SimpleTaxIO(object):
             SimpleTaxIO._specify_input(recs, idx, self._input[lnum])
         # create Calculator object for 2013 containing all tax filing units
         assert recs.current_year == 2013
-        assert self._params.current_year == 2013
-        return Calculator(params=self._params, records=recs)
+        assert self._policy.current_year == 2013
+        return Calculator(policy=self._policy, records=recs)
 
     @staticmethod
     def _specify_input(recs, idx, ivar):
