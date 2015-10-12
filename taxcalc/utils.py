@@ -54,161 +54,6 @@ def extract_array(f):
     return wrapper
 
 
-def expand_1D(x, inflate, inflation_rates, num_years):
-    """
-    Expand the given data to account for the given number of budget years.
-    If necessary, pad out additional years by increasing the last given
-    year at the provided inflation rate.
-    """
-
-    if isinstance(x, np.ndarray):
-        if len(x) >= num_years:
-            return x
-        else:
-            ans = np.zeros(num_years, dtype='f8')
-            ans[:len(x)] = x
-            if inflate:
-                extra = []
-                cur = x[-1]
-                for i in range(0, num_years - len(x)):
-                    inf_idx = i + len(x) - 1
-                    cur *= (1. + inflation_rates[inf_idx])
-                    extra.append(cur)
-            else:
-                extra = [float(x[-1]) for i in
-                         range(1, num_years - len(x) + 1)]
-
-            ans[len(x):] = extra
-            return ans.astype(x.dtype, casting='unsafe')
-
-    return expand_1D(np.array([x]), inflate, inflation_rates, num_years)
-
-
-def expand_2D(x, inflate, inflation_rates, num_years):
-    """
-    Expand the given data to account for the given number of budget years.
-    For 2D arrays, we expand out the number of rows until we have num_years
-    number of rows. For each expanded row, we inflate by the given inflation
-    rate.
-    """
-
-    if isinstance(x, np.ndarray):
-
-        # Look for -1s and create masks if present
-        last_good_row = -1
-        keep_user_data_mask = []
-        keep_calc_data_mask = []
-        has_nones = False
-        for row in x:
-            keep_user_data_mask.append([1 if i != -1 else 0 for i in row])
-            keep_calc_data_mask.append([0 if i != -1 else 1 for i in row])
-            if not np.any(row == -1):
-                last_good_row += 1
-            else:
-                has_nones = True
-
-        if x.shape[0] >= num_years and not has_nones:
-            return x
-        else:
-
-            if has_nones:
-                c = x[:last_good_row + 1]
-                keep_user_data_mask = np.array(keep_user_data_mask)
-                keep_calc_data_mask = np.array(keep_calc_data_mask)
-
-            else:
-                c = x
-
-            ans = np.zeros((num_years, c.shape[1]))
-            ans[:len(c), :] = c
-            if inflate:
-                extra = []
-                cur = c[-1]
-                for i in range(0, num_years - len(c)):
-                    inf_idx = i + len(c) - 1
-                    cur = np.array(cur * (1. + inflation_rates[inf_idx]))
-                    extra.append(cur)
-            else:
-                extra = [c[-1, :] for i in
-                         range(1, num_years - len(c) + 1)]
-
-            ans[len(c):, :] = extra
-
-            if has_nones:
-                # Use masks to "mask in" provided data and "mask out"
-                # data we don't need (produced in rows with a None value)
-                ans = ans * keep_calc_data_mask
-                user_vals = x * keep_user_data_mask
-                ans = ans + user_vals
-
-            return ans.astype(c.dtype, casting='unsafe')
-
-    return expand_2D(np.array(x), inflate, inflation_rates, num_years)
-
-
-def strip_Nones(x):
-    """
-    Takes a list of scalar values or a list of lists.
-    If it is a list of scalar values, when None is encountered, we
-    return everything encountered before. If a list of lists, we
-    replace None with -1 and return
-
-    Parameters
-    ----------
-    x: list
-
-    Returns
-    -------
-    list
-    """
-    accum = []
-    for val in x:
-        if val is None:
-            return accum
-        if not isinstance(val, list):
-            accum.append(val)
-        else:
-            for i, v in enumerate(val):
-                if v is None:
-                    val[i] = -1
-            accum.append(val)
-
-    return accum
-
-
-def expand_array(x, inflate, inflation_rates, num_years):
-    """
-    Dispatch to either expand_1D or expand2D depending on the dimension of x
-
-    Parameters
-    ----------
-    x : value to expand
-
-    inflate: Boolean
-        As we expand, inflate values if this is True, otherwise, just copy
-
-    inflation_rate: float
-        Yearly inflation reate
-
-    num_years: int
-        Number of budget years to expand
-
-    Returns
-    -------
-    expanded numpy array
-    """
-    x = np.array(strip_Nones(x))
-    try:
-        if len(x.shape) == 1:
-            return expand_1D(x, inflate, inflation_rates, num_years)
-        elif len(x.shape) == 2:
-            return expand_2D(x, inflate, inflation_rates, num_years)
-        else:
-            raise ValueError("Need a 1D or 2D array")
-    except AttributeError:
-        raise ValueError("Must pass a numpy array")
-
-
 def count_gt_zero(agg):
     return sum([1 for a in agg if a > 0])
 
@@ -280,7 +125,6 @@ def add_weighted_decile_bins(df, income_measure='_expanded_income'):
 
 def add_income_bins(df, compare_with="soi", bins=None, right=True,
                     income_measure='_expanded_income'):
-
     """
 
     Add a column of income bins of income_measure using pandas 'cut'.
@@ -400,9 +244,9 @@ def results(c):
     """
     outputs = []
     for col in STATS_COLUMNS:
-        if hasattr(c, 'records') and hasattr(c, 'params'):
-            if hasattr(c.params, col):
-                outputs.append(getattr(c.params, col))
+        if hasattr(c, 'records') and hasattr(c, 'policy'):
+            if hasattr(c.policy, col):
+                outputs.append(getattr(c.policy, col))
             else:
                 outputs.append(getattr(c.records, col))
         else:
@@ -416,7 +260,7 @@ def weighted_avg_allcols(df, cols, income_measure='_expanded_income'):
                      columns=[income_measure])
     for col in cols:
         if (col == "s006" or col == 'num_returns_StandardDed' or
-           col == 'num_returns_ItemDed' or col == 'num_returns_AMT'):
+                col == 'num_returns_ItemDed' or col == 'num_returns_AMT'):
             diff[col] = df.groupby('bins', as_index=False)[col].sum()[col]
         elif col != income_measure:
             diff[col] = df.groupby('bins', as_index=False).apply(weighted_mean,
@@ -463,11 +307,13 @@ def create_distribution_table(calc, groupby, result_type,
     # weight of returns with positive AGI and
     # itemized deduction greater than standard deduction
     res['c04470'] = res['c04470'].where(((res['c00100'] > 0) &
-                                        (res['c04470'] > res['_standard'])), 0)
+                                        (res['c04470'] > res['_standard'])),
+                                        0)
 
     # weight of returns with positive AGI and itemized deduction
     res['num_returns_ItemDed'] = res['s006'].where(((res['c00100'] > 0) &
-                                                   (res['c04470'] > 0)), 0)
+                                                   (res['c04470'] > 0)),
+                                                   0)
 
     # weight of returns with positive AGI and standard deduction
     res['num_returns_StandardDed'] = res['s006'].where(((res['c00100'] > 0) &
