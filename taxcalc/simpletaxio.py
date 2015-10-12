@@ -10,7 +10,6 @@ import sys
 import json
 import re
 import numpy.core as np
-from numpy.core import int32 as np_int32
 import pandas as pd
 from .policy import Policy
 from .records import Records
@@ -47,10 +46,10 @@ class SimpleTaxIO(object):
         """
         # construct output_filename and delete old output file if it exists
         self._output_filename = '{}.out-simtax'.format(input_filename)
-        if os.access(self._output_filename, os.F_OK):
+        if os.path.isfile(self._output_filename):
             os.remove(self._output_filename)
         # check for existence of file named input_filename
-        if not os.access(input_filename, os.F_OK):
+        if not os.path.isfile(input_filename):
             msg = 'INPUT file named {} could not be found'
             raise ValueError(msg.format(input_filename))
         # read input file contents into self._input dictionary
@@ -122,7 +121,7 @@ class SimpleTaxIO(object):
            class implement_reform(reform_dict) method.
         """
         # check existence of specified reform file
-        if not os.access(reform_filename, os.F_OK):
+        if not os.path.isfile(reform_filename):
             msg = 'simtax REFORM file {} could not be found'
             raise ValueError(msg.format(reform_filename))
         # read contents of reform file and remove // comments
@@ -437,7 +436,7 @@ class SimpleTaxIO(object):
             zero_dict[names[1]] = 0
         dict_list = [zero_dict for _ in range(0, len(self._input))]
         # use dict_list to create a Pandas DataFrame and Records object
-        recsdf = pd.DataFrame(dict_list, dtype=np_int32)
+        recsdf = pd.DataFrame(dict_list, dtype='int32')
         recs = Records(data=recsdf, start_year=2013)
         assert recs.dim == len(self._input)
         # specify input for each tax filing unit in Records object
