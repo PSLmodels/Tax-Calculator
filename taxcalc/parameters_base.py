@@ -258,7 +258,9 @@ class ParametersBase(object):
                 return ans.astype(x.dtype, casting='unsafe')
 
         return ParametersBase.expand_1D(np.array([x]),
-                                        inflate, inflation_rates, num_years)
+                                        inflate,
+                                        inflation_rates,
+                                        num_years)
 
     @staticmethod
     def expand_2D(x, inflate, inflation_rates, num_years):
@@ -320,8 +322,8 @@ class ParametersBase(object):
 
                 return ans.astype(c.dtype, casting='unsafe')
 
-        return ParametersBase.expand_2D(np.array(x), inflate,
-                                        inflation_rates, num_years)
+        return ParametersBase.expand_2D(np.array(x), inflate, inflation_rates,
+                                        num_years)
 
     @staticmethod
     def strip_Nones(x):
@@ -356,8 +358,8 @@ class ParametersBase(object):
     @staticmethod
     def expand_array(x, inflate, inflation_rates, num_years):
         """
-        Dispatch to either expand_1D or expand2D depending on
-        the dimension of x
+        Dispatch to either expand_1D or expand_2D
+        depending on the dimension of x
 
         Parameters
         ----------
@@ -379,11 +381,11 @@ class ParametersBase(object):
         x = np.array(ParametersBase.strip_Nones(x))
         try:
             if len(x.shape) == 1:
-                return ParametersBase.expand_1D(x, inflate,
-                                                inflation_rates, num_years)
+                return ParametersBase.expand_1D(x, inflate, inflation_rates,
+                                                num_years)
             elif len(x.shape) == 2:
-                return ParametersBase.expand_2D(x, inflate,
-                                                inflation_rates, num_years)
+                return ParametersBase.expand_2D(x, inflate, inflation_rates,
+                                                num_years)
             else:
                 raise ValueError("Need a 1D or 2D array")
         except AttributeError:

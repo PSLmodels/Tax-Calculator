@@ -50,7 +50,8 @@ def test_expand_1D_short_array():
     exp = np.zeros(10)
     exp[:3] = exp1
     exp[3:] = exp2
-    res = Policy.expand_1D(x, inflate=True, inflation_rates=[0.02] * 10, num_years=10)
+    res = Policy.expand_1D(x, inflate=True, inflation_rates=[0.02] * 10,
+                           num_years=10)
     assert(np.allclose(exp.astype(x.dtype, casting='unsafe'), res))
 
 
@@ -60,14 +61,16 @@ def test_expand_1D_variable_rates():
     exp2 = []
     cur = 9.0
     exp = np.array([4, 5, 9, 9 * 1.03, 9 * 1.03 * 1.035])
-    res = Policy.expand_1D(x, inflate=True, inflation_rates=irates, num_years=5)
+    res = Policy.expand_1D(x, inflate=True, inflation_rates=irates,
+                           num_years=5)
     assert(np.allclose(exp.astype('f4', casting='unsafe'), res))
 
 
 def test_expand_1D_scalar():
     x = 10.0
     exp = np.array([10.0 * math.pow(1.02, i) for i in range(0, 10)])
-    res = Policy.expand_1D(x, inflate=True, inflation_rates=[0.02] * 10, num_years=10)
+    res = Policy.expand_1D(x, inflate=True, inflation_rates=[0.02] * 10,
+                           num_years=10)
     assert(np.allclose(exp, res))
 
 
@@ -82,7 +85,8 @@ def test_expand_1D_accept_None():
     cur *= 1.035
     exp.append(cur)
     exp = np.array(exp)
-    res = Policy.expand_array(x, inflate=True, inflation_rates=irates, num_years=5)
+    res = Policy.expand_array(x, inflate=True, inflation_rates=irates,
+                              num_years=5)
     assert(np.allclose(exp.astype('f4', casting='unsafe'), res))
 
 
@@ -94,7 +98,8 @@ def test_expand_2D_short_array():
     exp = np.zeros((5, 3))
     exp[:1] = exp1
     exp[1:] = exp2
-    res = Policy.expand_2D(x, inflate=True, inflation_rates=[0.02] * 5, num_years=5)
+    res = Policy.expand_2D(x, inflate=True, inflation_rates=[0.02] * 5,
+                           num_years=5)
     assert(np.allclose(exp, res))
 
 
@@ -115,7 +120,8 @@ def test_expand_2D_variable_rates():
     exp = np.zeros((5, 3))
     exp[:1] = exp1
     exp[1:] = exp2
-    res = Policy.expand_2D(x, inflate=True, inflation_rates=irates, num_years=5)
+    res = Policy.expand_2D(x, inflate=True, inflation_rates=irates,
+                           num_years=5)
     npt.assert_array_equal(res, np.array(exp).astype('f8', casting='unsafe'))
     assert(np.allclose(exp, res))
 
@@ -351,7 +357,7 @@ def test_expand_2D_already_filled():
                 [40000, 74900, 37450, 50200, 74900, 37450]]
 
     res = Policy.expand_2D(_II_brk2, inflate=True, inflation_rates=[0.02] * 5,
-                    num_years=3)
+                           num_years=3)
 
     npt.assert_array_equal(res, np.array(_II_brk2))
 
@@ -382,7 +388,7 @@ def test_expand_2D_partial_expand():
     exp = np.array(exp).astype('i4', casting='unsafe')
 
     res = Policy.expand_2D(_II_brk2, inflate=True, inflation_rates=inf_rates,
-                    num_years=4)
+                           num_years=4)
 
     npt.assert_array_equal(res, exp)
 
@@ -419,8 +425,9 @@ def test_expand_2D_accept_None():
 
     exp = np.array(exp).astype('i4', casting='unsafe')
 
-    res = Policy.expand_array(_II_brk2, inflate=True, inflation_rates=[0.02] * 5,
-                       num_years=4)
+    res = Policy.expand_array(_II_brk2, inflate=True,
+                              inflation_rates=[0.02] * 5,
+                              num_years=4)
 
     npt.assert_array_equal(res, exp)
 
@@ -455,8 +462,8 @@ def test_expand_2D_accept_None_additional_row():
 
     inflation_rates = [0.015, 0.02, 0.02, 0.03]
 
-    res = Policy.expand_array(_II_brk2, inflate=True, inflation_rates=inflation_rates,
-                       num_years=5)
+    res = Policy.expand_array(_II_brk2, inflate=True,
+                              inflation_rates=inflation_rates, num_years=5)
 
     npt.assert_array_equal(res, exp)
 

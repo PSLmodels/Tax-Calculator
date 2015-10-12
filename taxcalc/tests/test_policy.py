@@ -144,22 +144,26 @@ def test_multi_year_reform():
     # confirm that parameters have current-law values
     assert_array_equal(getattr(ppo, '_AMT_thd_MarriedS'),
                        Policy.expand_array(np.array([40400, 41050]),
-                                    inflate=True, inflation_rates=iratelist,
-                                    num_years=nyrs))
+                                           inflate=True,
+                                           inflation_rates=iratelist,
+                                           num_years=nyrs))
     assert_array_equal(getattr(ppo, '_EITC_c'),
                        Policy.expand_array(np.array([[487, 3250, 5372, 6044],
-                                              [496, 3305, 5460, 6143],
-                                              [503, 3359, 5548, 6242]]),
-                                    inflate=True, inflation_rates=iratelist,
-                                    num_years=nyrs))
+                                           [496, 3305, 5460, 6143],
+                                           [503, 3359, 5548, 6242]]),
+                                           inflate=True,
+                                           inflation_rates=iratelist,
+                                           num_years=nyrs))
     assert_array_equal(getattr(ppo, '_II_em'),
                        Policy.expand_array(np.array([3900, 3950, 4000]),
-                                    inflate=True, inflation_rates=iratelist,
-                                    num_years=nyrs))
+                                           inflate=True,
+                                           inflation_rates=iratelist,
+                                           num_years=nyrs))
     assert_array_equal(getattr(ppo, '_SS_Earnings_c'),
                        Policy.expand_array(np.array([113700, 117000, 118500]),
-                                    inflate=True, inflation_rates=iratelist,
-                                    num_years=nyrs))
+                                           inflate=True,
+                                           inflation_rates=iratelist,
+                                           num_years=nyrs))
 
     # specify multi-year reform using a dictionary of year_provisions dicts
     reform = {
@@ -341,20 +345,24 @@ def test_create_parameters_from_file(policyfile):
 
     assert_array_equal(ppo._almdep,
                        Policy.expand_array(np.array([7150, 7250, 7400]),
-                                    inflate=True, inflation_rates=inf_rates,
-                                    num_years=ppo.num_years))
+                                           inflate=True,
+                                           inflation_rates=inf_rates,
+                                           num_years=ppo.num_years))
     assert_array_equal(ppo._almsep,
                        Policy.expand_array(np.array([40400, 41050]),
-                                    inflate=True, inflation_rates=inf_rates,
-                                    num_years=ppo.num_years))
+                                           inflate=True,
+                                           inflation_rates=inf_rates,
+                                           num_years=ppo.num_years))
     assert_array_equal(ppo._rt5,
                        Policy.expand_array(np.array([0.33]),
-                                    inflate=False, inflation_rates=inf_rates,
-                                    num_years=ppo.num_years))
+                                           inflate=False,
+                                           inflation_rates=inf_rates,
+                                           num_years=ppo.num_years))
     assert_array_equal(ppo._rt7,
                        Policy.expand_array(np.array([0.396]),
-                                    inflate=False, inflation_rates=inf_rates,
-                                    num_years=ppo.num_years))
+                                           inflate=False,
+                                           inflation_rates=inf_rates,
+                                           num_years=ppo.num_years))
 
 
 def test_parameters_get_default():
