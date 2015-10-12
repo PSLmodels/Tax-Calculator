@@ -9,7 +9,7 @@ import os
 import sys
 import json
 import re
-import numpy.core as np
+import numpy as np
 import pandas as pd
 from .policy import Policy
 from .records import Records
@@ -155,7 +155,8 @@ class SimpleTaxIO(object):
                     raise ValueError(msg.format(skey))
                 else:
                     year = int(skey)
-                rdict[year] = (np.array(val) if isinstance(val, list) else val)
+                rdict[year] = (np.core.array(val) if isinstance(val, list)
+                               else val)
             reform_pkey_param[pkey] = rdict
         # convert reform_pkey_param dictionary to reform_pkey_year dictionary
         return SimpleTaxIO.reform_pkey_year(reform_pkey_param)
