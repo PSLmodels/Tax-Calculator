@@ -193,8 +193,9 @@ def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
     calc.policy.implement_reform(user_mods)
 
     inf_rates = [IRATES[1991 + i] for i in range(0, 12)]
-    exp_almdep = Policy.expand_array(np.array([7150, 7250, 7400]), inflate=True,
-                              inflation_rates=inf_rates, num_years=12)
+    exp_almdep = Policy.expand_array(np.array([7150, 7250, 7400]),
+                                     inflate=True,
+                                     inflation_rates=inf_rates, num_years=12)
     act_almdep = getattr(calc.policy, '_almdep')
     assert_array_equal(act_almdep, exp_almdep)
     exp_almsep_values = [40400] + [41050] * 11
