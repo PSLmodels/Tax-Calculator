@@ -54,12 +54,14 @@ def behavior(calc_x, calc_y, update_income=update_income):
     """
 
     # Calculate marginal tax rates for plan x and plan y.
-    mtrX = calc_x.mtr('e00200')[2]
+    fica_mtr_x, iit_mtr_x, combined_mtr_x = calc_x.mtr('e00200')
+    mtr_x = combined_mtr_x
 
-    mtrY = calc_y.mtr('e00200')[2]
+    fica_mtr_y, iit_mtr_y, combined_mtr_y = calc_y.mtr('e00200')
+    mtr_y = combined_mtr_y
 
     # Calculate the percent change in after-tax rate.
-    pct_diff_atr = ((1 - mtrY) - (1 - mtrX)) / (1 - mtrX)
+    pct_diff_atr = ((1 - mtr_y) - (1 - mtr_x)) / (1 - mtr_x)
 
     # Calculate the magnitude of the substitution and income effects.
     substitution_effect = (calc_y.behavior.BE_sub * pct_diff_atr *
