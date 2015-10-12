@@ -99,6 +99,7 @@ def input_file():
         except OSError:
             pass  # sometimes we can't remove a generated temporary file
 
+
 @pytest.yield_fixture
 def reform_file():
     """
@@ -114,6 +115,7 @@ def reform_file():
             os.remove(rfile.name)
         except OSError:
             pass  # sometimes we can't remove a generated temporary file
+
 
 def test_1(input_file):  # pylint: disable=redefined-outer-name
     """
