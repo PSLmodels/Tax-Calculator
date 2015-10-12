@@ -92,7 +92,7 @@ class SimpleTaxIO(object):
                                                        self._input[lnum])
                     self._output[lnum] = ovar
             if calc_marginal_tax_rates:
-                (mtr_fica, mtr_itax, _) = self._calc.mtr('e00200')
+                mtr_fica, mtr_itax, _ = self._calc.mtr('e00200')
                 for idx in range(0, self._calc.records.dim):
                     indyr = calc_records_tax_year[idx]
                     if indyr == calcyear:
