@@ -8,7 +8,7 @@ from .functions import *
 from .policy import Policy
 from .records import Records
 from .behavior import Behavior
-from .growth import *
+from .growth import Growth, adjustment, target
 
 all_cols = set()
 
@@ -40,8 +40,11 @@ class Calculator(object):
         else:
             self.behavior = Behavior(start_year=policy.start_year)
 
-        if isinstance(growth, Growth):
-            self.growth = growth
+        if growth:
+            if isinstance(growth, Growth):
+                self.growth = growth
+            else:
+                raise ValueError("Must supply growth as a Growth object")
         else:
             self.growth = Growth(start_year=policy.start_year)
 
