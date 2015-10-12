@@ -65,40 +65,16 @@ def adjustment(calc, percentage, year):
     records.BF.AIPD[year] += percentage * abs(records.BF.AIPD[year] - 1)
 
 
-def get_adjustment(self, year):
-    return int(self._factor_adjustment[year - 2013])
-
-
-def growth(calc_x, calc_y):
-    calc_x_growth = copy.deepcopy(calc_x)
-    calc_y_growth = copy.deepcopy(calc_y)
-
-    if calc_y_growth.growth.factor_adjustment != 0:
-        year = calc_y_growth.growth.current_year + 1
-        percentage = calc_y_growth.growth.factor_adjustment
-        adjustment(calc_x_growth, percentage, year)
-        adjustment(calc_y_growth, percentage, year)
-    elif calc_y_growth.growth.factor_target != 0:
-        factor_target = calc_y_growth.growth._factor_target
-        year = calc_y_growth.growth.current_year + 1
-        inflation = calc_y.policy._inflation_rates
-        target(calc_x_growth, factor_target, inflation, year)
-        target(calc_y_growth, factor_target, inflation, year)
-
-    calc_x_growth.calc_all()
-    calc_y_growth.calc_all()
-
-    return (calc_x_growth, calc_y_growth)
-
-
 def target(calc, target, inflation, year):
     # 2013 is the start year of all parameter arrays. Hard coded for now.
     # Need to be fixed later
     records = calc.records
-    if year >= 2013 and target[year - 2013] != 0:
+    default_year = calc.policy.JSON_START_YEAR
+    if year >= default_year and target[year - default_year] != 0:
         # user inputs theoretically should be based on GDP
         g = abs(records.BF.AGDPN[year] - 1)
-        ratio = (target[year - 2013] + inflation[year - 2013]) / g
+        ratio = (target[year - default_year] +
+                 inflation[year - default_year]) / g
 
         # apply this ratio to all the dollar amount factors
         records.BF.AGDPN[year] = ratio * abs(records.BF.AGDPN[year] - 1) + 1
