@@ -25,7 +25,7 @@ the tax parameters is:
 
 .. code-block:: python
 
-   tax-calculator/taxcalc/params.json
+   tax-calculator/taxcalc/current_law_policy.json
 
 **2. Identify the desired change.**
 
@@ -59,25 +59,25 @@ to add a tax parameter --- a floor rate for the charitable deduction
 
 **1. Open the tax parameters file.**
 
-We define tax parameters in params.json; all of the tax parameters
+We define tax parameters in current_law_policy.json; all of the tax parameters
 that are already part of the Tax Calculator (for example, the personal
 income tax rates, the additional child tax credit rate, and the
 deduction for medical expenses rate) are in that file. The file
-params.json is your starting point.
+current_law_policy.json is your starting point.
 
-From your tax-calculator directory, the path to params.json is: 
+From your tax-calculator directory, the path to current_law_policy.json is:
 
 .. code-block:: python
 
-   tax-calculator/taxcalc/params.json
+   tax-calculator/taxcalc/current_law_policy.json
 
 **2. Add the new parameter.**
 
 The following code outlines the syntax and requirements for adding a
-new itemized deduction parameter in params.json. This code uses
+new itemized deduction parameter in current_law_policy.json. This code uses
 JavaScript Object Notation (JSON). You don't need to be familiar with
 JSON to perform this task - just copy the following code, paste it
-anywhere in params.json [1]_, and fill out the relevant information
+anywhere in current_law_policy.json [1]_, and fill out the relevant information
 between the each pair of asterisks.
 
 .. code-block:: python
@@ -112,7 +112,7 @@ the charitable deduction floor rate looks like this:
      "row_label": ["2013"],
      "cpi_inflated": false,
      "col_label": "",
-     "value":     [0.0]       
+     "value":     [0.0]
    },
 
 The new parameter's name consists of _ID (for Itemized Deduction), the
@@ -133,7 +133,7 @@ is only one column in the "value" attribute.
 
 **3. Open the functions file.**
 
-Now that we've defined the new parameter in params.json, we need to
+Now that we've defined the new parameter in current_law_policy.json, we need to
 tell the Tax Calculator to take into account that new parameter when
 it calculates taxes. The calculator's functions that model tax logic
 and work with the tax parameters are in the file functions.py.
@@ -141,7 +141,7 @@ Starting from your tax-calculator directory, the path to functions.py
 is:
 
 .. code-block:: python
-	
+
    tax-calculator/taxcalc/functions.py
 
 **4. Tell the calculator to perform the relevant function on the new
@@ -157,7 +157,7 @@ ItemDed() (if you're unfamiliar with Python, identify a function by
 the syntax "def FunctionName()"). The function ItemDed() calculates
 the total itemized deduction amount.
 
-We add the parameter name that we defined in params.json to *both* the
+We add the parameter name that we defined in current_law_policy.json to *both* the
 ItemDed() function and the @iterate_jit() decorator that is located
 above that function. There are several things to note when you do
 this:
@@ -168,9 +168,9 @@ this:
    * If the word "puf" appears the argument list of def ItemDed() make
      sure it comes last.
 
-   * Parameter names in params.json begin with an underscore. Do not
+   * Parameter names in current_law_policy.json begin with an underscore. Do not
      include that underscore in functions.py; _ID_Charity_frt in
-     params.json becomes ID_Charity_frt in functions.py.
+     current_law_policy.json becomes ID_Charity_frt in functions.py.
 
 .. image:: images/make_local_change_eg2_1.png
 
@@ -188,7 +188,7 @@ We add the following code under the "Charity" subheading inside ItemDed():
 The first line of the highlighted code calculates the amount of
 charitable expense that an individual must exceed to claim the
 charitable deduction by multiplying the floor rate that we defined in
-params.json with positive Adjusted Gross Income. The second line sets
+current_law_policy.json with positive Adjusted Gross Income. The second line sets
 the total charitable deduction amount to zero or, if greater than
 zero, to the individual's total charitable expenses minus the
 charity_floor variable.
@@ -201,7 +201,7 @@ with the Tax Calculator team, return to the :doc:`Contributor Guide
 section.
 
 
-.. [1] Currently, the tax parameters in params.json are in no
+.. [1] Currently, the tax parameters in current_law_policy.json are in no
        particular order. This undefined layout is likely to change in
        the future as we move to organize the file.
 

@@ -5,7 +5,7 @@ import pandas as pd
 from pandas import DataFrame
 from .utils import *
 from .functions import *
-from .parameters import Parameters
+from .policy import Policy
 from .records import Records
 from .behavior import Behavior
 
@@ -25,18 +25,18 @@ def add_df(alldfs, df):
 
 class Calculator(object):
 
-    def __init__(self, params=None, records=None,
+    def __init__(self, policy=None, records=None,
                  sync_years=True, behavior=None, **kwargs):
 
-        if isinstance(params, Parameters):
-            self._params = params
+        if isinstance(policy, Policy):
+            self._policy = policy
         else:
-            msg = 'Must supply tax parameters as a Parameters object'
+            msg = 'Must supply tax parameters as a Policy object'
             raise ValueError(msg)
         if isinstance(behavior, Behavior):
             self.behavior = behavior
         else:
-            self.behavior = Behavior(start_year=params.start_year)
+            self.behavior = Behavior(start_year=policy.start_year)
 
         if isinstance(records, Records):
             self._records = records
@@ -53,52 +53,52 @@ class Calculator(object):
             if self._records.current_year == 2009:
                 self.records.extrapolate_2009_puf()
 
-            while self._records.current_year < self._params.current_year:
+            while self._records.current_year < self._policy.current_year:
                 self._records.increment_year()
 
             print("Your data have been extrapolated to " +
                   str(self._records.current_year) + ".")
 
-        assert self._params.current_year == self._records.current_year
+        assert self._policy.current_year == self._records.current_year
 
     @property
-    def params(self):
-        return self._params
+    def policy(self):
+        return self._policy
 
     @property
     def records(self):
         return self._records
 
     def calc_one_year(self):
-        FilingStatus(self.params, self.records)
-        Adj(self.params, self.records)
-        CapGains(self.params, self.records)
-        SSBenefits(self.params, self.records)
-        AGI(self.params, self.records)
-        ItemDed(self.params, self.records)
-        EI_FICA(self.params, self.records)
-        AMED(self.params, self.records)
-        StdDed(self.params, self.records)
-        XYZD(self.params, self.records)
-        NonGain(self.params, self.records)
-        TaxGains(self.params, self.records)
-        MUI(self.params, self.records)
-        AMTI(self.params, self.records)
-        F2441(self.params, self.records)
-        DepCareBen(self.params, self.records)
-        ExpEarnedInc(self.params, self.records)
-        NumDep(self.params, self.records)
-        ChildTaxCredit(self.params, self.records)
-        AmOppCr(self.params, self.records)
-        LLC(self.params, self.records)
-        RefAmOpp(self.params, self.records)
-        NonEdCr(self.params, self.records)
-        AddCTC(self.params, self.records)
-        F5405(self.params, self.records)
-        C1040(self.params, self.records)
-        DEITC(self.params, self.records)
-        OSPC_TAX(self.params, self.records)
-        ExpandIncome(self.params, self.records)
+        FilingStatus(self.policy, self.records)
+        Adj(self.policy, self.records)
+        CapGains(self.policy, self.records)
+        SSBenefits(self.policy, self.records)
+        AGI(self.policy, self.records)
+        ItemDed(self.policy, self.records)
+        EI_FICA(self.policy, self.records)
+        AMED(self.policy, self.records)
+        StdDed(self.policy, self.records)
+        XYZD(self.policy, self.records)
+        NonGain(self.policy, self.records)
+        TaxGains(self.policy, self.records)
+        MUI(self.policy, self.records)
+        AMTI(self.policy, self.records)
+        F2441(self.policy, self.records)
+        DepCareBen(self.policy, self.records)
+        ExpEarnedInc(self.policy, self.records)
+        NumDep(self.policy, self.records)
+        ChildTaxCredit(self.policy, self.records)
+        AmOppCr(self.policy, self.records)
+        LLC(self.policy, self.records)
+        RefAmOpp(self.policy, self.records)
+        NonEdCr(self.policy, self.records)
+        AddCTC(self.policy, self.records)
+        F5405(self.policy, self.records)
+        C1040(self.policy, self.records)
+        DEITC(self.policy, self.records)
+        OSPC_TAX(self.policy, self.records)
+        ExpandIncome(self.policy, self.records)
 
     def calc_all(self):
         self.calc_one_year()
@@ -106,46 +106,46 @@ class Calculator(object):
 
     def calc_all_test(self):
         all_dfs = []
-        add_df(all_dfs, FilingStatus(self.params, self.records))
-        add_df(all_dfs, Adj(self.params, self.records))
-        add_df(all_dfs, CapGains(self.params, self.records))
-        add_df(all_dfs, SSBenefits(self.params, self.records))
-        add_df(all_dfs, AGI(self.params, self.records))
-        add_df(all_dfs, ItemDed(self.params, self.records))
-        add_df(all_dfs, EI_FICA(self.params, self.records))
-        add_df(all_dfs, AMED(self.params, self.records))
-        add_df(all_dfs, StdDed(self.params, self.records))
-        add_df(all_dfs, XYZD(self.params, self.records))
-        add_df(all_dfs, NonGain(self.params, self.records))
-        add_df(all_dfs, TaxGains(self.params, self.records))
-        add_df(all_dfs, MUI(self.params, self.records))
-        add_df(all_dfs, AMTI(self.params, self.records))
-        add_df(all_dfs, F2441(self.params, self.records))
-        add_df(all_dfs, DepCareBen(self.params, self.records))
-        add_df(all_dfs, ExpEarnedInc(self.params, self.records))
-        add_df(all_dfs, NumDep(self.params, self.records))
-        add_df(all_dfs, ChildTaxCredit(self.params, self.records))
-        add_df(all_dfs, AmOppCr(self.params, self.records))
-        add_df(all_dfs, LLC(self.params, self.records))
-        add_df(all_dfs, RefAmOpp(self.params, self.records))
-        add_df(all_dfs, NonEdCr(self.params, self.records))
-        add_df(all_dfs, AddCTC(self.params, self.records))
-        add_df(all_dfs, F5405(self.params, self.records))
-        add_df(all_dfs, C1040(self.params, self.records))
-        add_df(all_dfs, DEITC(self.params, self.records))
-        add_df(all_dfs, OSPC_TAX(self.params, self.records))
-        add_df(all_dfs, ExpandIncome(self.params, self.records))
+        add_df(all_dfs, FilingStatus(self.policy, self.records))
+        add_df(all_dfs, Adj(self.policy, self.records))
+        add_df(all_dfs, CapGains(self.policy, self.records))
+        add_df(all_dfs, SSBenefits(self.policy, self.records))
+        add_df(all_dfs, AGI(self.policy, self.records))
+        add_df(all_dfs, ItemDed(self.policy, self.records))
+        add_df(all_dfs, EI_FICA(self.policy, self.records))
+        add_df(all_dfs, AMED(self.policy, self.records))
+        add_df(all_dfs, StdDed(self.policy, self.records))
+        add_df(all_dfs, XYZD(self.policy, self.records))
+        add_df(all_dfs, NonGain(self.policy, self.records))
+        add_df(all_dfs, TaxGains(self.policy, self.records))
+        add_df(all_dfs, MUI(self.policy, self.records))
+        add_df(all_dfs, AMTI(self.policy, self.records))
+        add_df(all_dfs, F2441(self.policy, self.records))
+        add_df(all_dfs, DepCareBen(self.policy, self.records))
+        add_df(all_dfs, ExpEarnedInc(self.policy, self.records))
+        add_df(all_dfs, NumDep(self.policy, self.records))
+        add_df(all_dfs, ChildTaxCredit(self.policy, self.records))
+        add_df(all_dfs, AmOppCr(self.policy, self.records))
+        add_df(all_dfs, LLC(self.policy, self.records))
+        add_df(all_dfs, RefAmOpp(self.policy, self.records))
+        add_df(all_dfs, NonEdCr(self.policy, self.records))
+        add_df(all_dfs, AddCTC(self.policy, self.records))
+        add_df(all_dfs, F5405(self.policy, self.records))
+        add_df(all_dfs, C1040(self.policy, self.records))
+        add_df(all_dfs, DEITC(self.policy, self.records))
+        add_df(all_dfs, OSPC_TAX(self.policy, self.records))
+        add_df(all_dfs, ExpandIncome(self.policy, self.records))
         totaldf = pd.concat(all_dfs, axis=1)
         return totaldf
 
     def increment_year(self):
         self.records.increment_year()
-        self.params.set_year(self.params.current_year + 1)
-        self.behavior.set_year(self.params.current_year)
+        self.policy.set_year(self.policy.current_year + 1)
+        self.behavior.set_year(self.policy.current_year)
 
     @property
     def current_year(self):
-        return self.params.current_year
+        return self.policy.current_year
 
     def mtr(self, income_type_string, diff=100):
         """
@@ -194,7 +194,7 @@ class Calculator(object):
         for i in range(0, num_years):
             calc.calc_all()
 
-            row_years.append(calc.params._current_year)
+            row_years.append(calc.policy._current_year)
 
             # totoal number of records
             returns = calc.records.s006.sum()

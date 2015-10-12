@@ -2,5 +2,5 @@ include versioneer.py
 include taxcalc/_version.py
 include taxcalc/StageIFactors.csv
 include taxcalc/WEIGHTS.csv
-include taxcalc/params.json
+include taxcalc/current_law_policy.json
 include taxcalc/behavior.json
