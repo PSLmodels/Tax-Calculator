@@ -2,7 +2,7 @@ Validation of OSPC taxcalc Package
 ==================================
 
 The taxcalc package calculates federal income taxes and FICA taxes for
-a sample of tax filing units for years beginning with 2013.  The
+a sample of tax filing units in years beginning with 2013.  The
 Python code that performs the tax calculations has been validated in a
 number of ways.  First, taxcalc results for a number of tax filing
 units have been compared to hand calculations performed using IRS tax
@@ -20,7 +20,7 @@ OSPC taxcalc package and by simtax.py, which is a Python program that
 provides a command-line interface to the SimpleTaxIO class.
 
 The premise behind cross-model validation work is that independently
-developed tax simulation models are unlikely to contain exactly the
+developed tax simulation models are unlikely to contain the
 same bug, which means looking for differences between the output from
 two models is an effective way to locate bugs in the tax calculation
 logic.
@@ -38,11 +38,11 @@ Getting Started
 ===============
 
 The current version of the validation tools in this directory should
-work on Linux or Mac OS X.  Windows users will have to do three
-things: (a) install an AWK interpreter, (b) install a Tcl interpreter,
-and (c) translate the bash script `tests` into a Windows batch file.
-The Free Software Foundation provides a free AWK interpreter for
-Windows (gawk.exe) and ActiveState provides a free Tcl interpreter
+work on Linux or Mac OS X without any changes.  Windows users will have
+to do three things: (a) install an AWK interpreter, (b) install a Tcl 
+interpreter, and (c) translate the `tests` bash script into a Windows
+batch file.  The Free Software Foundation provides a free AWK interpreter
+for Windows (gawk.exe) and ActiveState provides a free Tcl interpreter
 for Windows (tclsh.exe).
 
 Tool Usage
@@ -68,10 +68,10 @@ expenses.
 `tclsh make-in.tcl 2014 a 1 > a2014-1.in`
 
 When not using the optional third parameter, the
-random-number-generator seed offset is zero.  In the example above,
+random-number-generator seed offset is set to zero.  In the example above,
 the offset is one, which generates a sample in the `a2014-1.in` file
 that is completely different from the sample in the `a2014.in` file.
-The third parameter have any value in the \[0,1000\] range, which
+The third parameter can have any value in the \[0,1000\] range, which
 allows generation of as many as one thousand alternative samples.
 
 (3) Generate a random sample of 100,000 tax filing units for 2013 that
@@ -89,7 +89,7 @@ Generating an OUTPUT file with simtax.py
 
 (1) Generate OSPC-taxcalc-package OUTPUT (with no marginal tax rates
 and assuming current-law policy) for the `c2013.in` INPUT file
-described in item (4) above.
+described above in item (4).
 
 `python ../../simtax.py c2013.in`
 
@@ -153,5 +153,4 @@ The `tests` script takes longer to execute (roughly seven or eight
 minutes) than the tests in the taxcalc/tests directory (roughly one
 minute).  But if the content of the six ?1?.taxdiffs files that are
 under version control are not modified by a `tests` execution, this a
-more thorough test that the tax calculation logic of the taxcalc
-package has not changed.
+more thorough confirmation that taxcalc logic has not changed.
