@@ -147,44 +147,114 @@ class Calculator(object):
     def current_year(self):
         return self.policy.current_year
 
-    def mtr(self, income_type_string, diff=100):
+    def mtr(self, income_type_string, finite_diff=1.):
         """
-        This method calculates the marginal tax rate for every record.
-        In order to avoid kinks, we find the marginal rates associated with
-        both a tax increase and a tax decrease and use the more modest of
-        the two.
+        Calculates the individual income tax, FICA, and combined marginal tax
+        rates for every record. Avoids kinks in the tax schedule by finding
+        the marginal rates associated with both an income increase and an
+        income decrease and then uses the more modest of the two.
+
+        Parameters
+        ----------
+        income_type_string: string of an income attribute on the Records class.
+
+        finite_diff: the marginal amount to be added or subtracted from income
+            in order to calculate the marginal tax rate.
+
+        Returns
+        -------
+        mtr_fica: an array of FICA marginal tax rates.
+        mtr_iit: an array of individual income tax marginal tax rates.
+        mtr_combined: an array of combined IIT and FICA marginal tax rates.
+
         """
 
         income_type = getattr(self.records, income_type_string)
 
         # Calculate the base level of taxes.
         self.calc_all()
-        taxes_base = np.copy(self.records._ospctax)
+        _ospctax_base = copy.deepcopy(self.records._ospctax)
+        _fica_base = copy.deepcopy(self.records._fica)
+        _combined_taxes_base = _ospctax_base + _fica_base
 
         # Calculate the tax change with a marginal increase in income.
-        setattr(self.records, income_type_string, income_type + diff)
+        setattr(self.records, income_type_string, income_type + finite_diff)
         self.calc_all()
-        delta_taxes_up = self.records._ospctax - taxes_base
+
+        _ospctax_up = copy.deepcopy(self.records._ospctax)
+        _fica_up = copy.deepcopy(self.records._fica)
+        _combined_taxes_up = _ospctax_up + _fica_up
+
+        delta_fica_up = _fica_up - _fica_base
+        delta_ospctax_up = _ospctax_up - _ospctax_base
+        delta_combined_taxes_up = _combined_taxes_up - _combined_taxes_base
 
         # Calculate the tax change with a marginal decrease in income.
-        setattr(self.records, income_type_string, income_type - diff)
+        setattr(self.records, income_type_string,
+                income_type - 2 * finite_diff)
         self.calc_all()
-        delta_taxes_down = taxes_base - self.records._ospctax
+
+        _ospctax_down = copy.deepcopy(self.records._ospctax)
+        _fica_down = copy.deepcopy(self.records._fica)
+        _combined_taxes_down = _ospctax_down + _fica_down
+
+        # We never take the downward version
+        # when the taxpayer's wages are sent negative.
+        delta_fica_down = np.where(income_type >=
+                                   finite_diff,
+                                   _fica_base - _fica_down,
+                                   delta_fica_up)
+        delta_ospctax_down = np.where(income_type >=
+                                      finite_diff,
+                                      _ospctax_base - _ospctax_down,
+                                      delta_ospctax_up)
+
+        delta_combined_taxes_down = np.where(income_type >=
+                                             finite_diff,
+                                             _combined_taxes_base -
+                                             _combined_taxes_down,
+                                             delta_combined_taxes_up)
 
         # Reset the income_type to its starting point to avoid
         # unintended consequences.
-        setattr(self.records, income_type_string, income_type)
+        setattr(self.records, income_type_string, income_type + finite_diff)
         self.calc_all()
 
         # Choose the more modest effect of either adding or subtracting income
-        delta_taxes = np.where(np.absolute(delta_taxes_up) <=
-                               np.absolute(delta_taxes_down),
-                               delta_taxes_up, delta_taxes_down)
+        delta_fica = np.where(np.absolute(delta_fica_up) <=
+                              np.absolute(delta_fica_down),
+                              delta_fica_up, delta_fica_down)
+        delta_ospctax = np.where(np.absolute(delta_ospctax_up) <=
+                                 np.absolute(delta_ospctax_down),
+                                 delta_ospctax_up, delta_ospctax_down)
+        delta_combined_taxes = np.where(np.absolute(delta_combined_taxes_up) <=
+                                        np.absolute(delta_combined_taxes_down),
+                                        delta_combined_taxes_up,
+                                        delta_combined_taxes_down)
 
-        # Calculate the marginal tax rate
-        mtr = delta_taxes / diff
+        # Calculate the marginal tax rate.
+        # The rate we want is the "after-tax share of tax in compensation".
+        # Since only half of the social security tax is including in wages for
+        # income tax purposes, we need to increase the denominator by the
+        # excluded portion of FICA.
 
-        return mtr
+        if (income_type_string == "e00200" or
+                income_type_string == "e00200s" or
+                income_type_string == "e00200p"):
+            employer_fica_adjustment = np.where(self.records.e00200 <
+                                                self.policy.SS_Earnings_c,
+                                                0.5 * self.policy.FICA_ss_trt +
+                                                0.5 * self.policy.FICA_mc_trt,
+                                                0.5 * self.policy.FICA_mc_trt)
+        else:
+            employer_fica_adjustment == 0.
+
+        mtr_fica = delta_fica / (finite_diff + employer_fica_adjustment)
+        mtr_iit = delta_ospctax / (finite_diff + employer_fica_adjustment)
+        mtr_combined = delta_combined_taxes / (finite_diff +
+                                               employer_fica_adjustment)
+
+        return (mtr_fica, mtr_iit, mtr_combined)
 
     def diagnostic_table(self, num_years=5):
         table = []
