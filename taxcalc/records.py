@@ -739,6 +739,8 @@ class Records(object):
                          0)
         self._earning_split = np.where(total != 0,
                                        self.wage_head / total, 1)
+        self.e00200p = self._earning_split * self.e00200
+        self.e00200s = (1 - self._earning_split) * self.e00200
 
     def _imputed_cmbtp_itemizer(self):
         return imputed_cmbtp_itemizer(self.e17500, self.e00100, self.e18400,
