@@ -1,5 +1,5 @@
 # MAKE-IN.TCL writes an Internet-TAXSIM-9.3-formatted input file to stdout
-# USAGE: tclsh make-in.tcl calyear letter
+# USAGE: tclsh make-in.tcl calyear letter [rng_offset]
 # PRODUCTION: tclsh make-in.tcl yyYY L > LYY.in
 
 if { $argc < 2 || $argc > 3 } {
@@ -16,6 +16,10 @@ if { $argc == 3 } {
     set offset [lindex $argv 2]
 } else {
     set offset 0
+}
+if { $offset < 0 || $offset > 1000 } {
+    puts stderr "ERROR: rng_offset=$offset not in \[0,1000\] range"
+    exit 1
 }
 switch $letter {
     a { # assumptions for aYY.in sample:
