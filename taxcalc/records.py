@@ -430,6 +430,9 @@ class Records(object):
 
     def _blowup(self, year):
         self.e00200 *= self.BF.AWAGE[year]
+        # two variables for earning split imputation
+        self.e00200p *= self.BF.AWAGE[year]
+        self.e00200s *= self.BF.AWAGE[year]
         self.e00300 *= self.BF.AINTS[year]
         self.e00400 *= self.BF.AINTS[year]
         self.e00600 *= self.BF.ADIVS[year]

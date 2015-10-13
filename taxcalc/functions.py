@@ -339,8 +339,9 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
 
 
 @iterate_jit(nopython=True)
-def EI_FICA(e00900, e02100, SS_Earnings_c, e00200, e11055, e00250, e30100,
-            FICA_ss_trt, FICA_mc_trt, _earning_split):
+def EI_FICA(e00900, e02100, SS_Earnings_c, e00200, e00200p, e00200s,
+            e11055, e00250, e30100, FICA_ss_trt, FICA_mc_trt,
+            _earning_split):
     # Earned Income and FICA #
 
     _sey = e00900 + e02100
