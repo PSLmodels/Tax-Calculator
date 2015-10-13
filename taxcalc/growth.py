@@ -74,7 +74,7 @@ def target(calc, target, inflation, year):
         # user inputs theoretically should be based on GDP
         g = abs(records.BF.AGDPN[year] - 1)
         distance = (target[year - default_year] +
-                 inflation[year - default_year]) - g
+                    inflation[year - default_year]) - g
 
         # apply this ratio to all the dollar amount factors
         records.BF.AGDPN[year] += distance
