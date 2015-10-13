@@ -69,10 +69,10 @@ expenses.
 
 When not using the optional third parameter, the
 random-number-generator seed offset is zero.  In the example above,
-the offset is one, which generates a sample in `a2014-1.in` that is
-completely different from the sample in the `a2014.in` file.  The
-third parameter have any value in the \[0,1000\] range, which allows
-generation of as many as one thousand alternative samples.
+the offset is one, which generates a sample in the `a2014-1.in` file
+that is completely different from the sample in the `a2014.in` file.
+The third parameter have any value in the \[0,1000\] range, which
+allows generation of as many as one thousand alternative samples.
 
 (3) Generate a random sample of 100,000 tax filing units for 2013 that
 have itemized-deduction expenses but no child-care expenses.
@@ -93,7 +93,8 @@ described in item (4) above.
 
 `python ../../simtax.py c2013.in`
 
-The resulting OUTPUT file is called `c2013.in.out-simtax`.
+The resulting OUTPUT file is in the same directory as the INPUT file
+and is called `c2013.in.out-simtax`.
 
 (2) Do same thing as in item (1) except include marginal tax rates in
 the OUTPUT.
