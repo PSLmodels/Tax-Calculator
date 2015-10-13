@@ -2,6 +2,7 @@ from .calculate import *
 from .policy import *
 from .behavior import *
 from .records import *
+from .simpletaxio import *
 from .utils import *
 from .decorators import *
 
