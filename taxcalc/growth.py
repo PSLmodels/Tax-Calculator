@@ -46,23 +46,23 @@ class Growth(ParametersBase):
 
 def adjustment(calc, percentage, year):
     records = calc.records
-    records.BF.AGDPN[year] += percentage * abs(records.BF.AGDPN[year] - 1)
-    records.BF.ATXPY[year] += percentage * abs(records.BF.ATXPY[year] - 1)
-    records.BF.AWAGE[year] += percentage * abs(records.BF.AWAGE[year] - 1)
-    records.BF.ASCHCI[year] += percentage * abs(records.BF.ASCHCI[year] - 1)
-    records.BF.ASCHCL[year] += percentage * abs(records.BF.ASCHCL[year] - 1)
-    records.BF.ASCHF[year] += percentage * abs(records.BF.ASCHF[year] - 1)
-    records.BF.AINTS[year] += percentage * abs(records.BF.AINTS[year] - 1)
-    records.BF.ADIVS[year] += percentage * abs(records.BF.ADIVS[year] - 1)
-    records.BF.ACGNS[year] += percentage * abs(records.BF.ACGNS[year] - 1)
-    records.BF.ASCHEI[year] += percentage * abs(records.BF.ASCHEI[year] - 1)
-    records.BF.ASCHEL[year] += percentage * abs(records.BF.ASCHEL[year] - 1)
-    records.BF.ABOOK[year] += percentage * abs(records.BF.ABOOK[year] - 1)
-    records.BF.ACPIU[year] += percentage * abs(records.BF.ACPIU[year] - 1)
-    records.BF.ACPIM[year] += percentage * abs(records.BF.ACPIM[year] - 1)
-    records.BF.ASOCSEC[year] += percentage * abs(records.BF.ASOCSEC[year] - 1)
-    records.BF.AUCOMP[year] += percentage * abs(records.BF.AUCOMP[year] - 1)
-    records.BF.AIPD[year] += percentage * abs(records.BF.AIPD[year] - 1)
+    records.BF.AGDPN[year] += percentage
+    records.BF.ATXPY[year] += percentage
+    records.BF.AWAGE[year] += percentage
+    records.BF.ASCHCI[year] += percentage
+    records.BF.ASCHCL[year] += percentage
+    records.BF.ASCHF[year] += percentage
+    records.BF.AINTS[year] += percentage
+    records.BF.ADIVS[year] += percentage
+    records.BF.ACGNS[year] += percentage
+    records.BF.ASCHEI[year] += percentage
+    records.BF.ASCHEL[year] += percentage
+    records.BF.ABOOK[year] += percentage
+    records.BF.ACPIU[year] += percentage
+    records.BF.ACPIM[year] += percentage
+    records.BF.ASOCSEC[year] += percentage
+    records.BF.AUCOMP[year] += percentage
+    records.BF.AIPD[year] += percentage
 
 
 def target(calc, target, inflation, year):
@@ -73,25 +73,24 @@ def target(calc, target, inflation, year):
     if year >= default_year and target[year - default_year] != 0:
         # user inputs theoretically should be based on GDP
         g = abs(records.BF.AGDPN[year] - 1)
-        ratio = (target[year - default_year] +
-                 inflation[year - default_year]) / g
+        distance = (target[year - default_year] +
+                 inflation[year - default_year]) - g
 
         # apply this ratio to all the dollar amount factors
-        records.BF.AGDPN[year] = ratio * abs(records.BF.AGDPN[year] - 1) + 1
-        records.BF.ATXPY[year] = ratio * abs(records.BF.ATXPY[year] - 1) + 1
-        records.BF.AWAGE[year] = ratio * abs(records.BF.AWAGE[year] - 1) + 1
-        records.BF.ASCHCI[year] = ratio * abs(records.BF.ASCHCI[year] - 1) + 1
-        records.BF.ASCHCL[year] = ratio * abs(records.BF.ASCHCL[year] - 1) + 1
-        records.BF.ASCHF[year] = ratio * abs(records.BF.ASCHF[year] - 1) + 1
-        records.BF.AINTS[year] = ratio * abs(records.BF.AINTS[year] - 1) + 1
-        records.BF.ADIVS[year] = ratio * abs(records.BF.ADIVS[year] - 1) + 1
-        records.BF.ACGNS[year] = ratio * abs(records.BF.ACGNS[year] - 1) + 1
-        records.BF.ASCHEI[year] = ratio * abs(records.BF.ASCHEI[year] - 1) + 1
-        records.BF.ASCHEL[year] = ratio * abs(records.BF.ASCHEL[year] - 1) + 1
-        records.BF.ABOOK[year] = ratio * abs(records.BF.ABOOK[year] - 1) + 1
-        records.BF.ACPIU[year] = ratio * abs(records.BF.ACPIU[year] - 1) + 1
-        records.BF.ACPIM[year] = ratio * abs(records.BF.ACPIM[year] - 1) + 1
-        records.BF.ASOCSEC[year] = (ratio *
-                                    abs(records.BF.ASOCSEC[year] - 1) + 1)
-        records.BF.AUCOMP[year] = ratio * abs(records.BF.AUCOMP[year] - 1) + 1
-        records.BF.AIPD[year] = ratio * abs(records.BF.AIPD[year] - 1) + 1
+        records.BF.AGDPN[year] += distance
+        records.BF.ATXPY[year] += distance
+        records.BF.AWAGE[year] += distance
+        records.BF.ASCHCI[year] += distance
+        records.BF.ASCHCL[year] += distance
+        records.BF.ASCHF[year] += distance
+        records.BF.AINTS[year] += distance
+        records.BF.ADIVS[year] += distance
+        records.BF.ACGNS[year] += distance
+        records.BF.ASCHEI[year] += distance
+        records.BF.ASCHEL[year] += distance
+        records.BF.ABOOK[year] += distance
+        records.BF.ACPIU[year] += distance
+        records.BF.ACPIM[year] += distance
+        records.BF.ASOCSEC[year] += distance
+        records.BF.AUCOMP[year] += distance
+        records.BF.AIPD[year] += distance
