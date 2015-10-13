@@ -240,6 +240,22 @@ def test_Calculator_create_distribution_table():
     assert isinstance(dt2, pd.DataFrame)
 
 
+def test_calculate_mtr():
+    # Create a Parameters object
+    policy = Policy()
+
+    # Create a Public Use File object
+    puf = Records(TAX_DTA, weights=WEIGHTS, start_year=2009)
+
+    # Create a Calculator
+    calc = Calculator(policy=policy, records=puf)
+
+    (mtr_FICA, mtr_IIT, mtr) = calc.mtr('e00200')
+    assert type(mtr) == np.ndarray
+    assert np.array_equal(mtr, mtr_FICA) == False
+    assert np.array_equal(mtr_FICA, mtr_IIT) == False
+
+
 def test_Calculator_create_difference_table():
     # create current-law Policy object and use to create Calculator calc1
     policy1 = Policy()
