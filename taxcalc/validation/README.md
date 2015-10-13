@@ -148,8 +148,9 @@ Automating the validation process
 tax filing units, have been used to generate Internet-TAXSIM OUTPUT
 files that are stored in the out-taxsim.zip file.  The `tests` bash
 script automates the four-step validation process described above.
-The `tests` script takes longer to execute than the tests in the
-taxcalc/tests directory.  But if the content of the six ?1?.taxdiffs
-files that are under version control are not modified by a `tests`
-execution, this a more thorough test that the tax calculation logic
-of the taxcalc package has not changed.
+The `tests` script takes longer to execute (roughly seven or eight
+minutes) than the tests in the taxcalc/tests directory (roughly one
+minute).  But if the content of the six ?1?.taxdiffs files that are
+under version control are not modified by a `tests` execution, this a
+more thorough test that the tax calculation logic of the taxcalc
+package has not changed.
