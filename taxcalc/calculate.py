@@ -8,6 +8,7 @@ from .functions import *
 from .policy import Policy
 from .records import Records
 from .behavior import Behavior
+from .growth import Growth, adjustment, target
 
 all_cols = set()
 
@@ -26,17 +27,26 @@ def add_df(alldfs, df):
 class Calculator(object):
 
     def __init__(self, policy=None, records=None,
-                 sync_years=True, behavior=None, **kwargs):
+                 sync_years=True, behavior=None, growth=None, **kwargs):
 
         if isinstance(policy, Policy):
             self._policy = policy
         else:
             msg = 'Must supply tax parameters as a Policy object'
             raise ValueError(msg)
+
         if isinstance(behavior, Behavior):
             self.behavior = behavior
         else:
             self.behavior = Behavior(start_year=policy.start_year)
+
+        if growth:
+            if isinstance(growth, Growth):
+                self.growth = growth
+            else:
+                raise ValueError("Must supply growth as a Growth object")
+        else:
+            self.growth = Growth(start_year=policy.start_year)
 
         if isinstance(records, Records):
             self._records = records
@@ -139,6 +149,19 @@ class Calculator(object):
         return totaldf
 
     def increment_year(self):
+        if self.growth.factor_adjustment != 0:
+            if np.any(self.growth._factor_target) != 0:
+                msg = "adjustment and target factor \
+                       cannot be non-zero at the same time"
+                raise ValueError(msg)
+            else:
+                adjustment(self, self.growth.factor_adjustment,
+                           self.policy.current_year + 1)
+        elif np.any(self.growth._factor_target) != 0:
+            target(self, self.growth._factor_target,
+                   self.policy._inflation_rates,
+                   self.policy.current_year + 1)
+
         self.records.increment_year()
         self.policy.set_year(self.policy.current_year + 1)
         self.behavior.set_year(self.policy.current_year)

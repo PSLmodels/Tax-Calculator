@@ -27,11 +27,10 @@ class ParametersBase(object):
         for name, data in self._vals.items():
             cpi_inflated = data.get('cpi_inflated', False)
             values = data['value']
+            i_rates = getattr(self, '_inflation_rates', None)
             setattr(self, name,
                     self.expand_array(values, inflate=cpi_inflated,
-                                      inflation_rates=(getattr(self,
-                                                       '_inflation_rates',
-                                                               None)),
+                                      inflation_rates=i_rates,
                                       num_years=self._num_years))
         self.set_year(self._start_year)
 
