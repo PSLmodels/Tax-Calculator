@@ -150,10 +150,14 @@ class Calculator(object):
 
     def increment_year(self):
         if self.growth.factor_adjustment != 0:
-            adjustment(self, self.growth.factor_adjustment,
-                       self.policy.current_year + 1)
-
-        if np.any(self.growth._factor_target) != 0:
+            if np.any(self._growth._factor_target) != 0:
+                msg = "adjustment and target factor \
+                       cannot be non-zero at the same time"
+                raise ValueError(msg)
+            else:
+                adjustment(self, self.growth.factor_adjustment,
+                           self.policy.current_year + 1)
+        elif np.any(self._growth._factor_target) != 0:
             target(self, self.growth._factor_target,
                    self.policy._inflation_rates,
                    self.policy.current_year + 1)
