@@ -1,7 +1,7 @@
 Validation of OSPC taxcalc Package
 ==================================
 
-The taxcalc package calculates federal income taxes and FICA taxes for
+The taxcalc package computes federal income taxes and FICA taxes for
 a sample of tax filing units in years beginning with 2013.  The
 Python code that performs the tax calculations has been validated in a
 number of ways.  First, taxcalc results for a number of tax filing
@@ -13,8 +13,8 @@ Feenberg and Ina Shapiro of NBER.  And third, tools in this directory
 provide the ability to conduct cross-model validation work using any
 two tax models that read input formatted as expected by the [Internet
 TAXSIM model](http://users.nber.org/~taxsim/taxsim-calc9/index.html)
-and write output formatted as written by Internet TAXSIM with
-intermediate results.  The ability to read and write tax information
+and write output formatted as written by the Internet TAXSIM model.
+The ability to read and write tax information
 in Internet-TAXSIM format is provided by the SimpleTaxIO class in the
 OSPC taxcalc package and by simtax.py, which is a Python program that
 provides a command-line interface to the SimpleTaxIO class.
@@ -31,26 +31,26 @@ validation work flow:
   1. Generate a random sample of tax filing units (INPUT).
   2. Generate OUTPUT from INPUT using simtax.py.
   3. Generate OUTPUT from INPUT using Internet TAXSIM.
-  4. Generate tax-difference tabulations by comparing the two OUTPUT
-     files.
+  4. Generate tax differences by comparing the two OUTPUT files.
 
-Getting Started
-===============
+Installing Validation Tools
+===========================
 
 The current version of the validation tools in this directory should
-work on Linux or Mac OS X without any changes.  Windows users will have
-to do three things: (a) install an AWK interpreter, (b) install a Tcl 
-interpreter, and (c) translate the `tests` bash script into a Windows
-batch file.  The Free Software Foundation provides a free AWK interpreter
-for Windows (gawk.exe) and ActiveState provides a free Tcl interpreter
-for Windows (tclsh.exe).
+work on Linux or Mac OS X without any changes and without adding any
+extra software.  Those who want to use these validation tools on Windows
+will have to do three things: (a) install an AWK interpreter,
+(b) install a Tcl interpreter, and (c) translate the `tests` bash script
+into a Windows batch file.  The Free Software Foundation provides a
+free AWK interpreter for Windows (gawk.exe) and ActiveState provides a
+free Tcl interpreter for Windows (tclsh.exe).
 
-Tool Usage
-==========
+Using Validation Tools
+======================
 
 Here is an overview of how the tools support the four-step work flow
-described above.  All these tools provide additional help from the
-command line.  The overview consists of examples of tool use and
+described above.  The validation tools provide additional help from
+the command line.  This overview consists of examples of tool use and
 assumes that the current working directory is taxcalc/validation/.
 
 Generating an INPUT file
@@ -140,6 +140,10 @@ intermediate and final tax OUTPUT variables and write that summary to
 a file called `c2013.taxdiffs`.
 
 `tclsh taxdiffs.tcl c2013.in.out-simtax c2013.in.out-taxsim > c2013.taxdiffs`
+
+Reading tax-difference results
+------------------------------
+
 
 
 Automating the validation process
