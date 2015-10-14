@@ -26,6 +26,8 @@ Contributors include the following individuals:
 * `Regan Kuchan`_
 * `Maria Messick`_
 * `Martin Holmer`_
+* `Peter Steinberg`_
+* `Sean Wang`_
 
 
 .. _`NBER`: http://www.nber.org/
@@ -40,3 +42,5 @@ Contributors include the following individuals:
 .. _`Regan Kuchan`: https://github.com/rkuchan
 .. _`Maria Messick`: https://github.com/mmessick
 .. _`Martin Holmer`: http://www.polsim.com/MRH_vita.pdf
+.. _`Peter Steinberg`: https://github.com/peterdsteinberg
+.. _`Sean Wang`: https://github.com/gofroggyrun
