@@ -111,7 +111,7 @@ END {
             signed_max_abs_vardiff = -max_abs_vardiff
         }
         printf( "%s= %2d %6d %6d %9.2f [%d]\n",
-                "TAXDIFF:col,#diffs,#1cdiffs,maxdiff[id]",
+                "TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]",
                 col,
                 num_diffs,
                 num_onecent_diffs,
@@ -128,11 +128,11 @@ END {
                             num_big_vardiff_with_big_taxdiff )
                 }
                 printf( "%s= %16d\n",
-                        "                      #big_inctax_diffs",
+                        "                       #big_inctax_diffs",
                         num_big_diffs )
             } else {
                 printf( "%s= %16d\n",
-                        "     #big_vardiffs_with_big_inctax_diff",
+                        "      #big_vardiffs_with_big_inctax_diff",
                         num_big_vardiff_with_big_taxdiff )
             }
         }
