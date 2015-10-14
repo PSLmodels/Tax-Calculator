@@ -1239,7 +1239,7 @@ def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
 
     if _ctcagi > CTC_ps[MARS - 1] and _exact != 1:
         _precrd = max(0., _precrd - CTC_prt *
-                      (max(0., _ctcagi - CTC_ps[MARS - 1]) + 500))
+                      max(0., _ctcagi - CTC_ps[MARS - 1]))
 
     # TODO get rid of this type declaration
     _precrd = float(_precrd)
