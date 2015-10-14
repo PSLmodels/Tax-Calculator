@@ -149,11 +149,15 @@ class Calculator(object):
         return totaldf
 
     def increment_year(self):
-        adjustment(self, self.growth.factor_adjustment,
+        if self.growth.factor_adjustment != 0:
+            adjustment(self, self.growth.factor_adjustment,
+                       self.policy.current_year + 1)
+
+        if np.any(self.growth._factor_target) != 0:
+            target(self, self.growth._factor_target,
+                   self.policy._inflation_rates,
                    self.policy.current_year + 1)
-        target(self, self.growth._factor_target,
-               self.policy._inflation_rates,
-               self.policy.current_year + 1)
+
         self.records.increment_year()
         self.policy.set_year(self.policy.current_year + 1)
         self.behavior.set_year(self.policy.current_year)
