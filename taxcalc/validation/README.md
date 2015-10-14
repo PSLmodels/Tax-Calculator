@@ -1,7 +1,7 @@
 Validation of OSPC taxcalc Package
 ==================================
 
-The taxcalc package calculates federal income taxes and FICA taxes for
+The taxcalc package computes federal income taxes and FICA taxes for
 a sample of tax filing units in years beginning with 2013.  The
 Python code that performs the tax calculations has been validated in a
 number of ways.  First, taxcalc results for a number of tax filing
@@ -13,8 +13,8 @@ Feenberg and Ina Shapiro of NBER.  And third, tools in this directory
 provide the ability to conduct cross-model validation work using any
 two tax models that read input formatted as expected by the [Internet
 TAXSIM model](http://users.nber.org/~taxsim/taxsim-calc9/index.html)
-and write output formatted as written by Internet TAXSIM with
-intermediate results.  The ability to read and write tax information
+and write output formatted as written by the Internet TAXSIM model.
+The ability to read and write tax information
 in Internet-TAXSIM format is provided by the SimpleTaxIO class in the
 OSPC taxcalc package and by simtax.py, which is a Python program that
 provides a command-line interface to the SimpleTaxIO class.
@@ -31,26 +31,26 @@ validation work flow:
   1. Generate a random sample of tax filing units (INPUT).
   2. Generate OUTPUT from INPUT using simtax.py.
   3. Generate OUTPUT from INPUT using Internet TAXSIM.
-  4. Generate tax-difference tabulations by comparing the two OUTPUT
-     files.
+  4. Generate tax differences by comparing the two OUTPUT files.
 
-Getting Started
-===============
+Installing Validation Tools
+===========================
 
 The current version of the validation tools in this directory should
-work on Linux or Mac OS X without any changes.  Windows users will have
-to do three things: (a) install an AWK interpreter, (b) install a Tcl 
-interpreter, and (c) translate the `tests` bash script into a Windows
-batch file.  The Free Software Foundation provides a free AWK interpreter
-for Windows (gawk.exe) and ActiveState provides a free Tcl interpreter
-for Windows (tclsh.exe).
+work on Linux or Mac OS X without any changes and without adding any
+extra software.  Those who want to use these validation tools on Windows
+will have to do three things: (a) install an AWK interpreter,
+(b) install a Tcl interpreter, and (c) translate the `tests` bash script
+into a Windows batch file.  The Free Software Foundation provides a
+free AWK interpreter for Windows (gawk.exe) and ActiveState provides a
+free Tcl interpreter for Windows (tclsh.exe).
 
-Tool Usage
-==========
+Using Validation Tools
+======================
 
 Here is an overview of how the tools support the four-step work flow
-described above.  All these tools provide additional help from the
-command line.  The overview consists of examples of tool use and
+described above.  The validation tools provide additional help from
+the command line.  This overview consists of examples of tool use and
 assumes that the current working directory is taxcalc/validation/.
 
 Generating an INPUT file
@@ -131,21 +131,52 @@ described above.
     any blank lines and the TAXSIM message about using the `56 1`
     option (which is usually at the top of the results).
 
-Generating tax-difference tabulations
--------------------------------------
+Generating tax-difference results
+---------------------------------
 
 (1) Continuing the above example that uses `c2013.in` INPUT and
 produces no marginal tax rates, generate a summary of differences in
-intermediate and final tax OUTPUT variables and write that summary to
-a file called `c2013.taxdiffs`.
+intermediate and final tax OUTPUT variables and write those summary
+results to a file called `c2013.taxdiffs`.
 
 `tclsh taxdiffs.tcl c2013.in.out-simtax c2013.in.out-taxsim > c2013.taxdiffs`
 
+Reading tax-difference results
+------------------------------
 
-Automating the validation process
-----------------------------------
+The tax-difference tools work with the same philosophy as the Unix
+diff command: no results are shown unless these are differences
+between the two OUTPUT files being compared.  But instead of showing
+all the tax filing units whose OUTPUT differs, the tax-difference
+tools show a summary of the differences.  The summary information for
+a particular OUTPUT variable includes:
 
-(1) Currently six samples, each containing 100,000 randomly-generated
+  * *ovar*: the number of the OUTPUT variable whose differences are
+                being summarized,
+  * *#diffs*: the number of filing units that have a difference in the
+                value of this OUTPUT variable between the two OUTPUT
+                files being compared,
+  * *#1cdiffs*: the number of filing units for which the absolute
+                value of this difference is no more than one cent,
+  * *maxdiff*: the signed value of the absolute value of the largest
+                difference, and
+  * *[id]*: the id (ivar[1] and ovar[1]) of the filing unit with the
+                largest difference in absolute value.  In other words,
+                the filing unit with the given *id* is the filing unit
+                with the *maxdiff*.
+
+When appropriate, a second line of summary results is shown.  This
+second line contains the number of filing units with an OUTPUT
+variable difference greater than one cent (that is, is not included in
+*#1cdiffs* on the main summary line) **and** a total tax liability
+(ovar[4]) that is greater than one cent in absolute value.  If there
+are no filing units that meet both criteria, the second line is not
+written.
+
+Automating Validation Process
+=============================
+
+Currently six samples, each containing 100,000 randomly-generated
 tax filing units, have been used to generate Internet-TAXSIM OUTPUT
 files that are stored in the out-taxsim.zip file.  The `tests` bash
 script automates the four-step validation process described above.
