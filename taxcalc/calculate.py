@@ -351,6 +351,9 @@ class Calculator(object):
             # ospc_tax
             revenue1 = (calc.records._ospctax * calc.records.s006).sum()
 
+            # payroll tax (FICA)
+            payroll = (calc.records._fica * calc.records.s006).sum()
+
             table.append([returns / math.pow(10, 6), agi / math.pow(10, 9),
                           NumItemizer1 / math.pow(10, 6), ID / math.pow(10, 9),
                           NumSTD / math.pow(10, 6), STD / math.pow(10, 9),
@@ -362,7 +365,8 @@ class Calculator(object):
                           refundable / math.pow(10, 9),
                           nonrefundable / math.pow(10, 9),
                           surtax / math.pow(10, 9),
-                          revenue1 / math.pow(10, 9)])
+                          revenue1 / math.pow(10, 9),
+                          payroll / math.pow(10, 9)])
             calc.increment_year()
 
         df = DataFrame(table, row_years,
@@ -376,7 +380,7 @@ class Calculator(object):
                         "refundable credits ($b)",
                         "nonrefundable credits ($b)",
                         "Misc. Surtax ($b)",
-                        "ospctax ($b)"])
+                        "ospctax ($b)", "Payroll tax ($b)"])
         df = df.transpose()
         pd.options.display.float_format = '{:8,.1f}'.format
 

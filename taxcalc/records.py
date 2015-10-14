@@ -265,6 +265,8 @@ class Records(object):
              ('e87530', 'e87530'),
              ('e87550', 'e87550'),
              ('RECID', 'recid'),
+             ('wage_head', 'wage_head'),
+             ('wage_spouse', 'wage_spouse'),
              ('s006', 's006'),
              ('s008', 's008'),
              ('s009', 's009'),
@@ -428,6 +430,9 @@ class Records(object):
 
     def _blowup(self, year):
         self.e00200 *= self.BF.AWAGE[year]
+        # two variables for earning split imputation
+        self.e00200p *= self.BF.AWAGE[year]
+        self.e00200s *= self.BF.AWAGE[year]
         self.e00300 *= self.BF.AINTS[year]
         self.e00400 *= self.BF.AINTS[year]
         self.e00600 *= self.BF.ADIVS[year]
@@ -439,6 +444,16 @@ class Records(object):
                                   self.BF.ASCHCI[year],
                                   self.e00900 *
                                   self.BF.ASCHCL[year])
+        self.e00900s[:] = np.where(self.e00900s >= 0,
+                                   self.e00900s *
+                                   self.BF.ASCHCI[year],
+                                   self.e00900s *
+                                   self.BF.ASCHCL[year])
+        self.e00900p[:] = np.where(self.e00900p >= 0,
+                                   self.e00900p *
+                                   self.BF.ASCHCI[year],
+                                   self.e00900p *
+                                   self.BF.ASCHCL[year])
         self.e01000[:] = np.where(self.e01000 >= 0.,
                                   self.e01000 * self.BF.ACGNS[year],
                                   self.e01000)
@@ -453,6 +468,8 @@ class Records(object):
                                   self.e02000 *
                                   self.BF.ASCHEL[year])
         self.e02100 *= self.BF.ASCHF[year]
+        self.e02100p *= self.BF.ASCHF[year]
+        self.e02100s *= self.BF.ASCHF[year]
         self.e02300 *= self.BF.AUCOMP[year]
         self.e02400 *= self.BF.ASOCSEC[year]
         # Taxable Social Security is a calculated field
@@ -724,6 +741,21 @@ class Records(object):
                                       (self.e04470 - std_2009[self.MARS - 1]) /
                                       std_aged_2009[1]),
                                   np.where(self.e02400 > 0, self._txpyers, 0))
+
+        # impute the ratio of household head in total household income
+        total = np.where(self.MARS == 2,
+                         self.wage_head + self.wage_spouse,
+                         0)
+        self._earning_split = np.where(total != 0,
+                                       self.wage_head / total, 1)
+        self.e00200p = self._earning_split * self.e00200
+        self.e00200s = (1 - self._earning_split) * self.e00200
+
+        self.e00900p = self._earning_split * self.e00900
+        self.e00900s = (1 - self._earning_split) * self.e00900
+
+        self.e02100p = self._earning_split * self.e02100
+        self.e02100s = (1 - self._earning_split) * self.e02100
 
     def _imputed_cmbtp_itemizer(self):
         return imputed_cmbtp_itemizer(self.e17500, self.e00100, self.e18400,
