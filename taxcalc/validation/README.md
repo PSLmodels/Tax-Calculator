@@ -131,25 +131,52 @@ described above.
     any blank lines and the TAXSIM message about using the `56 1`
     option (which is usually at the top of the results).
 
-Generating tax-difference tabulations
--------------------------------------
+Generating tax-difference results
+---------------------------------
 
 (1) Continuing the above example that uses `c2013.in` INPUT and
 produces no marginal tax rates, generate a summary of differences in
-intermediate and final tax OUTPUT variables and write that summary to
-a file called `c2013.taxdiffs`.
+intermediate and final tax OUTPUT variables and write those summary
+results to a file called `c2013.taxdiffs`.
 
 `tclsh taxdiffs.tcl c2013.in.out-simtax c2013.in.out-taxsim > c2013.taxdiffs`
 
 Reading tax-difference results
 ------------------------------
 
+The tax-difference tools work with the same philosophy as the Unix
+diff command: no results are shown unless these are differences
+between the two OUTPUT files being compared.  But instead of showing
+all the tax filing units whose OUTPUT differs, the tax-difference
+tools show a summary of the differences.  The summary information for
+a particular OUTPUT variable includes:
 
+  * *ovar*: the number of the OUTPUT variable whose differences are
+                being summarized,
+  * *#diffs*: the number of filing units that have a difference in the
+                value of this OUTPUT variable between the two OUTPUT
+                files being compared,
+  * *#1cdiffs*: the number of filing units for which the absolute
+                value of this difference is no more than one cent,
+  * *maxdiff*: the signed value of the absolute value of the largest
+                difference, and
+  * *[id]*: the id (ivar[1] and ovar[1]) of the filing unit with the
+                largest difference in absolute value.  In other words,
+                the filing unit with the given *id* is the filing unit
+                with the *maxdiff*.
 
-Automating the validation process
-----------------------------------
+When appropriate, a second line of summary results is shown.  This
+second line contains the number of filing units with an OUTPUT
+variable difference greater than one cent (that is, is not included in
+*#1cdiffs* on the main summary line) **and** a total tax liability
+(ovar[4]) that is greater than one cent in absolute value.  If there
+are no filing units that meet both criteria, the second line is not
+written.
 
-(1) Currently six samples, each containing 100,000 randomly-generated
+Automating Validation Process
+=============================
+
+Currently six samples, each containing 100,000 randomly-generated
 tax filing units, have been used to generate Internet-TAXSIM OUTPUT
 files that are stored in the out-taxsim.zip file.  The `tests` bash
 script automates the four-step validation process described above.
