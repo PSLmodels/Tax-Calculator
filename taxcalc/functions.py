@@ -1157,7 +1157,7 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
            e00600, e01000, e40223, e25360, e25430, e25470, e25400, e25500,
            e26210, e26340, e27200, e26205, e26320, EITC_InvestIncome_c, _cmp,
            SOIYR, DOBYR, SDOBYR, _agep, _ages, _earned, c59660, _exact, e59560,
-           puf):
+           _numextra, puf):
 
     EICYB1 = max(0.0, EICYB1)
     EICYB2 = max(0.0, EICYB2)
@@ -1206,6 +1206,12 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
 
     if puf or (_ieic > 0) or (_agep >= 25 and _agep <= 64) or (_ages > 0):
         c59660 = _preeitc
+        # make elderly childless filing units in PUF ineligible for EITC
+        if (_ieic == 0 and puf and
+            ((MARS == 2 and _numextra >= 2) or
+             (MARS != 2 and _numextra >= 1))):
+            c59660 = 0.
+            c59560 = 0.
     else:
         c59660 = 0.
         c59560 = 0.
