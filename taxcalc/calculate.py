@@ -172,7 +172,7 @@ class Calculator(object):
 
     def mtr(self, income_type_string,
             finite_diff=1.0,
-            wrt_expanded_income=True):
+            wrt_adjusted_income=True):
         """
         Calculates the individual income tax, FICA, and combined marginal tax
         rates for every record. Avoids kinks in the tax schedule by finding
@@ -188,10 +188,10 @@ class Calculator(object):
             specifies marginal amount to be added or subtracted from income
             in order to calculate the marginal tax rate.
 
-        wrt_expanded_income: boolean
+        wrt_adjusted_income: boolean
             specifies whether or not marginal tax rates on earned income are
-            computed with respect to (wrt) changes in expanded income, which
-            includes the employer share of OASDHI payroll taxes.
+            computed with respect to (wrt) changes in adjusted income that
+            includes the employer share of OASDI+HI payroll taxes.
 
         Returns
         -------
@@ -206,9 +206,9 @@ class Calculator(object):
             msg = 'mtr income_type_string={} not yet supported'
             raise ValueError(msg.format(income_type_string))
 
-        # Check for reasonable finite_diff value.
-        if finite_diff < 1.0 or finite_diff > 10.0:
-            msg = 'mtr finite_diff={} not in [1,10] range'
+        # Check for reasonable value of finite_diff parameter.
+        if finite_diff <= 0.0 or finite_diff > 10.0:
+            msg = 'mtr finite_diff={} not in (0,10] range'
             raise ValueError(msg.format(finite_diff))
 
         income_type = getattr(self.records, income_type_string)
@@ -283,7 +283,7 @@ class Calculator(object):
         # Since only half of the social security tax is including in wages for
         # income tax purposes, we need to increase the denominator by the
         # excluded portion of FICA.
-        if (wrt_expanded_income and
+        if (wrt_adjusted_income and
             (income_type_string == 'e00200' or
              income_type_string == 'e00200s' or
              income_type_string == 'e00200p')):
