@@ -8,23 +8,11 @@ be used to conduct revenue scoring and distributional analyses of tax
 policies.  The Tax Calculator is written in Python, an interpreted
 language that can execute on Windows, Mac, or Linux.
 
-About OSPC
-==========
-
-The Open Source Policy Center (OSPC) seeks to make policy analysis
-more transparent, trustworthy, and collaborative by harnessing
-open-source methods to build cutting-edge economic models.
 
 Disclaimer
 ==========
 
-The Tax Calculator is currently under development.  Users should be
-forewarned that the taxcalc API (application programming interface)
-could change significantly, and the implementation is subject to wild
-change.  Therefore, there is NO GUARANTEE OF ACCURACY. THE CODE SHOULD
-NOT CURRENTLY BE USED FOR PUBLICATIONS, JOURNAL ARTICLES, OR RESEARCH
-PURPOSES.  The source code is currently available for testing purposes
-only.
+Results will change as the underlying models improve. A fundamental reason for adopting open source methods in this project is so that people from all backgrounds can contribute to the models that our society uses to assess economic policy; when community-contributed improvements are incorporated, the model will produce different results.
 
 Getting Started
 ===============
@@ -36,9 +24,7 @@ by following the instructions in our [Contributor
 Guide](http://taxcalc.readthedocs.org/en/latest/contributor_guide.html).
 
 The second way is to access the Tax Calculator through our web
-application, [TaxBrain](http://www.ospc.org/).  Do this by emailing
-[Matt Jensen](mailto:matt.jensen@aei.org) about becoming a TaxBrain
-beta tester.
+application, [TaxBrain](http://www.ospc.org/taxbrain).
 
 Conda Package for Advanced Anaconda Users
 =========================================
