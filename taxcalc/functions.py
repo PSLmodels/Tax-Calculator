@@ -1619,12 +1619,14 @@ def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _avail, _othertax):
 @iterate_jit(nopython=True)
 def OSPC_TAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
              e11450, e11500, e82040, e09900, e11400, e11300, e11200, e11100,
-             e11550, e09710, e09720, e10000):
+             e11550, e09710, e09720, e10000, _fica):
 
     _refund = (c59660 + c11070 + c10960 + c10950 + c11600 + e11580 + e11450 +
                e11500)
 
     _ospctax = c09200 - _refund - e82040
+
+    _combined = _ospctax + _fica
 
     _payments = (c59660 + c10950 + c10960 + c11070 + e10000 + e11550 + e11580 +
                  e11450)
@@ -1636,7 +1638,7 @@ def OSPC_TAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
     # if c09200 <= _eitc:
     _eitc = c59660
 
-    return (c10300, _eitc, _refund, _ospctax)
+    return (c10300, _eitc, _refund, _ospctax, _combined)
 
 
 @jit(nopython=True)

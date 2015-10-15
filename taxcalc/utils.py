@@ -5,7 +5,7 @@ from collections import defaultdict
 
 STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600',
                  'c04800', 'c05200', 'c62100', 'c09600', 'c05800', 'c09200',
-                 '_refund', 'c07100', '_ospctax', 's006']
+                 '_refund', 'c07100', '_ospctax', '_fica', '_combined', 's006']
 
 # each entry in this array corresponds to the same entry in the array
 # TABLE_LABELS below. this allows us to use TABLE_LABELS to map a
@@ -14,7 +14,7 @@ STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600',
 TABLE_COLUMNS = ['s006', 'c00100', 'num_returns_StandardDed', '_standard',
                  'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'c05200',
                  'c62100', 'num_returns_AMT', 'c09600', 'c05800', 'c07100',
-                 'c09200', '_refund', '_ospctax']
+                 'c09200', '_refund', '_ospctax', '_fica', '_combined']
 
 TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Standard Deduction', 'Itemizers',
@@ -22,7 +22,8 @@ TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Taxable Income', 'Regular Tax', 'AMTI', 'AMT Filers', 'AMT',
                 'Tax before Credits', 'Non-refundable Credits',
                 'Tax before Refundable Credits', 'Refundable Credits',
-                'Revenue']
+                'Individual Income Tax Liabilities', 'Payroll Tax Liablities',
+                'Combined Payroll and Individual Income Tax Liabilities']
 
 # used in our difference table to label the columns
 DIFF_TABLE_LABELS = ["Tax Units with Tax Cut", "Tax Units with Tax Increase",
