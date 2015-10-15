@@ -618,6 +618,7 @@ class Records(object):
         self.p27895 *= self.BF.ATXPY[year]
         self.e87530 *= self.BF.ATXPY[year]
         self.e87550 *= self.BF.ATXPY[year]
+        self.e87521 *= self.BF.ATXPY[year]
         self.RECID *= 1.
         self.s006 *= 1.
         self.s008 *= 1.
