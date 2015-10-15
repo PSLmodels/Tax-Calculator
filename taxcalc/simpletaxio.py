@@ -487,9 +487,9 @@ class SimpleTaxIO(object):
         recs.XTOT[idx] = total_num_exemptions
         # pylint: disable=protected-access
         recs._numextra[idx] = ivar[6]  # number of taxpayers age 65+
-        recs.e00200[idx] = ivar[7]  # wage+sal+se income of txpyer (+/-)
-        # recs.[idx] = ivar[8]  # wage+sal+se income of spouse (+/-)
-        # need separate taxpayer & spouse earnings variables to do above lines
+        recs.e00200p[idx] = ivar[7]  # wage+sal+se income of txpyer (+/-)
+        recs.e00200s[idx] = ivar[8]  # wage+sal+se income of spouse (+/-)
+        recs.e00200[idx] = ivar[7] + ivar[8]  # combined wage+sal+se income
         recs.e00650[idx] = ivar[9]  # qualified dividend income
         recs.e00600[idx] = ivar[9]  # qual.div. included in ordinary dividends
         recs.e00300[idx] = ivar[10]  # other property income (+/-)
