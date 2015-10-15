@@ -96,10 +96,11 @@ described above in item (4).
 The resulting OUTPUT file is in the same directory as the INPUT file
 and is called `c2013.in.out-simtax`.
 
-(2) Do same thing as in item (1) except include marginal tax rates in
+(2) Do same thing as in item (1) except suppress calculation of the
+two marginal tax rates and write zero for each marginal tax rate in
 the OUTPUT.
 
-`python ../../simtax.py --mtr c2013.in`
+`python ../../simtax.py --no-mtr c2013.in`
 
 Generating an OUTPUT file with Internet TAXSIM
 ----------------------------------------------
