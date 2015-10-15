@@ -79,6 +79,14 @@ class Calculator(object):
     def records(self):
         return self._records
 
+    def TaxInc_to_AMTI(self):
+        TaxInc(self.policy, self.records)
+        XYZD(self.policy, self.records)
+        NonGain(self.policy, self.records)
+        TaxGains(self.policy, self.records)
+        MUI(self.policy, self.records)
+        AMTI(self.policy, self.records)
+
     def calc_one_year(self):
         FilingStatus(self.policy, self.records)
         Adj(self.policy, self.records)
@@ -89,6 +97,38 @@ class Calculator(object):
         EI_FICA(self.policy, self.records)
         AMED(self.policy, self.records)
         StdDed(self.policy, self.records)
+        # Store calculated standard deduction, calculate
+        # taxes with standard deduction, store AMT + Regular Tax
+        std = copy.deepcopy(self.records._standard)
+        item = copy.deepcopy(self.records.c04470)
+        item_no_limit = copy.deepcopy(self.records.c21060)
+        self.records.c04470 = np.zeros(self.records.dim)
+        self.records.c21060 = np.zeros(self.records.dim)
+        self.TaxInc_to_AMTI()
+        std_taxes = copy.deepcopy(self.records.c05200 +
+                                  self.records.c09600)
+        # Set standard deduction to zero, calculate taxes w/o
+        # standard deduction, and store AMT + Regular Tax
+        self.records._standard = np.zeros(self.records.dim)
+        self.records.c21060 = item_no_limit
+        self.records.c04470 = item
+        self.TaxInc_to_AMTI()
+        item_taxes = copy.deepcopy(self.records.c05200 +
+                                   self.records.c09600)
+        # Replace standard deduction with zero where the taxpayer
+        # would be better off itemizing
+        self.records._standard = np.where(item_taxes <
+                                          std_taxes,
+                                          0, std)
+        self.records.c04470 = np.where(item_taxes <
+                                       std_taxes,
+                                       item, 0)
+        self.records.c21060 = np.where(item_taxes <
+                                       std_taxes,
+                                       item_no_limit, 0)
+
+        # Calculate taxes with optimal itemized deduction
+        TaxInc(self.policy, self.records)
         XYZD(self.policy, self.records)
         NonGain(self.policy, self.records)
         TaxGains(self.policy, self.records)
@@ -125,6 +165,7 @@ class Calculator(object):
         add_df(all_dfs, EI_FICA(self.policy, self.records))
         add_df(all_dfs, AMED(self.policy, self.records))
         add_df(all_dfs, StdDed(self.policy, self.records))
+        add_df(all_dfs, TaxInc(self.policy, self.records))
         add_df(all_dfs, XYZD(self.policy, self.records))
         add_df(all_dfs, NonGain(self.policy, self.records))
         add_df(all_dfs, TaxGains(self.policy, self.records))

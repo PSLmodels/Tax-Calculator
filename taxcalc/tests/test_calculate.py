@@ -57,6 +57,7 @@ def run():
     cur_set = set(totaldf.columns)
     exp_set.add('_avail')
     exp_set.add('c62100_everyone')
+    exp_set.add('x04500')
 
     assert(exp_set == cur_set)
 
