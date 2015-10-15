@@ -170,7 +170,9 @@ class Calculator(object):
     def current_year(self):
         return self.policy.current_year
 
-    def mtr(self, income_type_string, finite_diff=1.):
+    def mtr(self, income_type_string,
+            finite_diff=1.,
+            wrt_expanded_income=True):
         """
         Calculates the individual income tax, FICA, and combined marginal tax
         rates for every record. Avoids kinks in the tax schedule by finding
@@ -179,10 +181,17 @@ class Calculator(object):
 
         Parameters
         ----------
-        income_type_string: string of an income attribute on the Records class.
+        income_type_string: string
+            specifies an income attribute in the Records class.
 
-        finite_diff: the marginal amount to be added or subtracted from income
+        finite_diff: float
+            specifies marginal amount to be added or subtracted from income
             in order to calculate the marginal tax rate.
+
+        wrt_expanded_income: boolean
+            specifies whether or not marginal tax rates on earned income are
+            computed with respect to (wrt) changes in expanded income, which
+            includes the employer share of OASDHI payroll taxes.
 
         Returns
         -------
@@ -191,7 +200,6 @@ class Calculator(object):
         mtr_combined: an array of combined IIT and FICA marginal tax rates.
 
         """
-
         income_type = getattr(self.records, income_type_string)
 
         # Calculate the base level of taxes.
@@ -231,7 +239,6 @@ class Calculator(object):
                                       finite_diff,
                                       _ospctax_base - _ospctax_down,
                                       delta_ospctax_up)
-
         delta_combined_taxes_down = np.where(income_type >=
                                              finite_diff,
                                              _combined_taxes_base -
@@ -255,28 +262,27 @@ class Calculator(object):
                                         delta_combined_taxes_up,
                                         delta_combined_taxes_down)
 
-        # Calculate the marginal tax rate.
+        # Calculate marginal tax rates:
         # The rate we want is the "after-tax share of tax in compensation".
         # Since only half of the social security tax is including in wages for
         # income tax purposes, we need to increase the denominator by the
         # excluded portion of FICA.
-
-        if (income_type_string == "e00200" or
-                income_type_string == "e00200s" or
-                income_type_string == "e00200p"):
+        if (wrt_expanded_income and
+            (income_type_string == "e00200" or
+             income_type_string == "e00200s" or
+             income_type_string == "e00200p")):
             employer_fica_adjustment = np.where(self.records.e00200 <
                                                 self.policy.SS_Earnings_c,
                                                 0.5 * self.policy.FICA_ss_trt +
                                                 0.5 * self.policy.FICA_mc_trt,
                                                 0.5 * self.policy.FICA_mc_trt)
         else:
-            employer_fica_adjustment == 0.
+            employer_fica_adjustment = 0.
 
         mtr_fica = delta_fica / (finite_diff + employer_fica_adjustment)
         mtr_iit = delta_ospctax / (finite_diff + employer_fica_adjustment)
         mtr_combined = delta_combined_taxes / (finite_diff +
                                                employer_fica_adjustment)
-
         return (mtr_fica, mtr_iit, mtr_combined)
 
     def diagnostic_table(self, num_years=5):
