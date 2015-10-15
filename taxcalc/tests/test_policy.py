@@ -366,11 +366,7 @@ def test_create_parameters_from_file(policyfile):
 
 
 def test_parameters_get_default():
-    use_classmethod = True
-    if use_classmethod:
-        paramdata = Policy.default_data()
-    else:  # use legacy global default_data function
-        paramdata = taxcalc.parameters.default_data()
+    paramdata = Policy.default_data()
     assert paramdata['_CDCC_ps'] == [15000]
 
 

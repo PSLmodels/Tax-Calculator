@@ -110,3 +110,8 @@ def test_adjustment():
 
     assert calc_y.records.BF.AGDPN[2015] == AGDPN_pre + 0.01
     assert calc_y.records.BF.ATXPY[2015] == ATXPY_pre + 0.01
+
+
+def test_growth_default_data():
+    paramdata = Growth.default_data()
+    assert paramdata['_factor_adjustment'] == [[0.0]]
