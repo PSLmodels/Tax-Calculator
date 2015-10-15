@@ -171,7 +171,7 @@ class Calculator(object):
         return self.policy.current_year
 
     def mtr(self, income_type_string,
-            finite_diff=1.,
+            finite_diff=1.0,
             wrt_expanded_income=True):
         """
         Calculates the individual income tax, FICA, and combined marginal tax
@@ -198,9 +198,21 @@ class Calculator(object):
         mtr_fica: an array of FICA marginal tax rates.
         mtr_iit: an array of individual income tax marginal tax rates.
         mtr_combined: an array of combined IIT and FICA marginal tax rates.
-
         """
+        # Check validity of income_type_string parameter.
+        if income_type_string == 'e00200p':
+            pass
+        else:
+            msg = 'mtr income_type_string={} not yet supported'
+            raise ValueError(msg.format(income_type_string))
+
+        # Check for reasonable finite_diff value.
+        if finite_diff < 1.0 or finite_diff > 10.0:
+            msg = 'mtr finite_diff={} not in [1,10] range'
+            raise ValueError(msg.format(finite_diff))
+
         income_type = getattr(self.records, income_type_string)
+        earnings_type = getattr(self.records, 'e00200')
 
         # Calculate the base level of taxes.
         self.calc_all()
@@ -210,6 +222,7 @@ class Calculator(object):
 
         # Calculate the tax change with a marginal increase in income.
         setattr(self.records, income_type_string, income_type + finite_diff)
+        setattr(self.records, 'e00200', earnings_type + finite_diff)
         self.calc_all()
 
         _ospctax_up = copy.deepcopy(self.records._ospctax)
@@ -223,6 +236,8 @@ class Calculator(object):
         # Calculate the tax change with a marginal decrease in income.
         setattr(self.records, income_type_string,
                 income_type - 2 * finite_diff)
+        setattr(self.records, 'e00200',
+                earnings_type - 2 * finite_diff)
         self.calc_all()
 
         _ospctax_down = copy.deepcopy(self.records._ospctax)
@@ -248,6 +263,7 @@ class Calculator(object):
         # Reset the income_type to its starting point to avoid
         # unintended consequences.
         setattr(self.records, income_type_string, income_type + finite_diff)
+        setattr(self.records, 'e00200', earnings_type + finite_diff)
         self.calc_all()
 
         # Choose the more modest effect of either adding or subtracting income
@@ -268,9 +284,9 @@ class Calculator(object):
         # income tax purposes, we need to increase the denominator by the
         # excluded portion of FICA.
         if (wrt_expanded_income and
-            (income_type_string == "e00200" or
-             income_type_string == "e00200s" or
-             income_type_string == "e00200p")):
+            (income_type_string == 'e00200' or
+             income_type_string == 'e00200s' or
+             income_type_string == 'e00200p')):
             employer_fica_adjustment = np.where(self.records.e00200 <
                                                 self.policy.SS_Earnings_c,
                                                 0.5 * self.policy.FICA_ss_trt +
