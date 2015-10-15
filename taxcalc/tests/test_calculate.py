@@ -241,16 +241,16 @@ def test_Calculator_create_distribution_table():
 
 
 def test_calculate_mtr():
-    # Create a Parameters object
+    # Create a Policy object
     policy = Policy()
 
-    # Create a Public Use File object
+    # Create a Records object
     puf = Records(TAX_DTA, weights=WEIGHTS, start_year=2009)
 
-    # Create a Calculator
+    # Create a Calculator object
     calc = Calculator(policy=policy, records=puf)
 
-    (mtr_FICA, mtr_IIT, mtr) = calc.mtr('e00200')
+    (mtr_FICA, mtr_IIT, mtr) = calc.mtr('e00200p')
     assert type(mtr) == np.ndarray
     assert np.array_equal(mtr, mtr_FICA) == False
     assert np.array_equal(mtr_FICA, mtr_IIT) == False
