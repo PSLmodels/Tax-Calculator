@@ -20,7 +20,8 @@ else
 fi
 clear
 echo "Validation tests using SimpleTaxIO class of OSPC taxcalc package"
-for LYY in a13 a14 b13 b14 c13 c14
+#for LYY in a13 a14 b13 b14 c13 c14
+for LYY in b13
 do
     echo "`date` : $LYY"
     L=${LYY:0:1}    
@@ -30,7 +31,7 @@ do
     unzip -oq out-taxsim.zip $LYY.in.out-taxsim
     tclsh taxdiffs.tcl $X $LYY.in.out-simtax $LYY.in.out-taxsim > $LYY.taxdiffs
     git diff --name-status $LYY.taxdiffs
-    rm $LYY.in $LYY.in.out-simtax $LYY.in.out-taxsim
+    #rm $LYY.in $LYY.in.out-simtax $LYY.in.out-taxsim
 done
 echo "`date`"
 exit 0

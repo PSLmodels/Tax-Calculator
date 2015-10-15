@@ -79,6 +79,14 @@ class Calculator(object):
     def records(self):
         return self._records
 
+    def StdDed_to_AMTI(self):
+        StdDed(self.policy, self.records)
+        XYZD(self.policy, self.records)
+        NonGain(self.policy, self.records)
+        TaxGains(self.policy, self.records)
+        MUI(self.policy, self.records)
+        AMTI(self.policy, self.records)
+
     def calc_one_year(self):
         FilingStatus(self.policy, self.records)
         Adj(self.policy, self.records)
@@ -88,12 +96,25 @@ class Calculator(object):
         ItemDed(self.policy, self.records)
         EI_FICA(self.policy, self.records)
         AMED(self.policy, self.records)
-        StdDed(self.policy, self.records)
-        XYZD(self.policy, self.records)
-        NonGain(self.policy, self.records)
-        TaxGains(self.policy, self.records)
-        MUI(self.policy, self.records)
-        AMTI(self.policy, self.records)
+        # Store calculated itemized deductions, calculate
+        # taxes with itemized deductions, store AMT + Regular Tax
+        item = copy.deepcopy(self.records.c04470)
+        self.StdDed_to_AMTI()
+        item_taxes = copy.deepcopy(self.records.c05200 +
+                                   self.records.c09600)
+        # Set itemized deductions to zero, calculate taxes w/o
+        # itemized deductions, and store AMT + Regular Tax
+        self.records.c04470 = np.zeros(self.records.dim)
+        self.StdDed_to_AMTI()
+        no_item_taxes = copy.deepcopy(self.records.c05200 +
+                                      self.records.c09600)
+        # Replace itemized deductions with zero where the taxpayer
+        # would be better of taking standard deduction
+        self.records.c04470 = np.where(no_item_taxes <
+                                       item_taxes,
+                                       0, item)
+        # Calculate taxes with optimal itemized deduction
+        self.StdDed_to_AMTI()
         F2441(self.policy, self.records)
         DepCareBen(self.policy, self.records)
         ExpEarnedInc(self.policy, self.records)
