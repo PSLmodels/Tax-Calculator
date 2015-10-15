@@ -100,7 +100,7 @@ and is called `c2013.in.out-simtax`.
 two marginal tax rates and write zero for each marginal tax rate in
 the OUTPUT.
 
-`python ../../simtax.py --no-mtr c2013.in`
+`python ../../simtax.py --nomtr c2013.in`
 
 Generating an OUTPUT file with Internet TAXSIM
 ----------------------------------------------

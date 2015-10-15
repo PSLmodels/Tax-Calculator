@@ -64,13 +64,13 @@ class SimpleTaxIO(object):
         self._calc = self._calc_object()
         self._output = {}
 
-    def calculate(self, calc_marginal_tax_rates=False, write_output_file=True):
+    def calculate(self, no_marginal_tax_rates=False, write_output_file=True):
         """
         Calculate taxes for all INPUT lines and write OUTPUT to file.
 
         Parameters
         ----------
-        calc_marginal_tax_rates: boolean
+        no_marginal_tax_rates: boolean
 
         write_output_file: boolean
 
@@ -91,8 +91,9 @@ class SimpleTaxIO(object):
                     ovar = SimpleTaxIO._extract_output(self._calc.records, idx,
                                                        self._input[lnum])
                     self._output[lnum] = ovar
-            if calc_marginal_tax_rates:
-                mtr_fica, mtr_itax, _ = self._calc.mtr('e00200')
+            if not no_marginal_tax_rates:
+                (mtr_fica, mtr_itax,
+                 _) = self._calc.mtr('e00200', wrt_expanded_income=True)
                 for idx in range(0, self._calc.records.dim):
                     indyr = cr_taxyr[idx]
                     if indyr == calcyr:
