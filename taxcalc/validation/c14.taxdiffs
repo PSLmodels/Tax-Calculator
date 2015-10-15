@@ -1,7 +1,7 @@
-TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]=  7  86005      0     15.00 [9977]
-      #big_vardiffs_with_big_inctax_diff=             4243
-TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]=  9 100000      0    -12.61 [1]
-      #big_vardiffs_with_big_inctax_diff=             4243
+TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]=  7    449     42     15.00 [9977]
+      #big_vardiffs_with_big_inctax_diff=              390
+TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]=  9      8      0      0.90 [1527]
+      #big_vardiffs_with_big_inctax_diff=                3
 TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]= 17   5513      0  77000.00 [36935]
       #big_vardiffs_with_big_inctax_diff=              290
 TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]= 18   2609      0 -29900.00 [25442]
