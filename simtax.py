@@ -42,11 +42,11 @@ def main():
                               '//-comments. No REFORM filename implies use '
                               'of current-law policy.'),
                         default=None)
-    parser.add_argument('--mtr',
-                        help=('optional flag to include marginal federal '
+    parser.add_argument('--nomtr',
+                        help=('optional flag to exclude marginal federal '
                               'income tax rate and marginal FICA tax rate '
-                              'in OUTPUT.  No --mtr flag implies those two '
-                              'marginal tax rates are set to zero.'),
+                              'from OUTPUT.  Using --nomtr flag implies '
+                              'those two marginal tax rates are set to zero.'),
                         default=False,
                         action="store_true")
     parser.add_argument('INPUT',
@@ -60,7 +60,7 @@ def main():
         return 0
     # instantiate SimpleTaxIO object and do tax calculations
     simtax = SimpleTaxIO(args.INPUT, args.reform)
-    simtax.calculate(calc_marginal_tax_rates=args.mtr)
+    simtax.calculate(no_marginal_tax_rates=args.nomtr)
     # return no-error exit code
     return 0
 # end of main function code

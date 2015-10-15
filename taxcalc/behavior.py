@@ -54,10 +54,10 @@ def behavior(calc_x, calc_y, update_income=update_income):
     """
 
     # Calculate marginal tax rates for plan x and plan y.
-    fica_mtr_x, iit_mtr_x, combined_mtr_x = calc_x.mtr('e00200')
+    fica_mtr_x, iit_mtr_x, combined_mtr_x = calc_x.mtr('e00200p')
     mtr_x = combined_mtr_x
 
-    fica_mtr_y, iit_mtr_y, combined_mtr_y = calc_y.mtr('e00200')
+    fica_mtr_y, iit_mtr_y, combined_mtr_y = calc_y.mtr('e00200p')
     mtr_y = combined_mtr_y
 
     # Calculate the percent change in after-tax rate.
