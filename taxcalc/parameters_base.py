@@ -1,9 +1,11 @@
 import os
 import json
 import numpy as np
+from abc import ABCMeta
 
 
 class ParametersBase(object):
+    __metaclass__ = ABCMeta
 
     '''Inherit from this class for Parameters, Behavior,
     and other groups of parameters that need to have
@@ -11,6 +13,89 @@ class ParametersBase(object):
     and DEFAULTS_FILENAME.'''
 
     DEFAULTS_FILENAME = None
+
+    @classmethod
+    def default_data(cls, metadata=False, start_year=None):
+        """
+        Return parametet data read from the subclass's json file.
+
+        Parameters
+        ----------
+        metadata: boolean
+
+        start_year: int
+
+        Returns
+        -------
+        params: dictionary of data
+        """
+        # extract different data from current_law_policy.json depending on
+        # start_year
+        if start_year:  # if start_year is not None
+            nyrs = start_year - cls.JSON_START_YEAR + 1
+            ppo = cls(num_years=nyrs)
+            ppo.set_year(start_year)
+            params = getattr(ppo, '_vals')
+            params = ParametersBase._revised_default_data(params, start_year,
+                                                          nyrs, ppo)
+        else:  # if start_year is None
+            params = cls._params_dict_from_json_file()
+        # return different data from params dict depending on metadata value
+        if metadata:
+            return params
+        else:
+            return {name: data['value'] for name, data in params.items()}
+
+    # ----- begin private methods of Policy class -----
+
+    @staticmethod
+    def _revised_default_data(params, start_year, nyrs, ppo):
+        """
+        Return revised default parameter data.
+
+        Parameters
+        ----------
+        params: dictionary of NAME:DATA pairs for each parameter
+            as defined in calling default_data staticmethod.
+
+        start_year: int
+            as defined in calling default_data staticmethod.
+
+        nyrs: int
+            as defined in calling default_data staticmethod.
+
+        ppo: Policy object
+            as defined in calling default_data staticmethod.
+
+        Returns
+        -------
+        params: dictionary of revised parameter data
+
+        Notes
+        -----
+        This staticmethod is called from default_data staticmethod in
+        order to reduce the complexity of the default_data staticmethod.
+        """
+        import numpy as np
+        start_year_str = '{}'.format(start_year)
+        for name, data in params.items():
+            data['start_year'] = start_year
+            values = data['value']
+            num_values = len(values)
+            if num_values <= nyrs:
+                # val should be the single start_year value
+                rawval = getattr(ppo, name[1:])
+                if isinstance(rawval, np.ndarray):
+                    val = rawval.tolist()
+                else:
+                    val = rawval
+                data['value'] = [val]
+                data['row_label'] = [start_year_str]
+            else:  # if num_values > nyrs
+                # val should extend beyond the start_year value
+                data['value'] = data['value'][(nyrs - 1):]
+                data['row_label'] = data['row_label'][(nyrs - 1):]
+        return params
 
     def __init__(self, *args, **kwargs):
         msg = 'Override __init__ and call self.initialize from it.'
