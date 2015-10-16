@@ -363,7 +363,7 @@ class Records(object):
                     '_amed', '_xlin3', '_xlin6', '_cmbtp_itemizer',
                     '_cmbtp_standard', '_expanded_income', 'c07300',
                     'c07600', 'c07240', 'c62100_everyone',
-                    '_surtax']
+                    '_surtax', 'x04500']
 
     def __init__(self,
                  data="puf.csv",
@@ -618,6 +618,7 @@ class Records(object):
         self.p27895 *= self.BF.ATXPY[year]
         self.e87530 *= self.BF.ATXPY[year]
         self.e87550 *= self.BF.ATXPY[year]
+        self.e87521 *= self.BF.ATXPY[year]
         self.RECID *= 1.
         self.s006 *= 1.
         self.s008 *= 1.
