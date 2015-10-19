@@ -5,7 +5,7 @@ dependencies:
 - python
 - numpy <= 1.9.3
 - pandas <=0.16.1
-- numba
+- numba <= 0.19.1
 - toolz
 - six
 - ipython
