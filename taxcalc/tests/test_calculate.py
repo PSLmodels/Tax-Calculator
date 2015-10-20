@@ -57,6 +57,7 @@ def run():
     cur_set = set(totaldf.columns)
     exp_set.add('_avail')
     exp_set.add('c62100_everyone')
+    exp_set.add('_combined')
     exp_set.add('x04500')
 
     assert(exp_set == cur_set)
@@ -231,7 +232,9 @@ def test_Calculator_create_distribution_table():
                    'Taxable Income', 'Regular Tax', 'AMTI', 'AMT Filers',
                    'AMT', 'Tax before Credits', 'Non-refundable Credits',
                    'Tax before Refundable Credits', 'Refundable Credits',
-                   'Revenue']
+                   'Individual Income Tax Liabilities',
+                   'Payroll Tax Liablities',
+                   'Combined Payroll and Individual Income Tax Liabilities']
     dt1 = create_distribution_table(calc, groupby="weighted_deciles",
                                     result_type="weighted_sum")
     dt1.columns = dist_labels
