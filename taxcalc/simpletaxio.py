@@ -64,13 +64,13 @@ class SimpleTaxIO(object):
         self._calc = self._calc_object()
         self._output = {}
 
-    def calculate(self, calc_marginal_tax_rates=False, write_output_file=True):
+    def calculate(self, no_marginal_tax_rates=False, write_output_file=True):
         """
         Calculate taxes for all INPUT lines and write OUTPUT to file.
 
         Parameters
         ----------
-        calc_marginal_tax_rates: boolean
+        no_marginal_tax_rates: boolean
 
         write_output_file: boolean
 
@@ -91,8 +91,9 @@ class SimpleTaxIO(object):
                     ovar = SimpleTaxIO._extract_output(self._calc.records, idx,
                                                        self._input[lnum])
                     self._output[lnum] = ovar
-            if calc_marginal_tax_rates:
-                mtr_fica, mtr_itax, _ = self._calc.mtr('e00200')
+            if not no_marginal_tax_rates:
+                (mtr_fica, mtr_itax,
+                 _) = self._calc.mtr('e00200p', wrt_adjusted_income=False)
                 for idx in range(0, self._calc.records.dim):
                     indyr = cr_taxyr[idx]
                     if indyr == calcyr:
@@ -437,7 +438,7 @@ class SimpleTaxIO(object):
             zero_dict[names[1]] = 0
         dict_list = [zero_dict for _ in range(0, len(self._input))]
         # use dict_list to create a Pandas DataFrame and Records object
-        recsdf = pd.DataFrame(dict_list, dtype='int32')
+        recsdf = pd.DataFrame(dict_list, dtype='int64')
         recs = Records(data=recsdf, start_year=2013)
         assert recs.dim == len(self._input)
         # specify input for each tax filing unit in Records object
@@ -487,9 +488,9 @@ class SimpleTaxIO(object):
         recs.XTOT[idx] = total_num_exemptions
         # pylint: disable=protected-access
         recs._numextra[idx] = ivar[6]  # number of taxpayers age 65+
-        recs.e00200[idx] = ivar[7]  # wage+sal+se income of txpyer (+/-)
-        # recs.[idx] = ivar[8]  # wage+sal+se income of spouse (+/-)
-        # need separate taxpayer & spouse earnings variables to do above lines
+        recs.e00200p[idx] = ivar[7]  # wage+sal+se income of txpyer (+/-)
+        recs.e00200s[idx] = ivar[8]  # wage+sal+se income of spouse (+/-)
+        recs.e00200[idx] = ivar[7] + ivar[8]  # combined wage+sal+se income
         recs.e00650[idx] = ivar[9]  # qualified dividend income
         recs.e00600[idx] = ivar[9]  # qual.div. included in ordinary dividends
         recs.e00300[idx] = ivar[10]  # other property income (+/-)

@@ -417,11 +417,8 @@ def AMED(_fica, e00200, MARS, AMED_thd, _sey, AMED_trt,
 
 @iterate_jit(nopython=True, puf=True)
 def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
-           MARS, MIDR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200, e02400,
-           STD_Aged, c04470, c00100, c21060, c21040, e37717, c04600, e04805,
-           t04470, f6251, _feided, c02700, FDED, II_rt1, II_rt2, II_rt3,
-           II_rt4, II_rt5, II_rt6, II_rt7, II_brk1, II_brk2, II_brk3, II_brk4,
-           II_brk5, II_brk6, _txpyers, _numextra, puf):
+           MARS, MIDR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200,
+           STD_Aged, _txpyers, f6251, _numextra, puf):
 
     """
 
@@ -459,22 +456,6 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
         requirement indicator:
             0 - not necessary to itemize because of filing status
             1 - necessary to itemize when filing separately
-
-        FDED : Form of deduction
-            0 - itemized deductions
-            1 - standard deduction
-            2 - taxpayer did not use itemized or standard deduction
-
-    Intermediate Variable:
-        c00100 : AGI
-
-        c04470 : Itemized deduction amount: set to zero if not itemizer
-
-        c04800 : Taxable Income.
-
-        _taxinc : Taxable income less limited exemptions
-
-
 
 
     Returns
@@ -527,6 +508,17 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
     if (MARS == 3 or MARS == 6) and (MIDR == 1):
         _standard = 0.
 
+    return _standard, c04200, _numextra, c15200, c15100, x04500, _txpyers
+
+
+@iterate_jit(nopython=True, puf=False)
+def TaxInc(c00100, c04470, c04100, _standard, e37717, c21060, c21040,
+           e04470, c04200, c04500, c04600, x04500,
+           e04805, t04470, f6251, _exact, _feided, c04800, MARS,
+           II_rt1, II_rt2, II_rt3, II_rt4,
+           II_rt5, II_rt6, II_rt7, II_brk1, II_brk2, II_brk3,
+           II_brk4, II_brk5, II_brk6, _numextra, FDED, c02700):
+
     # c04500 = c00100 - max(c04470, max(c04100, _standard + e37717))
     c04500 = c00100 - max(c21060 - c21040, _standard + e37717)
 
@@ -541,11 +533,11 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
     c04800 = max(0., c04500 - c04600 - e04805)
 
     # Check with Dan whether this is right!
-    if c04470 > _standard:
-        _standard = 0.
+    # if c04470 > _standard:
+    #     _standard = 0.
 
-    if c04470 <= _standard:
-        c04470 = 0.
+    # if c04470 <= _standard:
+    #     c04470 = 0.
 
     # why is this here, c60000 is reset many times?
     if _standard > 0:
@@ -577,8 +569,8 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
     else:
         _feitax, _oldfei = 0., 0.
 
-    return (c15100, _numextra, _txpyers, c15200, c04470, _othded, c04100,
-            c04200, _standard, c04500, c04800, c60000, _amtstd, _taxinc,
+    return (c04470, _othded, c04100,
+            c04500, c04800, c60000, _amtstd, _taxinc,
             _feitax, _oldfei)
 
 

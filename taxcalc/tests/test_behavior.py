@@ -86,3 +86,8 @@ def test_update_behavior():
     assert b.current_year == 2015
     assert b.BE_sub == 0.5
     assert b.BE_inc == 0.0
+
+
+def test_behavior_default_data():
+    paramdata = Behavior.default_data()
+    assert paramdata['_BE_sub'] == [0.0]
