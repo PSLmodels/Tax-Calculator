@@ -64,7 +64,7 @@ Setup Git
    .. code-block:: python
 
       $ cd tax-calculator
-      tax-calculator$ git remote add upstream https://github.com/opensourcepolicycenter/tax-calculator.git
+      tax-calculator$ git remote add upstream https://github.com/open-source-economics/tax-calculator.git
 
 9. Create a conda environment with all of the necessary packages to
    execute the source code:
@@ -248,7 +248,7 @@ sample notebook: `10 Minutes To TaxCalc`_.
    https://help.github.com/articles/caching-your-github-password-in-git/
 
 .. _`Tax Calculator's GitHub page`: 
-   https://github.com/OpenSourcePolicyCenter/Tax-Calculator
+   https://github.com/open-source-economics/Tax-Calculator
 
 .. _`repository`:
    https://help.github.com/articles/github-glossary/#repository
@@ -263,11 +263,11 @@ sample notebook: `10 Minutes To TaxCalc`_.
    https://guides.github.com/introduction/flow/
 
 .. _`10 Minutes To TaxCalc`:
-   http://nbviewer.ipython.org/github/OpenSourcePolicyCenter/Tax-Calculator/
+   http://nbviewer.ipython.org/github/open-source-economics/Tax-Calculator/
    blob/master/docs/notebooks/10_Minutes_to_Taxcalc.ipynb
 
 .. _`Behavior Example`:
-   http://nbviewer.ipython.org/github/OpenSourcePolicyCenter/Tax-Calculator/
+   http://nbviewer.ipython.org/github/open-source-economics/Tax-Calculator/
    blob/master/docs/notebooks/Behavioral_example.ipynb
 
 .. _`Continuum Analytics`:
