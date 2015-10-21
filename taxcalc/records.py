@@ -267,6 +267,7 @@ class Records(object):
              ('RECID', 'recid'),
              ('wage_head', 'wage_head'),
              ('wage_spouse', 'wage_spouse'),
+             ('age', 'age'),
              ('s006', 's006'),
              ('s008', 's008'),
              ('s009', 's009'),

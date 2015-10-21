@@ -240,19 +240,16 @@ class Calculator(object):
         mtr_iit: an array of individual income tax marginal tax rates.
         mtr_combined: an array of combined IIT and FICA marginal tax rates.
         """
-        # Check validity of income_type_string parameter.
-        if income_type_string == 'e00200p':
-            pass
-        else:
-            msg = 'mtr income_type_string={} not yet supported'
-            raise ValueError(msg.format(income_type_string))
 
         # Check for reasonable value of finite_diff parameter.
         if finite_diff <= 0.0 or finite_diff > 10.0:
             msg = 'mtr finite_diff={} not in (0,10] range'
             raise ValueError(msg.format(finite_diff))
 
-        income_type = getattr(self.records, income_type_string)
+        income_dict = {}
+        for income_type in income_type_string:
+            income_dict[income_type] = getattr(self.records, income_type)
+
         earnings_type = getattr(self.records, 'e00200')
 
         # Calculate the base level of taxes.
@@ -262,7 +259,10 @@ class Calculator(object):
         _combined_taxes_base = _ospctax_base + _fica_base
 
         # Calculate the tax change with a marginal increase in income.
-        setattr(self.records, income_type_string, income_type + finite_diff)
+        for income_type in income_type_string:
+            setattr(self.records, income_type,
+                    income_dict[income_type] + finite_diff)
+
         setattr(self.records, 'e00200', earnings_type + finite_diff)
         self.calc_all()
 
@@ -275,8 +275,10 @@ class Calculator(object):
         delta_combined_taxes_up = _combined_taxes_up - _combined_taxes_base
 
         # Calculate the tax change with a marginal decrease in income.
-        setattr(self.records, income_type_string,
-                income_type - 2 * finite_diff)
+        for income_type in income_type_string:
+            setattr(self.records, income_type,
+                    income_dict[income_type] - 2 * finite_diff)
+
         setattr(self.records, 'e00200',
                 earnings_type - 2 * finite_diff)
         self.calc_all()
@@ -287,23 +289,28 @@ class Calculator(object):
 
         # We never take the downward version
         # when the taxpayer's wages are sent negative.
-        delta_fica_down = np.where(income_type >=
-                                   finite_diff,
+
+        total = np.zeros(len(self.records.s006))
+        for income_type in income_type_string:
+            total += income_dict[income_type]
+
+        delta_fica_down = np.where(total <= finite_diff,
                                    _fica_base - _fica_down,
                                    delta_fica_up)
-        delta_ospctax_down = np.where(income_type >=
-                                      finite_diff,
+        delta_ospctax_down = np.where(total >= finite_diff,
                                       _ospctax_base - _ospctax_down,
                                       delta_ospctax_up)
-        delta_combined_taxes_down = np.where(income_type >=
-                                             finite_diff,
+        delta_combined_taxes_down = np.where(total >= finite_diff,
                                              _combined_taxes_base -
                                              _combined_taxes_down,
                                              delta_combined_taxes_up)
 
         # Reset the income_type to its starting point to avoid
         # unintended consequences.
-        setattr(self.records, income_type_string, income_type + finite_diff)
+        for income_type in income_type_string:
+            setattr(self.records, income_type,
+                    income_dict[income_type] + finite_diff)
+
         setattr(self.records, 'e00200', earnings_type + finite_diff)
         self.calc_all()
 
@@ -325,9 +332,9 @@ class Calculator(object):
         # income tax purposes, we need to increase the denominator by the
         # excluded portion of FICA.
         if (wrt_adjusted_income and
-            (income_type_string == 'e00200' or
-             income_type_string == 'e00200s' or
-             income_type_string == 'e00200p')):
+            (income_type_string == ['e00200'] or
+             income_type_string == ['e00200s'] or
+             income_type_string == ['e00200p'])):
             employer_fica_adjustment = np.where(self.records.e00200 <
                                                 self.policy.SS_Earnings_c,
                                                 0.5 * self.policy.FICA_ss_trt +
