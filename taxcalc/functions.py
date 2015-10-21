@@ -881,12 +881,6 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
                   e60600 + e60405 + e60440 + e60420 + e60410 + e61400 +
                   e60660 - c60260 - e60480 - e62000 + c60000 - e60250)
 
-    if (puf and (_standard == 0 or (_exact == 1 and e04470 > 0))):
-
-        _edical = max(0., e17500 - max(0., e00100) * 0.075)
-    else:
-        _edical = 0.
-
     if (puf and ((_standard == 0 or (_exact == 1 and e04470 > 0)) and
                  f6251 == 1)):
         _cmbtp = _cmbtp_itemizer
@@ -951,22 +945,18 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
 
     c62700 = max(0., c62100 - c62600)
 
-    _alminc = c62700
-
     if (c02700 > 0):
         _alminc = max(0., c62100 - c62600)
-
         _amtfei = (AMT_trt1 * c02700 + AMT_trt2 *
                    max(0., c02700 - AMT_tthd / _sep))
     else:
         _alminc = c62700
-
         _amtfei = 0.
 
     c62780 = (AMT_trt1 * _alminc + AMT_trt2 *
               max(0., _alminc - AMT_tthd / _sep) - _amtfei)
 
-    if f6251 != 0:
+    if f6251 == 1:
         c62900 = float(e62900)
     else:
         c62900 = float(e07300)
@@ -984,8 +974,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
 
     _ngamty = max(0., _alminc - c62740)
 
-    c62745 = AMT_trt1 * _ngamty + AMT_trt2 * \
-        max(0., _ngamty - AMT_tthd / _sep)
+    c62745 = AMT_trt1 * _ngamty + AMT_trt2 * max(0., _ngamty - AMT_tthd / _sep)
 
     y62745 = AMT_tthd / _sep
 
@@ -995,8 +984,8 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
 
     _amt5pc = 0.0
 
-    _amt15pc = min(_alminc, c62720) - _amt5pc - min(max(
-        0., AMT_CG_thd1[MARS - 1] - c24520), min(_alminc, c62720))
+    _amt15pc = (min(_alminc, c62720) - _amt5pc - min(max(
+                0., AMT_CG_thd1[MARS - 1] - c24520), min(_alminc, c62720)))
     if c04800 == 0:
         _amt15pc = max(0., min(_alminc, c62720) - AMT_CG_thd1[MARS - 1])
 
@@ -1035,7 +1024,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
     c05800 = _taxbc + c63200
 
     return (c62720, c60260, c63100, c60200, c60240, c60220, c60000,
-            c60130, c62730, _addamt, c62100, _edical, c04500,
+            c60130, c62730, _addamt, c62100, c04500,
             _amtsepadd, c62600, _agep, _ages, c62700,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
             _ngamty, c62745, y62745, _tamt2, _amt5pc, _amt15pc,
