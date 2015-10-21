@@ -254,7 +254,7 @@ def test_calculate_mtr():
     # Create a Calculator object
     calc = Calculator(policy=policy, records=puf)
 
-    (mtr_FICA, mtr_IIT, mtr) = calc.mtr('e00200p')
+    (mtr_FICA, mtr_IIT, mtr) = calc.mtr(['e00200p'])
     assert type(mtr) == np.ndarray
     assert np.array_equal(mtr, mtr_FICA) == False
     assert np.array_equal(mtr_FICA, mtr_IIT) == False
