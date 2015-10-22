@@ -211,7 +211,7 @@ class Calculator(object):
     def current_year(self):
         return self.policy.current_year
 
-    def mtr(self, income_type_string,
+    def mtr(self, income_type_list,
             finite_diff=1.0,
             wrt_adjusted_income=True):
         """
@@ -222,8 +222,8 @@ class Calculator(object):
 
         Parameters
         ----------
-        income_type_string: string
-            specifies an income attribute in the Records class.
+        income_type_list: list of strings
+            specifies a list of income attribute in the Records class.
 
         finite_diff: float
             specifies marginal amount to be added or subtracted from income
@@ -247,7 +247,7 @@ class Calculator(object):
             raise ValueError(msg.format(finite_diff))
 
         income_dict = {}
-        for income_type in income_type_string:
+        for income_type in income_type_list:
             income_dict[income_type] = getattr(self.records, income_type)
 
         earnings_type = getattr(self.records, 'e00200')
@@ -259,9 +259,10 @@ class Calculator(object):
         _combined_taxes_base = _ospctax_base + _fica_base
 
         # Calculate the tax change with a marginal increase in income.
-        for income_type in income_type_string:
+        for income_type in income_type_list:
             setattr(self.records, income_type,
                     income_dict[income_type] + finite_diff)
+            break
 
         setattr(self.records, 'e00200', earnings_type + finite_diff)
         self.calc_all()
@@ -275,9 +276,10 @@ class Calculator(object):
         delta_combined_taxes_up = _combined_taxes_up - _combined_taxes_base
 
         # Calculate the tax change with a marginal decrease in income.
-        for income_type in income_type_string:
+        for income_type in income_type_list:
             setattr(self.records, income_type,
                     income_dict[income_type] - 2 * finite_diff)
+            break
 
         setattr(self.records, 'e00200',
                 earnings_type - 2 * finite_diff)
@@ -291,7 +293,7 @@ class Calculator(object):
         # when the taxpayer's wages are sent negative.
 
         total = np.zeros(len(self.records.s006))
-        for income_type in income_type_string:
+        for income_type in income_type_list:
             total += income_dict[income_type]
 
         delta_fica_down = np.where(total <= finite_diff,
@@ -307,7 +309,7 @@ class Calculator(object):
 
         # Reset the income_type to its starting point to avoid
         # unintended consequences.
-        for income_type in income_type_string:
+        for income_type in income_type_list:
             setattr(self.records, income_type,
                     income_dict[income_type] + finite_diff)
 
@@ -332,9 +334,9 @@ class Calculator(object):
         # income tax purposes, we need to increase the denominator by the
         # excluded portion of FICA.
         if (wrt_adjusted_income and
-            (income_type_string == ['e00200'] or
-             income_type_string == ['e00200s'] or
-             income_type_string == ['e00200p'])):
+            (income_type_list == ['e00200'] or
+             income_type_list == ['e00200s'] or
+             income_type_list == ['e00200p'])):
             employer_fica_adjustment = np.where(self.records.e00200 <
                                                 self.policy.SS_Earnings_c,
                                                 0.5 * self.policy.FICA_ss_trt +
