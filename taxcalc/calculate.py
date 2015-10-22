@@ -241,6 +241,24 @@ class Calculator(object):
         mtr_combined: an array of combined IIT and FICA marginal tax rates.
         """
 
+        # At this point if the income type is wage and salaries (WAS)
+        # Only the splitted primary filer's WAS's allowed in this function
+        for income_type in income_type_list:
+            if income_type == 'e00200' or 'e00200s':
+                msg = 'Only e00200p is allowed for this type of income.'
+                ValueError(msg)
+            elif income_type == 'e00900' or 'e00900s':
+                msg = 'Only e00900p is allowed for this type of income.'
+                ValueError(msg)
+            elif income_type == 'e02100' or 'e02100s':
+                msg = 'Only e02100p is allowed for this type of income.'
+                ValueError(msg)
+            elif income_type[:1] != 'e' or 'p':
+                msg = 'Please use the PUF variables for this MTR calculation.'
+                ValueError(msg)
+            else:
+                pass
+
         # Check for reasonable value of finite_diff parameter.
         if finite_diff <= 0.0 or finite_diff > 10.0:
             msg = 'mtr finite_diff={} not in (0,10] range'
