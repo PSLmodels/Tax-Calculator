@@ -1,7 +1,7 @@
 {   "_BE_inc":{
         "start_year": 2013,
         "long_name": "Income effect",
-        "description": "The taxpayer's taxable income changes according to the product of this parameter and the change in tax liability that would have occurred as a result of specified policy change in the absence of any behavioral response.",
+        "description": "Change in the demand for leisure (negative of labor supply) per penny of change in after tax income, evaluated at the PlanX level of income and deductions. That is, the work response to a lump sum tax.",
         "row_label": ["2013"],
         "col_label": "",
         "value": [0.0]
