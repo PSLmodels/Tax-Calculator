@@ -271,6 +271,7 @@ def weighted_avg_allcols(df, cols, income_measure='_expanded_income'):
 
     return diff
 
+
 def add_columns(res):
     # weight of returns with positive AGI and
     # itemized deduction greater than standard deduction
@@ -293,9 +294,10 @@ def add_columns(res):
 
     return res
 
+
 def create_distribution_table(calc, groupby, result_type,
                               income_measure='_expanded_income',
-                              base_calc = None):
+                              base_calc=None):
     """
     Gets results given by the tax calculator, sorts them based on groupby, and
         manipulates them based on result_type. Returns these as a table
@@ -328,10 +330,10 @@ def create_distribution_table(calc, groupby, result_type,
     -------
     DataFrame object
     """
-    
+
     # check whether baseline calculator exist
     # keep reform plan
-    if base_calc == None:
+    if base_calc is None:
         res = results(calc)
         res = add_columns(res)
     else:
@@ -339,7 +341,7 @@ def create_distribution_table(calc, groupby, result_type,
         resY = add_columns(resY)
         resX = results(base_calc)
         resX = add_columns(resX)
-        
+
         res = resY.subtract(resX)
         res['c00100'] = resX['c00100']
         res['_expanded_income'] = resX['_expanded_income']
@@ -362,10 +364,11 @@ def create_distribution_table(calc, groupby, result_type,
                "'small_income_bins' or 'large_income_bins' or"
                "'webapp_income_bins'")
         raise ValueError(err)
-    
-    if base_calc != None:
+
+    if base_calc is not None:
         df['c00100'] = resY['c00100'] - resX['c00100']
-        df['_expanded_income'] = resY['_expanded_income'] - resX['_expanded_income']
+        df['_expanded_income'] = (resY['_expanded_income'] -
+                                  resX['_expanded_income'])
 
     # manipulates the data
     pd.options.display.float_format = '{:8,.0f}'.format
@@ -387,7 +390,7 @@ def create_distribution_table(calc, groupby, result_type,
 
 def create_difference_table(calc1, calc2, groupby,
                             income_measure='_expanded_income',
-                            income_to_present = '_ospctax'):
+                            income_to_present='_ospctax'):
     """
     Gets results given by the two different tax calculators and outputs
         a table that compares the differing results.
