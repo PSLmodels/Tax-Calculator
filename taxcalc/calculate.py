@@ -105,16 +105,14 @@ class Calculator(object):
         self.records.c04470 = np.zeros(self.records.dim)
         self.records.c21060 = np.zeros(self.records.dim)
         self.TaxInc_to_AMTI()
-        std_taxes = copy.deepcopy(self.records.c05200 +
-                                  self.records.c09600)
+        std_taxes = copy.deepcopy(self.records.c05800)
         # Set standard deduction to zero, calculate taxes w/o
         # standard deduction, and store AMT + Regular Tax
         self.records._standard = np.zeros(self.records.dim)
         self.records.c21060 = item_no_limit
         self.records.c04470 = item
         self.TaxInc_to_AMTI()
-        item_taxes = copy.deepcopy(self.records.c05200 +
-                                   self.records.c09600)
+        item_taxes = copy.deepcopy(self.records.c05800)
         # Replace standard deduction with zero where the taxpayer
         # would be better off itemizing
         self.records._standard = np.where(item_taxes <

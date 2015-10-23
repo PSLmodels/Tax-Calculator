@@ -55,10 +55,6 @@ def run():
     exp_results = pd.read_csv(exp_results_file, compression='gzip')
     exp_set = set(exp_results.columns)  # fix-up to bad colname in exp_results
     cur_set = set(totaldf.columns)
-    exp_set.add('_avail')
-    exp_set.add('c62100_everyone')
-    exp_set.add('_combined')
-    exp_set.add('x04500')
 
     assert(exp_set == cur_set)
 

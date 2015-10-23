@@ -826,12 +826,12 @@ def TaxGains(e00650, c01000, c04800, e01000, c23650, e23250, e01100, e58990,
 def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
          e60300, e60860, e60100, e60840, e60630, e60550, FDED, e62740,
          e60720, e60430, e60500, e60340, e60680, e60600, e60405, e24516,
-         e60440, e60420, e60410, e61400, e60660, e60480, c21060,
+         e60440, e60420, e60410, e61400, e60660, e60480, c21060, e62720,
          e62000, e60250, _cmp, _standard, e04470, e17500, c04600,
          f6251, e62100, e21040, e20800, c00100, _statax, e60000,
          c04470, c17000, e18500, c20800, c21040, NIIT, e62730,
          DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700,
-         e00100, e24515, x62730, x60130, e18400,
+         e00100, e24515, x62730, x60130, e18400, _amed,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
          II_brk6, MARS, _sep, II_brk2, AMT_Child_em, AMT_CG_rt1,
          AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516,
@@ -841,13 +841,23 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
          _cmbtp_standard, ID_StateLocalTax_HC, ID_Medical_HC,
          ID_Miscellaneous_HC, puf):
 
+    # if e62720 != 0 and e24517 > 0:
+    #    x62720 = e62720 - e24517
     c62720 = c24517 + x62720
+    # if e60260 != 0 and e00700 > 0:
+    #    x60260 = e60260 - e00700
     c60260 = e00700 + x60260
     # QUESTION: c63100 variable is reassigned below before use, is this a BUG?
     c63100 = max(0., _taxbc - e07300)
     c60200 = min((1 - ID_Medical_HC) * c17000, 0.025 * _posagi)
+    # if e60240 != 0 and e18300 > 0:
+    #    x60240 = e60240 - e18300
     c60240 = (1 - ID_StateLocalTax_HC) * c18300 + x60240
+    # if e60220 != 0 and e20800 > 0:
+    #    x60220 = e60220 - e20800
     c60220 = (1 - ID_Miscellaneous_HC) * c20800 + x60220
+    # if e60130 != 0 and e21040 > 0:
+    #    x60130 = e60130 - e21040
     c60130 = c21040 + x60130
     # imputation for x62730
     if e62730 != 0 and e24515 > 0:
@@ -881,35 +891,22 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
                   e60600 + e60405 + e60440 + e60420 + e60410 + e61400 +
                   e60660 - c60260 - e60480 - e62000 + c60000 - e60250)
 
-    if (puf and (_standard == 0 or (_exact == 1 and e04470 > 0))):
-
-        _edical = max(0., e17500 - max(0., e00100) * 0.075)
-    else:
-        _edical = 0.
-
-    if (puf and ((_standard == 0 or (_exact == 1 and e04470 > 0)) and
-                 f6251 == 1)):
-        _cmbtp = _cmbtp_itemizer
-        # (-1 * min(_edical, 0.025 * max(0., e00100)) + e62100 +
-        #          c60260 + e04470 + e21040 - _statax -
-        #          e00100 - e18500 - e20800)
-    else:
-        _cmbtp = 0.
-
     if (puf and ((_standard == 0 or (_exact == 1 and e04470 > 0)))):
+        if f6251 == 1:
+            _cmbtp = _cmbtp_itemizer
+        else:
+            _cmbtp = 0.
         c62100 = (c00100 - c04470 + max(0., min((1 - ID_Medical_HC) * c17000,
                   0.025 * c00100)) +
                   (1 - ID_StateLocalTax_HC) * max(0, e18400) + e18500 -
                   c60260 + (1 - ID_Miscellaneous_HC) * c20800 - c21040)
         c62100 += _cmbtp
 
-    if (puf and ((_standard > 0 and f6251 == 1))):
-        _cmbtp = _cmbtp_standard
-        #  s62100 - e00100 + e00700
-    else:
-        _cmbtp = 0
-
     if (puf and _standard > 0):
+        if f6251 == 1:
+            _cmbtp = _cmbtp_standard
+        else:
+            _cmbtp = 0.
         c62100 = (c00100 - c60260)
         c62100 += _cmbtp
 
@@ -951,22 +948,18 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
 
     c62700 = max(0., c62100 - c62600)
 
-    _alminc = c62700
-
     if (c02700 > 0):
         _alminc = max(0., c62100 - c62600)
-
         _amtfei = (AMT_trt1 * c02700 + AMT_trt2 *
                    max(0., c02700 - AMT_tthd / _sep))
     else:
         _alminc = c62700
-
         _amtfei = 0.
 
     c62780 = (AMT_trt1 * _alminc + AMT_trt2 *
               max(0., _alminc - AMT_tthd / _sep) - _amtfei)
 
-    if f6251 != 0:
+    if f6251 == 1:
         c62900 = float(e62900)
     else:
         c62900 = float(e07300)
@@ -984,8 +977,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
 
     _ngamty = max(0., _alminc - c62740)
 
-    c62745 = AMT_trt1 * _ngamty + AMT_trt2 * \
-        max(0., _ngamty - AMT_tthd / _sep)
+    c62745 = AMT_trt1 * _ngamty + AMT_trt2 * max(0., _ngamty - AMT_tthd / _sep)
 
     y62745 = AMT_tthd / _sep
 
@@ -995,8 +987,8 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
 
     _amt5pc = 0.0
 
-    _amt15pc = min(_alminc, c62720) - _amt5pc - min(max(
-        0., AMT_CG_thd1[MARS - 1] - c24520), min(_alminc, c62720))
+    _amt15pc = (min(_alminc, c62720) - _amt5pc - min(max(
+                0., AMT_CG_thd1[MARS - 1] - c24520), min(_alminc, c62720)))
     if c04800 == 0:
         _amt15pc = max(0., min(_alminc, c62720) - AMT_CG_thd1[MARS - 1])
 
@@ -1035,7 +1027,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
     c05800 = _taxbc + c63200
 
     return (c62720, c60260, c63100, c60200, c60240, c60220, c60000,
-            c60130, c62730, _addamt, c62100, _edical, c04500,
+            c60130, c62730, _addamt, c62100, c04500,
             _amtsepadd, c62600, _agep, _ages, c62700,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
             _ngamty, c62745, y62745, _tamt2, _amt5pc, _amt15pc,
