@@ -42,6 +42,8 @@ SMALL_INCOME_BINS = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
 WEBAPP_INCOME_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                       199999, 499999, 1000000, 1e14]
 
+EPSILON = 0.000000001
+
 
 def extract_array(f):
     """
@@ -95,7 +97,7 @@ def weighted_perc_dec(agg, col_name):
 
 
 def weighted_share_of_total(agg, col_name, total):
-    return float(weighted_sum(agg, col_name)) / float(total)
+    return float(weighted_sum(agg, col_name)) / (float(total) + EPSILON)
 
 
 def add_weighted_decile_bins(df, income_measure='_expanded_income'):
@@ -269,42 +271,7 @@ def weighted_avg_allcols(df, cols, income_measure='_expanded_income'):
 
     return diff
 
-
-def create_distribution_table(calc, groupby, result_type,
-                              income_measure='_expanded_income'):
-    """
-    Gets results given by the tax calculator, sorts them based on groupby, and
-        manipulates them based on result_type. Returns these as a table
-
-    Parameters
-    ----------
-    calc : the Calculator object
-    groupby : String object
-        options for input: 'weighted_deciles', 'small_income_bins',
-        'large_income_bins', 'webapp_income_bins';
-        determines how the columns in the resulting DataFrame are sorted
-    result_type : String object
-        options for input: 'weighted_sum' or 'weighted_avg';
-        determines how the data should be manipulated
-
-    Notes
-    -----
-    Taxpayer Characteristics:
-        c04470 : Total itemized deduction
-
-        c00100 : AGI (Defecit)
-
-        c09600 : Alternative minimum tax
-
-        s006 : used to weight population
-
-    Returns
-    -------
-    DataFrame object
-    """
-
-    res = results(calc)
-
+def add_columns(res):
     # weight of returns with positive AGI and
     # itemized deduction greater than standard deduction
     res['c04470'] = res['c04470'].where(((res['c00100'] > 0) &
@@ -324,6 +291,60 @@ def create_distribution_table(calc, groupby, result_type,
     # weight of returns with positive Alternative Minimum Tax (AMT)
     res['num_returns_AMT'] = res['s006'].where(res['c09600'] > 0, 0)
 
+    return res
+
+def create_distribution_table(calc, groupby, result_type,
+                              income_measure='_expanded_income',
+                              base_calc = None):
+    """
+    Gets results given by the tax calculator, sorts them based on groupby, and
+        manipulates them based on result_type. Returns these as a table
+
+    Parameters
+    ----------
+    calc : the Calculator object
+    groupby : String object
+        options for input: 'weighted_deciles', 'small_income_bins',
+        'large_income_bins', 'webapp_income_bins';
+        determines how the columns in the resulting DataFrame are sorted
+    result_type : String object
+        options for input: 'weighted_sum' or 'weighted_avg';
+        determines how the data should be manipulated
+    base_calc : A Calculator object
+        carries the baseline plan
+
+    Notes
+    -----
+    Taxpayer Characteristics:
+        c04470 : Total itemized deduction
+
+        c00100 : AGI (Defecit)
+
+        c09600 : Alternative minimum tax
+
+        s006 : used to weight population
+
+    Returns
+    -------
+    DataFrame object
+    """
+    
+    # check whether baseline calculator exist
+    # keep reform plan
+    if base_calc == None:
+        res = results(calc)
+        res = add_columns(res)
+    else:
+        resY = results(calc)
+        resY = add_columns(resY)
+        resX = results(base_calc)
+        resX = add_columns(resX)
+        
+        res = resY.subtract(resX)
+        res['c00100'] = resX['c00100']
+        res['_expanded_income'] = resX['_expanded_income']
+        res['s006'] = resX['s006']
+
     # sorts the data
     if groupby == "weighted_deciles":
         df = add_weighted_decile_bins(res, income_measure=income_measure)
@@ -341,6 +362,10 @@ def create_distribution_table(calc, groupby, result_type,
                "'small_income_bins' or 'large_income_bins' or"
                "'webapp_income_bins'")
         raise ValueError(err)
+    
+    if base_calc != None:
+        df['c00100'] = resY['c00100'] - resX['c00100']
+        df['_expanded_income'] = resY['_expanded_income'] - resX['_expanded_income']
 
     # manipulates the data
     pd.options.display.float_format = '{:8,.0f}'.format
@@ -361,7 +386,8 @@ def create_distribution_table(calc, groupby, result_type,
 
 
 def create_difference_table(calc1, calc2, groupby,
-                            income_measure='_expanded_income'):
+                            income_measure='_expanded_income',
+                            income_to_present = '_ospctax'):
     """
     Gets results given by the two different tax calculators and outputs
         a table that compares the differing results.
@@ -369,13 +395,17 @@ def create_difference_table(calc1, calc2, groupby,
 
     Parameters
     ----------
-    calc1, the first Calculator object
-    calc2, the other Calculator object
-    groupby, String object
+    calc1 :  the first Calculator object
+    calc2 : the other Calculator object
+    groupby : String object
         options for input: 'weighted_deciles', 'small_income_bins',
         'large_income_bins', 'webapp_income_bins'
         determines how the columns in the resulting DataFrame are sorted
-
+    income_measure : string
+        options for input: '_expanded_income', '_ospctax'
+        classifier of income bins/deciles
+    income_to_present : string
+        options for input: '_ospctax', '_fica', '_combined'
 
     Returns
     -------
@@ -404,7 +434,7 @@ def create_difference_table(calc1, calc2, groupby,
     # Difference in plans
     # Positive values are the magnitude of the tax increase
     # Negative values are the magnitude of the tax decrease
-    res2['tax_diff'] = res2['_ospctax'] - res1['_ospctax']
+    res2['tax_diff'] = res2[income_to_present] - res1[income_to_present]
 
     diffs = means_and_comparisons(res2, 'tax_diff',
                                   df.groupby('bins', as_index=False),
