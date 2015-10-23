@@ -394,8 +394,8 @@
                     [258250, 	309900,   154950,     284050, 		  309900,  154950]]
     },
     "_ID_BenefitSurtax_Switch":{
-        "long_name": "Switch for manipulating itemized deduction benefit surtax",
-	"description": "This parameter is specified by items and year. ",
+        "long_name": "Deductions subject to the surtax on itemized deduction benefits",
+	"description": "The surtax on itemized deduction benefits applies to the benefits derived from the itemized deductions specified with this parameter. ",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
