@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 """
 OSPC taxcalc package simple tax input-output class.
 """
@@ -146,6 +148,7 @@ class SimpleTaxIO(object):
         # convert year skey strings to integers and lists into np.arrays
         reform_pkey_param = {}
         for pkey, sdict in reform_dict_raw.items():
+            print("REFORM DICT HERE: ", pkey, sdict)
             if not isinstance(pkey, basestring):
                 msg = 'pkey {} in reform is not a string'
                 raise ValueError(msg.format(pkey))
