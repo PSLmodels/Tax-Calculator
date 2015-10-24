@@ -20,4 +20,4 @@ install:
 
 # command to run tests, e.g. python setup.py test
 script:
-  - python -c "import taxcalc"; py.test --pep8
+  - python -c "import taxcalc"; py.test -x -s taxcalc/tests/test_simpletaxio.py
