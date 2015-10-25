@@ -9,6 +9,7 @@ import os
 import sys
 import json
 import re
+import six
 import numpy as np
 import pandas as pd
 from .policy import Policy
@@ -146,12 +147,12 @@ class SimpleTaxIO(object):
         # convert year skey strings to integers and lists into np.arrays
         reform_pkey_param = {}
         for pkey, sdict in reform_dict_raw.items():
-            if not isinstance(pkey, basestring):
+            if not isinstance(pkey, six.string_types):
                 msg = 'pkey {} in reform is not a string'
                 raise ValueError(msg.format(pkey))
             rdict = {}
             for skey, val in sdict.items():
-                if not isinstance(skey, basestring):
+                if not isinstance(skey, six.string_types):
                     msg = 'skey {} in reform is not a string'
                     raise ValueError(msg.format(skey))
                 else:
@@ -175,7 +176,7 @@ class SimpleTaxIO(object):
         years = set()
         reform_pk_yr = {}
         for param, sdict in reform_pkey_param.items():
-            if not isinstance(param, basestring):
+            if not isinstance(param, six.string_types):
                 msg = 'pkey {} in reform is not a string'
                 raise ValueError(msg.format(param))
             elif not isinstance(sdict, dict):
