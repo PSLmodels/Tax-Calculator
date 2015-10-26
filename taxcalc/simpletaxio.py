@@ -502,11 +502,10 @@ class SimpleTaxIO(object):
         recs.e18500[idx] = ivar[15]  # real-estate (property) taxes paid
         recs.e18400[idx] = ivar[16]  # other AMT-preferred deductions
         recs.e32800[idx] = ivar[17]  # child care expenses
-        recs.e32750[idx] = ivar[17]
+        recs.chi[idx] = ivar[17]
         recs.e02300[idx] = ivar[18]  # unemployment compensation received
         recs.n24[idx] = ivar[19]  # number dependents under age 17
         recs.f2441[idx] = ivar[19]  # simplifying assumption
-        recs._nctcr[idx] = ivar[19]
         recs.e19200[idx] = ivar[20]  # AMT-nonpreferred deductions
         recs.p22250[idx] = ivar[21]  # short-term capital gains (+/-)
         recs.p23250[idx] = ivar[22]  # long-term capital gains (+/-)

@@ -1047,15 +1047,15 @@ def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
 
 
 @iterate_jit(nopython=True, puf=True)
-def F2441(_earned, _fixeic, e59560, MARS, f2441, DCC_c,
+def F2441(_earned, _fixeic, e59560, MARS, f2441, DCC_c, e00200p, e00200s,
           e32800, e32750, e32775, CDOB1, CDOB2, e32890, e32880, FLPDYR, puf):
 
     if _fixeic == 1:
         _earned = e59560
 
     if MARS == 2 and puf:
-        c32880 = 0.5 * _earned
-        c32890 = 0.5 * _earned
+        c32880 = e00200p
+        c32890 = e00200s
     else:
         c32880 = _earned
         c32890 = _earned
