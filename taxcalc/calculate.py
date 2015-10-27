@@ -273,10 +273,8 @@ class Calculator(object):
         delta_combined_taxes_up = _combined_taxes_up - _combined_taxes_base
 
         # Calculate the tax change with a marginal decrease in income.
-        setattr(self.records, income_type_string,
-                income_type - finite_diff)
-        setattr(self.records, 'e00200',
-                earnings_type - finite_diff)
+        setattr(self.records, income_type_string, income_type - finite_diff)
+        setattr(self.records, 'e00200', earnings_type - finite_diff)
         self.calc_all()
 
         _ospctax_down = copy.deepcopy(self.records._ospctax)
