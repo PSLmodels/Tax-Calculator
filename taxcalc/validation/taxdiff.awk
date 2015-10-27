@@ -8,6 +8,8 @@
 #       (d) the maxdiff amount is the signed value of the largest absolute
 #           value of all the variable differences.
 
+DUMP_NUM_TAXDIFFS = 0 # number of tax differences [abs(diff)>0.01] to print
+
 BEGIN {
     error = 0
     if ( col < 2 || col > 28 ) {
@@ -92,6 +94,11 @@ END {
                 }
             }
             num_diffs++
+            if ( col == 4 && DUMP_NUM_TAXDIFFS > 0 &&
+                 ( diff <= -0.011 || diff >= 0.011 ) &&
+                 num_diffs - num_onecent_diffs <= DUMP_NUM_TAXDIFFS ) {
+                printf( "TAXDIFF-DUMP:id,taxdiff= %6d %9.2f\n", id1[i], diff )
+            }
             if ( diff < 0.0 ) abs_vardiff = -diff; else abs_vardiff = diff
             if ( abs_vardiff > max_abs_vardiff ) {
                 max_abs_vardiff = abs_vardiff
