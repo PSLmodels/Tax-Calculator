@@ -502,7 +502,7 @@ class SimpleTaxIO(object):
         recs.e18500[idx] = ivar[15]  # real-estate (property) taxes paid
         recs.e18400[idx] = ivar[16]  # other AMT-preferred deductions
         recs.e32800[idx] = ivar[17]  # child care expenses
-        recs.chi[idx] = ivar[17]
+        recs.e32750[idx] = ivar[17]
         recs.e02300[idx] = ivar[18]  # unemployment compensation received
         recs.n24[idx] = ivar[19]  # number dependents under age 17
         recs.f2441[idx] = ivar[19]  # simplifying assumption
