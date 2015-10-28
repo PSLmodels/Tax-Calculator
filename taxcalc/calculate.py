@@ -199,7 +199,8 @@ class Calculator(object):
                 adjustment(self, self.growth.factor_adjustment,
                            self.policy.current_year + 1)
         elif np.array_equal(self.growth._factor_target,
-                            self.growth.REAL_GDP_GROWTH):
+                            self.growth.REAL_GDP_GROWTH) \
+        is False:
             target(self, self.growth._factor_target,
                    self.policy._inflation_rates,
                    self.policy.current_year + 1)
