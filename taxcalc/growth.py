@@ -11,10 +11,6 @@ class Growth(ParametersBase):
     JSON_START_YEAR = Policy.JSON_START_YEAR
     DEFAULTS_FILENAME = 'growth.json'
     DEFAULT_NUM_YEARS = Policy.DEFAULT_NUM_YEARS
-    DEFAULT_INFLATION_RATES = {2013: 0.015, 2014: 0.020, 2015: 0.022,
-                               2016: 0.020, 2017: 0.021, 2018: 0.022,
-                               2019: 0.023, 2020: 0.024, 2021: 0.024,
-                               2022: 0.024, 2023: 0.024, 2024: 0.024}
     REAL_GDP_GROWTH = {2013: 0.0244, 2014: 0.0118, 2015: 0.0281,
                        2016: 0.0331, 2017: 0.0285, 2018: 0.0223,
                        2019: 0.0202, 2020: 0.0188, 2021: 0.0183,
@@ -22,8 +18,7 @@ class Growth(ParametersBase):
 
     def __init__(self, growth_dict=None,
                  start_year=JSON_START_YEAR,
-                 num_years=DEFAULT_NUM_YEARS,
-                 inflation_rates=DEFAULT_INFLATION_RATES):
+                 num_years=DEFAULT_NUM_YEARS):
         if growth_dict:
             if not isinstance(growth_dict, dict):
                 raise ValueError('growth_dict is not a dictionary')
