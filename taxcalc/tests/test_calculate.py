@@ -188,14 +188,14 @@ def test_hard_coded_parameter_consistency():
         record.BF.AGDPN[year] = (record.BF.AGDPN[year] *
                                  record.BF.AGDPN[year - 1] *
                                  record.BF.APOPN[year])
-        print record.BF.AGDPN[year]
 
     # calculates GDP nominal growth rates
     Nominal_rates = np.zeros(12)
     for year in range(2013, 2025):
+        irate = policy._inflation_rates[year - 2013]
         Nominal_rates[year - 2013] = (record.BF.AGDPN[year] /
-                                      record.BF.AGDPN[year-1] - 1 -
-                                      policy._inflation_rates[year-2013])
+                                      record.BF.AGDPN[year - 1] - 1 -
+                                      irate)
 
     Nominal_rates = np.round(Nominal_rates, 4)
 
