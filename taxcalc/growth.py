@@ -15,6 +15,10 @@ class Growth(ParametersBase):
                                2016: 0.020, 2017: 0.021, 2018: 0.022,
                                2019: 0.023, 2020: 0.024, 2021: 0.024,
                                2022: 0.024, 2023: 0.024, 2024: 0.024}
+    REAL_GDP_GROWTH = {2013: 0.0394, 2014: 0.0318, 2015: 0.0501,
+                       2016: 0.0531, 2017: 0.0495, 2018: 0.0443,
+                       2019: 0.0432, 2020: 0.0428, 2021: 0.0423,
+                       2022: 0.0418, 2023: 0.0411, 2024: 0.0406}
 
     def __init__(self, growth_dict=None,
                  start_year=JSON_START_YEAR,
@@ -42,6 +46,10 @@ class Growth(ParametersBase):
             if year != self.start_year:
                 self.set_year(year)
             self._update({year: reform[year]})
+    
+    def default_GDP_growth_rates(self, year):
+        return Growth.REAL_GDP_GROWTH[year]
+    
 
 
 def adjustment(calc, percentage, year):
@@ -70,12 +78,13 @@ def target(calc, target, inflation, year):
     # Need to be fixed later
     records = calc.records
     default_year = calc.policy.JSON_START_YEAR
-    if year >= default_year and target[year - default_year] != 0:
+    r = records.BF.APOPN[year]
+    g = calc.growth.default_GDP_growth_rates(year)
+    
+    if year >= default_year and target[year - default_year] != g:
         # user inputs theoretically should be based on GDP
-        g = abs(records.BF.AGDPN[year] - 1)
-        distance = (target[year - default_year] +
-                    inflation[year - default_year]) - g
-
+        distance = (target[year - default_year] - g) / r
+        print 'HERE'
         # apply this ratio to all the dollar amount factors
         records.BF.AGDPN[year] += distance
         records.BF.ATXPY[year] += distance
