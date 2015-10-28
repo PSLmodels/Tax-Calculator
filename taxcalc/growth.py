@@ -84,7 +84,7 @@ def target(calc, target, inflation, year):
     if year >= default_year and target[year - default_year] != g:
         # user inputs theoretically should be based on GDP
         distance = (target[year - default_year] - g) / r
-        print 'HERE'
+
         # apply this ratio to all the dollar amount factors
         records.BF.AGDPN[year] += distance
         records.BF.ATXPY[year] += distance
