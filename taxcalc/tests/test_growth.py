@@ -50,7 +50,7 @@ def test_update_growth():
 
     # change growth adjustment/target
     growth_x = Growth()
-    factor_x = {2015: {'_factor_target': [[0.04]]}}
+    factor_x = {2015: {'_factor_target': [0.04]}}
     growth_x.update_economic_growth(factor_x)
 
     growth_y = Growth()
@@ -66,9 +66,9 @@ def test_update_growth():
     assert_array_equal(calc_x.growth.factor_target,
                        growth_x.factor_target)
     assert_array_equal(calc_x.growth._factor_target,
-                       np.array([[0.0], [0.0], [0.04], [0.04], [0.04],
-                                [0.04], [0.04], [0.04], [0.04], [0.04],
-                                [0.04], [0.04]]))
+                       np.array([0.0244, 0.0118, 0.04, 0.04, 0.04,
+                                0.04, 0.04, 0.04, 0.04, 0.04, 0.04,
+                                0.04]))
 
     assert_array_equal(calc_y.growth.factor_adjustment,
                        growth_y.factor_adjustment)
@@ -87,13 +87,13 @@ def test_target():
                         growth=growth_x)
 
     # set target
-    factor_x = {2015: {'_factor_target': [[0.04]]}}
+    factor_x = {2015: {'_factor_target': [0.04]}}
     growth_x.update_economic_growth(factor_x)
 
     target(calc_x, growth_x._factor_target, IRATES, 2015)
 
-    assert calc_x.records.BF.AGDPN[2015] == 0.04 + 0.22 + 1
-    assert calc_x.records.BF.ATXPY[2015] == 1.2572996865676191
+    assert calc_x.records.BF.AGDPN[2015] == 1.0532460627495555
+    assert calc_x.records.BF.ATXPY[2015] == 1.0505457493171746
 
 
 def test_adjustment():
