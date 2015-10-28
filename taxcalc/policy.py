@@ -57,6 +57,11 @@ class Policy(ParametersBase):
     __rates = {2013: 0.015, 2014: 0.020, 2015: 0.021, 2016: 0.020, 2017: 0.021,
                2018: 0.022, 2019: 0.023, 2020: 0.024, 2021: 0.024, 2022: 0.024,
                2023: 0.024, 2024: 0.024}
+    
+    __wage_rates = {2013: 0.0276, 2014: 0.0419, 2015: 0.0465, 2016: 0.0498,
+                    2017: 0.0507, 2018: 0.0481, 2019: 0.0451, 2020: 0.0441,
+                    2021: 0.0437, 2022: 0.0435, 2023: 0.0430, 2024: 0.0429}
+
 
     @staticmethod
     def default_inflation_rates():
@@ -73,6 +78,21 @@ class Policy(ParametersBase):
             decimal (not percentage) annual inflation rate by calyear.
         """
         return Policy.__rates
+    
+    def default_wage_inflation_rates():
+        """
+        Return complete default inflation rate dictionary.
+
+        Parameters
+        ----------
+        none
+
+        Returns
+        -------
+        default inflation rates: dict
+            decimal (not percentage) annual inflation rate by calyear.
+        """
+        return Policy.__wage_rates
 
     def __init__(self, parameter_dict=None,
                  start_year=JSON_START_YEAR,
@@ -103,6 +123,9 @@ class Policy(ParametersBase):
         else:  # if None, read default rates
             self._inflation_rates = [self.__rates[start_year + i]
                                      for i in range(0, num_years)]
+
+        self._wage_inflation_rates = [self.__wage_rates[start_year + i]
+                                      for i in range(0, num_years)]
         self.initialize(start_year, num_years)
 
     def implement_reform(self, reform):
