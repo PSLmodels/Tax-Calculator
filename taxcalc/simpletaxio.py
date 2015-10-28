@@ -488,6 +488,7 @@ class SimpleTaxIO(object):
         total_num_exemptions = num_taxpayers + num_dependents
         recs.XTOT[idx] = total_num_exemptions
         # pylint: disable=protected-access
+        recs.f2441[idx] = num_dependents  # simplifying assumption
         recs._numextra[idx] = ivar[6]  # number of taxpayers age 65+
         recs.e00200p[idx] = ivar[7]  # wage+sal+se income of txpyer (+/-)
         recs.e00200s[idx] = ivar[8]  # wage+sal+se income of spouse (+/-)
@@ -502,9 +503,9 @@ class SimpleTaxIO(object):
         recs.e18500[idx] = ivar[15]  # real-estate (property) taxes paid
         recs.e18400[idx] = ivar[16]  # other AMT-preferred deductions
         recs.e32800[idx] = ivar[17]  # child care expenses
+        recs.e32750[idx] = ivar[17]
         recs.e02300[idx] = ivar[18]  # unemployment compensation received
         recs.n24[idx] = ivar[19]  # number dependents under age 17
-        recs.f2441[idx] = ivar[19]  # simplifying assumption
         recs.e19200[idx] = ivar[20]  # AMT-nonpreferred deductions
         recs.p22250[idx] = ivar[21]  # short-term capital gains (+/-)
         recs.p23250[idx] = ivar[22]  # long-term capital gains (+/-)
