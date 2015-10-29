@@ -193,14 +193,13 @@ def test_hard_coded_parameter_consistency():
         record.BF.AGDPN[year] = (record.BF.AGDPN[year] *
                                  record.BF.AGDPN[year - 1] *
                                  record.BF.APOPN[year])
-        print record.BF.AGDPN[year]
 
     # calculates GDP nominal growth rates
     Nominal_rates = np.zeros(12)
     for year in range(2013, 2025):
         Nominal_rates[year - 2013] = (record.BF.AGDPN[year] /
-                                      record.BF.AGDPN[year-1] - 1 -
-                                      policy._inflation_rates[year-2013])
+                                      record.BF.AGDPN[year - 1] - 1 -
+                                      policy._inflation_rates[year - 2013])
 
     Nominal_rates = np.round(Nominal_rates, 4)
 
@@ -214,6 +213,24 @@ def test_hard_coded_parameter_consistency():
 
     CPI_U = np.round(CPI_U, 3)
     assert_array_equal(CPI_U, policy._inflation_rates)
+    
+    # back out the original stage I wage growth rates
+    record.BF.AWAGE[2009] = 1
+    for year in range(2010, 2025):
+        record.BF.AWAGE[year] = (record.BF.AWAGE[year] *
+                                 record.BF.AWAGE[year - 1] *
+                                 record.BF.APOPN[year])
+
+    # calculates GDP nominal growth rates
+    wage_rates = np.zeros(12)
+    for year in range(2013, 2025):
+        wage_rates[year - 2013] = (record.BF.AWAGE[year] /
+                                   record.BF.AWAGE[year - 1] - 1)
+
+    wage_rates = np.round(wage_rates, 4)
+
+    assert_array_equal(wage_rates,
+                       policy._wage_inflation_rates)
 
 
 def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
