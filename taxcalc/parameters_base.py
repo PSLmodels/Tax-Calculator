@@ -114,11 +114,16 @@ class ParametersBase(object):
             values = data['value']
             i_rates = getattr(self, '_inflation_rates', None)
             wage_rates = getattr(self, '_wage_inflation_rates', None)
-            setattr(self, name,
-                    self.expand_array(values, inflate=cpi_inflated,
-                                      inflation_rates=i_rates,
-                                      wage_rates = wage_rates,
-                                      num_years=self._num_years))
+            if name == '_SS_Earnings_c':
+                setattr(self, name,
+                        self.expand_array(values, inflate=cpi_inflated,
+                                          inflation_rates=wage_rates,
+                                          num_years=self._num_years))
+            else:
+                setattr(self, name,
+                        self.expand_array(values, inflate=cpi_inflated,
+                                          inflation_rates=i_rates,
+                                          num_years=self._num_years))
         self.set_year(self._start_year)
 
     @property
@@ -309,15 +314,25 @@ class ParametersBase(object):
             cval = getattr(self, name, None)
             if cval is None:
                 continue
-            nval = self.expand_array(values,
-                                     inflate=cpi_inflated,
-                                     inflation_rates=inf_rates,
-                                     num_years=num_years_to_expand)
+            # this particular parameter needs to be inflated as wage
+            if name == '_SS_Earnings_c':
+                num_year = year - self.start_year
+                wage_rates = [self._wage_inflation_rates[num_year + i]
+                              for i in range(0, num_years_to_expand)]
+                nval = self.expand_array(values,
+                                         inflate=cpi_inflated,
+                                         inflation_rates=wage_rates,
+                                         num_years=num_years_to_expand)
+            else:
+                nval = self.expand_array(values,
+                                         inflate=cpi_inflated,
+                                         inflation_rates=inf_rates,
+                                         num_years=num_years_to_expand)
             cval[(self.current_year - self.start_year):] = nval
         self.set_year(self._current_year)
 
     @staticmethod
-    def expand_1D(x, inflate, inflation_rates, wage_rates, num_years):
+    def expand_1D(x, inflate, inflation_rates, num_years):
         """
         Expand the given data to account for the given number of budget years.
         If necessary, pad out additional years by increasing the last given
@@ -350,7 +365,7 @@ class ParametersBase(object):
                                         num_years)
 
     @staticmethod
-    def expand_2D(x, inflate, inflation_rates, wage_rates, num_years):
+    def expand_2D(x, inflate, inflation_rates, num_years):
         """
         Expand the given data to account for the given number of budget years.
         For 2D arrays, we expand out the number of rows until we have num_years
@@ -443,8 +458,7 @@ class ParametersBase(object):
         return accum
 
     @staticmethod
-    def expand_array(x, inflate, inflation_rates,
-                     wage_rates, num_years):
+    def expand_array(x, inflate, inflation_rates, num_years):
         """
         Dispatch to either expand_1D or expand_2D
         depending on the dimension of x
@@ -470,10 +484,10 @@ class ParametersBase(object):
         try:
             if len(x.shape) == 1:
                 return ParametersBase.expand_1D(x, inflate, inflation_rates,
-                                                wage_rates, num_years)
+                                                num_years)
             elif len(x.shape) == 2:
                 return ParametersBase.expand_2D(x, inflate, inflation_rates,
-                                                wage_rates, num_years)
+                                                num_years)
             else:
                 raise ValueError("Need a 1D or 2D array")
         except AttributeError:
