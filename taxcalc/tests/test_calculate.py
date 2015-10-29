@@ -213,7 +213,7 @@ def test_hard_coded_parameter_consistency():
 
     CPI_U = np.round(CPI_U, 3)
     assert_array_equal(CPI_U, policy._inflation_rates)
-    
+
     # back out the original stage I wage growth rates
     record.BF.AWAGE[2009] = 1
     for year in range(2010, 2025):
