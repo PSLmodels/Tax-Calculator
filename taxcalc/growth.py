@@ -41,10 +41,9 @@ class Growth(ParametersBase):
             if year != self.start_year:
                 self.set_year(year)
             self._update({year: reform[year]})
-    
+
     def default_GDP_growth_rates(self, year):
         return Growth.REAL_GDP_GROWTH[year]
-    
 
 
 def adjustment(calc, percentage, year):
@@ -75,7 +74,7 @@ def target(calc, target, inflation, year):
     default_year = calc.policy.JSON_START_YEAR
     r = records.BF.APOPN[year]
     g = calc.growth.default_GDP_growth_rates(year)
-    
+
     if year >= default_year and target[year - default_year] != g:
         # user inputs theoretically should be based on GDP
         distance = (target[year - default_year] - g) / r
