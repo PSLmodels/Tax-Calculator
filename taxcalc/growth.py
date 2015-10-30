@@ -11,10 +11,9 @@ class Growth(ParametersBase):
     JSON_START_YEAR = Policy.JSON_START_YEAR
     DEFAULTS_FILENAME = 'growth.json'
     DEFAULT_NUM_YEARS = Policy.DEFAULT_NUM_YEARS
-    REAL_GDP_GROWTH = {2013: 0.0244, 2014: 0.0118, 2015: 0.0281,
-                       2016: 0.0331, 2017: 0.0285, 2018: 0.0223,
-                       2019: 0.0202, 2020: 0.0188, 2021: 0.0183,
-                       2022: 0.0178, 2023: 0.0171, 2024: 0.0166}
+    REAL_GDP_GROWTH = [0.0244,  0.0118,  0.0291,  0.0331,
+                       0.0285,  0.0223,  0.0202,  0.0188,
+                       0.0183,  0.0178,  0.0171,  0.0166]
 
     def __init__(self, growth_dict=None,
                  start_year=JSON_START_YEAR,
@@ -73,7 +72,7 @@ def target(calc, target, inflation, year):
     records = calc.records
     default_year = calc.policy.JSON_START_YEAR
     r = records.BF.APOPN[year]
-    g = calc.growth.default_GDP_growth_rates(year)
+    g = calc.growth.default_GDP_growth_rates(year - default_year)
 
     if year >= default_year and target[year - default_year] != g:
         # user inputs theoretically should be based on GDP
