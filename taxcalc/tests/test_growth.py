@@ -92,7 +92,7 @@ def test_target():
 
     target(calc_x, growth_x._factor_target, IRATES, 2015)
 
-    assert calc_x.records.BF.AGDPN[2015] == 1.0532460627495555
+    assert calc_x.records.BF.AGDPN[2015] == 1.0522542782635027
     assert calc_x.records.BF.ATXPY[2015] == 1.0505457493171746
 
 
