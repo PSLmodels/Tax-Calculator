@@ -198,12 +198,12 @@ minute).  But if the content of the six ?1?.taxdiffs files that are
 under version control are not modified by a `tests` execution, this a
 more thorough confirmation that Tax-Calculator logic has not changed.
 
-Status of OSPC Tax-Calculator Validation versus Internet TAXSIM
-===============================================================
+Current Validation Results
+==========================
 
 At the end of October, 2015, there are no FICA tax liability and no
 federal income tax liability differences (of more than one cent in
 absolute value) between OSPC Tax-Calculator results and Internet
-TAXSIM results for the 600,000 randomly-generated filing units
+TAXSIM results for the 600,000 randomly-generated tax filing units
 described above.  There are some (more than one cent) differences in
 intermediate results and these are being investigated.
