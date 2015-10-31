@@ -454,12 +454,8 @@ def test_Policy_reform_makes_no_changes_before_year():
 
 
 def test_parameters_get_default_start_year():
-    use_classmethod = True
-    if use_classmethod:
-        paramdata = Policy.default_data(metadata=True, start_year=2015)
-    else:  # use legacy global default_data function
-        paramdata = taxcalc.parameters.default_data(metadata=True,
-                                                    start_year=2015)
+    paramdata = Policy.default_data(metadata=True, start_year=2015)
+
     # 1D data, has 2015 values
     meta_II_em = paramdata['_II_em']
     assert meta_II_em['start_year'] == 2015
@@ -476,9 +472,9 @@ def test_parameters_get_default_start_year():
     meta_amt_thd_marrieds = paramdata['_AMT_thd_MarriedS']
     assert meta_amt_thd_marrieds['start_year'] == 2015
     assert meta_amt_thd_marrieds['row_label'] == ["2015"]
-    # Take the 2014 rate and multiply by inflation for that year
+    # Take the 2014 parameter value and multiply by inflation for that year
     assert meta_amt_thd_marrieds['value'] == (
-        [41050 * (1.0 + Policy._Policy__rates[2014])])
+        [41050 * (1.0 + Policy.default_inflation_rates()[2014])])
 
     # 1D data, doesn't have 2015 values, is not CPI inflated
     meta_kt_c_age = paramdata['_KT_c_Age']

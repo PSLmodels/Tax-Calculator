@@ -2,19 +2,17 @@
 OSPC Tax-Calculator federal tax policy Policy class.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 parameters.py
-# pylint --disable=locally-disabled parameters.py
+# pep8 --ignore=E402 policy.py
+# pylint --disable=locally-disabled policy.py
 
 
-import os
-import json
 from .parameters_base import ParametersBase
 
 
 class Policy(ParametersBase):
 
     """
-    Constructor for the federal tax policy parameters class.
+    Constructor for the federal tax policy class.
 
     Parameters
     ----------
@@ -47,21 +45,20 @@ class Policy(ParametersBase):
     """
 
     DEFAULTS_FILENAME = 'current_law_policy.json'
-    IRATES_FILENAME = 'irates.json'  # TODO: move __rates there & add wages
     JSON_START_YEAR = 2013  # remains the same unless earlier data added
     FIRST_BUDGET_YEAR = 2015  # increases by one every calendar year
     NUM_BUDGET_YEARS = 10  # fixed by federal government budgeting rules
     DEFAULT_NUM_YEARS = NUM_BUDGET_YEARS + FIRST_BUDGET_YEAR - JSON_START_YEAR
 
-    # default inflation rates by year
-    __rates = {2013: 0.015, 2014: 0.020, 2015: 0.022, 2016: 0.020, 2017: 0.021,
-               2018: 0.022, 2019: 0.023, 2020: 0.024, 2021: 0.024, 2022: 0.024,
-               2023: 0.024, 2024: 0.024}
+    # default price inflation rates by year
+    __pirates = {2013: 0.015, 2014: 0.020, 2015: 0.022, 2016: 0.020,
+                 2017: 0.021, 2018: 0.022, 2019: 0.023, 2020: 0.024,
+                 2021: 0.024, 2022: 0.024, 2023: 0.024, 2024: 0.024}
 
     @staticmethod
     def default_inflation_rates():
         """
-        Return complete default inflation rate dictionary.
+        Return complete default price inflation rate dictionary.
 
         Parameters
         ----------
@@ -70,9 +67,9 @@ class Policy(ParametersBase):
         Returns
         -------
         default inflation rates: dict
-            decimal (not percentage) annual inflation rate by calyear.
+            decimal (not percentage) annual inflation rate by calendar year.
         """
-        return Policy.__rates
+        return Policy.__pirates
 
     def __init__(self, parameter_dict=None,
                  start_year=JSON_START_YEAR,
@@ -81,11 +78,12 @@ class Policy(ParametersBase):
         """
         Policy class constructor.
         """
+        # pylint: disable=super-init-not-called
         if parameter_dict:
             if not isinstance(parameter_dict, dict):
                 raise ValueError('parameter_dict is not a dictionary')
             self._vals = parameter_dict
-        else:  # if None, read current-law parameters
+        else:  # if None, read current-law policy parameters
             self._vals = self._params_dict_from_json_file()
 
         if parameter_dict is None and start_year < Policy.JSON_START_YEAR:
@@ -101,13 +99,19 @@ class Policy(ParametersBase):
             self._inflation_rates = [inflation_rates[start_year + i]
                                      for i in range(0, num_years)]
         else:  # if None, read default rates
-            self._inflation_rates = [self.__rates[start_year + i]
+            self._inflation_rates = [self.__pirates[start_year + i]
                                      for i in range(0, num_years)]
         self.initialize(start_year, num_years)
 
+    def inflation_rates(self):
+        """
+        Returns list of price inflation rates starting with JSON_START_YEAR
+        """
+        return self._inflation_rates
+
     def implement_reform(self, reform):
         """
-        Implement multi-year parameters reform and set current_year=start_year.
+        Implement multi-year policy reform and set current_year=start_year.
 
         Parameters
         ----------
@@ -131,14 +135,14 @@ class Policy(ParametersBase):
         Given a reform dictionary, typical usage of the Policy class
         is as follows::
 
-            ppo = Policy()
-            ppo.implement_reform(reform)
+            policy = Policy()
+            policy.implement_reform(reform)
 
         In the above statements, the Policy() call instantiates a
-        policy parameters object (ppo) containing current-law policy
-        parameters, and the implement_reform(reform) call applies the
-        (possibly multi-year) reform specified in reform and then sets
-        the current_year to start_year with parameters set for that year.
+        policy object (policy) containing current-law policy parameters,
+        and the implement_reform(reform) call applies the (possibly
+        multi-year) reform specified in reform and then sets the
+        current_year to start_year with parameters set for that year.
 
         An example of a multi-year, multi-parameter reform is as follows::
 
