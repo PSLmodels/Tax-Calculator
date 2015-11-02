@@ -1,6 +1,4 @@
 import copy
-import json
-import os
 import numpy as np
 from .policy import Policy
 from .parameters_base import ParametersBase
@@ -54,10 +52,10 @@ def behavior(calc_x, calc_y, update_income=update_income):
     """
 
     # Calculate marginal tax rates for plan x and plan y.
-    fica_mtr_x, iit_mtr_x, combined_mtr_x = calc_x.mtr('e00200p')
+    _, _, combined_mtr_x = calc_x.mtr('e00200p')
     mtr_x = combined_mtr_x
 
-    fica_mtr_y, iit_mtr_y, combined_mtr_y = calc_y.mtr('e00200p')
+    _, _, combined_mtr_y = calc_y.mtr('e00200p')
     mtr_y = combined_mtr_y
 
     # Calculate the percent change in after-tax rate.
@@ -95,18 +93,20 @@ class Behavior(ParametersBase):
             self._vals = behavior_dict
         else:  # if None, read defaults
             self._vals = self._params_dict_from_json_file()
-
+        if inflation_rates is not None:
+            raise ValueError('inflation_rates != None in Behavior.__init__')
         self.initialize(start_year, num_years)
 
-    def update_behavior(self, reform):
-        '''Update behavior for a reform, a dictionary
-        consisting of year: modification dictionaries. For example:
-        {2014: {'_BE_inc': [0.4, 0.3]}}'''
+    def update_behavior(self, revisions):
+        """
+        Update behavior for given revisions, a dictionary consisting
+        of year:modification dictionaries.
+        For example: {2014: {'_BE_inc': [0.4, 0.3]}}
+        """
         self.set_default_vals()
         if self.current_year != self.start_year:
             self.set_year(self.start_year)
-
-        for year in reform:
+        for year in revisions:
             if year != self.start_year:
                 self.set_year(year)
-            self._update({year: reform[year]})
+            self._update({year: revisions[year]})
