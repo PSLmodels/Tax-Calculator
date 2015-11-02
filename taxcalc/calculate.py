@@ -93,6 +93,7 @@ class Calculator(object):
         CapGains(self.policy, self.records)
         SSBenefits(self.policy, self.records)
         AGI(self.policy, self.records)
+        Current_Law_AGI(self.policy, self.records)
         ItemDed(self.policy, self.records)
         EI_FICA(self.policy, self.records)
         AMED(self.policy, self.records)
