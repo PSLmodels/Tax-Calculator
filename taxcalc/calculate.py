@@ -32,11 +32,13 @@ class Calculator(object):
         if isinstance(policy, Policy):
             self._policy = policy
         else:
-            msg = 'Must supply tax parameters as a Policy object'
-            raise ValueError(msg)
+            raise ValueError('must specify policy as a Policy object')
 
-        if isinstance(behavior, Behavior):
-            self.behavior = behavior
+        if behavior:
+            if isinstance(behavior, Behavior):
+                self.behavior = behavior
+            else:
+                raise ValueError('behavior must be a Behavior object')
         else:
             self.behavior = Behavior(start_year=policy.start_year)
 
@@ -44,7 +46,7 @@ class Calculator(object):
             if isinstance(growth, Growth):
                 self.growth = growth
             else:
-                raise ValueError("Must supply growth as a Growth object")
+                raise ValueError('growth must be a Growth object')
         else:
             self.growth = Growth(start_year=policy.start_year)
 
@@ -53,7 +55,7 @@ class Calculator(object):
         elif isinstance(records, str):
             self._records = Records.from_file(records, **kwargs)
         else:
-            msg = 'Must supply tax records as a file path or Records object'
+            msg = 'must specify records as a file path or Records object'
             raise ValueError(msg)
 
         if sync_years and self._records.current_year == Records.PUF_YEAR:
@@ -200,9 +202,8 @@ class Calculator(object):
         elif not np.array_equal(self.growth._factor_target,
                                 self.growth.REAL_GDP_GROWTH):
             target(self, self.growth._factor_target,
-                   self.policy._inflation_rates,
+                   self.policy.inflation_rates,
                    self.policy.current_year + 1)
-
         self.records.increment_year()
         self.policy.set_year(self.policy.current_year + 1)
         self.behavior.set_year(self.policy.current_year)
@@ -348,7 +349,7 @@ class Calculator(object):
         for i in range(0, num_years):
             calc.calc_all()
 
-            row_years.append(calc.policy._current_year)
+            row_years.append(calc.policy.current_year)
 
             # totoal number of records
             returns = calc.records.s006.sum()
