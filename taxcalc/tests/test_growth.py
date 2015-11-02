@@ -114,3 +114,9 @@ def test_adjustment():
 def test_growth_default_data():
     paramdata = Growth.default_data()
     assert paramdata['_factor_adjustment'] == [0.0]
+
+
+def test_hard_coded_gdp_growth():
+    growth = Growth()
+    assert_array_equal(growth._factor_target,
+                       np.array(growth.REAL_GDP_GROWTH))
