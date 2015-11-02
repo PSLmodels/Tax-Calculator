@@ -29,6 +29,11 @@ class SimpleTaxIO(object):
     reform_filename: string or None
         name of optional REFORM file with None implying current-law policy.
 
+    emulate_taxsim_2441_logic: boolean
+        true implies emulation of questionable Internet TAXSIM logic, which
+        is necessary if the SimpleTaxIO class is being used in validation
+        tests against Internet TAXSIM output.
+
     Raises
     ------
     ValueError:
@@ -41,7 +46,10 @@ class SimpleTaxIO(object):
     class instance: SimpleTaxIO
     """
 
-    def __init__(self, input_filename, reform_filename):
+    def __init__(self,
+                 input_filename,
+                 reform_filename,
+                 emulate_taxsim_2441_logic):
         """
         SimpleTaxIO class constructor.
         """
@@ -62,7 +70,7 @@ class SimpleTaxIO(object):
             self._policy.implement_reform(reform)
         # validate input variable values
         self._validate_input()
-        self._calc = self._calc_object()
+        self._calc = self._calc_object(emulate_taxsim_2441_logic)
         self._output = {}
 
     def calculate(self, no_marginal_tax_rates=False, write_output_file=True):
@@ -421,13 +429,13 @@ class SimpleTaxIO(object):
                 raise ValueError(msg.format(num_young_dependents, lnum,
                                             num_all_dependents))
 
-    def _calc_object(self):
+    def _calc_object(self, emulate_taxsim_2441_logic):
         """
         Create and return Calculator object to conduct the tax calculations.
 
         Parameters
         ----------
-        none: void
+        emulate_taxsim_2441_logic: boolean
 
         Returns
         -------
@@ -446,14 +454,15 @@ class SimpleTaxIO(object):
         lnum = 0
         for idx in range(0, recs.dim):
             lnum += 1
-            SimpleTaxIO._specify_input(recs, idx, self._input[lnum])
+            SimpleTaxIO._specify_input(recs, idx, self._input[lnum],
+                                       emulate_taxsim_2441_logic)
         # create Calculator object for 2013 containing all tax filing units
         assert recs.current_year == 2013
         assert self._policy.current_year == 2013
         return Calculator(policy=self._policy, records=recs)
 
     @staticmethod
-    def _specify_input(recs, idx, ivar):
+    def _specify_input(recs, idx, ivar, emulate_taxsim_2441_logic):
         """
         Specifies recs values for index idx using ivar input variables.
 
@@ -467,6 +476,8 @@ class SimpleTaxIO(object):
 
         ivar: dictionary
             input variables for a single tax filing unit.
+
+        emulate_taxsim_2441_logic: boolean
 
         Returns
         -------
@@ -501,10 +512,18 @@ class SimpleTaxIO(object):
         # no use of ivar[14] because no state income tax calculations
         recs.e18500[idx] = ivar[15]  # real-estate (property) taxes paid
         recs.e18400[idx] = ivar[16]  # other AMT-preferred deductions
-        recs.e32800[idx] = ivar[17]  # child care expenses
+        recs.e32800[idx] = ivar[17]  # child care expenses (Form 2441)
+        recs.e32750[idx] = ivar[17]  # child care expenses (Form 2441)
+        # approximate number of Form 2441 qualified persons associated with
+        # the child care expenses specified by ivar[17] (Note that the exact
+        # number is the number of dependents under age 13, but that is not
+        # an Internet TAXSIM input variable; hence the need to approximate.)
+        if emulate_taxsim_2441_logic:
+            recs.f2441[idx] = num_dependents  # all dependents of any age
+        else:
+            recs.f2441[idx] = ivar[19]  # number dependents under age 17
         recs.e02300[idx] = ivar[18]  # unemployment compensation received
         recs.n24[idx] = ivar[19]  # number dependents under age 17
-        recs.f2441[idx] = ivar[19]  # simplifying assumption
         recs.e19200[idx] = ivar[20]  # AMT-nonpreferred deductions
         recs.p22250[idx] = ivar[21]  # short-term capital gains (+/-)
         recs.p23250[idx] = ivar[22]  # long-term capital gains (+/-)
