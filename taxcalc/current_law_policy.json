@@ -1112,6 +1112,19 @@
         "col_label": "",
         "value":     [3]        
     },
+    "_ALD_Interest_HC":{
+        "long_name": "Interest income haircut",
+	"description": "This pencentage can be applied to limit the interest income included in AGI. ",
+        "irs_ref": "Form 1040, line 8a",
+        "notes": "The final taxable interest amount will be (1- Haircut) * Interest. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [0]        
+    },
     "_ALD_StudentLoan_HC":{
         "long_name": "Adjustment for student loan interest haircut",
 	"description": "This pencentage can be applied to limit the student loan interest adjustment allowed. ",
