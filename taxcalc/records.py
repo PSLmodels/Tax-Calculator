@@ -363,7 +363,8 @@ class Records(object):
                     '_amed', '_xlin3', '_xlin6', '_cmbtp_itemizer',
                     '_cmbtp_standard', '_expanded_income', 'c07300',
                     'c07600', 'c07240', 'c62100_everyone',
-                    '_surtax', '_combined', 'x04500', 'current_law_AGI']
+                    '_surtax', '_combined', 'x04500', 'current_law_AGI',
+                    '_expanded_income_currentlaw']
 
     def __init__(self,
                  data="puf.csv",
