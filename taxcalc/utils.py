@@ -362,7 +362,7 @@ def create_distribution_table(calc, groupby, result_type,
 
 
 def create_difference_table(calc1, calc2, groupby,
-                            income_measure='_expanded_income'):
+                            income_measure='_expanded_income_currentlaw'):
     """
     Gets results given by the two different tax calculators and outputs
         a table that compares the differing results.
