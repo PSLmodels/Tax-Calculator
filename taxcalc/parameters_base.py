@@ -340,17 +340,16 @@ class ParametersBase(object):
                     msg = 'root parameter name {} not in values dictionary'
                     raise ValueError(msg.format(pname))
                 self._vals[pname]['cpi_inflated'] = pindexed  # remember status
-                pvals = getattr(self, pname)
-                pvalues = [pvals[year - self.start_year]]
-                cval = getattr(self, pname, None)
-                if cval is None:
+                pvals = getattr(self, pname, None)
+                if pvals is None:
                     msg = 'parameter {} in year_mods for year [] is unknown'
                     raise ValueError(msg.format(pname, year))
+                pvalues = [pvals[year - self.start_year]]
                 nval = self.expand_array(pvalues,
                                          inflate=pindexed,
                                          inflation_rates=inf_rates,
                                          num_years=num_years_to_expand)
-                cval[(year - self.start_year):] = nval
+                pvals[(year - self.start_year):] = nval
                 if name in used_names:
                     msg = 'parameter {} used twice in year_mods for year {}'
                     raise ValueError(msg.format(name, year))
