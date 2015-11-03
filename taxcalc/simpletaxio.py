@@ -66,7 +66,7 @@ class SimpleTaxIO(object):
         self._policy = Policy()
         # implement reform if reform file is specified
         if reform_filename:
-            reform = SimpleTaxIO.dictionary_from_reform_file(reform_filename)
+            reform = Policy.read_json_reform_file(reform_filename)
             self._policy.implement_reform(reform)
         # validate input variable values
         self._validate_input()
@@ -130,87 +130,6 @@ class SimpleTaxIO(object):
         Return number of lines read from INPUT file.
         """
         return len(self._input)
-
-    @staticmethod
-    def dictionary_from_reform_file(reform_filename):
-        """
-        Read reform file, strip //-comments, and return dict based on JSON.
-        The reform file is JSON with string policy-parameter primary keys and
-           string years as secondary keys.
-        Returned dictionary has integer years as primary keys and
-           string policy-parameters as secondary keys.
-        The returned dictionary is suitable as the argument to the Policy
-           class implement_reform(reform_dict) method.
-        """
-        # check existence of specified reform file
-        if not os.path.isfile(reform_filename):
-            msg = 'simtax REFORM file {} could not be found'
-            raise ValueError(msg.format(reform_filename))
-        # read contents of reform file and remove // comments
-        with open(reform_filename, 'r') as reform_file:
-            json_with_comments = reform_file.read()
-            json_without_comments = re.sub('//.*', '', json_with_comments)
-        # convert JSON text into a dictionary with year skeys as strings
-        try:
-            reform_dict_raw = json.loads(json_without_comments)
-        except ValueError:
-            msg = 'simtax REFORM file {} contains invalid JSON'
-            line = '----------------------------------------------------------'
-            txt = ('TO FIND FIRST JSON SYNTAX ERROR,\n'
-                   'COPY TEXT BETWEEN LINES AND '
-                   'PASTE INTO BOX AT jsonlint.com')
-            sys.stderr.write(txt + '\n')
-            sys.stderr.write(line + '\n')
-            sys.stderr.write(json_without_comments.strip() + '\n')
-            sys.stderr.write(line + '\n')
-            raise ValueError(msg.format(reform_filename))
-        # convert year skey strings to integers and lists into np.arrays
-        reform_pkey_param = {}
-        for pkey, sdict in reform_dict_raw.items():
-            if not isinstance(pkey, six.string_types):
-                msg = 'pkey {} in reform is not a string'
-                raise ValueError(msg.format(pkey))
-            rdict = {}
-            for skey, val in sdict.items():
-                if not isinstance(skey, six.string_types):
-                    msg = 'skey {} in reform is not a string'
-                    raise ValueError(msg.format(skey))
-                else:
-                    year = int(skey)
-                rdict[year] = (np.core.array(val) if isinstance(val, list)
-                               else val)
-            reform_pkey_param[pkey] = rdict
-        # convert reform_pkey_param dictionary to reform_pkey_year dictionary
-        return SimpleTaxIO.reform_pkey_year(reform_pkey_param)
-
-    @staticmethod
-    def reform_pkey_year(reform_pkey_param):
-        """
-        The input reform_pkey_param dictionary has string policy-parameter
-           primary keys and integer years as secondary keys.
-        Returned dictionary has integer years as primary keys and
-           string policy-parameters as secondary keys.
-        The returned dictionary is suitable as the argument to the Policy
-           class implement_reform(reform_dict) method.
-        """
-        years = set()
-        reform_pk_yr = {}
-        for param, sdict in reform_pkey_param.items():
-            if not isinstance(param, six.string_types):
-                msg = 'pkey {} in reform is not a string'
-                raise ValueError(msg.format(param))
-            elif not isinstance(sdict, dict):
-                msg = 'pkey {} value {} is not a dictionary'
-                raise ValueError(msg.format(param, sdict))
-            for year, val in sdict.items():
-                if not isinstance(year, int):
-                    msg = 'year skey {} in reform is not an integer'
-                    raise ValueError(msg.format(year))
-                if year not in years:
-                    years.add(year)
-                    reform_pk_yr[year] = {}
-                reform_pk_yr[year][param] = val
-        return reform_pk_yr
 
     @staticmethod
     def show_iovar_definitions():
