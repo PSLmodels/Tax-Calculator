@@ -588,14 +588,14 @@ class SimpleTaxIO(object):
         ovar[23] = crecs.c11070[idx]  # extra child tax credit (refunded)
         ovar[24] = crecs.c07180[idx]  # child care credit
         ovar[25] = crecs._eitc[idx]  # federal EITC
-        ovar[26] = crecs.c62100_everyone[idx]  # federal AMT taxable income
+        ovar[26] = crecs._amt15pc[idx]  # federal AMT taxable income
         amt_liability = crecs.c09600[idx]  # federal AMT liability
-        ovar[27] = amt_liability
+        ovar[27] = crecs._amt25pc[idx]
         # ovar[28] is federal income tax before credits; the taxcalc
         # crecs.c05800[idx] is this concept but includes AMT liability
         # while TAXSIM ovar[28] explicitly excludes AMT liability, so
         # we have the following:
-        ovar[28] = crecs.c05800[idx] - amt_liability
+        ovar[28] = crecs._tamt2[idx]
         return ovar
 
     def _write_output_file(self):
