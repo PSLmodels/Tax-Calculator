@@ -96,7 +96,7 @@ def test_target():
 
     distance = ((growth_x._factor_target[2015 - 2013] -
                  growth_x.default_GDP_growth_rates(2015 - 2013)) /
-                 calc_x.records.BF.APOPN[2015])
+                calc_x.records.BF.APOPN[2015])
     AGDPN_post = AGDPN_pre + distance
     ATXPY_post = ATXPY_pre + distance
 
