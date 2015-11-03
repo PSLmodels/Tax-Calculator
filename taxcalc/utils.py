@@ -3,7 +3,8 @@ import pandas as pd
 from pandas import DataFrame
 from collections import defaultdict
 
-STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600',
+STATS_COLUMNS = ['_expanded_income', '_expanded_income_currentlaw', 'c00100',
+                 'current_law_AGI', '_standard', 'c04470', 'c04600',
                  'c04800', 'c05200', 'c62100', 'c09600', 'c05800', 'c09200',
                  '_refund', 'c07100', '_ospctax', '_fica', '_combined', 's006']
 
@@ -271,7 +272,7 @@ def weighted_avg_allcols(df, cols, income_measure='_expanded_income'):
 
 
 def create_distribution_table(calc, groupby, result_type,
-                              income_measure='_expanded_income'):
+                              income_measure='_expanded_income_currentlaw'):
     """
     Gets results given by the tax calculator, sorts them based on groupby, and
         manipulates them based on result_type. Returns these as a table
