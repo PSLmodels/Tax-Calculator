@@ -89,10 +89,19 @@ def test_target():
     factor_x = {2015: {'_factor_target': [0.04]}}
     growth_x.update_economic_growth(factor_x)
 
+    AGDPN_pre = calc_x.records.BF.AGDPN[2015]
+    ATXPY_pre = calc_x.records.BF.ATXPY[2015]
+
     target(calc_x, growth_x._factor_target, IRATES, 2015)
 
-    assert calc_x.records.BF.AGDPN[2015] == 1.0522542782635027
-    assert calc_x.records.BF.ATXPY[2015] == 1.0495539648311218
+    distance = ((growth_x._factor_target[2015 - 2013] -
+                 growth_x.default_GDP_growth_rates(2015 - 2013)) /
+                 calc_x.records.BF.APOPN[2015])
+    AGDPN_post = AGDPN_pre + distance
+    ATXPY_post = ATXPY_pre + distance
+
+    assert calc_x.records.BF.AGDPN[2015] == AGDPN_post
+    assert calc_x.records.BF.ATXPY[2015] == ATXPY_post
 
 
 def test_adjustment():
