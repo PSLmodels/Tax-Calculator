@@ -330,7 +330,7 @@ class ParametersBase(object):
                                      num_years=num_years_to_expand)
             cval[(year - self.start_year):] = nval
         # handle unused parameter names, which all end in _cpi
-        for name, values in year_mods[year].items():
+        for name, pindexed in year_mods[year].items():
             if name not in used_names:
                 if not name.endswith('_cpi'):
                     msg = 'unused parameter name {} does not end in _cpi'
@@ -339,7 +339,6 @@ class ParametersBase(object):
                 if pname not in self._vals:
                     msg = 'root parameter name {} not in values dictionary'
                     raise ValueError(msg.format(pname))
-                pindexed = values  # set indexing status
                 self._vals[pname]['cpi_inflated'] = pindexed  # remember status
                 pvals = getattr(self, pname)
                 pvalues = [pvals[year - self.start_year]]
