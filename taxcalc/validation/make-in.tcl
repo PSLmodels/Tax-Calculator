@@ -119,8 +119,8 @@ for {set id 1} {$id <= $num} {incr id} {
                 set numdeps 0
                 set ccdeps 0
                 set ccexp 0
-                set wage1 [expr 50*[uniform 0 [expr 10*$max_wage_old]]]
-                set wage2 [expr 50*[uniform 0 [expr 10*$max_wage_old]]]
+                set wage1 [expr 100*[uniform 0 [expr 10*$max_wage_old]]]
+                set wage2 [expr 100*[uniform 0 [expr 10*$max_wage_old]]]
                 if { $wage1+$wage2 > 0.0 } {
                     set pnconpct [uniform 0 $max_pnconpct]
                 }
@@ -133,8 +133,8 @@ for {set id 1} {$id <= $num} {incr id} {
                 if { $ccdeps > 0 && $max_ccexp > 0 } {
                     set ccexp [expr  1000*[uniform 0 $max_ccexp]]
                 }
-                set wage1 [expr 70*[uniform 0 [expr 10*$max_wage_yng]]]
-                set wage2 [expr 70*[uniform 0 [expr 10*$max_wage_yng]]]
+                set wage1 [expr 100*[uniform 0 [expr 10*$max_wage_yng]]]
+                set wage2 [expr 100*[uniform 0 [expr 10*$max_wage_yng]]]
                 if { $wage1+$wage2 > 0.0 } {
                     set pnconpct [uniform 0 $max_pnconpct]
                 }
