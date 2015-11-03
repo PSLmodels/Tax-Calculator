@@ -332,11 +332,11 @@ class ParametersBase(object):
         for name, values in year_mods[year].items():
             if name not in used_names:
                 if not name.endswith('_cpi'):
-                    msg ='unused parameter name {} does not end in _cpi'
+                    msg = 'unused parameter name {} does not end in _cpi'
                     raise ValueError(msg.format(name))
                 pname = name[:-4]  # root parameter name
                 if pname not in self._vals:
-                    msg ='root parameter name {} not in values dictionary'
+                    msg = 'root parameter name {} not in values dictionary'
                     raise ValueError(msg.format(pname))
                 pindexed = values  # set indexing status
                 self._vals[pname]['cpi_inflated'] = pindexed  # remember status
