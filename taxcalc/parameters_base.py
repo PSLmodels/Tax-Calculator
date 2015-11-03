@@ -29,8 +29,7 @@ class ParametersBase(object):
         -------
         params: dictionary of data
         """
-        # extract different data from current_law_policy.json depending on
-        # start_year
+        # extract different data from DEFAULT_FILENAME depending on start_year
         if start_year:  # if start_year is not None
             nyrs = start_year - cls.JSON_START_YEAR + 1
             ppo = cls(num_years=nyrs)
@@ -294,26 +293,75 @@ class ParametersBase(object):
                          for i in range(0, num_years_to_expand)]
         else:
             inf_rates = None
-        paramvals = self._vals
+        all_names = set(year_mods[year].keys())
+        used_names = set()  # set of used parameter names in year_mods dict
         for name, values in year_mods[year].items():
-            # determine inflation indexing status of parameter with name
+            # determine indexing status of parameter with name for year
             if name.endswith('_cpi'):
-                continue
-            if name in paramvals:
-                default_cpi = paramvals[name].get('cpi_inflated', False)
+                continue  # handle elsewhere in this method
+            if name in self._vals:
+                vals_indexed = self._vals[name].get('cpi_inflated', False)
             else:
-                default_cpi = False
-            cpi_inflated = year_mods[year].get(name + '_cpi', default_cpi)
+                msg = 'parameter name {} not in parameter values dictionary'
+                raise ValueError(msg.format(name))
+            name_plus_cpi = name + '_cpi'
+            if name_plus_cpi in year_mods[year].keys():
+                indexed = year_mods[year].get(name_plus_cpi)
+                self._vals[name]['cpi_inflated'] = indexed  # remember status
+                if name_plus_cpi in used_names:
+                    msg = 'parameter {} used twice in year_mods for year {}'
+                    raise ValueError(msg.format(name_plus_cpi, year))
+                else:
+                    used_names.add(name_plus_cpi)
+            else:
+                indexed = vals_indexed
             # set post-reform values of parameter with name
+            if name in used_names:
+                msg = 'parameter {} used twice in year_mods for year {}'
+                raise ValueError(msg.format(name, year))
+            else:
+                used_names.add(name)
             cval = getattr(self, name, None)
             if cval is None:
-                continue
+                msg = 'parameter {} in year_mods for year [] is unknown'
+                raise ValueError(msg.format(name, year))
             nval = self.expand_array(values,
-                                     inflate=cpi_inflated,
+                                     inflate=indexed,
                                      inflation_rates=inf_rates,
                                      num_years=num_years_to_expand)
-            cval[(self.current_year - self.start_year):] = nval
-        self.set_year(self._current_year)
+            cval[(year - self.start_year):] = nval
+        # handle unused parameter names, all of which end in _cpi, but some
+        # parameter names ending in _cpi were handled above
+        unused_names = all_names - used_names
+        for name in unused_names:
+            pname = name[:-4]  # root parameter name
+            if pname not in self._vals:
+                msg = 'root parameter name {} not in values dictionary'
+                raise ValueError(msg.format(pname))
+            pindexed = year_mods[year][name]
+            self._vals[pname]['cpi_inflated'] = pindexed  # remember status
+            cval = getattr(self, pname, None)
+            if cval is None:
+                msg = 'parameter {} in year_mods for year [] is unknown'
+                raise ValueError(msg.format(pname, year))
+            pvalues = [cval[year - self.start_year]]
+            nval = self.expand_array(pvalues,
+                                     inflate=pindexed,
+                                     inflation_rates=inf_rates,
+                                     num_years=num_years_to_expand)
+            cval[(year - self.start_year):] = nval
+            if name in used_names:
+                msg = 'parameter {} used twice in year_mods for year {}'
+                raise ValueError(msg.format(name, year))
+            else:
+                used_names.add(name)
+        # check that all names in year_mods[year] dictionary have been used
+        if len(used_names) != len(year_mods[year]):
+            msg = 'length of used_names={} != len(year_mods)={} for year {}'
+            raise ValueError(msg.format(len(used_names),
+                                        len(year_mods[year]), year))
+        # implement updated parameters for year
+        self.set_year(year)
 
     @staticmethod
     def expand_1D(x, inflate, inflation_rates, num_years):

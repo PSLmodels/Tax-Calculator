@@ -73,6 +73,18 @@ class SimpleTaxIO(object):
         self._calc = self._calc_object(emulate_taxsim_2441_logic)
         self._output = {}
 
+    def start_year(self):
+        """
+        Returns starting year for SimpleTaxIO calculations
+        """
+        return self._policy.start_year
+
+    def end_year(self):
+        """
+        Returns ending year for SimpleTaxIO calculations
+        """
+        return self._policy.end_year
+
     def calculate(self, no_marginal_tax_rates=False, write_output_file=True):
         """
         Calculate taxes for all INPUT lines and write OUTPUT to file.
@@ -375,8 +387,8 @@ class SimpleTaxIO(object):
         begin with one).
         """
         self._year_set = set()
-        min_year = self._policy.start_year
-        max_year = self._policy.end_year
+        min_year = self.start_year()
+        max_year = self.end_year()
         for lnum in range(1, len(self._input) + 1):
             var = self._input[lnum]
             year = var[2]
