@@ -140,7 +140,7 @@ def test_2(input_file,  # pylint: disable=redefined-outer-name
     simtax = SimpleTaxIO(input_file.name, reform_file.name, False)
     assert simtax.number_input_lines() == NUM_INPUT_LINES
     # check that reform was implemented as specified above in REFORM_CONTENTS
-    syr = 2013
+    syr = simtax.start_year()
     amt_tthd = simtax._policy._AMT_tthd  # pylint: disable=protected-access
     assert amt_tthd[2015 - syr] == 200000
     assert amt_tthd[2016 - syr] > 200000
