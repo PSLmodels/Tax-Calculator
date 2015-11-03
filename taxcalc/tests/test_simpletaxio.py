@@ -125,7 +125,7 @@ def reform_file():
 
 def test_1(input_file):  # pylint: disable=redefined-outer-name
     """
-    Test SimpleTaxIO contructor with no policy reform.
+    Test SimpleTaxIO constructor with no policy reform.
     """
     reform_file_name = None
     simtax = SimpleTaxIO(input_file.name, reform_file_name, False)
@@ -135,7 +135,7 @@ def test_1(input_file):  # pylint: disable=redefined-outer-name
 def test_2(input_file,  # pylint: disable=redefined-outer-name
            reform_file):  # pylint: disable=redefined-outer-name
     """
-    Test SimpleTaxIO contructor with a policy reform.
+    Test SimpleTaxIO constructor with a policy reform.
     """
     simtax = SimpleTaxIO(input_file.name, reform_file.name, False)
     assert simtax.number_input_lines() == NUM_INPUT_LINES
