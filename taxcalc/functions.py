@@ -1006,15 +1006,12 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
 
     _tamt2 = c62747 + c62755 + c62770
 
-    if _ngamty > AMT_CG_thd2[MARS - 1]:
-        _amt = (AMT_CG_rt3 - AMT_CG_rt2) * min(_alminc, c62740)
-    elif _alminc > AMT_CG_thd2[MARS - 1]:
-        _amt = ((AMT_CG_rt3 - AMT_CG_rt2) *
-                min(_alminc - AMT_CG_thd2[MARS - 1], c62740))
+    if _ngamty != _amt15pc:
+        _amt = min(_alminc, c62720) - _amt15pc
     else:
         _amt = 0.
 
-    _tamt2 = _tamt2 + _amt
+    _tamt2 = _tamt2 + AMT_CG_rt3 * _amt
 
     c62800 = min(c62780, c62745 + _tamt2 - _amtfei)
     c63000 = c62800 - c62900
