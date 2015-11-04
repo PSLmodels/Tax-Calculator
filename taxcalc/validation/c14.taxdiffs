@@ -1,5 +1,6 @@
-TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]=  7    317     21    -22.08 [25488]
+TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]=  7    162      7      6.25 [1172]
       #big_vardiffs_with_big_inctax_diff=              155
+TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]=  9      6      0      0.90 [66327]
 TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]= 17    159      0 -31900.00 [85540]
       #big_vardiffs_with_big_inctax_diff=                2
 TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]= 18    159      0 -13400.00 [86672]
