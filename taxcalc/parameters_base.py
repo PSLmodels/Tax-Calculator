@@ -159,7 +159,7 @@ class ParametersBase(object):
             if num_values <= nyrs:
                 # val should be the single start_year value
                 rawval = getattr(ppo, name[1:])
-                if isinstance(rawval, np.core.ndarray):
+                if isinstance(rawval, np.ndarray):
                     val = rawval.tolist()
                 else:
                     val = rawval
@@ -361,11 +361,11 @@ class ParametersBase(object):
         If necessary, pad out additional years by increasing the last given
         year using the given inflation_rates list.
         """
-        if isinstance(x, np.core.ndarray):
+        if isinstance(x, np.ndarray):
             if len(x) >= num_years:
                 return x
             else:
-                ans = np.core.zeros(num_years, dtype='f8')
+                ans = np.zeros(num_years, dtype='f8')
                 ans[:len(x)] = x
                 if inflate:
                     extra = []
@@ -380,7 +380,7 @@ class ParametersBase(object):
 
                 ans[len(x):] = extra
                 return ans.astype(x.dtype, casting='unsafe')
-        return ParametersBase.expand_1D(np.core.array([x]),
+        return ParametersBase.expand_1D(np.array([x]),
                                         inflate,
                                         inflation_rates,
                                         num_years)
@@ -393,7 +393,7 @@ class ParametersBase(object):
         number of rows. For each expanded row, we inflate using the given
         inflation rates list.
         """
-        if isinstance(x, np.core.ndarray):
+        if isinstance(x, np.ndarray):
             # Look for -1s and create masks if present
             last_good_row = -1
             keep_user_data_mask = []
@@ -402,7 +402,7 @@ class ParametersBase(object):
             for row in x:
                 keep_user_data_mask.append([1 if i != -1 else 0 for i in row])
                 keep_calc_data_mask.append([0 if i != -1 else 1 for i in row])
-                if not np.core.any(row == -1):
+                if not np.any(row == -1):
                     last_good_row += 1
                 else:
                     has_nones = True
@@ -411,20 +411,19 @@ class ParametersBase(object):
             else:
                 if has_nones:
                     c = x[:last_good_row + 1]
-                    keep_user_data_mask = np.core.array(keep_user_data_mask)
-                    keep_calc_data_mask = np.core.array(keep_calc_data_mask)
+                    keep_user_data_mask = np.array(keep_user_data_mask)
+                    keep_calc_data_mask = np.array(keep_calc_data_mask)
 
                 else:
                     c = x
-                ans = np.core.zeros((num_years, c.shape[1]))
+                ans = np.zeros((num_years, c.shape[1]))
                 ans[:len(c), :] = c
                 if inflate:
                     extra = []
                     cur = c[-1]
                     for i in range(0, num_years - len(c)):
                         inf_idx = i + len(c) - 1
-                        cur = np.core.array(cur *
-                                            (1. + inflation_rates[inf_idx]))
+                        cur = np.array(cur * (1. + inflation_rates[inf_idx]))
                         extra.append(cur)
                 else:
                     extra = [c[-1, :] for i in
@@ -437,7 +436,7 @@ class ParametersBase(object):
                     user_vals = x * keep_user_data_mask
                     ans = ans + user_vals
                 return ans.astype(c.dtype, casting='unsafe')
-        return ParametersBase.expand_2D(np.core.array(x), inflate,
+        return ParametersBase.expand_2D(np.array(x), inflate,
                                         inflation_rates, num_years)
 
     @staticmethod
@@ -493,7 +492,7 @@ class ParametersBase(object):
         -------
         expanded numpy array
         """
-        x = np.core.array(ParametersBase.strip_Nones(x))
+        x = np.array(ParametersBase.strip_Nones(x))
         try:
             if len(x.shape) == 1:
                 return ParametersBase.expand_1D(x, inflate, inflation_rates,
