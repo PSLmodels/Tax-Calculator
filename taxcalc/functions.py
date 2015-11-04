@@ -987,23 +987,24 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
 
     _amt5pc = 0.0
 
-    _amt15pc = (min(_alminc, c62720) - min(max(
-                0., AMT_CG_thd1[MARS - 1] - c24520), min(_alminc, c62720)))
+    _line45 = max(0., AMT_CG_thd1[MARS - 1] - c24520)
 
-    _amt15pc = (min(_amt15pc, max(0., AMT_CG_thd2[MARS - 1] - c24520 + max(
-                0., AMT_CG_thd1[MARS - 1] - c24520))))
+    _line46 = min(_alminc, c62720)
+
+    _line48 = min(_alminc, c62720) - min(_line45, _line46)
+
+    _amt15pc = min(_line48, max(0., AMT_CG_thd2[MARS - 1] - c24520 + _line45))
 
     if c04800 == 0:
-        _amt15pc = max(0., min(_alminc, c62720) - AMT_CG_thd1[MARS - 1])
+        _amt15pc = max(0., _line46 - AMT_CG_thd1[MARS - 1])
 
     if _ngamty != _amt15pc:
-        _amt = (min(_alminc, c62720) - _amt15pc - min(max(
-                0., AMT_CG_thd1[MARS - 1] - c24520), min(_alminc, c62720)))
+        _amt20pc = _line46 - _amt15pc - min(_line45, _line46)
     else:
-        _amt = 0.
+        _amt20pc = 0.
 
     if c62730 != 0:
-        _amt25pc = max(0, _alminc - _ngamty - min(_alminc, c62720))
+        _amt25pc = max(0, _alminc - _ngamty - _line46)
     else:
         _amt25pc = 0.
 
@@ -1011,11 +1012,11 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
 
     c62755 = AMT_CG_rt2 * _amt15pc
 
+    c62760 = AMT_CG_rt3 * _amt20pc
+
     c62770 = 0.25 * _amt25pc
 
-    _tamt2 = c62747 + c62755 + c62770
-
-    _tamt2 = _tamt2 + AMT_CG_rt3 * _amt
+    _tamt2 = c62747 + c62755 + c62760 + c62770  # line62 without 42 being added
 
     c62800 = min(c62780, c62745 + _tamt2 - _amtfei)
     c63000 = c62800 - c62900
@@ -1032,10 +1033,10 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
 
     return (c62720, c60260, c63100, c60200, c60240, c60220, c60000,
             c60130, c62730, _addamt, c62100, c04500,
-            _amtsepadd, c62600, _agep, _ages, c62700,
+            _amtsepadd, c62600, _agep, _ages, c62700, c62760,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
             _ngamty, c62745, y62745, _tamt2, _amt5pc, _amt15pc,
-            _amt25pc, c62747, c62755, c62770, _amt, c62800,
+            _amt25pc, c62747, c62755, c62770, _amt20pc, c62800,
             c09600, _othtax, c05800, _cmbtp, c62100_everyone)
 
 
