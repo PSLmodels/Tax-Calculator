@@ -595,7 +595,7 @@ class SimpleTaxIO(object):
         # crecs.c05800[idx] is this concept but includes AMT liability
         # while TAXSIM ovar[28] explicitly excludes AMT liability, so
         # we have the following:
-        ovar[28] = crecs.c05800[idx]
+        ovar[28] = crecs.c05800[idx] - amt_liability
         return ovar
 
     def _write_output_file(self):
