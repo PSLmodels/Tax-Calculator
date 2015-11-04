@@ -1338,6 +1338,18 @@
         "col_label": "",
         "value": [0.20] 
     },
+    "_AMT_CG_rt4":{
+        "long_name": "Long term capital gain and qualified dividend rate 4",
+    "description": "The capital gain and qualified dividend (stacked on top of regular income) above threshold 2 are taxed at this rate.",
+    "irs_ref": "Form 6251, line 60, in-line. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.25] 
+    },
         "_AMT_CG_thd1":{
         "long_name": "Long term capital gain and qualified dividend threshold 1",
 	"description": "The capital gain plus dividends portion, stacked last, of income below this threshold is taxed at capital gain rate 1.",

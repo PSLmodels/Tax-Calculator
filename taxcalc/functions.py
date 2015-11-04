@@ -831,7 +831,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
          f6251, e62100, e21040, e20800, c00100, _statax, e60000,
          c04470, c17000, e18500, c20800, c21040, NIIT, e62730,
          DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700,
-         e00100, e24515, x62730, x60130, e18400, _amed,
+         e00100, e24515, x62730, x60130, e18400, _amed, AMT_CG_rt4,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
          II_brk6, MARS, _sep, II_brk2, AMT_Child_em, AMT_CG_rt1,
          AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516,
@@ -1014,7 +1014,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
 
     c62760 = AMT_CG_rt3 * _amt20pc
 
-    c62770 = 0.25 * _amt25pc
+    c62770 = AMT_CG_rt4 * _amt25pc
 
     _tamt2 = c62747 + c62755 + c62760 + c62770  # line62 without 42 being added
 
