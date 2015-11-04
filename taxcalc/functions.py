@@ -997,7 +997,8 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
         _amt15pc = max(0., min(_alminc, c62720) - AMT_CG_thd1[MARS - 1])
 
     if _ngamty != _amt15pc:
-        _amt = min(_alminc, c62720) - _amt15pc
+        _amt = (min(_alminc, c62720) - _amt15pc - min(max(
+                0., AMT_CG_thd1[MARS - 1] - c24520), min(_alminc, c62720)))
     else:
         _amt = 0.
 
