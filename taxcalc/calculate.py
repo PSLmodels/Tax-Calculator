@@ -1,3 +1,6 @@
+"""
+OSPC Tax-Calculator tax Calculator class.
+"""
 import math
 import copy
 import numpy as np
@@ -9,6 +12,7 @@ from .policy import Policy
 from .records import Records
 from .behavior import Behavior
 from .growth import Growth, adjustment, target
+
 
 all_cols = set()
 
@@ -214,24 +218,30 @@ class Calculator(object):
             finite_diff=0.01,
             wrt_adjusted_income=True):
         """
-        Calculates the individual income tax, FICA, and combined marginal tax
-        rates for every record. Avoids kinks in the tax schedule by finding
-        the marginal rates associated with both an income increase and an
-        income decrease and then uses the more modest of the two.
+        Calculates the marginal FICA, individual incom, and combined
+        tax rates for every tax filing unit.  The marginal tax rates
+        are approximated as the change in tax liability caused by a
+        small increase (the finite_diff) in income (specified by the
+        income_type_str) divided by that small increase in income.
+        If wrt_adjusted_income is true, then the marginal tax rates
+        are computed as the change in tax liability divided by the
+        change in total compensation caused by the small increase in
+        income.
 
         Parameters
         ----------
         income_type_str: string
-            specifies an income attribute in the Records class.
+            specifies type of income that is increased to compute the
+            marginal tax rates (see mtr_valid_income_types below).
 
         finite_diff: float
-            specifies marginal amount to be added or subtracted from income
-            in order to calculate the marginal tax rate.
+            specifies marginal amount to be added to income in order to
+            calculate the marginal tax rate.
 
         wrt_adjusted_income: boolean
-            specifies whether or not marginal tax rates on earned income are
-            computed with respect to (wrt) changes in adjusted income that
-            includes the employer share of OASDI+HI payroll taxes.
+            specifies whether or not marginal tax rates on earned income
+            are computed with respect to (wrt) changes in adjusted income
+            that includes the employer share of OASDI+HI payroll taxes.
 
         Returns
         -------
@@ -239,19 +249,19 @@ class Calculator(object):
         mtr_iit: an array of marginal individual income tax (IIT) rates.
         mtr_combined: an array of marginal combined FICA and IIT tax rates.
         """
-        MTR_VALID_INCOME_TYPES = ['e00200p']
-        MTR_IND_EARNINGS_TYPES = ['e00200p', 'e00200s']
+        mtr_valid_income_types = ['e00200p']
+        mtr_ind_earnings_types = ['e00200p']
         # check validity of income_type_str parameter
-        if income_type_str not in MTR_VALID_INCOME_TYPES:
-            msg = 'mtr income_type_str={} not valid'
+        if income_type_str not in mtr_valid_income_types:
+            msg = 'mtr income_type_str={} is not valid'
             raise ValueError(msg.format(income_type_str))
         # check for reasonable value of finite_diff parameter
-        if finite_diff <= 0.0 or finite_diff > 10.0:
-            msg = 'mtr finite_diff={} not in (0,10] range'
+        if finite_diff <= 0.0 or finite_diff > 1.0:
+            msg = 'mtr finite_diff={} is not in (0,1] range'
             raise ValueError(msg.format(finite_diff))
-        # extract income_type(s) from embedded records object
+        # extract income_type array(s) from embedded records object
         income_type = getattr(self.records, income_type_str)
-        if income_type_str in MTR_IND_EARNINGS_TYPES:
+        if income_type_str in mtr_ind_earnings_types:
             earnings_type = self.records.e00200
         # calculate base level of taxes
         self.calc_all()
@@ -260,41 +270,34 @@ class Calculator(object):
         combined_taxes_base = ospctax_base + fica_base
         # calculate level of taxes after a marginal increase in income
         setattr(self.records, income_type_str, income_type + finite_diff)
-        if income_type_str in MTR_IND_EARNINGS_TYPES:
+        if income_type_str in mtr_ind_earnings_types:
             self.records.e00200 = earnings_type + finite_diff
         self.calc_all()
         fica_up = copy.deepcopy(self.records._fica)
         ospctax_up = copy.deepcopy(self.records._ospctax)
         combined_taxes_up = ospctax_up + fica_up
-        # return embedded records object to its original state and recalculate
-        setattr(self.records, income_type_str, income_type)
-        if income_type_str in MTR_IND_EARNINGS_TYPES:
-            self.records.e00200 = earnings_type
-        self.calc_all()
-        # specify optional adjustment for employer (er) OASDI+HI payroll taxes
-        #    The marginal tax rate we want is the "after-tax share
-        #    of tax in compensation". Since only half of the OASDI+HI
-        #    payroll tax is included in wages for income tax purposes,
-        #    we need to increase the denominator by the excluded portion
-        #    of the OASDI+HI payroll tax.  Note that OASDI is "social
-        #    security" [_ss_ below] and that HI is "Medicare" [_mc_ below]
-        #    and that they are combined in the "FICA" or payroll tax.
-        if wrt_adjusted_income and income_type_str in MTR_IND_EARNINGS_TYPES:
-            er_fica_adjustment = np.where(income_type <
-                                          self.policy.SS_Earnings_c,
-                                          (0.5 * self.policy.FICA_ss_trt +
-                                           0.5 * self.policy.FICA_mc_trt),
-                                          0.5 * self.policy.FICA_mc_trt)
-            adjusted_finite_diff = finite_diff * (1.0 + er_fica_adjustment)
-        else:
-            adjusted_finite_diff = finite_diff
-        # compute marginal tax rates
+        # compute marginal changes in tax liability
         fica_delta = fica_up - fica_base
         ospctax_delta = ospctax_up - ospctax_base
         combined_delta = combined_taxes_up - combined_taxes_base
-        mtr_fica = fica_delta / adjusted_finite_diff
-        mtr_iit = ospctax_delta / adjusted_finite_diff
-        mtr_combined = combined_delta / adjusted_finite_diff
+        # return embedded records object to its original state and recalculate
+        setattr(self.records, income_type_str, income_type)
+        if income_type_str in mtr_ind_earnings_types:
+            self.records.e00200 = earnings_type
+        self.calc_all()
+        # specify optional adjustment for employer (er) OASDI+HI payroll taxes
+        if wrt_adjusted_income and income_type_str in mtr_ind_earnings_types:
+            adj = np.where(income_type <
+                           self.policy.SS_Earnings_c,
+                           0.5 * (self.policy.FICA_ss_trt +
+                                  self.policy.FICA_mc_trt),
+                           0.5 * self.policy.FICA_mc_trt)
+        else:
+            adj = 0.0
+        # compute marginal tax rates
+        mtr_fica = fica_delta / (finite_diff * (1.0 + adj))
+        mtr_iit = ospctax_delta / (finite_diff * (1.0 + adj))
+        mtr_combined = combined_delta / (finite_diff * (1.0 + adj))
         # return the three marginal tax rate arrays
         return (mtr_fica, mtr_iit, mtr_combined)
 
@@ -321,7 +324,7 @@ class Calculator(object):
 
             # S TD1 = (calc.c04100 + calc.c04200)*calc.s006
             NumItemizer1 = (calc.records.s006[(calc.records.c04470 > 0) *
-                            (calc.records.c00100 > 0)].sum())
+                                              (calc.records.c00100 > 0)].sum())
 
             # itemized deduction
             ID = ID1[calc.records.c04470 > 0].sum()
