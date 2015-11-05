@@ -216,17 +216,20 @@ class Calculator(object):
 
     def mtr(self, income_type_str='e00200p',
             finite_diff=0.01,
-            wrt_adjusted_income=True):
+            wrt_full_compensation=True):
         """
-        Calculates the marginal FICA, individual incom, and combined
-        tax rates for every tax filing unit.  The marginal tax rates
-        are approximated as the change in tax liability caused by a
-        small increase (the finite_diff) in income (specified by the
-        income_type_str) divided by that small increase in income.
-        If wrt_adjusted_income is true, then the marginal tax rates
-        are computed as the change in tax liability divided by the
-        change in total compensation caused by the small increase in
-        income.
+        Calculates the marginal FICA, individual income, and combined
+        tax rates for every tax filing unit.
+          The marginal tax rates are approximated as the change in tax
+        liability caused by a small increase (the finite_diff) in income
+        (specified by the income_type_str) divided by that small increase
+        in income, when wrt_full_compensation is false.
+          If wrt_full_compensation is true, then the marginal tax rates
+        are computed as the change in tax liability divided by the change
+        in total compensation caused by the small increase in income
+        (where the change in total compensation is the sum of the small
+        increase in income and any increase in the employer share of FICA
+        taxes caused by the small increase in income).
 
         Parameters
         ----------
@@ -238,9 +241,9 @@ class Calculator(object):
             specifies marginal amount to be added to income in order to
             calculate the marginal tax rate.
 
-        wrt_adjusted_income: boolean
+        wrt_full_compensation: boolean
             specifies whether or not marginal tax rates on earned income
-            are computed with respect to (wrt) changes in adjusted income
+            are computed with respect to (wrt) changes in total compensation
             that includes the employer share of OASDI+HI payroll taxes.
 
         Returns
@@ -286,7 +289,7 @@ class Calculator(object):
             self.records.e00200 = earnings_type
         self.calc_all()
         # specify optional adjustment for employer (er) OASDI+HI payroll taxes
-        if wrt_adjusted_income and income_type_str in mtr_ind_earnings_types:
+        if wrt_full_compensation and income_type_str in mtr_ind_earnings_types:
             adj = np.where(income_type <
                            self.policy.SS_Earnings_c,
                            0.5 * (self.policy.FICA_ss_trt +
