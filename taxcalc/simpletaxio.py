@@ -540,7 +540,7 @@ class SimpleTaxIO(object):
         recs.p22250[idx] = ivar[21]  # short-term capital gains (+/-)
         recs.p23250[idx] = ivar[22]  # long-term capital gains (+/-)
 
-    OVAR_NUM = 28
+    OVAR_NUM = 30
 
     @staticmethod
     def _extract_output(crecs, idx, ivar):
@@ -608,6 +608,8 @@ class SimpleTaxIO(object):
         # while TAXSIM ovar[28] explicitly excludes AMT liability, so
         # we have the following:
         ovar[28] = crecs.c05800[idx] - amt_liability
+        ovar[29] = 0.0  # test purpose, intermediate variable
+        ovar[30] = 0.0  # test purpose, intermediate variable
         return ovar
 
     def _write_output_file(self):
@@ -654,7 +656,9 @@ class SimpleTaxIO(object):
                 25: ' {:.2f}',
                 26: ' {:.2f}',
                 27: ' {:.2f}',
-                28: ' {:.2f}'}
+                28: ' {:.2f}',
+                29: ' {:.1f}',
+                30: ' {:.1f}'}
 
     @staticmethod
     def _write_output_line(output_dict, output_file):
