@@ -120,6 +120,39 @@ def test_adjustment():
     assert calc_y.records.BF.ATXPY[2015] == ATXPY_pre + 0.01
 
 
+def test_target_results_range():
+
+    growth = Growth()
+    target = [growth.default_GDP_growth_rates(2013 - 2013) + 0.01]
+    reform = {2013: {'_factor_target': target}}
+
+    records_x = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
+    policy_x = Policy()
+    calc_x = Calculator(policy=policy_x, records=records_x,
+                        growth=growth)
+
+    calc_x.calc_all()
+    calc_defaultAGI_13 = (calc_x.records.c00100 * calc_x.records.s006).sum()
+    calc_x.increment_year()
+    calc_x.calc_all()
+    calc_defaultAGI_14 = (calc_x.records.c00100 * calc_x.records.s006).sum()
+
+    growth.update_economic_growth(reform)
+
+    records_y = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
+    policy_y = Policy()
+    calc_y = Calculator(policy=policy_y, records=records_y,
+                        growth=growth)
+    calc_y.increment_year()
+    calc_y.calc_all()
+    calc_higher_AGI_14 = (calc_y.records.c00100 * calc_y.records.s006).sum()
+
+    delta = calc_higher_AGI_14 - calc_defaultAGI_14
+
+    assert delta <= 0.0102 * calc_defaultAGI_13
+    assert -delta >= -0.0098 * calc_defaultAGI_13
+
+
 def test_growth_default_data():
     paramdata = Growth.default_data()
     assert paramdata['_factor_adjustment'] == [0.0]
