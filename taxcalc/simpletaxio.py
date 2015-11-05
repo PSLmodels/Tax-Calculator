@@ -114,7 +114,7 @@ class SimpleTaxIO(object):
                     self._output[lnum] = ovar
             if not no_marginal_tax_rates:
                 (mtr_fica, mtr_itax,
-                 _) = self._calc.mtr('e00200p', wrt_adjusted_income=False)
+                 _) = self._calc.mtr(wrt_full_compensation=False)
                 for idx in range(0, self._calc.records.dim):
                     indyr = cr_taxyr[idx]
                     if indyr == calcyr:
