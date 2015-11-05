@@ -168,6 +168,26 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
             c04600)
 
 
+@iterate_jit(nopython=True)
+def Current_Law_AGI(e00200, e00300, e00600, e00700, e00800, e00900, c01000,
+                    e01100, e01200, e01400, e01700, e02000, e02100, e02300,
+                    e02600, e02610, e02800, e02540, e03150, e03210, e03600,
+                    e03260, e03270, e03300, e03400, e03500, e03280, e03900,
+                    e04000, e03700, e03220, e03230, e03240, e03290, c02700,
+                    e02500, e02615):
+
+    c02900 = (e03150 + e03210 + e03600 + e03260 + e03270 + e03300 +
+              e03400 + e03500 + e03280 + e03900 + e04000 + e03700 +
+              e03220 + e03230 + e03240 + e03290)
+    _ymod1 = (e00200 + e00300 + e00600 + e00700 + e00800 + e00900 + c01000 +
+              e01100 + e01200 + e01400 + e01700 + e02000 + e02100 + e02300 +
+              e02600 + e02610 + e02800 - e02540)
+    c02650 = _ymod1 + e02500 - c02700 + e02615
+    current_law_AGI = c02650 - c02900
+
+    return (current_law_AGI)
+
+
 @iterate_jit(nopython=True, puf=True)
 def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
             e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
@@ -1650,7 +1670,7 @@ def Taxer_i(inc_in, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6,
 @iterate_jit(nopython=True, parameters=['FICA_ss_trt', 'SS_Earnings_c',
                                         'FICA_mc_trt'])
 def ExpandIncome(FICA_ss_trt, SS_Earnings_c, e00200, FICA_mc_trt, e02400,
-                 c02500, c00100, e00400):
+                 c02500, c00100, e00400, current_law_AGI):
 
     employer_share_fica = (max(0,
                            0.5 * FICA_ss_trt * min(SS_Earnings_c, e00200) +
@@ -1663,7 +1683,12 @@ def ExpandIncome(FICA_ss_trt, SS_Earnings_c, e00200, FICA_mc_trt, e02400,
                         non_taxable_ss_benefits +
                         employer_share_fica)
 
-    return (_expanded_income)
+    _expanded_income_currentlaw = (current_law_AGI +  # AGI
+                                   e00400 +  # Non-taxable interest
+                                   non_taxable_ss_benefits +
+                                   employer_share_fica)
+
+    return (_expanded_income, _expanded_income_currentlaw)
 
 
 def BenefitSurtax(calc):
