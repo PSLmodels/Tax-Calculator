@@ -1,3 +1,6 @@
+"""
+OSPC Tax-Calculator abstract base parameters class.
+"""
 import os
 import json
 import numpy as np
@@ -44,57 +47,6 @@ class ParametersBase(object):
             return params
         else:
             return {name: data['value'] for name, data in params.items()}
-
-    # ----- begin private methods of ParametersBase class -----
-
-    @staticmethod
-    def _revised_default_data(params, start_year, nyrs, ppo):
-        """
-        Return revised default parameter data.
-
-        Parameters
-        ----------
-        params: dictionary of NAME:DATA pairs for each parameter
-            as defined in calling default_data staticmethod.
-
-        start_year: int
-            as defined in calling default_data staticmethod.
-
-        nyrs: int
-            as defined in calling default_data staticmethod.
-
-        ppo: Policy object
-            as defined in calling default_data staticmethod.
-
-        Returns
-        -------
-        params: dictionary of revised parameter data
-
-        Notes
-        -----
-        This staticmethod is called from default_data staticmethod in
-        order to reduce the complexity of the default_data staticmethod.
-        """
-        import numpy as np
-        start_year_str = '{}'.format(start_year)
-        for name, data in params.items():
-            data['start_year'] = start_year
-            values = data['value']
-            num_values = len(values)
-            if num_values <= nyrs:
-                # val should be the single start_year value
-                rawval = getattr(ppo, name[1:])
-                if isinstance(rawval, np.ndarray):
-                    val = rawval.tolist()
-                else:
-                    val = rawval
-                data['value'] = [val]
-                data['row_label'] = [start_year_str]
-            else:  # if num_values > nyrs
-                # val should extend beyond the start_year value
-                data['value'] = data['value'][(nyrs - 1):]
-                data['row_label'] = data['row_label'][(nyrs - 1):]
-        return params
 
     def __init__(self, *args, **kwargs):
         msg = 'Override __init__ and call self.initialize from it.'
@@ -168,6 +120,56 @@ class ParametersBase(object):
         for name in self._vals:
             arr = getattr(self, name)
             setattr(self, name[1:], arr[year_zero_indexed])
+
+    # ----- begin private methods of ParametersBase class -----
+
+    @staticmethod
+    def _revised_default_data(params, start_year, nyrs, ppo):
+        """
+        Return revised default parameter data.
+
+        Parameters
+        ----------
+        params: dictionary of NAME:DATA pairs for each parameter
+            as defined in calling default_data staticmethod.
+
+        start_year: int
+            as defined in calling default_data staticmethod.
+
+        nyrs: int
+            as defined in calling default_data staticmethod.
+
+        ppo: Policy object
+            as defined in calling default_data staticmethod.
+
+        Returns
+        -------
+        params: dictionary of revised parameter data
+
+        Notes
+        -----
+        This staticmethod is called from default_data staticmethod in
+        order to reduce the complexity of the default_data staticmethod.
+        """
+        start_year_str = '{}'.format(start_year)
+        for name, data in params.items():
+            data['start_year'] = start_year
+            values = data['value']
+            num_values = len(values)
+            if num_values <= nyrs:
+                # val should be the single start_year value
+                rawval = getattr(ppo, name[1:])
+                if isinstance(rawval, np.ndarray):
+                    val = rawval.tolist()
+                else:
+                    val = rawval
+                data['value'] = [val]
+                data['row_label'] = [start_year_str]
+            else:  # if num_values > nyrs
+                # val should extend beyond the start_year value
+                data['value'] = data['value'][(nyrs - 1):]
+                data['row_label'] = data['row_label'][(nyrs - 1):]
+        return params
 
     @classmethod
     def _params_dict_from_json_file(cls):
@@ -286,6 +288,10 @@ class ParametersBase(object):
         if year != self.current_year:
             msg = 'YEAR={} in year_mods is not equal to current_year={}'
             raise ValueError(msg.format(year, self.current_year))
+        # check that MODS is a dictionary
+        if not isinstance(year_mods[year], dict):
+            msg = 'mods in year_mods is not a dictionary'
+            raise ValueError(msg)
         # implement reform provisions included in the single YEAR:MODS pair
         num_years_to_expand = (self.start_year + self.num_years) - year
         if hasattr(self, '_inflation_rates'):
@@ -293,8 +299,8 @@ class ParametersBase(object):
                          for i in range(0, num_years_to_expand)]
         else:
             inf_rates = None
-        all_names = set(year_mods[year].keys())
-        used_names = set()  # set of used parameter names in year_mods dict
+        all_names = set(year_mods[year].keys())  # no duplicate keys in a dict
+        used_names = set()  # set of used parameter names in MODS dict
         for name, values in year_mods[year].items():
             # determine indexing status of parameter with name for year
             if name.endswith('_cpi'):
@@ -306,21 +312,13 @@ class ParametersBase(object):
                 raise ValueError(msg.format(name))
             name_plus_cpi = name + '_cpi'
             if name_plus_cpi in year_mods[year].keys():
+                used_names.add(name_plus_cpi)
                 indexed = year_mods[year].get(name_plus_cpi)
                 self._vals[name]['cpi_inflated'] = indexed  # remember status
-                if name_plus_cpi in used_names:
-                    msg = 'parameter {} used twice in year_mods for year {}'
-                    raise ValueError(msg.format(name_plus_cpi, year))
-                else:
-                    used_names.add(name_plus_cpi)
             else:
                 indexed = vals_indexed
             # set post-reform values of parameter with name
-            if name in used_names:
-                msg = 'parameter {} used twice in year_mods for year {}'
-                raise ValueError(msg.format(name, year))
-            else:
-                used_names.add(name)
+            used_names.add(name)
             cval = getattr(self, name, None)
             if cval is None:
                 msg = 'parameter {} in year_mods for year [] is unknown'
@@ -334,6 +332,7 @@ class ParametersBase(object):
         # parameter names ending in _cpi were handled above
         unused_names = all_names - used_names
         for name in unused_names:
+            used_names.add(name)
             pname = name[:-4]  # root parameter name
             if pname not in self._vals:
                 msg = 'root parameter name {} not in values dictionary'
@@ -350,16 +349,8 @@ class ParametersBase(object):
                                      inflation_rates=inf_rates,
                                      num_years=num_years_to_expand)
             cval[(year - self.start_year):] = nval
-            if name in used_names:
-                msg = 'parameter {} used twice in year_mods for year {}'
-                raise ValueError(msg.format(name, year))
-            else:
-                used_names.add(name)
-        # check that all names in year_mods[year] dictionary have been used
-        if len(used_names) != len(year_mods[year]):
-            msg = 'length of used_names={} != len(year_mods)={} for year {}'
-            raise ValueError(msg.format(len(used_names),
-                                        len(year_mods[year]), year))
+        # confirm that all names have been used
+        assert len(used_names) == len(all_names)
         # implement updated parameters for year
         self.set_year(year)
 
@@ -445,8 +436,8 @@ class ParametersBase(object):
                     user_vals = x * keep_user_data_mask
                     ans = ans + user_vals
                 return ans.astype(c.dtype, casting='unsafe')
-        return ParametersBase.expand_2D(np.array(x), inflate, inflation_rates,
-                                        num_years)
+        return ParametersBase.expand_2D(np.array(x), inflate,
+                                        inflation_rates, num_years)
 
     @staticmethod
     def strip_Nones(x):

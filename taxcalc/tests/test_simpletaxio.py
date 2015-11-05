@@ -54,38 +54,6 @@ REFORM_CONTENTS = """
      "2020": true   // values in future years indexed with this year as base
     }
 }
-
-// The JSON above is translated into the following Python dictionary with
-// calendar year as the primary key, which is the data structure required
-// as input to the Policy class implement_reform(reform) method.
-//   reform = {
-//       2015: {
-//           '_AMT_tthd': [200000]
-//       },
-//       2016: {
-//           '_EITC_c': [[ 900, 5000,  8000, 9000]],
-//           '_II_em': [6000],
-//           '_II_em_cpi': False,
-//           '_SS_Earnings_c': [300000]
-//       },
-//       2017: {
-//           '_AMT_tthd': [300000],
-//           '_AMT_em_cpi': False
-//       },
-//       2018: {
-//           '_II_em': [7500],
-//           '_II_em_cpi': True,
-//           '_SS_Earnings_c': [500000]
-//       },
-//       2019: {
-//           '_EITC_c': [[1200, 7000, 10000, 12000]]
-//       },
-//       2020: {
-//           '_II_em': [9000],
-//           '_SS_Earnings_c': [700000],
-//           '_AMT_em_cpi': True
-//       }
-//   }
 """
 
 

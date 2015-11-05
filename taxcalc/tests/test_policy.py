@@ -149,8 +149,8 @@ def test_multi_year_reform():
                                            num_years=nyrs))
     assert_array_equal(getattr(ppo, '_EITC_c'),
                        Policy.expand_array(np.array([[487, 3250, 5372, 6044],
-                                           [496, 3305, 5460, 6143],
-                                           [503, 3359, 5548, 6242]]),
+                                                     [496, 3305, 5460, 6143],
+                                                     [503, 3359, 5548, 6242]]),
                                            inflate=True,
                                            inflation_rates=iratelist,
                                            num_years=nyrs))
@@ -487,3 +487,89 @@ def test_parameters_get_default_start_year():
     assert meta_ctc_c['start_year'] == 2015
     assert meta_ctc_c['row_label'] == ["2015", "2016", "2017", "2018"]
     assert meta_ctc_c['value'] == [1000, 1000, 1000, 500]
+
+
+REFORM_CONTENTS = """
+// Example of a reform file suitable for Policy read_json_reform_file function.
+// This JSON file can contain any number of trailing //-style comments, which
+// will be removed before the contents are converted from JSON to a dictionary.
+// The primary keys are policy parameters and secondary keys are years.
+// Both the primary and secondary key values must be enclosed in quotes (").
+// Boolean variables are specified as true or false (no quotes; all lowercase).
+{
+    "_AMT_tthd": // AMT taxinc threshold separating the two AMT tax brackets
+    {"2015": [200000],
+     "2017": [300000]
+    },
+    "_EITC_c": // maximum EITC amount by number of qualifying kids (0,1,2,3+)
+    {"2016": [[ 900, 5000,  8000,  9000]],
+     "2019": [[1200, 7000, 10000, 12000]]
+    },
+    "_II_em": // personal exemption amount (see indexing changes below)
+    {"2016": [6000],
+     "2018": [7500],
+     "2020": [9000]
+    },
+    "_II_em_cpi": // personal exemption amount indexing status
+    {"2016": false, // values in future years are same as this year value
+     "2018": true   // values in future years indexed with this year as base
+    },
+    "_SS_Earnings_c": // social security (OASDI) maximum taxable earnings
+    {"2016": [300000],
+     "2018": [500000],
+     "2020": [700000]
+    },
+    "_AMT_em_cpi": // AMT exemption amount indexing status
+    {"2017": false, // values in future years are same as this year value
+     "2020": true   // values in future years indexed with this year as base
+    }
+}
+"""
+
+
+@pytest.yield_fixture
+def reform_file():
+    """
+    Temporary reform file for Policy read_json_reform_file function.
+    """
+    rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    rfile.write(REFORM_CONTENTS)
+    rfile.close()
+    # must close and then yield for Windows platform
+    yield rfile
+    if os.path.isfile(rfile.name):
+        try:
+            os.remove(rfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+def test_read_json_reform_file_and_implement_reform(reform_file):
+    """
+    Test reading and translation of reform file into a reform dictionary
+    that is then used to call implement_reform method.
+    """
+    reform = Policy.read_json_reform_file(reform_file.name)
+    policy = Policy()
+    policy.implement_reform(reform)
+    syr = policy.start_year
+    amt_tthd = policy._AMT_tthd
+    assert amt_tthd[2015 - syr] == 200000
+    assert amt_tthd[2016 - syr] > 200000
+    assert amt_tthd[2017 - syr] == 300000
+    assert amt_tthd[2018 - syr] > 300000
+    ii_em = policy._II_em
+    assert ii_em[2016 - syr] == 6000
+    assert ii_em[2017 - syr] == 6000
+    assert ii_em[2018 - syr] == 7500
+    assert ii_em[2019 - syr] > 7500
+    assert ii_em[2020 - syr] == 9000
+    assert ii_em[2021 - syr] > 9000
+    amt_em = policy._AMT_em
+    assert amt_em[2016 - syr, 0] > amt_em[2015 - syr, 0]
+    assert amt_em[2017 - syr, 0] > amt_em[2016 - syr, 0]
+    assert amt_em[2018 - syr, 0] == amt_em[2017 - syr, 0]
+    assert amt_em[2019 - syr, 0] == amt_em[2017 - syr, 0]
+    assert amt_em[2020 - syr, 0] == amt_em[2017 - syr, 0]
+    assert amt_em[2021 - syr, 0] > amt_em[2020 - syr, 0]
+    assert amt_em[2022 - syr, 0] > amt_em[2021 - syr, 0]
