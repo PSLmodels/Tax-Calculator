@@ -330,10 +330,19 @@ class ParametersBase(object):
             if cval is None:
                 msg = 'parameter {} in year_mods for year [] is unknown'
                 raise ValueError(msg.format(name, year))
-            nval = self.expand_array(values,
-                                     inflate=indexed,
-                                     inflation_rates=inf_rates,
-                                     num_years=num_years_to_expand)
+            if name == '_SS_Earnings_c':
+                num_year = year - self.start_year
+                wage_rates = [self._wage_inflation_rates[num_year + i]
+                              for i in range(0, num_years_to_expand)]
+                nval = self.expand_array(values,
+                                         inflate=indexed,
+                                         inflation_rates=wage_rates,
+                                         num_years=num_years_to_expand)
+            else:
+                nval = self.expand_array(values,
+                                         inflate=indexed,
+                                         inflation_rates=inf_rates,
+                                         num_years=num_years_to_expand)
             cval[(year - self.start_year):] = nval
         # handle unused parameter names, all of which end in _cpi, but some
         # parameter names ending in _cpi were handled above
