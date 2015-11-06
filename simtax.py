@@ -49,6 +49,16 @@ def main():
                               'those two marginal tax rates are set to zero.'),
                         default=False,
                         action="store_true")
+    parser.add_argument('--taxsim2441',
+                        help=('optional flag to emulate Internet TAXSIM '
+                              'practice of approximating the number of '
+                              'children eligible for the child care expense '
+                              'credit on Form 2441 by the total number of '
+                              'dependents of any age.  The default practice '
+                              'is to approximate with the number of '
+                              'dependents under age 17.'),
+                        default=False,
+                        action="store_true")
     parser.add_argument('INPUT',
                         help=('INPUT is name of required file that contains '
                               'tax-filing-unit information in Internet '
@@ -59,7 +69,9 @@ def main():
         SimpleTaxIO.show_iovar_definitions()
         return 0
     # instantiate SimpleTaxIO object and do tax calculations
-    simtax = SimpleTaxIO(args.INPUT, args.reform)
+    simtax = SimpleTaxIO(input_filename=args.INPUT,
+                         reform_filename=args.reform,
+                         emulate_taxsim_2441_logic=args.taxsim2441)
     simtax.calculate(no_marginal_tax_rates=args.nomtr)
     # return no-error exit code
     return 0

@@ -7,10 +7,6 @@ OSPC taxcalc package simple tax input-output class.
 
 import os
 import sys
-import json
-import re
-import six
-import numpy as np
 import pandas as pd
 from .policy import Policy
 from .records import Records
@@ -29,6 +25,11 @@ class SimpleTaxIO(object):
     reform_filename: string or None
         name of optional REFORM file with None implying current-law policy.
 
+    emulate_taxsim_2441_logic: boolean
+        true implies emulation of questionable Internet TAXSIM logic, which
+        is necessary if the SimpleTaxIO class is being used in validation
+        tests against Internet TAXSIM output.
+
     Raises
     ------
     ValueError:
@@ -41,7 +42,10 @@ class SimpleTaxIO(object):
     class instance: SimpleTaxIO
     """
 
-    def __init__(self, input_filename, reform_filename):
+    def __init__(self,
+                 input_filename,
+                 reform_filename,
+                 emulate_taxsim_2441_logic):
         """
         SimpleTaxIO class constructor.
         """
@@ -58,12 +62,24 @@ class SimpleTaxIO(object):
         self._policy = Policy()
         # implement reform if reform file is specified
         if reform_filename:
-            reform = SimpleTaxIO.dictionary_from_reform_file(reform_filename)
+            reform = Policy.read_json_reform_file(reform_filename)
             self._policy.implement_reform(reform)
         # validate input variable values
         self._validate_input()
-        self._calc = self._calc_object()
+        self._calc = self._calc_object(emulate_taxsim_2441_logic)
         self._output = {}
+
+    def start_year(self):
+        """
+        Returns starting year for SimpleTaxIO calculations
+        """
+        return self._policy.start_year
+
+    def end_year(self):
+        """
+        Returns ending year for SimpleTaxIO calculations
+        """
+        return self._policy.end_year
 
     def calculate(self, no_marginal_tax_rates=False, write_output_file=True):
         """
@@ -94,7 +110,7 @@ class SimpleTaxIO(object):
                     self._output[lnum] = ovar
             if not no_marginal_tax_rates:
                 (mtr_fica, mtr_itax,
-                 _) = self._calc.mtr('e00200p', wrt_adjusted_income=False)
+                 _) = self._calc.mtr(wrt_full_compensation=False)
                 for idx in range(0, self._calc.records.dim):
                     indyr = cr_taxyr[idx]
                     if indyr == calcyr:
@@ -110,87 +126,6 @@ class SimpleTaxIO(object):
         Return number of lines read from INPUT file.
         """
         return len(self._input)
-
-    @staticmethod
-    def dictionary_from_reform_file(reform_filename):
-        """
-        Read reform file, strip //-comments, and return dict based on JSON.
-        The reform file is JSON with string policy-parameter primary keys and
-           string years as secondary keys.
-        Returned dictionary has integer years as primary keys and
-           string policy-parameters as secondary keys.
-        The returned dictionary is suitable as the argument to the Policy
-           class implement_reform(reform_dict) method.
-        """
-        # check existence of specified reform file
-        if not os.path.isfile(reform_filename):
-            msg = 'simtax REFORM file {} could not be found'
-            raise ValueError(msg.format(reform_filename))
-        # read contents of reform file and remove // comments
-        with open(reform_filename, 'r') as reform_file:
-            json_with_comments = reform_file.read()
-            json_without_comments = re.sub('//.*', '', json_with_comments)
-        # convert JSON text into a dictionary with year skeys as strings
-        try:
-            reform_dict_raw = json.loads(json_without_comments)
-        except ValueError:
-            msg = 'simtax REFORM file {} contains invalid JSON'
-            line = '----------------------------------------------------------'
-            txt = ('TO FIND FIRST JSON SYNTAX ERROR,\n'
-                   'COPY TEXT BETWEEN LINES AND '
-                   'PASTE INTO BOX AT jsonlint.com')
-            sys.stderr.write(txt + '\n')
-            sys.stderr.write(line + '\n')
-            sys.stderr.write(json_without_comments.strip() + '\n')
-            sys.stderr.write(line + '\n')
-            raise ValueError(msg.format(reform_filename))
-        # convert year skey strings to integers and lists into np.arrays
-        reform_pkey_param = {}
-        for pkey, sdict in reform_dict_raw.items():
-            if not isinstance(pkey, six.string_types):
-                msg = 'pkey {} in reform is not a string'
-                raise ValueError(msg.format(pkey))
-            rdict = {}
-            for skey, val in sdict.items():
-                if not isinstance(skey, six.string_types):
-                    msg = 'skey {} in reform is not a string'
-                    raise ValueError(msg.format(skey))
-                else:
-                    year = int(skey)
-                rdict[year] = (np.core.array(val) if isinstance(val, list)
-                               else val)
-            reform_pkey_param[pkey] = rdict
-        # convert reform_pkey_param dictionary to reform_pkey_year dictionary
-        return SimpleTaxIO.reform_pkey_year(reform_pkey_param)
-
-    @staticmethod
-    def reform_pkey_year(reform_pkey_param):
-        """
-        The input reform_pkey_param dictionary has string policy-parameter
-           primary keys and integer years as secondary keys.
-        Returned dictionary has integer years as primary keys and
-           string policy-parameters as secondary keys.
-        The returned dictionary is suitable as the argument to the Policy
-           class implement_reform(reform_dict) method.
-        """
-        years = set()
-        reform_pk_yr = {}
-        for param, sdict in reform_pkey_param.items():
-            if not isinstance(param, six.string_types):
-                msg = 'pkey {} in reform is not a string'
-                raise ValueError(msg.format(param))
-            elif not isinstance(sdict, dict):
-                msg = 'pkey {} value {} is not a dictionary'
-                raise ValueError(msg.format(param, sdict))
-            for year, val in sdict.items():
-                if not isinstance(year, int):
-                    msg = 'year skey {} in reform is not an integer'
-                    raise ValueError(msg.format(year))
-                if year not in years:
-                    years.add(year)
-                    reform_pk_yr[year] = {}
-                reform_pk_yr[year][param] = val
-        return reform_pk_yr
 
     @staticmethod
     def show_iovar_definitions():
@@ -367,8 +302,8 @@ class SimpleTaxIO(object):
         begin with one).
         """
         self._year_set = set()
-        min_year = self._policy.start_year
-        max_year = self._policy.end_year
+        min_year = self.start_year()
+        max_year = self.end_year()
         for lnum in range(1, len(self._input) + 1):
             var = self._input[lnum]
             year = var[2]
@@ -421,13 +356,13 @@ class SimpleTaxIO(object):
                 raise ValueError(msg.format(num_young_dependents, lnum,
                                             num_all_dependents))
 
-    def _calc_object(self):
+    def _calc_object(self, emulate_taxsim_2441_logic):
         """
         Create and return Calculator object to conduct the tax calculations.
 
         Parameters
         ----------
-        none: void
+        emulate_taxsim_2441_logic: boolean
 
         Returns
         -------
@@ -446,14 +381,15 @@ class SimpleTaxIO(object):
         lnum = 0
         for idx in range(0, recs.dim):
             lnum += 1
-            SimpleTaxIO._specify_input(recs, idx, self._input[lnum])
+            SimpleTaxIO._specify_input(recs, idx, self._input[lnum],
+                                       emulate_taxsim_2441_logic)
         # create Calculator object for 2013 containing all tax filing units
         assert recs.current_year == 2013
         assert self._policy.current_year == 2013
         return Calculator(policy=self._policy, records=recs)
 
     @staticmethod
-    def _specify_input(recs, idx, ivar):
+    def _specify_input(recs, idx, ivar, emulate_taxsim_2441_logic):
         """
         Specifies recs values for index idx using ivar input variables.
 
@@ -467,6 +403,8 @@ class SimpleTaxIO(object):
 
         ivar: dictionary
             input variables for a single tax filing unit.
+
+        emulate_taxsim_2441_logic: boolean
 
         Returns
         -------
@@ -501,15 +439,29 @@ class SimpleTaxIO(object):
         # no use of ivar[14] because no state income tax calculations
         recs.e18500[idx] = ivar[15]  # real-estate (property) taxes paid
         recs.e18400[idx] = ivar[16]  # other AMT-preferred deductions
-        recs.e32800[idx] = ivar[17]  # child care expenses
+        recs.e32800[idx] = ivar[17]  # child care expenses (Form 2441)
+        recs.e32750[idx] = ivar[17]  # child care expenses (Form 2441)
+        # approximate number of Form 2441 qualified persons associated with
+        # the child care expenses specified by ivar[17] (Note that the exact
+        # number is the number of dependents under age 13, but that is not
+        # an Internet TAXSIM input variable; hence the need to approximate.)
+        if emulate_taxsim_2441_logic:
+            recs.f2441[idx] = num_dependents  # all dependents of any age
+        else:
+            recs.f2441[idx] = ivar[19]  # number dependents under age 17
         recs.e02300[idx] = ivar[18]  # unemployment compensation received
         recs.n24[idx] = ivar[19]  # number dependents under age 17
-        recs.f2441[idx] = ivar[19]  # simplifying assumption
         recs.e19200[idx] = ivar[20]  # AMT-nonpreferred deductions
         recs.p22250[idx] = ivar[21]  # short-term capital gains (+/-)
         recs.p23250[idx] = ivar[22]  # long-term capital gains (+/-)
 
     OVAR_NUM = 28
+    DVAR_NAMES = [  # OPTIONAL DEBUGGING OUTPUT VARIABLE NAMES
+        # '...',  # ovar[OVAR_NUM+1]
+        # '...',  # ovar[OVAR_NUM+2]
+        # etc.
+        # '...'   # ovar[OVAR_NUM+n]
+    ]
 
     @staticmethod
     def _extract_output(crecs, idx, ivar):
@@ -577,6 +529,16 @@ class SimpleTaxIO(object):
         # while TAXSIM ovar[28] explicitly excludes AMT liability, so
         # we have the following:
         ovar[28] = crecs.c05800[idx] - amt_liability
+        # add optional debugging output to ovar dictionary
+        num = SimpleTaxIO.OVAR_NUM
+        for dvar_name in SimpleTaxIO.DVAR_NAMES:
+            num += 1
+            dvar = getattr(crecs, dvar_name, None)
+            if dvar is None:
+                msg = 'debugging variable name "{}" not in calc.records object'
+                raise ValueError(msg.format(dvar_name))
+            else:
+                ovar[num] = dvar[idx]
         return ovar
 
     def _write_output_file(self):
@@ -644,6 +606,11 @@ class SimpleTaxIO(object):
         """
         for vnum in range(1, SimpleTaxIO.OVAR_NUM + 1):
             ostr = SimpleTaxIO.OVAR_FMT[vnum].format(output_dict[vnum])
+            output_file.write(ostr)
+        vnum = SimpleTaxIO.OVAR_NUM
+        for _ in SimpleTaxIO.DVAR_NAMES:
+            vnum += 1
+            ostr = ' {:.2f}'.format(output_dict[vnum])
             output_file.write(ostr)
         output_file.write('\n')
 

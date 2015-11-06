@@ -90,7 +90,7 @@ def Adj(e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
 
 
 @iterate_jit(nopython=True)
-def CapGains(e23250, e22250, e23660, _sep, _feided, FEI_ec_c,
+def CapGains(e23250, e22250, e23660, _sep, _feided, FEI_ec_c, ALD_Interest_ec,
              ALD_StudentLoan_HC, f2555, e00200, e00300, e00600, e00700, e00800,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
              e02300, e02600, e02610, e02800, e02540, e00400, e02400,
@@ -108,9 +108,9 @@ def CapGains(e23250, e22250, e23660, _sep, _feided, FEI_ec_c,
     c02700 = min(_feided, FEI_ec_c * f2555)
 
     #
-    _ymod1 = (e00200 + e00300 + e00600 + e00700 + e00800 + e00900 + c01000 +
-              e01100 + e01200 + e01400 + e01700 + e02000 + e02100 + e02300 +
-              e02600 + e02610 + e02800 - e02540)
+    _ymod1 = (e00200 + (1 - ALD_Interest_ec) * e00300 + e00600 + e00700 +
+              e00800 + e00900 + c01000 + e01100 + e01200 + e01400 + e01700 +
+              e02000 + e02100 + e02300 + e02600 + e02610 + e02800 - e02540)
     _ymod2 = e00400 + (0.50 * e02400) - c02900
     _ymod3 = (1 - ALD_StudentLoan_HC) * e03210 + e03230 + e03240 + e02615
     _ymod = _ymod1 + _ymod2 + _ymod3
@@ -827,11 +827,11 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
          e60300, e60860, e60100, e60840, e60630, e60550, FDED, e62740,
          e60720, e60430, e60500, e60340, e60680, e60600, e60405, e24516,
          e60440, e60420, e60410, e61400, e60660, e60480, c21060, e62720,
-         e62000, e60250, _cmp, _standard, e04470, e17500, c04600,
+         e62000, e60250, _cmp, _standard, e04470, e17500, c04600, c05200,
          f6251, e62100, e21040, e20800, c00100, _statax, e60000,
          c04470, c17000, e18500, c20800, c21040, NIIT, e62730,
          DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700,
-         e00100, e24515, x62730, x60130, e18400, _amed,
+         e00100, e24515, x62730, x60130, e18400, _amed, AMT_CG_rt4,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
          II_brk6, MARS, _sep, II_brk2, AMT_Child_em, AMT_CG_rt1,
          AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516,
@@ -987,35 +987,40 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
 
     _amt5pc = 0.0
 
-    _amt15pc = (min(_alminc, c62720) - _amt5pc - min(max(
-                0., AMT_CG_thd1[MARS - 1] - c24520), min(_alminc, c62720)))
-    if c04800 == 0:
-        _amt15pc = max(0., min(_alminc, c62720) - AMT_CG_thd1[MARS - 1])
+    _line45 = max(0., AMT_CG_thd1[MARS - 1] - c24520)
 
-    _amt25pc = min(_alminc, c62740) - min(_alminc, c62720)
+    _line46 = min(_alminc, c62720)
+
+    _line48 = min(_alminc, c62720) - min(_line45, _line46)
+
+    _amt15pc = min(_line48, max(0., AMT_CG_thd2[MARS - 1] - c24520 + _line45))
+
+    if c04800 == 0:
+        _amt15pc = max(0., _line46 - AMT_CG_thd1[MARS - 1])
+
+    if _ngamty != _amt15pc:
+        _amt20pc = _line46 - _amt15pc - min(_line45, _line46)
+    else:
+        _amt20pc = 0.
+
+    if c62730 != 0:
+        _amt25pc = max(0, _alminc - _ngamty - _line46)
+    else:
+        _amt25pc = 0.
 
     c62747 = AMT_CG_rt1 * _amt5pc
 
     c62755 = AMT_CG_rt2 * _amt15pc
 
-    c62770 = 0.25 * _amt25pc
+    c62760 = AMT_CG_rt3 * _amt20pc
 
-    _tamt2 = c62747 + c62755 + c62770
+    c62770 = AMT_CG_rt4 * _amt25pc
 
-    if _ngamty > AMT_CG_thd2[MARS - 1]:
-        _amt = (AMT_CG_rt3 - AMT_CG_rt2) * min(_alminc, c62740)
-    elif _alminc > AMT_CG_thd2[MARS - 1]:
-        _amt = ((AMT_CG_rt3 - AMT_CG_rt2) *
-                min(_alminc - AMT_CG_thd2[MARS - 1], c62740))
-    else:
-        _amt = 0.
-
-    _tamt2 = _tamt2 + _amt
+    _tamt2 = c62747 + c62755 + c62760 + c62770  # line62 without 42 being added
 
     c62800 = min(c62780, c62745 + _tamt2 - _amtfei)
     c63000 = c62800 - c62900
     c63100 = _taxbc - e07300 - c05700
-    c63100 = c63100 + e10105
     c63100 = max(0., c63100)
     c63200 = max(0., c63000 - c63100)
     c09600 = c63200
@@ -1028,10 +1033,10 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
 
     return (c62720, c60260, c63100, c60200, c60240, c60220, c60000,
             c60130, c62730, _addamt, c62100, c04500,
-            _amtsepadd, c62600, _agep, _ages, c62700,
+            _amtsepadd, c62600, _agep, _ages, c62700, c62760,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
             _ngamty, c62745, y62745, _tamt2, _amt5pc, _amt15pc,
-            _amt25pc, c62747, c62755, c62770, _amt, c62800,
+            _amt25pc, c62747, c62755, c62770, _amt20pc, c62800,
             c09600, _othtax, c05800, _cmbtp, c62100_everyone)
 
 
@@ -1047,15 +1052,15 @@ def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
 
 
 @iterate_jit(nopython=True, puf=True)
-def F2441(_earned, _fixeic, e59560, MARS, f2441, DCC_c,
+def F2441(_earned, _fixeic, e59560, MARS, f2441, DCC_c, e00200p, e00200s,
           e32800, e32750, e32775, CDOB1, CDOB2, e32890, e32880, FLPDYR, puf):
 
     if _fixeic == 1:
         _earned = e59560
 
     if MARS == 2 and puf:
-        c32880 = 0.5 * _earned
-        c32890 = 0.5 * _earned
+        c32880 = e00200p
+        c32890 = e00200s
     else:
         c32880 = _earned
         c32890 = _earned

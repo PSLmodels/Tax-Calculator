@@ -197,9 +197,10 @@ def test_hard_coded_parameter_consistency():
     # calculates GDP nominal growth rates
     Nominal_rates = np.zeros(12)
     for year in range(2013, 2025):
+        irate = policy._inflation_rates[year - 2013]
         Nominal_rates[year - 2013] = (record.BF.AGDPN[year] /
                                       record.BF.AGDPN[year - 1] - 1 -
-                                      policy._inflation_rates[year - 2013])
+                                      irate)
 
     Nominal_rates = np.round(Nominal_rates, 4)
 
@@ -300,16 +301,10 @@ def test_Calculator_create_distribution_table():
 
 
 def test_calculate_mtr():
-    # Create a Policy object
     policy = Policy()
-
-    # Create a Records object
     puf = Records(TAX_DTA, weights=WEIGHTS, start_year=2009)
-
-    # Create a Calculator object
     calc = Calculator(policy=policy, records=puf)
-
-    (mtr_FICA, mtr_IIT, mtr) = calc.mtr('e00200p')
+    (mtr_FICA, mtr_IIT, mtr) = calc.mtr()
     assert type(mtr) == np.ndarray
     assert np.array_equal(mtr, mtr_FICA) == False
     assert np.array_equal(mtr_FICA, mtr_IIT) == False
