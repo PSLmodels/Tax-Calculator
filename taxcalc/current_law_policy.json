@@ -1112,8 +1112,8 @@
         "col_label": "",
         "value":     [3]        
     },
-    "_ALD_Interest_HC":{
-        "long_name": "Interest income haircut",
+    "_ALD_Interest_ec":{
+        "long_name": "Interest income exclusion",
 	"description": "This pencentage can be applied to limit the interest income included in AGI. ",
         "irs_ref": "Form 1040, line 8a",
         "notes": "The final taxable interest amount will be (1- Haircut) * Interest. ",
