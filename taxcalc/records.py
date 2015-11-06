@@ -430,16 +430,23 @@ class Records(object):
     # --- begin private methods of Records class --- #
 
     def _blowup(self, year):
-        self.e00200 *= self.BF.AWAGE[year]
+        def times_equal(a,b):
+            try:
+                np.multiply(a, b, out=a, casting='unsafe')
+            except TypeError:
+                a = a.values
+                np.multiply(a, b, out=a, casting='unsafe')
+
+        times_equal(self.e00200, self.BF.AWAGE[year])
         # two variables for earning split imputation
-        self.e00200p *= self.BF.AWAGE[year]
-        self.e00200s *= self.BF.AWAGE[year]
-        self.e00300 *= self.BF.AINTS[year]
-        self.e00400 *= self.BF.AINTS[year]
-        self.e00600 *= self.BF.ADIVS[year]
-        self.e00650 *= self.BF.ADIVS[year]
-        self.e00700 *= self.BF.ATXPY[year]
-        self.e00800 *= self.BF.ATXPY[year]
+        times_equal(self.e00200p, self.BF.AWAGE[year])
+        times_equal(self.e00200s, self.BF.AWAGE[year])
+        times_equal(self.e00300, self.BF.AINTS[year])
+        times_equal(self.e00400, self.BF.AINTS[year])
+        times_equal(self.e00600, self.BF.ADIVS[year])
+        times_equal(self.e00650, self.BF.ADIVS[year])
+        times_equal(self.e00700, self.BF.ATXPY[year])
+        times_equal(self.e00800, self.BF.ATXPY[year])
         self.e00900[:] = np.where(self.e00900 >= 0,
                                   self.e00900 *
                                   self.BF.ASCHCI[year],
@@ -458,175 +465,175 @@ class Records(object):
         self.e01000[:] = np.where(self.e01000 >= 0.,
                                   self.e01000 * self.BF.ACGNS[year],
                                   self.e01000)
-        self.e01100 *= self.BF.ACGNS[year]
-        self.e01200 *= self.BF.ACGNS[year]
-        self.e01400 *= self.BF.ATXPY[year]
-        self.e01500 *= self.BF.ATXPY[year]
-        self.e01700 *= self.BF.ATXPY[year]
+        times_equal(self.e01100, self.BF.ACGNS[year])
+        times_equal(self.e01200, self.BF.ACGNS[year])
+        times_equal(self.e01400, self.BF.ATXPY[year])
+        times_equal(self.e01500, self.BF.ATXPY[year])
+        times_equal(self.e01700, self.BF.ATXPY[year])
         self.e02000[:] = np.where(self.e02000 >= 0,
                                   self.e02000 *
                                   self.BF.ASCHEI[year],
                                   self.e02000 *
                                   self.BF.ASCHEL[year])
-        self.e02100 *= self.BF.ASCHF[year]
-        self.e02100p *= self.BF.ASCHF[year]
-        self.e02100s *= self.BF.ASCHF[year]
-        self.e02300 *= self.BF.AUCOMP[year]
-        self.e02400 *= self.BF.ASOCSEC[year]
+        times_equal(self.e02100, self.BF.ASCHF[year])
+        times_equal(self.e02100p, self.BF.ASCHF[year])
+        times_equal(self.e02100s, self.BF.ASCHF[year])
+        times_equal(self.e02300, self.BF.AUCOMP[year])
+        times_equal(self.e02400, self.BF.ASOCSEC[year])
         # Taxable Social Security is a calculated field
-        self.e02500 *= self.BF.ASOCSEC[year]
-        self.e03150 *= self.BF.ATXPY[year]
-        self.e03210 *= self.BF.ATXPY[year]
-        self.e03220 *= self.BF.ATXPY[year]
-        self.e03230 *= self.BF.ATXPY[year]
-        self.e03260 *= self.BF.ASCHCI[year]
-        self.e03270 *= self.BF.ACPIM[year]
-        self.e03240 *= self.BF.AGDPN[year]
-        self.e03290 *= self.BF.ACPIM[year]
-        self.e03300 *= self.BF.ATXPY[year]
-        self.e03400 *= self.BF.ATXPY[year]
-        self.e03500 *= self.BF.ATXPY[year]
+        times_equal(self.e02500, self.BF.ASOCSEC[year])
+        times_equal(self.e03150, self.BF.ATXPY[year])
+        times_equal(self.e03210, self.BF.ATXPY[year])
+        times_equal(self.e03220, self.BF.ATXPY[year])
+        times_equal(self.e03230, self.BF.ATXPY[year])
+        times_equal(self.e03260, self.BF.ASCHCI[year])
+        times_equal(self.e03270, self.BF.ACPIM[year])
+        times_equal(self.e03240, self.BF.AGDPN[year])
+        times_equal(self.e03290, self.BF.ACPIM[year])
+        times_equal(self.e03300, self.BF.ATXPY[year])
+        times_equal(self.e03400, self.BF.ATXPY[year])
+        times_equal(self.e03500, self.BF.ATXPY[year])
         # Adjusted Gross Income is a calculated field
-        self.e00100 *= 1.
-        self.p04470 *= 1.
-        self.e04250 *= 1.
-        self.e04600 *= 1.
-        self.e04800 *= 1.
-        self.e05100 *= 1.
-        self.e05200 *= 1.
-        self.e05800 *= 1.
-        self.e06000 *= 1.
-        self.e06200 *= 1.
-        self.e06300 *= 1.
-        self.e09600 *= 1.
-        self.e07180 *= 1.
-        self.e07200 *= 1.
-        self.e07220 *= 1.
-        self.e07230 *= self.BF.ATXPY[year]
-        self.e07240 *= self.BF.ATXPY[year]
-        self.e07260 *= self.BF.ATXPY[year]
-        self.e07300 *= self.BF.ABOOK[year]
-        self.e07400 *= self.BF.ABOOK[year]
-        self.e07600 *= 1.
-        self.p08000 *= self.BF.ATXPY[year]
-        self.e07150 *= 1.
-        self.e06500 *= 1.
-        self.e08800 *= 1.
-        self.e09400 *= 1.
-        self.e09700 *= self.BF.ATXPY[year]
-        self.e09800 *= self.BF.ATXPY[year]
-        self.e09900 *= self.BF.ATXPY[year]
-        self.e10300 *= 1.
-        self.e10700 *= self.BF.ATXPY[year]
-        self.e10900 *= self.BF.ATXPY[year]
-        self.e59560 *= self.BF.ATXPY[year]
-        self.e59680 *= self.BF.ATXPY[year]
-        self.e59700 *= self.BF.ATXPY[year]
-        self.e59720 *= self.BF.ATXPY[year]
-        self.e11550 *= self.BF.ATXPY[year]
-        self.e11070 *= self.BF.ATXPY[year]
-        self.e11100 *= self.BF.ATXPY[year]
-        self.e11200 *= self.BF.ATXPY[year]
-        self.e11300 *= self.BF.ATXPY[year]
-        self.e11400 *= self.BF.ATXPY[year]
-        self.e11570 *= self.BF.ATXPY[year]
-        self.e11580 *= self.BF.ATXPY[year]
-        self.e11581 *= self.BF.ATXPY[year]
-        self.e11582 *= self.BF.ATXPY[year]
-        self.e11583 *= self.BF.ATXPY[year]
-        self.e10605 *= self.BF.ATXPY[year]
-        self.e11900 *= 1.
-        self.e12000 *= 1.
-        self.e12200 *= 1.
+        times_equal(self.e00100, 1.)
+        times_equal(self.p04470, 1.)
+        times_equal(self.e04250, 1.)
+        times_equal(self.e04600, 1.)
+        times_equal(self.e04800, 1.)
+        times_equal(self.e05100, 1.)
+        times_equal(self.e05200, 1.)
+        times_equal(self.e05800, 1.)
+        times_equal(self.e06000, 1.)
+        times_equal(self.e06200, 1.)
+        times_equal(self.e06300, 1.)
+        times_equal(self.e09600, 1.)
+        times_equal(self.e07180, 1.)
+        times_equal(self.e07200, 1.)
+        times_equal(self.e07220, 1.)
+        times_equal(self.e07230, self.BF.ATXPY[year])
+        times_equal(self.e07240, self.BF.ATXPY[year])
+        times_equal(self.e07260, self.BF.ATXPY[year])
+        times_equal(self.e07300, self.BF.ABOOK[year])
+        times_equal(self.e07400, self.BF.ABOOK[year])
+        times_equal(self.e07600, 1.)
+        times_equal(self.p08000, self.BF.ATXPY[year])
+        times_equal(self.e07150, 1.)
+        times_equal(self.e06500, 1.)
+        times_equal(self.e08800, 1.)
+        times_equal(self.e09400, 1.)
+        times_equal(self.e09700, self.BF.ATXPY[year])
+        times_equal(self.e09800, self.BF.ATXPY[year])
+        times_equal(self.e09900, self.BF.ATXPY[year])
+        times_equal(self.e10300, 1.)
+        times_equal(self.e10700, self.BF.ATXPY[year])
+        times_equal(self.e10900, self.BF.ATXPY[year])
+        times_equal(self.e59560, self.BF.ATXPY[year])
+        times_equal(self.e59680, self.BF.ATXPY[year])
+        times_equal(self.e59700, self.BF.ATXPY[year])
+        times_equal(self.e59720, self.BF.ATXPY[year])
+        times_equal(self.e11550, self.BF.ATXPY[year])
+        times_equal(self.e11070, self.BF.ATXPY[year])
+        times_equal(self.e11100, self.BF.ATXPY[year])
+        times_equal(self.e11200, self.BF.ATXPY[year])
+        times_equal(self.e11300, self.BF.ATXPY[year])
+        times_equal(self.e11400, self.BF.ATXPY[year])
+        times_equal(self.e11570, self.BF.ATXPY[year])
+        times_equal(self.e11580, self.BF.ATXPY[year])
+        times_equal(self.e11581, self.BF.ATXPY[year])
+        times_equal(self.e11582, self.BF.ATXPY[year])
+        times_equal(self.e11583, self.BF.ATXPY[year])
+        times_equal(self.e10605, self.BF.ATXPY[year])
+        times_equal(self.e11900, 1.)
+        times_equal(self.e12000, 1.)
+        times_equal(self.e12200, 1.)
         """  ITEMIZED DEDUCTIONS """
-        self.e17500 *= self.BF.ACPIM[year]
-        self.e18400 *= self.BF.ATXPY[year]
-        self.e18500 *= self.BF.ATXPY[year]
-        self.e19200 *= self.BF.AIPD[year]
-        self.e19550 *= self.BF.ATXPY[year]
-        self.e19800 *= self.BF.ATXPY[year]
-        self.e20100 *= self.BF.ATXPY[year]
-        self.e19700 *= self.BF.ATXPY[year]
-        self.e20550 *= self.BF.ATXPY[year]
-        self.e20600 *= self.BF.ATXPY[year]
-        self.e20400 *= self.BF.ATXPY[year]
-        self.e20800 *= self.BF.ATXPY[year]
-        self.e20500 *= self.BF.ATXPY[year]
-        self.e21040 *= self.BF.ATXPY[year]
+        times_equal(self.e17500, self.BF.ACPIM[year])
+        times_equal(self.e18400, self.BF.ATXPY[year])
+        times_equal(self.e18500, self.BF.ATXPY[year])
+        times_equal(self.e19200, self.BF.AIPD[year])
+        times_equal(self.e19550, self.BF.ATXPY[year])
+        times_equal(self.e19800, self.BF.ATXPY[year])
+        times_equal(self.e20100, self.BF.ATXPY[year])
+        times_equal(self.e19700, self.BF.ATXPY[year])
+        times_equal(self.e20550, self.BF.ATXPY[year])
+        times_equal(self.e20600, self.BF.ATXPY[year])
+        times_equal(self.e20400, self.BF.ATXPY[year])
+        times_equal(self.e20800, self.BF.ATXPY[year])
+        times_equal(self.e20500, self.BF.ATXPY[year])
+        times_equal(self.e21040, self.BF.ATXPY[year])
         """  CAPITAL GAINS   """
-        self.p22250 *= self.BF.ACGNS[year]
-        self.e22320 *= self.BF.ACGNS[year]
-        self.e22370 *= self.BF.ACGNS[year]
-        self.p23250 *= self.BF.ACGNS[year]
-        self.e24515 *= self.BF.ACGNS[year]
-        self.e24516 *= self.BF.ACGNS[year]
-        self.e24518 *= self.BF.ACGNS[year]
-        self.e24535 *= self.BF.ACGNS[year]
-        self.e24560 *= self.BF.ACGNS[year]
-        self.e24598 *= self.BF.ACGNS[year]
-        self.e24615 *= self.BF.ACGNS[year]
-        self.e24570 *= self.BF.ACGNS[year]
+        times_equal(self.p22250, self.BF.ACGNS[year])
+        times_equal(self.e22320, self.BF.ACGNS[year])
+        times_equal(self.e22370, self.BF.ACGNS[year])
+        times_equal(self.p23250, self.BF.ACGNS[year])
+        times_equal(self.e24515, self.BF.ACGNS[year])
+        times_equal(self.e24516, self.BF.ACGNS[year])
+        times_equal(self.e24518, self.BF.ACGNS[year])
+        times_equal(self.e24535, self.BF.ACGNS[year])
+        times_equal(self.e24560, self.BF.ACGNS[year])
+        times_equal(self.e24598, self.BF.ACGNS[year])
+        times_equal(self.e24615, self.BF.ACGNS[year])
+        times_equal(self.e24570, self.BF.ACGNS[year])
         """  SCHEDULE E  """
-        self.p25350 *= self.BF.ASCHEI[year]
-        self.p25380 *= self.BF.ASCHEI[year]
-        self.p25470 *= self.BF.ASCHEI[year]
-        self.p25700 *= self.BF.ASCHEI[year]
-        self.e25820 *= self.BF.ASCHEI[year]
-        self.e25850 *= self.BF.ASCHEI[year]
-        self.e25860 *= self.BF.ASCHEI[year]
-        self.e25940 *= self.BF.ASCHEI[year]
-        self.e25980 *= self.BF.ASCHEI[year]
-        self.e25920 *= self.BF.ASCHEI[year]
-        self.e25960 *= self.BF.ASCHEI[year]
-        self.e26110 *= self.BF.ASCHEI[year]
-        self.e26170 *= self.BF.ASCHEI[year]
-        self.e26190 *= self.BF.ASCHEI[year]
-        self.e26160 *= self.BF.ASCHEI[year]
-        self.e26180 *= self.BF.ASCHEI[year]
-        self.e26270 *= self.BF.ASCHEI[year]
-        self.e26100 *= self.BF.ASCHEI[year]
-        self.e26390 *= self.BF.ASCHEI[year]
-        self.e26400 *= self.BF.ASCHEI[year]
-        self.e27200 *= self.BF.ASCHEI[year]
+        times_equal(self.p25350, self.BF.ASCHEI[year])
+        times_equal(self.p25380, self.BF.ASCHEI[year])
+        times_equal(self.p25470, self.BF.ASCHEI[year])
+        times_equal(self.p25700, self.BF.ASCHEI[year])
+        times_equal(self.e25820, self.BF.ASCHEI[year])
+        times_equal(self.e25850, self.BF.ASCHEI[year])
+        times_equal(self.e25860, self.BF.ASCHEI[year])
+        times_equal(self.e25940, self.BF.ASCHEI[year])
+        times_equal(self.e25980, self.BF.ASCHEI[year])
+        times_equal(self.e25920, self.BF.ASCHEI[year])
+        times_equal(self.e25960, self.BF.ASCHEI[year])
+        times_equal(self.e26110, self.BF.ASCHEI[year])
+        times_equal(self.e26170, self.BF.ASCHEI[year])
+        times_equal(self.e26190, self.BF.ASCHEI[year])
+        times_equal(self.e26160, self.BF.ASCHEI[year])
+        times_equal(self.e26180, self.BF.ASCHEI[year])
+        times_equal(self.e26270, self.BF.ASCHEI[year])
+        times_equal(self.e26100, self.BF.ASCHEI[year])
+        times_equal(self.e26390, self.BF.ASCHEI[year])
+        times_equal(self.e26400, self.BF.ASCHEI[year])
+        times_equal(self.e27200, self.BF.ASCHEI[year])
         """  MISCELLANOUS SCHEDULES"""
-        self.e30400 *= self.BF.ASCHCI[year]
-        self.e30500 *= self.BF.ASCHCI[year]
-        self.e32800 *= self.BF.ATXPY[year]
-        self.e33000 *= self.BF.ATXPY[year]
-        self.e53240 *= self.BF.ATXPY[year]
-        self.e53280 *= self.BF.ATXPY[year]
-        self.e53410 *= self.BF.ATXPY[year]
-        self.e53300 *= self.BF.ATXPY[year]
-        self.e53317 *= self.BF.ATXPY[year]
-        self.e53458 *= self.BF.ATXPY[year]
-        self.e58950 *= self.BF.ATXPY[year]
-        self.e58990 *= self.BF.ATXPY[year]
-        self.p60100 *= self.BF.ATXPY[year]
-        self.p61850 *= self.BF.ATXPY[year]
-        self.e60000 *= self.BF.ATXPY[year]
-        self.e62100 *= self.BF.ATXPY[year]
-        self.e62900 *= self.BF.ATXPY[year]
-        self.e62720 *= self.BF.ATXPY[year]
-        self.e62730 *= self.BF.ATXPY[year]
-        self.e62740 *= self.BF.ATXPY[year]
-        self.p65300 *= self.BF.ATXPY[year]
-        self.p65400 *= self.BF.ATXPY[year]
-        self.e68000 *= self.BF.ATXPY[year]
-        self.e82200 *= self.BF.ATXPY[year]
-        self.t27800 *= self.BF.ATXPY[year]
-        self.s27860 *= self.BF.ATXPY[year]
-        self.p27895 *= self.BF.ATXPY[year]
-        self.e87530 *= self.BF.ATXPY[year]
-        self.e87550 *= self.BF.ATXPY[year]
-        self.e87521 *= self.BF.ATXPY[year]
-        self.RECID *= 1.
-        self.s006 *= 1.
-        self.s008 *= 1.
-        self.s009 *= 1.
-        self.WSAMP *= 1.
-        self.TXRT *= 1.
-        self._cmbtp_itemizer *= self.BF.ATXPY[year]
-        self._cmbtp_standard *= self.BF.ATXPY[year]
+        times_equal(self.e30400, self.BF.ASCHCI[year])
+        times_equal(self.e30500, self.BF.ASCHCI[year])
+        times_equal(self.e32800, self.BF.ATXPY[year])
+        times_equal(self.e33000, self.BF.ATXPY[year])
+        times_equal(self.e53240, self.BF.ATXPY[year])
+        times_equal(self.e53280, self.BF.ATXPY[year])
+        times_equal(self.e53410, self.BF.ATXPY[year])
+        times_equal(self.e53300, self.BF.ATXPY[year])
+        times_equal(self.e53317, self.BF.ATXPY[year])
+        times_equal(self.e53458, self.BF.ATXPY[year])
+        times_equal(self.e58950, self.BF.ATXPY[year])
+        times_equal(self.e58990, self.BF.ATXPY[year])
+        times_equal(self.p60100, self.BF.ATXPY[year])
+        times_equal(self.p61850, self.BF.ATXPY[year])
+        times_equal(self.e60000, self.BF.ATXPY[year])
+        times_equal(self.e62100, self.BF.ATXPY[year])
+        times_equal(self.e62900, self.BF.ATXPY[year])
+        times_equal(self.e62720, self.BF.ATXPY[year])
+        times_equal(self.e62730, self.BF.ATXPY[year])
+        times_equal(self.e62740, self.BF.ATXPY[year])
+        times_equal(self.p65300, self.BF.ATXPY[year])
+        times_equal(self.p65400, self.BF.ATXPY[year])
+        times_equal(self.e68000, self.BF.ATXPY[year])
+        times_equal(self.e82200, self.BF.ATXPY[year])
+        times_equal(self.t27800, self.BF.ATXPY[year])
+        times_equal(self.s27860, self.BF.ATXPY[year])
+        times_equal(self.p27895, self.BF.ATXPY[year])
+        times_equal(self.e87530, self.BF.ATXPY[year])
+        times_equal(self.e87550, self.BF.ATXPY[year])
+        times_equal(self.e87521, self.BF.ATXPY[year])
+        times_equal(self.RECID, 1.)
+        times_equal(self.s006, 1.)
+        times_equal(self.s008, 1.)
+        times_equal(self.s009, 1.)
+        times_equal(self.WSAMP, 1.)
+        times_equal(self.TXRT, 1.)
+        times_equal(self._cmbtp_itemizer, self.BF.ATXPY[year])
+        times_equal(self._cmbtp_standard, self.BF.ATXPY[year])
 
     def _read_data(self, data):
         if isinstance(data, pd.core.frame.DataFrame):
