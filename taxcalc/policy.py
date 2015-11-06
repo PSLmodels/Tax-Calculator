@@ -57,7 +57,7 @@ class Policy(ParametersBase):
     DEFAULT_NUM_YEARS = NUM_BUDGET_YEARS + FIRST_BUDGET_YEAR - JSON_START_YEAR
 
     # default price inflation rates by year
-    __pirates = {2013: 0.015, 2014: 0.020, 2015: 0.022, 2016: 0.020,
+    __pirates = {2013: 0.015, 2014: 0.020, 2015: 0.021, 2016: 0.020,
                  2017: 0.021, 2018: 0.022, 2019: 0.023, 2020: 0.024,
                  2021: 0.024, 2022: 0.024, 2023: 0.024, 2024: 0.024}
 

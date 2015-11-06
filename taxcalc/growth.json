@@ -8,7 +8,7 @@
         "row_var": "",
         "row_label": ["2013"],
         "col_label": "",
-        "value": [[0.0]] 
+        "value": [0.0] 
     },
      "_factor_target":{
         "long_name": "Replacement for CBO real GDP growth in economic baseline (percent)",
@@ -19,6 +19,17 @@
         "row_var": "",
         "row_label": ["2013"],
         "col_label": "",
-        "value": [[0.0]] 
-    }
+	"value": [0.0244,
+		  0.0118,
+		  0.0291,
+		  0.0331,
+		  0.0285,
+		  0.0223,
+		  0.0202,
+		  0.0188,
+		  0.0183,
+		  0.0178,
+		  0.0171,
+		  0.0166] 
+      }
 }

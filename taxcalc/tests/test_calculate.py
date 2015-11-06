@@ -175,6 +175,42 @@ def test_make_Calculator_with_reform_after_start_year():
     assert_array_equal(calc.policy.STD_Aged, exp_2015_STD_Aged)
 
 
+def test_hard_coded_parameter_consistency():
+    # GDP growths rates and cpi should be consistent
+    # across any objects
+    record = Records(TAX_DTA_PATH)
+    growth = Growth()
+    policy = Policy()
+
+    # back out the original stage I GDP
+    record.BF.AGDPN[2009] = 1
+    for year in range(2010, 2025):
+        record.BF.AGDPN[year] = (record.BF.AGDPN[year] *
+                                 record.BF.AGDPN[year - 1] *
+                                 record.BF.APOPN[year])
+
+    # calculates GDP nominal growth rates
+    Nominal_rates = np.zeros(12)
+    for year in range(2013, 2025):
+        irate = policy._inflation_rates[year - 2013]
+        Nominal_rates[year - 2013] = (record.BF.AGDPN[year] /
+                                      record.BF.AGDPN[year - 1] - 1 -
+                                      irate)
+
+    Nominal_rates = np.round(Nominal_rates, 4)
+
+    assert_array_equal(Nominal_rates,
+                       growth._factor_target)
+
+    # get CPI_U from stage I factors
+    CPI_U = np.zeros(12)
+    for year in range(2013, 2025):
+        CPI_U[year - 2013] = record.BF.ACPIU[year] - 1
+
+    CPI_U = np.round(CPI_U, 3)
+    assert_array_equal(CPI_U, policy._inflation_rates)
+
+
 def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
     with open(policyfile.name) as pfile:
         policy = json.load(pfile)
