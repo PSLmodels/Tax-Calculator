@@ -370,7 +370,6 @@ class ParametersBase(object):
         # implement updated parameters for year
         self.set_year(year)
 
-
     @staticmethod
     def expand_1D(x, inflate, inflation_rates, num_years):
         """
