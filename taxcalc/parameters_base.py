@@ -64,7 +64,7 @@ class ParametersBase(object):
             cpi_inflated = data.get('cpi_inflated', False)
             values = data['value']
             i_rates = getattr(self, '_inflation_rates', None)
-            wage_rates = getattr(self, '_wage_inflation_rates', None)
+            wage_rates = getattr(self, '_wage_rates', None)
             if name == '_SS_Earnings_c':
                 setattr(self, name,
                         self.expand_array(values, inflate=cpi_inflated,
@@ -332,7 +332,7 @@ class ParametersBase(object):
                 raise ValueError(msg.format(name, year))
             if name == '_SS_Earnings_c':
                 num_year = year - self.start_year
-                wage_rates = [self._wage_inflation_rates[num_year + i]
+                wage_rates = [self._wage_rates[num_year + i]
                               for i in range(0, num_years_to_expand)]
                 nval = self.expand_array(values,
                                          inflate=indexed,

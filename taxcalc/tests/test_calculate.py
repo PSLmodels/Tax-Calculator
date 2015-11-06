@@ -96,7 +96,7 @@ def test_make_Calculator_files_to_ctor(policyfile):
         policy = json.load(pfile)
     ppo = Policy(parameter_dict=policy, start_year=1991,
                  num_years=len(IRATES), inflation_rates=IRATES,
-                 wage_inflation_rates=WRATES)
+                 wage_rates=WRATES)
     calc = Calculator(policy=ppo, records=TAX_DTA_PATH,
                       start_year=1991, inflation_rates=IRATES)
     assert calc
@@ -231,7 +231,7 @@ def test_hard_coded_parameter_consistency():
     wage_rates = np.round(wage_rates, 4)
 
     assert_array_equal(wage_rates,
-                       policy._wage_inflation_rates)
+                       policy._wage_rates)
 
 
 def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
@@ -239,7 +239,7 @@ def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
         policy = json.load(pfile)
     ppo = Policy(parameter_dict=policy, start_year=1991,
                  num_years=len(IRATES), inflation_rates=IRATES,
-                 wage_inflation_rates=WRATES)
+                 wage_rates=WRATES)
     calc = Calculator(policy=ppo, records=TAX_DTA_PATH, start_year=1991,
                       inflation_rates=IRATES)
     user_mods = {1991: {"_almdep": [7150, 7250, 7400],
