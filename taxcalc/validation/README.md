@@ -119,6 +119,11 @@ the number of Form 2441 qualified persons is equal to the total number
 of dependents of all ages, while the default simtax.py approximation
 uses the number of dependents under age 17.
 
+(4) Generate extra OUTPUT variables that are useful in debugging
+Tax-Calculator logic.
+
+`Temporarily edit the DVAR_NAMES list in the simpletaxio.py file.`
+
 Generating an OUTPUT file with Internet TAXSIM
 ----------------------------------------------
 
@@ -207,7 +212,7 @@ more thorough confirmation that Tax-Calculator logic has not changed.
 Current Validation Results
 ==========================
 
-Since the end of October, 2015, there have been no FICA tax liability
+Since early November, 2015, there have been no FICA tax liability
 and no federal income tax liability differences (of more than one cent
 in absolute value) between OSPC Tax-Calculator results and Internet
 TAXSIM results for the 600,000 randomly-generated tax filing units

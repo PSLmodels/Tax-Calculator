@@ -7,10 +7,6 @@ OSPC taxcalc package simple tax input-output class.
 
 import os
 import sys
-import json
-import re
-import six
-import numpy as np
 import pandas as pd
 from .policy import Policy
 from .records import Records
@@ -460,6 +456,12 @@ class SimpleTaxIO(object):
         recs.p23250[idx] = ivar[22]  # long-term capital gains (+/-)
 
     OVAR_NUM = 28
+    DVAR_NAMES = [  # OPTIONAL DEBUGGING OUTPUT VARIABLE NAMES
+        # '...',  # ovar[OVAR_NUM+1]
+        # '...',  # ovar[OVAR_NUM+2]
+        # etc.
+        # '...'   # ovar[OVAR_NUM+n]
+    ]
 
     @staticmethod
     def _extract_output(crecs, idx, ivar):
@@ -527,6 +529,16 @@ class SimpleTaxIO(object):
         # while TAXSIM ovar[28] explicitly excludes AMT liability, so
         # we have the following:
         ovar[28] = crecs.c05800[idx] - amt_liability
+        # add optional debugging output to ovar dictionary
+        num = SimpleTaxIO.OVAR_NUM
+        for dvar_name in SimpleTaxIO.DVAR_NAMES:
+            num += 1
+            dvar = getattr(crecs, dvar_name, None)
+            if dvar is None:
+                msg = 'debugging variable name "{}" not in calc.records object'
+                raise ValueError(msg.format(dvar_name))
+            else:
+                ovar[num] = dvar[idx]
         return ovar
 
     def _write_output_file(self):
@@ -594,6 +606,11 @@ class SimpleTaxIO(object):
         """
         for vnum in range(1, SimpleTaxIO.OVAR_NUM + 1):
             ostr = SimpleTaxIO.OVAR_FMT[vnum].format(output_dict[vnum])
+            output_file.write(ostr)
+        vnum = SimpleTaxIO.OVAR_NUM
+        for _ in SimpleTaxIO.DVAR_NAMES:
+            vnum += 1
+            ostr = ' {:.2f}'.format(output_dict[vnum])
             output_file.write(ostr)
         output_file.write('\n')
 
