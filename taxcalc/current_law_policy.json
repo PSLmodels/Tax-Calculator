@@ -1116,7 +1116,7 @@
         "long_name": "Interest income exclusion",
 	"description": "This pencentage can be applied to limit the interest income included in AGI. ",
         "irs_ref": "Form 1040, line 8a",
-        "notes": "The final taxable interest amount will be (1- Haircut) * Interest. ",
+        "notes": "The final taxable interest amount will be (1- exclusion) * Interest. Even though this portion of interest wouldn't be included in AGI, it still contributes to Net Investment Income Tax and Earned Income Tax Credit.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
