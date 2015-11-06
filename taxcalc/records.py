@@ -430,7 +430,7 @@ class Records(object):
     # --- begin private methods of Records class --- #
 
     def _blowup(self, year):
-        def times_equal(a,b):
+        def times_equal(a, b):
             try:
                 np.multiply(a, b, out=a, casting='unsafe')
             except TypeError:
