@@ -93,6 +93,12 @@ class ParametersBase(object):
     def start_year(self):
         return self._start_year
 
+    def indexing_rates(self, param_name):
+        if param_name == '_SS_Earnings_c':
+            return self._wage_rates
+        else:
+            return self._inflation_rates
+
     def set_year(self, year):
         """
         Set parameters to values for specified calendar year.
