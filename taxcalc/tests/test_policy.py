@@ -149,7 +149,7 @@ def test_multi_year_reform():
 
     # instantiate policy Policy object
     ppo = Policy(start_year=syr, num_years=nyrs, inflation_rates=irates,
-                 wage_rates=wrates)
+                 wage_growth_rates=wrates)
 
     # confirm that parameters have current-law values
     assert_array_equal(getattr(ppo, '_AMT_thd_MarriedS'),

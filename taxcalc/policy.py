@@ -100,7 +100,7 @@ class Policy(ParametersBase):
                  start_year=JSON_START_YEAR,
                  num_years=DEFAULT_NUM_YEARS,
                  inflation_rates=None,
-                 wage_rates=None):
+                 wage_growth_rates=None):
         """
         Policy class constructor.
         """
@@ -128,17 +128,17 @@ class Policy(ParametersBase):
             self._inflation_rates = [self.__pirates[start_year + i]
                                      for i in range(0, num_years)]
 
-        if wage_rates:
-            if len(wage_rates) != num_years:
-                raise ValueError('len(wage_rates) != num_years')
-            if min(list(wage_rates.keys())) != start_year:
-                msg = 'min(wage_rates.keys()) != start_year'
+        if wage_growth_rates:
+            if len(wage_growth_rates) != num_years:
+                raise ValueError('len(wage_growth_rates) != num_years')
+            if min(list(wage_growth_rates.keys())) != start_year:
+                msg = 'min(wage_growth_rates.keys()) != start_year'
                 raise ValueError(msg)
-            self._wage_rates = [wage_rates[start_year + i]
-                                for i in range(0, num_years)]
+            self._wage_growth_rates = [wage_growth_rates[start_year + i]
+                                       for i in range(0, num_years)]
         else:  # if None, read default rates
-            self._wage_rates = [self.__wgrates[start_year + i]
-                                for i in range(0, num_years)]
+            self._wage_growth_rates = [self.__wgrates[start_year + i]
+                                       for i in range(0, num_years)]
 
         self.initialize(start_year, num_years)
 

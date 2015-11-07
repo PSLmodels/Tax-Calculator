@@ -63,18 +63,11 @@ class ParametersBase(object):
         for name, data in self._vals.items():
             cpi_inflated = data.get('cpi_inflated', False)
             values = data['value']
-            i_rates = getattr(self, '_inflation_rates', None)
-            wage_rates = getattr(self, '_wage_rates', None)
-            if name == '_SS_Earnings_c':
-                setattr(self, name,
-                        self.expand_array(values, inflate=cpi_inflated,
-                                          inflation_rates=wage_rates,
-                                          num_years=self._num_years))
-            else:
-                setattr(self, name,
-                        self.expand_array(values, inflate=cpi_inflated,
-                                          inflation_rates=i_rates,
-                                          num_years=self._num_years))
+            index_rates = self.indexing_rates(name)
+            setattr(self, name,
+                    self.expand_array(values, inflate=cpi_inflated,
+                                      inflation_rates=index_rates,
+                                      num_years=self._num_years))
         self.set_year(self._start_year)
 
     @property
@@ -95,9 +88,25 @@ class ParametersBase(object):
 
     def indexing_rates(self, param_name):
         if param_name == '_SS_Earnings_c':
-            return self._wage_rates
-        else:
+            return self._wage_growth_rates
+        elif hasattr(self, '_inflation_rates'):
             return self._inflation_rates
+        else:
+            return None
+
+    def indexing_rates_for_update(self, param_name, year,
+                                  num_years_to_expand):
+        if (hasattr(self, '_wage_growth_rates') and
+           param_name == '_SS_Earnings_c'):
+            rates = [self._wage_growth_rates[(year - self.start_year) + i]
+                     for i in range(0, num_years_to_expand)]
+        elif hasattr(self, '_inflation_rates'):
+            rates = [self._inflation_rates[(year - self.start_year) + i]
+                     for i in range(0, num_years_to_expand)]
+        else:
+            rates = None
+
+        return rates
 
     def set_year(self, year):
         """
@@ -307,11 +316,6 @@ class ParametersBase(object):
             raise ValueError(msg)
         # implement reform provisions included in the single YEAR:MODS pair
         num_years_to_expand = (self.start_year + self.num_years) - year
-        if hasattr(self, '_inflation_rates'):
-            inf_rates = [self._inflation_rates[(year - self.start_year) + i]
-                         for i in range(0, num_years_to_expand)]
-        else:
-            inf_rates = None
         all_names = set(year_mods[year].keys())  # no duplicate keys in a dict
         used_names = set()  # set of used parameter names in MODS dict
         for name, values in year_mods[year].items():
@@ -336,19 +340,13 @@ class ParametersBase(object):
             if cval is None:
                 msg = 'parameter {} in year_mods for year [] is unknown'
                 raise ValueError(msg.format(name, year))
-            if name == '_SS_Earnings_c':
-                num_year = year - self.start_year
-                wage_rates = [self._wage_rates[num_year + i]
-                              for i in range(0, num_years_to_expand)]
-                nval = self.expand_array(values,
-                                         inflate=indexed,
-                                         inflation_rates=wage_rates,
-                                         num_years=num_years_to_expand)
-            else:
-                nval = self.expand_array(values,
-                                         inflate=indexed,
-                                         inflation_rates=inf_rates,
-                                         num_years=num_years_to_expand)
+            index_rates = self.indexing_rates_for_update(name, year,
+                                                         num_years_to_expand)
+
+            nval = self.expand_array(values,
+                                     inflate=indexed,
+                                     inflation_rates=index_rates,
+                                     num_years=num_years_to_expand)
             cval[(year - self.start_year):] = nval
         # handle unused parameter names, all of which end in _cpi, but some
         # parameter names ending in _cpi were handled above
@@ -366,9 +364,11 @@ class ParametersBase(object):
                 msg = 'parameter {} in year_mods for year [] is unknown'
                 raise ValueError(msg.format(pname, year))
             pvalues = [cval[year - self.start_year]]
+            index_rates = self.indexing_rates_for_update(name, year,
+                                                         num_years_to_expand)
             nval = self.expand_array(pvalues,
                                      inflate=pindexed,
-                                     inflation_rates=inf_rates,
+                                     inflation_rates=index_rates,
                                      num_years=num_years_to_expand)
             cval[(year - self.start_year):] = nval
         # confirm that all names have been used
