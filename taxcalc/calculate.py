@@ -257,13 +257,15 @@ class Calculator(object):
         Notes
         -----
         Valid income_type_str values are:
-        'e00200p', taxpayer earnings (which is the default value);
+        'e00200p', taxpayer wage/salary earnings (which is the default value);
+        'e00900p', taxpayer (Schedule C) self-employment income;
         'e00300',  taxable interest income;
         'p23250',  long-term capital gains;
         'e01700',  federally-taxable pension benefits; and
         'e02400',  social security (OASDI) benefits.
         """
-        mtr_valid_income_types = ['e00200p', 'e00300', 'p23250',
+        mtr_valid_income_types = ['e00200p', 'e00900p',
+                                  'e00300', 'p23250',
                                   'e01700', 'e02400']
         mtr_ind_earnings_types = ['e00200p']
         # check validity of income_type_str parameter
