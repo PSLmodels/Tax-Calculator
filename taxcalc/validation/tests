@@ -1,5 +1,5 @@
 #!/bin/bash
-# Executes validation TESTS using OSPC taxcalc SimpleTaxIO class that involve:
+# Executes current-law validation TESTS using OSPC SimpleTaxIO class as follows:
 # (1) generating a random sample of tax filing units (INPUT),
 # (2) generating OUTPUT from INPUT using simtax.py, and
 # (3) generating tax-difference tabulations by comparing OUTPUT with
@@ -13,7 +13,7 @@ fi
 OPTIONS="--taxsim2441"
 # .... execute validation tests
 clear
-echo "Validation tests using OSPC Tax-Calculator SimpleTaxIO class"
+echo "Validation TESTS using OSPC Tax-Calculator SimpleTaxIO class"
 echo "(the tests compare OSPC and Internet TAXSIM results)"
 for LYY in a13 a14 b13 b14 c13 c14
 do
@@ -23,7 +23,7 @@ do
     tclsh make-in.tcl 20$YY $L > $LYY.in
     python ../../simtax.py $OPTIONS $LYY.in
     unzip -oq out-taxsim.zip $LYY.in.out-taxsim
-    tclsh taxdiffs.tcl $X $LYY.in.out-simtax $LYY.in.out-taxsim > $LYY.taxdiffs
+    tclsh taxdiffs.tcl $LYY.in.out-simtax $LYY.in.out-taxsim > $LYY.taxdiffs
     git diff --name-status $LYY.taxdiffs
     rm $LYY.in $LYY.in.out-simtax $LYY.in.out-taxsim
 done
