@@ -237,7 +237,7 @@ class Calculator(object):
         ----------
         income_type_str: string
             specifies type of income that is increased to compute the
-            marginal tax rates (see mtr_valid_income_types below).
+            marginal tax rates.  See Notes for list of valid income types.
 
         finite_diff: float
             specifies marginal amount to be added to income in order to
@@ -253,12 +253,22 @@ class Calculator(object):
         mtr_fica: an array of marginal FICA tax rates.
         mtr_iit: an array of marginal individual income tax (IIT) rates.
         mtr_combined: an array of marginal combined FICA and IIT tax rates.
+
+        Notes
+        -----
+        Valid income_type_str values are:
+        'e00200p', taxpayer earnings (which is the default value);
+        'e00300',  taxable interest income;
+        'p23250',  long-term capital gains;
+        'e01700',  federally-taxable pension benefits; and
+        'e02400',  social security (OASDI) benefits.
         """
-        mtr_valid_income_types = ['e00200p']
+        mtr_valid_income_types = ['e00200p', 'e00300', 'p23250',
+                                  'e01700', 'e02400']
         mtr_ind_earnings_types = ['e00200p']
         # check validity of income_type_str parameter
         if income_type_str not in mtr_valid_income_types:
-            msg = 'mtr income_type_str={} is not valid'
+            msg = 'mtr income_type_str="{}" is not valid'
             raise ValueError(msg.format(income_type_str))
         # check for reasonable value of finite_diff parameter
         if finite_diff <= 0.0 or finite_diff > 1.0:
