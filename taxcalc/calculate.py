@@ -237,7 +237,7 @@ class Calculator(object):
         Parameters
         ----------
         income_type_str: string
-            specifies a list of income types that is increased to compute
+            specifies type of income that is increased to compute
             the marginal tax rates (see mtr_valid_income_types below).
 
         finite_diff: float
