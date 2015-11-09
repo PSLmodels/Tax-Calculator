@@ -1,5 +1,5 @@
 """
-OSPC taxcalc package simple tax input-output class.
+Tax-Calculator package simple tax input-output class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 simpletaxio.py
