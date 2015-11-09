@@ -1,5 +1,5 @@
 """
-SIMple input-output capabilities for the ospc TAXcalc package.
+SIMple input-output capabilities for the TAX-calculator package.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 simtax.py
@@ -12,20 +12,19 @@ from taxcalc import SimpleTaxIO
 
 def main():
     """
-    Contains command-line interface to the OSPC SimpleTaxIO class.
+    Contains command-line interface to the Tax-Calculator SimpleTaxIO class.
     """
     # parse command-line arguments:
     parser = argparse.ArgumentParser(
-        description=('Writes to a file the federal tax OUTPUT for the '
-                     'tax filing units specified in the INPUT file with '
-                     'the OUTPUT computed from the INPUT using the OSPC '
-                     'taxcalc package. '
-                     'Both the INPUT and OUTPUT files use Internet TAXSIM '
+        description=('Writes to a file the federal tax OUTPUT for the tax '
+                     'filing units specified in the INPUT file with the '
+                     'OUTPUT computed from the INPUT using the Tax-Calculator.'
+                     ' Both the INPUT and OUTPUT files use Internet-TAXSIM '
                      'format.  The OUTPUT filename is the INPUT filename '
                      'with the ".out-simtax" string appended.  The OUTPUT '
-                     'file contains the first 28 Internet TAXSIM output '
+                     'file contains the first 28 Internet-TAXSIM output '
                      'variables.  Use --iohelp flag for more information. '
-                     'For details on Internet TAXSIM version 9.3 INPUT and '
+                     'For details on Internet-TAXSIM version 9.3 INPUT and '
                      'OUTPUT formats, go to '
                      'http://users.nber.org/~taxsim/taxsim-calc9/'))
     parser.add_argument('--iohelp',
@@ -50,7 +49,7 @@ def main():
                         default=False,
                         action="store_true")
     parser.add_argument('--taxsim2441',
-                        help=('optional flag to emulate Internet TAXSIM '
+                        help=('optional flag to emulate the Internet-TAXSIM '
                               'practice of approximating the number of '
                               'children eligible for the child care expense '
                               'credit on Form 2441 by the total number of '
@@ -61,8 +60,8 @@ def main():
                         action="store_true")
     parser.add_argument('INPUT',
                         help=('INPUT is name of required file that contains '
-                              'tax-filing-unit information in Internet '
-                              'TAXSIM format.'))
+                              'tax-filing-unit information in Internet-TAXSIM '
+                              'format.'))
     args = parser.parse_args()
     # optionally show INPUT and OUTPUT variable definitions and exit
     if args.iohelp:
