@@ -1,5 +1,6 @@
 #!/bin/bash
-# Executes current-law validation TESTS using OSPC SimpleTaxIO class as follows:
+# Executes current-law validation TESTS using Tax-Calculator SimpleTaxIO class
+# as follows:
 # (1) generating a random sample of tax filing units (INPUT),
 # (2) generating OUTPUT from INPUT using simtax.py, and
 # (3) generating tax-difference tabulations by comparing OUTPUT with
@@ -13,8 +14,8 @@ fi
 OPTIONS="--taxsim2441"
 # .... execute validation tests
 clear
-echo "Validation TESTS using OSPC Tax-Calculator SimpleTaxIO class"
-echo "(the tests compare OSPC and Internet TAXSIM results)"
+echo "Current-law validation TESTS using the Tax-Calculator SimpleTaxIO class"
+echo "(the tests compare Tax-Calculator and Internet-TAXSIM results)"
 for LYY in a13 a14 b13 b14 c13 c14
 do
     echo "`date` : $LYY"
