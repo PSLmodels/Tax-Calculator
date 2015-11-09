@@ -394,8 +394,8 @@
                     [258250, 	309900,   154950,     284050, 		  309900,  154950]]
     },
     "_ID_BenefitSurtax_Switch":{
-        "long_name": "Switch for manipulating itemized deduction benefit surtax",
-	"description": "This parameter is specified by items and year. ",
+        "long_name": "Deductions subject to the surtax on itemized deduction benefits",
+	"description": "The surtax on itemized deduction benefits applies to the benefits derived from the itemized deductions specified with this parameter. ",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
@@ -1112,6 +1112,19 @@
         "col_label": "",
         "value":     [3]        
     },
+    "_ALD_Interest_ec":{
+        "long_name": "Interest income exclusion",
+	"description": "This pencentage can be applied to limit the interest income included in AGI. ",
+        "irs_ref": "Form 1040, line 8a",
+        "notes": "The final taxable interest amount will be (1- exclusion) * Interest. Even though this portion of interest wouldn't be included in AGI, it still contributes to Net Investment Income Tax and Earned Income Tax Credit.",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [0]        
+    },
     "_ALD_StudentLoan_HC":{
         "long_name": "Adjustment for student loan interest haircut",
 	"description": "This pencentage can be applied to limit the student loan interest adjustment allowed. ",
@@ -1337,6 +1350,18 @@
         "cpi_inflated": false,
         "col_label": "",
         "value": [0.20] 
+    },
+    "_AMT_CG_rt4":{
+        "long_name": "Long term capital gain and qualified dividend rate 4",
+    "description": "The capital gain and qualified dividend (stacked on top of regular income) above threshold 2 are taxed at this rate.",
+    "irs_ref": "Form 6251, line 60, in-line. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.25] 
     },
         "_AMT_CG_thd1":{
         "long_name": "Long term capital gain and qualified dividend threshold 1",
