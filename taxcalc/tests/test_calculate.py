@@ -26,6 +26,10 @@ IRATES = {1991: 0.015, 1992: 0.020, 1993: 0.022, 1994: 0.020, 1995: 0.021,
           1996: 0.022, 1997: 0.023, 1998: 0.024, 1999: 0.024, 2000: 0.024,
           2001: 0.024, 2002: 0.024}
 
+WRATES = {1991: 0.0276, 1992: 0.0419, 1993: 0.0465, 1994: 0.0498,
+          1995: 0.0507, 1996: 0.0481, 1997: 0.0451, 1998: 0.0441,
+          1999: 0.0437, 2000: 0.0435, 2001: 0.0430, 2002: 0.0429}
+
 
 @pytest.yield_fixture
 def policyfile():
@@ -91,7 +95,8 @@ def test_make_Calculator_files_to_ctor(policyfile):
     with open(policyfile.name) as pfile:
         policy = json.load(pfile)
     ppo = Policy(parameter_dict=policy, start_year=1991,
-                 num_years=len(IRATES), inflation_rates=IRATES)
+                 num_years=len(IRATES), inflation_rates=IRATES,
+                 wage_growth_rates=WRATES)
     calc = Calculator(policy=ppo, records=TAX_DTA_PATH,
                       start_year=1991, inflation_rates=IRATES)
     assert calc
@@ -210,12 +215,31 @@ def test_hard_coded_parameter_consistency():
     CPI_U = np.round(CPI_U, 3)
     assert_array_equal(CPI_U, policy._inflation_rates)
 
+    # back out the original stage I wage growth rates
+    record.BF.AWAGE[2009] = 1
+    for year in range(2010, 2025):
+        record.BF.AWAGE[year] = (record.BF.AWAGE[year] *
+                                 record.BF.AWAGE[year - 1] *
+                                 record.BF.APOPN[year])
+
+    # calculates GDP nominal growth rates
+    wage_growth_rates = np.zeros(12)
+    for year in range(2013, 2025):
+        wage_growth_rates[year - 2013] = (record.BF.AWAGE[year] /
+                                          record.BF.AWAGE[year - 1] - 1)
+
+    wage_growth_rates = np.round(wage_growth_rates, 4)
+
+    assert_array_equal(wage_growth_rates,
+                       policy._wage_growth_rates)
+
 
 def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
     with open(policyfile.name) as pfile:
         policy = json.load(pfile)
     ppo = Policy(parameter_dict=policy, start_year=1991,
-                 num_years=len(IRATES), inflation_rates=IRATES)
+                 num_years=len(IRATES), inflation_rates=IRATES,
+                 wage_growth_rates=WRATES)
     calc = Calculator(policy=ppo, records=TAX_DTA_PATH, start_year=1991,
                       inflation_rates=IRATES)
     user_mods = {1991: {"_almdep": [7150, 7250, 7400],

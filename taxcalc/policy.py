@@ -61,6 +61,10 @@ class Policy(ParametersBase):
                  2017: 0.021, 2018: 0.022, 2019: 0.023, 2020: 0.024,
                  2021: 0.024, 2022: 0.024, 2023: 0.024, 2024: 0.024}
 
+    __wgrates = {2013: 0.0276, 2014: 0.0419, 2015: 0.0465, 2016: 0.0498,
+                 2017: 0.0507, 2018: 0.0481, 2019: 0.0451, 2020: 0.0441,
+                 2021: 0.0437, 2022: 0.0435, 2023: 0.0430, 2024: 0.0429}
+
     @staticmethod
     def default_inflation_rates():
         """
@@ -77,10 +81,26 @@ class Policy(ParametersBase):
         """
         return Policy.__pirates
 
+    def default_wage_growth_rates():
+        """
+        Return complete default wage growth rate dictionary.
+
+        Parameters
+        ----------
+        none
+
+        Returns
+        -------
+        default growth rates: dict
+            decimal (not percentage) annual growth rate by calyear.
+        """
+        return Policy.__wgrates
+
     def __init__(self, parameter_dict=None,
                  start_year=JSON_START_YEAR,
                  num_years=DEFAULT_NUM_YEARS,
-                 inflation_rates=None):
+                 inflation_rates=None,
+                 wage_growth_rates=None):
         """
         Policy class constructor.
         """
@@ -107,6 +127,19 @@ class Policy(ParametersBase):
         else:  # if None, read default rates
             self._inflation_rates = [self.__pirates[start_year + i]
                                      for i in range(0, num_years)]
+
+        if wage_growth_rates:
+            if len(wage_growth_rates) != num_years:
+                raise ValueError('len(wage_growth_rates) != num_years')
+            if min(list(wage_growth_rates.keys())) != start_year:
+                msg = 'min(wage_growth_rates.keys()) != start_year'
+                raise ValueError(msg)
+            self._wage_growth_rates = [wage_growth_rates[start_year + i]
+                                       for i in range(0, num_years)]
+        else:  # if None, read default rates
+            self._wage_growth_rates = [self.__wgrates[start_year + i]
+                                       for i in range(0, num_years)]
+
         self.initialize(start_year, num_years)
 
     def inflation_rates(self):
