@@ -217,7 +217,6 @@ class Calculator(object):
         return self.policy.current_year
 
     def mtr(self, income_type_str='e00200p',
-            finite_diff=0.01,
             wrt_full_compensation=True):
         """
         Calculates the marginal FICA, individual income, and combined
@@ -237,11 +236,7 @@ class Calculator(object):
         ----------
         income_type_str: string
             specifies type of income that is increased to compute the
-            marginal tax rates (see mtr_valid_income_types below).
-
-        finite_diff: float
-            specifies marginal amount to be added to income in order to
-            calculate the marginal tax rate.
+            marginal tax rates.  See Notes for list of valid income types.
 
         wrt_full_compensation: boolean
             specifies whether or not marginal tax rates on earned income
@@ -253,21 +248,32 @@ class Calculator(object):
         mtr_fica: an array of marginal FICA tax rates.
         mtr_iit: an array of marginal individual income tax (IIT) rates.
         mtr_combined: an array of marginal combined FICA and IIT tax rates.
+
+        Notes
+        -----
+        Valid income_type_str values are:
+        'e00200p', taxpayer wage/salary earnings (which is the default value);
+        'e00900p', taxpayer (Schedule C) self-employment income;
+        'e00300',  taxable interest income;
+        'p23250',  long-term capital gains;
+        'e01700',  federally-taxable pension benefits; and
+        'e02400',  social security (OASDI) benefits.
         """
-        mtr_valid_income_types = ['e00200p']
-        mtr_ind_earnings_types = ['e00200p']
+        mtr_valid_income_types = ['e00200p', 'e00900p',
+                                  'e00300', 'p23250',
+                                  'e01700', 'e02400']
         # check validity of income_type_str parameter
         if income_type_str not in mtr_valid_income_types:
-            msg = 'mtr income_type_str={} is not valid'
+            msg = 'mtr income_type_str="{}" is not valid'
             raise ValueError(msg.format(income_type_str))
-        # check for reasonable value of finite_diff parameter
-        if finite_diff <= 0.0 or finite_diff > 1.0:
-            msg = 'mtr finite_diff={} is not in (0,1] range'
-            raise ValueError(msg.format(finite_diff))
+        # specify value for finite_diff parameter
+        finite_diff = 0.01  # a one-cent difference
         # extract income_type array(s) from embedded records object
         income_type = getattr(self.records, income_type_str)
-        if income_type_str in mtr_ind_earnings_types:
+        if income_type_str == 'e00200p':
             earnings_type = self.records.e00200
+        elif income_type_str == 'e00900p':
+            seincome_type = self.records.e00900
         # calculate base level of taxes
         self.calc_all()
         fica_base = copy.deepcopy(self.records._fica)
@@ -275,8 +281,10 @@ class Calculator(object):
         combined_taxes_base = ospctax_base + fica_base
         # calculate level of taxes after a marginal increase in income
         setattr(self.records, income_type_str, income_type + finite_diff)
-        if income_type_str in mtr_ind_earnings_types:
+        if income_type_str == 'e00200p':
             self.records.e00200 = earnings_type + finite_diff
+        elif income_type_str == 'e00900p':
+            self.records.e00900 = seincome_type + finite_diff
         self.calc_all()
         fica_up = copy.deepcopy(self.records._fica)
         ospctax_up = copy.deepcopy(self.records._ospctax)
@@ -287,11 +295,13 @@ class Calculator(object):
         combined_delta = combined_taxes_up - combined_taxes_base
         # return embedded records object to its original state and recalculate
         setattr(self.records, income_type_str, income_type)
-        if income_type_str in mtr_ind_earnings_types:
+        if income_type_str == 'e00200p':
             self.records.e00200 = earnings_type
+        elif income_type_str == 'e00900p':
+            self.records.e00900 = seincome_type
         self.calc_all()
         # specify optional adjustment for employer (er) OASDI+HI payroll taxes
-        if wrt_full_compensation and income_type_str in mtr_ind_earnings_types:
+        if wrt_full_compensation and income_type_str == 'e00200p':
             adj = np.where(income_type <
                            self.policy.SS_Earnings_c,
                            0.5 * (self.policy.FICA_ss_trt +
