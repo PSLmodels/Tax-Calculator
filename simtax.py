@@ -41,13 +41,6 @@ def main():
                               '//-comments. No REFORM filename implies use '
                               'of current-law policy.'),
                         default=None)
-    parser.add_argument('--nomtr',
-                        help=('optional flag to exclude marginal federal '
-                              'income tax rate and marginal FICA tax rate '
-                              'from OUTPUT.  Using --nomtr flag implies '
-                              'those two marginal tax rates are set to zero.'),
-                        default=False,
-                        action="store_true")
     parser.add_argument('--taxsim2441',
                         help=('optional flag to emulate the Internet-TAXSIM '
                               'practice of approximating the number of '
@@ -71,7 +64,7 @@ def main():
     simtax = SimpleTaxIO(input_filename=args.INPUT,
                          reform_filename=args.reform,
                          emulate_taxsim_2441_logic=args.taxsim2441)
-    simtax.calculate(no_marginal_tax_rates=args.nomtr)
+    simtax.calculate()
     # return no-error exit code
     return 0
 # end of main function code
