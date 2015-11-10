@@ -1,5 +1,5 @@
 """
-OSPC Tax-Calculator abstract base parameters class.
+Tax-Calculator abstract base parameters class.
 """
 import os
 import json

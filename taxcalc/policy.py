@@ -1,5 +1,5 @@
 """
-OSPC Tax-Calculator federal tax policy Policy class.
+Tax-Calculator federal tax policy Policy class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 policy.py

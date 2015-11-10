@@ -350,6 +350,32 @@ def test_diff_table_sum_row():
                           tdiff2[non_digit_cols][-1:])
 
 
+def test_row_classifier():
+    # create a current-law Policy object and Calculator calc1
+    policy1 = Policy()
+    records1 = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
+    calc1 = Calculator(policy=policy1, records=records1)
+    calc1.calc_all()
+    calc1_s006 = create_distribution_table(calc1,
+                                           groupby="webapp_income_bins",
+                                           result_type="weighted_sum").s006
+
+    # create a policy-reform Policy object and Calculator calc2
+    reform = {2013: {"_ALD_StudentLoan_HC": [1]}}
+    policy2 = Policy()
+    policy2.implement_reform(reform)
+    records2 = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
+    calc2 = Calculator(policy=policy2, records=records2)
+    calc2.calc_all()
+    calc2_s006 = create_distribution_table(calc2,
+                                           groupby="webapp_income_bins",
+                                           result_type="weighted_sum",
+                                           baseline_calc=calc1).s006
+
+    # use weighted sum of weights in each cell to check classifer
+    npt.assert_array_equal(calc1_s006, calc2_s006)
+
+
 def test_expand_2D_already_filled():
 
     _II_brk2 = [[36000, 72250, 36500, 48600, 72500, 36250],

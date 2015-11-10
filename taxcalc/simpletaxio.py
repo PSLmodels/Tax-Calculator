@@ -1,5 +1,5 @@
 """
-OSPC taxcalc package simple tax input-output class.
+Tax-Calculator simple tax input-output class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 simpletaxio.py
@@ -26,9 +26,9 @@ class SimpleTaxIO(object):
         name of optional REFORM file with None implying current-law policy.
 
     emulate_taxsim_2441_logic: boolean
-        true implies emulation of questionable Internet TAXSIM logic, which
+        true implies emulation of questionable Internet-TAXSIM logic, which
         is necessary if the SimpleTaxIO class is being used in validation
-        tests against Internet TAXSIM output.
+        tests against Internet-TAXSIM output.
 
     Raises
     ------
@@ -81,14 +81,12 @@ class SimpleTaxIO(object):
         """
         return self._policy.end_year
 
-    def calculate(self, no_marginal_tax_rates=False, write_output_file=True):
+    def calculate(self, write_output_file=True):
         """
         Calculate taxes for all INPUT lines and write OUTPUT to file.
 
         Parameters
         ----------
-        no_marginal_tax_rates: boolean
-
         write_output_file: boolean
 
         Returns
@@ -108,15 +106,14 @@ class SimpleTaxIO(object):
                     ovar = SimpleTaxIO._extract_output(self._calc.records, idx,
                                                        self._input[lnum])
                     self._output[lnum] = ovar
-            if not no_marginal_tax_rates:
-                (mtr_fica, mtr_itax,
-                 _) = self._calc.mtr(wrt_full_compensation=False)
-                for idx in range(0, self._calc.records.dim):
-                    indyr = cr_taxyr[idx]
-                    if indyr == calcyr:
-                        lnum = idx + 1
-                        self._output[lnum][7] = 100 * mtr_itax[idx]
-                        self._output[lnum][9] = 100 * mtr_fica[idx]
+            (mtr_fica, mtr_itax,
+             _) = self._calc.mtr(wrt_full_compensation=False)
+            for idx in range(0, self._calc.records.dim):
+                indyr = cr_taxyr[idx]
+                if indyr == calcyr:
+                    lnum = idx + 1
+                    self._output[lnum][7] = 100 * mtr_itax[idx]
+                    self._output[lnum][9] = 100 * mtr_fica[idx]
         # write contents of self._output
         if write_output_file:
             self._write_output_file()
@@ -140,7 +137,7 @@ class SimpleTaxIO(object):
         -------
         nothing: void
         """
-        ivd = ('**** SimpleTaxIO INPUT variables in Internet TAXSIM format:\n'
+        ivd = ('**** SimpleTaxIO INPUT variables in Internet-TAXSIM format:\n'
                'Note that each INPUT variable must be an integer.\n'
                '(NEG) notation means that variable can be negative;\n'
                '      otherwise variable must be non-negative.\n'
@@ -168,7 +165,7 @@ class SimpleTaxIO(object):
                '[21] short-term capital gains or losses (NEG)\n'
                '[22] long-term capital gains or losses (NEG)\n')
         sys.stdout.write(ivd)
-        ovd = ('**** SimpleTaxIO OUTPUT variables in Internet TAXSIM format:\n'
+        ovd = ('**** SimpleTaxIO OUTPUT variables in Internet-TAXSIM format:\n'
                '[ 1] arbitrary id of income tax filing unit\n'
                '[ 2] calendar year of income tax filing\n'
                '[ 3] state code [ALWAYS ZERO]\n'
@@ -221,7 +218,7 @@ class SimpleTaxIO(object):
         Raises
         ------
         ValueError:
-            if INPUT variables are not in Internet TAXSIM format.
+            if INPUT variables are not in Internet-TAXSIM format.
             if INPUT variables have improper numeric type or value.
 
         Returns
@@ -414,7 +411,7 @@ class SimpleTaxIO(object):
         recs.FLPDYR[idx] = ivar[2]  # tax year
         # no use of ivar[3], state code
         if ivar[4] == 3:  # head-of-household is 3 in SimpleTaxIO INPUT file
-            mars_value = 4  # head-of-household is MARS=4 in taxcalc
+            mars_value = 4  # head-of-household is MARS=4 in Tax-Calculator
             num_taxpayers = 1
         else:  # if ivar[4] is 1=single or 2=married_filing_jointly
             mars_value = ivar[4]
@@ -444,7 +441,7 @@ class SimpleTaxIO(object):
         # approximate number of Form 2441 qualified persons associated with
         # the child care expenses specified by ivar[17] (Note that the exact
         # number is the number of dependents under age 13, but that is not
-        # an Internet TAXSIM input variable; hence the need to approximate.)
+        # an Internet-TAXSIM input variable; hence the need to approximate.)
         if emulate_taxsim_2441_logic:
             recs.f2441[idx] = num_dependents  # all dependents of any age
         else:
@@ -486,7 +483,7 @@ class SimpleTaxIO(object):
         Notes
         -----
         The value of each output variable is stored in the ovar dictionary,
-        which is indexed as Internet TAXSIM output variables are (where the
+        which is indexed as Internet-TAXSIM output variables are (where the
         index begins with one).
         """
         ovar = {}
@@ -524,9 +521,9 @@ class SimpleTaxIO(object):
         ovar[26] = crecs.c62100_everyone[idx]  # federal AMT taxable income
         amt_liability = crecs.c09600[idx]  # federal AMT liability
         ovar[27] = amt_liability
-        # ovar[28] is federal income tax before credits; the taxcalc
+        # ovar[28] is federal income tax before credits; the Tax-Calculator
         # crecs.c05800[idx] is this concept but includes AMT liability
-        # while TAXSIM ovar[28] explicitly excludes AMT liability, so
+        # while Internet-TAXSIM ovar[28] explicitly excludes AMT liability, so
         # we have the following:
         ovar[28] = crecs.c05800[idx] - amt_liability
         # add optional debugging output to ovar dictionary
@@ -558,7 +555,7 @@ class SimpleTaxIO(object):
             for lnum in range(1, len(self._output) + 1):
                 SimpleTaxIO._write_output_line(self._output[lnum], output_file)
 
-    OVAR_FMT = {1: '{:d}.',  # add decimal point to replicate TAXSIM output
+    OVAR_FMT = {1: '{:d}.',  # add decimal point as in Internet-TAXSIM output
                 2: ' {:d}',
                 3: ' {:d}',
                 4: ' {:.2f}',
