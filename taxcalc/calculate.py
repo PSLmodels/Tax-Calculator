@@ -1,5 +1,5 @@
 """
-OSPC Tax-Calculator tax Calculator class.
+Tax-Calculator federal tax Calculator class.
 """
 import math
 import copy

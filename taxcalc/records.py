@@ -1,5 +1,5 @@
 """
-OSPC Tax-Calculator tax-filing-unit Records class.
+Tax-Calculator tax-filing-unit Records class.
 """
 import pandas as pd
 import numpy as np

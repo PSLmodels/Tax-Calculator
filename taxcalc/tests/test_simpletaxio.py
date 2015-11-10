@@ -1,5 +1,5 @@
 """
-Tests for SimpleTaxIO class in taxcalc package.
+Tests for Tax-Calculator SimpleTaxIO class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 test_simpletaxio.py
