@@ -414,7 +414,7 @@ class SimpleTaxIO(object):
         recs.FLPDYR[idx] = ivar[2]  # tax year
         # no use of ivar[3], state code
         if ivar[4] == 3:  # head-of-household is 3 in SimpleTaxIO INPUT file
-            mars_value = 4  # head-of-household is MARS=4 in taxcalc
+            mars_value = 4  # head-of-household is MARS=4 in Tax-Calculator
             num_taxpayers = 1
         else:  # if ivar[4] is 1=single or 2=married_filing_jointly
             mars_value = ivar[4]
@@ -524,7 +524,7 @@ class SimpleTaxIO(object):
         ovar[26] = crecs.c62100_everyone[idx]  # federal AMT taxable income
         amt_liability = crecs.c09600[idx]  # federal AMT liability
         ovar[27] = amt_liability
-        # ovar[28] is federal income tax before credits; the taxcalc
+        # ovar[28] is federal income tax before credits; the Tax-Calculator
         # crecs.c05800[idx] is this concept but includes AMT liability
         # while Internet-TAXSIM ovar[28] explicitly excludes AMT liability, so
         # we have the following:

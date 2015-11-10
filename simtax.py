@@ -1,5 +1,5 @@
 """
-SIMple input-output capabilities for the TAX-calculator package.
+SIMple input-output capabilities for TAX-calculator.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 simtax.py
