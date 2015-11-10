@@ -236,17 +236,12 @@ class Calculator(object):
         Parameters
         ----------
         income_type_str: string
-<<<<<<< HEAD
-            specifies a list of income types that is increased to compute
+            specifies type of income that is increased to compute
             the marginal tax rates (see mtr_valid_income_types below).
 
         finite_diff: float
-            specifies marginal amount to be added to income in order to
-            calculate the marginal tax rate.
-=======
             specifies type of income that is increased to compute the
             marginal tax rates.  See Notes for list of valid income types.
->>>>>>> upstream/master
 
         wrt_full_compensation: boolean
             specifies whether or not marginal tax rates on earned income
