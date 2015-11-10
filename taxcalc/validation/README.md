@@ -101,13 +101,7 @@ for the `c2013.in` INPUT file described above in item (4).
 The resulting OUTPUT file is in the same directory as the INPUT file
 and is called `c2013.in.out-simtax`.
 
-(2) Do same thing as in item (1) except suppress calculation of the
-two marginal tax rates and write zero for each marginal tax rate in
-the OUTPUT.
-
-`python ../../simtax.py --nomtr c2013.in`
-
-(3) Do same thing as in item (1) except emulate Internet-TAXSIM logic
+(2) Do same thing as in item (1) except emulate Internet-TAXSIM logic
 regarding the approximation of Form 2441 qualified persons for whom
 child-care expenses are incurred.
 
@@ -119,7 +113,7 @@ assumes the number of Form 2441 qualified persons is equal to the total
 number of dependents of all ages, while the default simtax.py approximation
 uses the number of dependents under age 17.
 
-(4) Generate extra OUTPUT variables that are useful in debugging
+(3) Generate extra OUTPUT variables that are useful in debugging
 Tax-Calculator logic.
 
 `Temporarily edit the DVAR_NAMES list in the simpletaxio.py file.`
