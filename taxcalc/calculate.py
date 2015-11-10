@@ -218,7 +218,6 @@ class Calculator(object):
 
     def mtr(self, income_type_str='e00200p',
             wrt_full_compensation=True):
-
         """
         Calculates the marginal FICA, individual income, and combined
         tax rates for every tax filing unit.
@@ -236,10 +235,6 @@ class Calculator(object):
         Parameters
         ----------
         income_type_str: string
-            specifies type of income that is increased to compute
-            the marginal tax rates (see mtr_valid_income_types below).
-
-        finite_diff: float
             specifies type of income that is increased to compute the
             marginal tax rates.  See Notes for list of valid income types.
 
@@ -264,7 +259,6 @@ class Calculator(object):
         'e01700',  federally-taxable pension benefits; and
         'e02400',  social security (OASDI) benefits.
         """
-
         mtr_valid_income_types = ['e00200p', 'e00900p',
                                   'e00300', 'e23250',
                                   'e01700', 'e02400']
