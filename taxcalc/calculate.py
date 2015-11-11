@@ -103,6 +103,7 @@ class Calculator(object):
         EI_FICA(self.policy, self.records)
         AMED(self.policy, self.records)
         StdDed(self.policy, self.records)
+        Personal_Credit(self.policy, self.records)
         # Store calculated standard deduction, calculate
         # taxes with standard deduction, store AMT + Regular Tax
         std = copy.deepcopy(self.records._standard)

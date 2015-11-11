@@ -510,20 +510,22 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
 
     return _standard, c04200, _numextra, c15200, c15100, x04500, _txpyers
 
+
 @iterate_jit(nonpython=True, puf=False)
 def Personal_Credit(c00100, MARS):
     # full amount as defined in the parameter
     _personal_credit = II_credit[MARS - 1]
-    
+
     # phaseout using AGI
     if c00100 > II_credit_ps[MARS - 1]:
         credit_phaseout = II_credit_prt * (c00100 - II_credit_ps[MARS - 1])
     else:
         credit_phaseout = 0.0
-        
+
     _personal_credit = _personal_credit - credit_phaseout
 
     return _personal_credit
+
 
 @iterate_jit(nopython=True, puf=False)
 def TaxInc(c00100, c04470, c04100, _standard, e37717, c21060, c21040,
