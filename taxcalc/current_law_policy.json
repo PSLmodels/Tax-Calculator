@@ -1430,7 +1430,7 @@
         "col_var": "MARS",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
-        "cpi_inflated": true,
+        "cpi_inflated": false,
         "value": [ 0.0]
      }
 }
