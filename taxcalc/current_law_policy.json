@@ -1099,6 +1099,19 @@
         "col_label": "",
         "value":     [0.05]        
     },
+    "_CTC_additional":{
+        "long_name": "Partially refundable child tax credit",
+	"description": "In addition to all the credits currently available for dependents, this paramter gives each qualifying child a fixed amount of partially refundable credit, limited by the sum of total income and payroll tax liabilities.",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [0.0]        
+    },
     "_ACTC_ChildNum":{
         "long_name": "Additional child tax credit minimum number of qualified children",
 	"description": "Families with this number of qualified children or more are qualified for an alternative way to calculate additional child tax credit",
