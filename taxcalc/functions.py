@@ -511,7 +511,7 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
     return _standard, c04200, _numextra, c15200, c15100, x04500, _txpyers
 
 
-@iterate_jit(nonpython=True, puf=False)
+@iterate_jit(nopython=True, puf=False)
 def Personal_Credit(c00100, MARS):
     # full amount as defined in the parameter
     _personal_credit = II_credit[MARS - 1]
