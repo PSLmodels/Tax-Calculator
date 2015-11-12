@@ -65,8 +65,8 @@ def behavior(calc_x, calc_y, update_income=update_income):
     substitution_effect = (calc_y.behavior.BE_sub * pct_diff_atr *
                            (calc_x.records.c04800))
 
-    income_effect = calc_y.behavior.BE_inc * (calc_y.records._ospctax -
-                                              calc_x.records._ospctax)
+    income_effect = calc_y.behavior.BE_inc * (calc_y.records._iitax -
+                                              calc_x.records._iitax)
     calc_y_behavior = copy.deepcopy(calc_y)
 
     combined_behavioral_effect = income_effect + substitution_effect
