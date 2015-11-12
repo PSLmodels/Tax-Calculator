@@ -31,4 +31,8 @@ fi
 ./test c14 &
 wait
 echo "FINISHED WITH CURLAW TESTS : `date`"
+echo "TEST RESULTS: any lines (starting with M) between the STARTING... and"
+echo "              FINISHING... lines above indicate test failure caused by"
+echo "              the actual ???.taxdiffs results being different from the"
+echo "              expected results.  No M... lines implies tests passed."
 exit 0
