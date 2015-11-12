@@ -1619,7 +1619,7 @@ def IITAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
 
     partially_refundable_CTC = min(_combined, CTC_additional * n24)
 
-    _ospctax = _ospctax - partially_refundable_CTC
+    _iitax = _iitax - partially_refundable_CTC
 
     _refund = _refund + partially_refundable_CTC
 
