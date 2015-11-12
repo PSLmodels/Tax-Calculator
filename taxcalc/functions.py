@@ -1621,6 +1621,8 @@ def OSPC_TAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
 
     _ospctax = _ospctax - partially_refundable_CTC
 
+    _refund = _refund + partially_refundable_CTC
+
     _payments = (c59660 + c10950 + c10960 + c11070 + e10000 + e11550 + e11580 +
                  e11450)
 
