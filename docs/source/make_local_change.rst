@@ -20,7 +20,7 @@ local tax-calculator directory.
 
 **1. Navigate to the relevant file and open it.**
 
-From your tax calculator directory, the path to the file that defines
+From your tax-calculator directory, the path to the file that defines
 the tax parameters is:
 
 .. code-block:: python
