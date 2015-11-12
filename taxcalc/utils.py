@@ -5,7 +5,7 @@ from collections import defaultdict
 
 STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600',
                  'c04800', 'c05200', 'c62100', 'c09600', 'c05800', 'c09200',
-                 '_refund', 'c07100', '_ospctax', '_fica', '_combined', 's006']
+                 '_refund', 'c07100', '_iitax', '_fica', '_combined', 's006']
 
 # each entry in this array corresponds to the same entry in the array
 # TABLE_LABELS below. this allows us to use TABLE_LABELS to map a
@@ -14,7 +14,7 @@ STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600',
 TABLE_COLUMNS = ['s006', 'c00100', 'num_returns_StandardDed', '_standard',
                  'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'c05200',
                  'c62100', 'num_returns_AMT', 'c09600', 'c05800', 'c07100',
-                 'c09200', '_refund', '_ospctax', '_fica', '_combined']
+                 'c09200', '_refund', '_iitax', '_fica', '_combined']
 
 TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Standard Deduction', 'Itemizers',
@@ -414,7 +414,7 @@ def create_difference_table(calc1, calc2, groupby,
     # Difference in plans
     # Positive values are the magnitude of the tax increase
     # Negative values are the magnitude of the tax decrease
-    res2['tax_diff'] = res2['_ospctax'] - res1['_ospctax']
+    res2['tax_diff'] = res2['_iitax'] - res1['_iitax']
 
     diffs = means_and_comparisons(res2, 'tax_diff',
                                   df.groupby('bins', as_index=False),

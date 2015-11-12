@@ -20,7 +20,7 @@ Projects
 OSPC's first project is building tools to analyze the budgetary and
 broader economic impact of taxes. These models are completely
 transparent and freely available to researchers across the
-country. Additionally, an easy-to-use online interfaces will allow
+country. Additionally, an easy-to-use online interface will allow
 students, policymakers, journalists, and informed citizens to interact
 with the models and learn for themselves about the effects of
 policies.

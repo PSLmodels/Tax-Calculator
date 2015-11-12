@@ -359,7 +359,7 @@ class Records(object):
                     'c82940', 'e59660', '_othadd', 'y07100',
                     'x07100', 'c08800', 'e08795', 'x07400', 'c59680',
                     '_othertax', 'e82915', 'e82940', 'SFOBYR', 'NIIT',
-                    'c59720', '_comb', 'c07150', 'c10300', '_ospctax',
+                    'c59720', '_comb', 'c07150', 'c10300', '_iitax',
                     '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
                     '_amed', '_xlin3', '_xlin6', '_cmbtp_itemizer',
                     '_cmbtp_standard', '_expanded_income', 'c07300',

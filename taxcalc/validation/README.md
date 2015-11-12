@@ -231,12 +231,16 @@ Automating Validation Process
 Currently six samples, each containing 100,000 randomly-generated tax
 filing units, have been used to generate Internet-TAXSIM OUTPUT files
 that are stored in the out-taxsim.zip file.  The `tests` bash script
-automates the four-step validation process described above.  The
-`tests` script takes longer to execute (roughly nine or ten minutes)
-than the unit tests in the taxcalc/tests directory (roughly one or two
-minutes).  But if the content of the six ?1?.taxdiffs files that are
-under version control are not modified by a `tests` execution, this a
-more thorough confirmation that Tax-Calculator logic has not changed.
+automates the four-step validation process described above.  Without
+using the `all` command-line argument, the `tests` script conducts
+current-law validation for the c13 and c14 INPUT files.  Doing this
+abbreviated set of tests takes about the same time to execute (roughly
+two minutes) as all the unit tests in the taxcalc/tests directory.
+Executing `./tests all` in the `validation` directory causes all the
+samples to be used, which takes roughly five minutes.  These validation
+tests are an good complement to the unit tests because they provide a
+much stronger test that changes in Tax-Calculator source code have not
+introduced unintended regressions in Tax-Calculator capabilities.
 
 Current Validation Results
 ==========================
