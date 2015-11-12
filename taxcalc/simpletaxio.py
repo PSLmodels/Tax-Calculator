@@ -491,7 +491,7 @@ class SimpleTaxIO(object):
         ovar[2] = ivar[2]
         ovar[3] = ivar[3]
         # pylint: disable=protected-access
-        ovar[4] = crecs._ospctax[idx]  # federal income tax liability
+        ovar[4] = crecs._iitax[idx]  # federal income tax liability
         ovar[5] = 0.0  # no state income tax calculation
         ovar[6] = crecs._fica[idx]  # FICA taxes (ee+er) for OASDI+HI
         ovar[7] = 0.0  # marginal federal income tax rate as percent

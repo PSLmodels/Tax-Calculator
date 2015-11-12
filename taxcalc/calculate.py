@@ -152,7 +152,7 @@ class Calculator(object):
         F5405(self.policy, self.records)
         C1040(self.policy, self.records)
         DEITC(self.policy, self.records)
-        OSPC_TAX(self.policy, self.records)
+        IITAX(self.policy, self.records)
         ExpandIncome(self.policy, self.records)
 
     def calc_all(self):
@@ -189,7 +189,7 @@ class Calculator(object):
         add_df(all_dfs, F5405(self.policy, self.records))
         add_df(all_dfs, C1040(self.policy, self.records))
         add_df(all_dfs, DEITC(self.policy, self.records))
-        add_df(all_dfs, OSPC_TAX(self.policy, self.records))
+        add_df(all_dfs, IITAX(self.policy, self.records))
         add_df(all_dfs, ExpandIncome(self.policy, self.records))
         totaldf = pd.concat(all_dfs, axis=1)
         return totaldf
@@ -278,8 +278,8 @@ class Calculator(object):
         # calculate base level of taxes
         self.calc_all()
         fica_base = copy.deepcopy(self.records._fica)
-        ospctax_base = copy.deepcopy(self.records._ospctax)
-        combined_taxes_base = ospctax_base + fica_base
+        iitax_base = copy.deepcopy(self.records._iitax)
+        combined_taxes_base = iitax_base + fica_base
         # calculate level of taxes after a marginal increase in income
         setattr(self.records, income_type_str, income_type + finite_diff)
         if income_type_str == 'e00200p':
@@ -288,11 +288,11 @@ class Calculator(object):
             self.records.e00900 = seincome_type + finite_diff
         self.calc_all()
         fica_up = copy.deepcopy(self.records._fica)
-        ospctax_up = copy.deepcopy(self.records._ospctax)
-        combined_taxes_up = ospctax_up + fica_up
+        iitax_up = copy.deepcopy(self.records._iitax)
+        combined_taxes_up = iitax_up + fica_up
         # compute marginal changes in tax liability
         fica_delta = fica_up - fica_base
-        ospctax_delta = ospctax_up - ospctax_base
+        iitax_delta = iitax_up - iitax_base
         combined_delta = combined_taxes_up - combined_taxes_base
         # return embedded records object to its original state and recalculate
         setattr(self.records, income_type_str, income_type)
@@ -312,7 +312,7 @@ class Calculator(object):
             adj = 0.0
         # compute marginal tax rates
         mtr_fica = fica_delta / (finite_diff * (1.0 + adj))
-        mtr_iit = ospctax_delta / (finite_diff * (1.0 + adj))
+        mtr_iit = iitax_delta / (finite_diff * (1.0 + adj))
         mtr_combined = combined_delta / (finite_diff * (1.0 + adj))
         # return the three marginal tax rate arrays
         return (mtr_fica, mtr_iit, mtr_combined)
@@ -386,8 +386,8 @@ class Calculator(object):
             # Misc. Surtax
             surtax = (calc.records._surtax * calc.records.s006).sum()
 
-            # ospc_tax
-            revenue1 = (calc.records._ospctax * calc.records.s006).sum()
+            # iitax
+            revenue1 = (calc.records._iitax * calc.records.s006).sum()
 
             # payroll tax (FICA)
             payroll = (calc.records._fica * calc.records.s006).sum()
@@ -418,7 +418,7 @@ class Calculator(object):
                         "refundable credits ($b)",
                         "nonrefundable credits ($b)",
                         "Misc. Surtax ($b)",
-                        "ospctax ($b)", "Payroll tax ($b)"])
+                        "Ind inc tax ($b)", "Payroll tax ($b)"])
         df = df.transpose()
         pd.options.display.float_format = '{:8,.1f}'.format
 

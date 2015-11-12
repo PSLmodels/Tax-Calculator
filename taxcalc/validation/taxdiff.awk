@@ -3,7 +3,7 @@
 # NOTE: this file must be in same directory as the taxdiffs.tcl file.
 # USAGE: awk -f taxdiff.awk -v col=NUM first-output-file second-output-file
 # NOTE: (a) the output files must have identical var[1] id variables;
-#       (b) the output files must have at least 28 output variables per line;
+#       (b) the output files must have at least NUM output variables per line;
 #       (c) the difference is the variable value in first output file minus
 #           the variable value in the second output file; and
 #       (d) the maxdiff amount is the signed value of the largest absolute
@@ -20,7 +20,7 @@ BEGIN {
     }
     file_number = 0
     file_name = ""
-    min_num_vars = 28
+    min_num_vars = col
 }
 error==1 { exit }
 
