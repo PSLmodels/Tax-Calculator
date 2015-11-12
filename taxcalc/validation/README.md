@@ -246,4 +246,24 @@ and no federal income tax liability differences (of more than one cent
 in absolute value) between Tax-Calculator results and Internet-TAXSIM
 results for the 600,000 randomly-generated tax filing units
 described above.  There are some (more than one cent) differences in
-intermediate results and these are being investigated.
+intermediate results and they will be investigated in the future.
+
+Among these 600,000 filing units there only a handful of marginal tax
+rate differences (of more than one basis point).  
+
+There are 49 filing units for which Tax-Calculator generates a
+marginal FICA tax rate of 3.80 percent while Internet-TAXSIM generates
+a rate of 2.90 percent.  All of these units are exactly at the 200,000
+(or 250,000 for couples) dollar threshold for the additional Medicare
+tax on high earnings.  The derivative of the total FICA tax function
+at this point is not well defined: Tax-Calculator generates 3.80
+because it approximates the derivative using a one-cent **increase**
+in earnings, while Internet-TAXSIM appears to be focusing on decreases
+in earnings.  But the main point here is that the only significant
+differences in marginal FICA tax rates are completely understandable.
+
+And there are 3 filing units for which Tax-Calculator generates a
+marginal federal income tax rate of 35.00 percent while
+Internet-TAXSIM generates rates of 35.77, 35,52, and 35.88 percent.
+The reasons for these three modest differences have not been
+determined.
