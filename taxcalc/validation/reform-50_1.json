@@ -1,0 +1,13 @@
+// REFORM: Suppress AMT 
+// (same as Internet-TAXSIM reform option "50 1")
+{    
+    "_AMT_prt": {
+        "2013": [0]// Suppress AMT
+    },
+    "_AMT_trt1": {
+        "2013": [0]// Suppress AMT
+    },
+    "_AMT_trt2": {
+        "2013": [0]// Suppress AMT
+    }
+}
