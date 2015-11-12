@@ -62,9 +62,9 @@ def test_make_behavioral_Calculator():
     behavior_y.update_behavior(behavior3)
     calc_y_behavior3 = behavior(calc_x, calc_y)
     # check that total income tax liability differs across the three behaviors
-    assert (calc_y_behavior1.records._ospctax.sum() !=
-            calc_y_behavior2.records._ospctax.sum() !=
-            calc_y_behavior3.records._ospctax.sum())
+    assert (calc_y_behavior1.records._iitax.sum() !=
+            calc_y_behavior2.records._iitax.sum() !=
+            calc_y_behavior3.records._iitax.sum())
 
 
 def test_update_behavior():

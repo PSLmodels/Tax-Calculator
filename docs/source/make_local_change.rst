@@ -1,20 +1,20 @@
 :orphan:
 
-Making changes to your local copy of the Tax Calculator
+Making changes to your local copy of the Tax-Calculator
 =======================================================
 
 This document provides examples of two different kinds of changes to
-your local copy of the Tax Calculator.  The first example illustrates
+your local copy of the Tax-Calculator.  The first example illustrates
 changing the numerical value of a tax parameter that already exists in
-the Tax Calculator code.  The second example illustrates adding a new
+the Tax-Calculator code.  The second example illustrates adding a new
 tax parameter and its associated logic that do not already exist in
-the Tax Calculator.
+the Tax-Calculator.
 
 Example 1: Changing the value of an existing tax parameter
 ----------------------------------------------------------
 
 In this example, we make a simple change in the file that stores the
-Tax Calculator's tax parameters. The process we outline below is
+Tax-Calculator's tax parameters. The process we outline below is
 similar to the steps you'll take when you make changes in your own
 local tax-calculator directory.
 
@@ -52,7 +52,7 @@ of the Workflow section.
 Example 2: Adding a new tax parameter and associated logic
 ----------------------------------------------------------
 
-Some changes to the Tax Calculator require edits to the code in more
+Some changes to the Tax-Calculator require edits to the code in more
 than one place and in more than one file. In this example, we show how
 to add a tax parameter --- a floor rate for the charitable deduction
 --- to the calculator.
@@ -60,7 +60,7 @@ to add a tax parameter --- a floor rate for the charitable deduction
 **1. Open the tax parameters file.**
 
 We define tax parameters in current_law_policy.json; all of the tax parameters
-that are already part of the Tax Calculator (for example, the personal
+that are already part of the Tax-Calculator (for example, the personal
 income tax rates, the additional child tax credit rate, and the
 deduction for medical expenses rate) are in that file. The file
 current_law_policy.json is your starting point.
@@ -134,7 +134,7 @@ is only one column in the "value" attribute.
 **3. Open the functions file.**
 
 Now that we've defined the new parameter in current_law_policy.json, we need to
-tell the Tax Calculator to take into account that new parameter when
+tell the Tax-Calculator to take into account that new parameter when
 it calculates taxes. The calculator's functions that model tax logic
 and work with the tax parameters are in the file functions.py.
 Starting from your tax-calculator directory, the path to functions.py
@@ -176,7 +176,7 @@ this:
 
 **5. Add the relevant code to the function.**
 
-In step 4, we told the Tax Calculator the name of our new tax
+In step 4, we told the Tax-Calculator the name of our new tax
 parameter. In this step, we add code to the function ItemDed() to
 calculate the charitable deduction amount using the new charitable
 deduction floor rate.
@@ -196,7 +196,7 @@ charity_floor variable.
 **6. Test and save your code changes.**
 
 For details on how to test and save your changes before sharing them
-with the Tax Calculator team, return to the :doc:`Contributor Guide
+with the Tax-Calculator team, return to the :doc:`Contributor Guide
 </contributor_guide>` and continue with Step 4 of the Workflow
 section.
 
