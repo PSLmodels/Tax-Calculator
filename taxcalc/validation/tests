@@ -1,5 +1,5 @@
 #!/bin/bash
-# Executes current-law validation TESTS by calling test bash script.
+# Executes current-law & reform validation TESTS by calling test bash script.
 # .... check number of command-line arguments
 if [[ "$#" -gt 1 ]]; then
     echo "ERROR: can specify at most one command-line argument"
@@ -18,7 +18,7 @@ if [[ "$#" -eq 1 ]]; then
     fi
 fi
 # .... execute validation tests in parallel
-echo "STARTING WITH CURLAW TESTS : `date`"
+echo "STARTING WITH VALIDATION TESTS : `date`"
 if [[ "$ALLTESTS" == true ]] ; then
     ./test a13 &
     ./test a14 &
@@ -30,9 +30,9 @@ fi
 ./test c13 &
 ./test c14 &
 wait
-echo "FINISHED WITH CURLAW TESTS : `date`"
+echo "FINISHED WITH VALIDATION TESTS : `date`"
 echo "TEST RESULTS: any lines (starting with M) between the STARTING... and"
-echo "              FINISHING... lines above indicate test failure caused by"
+echo "              FINISHED... lines above indicate test failure caused by"
 echo "              the actual ???.taxdiffs results being different from the"
-echo "              expected results.  No M... lines implies tests passed."
+echo "              expected results; no M... lines implies tests passed."
 exit 0
