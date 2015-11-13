@@ -50,7 +50,14 @@ class SimpleTaxIO(object):
         SimpleTaxIO class constructor.
         """
         # construct output_filename and delete old output file if it exists
-        self._output_filename = '{}.out-simtax'.format(input_filename)
+        if reform_filename:
+            if reform_filename.endswith('.json'):
+                ref = '-{}'.format(reform_filename[:-5])
+            else:
+                ref = '-{}'.format(reform_filename)
+        else:
+            ref = ''
+        self._output_filename = '{}.out-simtax{}'.format(input_filename, ref)
         if os.path.isfile(self._output_filename):
             os.remove(self._output_filename)
         # check for existence of file named input_filename
