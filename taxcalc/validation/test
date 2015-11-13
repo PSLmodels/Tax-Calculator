@@ -1,4 +1,3 @@
-#!/bin/bash
 # Execute validation TEST using Tax-Calculator SimpleTaxIO class as follows:
 # (1) generates a random sample of tax filing units (INPUT),
 # (2) generates OUTPUT from INPUT and REFORM using simtax.py, and
@@ -7,7 +6,7 @@
 # Check command-line arguments
 if [[ "$#" -ne 2 ]]; then
     echo "ERROR: not exactly two command-line arguments"
-    echo "USAGE: ./test LYY REFORM"
+    echo "USAGE: bash test LYY REFORM"
     echo "       where L is letter in [a,b,c] and YY is number in [13,14]"
     echo "       and where REFORM is Internet-TAXSIM option (e.g., '50_1') or"
     echo "       '.' for no reform (i.e., current-law policy)"
