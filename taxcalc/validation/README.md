@@ -236,11 +236,13 @@ using the `all` command-line argument, the `tests` script conducts
 current-law validation for the c13 and c14 INPUT files.  Doing this
 abbreviated set of tests takes about the same time to execute (roughly
 two minutes) as all the unit tests in the taxcalc/tests directory.
-Executing `./tests all` in the `validation` directory causes all the
-samples to be used, which takes roughly five minutes.  These validation
-tests are an good complement to the unit tests because they provide a
-much stronger test that changes in Tax-Calculator source code have not
-introduced unintended regressions in Tax-Calculator capabilities.
+Executing `./tests all` in the `validation` directory causes all six
+of the samples to be used with current-law policy and for the c13 and
+c14 samples each to be used with four different policy reforms, which
+takes roughly nine minutes.  These validation tests are an good
+complement to the unit tests because they provide a much stronger test
+than the unit tests for detecting whether changes in Tax-Calculator
+code have introduced unintended regressions in Tax-Calculator logic.
 
 Current Validation Results
 ==========================
@@ -271,3 +273,8 @@ marginal federal income tax rate of 35.00 percent while
 Internet-TAXSIM generates rates of 35.77, 35,52, and 35.88 percent.
 The reasons for these three modest differences have not been
 determined.
+
+The validation tests also include four simple income tax policy
+reforms that are simulated with the c13 and c14 samples.  The 100,000
+Tax-Calculator and Internet-TAXSIM income tax liabilities in each of
+these eight tests differ by no more than one-cent.
