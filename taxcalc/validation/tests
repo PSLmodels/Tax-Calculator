@@ -4,6 +4,7 @@
 if [[ "$#" -gt 1 ]]; then
     echo "ERROR: can specify at most one command-line argument"
     echo "USAGE: ./tests [all]"
+    echo "       (using the 'all' option will execute four tests at a time)"
     exit 1
 fi
 # .... specify whether or not to execute all tests
@@ -22,13 +23,21 @@ echo "STARTING WITH VALIDATION TESTS : `date`"
 if [[ "$ALLTESTS" == true ]] ; then
     ./test a13 . &
     ./test a14 . &
-    wait
     ./test b13 . &
     ./test b14 . &
     wait
+    ./test c13 18_0.07 &
+    ./test c14 18_0.07 &
+    ./test c13 19_0.05 &
+    ./test c14 19_0.05 &
+    wait
+    ./test c13 50_1 &
+    ./test c14 50_1 &
+    ./test c13 75_500 &
 fi
 ./test c13 . &
 ./test c14 . &
+# ./test c14 75_500 &
 wait
 echo "FINISHED WITH VALIDATION TESTS : `date`"
 echo "TEST RESULTS: any lines (starting with M) between the STARTING... and"
