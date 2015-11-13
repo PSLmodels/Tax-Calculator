@@ -20,15 +20,15 @@ fi
 # .... execute validation tests in parallel
 echo "STARTING WITH VALIDATION TESTS : `date`"
 if [[ "$ALLTESTS" == true ]] ; then
-    ./test a13 &
-    ./test a14 &
+    ./test a13 . &
+    ./test a14 . &
     wait
-    ./test b13 &
-    ./test b14 &
+    ./test b13 . &
+    ./test b14 . &
     wait
 fi
-./test c13 &
-./test c14 &
+./test c13 . &
+./test c14 . &
 wait
 echo "FINISHED WITH VALIDATION TESTS : `date`"
 echo "TEST RESULTS: any lines (starting with M) between the STARTING... and"
