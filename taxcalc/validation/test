@@ -33,10 +33,10 @@ fi
 # Unzip Internet-TAXSIM output for specified INPUT and REFORM
 unzip -oq out-taxsim.zip $LYY.in.out-taxsim$SUFFIX
 # Compare simtax and Internet-TAXSIM OUTPUT
-tclsh taxdiffs.tcl $OVAR4 $LYY.in.out-simtax        \
+tclsh taxdiffs.tcl $OVAR4 $LYY.in.out-simtax$SUFFIX \
                           $LYY.in.out-taxsim$SUFFIX > $LYY$SUFFIX.taxdiffs
 # Check for difference between actual .taxdiffs and expected .taxdiffs files
 git diff --name-status $LYY$SUFFIX.taxdiffs
 # Remove temporary files
-rm $LYY.in $LYY.in.out-simtax        $LYY.in.out-taxsim$SUFFIX
+rm $LYY.in $LYY.in.out-simtax$SUFFIX $LYY.in.out-taxsim$SUFFIX
 exit 0
