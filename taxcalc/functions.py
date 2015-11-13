@@ -531,13 +531,13 @@ def Personal_Credit(c00100, MARS, II_credit, II_credit_ps, II_credit_prt):
 def TaxInc(c00100, c04470, c04100, _standard, e37717, c21060, c21040,
            e04470, c04200, c04500, c04600, x04500,
            e04805, t04470, f6251, _exact, _feided, c04800, MARS,
-           II_rt1, II_rt2, II_rt3, II_rt4, _personal_credit,
+           II_rt1, II_rt2, II_rt3, II_rt4,
            II_rt5, II_rt6, II_rt7, II_brk1, II_brk2, II_brk3,
            II_brk4, II_brk5, II_brk6, _numextra, FDED, c02700):
 
     # c04500 = c00100 - max(c04470, max(c04100, _standard + e37717))
     c04500 = c00100 - max(c21060 - c21040, _standard + e37717)
-    c04500 = c04500 - _personal_credit
+    c04500 = c04500
 
     if FDED == 1:
         _othded = e04470 - c04470
@@ -1625,10 +1625,10 @@ def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _avail, _othertax):
 @iterate_jit(nopython=True)
 def IITAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
           e11450, e11500, e82040, e09900, e11400, e11300, e11200, e11100,
-          e11550, e09710, e09720, e10000, _fica):
+          e11550, e09710, e09720, e10000, _fica, _personal_credit):
 
     _refund = (c59660 + c11070 + c10960 + c10950 + c11600 + e11580 + e11450 +
-               e11500)
+               e11500 + _personal_credit)
 
     _iitax = c09200 - _refund - e82040
 
