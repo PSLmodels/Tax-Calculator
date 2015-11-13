@@ -1,0 +1,8 @@
+// REFORM: raise STD deduction by 500 in 2013
+// (same as Internet-TAXSIM reform option "75 500")
+{
+    "_STD": {
+        "2013": [[6600, 12700, 6600, 9450, 12700, 6600, 1500],// add 500 to 2013 STD deduction
+                 [6700, 12900, 6700, 9600, 12900, 6700, 1500]]// add 500 to 2014 STD deduction
+    }
+}
