@@ -1065,16 +1065,7 @@ def F2441(_earned, _fixeic, e59560, MARS, f2441, DCC_c, e00200p, e00200s,
         c32880 = _earned
         c32890 = _earned
 
-    # if f2441 == 0:
-    #    _ncu13 = 0
-    #    if FLPDYR - CDOB1 >= 0 and FLPDYR - CDOB1 <= 12:
-    #        _ncu13 = _ncu13 + 1
-    #    if FLPDYR - CDOB2 >= 0 and FLPDYR - CDOB2 <= 12:
-    #        _ncu13 = _ncu13 + 1
-    # else:
-    _ncu13 = f2441
-
-    _dclim = min(_ncu13, 2.) * DCC_c
+    _dclim = min(f2441, 2.) * DCC_c
 
     c32800 = min(max(e32800, e32750 + e32775), _dclim)
 
@@ -1082,9 +1073,8 @@ def F2441(_earned, _fixeic, e59560, MARS, f2441, DCC_c, e00200p, e00200s,
     _earned = float(_earned)
     c32880 = float(c32880)
     c32890 = float(c32890)
-    _ncu13 = float(_ncu13)
 
-    return _earned, c32880, c32890, _ncu13, _dclim, c32800
+    return _earned, c32880, c32890, _dclim, c32800
 
 
 @iterate_jit(nopython=True)
