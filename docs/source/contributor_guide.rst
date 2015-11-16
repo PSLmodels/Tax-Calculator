@@ -81,7 +81,8 @@ Setup Git
        tax-calculator$ source activate taxcalc-dev
 
 11. To check that everything is working properly, run the following at
-    the command line from the tax-calculator directory.
+    the command line from the tax-calculator directory (but skip the
+    validation tests if you are working on Windows).
 
    .. code-block:: python
 
@@ -91,8 +92,8 @@ Setup Git
       tax-calculator/taxcalc/validation$ ./tests
 
    If all the tests pass, you're good to go. If they don't pass, enter
-   the following updates at the command line and then try running
-   py.test again. If the tests still don't pass, please contact us.
+   the following updates at the command line and then try running the
+   tests again. If the tests still don't pass, please contact us.
 
    .. code-block:: python
 
@@ -170,8 +171,9 @@ situations, in which case other contributors are here to help.
 
 4. As you make changes, frequently check that your changes do not
    introduce bugs or degrade the accuracy of the Tax-Calculator. To do
-   this, run the following at the command line from inside the
-   tax-calculator/taxcalc directory. If the tests do not pass, try to
+   this, run the following commands from the command line from inside
+   the tax-calculator/taxcalc directory (but skip the validation tests
+   if you are working on Windows). If the tests do not pass, try to
    fix the issue by using the information provided by the error
    message. If this isn't possible or doesn't work, we are here to
    help.
@@ -179,6 +181,8 @@ situations, in which case other contributors are here to help.
    .. code-block:: python
 
       tax-calculator/taxcalc$ py.test
+      tax-calculator/taxcalc$ cd validation
+      tax-calculator/taxcalc/validation$ ./tests
 
 5. Now you're ready to `commit`_ your changes to your local repo using
    the code below. The first line of code tells Git to track a

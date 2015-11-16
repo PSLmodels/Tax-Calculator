@@ -1,7 +1,7 @@
 Source Code
 ===========
 
-The Tax Calculator's core capabilities are in the Python package
+The Tax-Calculator's core capabilities are in the Python package
 called taxcalc, the source code for which is located in the
 tax-calculator/taxcalc directory.
 
@@ -39,16 +39,34 @@ Module taxcalc.functions
 .. automodule:: taxcalc.functions
     :members:
 
-Module taxcalc.parameters
--------------------------
+Module taxcalc.growth
+---------------------
 
-.. automodule:: taxcalc.parameters
+.. automodule:: taxcalc.growth
+    :members:
+
+Module taxcalc.parameters_base
+------------------------------
+
+.. automodule:: taxcalc.parameters_base
+    :members:
+
+Module taxcalc.policy
+---------------------
+
+.. automodule:: taxcalc.policy
     :members:
 
 Module taxcalc.records
 ----------------------
 
 .. automodule:: taxcalc.records
+    :members:
+
+Module taxcalc.simpletaxio
+----------------------
+
+.. automodule:: taxcalc.simpletaxio
     :members:
 
 Module taxcalc.utils
