@@ -110,7 +110,7 @@ class SimpleTaxIO(object):
                 indyr = cr_taxyr[idx]
                 if indyr == calcyr:
                     lnum = idx + 1
-                    ovar = SimpleTaxIO._extract_output(self._calc.records, idx)
+                    ovar = SimpleTaxIO.extract_output(self._calc.records, idx)
                     output[lnum] = ovar
             (mtr_fica, mtr_itax,
              _) = self._calc.mtr(wrt_full_compensation=False)
@@ -205,9 +205,9 @@ class SimpleTaxIO(object):
         sys.stdout.write(ovd)
 
     @staticmethod
-    def _extract_output(crecs, idx):
+    def extract_output(crecs, idx):
         """
-        Extracts tax output from crecs object.
+        Extracts tax output from crecs object for filing unit with idx.
 
         Parameters
         ----------
@@ -215,7 +215,7 @@ class SimpleTaxIO(object):
             Records object embedded in Calculator object.
 
         idx: integer
-            crecs object index of tax filing unit with specified id.
+            crecs object index of tax filing unit with specified idx.
 
         Returns
         -------
