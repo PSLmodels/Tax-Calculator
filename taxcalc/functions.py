@@ -16,6 +16,7 @@ def FilingStatus(MARS):
 
     return _sep
 
+
 @iterate_jit(nopython=True)
 def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
             e11055, e00250, e30100, FICA_ss_trt, FICA_mc_trt,
