@@ -389,7 +389,7 @@ class Records(object):
             raise ValueError(msg)
         if self._current_year == Records.PUF_YEAR:
             self._impute_variables()
-            self.extrapolate_2009_puf()
+            self._extrapolate_2009_puf()
 
     @property
     def current_year(self):
@@ -402,32 +402,6 @@ class Records(object):
         self._blowup(self._current_year)
         # Implement Stage 2 Extrapolation reweighting.
         self.s006 = (self.WT["WT" + str(self.current_year)] / 100).values
-
-    def extrapolate_2009_puf(self):
-        year = 2009
-        self.BF.AGDPN[year] = 1
-        self.BF.ATXPY[year] = 1
-        self.BF.AWAGE[year] = 1.0053
-        self.BF.ASCHCI[year] = 1.0041
-        self.BF.ASCHCL[year] = 1.1629
-        self.BF.ASCHF[year] = 1
-        self.BF.AINTS[year] = 1.0357
-        self.BF.ADIVS[year] = 1.0606
-        self.BF.ASCHEI[year] = 1.1089
-        self.BF.ASCHEL[year] = 1.2953
-        self.BF.ACGNS[year] = 1.1781
-        self.BF.ABOOK[year] = 1
-        self.BF.ARETS[year] = 1.0026
-        self.BF.APOPN[year] = 1
-        self.BF.ACPIU[year] = 1
-        self.BF.APOPDEP[year] = 1
-        self.BF.ASOCSEC[year] = 0.9941
-        self.BF.ACPIM[year] = 1
-        self.BF.AUCOMP[year] = 1.0034
-        self.BF.APOPSNR[year] = 1
-        self.BF.AIPD[year] = 1
-        self._blowup(year)
-        self.s006 = self.WT["WT" + str(year)] / 100
 
     # --- begin private methods of Records class --- #
 
@@ -766,6 +740,32 @@ class Records(object):
                                       self.e62100, self.e00700,
                                       self.p04470, self.e21040,
                                       self.e18500, self.e20800)
+
+    def _extrapolate_2009_puf(self):
+        year = 2009
+        self.BF.AGDPN[year] = 1
+        self.BF.ATXPY[year] = 1
+        self.BF.AWAGE[year] = 1.0053
+        self.BF.ASCHCI[year] = 1.0041
+        self.BF.ASCHCL[year] = 1.1629
+        self.BF.ASCHF[year] = 1
+        self.BF.AINTS[year] = 1.0357
+        self.BF.ADIVS[year] = 1.0606
+        self.BF.ASCHEI[year] = 1.1089
+        self.BF.ASCHEL[year] = 1.2953
+        self.BF.ACGNS[year] = 1.1781
+        self.BF.ABOOK[year] = 1
+        self.BF.ARETS[year] = 1.0026
+        self.BF.APOPN[year] = 1
+        self.BF.ACPIU[year] = 1
+        self.BF.APOPDEP[year] = 1
+        self.BF.ASOCSEC[year] = 0.9941
+        self.BF.ACPIM[year] = 1
+        self.BF.AUCOMP[year] = 1.0034
+        self.BF.APOPSNR[year] = 1
+        self.BF.AIPD[year] = 1
+        self._blowup(year)
+        self.s006 = self.WT["WT" + str(year)] / 100
 
 
 @vectorize([float64(float64, float64, float64,
