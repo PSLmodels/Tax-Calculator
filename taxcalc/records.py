@@ -15,24 +15,30 @@ class Records(object):
     Parameters
     ----------
     data: string or Pandas DataFrame
-        string describes CSV file in which records data reside
-        DataFrame already contains records data
+        string describes CSV file in which records data reside;
+        DataFrame already contains records data;
         default value is the string 'puf.csv'
 
     blowup_factors: string or Pandas DataFrame
-        string describes CSV file in which blowup factors reside
-        DataFrame already contains blowup factors
+        string describes CSV file in which blowup factors reside;
+        DataFrame already contains blowup factors;
         default value is filename of the default blowup factors
 
     weights: string or Pandas DataFrame
-        string describes CSV file in which weights reside
-        DataFrame already contains weights
+        string describes CSV file in which weights reside;
+        DataFrame already contains weights;
         default value is filename of the default weights
 
     start_year: None or integer
-        None implies current_year is set to value of FLPDYR for first unit
-        integer implies current_year is set to start_year
+        None implies current_year is set to value of FLPDYR for first unit;
+        integer implies current_year is set to start_year;
         default value is None
+
+    consider_imputations: boolean
+        True implies that if current_year (see start_year above) equals
+        PUF_YEAR (see below), then call _impute_variables() method;
+        False implies never call _impute_variables() method;
+        default value is True
 
     Raises
     ------
@@ -371,6 +377,7 @@ class Records(object):
                  blowup_factors=BLOWUP_FACTORS_PATH,
                  weights=WEIGHTS_PATH,
                  start_year=None,
+                 consider_imputations=True,
                  **kwargs):
 
         """
@@ -387,7 +394,7 @@ class Records(object):
             msg = ('Records.constructor start_year is neither None nor '
                    'an integer')
             raise ValueError(msg)
-        if self._current_year == Records.PUF_YEAR:
+        if consider_imputations and self._current_year == Records.PUF_YEAR:
             self._impute_variables()
 
     @property
