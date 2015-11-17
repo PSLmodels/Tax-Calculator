@@ -212,6 +212,7 @@ for {set id 1} {$id <= $num} {incr id} {
     set tot_ded [expr $retax_amt + $ided_pref + $ided_nopref]
     if { $tot_ded > 0 } {
         set max_ded [expr 0.5*($wage1 + $wage2 + $divinc + $pnben + $ssben)]
+        if { $max_ded < 0 } { set max_ded 0 }
         if { $tot_ded >= $max_ded } {
             set frac_retax [expr $retax_amt/double($tot_ded)]
             set retax_amt [expr round($frac_retax*$max_ded)]
@@ -221,9 +222,6 @@ for {set id 1} {$id <= $num} {incr id} {
             if { $ided_nopref < 0 } { set ided_nopref 0 }
         }
     }
-    ######### begin TEMP code -- remove after CPS-match provides info #########
-    set wage2 0 ;# ivar[8] (not yet able to split between taxpayer and spouse)
-    #########   end TEMP code -- remove after CPS-match provides info #########
     set part0108 [format "%d %d %d %d %d %d %d %d" \
                       $id $cyr 0 $ms $numdeps $elders $wage1 $wage2]
     set part0915 [format "%d %d %d %d %d %d %d" \

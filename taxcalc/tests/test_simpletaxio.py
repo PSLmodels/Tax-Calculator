@@ -1,5 +1,5 @@
 """
-Tests for SimpleTaxIO class in taxcalc package.
+Tests for Tax-Calculator SimpleTaxIO class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 test_simpletaxio.py
@@ -48,38 +48,12 @@ REFORM_CONTENTS = """
     {"2016": [300000],
      "2018": [500000],
      "2020": [700000]
+    },
+    "_AMT_em_cpi": // AMT exemption amount indexing status
+    {"2017": false, // values in future years are same as this year value
+     "2020": true   // values in future years indexed with this year as base
     }
 }
-
-// The JSON above is translated into the following Python dictionary with
-// calendar year as the primary key, which is the data structure required
-// as input to the Policy class implement_reform(reform) method.
-//   reform = {
-//       2015: {
-//           '_AMT_tthd': [200000]
-//       },
-//       2016: {
-//           '_EITC_c': [[ 900, 5000,  8000, 9000]],
-//           '_II_em': [6000],
-//           '_II_em_cpi': False,
-//           '_SS_Earnings_c': [300000]
-//       },
-//       2017: {
-//           '_AMT_tthd': [300000]
-//       },
-//       2018: {
-//           '_II_em': [7500],
-//           '_II_em_cpi': True,
-//           '_SS_Earnings_c': [500000]
-//       },
-//       2019: {
-//           '_EITC_c': [[1200, 7000, 10000, 12000]]
-//       },
-//       2020: {
-//           '_II_em': [9000],
-//           '_SS_Earnings_c': [700000]
-//       }
-//   }
 """
 
 
@@ -119,20 +93,42 @@ def reform_file():
 
 def test_1(input_file):  # pylint: disable=redefined-outer-name
     """
-    Test SimpleTaxIO contructor with no policy reform.
+    Test SimpleTaxIO constructor with no policy reform.
     """
     reform_file_name = None
-    simtax = SimpleTaxIO(input_file.name, reform_file_name)
+    simtax = SimpleTaxIO(input_file.name, reform_file_name, False)
     assert simtax.number_input_lines() == NUM_INPUT_LINES
 
 
 def test_2(input_file,  # pylint: disable=redefined-outer-name
            reform_file):  # pylint: disable=redefined-outer-name
     """
-    Test SimpleTaxIO contructor with a policy reform.
+    Test SimpleTaxIO constructor with a policy reform.
     """
-    simtax = SimpleTaxIO(input_file.name, reform_file.name)
+    simtax = SimpleTaxIO(input_file.name, reform_file.name, False)
     assert simtax.number_input_lines() == NUM_INPUT_LINES
+    # check that reform was implemented as specified above in REFORM_CONTENTS
+    syr = simtax.start_year()
+    amt_tthd = simtax._policy._AMT_tthd  # pylint: disable=protected-access
+    assert amt_tthd[2015 - syr] == 200000
+    assert amt_tthd[2016 - syr] > 200000
+    assert amt_tthd[2017 - syr] == 300000
+    assert amt_tthd[2018 - syr] > 300000
+    ii_em = simtax._policy._II_em  # pylint: disable=protected-access
+    assert ii_em[2016 - syr] == 6000
+    assert ii_em[2017 - syr] == 6000
+    assert ii_em[2018 - syr] == 7500
+    assert ii_em[2019 - syr] > 7500
+    assert ii_em[2020 - syr] == 9000
+    assert ii_em[2021 - syr] > 9000
+    amt_em = simtax._policy._AMT_em  # pylint: disable=protected-access
+    assert amt_em[2016 - syr, 0] > amt_em[2015 - syr, 0]
+    assert amt_em[2017 - syr, 0] > amt_em[2016 - syr, 0]
+    assert amt_em[2018 - syr, 0] == amt_em[2017 - syr, 0]
+    assert amt_em[2019 - syr, 0] == amt_em[2017 - syr, 0]
+    assert amt_em[2020 - syr, 0] == amt_em[2017 - syr, 0]
+    assert amt_em[2021 - syr, 0] > amt_em[2020 - syr, 0]
+    assert amt_em[2022 - syr, 0] > amt_em[2021 - syr, 0]
 
 
 def test_3(input_file):  # pylint: disable=redefined-outer-name
@@ -140,6 +136,6 @@ def test_3(input_file):  # pylint: disable=redefined-outer-name
     Test SimpleTaxIO calculate method with no output writing.
     """
     reform_file_name = None
-    simtax = SimpleTaxIO(input_file.name, reform_file_name)
+    simtax = SimpleTaxIO(input_file.name, reform_file_name, False)
     simtax.calculate(write_output_file=False)
     assert simtax.number_input_lines() == NUM_INPUT_LINES

@@ -5,7 +5,7 @@ from collections import defaultdict
 
 STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600',
                  'c04800', 'c05200', 'c62100', 'c09600', 'c05800', 'c09200',
-                 '_refund', 'c07100', '_ospctax', '_fica', '_combined', 's006']
+                 '_refund', 'c07100', '_iitax', '_fica', '_combined', 's006']
 
 # each entry in this array corresponds to the same entry in the array
 # TABLE_LABELS below. this allows us to use TABLE_LABELS to map a
@@ -14,7 +14,7 @@ STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600',
 TABLE_COLUMNS = ['s006', 'c00100', 'num_returns_StandardDed', '_standard',
                  'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'c05200',
                  'c62100', 'num_returns_AMT', 'c09600', 'c05800', 'c07100',
-                 'c09200', '_refund', '_ospctax', '_fica', '_combined']
+                 'c09200', '_refund', '_iitax', '_fica', '_combined']
 
 TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Standard Deduction', 'Itemizers',
@@ -297,7 +297,8 @@ def add_columns(res):
 
 def create_distribution_table(calc, groupby, result_type,
                               income_measure='_expanded_income',
-                              base_calc=None):
+                              baseline_calc=None, diffs=False):
+
     """
     Gets results given by the tax calculator, sorts them based on groupby, and
         manipulates them based on result_type. Returns these as a table
@@ -347,6 +348,22 @@ def create_distribution_table(calc, groupby, result_type,
         res['_expanded_income'] = resX['_expanded_income']
         res['s006'] = resX['s006']
 
+    if baseline_calc is not None:
+        if calc.current_year != baseline_calc.current_year:
+            msg = 'The baseline calculator is not on the same year as reform.'
+            raise ValueError(msg)
+        baseline_income_measure = income_measure + '_baseline'
+        res_base = results(baseline_calc)
+        res[baseline_income_measure] = res_base[income_measure]
+        income_measure = baseline_income_measure
+        
+        if diffs:
+            resX = results(baseline_calc)
+            resX = add_columns(resX)
+            res = res.subtract(resX)
+            res['s006'] = resX['s006']
+
+
     # sorts the data
     if groupby == "weighted_deciles":
         df = add_weighted_decile_bins(res, income_measure=income_measure)
@@ -390,7 +407,7 @@ def create_distribution_table(calc, groupby, result_type,
 
 def create_difference_table(calc1, calc2, groupby,
                             income_measure='_expanded_income',
-                            income_to_present='_ospctax'):
+                            income_to_present='_iitax'):
     """
     Gets results given by the two different tax calculators and outputs
         a table that compares the differing results.
@@ -437,6 +454,7 @@ def create_difference_table(calc1, calc2, groupby,
     # Difference in plans
     # Positive values are the magnitude of the tax increase
     # Negative values are the magnitude of the tax decrease
+
     res2['tax_diff'] = res2[income_to_present] - res1[income_to_present]
 
     diffs = means_and_comparisons(res2, 'tax_diff',

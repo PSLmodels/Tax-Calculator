@@ -1,3 +1,6 @@
+"""
+Tax-Calculator federal tax Calculator class.
+"""
 import math
 import copy
 import numpy as np
@@ -9,6 +12,7 @@ from .policy import Policy
 from .records import Records
 from .behavior import Behavior
 from .growth import Growth, adjustment, target
+
 
 all_cols = set()
 
@@ -32,11 +36,13 @@ class Calculator(object):
         if isinstance(policy, Policy):
             self._policy = policy
         else:
-            msg = 'Must supply tax parameters as a Policy object'
-            raise ValueError(msg)
+            raise ValueError('must specify policy as a Policy object')
 
-        if isinstance(behavior, Behavior):
-            self.behavior = behavior
+        if behavior:
+            if isinstance(behavior, Behavior):
+                self.behavior = behavior
+            else:
+                raise ValueError('behavior must be a Behavior object')
         else:
             self.behavior = Behavior(start_year=policy.start_year)
 
@@ -44,7 +50,7 @@ class Calculator(object):
             if isinstance(growth, Growth):
                 self.growth = growth
             else:
-                raise ValueError("Must supply growth as a Growth object")
+                raise ValueError('growth must be a Growth object')
         else:
             self.growth = Growth(start_year=policy.start_year)
 
@@ -53,15 +59,12 @@ class Calculator(object):
         elif isinstance(records, str):
             self._records = Records.from_file(records, **kwargs)
         else:
-            msg = 'Must supply tax records as a file path or Records object'
+            msg = 'must specify records as a file path or Records object'
             raise ValueError(msg)
 
         if sync_years and self._records.current_year == Records.PUF_YEAR:
             print("You loaded data for " +
                   str(self._records.current_year) + '.')
-
-            if self._records.current_year == 2009:
-                self.records.extrapolate_2009_puf()
 
             while self._records.current_year < self._policy.current_year:
                 self._records.increment_year()
@@ -97,6 +100,7 @@ class Calculator(object):
         EI_FICA(self.policy, self.records)
         AMED(self.policy, self.records)
         StdDed(self.policy, self.records)
+        Personal_Credit(self.policy, self.records)
         # Store calculated standard deduction, calculate
         # taxes with standard deduction, store AMT + Regular Tax
         std = copy.deepcopy(self.records._standard)
@@ -105,16 +109,14 @@ class Calculator(object):
         self.records.c04470 = np.zeros(self.records.dim)
         self.records.c21060 = np.zeros(self.records.dim)
         self.TaxInc_to_AMTI()
-        std_taxes = copy.deepcopy(self.records.c05200 +
-                                  self.records.c09600)
+        std_taxes = copy.deepcopy(self.records.c05800)
         # Set standard deduction to zero, calculate taxes w/o
         # standard deduction, and store AMT + Regular Tax
         self.records._standard = np.zeros(self.records.dim)
         self.records.c21060 = item_no_limit
         self.records.c04470 = item
         self.TaxInc_to_AMTI()
-        item_taxes = copy.deepcopy(self.records.c05200 +
-                                   self.records.c09600)
+        item_taxes = copy.deepcopy(self.records.c05800)
         # Replace standard deduction with zero where the taxpayer
         # would be better off itemizing
         self.records._standard = np.where(item_taxes <
@@ -147,7 +149,7 @@ class Calculator(object):
         F5405(self.policy, self.records)
         C1040(self.policy, self.records)
         DEITC(self.policy, self.records)
-        OSPC_TAX(self.policy, self.records)
+        IITAX(self.policy, self.records)
         ExpandIncome(self.policy, self.records)
 
     def calc_all(self):
@@ -184,25 +186,26 @@ class Calculator(object):
         add_df(all_dfs, F5405(self.policy, self.records))
         add_df(all_dfs, C1040(self.policy, self.records))
         add_df(all_dfs, DEITC(self.policy, self.records))
-        add_df(all_dfs, OSPC_TAX(self.policy, self.records))
+        add_df(all_dfs, IITAX(self.policy, self.records))
         add_df(all_dfs, ExpandIncome(self.policy, self.records))
         totaldf = pd.concat(all_dfs, axis=1)
         return totaldf
 
     def increment_year(self):
         if self.growth.factor_adjustment != 0:
-            if np.any(self.growth._factor_target) != 0:
+            if not np.array_equal(self.growth._factor_target,
+                                  self.growth.REAL_GDP_GROWTH):
                 msg = "adjustment and target factor \
                        cannot be non-zero at the same time"
                 raise ValueError(msg)
             else:
                 adjustment(self, self.growth.factor_adjustment,
                            self.policy.current_year + 1)
-        elif np.any(self.growth._factor_target) != 0:
+        elif not np.array_equal(self.growth._factor_target,
+                                self.growth.REAL_GDP_GROWTH):
             target(self, self.growth._factor_target,
-                   self.policy._inflation_rates,
+                   self.policy.inflation_rates,
                    self.policy.current_year + 1)
-
         self.records.increment_year()
         self.policy.set_year(self.policy.current_year + 1)
         self.behavior.set_year(self.policy.current_year)
@@ -211,135 +214,104 @@ class Calculator(object):
     def current_year(self):
         return self.policy.current_year
 
-    def mtr(self, income_type_string,
-            finite_diff=1.0,
-            wrt_adjusted_income=True):
+    def mtr(self, income_type_str='e00200p',
+            wrt_full_compensation=True):
         """
-        Calculates the individual income tax, FICA, and combined marginal tax
-        rates for every record. Avoids kinks in the tax schedule by finding
-        the marginal rates associated with both an income increase and an
-        income decrease and then uses the more modest of the two.
+        Calculates the marginal FICA, individual income, and combined
+        tax rates for every tax filing unit.
+          The marginal tax rates are approximated as the change in tax
+        liability caused by a small increase (the finite_diff) in income
+        (specified by the income_type_str) divided by that small increase
+        in income, when wrt_full_compensation is false.
+          If wrt_full_compensation is true, then the marginal tax rates
+        are computed as the change in tax liability divided by the change
+        in total compensation caused by the small increase in income
+        (where the change in total compensation is the sum of the small
+        increase in income and any increase in the employer share of FICA
+        taxes caused by the small increase in income).
 
         Parameters
         ----------
-        income_type_string: string
-            specifies an income attribute in the Records class.
+        income_type_str: string
+            specifies type of income that is increased to compute the
+            marginal tax rates.  See Notes for list of valid income types.
 
-        finite_diff: float
-            specifies marginal amount to be added or subtracted from income
-            in order to calculate the marginal tax rate.
-
-        wrt_adjusted_income: boolean
-            specifies whether or not marginal tax rates on earned income are
-            computed with respect to (wrt) changes in adjusted income that
-            includes the employer share of OASDI+HI payroll taxes.
+        wrt_full_compensation: boolean
+            specifies whether or not marginal tax rates on earned income
+            are computed with respect to (wrt) changes in total compensation
+            that includes the employer share of OASDI+HI payroll taxes.
 
         Returns
         -------
-        mtr_fica: an array of FICA marginal tax rates.
-        mtr_iit: an array of individual income tax marginal tax rates.
-        mtr_combined: an array of combined IIT and FICA marginal tax rates.
+        mtr_fica: an array of marginal FICA tax rates.
+        mtr_iit: an array of marginal individual income tax (IIT) rates.
+        mtr_combined: an array of marginal combined FICA and IIT tax rates.
+
+        Notes
+        -----
+        Valid income_type_str values are:
+        'e00200p', taxpayer wage/salary earnings (which is the default value);
+        'e00900p', taxpayer (Schedule C) self-employment income;
+        'e00300',  taxable interest income;
+        'e23250',  long-term capital gains;
+        'e01700',  federally-taxable pension benefits; and
+        'e02400',  social security (OASDI) benefits.
         """
-        # Check validity of income_type_string parameter.
-        if income_type_string == 'e00200p':
-            pass
+        mtr_valid_income_types = ['e00200p', 'e00900p',
+                                  'e00300', 'e23250',
+                                  'e01700', 'e02400']
+        # check validity of income_type_str parameter
+        if income_type_str not in mtr_valid_income_types:
+            msg = 'mtr income_type_str="{}" is not valid'
+            raise ValueError(msg.format(income_type_str))
+        # specify value for finite_diff parameter
+        finite_diff = 0.01  # a one-cent difference
+        # extract income_type array(s) from embedded records object
+        income_type = getattr(self.records, income_type_str)
+        if income_type_str == 'e00200p':
+            earnings_type = self.records.e00200
+        elif income_type_str == 'e00900p':
+            seincome_type = self.records.e00900
+        # calculate base level of taxes
+        self.calc_all()
+        fica_base = copy.deepcopy(self.records._fica)
+        iitax_base = copy.deepcopy(self.records._iitax)
+        combined_taxes_base = iitax_base + fica_base
+        # calculate level of taxes after a marginal increase in income
+        setattr(self.records, income_type_str, income_type + finite_diff)
+        if income_type_str == 'e00200p':
+            self.records.e00200 = earnings_type + finite_diff
+        elif income_type_str == 'e00900p':
+            self.records.e00900 = seincome_type + finite_diff
+        self.calc_all()
+        fica_up = copy.deepcopy(self.records._fica)
+        iitax_up = copy.deepcopy(self.records._iitax)
+        combined_taxes_up = iitax_up + fica_up
+        # compute marginal changes in tax liability
+        fica_delta = fica_up - fica_base
+        iitax_delta = iitax_up - iitax_base
+        combined_delta = combined_taxes_up - combined_taxes_base
+        # return embedded records object to its original state and recalculate
+        setattr(self.records, income_type_str, income_type)
+        if income_type_str == 'e00200p':
+            self.records.e00200 = earnings_type
+        elif income_type_str == 'e00900p':
+            self.records.e00900 = seincome_type
+        self.calc_all()
+        # specify optional adjustment for employer (er) OASDI+HI payroll taxes
+        if wrt_full_compensation and income_type_str == 'e00200p':
+            adj = np.where(income_type <
+                           self.policy.SS_Earnings_c,
+                           0.5 * (self.policy.FICA_ss_trt +
+                                  self.policy.FICA_mc_trt),
+                           0.5 * self.policy.FICA_mc_trt)
         else:
-            msg = 'mtr income_type_string={} not yet supported'
-            raise ValueError(msg.format(income_type_string))
-
-        # Check for reasonable value of finite_diff parameter.
-        if finite_diff <= 0.0 or finite_diff > 10.0:
-            msg = 'mtr finite_diff={} not in (0,10] range'
-            raise ValueError(msg.format(finite_diff))
-
-        income_type = getattr(self.records, income_type_string)
-        earnings_type = getattr(self.records, 'e00200')
-
-        # Calculate the base level of taxes.
-        self.calc_all()
-        _ospctax_base = copy.deepcopy(self.records._ospctax)
-        _fica_base = copy.deepcopy(self.records._fica)
-        _combined_taxes_base = _ospctax_base + _fica_base
-
-        # Calculate the tax change with a marginal increase in income.
-        setattr(self.records, income_type_string, income_type + finite_diff)
-        setattr(self.records, 'e00200', earnings_type + finite_diff)
-        self.calc_all()
-
-        _ospctax_up = copy.deepcopy(self.records._ospctax)
-        _fica_up = copy.deepcopy(self.records._fica)
-        _combined_taxes_up = _ospctax_up + _fica_up
-
-        delta_fica_up = _fica_up - _fica_base
-        delta_ospctax_up = _ospctax_up - _ospctax_base
-        delta_combined_taxes_up = _combined_taxes_up - _combined_taxes_base
-
-        # Calculate the tax change with a marginal decrease in income.
-        setattr(self.records, income_type_string,
-                income_type - 2 * finite_diff)
-        setattr(self.records, 'e00200',
-                earnings_type - 2 * finite_diff)
-        self.calc_all()
-
-        _ospctax_down = copy.deepcopy(self.records._ospctax)
-        _fica_down = copy.deepcopy(self.records._fica)
-        _combined_taxes_down = _ospctax_down + _fica_down
-
-        # We never take the downward version
-        # when the taxpayer's wages are sent negative.
-        delta_fica_down = np.where(income_type >=
-                                   finite_diff,
-                                   _fica_base - _fica_down,
-                                   delta_fica_up)
-        delta_ospctax_down = np.where(income_type >=
-                                      finite_diff,
-                                      _ospctax_base - _ospctax_down,
-                                      delta_ospctax_up)
-        delta_combined_taxes_down = np.where(income_type >=
-                                             finite_diff,
-                                             _combined_taxes_base -
-                                             _combined_taxes_down,
-                                             delta_combined_taxes_up)
-
-        # Reset the income_type to its starting point to avoid
-        # unintended consequences.
-        setattr(self.records, income_type_string, income_type + finite_diff)
-        setattr(self.records, 'e00200', earnings_type + finite_diff)
-        self.calc_all()
-
-        # Choose the more modest effect of either adding or subtracting income
-        delta_fica = np.where(np.absolute(delta_fica_up) <=
-                              np.absolute(delta_fica_down),
-                              delta_fica_up, delta_fica_down)
-        delta_ospctax = np.where(np.absolute(delta_ospctax_up) <=
-                                 np.absolute(delta_ospctax_down),
-                                 delta_ospctax_up, delta_ospctax_down)
-        delta_combined_taxes = np.where(np.absolute(delta_combined_taxes_up) <=
-                                        np.absolute(delta_combined_taxes_down),
-                                        delta_combined_taxes_up,
-                                        delta_combined_taxes_down)
-
-        # Calculate marginal tax rates:
-        # The rate we want is the "after-tax share of tax in compensation".
-        # Since only half of the social security tax is including in wages for
-        # income tax purposes, we need to increase the denominator by the
-        # excluded portion of FICA.
-        if (wrt_adjusted_income and
-            (income_type_string == 'e00200' or
-             income_type_string == 'e00200s' or
-             income_type_string == 'e00200p')):
-            employer_fica_adjustment = np.where(self.records.e00200 <
-                                                self.policy.SS_Earnings_c,
-                                                0.5 * self.policy.FICA_ss_trt +
-                                                0.5 * self.policy.FICA_mc_trt,
-                                                0.5 * self.policy.FICA_mc_trt)
-        else:
-            employer_fica_adjustment = 0.
-
-        mtr_fica = delta_fica / (finite_diff + employer_fica_adjustment)
-        mtr_iit = delta_ospctax / (finite_diff + employer_fica_adjustment)
-        mtr_combined = delta_combined_taxes / (finite_diff +
-                                               employer_fica_adjustment)
+            adj = 0.0
+        # compute marginal tax rates
+        mtr_fica = fica_delta / (finite_diff * (1.0 + adj))
+        mtr_iit = iitax_delta / (finite_diff * (1.0 + adj))
+        mtr_combined = combined_delta / (finite_diff * (1.0 + adj))
+        # return the three marginal tax rate arrays
         return (mtr_fica, mtr_iit, mtr_combined)
 
     def diagnostic_table(self, num_years=5):
@@ -350,7 +322,7 @@ class Calculator(object):
         for i in range(0, num_years):
             calc.calc_all()
 
-            row_years.append(calc.policy._current_year)
+            row_years.append(calc.policy.current_year)
 
             # totoal number of records
             returns = calc.records.s006.sum()
@@ -365,7 +337,7 @@ class Calculator(object):
 
             # S TD1 = (calc.c04100 + calc.c04200)*calc.s006
             NumItemizer1 = (calc.records.s006[(calc.records.c04470 > 0) *
-                            (calc.records.c00100 > 0)].sum())
+                                              (calc.records.c00100 > 0)].sum())
 
             # itemized deduction
             ID = ID1[calc.records.c04470 > 0].sum()
@@ -411,8 +383,8 @@ class Calculator(object):
             # Misc. Surtax
             surtax = (calc.records._surtax * calc.records.s006).sum()
 
-            # ospc_tax
-            revenue1 = (calc.records._ospctax * calc.records.s006).sum()
+            # iitax
+            revenue1 = (calc.records._iitax * calc.records.s006).sum()
 
             # payroll tax (FICA)
             payroll = (calc.records._fica * calc.records.s006).sum()
@@ -443,7 +415,7 @@ class Calculator(object):
                         "refundable credits ($b)",
                         "nonrefundable credits ($b)",
                         "Misc. Surtax ($b)",
-                        "ospctax ($b)", "Payroll tax ($b)"])
+                        "Ind inc tax ($b)", "Payroll tax ($b)"])
         df = df.transpose()
         pd.options.display.float_format = '{:8,.1f}'.format
 

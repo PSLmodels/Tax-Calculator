@@ -1,20 +1,24 @@
 """
-OSPC Tax-Calculator federal tax policy Policy class.
+Tax-Calculator federal tax policy Policy class.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 parameters.py
-# pylint --disable=locally-disabled parameters.py
+# pep8 --ignore=E402 policy.py
+# pylint --disable=locally-disabled policy.py
 
 
 import os
+import sys
 import json
+import re
+import six
+import numpy as np
 from .parameters_base import ParametersBase
 
 
 class Policy(ParametersBase):
 
     """
-    Constructor for the federal tax policy parameters class.
+    Constructor for the federal tax policy class.
 
     Parameters
     ----------
@@ -47,21 +51,24 @@ class Policy(ParametersBase):
     """
 
     DEFAULTS_FILENAME = 'current_law_policy.json'
-    IRATES_FILENAME = 'irates.json'  # TODO: move __rates there & add wages
     JSON_START_YEAR = 2013  # remains the same unless earlier data added
     FIRST_BUDGET_YEAR = 2015  # increases by one every calendar year
     NUM_BUDGET_YEARS = 10  # fixed by federal government budgeting rules
     DEFAULT_NUM_YEARS = NUM_BUDGET_YEARS + FIRST_BUDGET_YEAR - JSON_START_YEAR
 
-    # default inflation rates by year
-    __rates = {2013: 0.015, 2014: 0.020, 2015: 0.022, 2016: 0.020, 2017: 0.021,
-               2018: 0.022, 2019: 0.023, 2020: 0.024, 2021: 0.024, 2022: 0.024,
-               2023: 0.024, 2024: 0.024}
+    # default price inflation rates by year
+    __pirates = {2013: 0.015, 2014: 0.020, 2015: 0.021, 2016: 0.020,
+                 2017: 0.021, 2018: 0.022, 2019: 0.023, 2020: 0.024,
+                 2021: 0.024, 2022: 0.024, 2023: 0.024, 2024: 0.024}
+
+    __wgrates = {2013: 0.0276, 2014: 0.0419, 2015: 0.0465, 2016: 0.0498,
+                 2017: 0.0507, 2018: 0.0481, 2019: 0.0451, 2020: 0.0441,
+                 2021: 0.0437, 2022: 0.0435, 2023: 0.0430, 2024: 0.0429}
 
     @staticmethod
     def default_inflation_rates():
         """
-        Return complete default inflation rate dictionary.
+        Return complete default price inflation rate dictionary.
 
         Parameters
         ----------
@@ -70,22 +77,39 @@ class Policy(ParametersBase):
         Returns
         -------
         default inflation rates: dict
-            decimal (not percentage) annual inflation rate by calyear.
+            decimal (not percentage) annual inflation rate by calendar year.
         """
-        return Policy.__rates
+        return Policy.__pirates
+
+    def default_wage_growth_rates():
+        """
+        Return complete default wage growth rate dictionary.
+
+        Parameters
+        ----------
+        none
+
+        Returns
+        -------
+        default growth rates: dict
+            decimal (not percentage) annual growth rate by calyear.
+        """
+        return Policy.__wgrates
 
     def __init__(self, parameter_dict=None,
                  start_year=JSON_START_YEAR,
                  num_years=DEFAULT_NUM_YEARS,
-                 inflation_rates=None):
+                 inflation_rates=None,
+                 wage_growth_rates=None):
         """
         Policy class constructor.
         """
+        # pylint: disable=super-init-not-called
         if parameter_dict:
             if not isinstance(parameter_dict, dict):
                 raise ValueError('parameter_dict is not a dictionary')
             self._vals = parameter_dict
-        else:  # if None, read current-law parameters
+        else:  # if None, read current-law policy parameters
             self._vals = self._params_dict_from_json_file()
 
         if parameter_dict is None and start_year < Policy.JSON_START_YEAR:
@@ -101,19 +125,94 @@ class Policy(ParametersBase):
             self._inflation_rates = [inflation_rates[start_year + i]
                                      for i in range(0, num_years)]
         else:  # if None, read default rates
-            self._inflation_rates = [self.__rates[start_year + i]
+            self._inflation_rates = [self.__pirates[start_year + i]
                                      for i in range(0, num_years)]
+
+        if wage_growth_rates:
+            if len(wage_growth_rates) != num_years:
+                raise ValueError('len(wage_growth_rates) != num_years')
+            if min(list(wage_growth_rates.keys())) != start_year:
+                msg = 'min(wage_growth_rates.keys()) != start_year'
+                raise ValueError(msg)
+            self._wage_growth_rates = [wage_growth_rates[start_year + i]
+                                       for i in range(0, num_years)]
+        else:  # if None, read default rates
+            self._wage_growth_rates = [self.__wgrates[start_year + i]
+                                       for i in range(0, num_years)]
+
         self.initialize(start_year, num_years)
+
+    def inflation_rates(self):
+        """
+        Returns list of price inflation rates starting with JSON_START_YEAR
+        """
+        return self._inflation_rates
+
+    @staticmethod
+    def read_json_reform_file(reform_filename):
+        """
+        Read reform file, strip //-comments, and return dict based on JSON.
+        The reform file is JSON with string policy-parameter primary keys and
+           string years as secondary keys.  See tests/test_policy.py for an
+           extended example of a commented JSON reform file that can be read
+           by this function.
+        Returned dictionary has integer years as primary keys and
+           string policy-parameters as secondary keys.
+        The returned dictionary is suitable as the argument to the
+           implement_reform(reform_dict) method (see below).
+        """
+        # check existence of specified reform file
+        if not os.path.isfile(reform_filename):
+            msg = 'simtax REFORM file {} could not be found'
+            raise ValueError(msg.format(reform_filename))
+        # read contents of reform file and remove // comments
+        with open(reform_filename, 'r') as reform_file:
+            json_with_comments = reform_file.read()
+            json_without_comments = re.sub('//.*', '', json_with_comments)
+        # convert JSON text into a dictionary with year skeys as strings
+        try:
+            reform_dict_raw = json.loads(json_without_comments)
+        except ValueError:
+            msg = 'simtax REFORM file {} contains invalid JSON'
+            line = '----------------------------------------------------------'
+            txt = ('TO FIND FIRST JSON SYNTAX ERROR,\n'
+                   'COPY TEXT BETWEEN LINES AND '
+                   'PASTE INTO BOX AT jsonlint.com')
+            sys.stderr.write(txt + '\n')
+            sys.stderr.write(line + '\n')
+            sys.stderr.write(json_without_comments.strip() + '\n')
+            sys.stderr.write(line + '\n')
+            raise ValueError(msg.format(reform_filename))
+        # convert year skey strings to integers and lists into np.arrays
+        reform_pkey_param = {}
+        for pkey, sdict in reform_dict_raw.items():
+            if not isinstance(pkey, six.string_types):
+                msg = 'pkey {} in reform is not a string'
+                raise ValueError(msg.format(pkey))
+            rdict = {}
+            for skey, val in sdict.items():
+                if not isinstance(skey, six.string_types):
+                    msg = 'skey {} in reform is not a string'
+                    raise ValueError(msg.format(skey))
+                else:
+                    year = int(skey)
+                rdict[year] = (np.array(val)  # pylint: disable=no-member
+                               if isinstance(val, list) else val)
+            reform_pkey_param[pkey] = rdict
+        # convert reform_pkey_param dictionary to reform_pkey_year dictionary
+        return Policy._reform_pkey_year(reform_pkey_param)
 
     def implement_reform(self, reform):
         """
-        Implement multi-year parameters reform and set current_year=start_year.
+        Implement multi-year policy reform and set current_year=start_year.
 
         Parameters
         ----------
         reform: dictionary of one or more YEAR:MODS pairs
-            see Notes to _update function for details on MODS structure.
-
+            see Notes to _update function for details on MODS structure, and
+            see read_json_reform_file method above for how to specify a
+            reform in a JSON file and translate it into a reform dictionary
+            suitable for input into this implement_reform method.
         Raises
         ------
         ValueError:
@@ -131,14 +230,14 @@ class Policy(ParametersBase):
         Given a reform dictionary, typical usage of the Policy class
         is as follows::
 
-            ppo = Policy()
-            ppo.implement_reform(reform)
+            policy = Policy()
+            policy.implement_reform(reform)
 
         In the above statements, the Policy() call instantiates a
-        policy parameters object (ppo) containing current-law policy
-        parameters, and the implement_reform(reform) call applies the
-        (possibly multi-year) reform specified in reform and then sets
-        the current_year to start_year with parameters set for that year.
+        policy object (policy) containing current-law policy parameters,
+        and the implement_reform(reform) call applies the (possibly
+        multi-year) reform specified in reform and then sets the
+        current_year to start_year with parameters set for that year.
 
         An example of a multi-year, multi-parameter reform is as follows::
 
@@ -191,3 +290,37 @@ class Policy(ParametersBase):
                 self.set_year(year)
             self._update({year: reform[year]})
         self.set_year(self.start_year)
+
+    # ----- begin private methods of Policy class -----
+
+    @staticmethod
+    def _reform_pkey_year(reform_pkey_param):
+        """
+        The input reform_pkey_param dictionary has string policy-parameter
+           primary keys and integer years as secondary keys.
+        Returned dictionary has integer years as primary keys and
+           string policy-parameters as secondary keys.
+        The returned dictionary is suitable as the argument to the
+           implement_reform(reform_dict) method (see above).
+        """
+        years = set()
+        reform_pk_yr = {}
+        for param, sdict in reform_pkey_param.items():
+            if not isinstance(param, six.string_types):
+                msg = 'pkey {} in reform is not a string'
+                raise ValueError(msg.format(param))
+            elif not isinstance(sdict, dict):
+                msg = 'pkey {} value {} is not a dictionary'
+                raise ValueError(msg.format(param, sdict))
+            for year, val in sdict.items():
+                if not isinstance(year, int):
+                    msg = 'year skey {} in reform is not an integer'
+                    raise ValueError(msg.format(year))
+                if year not in years:
+                    years.add(year)
+                    reform_pk_yr[year] = {}
+                reform_pk_yr[year][param] = val
+        return reform_pk_yr
+
+
+# end Policy class

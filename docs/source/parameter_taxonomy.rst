@@ -101,5 +101,5 @@ Examples
 
 
 .. [1] Currently, the abbreviation for haircuts is uppercase in the
-       Tax Calculator; we will be changing it to lowercase in the
+       Tax-Calculator; we will be changing it to lowercase in the
        future and will update this page accordingly.

@@ -50,11 +50,11 @@ def test_update_growth():
 
     # change growth adjustment/target
     growth_x = Growth()
-    factor_x = {2015: {'_factor_target': [[0.04]]}}
+    factor_x = {2015: {'_factor_target': [0.04]}}
     growth_x.update_economic_growth(factor_x)
 
     growth_y = Growth()
-    factor_y = {2015: {'_factor_adjustment': [[0.01]]}}
+    factor_y = {2015: {'_factor_adjustment': [0.01]}}
     growth_y.update_economic_growth(factor_y)
 
     # create two Calculators
@@ -66,16 +66,15 @@ def test_update_growth():
     assert_array_equal(calc_x.growth.factor_target,
                        growth_x.factor_target)
     assert_array_equal(calc_x.growth._factor_target,
-                       np.array([[0.0], [0.0], [0.04], [0.04], [0.04],
-                                [0.04], [0.04], [0.04], [0.04], [0.04],
-                                [0.04], [0.04]]))
+                       np.array([0.0244, 0.0118, 0.04, 0.04, 0.04,
+                                0.04, 0.04, 0.04, 0.04, 0.04, 0.04,
+                                0.04]))
 
     assert_array_equal(calc_y.growth.factor_adjustment,
                        growth_y.factor_adjustment)
     assert_array_equal(calc_y.growth._factor_adjustment,
-                       np.array([[0.0], [0.0], [0.01], [0.01], [0.01],
-                                [0.01], [0.01], [0.01], [0.01], [0.01],
-                                [0.01], [0.01]]))
+                       np.array([0.0, 0.0, 0.01, 0.01, 0.01, 0.01,
+                                 0.01, 0.01, 0.01, 0.01, 0.01, 0.01]))
 
 
 def test_target():
@@ -87,13 +86,22 @@ def test_target():
                         growth=growth_x)
 
     # set target
-    factor_x = {2015: {'_factor_target': [[0.04]]}}
+    factor_x = {2015: {'_factor_target': [0.04]}}
     growth_x.update_economic_growth(factor_x)
+
+    AGDPN_pre = calc_x.records.BF.AGDPN[2015]
+    ATXPY_pre = calc_x.records.BF.ATXPY[2015]
 
     target(calc_x, growth_x._factor_target, IRATES, 2015)
 
-    assert calc_x.records.BF.AGDPN[2015] == 0.04 + 0.22 + 1
-    assert calc_x.records.BF.ATXPY[2015] == 1.2572996865676191
+    distance = ((growth_x._factor_target[2015 - 2013] -
+                 growth_x.default_GDP_growth_rates(2015 - 2013)) /
+                calc_x.records.BF.APOPN[2015])
+    AGDPN_post = AGDPN_pre + distance
+    ATXPY_post = ATXPY_pre + distance
+
+    assert calc_x.records.BF.AGDPN[2015] == AGDPN_post
+    assert calc_x.records.BF.ATXPY[2015] == ATXPY_post
 
 
 def test_adjustment():
@@ -114,4 +122,10 @@ def test_adjustment():
 
 def test_growth_default_data():
     paramdata = Growth.default_data()
-    assert paramdata['_factor_adjustment'] == [[0.0]]
+    assert paramdata['_factor_adjustment'] == [0.0]
+
+
+def test_hard_coded_gdp_growth():
+    growth = Growth()
+    assert_array_equal(growth._factor_target,
+                       np.array(growth.REAL_GDP_GROWTH))

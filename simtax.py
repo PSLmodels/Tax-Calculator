@@ -1,5 +1,5 @@
 """
-SIMple input-output capabilities for the ospc TAXcalc package.
+SIMple input-output capabilities for TAX-calculator.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 simtax.py
@@ -12,21 +12,23 @@ from taxcalc import SimpleTaxIO
 
 def main():
     """
-    Contains command-line interface to the OSPC SimpleTaxIO class.
+    Contains command-line interface to the Tax-Calculator SimpleTaxIO class.
     """
     # parse command-line arguments:
     parser = argparse.ArgumentParser(
-        description=('Writes to a file the federal tax OUTPUT for the '
-                     'tax filing units specified in the INPUT file with '
-                     'the OUTPUT computed from the INPUT using the OSPC '
-                     'taxcalc package. '
-                     'Both the INPUT and OUTPUT files use Internet TAXSIM '
+        description=('Writes to a file the federal tax OUTPUT for the tax '
+                     'filing units specified in the INPUT file with the '
+                     'OUTPUT computed from the INPUT using the Tax-Calculator.'
+                     ' Both the INPUT and OUTPUT files use Internet-TAXSIM '
                      'format.  The OUTPUT filename is the INPUT filename '
-                     'with the ".out-simtax" string appended.  The OUTPUT '
-                     'file contains the first 28 Internet TAXSIM output '
-                     'variables.  Use --iohelp flag for more information. '
-                     'For details on Internet TAXSIM version 9.3 INPUT and '
-                     'OUTPUT formats, go to '
+                     'with the ".out-simtax" string appended if no --reform '
+                     'option is specified; otherwise the OUTPUT filename is '
+                     'the INPUT filename with the ".out-simtax-REFORM" string '
+                     'appended (excluding any ".json" ending to the REFORM '
+                     'filename).  The OUTPUT file contains the first 28 '
+                     'Internet-TAXSIM output variables.  Use --iohelp flag '
+                     'for more information.  For details on Internet-TAXSIM '
+                     'version 9.3 INPUT and OUTPUT formats, go to '
                      'http://users.nber.org/~taxsim/taxsim-calc9/'))
     parser.add_argument('--iohelp',
                         help=('optional flag to show INPUT and OUTPUT '
@@ -42,25 +44,30 @@ def main():
                               '//-comments. No REFORM filename implies use '
                               'of current-law policy.'),
                         default=None)
-    parser.add_argument('--nomtr',
-                        help=('optional flag to exclude marginal federal '
-                              'income tax rate and marginal FICA tax rate '
-                              'from OUTPUT.  Using --nomtr flag implies '
-                              'those two marginal tax rates are set to zero.'),
+    parser.add_argument('--taxsim2441',
+                        help=('optional flag to emulate the Internet-TAXSIM '
+                              'practice of approximating the number of '
+                              'children eligible for the child care expense '
+                              'credit on Form 2441 by the total number of '
+                              'dependents of any age.  The default practice '
+                              'is to approximate with the number of '
+                              'dependents under age 17.'),
                         default=False,
                         action="store_true")
     parser.add_argument('INPUT',
                         help=('INPUT is name of required file that contains '
-                              'tax-filing-unit information in Internet '
-                              'TAXSIM format.'))
+                              'tax-filing-unit information in Internet-TAXSIM '
+                              'format.'))
     args = parser.parse_args()
     # optionally show INPUT and OUTPUT variable definitions and exit
     if args.iohelp:
         SimpleTaxIO.show_iovar_definitions()
         return 0
     # instantiate SimpleTaxIO object and do tax calculations
-    simtax = SimpleTaxIO(args.INPUT, args.reform)
-    simtax.calculate(no_marginal_tax_rates=args.nomtr)
+    simtax = SimpleTaxIO(input_filename=args.INPUT,
+                         reform_filename=args.reform,
+                         emulate_taxsim_2441_logic=args.taxsim2441)
+    simtax.calculate()
     # return no-error exit code
     return 0
 # end of main function code

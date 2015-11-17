@@ -26,6 +26,10 @@ IRATES = {1991: 0.015, 1992: 0.020, 1993: 0.022, 1994: 0.020, 1995: 0.021,
           1996: 0.022, 1997: 0.023, 1998: 0.024, 1999: 0.024, 2000: 0.024,
           2001: 0.024, 2002: 0.024}
 
+WRATES = {1991: 0.0276, 1992: 0.0419, 1993: 0.0465, 1994: 0.0498,
+          1995: 0.0507, 1996: 0.0481, 1997: 0.0451, 1998: 0.0441,
+          1999: 0.0437, 2000: 0.0435, 2001: 0.0430, 2002: 0.0429}
+
 
 @pytest.yield_fixture
 def policyfile():
@@ -55,10 +59,6 @@ def run():
     exp_results = pd.read_csv(exp_results_file, compression='gzip')
     exp_set = set(exp_results.columns)  # fix-up to bad colname in exp_results
     cur_set = set(totaldf.columns)
-    exp_set.add('_avail')
-    exp_set.add('c62100_everyone')
-    exp_set.add('_combined')
-    exp_set.add('x04500')
 
     assert(exp_set == cur_set)
 
@@ -95,7 +95,8 @@ def test_make_Calculator_files_to_ctor(policyfile):
     with open(policyfile.name) as pfile:
         policy = json.load(pfile)
     ppo = Policy(parameter_dict=policy, start_year=1991,
-                 num_years=len(IRATES), inflation_rates=IRATES)
+                 num_years=len(IRATES), inflation_rates=IRATES,
+                 wage_growth_rates=WRATES)
     calc = Calculator(policy=ppo, records=TAX_DTA_PATH,
                       start_year=1991, inflation_rates=IRATES)
     assert calc
@@ -179,11 +180,66 @@ def test_make_Calculator_with_reform_after_start_year():
     assert_array_equal(calc.policy.STD_Aged, exp_2015_STD_Aged)
 
 
+def test_hard_coded_parameter_consistency():
+    # GDP growths rates and cpi should be consistent
+    # across any objects
+    record = Records(TAX_DTA_PATH)
+    growth = Growth()
+    policy = Policy()
+
+    # back out the original stage I GDP
+    record.BF.AGDPN[2009] = 1
+    for year in range(2010, 2025):
+        record.BF.AGDPN[year] = (record.BF.AGDPN[year] *
+                                 record.BF.AGDPN[year - 1] *
+                                 record.BF.APOPN[year])
+
+    # calculates GDP nominal growth rates
+    Nominal_rates = np.zeros(12)
+    for year in range(2013, 2025):
+        irate = policy._inflation_rates[year - 2013]
+        Nominal_rates[year - 2013] = (record.BF.AGDPN[year] /
+                                      record.BF.AGDPN[year - 1] - 1 -
+                                      irate)
+
+    Nominal_rates = np.round(Nominal_rates, 4)
+
+    assert_array_equal(Nominal_rates,
+                       growth._factor_target)
+
+    # get CPI_U from stage I factors
+    CPI_U = np.zeros(12)
+    for year in range(2013, 2025):
+        CPI_U[year - 2013] = record.BF.ACPIU[year] - 1
+
+    CPI_U = np.round(CPI_U, 3)
+    assert_array_equal(CPI_U, policy._inflation_rates)
+
+    # back out the original stage I wage growth rates
+    record.BF.AWAGE[2009] = 1
+    for year in range(2010, 2025):
+        record.BF.AWAGE[year] = (record.BF.AWAGE[year] *
+                                 record.BF.AWAGE[year - 1] *
+                                 record.BF.APOPN[year])
+
+    # calculates GDP nominal growth rates
+    wage_growth_rates = np.zeros(12)
+    for year in range(2013, 2025):
+        wage_growth_rates[year - 2013] = (record.BF.AWAGE[year] /
+                                          record.BF.AWAGE[year - 1] - 1)
+
+    wage_growth_rates = np.round(wage_growth_rates, 4)
+
+    assert_array_equal(wage_growth_rates,
+                       policy._wage_growth_rates)
+
+
 def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
     with open(policyfile.name) as pfile:
         policy = json.load(pfile)
     ppo = Policy(parameter_dict=policy, start_year=1991,
-                 num_years=len(IRATES), inflation_rates=IRATES)
+                 num_years=len(IRATES), inflation_rates=IRATES,
+                 wage_growth_rates=WRATES)
     calc = Calculator(policy=ppo, records=TAX_DTA_PATH, start_year=1991,
                       inflation_rates=IRATES)
     user_mods = {1991: {"_almdep": [7150, 7250, 7400],
@@ -245,16 +301,10 @@ def test_Calculator_create_distribution_table():
 
 
 def test_calculate_mtr():
-    # Create a Policy object
     policy = Policy()
-
-    # Create a Records object
     puf = Records(TAX_DTA, weights=WEIGHTS, start_year=2009)
-
-    # Create a Calculator object
     calc = Calculator(policy=policy, records=puf)
-
-    (mtr_FICA, mtr_IIT, mtr) = calc.mtr('e00200p')
+    (mtr_FICA, mtr_IIT, mtr) = calc.mtr()
     assert type(mtr) == np.ndarray
     assert np.array_equal(mtr, mtr_FICA) == False
     assert np.array_equal(mtr_FICA, mtr_IIT) == False
