@@ -473,8 +473,7 @@ class SimpleTaxIO(object):
         dict_list = [zero_dict for _ in range(0, len(self._input))]
         # use dict_list to create a Pandas DataFrame and Records object
         recsdf = pd.DataFrame(dict_list, dtype='int64')
-        recs = Records(data=recsdf,
-                       start_year=self._policy.start_year,
+        recs = Records(data=recsdf, start_year=self._policy.start_year,
                        consider_imputations=False)
         assert recs.dim == len(self._input)
         # specify input for each tax filing unit in Records object
