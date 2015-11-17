@@ -47,11 +47,12 @@ class IncomeTaxIO(object):
         """
         IncomeTaxIO class constructor.
         """
+        # check that input_filename ends with .csv
+        if not input_filename.endswith('.csv'):
+            msg = 'INPUT file named {} does not end in ".csv"'
+            raise ValueError(msg.format(input_filename))
         # construct output_filename and delete old output file if it exists
-        if input_filename.endswith('.csv'):
-            inp = '-{}'.format(input_filename[:-4])
-        else:
-            inp = '-{}'.format(input_filename)
+        inp = '-{}'.format(input_filename[:-4])
         if reform_filename:
             if reform_filename.endswith('.json'):
                 ref = '-{}'.format(reform_filename[:-5])
