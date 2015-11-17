@@ -207,7 +207,7 @@ class SimpleTaxIO(object):
     @staticmethod
     def extract_output(crecs, idx):
         """
-        Extracts tax output from crecs object for filing unit with idx.
+        Extracts tax output from crecs object for one tax filing unit.
 
         Parameters
         ----------
@@ -215,7 +215,7 @@ class SimpleTaxIO(object):
             Records object embedded in Calculator object.
 
         idx: integer
-            crecs object index of tax filing unit with specified idx.
+            crecs object index of the one tax filing unit.
 
         Returns
         -------
@@ -473,7 +473,8 @@ class SimpleTaxIO(object):
         dict_list = [zero_dict for _ in range(0, len(self._input))]
         # use dict_list to create a Pandas DataFrame and Records object
         recsdf = pd.DataFrame(dict_list, dtype='int64')
-        recs = Records(data=recsdf, start_year=2013)
+        recs = Records(data=recsdf, start_year=self._policy.start_year,
+                       consider_imputations=False)
         assert recs.dim == len(self._input)
         # specify input for each tax filing unit in Records object
         lnum = 0
@@ -481,10 +482,8 @@ class SimpleTaxIO(object):
             lnum += 1
             SimpleTaxIO._specify_input(recs, idx, self._input[lnum],
                                        emulate_taxsim_2441_logic)
-        # create Calculator object for 2013 containing all tax filing units
-        assert recs.current_year == 2013
-        assert self._policy.current_year == 2013
-        return Calculator(policy=self._policy, records=recs)
+        # create Calculator object containing all tax filing units
+        return Calculator(policy=self._policy, records=recs, sync_years=False)
 
     @staticmethod
     def _specify_input(recs, idx, ivar, emulate_taxsim_2441_logic):
