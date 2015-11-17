@@ -52,7 +52,7 @@ class IncomeTaxIO(object):
             msg = 'INPUT file named {} does not end in ".csv"'
             raise ValueError(msg.format(input_filename))
         # construct output_filename and delete old output file if it exists
-        inp = '-{}'.format(input_filename[:-4])
+        inp = '{}'.format(input_filename[:-4])
         if reform_filename:
             if reform_filename.endswith('.json'):
                 ref = '-{}'.format(reform_filename[:-5])
@@ -81,15 +81,15 @@ class IncomeTaxIO(object):
             reform = Policy.read_json_reform_file(reform_filename)
             policy.implement_reform(reform)
         # set tax policy parameters to specified tax_year
-        policy.set_year(tax_year)
+        # TO DO : policy.set_year(tax_year)
         # read input file contents into Records object
         # (recs does not include the IRS-SOI-PUF aggregate record)
         recs = Records(data=input_filename,
-                       start_year=tax_year,
-                       consider_imputations=False)
-        recs.FLPDYR = tax_year
+                       start_year=2009,
+                       consider_imputations=True)
+        # TO DO : recs.FLPDYR = tax_year
         # create Calculator object
-        self._calc = Calculator(policy=policy, records=recs, sync_years=False)
+        self._calc = Calculator(policy=policy, records=recs, sync_years=True)
 
     def start_year(self):
         """
@@ -130,11 +130,11 @@ class IncomeTaxIO(object):
         if write_output_file:
             SimpleTaxIO.write_output_file(output, self._output_filename)
 
-    def number_input_lines(self):
+    def number_input_rows(self):
         """
-        Return number of lines read from INPUT file.
+        Return number of data rows read from INPUT file.
         """
-        return len(self._calc.records.dim)
+        return self._calc.records.dim
 
     @staticmethod
     def show_iovar_definitions():
