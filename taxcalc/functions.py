@@ -406,10 +406,9 @@ def AMED(_fica, e00200, MARS, AMED_thd, _sey, AMED_trt,
     """
 
     # ratio of income subject to AMED tax = (1 - 0.5*(FICA_mc_trt+FICA_ss_trt)
-    _amed = AMED_trt * max(0, e00200 +
-                           max(0, _sey) * (1 - 0.5 *
-                                           (FICA_mc_trt + FICA_ss_trt)) -
-                           AMED_thd[MARS - 1])
+    _amed = AMED_trt * (max(0, e00200 - AMED_thd[MARS - 1]) + max(0, max(0,
+                        _sey) * (1 - 0.5 * (FICA_mc_trt + FICA_ss_trt)) -
+                        max(0, AMED_thd[MARS - 1] - e00200)))
     _fica = _fica + _amed
 
     return (_amed, _fica)
@@ -1538,7 +1537,7 @@ def C1040(e07400, e07180, e07200, c07220, c07230, e07250, c07300, c07240,
           e07500, e07700, e08000, e07240, e08001, e07960, e07970,
           SOIYR, e07980, c05800, e08800, e09900, e09400, e09800,
           e10000, e10100, e09700, e10050, e10075, e09805, e09710,
-          c59660, c07180, _eitc, c59680, NIIT, _amed, puf):
+          c59660, c07180, c59680, NIIT, _amed, puf):
 
     # Credits 1040 line 48
 
@@ -1572,7 +1571,7 @@ def C1040(e07400, e07180, e07200, c07220, c07230, e07250, c07300, c07240,
     # assuming year (FLPDYR) > 2009
     c09200 = c09200 + e09700 + e10050 + e10075 + e09805 + e09710 + e09720
 
-    return (c07100, c07970, y07100, x07100, c08795, e08795, c09200, _eitc,
+    return (c07100, c07970, y07100, x07100, c08795, e08795, c09200,
             _othertax)
 
 
