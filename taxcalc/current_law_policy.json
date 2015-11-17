@@ -436,7 +436,7 @@
         "long_name": "Max Taxable Earnings for Social Security",
 	"description": "Only earnings lower than this maximum amount are subjected to Social Security tax (OASDI tax).",
         "irs_ref": "W-2, Box 4, instructions",
-        "notes": "Payroll tax is not calculated in this calculator.",
+        "notes": "",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -750,10 +750,10 @@
 	"validations":{"min": "_II_brk5"}
      },
      "_FICA_ss_trt":{
-        "long_name": "Social Security payroll rate",
-	"description": "Social Security  tax rate, including both employer and employee.",
+        "long_name": "Social Security payroll tax rate",
+	"description": "Social Security FICA rate, including both employer and employee.",
         "irs_ref": "Form , line , ",
-        "notes": "We do not calculate payroll tax liability, but use this for eligibility for some tax items.",
+        "notes": "",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -765,10 +765,10 @@
 
     },
      "_FICA_mc_trt":{
-        "long_name": "Medicare FICA rate",
-        "description": "Medicare tax rate, including both employer and employee.",
+        "long_name": "Medicare payroll tax rate",
+        "description": "Medicare FICA rate, including both employer and employee.",
         "irs_ref": "Form , line , ",
-        "notes": "We do not calculate payroll tax liability, but use this for eligibility for some tax items.",
+        "notes": "",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
