@@ -16,10 +16,46 @@ def FilingStatus(MARS):
 
     return _sep
 
+@iterate_jit(nopython=True)
+def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
+            e11055, e00250, e30100, FICA_ss_trt, FICA_mc_trt,
+            e00900p, e00900s, e02100p, e02100s):
+    # Earned Income and FICA #
+
+    _sey_p = e00900p + e02100p
+    _sey_s = e00900s + e02100s
+    _sey = _sey_p + _sey_s
+
+    FICA_trt = FICA_mc_trt + FICA_ss_trt
+    _fica_ss_head = max(0, FICA_ss_trt * min(SS_Earnings_c, e00200p +
+                        max(0, _sey_p) * (1 - 0.5 * FICA_trt)))
+    _fica_ss_spouse = max(0, FICA_ss_trt * min(SS_Earnings_c, e00200s +
+                          max(0, _sey_s) * (1 - 0.5 * FICA_trt)))
+
+    _fica_ss = _fica_ss_head + _fica_ss_spouse
+    _fica_mc = max(0, FICA_mc_trt * (e00200 + max(0, _sey) *
+                   (1 - 0.5 * (FICA_mc_trt + FICA_ss_trt))))
+
+    _fica = _fica_mc + _fica_ss
+
+    c09400 = max(0, _fica - (FICA_ss_trt + FICA_mc_trt) * e00200)
+
+    # if c09400 <= 14204:
+    #    c03260 = 0.5751 * c09400
+    # else:
+    #    c03260 = 0.5 * c09400 + 10067
+    c03260 = 0.5 * c09400
+
+    c11055 = e11055
+
+    _earned = max(0, e00200 + e00250 + c11055 + e30100 + _sey - c03260)
+
+    return (_sey, _fica, c09400, c03260, c11055, _earned)
+
 
 @iterate_jit(nopython=True)
-def Adj(e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
-        e03270, e03300, e03400, e03500, e03280, e03900, e04000,
+def Adj(e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260, c03260,
+        e03270, e03300, e03400, e03500, e03280, e03900, e04000, _exact,
         e03700, e03220, e03230, e03240, e03290, ALD_StudentLoan_HC,
         ALD_SelfEmploymentTax_HC, ALD_SelfEmp_HealthIns_HC, ALD_KEOGH_SEP_HC,
         ALD_EarlyWithdraw_HC, ALD_Alimony_HC):
@@ -78,9 +114,12 @@ def Adj(e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260,
     # Form 2555: Foreign earned income
     _feided = max(e35300_0, e35600_0 + e35910_0)
 
+    if _exact:
+        c03260 = e03260
+
     # For 1040: adjustments
     c02900 = (e03150 + (1 - ALD_StudentLoan_HC) * e03210 + e03600 +
-              (1 - ALD_SelfEmploymentTax_HC) * e03260 +
+              (1 - ALD_SelfEmploymentTax_HC) * c03260 +
               (1 - ALD_SelfEmp_HealthIns_HC) * e03270 +
               (1 - ALD_KEOGH_SEP_HC) * e03300 + (1 - ALD_EarlyWithdraw_HC) *
               e03400 + (1 - ALD_Alimony_HC) * e03500 + e03280 + e03900 +
@@ -336,44 +375,6 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
     return (c17750, c17000, _statax, c18300, c37703, c20500,
             c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
             _nonlimited, _limitratio, c04470, c21040)
-
-
-@iterate_jit(nopython=True)
-def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
-            e11055, e00250, e30100, FICA_ss_trt, FICA_mc_trt,
-            e00900p, e00900s, e02100p, e02100s):
-    # Earned Income and FICA #
-
-    _sey_p = e00900p + e02100p
-    _sey_s = e00900s + e02100s
-    _sey = _sey_p + _sey_s
-
-    FICA_trt = FICA_mc_trt + FICA_ss_trt
-    _fica_ss_head = max(0, FICA_ss_trt * min(SS_Earnings_c, e00200p +
-                        max(0, _sey_p) * (1 - 0.5 * FICA_trt)))
-    _fica_ss_spouse = max(0, FICA_ss_trt * min(SS_Earnings_c, e00200s +
-                          max(0, _sey_s) * (1 - 0.5 * FICA_trt)))
-
-    _fica_ss = _fica_ss_head + _fica_ss_spouse
-    _fica_mc = max(0, FICA_mc_trt * (e00200 + max(0, _sey) *
-                   (1 - 0.5 * (FICA_mc_trt + FICA_ss_trt))))
-
-    _fica = _fica_mc + _fica_ss
-
-    _setax = max(0, _fica - (FICA_ss_trt + FICA_mc_trt) * e00200)
-
-    # if _setax <= 14204:
-    #    _seyoff = 0.5751 * _setax
-    # else:
-    #    _seyoff = 0.5 * _setax + 10067
-    _seyoff = 0.5 * _setax
-
-    c11055 = e11055
-
-    _earned = max(0, e00200 + e00250 + c11055 + e30100 + _sey - _seyoff)
-
-    return (_sey, _fica, _setax, _seyoff, c11055, _earned)
-
 
 @iterate_jit(nopython=True)
 def AMED(_fica, e00200, MARS, AMED_thd, _sey, AMED_trt,
@@ -1468,7 +1469,7 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
 
 @iterate_jit(nopython=True, puf=True)
 def AddCTC(_nctcr, _precrd, _earned, c07220, e00200, e82882, e30100, _sey,
-           _setax, _exact, e82880, ACTC_Income_thd, ACTC_rt, SS_Earnings_c,
+           _exact, e82880, ACTC_Income_thd, ACTC_rt, SS_Earnings_c,
            ALD_SelfEmploymentTax_HC, e03260, e09800, c59660, e11200, e59680,
            e59700, e59720, e11070, e82915, e82940, c82940,
            ACTC_ChildNum, puf):
