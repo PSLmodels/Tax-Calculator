@@ -331,22 +331,8 @@ def create_distribution_table(calc, groupby, result_type,
     -------
     DataFrame object
     """
-
-    # check whether baseline calculator exist
-    # keep reform plan
-    if base_calc is None:
-        res = results(calc)
-        res = add_columns(res)
-    else:
-        resY = results(calc)
-        resY = add_columns(resY)
-        resX = results(base_calc)
-        resX = add_columns(resX)
-
-        res = resY.subtract(resX)
-        res['c00100'] = resX['c00100']
-        res['_expanded_income'] = resX['_expanded_income']
-        res['s006'] = resX['s006']
+    res = results(calc)
+    res = add_columns(res)
 
     if baseline_calc is not None:
         if calc.current_year != baseline_calc.current_year:
@@ -356,13 +342,11 @@ def create_distribution_table(calc, groupby, result_type,
         res_base = results(baseline_calc)
         res[baseline_income_measure] = res_base[income_measure]
         income_measure = baseline_income_measure
-        
-        if diffs:
-            resX = results(baseline_calc)
-            resX = add_columns(resX)
-            res = res.subtract(resX)
-            res['s006'] = resX['s006']
 
+        if diffs:
+            res_base = add_columns(res_base)
+            res = res.subtract(res_base)
+            res['s006'] = res_base['s006']
 
     # sorts the data
     if groupby == "weighted_deciles":
@@ -381,11 +365,6 @@ def create_distribution_table(calc, groupby, result_type,
                "'small_income_bins' or 'large_income_bins' or"
                "'webapp_income_bins'")
         raise ValueError(err)
-
-    if base_calc is not None:
-        df['c00100'] = resY['c00100'] - resX['c00100']
-        df['_expanded_income'] = (resY['_expanded_income'] -
-                                  resX['_expanded_income'])
 
     # manipulates the data
     pd.options.display.float_format = '{:8,.0f}'.format
