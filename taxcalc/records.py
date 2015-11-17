@@ -389,6 +389,7 @@ class Records(object):
             raise ValueError(msg)
         if self._current_year == Records.PUF_YEAR:
             self._impute_variables()
+            self.extrapolate_2009_puf()
 
     @property
     def current_year(self):
