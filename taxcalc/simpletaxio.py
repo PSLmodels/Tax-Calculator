@@ -207,7 +207,7 @@ class SimpleTaxIO(object):
     @staticmethod
     def extract_output(crecs, idx):
         """
-        Extracts tax output from crecs object for filing unit with idx.
+        Extracts tax output from crecs object for one tax filing unit.
 
         Parameters
         ----------
@@ -215,7 +215,7 @@ class SimpleTaxIO(object):
             Records object embedded in Calculator object.
 
         idx: integer
-            crecs object index of tax filing unit with specified idx.
+            crecs object index of the one tax filing unit.
 
         Returns
         -------
