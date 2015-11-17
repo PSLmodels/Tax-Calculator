@@ -1625,7 +1625,8 @@ def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _avail, _othertax):
 @iterate_jit(nopython=True)
 def IITAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
           e11450, e11500, e82040, e09900, e11400, e11300, e11200, e11100,
-          e11550, e09710, e09720, e10000, _fica, _personal_credit):
+          e11550, e09710, e09720, e10000, _fica, _personal_credit, n24,
+          CTC_additional):
 
     _refund = (c59660 + c11070 + c10960 + c10950 + c11600 + e11580 + e11450 +
                e11500 + _personal_credit)
@@ -1633,6 +1634,12 @@ def IITAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
     _iitax = c09200 - _refund - e82040
 
     _combined = _iitax + _fica
+
+    partially_refundable_CTC = max(0, min(_combined, CTC_additional * n24))
+
+    _iitax = _iitax - partially_refundable_CTC
+
+    _refund = _refund + partially_refundable_CTC
 
     _payments = (c59660 + c10950 + c10960 + c11070 + e10000 + e11550 + e11580 +
                  e11450)
