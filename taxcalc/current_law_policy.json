@@ -1100,10 +1100,10 @@
         "value":     [0.05]        
     },
     "_CTC_additional":{
-        "long_name": "Partially refundable child tax credit",
+        "long_name": "Additional additional child tax credit (Lee-Rubio)",
 	"description": "In addition to all the credits currently available for dependents, this paramter gives each qualifying child a fixed amount of partially refundable credit, limited by the sum of total income and payroll tax liabilities.",
         "irs_ref": "",
-        "notes": "",
+        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualificaiton rules for the Child Tax Credit under current law. ",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
