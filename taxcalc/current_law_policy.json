@@ -198,7 +198,7 @@
         
     },	
      "_CTC_c":{
-        "long_name": "Maximum child tax credit per child amount",
+        "long_name": "Maximum child tax credit per child",
 	"description": "The maximum amount of credit allowed for each child. ",
         "irs_ref": "form 1040, line 52, instructions (child tax credit worksheet, line 1). ",
         "notes": "Scheduled to decrease to 500 in 2018.",
@@ -1100,7 +1100,7 @@
         "value":     [0.05]        
     },
     "_CTC_additional":{
-        "long_name": "Additional additional child tax credit (Lee-Rubio)",
+        "long_name": "Additional additional child tax credit amount (Lee-Rubio)",
 	"description": "In addition to all the credits currently available for dependents, this paramter gives each qualifying child a fixed amount of partially refundable credit, limited by the sum of total income and payroll tax liabilities.",
         "irs_ref": "",
         "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualificaiton rules for the Child Tax Credit under current law. ",
