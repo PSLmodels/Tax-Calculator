@@ -114,18 +114,16 @@ class IncomeTaxIO(object):
         -------
         nothing: void
         """
-        output = {}
+        output = {}  # dictionary indexed by Records index for filing unit
         self._calc.calc_all()
+        (_, mtr_iitax, _) = self._calc.mtr(wrt_full_compensation=False)
         for idx in range(0, self._calc.records.dim):
-            lnum = idx + 1
             ovar = SimpleTaxIO.extract_output(self._calc.records, idx)
-            output[lnum] = ovar
-        (mtr_fica, mtr_itax, _) = self._calc.mtr(wrt_full_compensation=False)
-        for idx in range(0, self._calc.records.dim):
-            lnum = idx + 1
-            output[lnum][7] = 100 * mtr_itax[idx]
-            output[lnum][9] = 100 * mtr_fica[idx]
-        # write contents of output
+            ovar[6] = 0.0  # no FICA tax liability calculated
+            ovar[7] = 100 * mtr_iitax[idx]
+            ovar[9] = 0.0  # no marginal FICA tax rate calculated
+            output[idx] = ovar
+        # write contents of output dictionary to OUTPUT file
         if write_output_file:
             SimpleTaxIO.write_output_file(output, self._output_filename)
 
