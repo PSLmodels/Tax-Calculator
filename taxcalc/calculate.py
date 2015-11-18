@@ -156,6 +156,41 @@ class Calculator(object):
         self.calc_one_year()
         BenefitSurtax(self)
 
+    def calc_all_test(self):
+        all_dfs = []
+        add_df(all_dfs, FilingStatus(self.policy, self.records))
+        add_df(all_dfs, Adj(self.policy, self.records))
+        add_df(all_dfs, CapGains(self.policy, self.records))
+        add_df(all_dfs, SSBenefits(self.policy, self.records))
+        add_df(all_dfs, AGI(self.policy, self.records))
+        add_df(all_dfs, ItemDed(self.policy, self.records))
+        add_df(all_dfs, EI_FICA(self.policy, self.records))
+        add_df(all_dfs, AMED(self.policy, self.records))
+        add_df(all_dfs, StdDed(self.policy, self.records))
+        add_df(all_dfs, TaxInc(self.policy, self.records))
+        add_df(all_dfs, XYZD(self.policy, self.records))
+        add_df(all_dfs, NonGain(self.policy, self.records))
+        add_df(all_dfs, TaxGains(self.policy, self.records))
+        add_df(all_dfs, MUI(self.policy, self.records))
+        add_df(all_dfs, AMTI(self.policy, self.records))
+        add_df(all_dfs, F2441(self.policy, self.records))
+        add_df(all_dfs, DepCareBen(self.policy, self.records))
+        add_df(all_dfs, ExpEarnedInc(self.policy, self.records))
+        add_df(all_dfs, NumDep(self.policy, self.records))
+        add_df(all_dfs, ChildTaxCredit(self.policy, self.records))
+        add_df(all_dfs, AmOppCr(self.policy, self.records))
+        add_df(all_dfs, LLC(self.policy, self.records))
+        add_df(all_dfs, RefAmOpp(self.policy, self.records))
+        add_df(all_dfs, NonEdCr(self.policy, self.records))
+        add_df(all_dfs, AddCTC(self.policy, self.records))
+        add_df(all_dfs, F5405(self.policy, self.records))
+        add_df(all_dfs, C1040(self.policy, self.records))
+        add_df(all_dfs, DEITC(self.policy, self.records))
+        add_df(all_dfs, IITAX(self.policy, self.records))
+        add_df(all_dfs, ExpandIncome(self.policy, self.records))
+        totaldf = pd.concat(all_dfs, axis=1)
+        return totaldf
+
     def increment_year(self):
         if self.growth.factor_adjustment != 0:
             if not np.array_equal(self.growth._factor_target,
