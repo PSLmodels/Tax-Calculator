@@ -198,7 +198,7 @@
         
     },	
      "_CTC_c":{
-        "long_name": "Maximum child tax credit per child",
+        "long_name": "Maximum child tax credit per child amount",
 	"description": "The maximum amount of credit allowed for each child. ",
         "irs_ref": "form 1040, line 52, instructions (child tax credit worksheet, line 1). ",
         "notes": "Scheduled to decrease to 500 in 2018.",
