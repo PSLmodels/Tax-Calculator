@@ -15,14 +15,17 @@ def run():
     Run each function defined in Calculator.calc_all_test method using
     'puf.csv' input and writing ouput to a CSV file named 'results_puf.csv'.
     """
-    # create a Policy object containing current-law policy parameters
-    policy = Policy()
+    # create a Policy object containing current-law policy (clp) parameters
+    clp = Policy()
 
-    # create a Records object containing puf.csv input records
-    recs = Records()
+    # create a Records object (puf) containing puf.csv input records
+    tax_dta = pd.read_csv('puf.csv')
+    blowup_factors = './taxcalc/StageIFactors.csv'
+    weights = './taxcalc/WEIGHTS.csv'
+    puf = Records(tax_dta, blowup_factors, weights)
 
-    # create a Calculator object using policy and recs objects
-    calc = Calculator(policy=policy, records=recs)
+    # create a Calculator object using clp policy and puf records
+    calc = Calculator(policy=clp, records=puf)
 
     # save calculated test results in output dataframe (odf)
     odf = calc.calc_all_test()
