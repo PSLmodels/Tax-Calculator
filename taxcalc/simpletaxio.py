@@ -100,26 +100,21 @@ class SimpleTaxIO(object):
         nothing: void
         """
         # loop through self._year_set doing tax calculations and saving output
-        output = {}
+        output = {}  # dictionary indexed by Records index for filing unit
         for calcyr in self._year_set:
             if calcyr != self._calc.policy.current_year:
                 self._calc.policy.set_year(calcyr)
             self._calc.calc_all()
+            (mtr_fica, mtr_itax,
+             _) = self._calc.mtr(wrt_full_compensation=False)
             cr_taxyr = self._calc.records.FLPDYR  # pylint: disable=no-member
             for idx in range(0, self._calc.records.dim):
                 indyr = cr_taxyr[idx]
                 if indyr == calcyr:
-                    lnum = idx + 1
                     ovar = SimpleTaxIO.extract_output(self._calc.records, idx)
-                    output[lnum] = ovar
-            (mtr_fica, mtr_itax,
-             _) = self._calc.mtr(wrt_full_compensation=False)
-            for idx in range(0, self._calc.records.dim):
-                indyr = cr_taxyr[idx]
-                if indyr == calcyr:
-                    lnum = idx + 1
-                    output[lnum][7] = 100 * mtr_itax[idx]
-                    output[lnum][9] = 100 * mtr_fica[idx]
+                    ovar[7] = 100 * mtr_itax[idx]
+                    ovar[9] = 100 * mtr_fica[idx]
+                    output[idx] = ovar
         # write contents of output
         if write_output_file:
             assert len(output) == len(self._input)
@@ -295,8 +290,8 @@ class SimpleTaxIO(object):
         nothing: void
         """
         with open(output_filename, 'w') as output_file:
-            for lnum in range(1, len(output) + 1):
-                SimpleTaxIO._write_output_line(output[lnum], output_file)
+            for idx in range(0, len(output)):
+                SimpleTaxIO._write_output_line(output[idx], output_file)
 
     # --- begin private methods of SimpleTaxIO class --- #
 
