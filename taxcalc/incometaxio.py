@@ -51,18 +51,6 @@ class IncomeTaxIO(object):
         if not input_filename.endswith('.csv'):
             msg = 'INPUT file named {} does not end in ".csv"'
             raise ValueError(msg.format(input_filename))
-        # construct output_filename and delete old output file if it exists
-        inp = '{}'.format(input_filename[:-4])
-        if reform_filename:
-            if reform_filename.endswith('.json'):
-                ref = '-{}'.format(reform_filename[:-5])
-            else:
-                ref = '-{}'.format(reform_filename)
-        else:
-            ref = ''
-        self._output_filename = '{}.out-inctax{}'.format(inp, ref)
-        if os.path.isfile(self._output_filename):
-            os.remove(self._output_filename)
         # check for existence of file named input_filename
         if not os.path.isfile(input_filename):
             msg = 'INPUT file named {} could not be found'
@@ -76,6 +64,18 @@ class IncomeTaxIO(object):
         if tax_year > policy.end_year:
             msg = 'tax_year {} greater than policy.end_year {}'
             raise ValueError(msg.format(tax_year, policy.end_year))
+        # construct output_filename and delete old output file if it exists
+        inp_str = '{}-{}'.format(input_filename[:-4], str(tax_year)[2:])
+        if reform_filename:
+            if reform_filename.endswith('.json'):
+                ref_str = '-{}'.format(reform_filename[:-5])
+            else:
+                ref_str = '-{}'.format(reform_filename)
+        else:
+            ref_str = ''
+        self._output_filename = '{}.out-inctax{}'.format(inp_str, ref_str)
+        if os.path.isfile(self._output_filename):
+            os.remove(self._output_filename)
         # implement policy reform if reform file is specified
         if reform_filename:
             reform = Policy.read_json_reform_file(reform_filename)

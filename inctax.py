@@ -23,11 +23,12 @@ def main():
                      'The INPUT file is a CSV-formatted file that includes '
                      'a subset of IRS-SOI PUF variables. The OUTPUT file uses '
                      'Internet-TAXSIM format.  The OUTPUT filename is the '
-                     'INPUT filename (excluding the .csv suffix) with the '
-                     '".out-inctax" string appended if no --reform option is '
-                     'specified; otherwise the OUTPUT filename is the INPUT '
-                     'filename (excluding the .csv suffix) with the '
-                     '".out-inctax-REFORM" string appended (excluding any '
+                     'INPUT filename (excluding the .csv suffix) followed by '
+                     'a string equal to "-YY" (where the YY is the last two '
+                     'digits in the TAXYEAR) and all that is followed by a '
+                     'trailing string.  The trailing string is ".out-inctax" '
+                     'if no --reform option is specified; otherwise the '
+                     'trailing string is ".out-inctax-REFORM" (excluding any '
                      '".json" ending to the REFORM filename).  The OUTPUT '
                      'file contains the first 28 Internet-TAXSIM output '
                      'variables.  Use --iohelp flag for more information. '
@@ -38,8 +39,9 @@ def main():
                         help=('optional flag to show INPUT and OUTPUT '
                               'variable definitions and exit without trying '
                               'to read the INPUT file, so INPUT and TAXYEAR '
-                              'can be any meaningless pair of characters '
-                              '(e.g., "i y" or "x 0")'),
+                              'can be any meaningless pair of character (as '
+                              'long as the second character is a digit) '
+                              '(e.g., "i 0" or "x 1" or ". 9")'),
                         default=False,
                         action="store_true")
     parser.add_argument('--reform',
@@ -54,7 +56,7 @@ def main():
                               'contains a subset of IRS-SOI PUF variables.'))
     parser.add_argument('TAXYEAR',
                         help=('TAXYEAR is calendar year for which income '
-                              'taxes are computed.'),
+                              'taxes are computed (e.g., 2013).'),
                         type=int)
     args = parser.parse_args()
     # optionally show INPUT and OUTPUT variable definitions and exit
