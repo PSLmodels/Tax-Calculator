@@ -83,13 +83,10 @@ class IncomeTaxIO(object):
         # set tax policy parameters to specified tax_year
         policy.set_year(tax_year)
         # read input file contents into Records object
-        # (recs does not include the IRS-SOI-PUF aggregate record)
+        # (note that recs does not include the IRS-SOI-PUF aggregate record)
         recs = Records(data=input_filename, consider_imputations=True)
         # prepare Records object for sync_years=False in Calculator ctor
-        diff_years = policy.current_year - recs.current_year
-        recs.FLPDYR += diff_years  # pylint: disable=no-member
-        # pylint: disable=protected-access
-        recs._current_year = policy.current_year
+        recs.set_current_year(policy.current_year)
         # create Calculator object without doing year synchronization
         self._calc = Calculator(policy=policy, records=recs, sync_years=False)
 
@@ -131,12 +128,6 @@ class IncomeTaxIO(object):
         # write contents of output
         if write_output_file:
             SimpleTaxIO.write_output_file(output, self._output_filename)
-
-    def number_input_rows(self):
-        """
-        Return number of data rows read from INPUT file.
-        """
-        return self._calc.records.dim
 
     @staticmethod
     def show_iovar_definitions():
