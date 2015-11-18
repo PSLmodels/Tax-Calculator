@@ -420,9 +420,8 @@ class Records(object):
         Sets current year to specified value and updates FLPDYR variable.
         Unlike increment_year method, blowup and reweighting are skipped.
         """
-        diff_years = new_current_year - self._current_year
-        self.FLPDYR += diff_years
         self._current_year = new_current_year
+        self.FLPDYR.fill(new_current_year)
 
     # --- begin private methods of Records class --- #
 
