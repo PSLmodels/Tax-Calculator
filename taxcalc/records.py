@@ -752,7 +752,7 @@ class Records(object):
                          self.wage_head + self.wage_spouse,
                          0)
         self._earning_split = np.where(total != 0,
-                                       self.wage_head / total, 1)
+                                       (self.wage_head * 1.0) / total, 1.0)
         self.e00200p = self._earning_split * self.e00200
         self.e00200s = (1 - self._earning_split) * self.e00200
 
