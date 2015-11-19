@@ -915,7 +915,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
             _cmbtp = 0.
         c62100 = (c00100 - c04470 + max(0., min((1 - ID_Medical_HC) * c17000,
                   0.025 * c00100)) +
-                  (1 - ID_StateLocalTax_HC) * max(0, e18400) + e18500 -
+                  (1 - ID_StateLocalTax_HC) * (max(0, e18400) + e18500) -
                   c60260 + (1 - ID_Miscellaneous_HC) * c20800 - c21040)
         c62100 += _cmbtp
 
