@@ -12,7 +12,7 @@ from taxcalc import Policy, Records, Calculator
 
 def run():
     """
-    Run all function using
+    Run all functions using
     'puf.csv' input and writing ouput to a CSV file named 'results_puf.csv'.
     """
     # create a Policy object containing current-law policy (clp) parameters
