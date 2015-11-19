@@ -20,7 +20,9 @@ class IncomeTaxIO(object):
     Parameters
     ----------
     input_filename: string
-        name of INPUT file that is CSV formatted using SOI PUF varnames.
+        name of INPUT file that is CSV formatted using SOI PUF varnames;
+        the CSV file may be contained in a compressed GZIP file with a
+        name ending in '.gz'.
 
     tax_year: integer
         calendar year for which income taxes will be computed for INPUT.
@@ -47,10 +49,27 @@ class IncomeTaxIO(object):
         """
         IncomeTaxIO class constructor.
         """
-        # check that input_filename ends with .csv
-        if not input_filename.endswith('.csv'):
-            msg = 'INPUT file named {} does not end in ".csv"'
+        # check that input_filename ends with '.csv' or '.csv.gz'
+        if input_filename.endswith('.csv'):
+            inp_str = '{}-{}'.format(input_filename[:-4], str(tax_year)[2:])
+        elif input_filename.endswith('.csv.gz'):
+            inp_str = '{}-{}'.format(input_filename[:-7], str(tax_year)[2:])
+        elif input_filename.endswith('.gz'):
+            inp_str = '{}-{}'.format(input_filename[:-3], str(tax_year)[2:])
+        else:
+            msg = 'INPUT file named {} does not end in ".csv" or ".gz"'
             raise ValueError(msg.format(input_filename))
+        # construct output_filename and delete old output file if it exists
+        if reform_filename:
+            if reform_filename.endswith('.json'):
+                ref_str = '-{}'.format(reform_filename[:-5])
+            else:
+                ref_str = '-{}'.format(reform_filename)
+        else:
+            ref_str = ''
+        self._output_filename = '{}.out-inctax{}'.format(inp_str, ref_str)
+        if os.path.isfile(self._output_filename):
+            os.remove(self._output_filename)
         # check for existence of file named input_filename
         if not os.path.isfile(input_filename):
             msg = 'INPUT file named {} could not be found'
@@ -64,18 +83,6 @@ class IncomeTaxIO(object):
         if tax_year > policy.end_year:
             msg = 'tax_year {} greater than policy.end_year {}'
             raise ValueError(msg.format(tax_year, policy.end_year))
-        # construct output_filename and delete old output file if it exists
-        inp_str = '{}-{}'.format(input_filename[:-4], str(tax_year)[2:])
-        if reform_filename:
-            if reform_filename.endswith('.json'):
-                ref_str = '-{}'.format(reform_filename[:-5])
-            else:
-                ref_str = '-{}'.format(reform_filename)
-        else:
-            ref_str = ''
-        self._output_filename = '{}.out-inctax{}'.format(inp_str, ref_str)
-        if os.path.isfile(self._output_filename):
-            os.remove(self._output_filename)
         # implement policy reform if reform file is specified
         if reform_filename:
             reform = Policy.read_json_reform_file(reform_filename)
@@ -90,17 +97,11 @@ class IncomeTaxIO(object):
         # create Calculator object without doing year synchronization
         self._calc = Calculator(policy=policy, records=recs, sync_years=False)
 
-    def start_year(self):
+    def tax_year(self):
         """
-        Returns earliest year for IncomeTaxIO calculations
+        Returns year for which IncomeTaxIO calculations are being done.
         """
-        return self._calc.policy.start_year
-
-    def end_year(self):
-        """
-        Returns latest year for IncomeTaxIO calculations
-        """
-        return self._calc.policy.end_year
+        return self._calc.policy.current_year
 
     def calculate(self, write_output_file=True):
         """

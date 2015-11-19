@@ -23,7 +23,8 @@ def main():
                      'The INPUT file is a CSV-formatted file that includes '
                      'a subset of IRS-SOI PUF variables. The OUTPUT file uses '
                      'Internet-TAXSIM format.  The OUTPUT filename is the '
-                     'INPUT filename (excluding the .csv suffix) followed by '
+                     'INPUT filename (excluding the .csv suffix, the .csv.gz '
+                     'suffix, or the .gz suffix) followed by '
                      'a string equal to "-YY" (where the YY is the last two '
                      'digits in the TAXYEAR) and all that is followed by a '
                      'trailing string.  The trailing string is ".out-inctax" '
@@ -53,7 +54,9 @@ def main():
                         default=None)
     parser.add_argument('INPUT',
                         help=('INPUT is name of required CSV file that '
-                              'contains a subset of IRS-SOI PUF variables.'))
+                              'contains a subset of IRS-SOI PUF variables. '
+                              'The CSV file may be included in a compressed '
+                              'GZIP file with the name ending in ".gz".'))
     parser.add_argument('TAXYEAR',
                         help=('TAXYEAR is calendar year for which income '
                               'taxes are computed (e.g., 2013).'),
