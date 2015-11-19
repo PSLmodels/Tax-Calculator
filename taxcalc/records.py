@@ -55,12 +55,13 @@ class Records(object):
     Typical usage is "recs = Records()", which uses all the default
     parameters of the constructor, and therefore, imputed variables
     are generated to augment the data and initial-year blowup factors
-    are applied to the data. Explicitly setting start_year to some
-    value other than Records.PUF_YEAR will cause this variable-imputation
-    and initial-year-blowup logic to be skipped.  There are situations in
-    which this is exactly what is desired, but more often than not,
-    skipping the imputation and blowup logic would be a mistake.  In
-    other words, do not explicitly specify start_year in the Records
+    are applied to the data. Explicitly setting consider_imputation to
+    False and/or the start_year to something other than Records.PUF_YEAR
+    will cause this variable-imputation and initial-year-blowup logic to
+    be skipped.  There are situations in which this is exactly what is
+    desired, but more often than not, skipping the imputation and blowup
+    logic would be a mistake.  In other words, do not explicitly specify
+    consider_imputations=False or specify the start_year in the Records
     class constructor unless you know exactly what you are doing.
     """
 
@@ -403,12 +404,24 @@ class Records(object):
         return self._current_year
 
     def increment_year(self):
+        """
+        Adds one to current year and updates each record's FLPDYR variable.
+        Also, does variable blowup and reweighting for the new current year.
+        """
         self._current_year += 1
         self.FLPDYR += 1
         # Implement Stage 1 Extrapolation blowup factors
         self._blowup(self._current_year)
         # Implement Stage 2 Extrapolation reweighting.
         self.s006 = (self.WT["WT" + str(self.current_year)] / 100).values
+
+    def set_current_year(self, new_current_year):
+        """
+        Sets current year to specified value and updates FLPDYR variable.
+        Unlike increment_year method, blowup and reweighting are skipped.
+        """
+        self._current_year = new_current_year
+        self.FLPDYR.fill(new_current_year)
 
     # --- begin private methods of Records class --- #
 
