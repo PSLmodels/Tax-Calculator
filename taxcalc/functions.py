@@ -517,8 +517,8 @@ def Personal_Credit(c00100, MARS, II_credit, II_credit_ps, II_credit_prt):
     _personal_credit = II_credit[MARS - 1]
 
     # phaseout using AGI
-    if c00100 > II_credit_ps[MARS - 1]:
-        credit_phaseout = II_credit_prt * (c00100 - II_credit_ps[MARS - 1])
+    if c04500 > II_credit_ps[MARS - 1]:
+        credit_phaseout = II_credit_prt * (c04500 - II_credit_ps[MARS - 1])
     else:
         credit_phaseout = 0.0
 
