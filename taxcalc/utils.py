@@ -41,6 +41,7 @@ SMALL_INCOME_BINS = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
 
 WEBAPP_INCOME_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                       199999, 499999, 1000000, 1e14]
+EPSILON = 1e-3
 
 
 def extract_array(f):
@@ -95,7 +96,7 @@ def weighted_perc_dec(agg, col_name):
 
 
 def weighted_share_of_total(agg, col_name, total):
-    return float(weighted_sum(agg, col_name)) / float(total)
+    return float(weighted_sum(agg, col_name)) / (float(total) + EPSILON)
 
 
 def add_weighted_decile_bins(df, income_measure='_expanded_income'):
@@ -376,15 +377,21 @@ def create_difference_table(calc1, calc2, groupby,
     Gets results given by the two different tax calculators and outputs
         a table that compares the differing results.
         The table is sorted according the the groupby input.
+        Notice that you always needs to run calc_all() for each year
+        before generating diffs table from this function. You can check
+        what year your calculator is using the current_year attribute
+        of your calculator. (usage: calc1.current_year)
 
     Parameters
     ----------
-    calc1, the first Calculator object
-    calc2, the other Calculator object
-    groupby, String object
+    calc1: the baseline Calculator on year t
+    calc2: the reform Calculator on year t
+    groupby: String
         options for input: 'weighted_deciles', 'small_income_bins',
         'large_income_bins', 'webapp_income_bins'
         determines how the columns in the resulting DataFrame are sorted
+    income_measure: String
+        specifies the income type for row label classifer
 
 
     Returns
@@ -394,6 +401,11 @@ def create_difference_table(calc1, calc2, groupby,
 
     res1 = results(calc1)
     res2 = results(calc2)
+
+    baseline_income_measure = income_measure + '_baseline'
+    res2[baseline_income_measure] = res1[income_measure]
+    income_measure = baseline_income_measure
+
     if groupby == "weighted_deciles":
         df = add_weighted_decile_bins(res2, income_measure=income_measure)
     elif groupby == "small_income_bins":
