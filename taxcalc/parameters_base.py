@@ -88,7 +88,7 @@ class ParametersBase(object):
 
     def indexing_rates(self, param_name):
         if (hasattr(self, '_wage_growth_rates') and
-            param_name == '_SS_Earnings_c'):
+           param_name == '_SS_Earnings_c'):
             return self._wage_growth_rates
         elif hasattr(self, '_inflation_rates'):
             return self._inflation_rates
@@ -98,7 +98,7 @@ class ParametersBase(object):
     def indexing_rates_for_update(self, param_name,
                                   calyear, num_years_to_expand):
         if (hasattr(self, '_wage_growth_rates') and
-            param_name == '_SS_Earnings_c'):
+           param_name == '_SS_Earnings_c'):
             rates = self.wage_growth_rates()
         elif hasattr(self, '_inflation_rates'):
             rates = self.inflation_rates()
