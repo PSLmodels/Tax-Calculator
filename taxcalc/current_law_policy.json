@@ -403,7 +403,7 @@
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "cpi_inflated": true,
-        "col_label": ["Medical", "StateLocal", "Casualty", "Miscellaneous", "Interest", "Charity"],        
+        "col_label": ["Medical", "AllTaxPaid", "Casualty", "Miscellaneous", "Interest", "Charity"],        
         "value":    [[true, 	   true,           true,          true,           true,      true]]
     },
      "_EITC_rt":{
@@ -987,6 +987,19 @@
         "description": "This percentage reduces the state and local tax deduction." ,
         "irs_ref": "",
         "notes": "This parameter allows for the implementation of Option 51 from https://www.cbo.gov/sites/default/files/cbofiles/attachments/49638-BudgetOptions.pdf.",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0]
+    },
+    "_ID_AllTaxPaid_HC":{
+        "long_name": "Deduction for all taxes paid at state and local level (Income, Sales, Real Estate, and Personal Property).",
+        "description": "This percentage reduces all taxes paid deduction." ,
+        "irs_ref": "",
+        "notes": "This parameter is currently used to eliminate this part of itemized deduction.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",

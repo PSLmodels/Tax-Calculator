@@ -42,7 +42,6 @@ SMALL_INCOME_BINS = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
 WEBAPP_INCOME_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                       199999, 499999, 1000000, 1e14]
 
-EPSILON = 1e-3
 
 def extract_array(f):
     """
@@ -96,7 +95,7 @@ def weighted_perc_dec(agg, col_name):
 
 
 def weighted_share_of_total(agg, col_name, total):
-    return float(weighted_sum(agg, col_name)) / (float(total) + EPSILON)
+    return float(weighted_sum(agg, col_name)) / float(total)
 
 
 def add_weighted_decile_bins(df, income_measure='_expanded_income'):
