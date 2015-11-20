@@ -39,7 +39,7 @@ class Growth(ParametersBase):
 
     @staticmethod
     def default_real_GDP_growth_rate(list_index):
-         return Growth.REAL_GDP_GROWTH_RATES[list_index]
+        return Growth.REAL_GDP_GROWTH_RATES[list_index]
 
 
 def adjustment(calc, percentage, year):
