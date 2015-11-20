@@ -177,9 +177,9 @@ def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, SS_thd50, SS_thd85,
     return (c02500, e02500)
 
 
-@iterate_jit(nopython=True)
-def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
-        II_em, II_em_ps, MARS, _sep, II_prt, DSI):
+@iterate_jit(nopython=True, puf=True)
+def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT, XOCAH,
+        XOCAWH, XOODEP, II_em, II_em_ps, MARS, _sep, II_prt, DSI, puf):
 
     # Adjusted Gross Income
 
@@ -194,6 +194,10 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
 
     if DSI:
         XTOT = 0
+    elif puf:
+        XTOT = 1 + XOCAH + XOCAWH + XOODEP + (MARS == 2)
+    else:
+        XTOT = XTOT
 
     _prexmp = XTOT * II_em
     # Personal Exemptions (_phaseout smoothed)
