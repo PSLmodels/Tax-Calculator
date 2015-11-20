@@ -15,6 +15,7 @@ from pandas.util.testing import assert_series_equal
 from numba import jit, vectorize, guvectorize
 from taxcalc import *
 from csv_to_ascii import ascii_output
+from taxcalc.utils import EPSILON
 
 # use 1991 PUF-like data to emulate current PUF, which is private
 TAX_DTA_PATH = os.path.join(CUR_PATH, '../../tax_all1991_puf.gz')
@@ -226,7 +227,7 @@ def test_weighted_share_of_total():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
     diffs = grped.apply(weighted_share_of_total, 'tax_diff', 42.0)
-    exp = Series(data=[16.0 / (42. + 1e-3), 26.0 / (42.0 + 1e-3)],
+    exp = Series(data=[16.0 / (42. + EPSILON), 26.0 / (42.0 + EPSILON)],
                  index=['a', 'b'])
     exp.index.name = 'label'
     assert_series_equal(exp, diffs)
