@@ -226,7 +226,8 @@ def test_weighted_share_of_total():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
     diffs = grped.apply(weighted_share_of_total, 'tax_diff', 42.0)
-    exp = Series(data=[16.0 / 42., 26.0 / 42.0], index=['a', 'b'])
+    exp = Series(data=[16.0 / (42. + 1e-3), 26.0 / (42.0 + 1e-3)],
+                 index=['a', 'b'])
     exp.index.name = 'label'
     assert_series_equal(exp, diffs)
 
