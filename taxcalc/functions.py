@@ -512,22 +512,6 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
 
 
 @iterate_jit(nopython=True, puf=False)
-def Personal_Credit(c00100, MARS, II_credit, II_credit_ps, II_credit_prt):
-    # full amount as defined in the parameter
-    _personal_credit = II_credit[MARS - 1]
-
-    # phaseout using AGI
-    if c00100 > II_credit_ps[MARS - 1]:
-        credit_phaseout = II_credit_prt * (c00100 - II_credit_ps[MARS - 1])
-    else:
-        credit_phaseout = 0.0
-
-    _personal_credit = _personal_credit - credit_phaseout
-
-    return _personal_credit
-
-
-@iterate_jit(nopython=True, puf=False)
 def TaxInc(c00100, c04470, c04100, _standard, e37717, c21060, c21040,
            e04470, c04200, c04500, c04600, x04500,
            e04805, t04470, f6251, _exact, _feided, c04800, MARS,
@@ -589,6 +573,22 @@ def TaxInc(c00100, c04470, c04100, _standard, e37717, c21060, c21040,
     return (c04470, _othded, c04100,
             c04500, c04800, c60000, _amtstd, _taxinc,
             _feitax, _oldfei)
+
+
+@iterate_jit(nopython=True, puf=False)
+def Personal_Credit(c04500, MARS, II_credit, II_credit_ps, II_credit_prt):
+    # full amount as defined in the parameter
+    _personal_credit = II_credit[MARS - 1]
+
+    # phaseout using taxable income
+    if c04500 > II_credit_ps[MARS - 1]:
+        credit_phaseout = II_credit_prt * (c04500 - II_credit_ps[MARS - 1])
+    else:
+        credit_phaseout = 0.0
+
+    _personal_credit = _personal_credit - credit_phaseout
+
+    return _personal_credit
 
 
 @iterate_jit(nopython=True)
