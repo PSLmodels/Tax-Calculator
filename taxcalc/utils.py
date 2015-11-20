@@ -314,8 +314,12 @@ def create_distribution_table(calc, groupby, result_type,
     result_type : String object
         options for input: 'weighted_sum' or 'weighted_avg';
         determines how the data should be manipulated
-    base_calc : A Calculator object
+    baseline_calc : A Calculator object
         carries the baseline plan
+    diffs : boolean
+        indicates showing the results from reform or the difference between
+        the baseline and reform. Turn this switch to True if you want to see
+        the difference
 
     Notes
     -----
