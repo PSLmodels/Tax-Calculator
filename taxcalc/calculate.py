@@ -66,8 +66,8 @@ class Calculator(object):
             print("You loaded data for " +
                   str(self._records.current_year) + '.')
 
-            if self._records.current_year == 2009:
-                self.records.extrapolate_2009_puf()
+            # if self._records.current_year == 2009:
+            #    self.records.extrapolate_2009_puf()
 
             while self._records.current_year < self._policy.current_year:
                 self._records.increment_year()

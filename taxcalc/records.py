@@ -398,9 +398,9 @@ class Records(object):
         self._current_year += 1
         self.FLPDYR += 1
         # Implement Stage 1 Extrapolation blowup factors
-        self._blowup(self._current_year)
+        # self._blowup(self._current_year)
         # Implement Stage 2 Extrapolation reweighting.
-        self.s006 = (self.WT["WT" + str(self.current_year)] / 100).values
+        # self.s006 = (self.WT["WT" + str(self.current_year)] / 100).values
 
     def extrapolate_2009_puf(self):
         year = 2009
@@ -757,7 +757,7 @@ class Records(object):
                          self.wage_head + self.wage_spouse,
                          0)
         self._earning_split = np.where(total != 0,
-                                       self.wage_head / total, 1)
+                                       self.wage_head * 1.0 / total, 1.0)
         self.e00200p = self._earning_split * self.e00200
         self.e00200s = (1 - self._earning_split) * self.e00200
 
