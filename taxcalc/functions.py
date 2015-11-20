@@ -354,7 +354,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700, e00100,
     _nonlimited = ((1 - ID_Medical_HC) * c17000 +
                    (1 - ID_Casualty_HC) * c20500 +
                    e19570 + e21010 + e20900)
-    _limitratio = _phase2_i / _sep
+    _limitratio = _phase2_i
 
     # Itemized deductions amount after limitation if any
     c04470 = c21060
@@ -380,6 +380,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700, e00100,
     return (c17750, c17000, _statax, c18300, c37703, c20500,
             c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
             _nonlimited, _limitratio, c04470, c21040)
+
 
 @iterate_jit(nopython=True)
 def AMED(_fica, e00200, MARS, AMED_thd, _sey, AMED_trt,
@@ -538,11 +539,11 @@ def TaxInc(c00100, c04470, c04100, _standard, e37717, c21060, c21040,
     c04800 = max(0., c04500 - c04600 - e04805)
 
     # Check with Dan whether this is right!
-    # if c04470 > _standard:
-    #     _standard = 0.
+    if c04470 > _standard:
+        _standard = 0.
 
-    # if c04470 <= _standard:
-    #     c04470 = 0.
+    if c04470 <= _standard:
+        c04470 = 0.
 
     # why is this here, c60000 is reset many times?
     if _standard > 0:
