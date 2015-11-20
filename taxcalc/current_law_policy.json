@@ -436,7 +436,7 @@
         "long_name": "Max Taxable Earnings for Social Security",
 	"description": "Only earnings lower than this maximum amount are subjected to Social Security tax (OASDI tax).",
         "irs_ref": "W-2, Box 4, instructions",
-        "notes": "Payroll tax is not calculated in this calculator.",
+        "notes": "",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -750,10 +750,10 @@
 	"validations":{"min": "_II_brk5"}
      },
      "_FICA_ss_trt":{
-        "long_name": "Social Security payroll rate",
-	"description": "Social Security  tax rate, including both employer and employee.",
+        "long_name": "Social Security payroll tax rate",
+	"description": "Social Security FICA rate, including both employer and employee.",
         "irs_ref": "Form , line , ",
-        "notes": "We do not calculate payroll tax liability, but use this for eligibility for some tax items.",
+        "notes": "",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -765,10 +765,10 @@
 
     },
      "_FICA_mc_trt":{
-        "long_name": "Medicare FICA rate",
-        "description": "Medicare tax rate, including both employer and employee.",
+        "long_name": "Medicare payroll tax rate",
+        "description": "Medicare FICA rate, including both employer and employee.",
         "irs_ref": "Form , line , ",
-        "notes": "We do not calculate payroll tax liability, but use this for eligibility for some tax items.",
+        "notes": "",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -958,7 +958,7 @@
     },
     "_ID_prt":{
         "long_name": "Itemized deduction phaseout rate (Pease)",
-	    "description": "Taxpayers will not be eligible to deduct the full amount of itemized deduction if their AGI is above the phaseout start. The deductible portion would be decreased at this rate for each dollar exceeding the start.",
+	"description": "Taxpayers will not be eligible to deduct the full amount of itemized deduction if their AGI is above the phaseout start. The deductible portion would be decreased at this rate for each dollar exceeding the start.",
         "irs_ref": "Schedule A, line 29, instructions. ",
         "notes": "This phaseout rate cannot be lower than 0.03 for each dollar, due to limited data on non-itemizers.",
         "start_year": 2013,
@@ -1100,10 +1100,10 @@
         "value":     [0.05]        
     },
     "_CTC_additional":{
-        "long_name": "Partially refundable child tax credit",
+        "long_name": "Additional additional child tax credit amount (Lee-Rubio)",
 	"description": "In addition to all the credits currently available for dependents, this paramter gives each qualifying child a fixed amount of partially refundable credit, limited by the sum of total income and payroll tax liabilities.",
         "irs_ref": "",
-        "notes": "",
+        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualificaiton rules for the Child Tax Credit under current law. ",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -1410,7 +1410,7 @@
     },
         "_II_credit":{
         "long_name": "Personal refundable credit",
-	"description": "",
+	"description": "This credit amount is fully refundable, phased out based on taxable income. ",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
@@ -1423,7 +1423,7 @@
      },
         "_II_credit_ps":{
         "long_name": "Personal refundable credit phaseout start",
-	"description": "",
+	"description": "The Personal Refundable credit amount will be reduced for taxpayers with taxable income higher than this level.",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
@@ -1436,7 +1436,7 @@
      },
         "_II_credit_prt":{
         "long_name": "Personal refundable credit phaseout rate",
-	"description": "",
+	"description": "The Personal Refundable credit amount will be reduced at this rate for each dollor of taxable income exceeding the thresholds.",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
