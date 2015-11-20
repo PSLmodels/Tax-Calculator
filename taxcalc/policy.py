@@ -148,6 +148,18 @@ class Policy(ParametersBase):
 
         self.initialize(start_year, num_years)
 
+    def inflation_rates(self):
+        """
+        Returns list of price inflation rates starting with JSON_START_YEAR.
+        """
+        return self._inflation_rates
+
+    def wage_growth_rates(self):
+        """
+        Returns list of wage growth rates starting with JSON_START_YEAR.
+        """
+        return self._wage_growth_rates
+
     @staticmethod
     def read_json_reform_file(reform_filename):
         """
