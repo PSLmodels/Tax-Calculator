@@ -580,7 +580,7 @@ def Personal_Credit(c04500, MARS, II_credit, II_credit_ps, II_credit_prt):
     # full amount as defined in the parameter
     _personal_credit = II_credit[MARS - 1]
 
-    # phaseout using AGI
+    # phaseout using taxable income
     if c04500 > II_credit_ps[MARS - 1]:
         credit_phaseout = II_credit_prt * (c04500 - II_credit_ps[MARS - 1])
     else:
