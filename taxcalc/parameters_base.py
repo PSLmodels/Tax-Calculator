@@ -87,26 +87,26 @@ class ParametersBase(object):
         return self._start_year
 
     def indexing_rates(self, param_name):
-        if param_name == '_SS_Earnings_c':
+        if (hasattr(self, '_wage_growth_rates') and
+            param_name == '_SS_Earnings_c'):
             return self._wage_growth_rates
         elif hasattr(self, '_inflation_rates'):
             return self._inflation_rates
         else:
             return None
 
-    def indexing_rates_for_update(self, param_name, year,
-                                  num_years_to_expand):
+    def indexing_rates_for_update(self, param_name,
+                                  calyear, num_years_to_expand):
         if (hasattr(self, '_wage_growth_rates') and
-           param_name == '_SS_Earnings_c'):
-            rates = [self._wage_growth_rates[(year - self.start_year) + i]
-                     for i in range(0, num_years_to_expand)]
+            param_name == '_SS_Earnings_c'):
+            rates = self.wage_growth_rates()
         elif hasattr(self, '_inflation_rates'):
-            rates = [self._inflation_rates[(year - self.start_year) + i]
-                     for i in range(0, num_years_to_expand)]
+            rates = self.inflation_rates()
         else:
-            rates = None
-
-        return rates
+            return None
+        expand_rates = [rates[(calyear - self.start_year) + i]
+                        for i in range(0, num_years_to_expand)]
+        return expand_rates
 
     def set_year(self, year):
         """
