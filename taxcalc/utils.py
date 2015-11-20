@@ -396,6 +396,10 @@ def create_difference_table(calc1, calc2, groupby,
     res1 = results(calc1)
     res2 = results(calc2)
 
+    baseline_income_measure = income_measure + '_baseline'
+    res2[baseline_income_measure] = res1[income_measure]
+    income_measure = baseline_income_measure
+
     if groupby == "weighted_deciles":
         df = add_weighted_decile_bins(res2, income_measure=income_measure)
     elif groupby == "small_income_bins":
