@@ -272,7 +272,8 @@ class Records(object):
              ('s008', 's008'),
              ('s009', 's009'),
              ('WSAMP', 'wsamp'),
-             ('TXRT', 'txrt'), ]
+             ('TXRT', 'txrt'),
+             ('AGERANGE', 'agerange')]
 
     # list of zeroed-out "nonconst" variables
     ZEROED_NAMES = ['e35300_0', 'e35600_0', 'e35910_0', 'x03150', 'e03600',
@@ -731,10 +732,11 @@ class Records(object):
         self._cmbtp_itemizer = self._imputed_cmbtp_itemizer()
         self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
         # standard deduction amount in 2009
-        std_2009 = np.array([5700, 11400, 5700, 8350, 11400, 5700, 950])
-        # std_2009 = np.array([6100, 12200, 6100, 8950, 12200, 6100, 1000])
+        # std_2009 = np.array([5700, 11400, 5700, 8350, 11400, 5700, 950])
+        std_2009 = np.array([6100, 12200, 6100, 8950, 12200, 6100, 1000])
         # Additional standard deduction for aged 2009
-        std_aged_2009 = np.array([1400., 1100.])
+        # std_aged_2009 = np.array([1400., 1100.])
+        std_aged_2009 = np.array([1500., 1200.])
         # impute number of taxpayers
         self._txpyers = np.where(np.logical_or(self.MARS == 2,
                                                np.logical_or(self.MARS == 3,
