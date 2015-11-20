@@ -213,7 +213,7 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT, XOCAH,
 
 
 @iterate_jit(nopython=True, puf=True)
-def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
+def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700, e00100,
             e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
             e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
             MARS, _sep, c00100, ID_ps, ID_Medical_frt, ID_Medical_HC,
@@ -306,11 +306,11 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
 
     # Casualty
     if e20500 > 0:
-        c37703 = e20500 + ID_Casualty_frt * _posagi
-        c20500 = c37703 - ID_Casualty_frt * _posagi
+        c37703 = e20500 + ID_Casualty_frt * max(0, e00100)
     else:
         c37703 = 0.
-        c20500 = 0.
+
+    c20500 = max(0, c37703 - ID_Casualty_frt * _posagi)
 
     # Miscellaneous
     c20750 = ID_Miscellaneous_frt * _posagi
