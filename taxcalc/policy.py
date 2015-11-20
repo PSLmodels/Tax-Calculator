@@ -37,6 +37,10 @@ class Policy(ParametersBase):
         variable inflation rates used to project future policy parameter
         values; if None, default inflation rates (specified below) are used.
 
+    wage_growth_rates: dictionary of YEAR:RATE pairs
+        variable wage growth rates used to project future policy parameter
+        values; if None, default wage growth rates (specified below) are used.
+
     Raises
     ------
     ValueError:
@@ -81,6 +85,7 @@ class Policy(ParametersBase):
         """
         return Policy.__pirates
 
+    @staticmethod
     def default_wage_growth_rates():
         """
         Return complete default wage growth rate dictionary.
@@ -104,6 +109,7 @@ class Policy(ParametersBase):
         """
         Policy class constructor.
         """
+        # pylint: disable=too-many-arguments
         # pylint: disable=super-init-not-called
         if parameter_dict:
             if not isinstance(parameter_dict, dict):
@@ -141,12 +147,6 @@ class Policy(ParametersBase):
                                        for i in range(0, num_years)]
 
         self.initialize(start_year, num_years)
-
-    def inflation_rates(self):
-        """
-        Returns list of price inflation rates starting with JSON_START_YEAR
-        """
-        return self._inflation_rates
 
     @staticmethod
     def read_json_reform_file(reform_filename):
