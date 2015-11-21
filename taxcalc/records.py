@@ -743,16 +743,22 @@ class Records(object):
                                                              self.MARS == 6)),
                                  2., 1.)
         # impute number of extra standard deductions for aged
-        self._numextra = np.where(np.logical_and(self.FDED == 2, self.e04470 >
-                                                 std_2009[self.MARS - 1]),
-                                  np.where(
-                                      np.logical_and(self.MARS != 2,
-                                                     self.MARS != 3),
-                                      (self.e04470 - std_2009[self.MARS - 1]) /
-                                      std_aged_2009[0],
-                                      (self.e04470 - std_2009[self.MARS - 1]) /
-                                      std_aged_2009[1]),
-                                  np.where(self.e02400 > 0, self._txpyers, 0))
+        self._numextra = np.where(np.logical_or(self.AGERANGE >= 6,
+                                  np.logical_and(self.FDED != 2,
+                                                np.logical_and(
+                                                 self.AGERANGE <= 0,
+                                                 self.e02400 > 0))),
+                                  self._txpyers,
+                                  np.where(np.logical_and(self.FDED == 2,
+                                           self.e04470 >
+                                           std_2009[self.MARS - 1]),
+                                           np.where(self.MARS != 2,
+                                           (self.e04470 -
+                                            std_2009[self.MARS - 1]) /
+                                           std_aged_2009[0],
+                                           (self.e04470 -
+                                            std_2009[self.MARS - 1]) /
+                                           std_aged_2009[1]), 0))
 
         # impute the ratio of household head in total household income
         total = np.where(self.MARS == 2,
