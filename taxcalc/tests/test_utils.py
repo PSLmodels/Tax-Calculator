@@ -312,6 +312,20 @@ def test_add_weighted_decile_bins():
     assert 'bins' in df
 
 
+def test_add_columns():
+    cols = [[1000, 40, -10, 0, 10],
+            [100, 8, 9, 100, 20],
+            [-1000, 38, 90, 800, 30]]
+    df = DataFrame(data=cols,
+                   columns=['c00100', 'c04470', '_standard', 'c09600', 's006'])
+    add_columns(df)
+
+    npt.assert_array_equal(df.c04470, np.array([40, 0, 0]))
+    npt.assert_array_equal(df.num_returns_ItemDed, np.array([10, 0, 0]))
+    npt.assert_array_equal(df.num_returns_StandardDed, np.array([0, 20, 0]))
+    npt.assert_array_equal(df.num_returns_AMT, np.array([0, 20, 30]))
+
+
 def test_dist_table_sum_row():
     # Create a default Policy object
     policy1 = Policy()
