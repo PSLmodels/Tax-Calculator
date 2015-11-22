@@ -86,27 +86,36 @@ class ParametersBase(object):
     def start_year(self):
         return self._start_year
 
+    def inflation_rates(self):
+        """
+        Override this method in subclass when appropriate.
+        """
+        return None
+
+    def wage_growth_rates(self):
+        """
+        Override this method in subclass when appropriate.
+        """
+        return None
+
     def indexing_rates(self, param_name):
-        if (hasattr(self, '_wage_growth_rates') and
-           param_name == '_SS_Earnings_c'):
-            return self._wage_growth_rates
-        elif hasattr(self, '_inflation_rates'):
-            return self._inflation_rates
+        if param_name == '_SS_Earnings_c':
+            return self.wage_growth_rates()
         else:
-            return None
+            return self.inflation_rates()
 
     def indexing_rates_for_update(self, param_name,
                                   calyear, num_years_to_expand):
-        if (hasattr(self, '_wage_growth_rates') and
-           param_name == '_SS_Earnings_c'):
+        if param_name == '_SS_Earnings_c':
             rates = self.wage_growth_rates()
-        elif hasattr(self, '_inflation_rates'):
+        else:
             rates = self.inflation_rates()
+        if rates:
+            expand_rates = [rates[(calyear - self.start_year) + i]
+                            for i in range(0, num_years_to_expand)]
+            return expand_rates
         else:
             return None
-        expand_rates = [rates[(calyear - self.start_year) + i]
-                        for i in range(0, num_years_to_expand)]
-        return expand_rates
 
     def set_year(self, year):
         """
@@ -342,7 +351,6 @@ class ParametersBase(object):
                 raise ValueError(msg.format(name, year))
             index_rates = self.indexing_rates_for_update(name, year,
                                                          num_years_to_expand)
-
             nval = self.expand_array(values,
                                      inflate=indexed,
                                      inflation_rates=index_rates,
