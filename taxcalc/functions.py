@@ -534,13 +534,13 @@ def TaxInc(c00100, c04470, c04100, _standard, e37717, c21060, c21040,
     if c04470 <= _standard:
         c04470 = 0.
 
-    if FDED == 1:
-        _othded = e04470 - c04470
-        c04100 = 0.
-        c04200 = 0.
-        _standard = 0.
-    else:
-        _othded = 0.
+    # if FDED == 1:
+    #    _othded = e04470 - c04470
+    #    c04100 = 0.
+    #    c04200 = 0.
+    #    _standard = 0.
+    # else:
+    #    _othded = 0.
 
     c04800 = max(0., c04500 - c04600 - e04805)
 
@@ -574,7 +574,7 @@ def TaxInc(c00100, c04470, c04100, _standard, e37717, c21060, c21040,
     else:
         _feitax, _oldfei = 0., 0.
 
-    return (c04470, _othded, c04100,
+    return (c04470, c04100,
             c04500, c04800, c60000, _amtstd, _taxinc,
             _feitax, _oldfei)
 
