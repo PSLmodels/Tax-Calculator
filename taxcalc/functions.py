@@ -858,10 +858,13 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
     # imputation for x62730
     if e62730 != 0 and e24515 > 0:
         x62730 = e62730 - e24515
-    c62730 = e24515 + x62730
+    c62730 = e24515
 
     _amtded = c60200 + c60220 + c60240
-    _prefded = c60200 + c60220 + c60240
+    if FDED == 2:
+        _prefded = 0
+    else:
+        _prefded = c60200 + c60220 + c60240
     _prefnot = c21060 - c21040 - _prefded
     _totded = _prefded + _prefnot
     _useded = min(_totded, max(0, c00100 - c04600))
@@ -880,8 +883,8 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
 
     #   _amtded = max(0., _amtded + c60000)
 
-    if FDED == 1 or ((_amtded + e60290) > 0):
-        _addamt = _amtded + e60290 - c60130
+    if FDED == 1 or ((_prefded + e60290) > 0):
+        _addamt = _prefded + e60290 - c60130
     else:
         _addamt = 0
 
