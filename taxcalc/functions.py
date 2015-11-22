@@ -176,7 +176,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
             ID_Casualty_frt, ID_Casualty_HC, ID_Miscellaneous_frt,
             ID_Miscellaneous_HC, ID_Charity_crt_Cash, ID_Charity_crt_Asset,
             ID_prt, ID_crt, ID_StateLocalTax_HC, ID_Charity_frt,
-            ID_Charity_HC, ID_InterestPaid_HC, puf):
+            ID_Charity_HC, ID_InterestPaid_HC, ID_RealEstate_HC, puf):
 
     """
     Itemized Deduction; Form 1040, Schedule A
@@ -254,11 +254,11 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
     c17000 = max(0, e17500 - c17750)
 
     # State and Local Income Tax, or Sales Tax
-    _statax = max(e18400, 0)
-    # _statax = max(e18450, max(e18400, e18425))
+    _statax = (1 - ID_StateLocalTax_HC) * max(e18400, 0)
 
     # Other Taxes (including state and local)
-    c18300 = _statax + e18500 + e18800 + e18900
+    real_estate = (1 - ID_RealEstate_HC) * e18500
+    c18300 = _statax + real_estate + e18800 + e18900
 
     # Casualty
     if e20500 > 0:
@@ -297,8 +297,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
 
     # Gross Itemized Deductions
 
-    c21060 = (e20900 + (1 - ID_Medical_HC) * c17000 +
-              (1 - ID_StateLocalTax_HC) * c18300 +
+    c21060 = (e20900 + (1 - ID_Medical_HC) * c17000 + c18300 +
               (1 - ID_InterestPaid_HC) * c19200 +
               (1 - ID_Charity_HC) * c19700 +
               (1 - ID_Casualty_HC) * c20500 +
@@ -856,7 +855,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
          KT_c_Age, x62740, e62900, AMT_thd_MarriedS, _earned, e62600,
          AMT_em, AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer,
          _cmbtp_standard, ID_StateLocalTax_HC, ID_Medical_HC,
-         ID_Miscellaneous_HC, puf):
+         ID_Miscellaneous_HC, ID_RealEstate_HC, puf):
 
     # if e62720 != 0 and e24517 > 0:
     #    x62720 = e62720 - e24517
@@ -869,7 +868,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
     c60200 = min((1 - ID_Medical_HC) * c17000, 0.025 * _posagi)
     # if e60240 != 0 and e18300 > 0:
     #    x60240 = e60240 - e18300
-    c60240 = (1 - ID_StateLocalTax_HC) * c18300 + x60240
+    c60240 = c18300 + x60240
     # if e60220 != 0 and e20800 > 0:
     #    x60220 = e60220 - e20800
     c60220 = (1 - ID_Miscellaneous_HC) * c20800 + x60220
@@ -913,9 +912,10 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
             _cmbtp = _cmbtp_itemizer
         else:
             _cmbtp = 0.
+        real_estate = (1 - ID_RealEstate_HC) * e18500
+        income_sales = (1 - ID_StateLocalTax_HC) * max(0, e18400)
         c62100 = (c00100 - c04470 + max(0., min((1 - ID_Medical_HC) * c17000,
-                  0.025 * c00100)) +
-                  (1 - ID_StateLocalTax_HC) * max(0, e18400) + e18500 -
+                  0.025 * c00100)) + income_sales + real_estate -
                   c60260 + (1 - ID_Miscellaneous_HC) * c20800 - c21040)
         c62100 += _cmbtp
 
@@ -1702,7 +1702,7 @@ def BenefitSurtax(calc):
         # hard code the reform
         nobenefits_calc.policy.ID_Medical_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[0])
-        nobenefits_calc.policy.ID_StateLocalTax_HC = \
+        nobenefits_calc.policy.ID_AllTaxPaid_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[1])
         nobenefits_calc.policy.ID_casualty_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[2])

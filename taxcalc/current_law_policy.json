@@ -403,7 +403,7 @@
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "cpi_inflated": true,
-        "col_label": ["Medical", "StateLocal", "Casualty", "Miscellaneous", "Interest", "Charity"],        
+        "col_label": ["Medical", "AllTaxPaid", "Casualty", "Miscellaneous", "Interest", "Charity"],        
         "value":    [[true, 	   true,           true,          true,           true,      true]]
     },
      "_EITC_rt":{
@@ -983,10 +983,23 @@
         "value":     [0.8]        
     },
     "_ID_StateLocalTax_HC":{
-        "long_name": "Deduction for state and local taxes haircut.",
+        "long_name": "State and local taxes (Income and Sales) deduction haircut.",
         "description": "This percentage reduces the state and local tax deduction." ,
         "irs_ref": "",
         "notes": "This parameter allows for the implementation of Option 51 from https://www.cbo.gov/sites/default/files/cbofiles/attachments/49638-BudgetOptions.pdf.",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0]
+    },
+    "_ID_RealEstate_HC":{
+        "long_name": "Real estate taxes deduction haircut.",
+        "description": "This percentage reduces real estate taxes paid eligible to deduct in itemized deduction." ,
+        "irs_ref": "",
+        "notes": "This parameter is currently used to eliminate real estate taxes paid itemized deduction.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -1444,6 +1457,7 @@
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "cpi_inflated": false,
+        "col_label": "",
         "value": [ 0.0]
      }
 }

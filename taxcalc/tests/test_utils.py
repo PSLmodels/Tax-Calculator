@@ -15,6 +15,7 @@ from pandas.util.testing import assert_series_equal
 from numba import jit, vectorize, guvectorize
 from taxcalc import *
 from csv_to_ascii import ascii_output
+from taxcalc.utils import EPSILON
 
 # use 1991 PUF-like data to emulate current PUF, which is private
 TAX_DTA_PATH = os.path.join(CUR_PATH, '../../tax_all1991_puf.gz')
@@ -226,7 +227,8 @@ def test_weighted_share_of_total():
     df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
     diffs = grped.apply(weighted_share_of_total, 'tax_diff', 42.0)
-    exp = Series(data=[16.0 / 42., 26.0 / 42.0], index=['a', 'b'])
+    exp = Series(data=[16.0 / (42. + EPSILON), 26.0 / (42.0 + EPSILON)],
+                 index=['a', 'b'])
     exp.index.name = 'label'
     assert_series_equal(exp, diffs)
 
@@ -308,6 +310,20 @@ def test_add_weighted_decile_bins():
     df = DataFrame(data=data, columns=['_expanded_income', 's006', 'label'])
     df = add_weighted_decile_bins(df)
     assert 'bins' in df
+
+
+def test_add_columns():
+    cols = [[1000, 40, -10, 0, 10],
+            [100, 8, 9, 100, 20],
+            [-1000, 38, 90, 800, 30]]
+    df = DataFrame(data=cols,
+                   columns=['c00100', 'c04470', '_standard', 'c09600', 's006'])
+    add_columns(df)
+
+    npt.assert_array_equal(df.c04470, np.array([40, 0, 0]))
+    npt.assert_array_equal(df.num_returns_ItemDed, np.array([10, 0, 0]))
+    npt.assert_array_equal(df.num_returns_StandardDed, np.array([0, 20, 0]))
+    npt.assert_array_equal(df.num_returns_AMT, np.array([0, 20, 30]))
 
 
 def test_dist_table_sum_row():
