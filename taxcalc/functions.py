@@ -476,16 +476,20 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
     # Calculate deduction for dependents
     if DSI == 1:
         c15100 = max(350 + _earned, STD[6])
+        c04100 = min(STD[MARS - 1], c15100)
     else:
-        c15100 = 0.
+        if MIDR == 1:
+            c04100 = 0.
+        else:
+            c04100 = STD[MARS - 1]
 
     # Apply regular standard deduction if not dependent or compulsory itemizer
-    if (DSI == 1):
-        c04100 = min(STD[MARS - 1], c15100)
-    elif MIDR == 1:
-        c04100 = 0.
-    else:
-        c04100 = STD[MARS - 1]
+    # if (DSI == 1):
+    #    c04100 = min(STD[MARS - 1], c15100)
+    # elif MIDR == 1:
+    #    c04100 = 0.
+    # else:
+    #    c04100 = STD[MARS - 1]
 
     # Add motor vehicle tax to standard deduction
     c04100 = c04100 + e15360
@@ -514,11 +518,12 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
     if (MARS == 3 or MARS == 6) and (MIDR == 1):
         _standard = 0.
 
-    return _standard, c04200, _numextra, c15200, c15100, x04500, _txpyers
+    return (_standard, c04200, _numextra, c15200, c15100, x04500, _txpyers,
+            c04100)
 
 
 @iterate_jit(nopython=True, puf=False)
-def TaxInc(c00100, c04470, c04100, _standard, e37717, c21060, c21040,
+def TaxInc(c00100, c04470, _standard, e37717, c21060, c21040,
            e04470, c04200, c04500, c04600, x04500,
            e04805, t04470, f6251, _exact, _feided, c04800, MARS,
            II_rt1, II_rt2, II_rt3, II_rt4,
@@ -574,9 +579,7 @@ def TaxInc(c00100, c04470, c04100, _standard, e37717, c21060, c21040,
     else:
         _feitax, _oldfei = 0., 0.
 
-    return (c04470, c04100,
-            c04500, c04800, c60000, _amtstd, _taxinc,
-            _feitax, _oldfei)
+    return (c04470, c04500, c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei)
 
 
 @iterate_jit(nopython=True)
