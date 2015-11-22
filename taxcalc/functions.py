@@ -610,8 +610,6 @@ def TaxGains(e00650, c01000, c04800, e01000, c23650, e23250, e01100, e58990,
     else:
         _hasgain = 0.
 
-    _hasgain = 1.  # hasgain switch is off in SAS
-
     if _hasgain == 1.:
         # if/else 1
         _dwks5 = max(0., e58990 - e58980)
