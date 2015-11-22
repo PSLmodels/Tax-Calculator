@@ -107,7 +107,7 @@ def test_default_rates_and_those_implied_by_blowup_factors():
     record = Records(TAX_DTA_PATH)  # contains the blowup factors
     policy = Policy()  # contains the default indexing rates
     syr = Policy.JSON_START_YEAR
-    endyr = 2025
+    endyr = Policy.FIRST_BUDGET_YEAR + Policy.NUM_BUDGET_YEARS
     nyrs = endyr - syr
 
     # back out original stage I GDP growth rates from blowup factors
