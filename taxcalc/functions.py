@@ -526,7 +526,13 @@ def TaxInc(c00100, c04470, c04100, _standard, e37717, c21060, c21040,
            II_brk4, II_brk5, II_brk6, _numextra, FDED, c02700):
 
     # c04500 = c00100 - max(c04470, max(c04100, _standard + e37717))
-    c04500 = c00100 - max(c21060 - c21040, _standard + e37717)
+    c04500 = max(0, c00100 - max(c21060 - c21040, _standard + e37717))
+
+    # Check with Dan whether this is right!
+    if c04470 > _standard:
+        _standard = 0.
+    if c04470 <= _standard:
+        c04470 = 0.
 
     if FDED == 1:
         _othded = e04470 - c04470
@@ -537,13 +543,6 @@ def TaxInc(c00100, c04470, c04100, _standard, e37717, c21060, c21040,
         _othded = 0.
 
     c04800 = max(0., c04500 - c04600 - e04805)
-
-    # Check with Dan whether this is right!
-    if c04470 > _standard:
-        _standard = 0.
-
-    if c04470 <= _standard:
-        c04470 = 0.
 
     # why is this here, c60000 is reset many times?
     if _standard > 0:
