@@ -549,19 +549,8 @@ def TaxInc(c00100, c04470, _standard, e37717, c21060, c21040,
 
     c04800 = max(0., c04500 - c04600 - e04805)
 
-    # why is this here, c60000 is reset many times?
-    if _standard > 0:
-        c60000 = c00100 - x04500
-    else:
-        c60000 = c04500
-
-    c60000 = c60000 - e04805
-
     # Some taxpayers iteimize only for AMT, not regular tax
     _amtstd = 0.
-
-    if (e04470 == 0 and (t04470 > _amtstd) and f6251 == 1 and _exact == 1):
-        c60000 = c00100 - t04470
 
     if (c04800 > 0 and _feided > 0):
         _taxinc = c04800 + c02700
@@ -579,7 +568,7 @@ def TaxInc(c00100, c04470, _standard, e37717, c21060, c21040,
     else:
         _feitax, _oldfei = 0., 0.
 
-    return (c04470, c04500, c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei,
+    return (c04470, c04500, c04800, _amtstd, _taxinc, _feitax, _oldfei,
             _standard)
 
 
@@ -837,8 +826,8 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
          e60720, e60430, e60500, e60340, e60680, e60600, e60405, e24516,
          e60440, e60420, e60410, e61400, e60660, e60480, c21060, e62720,
          e62000, e60250, _cmp, _standard, e04470, e17500, c04600, c05200,
-         f6251, e62100, e21040, e20800, c00100, _statax, e60000,
-         c04470, c17000, e18500, c20800, c21040, NIIT, e62730,
+         f6251, e62100, e21040, e20800, c00100, _statax, e60000, t04470,
+         c04470, c17000, e18500, c20800, c21040, NIIT, e62730, e04805,
          DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700,
          e00100, e24515, x62730, x60130, e18400, _amed, AMT_CG_rt4,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
@@ -880,10 +869,14 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
     _useded = min(_totded, max(0, c00100 - c04600))
     # c04500 = c00100 - max(_useded, _standard + e37717)
     if FDED == 1:
-        c60000 = c00100 - _useded
+        c60000 = c00100 - _totded
+    elif FDED == 3:
+        c60000 = c00100 - max(c04470, t04470)
     else:
         c60000 = c00100
-    c60000 = c00100 - _useded
+
+    c60000 = c60000 - e04805
+    # c60000 = c00100 - _useded
     _amtded = min(_prefded, max(0, _useded - _prefnot))
     # if c60000 <= 0:
 
