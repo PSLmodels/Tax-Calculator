@@ -579,7 +579,8 @@ def TaxInc(c00100, c04470, _standard, e37717, c21060, c21040,
     else:
         _feitax, _oldfei = 0., 0.
 
-    return (c04470, c04500, c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei)
+    return (c04470, c04500, c04800, c60000, _amtstd, _taxinc, _feitax, _oldfei,
+            _standard)
 
 
 @iterate_jit(nopython=True)
@@ -877,7 +878,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
     _prefnot = c21060 - c21040 - _prefded
     _totded = _prefded + _prefnot
     _useded = min(_totded, max(0, c00100 - c04600))
-    c04500 = c00100 - max(_useded, _standard + e37717)
+    # c04500 = c00100 - max(_useded, _standard + e37717)
     if FDED == 1:
         c60000 = c00100 - _useded
     else:
@@ -1040,7 +1041,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
     c05800 = _taxbc + c63200
 
     return (c62720, c60260, c63100, c60200, c60240, c60220, c60000,
-            c60130, c62730, _addamt, c62100, c04500,
+            c60130, c62730, _addamt, c62100,
             _amtsepadd, c62600, _agep, _ages, c62700, c62760,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
             _ngamty, c62745, y62745, _tamt2, _amt5pc, _amt15pc,
