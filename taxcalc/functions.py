@@ -826,10 +826,10 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
          e62000, e60250, _cmp, _standard, e04470, e17500, c04600, c05200,
          f6251, e62100, e21040, e20800, c00100, _statax, e60000, t04470,
          c04470, c17000, e18500, c20800, c21040, NIIT, e62730, e04805,
-         DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700,
+         DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700, AGERANGE,
          e00100, e24515, x62730, x60130, e18400, _amed, AMT_CG_rt4,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
-         II_brk6, MARS, _sep, II_brk2, AMT_Child_em, AMT_CG_rt1,
+         II_brk6, MARS, _sep, II_brk2, AMT_Child_em, AMT_CG_rt1, DSI,
          AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516,
          c24520, c04800, e10105, c05700, e05800, e05100, e09600,
          KT_c_Age, x62740, e62900, AMT_thd_MarriedS, _earned, e62600,
@@ -842,7 +842,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
     c62720 = c24517 + x62720
     # if e60260 != 0 and e00700 > 0:
     #    x60260 = e60260 - e00700
-    c60260 = e00700 + x60260
+    c60260 = e00700
     # QUESTION: c63100 variable is reassigned below before use, is this a BUG?
     c63100 = max(0., _taxbc - e07300)
     c60200 = min((1 - ID_Medical_HC) * c17000, 0.025 * _posagi)
@@ -910,7 +910,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
             _cmbtp = _cmbtp_standard
         else:
             _cmbtp = 0.
-        c62100 = (c00100 - c60260)
+        c62100 = c00100 - c60260
         c62100 += _cmbtp
 
     if (MARS == 3 or MARS == 6):
@@ -923,25 +923,28 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
     c62600 = max(0., AMT_em[MARS - 1] - AMT_prt *
                  max(0., c62100 - AMT_em_ps[MARS - 1]))
 
-    if DOBYR >= 1 and DOBYR <= 99:
-        _DOBYR = DOBYR + 1900.
+    if AGERANGE == 1 or (puf and (DSI == 1)):
+        _ages = 0.
     else:
-        _DOBYR = DOBYR
+        if DOBYR >= 1 and DOBYR <= 99:
+            _DOBYR = DOBYR + 1900.
+        else:
+            _DOBYR = DOBYR
 
-    if _DOBYR > 1890:
-        _agep = FLPDYR - _DOBYR
-    else:
-        _agep = 50.
+        if _DOBYR > 1890:
+            _agep = FLPDYR - _DOBYR
+        else:
+            _agep = 50.
 
-    if SDOBYR >= 1 and SDOBYR <= 99:
-        _SDOBYR = SDOBYR + 1900.
-    else:
-        _SDOBYR = SFOBYR
+        if SDOBYR >= 1 and SDOBYR <= 99:
+            _SDOBYR = SDOBYR + 1900.
+        else:
+            _SDOBYR = SFOBYR
 
-    if _SDOBYR > 1890:
-        _ages = FLPDYR - _SDOBYR
-    else:
-        _ages = 50.
+        if _SDOBYR > 1890:
+            _ages = FLPDYR - _SDOBYR
+        else:
+            _ages = 50.
 
     if (_cmp == 1 and f6251 == 1 and _exact == 1):
         c62600 = e62600
