@@ -970,8 +970,6 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
     else:
         c62900 = float(e07300)
 
-    c63000 = c62780 - c62900
-
     # imputation for x62740
     if e62740 != 0 and e24516 > 0:
         x62740 = e62740 - e24516
@@ -979,13 +977,11 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
     if c24516 == 0:
         c62740 = c62720 + c62730
     else:
-        c62740 = min(max(0., c24516 + x62740), c62720 + c62730)
+        c62740 = min(max(0., c24516), c62720 + c62730)
 
     _ngamty = max(0., _alminc - c62740)
 
     c62745 = AMT_trt1 * _ngamty + AMT_trt2 * max(0., _ngamty - AMT_tthd / _sep)
-
-    y62745 = AMT_tthd / _sep
 
     # Capital Gain for AMT
 
@@ -997,19 +993,18 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
 
     _line46 = min(_alminc, c62720)
 
-    _line48 = min(_alminc, c62720) - min(_line45, _line46)
+    _line47 = min(_line45, _line46)
 
-    _amt15pc = min(_line48, max(0., AMT_CG_thd2[MARS - 1] - c24520 + _line45))
+    _line48 = min(_alminc, c62720) - _line47
 
-    if c04800 == 0:
-        _amt15pc = max(0., _line46 - AMT_CG_thd1[MARS - 1])
+    _amt15pc = min(_line48, max(0., AMT_CG_thd2[MARS - 1] - c24520 - _line45))
 
-    if _ngamty != _amt15pc:
-        _amt20pc = _line46 - _amt15pc - min(_line45, _line46)
+    if _ngamty != (_amt15pc + _line47):
+        _amt20pc = _line46 - _amt15pc - _line47
     else:
         _amt20pc = 0.
 
-    if c62730 != 0:
+    if c62720 != 0:
         _amt25pc = max(0, _alminc - _ngamty - _line46)
     else:
         _amt25pc = 0.
@@ -1041,7 +1036,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
             c60130, c62730, _addamt, c62100,
             _amtsepadd, c62600, _agep, _ages, c62700, c62760,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
-            _ngamty, c62745, y62745, _tamt2, _amt5pc, _amt15pc,
+            _ngamty, c62745, _tamt2, _amt5pc, _amt15pc,
             _amt25pc, c62747, c62755, c62770, _amt20pc, c62800,
             c09600, _othtax, c05800, _cmbtp, c62100_everyone)
 
