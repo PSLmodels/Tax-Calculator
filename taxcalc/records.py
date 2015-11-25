@@ -15,24 +15,30 @@ class Records(object):
     Parameters
     ----------
     data: string or Pandas DataFrame
-        string describes CSV file in which records data reside
-        DataFrame already contains records data
+        string describes CSV file in which records data reside;
+        DataFrame already contains records data;
         default value is the string 'puf.csv'
 
     blowup_factors: string or Pandas DataFrame
-        string describes CSV file in which blowup factors reside
-        DataFrame already contains blowup factors
+        string describes CSV file in which blowup factors reside;
+        DataFrame already contains blowup factors;
         default value is filename of the default blowup factors
 
     weights: string or Pandas DataFrame
-        string describes CSV file in which weights reside
-        DataFrame already contains weights
+        string describes CSV file in which weights reside;
+        DataFrame already contains weights;
         default value is filename of the default weights
 
     start_year: None or integer
-        None implies current_year is set to value of FLPDYR for first unit
-        integer implies current_year is set to start_year
+        None implies current_year is set to value of FLPDYR for first unit;
+        integer implies current_year is set to start_year;
         default value is None
+
+    consider_imputations: boolean
+        True implies that if current_year (see start_year above) equals
+        PUF_YEAR (see below), then call _impute_variables() method;
+        False implies never call _impute_variables() method;
+        default value is True
 
     Raises
     ------
@@ -49,12 +55,13 @@ class Records(object):
     Typical usage is "recs = Records()", which uses all the default
     parameters of the constructor, and therefore, imputed variables
     are generated to augment the data and initial-year blowup factors
-    are applied to the data. Explicitly setting start_year to some
-    value other than Records.PUF_YEAR will cause this variable-imputation
-    and initial-year-blowup logic to be skipped.  There are situations in
-    which this is exactly what is desired, but more often than not,
-    skipping the imputation and blowup logic would be a mistake.  In
-    other words, do not explicitly specify start_year in the Records
+    are applied to the data. Explicitly setting consider_imputation to
+    False and/or the start_year to something other than Records.PUF_YEAR
+    will cause this variable-imputation and initial-year-blowup logic to
+    be skipped.  There are situations in which this is exactly what is
+    desired, but more often than not, skipping the imputation and blowup
+    logic would be a mistake.  In other words, do not explicitly specify
+    consider_imputations=False or specify the start_year in the Records
     class constructor unless you know exactly what you are doing.
     """
 
@@ -360,18 +367,19 @@ class Records(object):
                     'c82940', 'e59660', '_othadd', 'y07100',
                     'x07100', 'c08800', 'e08795', 'x07400', 'c59680',
                     '_othertax', 'e82915', 'e82940', 'SFOBYR', 'NIIT',
-                    'c59720', '_comb', 'c07150', 'c10300', '_ospctax',
+                    'c59720', '_comb', 'c07150', 'c10300', '_iitax',
                     '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
                     '_amed', '_xlin3', '_xlin6', '_cmbtp_itemizer',
                     '_cmbtp_standard', '_expanded_income', 'c07300',
                     'c07600', 'c07240', 'c62100_everyone',
-                    '_surtax', '_combined', 'x04500']
+                    '_surtax', '_combined', 'x04500', '_personal_credit']
 
     def __init__(self,
                  data="puf.csv",
                  blowup_factors=BLOWUP_FACTORS_PATH,
                  weights=WEIGHTS_PATH,
                  start_year=None,
+                 consider_imputations=True,
                  **kwargs):
 
         """
@@ -388,14 +396,19 @@ class Records(object):
             msg = ('Records.constructor start_year is neither None nor '
                    'an integer')
             raise ValueError(msg)
-        if self._current_year == Records.PUF_YEAR:
+        if consider_imputations and self._current_year == Records.PUF_YEAR:
             self._impute_variables()
+            self._extrapolate_2009_puf()
 
     @property
     def current_year(self):
         return self._current_year
 
     def increment_year(self):
+        """
+        Adds one to current year and updates each record's FLPDYR variable.
+        Also, does variable blowup and reweighting for the new current year.
+        """
         self._current_year += 1
         self.FLPDYR += 1
         # Implement Stage 1 Extrapolation blowup factors
@@ -403,31 +416,13 @@ class Records(object):
         # Implement Stage 2 Extrapolation reweighting.
         self.s006 = (self.WT["WT" + str(self.current_year)] / 100).values
 
-    def extrapolate_2009_puf(self):
-        year = 2009
-        self.BF.AGDPN[year] = 1
-        self.BF.ATXPY[year] = 1
-        self.BF.AWAGE[year] = 1.0053
-        self.BF.ASCHCI[year] = 1.0041
-        self.BF.ASCHCL[year] = 1.1629
-        self.BF.ASCHF[year] = 1
-        self.BF.AINTS[year] = 1.0357
-        self.BF.ADIVS[year] = 1.0606
-        self.BF.ASCHEI[year] = 1.1089
-        self.BF.ASCHEL[year] = 1.2953
-        self.BF.ACGNS[year] = 1.1781
-        self.BF.ABOOK[year] = 1
-        self.BF.ARETS[year] = 1.0026
-        self.BF.APOPN[year] = 1
-        self.BF.ACPIU[year] = 1
-        self.BF.APOPDEP[year] = 1
-        self.BF.ASOCSEC[year] = 0.9941
-        self.BF.ACPIM[year] = 1
-        self.BF.AUCOMP[year] = 1.0034
-        self.BF.APOPSNR[year] = 1
-        self.BF.AIPD[year] = 1
-        self._blowup(year)
-        self.s006 = self.WT["WT" + str(year)] / 100
+    def set_current_year(self, new_current_year):
+        """
+        Sets current year to specified value and updates FLPDYR variable.
+        Unlike increment_year method, blowup and reweighting are skipped.
+        """
+        self._current_year = new_current_year
+        self.FLPDYR.fill(new_current_year)
 
     # --- begin private methods of Records class --- #
 
@@ -765,7 +760,7 @@ class Records(object):
                          self.wage_head + self.wage_spouse,
                          0)
         self._earning_split = np.where(total != 0,
-                                       self.wage_head * 1.0 / total, 1.0)
+                                       (self.wage_head * 1.0) / total, 1.0)
         self.e00200p = self._earning_split * self.e00200
         self.e00200s = (1 - self._earning_split) * self.e00200
 
@@ -780,6 +775,32 @@ class Records(object):
                                       self.e62100, self.e00700,
                                       self.p04470, self.e21040,
                                       self.e18500, self.e20800)
+
+    def _extrapolate_2009_puf(self):
+        year = 2009
+        self.BF.AGDPN[year] = 1
+        self.BF.ATXPY[year] = 1
+        self.BF.AWAGE[year] = 1.0053
+        self.BF.ASCHCI[year] = 1.0041
+        self.BF.ASCHCL[year] = 1.1629
+        self.BF.ASCHF[year] = 1
+        self.BF.AINTS[year] = 1.0357
+        self.BF.ADIVS[year] = 1.0606
+        self.BF.ASCHEI[year] = 1.1089
+        self.BF.ASCHEL[year] = 1.2953
+        self.BF.ACGNS[year] = 1.1781
+        self.BF.ABOOK[year] = 1
+        self.BF.ARETS[year] = 1.0026
+        self.BF.APOPN[year] = 1
+        self.BF.ACPIU[year] = 1
+        self.BF.APOPDEP[year] = 1
+        self.BF.ASOCSEC[year] = 0.9941
+        self.BF.ACPIM[year] = 1
+        self.BF.AUCOMP[year] = 1.0034
+        self.BF.APOPSNR[year] = 1
+        self.BF.AIPD[year] = 1
+        self._blowup(year)
+        self.s006 = self.WT["WT" + str(year)] / 100
 
 
 @vectorize([float64(float64, float64, float64,

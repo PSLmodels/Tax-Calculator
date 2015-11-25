@@ -403,8 +403,8 @@
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "cpi_inflated": true,
-        "col_label": ["Medical", "StateLocal", "Casualty", "Miscellaneous", "Interest", "Charity"],        
-        "value":    [[true, 	   true,           true,          true,           true,      true]]
+        "col_label": ["Medical", "State & Local", "Real Estate", "Casualty", "Miscellaneous", "Interest", "Charity"],        
+        "value":    [[true, 	   true,           true,          true,          true,           true,      true]]
     },
      "_EITC_rt":{
         "long_name": "Earned income credit rate",
@@ -433,10 +433,10 @@
         "value":    [[0.0765, 0.1598, 0.2106, 0.2106]]        
     },
     "_SS_Earnings_c":{
-        "long_name": "Max Taxable Earnings for Social Security",
-	"description": "Only earnings lower than this maximum amount are subjected to Social Security tax (OASDI tax).",
+        "long_name": "Maximum Taxable Earnings for Social Security",
+	"description": "Only individual earnings below this maximum amount are subjected to Social Security (OASDI) payroll tax.",
         "irs_ref": "W-2, Box 4, instructions",
-        "notes": "Payroll tax is not calculated in this calculator.",
+        "notes": "This parameter is indexed by the rate of growth in average wages, not by the inflation rate.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -750,10 +750,10 @@
 	"validations":{"min": "_II_brk5"}
      },
      "_FICA_ss_trt":{
-        "long_name": "Social Security payroll rate",
-	"description": "Social Security  tax rate, including both employer and employee.",
+        "long_name": "Social Security payroll tax rate",
+	"description": "Social Security FICA rate, including both employer and employee.",
         "irs_ref": "Form , line , ",
-        "notes": "We do not calculate payroll tax liability, but use this for eligibility for some tax items.",
+        "notes": "",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -765,10 +765,10 @@
 
     },
      "_FICA_mc_trt":{
-        "long_name": "Medicare FICA rate",
-        "description": "Medicare tax rate, including both employer and employee.",
+        "long_name": "Medicare payroll tax rate",
+        "description": "Medicare FICA rate, including both employer and employee.",
         "irs_ref": "Form , line , ",
-        "notes": "We do not calculate payroll tax liability, but use this for eligibility for some tax items.",
+        "notes": "",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -958,7 +958,7 @@
     },
     "_ID_prt":{
         "long_name": "Itemized deduction phaseout rate (Pease)",
-	    "description": "Taxpayers will not be eligible to deduct the full amount of itemized deduction if their AGI is above the phaseout start. The deductible portion would be decreased at this rate for each dollar exceeding the start.",
+	"description": "Taxpayers will not be eligible to deduct the full amount of itemized deduction if their AGI is above the phaseout start. The deductible portion would be decreased at this rate for each dollar exceeding the start.",
         "irs_ref": "Schedule A, line 29, instructions. ",
         "notes": "This phaseout rate cannot be lower than 0.03 for each dollar, due to limited data on non-itemizers.",
         "start_year": 2013,
@@ -983,10 +983,23 @@
         "value":     [0.8]        
     },
     "_ID_StateLocalTax_HC":{
-        "long_name": "Deduction for state and local taxes haircut.",
+        "long_name": "State and local taxes (Income and Sales) deduction haircut.",
         "description": "This percentage reduces the state and local tax deduction." ,
         "irs_ref": "",
         "notes": "This parameter allows for the implementation of Option 51 from https://www.cbo.gov/sites/default/files/cbofiles/attachments/49638-BudgetOptions.pdf.",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0]
+    },
+    "_ID_RealEstate_HC":{
+        "long_name": "Real estate taxes deduction haircut.",
+        "description": "This percentage reduces real estate taxes paid eligible to deduct in itemized deduction." ,
+        "irs_ref": "",
+        "notes": "This parameter is currently used to eliminate real estate taxes paid itemized deduction.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
@@ -1098,6 +1111,19 @@
         "cpi_inflated": false,
         "col_label": "",
         "value":     [0.05]        
+    },
+    "_CTC_additional":{
+        "long_name": "Additional additional child tax credit amount (Lee-Rubio)",
+	"description": "In addition to all the credits currently available for dependents, this paramter gives each qualifying child a fixed amount of partially refundable credit, limited by the sum of total income and payroll tax liabilities.",
+        "irs_ref": "",
+        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualificaiton rules for the Child Tax Credit under current law. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [0.0]        
     },
     "_ACTC_ChildNum":{
         "long_name": "Additional child tax credit minimum number of qualified children",
@@ -1394,5 +1420,44 @@
         "value": [  [400000, 450000, 225000, 425000, 450000, 225000],
                     [406750, 457600, 228800, 432200, 457600, 228800],
                     [413200, 464850, 223425, 439000, 464850, 223425]]
-    }
+    },
+        "_II_credit":{
+        "long_name": "Personal refundable credit",
+	"description": "This credit amount is fully refundable, phased out based on taxable income. ",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household"],        
+        "value": [ [0,           0,        0,             0]]
+     },
+        "_II_credit_ps":{
+        "long_name": "Personal refundable credit phaseout start",
+	"description": "The Personal Refundable credit amount will be reduced for taxpayers with taxable income higher than this level.",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household"],        
+        "value": [ [0,           0,        0,             0]]
+     },
+        "_II_credit_prt":{
+        "long_name": "Personal refundable credit phaseout rate",
+	"description": "The Personal Refundable credit amount will be reduced at this rate for each dollor of taxable income exceeding the thresholds.",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [ 0.0]
+     }
 }

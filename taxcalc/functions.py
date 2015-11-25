@@ -220,7 +220,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700, e00100,
             ID_Casualty_frt, ID_Casualty_HC, ID_Miscellaneous_frt,
             ID_Miscellaneous_HC, ID_Charity_crt_Cash, ID_Charity_crt_Asset,
             ID_prt, ID_crt, ID_StateLocalTax_HC, ID_Charity_frt,
-            ID_Charity_HC, ID_InterestPaid_HC, puf):
+            ID_Charity_HC, ID_InterestPaid_HC, ID_RealEstate_HC, puf):
 
     """
     Itemized Deduction; Form 1040, Schedule A
@@ -298,11 +298,11 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700, e00100,
     c17000 = max(0, e17500 - c17750)
 
     # State and Local Income Tax, or Sales Tax
-    _statax = max(e18400, 0)
-    # _statax = max(e18450, max(e18400, e18425))
+    _statax = (1 - ID_StateLocalTax_HC) * max(e18400, 0)
 
     # Other Taxes (including state and local)
-    c18300 = _statax + e18500 + e18800 + e18900
+    real_estate = (1 - ID_RealEstate_HC) * e18500
+    c18300 = _statax + real_estate + e18800 + e18900
 
     # Casualty
     if e20500 > 0:
@@ -341,8 +341,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700, e00100,
 
     # Gross Itemized Deductions
 
-    c21060 = (e20900 + (1 - ID_Medical_HC) * c17000 +
-              (1 - ID_StateLocalTax_HC) * c18300 +
+    c21060 = (e20900 + (1 - ID_Medical_HC) * c17000 + c18300 +
               (1 - ID_InterestPaid_HC) * c19200 +
               (1 - ID_Charity_HC) * c19700 +
               (1 - ID_Casualty_HC) * c20500 +
@@ -534,10 +533,10 @@ def TaxInc(c00100, c04470, _standard, e37717, c21060, c21040,
     c04500 = max(0, c00100 - max(c21060 - c21040, _standard + e37717))
 
     # Check with Dan whether this is right!
-    if c04470 > _standard:
-        _standard = 0.
-    if c04470 <= _standard:
-        c04470 = 0.
+    # if c04470 > _standard:
+    #    _standard = 0.
+    # if c04470 <= _standard:
+    #    c04470 = 0.
 
     # if FDED == 1:
     #    _othded = e04470 - c04470
@@ -570,6 +569,22 @@ def TaxInc(c00100, c04470, _standard, e37717, c21060, c21040,
 
     return (c04470, c04500, c04800, _amtstd, _taxinc, _feitax, _oldfei,
             _standard)
+
+
+@iterate_jit(nopython=True, puf=False)
+def Personal_Credit(c04500, MARS, II_credit, II_credit_ps, II_credit_prt):
+    # full amount as defined in the parameter
+    _personal_credit = II_credit[MARS - 1]
+
+    # phaseout using taxable income
+    if c04500 > II_credit_ps[MARS - 1]:
+        credit_phaseout = II_credit_prt * (c04500 - II_credit_ps[MARS - 1])
+    else:
+        credit_phaseout = 0.0
+
+    _personal_credit = _personal_credit - credit_phaseout
+
+    return _personal_credit
 
 
 @iterate_jit(nopython=True)
@@ -835,7 +850,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
          KT_c_Age, x62740, e62900, AMT_thd_MarriedS, _earned, e62600,
          AMT_em, AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer,
          _cmbtp_standard, ID_StateLocalTax_HC, ID_Medical_HC,
-         ID_Miscellaneous_HC, puf):
+         ID_Miscellaneous_HC, ID_RealEstate_HC, puf):
 
     # if e62720 != 0 and e24517 > 0:
     #    x62720 = e62720 - e24517
@@ -848,7 +863,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
     c60200 = min((1 - ID_Medical_HC) * c17000, 0.025 * _posagi)
     # if e60240 != 0 and e18300 > 0:
     #    x60240 = e60240 - e18300
-    c60240 = (1 - ID_StateLocalTax_HC) * c18300 + x60240
+    c60240 = c18300 + x60240
     # if e60220 != 0 and e20800 > 0:
     #    x60220 = e60220 - e20800
     c60220 = (1 - ID_Miscellaneous_HC) * c20800 + x60220
@@ -899,9 +914,10 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
             _cmbtp = _cmbtp_itemizer
         else:
             _cmbtp = 0.
+        real_estate = (1 - ID_RealEstate_HC) * e18500
+        income_sales = (1 - ID_StateLocalTax_HC) * max(0, e18400)
         c62100 = (c00100 - c04470 + max(0., min((1 - ID_Medical_HC) * c17000,
-                  0.025 * c00100)) +
-                  (1 - ID_StateLocalTax_HC) * max(0, e18400) + e18500 -
+                  0.025 * c00100)) + income_sales + real_estate -
                   c60260 + (1 - ID_Miscellaneous_HC) * c20800 - c21040)
         c62100 += _cmbtp
 
@@ -1603,16 +1619,23 @@ def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _avail, e11601,
 
 
 @iterate_jit(nopython=True)
-def OSPC_TAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
-             e11450, e11500, e82040, e09900, e11400, e11300, e11200, e11100,
-             e11550, e09710, e09720, e10000, _fica):
+def IITAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
+          e11450, e11500, e82040, e09900, e11400, e11300, e11200, e11100,
+          e11550, e09710, e09720, e10000, _fica, _personal_credit, n24,
+          CTC_additional):
 
     _refund = (c59660 + c11070 + c10960 + c10950 + c11600 + e11580 + e11450 +
-               e11500)
+               e11500 + _personal_credit)
 
-    _ospctax = c09200 - _refund - e82040
+    _iitax = c09200 - _refund - e82040
 
-    _combined = _ospctax + _fica
+    _combined = _iitax + _fica
+
+    partially_refundable_CTC = max(0, min(_combined, CTC_additional * n24))
+
+    _iitax = _iitax - partially_refundable_CTC
+
+    _refund = _refund + partially_refundable_CTC
 
     _payments = (c59660 + c10950 + c10960 + c11070 + e10000 + e11550 +
                  e11450 + e11500)
@@ -1624,7 +1647,7 @@ def OSPC_TAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
     # if c09200 <= _eitc:
     _eitc = c59660
 
-    return (c10300, _eitc, _refund, _ospctax, _combined)
+    return (c10300, _eitc, _refund, _iitax, _combined)
 
 
 @jit(nopython=True)
@@ -1677,21 +1700,23 @@ def BenefitSurtax(calc):
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[0])
         nobenefits_calc.policy.ID_StateLocalTax_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[1])
-        nobenefits_calc.policy.ID_casualty_HC = \
+        nobenefits_calc.policy.ID_RealEstate_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[2])
-        nobenefits_calc.policy.ID_Miscellaneous_HC = \
+        nobenefits_calc.policy.ID_casualty_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[3])
-        nobenefits_calc.policy.ID_InterestPaid_HC = \
+        nobenefits_calc.policy.ID_Miscellaneous_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[4])
-        nobenefits_calc.policy.ID_Charity_HC = \
+        nobenefits_calc.policy.ID_InterestPaid_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[5])
+        nobenefits_calc.policy.ID_Charity_HC = \
+            int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[6])
 
         nobenefits_calc.calc_one_year()
 
-        tax_diff = np.where(nobenefits_calc.records._ospctax -
-                            calc.records._ospctax > 0,
-                            nobenefits_calc.records._ospctax -
-                            calc.records._ospctax, 0)
+        tax_diff = np.where(nobenefits_calc.records._iitax -
+                            calc.records._iitax > 0,
+                            nobenefits_calc.records._iitax -
+                            calc.records._iitax, 0)
 
         surtax_cap = nobenefits_calc.policy.ID_BenefitSurtax_crt *\
             nobenefits_calc.records.c00100
@@ -1700,4 +1725,4 @@ def BenefitSurtax(calc):
                                         tax_diff - surtax_cap,
                                         0) * calc.policy.ID_BenefitSurtax_trt
 
-        calc.records._ospctax += calc.records._surtax
+        calc.records._iitax += calc.records._surtax
