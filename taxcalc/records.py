@@ -94,9 +94,10 @@ class Records(object):
     # specify set of all Record variables used by Tax-Calculator:
     ALL_VARNAMES = set([
         'AGIR1', 'DSI', 'EFI', 'EIC', 'ELECT', 'FDED', 'FLPDYR', 'FLPDMO',
-        'f2441', 'f3800', 'f6251', 'f8582', 'f8606', 'IE', 'MARS', 'MIDR',
-        'n20', 'n24', 'n25', 'PREP', 'SCHB', 'SCHCF', 'SCHE', 'TFORM',
-        'TXST', 'XFPT', 'XFST', 'XOCAH', 'XOCAWH', 'XOODEP', 'XOPAR', 'XTOT',
+        'f2441', 'f3800', 'f6251', 'f8582', 'f8606', 'f8829', 'f8910', 'f8936',
+        'n20', 'n24', 'n25', 'n30', 'PREP', 'SCHB', 'SCHCF', 'SCHE',
+        'TFORM', 'IE', 'TXST', 'XFPT', 'XFST',
+        'XOCAH', 'XOCAWH', 'XOODEP', 'XOPAR', 'XTOT',
         'e00200', 'e00300', 'e00400', 'e00600', 'e00650', 'e00700', 'e00800',
         'e00900', 'e01000', 'e01100', 'e01200', 'e01400', 'e01500', 'e01700',
         'e02000', 'e02100', 'e02300', 'e02400', 'e02500', 'e03150', 'e03210',
@@ -119,17 +120,20 @@ class Records(object):
         'e53280', 'e53410', 'e53300', 'e53317', 'e53458', 'e58950', 'e58990',
         'p60100', 'p61850', 'e60000', 'e62100', 'e62900', 'e62720', 'e62730',
         'e62740', 'p65300', 'p65400', 'p87482', 'p87521', 'e68000', 'e82200',
-        't27800', 's27860', 'p27895', 'e87530', 'e87550',
-        'RECID', 'wage_head', 'wage_spouse', 'age',
-        's006', 's008', 's009', 'WSAMP', 'TXRT',
+        't27800', 's27860', 'p27895', 'e87530', 'e87550', 'e87870', 'e87875',
+        'e87880', 'MARS', 'MIDR', 'RECID', 'gender',
+        'wage_head', 'wage_spouse', 'earnsplit',
+        'age', 'agedp1', 'agedp2', 'agedp3', 'agerange',
+        's006', 's008', 's009', 'WSAMP', 'TXRT', 'filer', 'matched_weight',
+
         'e35300_0', 'e35600_0', 'e35910_0', 'x03150', 'e03600',
         'e03280', 'e03900', 'e04000', 'e03700', 'c23250',
         'e23660', 'f2555', 'e02800', 'e02610', 'e02540',
-        'e02615', 'SSIND', 'e18800', 'e18900',
-        'e20950', 'e19500', 'e19570', 'e19400', 'c20400',
-        'e20200', 'e20900', 'e21000', 'e21010', 'e02600',
-        '_exact', 'e11055', 'e00250', 'e30100', 'e15360',
-        'e04200', 'e37717', 'e04805', 'AGEP', 'AGES', 'PBI',
+        'e02615', 'SSIND', 'e18600', 'e18800', 'e18900', 'e10950',
+        'e10960', 'e15100', 'e15210', 'e15250', 'e20950', 'e19500',
+        'e19570', 'e19400', 'c20400', 'e20200', 'e20900', 'e21000',
+        'e21010', 'e02600', '_exact', 'e11055', 'e00250', 'e30100',
+        'e15360', 'e04200', 'e37717', 'e04805', 'AGEP', 'AGES', 'PBI',
         'SBI', 't04470', 'e58980', 'c00650', 'c00100',
         'c04470', 'c04600', 'c21060', 'c21040', 'c17000',
         'c18300', 'c20800', 'c02900', 'c02700', 'c23650',
@@ -770,7 +774,7 @@ class Records(object):
         times_equal(self.p27895, self.BF.ATXPY[year])
         times_equal(self.e87530, self.BF.ATXPY[year])
         times_equal(self.e87550, self.BF.ATXPY[year])
-        times_equal(self.e87521, self.BF.ATXPY[year])
+        times_equal(self.p87521, self.BF.ATXPY[year])
         times_equal(self.RECID, 1.)
         times_equal(self.s006, 1.)
         times_equal(self.s008, 1.)
@@ -796,7 +800,7 @@ class Records(object):
                    'a Pandas DataFrame')
             raise ValueError(msg)
         # remove the aggregated record from 2009 PUF
-        tax_dta = tax_dta[tax_dta.recid != 999999]
+        tax_dta = tax_dta[tax_dta.RECID != 999999]
         self.dim = len(tax_dta)
         # create variables using tax_dta DataFrame column names
         for varname in list(tax_dta.columns.values):
@@ -893,14 +897,14 @@ class Records(object):
                                                              self.MARS == 6)),
                                  2., 1.)
         # impute number of extra standard deductions for aged
-        self._numextra = np.where(np.logical_and(self.FDED == 2, self.e04470 >
+        self._numextra = np.where(np.logical_and(self.FDED == 2, self.p04470 >
                                                  std_2009[self.MARS - 1]),
                                   np.where(
                                       np.logical_and(self.MARS != 2,
                                                      self.MARS != 3),
-                                      (self.e04470 - std_2009[self.MARS - 1]) /
+                                      (self.p04470 - std_2009[self.MARS - 1]) /
                                       std_aged_2009[0],
-                                      (self.e04470 - std_2009[self.MARS - 1]) /
+                                      (self.p04470 - std_2009[self.MARS - 1]) /
                                       std_aged_2009[1]),
                                   np.where(self.e02400 > 0, self._txpyers, 0))
 
@@ -964,7 +968,7 @@ class Records(object):
                     float64, float64)])
 def imputed_cmbtp_itemizer(e17500, e00100, e18400,
                            e62100, e00700,
-                           e04470, e21040,
+                           p04470, e21040,
                            e18500, e20800):
     """
     Global function that calculates _cmbtp_itemizer values
@@ -974,5 +978,5 @@ def imputed_cmbtp_itemizer(e17500, e00100, e18400,
     medical_limited = max(0., e17500 - max(0., e00100) * 0.075)
     medical_adjustment = min(medical_limited, 0.025 * max(0., e00100))
     state_adjustment = max(0, e18400)
-    return (e62100 - medical_adjustment + e00700 + e04470 + e21040 -
+    return (e62100 - medical_adjustment + e00700 + p04470 + e21040 -
             state_adjustment - e00100 - e18500 - e20800)
