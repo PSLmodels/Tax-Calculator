@@ -403,8 +403,8 @@
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "cpi_inflated": true,
-        "col_label": ["Medical", "AllTaxPaid", "Casualty", "Miscellaneous", "Interest", "Charity"],        
-        "value":    [[true, 	   true,           true,          true,           true,      true]]
+        "col_label": ["Medical", "State & Local", "Real Estate", "Casualty", "Miscellaneous", "Interest", "Charity"],        
+        "value":    [[true, 	   true,           true,          true,          true,           true,      true]]
     },
      "_EITC_rt":{
         "long_name": "Earned income credit rate",
@@ -433,10 +433,10 @@
         "value":    [[0.0765, 0.1598, 0.2106, 0.2106]]        
     },
     "_SS_Earnings_c":{
-        "long_name": "Max Taxable Earnings for Social Security",
-	"description": "Only earnings lower than this maximum amount are subjected to Social Security tax (OASDI tax).",
+        "long_name": "Maximum Taxable Earnings for Social Security",
+	"description": "Only individual earnings below this maximum amount are subjected to Social Security (OASDI) payroll tax.",
         "irs_ref": "W-2, Box 4, instructions",
-        "notes": "",
+        "notes": "This parameter is indexed by the rate of growth in average wages, not by the inflation rate.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
