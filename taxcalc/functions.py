@@ -1614,7 +1614,7 @@ def OSPC_TAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
 
     _combined = _ospctax + _fica
 
-    _payments = (c59660 + c10950 + c10960 + c11070 + e10000 + e11550 + e11580 +
+    _payments = (c59660 + c10950 + c10960 + c11070 + e10000 + e11550 +
                  e11450 + e11500)
 
     c10300 = max(0, c09200 - _payments)
