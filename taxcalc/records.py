@@ -212,6 +212,8 @@ class Records(object):
         '_cmbtp_standard', '_expanded_income', 'c07300',
         'c07600', 'c07240', 'c62100_everyone',
         '_surtax', '_combined', 'x04500', '_personal_credit'])
+    USED_VARNAMES = set()
+    UNUSED_VARNAMES = set()
 
     # pairs of 'name of attribute', 'column name' - often the same
     # NOTE: second name in each pair is what Records.__init__() expects
@@ -515,7 +517,7 @@ class Records(object):
                  weights=WEIGHTS_PATH,
                  start_year=None,
                  consider_imputations=True,
-                 **kwargs):
+                 **kwargs):  # TODO: eliminate **kwargs
         """
         Records class constructor
         """
@@ -796,22 +798,20 @@ class Records(object):
         # remove the aggregated record from 2009 PUF
         tax_dta = tax_dta[tax_dta.recid != 999999]
         self.dim = len(tax_dta)
-        # create variables in NAMES list
-        for attrname, varname in Records.NAMES:
-            setattr(self, attrname, tax_dta[varname].values)
-        for name in Records.ZEROED_NAMES:
-            setattr(self, name, np.zeros((self.dim,)))
-        self._num = np.ones((self.dim,))
-        # specify eNNNNN aliases for several pNNNNN and sNNNNN variables
-        self.e22250 = self.p22250
-        self.e04470 = self.p04470
-        self.e23250 = self.p23250
-        self.e25470 = self.p25470
-        self.e08000 = self.p08000
-        self.e60100 = self.p60100
-        self.e27860 = self.s27860
-        # specify SOIYR
-        self.SOIYR = np.repeat(Records.PUF_YEAR, self.dim)
+        # create variables using tax_dta DataFrame column names
+        for varname in list(tax_dta.columns.values):
+            if varname not in Records.ALL_VARNAMES:
+                msg = 'Records data variable name {} not in ALL_VARNAMES'
+                raise ValueError(msg.format(varname))
+            Records.USED_VARNAMES.add(varname)
+            setattr(self, varname, tax_dta[varname].values)
+        # create variables that are all zeros if varname not in DataFrame data
+        Records.UNUSED_VARNAMES = Records.ALL_VARNAMES - Records.USED_VARNAMES
+        for varname in Records.UNUSED_VARNAMES:
+            setattr(self, varname, np.zeros((self.dim,)))
+        # create variables that are not in ALL_VARNAMES
+        self._num = np.ones((self.dim,))  # TODO: why is this done this way?
+        self.SOIYR = np.repeat(Records.PUF_YEAR, self.dim)  # TODO: eliminate
 
     def _read_weights(self, weights):
         """
