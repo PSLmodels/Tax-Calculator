@@ -1217,7 +1217,7 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
 
 @iterate_jit(nopython=True)
 def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
-                   c11070, c07220, c07230, _num, _precrd, _nctcr, CTC_prt):
+                   c11070, c07220, _num, _precrd, _nctcr, CTC_prt):
 
     # Child Tax Credit
     if MARS == 2:
@@ -1240,7 +1240,7 @@ def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
     # TODO get rid of this type declaration
     _precrd = float(_precrd)
 
-    return (c11070, c07220, c07230, _num, _nctcr, _precrd, _ctcagi)
+    return (c11070, c07220, _num, _nctcr, _precrd, _ctcagi)
 
 # def HopeCredit():
     # W/o congressional action, Hope Credit will replace
@@ -1377,28 +1377,26 @@ def RefAmOpp(_cmp, c87521, _num, c00100, EDCRAGE, c87668):
     if c87521 > 0:
         c87654 = 90000 * _num
         c87656 = c00100
-        c87658 = np.maximum(0., c87654 - c87656)
+        c87658 = max(0., c87654 - c87656)
         c87660 = 10000 * _num
-        c87662 = 1000 * np.minimum(1., c87658 / c87660)
+        c87662 = 1000 * min(1., c87658 / c87660)
         c87664 = c87662 * c87521 / 1000.0
-    else:
-        c87654, c87656, c87658, c87660, c87662, c87664 = 0., 0., 0., 0., 0., 0.
-
-    # Up to 40% of American Opportunity credit is Refundable.
-    if _cmp == 1 and c87521 > 0 and EDCRAGE == 1:
-        c87666 = 0.
-    else:
-        c87666 = 0.4 * c87664
-
-    if c87521 > 0:
+        if EDCRAGE == 1:
+            c87666 = 0
+        else:
+            c87666 = 0.4 * c87664
         c10960 = c87666
         c87668 = c87664 - c87666
-        c87681 = c87666
-    else:
-        c10960, c87668, c87681 = 0., 0., 0.
+
+    # if c87521 > 0:
+    #    c10960 = c87666
+    #    c87668 = c87664 - c87666
+    #    c87681 = c87666
+    # else:
+    #    c10960, c87668, c87681 = 0., 0., 0.
 
     return (c87654, c87656, c87658, c87660, c87662, c87664, c87666, c10960,
-            c87668, c87681)
+            c87668)
 
 
 @iterate_jit(nopython=True)
@@ -1507,7 +1505,7 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, e00200, e82882, e30100, _sey,
     # Part II of 2005 form 8812
 
     if _nctcr >= ACTC_ChildNum and c82890 < c82935:
-        c82900 = 0.0765 * min(SS_Earnings_c, c82880)
+        c82900 = 0.0765 * min(min(SS_Earnings_c, c82880), e00200)
         c82905 = float((1 - ALD_SelfEmploymentTax_HC) * e03260 + e09800)
         c82910 = c82900 + c82905
         c82915 = c59660 + e11200
