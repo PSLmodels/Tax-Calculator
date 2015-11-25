@@ -1590,8 +1590,9 @@ def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _avail, e11601,
     # Decomposition of EITC
     _comb = 0
     c10950 = 0
-    c59680 = min(c59660, max(0, _avail))
+    c59680 = min(c59660, _avail)
     _avail = _avail - c59680
+    _avail = max(0, _avail - e07170)
     _avail = _avail + _othertax
     c59700 = min(_avail, c59660 - c59680)
     c59720 = c59660 - c59680 - c59700
