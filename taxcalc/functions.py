@@ -1044,12 +1044,10 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
 
 @iterate_jit(nopython=True)
 def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
-        NIIT):
-    if c00100 > NIIT_thd[MARS - 1]:
-        NIIT = NIIT_trt * min(e00300 + e00600 + max(0, c01000) +
-                              max(0, e02000), c00100 - NIIT_thd[MARS - 1])
-    else:
-        NIIT = 0
+        NIIT, e85070, e26270):
+    NIIT = NIIT_trt * min(e00300 + e00600 + max(0, c01000) + max(0, e02000 -
+                          e26270 + e85070), max(0, c00100 -
+                          NIIT_thd[MARS - 1]))
     return NIIT
 
 
@@ -1585,7 +1583,7 @@ def C1040(e07400, e07180, e07200, c07220, c07230, e07250, c07300, c07240,
 
 @iterate_jit(nopython=True)
 def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _avail, e11601,
-          _othertax):
+          e07170, _othertax):
 
     # Decomposition of EITC
     _comb = 0
@@ -1617,7 +1615,7 @@ def OSPC_TAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
     _combined = _ospctax + _fica
 
     _payments = (c59660 + c10950 + c10960 + c11070 + e10000 + e11550 + e11580 +
-                 e11450)
+                 e11450 + e11500)
 
     c10300 = max(0, c09200 - _payments)
 
