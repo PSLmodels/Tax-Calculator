@@ -1025,6 +1025,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
     c63100 = max(0., c63100)
     c63200 = max(0., c63000 - c63100)
     c09600 = c63200
+    # no _othtax in SAS
     _othtax = e05800 - (e05100 + c09600)
     c62100_everyone = c62100
     if c09600 == 0 and e60000 == 0:
@@ -1426,9 +1427,13 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
 
     c87620 = c87560 * c87610
 
-    _xlin3 = c87668 + c87620
-    _xlin6 = max(0, c05800 - (e07300 + c07180 + e07200))
-    # c07230 = min(_xlin3, _xlin6)
+    _xlin4 = max(0, c05800 - (e07300 + c07180 + e07200))
+    _xlin5 = min(c87620, _xlin4)
+    _xlin8 = e07300 + c07180 + e07200 + _xlin5
+    _xlin9 = max(0, c05800 - (e07300 + c07180 + e07200 + _xlin5))
+    _xlin10 = min(c87668, _xlin9)
+    c87680 = _xlin5 + _xlin10
+    c07230 = c87680
 
     _ctc1 = c07180 + e07200 + c07230
 
@@ -1448,7 +1453,8 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
     _avail = c05800
     c07180 = min(c07180, _avail)
     _avail = _avail - c07180
-    _avail = max(0, _avail - e07200)
+    c07200 = min(e07200, _avail)
+    _avail = _avail - c07200
     c07300 = min(e07300, _avail)
     _avail = _avail - c07300
     c07230 = min(c07230, _avail)
@@ -1457,6 +1463,8 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
     _avail = _avail - c07240
     c07260 = min(e07260, _avail)
     _avail = _avail - c07260
+    c07250 = min(e07250, _avail)
+    _avail = _avail - c07250
     c07600 = min(e07600, _avail)
     _avail = _avail - c07600
     c07220 = min(c07220, _avail)
