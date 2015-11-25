@@ -49,7 +49,7 @@ def run():
                  '_nonlimited', '_num', '_numextra', '_oldfei', '_othadd',
                  '_othded', '_othertax', '_othtax', '_parents', '_phase2_i',
                  '_posagi', '_precrd', '_preeitc', '_prexmp', '_refund',
-                 '_regcrd', '_s1291', '_sep', '_sey', 'c09400',
+                 '_regcrd', '_s1291', '_sep', '_sey', 'c09400', 'c03260',
                  '_seywage', '_standard', '_statax', '_tamt2', '_taxbc',
                  '_taxinc', '_taxspecial', '_tratio', '_txpyers',
                  '_val_rtbase', '_val_rtless', '_val_ymax', '_xyztax', '_ymod',

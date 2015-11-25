@@ -297,7 +297,7 @@ class Records(object):
                     'e33450', 'e33460', 'e33465', 'e33470', 'x59560',
                     'EICYB1', 'EICYB2', 'EICYB3', 'e83080', 'e25360',
                     'e25430', 'e25400', 'e25500', 'e26210', 'e26340',
-                    'e26205', 'e26320', 'e87487', 'e87492',
+                    'e26205', 'e26320', 'e87487', 'e87492', 'e07170',
                     'e87497', 'e87526', 'e87522', 'e87524', 'e87528',
                     'EDCRAGE', 'e07960', 'e07700', 'e07250', 't07950',
                     'e82882', 'e82880', 'e07500', 'e08001', 'e07970',
@@ -310,7 +310,7 @@ class Records(object):
                     'e60410', 'e61400', 'e60660', 'e60480', 'e62000',
                     'e60250', 'e40223', '_sep', '_earned', '_sey',
                     'c09400', '_feided', '_ymod', '_ymod1', '_posagi',
-                    'xtxcr1xtxcr10', '_xyztax', '_avail',
+                    'xtxcr1xtxcr10', '_xyztax', '_avail', 'e85070',
                     '_taxinc', 'c04800', '_feitax', 'c05750', 'c24517',
                     '_taxbc', 'c60000', '_standard', 'c24516', 'c25420',
                     'c05700', 'c32880', 'c32890', '_dclim', 'c32800',
@@ -399,9 +399,9 @@ class Records(object):
         self._current_year += 1
         self.FLPDYR += 1
         # Implement Stage 1 Extrapolation blowup factors
-        # self._blowup(self._current_year)
+        self._blowup(self._current_year)
         # Implement Stage 2 Extrapolation reweighting.
-        # self.s006 = (self.WT["WT" + str(self.current_year)] / 100).values
+        self.s006 = (self.WT["WT" + str(self.current_year)] / 100).values
 
     def extrapolate_2009_puf(self):
         year = 2009
@@ -732,11 +732,11 @@ class Records(object):
         self._cmbtp_itemizer = self._imputed_cmbtp_itemizer()
         self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
         # standard deduction amount in 2009
-        # std_2009 = np.array([5700, 11400, 5700, 8350, 11400, 5700, 950])
-        std_2009 = np.array([6100, 12200, 6100, 8950, 12200, 6100, 1000])
+        std_2009 = np.array([5700, 11400, 5700, 8350, 11400, 5700, 950])
+        # std_2009 = np.array([6100, 12200, 6100, 8950, 12200, 6100, 1000])
         # Additional standard deduction for aged 2009
-        # std_aged_2009 = np.array([1400., 1100.])
-        std_aged_2009 = np.array([1500., 1200.])
+        std_aged_2009 = np.array([1400., 1100.])
+        # std_aged_2009 = np.array([1500., 1200.])
         # impute number of taxpayers
         self._txpyers = np.where(np.logical_or(self.MARS == 2,
                                                np.logical_or(self.MARS == 3,
