@@ -1702,16 +1702,18 @@ def BenefitSurtax(calc):
         # hard code the reform
         nobenefits_calc.policy.ID_Medical_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[0])
-        nobenefits_calc.policy.ID_AllTaxPaid_HC = \
+        nobenefits_calc.policy.ID_StateLocalTax_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[1])
-        nobenefits_calc.policy.ID_casualty_HC = \
+        nobenefits_calc.policy.ID_RealEstate_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[2])
-        nobenefits_calc.policy.ID_Miscellaneous_HC = \
+        nobenefits_calc.policy.ID_casualty_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[3])
-        nobenefits_calc.policy.ID_InterestPaid_HC = \
+        nobenefits_calc.policy.ID_Miscellaneous_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[4])
-        nobenefits_calc.policy.ID_Charity_HC = \
+        nobenefits_calc.policy.ID_InterestPaid_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[5])
+        nobenefits_calc.policy.ID_Charity_HC = \
+            int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[6])
 
         nobenefits_calc.calc_one_year()
 
