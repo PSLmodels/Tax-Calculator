@@ -1584,7 +1584,8 @@ def C1040(e07400, e07180, e07200, c07220, c07230, e07250, c07300, c07240,
 
 
 @iterate_jit(nopython=True)
-def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _avail, _othertax):
+def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _avail, e11601,
+          _othertax):
 
     # Decomposition of EITC
     _comb = 0
@@ -1595,7 +1596,7 @@ def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _avail, _othertax):
     c59700 = min(_avail, c59660 - c59680)
     c59720 = c59660 - c59680 - c59700
 
-    c07150 = c07100 + c59680
+    c07150 = c07100 + c59680 + e11601
     c07150 = min(c07150, c05800)
     c08800 = c05800 - c07150
 
