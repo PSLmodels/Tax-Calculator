@@ -73,10 +73,6 @@ class Records(object):
     BLOWUP_FACTORS_FILENAME = "StageIFactors.csv"
     BLOWUP_FACTORS_PATH = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
 
-    @classmethod
-    def from_file(cls, path, **kwargs):
-        return cls(path, **kwargs)
-
     # pairs of 'name of attribute', 'column name' - often the same
     # NOTE: second name in each pair is what Records.__init__() expects
     # if data parameter is a Pandas DataFrame rather than a CSV filename.
@@ -378,9 +374,7 @@ class Records(object):
                  blowup_factors=BLOWUP_FACTORS_PATH,
                  weights=WEIGHTS_PATH,
                  start_year=None,
-                 consider_imputations=True,
-                 **kwargs):
-
+                 consider_imputations=True):
         """
         Records class constructor
         """

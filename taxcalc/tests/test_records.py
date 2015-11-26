@@ -35,13 +35,6 @@ def test_create_records_with_wrong_start_year():
     # against accidentally specifying wrong start_year
 
 
-def test_create_records_from_file():
-    recs = Records.from_file(TAX_DTA_PATH, weigths=WEIGHTS,
-                             start_year=Records.PUF_YEAR)
-    assert recs
-    assert hasattr(recs, '_numextra') == True
-
-
 def test_blow_up():
     tax_dta = pd.read_csv(TAX_DTA_PATH, compression='gzip')
     extra_years = Records.PUF_YEAR - 1991
