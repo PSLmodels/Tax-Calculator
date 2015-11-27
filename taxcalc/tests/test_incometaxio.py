@@ -3,7 +3,8 @@ Tests for Tax-Calculator IncomeTaxIO class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 test_incometaxio.py
-# pylint --disable=locally-disabled test_incometaxio.py
+# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy \
+#        test_incometaxio.py
 
 import os
 import sys

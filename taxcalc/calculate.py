@@ -31,7 +31,7 @@ def add_df(alldfs, df):
 class Calculator(object):
 
     def __init__(self, policy=None, records=None,
-                 sync_years=True, behavior=None, growth=None, **kwargs):
+                 sync_years=True, behavior=None, growth=None):
 
         if isinstance(policy, Policy):
             self._policy = policy
@@ -56,11 +56,8 @@ class Calculator(object):
 
         if isinstance(records, Records):
             self._records = records
-        elif isinstance(records, str):
-            self._records = Records.from_file(records, **kwargs)
         else:
-            msg = 'must specify records as a file path or Records object'
-            raise ValueError(msg)
+            raise ValueError('must specify records as a Records object')
 
         if sync_years and self._records.current_year == Records.PUF_YEAR:
             print("You loaded data for " +
@@ -159,7 +156,7 @@ class Calculator(object):
     def increment_year(self):
         if self.growth.factor_adjustment != 0:
             if not np.array_equal(self.growth._factor_target,
-                                  self.growth.REAL_GDP_GROWTH):
+                                  Growth.REAL_GDP_GROWTH_RATES):
                 msg = "adjustment and target factor \
                        cannot be non-zero at the same time"
                 raise ValueError(msg)
@@ -167,9 +164,8 @@ class Calculator(object):
                 adjustment(self, self.growth.factor_adjustment,
                            self.policy.current_year + 1)
         elif not np.array_equal(self.growth._factor_target,
-                                self.growth.REAL_GDP_GROWTH):
+                                Growth.REAL_GDP_GROWTH_RATES):
             target(self, self.growth._factor_target,
-                   self.policy.inflation_rates,
                    self.policy.current_year + 1)
         self.records.increment_year()
         self.policy.set_year(self.policy.current_year + 1)

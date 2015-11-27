@@ -18,8 +18,6 @@ TAX_DTA = pd.read_csv(TAX_DTA_PATH, compression='gzip')
 # data fix-up: midr needs to be type int64 to match PUF
 TAX_DTA['midr'] = TAX_DTA['midr'].astype('int64')
 
-IRATES = [0.34, 0.21, 0.22]
-
 
 def test_make_calculator_with_growth():
     # create a Records and Params object
@@ -92,10 +90,10 @@ def test_target():
     AGDPN_pre = calc_x.records.BF.AGDPN[2015]
     ATXPY_pre = calc_x.records.BF.ATXPY[2015]
 
-    target(calc_x, growth_x._factor_target, IRATES, 2015)
+    target(calc_x, growth_x._factor_target, 2015)
 
     distance = ((growth_x._factor_target[2015 - 2013] -
-                 growth_x.default_GDP_growth_rates(2015 - 2013)) /
+                 Growth.default_real_GDP_growth_rate(2015 - 2013)) /
                 calc_x.records.BF.APOPN[2015])
     AGDPN_post = AGDPN_pre + distance
     ATXPY_post = ATXPY_pre + distance
@@ -128,4 +126,4 @@ def test_growth_default_data():
 def test_hard_coded_gdp_growth():
     growth = Growth()
     assert_array_equal(growth._factor_target,
-                       np.array(growth.REAL_GDP_GROWTH))
+                       np.array(Growth.REAL_GDP_GROWTH_RATES))

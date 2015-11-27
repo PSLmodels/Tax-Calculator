@@ -3,7 +3,8 @@ Tax-Calculator tax-filing-unit Records class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 records.py
-# pylint --disable=locally-disabled records.py
+# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy records.py
+# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 
 import pandas as pd
@@ -83,13 +84,6 @@ class Records(object):
     WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
     BLOWUP_FACTORS_FILENAME = "StageIFactors.csv"
     BLOWUP_FACTORS_PATH = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
-
-    @classmethod
-    def from_file(cls, path, **kwargs):
-        """
-        Return class instance read from files.
-        """
-        return cls(path, **kwargs)
 
     # specify set of all Record variables used by Tax-Calculator:
     ALL_VARNAMES = set([
@@ -520,8 +514,7 @@ class Records(object):
                  blowup_factors=BLOWUP_FACTORS_PATH,
                  weights=WEIGHTS_PATH,
                  start_year=None,
-                 consider_imputations=True,
-                 **kwargs):  # TODO: eliminate **kwargs
+                 consider_imputations=True):
         """
         Records class constructor
         """
