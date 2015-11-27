@@ -3,8 +3,8 @@ Tax-Calculator simple tax input-output class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 simpletaxio.py
-# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy \
-#        simpletaxio.py
+# pylint --disable=locally-disabled simpletaxio.py
+# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import os
 import sys
