@@ -145,17 +145,6 @@ def test_make_Calculator_deepcopy():
     assert isinstance(calc2, Calculator)
 
 
-def test_make_Calculator_files_to_ctor(policyfile):
-    with open(policyfile.name) as pfile:
-        policy = json.load(pfile)
-    ppo = Policy(parameter_dict=policy, start_year=1991,
-                 num_years=len(IRATES), inflation_rates=IRATES,
-                 wage_growth_rates=WRATES)
-    calc = Calculator(policy=ppo, records=TAX_DTA_PATH,
-                      start_year=1991, inflation_rates=IRATES)
-    assert calc
-
-
 def test_make_Calculator_with_policy_reform():
     # create a Policy object and apply a policy reform
     policy2 = Policy()
@@ -212,8 +201,7 @@ def test_make_Calculator_with_reform_after_start_year():
     reform[2016]['_II_em'] = [6000]
     reform[2016]['_II_em_cpi'] = False
     parm.implement_reform(reform)
-    tax_dta = pd.read_csv(TAX_DTA_PATH, compression='gzip')
-    recs = Records(data=tax_dta, weights=WEIGHTS, start_year=2009)
+    recs = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
     calc = Calculator(policy=parm, records=recs)
     # compare actual and expected parameter values over all years
     exp_STD_Aged = np.array([[1500, 1200, 1200, 1500, 1500, 1200],
@@ -240,8 +228,8 @@ def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
     ppo = Policy(parameter_dict=policy, start_year=1991,
                  num_years=len(IRATES), inflation_rates=IRATES,
                  wage_growth_rates=WRATES)
-    calc = Calculator(policy=ppo, records=TAX_DTA_PATH, start_year=1991,
-                      inflation_rates=IRATES)
+    rec = Records(data=TAX_DTA)
+    calc = Calculator(policy=ppo, records=rec)
     user_mods = {1991: {"_almdep": [7150, 7250, 7400],
                         "_almdep_cpi": True,
                         "_almsep": [40400, 41050],
@@ -249,7 +237,7 @@ def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
                         "_rt5": [0.33],
                         "_rt7": [0.396]}}
     calc.policy.implement_reform(user_mods)
-
+    # compare actual and expected values
     inf_rates = [IRATES[1991 + i] for i in range(0, 12)]
     exp_almdep = Policy.expand_array(np.array([7150, 7250, 7400]),
                                      inflate=True,
@@ -347,8 +335,7 @@ def test_make_Calculator_increment_years_first():
     reform[2016]['_II_em_cpi'] = False
     policy.implement_reform(reform)
     # create Records object by reading 1991 data and saying it is 2009 data
-    tax_dta = pd.read_csv(TAX_DTA_PATH, compression='gzip')
-    puf = Records(tax_dta, weights=WEIGHTS, start_year=2009)
+    puf = Records(TAX_DTA, weights=WEIGHTS, start_year=2009)
     # create Calculator object with Policy object as modified by reform
     calc = Calculator(policy=policy, records=puf)
     # compare expected policy parameter values with those embedded in calc

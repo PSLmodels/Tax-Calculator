@@ -31,7 +31,7 @@ def add_df(alldfs, df):
 class Calculator(object):
 
     def __init__(self, policy=None, records=None,
-                 sync_years=True, behavior=None, growth=None, **kwargs):
+                 sync_years=True, behavior=None, growth=None):
 
         if isinstance(policy, Policy):
             self._policy = policy
@@ -56,11 +56,8 @@ class Calculator(object):
 
         if isinstance(records, Records):
             self._records = records
-        elif isinstance(records, str):
-            self._records = Records.from_file(records, **kwargs)
         else:
-            msg = 'must specify records as a file path or Records object'
-            raise ValueError(msg)
+            raise ValueError('must specify records as a Records object')
 
         if sync_years and self._records.current_year == Records.PUF_YEAR:
             print("You loaded data for " +
