@@ -3,7 +3,8 @@ Tax-Calculator income tax input-output class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 incometaxio.py
-# pylint --disable=locally-disabled incometaxio.py
+# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy \
+#        incometaxio.py
 
 import os
 import sys
