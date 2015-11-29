@@ -1730,3 +1730,4 @@ def BenefitSurtax(calc):
                                         0) * calc.policy.ID_BenefitSurtax_trt
 
         calc.records._iitax += calc.records._surtax
+        calc.records._combined += calc.records._surtax
