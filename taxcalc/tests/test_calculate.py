@@ -4,7 +4,7 @@ import json
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, "../../"))
 import numpy as np
-from numpy.testing import assert_array_equal
+from numpy.testing import assert_array_equal, assert_array_almost_equal
 import pandas as pd
 import tempfile
 import pytest
@@ -326,7 +326,7 @@ def test_ID_hc_vs_surtax():
     calc1.calc_all()
     calc2.calc_all()
 
-    assert_array_equal(calc1.records._combined, calc2.records._combined)
+    assert_array_almost_equal(calc1.records._combined, calc2.records._combined, decimal=2)
 
 
 def test_Calculator_create_difference_table():
