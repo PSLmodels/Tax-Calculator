@@ -276,13 +276,14 @@ class Calculator(object):
         return (mtr_fica, mtr_iit, mtr_combined)
 
     def capital_mtr(self):
-        capital_income_sources = ['e00300', 'e00400', 'e00600', 'e00650', 'e01000',
-                                  'e01400', 'e01500', 'e01700', 'e02000', 'e23250']
-        
+        capital_income_sources = ['e00300', 'e00400', 'e00600', 'e00650',
+                                  'e01000', 'e01400', 'e01500', 'e01700',
+                                  'e02000', 'e23250']
+
         length = len(self.records.s006)
         income_sum = np.zeros(length)
         originals = {}
-        
+
         # get the sum of all capital income and save the values for later use
         for capital_income in capital_income_sources:
             income_sum += getattr(self.records, capital_income)
@@ -295,7 +296,9 @@ class Calculator(object):
         finite_diff = 0.01  # a one-cent difference
         epsilon = 10e-20
         for capital_income in capital_income_sources:
-            income_up = originals[capital_income] * (1 + finite_diff/(income_sum + epsilon))
+            margin = finite_diff * originals[capital_income]/(income_sum +
+                                                              epsilon)
+            income_up = originals[capital_income] + margin
             setattr(self.records, capital_income, income_up)
 
         self.calc_all()
@@ -303,7 +306,7 @@ class Calculator(object):
 
         # delta of the results with margin added
         iitax_delta = iitax_up - iitax_base
-        
+
         # calculates mtrs
         mtr_iit = iitax_delta / finite_diff
 
@@ -311,7 +314,7 @@ class Calculator(object):
         for capital_income in capital_income_sources:
             setattr(self.records, capital_income, originals[capital_income])
         self.calc_all()
-        
+
         return mtr_iit
 
     def diagnostic_table(self, num_years=5):
