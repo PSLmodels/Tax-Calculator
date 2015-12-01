@@ -296,8 +296,8 @@ class Calculator(object):
         finite_diff = 0.01  # a one-cent difference
         epsilon = 10e-20
         for capital_income in capital_income_sources:
-            margin = finite_diff * originals[capital_income]/(income_sum +
-                                                              epsilon)
+            margin = finite_diff * originals[capital_income] / (income_sum +
+                                                                epsilon)
             income_up = originals[capital_income] + margin
             setattr(self.records, capital_income, income_up)
 
