@@ -296,8 +296,8 @@ class Calculator(object):
         # add the one-cent margin
         finite_diff = 0.01  # a one-cent difference   
         for capital_income in capital_income_sources:
-            income_up = originals[each_income] * (1 + finite_diff/income_sum)
-            setattr(self.records, income_up)
+            income_up = originals[capital_income] * (1 + finite_diff/income_sum)
+            setattr(self.records, capital_income, income_up)
 
         self.calc_all()
         fica_up = copy.deepcopy(self.records._fica)
@@ -312,11 +312,11 @@ class Calculator(object):
         # calculates mtrs
         mtr_fica = fica_delta / finite_diff
         mtr_iit = iitax_delta / finite_diff
-        mtr_combined = combined_delta / finite_diff * 1.0
+        mtr_combined = combined_delta / finite_diff
 
         # reset everything
         for capital_income in capital_income_sources:
-            setattr(self.records, originals[each_income])
+            setattr(self.records, capital_income, originals[capital_income])
         self.calc_all()
         
         return (mtr_fica, mtr_iit, mtr_combined)
