@@ -289,9 +289,7 @@ class Calculator(object):
             originals[capital_income] = getattr(self.records, capital_income)
 
         self.calc_all()
-        fica_base = copy.deepcopy(self.records._fica)
         iitax_base = copy.deepcopy(self.records._iitax)
-        combined_taxes_base = iitax_base + fica_base
 
         # add the one-cent margin
         finite_diff = 0.01  # a one-cent difference   
@@ -300,19 +298,13 @@ class Calculator(object):
             setattr(self.records, capital_income, income_up)
 
         self.calc_all()
-        fica_up = copy.deepcopy(self.records._fica)
         iitax_up = copy.deepcopy(self.records._iitax)
-        combined_taxes_up = iitax_up + fica_up
 
         # delta of the results with margin added
-        fica_delta = fica_up - fica_base
         iitax_delta = iitax_up - iitax_base
-        combined_delta = combined_taxes_up - combined_taxes_base
         
         # calculates mtrs
-        mtr_fica = fica_delta / finite_diff
         mtr_iit = iitax_delta / finite_diff
-        mtr_combined = combined_delta / finite_diff
 
         # reset everything
         for capital_income in capital_income_sources:
