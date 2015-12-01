@@ -275,6 +275,52 @@ class Calculator(object):
         # return the three marginal tax rate arrays
         return (mtr_fica, mtr_iit, mtr_combined)
 
+    def capital_mtr(self):
+        capital_income_sources = ['e00300', 'e00400', 'e00600', 'e00650', 'e01000',
+                                  'e01400', 'e01500', 'e01700', 'e02000', 'e23250']
+        
+        length = len(self.records.s006)
+        income_sum = np.zeros(length)
+        originals = {}
+        
+        # get the sum of all capital income and save the values for later use
+        for capital_income in capital_income_sources:
+            income_sum += getattr(self.records, capital_income)
+            originals[capital_income] = getattr(self.records, capital_income)
+
+        self.calc_all()
+        fica_base = copy.deepcopy(self.records._fica)
+        iitax_base = copy.deepcopy(self.records._iitax)
+        combined_taxes_base = iitax_base + fica_base
+
+        # add the one-cent margin
+        finite_diff = 0.01  # a one-cent difference   
+        for capital_income in capital_income_sources:
+            income_up = originals[each_income] * (1 + finite_diff/income_sum)
+            setattr(self.records, income_up)
+
+        self.calc_all()
+        fica_up = copy.deepcopy(self.records._fica)
+        iitax_up = copy.deepcopy(self.records._iitax)
+        combined_taxes_up = iitax_up + fica_up
+
+        # delta of the results with margin added
+        fica_delta = fica_up - fica_base
+        iitax_delta = iitax_up - iitax_base
+        combined_delta = combined_taxes_up - combined_taxes_base
+        
+        # calculates mtrs
+        mtr_fica = fica_delta / finite_diff
+        mtr_iit = iitax_delta / finite_diff
+        mtr_combined = combined_delta / finite_diff * 1.0
+
+        # reset everything
+        for capital_income in capital_income_sources:
+            setattr(self.records, originals[each_income])
+        self.calc_all()
+        
+        return (mtr_fica, mtr_iit, mtr_combined)
+
     def diagnostic_table(self, num_years=5):
         table = []
         row_years = []
