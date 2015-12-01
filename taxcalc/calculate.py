@@ -292,9 +292,10 @@ class Calculator(object):
         iitax_base = copy.deepcopy(self.records._iitax)
 
         # add the one-cent margin
-        finite_diff = 0.01  # a one-cent difference   
+        finite_diff = 0.01  # a one-cent difference
+        epsilon = 10e-20
         for capital_income in capital_income_sources:
-            income_up = originals[capital_income] * (1 + finite_diff/income_sum)
+            income_up = originals[capital_income] * (1 + finite_diff/(income_sum + epsilon))
             setattr(self.records, capital_income, income_up)
 
         self.calc_all()
@@ -311,7 +312,7 @@ class Calculator(object):
             setattr(self.records, capital_income, originals[capital_income])
         self.calc_all()
         
-        return (mtr_fica, mtr_iit, mtr_combined)
+        return mtr_iit
 
     def diagnostic_table(self, num_years=5):
         table = []
