@@ -275,10 +275,11 @@ class Calculator(object):
         # return the three marginal tax rate arrays
         return (mtr_fica, mtr_iit, mtr_combined)
 
-    def capital_mtr(self):
-        capital_income_sources = ['e00300', 'e00400', 'e00600', 'e00650',
-                                  'e01000', 'e01400', 'e01500', 'e01700',
-                                  'e02000', 'e23250']
+    def capital_mtr(self,
+                    capital_income_sources=['e00300', 'e00400', 'e00600',
+                                            'e00650', 'e01000', 'e01400',
+                                            'e01500', 'e01700', 'e02000',
+                                            'e23250']):
 
         length = len(self.records.s006)
         income_sum = np.zeros(length)
