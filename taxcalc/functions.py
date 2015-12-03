@@ -154,6 +154,10 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
 
     if DSI:
         XTOT = 0
+    elif puf:
+        XTOT = 1 + XOCAH + XOCAWH + XOODEP + (MARS == 2)
+    else:
+        XTOT = XTOT
 
     _prexmp = XTOT * II_em
     # Personal Exemptions (_phaseout smoothed)
