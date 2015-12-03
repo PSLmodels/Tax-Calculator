@@ -281,14 +281,18 @@ class Calculator(object):
                                             'e01500', 'e01700', 'e02000',
                                             'e23250']):
 
+        num_sources = len(capital_income_sources)
         length = len(self.records.s006)
         income_sum = np.zeros(length)
+        no_capital_income = np.zeros(length)
         originals = {}
 
         # get the sum of all capital income and save the values for later use
         for capital_income in capital_income_sources:
             income_sum += getattr(self.records, capital_income)
             originals[capital_income] = getattr(self.records, capital_income)
+            no_capital_income = np.where(originals[capital_income] != 0,
+                                         1, no_capital_income)
 
         self.calc_all()
         iitax_base = copy.deepcopy(self.records._iitax)
@@ -301,6 +305,12 @@ class Calculator(object):
                                                                 epsilon)
             income_up = originals[capital_income] + margin
             setattr(self.records, capital_income, income_up)
+
+        # distribute the margin to interest if taxpayer has no capital income
+        interest = np.where(no_capital_income == 0,
+                            finite_diff,
+                            self.records.e00300)
+        setattr(self.records, 'e00300', interest)
 
         self.calc_all()
         iitax_up = copy.deepcopy(self.records._iitax)
