@@ -306,7 +306,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700, e00100,
 
     # Casualty
     if e20500 > 0:
-        c37703 = e20500 + ID_Casualty_frt * max(0, e00100)
+        c37703 = e20500 + ID_Casualty_frt * _posagi
     else:
         c37703 = 0.
 
