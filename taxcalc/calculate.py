@@ -275,6 +275,59 @@ class Calculator(object):
         # return the three marginal tax rate arrays
         return (mtr_fica, mtr_iit, mtr_combined)
 
+    def capital_mtr(self,
+                    capital_income_sources=['e00300', 'e00400', 'e00600',
+                                            'e00650', 'e01000', 'e01400',
+                                            'e01500', 'e01700', 'e02000',
+                                            'e23250']):
+
+        num_sources = len(capital_income_sources)
+        length = len(self.records.s006)
+        income_sum = np.zeros(length)
+        no_capital_income = np.zeros(length)
+        originals = {}
+
+        # get the sum of all capital income and save the values for later use
+        for capital_income in capital_income_sources:
+            income_sum += getattr(self.records, capital_income)
+            originals[capital_income] = getattr(self.records, capital_income)
+            no_capital_income = np.where(originals[capital_income] != 0,
+                                         1, no_capital_income)
+
+        self.calc_all()
+        iitax_base = copy.deepcopy(self.records._iitax)
+
+        # add the one-cent margin
+        finite_diff = 0.01  # a one-cent difference
+        epsilon = 10e-20
+        for capital_income in capital_income_sources:
+            margin = finite_diff * originals[capital_income] / (income_sum +
+                                                                epsilon)
+            income_up = originals[capital_income] + margin
+            setattr(self.records, capital_income, income_up)
+
+        # distribute the margin to interest if taxpayer has no capital income
+        interest = np.where(no_capital_income == 0,
+                            finite_diff,
+                            self.records.e00300)
+        setattr(self.records, 'e00300', interest)
+
+        self.calc_all()
+        iitax_up = copy.deepcopy(self.records._iitax)
+
+        # delta of the results with margin added
+        iitax_delta = iitax_up - iitax_base
+
+        # calculates mtrs
+        mtr_iit = iitax_delta / finite_diff
+
+        # reset everything
+        for capital_income in capital_income_sources:
+            setattr(self.records, capital_income, originals[capital_income])
+        self.calc_all()
+
+        return mtr_iit
+
     def diagnostic_table(self, num_years=5):
         table = []
         row_years = []
