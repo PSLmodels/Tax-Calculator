@@ -151,8 +151,8 @@ class SimpleTaxIO(object):
                '     1=single, 2=married_filing_jointly, 3=head_of_household\n'
                '[ 5] total number of dependents\n'
                '[ 6] number of taxpayer/spouse who are age 65+\n'
-               '[ 7] taxpayer wage, salary, plus self-employed income (NEG)\n'
-               '[ 8] spouse wage, salary, plus self-employed income (NEG)\n'
+               '[ 7] taxpayer wage and salary income\n'
+               '[ 8] spouse wage and salary income\n'
                '[ 9] qualified dividend income\n'
                '[10] other property income (NEG)\n'
                '[11] pension benefits that are federally taxable\n'
@@ -298,7 +298,7 @@ class SimpleTaxIO(object):
 
     IVAR_NUM = 22
     IVAR_NONNEG = {1: True, 2: True, 3: True, 4: True, 5: True,
-                   6: True, 7: False, 8: False, 9: True, 10: False,
+                   6: True, 7: True, 8: True, 9: True, 10: False,
                    11: True, 12: True, 13: True, 14: True, 15: True,
                    16: True, 17: True, 18: True, 19: True, 20: True,
                    21: False, 22: False}  # True ==> value must be non-negative
@@ -520,9 +520,9 @@ class SimpleTaxIO(object):
         recs.XTOT[idx] = total_num_exemptions
         # pylint: disable=protected-access
         recs._numextra[idx] = ivar[6]  # number of taxpayers age 65+
-        recs.e00200p[idx] = ivar[7]  # wage+sal+se income of txpyer (+/-)
-        recs.e00200s[idx] = ivar[8]  # wage+sal+se income of spouse (+/-)
-        recs.e00200[idx] = ivar[7] + ivar[8]  # combined wage+sal+se income
+        recs.e00200p[idx] = ivar[7]  # wage+salary income of taxpayer
+        recs.e00200s[idx] = ivar[8]  # wage+salary income of spouse
+        recs.e00200[idx] = ivar[7] + ivar[8]  # combined wage+salary income
         recs.e00650[idx] = ivar[9]  # qualified dividend income
         recs.e00600[idx] = ivar[9]  # qual.div. included in ordinary dividends
         recs.e00300[idx] = ivar[10]  # other property income (+/-)
