@@ -51,6 +51,7 @@ class IncomeTaxIO(object):
         """
         IncomeTaxIO class constructor.
         """
+        # pylint: disable=too-many-branches
         # check that input_filename ends with '.csv' or '.csv.gz'
         if input_filename.endswith('.csv'):
             inp_str = '{}-{}'.format(input_filename[:-4], str(tax_year)[2:])
@@ -119,12 +120,15 @@ class IncomeTaxIO(object):
         """
         output = {}  # dictionary indexed by Records index for filing unit
         self._calc.calc_all()
-        (_, mtr_iitax, _) = self._calc.mtr(wrt_full_compensation=False)
+        (mtr_fica, mtr_iitax, _) = self._calc.mtr(wrt_full_compensation=False)
         for idx in range(0, self._calc.records.dim):
             ovar = SimpleTaxIO.extract_output(self._calc.records, idx)
-            ovar[6] = 0.0  # no FICA tax liability calculated
-            ovar[7] = 100 * mtr_iitax[idx]
-            ovar[9] = 0.0  # no marginal FICA tax rate calculated
+            ovar[7] = 100.0 * mtr_iitax[idx]
+            if self._calc.records.MARS[idx] == 2:
+                ovar[6] = 0.0  # no FICA tax liability calculated for couples
+                ovar[9] = 0.0  # no marginal FICA tax rate for couples
+            else:
+                ovar[9] = 100.0 * mtr_fica[idx]
             output[idx] = ovar
         # write contents of output dictionary to OUTPUT file
         if write_output_file:
