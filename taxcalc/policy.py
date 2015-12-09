@@ -3,7 +3,8 @@ Tax-Calculator federal tax policy Policy class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 policy.py
-# pylint --disable=locally-disabled policy.py
+# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy policy.py
+# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 
 import os
@@ -208,7 +209,7 @@ class Policy(ParametersBase):
                     raise ValueError(msg.format(skey))
                 else:
                     year = int(skey)
-                rdict[year] = (np.array(val)  # pylint: disable=no-member
+                rdict[year] = (np.array(val)
                                if isinstance(val, list) else val)
             reform_pkey_param[pkey] = rdict
         # convert reform_pkey_param dictionary to reform_pkey_year dictionary
