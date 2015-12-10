@@ -5,6 +5,7 @@ writes results to the 'results_puf.csv' file.
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 test.py
 # pylint --disable=locally-disabled test.py
+# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import pandas as pd
 from taxcalc import Policy, Records, Calculator
