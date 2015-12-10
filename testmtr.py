@@ -1,6 +1,16 @@
 """
 Marginal tax rate test program for Calculator class logic that
 uses 'puf.csv' records and writes mtr histograms to stdout.
+
+COMMAND-LINE USAGE: python testmtr.py
+
+Note that the puf.csv file that is required to run this program has
+been constructed by the Tax-Calculator development team by merging
+information from the most recent publicly available IRS SOI PUF file
+and from the Census CPS file for the corresponding year.  If you have
+acquired from IRS the most recent SOI PUF file and want to execute
+this program, contact the Tax-Calculator development team to discuss
+your options.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 testmtr.py
@@ -26,13 +36,19 @@ def run():
     # create a Calculator object using clp policy and puf records
     calc = Calculator(policy=clp, records=puf)
 
-    # compute marginal tax rate histogram for each mtr income type
+    # compute marginal tax rate (mtr) histograms for each mtr income type
     mtr_income_types = ['e00200p', 'e00900p',
                         'e00300', 'e01700', 'e02400', 'e23250']
+    # . . . specify FICA mtr histogram bin boundaries (or edges):
     fica_bin_edges = [0.0, 0.02, 0.04, 0.06, 0.08,
                       0.10, 0.12, 0.14, 0.16, 0.18, 1.0]
+    #                the bin boundaries above are arbitrary, so users
+    #                may want to experiment with alternative boundaries
+    # . . . specify IIT mtr histogram bin boundaries (or edges):
     iit_bin_edges = [-1.0, -0.30, -0.20, -0.10, 0.0,
                      0.10, 0.20, 0.30, 0.40, 0.50, 1.0]
+    #                the bin boundaries above are arbitrary, so users
+    #                may want to experiment with alternative boundaries
     assert len(fica_bin_edges) == len(iit_bin_edges)
     sys.stdout.write('{} = {}\n'.format('Total number of data records',
                                         puf.dim))
