@@ -32,6 +32,7 @@ def run():
 
     # create a Records object (puf) containing puf.csv input records
     puf = Records()
+    recid = puf.RECID  # pylint: disable=no-member
 
     # create a Calculator object using clp policy and puf records
     calc = Calculator(policy=clp, records=puf)
@@ -61,11 +62,11 @@ def run():
         (mtr_fica, mtr_iit, _) = calc.mtr(income_type_str=inctype,
                                           wrt_full_compensation=False)
         sys.stdout.write('{} {}:\n'.format(inctype_header, inctype))
-        write_mtr_bin_counts(mtr_fica, fica_bin_edges)
-        write_mtr_bin_counts(mtr_iit, iit_bin_edges)
+        write_mtr_bin_counts(mtr_fica, fica_bin_edges, recid)
+        write_mtr_bin_counts(mtr_iit, iit_bin_edges, recid)
 
 
-def write_mtr_bin_counts(mtr_data, bin_edges):
+def write_mtr_bin_counts(mtr_data, bin_edges, recid):
     """
     Calculate and write to stdout mtr histogram bin counts.
     """
@@ -76,14 +77,22 @@ def write_mtr_bin_counts(mtr_data, bin_edges):
         sys.stdout.write(' {:6d}'.format(bincount[idx]))
     sys.stdout.write('\n')
     if sum_bincount < mtr_data.size:
-        sys.stdout.write('WARNING: sum of bin counts is too low:')
+        sys.stdout.write('WARNING: sum of bin counts is too low\n')
+        recinfo = '         mtr={:.2f} for recid={}\n'
         mtr_min = mtr_data.min()
         mtr_max = mtr_data.max()
-        if mtr_min < min(bin_edges):
-            sys.stdout.write(' min(mtr)={:.2f} '.format(mtr_min))
-        if mtr_max > max(bin_edges):
-            sys.stdout.write(' max(mtr)={:.2f} '.format(mtr_max))
-        sys.stdout.write('\n')
+        bin_min = min(bin_edges)
+        bin_max = max(bin_edges)
+        if mtr_min < bin_min:
+            sys.stdout.write('         min(mtr)={:.2f}\n'.format(mtr_min))
+            for idx in range(mtr_data.size):
+                if mtr_data[idx] < bin_min:
+                    sys.stdout.write(recinfo.format(mtr_data[idx], recid[idx]))
+        if mtr_max > bin_max:
+            sys.stdout.write('         max(mtr)={:.2f}\n'.format(mtr_max))
+            for idx in range(mtr_data.size):
+                if mtr_data[idx] > bin_max:
+                    sys.stdout.write(recinfo.format(mtr_data[idx], recid[idx]))
 
 
 if __name__ == '__main__':
