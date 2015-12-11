@@ -80,7 +80,7 @@ def weighted_count(agg):
 
 def weighted_mean(agg, col_name):
     return (float((agg[col_name] * agg['s006']).sum()) /
-            float(agg['s006'].sum()))
+            float(agg['s006'].sum() + EPSILON))
 
 
 def weighted_sum(agg, col_name):
@@ -89,12 +89,12 @@ def weighted_sum(agg, col_name):
 
 def weighted_perc_inc(agg, col_name):
     return (float(weighted_count_gt_zero(agg, col_name)) /
-            float(weighted_count(agg)))
+            float(weighted_count(agg) + EPSILON))
 
 
 def weighted_perc_dec(agg, col_name):
     return (float(weighted_count_lt_zero(agg, col_name)) /
-            float(weighted_count(agg)))
+            float(weighted_count(agg) + EPSILON))
 
 
 def weighted_share_of_total(agg, col_name, total):
