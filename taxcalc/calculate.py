@@ -220,7 +220,10 @@ class Calculator(object):
         """
         mtr_valid_income_types = ['e00200p', 'e00900p',
                                   'e00300', 'e23250',
-                                  'e01700', 'e02400']
+                                  'e01700', 'e02400',
+                                  'e00400', 'e00600',
+                                  'e00650', 'e22250',
+                                  'e01400', 'e02000']
         # check validity of income_type_str parameter
         if income_type_str not in mtr_valid_income_types:
             msg = 'mtr income_type_str="{}" is not valid'
