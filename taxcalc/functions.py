@@ -1492,8 +1492,8 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
 def AddCTC(_nctcr, _precrd, _earned, c07220, e00200, e82882, e30100, _sey,
            _exact, e82880, ACTC_Income_thd, ACTC_rt, SS_Earnings_c,
            ALD_SelfEmploymentTax_HC, e03260, e09800, c59660, e11200, e59680,
-           e59700, e59720, e11070, e82915, e82940, c82940,
-           ACTC_ChildNum, puf):
+           e59700, e59720, e11070, e82915, e82940, c82940, FICA_ss_trt,
+           FICA_mc_trt, ACTC_ChildNum, puf):
 
     # Additional Child Tax Credit
 
@@ -1519,7 +1519,8 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, e00200, e82882, e30100, _sey,
     # Part II of 2005 form 8812
 
     if _nctcr >= ACTC_ChildNum and c82890 < c82935:
-        c82900 = 0.0765 * min(min(SS_Earnings_c, c82880), e00200)
+        c82900 = 0.5 * (FICA_mc_trt + FICA_ss_trt) *\
+            min(min(SS_Earnings_c, c82880), e00200)
         c82905 = float((1 - ALD_SelfEmploymentTax_HC) * e03260 + e09800)
         c82910 = c82900 + c82905
         c82915 = c59660 + e11200
