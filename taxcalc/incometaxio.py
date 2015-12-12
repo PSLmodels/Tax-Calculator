@@ -99,7 +99,7 @@ class IncomeTaxIO(object):
         # read input file contents into Records object
         # (note that recs does not include the IRS-SOI-PUF aggregate record)
         recs = Records(data=input_filename, consider_imputations=True)
-        if blowup_input_data == False:
+        if blowup_input_data is False:
             # prepare Records object for sync_years=False in Calculator ctor
             recs.set_current_year(tax_year)
         # create Calculator object
