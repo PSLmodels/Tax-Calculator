@@ -22,13 +22,17 @@ import numpy as np
 from taxcalc import Policy, Records, Calculator
 
 
+TAX_YEAR = 2013
+
+
 def run():
     """
     Compute histograms for each marginal tax rate income type using
     sample input from the 'puf.csv' file and writing output to stdout.
     """
-    # create a Policy object containing current-law policy (clp) parameters
+    # create a Policy object (clp) containing current-law policy parameters
     clp = Policy()
+    clp.set_year(TAX_YEAR)
 
     # create a Records object (puf) containing puf.csv input records
     puf = Records()
