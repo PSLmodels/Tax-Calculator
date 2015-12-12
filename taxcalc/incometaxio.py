@@ -32,6 +32,9 @@ class IncomeTaxIO(object):
     reform_filename: string or None
         name of optional REFORM file with None implying current-law policy.
 
+    blowup_input_data: boolean
+        whether or not to age record data from data year to tax_year.
+
     Raises
     ------
     ValueError:
@@ -47,10 +50,12 @@ class IncomeTaxIO(object):
     def __init__(self,
                  input_filename,
                  tax_year,
-                 reform_filename):
+                 reform_filename,
+                 blowup_input_data):
         """
         IncomeTaxIO class constructor.
         """
+        # pylint: disable=too-many-branches
         # check that input_filename ends with '.csv' or '.csv.gz'
         if input_filename.endswith('.csv'):
             inp_str = '{}-{}'.format(input_filename[:-4], str(tax_year)[2:])
@@ -94,10 +99,12 @@ class IncomeTaxIO(object):
         # read input file contents into Records object
         # (note that recs does not include the IRS-SOI-PUF aggregate record)
         recs = Records(data=input_filename, consider_imputations=True)
-        # prepare Records object for sync_years=False in Calculator ctor
-        recs.set_current_year(policy.current_year)
-        # create Calculator object without doing year synchronization
-        self._calc = Calculator(policy=policy, records=recs, sync_years=False)
+        if blowup_input_data is False:
+            # prepare Records object for sync_years=False in Calculator ctor
+            recs.set_current_year(tax_year)
+        # create Calculator object
+        self._calc = Calculator(policy=policy, records=recs,
+                                sync_years=blowup_input_data)
 
     def tax_year(self):
         """
@@ -105,12 +112,14 @@ class IncomeTaxIO(object):
         """
         return self._calc.policy.current_year
 
-    def calculate(self, write_output_file=True):
+    def calculate(self, mtr_inctype='e00200p', write_output_file=True):
         """
         Calculate taxes for all INPUT lines and write OUTPUT to file.
 
         Parameters
         ----------
+        mtr_inctype: string
+
         write_output_file: boolean
 
         Returns
@@ -119,12 +128,16 @@ class IncomeTaxIO(object):
         """
         output = {}  # dictionary indexed by Records index for filing unit
         self._calc.calc_all()
-        (_, mtr_iitax, _) = self._calc.mtr(wrt_full_compensation=False)
+        (mtr_fica, mtr_iitax, _) = self._calc.mtr(income_type_str=mtr_inctype,
+                                                  wrt_full_compensation=False)
         for idx in range(0, self._calc.records.dim):
             ovar = SimpleTaxIO.extract_output(self._calc.records, idx)
-            ovar[6] = 0.0  # no FICA tax liability calculated
-            ovar[7] = 100 * mtr_iitax[idx]
-            ovar[9] = 0.0  # no marginal FICA tax rate calculated
+            ovar[7] = 100.0 * mtr_iitax[idx]
+            if self._calc.records.MARS[idx] == 2:
+                ovar[6] = 0.0  # no FICA tax liability calculated for couples
+                ovar[9] = 0.0  # no marginal FICA tax rate for couples
+            else:
+                ovar[9] = 100.0 * mtr_fica[idx]
             output[idx] = ovar
         # write contents of output dictionary to OUTPUT file
         if write_output_file:

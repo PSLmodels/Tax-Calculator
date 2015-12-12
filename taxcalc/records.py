@@ -415,7 +415,8 @@ class Records(object):
              ('s008', 's008'),
              ('s009', 's009'),
              ('WSAMP', 'wsamp'),
-             ('TXRT', 'txrt'), ]
+             ('TXRT', 'txrt'),
+             ('AGERANGE', 'agerange')]
 
     # list of zeroed-out "nonconst" variables
     ZEROED_NAMES = ['e35300_0', 'e35600_0', 'e35910_0', 'x03150', 'e03600',
@@ -439,7 +440,7 @@ class Records(object):
                     'e33450', 'e33460', 'e33465', 'e33470', 'x59560',
                     'EICYB1', 'EICYB2', 'EICYB3', 'e83080', 'e25360',
                     'e25430', 'e25400', 'e25500', 'e26210', 'e26340',
-                    'e26205', 'e26320', 'e87487', 'e87492',
+                    'e26205', 'e26320', 'e87487', 'e87492', 'e07170',
                     'e87497', 'e87526', 'e87522', 'e87524', 'e87528',
                     'EDCRAGE', 'e07960', 'e07700', 'e07250', 't07950',
                     'e82882', 'e82880', 'e07500', 'e08001', 'e07970',
@@ -451,8 +452,8 @@ class Records(object):
                     'e60680', 'e60600', 'e60405', 'e60440', 'e60420',
                     'e60410', 'e61400', 'e60660', 'e60480', 'e62000',
                     'e60250', 'e40223', '_sep', '_earned', '_sey',
-                    '_setax', '_feided', '_ymod', '_ymod1', '_posagi',
-                    'xtxcr1xtxcr10', '_xyztax', '_avail',
+                    'c09400', '_feided', '_ymod', '_ymod1', '_posagi',
+                    'xtxcr1xtxcr10', '_xyztax', '_avail', 'e85070',
                     '_taxinc', 'c04800', '_feitax', 'c05750', 'c24517',
                     '_taxbc', 'c60000', '_standard', 'c24516', 'c25420',
                     'c05700', 'c32880', 'c32890', '_dclim', 'c32800',
@@ -464,7 +465,7 @@ class Records(object):
                     '_ywossbe', '_ywossbc', '_prexmp', 'c17750',
                     '_statax', 'c37703', 'c20500', 'c20750', 'c19200',
                     'c19700', '_nonlimited', '_limitratio', '_phase2_i',
-                    '_fica', '_seyoff', 'c11055', 'c15100', '_numextra',
+                    '_fica', 'c03260', 'c11055', 'c15100', '_numextra',
                     '_txpyers', 'c15200', '_othded', 'c04100', 'c04200',
                     'c04500', '_amtstd', '_oldfei', 'c05200', '_cglong',
                     '_noncg', '_hasgain', '_dwks9', '_dwks5', '_dwks12',
@@ -884,22 +885,29 @@ class Records(object):
         # std_2009 = np.array([6100, 12200, 6100, 8950, 12200, 6100, 1000])
         # Additional standard deduction for aged 2009
         std_aged_2009 = np.array([1400., 1100.])
+        # std_aged_2009 = np.array([1500., 1200.])
         # impute number of taxpayers
         self._txpyers = np.where(np.logical_or(self.MARS == 2,
                                                np.logical_or(self.MARS == 3,
                                                              self.MARS == 6)),
                                  2., 1.)
         # impute number of extra standard deductions for aged
-        self._numextra = np.where(np.logical_and(self.FDED == 2, self.p04470 >
-                                                 std_2009[self.MARS - 1]),
-                                  np.where(
-                                      np.logical_and(self.MARS != 2,
-                                                     self.MARS != 3),
-                                      (self.p04470 - std_2009[self.MARS - 1]) /
-                                      std_aged_2009[0],
-                                      (self.p04470 - std_2009[self.MARS - 1]) /
-                                      std_aged_2009[1]),
-                                  np.where(self.e02400 > 0, self._txpyers, 0))
+        self._numextra = np.where(np.logical_or(self.AGERANGE >= 6,
+                                  np.logical_and(self.FDED != 2,
+                                                np.logical_and(
+                                                 self.AGERANGE <= 0,
+                                                 self.e02400 > 0))),
+                                  self._txpyers,
+                                  np.where(np.logical_and(self.FDED == 2,
+                                           self.e04470 >
+                                           std_2009[self.MARS - 1]),
+                                           np.where(self.MARS != 2,
+                                           (self.e04470 -
+                                            std_2009[self.MARS - 1]) /
+                                           std_aged_2009[0],
+                                           (self.e04470 -
+                                            std_2009[self.MARS - 1]) /
+                                           std_aged_2009[1]), 0))
 
         # impute the ratio of household head in total household income
         total = np.where(self.MARS == 2,

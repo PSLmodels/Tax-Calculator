@@ -4,6 +4,7 @@ INCome tax input-output capabilities for TAX-calculator.
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 inctax.py
 # pylint --disable=locally-disabled inctax.py
+# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import argparse
 import sys
@@ -16,6 +17,7 @@ def main():
     """
     # parse command-line arguments:
     parser = argparse.ArgumentParser(
+        prog='python inctax.py',
         description=('Writes to a file the federal income tax OUTPUT for the '
                      'tax filing units specified in the INPUT file with the '
                      'OUTPUT computed from the INPUT for the TAXYEAR using '
@@ -52,6 +54,20 @@ def main():
                               '//-comments. No REFORM filename implies use '
                               'of current-law policy.'),
                         default=None)
+    parser.add_argument('--mtrinc',
+                        help=('MTRINC is name of income type for which '
+                              'marginal tax rates are computed. No MTRINC '
+                              'implies using taxpayer earnings as the income '
+                              'type for which to compute marginal tax rates.'),
+                        default='e00200p')
+    parser.add_argument('--blowup',
+                        help=('optional flag that causes INPUT variables to '
+                              'be aged using default blowup factors from the '
+                              'year of the INPUT data to the TAXYEAR.  No '
+                              '--blowup option implies INPUT data are not '
+                              'adjusted in any way.'),
+                        default=False,
+                        action="store_true")
     parser.add_argument('INPUT',
                         help=('INPUT is name of required CSV file that '
                               'contains a subset of IRS-SOI PUF variables. '
@@ -69,8 +85,9 @@ def main():
     # instantiate IncometaxIO object and do tax calculations
     inctax = IncomeTaxIO(input_filename=args.INPUT,
                          tax_year=args.TAXYEAR,
-                         reform_filename=args.reform)
-    inctax.calculate()
+                         reform_filename=args.reform,
+                         blowup_input_data=args.blowup)
+    inctax.calculate(mtr_inctype=args.mtrinc)
     # return no-error exit code
     return 0
 # end of main function code

@@ -1,10 +1,21 @@
 """
 Test program for Calculator class logic that uses 'puf.csv' records and
 writes results to the 'results_puf.csv' file.
+
+COMMAND-LINE USAGE: python test.py
+
+Note that the puf.csv file that is required to run this program has
+been constructed by the Tax-Calculator development team by merging
+information from the most recent publicly available IRS SOI PUF file
+and from the Census CPS file for the corresponding year.  If you have
+acquired from IRS the most recent SOI PUF file and want to execute
+this program, contact the Tax-Calculator development team to discuss
+your options.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 test.py
 # pylint --disable=locally-disabled test.py
+# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import pandas as pd
 from taxcalc import Policy, Records, Calculator
@@ -12,8 +23,8 @@ from taxcalc import Policy, Records, Calculator
 
 def run():
     """
-    Run all functions using
-    'puf.csv' input and writing ouput to a CSV file named 'results_puf.csv'.
+    Execute Calculator.calc_all() method using 'puf.csv' input and
+    writing truncated ouput to a CSV file named 'results_puf.csv'.
     """
     # create a Policy object containing current-law policy (clp) parameters
     clp = Policy()
@@ -26,15 +37,15 @@ def run():
 
     calc.calc_all()
     rshape = calc.records.e00100.shape
-    df = pd.DataFrame()
+    dataf = pd.DataFrame()
     for attr in dir(calc.records):
         value = getattr(calc.records, attr)
         if hasattr(value, "shape"):
-            if (value.shape == rshape):
-                df[attr] = value
+            if value.shape == rshape:
+                dataf[attr] = value
 
     # truncate the outputs
-    Col_names = ['EICYB1', 'EICYB2', 'EICYB3', 'NIIT', '_addamt', '_addtax',
+    col_names = ['EICYB1', 'EICYB2', 'EICYB3', 'NIIT', '_addamt', '_addtax',
                  '_agep', '_ages', '_agierr', '_alminc', '_amed', '_amt15pc',
                  '_amt20pc', '_amt25pc', '_amt5pc', '_amtfei', '_amtsepadd',
                  '_amtstd', '_avail', '_cglong', '_cmbtp', '_comb',
@@ -42,14 +53,14 @@ def run():
                  '_dwks12', '_dwks16', '_dwks17', '_dwks21', '_dwks25',
                  '_dwks26', '_dwks28', '_dwks31', '_dwks5', '_dwks9', '_dy',
                  '_earned', '_eitc', '_exocrd', '_expanded_income', '_feided',
-                 '_feitax', '_fica', '_hasgain', '_ieic', '_iitax',
+                 '_feitax', '_fica', '_hasgain', '_ieic', 'c03260',
                  '_limitratio', '_line17', '_line19', '_line22', '_line30',
                  '_line31', '_line32', '_line33', '_line34', '_line35',
                  '_line36', '_modagi', '_nctcr', '_ncu13', '_ngamty', '_noncg',
                  '_nonlimited', '_num', '_numextra', '_oldfei', '_othadd',
                  '_othded', '_othertax', '_othtax', '_parents', '_phase2_i',
                  '_posagi', '_precrd', '_preeitc', '_prexmp', '_refund',
-                 '_regcrd', '_s1291', '_sep', '_setax', '_sey', '_seyoff',
+                 '_regcrd', '_s1291', '_sep', '_sey', 'c09400', 'c03260',
                  '_seywage', '_standard', '_statax', '_tamt2', '_taxbc',
                  '_taxinc', '_taxspecial', '_tratio', '_txpyers',
                  '_val_rtbase', '_val_rtless', '_val_ymax', '_xyztax', '_ymod',
@@ -81,12 +92,11 @@ def run():
                  'c87656', 'c87658', 'c87660', 'c87662', 'c87664', 'c87666',
                  'c87668', 'c87681', 'e00650', 'e02500', 'e08795', 'h82880',
                  'x04500', 'x07100', 'y07100', 'y62745']
-
-    df_truncated = df[Col_names]
+    dataf_truncated = dataf[col_names]
 
     # write test output to csv file named 'results_puf.csv'
-    df_truncated.to_csv('results_puf.csv', float_format='%1.3f', sep=',',
-                        header=True, index=False)
+    dataf_truncated.to_csv('results_puf.csv', float_format='%1.3f', sep=',',
+                           header=True, index=False)
 
 
 if __name__ == '__main__':
