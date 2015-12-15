@@ -175,6 +175,13 @@ class Calculator(object):
     def current_year(self):
         return self.policy.current_year
 
+    MTR_VALID_INCOME_TYPES = ['e00200p', 'e00900p',
+                              'e00300', 'e00400',
+                              'e00600', 'e00650',
+                              'e01400', 'e01700',
+                              'e02000', 'e02400',
+                              'e22250', 'e23250']
+
     def mtr(self, income_type_str='e00200p',
             wrt_full_compensation=True):
         """
@@ -211,21 +218,21 @@ class Calculator(object):
         Notes
         -----
         Valid income_type_str values are:
-        'e00200p', taxpayer wage/salary earnings (which is the default value);
-        'e00900p', taxpayer (Schedule C) self-employment income;
+        'e00200p', taxpayer wage/salary earnings (also included in e00200);
+        'e00900p', taxpayer Schedule C self-employment income (also in e00900);
         'e00300',  taxable interest income;
+        'e00400',  federally-tax-exempt interest income;
+        'e00600',  all dividends included in AGI
+        'e00650',  qualified dividends (also included in e00600)
+        'e01400',  federally-taxable IRA distribution;
+        'e01700',  federally-taxable pension benefits;
+        'e02000',  Schedule E net income/loss
+        'e02400',  all social security (OASDI) benefits;
+        'e22250',  short-term capital gains;
         'e23250',  long-term capital gains;
-        'e01700',  federally-taxable pension benefits; and
-        'e02400',  social security (OASDI) benefits.
         """
-        mtr_valid_income_types = ['e00200p', 'e00900p',
-                                  'e00300', 'e23250',
-                                  'e01700', 'e02400',
-                                  'e00400', 'e00600',
-                                  'e00650', 'e22250',
-                                  'e01400', 'e02000']
         # check validity of income_type_str parameter
-        if income_type_str not in mtr_valid_income_types:
+        if income_type_str not in Calculator.MTR_VALID_INCOME_TYPES:
             msg = 'mtr income_type_str="{}" is not valid'
             raise ValueError(msg.format(income_type_str))
         # specify value for finite_diff parameter
