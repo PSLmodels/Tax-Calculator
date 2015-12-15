@@ -23,6 +23,7 @@ from taxcalc import Policy, Records, Calculator
 
 
 TAX_YEAR = 2013
+NEG_DIFF = False  # set True if want to subtract (rather than add) small amount
 
 
 def run():
@@ -30,6 +31,10 @@ def run():
     Compute histograms for each marginal tax rate income type using
     sample input from the 'puf.csv' file and writing output to stdout.
     """
+    if NEG_DIFF:
+        sys.stdout.write('MTR computed using NEGATIVE finite_diff.\n')
+    else:
+        sys.stdout.write('MTR computed using POSITIVE finite_diff.\n')
     # create a Policy object (clp) containing current-law policy parameters
     clp = Policy()
     clp.set_year(TAX_YEAR)
@@ -62,6 +67,7 @@ def run():
     # compute marginal tax rate (mtr) histograms for each mtr income type
     for inctype in Calculator.MTR_VALID_INCOME_TYPES:
         (mtr_fica, mtr_iit, _) = calc.mtr(income_type_str=inctype,
+                                          negative_finite_diff=NEG_DIFF,
                                           wrt_full_compensation=False)
         sys.stdout.write('{} {}:\n'.format(inctype_header, inctype))
         write_mtr_bin_counts(mtr_fica, fica_bin_edges, recid)
