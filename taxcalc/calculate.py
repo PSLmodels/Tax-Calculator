@@ -183,6 +183,7 @@ class Calculator(object):
                               'e22250', 'e23250']
 
     def mtr(self, income_type_str='e00200p',
+            negative_finite_diff=False,
             wrt_full_compensation=True):
         """
         Calculates the marginal FICA, individual income, and combined
@@ -203,6 +204,11 @@ class Calculator(object):
         income_type_str: string
             specifies type of income that is increased to compute the
             marginal tax rates.  See Notes for list of valid income types.
+
+        negative_finite_diff: boolean
+            specifies whether or not marginal tax rates are computed by
+            subtracting (rather than adding) a small finite_diff amount
+            to the specified income type.
 
         wrt_full_compensation: boolean
             specifies whether or not marginal tax rates on earned income
@@ -237,6 +243,8 @@ class Calculator(object):
             raise ValueError(msg.format(income_type_str))
         # specify value for finite_diff parameter
         finite_diff = 0.01  # a one-cent difference
+        if negative_finite_diff:
+            finite_diff *= -1.0
         # extract income_type array(s) from embedded records object
         income_type = getattr(self.records, income_type_str)
         if income_type_str == 'e00200p':
