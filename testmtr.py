@@ -41,9 +41,6 @@ def run():
     # create a Calculator object using clp policy and puf records
     calc = Calculator(policy=clp, records=puf)
 
-    # compute marginal tax rate (mtr) histograms for each mtr income type
-    mtr_income_types = ['e00200p', 'e00900p',
-                        'e00300', 'e01700', 'e02400', 'e23250']
     # . . . specify FICA mtr histogram bin boundaries (or edges):
     fica_bin_edges = [0.0, 0.02, 0.04, 0.06, 0.08,
                       0.10, 0.12, 0.14, 0.16, 0.18, 1.0]
@@ -62,7 +59,8 @@ def run():
     sys.stdout.write('IIT mtr histogram bin edges:\n')
     sys.stdout.write('     {}\n'.format(iit_bin_edges))
     inctype_header = 'FICA and IIT mtr histogram bin counts for'
-    for inctype in mtr_income_types:
+    # compute marginal tax rate (mtr) histograms for each mtr income type
+    for inctype in Calculator.MTR_VALID_INCOME_TYPES:
         (mtr_fica, mtr_iit, _) = calc.mtr(income_type_str=inctype,
                                           wrt_full_compensation=False)
         sys.stdout.write('{} {}:\n'.format(inctype_header, inctype))
