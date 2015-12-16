@@ -1020,7 +1020,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
     else:
         _amt20pc = 0.
 
-    if c62720 != 0:
+    if c62730 != 0:
         _amt25pc = max(0, _alminc - _ngamty - _line46)
     else:
         _amt25pc = 0.
