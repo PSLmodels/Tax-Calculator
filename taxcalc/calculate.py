@@ -235,7 +235,7 @@ class Calculator(object):
         'e02000',  Schedule E net income/loss
         'e02400',  all social security (OASDI) benefits;
         'e22250',  short-term capital gains;
-        'e23250',  long-term capital gains;
+        'e23250',  long-term capital gains.
         """
         # check validity of income_type_str parameter
         if income_type_str not in Calculator.MTR_VALID_INCOME_TYPES:
