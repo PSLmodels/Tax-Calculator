@@ -251,6 +251,8 @@ class Calculator(object):
             earnings_type = self.records.e00200
         elif income_type_str == 'e00900p':
             seincome_type = self.records.e00900
+        elif income_type_str == 'e00650':
+            divincome_type = self.records.e00600
         # calculate base level of taxes
         self.calc_all()
         fica_base = copy.deepcopy(self.records._fica)
@@ -262,6 +264,8 @@ class Calculator(object):
             self.records.e00200 = earnings_type + finite_diff
         elif income_type_str == 'e00900p':
             self.records.e00900 = seincome_type + finite_diff
+        elif income_type_str == 'e00650':
+            self.records.e00600 = divincome_type + finite_diff
         self.calc_all()
         fica_up = copy.deepcopy(self.records._fica)
         iitax_up = copy.deepcopy(self.records._iitax)
@@ -276,6 +280,8 @@ class Calculator(object):
             self.records.e00200 = earnings_type
         elif income_type_str == 'e00900p':
             self.records.e00900 = seincome_type
+        elif income_type_str == 'e00650':
+            self.records.e00600 = divincome_type
         self.calc_all()
         # specify optional adjustment for employer (er) OASDI+HI payroll taxes
         if wrt_full_compensation and income_type_str == 'e00200p':
