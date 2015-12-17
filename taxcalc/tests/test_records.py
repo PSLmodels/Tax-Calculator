@@ -46,9 +46,6 @@ def test_blow_up():
     # r.current_year == PUF_YEAR implies Calculator ctor will call r.blowup()
     calc = Calculator(policy=parms, records=recs)
     assert calc.current_year == parms_start_year
-    # have e aliases of p variables been maintained after several blowups?
-    assert calc.records.e23250.sum() == calc.records.p23250.sum()
-    assert calc.records.e22250.sum() == calc.records.p22250.sum()
 
 
 def test_imputation_of_cmbtp_itemizer():

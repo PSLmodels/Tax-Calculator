@@ -648,9 +648,7 @@ class Records(object):
             setattr(self, name, np.zeros((self.dim,)))
         self._num = np.ones((self.dim,))
         # specify eNNNNN aliases for several pNNNNN and sNNNNN variables
-        self.e22250 = self.p22250
         self.e04470 = self.p04470
-        self.e23250 = self.p23250
         self.e25470 = self.p25470
         self.e08000 = self.p08000
         self.e60100 = self.p60100
