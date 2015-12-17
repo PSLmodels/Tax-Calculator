@@ -421,7 +421,7 @@ def AMED(_fica, e00200, MARS, AMED_thd, _sey, AMED_trt,
 
 
 @iterate_jit(nopython=True, puf=True)
-def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
+def StdDed(DSI, _earned, STD, p04470, e00100, e60000,
            MARS, MIDR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200,
            STD_Aged, _txpyers, f6251, _numextra, puf):
 
@@ -495,7 +495,7 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
 
     # ??
     x04500 = 0.
-    if f6251 == 0 and e04470 == 0:
+    if f6251 == 0 and p04470 == 0:
         x04500 = e00100 - e60000
 
     # Calculate the extra deduction for aged and blind
@@ -523,7 +523,7 @@ def StdDed(DSI, _earned, STD, e04470, e00100, e60000,
 
 @iterate_jit(nopython=True, puf=False)
 def TaxInc(c00100, c04470, _standard, e37717, c21060, c21040,
-           e04470, c04200, c04500, c04600, x04500,
+           p04470, c04200, c04500, c04600, x04500,
            e04805, t04470, f6251, _exact, _feided, c04800, MARS,
            II_rt1, II_rt2, II_rt3, II_rt4,
            II_rt5, II_rt6, II_rt7, II_brk1, II_brk2, II_brk3,
@@ -539,7 +539,7 @@ def TaxInc(c00100, c04470, _standard, e37717, c21060, c21040,
     #    c04470 = 0.
 
     # if FDED == 1:
-    #    _othded = e04470 - c04470
+    #    _othded = p04470 - c04470
     #    c04100 = 0.
     #    c04200 = 0.
     #    _standard = 0.
@@ -835,10 +835,10 @@ def TaxGains(e00650, c01000, c04800, e01000, c23650, p23250, e01100, e58990,
 
 @iterate_jit(nopython=True, puf=True)
 def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
-         e60300, e60860, e60100, e60840, e60630, e60550, FDED, e62740,
+         e60300, e60860, p60100, e60840, e60630, e60550, FDED, e62740,
          e60720, e60430, e60500, e60340, e60680, e60600, e60405, e24516,
          e60440, e60420, e60410, e61400, e60660, e60480, c21060, e62720,
-         e62000, e60250, _cmp, _standard, e04470, e17500, c04600, c05200,
+         e62000, e60250, _cmp, _standard, p04470, e17500, c04600, c05200,
          f6251, e62100, e21040, e20800, c00100, _statax, e60000, t04470,
          c04470, c17000, e18500, c20800, c21040, NIIT, e62730, e04805,
          DOBYR, FLPDYR, DOBMD, SDOBYR, SDOBMD, SFOBYR, c02700, AGERANGE,
@@ -904,12 +904,12 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
         _addamt = 0
 
     if _cmp == 1:
-        c62100 = (_addamt + e60300 + e60860 + e60100 + e60840 + e60630 +
+        c62100 = (_addamt + e60300 + e60860 + p60100 + e60840 + e60630 +
                   e60550 + e60720 + e60430 + e60500 + e60340 + e60680 +
                   e60600 + e60405 + e60440 + e60420 + e60410 + e61400 +
                   e60660 - c60260 - e60480 - e62000 + c60000 - e60250)
 
-    if (puf and ((_standard == 0 or (_exact == 1 and e04470 > 0)))):
+    if (puf and ((_standard == 0 or (_exact == 1 and p04470 > 0)))):
         if f6251 == 1:
             _cmbtp = _cmbtp_itemizer
         else:
@@ -1158,7 +1158,7 @@ def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt,
 @iterate_jit(nopython=True, puf=True)
 def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
            EITC_ps_MarriedJ, EITC_rt, c59560, EITC_c, EITC_prt, e83080, e00300,
-           e00600, e01000, e40223, e25360, e25430, e25470, e25400, e25500,
+           e00600, e01000, e40223, e25360, e25430, p25470, e25400, e25500,
            e26210, e26340, e27200, e26205, e26320, EITC_InvestIncome_c, _cmp,
            SOIYR, DOBYR, SDOBYR, _agep, _ages, _earned, c59660, _exact, e59560,
            _numextra, puf):
@@ -1197,7 +1197,7 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
         _val_rtbase = EITC_rt[_ieic] * 100
         _val_rtless = EITC_prt[_ieic] * 100
         _dy = (e00400 + e83080 + e00300 + e00600 + max(0., max(0., c01000) -
-               max(0., e40223)) + max(0., max(0., e25360) - e25430 - e25470 -
+               max(0., e40223)) + max(0., max(0., e25360) - e25430 - p25470 -
                e25400 - e25500) + max(0., e26210 + e26340 + e27200 -
                e26205 - e26320))
     else:
@@ -1557,7 +1557,7 @@ def F5405(pm, rc):
 @iterate_jit(nopython=True, puf=True)
 def C1040(e07400, e07180, e07200, c07220, c07230, e07250, c07300, c07240,
           e07600, e07260, c07970, e07300, x07400, e09720, c07600,
-          e07500, e07700, e08000, e07240, e08001, e07960, e07970,
+          e07500, e07700, p08000, e07240, e08001, e07960, e07970,
           SOIYR, e07980, c05800, e08800, e09900, e09400, e09800,
           e10000, e10100, e09700, e10050, e10075, e09805, e09710,
           c59660, c07180, c59680, NIIT, _amed, puf):
@@ -1567,7 +1567,7 @@ def C1040(e07400, e07180, e07200, c07220, c07230, e07250, c07300, c07240,
     x07400 = e07400
 
     c07100 = (c07180 + e07200 + c07600 + c07300 + x07400 + e07980 + c07220 +
-              e07500 + e08000)
+              e07500 + p08000)
 
     y07100 = c07100
 

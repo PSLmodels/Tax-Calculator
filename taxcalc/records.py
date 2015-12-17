@@ -647,12 +647,6 @@ class Records(object):
         for name in Records.ZEROED_NAMES:
             setattr(self, name, np.zeros((self.dim,)))
         self._num = np.ones((self.dim,))
-        # specify eNNNNN aliases for several pNNNNN and sNNNNN variables
-        self.e04470 = self.p04470
-        self.e25470 = self.p25470
-        self.e08000 = self.p08000
-        self.e60100 = self.p60100
-        self.e27860 = self.s27860
         # specify SOIYR
         self.SOIYR = np.repeat(Records.PUF_YEAR, self.dim)
 
@@ -737,13 +731,13 @@ class Records(object):
                                                  self.e02400 > 0))),
                                   self._txpyers,
                                   np.where(np.logical_and(self.FDED == 2,
-                                           self.e04470 >
+                                           self.p04470 >
                                            std_2009[self.MARS - 1]),
                                            np.where(self.MARS != 2,
-                                           (self.e04470 -
+                                           (self.p04470 -
                                             std_2009[self.MARS - 1]) /
                                            std_aged_2009[0],
-                                           (self.e04470 -
+                                           (self.p04470 -
                                             std_2009[self.MARS - 1]) /
                                            std_aged_2009[1]), 0))
 
@@ -801,7 +795,7 @@ class Records(object):
                     float64, float64)])
 def imputed_cmbtp_itemizer(e17500, e00100, e18400,
                            e62100, e00700,
-                           e04470, e21040,
+                           p04470, e21040,
                            e18500, e20800):
     """
     Calculates _cmbtp_itemizer values
@@ -810,5 +804,5 @@ def imputed_cmbtp_itemizer(e17500, e00100, e18400,
     medical_limited = max(0., e17500 - max(0., e00100) * 0.075)
     medical_adjustment = min(medical_limited, 0.025 * max(0., e00100))
     state_adjustment = max(0, e18400)
-    return (e62100 - medical_adjustment + e00700 + e04470 + e21040 -
+    return (e62100 - medical_adjustment + e00700 + p04470 + e21040 -
             state_adjustment - e00100 - e18500 - e20800)
