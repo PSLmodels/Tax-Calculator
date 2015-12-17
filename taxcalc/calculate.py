@@ -175,7 +175,15 @@ class Calculator(object):
     def current_year(self):
         return self.policy.current_year
 
+    MTR_VALID_INCOME_TYPES = ['e00200p', 'e00900p',
+                              'e00300', 'e00400',
+                              'e00600', 'e00650',
+                              'e01400', 'e01700',
+                              'e02000', 'e02400',
+                              'e22250', 'e23250']
+
     def mtr(self, income_type_str='e00200p',
+            negative_finite_diff=False,
             wrt_full_compensation=True):
         """
         Calculates the marginal FICA, individual income, and combined
@@ -197,6 +205,11 @@ class Calculator(object):
             specifies type of income that is increased to compute the
             marginal tax rates.  See Notes for list of valid income types.
 
+        negative_finite_diff: boolean
+            specifies whether or not marginal tax rates are computed by
+            subtracting (rather than adding) a small finite_diff amount
+            to the specified income type.
+
         wrt_full_compensation: boolean
             specifies whether or not marginal tax rates on earned income
             are computed with respect to (wrt) changes in total compensation
@@ -211,31 +224,35 @@ class Calculator(object):
         Notes
         -----
         Valid income_type_str values are:
-        'e00200p', taxpayer wage/salary earnings (which is the default value);
-        'e00900p', taxpayer (Schedule C) self-employment income;
+        'e00200p', taxpayer wage/salary earnings (also included in e00200);
+        'e00900p', taxpayer Schedule C self-employment income (also in e00900);
         'e00300',  taxable interest income;
-        'e23250',  long-term capital gains;
-        'e01700',  federally-taxable pension benefits; and
-        'e02400',  social security (OASDI) benefits.
+        'e00400',  federally-tax-exempt interest income;
+        'e00600',  all dividends included in AGI
+        'e00650',  qualified dividends (also included in e00600)
+        'e01400',  federally-taxable IRA distribution;
+        'e01700',  federally-taxable pension benefits;
+        'e02000',  Schedule E net income/loss
+        'e02400',  all social security (OASDI) benefits;
+        'e22250',  short-term capital gains;
+        'e23250',  long-term capital gains.
         """
-        mtr_valid_income_types = ['e00200p', 'e00900p',
-                                  'e00300', 'e23250',
-                                  'e01700', 'e02400',
-                                  'e00400', 'e00600',
-                                  'e00650', 'e22250',
-                                  'e01400', 'e02000']
         # check validity of income_type_str parameter
-        if income_type_str not in mtr_valid_income_types:
+        if income_type_str not in Calculator.MTR_VALID_INCOME_TYPES:
             msg = 'mtr income_type_str="{}" is not valid'
             raise ValueError(msg.format(income_type_str))
         # specify value for finite_diff parameter
         finite_diff = 0.01  # a one-cent difference
+        if negative_finite_diff:
+            finite_diff *= -1.0
         # extract income_type array(s) from embedded records object
         income_type = getattr(self.records, income_type_str)
         if income_type_str == 'e00200p':
             earnings_type = self.records.e00200
         elif income_type_str == 'e00900p':
             seincome_type = self.records.e00900
+        elif income_type_str == 'e00650':
+            divincome_type = self.records.e00600
         # calculate base level of taxes
         self.calc_all()
         fica_base = copy.deepcopy(self.records._fica)
@@ -247,6 +264,8 @@ class Calculator(object):
             self.records.e00200 = earnings_type + finite_diff
         elif income_type_str == 'e00900p':
             self.records.e00900 = seincome_type + finite_diff
+        elif income_type_str == 'e00650':
+            self.records.e00600 = divincome_type + finite_diff
         self.calc_all()
         fica_up = copy.deepcopy(self.records._fica)
         iitax_up = copy.deepcopy(self.records._iitax)
@@ -261,6 +280,8 @@ class Calculator(object):
             self.records.e00200 = earnings_type
         elif income_type_str == 'e00900p':
             self.records.e00900 = seincome_type
+        elif income_type_str == 'e00650':
+            self.records.e00600 = divincome_type
         self.calc_all()
         # specify optional adjustment for employer (er) OASDI+HI payroll taxes
         if wrt_full_compensation and income_type_str == 'e00200p':

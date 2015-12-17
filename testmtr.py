@@ -23,6 +23,7 @@ from taxcalc import Policy, Records, Calculator
 
 
 TAX_YEAR = 2013
+NEG_DIFF = False  # set True if want to subtract (rather than add) small amount
 
 
 def run():
@@ -30,6 +31,10 @@ def run():
     Compute histograms for each marginal tax rate income type using
     sample input from the 'puf.csv' file and writing output to stdout.
     """
+    if NEG_DIFF:
+        sys.stdout.write('MTR computed using NEGATIVE finite_diff.\n')
+    else:
+        sys.stdout.write('MTR computed using POSITIVE finite_diff.\n')
     # create a Policy object (clp) containing current-law policy parameters
     clp = Policy()
     clp.set_year(TAX_YEAR)
@@ -41,9 +46,6 @@ def run():
     # create a Calculator object using clp policy and puf records
     calc = Calculator(policy=clp, records=puf)
 
-    # compute marginal tax rate (mtr) histograms for each mtr income type
-    mtr_income_types = ['e00200p', 'e00900p',
-                        'e00300', 'e01700', 'e02400', 'e23250']
     # . . . specify FICA mtr histogram bin boundaries (or edges):
     fica_bin_edges = [0.0, 0.02, 0.04, 0.06, 0.08,
                       0.10, 0.12, 0.14, 0.16, 0.18, 1.0]
@@ -62,8 +64,10 @@ def run():
     sys.stdout.write('IIT mtr histogram bin edges:\n')
     sys.stdout.write('     {}\n'.format(iit_bin_edges))
     inctype_header = 'FICA and IIT mtr histogram bin counts for'
-    for inctype in mtr_income_types:
+    # compute marginal tax rate (mtr) histograms for each mtr income type
+    for inctype in Calculator.MTR_VALID_INCOME_TYPES:
         (mtr_fica, mtr_iit, _) = calc.mtr(income_type_str=inctype,
+                                          negative_finite_diff=NEG_DIFF,
                                           wrt_full_compensation=False)
         sys.stdout.write('{} {}:\n'.format(inctype_header, inctype))
         write_mtr_bin_counts(mtr_fica, fica_bin_edges, recid)
