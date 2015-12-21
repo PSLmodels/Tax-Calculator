@@ -1262,7 +1262,7 @@ def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
 
 
 @iterate_jit(nopython=True, puf=True)
-def AmOppCr(_cmp, e87482, e87487, e87492, e87497, e87521, puf):
+def AmOppCr(_cmp, p87482, e87487, e87492, e87497, p87521, puf):
     """American Opportunity Credit 2009+; Form 8863"""
 
     """
@@ -1272,7 +1272,7 @@ def AmOppCr(_cmp, e87482, e87487, e87492, e87497, e87521, puf):
     """
 
     # Expense should not exceed the cap of $4000.
-    c87482 = max(0., min(e87482, 4000.))
+    c87482 = max(0., min(p87482, 4000.))
     c87487 = max(0., min(e87487, 4000.))
     c87492 = max(0., min(e87492, 4000.))
     c87497 = max(0., min(e87497, 4000.))
@@ -1303,7 +1303,7 @@ def AmOppCr(_cmp, e87482, e87487, e87492, e87497, e87521, puf):
     c87521 = c87483 + c87488 + c87493 + c87498
 
     if puf:
-        c87521 = e87521
+        c87521 = p87521
 
     return (c87482, c87487, c87492, c87497, c87483, c87488, c87493, c87498,
             c87521)

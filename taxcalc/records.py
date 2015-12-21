@@ -258,8 +258,8 @@ class Records(object):
              ('e62740', 'e62740'),
              ('p65300', 'p65300'),
              ('p65400', 'p65400'),
-             ('e87482', 'p87482'),
-             ('e87521', 'p87521'),
+             ('p87482', 'p87482'),
+             ('p87521', 'p87521'),
              ('e68000', 'e68000'),
              ('e82200', 'e82200'),
              ('t27800', 't27800'),
@@ -616,7 +616,7 @@ class Records(object):
         times_equal(self.p27895, self.BF.ATXPY[year])
         times_equal(self.e87530, self.BF.ATXPY[year])
         times_equal(self.e87550, self.BF.ATXPY[year])
-        times_equal(self.e87521, self.BF.ATXPY[year])
+        times_equal(self.p87521, self.BF.ATXPY[year])
         times_equal(self.RECID, 1.)
         times_equal(self.s006, 1.)
         times_equal(self.s008, 1.)
