@@ -618,7 +618,6 @@ class Records(object):
                               (self.p04470 -
                                std_2009[self.MARS - 1]) /
                               std_aged_2009[1]), 0))
-
         # impute the ratio of household head in total household income
         total = np.where(self.MARS == 2,
                          self.wage_head + self.wage_spouse,
