@@ -180,7 +180,7 @@ class Calculator(object):
                               'e00600', 'e00650',
                               'e01400', 'e01700',
                               'e02000', 'e02400',
-                              'e22250', 'e23250']
+                              'p22250', 'p23250']
 
     def mtr(self, income_type_str='e00200p',
             negative_finite_diff=False,
@@ -234,8 +234,8 @@ class Calculator(object):
         'e01700',  federally-taxable pension benefits;
         'e02000',  Schedule E net income/loss
         'e02400',  all social security (OASDI) benefits;
-        'e22250',  short-term capital gains;
-        'e23250',  long-term capital gains.
+        'p22250',  short-term capital gains;
+        'p23250',  long-term capital gains.
         """
         # check validity of income_type_str parameter
         if income_type_str not in Calculator.MTR_VALID_INCOME_TYPES:
