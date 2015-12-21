@@ -17,6 +17,7 @@ def main():
     """
     # parse command-line arguments:
     parser = argparse.ArgumentParser(
+        prog='python simtax.py',
         description=('Writes to a file the federal tax OUTPUT for the tax '
                      'filing units specified in the INPUT file with the '
                      'OUTPUT computed from the INPUT using the Tax-Calculator.'
