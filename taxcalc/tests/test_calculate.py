@@ -16,7 +16,7 @@ from taxcalc import create_distribution_table, create_difference_table
 TAX_DTA_PATH = os.path.join(CUR_PATH, '../../tax_all1991_puf.gz')
 TAX_DTA = pd.read_csv(TAX_DTA_PATH, compression='gzip')
 # PUF-fix-up: MIdR needs to be type int64 to match PUF
-TAX_DTA['midr'] = TAX_DTA['midr'].astype('int64')
+TAX_DTA['MIDR'] = TAX_DTA['MIDR'].astype('int64')
 # specify WEIGHTS appropriate for 1991 data
 WEIGHTS_FILENAME = '../../WEIGHTS_testing.csv'
 WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
@@ -317,7 +317,7 @@ def test_Calculator_create_difference_table():
 
 def test_diagnostic_table():
     policy = Policy()
-    TAX_DTA.flpdyr += 18  # flpdyr==2009 so that Records ctor will apply blowup
+    TAX_DTA.FLPDYR += 18  # flpdyr==2009 so that Records ctor will apply blowup
     puf = Records(data=TAX_DTA, weights=WEIGHTS)
     calc = Calculator(policy=policy, records=puf)
     calc.diagnostic_table()

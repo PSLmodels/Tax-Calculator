@@ -21,7 +21,7 @@ from taxcalc.utils import EPSILON
 TAX_DTA_PATH = os.path.join(CUR_PATH, '../../tax_all1991_puf.gz')
 TAX_DTA = pd.read_csv(TAX_DTA_PATH, compression='gzip')
 # PUF-fix-up: MIdR needs to be type int64 to match PUF
-TAX_DTA['midr'] = TAX_DTA['midr'].astype('int64')
+TAX_DTA['MIDR'] = TAX_DTA['MIDR'].astype('int64')
 # specify WEIGHTS appropriate for 1991 data
 WEIGHTS_FILENAME = '../../WEIGHTS_testing.csv'
 WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)

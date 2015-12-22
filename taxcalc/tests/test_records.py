@@ -11,7 +11,7 @@ from taxcalc import Records, imputed_cmbtp_itemizer, Policy, Calculator, Growth
 TAX_DTA_PATH = os.path.join(CUR_PATH, '../../tax_all1991_puf.gz')
 TAX_DTA = pd.read_csv(TAX_DTA_PATH, compression='gzip')
 # PUF-fix-up: MIdR needs to be type int64 to match PUF
-TAX_DTA['midr'] = TAX_DTA['midr'].astype('int64')
+TAX_DTA['MIDR'] = TAX_DTA['MIDR'].astype('int64')
 # specify WEIGHTS appropriate for 1991 data
 WEIGHTS_FILENAME = '../../WEIGHTS_testing.csv'
 WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
@@ -38,7 +38,7 @@ def test_create_records_with_wrong_start_year():
 def test_blow_up():
     tax_dta = pd.read_csv(TAX_DTA_PATH, compression='gzip')
     extra_years = Records.PUF_YEAR - 1991
-    tax_dta.flpdyr += extra_years
+    tax_dta.FLPDYR += extra_years
     parms = Policy()
     parms_start_year = parms.current_year
     recs = Records(data=tax_dta)
@@ -75,17 +75,14 @@ def test_imputation_of_cmbtp_itemizer():
 
 
 def test_for_duplicate_names():
-    var_names = set()
-    inp_names = set()
-    for var_name, inp_name in Records.NAMES:
-        assert var_name not in var_names
-        var_names.add(var_name)
-        assert inp_name not in inp_names
-        inp_names.add(inp_name)
-    zero_names = set()
-    for zero_name in Records.ZEROED_NAMES:
-        assert zero_name not in zero_names
-        zero_names.add(zero_name)
+    varnames = set()
+    for varname in Records.VALID_READ_VARS:
+        assert varname not in varnames
+        varnames.add(varname)
+    varnames = set()
+    for varname in Records.CALCULATED_VARS:
+        assert varname not in varnames
+        varnames.add(varname)
 
 
 def test_default_rates_and_those_implied_by_blowup_factors():
