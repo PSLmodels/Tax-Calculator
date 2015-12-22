@@ -464,8 +464,8 @@ class SimpleTaxIO(object):
         """
         # create all-zeros dictionary and then list of all-zero dictionaries
         zero_dict = {}
-        for names in Records.NAMES:
-            zero_dict[names[1]] = 0
+        for varname in Records.VALID_READ_VARS:
+            zero_dict[varname] = 0
         dict_list = [zero_dict for _ in range(0, len(self._input))]
         # use dict_list to create a Pandas DataFrame and Records object
         recsdf = pd.DataFrame(dict_list, dtype='int64')

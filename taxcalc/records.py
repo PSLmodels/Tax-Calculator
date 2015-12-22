@@ -1,6 +1,12 @@
 """
 Tax-Calculator tax-filing-unit Records class.
 """
+# CODING-STYLE CHECKS:
+# pep8 --ignore=E402 records.py
+# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy records.py
+# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
+
+
 import pandas as pd
 import numpy as np
 import os
@@ -64,6 +70,12 @@ class Records(object):
     consider_imputations=False or specify the start_year in the Records
     class constructor unless you know exactly what you are doing.
     """
+    # suppress pylint warnings about unrecognized Records variables:
+    # pylint: disable=no-member
+    # suppress pylint warnings about uppercase variable names:
+    # pylint: disable=invalid-name
+    # suppress pylint warnings about too many class instance attributes:
+    # pylint: disable=too-many-instance-attributes
 
     PUF_YEAR = 2009
 
@@ -73,302 +85,138 @@ class Records(object):
     BLOWUP_FACTORS_FILENAME = "StageIFactors.csv"
     BLOWUP_FACTORS_PATH = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
 
-    # pairs of 'name of attribute', 'column name' - often the same
-    # NOTE: second name in each pair is what Records.__init__() expects
-    # if data parameter is a Pandas DataFrame rather than a CSV filename.
-    NAMES = [('AGIR1', 'agir1'),
-             ('DSI', 'dsi'),
-             ('EFI', 'efi'),
-             ('EIC', 'eic'),
-             ('ELECT', 'elect'),
-             ('FDED', 'fded'),
-             ('FLPDYR', 'flpdyr'),
-             ('FLPDMO', 'flpdmo'),
-             ('f2441', 'f2441'),
-             ('f3800', 'f3800'),
-             ('f6251', 'f6251'),
-             ('f8582', 'f8582'),
-             ('f8606', 'f8606'),
-             ('IE', 'ie'),
-             ('MARS', 'mars'),
-             ('MIDR', 'midr'),
-             ('n20', 'n20'),
-             ('n24', 'n24'),
-             ('n25', 'n25'),
-             ('PREP', 'prep'),
-             ('SCHB', 'schb'),
-             ('SCHCF', 'schcf'),
-             ('SCHE', 'sche'),
-             ('TFORM', 'tform'),
-             ('TXST', 'txst'),
-             ('XFPT', 'xfpt'),
-             ('XFST', 'xfst'),
-             ('XOCAH', 'xocah'),
-             ('XOCAWH', 'xocawh'),
-             ('XOODEP', 'xoodep'),
-             ('XOPAR', 'xopar'),
-             ('XTOT', 'xtot'),
-             ('e00200', 'e00200'),
-             ('e00300', 'e00300'),
-             ('e00400', 'e00400'),
-             ('e00600', 'e00600'),
-             ('e00650', 'e00650'),
-             ('e00700', 'e00700'),
-             ('e00800', 'e00800'),
-             ('e00900', 'e00900'),
-             ('e01000', 'e01000'),
-             ('e01100', 'e01100'),
-             ('e01200', 'e01200'),
-             ('e01400', 'e01400'),
-             ('e01500', 'e01500'),
-             ('e01700', 'e01700'),
-             ('e02000', 'e02000'),
-             ('e02100', 'e02100'),
-             ('e02300', 'e02300'),
-             ('e02400', 'e02400'),
-             ('e02500', 'e02500'),
-             ('e03150', 'e03150'),
-             ('e03210', 'e03210'),
-             ('e03220', 'e03220'),
-             ('e03230', 'e03230'),
-             ('e03260', 'e03260'),
-             ('e03270', 'e03270'),
-             ('e03240', 'e03240'),
-             ('e03290', 'e03290'),
-             ('e03300', 'e03300'),
-             ('e03400', 'e03400'),
-             ('e03500', 'e03500'),
-             ('e00100', 'e00100'),
-             ('p04470', 'p04470'),
-             ('e04250', 'e04250'),
-             ('e04600', 'e04600'),
-             ('e04800', 'e04800'),
-             ('e05100', 'e05100'),
-             ('e05200', 'e05200'),
-             ('e05800', 'e05800'),
-             ('e06000', 'e06000'),
-             ('e06200', 'e06200'),
-             ('e06300', 'e06300'),
-             ('e09600', 'e09600'),
-             ('e07180', 'e07180'),
-             ('e07200', 'e07200'),
-             ('e07220', 'e07220'),
-             ('e07230', 'e07230'),
-             ('e07240', 'e07240'),
-             ('e07260', 'e07260'),
-             ('e07300', 'e07300'),
-             ('e07400', 'e07400'),
-             ('e07600', 'e07600'),
-             ('p08000', 'p08000'),
-             ('e07150', 'e07150'),
-             ('e06500', 'e06500'),
-             ('e08800', 'e08800'),
-             ('e09400', 'e09400'),
-             ('e09700', 'e09700'),
-             ('e09800', 'e09800'),
-             ('e09900', 'e09900'),
-             ('e10300', 'e10300'),
-             ('e10700', 'e10700'),
-             ('e10900', 'e10900'),
-             ('e59560', 'e59560'),
-             ('e59680', 'e59680'),
-             ('e59700', 'e59700'),
-             ('e59720', 'e59720'),
-             ('e11550', 'e11550'),
-             ('e11070', 'e11070'),
-             ('e11100', 'e11100'),
-             ('e11200', 'e11200'),
-             ('e11300', 'e11300'),
-             ('e11400', 'e11400'),
-             ('e11570', 'e11570'),
-             ('e11580', 'e11580'),
-             ('e11581', 'e11581'),
-             ('e11582', 'e11582'),
-             ('e11583', 'e11583'),
-             ('e10605', 'e10605'),
-             ('e11900', 'e11900'),
-             ('e12000', 'e12000'),
-             ('e12200', 'e12200'),
-             ('e17500', 'e17500'),
-             ('e18400', 'e18400'),
-             ('e18500', 'e18500'),
-             ('e19200', 'e19200'),
-             ('e19550', 'e19550'),
-             ('e19800', 'e19800'),
-             ('e20100', 'e20100'),
-             ('e19700', 'e19700'),
-             ('e20550', 'e20550'),
-             ('e20600', 'e20600'),
-             ('e20400', 'e20400'),
-             ('e20800', 'e20800'),
-             ('e20500', 'e20500'),
-             ('e21040', 'e21040'),
-             ('p22250', 'p22250'),
-             ('e22320', 'e22320'),
-             ('e22370', 'e22370'),
-             ('p23250', 'p23250'),
-             ('e24515', 'e24515'),
-             ('e24516', 'e24516'),
-             ('e24518', 'e24518'),
-             ('e24535', 'e24535'),
-             ('e24560', 'e24560'),
-             ('e24598', 'e24598'),
-             ('e24615', 'e24615'),
-             ('e24570', 'e24570'),
-             ('p25350', 'p25350'),
-             ('p25380', 'p25380'),
-             ('p25470', 'p25470'),
-             ('p25700', 'p25700'),
-             ('e25820', 'e25820'),
-             ('e25850', 'e25850'),
-             ('e25860', 'e25860'),
-             ('e25940', 'e25940'),
-             ('e25980', 'e25980'),
-             ('e25920', 'e25920'),
-             ('e25960', 'e25960'),
-             ('e26110', 'e26110'),
-             ('e26170', 'e26170'),
-             ('e26190', 'e26190'),
-             ('e26160', 'e26160'),
-             ('e26180', 'e26180'),
-             ('e26270', 'e26270'),
-             ('e26100', 'e26100'),
-             ('e26390', 'e26390'),
-             ('e26400', 'e26400'),
-             ('e27200', 'e27200'),
-             ('e30400', 'e30400'),
-             ('e30500', 'e30500'),
-             ('e32800', 'e32800'),
-             ('e33000', 'e33000'),
-             ('e53240', 'e53240'),
-             ('e53280', 'e53280'),
-             ('e53410', 'e53410'),
-             ('e53300', 'e53300'),
-             ('e53317', 'e53317'),
-             ('e53458', 'e53458'),
-             ('e58950', 'e58950'),
-             ('e58990', 'e58990'),
-             ('p60100', 'p60100'),
-             ('p61850', 'p61850'),
-             ('e60000', 'e60000'),
-             ('e62100', 'e62100'),
-             ('e62900', 'e62900'),
-             ('e62720', 'e62720'),
-             ('e62730', 'e62730'),
-             ('e62740', 'e62740'),
-             ('p65300', 'p65300'),
-             ('p65400', 'p65400'),
-             ('p87482', 'p87482'),
-             ('p87521', 'p87521'),
-             ('e68000', 'e68000'),
-             ('e82200', 'e82200'),
-             ('t27800', 't27800'),
-             ('s27860', 's27860'),
-             ('p27895', 'p27895'),
-             ('e87530', 'e87530'),
-             ('e87550', 'e87550'),
-             ('RECID', 'recid'),
-             ('wage_head', 'wage_head'),
-             ('wage_spouse', 'wage_spouse'),
-             ('age', 'age'),
-             ('s006', 's006'),
-             ('s008', 's008'),
-             ('s009', 's009'),
-             ('WSAMP', 'wsamp'),
-             ('TXRT', 'txrt'),
-             ('AGERANGE', 'agerange')]
+    # specify set of all Record variables that can be read by Tax-Calculator:
+    VALID_READ_VARS = set([
+        'AGIR1', 'DSI', 'EFI', 'EIC', 'ELECT', 'FDED', 'FLPDYR', 'FLPDMO',
+        'f2441', 'f3800', 'f6251', 'f8582', 'f8606', 'f8829', 'f8910', 'f8936',
+        'n20', 'n24', 'n25', 'n30', 'PREP', 'SCHB', 'SCHCF', 'SCHE',
+        'TFORM', 'IE', 'TXST', 'XFPT', 'XFST',
+        'XOCAH', 'XOCAWH', 'XOODEP', 'XOPAR', 'XTOT',
+        'e00200', 'e00300', 'e00400', 'e00600', 'e00650', 'e00700', 'e00800',
+        'e00900', 'e01000', 'e01100', 'e01200', 'e01400', 'e01500', 'e01700',
+        'e02000', 'e02100', 'e02300', 'e02400', 'e02500', 'e03150', 'e03210',
+        'e03220', 'e03230', 'e03260', 'e03270', 'e03240', 'e03290', 'e03300',
+        'e03400', 'e03500', 'e00100', 'p04470', 'e04250', 'e04600', 'e04800',
+        'e05100', 'e05200', 'e05800', 'e06000', 'e06200', 'e06300', 'e09600',
+        'e07180', 'e07200', 'e07220', 'e07230', 'e07240', 'e07260', 'e07300',
+        'e07400', 'e07600', 'p08000', 'e07150', 'e06500', 'e08800', 'e09400',
+        'e09700', 'e09800', 'e09900', 'e10300', 'e10700', 'e10900', 'e10950',
+        'e10960', 'e15100', 'e15210', 'e15250', 'e15360', 'e18600', 'e59560',
+        'e59680', 'e59700', 'e59720', 'e11550', 'e11070', 'e11100', 'e11200',
+        'e11300', 'e11400', 'e11570', 'e11580', 'e11581', 'e11582', 'e11583',
+        'e10605', 'e11900', 'e12000', 'e12200', 'e17500', 'e18400', 'e18500',
+        'e19200', 'e19550', 'e19800', 'e20100', 'e19700', 'e20550', 'e20600',
+        'e20400', 'e20800', 'e20500', 'e21040', 'p22250', 'e22320', 'e22370',
+        'p23250', 'e24515', 'e24516', 'e24518', 'e24535', 'e24560', 'e24598',
+        'e24615', 'e24570', 'p25350', 'p25380', 'p25470', 'p25700', 'e25820',
+        'e25850', 'e25860', 'e25940', 'e25980', 'e25920', 'e25960', 'e26110',
+        'e26170', 'e26190', 'e26160', 'e26180', 'e26270', 'e26100', 'e26390',
+        'e26400', 'e27200', 'e30400', 'e30500', 'e32800', 'e33000', 'e53240',
+        'e53280', 'e53410', 'e53300', 'e53317', 'e53458', 'e58950', 'e58990',
+        'p60100', 'p61850', 'e60000', 'e62100', 'e62900', 'e62720', 'e62730',
+        'e62740', 'p65300', 'p65400', 'p87482', 'p87521', 'e68000', 'e82200',
+        't27800', 's27860', 'p27895', 'e87530', 'e87550', 'e87870', 'e87875',
+        'e87880', 'MARS', 'MIDR', 'RECID', 'gender',
+        'wage_head', 'wage_spouse', 'earnsplit',
+        'age', 'agedp1', 'agedp2', 'agedp3', 'AGERANGE',
+        's006', 's008', 's009', 'WSAMP', 'TXRT', 'filer', 'matched_weight'])
 
-    # list of zeroed-out "nonconst" variables
-    ZEROED_NAMES = ['e35300_0', 'e35600_0', 'e35910_0', 'x03150', 'e03600',
-                    'e03280', 'e03900', 'e04000', 'e03700', 'c23250',
-                    'e23660', 'f2555', 'e02800', 'e02610', 'e02540',
-                    'e02615', 'SSIND', 'e18800', 'e18900',
-                    'e20950', 'e19500', 'e19570', 'e19400', 'c20400',
-                    'e20200', 'e20900', 'e21000', 'e21010', 'e02600',
-                    '_exact', 'e11055', 'e00250', 'e30100', 'e15360',
-                    'e04200', 'e37717', 'e04805', 'AGEP', 'AGES', 'PBI',
-                    'SBI', 't04470', 'e58980', 'c00650', 'c00100',
-                    'c04470', 'c04600', 'c21060', 'c21040', 'c17000',
-                    'c18300', 'c20800', 'c02900', 'c02700', 'c23650',
-                    'c01000', 'c02500', 'e24583', '_cmp',
-                    'e59440', 'e59470', 'e59400', 'e10105', 'e83200_0',
-                    'e59410', 'e59420', 'e74400', 'x62720', 'x60260',
-                    'x60240', 'x60220', 'x60130', 'x62730', 'e60290',
-                    'DOBYR', 'SDOBYR', 'DOBMD', 'SDOBMD', 'e62600',
-                    'x62740', '_fixeic', 'e32880', 'e32890', 'CDOB1',
-                    'CDOB2', 'e32750', 'e32775', 'e33420', 'e33430',
-                    'e33450', 'e33460', 'e33465', 'e33470', 'x59560',
-                    'EICYB1', 'EICYB2', 'EICYB3', 'e83080', 'e25360',
-                    'e25430', 'e25400', 'e25500', 'e26210', 'e26340',
-                    'e26205', 'e26320', 'e87487', 'e87492', 'e07170',
-                    'e87497', 'e87526', 'e87522', 'e87524', 'e87528',
-                    'EDCRAGE', 'e07960', 'e07700', 'e07250', 't07950',
-                    'e82882', 'e82880', 'e07500', 'e08001', 'e07970',
-                    'e07980', 'e10000', 'e10100', 'e10050', 'e10075',
-                    'e09805', 'e09710', 'e09720', 'e87900', 'e87905',
-                    'e87681', 'e87682', 'e11451', 'e11452', 'e11601',
-                    'e11602', 'e60300', 'e60860', 'e60840', 'e60630',
-                    'e60550', 'e60720', 'e60430', 'e60500', 'e60340',
-                    'e60680', 'e60600', 'e60405', 'e60440', 'e60420',
-                    'e60410', 'e61400', 'e60660', 'e60480', 'e62000',
-                    'e60250', 'e40223', '_sep', '_earned', '_sey',
-                    'c09400', '_feided', '_ymod', '_ymod1', '_posagi',
-                    'xtxcr1xtxcr10', '_xyztax', '_avail', 'e85070',
-                    '_taxinc', 'c04800', '_feitax', 'c05750', 'c24517',
-                    '_taxbc', 'c60000', '_standard', 'c24516', 'c25420',
-                    'c05700', 'c32880', 'c32890', '_dclim', 'c32800',
-                    'c33000', 'c05800', '_othtax', 'c59560', '_agep',
-                    '_ages', 'c87521', 'c87550', 'c07180',
-                    'c07230', '_precrd', 'c07220', 'c59660', 'c07970',
-                    'c08795', 'c09200', 'c07100', '_eitc', 'c59700',
-                    'c10950', '_ymod2', '_ymod3', 'c02650', '_agierr',
-                    '_ywossbe', '_ywossbc', '_prexmp', 'c17750',
-                    '_statax', 'c37703', 'c20500', 'c20750', 'c19200',
-                    'c19700', '_nonlimited', '_limitratio', '_phase2_i',
-                    '_fica', 'c03260', 'c11055', 'c15100', '_numextra',
-                    '_txpyers', 'c15200', '_othded', 'c04100', 'c04200',
-                    'c04500', '_amtstd', '_oldfei', 'c05200', '_cglong',
-                    '_noncg', '_hasgain', '_dwks9', '_dwks5', '_dwks12',
-                    '_dwks16', '_dwks17', '_dwks21', '_dwks25', '_dwks26',
-                    '_dwks28', '_dwks31', 'c24505', 'c24510', 'c24520',
-                    'c24530', 'c24540', 'c24534', 'c24597', 'c24598',
-                    'c24610', 'c24615', 'c24550', 'c24570', '_addtax',
-                    'c24560', '_taxspecial', 'c24580', 'c05100',
-                    'c59430', 'c59450', 'c59460', '_line17', '_line19',
-                    '_line22', '_line30', '_line31', '_line32', '_line36',
-                    '_line33', '_line34', '_line35', 'c59485', 'c59490',
-                    '_s1291', '_parents', 'c62720', 'c60260', 'c63100',
-                    'c60200', 'c60240', 'c60220', 'c60130', 'c62730',
-                    '_addamt', 'c62100', '_cmbtp', '_edical', '_amtsepadd',
-                    'c62600', 'c62700', '_alminc', 'c62760',
-                    '_amtfei', 'c62780', 'c62900', 'c63000', 'c62740',
-                    '_ngamty', 'c62745', 'y62745', '_tamt2', '_amt5pc',
-                    '_amt15pc', '_amt25pc', 'c62747', 'c62755', 'c62770',
-                    '_amt20pc', 'c62800', 'c09600', '_ncu13',
-                    '_seywage', 'c33465', 'c33470', 'c33475', 'c33480',
-                    'c32840', '_tratio', 'c33200', 'c33400',
-                    '_ieic', '_modagi', 'e00200p', 'e00200s',
-                    'e00900p', 'e00900s', 'e02100p', 'e02100s',
-                    '_val_ymax', '_preeitc', '_val_rtbase', '_val_rtless',
-                    '_dy', 'c11070', '_nctcr', '_ctcagi', 'c87482',
-                    'c87487', 'c87492', 'c87497', 'c87483', 'c87488',
-                    'c87493', 'c87498', 'c87540', 'c87530', 'c87654',
-                    'c87656', 'c87658', 'c87660', 'c87662', 'c87664',
-                    'c87666', 'c10960', 'c87668', 'c87681', 'c87560',
-                    'c87570', 'c87580', 'c87590', 'c87600', 'c87610',
-                    'c87620', '_ctc1', '_ctc2', '_regcrd', '_exocrd',
-                    '_ctctax', 'c82925', 'c82930', 'c82935',
-                    'c82880', 'h82880', 'c82885', 'c82890', 'c82900',
-                    'c82905', 'c82910', 'c82915', 'c82920', 'c82937',
-                    'c82940', 'e59660', '_othadd', 'y07100',
-                    'x07100', 'c08800', 'e08795', 'x07400', 'c59680',
-                    '_othertax', 'e82915', 'e82940', 'SFOBYR', 'NIIT',
-                    'c59720', '_comb', 'c07150', 'c10300', '_iitax',
-                    '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
-                    '_amed', '_xlin3', '_xlin6', '_cmbtp_itemizer',
-                    '_cmbtp_standard', '_expanded_income', 'c07300',
-                    'c07600', 'c07240', 'c62100_everyone',
-                    '_surtax', '_combined', 'x04500', '_personal_credit']
+    # specify set of all Record variables that cannot be read in:
+    CALCULATED_VARS = set([
+        'e35300_0', 'e35600_0', 'e35910_0', 'x03150', 'e03600',
+        'e03280', 'e03900', 'e04000', 'e03700', 'c23250',
+        'e23660', 'f2555', 'e02800', 'e02610', 'e02540',
+        'e02615', 'SSIND', 'e18800', 'e18900',
+        'e20950', 'e19500', 'e19570', 'e19400', 'c20400',
+        'e20200', 'e20900', 'e21000', 'e21010', 'e02600',
+        '_exact', 'e11055', 'e00250', 'e30100', 'e15360',
+        'e04200', 'e37717', 'e04805', 'AGEP', 'AGES', 'PBI',
+        'SBI', 't04470', 'e58980', 'c00650', 'c00100',
+        'c04470', 'c04600', 'c21060', 'c21040', 'c17000',
+        'c18300', 'c20800', 'c02900', 'c02700', 'c23650',
+        'c01000', 'c02500', 'e24583', '_cmp',
+        'e59440', 'e59470', 'e59400', 'e10105', 'e83200_0',
+        'e59410', 'e59420', 'e74400', 'x62720', 'x60260',
+        'x60240', 'x60220', 'x60130', 'x62730', 'e60290',
+        'DOBYR', 'SDOBYR', 'DOBMD', 'SDOBMD', 'e62600',
+        'x62740', '_fixeic', 'e32880', 'e32890', 'CDOB1',
+        'CDOB2', 'e32750', 'e32775', 'e33420', 'e33430',
+        'e33450', 'e33460', 'e33465', 'e33470', 'x59560',
+        'EICYB1', 'EICYB2', 'EICYB3', 'e83080', 'e25360',
+        'e25430', 'e25400', 'e25500', 'e26210', 'e26340',
+        'e26205', 'e26320', 'e87487', 'e87492', 'e07170',
+        'e87497', 'e87526', 'e87522', 'e87524', 'e87528',
+        'EDCRAGE', 'e07960', 'e07700', 'e07250', 't07950',
+        'e82882', 'e82880', 'e07500', 'e08001', 'e07970',
+        'e07980', 'e10000', 'e10100', 'e10050', 'e10075',
+        'e09805', 'e09710', 'e09720', 'e87900', 'e87905',
+        'e87681', 'e87682', 'e11451', 'e11452', 'e11601',
+        'e11602', 'e60300', 'e60860', 'e60840', 'e60630',
+        'e60550', 'e60720', 'e60430', 'e60500', 'e60340',
+        'e60680', 'e60600', 'e60405', 'e60440', 'e60420',
+        'e60410', 'e61400', 'e60660', 'e60480', 'e62000',
+        'e60250', 'e40223', '_sep', '_earned', '_sey',
+        'c09400', '_feided', '_ymod', '_ymod1', '_posagi',
+        'xtxcr1xtxcr10', '_xyztax', '_avail', 'e85070',
+        '_taxinc', 'c04800', '_feitax', 'c05750', 'c24517',
+        '_taxbc', 'c60000', '_standard', 'c24516', 'c25420',
+        'c05700', 'c32880', 'c32890', '_dclim', 'c32800',
+        'c33000', 'c05800', '_othtax', 'c59560', '_agep',
+        '_ages', 'c87521', 'c87550', 'c07180',
+        'c07230', '_precrd', 'c07220', 'c59660', 'c07970',
+        'c08795', 'c09200', 'c07100', '_eitc', 'c59700',
+        'c10950', '_ymod2', '_ymod3', 'c02650', '_agierr',
+        '_ywossbe', '_ywossbc', '_prexmp', 'c17750',
+        '_statax', 'c37703', 'c20500', 'c20750', 'c19200',
+        'c19700', '_nonlimited', '_limitratio', '_phase2_i',
+        '_fica', 'c03260', 'c11055', 'c15100', '_numextra',
+        '_txpyers', 'c15200', '_othded', 'c04100', 'c04200',
+        'c04500', '_amtstd', '_oldfei', 'c05200', '_cglong',
+        '_noncg', '_hasgain', '_dwks9', '_dwks5', '_dwks12',
+        '_dwks16', '_dwks17', '_dwks21', '_dwks25', '_dwks26',
+        '_dwks28', '_dwks31', 'c24505', 'c24510', 'c24520',
+        'c24530', 'c24540', 'c24534', 'c24597', 'c24598',
+        'c24610', 'c24615', 'c24550', 'c24570', '_addtax',
+        'c24560', '_taxspecial', 'c24580', 'c05100',
+        'c59430', 'c59450', 'c59460', '_line17', '_line19',
+        '_line22', '_line30', '_line31', '_line32', '_line36',
+        '_line33', '_line34', '_line35', 'c59485', 'c59490',
+        '_s1291', '_parents', 'c62720', 'c60260', 'c63100',
+        'c60200', 'c60240', 'c60220', 'c60130', 'c62730',
+        '_addamt', 'c62100', '_cmbtp', '_edical', '_amtsepadd',
+        'c62600', 'c62700', '_alminc', 'c62760',
+        '_amtfei', 'c62780', 'c62900', 'c63000', 'c62740',
+        '_ngamty', 'c62745', 'y62745', '_tamt2', '_amt5pc',
+        '_amt15pc', '_amt25pc', 'c62747', 'c62755', 'c62770',
+        '_amt20pc', 'c62800', 'c09600', '_ncu13',
+        '_seywage', 'c33465', 'c33470', 'c33475', 'c33480',
+        'c32840', '_tratio', 'c33200', 'c33400',
+        '_ieic', '_modagi', 'e00200p', 'e00200s',
+        'e00900p', 'e00900s', 'e02100p', 'e02100s',
+        '_val_ymax', '_preeitc', '_val_rtbase', '_val_rtless',
+        '_dy', 'c11070', '_nctcr', '_ctcagi', 'c87482',
+        'c87487', 'c87492', 'c87497', 'c87483', 'c87488',
+        'c87493', 'c87498', 'c87540', 'c87530', 'c87654',
+        'c87656', 'c87658', 'c87660', 'c87662', 'c87664',
+        'c87666', 'c10960', 'c87668', 'c87681', 'c87560',
+        'c87570', 'c87580', 'c87590', 'c87600', 'c87610',
+        'c87620', '_ctc1', '_ctc2', '_regcrd', '_exocrd',
+        '_ctctax', 'c82925', 'c82930', 'c82935',
+        'c82880', 'h82880', 'c82885', 'c82890', 'c82900',
+        'c82905', 'c82910', 'c82915', 'c82920', 'c82937',
+        'c82940', 'e59660', '_othadd', 'y07100',
+        'x07100', 'c08800', 'e08795', 'x07400', 'c59680',
+        '_othertax', 'e82915', 'e82940', 'SFOBYR', 'NIIT',
+        'c59720', '_comb', 'c07150', 'c10300', '_iitax',
+        '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
+        '_amed', '_xlin3', '_xlin6', '_cmbtp_itemizer',
+        '_cmbtp_standard', '_expanded_income', 'c07300',
+        'c07600', 'c07240', 'c62100_everyone',
+        '_surtax', '_combined', 'x04500', '_personal_credit'])
+
+    READ_VARS = set()
+    UNREAD_VARS = set()
+    ZEROED_VARS = set()
 
     def __init__(self,
                  data="puf.csv",
@@ -379,6 +227,7 @@ class Records(object):
         """
         Records class constructor
         """
+        # pylint: disable=unused-argument,too-many-arguments
         self._read_data(data)
         self._read_blowup(blowup_factors)
         self._read_weights(weights)
@@ -396,6 +245,9 @@ class Records(object):
 
     @property
     def current_year(self):
+        """
+        Return current calendar year of Records.
+        """
         return self._current_year
 
     def increment_year(self):
@@ -407,7 +259,8 @@ class Records(object):
         self.FLPDYR += 1
         # Implement Stage 1 Extrapolation blowup factors
         self._blowup(self._current_year)
-        # Implement Stage 2 Extrapolation reweighting.
+        # Implement Stage 2 Extrapolation reweighting
+        # pylint: disable=attribute-defined-outside-init
         self.s006 = (self.WT["WT" + str(self.current_year)] / 100).values
 
     def set_current_year(self, new_current_year):
@@ -421,7 +274,14 @@ class Records(object):
     # --- begin private methods of Records class --- #
 
     def _blowup(self, year):
+        """
+        Applies blowup factors (BF) for specified calendar year.
+        """
+        # pylint: disable=too-many-statements
         def times_equal(a, b):
+            """
+            Local function used in private _blowup method.
+            """
             try:
                 np.multiply(a, b, out=a, casting='unsafe')
             except TypeError:
@@ -536,7 +396,7 @@ class Records(object):
         times_equal(self.e11900, 1.)
         times_equal(self.e12000, 1.)
         times_equal(self.e12200, 1.)
-        """  ITEMIZED DEDUCTIONS """
+        # ITEMIZED DEDUCTIONS
         times_equal(self.e17500, self.BF.ACPIM[year])
         times_equal(self.e18400, self.BF.ATXPY[year])
         times_equal(self.e18500, self.BF.ATXPY[year])
@@ -551,7 +411,7 @@ class Records(object):
         times_equal(self.e20800, self.BF.ATXPY[year])
         times_equal(self.e20500, self.BF.ATXPY[year])
         times_equal(self.e21040, self.BF.ATXPY[year])
-        """  CAPITAL GAINS   """
+        # CAPITAL GAINS
         times_equal(self.p22250, self.BF.ACGNS[year])
         times_equal(self.e22320, self.BF.ACGNS[year])
         times_equal(self.e22370, self.BF.ACGNS[year])
@@ -564,7 +424,7 @@ class Records(object):
         times_equal(self.e24598, self.BF.ACGNS[year])
         times_equal(self.e24615, self.BF.ACGNS[year])
         times_equal(self.e24570, self.BF.ACGNS[year])
-        """  SCHEDULE E  """
+        # SCHEDULE E
         times_equal(self.p25350, self.BF.ASCHEI[year])
         times_equal(self.p25380, self.BF.ASCHEI[year])
         times_equal(self.p25470, self.BF.ASCHEI[year])
@@ -586,7 +446,7 @@ class Records(object):
         times_equal(self.e26390, self.BF.ASCHEI[year])
         times_equal(self.e26400, self.BF.ASCHEI[year])
         times_equal(self.e27200, self.BF.ASCHEI[year])
-        """  MISCELLANOUS SCHEDULES"""
+        # MISCELLANOUS SCHEDULES
         times_equal(self.e30400, self.BF.ASCHCI[year])
         times_equal(self.e30500, self.BF.ASCHCI[year])
         times_equal(self.e32800, self.BF.ATXPY[year])
@@ -627,6 +487,9 @@ class Records(object):
         times_equal(self._cmbtp_standard, self.BF.ATXPY[year])
 
     def _read_data(self, data):
+        """
+        Read Records data from file or use specified DataFrame as data.
+        """
         if isinstance(data, pd.core.frame.DataFrame):
             tax_dta = data
         elif isinstance(data, str):
@@ -639,18 +502,28 @@ class Records(object):
                    'a Pandas DataFrame')
             raise ValueError(msg)
         # remove the aggregated record from 2009 PUF
-        tax_dta = tax_dta[tax_dta.recid != 999999]
+        tax_dta = tax_dta[tax_dta.RECID != 999999]
         self.dim = len(tax_dta)
-        # create variables in NAMES list
-        for attrname, varname in Records.NAMES:
-            setattr(self, attrname, tax_dta[varname].values)
-        for name in Records.ZEROED_NAMES:
-            setattr(self, name, np.zeros((self.dim,)))
-        self._num = np.ones((self.dim,))
-        # specify SOIYR
-        self.SOIYR = np.repeat(Records.PUF_YEAR, self.dim)
+        # create variables using tax_dta DataFrame column names
+        for varname in list(tax_dta.columns.values):
+            if varname not in Records.VALID_READ_VARS:
+                msg = 'Records data variable name {} not in VALID_READ_VARS'
+                raise ValueError(msg.format(varname))
+            Records.READ_VARS.add(varname)
+            setattr(self, varname, tax_dta[varname].values)
+        # create variables that are set to all zeros
+        Records.UNREAD_VARS = Records.VALID_READ_VARS - Records.READ_VARS
+        Records.ZEROED_VARS = Records.CALCULATED_VARS | Records.UNREAD_VARS
+        for varname in Records.ZEROED_VARS:
+            setattr(self, varname, np.zeros((self.dim,)))
+        # create variables that are not read in from input file
+        self._num = np.ones((self.dim,))  # TODO: why is this done this way?
+        self.SOIYR = np.repeat(Records.PUF_YEAR, self.dim)  # TODO: eliminate
 
     def _read_weights(self, weights):
+        """
+        Read Records weights from file or use specified DataFrame as data.
+        """
         if isinstance(weights, pd.core.frame.DataFrame):
             WT = weights
         elif isinstance(weights, str):
@@ -672,6 +545,10 @@ class Records(object):
         setattr(self, 'WT', WT)
 
     def _read_blowup(self, blowup_factors):
+        """
+        Read Records blowup factors from file or
+        use specified DataFrame as data.
+        """
         if isinstance(blowup_factors, pd.core.frame.DataFrame):
             BF = blowup_factors
         elif isinstance(blowup_factors, str):
@@ -724,23 +601,23 @@ class Records(object):
                                                              self.MARS == 6)),
                                  2., 1.)
         # impute number of extra standard deductions for aged
-        self._numextra = np.where(np.logical_or(self.AGERANGE >= 6,
-                                  np.logical_and(self.FDED != 2,
-                                                np.logical_and(
-                                                 self.AGERANGE <= 0,
-                                                 self.e02400 > 0))),
-                                  self._txpyers,
-                                  np.where(np.logical_and(self.FDED == 2,
-                                           self.p04470 >
-                                           std_2009[self.MARS - 1]),
-                                           np.where(self.MARS != 2,
-                                           (self.p04470 -
-                                            std_2009[self.MARS - 1]) /
-                                           std_aged_2009[0],
-                                           (self.p04470 -
-                                            std_2009[self.MARS - 1]) /
-                                           std_aged_2009[1]), 0))
-
+        self._numextra = np.where(
+            np.logical_or(self.AGERANGE >= 6,
+                          np.logical_and(self.FDED != 2,
+                                         np.logical_and(
+                                             self.AGERANGE <= 0,
+                                             self.e02400 > 0))),
+            self._txpyers,
+            np.where(np.logical_and(self.FDED == 2,
+                                    self.p04470 >
+                                    std_2009[self.MARS - 1]),
+                     np.where(self.MARS != 2,
+                              (self.p04470 -
+                               std_2009[self.MARS - 1]) /
+                              std_aged_2009[0],
+                              (self.p04470 -
+                               std_2009[self.MARS - 1]) /
+                              std_aged_2009[1]), 0))
         # impute the ratio of household head in total household income
         total = np.where(self.MARS == 2,
                          self.wage_head + self.wage_spouse,
@@ -757,12 +634,18 @@ class Records(object):
         self.e02100s = (1 - self._earning_split) * self.e02100
 
     def _imputed_cmbtp_itemizer(self):
+        """
+        Private class method calls global function defined below.
+        """
         return imputed_cmbtp_itemizer(self.e17500, self.e00100, self.e18400,
                                       self.e62100, self.e00700,
                                       self.p04470, self.e21040,
                                       self.e18500, self.e20800)
 
     def _extrapolate_2009_puf(self):
+        """
+        Initial year blowup factors for 2009 IRS-PUF/Census-CPS merged data.
+        """
         year = 2009
         self.BF.AGDPN[year] = 1
         self.BF.ATXPY[year] = 1
@@ -798,9 +681,10 @@ def imputed_cmbtp_itemizer(e17500, e00100, e18400,
                            p04470, e21040,
                            e18500, e20800):
     """
-    Calculates _cmbtp_itemizer values
-    Uses vectorize decorator to speed-up calculations with NumPy arrays
+    Global function that calculates _cmbtp_itemizer values
+    (uses vectorize decorator to speed up calculations with NumPy arrays)
     """
+    # pylint: disable=too-many-arguments
     medical_limited = max(0., e17500 - max(0., e00100) * 0.075)
     medical_adjustment = min(medical_limited, 0.025 * max(0., e00100))
     state_adjustment = max(0, e18400)

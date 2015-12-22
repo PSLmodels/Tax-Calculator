@@ -14,7 +14,7 @@ WEIGHTS = pd.read_csv(WEIGHTS_PATH)
 TAX_DTA_PATH = os.path.join(CUR_PATH, "../../tax_all1991_puf.gz")
 TAX_DTA = pd.read_csv(TAX_DTA_PATH, compression='gzip')
 # data fix-up: midr needs to be type int64 to match PUF
-TAX_DTA['midr'] = TAX_DTA['midr'].astype('int64')
+TAX_DTA['MIDR'] = TAX_DTA['MIDR'].astype('int64')
 
 
 def test_make_behavioral_Calculator():
