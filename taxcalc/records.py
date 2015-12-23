@@ -85,7 +85,7 @@ class Records(object):
     BLOWUP_FACTORS_FILENAME = "StageIFactors.csv"
     BLOWUP_FACTORS_PATH = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
 
-    # specify set of all Record variables that can be read by Tax-Calculator:
+    # specify set of all Record variables that MAY be read by Tax-Calculator:
     VALID_READ_VARS = set([
         'AGIR1', 'DSI', 'EFI', 'EIC', 'ELECT', 'FDED', 'FLPDYR', 'FLPDMO',
         'f2441', 'f3800', 'f6251', 'f8582', 'f8606', 'f8829', 'f8910', 'f8936',
@@ -120,6 +120,9 @@ class Records(object):
         'wage_head', 'wage_spouse', 'earnsplit',
         'age', 'agedp1', 'agedp2', 'agedp3', 'AGERANGE',
         's006', 's008', 's009', 'WSAMP', 'TXRT', 'filer', 'matched_weight'])
+
+    # specify set of all Record variables that MUST be read by Tax-Calculator:
+    MUST_READ_VARS = set(['RECID', 'FLPDYR', 'MARS'])
 
     # specify set of all Record variables that cannot be read in:
     CALCULATED_VARS = set([
@@ -511,6 +514,11 @@ class Records(object):
                 raise ValueError(msg.format(varname))
             Records.READ_VARS.add(varname)
             setattr(self, varname, tax_dta[varname].values)
+        # check that MUST_READ_VARS are all present in tax_dta
+        UNREAD_MUST_VARS = Records.MUST_READ_VARS - Records.READ_VARS
+        if len(UNREAD_MUST_VARS) > 0:
+            msg = 'Records data missing {} MUST_READ_VARS'
+            raise ValueError(msg.format(len(UNREAD_MUST_VARS)))
         # create variables that are set to all zeros
         Records.UNREAD_VARS = Records.VALID_READ_VARS - Records.READ_VARS
         Records.ZEROED_VARS = Records.CALCULATED_VARS | Records.UNREAD_VARS
