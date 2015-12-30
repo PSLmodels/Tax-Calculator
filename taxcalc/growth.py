@@ -10,7 +10,8 @@ class Growth(ParametersBase):
     # REAL_GDP_GROWTH_RATES is a list indexed starting with JSON_START_YEAR
     REAL_GDP_GROWTH_RATES = [0.0244, 0.0118, 0.0291, 0.0331,
                              0.0285, 0.0223, 0.0202, 0.0188,
-                             0.0183, 0.0178, 0.0171, 0.0166]
+                             0.0183, 0.0178, 0.0171, 0.0166,
+                             0.0166, 0.0166]
 
     def __init__(self, growth_dict=None,
                  start_year=JSON_START_YEAR,
