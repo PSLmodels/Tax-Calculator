@@ -24,11 +24,12 @@ WEIGHTS = pd.read_csv(WEIGHTS_PATH)
 
 IRATES = {1991: 0.015, 1992: 0.020, 1993: 0.022, 1994: 0.020, 1995: 0.021,
           1996: 0.022, 1997: 0.023, 1998: 0.024, 1999: 0.024, 2000: 0.024,
-          2001: 0.024, 2002: 0.024}
+          2001: 0.024, 2002: 0.024, 2003: 0.024, 2004: 0.024}
 
 WRATES = {1991: 0.0276, 1992: 0.0419, 1993: 0.0465, 1994: 0.0498,
           1995: 0.0507, 1996: 0.0481, 1997: 0.0451, 1998: 0.0441,
-          1999: 0.0437, 2000: 0.0435, 2001: 0.0430, 2002: 0.0429}
+          1999: 0.0437, 2000: 0.0435, 2001: 0.0430, 2002: 0.0429,
+          2003: 0.0429, 2004: 0.0429}
 
 
 @pytest.yield_fixture
@@ -158,8 +159,8 @@ def test_make_Calculator_with_policy_reform():
     # check that Policy object embedded in Calculator object is correct
     assert calc2.current_year == 2013
     assert calc2.policy.II_em == 4000
-    assert_array_equal(calc2.policy._II_em, np.array([4000] * 12))
-    exp_STD_Aged = [[1600, 1300, 1300, 1600, 1600, 1300]] * 12
+    assert_array_equal(calc2.policy._II_em, np.array([4000] * 14))
+    exp_STD_Aged = [[1600, 1300, 1300, 1600, 1600, 1300]] * 14
     assert_array_equal(calc2.policy._STD_Aged, np.array(exp_STD_Aged))
     assert_array_equal(calc2.policy.STD_Aged,
                        np.array([1600, 1300, 1300, 1600, 1600, 1300]))
@@ -179,8 +180,8 @@ def test_make_Calculator_with_multiyear_reform():
     # check that Policy object embedded in Calculator object is correct
     assert calc3.current_year == 2013
     assert calc3.policy.II_em == 3900
-    assert calc3.policy.num_years == 12
-    exp_II_em = [3900, 3950, 5000] + [6000] * 9
+    assert calc3.policy.num_years == 14
+    exp_II_em = [3900, 3950, 5000] + [6000] * 11
     assert_array_equal(calc3.policy._II_em, np.array(exp_II_em))
     calc3.increment_year()
     calc3.increment_year()
@@ -238,13 +239,13 @@ def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
                         "_rt7": [0.396]}}
     calc.policy.implement_reform(user_mods)
     # compare actual and expected values
-    inf_rates = [IRATES[1991 + i] for i in range(0, 12)]
+    inf_rates = [IRATES[1991 + i] for i in range(0, 14)]
     exp_almdep = Policy.expand_array(np.array([7150, 7250, 7400]),
                                      inflate=True,
-                                     inflation_rates=inf_rates, num_years=12)
+                                     inflation_rates=inf_rates, num_years=14)
     act_almdep = getattr(calc.policy, '_almdep')
     assert_array_equal(act_almdep, exp_almdep)
-    exp_almsep_values = [40400] + [41050] * 11
+    exp_almsep_values = [40400] + [41050] * 13
     exp_almsep = np.array(exp_almsep_values)
     act_almsep = getattr(calc.policy, '_almsep')
     assert_array_equal(act_almsep, exp_almsep)

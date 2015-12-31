@@ -66,13 +66,14 @@ def test_update_growth():
     assert_array_equal(calc_x.growth._factor_target,
                        np.array([0.0244, 0.0118, 0.04, 0.04, 0.04,
                                 0.04, 0.04, 0.04, 0.04, 0.04, 0.04,
-                                0.04]))
+                                0.04, 0.04, 0.04]))
 
     assert_array_equal(calc_y.growth.factor_adjustment,
                        growth_y.factor_adjustment)
     assert_array_equal(calc_y.growth._factor_adjustment,
                        np.array([0.0, 0.0, 0.01, 0.01, 0.01, 0.01,
-                                 0.01, 0.01, 0.01, 0.01, 0.01, 0.01]))
+                                 0.01, 0.01, 0.01, 0.01, 0.01, 0.01,
+                                 0.01, 0.01]))
 
 
 def test_target():

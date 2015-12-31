@@ -70,10 +70,10 @@ def test_make_behavioral_Calculator():
 def test_update_behavior():
     beh = Behavior(start_year=2013)
     beh.update_behavior({2014: {'_BE_sub': [0.5]}})
-    should_be = np.full((12,), 0.5)
+    should_be = np.full((14,), 0.5)
     should_be[0] = 0.0
     assert np.allclose(beh._BE_sub, should_be, rtol=0.0)
-    assert np.allclose(beh._BE_inc, np.zeros((12,)), rtol=0.0)
+    assert np.allclose(beh._BE_inc, np.zeros((14,)), rtol=0.0)
     beh.set_year(2015)
     assert beh.current_year == 2015
     assert beh.BE_sub == 0.5
