@@ -358,7 +358,7 @@ def test_diff_table_sum_row():
     # create two difference tables and compare their content
     tdiff1 = create_difference_table(calc1, calc2, groupby="small_income_bins")
     tdiff2 = create_difference_table(calc1, calc2, groupby="large_income_bins")
-    non_digit_cols = ['mean', 'perc_inc', 'perc_cut', 'share_of_change', 'count']
+    non_digit_cols = ['mean', 'perc_inc', 'perc_cut', 'share_of_change']
     digit_cols = [x for x in tdiff1.columns.tolist() if
                   x not in non_digit_cols]
     assert np.allclose(tdiff1[digit_cols][-1:], tdiff2[digit_cols][-1:])
