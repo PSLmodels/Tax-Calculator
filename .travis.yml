@@ -15,7 +15,6 @@ install:
   - conda create -n taxcalcdev python=$TRAVIS_PYTHON_VERSION pytest setuptools pandas=0.16.2 numba toolz six
   - source activate taxcalcdev
   - pip install pytest-pep8
-  - pip install pytest-cov
   - pip install coverage
   - pip install codecov
   - python setup.py install
@@ -23,7 +22,7 @@ install:
 
 # command to run tests, e.g. python setup.py test
 script:
-  - python -c "import taxcalc"; py.test --cov-config .coveragerc --cov-report= --cov=taxcalc --pep8
+  - python -c "import taxcalc"; coverage run -m py.test --pep8 taxcalc/tests/
 
 after_success:
   - codecov
