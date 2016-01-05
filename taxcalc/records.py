@@ -526,7 +526,6 @@ class Records(object):
             setattr(self, varname, np.zeros((self.dim,)))
         # create variables that are not read in from input file
         self._num = np.ones((self.dim,))  # TODO: why is this done this way?
-        self.SOIYR = np.repeat(Records.PUF_YEAR, self.dim)  # TODO: eliminate
 
     def _read_weights(self, weights):
         """
