@@ -178,11 +178,10 @@ def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, SS_thd50, SS_thd85,
 
 
 @iterate_jit(nopython=True, puf=True)
-def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT, XOCAH,
-        XOCAWH, XOODEP, II_em, II_em_ps, MARS, _sep, II_prt, DSI, puf):
+def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
+        II_em, II_em_ps, MARS, _sep, II_prt, DSI, puf):
 
     # Adjusted Gross Income
-
     c02650 = _ymod1 + c02500 - c02700 + e02615  # Gross Income
 
     c00100 = c02650 - c02900
@@ -192,16 +191,11 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT, XOCAH,
     _ywossbe = e00100 - e02500
     _ywossbc = c00100 - c02500
 
-    if DSI:
-        XTOT = 0
-    # elif puf:
-    #    XTOT = 1 + XOCAH + XOCAWH + XOODEP + (MARS == 2)
-    # else:
-    #    XTOT = XTOT
-
     _prexmp = XTOT * II_em
-    # Personal Exemptions (_phaseout smoothed)
+    if DSI:
+        _prexmp = 0
 
+    # Personal Exemptions (_phaseout smoothed)
     _dispc_numer = II_prt * (_posagi - II_em_ps[MARS - 1])
     _dispc_denom = (2500 / _sep)
     _dispc = min(1, max(0, _dispc_numer / _dispc_denom))
