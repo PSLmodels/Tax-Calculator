@@ -8,16 +8,6 @@ import copy
 
 
 @iterate_jit(nopython=True)
-def FilingStatus(MARS):
-    if MARS == 3 or MARS == 6:
-        _sep = 2
-    else:
-        _sep = 1
-
-    return _sep
-
-
-@iterate_jit(nopython=True)
 def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
             e11055, e00250, e30100, FICA_ss_trt, FICA_mc_trt,
             e00900p, e00900s, e02100p, e02100s):
@@ -1231,11 +1221,9 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
 
 @iterate_jit(nopython=True)
 def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
-                   c11070, c07220, _num, _precrd, _nctcr, CTC_prt):
+                   c11070, c07220, _precrd, _nctcr, CTC_prt):
 
     # Child Tax Credit
-    if MARS == 2:
-        _num = 2.
 
     _nctcr = n24
 
@@ -1254,7 +1242,7 @@ def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
     # TODO get rid of this type declaration
     _precrd = float(_precrd)
 
-    return (c11070, c07220, _num, _nctcr, _precrd, _ctcagi)
+    return (c11070, c07220, _nctcr, _precrd, _ctcagi)
 
 # def HopeCredit():
     # W/o congressional action, Hope Credit will replace
@@ -1374,7 +1362,7 @@ def RefAmOpp(_cmp, c87521, _num, c00100, EDCRAGE, c87668):
 
         c87521 : American Opportunity Credit
 
-        _num : filing status, number of people filing jointly
+        _num : number of people filing jointly
 
         EDCRAGE : Education credit age from CPS: NEED TO BE CONFIRMED!!!!!!
 

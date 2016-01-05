@@ -172,7 +172,7 @@ class Records(object):
         '_ywossbe', '_ywossbc', '_prexmp', 'c17750',
         '_statax', 'c37703', 'c20500', 'c20750', 'c19200',
         'c19700', '_nonlimited', '_limitratio', '_phase2_i',
-        '_fica', 'c03260', 'c11055', 'c15100', '_numextra',
+        '_fica', 'c03260', 'c11055', 'c15100', '_numextra', '_num',
         '_txpyers', 'c15200', '_othded', 'c04100', 'c04200',
         'c04500', '_amtstd', '_oldfei', 'c05200', '_cglong',
         '_noncg', '_hasgain', '_dwks9', '_dwks5', '_dwks12',
@@ -524,8 +524,11 @@ class Records(object):
         Records.ZEROED_VARS = Records.CALCULATED_VARS | Records.UNREAD_VARS
         for varname in Records.ZEROED_VARS:
             setattr(self, varname, np.zeros((self.dim,)))
-        # create variables that are not read in from input file
-        self._num = np.ones((self.dim,))  # TODO: why is this done this way?
+        # create variables that are derived from MARS
+        self._num = np.where(self.MARS == 2,
+                             2., 1.)
+        self._sep = np.where(np.logical_or(self.MARS == 3, self.MARS == 6),
+                             2., 1.)
         self.SOIYR = np.repeat(Records.PUF_YEAR, self.dim)  # TODO: eliminate
 
     def _read_weights(self, weights):

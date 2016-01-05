@@ -89,7 +89,6 @@ class Calculator(object):
 
     def calc_one_year(self):
         EI_FICA(self.policy, self.records)
-        FilingStatus(self.policy, self.records)
         Adj(self.policy, self.records)
         CapGains(self.policy, self.records)
         SSBenefits(self.policy, self.records)
