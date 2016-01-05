@@ -529,7 +529,6 @@ class Records(object):
                              2., 1.)
         self._sep = np.where(np.logical_or(self.MARS == 3, self.MARS == 6),
                              2., 1.)
-        self.SOIYR = np.repeat(Records.PUF_YEAR, self.dim)  # TODO: eliminate
 
     def _read_weights(self, weights):
         """

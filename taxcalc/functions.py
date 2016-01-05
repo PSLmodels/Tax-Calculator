@@ -1150,7 +1150,7 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
            EITC_ps_MarriedJ, EITC_rt, c59560, EITC_c, EITC_prt, e83080, e00300,
            e00600, e01000, e40223, e25360, e25430, p25470, e25400, e25500,
            e26210, e26340, e27200, e26205, e26320, EITC_InvestIncome_c, _cmp,
-           SOIYR, DOBYR, SDOBYR, _agep, _ages, _earned, c59660, _exact, e59560,
+           DOBYR, SDOBYR, _agep, _ages, _earned, c59660, _exact, e59560,
            _numextra, puf):
 
     EICYB1 = max(0.0, EICYB1)
@@ -1546,7 +1546,7 @@ def F5405(pm, rc):
 def C1040(e07400, e07180, e07200, c07220, c07230, e07250, c07300, c07240,
           e07600, e07260, c07970, e07300, x07400, e09720, c07600,
           e07500, e07700, p08000, e07240, e08001, e07960, e07970,
-          SOIYR, e07980, c05800, e08800, e09900, e09400, e09800,
+          e07980, c05800, e08800, e09900, e09400, e09800,
           e10000, e10100, e09700, e10050, e10075, e09805, e09710,
           c59660, c07180, c59680, NIIT, _amed, puf):
 
