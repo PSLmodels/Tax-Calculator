@@ -58,17 +58,19 @@ class Policy(ParametersBase):
     DEFAULTS_FILENAME = 'current_law_policy.json'
     JSON_START_YEAR = 2013  # remains the same unless earlier data added
     FIRST_BUDGET_YEAR = 2015  # increases by one every calendar year
-    NUM_BUDGET_YEARS = 10  # fixed by federal government budgeting rules
+    NUM_BUDGET_YEARS = 12  # fixed by federal government budgeting rules
     DEFAULT_NUM_YEARS = NUM_BUDGET_YEARS + FIRST_BUDGET_YEAR - JSON_START_YEAR
 
     # default price inflation rates by year
     __pirates = {2013: 0.015, 2014: 0.020, 2015: 0.021, 2016: 0.020,
                  2017: 0.021, 2018: 0.022, 2019: 0.023, 2020: 0.024,
-                 2021: 0.024, 2022: 0.024, 2023: 0.024, 2024: 0.024}
+                 2021: 0.024, 2022: 0.024, 2023: 0.024, 2024: 0.024,
+                 2025: 0.024, 2026: 0.024}
 
     __wgrates = {2013: 0.0276, 2014: 0.0419, 2015: 0.0465, 2016: 0.0498,
                  2017: 0.0507, 2018: 0.0481, 2019: 0.0451, 2020: 0.0441,
-                 2021: 0.0437, 2022: 0.0435, 2023: 0.0430, 2024: 0.0429}
+                 2021: 0.0437, 2022: 0.0435, 2023: 0.0430, 2024: 0.0429,
+                 2025: 0.0429, 2026: 0.0428}
 
     @staticmethod
     def default_inflation_rates():

@@ -386,7 +386,8 @@ class Calculator(object):
                           surtax / math.pow(10, 9),
                           revenue1 / math.pow(10, 9),
                           payroll / math.pow(10, 9)])
-            calc.increment_year()
+            if i < num_years - 1:
+                calc.increment_year()
 
         df = DataFrame(table, row_years,
                        ["Returns (#m)", "AGI ($b)", "Itemizers (#m)",
