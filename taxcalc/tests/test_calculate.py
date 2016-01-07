@@ -160,9 +160,9 @@ def test_make_Calculator_with_policy_reform():
     assert calc2.current_year == 2013
     assert calc2.policy.II_em == 4000
     assert_array_equal(calc2.policy._II_em,
-                       np.array([4000] * policy2.DEFAULT_NUM_YEARS))
+                       np.array([4000] * Policy.DEFAULT_NUM_YEARS))
     exp_STD_Aged = [[1600, 1300, 1300,
-                     1600, 1600, 1300]] * policy2.DEFAULT_NUM_YEARS
+                     1600, 1600, 1300]] * Policy.DEFAULT_NUM_YEARS
     assert_array_equal(calc2.policy._STD_Aged, np.array(exp_STD_Aged))
     assert_array_equal(calc2.policy.STD_Aged,
                        np.array([1600, 1300, 1300, 1600, 1600, 1300]))
@@ -182,8 +182,8 @@ def test_make_Calculator_with_multiyear_reform():
     # check that Policy object embedded in Calculator object is correct
     assert calc3.current_year == 2013
     assert calc3.policy.II_em == 3900
-    assert calc3.policy.num_years == policy3.DEFAULT_NUM_YEARS
-    exp_II_em = [3900, 3950, 5000] + [6000] * (policy3.DEFAULT_NUM_YEARS - 3)
+    assert calc3.policy.num_years == Policy.DEFAULT_NUM_YEARS
+    exp_II_em = [3900, 3950, 5000] + [6000] * (Policy.DEFAULT_NUM_YEARS - 3)
     assert_array_equal(calc3.policy._II_em, np.array(exp_II_em))
     calc3.increment_year()
     calc3.increment_year()
@@ -241,14 +241,14 @@ def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
                         "_rt7": [0.396]}}
     calc.policy.implement_reform(user_mods)
     # compare actual and expected values
-    inf_rates = [IRATES[1991 + i] for i in range(0, ppo.DEFAULT_NUM_YEARS)]
+    inf_rates = [IRATES[1991 + i] for i in range(0, Policy.DEFAULT_NUM_YEARS)]
     exp_almdep = Policy.expand_array(np.array([7150, 7250, 7400]),
                                      inflate=True,
                                      inflation_rates=inf_rates,
-                                     num_years=ppo.DEFAULT_NUM_YEARS)
+                                     num_years=Policy.DEFAULT_NUM_YEARS)
     act_almdep = getattr(calc.policy, '_almdep')
     assert_array_equal(act_almdep, exp_almdep)
-    exp_almsep_values = [40400] + [41050] * (ppo.DEFAULT_NUM_YEARS - 1)
+    exp_almsep_values = [40400] + [41050] * (Policy.DEFAULT_NUM_YEARS - 1)
     exp_almsep = np.array(exp_almsep_values)
     act_almsep = getattr(calc.policy, '_almsep')
     assert_array_equal(act_almsep, exp_almsep)

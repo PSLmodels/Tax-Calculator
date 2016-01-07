@@ -71,11 +71,11 @@ def test_update_behavior():
     beh = Behavior(start_year=2013)
     beh.update_behavior({2014: {'_BE_sub': [0.5]}})
     policy = Policy()
-    should_be = np.full((policy.DEFAULT_NUM_YEARS,), 0.5)
+    should_be = np.full((Behavior.DEFAULT_NUM_YEARS,), 0.5)
     should_be[0] = 0.0
     assert np.allclose(beh._BE_sub, should_be, rtol=0.0)
     assert np.allclose(beh._BE_inc,
-                       np.zeros((policy.DEFAULT_NUM_YEARS,)),
+                       np.zeros((Behavior.DEFAULT_NUM_YEARS,)),
                        rtol=0.0)
     beh.set_year(2015)
     assert beh.current_year == 2015
