@@ -139,9 +139,7 @@ def run():
     exp_results = pd.read_csv(exp_results_file, compression='gzip')
     exp_set = set(exp_results.columns)  # fix-up to bad colname in exp_results
     cur_set = set(df.columns)
-
-    assertexp_set == cur_set
-
+    assert exp_set == cur_set
     for label in exp_results.columns:
         lhs = exp_results[label].values.reshape(len(exp_results))
         rhs = totaldf[label].values.reshape(len(exp_results))
