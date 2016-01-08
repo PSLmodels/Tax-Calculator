@@ -9,10 +9,9 @@ Tax-Calculator functions that calculate FICA and individual income taxes.
 # pylint: disable=invalid-name
 #
 import pandas as pd
-from pandas import DataFrame
 import math
 import numpy as np
-from .decorators import *
+from .decorators import iterate_jit, jit
 import copy
 
 
@@ -1564,7 +1563,7 @@ def F5405(pm, rc):
     F5405 function: Form 5405 First-Time Homebuyer Credit is not needed
     """
     c64450 = np.zeros((rc.dim,))
-    return DataFrame(data=np.column_stack((c64450,)), columns=['c64450'])
+    return pd.DataFrame(data=np.column_stack((c64450,)), columns=['c64450'])
 
 
 @iterate_jit(nopython=True, puf=True)
