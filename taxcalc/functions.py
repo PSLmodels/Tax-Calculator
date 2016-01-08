@@ -7,6 +7,7 @@ Tax-Calculator functions that calculate FICA and individual income taxes.
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 #
 # pylint: disable=invalid-name
+# pylint: disable=too-many-arguments
 #
 import pandas as pd
 import math
@@ -29,14 +30,16 @@ def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
     _sey = _sey_p + _sey_s
 
     FICA_trt = FICA_mc_trt + FICA_ss_trt
-    _fica_ss_head = max(0, FICA_ss_trt * min(SS_Earnings_c, e00200p +
-                        max(0, _sey_p) * (1 - 0.5 * FICA_trt)))
-    _fica_ss_spouse = max(0, FICA_ss_trt * min(SS_Earnings_c, e00200s +
-                          max(0, _sey_s) * (1 - 0.5 * FICA_trt)))
+    _fica_ss_head = max(0, FICA_ss_trt *
+                        min(SS_Earnings_c, e00200p +
+                            max(0, _sey_p) * (1 - 0.5 * FICA_trt)))
+    _fica_ss_spouse = max(0, FICA_ss_trt *
+                          min(SS_Earnings_c, e00200s +
+                              max(0, _sey_s) * (1 - 0.5 * FICA_trt)))
 
     _fica_ss = _fica_ss_head + _fica_ss_spouse
     _fica_mc = max(0, FICA_mc_trt * (e00200 + max(0, _sey) *
-                   (1 - 0.5 * (FICA_mc_trt + FICA_ss_trt))))
+                                     (1 - 0.5 * (FICA_mc_trt + FICA_ss_trt))))
 
     _fica = _fica_mc + _fica_ss
 
@@ -174,8 +177,9 @@ def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, SS_thd50, SS_thd85,
         c02500 = SS_percentage1 * min(_ymod - SS_thd50[MARS - 1], e02400)
     else:
         c02500 = min(SS_percentage2 * (_ymod - SS_thd85[MARS - 1]) +
-                     SS_percentage1 * min(e02400, SS_thd85[MARS - 1] -
-                     SS_thd50[MARS - 1]), SS_percentage2 * e02400)
+                     SS_percentage1 *
+                     min(e02400, SS_thd85[MARS - 1] -
+                         SS_thd50[MARS - 1]), SS_percentage2 * e02400)
     c02500 = float(c02500)
 
     return (c02500, e02500)
@@ -409,9 +413,10 @@ def AMED(_fica, e00200, MARS, AMED_thd, _sey, AMED_trt,
 
     """
     # ratio of income subject to AMED tax = (1 - 0.5*(FICA_mc_trt+FICA_ss_trt)
-    _amed = AMED_trt * (max(0, e00200 - AMED_thd[MARS - 1]) + max(0, max(0,
-                        _sey) * (1 - 0.5 * (FICA_mc_trt + FICA_ss_trt)) -
-                        max(0, AMED_thd[MARS - 1] - e00200)))
+    _amed = AMED_trt * (max(0, e00200 - AMED_thd[MARS - 1]) +
+                        max(0, max(0, _sey) *
+                            (1 - 0.5 * (FICA_mc_trt + FICA_ss_trt)) -
+                            max(0, AMED_thd[MARS - 1] - e00200)))
     _fica = _fica + _amed
 
     return (_amed, _fica)
@@ -921,8 +926,9 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
             _cmbtp = 0.
         real_estate = (1 - ID_RealEstate_HC) * e18500
         income_sales = (1 - ID_StateLocalTax_HC) * max(0, e18400)
-        c62100 = (c00100 - c04470 + max(0., min((1 - ID_Medical_HC) * c17000,
-                  0.025 * c00100)) + income_sales + real_estate -
+        c62100 = (c00100 - c04470 +
+                  max(0., min((1 - ID_Medical_HC) * c17000, 0.025 * c00100)) +
+                  income_sales + real_estate -
                   c60260 + (1 - ID_Miscellaneous_HC) * c20800 - c21040)
         c62100 += _cmbtp
 
@@ -1069,9 +1075,9 @@ def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
     """
     MUI function: ...
     """
-    NIIT = NIIT_trt * min(e00300 + e00600 + max(0, c01000) + max(0, e02000 -
-                          e26270 + e85070), max(0, c00100 -
-                          NIIT_thd[MARS - 1]))
+    NIIT = NIIT_trt * min(e00300 + e00600 + max(0, c01000) +
+                          max(0, e02000 - e26270 + e85070),
+                          max(0, c00100 - NIIT_thd[MARS - 1]))
     return NIIT
 
 
@@ -1213,10 +1219,10 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
     if MARS != 3 and MARS != 6:
         _val_rtbase = EITC_rt[_ieic] * 100
         _val_rtless = EITC_prt[_ieic] * 100
-        _dy = (e00400 + e83080 + e00300 + e00600 + max(0., max(0., c01000) -
-               max(0., e40223)) + max(0., max(0., e25360) - e25430 - p25470 -
-               e25400 - e25500) + max(0., e26210 + e26340 + e27200 -
-               e26205 - e26320))
+        _dy = (e00400 + e83080 + e00300 + e00600 +
+               max(0., max(0., c01000) - max(0., e40223)) +
+               max(0., max(0., e25360) - e25430 - p25470 - e25400 - e25500) +
+               max(0., e26210 + e26340 + e27200 - e26205 - e26320))
     else:
         _val_rtbase = 0.
         _val_rtless = 0.
@@ -1228,9 +1234,8 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
     if puf or (_ieic > 0) or (_agep >= 25 and _agep <= 64) or (_ages > 0):
         c59660 = _preeitc
         # make elderly childless filing units in PUF ineligible for EITC
-        if (_ieic == 0 and puf and
-            ((MARS == 2 and _numextra >= 2) or
-             (MARS != 2 and _numextra >= 1))):
+        if (_ieic == 0 and puf and ((MARS == 2 and _numextra >= 2) or
+                                    (MARS != 2 and _numextra >= 1))):
             c59660 = 0.
             c59560 = 0.
     else:
@@ -1678,15 +1683,15 @@ def Taxer_i(inc_in, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6,
 
     inc_out = (II_rt1 * min(_a6, II_brk1[MARS - 1]) + II_rt2 *
                min(II_brk2[MARS - 1] - II_brk1[MARS - 1],
-               max(0., _a6 - II_brk1[MARS - 1])) + II_rt3 *
+                   max(0., _a6 - II_brk1[MARS - 1])) + II_rt3 *
                min(II_brk3[MARS - 1] - II_brk2[MARS - 1],
-               max(0., _a6 - II_brk2[MARS - 1])) + II_rt4 *
+                   max(0., _a6 - II_brk2[MARS - 1])) + II_rt4 *
                min(II_brk4[MARS - 1] - II_brk3[MARS - 1],
-               max(0., _a6 - II_brk3[MARS - 1])) + II_rt5 *
+                   max(0., _a6 - II_brk3[MARS - 1])) + II_rt5 *
                min(II_brk5[MARS - 1] - II_brk4[MARS - 1],
-               max(0., _a6 - II_brk4[MARS - 1])) + II_rt6 *
+                   max(0., _a6 - II_brk4[MARS - 1])) + II_rt6 *
                min(II_brk6[MARS - 1] - II_brk5[MARS - 1],
-               max(0., _a6 - II_brk5[MARS - 1])) + II_rt7 *
+                   max(0., _a6 - II_brk5[MARS - 1])) + II_rt7 *
                max(0., _a6 - II_brk6[MARS - 1]))
 
     return inc_out
@@ -1700,8 +1705,8 @@ def ExpandIncome(FICA_ss_trt, SS_Earnings_c, e00200, FICA_mc_trt, e02400,
     ExpandIncome function: ...
     """
     employer_share_fica = (max(0,
-                           0.5 * FICA_ss_trt * min(SS_Earnings_c, e00200) +
-                           0.5 * FICA_mc_trt * e00200))
+                               0.5 * FICA_ss_trt * min(SS_Earnings_c, e00200) +
+                               0.5 * FICA_mc_trt * e00200))
 
     non_taxable_ss_benefits = (e02400 - c02500)
 
