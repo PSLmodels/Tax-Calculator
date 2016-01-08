@@ -8,7 +8,8 @@ Tax-Calculator functions that calculate FICA and individual income taxes.
 #
 # pylint: disable=invalid-name
 # pylint: disable=too-many-arguments
-#
+
+
 import pandas as pd
 import math
 import numpy as np
@@ -549,12 +550,12 @@ def TaxInc(c00100, c04470, _standard, e37717, c21060, c21040,
     # Some taxpayers iteimize only for AMT, not regular tax
     _amtstd = 0.
 
-    if (c04800 > 0 and _feided > 0):
+    if c04800 > 0 and _feided > 0:
         _taxinc = c04800 + c02700
     else:
         _taxinc = c04800
 
-    if (c04800 > 0 and _feided > 0):
+    if c04800 > 0 and _feided > 0:
         _feitax = Taxer_i(_feided, MARS, II_rt1, II_rt2, II_rt3, II_rt4,
                           II_rt5, II_rt6, II_rt7, II_brk1, II_brk2, II_brk3,
                           II_brk4, II_brk5, II_brk6)
@@ -919,7 +920,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
                   e60600 + e60405 + e60440 + e60420 + e60410 + e61400 +
                   e60660 - c60260 - e60480 - e62000 + c60000 - e60250)
 
-    if (puf and ((_standard == 0 or (_exact == 1 and p04470 > 0)))):
+    if puf and ((_standard == 0 or (_exact == 1 and p04470 > 0))):
         if f6251 == 1:
             _cmbtp = _cmbtp_itemizer
         else:
@@ -932,7 +933,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
                   c60260 + (1 - ID_Miscellaneous_HC) * c20800 - c21040)
         c62100 += _cmbtp
 
-    if (puf and _standard > 0):
+    if puf and _standard > 0:
         if f6251 == 1:
             _cmbtp = _cmbtp_standard
         else:
@@ -940,7 +941,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
         c62100 = c00100 - c60260
         c62100 += _cmbtp
 
-    if (MARS == 3 or MARS == 6):
+    if MARS == 3 or MARS == 6:
         _amtsepadd = max(0.,
                          min(AMT_thd_MarriedS, 0.25 * (c62100 - AMT_em_pe)))
     else:
@@ -973,7 +974,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
         else:
             _ages = 50.
 
-    if (_cmp == 1 and f6251 == 1 and _exact == 1):
+    if _cmp == 1 and f6251 == 1 and _exact == 1:
         c62600 = e62600
 
     if _agep < KT_c_Age and _agep != 0:
@@ -981,7 +982,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
 
     c62700 = max(0., c62100 - c62600)
 
-    if (c02700 > 0):
+    if c02700 > 0:
         _alminc = max(0., c62100 - c62600)
         _amtfei = (AMT_trt1 * c02700 + AMT_trt2 *
                    max(0., c02700 - AMT_tthd / _sep))
@@ -1201,12 +1202,12 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
 
     if MARS == 2:
         _val_ymax = float((EITC_ps[_ieic] + EITC_ps_MarriedJ[_ieic]))
-    elif (MARS == 1 or MARS == 4 or MARS == 5 or MARS == 7):
+    elif MARS == 1 or MARS == 4 or MARS == 5 or MARS == 7:
         _val_ymax = float(EITC_ps[_ieic])
     else:
         _val_ymax = 0.
 
-    if (MARS == 1 or MARS == 4 or MARS == 5 or MARS == 2 or MARS == 7):
+    if MARS == 1 or MARS == 4 or MARS == 5 or MARS == 2 or MARS == 7:
         c59660 = min(EITC_rt[_ieic] * c59560, EITC_c[_ieic])
         _preeitc = c59660
 
@@ -1228,7 +1229,7 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
         _val_rtless = 0.
         _dy = 0.
 
-    if (MARS != 3 and MARS != 6 and _dy > EITC_InvestIncome_c):
+    if MARS != 3 and MARS != 6 and _dy > EITC_InvestIncome_c:
         _preeitc = 0.
 
     if puf or (_ieic > 0) or (_agep >= 25 and _agep <= 64) or (_ages > 0):
@@ -1707,15 +1708,12 @@ def ExpandIncome(FICA_ss_trt, SS_Earnings_c, e00200, FICA_mc_trt, e02400,
     employer_share_fica = (max(0,
                                0.5 * FICA_ss_trt * min(SS_Earnings_c, e00200) +
                                0.5 * FICA_mc_trt * e00200))
-
     non_taxable_ss_benefits = (e02400 - c02500)
-
     _expanded_income = (c00100 +  # AGI
                         e00400 +  # Non-taxable interest
                         non_taxable_ss_benefits +
                         employer_share_fica)
-
-    return (_expanded_income)
+    return _expanded_income
 
 
 def BenefitSurtax(calc):
