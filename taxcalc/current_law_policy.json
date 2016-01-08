@@ -65,7 +65,7 @@
     },
      "_ACTC_rt":{
         "long_name": "Additional child tax credit rate",
-	"description": "This is the fraction of earning used in calculating ACTC. ",
+	"description": "This is the fraction of earning used in calculating ACTC, which makes CTC a refundable credit for some families. ",
         "irs_ref": "Form 8812, line 6, inline.",
         "notes": "",
         "start_year": 2013,
@@ -1114,7 +1114,7 @@
     },
     "_CTC_additional":{
         "long_name": "Additional additional child tax credit amount (Lee-Rubio)",
-	"description": "In addition to all the credits currently available for dependents, this paramter gives each qualifying child a fixed amount of partially refundable credit, limited by the sum of total income and payroll tax liabilities.",
+	"description": "In addition to all the credits currently available for dependents, this parameter gives each qualifying child a fixed amount of partially refundable credit, limited by the sum of total income and payroll tax liabilities.",
         "irs_ref": "",
         "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualificaiton rules for the Child Tax Credit under current law. ",
         "start_year": 2013,
@@ -1127,7 +1127,7 @@
     },
     "_ACTC_ChildNum":{
         "long_name": "Additional child tax credit minimum number of qualified children",
-	"description": "Families with this number of qualified children or more are qualified for an alternative way to calculate additional child tax credit",
+	"description": "Families with this number of qualified children or more may qualify for the additional child tax credit, which makes the CTC refundable",
         "irs_ref": "Form 8812, Part III. ",
         "notes": "",
         "start_year": 2013,
