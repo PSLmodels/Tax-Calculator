@@ -24,6 +24,9 @@ class Records(object):
         string describes CSV file in which records data reside;
         DataFrame already contains records data;
         default value is the string 'puf.csv'
+        For details on how to use your own data with the Tax-Calculator,
+        look at the test_Calculator_using_nonstd_input() function in the
+        tests/test_calculate.py file.
 
     blowup_factors: string or Pandas DataFrame
         string describes CSV file in which blowup factors reside;
@@ -36,15 +39,24 @@ class Records(object):
         default value is filename of the default weights
 
     start_year: None or integer
-        None implies current_year is set to value of FLPDYR for first unit;
+        None implies current_year is set to PUF_YEAR (see below);
         integer implies current_year is set to start_year;
         default value is None
+        NOTE: if specifying data (see above) as being a custom
+              data set, be sure to explicitly set start_year to the
+              custom data's calendar year.  For details on how to
+              use your own data with the Tax-Calculator, look at the
+              test_Calculator_using_nonstd_input() function in the
+              tests/test_calculate.py file.
 
     consider_imputations: boolean
         True implies that if current_year (see start_year above) equals
         PUF_YEAR (see below), then call _impute_variables() method;
         False implies never call _impute_variables() method;
         default value is True
+        For details on how to use your own data with the Tax-Calculator,
+        look at the test_Calculator_using_nonstd_input() function in the
+        tests/test_calculate.py file.
 
     Raises
     ------
@@ -122,7 +134,7 @@ class Records(object):
         's006', 's008', 's009', 'WSAMP', 'TXRT', 'filer', 'matched_weight'])
 
     # specify set of all Record variables that MUST be read by Tax-Calculator:
-    MUST_READ_VARS = set(['RECID', 'FLPDYR', 'MARS'])
+    MUST_READ_VARS = set(['RECID', 'MARS'])
 
     # specify set of all Record variables that cannot be read in:
     CALCULATED_VARS = set([
@@ -235,7 +247,8 @@ class Records(object):
         self._read_blowup(blowup_factors)
         self._read_weights(weights)
         if start_year is None:
-            self._current_year = self.FLPDYR[0]
+            self._current_year = Records.PUF_YEAR
+            self.FLPDYR.fill(Records.PUF_YEAR)
         elif isinstance(start_year, int):
             self._current_year = start_year
         else:
@@ -255,11 +268,10 @@ class Records(object):
 
     def increment_year(self):
         """
-        Adds one to current year and updates each record's FLPDYR variable.
+        Adds one to current year.
         Also, does variable blowup and reweighting for the new current year.
         """
         self._current_year += 1
-        self.FLPDYR += 1
         # Implement Stage 1 Extrapolation blowup factors
         self._blowup(self._current_year)
         # Implement Stage 2 Extrapolation reweighting
