@@ -24,6 +24,9 @@ class Records(object):
         string describes CSV file in which records data reside;
         DataFrame already contains records data;
         default value is the string 'puf.csv'
+        For details on how to use your own data with the Tax-Calculator,
+        look at the test_Calculator_using_nonstd_input() function in the
+        tests/test_calculator.py file.
 
     blowup_factors: string or Pandas DataFrame
         string describes CSV file in which blowup factors reside;
@@ -39,12 +42,21 @@ class Records(object):
         None implies current_year is set to PUF_YEAR (see below);
         integer implies current_year is set to start_year;
         default value is None
+        NOTE: if specifying data (see above) as being a custom
+              data set, be sure to explicitly set start_year to the
+              custom data's calendar year.  For details on how to
+              use your own data with the Tax-Calculator, look at the
+              test_Calculator_using_nonstd_input() function in the
+              tests/test_calculator.py file.
 
     consider_imputations: boolean
         True implies that if current_year (see start_year above) equals
         PUF_YEAR (see below), then call _impute_variables() method;
         False implies never call _impute_variables() method;
         default value is True
+        For details on how to use your own data with the Tax-Calculator,
+        look at the test_Calculator_using_nonstd_input() function in the
+        tests/test_calculator.py file.
 
     Raises
     ------
