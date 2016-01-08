@@ -6,8 +6,10 @@ Tax-Calculator functions that calculate FICA and individual income taxes.
 # pylint --disable=locally-disabled --extension-pkg-whitelist=numpy function.py
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 #
+# pylint: disable=too-many-lines
 # pylint: disable=invalid-name
 # pylint: disable=too-many-arguments
+# pylint: disable=too-many-locals
 
 
 import pandas as pd
@@ -626,6 +628,8 @@ def TaxGains(e00650, c01000, c04800, e01000, c23650, p23250, e01100, e58990,
     """
     TaxGains function: ...
     """
+    # pylint: disable=too-many-statements,too-many-branches
+
     c00650 = e00650
     _addtax = 0.
 
@@ -863,6 +867,8 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
     """
     AMTI function: ...
     """
+    # pylint: disable=too-many-statements,too-many-branches
+
     # if e62720 != 0 and e24517 > 0:
     #    x62720 = e62720 - e24517
     c62720 = c24517 + x62720
@@ -886,14 +892,14 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
         x62730 = e62730 - e24515
     c62730 = e24515
 
-    _amtded = c60200 + c60220 + c60240
+    # UNUSED-LOCAL-VAR: _amtded = c60200 + c60220 + c60240
     if FDED == 2:
         _prefded = 0
     else:
         _prefded = c60200 + c60220 + c60240
     _prefnot = c21060 - c21040 - _prefded
     _totded = _prefded + _prefnot
-    _useded = min(_totded, max(0, c00100 - c04600))
+    # UNUSED-LOCAL-VAR: _useded = min(_totded, max(0, c00100 - c04600))
     # c04500 = c00100 - max(_useded, _standard + e37717)
     if FDED == 1:
         c60000 = c00100 - _totded
@@ -904,9 +910,8 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, x60260, c24517, e37717,
 
     c60000 = c60000 - e04805
     # c60000 = c00100 - _useded
-    _amtded = min(_prefded, max(0, _useded - _prefnot))
+    # UNUSED-LOCAL-VAR: _amtded = min(_prefded, max(0, _useded - _prefnot))
     # if c60000 <= 0:
-
     #   _amtded = max(0., _amtded + c60000)
 
     if FDED == 1 or ((_prefded + e60290) > 0):
@@ -1187,6 +1192,8 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
     """
     NumDep function: ...
     """
+    # pylint: disable=too-many-branches
+
     EICYB1 = max(0.0, EICYB1)
     EICYB2 = max(0.0, EICYB2)
     EICYB3 = max(0.0, EICYB3)
@@ -1246,7 +1253,7 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
     if c59660 == 0:
         c59560 = 0.
 
-    _eitc = c59660
+    # UNUSED-LOCAL-VARIABLE: _eitc = c59660
 
     return (_ieic, EICYB1, EICYB2, EICYB3, _modagi, c59560, c59660, _val_ymax,
             _preeitc, _val_rtbase, _val_rtless, _dy)
@@ -1459,7 +1466,7 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
 
     _xlin4 = max(0, c05800 - (e07300 + c07180 + e07200))
     _xlin5 = min(c87620, _xlin4)
-    _xlin8 = e07300 + c07180 + e07200 + _xlin5
+    # UNUSED-LOCAL-VAR: _xlin8 = e07300 + c07180 + e07200 + _xlin5
     _xlin9 = max(0, c05800 - (e07300 + c07180 + e07200 + _xlin5))
     _xlin10 = min(c87668, _xlin9)
     c87680 = _xlin5 + _xlin10
@@ -1741,6 +1748,7 @@ def BenefitSurtax(calc):
 
         nobenefits_calc.calc_one_year()
 
+        # pylint: disable=protected-access
         tax_diff = np.where(nobenefits_calc.records._iitax -
                             calc.records._iitax > 0,
                             nobenefits_calc.records._iitax -
