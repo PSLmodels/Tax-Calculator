@@ -644,14 +644,16 @@ def TaxGains(e00650, c01000, c04800, e01000, c23650, p23250, e01100, e58990,
         # line 27 on the latest worksheet
         _LINE27 = max(0., (min(_taxinc, CG_thd2[MARS - 1]) - c24540 - c24534))
         c24598 = CG_rt2 * min(c24597, _LINE27)  # actual 15% tax
+        _LINE30 = min(0, c24534) + min(c24597, _LINE27)
+        _LINE31 = _dwks21 - _LINE30
         # income subject to 20% tax, named _addtax
-        _addtax = CG_rt3 * (_dwks21 - min(0, c24534) - min(c24597, _LINE27))
+        _addtax = CG_rt3 * _LINE31
         _dwks25 = min(_dwks9, e24515)
         _dwks26 = c24516 + c24540
         _dwks28 = max(0., _dwks26 - _taxinc)
         c24610 = max(0., _dwks25 - _dwks28)
         c24615 = 0.25 * c24610
-        _dwks31 = c24540 + c24534 + _dwks21 - min(0, c24534) + c24610
+        _dwks31 = c24540 + c24534 + min(c24597, _LINE27) + _LINE31 + c24610
         c24550 = max(0., _taxinc - _dwks31)
         c24570 = 0.28 * c24550
 
