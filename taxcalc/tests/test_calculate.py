@@ -254,7 +254,7 @@ def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
     ppo = Policy(parameter_dict=policy, start_year=1991,
                  num_years=len(IRATES), inflation_rates=IRATES,
                  wage_growth_rates=WRATES)
-    rec = Records(data=TAX_DTA)
+    rec = Records(data=TAX_DTA, start_year=1991)
     calc = Calculator(policy=ppo, records=rec)
     user_mods = {1991: {"_almdep": [7150, 7250, 7400],
                         "_almdep_cpi": True,
