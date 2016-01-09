@@ -34,11 +34,11 @@ WRATES = {1991: 0.0276, 1992: 0.0419, 1993: 0.0465, 1994: 0.0498,
 RAWINPUTFILE_FUNITS = 4
 RAWINPUTFILE_YEAR = 2015
 RAWINPUTFILE_CONTENTS = (
-    'RECID,FLPDYR,MARS\n'
-    '1,2015,2\n'
-    '2,2015,1\n'
-    '3,2015,4\n'
-    '4,2015,6\n'
+    'RECID,MARS\n'
+    '1,2\n'
+    '2,1\n'
+    '3,4\n'
+    '4,6\n'
 )
 
 
