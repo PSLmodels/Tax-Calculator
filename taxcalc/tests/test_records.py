@@ -37,13 +37,11 @@ def test_create_records_with_wrong_start_year():
 
 def test_blow_up():
     tax_dta = pd.read_csv(TAX_DTA_PATH, compression='gzip')
-    extra_years = Records.PUF_YEAR - 1991
-    tax_dta.FLPDYR += extra_years
     parms = Policy()
     parms_start_year = parms.current_year
-    recs = Records(data=tax_dta)
+    recs = Records(data=tax_dta, start_year=Records.PUF_YEAR)
     assert recs.current_year == Records.PUF_YEAR
-    # r.current_year == PUF_YEAR implies Calculator ctor will call r.blowup()
+    # r.current_year == PUF_YEAR ==> Calculator ctor will call r.blowup()
     calc = Calculator(policy=parms, records=recs)
     assert calc.current_year == parms_start_year
 

@@ -229,10 +229,6 @@ class Records(object):
         'c07600', 'c07240', 'c62100_everyone',
         '_surtax', '_combined', 'x04500', '_personal_credit'])
 
-    READ_VARS = set()
-    UNREAD_VARS = set()
-    ZEROED_VARS = set()
-
     def __init__(self,
                  data="puf.csv",
                  blowup_factors=BLOWUP_FACTORS_PATH,
@@ -505,7 +501,7 @@ class Records(object):
         """
         Read Records data from file or use specified DataFrame as data.
         """
-        if isinstance(data, pd.core.frame.DataFrame):
+        if isinstance(data, pd.DataFrame):
             tax_dta = data
         elif isinstance(data, str):
             if data.endswith("gz"):
@@ -520,23 +516,24 @@ class Records(object):
         tax_dta = tax_dta[tax_dta.RECID != 999999]
         self.dim = len(tax_dta)
         # create variables using tax_dta DataFrame column names
+        READ_VARS = set()
         for varname in list(tax_dta.columns.values):
             if varname not in Records.VALID_READ_VARS:
                 msg = 'Records data variable name {} not in VALID_READ_VARS'
                 raise ValueError(msg.format(varname))
-            Records.READ_VARS.add(varname)
+            READ_VARS.add(varname)
             setattr(self, varname, tax_dta[varname].values)
         # check that MUST_READ_VARS are all present in tax_dta
-        UNREAD_MUST_VARS = Records.MUST_READ_VARS - Records.READ_VARS
+        UNREAD_MUST_VARS = Records.MUST_READ_VARS - READ_VARS
         if len(UNREAD_MUST_VARS) > 0:
             msg = 'Records data missing {} MUST_READ_VARS'
             raise ValueError(msg.format(len(UNREAD_MUST_VARS)))
         # create variables that are set to all zeros
-        Records.UNREAD_VARS = Records.VALID_READ_VARS - Records.READ_VARS
-        Records.ZEROED_VARS = Records.CALCULATED_VARS | Records.UNREAD_VARS
-        for varname in Records.ZEROED_VARS:
+        UNREAD_VARS = Records.VALID_READ_VARS - READ_VARS
+        ZEROED_VARS = Records.CALCULATED_VARS | UNREAD_VARS
+        for varname in ZEROED_VARS:
             setattr(self, varname, np.zeros((self.dim,)))
-        # create variables that are derived from MARS
+        # create variables derived from MARS, which is in MUST_READ_VARS
         self._num = np.where(self.MARS == 2,
                              2., 1.)
         self._sep = np.where(np.logical_or(self.MARS == 3, self.MARS == 6),
@@ -546,7 +543,7 @@ class Records(object):
         """
         Read Records weights from file or use specified DataFrame as data.
         """
-        if isinstance(weights, pd.core.frame.DataFrame):
+        if isinstance(weights, pd.DataFrame):
             WT = weights
         elif isinstance(weights, str):
             try:
@@ -571,7 +568,7 @@ class Records(object):
         Read Records blowup factors from file or
         use specified DataFrame as data.
         """
-        if isinstance(blowup_factors, pd.core.frame.DataFrame):
+        if isinstance(blowup_factors, pd.DataFrame):
             BF = blowup_factors
         elif isinstance(blowup_factors, str):
             try:
