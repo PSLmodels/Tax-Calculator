@@ -8,7 +8,7 @@ from numpy.testing import assert_array_equal
 import pandas as pd
 import tempfile
 import pytest
-from taxcalc import Policy, Records, Calculator, Growth
+from taxcalc import Policy, Records, Calculator
 from taxcalc import create_distribution_table, create_difference_table
 
 
@@ -31,15 +31,40 @@ WRATES = {1991: 0.0276, 1992: 0.0419, 1993: 0.0465, 1994: 0.0498,
           1999: 0.0437, 2000: 0.0435, 2001: 0.0430, 2002: 0.0429,
           2003: 0.0429, 2004: 0.0429}
 
+RAWINPUTFILE_FUNITS = 4
+RAWINPUTFILE_YEAR = 2015
+RAWINPUTFILE_CONTENTS = (
+    'RECID,MARS\n'
+    '1,2\n'
+    '2,1\n'
+    '3,4\n'
+    '4,6\n'
+)
+
+
+@pytest.yield_fixture
+def rawinputfile():
+    """
+    Temporary input file that contains minimum required input varaibles.
+    """
+    ifile = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    ifile.write(RAWINPUTFILE_CONTENTS)
+    ifile.close()
+    # must close and then yield for Windows platform
+    yield ifile
+    if os.path.isfile(ifile.name):
+        try:
+            os.remove(ifile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
 
 @pytest.yield_fixture
 def policyfile():
-
     txt = """{"_almdep": {"value": [7150, 7250, 7400]},
              "_almsep": {"value": [40400, 41050]},
              "_rt5": {"value": [0.33 ]},
              "_rt7": {"value": [0.396]}}"""
-
     f = tempfile.NamedTemporaryFile(mode="a", delete=False)
     f.write(txt + "\n")
     f.close()
@@ -60,7 +85,7 @@ def run():
     for attr in dir(calc.records):
         value = getattr(calc.records, attr)
         if hasattr(value, "shape"):
-            if (value.shape == rshape):
+            if value.shape == rshape:
                 totaldf[attr] = value
     Col_names = ['EICYB1', 'EICYB2', 'EICYB3', 'NIIT', '_addamt', '_addtax',
                  '_agep', '_ages', '_agierr', '_alminc', '_amed', '_amt15pc',
@@ -114,9 +139,7 @@ def run():
     exp_results = pd.read_csv(exp_results_file, compression='gzip')
     exp_set = set(exp_results.columns)  # fix-up to bad colname in exp_results
     cur_set = set(df.columns)
-
-    assert(exp_set == cur_set)
-
+    assert exp_set == cur_set
     for label in exp_results.columns:
         lhs = exp_results[label].values.reshape(len(exp_results))
         rhs = totaldf[label].values.reshape(len(exp_results))
@@ -231,7 +254,7 @@ def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
     ppo = Policy(parameter_dict=policy, start_year=1991,
                  num_years=len(IRATES), inflation_rates=IRATES,
                  wage_growth_rates=WRATES)
-    rec = Records(data=TAX_DTA)
+    rec = Records(data=TAX_DTA, start_year=1991)
     calc = Calculator(policy=ppo, records=rec)
     user_mods = {1991: {"_almdep": [7150, 7250, 7400],
                         "_almdep_cpi": True,
@@ -292,7 +315,7 @@ def test_Calculator_create_distribution_table():
     assert isinstance(dt2, pd.DataFrame)
 
 
-def test_calculate_mtr():
+def test_Calculator_mtr():
     policy = Policy()
     puf = Records(TAX_DTA, weights=WEIGHTS, start_year=2009)
     calc = Calculator(policy=policy, records=puf)
@@ -319,10 +342,9 @@ def test_Calculator_create_difference_table():
     assert isinstance(dtable, pd.DataFrame)
 
 
-def test_diagnostic_table():
+def test_Calculator_diagnostic_table():
     policy = Policy()
-    TAX_DTA.FLPDYR += 18  # flpdyr==2009 so that Records ctor will apply blowup
-    puf = Records(data=TAX_DTA, weights=WEIGHTS)
+    puf = Records(data=TAX_DTA, weights=WEIGHTS, start_year=Records.PUF_YEAR)
     calc = Calculator(policy=policy, records=puf)
     calc.diagnostic_table()
 
@@ -351,6 +373,27 @@ def test_make_Calculator_increment_years_first():
     exp_II_em = np.array([3900, 3950, 5000, 6000, 6000])
     assert_array_equal(calc.policy._STD_Aged, exp_STD_Aged)
     assert_array_equal(calc.policy._II_em, exp_II_em)
+
+
+def test_Calculator_using_nonstd_input(rawinputfile):
+    # check Calculator handling of raw, non-standard input data with no aging
+    policy = Policy()
+    policy.set_year(RAWINPUTFILE_YEAR)  # set policy params to input data year
+    nonpuf = Records(data=rawinputfile.name,
+                     start_year=RAWINPUTFILE_YEAR,  # set raw input data year
+                     consider_imputations=False)  # keeps raw data unchanged
+    assert nonpuf.dim == RAWINPUTFILE_FUNITS
+    calc = Calculator(policy=policy,
+                      records=nonpuf,
+                      sync_years=False)  # keeps raw data unchanged
+    assert calc.current_year == RAWINPUTFILE_YEAR
+    calc.calc_all()
+    exp_iitax = np.zeros((nonpuf.dim,))
+    assert_array_equal(nonpuf._iitax, exp_iitax)
+    mtr_fica, _, _ = calc.mtr(wrt_full_compensation=False)
+    exp_mtr_fica = np.zeros((nonpuf.dim,))
+    exp_mtr_fica.fill(0.153)
+    assert_array_equal(mtr_fica, exp_mtr_fica)
 
 
 class TaxCalcError(Exception):

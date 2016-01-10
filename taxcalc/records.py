@@ -24,6 +24,9 @@ class Records(object):
         string describes CSV file in which records data reside;
         DataFrame already contains records data;
         default value is the string 'puf.csv'
+        For details on how to use your own data with the Tax-Calculator,
+        look at the test_Calculator_using_nonstd_input() function in the
+        tests/test_calculate.py file.
 
     blowup_factors: string or Pandas DataFrame
         string describes CSV file in which blowup factors reside;
@@ -36,15 +39,24 @@ class Records(object):
         default value is filename of the default weights
 
     start_year: None or integer
-        None implies current_year is set to value of FLPDYR for first unit;
+        None implies current_year is set to PUF_YEAR (see below);
         integer implies current_year is set to start_year;
         default value is None
+        NOTE: if specifying data (see above) as being a custom
+              data set, be sure to explicitly set start_year to the
+              custom data's calendar year.  For details on how to
+              use your own data with the Tax-Calculator, look at the
+              test_Calculator_using_nonstd_input() function in the
+              tests/test_calculate.py file.
 
     consider_imputations: boolean
         True implies that if current_year (see start_year above) equals
         PUF_YEAR (see below), then call _impute_variables() method;
         False implies never call _impute_variables() method;
         default value is True
+        For details on how to use your own data with the Tax-Calculator,
+        look at the test_Calculator_using_nonstd_input() function in the
+        tests/test_calculate.py file.
 
     Raises
     ------
@@ -122,7 +134,7 @@ class Records(object):
         's006', 's008', 's009', 'WSAMP', 'TXRT', 'filer', 'matched_weight'])
 
     # specify set of all Record variables that MUST be read by Tax-Calculator:
-    MUST_READ_VARS = set(['RECID', 'FLPDYR', 'MARS'])
+    MUST_READ_VARS = set(['RECID', 'MARS'])
 
     # specify set of all Record variables that cannot be read in:
     CALCULATED_VARS = set([
@@ -217,10 +229,6 @@ class Records(object):
         'c07600', 'c07240', 'c62100_everyone',
         '_surtax', '_combined', 'x04500', '_personal_credit'])
 
-    READ_VARS = set()
-    UNREAD_VARS = set()
-    ZEROED_VARS = set()
-
     def __init__(self,
                  data="puf.csv",
                  blowup_factors=BLOWUP_FACTORS_PATH,
@@ -235,7 +243,8 @@ class Records(object):
         self._read_blowup(blowup_factors)
         self._read_weights(weights)
         if start_year is None:
-            self._current_year = self.FLPDYR[0]
+            self._current_year = Records.PUF_YEAR
+            self.FLPDYR.fill(Records.PUF_YEAR)
         elif isinstance(start_year, int):
             self._current_year = start_year
         else:
@@ -255,11 +264,10 @@ class Records(object):
 
     def increment_year(self):
         """
-        Adds one to current year and updates each record's FLPDYR variable.
+        Adds one to current year.
         Also, does variable blowup and reweighting for the new current year.
         """
         self._current_year += 1
-        self.FLPDYR += 1
         # Implement Stage 1 Extrapolation blowup factors
         self._blowup(self._current_year)
         # Implement Stage 2 Extrapolation reweighting
@@ -493,7 +501,7 @@ class Records(object):
         """
         Read Records data from file or use specified DataFrame as data.
         """
-        if isinstance(data, pd.core.frame.DataFrame):
+        if isinstance(data, pd.DataFrame):
             tax_dta = data
         elif isinstance(data, str):
             if data.endswith("gz"):
@@ -508,23 +516,24 @@ class Records(object):
         tax_dta = tax_dta[tax_dta.RECID != 999999]
         self.dim = len(tax_dta)
         # create variables using tax_dta DataFrame column names
+        READ_VARS = set()
         for varname in list(tax_dta.columns.values):
             if varname not in Records.VALID_READ_VARS:
                 msg = 'Records data variable name {} not in VALID_READ_VARS'
                 raise ValueError(msg.format(varname))
-            Records.READ_VARS.add(varname)
+            READ_VARS.add(varname)
             setattr(self, varname, tax_dta[varname].values)
         # check that MUST_READ_VARS are all present in tax_dta
-        UNREAD_MUST_VARS = Records.MUST_READ_VARS - Records.READ_VARS
+        UNREAD_MUST_VARS = Records.MUST_READ_VARS - READ_VARS
         if len(UNREAD_MUST_VARS) > 0:
             msg = 'Records data missing {} MUST_READ_VARS'
             raise ValueError(msg.format(len(UNREAD_MUST_VARS)))
         # create variables that are set to all zeros
-        Records.UNREAD_VARS = Records.VALID_READ_VARS - Records.READ_VARS
-        Records.ZEROED_VARS = Records.CALCULATED_VARS | Records.UNREAD_VARS
-        for varname in Records.ZEROED_VARS:
+        UNREAD_VARS = Records.VALID_READ_VARS - READ_VARS
+        ZEROED_VARS = Records.CALCULATED_VARS | UNREAD_VARS
+        for varname in ZEROED_VARS:
             setattr(self, varname, np.zeros((self.dim,)))
-        # create variables that are derived from MARS
+        # create variables derived from MARS, which is in MUST_READ_VARS
         self._num = np.where(self.MARS == 2,
                              2., 1.)
         self._sep = np.where(np.logical_or(self.MARS == 3, self.MARS == 6),
@@ -534,7 +543,7 @@ class Records(object):
         """
         Read Records weights from file or use specified DataFrame as data.
         """
-        if isinstance(weights, pd.core.frame.DataFrame):
+        if isinstance(weights, pd.DataFrame):
             WT = weights
         elif isinstance(weights, str):
             try:
@@ -559,7 +568,7 @@ class Records(object):
         Read Records blowup factors from file or
         use specified DataFrame as data.
         """
-        if isinstance(blowup_factors, pd.core.frame.DataFrame):
+        if isinstance(blowup_factors, pd.DataFrame):
             BF = blowup_factors
         elif isinstance(blowup_factors, str):
             try:
