@@ -428,7 +428,7 @@ def AMED(_fica, e00200, MARS, AMED_thd, _sey, AMED_trt,
 @iterate_jit(nopython=True, puf=True)
 def StdDed(DSI, _earned, STD, p04470, e00100, e60000,
            MARS, MIDR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200,
-           STD_Aged, _txpyers, f6251, _numextra, puf):
+           STD_Aged, f6251, _numextra, puf):
     """
     StdDed function:
 
@@ -516,13 +516,11 @@ def StdDed(DSI, _earned, STD, p04470, e00100, e60000,
     if (MARS == 3 or MARS == 6) and (MIDR == 1):
         _standard = 0.
 
-    return (_standard, c04200, _numextra, c15200, c15100, x04500, _txpyers,
-            c04100)
+    return (_standard, c04200, _numextra, c15200, c15100, x04500, c04100)
 
 
 @iterate_jit(nopython=True, puf=False)
-def TaxInc(c00100, c04470, _standard, e37717, c21060, c21040,
-           c04500, c04600,
+def TaxInc(c00100, _standard, e37717, c21060, c21040, c04500, c04600,
            e04805, _feided, c04800, MARS,
            II_rt1, II_rt2, II_rt3, II_rt4,
            II_rt5, II_rt6, II_rt7, II_brk1, II_brk2, II_brk3,
@@ -530,22 +528,7 @@ def TaxInc(c00100, c04470, _standard, e37717, c21060, c21040,
     """
     TaxInc function: ...
     """
-    # c04500 = c00100 - max(c04470, max(c04100, _standard + e37717))
     c04500 = max(0, c00100 - max(c21060 - c21040, _standard + e37717))
-
-    # Check with Dan whether this is right!
-    # if c04470 > _standard:
-    #    _standard = 0.
-    # if c04470 <= _standard:
-    #    c04470 = 0.
-
-    # if FDED == 1:
-    #    _othded = p04470 - c04470
-    #    c04100 = 0.
-    #    c04200 = 0.
-    #    _standard = 0.
-    # else:
-    #    _othded = 0.
 
     c04800 = max(0., c04500 - c04600 - e04805)
 
@@ -568,8 +551,7 @@ def TaxInc(c00100, c04470, _standard, e37717, c21060, c21040,
     else:
         _feitax, _oldfei = 0., 0.
 
-    return (c04470, c04500, c04800, _amtstd, _taxinc, _feitax, _oldfei,
-            _standard)
+    return (c04500, c04800, _amtstd, _taxinc, _feitax, _oldfei, _standard)
 
 
 @iterate_jit(nopython=True, puf=False)
@@ -1260,7 +1242,7 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
 
 @iterate_jit(nopython=True)
 def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
-                   c11070, c07220, _precrd, _nctcr, CTC_prt):
+                   _precrd, _nctcr, CTC_prt):
     """
     ChildTaxCredit function: ...
     """
@@ -1281,11 +1263,16 @@ def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
     # TODO get rid of this type declaration
     _precrd = float(_precrd)
 
-    return (c11070, c07220, _nctcr, _precrd, _ctcagi)
+    return (_nctcr, _precrd, _ctcagi)
 
-# def HopeCredit():
+
+def HopeCredit():
+    """
+    HopeCredit function: ...
+    """
     # W/o congressional action, Hope Credit will replace
     # American opportunities credit in 2018. NEED TO ADD LOGIC!!!
+    return None
 
 
 @iterate_jit(nopython=True, puf=True)
@@ -1569,12 +1556,12 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, e00200,
             _othadd)
 
 
-def F5405(pm, rc):
+def F5405(pol, rec):
     """
     F5405 function: Form 5405 First-Time Homebuyer Credit is not needed
     """
-    # pylint: disable=unused-argument
-    c64450 = np.zeros((rc.dim,))
+    if pol.current_year > 0:  # meaningless use of required first argument
+        c64450 = np.zeros((rec.dim,))
     return pd.DataFrame(data=np.column_stack((c64450,)), columns=['c64450'])
 
 
