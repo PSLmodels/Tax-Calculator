@@ -1,3 +1,11 @@
+"""
+Tests for Tax-Calculator functions.py file.
+"""
+# CODING-STYLE CHECKS:
+# pep8 --ignore=E402 test_functions.py
+# pylint --disable=locally-disabled test_functions.py
+# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
+
 import os
 import sys
 import re
@@ -17,7 +25,7 @@ def test_function_args_usage():
     for func in funcs[1:]:  # skip first item in list, which is imports, etc.
         fcode = func.split('return ')[0]  # fcode is between def and return
         match = re.search(r'^(.+?)\((.*?)\):(.*)$', fcode)
-        if match == None:
+        if match is None:
             sys.stdout.write('==========\n{}\n==========\n'.format(fcode))
             assert 'match' == 'None'
         else:
@@ -29,4 +37,4 @@ def test_function_args_usage():
             if fbody.find(arg) < 0:
                 msg = '{} function argument {} never used\n'.format(fname, arg)
                 sys.stdout.write(msg)
-                assert 'arg' == 'UNUSED' 
+                assert 'arg' == 'UNUSED'
