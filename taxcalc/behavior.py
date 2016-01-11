@@ -40,12 +40,16 @@ def update_ordinary_income(behavioral_effect, calc_y):
     # TODO, we should create a behavioral modification
     # variable instead of using e19570
 
-    calc_y.calc_all()
-
     return calc_y
 
 
-def behavior(calc_x, calc_y, update_income=update_income):
+def update_cap_gain_income(cap_gain_behavioral_effect, calc_y):
+    calc_y.records.p23250 = calc_y.records.p23250 + cap_gain_behavioral_effect
+    calc_y.records.e01100 = calc_y.records.e01100 + cap_gain_behavioral_effect
+    return calc_y
+
+
+def behavior(calc_x, calc_y):
     """
     Modify plan Y records to account for micro-feedback effect that arrise
     from moving from plan X to plan Y.
@@ -57,13 +61,15 @@ def behavior(calc_x, calc_y, update_income=update_income):
                                     liability_type='combined')
 
     CG_mtr_x, CG_mtr_y = mtr_xy(calc_x, calc_y,
-                                mtr_of='e23250',
-                                liability_type='iitax')
+                                mtr_of='p23250',
+                                liability_type='combined')
 
     # Calculate the percent change in after-tax rate for wage and capital gain.
     wage_pctdiff = ((1 - wage_mtr_y) - (1 - wage_mtr_x)) / (1 - wage_mtr_x)
+    CG_pctdiff = ((1 - CG_mtr_y) - (1 - CG_mtr_x)) / (1 - CG_mtr_x)
 
-    # Calculate the magnitude of the substitution and income effects.
+    # Calculate the magnitude of the substitution and income effects
+    # Calculate the magnitude of behavior changes on cap gain
     substitution_effect = (calc_y.behavior.BE_sub * wage_pctdiff *
                            (calc_x.records.c04800))
 
@@ -72,16 +78,26 @@ def behavior(calc_x, calc_y, update_income=update_income):
 
     combined_behavioral_effect = income_effect + substitution_effect
 
+    cap_gain_behavioral_effect = (calc_y.behavior.BE_CG_per * CG_pctdiff *
+                                  (calc_x.records.p23250))
+
+    # Add the behavior changes to income sources
     calc_y_behavior = copy.deepcopy(calc_y)
     calc_y_behavior = update_ordinary_income(combined_behavioral_effect,
                                              calc_y_behavior)
+    calc_y_behavior = update_cap_gain_income(cap_gain_behavioral_effect,
+                                             calc_y_behavior)
+
+    # Takes all income updates into considaration
+    calc_y_behavior.calc_all()
 
     return calc_y_behavior
 
 
 def mtr_xy(calc_x, calc_y, mtr_of='e00200p', liability_type='combined'):
-    iitax_x, payroll_x, combined_x = calc_x.mtr(mtr_of)
-    iitax_y, payroll_y, combined_y = calc_y.mtr(mtr_of)
+
+    payroll_x, iitax_x, combined_x = calc_x.mtr(mtr_of)
+    payroll_y, iitax_y, combined_y = calc_y.mtr(mtr_of)
 
     if liability_type == 'combined':
         return (combined_x, combined_y)
