@@ -26,8 +26,11 @@ def test_function_args_usage():
         fcode = func.split('return ')[0]  # fcode is between def and return
         match = re.search(r'^(.+?)\((.*?)\):(.*)$', fcode)
         if match is None:
-            sys.stdout.write('==========\n{}\n==========\n'.format(fcode))
-            assert 'match' == 'None'
+            msg = ('Could not find function name, arguments, '
+                   'and code portions in the following text:')
+            line = '====================================================='
+            sys.stdout.write('{}\n{}\n{}\n{}\n'.format(msg, line, fcode, line))
+            assert False
         else:
             fname = match.group(1)
             fargs = match.group(2).split(',')  # list of function arguments
