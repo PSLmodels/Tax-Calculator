@@ -10,7 +10,7 @@ from .utils import *
 from .functions import *
 from .policy import Policy
 from .records import Records
-from .behavior import Behavior
+from .behavior import Behavior, behavior
 from .growth import Growth, adjustment, target
 
 
@@ -298,96 +298,108 @@ class Calculator(object):
         # return the three marginal tax rate arrays
         return (mtr_fica, mtr_iit, mtr_combined)
 
-    def diagnostic_table(self, num_years=5):
+    def diagnostic_table_items(self, table):
+        # totoal number of records
+        returns = self.records.s006.sum()
+
+        # AGI
+        agi = (self.records.c00100 * self.records.s006).sum()
+
+        # number of itemizers
+        ID1 = self.records.c04470 * self.records.s006
+        STD1 = self.records._standard * self.records.s006
+        deduction = np.maximum(self.records.c04470, self.records._standard)
+
+        # S TD1 = (self.c04100 + self.c04200)*self.s006
+        NumItemizer1 = (self.records.s006[(self.records.c04470 > 0) *
+                                          (self.records.c00100 > 0)].sum())
+
+        # itemized deduction
+        ID = ID1[self.records.c04470 > 0].sum()
+
+        NumSTD = self.records.s006[(self.records._standard > 0) *
+                                   (self.records.c00100 > 0)].sum()
+        # standard deduction
+        STD = STD1[(self.records._standard > 0) *
+                   (self.records.c00100 > 0)].sum()
+
+        # personal exemption
+        PE = (self.records.c04600 *
+              self.records.s006)[self.records.c00100 > 0].sum()
+
+        # taxable income
+        taxinc = (self.records.c04800 * self.records.s006).sum()
+
+        # regular tax
+        regular_tax = (self.records.c05200 * self.records.s006).sum()
+
+        # AMT income
+        AMTI = (self.records.c62100 * self.records.s006).sum()
+
+        # total AMTs
+        AMT = (self.records.c09600 * self.records.s006).sum()
+
+        # number of people paying AMT
+        NumAMT1 = self.records.s006[self.records.c09600 > 0].sum()
+
+        # tax before credits
+        tax_bf_credits = (self.records.c05800 * self.records.s006).sum()
+
+        # tax before nonrefundable credits 09200
+        tax_bf_nonrefundable = (self.records.c09200 *
+                                self.records.s006).sum()
+
+        # refundable credits
+        refundable = (self.records._refund * self.records.s006).sum()
+
+        # nonrefuncable credits
+        nonrefundable = (self.records.c07100 * self.records.s006).sum()
+
+        # Misc. Surtax
+        surtax = (self.records._surtax * self.records.s006).sum()
+
+        # iitax
+        revenue1 = (self.records._iitax * self.records.s006).sum()
+
+        # payroll tax (FICA)
+        payroll = (self.records._fica * self.records.s006).sum()
+
+        table.append([returns / math.pow(10, 6), agi / math.pow(10, 9),
+                      NumItemizer1 / math.pow(10, 6), ID / math.pow(10, 9),
+                      NumSTD / math.pow(10, 6), STD / math.pow(10, 9),
+                      PE / math.pow(10, 9), taxinc / math.pow(10, 9),
+                      regular_tax / math.pow(10, 9),
+                      AMTI / math.pow(10, 9), AMT / math.pow(10, 9),
+                      NumAMT1 / math.pow(10, 6),
+                      tax_bf_credits / math.pow(10, 9),
+                      refundable / math.pow(10, 9),
+                      nonrefundable / math.pow(10, 9),
+                      surtax / math.pow(10, 9),
+                      revenue1 / math.pow(10, 9),
+                      payroll / math.pow(10, 9)])
+
+    def diagnostic_table(self, num_years=5, base_calc=None):
         table = []
         row_years = []
         calc = copy.deepcopy(self)
 
         for i in range(0, num_years):
-            calc.calc_all()
+            has_behavior = (calc.behavior.BE_sub or calc.behavior.BE_inc or
+                            calc.behavior.BE_CG_per)
+            if has_behavior:
+                base_calc.calc_all()
+                behavior_calc = behavior(base_calc, calc)
+                behavior_calc.diagnostic_table_items(table)
+            else:
+                calc.calc_all()
+                calc.diagnostic_table_items(table)
 
             row_years.append(calc.policy.current_year)
 
-            # totoal number of records
-            returns = calc.records.s006.sum()
-
-            # AGI
-            agi = (calc.records.c00100 * calc.records.s006).sum()
-
-            # number of itemizers
-            ID1 = calc.records.c04470 * calc.records.s006
-            STD1 = calc.records._standard * calc.records.s006
-            deduction = np.maximum(calc.records.c04470, calc.records._standard)
-
-            # S TD1 = (calc.c04100 + calc.c04200)*calc.s006
-            NumItemizer1 = (calc.records.s006[(calc.records.c04470 > 0) *
-                                              (calc.records.c00100 > 0)].sum())
-
-            # itemized deduction
-            ID = ID1[calc.records.c04470 > 0].sum()
-
-            NumSTD = calc.records.s006[(calc.records._standard > 0) *
-                                       (calc.records.c00100 > 0)].sum()
-            # standard deduction
-            STD = STD1[(calc.records._standard > 0) *
-                       (calc.records.c00100 > 0)].sum()
-
-            # personal exemption
-            PE = (calc.records.c04600 *
-                  calc.records.s006)[calc.records.c00100 > 0].sum()
-
-            # taxable income
-            taxinc = (calc.records.c04800 * calc.records.s006).sum()
-
-            # regular tax
-            regular_tax = (calc.records.c05200 * calc.records.s006).sum()
-
-            # AMT income
-            AMTI = (calc.records.c62100 * calc.records.s006).sum()
-
-            # total AMTs
-            AMT = (calc.records.c09600 * calc.records.s006).sum()
-
-            # number of people paying AMT
-            NumAMT1 = calc.records.s006[calc.records.c09600 > 0].sum()
-
-            # tax before credits
-            tax_bf_credits = (calc.records.c05800 * calc.records.s006).sum()
-
-            # tax before nonrefundable credits 09200
-            tax_bf_nonrefundable = (calc.records.c09200 *
-                                    calc.records.s006).sum()
-
-            # refundable credits
-            refundable = (calc.records._refund * calc.records.s006).sum()
-
-            # nonrefuncable credits
-            nonrefundable = (calc.records.c07100 * calc.records.s006).sum()
-
-            # Misc. Surtax
-            surtax = (calc.records._surtax * calc.records.s006).sum()
-
-            # iitax
-            revenue1 = (calc.records._iitax * calc.records.s006).sum()
-
-            # payroll tax (FICA)
-            payroll = (calc.records._fica * calc.records.s006).sum()
-
-            table.append([returns / math.pow(10, 6), agi / math.pow(10, 9),
-                          NumItemizer1 / math.pow(10, 6), ID / math.pow(10, 9),
-                          NumSTD / math.pow(10, 6), STD / math.pow(10, 9),
-                          PE / math.pow(10, 9), taxinc / math.pow(10, 9),
-                          regular_tax / math.pow(10, 9),
-                          AMTI / math.pow(10, 9), AMT / math.pow(10, 9),
-                          NumAMT1 / math.pow(10, 6),
-                          tax_bf_credits / math.pow(10, 9),
-                          refundable / math.pow(10, 9),
-                          nonrefundable / math.pow(10, 9),
-                          surtax / math.pow(10, 9),
-                          revenue1 / math.pow(10, 9),
-                          payroll / math.pow(10, 9)])
             if i < num_years - 1:
                 calc.increment_year()
+                if base_calc is not None:
+                    base_calc.increment_year()
 
         df = DataFrame(table, row_years,
                        ["Returns (#m)", "AGI ($b)", "Itemizers (#m)",
