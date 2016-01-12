@@ -16,7 +16,7 @@ def test_function_args_usage():
     """
     Checks each function argument in functions.py for use in its function body.
     """
-    funcfilename = '{}/../functions.py'.format(CUR_PATH)
+    funcfilename = os.path.join(CUR_PATH, '..', 'functions.py')
     with open(funcfilename, 'r') as funcfile:
         fcontent = funcfile.read()
     fcontent = re.sub('#.*', '', fcontent)  # remove all '#...' comments
