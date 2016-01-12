@@ -226,8 +226,9 @@ class Records(object):
         '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
         '_amed', '_xlin3', '_xlin6', '_cmbtp_itemizer',
         '_cmbtp_standard', '_expanded_income', 'c07300',
-        'c07600', 'c07240', 'c62100_everyone',
-        '_surtax', '_combined', 'x04500', '_personal_credit'])
+        'c07600', 'c07240', 'c62100_everyone', '_LINE27',
+        '_surtax', '_combined', 'x04500', '_personal_credit',
+        '_LINE30', '_LINE31'])
 
     def __init__(self,
                  data="puf.csv",

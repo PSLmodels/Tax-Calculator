@@ -641,22 +641,28 @@ def TaxGains(e00650, c01000, c04800, e01000, c23650, p23250, e01100, e58990,
 
         # if/else 4
         # income subject to 15% tax
-        c24598 = CG_rt2 * c24597  # actual 15% tax
+        # line 27 on the latest worksheet
+        _LINE27 = max(0., (min(_taxinc, CG_thd2[MARS - 1]) - c24540 - c24534))
+        c24598 = CG_rt2 * min(c24597, _LINE27)  # actual 15% tax
+        _LINE30 = min(0, c24534) + min(c24597, _LINE27)
+        _LINE31 = min(0, _dwks21 - _LINE30)
+        # income subject to 20% tax, named _addtax
+        _addtax = CG_rt3 * _LINE31
         _dwks25 = min(_dwks9, e24515)
         _dwks26 = c24516 + c24540
         _dwks28 = max(0., _dwks26 - _taxinc)
         c24610 = max(0., _dwks25 - _dwks28)
         c24615 = 0.25 * c24610
-        _dwks31 = c24540 + c24534 + c24597 + c24610
+        _dwks31 = c24540 + c24534 + min(c24597, _LINE27) + _LINE31 + c24610
         c24550 = max(0., _taxinc - _dwks31)
-        c24570 = 0.28 * c24550
+        c24570 = 0.2 * c24550
 
-        if c24540 > CG_thd2[MARS - 1]:
-            _addtax = (CG_rt3 - CG_rt2) * c24517
+        # if c24540 > CG_thd2[MARS - 1]:
+        #    _addtax = (CG_rt3 - CG_rt2) * c24517
 
-        elif c24540 <= CG_thd2[MARS - 1] and _taxinc > CG_thd2[MARS - 1]:
-            _addtax = (CG_rt3 - CG_rt2) * min(_dwks21,
-                                              _taxinc - CG_thd2[MARS - 1])
+        # elif c24540 <= CG_thd2[MARS - 1] and _taxinc > CG_thd2[MARS - 1]:
+        #    _addtax = (CG_rt3 - CG_rt2) * min(_dwks21,
+        #                                      _taxinc - CG_thd2[MARS - 1])
 
         c24560 = Taxer_i(c24540, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
                          II_rt6, II_rt7, II_brk1, II_brk2, II_brk3, II_brk4,
