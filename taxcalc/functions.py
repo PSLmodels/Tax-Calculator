@@ -645,7 +645,7 @@ def TaxGains(e00650, c01000, c04800, e01000, c23650, p23250, e01100, e58990,
         _LINE27 = max(0., (min(_taxinc, CG_thd2[MARS - 1]) - c24540 - c24534))
         c24598 = CG_rt2 * min(c24597, _LINE27)  # actual 15% tax
         _LINE30 = min(0, c24534) + min(c24597, _LINE27)
-        _LINE31 = _dwks21 - _LINE30
+        _LINE31 = min(0, _dwks21 - _LINE30)
         # income subject to 20% tax, named _addtax
         _addtax = CG_rt3 * _LINE31
         _dwks25 = min(_dwks9, e24515)
@@ -655,7 +655,7 @@ def TaxGains(e00650, c01000, c04800, e01000, c23650, p23250, e01100, e58990,
         c24615 = 0.25 * c24610
         _dwks31 = c24540 + c24534 + min(c24597, _LINE27) + _LINE31 + c24610
         c24550 = max(0., _taxinc - _dwks31)
-        c24570 = 0.28 * c24550
+        c24570 = 0.2 * c24550
 
         # if c24540 > CG_thd2[MARS - 1]:
         #    _addtax = (CG_rt3 - CG_rt2) * c24517
