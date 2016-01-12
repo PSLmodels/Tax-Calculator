@@ -62,7 +62,7 @@ def behavior(calc_x, calc_y):
 
     CG_mtr_x, CG_mtr_y = mtr_xy(calc_x, calc_y,
                                 mtr_of='p23250',
-                                liability_type='combined')
+                                liability_type='iitax')
 
     # Calculate the percent change in after-tax rate for wage and capital gain.
     wage_pctdiff = ((1 - wage_mtr_y) - (1 - wage_mtr_x)) / (1 - wage_mtr_x)
