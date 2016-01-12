@@ -1279,7 +1279,7 @@
         "cpi_inflated": false,
         
         "col_label": "",
-        "value": [0.0] 
+        "value": [0.02] 
     },
     "_CG_rt2":{
         "long_name": "Long term capital gain and qualified dividends rate 2",
@@ -1292,7 +1292,7 @@
         "cpi_inflated": false,
         
         "col_label": "",
-        "value": [0.15]
+        "value": [0.17]
     },
     "_CG_rt3":{
         "long_name": "Long term capital gain and qualified dividends rate 3",
@@ -1304,7 +1304,7 @@
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value": [0.20] 
+        "value": [0.22] 
     },
         "_CG_thd1":{
         "long_name": "Long term capital gain and qualified dividends threshold 1",
@@ -1350,7 +1350,7 @@
         "cpi_inflated": false,
         
         "col_label": "",
-        "value": [0.0] 
+        "value": [0.02] 
     },
     "_AMT_CG_rt2":{
         "long_name": "Long term capital gain and qualified dividend rate2",
@@ -1363,7 +1363,7 @@
         "cpi_inflated": false,
         
         "col_label": "",
-        "value": [0.15]
+        "value": [0.17]
     },
     "_AMT_CG_rt3":{
         "long_name": "Long term capital gain and qualified dividend rate 3",
@@ -1375,7 +1375,7 @@
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value": [0.20] 
+        "value": [0.22] 
     },
     "_AMT_CG_rt4":{
         "long_name": "Long term capital gain and qualified dividend rate 4",
