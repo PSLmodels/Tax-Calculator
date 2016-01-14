@@ -321,8 +321,8 @@ def test_Calculator_mtr():
     calc = Calculator(policy=policy, records=puf)
     (mtr_FICA, mtr_IIT, mtr) = calc.mtr()
     assert type(mtr) == np.ndarray
-    assert np.array_equal(mtr, mtr_FICA) == False
-    assert np.array_equal(mtr_FICA, mtr_IIT) == False
+    assert np.array_equal(mtr, mtr_FICA) is False
+    assert np.array_equal(mtr_FICA, mtr_IIT) is False
 
 
 def test_Calculator_create_difference_table():
