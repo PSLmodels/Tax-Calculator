@@ -1239,9 +1239,12 @@ def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
     return (c11070, c07220, _nctcr, _precrd, _ctcagi)
 
 
-@iterate_jit(nopython=True, puf=True)
-def HopeCredit(_exact, n20, e87545,        , puf):
+@iterate_jit(nopython=True)
+def HopeCredit(_exact, n20, e87545, e87480, e87485, e87490, e87495, e87520,
+               Hope_Lim):
+
     """Hope Credit 2009 before and 2018 after; Form 8863"""
+    # Hope_Lim is 1200 in 2009 law, but unsure how would it change
     if n20 > 0. or e87545 > 0.:
         _hope = 2 * Hope_Lim
     else:
@@ -1251,6 +1254,7 @@ def HopeCredit(_exact, n20, e87545,        , puf):
     c87485 = max(0, min(e87485, 2 * _hope))
     c87490 = max(0, min(e87490, 2 * _hope))
     c87495 = max(0, min(e87495, 2 * _hope))
+
     c87481 = .5 * (c87480 + min(c87480, _hope))
     c87486 = .5 * (c87485 + min(c87485, _hope))
     c87491 = .5 * (c87490 + min(c87490, _hope))
@@ -1260,7 +1264,8 @@ def HopeCredit(_exact, n20, e87545,        , puf):
     if _exact == 1:
         c87520 = e87520
 
-    return ( )
+    return (_hope, c87480, c87485, c87490, c87495, c87481,
+            c87486, c87491, c87496, c87520)
 
 
 @iterate_jit(nopython=True, puf=True)
