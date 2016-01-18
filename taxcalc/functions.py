@@ -1251,14 +1251,16 @@ def HopeCredit(_exact, n20, e87545,        , puf):
     c87485 = max(0, min(e87485, 2 * _hope))
     c87490 = max(0, min(e87490, 2 * _hope))
     c87495 = max(0, min(e87495, 2 * _hope))
-
-
+    c87481 = .5 * (c87480 + min(c87480, _hope))
+    c87486 = .5 * (c87485 + min(c87485, _hope))
+    c87491 = .5 * (c87490 + min(c87490, _hope))
+    c87496 = .5 * (c87495 + min(c87495, _hope))
+    c87520 = c87481 + c87486 + c87491 + c87496
 
     if _exact == 1:
         c87520 = e87520
 
-    return (c87482, c87487, c87492, c87497, c87483, c87488, c87493, c87498,
-            c87521)
+    return ( )
 
 
 @iterate_jit(nopython=True, puf=True)
