@@ -1458,6 +1458,20 @@
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value": [ 0.0]
-     }
-}
+        "value": [0.0]
+     },
+      "_Hope_Lim":{
+        "long_name": "Cap for qualified expense",
+    "description": " Cap of $1,200 in most cases for hope credit. ",
+        "irs_ref": "Form 8863 (09 ver), part II",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [1200]
+        
+    }
+} 
