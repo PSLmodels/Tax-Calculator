@@ -1238,9 +1238,27 @@ def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
 
     return (c11070, c07220, _nctcr, _precrd, _ctcagi)
 
-# def HopeCredit():
-    # W/o congressional action, Hope Credit will replace
-    # American opportunities credit in 2018. NEED TO ADD LOGIC!!!
+
+@iterate_jit(nopython=True, puf=True)
+def HopeCredit(_exact, n20, e87545,        , puf):
+    """Hope Credit 2009 before and 2018 after; Form 8863"""
+    if n20 > 0. or e87545 > 0.:
+        _hope = 2 * Hope_Lim
+    else:
+        _hope = Hope_Lim
+
+    c87480 = max(0, min(e87480, 2 * _hope))
+    c87485 = max(0, min(e87485, 2 * _hope))
+    c87490 = max(0, min(e87490, 2 * _hope))
+    c87495 = max(0, min(e87495, 2 * _hope))
+
+
+
+    if _exact == 1:
+        c87520 = e87520
+
+    return (c87482, c87487, c87492, c87497, c87483, c87488, c87493, c87498,
+            c87521)
 
 
 @iterate_jit(nopython=True, puf=True)
