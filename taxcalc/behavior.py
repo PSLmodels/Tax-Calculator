@@ -45,7 +45,6 @@ def update_ordinary_income(behavioral_effect, calc_y):
 
 def update_cap_gain_income(cap_gain_behavioral_effect, calc_y):
     calc_y.records.p23250 = calc_y.records.p23250 + cap_gain_behavioral_effect
-    calc_y.records.e01100 = calc_y.records.e01100 + cap_gain_behavioral_effect
     return calc_y
 
 
