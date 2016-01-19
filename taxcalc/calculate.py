@@ -138,6 +138,7 @@ class Calculator(object):
         NumDep(self.policy, self.records)
         ChildTaxCredit(self.policy, self.records)
         AmOppCr(self.policy, self.records)
+        HopeCredit(self.policy, self.records)
         LLC(self.policy, self.records)
         RefAmOpp(self.policy, self.records)
         NonEdCr(self.policy, self.records)
