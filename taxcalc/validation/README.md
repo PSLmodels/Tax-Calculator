@@ -201,8 +201,7 @@ Generating tax-difference results
 
 (1) Continuing the above example that uses ```c2013.in``` INPUT, generate
 a summary of differences in intermediate and final tax OUTPUT
-variables and write those summary results to a file called
-```c2013.taxdiffs```.
+variables and write those summary results to a file called ```c2013.taxdiffs```.
 
 ```
 tclsh taxdiffs.tcl c2013.in.out-simtax c2013.in.out-taxsim > c2013.taxdiffs
