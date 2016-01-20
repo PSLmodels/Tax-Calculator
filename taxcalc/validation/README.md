@@ -169,24 +169,24 @@ tax filing units with high earnings and/or high taxable income.
 Generating an OUTPUT file with Internet-TAXSIM
 ----------------------------------------------
 
-(1) Generate Internet-TAXSIM OUTPUT for the ```c2013.in``` INPUT file
+Generate Internet-TAXSIM OUTPUT for the ```c2013.in``` INPUT file
 described above.
 
-  * Browse [Internet-TAXSIM
-    model](http://users.nber.org/~taxsim/taxsim-calc9/index.html)
-    home page.
+(1) Browse [Internet-TAXSIM
+    model](http://users.nber.org/~taxsim/taxsim-calc9/index.html) home
+    page.
 
-  * Just under the heading *Upload a file with TAXSIM data*, do four
+(2) Just under the heading *Upload a file with TAXSIM data*, do four
     things: (a) choose ```c2013.in``` as the file to upload, (b) click the
     On radio button to show detailed intermediate calculations, (c)
     enter ```56 1``` in the optional tax plan box to suppress property
     income smoothing in the calculation of the EITC, and (d) click
     on the button labeled "calculate using this file's data".
 
-  * After a few seconds a new browser page is opened automatically
+(3) After a few seconds a new browser page is opened automatically
     and the Internet-TAXSIM output results start to fill up that page.
 
-  * After results for all 100,000 tax filing units have been written
+(4) After results for all 100,000 tax filing units have been written
     to that browser page, save them to a file called, in this example,
     ```c2013.in.out-taxsim```.  Do this as follows: (a) in the new browser
     page, "Select All" and then "Copy" to put the contents of the new
@@ -199,7 +199,7 @@ described above.
 Generating tax-difference results
 ---------------------------------
 
-(1) Continuing the above example that uses ```c2013.in``` INPUT, generate
+Continuing the above example that uses ```c2013.in``` INPUT, generate
 a summary of differences in intermediate and final tax OUTPUT
 variables and write those summary results to a file called ```c2013.taxdiffs```.
 
