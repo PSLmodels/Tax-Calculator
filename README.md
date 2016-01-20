@@ -25,9 +25,9 @@ results.
 Getting Started
 ===============
 
-At the moment there are **three ways** to start using the Tax-Calculator.
+At the moment there are three ways to start using the Tax-Calculator.
 
-(1) The **first way** is install the Tax-Calculator repository on your
+The **first way** is to install the Tax-Calculator repository on your
 computer.  Do this by following the instructions in our [Contributor
 Guide](http://taxcalc.readthedocs.org/en/latest/contributor_guide.html)
 and then reading about our [testing procedure](TESTING.md).  This way
@@ -36,15 +36,16 @@ source code.  While this way does not provide you with a
 representative sample of tax filing units, it does allow you to
 estimate tax liabilities and marginal tax rates for any collection of
 filing units specified in [Internet-TAXSIM input
-format](http://users.nber.org/~taxsim/taxsim-calc9/).
+format](http://users.nber.org/~taxsim/taxsim-calc9/) using the
+```simtax.py``` command-line interface to the Tax-Calculator.
 
-(2) The **second way** is to access the Tax-Calculator through our web
+The **second way** is to access the Tax-Calculator through our web
 application, [TaxBrain](http://www.ospc.org/taxbrain).  This way
 allows you to generate tax reform estimates using a representative
 sample of tax filing units that is not part of the Tax-Calculator
 repository.
 
-(3) The **third way**, which is for advanced Anaconda users, involves
+The **third way**, which is for advanced Anaconda users, involves
 installing a taxcalc package on your local computer.  A new taxcalc
 package is generated for every release of the Tax-Calculator.  We use
 the package to install taxcalc on Amazon Web Services (AWS) instances
