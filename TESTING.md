@@ -124,12 +124,13 @@ Interpreting the Test Results
 If you are adding an enhancement that expands the capabilities of the
 Tax-Calculator, then all the tests should pass before you submit a
 pull request containing the enhancement.  In addition, it would be
-highly desirable to add a test to the pytest suite, which are located
+highly desirable to add a test to the pytest suite, which is located
 in the ```taxcalc/tests``` directory, that somehow checks that your
 enhancement is working as you expect it to work.
 
 On the other hand, if you think you have found a bug in the
 Tax-Calculator source code, the first thing to do is add a test to the
-pytest suite that demonstrates how the source code produces an incorrect
-result.  Then change the source code to fix the bug and demonstrate that
-the newly-added test, which used to fail, now passes.
+pytest suite that demonstrates how the source code produces an
+incorrect result (that is, the test fails because the result is
+incorrect).  Then change the source code to fix the bug and
+demonstrate that the newly-added test, which used to fail, now passes.
