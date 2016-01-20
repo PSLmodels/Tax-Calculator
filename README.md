@@ -41,12 +41,12 @@ format](http://users.nber.org/~taxsim/taxsim-calc9/) using the
 
 The **second way** is to access the Tax-Calculator through our web
 application, [TaxBrain](http://www.ospc.org/taxbrain).  This way
-allows you to generate tax reform estimates using a representative
-sample of tax filing units that is not part of the Tax-Calculator
-repository.
+allows you to generate aggregate and distributional tax reform
+estimates using a nationally representative sample of tax filing units
+that is not part of the Tax-Calculator repository.
 
 The **third way**, which is for advanced Anaconda users, involves
-installing a taxcalc package on your local computer.  A new taxcalc
+installing the taxcalc package on your local computer.  A new taxcalc
 package is generated for every release of the Tax-Calculator.  We use
 the package to install taxcalc on Amazon Web Services (AWS) instances
 that run the TaxBrain web application.  You can get the latest release
@@ -54,7 +54,8 @@ of the Tax-Calculator to run on your computer via the command ```conda
 install -c ospc taxcalc```.  Note that this package does not include a
 micro data set that represents the US population.  Also, note that
 there is some skill involved in Getting Started the first way and
-installing the taxcalc package on the same local computer.
+installing the taxcalc package on the same local computer, which is
+why we describe this way as being for advanced Anaconda users.
 
 And, of course, you can get started with any combination of these
 three ways of using the Tax-Calculator.
