@@ -30,7 +30,7 @@ At the moment there are three ways to start using the Tax-Calculator.
 The **first way** is to install the Tax-Calculator repository on your
 computer.  Do this by following the instructions in our [Contributor
 Guide](http://taxcalc.readthedocs.org/en/latest/contributor_guide.html)
-and then reading about our [testing procedure](TESTING.md).  This way
+and then reading about our [testing procedures](TESTING.md).  This way
 allows you to read the source code and contribute enhancements to the
 source code.  While this way does not provide you with a
 representative sample of tax filing units, it does allow you to
@@ -53,7 +53,7 @@ that run the TaxBrain web application.  You can get the latest release
 of the Tax-Calculator to run on your computer via the command ```conda
 install -c ospc taxcalc```.  Note that this package does not include a
 micro data set that represents the US population.  Also, note that
-there is some skill involved in Getting Started the **first way** and
+there is some skill involved in Getting Started the first way and
 installing the taxcalc package on the same local computer.
 
 And, of course, you can get started with any combination of these
