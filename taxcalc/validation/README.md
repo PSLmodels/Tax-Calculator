@@ -135,7 +135,7 @@ social security maximum taxable earnings level by 100,000 dollars in
 describing the reform, and then specify the name of that file using
 the ```--reform FILENAME``` command-line simtax.py option.  (There is an
 example of a more complex reform in the [REFORM_CONTENTS
-section](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/tests/test_simpletaxio.py#L22)
+section](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/tests/test_simpletaxio.py#L23-L58)
 of the ```test_simpletaxio.py``` file.)
 
 ```
