@@ -29,7 +29,8 @@ At the moment there are two ways to start using the Tax-Calculator.
 
 The first way is install the Tax-Calculator on your computer.  Do this
 by following the instructions in our [Contributor
-Guide](http://taxcalc.readthedocs.org/en/latest/contributor_guide.html).
+Guide](http://taxcalc.readthedocs.org/en/latest/contributor_guide.html)
+and then reading about our [testing procedure](TESTING.md).
 
 The second way is to access the Tax-Calculator through our web
 application, [TaxBrain](http://www.ospc.org/taxbrain).
