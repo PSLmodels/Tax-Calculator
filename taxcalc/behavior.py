@@ -4,7 +4,7 @@ from .policy import Policy
 from .parameters_base import ParametersBase
 
 
-def update_ordinary_income(behavioral_effect, calc_y):
+def update_ordinary_income(behavioral_effect, calc_y, calc_x):
     delta_inc = np.where(calc_y.records.c00100 > 0, behavioral_effect, 0)
 
     # Attribute the behavioral effects across itemized deductions,
@@ -31,16 +31,16 @@ def update_ordinary_income(behavioral_effect, calc_y):
                                (calc_y.records.c00100 + _itemized)),
                               0)
 
-    calc_y.records.e00200 = calc_y.records.e00200 + delta_wages
+    calc_x.records.e00200 = calc_y.records.e00200 + delta_wages
 
-    calc_y.records.e00300 = calc_y.records.e00300 + delta_other_inc
+    calc_x.records.e00300 = calc_y.records.e00300 + delta_other_inc
 
-    calc_y.records.e19570 = np.where(_itemized > 0,
+    calc_x.records.e19570 = np.where(_itemized > 0,
                                      calc_y.records.e19570 + delta_itemized, 0)
     # TODO, we should create a behavioral modification
     # variable instead of using e19570
 
-    return calc_y
+    return calc_x
 
 
 def update_cap_gain_income(cap_gain_behavioral_effect, calc_y):
@@ -84,9 +84,9 @@ def behavior(calc_x, calc_y):
     calc_y_behavior = copy.deepcopy(calc_y)
     calc_y.calc_all()
     calc_y_behavior = update_ordinary_income(combined_behavioral_effect,
-                                             calc_y)
+                                             calc_y, calc_y_behavior)
     calc_y_behavior = update_cap_gain_income(cap_gain_behavioral_effect,
-                                             calc_y)
+                                             calc_y_behavior)
 
     # Takes all income updates into considaration
     calc_y_behavior.calc_all()
