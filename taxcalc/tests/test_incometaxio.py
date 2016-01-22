@@ -3,18 +3,18 @@ Tests for Tax-Calculator IncomeTaxIO class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 test_incometaxio.py
-# pylint --disable=locally-disabled incometaxio.py
+# pylint --disable=locally-disabled test_incometaxio.py
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import os
 import sys
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, '../../'))
+sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import IncomeTaxIO  # pylint: disable=import-error
 
 
 # use 1991 PUF-like data to emulate current PUF, which is private
-FAUX_PUF_CSV = os.path.join(CUR_PATH, '../../tax_all1991_puf.gz')
+FAUX_PUF_CSV = os.path.join(CUR_PATH, '..', '..', 'tax_all1991_puf.gz')
 
 
 def test_1():
