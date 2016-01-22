@@ -82,10 +82,11 @@ def behavior(calc_x, calc_y):
 
     # Add the behavior changes to income sources
     calc_y_behavior = copy.deepcopy(calc_y)
+    calc_y.calc_all()
     calc_y_behavior = update_ordinary_income(combined_behavioral_effect,
-                                             calc_y_behavior)
+                                             calc_y)
     calc_y_behavior = update_cap_gain_income(cap_gain_behavioral_effect,
-                                             calc_y_behavior)
+                                             calc_y)
 
     # Takes all income updates into considaration
     calc_y_behavior.calc_all()
