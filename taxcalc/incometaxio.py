@@ -112,14 +112,12 @@ class IncomeTaxIO(object):
         """
         return self._calc.policy.current_year
 
-    def calculate(self, mtr_inctype='e00200p', write_output_file=True):
+    def calculate(self, write_output_file=True):
         """
         Calculate taxes for all INPUT lines and write OUTPUT to file.
 
         Parameters
         ----------
-        mtr_inctype: string
-
         write_output_file: boolean
 
         Returns
@@ -128,16 +126,9 @@ class IncomeTaxIO(object):
         """
         output = {}  # dictionary indexed by Records index for filing unit
         self._calc.calc_all()
-        (mtr_fica, mtr_iitax, _) = self._calc.mtr(income_type_str=mtr_inctype,
-                                                  wrt_full_compensation=False)
         for idx in range(0, self._calc.records.dim):
             ovar = SimpleTaxIO.extract_output(self._calc.records, idx)
-            ovar[7] = 100.0 * mtr_iitax[idx]
-            if self._calc.records.MARS[idx] == 2:
-                ovar[6] = 0.0  # no FICA tax liability calculated for couples
-                ovar[9] = 0.0  # no marginal FICA tax rate for couples
-            else:
-                ovar[9] = 100.0 * mtr_fica[idx]
+            ovar[6] = 0.0  # no FICA tax liability included in output
             output[idx] = ovar
         # write contents of output dictionary to OUTPUT file
         if write_output_file:
@@ -167,10 +158,10 @@ class IncomeTaxIO(object):
                '[ 3] state code [ALWAYS ZERO]\n'
                '[ 4] federal income tax liability\n'
                '[ 5] state income tax liability [ALWAYS ZERO]\n'
-               '[ 6] FICA (OASDI+HI) tax liability (sum of ee and er share)\n'
-               '[ 7] marginal federal income tax rate as percent\n'
+               '[ 6] FICA (OASDI+HI) tax liability [ALWAYS ZERO]\n'
+               '[ 7] marginal federal income tax rate [ALWAYS ZERO]\n'
                '[ 8] marginal state income tax rate [ALWAYS ZERO]\n'
-               '[ 9] marginal FICA tax rate as percent\n'
+               '[ 9] marginal FICA tax rate [ALWAYS ZERO]\n'
                '[10] federal adjusted gross income, AGI\n'
                '[11] unemployment (UI) benefits included in AGI\n'
                '[12] social security (OASDI) benefits included in AGI\n'

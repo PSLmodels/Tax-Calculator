@@ -54,12 +54,6 @@ def main():
                               '//-comments. No REFORM filename implies use '
                               'of current-law policy.'),
                         default=None)
-    parser.add_argument('--mtrinc',
-                        help=('MTRINC is name of income type for which '
-                              'marginal tax rates are computed. No MTRINC '
-                              'implies using taxpayer earnings as the income '
-                              'type for which to compute marginal tax rates.'),
-                        default='e00200p')
     parser.add_argument('--blowup',
                         help=('optional flag that causes INPUT variables to '
                               'be aged using default blowup factors from the '
@@ -87,7 +81,7 @@ def main():
                          tax_year=args.TAXYEAR,
                          reform_filename=args.reform,
                          blowup_input_data=args.blowup)
-    inctax.calculate(mtr_inctype=args.mtrinc)
+    inctax.calculate()
     # return no-error exit code
     return 0
 # end of main function code
