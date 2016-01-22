@@ -73,7 +73,7 @@ EXPECTED_AGG_RESULTS = (
 @pytest.mark.requires_pufcsv
 def test_agg():
     """
-    Test Tax-Calculator aggregate taxes with no policy reform.
+    Test Tax-Calculator aggregate taxes with no policy reform using puf.csv
     """
     # create a Policy object (clp) containing current-law policy parameters
     clp = Policy()
@@ -211,7 +211,7 @@ def mtr_bin_counts(mtr_data, bin_edges, recid):
 @pytest.mark.requires_pufcsv
 def test_mtr():
     """
-    Test Tax-Calculator marginal tax rates with no policy reform.
+    Test Tax-Calculator marginal tax rates with no policy reform using puf.csv
 
     Compute histograms for each marginal tax rate income type using
     sample input from the puf.csv file and writing output to a string,
