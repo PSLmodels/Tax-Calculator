@@ -1,5 +1,7 @@
 #!/bin/bash
 # Executes current-law & reform validation TESTS by calling test bash script.
+# .... delete testerror file if it exists
+rm -f testerror
 # .... check number of command-line arguments
 if [[ "$#" -gt 1 ]]; then
     echo "ERROR: can specify at most one command-line argument"
@@ -21,36 +23,45 @@ fi
 # .... execute validation tests in parallel
 echo "STARTING WITH VALIDATION TESTS : `date`"
 if [[ "$ALLTESTS" == true ]] ; then
-    printf ".. starting test group 1 of 5 at `date`\r"
     bash test a13 . &
     bash test c13 18_0.07 &
     bash test c14 18_0.07 &
     wait
-    printf ".. starting test group 2 of 5 at `date`\r"
     bash test a14 . &
     bash test c13 19_0.05 &
     bash test c14 19_0.05 &
     wait
-    printf ".. starting test group 3 of 5 at `date`\r"
     bash test b13 . &
     bash test c13 50_1 &
     bash test c14 50_1 &
     wait
-    printf ".. starting test group 4 of 5 at `date`\r"
     bash test b14 . &
     bash test c13 75_500 &
     bash test c14 75_500 &
     wait
-    printf ".. starting test group 5 of 5 at `date`\r"
 fi
 bash test c13 . &
 bash test c14 . &
 wait
 echo "FINISHED WITH VALIDATION TESTS : `date`"
-echo "VALIDATION TESTS RESULTS: any lines (starting with M) between the"
-echo "                          STARTING... and FINISHED... lines above"
-echo "                          indicate a test failure caused by the actual"
-echo "                          *.taxdiffs results being different from the"
-echo "                          expected *.taxdiffs results;"
-echo "                          no M lines implies that all tests passed."
-exit 0
+if [[ -f "testerror" ]]; then
+    ERROR=1
+else
+    ERROR=0
+fi
+rm -f testerror
+RED=$(tput setaf 1)
+GRN=$(tput setaf 2)
+BOLD=$(tput bold)
+NORMAL=$(tput sgr0)
+if [[ "$ERROR" -eq 1 ]] ; then
+    echo "TEST FAILURE: any red lines starting with F between the"
+    echo "              STARTING... and FINISHED... lines above"
+    echo "              indicate a test failure caused by the actual"
+    echo "              *.taxdiffs results being different from the"
+    echo "              expected *.taxdiffs results."
+    printf "$BOLD$RED============ SOME EXECUTED VALIDATION/TESTS FAIL$NORMAL\n"
+else
+    printf "$BOLD$GRN============ ALL EXECUTED VALIDATION/TESTS PASS$NORMAL\n"
+fi
+exit $ERROR
