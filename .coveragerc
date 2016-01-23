@@ -4,3 +4,5 @@ omit =
     conda.recipe/*
     csv_to_ascii.py
     taxcalc/_version.py
+    taxcalc/functions.py
+    taxcalc/*.json
