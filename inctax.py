@@ -24,7 +24,7 @@ def main():
                      'the Tax-Calculator. '
                      'The INPUT file is a CSV-formatted file that contains '
                      'variable names that are a subset of the '
-                     'Records.VALID_READ_VARS set.  The OUTPUT file uses '
+                     'Records.VALID_READ_VARS set.  The OUTPUT file is in '
                      'Internet-TAXSIM format.  The OUTPUT filename is the '
                      'INPUT filename (excluding the .csv suffix or '
                      '.gz suffix, or both) followed by '
@@ -56,13 +56,20 @@ def main():
                               'of current-law policy.'),
                         default=None)
     parser.add_argument('--blowup',
-                        help=('optional flag that requires INPUT to be '
-                              '"puf.csv", the contents of which will be '
-                              'aged using default blowup factors from '
-                              'Records.PUF_YEAR to the TAXYEAR. '
+                        help=('optional flag that triggers the default '
+                              'imputation and blowup (or aging) logic built '
+                              'into the Tax-Calculator that will age the '
+                              'INPUT data from Records.PUF_YEAR to TAXYEAR. '
                               'No --blowup option implies INPUT data are '
                               'considered raw data that are not aged or '
                               'adjusted in any way.'),
+                        default=False,
+                        action="store_true")
+    parser.add_argument('--weights',
+                        help=('optional flag that causes OUTPUT to have an '
+                              'additional variable [29] containing the s006 '
+                              'sample weight, which will be aged if the '
+                              '--blowup option is used'),
                         default=False,
                         action="store_true")
     parser.add_argument('INPUT',
@@ -80,14 +87,11 @@ def main():
         IncomeTaxIO.show_iovar_definitions()
         return 0
     # instantiate IncometaxIO object and do federal income tax calculations
-    if args.blowup and args.INPUT != 'puf.csv':
-        msg = 'INPUT must be "puf.csv" when using --blowup option'
-        raise ValueError(msg)
     inctax = IncomeTaxIO(input_filename=args.INPUT,
                          tax_year=args.TAXYEAR,
                          reform_filename=args.reform,
                          blowup_input_data=args.blowup)
-    inctax.calculate()
+    inctax.calculate(output_weights=args.weights)
     # return no-error exit code
     return 0
 # end of main function code
