@@ -116,13 +116,16 @@ class IncomeTaxIO(object):
         """
         return self._calc.policy.current_year
 
-    def calculate(self, write_output_file=True):
+    def calculate(self, write_output_file=True, output_weights=False):
         """
         Calculate taxes for all INPUT lines and write OUTPUT to file.
 
         Parameters
         ----------
         write_output_file: boolean
+
+        output_weights: boolean
+            whether or not to use s006 as an additional output variable.
 
         Returns
         -------
@@ -131,7 +134,8 @@ class IncomeTaxIO(object):
         output = {}  # dictionary indexed by Records index for filing unit
         self._calc.calc_all()
         for idx in range(0, self._calc.records.dim):
-            ovar = SimpleTaxIO.extract_output(self._calc.records, idx)
+            ovar = SimpleTaxIO.extract_output(self._calc.records, idx,
+                                              extract_weight=output_weights)
             ovar[6] = 0.0  # no FICA tax liability included in output
             output[idx] = ovar
         # write contents of output dictionary to OUTPUT file

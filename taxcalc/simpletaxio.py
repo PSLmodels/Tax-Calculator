@@ -201,7 +201,7 @@ class SimpleTaxIO(object):
         sys.stdout.write(ovd)
 
     @staticmethod
-    def extract_output(crecs, idx):
+    def extract_output(crecs, idx, extract_weight=False):
         """
         Extracts tax output from crecs object for one tax filing unit.
 
@@ -213,9 +213,14 @@ class SimpleTaxIO(object):
         idx: integer
             crecs object index of the one tax filing unit.
 
+        extract_weight: boolean
+            whether or not to extract s006 sample weight into ovar[29]
+
         Returns
         -------
-        ovar: dictionary of output variables indexed from 1 to OVAR_NUM.
+        ovar: dictionary of output variables indexed from 1 to OVAR_NUM,
+            or from 1 to OVAR_NUM+1 if extract_weight is True,
+            of from 1 to OVAR_NUM+? if debugging variables are included.
 
         Notes
         -----
@@ -263,8 +268,12 @@ class SimpleTaxIO(object):
         # while Internet-TAXSIM ovar[28] explicitly excludes AMT liability, so
         # we have the following:
         ovar[28] = crecs.c05800[idx] - amt_liability
-        # add optional debugging output to ovar dictionary
-        num = SimpleTaxIO.OVAR_NUM
+        # add optional weight and debugging output to ovar dictionary
+        if extract_weight:
+            ovar[29] = crecs.s006[idx]  # sample weight
+            num = SimpleTaxIO.OVAR_NUM + 1
+        else:
+            num = SimpleTaxIO.OVAR_NUM
         for dvar_name in SimpleTaxIO.DVAR_NAMES:
             num += 1
             dvar = getattr(crecs, dvar_name, None)
@@ -550,10 +559,10 @@ class SimpleTaxIO(object):
 
     OVAR_NUM = 28
     DVAR_NAMES = [  # OPTIONAL DEBUGGING OUTPUT VARIABLE NAMES
-        # '...',  # ovar[OVAR_NUM+1]
-        # '...',  # ovar[OVAR_NUM+2]
+        # '...',  # first debugging variable
+        # '...',  # second debugging variable
         # etc.
-        # '...'   # ovar[OVAR_NUM+n]
+        # '...'   # last debugging variable
     ]
     OVAR_FMT = {1: '{:d}.',  # add decimal point as in Internet-TAXSIM output
                 2: ' {:d}',
@@ -601,13 +610,10 @@ class SimpleTaxIO(object):
         -------
         nothing: void
         """
-        for vnum in range(1, SimpleTaxIO.OVAR_NUM + 1):
-            ostr = SimpleTaxIO.OVAR_FMT[vnum].format(output_dict[vnum])
-            output_file.write(ostr)
-        vnum = SimpleTaxIO.OVAR_NUM
-        for _ in SimpleTaxIO.DVAR_NAMES:
-            vnum += 1
-            ostr = ' {:.2f}'.format(output_dict[vnum])
+        num_ovar = len(output_dict)
+        for vnum in range(1, num_ovar + 1):
+            fnum = min(vnum, SimpleTaxIO.OVAR_NUM)
+            ostr = SimpleTaxIO.OVAR_FMT[fnum].format(output_dict[vnum])
             output_file.write(ostr)
         output_file.write('\n')
 
