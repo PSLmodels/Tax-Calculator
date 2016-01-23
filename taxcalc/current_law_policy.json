@@ -65,7 +65,7 @@
     },
      "_ACTC_rt":{
         "long_name": "Additional child tax credit rate",
-	"description": "This is the fraction of earning used in calculating ACTC, which makes CTC a refundable credit for some families. ",
+	"description": "This is the fraction of earnings used in calculating the ACTC, which is a partially refundable credit that supplements the CTC for some taxpayers. ",
         "irs_ref": "Form 8812, line 6, inline.",
         "notes": "",
         "start_year": 2013,
@@ -1127,7 +1127,7 @@
     },
     "_ACTC_ChildNum":{
         "long_name": "Additional child tax credit minimum number of qualified children",
-	"description": "Families with this number of qualified children or more may qualify for the additional child tax credit, which makes the CTC refundable",
+	"description": "Families with this number of qualified children or more may qualify for the additional child tax credit, which is a partially refundable credit that supplements the CTC for some taxpayers.",
         "irs_ref": "Form 8812, Part III. ",
         "notes": "",
         "start_year": 2013,
