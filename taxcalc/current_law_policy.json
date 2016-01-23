@@ -331,7 +331,7 @@
         
     },	
      "_EITC_ps_MarriedJ":{
-        "long_name": "EITC Phastout Starting* AGI (Married filling Jointly)",
+        "long_name": "EITC Phaseout Starting AGI (Married filling Jointly)",
 	"description": "This is the additional amount added on the regular EITC phaseout start, only for taxpayers with filling status of married filling jointly. ",
         "irs_ref": "Form 1040, line 66a&b, calcuation (the difference btw EIC phaseout bases of married jointly fillers and other fillers).",
         "notes": "",

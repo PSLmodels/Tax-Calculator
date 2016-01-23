@@ -247,6 +247,7 @@ class Records(object):
             self.FLPDYR.fill(Records.PUF_YEAR)
         elif isinstance(start_year, int):
             self._current_year = start_year
+            self.FLPDYR.fill(start_year)
         else:
             msg = ('Records.constructor start_year is neither None nor '
                    'an integer')

@@ -69,7 +69,8 @@ def test_make_behavioral_Calculator():
 
 def test_update_behavior():
     beh = Behavior(start_year=2013)
-    beh.update_behavior({2014: {'_BE_sub': [0.5]}})
+    beh.update_behavior({2014: {'_BE_sub': [0.5]},
+                         2015: {'_BE_CG_per': [1.2]}})
     policy = Policy()
     should_be = np.full((Behavior.DEFAULT_NUM_YEARS,), 0.5)
     should_be[0] = 0.0
@@ -81,6 +82,7 @@ def test_update_behavior():
     assert beh.current_year == 2015
     assert beh.BE_sub == 0.5
     assert beh.BE_inc == 0.0
+    assert beh.BE_CG_per == 1.2
 
 
 def test_behavior_default_data():
