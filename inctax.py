@@ -22,11 +22,12 @@ def main():
                      'tax filing units specified in the INPUT file with the '
                      'OUTPUT computed from the INPUT for the TAXYEAR using '
                      'the Tax-Calculator. '
-                     'The INPUT file is a CSV-formatted file that includes '
-                     'a subset of IRS-SOI PUF variables. The OUTPUT file uses '
+                     'The INPUT file is a CSV-formatted file that contains '
+                     'variable names that are a subset of the '
+                     'Records.VALID_READ_VARS set.  The OUTPUT file uses '
                      'Internet-TAXSIM format.  The OUTPUT filename is the '
-                     'INPUT filename (excluding the .csv suffix, the .csv.gz '
-                     'suffix, or the .gz suffix) followed by '
+                     'INPUT filename (excluding the .csv suffix or '
+                     '.gz suffix, or both) followed by '
                      'a string equal to "-YY" (where the YY is the last two '
                      'digits in the TAXYEAR) and all that is followed by a '
                      'trailing string.  The trailing string is ".out-inctax" '
@@ -54,40 +55,39 @@ def main():
                               '//-comments. No REFORM filename implies use '
                               'of current-law policy.'),
                         default=None)
-    parser.add_argument('--mtrinc',
-                        help=('MTRINC is name of income type for which '
-                              'marginal tax rates are computed. No MTRINC '
-                              'implies using taxpayer earnings as the income '
-                              'type for which to compute marginal tax rates.'),
-                        default='e00200p')
     parser.add_argument('--blowup',
-                        help=('optional flag that causes INPUT variables to '
-                              'be aged using default blowup factors from the '
-                              'year of the INPUT data to the TAXYEAR.  No '
-                              '--blowup option implies INPUT data are not '
+                        help=('optional flag that requires INPUT to be '
+                              '"puf.csv", the contents of which will be '
+                              'aged using default blowup factors from '
+                              'Records.PUF_YEAR to the TAXYEAR. '
+                              'No --blowup option implies INPUT data are '
+                              'considered raw data that are not aged or '
                               'adjusted in any way.'),
                         default=False,
                         action="store_true")
     parser.add_argument('INPUT',
                         help=('INPUT is name of required CSV file that '
-                              'contains a subset of IRS-SOI PUF variables. '
-                              'The CSV file may be included in a compressed '
-                              'GZIP file with the name ending in ".gz".'))
+                              'contains a subset of variables included in '
+                              'the Records.VALID_READ_VARS set.  INPUT must '
+                              'end in ".csv" or ".gz".'))
     parser.add_argument('TAXYEAR',
-                        help=('TAXYEAR is calendar year for which income '
-                              'taxes are computed (e.g., 2013).'),
+                        help=('TAXYEAR is calendar year for which federal '
+                              'income taxes are computed (e.g., 2013).'),
                         type=int)
     args = parser.parse_args()
     # optionally show INPUT and OUTPUT variable definitions and exit
     if args.iohelp:
         IncomeTaxIO.show_iovar_definitions()
         return 0
-    # instantiate IncometaxIO object and do tax calculations
+    # instantiate IncometaxIO object and do federal income tax calculations
+    if args.blowup and args.INPUT != 'puf.csv':
+        msg = 'INPUT must be "puf.csv" when using --blowup option'
+        raise ValueError(msg)
     inctax = IncomeTaxIO(input_filename=args.INPUT,
                          tax_year=args.TAXYEAR,
                          reform_filename=args.reform,
                          blowup_input_data=args.blowup)
-    inctax.calculate(mtr_inctype=args.mtrinc)
+    inctax.calculate()
     # return no-error exit code
     return 0
 # end of main function code
