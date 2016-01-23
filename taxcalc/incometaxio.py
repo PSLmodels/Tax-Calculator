@@ -22,9 +22,9 @@ class IncomeTaxIO(object):
     Parameters
     ----------
     input_filename: string
-        name of INPUT file that is CSV formatted using SOI PUF varnames;
-        the CSV file may be contained in a compressed GZIP file with a
-        name ending in '.gz'.
+        name of INPUT file that is CSV formatted containing only variable
+        names in the Records.VALID_READ_VARS set; the CSV file may be
+        contained in a compressed GZIP file with a name ending in '.gz'.
 
     tax_year: integer
         calendar year for which income taxes will be computed for INPUT.
@@ -56,7 +56,7 @@ class IncomeTaxIO(object):
         IncomeTaxIO class constructor.
         """
         # pylint: disable=too-many-branches
-        # check that input_filename ends with '.csv' or '.csv.gz'
+        # check that input_filename ends with ".csv", ".csv.gz" or ".gz"
         if input_filename.endswith('.csv'):
             inp_str = '{}-{}'.format(input_filename[:-4], str(tax_year)[2:])
         elif input_filename.endswith('.csv.gz'):
@@ -64,8 +64,9 @@ class IncomeTaxIO(object):
         elif input_filename.endswith('.gz'):
             inp_str = '{}-{}'.format(input_filename[:-3], str(tax_year)[2:])
         else:
-            msg = 'INPUT file named {} does not end in ".csv" or ".gz"'
-            raise ValueError(msg.format(input_filename))
+            msg = 'INPUT file named {} does not end in {}'
+            raise ValueError(msg.format(input_filename,
+                                        '".csv", ".csv.gz", or ".gz"'))
         # construct output_filename and delete old output file if it exists
         if reform_filename:
             if reform_filename.endswith('.json'):
@@ -97,11 +98,14 @@ class IncomeTaxIO(object):
         # set tax policy parameters to specified tax_year
         policy.set_year(tax_year)
         # read input file contents into Records object
-        # (note that recs does not include the IRS-SOI-PUF aggregate record)
-        recs = Records(data=input_filename, consider_imputations=True)
-        if blowup_input_data is False:
-            # prepare Records object for sync_years=False in Calculator ctor
-            recs.set_current_year(tax_year)
+        if blowup_input_data:
+            recs = Records(data=input_filename,
+                           start_year=Records.PUF_YEAR,
+                           consider_imputations=True)
+        else:
+            recs = Records(data=input_filename,
+                           start_year=tax_year,
+                           consider_imputations=False)
         # create Calculator object
         self._calc = Calculator(policy=policy, records=recs,
                                 sync_years=blowup_input_data)
@@ -112,14 +116,12 @@ class IncomeTaxIO(object):
         """
         return self._calc.policy.current_year
 
-    def calculate(self, mtr_inctype='e00200p', write_output_file=True):
+    def calculate(self, write_output_file=True):
         """
         Calculate taxes for all INPUT lines and write OUTPUT to file.
 
         Parameters
         ----------
-        mtr_inctype: string
-
         write_output_file: boolean
 
         Returns
@@ -128,16 +130,9 @@ class IncomeTaxIO(object):
         """
         output = {}  # dictionary indexed by Records index for filing unit
         self._calc.calc_all()
-        (mtr_fica, mtr_iitax, _) = self._calc.mtr(income_type_str=mtr_inctype,
-                                                  wrt_full_compensation=False)
         for idx in range(0, self._calc.records.dim):
             ovar = SimpleTaxIO.extract_output(self._calc.records, idx)
-            ovar[7] = 100.0 * mtr_iitax[idx]
-            if self._calc.records.MARS[idx] == 2:
-                ovar[6] = 0.0  # no FICA tax liability calculated for couples
-                ovar[9] = 0.0  # no marginal FICA tax rate for couples
-            else:
-                ovar[9] = 100.0 * mtr_fica[idx]
+            ovar[6] = 0.0  # no FICA tax liability included in output
             output[idx] = ovar
         # write contents of output dictionary to OUTPUT file
         if write_output_file:
@@ -167,10 +162,10 @@ class IncomeTaxIO(object):
                '[ 3] state code [ALWAYS ZERO]\n'
                '[ 4] federal income tax liability\n'
                '[ 5] state income tax liability [ALWAYS ZERO]\n'
-               '[ 6] FICA (OASDI+HI) tax liability (sum of ee and er share)\n'
-               '[ 7] marginal federal income tax rate as percent\n'
+               '[ 6] FICA (OASDI+HI) tax liability [ALWAYS ZERO]\n'
+               '[ 7] marginal federal income tax rate [ALWAYS ZERO]\n'
                '[ 8] marginal state income tax rate [ALWAYS ZERO]\n'
-               '[ 9] marginal FICA tax rate as percent\n'
+               '[ 9] marginal FICA tax rate [ALWAYS ZERO]\n'
                '[10] federal adjusted gross income, AGI\n'
                '[11] unemployment (UI) benefits included in AGI\n'
                '[12] social security (OASDI) benefits included in AGI\n'

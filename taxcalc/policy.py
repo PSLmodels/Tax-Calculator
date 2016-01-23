@@ -219,7 +219,7 @@ class Policy(ParametersBase):
 
     def implement_reform(self, reform):
         """
-        Implement multi-year policy reform and set current_year=start_year.
+        Implement multi-year policy reform and leave current_year unchanged.
 
         Parameters
         ----------
@@ -234,6 +234,7 @@ class Policy(ParametersBase):
             if reform is not a dictionary.
             if each YEAR in reform is not an integer.
             if minimum YEAR in the YEAR:MODS pairs is less than start_year.
+            if minimum YEAR in the YEAR:MODS pairs is less than current_year.
             if maximum YEAR in the YEAR:MODS pairs is greater than end_year.
 
         Returns
@@ -252,7 +253,8 @@ class Policy(ParametersBase):
         policy object (policy) containing current-law policy parameters,
         and the implement_reform(reform) call applies the (possibly
         multi-year) reform specified in reform and then sets the
-        current_year to start_year with parameters set for that year.
+        current_year to the value of current_year when implement_reform
+        was called with parameters set for that pre-call year.
 
         An example of a multi-year, multi-parameter reform is as follows::
 
@@ -280,8 +282,6 @@ class Policy(ParametersBase):
         required by the private _update method, whose documentation
         provides several MODS dictionary examples.
         """
-        if self.current_year != self.start_year:
-            self.set_year(self.start_year)
         if not isinstance(reform, dict):
             msg = 'reform passed to implement_reform is not a dictionary'
             ValueError(msg)
@@ -296,15 +296,18 @@ class Policy(ParametersBase):
         if first_reform_year < self.start_year:
             msg = 'reform provision in year={} < start_year={}'
             ValueError(msg.format(first_reform_year, self.start_year))
+        if first_reform_year < self.current_year:
+            msg = 'reform provision in year={} < current_year={}'
+            ValueError(msg.format(first_reform_year, self.current_year))
         last_reform_year = max(reform_years)
         if last_reform_year > self.end_year:
             msg = 'reform provision in year={} > end_year={}'
             ValueError(msg.format(last_reform_year, self.end_year))
+        precall_current_year = self.current_year
         for year in reform_years:
-            if year != self.start_year:
-                self.set_year(year)
+            self.set_year(year)
             self._update({year: reform[year]})
-        self.set_year(self.start_year)
+        self.set_year(precall_current_year)
 
     # ----- begin private methods of Policy class -----
 
