@@ -349,6 +349,22 @@ def test_Calculator_diagnostic_table():
     calc.diagnostic_table()
 
 
+def test_Calculator_diagnostic_table_no_mutation():
+    policy_x = Policy()
+    record_x = Records(data=TAX_DTA, weights=WEIGHTS,
+                       start_year=Records.PUF_YEAR)
+    policy_y = Policy()
+    record_y = Records(data=TAX_DTA, weights=WEIGHTS,
+                       start_year=Records.PUF_YEAR)
+    calc_x = Calculator(policy=policy_x, records=record_x)
+    calc_y = Calculator(policy=policy_y, records=record_y)
+    x_start = calc_x.current_year
+    y_start = calc_y.current_year
+    calc_y.diagnostic_table(base_calc=calc_x)
+    assert calc_y.current_year == y_start
+    assert calc_x.current_year == x_start
+
+
 def test_make_Calculator_increment_years_first():
     # create Policy object with custom indexing rates and policy reform
     irates = {2013: 0.01, 2014: 0.01, 2015: 0.02, 2016: 0.01, 2017: 0.03}
