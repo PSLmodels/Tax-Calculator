@@ -131,7 +131,8 @@ class Records(object):
         'e87880', 'MARS', 'MIDR', 'RECID', 'gender',
         'wage_head', 'wage_spouse', 'earnsplit',
         'age', 'agedp1', 'agedp2', 'agedp3', 'AGERANGE',
-        's006', 's008', 's009', 'WSAMP', 'TXRT', 'filer', 'matched_weight'])
+        's006', 's008', 's009', 'WSAMP', 'TXRT', 'filer', 'matched_weight',
+        'e87545', 'e87480', 'e87485', 'e87490', 'e87495', 'e87520'])
 
     # specify set of all Record variables that MUST be read by Tax-Calculator:
     MUST_READ_VARS = set(['RECID', 'MARS'])
@@ -227,7 +228,9 @@ class Records(object):
         '_amed', '_xlin3', '_xlin6', '_cmbtp_itemizer',
         '_cmbtp_standard', '_expanded_income', 'c07300',
         'c07600', 'c07240', 'c62100_everyone',
-        '_surtax', '_combined', 'x04500', '_personal_credit'])
+        '_surtax', '_combined', 'x04500', '_personal_credit',
+        'c87480', 'c87485', 'c87490', 'c87495', 'c87481',
+        'c87486', 'c87491', 'c87496', 'c87520'])
 
     def __init__(self,
                  data="puf.csv",
