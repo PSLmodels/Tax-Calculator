@@ -118,6 +118,7 @@ def test_mtr():
     sample input from the puf.csv file and writing output to a string,
     which is then compared for differences with EXPECTED_MTR_RESULTS.
     """
+    # pylint: disable=too-many-locals
     assert len(FICA_MTR_BIN_EDGES) == len(IIT_MTR_BIN_EDGES)
     # construct actual results string, res
     res = ''
