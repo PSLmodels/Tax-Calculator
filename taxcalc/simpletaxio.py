@@ -565,7 +565,7 @@ class SimpleTaxIO(object):
         # '...'   # last debugging variable
     ]
     OVAR_FMT = {1: '{:d}.',  # add decimal point as in Internet-TAXSIM output
-                2: ' {:d}',
+                2: ' {:.0f}',
                 3: ' {:d}',
                 4: ' {:.2f}',
                 5: ' {:.2f}',
