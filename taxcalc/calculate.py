@@ -382,6 +382,7 @@ class Calculator(object):
         table = []
         row_years = []
         calc = copy.deepcopy(self)
+        base_calc = copy.deepcopy(base_calc)
 
         for i in range(0, num_years):
             has_behavior = (calc.behavior.BE_sub or calc.behavior.BE_inc or

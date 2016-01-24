@@ -25,22 +25,37 @@ results.
 Getting Started
 ===============
 
-At the moment there are two ways to start using the Tax-Calculator.
+At the moment there are three ways to start using the Tax-Calculator.
 
-The first way is install the Tax-Calculator on your computer.  Do this
-by following the instructions in our [Contributor
+The **first way** is to install the Tax-Calculator repository on your
+computer.  Do this by following the instructions in our [Contributor
 Guide](http://taxcalc.readthedocs.org/en/latest/contributor_guide.html)
-and then reading about our [testing procedure](TESTING.md).
+and then reading about our [testing procedures](TESTING.md).  This way
+allows you to read the source code and contribute enhancements to the
+source code.  While this way does not provide you with a
+representative sample of tax filing units, it does allow you to
+estimate tax liabilities and marginal tax rates for any collection of
+filing units specified in [Internet-TAXSIM input
+format](http://users.nber.org/~taxsim/taxsim-calc9/) using the
+```simtax.py``` command-line interface to the Tax-Calculator.
 
-The second way is to access the Tax-Calculator through our web
-application, [TaxBrain](http://www.ospc.org/taxbrain).
+The **second way** is to access the Tax-Calculator through our web
+application, [TaxBrain](http://www.ospc.org/taxbrain).  This way
+allows you to generate aggregate and distributional tax reform
+estimates using a nationally representative sample of tax filing units
+that is not part of the Tax-Calculator repository.
 
-Conda Package for Advanced Anaconda Users
-=========================================
+The **third way**, which is for advanced Anaconda users, involves
+installing the taxcalc package on your local computer.  A new taxcalc
+package is generated for every release of the Tax-Calculator.  We use
+the package to install taxcalc on Amazon Web Services (AWS) instances
+that run the TaxBrain web application.  You can get the latest release
+of the Tax-Calculator to run on your computer via the command ```conda
+install -c ospc taxcalc```.  Note that this package does not include a
+representative sample of the US population.  Also, note that there is
+some skill involved in Getting Started the first way and installing
+the taxcalc package on the same local computer, which is why we
+describe this way as being for advanced Anaconda users.
 
-Conda taxcalc packages are created for every release of the Tax-Calculator.
-We use them to install taxcalc on Amazon Web Services (AWS) instances that
-run the TaxBrain web application.  You can get the latest release of the
-Tax-Calculator to run on your computer via the command
-`conda install -c ospc taxcalc`.  Note that this package does not include
-a micro data set that represents the US population.
+And, of course, you can get started with any combination of these
+three ways of using the Tax-Calculator.

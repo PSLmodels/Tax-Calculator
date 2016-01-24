@@ -13,6 +13,7 @@ if [[ "$#" -lt 2 || "$#" -gt 3 ]]; then
     echo "             '.' for no reform (i.e., current-law policy);"
     echo "       WHERE the 'save' option skips the deletion of INPUT and"
     echo "             OUTPUT files at the end of the test"
+    touch testerror
     exit 1
 fi
 LYY=$1
@@ -24,6 +25,7 @@ if [[ "$#" -eq 3 ]]; then
     else
         echo "ERROR: optional third command-line argument must be 'save'"
         echo "USAGE: bash test LYY REFORM [save]"
+        touch testerror
         exit 1
     fi
 fi
@@ -48,15 +50,21 @@ unzip -oq out-taxsim.zip $LYY.in.out-taxsim$SUFFIX
 tclsh taxdiffs.tcl $OVAR4 $LYY.in.out-simtax$SUFFIX \
                           $LYY.in.out-taxsim$SUFFIX > $LYY$SUFFIX.taxdiffs
 # Check for difference between actual .taxdiffs and expected .taxdiffs files
+RC=0
 DIFF=$(git diff --name-status $LYY$SUFFIX.taxdiffs)
 if [[ "$DIFF" != "" ]] ; then
+    RC=1
+    touch testerror
+    DIF=${DIFF/M/F}
     RED=$(tput setaf 1)
     BOLD=$(tput bold)
     NORMAL=$(tput sgr0)
-    printf "$BOLD$RED$DIFF$NORMAL\n"
+    printf "$BOLD$RED$DIF$NORMAL\n"
+else
+    printf ". $LYY$SUFFIX\n"
 fi
 # Remove temporary files
 if [[ "$SAVE" == false ]] ; then
     rm $LYY.in $LYY.in.out-simtax$SUFFIX $LYY.in.out-taxsim$SUFFIX
 fi
-exit 0
+exit $RC
