@@ -36,9 +36,14 @@ def test_2():
     Test IncomeTaxIO calculate method with no output writing and no blowup.
     """
     taxyear = 2020
+    policy_reform = {
+        2016: {'_SS_Earnings_c': [300000]},
+        2018: {'_SS_Earnings_c': [500000]},
+        2020: {'_SS_Earnings_c': [700000]}
+    }
     inctax = IncomeTaxIO(input_filename=FAUX_PUF_CSV,
                          tax_year=taxyear,
-                         reform=None,
+                         reform=policy_reform,
                          blowup_input_data=False)
     inctax.calculate(write_output_file=False)
     assert inctax.tax_year() == taxyear
