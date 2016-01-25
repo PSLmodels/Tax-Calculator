@@ -115,9 +115,26 @@ REFORM_CONTENTS = """
 
 
 @pytest.yield_fixture
-def reformfile():
+def reformfileA():
     """
-    Temporary reform file for IncomeTaxIO constructor.
+    Temporary reform file with .json extension for IncomeTaxIO constructor.
+    """
+    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    rfile.write(REFORM_CONTENTS)
+    rfile.close()
+    # must close and then yield for Windows platform
+    yield rfile
+    if os.path.isfile(rfile.name):
+        try:
+            os.remove(rfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+@pytest.yield_fixture
+def reformfileB():
+    """
+    Temporary reform file without .json extension for IncomeTaxIO constructor.
     """
     rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
     rfile.write(REFORM_CONTENTS)
@@ -131,14 +148,27 @@ def reformfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
-def test_3(rawinputfile, reformfile):  # pylint: disable=redefined-outer-name
+def test_3(rawinputfile, reformfileA):  # pylint: disable=redefined-outer-name
     """
     Test IncomeTaxIO calculate method with no output writing and with blowup.
     """
     taxyear = 2021
     inctax = IncomeTaxIO(input_filename=rawinputfile.name,
                          tax_year=taxyear,
-                         reform=reformfile.name,
+                         reform=reformfileA.name,
+                         blowup_input_data=False)
+    inctax.calculate(write_output_file=False)
+    assert inctax.tax_year() == taxyear
+
+
+def test_4(rawinputfile, reformfileB):  # pylint: disable=redefined-outer-name
+    """
+    Test IncomeTaxIO calculate method with no output writing and with blowup.
+    """
+    taxyear = 2021
+    inctax = IncomeTaxIO(input_filename=rawinputfile.name,
+                         tax_year=taxyear,
+                         reform=reformfileB.name,
                          blowup_input_data=False)
     inctax.calculate(write_output_file=False)
     assert inctax.tax_year() == taxyear
