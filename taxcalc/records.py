@@ -10,6 +10,7 @@ Tax-Calculator tax-filing-unit Records class.
 import pandas as pd
 import numpy as np
 import os
+import six
 from numba import vectorize, float64
 from pkg_resources import resource_stream, Requirement
 
@@ -506,7 +507,7 @@ class Records(object):
         """
         if isinstance(data, pd.DataFrame):
             tax_dta = data
-        elif isinstance(data, str):
+        elif isinstance(data, six.string_types):
             if data.endswith("gz"):
                 tax_dta = pd.read_csv(data, compression='gzip')
             else:
@@ -548,7 +549,7 @@ class Records(object):
         """
         if isinstance(weights, pd.DataFrame):
             WT = weights
-        elif isinstance(weights, str):
+        elif isinstance(weights, six.string_types):
             try:
                 if not os.path.exists(weights):
                     # grab weights out of EGG distribution
@@ -573,7 +574,7 @@ class Records(object):
         """
         if isinstance(blowup_factors, pd.DataFrame):
             BF = blowup_factors
-        elif isinstance(blowup_factors, str):
+        elif isinstance(blowup_factors, six.string_types):
             try:
                 if not os.path.exists(blowup_factors):
                     # grab blowup factors out of EGG distribution

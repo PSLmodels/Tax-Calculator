@@ -59,7 +59,7 @@ class IncomeTaxIO(object):
         """
         # pylint: disable=too-many-statements
         # pylint: disable=too-many-branches
-        if isinstance(input_data, str):
+        if isinstance(input_data, six.string_types):
             # check that input_data string ends with ".csv"
             if input_data.endswith('.csv'):
                 inp = '{}-{}'.format(input_data[:-4], str(tax_year)[2:])
