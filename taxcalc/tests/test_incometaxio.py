@@ -23,6 +23,7 @@ def test_1():
     """
     Test IncomeTaxIO constructor with no policy reform and no blowup.
     """
+    IncomeTaxIO.show_iovar_definitions()
     taxyear = 2020
     inctax = IncomeTaxIO(input_filename=FAUX_PUF_CSV,
                          tax_year=taxyear,
