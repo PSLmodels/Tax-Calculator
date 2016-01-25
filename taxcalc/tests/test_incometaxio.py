@@ -161,7 +161,7 @@ def test_4(reformfile2):  # pylint: disable=redefined-outer-name
     """
     Test IncomeTaxIO calculate method with no output writing and with blowup.
     """
-    input_stream = StringIO(unicode(RAWINPUTFILE_CONTENTS))
+    input_stream = StringIO(RAWINPUTFILE_CONTENTS.decode())
     input_dataframe = pd.read_csv(input_stream)
     taxyear = 2021
     inctax = IncomeTaxIO(input_data=input_dataframe,
