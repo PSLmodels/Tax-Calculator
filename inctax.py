@@ -89,7 +89,7 @@ def main():
     # instantiate IncometaxIO object and do federal income tax calculations
     inctax = IncomeTaxIO(input_filename=args.INPUT,
                          tax_year=args.TAXYEAR,
-                         reform_filename=args.reform,
+                         reform=args.reform,
                          blowup_input_data=args.blowup)
     inctax.calculate(output_weights=args.weights)
     # return no-error exit code

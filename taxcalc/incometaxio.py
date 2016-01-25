@@ -9,6 +9,7 @@ Tax-Calculator income tax input-output class.
 
 import os
 import sys
+import six
 from .policy import Policy
 from .records import Records
 from .calculate import Calculator
@@ -29,8 +30,10 @@ class IncomeTaxIO(object):
     tax_year: integer
         calendar year for which income taxes will be computed for INPUT.
 
-    reform_filename: string or None
-        name of optional REFORM file with None implying current-law policy.
+    reform: None or string or dictionary
+        None implies no reform (current-law policy), or
+        string is name of optional REFORM file, or
+        dictionary suitable for passing to Policy.implement_reform() method.
 
     blowup_input_data: boolean
         whether or not to age record data from data year to tax_year.
@@ -39,6 +42,7 @@ class IncomeTaxIO(object):
     ------
     ValueError:
         if file with input_filename does not exist.
+        if reform is neither None, string, nor dictionary.
         if tax_year before Policy start_year.
         if tax_year after Policy end_year.
 
@@ -50,7 +54,7 @@ class IncomeTaxIO(object):
     def __init__(self,
                  input_filename,
                  tax_year,
-                 reform_filename,
+                 reform,
                  blowup_input_data):
         """
         IncomeTaxIO class constructor.
@@ -68,14 +72,22 @@ class IncomeTaxIO(object):
             raise ValueError(msg.format(input_filename,
                                         '".csv", ".csv.gz", or ".gz"'))
         # construct output_filename and delete old output file if it exists
-        if reform_filename:
-            if reform_filename.endswith('.json'):
-                ref_str = '-{}'.format(reform_filename[:-5])
+        if reform:
+            if isinstance(reform, six.string_types):
+                if reform.endswith('.json'):
+                    ref = '-{}'.format(reform[:-5])
+                else:
+                    ref = '-{}'.format(reform)
+                self._using_reform_file = True
+            elif isinstance(reform, dict):
+                ref = ''
+                self._using_reform_file = False
             else:
-                ref_str = '-{}'.format(reform_filename)
+                msg = 'IncomeTaxIO.ctor reform is neither None, str, nor dict'
+                raise ValueError(msg)
         else:
-            ref_str = ''
-        self._output_filename = '{}.out-inctax{}'.format(inp_str, ref_str)
+            ref = ''
+        self._output_filename = '{}.out-inctax{}'.format(inp_str, ref)
         if os.path.isfile(self._output_filename):
             os.remove(self._output_filename)
         # check for existence of file named input_filename
@@ -91,10 +103,13 @@ class IncomeTaxIO(object):
         if tax_year > policy.end_year:
             msg = 'tax_year {} greater than policy.end_year {}'
             raise ValueError(msg.format(tax_year, policy.end_year))
-        # implement policy reform if reform file is specified
-        if reform_filename:
-            reform = Policy.read_json_reform_file(reform_filename)
-            policy.implement_reform(reform)
+        # implement policy reform if reform is specified
+        if reform:
+            if self._using_reform_file:
+                reform_dict = Policy.read_json_reform_file(reform)
+            else:
+                reform_dict = reform
+            policy.implement_reform(reform_dict)
         # set tax policy parameters to specified tax_year
         policy.set_year(tax_year)
         # read input file contents into Records object

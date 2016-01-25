@@ -23,10 +23,11 @@ def test_1():
     """
     Test IncomeTaxIO constructor with no policy reform and no blowup.
     """
+    IncomeTaxIO.show_iovar_definitions()
     taxyear = 2020
     inctax = IncomeTaxIO(input_filename=FAUX_PUF_CSV,
                          tax_year=taxyear,
-                         reform_filename=None,
+                         reform=None,
                          blowup_input_data=False)
     assert inctax.tax_year() == taxyear
 
@@ -36,9 +37,14 @@ def test_2():
     Test IncomeTaxIO calculate method with no output writing and no blowup.
     """
     taxyear = 2020
+    policy_reform = {
+        2016: {'_SS_Earnings_c': [300000]},
+        2018: {'_SS_Earnings_c': [500000]},
+        2020: {'_SS_Earnings_c': [700000]}
+    }
     inctax = IncomeTaxIO(input_filename=FAUX_PUF_CSV,
                          tax_year=taxyear,
-                         reform_filename=None,
+                         reform=policy_reform,
                          blowup_input_data=False)
     inctax.calculate(write_output_file=False)
     assert inctax.tax_year() == taxyear
@@ -110,9 +116,26 @@ REFORM_CONTENTS = """
 
 
 @pytest.yield_fixture
-def reformfile():
+def reformfileA():
     """
-    Temporary reform file for IncomeTaxIO constructor.
+    Temporary reform file with .json extension for IncomeTaxIO constructor.
+    """
+    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    rfile.write(REFORM_CONTENTS)
+    rfile.close()
+    # must close and then yield for Windows platform
+    yield rfile
+    if os.path.isfile(rfile.name):
+        try:
+            os.remove(rfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+@pytest.yield_fixture
+def reformfileB():
+    """
+    Temporary reform file without .json extension for IncomeTaxIO constructor.
     """
     rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
     rfile.write(REFORM_CONTENTS)
@@ -126,14 +149,27 @@ def reformfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
-def test_3(rawinputfile, reformfile):  # pylint: disable=redefined-outer-name
+def test_3(rawinputfile, reformfileA):  # pylint: disable=redefined-outer-name
     """
     Test IncomeTaxIO calculate method with no output writing and with blowup.
     """
     taxyear = 2021
     inctax = IncomeTaxIO(input_filename=rawinputfile.name,
                          tax_year=taxyear,
-                         reform_filename=reformfile.name,
+                         reform=reformfileA.name,
+                         blowup_input_data=False)
+    inctax.calculate(write_output_file=False)
+    assert inctax.tax_year() == taxyear
+
+
+def test_4(rawinputfile, reformfileB):  # pylint: disable=redefined-outer-name
+    """
+    Test IncomeTaxIO calculate method with no output writing and with blowup.
+    """
+    taxyear = 2021
+    inctax = IncomeTaxIO(input_filename=rawinputfile.name,
+                         tax_year=taxyear,
+                         reform=reformfileB.name,
                          blowup_input_data=False)
     inctax.calculate(write_output_file=False)
     assert inctax.tax_year() == taxyear
