@@ -8,6 +8,7 @@ Tax-Calculator simple tax input-output class.
 
 import os
 import sys
+import six
 import pandas as pd
 from .policy import Policy
 from .records import Records
@@ -23,8 +24,10 @@ class SimpleTaxIO(object):
     input_filename: string
         name of required INPUT file.
 
-    reform_filename: string or None
-        name of optional REFORM file with None implying current-law policy.
+    reform: None or string or dictionary
+        None implies no reform (current-law policy), or
+        string is name of optional REFORM file, or
+        dictionary suitable for passing to Policy.implement_reform() method.
 
     emulate_taxsim_2441_logic: boolean
         true implies emulation of questionable Internet-TAXSIM logic, which
@@ -35,6 +38,7 @@ class SimpleTaxIO(object):
     ------
     ValueError:
         if file with input_filename does not exist.
+        if reform is neither None, string, nor dictionary.
         if earliest INPUT year before simtax start year.
         if latest INPUT year after simtax end year.
 
@@ -45,17 +49,25 @@ class SimpleTaxIO(object):
 
     def __init__(self,
                  input_filename,
-                 reform_filename,
+                 reform,
                  emulate_taxsim_2441_logic):
         """
         SimpleTaxIO class constructor.
         """
         # construct output_filename and delete old output file if it exists
-        if reform_filename:
-            if reform_filename.endswith('.json'):
-                ref = '-{}'.format(reform_filename[:-5])
+        if reform:
+            if isinstance(reform, six.string_types):
+                if reform.endswith('.json'):
+                    ref = '-{}'.format(reform[:-5])
+                else:
+                    ref = '-{}'.format(reform)
+                self._using_reform_file = True
+            elif isinstance(reform, dict):
+                ref = ''
+                self._using_reform_file = False
             else:
-                ref = '-{}'.format(reform_filename)
+                msg = 'SimpleTaxIO.ctor reform is neither None, str, nor dict'
+                raise ValueError(msg)
         else:
             ref = ''
         self._output_filename = '{}.out-simtax{}'.format(input_filename, ref)
@@ -68,10 +80,13 @@ class SimpleTaxIO(object):
         # read input file contents into self._input dictionary
         self._read_input(input_filename)
         self._policy = Policy()
-        # implement reform if reform file is specified
-        if reform_filename:
-            reform = Policy.read_json_reform_file(reform_filename)
-            self._policy.implement_reform(reform)
+        # implement reform if reform is specified
+        if reform:
+            if self._using_reform_file:
+                reform_dict = Policy.read_json_reform_file(reform)
+            else:
+                reform_dict = reform
+            self._policy.implement_reform(reform_dict)
         # validate input variable values
         self._validate_input()
         self._calc = self._calc_object(emulate_taxsim_2441_logic)

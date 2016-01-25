@@ -26,7 +26,7 @@ def test_1():
     taxyear = 2020
     inctax = IncomeTaxIO(input_filename=FAUX_PUF_CSV,
                          tax_year=taxyear,
-                         reform_filename=None,
+                         reform=None,
                          blowup_input_data=False)
     assert inctax.tax_year() == taxyear
 
@@ -38,7 +38,7 @@ def test_2():
     taxyear = 2020
     inctax = IncomeTaxIO(input_filename=FAUX_PUF_CSV,
                          tax_year=taxyear,
-                         reform_filename=None,
+                         reform=None,
                          blowup_input_data=False)
     inctax.calculate(write_output_file=False)
     assert inctax.tax_year() == taxyear
@@ -133,7 +133,7 @@ def test_3(rawinputfile, reformfile):  # pylint: disable=redefined-outer-name
     taxyear = 2021
     inctax = IncomeTaxIO(input_filename=rawinputfile.name,
                          tax_year=taxyear,
-                         reform_filename=reformfile.name,
+                         reform=reformfile.name,
                          blowup_input_data=False)
     inctax.calculate(write_output_file=False)
     assert inctax.tax_year() == taxyear
