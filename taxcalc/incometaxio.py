@@ -10,6 +10,7 @@ Tax-Calculator income tax input-output class.
 import os
 import sys
 import six
+import pandas as pd
 from .policy import Policy
 from .records import Records
 from .calculate import Calculator
@@ -22,16 +23,17 @@ class IncomeTaxIO(object):
 
     Parameters
     ----------
-    input_filename: string
-        name of INPUT file that is CSV formatted containing only variable
-        names in the Records.VALID_READ_VARS set; the CSV file may be
-        contained in a compressed GZIP file with a name ending in '.gz'.
+    input_data: string or Pandas DataFrame
+        string is name of INPUT file that is CSV formatted containing only
+        variable names in the Records.VALID_READ_VARS set, or
+        Pandas DataFrame is INPUT data containing only variable names in
+        the Records.VALID_READ_VARS set.
 
     tax_year: integer
         calendar year for which income taxes will be computed for INPUT.
 
-    reform: None or string or dictionary
-        None implies no reform (current-law policy), or
+    policy_reform: None or string or dictionary
+        None implies no policy reform (current-law policy), or
         string is name of optional REFORM file, or
         dictionary suitable for passing to Policy.implement_reform() method.
 
@@ -41,8 +43,8 @@ class IncomeTaxIO(object):
     Raises
     ------
     ValueError:
-        if file with input_filename does not exist.
-        if reform is neither None, string, nor dictionary.
+        if file specified by input_data string does not exist.
+        if policy_reform is neither None, string, nor dictionary.
         if tax_year before Policy start_year.
         if tax_year after Policy end_year.
 
@@ -51,35 +53,35 @@ class IncomeTaxIO(object):
     class instance: IncomeTaxIO
     """
 
-    def __init__(self,
-                 input_filename,
-                 tax_year,
-                 reform,
-                 blowup_input_data):
+    def __init__(self, input_data, tax_year, policy_reform, blowup_input_data):
         """
         IncomeTaxIO class constructor.
         """
+        # pylint: disable=too-many-statements
         # pylint: disable=too-many-branches
-        # check that input_filename ends with ".csv", ".csv.gz" or ".gz"
-        if input_filename.endswith('.csv'):
-            inp_str = '{}-{}'.format(input_filename[:-4], str(tax_year)[2:])
-        elif input_filename.endswith('.csv.gz'):
-            inp_str = '{}-{}'.format(input_filename[:-7], str(tax_year)[2:])
-        elif input_filename.endswith('.gz'):
-            inp_str = '{}-{}'.format(input_filename[:-3], str(tax_year)[2:])
+        if isinstance(input_data, str):
+            # check that input_data string ends with ".csv"
+            if input_data.endswith('.csv'):
+                inp = '{}-{}'.format(input_data[:-4], str(tax_year)[2:])
+                self._using_input_file = True
+            else:
+                msg = 'INPUT file named {} does not end in .csv'
+                raise ValueError(msg.format(input_data))
+        elif isinstance(input_data, pd.DataFrame):
+            inp = 'df-{}'.format(str(tax_year)[2:])
+            self._using_input_file = False
         else:
-            msg = 'INPUT file named {} does not end in {}'
-            raise ValueError(msg.format(input_filename,
-                                        '".csv", ".csv.gz", or ".gz"'))
+            msg = 'INPUT is neither string nor Pandas DataFrame'
+            raise ValueError(msg)
         # construct output_filename and delete old output file if it exists
-        if reform:
-            if isinstance(reform, six.string_types):
-                if reform.endswith('.json'):
-                    ref = '-{}'.format(reform[:-5])
+        if policy_reform:
+            if isinstance(policy_reform, six.string_types):
+                if policy_reform.endswith('.json'):
+                    ref = '-{}'.format(policy_reform[:-5])
                 else:
-                    ref = '-{}'.format(reform)
+                    ref = '-{}'.format(policy_reform)
                 self._using_reform_file = True
-            elif isinstance(reform, dict):
+            elif isinstance(policy_reform, dict):
                 ref = ''
                 self._using_reform_file = False
             else:
@@ -87,13 +89,14 @@ class IncomeTaxIO(object):
                 raise ValueError(msg)
         else:
             ref = ''
-        self._output_filename = '{}.out-inctax{}'.format(inp_str, ref)
+        self._output_filename = '{}.out-inctax{}'.format(inp, ref)
         if os.path.isfile(self._output_filename):
             os.remove(self._output_filename)
-        # check for existence of file named input_filename
-        if not os.path.isfile(input_filename):
-            msg = 'INPUT file named {} could not be found'
-            raise ValueError(msg.format(input_filename))
+        # check for existence of INPUT file
+        if self._using_input_file:
+            if not os.path.isfile(input_data):
+                msg = 'INPUT file named {} could not be found'
+                raise ValueError(msg.format(input_data))
         # create Policy object assuming current-law policy
         policy = Policy()
         # check for valid tax_year value
@@ -103,22 +106,22 @@ class IncomeTaxIO(object):
         if tax_year > policy.end_year:
             msg = 'tax_year {} greater than policy.end_year {}'
             raise ValueError(msg.format(tax_year, policy.end_year))
-        # implement policy reform if reform is specified
-        if reform:
+        # implement policy reform if one is specified
+        if policy_reform:
             if self._using_reform_file:
-                reform_dict = Policy.read_json_reform_file(reform)
+                reform = Policy.read_json_reform_file(policy_reform)
             else:
-                reform_dict = reform
-            policy.implement_reform(reform_dict)
+                reform = policy_reform
+            policy.implement_reform(reform)
         # set tax policy parameters to specified tax_year
         policy.set_year(tax_year)
         # read input file contents into Records object
         if blowup_input_data:
-            recs = Records(data=input_filename,
+            recs = Records(data=input_data,
                            start_year=Records.PUF_YEAR,
                            consider_imputations=True)
         else:
-            recs = Records(data=input_filename,
+            recs = Records(data=input_data,
                            start_year=tax_year,
                            consider_imputations=False)
         # create Calculator object
