@@ -96,6 +96,7 @@ def test_1(input_file):  # pylint: disable=redefined-outer-name
     """
     Test SimpleTaxIO constructor with no policy reform.
     """
+    SimpleTaxIO.show_iovar_definitions()
     simtax = SimpleTaxIO(input_filename=input_file.name,
                          reform=None,
                          emulate_taxsim_2441_logic=False)

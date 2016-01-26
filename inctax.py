@@ -75,8 +75,8 @@ def main():
     parser.add_argument('INPUT',
                         help=('INPUT is name of required CSV file that '
                               'contains a subset of variables included in '
-                              'the Records.VALID_READ_VARS set.  INPUT must '
-                              'end in ".csv" or ".gz".'))
+                              'the Records.VALID_READ_VARS set. '
+                              'INPUT must end in ".csv".'))
     parser.add_argument('TAXYEAR',
                         help=('TAXYEAR is calendar year for which federal '
                               'income taxes are computed (e.g., 2013).'),
@@ -87,9 +87,9 @@ def main():
         IncomeTaxIO.show_iovar_definitions()
         return 0
     # instantiate IncometaxIO object and do federal income tax calculations
-    inctax = IncomeTaxIO(input_filename=args.INPUT,
+    inctax = IncomeTaxIO(input_data=args.INPUT,
                          tax_year=args.TAXYEAR,
-                         reform=args.reform,
+                         policy_reform=args.reform,
                          blowup_input_data=args.blowup)
     inctax.calculate(output_weights=args.weights)
     # return no-error exit code
