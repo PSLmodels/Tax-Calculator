@@ -11,7 +11,7 @@ from taxcalc import *
 import pandas as pd
 from pandas import DataFrame
 import numpy as np
-import simplejson
+import json
 import copy
 import csv
 
