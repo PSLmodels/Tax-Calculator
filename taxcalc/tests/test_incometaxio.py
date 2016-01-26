@@ -8,7 +8,7 @@ Tests for Tax-Calculator IncomeTaxIO class.
 
 import os
 from taxcalc import IncomeTaxIO  # pylint: disable=import-error
-from io import BytesIO
+from io import StringIO
 import pandas as pd
 import pytest
 import tempfile
@@ -16,11 +16,11 @@ import tempfile
 
 RAWINPUTFILE_FUNITS = 4
 RAWINPUTFILE_CONTENTS = (
-    'RECID,MARS\n'
-    '1,2\n'
-    '2,1\n'
-    '3,4\n'
-    '4,6\n'
+    u'RECID,MARS\n'
+    u'1,2\n'
+    u'2,1\n'
+    u'3,4\n'
+    u'4,6\n'
 )
 
 
@@ -161,7 +161,7 @@ def test_4(reformfile2):  # pylint: disable=redefined-outer-name
     """
     Test IncomeTaxIO calculate method with no output writing and with blowup.
     """
-    input_stream = BytesIO(RAWINPUTFILE_CONTENTS)
+    input_stream = StringIO(RAWINPUTFILE_CONTENTS)
     input_dataframe = pd.read_csv(input_stream)
     taxyear = 2021
     inctax = IncomeTaxIO(input_data=input_dataframe,
