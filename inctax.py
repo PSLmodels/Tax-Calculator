@@ -91,7 +91,7 @@ def main():
                          tax_year=args.TAXYEAR,
                          policy_reform=args.reform,
                          blowup_input_data=args.blowup)
-    inctax.calculate(output_weights=args.weights)
+    inctax.calculate(writing_output_file=True, output_weights=args.weights)
     # return no-error exit code
     return 0
 # end of main function code

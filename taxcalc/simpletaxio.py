@@ -55,6 +55,7 @@ class SimpleTaxIO(object):
         SimpleTaxIO class constructor.
         """
         # construct output_filename and delete old output file if it exists
+        # ... construct reform extension to output_filename
         if reform:
             if isinstance(reform, six.string_types):
                 if reform.endswith('.json'):
@@ -68,8 +69,11 @@ class SimpleTaxIO(object):
             else:
                 msg = 'SimpleTaxIO.ctor reform is neither None, str, nor dict'
                 raise ValueError(msg)
-        else:
+        else:  # if reform is None
             ref = ''
+            self._using_reform_file = True
+        # ... construct whole output_filename
+        self._using_input_file = True
         self._output_filename = '{}.out-simtax{}'.format(input_filename, ref)
         if os.path.isfile(self._output_filename):
             os.remove(self._output_filename)
@@ -103,17 +107,23 @@ class SimpleTaxIO(object):
         """
         return self._policy.end_year
 
-    def calculate(self, write_output_file=True):
+    def calculate(self, writing_output_file=False):
         """
-        Calculate taxes for all INPUT lines and write OUTPUT to file.
+        Calculate taxes for all INPUT lines and write or return OUTPUT lines.
+
+        Output lines will be written to file if SimpleTaxIO constructor was
+        passed an input_filename string and a reform string or None and if
+        writing_output_file is True.
 
         Parameters
         ----------
-        write_output_file: boolean
+        writing_output_file: boolean
 
         Returns
         -------
-        nothing: void
+        output_lines: string
+            empty string if OUTPUT lines are written to a file;
+            otherwise output_lines contain all OUTPUT lines
         """
         # loop through self._year_set doing tax calculations and saving output
         output = {}  # dictionary indexed by Records index for filing unit
@@ -131,10 +141,16 @@ class SimpleTaxIO(object):
                     ovar[7] = 100 * mtr_itax[idx]
                     ovar[9] = 100 * mtr_fica[idx]
                     output[idx] = ovar
-        # write contents of output
-        if write_output_file:
-            assert len(output) == len(self._input)
-            self.write_output_file(output, self._output_filename)
+        assert len(output) == len(self._input)
+        # handle disposition of calculated output
+        olines = ''
+        writing_possible = self._using_input_file and self._using_reform_file
+        if writing_possible and writing_output_file:
+            SimpleTaxIO.write_output_file(output, self._output_filename)
+        else:
+            for idx in range(0, len(output)):
+                olines += SimpleTaxIO.construct_output_line(output[idx])
+        return olines
 
     def number_input_lines(self):
         """
@@ -316,7 +332,65 @@ class SimpleTaxIO(object):
         """
         with open(output_filename, 'w') as output_file:
             for idx in range(0, len(output)):
-                SimpleTaxIO._write_output_line(output[idx], output_file)
+                outline = SimpleTaxIO.construct_output_line(output[idx])
+                output_file.write(outline)
+
+    OVAR_NUM = 28
+    DVAR_NAMES = [  # OPTIONAL DEBUGGING OUTPUT VARIABLE NAMES
+        # '...',  # first debugging variable
+        # '...',  # second debugging variable
+        # etc.
+        # '...'   # last debugging variable
+    ]
+    OVAR_FMT = {1: '{:d}.',  # add decimal point as in Internet-TAXSIM output
+                2: ' {:.0f}',
+                3: ' {:d}',
+                4: ' {:.2f}',
+                5: ' {:.2f}',
+                6: ' {:.2f}',
+                7: ' {:.2f}',
+                8: ' {:.2f}',
+                9: ' {:.2f}',
+                10: ' {:.2f}',
+                11: ' {:.2f}',
+                12: ' {:.2f}',
+                13: ' {:.2f}',
+                14: ' {:.2f}',
+                15: ' {:.2f}',
+                16: ' {:.2f}',
+                17: ' {:.2f}',
+                18: ' {:.2f}',
+                19: ' {:.2f}',
+                20: ' {:.2f}',
+                21: ' {:.2f}',
+                22: ' {:.2f}',
+                23: ' {:.2f}',
+                24: ' {:.2f}',
+                25: ' {:.2f}',
+                26: ' {:.2f}',
+                27: ' {:.2f}',
+                28: ' {:.2f}'}
+
+    @staticmethod
+    def construct_output_line(output_dict):
+        """
+        Construct line of OUTPUT from a filing unit output_dict.
+
+        Parameters
+        ----------
+        output_dict: dictionary
+            calculated output values indexed from 1 to len(output_dict).
+
+        Returns
+        -------
+        output_line: string
+        """
+        outline = ''
+        for vnum in range(1, len(output_dict) + 1):
+            fnum = min(vnum, SimpleTaxIO.OVAR_NUM)
+            outline += SimpleTaxIO.OVAR_FMT[fnum].format(output_dict[vnum])
+        outline += '\n'
+        return outline
 
     # --- begin private methods of SimpleTaxIO class --- #
 
@@ -571,66 +645,5 @@ class SimpleTaxIO(object):
         recs.e19200[idx] = ivar[20]  # AMT-nonpreferred deductions
         recs.p22250[idx] = ivar[21]  # short-term capital gains (+/-)
         recs.p23250[idx] = ivar[22]  # long-term capital gains (+/-)
-
-    OVAR_NUM = 28
-    DVAR_NAMES = [  # OPTIONAL DEBUGGING OUTPUT VARIABLE NAMES
-        # '...',  # first debugging variable
-        # '...',  # second debugging variable
-        # etc.
-        # '...'   # last debugging variable
-    ]
-    OVAR_FMT = {1: '{:d}.',  # add decimal point as in Internet-TAXSIM output
-                2: ' {:.0f}',
-                3: ' {:d}',
-                4: ' {:.2f}',
-                5: ' {:.2f}',
-                6: ' {:.2f}',
-                7: ' {:.2f}',
-                8: ' {:.2f}',
-                9: ' {:.2f}',
-                10: ' {:.2f}',
-                11: ' {:.2f}',
-                12: ' {:.2f}',
-                13: ' {:.2f}',
-                14: ' {:.2f}',
-                15: ' {:.2f}',
-                16: ' {:.2f}',
-                17: ' {:.2f}',
-                18: ' {:.2f}',
-                19: ' {:.2f}',
-                20: ' {:.2f}',
-                21: ' {:.2f}',
-                22: ' {:.2f}',
-                23: ' {:.2f}',
-                24: ' {:.2f}',
-                25: ' {:.2f}',
-                26: ' {:.2f}',
-                27: ' {:.2f}',
-                28: ' {:.2f}'}
-
-    @staticmethod
-    def _write_output_line(output_dict, output_file):
-        """
-        Write line of OUTPUT in output_dict to output_file.
-
-        Parameters
-        ----------
-        output_dict: dictionary
-            calculated output values indexed from 1 to OVAR_NUM.
-
-        output_file: file handle
-            output text file.
-
-        Returns
-        -------
-        nothing: void
-        """
-        num_ovar = len(output_dict)
-        for vnum in range(1, num_ovar + 1):
-            fnum = min(vnum, SimpleTaxIO.OVAR_NUM)
-            ostr = SimpleTaxIO.OVAR_FMT[fnum].format(output_dict[vnum])
-            output_file.write(ostr)
-        output_file.write('\n')
-
 
 # end SimpleTaxIO class
