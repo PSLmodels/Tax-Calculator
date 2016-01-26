@@ -22,6 +22,7 @@ import csv
 # import all reforms from this JSON file
 with open("reforms.json") as json_file:
     reforms_json = simplejson.load(json_file)
+num_reforms = len(reforms_json)
 
 # create two calculators, one for baseline and the other for reforms
 tax_dta1 = pd.read_csv("puf.csv")
@@ -46,7 +47,7 @@ results = {}
 
 # runs one reform a time, each reform for 4 years
 # modify the number of reform & number of years as needed
-for i in range(1, 55):
+for i in range(1, num_reforms + 1):
     # make two deep copies so the originals could be used again in next loop
     c1 = copy.deepcopy(calc1)
     c2 = copy.deepcopy(calc2)
@@ -97,7 +98,7 @@ for i in range(1, 55):
 # export all results to a CSV file
 writer = csv.writer(open('comparison_results.csv', 'wb'))
 
-for i in range(1, 55):
+for i in range(1, num_reforms + 1):
     this_reform = 'r' + str(i)
     writer.writerow([""])
 
