@@ -55,6 +55,7 @@ class SimpleTaxIO(object):
         SimpleTaxIO class constructor.
         """
         # construct output_filename and delete old output file if it exists
+        # ... construct reform extension to output_filename
         if reform:
             if isinstance(reform, six.string_types):
                 if reform.endswith('.json'):
@@ -68,8 +69,11 @@ class SimpleTaxIO(object):
             else:
                 msg = 'SimpleTaxIO.ctor reform is neither None, str, nor dict'
                 raise ValueError(msg)
-        else:
+        else:  # if reform is None
             ref = ''
+            self._using_reform_file = True
+        # ... construct whole output_filename
+        self._using_input_file = True
         self._output_filename = '{}.out-simtax{}'.format(input_filename, ref)
         if os.path.isfile(self._output_filename):
             os.remove(self._output_filename)
@@ -103,9 +107,12 @@ class SimpleTaxIO(object):
         """
         return self._policy.end_year
 
-    def calculate(self, write_output_file=True):
+    def calculate(self):
         """
-        Calculate taxes for all INPUT lines and write OUTPUT to file.
+        Calculate taxes for all INPUT lines and write or return OUTPUT lines.
+
+        Output lines will be written to file if SimpleTaxIO constructor was
+        passed an input_filename string and was passed a reform string or None.
 
         Parameters
         ----------
@@ -113,7 +120,9 @@ class SimpleTaxIO(object):
 
         Returns
         -------
-        nothing: void
+        output_lines: string
+            empty string if OUTPUT lines are written to a file;
+            otherwise output_lines contain all OUTPUT lines
         """
         # loop through self._year_set doing tax calculations and saving output
         output = {}  # dictionary indexed by Records index for filing unit
@@ -131,10 +140,15 @@ class SimpleTaxIO(object):
                     ovar[7] = 100 * mtr_itax[idx]
                     ovar[9] = 100 * mtr_fica[idx]
                     output[idx] = ovar
-        # write contents of output
-        if write_output_file:
-            assert len(output) == len(self._input)
+        assert len(output) == len(self._input)
+        # handle calculated output depending on use of input and reform files
+        olines = ''
+        if self._using_input_file and self._using_reform_file:
             self.write_output_file(output, self._output_filename)
+        else:
+            for idx in range(0, len(output)):
+                olines += SimpleTaxIO._construct_output_line(output[idx])
+        return olines
 
     def number_input_lines(self):
         """
@@ -316,7 +330,8 @@ class SimpleTaxIO(object):
         """
         with open(output_filename, 'w') as output_file:
             for idx in range(0, len(output)):
-                SimpleTaxIO._write_output_line(output[idx], output_file)
+                outline = SimpleTaxIO._construct_output_line(output[idx])
+                output_file.write(outline)
 
     # --- begin private methods of SimpleTaxIO class --- #
 
@@ -609,28 +624,25 @@ class SimpleTaxIO(object):
                 28: ' {:.2f}'}
 
     @staticmethod
-    def _write_output_line(output_dict, output_file):
+    def _construct_output_line(output_dict):
         """
-        Write line of OUTPUT in output_dict to output_file.
+        Construct line of OUTPUT from a filing unit output_dict.
 
         Parameters
         ----------
         output_dict: dictionary
-            calculated output values indexed from 1 to OVAR_NUM.
-
-        output_file: file handle
-            output text file.
+            calculated output values indexed from 1 to len(output_dict).
 
         Returns
         -------
-        nothing: void
+        output_line: string
         """
-        num_ovar = len(output_dict)
-        for vnum in range(1, num_ovar + 1):
+        outline = ""
+        for vnum in range(1, len(output_dict) + 1):
             fnum = min(vnum, SimpleTaxIO.OVAR_NUM)
-            ostr = SimpleTaxIO.OVAR_FMT[fnum].format(output_dict[vnum])
-            output_file.write(ostr)
-        output_file.write('\n')
+            outline += SimpleTaxIO.OVAR_FMT[fnum].format(output_dict[vnum])
+        outline += '\n'
+        return outline
 
 
 # end SimpleTaxIO class
