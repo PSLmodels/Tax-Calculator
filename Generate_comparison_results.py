@@ -4,6 +4,9 @@
 # It uses reforms stored in 'reforms.json',
 # and export and save all results and comparisons in a CSV file
 
+# puf.csv needs to be in the current directory.
+# Otherwise replace the file name with full path
+
 # USAGE: python Genrate_comparison_results.py
 
 
@@ -21,12 +24,12 @@ with open("reforms.json") as json_file:
     reforms_json = simplejson.load(json_file)
 
 # create two calculators, one for baseline and the other for reforms
-tax_dta1 = pd.read_csv("/Users/Amy/Documents/2009 Public Use File/puf.csv")
+tax_dta1 = pd.read_csv("puf.csv")
 records1 = Records(tax_dta1)
 policy1 = Policy(start_year=2013)
 calc1 = Calculator(records=records1, policy=policy1)
 
-tax_dta2 = pd.read_csv("/Users/Amy/Documents/2009 Public Use File/puf.csv")
+tax_dta2 = pd.read_csv("puf.csv")
 records2 = Records(tax_dta2)
 policy2 = Policy(start_year=2013)
 calc2 = Calculator(records=records2, policy=policy2)
@@ -68,17 +71,18 @@ for i in range(1, 55):
 
     # run the current reform for 4 years
     this_reform_results = []
-    for j in range(1, start_year-2010):
+    for j in range(1,start_year-2010):
+        output_type = reforms_json.get(this_reform).get("output_type")
+        
         c1.calc_all()
+        baseline = getattr(c1.records, output_type)
         if has_behavior:
-            c2 = behavior(c1, c2)
+            c2_behavior = behavior(c1, c2)
+            diff = getattr(c2_behavior.records, output_type) - baseline
         else:
             c2.calc_all()
-
-        # save the results of this reform
-        output_type = reforms_json.get(this_reform).get("output_type")
-        diff = (getattr(c2.records, output_type) -
-                getattr(c1.records, output_type))
+            diff = getattr(c2.records, output_type) - baseline
+        
         weighted_sum_diff = (diff * c1.records.s006).sum()/1000000000
 
         this_reform_results.append(weighted_sum_diff)
@@ -93,7 +97,7 @@ for i in range(1, 55):
 # export all results to a CSV file
 writer = csv.writer(open('comparison_results.csv', 'wb'))
 
-for i in range(1, 53):
+for i in range(1, 55):
     this_reform = 'r' + str(i)
     writer.writerow([""])
 
