@@ -87,8 +87,9 @@ class IncomeTaxIO(object):
             else:
                 msg = 'IncomeTaxIO.ctor reform is neither None, str, nor dict'
                 raise ValueError(msg)
-        else:
+        else:  # if policy_reform is None
             ref = ''
+            self._using_reform_file = True
         self._output_filename = '{}.out-inctax{}'.format(inp, ref)
         if os.path.isfile(self._output_filename):
             os.remove(self._output_filename)
@@ -134,20 +135,26 @@ class IncomeTaxIO(object):
         """
         return self._calc.policy.current_year
 
-    def calculate(self, write_output_file=True, output_weights=False):
+    def calculate(self, writing_output_file=False, output_weights=False):
         """
-        Calculate taxes for all INPUT lines and write OUTPUT to file.
+        Calculate taxes for all INPUT lines and write or return OUTPUT lines.
+
+        Output lines will be written to file if IncomeTaxIO constructor
+        was passed an input_filename string and a reform string or None,
+        and if writing_output_file is True.
 
         Parameters
         ----------
-        write_output_file: boolean
+        writing_output_file: boolean
 
         output_weights: boolean
             whether or not to use s006 as an additional output variable.
 
         Returns
         -------
-        nothing: void
+        output_lines: string
+            empty string if OUTPUT lines are written to a file;
+            otherwise output_lines contain all OUTPUT lines
         """
         output = {}  # dictionary indexed by Records index for filing unit
         self._calc.calc_all()
@@ -156,9 +163,16 @@ class IncomeTaxIO(object):
                                               extract_weight=output_weights)
             ovar[6] = 0.0  # no FICA tax liability included in output
             output[idx] = ovar
-        # write contents of output dictionary to OUTPUT file
-        if write_output_file:
+        assert len(output) == self._calc.records.dim
+        # handle disposition of calculated output
+        olines = ''
+        writing_possible = self._using_input_file and self._using_reform_file
+        if writing_possible and writing_output_file:
             SimpleTaxIO.write_output_file(output, self._output_filename)
+        else:
+            for idx in range(0, len(output)):
+                olines += SimpleTaxIO.construct_output_line(output[idx])
+        return olines
 
     @staticmethod
     def show_iovar_definitions():
