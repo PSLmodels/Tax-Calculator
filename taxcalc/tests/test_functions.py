@@ -22,14 +22,14 @@ def test_1():
     # specify a reform that eliminates all Medicare FICA taxes and sets
     #   the maximum taxable earnings (MTE) at $100,000 in 2015, in order
     #   to simplify the hand calculations that follow the IRS form logic.
-    mte = 100000
-    ssr = 0.124
+    mte = 100000  # lower than current-law to simplify hand calculations
+    ssr = 0.124  # current law OASDI ee+er payroll tax rate
+    mrr = 0.029  # current law HI ee+er payroll tax rate
     reform = {
         2015: {
             '_SS_Earnings_c': [mte],
             '_FICA_ss_trt': [ssr],
-            '_FICA_mc_trt': [0.0],
-            '_AMED_trt': [0.0]
+            '_FICA_mc_trt': [mrr],
         }
     }
     funit = (
@@ -38,11 +38,14 @@ def test_1():
     )
     # The expected AGI for this filing unit is $400,000 minus half of
     # the  spouse's Self-Employment Tax (SET), which represents the
-    # "employer share".  The spouse pays Self-Employment Tax on only
-    # $93,800 of self-employment income, which implies a tax of $11,631.20.
-    # The SET AGI adjustment is one-half of this, which is $5,815.60.  So,
-    # filing unit's AGI is $400,000 less that amount, which is $394,184.40.
-    expected_agi = '394184.40'
+    # "employer share" of the SET.  The spouse pays OASDI SET on only
+    # $100,000 of self-employment income, which implies a tax of
+    # $12,400.  The spouse also pays HI SET on 0.9235 * 200000 * 0.029,
+    # which implies a tax of $5,356.30.  So, the spouse's total SET is
+    # the sum of the two, which equals $17,756.30.
+    # The SET AGI adjustment is one-half of that amount, which is $8,878.15.
+    # So, filing unit's AGI is $400,000 less this, which is $391,121.85.
+    expected_agi = '391121.85'
     input_dataframe = pd.read_csv(StringIO(funit))
     inctax = IncomeTaxIO(input_data=input_dataframe,
                          tax_year=2015,
