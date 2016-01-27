@@ -14,25 +14,40 @@ def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
     """
     EI_FICA function: computes total earned income and regular FICA taxes.
     """
+    # compute _sey
     sey_p = e00900p + e02100p
     sey_s = e00900s + e02100s
     _sey = sey_p + sey_s  # total self-employment income for filing unit
 
-    fica_trt = FICA_mc_trt + FICA_ss_trt
-    sey_frac = 1.0 - 0.5 * fica_trt
-    fica_ss_p = max(0, FICA_ss_trt *
-                    min(SS_Earnings_c, e00200p + max(0, sey_p) * sey_frac))
-    fica_ss_s = max(0, FICA_ss_trt *
-                    min(SS_Earnings_c, e00200s + max(0, sey_s) * sey_frac))
+    # compute taxable earnings for OASDI FICA ('was' denotes 'wage and salary')
+    sey_frac = 1.0 - 0.5 * (FICA_ss_trt + FICA_mc_trt)
+    txearn_was_p = min(SS_Earnings_c, e00200p)
+    txearn_was_s = min(SS_Earnings_c, e00200s)
+    txearn_sey_p = min(max(0, sey_p * sey_frac), SS_Earnings_c - txearn_was_p)
+    txearn_sey_s = min(max(0, sey_s * sey_frac), SS_Earnings_c - txearn_was_s)
 
-    fica_ss = fica_ss_p + fica_ss_s
-    fica_mc = max(0, FICA_mc_trt * (e00200 + max(0, _sey) * sey_frac))
+    # compute OASDI FICA taxes for was and sey taxable earnings separately
+    fica_ss_was_p = FICA_ss_trt * txearn_was_p
+    fica_ss_was_s = FICA_ss_trt * txearn_was_s
+    fica_ss_sey_p = FICA_ss_trt * txearn_sey_p
+    fica_ss_sey_s = FICA_ss_trt * txearn_sey_s
 
-    _fica = fica_mc + fica_ss  # total regular FICA taxes for filing unit
+    # compute regular HI FICA taxes for all was and sey earnings separately
+    fica_mc_was_p = FICA_mc_trt * e00200p
+    fica_mc_was_s = FICA_mc_trt * e00200s
+    fica_mc_sey_p = FICA_mc_trt * max(0, sey_p * sey_frac)
+    fica_mc_sey_s = FICA_mc_trt * max(0, sey_s * sey_frac)
 
-    c09400 = max(0, _fica - fica_trt * e00200)
-    c03260 = 0.5 * c09400  # AGI deduction for "employer share" of SET
+    # compute total regular FICA taxes for filing unit
+    fica_ss = fica_ss_was_p + fica_ss_was_s + fica_ss_sey_p + fica_ss_sey_s
+    fica_mc = fica_mc_was_p + fica_mc_was_s + fica_mc_sey_p + fica_mc_sey_s
+    _fica = fica_ss + fica_mc
 
+    # compute AGI deduction for "employer share" of self-employment FICA taxes
+    c09400 = fica_ss_sey_p + fica_ss_sey_s + fica_mc_sey_p + fica_mc_sey_s
+    c03260 = 0.5 * c09400  # half of c09400 represents the "employer share"
+
+    # compute _earned
     c11055 = e11055
     _earned = max(0, e00200 + e00250 + c11055 + e30100 + _sey - c03260)
 
