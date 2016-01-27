@@ -23,8 +23,8 @@ CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
 PUFCSV_PATH = os.path.join(CUR_PATH, '..', '..', 'puf.csv')
-AGGRES_PATH = os.path.join(CUR_PATH, 'pufcsv_agg_expected.txt')
-MTRRES_PATH = os.path.join(CUR_PATH, 'pufcsv_mtr_expected.txt')
+AGGRES_PATH = os.path.join(CUR_PATH, 'pufcsv_agg_expect.txt')
+MTRRES_PATH = os.path.join(CUR_PATH, 'pufcsv_mtr_expect.txt')
 import pytest
 import difflib
 import numpy as np
@@ -59,8 +59,16 @@ def test_agg():
         diff_lines.append(line)
     # test failure if there are any diff_lines
     if len(diff_lines) > 0:
-        for line in diff_lines:
-            sys.stdout.write(line)
+        # write diffs to stdout
+        # for line in diff_lines:
+        #     sys.stdout.write(line)
+        # write new adtstr to file
+        sys.stdout.write('*************************************************\n')
+        sys.stdout.write('*** NEW RESULTS IN pufcsv_agg_actual.txt FILE ***\n')
+        sys.stdout.write('*************************************************\n')
+        new_agg_filename = '{}{}'.format(AGGRES_PATH[:-10], 'actual.txt')
+        with open(new_agg_filename, 'w') as new_agg_file:
+            new_agg_file.write(adtstr)
         assert False
 
 
@@ -162,6 +170,14 @@ def test_mtr():
         diff_lines.append(line)
     # test failure if there are any diff_lines
     if len(diff_lines) > 0:
-        for line in diff_lines:
-            sys.stdout.write(line)
+        # write diff_lines to stdout
+        # for line in diff_lines:
+        #     sys.stdout.write(line)
+        # write new res to file
+        sys.stdout.write('*************************************************\n')
+        sys.stdout.write('*** NEW RESULTS IN pufcsv_mtr_actual.txt FILE ***\n')
+        sys.stdout.write('*************************************************\n')
+        new_mtr_filename = '{}{}'.format(MTRRES_PATH[:-10], 'actual.txt')
+        with open(new_mtr_filename, 'w') as new_mtr_file:
+            new_mtr_file.write(res)
         assert False
