@@ -11,30 +11,28 @@ import copy
 def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
             e11055, e00250, e30100, FICA_ss_trt, FICA_mc_trt,
             e00900p, e00900s, e02100p, e02100s):
-    # Earned Income and FICA #
-
-    _sey_p = e00900p + e02100p
-    _sey_s = e00900s + e02100s
-    _sey = _sey_p + _sey_s
+    """
+    EI_FICA function: computes self-employment income and FICA taxes.
+    """
+    sey_p = e00900p + e02100p
+    sey_s = e00900s + e02100s
+    _sey = sey_p + sey_s
 
     FICA_trt = FICA_mc_trt + FICA_ss_trt
-    _fica_ss_head = max(0, FICA_ss_trt * min(SS_Earnings_c, e00200p +
-                        max(0, _sey_p) * (1 - 0.5 * FICA_trt)))
-    _fica_ss_spouse = max(0, FICA_ss_trt * min(SS_Earnings_c, e00200s +
-                          max(0, _sey_s) * (1 - 0.5 * FICA_trt)))
+    fica_ss_head = max(0, FICA_ss_trt *
+                       min(SS_Earnings_c, e00200p +
+                           max(0, sey_p) * (1 - 0.5 * FICA_trt)))
+    fica_ss_spouse = max(0, FICA_ss_trt *
+                         min(SS_Earnings_c, e00200s +
+                             max(0, sey_s) * (1 - 0.5 * FICA_trt)))
 
-    _fica_ss = _fica_ss_head + _fica_ss_spouse
-    _fica_mc = max(0, FICA_mc_trt * (e00200 + max(0, _sey) *
-                   (1 - 0.5 * (FICA_mc_trt + FICA_ss_trt))))
+    fica_ss = fica_ss_head + fica_ss_spouse
+    fica_mc = max(0, FICA_mc_trt * (e00200 + max(0, _sey) *
+                                    (1 - 0.5 * FICA_trt)))
 
-    _fica = _fica_mc + _fica_ss
+    _fica = fica_mc + fica_ss
 
-    c09400 = max(0, _fica - (FICA_ss_trt + FICA_mc_trt) * e00200)
-
-    # if c09400 <= 14204:
-    #    c03260 = 0.5751 * c09400
-    # else:
-    #    c03260 = 0.5 * c09400 + 10067
+    c09400 = max(0, _fica - FICA_trt * e00200)
     c03260 = 0.5 * c09400
 
     c11055 = e11055
