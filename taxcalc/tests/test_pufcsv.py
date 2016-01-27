@@ -67,7 +67,6 @@ def test_agg():
         sys.stdout.write('*** NEW RESULTS IN pufcsv_agg_actual.txt FILE ***\n')
         sys.stdout.write('*************************************************\n')
         new_agg_filename = '{}{}'.format(AGGRES_PATH[:-10], 'actual.txt')
-        print new_agg_filename
         with open(new_agg_filename, 'w') as new_agg_file:
             new_agg_file.write(adtstr)
         assert False
@@ -179,7 +178,6 @@ def test_mtr():
         sys.stdout.write('*** NEW RESULTS IN pufcsv_mtr_actual.txt FILE ***\n')
         sys.stdout.write('*************************************************\n')
         new_mtr_filename = '{}{}'.format(MTRRES_PATH[:-10], 'actual.txt')
-        print new_mtr_filename
         with open(new_mtr_filename, 'w') as new_mtr_file:
             new_mtr_file.write(res)
         assert False
