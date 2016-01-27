@@ -12,7 +12,6 @@ import pandas as pd
 import pytest
 
 
-@pytest.mark.one
 def test_1():
     """
     Test calculation of AGI adjustment for half of Self-Employment Tax,
