@@ -69,7 +69,7 @@ def main():
     simtax = SimpleTaxIO(input_filename=args.INPUT,
                          reform=args.reform,
                          emulate_taxsim_2441_logic=args.taxsim2441)
-    simtax.calculate()
+    simtax.calculate(writing_output_file=True)
     # return no-error exit code
     return 0
 # end of main function code

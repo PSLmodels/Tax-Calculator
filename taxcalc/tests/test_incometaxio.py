@@ -23,6 +23,17 @@ RAWINPUTFILE_CONTENTS = (
     u'4,6\n'
 )
 
+EXPECTED_OUTPUT = (  # from using RAWINPUTFILE_CONTENTS as input
+    '1. 2021 0 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
+    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
+    '2. 2021 0 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
+    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
+    '3. 2021 0 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
+    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
+    '4. 2021 0 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
+    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
+)
+
 
 @pytest.yield_fixture
 def rawinputfile():
@@ -46,7 +57,7 @@ def test_1(rawinputfile):  # pylint: disable=redefined-outer-name
     Test IncomeTaxIO constructor with no policy reform and no blowup.
     """
     IncomeTaxIO.show_iovar_definitions()
-    taxyear = 2020
+    taxyear = 2021
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
                          policy_reform=None,
@@ -58,7 +69,7 @@ def test_2(rawinputfile):  # pylint: disable=redefined-outer-name
     """
     Test IncomeTaxIO calculate method with no output writing and no blowup.
     """
-    taxyear = 2020
+    taxyear = 2021
     reform_dict = {
         2016: {'_SS_Earnings_c': [300000]},
         2018: {'_SS_Earnings_c': [500000]},
@@ -68,8 +79,8 @@ def test_2(rawinputfile):  # pylint: disable=redefined-outer-name
                          tax_year=taxyear,
                          policy_reform=reform_dict,
                          blowup_input_data=False)
-    inctax.calculate(write_output_file=False)
-    assert inctax.tax_year() == taxyear
+    output = inctax.calculate()
+    assert output == EXPECTED_OUTPUT
 
 
 REFORM_CONTENTS = """
@@ -153,8 +164,8 @@ def test_3(rawinputfile, reformfile1):  # pylint: disable=redefined-outer-name
                          tax_year=taxyear,
                          policy_reform=reformfile1.name,
                          blowup_input_data=False)
-    inctax.calculate(write_output_file=False)
-    assert inctax.tax_year() == taxyear
+    output = inctax.calculate()
+    assert output == EXPECTED_OUTPUT
 
 
 def test_4(reformfile2):  # pylint: disable=redefined-outer-name
@@ -168,5 +179,5 @@ def test_4(reformfile2):  # pylint: disable=redefined-outer-name
                          tax_year=taxyear,
                          policy_reform=reformfile2.name,
                          blowup_input_data=False)
-    inctax.calculate(write_output_file=False)
-    assert inctax.tax_year() == taxyear
+    output = inctax.calculate()
+    assert output == EXPECTED_OUTPUT
