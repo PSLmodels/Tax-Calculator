@@ -23,8 +23,8 @@ CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
 PUFCSV_PATH = os.path.join(CUR_PATH, '..', '..', 'puf.csv')
-AGGRES_PATH = os.path.join(CUR_PATH, 'pufcsv_agg_expected.txt')
-MTRRES_PATH = os.path.join(CUR_PATH, 'pufcsv_mtr_expected.txt')
+AGGRES_PATH = os.path.join(CUR_PATH, 'pufcsv_agg_expect.txt')
+MTRRES_PATH = os.path.join(CUR_PATH, 'pufcsv_mtr_expect.txt')
 import pytest
 import difflib
 import numpy as np
@@ -59,8 +59,15 @@ def test_agg():
         diff_lines.append(line)
     # test failure if there are any diff_lines
     if len(diff_lines) > 0:
-        for line in diff_lines:
-            sys.stdout.write(line)
+        new_filename = '{}{}'.format(AGGRES_PATH[:-10], 'actual.txt')
+        with open(new_filename, 'w') as new_file:
+            new_file.write(adtstr)
+        sys.stdout.write('*************************************************\n')
+        sys.stdout.write('*** NEW RESULTS IN pufcsv_agg_actual.txt FILE ***\n')
+        sys.stdout.write('*** if new OK, copy pufcsv_agg_actual.txt to  ***\n')
+        sys.stdout.write('***                 pufcsv_agg_expect.txt     ***\n')
+        sys.stdout.write('***            and rerun test.                ***\n')
+        sys.stdout.write('*************************************************\n')
         assert False
 
 
@@ -162,6 +169,13 @@ def test_mtr():
         diff_lines.append(line)
     # test failure if there are any diff_lines
     if len(diff_lines) > 0:
-        for line in diff_lines:
-            sys.stdout.write(line)
+        new_filename = '{}{}'.format(MTRRES_PATH[:-10], 'actual.txt')
+        with open(new_filename, 'w') as new_file:
+            new_file.write(res)
+        sys.stdout.write('*************************************************\n')
+        sys.stdout.write('*** NEW RESULTS IN pufcsv_mtr_actual.txt FILE ***\n')
+        sys.stdout.write('*** if new OK, copy pufcsv_mtr_actual.txt to  ***\n')
+        sys.stdout.write('***                 pufcsv_mtr_expect.txt     ***\n')
+        sys.stdout.write('***            and rerun test.                ***\n')
+        sys.stdout.write('*************************************************\n')
         assert False
