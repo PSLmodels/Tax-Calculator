@@ -1,27 +1,27 @@
-# This script generates policy experiment results,
-# and compare them with JCT Tax Expenditure or Budget Options if available.
 
-# It uses reforms stored in 'reforms.json',
-# and export and save all results and comparisons in a CSV file
+"""
+This script generates policy experiment results,
+and compare them with JCT Tax Expenditure or Budget Options if available.
 
-# puf.csv needs to be in the current directory.
-# Otherwise replace the file name with full path
+It uses reforms stored in 'reforms.json',
+and export and save all results and comparisons in a CSV file
 
-# USAGE: python Genrate_comparison_results.py
+puf.csv needs to be in the current directory.
+Otherwise replace the file name with full path
 
+USAGE: python Genrate_comparison_results.py
+"""
 
-from taxcalc import *
-import pandas as pd
-from pandas import DataFrame
-import numpy as np
 import json
 import copy
 import csv
+import pandas as pd
+from taxcalc import Policy, Records, Calculator, behavior
 
 
 # import all reforms from this JSON file
 with open("reforms.json") as json_file:
-    reforms_json = simplejson.load(json_file)
+    reforms_json = json.load(json_file)
 num_reforms = len(reforms_json)
 
 # create two calculators, one for baseline and the other for reforms
@@ -72,9 +72,9 @@ for i in range(1, num_reforms + 1):
 
     # run the current reform for 4 years
     this_reform_results = []
-    for j in range(1,start_year-2010):
+    for j in range(1, start_year-2010):
         output_type = reforms_json.get(this_reform).get("output_type")
-        
+
         c1.calc_all()
         baseline = getattr(c1.records, output_type)
         if has_behavior:
@@ -83,7 +83,7 @@ for i in range(1, num_reforms + 1):
         else:
             c2.calc_all()
             diff = getattr(c2.records, output_type) - baseline
-        
+
         weighted_sum_diff = (diff * c1.records.s006).sum()/1000000000
 
         this_reform_results.append(weighted_sum_diff)
