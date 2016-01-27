@@ -59,16 +59,15 @@ def test_agg():
         diff_lines.append(line)
     # test failure if there are any diff_lines
     if len(diff_lines) > 0:
-        # write diffs to stdout
-        # for line in diff_lines:
-        #     sys.stdout.write(line)
-        # write new adtstr to file
+        new_filename = '{}{}'.format(AGGRES_PATH[:-10], 'actual.txt')
+        with open(new_filename, 'w') as new_file:
+            new_file.write(adtstr)
         sys.stdout.write('*************************************************\n')
         sys.stdout.write('*** NEW RESULTS IN pufcsv_agg_actual.txt FILE ***\n')
+        sys.stdout.write('*** if new OK, copy pufcsv_agg_actual.txt to  ***\n')
+        sys.stdout.write('***                 pufcsv_agg_expect.txt     ***\n')
+        sys.stdout.write('***            and rerun test.                ***\n')
         sys.stdout.write('*************************************************\n')
-        new_agg_filename = '{}{}'.format(AGGRES_PATH[:-10], 'actual.txt')
-        with open(new_agg_filename, 'w') as new_agg_file:
-            new_agg_file.write(adtstr)
         assert False
 
 
@@ -170,14 +169,13 @@ def test_mtr():
         diff_lines.append(line)
     # test failure if there are any diff_lines
     if len(diff_lines) > 0:
-        # write diff_lines to stdout
-        # for line in diff_lines:
-        #     sys.stdout.write(line)
-        # write new res to file
+        new_filename = '{}{}'.format(MTRRES_PATH[:-10], 'actual.txt')
+        with open(new_filename, 'w') as new_file:
+            new_file.write(res)
         sys.stdout.write('*************************************************\n')
         sys.stdout.write('*** NEW RESULTS IN pufcsv_mtr_actual.txt FILE ***\n')
+        sys.stdout.write('*** if new OK, copy pufcsv_mtr_actual.txt to  ***\n')
+        sys.stdout.write('***                 pufcsv_mtr_expect.txt     ***\n')
+        sys.stdout.write('***            and rerun test.                ***\n')
         sys.stdout.write('*************************************************\n')
-        new_mtr_filename = '{}{}'.format(MTRRES_PATH[:-10], 'actual.txt')
-        with open(new_mtr_filename, 'w') as new_mtr_file:
-            new_mtr_file.write(res)
         assert False
