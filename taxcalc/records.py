@@ -10,6 +10,7 @@ Tax-Calculator tax-filing-unit Records class.
 import pandas as pd
 import numpy as np
 import os
+import six
 from numba import vectorize, float64
 from pkg_resources import resource_stream, Requirement
 
@@ -105,8 +106,11 @@ class Records(object):
         'TFORM', 'IE', 'TXST', 'XFPT', 'XFST',
         'XOCAH', 'XOCAWH', 'XOODEP', 'XOPAR', 'XTOT',
         'e00200', 'e00300', 'e00400', 'e00600', 'e00650', 'e00700', 'e00800',
+        'e00200p', 'e00200s',
         'e00900', 'e01000', 'e01100', 'e01200', 'e01400', 'e01500', 'e01700',
+        'e00900p', 'e00900s',
         'e02000', 'e02100', 'e02300', 'e02400', 'e02500', 'e03150', 'e03210',
+        'e02100p', 'e02100s',
         'e03220', 'e03230', 'e03260', 'e03270', 'e03240', 'e03290', 'e03300',
         'e03400', 'e03500', 'e00100', 'p04470', 'e04250', 'e04600', 'e04800',
         'e05100', 'e05200', 'e05800', 'e06000', 'e06200', 'e06300', 'e09600',
@@ -170,7 +174,7 @@ class Records(object):
         'e60550', 'e60720', 'e60430', 'e60500', 'e60340',
         'e60680', 'e60600', 'e60405', 'e60440', 'e60420',
         'e60410', 'e61400', 'e60660', 'e60480', 'e62000',
-        'e60250', 'e40223', '_sep', '_earned', '_sey',
+        'e60250', 'e40223', '_earned', '_sey',
         'c09400', '_feided', '_ymod', '_ymod1', '_posagi',
         'xtxcr1xtxcr10', '_xyztax', '_avail', 'e85070',
         '_taxinc', 'c04800', '_feitax', 'c05750', 'c24517',
@@ -206,8 +210,7 @@ class Records(object):
         '_amt20pc', 'c62800', 'c09600', '_ncu13',
         '_seywage', 'c33465', 'c33470', 'c33475', 'c33480',
         'c32840', '_tratio', 'c33200', 'c33400',
-        '_ieic', '_modagi', 'e00200p', 'e00200s',
-        'e00900p', 'e00900s', 'e02100p', 'e02100s',
+        '_ieic', '_modagi',
         '_val_ymax', '_preeitc', '_val_rtbase', '_val_rtless',
         '_dy', 'c11070', '_nctcr', '_ctcagi', 'c87482',
         'c87487', 'c87492', 'c87497', 'c87483', 'c87488',
@@ -504,7 +507,7 @@ class Records(object):
         """
         if isinstance(data, pd.DataFrame):
             tax_dta = data
-        elif isinstance(data, str):
+        elif isinstance(data, six.string_types):
             if data.endswith("gz"):
                 tax_dta = pd.read_csv(data, compression='gzip')
             else:
@@ -546,7 +549,7 @@ class Records(object):
         """
         if isinstance(weights, pd.DataFrame):
             WT = weights
-        elif isinstance(weights, str):
+        elif isinstance(weights, six.string_types):
             try:
                 if not os.path.exists(weights):
                     # grab weights out of EGG distribution
@@ -571,7 +574,7 @@ class Records(object):
         """
         if isinstance(blowup_factors, pd.DataFrame):
             BF = blowup_factors
-        elif isinstance(blowup_factors, str):
+        elif isinstance(blowup_factors, six.string_types):
             try:
                 if not os.path.exists(blowup_factors):
                     # grab blowup factors out of EGG distribution

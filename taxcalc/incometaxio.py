@@ -9,6 +9,8 @@ Tax-Calculator income tax input-output class.
 
 import os
 import sys
+import six
+import pandas as pd
 from .policy import Policy
 from .records import Records
 from .calculate import Calculator
@@ -21,16 +23,19 @@ class IncomeTaxIO(object):
 
     Parameters
     ----------
-    input_filename: string
-        name of INPUT file that is CSV formatted containing only variable
-        names in the Records.VALID_READ_VARS set; the CSV file may be
-        contained in a compressed GZIP file with a name ending in '.gz'.
+    input_data: string or Pandas DataFrame
+        string is name of INPUT file that is CSV formatted containing only
+        variable names in the Records.VALID_READ_VARS set, or
+        Pandas DataFrame is INPUT data containing only variable names in
+        the Records.VALID_READ_VARS set.
 
     tax_year: integer
         calendar year for which income taxes will be computed for INPUT.
 
-    reform_filename: string or None
-        name of optional REFORM file with None implying current-law policy.
+    policy_reform: None or string or dictionary
+        None implies no policy reform (current-law policy), or
+        string is name of optional REFORM file, or
+        dictionary suitable for passing to Policy.implement_reform() method.
 
     blowup_input_data: boolean
         whether or not to age record data from data year to tax_year.
@@ -38,7 +43,8 @@ class IncomeTaxIO(object):
     Raises
     ------
     ValueError:
-        if file with input_filename does not exist.
+        if file specified by input_data string does not exist.
+        if policy_reform is neither None, string, nor dictionary.
         if tax_year before Policy start_year.
         if tax_year after Policy end_year.
 
@@ -47,41 +53,51 @@ class IncomeTaxIO(object):
     class instance: IncomeTaxIO
     """
 
-    def __init__(self,
-                 input_filename,
-                 tax_year,
-                 reform_filename,
-                 blowup_input_data):
+    def __init__(self, input_data, tax_year, policy_reform, blowup_input_data):
         """
         IncomeTaxIO class constructor.
         """
+        # pylint: disable=too-many-statements
         # pylint: disable=too-many-branches
-        # check that input_filename ends with ".csv", ".csv.gz" or ".gz"
-        if input_filename.endswith('.csv'):
-            inp_str = '{}-{}'.format(input_filename[:-4], str(tax_year)[2:])
-        elif input_filename.endswith('.csv.gz'):
-            inp_str = '{}-{}'.format(input_filename[:-7], str(tax_year)[2:])
-        elif input_filename.endswith('.gz'):
-            inp_str = '{}-{}'.format(input_filename[:-3], str(tax_year)[2:])
-        else:
-            msg = 'INPUT file named {} does not end in {}'
-            raise ValueError(msg.format(input_filename,
-                                        '".csv", ".csv.gz", or ".gz"'))
-        # construct output_filename and delete old output file if it exists
-        if reform_filename:
-            if reform_filename.endswith('.json'):
-                ref_str = '-{}'.format(reform_filename[:-5])
+        if isinstance(input_data, six.string_types):
+            # check that input_data string ends with ".csv"
+            if input_data.endswith('.csv'):
+                inp = '{}-{}'.format(input_data[:-4], str(tax_year)[2:])
+                self._using_input_file = True
             else:
-                ref_str = '-{}'.format(reform_filename)
+                msg = 'INPUT file named {} does not end in .csv'
+                raise ValueError(msg.format(input_data))
+        elif isinstance(input_data, pd.DataFrame):
+            inp = 'df-{}'.format(str(tax_year)[2:])
+            self._using_input_file = False
         else:
-            ref_str = ''
-        self._output_filename = '{}.out-inctax{}'.format(inp_str, ref_str)
+            msg = 'INPUT is neither string nor Pandas DataFrame'
+            raise ValueError(msg)
+        # construct output_filename and delete old output file if it exists
+        if policy_reform:
+            if isinstance(policy_reform, six.string_types):
+                if policy_reform.endswith('.json'):
+                    ref = '-{}'.format(policy_reform[:-5])
+                else:
+                    ref = '-{}'.format(policy_reform)
+                self._using_reform_file = True
+            elif isinstance(policy_reform, dict):
+                ref = ''
+                self._using_reform_file = False
+            else:
+                msg = 'IncomeTaxIO.ctor reform is neither None, str, nor dict'
+                raise ValueError(msg)
+        else:  # if policy_reform is None
+            ref = ''
+            self._using_reform_file = True
+        self._output_filename = '{}.out-inctax{}'.format(inp, ref)
         if os.path.isfile(self._output_filename):
             os.remove(self._output_filename)
-        # check for existence of file named input_filename
-        if not os.path.isfile(input_filename):
-            msg = 'INPUT file named {} could not be found'
-            raise ValueError(msg.format(input_filename))
+        # check for existence of INPUT file
+        if self._using_input_file:
+            if not os.path.isfile(input_data):
+                msg = 'INPUT file named {} could not be found'
+                raise ValueError(msg.format(input_data))
         # create Policy object assuming current-law policy
         policy = Policy()
         # check for valid tax_year value
@@ -91,19 +107,22 @@ class IncomeTaxIO(object):
         if tax_year > policy.end_year:
             msg = 'tax_year {} greater than policy.end_year {}'
             raise ValueError(msg.format(tax_year, policy.end_year))
-        # implement policy reform if reform file is specified
-        if reform_filename:
-            reform = Policy.read_json_reform_file(reform_filename)
+        # implement policy reform if one is specified
+        if policy_reform:
+            if self._using_reform_file:
+                reform = Policy.read_json_reform_file(policy_reform)
+            else:
+                reform = policy_reform
             policy.implement_reform(reform)
         # set tax policy parameters to specified tax_year
         policy.set_year(tax_year)
         # read input file contents into Records object
         if blowup_input_data:
-            recs = Records(data=input_filename,
+            recs = Records(data=input_data,
                            start_year=Records.PUF_YEAR,
                            consider_imputations=True)
         else:
-            recs = Records(data=input_filename,
+            recs = Records(data=input_data,
                            start_year=tax_year,
                            consider_imputations=False)
         # create Calculator object
@@ -116,20 +135,26 @@ class IncomeTaxIO(object):
         """
         return self._calc.policy.current_year
 
-    def calculate(self, write_output_file=True, output_weights=False):
+    def calculate(self, writing_output_file=False, output_weights=False):
         """
-        Calculate taxes for all INPUT lines and write OUTPUT to file.
+        Calculate taxes for all INPUT lines and write or return OUTPUT lines.
+
+        Output lines will be written to file if IncomeTaxIO constructor
+        was passed an input_filename string and a reform string or None,
+        and if writing_output_file is True.
 
         Parameters
         ----------
-        write_output_file: boolean
+        writing_output_file: boolean
 
         output_weights: boolean
             whether or not to use s006 as an additional output variable.
 
         Returns
         -------
-        nothing: void
+        output_lines: string
+            empty string if OUTPUT lines are written to a file;
+            otherwise output_lines contain all OUTPUT lines
         """
         output = {}  # dictionary indexed by Records index for filing unit
         self._calc.calc_all()
@@ -138,9 +163,16 @@ class IncomeTaxIO(object):
                                               extract_weight=output_weights)
             ovar[6] = 0.0  # no FICA tax liability included in output
             output[idx] = ovar
-        # write contents of output dictionary to OUTPUT file
-        if write_output_file:
+        assert len(output) == self._calc.records.dim
+        # handle disposition of calculated output
+        olines = ''
+        writing_possible = self._using_input_file and self._using_reform_file
+        if writing_possible and writing_output_file:
             SimpleTaxIO.write_output_file(output, self._output_filename)
+        else:
+            for idx in range(0, len(output)):
+                olines += SimpleTaxIO.construct_output_line(output[idx])
+        return olines
 
     @staticmethod
     def show_iovar_definitions():
