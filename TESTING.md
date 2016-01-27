@@ -134,3 +134,22 @@ pytest suite that demonstrates how the source code produces an
 incorrect result (that is, the test fails because the result is
 incorrect).  Then change the source code to fix the bug and
 demonstrate that the newly-added test, which used to fail, now passes.
+
+Updating the Test Results
+-------------------------
+
+After an enhancement or bug fix, you may be convinced that the new and
+different test results are, in fact, correct.  How do you eliminate
+the test failures?  For all but the few tests that require the
+```puf.csv``` file as input, simply edit the appropriate
+```taxcalc/tests/test_*.py``` file so that the test passes when you
+rerun the pytests.  If there are failures for the tests that require
+the ```puf.csv``` file as input, the new test results will be written
+to a file named ```pufcsv_*_actual.txt``` (where the value of `*`
+depends on the test).  Use any diff utility to see the differences
+between this new ```pufcsv_*_actual.txt``` file and the old
+```pufcsv_*_expect.txt``` file.  Then copy the new ```actual``` file
+to the ```expect``` overwriting the old expected test results.  When
+all this is done, rerunning the pytests should produce no failures.
+If so, then delete any ```pufcsv_*_actual.txt``` files and commit all
+the revised ```test_*.py``` and ```pufcsv_*_expect.txt``` files.
