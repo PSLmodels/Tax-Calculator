@@ -34,6 +34,17 @@ EXPECTED_OUTPUT = (  # from using RAWINPUTFILE_CONTENTS as input
     '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
 )
 
+EXPECTED_OUTPUT_MTR = (  # from using RAWINPUTFILE_CONTENTS as input
+    '1. 2021 0 0.00 0.00 0.00 -7.65 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
+    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
+    '2. 2021 0 0.00 0.00 0.00 -7.65 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
+    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
+    '3. 2021 0 0.00 0.00 0.00 -7.65 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
+    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
+    '4. 2021 0 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
+    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
+)
+
 
 @pytest.yield_fixture
 def rawinputfile():
@@ -61,7 +72,7 @@ def test_1(rawinputfile):  # pylint: disable=redefined-outer-name
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
                          policy_reform=None,
-                         blowup_input_data=False)
+                         blowup_input_data=True)
     assert inctax.tax_year() == taxyear
 
 
@@ -79,8 +90,13 @@ def test_2(rawinputfile):  # pylint: disable=redefined-outer-name
                          tax_year=taxyear,
                          policy_reform=reform_dict,
                          blowup_input_data=False)
-    output = inctax.calculate()
-    assert output == EXPECTED_OUTPUT
+    output = inctax.calculate(output_mtr=True)
+    print "============================================================="
+    print output
+    print "============================================================="
+    print EXPECTED_OUTPUT_MTR
+    print "============================================================="
+    assert output == EXPECTED_OUTPUT_MTR
 
 
 REFORM_CONTENTS = """
