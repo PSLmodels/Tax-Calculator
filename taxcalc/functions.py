@@ -11,34 +11,44 @@ import copy
 def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
             e11055, e00250, e30100, FICA_ss_trt, FICA_mc_trt,
             e00900p, e00900s, e02100p, e02100s):
-    # Earned Income and FICA #
+    """
+    EI_FICA function: computes total earned income and regular FICA taxes.
+    """
+    # compute _sey
+    sey_p = e00900p + e02100p
+    sey_s = e00900s + e02100s
+    _sey = sey_p + sey_s  # total self-employment income for filing unit
 
-    _sey_p = e00900p + e02100p
-    _sey_s = e00900s + e02100s
-    _sey = _sey_p + _sey_s
+    # compute taxable earnings for OASDI FICA ('was' denotes 'wage and salary')
+    sey_frac = 1.0 - 0.5 * (FICA_ss_trt + FICA_mc_trt)
+    txearn_was_p = min(SS_Earnings_c, e00200p)
+    txearn_was_s = min(SS_Earnings_c, e00200s)
+    txearn_sey_p = min(max(0, sey_p * sey_frac), SS_Earnings_c - txearn_was_p)
+    txearn_sey_s = min(max(0, sey_s * sey_frac), SS_Earnings_c - txearn_was_s)
 
-    FICA_trt = FICA_mc_trt + FICA_ss_trt
-    _fica_ss_head = max(0, FICA_ss_trt * min(SS_Earnings_c, e00200p +
-                        max(0, _sey_p) * (1 - 0.5 * FICA_trt)))
-    _fica_ss_spouse = max(0, FICA_ss_trt * min(SS_Earnings_c, e00200s +
-                          max(0, _sey_s) * (1 - 0.5 * FICA_trt)))
+    # compute OASDI FICA taxes for was and sey taxable earnings separately
+    fica_ss_was_p = FICA_ss_trt * txearn_was_p
+    fica_ss_was_s = FICA_ss_trt * txearn_was_s
+    fica_ss_sey_p = FICA_ss_trt * txearn_sey_p
+    fica_ss_sey_s = FICA_ss_trt * txearn_sey_s
 
-    _fica_ss = _fica_ss_head + _fica_ss_spouse
-    _fica_mc = max(0, FICA_mc_trt * (e00200 + max(0, _sey) *
-                   (1 - 0.5 * (FICA_mc_trt + FICA_ss_trt))))
+    # compute regular HI FICA taxes for all was and sey earnings separately
+    fica_mc_was_p = FICA_mc_trt * e00200p
+    fica_mc_was_s = FICA_mc_trt * e00200s
+    fica_mc_sey_p = FICA_mc_trt * max(0, sey_p * sey_frac)
+    fica_mc_sey_s = FICA_mc_trt * max(0, sey_s * sey_frac)
 
-    _fica = _fica_mc + _fica_ss
+    # compute total regular FICA taxes for filing unit
+    fica_ss = fica_ss_was_p + fica_ss_was_s + fica_ss_sey_p + fica_ss_sey_s
+    fica_mc = fica_mc_was_p + fica_mc_was_s + fica_mc_sey_p + fica_mc_sey_s
+    _fica = fica_ss + fica_mc
 
-    c09400 = max(0, _fica - (FICA_ss_trt + FICA_mc_trt) * e00200)
+    # compute AGI deduction for "employer share" of self-employment FICA taxes
+    c09400 = fica_ss_sey_p + fica_ss_sey_s + fica_mc_sey_p + fica_mc_sey_s
+    c03260 = 0.5 * c09400  # half of c09400 represents the "employer share"
 
-    # if c09400 <= 14204:
-    #    c03260 = 0.5751 * c09400
-    # else:
-    #    c03260 = 0.5 * c09400 + 10067
-    c03260 = 0.5 * c09400
-
+    # compute _earned
     c11055 = e11055
-
     _earned = max(0, e00200 + e00250 + c11055 + e30100 + _sey - c03260)
 
     return (_sey, _fica, c09400, c03260, c11055, _earned)
