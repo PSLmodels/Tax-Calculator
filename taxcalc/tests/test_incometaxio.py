@@ -17,10 +17,10 @@ import tempfile
 RAWINPUTFILE_FUNITS = 4
 RAWINPUTFILE_CONTENTS = (
     u'RECID,MARS\n'
-    u'1,2\n'
-    u'2,1\n'
-    u'3,4\n'
-    u'4,6\n'
+    u'    1,   2\n'
+    u'    2,   1\n'
+    u'    3,   4\n'
+    u'    4,   6\n'
 )
 
 EXPECTED_OUTPUT = (  # from using RAWINPUTFILE_CONTENTS as input
