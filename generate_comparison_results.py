@@ -9,7 +9,7 @@ and export and save all results and comparisons in a CSV file
 puf.csv needs to be in the current directory.
 Otherwise replace the file name with full path
 
-USAGE: python Genrate_comparison_results.py
+USAGE: python reform_results.py
 """
 
 import json
@@ -96,28 +96,33 @@ for i in range(1, num_reforms + 1):
 
 
 # export all results to a CSV file
-writer = csv.writer(open('comparison_results.csv', 'wb'))
-
+# write all results to a text file
+ofile = open('reform_results.txt', 'w')
 for i in range(1, num_reforms + 1):
-    this_reform = 'r' + str(i)
-    writer.writerow([""])
+    reform = reforms_json['r' + str(i)]
+    ofile.write('""\n')
+    
+    if "section_name" in reform:
+        ofile.write('{}\n'.format(reform["section_name"]))
+        ofile.write('""\n')
 
-    if "section_name" in reforms_json[this_reform]:
-        writer.writerow([reforms_json[this_reform]["section_name"]])
-        writer.writerow([""])
-
-    reform_name = reforms_json[this_reform]["name"]
-    writer.writerow([reform_name])
+    reform_name = reform["name"]
+    ofile.write('{}\n'.format(reform_name))
 
     value = results[reform_name]
-    writer.writerow(["OSPC", round(value[0], 1), round(value[1], 1),
-                     round(value[2], 1), round(value[3], 1)])
-
-    if "Tax Expenditure" in reforms_json[this_reform]["compare_with"]:
-        comp = reforms_json[this_reform]["compare_with"]["Tax Expenditure"]
-        writer.writerow(["Tax Expenditure",
-                         comp[0], comp[1], comp[2], comp[3]])
-
-    if "Budget Options" in reforms_json[this_reform]["compare_with"]:
-        comp = reforms_json[this_reform]["compare_with"]["Budget Options"]
-        writer.writerow(["Budget Options", comp[0], comp[1], comp[2], comp[3]])
+    ofile.write('Tax-Calculator')
+    ofile.write(',{:.1f},{:.1f},{:.1f},{:.1f}\n'.format(value[0], value[1],
+                                                        value[2], value[3]))
+        
+    if "Tax Expenditure" in reform["compare_with"]:
+        comp = reform["compare_with"]["Tax Expenditure"]
+        ofile.write('Tax Expenditure')
+        ofile.write(',{:.0f},{:.0f},{:.0f},{:.0f}\n'.format(comp[0], comp[1],
+                                                            comp[2], comp[3]))
+                                                                
+    if "Budget Options" in reform["compare_with"]:
+        comp = reform["compare_with"]["Budget Options"]
+        ofile.write('Budget Options')
+        ofile.write(',{:.0f},{:.0f},{:.0f},{:.0f}\n'.format(comp[0], comp[1],
+                                                            comp[2], comp[3]))
+ofile.close()
