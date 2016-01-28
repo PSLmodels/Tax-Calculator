@@ -20,7 +20,7 @@ from taxcalc import Policy, Records, Calculator, behavior
 
 
 # import all reforms from this JSON file
-with open("reforms.json") as json_file:
+with open("../../reforms.json") as json_file:
     reforms_json = json.load(json_file)
 num_reforms = len(reforms_json)
 
