@@ -72,7 +72,7 @@ for i in range(1, num_reforms + 1):
 
     # run the current reform for 4 years
     this_reform_results = []
-    for j in range(1, start_year-2010):
+    for j in range(1, start_year - 2010):
         output_type = reforms_json.get(this_reform).get("output_type")
 
         c1.calc_all()
@@ -84,7 +84,7 @@ for i in range(1, num_reforms + 1):
             c2.calc_all()
             diff = getattr(c2.records, output_type) - baseline
 
-        weighted_sum_diff = (diff * c1.records.s006).sum()/1000000000
+        weighted_sum_diff = (diff * c1.records.s006).sum() / 1000000000
 
         this_reform_results.append(weighted_sum_diff)
 
