@@ -4,9 +4,9 @@ This script generates policy experiment results,
 and compare them with JCT Tax Expenditure or Budget Options if available.
 
 It uses reforms stored in 'reforms.json',
-and export and save all results and comparisons in a CSV file
+and export and save all results and comparisons in a txt file
 
-puf.csv needs to be in the current directory.
+puf.csv needs to be in the top level of Tax-calculator.
 Otherwise replace the file name with full path
 
 USAGE: python reform_results.py
@@ -25,7 +25,7 @@ with open("reforms.json") as json_file:
 num_reforms = len(reforms_json)
 
 # create two calculators, one for baseline and the other for reforms
-tax_dta1 = pd.read_csv("puf.csv")
+tax_dta1 = pd.read_csv("../../puf.csv")
 records1 = Records(tax_dta1)
 policy1 = Policy(start_year=2013)
 calc1 = Calculator(records=records1, policy=policy1)
@@ -101,7 +101,7 @@ ofile = open('reform_results.txt', 'w')
 for i in range(1, num_reforms + 1):
     reform = reforms_json['r' + str(i)]
     ofile.write('""\n')
-    
+
     if "section_name" in reform:
         ofile.write('{}\n'.format(reform["section_name"]))
         ofile.write('""\n')
@@ -113,13 +113,13 @@ for i in range(1, num_reforms + 1):
     ofile.write('Tax-Calculator')
     ofile.write(',{:.1f},{:.1f},{:.1f},{:.1f}\n'.format(value[0], value[1],
                                                         value[2], value[3]))
-        
+
     if "Tax Expenditure" in reform["compare_with"]:
         comp = reform["compare_with"]["Tax Expenditure"]
         ofile.write('Tax Expenditure')
         ofile.write(',{:.0f},{:.0f},{:.0f},{:.0f}\n'.format(comp[0], comp[1],
                                                             comp[2], comp[3]))
-                                                                
+
     if "Budget Options" in reform["compare_with"]:
         comp = reform["compare_with"]["Budget Options"]
         ofile.write('Budget Options')
