@@ -91,11 +91,6 @@ def test_2(rawinputfile):  # pylint: disable=redefined-outer-name
                          policy_reform=reform_dict,
                          blowup_input_data=False)
     output = inctax.calculate(output_mtr=True)
-    print "============================================================="
-    print output
-    print "============================================================="
-    print EXPECTED_OUTPUT_MTR
-    print "============================================================="
     assert output == EXPECTED_OUTPUT_MTR
 
 
