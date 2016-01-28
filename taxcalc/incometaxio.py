@@ -152,8 +152,8 @@ class IncomeTaxIO(object):
             whether or not to use s006 as an additional output variable.
 
         output_mtr: boolean
-            whether or not write calculated marginal tax rates instead of
-            zeros.
+            whether or not write calculated marginal federal income tax
+            rate instead of zero.
 
         Returns
         -------
@@ -163,8 +163,7 @@ class IncomeTaxIO(object):
         """
         output = {}  # dictionary indexed by Records index for filing unit
         if output_mtr:
-            (mtr_fica, mtr_iitx,
-             _) = self._calc.mtr(wrt_full_compensation=False)
+            (_, mtr_iitx, _) = self._calc.mtr(wrt_full_compensation=False)
         else:
             self._calc.calc_all()
         for idx in range(0, self._calc.records.dim):
@@ -173,7 +172,6 @@ class IncomeTaxIO(object):
             ovar[6] = 0.0  # no FICA tax liability included in output
             if output_mtr:
                 ovar[7] = 100 * mtr_iitx[idx]
-                ovar[9] = 100 * mtr_fica[idx]
             output[idx] = ovar
         assert len(output) == self._calc.records.dim
         # handle disposition of calculated output
@@ -213,7 +211,7 @@ class IncomeTaxIO(object):
                '[ 6] FICA (OASDI+HI) tax liability [ALWAYS ZERO]\n'
                '[ 7] marginal federal inc tax rate [ZERO UNLESS --mtr USED]\n'
                '[ 8] marginal state income tax rate [ALWAYS ZERO]\n'
-               '[ 9] marginal FICA tax rate [ZERO UNLESS --mtr USED]\n'
+               '[ 9] marginal FICA tax rate [ALWAYS ZERO]\n'
                '[10] federal adjusted gross income, AGI\n'
                '[11] unemployment (UI) benefits included in AGI\n'
                '[12] social security (OASDI) benefits included in AGI\n'
