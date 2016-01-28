@@ -72,6 +72,12 @@ def main():
                               '--blowup option is used'),
                         default=False,
                         action="store_true")
+    parser.add_argument('--mtr',
+                        help=('optional flag that causes OUTPUT to include '
+                              'calculated marginal tax rates expressed in '
+                              'percentage terms (instead of zeros).'),
+                        default=False,
+                        action="store_true")
     parser.add_argument('INPUT',
                         help=('INPUT is name of required CSV file that '
                               'contains a subset of variables included in '
@@ -91,7 +97,9 @@ def main():
                          tax_year=args.TAXYEAR,
                          policy_reform=args.reform,
                          blowup_input_data=args.blowup)
-    inctax.calculate(writing_output_file=True, output_weights=args.weights)
+    inctax.calculate(writing_output_file=True,
+                     output_weights=args.weights,
+                     output_mtr=args.mtr)
     # return no-error exit code
     return 0
 # end of main function code
