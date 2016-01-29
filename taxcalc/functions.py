@@ -1615,7 +1615,8 @@ def DEITC(c08795, c59660, c09200, c07100, c08800, c05800, _avail, e11601,
 def IITAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
           e11450, e11500, e82040, e09900, e11400, e11300, e11200, e11100,
           e11550, e09710, e09720, e10000, _fica, _personal_credit, n24,
-          CTC_additional):
+          CTC_additional, CTC_additional_ps, CTC_additional_prt, c00100,
+          _sep, MARS):
 
     _refund = (c59660 + c11070 + c10960 + c10950 + c11600 + e11580 + e11450 +
                e11500 + _personal_credit)
@@ -1624,11 +1625,17 @@ def IITAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
 
     _combined = _iitax + _fica
 
-    partially_refundable_CTC = max(0, min(_combined, CTC_additional * n24))
+    potential_add_CTC = max(0, min(_combined, CTC_additional * n24))
+    phaseout = (c00100 -
+                CTC_additional_ps[MARS - 1]) * CTC_additional_prt / _sep
+    final_add_CTC = max(0, potential_add_CTC - max(0, phaseout))
 
-    _iitax = _iitax - partially_refundable_CTC
+    _iitax = _iitax - final_add_CTC
 
-    _refund = _refund + partially_refundable_CTC
+    # updated combined tax liabilities after applying the credit
+    _combined = _iitax + _fica
+
+    _refund = _refund + final_add_CTC
 
     _payments = (c59660 + c10950 + c10960 + c11070 + e10000 + e11550 +
                  e11450 + e11500)
