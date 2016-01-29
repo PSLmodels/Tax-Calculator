@@ -5,6 +5,7 @@ Tests for Tax-Calculator SimpleTaxIO class.
 # pep8 --ignore=E402 test_simpletaxio.py
 # pylint --disable=locally-disabled --extension-pkg-whitelist=numpy \
 #        test_simpletaxio.py
+# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import os
 import sys
