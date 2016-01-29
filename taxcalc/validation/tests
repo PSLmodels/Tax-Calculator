@@ -42,6 +42,7 @@ if [[ "$ALLTESTS" == true ]] ; then
 fi
 bash test c13 . &
 bash test c14 . &
+bash test c15 . &
 wait
 echo "FINISHED WITH VALIDATION TESTS : `date`"
 if [[ -f "testerror" ]]; then
