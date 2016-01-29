@@ -1123,7 +1123,36 @@
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value":     [0.0]        
+        "value":     [0]        
+    },
+    "_CTC_additional_ps":{
+        "long_name": "Additional additional child tax credit phaseout starting AGI (Lee-Rubio)",
+	"description": "The amount of additional additional child tax credit is reduced for taxpayers with AGI higher than this level. ",
+        "irs_ref": "",
+        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualificaiton rules for the Child Tax Credit under current law. ",
+        "start_year": 2013,
+        "col_var": ["single", "joint", "separate", "head of household"], 
+        "row_label": ["2013", "2014", "2015"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [[0, 0, 0, 0],
+		      [0, 0, 0, 0],
+		      [150000, 300000, 150000, 200000]]     
+    },
+    "_CTC_additional_prt":{
+        "long_name": "Additional additional child tax credit amount phaseout rate (Lee-Rubio)",
+	"description": "The amount of additional additional child tax credit is reduced at this rate per dollor exceeding the phaseout starting AGI. ",
+        "irs_ref": "",
+        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualificaiton rules for the Child Tax Credit under current law. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013", "2014", "2015"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [0.0,
+		      0.0,
+		      0.04]        
     },
     "_ACTC_ChildNum":{
         "long_name": "Additional child tax credit minimum number of qualified children",
