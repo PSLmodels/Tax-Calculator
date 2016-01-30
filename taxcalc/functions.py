@@ -1092,12 +1092,7 @@ def F2441(_earned, _fixeic, e59560, MARS, f2441, DCC_c, e00200p, e00200s,
 
     c32800 = min(max(e32800, e32750 + e32775), _dclim)
 
-    # TODO deal with these types
-    _earned = float(_earned)
-    c32880 = float(c32880)
-    c32890 = float(c32890)
-
-    return _earned, c32880, c32890, _dclim, c32800
+    return (_earned, c32880, c32890, _dclim, c32800)
 
 
 @iterate_jit(nopython=True)
@@ -1130,7 +1125,7 @@ def DepCareBen(c32800, _cmp, f2441, MARS, c32880, c32890, e33420, e33430,
 
     c33000 = max(0, min(c32800, min(c32880, c32890)))
 
-    return _seywage, c33465, c33470, c33475, c33480, c32840, c32800, c33000
+    return (_seywage, c33465, c33470, c33475, c33480, c32840, c32800, c33000)
 
 
 @iterate_jit(nopython=True)
@@ -1163,7 +1158,7 @@ def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt,
     else:
         c07180 = c33400
 
-    return _tratio, c33200, c33400, c07180, c33000
+    return (_tratio, c33200, c33400, c07180, c33000)
 
 
 @iterate_jit(nopython=True, puf=True)
