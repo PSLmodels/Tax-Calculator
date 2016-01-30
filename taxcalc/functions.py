@@ -821,7 +821,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
     c05750 = max(c05100 + _parents + c05700, e74400)
     _taxbc = c05750
 
-    return (e00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
+    return (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
             c24580, _dwks12, c24517, c24520, c24530, _dwks16,
             _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
             _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
@@ -829,8 +829,6 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
             c59450, c59460, _line17, _line19, _line22, _line30, _line31,
             _line32, _line36, _line33, _line34, _line35, c59485, c59490,
             _s1291, _parents, _taxbc, c05750)
-
-# TODO should we return c00650 instead of e00650?? Would need to change tests
 
 
 @iterate_jit(nopython=True, puf=True)
@@ -1094,12 +1092,7 @@ def F2441(_earned, _fixeic, e59560, MARS, f2441, DCC_c, e00200p, e00200s,
 
     c32800 = min(max(e32800, e32750 + e32775), _dclim)
 
-    # TODO deal with these types
-    _earned = float(_earned)
-    c32880 = float(c32880)
-    c32890 = float(c32890)
-
-    return _earned, c32880, c32890, _dclim, c32800
+    return (_earned, c32880, c32890, _dclim, c32800)
 
 
 @iterate_jit(nopython=True)
@@ -1132,7 +1125,7 @@ def DepCareBen(c32800, _cmp, f2441, MARS, c32880, c32890, e33420, e33430,
 
     c33000 = max(0, min(c32800, min(c32880, c32890)))
 
-    return _seywage, c33465, c33470, c33475, c33480, c32840, c32800, c33000
+    return (_seywage, c33465, c33470, c33475, c33480, c32840, c32800, c33000)
 
 
 @iterate_jit(nopython=True)
@@ -1165,7 +1158,7 @@ def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt,
     else:
         c07180 = c33400
 
-    return _tratio, c33200, c33400, c07180, c33000
+    return (_tratio, c33200, c33400, c07180, c33000)
 
 
 @iterate_jit(nopython=True, puf=True)
@@ -1239,8 +1232,6 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
     if c59660 == 0:
         c59560 = 0.
 
-    # UNUSED-LOCAL-VARIABLE: _eitc = c59660
-
     return (_ieic, EICYB1, EICYB2, EICYB3, _modagi, c59560, c59660, _val_ymax,
             _preeitc, _val_rtbase, _val_rtless, _dy)
 
@@ -1264,9 +1255,6 @@ def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
     if _ctcagi > CTC_ps[MARS - 1] and _exact != 1:
         _precrd = max(0., _precrd - CTC_prt *
                       max(0., _ctcagi - CTC_ps[MARS - 1]))
-
-    # TODO get rid of this type declaration
-    _precrd = float(_precrd)
 
     return (_nctcr, _precrd, _ctcagi)
 
@@ -1642,6 +1630,7 @@ def IITAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
           e11450, e11500, e82040, e11550, e10000, _fica, _personal_credit, n24,
           CTC_additional, CTC_additional_ps, CTC_additional_prt, c00100,
           _sep, MARS):
+
     """
     IITAX function: ...
     """
@@ -1670,9 +1659,6 @@ def IITAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
 
     c10300 = max(0, c09200 - _payments)
 
-    # Ignore refundable partof _eitc
-    # TODO Remove this _eitc
-    # if c09200 <= _eitc:
     _eitc = c59660
 
     return (c10300, _eitc, _refund, _iitax, _combined)

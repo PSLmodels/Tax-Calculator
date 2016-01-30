@@ -536,7 +536,7 @@ class Records(object):
         UNREAD_VARS = Records.VALID_READ_VARS - READ_VARS
         ZEROED_VARS = Records.CALCULATED_VARS | UNREAD_VARS
         for varname in ZEROED_VARS:
-            setattr(self, varname, np.zeros((self.dim,)))
+            setattr(self, varname, np.zeros((self.dim,)))  # float zeros
         # create variables derived from MARS, which is in MUST_READ_VARS
         self._num = np.where(self.MARS == 2,
                              2., 1.)
