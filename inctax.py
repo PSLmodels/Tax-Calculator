@@ -74,9 +74,10 @@ def main():
                         action="store_true")
     parser.add_argument('--mtr',
                         help=('optional flag that causes OUTPUT to include '
-                              'calculated marginal federal income tax rate '
-                              'expressed in percentage terms (instead of '
-                              'zero).'),
+                              'marginal federal income tax rate calculated '
+                              'with respect to a small increase in taxpayer '
+                              'earnings and expressed in percentage terms '
+                              '(instead of OUTPUT variable 7 being zero).'),
                         default=False,
                         action="store_true")
     parser.add_argument('INPUT',
