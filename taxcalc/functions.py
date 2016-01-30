@@ -1639,8 +1639,7 @@ def DEITC(c59660, c07100, c08800, c05800, _avail, e11601, e07170, _othertax):
 
 @iterate_jit(nopython=True)
 def IITAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
-          e11450, e11500, e82040, e09900, e11400, e11300, e11200, e11100,
-          e11550, e09710, e09720, e10000, _fica, _personal_credit, n24,
+          e11450, e11500, e82040, e11550, e10000, _fica, _personal_credit, n24,
           CTC_additional, CTC_additional_ps, CTC_additional_prt, c00100,
           _sep, MARS):
     """
