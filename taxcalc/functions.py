@@ -1511,16 +1511,10 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, e00200,
         c82880 = max(0, _earned)
         if _exact == 1:
             c82880 = e82880
-        h82880 = 0
         c82885 = max(0., c82880 - ACTC_Income_thd)
         c82890 = ACTC_rt * c82885
-    # else:
-    #    c82925, c82930, c82935, c82880, h82880, c82885, c82890 = (0., 0., 0.,
-    #                                                              0., 0., 0.,
-    #                                                              0.)
 
     # Part II of 2005 form 8812
-
     if _nctcr >= ACTC_ChildNum and c82890 < c82935:
         c82900 = 0.5 * (FICA_mc_trt + FICA_ss_trt) *\
             min(min(SS_Earnings_c, c82880), e00200)
@@ -1529,8 +1523,6 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, e00200,
         c82915 = c59660 + e11200
         c82920 = max(0., c82910 - c82915)
         c82937 = max(c82890, c82920)
-    # else:
-    #   c82900, c82905, c82910, c82915, c82920, c82937 = 0., 0., 0., 0., 0., 0.
 
     # Part II of 2005 form 8812
     if _nctcr > 0 and _nctcr <= 2 and c82890 > 0:
@@ -1544,7 +1536,7 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, e00200,
     if e82915 > 0 and abs(e82940 - c82940) > 100:
         _othadd = e11070 - c11070
 
-    return (c82925, c82930, c82935, c82880, h82880, c82885, c82890,
+    return (c82925, c82930, c82935, c82880, c82885, c82890,
             c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070,
             _othadd)
 
