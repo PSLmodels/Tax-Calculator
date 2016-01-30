@@ -1232,8 +1232,6 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
     if c59660 == 0:
         c59560 = 0.
 
-    # UNUSED-LOCAL-VARIABLE: _eitc = c59660
-
     return (_ieic, EICYB1, EICYB2, EICYB3, _modagi, c59560, c59660, _val_ymax,
             _preeitc, _val_rtbase, _val_rtless, _dy)
 
@@ -1628,7 +1626,7 @@ def DEITC(c59660, c07100, c08800, c05800, _avail, e11601, e07170, _othertax):
 
 
 @iterate_jit(nopython=True)
-def IITAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
+def IITAX(c09200, c59660, c11070, c10960, c11600, c10950, e11580,
           e11450, e11500, e82040,
           e11550, e10000, _fica, _personal_credit, n24, CTC_additional):
     """
@@ -1652,9 +1650,6 @@ def IITAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
 
     c10300 = max(0, c09200 - _payments)
 
-    # Ignore refundable partof _eitc
-    # TODO Remove this _eitc
-    # if c09200 <= _eitc:
     _eitc = c59660
 
     return (c10300, _eitc, _refund, _iitax, _combined)
