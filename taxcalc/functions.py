@@ -821,7 +821,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
     c05750 = max(c05100 + _parents + c05700, e74400)
     _taxbc = c05750
 
-    return (e00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
+    return (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
             c24580, _dwks12, c24517, c24520, c24530, _dwks16,
             _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
             _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
@@ -829,8 +829,6 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
             c59450, c59460, _line17, _line19, _line22, _line30, _line31,
             _line32, _line36, _line33, _line34, _line35, c59485, c59490,
             _s1291, _parents, _taxbc, c05750)
-
-# TODO should we return c00650 instead of e00650?? Would need to change tests
 
 
 @iterate_jit(nopython=True, puf=True)
