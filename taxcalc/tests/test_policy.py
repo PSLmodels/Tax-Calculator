@@ -160,25 +160,26 @@ def test_multi_year_reform():
     assert_array_equal(getattr(ppo, '_EITC_c'),
                        Policy.expand_array(np.array([[487, 3250, 5372, 6044],
                                                      [496, 3305, 5460, 6143],
-                                                     [503, 3359, 5548, 6242]]),
+                                                     [503, 3359, 5548, 6242],
+                                                     [506, 3373, 5572, 6269]]),
                                            inflate=True,
                                            inflation_rates=iratelist,
                                            num_years=nyrs))
     assert_array_equal(getattr(ppo, '_II_em'),
-                       Policy.expand_array(np.array([3900, 3950, 4000]),
+                       Policy.expand_array(np.array([3900, 3950, 4000, 4050]),
                                            inflate=True,
                                            inflation_rates=iratelist,
                                            num_years=nyrs))
     assert_array_equal(getattr(ppo, '_CTC_c'),
-                       Policy.expand_array(np.array([1000, 1000, 1000,
-                                                     1000, 1000, 500]),
+                       Policy.expand_array(np.array([1000]),
                                            inflate=False,
                                            inflation_rates=iratelist,
                                            num_years=nyrs))
 
     # this parameter uses a different inflating rate
     assert_array_equal(getattr(ppo, '_SS_Earnings_c'),
-                       Policy.expand_array(np.array([113700, 117000, 118500]),
+                       Policy.expand_array(np.array([113700, 117000,
+                                                     118500, 118500]),
                                            inflate=True,
                                            inflation_rates=wratelist,
                                            num_years=nyrs))
@@ -471,14 +472,15 @@ def test_parameters_get_default_start_year():
     # 1D data, has 2015 values
     meta_II_em = paramdata['_II_em']
     assert meta_II_em['start_year'] == 2015
-    assert meta_II_em['row_label'] == ["2015"]
-    assert meta_II_em['value'] == [4000]
+    assert meta_II_em['row_label'] == ["2015", "2016"]
+    assert meta_II_em['value'] == [4000, 4050]
 
     # 2D data, has 2015 values
     meta_std_aged = paramdata['_STD_Aged']
     assert meta_std_aged['start_year'] == 2015
-    assert meta_std_aged['row_label'] == ["2015"]
-    assert meta_std_aged['value'] == [[1550, 1250, 1250, 1550, 1550, 1250]]
+    assert meta_std_aged['row_label'] == ["2015", "2016"]
+    assert meta_std_aged['value'] == [[1550, 1250, 1250, 1550, 1550, 1250],
+                                      [1550, 1250, 1250, 1550, 1550, 1250]]
 
     # 1D data, doesn't have 2015 values, is CPI inflated
     meta_amt_thd_marrieds = paramdata['_AMT_thd_MarriedS']
@@ -493,12 +495,6 @@ def test_parameters_get_default_start_year():
     assert meta_kt_c_age['start_year'] == 2015
     assert meta_kt_c_age['row_label'] == ["2015"]
     assert meta_kt_c_age['value'] == [24]
-
-    # 1D data, does have 2015 values, goes up to 2018
-    meta_ctc_c = paramdata['_CTC_c']
-    assert meta_ctc_c['start_year'] == 2015
-    assert meta_ctc_c['row_label'] == ["2015", "2016", "2017", "2018"]
-    assert meta_ctc_c['value'] == [1000, 1000, 1000, 500]
 
 
 REFORM_CONTENTS = """
