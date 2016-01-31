@@ -103,8 +103,6 @@ def test_1():
     assert agi == expected_agi_2
 
 
-import pytest
-@pytest.mark.one
 def test_2():
     """
     Test calculation of Additional Child Tax Credit (CTC) when at least one
