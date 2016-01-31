@@ -52,9 +52,7 @@ def test_1():
     which is the FICA payroll tax on self-employment income.
     """
     agi_ovar_num = 10
-    # specify a reform that eliminates all Medicare FICA taxes and sets
-    #   the maximum taxable earnings (MTE) at $100,000 in 2015, in order
-    #   to simplify the hand calculations that follow the IRS form logic.
+    # specify a reform that simplifies the hand calculations
     mte = 100000  # lower than current-law to simplify hand calculations
     ssr = 0.124  # current law OASDI ee+er payroll tax rate
     mrr = 0.029  # current law HI ee+er payroll tax rate
@@ -62,7 +60,7 @@ def test_1():
         2015: {
             '_SS_Earnings_c': [mte],
             '_FICA_ss_trt': [ssr],
-            '_FICA_mc_trt': [mrr],
+            '_FICA_mc_trt': [mrr]
         }
     }
     funit = (
@@ -103,3 +101,98 @@ def test_1():
     output_vars_list = output_lines_list[1].split()
     agi = output_vars_list[agi_ovar_num - 1]
     assert agi == expected_agi_2
+
+
+import pytest
+@pytest.mark.one
+def test_2():
+    """
+    Test calculation of Additional Child Tax Credit when at least one of
+    taxpayer and spouse have wage-and-salary income above the FICA maximum
+    taxable earnings.
+    """
+    ctc_ovar_num = 22
+    actc_ovar_num = 23
+    # specify a reform that simplifies the hand calculations
+    actc_thd = 35000
+    mte = 53000
+    reform = {
+        2015: {
+            '_ACTC_Income_thd': [actc_thd],
+            '_SS_Earnings_c': [mte],
+        }
+    }
+    funit = (
+        u'RECID,MARS,XTOT,n24,e00200,e00200p\n'
+        u'1,    2,   7,     7, 60000,  60000\n'
+    )
+    expected_ctc = '2500.00'
+    expected_actc = '9.99'  # WHAT IS CORRECT AMOUNT?
+    input_dataframe = pd.read_csv(StringIO(funit))
+    inctax = IncomeTaxIO(input_data=input_dataframe,
+                         tax_year=2015,
+                         policy_reform=reform,
+                         blowup_input_data=False)
+    output = inctax.calculate()
+    output_vars_list = output.split()
+    ctc = output_vars_list[ctc_ovar_num - 1]
+    actc = output_vars_list[actc_ovar_num - 1]
+    print ctc, actc  # TODO remove debugging prints on this line and below
+    print "c82925:", inctax._calc.records.c82925
+    print "c82935:", inctax._calc.records.c82935
+    print "c82880:", inctax._calc.records.c82880
+    print "c82885:", inctax._calc.records.c82885
+    print "c82900>", inctax._calc.records.c82885*0.15
+    print "c82905:", inctax._calc.records.c82905
+    print "c82910:", inctax._calc.records.c82910
+    print "c82920:", inctax._calc.records.c82920
+    print "c82937:", inctax._calc.records.c82937
+    # assert ctc == expected_ctc
+    # assert actc == expected_actc
+    """
+    WITH BAD FICA:
+    1987.50 4054.50
+    c82925: [ 7000.]
+    c82935: [ 5012.5]
+    c82880: [ 60000.]
+    c82885: [ 25000.]
+    c82900> [ 3750.]
+    c82905: [ 0.]
+    c82910: [ 4054.5]
+    c82920: [ 4054.5]
+    c82937: [ 4054.5]
+    WITH OK FICA:
+    1987.50 4156.00
+    c82925: [ 7000.]
+    c82935: [ 5012.5]
+    c82880: [ 60000.]
+    c82885: [ 25000.]
+    c82900> [ 3750.]
+    c82905: [ 0.]
+    c82910: [ 4156.]
+    c82920: [ 4156.]
+    c82937: [ 4156.]
+    """
+    """
+    diff --git a/taxcalc/functions.py b/taxcalc/functions.py
+    index 5735d6f..6e082f7 100644
+    --- a/taxcalc/functions.py
+    +++ b/taxcalc/functions.py
+    @@ -1508,7 +1508,7 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, e00200,
+    c82930 = c07220
+    c82935 = c82925 - c82930
+    # CTC not applied to tax
+    -        c82880 = max(0, _earned)
+    +        c82880 = max(0., _earned)
+    if _exact == 1:
+    c82880 = e82880
+    c82885 = max(0., c82880 - ACTC_Income_thd)
+    @@ -1518,6 +1518,7 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, e00200,
+    if _nctcr >= ACTC_ChildNum and c82890 < c82935:
+    c82900 = 0.5 * (FICA_mc_trt + FICA_ss_trt) *\
+    min(min(SS_Earnings_c, c82880), e00200)
+    +        ###c82900 = 0.5 * (FICA_mc_trt * e00200 + FICA_ss_trt * min(SS_Earnings_c, e00200))
+    c82905 = float((1 - ALD_SelfEmploymentTax_HC) * e03260 + e09800)
+    c82910 = c82900 + c82905
+    c82915 = c59660 + e11200
+    """
