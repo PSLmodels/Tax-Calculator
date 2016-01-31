@@ -52,9 +52,7 @@ def test_1():
     which is the FICA payroll tax on self-employment income.
     """
     agi_ovar_num = 10
-    # specify a reform that eliminates all Medicare FICA taxes and sets
-    #   the maximum taxable earnings (MTE) at $100,000 in 2015, in order
-    #   to simplify the hand calculations that follow the IRS form logic.
+    # specify a reform that simplifies the hand calculations
     mte = 100000  # lower than current-law to simplify hand calculations
     ssr = 0.124  # current law OASDI ee+er payroll tax rate
     mrr = 0.029  # current law HI ee+er payroll tax rate
@@ -62,7 +60,7 @@ def test_1():
         2015: {
             '_SS_Earnings_c': [mte],
             '_FICA_ss_trt': [ssr],
-            '_FICA_mc_trt': [mrr],
+            '_FICA_mc_trt': [mrr]
         }
     }
     funit = (
@@ -103,3 +101,47 @@ def test_1():
     output_vars_list = output_lines_list[1].split()
     agi = output_vars_list[agi_ovar_num - 1]
     assert agi == expected_agi_2
+
+
+def test_2():
+    """
+    Test calculation of Additional Child Tax Credit (CTC) when at least one
+    of taxpayer and spouse have wage-and-salary income above the FICA maximum
+    taxable earnings.
+    """
+    ctc_ovar_num = 22
+    actc_ovar_num = 23
+    # specify a contrived example -- implausible policy and a large family ---
+    # in order to make the hand calculations easier
+    actc_thd = 35000
+    mte = 53000
+    reform = {
+        2015: {
+            '_ACTC_Income_thd': [actc_thd],
+            '_SS_Earnings_c': [mte],
+        }
+    }
+    funit = (
+        u'RECID,MARS,XTOT,n24,e00200,e00200p\n'
+        u'1,    2,   9,     7, 60000,  60000\n'
+    )
+    # The maximum CTC in the above situation is $7,000, but only $1,140 can
+    # be paid as a nonrefundable CTC.  Because the family has 3+ kids, they
+    # can compute their refundable CTC amount in a way that uses the
+    # employee share of FICA taxes paid on wage-and-salary income.  In this
+    # case, the employee share is the sum of HI FICA (0.0145*60000) $870 and
+    # OASDI FICA (0.062*53000) $3,286, which is $4,156, which is larger than
+    # the $3,700 available to smaller families.
+    expected_ctc = '1140.00'
+    expected_actc = '4156.00'
+    input_dataframe = pd.read_csv(StringIO(funit))
+    inctax = IncomeTaxIO(input_data=input_dataframe,
+                         tax_year=2015,
+                         policy_reform=reform,
+                         blowup_input_data=False)
+    output = inctax.calculate()
+    output_vars_list = output.split()
+    ctc = output_vars_list[ctc_ovar_num - 1]
+    actc = output_vars_list[actc_ovar_num - 1]
+    assert ctc == expected_ctc
+    assert actc == expected_actc

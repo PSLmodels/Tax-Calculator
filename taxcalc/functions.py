@@ -55,6 +55,9 @@ def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
     fica_mc = fica_mc_was_p + fica_mc_was_s + fica_mc_sey_p + fica_mc_sey_s
     _fica = fica_ss + fica_mc
 
+    # compute regular FICA taxes on wage-and-salary income
+    _fica_was = fica_ss_was_p + fica_ss_was_s + fica_mc_was_p + fica_mc_was_s
+
     # compute AGI deduction for "employer share" of self-employment FICA taxes
     c09400 = fica_ss_sey_p + fica_ss_sey_s + fica_mc_sey_p + fica_mc_sey_s
     c03260 = 0.5 * c09400  # half of c09400 represents the "employer share"
@@ -63,7 +66,7 @@ def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
     c11055 = e11055
     _earned = max(0, e00200 + e00250 + c11055 + e30100 + _sey - c03260)
 
-    return (_sey, _fica, c09400, c03260, c11055, _earned)
+    return (_sey, _fica, _fica_was, c09400, c03260, c11055, _earned)
 
 
 @iterate_jit(nopython=True)
@@ -1492,11 +1495,10 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
 
 
 @iterate_jit(nopython=True, puf=True)
-def AddCTC(_nctcr, _precrd, _earned, c07220, e00200,
-           _exact, e82880, ACTC_Income_thd, ACTC_rt, SS_Earnings_c,
+def AddCTC(_nctcr, _precrd, _earned, c07220, _fica_was,
+           _exact, e82880, ACTC_Income_thd, ACTC_rt,
            ALD_SelfEmploymentTax_HC, e03260, e09800, c59660, e11200,
-           e11070, e82915, e82940, c82940, FICA_ss_trt,
-           FICA_mc_trt, ACTC_ChildNum):
+           e11070, e82915, e82940, c82940, ACTC_ChildNum):
     """
     AddCTC function: calculates Additional Child Tax Credit
     """
@@ -1511,26 +1513,17 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, e00200,
         c82880 = max(0, _earned)
         if _exact == 1:
             c82880 = e82880
-        h82880 = 0
         c82885 = max(0., c82880 - ACTC_Income_thd)
         c82890 = ACTC_rt * c82885
-    # else:
-    #    c82925, c82930, c82935, c82880, h82880, c82885, c82890 = (0., 0., 0.,
-    #                                                              0., 0., 0.,
-    #                                                              0.)
 
     # Part II of 2005 form 8812
-
     if _nctcr >= ACTC_ChildNum and c82890 < c82935:
-        c82900 = 0.5 * (FICA_mc_trt + FICA_ss_trt) *\
-            min(min(SS_Earnings_c, c82880), e00200)
+        c82900 = 0.5 * _fica_was
         c82905 = float((1 - ALD_SelfEmploymentTax_HC) * e03260 + e09800)
         c82910 = c82900 + c82905
         c82915 = c59660 + e11200
         c82920 = max(0., c82910 - c82915)
         c82937 = max(c82890, c82920)
-    # else:
-    #   c82900, c82905, c82910, c82915, c82920, c82937 = 0., 0., 0., 0., 0., 0.
 
     # Part II of 2005 form 8812
     if _nctcr > 0 and _nctcr <= 2 and c82890 > 0:
@@ -1544,7 +1537,7 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, e00200,
     if e82915 > 0 and abs(e82940 - c82940) > 100:
         _othadd = e11070 - c11070
 
-    return (c82925, c82930, c82935, c82880, h82880, c82885, c82890,
+    return (c82925, c82930, c82935, c82880, c82885, c82890,
             c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070,
             _othadd)
 
