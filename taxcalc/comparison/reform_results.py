@@ -14,10 +14,14 @@ USAGE: python reform_results.py
 
 import json
 import copy
-import csv
 import pandas as pd
+import os
+import sys
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(CUR_PATH, "..", ".."))
 from taxcalc import Policy, Records, Calculator, behavior
-
+from taxcalc import Policy, Records, Calculator, behavior
+PUF_PATH = os.path.join(CUR_PATH, "..", "..", "puf.csv")
 
 # import all reforms from this JSON file
 with open("reforms.json") as json_file:
@@ -25,12 +29,12 @@ with open("reforms.json") as json_file:
 num_reforms = len(reforms_json)
 
 # create two calculators, one for baseline and the other for reforms
-tax_dta1 = pd.read_csv("../../puf.csv")
+tax_dta1 = pd.read_csv(PUF_PATH)
 records1 = Records(tax_dta1)
 policy1 = Policy(start_year=2013)
 calc1 = Calculator(records=records1, policy=policy1)
 
-tax_dta2 = pd.read_csv("puf.csv")
+tax_dta2 = pd.read_csv(PUF_PATH)
 records2 = Records(tax_dta2)
 policy2 = Policy(start_year=2013)
 calc2 = Calculator(records=records2, policy=policy2)
