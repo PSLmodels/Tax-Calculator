@@ -4,7 +4,7 @@ import json
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, "../../"))
 import numpy as np
-from numpy.testing import assert_array_equal
+from numpy.testing import assert_array_equal, assert_array_almost_equal
 import pandas as pd
 import tempfile
 import pytest
@@ -323,6 +323,37 @@ def test_Calculator_mtr():
     assert type(mtr) == np.ndarray
     assert np.array_equal(mtr, mtr_FICA) is False
     assert np.array_equal(mtr_FICA, mtr_IIT) is False
+
+
+def test_ID_hc_vs_surtax():
+    policy1 = Policy()
+    puf1 = Records(TAX_DTA, weights=WEIGHTS, start_year=2009)
+    calc1 = Calculator(policy=policy1, records=puf1)
+
+    policy2 = Policy()
+    puf2 = Records(TAX_DTA, weights=WEIGHTS, start_year=2009)
+    calc2 = Calculator(policy=policy2, records=puf2)
+
+    reform1 = {2013: {'_ID_Medical_HC': [1],
+                      '_ID_StateLocalTax_HC': [1],
+                      '_ID_RealEstate_HC': [1],
+                      '_ID_Casualty_HC': [1],
+                      '_ID_Miscellaneous_HC': [1],
+                      '_ID_InterestPaid_HC': [1],
+                      '_ID_Charity_HC': [1]
+                      }
+               }
+    reform2 = {2013: {'_ID_BenefitSurtax_crt': [0]
+                      }
+               }
+
+    policy1.implement_reform(reform1)
+    policy2.implement_reform(reform2)
+
+    calc1.calc_all()
+    calc2.calc_all()
+
+    assert_array_almost_equal(calc1.records._combined, calc2.records._combined, decimal=2)
 
 
 def test_Calculator_create_difference_table():

@@ -1713,7 +1713,7 @@ def BenefitSurtax(calc):
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[1])
         nobenefits_calc.policy.ID_RealEstate_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[2])
-        nobenefits_calc.policy.ID_casualty_HC = \
+        nobenefits_calc.policy.ID_Casualty_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[3])
         nobenefits_calc.policy.ID_Miscellaneous_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[4])
@@ -1738,3 +1738,4 @@ def BenefitSurtax(calc):
                                         0) * calc.policy.ID_BenefitSurtax_trt
 
         calc.records._iitax += calc.records._surtax
+        calc.records._combined += calc.records._surtax
