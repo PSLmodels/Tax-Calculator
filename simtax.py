@@ -67,9 +67,9 @@ def main():
         return 0
     # instantiate SimpleTaxIO object and do tax calculations
     simtax = SimpleTaxIO(input_filename=args.INPUT,
-                         reform_filename=args.reform,
+                         reform=args.reform,
                          emulate_taxsim_2441_logic=args.taxsim2441)
-    simtax.calculate()
+    simtax.calculate(writing_output_file=True)
     # return no-error exit code
     return 0
 # end of main function code

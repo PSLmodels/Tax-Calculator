@@ -5,6 +5,7 @@ Tests for Tax-Calculator SimpleTaxIO class.
 # pep8 --ignore=E402 test_simpletaxio.py
 # pylint --disable=locally-disabled --extension-pkg-whitelist=numpy \
 #        test_simpletaxio.py
+# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import os
 import sys
@@ -96,17 +97,21 @@ def test_1(input_file):  # pylint: disable=redefined-outer-name
     """
     Test SimpleTaxIO constructor with no policy reform.
     """
-    reform_file_name = None
-    simtax = SimpleTaxIO(input_file.name, reform_file_name, False)
+    SimpleTaxIO.show_iovar_definitions()
+    simtax = SimpleTaxIO(input_filename=input_file.name,
+                         reform=None,
+                         emulate_taxsim_2441_logic=False)
     assert simtax.number_input_lines() == NUM_INPUT_LINES
 
 
 def test_2(input_file,  # pylint: disable=redefined-outer-name
            reform_file):  # pylint: disable=redefined-outer-name
     """
-    Test SimpleTaxIO constructor with a policy reform.
+    Test SimpleTaxIO constructor with a policy reform from JSON file.
     """
-    simtax = SimpleTaxIO(input_file.name, reform_file.name, False)
+    simtax = SimpleTaxIO(input_filename=input_file.name,
+                         reform=reform_file.name,
+                         emulate_taxsim_2441_logic=False)
     assert simtax.number_input_lines() == NUM_INPUT_LINES
     # check that reform was implemented as specified above in REFORM_CONTENTS
     syr = simtax.start_year()
@@ -134,9 +139,15 @@ def test_2(input_file,  # pylint: disable=redefined-outer-name
 
 def test_3(input_file):  # pylint: disable=redefined-outer-name
     """
-    Test SimpleTaxIO calculate method with no output writing.
+    Test SimpleTaxIO calculate method with a policy reform from dictionary.
     """
-    reform_file_name = None
-    simtax = SimpleTaxIO(input_file.name, reform_file_name, False)
-    simtax.calculate(write_output_file=False)
+    policy_reform = {
+        2016: {'_SS_Earnings_c': [300000]},
+        2018: {'_SS_Earnings_c': [500000]},
+        2020: {'_SS_Earnings_c': [700000]}
+    }
+    simtax = SimpleTaxIO(input_filename=input_file.name,
+                         reform=policy_reform,
+                         emulate_taxsim_2441_logic=False)
+    simtax.calculate()
     assert simtax.number_input_lines() == NUM_INPUT_LINES

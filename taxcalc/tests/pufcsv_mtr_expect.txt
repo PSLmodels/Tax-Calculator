@@ -1,0 +1,60 @@
+MTR computed using POSITIVE finite_diff.
+Total number of data records = 219814
+FICA mtr histogram bin edges:
+     [0.0, 0.02, 0.04, 0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18, 1.0]
+IIT mtr histogram bin edges:
+     [-1.0, -0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 1.0]
+FICA and IIT mtr histogram bin counts for e00200p:
+219814 :      0  31950      0      0      0      0      0 183680   4184      0
+219814 :   4585    105   1751  14349  38694  62751  47391  27242  22272    674
+FICA and IIT mtr histogram bin counts for e00900p:
+219814 :  14116  29235      0      0      0      0      0 176463      0      0
+219814 :   4583    107   1751  14115  43935  60010  53145  25900  15972    296
+FICA and IIT mtr histogram bin counts for e00300:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219813 :      0      0      0      0  59708  63865  43266  26371  25921    682
+WARNING: sum of bin counts is too low
+         max(mtr)=12612.69
+         mtr=12612.69 for recid=1264520
+FICA and IIT mtr histogram bin counts for e00400:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219813 :      0      0      0      0 206435   7602   5640     97     33      6
+WARNING: sum of bin counts is too low
+         max(mtr)=12612.69
+         mtr=12612.69 for recid=1264520
+FICA and IIT mtr histogram bin counts for e00600:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219813 :      0      0      0      0  59716  63857  43298  26339  25921    682
+WARNING: sum of bin counts is too low
+         max(mtr)=12612.69
+         mtr=12612.69 for recid=1264520
+FICA and IIT mtr histogram bin counts for e00650:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219813 :      0      0      0  16996 107653  43518  50587    634    404     21
+WARNING: sum of bin counts is too low
+         max(mtr)=12612.69
+         mtr=12612.69 for recid=1264520
+FICA and IIT mtr histogram bin counts for e01400:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219814 :      0      0      0      0  59741  63859  46940  26850  21756    668
+FICA and IIT mtr histogram bin counts for e01700:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219814 :      0      0      0      0  59748  63852  46945  26843  21758    668
+FICA and IIT mtr histogram bin counts for e02000:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219814 :      0      0      0      0  59781  63814  43800  26113  25628    678
+FICA and IIT mtr histogram bin counts for e02400:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219814 :      0      0      0      0  99152  39928  50828  29044    762    100
+FICA and IIT mtr histogram bin counts for p22250:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219813 :      0      0      0     19  82191  61626  41864  18995  14704    414
+WARNING: sum of bin counts is too low
+         max(mtr)=12612.69
+         mtr=12612.69 for recid=1264520
+FICA and IIT mtr histogram bin counts for p23250:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219813 :      0      0      0  16459 126267  38070  33978   2069   2924     46
+WARNING: sum of bin counts is too low
+         max(mtr)=12612.69
+         mtr=12612.69 for recid=1264520

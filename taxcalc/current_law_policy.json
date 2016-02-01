@@ -9,13 +9,15 @@
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
-                      "2015"],
+                      "2015",
+                      "2016"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
         "value":
                      [[51900,    80800,   40400,      51900,               80800,   40400],
                       [52800,    82100,   41050,      52800,               82100,   41050],
-                      [53600,    83400,   41700,      53600,               83400,   41700]]
+                      [53600,    83400,   41700,      53600,               83400,   41700],
+                      [53900,    83800,   41900,      53900,               83800,   41900]]
     },
     "_EITC_c": {
         "long_name": "Maximum earned income credit",
@@ -27,12 +29,14 @@
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
-                      "2015"],
+                      "2015",
+                      "2016"],
         "cpi_inflated": true,
         "col_label": ["0 kids", "1 kid", "2 kids", "3 kids"],
          "value":    [ [487,    3250,       5372,      6044],
                        [496,    3305,       5460,      6143],
-                       [503,    3359,       5548,      6242]]
+                       [503,    3359,       5548,      6242],
+                       [506,    3373,       5572,      6269]]
     
     },
     "_SS_thd50":{
@@ -86,13 +90,15 @@
         "col_var": "",
         "row_var": "FLPDYR",
         "row_label": ["2013",
-		      "2014",
-		      "2015"],
+		              "2014",
+		              "2015",
+                      "2016"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value":      [[1500, 1200, 1200, 1500, 1500, 1200 ],
+        "value":      [[1500, 1200, 1200, 1500, 1500, 1200],
 		               [1550, 1200, 1200, 1550, 1550, 1200],
-		               [1550, 1250, 1250, 1550, 1550, 1250]],
+		               [1550, 1250, 1250, 1550, 1550, 1250],
+                       [1550, 1250, 1250, 1550, 1550, 1250]],
 	"validations": {"min": "default"}
 
     },
@@ -106,12 +112,14 @@
         "col_var": "",
         "row_var": "FLPDYR",
         "row_label": ["2013",
-		      "2014",
-		      "2015"],
+		              "2014",
+		              "2015",
+                      "2016"],
         "cpi_inflated": true,
         "col_label": "",
         "value":  [7150,
                    7250,
+                   7400,
                    7400]
         
     },
@@ -124,11 +132,11 @@
         "col_var": "",
         "row_var": "FLPDYR",
         "row_label": ["2013",
-		      "2014"],
+		              "2014"],
         "cpi_inflated": true,
         "col_label": "",
         "value":  [40400,
-		   41050]
+		           41050]
         
     },
      "_AMT_tthd":{
@@ -141,12 +149,14 @@
         "row_var": "FLPDYR",
         "row_label": ["2013",
 		      "2014",
-		      "2015"],
+		      "2015",
+              "2016"],
         "cpi_inflated": true,
         "col_label": "",
         "value": [179500,
                   182500,
-                  185400]
+                  185400,
+                  186300]
         
     },
      "_II_em":{
@@ -158,13 +168,15 @@
         "col_var": "",
         "row_var": "FLPDYR",
         "row_label": ["2013",
-		      "2014",
-		      "2015"],
+		              "2014",
+		              "2015",
+                      "2016"],
         "cpi_inflated": true,
         "col_label": "",
         "value":   [3900,
                     3950,
-                    4000]
+                    4000,
+                    4050]
         
     },
      "_KT_c_Age":{
@@ -201,25 +213,14 @@
         "long_name": "Maximum child tax credit per child",
 	"description": "The maximum amount of credit allowed for each child. ",
         "irs_ref": "form 1040, line 52, instructions (child tax credit worksheet, line 1). ",
-        "notes": "Scheduled to decrease to 500 in 2018.",
+        "notes": "",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
-        "row_label": ["2013",
-		      "2014",
-		      "2015",
-		      "2016",
-		      "2017",
-		      "2018"],
+        "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value": [ 1000,
-                   1000,
-                   1000,
-                   1000,
-                   1000,
-                   500]
-        
+        "value": [ 1000 ]
     },	
     "_DCC_c":{
         "long_name": "Max dependent care credit per dependent",
@@ -233,7 +234,6 @@
         "cpi_inflated": false,
         "col_label": "",
         "value":     [3000]
-        
     },
      "_EITC_InvestIncome_c":{
         "long_name": "Max disqualifying income for EITC",
@@ -244,12 +244,14 @@
         "col_var": "",
         "row_var": "FLPDYR",
         "row_label": ["2013",
-		      "2014",
-		      "2015"],
+		              "2014",
+		              "2015",
+                      "2016"],
         "cpi_inflated": false,
         "col_label": "",
         "value":  [ 3300,
                     3350,
+                    3400,
                     3400]    
     },	
      "_ACTC_Income_thd":{
@@ -260,20 +262,10 @@
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
-        "row_label": ["2013",
-		      "2014",
-		      "2015",
-		      "2016",
-		      "2017",
-		      "2018"],
-        "cpi_inflated": true,
+        "row_label": ["2013"],
+        "cpi_inflated": false,
         "col_label": "",
-        "value": [ 3000,
-                    3000,
-                    3000,
-                    3000,
-                    3000,
-                    10000]
+        "value": [ 3000 ] 
         
     },	
     "_ETC_pe_Single":{
@@ -303,8 +295,8 @@
         "col_var": "",
         "row_var": "FLPDYR",
         "row_label": ["2013",
-		      "2014",
-		      "2015"],
+		              "2014",
+		              "2015"],
         "cpi_inflated": true,
         "col_label": "",
         "value":   [127,
@@ -322,13 +314,14 @@
         "row_var": "FLPDYR",
         "row_label": ["2013",
 		      "2014",
-		      "2015"],
+		      "2015",
+              "2016"],
         "cpi_inflated": false,
         "col_label": "",
         "value": [97600,
                   99200,
-                  100800]
-        
+                  100800,
+                  101300]
     },	
      "_EITC_ps_MarriedJ":{
         "long_name": "EITC Phaseout Starting AGI (Married filling Jointly)",
@@ -340,12 +333,14 @@
         "row_var": "FLPDYR",
         "row_label": ["2013",
 		      "2014",
-		      "2015"],
+		      "2015",
+              "2016"],
         "cpi_inflated": true,
         "col_label":"0kids 1kid  2kids 3+kids",
         "value":  [ [5340, 5340, 5340, 5340],
                     [5430, 5430, 5430, 5430],
-                    [5510, 5520, 5520, 5520]]
+                    [5510, 5520, 5520, 5520],
+                    [5550, 5550, 5550, 5550]]
         
     },
      "_LLC_Expense_c":{
@@ -386,12 +381,14 @@
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
-                      "2015"],
+                      "2015",
+                      "2016"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
-        "value":    [[250000, 	300000,   150000,     275000, 		  300000,  150000],
-                    [254200, 	305050,   152525,     279650, 		  305050,  152525],
-                    [258250, 	309900,   154950,     284050, 		  309900,  154950]]
+        "value":    [ [250000, 	300000,   150000,     275000, 		       300000,  150000],
+                      [254200, 	305050,   152525,     279650, 		       305050,  152525],
+                      [258250, 	309900,   154950,     284050, 		       309900,  154950],
+                      [259400,  311300,   155650,     285350,              311300,  155650]]
     },
     "_ID_BenefitSurtax_Switch":{
         "long_name": "Deductions subject to the surtax on itemized deduction benefits",
@@ -441,12 +438,14 @@
         "col_var": "",
         "row_var": "FLPDYR",
         "row_label": ["2013",
-		      "2014",
-		      "2015"],
+		              "2014",
+		              "2015",
+                      "2016"],
         "cpi_inflated": true,
         "col_label": "",
         "value": [ 113700,
                    117000,
+                   118500,
                    118500]
         
     },	
@@ -459,13 +458,15 @@
         "col_var": "",
         "row_var": "FLPDYR",
         "row_label": ["2013",
-		      "2014",
-		      "2015"],
+		              "2014",
+		              "2015",
+                      "2016"],
         "cpi_inflated": true,
         "col_label":"0kids 1kid  2kids 3+kids",
         "value":[  [7970, 17530, 17530, 17530],
                     [8110, 17830, 17830, 17830],
-                    [8240, 18110, 18110, 18110]]
+                    [8240, 18110, 18110, 18110],
+                    [8270, 18190, 18190, 18190]]
         
     },
      "_II_rt1":{
@@ -575,13 +576,15 @@
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
-                      "2015"],
+                      "2015",
+                      "2016"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
         "value":
                     [[115400, 153900, 76950, 115400, 153900, 76950],
                     [117300, 156500, 78250, 117300, 156500, 78250],
-                    [119200, 158900, 79450, 119200, 158900, 79450]]
+                    [119200, 158900, 79450, 119200, 158900, 79450],
+                    [119700, 159700, 79850, 119700, 159700, 79850]]
     },
     "_CTC_ps":{
         "long_name": "Child tax credit phaseout MAGI start",
@@ -619,13 +622,15 @@
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
-                      "2015"],
+                      "2015",
+                      "2016"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
         "value":
-		  [ [250000, 300000, 150000, 275000, 300000, 150000], 
+		          [ [250000, 300000, 150000, 275000, 300000, 150000], 
                     [254200, 305050, 152525, 279650, 305050, 152525],
-                    [258250, 309900, 154950, 284040, 309900, 154950]]    
+                    [258250, 309900, 154950, 284040, 309900, 154950],
+                    [259400, 311300, 155650, 285350, 311300, 155650]]    
      },
     "_STD":{
         "long_name": "Standard deduction amount",
@@ -637,13 +642,15 @@
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
-                      "2015"],
+                      "2015",
+                      "2016"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate", "dependent"],        
         "value":
 		          [ [6100, 12200, 6100, 8950, 12200, 6100, 1000], 
                     [6200, 12400, 6200, 9100, 12400, 6200, 1000],
-                    [6300, 12600, 6300, 9250, 12600, 6300, 1050]],
+                    [6300, 12600, 6300, 9250, 12600, 6300, 1050],
+                    [6300, 12600, 6300, 9300, 12600, 6300, 1050]],
 	"validations": {"min": "default"}
      },
      "_II_brk1":{
@@ -656,12 +663,14 @@
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
-                      "2015"],
+                      "2015",
+                      "2016"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
-        "value":[  [8925, 17850, 8925, 12750, 17850, 8925], 
+        "value":[   [8925, 17850, 8925, 12750, 17850, 8925], 
                     [9075, 18150, 9075, 12950, 18150, 9075],
-                    [9225, 18450, 9225, 13150, 18450, 9225]],
+                    [9225, 18450, 9225, 13150, 18450, 9225],
+                    [9275, 18550, 9275, 13250, 18550, 9275]],
 	"validations":{"min": 0, "max": "_II_brk2"}
      },
      "_II_brk2":{
@@ -673,12 +682,14 @@
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
-                      "2015"],
+                      "2015",
+                      "2016"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
-        "value":[  [36250, 72500, 36250, 48600, 72500, 36250], 
+        "value":[   [36250, 72500, 36250, 48600, 72500, 36250], 
                     [36900, 73800, 36900, 49400, 73800, 36900],
-                    [37450, 74900, 37450, 50200, 74900, 37450]],
+                    [37450, 74900, 37450, 50200, 74900, 37450],
+                    [37650, 75300, 37650, 50400, 75300, 37650]],
 	"validations":{"min": "_II_brk1", "max": "_II_brk3"}
      },
      "_II_brk3":{
@@ -690,12 +701,14 @@
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
-                      "2015"],
+                      "2015",
+                      "2016"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
-        "value":[  [87850, 146400, 73200, 125450, 146400, 73200], 
+        "value":[   [87850, 146400, 73200, 125450, 146400, 73200], 
                     [89350, 148850, 74425, 127550, 148850, 74425],
-                    [90750, 151200, 75600, 129600, 151200, 75600]],
+                    [90750, 151200, 75600, 129600, 151200, 75600],
+                    [91150, 151900, 75950, 130150, 151900, 75950]],
 	"validations":{"min": "_II_brk2", "max": "_II_brk4"}
      },
      "_II_brk4":{
@@ -707,12 +720,14 @@
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
-                      "2015"],
+                      "2015",
+                      "2016"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
-        "value":[  [183250, 223050, 111525, 203150, 223050, 111525], 
+        "value":[   [183250, 223050, 111525, 203150, 223050, 111525], 
                     [186350, 226850, 113425, 206600, 226850, 113425],
-                    [189300, 230450, 115225, 209850, 230450, 115225]],
+                    [189300, 230450, 115225, 209850, 230450, 115225],
+                    [190150, 231450, 115725, 210800, 231450, 115725]],
 	"validations":{"min": "_II_brk3", "max": "_II_brk5"}
      },
      "_II_brk5":{
@@ -724,12 +739,14 @@
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
-                      "2015"],
+                      "2015",
+                      "2016"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
-        "value":[  [398350, 398350, 199175, 398350, 398350, 199175], 
+        "value":[   [398350, 398350, 199175, 398350, 398350, 199175], 
                     [405100, 405100, 202550, 405100, 405100, 202550],
-                    [411500, 411500, 205750, 411500, 411500, 205750]],
+                    [411500, 411500, 205750, 411500, 411500, 205750],
+                    [413350, 413350, 206675, 413350, 413350, 206675]],
 	"validations":{"min": "_II_brk4", "max": "_II_brk6"}
      },
      "_II_brk6":{
@@ -741,12 +758,14 @@
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
-                      "2015"],
+                      "2015",
+                      "2016"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],        
-        "value":[  [400000, 450000, 225000, 425000, 450000, 225000],
+        "value":[   [400000, 450000, 225000, 425000, 450000, 225000],
                     [406750, 457600, 228800, 432200, 457600, 228800],
-                    [413200, 464850, 223425, 439000, 464850, 223425]],
+                    [413200, 464850, 232425, 439000, 464850, 232425],
+                    [415050, 466950, 233475, 441000, 466950, 233475]],
 	"validations":{"min": "_II_brk5"}
      },
      "_FICA_ss_trt":{
@@ -1123,7 +1142,36 @@
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value":     [0.0]        
+        "value":     [0]        
+    },
+    "_CTC_additional_ps":{
+        "long_name": "Additional additional child tax credit phaseout starting AGI (Lee-Rubio)",
+	"description": "The amount of additional additional child tax credit is reduced for taxpayers with AGI higher than this level. ",
+        "irs_ref": "",
+        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualificaiton rules for the Child Tax Credit under current law. ",
+        "start_year": 2013,
+        "col_var": ["single", "joint", "separate", "head of household"], 
+        "row_label": ["2013",
+                      "2014",
+                      "2015"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [[150000, 300000, 150000, 200000],
+		              [150000, 300000, 150000, 200000],
+                      [150000, 300000, 150000, 200000]]   
+    },
+    "_CTC_additional_prt":{
+        "long_name": "Additional additional child tax credit amount phaseout rate (Lee-Rubio)",
+	"description": "The amount of additional additional child tax credit is reduced at this rate per dollar exceeding the phaseout starting AGI. ",
+        "irs_ref": "",
+        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualificaiton rules for the Child Tax Credit under current law. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [0.4]       
     },
     "_ACTC_ChildNum":{
         "long_name": "Additional child tax credit minimum number of qualified children",
@@ -1315,12 +1363,14 @@
         "row_var": "",
         "row_label": ["2013",
                       "2014",
-                      "2015"],
+                      "2015",
+                      "2016"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
         "value": [  [36250, 72500, 36250, 48600, 72500, 36250], 
                     [36900, 73800, 36900, 49400, 73800, 36900],
-                    [37450, 74900, 37450, 50200, 74900, 37450]] 
+                    [37450, 74900, 37450, 50200, 74900, 37450],
+                    [37650, 75300, 37650, 50400, 75300, 37650]] 
     },
         "_CG_thd2":{
         "long_name": "Long term capital gain and qualified dividend threshold 2",
@@ -1331,13 +1381,15 @@
         "row_var": "",
         "row_label": ["2013",
                       "2014",
-                      "2015"],
+                      "2015",
+                      "2016"],
         "cpi_inflated": true,
         
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
         "value": [  [400000, 450000, 225000, 425000, 450000, 225000],
                     [406750, 457600, 228800, 432200, 457600, 228800],
-                    [413200, 464850, 223425, 439000, 464850, 223425]]
+                    [413200, 464850, 232425, 439000, 464850, 232425],
+                    [415050, 466950, 233475, 441000, 466950, 233475]]
     },
      "_AMT_CG_rt1":{
         "long_name": "Long term capital gain and qualified dividend rate1",
@@ -1398,12 +1450,14 @@
         "row_var": "",
         "row_label": ["2013",
                       "2014",
-                      "2015"],
+                      "2015",
+                      "2016"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
         "value": [  [36250, 72500, 36250, 48600, 72500, 36250], 
                     [36900, 73800, 36900, 49400, 73800, 36900],
-                    [37450, 74900, 37450, 50200, 74900, 37450]]
+                    [37450, 74900, 37450, 50200, 74900, 37450],
+                    [37650, 75300, 37650, 50400, 75300, 37650]]
     },
         "_AMT_CG_thd2":{
         "long_name": "Long term capital gain and qualified dividend threshold 2",
@@ -1414,12 +1468,14 @@
         "row_var": "",
         "row_label": ["2013",
                       "2014",
-                      "2015"],
+                      "2015",
+                      "2016"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
         "value": [  [400000, 450000, 225000, 425000, 450000, 225000],
                     [406750, 457600, 228800, 432200, 457600, 228800],
-                    [413200, 464850, 223425, 439000, 464850, 223425]]
+                    [413200, 464850, 232425, 439000, 464850, 223425],
+                    [415050, 466950, 233475, 441000, 466950, 233475]]
     },
         "_II_credit":{
         "long_name": "Personal refundable credit",
@@ -1449,7 +1505,7 @@
      },
         "_II_credit_prt":{
         "long_name": "Personal refundable credit phaseout rate",
-	"description": "The Personal Refundable credit amount will be reduced at this rate for each dollor of taxable income exceeding the thresholds.",
+	"description": "The Personal Refundable credit amount will be reduced at this rate for each dollar of taxable income exceeding the thresholds.",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,

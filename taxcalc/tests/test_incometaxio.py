@@ -7,57 +7,49 @@ Tests for Tax-Calculator IncomeTaxIO class.
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import os
-import sys
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import IncomeTaxIO  # pylint: disable=import-error
+from io import StringIO
+import pandas as pd
 import pytest
 import tempfile
 
 
-# use 1991 PUF-like data to emulate current PUF, which is private
-FAUX_PUF_CSV = os.path.join(CUR_PATH, '..', '..', 'tax_all1991_puf.gz')
-
-
-def test_1():
-    """
-    Test IncomeTaxIO constructor with no policy reform and no blowup.
-    """
-    taxyear = 2020
-    inctax = IncomeTaxIO(input_filename=FAUX_PUF_CSV,
-                         tax_year=taxyear,
-                         reform_filename=None,
-                         blowup_input_data=False)
-    assert inctax.tax_year() == taxyear
-
-
-def test_2():
-    """
-    Test IncomeTaxIO calculate method with no output writing and no blowup.
-    """
-    taxyear = 2020
-    inctax = IncomeTaxIO(input_filename=FAUX_PUF_CSV,
-                         tax_year=taxyear,
-                         reform_filename=None,
-                         blowup_input_data=False)
-    inctax.calculate(write_output_file=False)
-    assert inctax.tax_year() == taxyear
-
-
 RAWINPUTFILE_FUNITS = 4
 RAWINPUTFILE_CONTENTS = (
-    'RECID,MARS\n'
-    '1,2\n'
-    '2,1\n'
-    '3,4\n'
-    '4,6\n'
+    u'RECID,MARS\n'
+    u'    1,   2\n'
+    u'    2,   1\n'
+    u'    3,   4\n'
+    u'    4,   6\n'
+)
+
+EXPECTED_OUTPUT = (  # from using RAWINPUTFILE_CONTENTS as input
+    '1. 2021 0 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
+    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
+    '2. 2021 0 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
+    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
+    '3. 2021 0 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
+    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
+    '4. 2021 0 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
+    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
+)
+
+EXPECTED_OUTPUT_MTR = (  # from using RAWINPUTFILE_CONTENTS as input
+    '1. 2021 0 0.00 0.00 0.00 -7.65 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
+    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
+    '2. 2021 0 0.00 0.00 0.00 -7.65 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
+    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
+    '3. 2021 0 0.00 0.00 0.00 -7.65 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
+    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
+    '4. 2021 0 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
+    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
 )
 
 
 @pytest.yield_fixture
 def rawinputfile():
     """
-    Temporary input file that contains minimum required input varaibles.
+    Temporary input file that contains minimum required input variables.
     """
     ifile = tempfile.NamedTemporaryFile(suffix='.csv', mode='a', delete=False)
     ifile.write(RAWINPUTFILE_CONTENTS)
@@ -69,6 +61,37 @@ def rawinputfile():
             os.remove(ifile.name)
         except OSError:
             pass  # sometimes we can't remove a generated temporary file
+
+
+def test_1(rawinputfile):  # pylint: disable=redefined-outer-name
+    """
+    Test IncomeTaxIO constructor with no policy reform and no blowup.
+    """
+    IncomeTaxIO.show_iovar_definitions()
+    taxyear = 2021
+    inctax = IncomeTaxIO(input_data=rawinputfile.name,
+                         tax_year=taxyear,
+                         policy_reform=None,
+                         blowup_input_data=True)
+    assert inctax.tax_year() == taxyear
+
+
+def test_2(rawinputfile):  # pylint: disable=redefined-outer-name
+    """
+    Test IncomeTaxIO calculate method with no output writing and no blowup.
+    """
+    taxyear = 2021
+    reform_dict = {
+        2016: {'_SS_Earnings_c': [300000]},
+        2018: {'_SS_Earnings_c': [500000]},
+        2020: {'_SS_Earnings_c': [700000]}
+    }
+    inctax = IncomeTaxIO(input_data=rawinputfile.name,
+                         tax_year=taxyear,
+                         policy_reform=reform_dict,
+                         blowup_input_data=False)
+    output = inctax.calculate(output_mtr=True)
+    assert output == EXPECTED_OUTPUT_MTR
 
 
 REFORM_CONTENTS = """
@@ -110,9 +133,26 @@ REFORM_CONTENTS = """
 
 
 @pytest.yield_fixture
-def reformfile():
+def reformfile1():
     """
-    Temporary reform file for IncomeTaxIO constructor.
+    Temporary reform file with .json extension for IncomeTaxIO constructor.
+    """
+    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    rfile.write(REFORM_CONTENTS)
+    rfile.close()
+    # must close and then yield for Windows platform
+    yield rfile
+    if os.path.isfile(rfile.name):
+        try:
+            os.remove(rfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+@pytest.yield_fixture
+def reformfile2():
+    """
+    Temporary reform file without .json extension for IncomeTaxIO constructor.
     """
     rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
     rfile.write(REFORM_CONTENTS)
@@ -126,14 +166,29 @@ def reformfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
-def test_3(rawinputfile, reformfile):  # pylint: disable=redefined-outer-name
+def test_3(rawinputfile, reformfile1):  # pylint: disable=redefined-outer-name
     """
     Test IncomeTaxIO calculate method with no output writing and with blowup.
     """
     taxyear = 2021
-    inctax = IncomeTaxIO(input_filename=rawinputfile.name,
+    inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
-                         reform_filename=reformfile.name,
+                         policy_reform=reformfile1.name,
                          blowup_input_data=False)
-    inctax.calculate(write_output_file=False)
-    assert inctax.tax_year() == taxyear
+    output = inctax.calculate()
+    assert output == EXPECTED_OUTPUT
+
+
+def test_4(reformfile2):  # pylint: disable=redefined-outer-name
+    """
+    Test IncomeTaxIO calculate method with no output writing and with blowup.
+    """
+    input_stream = StringIO(RAWINPUTFILE_CONTENTS)
+    input_dataframe = pd.read_csv(input_stream)
+    taxyear = 2021
+    inctax = IncomeTaxIO(input_data=input_dataframe,
+                         tax_year=taxyear,
+                         policy_reform=reformfile2.name,
+                         blowup_input_data=False)
+    output = inctax.calculate()
+    assert output == EXPECTED_OUTPUT

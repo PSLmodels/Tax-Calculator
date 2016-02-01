@@ -87,7 +87,7 @@ def run():
         if hasattr(value, "shape"):
             if value.shape == rshape:
                 totaldf[attr] = value
-    Col_names = ['EICYB1', 'EICYB2', 'EICYB3', 'NIIT', '_addamt', '_addtax',
+    col_names = ['EICYB1', 'EICYB2', 'EICYB3', 'NIIT', '_addamt', '_addtax',
                  '_agep', '_ages', '_agierr', '_alminc', '_amed', '_amt15pc',
                  '_amt20pc', '_amt25pc', '_amt5pc', '_amtfei', '_amtsepadd',
                  '_amtstd', '_avail', '_cglong', '_cmbtp', '_comb',
@@ -132,20 +132,20 @@ def run():
                  'c87521', 'c87530', 'c87540', 'c87550', 'c87560', 'c87570',
                  'c87580', 'c87590', 'c87600', 'c87610', 'c87620', 'c87654',
                  'c87656', 'c87658', 'c87660', 'c87662', 'c87664', 'c87666',
-                 'c87668', 'c87681', 'e00650', 'e02500', 'e08795', 'h82880',
+                 'c87668', 'c87681', 'e00650', 'e02500', 'e08795',
                  'x04500', 'x07100', 'y07100', 'y62745']
-    df = totaldf[Col_names]
+    df = totaldf[col_names]
     exp_results_file = os.path.join(CUR_PATH, '../../exp_results.csv.gz')
     exp_results = pd.read_csv(exp_results_file, compression='gzip')
     exp_set = set(exp_results.columns)  # fix-up to bad colname in exp_results
     cur_set = set(df.columns)
     assert exp_set == cur_set
-    for label in exp_results.columns:
-        lhs = exp_results[label].values.reshape(len(exp_results))
-        rhs = totaldf[label].values.reshape(len(exp_results))
+    for col in exp_results.columns:
+        lhs = exp_results[col].values
+        rhs = totaldf[col].values
         res = np.allclose(lhs, rhs, atol=1e-02)
         if not res:
-            print('Problem found in: ', label)
+            print('Values not the same in column {}'.format(col))
 
 
 def test_sequence():
