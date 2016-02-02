@@ -119,7 +119,7 @@ def test_default_rates_and_those_implied_by_blowup_factors():
         cpi_u[year - syr] = record.BF.ACPIU[year] - 1
 
     # check that blowup rates are same as default inflation rates
-    cpi_u = np.round(cpi_u, 3)
+    cpi_u = np.round(cpi_u, 4)
     assert_array_equal(cpi_u, policy._inflation_rates)
 
     # back out original stage I wage growth rates from blowup factors

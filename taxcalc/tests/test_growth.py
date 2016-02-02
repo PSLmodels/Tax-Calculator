@@ -64,7 +64,7 @@ def test_update_growth():
     assert_array_equal(calc_x.growth.factor_target,
                        growth_x.factor_target)
     assert_array_equal(calc_x.growth._factor_target,
-                       np.array([0.0244, 0.0118, 0.04, 0.04, 0.04,
+                       np.array([0.0226, 0.0241, 0.04, 0.04, 0.04,
                                 0.04, 0.04, 0.04, 0.04, 0.04, 0.04,
                                 0.04, 0.04, 0.04]))
 
