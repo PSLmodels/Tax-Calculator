@@ -1,4 +1,3 @@
-
 """
 This script generates policy experiment results,
 and compare them with JCT Tax Expenditure or Budget Options if available.
@@ -19,7 +18,6 @@ import os
 import sys
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, "..", ".."))
-from taxcalc import Policy, Records, Calculator, behavior
 from taxcalc import Policy, Records, Calculator, behavior
 PUF_PATH = os.path.join(CUR_PATH, "..", "..", "puf.csv")
 

@@ -8,7 +8,7 @@ Increase the maximum taxable earnings (177500) for the social security payroll t
 Tax-Calculator,51.6,61.7,64.1,66.6
 Budget Options,40,46,49,51
 ""
-Increase the Payroll tax rate for medicare hospital insurace by 1pts
+Increase the Payroll tax rate for medicare hospital insurance by 1pts
 Tax-Calculator,74.1,77.8,81.8,85.7
 Budget Options,73,77,82,87
 ""
@@ -102,7 +102,7 @@ Tax-Calculator,-2.7,-2.8,-2.9,-3.1
 Increase Itemized deduction maximum phaseout by 10%
 Tax-Calculator,0.1,0.1,0.1,0.1
 ""
-Dncrease Itemized Deduction phaseout starting AGI by 10,000
+Increase Itemized Deduction phaseout starting AGI by 10,000
 Tax-Calculator,0.1,0.1,0.1,0.1
 ""
 Increase Itemized Deduction phaseout rate by 1 pts
@@ -210,8 +210,8 @@ Tax-Calculator,-0.4,-0.4,-0.4,-0.4
 ""
 PERSONAL REFUNDABLE CREDIT
 ""
-Increase Personal Refudable credit amount to 1000
+Increase Personal Refundable credit amount to 1000
 Tax-Calculator,-167.5,-173.2,-179.1,-184.7
 ""
-Increase Personal Refudable credit amount to 1000, with phaseout starting AGI 10,000 and phaseout rate at 0.01
+Increase Personal Refundable credit amount to 1000, with phaseout starting AGI 10,000 and phaseout rate at 0.01
 Tax-Calculator,-167.5,-144.1,-148.4,-152.2
