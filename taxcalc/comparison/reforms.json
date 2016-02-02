@@ -432,7 +432,7 @@
         "value": {"_II_credit": [[1000, 1000, 1000, 1000]],
                   "_II_credit_ps": [[100000, 100000, 100000, 100000]],
                   "_II_credit_prt": [0.01]},
-        "name": "Increase Personal Refutable credit amount to 1000, with phaseout starting AGI 10,000 and phaseout rate at 0.01",
+        "name": "Increase Personal Refundable credit amount to 1000, with phaseout starting AGI 10,000 and phaseout rate at 0.01",
         "output_type": "_iitax",
         "compare_with": {}
      }
