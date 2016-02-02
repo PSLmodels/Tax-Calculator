@@ -16,7 +16,7 @@
      "r3":{
         "start_year": 2015,
         "value": {"_FICA_mc_trt": [0.039]},
-        "name": "Increase the Payroll tax rate for medicare hospital insurace by 1pts",
+        "name": "Increase the Payroll tax rate for medicare hospital insurance by 1pts",
         "output_type": "_fica",
         "compare_with": {"Budget Options": [73, 77, 82, 87]}
      },
@@ -194,7 +194,7 @@
      "r27":{
         "start_year": 2015,
         "value": {"_ID_ps": [[248250, 299900, 144950, 274050, 299900, 144950]]},
-        "name": "Dncrease Itemized Deduction phaseout starting AGI by 10,000",
+        "name": "Increase Itemized Deduction phaseout starting AGI by 10,000",
         "output_type": "_iitax",
         "compare_with": {}
      },
@@ -423,7 +423,7 @@
         "start_year": 2015,
         "value": {"_II_credit": [[1000, 1000, 1000, 1000]]},
         "section_name": "PERSONAL REFUNDABLE CREDIT",
-        "name": "Increase Personal Refudable credit amount to 1000",
+        "name": "Increase Personal Refundable credit amount to 1000",
         "output_type": "_iitax",
         "compare_with": {}
      },
@@ -432,7 +432,7 @@
         "value": {"_II_credit": [[1000, 1000, 1000, 1000]],
                   "_II_credit_ps": [[100000, 100000, 100000, 100000]],
                   "_II_credit_prt": [0.01]},
-        "name": "Increase Personal Refudable credit amount to 1000, with phaseout starting AGI 10,000 and phaseout rate at 0.01",
+        "name": "Increase Personal Refundable credit amount to 1000, with phaseout starting AGI 10,000 and phaseout rate at 0.01",
         "output_type": "_iitax",
         "compare_with": {}
      }
