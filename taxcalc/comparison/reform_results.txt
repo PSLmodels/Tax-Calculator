@@ -1,0 +1,217 @@
+""
+PAYROLL TAXES
+""
+Increase the Social Security payroll tax rate by 1pts
+Tax-Calculator,62.2,64.8,68.2,71.6
+""
+Increase the maximum taxable earnings (177500) for the social security payroll tax
+Tax-Calculator,51.6,61.7,64.1,66.6
+Budget Options,40,46,49,51
+""
+Increase the Payroll tax rate for medicare hospital insurace by 1pts
+Tax-Calculator,74.1,77.8,81.8,85.7
+Budget Options,73,77,82,87
+""
+Increase the Additional Medicare threshold by 10,000
+Tax-Calculator,-0.3,-0.3,-0.3,-0.4
+""
+Increase the Additional Medicare tax rate by 0.1 pts
+Tax-Calculator,0.8,0.8,0.9,1.0
+""
+SOCIAL SECURITY TAXABILITY
+""
+Exclusion of untaxed social security and railroad retirement
+Tax-Calculator,39.3,41.8,44.1,46.5
+Tax Expenditure,39,42,44,47
+Budget Options,35,37,38,40
+""
+ADJUSTMENTS
+""
+Net exclusion of KEOGH plan
+Tax-Calculator,7.0,7.4,7.8,8.3
+Tax Expenditure,9,10,11,16
+""
+Deduction for student loans
+Tax-Calculator,1.7,1.8,2.0,2.1
+Tax Expenditure,2,2,2,2
+""
+Eliminate adjustment for self-employment tax
+Tax-Calculator,4.4,4.7,5.0,5.3
+""
+Eliminate adjustment for self-employed health insurance
+Tax-Calculator,6.1,6.4,6.7,7.0
+""
+Eliminate adjustment for alimony payments
+Tax-Calculator,1.9,2.1,2.2,2.3
+""
+Eliminate adjustment for forfeited interest penalty
+Tax-Calculator,0.1,0.1,0.1,0.1
+""
+EXEMPTION
+""
+Increase personal and dependent exemption amount by 1000
+Tax-Calculator,-32.7,-35.4,-36.8,-38.2
+""
+Increase personal exemption phaseout starting AGI by 10,000
+Tax-Calculator,-0.1,-0.1,-0.1,-0.1
+""
+Increase personal exemption phaseout rate by 1 pts
+Tax-Calculator,0.2,0.2,0.2,0.2
+""
+STANDARD DEDUCTION
+""
+Increase standard deduction by 100
+Tax-Calculator,-1.0,-2.8,-3.0,-3.1
+""
+Increase additional standard deduction for aged and blind by 100
+Tax-Calculator,-0.4,-0.5,-0.6,-0.6
+""
+ITEMIZED DEDUCTION
+""
+Real Estate
+Tax-Calculator,35.4,37.8,40.2,42.7
+Tax Expenditure,34,36,39,41
+""
+Home Mortgage
+Tax-Calculator,80.0,87.5,94.4,101.8
+Tax Expenditure,75,82,88,93
+""
+Both real estate and state and local
+Tax-Calculator,98.4,105.7,112.7,119.9
+Tax Expenditure,75,82,88,93
+""
+State & Local
+Tax-Calculator,63.9,68.1,72.2,76.4
+Tax Expenditure,59,63,67,71
+""
+Medical
+Tax-Calculator,8.4,9.2,10.0,10.8
+Tax Expenditure,11,12,13,14
+""
+Casualty
+Tax-Calculator,0.4,0.5,0.5,0.5
+Tax Expenditure,0,0,0,0
+""
+Charitable
+Tax-Calculator,44.0,47.3,50.4,53.8
+Tax Expenditure,46,47,48,50
+""
+Decrease AGI floor for miscellaneous expenses by 1 pts
+Tax-Calculator,-2.7,-2.8,-2.9,-3.1
+""
+Increase Itemized deduction maximum phaseout by 10%
+Tax-Calculator,0.1,0.1,0.1,0.1
+""
+Dncrease Itemized Deduction phaseout starting AGI by 10,000
+Tax-Calculator,0.1,0.1,0.1,0.1
+""
+Increase Itemized Deduction phaseout rate by 1 pts
+Tax-Calculator,3.7,4.0,4.2,4.4
+""
+limit the tax value of ID to 6% of AGI
+Tax-Calculator,21.4,23.0,24.5,26.3
+Budget Options,11,9,8,7
+""
+CAPITAL GAIN
+""
+Increase long term cap gain and dividends tax rates by 2 percentage, no behavior
+Tax-Calculator,16.6,16.9,17.5,18.3
+""
+Increase long term cap gain and dividends tax rates by 2 percentage, elasticity assumed to be 0.78
+Tax-Calculator,12.7,13.0,13.5,14.1
+""
+Increase long term cap gain and dividends tax rates by 2 percentage, elasticity assumed to be 1.2
+Tax-Calculator,10.6,10.9,11.4,11.8
+Budget Options,5,5,5,6
+""
+REGULAR TAXES
+""
+Increase each bracket rate by 1%
+Tax-Calculator,56.4,59.5,62.6,65.5
+Budget Options,56,60,65,69
+""
+Increase top 4 rates by 1%
+Tax-Calculator,12.3,13.2,13.9,14.5
+Budget Options,11,12,14,15
+""
+Increase top 2 rates by 1%
+Tax-Calculator,7.8,8.4,8.8,9.1
+Budget Options,7,8,9,10
+""
+Alternative Minimum Tax
+""
+Increase exemption amount by 1000
+Tax-Calculator,-1.0,-2.5,-2.6,-2.8
+""
+Alternative Minimum Tax
+""
+Increase exemption phaseout starting AMTI by 10,000
+Tax-Calculator,-2.3,-3.1,-3.4,-3.6
+""
+Alternative Minimum Tax
+""
+Increase exemption phaseout rate by 2 pts
+Tax-Calculator,2.4,2.6,2.8,3.0
+""
+Alternative Minimum Tax
+""
+Increase AMT rate under the surtax threshold by 2 pts
+Tax-Calculator,24.8,27.1,29.1,31.2
+""
+Alternative Minimum Tax
+""
+Increase AMT rate above the surtax threshold by 2 pts
+Tax-Calculator,8.1,8.8,9.5,10.1
+""
+Increase AMT surtax threshold by 10,000
+Tax-Calculator,-0.4,-0.6,-0.7,-0.7
+""
+NONREFUNDABLE CREDIT
+""
+Total expenditure from child tax credit
+Tax-Calculator,51.7,51.2,50.7,49.9
+Tax Expenditure,57,57,57,57
+""
+Increase Child Tax Credit phaseout rate by 1 pts
+Tax-Calculator,0.5,0.5,0.6,0.6
+""
+Increase Child Tax Credit phaseout starting MAGI by 1000
+Tax-Calculator,-0.2,-0.2,-0.2,-0.2
+""
+REFUNDABLE CREDIT
+""
+Earned income tax credit, total
+Tax-Calculator,71.3,70.2,70.9,71.3
+Tax Expenditure,70,71,72,70
+""
+Increase EITC phaseout rate by 1 pts
+Tax-Calculator,1.3,1.3,1.4,1.4
+""
+Increase EITC phaseout starting AGI by 1000
+Tax-Calculator,-2.5,-3.2,-3.3,-3.3
+""
+Increase Maximum EITC allowed by 100
+Tax-Calculator,-2.6,-3.9,-4.0,-4.1
+""
+Increase additional child tax credit rate by 2 pts
+Tax-Calculator,-0.7,-0.7,-0.6,-0.6
+""
+Decrease additional child tax credit minimum number of child to two
+Tax-Calculator,0.0,0.0,0.0,0.0
+""
+OTHER TAXES
+""
+Net investment income tax, total
+Tax-Calculator,-33.0,-34.0,-35.5,-37.3
+Tax Expenditure,-33,-35,-37,-39
+""
+Increase Net Investment Income Tax threshold by 10,000
+Tax-Calculator,-0.4,-0.4,-0.4,-0.4
+""
+PERSONAL REFUNDABLE CREDIT
+""
+Increase Personal Refudable credit amount to 1000
+Tax-Calculator,-167.5,-173.2,-179.1,-184.7
+""
+Increase Personal Refudable credit amount to 1000, with phaseout starting AGI 10,000 and phaseout rate at 0.01
+Tax-Calculator,-167.5,-144.1,-148.4,-152.2
