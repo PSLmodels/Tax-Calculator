@@ -311,11 +311,11 @@ def test_add_weighted_decile_bins():
     df = add_weighted_decile_bins(df)
     assert 'bins' in df
     bin_labels = df['bins'].unique()
-    default_labels = set(range(1,11))
+    default_labels = set(range(1, 11))
     for lab in bin_labels:
         assert lab in default_labels
 
-    #Custom labels
+    # Custom labels
     custom_labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
     df = add_weighted_decile_bins(df, labels=custom_labels)
     assert 'bins' in df
