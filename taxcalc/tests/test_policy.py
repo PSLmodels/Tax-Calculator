@@ -1,35 +1,28 @@
 import os
 import sys
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, "../../"))
+sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 import json
 import numpy as np
 from numpy.testing import assert_array_equal
-import pandas as pd
 import pytest
 import tempfile
-from numba import jit, vectorize, guvectorize
-import taxcalc
-from taxcalc import *
+from taxcalc import Policy
 
 
 @pytest.yield_fixture
 def policyfile():
-
+    # specify JSON text for policy reform
     txt = """{"_almdep": {"value": [7150, 7250, 7400],
                           "cpi_inflated": true},
-
-             "_almsep": {"value": [40400, 41050],
-                         "cpi_inflated": true},
-
-             "_rt5": {"value": [0.33 ],
-                      "cpi_inflated": false},
-
-             "_rt7": {"value": [0.396],
-                      "cpi_inflated": false}}"""
-
-    f = tempfile.NamedTemporaryFile(mode="a", delete=False)
-    f.write(txt + "\n")
+              "_almsep": {"value": [40400, 41050],
+                          "cpi_inflated": true},
+              "_rt5": {"value": [0.33 ],
+                       "cpi_inflated": false},
+              "_rt7": {"value": [0.396],
+                       "cpi_inflated": false}}"""
+    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    f.write(txt + '\n')
     f.close()
     # Must close and then yield for Windows platform
     yield f
@@ -75,7 +68,7 @@ def test_constant_inflation_rate_with_reform():
     irates = {(syr + i): irate for i in range(0, nyrs)}
     ppo = Policy(start_year=syr, num_years=nyrs, inflation_rates=irates)
     # implement reform in 2021 which is the year before the last year = 2022
-    reform = {2021: {"_II_em": [20000]}}
+    reform = {2021: {'_II_em': [20000]}}
     ppo.implement_reform(reform)
     # check implied inflation rate just before reform
     grate = float(ppo._II_em[2020 - syr]) / float(ppo._II_em[2019 - syr]) - 1.0
@@ -107,7 +100,7 @@ def test_variable_inflation_rate_with_reform():
     ppo = Policy(start_year=syr, num_years=10, inflation_rates=irates)
     assert ppo._II_em[2013 - syr] == 3900
     # implement reform in 2020 which is two years before the last year, 2022
-    reform = {2020: {"_II_em": [20000]}}
+    reform = {2020: {'_II_em': [20000]}}
     ppo.implement_reform(reform)
     ppo.set_year(2020)
     assert ppo.current_year == 2020
@@ -417,7 +410,7 @@ def test_parameters_get_default():
 
 
 def test_implement_reform_Policy_raises_on_no_year():
-    reform = {"_STD_Aged": [[1400, 1200]]}
+    reform = {'_STD_Aged': [[1400, 1200]]}
     ppo = Policy()
     with pytest.raises(ValueError):
         ppo.implement_reform(reform)
@@ -425,7 +418,7 @@ def test_implement_reform_Policy_raises_on_no_year():
 
 def test_Policy_reform_in_start_year():
     ppo = Policy(start_year=2013)
-    reform = {2013: {"_STD_Aged": [[1400, 1100, 1100, 1400, 1400, 1199]]}}
+    reform = {2013: {'_STD_Aged': [[1400, 1100, 1100, 1400, 1400, 1199]]}}
     ppo.implement_reform(reform)
     assert_array_equal(ppo.STD_Aged,
                        np.array([1400, 1100, 1100, 1400, 1400, 1199]))
@@ -434,13 +427,13 @@ def test_Policy_reform_in_start_year():
 def test_implement_reform_Policy_raises_on_future_year():
     ppo = Policy(start_year=2013)
     with pytest.raises(ValueError):
-        reform = {2010: {"_STD_Aged": [[1400, 1100, 1100, 1400, 1400, 1199]]}}
+        reform = {2010: {'_STD_Aged': [[1400, 1100, 1100, 1400, 1400, 1199]]}}
         ppo.implement_reform(reform)
 
 
 def test_Policy_reform_with_default_cpi_flags():
     ppo = Policy(start_year=2013)
-    reform = {2015: {"_II_em": [4300]}}
+    reform = {2015: {'_II_em': [4300]}}
     ppo.implement_reform(reform)
     # '_II_em' has a default cpi_flag of True, so
     # in 2016 its value should be greater than 4300
@@ -450,7 +443,7 @@ def test_Policy_reform_with_default_cpi_flags():
 
 def test_Policy_reform_after_start_year():
     ppo = Policy(start_year=2013)
-    reform = {2015: {"_STD_Aged": [[1400, 1100, 1100, 1400, 1400, 1199]]}}
+    reform = {2015: {'_STD_Aged': [[1400, 1100, 1100, 1400, 1400, 1199]]}}
     ppo.implement_reform(reform)
     ppo.set_year(2015)
     assert_array_equal(ppo.STD_Aged,
@@ -459,7 +452,7 @@ def test_Policy_reform_after_start_year():
 
 def test_Policy_reform_makes_no_changes_before_year():
     ppo = Policy(start_year=2013)
-    reform = {2015: {"_II_em": [4400], "_II_em_cpi": True}}
+    reform = {2015: {'_II_em': [4400], '_II_em_cpi': True}}
     ppo.implement_reform(reform)
     ppo.set_year(2015)
     assert_array_equal(ppo._II_em[:3], np.array([3900, 3950, 4400]))
@@ -472,20 +465,20 @@ def test_parameters_get_default_start_year():
     # 1D data, has 2015 values
     meta_II_em = paramdata['_II_em']
     assert meta_II_em['start_year'] == 2015
-    assert meta_II_em['row_label'] == ["2015", "2016"]
+    assert meta_II_em['row_label'] == ['2015', '2016']
     assert meta_II_em['value'] == [4000, 4050]
 
     # 2D data, has 2015 values
     meta_std_aged = paramdata['_STD_Aged']
     assert meta_std_aged['start_year'] == 2015
-    assert meta_std_aged['row_label'] == ["2015", "2016"]
+    assert meta_std_aged['row_label'] == ['2015', '2016']
     assert meta_std_aged['value'] == [[1550, 1250, 1250, 1550, 1550, 1250],
                                       [1550, 1250, 1250, 1550, 1550, 1250]]
 
     # 1D data, doesn't have 2015 values, is CPI inflated
     meta_amt_thd_marrieds = paramdata['_AMT_thd_MarriedS']
     assert meta_amt_thd_marrieds['start_year'] == 2015
-    assert meta_amt_thd_marrieds['row_label'] == ["2015"]
+    assert meta_amt_thd_marrieds['row_label'] == ['2015']
     # Take the 2014 parameter value and multiply by inflation for that year
     should_be = [int(41050 * (1 + Policy.default_inflation_rates()[2014]))]
     assert meta_amt_thd_marrieds['value'] == should_be
@@ -493,7 +486,7 @@ def test_parameters_get_default_start_year():
     # 1D data, doesn't have 2015 values, is not CPI inflated
     meta_kt_c_age = paramdata['_KT_c_Age']
     assert meta_kt_c_age['start_year'] == 2015
-    assert meta_kt_c_age['row_label'] == ["2015"]
+    assert meta_kt_c_age['row_label'] == ['2015']
     assert meta_kt_c_age['value'] == [24]
 
 
