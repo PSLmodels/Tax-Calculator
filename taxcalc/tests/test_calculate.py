@@ -12,12 +12,10 @@ from taxcalc import Policy, Records, Calculator
 from taxcalc import create_distribution_table, create_difference_table
 
 # use 1991 PUF-like data to emulate current puf.csv, which is private
-TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'tax_all1991_puf.gz')
+TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91taxdata.csv.gz')
 TAXDATA = pd.read_csv(TAXDATA_PATH, compression='gzip')
-
-# specify WEIGHTS appropriate for 1991 data
-WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'WEIGHTS_testing.csv')
-WEIGHTS = pd.read_csv(WEIGHTS_PATH)
+WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
+WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
 IRATES = {1991: 0.015, 1992: 0.020, 1993: 0.022, 1994: 0.020, 1995: 0.021,
           1996: 0.022, 1997: 0.023, 1998: 0.024, 1999: 0.024, 2000: 0.024,
@@ -133,7 +131,7 @@ def run():
                  'x04500', 'x07100', 'y07100', 'y62745']
     df = totaldf[col_names]
     exp_results_file = os.path.join(CUR_PATH,
-                                    '..', 'altdata', 'exp_results.csv.gz')
+                                    '..', 'altdata', 'puf91results.csv.gz')
     exp_results = pd.read_csv(exp_results_file, compression='gzip')
     exp_set = set(exp_results.columns)  # fix-up to bad colname in exp_results
     cur_set = set(df.columns)
