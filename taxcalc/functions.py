@@ -1262,15 +1262,6 @@ def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
     return (_nctcr, _precrd, _ctcagi)
 
 
-def HopeCredit():
-    """
-    HopeCredit function: ...
-    """
-    # W/o congressional action, Hope Credit will replace
-    # American opportunities credit in 2018. NEED TO ADD LOGIC!!!
-    return None
-
-
 @iterate_jit(nopython=True, puf=True)
 def AmOppCr(p87482, e87487, e87492, e87497, p87521, puf):
     """
