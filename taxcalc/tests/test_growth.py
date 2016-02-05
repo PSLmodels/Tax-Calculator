@@ -9,12 +9,10 @@ from taxcalc import Policy, Records, Calculator, behavior, Behavior, Growth
 from taxcalc import adjustment, target
 
 # use 1991 PUF-like data to emulate current puf.csv, which is private
-TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'tax_all1991_puf.gz')
+TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91taxdata.csv.gz')
 TAXDATA = pd.read_csv(TAXDATA_PATH, compression='gzip')
-
-# specify WEIGHTS appropriate for 1991 data
-WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'WEIGHTS_testing.csv')
-WEIGHTS = pd.read_csv(WEIGHTS_PATH)
+WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
+WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
 
 def test_make_calculator_with_growth():
