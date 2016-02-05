@@ -1,26 +1,24 @@
 import os
 import sys
 import numpy as np
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, "../../"))
 import pandas as pd
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy, Records, Calculator, behavior, Behavior
 
+# use 1991 PUF-like data to emulate current puf.csv, which is private
+TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'tax_all1991_puf.gz')
+TAXDATA = pd.read_csv(TAXDATA_PATH, compression='gzip')
 
-WEIGHTS_FILENAME = "../../WEIGHTS_testing.csv"
-WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
+# specify WEIGHTS appropriate for 1991 data
+WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'WEIGHTS_testing.csv')
 WEIGHTS = pd.read_csv(WEIGHTS_PATH)
-
-TAX_DTA_PATH = os.path.join(CUR_PATH, "../../tax_all1991_puf.gz")
-TAX_DTA = pd.read_csv(TAX_DTA_PATH, compression='gzip')
-# data fix-up: midr needs to be type int64 to match PUF
-TAX_DTA['MIDR'] = TAX_DTA['MIDR'].astype('int64')
 
 
 def test_make_behavioral_Calculator():
     # create Records objects
-    records_x = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
-    records_y = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
+    records_x = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    records_y = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     # create Policy objects
     policy_x = Policy()
     policy_y = Policy()
