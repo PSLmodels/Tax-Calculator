@@ -168,7 +168,8 @@ class IncomeTaxIO(object):
         """
         output = {}  # dictionary indexed by Records index for filing unit
         if output_mtr:
-            (_, mtr_iitx, _) = self._calc.mtr(wrt_full_compensation=False)
+            (mtr_fica, mtr_iitx,
+             _) = self._calc.mtr(wrt_full_compensation=False)
         else:
             self._calc.calc_all()
         for idx in range(0, self._calc.records.dim):
@@ -178,6 +179,8 @@ class IncomeTaxIO(object):
                 ovar[6] = 0.0  # no FICA tax liability included in output
             if output_mtr:
                 ovar[7] = 100 * mtr_iitx[idx]
+                if self._using_puf_csv_file:
+                    ovar[9] = 100 * mtr_fica[idx]
             output[idx] = ovar
         assert len(output) == self._calc.records.dim
         # handle disposition of calculated output
@@ -217,7 +220,8 @@ class IncomeTaxIO(object):
                '[ 6] FICA tax liability [ZERO UNLESS puf.csv USED AS INPUT]\n'
                '[ 7] marginal federal inc tax rate [ZERO UNLESS --mtr USED]\n'
                '[ 8] marginal state income tax rate [ALWAYS ZERO]\n'
-               '[ 9] marginal FICA tax rate [ALWAYS ZERO]\n'
+               '[ 9] marginal FICA tax rate [ZERO UNLESS --mtr USED AND '
+               'puf.csv USED AS INPUT]\n'
                '[10] federal adjusted gross income, AGI\n'
                '[11] unemployment (UI) benefits included in AGI\n'
                '[12] social security (OASDI) benefits included in AGI\n'
