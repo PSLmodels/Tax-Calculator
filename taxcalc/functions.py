@@ -576,7 +576,7 @@ def Personal_Credit(c04500, MARS, II_credit, II_credit_ps, II_credit_prt):
     else:
         credit_phaseout = 0.0
 
-    _personal_credit = _personal_credit - credit_phaseout
+    _personal_credit = max(0, _personal_credit - credit_phaseout)
 
     return _personal_credit
 
