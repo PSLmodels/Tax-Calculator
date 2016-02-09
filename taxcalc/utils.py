@@ -101,7 +101,7 @@ def weighted_share_of_total(agg, col_name, total):
     return float(weighted_sum(agg, col_name)) / (float(total) + EPSILON)
 
 
-def add_weighted_decile_bins(df, income_measure='_expanded_income'):
+def add_weighted_decile_bins(df, income_measure='_expanded_income', labels=None):
     """
 
     Add a column of income bins based on each 10% of the income_measure,
@@ -121,9 +121,10 @@ def add_weighted_decile_bins(df, income_measure='_expanded_income'):
     max_ = df['cumsum_weights'].values[-1]
     # Create 10 bins and labels based on this cumulative weight
     bins = [0] + list(np.arange(1, 11) * (max_ / 10.0))
-    labels = [range(1, 11)]
+    if not labels:
+        labels = range(1, 11)
     #  Groupby weighted deciles
-    df['bins'] = pd.cut(df['cumsum_weights'], bins, labels)
+    df['bins'] = pd.cut(df['cumsum_weights'], bins, labels=labels)
     return df
 
 

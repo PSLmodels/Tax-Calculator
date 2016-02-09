@@ -2,27 +2,23 @@ import os
 import sys
 import numpy as np
 from numpy.testing import assert_array_equal
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, "../../"))
 import pandas as pd
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy, Records, Calculator, behavior, Behavior, Growth
 from taxcalc import adjustment, target
 
-
-WEIGHTS_FILENAME = "../../WEIGHTS_testing.csv"
-WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
-WEIGHTS = pd.read_csv(WEIGHTS_PATH)
-
-TAX_DTA_PATH = os.path.join(CUR_PATH, "../../tax_all1991_puf.gz")
-TAX_DTA = pd.read_csv(TAX_DTA_PATH, compression='gzip')
-# data fix-up: midr needs to be type int64 to match PUF
-TAX_DTA['MIDR'] = TAX_DTA['MIDR'].astype('int64')
+# use 1991 PUF-like data to emulate current puf.csv, which is private
+TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91taxdata.csv.gz')
+TAXDATA = pd.read_csv(TAXDATA_PATH, compression='gzip')
+WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
+WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
 
 def test_make_calculator_with_growth():
     # create a Records and Params object
-    records_x = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
-    records_y = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
+    records_x = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    records_y = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     policy_x = Policy()
     policy_y = Policy()
 
@@ -41,8 +37,8 @@ def test_make_calculator_with_growth():
 
 def test_update_growth():
 
-    records_x = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
-    records_y = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
+    records_x = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    records_y = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     policy_x = Policy()
     policy_y = Policy()
 
@@ -64,7 +60,7 @@ def test_update_growth():
     assert_array_equal(calc_x.growth.factor_target,
                        growth_x.factor_target)
     assert_array_equal(calc_x.growth._factor_target,
-                       np.array([0.0244, 0.0118, 0.04, 0.04, 0.04,
+                       np.array([0.0226, 0.0241, 0.04, 0.04, 0.04,
                                 0.04, 0.04, 0.04, 0.04, 0.04, 0.04,
                                 0.04, 0.04, 0.04]))
 
@@ -78,7 +74,7 @@ def test_update_growth():
 
 def test_target():
     # Calculator
-    records_x = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
+    records_x = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     policy_x = Policy()
     growth_x = Growth()
     calc_x = Calculator(policy=policy_x, records=records_x,
@@ -105,7 +101,7 @@ def test_target():
 
 def test_adjustment():
     # make calculator
-    records_y = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
+    records_y = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     policy_y = Policy()
     calc_y = Calculator(policy=policy_y, records=records_y)
 

@@ -4,30 +4,25 @@ import numpy as np
 from numpy.testing import assert_array_equal
 import pandas as pd
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, "../../"))
-from taxcalc import Records, imputed_cmbtp_itemizer, Policy, Calculator, Growth
+sys.path.append(os.path.join(CUR_PATH, '..', '..'))
+from taxcalc import Policy, Records, Calculator, Growth
+from taxcalc import imputed_cmbtp_itemizer
 
-# use 1991 PUF-like data to emulate current PUF, which is private
-TAX_DTA_PATH = os.path.join(CUR_PATH, '../../tax_all1991_puf.gz')
-TAX_DTA = pd.read_csv(TAX_DTA_PATH, compression='gzip')
-# PUF-fix-up: MIdR needs to be type int64 to match PUF
-TAX_DTA['MIDR'] = TAX_DTA['MIDR'].astype('int64')
-# specify WEIGHTS appropriate for 1991 data
-WEIGHTS_FILENAME = '../../WEIGHTS_testing.csv'
-WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
-WEIGHTS = pd.read_csv(WEIGHTS_PATH)
+# use 1991 PUF-like data to emulate current puf.csv, which is private
+TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91taxdata.csv.gz')
+TAXDATA = pd.read_csv(TAXDATA_PATH, compression='gzip')
+WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
+WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
 
 def test_create_records_with_correct_start_year():
-    recs = Records(data=TAX_DTA, weights=WEIGHTS,
-                   start_year=Records.PUF_YEAR)
+    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=Records.PUF_YEAR)
     assert recs
     assert np.any(recs._numextra != 0)
 
 
 def test_create_records_with_wrong_start_year():
-    recs = Records(data=TAX_DTA, weights=WEIGHTS,
-                   start_year=2001)
+    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2001)
     assert recs
     assert np.all(recs._numextra == 0)
     # absence of non-zero values for imputed recs._numextra variable will raise
@@ -36,7 +31,7 @@ def test_create_records_with_wrong_start_year():
 
 
 def test_blow_up():
-    tax_dta = pd.read_csv(TAX_DTA_PATH, compression='gzip')
+    tax_dta = pd.read_csv(TAXDATA_PATH, compression='gzip')
     parms = Policy()
     parms_start_year = parms.current_year
     recs = Records(data=tax_dta, start_year=Records.PUF_YEAR)
@@ -89,7 +84,7 @@ def test_default_rates_and_those_implied_by_blowup_factors():
     default price inflation rates, are consistent with the rates embedded
     in the Records blowup factors (BF).
     """
-    record = Records(TAX_DTA_PATH)  # contains the blowup factors
+    record = Records(TAXDATA_PATH)  # contains the blowup factors
     policy = Policy()  # contains the default indexing rates
     syr = Policy.JSON_START_YEAR
     endyr = Policy.FIRST_BUDGET_YEAR + Policy.NUM_BUDGET_YEARS
@@ -119,7 +114,7 @@ def test_default_rates_and_those_implied_by_blowup_factors():
         cpi_u[year - syr] = record.BF.ACPIU[year] - 1
 
     # check that blowup rates are same as default inflation rates
-    cpi_u = np.round(cpi_u, 3)
+    cpi_u = np.round(cpi_u, 4)
     assert_array_equal(cpi_u, policy._inflation_rates)
 
     # back out original stage I wage growth rates from blowup factors

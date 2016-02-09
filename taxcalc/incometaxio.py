@@ -60,16 +60,21 @@ class IncomeTaxIO(object):
         # pylint: disable=too-many-statements
         # pylint: disable=too-many-branches
         if isinstance(input_data, six.string_types):
+            self._using_input_file = True
+            if input_data == 'puf.csv':
+                self._using_puf_csv_file = True
+            else:
+                self._using_puf_csv_file = False
             # check that input_data string ends with ".csv"
             if input_data.endswith('.csv'):
                 inp = '{}-{}'.format(input_data[:-4], str(tax_year)[2:])
-                self._using_input_file = True
             else:
                 msg = 'INPUT file named {} does not end in .csv'
                 raise ValueError(msg.format(input_data))
         elif isinstance(input_data, pd.DataFrame):
-            inp = 'df-{}'.format(str(tax_year)[2:])
             self._using_input_file = False
+            self._using_puf_csv_file = False
+            inp = 'df-{}'.format(str(tax_year)[2:])
         else:
             msg = 'INPUT is neither string nor Pandas DataFrame'
             raise ValueError(msg)
@@ -163,15 +168,19 @@ class IncomeTaxIO(object):
         """
         output = {}  # dictionary indexed by Records index for filing unit
         if output_mtr:
-            (_, mtr_iitx, _) = self._calc.mtr(wrt_full_compensation=False)
+            (mtr_fica, mtr_iitx,
+             _) = self._calc.mtr(wrt_full_compensation=False)
         else:
             self._calc.calc_all()
         for idx in range(0, self._calc.records.dim):
             ovar = SimpleTaxIO.extract_output(self._calc.records, idx,
                                               extract_weight=output_weights)
-            ovar[6] = 0.0  # no FICA tax liability included in output
+            if not self._using_puf_csv_file:
+                ovar[6] = 0.0  # no FICA tax liability included in output
             if output_mtr:
                 ovar[7] = 100 * mtr_iitx[idx]
+                if self._using_puf_csv_file:
+                    ovar[9] = 100 * mtr_fica[idx]
             output[idx] = ovar
         assert len(output) == self._calc.records.dim
         # handle disposition of calculated output
@@ -208,10 +217,11 @@ class IncomeTaxIO(object):
                '[ 3] state code [ALWAYS ZERO]\n'
                '[ 4] federal income tax liability\n'
                '[ 5] state income tax liability [ALWAYS ZERO]\n'
-               '[ 6] FICA (OASDI+HI) tax liability [ALWAYS ZERO]\n'
+               '[ 6] FICA tax liability [ZERO UNLESS puf.csv USED AS INPUT]\n'
                '[ 7] marginal federal inc tax rate [ZERO UNLESS --mtr USED]\n'
                '[ 8] marginal state income tax rate [ALWAYS ZERO]\n'
-               '[ 9] marginal FICA tax rate [ALWAYS ZERO]\n'
+               '[ 9] marginal FICA tax rate [ZERO UNLESS --mtr USED AND '
+               'puf.csv USED AS INPUT]\n'
                '[10] federal adjusted gross income, AGI\n'
                '[11] unemployment (UI) benefits included in AGI\n'
                '[12] social security (OASDI) benefits included in AGI\n'
