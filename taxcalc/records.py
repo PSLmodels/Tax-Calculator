@@ -626,7 +626,7 @@ class Records(object):
         # impute number of extra standard deductions for aged
         self._numextra = np.where(
             np.logical_or(self.AGERANGE >= 6,
-                          np.logical_and(self.age > 65, self.AGERANGE == 0)),
+                          np.logical_and(self.age >= 65, self.AGERANGE == 0)),
             self._txpyers, 0)
         # impute the ratio of household head in total household income
         total = np.where(self.MARS == 2,
