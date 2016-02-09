@@ -47,7 +47,8 @@ def test_expand_1D_short_array():
     exp[3:] = exp2
     res = Policy.expand_1D(x, inflate=True, inflation_rates=[0.02] * 10,
                            num_years=10)
-    assert np.allclose(exp.astype(x.dtype, casting='unsafe'), res)
+    npt.assert_allclose(exp, res, atol=0.0, rtol=1.0E-7)
+
 
 
 def test_expand_1D_variable_rates():
@@ -58,7 +59,8 @@ def test_expand_1D_variable_rates():
     exp = np.array([4, 5, 9, 9 * 1.03, 9 * 1.03 * 1.035])
     res = Policy.expand_1D(x, inflate=True, inflation_rates=irates,
                            num_years=5)
-    assert np.allclose(exp.astype('f4', casting='unsafe'), res)
+    npt.assert_allclose(exp.astype('f4', casting='unsafe'), res,
+                        atol=0.0, rtol=1.0E-7)
 
 
 def test_expand_1D_scalar():
@@ -82,43 +84,39 @@ def test_expand_1D_accept_None():
     exp = np.array(exp)
     res = Policy.expand_array(x, inflate=True, inflation_rates=irates,
                               num_years=5)
-    assert np.allclose(exp.astype('f4', casting='unsafe'), res)
+    npt.assert_allclose(exp.astype('f4', casting='unsafe'), res)
 
 
 def test_expand_2D_short_array():
-    x = np.array([[1, 2, 3]], dtype='f8')
-    val = np.array([1, 2, 3], dtype='f8')
+    x = np.array([[1, 2, 3]], dtype=np.float64)
+    val = np.array([1, 2, 3], dtype=np.float64)
     exp2 = np.array([val * math.pow(1.02, i) for i in range(1, 5)])
-    exp1 = np.array([1, 2, 3], dtype='f8')
+    exp1 = np.array([1, 2, 3], dtype=np.float64)
     exp = np.zeros((5, 3))
     exp[:1] = exp1
     exp[1:] = exp2
     res = Policy.expand_2D(x, inflate=True, inflation_rates=[0.02] * 5,
                            num_years=5)
-    assert np.allclose(exp, res)
+    npt.assert_allclose(exp, res)
 
 
 def test_expand_2D_variable_rates():
-    x = np.array([[1, 2, 3]], dtype='f8')
-    cur = np.array([1, 2, 3], dtype='f8')
+    x = np.array([[1, 2, 3]], dtype=np.float64)
+    cur = np.array([1, 2, 3], dtype=np.float64)
     irates = [0.02, 0.02, 0.02, 0.03, 0.035]
-
     exp2 = []
     for i in range(0, 4):
         idx = i + len(x) - 1
         cur = np.array(cur * (1.0 + irates[idx]))
         print("cur is ", cur)
         exp2.append(cur)
-
-    # exp2 = np.array([val * math.pow(1.02, i) for i in range(1, 5)])
-    exp1 = np.array([1, 2, 3], dtype='f8')
-    exp = np.zeros((5, 3))
+    exp1 = np.array([1, 2, 3], dtype=np.float64)
+    exp = np.zeros((5, 3), dtype=np.float64)
     exp[:1] = exp1
     exp[1:] = exp2
     res = Policy.expand_2D(x, inflate=True, inflation_rates=irates,
                            num_years=5)
-    npt.assert_array_equal(res, np.array(exp).astype('f8', casting='unsafe'))
-    assert np.allclose(exp, res)
+    npt.assert_allclose(exp, res)
 
 
 def test_create_tables():
@@ -235,14 +233,11 @@ def test_add_income_bins():
     df = add_income_bins(df, compare_with="tpc", bins=None)
     grpd = df.groupby('bins')
     grps = [grp for grp in grpd]
-
     for g, num in zip(grps, bins[1:-1]):
         assert g[0].endswith(str(num) + "]")
-
     grpdl = add_income_bins(df, compare_with="tpc", bins=None, right=False)
     grpdl = grpdl.groupby('bins')
     grps = [grp for grp in grpdl]
-
     for g, num in zip(grps, bins[1:-1]):
         assert g[0].endswith(str(num) + ")")
 
@@ -250,22 +245,17 @@ def test_add_income_bins():
 def test_add_income_bins_soi():
     data = np.arange(1, 1e6, 5000)
     df = DataFrame(data=data, columns=['_expanded_income'])
-
     bins = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
             49999, 74999, 99999, 199999, 499999, 999999, 1499999,
             1999999, 4999999, 9999999, 1e14]
-
     df = add_income_bins(df, compare_with="soi", bins=None)
     grpd = df.groupby('bins')
     grps = [grp for grp in grpd]
-
     for g, num in zip(grps, bins[1:-1]):
         assert g[0].endswith(str(num) + "]")
-
     grpdl = add_income_bins(df, compare_with="soi", bins=None, right=False)
     grpdl = grpdl.groupby('bins')
     grps = [grp for grp in grpdl]
-
     for g, num in zip(grps, bins[1:-1]):
         assert g[0].endswith(str(num) + ")")
 
@@ -273,21 +263,16 @@ def test_add_income_bins_soi():
 def test_add_income_bins_specify_bins():
     data = np.arange(1, 1e6, 5000)
     df = DataFrame(data=data, columns=['_expanded_income'])
-
     bins = [-1e14, 0, 4999, 9999, 14999, 19999, 29999, 32999, 43999,
             1e14]
-
     df = add_income_bins(df, bins=bins)
     grpd = df.groupby('bins')
     grps = [grp for grp in grpd]
-
     for g, num in zip(grps, bins[1:-1]):
         assert g[0].endswith(str(num) + "]")
-
     grpdl = add_income_bins(df, bins=bins, right=False)
     grpdl = grpdl.groupby('bins')
     grps = [grp for grp in grpdl]
-
     for g, num in zip(grps, bins[1:-1]):
         assert g[0].endswith(str(num) + ")")
 
@@ -295,7 +280,6 @@ def test_add_income_bins_specify_bins():
 def test_add_income_bins_raises():
     data = np.arange(1, 1e6, 5000)
     df = DataFrame(data=data, columns=['_expanded_income'])
-
     with pytest.raises(ValueError):
         df = add_income_bins(df, compare_with="stuff")
 
@@ -308,7 +292,6 @@ def test_add_weighted_decile_bins():
     default_labels = set(range(1, 11))
     for lab in bin_labels:
         assert lab in default_labels
-
     # Custom labels
     custom_labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
     df = add_weighted_decile_bins(df, labels=custom_labels)
@@ -342,7 +325,7 @@ def test_dist_table_sum_row():
                                    result_type="weighted_sum")
     t2 = create_distribution_table(calc1, groupby="large_income_bins",
                                    result_type="weighted_sum")
-    assert np.allclose(t1[-1:], t2[-1:])
+    npt.assert_allclose(t1[-1:], t2[-1:])
     t3 = create_distribution_table(calc1, groupby="small_income_bins",
                                    result_type="weighted_avg")
 
@@ -366,7 +349,7 @@ def test_diff_table_sum_row():
     non_digit_cols = ['mean', 'perc_inc', 'perc_cut', 'share_of_change']
     digit_cols = [x for x in tdiff1.columns.tolist() if
                   x not in non_digit_cols]
-    assert np.allclose(tdiff1[digit_cols][-1:], tdiff2[digit_cols][-1:])
+    npt.assert_allclose(tdiff1[digit_cols][-1:], tdiff2[digit_cols][-1:])
     assert np.array_equal(tdiff1[non_digit_cols][-1:],
                           tdiff2[non_digit_cols][-1:])
 
@@ -380,7 +363,6 @@ def test_row_classifier():
     calc1_s006 = create_distribution_table(calc1,
                                            groupby="webapp_income_bins",
                                            result_type="weighted_sum").s006
-
     # create a policy-reform Policy object and Calculator calc2
     reform = {2013: {"_ALD_StudentLoan_HC": [1]}}
     policy2 = Policy()
@@ -392,7 +374,6 @@ def test_row_classifier():
                                            groupby="webapp_income_bins",
                                            result_type="weighted_sum",
                                            baseline_calc=calc1).s006
-
     # use weighted sum of weights in each cell to check classifer
     npt.assert_array_equal(calc1_s006, calc2_s006)
 
@@ -424,7 +405,6 @@ def test_expand_2D_partial_expand():
            [38000, 74000, 36900, 49400, 73800, 36900],
            [40000, 74900, 37450, 50200, 74900, 37450],
            [exp1, exp2, exp3, exp4, exp5, exp6]]
-    exp = np.array(exp).astype('i4', casting='unsafe')
     res = Policy.expand_2D(_II_brk2, inflate=True, inflation_rates=inf_rates,
                            num_years=4)
     npt.assert_array_equal(res, exp)
@@ -481,7 +461,6 @@ def test_expand_2D_accept_None_additional_row():
            [40000, 74900, 37450, 50200, 74900, 37450],
            [41000, exp1, exp2, exp3, exp4, exp5],
            [43000, exp6, exp7, exp8, exp9, exp10]]
-    exp = np.array(exp).astype('i4', casting='unsafe')
     inflation_rates = [0.015, 0.02, 0.02, 0.03]
     res = Policy.expand_array(_II_brk2, inflate=True,
                               inflation_rates=inflation_rates, num_years=5)

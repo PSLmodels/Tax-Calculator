@@ -395,7 +395,7 @@ class ParametersBase(object):
             if len(x) >= num_years:
                 return x
             else:
-                ans = np.zeros(num_years, dtype='f8')
+                ans = np.zeros(num_years, dtype=np.float64)
                 ans[:len(x)] = x
                 if inflate:
                     extra = []
@@ -409,8 +409,8 @@ class ParametersBase(object):
                              range(1, num_years - len(x) + 1)]
 
                 ans[len(x):] = extra
-                return ans.astype(x.dtype, casting='unsafe')
-        return ParametersBase.expand_1D(np.array([x]),
+                return ans
+        return ParametersBase.expand_1D(np.array([x], dtype=np.float64),
                                         inflate,
                                         inflation_rates,
                                         num_years)
@@ -446,7 +446,7 @@ class ParametersBase(object):
 
                 else:
                     c = x
-                ans = np.zeros((num_years, c.shape[1]))
+                ans = np.zeros((num_years, c.shape[1]), dtype=np.float64)
                 ans[:len(c), :] = c
                 if inflate:
                     extra = []
@@ -465,9 +465,9 @@ class ParametersBase(object):
                     ans = ans * keep_calc_data_mask
                     user_vals = x * keep_user_data_mask
                     ans = ans + user_vals
-                return ans.astype(c.dtype, casting='unsafe')
-        return ParametersBase.expand_2D(np.array(x), inflate,
-                                        inflation_rates, num_years)
+                return ans
+        return ParametersBase.expand_2D(np.array(x, dtype=np.float64),
+                                        inflate, inflation_rates, num_years)
 
     @staticmethod
     def strip_Nones(x):
@@ -507,7 +507,8 @@ class ParametersBase(object):
 
         Parameters
         ----------
-        x : value to expand
+        x : value to expand --- either a list of scalars (1D)
+                                or a list of lists of scalars (2D)
 
         inflate: Boolean
             As we expand, inflate values if this is True, otherwise, just copy
@@ -520,9 +521,9 @@ class ParametersBase(object):
 
         Returns
         -------
-        expanded numpy array
+        expanded numpy array with dtype=np.float64
         """
-        x = np.array(ParametersBase.strip_Nones(x))
+        x = np.array(ParametersBase.strip_Nones(x), np.float64)
         try:
             if len(x.shape) == 1:
                 return ParametersBase.expand_1D(x, inflate, inflation_rates,
@@ -531,6 +532,6 @@ class ParametersBase(object):
                 return ParametersBase.expand_2D(x, inflate, inflation_rates,
                                                 num_years)
             else:
-                raise ValueError("Need a 1D or 2D array")
+                raise ValueError('expand_array expects a 1D or 2D array')
         except AttributeError:
-            raise ValueError("Must pass a numpy array")
+            raise ValueError('expand_array expects a numpy array')
