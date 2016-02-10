@@ -6,55 +6,55 @@ IIT mtr histogram bin edges:
      [-1.0, -0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 1.0]
 FICA and IIT mtr histogram bin counts for e00200p:
 219814 :      0  31950      0      0      0      0      0 183680   4184      0
-219814 :   4587    105   1754  14372  38670  62868  47384  27169  22206    699
+219814 :   4584    107   1755  15480  37426  62812  47559  27179  22216    696
 FICA and IIT mtr histogram bin counts for e00900p:
 219814 :  14116  29235      0      0      0      0      0 176463      0      0
-219814 :   4583    109   1754  14136  43986  60050  53146  25837  15905    308
+219814 :   4580    111   1755  15245  42700  60016  53346  25843  15911    307
 FICA and IIT mtr histogram bin counts for e00300:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219813 :      0      0      0      0  59717  63982  43244  26396  25769    705
+219813 :      0      0      0      0  59574  63936  43426  26406  25769    702
 WARNING: sum of bin counts is too low
          max(mtr)=12605.04
          mtr=12605.04 for recid=1264520
 FICA and IIT mtr histogram bin counts for e00400:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219813 :      0      0      0      0 206417   7624   5635     98     33      6
+219813 :      0      0      0      0 206399   7642   5635     98     31      8
 WARNING: sum of bin counts is too low
          max(mtr)=12605.04
          mtr=12605.04 for recid=1264520
 FICA and IIT mtr histogram bin counts for e00600:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219813 :      0      0      0      0  59727  63973  43280  26358  25770    705
+219813 :      0      0      0      0  59584  63927  43461  26369  25770    702
 WARNING: sum of bin counts is too low
          max(mtr)=12605.04
          mtr=12605.04 for recid=1264520
 FICA and IIT mtr histogram bin counts for e00650:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219813 :      0      0      0  16947 107814  43529  50470    622    409     22
+219813 :      0      0      0  16816 107792  43711  50441    623    406     24
 WARNING: sum of bin counts is too low
          max(mtr)=12605.04
          mtr=12605.04 for recid=1264520
 FICA and IIT mtr histogram bin counts for e01400:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219814 :      0      0      0      0  59766  63957  46944  26759  21696    692
+219814 :      0      0      0      0  59625  63909  47123  26762  21706    689
 FICA and IIT mtr histogram bin counts for e01700:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219814 :      0      0      0      0  59777  63947  46949  26751  21698    692
+219814 :      0      0      0      0  59645  63890  47128  26754  21708    689
 FICA and IIT mtr histogram bin counts for e02000:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219814 :      0      0      0      0  59811  63908  43793  26124  25477    701
+219814 :      0      0      0      0  59686  63844  43973  26135  25478    698
 FICA and IIT mtr histogram bin counts for e02400:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219814 :      0      0      0      0  99279  39955  50799  28911    765    105
+219814 :      0      0      0      0  99245  39848  50920  28936    761    104
 FICA and IIT mtr histogram bin counts for p22250:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219813 :      0      0      0     23  81973  61823  41886  19075  14610    423
+219813 :      0      0      0     22  81858  61769  42032  19097  14615    420
 WARNING: sum of bin counts is too low
          max(mtr)=12605.04
          mtr=12605.04 for recid=1264520
 FICA and IIT mtr histogram bin counts for p23250:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219813 :      0      0      0  16504 126110  38121  33940   2149   2943     46
+219813 :      0      0      0  16335 126143  38268  33928   2149   2942     48
 WARNING: sum of bin counts is too low
          max(mtr)=12605.04
          mtr=12605.04 for recid=1264520
