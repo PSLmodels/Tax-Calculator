@@ -608,3 +608,28 @@ def test_read_json_reform_file_and_implement_reform_b(reform_file):
     assert amt_em[2020 - syr, 0] == amt_em[2017 - syr, 0]
     assert amt_em[2021 - syr, 0] > amt_em[2020 - syr, 0]
     assert amt_em[2022 - syr, 0] > amt_em[2021 - syr, 0]
+
+
+@pytest.mark.one
+def test_high_mte():
+    """
+    Test different ways of eliminating the maximum taxable earnings (MTE)
+    used in the calculation of the OASDI payroll tax.
+    """
+    # clarify start year and create Policy parameters object
+    syr = 2013
+    ppo = Policy(start_year=syr)
+    # confirm that MTE (or '_SS_Earnings_c') has current-law value in 2016
+    assert ppo._SS_Earnings_c[2016 - syr] == 118500
+    # specify a "pop the cap" reform that 'eliminates' MTE cap in 2016
+    # ... first way:
+    reform = {2016: {'_SS_Earnings_c': [9.20E18]}}
+    with pytest.raises(OverflowError):
+        # overflows max size of int64 in the out years
+        ppo.implement_reform(reform)
+    # ... second way:
+
+    reform = {2016: {'_SS_Earnings_c': [9.25E18]}}
+    with pytest.raises(OverflowError):
+        # overflows max size of int64 immediately
+        ppo.implement_reform(reform)
