@@ -100,14 +100,14 @@ def test_make_Calculator_with_policy_reform():
     assert calc2.policy.II_em == 4000
     assert_allclose(calc2.policy._II_em,
                     np.array([4000] * Policy.DEFAULT_NUM_YEARS),
-                    atol=0.5, rtol=0.0)
+                    atol=0.01, rtol=0.0)
     exp_STD_Aged = [[1600, 1300, 1300,
                      1600, 1600, 1300]] * Policy.DEFAULT_NUM_YEARS
     assert_allclose(calc2.policy._STD_Aged, np.array(exp_STD_Aged),
-                    atol=0.5, rtol=0.0)
+                    atol=0.01, rtol=0.0)
     assert_allclose(calc2.policy.STD_Aged,
                     np.array([1600, 1300, 1300, 1600, 1600, 1300]),
-                    atol=0.5, rtol=0.0)
+                    atol=0.01, rtol=0.0)
 
 
 def test_make_Calculator_with_multiyear_reform():
@@ -127,13 +127,13 @@ def test_make_Calculator_with_multiyear_reform():
     assert calc3.policy.num_years == Policy.DEFAULT_NUM_YEARS
     exp_II_em = [3900, 3950, 5000] + [6000] * (Policy.DEFAULT_NUM_YEARS - 3)
     assert_allclose(calc3.policy._II_em, np.array(exp_II_em),
-                    atol=0.5, rtol=0.0)
+                    atol=0.01, rtol=0.0)
     calc3.increment_year()
     calc3.increment_year()
     assert calc3.current_year == 2015
     assert_allclose(calc3.policy.STD_Aged,
                     np.array([1600, 1300, 1600, 1300, 1600, 1300]),
-                    atol=0.5, rtol=0.0)
+                    atol=0.01, rtol=0.0)
 
 
 def test_make_Calculator_with_reform_after_start_year():
@@ -157,20 +157,18 @@ def test_make_Calculator_with_reform_after_start_year():
                              [1632, 1326, 1632, 1326, 1632, 1326],
                              [1648, 1339, 1648, 1339, 1648, 1339]])
     exp_II_em = np.array([3900, 3950, 5000, 6000, 6000])
-    assert_allclose(calc.policy._STD_Aged, exp_STD_Aged,
-                    atol=0.5, rtol=0.0)
-    assert_allclose(calc.policy._II_em, exp_II_em,
-                    atol=0.5, rtol=0.0)
+    assert_allclose(calc.policy._STD_Aged, exp_STD_Aged, atol=0.5, rtol=0.0)
+    assert_allclose(calc.policy._II_em, exp_II_em, atol=0.001, rtol=0.0)
     # compare actual and expected values for 2015
     calc.increment_year()
     calc.increment_year()
     assert calc.current_year == 2015
     exp_2015_II_em = 5000
     assert_allclose(calc.policy.II_em, exp_2015_II_em,
-                    atol=0.5, rtol=0.0)
+                    atol=0.0, rtol=0.0)
     exp_2015_STD_Aged = np.array([1600, 1300, 1600, 1300, 1600, 1300])
     assert_allclose(calc.policy.STD_Aged, exp_2015_STD_Aged,
-                    atol=0.5, rtol=0.0)
+                    atol=0.0, rtol=0.0)
 
 
 def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
@@ -195,11 +193,11 @@ def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
                                      inflation_rates=inf_rates,
                                      num_years=Policy.DEFAULT_NUM_YEARS)
     act_almdep = getattr(calc.policy, '_almdep')
-    assert_allclose(act_almdep, exp_almdep, atol=0.5, rtol=0.0)
+    assert_allclose(act_almdep, exp_almdep, atol=0.01, rtol=0.0)
     exp_almsep_values = [40400] + [41050] * (Policy.DEFAULT_NUM_YEARS - 1)
     exp_almsep = np.array(exp_almsep_values)
     act_almsep = getattr(calc.policy, '_almsep')
-    assert_allclose(act_almsep, exp_almsep, atol=0.5, rtol=0.0)
+    assert_allclose(act_almsep, exp_almsep, atol=0.01, rtol=0.0)
 
 
 def test_make_Calculator_raises_on_no_policy():

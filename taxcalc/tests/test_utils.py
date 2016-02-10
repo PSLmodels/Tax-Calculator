@@ -59,8 +59,7 @@ def test_expand_1D_variable_rates():
     exp = np.array([4, 5, 9, 9 * 1.03, 9 * 1.03 * 1.035])
     res = Policy.expand_1D(x, inflate=True, inflation_rates=irates,
                            num_years=5)
-    npt.assert_allclose(exp.astype('f4', casting='unsafe'), res,
-                        atol=0.0, rtol=1.0E-7)
+    npt.assert_allclose(exp.astype('f4', casting='unsafe'), res)
 
 
 def test_expand_1D_scalar():
@@ -68,7 +67,7 @@ def test_expand_1D_scalar():
     exp = np.array([10.0 * math.pow(1.02, i) for i in range(0, 10)])
     res = Policy.expand_1D(x, inflate=True, inflation_rates=[0.02] * 10,
                            num_years=10)
-    assert np.allclose(exp, res)
+    npt.assert_allclose(exp, res)
 
 
 def test_expand_1D_accept_None():
