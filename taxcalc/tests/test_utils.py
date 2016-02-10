@@ -50,7 +50,6 @@ def test_expand_1D_short_array():
     npt.assert_allclose(exp, res, atol=0.0, rtol=1.0E-7)
 
 
-
 def test_expand_1D_variable_rates():
     x = np.array([4, 5, 9], dtype='f4')
     irates = [0.02, 0.02, 0.03, 0.035]
