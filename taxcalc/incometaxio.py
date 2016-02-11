@@ -1,5 +1,9 @@
 """
-Tax-Calculator income tax input-output class.
+Tax-Calculator income tax input-output class that
+either
+reads CSV-formatted file input and writes Internet-TAXSIM-formatted output,
+or
+takes DataFrame input and returns Internet-TAXSIM-formatted output as string.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 incometaxio.py
@@ -61,10 +65,6 @@ class IncomeTaxIO(object):
         # pylint: disable=too-many-branches
         if isinstance(input_data, six.string_types):
             self._using_input_file = True
-            if input_data == 'puf.csv':
-                self._using_puf_csv_file = True
-            else:
-                self._using_puf_csv_file = False
             # check that input_data string ends with ".csv"
             if input_data.endswith('.csv'):
                 inp = '{}-{}'.format(input_data[:-4], str(tax_year)[2:])
@@ -73,7 +73,6 @@ class IncomeTaxIO(object):
                 raise ValueError(msg.format(input_data))
         elif isinstance(input_data, pd.DataFrame):
             self._using_input_file = False
-            self._using_puf_csv_file = False
             inp = 'df-{}'.format(str(tax_year)[2:])
         else:
             msg = 'INPUT is neither string nor Pandas DataFrame'
@@ -140,8 +139,7 @@ class IncomeTaxIO(object):
         """
         return self._calc.policy.current_year
 
-    def calculate(self, writing_output_file=False,
-                  output_weights=False, output_mtr=False):
+    def calculate(self, writing_output_file=False, output_weights=False):
         """
         Calculate taxes for all INPUT lines and write or return OUTPUT lines.
 
@@ -156,10 +154,6 @@ class IncomeTaxIO(object):
         output_weights: boolean
             whether or not to use s006 as an additional output variable.
 
-        output_mtr: boolean
-            whether or not write calculated marginal federal income tax
-            rate instead of zero.
-
         Returns
         -------
         output_lines: string
@@ -167,20 +161,12 @@ class IncomeTaxIO(object):
             otherwise output_lines contain all OUTPUT lines
         """
         output = {}  # dictionary indexed by Records index for filing unit
-        if output_mtr:
-            (mtr_fica, mtr_iitx,
-             _) = self._calc.mtr(wrt_full_compensation=False)
-        else:
-            self._calc.calc_all()
+        (mtr_fica, mtr_iitx, _) = self._calc.mtr(wrt_full_compensation=False)
         for idx in range(0, self._calc.records.dim):
             ovar = SimpleTaxIO.extract_output(self._calc.records, idx,
                                               extract_weight=output_weights)
-            if not self._using_puf_csv_file:
-                ovar[6] = 0.0  # no FICA tax liability included in output
-            if output_mtr:
-                ovar[7] = 100 * mtr_iitx[idx]
-                if self._using_puf_csv_file:
-                    ovar[9] = 100 * mtr_fica[idx]
+            ovar[7] = 100 * mtr_iitx[idx]
+            ovar[9] = 100 * mtr_fica[idx]
             output[idx] = ovar
         assert len(output) == self._calc.records.dim
         # handle disposition of calculated output
@@ -207,9 +193,8 @@ class IncomeTaxIO(object):
         nothing: void
         """
         ivd = ('**** IncomeTaxIO INPUT variables determined by INPUT file,\n'
-               'which is a csv-formatted text file whose name ends in .csv\n'
-               'and whose column names are IRS-SOI Public Use File (PUF)\n'
-               'variable names.\n')
+               'which is a CSV-formatted text file whose name ends in .csv\n'
+               'and whose column names are all in Records.VALID_READ_VARS.\n')
         sys.stdout.write(ivd)
         ovd = ('**** IncomeTaxIO OUTPUT variables in Internet-TAXSIM format:\n'
                '[ 1] arbitrary id of income tax filing unit\n'
@@ -217,11 +202,10 @@ class IncomeTaxIO(object):
                '[ 3] state code [ALWAYS ZERO]\n'
                '[ 4] federal income tax liability\n'
                '[ 5] state income tax liability [ALWAYS ZERO]\n'
-               '[ 6] FICA tax liability [ZERO UNLESS puf.csv USED AS INPUT]\n'
-               '[ 7] marginal federal inc tax rate [ZERO UNLESS --mtr USED]\n'
+               '[ 6] FICA tax liability\n'
+               '[ 7] marginal federal income tax rate\n'
                '[ 8] marginal state income tax rate [ALWAYS ZERO]\n'
-               '[ 9] marginal FICA tax rate [ZERO UNLESS --mtr USED AND '
-               'puf.csv USED AS INPUT]\n'
+               '[ 9] marginal FICA tax rate\n'
                '[10] federal adjusted gross income, AGI\n'
                '[11] unemployment (UI) benefits included in AGI\n'
                '[12] social security (OASDI) benefits included in AGI\n'
