@@ -1309,39 +1309,39 @@ def AmOppCr(p87482, e87487, e87492, e87497, p87521, puf):
 
 
 @iterate_jit(nopython=True, puf=True)
-def LLC(e87530, LLC_Expense_c, e87526, e87522, e87524, e87528, c87540, c87550,
-        puf):
+def LLC(e87530, LLC_Expense_c, e87526, e87522, e87524, e87528, puf):
     """
-    LLC function:
-
     Lifetime Learning Credit; Form 8863
 
     Notes
     -----
-    Tax Law Parameters:
-
-        LLC_Expense_c : Lifetime Learning Credit expense limit
+    Tax Law Parameters that are not parameterized:
 
         0.2 : Lifetime Learning Credit ratio against expense:
-        TODO NEED TO PARAMETERIZE
+
+    Tax Law Parameters that are parameterized:
+
+        LLC_Expense_c : Lifetime Learning Credit expense limit
 
     Taxpayer Charateristics:
 
         e87530 : Total expense
 
+        and four other e8752? values used only if puf is False
+
     Returns
     -------
-    c87550 : Nonrefundable Education Credit
+        c87550 : Nonrefundable Education Credit
+
+        and intermediate variables used to compute this credit amount
     """
     if puf:
-        c87540 = float(min(e87530, LLC_Expense_c))
         c87530 = 0.
+        c87540 = float(min(e87530, LLC_Expense_c))
     else:
         c87530 = e87526 + e87522 + e87524 + e87528
         c87540 = float(min(c87530, LLC_Expense_c))
-
     c87550 = 0.2 * c87540
-
     return (c87540, c87550, c87530)
 
 
