@@ -16,9 +16,27 @@ your options.
 # pep8 --ignore=E402 test.py
 # pylint --disable=locally-disabled test.py
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
-
+import argparse
 import pandas as pd
 from taxcalc import Policy, Records, Calculator
+
+'''
+the main funtion gives the option to either produce real inputs after
+extrapolation, or outputs based on real inputs. The real inputs can be served
+for the purpose of debugging.
+'''
+
+
+def main():
+    parser = argparse.ArgumentParser(prog='python test.py')
+
+    parser.add_argument('--realin', default=False, action="store_true")
+
+    args = parser.parse_args()
+    if args.realin == 1:
+        dontrun()
+    else:
+        run()
 
 
 def run():
@@ -90,7 +108,7 @@ def run():
                  'c87521', 'c87530', 'c87540', 'c87550', 'c87560', 'c87570',
                  'c87580', 'c87590', 'c87600', 'c87610', 'c87620', 'c87654',
                  'c87656', 'c87658', 'c87660', 'c87662', 'c87664', 'c87666',
-                 'c87668', 'c87681', 'e00650', 'e02500', 'e08795', 'h82880',
+                 'c87668', 'c87681', 'e00650', 'e02500', 'e08795',
                  'x04500', 'x07100', 'y07100', 'y62745']
     dataf_truncated = dataf[col_names]
 
@@ -99,5 +117,66 @@ def run():
                            header=True, index=False)
 
 
+def dontrun():
+    clp = Policy()
+
+    puf = Records()
+
+    calc = Calculator(policy=clp, records=puf)
+
+    rshape = calc.records.e00100.shape
+    dataf = pd.DataFrame()
+    for attr in dir(calc.records):
+        value = getattr(calc.records, attr)
+        if hasattr(value, "shape"):
+            if value.shape == rshape:
+                dataf[attr] = value
+
+# VALID_READ_VARS is a list of variables that run through tax-logic
+
+    VALID_READ_VARS = [
+        'AGIR1', 'DSI', 'EFI', 'EIC', 'ELECT', 'FDED', 'FLPDYR', 'FLPDMO',
+        'f2441', 'f3800', 'f6251', 'f8582', 'f8606', 'f8829', 'f8910', 'f8936',
+        'n20', 'n24', 'n25', 'n30', 'PREP', 'SCHB', 'SCHCF', 'SCHE',
+        'TFORM', 'IE', 'TXST', 'XFPT', 'XFST', 'RECID', 'MARS',
+        'XOCAH', 'XOCAWH', 'XOODEP', 'XOPAR', 'XTOT',
+        'e00200', 'e00300', 'e00400', 'e00600', 'e00650', 'e00700', 'e00800',
+        'e00200p', 'e00200s',
+        'e00900', 'e01000', 'e01100', 'e01200', 'e01400', 'e01500', 'e01700',
+        'e00900p', 'e00900s',
+        'e02000', 'e02100', 'e02300', 'e02400', 'e02500', 'e03150', 'e03210',
+        'e02100p', 'e02100s',
+        'e03220', 'e03230', 'e03260', 'e03270', 'e03240', 'e03290', 'e03300',
+        'e03400', 'e03500', 'e00100', 'p04470', 'e04250', 'e04600', 'e04800',
+        'e05100', 'e05200', 'e05800', 'e06000', 'e06200', 'e06300', 'e09600',
+        'e07180', 'e07200', 'e07220', 'e07230', 'e07240', 'e07260', 'e07300',
+        'e07400', 'e07600', 'p08000', 'e07150', 'e06500', 'e08800', 'e09400',
+        'e09700', 'e09800', 'e09900', 'e10300', 'e10700', 'e10900', 'e10950',
+        'e10960', 'e15100', 'e15210', 'e15250', 'e15360', 'e18600', 'e59560',
+        'e59680', 'e59700', 'e59720', 'e11550', 'e11070', 'e11100', 'e11200',
+        'e11300', 'e11400', 'e11570', 'e11580', 'e11581', 'e11582', 'e11583',
+        'e10605', 'e11900', 'e12000', 'e12200', 'e17500', 'e18400', 'e18500',
+        'e19200', 'e19550', 'e19800', 'e20100', 'e19700', 'e20550', 'e20600',
+        'e20400', 'e20800', 'e20500', 'e21040', 'p22250', 'e22320', 'e22370',
+        'p23250', 'e24515', 'e24516', 'e24518', 'e24535', 'e24560', 'e24598',
+        'e24615', 'e24570', 'p25350', 'p25380', 'p25470', 'p25700', 'e25820',
+        'e25850', 'e25860', 'e25940', 'e25980', 'e25920', 'e25960', 'e26110',
+        'e26170', 'e26190', 'e26160', 'e26180', 'e26270', 'e26100', 'e26390',
+        'e26400', 'e27200', 'e30400', 'e30500', 'e32800', 'e33000', 'e53240',
+        'e53280', 'e53410', 'e53300', 'e53317', 'e53458', 'e58950', 'e58990',
+        'p60100', 'p61850', 'e60000', 'e62100', 'e62900', 'e62720', 'e62730',
+        'e62740', 'p65300', 'p65400', 'p87482', 'p87521', 'e68000', 'e82200',
+        't27800', 's27860', 'p27895', 'e87530', 'e87550', 'e87870', 'e87875',
+        'e87880', 'MARS', 'MIDR', 'RECID', 'gender',
+        'wage_head', 'wage_spouse', 'earnsplit',
+        'age', 'agedp1', 'agedp2', 'agedp3', 'AGERANGE',
+        's006', 's008', 's009', 'WSAMP', 'TXRT', 'filer', 'matched_weight']
+
+    dataf_truncated = dataf[VALID_READ_VARS]
+
+    dataf_truncated.to_csv('realin_puf.csv', float_format='%1.3f', sep=',',
+                           header=True, index=False)
+
+
 if __name__ == '__main__':
-    run()
+    main()
