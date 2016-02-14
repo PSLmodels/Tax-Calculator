@@ -1265,12 +1265,10 @@ def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
 @iterate_jit(nopython=True, puf=True)
 def AmOppCr(p87482, e87487, e87492, e87497, p87521, puf):
     """
-    AmOppCr function:
-
     American Opportunity Credit 2009+; Form 8863
 
     This function calculates American Opportunity Credit
-    for up to four eligible students
+    for up to four eligible students.
     """
     # Expense should not exceed the cap of $4000.
     c87482 = max(0., min(p87482, 4000.))
@@ -1311,79 +1309,78 @@ def AmOppCr(p87482, e87487, e87492, e87497, p87521, puf):
 
 
 @iterate_jit(nopython=True, puf=True)
-def LLC(e87530, LLC_Expense_c, e87526, e87522, e87524, e87528, c87540, c87550,
-        puf):
+def LLC(e87530, LLC_Expense_c, e87526, e87522, e87524, e87528, puf):
     """
-    LLC function:
-
     Lifetime Learning Credit; Form 8863
 
     Notes
     -----
-    Tax Law Parameters:
-
-        LLC_Expense_c : Lifetime Learning Credit expense limit
+    Tax Law Parameters that are not parameterized:
 
         0.2 : Lifetime Learning Credit ratio against expense:
-        TODO NEED TO PARAMETERIZE
+
+    Tax Law Parameters that are parameterized:
+
+        LLC_Expense_c : Lifetime Learning Credit expense limit
 
     Taxpayer Charateristics:
 
         e87530 : Total expense
 
+        and four other e8752? values used only if puf is False
+
     Returns
     -------
-    c87550 : Nonrefundable Education Credit
+        c87550 : Nonrefundable Education Credit
+
+        and intermediate variables used to compute this credit amount
     """
     if puf:
-        c87540 = float(min(e87530, LLC_Expense_c))
         c87530 = 0.
+        c87540 = float(min(e87530, LLC_Expense_c))
     else:
         c87530 = e87526 + e87522 + e87524 + e87528
         c87540 = float(min(c87530, LLC_Expense_c))
-
     c87550 = 0.2 * c87540
-
     return (c87540, c87550, c87530)
 
 
 @iterate_jit(nopython=True)
-def RefAmOpp(c87521, _num, c00100, EDCRAGE, c87668):
+def RefAmOpp(c87521, _num, c00100):
     """
-    RefAmOpp function:
-
     Refundable American Opportunity Credit 2009+; Form 8863
 
-    This function checks the previously calculated American Opportunity credit
-    with the phaseout range and then apply the 0.4 refundable rate
+    This function checks the previously calculated American Opportunity Credit
+    with the phaseout range and then applies the 0.4 refundable rate.
 
     Notes
     -----
-    Tax Law Parameters:
+    Tax Law Parameters that are not parameterized:
 
-        90000 : American Opportunity Credit phaseout income base:
-        TODO NEED TO PARAMETERIZE
+        90000 : American Opportunity Credit phaseout income base
 
-        10000 : American Opportunity Credit phaseout income range length:
-        TODO NEED TO PARAMETERIZE
+        10000 : American Opportunity Credit phaseout income range length
 
         1/1000 : American Opportunity Credit phaseout rate
 
-    Intermediate Variables:
+        0.4 : American Opportunity Credit refundable rate
 
-        c87521 : American Opportunity Credit
+    Parameters
+    ----------
+        c87521 : gross American Opportunity Credit
 
         _num : number of people filing jointly
 
-        EDCRAGE : Education credit age from CPS: NEED TO BE CONFIRMED!!!!!!
-
-        c87668 : nonrefundable Education Credit
+        c00100 : AGI
 
     Returns
     -------
         c87666 : Refundable part of American Opportunity Credit
+
+        c87668 : Nonrefundable part of American Opportunity Credit
+
+        and intermediate variables used to compute these two credit amounts
     """
-    # Phase out the credit for income range [80k,90k].
     if c87521 > 0:
         c87654 = 90000 * _num
         c87656 = c00100
@@ -1391,20 +1388,9 @@ def RefAmOpp(c87521, _num, c00100, EDCRAGE, c87668):
         c87660 = 10000 * _num
         c87662 = 1000 * min(1., c87658 / c87660)
         c87664 = c87662 * c87521 / 1000.0
-        if EDCRAGE == 1:
-            c87666 = 0
-        else:
-            c87666 = 0.4 * c87664
+        c87666 = 0.4 * c87664
         c10960 = c87666
         c87668 = c87664 - c87666
-
-    # if c87521 > 0:
-    #    c10960 = c87666
-    #    c87668 = c87664 - c87666
-    #    c87681 = c87666
-    # else:
-    #    c10960, c87668, c87681 = 0., 0., 0.
-
     return (c87654, c87656, c87658, c87660, c87662, c87664, c87666, c10960,
             c87668)
 

@@ -1,5 +1,5 @@
 """
-INCome tax input-output capabilities for TAX-calculator.
+INCome TAX input-output capabilities for Tax-Calculator.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 inctax.py
@@ -72,14 +72,6 @@ def main():
                               '--blowup option is used'),
                         default=False,
                         action="store_true")
-    parser.add_argument('--mtr',
-                        help=('optional flag that causes OUTPUT to include '
-                              'marginal federal income tax rate calculated '
-                              'with respect to a small increase in taxpayer '
-                              'earnings and expressed in percentage terms '
-                              '(instead of OUTPUT variable 7 being zero).'),
-                        default=False,
-                        action="store_true")
     parser.add_argument('INPUT',
                         help=('INPUT is name of required CSV file that '
                               'contains a subset of variables included in '
@@ -100,8 +92,7 @@ def main():
                          policy_reform=args.reform,
                          blowup_input_data=args.blowup)
     inctax.calculate(writing_output_file=True,
-                     output_weights=args.weights,
-                     output_mtr=args.mtr)
+                     output_weights=args.weights)
     # return no-error exit code
     return 0
 # end of main function code

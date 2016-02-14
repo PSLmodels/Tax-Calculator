@@ -24,24 +24,13 @@ RAWINPUTFILE_CONTENTS = (
 )
 
 EXPECTED_OUTPUT = (  # from using RAWINPUTFILE_CONTENTS as input
-    '1. 2021 0 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
+    '1. 2021 0 0.00 0.00 0.00 -7.65 0.00 15.30 0.00 0.00 0.00 0.00 0.00 '
     '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
-    '2. 2021 0 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
+    '2. 2021 0 0.00 0.00 0.00 -7.65 0.00 15.30 0.00 0.00 0.00 0.00 0.00 '
     '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
-    '3. 2021 0 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
+    '3. 2021 0 0.00 0.00 0.00 -7.65 0.00 15.30 0.00 0.00 0.00 0.00 0.00 '
     '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
-    '4. 2021 0 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
-    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
-)
-
-EXPECTED_OUTPUT_MTR = (  # from using RAWINPUTFILE_CONTENTS as input
-    '1. 2021 0 0.00 0.00 0.00 -7.65 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
-    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
-    '2. 2021 0 0.00 0.00 0.00 -7.65 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
-    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
-    '3. 2021 0 0.00 0.00 0.00 -7.65 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
-    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
-    '4. 2021 0 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 '
+    '4. 2021 0 0.00 0.00 0.00 0.00 0.00 15.30 0.00 0.00 0.00 0.00 0.00 '
     '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
 )
 
@@ -65,7 +54,7 @@ def rawinputfile():
 
 def test_1(rawinputfile):  # pylint: disable=redefined-outer-name
     """
-    Test IncomeTaxIO constructor with no policy reform and no blowup.
+    Test IncomeTaxIO constructor with no policy reform and with blowup.
     """
     IncomeTaxIO.show_iovar_definitions()
     taxyear = 2021
@@ -90,8 +79,8 @@ def test_2(rawinputfile):  # pylint: disable=redefined-outer-name
                          tax_year=taxyear,
                          policy_reform=reform_dict,
                          blowup_input_data=False)
-    output = inctax.calculate(output_mtr=True)
-    assert output == EXPECTED_OUTPUT_MTR
+    output = inctax.calculate()
+    assert output == EXPECTED_OUTPUT
 
 
 REFORM_CONTENTS = """
@@ -168,7 +157,8 @@ def reformfile2():
 
 def test_3(rawinputfile, reformfile1):  # pylint: disable=redefined-outer-name
     """
-    Test IncomeTaxIO calculate method with no output writing and with blowup.
+    Test IncomeTaxIO calculate method with no output writing and no blowup,
+    using file name for IncomeTaxIO constructor input_data.
     """
     taxyear = 2021
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
@@ -181,7 +171,8 @@ def test_3(rawinputfile, reformfile1):  # pylint: disable=redefined-outer-name
 
 def test_4(reformfile2):  # pylint: disable=redefined-outer-name
     """
-    Test IncomeTaxIO calculate method with no output writing and with blowup.
+    Test IncomeTaxIO calculate method with no output writing and no blowup,
+    using DataFrame for IncomeTaxIO constructor input_data.
     """
     input_stream = StringIO(RAWINPUTFILE_CONTENTS)
     input_dataframe = pd.read_csv(input_stream)
