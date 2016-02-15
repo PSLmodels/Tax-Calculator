@@ -72,6 +72,17 @@ def main():
                               '--blowup option is used'),
                         default=False,
                         action="store_true")
+    parser.add_argument('--records',
+                        help=('optional flag that causes the output file to '
+                              'be a CSV-formatted file containing for each '
+                              'INPUT filing unit the TAXYEAR values of each '
+                              'variable in the Records.VALID_READ_VARS set. '
+                              'If the --records option is specified, the '
+                              'output file name will be the same as if the '
+                              'option was not specified, except that the '
+                              '".out-inctax" part is replaced by ".records"'),
+                        default=False,
+                        action="store_true")
     parser.add_argument('INPUT',
                         help=('INPUT is name of required CSV file that '
                               'contains a subset of variables included in '
@@ -90,9 +101,13 @@ def main():
     inctax = IncomeTaxIO(input_data=args.INPUT,
                          tax_year=args.TAXYEAR,
                          policy_reform=args.reform,
-                         blowup_input_data=args.blowup)
-    inctax.calculate(writing_output_file=True,
-                     output_weights=args.weights)
+                         blowup_input_data=args.blowup,
+                         output_records=args.records)
+    if args.records:
+        inctax.output_records(writing_output_file=True)
+    else:
+        inctax.calculate(writing_output_file=True,
+                         output_weights=args.weights)
     # return no-error exit code
     return 0
 # end of main function code
