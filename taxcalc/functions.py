@@ -843,7 +843,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
          f6251, c00100, e60000, t04470,
          c04470, c17000, e18500, c20800, c21040, e04805,
          DOBYR, FLPDYR, SDOBYR, SFOBYR, c02700, AGERANGE,
-         e24515, x60130, e18400, AMT_CG_rt4,
+         e24515, x60130, e18400,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
          MARS, _sep, AMT_Child_em, AMT_CG_rt1, DSI,
          AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516,
@@ -1036,7 +1036,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
 
     c62760 = AMT_CG_rt3 * _amt20pc
 
-    c62770 = AMT_CG_rt4 * _amt25pc
+    c62770 = 0.25 * _amt25pc  # tax rate on "Unrecaptured Schedule E Gain"
 
     _tamt2 = c62747 + c62755 + c62760 + c62770  # line62 without 42 being added
 
