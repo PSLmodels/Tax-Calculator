@@ -71,10 +71,12 @@ def test_for_duplicate_names():
     varnames = set()
     for varname in Records.VALID_READ_VARS:
         assert varname not in varnames
+        assert varname not in Records.CALCULATED_VARS
         varnames.add(varname)
     varnames = set()
     for varname in Records.CALCULATED_VARS:
         assert varname not in varnames
+        assert varname not in Records.VALID_READ_VARS
         varnames.add(varname)
 
 
