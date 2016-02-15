@@ -92,7 +92,8 @@ def test_1():
     inctax = IncomeTaxIO(input_data=input_dataframe,
                          tax_year=2015,
                          policy_reform=reform,
-                         blowup_input_data=False)
+                         blowup_input_data=False,
+                         output_records=False)
     output = inctax.calculate()
     output_lines_list = output.split('\n')
     output_vars_list = output_lines_list[0].split()
@@ -138,7 +139,8 @@ def test_2():
     inctax = IncomeTaxIO(input_data=input_dataframe,
                          tax_year=2015,
                          policy_reform=reform,
-                         blowup_input_data=False)
+                         blowup_input_data=False,
+                         output_records=False)
     output = inctax.calculate()
     output_vars_list = output.split()
     ctc = output_vars_list[ctc_ovar_num - 1]

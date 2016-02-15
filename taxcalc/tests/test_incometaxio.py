@@ -61,7 +61,8 @@ def test_1(rawinputfile):  # pylint: disable=redefined-outer-name
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
                          policy_reform=None,
-                         blowup_input_data=True)
+                         blowup_input_data=True,
+                         output_records=False)
     assert inctax.tax_year() == taxyear
 
 
@@ -78,7 +79,8 @@ def test_2(rawinputfile):  # pylint: disable=redefined-outer-name
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
                          policy_reform=reform_dict,
-                         blowup_input_data=False)
+                         blowup_input_data=False,
+                         output_records=False)
     output = inctax.calculate()
     assert output == EXPECTED_OUTPUT
 
@@ -164,7 +166,8 @@ def test_3(rawinputfile, reformfile1):  # pylint: disable=redefined-outer-name
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
                          policy_reform=reformfile1.name,
-                         blowup_input_data=False)
+                         blowup_input_data=False,
+                         output_records=False)
     output = inctax.calculate()
     assert output == EXPECTED_OUTPUT
 
@@ -180,6 +183,7 @@ def test_4(reformfile2):  # pylint: disable=redefined-outer-name
     inctax = IncomeTaxIO(input_data=input_dataframe,
                          tax_year=taxyear,
                          policy_reform=reformfile2.name,
-                         blowup_input_data=False)
+                         blowup_input_data=False,
+                         output_records=False)
     output = inctax.calculate()
     assert output == EXPECTED_OUTPUT
