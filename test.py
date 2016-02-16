@@ -16,9 +16,27 @@ your options.
 # pep8 --ignore=E402 test.py
 # pylint --disable=locally-disabled test.py
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
-
+import argparse
 import pandas as pd
 from taxcalc import Policy, Records, Calculator
+
+'''
+the main funtion gives the option to either produce real inputs after
+extrapolation, or outputs based on real inputs. The real inputs can be served
+for the purpose of debugging.
+'''
+
+
+def main():
+    parser = argparse.ArgumentParser(prog='python test.py')
+
+    parser.add_argument('--realin', default=False, action="store_true")
+
+    args = parser.parse_args()
+    if args.realin == 1:
+        dontrun()
+    else:
+        run()
 
 
 def run():
@@ -90,7 +108,7 @@ def run():
                  'c87521', 'c87530', 'c87540', 'c87550', 'c87560', 'c87570',
                  'c87580', 'c87590', 'c87600', 'c87610', 'c87620', 'c87654',
                  'c87656', 'c87658', 'c87660', 'c87662', 'c87664', 'c87666',
-                 'c87668', 'c87681', 'e00650', 'e02500', 'e08795', 'h82880',
+                 'c87668', 'c87681', 'e00650', 'e02500', 'e08795',
                  'x04500', 'x07100', 'y07100', 'y62745']
     dataf_truncated = dataf[col_names]
 
@@ -99,5 +117,30 @@ def run():
                            header=True, index=False)
 
 
+def dontrun():
+    clp = Policy()
+
+    puf = Records()
+
+    calc = Calculator(policy=clp, records=puf)
+
+    rshape = calc.records.e00100.shape
+    dataf = pd.DataFrame()
+    for attr in dir(calc.records):
+        value = getattr(calc.records, attr)
+        if hasattr(value, "shape"):
+            if value.shape == rshape:
+                dataf[attr] = value
+
+# readinput is a list of variables that run through tax-logic
+
+    readinput = list(Records.VALID_READ_VARS | Records.MUST_READ_VARS)
+
+    dataf_truncated = dataf[readinput]
+
+    dataf_truncated.to_csv('realin_puf.csv', float_format='%1.3f', sep=',',
+                           header=True, index=False)
+
+
 if __name__ == '__main__':
-    run()
+    main()
