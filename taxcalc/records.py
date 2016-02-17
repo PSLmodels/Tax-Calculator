@@ -140,6 +140,31 @@ class Records(object):
     # specify set of all Record variables that MUST be read by Tax-Calculator:
     MUST_READ_VARS = set(['RECID', 'MARS'])
 
+    # specify subset of VALID_READ_VARS that are not e-code variables and
+    # that are unused by Tax-Calculator:
+    UNUSED_READ_VARS = set([
+        'AGIR1', 'EFI', 'ELECT', 'FLPDMO',
+        'f3800', 'f8582', 'f8606', 'f8829', 'f8910', 'f8936',
+        'n20', 'n25', 'n30', 'PREP', 'SCHB', 'SCHCF', 'SCHE',
+        'TFORM', 'IE', 'TXST', 'XFPT', 'XFST',
+        'XOCAH', 'XOCAWH', 'XOODEP', 'XOPAR',
+        'gender',
+        'earnsplit',
+        'agedp1', 'agedp2', 'agedp3',
+        's008', 's009', 'WSAMP', 'TXRT', 'filer', 'matched_weight'])
+    # TODO: the long-term objective is to remove these UNUSED_READ_VARS
+    #       from the puf.csv input file so that this set can be removed
+    #       from the Records class code.
+
+    # specify which VALID_READ_VARS should be int64 (rather than float64):
+    INTEGER_READ_VARS = set([
+        'DSI', 'EIC', 'FDED', 'FLPDYR',
+        'f2441', 'f6251',
+        'n24',
+        'XTOT',
+        'MARS', 'MIDR', 'RECID',
+        'age', 'AGERANGE'])
+
     # specify set of all Record variables that cannot be read in:
     CALCULATED_VARS = set([
         'e35300_0', 'e35600_0', 'e35910_0', 'x03150', 'e03600',
@@ -475,8 +500,6 @@ class Records(object):
             msg = ('Records.constructor data is neither a string nor '
                    'a Pandas DataFrame')
             raise ValueError(msg)
-        # remove the aggregated record from 2009 PUF
-        tax_dta = tax_dta[tax_dta.RECID != 999999]
         self.dim = len(tax_dta)
         # create variables using tax_dta DataFrame column names
         READ_VARS = set()
@@ -485,7 +508,8 @@ class Records(object):
                 msg = 'Records data variable name {} not in VALID_READ_VARS'
                 raise ValueError(msg.format(varname))
             READ_VARS.add(varname)
-            setattr(self, varname, tax_dta[varname].values)
+            if varname not in Records.UNUSED_READ_VARS:
+                setattr(self, varname, tax_dta[varname].values)
         # check that MUST_READ_VARS are all present in tax_dta
         UNREAD_MUST_VARS = Records.MUST_READ_VARS - READ_VARS
         if len(UNREAD_MUST_VARS) > 0:

@@ -71,13 +71,25 @@ def test_for_duplicate_names():
     varnames = set()
     for varname in Records.VALID_READ_VARS:
         assert varname not in varnames
-        assert varname not in Records.CALCULATED_VARS
         varnames.add(varname)
+        assert varname not in Records.CALCULATED_VARS
     varnames = set()
     for varname in Records.CALCULATED_VARS:
         assert varname not in varnames
-        assert varname not in Records.VALID_READ_VARS
         varnames.add(varname)
+        assert varname not in Records.VALID_READ_VARS
+    varnames = set()
+    for varname in Records.UNUSED_READ_VARS:
+        assert varname not in varnames
+        varnames.add(varname)
+        assert varname in Records.VALID_READ_VARS
+        assert varname not in Records.INTEGER_READ_VARS
+    varnames = set()
+    for varname in Records.INTEGER_READ_VARS:
+        assert varname not in varnames
+        varnames.add(varname)
+        assert varname in Records.VALID_READ_VARS
+        assert varname not in Records.UNUSED_READ_VARS
 
 
 def test_default_rates_and_those_implied_by_blowup_factors():
