@@ -304,7 +304,6 @@ class Records(object):
                 np.multiply(a, b, out=a, casting='unsafe')
 
         times_equal(self.e00200, self.BF.AWAGE[year])
-        # two variables for earning split imputation
         times_equal(self.e00200p, self.BF.AWAGE[year])
         times_equal(self.e00200s, self.BF.AWAGE[year])
         times_equal(self.e00300, self.BF.AINTS[year])
@@ -314,20 +313,14 @@ class Records(object):
         times_equal(self.e00700, self.BF.ATXPY[year])
         times_equal(self.e00800, self.BF.ATXPY[year])
         self.e00900[:] = np.where(self.e00900 >= 0,
-                                  self.e00900 *
-                                  self.BF.ASCHCI[year],
-                                  self.e00900 *
-                                  self.BF.ASCHCL[year])
+                                  self.e00900 * self.BF.ASCHCI[year],
+                                  self.e00900 * self.BF.ASCHCL[year])
         self.e00900s[:] = np.where(self.e00900s >= 0,
-                                   self.e00900s *
-                                   self.BF.ASCHCI[year],
-                                   self.e00900s *
-                                   self.BF.ASCHCL[year])
+                                   self.e00900s * self.BF.ASCHCI[year],
+                                   self.e00900s * self.BF.ASCHCL[year])
         self.e00900p[:] = np.where(self.e00900p >= 0,
-                                   self.e00900p *
-                                   self.BF.ASCHCI[year],
-                                   self.e00900p *
-                                   self.BF.ASCHCL[year])
+                                   self.e00900p * self.BF.ASCHCI[year],
+                                   self.e00900p * self.BF.ASCHCL[year])
         self.e01000[:] = np.where(self.e01000 >= 0.,
                                   self.e01000 * self.BF.ACGNS[year],
                                   self.e01000)
@@ -337,16 +330,13 @@ class Records(object):
         times_equal(self.e01500, self.BF.ATXPY[year])
         times_equal(self.e01700, self.BF.ATXPY[year])
         self.e02000[:] = np.where(self.e02000 >= 0,
-                                  self.e02000 *
-                                  self.BF.ASCHEI[year],
-                                  self.e02000 *
-                                  self.BF.ASCHEL[year])
+                                  self.e02000 * self.BF.ASCHEI[year],
+                                  self.e02000 * self.BF.ASCHEL[year])
         times_equal(self.e02100, self.BF.ASCHF[year])
         times_equal(self.e02100p, self.BF.ASCHF[year])
         times_equal(self.e02100s, self.BF.ASCHF[year])
         times_equal(self.e02300, self.BF.AUCOMP[year])
         times_equal(self.e02400, self.BF.ASOCSEC[year])
-        # Taxable Social Security is a calculated field
         times_equal(self.e02500, self.BF.ASOCSEC[year])
         times_equal(self.e03150, self.BF.ATXPY[year])
         times_equal(self.e03210, self.BF.ATXPY[year])
@@ -359,7 +349,6 @@ class Records(object):
         times_equal(self.e03300, self.BF.ATXPY[year])
         times_equal(self.e03400, self.BF.ATXPY[year])
         times_equal(self.e03500, self.BF.ATXPY[year])
-        # Adjusted Gross Income is a calculated field
         times_equal(self.e00100, 1.)
         times_equal(self.p04470, 1.)
         times_equal(self.e04250, 1.)
