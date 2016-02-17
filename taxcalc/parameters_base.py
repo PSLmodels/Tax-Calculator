@@ -355,7 +355,11 @@ class ParametersBase(object):
                                      inflate=indexed,
                                      inflation_rates=index_rates,
                                      num_years=num_years_to_expand)
-            cval[(year - self.start_year):] = nval
+            offset = year - self.start_year
+            # Copy manually to check for overflow at the Python level
+            for i in range(offset, cval.shape[0]):
+                cval[i] = nval[i - offset]
+
         # handle unused parameter names, all of which end in _cpi, but some
         # parameter names ending in _cpi were handled above
         unused_names = all_names - used_names
