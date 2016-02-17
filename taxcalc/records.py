@@ -255,7 +255,7 @@ class Records(object):
             msg = ('Records.constructor start_year is neither None nor '
                    'an integer')
             raise ValueError(msg)
-        if consider_imputations and self._current_year == Records.PUF_YEAR:
+        if consider_imputations and self.current_year == Records.PUF_YEAR:
             self._impute_variables()
             self._extrapolate_2009_puf()
 
@@ -273,10 +273,10 @@ class Records(object):
         """
         self._current_year += 1
         # Implement Stage 1 Extrapolation blowup factors
-        self._blowup(self._current_year)
+        self._blowup(self.current_year)
         # Implement Stage 2 Extrapolation reweighting
         # pylint: disable=attribute-defined-outside-init
-        self.s006 = (self.WT["WT" + str(self.current_year)] / 100).values
+        self.s006 = self.WT["WT" + str(self.current_year)] * 0.01
 
     def set_current_year(self, new_current_year):
         """
@@ -563,7 +563,7 @@ class Records(object):
                 ValueError(msg)
         else:
             msg = ('Records.constructor blowup_factors is neither a string '
-                   'nore a Pandas DataFrame')
+                   'nor a Pandas DataFrame')
             raise ValueError(msg)
         setattr(self, 'WT', WT)
 
@@ -588,7 +588,7 @@ class Records(object):
                 ValueError(msg)
         else:
             msg = ('Records.constructor blowup_factors is neither a string '
-                   'nore a Pandas DataFrame')
+                   'nor a Pandas DataFrame')
             raise ValueError(msg)
         BF.AGDPN = BF.AGDPN / BF.APOPN
         BF.ATXPY = BF. ATXPY / BF. APOPN
@@ -612,12 +612,6 @@ class Records(object):
         """
         self._cmbtp_itemizer = self._imputed_cmbtp_itemizer()
         self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
-        # standard deduction amount in 2009
-        std_2009 = np.array([5700, 11400, 5700, 8350, 11400, 5700, 950])
-        # std_2009 = np.array([6100, 12200, 6100, 8950, 12200, 6100, 1000])
-        # Additional standard deduction for aged 2009
-        std_aged_2009 = np.array([1400., 1100.])
-        # std_aged_2009 = np.array([1500., 1200.])
         # impute number of taxpayers
         self._txpyers = np.where(np.logical_or(self.MARS == 2,
                                                np.logical_or(self.MARS == 3,
@@ -657,29 +651,29 @@ class Records(object):
         Initial year blowup factors for 2009 IRS-PUF/Census-CPS merged data.
         """
         year = 2009
-        self.BF.AGDPN[year] = 1
-        self.BF.ATXPY[year] = 1
+        self.BF.AGDPN[year] = 1.0
+        self.BF.ATXPY[year] = 1.0
         self.BF.AWAGE[year] = 1.0053
         self.BF.ASCHCI[year] = 1.0041
         self.BF.ASCHCL[year] = 1.1629
-        self.BF.ASCHF[year] = 1
+        self.BF.ASCHF[year] = 1.0
         self.BF.AINTS[year] = 1.0357
         self.BF.ADIVS[year] = 1.0606
         self.BF.ASCHEI[year] = 1.1089
         self.BF.ASCHEL[year] = 1.2953
         self.BF.ACGNS[year] = 1.1781
-        self.BF.ABOOK[year] = 1
+        self.BF.ABOOK[year] = 1.0
         self.BF.ARETS[year] = 1.0026
-        self.BF.APOPN[year] = 1
-        self.BF.ACPIU[year] = 1
-        self.BF.APOPDEP[year] = 1
+        self.BF.APOPN[year] = 1.0
+        self.BF.ACPIU[year] = 1.0
+        self.BF.APOPDEP[year] = 1.0
         self.BF.ASOCSEC[year] = 0.9941
-        self.BF.ACPIM[year] = 1
+        self.BF.ACPIM[year] = 1.0
         self.BF.AUCOMP[year] = 1.0034
-        self.BF.APOPSNR[year] = 1
-        self.BF.AIPD[year] = 1
+        self.BF.APOPSNR[year] = 1.0
+        self.BF.AIPD[year] = 1.0
         self._blowup(year)
-        self.s006 = self.WT["WT" + str(year)] / 100
+        self.s006 = self.WT["WT" + str(year)] * 0.01
 
 
 @vectorize([float64(float64, float64, float64,
