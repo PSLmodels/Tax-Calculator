@@ -489,21 +489,22 @@ class Records(object):
         """
         Read Records data from file or use specified DataFrame as data.
         """
+        # pylint: disable=too-many-branches
         if isinstance(data, pd.DataFrame):
-            tax_dta = data
+            taxdf = data
         elif isinstance(data, six.string_types):
             if data.endswith("gz"):
-                tax_dta = pd.read_csv(data, compression='gzip')
+                taxdf = pd.read_csv(data, compression='gzip')
             else:
-                tax_dta = pd.read_csv(data)
+                taxdf = pd.read_csv(data)
         else:
             msg = ('Records.constructor data is neither a string nor '
                    'a Pandas DataFrame')
             raise ValueError(msg)
-        self.dim = len(tax_dta)
-        # create variables using tax_dta DataFrame column names
+        self.dim = len(taxdf)
+        # create class variables using taxdf column names
         READ_VARS = set()
-        for varname in list(tax_dta.columns.values):
+        for varname in list(taxdf.columns.values):
             if varname not in Records.VALID_READ_VARS:
                 msg = 'Records data variable name {} not in VALID_READ_VARS'
                 raise ValueError(msg.format(varname))
@@ -511,20 +512,21 @@ class Records(object):
             if varname not in Records.UNUSED_READ_VARS:
                 if varname in Records.INTEGER_READ_VARS:
                     setattr(self, varname,
-                            tax_dta[varname].astype(np.int64).values)
+                            taxdf[varname].astype(np.int64).values)
                 else:
                     setattr(self, varname,
-                            tax_dta[varname].astype(np.float64).values)
-        # check that MUST_READ_VARS are all present in tax_dta
+                            taxdf[varname].astype(np.float64).values)
+        # check that MUST_READ_VARS are all present in taxdf
         UNREAD_MUST_VARS = Records.MUST_READ_VARS - READ_VARS
         if len(UNREAD_MUST_VARS) > 0:
             msg = 'Records data missing {} MUST_READ_VARS'
             raise ValueError(msg.format(len(UNREAD_MUST_VARS)))
-        # create variables that are set to all zeros
+        # create other class variables that are set to all zeros
         UNREAD_VARS = Records.VALID_READ_VARS - READ_VARS
         ZEROED_VARS = Records.CALCULATED_VARS | UNREAD_VARS
         for varname in ZEROED_VARS:
-            setattr(self, varname, np.zeros((self.dim,)))  # float zeros
+            if varname not in Records.UNUSED_READ_VARS:
+                setattr(self, varname, np.zeros(self.dim, dtype=np.float64))
         # create variables derived from MARS, which is in MUST_READ_VARS
         self._num = np.where(self.MARS == 2,
                              2., 1.)
