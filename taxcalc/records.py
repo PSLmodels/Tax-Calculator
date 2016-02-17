@@ -509,7 +509,12 @@ class Records(object):
                 raise ValueError(msg.format(varname))
             READ_VARS.add(varname)
             if varname not in Records.UNUSED_READ_VARS:
-                setattr(self, varname, tax_dta[varname].values)
+                if varname in Records.INTEGER_READ_VARS:
+                    setattr(self, varname,
+                            tax_dta[varname].astype(np.int64).values)
+                else:
+                    setattr(self, varname,
+                            tax_dta[varname].astype(np.float64).values)
         # check that MUST_READ_VARS are all present in tax_dta
         UNREAD_MUST_VARS = Records.MUST_READ_VARS - READ_VARS
         if len(UNREAD_MUST_VARS) > 0:

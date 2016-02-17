@@ -6,55 +6,37 @@ IIT mtr histogram bin edges:
      [-1.0, -0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 1.0]
 FICA and IIT mtr histogram bin counts for e00200p:
 219814 :      0  31950      0      0      0      0      0 183680   4184      0
-219814 :   4584    107   1755  15480  37448  62829  47530  27170  22214    697
+219814 :   4584    107   1755  15482  38045  62210  47632  27092  22212    695
 FICA and IIT mtr histogram bin counts for e00900p:
 219814 :  14116  29235      0      0      0      0      0 176463      0      0
-219814 :   4580    111   1755  15245  42733  60030  53304  25838  15910    308
+219814 :   4580    111   1755  15257  42734  60010  53295  25852  15914    306
 FICA and IIT mtr histogram bin counts for e00300:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219813 :      0      0      0      0  59598  63951  43395  26399  25767    703
-WARNING: sum of bin counts is too low
-         max(mtr)=12605.04
-         mtr=12605.04 for recid=1264520
+219814 :      0      0      0      0  59790  63084  43576  26889  25774    701
 FICA and IIT mtr histogram bin counts for e00400:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219813 :      0      0      0      0 206404   7637   5635     98     31      8
-WARNING: sum of bin counts is too low
-         max(mtr)=12605.04
-         mtr=12605.04 for recid=1264520
+219814 :      0      0      0      0 205727   7850   6099     99     31      8
 FICA and IIT mtr histogram bin counts for e00600:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219813 :      0      0      0      0  59608  63942  43430  26362  25768    703
-WARNING: sum of bin counts is too low
-         max(mtr)=12605.04
-         mtr=12605.04 for recid=1264520
+219814 :      0      0      0      0  59802  63084  43761  26697  25769    701
 FICA and IIT mtr histogram bin counts for e00650:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219813 :      0      0      0  16828 107813  43671  50448    622    407     24
-WARNING: sum of bin counts is too low
-         max(mtr)=12605.04
-         mtr=12605.04 for recid=1264520
+219814 :      0      0      0  17829 106130  44177  50631    620    403     24
 FICA and IIT mtr histogram bin counts for e01400:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219814 :      0      0      0      0  59650  63923  47091  26755  21705    690
+219814 :      0      0      0      0  59790  63112  47401  27118  21705    688
 FICA and IIT mtr histogram bin counts for e01700:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219814 :      0      0      0      0  59668  63906  47097  26746  21707    690
+219814 :      0      0      0      0  59792  63110  47387  27131  21706    688
 FICA and IIT mtr histogram bin counts for e02000:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219814 :      0      0      0      0  59709  63860  43942  26128  25476    699
+219814 :      0      0      0      0  59817  63082  44145  26592  25481    697
 FICA and IIT mtr histogram bin counts for e02400:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219814 :      0      0      0      0  99250  39874  50895  28930    761    104
+219814 :      0      0      0      0  98959  40108  50938  28944    761    104
 FICA and IIT mtr histogram bin counts for p22250:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219813 :      0      0      0     22  81878  61785  42005  19089  14614    420
-WARNING: sum of bin counts is too low
-         max(mtr)=12605.04
-         mtr=12605.04 for recid=1264520
+219814 :      0      0      0     16  82045  60955  42281  19484  14615    418
 FICA and IIT mtr histogram bin counts for p23250:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219813 :      0      0      0  16349 126159  38232  33934   2149   2942     48
-WARNING: sum of bin counts is too low
-         max(mtr)=12605.04
-         mtr=12605.04 for recid=1264520
+219814 :      0      0      0  17121 124727  38643  34168   2169   2938     48
