@@ -380,41 +380,41 @@ class Records(object):
         self.e03150 = self.e03150 * ATXPY
         self.e03210 = self.e03210 * ATXPY
         self.e03220 = self.e03220 * ATXPY
-        times_equal(self.e03230, ATXPY)
-        times_equal(self.e03260, ASCHCI)
-        times_equal(self.e03270, ACPIM)
-        times_equal(self.e03240, AGDPN)
-        times_equal(self.e03290, ACPIM)
-        times_equal(self.e03300, ATXPY)
-        times_equal(self.e03400, ATXPY)
-        times_equal(self.e03500, ATXPY)
-        times_equal(self.e07230, ATXPY)
-        times_equal(self.e07240, ATXPY)
-        times_equal(self.e07260, ATXPY)
-        times_equal(self.e07300, ABOOK)
-        times_equal(self.e07400, ABOOK)
-        times_equal(self.p08000, ATXPY)
-        times_equal(self.e09700, ATXPY)
-        times_equal(self.e09800, ATXPY)
-        times_equal(self.e09900, ATXPY)
-        times_equal(self.e10700, ATXPY)
-        times_equal(self.e10900, ATXPY)
-        times_equal(self.e59560, ATXPY)
-        times_equal(self.e59680, ATXPY)
-        times_equal(self.e59700, ATXPY)
-        times_equal(self.e59720, ATXPY)
-        times_equal(self.e11550, ATXPY)
-        times_equal(self.e11070, ATXPY)
-        times_equal(self.e11100, ATXPY)
-        times_equal(self.e11200, ATXPY)
-        times_equal(self.e11300, ATXPY)
-        times_equal(self.e11400, ATXPY)
-        times_equal(self.e11570, ATXPY)
-        times_equal(self.e11580, ATXPY)
-        times_equal(self.e11581, ATXPY)
-        times_equal(self.e11582, ATXPY)
-        times_equal(self.e11583, ATXPY)
-        times_equal(self.e10605, ATXPY)
+        self.e03230 = self.e03230 * ATXPY
+        self.e03260 = self.e03260 * ASCHCI
+        self.e03270 = self.e03270 * ACPIM
+        self.e03240 = self.e03240 * AGDPN
+        self.e03290 = self.e03290 * ACPIM
+        self.e03300 = self.e03300 * ATXPY
+        self.e03400 = self.e03400 * ATXPY
+        self.e03500 = self.e03500 * ATXPY
+        self.e07230 = self.e07230 * ATXPY
+        self.e07240 = self.e07240 * ATXPY
+        self.e07260 = self.e07260 * ATXPY
+        self.e07300 = self.e07300 * ABOOK
+        self.e07400 = self.e07400 * ABOOK
+        self.p08000 = self.p08000 * ATXPY
+        self.e09700 = self.e09700 * ATXPY
+        self.e09800 = self.e09800 * ATXPY
+        self.e09900 = self.e09900 * ATXPY
+        self.e10700 = self.e10700 * ATXPY
+        self.e10900 = self.e10900 * ATXPY
+        self.e59560 = self.e59560 * ATXPY
+        self.e59680 = self.e59680 * ATXPY
+        self.e59700 = self.e59700 * ATXPY
+        self.e59720 = self.e59720 * ATXPY
+        self.e11550 = self.e11550 * ATXPY
+        self.e11070 = self.e11070 * ATXPY
+        self.e11100 = self.e11100 * ATXPY
+        self.e11200 = self.e11200 * ATXPY
+        self.e11300 = self.e11300 * ATXPY
+        self.e11400 = self.e11400 * ATXPY
+        self.e11570 = self.e11570 * ATXPY
+        self.e11580 = self.e11580 * ATXPY
+        self.e11581 = self.e11581 * ATXPY
+        self.e11582 = self.e11582 * ATXPY
+        self.e11583 = self.e11583 * ATXPY
+        self.e10605 = self.e10605 * ATXPY
         # ITEMIZED DEDUCTIONS
         times_equal(self.e17500, ACPIM)
         times_equal(self.e18400, ATXPY)
@@ -496,6 +496,7 @@ class Records(object):
         times_equal(self.e87530, ATXPY)
         times_equal(self.e87550, ATXPY)
         times_equal(self.p87521, ATXPY)
+
         self._cmbtp_itemizer = self._cmbtp_itemizer * ATXPY
         self._cmbtp_standard = self._cmbtp_standard * ATXPY
 
