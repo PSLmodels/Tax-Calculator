@@ -319,17 +319,7 @@ class Records(object):
         """
         # pylint: disable=too-many-statements
         # pylint: disable=attribute-defined-outside-init
-
-        def times_equal(a, b):
-            """
-            Local function used in private _blowup method.
-            """
-            try:
-                np.multiply(a, b, out=a, casting='unsafe')
-            except TypeError:
-                a = a.values
-                np.multiply(a, b, out=a, casting='unsafe')
-
+        # local copies of blowup factors for specified year:
         AWAGE = self.BF.AWAGE[year]
         AINTS = self.BF.AINTS[year]
         ADIVS = self.BF.ADIVS[year]
@@ -346,7 +336,7 @@ class Records(object):
         AGDPN = self.BF.AGDPN[year]
         ABOOK = self.BF.ABOOK[year]
         AIPD = self.BF.AIPD[year]
-
+        # apply blowup factors to variables:
         self.e00200 = self.e00200 * AWAGE
         self.e00200p = self.e00200p * AWAGE
         self.e00200s = self.e00200s * AWAGE
@@ -416,87 +406,86 @@ class Records(object):
         self.e11583 = self.e11583 * ATXPY
         self.e10605 = self.e10605 * ATXPY
         # ITEMIZED DEDUCTIONS
-        times_equal(self.e17500, ACPIM)
-        times_equal(self.e18400, ATXPY)
-        times_equal(self.e18500, ATXPY)
-        times_equal(self.e19200, AIPD)
-        times_equal(self.e19550, ATXPY)
-        times_equal(self.e19800, ATXPY)
-        times_equal(self.e20100, ATXPY)
-        times_equal(self.e19700, ATXPY)
-        times_equal(self.e20550, ATXPY)
-        times_equal(self.e20600, ATXPY)
-        times_equal(self.e20400, ATXPY)
-        times_equal(self.e20800, ATXPY)
-        times_equal(self.e20500, ATXPY)
-        times_equal(self.e21040, ATXPY)
+        self.e17500 = self.e17500 * ACPIM
+        self.e18400 = self.e18400 * ATXPY
+        self.e18500 = self.e18500 * ATXPY
+        self.e19200 = self.e19200 * AIPD
+        self.e19550 = self.e19550 * ATXPY
+        self.e19800 = self.e19800 * ATXPY
+        self.e20100 = self.e20100 * ATXPY
+        self.e19700 = self.e19700 * ATXPY
+        self.e20550 = self.e20550 * ATXPY
+        self.e20600 = self.e20600 * ATXPY
+        self.e20400 = self.e20400 * ATXPY
+        self.e20800 = self.e20800 * ATXPY
+        self.e20500 = self.e20500 * ATXPY
+        self.e21040 = self.e21040 * ATXPY
         # CAPITAL GAINS
         self.p22250 = self.p22250 * ACGNS
         self.e22320 = self.e22320 * ACGNS
         self.e22370 = self.e22370 * ACGNS
         self.p23250 = self.p23250 * ACGNS
-        times_equal(self.e24515, ACGNS)
-        times_equal(self.e24516, ACGNS)
-        times_equal(self.e24518, ACGNS)
-        times_equal(self.e24535, ACGNS)
-        times_equal(self.e24560, ACGNS)
-        times_equal(self.e24598, ACGNS)
-        times_equal(self.e24615, ACGNS)
-        times_equal(self.e24570, ACGNS)
+        self.e24515 = self.e24515 * ACGNS
+        self.e24516 = self.e24516 * ACGNS
+        self.e24518 = self.e24518 * ACGNS
+        self.e24535 = self.e24535 * ACGNS
+        self.e24560 = self.e24560 * ACGNS
+        self.e24598 = self.e24598 * ACGNS
+        self.e24615 = self.e24615 * ACGNS
+        self.e24570 = self.e24570 * ACGNS
         # SCHEDULE E
-        times_equal(self.p25350, ASCHEI)
-        times_equal(self.p25380, ASCHEI)
-        times_equal(self.p25470, ASCHEI)
-        times_equal(self.p25700, ASCHEI)
-        times_equal(self.e25820, ASCHEI)
-        times_equal(self.e25850, ASCHEI)
-        times_equal(self.e25860, ASCHEI)
-        times_equal(self.e25940, ASCHEI)
-        times_equal(self.e25980, ASCHEI)
-        times_equal(self.e25920, ASCHEI)
-        times_equal(self.e25960, ASCHEI)
-        times_equal(self.e26110, ASCHEI)
-        times_equal(self.e26170, ASCHEI)
-        times_equal(self.e26190, ASCHEI)
-        times_equal(self.e26160, ASCHEI)
-        times_equal(self.e26180, ASCHEI)
-        times_equal(self.e26270, ASCHEI)
-        times_equal(self.e26100, ASCHEI)
-        times_equal(self.e26390, ASCHEI)
-        times_equal(self.e26400, ASCHEI)
-        times_equal(self.e27200, ASCHEI)
+        self.p25350 = self.p25350 * ASCHEI
+        self.p25380 = self.p25380 * ASCHEI
+        self.p25470 = self.p25470 * ASCHEI
+        self.p25700 = self.p25700 * ASCHEI
+        self.e25820 = self.e25820 * ASCHEI
+        self.e25850 = self.e25850 * ASCHEI
+        self.e25860 = self.e25860 * ASCHEI
+        self.e25940 = self.e25940 * ASCHEI
+        self.e25980 = self.e25980 * ASCHEI
+        self.e25920 = self.e25920 * ASCHEI
+        self.e25960 = self.e25960 * ASCHEI
+        self.e26110 = self.e26110 * ASCHEI
+        self.e26170 = self.e26170 * ASCHEI
+        self.e26190 = self.e26190 * ASCHEI
+        self.e26160 = self.e26160 * ASCHEI
+        self.e26180 = self.e26180 * ASCHEI
+        self.e26270 = self.e26270 * ASCHEI
+        self.e26100 = self.e26100 * ASCHEI
+        self.e26390 = self.e26390 * ASCHEI
+        self.e26400 = self.e26400 * ASCHEI
+        self.e27200 = self.e27200 * ASCHEI
         # MISCELLANOUS SCHEDULES
-        times_equal(self.e30400, ASCHCI)
-        times_equal(self.e30500, ASCHCI)
-        times_equal(self.e32800, ATXPY)
-        times_equal(self.e33000, ATXPY)
-        times_equal(self.e53240, ATXPY)
-        times_equal(self.e53280, ATXPY)
-        times_equal(self.e53410, ATXPY)
-        times_equal(self.e53300, ATXPY)
-        times_equal(self.e53317, ATXPY)
-        times_equal(self.e53458, ATXPY)
-        times_equal(self.e58950, ATXPY)
-        times_equal(self.e58990, ATXPY)
-        times_equal(self.p60100, ATXPY)
-        times_equal(self.p61850, ATXPY)
-        times_equal(self.e60000, ATXPY)
-        times_equal(self.e62100, ATXPY)
-        times_equal(self.e62900, ATXPY)
-        times_equal(self.e62720, ATXPY)
-        times_equal(self.e62730, ATXPY)
-        times_equal(self.e62740, ATXPY)
-        times_equal(self.p65300, ATXPY)
-        times_equal(self.p65400, ATXPY)
-        times_equal(self.e68000, ATXPY)
-        times_equal(self.e82200, ATXPY)
-        times_equal(self.t27800, ATXPY)
-        times_equal(self.s27860, ATXPY)
-        times_equal(self.p27895, ATXPY)
-        times_equal(self.e87530, ATXPY)
-        times_equal(self.e87550, ATXPY)
-        times_equal(self.p87521, ATXPY)
-
+        self.e30400 = self.e30400 * ASCHCI
+        self.e30500 = self.e30500 * ASCHCI
+        self.e32800 = self.e32800 * ATXPY
+        self.e33000 = self.e33000 * ATXPY
+        self.e53240 = self.e53240 * ATXPY
+        self.e53280 = self.e53280 * ATXPY
+        self.e53410 = self.e53410 * ATXPY
+        self.e53300 = self.e53300 * ATXPY
+        self.e53317 = self.e53317 * ATXPY
+        self.e53458 = self.e53458 * ATXPY
+        self.e58950 = self.e58950 * ATXPY
+        self.e58990 = self.e58990 * ATXPY
+        self.p60100 = self.p60100 * ATXPY
+        self.p61850 = self.p61850 * ATXPY
+        self.e60000 = self.e60000 * ATXPY
+        self.e62100 = self.e62100 * ATXPY
+        self.e62900 = self.e62900 * ATXPY
+        self.e62720 = self.e62720 * ATXPY
+        self.e62730 = self.e62730 * ATXPY
+        self.e62740 = self.e62740 * ATXPY
+        self.p65300 = self.p65300 * ATXPY
+        self.p65400 = self.p65400 * ATXPY
+        self.e68000 = self.e68000 * ATXPY
+        self.e82200 = self.e82200 * ATXPY
+        self.t27800 = self.t27800 * ATXPY
+        self.s27860 = self.s27860 * ATXPY
+        self.p27895 = self.p27895 * ATXPY
+        self.e87530 = self.e87530 * ATXPY
+        self.e87550 = self.e87550 * ATXPY
+        self.p87521 = self.p87521 * ATXPY
         self._cmbtp_itemizer = self._cmbtp_itemizer * ATXPY
         self._cmbtp_standard = self._cmbtp_standard * ATXPY
 
