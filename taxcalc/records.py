@@ -334,6 +334,18 @@ class Records(object):
         AINTS = self.BF.AINTS[year]
         ADIVS = self.BF.ADIVS[year]
         ATXPY = self.BF.ATXPY[year]
+        ASCHCI = self.BF.ASCHCI[year]
+        ASCHCL = self.BF.ASCHCL[year]
+        ACGNS = self.BF.ACGNS[year]
+        ASCHEI = self.BF.ASCHEI[year]
+        ASCHEL = self.BF.ASCHEL[year]
+        ASCHF = self.BF.ASCHF[year]
+        AUCOMP = self.BF.AUCOMP[year]
+        ASOCSEC = self.BF.ASOCSEC[year]
+        ACPIM = self.BF.ACPIM[year]
+        AGDPN = self.BF.AGDPN[year]
+        ABOOK = self.BF.ABOOK[year]
+        AIPD = self.BF.AIPD[year]
 
         self.e00200 = self.e00200 * AWAGE
         self.e00200p = self.e00200p * AWAGE
@@ -345,47 +357,42 @@ class Records(object):
         self.e00700 = self.e00700 * ATXPY
         self.e00800 = self.e00800 * ATXPY
         self.e00900 = np.where(self.e00900 >= 0,
-                               self.e00900 * self.BF.ASCHCI[year],
-                               self.e00900 * self.BF.ASCHCL[year])
+                               self.e00900 * ASCHCI, self.e00900 * ASCHCL)
         self.e00900s = np.where(self.e00900s >= 0,
-                                self.e00900s * self.BF.ASCHCI[year],
-                                self.e00900s * self.BF.ASCHCL[year])
+                                self.e00900s * ASCHCI, self.e00900s * ASCHCL)
         self.e00900p = np.where(self.e00900p >= 0,
-                                self.e00900p * self.BF.ASCHCI[year],
-                                self.e00900p * self.BF.ASCHCL[year])
-        self.e01000 = np.where(self.e01000 >= 0.,
-                               self.e01000 * self.BF.ACGNS[year],
-                               self.e01000)
-        self.e01100 = self.e01100 * self.BF.ACGNS[year]
-        self.e01200 = self.e01200 * self.BF.ACGNS[year]
+                                self.e00900p * ASCHCI, self.e00900p * ASCHCL)
+        self.e01000 = np.where(self.e01000 >= 0,
+                               self.e01000 * ACGNS, self.e01000)
+        self.e01100 = self.e01100 * ACGNS
+        self.e01200 = self.e01200 * ACGNS
         self.e01400 = self.e01400 * ATXPY
         self.e01500 = self.e01500 * ATXPY
         self.e01700 = self.e01700 * ATXPY
         self.e02000 = np.where(self.e02000 >= 0,
-                               self.e02000 * self.BF.ASCHEI[year],
-                               self.e02000 * self.BF.ASCHEL[year])
-        self.e02100 = self.e02100 * self.BF.ASCHF[year]
-        self.e02100p = self.e02100p * self.BF.ASCHF[year]
-        self.e02100s = self.e02100s * self.BF.ASCHF[year]
-        self.e02300 = self.e02300 * self.BF.AUCOMP[year]
-        self.e02400 = self.e02400 * self.BF.ASOCSEC[year]
-        self.e02500 = self.e02500 * self.BF.ASOCSEC[year]
+                               self.e02000 * ASCHEI, self.e02000 * ASCHEL)
+        self.e02100 = self.e02100 * ASCHF
+        self.e02100p = self.e02100p * ASCHF
+        self.e02100s = self.e02100s * ASCHF
+        self.e02300 = self.e02300 * AUCOMP
+        self.e02400 = self.e02400 * ASOCSEC
+        self.e02500 = self.e02500 * ASOCSEC
         self.e03150 = self.e03150 * ATXPY
         self.e03210 = self.e03210 * ATXPY
         self.e03220 = self.e03220 * ATXPY
         times_equal(self.e03230, ATXPY)
-        times_equal(self.e03260, self.BF.ASCHCI[year])
-        times_equal(self.e03270, self.BF.ACPIM[year])
-        times_equal(self.e03240, self.BF.AGDPN[year])
-        times_equal(self.e03290, self.BF.ACPIM[year])
+        times_equal(self.e03260, ASCHCI)
+        times_equal(self.e03270, ACPIM)
+        times_equal(self.e03240, AGDPN)
+        times_equal(self.e03290, ACPIM)
         times_equal(self.e03300, ATXPY)
         times_equal(self.e03400, ATXPY)
         times_equal(self.e03500, ATXPY)
         times_equal(self.e07230, ATXPY)
         times_equal(self.e07240, ATXPY)
         times_equal(self.e07260, ATXPY)
-        times_equal(self.e07300, self.BF.ABOOK[year])
-        times_equal(self.e07400, self.BF.ABOOK[year])
+        times_equal(self.e07300, ABOOK)
+        times_equal(self.e07400, ABOOK)
         times_equal(self.p08000, ATXPY)
         times_equal(self.e09700, ATXPY)
         times_equal(self.e09800, ATXPY)
@@ -409,10 +416,10 @@ class Records(object):
         times_equal(self.e11583, ATXPY)
         times_equal(self.e10605, ATXPY)
         # ITEMIZED DEDUCTIONS
-        times_equal(self.e17500, self.BF.ACPIM[year])
+        times_equal(self.e17500, ACPIM)
         times_equal(self.e18400, ATXPY)
         times_equal(self.e18500, ATXPY)
-        times_equal(self.e19200, self.BF.AIPD[year])
+        times_equal(self.e19200, AIPD)
         times_equal(self.e19550, ATXPY)
         times_equal(self.e19800, ATXPY)
         times_equal(self.e20100, ATXPY)
@@ -424,43 +431,43 @@ class Records(object):
         times_equal(self.e20500, ATXPY)
         times_equal(self.e21040, ATXPY)
         # CAPITAL GAINS
-        self.p22250 = self.p22250 * self.BF.ACGNS[year]
-        self.e22320 = self.e22320 * self.BF.ACGNS[year]
-        self.e22370 = self.e22370 * self.BF.ACGNS[year]
-        self.p23250 = self.p23250 * self.BF.ACGNS[year]
-        times_equal(self.e24515, self.BF.ACGNS[year])
-        times_equal(self.e24516, self.BF.ACGNS[year])
-        times_equal(self.e24518, self.BF.ACGNS[year])
-        times_equal(self.e24535, self.BF.ACGNS[year])
-        times_equal(self.e24560, self.BF.ACGNS[year])
-        times_equal(self.e24598, self.BF.ACGNS[year])
-        times_equal(self.e24615, self.BF.ACGNS[year])
-        times_equal(self.e24570, self.BF.ACGNS[year])
+        self.p22250 = self.p22250 * ACGNS
+        self.e22320 = self.e22320 * ACGNS
+        self.e22370 = self.e22370 * ACGNS
+        self.p23250 = self.p23250 * ACGNS
+        times_equal(self.e24515, ACGNS)
+        times_equal(self.e24516, ACGNS)
+        times_equal(self.e24518, ACGNS)
+        times_equal(self.e24535, ACGNS)
+        times_equal(self.e24560, ACGNS)
+        times_equal(self.e24598, ACGNS)
+        times_equal(self.e24615, ACGNS)
+        times_equal(self.e24570, ACGNS)
         # SCHEDULE E
-        times_equal(self.p25350, self.BF.ASCHEI[year])
-        times_equal(self.p25380, self.BF.ASCHEI[year])
-        times_equal(self.p25470, self.BF.ASCHEI[year])
-        times_equal(self.p25700, self.BF.ASCHEI[year])
-        times_equal(self.e25820, self.BF.ASCHEI[year])
-        times_equal(self.e25850, self.BF.ASCHEI[year])
-        times_equal(self.e25860, self.BF.ASCHEI[year])
-        times_equal(self.e25940, self.BF.ASCHEI[year])
-        times_equal(self.e25980, self.BF.ASCHEI[year])
-        times_equal(self.e25920, self.BF.ASCHEI[year])
-        times_equal(self.e25960, self.BF.ASCHEI[year])
-        times_equal(self.e26110, self.BF.ASCHEI[year])
-        times_equal(self.e26170, self.BF.ASCHEI[year])
-        times_equal(self.e26190, self.BF.ASCHEI[year])
-        times_equal(self.e26160, self.BF.ASCHEI[year])
-        times_equal(self.e26180, self.BF.ASCHEI[year])
-        times_equal(self.e26270, self.BF.ASCHEI[year])
-        times_equal(self.e26100, self.BF.ASCHEI[year])
-        times_equal(self.e26390, self.BF.ASCHEI[year])
-        times_equal(self.e26400, self.BF.ASCHEI[year])
-        times_equal(self.e27200, self.BF.ASCHEI[year])
+        times_equal(self.p25350, ASCHEI)
+        times_equal(self.p25380, ASCHEI)
+        times_equal(self.p25470, ASCHEI)
+        times_equal(self.p25700, ASCHEI)
+        times_equal(self.e25820, ASCHEI)
+        times_equal(self.e25850, ASCHEI)
+        times_equal(self.e25860, ASCHEI)
+        times_equal(self.e25940, ASCHEI)
+        times_equal(self.e25980, ASCHEI)
+        times_equal(self.e25920, ASCHEI)
+        times_equal(self.e25960, ASCHEI)
+        times_equal(self.e26110, ASCHEI)
+        times_equal(self.e26170, ASCHEI)
+        times_equal(self.e26190, ASCHEI)
+        times_equal(self.e26160, ASCHEI)
+        times_equal(self.e26180, ASCHEI)
+        times_equal(self.e26270, ASCHEI)
+        times_equal(self.e26100, ASCHEI)
+        times_equal(self.e26390, ASCHEI)
+        times_equal(self.e26400, ASCHEI)
+        times_equal(self.e27200, ASCHEI)
         # MISCELLANOUS SCHEDULES
-        times_equal(self.e30400, self.BF.ASCHCI[year])
-        times_equal(self.e30500, self.BF.ASCHCI[year])
+        times_equal(self.e30400, ASCHCI)
+        times_equal(self.e30500, ASCHCI)
         times_equal(self.e32800, ATXPY)
         times_equal(self.e33000, ATXPY)
         times_equal(self.e53240, ATXPY)
@@ -600,7 +607,7 @@ class Records(object):
         BF.ACGNS = BF.ACGNS / BF.APOPN
         BF.ABOOK = BF.ABOOK / BF.APOPN
         BF.ASOCSEC = BF.ASOCSEC / BF.APOPSNR
-        BF = 1 + BF.pct_change()
+        BF = 1.0 + BF.pct_change()
         setattr(self, 'BF', BF)
 
     def _impute_variables(self):
