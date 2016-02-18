@@ -155,6 +155,8 @@ class Records(object):
     # TODO: the long-term objective is to remove these UNUSED_READ_VARS
     #       from the puf.csv input file so that this set can be removed
     #       from the Records class code.
+    # Each removal from UNUSED_READ_VARS set requires removal of same
+    # variable from VALID_READ_VARS set.
 
     # specify which VALID_READ_VARS should be int64 (rather than float64):
     INTEGER_READ_VARS = set([
@@ -319,6 +321,7 @@ class Records(object):
         """
         # pylint: disable=too-many-statements
         # pylint: disable=attribute-defined-outside-init
+        # pylint: disable=too-many-locals
         # local copies of blowup factors for specified year:
         AWAGE = self.BF.AWAGE[year]
         AINTS = self.BF.AINTS[year]
