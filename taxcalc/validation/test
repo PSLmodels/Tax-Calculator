@@ -7,8 +7,8 @@
 if [[ "$#" -lt 2 || "$#" -gt 3 ]]; then
     echo "ERROR: number of command-line arguments not in 2-to-3 range"
     echo "USAGE: bash test LYY REFORM [save]"
-    echo "       WHERE L is a letter equal to 'a', 'b', or 'c' and"
-    echo "             YY is a number equal to '13' or '14';"
+    echo "       WHERE L is a letter equal to 'a', 'b', 'c', or 'd' and"
+    echo "             YY is a number equal to '13', '15', or '15';"
     echo "       WHERE REFORM is Internet-TAXSIM option (e.g., '50_1') or"
     echo "             '.' for no reform (i.e., current-law policy);"
     echo "       WHERE the 'save' option skips the deletion of INPUT and"
