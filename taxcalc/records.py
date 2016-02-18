@@ -216,7 +216,7 @@ class Records(object):
         '_statax', 'c37703', 'c20500', 'c20750', 'c19200',
         'c19700', '_nonlimited', '_limitratio', '_phase2_i',
         '_fica', '_fica_was', 'c03260', 'c11055', 'c15100', '_numextra',
-        '_num', '_txpyers', 'c15200', '_othded', 'c04100', 'c04200',
+        '_sep', '_num', '_txpyers', 'c15200', '_othded', 'c04100', 'c04200',
         'c04500', '_amtstd', '_oldfei', 'c05200', '_cglong',
         '_noncg', '_hasgain', '_dwks9', '_dwks5', '_dwks12',
         '_dwks16', '_dwks17', '_dwks21', '_dwks25', '_dwks26',
@@ -322,7 +322,6 @@ class Records(object):
         # pylint: disable=too-many-statements
         # pylint: disable=attribute-defined-outside-init
         # pylint: disable=too-many-locals
-        # local copies of blowup factors for specified year:
         AWAGE = self.BF.AWAGE[year]
         AINTS = self.BF.AINTS[year]
         ADIVS = self.BF.ADIVS[year]
@@ -339,158 +338,162 @@ class Records(object):
         AGDPN = self.BF.AGDPN[year]
         ABOOK = self.BF.ABOOK[year]
         AIPD = self.BF.AIPD[year]
-        # apply blowup factors to variables:
-        self.e00200 = self.e00200 * AWAGE
-        self.e00200p = self.e00200p * AWAGE
-        self.e00200s = self.e00200s * AWAGE
-        self.e00300 = self.e00300 * AINTS
-        self.e00400 = self.e00400 * AINTS
-        self.e00600 = self.e00600 * ADIVS
-        self.e00650 = self.e00650 * ADIVS
-        self.e00700 = self.e00700 * ATXPY
-        self.e00800 = self.e00800 * ATXPY
-        self.e00900 = np.where(self.e00900 >= 0,
-                               self.e00900 * ASCHCI, self.e00900 * ASCHCL)
-        self.e00900s = np.where(self.e00900s >= 0,
-                                self.e00900s * ASCHCI, self.e00900s * ASCHCL)
-        self.e00900p = np.where(self.e00900p >= 0,
-                                self.e00900p * ASCHCI, self.e00900p * ASCHCL)
-        self.e01000 = np.where(self.e01000 >= 0,
-                               self.e01000 * ACGNS, self.e01000)
-        self.e01100 = self.e01100 * ACGNS
-        self.e01200 = self.e01200 * ACGNS
-        self.e01400 = self.e01400 * ATXPY
-        self.e01500 = self.e01500 * ATXPY
-        self.e01700 = self.e01700 * ATXPY
-        self.e02000 = np.where(self.e02000 >= 0,
-                               self.e02000 * ASCHEI, self.e02000 * ASCHEL)
-        self.e02100 = self.e02100 * ASCHF
-        self.e02100p = self.e02100p * ASCHF
-        self.e02100s = self.e02100s * ASCHF
-        self.e02300 = self.e02300 * AUCOMP
-        self.e02400 = self.e02400 * ASOCSEC
-        self.e02500 = self.e02500 * ASOCSEC
-        self.e03150 = self.e03150 * ATXPY
-        self.e03210 = self.e03210 * ATXPY
-        self.e03220 = self.e03220 * ATXPY
-        self.e03230 = self.e03230 * ATXPY
-        self.e03260 = self.e03260 * ASCHCI
-        self.e03270 = self.e03270 * ACPIM
-        self.e03240 = self.e03240 * AGDPN
-        self.e03290 = self.e03290 * ACPIM
-        self.e03300 = self.e03300 * ATXPY
-        self.e03400 = self.e03400 * ATXPY
-        self.e03500 = self.e03500 * ATXPY
-        self.e07230 = self.e07230 * ATXPY
-        self.e07240 = self.e07240 * ATXPY
-        self.e07260 = self.e07260 * ATXPY
-        self.e07300 = self.e07300 * ABOOK
-        self.e07400 = self.e07400 * ABOOK
-        self.p08000 = self.p08000 * ATXPY
-        self.e09700 = self.e09700 * ATXPY
-        self.e09800 = self.e09800 * ATXPY
-        self.e09900 = self.e09900 * ATXPY
-        self.e10700 = self.e10700 * ATXPY
-        self.e10900 = self.e10900 * ATXPY
-        self.e59560 = self.e59560 * ATXPY
-        self.e59680 = self.e59680 * ATXPY
-        self.e59700 = self.e59700 * ATXPY
-        self.e59720 = self.e59720 * ATXPY
-        self.e11550 = self.e11550 * ATXPY
-        self.e11070 = self.e11070 * ATXPY
-        self.e11100 = self.e11100 * ATXPY
-        self.e11200 = self.e11200 * ATXPY
-        self.e11300 = self.e11300 * ATXPY
-        self.e11400 = self.e11400 * ATXPY
-        self.e11570 = self.e11570 * ATXPY
-        self.e11580 = self.e11580 * ATXPY
-        self.e11581 = self.e11581 * ATXPY
-        self.e11582 = self.e11582 * ATXPY
-        self.e11583 = self.e11583 * ATXPY
-        self.e10605 = self.e10605 * ATXPY
+        self.e00200 *= AWAGE
+        self.e00200p *= AWAGE
+        self.e00200s *= AWAGE
+        self.e00300 *= AINTS
+        self.e00400 *= AINTS
+        self.e00600 *= ADIVS
+        self.e00650 *= ADIVS
+        self.e00700 *= ATXPY
+        self.e00800 *= ATXPY
+        self.e00900[:] = np.where(self.e00900 >= 0,
+                                  self.e00900 * ASCHCI,
+                                  self.e00900 * ASCHCL)
+        self.e00900s[:] = np.where(self.e00900s >= 0,
+                                   self.e00900s * ASCHCI,
+                                   self.e00900s * ASCHCL)
+        self.e00900p[:] = np.where(self.e00900p >= 0,
+                                   self.e00900p * ASCHCI,
+                                   self.e00900p * ASCHCL)
+        self.e01000[:] = np.where(self.e01000 >= 0,
+                                  self.e01000 * ACGNS,
+                                  self.e01000)
+        self.e01100 *= ACGNS
+        self.e01200 *= ACGNS
+        self.e01400 *= ATXPY
+        self.e01500 *= ATXPY
+        self.e01700 *= ATXPY
+        self.e02000[:] = np.where(self.e02000 >= 0,
+                                  self.e02000 * ASCHEI,
+                                  self.e02000 * ASCHEL)
+        self.e02100 *= ASCHF
+        self.e02100p *= ASCHF
+        self.e02100s *= ASCHF
+        self.e02300 *= AUCOMP
+        self.e02400 *= ASOCSEC
+        self.e02500 *= ASOCSEC
+        self.e03150 *= ATXPY
+        self.e03210 *= ATXPY
+        self.e03220 *= ATXPY
+        self.e03230 *= ATXPY
+        self.e03260 *= ASCHCI
+        self.e03270 *= ACPIM
+        self.e03240 *= AGDPN
+        self.e03290 *= ACPIM
+        self.e03300 *= ATXPY
+        self.e03400 *= ATXPY
+        self.e03500 *= ATXPY
+        self.e07230 *= ATXPY
+        self.e07240 *= ATXPY
+        self.e07260 *= ATXPY
+        self.e07300 *= ABOOK
+        self.e07400 *= ABOOK
+        self.p08000 *= ATXPY
+        self.e09700 *= ATXPY
+        self.e09800 *= ATXPY
+        self.e09900 *= ATXPY
+        self.e10700 *= ATXPY
+        self.e10900 *= ATXPY
+        self.e59560 *= ATXPY
+        self.e59680 *= ATXPY
+        self.e59700 *= ATXPY
+        self.e59720 *= ATXPY
+        self.e11550 *= ATXPY
+        self.e11070 *= ATXPY
+        self.e11100 *= ATXPY
+        self.e11200 *= ATXPY
+        self.e11300 *= ATXPY
+        self.e11400 *= ATXPY
+        self.e11570 *= ATXPY
+        self.e11580 *= ATXPY
+        self.e11581 *= ATXPY
+        self.e11582 *= ATXPY
+        self.e11583 *= ATXPY
+        self.e10605 *= ATXPY
         # ITEMIZED DEDUCTIONS
-        self.e17500 = self.e17500 * ACPIM
-        self.e18400 = self.e18400 * ATXPY
-        self.e18500 = self.e18500 * ATXPY
-        self.e19200 = self.e19200 * AIPD
-        self.e19550 = self.e19550 * ATXPY
-        self.e19800 = self.e19800 * ATXPY
-        self.e20100 = self.e20100 * ATXPY
-        self.e19700 = self.e19700 * ATXPY
-        self.e20550 = self.e20550 * ATXPY
-        self.e20600 = self.e20600 * ATXPY
-        self.e20400 = self.e20400 * ATXPY
-        self.e20800 = self.e20800 * ATXPY
-        self.e20500 = self.e20500 * ATXPY
-        self.e21040 = self.e21040 * ATXPY
+        self.e17500 *= ACPIM
+        self.e18400 *= ATXPY
+        self.e18500 *= ATXPY
+        self.e19200 *= AIPD
+        self.e19550 *= ATXPY
+        self.e19800 *= ATXPY
+        self.e20100 *= ATXPY
+        self.e19700 *= ATXPY
+        self.e20550 *= ATXPY
+        self.e20600 *= ATXPY
+        self.e20400 *= ATXPY
+        self.e20800 *= ATXPY
+        self.e20500 *= ATXPY
+        self.e21040 *= ATXPY
         # CAPITAL GAINS
-        self.p22250 = self.p22250 * ACGNS
-        self.e22320 = self.e22320 * ACGNS
-        self.e22370 = self.e22370 * ACGNS
-        self.p23250 = self.p23250 * ACGNS
-        self.e24515 = self.e24515 * ACGNS
-        self.e24516 = self.e24516 * ACGNS
-        self.e24518 = self.e24518 * ACGNS
-        self.e24535 = self.e24535 * ACGNS
-        self.e24560 = self.e24560 * ACGNS
-        self.e24598 = self.e24598 * ACGNS
-        self.e24615 = self.e24615 * ACGNS
-        self.e24570 = self.e24570 * ACGNS
+        self.p22250 *= ACGNS
+        self.e22320 *= ACGNS
+        self.e22370 *= ACGNS
+        self.p23250 *= ACGNS
+        self.e24515 *= ACGNS
+        self.e24516 *= ACGNS
+        self.e24518 *= ACGNS
+        self.e24535 *= ACGNS
+        self.e24560 *= ACGNS
+        self.e24598 *= ACGNS
+        self.e24615 *= ACGNS
+        self.e24570 *= ACGNS
         # SCHEDULE E
-        self.p25350 = self.p25350 * ASCHEI
-        self.p25380 = self.p25380 * ASCHEI
-        self.p25470 = self.p25470 * ASCHEI
-        self.p25700 = self.p25700 * ASCHEI
-        self.e25820 = self.e25820 * ASCHEI
-        self.e25850 = self.e25850 * ASCHEI
-        self.e25860 = self.e25860 * ASCHEI
-        self.e25940 = self.e25940 * ASCHEI
-        self.e25980 = self.e25980 * ASCHEI
-        self.e25920 = self.e25920 * ASCHEI
-        self.e25960 = self.e25960 * ASCHEI
-        self.e26110 = self.e26110 * ASCHEI
-        self.e26170 = self.e26170 * ASCHEI
-        self.e26190 = self.e26190 * ASCHEI
-        self.e26160 = self.e26160 * ASCHEI
-        self.e26180 = self.e26180 * ASCHEI
-        self.e26270 = self.e26270 * ASCHEI
-        self.e26100 = self.e26100 * ASCHEI
-        self.e26390 = self.e26390 * ASCHEI
-        self.e26400 = self.e26400 * ASCHEI
-        self.e27200 = self.e27200 * ASCHEI
+        self.p25350 *= ASCHEI
+        self.p25380 *= ASCHEI
+        self.p25470 *= ASCHEI
+        self.p25700 *= ASCHEI
+        self.e25820 *= ASCHEI
+        self.e25850 *= ASCHEI
+        self.e25860 *= ASCHEI
+        self.e25940 *= ASCHEI
+        self.e25980 *= ASCHEI
+        self.e25920 *= ASCHEI
+        self.e25960 *= ASCHEI
+        self.e26110 *= ASCHEI
+        self.e26170 *= ASCHEI
+        self.e26190 *= ASCHEI
+        self.e26160 *= ASCHEI
+        self.e26180 *= ASCHEI
+        self.e26270 *= ASCHEI
+        self.e26100 *= ASCHEI
+        self.e26390 *= ASCHEI
+        self.e26400 *= ASCHEI
+        self.e27200 *= ASCHEI
         # MISCELLANOUS SCHEDULES
-        self.e30400 = self.e30400 * ASCHCI
-        self.e30500 = self.e30500 * ASCHCI
-        self.e32800 = self.e32800 * ATXPY
-        self.e33000 = self.e33000 * ATXPY
-        self.e53240 = self.e53240 * ATXPY
-        self.e53280 = self.e53280 * ATXPY
-        self.e53410 = self.e53410 * ATXPY
-        self.e53300 = self.e53300 * ATXPY
-        self.e53317 = self.e53317 * ATXPY
-        self.e53458 = self.e53458 * ATXPY
-        self.e58950 = self.e58950 * ATXPY
-        self.e58990 = self.e58990 * ATXPY
-        self.p60100 = self.p60100 * ATXPY
-        self.p61850 = self.p61850 * ATXPY
-        self.e60000 = self.e60000 * ATXPY
-        self.e62100 = self.e62100 * ATXPY
-        self.e62900 = self.e62900 * ATXPY
-        self.e62720 = self.e62720 * ATXPY
-        self.e62730 = self.e62730 * ATXPY
-        self.e62740 = self.e62740 * ATXPY
-        self.p65300 = self.p65300 * ATXPY
-        self.p65400 = self.p65400 * ATXPY
-        self.e68000 = self.e68000 * ATXPY
-        self.e82200 = self.e82200 * ATXPY
-        self.t27800 = self.t27800 * ATXPY
-        self.s27860 = self.s27860 * ATXPY
-        self.p27895 = self.p27895 * ATXPY
-        self.e87530 = self.e87530 * ATXPY
-        self.e87550 = self.e87550 * ATXPY
-        self.p87521 = self.p87521 * ATXPY
-        self._cmbtp_itemizer = self._cmbtp_itemizer * ATXPY
-        self._cmbtp_standard = self._cmbtp_standard * ATXPY
+        self.e30400 *= ASCHCI
+        self.e30500 *= ASCHCI
+        self.e32800 *= ATXPY
+        self.e33000 *= ATXPY
+        self.e53240 *= ATXPY
+        self.e53280 *= ATXPY
+        self.e53410 *= ATXPY
+        self.e53300 *= ATXPY
+        self.e53317 *= ATXPY
+        self.e53458 *= ATXPY
+        self.e58950 *= ATXPY
+        self.e58990 *= ATXPY
+        self.p60100 *= ATXPY
+        self.p61850 *= ATXPY
+        self.e60000 *= ATXPY
+        self.e62100 *= ATXPY
+        self.e62900 *= ATXPY
+        self.e62720 *= ATXPY
+        self.e62730 *= ATXPY
+        self.e62740 *= ATXPY
+        self.p65300 *= ATXPY
+        self.p65400 *= ATXPY
+        self.e68000 *= ATXPY
+        self.e82200 *= ATXPY
+        self.t27800 *= ATXPY
+        self.s27860 *= ATXPY
+        self.p27895 *= ATXPY
+        self.e87530 *= ATXPY
+        self.e87550 *= ATXPY
+        self.p87521 *= ATXPY
+        self._cmbtp_itemizer *= ATXPY
+        self._cmbtp_standard *= ATXPY
 
     def _read_data(self, data):
         """
@@ -535,10 +538,10 @@ class Records(object):
             if varname not in Records.UNUSED_READ_VARS:
                 setattr(self, varname, np.zeros(self.dim, dtype=np.float64))
         # create variables derived from MARS, which is in MUST_READ_VARS
-        self._num = np.where(self.MARS == 2,
-                             2., 1.)
-        self._sep = np.where(np.logical_or(self.MARS == 3, self.MARS == 6),
-                             2., 1.)
+        self._num[:] = np.where(self.MARS == 2,
+                                2., 1.)
+        self._sep[:] = np.where(np.logical_or(self.MARS == 3, self.MARS == 6),
+                                2., 1.)
 
     def _read_weights(self, weights):
         """
@@ -610,12 +613,12 @@ class Records(object):
         self._cmbtp_itemizer = self._imputed_cmbtp_itemizer()
         self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
         # impute number of taxpayers
-        self._txpyers = np.where(np.logical_or(self.MARS == 2,
-                                               np.logical_or(self.MARS == 3,
-                                                             self.MARS == 6)),
-                                 2., 1.)
+        self._txpyers[:] = np.where(
+            np.logical_or(self.MARS == 2,
+                          np.logical_or(self.MARS == 3, self.MARS == 6)),
+            2., 1.)
         # impute number of extra standard deductions for aged
-        self._numextra = np.where(
+        self._numextra[:] = np.where(
             np.logical_or(self.AGERANGE >= 6,
                           np.logical_and(self.age >= 65, self.AGERANGE == 0)),
             self._txpyers, 0.)
@@ -625,12 +628,12 @@ class Records(object):
         earnings_split = np.where(total != 0,
                                   self.wage_head / total, 1.)
         one_minus_earnings_split = 1.0 - earnings_split
-        self.e00200p = earnings_split * self.e00200
-        self.e00200s = one_minus_earnings_split * self.e00200
-        self.e00900p = earnings_split * self.e00900
-        self.e00900s = one_minus_earnings_split * self.e00900
-        self.e02100p = earnings_split * self.e02100
-        self.e02100s = one_minus_earnings_split * self.e02100
+        self.e00200p[:] = earnings_split * self.e00200
+        self.e00200s[:] = one_minus_earnings_split * self.e00200
+        self.e00900p[:] = earnings_split * self.e00900
+        self.e00900s[:] = one_minus_earnings_split * self.e00900
+        self.e02100p[:] = earnings_split * self.e02100
+        self.e02100s[:] = one_minus_earnings_split * self.e02100
 
     def _imputed_cmbtp_itemizer(self):
         """
