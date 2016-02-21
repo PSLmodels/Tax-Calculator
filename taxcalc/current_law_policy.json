@@ -20,26 +20,6 @@
                       [53900,    83800,   41900,      53900,               83800,   41900]]
     },
 
-    "_EITC_c": {
-        "long_name": "Maximum earned income credit",
-	"description": "This is the maximum amount of earned income credit taxpayers are eligible for; it depends on how many kids they have. ",
-        "irs_ref": "IRS reference: form 1040, line 66a&b, instruction (table).",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "ChildNum",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label": ["0 kids", "1 kid", "2 kids", "3 kids"],
-         "value":    [ [487,    3250,       5372,      6044],
-                       [496,    3305,       5460,      6143],
-                       [503,    3359,       5548,      6242],
-                       [506,    3373,       5572,      6269]]
-    },
-
     "_SS_thd50":{
         "long_name": "Threshold for Social Security benefit taxability 1",
 	"description": "The first threshold for Social Security benefit taxability: if taxpayers have provisional income greater than this threshold, up to 50% of their Social Security benefit will be subject to tax under current law.",
@@ -237,26 +217,6 @@
         "value":     [3000]
     },
 
-    "_EITC_InvestIncome_c":{
-        "long_name": "Max disqualifying income for EITC",
-	"description": "The earned income credit may not be claimed by taxpayers whose investment income exceeds this limit.",
-        "irs_ref": "Form 1040, line 66a&b, instruction(step2)",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-		      "2014",
-		      "2015",
-                      "2016"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value":  [ 3300,
-                    3350,
-                    3400,
-                    3400]    
-    },
-
     "_ACTC_Income_thd":{
         "long_name": "ACTC income threshold",
 	"description": "The portion of earned income below this threshold does not count as base for the additional child tax credit.",
@@ -327,26 +287,6 @@
                   101300]
     },
 
-    "_EITC_ps_MarriedJ":{
-        "long_name": "EITC Phaseout Starting AGI (Married filling Jointly)",
-	"description": "This is the additional amount added on the regular EITC phaseout start, only for taxpayers with filling status of married filling jointly. ",
-        "irs_ref": "Form 1040, line 66a&b, calcuation (the difference btw EIC phaseout bases of married jointly fillers and other fillers).",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-		      "2014",
-		      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label":"0kids 1kid  2kids 3+kids",
-        "value":  [ [5340, 5340, 5340, 5340],
-                    [5430, 5430, 5430, 5430],
-                    [5510, 5520, 5520, 5520],
-                    [5550, 5550, 5550, 5550]]
-    },
-
     "_LLC_Expense_c":{
         "long_name": "Lifetime learning credit expense limit",
 	"description": "The maximum expense eligible for lifetime learning credit, per child.",
@@ -409,6 +349,46 @@
         "value":    [[true, 	   true,           true,          true,          true,           true,      true]]
     },
 
+    "_EITC_ps":{
+        "long_name": "Earned income credit phaseout AGI start",
+	"description": "If AGI is higher than this threshold, the amount of EITC will start to decrease. ",
+        "irs_ref": "Form 1040, line 66a&b, instructions.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+		      "2014",
+		      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label":"0kids 1kid  2kids 3+kids",
+        "value": [[7970, 17530, 17530, 17530],
+                  [8110, 17830, 17830, 17830],
+                  [8250, 18150, 18150, 18150],
+                  [8270, 18190, 18190, 18190]]
+    },
+
+    "_EITC_ps_MarriedJ":{
+        "long_name": "EITC Phaseout Starting AGI (Married filling Jointly)",
+	"description": "This is the additional amount added on the regular EITC phaseout start, only for taxpayers with filling status of married filling jointly. ",
+        "irs_ref": "Form 1040, line 66a&b, calcuation (the difference btw EIC phaseout bases of married jointly fillers and other fillers).",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+		      "2014",
+		      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label":"0kids 1kid  2kids 3+kids",
+        "value": [[5340, 5340, 5340, 5340],
+                  [5430, 5430, 5430, 5430],
+                  [5500, 5500, 5500, 5500],
+                  [5550, 5550, 5550, 5550]]
+    },
+
     "_EITC_rt":{
         "long_name": "Earned income credit rate",
 	"description": "If one taxpayer's AGI is below AGI phaseout start, he can apply this rate to his earned income to calculate the credit amount eligible. ",
@@ -434,7 +414,47 @@
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label":["0kids", "1kid", "2kids", "3+kids"],
-        "value":    [[0.0765, 0.1598, 0.2106, 0.2106]]        
+        "value":    [[0.0765, 0.1598,  0.2106,  0.2106]]        
+    },
+
+    "_EITC_c": {
+        "long_name": "Maximum earned income credit",
+	"description": "This is the maximum amount of earned income credit taxpayers are eligible for; it depends on how many kids they have. ",
+        "irs_ref": "IRS reference: form 1040, line 66a&b, instruction (table).",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "ChildNum",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["0 kids", "1 kid", "2 kids", "3 kids"],
+         "value":       [[487,     3250,     5372,    6044],
+                         [496,     3305,     5460,    6143],
+                         [503,     3359,     5548,    6242],
+                         [506,     3373,     5572,    6269]]
+    },
+
+    "_EITC_InvestIncome_c":{
+        "long_name": "Max disqualifying income for EITC",
+	"description": "The earned income credit may not be claimed by taxpayers whose investment income exceeds this limit.",
+        "irs_ref": "Form 1040, line 66a&b, instruction(step2)",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+		      "2014",
+		      "2015",
+                      "2016"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [3300,
+                  3350,
+                  3400,
+                  3400]
     },
 
     "_SS_Earnings_c":{
@@ -455,26 +475,6 @@
                    117000,
                    118500,
                    118500]
-    },
-
-    "_EITC_ps":{
-        "long_name": "Earned income credit phaseout AGI start",
-	"description": "If AGI is higher than this threshold, the amount of EITC will start to decrease. ",
-        "irs_ref": "Form 1040, line 66a&b, instructions.",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-		      "2014",
-		      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label":"0kids 1kid  2kids 3+kids",
-        "value":[  [7970, 17530, 17530, 17530],
-                    [8110, 17830, 17830, 17830],
-                    [8240, 18110, 18110, 18110],
-                    [8270, 18190, 18190, 18190]]
     },
 
     "_II_rt1":{
