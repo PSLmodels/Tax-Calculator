@@ -333,7 +333,6 @@ class Records(object):
         Applies blowup factors (BF) to variables for specified calendar year.
         """
         # pylint: disable=too-many-statements
-        # pylint: disable=attribute-defined-outside-init
         # pylint: disable=too-many-locals
         AWAGE = self.BF.AWAGE[year]
         AINTS = self.BF.AINTS[year]
