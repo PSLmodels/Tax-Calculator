@@ -140,8 +140,7 @@ class Records(object):
     # specify set of all Record variables that MUST be read by Tax-Calculator:
     MUST_READ_VARS = set(['RECID', 'MARS'])
 
-    # specify subset of VALID_READ_VARS that are not e-code variables and
-    # that are unused by Tax-Calculator:
+    # specify subset of VALID_READ_VARS that are unused by Tax-Calculator:
     UNUSED_READ_VARS = set([
         'AGIR1', 'EFI', 'ELECT', 'FLPDMO',
         'f3800', 'f8582', 'f8606', 'f8829', 'f8910', 'f8936',
@@ -151,7 +150,21 @@ class Records(object):
         'gender',
         'earnsplit',
         'agedp1', 'agedp2', 'agedp3',
-        's008', 's009', 'WSAMP', 'TXRT', 'filer', 'matched_weight'])
+        's008', 's009', 'WSAMP', 'TXRT', 'filer', 'matched_weight',
+        'e87870', 'e30400', 'e24598', 'e11300', 'e24535', 'e30500',
+        'e07180', 'e53458', 'e33000', 'e25940', 'e12000', 'p65400',
+        'e15210', 'e24615', 'e07230', 'e11100', 'e10900', 'e11581',
+        'e11582', 'e11583', 'e25920', 's27860', 'e10960', 'e59720',
+        'e87550', 'e26190', 'e53317', 'e53410', 'e04600', 'e26390',
+        'e15250', 'p65300', 'p25350', 'e06500', 'e10300', 'e26170',
+        'e26400', 'e11400', 'p25700', 'e01500', 'e04250', 'e07150',
+        'e59680', 'e24570', 'e11570', 'e53300', 'e10605', 'e22320',
+        'e26160', 'e22370', 'e53240', 'p25380', 'e10700', 'e09600',
+        'e06200', 'e24560', 'p61850', 'e25980', 'e53280', 'e25850',
+        'e25820', 'e10950', 'e68000', 'e26110', 'e58950', 'e26180',
+        'e04800', 'e06000', 'e87880', 't27800', 'e06300', 'e59700',
+        'e26100', 'e05200', 'e87875', 'e82200', 'e25860', 'e07220',
+        'e11900', 'e18600', 'e25960', 'e15100', 'p27895', 'e12200'])
     # TODO: the long-term objective is to remove these UNUSED_READ_VARS
     #       from the puf.csv input file so that this set can be removed
     #       from the Records class code.
@@ -362,7 +375,6 @@ class Records(object):
         self.e01100 *= ACGNS
         self.e01200 *= ACGNS
         self.e01400 *= ATXPY
-        self.e01500 *= ATXPY
         self.e01700 *= ATXPY
         self.e02000[:] = np.where(self.e02000 >= 0,
                                   self.e02000 * ASCHEI,
@@ -384,7 +396,6 @@ class Records(object):
         self.e03300 *= ATXPY
         self.e03400 *= ATXPY
         self.e03500 *= ATXPY
-        self.e07230 *= ATXPY
         self.e07240 *= ATXPY
         self.e07260 *= ATXPY
         self.e07300 *= ABOOK
@@ -393,24 +404,11 @@ class Records(object):
         self.e09700 *= ATXPY
         self.e09800 *= ATXPY
         self.e09900 *= ATXPY
-        self.e10700 *= ATXPY
-        self.e10900 *= ATXPY
         self.e59560 *= ATXPY
-        self.e59680 *= ATXPY
-        self.e59700 *= ATXPY
-        self.e59720 *= ATXPY
         self.e11550 *= ATXPY
         self.e11070 *= ATXPY
-        self.e11100 *= ATXPY
         self.e11200 *= ATXPY
-        self.e11300 *= ATXPY
-        self.e11400 *= ATXPY
-        self.e11570 *= ATXPY
         self.e11580 *= ATXPY
-        self.e11581 *= ATXPY
-        self.e11582 *= ATXPY
-        self.e11583 *= ATXPY
-        self.e10605 *= ATXPY
         # ITEMIZED DEDUCTIONS
         self.e17500 *= ACPIM
         self.e18400 *= ATXPY
@@ -428,69 +426,25 @@ class Records(object):
         self.e21040 *= ATXPY
         # CAPITAL GAINS
         self.p22250 *= ACGNS
-        self.e22320 *= ACGNS
-        self.e22370 *= ACGNS
         self.p23250 *= ACGNS
         self.e24515 *= ACGNS
         self.e24516 *= ACGNS
         self.e24518 *= ACGNS
-        self.e24535 *= ACGNS
-        self.e24560 *= ACGNS
-        self.e24598 *= ACGNS
-        self.e24615 *= ACGNS
-        self.e24570 *= ACGNS
         # SCHEDULE E
-        self.p25350 *= ASCHEI
-        self.p25380 *= ASCHEI
         self.p25470 *= ASCHEI
-        self.p25700 *= ASCHEI
-        self.e25820 *= ASCHEI
-        self.e25850 *= ASCHEI
-        self.e25860 *= ASCHEI
-        self.e25940 *= ASCHEI
-        self.e25980 *= ASCHEI
-        self.e25920 *= ASCHEI
-        self.e25960 *= ASCHEI
-        self.e26110 *= ASCHEI
-        self.e26170 *= ASCHEI
-        self.e26190 *= ASCHEI
-        self.e26160 *= ASCHEI
-        self.e26180 *= ASCHEI
         self.e26270 *= ASCHEI
-        self.e26100 *= ASCHEI
-        self.e26390 *= ASCHEI
-        self.e26400 *= ASCHEI
         self.e27200 *= ASCHEI
         # MISCELLANOUS SCHEDULES
-        self.e30400 *= ASCHCI
-        self.e30500 *= ASCHCI
         self.e32800 *= ATXPY
-        self.e33000 *= ATXPY
-        self.e53240 *= ATXPY
-        self.e53280 *= ATXPY
-        self.e53410 *= ATXPY
-        self.e53300 *= ATXPY
-        self.e53317 *= ATXPY
-        self.e53458 *= ATXPY
-        self.e58950 *= ATXPY
         self.e58990 *= ATXPY
         self.p60100 *= ATXPY
-        self.p61850 *= ATXPY
         self.e60000 *= ATXPY
         self.e62100 *= ATXPY
         self.e62900 *= ATXPY
         self.e62720 *= ATXPY
         self.e62730 *= ATXPY
         self.e62740 *= ATXPY
-        self.p65300 *= ATXPY
-        self.p65400 *= ATXPY
-        self.e68000 *= ATXPY
-        self.e82200 *= ATXPY
-        self.t27800 *= ATXPY
-        self.s27860 *= ATXPY
-        self.p27895 *= ATXPY
         self.e87530 *= ATXPY
-        self.e87550 *= ATXPY
         self.p87521 *= ATXPY
         self._cmbtp_itemizer *= ATXPY
         self._cmbtp_standard *= ATXPY
