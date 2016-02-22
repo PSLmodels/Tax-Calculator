@@ -7,8 +7,8 @@ if { $argc < 2 || $argc > 3 } {
     exit 1
 }
 set cyr [lindex $argv 0]
-if { $cyr < 2013 || $cyr > 2020 } {
-    puts stderr "ERROR: calyear=$cyr not in \[2013,2020\] range"
+if { $cyr < 2013 || $cyr > 2023 } {
+    puts stderr "ERROR: calyear=$cyr not in \[2013,2023\] range"
     exit 1
 }
 set letter [lindex $argv 1]
@@ -65,6 +65,23 @@ switch $letter {
         set max_ucomp  5
         set max_divinc 10
         set max_intinc 0
+        set max_scgain 10
+        set max_lcgain 10
+        set max_ided_pref 40
+        set max_ided_nopref 40
+        set max_ccexp 12
+    }
+    d { # assumptions for dYY.in sample:
+        # same as c except add other property income, ivar[10]
+        set num 100000
+        set max_wage_yng 300
+        set max_wage_old  20
+        set max_pnconpct 0
+        set max_pnben  40
+        set max_ssben  40
+        set max_ucomp  5
+        set max_divinc 10
+        set max_intinc 10
         set max_scgain 10
         set max_lcgain 10
         set max_ided_pref 40
