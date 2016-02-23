@@ -57,9 +57,8 @@ class Policy(ParametersBase):
 
     DEFAULTS_FILENAME = 'current_law_policy.json'
     JSON_START_YEAR = 2013  # remains the same unless earlier data added
-    FIRST_BUDGET_YEAR = 2015  # increases by one every calendar year
-    NUM_BUDGET_YEARS = 12  # at least 10 per federal government budgeting rules
-    DEFAULT_NUM_YEARS = NUM_BUDGET_YEARS + FIRST_BUDGET_YEAR - JSON_START_YEAR
+    LAST_BUDGET_YEAR = 2026  # increases by one every calendar year
+    DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
     # default price inflation rates by year
     __pirates = {2013: 0.0148, 2014: 0.0159, 2015: 0.0013, 2016: 0.0135,
