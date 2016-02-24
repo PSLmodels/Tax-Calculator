@@ -499,7 +499,7 @@ def asciifile():
 
 def test_ascii_output_function(csvfile, asciifile):
     output_test = tempfile.NamedTemporaryFile(mode="a", delete=False)
-    ascii_output(csv_results=csvfile.name, ascii_results=output_test.name)
+    ascii_output(csv_filename=csvfile.name, ascii_filename=output_test.name)
     assert filecmp.cmp(output_test.name, asciifile.name)
     output_test.close()
     os.remove(output_test.name)

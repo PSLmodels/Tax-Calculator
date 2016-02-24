@@ -478,17 +478,17 @@ def create_difference_table(calc1, calc2, groupby,
     return diffs
 
 
-def ascii_output(csv_results="", ascii_results=""):
+def ascii_output(csv_filename="", ascii_filename=""):
     """
-    Converts csv results from Calculator into ascii results with uniform
+    Converts csv output from Calculator into ascii output with uniform
     columns and transposes data so columns are rows and rows are columns.
     In an ipython notebook, you can import this function from the utils module.
     """
-    if csv_results == "":
-        print("no csv file given!")
+    if csv_filename == "":
+        print("ASCII_OUTPUT ERROR: no csv output filename given!")
         exit(0)
-    if ascii_results == "":
-        print("no output file name given!")
+    if ascii_filename == "":
+        print("ASCII_OUTPUT ERROR: no ascii output filename given!")
         exit(0)
     # list of integers corresponding to the number(s) of the row(s) in the
     # csv file, only rows in list will be recorded in final output
@@ -498,7 +498,7 @@ def ascii_output(csv_results="", ascii_results=""):
     recids = [1, 4, 5]
     # Number of characters in each column, must be whole nonnegative integer
     col_size = 15
-    df = pd.read_csv(csv_results, dtype=object)
+    df = pd.read_csv(csv_filename, dtype=object)
     # keeps only listed recid's
     if recids != []:
         def f(x):
@@ -510,5 +510,5 @@ def ascii_output(csv_results="", ascii_results=""):
     # formats data into uniform columns
     fstring = '{:' + str(col_size) + '}'
     out = out.applymap(fstring.format)
-    out.to_csv(ascii_results, header=False, index=False,
+    out.to_csv(ascii_filename, header=False, index=False,
                delim_whitespace=True, sep='\t')
