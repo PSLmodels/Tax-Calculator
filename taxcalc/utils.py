@@ -478,18 +478,12 @@ def create_difference_table(calc1, calc2, groupby,
     return diffs
 
 
-def ascii_output(csv_filename="", ascii_filename=""):
+def ascii_output(csv_filename, ascii_filename):
     """
     Converts csv output from Calculator into ascii output with uniform
     columns and transposes data so columns are rows and rows are columns.
     In an ipython notebook, you can import this function from the utils module.
     """
-    if csv_filename == "":
-        print("ASCII_OUTPUT ERROR: no csv output filename given!")
-        exit(0)
-    if ascii_filename == "":
-        print("ASCII_OUTPUT ERROR: no ascii output filename given!")
-        exit(0)
     # list of integers corresponding to the number(s) of the row(s) in the
     # csv file, only rows in list will be recorded in final output
     # if left as [], results in entire file being converted to ascii
