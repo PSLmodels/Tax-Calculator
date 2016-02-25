@@ -1,4 +1,3 @@
-
 import os
 import sys
 import numpy as np
@@ -148,3 +147,32 @@ def test_default_rates_and_those_implied_by_blowup_factors():
     # check that blowup rates are same as default wage growth rates
     wage_growth_rates = np.round(wage_growth_rates, 4)
     assert_array_equal(wage_growth_rates[1:], policy._wage_growth_rates[1:-1])
+
+
+def test_var_labels_txt_contents():
+    """
+    Check that every Records variable used by taxcalc is in var_labels.txt
+    and that all variables in var_labels.txt are used by taxcalc.
+    """
+    # read variables in var_labels.txt file (checking for duplicates)
+    var_labels_path = os.path.join(CUR_PATH, '..', 'var_labels.txt')
+    var_labels_set = set()
+    with open(var_labels_path, 'r') as input:
+        for line in input:
+            var = (line.split())[0]
+            if var in var_labels_set:
+                msg = 'DUPLICATE_IN_VAR_LABELS.TXT: {}\n'.format(var)
+                sys.stdout.write(msg)
+                assert False
+            else:
+                var_labels_set.add(var)
+    # change all VALID and not UNUSED variables to uppercase
+    var_used_set = set()
+    for var in (Records.VALID_READ_VARS - Records.UNUSED_READ_VARS):
+        var_used_set.add(var.upper())
+    # check for no extra var_used variables
+    used_less_labels = var_used_set - var_labels_set
+    assert len(used_less_labels) == 0
+    # check for no extra var_labels variables
+    labels_less_used = var_labels_set - var_used_set
+    assert len(labels_less_used) == 0
