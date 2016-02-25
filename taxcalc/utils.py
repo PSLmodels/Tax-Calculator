@@ -476,3 +476,33 @@ def create_difference_table(calc1, calc2, groupby,
         diffs.loc['sums', col] = 'n/a'
 
     return diffs
+
+
+def ascii_output(csv_filename, ascii_filename):
+    """
+    Converts csv output from Calculator into ascii output with uniform
+    columns and transposes data so columns are rows and rows are columns.
+    In an ipython notebook, you can import this function from the utils module.
+    """
+    # list of integers corresponding to the number(s) of the row(s) in the
+    # csv file, only rows in list will be recorded in final output
+    # if left as [], results in entire file being converted to ascii
+    # put in order from smallest to largest, for example:
+    # recids = [33180, 64023, 68020, 74700, 84723, 98001, 107039, 108820]
+    recids = [1, 4, 5]
+    # Number of characters in each column, must be whole nonnegative integer
+    col_size = 15
+    df = pd.read_csv(csv_filename, dtype=object)
+    # keeps only listed recid's
+    if recids != []:
+        def f(x):
+            return x - 1
+        recids = map(f, recids)  # maps recids to correct index in df
+        df = df.ix[recids]
+    # does transposition
+    out = df.T.reset_index()
+    # formats data into uniform columns
+    fstring = '{:' + str(col_size) + '}'
+    out = out.applymap(fstring.format)
+    out.to_csv(ascii_filename, header=False, index=False,
+               delim_whitespace=True, sep='\t')
