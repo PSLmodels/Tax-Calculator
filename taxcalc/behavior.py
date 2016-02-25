@@ -5,38 +5,39 @@ from .parameters_base import ParametersBase
 
 
 def update_ordinary_income(behavioral_effect, calc_y):
-    delta_inc = np.where(calc_y.records.c00100 > 0, behavioral_effect, 0)
+    delta_inc = np.where(calc_y.records.c00100 > 0, behavioral_effect, 0.)
 
     # Attribute the behavioral effects across itemized deductions,
     # wages, and other income.
 
-    _itemized = np.where(calc_y.records.c04470 < calc_y.records._standard,
-                         0,
-                         calc_y.records.c04470)
+    itemized = np.where(calc_y.records.c04470 < calc_y.records._standard,
+                        0.,
+                        calc_y.records.c04470)
 
-    delta_wages = np.where(calc_y.records.c00100 + _itemized > 0,
+    delta_wages = np.where(calc_y.records.c00100 + itemized > 0,
                            (delta_inc * calc_y.records.e00200 /
-                            (calc_y.records.c00100 + _itemized)),
-                           0)
+                            (calc_y.records.c00100 + itemized)),
+                           0.)
 
     other_inc = calc_y.records.c00100 - calc_y.records.e00200
 
-    delta_other_inc = np.where(calc_y.records.c00100 + _itemized > 0,
+    delta_other_inc = np.where(calc_y.records.c00100 + itemized > 0,
                                (delta_inc * other_inc /
-                                (calc_y.records.c00100 + _itemized)),
-                               0)
+                                (calc_y.records.c00100 + itemized)),
+                               0.)
 
-    delta_itemized = np.where(calc_y.records.c00100 + _itemized > 0,
-                              (delta_inc * _itemized /
-                               (calc_y.records.c00100 + _itemized)),
-                              0)
+    delta_itemized = np.where(calc_y.records.c00100 + itemized > 0,
+                              (delta_inc * itemized /
+                               (calc_y.records.c00100 + itemized)),
+                              0.)
 
     calc_y.records.e00200 = calc_y.records.e00200 + delta_wages
 
     calc_y.records.e00300 = calc_y.records.e00300 + delta_other_inc
 
-    calc_y.records.e19570 = np.where(_itemized > 0,
-                                     calc_y.records.e19570 + delta_itemized, 0)
+    calc_y.records.e19570 = np.where(itemized > 0,
+                                     calc_y.records.e19570 + delta_itemized,
+                                     0.)
     # TODO, we should create a behavioral modification
     # variable instead of using e19570
 

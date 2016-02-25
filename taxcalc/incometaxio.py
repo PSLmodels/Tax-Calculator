@@ -67,6 +67,7 @@ class IncomeTaxIO(object):
         """
         IncomeTaxIO class constructor.
         """
+        # pylint: disable=too-many-arguments
         # pylint: disable=too-many-statements
         # pylint: disable=too-many-branches
         if isinstance(input_data, six.string_types):
@@ -150,9 +151,10 @@ class IncomeTaxIO(object):
 
     def output_records(self, writing_output_file=False):
         """
-        Write CSV-formatted file containing values of Record.VALID_READ_VARS
-        in the tax_year.  The order of the columns in this output file might
-        not be the same as in the input_data passed to IncomeTaxIO constructor.
+        Write CSV-formatted file containing values of Records.VALID_READ_VARS
+        less Records.UNUSED_READ_VARS in the tax_year.  The order of the
+        columns in this output file might not be the same as in the
+        input_data passed to IncomeTaxIO constructor.
 
         Parameters
         ----------
@@ -164,8 +166,9 @@ class IncomeTaxIO(object):
         """
         recdf = pd.DataFrame()
         for varname in Records.VALID_READ_VARS:
-            vardata = getattr(self._calc.records, varname)
-            recdf[varname] = vardata
+            if varname not in Records.UNUSED_READ_VARS:
+                vardata = getattr(self._calc.records, varname)
+                recdf[varname] = vardata
         writing_possible = self._using_input_file and self._using_reform_file
         if writing_possible and writing_output_file:
             recdf.to_csv(self._output_filename,

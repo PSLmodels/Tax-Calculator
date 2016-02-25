@@ -1698,16 +1698,15 @@ def BenefitSurtax(calc):
         nobenefits_calc.calc_one_year()
 
         # pylint: disable=protected-access
-        tax_diff = np.where(nobenefits_calc.records._iitax -
-                            calc.records._iitax > 0,
-                            nobenefits_calc.records._iitax -
-                            calc.records._iitax, 0)
+        tax_diff = np.where(
+            nobenefits_calc.records._iitax - calc.records._iitax > 0,
+            nobenefits_calc.records._iitax - calc.records._iitax,
+            0.)
 
         surtax_cap = nobenefits_calc.policy.ID_BenefitSurtax_crt *\
             nobenefits_calc.records.c00100
 
-        calc.records._surtax = np.where(tax_diff > surtax_cap,
-                                        tax_diff - surtax_cap,
-                                        0) * calc.policy.ID_BenefitSurtax_trt
+        calc.records._surtax[:] = calc.policy.ID_BenefitSurtax_trt * np.where(
+            tax_diff > surtax_cap, tax_diff - surtax_cap, 0.)
 
         calc.records._iitax += calc.records._surtax

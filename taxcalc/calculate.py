@@ -115,15 +115,12 @@ class Calculator(object):
         item_taxes = copy.deepcopy(self.records.c05800)
         # Replace standard deduction with zero where the taxpayer
         # would be better off itemizing
-        self.records._standard = np.where(item_taxes <
-                                          std_taxes,
-                                          0, std)
-        self.records.c04470 = np.where(item_taxes <
-                                       std_taxes,
-                                       item, 0)
-        self.records.c21060 = np.where(item_taxes <
-                                       std_taxes,
-                                       item_no_limit, 0)
+        self.records._standard[:] = np.where(item_taxes < std_taxes,
+                                             0., std)
+        self.records.c04470[:] = np.where(item_taxes < std_taxes,
+                                          item, 0.)
+        self.records.c21060[:] = np.where(item_taxes < std_taxes,
+                                          item_no_limit, 0.)
 
         # Calculate taxes with optimal itemized deduction
         TaxInc(self.policy, self.records)
@@ -284,8 +281,7 @@ class Calculator(object):
         self.calc_all()
         # specify optional adjustment for employer (er) OASDI+HI payroll taxes
         if wrt_full_compensation and income_type_str == 'e00200p':
-            adj = np.where(income_type <
-                           self.policy.SS_Earnings_c,
+            adj = np.where(income_type < self.policy.SS_Earnings_c,
                            0.5 * (self.policy.FICA_ss_trt +
                                   self.policy.FICA_mc_trt),
                            0.5 * self.policy.FICA_mc_trt)
