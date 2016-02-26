@@ -1189,15 +1189,15 @@
         "irs_ref": "",
         "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualificaiton rules for the Child Tax Credit under current law. ",
         "start_year": 2013,
-        "col_var": ["single", "joint", "separate", "head of household"], 
+        "col_var": ["single", "joint", "separate", "head of household", "mars_5", "mars_6"],
         "row_label": ["2013",
                       "2014",
                       "2015"],
         "cpi_inflated": false,
         "col_label": "",
-        "value": [[150000, 300000, 150000, 200000],
-		  [150000, 300000, 150000, 200000],
-                  [150000, 300000, 150000, 200000]]   
+        "value": [[150000, 300000, 150000, 200000, 200000, 200000],
+		          [150000, 300000, 150000, 200000, 200000, 200000],
+                  [150000, 300000, 150000, 200000, 200000, 200000]]
     },
 
     "_CTC_additional_prt":{
@@ -1528,8 +1528,8 @@
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "cpi_inflated": true,
-        "col_label": ["single", "joint", "separate", "head of household"],
-        "value": [ [0,           0,        0,             0]]
+        "col_label": ["single", "joint", "separate", "head of household", "mars_5", "mars_6"],
+        "value": [ [0,           0,        0,             0, 0, 0]]
     },
 
     "_II_credit_ps":{
