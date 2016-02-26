@@ -67,17 +67,15 @@ py.test
 This will start executing a pytest suite containing more than one
 hundred tests, including the few tests that require the ```puf.csv```
 file as input.  Depending on your computer, the execution time for
-this incomplete suite of tests is about five minutes.
+this complete suite of tests is about five minutes.
 
 Testing with validation/tests
 -----------------------------
 
-There are two variants of this second testing phase depending on
-whether or not you want to run a shorter or a longer test.  The
-current version of the validation/tests run only under Mac and Linux;
+The current version of the validation/tests runs only under Mac and Linux;
 if you are working under Windows, skip this second phase of testing.
 
-Both variants of the validation/tests generate samples of tax filing
+The validation/tests generate samples of tax filing
 units whose attributes are specified in a random, non-representative
 manner.  Each sample is used to generate tax liabilities, intermediate
 income tax results, and marginal tax rates using Internet-TAXSIM and
@@ -85,13 +83,9 @@ simtax.py, which is a command-line interface to the Tax-Calculator.
 And then the output from the two models are compared item-by-item and
 unit-by-unit to produce cross-model-validation summary results.  See
 the [description of the Internet-TAXSIM validation
-tests](taxcalc/validation/README.md) for more details.  The only
-difference between the two variants of this second phase of testing is
-the number of randomly-generated samples that are generated and
-compared.
+tests](taxcalc/validation/README.md) for more details.
 
-**SHORTER TEST**: If you don't want to run all the validation/tests,
-run the second-phase of testing as follows at the Mac or Linux command
+Run the second-phase of testing as follows at the Mac or Linux command
 prompt in the tax-calculator directory at the top of the repository
 directory tree:
 
@@ -100,23 +94,9 @@ cd taxcalc/validation
 ./tests
 ```
 
-This will start executing a subset of the validation/tests.  Depending
-on your computer, the execution time for this incomplete suite of
+This will start executing the validation/tests.  Depending
+on your computer, the execution time for this suite of
 validation/tests is about two minutes.
-
-**LONGER TEST**: If you do want to run all the validation/tests, run
-the second-phase of testing as follows at the Mac or Linux command
-prompt in the tax-calculator directory at the top of the repository
-directory tree:
-
-```
-cd taxcalc/validation
-./tests all
-```
-
-This will start executing all of the validation/tests.  Depending on
-your computer, the execution time for this complete suite of
-validation/tests is about nine minutes.
 
 Interpreting the Test Results
 -----------------------------
@@ -149,7 +129,7 @@ to a file named ```pufcsv_*_actual.txt``` (where the value of `*`
 depends on the test).  Use any diff utility to see the differences
 between this new ```pufcsv_*_actual.txt``` file and the old
 ```pufcsv_*_expect.txt``` file.  Then copy the new ```actual``` file
-to the ```expect``` overwriting the old expected test results.  When
+to the ```expect``` file overwriting the old expected test results.  When
 all this is done, rerunning the pytests should produce no failures.
 If so, then delete any ```pufcsv_*_actual.txt``` files and commit all
 the revised ```test_*.py``` and ```pufcsv_*_expect.txt``` files.
