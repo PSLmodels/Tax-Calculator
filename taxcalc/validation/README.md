@@ -292,6 +292,6 @@ The reasons for this one modest difference has not been determined.
 In earlier validation work, a and b samples for 2013 and 2014 were
 tested successfully under current-law policy.  And c samples for 2013
 and 2014 were tested successfully under four simple income tax policy
-reforms.  In all ten of these earlier validation tests, the
-Tax-Calculator and Internet-TAXSIM income tax liabilities differed by
-no more than one-cent.
+reforms.  In all twelve of these earlier validation tests, the
+Tax-Calculator and Internet-TAXSIM income and FICA tax liabilities
+differed by no more than one-cent.
