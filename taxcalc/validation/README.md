@@ -251,9 +251,9 @@ validation directory
 ./tests
 ```
 
-conducts current-law validation for the c13, c14, and c15 INPUT files.
-Doing these basic tests takes about the same time to execute (roughly
-two minutes) as all the unit tests in the taxcalc/tests directory.
+conducts current-law validation for the ```c13.in```, ```c14.in```,
+and ```c15.in``` INPUT files.  Executing these three basic tests takes
+about two minutes.
 
 Current Validation Results
 ==========================
@@ -262,16 +262,16 @@ Since early November, 2015, there have been no FICA tax liability
 and no federal income tax liability differences (of more than one cent
 in absolute value) between Tax-Calculator results and Internet-TAXSIM
 results for the 200,000 randomly-generated tax filing units in the
-c13 and c14 samples.  Since late February, 2016, there have been no
-FICA tax liability and no federal income tax liability differences (of
-more than one cent in absolute value) between Tax-Calculator results
-and Internet-TAXSIM results for the 100,000 randomly-generated tax
-filing units in the c15 sample.  There are some (more than one cent)
-differences in intermediate results and they will be investigated in
-the future.
+```c13.in``` and ```c14.in``` samples.  Since late February, 2016,
+there have been no FICA tax liability and no federal income tax
+liability differences (of more than one cent in absolute value)
+between Tax-Calculator results and Internet-TAXSIM results for the
+100,000 randomly-generated tax filing units in the ```c15.in``` sample.
+There are some (more than one cent) differences in intermediate
+results and they will be investigated in the future.
 
-Among these 300,000 filing units there only a handful of marginal tax
-rate differences (of more than one basis point).  
+Among these 300,000 filing units there are only a handful of marginal
+tax rate differences (of more than one basis point).
 
 There are 24 filing units for which Tax-Calculator generates a
 marginal FICA tax rate of 3.80 percent while Internet-TAXSIM generates
@@ -292,6 +292,6 @@ The reasons for this one modest difference has not been determined.
 In earlier validation work, a and b samples for 2013 and 2014 were
 tested successfully under current-law policy.  And c samples for 2013
 and 2014 were tested successfully under four simple income tax policy
-reforms.  In all ten of these earlier validation runs, the
+reforms.  In all ten of these earlier validation tests, the
 Tax-Calculator and Internet-TAXSIM income tax liabilities differed by
 no more than one-cent.
