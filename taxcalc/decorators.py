@@ -8,6 +8,8 @@ from six import StringIO
 import ast
 import toolz
 
+DO_JIT=True
+
 
 class GetReturnNode(ast.NodeVisitor):
     """
@@ -189,7 +191,7 @@ def create_toplevel_function_string(args_out, args_in, pm_or_pf,
     return s.getvalue()
 
 
-def make_apply_function(func, out_args, in_args, parameters, do_jit=True,
+def make_apply_function(func, out_args, in_args, parameters, do_jit=DO_JIT,
                         **kwargs):
     """
     Takes a '_calc' function and creates the necessary Python code for an
@@ -214,7 +216,10 @@ def make_apply_function(func, out_args, in_args, parameters, do_jit=True,
     '_apply' style function
 
     """
-    jitted_f = jit(**kwargs)(func)
+    if do_jit:
+        jitted_f = jit(**kwargs)(func)
+    else:
+        jitted_f = func
     apfunc = create_apply_function_string(out_args, in_args, parameters)
 
     func_code = compile(apfunc, "<string>", "exec")
@@ -226,7 +231,7 @@ def make_apply_function(func, out_args, in_args, parameters, do_jit=True,
         return fakeglobals['ap_func']
 
 
-def apply_jit(dtype_sig_out, dtype_sig_in, parameters=None, **kwargs):
+def apply_jit(dtype_sig_out, dtype_sig_in, parameters=None, do_jit=DO_JIT, **kwargs):
     """
     make a decorator that takes in a _calc-style function, handle
     the apply step
@@ -236,7 +241,11 @@ def apply_jit(dtype_sig_out, dtype_sig_in, parameters=None, **kwargs):
 
     def make_wrapper(func):
         theargs = inspect.getargspec(func).args
-        jitted_f = jit(**kwargs)(func)
+        if do_jit:
+            jitted_f = jit(**kwargs)(func)
+        else:
+            jitted_f = func
+
 
         jitted_apply = make_apply_function(func, dtype_sig_out,
                                            dtype_sig_in, parameters,
@@ -325,7 +334,7 @@ def iterate_jit(parameters=None, **kwargs):
                                                list(reversed(all_out_args)),
                                                in_args,
                                                parameters=all_parameters,
-                                               do_jit=True,
+                                               do_jit=DO_JIT,
                                                **kwargs_for_jit)
 
         def wrapper(*args, **kwargs):
