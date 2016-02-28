@@ -481,9 +481,10 @@ def StdDed(DSI, _earned, STD, p04470, e00100, e60000,
     """
     # Calculate deduction for dependents
     if DSI == 1:
-        c15100 = max(350 + _earned, STD[6])
+        c15100 = max(350. + _earned, STD[6])
         c04100 = min(STD[MARS - 1], c15100)
     else:
+        c15100 = 0.
         if MIDR == 1:
             c04100 = 0.
         else:
@@ -945,6 +946,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
                  max(0., c62100 - AMT_em_ps[MARS - 1]))
 
     if AGERANGE == 1 or (puf and (DSI == 1)):
+        _agep = 0.
         _ages = 0.
     else:
         if DOBYR >= 1 and DOBYR <= 99:
@@ -1391,6 +1393,16 @@ def RefAmOpp(c87521, _num, c00100):
         c87666 = 0.4 * c87664
         c10960 = c87666
         c87668 = c87664 - c87666
+    else:
+        c87654 = 0.
+        c87656 = 0.
+        c87658 = 0.
+        c87660 = 0.
+        c87662 = 0.
+        c87664 = 0.
+        c87666 = 0.
+        c10960 = 0.
+        c87668 = 0.
     return (c87654, c87656, c87658, c87660, c87662, c87664, c87666, c10960,
             c87668)
 
@@ -1475,11 +1487,25 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
 def AddCTC(_nctcr, _precrd, _earned, c07220, _fica_was,
            _exact, e82880, ACTC_Income_thd, ACTC_rt,
            ALD_SelfEmploymentTax_HC, e03260, e09800, c59660, e11200,
-           e11070, e82915, e82940, c82940, ACTC_ChildNum):
+           e11070, e82915, e82940, ACTC_ChildNum):
     """
     AddCTC function: calculates Additional Child Tax Credit
     """
+    c82925 = 0.
+    c82930 = 0.
+    c82935 = 0.
+    c82880 = 0.
+    c82885 = 0.
+    c82890 = 0.
+    c82900 = 0.
+    c82905 = 0.
+    c82910 = 0.
+    c82915 = 0.
+    c82920 = 0.
+    c82937 = 0.
     c82940 = 0.
+    c11070 = 0.
+    _othadd = 0.
 
     # Part I of 2005 form 8812
     if _nctcr > 0:
