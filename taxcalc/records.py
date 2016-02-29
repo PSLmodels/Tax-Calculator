@@ -196,12 +196,11 @@ class Records(object):
         'c01000', 'c02500', '_cmp',
         'e59440', 'e59470', 'e59400', 'e10105', 'e83200_0',
         'e59410', 'e59420', 'e74400', 'x62720', 'x60260',
-        'x60240', 'x60220', 'x60130', 'x62730', 'e60290',
-        'DOBYR', 'SDOBYR', 'e62600',
-        'x62740', '_fixeic',
+        'x60240', 'x60220', 'x60130', 'e60290',
+        'DOBYR', 'SDOBYR', 'e62600', '_fixeic',
         'e32750', 'e32775', 'e33420', 'e33430',
         'e33450', 'e33460', 'e33465', 'e33470',
-        'EICYB1', 'EICYB2', 'EICYB3', 'e83080', 'e25360',
+        'e83080', 'e25360',
         'e25430', 'e25400', 'e25500', 'e26210', 'e26340',
         'e26205', 'e26320', 'e87487', 'e87492', 'e07170',
         'e87497', 'e87526', 'e87522', 'e87524', 'e87528',
@@ -250,7 +249,7 @@ class Records(object):
         '_amt20pc', 'c62800', 'c09600',
         '_seywage', 'c33465', 'c33470', 'c33475', 'c33480',
         'c32840', '_tratio', 'c33200', 'c33400',
-        '_ieic', '_modagi',
+        '_modagi',
         '_val_ymax', '_preeitc', '_val_rtbase', '_val_rtless',
         '_dy', 'c11070', '_nctcr', '_ctcagi', 'c87482',
         'c87487', 'c87492', 'c87497', 'c87483', 'c87488',
@@ -273,7 +272,7 @@ class Records(object):
         '_surtax', '_combined', 'x04500', '_personal_credit'])
 
     INTEGER_CALCULATED_VARS = set([
-        '_num', '_sep', '_ieic', '_exact', '_hasgain', '_cmp',
+        '_num', '_sep', '_exact', '_hasgain', '_cmp', '_fixeic',
         'DOBYR', 'SDOBYR', 'SFOBYR', '_agep', '_ages'])
 
     def __init__(self,
@@ -491,9 +490,10 @@ class Records(object):
         # create other class variables that are set to all zeros
         UNREAD_VARS = Records.VALID_READ_VARS - READ_VARS
         ZEROED_VARS = Records.CALCULATED_VARS | UNREAD_VARS
+        INT_VARS = Records.INTEGER_READ_VARS | Records.INTEGER_CALCULATED_VARS
         for varname in ZEROED_VARS:
             if varname not in Records.UNUSED_READ_VARS:
-                if varname in Records.INTEGER_CALCULATED_VARS:
+                if varname in INT_VARS:
                     setattr(self, varname,
                             np.zeros(self.dim, dtype=np.int64))
                 else:

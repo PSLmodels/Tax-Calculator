@@ -1008,7 +1008,7 @@ def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt,
 
 
 @iterate_jit(nopython=True, puf=True)
-def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
+def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps,
            EITC_ps_MarriedJ, EITC_rt, c59560, EITC_c, EITC_prt, e83080, e00300,
            e00600, e40223, e25360, e25430, p25470, e25400, e25500,
            e26210, e26340, e27200, e26205, e26320, EITC_InvestIncome_c,
@@ -1018,12 +1018,7 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
     NumDep function: ...
     """
     # pylint: disable=too-many-branches
-
-    EICYB1 = max(0., EICYB1)
-    EICYB2 = max(0., EICYB2)
-    EICYB3 = max(0., EICYB3)
     _preeitc = 0.
-    _ieic = int(max(EIC, EICYB1) + EICYB2 + EICYB3)
     if _exact == 1:
         c59560 = e59560
     else:
@@ -1031,22 +1026,22 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
     # Modified AGI only through 2002
     _modagi = c00100 + e00400
     if MARS == 2:
-        _val_ymax = EITC_ps[_ieic] + EITC_ps_MarriedJ[_ieic]
+        _val_ymax = EITC_ps[EIC] + EITC_ps_MarriedJ[EIC]
     elif MARS == 1 or MARS == 4 or MARS == 5 or MARS == 7:
-        _val_ymax = EITC_ps[_ieic]
+        _val_ymax = EITC_ps[EIC]
     else:
         _val_ymax = 0.
     if MARS == 1 or MARS == 4 or MARS == 5 or MARS == 2 or MARS == 7:
-        c59660 = min(EITC_rt[_ieic] * c59560, EITC_c[_ieic])
+        c59660 = min(EITC_rt[EIC] * c59560, EITC_c[EIC])
         _preeitc = c59660
     if (MARS != 3 and MARS != 6 and
             (_modagi > _val_ymax or c59560 > _val_ymax)):
-        _preeitc = max(0., EITC_c[_ieic] - EITC_prt[_ieic] *
+        _preeitc = max(0., EITC_c[EIC] - EITC_prt[EIC] *
                        (max(0., max(_modagi, c59560) - _val_ymax)))
         _preeitc = min(_preeitc, c59660)
     if MARS != 3 and MARS != 6:
-        _val_rtbase = EITC_rt[_ieic] * 100
-        _val_rtless = EITC_prt[_ieic] * 100
+        _val_rtbase = EITC_rt[EIC] * 100.
+        _val_rtless = EITC_prt[EIC] * 100.
         _dy = (e00400 + e83080 + e00300 + e00600 +
                max(0., max(0., c01000) - max(0., e40223)) +
                max(0., max(0., e25360) - e25430 - p25470 - e25400 - e25500) +
@@ -1057,11 +1052,11 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
         _dy = 0.
     if MARS != 3 and MARS != 6 and _dy > EITC_InvestIncome_c:
         _preeitc = 0.
-    if puf or (_ieic > 0) or (_agep >= 25 and _agep <= 64) or (_ages > 0):
+    if puf or (EIC > 0) or (_agep >= 25 and _agep <= 64) or (_ages > 0):
         c59660 = _preeitc
         # make elderly childless filing units in PUF ineligible for EITC
-        if (_ieic == 0 and puf and ((MARS == 2 and _numextra >= 2.) or
-                                    (MARS != 2 and _numextra >= 1.))):
+        if (EIC == 0 and puf and ((MARS == 2 and _numextra >= 2.) or
+                                  (MARS != 2 and _numextra >= 1.))):
             c59660 = 0.
             c59560 = 0.
     else:
@@ -1069,7 +1064,7 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
         c59560 = 0.
     if c59660 == 0:
         c59560 = 0.
-    return (_ieic, EICYB1, EICYB2, EICYB3, _modagi, c59560, c59660, _val_ymax,
+    return (_modagi, c59560, c59660, _val_ymax,
             _preeitc, _val_rtbase, _val_rtless, _dy)
 
 
