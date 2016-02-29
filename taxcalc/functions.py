@@ -1039,8 +1039,8 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps,
                        (max(0., max(_modagi, c59560) - _val_ymax)))
         _preeitc = min(_preeitc, c59660)
     if MARS != 3 and MARS != 6:
-        _val_rtbase = EITC_rt[EIC] * 100
-        _val_rtless = EITC_prt[EIC] * 100
+        _val_rtbase = EITC_rt[EIC] * 100.
+        _val_rtless = EITC_prt[EIC] * 100.
         _dy = (e00400 + e83080 + e00300 + e00600 +
                max(0., max(0., c01000) - max(0., e40223)) +
                max(0., max(0., e25360) - e25430 - p25470 - e25400 - e25500) +
