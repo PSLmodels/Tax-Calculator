@@ -32,12 +32,10 @@ class Calculator(object):
 
     def __init__(self, policy=None, records=None,
                  sync_years=True, behavior=None, growth=None):
-
         if isinstance(policy, Policy):
             self._policy = policy
         else:
             raise ValueError('must specify policy as a Policy object')
-
         if behavior:
             if isinstance(behavior, Behavior):
                 self.behavior = behavior
@@ -45,7 +43,6 @@ class Calculator(object):
                 raise ValueError('behavior must be a Behavior object')
         else:
             self.behavior = Behavior(start_year=policy.start_year)
-
         if growth:
             if isinstance(growth, Growth):
                 self.growth = growth
@@ -53,12 +50,10 @@ class Calculator(object):
                 raise ValueError('growth must be a Growth object')
         else:
             self.growth = Growth(start_year=policy.start_year)
-
         if isinstance(records, Records):
             self._records = records
         else:
             raise ValueError('must specify records as a Records object')
-
         if sync_years and self._records.current_year == Records.PUF_YEAR:
             print("You loaded data for " +
                   str(self._records.current_year) + '.')
@@ -68,7 +63,6 @@ class Calculator(object):
 
             print("Your data have been extrapolated to " +
                   str(self._records.current_year) + ".")
-
         assert self._policy.current_year == self._records.current_year
 
     @property
@@ -121,7 +115,6 @@ class Calculator(object):
                                           item, 0.)
         self.records.c21060[:] = np.where(item_taxes < std_taxes,
                                           item_no_limit, 0.)
-
         # Calculate taxes with optimal itemized deduction
         TaxInc(self.policy, self.records)
         XYZD(self.policy, self.records)
@@ -297,69 +290,50 @@ class Calculator(object):
     def diagnostic_table_items(self, table):
         # totoal number of records
         returns = self.records.s006.sum()
-
         # AGI
         agi = (self.records.c00100 * self.records.s006).sum()
-
         # number of itemizers
         ID1 = self.records.c04470 * self.records.s006
         STD1 = self.records._standard * self.records.s006
         deduction = np.maximum(self.records.c04470, self.records._standard)
-
-        # S TD1 = (self.c04100 + self.c04200)*self.s006
-        NumItemizer1 = (self.records.s006[(self.records.c04470 > 0) *
-                                          (self.records.c00100 > 0)].sum())
-
+        NumItemizer1 = (self.records.s006[(self.records.c04470 > 0.) *
+                                          (self.records.c00100 > 0.)].sum())
         # itemized deduction
-        ID = ID1[self.records.c04470 > 0].sum()
-
-        NumSTD = self.records.s006[(self.records._standard > 0) *
-                                   (self.records.c00100 > 0)].sum()
+        ID = ID1[self.records.c04470 > 0.].sum()
+        NumSTD = self.records.s006[(self.records._standard > 0.) *
+                                   (self.records.c00100 > 0.)].sum()
         # standard deduction
-        STD = STD1[(self.records._standard > 0) *
-                   (self.records.c00100 > 0)].sum()
-
+        STD = STD1[(self.records._standard > 0.) *
+                   (self.records.c00100 > 0.)].sum()
         # personal exemption
         PE = (self.records.c04600 *
-              self.records.s006)[self.records.c00100 > 0].sum()
-
+              self.records.s006)[self.records.c00100 > 0.].sum()
         # taxable income
         taxinc = (self.records.c04800 * self.records.s006).sum()
-
         # regular tax
         regular_tax = (self.records.c05200 * self.records.s006).sum()
-
         # AMT income
         AMTI = (self.records.c62100 * self.records.s006).sum()
-
         # total AMTs
         AMT = (self.records.c09600 * self.records.s006).sum()
-
         # number of people paying AMT
-        NumAMT1 = self.records.s006[self.records.c09600 > 0].sum()
-
+        NumAMT1 = self.records.s006[self.records.c09600 > 0.].sum()
         # tax before credits
         tax_bf_credits = (self.records.c05800 * self.records.s006).sum()
-
         # tax before nonrefundable credits 09200
         tax_bf_nonrefundable = (self.records.c09200 *
                                 self.records.s006).sum()
-
         # refundable credits
         refundable = (self.records._refund * self.records.s006).sum()
-
         # nonrefuncable credits
         nonrefundable = (self.records.c07100 * self.records.s006).sum()
-
         # Misc. Surtax
         surtax = (self.records._surtax * self.records.s006).sum()
-
         # iitax
         revenue1 = (self.records._iitax * self.records.s006).sum()
-
         # payroll tax (FICA)
         payroll = (self.records._fica * self.records.s006).sum()
-
+        # append results to table
         table.append([returns / math.pow(10, 6), agi / math.pow(10, 9),
                       NumItemizer1 / math.pow(10, 6), ID / math.pow(10, 9),
                       NumSTD / math.pow(10, 6), STD / math.pow(10, 9),
@@ -379,7 +353,6 @@ class Calculator(object):
         row_years = []
         calc = copy.deepcopy(self)
         base_calc = copy.deepcopy(base_calc)
-
         for i in range(0, num_years):
             has_behavior = (calc.behavior.BE_sub or calc.behavior.BE_inc or
                             calc.behavior.BE_CG_per)
@@ -390,14 +363,11 @@ class Calculator(object):
             else:
                 calc.calc_all()
                 calc.diagnostic_table_items(table)
-
             row_years.append(calc.policy.current_year)
-
             if i < num_years - 1:
                 calc.increment_year()
                 if base_calc is not None:
                     base_calc.increment_year()
-
         df = DataFrame(table, row_years,
                        ["Returns (#m)", "AGI ($b)", "Itemizers (#m)",
                         "Itemized Deduction ($b)",
@@ -412,5 +382,4 @@ class Calculator(object):
                         "Ind inc tax ($b)", "Payroll tax ($b)"])
         df = df.transpose()
         pd.options.display.float_format = '{:8,.1f}'.format
-
         return df
