@@ -35,8 +35,8 @@ def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
     sey_frac = 1.0 - 0.5 * (FICA_ss_trt + FICA_mc_trt)
     txearn_was_p = min(SS_Earnings_c, e00200p)
     txearn_was_s = min(SS_Earnings_c, e00200s)
-    txearn_sey_p = min(max(0, sey_p * sey_frac), SS_Earnings_c - txearn_was_p)
-    txearn_sey_s = min(max(0, sey_s * sey_frac), SS_Earnings_c - txearn_was_s)
+    txearn_sey_p = min(max(0., sey_p * sey_frac), SS_Earnings_c - txearn_was_p)
+    txearn_sey_s = min(max(0., sey_s * sey_frac), SS_Earnings_c - txearn_was_s)
 
     # compute OASDI FICA taxes for was and sey taxable earnings separately
     fica_ss_was_p = FICA_ss_trt * txearn_was_p
@@ -47,8 +47,8 @@ def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
     # compute regular HI FICA taxes for all was and sey earnings separately
     fica_mc_was_p = FICA_mc_trt * e00200p
     fica_mc_was_s = FICA_mc_trt * e00200s
-    fica_mc_sey_p = FICA_mc_trt * max(0, sey_p * sey_frac)
-    fica_mc_sey_s = FICA_mc_trt * max(0, sey_s * sey_frac)
+    fica_mc_sey_p = FICA_mc_trt * max(0., sey_p * sey_frac)
+    fica_mc_sey_s = FICA_mc_trt * max(0., sey_s * sey_frac)
 
     # compute total regular FICA taxes for filing unit
     fica_ss = fica_ss_was_p + fica_ss_was_s + fica_ss_sey_p + fica_ss_sey_s
@@ -64,7 +64,7 @@ def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
 
     # compute _earned
     c11055 = e11055
-    _earned = max(0, e00200 + e00250 + c11055 + e30100 + _sey - c03260)
+    _earned = max(0., e00200 + e00250 + c11055 + e30100 + _sey - c03260)
 
     return (_sey, _fica, _fica_was, c09400, c03260, c11055, _earned)
 
@@ -191,8 +191,6 @@ def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, SS_thd50, SS_thd85,
                      SS_percentage1 *
                      min(e02400, SS_thd85[MARS - 1] -
                          SS_thd50[MARS - 1]), SS_percentage2 * e02400)
-    c02500 = float(c02500)
-
     return (c02500, e02500)
 
 
@@ -218,7 +216,7 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
     # Personal Exemptions (_phaseout smoothed)
     _dispc_numer = II_prt * (_posagi - II_em_ps[MARS - 1])
     _dispc_denom = (2500 / _sep)
-    _dispc = min(1, max(0, _dispc_numer / _dispc_denom))
+    _dispc = min(1, max(0., _dispc_numer / _dispc_denom))
 
     c04600 = _prexmp * (1 - _dispc)
 
@@ -310,10 +308,10 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
     """
     # Medical
     c17750 = ID_Medical_frt * _posagi
-    c17000 = max(0, e17500 - c17750)
+    c17000 = max(0., e17500 - c17750)
 
     # State and Local Income Tax, or Sales Tax
-    _statax = (1 - ID_StateLocalTax_HC) * max(e18400, 0)
+    _statax = (1 - ID_StateLocalTax_HC) * max(e18400, 0.)
 
     # Other Taxes (including state and local)
     real_estate = (1 - ID_RealEstate_HC) * e18500
@@ -325,7 +323,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
     else:
         c37703 = 0.
 
-    c20500 = max(0, c37703 - ID_Casualty_frt * _posagi)
+    c20500 = max(0., c37703 - ID_Casualty_frt * _posagi)
 
     # Miscellaneous
     c20750 = ID_Miscellaneous_frt * _posagi
@@ -333,7 +331,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
         c20400 = e20400
     else:
         c20400 = e20550 + e20600 + e20950
-    c20800 = max(0, c20400 - c20750)
+    c20800 = max(0., c20400 - c20750)
 
     # Interest paid deduction
     if puf:
@@ -350,46 +348,33 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
     else:
         lim30 = min(ID_Charity_crt_Asset * _posagi, e20100 + e20200)
         c19700 = min(ID_Charity_crt_Cash * _posagi, lim30 + e19800)
-
     charity_floor = ID_Charity_frt * _posagi  # frt is zero in present law
-    c19700 = max(0, c19700 - charity_floor)
+    c19700 = max(0., c19700 - charity_floor)
 
     # Gross Itemized Deductions
-
-    c21060 = (e20900 + (1 - ID_Medical_HC) * c17000 + c18300 +
-              (1 - ID_InterestPaid_HC) * c19200 +
-              (1 - ID_Charity_HC) * c19700 +
-              (1 - ID_Casualty_HC) * c20500 +
-              (1 - ID_Miscellaneous_HC) * c20800 +
+    c21060 = (e20900 + (1. - ID_Medical_HC) * c17000 + c18300 +
+              (1. - ID_InterestPaid_HC) * c19200 +
+              (1. - ID_Charity_HC) * c19700 +
+              (1. - ID_Casualty_HC) * c20500 +
+              (1. - ID_Miscellaneous_HC) * c20800 +
               e21000 + e21010)
 
     # Limitations on deductions excluding medical, charity etc
     _phase2_i = ID_ps[MARS - 1]
-    _nonlimited = ((1 - ID_Medical_HC) * c17000 +
-                   (1 - ID_Casualty_HC) * c20500 +
+    _nonlimited = ((1. - ID_Medical_HC) * c17000 +
+                   (1. - ID_Casualty_HC) * c20500 +
                    e19570 + e21010 + e20900)
     _limitratio = _phase2_i
 
     # Itemized deductions amount after limitation if any
     c04470 = c21060
-
     if c21060 > _nonlimited and c00100 > _limitratio:
         dedmin = ID_crt * (c21060 - _nonlimited)
-        dedpho = ID_prt * max(0, _posagi - _limitratio)
+        dedpho = ID_prt * max(0., _posagi - _limitratio)
         c21040 = min(dedmin, dedpho)
         c04470 = c21060 - c21040
     else:
-        c21040 = 0.0
-
-    # the variables that are casted as floats below can be either floats or
-    # ints depending n which if/else branches they follow in the above code.
-    # they need to always be the same type
-
-    c20400 = float(c20400)
-    c20400 = float(c20400)
-    c19200 = float(c19200)
-    c37703 = float(c37703)
-    c20500 = float(c20500)
+        c21040 = 0.
 
     return (c17750, c17000, _statax, c18300, c37703, c20500,
             c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
@@ -424,10 +409,10 @@ def AMED(_fica, e00200, MARS, AMED_thd, _sey, AMED_trt,
 
     """
     # ratio of income subject to AMED tax = (1 - 0.5*(FICA_mc_trt+FICA_ss_trt)
-    _amed = AMED_trt * (max(0, e00200 - AMED_thd[MARS - 1]) +
-                        max(0, max(0, _sey) *
-                            (1 - 0.5 * (FICA_mc_trt + FICA_ss_trt)) -
-                            max(0, AMED_thd[MARS - 1] - e00200)))
+    _amed = AMED_trt * (max(0., e00200 - AMED_thd[MARS - 1]) +
+                        max(0., max(0., _sey) *
+                            (1. - 0.5 * (FICA_mc_trt + FICA_ss_trt)) -
+                            max(0., AMED_thd[MARS - 1] - e00200)))
     _fica = _fica + _amed
 
     return (_amed, _fica)
@@ -509,7 +494,7 @@ def StdDed(DSI, _earned, STD, p04470, e00100, e60000,
     if puf:
         _numextra = _numextra
     else:
-        _numextra = float(AGEP + AGES + PBI + SBI)
+        _numextra = AGEP + AGES + PBI + SBI
 
     if _exact == 1 and MARS == 3 or MARS == 5:
         c04200 = e04200
@@ -536,7 +521,7 @@ def TaxInc(c00100, _standard, e37717, c21060, c21040, c04500, c04600,
     """
     TaxInc function: ...
     """
-    c04500 = max(0, c00100 - max(c21060 - c21040, _standard + e37717))
+    c04500 = max(0., c00100 - max(c21060 - c21040, _standard + e37717))
 
     c04800 = max(0., c04500 - c04600 - e04805)
 
@@ -574,9 +559,9 @@ def Personal_Credit(c04500, MARS, II_credit, II_credit_ps, II_credit_prt):
     if c04500 > II_credit_ps[MARS - 1]:
         credit_phaseout = II_credit_prt * (c04500 - II_credit_ps[MARS - 1])
     else:
-        credit_phaseout = 0.0
+        credit_phaseout = 0.
 
-    _personal_credit = max(0.0, _personal_credit - credit_phaseout)
+    _personal_credit = max(0., _personal_credit - credit_phaseout)
 
     return _personal_credit
 
@@ -635,11 +620,11 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
 
         # gain for tax computation
         if e01100 > 0.:
-            c24510 = float(e01100)
+            c24510 = e01100
         else:
             c24510 = max(0., min(c23650, p23250)) + e01100
 
-        _dwks9 = max(0, c24510 - min(e58990, e58980))
+        _dwks9 = max(0., c24510 - min(e58990, e58980))
         c24516 = c24505 + _dwks9
 
         # if/else 2
@@ -743,7 +728,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         _line30 = 0.1 * max(0., c59450 - c59460 - e59470)
 
         _line31 = (0.11 * min(_line30, 1190.) +
-                   0.12 * min(2270. - 1190., max(0, _line30 - 1190.)) +
+                   0.12 * min(2270. - 1190., max(0., _line30 - 1190.)) +
                    0.14 * min(4530. - 2270., max(0., _line30 - 2270.)) +
                    0.15 * min(6690. - 4530., max(0., _line30 - 4530.)) +
                    0.16 * min(9170. - 6690., max(0., _line30 - 6690.)) +
@@ -919,7 +904,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
         else:
             _cmbtp = 0.
         real_estate = (1 - ID_RealEstate_HC) * e18500
-        income_sales = (1 - ID_StateLocalTax_HC) * max(0, e18400)
+        income_sales = (1 - ID_StateLocalTax_HC) * max(0., e18400)
         c62100 = (c00100 - c04470 +
                   max(0., min((1 - ID_Medical_HC) * c17000, 0.025 * c00100)) +
                   income_sales + real_estate -
@@ -987,9 +972,9 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
               max(0., _alminc - AMT_tthd / _sep) - _amtfei)
 
     if f6251 == 1:
-        c62900 = float(e62900)
+        c62900 = e62900
     else:
-        c62900 = float(e07300)
+        c62900 = e07300
 
     # imputation for x62740
     # UNUSED-LOCAL-VAR: if e62740 != 0 and e24516 > 0:
@@ -1008,7 +993,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
 
     _tamt2 = 0.
 
-    _amt5pc = 0.0
+    _amt5pc = 0.
 
     _line45 = max(0., AMT_CG_thd1[MARS - 1] - c24520)
 
@@ -1026,7 +1011,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
         _amt20pc = 0.
 
     if c62740 != 0:
-        _amt25pc = max(0, _alminc - _ngamty - _line46)
+        _amt25pc = max(0., _alminc - _ngamty - _line46)
     else:
         _amt25pc = 0.
 
@@ -1069,9 +1054,9 @@ def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
     """
     MUI function: ...
     """
-    NIIT = NIIT_trt * min(e00300 + e00600 + max(0, c01000) +
-                          max(0, e02000 - e26270 + e85070),
-                          max(0, c00100 - NIIT_thd[MARS - 1]))
+    NIIT = NIIT_trt * min(e00300 + e00600 + max(0., c01000) +
+                          max(0., e02000 - e26270 + e85070),
+                          max(0., c00100 - NIIT_thd[MARS - 1]))
     return NIIT
 
 
@@ -1126,7 +1111,7 @@ def DepCareBen(c32800, _cmp, f2441, MARS, c32880, c32890, e33420, e33430,
         c33465, c33470, c33475, c33480, c32840 = 0., 0., 0., 0., 0.
         c32800 = c32800
 
-    c33000 = max(0, min(c32800, min(c32880, c32890)))
+    c33000 = max(0., min(c32800, min(c32880, c32890)))
 
     return (_seywage, c33465, c33470, c33475, c33480, c32840, c32800, c33000)
 
@@ -1141,7 +1126,7 @@ def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt,
 
     if _exact == 1:
 
-        _tratio = float(math.ceil(max((c00100 - CDCC_ps) / 2000, 0.)))
+        _tratio = math.ceil(max(((c00100 - CDCC_ps) / 2000.), 0.))
 
         c33200 = c33000 * 0.01 * max(20., CDCC_crt - min(15., _tratio))
 
@@ -1149,7 +1134,7 @@ def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt,
         _tratio = 0.
 
         c33200 = c33000 * 0.01 * max(20., CDCC_crt -
-                                     max((c00100 - CDCC_ps) / 2000, 0.))
+                                     max(((c00100 - CDCC_ps) / 2000.), 0.))
 
     c33400 = min(max(0., c05800 - e07300), c33200)
 
@@ -1176,9 +1161,9 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
     """
     # pylint: disable=too-many-branches
 
-    EICYB1 = max(0.0, EICYB1)
-    EICYB2 = max(0.0, EICYB2)
-    EICYB3 = max(0.0, EICYB3)
+    EICYB1 = max(0., EICYB1)
+    EICYB2 = max(0., EICYB2)
+    EICYB3 = max(0., EICYB3)
     _preeitc = 0.
     _ieic = int(max(EIC, EICYB1) + EICYB2 + EICYB3)
     if _exact == 1:
@@ -1190,9 +1175,9 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
     _modagi = c00100 + e00400
 
     if MARS == 2:
-        _val_ymax = float((EITC_ps[_ieic] + EITC_ps_MarriedJ[_ieic]))
+        _val_ymax = EITC_ps[_ieic] + EITC_ps_MarriedJ[_ieic]
     elif MARS == 1 or MARS == 4 or MARS == 5 or MARS == 7:
-        _val_ymax = float(EITC_ps[_ieic])
+        _val_ymax = EITC_ps[_ieic]
     else:
         _val_ymax = 0.
 
@@ -1278,25 +1263,25 @@ def AmOppCr(p87482, e87487, e87492, e87497, p87521, puf):
 
     # Credit calculated as 100% of the first $2000 expense plus
     # 25% of amount exceeding $2000.
-    if max(0, c87482 - 2000) == 0:
+    if max(0., c87482 - 2000.) == 0.:
         c87483 = c87482
     else:
-        c87483 = 2000 + 0.25 * max(0, c87482 - 2000)
+        c87483 = 2000 + 0.25 * max(0., c87482 - 2000.)
 
-    if max(0, c87487 - 2000) == 0:
+    if max(0., c87487 - 2000.) == 0.:
         c87488 = c87487
     else:
-        c87488 = 2000 + 0.25 * max(0, c87487 - 2000)
+        c87488 = 2000 + 0.25 * max(0., c87487 - 2000)
 
-    if max(0, c87492 - 2000) == 0:
+    if max(0., c87492 - 2000.) == 0.:
         c87493 = c87492
     else:
-        c87493 = 2000 + 0.25 * max(0, c87492 - 2000)
+        c87493 = 2000. + 0.25 * max(0., c87492 - 2000.)
 
-    if max(0, c87497 - 2000) == 0:
+    if max(0., c87497 - 2000.) == 0.:
         c87498 = c87497
     else:
-        c87498 = 2000 + 0.25 * max(0, c87497 - 2000)
+        c87498 = 2000. + 0.25 * max(0., c87497 - 2000.)
 
     # Sum of credits of all four students.
     c87521 = c87483 + c87488 + c87493 + c87498
@@ -1337,10 +1322,10 @@ def LLC(e87530, LLC_Expense_c, e87526, e87522, e87524, e87528, puf):
     """
     if puf:
         c87530 = 0.
-        c87540 = float(min(e87530, LLC_Expense_c))
+        c87540 = min(e87530, LLC_Expense_c)
     else:
         c87530 = e87526 + e87522 + e87524 + e87528
-        c87540 = float(min(c87530, LLC_Expense_c))
+        c87540 = min(c87530, LLC_Expense_c)
     c87550 = 0.2 * c87540
     return (c87540, c87550, c87530)
 
@@ -1387,7 +1372,7 @@ def RefAmOpp(c87521, _num, c00100):
         c87658 = max(0., c87654 - c87656)
         c87660 = 10000 * _num
         c87662 = 1000 * min(1., c87658 / c87660)
-        c87664 = c87662 * c87521 / 1000.0
+        c87664 = c87662 * c87521 / 1000.
         c87666 = 0.4 * c87664
         c10960 = c87666
         c87668 = c87664 - c87666
@@ -1408,24 +1393,24 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
 
     # Phase Out
     if MARS == 2:
-        c87570 = float(ETC_pe_Married * 1000)
+        c87570 = ETC_pe_Married * 1000.
     else:
-        c87570 = float(ETC_pe_Single * 1000)
+        c87570 = ETC_pe_Single * 1000.
 
-    c87580 = float(c00100)
+    c87580 = c00100
 
     c87590 = max(0., c87570 - c87580)
 
-    c87600 = 10000.0 * _num
+    c87600 = 10000. * _num
 
-    c87610 = min(1., float(c87590 / c87600))
+    c87610 = min(1., c87590 / c87600)
 
     c87620 = c87560 * c87610
 
-    _xlin4 = max(0, c05800 - (e07300 + c07180 + e07200))
+    _xlin4 = max(0., c05800 - (e07300 + c07180 + e07200))
     _xlin5 = min(c87620, _xlin4)
     # UNUSED-LOCAL-VAR: _xlin8 = e07300 + c07180 + e07200 + _xlin5
-    _xlin9 = max(0, c05800 - (e07300 + c07180 + e07200 + _xlin5))
+    _xlin9 = max(0., c05800 - (e07300 + c07180 + e07200 + _xlin5))
     _xlin10 = min(c87668, _xlin9)
     c87680 = _xlin5 + _xlin10
     c07230 = c87680
@@ -1487,7 +1472,7 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, _fica_was,
         c82930 = c07220
         c82935 = c82925 - c82930
         # CTC not applied to tax
-        c82880 = max(0, _earned)
+        c82880 = max(0., _earned)
         if _exact == 1:
             c82880 = e82880
         c82885 = max(0., c82880 - ACTC_Income_thd)
@@ -1496,7 +1481,7 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, _fica_was,
     # Part II of 2005 form 8812
     if _nctcr >= ACTC_ChildNum and c82890 < c82935:
         c82900 = 0.5 * _fica_was
-        c82905 = float((1 - ALD_SelfEmploymentTax_HC) * e03260 + e09800)
+        c82905 = (1. - ALD_SelfEmploymentTax_HC) * e03260 + e09800
         c82910 = c82900 + c82905
         c82915 = c59660 + e11200
         c82920 = max(0., c82910 - c82915)
@@ -1553,13 +1538,9 @@ def C1040(e07400, e07200, c07220, c07230, c07300, c07240,
     c07100 = min(c07100, c05800)
 
     # Tax After credits 1040 line 52
-
     c08795 = max(0., c05800 - c07100)  # SAS @1277
-
-#    c08800 = c08795
-
     if puf:
-        e08795 = float(e08800)
+        e08795 = e08800
     else:
         e08795 = 0.
 
@@ -1570,8 +1551,7 @@ def C1040(e07400, e07200, c07220, c07230, c07300, c07240,
     # assuming year (FLPDYR) > 2009
     c09200 = c09200 + e09700 + e10050 + e10075 + e09805 + e09710 + e09720
 
-    return (c07100, c07970, y07100, x07100, c08795, e08795, c09200,
-            _othertax)
+    return (c07100, c07970, y07100, x07100, c08795, e08795, c09200, _othertax)
 
 
 @iterate_jit(nopython=True)
@@ -1583,7 +1563,7 @@ def DEITC(c59660, c07100, c08800, c05800, _avail, e11601, e07170, _othertax):
     c10950 = 0
     c59680 = min(c59660, _avail)
     _avail = _avail - c59680
-    _avail = max(0, _avail - e07170)
+    _avail = max(0., _avail - e07170)
     _avail = _avail + _othertax
     c59700 = min(_avail, c59660 - c59680)
     c59720 = c59660 - c59680 - c59700
@@ -1612,10 +1592,10 @@ def IITAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
 
     _combined = _iitax + _fica
 
-    potential_add_CTC = max(0, min(_combined, CTC_additional * n24))
+    potential_add_CTC = max(0., min(_combined, CTC_additional * n24))
     phaseout = (c00100 -
                 CTC_additional_ps[MARS - 1]) * CTC_additional_prt / _sep
-    final_add_CTC = max(0, potential_add_CTC - max(0, phaseout))
+    final_add_CTC = max(0., potential_add_CTC - max(0., phaseout))
 
     _iitax = _iitax - final_add_CTC
 
@@ -1627,7 +1607,7 @@ def IITAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
     _payments = (c59660 + c10950 + c10960 + c11070 + e10000 + e11550 +
                  e11450 + e11500)
 
-    c10300 = max(0, c09200 - _payments)
+    c10300 = max(0., c09200 - _payments)
 
     _eitc = c59660
 
@@ -1699,7 +1679,7 @@ def BenefitSurtax(calc):
 
         # pylint: disable=protected-access
         tax_diff = np.where(
-            nobenefits_calc.records._iitax - calc.records._iitax > 0,
+            nobenefits_calc.records._iitax - calc.records._iitax > 0.,
             nobenefits_calc.records._iitax - calc.records._iitax,
             0.)
 
