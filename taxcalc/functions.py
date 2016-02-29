@@ -327,16 +327,16 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
     charity_floor = ID_Charity_frt * _posagi  # frt is zero in present law
     c19700 = max(0., c19700 - charity_floor)
     # Gross Itemized Deductions
-    c21060 = (e20900 + (1. - ID_Medical_HC) * c17000 + c18300 +
-              (1. - ID_InterestPaid_HC) * c19200 +
-              (1. - ID_Charity_HC) * c19700 +
-              (1. - ID_Casualty_HC) * c20500 +
-              (1. - ID_Miscellaneous_HC) * c20800 +
+    c21060 = (e20900 + (1 - ID_Medical_HC) * c17000 + c18300 +
+              (1 - ID_InterestPaid_HC) * c19200 +
+              (1 - ID_Charity_HC) * c19700 +
+              (1 - ID_Casualty_HC) * c20500 +
+              (1 - ID_Miscellaneous_HC) * c20800 +
               e21000 + e21010)
     # Limitations on deductions excluding medical, charity etc
     _phase2_i = ID_ps[MARS - 1]
-    _nonlimited = ((1. - ID_Medical_HC) * c17000 +
-                   (1. - ID_Casualty_HC) * c20500 +
+    _nonlimited = ((1 - ID_Medical_HC) * c17000 +
+                   (1 - ID_Casualty_HC) * c20500 +
                    e19570 + e21010 + e20900)
     _limitratio = _phase2_i
     # Itemized deductions amount after limitation if any
@@ -813,12 +813,12 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
             _cmbtp = _cmbtp_itemizer
         else:
             _cmbtp = 0.
-        real_estate = (1. - ID_RealEstate_HC) * e18500
-        income_sales = (1. - ID_StateLocalTax_HC) * max(0., e18400)
+        real_estate = (1 - ID_RealEstate_HC) * e18500
+        income_sales = (1 - ID_StateLocalTax_HC) * max(0., e18400)
         c62100 = (c00100 - c04470 +
-                  max(0., min((1. - ID_Medical_HC) * c17000, 0.025 * c00100)) +
+                  max(0., min((1 - ID_Medical_HC) * c17000, 0.025 * c00100)) +
                   income_sales + real_estate -
-                  c60260 + (1. - ID_Miscellaneous_HC) * c20800 - c21040)
+                  c60260 + (1 - ID_Miscellaneous_HC) * c20800 - c21040)
         c62100 += _cmbtp
     if puf and _standard > 0:
         if f6251 == 1:
