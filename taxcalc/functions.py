@@ -130,7 +130,7 @@ def Adj(e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260, c03260,
     """
     # Form 2555: Foreign earned income
     _feided = max(e35300_0, e35600_0 + e35910_0)
-    if _exact:
+    if _exact == 1:
         c03260 = e03260
     # For 1040: adjustments
     c02900 = (e03150 + (1 - ALD_StudentLoan_HC) * e03210 + e03600 +
@@ -154,7 +154,7 @@ def CapGains(p23250, p22250, e23660, _sep, _feided, FEI_ec_c, ALD_Interest_ec,
     # Net capital gain (long term + short term) before exclusion
     c23650 = p23250 + p22250 + e23660
     # Limitation for capital loss
-    c01000 = max(-3000 / _sep, c23650)
+    c01000 = max((-3000. / _sep), c23650)
     # Foreign earned income exclusion
     c02700 = min(_feided, FEI_ec_c * f2555)
     # compute _ymod* variables
@@ -204,9 +204,9 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
         _prexmp = 0.
     # Personal Exemptions (_phaseout smoothed)
     _dispc_numer = II_prt * (_posagi - II_em_ps[MARS - 1])
-    _dispc_denom = (2500 / _sep)
-    _dispc = min(1, max(0., _dispc_numer / _dispc_denom))
-    c04600 = _prexmp * (1 - _dispc)
+    _dispc_denom = 2500. / _sep
+    _dispc = min(1., max(0., _dispc_numer / _dispc_denom))
+    c04600 = _prexmp * (1. - _dispc)
     return (c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp,
             c04600)
 
@@ -552,11 +552,11 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
     c00650 = e00650
     _addtax = 0.
     if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
-        _hasgain = 1.
+        _hasgain = 1
     else:
-        _hasgain = 0.
-    if _hasgain == 1.:
-
+        _hasgain = 0
+    if _hasgain == 1:
+        # if/else 1
         _dwks5 = max(0., e58990 - e58980)
         c24505 = max(0., c00650 - _dwks5)
         # gain for tax computation
@@ -651,7 +651,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         c05100 = c24580
 
     # Form 4972, Lump Sum Distributions
-    if _cmp == 1.:
+    if _cmp == 1:
         c59430 = max(0., e59410 - e59420)
         c59450 = c59430 + e59440  # income plus lump sum
         c59460 = (max(0., min(0.5 * c59450, 10000.)) - 0.2 *
@@ -836,24 +836,25 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
     c62600 = max(0., AMT_em[MARS - 1] - AMT_prt *
                  max(0., c62100 - AMT_em_ps[MARS - 1]))
     if AGERANGE == 1 or (puf and (DSI == 1)):
-        _ages = 0.
+        _agep = 0
+        _ages = 0
     else:
         if DOBYR >= 1 and DOBYR <= 99:
-            _DOBYR = DOBYR + 1900.
+            _DOBYR = DOBYR + 1900
         else:
             _DOBYR = DOBYR
         if _DOBYR > 1890:
             _agep = FLPDYR - _DOBYR
         else:
-            _agep = 50.
+            _agep = 50
         if SDOBYR >= 1 and SDOBYR <= 99:
-            _SDOBYR = SDOBYR + 1900.
+            _SDOBYR = SDOBYR + 1900
         else:
             _SDOBYR = SFOBYR
         if _SDOBYR > 1890:
             _ages = FLPDYR - _SDOBYR
         else:
-            _ages = 50.
+            _ages = 50
     if _cmp == 1 and f6251 == 1 and _exact == 1:
         c62600 = e62600
     if _agep < KT_c_Age and _agep != 0:
@@ -862,12 +863,12 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
     if c02700 > 0.:
         _alminc = max(0., c62100 - c62600)
         _amtfei = (AMT_trt1 * c02700 + AMT_trt2 *
-                   max(0., c02700 - AMT_tthd / _sep))
+                   max(0., (c02700 - (AMT_tthd / _sep))))
     else:
         _alminc = c62700
         _amtfei = 0.
     c62780 = (AMT_trt1 * _alminc + AMT_trt2 *
-              max(0., _alminc - AMT_tthd / _sep) - _amtfei)
+              max(0., (_alminc - (AMT_tthd / _sep) - _amtfei)))
     if f6251 == 1:
         c62900 = e62900
     else:
@@ -877,7 +878,8 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
     else:
         c62740 = min(max(0., c24516), c62720 + c62730)
     _ngamty = max(0., _alminc - c62740)
-    c62745 = AMT_trt1 * _ngamty + AMT_trt2 * max(0., _ngamty - AMT_tthd / _sep)
+    c62745 = (AMT_trt1 * _ngamty +
+              AMT_trt2 * max(0., (_ngamty - (AMT_tthd / _sep))))
     # Capital Gain for AMT
     _tamt2 = 0.
     _amt5pc = 0.
@@ -968,7 +970,7 @@ def DepCareBen(c32800, _cmp, f2441, MARS, c32880, c32890, e33420, e33430,
     if f2441 != 0:
         c33465 = e33465
         c33470 = e33470
-        c33475 = max(0., min(_seywage, 5000 / _sep) - c33470)
+        c33475 = max(0., min(_seywage, (5000. / _sep)) - c33470)
         c33480 = max(0., e33420 + e33430 - e33450 - c33465 - c33475)
         c32840 = c33470 + c33475
         c32800 = min(max(0., _dclim - c32840),
@@ -1057,8 +1059,8 @@ def NumDep(EICYB1, EICYB2, EICYB3, EIC, c00100, c01000, e00400, MARS, EITC_ps,
     if puf or (_ieic > 0) or (_agep >= 25 and _agep <= 64) or (_ages > 0):
         c59660 = _preeitc
         # make elderly childless filing units in PUF ineligible for EITC
-        if (_ieic == 0 and puf and ((MARS == 2 and _numextra >= 2) or
-                                    (MARS != 2 and _numextra >= 1))):
+        if (_ieic == 0 and puf and ((MARS == 2 and _numextra >= 2.) or
+                                    (MARS != 2 and _numextra >= 1.))):
             c59660 = 0.
             c59560 = 0.
     else:
@@ -1201,11 +1203,11 @@ def RefAmOpp(c87521, _num, c00100):
         and intermediate variables used to compute these two credit amounts
     """
     if c87521 > 0:
-        c87654 = 90000 * _num
+        c87654 = 90000. * _num
         c87656 = c00100
         c87658 = max(0., c87654 - c87656)
-        c87660 = 10000 * _num
-        c87662 = 1000 * min(1., c87658 / c87660)
+        c87660 = 10000. * _num
+        c87662 = 1000. * min(1., c87658 / c87660)
         c87664 = c87662 * c87521 / 1000.
         c87666 = 0.4 * c87664
         c10960 = c87666
@@ -1391,7 +1393,7 @@ def IITAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
     _combined = _iitax + _fica
     potential_add_CTC = max(0., min(_combined, CTC_additional * n24))
     phaseout = (c00100 -
-                CTC_additional_ps[MARS - 1]) * CTC_additional_prt / _sep
+                CTC_additional_ps[MARS - 1]) * (CTC_additional_prt / _sep)
     final_add_CTC = max(0., potential_add_CTC - max(0., phaseout))
 
     _iitax = _iitax - final_add_CTC

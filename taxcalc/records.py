@@ -220,8 +220,8 @@ class Records(object):
         '_taxinc', 'c04800', '_feitax', 'c05750', 'c24517',
         '_taxbc', 'c60000', '_standard', 'c24516',
         'c05700', 'c32880', 'c32890', '_dclim', 'c32800',
-        'c33000', 'c05800', '_othtax', 'c59560', '_agep',
-        '_ages', 'c87521', 'c87550', 'c07180',
+        'c33000', 'c05800', '_othtax', 'c59560',
+        '_agep', '_ages', 'c87521', 'c87550', 'c07180',
         'c07230', '_precrd', 'c07220', 'c59660', 'c07970',
         'c08795', 'c09200', 'c07100', '_eitc', 'c59700',
         'c10950', '_ymod2', '_ymod3', 'c02650', '_agierr',
@@ -271,6 +271,10 @@ class Records(object):
         '_cmbtp_standard', '_expanded_income', 'c07300',
         'c07600', 'c07240', 'c62100_everyone',
         '_surtax', '_combined', 'x04500', '_personal_credit'])
+
+    INTEGER_CALCULATED_VARS = set([
+        '_num', '_sep', '_ieic', '_exact', '_hasgain', '_cmp',
+        'DOBYR', 'SDOBYR', 'SFOBYR', '_agep', '_ages'])
 
     def __init__(self,
                  data="puf.csv",
@@ -489,12 +493,17 @@ class Records(object):
         ZEROED_VARS = Records.CALCULATED_VARS | UNREAD_VARS
         for varname in ZEROED_VARS:
             if varname not in Records.UNUSED_READ_VARS:
-                setattr(self, varname, np.zeros(self.dim, dtype=np.float64))
+                if varname in Records.INTEGER_CALCULATED_VARS:
+                    setattr(self, varname,
+                            np.zeros(self.dim, dtype=np.int64))
+                else:
+                    setattr(self, varname,
+                            np.zeros(self.dim, dtype=np.float64))
         # create variables derived from MARS, which is in MUST_READ_VARS
         self._num[:] = np.where(self.MARS == 2,
-                                2., 1.)
+                                2, 1)
         self._sep[:] = np.where(np.logical_or(self.MARS == 3, self.MARS == 6),
-                                2., 1.)
+                                2, 1)
 
     def _read_weights(self, weights):
         """

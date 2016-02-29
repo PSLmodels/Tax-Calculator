@@ -14,19 +14,19 @@ def update_ordinary_income(behavioral_effect, calc_y):
                         0.,
                         calc_y.records.c04470)
 
-    delta_wages = np.where(calc_y.records.c00100 + itemized > 0,
+    delta_wages = np.where(calc_y.records.c00100 + itemized > 0.,
                            (delta_inc * calc_y.records.e00200 /
                             (calc_y.records.c00100 + itemized)),
                            0.)
 
     other_inc = calc_y.records.c00100 - calc_y.records.e00200
 
-    delta_other_inc = np.where(calc_y.records.c00100 + itemized > 0,
+    delta_other_inc = np.where(calc_y.records.c00100 + itemized > 0.,
                                (delta_inc * other_inc /
                                 (calc_y.records.c00100 + itemized)),
                                0.)
 
-    delta_itemized = np.where(calc_y.records.c00100 + itemized > 0,
+    delta_itemized = np.where(calc_y.records.c00100 + itemized > 0.,
                               (delta_inc * itemized /
                                (calc_y.records.c00100 + itemized)),
                               0.)
@@ -35,7 +35,7 @@ def update_ordinary_income(behavioral_effect, calc_y):
 
     calc_y.records.e00300 = calc_y.records.e00300 + delta_other_inc
 
-    calc_y.records.e19570 = np.where(itemized > 0,
+    calc_y.records.e19570 = np.where(itemized > 0.,
                                      calc_y.records.e19570 + delta_itemized,
                                      0.)
     # TODO, we should create a behavioral modification
@@ -65,8 +65,8 @@ def behavior(calc_x, calc_y):
                                 liability_type='iitax')
 
     # Calculate the percent change in after-tax rate for wage and capital gain.
-    wage_pctdiff = ((1 - wage_mtr_y) - (1 - wage_mtr_x)) / (1 - wage_mtr_x)
-    CG_pctdiff = ((1 - CG_mtr_y) - (1 - CG_mtr_x)) / (1 - CG_mtr_x)
+    wage_pctdiff = ((1. - wage_mtr_y) - (1. - wage_mtr_x)) / (1. - wage_mtr_x)
+    CG_pctdiff = ((1. - CG_mtr_y) - (1. - CG_mtr_x)) / (1. - CG_mtr_x)
 
     # Calculate the magnitude of the substitution and income effects
     # Calculate the magnitude of behavior changes on cap gain
