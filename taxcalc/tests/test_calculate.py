@@ -160,9 +160,7 @@ def test_make_Calculator_with_reform_after_start_year():
     assert_allclose(calc.policy._STD_Aged, exp_STD_Aged, atol=0.5, rtol=0.0)
     assert_allclose(calc.policy._II_em, exp_II_em, atol=0.001, rtol=0.0)
     # compare actual and expected values for 2015
-    calc.increment_year()
-    calc.increment_year()
-    assert calc.current_year == 2015
+    calc.year_increment(2015)
     exp_2015_II_em = 5000
     assert_allclose(calc.policy.II_em, exp_2015_II_em,
                     atol=0.0, rtol=0.0)
