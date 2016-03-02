@@ -163,22 +163,7 @@ class Calculator(object):
     def year_increment(self, new_current_year):
         iteration = new_current_year - self.policy.current_year
         for i in range(iteration):
-            if self.growth.factor_adjustment != 0:
-                if not np.array_equal(self.growth._factor_target,
-                                      Growth.REAL_GDP_GROWTH_RATES):
-                    msg = "adjustment and target factor \
-                        cannot be non-zero at the same time"
-                    raise ValueError(msg)
-                else:
-                    adjustment(self, self.growth.factor_adjustment,
-                               self.policy.current_year + 1)
-            elif not np.array_equal(self.growth._factor_target,
-                                    Growth.REAL_GDP_GROWTH_RATES):
-                target(self, self.growth._factor_target,
-                       self.policy.current_year + 1)
-            self.records.increment_year()
-            self.policy.set_year(self.policy.current_year + 1)
-            self.behavior.set_year(self.policy.current_year)
+            self.increment_year()
         assert self.policy.current_year == new_current_year
 
     @property
