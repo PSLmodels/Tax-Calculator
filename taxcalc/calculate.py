@@ -160,11 +160,35 @@ class Calculator(object):
         self.policy.set_year(self.policy.current_year + 1)
         self.behavior.set_year(self.policy.current_year)
 
-    def year_increment(self, new_current_year):
-        iteration = new_current_year - self.policy.current_year
-        for i in range(iteration):
-            self.increment_year()
-        assert self.policy.current_year == new_current_year
+    def year_increment(self, advance_to_year):
+        '''
+        The year_increment function gives an optional way of implementing
+        increment year functionality by immediately specifying the year
+        as input. Robustness has been added to ensure input is of good shape.
+        '''
+        if isinstance(advance_to_year, int):
+            iteration = advance_to_year - self.records.current_year
+            if iteration > 0:
+                if iteration > 3:
+                    for i in range(iteration):
+                        self.increment_year()
+                    assert self.records.current_year == advance_to_year
+                    print("Your data and policy have been further extrapolated"
+                          " to " + str(self.records.current_year) + ".")
+                else:
+                    for i in range(iteration):
+                        self.increment_year()
+                    assert self.records.current_year == advance_to_year
+                    print("Your data have been further extrapolated to " +
+                          str(self.records.current_year) + ".")
+            elif iteration == 0:
+                print("You are already in " +
+                      str(self.records.current_year) + ".")
+            else:
+                print(str(self.records.current_year) + " is the earliest " +
+                      "possible year to perform any tax calculation.")
+        else:
+            print("Integer input is expected!")
 
     @property
     def current_year(self):
