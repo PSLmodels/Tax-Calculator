@@ -171,6 +171,16 @@ def test_make_Calculator_with_reform_after_start_year():
                     atol=0.0, rtol=0.0)
 
 
+def test_Calculator_advance_to_year():
+    policy = Policy()
+    puf = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    calc = Calculator(policy=policy, records=puf)
+    calc.advance_to_year(2016)
+    assert calc.current_year == 2016
+    with pytest.raises(ValueError):
+        calc.advance_to_year(2015)
+
+
 def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
     with open(policyfile.name) as pfile:
         policy = json.load(pfile)
