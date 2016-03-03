@@ -162,7 +162,7 @@ class Calculator(object):
 
     def advance_to_year(self, year):
         '''
-        The year_increment function gives an optional way of implementing
+        The advance_to_year function gives an optional way of implementing
         increment year functionality by immediately specifying the year
         as input. New year must be at least the current year.
         '''
