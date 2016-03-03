@@ -160,19 +160,19 @@ class Calculator(object):
         self.policy.set_year(self.policy.current_year + 1)
         self.behavior.set_year(self.policy.current_year)
 
-    def year_increment(self, advance_to_year):
+    def advance_to_year(self, year):
         '''
         The year_increment function gives an optional way of implementing
         increment year functionality by immediately specifying the year
         as input. New year must be at least the current year.
         '''
-        iteration = advance_to_year - self.records.current_year
+        iteration = year - self.records.current_year
         if iteration < 0:
             raise ValueError("New current year must be " +
                              "greater than current year!")
         for i in range(iteration):
             self.increment_year()
-        assert self.records.current_year == advance_to_year
+        assert self.records.current_year == year
 
     @property
     def current_year(self):
