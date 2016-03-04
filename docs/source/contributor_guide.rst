@@ -80,6 +80,12 @@ Setup Git
 
        tax-calculator$ source activate taxcalc-dev
 
+If you are working on Windows, use the following the command line:
+
+    .. code-block:: python
+   
+       tax-calculator$ activate taxcalc-dev
+   
 11. To check that everything is working properly, run the following at
     the command line from the tax-calculator directory (but skip the
     validation tests if you are working on Windows).
