@@ -11,7 +11,7 @@ and GitHub documentation to help with some of the unfamiliar
 terminology. Following the next steps will get you up and running and
 contributing to our model even if you've never used anything like Git.
 
-If you have already completed the Setup Python and Setup Git sections,
+If you already completed the Setup Python and Setup Git sections,
 please skip to `Workflow`_.
 
 Setup Python
