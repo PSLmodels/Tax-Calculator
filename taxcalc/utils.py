@@ -101,7 +101,8 @@ def weighted_share_of_total(agg, col_name, total):
     return float(weighted_sum(agg, col_name)) / (float(total) + EPSILON)
 
 
-def add_weighted_decile_bins(df, income_measure='_expanded_income', labels=None):
+def add_weighted_decile_bins(df, income_measure='_expanded_income',
+                             labels=None):
     """
 
     Add a column of income bins based on each 10% of the income_measure,
