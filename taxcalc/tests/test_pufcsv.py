@@ -130,9 +130,10 @@ def test_mtr():
     # construct actual results string, res
     res = ''
     if MTR_NEG_DIFF:
-        res += 'MTR computed using NEGATIVE finite_diff.\n'
+        res += 'MTR computed using NEGATIVE finite_diff '
     else:
-        res += 'MTR computed using POSITIVE finite_diff.\n'
+        res += 'MTR computed using POSITIVE finite_diff '
+    res += 'for tax year {}\n'.format(MTR_TAX_YEAR)
     # create a Policy object (clp) containing current-law policy parameters
     clp = Policy()
     clp.set_year(MTR_TAX_YEAR)
