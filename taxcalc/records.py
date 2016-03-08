@@ -100,76 +100,43 @@ class Records(object):
 
     # specify set of all Record variables that MAY be read by Tax-Calculator:
     VALID_READ_VARS = set([
-        'AGIR1', 'DSI', 'EFI', 'EIC', 'ELECT', 'FDED', 'FLPDYR', 'FLPDMO',
-        'f2441', 'f3800', 'f6251', 'f8582', 'f8606', 'f8829', 'f8910', 'f8936',
-        'n20', 'n24', 'n25', 'n30', 'PREP', 'SCHB', 'SCHCF', 'SCHE',
-        'TFORM', 'IE', 'TXST', 'XFPT', 'XFST',
-        'XOCAH', 'XOCAWH', 'XOODEP', 'XOPAR', 'XTOT',
+        'DSI', 'EIC', 'FDED', 'FLPDYR',
+        'f2441', 'f6251',
+        'n24',
+        'XTOT',
         'e00200', 'e00300', 'e00400', 'e00600', 'e00650', 'e00700', 'e00800',
         'e00200p', 'e00200s',
-        'e00900', 'e01000', 'e01100', 'e01200', 'e01400', 'e01500', 'e01700',
+        'e00900', 'e01000', 'e01100', 'e01200', 'e01400', 'e01700',
         'e00900p', 'e00900s',
         'e02000', 'e02100', 'e02300', 'e02400', 'e02500', 'e03150', 'e03210',
         'e02100p', 'e02100s',
-        'e03220', 'e03230', 'e03260', 'e03270', 'e03240', 'e03290', 'e03300',
-        'e03400', 'e03500', 'e00100', 'p04470', 'e04250', 'e04600', 'e04800',
-        'e05100', 'e05200', 'e05800', 'e06000', 'e06200', 'e06300', 'e09600',
-        'e07180', 'e07200', 'e07220', 'e07230', 'e07240', 'e07260', 'e07300',
-        'e07400', 'e07600', 'p08000', 'e07150', 'e06500', 'e08800', 'e09400',
-        'e09700', 'e09800', 'e09900', 'e10300', 'e10700', 'e10900', 'e10950',
-        'e10960', 'e15100', 'e15210', 'e15250', 'e15360', 'e18600', 'e59560',
-        'e59680', 'e59700', 'e59720', 'e11550', 'e11070', 'e11100', 'e11200',
-        'e11300', 'e11400', 'e11570', 'e11580', 'e11581', 'e11582', 'e11583',
-        'e10605', 'e11900', 'e12000', 'e12200', 'e17500', 'e18400', 'e18500',
+        'e03220', 'e03230', 'e03260', 'e03270', 'e03240', 'e03290',
+        'e03400', 'e03500', 'e00100', 'p04470',
+        'e05100', 'e05800',
+        'e07200', 'e07240', 'e07260', 'e07300',
+        'e07400', 'e07600', 'p08000', 'e08800', 'e09400',
+        'e09700', 'e09800', 'e09900',
+        'e15360', 'e59560',
+        'e11550', 'e11070', 'e11200',
+        'e11580',
+        'e17500', 'e18400', 'e18500',
         'e19200', 'e19550', 'e19800', 'e20100', 'e19700', 'e20550', 'e20600',
-        'e20400', 'e20800', 'e20500', 'e21040', 'p22250', 'e22320', 'e22370',
-        'p23250', 'e24515', 'e24516', 'e24518', 'e24535', 'e24560', 'e24598',
-        'e24615', 'e24570', 'p25350', 'p25380', 'p25470', 'p25700', 'e25820',
-        'e25850', 'e25860', 'e25940', 'e25980', 'e25920', 'e25960', 'e26110',
-        'e26170', 'e26190', 'e26160', 'e26180', 'e26270', 'e26100', 'e26390',
-        'e26400', 'e27200', 'e30400', 'e30500', 'e32800', 'e33000', 'e53240',
-        'e53280', 'e53410', 'e53300', 'e53317', 'e53458', 'e58950', 'e58990',
-        'p60100', 'p61850', 'e60000', 'e62100', 'e62900', 'e62720', 'e62730',
-        'e62740', 'p65300', 'p65400', 'p87482', 'p87521', 'e68000', 'e82200',
-        't27800', 's27860', 'p27895', 'e87530', 'e87550', 'e87870', 'e87875',
-        'e87880', 'MARS', 'MIDR', 'RECID', 'gender',
-        'wage_head', 'wage_spouse', 'earnsplit',
-        'age', 'agedp1', 'agedp2', 'agedp3', 'AGERANGE',
-        's006', 's008', 's009', 'WSAMP', 'TXRT', 'filer', 'matched_weight'])
+        'e20400', 'e20800', 'e20500', 'e21040', 'p22250',
+        'p23250', 'e24515', 'e24516', 'e24518',
+        'p25470',
+        'e26270',
+        'e27200', 'e32800', 'e03300',
+        'e58990',
+        'p60100', 'e60000', 'e62100', 'e62900', 'e62720', 'e62730',
+        'e62740', 'p87482', 'p87521',
+        'e87530',
+        'MARS', 'MIDR', 'RECID',
+        'wage_head', 'wage_spouse',
+        'age', 'AGERANGE',
+        's006', 'filer'])
 
     # specify set of all Record variables that MUST be read by Tax-Calculator:
     MUST_READ_VARS = set(['RECID', 'MARS'])
-
-    # specify subset of VALID_READ_VARS that are unused by Tax-Calculator:
-    UNUSED_READ_VARS = set([
-        'AGIR1', 'EFI', 'ELECT', 'FLPDMO',
-        'f3800', 'f8582', 'f8606', 'f8829', 'f8910', 'f8936',
-        'n20', 'n25', 'n30', 'PREP', 'SCHB', 'SCHCF', 'SCHE',
-        'TFORM', 'IE', 'TXST', 'XFPT', 'XFST',
-        'XOCAH', 'XOCAWH', 'XOODEP', 'XOPAR',
-        'gender',
-        'earnsplit',
-        'agedp1', 'agedp2', 'agedp3',
-        's008', 's009', 'WSAMP', 'TXRT', 'filer', 'matched_weight',
-        'e87870', 'e30400', 'e24598', 'e11300', 'e24535', 'e30500',
-        'e07180', 'e53458', 'e33000', 'e25940', 'e12000', 'p65400',
-        'e15210', 'e24615', 'e07230', 'e11100', 'e10900', 'e11581',
-        'e11582', 'e11583', 'e25920', 's27860', 'e10960', 'e59720',
-        'e87550', 'e26190', 'e53317', 'e53410', 'e04600', 'e26390',
-        'e15250', 'p65300', 'p25350', 'e06500', 'e10300', 'e26170',
-        'e26400', 'e11400', 'p25700', 'e01500', 'e04250', 'e07150',
-        'e59680', 'e24570', 'e11570', 'e53300', 'e10605', 'e22320',
-        'e26160', 'e22370', 'e53240', 'p25380', 'e10700', 'e09600',
-        'e06200', 'e24560', 'p61850', 'e25980', 'e53280', 'e25850',
-        'e25820', 'e10950', 'e68000', 'e26110', 'e58950', 'e26180',
-        'e04800', 'e06000', 'e87880', 't27800', 'e06300', 'e59700',
-        'e26100', 'e05200', 'e87875', 'e82200', 'e25860', 'e07220',
-        'e11900', 'e18600', 'e25960', 'e15100', 'p27895', 'e12200'])
-    # TODO: the long-term objective is to remove these UNUSED_READ_VARS
-    #       from the puf.csv input file so that this set can be removed
-    #       from the Records class code.
-    # Each removal from UNUSED_READ_VARS set requires removal of same
-    # variable from VALID_READ_VARS set.
 
     # specify which VALID_READ_VARS should be int64 (rather than float64):
     INTEGER_READ_VARS = set([
@@ -475,13 +442,12 @@ class Records(object):
                 msg = 'Records data variable name {} not in VALID_READ_VARS'
                 raise ValueError(msg.format(varname))
             READ_VARS.add(varname)
-            if varname not in Records.UNUSED_READ_VARS:
-                if varname in Records.INTEGER_READ_VARS:
-                    setattr(self, varname,
-                            taxdf[varname].astype(np.int64).values)
-                else:
-                    setattr(self, varname,
-                            taxdf[varname].astype(np.float64).values)
+            if varname in Records.INTEGER_READ_VARS:
+                setattr(self, varname,
+                        taxdf[varname].astype(np.int64).values)
+            else:
+                setattr(self, varname,
+                        taxdf[varname].astype(np.float64).values)
         # check that MUST_READ_VARS are all present in taxdf
         UNREAD_MUST_VARS = Records.MUST_READ_VARS - READ_VARS
         if len(UNREAD_MUST_VARS) > 0:
@@ -492,13 +458,12 @@ class Records(object):
         ZEROED_VARS = Records.CALCULATED_VARS | UNREAD_VARS
         INT_VARS = Records.INTEGER_READ_VARS | Records.INTEGER_CALCULATED_VARS
         for varname in ZEROED_VARS:
-            if varname not in Records.UNUSED_READ_VARS:
-                if varname in INT_VARS:
-                    setattr(self, varname,
-                            np.zeros(self.dim, dtype=np.int64))
-                else:
-                    setattr(self, varname,
-                            np.zeros(self.dim, dtype=np.float64))
+            if varname in INT_VARS:
+                setattr(self, varname,
+                        np.zeros(self.dim, dtype=np.int64))
+            else:
+                setattr(self, varname,
+                        np.zeros(self.dim, dtype=np.float64))
         # create variables derived from MARS, which is in MUST_READ_VARS
         self._num[:] = np.where(self.MARS == 2,
                                 2, 1)

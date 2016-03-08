@@ -88,6 +88,7 @@ EIC = Earned Income Credit code: categorical variable
 F2441 = Form 2441 number of Child Care Credit qualified individuals
 F6251 = Form 6251, Alternative Minimum Tax, attached to return or not
 FDED = Form of deduction code: categorical variable
+FILER = 1 if unit from IRS-SOI PUF; 0 if unit from CPS
 FLPDYR = Filing (accounting) period (i.e., tax year)
 MARS = Marital (filing) status: categorical variable
 MIDR = Married filing separately itemized deductions requirement indicator
