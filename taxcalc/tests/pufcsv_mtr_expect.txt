@@ -1,4 +1,4 @@
-MTR computed using POSITIVE finite_diff.
+MTR computed using POSITIVE finite_diff for tax year 2013
 Total number of data records = 219814
 FICA mtr histogram bin edges:
      [0.0, 0.02, 0.04, 0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18, 1.0]
