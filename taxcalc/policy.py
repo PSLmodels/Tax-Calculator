@@ -170,7 +170,7 @@ class Policy(ParametersBase):
         The reform file is JSON with string policy-parameter primary keys and
            string years as secondary keys.  See tests/test_policy.py for an
            extended example of a commented JSON reform file that can be read
-           by this function.
+           by this method.
         Returned dictionary has integer years as primary keys and
            string policy-parameters as secondary keys.
         The returned dictionary is suitable as the argument to the
@@ -198,24 +198,7 @@ class Policy(ParametersBase):
             sys.stderr.write(json_without_comments.strip() + '\n')
             sys.stderr.write(line + '\n')
             raise ValueError(msg.format(reform_filename))
-        # convert year skey strings to integers and lists into np.arrays
-        reform_pkey_param = {}
-        for pkey, sdict in reform_dict_raw.items():
-            if not isinstance(pkey, six.string_types):
-                msg = 'pkey {} in reform is not a string'
-                raise ValueError(msg.format(pkey))
-            rdict = {}
-            for skey, val in sdict.items():
-                if not isinstance(skey, six.string_types):
-                    msg = 'skey {} in reform is not a string'
-                    raise ValueError(msg.format(skey))
-                else:
-                    year = int(skey)
-                rdict[year] = (np.array(val)
-                               if isinstance(val, list) else val)
-            reform_pkey_param[pkey] = rdict
-        # convert reform_pkey_param dictionary to reform_pkey_year dictionary
-        return Policy._reform_pkey_year(reform_pkey_param)
+        return Policy.convert_reform_dictionary(reform_dict_raw)
 
     def implement_reform(self, reform):
         """
@@ -224,7 +207,7 @@ class Policy(ParametersBase):
         Parameters
         ----------
         reform: dictionary of one or more YEAR:MODS pairs
-            see Notes to _update function for details on MODS structure, and
+            see Notes to _update method for details on MODS structure, and
             see read_json_reform_file method above for how to specify a
             reform in a JSON file and translate it into a reform dictionary
             suitable for input into this implement_reform method.
@@ -308,6 +291,39 @@ class Policy(ParametersBase):
             self.set_year(year)
             self._update({year: reform[year]})
         self.set_year(precall_current_year)
+
+    @staticmethod
+    def convert_reform_dictionary(param_key_dict):
+        """
+        Converts specified param_key_dict into a dictionary whose primary
+        keys are calendary years, and hence, is suitable as the argument
+        to the implement_reform(reform_dict) method (see above).
+
+        Specified input dictionary has string policy-parameter primary keys
+           and string years as secondary keys.  See read_json_reform_file
+           method above.
+
+        Returned dictionary has integer years as primary keys and
+           string policy-parameters as secondary keys.
+        """
+        # convert year skey strings to integers and lists into np.arrays
+        reform_pkey_param = {}
+        for pkey, sdict in param_key_dict.items():
+            if not isinstance(pkey, six.string_types):
+                msg = 'pkey {} in reform is not a string'
+                raise ValueError(msg.format(pkey))
+            rdict = {}
+            for skey, val in sdict.items():
+                if not isinstance(skey, six.string_types):
+                    msg = 'skey {} in reform is not a string'
+                    raise ValueError(msg.format(skey))
+                else:
+                    year = int(skey)
+                rdict[year] = (np.array(val)
+                               if isinstance(val, list) else val)
+            reform_pkey_param[pkey] = rdict
+        # convert reform_pkey_param dictionary to reform_pkey_year dictionary
+        return Policy._reform_pkey_year(reform_pkey_param)
 
     # ----- begin private methods of Policy class -----
 
