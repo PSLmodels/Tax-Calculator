@@ -1,0 +1,34 @@
+// Federal income tax policy reforms used to test that TaxBrain Internet site
+// produces essentially the same results as Tax-Calculator on this computer.
+{
+    "0": {
+        "taxbrain_start_year": 2016,
+        "name": "Eliminate OASDI MTE in 2017",
+        "spec": {
+            "_SS_Earnings_c": {
+                "2017": [999999999]
+            }
+        }
+    },
+
+    "1": {
+        "taxbrain_start_year": 2013,
+        "name": "Eliminate OASDI MTE in 2020",
+        "spec": {
+            "_SS_Earnings_c": {
+                "2020": [999999999]
+            }
+        }
+    },
+
+    "01": {
+        "taxbrain_start_year": 2013,
+        "name": "Eliminate OASDI MTE in 2019",
+        "spec": {
+            "_SS_Earnings_c": {
+                "2019": [999999999]
+            }
+        }
+    }
+
+}
