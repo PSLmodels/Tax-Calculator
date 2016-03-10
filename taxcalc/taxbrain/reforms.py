@@ -1,7 +1,8 @@
 """
-Python script that compares federal individual income tax reform results
-produced by the Tax-Calculator taxcalc package on this computer with those
-produced by the TaxBrain Internet site.
+Python script that compares federal individual income and payroll tax
+reform results produced by Tax-Calculator in two ways:
+(1) via the TaxBrain website running in the clould, and
+(2) via the taxcalc package running on this computer.
 
 COMMAND-LINE USAGE: python reforms.py
 
@@ -23,7 +24,9 @@ import re
 import json
 
 
-NUM_YEARS = 10  # number of year for which tax results are calculated
+MIN_START_YEAR = 2013
+MAX_START_YEAR = 2017
+NUM_YEARS = 10  # number of years for which results are calculated
 
 
 def main():
@@ -35,8 +38,12 @@ def main():
 
     # process each reform in reforms_dict
     for ref in sorted(reforms_dict):
-        reform_desc = reforms_dict[ref]['desc']
+        # reform_desc = reforms_dict[ref]['desc']
         start_year = reforms_dict[ref]['year']
+        if start_year < MIN_START_YEAR or start_year > MAX_START_YEAR:
+            msg = 'reform {} has start_year {} outside [{},{}] range'
+            raise ValueError(msg.format(ref, start_year,
+                                        MIN_START_YEAR, MAX_START_YEAR))
         reform_spec = reforms_dict[ref]['spec']
         reform_dict = Policy.convert_reform_dictionary(reform_spec)
         (itax_taxcalc,
@@ -94,8 +101,8 @@ def taxcalc_results(start_year, reform_dict):
 
 def taxbrain_results(start_year, reform_dict):
     """
-    Use TaxBrain Internet site to compute aggregate income tax and
-    payroll tax revenues for ten years beginning with the specified
+    Use TaxBrain website running in the cloud to compute aggregate income tax
+    and payroll tax revenues for ten years beginning with the specified
     start_year using the specified reform_spec dictionary.
     Returns two aggregate revenue dictionaries indexed by calendar year.
     """
@@ -109,7 +116,7 @@ def taxbrain_results(start_year, reform_dict):
 
 def differences(taxkind, taxcalc, taxbrain):
     """
-    Checks for differences in the taxcalc and taxbrain dictionaries,
+    Check for differences in the taxcalc and taxbrain dictionaries,
     which are for the kind of tax specified in the taxkind string.
     """
     first_year = min(taxcalc)
