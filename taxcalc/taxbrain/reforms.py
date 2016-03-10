@@ -18,23 +18,33 @@ import os
 import sys
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 PUF_PATH = os.path.join(CUR_PATH, '..', '..', 'puf.csv')
+CWD_PATH = os.path.join(CUR_PATH, '..', '..', 'chromedriver')
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
 import re
 import json
+import selenium
+from selenium.webdriver.support.ui import Select, WebDriverWait
+from selenium.common.exceptions import NoSuchElementException
+from time import sleep
 
 
 MIN_START_YEAR = 2013
 MAX_START_YEAR = 2017
-NUM_YEARS = 10  # number of years for which results are calculated
+NUMBER_OF_YEARS = 10  # number of years for which results are calculated
 
 
 def main():
     """
-    .................
+    Highest-level logic of reforms.py script.
     """
     # read reforms.json file and convert to a dictionary of reforms
     reforms_dict = read_reforms_json_file('reforms.json')
+
+    # check that selenium package and chromedriver program are available
+    check_selenium_and_chromedriver()
+    # create Chrome webdriver object
+    driver = selenium.webdriver.Chrome(executable_path=CWD_PATH)
 
     # process each reform in reforms_dict
     for ref in sorted(reforms_dict):
@@ -49,10 +59,13 @@ def main():
         (itax_taxcalc,
          fica_taxcalc) = taxcalc_results(start_year, reform_dict)
         (itax_taxbrain,
-         fica_taxbrain) = taxbrain_results(start_year, reform_spec)
+         fica_taxbrain) = taxbrain_results(driver, start_year, reform_spec)
         differences('ITAX', itax_taxcalc, itax_taxbrain)
         differences('FICA', fica_taxcalc, fica_taxbrain)
-        break  # out of loop >> TEMP CODE <<
+        break  # out of loop >>> TEMP CODE <<<
+
+    # delete Chrome webdriver object
+    driver.quit()
 
     # return no-error exit code
     return 0
@@ -94,21 +107,27 @@ def taxcalc_results(start_year, reform_dict):
     pol.implement_reform(reform_dict)
     calc = Calculator(policy=pol, records=Records(data=PUF_PATH))
     calc.advance_to_year(start_year)
-    adt = calc.diagnostic_table(num_years=NUM_YEARS)  # adt is Pandas DataFrame
+    adt = calc.diagnostic_table(num_years=NUMBER_OF_YEARS)
+    # note that adt is Pandas DataFrame object
     return (adt.xs('Ind inc tax ($b)').to_dict(),
             adt.xs('Payroll tax ($b)').to_dict())
 
 
-def taxbrain_results(start_year, reform_dict):
+def taxbrain_results(driver, start_year, reform_dict):
     """
     Use TaxBrain website running in the cloud to compute aggregate income tax
     and payroll tax revenues for ten years beginning with the specified
     start_year using the specified reform_spec dictionary.
     Returns two aggregate revenue dictionaries indexed by calendar year.
     """
+    # go to main TaxBrain webpage specifying start_year
+    url = 'http://www.ospc.org/taxbrain/?start_year={}'.format(start_year)
+    driver.get(url)
+
+    # PLACEHOLDER CODE BELOW:
     itax = {}
     fica = {}
-    for year in range(start_year, start_year + NUM_YEARS):
+    for year in range(start_year, start_year + NUMBER_OF_YEARS):
         itax[year] = 0.0
         fica[year] = 0.0
     return (itax, fica)
@@ -126,6 +145,26 @@ def differences(taxkind, taxcalc, taxbrain):
         print 'YR,{}_DIFF,_TAXCALC: {} {:.1f} {:.1f}'.format(taxkind,
                                                              year, diff,
                                                              taxcalc[year])
+
+
+def check_selenium_and_chromedriver():
+    """
+    Check availability of selenium package and chromedriver program.
+    Raises error if package or program not installed correctly;
+    otherwise returns without doing anything or returning anything.
+    """
+    # check for selenium package
+    try:
+        import imp
+        imp.find_module('selenium')
+    except ImportError:
+        msg = 'cannot find selenium package to import'
+        raise ImportError(msg)
+    # check for chromedriver program
+    if not os.path.isfile(CWD_PATH):
+        msg = 'cannot find chromedriver program at {}'.format(CWD_PATH)
+        raise ValueError(msg)
+    return
 
 
 if __name__ == '__main__':

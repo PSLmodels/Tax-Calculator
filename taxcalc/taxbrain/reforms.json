@@ -7,7 +7,7 @@
 {
     "0": {
         "desc": "Eliminate OASDI MTE in 2017",
-        "year": 2016,
+        "year": 2013, // 2016,
         "spec": {
             "_SS_Earnings_c": {
                 "2017": [999999999]
@@ -17,7 +17,7 @@
 
     "1": {
         "desc": "Eliminate OASDI MTE in 2020",
-        "year": 2013,
+        "year": 2015,
         "spec": {
             "_SS_Earnings_c": {
                 "2020": [999999999]
@@ -27,7 +27,7 @@
 
     "01": {
         "desc": "Eliminate OASDI MTE in 2019",
-        "year": 2013,
+        "year": 2014,
         "spec": {
             "_SS_Earnings_c": {
                 "2019": [999999999]
