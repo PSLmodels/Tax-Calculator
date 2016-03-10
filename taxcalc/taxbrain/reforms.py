@@ -23,6 +23,9 @@ import re
 import json
 
 
+NUM_YEARS = 10  # number of year for which tax results are calculated
+
+
 def main():
     """
     .................
@@ -30,19 +33,19 @@ def main():
     # read reforms.json file and convert to a dictionary of reforms
     reforms_dict = read_reforms_json_file('reforms.json')
 
-    # ...
+    # process each reform in reforms_dict
     for ref in sorted(reforms_dict):
-        reform = reforms_dict.get(ref)
-        start_year = reform['taxbrain_start_year']
-        reform_name = reform['name']
-        reform_spec = reform['spec']
+        reform_desc = reforms_dict[ref]['desc']
+        start_year = reforms_dict[ref]['year']
+        reform_spec = reforms_dict[ref]['spec']
         reform_dict = Policy.convert_reform_dictionary(reform_spec)
-        print '*** REFORM:', ref, start_year, reform_name
-        print '      SPEC:', reform_spec
-        print '      DICT:', reform_dict
-
-    # calc = Calculator(policy=Policy(), records=Records(data=PUF_PATH))
-    # calc.diagnostic_table(num_years=5)
+        (itax_taxcalc,
+         fica_taxcalc) = taxcalc_results(start_year, reform_dict)
+        (itax_taxbrain,
+         fica_taxbrain) = taxbrain_results(start_year, reform_spec)
+        differences('ITAX', itax_taxcalc, itax_taxbrain)
+        differences('FICA', fica_taxcalc, fica_taxbrain)
+        break  # out of loop >> TEMP CODE <<
 
     # return no-error exit code
     return 0
@@ -51,8 +54,8 @@ def main():
 
 def read_reforms_json_file(filename):
     """
-    Read specified filename; strip //-comments;
-    and return dictionary of  if is valid JSON
+    Read specified filename; strip //-comments; and
+    return dictionary of reforms if file contains valid JSON.
     """
     with open(filename, 'r') as reforms_file:
         json_with_comments = reforms_file.read()
@@ -71,6 +74,51 @@ def read_reforms_json_file(filename):
         sys.stderr.write(line + '\n')
         raise ValueError(msg)
     return reforms_dict
+
+
+def taxcalc_results(start_year, reform_dict):
+    """
+    Use taxcalc package on this computer to compute aggregate income tax
+    and payroll tax revenues for ten years beginning with the specified
+    start_year using the specified reform_dict dictionary.
+    Returns two aggregate revenue dictionaries indexed by calendar year.
+    """
+    pol = Policy()
+    pol.implement_reform(reform_dict)
+    calc = Calculator(policy=pol, records=Records(data=PUF_PATH))
+    calc.advance_to_year(start_year)
+    adt = calc.diagnostic_table(num_years=NUM_YEARS)  # adt is Pandas DataFrame
+    return (adt.xs('Ind inc tax ($b)').to_dict(),
+            adt.xs('Payroll tax ($b)').to_dict())
+
+
+def taxbrain_results(start_year, reform_dict):
+    """
+    Use TaxBrain Internet site to compute aggregate income tax and
+    payroll tax revenues for ten years beginning with the specified
+    start_year using the specified reform_spec dictionary.
+    Returns two aggregate revenue dictionaries indexed by calendar year.
+    """
+    itax = {}
+    fica = {}
+    for year in range(start_year, start_year + NUM_YEARS):
+        itax[year] = 0.0
+        fica[year] = 0.0
+    return (itax, fica)
+
+
+def differences(taxkind, taxcalc, taxbrain):
+    """
+    Checks for differences in the taxcalc and taxbrain dictionaries,
+    which are for the kind of tax specified in the taxkind string.
+    """
+    first_year = min(taxcalc)
+    last_year = max(taxcalc)
+    for year in range(first_year, last_year + 1):
+        diff = taxcalc[year] - taxbrain[year]
+        print 'YR,{}_DIFF,_TAXCALC: {} {:.1f} {:.1f}'.format(taxkind,
+                                                             year, diff,
+                                                             taxcalc[year])
 
 
 if __name__ == '__main__':

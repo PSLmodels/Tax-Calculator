@@ -1,9 +1,13 @@
 // Federal income tax policy reforms used to test that TaxBrain Internet site
 // produces essentially the same results as Tax-Calculator on this computer.
+// Each reform below has the following attributes
+// (1) desc -> reform description
+// (2) year -> TaxBrain start year
+// (3) spec -> TaxBrain-style reform specification | by parameter, then by year
 {
     "0": {
-        "taxbrain_start_year": 2016,
-        "name": "Eliminate OASDI MTE in 2017",
+        "desc": "Eliminate OASDI MTE in 2017",
+        "year": 2016,
         "spec": {
             "_SS_Earnings_c": {
                 "2017": [999999999]
@@ -12,8 +16,8 @@
     },
 
     "1": {
-        "taxbrain_start_year": 2013,
-        "name": "Eliminate OASDI MTE in 2020",
+        "desc": "Eliminate OASDI MTE in 2020",
+        "year": 2013,
         "spec": {
             "_SS_Earnings_c": {
                 "2020": [999999999]
@@ -22,8 +26,8 @@
     },
 
     "01": {
-        "taxbrain_start_year": 2013,
-        "name": "Eliminate OASDI MTE in 2019",
+        "desc": "Eliminate OASDI MTE in 2019",
+        "year": 2013,
         "spec": {
             "_SS_Earnings_c": {
                 "2019": [999999999]
