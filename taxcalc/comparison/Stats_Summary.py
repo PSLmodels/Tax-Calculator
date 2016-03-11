@@ -8,15 +8,16 @@ USAGE: python Stats_Summary.py
 
 """
 
-from taxcalc import *
 import pandas as pd
 from pandas import DataFrame
 import numpy as np
 import copy
+import os
+import sys
 
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, "..", ".."))
-from taxcalc import Policy, Records, Calculator, behavior
+from taxcalc import Policy, Records, Calculator, Growth, behavior
 PUF_PATH = os.path.join(CUR_PATH, "..", "..", "puf.csv")
 EVAR_PATH = os.path.join(CUR_PATH, "..", "e_variable_info.csv")
 
@@ -137,7 +138,7 @@ calc1 = Calculator(records=records1, policy=policy1)
 # calculates weighted mean for each variable
 # in total 10 years
 total_pop = calc1.records.s006.sum()
-for year in range(2013, 2024):
+for year in range(2013, 2027):
     calc1.calc_all()
     stat = []
     for variable in sum_stats.index:
@@ -148,8 +149,9 @@ for year in range(2013, 2024):
     sum_stats[column] = stat
     
     year+=1
-    calc1.increment_year()
+    if year != 2027:
+        calc1.increment_year()
 
 sum_stats.to_csv("variable_stats_summary.csv", header=['description','2013','2014','2015','2016','2017','2018',
-                                                        '2019', '2020','2021', '2022', '2023'], float_format='%8.2f')
+                                                        '2019', '2020','2021', '2022', '2023', '2024','2025', '2026'], float_format='%8.2f')
 
