@@ -18,6 +18,7 @@ E01000 = Net capital gain or loss reported on Schedule D
 E01100 = Capital gain distribution (not reported on Schedule D)
 E01200 = Other net gain or loss (Form 4797)
 E01400 = Taxable IRA distribution
+E01500 = Pensions and annuities in AGI plus those not in AGI
 E01700 = Pensions and annuities in AGI
 E02000 = Schedule E net income or loss
 E02100 = Farm net profit or loss for filing unit
