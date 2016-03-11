@@ -50,12 +50,9 @@ def main():
     for ref in sorted(reforms_dict):
         # reform_desc = reforms_dict[ref]['desc']
         start_year = reforms_dict[ref]['year']
-        if start_year < MIN_START_YEAR or start_year > MAX_START_YEAR:
-            msg = 'reform {} has start_year {} outside [{},{}] range'
-            raise ValueError(msg.format(ref, start_year,
-                                        MIN_START_YEAR, MAX_START_YEAR))
         reform_spec = reforms_dict[ref]['spec']
         reform_dict = Policy.convert_reform_dictionary(reform_spec)
+        check_reform_years(ref, start_year, reform_dict)
         (itax_taxcalc,
          fica_taxcalc) = taxcalc_results(start_year, reform_dict)
         (itax_taxbrain,
@@ -94,6 +91,29 @@ def read_reforms_json_file(filename):
         sys.stderr.write(line + '\n')
         raise ValueError(msg)
     return reforms_dict
+
+
+def check_reform_years(reform_name, start_year, reform_dict):
+    """
+    Check specified reform start_year and specified reform_dict (a
+    dictionary with year as the primary key) for valid year values.
+    Raises error if there are illegal year values; otherwise
+    returns without doing anything or returning anything.
+    """
+    if start_year < MIN_START_YEAR or start_year > MAX_START_YEAR:
+        msg = 'reform {} has start year {} outside [{},{}] range'
+        raise ValueError(msg.format(reform_name, start_year,
+                                    MIN_START_YEAR, MAX_START_YEAR))
+    first_year = min(reform_dict)
+    if first_year < start_year:
+        msg = 'reform {} has first reform year {} before start year {}'
+        raise ValueError(msg.format(reform_name, first_year, start_year))
+    last_year = max(reform_dict)
+    max_year = start_year + NUMBER_OF_YEARS
+    if last_year > max_year:
+        msg = 'reform {} has last reform year {} after last results year {}'
+        raise ValueError(msg.format(reform_name, last_year, max_year))
+    return
 
 
 def taxcalc_results(start_year, reform_dict):
