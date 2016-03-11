@@ -2,7 +2,7 @@
 This script calculates weighted means for PUF variables used in the Calculator
 and 16 calculated variables.
 
-USAGE: python Stats_Summary.py
+USAGE: python stats_summary.py
 
 """
 
@@ -24,7 +24,7 @@ EVAR_PATH = os.path.join(CUR_PATH, "..", "e_variable_info.csv")
 
 def main():
     parser = argparse.ArgumentParser(
-        prog="python Stats_Summary.py",
+        prog="python stats_summary.py",
         description=('Generates a files for either statistics summary'
                      'on a 10-year span or correlation matrix of current'
                      'tax year. Adding either sum-stats or correlation'
