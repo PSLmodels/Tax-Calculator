@@ -58,7 +58,6 @@ def main():
 
     # process each reform in reforms_dict
     for ref in sorted(reforms_dict):
-        replications = reforms_dict[ref]['replications']
         syr = reforms_dict[ref]['start_year']
         refspec = reforms_dict[ref]['specification']
         refdict = Policy.convert_reform_dictionary(refspec)
@@ -66,15 +65,15 @@ def main():
          fica_taxcalc) = taxcalc_results(syr, refdict,
                                          itax_taxcalc_clp,
                                          fica_taxcalc_clp)
-        for repl in range(replications):
+        for repl in range(reforms_dict[ref]['replications']):
             (itax_taxbrain,
              fica_taxbrain,
-             taxbrain_output_url) = taxbrain_results(driver, syr, refspec)
-            check_for_differences(ref, repl, 'ITAX', taxbrain_output_url,
+             taxbrain_output_url) = taxbrain_results(driver, ref, syr, refspec)
+            ref_repl = '{}-{:03d}'.format(ref, repl)
+            check_for_differences(ref_repl, 'ITAX', taxbrain_output_url,
                                   itax_taxbrain, itax_taxcalc)
-            check_for_differences(ref, repl, 'FICA', taxbrain_output_url,
+            check_for_differences(ref_repl, 'FICA', taxbrain_output_url,
                                   fica_taxbrain, fica_taxcalc)
-        break  # >>>>>>> TEMP CODE <<<<<<<<<
 
     # delete Chrome webdriver object
     driver.quit()
@@ -173,12 +172,12 @@ def check_selenium_and_chromedriver():
     return
 
 
-def taxbrain_results(driver, start_year, reform_dict):
+def taxbrain_results(driver, reform_name, start_year, reform_dict):
     """
     Use TaxBrain website running in the cloud to compute aggregate income tax
     and payroll tax revenue difference (between reform and current-law policy)
     for ten years beginning with the specified start_year using the specified
-    reform_spec dictionary.
+    reform_spec dictionary for the reform with the specified reform_name.
     Returns two aggregate revenue difference dictionaries indexed by calendar
     year and the URL of the complete TaxBrain results.
     """
@@ -198,7 +197,8 @@ def taxbrain_results(driver, start_year, reform_dict):
     # wait for TaxBrain output webpage to appear
     css = 'div.flatblock.block-taxbrain_results_header'
     wait_secs = 120  # time to wait before triggering wait error
-    wait_error_msg = 'No TaxBrain results after {} seconds'.format(wait_secs)
+    template = 'No TaxBrain results for reform {} after {} seconds'
+    wait_error_msg = template.format(reform_name, wait_secs)
     WebDriverWait(driver, wait_secs).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, css)), wait_error_msg)
 
@@ -207,8 +207,14 @@ def taxbrain_results(driver, start_year, reform_dict):
     driver.find_element_by_css_selector(css).click()
     sleep(1)  # wait for a second for the copy to clipboard to finish
 
-    # return extracted contents of clipboard
-    return taxbrain_output_table_extract(pyperclip.paste())
+    # extract tax revenue difference dictionaries from clipboard contents
+    dicts = taxbrain_output_table_extract(pyperclip.paste())
+
+    # clear the clipboard
+    pyperclip.copy('')
+
+    # return dictionaries extracted from "TOTAL LIABILITIES CHANGE" table
+    return dicts
 
 
 def taxbrain_output_table_extract(table):
@@ -222,7 +228,8 @@ def taxbrain_output_table_extract(table):
     tyears = tlines[0].split()
     titaxd = (tlines[2].split())[5:]
     tficad = (tlines[3].split())[4:]
-    url = (tlines[5].split())[1:]
+    url_list = (tlines[5].split())[1:]
+    url = (url_list[0])[7:]
     itax = {}
     fica = {}
     for year, itaxd, ficad in zip(tyears, titaxd, tficad):
@@ -257,16 +264,18 @@ def taxcalc_results(start_year, reform_dict, itax_clp, fica_clp):
     return (itax_diff, fica_diff)
 
 
-def check_for_differences(ref, repl, taxkind, out_url, taxbrain, taxcalc):
+def check_for_differences(ref_repl, taxkind, out_url, taxbrain, taxcalc):
     """
     Check for differences in the specified taxbrain and taxcalc dictionaries,
     which are for the kind of tax specified in the taxkind string and for the
-    specified reform ref and replication repl with complete TaxBrain output
-    in specified out_url.
+    specified reform-replication with complete TaxBrain output in specified
+    out_url.
     Writes to stdout only when absolute value of taxbrain-minus-taxcalc
     difference is greater than epsilon, with written information being
-    reform, taxkind, year, taxbrain-minus-taxcalc difference, and the
-    relative percentage difference measured by 100*abs(diff)/abs(taxcalc)
+    reform-replication, taxkind, year, taxbrain-minus-taxcalc difference,
+    the relative percentage difference measured by 100*abs(diff)/abs(taxcalc),
+    and the URL from which complete TaxBrain output results are available.
+    Lines written to stdout are tab-delimited.
     """
     epsilon = 0.05
     for year in sorted(taxbrain):
@@ -277,8 +286,8 @@ def check_for_differences(ref, repl, taxkind, out_url, taxbrain, taxcalc):
             else:
                 pctdiff = float('inf')
             template = '{}\t{}\t{}\t{:.1f}\t{:.2f}\t{}\n'
-            rpr = ref + '-{:3d}'.format(repl)
-            msg = template.format(rpr, taxkind, year, diff, pctdiff, out_url)
+            msg = template.format(ref_repl, taxkind, year,
+                                  diff, pctdiff, out_url)
             sys.stdout.write(msg)
 
 
