@@ -15,8 +15,7 @@ the multivariate distribution of income, deduction and credit items in
 `CBO forecasts`_ available in Spring 2016. It is intended to match similar
 but confidential data used by the Congressional Joint Committee on
 Taxation. The underlying dataset must be purchased from the Statistics
-of Income division of the Internal Revenue Service, and is described
-in the `general description booklet`_. Additional
+of Income division of the Internal Revenue Service. Additional
 information on non-filers is taken from the March 2013 Current
 Population Survey. 
 
