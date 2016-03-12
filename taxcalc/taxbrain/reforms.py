@@ -24,9 +24,11 @@ from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
 import re
 import json
 import selenium
-from selenium.webdriver.support.ui import Select, WebDriverWait
-from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
+import pyperclip
 
 
 MIN_START_YEAR = 2013
@@ -46,19 +48,29 @@ def main():
     # create Chrome webdriver object
     driver = selenium.webdriver.Chrome(executable_path=CWD_PATH)
 
+    # initial empty results dictionaries that contain reform-indexed
+    # dictionaries of year-indexed aggregate tax revenue dictionaries
+    # : TaxBrain results are differences between reform and current-law policy
+    itax_taxbrain_diff = {}
+    fica_taxbrain_diff = {}
+    # : taxcalc results are levels under reform policy
+    itax_taxcalc = {}
+    fica_taxcalc = {}
+    # : URL of complete TaxBrain output results
+    taxbrain_output_url = {}
+
     # process each reform in reforms_dict
     for ref in sorted(reforms_dict):
-        # reform_desc = reforms_dict[ref]['desc']
-        start_year = reforms_dict[ref]['year']
-        reform_spec = reforms_dict[ref]['spec']
-        reform_dict = Policy.convert_reform_dictionary(reform_spec)
-        check_reform_years(ref, start_year, reform_dict)
-        (itax_taxcalc,
-         fica_taxcalc) = taxcalc_results(start_year, reform_dict)
-        (itax_taxbrain,
-         fica_taxbrain) = taxbrain_results(driver, start_year, reform_spec)
-        differences('ITAX', itax_taxcalc, itax_taxbrain)
-        differences('FICA', fica_taxcalc, fica_taxbrain)
+        dsc = reforms_dict[ref]['description']
+        syr = reforms_dict[ref]['start_year']
+        refspec = reforms_dict[ref]['spec']
+        refdict = Policy.convert_reform_dictionary(refspec)
+        check_reform_years(ref, syr, refdict)
+        (itax_taxbrain_diff[ref],
+         fica_taxbrain_diff[ref],
+         taxbrain_output_url[ref]) = taxbrain_results(driver, syr, refspec)
+        (itax_taxcalc[ref],
+         fica_taxcalc[ref]) = taxcalc_results(syr, refdict)
         break  # out of loop >>> TEMP CODE <<<
 
     # delete Chrome webdriver object
@@ -93,6 +105,26 @@ def read_reforms_json_file(filename):
     return reforms_dict
 
 
+def check_selenium_and_chromedriver():
+    """
+    Check availability of selenium package and chromedriver program.
+    Raises error if package or program not installed correctly;
+    otherwise returns without doing anything or returning anything.
+    """
+    # check for selenium package
+    try:
+        import imp
+        imp.find_module('selenium')
+    except ImportError:
+        msg = 'cannot find selenium package to import'
+        raise ImportError(msg)
+    # check for chromedriver program
+    if not os.path.isfile(CWD_PATH):
+        msg = 'cannot find chromedriver program at {}'.format(CWD_PATH)
+        raise ValueError(msg)
+    return
+
+
 def check_reform_years(reform_name, start_year, reform_dict):
     """
     Check specified reform start_year and specified reform_dict (a
@@ -116,6 +148,63 @@ def check_reform_years(reform_name, start_year, reform_dict):
     return
 
 
+def taxbrain_results(driver, start_year, reform_dict):
+    """
+    Use TaxBrain website running in the cloud to compute aggregate income tax
+    and payroll tax revenues for ten years beginning with the specified
+    start_year using the specified reform_spec dictionary.
+    Returns two aggregate revenue dictionaries indexed by calendar year and
+    the URL of the complete TaxBrain results.
+    """
+    # browse TaxBrain input webpage for specified start_year
+    url = 'http://www.ospc.org/taxbrain/?start_year={}'.format(start_year)
+    driver.get(url)
+
+    # insert reform parameters into fields on input webpage
+    css = 'input#id_SS_Earnings_c.form-control'
+    txt = '999999999'  # TODO: derive txt from reform_dict values
+    driver.find_element_by_css_selector(css).send_keys(txt)
+
+    # click on "Show me the results!" button to start tax calculations
+    css = 'input#tax-submit.btn.btn-secondary.btn-block.btn-animate'
+    driver.find_element_by_css_selector(css).click()
+
+    # wait for TaxBrain output webpage to appear
+    css = 'div.flatblock.block-taxbrain_results_header'
+    wait_secs = 120  # time to wait before triggering wait error
+    wait_error_msg = 'No TaxBrain results after {} seconds'.format(wait_secs)
+    WebDriverWait(driver, wait_secs).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, css)), wait_error_msg)
+
+    # copy "TOTAL LIABILITIES CHANGE BY CALENDAR YEAR" table to clipboard
+    css = 'a.btn.btn-default.buttons-copy.buttons-html5'
+    driver.find_element_by_css_selector(css).click()
+    sleep(1)  # wait for a second for the copy to clipboard to finish
+
+    # return extracted contents of clipboard
+    return taxbrain_output_table_extract(pyperclip.paste())
+
+
+def taxbrain_output_table_extract(table):
+    """
+    Extract from specified "TOTAL LIABILITIES CHANGE BY CALENDAR YEAR" table
+    reform-vs-current-law-policy differences in itax and fica aggregate
+    revenue by calendar year, which are returned as dictionaries.
+    Also, extract the URL of the complete TaxBrain results and return.
+    """
+    tlines = table.split('\n')
+    tyears = tlines[0].split()
+    titaxd = (tlines[2].split())[5:]
+    tficad = (tlines[3].split())[4:]
+    url = (tlines[5].split())[1:]
+    itax = {}
+    fica = {}
+    for year, itaxd, ficad in zip(tyears, titaxd, tficad):
+        itax[year] = float(itaxd)
+        fica[year] = float(ficad)
+    return (itax, fica, url)
+
+
 def taxcalc_results(start_year, reform_dict):
     """
     Use taxcalc package on this computer to compute aggregate income tax
@@ -133,26 +222,6 @@ def taxcalc_results(start_year, reform_dict):
             adt.xs('Payroll tax ($b)').to_dict())
 
 
-def taxbrain_results(driver, start_year, reform_dict):
-    """
-    Use TaxBrain website running in the cloud to compute aggregate income tax
-    and payroll tax revenues for ten years beginning with the specified
-    start_year using the specified reform_spec dictionary.
-    Returns two aggregate revenue dictionaries indexed by calendar year.
-    """
-    # go to main TaxBrain webpage specifying start_year
-    url = 'http://www.ospc.org/taxbrain/?start_year={}'.format(start_year)
-    driver.get(url)
-
-    # PLACEHOLDER CODE BELOW:
-    itax = {}
-    fica = {}
-    for year in range(start_year, start_year + NUMBER_OF_YEARS):
-        itax[year] = 0.0
-        fica[year] = 0.0
-    return (itax, fica)
-
-
 def differences(taxkind, taxcalc, taxbrain):
     """
     Check for differences in the taxcalc and taxbrain dictionaries,
@@ -165,26 +234,6 @@ def differences(taxkind, taxcalc, taxbrain):
         print 'YR,{}_DIFF,_TAXCALC: {} {:.1f} {:.1f}'.format(taxkind,
                                                              year, diff,
                                                              taxcalc[year])
-
-
-def check_selenium_and_chromedriver():
-    """
-    Check availability of selenium package and chromedriver program.
-    Raises error if package or program not installed correctly;
-    otherwise returns without doing anything or returning anything.
-    """
-    # check for selenium package
-    try:
-        import imp
-        imp.find_module('selenium')
-    except ImportError:
-        msg = 'cannot find selenium package to import'
-        raise ImportError(msg)
-    # check for chromedriver program
-    if not os.path.isfile(CWD_PATH):
-        msg = 'cannot find chromedriver program at {}'.format(CWD_PATH)
-        raise ValueError(msg)
-    return
 
 
 if __name__ == '__main__':
