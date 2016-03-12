@@ -344,6 +344,7 @@ class Records(object):
         self.e01100 *= ACGNS
         self.e01200 *= ACGNS
         self.e01400 *= ATXPY
+        self.e01500 *= ATXPY
         self.e01700 *= ATXPY
         self.e02000[:] = np.where(self.e02000 >= 0,
                                   self.e02000 * ASCHEI,
