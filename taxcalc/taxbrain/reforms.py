@@ -43,36 +43,37 @@ def main():
     # read reforms.json file and convert to a dictionary of reforms
     reforms_dict = read_reforms_json_file('reforms.json')
 
+    # check validity of years in each reform
+    for ref in sorted(reforms_dict):
+        syr = reforms_dict[ref]['start_year']
+        refspec = reforms_dict[ref]['spec']
+        refdict = Policy.convert_reform_dictionary(refspec)
+        check_reform_years(ref, syr, refdict)
+
+    # compute taxcalc results for current-law policy
+    (itax_taxcalc_clp, fica_taxcalc_clp) = taxcalc_clp_results()
+
     # check that selenium package and chromedriver program are available
     check_selenium_and_chromedriver()
     # create Chrome webdriver object
     driver = selenium.webdriver.Chrome(executable_path=CWD_PATH)
 
-    # initial empty results dictionaries that contain reform-indexed
-    # dictionaries of year-indexed aggregate tax revenue dictionaries
-    # : TaxBrain results are differences between reform and current-law policy
-    itax_taxbrain_diff = {}
-    fica_taxbrain_diff = {}
-    # : taxcalc results are levels under reform policy
-    itax_taxcalc = {}
-    fica_taxcalc = {}
-    # : URL of complete TaxBrain output results
+    # dictionary of complete TaxBrain output URLs indexed by reform
     taxbrain_output_url = {}
 
     # process each reform in reforms_dict
     for ref in sorted(reforms_dict):
-        dsc = reforms_dict[ref]['description']
         syr = reforms_dict[ref]['start_year']
         refspec = reforms_dict[ref]['spec']
         refdict = Policy.convert_reform_dictionary(refspec)
-        check_reform_years(ref, syr, refdict)
-        (itax_taxbrain_diff[ref],
-         fica_taxbrain_diff[ref],
-         taxbrain_output_url[ref]) = taxbrain_results(driver, syr, refspec)
-        (itax_taxcalc[ref],
-         fica_taxcalc[ref]) = taxcalc_results(syr, refdict)
-        break  # out of loop >>> TEMP CODE <<<
-
+        (itax_taxbrain,
+         fica_taxbrain,
+         taxbrain_output_url) = taxbrain_results(driver, syr, refspec)
+        (itax_taxcalc,
+         fica_taxcalc) = taxcalc_results(syr, refdict,
+                                         itax_taxcalc_clp, fica_taxcalc_clp)
+        check_for_differences(ref, syr, 'ITAX', itax_taxbrain, itax_taxcalc)
+        check_for_differences(ref, syr, 'FICA', fica_taxbrain, fica_taxcalc)
     # delete Chrome webdriver object
     driver.quit()
 
@@ -105,26 +106,6 @@ def read_reforms_json_file(filename):
     return reforms_dict
 
 
-def check_selenium_and_chromedriver():
-    """
-    Check availability of selenium package and chromedriver program.
-    Raises error if package or program not installed correctly;
-    otherwise returns without doing anything or returning anything.
-    """
-    # check for selenium package
-    try:
-        import imp
-        imp.find_module('selenium')
-    except ImportError:
-        msg = 'cannot find selenium package to import'
-        raise ImportError(msg)
-    # check for chromedriver program
-    if not os.path.isfile(CWD_PATH):
-        msg = 'cannot find chromedriver program at {}'.format(CWD_PATH)
-        raise ValueError(msg)
-    return
-
-
 def check_reform_years(reform_name, start_year, reform_dict):
     """
     Check specified reform start_year and specified reform_dict (a
@@ -148,13 +129,49 @@ def check_reform_years(reform_name, start_year, reform_dict):
     return
 
 
+def taxcalc_clp_results():
+    """
+    Use taxcalc package on this computer to compute aggregate income tax
+    and payroll tax revenues for years beginning with MIN_START_YEAR and
+    ending with MAX_START_YEAR+NUMBER_OF_YEARS-1 for current-law policy.
+    Returns two aggregate revenue dictionaries indexed by calendar year.
+    """
+    calc = Calculator(policy=Policy(), records=Records(data=PUF_PATH))
+    nyrs = MAX_START_YEAR + NUMBER_OF_YEARS - MIN_START_YEAR
+    adt = calc.diagnostic_table(num_years=nyrs)
+    # note that adt is Pandas DataFrame object
+    return (adt.xs('Ind inc tax ($b)').to_dict(),
+            adt.xs('Payroll tax ($b)').to_dict())
+
+
+def check_selenium_and_chromedriver():
+    """
+    Check availability of selenium package and chromedriver program.
+    Raises error if package or program not installed correctly;
+    otherwise returns without doing anything or returning anything.
+    """
+    # check for selenium package
+    try:
+        import imp
+        imp.find_module('selenium')
+    except ImportError:
+        msg = 'cannot find selenium package to import'
+        raise ImportError(msg)
+    # check for chromedriver program
+    if not os.path.isfile(CWD_PATH):
+        msg = 'cannot find chromedriver program at {}'.format(CWD_PATH)
+        raise ValueError(msg)
+    return
+
+
 def taxbrain_results(driver, start_year, reform_dict):
     """
     Use TaxBrain website running in the cloud to compute aggregate income tax
-    and payroll tax revenues for ten years beginning with the specified
-    start_year using the specified reform_spec dictionary.
-    Returns two aggregate revenue dictionaries indexed by calendar year and
-    the URL of the complete TaxBrain results.
+    and payroll tax revenue difference (between reform and current-law policy)
+    for ten years beginning with the specified start_year using the specified
+    reform_spec dictionary.
+    Returns two aggregate revenue difference dictionaries indexed by calendar
+    year and the URL of the complete TaxBrain results.
     """
     # browse TaxBrain input webpage for specified start_year
     url = 'http://www.ospc.org/taxbrain/?start_year={}'.format(start_year)
@@ -200,17 +217,20 @@ def taxbrain_output_table_extract(table):
     itax = {}
     fica = {}
     for year, itaxd, ficad in zip(tyears, titaxd, tficad):
-        itax[year] = float(itaxd)
-        fica[year] = float(ficad)
+        itax[int(year)] = float(itaxd)
+        fica[int(year)] = float(ficad)
     return (itax, fica, url)
 
 
-def taxcalc_results(start_year, reform_dict):
+def taxcalc_results(start_year, reform_dict, itax_clp, fica_clp):
     """
-    Use taxcalc package on this computer to compute aggregate income tax
-    and payroll tax revenues for ten years beginning with the specified
-    start_year using the specified reform_dict dictionary.
-    Returns two aggregate revenue dictionaries indexed by calendar year.
+    Use taxcalc package on this computer to compute aggregate income tax and
+    payroll tax revenue difference (between reform and current-law policy)
+    for ten years beginning with the specified start_year using the specified
+    reform_spec dictionary and the two specified current-law-policy results
+    dictionaries.
+    Returns two aggregate revenue difference dictionaries indexed by calendar
+    year and the URL of the complete TaxBrain results.
     """
     pol = Policy()
     pol.implement_reform(reform_dict)
@@ -218,22 +238,37 @@ def taxcalc_results(start_year, reform_dict):
     calc.advance_to_year(start_year)
     adt = calc.diagnostic_table(num_years=NUMBER_OF_YEARS)
     # note that adt is Pandas DataFrame object
-    return (adt.xs('Ind inc tax ($b)').to_dict(),
-            adt.xs('Payroll tax ($b)').to_dict())
+    itax_ref = adt.xs('Ind inc tax ($b)').to_dict()
+    fica_ref = adt.xs('Payroll tax ($b)').to_dict()
+    itax_diff = {}
+    fica_diff = {}
+    for year in itax_ref:
+        itax_diff[year] = round(itax_ref[year] - itax_clp[year], 1)
+        fica_diff[year] = round(fica_ref[year] - fica_clp[year], 1)
+    return (itax_diff, fica_diff)
 
 
-def differences(taxkind, taxcalc, taxbrain):
+def check_for_differences(reform, start_year, taxkind, taxbrain, taxcalc):
     """
-    Check for differences in the taxcalc and taxbrain dictionaries,
-    which are for the kind of tax specified in the taxkind string.
+    Check for differences in the specified taxbrain and taxcalc dictionaries,
+    which are for the kind of tax specified in the taxkind string and for the
+    specified reform.
+    Writes to stdout only when absolute value of taxbrain-minus-taxcalc
+    difference is greater than epsilon, with written information being
+    reform, taxkind, year, taxbrain-minus-taxcalc difference, and the
+    relative percentage difference measured by 100*abs(diff)/abs(taxcalc)
     """
-    first_year = min(taxcalc)
-    last_year = max(taxcalc)
-    for year in range(first_year, last_year + 1):
-        diff = taxcalc[year] - taxbrain[year]
-        print 'YR,{}_DIFF,_TAXCALC: {} {:.1f} {:.1f}'.format(taxkind,
-                                                             year, diff,
-                                                             taxcalc[year])
+    epsilon = 0.05
+    for year in sorted(taxbrain):
+        diff = taxbrain[year] - taxcalc[year]
+        if abs(diff) > epsilon:
+            if abs(taxcalc[year]) > 0.0:
+                pctdiff = 100.0 * abs(diff) / abs(taxcalc[year])
+            else:
+                pctdiff = float('inf')
+            msg = '{}\t{}\t{}\t{:.1f}\t{:.2f}\n'.format(reform, taxkind,
+                                                        year, diff, pctdiff)
+            sys.stdout.write(msg)
 
 
 if __name__ == '__main__':
