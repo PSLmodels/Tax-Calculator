@@ -1,14 +1,15 @@
 // Federal tax policy reforms used to test that that TaxBrain website
 // produces essentially the same results as the taxcalc package.
 // Each reform below has the following attributes
-// (1) description -> reform description
-// (2) start_year -> the first of ten years of tax results
-// (3) spec -> TaxBrain style reform specification by parameter, then by year
+// (1) replications -> number of TaxBrain replications
+// (2) start_year -> first of ten years of tax results
+// (3) specification -> TaxBrain style reform spec by parameter, then by year
 {
     "0": {
-        "description": "Eliminate OASDI MTE in 2016",
+        "replications": 1,
         "start_year": 2016,
-        "spec": {
+        "specification": {
+            // Eliminate OASDI MTE in 2016
             "_SS_Earnings_c": {
                 "2016": [999999999]
             }
@@ -16,21 +17,12 @@
     },
 
     "1": {
-        "description": "Eliminate OASDI MTE in 2020",
-        "start_year": 2015,
-        "spec": {
+        "replications": 1,
+        "start_year": 2013,
+        "specification": {
+            // Eliminate OASDI MTE in 2016
             "_SS_Earnings_c": {
-                "2020": [999999999]
-            }
-        }
-    },
-
-    "01": {
-        "description": "Eliminate OASDI MTE in 2018",
-        "start_year": 2014,
-        "spec": {
-            "_SS_Earnings_c": {
-                "2018": [999999999]
+                "2016": [999999999]
             }
         }
     }

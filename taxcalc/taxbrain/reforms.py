@@ -43,37 +43,39 @@ def main():
     # read reforms.json file and convert to a dictionary of reforms
     reforms_dict = read_reforms_json_file('reforms.json')
 
-    # check validity of years in each reform
+    # check validity of each reform
     for ref in sorted(reforms_dict):
-        syr = reforms_dict[ref]['start_year']
-        refspec = reforms_dict[ref]['spec']
-        refdict = Policy.convert_reform_dictionary(refspec)
-        check_reform_years(ref, syr, refdict)
+        check_reform_reps_and_years(ref, reforms_dict[ref])
 
     # compute taxcalc results for current-law policy
     (itax_taxcalc_clp, fica_taxcalc_clp) = taxcalc_clp_results()
 
     # check that selenium package and chromedriver program are available
     check_selenium_and_chromedriver()
+
     # create Chrome webdriver object
     driver = selenium.webdriver.Chrome(executable_path=CWD_PATH)
 
-    # dictionary of complete TaxBrain output URLs indexed by reform
-    taxbrain_output_url = {}
-
     # process each reform in reforms_dict
     for ref in sorted(reforms_dict):
+        replications = reforms_dict[ref]['replications']
         syr = reforms_dict[ref]['start_year']
-        refspec = reforms_dict[ref]['spec']
+        refspec = reforms_dict[ref]['specification']
         refdict = Policy.convert_reform_dictionary(refspec)
-        (itax_taxbrain,
-         fica_taxbrain,
-         taxbrain_output_url) = taxbrain_results(driver, syr, refspec)
         (itax_taxcalc,
          fica_taxcalc) = taxcalc_results(syr, refdict,
-                                         itax_taxcalc_clp, fica_taxcalc_clp)
-        check_for_differences(ref, syr, 'ITAX', itax_taxbrain, itax_taxcalc)
-        check_for_differences(ref, syr, 'FICA', fica_taxbrain, fica_taxcalc)
+                                         itax_taxcalc_clp,
+                                         fica_taxcalc_clp)
+        for repl in range(replications):
+            (itax_taxbrain,
+             fica_taxbrain,
+             taxbrain_output_url) = taxbrain_results(driver, syr, refspec)
+            check_for_differences(ref, repl, 'ITAX', taxbrain_output_url,
+                                  itax_taxbrain, itax_taxcalc)
+            check_for_differences(ref, repl, 'FICA', taxbrain_output_url,
+                                  fica_taxbrain, fica_taxcalc)
+        break  # >>>>>>> TEMP CODE <<<<<<<<<
+
     # delete Chrome webdriver object
     driver.quit()
 
@@ -106,22 +108,29 @@ def read_reforms_json_file(filename):
     return reforms_dict
 
 
-def check_reform_years(reform_name, start_year, reform_dict):
+def check_reform_reps_and_years(reform_name, complete_reform_dict):
     """
-    Check specified reform start_year and specified reform_dict (a
-    dictionary with year as the primary key) for valid year values.
-    Raises error if there are illegal year values; otherwise
+    Check specified complete_reform_dict for reform with specified
+    reform_name for valid year values and number of replications.
+    Raises error if there are any illegal values; otherwise
     returns without doing anything or returning anything.
     """
+    replications = complete_reform_dict['replications']
+    start_year = complete_reform_dict['start_year']
+    refspec = complete_reform_dict['specification']
+    refdict = Policy.convert_reform_dictionary(refspec)
+    if replications < 1 or replications > 1000:
+        msg = 'reform {} has replications {} outside [1,1000] range'
+        raise ValueError(msg.format(reform_name, replications))
     if start_year < MIN_START_YEAR or start_year > MAX_START_YEAR:
         msg = 'reform {} has start year {} outside [{},{}] range'
         raise ValueError(msg.format(reform_name, start_year,
                                     MIN_START_YEAR, MAX_START_YEAR))
-    first_year = min(reform_dict)
+    first_year = min(refdict)
     if first_year < start_year:
         msg = 'reform {} has first reform year {} before start year {}'
         raise ValueError(msg.format(reform_name, first_year, start_year))
-    last_year = max(reform_dict)
+    last_year = max(refdict)
     max_year = start_year + NUMBER_OF_YEARS
     if last_year > max_year:
         msg = 'reform {} has last reform year {} after last results year {}'
@@ -248,11 +257,12 @@ def taxcalc_results(start_year, reform_dict, itax_clp, fica_clp):
     return (itax_diff, fica_diff)
 
 
-def check_for_differences(reform, start_year, taxkind, taxbrain, taxcalc):
+def check_for_differences(ref, repl, taxkind, out_url, taxbrain, taxcalc):
     """
     Check for differences in the specified taxbrain and taxcalc dictionaries,
     which are for the kind of tax specified in the taxkind string and for the
-    specified reform.
+    specified reform ref and replication repl with complete TaxBrain output
+    in specified out_url.
     Writes to stdout only when absolute value of taxbrain-minus-taxcalc
     difference is greater than epsilon, with written information being
     reform, taxkind, year, taxbrain-minus-taxcalc difference, and the
@@ -266,8 +276,9 @@ def check_for_differences(reform, start_year, taxkind, taxbrain, taxcalc):
                 pctdiff = 100.0 * abs(diff) / abs(taxcalc[year])
             else:
                 pctdiff = float('inf')
-            msg = '{}\t{}\t{}\t{:.1f}\t{:.2f}\n'.format(reform, taxkind,
-                                                        year, diff, pctdiff)
+            template = '{}\t{}\t{}\t{:.1f}\t{:.2f}\t{}\n'
+            rpr = ref + '-{:3d}'.format(repl)
+            msg = template.format(rpr, taxkind, year, diff, pctdiff, out_url)
             sys.stdout.write(msg)
 
 
