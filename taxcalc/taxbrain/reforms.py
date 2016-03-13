@@ -172,7 +172,7 @@ def check_selenium_and_chromedriver():
     return
 
 
-def taxbrain_results(driver, reform_name, start_year, reform_dict):
+def taxbrain_results(driver, reform_name, start_year, reform_spec):
     """
     Use TaxBrain website running in the cloud to compute aggregate income tax
     and payroll tax revenue difference (between reform and current-law policy)
@@ -186,9 +186,7 @@ def taxbrain_results(driver, reform_name, start_year, reform_dict):
     driver.get(url)
 
     # insert reform parameters into fields on input webpage
-    css = 'input#id_SS_Earnings_c.form-control'
-    txt = '999999999'  # TODO: derive txt from reform_dict values
-    driver.find_element_by_css_selector(css).send_keys(txt)
+    taxbrain_param_values_insert(driver, start_year, reform_spec)
 
     # click on "Show me the results!" button to start tax calculations
     css = 'input#tax-submit.btn.btn-secondary.btn-block.btn-animate'
@@ -217,12 +215,48 @@ def taxbrain_results(driver, reform_name, start_year, reform_dict):
     return dicts
 
 
+def taxbrain_param_values_insert(driver, start_year, reform_spec):
+    """
+    Inserts policy parameter values into TaxBrain input webpage using
+    specified reform_spec dictionary, which has parameter-name string keys
+    and dictionary values, where each paramter dictionary contains one
+    or more year:value pairs, and the specified start_year.
+    Function returns nothing.
+    """
+    for param in reform_spec:
+        param_dict = reform_spec[param]
+        pyrs = sorted(param_dict.keys())  # is a list of unicode year strings
+        # handle first pyr in pyrs list
+        pyr = pyrs[0]
+        pval = param_dict[pyr][0]  # [0] removes the outer brackets
+        pyr = int(pyr)
+        if pyr == start_year:
+            txt = '{}'.format(pval)
+        else:  # pyr > start_year
+            txt = '*'
+            for _ in range(pyr - start_year + 1):
+                txt += ',*'
+            txt += ',{}'.format(pval)
+        # handle subsequent pyr in pyrs list
+        prior_pyr = pyr
+        for pyr in pyrs[1:]:
+            pval = param_dict[pyr][0]  # [0] removes the outer brackets
+            pyr = int(pyr)
+            for _ in range(pyr - prior_pyr - 1):
+                txt += ',*'
+            txt += ',{}'.format(pval)
+            prior_pyr = pyr
+        # insert txt into parameter field
+        css = 'input#id{}.form-control'.format(param)
+        driver.find_element_by_css_selector(css).send_keys(txt)
+
+
 def taxbrain_output_table_extract(table):
     """
     Extract from specified "TOTAL LIABILITIES CHANGE BY CALENDAR YEAR" table
     reform-vs-current-law-policy differences in itax and fica aggregate
     revenue by calendar year, which are returned as dictionaries.
-    Also, extract the URL of the complete TaxBrain results and return.
+    Also, extract the URL of the complete TaxBrain results and returns it.
     """
     tlines = table.split('\n')
     tyears = tlines[0].split()
@@ -233,8 +267,8 @@ def taxbrain_output_table_extract(table):
     itax = {}
     fica = {}
     for year, itaxd, ficad in zip(tyears, titaxd, tficad):
-        itax[int(year)] = float(itaxd)
-        fica[int(year)] = float(ficad)
+        itax[int(year)] = float(re.sub(',', '', itaxd))
+        fica[int(year)] = float(re.sub(',', '', ficad))
     return (itax, fica, url)
 
 
@@ -243,7 +277,7 @@ def taxcalc_results(start_year, reform_dict, itax_clp, fica_clp):
     Use taxcalc package on this computer to compute aggregate income tax and
     payroll tax revenue difference (between reform and current-law policy)
     for ten years beginning with the specified start_year using the specified
-    reform_spec dictionary and the two specified current-law-policy results
+    reform_dict dictionary and the two specified current-law-policy results
     dictionaries.
     Returns two aggregate revenue difference dictionaries indexed by calendar
     year and the URL of the complete TaxBrain results.
