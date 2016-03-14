@@ -5,18 +5,37 @@
 // (2) start_year -> first of ten years of tax results
 // (3) specification -> TaxBrain style reform spec by parameter, then by year
 {
-    "0": {
+    "1": {
         "replications": 1,
         "start_year": 2016,
         "specification": {
-            // Raise OASDI MTE in steps during 2016-2019 and eliminate in 2020
+            //  # "_STD": {
+            // 2016 clp [[6300, 12600,  6300,  9300, 12600, 6300, 1050]]
+            // "2016": [[12600, 25200, 12600, 18600,     0,    0,    0]]
+            //  #      "2016": [[6300, 12600,  6300, 9300, 12600, 6300, 1050]]
+            //  # },
+            // Eliminate OASDI MTE 2016
             "_SS_Earnings_c": {
-                "2016": [200000],
-                "2017": [300000],
-                "2018": [400000],
-                "2019": [500000],
-                "2020": [1.0E999]
+                "2016": [1.0E99] // 1.0E999 generates TaxBrain input error
             }
         }
     }
 }
+
+//    "0": {
+//        "replications": 1,
+//        "start_year": 2016,
+//        "specification": {
+//            // Raise OASDI MTE in steps beginning in 2016 and eliminate in 2020
+//            "_SS_Earnings_c": {
+//                "2016": [200000],
+//                "2017": [300000],
+//                "2018": [400000],
+//                "2019": [500000],
+//                "2020": [1.0E999]
+//            },
+//            "_II_em": {
+//                "2016": [6000]
+//            }
+//        }
+//    },

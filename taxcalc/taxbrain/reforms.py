@@ -24,9 +24,11 @@ from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
 import re
 import json
 import selenium
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import TimeoutException
 from time import sleep
 import pyperclip
 
@@ -45,16 +47,13 @@ def main():
 
     # check validity of each reform
     for ref in sorted(reforms_dict):
-        check_reform_reps_and_years(ref, reforms_dict[ref])
+        check_complete_reform_dict(ref, reforms_dict[ref])
 
     # compute taxcalc results for current-law policy
     (itax_taxcalc_clp, fica_taxcalc_clp) = taxcalc_clp_results()
 
     # check that selenium package and chromedriver program are available
     check_selenium_and_chromedriver()
-
-    # create Chrome webdriver object
-    driver = selenium.webdriver.Chrome(executable_path=CWD_PATH)
 
     # process each reform in reforms_dict
     for ref in sorted(reforms_dict):
@@ -66,17 +65,16 @@ def main():
                                          itax_taxcalc_clp,
                                          fica_taxcalc_clp)
         for repl in range(reforms_dict[ref]['replications']):
+            ref_repl = '{}-{:03d}'.format(ref, repl)
             (itax_taxbrain,
              fica_taxbrain,
-             taxbrain_output_url) = taxbrain_results(driver, ref, syr, refspec)
-            ref_repl = '{}-{:03d}'.format(ref, repl)
+             taxbrain_output_url) = taxbrain_results(ref_repl, syr, refspec)
+            if len(taxbrain_output_url) == 0:  # no TaxBrain output
+                continue  # to top of replication loop
             check_for_differences(ref_repl, 'ITAX', taxbrain_output_url,
                                   itax_taxbrain, itax_taxcalc)
             check_for_differences(ref_repl, 'FICA', taxbrain_output_url,
                                   fica_taxbrain, fica_taxcalc)
-
-    # delete Chrome webdriver object
-    driver.quit()
 
     # return no-error exit code
     return 0
@@ -107,10 +105,10 @@ def read_reforms_json_file(filename):
     return reforms_dict
 
 
-def check_reform_reps_and_years(reform_name, complete_reform_dict):
+def check_complete_reform_dict(reform_name, complete_reform_dict):
     """
     Check specified complete_reform_dict for reform with specified
-    reform_name for valid year values and number of replications.
+    reform_name for valid year values and for valid number of replications.
     Raises error if there are any illegal values; otherwise
     returns without doing anything or returning anything.
     """
@@ -172,15 +170,18 @@ def check_selenium_and_chromedriver():
     return
 
 
-def taxbrain_results(driver, reform_name, start_year, reform_spec):
+def taxbrain_results(ref_repl, start_year, reform_spec):
     """
     Use TaxBrain website running in the cloud to compute aggregate income tax
     and payroll tax revenue difference (between reform and current-law policy)
     for ten years beginning with the specified start_year using the specified
-    reform_spec dictionary for the reform with the specified reform_name.
+    reform_spec dictionary for the reform with the specified ref_repl name.
     Returns two aggregate revenue difference dictionaries indexed by calendar
     year and the URL of the complete TaxBrain results.
     """
+    # create Chrome webdriver object
+    driver = selenium.webdriver.Chrome(executable_path=CWD_PATH)
+
     # browse TaxBrain input webpage for specified start_year
     url = 'http://www.ospc.org/taxbrain/?start_year={}'.format(start_year)
     driver.get(url)
@@ -192,13 +193,31 @@ def taxbrain_results(driver, reform_name, start_year, reform_spec):
     css = 'input#tax-submit.btn.btn-secondary.btn-block.btn-animate'
     driver.find_element_by_css_selector(css).click()
 
+    # wait for TaxBrain input error message
+    css = 'div.alert.alert-danger.text-center.lert-dismissible'
+    wait_secs = 10  # time to wait for an input error message
+    try:
+        WebDriverWait(driver, wait_secs).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, css)))
+        msg = '{}\tTaxBrain-input-error\n'.format(ref_repl)
+        sys.stdout.write(msg)
+        sys.stdout.flush()
+        return ({}, {}, '')
+    except TimeoutException:
+        pass
+
     # wait for TaxBrain output webpage to appear
     css = 'div.flatblock.block-taxbrain_results_header'
-    wait_secs = 120  # time to wait before triggering wait error
-    template = 'No TaxBrain results for reform {} after {} seconds'
-    wait_error_msg = template.format(reform_name, wait_secs)
-    WebDriverWait(driver, wait_secs).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, css)), wait_error_msg)
+    wait_secs = 100  # time to wait before triggering wait error
+    try:
+        WebDriverWait(driver, wait_secs).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, css)))
+    except TimeoutException:
+        template = '{}\tTaxBrain-timeout-after-{}-seconds\n'
+        msg = template.format(ref_repl, wait_secs)
+        sys.stdout.write(msg)
+        sys.stdout.flush()
+        return ({}, {}, '')
 
     # copy "TOTAL LIABILITIES CHANGE BY CALENDAR YEAR" table to clipboard
     css = 'a.btn.btn-default.buttons-copy.buttons-html5'
@@ -211,13 +230,16 @@ def taxbrain_results(driver, reform_name, start_year, reform_spec):
     # clear the clipboard
     pyperclip.copy('')
 
+    # delete Chrome webdriver object
+    driver.quit()
+
     # return dictionaries extracted from "TOTAL LIABILITIES CHANGE" table
     return dicts
 
 
 def taxbrain_param_values_insert(driver, start_year, reform_spec):
     """
-    Inserts policy parameter values into TaxBrain input webpage using
+    Insert policy parameter values into TaxBrain input webpage using
     specified reform_spec dictionary, which has parameter-name string keys
     and dictionary values, where each paramter dictionary contains one
     or more year:value pairs, and the specified start_year.
@@ -225,30 +247,81 @@ def taxbrain_param_values_insert(driver, start_year, reform_spec):
     """
     for param in reform_spec:
         param_dict = reform_spec[param]
-        pyrs = sorted(param_dict.keys())  # is a list of unicode year strings
-        # handle first pyr in pyrs list
+        pval = param_dict[(param_dict.keys())[0]]
+        if isinstance(pval[0], list):  # [0] removes the outer brackets
+            taxbrain_vector_pval_insert(driver, start_year, param, param_dict)
+        else:
+            taxbrain_scalar_pval_insert(driver, start_year, param, param_dict)
+    return
+
+
+def taxbrain_scalar_pval_insert(driver, start_year, param_name, param_dict):
+    """
+    Insert scalar policy parameter values into TaxBrain input webpage.
+    Function returns nothing.
+    """
+    pyrs = sorted(param_dict.keys())
+    # handle first pyr in pyrs list of year strings
+    pyr = pyrs[0]
+    pval = param_dict[pyr][0]  # [0] removes the outer brackets
+    pyr = int(pyr)
+    if pyr == start_year:
+        txt = '{}'.format(pval)
+    else:  # pyr > start_year
+        txt = '*'
+        for _ in range(pyr - start_year + 1):
+            txt += ',*'
+        txt += ',{}'.format(pval)
+    prior_pyr = pyr
+    # handle subsequent pyr in pyrs list
+    for pyr in pyrs[1:]:
+        pval = param_dict[pyr][0]  # [0] removes the outer brackets
+        pyr = int(pyr)
+        for _ in range(pyr - prior_pyr - 1):
+            txt += ',*'
+        txt += ',{}'.format(pval)
+        prior_pyr = pyr
+    # insert txt into parameter field
+    css = 'input#id{}.form-control'.format(param_name)
+    driver.find_element_by_css_selector(css).send_keys(txt + Keys.TAB)
+    return
+
+
+def taxbrain_vector_pval_insert(driver, start_year, param_name, param_dict):
+    """
+    Insert vector policy parameter values into TaxBrain input webpage.
+    Function returns nothing.
+    """
+    if param_name == '_BenefitSurtax_Switch':
+        vector_length = 7
+    else:
+        vector_length = 4
+    pyrs = sorted(param_dict.keys())
+    for idx in range(vector_length):
+        # handle first pyr in pyrs list of year strings
         pyr = pyrs[0]
         pval = param_dict[pyr][0]  # [0] removes the outer brackets
         pyr = int(pyr)
         if pyr == start_year:
-            txt = '{}'.format(pval)
+            txt = '{}'.format(pval[idx])
         else:  # pyr > start_year
             txt = '*'
             for _ in range(pyr - start_year + 1):
                 txt += ',*'
-            txt += ',{}'.format(pval)
-        # handle subsequent pyr in pyrs list
+            txt += ',{}'.format(pval[idx])
         prior_pyr = pyr
+        # handle subsequent pyr in pyrs list
         for pyr in pyrs[1:]:
             pval = param_dict[pyr][0]  # [0] removes the outer brackets
             pyr = int(pyr)
             for _ in range(pyr - prior_pyr - 1):
                 txt += ',*'
-            txt += ',{}'.format(pval)
+            txt += ',{}'.format(pval[idx])
             prior_pyr = pyr
         # insert txt into parameter field
-        css = 'input#id{}.form-control'.format(param)
-        driver.find_element_by_css_selector(css).send_keys(txt)
+        css = 'input#id{}_{}.form-control'.format(param_name, idx)
+        driver.find_element_by_css_selector(css).send_keys(txt + Keys.TAB)
+    return
 
 
 def taxbrain_output_table_extract(table):
@@ -311,7 +384,7 @@ def check_for_differences(ref_repl, taxkind, out_url, taxbrain, taxcalc):
     and the URL from which complete TaxBrain output results are available.
     Lines written to stdout are tab-delimited.
     """
-    epsilon = 0.05
+    epsilon = 0.05  # one-half of one-tenth of a billion dollars
     for year in sorted(taxbrain):
         diff = taxbrain[year] - taxcalc[year]
         if abs(diff) > epsilon:
@@ -323,6 +396,8 @@ def check_for_differences(ref_repl, taxkind, out_url, taxbrain, taxcalc):
             msg = template.format(ref_repl, taxkind, year,
                                   diff, pctdiff, out_url)
             sys.stdout.write(msg)
+            sys.stdout.flush()
+    return
 
 
 if __name__ == '__main__':
