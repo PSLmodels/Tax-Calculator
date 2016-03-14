@@ -5,7 +5,7 @@ The Tax-Calculator's core capabilities are in the Python package
 called taxcalc, the source code for which is located in the
 tax-calculator/taxcalc directory.
 
-Here we provide a high-level view of the taxcalc package that provides
+Here we provide a high-level view of the taxcalc package with
 links to the source code.  This high-level view is organized around
 the modules that compose the taxcalc package.  Below is a full list of
 the taxcalc package modules (in alphabetical order) with documentation
