@@ -87,13 +87,16 @@ Setup Git
        tax-calculator$ activate taxcalc-dev
    
 11. To check that everything is working properly, run the following at
-    the command line from the tax-calculator directory (but skip the
-    validation tests if you are working on Windows).
+    the command line from the tax-calculator directory, but skip the
+    validation tests if you are working on Windows.  For more detail on
+    Tax-Calculator testing procedures, read the `testing documentation`_.
+
+
 
    .. code-block:: python
 
       tax-calculator$ cd taxcalc
-      tax-calculator/taxcalc$ py.test
+      tax-calculator/taxcalc$ py.test -m "not requires_pufcsv"
       tax-calculator/taxcalc$ cd validation
       tax-calculator/taxcalc/validation$ ./tests
 
@@ -186,7 +189,7 @@ situations, in which case other contributors are here to help.
 
    .. code-block:: python
 
-      tax-calculator/taxcalc$ py.test
+      tax-calculator/taxcalc$ py.test -m "not requires_pufcsv"
       tax-calculator/taxcalc$ cd validation
       tax-calculator/taxcalc/validation$ ./tests
 
@@ -287,6 +290,9 @@ sample notebook: `10 Minutes To TaxCalc`_.
 
 .. _`remote`:
    https://help.github.com/articles/github-glossary/#remote
+
+.. _`testing documentation`:
+   https://github.com/open-source-economics/Tax-Calculator/blob/master/TESTING.md
 
 .. _`clone`:
    https://help.github.com/articles/github-glossary/#clone
