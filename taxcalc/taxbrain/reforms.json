@@ -1,4 +1,4 @@
-// Federal tax policy reforms used to test that that TaxBrain website
+// Federal tax policy reforms used to test that TaxBrain webapp
 // produces essentially the same results as the taxcalc package.
 // Each reform below has the following attributes
 // (1) replications -> number of TaxBrain replications

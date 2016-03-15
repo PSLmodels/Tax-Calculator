@@ -1,7 +1,7 @@
 """
 Python script that compares federal individual income and payroll tax
 reform results produced by Tax-Calculator in two ways:
-(1) via the TaxBrain website running in the cloud, and
+(1) via the TaxBrain webapp running in the cloud, and
 (2) via the taxcalc package running on this computer.
 
 COMMAND-LINE USAGE: python reforms.py
@@ -111,8 +111,8 @@ def check_complete_reform_dict(reform_name, complete_reform_dict):
     """
     Check specified complete_reform_dict for reform with specified
     reform_name for valid year values and for valid number of replications.
-    Raises error if there are any illegal values; otherwise
-    returns without doing anything or returning anything.
+    Raise error if there are any illegal values; otherwise
+    return without doing anything or returning anything.
     """
     replications = complete_reform_dict['replications']
     start_year = complete_reform_dict['start_year']
@@ -142,7 +142,7 @@ def taxcalc_clp_results():
     Use taxcalc package on this computer to compute aggregate income tax
     and payroll tax revenues for years beginning with MIN_START_YEAR and
     ending with MAX_START_YEAR+NUMBER_OF_YEARS-1 for current-law policy.
-    Returns two aggregate revenue dictionaries indexed by calendar year.
+    Return two aggregate revenue dictionaries indexed by calendar year.
     """
     calc = Calculator(policy=Policy(), records=Records(data=PUF_PATH))
     nyrs = MAX_START_YEAR + NUMBER_OF_YEARS - MIN_START_YEAR
@@ -155,8 +155,8 @@ def taxcalc_clp_results():
 def check_selenium_and_chromedriver():
     """
     Check availability of selenium package and chromedriver program.
-    Raises error if package or program not installed correctly;
-    otherwise returns without doing anything or returning anything.
+    Raise error if package or program not installed correctly;
+    otherwise return without doing anything or returning anything.
     """
     # check for selenium package
     try:
@@ -174,11 +174,11 @@ def check_selenium_and_chromedriver():
 
 def taxbrain_results(ref_repl, start_year, reform_spec):
     """
-    Use TaxBrain website running in the cloud to compute aggregate income tax
+    Use TaxBrain webapp running in the cloud to compute aggregate income tax
     and payroll tax revenue difference (between reform and current-law policy)
     for ten years beginning with the specified start_year using the specified
     reform_spec dictionary for the reform with the specified ref_repl name.
-    Returns two aggregate revenue difference dictionaries indexed by calendar
+    Return two aggregate revenue difference dictionaries indexed by calendar
     year and the URL of the complete TaxBrain results.
     """
     # create Chrome webdriver object
@@ -334,7 +334,7 @@ def taxbrain_output_table_extract(table):
     Extract from specified "TOTAL LIABILITIES CHANGE BY CALENDAR YEAR" table
     reform-vs-current-law-policy differences in itax and fica aggregate
     revenue by calendar year, which are returned as dictionaries.
-    Also, extract the URL of the complete TaxBrain results and returns it.
+    Also, extract the URL of the complete TaxBrain results and return it.
     """
     tlines = table.split('\n')
     tyears = tlines[0].split()
@@ -357,8 +357,8 @@ def taxcalc_results(start_year, reform_dict, itax_clp, fica_clp):
     for ten years beginning with the specified start_year using the specified
     reform_dict dictionary and the two specified current-law-policy results
     dictionaries.
-    Returns two aggregate revenue difference dictionaries indexed by calendar
-    year and the URL of the complete TaxBrain results.
+    Return two aggregate tax revenue difference dictionaries indexed by
+    calendar year.
     """
     pol = Policy()
     pol.implement_reform(reform_dict)
@@ -382,12 +382,12 @@ def check_for_differences(ref_repl, taxkind, out_url, taxbrain, taxcalc):
     which are for the kind of tax specified in the taxkind string and for the
     specified reform-replication with complete TaxBrain output in specified
     out_url.
-    Writes to stdout only when absolute value of taxbrain-minus-taxcalc
+    Write to stdout only when absolute value of taxbrain-minus-taxcalc
     difference is greater than epsilon, with written information being
     reform-replication, taxkind, year, taxbrain-minus-taxcalc difference,
-    the relative percentage difference measured by 100*abs(diff)/abs(taxcalc),
+    the relative percentage difference measured by 100*diff/abs(taxcalc),
     and the URL from which complete TaxBrain output results are available.
-    Lines written to stdout are tab-delimited.
+    Each line written to stdout is tab-delimited.
     """
     epsilon = 0.05  # one-half of one-tenth of a billion dollars
     for year in sorted(taxbrain):
@@ -416,7 +416,7 @@ if __name__ == '__main__':
         description=('Writes to stdout any differences in federal income '
                      'tax and payroll tax\nrevenue changes for a set of '
                      'policy reforms that are generated by\nTax-Calculator '
-                     'in two ways:\n(a) via the TaxBrain website running '
+                     'in two ways:\n(a) via the TaxBrain webapp running '
                      'in the cloud, and\n(b) via the taxcalc package '
                      'running on this computer.\n'
                      'Each output line contains six tab-delimited fields:\n'
