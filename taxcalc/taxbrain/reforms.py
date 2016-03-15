@@ -1,7 +1,7 @@
 """
 Python script that compares federal individual income and payroll tax
 reform results produced by Tax-Calculator in two ways:
-(1) via the TaxBrain website running in the clould, and
+(1) via the TaxBrain website running in the cloud, and
 (2) via the taxcalc package running on this computer.
 
 COMMAND-LINE USAGE: python reforms.py
@@ -16,13 +16,12 @@ it is not useful for conducting any kind of tax policy analysis.
 
 import os
 import sys
+import re
+import json
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 PUF_PATH = os.path.join(CUR_PATH, '..', '..', 'puf.csv')
 CWD_PATH = os.path.join(CUR_PATH, '..', '..', 'chromedriver')
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
-from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
-import re
-import json
 import selenium
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -31,6 +30,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
 from time import sleep
 import pyperclip
+# pylint: disable=import-error
+from taxcalc import Policy, Records, Calculator
 
 
 MIN_START_YEAR = 2013
@@ -186,6 +187,9 @@ def taxbrain_results(ref_repl, start_year, reform_spec):
     url = 'http://www.ospc.org/taxbrain/?start_year={}'.format(start_year)
     driver.get(url)
 
+    # make TaxBrain input webpage bigger so that all elements are visible
+    driver.maximize_window()
+
     # insert reform parameters into fields on input webpage
     taxbrain_param_values_insert(driver, start_year, reform_spec)
 
@@ -241,7 +245,7 @@ def taxbrain_param_values_insert(driver, start_year, reform_spec):
     """
     Insert policy parameter values into TaxBrain input webpage using
     specified reform_spec dictionary, which has parameter-name string keys
-    and dictionary values, where each paramter dictionary contains one
+    and dictionary values, where each parameter dictionary contains one
     or more year:value pairs, and the specified start_year.
     Function returns nothing.
     """
