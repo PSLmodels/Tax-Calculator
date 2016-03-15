@@ -9,14 +9,19 @@
         "replications": 1,
         "start_year": 2016,
         "specification": {
-            //  # "_STD": {
+            //*"_STD": {
+            // using this reform provision cause invisibility of tax-submit btn
             // 2016 clp [[6300, 12600,  6300,  9300, 12600, 6300, 1050]]
             // "2016": [[12600, 25200, 12600, 18600,     0,    0,    0]]
-            //  #      "2016": [[6300, 12600,  6300, 9300, 12600, 6300, 1050]]
-            //  # },
+            //*    "2016": [[6300, 12600,  6300, 9300, 12600, 6300, 1050]]
+            //*},
             // Eliminate OASDI MTE 2016
             "_SS_Earnings_c": {
                 "2016": [1.0E99] // 1.0E999 generates TaxBrain input error
+            },
+            "_II_em": {
+                "2016": [5000],
+                "2017": [6000]
             }
         }
     }
