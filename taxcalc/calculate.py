@@ -347,6 +347,8 @@ class Calculator(object):
         revenue1 = (self.records._iitax * self.records.s006).sum()
         # payroll tax (FICA)
         payroll = (self.records._fica * self.records.s006).sum()
+        # combined
+        combined = (self.records._combined * self.records.s006).sum()
         # append results to table
         table.append([returns / math.pow(10, 6), agi / math.pow(10, 9),
                       NumItemizer1 / math.pow(10, 6), ID / math.pow(10, 9),
@@ -360,7 +362,8 @@ class Calculator(object):
                       nonrefundable / math.pow(10, 9),
                       surtax / math.pow(10, 9),
                       revenue1 / math.pow(10, 9),
-                      payroll / math.pow(10, 9)])
+                      payroll / math.pow(10, 9),
+                      combined / math.pow(10, 9)])
 
     def diagnostic_table(self, num_years=5, base_calc=None):
         table = []
@@ -393,7 +396,8 @@ class Calculator(object):
                         "refundable credits ($b)",
                         "nonrefundable credits ($b)",
                         "Misc. Surtax ($b)",
-                        "Ind inc tax ($b)", "Payroll tax ($b)"])
+                        "Ind inc tax ($b)", "Payroll tax ($b)",
+                        "Combined liability ($b)"])
         df = df.transpose()
         pd.options.display.float_format = '{:8,.1f}'.format
         return df
