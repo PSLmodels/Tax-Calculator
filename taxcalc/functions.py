@@ -1495,3 +1495,4 @@ def BenefitSurtax(calc):
         calc.records._surtax[:] = calc.policy.ID_BenefitSurtax_trt * np.where(
             tax_diff > surtax_cap, tax_diff - surtax_cap, 0.)
         calc.records._iitax += calc.records._surtax
+        calc.records._combined = calc.records._iitax + calc.records._fica
