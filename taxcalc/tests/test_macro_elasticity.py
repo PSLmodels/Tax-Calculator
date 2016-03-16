@@ -18,10 +18,11 @@ def test_percentage_change_gdp():
     calc1 = Calculator(policy=policy1, records=records1)
     calc1.calc_all()
 
-    reform = {2013: (
+    reform = {2013: 
         {"_STD": [[12600, 25200, 12600, 18600, 25300, 12600, 2100]],
          "_AMT_trt1": [0.0],
-         "_AMT_trt2": [0.0]}})
+         "_AMT_trt2": [0.0]}}
+        
     policy2 = Policy()
     policy2.implement_reform(reform)
 
