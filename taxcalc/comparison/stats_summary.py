@@ -29,7 +29,7 @@ def main():
                      'on a 10-year span or correlation matrix of current'
                      'tax year. Adding either sum-stats or correlation'
                      'as an argument after python Stats_Summary.py --output')
-            )
+                    )
     parser.add_argument('--output',
                         default='sum-stats')
 
@@ -125,10 +125,10 @@ def gen_sum_stats(table, calc):
         stat = []
         for variable in table.index:
             weighted = getattr(calc.records, variable) * calc.records.s006
-            this_record = weighted.sum()/total_pop
+            this_record = weighted.sum() / total_pop
             stat.append(this_record)
 
-        column = "mean_"+str(year)
+        column = "mean_" + str(year)
         table[column] = stat
 
         year += 1
