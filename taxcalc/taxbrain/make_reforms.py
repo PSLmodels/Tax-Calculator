@@ -87,12 +87,12 @@ def main():
             if name in PARAMS_NOT_SCALED:
                 val = value
             else:
-                val = value * SCALE_FACTOR
+                val = round(value * SCALE_FACTOR, 5)
         else:
             if name in PARAMS_NOT_SCALED:
                 val = value.tolist()
             else:
-                val = [v * SCALE_FACTOR for v in value.tolist()]
+                val = [round(v * SCALE_FACTOR, 5) for v in value.tolist()]
         sys.stdout.write('{}{}"{}": [{}]\n'.format(TAB, SPC, START_YEAR, val))
         if num == num_names:
             sys.stdout.write('{}{}\n'.format(TAB, '}'))
