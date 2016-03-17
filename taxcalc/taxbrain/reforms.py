@@ -39,6 +39,8 @@ MIN_START_YEAR = 2013
 MAX_START_YEAR = 2017
 NUMBER_OF_YEARS = 10  # number of years for which results are calculated
 
+TRACING = False  # set to true to write name of each parameter processed
+
 
 def main(reforms_json_filename):
     """
@@ -251,6 +253,9 @@ def taxbrain_param_values_insert(driver, start_year, reform_spec):
     Function returns nothing.
     """
     for param in reform_spec:
+        if TRACING:
+            sys.stdout.write('==> PARAM {}\n'.format(param))
+            sys.stdout.flush()
         param_dict = reform_spec[param]
         pval = param_dict[(param_dict.keys())[0]]
         if isinstance(pval[0], list):  # [0] removes the outer brackets
@@ -288,7 +293,13 @@ def taxbrain_scalar_pval_insert(driver, start_year, param_name, param_dict):
         prior_pyr = pyr
     # insert txt into parameter field
     css = 'input#id{}.form-control'.format(param_name)
-    driver.find_element_by_css_selector(css).send_keys(txt + Keys.TAB)
+    try:
+        field = WebDriverWait(driver, 2, 0.1).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, css)))
+        field.send_keys(txt + Keys.TAB)
+    except TimeoutException:
+        msg = 'no TaxBrain parameter named {}'.format(param_name)
+        raise ValueError(msg)
     return
 
 
@@ -325,7 +336,13 @@ def taxbrain_vector_pval_insert(driver, start_year, param_name, param_dict):
             prior_pyr = pyr
         # insert txt into parameter field
         css = 'input#id{}_{}.form-control'.format(param_name, idx)
-        driver.find_element_by_css_selector(css).send_keys(txt + Keys.TAB)
+        try:
+            field = WebDriverWait(driver, 2, 0.1).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, css)))
+            field.send_keys(txt + Keys.TAB)
+        except TimeoutException:
+            msg = 'no TaxBrain parameter named {}_{}'.format(param_name, idx)
+            raise ValueError(msg)
     return
 
 
