@@ -29,7 +29,7 @@ def main():
                      'on a 10-year span or correlation matrix of current'
                      'tax year. Adding either sum-stats or correlation'
                      'as an argument after python Stats_Summary.py --output')
-                    )
+    )
     parser.add_argument('--output',
                         default='sum-stats')
 
