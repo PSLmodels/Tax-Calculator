@@ -1,29 +1,9 @@
-STARTING WITH TAXBRAINTEST : Thu Mar 17 04:41:40 EDT 2016
-10-000	ITAX	2019	-0.1	-0.33	www.ospc.org/taxbrain/1730/
-16-000	ITAX	2023	-0.1	-0.06	www.ospc.org/taxbrain/1736/
-16-000	ITAX	2025	-0.1	-0.06	www.ospc.org/taxbrain/1736/
-3-000	ITAX	2016	72.2	5157.14	www.ospc.org/taxbrain/1751/
-3-000	ITAX	2017	72.4	5569.23	www.ospc.org/taxbrain/1751/
-3-000	ITAX	2018	73.4	5646.15	www.ospc.org/taxbrain/1751/
-3-000	ITAX	2019	74.5	5730.77	www.ospc.org/taxbrain/1751/
-3-000	ITAX	2020	75.7	5407.14	www.ospc.org/taxbrain/1751/
-3-000	ITAX	2021	76.7	5478.57	www.ospc.org/taxbrain/1751/
-3-000	ITAX	2022	77.8	5557.14	www.ospc.org/taxbrain/1751/
-3-000	ITAX	2023	78.7	5621.43	www.ospc.org/taxbrain/1751/
-3-000	ITAX	2024	79.6	5685.71	www.ospc.org/taxbrain/1751/
-3-000	ITAX	2025	80.2	5728.57	www.ospc.org/taxbrain/1751/
-45-000	FICA	2023	-0.1	-0.09	www.ospc.org/taxbrain/1768/
-47-000	ITAX	2020	0.1	1.18	www.ospc.org/taxbrain/1770/
-56-000	ITAX	2016	-67.0	-3045.45	www.ospc.org/taxbrain/1780/
-56-000	ITAX	2017	-69.7	-3168.18	www.ospc.org/taxbrain/1780/
-56-000	ITAX	2018	-72.4	-3147.83	www.ospc.org/taxbrain/1780/
-56-000	ITAX	2019	-74.7	-3247.83	www.ospc.org/taxbrain/1780/
-56-000	ITAX	2020	-77.5	-3229.17	www.ospc.org/taxbrain/1780/
-56-000	ITAX	2021	-80.3	-3212.00	www.ospc.org/taxbrain/1780/
-56-000	ITAX	2022	-83.2	-3328.00	www.ospc.org/taxbrain/1780/
-56-000	ITAX	2023	-86.5	-3326.92	www.ospc.org/taxbrain/1780/
-56-000	ITAX	2024	-89.9	-3329.63	www.ospc.org/taxbrain/1780/
-56-000	ITAX	2025	-93.4	-3459.26	www.ospc.org/taxbrain/1780/
+STARTING WITH TAXBRAINTEST : Thu Mar 17 18:56:46 EDT 2016
+10-000	ITAX	2019	-0.1	-0.33	www.ospc.org/taxbrain/1847/
+16-000	ITAX	2023	-0.1	-0.06	www.ospc.org/taxbrain/1853/
+16-000	ITAX	2025	-0.1	-0.06	www.ospc.org/taxbrain/1853/
+45-000	FICA	2023	-0.1	-0.09	www.ospc.org/taxbrain/1885/
+47-000	ITAX	2020	0.1	1.18	www.ospc.org/taxbrain/1887/
 72-000	TaxBrain-input-error
-75-000	ITAX	2019	0.1	1.64	www.ospc.org/taxbrain/1800/
-FINISHED WITH TAXBRAINTEST : Thu Mar 17 06:29:02 EDT 2016
+75-000	ITAX	2019	0.1	1.64	www.ospc.org/taxbrain/1917/
+FINISHED WITH TAXBRAINTEST : Thu Mar 17 20:46:48 EDT 2016
