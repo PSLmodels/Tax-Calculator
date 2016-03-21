@@ -611,3 +611,35 @@ def test_pop_the_cap_reform():
     assert mte[2015 - syr] == 118500
     assert mte[2016 - syr] == float('inf')
     assert mte[ppo.end_year - syr] == float('inf')
+
+
+def test_order_of_cpi_and_level_reforms():
+    """
+    Test that the order of the two reform provisions for the same parameter
+    make no difference to the post-reform policy parameter values.
+    """
+    # specify two reforms that raises the MTE and stops its indexing in 2015
+    reform = [{2015: {'_SS_Earnings_c': [500000],
+                      '_SS_Earnings_c_cpi': False}},
+              # now reverse the order of the two reform provisions
+              {2015: {'_SS_Earnings_c_cpi': False,
+                      '_SS_Earnings_c': [500000]}}]
+    # specify two Policy objects
+    syr = 2013
+    ppo = [Policy(start_year=syr), Policy(start_year=syr)]
+    # apply reforms to corresponding Policy object and check post-reform values
+    for ref in range(len(reform)):
+        # confirm pre-reform MTE values in 2014-17
+        mte = ppo[ref]._SS_Earnings_c
+        assert mte[2014 - syr] == 117000
+        assert mte[2015 - syr] == 118500
+        assert mte[2016 - syr] == 118500
+        assert mte[2017 - syr] < 500000
+        # implement reform in 2015
+        ppo[ref].implement_reform(reform[ref])
+        # confirm post-reform MTE values in 2014-17
+        mte = ppo[ref]._SS_Earnings_c
+        assert mte[2014 - syr] == 117000
+        assert mte[2015 - syr] == 500000
+        assert mte[2016 - syr] == 500000
+        assert mte[2017 - syr] == 500000

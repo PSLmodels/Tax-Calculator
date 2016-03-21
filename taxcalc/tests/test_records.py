@@ -79,17 +79,10 @@ def test_for_duplicate_names():
         varnames.add(varname)
         assert varname not in Records.VALID_READ_VARS
     varnames = set()
-    for varname in Records.UNUSED_READ_VARS:
-        assert varname not in varnames
-        varnames.add(varname)
-        assert varname in Records.VALID_READ_VARS
-        assert varname not in Records.INTEGER_READ_VARS
-    varnames = set()
     for varname in Records.INTEGER_READ_VARS:
         assert varname not in varnames
         varnames.add(varname)
         assert varname in Records.VALID_READ_VARS
-        assert varname not in Records.UNUSED_READ_VARS
 
 
 def test_default_rates_and_those_implied_by_blowup_factors():
@@ -166,9 +159,9 @@ def test_var_labels_txt_contents():
                 assert False
             else:
                 var_labels_set.add(var)
-    # change all VALID and not UNUSED variables to uppercase
+    # change all VALID variables to uppercase
     var_used_set = set()
-    for var in (Records.VALID_READ_VARS - Records.UNUSED_READ_VARS):
+    for var in Records.VALID_READ_VARS:
         var_used_set.add(var.upper())
     # check for no extra var_used variables
     used_less_labels = var_used_set - var_labels_set
