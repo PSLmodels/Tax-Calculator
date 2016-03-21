@@ -258,10 +258,28 @@ def taxbrain_param_values_insert(driver, start_year, reform_spec):
             sys.stdout.flush()
         param_dict = reform_spec[param]
         pval = param_dict[(param_dict.keys())[0]]
-        if isinstance(pval[0], list):  # [0] removes the outer brackets
+        if param.endswith('_cpi'):
+            taxbrain_cpi_button_click(driver, param)
+        elif isinstance(pval[0], list):  # [0] removes the outer brackets
             taxbrain_vector_pval_insert(driver, start_year, param, param_dict)
         else:
             taxbrain_scalar_pval_insert(driver, start_year, param, param_dict)
+    return
+
+
+def taxbrain_cpi_button_click(driver, param_name):
+    """
+    Click the CPI button for the specified param_name.
+    Function returns nothing.
+    """
+    css = 'label[for="id{}"].btn.btn-cpi'.format(param_name)
+    try:
+        button = WebDriverWait(driver, 2, 0.1).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, css)))
+        button.click()
+    except TimeoutException:
+        msg = 'no TaxBrain parameter named {}'.format(param_name)
+        raise ValueError(msg)
     return
 
 

@@ -26,7 +26,9 @@ from taxcalc import Policy  # pylint: disable=import-error
 PARAMS_NOT_SCALED = set(['_ACTC_ChildNum',
                          '_ID_Charity_crt_Cash',
                          '_ID_Charity_crt_Asset',
-                         '_ID_BenefitSurtax_Switch'])
+                         '_ID_BenefitSurtax_Switch',
+                         '_ID_BenefitSurtax_crt',
+                         '_ID_BenefitSurtax_trt'])
 PARAMS_NOT_USED_IN_TAXBRAIN = set(['_ACTC_Income_thd',
                                    '_ALD_Interest_ec',
                                    '_AMT_Child_em',
@@ -51,6 +53,8 @@ PARAMS_NOT_USED_IN_TAXBRAIN = set(['_ACTC_Income_thd',
                                    '_ID_Miscellaneous_HC',
                                    '_KT_c_Age',
                                    '_LLC_Expense_c'])
+PARAMS_WITHOUT_CPI_BUTTON_IN_TAXBRAIN = set(['_II_credit',
+                                             '_II_credit_ps'])
 PROVISIONS_ALL_TOGETHER = 1
 PROVISIONS_EACH_SEPARATE = 2
 FIRST_YEAR = Policy.JSON_START_YEAR
@@ -58,7 +62,7 @@ SPC = '    '
 TAB = '{}{}{}'.format(SPC, SPC, SPC)
 
 
-def main(start_year, scale_factor, each_separate):
+def main(start_year, scale_factor, no_indexing, each_separate):
     """
     Highest-level logic of make_reforms.py script.
     """
@@ -86,6 +90,18 @@ def main(start_year, scale_factor, each_separate):
     # remove names of policy parameters not currently used by TaxBrain
     param_names = policy_param_names - PARAMS_NOT_USED_IN_TAXBRAIN
 
+    # add *_cpi parameter names if no_indexing is true
+    if no_indexing:
+        param_names = param_names | indexed_parameter_names(clp, param_names)
+
+    # remove "null" reform provisions
+    if scale_factor == 1.0:
+        excluded_names = set()
+        for name in param_names:
+            if not name.endswith('_cpi'):
+                excluded_names.add(name)
+        param_names = param_names - excluded_names
+
     # write a JSON entry for each parameter
     if reform == PROVISIONS_ALL_TOGETHER:
         write_all_together(param_names, clp, start_year, scale_factor)
@@ -101,6 +117,20 @@ def main(start_year, scale_factor, each_separate):
 # end of main function code
 
 
+def indexed_parameter_names(policy, param_names):
+    """
+    Return set of indexing-status parameter names for the parameters in
+    specified parameter_name set that are indexed under specified policy.
+    """
+    indexed_names = set()
+    values = getattr(policy, '_vals')
+    for name in param_names:
+        if values[name]['cpi_inflated']:
+            if name not in PARAMS_WITHOUT_CPI_BUTTON_IN_TAXBRAIN:
+                indexed_names.add(name + '_cpi')
+    return indexed_names
+
+
 def write_all_together(param_names, clp, start_year, scale_factor):
     """
     Write JSON for one reform containing all the provisions together.
@@ -113,22 +143,26 @@ def write_all_together(param_names, clp, start_year, scale_factor):
     idx = start_year - FIRST_YEAR
     num_names = len(param_names)
     num = 0
-    for name in param_names:
+    for name in sorted(param_names):
         num += 1
-        values = getattr(clp, name)
-        value = values[idx]
         sys.stdout.write('{}"{}": {}\n'.format(TAB, name, '{'))
-        if isinstance(value, float):
-            if name in PARAMS_NOT_SCALED:
-                val = value
-            else:
-                val = round(value * scale_factor, 5)
+        if name.endswith('_cpi'):
+            sys.stdout.write('{}{}"{}": false\n'.format(TAB, SPC, start_year))
         else:
-            if name in PARAMS_NOT_SCALED:
-                val = value.tolist()
+            values = getattr(clp, name)
+            value = values[idx]
+            if isinstance(value, float):
+                if name in PARAMS_NOT_SCALED:
+                    val = value
+                else:
+                    val = round(value * scale_factor, 5)
             else:
-                val = [round(v * scale_factor, 5) for v in value.tolist()]
-        sys.stdout.write('{}{}"{}": [{}]\n'.format(TAB, SPC, start_year, val))
+                if name in PARAMS_NOT_SCALED:
+                    val = value.tolist()
+                else:
+                    val = [round(v * scale_factor, 5) for v in value.tolist()]
+            sys.stdout.write('{}{}"{}": [{}]\n'.format(TAB, SPC,
+                                                       start_year, val))
         if num == num_names:
             sys.stdout.write('{}{}\n'.format(TAB, '}'))
         else:
@@ -147,27 +181,31 @@ def write_each_separate(param_names, clp, start_year, scale_factor):
     num_names = len(param_names)
     num = 0
     sys.stdout.write('{}\n'.format('{'))
-    for name in param_names:
+    for name in sorted(param_names):
         num += 1
         sys.stdout.write('{}"{}": {}\n'.format(SPC, num, '{'))
         sys.stdout.write('{}{}"replications": 1,\n'.format(SPC, SPC))
         sys.stdout.write('{}{}"start_year": {},\n'.format(SPC, SPC,
                                                           start_year))
         sys.stdout.write('{}{}"specification": {}\n'.format(SPC, SPC, '{'))
-        values = getattr(clp, name)
-        value = values[idx]
         sys.stdout.write('{}"{}": {}\n'.format(TAB, name, '{'))
-        if isinstance(value, float):
-            if name in PARAMS_NOT_SCALED:
-                val = value
-            else:
-                val = round(value * scale_factor, 5)
+        if name.endswith('_cpi'):
+            sys.stdout.write('{}{}"{}": false\n'.format(TAB, SPC, start_year))
         else:
-            if name in PARAMS_NOT_SCALED:
-                val = value.tolist()
+            values = getattr(clp, name)
+            value = values[idx]
+            if isinstance(value, float):
+                if name in PARAMS_NOT_SCALED:
+                    val = value
+                else:
+                    val = round(value * scale_factor, 5)
             else:
-                val = [round(v * scale_factor, 5) for v in value.tolist()]
-        sys.stdout.write('{}{}"{}": [{}]\n'.format(TAB, SPC, start_year, val))
+                if name in PARAMS_NOT_SCALED:
+                    val = value.tolist()
+                else:
+                    val = [round(v * scale_factor, 5) for v in value.tolist()]
+            sys.stdout.write('{}{}"{}": [{}]\n'.format(TAB, SPC,
+                                                       start_year, val))
         sys.stdout.write('{}{}\n'.format(TAB, '}'))
         sys.stdout.write('{}{}{}\n'.format(SPC, SPC, '}'))
         if num == num_names:
@@ -192,13 +230,20 @@ if __name__ == '__main__':
     PARSER.add_argument('--scale', type=float, default=1.10,
                         help=('optional flag to specify multiplicative '
                               'scaling factor\nused to increase policy '
-                              'parameters in each reform;\nno flag implies '
-                              'use of a scaling factor of 1.10, which\nis a '
-                              'ten percent increase in each policy paramter.'))
+                              'parameters in each reform provision;\n'
+                              'no flag implies use of a scaling factor of '
+                              '1.10, which is\na ten percent increase in '
+                              'each policy paramter.'))
+    PARSER.add_argument('--noindexing', action='store_true',
+                        help=('optional flag to specify reform provisions '
+                              'that turn off\nall indexing of parameters '
+                              'that are indexed under\ncurrent-law policy;\n'
+                              'no flag implies indexing status of parameters '
+                              'is unchanged.'))
     PARSER.add_argument('--separate', action='store_true',
                         help=('optional flag to specify that each reform '
                               'provision\nshould constitute its own reform;\n'
                               'no flag implies all reform provisions are\n'
                               'combined together into a single reform.'))
     ARGS = PARSER.parse_args()
-    sys.exit(main(ARGS.year, ARGS.scale, ARGS.separate))
+    sys.exit(main(ARGS.year, ARGS.scale, ARGS.noindexing, ARGS.separate))
