@@ -26,7 +26,9 @@ from taxcalc import Policy  # pylint: disable=import-error
 PARAMS_NOT_SCALED = set(['_ACTC_ChildNum',
                          '_ID_Charity_crt_Cash',
                          '_ID_Charity_crt_Asset',
-                         '_ID_BenefitSurtax_Switch'])
+                         '_ID_BenefitSurtax_Switch',
+                         '_ID_BenefitSurtax_crt',
+                         '_ID_BenefitSurtax_trt'])
 PARAMS_NOT_USED_IN_TAXBRAIN = set(['_ACTC_Income_thd',
                                    '_ALD_Interest_ec',
                                    '_AMT_Child_em',
@@ -51,6 +53,8 @@ PARAMS_NOT_USED_IN_TAXBRAIN = set(['_ACTC_Income_thd',
                                    '_ID_Miscellaneous_HC',
                                    '_KT_c_Age',
                                    '_LLC_Expense_c'])
+PARAMS_WITHOUT_CPI_BUTTON_IN_TAXBRAIN = set(['_II_credit',
+                                             '_II_credit_ps'])
 PROVISIONS_ALL_TOGETHER = 1
 PROVISIONS_EACH_SEPARATE = 2
 FIRST_YEAR = Policy.JSON_START_YEAR
@@ -90,6 +94,14 @@ def main(start_year, scale_factor, no_indexing, each_separate):
     if no_indexing:
         param_names = param_names | indexed_parameter_names(clp, param_names)
 
+    # remove "null" reform provisions
+    if scale_factor == 1.0:
+        excluded_names = set()
+        for name in param_names:
+            if not name.endswith('_cpi'):
+                excluded_names.add(name)
+        param_names = param_names - excluded_names
+
     # write a JSON entry for each parameter
     if reform == PROVISIONS_ALL_TOGETHER:
         write_all_together(param_names, clp, start_year, scale_factor)
@@ -114,7 +126,8 @@ def indexed_parameter_names(policy, param_names):
     values = getattr(policy, '_vals')
     for name in param_names:
         if values[name]['cpi_inflated']:
-            indexed_names.add(name + '_cpi')
+            if name not in PARAMS_WITHOUT_CPI_BUTTON_IN_TAXBRAIN:
+                indexed_names.add(name + '_cpi')
     return indexed_names
 
 
