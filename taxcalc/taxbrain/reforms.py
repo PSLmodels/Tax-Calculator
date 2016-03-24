@@ -252,7 +252,7 @@ def taxbrain_param_values_insert(driver, start_year, reform_spec):
     or more year:value pairs, and the specified start_year.
     Function returns nothing.
     """
-    for param in reform_spec:
+    for param in sorted(reform_spec.keys()):
         if TRACING:
             sys.stdout.write('==> PARAM {}\n'.format(param))
             sys.stdout.flush()
