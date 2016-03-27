@@ -100,7 +100,8 @@ def test_1(input_file):  # pylint: disable=redefined-outer-name
     SimpleTaxIO.show_iovar_definitions()
     simtax = SimpleTaxIO(input_filename=input_file.name,
                          reform=None,
-                         emulate_taxsim_2441_logic=False)
+                         emulate_taxsim_2441_logic=False,
+                         output_records=False)
     assert simtax.number_input_lines() == NUM_INPUT_LINES
 
 
@@ -111,7 +112,8 @@ def test_2(input_file,  # pylint: disable=redefined-outer-name
     """
     simtax = SimpleTaxIO(input_filename=input_file.name,
                          reform=reform_file.name,
-                         emulate_taxsim_2441_logic=False)
+                         emulate_taxsim_2441_logic=False,
+                         output_records=False)
     assert simtax.number_input_lines() == NUM_INPUT_LINES
     # check that reform was implemented as specified above in REFORM_CONTENTS
     syr = simtax.start_year()
@@ -148,6 +150,7 @@ def test_3(input_file):  # pylint: disable=redefined-outer-name
     }
     simtax = SimpleTaxIO(input_filename=input_file.name,
                          reform=policy_reform,
-                         emulate_taxsim_2441_logic=False)
+                         emulate_taxsim_2441_logic=False,
+                         output_records=False)
     simtax.calculate()
     assert simtax.number_input_lines() == NUM_INPUT_LINES
