@@ -14,20 +14,6 @@ from .behavior import Behavior, behavior
 from .growth import Growth, adjustment, target
 
 
-all_cols = set()
-
-
-def add_df(alldfs, df):
-    for col in df.columns:
-        if col not in all_cols:
-            all_cols.add(col)
-            alldfs.append(df[col])
-        else:
-            dup_index = [i for i,
-                         series in enumerate(alldfs) if series.name == col][0]
-            alldfs[dup_index] = df[col]
-
-
 class Calculator(object):
 
     def __init__(self, policy=None, records=None,
