@@ -57,7 +57,7 @@ def run():
                  '_limitratio', '_line17', '_line19', '_line22', '_line30',
                  '_line31', '_line32', '_line33', '_line34', '_line35',
                  '_line36', '_modagi', '_nctcr', '_ncu13', '_ngamty', '_noncg',
-                 '_nonlimited', '_num', '_numextra', '_oldfei', '_othadd',
+                 '_nonlimited', '_num', 'numextra', '_oldfei', '_othadd',
                  '_othded', '_othertax', '_othtax', '_parents', '_phase2_i',
                  '_posagi', '_precrd', '_preeitc', '_prexmp', '_refund',
                  '_regcrd', '_s1291', '_sep', '_sey', 'c09400', 'c03260',

@@ -392,7 +392,7 @@ def AMED(_fica, e00200, MARS, AMED_thd, _sey, AMED_trt,
 @iterate_jit(nopython=True, puf=True)
 def StdDed(DSI, _earned, STD, p04470, e00100, e60000,
            MARS, MIDR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200,
-           STD_Aged, f6251, _numextra, puf):
+           STD_Aged, f6251, numextra, puf):
     """
     StdDed function:
 
@@ -453,19 +453,19 @@ def StdDed(DSI, _earned, STD, p04470, e00100, e60000,
         x04500 = e00100 - e60000
     # Calculate the extra deduction for aged and blind
     if puf:
-        _numextra = _numextra
+        numextra = numextra
     else:
-        _numextra = AGEP + AGES + PBI + SBI
+        numextra = AGEP + AGES + PBI + SBI
     if _exact == 1 and MARS == 3 or MARS == 5:
         c04200 = e04200
     else:
-        c04200 = _numextra * STD_Aged[MARS - 1]
+        c04200 = numextra * STD_Aged[MARS - 1]
     c15200 = c04200
     # Compute the total standard deduction
     _standard = c04100 + c04200
     if (MARS == 3 or MARS == 6) and (MIDR == 1):
         _standard = 0.
-    return (_standard, c04200, _numextra, c15200, c15100, x04500, c04100)
+    return (_standard, c04200, numextra, c15200, c15100, x04500, c04100)
 
 
 @iterate_jit(nopython=True, puf=False)
@@ -1013,7 +1013,7 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps,
            e00600, e40223, e25360, e25430, p25470, e25400, e25500,
            e26210, e26340, e27200, e26205, e26320, EITC_InvestIncome_c,
            _agep, _ages, _earned, c59660, _exact, e59560,
-           _numextra, puf):
+           numextra, puf):
     """
     NumDep function: ...
     """
@@ -1055,8 +1055,8 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps,
     if puf or (EIC > 0) or (_agep >= 25 and _agep <= 64) or (_ages > 0):
         c59660 = _preeitc
         # make elderly childless filing units in PUF ineligible for EITC
-        if (EIC == 0 and puf and ((MARS == 2 and _numextra >= 2.) or
-                                  (MARS != 2 and _numextra >= 1.))):
+        if (EIC == 0 and puf and ((MARS == 2 and numextra >= 2.) or
+                                  (MARS != 2 and numextra >= 1.))):
             c59660 = 0.
             c59560 = 0.
     else:

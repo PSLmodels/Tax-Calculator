@@ -635,8 +635,7 @@ class SimpleTaxIO(object):
         recs.EIC[idx] = min(num_eitc_qualified_kids, 3)
         total_num_exemptions = num_taxpayers + num_dependents
         recs.XTOT[idx] = total_num_exemptions
-        # pylint: disable=protected-access
-        recs._numextra[idx] = ivar[6]  # number of taxpayers age 65+
+        recs.numextra[idx] = ivar[6]  # number of taxpayers age 65+
         recs.e00200p[idx] = ivar[7]  # wage+salary income of taxpayer
         recs.e00200s[idx] = ivar[8]  # wage+salary income of spouse
         recs.e00200[idx] = ivar[7] + ivar[8]  # combined wage+salary income

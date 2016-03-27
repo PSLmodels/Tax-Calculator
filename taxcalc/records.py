@@ -125,12 +125,12 @@ class Records(object):
         'p23250', 'e24515', 'e24516', 'e24518',
         'p25470',
         'e26270',
-        'e27200', 'e32800', 'e03300',
+        'e27200', 'e32800', 'e32750', 'e03300',
         'e58990',
         'p60100', 'e60000', 'e62100', 'e62900', 'e62720', 'e62730',
         'e62740', 'p87482', 'p87521',
         'e87530',
-        'MARS', 'MIDR', 'RECID',
+        'MARS', 'MIDR', 'RECID', 'numextra',
         'wage_head', 'wage_spouse',
         'age', 'AGERANGE',
         's006', 'filer'])
@@ -165,7 +165,7 @@ class Records(object):
         'e59410', 'e59420', 'e74400', 'x62720', 'x60260',
         'x60240', 'x60220', 'x60130', 'e60290',
         'DOBYR', 'SDOBYR', 'e62600', '_fixeic',
-        'e32750', 'e32775', 'e33420', 'e33430',
+        'e32775', 'e33420', 'e33430',
         'e33450', 'e33460', 'e33465', 'e33470',
         'e83080', 'e25360',
         'e25430', 'e25400', 'e25500', 'e26210', 'e26340',
@@ -194,7 +194,7 @@ class Records(object):
         '_ywossbe', '_ywossbc', '_prexmp', 'c17750',
         '_statax', 'c37703', 'c20500', 'c20750', 'c19200',
         'c19700', '_nonlimited', '_limitratio', '_phase2_i',
-        '_fica', '_fica_was', 'c03260', 'c11055', 'c15100', '_numextra',
+        '_fica', '_fica_was', 'c03260', 'c11055', 'c15100',
         '_sep', '_num', '_txpyers', 'c15200', 'c04100', 'c04200',
         'c04500', '_amtstd', '_oldfei', 'c05200', '_cglong',
         '_noncg', '_hasgain', '_dwks9', '_dwks5', '_dwks12',
@@ -546,7 +546,7 @@ class Records(object):
                           np.logical_or(self.MARS == 3, self.MARS == 6)),
             2., 1.)
         # impute number of extra standard deductions for aged
-        self._numextra[:] = np.where(
+        self.numextra[:] = np.where(
             np.logical_or(self.AGERANGE >= 6,
                           np.logical_and(self.age >= 65, self.AGERANGE == 0)),
             self._txpyers, 0.)
