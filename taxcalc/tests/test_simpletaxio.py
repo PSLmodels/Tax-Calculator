@@ -16,10 +16,11 @@ import pytest
 import tempfile
 
 
-NUM_INPUT_LINES = 2
+NUM_INPUT_LINES = 3
 INPUT_CONTENTS = (
     '1 2014 0 1 0 0 95000 0 5000 0     0     0 0 0 0 0 0 0 0 0 9000 -1000\n'
     '2 2013 0 2 0 1 15000 0    0 0 50000 70000 0 0 0 0 0 0 0 0    0 -3000\n'
+    '3 2014 0 3 1 0 40000 0 1000 0     0     0 0 0 0 0 0 0 0 0 1000 -1000\n'
 )
 REFORM_CONTENTS = """
 // Example of a reform suitable for use as an optional SimpleTaxIO reform file.
