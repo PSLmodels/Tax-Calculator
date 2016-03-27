@@ -56,6 +56,17 @@ def main():
                               'dependents under age 17.'),
                         default=False,
                         action="store_true")
+    parser.add_argument('--records',
+                        help=('optional flag that causes the output file to '
+                              'be a CSV-formatted file containing for each '
+                              'INPUT filing unit the TAXYEAR values of each '
+                              'variable in the Records.VALID_READ_VARS set. '
+                              'If the --records option is specified, the '
+                              'output file name will be the same as if the '
+                              'option was not specified, except that the '
+                              '".out-simtax" part is replaced by ".records"'),
+                        default=False,
+                        action="store_true")
     parser.add_argument('INPUT',
                         help=('INPUT is name of required file that contains '
                               'tax-filing-unit information in Internet-TAXSIM '
@@ -68,7 +79,8 @@ def main():
     # instantiate SimpleTaxIO object and do tax calculations
     simtax = SimpleTaxIO(input_filename=args.INPUT,
                          reform=args.reform,
-                         emulate_taxsim_2441_logic=args.taxsim2441)
+                         emulate_taxsim_2441_logic=args.taxsim2441,
+                         output_records=args.records)
     simtax.calculate(writing_output_file=True)
     # return no-error exit code
     return 0

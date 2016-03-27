@@ -9,6 +9,7 @@ Tax-Calculator simple tax input-output class.
 import os
 import sys
 import six
+import re
 import pandas as pd
 from .policy import Policy
 from .records import Records
@@ -34,6 +35,11 @@ class SimpleTaxIO(object):
         is necessary if the SimpleTaxIO class is being used in validation
         tests against Internet-TAXSIM output.
 
+    output_records: boolean
+        true implies write a CSV-formatted file containing for each
+        INPUT filing unit the TAXYEAR values of each variable in the
+        Records.VALID_READ_VARS set.
+
     Raises
     ------
     ValueError:
@@ -50,7 +56,8 @@ class SimpleTaxIO(object):
     def __init__(self,
                  input_filename,
                  reform,
-                 emulate_taxsim_2441_logic):
+                 emulate_taxsim_2441_logic,
+                 output_records):
         """
         SimpleTaxIO class constructor.
         """
@@ -93,7 +100,8 @@ class SimpleTaxIO(object):
             self._policy.implement_reform(reform_dict)
         # validate input variable values
         self._validate_input()
-        self._calc = self._calc_object(emulate_taxsim_2441_logic)
+        self._calc = self._calc_object(emulate_taxsim_2441_logic,
+                                       output_records)
 
     def start_year(self):
         """
@@ -548,13 +556,15 @@ class SimpleTaxIO(object):
                 raise ValueError(msg.format(num_young_dependents, lnum,
                                             num_all_dependents))
 
-    def _calc_object(self, emulate_taxsim_2441_logic):
+    def _calc_object(self, emulate_taxsim_2441_logic, output_records):
         """
         Create and return Calculator object to conduct the tax calculations.
 
         Parameters
         ----------
         emulate_taxsim_2441_logic: boolean
+
+        output_records: boolean
 
         Returns
         -------
@@ -576,6 +586,15 @@ class SimpleTaxIO(object):
             lnum += 1
             SimpleTaxIO._specify_input(recs, idx, self._input[lnum],
                                        emulate_taxsim_2441_logic)
+        # optionally write Records.VALID_READ_VARS content to file
+        if output_records:
+            recdf = pd.DataFrame()
+            for varname in Records.VALID_READ_VARS:
+                vardata = getattr(recs, varname)
+                recdf[varname] = vardata
+            recdf.to_csv(re.sub('out-simtax', 'records',
+                                self._output_filename),
+                         float_format='%.2f', index=False)
         # create Calculator object containing all tax filing units
         return Calculator(policy=self._policy, records=recs, sync_years=False)
 

@@ -16,10 +16,11 @@ import pytest
 import tempfile
 
 
-NUM_INPUT_LINES = 2
+NUM_INPUT_LINES = 3
 INPUT_CONTENTS = (
     '1 2014 0 1 0 0 95000 0 5000 0     0     0 0 0 0 0 0 0 0 0 9000 -1000\n'
     '2 2013 0 2 0 1 15000 0    0 0 50000 70000 0 0 0 0 0 0 0 0    0 -3000\n'
+    '3 2014 0 3 1 0 40000 0 1000 0     0     0 0 0 0 0 0 0 0 0 1000 -1000\n'
 )
 REFORM_CONTENTS = """
 // Example of a reform suitable for use as an optional SimpleTaxIO reform file.
@@ -100,7 +101,8 @@ def test_1(input_file):  # pylint: disable=redefined-outer-name
     SimpleTaxIO.show_iovar_definitions()
     simtax = SimpleTaxIO(input_filename=input_file.name,
                          reform=None,
-                         emulate_taxsim_2441_logic=False)
+                         emulate_taxsim_2441_logic=False,
+                         output_records=False)
     assert simtax.number_input_lines() == NUM_INPUT_LINES
 
 
@@ -111,7 +113,8 @@ def test_2(input_file,  # pylint: disable=redefined-outer-name
     """
     simtax = SimpleTaxIO(input_filename=input_file.name,
                          reform=reform_file.name,
-                         emulate_taxsim_2441_logic=False)
+                         emulate_taxsim_2441_logic=False,
+                         output_records=False)
     assert simtax.number_input_lines() == NUM_INPUT_LINES
     # check that reform was implemented as specified above in REFORM_CONTENTS
     syr = simtax.start_year()
@@ -148,6 +151,7 @@ def test_3(input_file):  # pylint: disable=redefined-outer-name
     }
     simtax = SimpleTaxIO(input_filename=input_file.name,
                          reform=policy_reform,
-                         emulate_taxsim_2441_logic=False)
+                         emulate_taxsim_2441_logic=False,
+                         output_records=False)
     simtax.calculate()
     assert simtax.number_input_lines() == NUM_INPUT_LINES
