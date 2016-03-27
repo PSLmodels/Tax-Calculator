@@ -18,16 +18,13 @@ WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 def test_create_records_with_correct_start_year():
     recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=Records.PUF_YEAR)
     assert recs
-    assert np.any(recs._numextra != 0)
+    assert np.any(recs.numextra != 0)
 
 
 def test_create_records_with_wrong_start_year():
     recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2001)
     assert recs
-    assert np.all(recs._numextra == 0)
-    # absence of non-zero values for imputed recs._numextra variable will raise
-    # an error when Calculator.calc_all() is called, guarding
-    # against accidentally specifying wrong start_year
+    assert np.all(recs.numextra == 0)
 
 
 def test_blow_up():
