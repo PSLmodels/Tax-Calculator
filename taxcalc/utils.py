@@ -2,10 +2,13 @@ import numpy as np
 import pandas as pd
 from pandas import DataFrame
 from collections import defaultdict
+import matplotlib
+import matplotlib.pyplot as plt
 
 STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600',
                  'c04800', 'c05200', 'c62100', 'c09600', 'c05800', 'c09200',
-                 '_refund', 'c07100', '_iitax', '_fica', '_combined', 's006']
+                 '_refund', 'c07100', '_iitax', '_fica', '_combined', 's006',
+                 'e00200', 'MARS', 'n24']
 
 # each entry in this array corresponds to the same entry in the array
 # TABLE_LABELS below. this allows us to use TABLE_LABELS to map a
@@ -101,7 +104,7 @@ def weighted_share_of_total(agg, col_name, total):
     return float(weighted_sum(agg, col_name)) / (float(total) + EPSILON)
 
 
-def add_weighted_decile_bins(df, income_measure='_expanded_income',
+def add_weighted_decile_bins(df, num_bins, income_measure='_expanded_income',
                              labels=None):
     """
 
@@ -121,9 +124,9 @@ def add_weighted_decile_bins(df, income_measure='_expanded_income',
     # Max value of cum sum of weights
     max_ = df['cumsum_weights'].values[-1]
     # Create 10 bins and labels based on this cumulative weight
-    bins = [0] + list(np.arange(1, 11) * (max_ / 10.0))
+    bins = [0] + list(np.arange(1, (num_bins + 1)) * (max_ / float(num_bins)))
     if not labels:
-        labels = range(1, 11)
+        labels = range(1, (num_bins + 1))
     #  Groupby weighted deciles
     df['bins'] = pd.cut(df['cumsum_weights'], bins, labels=labels)
     return df
@@ -357,7 +360,7 @@ def create_distribution_table(calc, groupby, result_type,
 
     # sorts the data
     if groupby == "weighted_deciles":
-        df = add_weighted_decile_bins(res, income_measure=income_measure)
+        df = add_weighted_decile_bins(res, 10, income_measure=income_measure)
     elif groupby == "small_income_bins":
         df = add_income_bins(res, compare_with="soi",
                              income_measure=income_measure)
@@ -430,7 +433,7 @@ def create_difference_table(calc1, calc2, groupby,
     income_measure = baseline_income_measure
 
     if groupby == "weighted_deciles":
-        df = add_weighted_decile_bins(res2, income_measure=income_measure)
+        df = add_weighted_decile_bins(res2, 10, income_measure=income_measure)
     elif groupby == "small_income_bins":
         df = add_income_bins(res2, compare_with="soi",
                              income_measure=income_measure)
