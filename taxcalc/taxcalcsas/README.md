@@ -50,15 +50,11 @@ $ python ../../inctax.py c13.csv 2013
 ```
 
 The resulting OUTPUT file is identical to that produced by the
-```simtax.py``` command-line interface to Tax-Calculator as shown
-below:
+```simtax.py``` command-line interface to Tax-Calculator because
+the following command produces no difference output:
 
 ```
 $ diff c13-13.out-inctax c13.in.out-simtax
-```
-
-```
-$
 ```
 
 So, the contents of the ```c13.in``` and ```c13.csv``` files are identical
