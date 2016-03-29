@@ -3,8 +3,8 @@ dependencies:
 - pytest
 - setuptools
 - python
-- numpy
-- pandas <=0.16.2
+- numpy =1.10.4
+- pandas =0.18.0
 - numba
 - toolz
 - six
