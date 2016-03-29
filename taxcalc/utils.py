@@ -301,6 +301,76 @@ def add_columns(res):
     return res
 
 
+def create_mtr_graph(calcX, calcY, MARS, weights,
+                     income_measure='c00100',
+                     kid_cap=1000, kid_flo=0, combined_or_IIT='combined'):
+    """
+    The create_mtr_graph function plots the mtr w.r.t different income measure.
+
+    The function also allows filtering different MARS values, choosing from
+    different weighting measurements as well as setting cap and floor for
+    number of kids.
+
+    Notice that the second calculator, calcY, is optional.
+    """
+    # get the mtr w.r.t iit and combined liability
+    a, mtr_iit_x, mtr_combined_x = calcX.mtr()
+    a, mtr_iit_y, mtr_combined_y = calcY.mtr()
+
+    # call the results function to get results in a table
+    df_x = results(calcX)
+    df_y = results(calcY)
+    df_x['mtr_iit'] = mtr_iit_x
+    df_y['mtr_iit'] = mtr_iit_y
+    df_x['mtr_combined'] = mtr_combined_x
+    df_y['mtr_combined'] = mtr_combined_y
+
+    df_y[income_measure] = df_x[income_measure]
+
+    df_x = add_income_bins(df_x, 100, income_measure)
+    df_y = add_income_bins(df_y, 100, income_measure)
+
+    df_filtered_x = df_x[(df_x['MARS'] == MARS) & (df_x['n24'] >= kid_flo) & (df_x['n24'] <= kid_cap) ].copy()
+    df_filtered_y = df_y[(df_y['MARS'] == MARS) & (df_x['n24'] >= kid_flo) & (df_x['n24'] <= kid_cap) ].copy()
+
+    #Create a GroupBy object with 100 groups
+    gp_x = df_filtered_x.groupby('bins', as_index=False)
+    gp_y = df_filtered_y.groupby('bins', as_index=False)
+
+    #Create a series of size 100
+    if combined_or_IIT == 'combined':
+        wmtr_x = gp_x.apply(weights, 'mtr_combined')
+        wmtr_y = gp_y.apply(weights, 'mtr_combined')
+    elif combined_or_IIT == 'IIT':
+        wmtr_x = gp_x.apply(weights, 'mtr_iit')
+        wmtr_y = gp_y.apply(weights, 'mtr_iit')
+
+    #Create a DataFrame out of this with a default index
+    wmtrx_df = DataFrame(data=wmtr_x, columns=['w_mtr'])
+    wmtry_df = DataFrame(data=wmtr_y, columns=['w_mtr'])
+
+    #Add the bin labels
+    wmtrx_df['bins'] = np.arange(1, 101)
+    wmtry_df['bins'] = np.arange(1, 101)
+
+    #Join df_x and appld on the bin, carrying along 'w_mtr'
+    #Left join means that 'rslt' is of size len(df_filtered_x)
+    rsltx = pd.merge(df_filtered_x[['bins']], wmtrx_df, how='left')
+    rslty = pd.merge(df_filtered_y[['bins']], wmtry_df, how='left')
+
+    # Put that column in df_filtered_x, disregarding index of rslt
+    df_filtered_x['w_mtr'] = rsltx['w_mtr'].values
+    df_filtered_y['w_mtr'] = rslty['w_mtr'].values
+
+    df_filtered_x.drop_duplicates(subset='bins', inplace=True)
+    df_filtered_y.drop_duplicates(subset='bins', inplace=True)
+
+    plt.plot(df_filtered_x.bins, df_filtered_x.w_mtr)
+    if calcX != calcY:
+        plt.plot(df_filtered_y.bins.unique(), df_filtered_y.w_mtr.unique())
+        plt.legend(['Baseline', 'Reform'])
+
+
 def create_distribution_table(calc, groupby, result_type,
                               income_measure='_expanded_income',
                               baseline_calc=None, diffs=False):
