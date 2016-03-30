@@ -233,7 +233,7 @@ Simple Usage
 
 For examples of Tax-Calculator usage (without changing tax parameter
 values and without adding a new tax parameter), you can view our code
-sample notebook: `10 Minutes To TaxCalc`_.
+sample notebook: `10 Minutes To Tax-Calculator`_.
 
 
 .. [1] The dollar sign is the end of the command prompt on a Mac.  If
@@ -277,9 +277,9 @@ sample notebook: `10 Minutes To TaxCalc`_.
 .. _`Github Flow`:
    https://guides.github.com/introduction/flow/
 
-.. _`10 Minutes To TaxCalc`:
+.. _`10 Minutes To Tax-Calculator`:
    http://nbviewer.ipython.org/github/open-source-economics/Tax-Calculator/
-   blob/master/docs/notebooks/10_Minutes_to_Taxcalc.ipynb
+   blob/master/docs/notebooks/10_Minutes_to_Tax-Calculator.ipynb
 
 .. _`Behavior Example`:
    http://nbviewer.ipython.org/github/open-source-economics/Tax-Calculator/
