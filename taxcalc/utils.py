@@ -337,11 +337,11 @@ def create_mtr_graph(calcX, calcY, MARS, weights, income_measure='c00100',
     df_filtered_y = df_y[(df_y['MARS'] == MARS) & (df_x['n24'] >= kid_flo) &
                          (df_x['n24'] <= kid_cap)].copy()
 
-    # Create a GroupBy object with 100 groups
+    # create a GroupBy object with 100 groups
     gp_x = df_filtered_x.groupby('bins', as_index=False)
     gp_y = df_filtered_y.groupby('bins', as_index=False)
 
-    # Create a series of size 100
+    # create a series of size 100, and get the desired mtr
     if combined_or_IIT == 'combined':
         wmtr_x = gp_x.apply(weights, 'mtr_combined')
         wmtr_y = gp_y.apply(weights, 'mtr_combined')
@@ -349,26 +349,28 @@ def create_mtr_graph(calcX, calcY, MARS, weights, income_measure='c00100',
         wmtr_x = gp_x.apply(weights, 'mtr_iit')
         wmtr_y = gp_y.apply(weights, 'mtr_iit')
 
-    # Create a DataFrame out of this with a default index
+    # create a DataFrame out of this with a default index
     wmtrx_df = DataFrame(data=wmtr_x, columns=['w_mtr'])
     wmtry_df = DataFrame(data=wmtr_y, columns=['w_mtr'])
 
-    # Add the bin labels
+    # add the bin labels
     wmtrx_df['bins'] = np.arange(1, 101)
     wmtry_df['bins'] = np.arange(1, 101)
 
-    # Join df_x and appld on the bin, carrying along 'w_mtr'
-    # Left join means that 'rslt' is of size len(df_filtered_x)
+    # join df_x and appld on the bin, carrying along 'w_mtr'
+    # left join means that 'rslt' is of size len(df_filtered_x)
     rsltx = pd.merge(df_filtered_x[['bins']], wmtrx_df, how='left')
     rslty = pd.merge(df_filtered_y[['bins']], wmtry_df, how='left')
 
-    # Put that column in df_filtered_x, disregarding index of rslt
+    # put that column in df_filtered_x, disregarding index of rslt
     df_filtered_x['w_mtr'] = rsltx['w_mtr'].values
     df_filtered_y['w_mtr'] = rslty['w_mtr'].values
 
     df_filtered_x.drop_duplicates(subset='bins', inplace=True)
     df_filtered_y.drop_duplicates(subset='bins', inplace=True)
 
+    # plot the mtr against our bins, notice that only one plot will be
+    # generated if two calculators are the same
     plt.plot(df_filtered_x.bins, df_filtered_x.w_mtr)
     if calcX != calcY:
         plt.plot(df_filtered_y.bins.unique(), df_filtered_y.w_mtr.unique())
