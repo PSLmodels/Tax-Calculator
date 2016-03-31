@@ -104,12 +104,12 @@ def weighted_share_of_total(agg, col_name, total):
     return float(weighted_sum(agg, col_name)) / (float(total) + EPSILON)
 
 
-def add_weighted_decile_bins(df, num_bins, income_measure='_expanded_income',
-                             labels=None):
+def add_weighted_decile_bins(df, num_bins=10,
+                             income_measure='_expanded_income', labels=None):
     """
 
-    Add a column of income bins based on each 10% of the income_measure,
-    weighted by s006.
+    Add a column of income bins based on each 10% (customizable) of the
+    income_measure, weighted by s006.
 
     The default income_measure is `expanded_income`, but `c00100` also works.
 
@@ -301,8 +301,7 @@ def add_columns(res):
     return res
 
 
-def create_mtr_graph(calcX, calcY, MARS, weights,
-                     income_measure='c00100',
+def create_mtr_graph(calcX, calcY, MARS, weights, income_measure='c00100',
                      kid_cap=1000, kid_flo=0, combined_or_IIT='combined'):
     """
     The create_mtr_graph function plots the mtr w.r.t different income measure.
@@ -317,7 +316,7 @@ def create_mtr_graph(calcX, calcY, MARS, weights,
     a, mtr_iit_x, mtr_combined_x = calcX.mtr()
     a, mtr_iit_y, mtr_combined_y = calcY.mtr()
 
-    # call the results function to get results in a table
+    # call the results function to organize results in a table
     df_x = results(calcX)
     df_y = results(calcY)
     df_x['mtr_iit'] = mtr_iit_x
@@ -327,17 +326,22 @@ def create_mtr_graph(calcX, calcY, MARS, weights,
 
     df_y[income_measure] = df_x[income_measure]
 
-    df_x = add_income_bins(df_x, 100, income_measure)
-    df_y = add_income_bins(df_y, 100, income_measure)
+    # call the add_weighted_decile_bins function with 100 bins, that is, with
+    # each 1% of the income_measure.
+    df_x = add_weighted_decile_bins(df_x, 100, income_measure)
+    df_y = add_weighted_decile_bins(df_y, 100, income_measure)
 
-    df_filtered_x = df_x[(df_x['MARS'] == MARS) & (df_x['n24'] >= kid_flo) & (df_x['n24'] <= kid_cap) ].copy()
-    df_filtered_y = df_y[(df_y['MARS'] == MARS) & (df_x['n24'] >= kid_flo) & (df_x['n24'] <= kid_cap) ].copy()
+    # filtered the records according to inputed parameters
+    df_filtered_x = df_x[(df_x['MARS'] == MARS) & (df_x['n24'] >= kid_flo) &
+                         (df_x['n24'] <= kid_cap)].copy()
+    df_filtered_y = df_y[(df_y['MARS'] == MARS) & (df_x['n24'] >= kid_flo) &
+                         (df_x['n24'] <= kid_cap)].copy()
 
-    #Create a GroupBy object with 100 groups
+    # Create a GroupBy object with 100 groups
     gp_x = df_filtered_x.groupby('bins', as_index=False)
     gp_y = df_filtered_y.groupby('bins', as_index=False)
 
-    #Create a series of size 100
+    # Create a series of size 100
     if combined_or_IIT == 'combined':
         wmtr_x = gp_x.apply(weights, 'mtr_combined')
         wmtr_y = gp_y.apply(weights, 'mtr_combined')
@@ -345,16 +349,16 @@ def create_mtr_graph(calcX, calcY, MARS, weights,
         wmtr_x = gp_x.apply(weights, 'mtr_iit')
         wmtr_y = gp_y.apply(weights, 'mtr_iit')
 
-    #Create a DataFrame out of this with a default index
+    # Create a DataFrame out of this with a default index
     wmtrx_df = DataFrame(data=wmtr_x, columns=['w_mtr'])
     wmtry_df = DataFrame(data=wmtr_y, columns=['w_mtr'])
 
-    #Add the bin labels
+    # Add the bin labels
     wmtrx_df['bins'] = np.arange(1, 101)
     wmtry_df['bins'] = np.arange(1, 101)
 
-    #Join df_x and appld on the bin, carrying along 'w_mtr'
-    #Left join means that 'rslt' is of size len(df_filtered_x)
+    # Join df_x and appld on the bin, carrying along 'w_mtr'
+    # Left join means that 'rslt' is of size len(df_filtered_x)
     rsltx = pd.merge(df_filtered_x[['bins']], wmtrx_df, how='left')
     rslty = pd.merge(df_filtered_y[['bins']], wmtry_df, how='left')
 
@@ -430,7 +434,7 @@ def create_distribution_table(calc, groupby, result_type,
 
     # sorts the data
     if groupby == "weighted_deciles":
-        df = add_weighted_decile_bins(res, 10, income_measure=income_measure)
+        df = add_weighted_decile_bins(res, income_measure=income_measure)
     elif groupby == "small_income_bins":
         df = add_income_bins(res, compare_with="soi",
                              income_measure=income_measure)
@@ -503,7 +507,7 @@ def create_difference_table(calc1, calc2, groupby,
     income_measure = baseline_income_measure
 
     if groupby == "weighted_deciles":
-        df = add_weighted_decile_bins(res2, 10, income_measure=income_measure)
+        df = add_weighted_decile_bins(res2, income_measure=income_measure)
     elif groupby == "small_income_bins":
         df = add_income_bins(res2, compare_with="soi",
                              income_measure=income_measure)
