@@ -357,8 +357,7 @@ def create_mtr_graph(calcX, calcY, MARS, weights, income_measure='c00100',
     wmtrx_df['bins'] = np.arange(1, 101)
     wmtry_df['bins'] = np.arange(1, 101)
 
-    # join df_x and appld on the bin, carrying along 'w_mtr'
-    # left join means that 'rslt' is of size len(df_filtered_x)
+    # join df_x and apply on the bin, carrying along 'wmtr'
     rsltx = pd.merge(df_filtered_x[['bins']], wmtrx_df, how='left')
     rslty = pd.merge(df_filtered_y[['bins']], wmtry_df, how='left')
 
@@ -369,11 +368,11 @@ def create_mtr_graph(calcX, calcY, MARS, weights, income_measure='c00100',
     df_filtered_x.drop_duplicates(subset='bins', inplace=True)
     df_filtered_y.drop_duplicates(subset='bins', inplace=True)
 
-    # plot the mtr against our bins, notice that only one plot will be
+    # plot the mtr against bins, notice that only one plot will be
     # generated if two calculators are the same
     plt.plot(df_filtered_x.bins, df_filtered_x.w_mtr)
     if calcX != calcY:
-        plt.plot(df_filtered_y.bins.unique(), df_filtered_y.w_mtr.unique())
+        plt.plot(df_filtered_y.bins, df_filtered_y.w_mtr)
         plt.legend(['Baseline', 'Reform'])
 
 
