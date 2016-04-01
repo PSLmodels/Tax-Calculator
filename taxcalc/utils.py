@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
@@ -302,7 +303,7 @@ def add_columns(res):
 
 
 def create_mtr_graph(calcX, calcY, MARS, weights, income_measure='c00100',
-                     kid_cap=1000, kid_flo=0, combined_or_IIT='combined'):
+                     kid_cap=1000, kid_flo=0, combined_or_IIT='Combined'):
     """
     The create_mtr_graph function plots the mtr w.r.t different income measure.
 
@@ -342,7 +343,7 @@ def create_mtr_graph(calcX, calcY, MARS, weights, income_measure='c00100',
     gp_y = df_filtered_y.groupby('bins', as_index=False)
 
     # create a series of size 100, and get the desired mtr
-    if combined_or_IIT == 'combined':
+    if combined_or_IIT == 'Combined':
         wmtr_x = gp_x.apply(weights, 'mtr_combined')
         wmtr_y = gp_y.apply(weights, 'mtr_combined')
     elif combined_or_IIT == 'IIT':
@@ -370,10 +371,20 @@ def create_mtr_graph(calcX, calcY, MARS, weights, income_measure='c00100',
 
     # plot the mtr against bins, notice that only one plot will be
     # generated if two calculators are the same
-    plt.plot(df_filtered_x.bins, df_filtered_x.w_mtr)
+    layer = plt.figure()
+    layer.suptitle("MARS = %d, Kid Range: [%d, %d]" % (MARS, kid_cap, kid_flo),
+                   fontsize=12, fontweight='bold')
+
+    plt.plot(df_filtered_x.bins, df_filtered_x.w_mtr, label="Baseline")
+
+    background = layer.add_subplot(111)
+    layer.subplots_adjust(top=0.85)
+
+    background.set_xlabel('Income Bins' + '(' + income_measure + ')')
+    background.set_ylabel('Marginal Tax Rate' + '(' + combined_or_IIT + ')')
     if calcX != calcY:
-        plt.plot(df_filtered_y.bins, df_filtered_y.w_mtr)
-        plt.legend(['Baseline', 'Reform'])
+        plt.plot(df_filtered_y.bins, df_filtered_y.w_mtr, label="Reform")
+        plt.legend(loc='upper left')
 
 
 def create_distribution_table(calc, groupby, result_type,
