@@ -380,7 +380,7 @@ def create_mtr_graph(calcX, calcY, MARS, weights, income_measure='c00100',
     background = layer.add_subplot(111)
     layer.subplots_adjust(top=0.85)
 
-    background.set_xlabel('Income Bins' + '(' + income_measure + ')')
+    background.set_xlabel('Income Percentiles' + '(' + income_measure + ')')
     background.set_ylabel('Marginal Tax Rate' + '(' + combined_or_IIT + ')')
     if calcX != calcY:
         plt.plot(df_filtered_y.bins, df_filtered_y.w_mtr, label="Reform")
