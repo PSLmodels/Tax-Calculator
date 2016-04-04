@@ -18,59 +18,12 @@ sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import SimpleTaxIO  # pylint: disable=import-error
 
 
-EXPECTED_INPUT_VARS = set([
-    'e00650', 'e02500', 'RECID', '_cmbtp', '_amtspa', '_edical',
-    'c82880', 'c82885', 'c82890', 'c82900', 'c82905', 'c82910',
-    'c82915', 'c82920', 'c82925', 'c82930', 'c82935', 'c82937',
-    'c82940', 'c00100', 'c01000', 'c02500', 'c02650', 'c02700',
-    'c02900', 'c04100', 'c04200', 'c04470', 'c04500', 'c04600',
-    'c04800', 'c05100', 'c05200', 'c05700', 'c05750', 'c05800',
-    'c07100', 'c07150', 'c07180', 'c07220', 'c07230', 'c07970',
-    'c08795', 'c08800', 'c09200', 'c09600', 'c10300', 'c10950',
-    'c10960', 'c11055', 'c11070', 'c15100', 'c15200', 'c17000',
-    'c17750', 'c18300', 'c19200', 'c19700', 'c20400', 'c20500',
-    'c20750', 'c20800', 'c21040', 'c21060', 'c23650', 'c24505',
-    'c24510', 'c24516', 'c24517', 'c24520', 'c24530', 'c24534',
-    'c24540', 'c24550', 'c24560', 'c24570', 'c24580', 'c24597',
-    'c24598', 'c24610', 'c24615', 'c32800', 'c32840', 'c32880',
-    'c32890', 'c33000', 'c33200', 'c33400', 'c33465', 'c33470',
-    'c33475', 'c33480', 'c37703', 'c59430', 'c59450', 'c59460',
-    'c59485', 'c59490', 'c59560', 'c59660', 'c59680', 'c59700',
-    'c59720', 'c60000', 'c60130', 'c60200', 'c60220', 'c60240',
-    'c60260', 'c62100', 'c62600', 'c62700', 'c62720', 'c62730',
-    'c62740', 'c62745', 'c62747', 'c62755', 'c62770', 'c62780',
-    'c62800', 'c62900', 'c63000', 'c63100', 'c64450', 'c87482',
-    'c87483', 'c87487', 'c87488', 'c87492', 'c87493', 'c87497',
-    'c87498', 'c87521', 'c87530', 'c87540', 'c87550', 'c87560',
-    'c87570', 'c87580', 'c87590', 'c87600', 'c87610', 'c87620',
-    'c87654', 'c87656', 'c87658', 'c87660', 'c87662', 'c87664',
-    'c87666', 'c87668', 'c87681', 'c03260', 'c09400', '_addamt',
-    '_addtax', '_agep', '_ages', '_agierr', '_alminc', '_amt',
-    '_amtfei', '_amtstd', '_cglong', '_ctc1', '_ctc2', '_ctcagi',
-    '_ctctax', '_dclim', '_dwks12', '_dwks16', '_dwks17',
-    '_dwks21', '_dwks25', '_dwks26', '_dwks28', '_dwks31',
-    '_dwks5', '_dwks9', '_dy', '_earned', '_exocrd', '_feided',
-    '_feitax', '_fica', '_ieic', '_limitratio', '_line17',
-    '_line19', '_line22', '_line30', '_line31', '_line32',
-    '_line33', '_line34', '_line35', '_line36', '_modagi',
-    '_nbertax', '_nctcr', '_ngamty', '_noncg', '_nonlim',
-    '_num', '_numxtr', '_othadd', '_othded', '_othtax',
-    '_parents', '_posagi', '_precrd', '_preeitc', '_prexmp',
-    '_regcrd', '_s1291', '_sey', '_secwage', '_statax',
-    '_stndrd', '_tamt2', '_taxbc', '_taxcg', '_taxinc',
-    '_tratio', '_txpyrs', '_val_rtbase', '_val_rtless',
-    '_val_ymax', '_xyztax', '_ymod', '_ymod1', '_ymod2',
-    '_ymod3', '_amt1513', '_soitax'])
-
-
 def main(infilename, outfilename):
     """
     Contains high-level logic of the script.
     """
     # read INPUT file into a Pandas DataFrame
     inputdf = pd.read_csv(infilename)
-    actual_input_vars = set(inputdf.columns.values)
-    assert actual_input_vars == EXPECTED_INPUT_VARS
 
     # translate INPUT variables into OUTPUT lines
     olines = ''
@@ -120,11 +73,11 @@ def extract_output(rec):
     ovar[11] = 0.0  # UI benefits in AGI
     ovar[12] = rec['c02500']  # OASDI benefits in AGI
     ovar[13] = 0.0  # always set zero-bracket amount to zero
-    pre_phase_out_pe = rec['_prexmp']
-    post_phase_out_pe = rec['c04600']
-    phased_out_pe = pre_phase_out_pe - post_phase_out_pe
-    ovar[14] = post_phase_out_pe  # post-phase-out personal exemption
-    ovar[15] = phased_out_pe  # personal exemption that is phased out
+    # pre_phase_out_pe = rec['_prexmp']
+    # post_phase_out_pe = rec['c04600']
+    # phased_out_pe = pre_phase_out_pe - post_phase_out_pe
+    ovar[14] = 0.0  # post_phase_out_pe  # post-phase-out personal exemption
+    ovar[15] = 0.0  # phased_out_pe  # personal exemption that is phased out
     # ovar[16] can be positive for non-itemizer:
     ovar[16] = rec['c21040']  # itemized deduction that is phased out
     # ovar[17] is zero for non-itemizer:
@@ -137,7 +90,7 @@ def extract_output(rec):
     ovar[23] = rec['c11070']  # extra child tax credit (refunded)
     ovar[24] = rec['c07180']  # child care credit
     ovar[25] = 0.0  # NOT IN TAXCALC.SAS : crecs._eitc[idx]  # federal EITC
-    ovar[26] = rec['c62100']  # federal AMT taxable income ? _everybody ?
+    ovar[26] = 0.0  # rec['c62100']  # federal AMT taxable income ?_everybody?
     amt_liability = rec['c09600']  # federal AMT liability
     ovar[27] = amt_liability
     # ovar[28] is federal income tax before credits; the variable
