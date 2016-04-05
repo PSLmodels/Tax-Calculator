@@ -938,7 +938,7 @@ def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
 
 @iterate_jit(nopython=True, puf=True)
 def F2441(_earned, _fixeic, e59560, MARS, f2441, DCC_c, e00200p, e00200s,
-          e32800, e32750, e32775, puf):
+          e32800, puf):
     """
     F2441 function: ...
     """
@@ -951,7 +951,7 @@ def F2441(_earned, _fixeic, e59560, MARS, f2441, DCC_c, e00200p, e00200s,
         c32880 = _earned
         c32890 = _earned
     _dclim = min(f2441, 2.) * DCC_c
-    c32800 = min(max(e32800, e32750 + e32775), _dclim)
+    c32800 = min(e32800, _dclim)
     return (_earned, c32880, c32890, _dclim, c32800)
 
 
@@ -974,8 +974,7 @@ def DepCareBen(c32800, _cmp, f2441, MARS, c32880, c32890, e33420, e33430,
         c33475 = max(0., min(_seywage, (5000. / _sep)) - c33470)
         c33480 = max(0., e33420 + e33430 - e33450 - c33465 - c33475)
         c32840 = c33470 + c33475
-        c32800 = min(max(0., _dclim - c32840),
-                     max(0., c32800 - c32840))
+        c32800 = min(max(0., _dclim - c32840), max(0., c32800 - c32840))
     else:
         c33465, c33470, c33475, c33480, c32840 = 0., 0., 0., 0., 0.
         c32800 = c32800
