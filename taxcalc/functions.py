@@ -957,7 +957,7 @@ def F2441(_earned, _fixeic, e59560, MARS, f2441, DCC_c, e00200p, e00200s,
 
 @iterate_jit(nopython=True)
 def DepCareBen(c32800, _cmp, f2441, MARS, c32880, c32890, e33420, e33430,
-               e33450, e33460, e33465, e33470, _sep, _dclim, e32750, e32775):
+               e33450, e33460, e33465, e33470, _sep, _dclim):
     """
     DepCareBen function: ...
     """
@@ -975,7 +975,7 @@ def DepCareBen(c32800, _cmp, f2441, MARS, c32880, c32890, e33420, e33430,
         c33480 = max(0., e33420 + e33430 - e33450 - c33465 - c33475)
         c32840 = c33470 + c33475
         c32800 = min(max(0., _dclim - c32840),
-                     max(0., e32750 + e32775 - c32840, c32800 - c32840))
+                     max(0., c32800 - c32840))
     else:
         c33465, c33470, c33475, c33480, c32840 = 0., 0., 0., 0., 0.
         c32800 = c32800
