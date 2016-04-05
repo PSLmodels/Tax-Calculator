@@ -649,7 +649,6 @@ class SimpleTaxIO(object):
         recs.e18500[idx] = ivar[15]  # real-estate (property) taxes paid
         recs.e18400[idx] = ivar[16]  # other AMT-preferred deductions
         recs.e32800[idx] = ivar[17]  # child care expenses (Form 2441)
-        recs.e32750[idx] = ivar[17]  # child care expenses (Form 2441)
         # approximate number of Form 2441 qualified persons associated with
         # the child care expenses specified by ivar[17] (Note that the exact
         # number is the number of dependents under age 13, but that is not

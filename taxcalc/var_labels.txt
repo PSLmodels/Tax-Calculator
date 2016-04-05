@@ -75,7 +75,6 @@ E24516 = Schedule D: Gain Less Invested Income Amt.
 E24518 = Schedule D: 28% Rate Gain or Loss New 2003
 E26270 = Combined partnership and S corporation net income/loss (+/-)
 E27200 = Schedule E: Farm rent net income or loss
-E32750 = Form 2441 child/dependent care expense: Qualifying Individual Exp.s
 E32800 = Form 2441 child/dependent care expense: Qualifying Individual Exp.s
 E58990 = Form 4952 Investment Income Amount
 E59560 = Schedule EIC: earned income
