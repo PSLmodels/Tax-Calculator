@@ -1077,14 +1077,10 @@ def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
     _precrd = CTC_c * _nctcr
     _ctcagi = c00100 + _feided
     if _ctcagi > CTC_ps[MARS - 1]:
+        excess = _ctcagi - CTC_ps[MARS - 1]
         if _exact == 1:
-            # round _ctcagi-CTC_ps amount up to nearest whole $1000
-            _precrd = max(0., _precrd - CTC_prt * 1000. *
-                          math.ceil((_ctcagi - CTC_ps[MARS - 1]) / 1000.))
-        else:
-            # ignore rounding logic if _exact != 1
-            _precrd = max(0., _precrd - CTC_prt *
-                          (_ctcagi - CTC_ps[MARS - 1]))
+            excess = 1000. * math.ceil(excess / 1000.)
+        _precrd = max(0., _precrd - CTC_prt * excess)
     return (_nctcr, _precrd, _ctcagi)
 
 
