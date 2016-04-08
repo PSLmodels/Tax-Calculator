@@ -7,7 +7,7 @@ list continues to grow.
 Origins of Tax-Calculator
 -------------------------
 
-The Tax-Calculator is derived from taxcalc.sas, a program written by
+The Tax-Calculator is derived from TAXCALC, a SAS program written by
 Dan Feenberg (`NBER`_) and Inna Shapiro (`NBER`_).
 
 Contributors to Tax-Calculator

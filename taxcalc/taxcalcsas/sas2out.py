@@ -1,7 +1,7 @@
 """
 Script that takes specified CSV-formatted output file, which is generated
-by taxcalc.sas, and translates that information into a file that has an
-Internet-TAXSIM output format.
+by the TAXCALC SAS program, and translates that information into a file that
+has an Internet-TAXSIM output format.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 sas2out.py
@@ -106,11 +106,11 @@ if __name__ == '__main__':
     PARSER = argparse.ArgumentParser(
         prog='python sas2out.py',
         description=('Reads CSV-formatted INPUT file containing '
-                     'taxcalc.sas output results and writes an '
+                     'TAXCALC SAS output results and writes an '
                      'OUTPUT file with Internet-TAXSIM output format.'))
     PARSER.add_argument('INPUT',
                         help=('INPUT is name of required file that contains '
-                              'CSV-formatted taxcalc.sas output results.'))
+                              'CSV-formatted TAXCALC SAS output results.'))
     PARSER.add_argument('OUTPUT',
                         help=('OUTPUT is name of required file that contains '
                               'output results in Internet-TAXSIM format.'))
