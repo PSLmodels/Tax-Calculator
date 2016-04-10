@@ -82,9 +82,7 @@ if { $ovar4 == 0 } {
     taxdiff $awkfilename 22 $out1_filename $out2_filename
     taxdiff $awkfilename 23 $out1_filename $out2_filename
     taxdiff $awkfilename 24 $out1_filename $out2_filename
-    if { $taxcalc == 0 } {
-        taxdiff $awkfilename 25 $out1_filename $out2_filename
-    }
+    taxdiff $awkfilename 25 $out1_filename $out2_filename
     taxdiff $awkfilename 26 $out1_filename $out2_filename
     taxdiff $awkfilename 27 $out1_filename $out2_filename
     taxdiff $awkfilename 28 $out1_filename $out2_filename
