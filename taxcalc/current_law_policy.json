@@ -368,6 +368,34 @@
                   [8270, 18190, 18190, 18190]]
     },
 
+    "_EITC_flr":{
+        "long_name": "Earned income credit eligible age floor",
+    "description": "If age is lower than this threshold, the unit will be ineligible for EIC.",
+        "irs_ref": "Form 1040, line 66a&b, instructions.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [25]
+    },
+
+    "_EITC_cel":{
+        "long_name": "Earned income credit eligible age ceiling",
+    "description": "If age is higher than this threshold, the unit will be ineligible for EIC.",
+        "irs_ref": "Form 1040, line 66a&b, instructions.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+         "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [65]
+    },
+
     "_EITC_ps_MarriedJ": {
         "long_name": "EITC Phaseout Starting AGI (Married filling Jointly)",
         "description": "This is the additional amount added on the regular EITC phaseout start, only for taxpayers with filling status of married filling jointly. ",
