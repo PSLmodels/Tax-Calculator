@@ -82,7 +82,6 @@ def test_2(rawinputfile):  # pylint: disable=redefined-outer-name
                          blowup_input_data=False,
                          output_records=False)
     output = inctax.calculate()
-    print output
     assert output == EXPECTED_OUTPUT
 
 
