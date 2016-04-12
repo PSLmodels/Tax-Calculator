@@ -368,10 +368,10 @@
                   [8270, 18190, 18190, 18190]]
     },
 
-    "_EITC_flr":{
+       "_EITC_flr":{
         "long_name": "Earned income credit eligible age floor",
-    "description": "If age is lower than this threshold, the unit will be ineligible for EIC.",
-        "irs_ref": "Form 1040, line 66a&b, instructions.",
+        "description": "If one taxpayer's age is less than this threshold, he or she will can't take the earned income credit.",
+        "irs_ref": "Form 1040, line 66a&b, step 4, instructions.",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -384,8 +384,8 @@
 
     "_EITC_cel":{
         "long_name": "Earned income credit eligible age ceiling",
-    "description": "If age is higher than this threshold, the unit will be ineligible for EIC.",
-        "irs_ref": "Form 1040, line 66a&b, instructions.",
+        "description": "If one taxpayer's age is more than this threshold, he or she will can't take the earned income credit.",
+        "irs_ref": "Form 1040, line 66a&b, step 4, instructions.",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
