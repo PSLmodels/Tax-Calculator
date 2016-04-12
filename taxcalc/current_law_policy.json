@@ -369,8 +369,8 @@
     },
 
        "_EITC_flr":{
-        "long_name": "Earned income credit eligible age floor",
-        "description": "If one taxpayer's age is less than this threshold, he or she will can't take the earned income credit.",
+        "long_name": "Earned Income Credit Age Eligibility Threshold",
+        "description": "If one taxpayer's age is under this threshold, he or she will can't take the earned income credit.",
         "irs_ref": "Form 1040, line 66a&b, step 4, instructions.",
         "notes": "",
         "start_year": 2013,
@@ -383,8 +383,8 @@
     },
 
     "_EITC_cel":{
-        "long_name": "Earned income credit eligible age ceiling",
-        "description": "If one taxpayer's age is more than this threshold, he or she will can't take the earned income credit.",
+        "long_name": "Earned Income Credit Age Eligibility Threshold",
+        "description": "If one taxpayer's age is over this threshold, he or she will can't take the earned income credit.",
         "irs_ref": "Form 1040, line 66a&b, step 4, instructions.",
         "notes": "",
         "start_year": 2013,
