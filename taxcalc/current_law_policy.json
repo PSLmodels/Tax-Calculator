@@ -368,9 +368,9 @@
                   [8270, 18190, 18190, 18190]]
     },
 
-       "_EITC_flr":{
+       "_EITC_Age_flr":{
         "long_name": "Earned Income Credit Age Eligibility Threshold",
-        "description": "If one taxpayer's age is under this threshold, he or she can't take the earned income credit.",
+        "description": "If one taxpayer's age is under this threshold, and he or she does not have a qualifying child, then the earned income credit cannot be claimed.",
         "irs_ref": "Form 1040, line 66a&b, step 4, instructions.",
         "notes": "",
         "start_year": 2013,
@@ -382,9 +382,9 @@
         "value":     [25]
     },
 
-    "_EITC_cel":{
+    "_EITC_Age_cel":{
         "long_name": "Earned Income Credit Age Eligibility Threshold",
-        "description": "If one taxpayer's age is over this threshold, he or she can't take the earned income credit.",
+        "description": "If one taxpayer's age is over this threshold, and he or she does not have a qualifying child, then the earned income credit cannot be claimed.",
         "irs_ref": "Form 1040, line 66a&b, step 4, instructions.",
         "notes": "",
         "start_year": 2013,
