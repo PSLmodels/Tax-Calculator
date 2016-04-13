@@ -1007,11 +1007,11 @@ def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt,
 
 
 @iterate_jit(nopython=True)
-def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_flr, EITC_cel,
-           EITC_ps_MarriedJ, EITC_rt, c59560, EITC_c, EITC_prt, e83080, e00300,
-           e00600, e40223, e25360, e25430, p25470, e25400, e25500, numextra,
-           e26210, e26340, e27200, e26205, e26320, EITC_InvestIncome_c,
-           _earned, c59660, _exact, e59560, age):
+def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_Age_flr,
+           EITC_Age_cel, EITC_ps_MarriedJ, EITC_rt, c59560, EITC_c, EITC_prt,
+           e83080, e00300, e00600, e40223, e25360, e25430, p25470, e25400,
+           e25500, numextra, e26210, e26340, e27200, e26205, e26320,
+           EITC_InvestIncome_c, _earned, c59660, _exact, e59560, age):
     """
     NumDep function: ...
     """
@@ -1058,7 +1058,7 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_flr, EITC_cel,
         else:
             c59660 = _preeitc
     else:
-        if (EIC == 0 and (age < EITC_flr or age >= EITC_cel)):
+        if (EIC == 0 and (age < EITC_Age_flr or age >= EITC_Age_cel)):
             c59660 = 0.
         else:
             c59660 = _preeitc
