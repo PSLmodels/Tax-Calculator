@@ -89,7 +89,7 @@ def extract_output(rec):
     ovar[22] = rec['c07220']  # child tax credit (adjusted)
     ovar[23] = rec['c11070']  # extra child tax credit (refunded)
     ovar[24] = rec['c07180']  # child care credit
-    ovar[25] = 0.0  # NOT IN TAXCALC.SAS : crecs._eitc[idx]  # federal EITC
+    ovar[25] = rec['c59660']  # federal EITC amount
     ovar[26] = 0.0  # rec['c62100']  # federal AMT taxable income ?_everybody?
     amt_liability = rec['c09600']  # federal AMT liability
     ovar[27] = amt_liability
