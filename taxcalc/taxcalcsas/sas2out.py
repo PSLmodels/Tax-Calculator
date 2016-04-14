@@ -65,7 +65,7 @@ def extract_output(rec):
     ovar[3] = 0  # state code is always zero
     ovar[4] = rec['_nbertax']  # federal income tax liability
     ovar[5] = 0.0  # no state income tax calculation
-    ovar[6] = 0.0  # NOT IN TAXCALC.SAS : FICA taxes (ee+er) for OASDI+HI
+    ovar[6] = 0.0  # FICA taxes (ee+er) for OASDI+HI
     ovar[7] = 0.0  # marginal federal income tax rate as percent
     ovar[8] = 0.0  # no state income tax calculation
     ovar[9] = 0.0  # marginal FICA tax rate as percent
