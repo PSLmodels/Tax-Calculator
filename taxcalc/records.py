@@ -164,7 +164,7 @@ class Records(object):
         'e59440', 'e59470', 'e59400', 'e10105', 'e83200_0',
         'e59410', 'e59420', 'e74400', 'x62720', 'x60260',
         'x60240', 'x60220', 'x60130', 'e60290',
-        'DOBYR', 'SDOBYR', 'e62600', '_fixeic',
+        'e62600', '_fixeic',
         'e33420', 'e33430',
         'e33450', 'e33460', 'e33465', 'e33470',
         'e83080', 'e25360',
@@ -230,7 +230,7 @@ class Records(object):
         'c82905', 'c82910', 'c82915', 'c82920', 'c82937',
         'c82940', '_othadd', 'y07100',
         'x07100', 'c08800', 'e08795', 'x07400', 'c59680',
-        '_othertax', 'e82915', 'e82940', 'SFOBYR', 'NIIT',
+        '_othertax', 'e82915', 'e82940', 'NIIT',
         'c59720', '_comb', 'c07150', 'c10300', '_iitax',
         '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
         '_amed', '_cmbtp_itemizer',
@@ -240,7 +240,7 @@ class Records(object):
 
     INTEGER_CALCULATED_VARS = set([
         '_num', '_sep', '_exact', '_hasgain', '_cmp', '_fixeic',
-        'DOBYR', 'SDOBYR', 'SFOBYR', '_agep', '_ages'])
+        '_agep', '_ages'])
 
     def __init__(self,
                  data="puf.csv",

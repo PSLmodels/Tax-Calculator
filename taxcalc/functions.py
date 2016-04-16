@@ -753,7 +753,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
          e62000, e60250, _cmp, _standard, p04470,
          f6251, c00100, e60000, t04470,
          c04470, c17000, e18500, c20800, c21040, e04805,
-         DOBYR, FLPDYR, SDOBYR, SFOBYR, c02700, AGERANGE,
+         c02700, AGERANGE,
          e24515, x60130, e18400,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
          MARS, _sep, AMT_Child_em, AMT_CG_rt1, DSI,
@@ -840,22 +840,8 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
         _agep = 0
         _ages = 0
     else:
-        if DOBYR >= 1 and DOBYR <= 99:
-            _DOBYR = DOBYR + 1900
-        else:
-            _DOBYR = DOBYR
-        if _DOBYR > 1890:
-            _agep = FLPDYR - _DOBYR
-        else:
-            _agep = 50
-        if SDOBYR >= 1 and SDOBYR <= 99:
-            _SDOBYR = SDOBYR + 1900
-        else:
-            _SDOBYR = SFOBYR
-        if _SDOBYR > 1890:
-            _ages = FLPDYR - _SDOBYR
-        else:
-            _ages = 50
+        _agep = 50
+        _ages = 50
     if _cmp == 1 and f6251 == 1 and _exact == 1:
         c62600 = e62600
     if _agep < KT_c_Age and _agep != 0:
