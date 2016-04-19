@@ -1,0 +1,18 @@
+#!/bin/bash
+# Check command-line arguments
+if [[ "$#" -ne 2 ]]; then
+    echo "ERROR: number of command-line arguments not two"
+    echo "USAGE: ./compare2 L YY"
+    echo "       WHERE L is a letter that is valid make-in.tcl L input and"
+    echo "             YY is valid make-in.tcl CALENDAR YEAR (20YY) input."
+    exit 1
+fi
+L=$1
+YY=$2
+LYY=$L$YY
+# Execute commands
+cp $LYY-$YY.out-inctax py-out
+python sas2out.py $LYY.out-sas sas-out
+tclsh ../validation/taxdiffs.tcl --taxcalc py-out sas-out > $LYY-$YY.taxdiffs
+diff $LYY-$YY.taxdifferences $LYY-$YY.taxdiffs
+exit 0
