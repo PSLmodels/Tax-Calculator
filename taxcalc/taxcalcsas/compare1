@@ -1,0 +1,19 @@
+#!/bin/bash
+# Check command-line arguments
+if [[ "$#" -ne 2 ]]; then
+    echo "ERROR: number of command-line arguments not two"
+    echo "USAGE: ./compare1 L YY"
+    echo "       WHERE L is a letter that is valid make-in.tcl L input and"
+    echo "             YY is valid make-in.tcl CALENDAR YEAR (20YY) input."
+    exit 1
+fi
+L=$1
+YY=$2
+LYY=$L$YY
+# Execute commands
+tclsh ../validation/make-in.tcl 20$YY $L > $LYY.in
+python ../../simtax.py --taxsim2441 --records $LYY.in
+mv $LYY.in.records $LYY.csv
+python ../../inctax.py $LYY.csv 20$YY
+diff $LYY-$YY.out-inctax $LYY.in.out-simtax
+exit 0
