@@ -36,8 +36,8 @@ units have no itemized deduction expenses and no childcare expenses.
 The **b13** sample does have itemized deductions expenses, but no
 childcare expenses.  And the **c13** sample has both itemized
 deduction expenses and childcare expenses.  Each of these three
-samples have been used to generate nearly identical tax output using
-Tax-Calculator and Internet TAXSIM as described as described
+samples have been used to generate identical income tax liabilities
+using Tax-Calculator and Internet TAXSIM as described
 [here](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/validation/README.md).
 
 The samples are generated using these commands:
