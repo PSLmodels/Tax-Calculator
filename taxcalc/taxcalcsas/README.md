@@ -18,23 +18,27 @@ Steps 1 and 2 are accomplished by the commands in the
 [compare1](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/taxcalcsas/compare1)
 bash script (which will not execute on Windows).  Step 3 is
 accomplished by (a) copying the INPUT file (as `compare-in.csv`), the
-TAXCALC SAS program (`taxcalc.sas`), and the [compare.sas
-script](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/taxcalcsas/compare.sas)
-to the same directory; (b) executing the `compare.sas` script; and (c)
-copying back the resulting `compare-out.csv` file to the current
-directory.  Step 4 is accomplished by the commands in the
+TAXCALC SAS program (`taxcalc.sas`), and the
+[compare.sas](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/taxcalcsas/compare.sas)
+SAS script to the same directory; (b) executing the `compare.sas` script;
+and (c) copying back the resulting `compare-out.csv` file to the
+current directory.  Step 4 is accomplished by the commands in the
 [compare2](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/taxcalcsas/compare2)
 bash script (which will not execute on Windows).
 
 ## First comparisons
 
-The initial phase of this comparison project involves generating three
+The initial phase of this comparison project,
+which was conducted during April 2016, involves generating three
 separate INPUT files, each one of which contains 100,000 different
 randomly-generated tax filing units for 2013.  The **a13** sample
 units have no itemized deduction expenses and no childcare expenses.
 The **b13** sample does have itemized deductions expenses, but no
 childcare expenses.  And the **c13** sample has both itemized
-deduction expenses and childcare expenses.
+deduction expenses and childcare expenses.  Each of these three
+samples have been used to generate identical income tax liabilities
+using Tax-Calculator and Internet TAXSIM as described
+[here](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/validation/README.md).
 
 The samples are generated using these commands:
 
@@ -61,7 +65,7 @@ The summary results of this comparison exercise are in three files:
 The contents of these three cross-model-differences files are shown
 here along with some commentary.
 
-### a13 differences:
+### a13 differences
 
 ```
 TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]= 19     52     52      0.01 [874]
@@ -80,7 +84,7 @@ instead it reads it in from a more comprehensive input file than
 `a13.csv`.  The `b13` and `c13` differences shown below also ignore
 the Schedule R tax credit differences.
 
-### b13 differences:
+### b13 differences
 
 ```
 TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]= 17   2086      0 -45500.00 [57063]
@@ -105,7 +109,7 @@ with RECID 75773) with the Tax-Calculator amount being less that the
 `taxcalc.sas` amount.  The causes of these few differences are being
 investigated.
 
-### c13 differences:
+### c13 differences
 
 ```
 TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]= 17   2123      0 -45350.00 [14914]
@@ -129,6 +133,11 @@ cent.  The largest income tax difference is $3150 (for the unit
 with RECID 29984) with the Tax-Calculator amount being less that the
 `taxcalc.sas` amount.  The causes of these few differences are being
 investigated.
+
+As indicated above, these few differences in income tax liabilities in
+the **b13** and **c13** samples represent not only differences between
+`taxcalc.sas` and Tax-Calculator, but also differences between
+`taxcalc.sas` and Internet TAXSIM.
 
 ## Subsequent comparisons
 
