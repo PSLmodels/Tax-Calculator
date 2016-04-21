@@ -389,10 +389,10 @@ def AMED(_fica, e00200, MARS, AMED_thd, _sey, AMED_trt,
     return (_amed, _fica)
 
 
-@iterate_jit(nopython=True, puf=True)
+@iterate_jit(nopython=True)
 def StdDed(DSI, _earned, STD, p04470, e00100, e60000, age_head, age_spouse,
-           MARS, MIDR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200,
-           STD_Aged, f6251, puf):
+           MARS, MIDR, e15360, blind_head, blind_spouse, _exact, e04200,
+           STD_Aged, f6251):
     """
     StdDed function:
 
@@ -451,15 +451,12 @@ def StdDed(DSI, _earned, STD, p04470, e00100, e60000, age_head, age_spouse,
     x04500 = 0.
     if f6251 == 0 and p04470 == 0:
         x04500 = e00100 - e60000
-    # Calculate the extra deduction for aged and blind
-    if puf:
-        _extrastd = 0.
-        if age_head >= 65:
-            _extrastd += 1.
-        if MARS == 2 and age_spouse >= 65:
-            _extrastd += 1.
-    else:
-        _extrastd = AGEP + AGES + PBI + SBI
+    # Calculate extra standard deduction for aged and blind
+    _extrastd = blind_head + blind_spouse
+    if age_head >= 65:
+        _extrastd += 1
+    if MARS == 2 and age_spouse >= 65:
+        _extrastd += 1
     if _exact == 1 and MARS == 3 or MARS == 5:
         c04200 = e04200
     else:

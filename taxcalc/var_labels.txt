@@ -1,5 +1,7 @@
 AGE_HEAD = Age in years of taxpayer (i.e., primary filer)
 AGE_SPOUSE = Age in years of spouse (i.e., secondary filer if present)
+BLIND_HEAD = zero/one indicator for taxpayer (i.e., primary filer)
+BLIND_SPOUSE = zero/one indicator for spouse (i.e., secondary filer if present)
 DSI = 1 if taxpayer claimed as a dependent on another tax return; otherwise 0
 E00100 = Adjusted Gross Income (Deficit)
 E00200 = Salaries, wages, and tips for filing unit

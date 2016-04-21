@@ -132,7 +132,7 @@ class Records(object):
         'e87530',
         'MARS', 'MIDR', 'RECID',
         'wage_head', 'wage_spouse',
-        'age_head', 'age_spouse',
+        'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
         's006', 'filer'])
 
     # specify set of all Record variables that MUST be read by Tax-Calculator:
@@ -145,7 +145,7 @@ class Records(object):
         'n24',
         'XTOT',
         'MARS', 'MIDR', 'RECID',
-        'age_head', 'age_spouse'])
+        'age_head', 'age_spouse', 'blind_head', 'blind_spouse'])
 
     # specify set of all Record variables that cannot be read in:
     CALCULATED_VARS = set([
@@ -157,7 +157,6 @@ class Records(object):
         'e20200', 'e20900', 'e21000', 'e21010', 'e02600',
         '_exact', 'e11055', 'e00250', 'e30100',
         'e04200', 'e37717', 'e04805',
-        'AGEP', 'AGES', 'PBI', 'SBI', '_extrastd',
         't04470', 'e58980', 'c00650', 'c00100',
         'c04470', 'c04600', 'c21060', 'c21040', 'c17000',
         'c18300', 'c20800', 'c02900', 'c02700', 'c23650',
@@ -217,7 +216,7 @@ class Records(object):
         '_amt20pc', 'c62800', 'c09600',
         '_seywage', 'c33465', 'c33470', 'c33475', 'c33480',
         'c32840', '_tratio', 'c33200', 'c33400',
-        '_modagi',
+        '_modagi', '_extrastd',
         '_val_ymax', '_preeitc', '_val_rtbase', '_val_rtless',
         '_dy', 'c11070', '_nctcr', '_ctcagi', 'c87482',
         'c87487', 'c87492', 'c87497', 'c87483', 'c87488',
