@@ -528,17 +528,23 @@ class SimpleTaxIO(object):
                 msg = ('var[5]={} on line {} of simtax INPUT is not '
                        'positive when var[4] equals 3')
                 raise ValueError(msg.format(num_all_dependents, lnum))
-            num_aged = var[6]
-            if filing_status == 2:
-                if num_aged > 2:
-                    msg = ('var[6]={} on line {} of simtax INPUT is not '
-                           'less than or equal to two')
-                    raise ValueError(msg.format(num_aged, lnum))
-            else:  # if filing_status is 1=single or 3=head_of_household
-                if num_aged > 1:
-                    msg = ('var[6]={} on line {} of simtax INPUT is not '
-                           'less than or equal to one')
-                    raise ValueError(msg.format(num_aged, lnum))
+            agecode = var[6]
+            if agecode < 9:  # using old Internet-TAXSIM agecode
+                if filing_status == 2:
+                    if agecode > 2:
+                        msg = ('var[6]={} on line {} of simtax INPUT is not '
+                               'less than or equal to two')
+                        raise ValueError(msg.format(agecode, lnum))
+                else:  # if filing_status is 1=single or 3=head_of_household
+                    if agecode > 1:
+                        msg = ('var[6]={} on line {} of simtax INPUT is not '
+                               'less than or equal to one')
+                        raise ValueError(msg.format(agecode, lnum))
+            else:  # using new Internet-TAXSIM agecode
+                if agecode < 100:
+                    msg = ('var[6]={} on line {} of simtax INPUT is '
+                           'less than 100')
+                    raise ValueError(msg.format(agecode, lnum))
             transfers = var[13]
             if transfers != 0:
                 msg = ('var[13]={} on line {} of simtax INPUT is not zero '
