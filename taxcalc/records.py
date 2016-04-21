@@ -130,9 +130,9 @@ class Records(object):
         'p60100', 'e60000', 'e62100', 'e62900', 'e62720', 'e62730',
         'e62740', 'p87482', 'p87521',
         'e87530',
-        'MARS', 'MIDR', 'RECID', 'numextra',
+        'MARS', 'MIDR', 'RECID',
         'wage_head', 'wage_spouse',
-        'age', 'AGERANGE',
+        'age_head', 'age_spouse',
         's006', 'filer'])
 
     # specify set of all Record variables that MUST be read by Tax-Calculator:
@@ -145,7 +145,7 @@ class Records(object):
         'n24',
         'XTOT',
         'MARS', 'MIDR', 'RECID',
-        'age', 'AGERANGE'])
+        'age_head', 'age_spouse'])
 
     # specify set of all Record variables that cannot be read in:
     CALCULATED_VARS = set([
@@ -156,8 +156,9 @@ class Records(object):
         'e20950', 'e19500', 'e19570', 'e19400', 'c20400',
         'e20200', 'e20900', 'e21000', 'e21010', 'e02600',
         '_exact', 'e11055', 'e00250', 'e30100',
-        'e04200', 'e37717', 'e04805', 'AGEP', 'AGES', 'PBI',
-        'SBI', 't04470', 'e58980', 'c00650', 'c00100',
+        'e04200', 'e37717', 'e04805',
+        'AGEP', 'AGES', 'PBI', 'SBI', '_extrastd',
+        't04470', 'e58980', 'c00650', 'c00100',
         'c04470', 'c04600', 'c21060', 'c21040', 'c17000',
         'c18300', 'c20800', 'c02900', 'c02700', 'c23650',
         'c01000', 'c02500', '_cmp',
@@ -187,7 +188,7 @@ class Records(object):
         '_taxbc', 'c60000', '_standard', 'c24516',
         'c05700', 'c32880', 'c32890', '_dclim', 'c32800',
         'c33000', 'c05800', '_othtax', 'c59560',
-        '_agep', '_ages', 'c87521', 'c87550', 'c07180',
+        'c87521', 'c87550', 'c07180',
         'c07230', '_precrd', 'c07220', 'c59660', 'c07970',
         'c08795', 'c09200', 'c07100', '_eitc', 'c59700',
         'c10950', '_ymod2', '_ymod3', 'c02650', '_agierr',
@@ -195,7 +196,7 @@ class Records(object):
         '_statax', 'c37703', 'c20500', 'c20750', 'c19200',
         'c19700', '_nonlimited', '_limitratio', '_phase2_i',
         '_fica', '_fica_was', 'c03260', 'c11055', 'c15100',
-        '_sep', '_num', '_txpyers', 'c15200', 'c04100', 'c04200',
+        '_sep', '_num', 'c15200', 'c04100', 'c04200',
         'c04500', '_amtstd', '_oldfei', 'c05200', '_cglong',
         '_noncg', '_hasgain', '_dwks9', '_dwks5', '_dwks12',
         '_dwks16', '_dwks17', '_dwks21', '_dwks25', '_dwks26',
@@ -239,8 +240,7 @@ class Records(object):
         '_surtax', '_combined', 'x04500', '_personal_credit'])
 
     INTEGER_CALCULATED_VARS = set([
-        '_num', '_sep', '_exact', '_hasgain', '_cmp', '_fixeic',
-        '_agep', '_ages'])
+        '_num', '_sep', '_exact', '_hasgain', '_cmp', '_fixeic'])
 
     def __init__(self,
                  data="puf.csv",
@@ -540,16 +540,6 @@ class Records(object):
         """
         self._cmbtp_itemizer = self._imputed_cmbtp_itemizer()
         self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
-        # impute number of taxpayers
-        self._txpyers[:] = np.where(
-            np.logical_or(self.MARS == 2,
-                          np.logical_or(self.MARS == 3, self.MARS == 6)),
-            2., 1.)
-        # impute number of extra standard deductions for aged
-        self.numextra[:] = np.where(
-            np.logical_or(self.AGERANGE >= 6,
-                          np.logical_and(self.age >= 65, self.AGERANGE == 0)),
-            self._txpyers, 0.)
         # impute the ratio of household head in total household income
         total = np.where(self.MARS == 2,
                          self.wage_head + self.wage_spouse, 0)

@@ -187,7 +187,7 @@ def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, SS_thd50, SS_thd85,
     return (c02500, e02500)
 
 
-@iterate_jit(nopython=True, puf=True)
+@iterate_jit(nopython=True)
 def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
         II_em, II_em_ps, MARS, _sep, II_prt, DSI):
     """
@@ -390,9 +390,9 @@ def AMED(_fica, e00200, MARS, AMED_thd, _sey, AMED_trt,
 
 
 @iterate_jit(nopython=True, puf=True)
-def StdDed(DSI, _earned, STD, p04470, e00100, e60000,
+def StdDed(DSI, _earned, STD, p04470, e00100, e60000, age_head, age_spouse,
            MARS, MIDR, e15360, AGEP, AGES, PBI, SBI, _exact, e04200,
-           STD_Aged, f6251, numextra, puf):
+           STD_Aged, f6251, puf):
     """
     StdDed function:
 
@@ -453,22 +453,26 @@ def StdDed(DSI, _earned, STD, p04470, e00100, e60000,
         x04500 = e00100 - e60000
     # Calculate the extra deduction for aged and blind
     if puf:
-        numextra = numextra
+        _extrastd = 0.
+        if age_head >= 65:
+            _extrastd += 1.
+        if MARS == 2 and age_spouse >= 65:
+            _extrastd += 1.
     else:
-        numextra = AGEP + AGES + PBI + SBI
+        _extrastd = AGEP + AGES + PBI + SBI
     if _exact == 1 and MARS == 3 or MARS == 5:
         c04200 = e04200
     else:
-        c04200 = numextra * STD_Aged[MARS - 1]
+        c04200 = _extrastd * STD_Aged[MARS - 1]
     c15200 = c04200
     # Compute the total standard deduction
     _standard = c04100 + c04200
     if (MARS == 3 or MARS == 6) and (MIDR == 1):
         _standard = 0.
-    return (_standard, c04200, numextra, c15200, c15100, x04500, c04100)
+    return (_standard, c04200, c15200, c15100, x04500, c04100)
 
 
-@iterate_jit(nopython=True, puf=False)
+@iterate_jit(nopython=True)
 def TaxInc(c00100, _standard, e37717, c21060, c21040, c04500, c04600,
            e04805, _feided, c04800, MARS,
            II_rt1, II_rt2, II_rt3, II_rt4,
@@ -497,7 +501,7 @@ def TaxInc(c00100, _standard, e37717, c21060, c21040, c04500, c04600,
     return (c04500, c04800, _amtstd, _taxinc, _feitax, _oldfei, _standard)
 
 
-@iterate_jit(nopython=True, puf=False)
+@iterate_jit(nopython=True)
 def Personal_Credit(c04500, MARS, II_credit, II_credit_ps, II_credit_prt):
     """
     Personal_Credit function: ...
@@ -753,13 +757,13 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
          e62000, e60250, _cmp, _standard, p04470,
          f6251, c00100, e60000, t04470,
          c04470, c17000, e18500, c20800, c21040, e04805,
-         c02700, AGERANGE,
+         c02700,
          e24515, x60130, e18400,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
-         MARS, _sep, AMT_Child_em, AMT_CG_rt1, DSI,
+         MARS, _sep, AMT_Child_em, AMT_CG_rt1,
          AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516,
          c24520, c05700, e05800, e05100,
-         KT_c_Age, e62900, AMT_thd_MarriedS, _earned, e62600,
+         age_head, KT_c_Age, e62900, AMT_thd_MarriedS, _earned, e62600,
          AMT_em, AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer,
          _cmbtp_standard, ID_StateLocalTax_HC, ID_Medical_HC,
          ID_Miscellaneous_HC, ID_RealEstate_HC, puf):
@@ -836,15 +840,9 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
     c62100 = c62100 + _amtsepadd
     c62600 = max(0., AMT_em[MARS - 1] - AMT_prt *
                  max(0., c62100 - AMT_em_ps[MARS - 1]))
-    if AGERANGE == 1 or (puf and (DSI == 1)):
-        _agep = 0
-        _ages = 0
-    else:
-        _agep = 50
-        _ages = 50
     if _cmp == 1 and f6251 == 1 and _exact == 1:
         c62600 = e62600
-    if _agep < KT_c_Age and _agep != 0:
+    if age_head != 0 and age_head < KT_c_Age:
         c62600 = min(c62600, _earned + AMT_Child_em)
     c62700 = max(0., c62100 - c62600)
     if c02700 > 0.:
@@ -903,7 +901,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
     c05800 = _taxbc + c63200
     return (c62720, c60260, c63100, c60200, c60240, c60220, c60000,
             c60130, c62730, _addamt, c62100,
-            _amtsepadd, c62600, _agep, _ages, c62700, c62760,
+            _amtsepadd, c62600, c62700, c62760,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
             _ngamty, c62745, _tamt2, _amt5pc, _amt15pc,
             _amt25pc, c62747, c62755, c62770, _amt20pc, c62800,
@@ -992,13 +990,12 @@ def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt,
     return (_tratio, c33200, c33400, c07180, c33000)
 
 
-@iterate_jit(nopython=True, puf=True)
+@iterate_jit(nopython=True)
 def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps,
            EITC_ps_MarriedJ, EITC_rt, c59560, EITC_c, EITC_prt, e83080, e00300,
            e00600, e40223, e25360, e25430, p25470, e25400, e25500,
            e26210, e26340, e27200, e26205, e26320, EITC_InvestIncome_c,
-           _agep, _ages, _earned, c59660, _exact, e59560,
-           numextra, puf):
+           age_head, age_spouse, _earned, c59660, _exact, e59560):
     """
     NumDep function: ...
     """
@@ -1037,16 +1034,24 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps,
         _dy = 0.
     if MARS != 3 and MARS != 6 and _dy > EITC_InvestIncome_c:
         _preeitc = 0.
-    if puf or (EIC > 0) or (_agep >= 25 and _agep <= 64) or (_ages > 0):
-        c59660 = _preeitc
-        # make elderly childless filing units in PUF ineligible for EITC
-        if (EIC == 0 and puf and ((MARS == 2 and numextra >= 2.) or
-                                  (MARS != 2 and numextra >= 1.))):
-            c59660 = 0.
-            c59560 = 0.
+    if EIC == 0:
+        # enforce age eligibility rule for those with no EITC-eligible children
+        # (assume that an unknown age_head value implies EITC age eligibility)
+        if MARS == 2:
+            if age_head == 0 or \
+               (age_head >= 25 and age_head <= 64) or \
+               (age_spouse >= 25 and age_spouse <= 64):
+                c59660 = _preeitc
+            else:
+                c59660 = 0.
+        else:
+            if age_head == 0 or \
+               age_head >= 25 and age_head <= 64:
+                c59660 = _preeitc
+            else:
+                c59660 = 0.
     else:
-        c59660 = 0.
-        c59560 = 0.
+        c59660 = _preeitc
     if c59660 == 0:
         c59560 = 0.
     return (_modagi, c59560, c59660, _val_ymax,
@@ -1265,7 +1270,7 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
             c07230, _avail)
 
 
-@iterate_jit(nopython=True, puf=True)
+@iterate_jit(nopython=True)
 def AddCTC(_nctcr, _precrd, _earned, c07220, _fica_was,
            _exact, e82880, ACTC_Income_thd, ACTC_rt,
            ALD_SelfEmploymentTax_HC, e03260, e09800, c59660, e11200,

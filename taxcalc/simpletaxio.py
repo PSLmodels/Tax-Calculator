@@ -635,7 +635,16 @@ class SimpleTaxIO(object):
         recs.EIC[idx] = min(num_eitc_qualified_kids, 3)
         total_num_exemptions = num_taxpayers + num_dependents
         recs.XTOT[idx] = total_num_exemptions
-        recs.numextra[idx] = ivar[6]  # number of taxpayers age 65+
+        if ivar[6] < 3:  # old coding of Internet-TAXSIM ivar[6]
+            recs.age_head[idx] = 50
+            recs.age_spouse[idx] = 50
+            if ivar[6] >= 1:
+                recs.age_head[idx] = 70
+                if ivar[6] >= 2:
+                    recs.age_spouse[idx] = 70
+        else:  # new coding of Internet-TAXSIM ivar[6]
+            recs.age_head[idx] = ivar[6] // 100  # integer division
+            recs.age_spouse[idx] = ivar[6] % 100  # division remainder
         recs.e00200p[idx] = ivar[7]  # wage+salary income of taxpayer
         recs.e00200s[idx] = ivar[8]  # wage+salary income of spouse
         recs.e00200[idx] = ivar[7] + ivar[8]  # combined wage+salary income

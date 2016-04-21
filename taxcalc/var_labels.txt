@@ -1,5 +1,5 @@
-AGE = Age in years of taxpayer (i.e., primary filer)
-AGERANGE = Age range of taxpayer (i.e., primary filer); categorical variable
+AGE_HEAD = Age in years of taxpayer (i.e., primary filer)
+AGE_SPOUSE = Age in years of spouse (i.e., secondary filer if present)
 DSI = 1 if taxpayer claimed as a dependent on another tax return; otherwise 0
 E00100 = Adjusted Gross Income (Deficit)
 E00200 = Salaries, wages, and tips for filing unit
@@ -94,7 +94,6 @@ FLPDYR = Filing (accounting) period (i.e., tax year)
 MARS = Marital (filing) status: categorical variable
 MIDR = Married filing separately itemized deductions requirement indicator
 N24 = Number of children eligible for Child Tax Credit
-NUMEXTRA = Number of taxpayers age 65+
 P04470 = Total deductions (standard or itemized)
 P08000 = Other tax credits
 P22250 = Schedule D: Short-term gains less losses
