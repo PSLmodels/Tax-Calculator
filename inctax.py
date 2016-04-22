@@ -72,7 +72,8 @@ def main():
                               '--blowup option is used'),
                         default=False,
                         action="store_true")
-    parser.add_argument('--records',
+    output = parser.add_mutually_exclusive_group(required=False)
+    output.add_argument('--records',
                         help=('optional flag that causes the output file to '
                               'be a CSV-formatted file containing for each '
                               'INPUT filing unit the TAXYEAR values of each '
@@ -81,6 +82,18 @@ def main():
                               'output file name will be the same as if the '
                               'option was not specified, except that the '
                               '".out-inctax" part is replaced by ".records"'),
+                        default=False,
+                        action="store_true")
+    output.add_argument('--csvdump',
+                        help=('optional flag that causes the output file to '
+                              'be a CSV-formatted file containing for each '
+                              'INPUT filing unit the TAXYEAR values of each '
+                              'variable in the Records.VALID_READ_VARS set '
+                              'and in the Records.CALCULATED_VARS set. '
+                              'If the --csvdump option is specified, the '
+                              'output file name will be the same as if the '
+                              'option was not specified, except that the '
+                              '".out-inctax" part is replaced by ".csvdump"'),
                         default=False,
                         action="store_true")
     parser.add_argument('INPUT',
@@ -102,9 +115,12 @@ def main():
                          tax_year=args.TAXYEAR,
                          policy_reform=args.reform,
                          blowup_input_data=args.blowup,
-                         output_records=args.records)
+                         output_records=args.records,
+                         csv_dump=args.csvdump)
     if args.records:
         inctax.output_records(writing_output_file=True)
+    elif args.csvdump:
+        inctax.csv_dump(writing_output_file=True)
     else:
         inctax.calculate(writing_output_file=True,
                          output_weights=args.weights)

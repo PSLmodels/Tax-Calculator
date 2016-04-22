@@ -93,7 +93,8 @@ def test_1():
                          tax_year=2015,
                          policy_reform=reform,
                          blowup_input_data=False,
-                         output_records=False)
+                         output_records=False,
+                         csv_dump=False)
     output = inctax.calculate()
     output_lines_list = output.split('\n')
     output_vars_list = output_lines_list[0].split()
@@ -140,7 +141,8 @@ def test_2():
                          tax_year=2015,
                          policy_reform=reform,
                          blowup_input_data=False,
-                         output_records=False)
+                         output_records=False,
+                         csv_dump=False)
     output = inctax.calculate()
     output_vars_list = output.split()
     ctc = output_vars_list[ctc_ovar_num - 1]
