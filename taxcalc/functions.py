@@ -1058,7 +1058,7 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_Age_flr,
         else:
             c59660 = _preeitc
     else:
-        if (EIC == 0 and (age < EITC_MinEligAge or age >= EITC_MaxEligAge)):
+        if (EIC == 0 and (age < EITC_MinEligAge or age > EITC_MaxEligAge)):
             c59660 = 0.
         else:
             c59660 = _preeitc

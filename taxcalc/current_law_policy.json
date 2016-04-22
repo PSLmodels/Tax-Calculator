@@ -370,7 +370,7 @@
 
        "_EITC_MinEligAge":{
         "long_name": "Earned Income Credit Minimal Age Eligibility Threshold",
-        "description": "Among a childless filling unit, at least one individual's age needs to be above this threshold (but under the EITC_MaxEligAge threshold) in order to claim earned income credit.",
+        "description": "Among a childless filling unit, at least one individual's age needs to be no less than this threshold (but no greater than the EITC_MaxEligAge threshold) in order to claim earned income credit.",
         "irs_ref": "Form 1040, line 66a&b, step 4, instructions.",
         "notes": "",
         "start_year": 2013,
@@ -384,7 +384,7 @@
 
     "_EITC_MaxEligAge":{
         "long_name": "Earned Income Credit Maximal Age Eligibility Threshold",
-        "description": "Among a childless filling unit, at least one individual's age needs to be under this threshold (but above the EITC_MinEligAge threshold) in order to claim earned income credit.",
+        "description": "Among a childless filling unit, at least one individual's age needs to be no greater than this threshold (but no less than the EITC_MinEligAge threshold) in order to claim earned income credit.",
         "irs_ref": "Form 1040, line 66a&b, step 4, instructions.",
         "notes": "",
         "start_year": 2013,
@@ -393,7 +393,7 @@
          "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value":     [65]
+        "value":     [64]
     },
 
     "_EITC_ps_MarriedJ": {
