@@ -45,9 +45,14 @@ class IncomeTaxIO(object):
         whether or not to age record data from data year to tax_year.
 
     output_records: boolean
-        whether or not to write records to output file instead of the
-        standard tax liability, intermediate values, and marginal tax
-        rate output.
+        whether or not to write CSV-formatted file containing the values
+        of the Records.VALID_READ_VARS variables in the tax_year.
+
+    csv_dump: boolean
+        whether or not to write CSV-formatted output file containing the
+        values of the Records.VALID_READ_VARS and Records.CALCULATE_VARS
+        variables.  If true, the CSV-formatted output file replaces the
+        usual space-separated-values Internet-TAXSIM output file.
 
     Raises
     ------
@@ -63,7 +68,7 @@ class IncomeTaxIO(object):
     """
 
     def __init__(self, input_data, tax_year, policy_reform,
-                 blowup_input_data, output_records):
+                 blowup_input_data, output_records, csv_dump):
         """
         IncomeTaxIO class constructor.
         """
@@ -103,6 +108,8 @@ class IncomeTaxIO(object):
             self._using_reform_file = True
         if output_records:
             self._output_filename = '{}.records{}'.format(inp, ref)
+        elif csv_dump:
+            self._output_filename = '{}.csvdump{}'.format(inp, ref)
         else:
             self._output_filename = '{}.out-inctax{}'.format(inp, ref)
         if os.path.isfile(self._output_filename):
@@ -173,7 +180,31 @@ class IncomeTaxIO(object):
             recdf.to_csv(self._output_filename,
                          float_format='%.4f', index=False)
 
-    def calculate(self, writing_output_file=False, output_weights=False):
+    def csv_dump(self, writing_output_file=False):
+        """
+        Write CSV-formatted file containing the values of all the
+        Records.VALID_READ_VARS variables and all the Records.CALCULATED_VARS
+        variables in the tax_year.
+
+        Parameters
+        ----------
+        writing_output_file: boolean
+
+        Returns
+        -------
+        Nothing
+        """
+        recdf = pd.DataFrame()
+        for varname in Records.VALID_READ_VARS | Records.CALCULATED_VARS:
+            vardata = getattr(self._calc.records, varname)
+            recdf[varname] = vardata
+        writing_possible = self._using_input_file and self._using_reform_file
+        if writing_possible and writing_output_file:
+            recdf.to_csv(self._output_filename,
+                         float_format='%.4f', index=False)
+
+    def calculate(self, writing_output_file=False,
+                  output_weights=False):
         """
         Calculate taxes for all INPUT lines and write or return OUTPUT lines.
 

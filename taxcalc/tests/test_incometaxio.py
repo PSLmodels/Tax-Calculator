@@ -62,7 +62,8 @@ def test_1(rawinputfile):  # pylint: disable=redefined-outer-name
                          tax_year=taxyear,
                          policy_reform=None,
                          blowup_input_data=True,
-                         output_records=False)
+                         output_records=False,
+                         csv_dump=False)
     assert inctax.tax_year() == taxyear
 
 
@@ -80,7 +81,8 @@ def test_2(rawinputfile):  # pylint: disable=redefined-outer-name
                          tax_year=taxyear,
                          policy_reform=reform_dict,
                          blowup_input_data=False,
-                         output_records=False)
+                         output_records=False,
+                         csv_dump=False)
     output = inctax.calculate()
     assert output == EXPECTED_OUTPUT
 
@@ -167,7 +169,8 @@ def test_3(rawinputfile, reformfile1):  # pylint: disable=redefined-outer-name
                          tax_year=taxyear,
                          policy_reform=reformfile1.name,
                          blowup_input_data=False,
-                         output_records=False)
+                         output_records=False,
+                         csv_dump=False)
     output = inctax.calculate()
     assert output == EXPECTED_OUTPUT
 
@@ -184,7 +187,8 @@ def test_4(reformfile2):  # pylint: disable=redefined-outer-name
                          tax_year=taxyear,
                          policy_reform=reformfile2.name,
                          blowup_input_data=False,
-                         output_records=False)
+                         output_records=False,
+                         csv_dump=False)
     output = inctax.calculate()
     assert output == EXPECTED_OUTPUT
 
@@ -199,6 +203,23 @@ def test_5(rawinputfile):  # pylint: disable=redefined-outer-name
                          tax_year=taxyear,
                          policy_reform=None,
                          blowup_input_data=False,
-                         output_records=True)
+                         output_records=True,
+                         csv_dump=False)
     inctax.output_records(writing_output_file=False)
+    assert inctax.tax_year() == taxyear
+
+
+def test_6(rawinputfile):  # pylint: disable=redefined-outer-name
+    """
+    Test IncomeTaxIO calculate method with no output writing and no blowup and
+    no reform, using the csv_dump option.
+    """
+    taxyear = 2021
+    inctax = IncomeTaxIO(input_data=rawinputfile.name,
+                         tax_year=taxyear,
+                         policy_reform=None,
+                         blowup_input_data=False,
+                         output_records=False,
+                         csv_dump=True)
+    inctax.csv_dump(writing_output_file=False)
     assert inctax.tax_year() == taxyear
