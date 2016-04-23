@@ -101,11 +101,13 @@ proc uniform { lo hi } {
     return [expr round($lo+rand()*($hi-$lo))]
 }
 
+set use_new_agecode 1 ;# Internet-TAXSIM revised ivar[6] coding in March 2016
+
 # write $num TAXSIM-input lines, one for each filing unit
 for {set id 1} {$id <= $num} {incr id} {
     set raw_ms [uniform 1 5]
     set pnconpct 0
-    switch $raw_ms {    
+    switch $raw_ms {
         1 { set ms 1
             set elders [uniform 0 1]
             set numdeps 0
@@ -191,6 +193,24 @@ for {set id 1} {$id <= $num} {incr id} {
             }
         }
     } ;# end switch $ms
+    if { $use_new_agecode == 1 } {
+        # use new Internet-TAXSIM agecode (ivar[6]) scheme
+        if { $raw_ms == 1 || $raw_ms == 5 } {
+            set young_spouse_age 0
+        } elseif { $raw_ms == 2 } {
+            set young_spouse_age 50
+        } else {
+            set young_spouse_age 50
+        }
+        switch $elders {
+            0 { set agecode [expr 5000 + $young_spouse_age] }
+            1 { set agecode [expr 7000 + $young_spouse_age] }
+            2 { set agecode 7070 }
+        }
+    } else {
+        # use old Internet-TAXSIM agecode (ivar[6]) scheme
+        set agecode $elders
+    }
     if { $max_divinc > 0 } {
         set divinc [expr 1000*[uniform 0 $max_divinc]]
     } else {
@@ -240,7 +260,7 @@ for {set id 1} {$id <= $num} {incr id} {
         }
     }
     set part0108 [format "%d %d %d %d %d %d %d %d" \
-                      $id $cyr 0 $ms $numdeps $elders $wage1 $wage2]
+                      $id $cyr 0 $ms $numdeps $agecode $wage1 $wage2]
     set part0915 [format "%d %d %d %d %d %d %d" \
                       $divinc $intinc $pnben $ssben 0 0 $retax_amt]
     set part1620 [format "%d %d %d %d %d" \
