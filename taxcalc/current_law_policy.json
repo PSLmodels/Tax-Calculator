@@ -368,6 +368,34 @@
                   [8270, 18190, 18190, 18190]]
     },
 
+       "_EITC_MinEligAge":{
+        "long_name": "Earned Income Credit Minimal Age Eligibility Threshold",
+        "description": "Among a childless filling unit, at least one individual's age needs to be no less than this threshold (but no greater than the EITC_MaxEligAge threshold) in order to claim earned income credit.",
+        "irs_ref": "Form 1040, line 66a&b, step 4, instructions.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [25]
+    },
+
+    "_EITC_MaxEligAge":{
+        "long_name": "Earned Income Credit Maximal Age Eligibility Threshold",
+        "description": "Among a childless filling unit, at least one individual's age needs to be no greater than this threshold (but no less than the EITC_MinEligAge threshold) in order to claim earned income credit.",
+        "irs_ref": "Form 1040, line 66a&b, step 4, instructions.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+         "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value":     [64]
+    },
+
     "_EITC_ps_MarriedJ": {
         "long_name": "EITC Phaseout Starting AGI (Married filling Jointly)",
         "description": "This is the additional amount added on the regular EITC phaseout start, only for taxpayers with filling status of married filling jointly. ",
