@@ -72,7 +72,8 @@ switch $letter {
         set max_ccexp 12
     }
     d { # assumptions for dYY.in sample:
-        # same as c except add other property income, ivar[10]
+        # same as c except (a) add other property income, ivar[10], and
+        # (b) add some young spouses for checking EITC age eligibility
         set num 100000
         set max_wage_yng 300
         set max_wage_old  20
@@ -198,7 +199,11 @@ for {set id 1} {$id <= $num} {incr id} {
         if { $raw_ms == 1 || $raw_ms == 5 } {
             set young_spouse_age 0
         } elseif { $raw_ms == 2 } {
-            set young_spouse_age 50
+            if { $elders == 1 } {
+                set young_spouse_age 20
+            } else {
+                set young_spouse_age 50
+            }
         } else {
             set young_spouse_age 50
         }
