@@ -1036,17 +1036,20 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge,
     if EIC == 0:
         # enforce age eligibility rule for those with no EITC-eligible children
         # (assume that an unknown age_head value implies EITC age eligibility)
+        # pylint: disable=bad-continuation
         if MARS == 2:
-            if age_head == 0 or \
-               (age_head >= EITC_MinEligAge and age_head <= EITC_MaxEligAge) \
-               or (age_spouse >= EITC_MinEligAge and
-                   age_spouse <= EITC_MaxEligAge):
+            if (age_head >= EITC_MinEligAge and
+                age_head <= EITC_MaxEligAge) or \
+               (age_spouse >= EITC_MinEligAge and
+                age_spouse <= EITC_MaxEligAge) or \
+               age_head == 0:
                 c59660 = _preeitc
             else:
                 c59660 = 0.
         else:
-            if age_head == 0 or \
-               age_head >= EITC_MinEligAge and age_head <= EITC_MaxEligAge:
+            if (age_head >= EITC_MinEligAge and
+                age_head <= EITC_MaxEligAge) or \
+               age_head == 0:
                 c59660 = _preeitc
             else:
                 c59660 = 0.
