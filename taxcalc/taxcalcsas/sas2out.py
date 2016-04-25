@@ -1,7 +1,7 @@
 """
 Script that takes specified CSV-formatted output file, which is generated
-by taxcalc.sas, and translates that information into a file that has an
-Internet-TAXSIM output format.
+by the TAXCALC SAS program, and translates that information into a file that
+has an Internet-TAXSIM output format.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 sas2out.py
@@ -65,7 +65,7 @@ def extract_output(rec):
     ovar[3] = 0  # state code is always zero
     ovar[4] = rec['_nbertax']  # federal income tax liability
     ovar[5] = 0.0  # no state income tax calculation
-    ovar[6] = 0.0  # NOT IN TAXCALC.SAS : FICA taxes (ee+er) for OASDI+HI
+    ovar[6] = 0.0  # FICA taxes (ee+er) for OASDI+HI
     ovar[7] = 0.0  # marginal federal income tax rate as percent
     ovar[8] = 0.0  # no state income tax calculation
     ovar[9] = 0.0  # marginal FICA tax rate as percent
@@ -89,7 +89,7 @@ def extract_output(rec):
     ovar[22] = rec['c07220']  # child tax credit (adjusted)
     ovar[23] = rec['c11070']  # extra child tax credit (refunded)
     ovar[24] = rec['c07180']  # child care credit
-    ovar[25] = 0.0  # NOT IN TAXCALC.SAS : crecs._eitc[idx]  # federal EITC
+    ovar[25] = rec['c59660']  # federal EITC amount
     ovar[26] = 0.0  # rec['c62100']  # federal AMT taxable income ?_everybody?
     amt_liability = rec['c09600']  # federal AMT liability
     ovar[27] = amt_liability
@@ -106,11 +106,11 @@ if __name__ == '__main__':
     PARSER = argparse.ArgumentParser(
         prog='python sas2out.py',
         description=('Reads CSV-formatted INPUT file containing '
-                     'taxcalc.sas output results and writes an '
+                     'TAXCALC SAS output results and writes an '
                      'OUTPUT file with Internet-TAXSIM output format.'))
     PARSER.add_argument('INPUT',
                         help=('INPUT is name of required file that contains '
-                              'CSV-formatted taxcalc.sas output results.'))
+                              'CSV-formatted TAXCALC SAS output results.'))
     PARSER.add_argument('OUTPUT',
                         help=('OUTPUT is name of required file that contains '
                               'output results in Internet-TAXSIM format.'))

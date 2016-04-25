@@ -204,7 +204,7 @@
 
     "_DCC_c": {
         "long_name": "Max dependent care credit per dependent",
-        "description": "",
+        "description": "The maximum amount of credit allowed for each qualifying dependent.",
         "irs_ref": "Form 2441, line 3c, in-line.",
         "notes": "",
         "start_year": 2013,
