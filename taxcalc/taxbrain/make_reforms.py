@@ -140,7 +140,6 @@ def write_all_together(param_names, clp, start_year, scale_factor):
     sys.stdout.write('{}{}"replications": 1,\n'.format(SPC, SPC))
     sys.stdout.write('{}{}"start_year": {},\n'.format(SPC, SPC, start_year))
     sys.stdout.write('{}{}"specification": {}\n'.format(SPC, SPC, '{'))
-    idx = start_year - FIRST_YEAR
     num_names = len(param_names)
     num = 0
     for name in sorted(param_names):
@@ -149,20 +148,9 @@ def write_all_together(param_names, clp, start_year, scale_factor):
         if name.endswith('_cpi'):
             sys.stdout.write('{}{}"{}": false\n'.format(TAB, SPC, start_year))
         else:
-            values = getattr(clp, name)
-            value = values[idx]
-            if isinstance(value, float):
-                if name in PARAMS_NOT_SCALED:
-                    val = value
-                else:
-                    val = round(value * scale_factor, 5)
-            else:
-                if name in PARAMS_NOT_SCALED:
-                    val = value.tolist()
-                else:
-                    val = [round(v * scale_factor, 5) for v in value.tolist()]
+            value = new_value(clp, name, start_year, scale_factor)
             sys.stdout.write('{}{}"{}": [{}]\n'.format(TAB, SPC,
-                                                       start_year, val))
+                                                       start_year, value))
         if num == num_names:
             sys.stdout.write('{}{}\n'.format(TAB, '}'))
         else:
@@ -177,7 +165,6 @@ def write_each_separate(param_names, clp, start_year, scale_factor):
     """
     Write JSON for many reforms each containing a single provision.
     """
-    idx = start_year - FIRST_YEAR
     num_names = len(param_names)
     num = 0
     sys.stdout.write('{}\n'.format('{'))
@@ -192,20 +179,9 @@ def write_each_separate(param_names, clp, start_year, scale_factor):
         if name.endswith('_cpi'):
             sys.stdout.write('{}{}"{}": false\n'.format(TAB, SPC, start_year))
         else:
-            values = getattr(clp, name)
-            value = values[idx]
-            if isinstance(value, float):
-                if name in PARAMS_NOT_SCALED:
-                    val = value
-                else:
-                    val = round(value * scale_factor, 5)
-            else:
-                if name in PARAMS_NOT_SCALED:
-                    val = value.tolist()
-                else:
-                    val = [round(v * scale_factor, 5) for v in value.tolist()]
+            value = new_value(clp, name, start_year, scale_factor)
             sys.stdout.write('{}{}"{}": [{}]\n'.format(TAB, SPC,
-                                                       start_year, val))
+                                                       start_year, value))
         sys.stdout.write('{}{}\n'.format(TAB, '}'))
         sys.stdout.write('{}{}{}\n'.format(SPC, SPC, '}'))
         if num == num_names:
@@ -214,6 +190,29 @@ def write_each_separate(param_names, clp, start_year, scale_factor):
             sys.stdout.write('{}{}\n'.format(SPC, '},'))
     sys.stdout.write('{}\n'.format('}'))
     return
+
+
+def new_value(policy, name, start_year, scale_factor):
+    """
+    Return new value for start_year given policy, name, and scale_factor.
+    """
+    value = getattr(policy, name)[start_year - FIRST_YEAR]
+    if isinstance(value, float):
+        if name in PARAMS_NOT_SCALED:
+            val = value
+        else:
+            val = round(value * scale_factor, 5)
+    elif isinstance(value, int):
+        if name in PARAMS_NOT_SCALED:
+            val = value
+        else:
+            val = int(round(value * scale_factor, 0))
+    else:
+        if name in PARAMS_NOT_SCALED:
+            val = value.tolist()
+        else:
+            val = [round(v * scale_factor, 5) for v in value.tolist()]
+    return val
 
 
 if __name__ == '__main__':
