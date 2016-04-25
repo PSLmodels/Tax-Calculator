@@ -528,17 +528,15 @@ class SimpleTaxIO(object):
                 msg = ('var[5]={} on line {} of simtax INPUT is not '
                        'positive when var[4] equals 3')
                 raise ValueError(msg.format(num_all_dependents, lnum))
-            num_aged = var[6]
-            if filing_status == 2:
-                if num_aged > 2:
-                    msg = ('var[6]={} on line {} of simtax INPUT is not '
-                           'less than or equal to two')
-                    raise ValueError(msg.format(num_aged, lnum))
-            else:  # if filing_status is 1=single or 3=head_of_household
-                if num_aged > 1:
-                    msg = ('var[6]={} on line {} of simtax INPUT is not '
-                           'less than or equal to one')
-                    raise ValueError(msg.format(num_aged, lnum))
+            agecode = var[6]
+            if agecode < 100:  # using old Internet-TAXSIM agecode
+                if (filing_status == 2 and agecode > 2) or \
+                   (filing_status != 2 and agecode > 1):
+                    msg = ('var[6]={} on line {} of simtax INPUT is has '
+                               'illegal value')
+                    raise ValueError(msg.format(agecode, lnum))
+            else:  # using new Internet-TAXSIM agecode
+                pass
             transfers = var[13]
             if transfers != 0:
                 msg = ('var[13]={} on line {} of simtax INPUT is not zero '
@@ -635,7 +633,16 @@ class SimpleTaxIO(object):
         recs.EIC[idx] = min(num_eitc_qualified_kids, 3)
         total_num_exemptions = num_taxpayers + num_dependents
         recs.XTOT[idx] = total_num_exemptions
-        recs.numextra[idx] = ivar[6]  # number of taxpayers age 65+
+        if ivar[6] < 3:  # old coding of Internet-TAXSIM ivar[6]
+            recs.age_head[idx] = 50
+            recs.age_spouse[idx] = 50
+            if ivar[6] >= 1:
+                recs.age_head[idx] = 70
+                if ivar[6] >= 2:
+                    recs.age_spouse[idx] = 70
+        else:  # new coding of Internet-TAXSIM ivar[6]
+            recs.age_head[idx] = ivar[6] // 100  # integer division
+            recs.age_spouse[idx] = ivar[6] % 100  # division remainder
         recs.e00200p[idx] = ivar[7]  # wage+salary income of taxpayer
         recs.e00200s[idx] = ivar[8]  # wage+salary income of spouse
         recs.e00200[idx] = ivar[7] + ivar[8]  # combined wage+salary income
