@@ -37,6 +37,7 @@ switch $letter {
         set max_ided_pref 0
         set max_ided_nopref 0
         set max_ccexp 0
+        set yng_spouses 0
     }
     b { # assumptions for bYY.in sample:
         set num 100000
@@ -53,6 +54,7 @@ switch $letter {
         set max_ided_pref 40
         set max_ided_nopref 40
         set max_ccexp 0
+        set yng_spouses 0
     }
     c { # assumptions for cYY.in sample:
         # same as b except add child care expenses, ivar[17]
@@ -70,6 +72,7 @@ switch $letter {
         set max_ided_pref 40
         set max_ided_nopref 40
         set max_ccexp 12
+        set yng_spouses 0
     }
     d { # assumptions for dYY.in sample:
         # same as c except (a) add other property income, ivar[10], and
@@ -88,6 +91,7 @@ switch $letter {
         set max_ided_pref 40
         set max_ided_nopref 40
         set max_ccexp 12
+        set yng_spouses 1
     }
     default {
         puts stderr "ERROR: undefined letter $letter"
@@ -199,7 +203,7 @@ for {set id 1} {$id <= $num} {incr id} {
         if { $raw_ms == 1 || $raw_ms == 5 } {
             set young_spouse_age 0
         } elseif { $raw_ms == 2 } {
-            if { $elders == 1 } {
+            if { $yng_spouses == 1 && $elders == 1 } {
                 set young_spouse_age 20
             } else {
                 set young_spouse_age 50
