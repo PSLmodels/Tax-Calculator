@@ -11,7 +11,8 @@ import pandas as pd
 import numpy as np
 import os
 import six
-from numba import vectorize, float64
+import time
+from numba import vectorize, float64, jit
 from pkg_resources import resource_stream, Requirement
 
 
@@ -567,6 +568,7 @@ class Records(object):
         """
         Private class method calls global function defined below.
         """
+
         return imputed_cmbtp_itemizer(self.e17500, self.e00100, self.e18400,
                                       self.e62100, self.e00700,
                                       self.p04470, self.e21040,
@@ -602,7 +604,7 @@ class Records(object):
         self.s006 = self.WT["WT" + str(year)] * 0.01
 
 
-@vectorize([float64(float64, float64, float64,
+@jit([float64(float64, float64, float64,
                     float64, float64,
                     float64, float64,
                     float64, float64)])
@@ -615,8 +617,13 @@ def imputed_cmbtp_itemizer(e17500, e00100, e18400,
     (uses vectorize decorator to speed up calculations with NumPy arrays)
     """
     # pylint: disable=too-many-arguments
-    medical_limited = max(0., e17500 - max(0., e00100) * 0.075)
-    medical_adjustment = min(medical_limited, 0.025 * max(0., e00100))
-    state_adjustment = max(0, e18400)
+    medical_limited = np.zeros(e17500.shape)
+    medical_adjustment = np.zeros(e17500.shape)
+    state_adjustment = np.zeros(e17500.shape)
+    for i in range(e17500.shape[0]):
+        medical_limited[i] = max(0., e17500[i] - max(0., e00100[i]) * 0.075)
+        medical_adjustment[i] = min(medical_limited[i], 0.025 * max(0., e00100[i]))
+        state_adjustment[i] = max(0, e18400[i])
+
     return (e62100 - medical_adjustment + e00700 + p04470 + e21040 -
             state_adjustment - e00100 - e18500 - e20800)
