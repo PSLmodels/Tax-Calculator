@@ -643,3 +643,34 @@ def test_order_of_cpi_and_level_reforms():
         assert mte[2015 - syr] == 500000
         assert mte[2016 - syr] == 500000
         assert mte[2017 - syr] == 500000
+
+
+def test_same_reform_expressed_two_ways():
+    """
+    Test that two ways of specifying the same reform produce the same results.
+    """
+    # specify the same reform in two different ways
+    reform1 = {2016: {'_SS_Earnings_c': [500000],
+                      '_II_em': [9000]}}
+    reform2 = {2016: {'_SS_Earnings_c': [500000]},
+               2016: {'_II_em': [9000]}}
+    # implement the two reforms in separate Policy objects
+    syr = 2013
+    ppo1 = Policy(start_year=syr)
+    ppo1.implement_reform(reform1)
+    ppo2 = Policy(start_year=syr)
+    ppo2.implement_reform(reform2)
+    # confirm reformed parameter values are the same under the two reforms
+    mte1 = ppo1._SS_Earnings_c
+    mte2 = ppo2._SS_Earnings_c
+    for cyr in range(syr, 10):
+        assert mte1[cyr - syr] == mte2[cyr - syr]
+    iiem1 = ppo1._II_em
+    iiem2 = ppo2._II_em
+    for cyr in range(syr, 10):
+        assert iiem1[cyr - syr] == iiem2[cyr - syr]
+    # confirm unreformed parameter values are the same under the two reforms
+    amtem1 = ppo1._AMT_em
+    amtem2 = ppo2._AMT_em
+    for cyr in range(syr, 10):
+        assert amtem1[cyr - syr] == amtem2[cyr - syr]
