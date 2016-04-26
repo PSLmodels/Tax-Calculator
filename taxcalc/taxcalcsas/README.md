@@ -36,7 +36,7 @@ units have no itemized deduction expenses and no childcare expenses.
 The **b13** sample does have itemized deductions expenses, but no
 childcare expenses.  The **c13** sample has both itemized
 deduction expenses and childcare expenses.  And the **d14** sample
-is similar to the c13 sample except there filing units with positive
+is similar to the c13 sample except there are filing units with positive
 property income and a few couples with a very large age difference (to
 test the EITC age-eligibility logic of the two models).  Each of these
 four samples have been used to generate identical income tax liabilities
