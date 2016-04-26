@@ -29,40 +29,44 @@ bash script (which will not execute on Windows).
 ## Initial comparisons
 
 The initial phase of this comparison project,
-which was conducted during April 2016, involves generating three
+which was conducted during April 2016, involves generating four
 separate INPUT files, each one of which contains 100,000 different
 randomly-generated tax filing units for 2013.  The **a13** sample
 units have no itemized deduction expenses and no childcare expenses.
 The **b13** sample does have itemized deductions expenses, but no
-childcare expenses.  And the **c13** sample has both itemized
-deduction expenses and childcare expenses.  Each of these three
-samples have been used to generate identical income tax liabilities
+childcare expenses.  The **c13** sample has both itemized
+deduction expenses and childcare expenses.  And the **d14** sample
+is similar to the c13 sample except there filing units with positive
+property income and a few couples with a very large age difference (to
+test the EITC age-eligibility logic of the two models).  Each of these
+four samples have been used to generate identical income tax liabilities
 using Tax-Calculator and Internet TAXSIM as described
 [here](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/validation/README.md).
 
 The samples are generated using these commands:
 
 ```
-./compare1 a 13 ; ./compare1 b 13 ; ./compare1 c 13
+./compare1 a 13 ; ./compare1 b 13 ; ./compare1 c 13 ; ./compare1 d 13
 ```
 
-The generated `a13.csv`, `b13.csv`, and `c13.csv` files are copied
+The generated `a13.csv`, `b13.csv`, `c13.csv`, and `d13.csv` files are copied
 (along with `compare.sas` and `taxcalc.sas`) to a directory where
 `compare.sas` is executed by SAS.  The resulting `compare-out.csv`
 files are copied back to this directory as `a13.out-sas`,
-`b13.out-sas`, and `c13.out-sas`, respectively.  And finally, those
-files are processed using these commands:
+`b13.out-sas`, `c13.out-sas`, and `d13.out-sas`, respectively.  And finally,
+those files are processed using these commands:
 
 ```
-./compare2 a 13 ; ./compare2 b 13 ; ./compare2 c 13
+./compare2 a 13 ; ./compare2 b 13 ; ./compare2 c 13 ; ./compare2 d 13
 ```
 
-The summary results of this comparison exercise are in three files:
+The summary results of this comparison exercise are in four files:
 [a13.taxdifferences](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/taxcalcsas/a13-13.taxdifferences),
-[b13.taxdifferences](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/taxcalcsas/b13-13.taxdifferences), and
-[c13.taxdifferences](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/taxcalcsas/c13-13.taxdifferences).
+[b13.taxdifferences](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/taxcalcsas/b13-13.taxdifferences),
+[c13.taxdifferences](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/taxcalcsas/c13-13.taxdifferences), and
+[d13.taxdifferences](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/taxcalcsas/d13-13.taxdifferences).
 
-The contents of these three cross-model-differences files are shown
+The contents of these four cross-model-differences files are shown
 here along with some commentary.
 
 ### a13 differences
@@ -106,7 +110,7 @@ These b13 comparison results show that there are very few (211 out of
 100,000) units with income tax liabilities different by more than one
 cent.  The largest income tax difference is almost $3300 (for the unit
 with RECID 75773) with the Tax-Calculator amount being less that the
-`taxcalc.sas` amount.  The causes of these few differences are being
+`taxcalc.sas` amount.  The causes of these few differences will be
 investigated.
 
 ### c13 differences
@@ -131,12 +135,37 @@ These c13 comparison results show that there are very few (251 out of
 100,000) units with income tax liabilities different by more than one
 cent.  The largest income tax difference is $3150 (for the unit
 with RECID 29984) with the Tax-Calculator amount being less that the
-`taxcalc.sas` amount.  The causes of these few differences are being
+`taxcalc.sas` amount.  The causes of these few differences will be
+investigated.
+
+### d13 differences
+
+```
+TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]= 17    986      0 -43400.00 [11739]
+      #big_vardiffs_with_big_inctax_diff=              185
+TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]= 18    726      0  27050.00 [60137]
+      #big_vardiffs_with_big_inctax_diff=              185
+TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]= 19    788     62   8869.82 [66360]
+      #big_vardiffs_with_big_inctax_diff=              185
+TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]= 25      7      7     -0.01 [20505]
+TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]= 27    474    188  -8869.82 [66360]
+      #big_vardiffs_with_big_inctax_diff=              189
+TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]= 28    354     72   8869.82 [66360]
+      #big_vardiffs_with_big_inctax_diff=              185
+TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]=  4    221     32  -3079.00 [300]
+                       #big_inctax_diffs=              189
+```
+
+These d13 comparison results show that there are very few (189 out of
+100,000) units with income tax liabilities different by more than one
+cent.  The largest income tax difference is $3079 (for the unit
+with RECID 300) with the Tax-Calculator amount being less that the
+`taxcalc.sas` amount.  The causes of these few differences will be
 investigated.
 
 As indicated above, these few differences in income tax liabilities in
-the **b13** and **c13** samples represent not only differences between
-`taxcalc.sas` and Tax-Calculator, but also differences between
+the **b13**, **c13**, and **d13** samples represent not only differences
+between `taxcalc.sas` and Tax-Calculator, but also differences between
 `taxcalc.sas` and Internet TAXSIM.
 
 ## Subsequent comparisons
