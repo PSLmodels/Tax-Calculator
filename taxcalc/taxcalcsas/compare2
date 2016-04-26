@@ -1,0 +1,21 @@
+#!/bin/bash
+# (0) process command-line arguments:
+if [[ "$#" -ne 2 ]]; then
+    echo "ERROR: number of command-line arguments not two"
+    echo "USAGE: ./compare2 L YY"
+    echo "       WHERE L is a letter that is valid make-in.tcl L input and"
+    echo "             YY is valid make-in.tcl CALENDAR YEAR (20YY) input."
+    exit 1
+fi
+L=$1
+YY=$2
+LYY=$L$YY
+# (1) rename Tax-Calculator OUTPUT file as py-out:
+cp $LYY-$YY.out-inctax py-out
+# (2) convert taxcalc.sas OUTPUT from CSV format to Internet-TAXSIM format:
+python sas2out.py $LYY.out-sas sas-out
+# (3) compare Tax-Calculator OUTPUT with taxcalc.sas OUTPUT:
+tclsh ../validation/taxdiffs.tcl --taxcalc py-out sas-out > $LYY-$YY.taxdiffs
+# (4)confirm no differences between taxdiffs and archived taxdifferences:
+diff $LYY-$YY.taxdifferences $LYY-$YY.taxdiffs
+exit 0

@@ -91,7 +91,7 @@ def creat_table_base(records):
                      'XOCAWH', 'XOODEP', 'XOPAR', 'XTOT', 'MARS', 'MIDR',
                      'RECID', 'gender', 'wage_head', 'wage_spouse',
                      'earnsplit', 'age', 'agedp1', 'agedp2', 'agedp3',
-                     'AGERANGE', 's006', 's008', 's009', 'WSAMP', 'TXRT',
+                     's006', 's008', 's009', 'WSAMP', 'TXRT',
                      'filer', 'matched_weight', 'e00200p', 'e00200s',
                      'e00900p', 'e00900s', 'e02100p', 'e02100s'])
 

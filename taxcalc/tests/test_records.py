@@ -15,16 +15,10 @@ WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
 WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
 
-def test_create_records_with_correct_start_year():
+def test_create_records():
     recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=Records.PUF_YEAR)
     assert recs
-    assert np.any(recs.numextra != 0)
-
-
-def test_create_records_with_wrong_start_year():
-    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2001)
-    assert recs
-    assert np.all(recs.numextra == 0)
+    assert np.any(recs.MARS != 0)
 
 
 def test_blow_up():

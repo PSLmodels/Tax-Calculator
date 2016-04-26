@@ -1,15 +1,14 @@
-:orphan:
+Parameter Naming Conventions
+============================
 
-Parameter Taxonomy
-==================
+Parameter names have two components; the first component is an
+abbreviation for the parameter's tax category and the second component
+is an abbreviation for the role the parameter plays in those tax
+category rules. In some cases, parameter names have a subcategory that
+conveys additional information about the role the parameter plays (see
+Examples below).
 
-Parameter names have two fixed components; the first component is the
-tax category abbreviation and the second is the abbreviation for the
-function of the parameter's value. In some cases, parameter names have
-a subcategory that conveys additional information about the parameter
-(see examples).
-
-Tax categories
+Tax Categories
 --------------
 
 Tax categories are uppercase:
@@ -54,12 +53,13 @@ Tax categories are uppercase:
 
    **STD**: Standard Deduction
 
-Functions of the parameter's value
-----------------------------------
+Parameter Role
+--------------
 
-Functions of the parameter's value are lowercase:
+Abbreviates for the role the parameter plays in the tax rules are
+usually lowercase:
 
-   **c**: ceiling
+   **c**: ceiling (or use **Max** especially for integer variables)
 
    **e**: end
 
@@ -67,13 +67,13 @@ Functions of the parameter's value are lowercase:
 
    **em**: exemption
 
-   **f**: floor
+   **f**: floor (or use **Min** especially for integer variables)
 
-   **HC**: haircut [1]_
+   **HC**: haircut
 
    **p**: phaseout
 
-   **rt**: rate
+   **rt**: rate (always expressed as a decimal, rather than a percentage, rate)
 
    **s**: start
 
@@ -81,7 +81,7 @@ Functions of the parameter's value are lowercase:
 
    **thd**: threshold
 
-Combine functions to create additional functions: frt = floor rate.
+Combine abbreviations to create more complex roles: frt = floor rate.
 
 Examples
 --------
@@ -99,7 +99,5 @@ Examples
 
    **_ETC_pe_Married**: Education Tax Credit phaseout ends (Married)
 
-
-.. [1] Currently, the abbreviation for haircuts is uppercase in the
-       Tax-Calculator; we will be changing it to lowercase in the
-       future and will update this page accordingly.
+   **_EITC_MinEligAge**: Earned Income Tax Credit minimum eligibility
+   age for those with no EITC-eligible children
