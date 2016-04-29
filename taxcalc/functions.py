@@ -988,7 +988,7 @@ def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt,
 
 
 @iterate_jit(nopython=True)
-def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge,
+def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge, DSI,
            age_head, EITC_MaxEligAge, EITC_ps_MarriedJ, EITC_rt, c59560,
            EITC_c, age_spouse, EITC_prt, e83080, e00300, e00600, e40223,
            e25360, e25430, p25470, e25400, e25500, e26210, e26340, e27200,
@@ -1031,6 +1031,9 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge,
         _val_rtless = 0.
         _dy = 0.
     if MARS != 3 and MARS != 6 and _dy > EITC_InvestIncome_c:
+        _preeitc = 0.
+
+    if DSI == 1:
         _preeitc = 0.
 
     if EIC == 0:
