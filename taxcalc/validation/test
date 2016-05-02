@@ -65,6 +65,6 @@ else
 fi
 # Remove temporary files
 if [[ "$SAVE" == false ]] ; then
-    rm $LYY.in $LYY.in.out-simtax$SUFFIX $LYY.in.out-taxsim$SUFFIX
+    rm -f $LYY.in $LYY.in.out-simtax$SUFFIX $LYY.in.out-taxsim$SUFFIX
 fi
 exit $RC

@@ -23,26 +23,24 @@ fi
 # .... execute validation tests in parallel
 echo "STARTING WITH VALIDATION TESTS : `date`"
 if [[ "$ALLTESTS" == true ]] ; then
-    bash test a13 . &
+    bash test c13 . &
     bash test c13 18_0.07 &
-    bash test c14 18_0.07 &
-    wait
-    bash test a14 . &
     bash test c13 19_0.05 &
     bash test c14 19_0.05 &
     wait
-    bash test b13 . &
+    bash test c14 . &
+    bash test c14 18_0.07 &
     bash test c13 50_1 &
     bash test c14 50_1 &
     wait
-    bash test b14 . &
+    bash test c15 . &
     bash test c13 75_500 &
     bash test c14 75_500 &
     wait
 fi
-bash test c13 . &
-bash test c14 . &
-bash test c15 . &
+bash test d13 . &
+bash test d14 . &
+bash test d15 . &
 wait
 echo "FINISHED WITH VALIDATION TESTS : `date`"
 if [[ -f "testerror" ]]; then
