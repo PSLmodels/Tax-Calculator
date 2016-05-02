@@ -296,8 +296,8 @@ reforms.  In all twelve of these earlier validation tests, the
 Tax-Calculator and Internet-TAXSIM income and FICA tax liabilities
 differed by no more than one-cent.
 
-At the end of April, 2016, three new samples have been added to the
+At the end of April, 2016, three new samples were added to the
 validation test suite: the `d13.in`, `d14.in`, and `d15.in` samples.
 For all three of these samples of 100,000 tax filing units, the
 Tax-Calculator and Internet-TAXSIM income and FICA tax liabilities
-differed by no more than one-cent.
+differ by no more than one-cent.
