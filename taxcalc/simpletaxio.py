@@ -533,7 +533,7 @@ class SimpleTaxIO(object):
                 if (filing_status == 2 and agecode > 2) or \
                    (filing_status != 2 and agecode > 1):
                     msg = ('var[6]={} on line {} of simtax INPUT is has '
-                               'illegal value')
+                           'illegal value')
                     raise ValueError(msg.format(agecode, lnum))
             else:  # using new Internet-TAXSIM agecode
                 pass

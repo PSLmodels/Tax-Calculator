@@ -21,7 +21,7 @@ Tax-Calculator,0.8,0.8,0.9,1.0
 SOCIAL SECURITY TAXABILITY
 ""
 Exclusion of untaxed social security and railroad retirement
-Tax-Calculator,39.3,41.0,43.6,46.1
+Tax-Calculator,39.2,41.0,43.6,46.0
 Tax Expenditure,39,42,44,47
 Budget Options,35,37,38,40
 ""
@@ -181,7 +181,7 @@ Tax-Calculator,-0.2,-0.2,-0.2,-0.2
 REFUNDABLE CREDIT
 ""
 Earned income tax credit, total
-Tax-Calculator,68.0,67.2,67.4,68.4
+Tax-Calculator,67.9,67.1,67.4,68.3
 Tax Expenditure,70,71,72,70
 ""
 Increase EITC phaseout rate by 1 pts
@@ -191,7 +191,7 @@ Increase EITC phaseout starting AGI by 1000
 Tax-Calculator,-2.1,-2.1,-2.1,-2.2
 ""
 Increase Maximum EITC allowed by 100
-Tax-Calculator,-2.1,-1.9,-1.9,-1.9
+Tax-Calculator,-2.1,-1.8,-1.9,-1.9
 ""
 Increase additional child tax credit rate by 2 pts
 Tax-Calculator,-0.7,-0.7,-0.6,-0.6
