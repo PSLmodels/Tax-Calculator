@@ -1,4 +1,4 @@
-k#!/bin/bash
+#!/bin/bash
 # Executes current-law & reform validation TESTS by calling test bash script.
 # .... delete testerror file if it exists
 rm -f testerror
