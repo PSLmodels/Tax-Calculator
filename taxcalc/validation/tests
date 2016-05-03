@@ -1,4 +1,4 @@
-#!/bin/bash
+k#!/bin/bash
 # Executes current-law & reform validation TESTS by calling test bash script.
 # .... delete testerror file if it exists
 rm -f testerror
@@ -22,18 +22,21 @@ if [[ "$#" -eq 1 ]]; then
 fi
 # .... execute validation tests in parallel
 echo "STARTING WITH VALIDATION TESTS : `date`"
+rm -f testerror
 if [[ "$ALLTESTS" == true ]] ; then
     bash test c13 . &
-    bash test c13 18_0.07 &
+    bash test c14 . &
+    bash test c15 . &
+    wait
     bash test c13 19_0.05 &
     bash test c14 19_0.05 &
     wait
-    bash test c14 . &
+    bash test c13 18_0.07 &
     bash test c14 18_0.07 &
+    wait
     bash test c13 50_1 &
     bash test c14 50_1 &
     wait
-    bash test c15 . &
     bash test c13 75_500 &
     bash test c14 75_500 &
     wait
