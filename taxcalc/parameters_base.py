@@ -432,9 +432,9 @@ class ParametersBase(object):
             for row in x:
                 keep_user_data_mask.append([1 if i != -1 else 0 for i in row])
                 keep_calc_data_mask.append([0 if i != -1 else 1 for i in row])
-                if not np.any(row == -1):
+                if not np.all(row == -1):
                     last_good_row += 1
-                else:
+                if np.any(row == -1):
                     has_nones = True
             if x.shape[0] >= num_years and not has_nones:
                 return x
@@ -448,23 +448,47 @@ class ParametersBase(object):
                     c = x
                 ans = np.zeros((num_years, c.shape[1]), dtype=np.float64)
                 ans[:len(c), :] = c
-                if inflate:
-                    extra = []
-                    cur = c[-1]
-                    for i in range(0, num_years - len(c)):
-                        inf_idx = i + len(c) - 1
-                        cur = np.array(cur * (1. + inflation_rates[inf_idx]))
-                        extra.append(cur)
-                else:
-                    extra = [c[-1, :] for i in
-                             range(1, num_years - len(c) + 1)]
-                ans[len(c):, :] = extra
+                # First, fill in any 'None's with appropriate values
+                for i in range(last_good_row + 1):
+                    for j in range(ans.shape[1]):
+                        if ans[i, j] == -1.:
+                            if inflate:
+                                ans[i, j] = (ans[i - 1, j] *
+                                             (1. + inflation_rates[i - 1]))
+                            else:
+                                ans[i, j] = ans[i - 1, j]
+
+                # Now, fill based on inflate flag:
+                for i in range(last_good_row + 1, ans.shape[0]):
+                    for j in range(ans.shape[1]):
+                        if inflate:
+                            ans[i, j] = (ans[i - 1, j] *
+                                         (1. + inflation_rates[i - 1]))
+                        else:
+                            ans[i, j] = ans[i - 1, j]
+
                 if has_nones:
                     # Use masks to "mask in" provided data and "mask out"
                     # data we don't need (produced in rows with a None value)
-                    ans = ans * keep_calc_data_mask
-                    user_vals = x * keep_user_data_mask
-                    ans = ans + user_vals
+                    if not ans.shape == keep_calc_data_mask.shape:
+                        # repeat the last row of each mask
+                        num_repeats = (ans.shape[0] -
+                                       keep_calc_data_mask.shape[0] + 1)
+                        repeats = [1 for i in
+                                   range(keep_calc_data_mask.shape[0])]
+                        repeats[-1] = num_repeats
+                        keep_calc_data_mask = np.repeat(keep_calc_data_mask,
+                                                        repeats, axis=0)
+                        keep_user_data_mask = np.repeat(keep_user_data_mask,
+                                                        repeats, axis=0)
+                        final_ans = ans * keep_calc_data_mask
+                        final_user_vals = ans * keep_user_data_mask
+                        ans = final_ans + final_user_vals
+                    else:
+                        ans = ans * keep_calc_data_mask
+                        user_vals = x * keep_user_data_mask
+                        ans = ans + user_vals
+
                 return ans
         return ParametersBase.expand_2D(np.array(x, dtype=np.float64),
                                         inflate, inflation_rates, num_years)
