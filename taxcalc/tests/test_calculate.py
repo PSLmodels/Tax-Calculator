@@ -345,6 +345,40 @@ def test_Calculator_using_nonstd_input(rawinputfile):
     assert_allclose(mtr_fica, exp_mtr_fica)
 
 
+def test_same_reform_expressed_two_ways_result():
+    """
+    Test that two ways of specifying the same reform produce the same results.
+    """
+    # specify the same reform in two different ways
+    reform1 = {2014: {'_EITC_rt': [[0, 0, 0, 0]], '_EITC_prt': [[0, 0, 0, 0]]}}
+    reform2 = {2014: {'_EITC_rt': [[0, 0, 0, 0]]},
+               2014: {'_EITC_prt': [[0, 0, 0, 0]]}}
+    # specify two separate policies
+    policy_1 = Policy()
+    policy_2 = Policy()
+    # load the input data separately as well
+    TAXDATA_1 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    TAXDATA_2 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+
+    # set up two parallel calculators
+    calcX = Calculator(policy=policy_1, records=TAXDATA_1)
+    calcY = Calculator(policy=policy_2, records=TAXDATA_2)
+
+    # implement the same reforms that are expressed in different ways
+    policy_1.implement_reform(reform1)
+    policy_2.implement_reform(reform2)
+
+    calcX.advance_to_year(2014)
+    calcY.advance_to_year(2014)
+
+    # calculate the results for the two calculators
+    calcX.calc_all()
+    calcY.calc_all()
+    # confirm that the two calculators yield the same iitax liability
+    assert (calcX.records._iitax * calcX.records.s006).sum() == \
+        (calcY.records._iitax * calcY.records.s006).sum()
+
+
 class TaxCalcError(Exception):
     '''I've stripped this down to a simple extension of the basic Exception for
     now. We can add functionality later as we see fit.
