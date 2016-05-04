@@ -762,7 +762,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
          c24520, c05700, e05800, e05100,
          age_head, KT_c_Age, e62900, AMT_thd_MarriedS, _earned, e62600,
          AMT_em, AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer,
-         _cmbtp_standard, ID_StateLocalTax_HC, ID_Medical_HC,
+         e62100, e00100, ID_StateLocalTax_HC, ID_Medical_HC,
          ID_Miscellaneous_HC, ID_RealEstate_HC, puf):
     """
     AMTI function: ...
@@ -824,7 +824,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
         c62100 += _cmbtp
     if puf and _standard > 0:
         if f6251 == 1:
-            _cmbtp = _cmbtp_standard
+            _cmbtp = e62100 - e00100 + e00700
         else:
             _cmbtp = 0.
         c62100 = c00100 - c60260
