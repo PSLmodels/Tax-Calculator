@@ -2,7 +2,9 @@
 This script calculates weighted means for PUF variables used in the Calculator
 and 16 calculated variables.
 
-USAGE: python stats_summary.py
+USAGE: 
+Generate statistics Summary: python stats_summary.py
+Generate correlation matrix: python stats_summary.py --output correlation
 
 """
 
