@@ -70,10 +70,16 @@ def main(reforms_json_filename):
                                          fica_taxcalc_clp)
         for repl in range(reforms_dict[ref]['replications']):
             ref_repl = '{}-{:03d}'.format(ref, repl)
+            if TRACING:
+                sys.stdout.write('==> PARAM {}\n'.format(ref_repl))
+                sys.stdout.flush()
             (itax_taxbrain,
              fica_taxbrain,
              taxbrain_output_url) = taxbrain_results(ref_repl, syr, refspec)
             if len(taxbrain_output_url) == 0:  # no TaxBrain output
+                if TRACING:
+                    sys.stdout.write('    no TaxBrain output\n')
+                    sys.stdout.flush()
                 continue  # to top of replication loop
             check_for_differences(ref_repl, 'ITAX', taxbrain_output_url,
                                   itax_taxbrain, itax_taxcalc)
@@ -253,9 +259,6 @@ def taxbrain_param_values_insert(driver, start_year, reform_spec):
     Function returns nothing.
     """
     for param in sorted(reform_spec.keys()):
-        if TRACING:
-            sys.stdout.write('==> PARAM {}\n'.format(param))
-            sys.stdout.flush()
         param_dict = reform_spec[param]
         pval = param_dict[(param_dict.keys())[0]]
         if param.endswith('_cpi'):
