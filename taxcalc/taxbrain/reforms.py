@@ -289,26 +289,22 @@ def taxbrain_scalar_pval_insert(driver, start_year, param_name, param_dict):
     Function returns nothing.
     """
     pyrs = sorted(param_dict.keys())
-    # handle first pyr in pyrs list of year strings
-    pyr = pyrs[0]
-    pval = param_dict[pyr][0]  # [0] removes the outer brackets
-    pyr = int(pyr)
-    if pyr == start_year:
-        txt = '{}'.format(pval)
-    else:  # pyr > start_year
-        txt = '*'
-        for _ in range(pyr - start_year + 1):
-            txt += ',*'
-        txt += ',{}'.format(pval)
-    prior_pyr = pyr
-    # handle subsequent pyr in pyrs list
-    for pyr in pyrs[1:]:
+    # handle each pyr in pyrs list of sorted year strings
+    first_segment_year = start_year
+    for pyr in pyrs:
         pval = param_dict[pyr][0]  # [0] removes the outer brackets
-        pyr = int(pyr)
-        for _ in range(pyr - prior_pyr - 1):
-            txt += ',*'
-        txt += ',{}'.format(pval)
-        prior_pyr = pyr
+        pyr_int = int(pyr)
+        if pyr_int == first_segment_year:
+            txt = '{}'.format(pval)
+        else:  # pyr_int > first_segment_year
+            if first_segment_year == start_year:
+                txt = '*'
+            else:
+                txt += ',*'
+            for _ in range(0, pyr_int - first_segment_year - 1):
+                txt += ',*'
+            txt += ',{}'.format(pval)
+        first_segment_year = pyr_int + 1
     # insert txt into parameter field
     css = 'input#id{}.form-control'.format(param_name)
     try:
@@ -326,32 +322,29 @@ def taxbrain_vector_pval_insert(driver, start_year, param_name, param_dict):
     Insert vector policy parameter values into TaxBrain input webpage.
     Function returns nothing.
     """
+    # pylint: disable=too-many-locals
     if param_name == '_BenefitSurtax_Switch':
         vector_length = 7
     else:
         vector_length = 4
     pyrs = sorted(param_dict.keys())
     for idx in range(vector_length):
-        # handle first pyr in pyrs list of year strings
-        pyr = pyrs[0]
-        pval = param_dict[pyr][0]  # [0] removes the outer brackets
-        pyr = int(pyr)
-        if pyr == start_year:
-            txt = '{}'.format(pval[idx])
-        else:  # pyr > start_year
-            txt = '*'
-            for _ in range(pyr - start_year + 1):
-                txt += ',*'
-            txt += ',{}'.format(pval[idx])
-        prior_pyr = pyr
-        # handle subsequent pyr in pyrs list
-        for pyr in pyrs[1:]:
+        # handle each pyr in pyrs list of sorted year strings
+        first_segment_year = start_year
+        for pyr in pyrs:
             pval = param_dict[pyr][0]  # [0] removes the outer brackets
-            pyr = int(pyr)
-            for _ in range(pyr - prior_pyr - 1):
-                txt += ',*'
-            txt += ',{}'.format(pval[idx])
-            prior_pyr = pyr
+            pyr_int = int(pyr)
+            if pyr_int == first_segment_year:
+                txt = '{}'.format(pval[idx])
+            else:  # pyr_int > first_segment_year
+                if first_segment_year == start_year:
+                    txt = '*'
+                else:
+                    txt += ',*'
+                for _ in range(0, pyr_int - first_segment_year - 1):
+                    txt += ',*'
+                txt += ',{}'.format(pval[idx])
+            first_segment_year = pyr_int + 1
         # insert txt into parameter field
         css = 'input#id{}_{}.form-control'.format(param_name, idx)
         try:
