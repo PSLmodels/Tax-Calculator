@@ -39,13 +39,13 @@ MIN_START_YEAR = 2013
 MAX_START_YEAR = 2017
 NUMBER_OF_YEARS = 10  # number of years for which results are calculated
 
-TRACING = True  # set to True to write of each reform-replication processed
 
-
-def main(reforms_json_filename):
+def main(reforms_json_filename, tracing):
     """
     Highest-level logic of reforms.py script.
     """
+    # pylint: disable=too-many-locals
+
     # read specified reforms file and convert to a dictionary of reforms
     reforms_dict = read_reforms_json_file(reforms_json_filename)
 
@@ -70,20 +70,21 @@ def main(reforms_json_filename):
                                          fica_taxcalc_clp)
         for repl in range(reforms_dict[ref]['replications']):
             ref_repl = '{}-{:03d}'.format(ref, repl)
-            if TRACING:
+            if tracing:
                 sys.stderr.write('==> {}\n'.format(ref_repl))
                 sys.stderr.flush()
             (itax_taxbrain,
              fica_taxbrain,
              taxbrain_output_url) = taxbrain_results(ref_repl, syr, refspec)
-            if len(taxbrain_output_url) == 0:  # no TaxBrain output
-                if TRACING:
+            if len(taxbrain_output_url) == 0:
+                if tracing:
                     sys.stderr.write('    no TaxBrain output\n')
                     sys.stderr.flush()
                 continue  # to top of replication loop
-            if TRACING:
-                sys.stderr.write('    got TaxBrain output\n')
-                sys.stderr.flush()
+            else:
+                if tracing:
+                    sys.stderr.write('    got TaxBrain output\n')
+                    sys.stderr.flush()
             check_for_differences(ref_repl, 'ITAX', taxbrain_output_url,
                                   itax_taxbrain, itax_taxcalc)
             check_for_differences(ref_repl, 'FICA', taxbrain_output_url,
@@ -155,7 +156,9 @@ def taxcalc_clp_results():
     ending with MAX_START_YEAR+NUMBER_OF_YEARS-1 for current-law policy.
     Return two aggregate revenue dictionaries indexed by calendar year.
     """
-    calc = Calculator(policy=Policy(), records=Records(data=PUF_PATH))
+    calc = Calculator(policy=Policy(),
+                      records=Records(data=PUF_PATH),
+                      verbose=False)
     nyrs = MAX_START_YEAR + NUMBER_OF_YEARS - MIN_START_YEAR
     adt = calc.diagnostic_table(num_years=nyrs)
     # note that adt is Pandas DataFrame object
@@ -398,7 +401,9 @@ def taxcalc_results(start_year, reform_dict, itax_clp, fica_clp):
     """
     pol = Policy()
     pol.implement_reform(reform_dict)
-    calc = Calculator(policy=pol, records=Records(data=PUF_PATH))
+    calc = Calculator(policy=pol,
+                      records=Records(data=PUF_PATH),
+                      verbose=False)
     calc.advance_to_year(start_year)
     adt = calc.diagnostic_table(num_years=NUMBER_OF_YEARS)
     # note that adt is Pandas DataFrame object
@@ -470,5 +475,10 @@ if __name__ == '__main__':
                               'reforms;\nno flag implies '
                               'FILENAME is "reforms.json".'),
                         default='reforms.json')
+    PARSER.add_argument('--trace', action='store_true',
+                        help=('optional flag to write to stderr the reform '
+                              'id and\nreplication number as well as whether '
+                              'or not got\nTaxBrain output; no flag implies '
+                              'no tracing.'))
     ARGS = PARSER.parse_args()
-    sys.exit(main(ARGS.filename))
+    sys.exit(main(ARGS.filename, ARGS.trace))
