@@ -12,12 +12,13 @@ it is not useful for conducting any kind of tax policy analysis.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 make_reforms.py
-# pylint --disable=locally-disabled make_reforms.py
+# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy make_r*.py
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import os
 import sys
 import argparse
+import numpy as np
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy  # pylint: disable=import-error
@@ -42,6 +43,8 @@ PARAMS_NOT_USED_IN_TAXBRAIN = set(['_ACTC_Income_thd',
                                    '_DCC_c',
                                    '_EITC_ps_MarriedJ',
                                    '_EITC_InvestIncome_c',
+                                   '_EITC_MinEligAge',
+                                   '_EITC_MaxEligAge',
                                    '_ETC_pe_Single',
                                    '_ETC_pe_Married',
                                    '_ETC_pe_Single',
@@ -62,7 +65,7 @@ SPC = '    '
 TAB = '{}{}{}'.format(SPC, SPC, SPC)
 
 
-def main(start_year, scale_factor, no_indexing, each_separate):
+def main(start_year, delay_years, scale_factor, no_indexing, each_separate):
     """
     Highest-level logic of make_reforms.py script.
     """
@@ -103,10 +106,15 @@ def main(start_year, scale_factor, no_indexing, each_separate):
         param_names = param_names - excluded_names
 
     # write a JSON entry for each parameter
+    np.random.seed(seed=123456789)
     if reform == PROVISIONS_ALL_TOGETHER:
-        write_all_together(param_names, clp, start_year, scale_factor)
+        write_all_together(param_names, clp,
+                           start_year, delay_years,
+                           scale_factor)
     elif reform == PROVISIONS_EACH_SEPARATE:
-        write_each_separate(param_names, clp, start_year, scale_factor)
+        write_each_separate(param_names, clp,
+                            start_year, delay_years,
+                            scale_factor)
     else:
         msg = 'ERROR: reform has illegal value {}\n'
         sys.stderr.write(msg.format(reform))
@@ -131,7 +139,8 @@ def indexed_parameter_names(policy, param_names):
     return indexed_names
 
 
-def write_all_together(param_names, clp, start_year, scale_factor):
+def write_all_together(param_names, clp, start_year,
+                       max_reform_delay_years, scale_factor):
     """
     Write JSON for one reform containing all the provisions together.
     """
@@ -144,13 +153,15 @@ def write_all_together(param_names, clp, start_year, scale_factor):
     num = 0
     for name in sorted(param_names):
         num += 1
+        yrs = np.random.random_integers(0, max_reform_delay_years)
+        reform_year = start_year + yrs
         sys.stdout.write('{}"{}": {}\n'.format(TAB, name, '{'))
         if name.endswith('_cpi'):
-            sys.stdout.write('{}{}"{}": false\n'.format(TAB, SPC, start_year))
+            sys.stdout.write('{}{}"{}": false\n'.format(TAB, SPC, reform_year))
         else:
-            value = new_value(clp, name, start_year, scale_factor)
+            value = new_value(clp, name, reform_year, scale_factor)
             sys.stdout.write('{}{}"{}": [{}]\n'.format(TAB, SPC,
-                                                       start_year, value))
+                                                       reform_year, value))
         if num == num_names:
             sys.stdout.write('{}{}\n'.format(TAB, '}'))
         else:
@@ -161,7 +172,8 @@ def write_all_together(param_names, clp, start_year, scale_factor):
     return
 
 
-def write_each_separate(param_names, clp, start_year, scale_factor):
+def write_each_separate(param_names, clp, start_year,
+                        max_reform_delay_years, scale_factor):
     """
     Write JSON for many reforms each containing a single provision.
     """
@@ -170,6 +182,8 @@ def write_each_separate(param_names, clp, start_year, scale_factor):
     sys.stdout.write('{}\n'.format('{'))
     for name in sorted(param_names):
         num += 1
+        yrs = np.random.random_integers(0, max_reform_delay_years)
+        reform_year = start_year + yrs
         sys.stdout.write('{}"{}": {}\n'.format(SPC, num, '{'))
         sys.stdout.write('{}{}"replications": 1,\n'.format(SPC, SPC))
         sys.stdout.write('{}{}"start_year": {},\n'.format(SPC, SPC,
@@ -177,11 +191,11 @@ def write_each_separate(param_names, clp, start_year, scale_factor):
         sys.stdout.write('{}{}"specification": {}\n'.format(SPC, SPC, '{'))
         sys.stdout.write('{}"{}": {}\n'.format(TAB, name, '{'))
         if name.endswith('_cpi'):
-            sys.stdout.write('{}{}"{}": false\n'.format(TAB, SPC, start_year))
+            sys.stdout.write('{}{}"{}": false\n'.format(TAB, SPC, reform_year))
         else:
-            value = new_value(clp, name, start_year, scale_factor)
+            value = new_value(clp, name, reform_year, scale_factor)
             sys.stdout.write('{}{}"{}": [{}]\n'.format(TAB, SPC,
-                                                       start_year, value))
+                                                       reform_year, value))
         sys.stdout.write('{}{}\n'.format(TAB, '}'))
         sys.stdout.write('{}{}{}\n'.format(SPC, SPC, '}'))
         if num == num_names:
@@ -192,22 +206,17 @@ def write_each_separate(param_names, clp, start_year, scale_factor):
     return
 
 
-def new_value(policy, name, start_year, scale_factor):
+def new_value(policy, name, reform_year, scale_factor):
     """
-    Return new value for start_year given policy, name, and scale_factor.
+    Return new value for reform_year given policy, name, and scale_factor.
     """
-    value = getattr(policy, name)[start_year - FIRST_YEAR]
+    value = getattr(policy, name)[reform_year - FIRST_YEAR]
     if isinstance(value, float):
         if name in PARAMS_NOT_SCALED:
             val = value
         else:
             val = round(value * scale_factor, 5)
-    elif isinstance(value, int):
-        if name in PARAMS_NOT_SCALED:
-            val = value
-        else:
-            val = int(round(value * scale_factor, 0))
-    else:
+    else:  # value is a list
         if name in PARAMS_NOT_SCALED:
             val = value.tolist()
         else:
@@ -226,6 +235,11 @@ if __name__ == '__main__':
     PARSER.add_argument('--year', type=int, default=2016,
                         help=('optional flag to specify TaxBrain start year;\n'
                               'no flag implies start year is 2016.'))
+    PARSER.add_argument('--delay', type=int, default=0,
+                        help=('optional flag to specify maximum number '
+                              'of random years\nreform provisions are '
+                              'implemented after the year\nspecified by '
+                              '--year option; no flag implies no delay.'))
     PARSER.add_argument('--scale', type=float, default=1.10,
                         help=('optional flag to specify multiplicative '
                               'scaling factor\nused to increase policy '
@@ -245,4 +259,5 @@ if __name__ == '__main__':
                               'no flag implies all reform provisions are\n'
                               'combined together into a single reform.'))
     ARGS = PARSER.parse_args()
-    sys.exit(main(ARGS.year, ARGS.scale, ARGS.noindexing, ARGS.separate))
+    sys.exit(main(ARGS.year, ARGS.delay, ARGS.scale,
+                  ARGS.noindexing, ARGS.separate))

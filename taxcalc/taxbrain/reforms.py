@@ -39,18 +39,18 @@ MIN_START_YEAR = 2013
 MAX_START_YEAR = 2017
 NUMBER_OF_YEARS = 10  # number of years for which results are calculated
 
-TRACING = False  # set to true to write name of each parameter processed
 
-
-def main(reforms_json_filename):
+def main(reforms_json_filename, tracing):
     """
     Highest-level logic of reforms.py script.
     """
+    # pylint: disable=too-many-locals
+
     # read specified reforms file and convert to a dictionary of reforms
     reforms_dict = read_reforms_json_file(reforms_json_filename)
 
     # check validity of each reform
-    for ref in sorted(reforms_dict):
+    for ref in sorted(reforms_dict, key=int):
         check_complete_reform_dict(ref, reforms_dict[ref])
 
     # compute taxcalc results for current-law policy
@@ -60,7 +60,7 @@ def main(reforms_json_filename):
     check_selenium_and_chromedriver()
 
     # process each reform in reforms_dict
-    for ref in sorted(reforms_dict):
+    for ref in sorted(reforms_dict, key=int):
         syr = reforms_dict[ref]['start_year']
         refspec = reforms_dict[ref]['specification']
         refdict = Policy.convert_reform_dictionary(refspec)
@@ -70,11 +70,21 @@ def main(reforms_json_filename):
                                          fica_taxcalc_clp)
         for repl in range(reforms_dict[ref]['replications']):
             ref_repl = '{}-{:03d}'.format(ref, repl)
+            if tracing:
+                sys.stderr.write('==> {}\n'.format(ref_repl))
+                sys.stderr.flush()
             (itax_taxbrain,
              fica_taxbrain,
              taxbrain_output_url) = taxbrain_results(ref_repl, syr, refspec)
-            if len(taxbrain_output_url) == 0:  # no TaxBrain output
+            if len(taxbrain_output_url) == 0:
+                if tracing:
+                    sys.stderr.write('    no TaxBrain output\n')
+                    sys.stderr.flush()
                 continue  # to top of replication loop
+            else:
+                if tracing:
+                    sys.stderr.write('    got TaxBrain output\n')
+                    sys.stderr.flush()
             check_for_differences(ref_repl, 'ITAX', taxbrain_output_url,
                                   itax_taxbrain, itax_taxcalc)
             check_for_differences(ref_repl, 'FICA', taxbrain_output_url,
@@ -146,7 +156,9 @@ def taxcalc_clp_results():
     ending with MAX_START_YEAR+NUMBER_OF_YEARS-1 for current-law policy.
     Return two aggregate revenue dictionaries indexed by calendar year.
     """
-    calc = Calculator(policy=Policy(), records=Records(data=PUF_PATH))
+    calc = Calculator(policy=Policy(),
+                      records=Records(data=PUF_PATH),
+                      verbose=False)
     nyrs = MAX_START_YEAR + NUMBER_OF_YEARS - MIN_START_YEAR
     adt = calc.diagnostic_table(num_years=nyrs)
     # note that adt is Pandas DataFrame object
@@ -207,8 +219,9 @@ def taxbrain_results(ref_repl, start_year, reform_spec):
         WebDriverWait(driver, wait_secs).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, css)))
         msg = '{}\tTaxBrain-input-error\n'.format(ref_repl)
-        sys.stdout.write(msg)
-        sys.stdout.flush()
+        sys.stderr.write(msg)
+        sys.stderr.flush()
+        driver.quit()
         return ({}, {}, '')
     except TimeoutException:
         pass
@@ -222,8 +235,9 @@ def taxbrain_results(ref_repl, start_year, reform_spec):
     except TimeoutException:
         template = '{}\tTaxBrain-timeout-after-{}-seconds\n'
         msg = template.format(ref_repl, wait_secs)
-        sys.stdout.write(msg)
-        sys.stdout.flush()
+        sys.stderr.write(msg)
+        sys.stderr.flush()
+        driver.quit()
         return ({}, {}, '')
 
     # copy "TOTAL LIABILITIES CHANGE BY CALENDAR YEAR" table to clipboard
@@ -253,9 +267,6 @@ def taxbrain_param_values_insert(driver, start_year, reform_spec):
     Function returns nothing.
     """
     for param in sorted(reform_spec.keys()):
-        if TRACING:
-            sys.stdout.write('==> PARAM {}\n'.format(param))
-            sys.stdout.flush()
         param_dict = reform_spec[param]
         pval = param_dict[(param_dict.keys())[0]]
         if param.endswith('_cpi'):
@@ -289,26 +300,22 @@ def taxbrain_scalar_pval_insert(driver, start_year, param_name, param_dict):
     Function returns nothing.
     """
     pyrs = sorted(param_dict.keys())
-    # handle first pyr in pyrs list of year strings
-    pyr = pyrs[0]
-    pval = param_dict[pyr][0]  # [0] removes the outer brackets
-    pyr = int(pyr)
-    if pyr == start_year:
-        txt = '{}'.format(pval)
-    else:  # pyr > start_year
-        txt = '*'
-        for _ in range(pyr - start_year + 1):
-            txt += ',*'
-        txt += ',{}'.format(pval)
-    prior_pyr = pyr
-    # handle subsequent pyr in pyrs list
-    for pyr in pyrs[1:]:
+    # handle each pyr in pyrs list of sorted year strings
+    first_segment_year = start_year
+    for pyr in pyrs:
         pval = param_dict[pyr][0]  # [0] removes the outer brackets
-        pyr = int(pyr)
-        for _ in range(pyr - prior_pyr - 1):
-            txt += ',*'
-        txt += ',{}'.format(pval)
-        prior_pyr = pyr
+        pyr_int = int(pyr)
+        if pyr_int == first_segment_year:
+            txt = '{}'.format(pval)
+        else:  # pyr_int > first_segment_year
+            if first_segment_year == start_year:
+                txt = '*'
+            else:
+                txt += ',*'
+            for _ in range(0, pyr_int - first_segment_year - 1):
+                txt += ',*'
+            txt += ',{}'.format(pval)
+        first_segment_year = pyr_int + 1
     # insert txt into parameter field
     css = 'input#id{}.form-control'.format(param_name)
     try:
@@ -326,32 +333,29 @@ def taxbrain_vector_pval_insert(driver, start_year, param_name, param_dict):
     Insert vector policy parameter values into TaxBrain input webpage.
     Function returns nothing.
     """
+    # pylint: disable=too-many-locals
     if param_name == '_BenefitSurtax_Switch':
         vector_length = 7
     else:
         vector_length = 4
     pyrs = sorted(param_dict.keys())
     for idx in range(vector_length):
-        # handle first pyr in pyrs list of year strings
-        pyr = pyrs[0]
-        pval = param_dict[pyr][0]  # [0] removes the outer brackets
-        pyr = int(pyr)
-        if pyr == start_year:
-            txt = '{}'.format(pval[idx])
-        else:  # pyr > start_year
-            txt = '*'
-            for _ in range(pyr - start_year + 1):
-                txt += ',*'
-            txt += ',{}'.format(pval[idx])
-        prior_pyr = pyr
-        # handle subsequent pyr in pyrs list
-        for pyr in pyrs[1:]:
+        # handle each pyr in pyrs list of sorted year strings
+        first_segment_year = start_year
+        for pyr in pyrs:
             pval = param_dict[pyr][0]  # [0] removes the outer brackets
-            pyr = int(pyr)
-            for _ in range(pyr - prior_pyr - 1):
-                txt += ',*'
-            txt += ',{}'.format(pval[idx])
-            prior_pyr = pyr
+            pyr_int = int(pyr)
+            if pyr_int == first_segment_year:
+                txt = '{}'.format(pval[idx])
+            else:  # pyr_int > first_segment_year
+                if first_segment_year == start_year:
+                    txt = '*'
+                else:
+                    txt += ',*'
+                for _ in range(0, pyr_int - first_segment_year - 1):
+                    txt += ',*'
+                txt += ',{}'.format(pval[idx])
+            first_segment_year = pyr_int + 1
         # insert txt into parameter field
         css = 'input#id{}_{}.form-control'.format(param_name, idx)
         try:
@@ -397,7 +401,9 @@ def taxcalc_results(start_year, reform_dict, itax_clp, fica_clp):
     """
     pol = Policy()
     pol.implement_reform(reform_dict)
-    calc = Calculator(policy=pol, records=Records(data=PUF_PATH))
+    calc = Calculator(policy=pol,
+                      records=Records(data=PUF_PATH),
+                      verbose=False)
     calc.advance_to_year(start_year)
     adt = calc.diagnostic_table(num_years=NUMBER_OF_YEARS)
     # note that adt is Pandas DataFrame object
@@ -469,5 +475,10 @@ if __name__ == '__main__':
                               'reforms;\nno flag implies '
                               'FILENAME is "reforms.json".'),
                         default='reforms.json')
+    PARSER.add_argument('--trace', action='store_true',
+                        help=('optional flag to write to stderr the reform '
+                              'id and\nreplication number as well as whether '
+                              'or not got\nTaxBrain output; no flag implies '
+                              'no tracing.'))
     ARGS = PARSER.parse_args()
-    sys.exit(main(ARGS.filename))
+    sys.exit(main(ARGS.filename, ARGS.trace))

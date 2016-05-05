@@ -16,7 +16,7 @@ from .growth import Growth, adjustment, target
 
 class Calculator(object):
 
-    def __init__(self, policy=None, records=None,
+    def __init__(self, policy=None, records=None, verbose=True,
                  sync_years=True, behavior=None, growth=None):
         if isinstance(policy, Policy):
             self._policy = policy
@@ -41,14 +41,14 @@ class Calculator(object):
         else:
             raise ValueError('must specify records as a Records object')
         if sync_years and self._records.current_year == Records.PUF_YEAR:
-            print("You loaded data for " +
-                  str(self._records.current_year) + '.')
-
+            if verbose:
+                print("You loaded data for " +
+                      str(self._records.current_year) + '.')
             while self._records.current_year < self._policy.current_year:
                 self._records.increment_year()
-
-            print("Your data have been extrapolated to " +
-                  str(self._records.current_year) + ".")
+            if verbose:
+                print("Your data have been extrapolated to " +
+                      str(self._records.current_year) + ".")
         assert self._policy.current_year == self._records.current_year
 
     @property
