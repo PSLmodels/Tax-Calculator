@@ -2,7 +2,9 @@
 This script calculates weighted means for PUF variables used in the Calculator
 and 16 calculated variables.
 
-USAGE: python stats_summary.py
+USAGE:
+Generate statistics Summary: python stats_summary.py
+Generate correlation matrix: python stats_summary.py --output correlation
 
 """
 
@@ -90,14 +92,13 @@ def creat_table_base(records):
                      'TFORM', 'IE', 'TXST', 'XFPT', 'XFST', 'XOCAH',
                      'XOCAWH', 'XOODEP', 'XOPAR', 'XTOT', 'MARS', 'MIDR',
                      'RECID', 'gender', 'wage_head', 'wage_spouse',
-                     'earnsplit', 'age', 'agedp1', 'agedp2', 'agedp3',
+                     'earnsplit', 'agedp1', 'agedp2', 'agedp3',
                      's006', 's008', 's009', 'WSAMP', 'TXRT',
                      'filer', 'matched_weight', 'e00200p', 'e00200s',
-                     'e00900p', 'e00900s', 'e02100p', 'e02100s'])
+                     'e00900p', 'e00900s', 'e02100p', 'e02100s',
+                     'age_head', 'age_spouse', 'blind_head', 'blind_spouse'])
 
-    UNUSED_READ_VARS = records.UNUSED_READ_VARS
-
-    USED_VARS = list(VALID_READ_VARS - CODES_IMP - UNUSED_READ_VARS)
+    USED_VARS = list(VALID_READ_VARS - CODES_IMP)
 
     # read variable description from e_variable_info.csv
     table = {}
