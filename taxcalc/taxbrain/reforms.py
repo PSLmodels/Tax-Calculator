@@ -39,7 +39,7 @@ MIN_START_YEAR = 2013
 MAX_START_YEAR = 2017
 NUMBER_OF_YEARS = 10  # number of years for which results are calculated
 
-TRACING = False  # set to true to write name of each parameter processed
+TRACING = True  # set to True to write of each reform-replication processed
 
 
 def main(reforms_json_filename):
@@ -50,7 +50,7 @@ def main(reforms_json_filename):
     reforms_dict = read_reforms_json_file(reforms_json_filename)
 
     # check validity of each reform
-    for ref in sorted(reforms_dict):
+    for ref in sorted(reforms_dict, key=int):
         check_complete_reform_dict(ref, reforms_dict[ref])
 
     # compute taxcalc results for current-law policy
@@ -60,7 +60,7 @@ def main(reforms_json_filename):
     check_selenium_and_chromedriver()
 
     # process each reform in reforms_dict
-    for ref in sorted(reforms_dict):
+    for ref in sorted(reforms_dict, key=int):
         syr = reforms_dict[ref]['start_year']
         refspec = reforms_dict[ref]['specification']
         refdict = Policy.convert_reform_dictionary(refspec)
@@ -71,16 +71,19 @@ def main(reforms_json_filename):
         for repl in range(reforms_dict[ref]['replications']):
             ref_repl = '{}-{:03d}'.format(ref, repl)
             if TRACING:
-                sys.stdout.write('==> PARAM {}\n'.format(ref_repl))
-                sys.stdout.flush()
+                sys.stderr.write('==> {}\n'.format(ref_repl))
+                sys.stderr.flush()
             (itax_taxbrain,
              fica_taxbrain,
              taxbrain_output_url) = taxbrain_results(ref_repl, syr, refspec)
             if len(taxbrain_output_url) == 0:  # no TaxBrain output
                 if TRACING:
-                    sys.stdout.write('    no TaxBrain output\n')
-                    sys.stdout.flush()
+                    sys.stderr.write('    no TaxBrain output\n')
+                    sys.stderr.flush()
                 continue  # to top of replication loop
+            if TRACING:
+                sys.stderr.write('    got TaxBrain output\n')
+                sys.stderr.flush()
             check_for_differences(ref_repl, 'ITAX', taxbrain_output_url,
                                   itax_taxbrain, itax_taxcalc)
             check_for_differences(ref_repl, 'FICA', taxbrain_output_url,
@@ -213,8 +216,9 @@ def taxbrain_results(ref_repl, start_year, reform_spec):
         WebDriverWait(driver, wait_secs).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, css)))
         msg = '{}\tTaxBrain-input-error\n'.format(ref_repl)
-        sys.stdout.write(msg)
-        sys.stdout.flush()
+        sys.stderr.write(msg)
+        sys.stderr.flush()
+        driver.quit()
         return ({}, {}, '')
     except TimeoutException:
         pass
@@ -228,8 +232,9 @@ def taxbrain_results(ref_repl, start_year, reform_spec):
     except TimeoutException:
         template = '{}\tTaxBrain-timeout-after-{}-seconds\n'
         msg = template.format(ref_repl, wait_secs)
-        sys.stdout.write(msg)
-        sys.stdout.flush()
+        sys.stderr.write(msg)
+        sys.stderr.flush()
+        driver.quit()
         return ({}, {}, '')
 
     # copy "TOTAL LIABILITIES CHANGE BY CALENDAR YEAR" table to clipboard
