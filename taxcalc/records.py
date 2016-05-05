@@ -234,7 +234,7 @@ class Records(object):
         'c59720', '_comb', 'c07150', 'c10300', '_iitax',
         '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
         '_amed', '_cmbtp_itemizer',
-        '_cmbtp_standard', '_expanded_income', 'c07300',
+        '_expanded_income', 'c07300',
         'c07600', 'c07240', 'c62100_everyone',
         '_surtax', '_combined', 'x04500', '_personal_credit'])
 
@@ -416,7 +416,7 @@ class Records(object):
         self.e87530 *= ATXPY
         self.p87521 *= ATXPY
         self._cmbtp_itemizer *= ATXPY
-        self._cmbtp_standard *= ATXPY
+        self.e00100 *= ATXPY
 
     def _read_data(self, data):
         """
@@ -538,7 +538,6 @@ class Records(object):
         Impute variables in 2009 PUF Records data
         """
         self._cmbtp_itemizer = self._imputed_cmbtp_itemizer()
-        self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
         # impute the ratio of household head in total household income
         total = np.where(self.MARS == 2,
                          self.wage_head + self.wage_spouse, 0)
