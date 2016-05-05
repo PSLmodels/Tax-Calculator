@@ -61,12 +61,11 @@ PARAMS_WITHOUT_CPI_BUTTON_IN_TAXBRAIN = set(['_II_credit',
 PROVISIONS_ALL_TOGETHER = 1
 PROVISIONS_EACH_SEPARATE = 2
 FIRST_YEAR = Policy.JSON_START_YEAR
-MAX_REFORM_DELAY_YEARS = 4
 SPC = '    '
 TAB = '{}{}{}'.format(SPC, SPC, SPC)
 
 
-def main(start_year, scale_factor, no_indexing, each_separate):
+def main(start_year, delay_years, scale_factor, no_indexing, each_separate):
     """
     Highest-level logic of make_reforms.py script.
     """
@@ -109,9 +108,13 @@ def main(start_year, scale_factor, no_indexing, each_separate):
     # write a JSON entry for each parameter
     np.random.seed(seed=123456789)
     if reform == PROVISIONS_ALL_TOGETHER:
-        write_all_together(param_names, clp, start_year, scale_factor)
+        write_all_together(param_names, clp,
+                           start_year, delay_years,
+                           scale_factor)
     elif reform == PROVISIONS_EACH_SEPARATE:
-        write_each_separate(param_names, clp, start_year, scale_factor)
+        write_each_separate(param_names, clp,
+                            start_year, delay_years,
+                            scale_factor)
     else:
         msg = 'ERROR: reform has illegal value {}\n'
         sys.stderr.write(msg.format(reform))
@@ -136,7 +139,8 @@ def indexed_parameter_names(policy, param_names):
     return indexed_names
 
 
-def write_all_together(param_names, clp, start_year, scale_factor):
+def write_all_together(param_names, clp, start_year,
+                       max_reform_delay_years, scale_factor):
     """
     Write JSON for one reform containing all the provisions together.
     """
@@ -149,7 +153,7 @@ def write_all_together(param_names, clp, start_year, scale_factor):
     num = 0
     for name in sorted(param_names):
         num += 1
-        yrs = np.random.random_integers(0, MAX_REFORM_DELAY_YEARS)
+        yrs = np.random.random_integers(0, max_reform_delay_years)
         reform_year = start_year + yrs
         sys.stdout.write('{}"{}": {}\n'.format(TAB, name, '{'))
         if name.endswith('_cpi'):
@@ -168,7 +172,8 @@ def write_all_together(param_names, clp, start_year, scale_factor):
     return
 
 
-def write_each_separate(param_names, clp, start_year, scale_factor):
+def write_each_separate(param_names, clp, start_year,
+                        max_reform_delay_years, scale_factor):
     """
     Write JSON for many reforms each containing a single provision.
     """
@@ -177,7 +182,7 @@ def write_each_separate(param_names, clp, start_year, scale_factor):
     sys.stdout.write('{}\n'.format('{'))
     for name in sorted(param_names):
         num += 1
-        yrs = np.random.random_integers(0, MAX_REFORM_DELAY_YEARS)
+        yrs = np.random.random_integers(0, max_reform_delay_years)
         reform_year = start_year + yrs
         sys.stdout.write('{}"{}": {}\n'.format(SPC, num, '{'))
         sys.stdout.write('{}{}"replications": 1,\n'.format(SPC, SPC))
@@ -230,6 +235,11 @@ if __name__ == '__main__':
     PARSER.add_argument('--year', type=int, default=2016,
                         help=('optional flag to specify TaxBrain start year;\n'
                               'no flag implies start year is 2016.'))
+    PARSER.add_argument('--delay', type=int, default=0,
+                        help=('optional flag to specify maximum number '
+                              'of random years\nreform provisions are '
+                              'implemented after the year\nspecified by '
+                              '--year option; no flag implies no delay.'))
     PARSER.add_argument('--scale', type=float, default=1.10,
                         help=('optional flag to specify multiplicative '
                               'scaling factor\nused to increase policy '
@@ -249,4 +259,5 @@ if __name__ == '__main__':
                               'no flag implies all reform provisions are\n'
                               'combined together into a single reform.'))
     ARGS = PARSER.parse_args()
-    sys.exit(main(ARGS.year, ARGS.scale, ARGS.noindexing, ARGS.separate))
+    sys.exit(main(ARGS.year, ARGS.delay, ARGS.scale,
+                  ARGS.noindexing, ARGS.separate))
