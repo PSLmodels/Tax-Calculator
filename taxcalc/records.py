@@ -190,8 +190,8 @@ class Records(object):
         'c87521', 'c87550', 'c07180',
         'c07230', '_precrd', 'c07220', 'c59660', 'c07970',
         'c08795', 'c09200', 'c07100', '_eitc', 'c59700',
-        'c10950', '_ymod2', '_ymod3', 'c02650', '_agierr',
-        '_ywossbe', '_ywossbc', '_prexmp', 'c17750',
+        'c10950', '_ymod2', '_ymod3', 'c02650',
+        '_prexmp', 'c17750',
         '_statax', 'c37703', 'c20500', 'c20750', 'c19200',
         'c19700', '_nonlimited', '_limitratio', '_phase2_i',
         '_fica', '_fica_was', 'c03260', 'c11055', 'c15100',
@@ -236,7 +236,7 @@ class Records(object):
         '_amed', '_cmbtp_itemizer',
         '_cmbtp_standard', '_expanded_income', 'c07300',
         'c07600', 'c07240', 'c62100_everyone',
-        '_surtax', '_combined', 'x04500', '_personal_credit'])
+        '_surtax', '_combined', '_personal_credit'])
 
     INTEGER_CALCULATED_VARS = set([
         '_num', '_sep', '_exact', '_hasgain', '_cmp', '_fixeic'])

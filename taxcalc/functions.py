@@ -188,17 +188,14 @@ def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, SS_thd50, SS_thd85,
 
 
 @iterate_jit(nopython=True)
-def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
+def AGI(_ymod1, c02500, c02700, e02615, c02900, XTOT,
         II_em, II_em_ps, MARS, _sep, II_prt, DSI):
     """
     AGI function: compute Adjusted Gross Income
     """
     c02650 = _ymod1 + c02500 - c02700 + e02615  # Gross Income
     c00100 = c02650 - c02900
-    _agierr = e00100 - c00100  # Adjusted Gross Income
     _posagi = max(c00100, 0)
-    _ywossbe = e00100 - e02500
-    _ywossbc = c00100 - c02500
     _prexmp = XTOT * II_em
     if DSI:
         _prexmp = 0.
@@ -207,8 +204,7 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, e00100, e02500, XTOT,
     _dispc_denom = 2500. / _sep
     _dispc = min(1., max(0., _dispc_numer / _dispc_denom))
     c04600 = _prexmp * (1. - _dispc)
-    return (c02650, c00100, _agierr, _posagi, _ywossbe, _ywossbc, _prexmp,
-            c04600)
+    return (c02650, c00100, _posagi, _prexmp, c04600)
 
 
 @iterate_jit(nopython=True, puf=True)
@@ -390,9 +386,8 @@ def AMED(_fica, e00200, MARS, AMED_thd, _sey, AMED_trt,
 
 
 @iterate_jit(nopython=True)
-def StdDed(DSI, _earned, STD, p04470, e00100, e60000, age_head, age_spouse,
-           MARS, MIDR, e15360, blind_head, blind_spouse, _exact, e04200,
-           STD_Aged, f6251):
+def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
+           MARS, MIDR, e15360, blind_head, blind_spouse, _exact, e04200):
     """
     StdDed function:
 
@@ -447,10 +442,6 @@ def StdDed(DSI, _earned, STD, p04470, e00100, e60000, age_head, age_spouse,
             c04100 = STD[MARS - 1]
     # Add motor vehicle tax to standard deduction
     c04100 = c04100 + e15360
-    # ??
-    x04500 = 0.
-    if f6251 == 0 and p04470 == 0:
-        x04500 = e00100 - e60000
     # Calculate extra standard deduction for aged and blind
     _extrastd = blind_head + blind_spouse
     if age_head >= 65:
@@ -466,7 +457,7 @@ def StdDed(DSI, _earned, STD, p04470, e00100, e60000, age_head, age_spouse,
     _standard = c04100 + c04200
     if (MARS == 3 or MARS == 6) and (MIDR == 1):
         _standard = 0.
-    return (_standard, c04200, c15200, c15100, x04500, c04100)
+    return (_standard, c04200, c15200, c15100, c04100)
 
 
 @iterate_jit(nopython=True)
@@ -768,24 +759,11 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
     AMTI function: ...
     """
     # pylint: disable=too-many-statements,too-many-branches
-
-    # if e62720 != 0 and e24517 > 0:
-    #    x62720 = e62720 - e24517
     c62720 = c24517 + x62720
-    # if e60260 != 0 and e00700 > 0:
-    #    x60260 = e60260 - e00700
     c60260 = e00700
-    # QUESTION: c63100 variable is reassigned below before use, is this a BUG?
-    c63100 = max(0., _taxbc - e07300)
     c60200 = min((1 - ID_Medical_HC) * c17000, 0.025 * _posagi)
-    # if e60240 != 0 and e18300 > 0:
-    #    x60240 = e60240 - e18300
     c60240 = c18300 + x60240
-    # if e60220 != 0 and e20800 > 0:
-    #    x60220 = e60220 - e20800
     c60220 = (1 - ID_Miscellaneous_HC) * c20800 + x60220
-    # if e60130 != 0 and e21040 > 0:
-    #    x60130 = e60130 - e21040
     c60130 = c21040 + x60130
     c62730 = e24515
     if FDED == 2:
