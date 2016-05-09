@@ -4,7 +4,6 @@ run;
 data outdata;
 set indata;
 %INIT;
-* NOTE: _cmbtp is set to zero in INIT even though _puf==1 because f6251==0;
 _puf = 0;
 _agep = age_head;
 _ages = age_spouse;

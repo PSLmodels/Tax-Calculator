@@ -4,14 +4,14 @@
 # NOTE: taxdiff.awk file must be in same directory as this taxdiffs.tcl file.
 # USAGE: tclsh taxdiffs.tcl [--ovar4 | --taxcalc] 1st-out-file 2nd-out-file
 # WHERE --ovar4 option computes differences only for output variable 4
-#    OR --taxcalc option skips output variables not produced by SAS TAXCALC
+#    OR --taxcalc option skips output variables not produced by taxcalc.sas
 
 proc usage {} {
     set args "\[--ovar4 | --taxcalc\] 1st-out-file 2nd-out-file"
     puts stderr "USAGE: tclsh taxdiffs.tcl $args"
     set details "computes diffs only for output variable 4"
     puts stderr "       WHERE using --ovar4 option $details"
-    set details "skips output not produced by SAS TAXCALC"
+    set details "skips output not produced by taxcalc.sas"
     puts stderr "          OR using --taxcalc option $details"
 }
 
