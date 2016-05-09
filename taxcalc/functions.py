@@ -1261,7 +1261,7 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
 @iterate_jit(nopython=True)
 def AddCTC(_nctcr, _precrd, _earned, c07220, _fica_was,
            _exact, e82880, ACTC_Income_thd, ACTC_rt,
-           ALD_SelfEmploymentTax_HC, e03260, e09800, c59660, e11200,
+           ALD_SelfEmploymentTax_HC, c03260, e09800, c59660, e11200,
            e11070, e82915, e82940, ACTC_ChildNum):
     """
     AddCTC function: calculates Additional Child Tax Credit
@@ -1295,7 +1295,7 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, _fica_was,
     # Part II of 2005 form 8812
     if _nctcr >= ACTC_ChildNum and c82890 < c82935:
         c82900 = 0.5 * _fica_was
-        c82905 = (1. - ALD_SelfEmploymentTax_HC) * e03260 + e09800
+        c82905 = (1. - ALD_SelfEmploymentTax_HC) * c03260 + e09800
         c82910 = c82900 + c82905
         c82915 = c59660 + e11200
         c82920 = max(0., c82910 - c82915)
