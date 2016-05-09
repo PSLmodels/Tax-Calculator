@@ -22,7 +22,7 @@ import copy
 @iterate_jit(nopython=True)
 def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
             e11055, e00250, e30100, FICA_ss_trt, FICA_mc_trt,
-            e00900p, e00900s, e02100p, e02100s):
+            e00900p, e00900s, e02100p, e02100s, e03260, _exact):
     """
     EI_FICA function: computes total earned income and regular FICA taxes.
     """
@@ -61,6 +61,8 @@ def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
     # compute AGI deduction for "employer share" of self-employment FICA taxes
     c09400 = fica_ss_sey_p + fica_ss_sey_s + fica_mc_sey_p + fica_mc_sey_s
     c03260 = 0.5 * c09400  # half of c09400 represents the "employer share"
+    if _exact == 1:
+        c03260 = e03260
 
     # compute _earned
     c11055 = e11055
@@ -70,8 +72,8 @@ def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
 
 
 @iterate_jit(nopython=True)
-def Adj(e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260, c03260,
-        e03270, e03300, e03400, e03500, e03280, e03900, e04000, _exact,
+def Adj(e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, c03260,
+        e03270, e03300, e03400, e03500, e03280, e03900, e04000,
         e03700, e03220, e03230, e03240, e03290, ALD_StudentLoan_HC,
         ALD_SelfEmploymentTax_HC, ALD_SelfEmp_HealthIns_HC, ALD_KEOGH_SEP_HC,
         ALD_EarlyWithdraw_HC, ALD_Alimony_HC):
@@ -93,6 +95,8 @@ def Adj(e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260, c03260,
         e03230 : Education credit adjustments
 
         e03240 : Domestic Production Activity Deduction
+
+        c03260 : Self employed payroll tax deduction
 
         e03270 : Self employed health insurance deduction
 
@@ -130,9 +134,7 @@ def Adj(e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, e03260, c03260,
     """
     # Form 2555: Foreign earned income
     _feided = max(e35300_0, e35600_0 + e35910_0)
-    if _exact == 1:
-        c03260 = e03260
-    # For 1040: adjustments
+    # Form 1040: adjustments
     c02900 = (e03150 + (1 - ALD_StudentLoan_HC) * e03210 + e03600 +
               (1 - ALD_SelfEmploymentTax_HC) * c03260 +
               (1 - ALD_SelfEmp_HealthIns_HC) * e03270 +
