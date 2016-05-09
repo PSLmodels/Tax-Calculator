@@ -645,32 +645,17 @@ def test_order_of_cpi_and_level_reforms():
         assert mte[2017 - syr] == 500000
 
 
-def test_same_reform_expressed_two_ways():
+def test_misspecified_reforms():
     """
-    Test that two ways of specifying the same reform produce the same results.
+    Demonstrate pitfalls of careless specification of policy reforms.
     """
-    # specify the same reform in two different ways
+    # specify apparently the same reform in two different ways, forgetting
+    # that Python dictionaries have unique keys
     reform1 = {2016: {'_SS_Earnings_c': [500000],
                       '_II_em': [9000]}}
     reform2 = {2016: {'_SS_Earnings_c': [500000]},
                2016: {'_II_em': [9000]}}
-    # implement the two reforms in separate Policy objects
-    syr = 2013
-    ppo1 = Policy(start_year=syr)
-    ppo1.implement_reform(reform1)
-    ppo2 = Policy(start_year=syr)
-    ppo2.implement_reform(reform2)
-    # confirm reformed parameter values are the same under the two reforms
-    mte1 = ppo1._SS_Earnings_c
-    mte2 = ppo2._SS_Earnings_c
-    for cyr in range(syr, 10):
-        assert mte1[cyr - syr] == mte2[cyr - syr]
-    iiem1 = ppo1._II_em
-    iiem2 = ppo2._II_em
-    for cyr in range(syr, 10):
-        assert iiem1[cyr - syr] == iiem2[cyr - syr]
-    # confirm unreformed parameter values are the same under the two reforms
-    amtem1 = ppo1._AMT_em
-    amtem2 = ppo2._AMT_em
-    for cyr in range(syr, 10):
-        assert amtem1[cyr - syr] == amtem2[cyr - syr]
+    # these two reform dictionaries are not the same: the second
+    # 2016 key:value pair in reform2 (2016:{'_II_em...}) overwrites and
+    # replaces the first 2016 key:value pair in reform2 (2016:{'_SS_E...})
+    assert not reform1 == reform2
