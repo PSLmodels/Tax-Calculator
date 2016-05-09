@@ -357,6 +357,8 @@ def test_same_reform_expressed_two_ways_result():
     reform2 = {2017: {'_STD': [[0, 0, 0, 0, 0, 0, 0]]},
                2017: {'_EITC_MinEligAge': [26]}
                }
+    print reform1
+    print reform2
     # specify two separate policies
     policy_1 = Policy()
     policy_2 = Policy()
