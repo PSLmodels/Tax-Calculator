@@ -171,22 +171,24 @@ the **b13**, **c13**, and **d13** samples represent not only differences
 between `taxcalc.sas` and Tax-Calculator, but also differences between
 `taxcalc.sas` and Internet TAXSIM.
 
-## Comparison using 2009 `puf.csv` input
+## Comparison using modified 2009 `puf.csv` input
 
 This comparison, which was conducted beginning in May 2016, involves
-using the 2009 `puf.csv` file as input to both the `inctax.py`
-interface to Tax-Calculator and the TAXCALC-SAS program
-(`taxcalc.sas`).  This input file, which contains filing units from
-the 2009 IRS-SOI PUF and CPS units to represent non-filers, contains
-219,814 units and a much wider range of input variables than the
-samples described above.
+using a modified version of the 2009 `puf.csv` file as input to both
+the `inctax.py` interface to Tax-Calculator and the TAXCALC-SAS program
+(`taxcalc.sas`).  The modifications, which are performed by the `pufprep.py`
+script, are necessary to avoid spurious income tax differences casued by
+the incomplete payroll tax logic in TAXCALC-SAS.  The modified file, which
+contains filing units from the 2009 IRS-SOI PUF and CPS units to represent
+non-filers, contains 219,814 units and a much wider range of input variables
+than the samples described above.
 
 The four-step cross-model-comparison work flow describe above is
-implemented as follows in this case.  The `puf.csv` file is copied
-to the current directory and serves as in INPUT file, so there is
-nothing else to do for step 1.  Step 2 is accomplished by these
-commands:
+implemented as follows in this case.  Copy the `puf.csv` file to the
+current directory with the name `pufraw.csv`.  Steps 1 and 2 are then
+accomplished by these commands:
 ```
+$ python pufprep.py pufraw.csv puf.csv
 $ python ../../inctax.py puf.csv 2013
 $ mv puf-13.out-inctax py-out
 ```
@@ -196,4 +198,5 @@ Step 4 is accomplished by the following commands:
 ```
 $ python sas2out.py puf.out-sas sas-out
 $ tclsh ../validation/taxdiffs.tcl --taxcalc py-out sas-out > puf-13.taxdiffs
+$ diff puf-13.taxdiffs puf-13.taxdifferences
 ```
