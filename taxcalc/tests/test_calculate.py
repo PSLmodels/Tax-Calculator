@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import numpy as np
-from numpy.testing import assert_allclose
+from numpy.testing import assert_allclose, assert_array_almost_equal
 import pandas as pd
 import tempfile
 import pytest
@@ -14,6 +14,8 @@ from taxcalc import create_distribution_table, create_difference_table
 # use 1991 PUF-like data to emulate current puf.csv, which is private
 TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91taxdata.csv.gz')
 TAXDATA = pd.read_csv(TAXDATA_PATH, compression='gzip')
+PUF_PATH = os.path.join(CUR_PATH, '..', '..', 'puf.csv')
+PUFDATA = pd.read_csv(PUF_PATH,)
 WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
 WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
@@ -322,6 +324,37 @@ def test_make_Calculator_increment_years_first():
     exp_II_em = np.array([3900, 3950, 5000, 6000, 6000])
     assert_allclose(calc.policy._STD_Aged, exp_STD_Aged, atol=0.5, rtol=0.0)
     assert_allclose(calc.policy._II_em, exp_II_em, atol=0.5, rtol=0.0)
+
+
+def test_ID_hc_vs_surtax():
+    policy1 = Policy()
+    puf1 = Records(PUFDATA, start_year=2009)
+    calc1 = Calculator(policy=policy1, records=puf1)
+
+    policy2 = Policy()
+    puf2 = Records(PUFDATA, start_year=2009)
+    calc2 = Calculator(policy=policy2, records=puf2)
+
+    reform1 = {2013: {'_ID_Medical_HC': [1],
+                      '_ID_StateLocalTax_HC': [1],
+                      '_ID_RealEstate_HC': [1],
+                      '_ID_Casualty_HC': [1],
+                      '_ID_Miscellaneous_HC': [1],
+                      '_ID_InterestPaid_HC': [1],
+                      '_ID_Charity_HC': [1]}}
+
+    reform2 = {2013: {'_ID_BenefitSurtax_crt': [0]}}
+
+    policy1.implement_reform(reform1)
+    policy2.implement_reform(reform2)
+
+    calc1.calc_all()
+    calc2.calc_all()
+
+    print calc1.records.RECID[calc1.records._combined < calc2.records._combined - 0.1]
+
+    assert_array_almost_equal(calc1.records._combined, calc2.records._combined,
+                              decimal=2)
 
 
 def test_Calculator_using_nonstd_input(rawinputfile):
