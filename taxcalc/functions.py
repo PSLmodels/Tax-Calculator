@@ -22,7 +22,7 @@ import copy
 @iterate_jit(nopython=True)
 def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
             e11055, e00250, e30100, FICA_ss_trt, FICA_mc_trt,
-            e00900p, e00900s, e02100p, e02100s, e03260, _exact):
+            e00900p, e00900s, e02100p, e02100s):
     """
     EI_FICA function: computes total earned income and regular FICA taxes.
     """
@@ -61,8 +61,6 @@ def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
     # compute AGI deduction for "employer share" of self-employment FICA taxes
     c09400 = fica_ss_sey_p + fica_ss_sey_s + fica_mc_sey_p + fica_mc_sey_s
     c03260 = 0.5 * c09400  # half of c09400 represents the "employer share"
-    if _exact == 1:
-        c03260 = e03260
 
     # compute _earned
     c11055 = e11055

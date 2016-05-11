@@ -358,7 +358,6 @@ class Records(object):
         self.e03210 *= ATXPY
         self.e03220 *= ATXPY
         self.e03230 *= ATXPY
-        self.e03260 *= ASCHCI
         self.e03270 *= ACPIM
         self.e03240 *= AGDPN
         self.e03290 *= ACPIM
