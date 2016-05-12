@@ -1343,16 +1343,12 @@ def C1040(e07400, e07200, c07220, c07230, c07300, c07240,
     c07100 = min(c07100, c05800)
     # Tax After credits 1040 line 52
     c08795 = max(0., c05800 - c07100)  # SAS @1277
-    if puf:
-        e08795 = e08800
-    else:
-        e08795 = 0.
     # Tax before refundable credits
     _othertax = e09900 + c09400 + e09800 + e10000 + e10100 + NIIT
     c09200 = _othertax + c08795
     # assuming year (FLPDYR) > 2009
     c09200 = c09200 + e09700 + e10050 + e10075 + e09805 + e09710 + e09720
-    return (c07100, c07970, y07100, x07100, c08795, e08795, c09200, _othertax)
+    return (c07100, c07970, y07100, x07100, c08795, c09200, _othertax)
 
 
 @iterate_jit(nopython=True)
