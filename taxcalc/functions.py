@@ -387,7 +387,7 @@ def AMED(_fica, e00200, MARS, AMED_thd, _sey, AMED_trt,
 
 @iterate_jit(nopython=True)
 def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
-           MARS, MIDR, e15360, blind_head, blind_spouse, _exact, e04200):
+           MARS, MIDR, blind_head, blind_spouse, _exact, e04200):
     """
     StdDed function:
 
@@ -440,8 +440,6 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
             c04100 = 0.
         else:
             c04100 = STD[MARS - 1]
-    # Add motor vehicle tax to standard deduction
-    c04100 = c04100 + e15360
     # Calculate extra standard deduction for aged and blind
     _extrastd = blind_head + blind_spouse
     if age_head >= 65:

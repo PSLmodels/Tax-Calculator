@@ -50,7 +50,7 @@ Tax-Calculator,0.1,0.1,0.1,0.1
 EXEMPTION
 ""
 Increase personal and dependent exemption amount by 1000
-Tax-Calculator,-32.8,-32.2,-33.3,-34.5
+Tax-Calculator,-32.9,-32.3,-33.3,-34.5
 ""
 Increase personal exemption phaseout starting AGI by 10,000
 Tax-Calculator,-0.1,-0.1,-0.1,-0.1
@@ -127,7 +127,7 @@ Budget Options,5,5,5,6
 REGULAR TAXES
 ""
 Increase each bracket rate by 1%
-Tax-Calculator,56.2,58.7,61.5,63.9
+Tax-Calculator,56.3,58.8,61.5,64.0
 Budget Options,56,60,65,69
 ""
 Increase top 4 rates by 1%
@@ -156,7 +156,7 @@ Tax-Calculator,2.4,2.6,2.7,2.9
 Alternative Minimum Tax
 ""
 Increase AMT rate under the surtax threshold by 2 pts
-Tax-Calculator,24.8,26.7,28.3,29.9
+Tax-Calculator,24.8,26.6,28.3,29.9
 ""
 Alternative Minimum Tax
 ""
