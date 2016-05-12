@@ -64,8 +64,8 @@ class Calculator(object):
         XYZD(self.policy, self.records)
         NonGain(self.policy, self.records)
         TaxGains(self.policy, self.records)
-        AMTI(self.policy, self.records)
         MUI(self.policy, self.records)
+        AMTI(self.policy, self.records)
 
     def calc_one_year(self):
         EI_FICA(self.policy, self.records)

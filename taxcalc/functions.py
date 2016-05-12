@@ -326,7 +326,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
     charity_floor = ID_Charity_frt * _posagi  # frt is zero in present law
     c19700 = max(0., c19700 - charity_floor)
     # Gross Itemized Deductions
-    c21060 = (e20900 + (1 - ID_Medical_HC) * c17000 +
+    c21060 = (e20900 + (1 - ID_Medical_HC) * c17000 + c18300 +
               (1 - ID_InterestPaid_HC) * c19200 +
               (1 - ID_Charity_HC) * c19700 +
               (1 - ID_Casualty_HC) * c20500 +
@@ -334,7 +334,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
               e21000 + e21010)
     # Limitations on deductions excluding medical, charity etc
     _phase2_i = ID_ps[MARS - 1]
-    _nonlimited = ((1 - ID_Medical_HC) * c17000 + c18300 +
+    _nonlimited = ((1 - ID_Medical_HC) * c17000 +
                    (1 - ID_Casualty_HC) * c20500 +
                    e19570 + e21010 + e20900)
     _limitratio = _phase2_i
@@ -746,7 +746,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
          e60720, e60430, e60500, e60340, e60680, e60600, e60405,
          e60440, e60420, e60410, e61400, e60660, e60480, c21060,
          e62000, e60250, _cmp, _standard, p04470,
-         f6251, c00100, e60000, t04470, e17500,
+         f6251, c00100, e60000, t04470, c17000,
          c04470, c20800, c21040, e04805, e18800,
          c02700, real_estate, _statax, e18900,
          e24515, x60130, e18500, e18400, ID_BenefitSurtax_crt,
@@ -762,14 +762,6 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
     AMTI function: ...
     """
     # pylint: disable=too-many-statements,too-many-branches
-    c17750 = ID_Medical_frt * _posagi
-    c17000 = max(0., e17500 - c17750)
-    # State and Local Income Tax, or Sales Tax
-    _statax = max(e18400, 0.)
-    # Other Taxes (including state and local)
-    real_estate = e18500
-    c18300 = (1 - ID_StateLocalTax_HC) * _statax + (1 - ID_RealEstate_HC) *\
-        real_estate + e18800 + e18900
     c62720 = c24517 + x62720
     c60260 = e00700
     c60200 = min((1 - ID_Medical_HC) * c17000, 0.025 * _posagi)
