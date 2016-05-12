@@ -1323,13 +1323,13 @@ def F5405(pol, rec):
     return pd.DataFrame(data=np.column_stack((c64450,)), columns=['c64450'])
 
 
-@iterate_jit(nopython=True, puf=True)
+@iterate_jit(nopython=True)
 def C1040(e07400, e07200, c07220, c07230, c07300, c07240,
           e07260, c07970, x07400, e09720, c07600,
           e07500, e07700, p08000, e08001, e07960,
-          e07980, c05800, e08800, e09900, c09400, e09800,
+          e07980, c05800, e09900, c09400, e09800,
           e10000, e10100, e09700, e10050, e10075, e09805, e09710,
-          c07180, NIIT, puf):
+          c07180, NIIT):
     """
     C1040 function: ...
     """
