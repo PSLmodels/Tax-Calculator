@@ -746,14 +746,14 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
          e60720, e60430, e60500, e60340, e60680, e60600, e60405,
          e60440, e60420, e60410, e61400, e60660, e60480, c21060,
          e62000, e60250, _cmp, _standard, p04470,
-         f6251, c00100, e60000, t04470,
-         c04470, c17000, c20800, c21040, e04805,
-         c02700, real_estate, _statax,
+         f6251, c00100, e60000, t04470, e17500,
+         c04470, c20800, c21040, e04805, e18800,
+         c02700, real_estate, _statax, e18900,
          e24515, x60130, e18500, e18400,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
          MARS, _sep, AMT_Child_em, AMT_CG_rt1,
          AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516,
-         c24520, c05700, e05800, e05100,
+         c24520, c05700, e05800, e05100, ID_Medical_frt,
          age_head, KT_c_Age, e62900, AMT_thd_MarriedS, _earned, e62600,
          AMT_em, AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer,
          _cmbtp_standard, ID_StateLocalTax_HC, ID_Medical_HC,
@@ -762,6 +762,14 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
     AMTI function: ...
     """
     # pylint: disable=too-many-statements,too-many-branches
+    c17750 = ID_Medical_frt * _posagi
+    c17000 = max(0., e17500 - c17750)
+    # State and Local Income Tax, or Sales Tax
+    _statax = max(e18400, 0.)
+    # Other Taxes (including state and local)
+    real_estate = e18500
+    c18300 = (1 - ID_StateLocalTax_HC) * _statax + (1 - ID_RealEstate_HC) *\
+        real_estate + e18800 + e18900
     c62720 = c24517 + x62720
     c60260 = e00700
     c60200 = min((1 - ID_Medical_HC) * c17000, 0.025 * _posagi)
