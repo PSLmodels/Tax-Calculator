@@ -762,6 +762,15 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
     AMTI function: ...
     """
     # pylint: disable=too-many-statements,too-many-branches
+    if ID_BenefitSurtax_crt != 1:
+        ID_Medical_HC = 1
+        ID_Miscellaneous_HC = 1
+        ID_StateLocalTax_HC = 1
+        ID_RealEstate_HC = 1
+    # State and Local Income Tax, or Sales Tax
+    _statax = max(e18400, 0.)
+    # Other Taxes (including state and local)
+    real_estate = e18500
     c62720 = c24517 + x62720
     c60260 = e00700
     c60200 = min((1 - ID_Medical_HC) * c17000, 0.025 * _posagi)
@@ -796,8 +805,6 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
             _cmbtp = _cmbtp_itemizer
         else:
             _cmbtp = 0.
-        real_estate = e18500
-        _statax = max(0., e18400)
         c62100 = (c00100 - c04470 +
                   max(0., min((1 - ID_Medical_HC) * c17000, 0.025 * c00100)) +
                   (1 - ID_StateLocalTax_HC) * _statax +
