@@ -351,8 +351,6 @@ def test_ID_hc_vs_surtax():
     calc1.calc_all()
     calc2.calc_all()
 
-    print calc1.records.RECID[calc1.records._combined < calc2.records._combined - 0.1]
-
     assert_array_almost_equal(calc1.records._combined, calc2.records._combined,
                               decimal=2)
 

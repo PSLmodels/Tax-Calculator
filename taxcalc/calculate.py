@@ -85,14 +85,14 @@ class Calculator(object):
         self.records.c04470 = np.zeros(self.records.dim)
         self.records.c21060 = np.zeros(self.records.dim)
         self.TaxInc_to_AMTI()
-        std_taxes = copy.deepcopy(self.records._iitax)
+        std_taxes = copy.deepcopy(self.records.c05800)
         # Set standard deduction to zero, calculate taxes w/o
         # standard deduction, and store AMT + Regular Tax
         self.records._standard = np.zeros(self.records.dim)
         self.records.c21060 = item_no_limit
         self.records.c04470 = item
         self.TaxInc_to_AMTI()
-        item_taxes = copy.deepcopy(self.records._iitax)
+        item_taxes = copy.deepcopy(self.records.c05800)
         # Replace standard deduction with zero where the taxpayer
         # would be better off itemizing
         self.records._standard[:] = np.where(item_taxes < std_taxes,
@@ -125,9 +125,8 @@ class Calculator(object):
         ExpandIncome(self.policy, self.records)
 
     def calc_all(self):
-        nobenefits_calc = copy.deepcopy(self)
         self.calc_one_year()
-        BenefitSurtax(self, nobenefits_calc)
+        self.BenefitSurtax()
 
     def increment_year(self):
         if self.growth.factor_adjustment != 0:
@@ -160,6 +159,40 @@ class Calculator(object):
         for i in range(iteration):
             self.increment_year()
         assert self.records.current_year == year
+
+    def BenefitSurtax(self):
+        """
+        BenefitSurtax function: ...
+        """
+        nobenefits_calc = copy.deepcopy(self)
+        if self.policy.ID_BenefitSurtax_crt != 1.:
+                    # hard code the reform
+            nobenefits_calc.policy.ID_Medical_HC = \
+                int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[0])
+            nobenefits_calc.policy.ID_StateLocalTax_HC = \
+                int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[1])
+            nobenefits_calc.policy.ID_RealEstate_HC = \
+                int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[2])
+            nobenefits_calc.policy.ID_casualty_HC = \
+                int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[3])
+            nobenefits_calc.policy.ID_Miscellaneous_HC = \
+                int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[4])
+            nobenefits_calc.policy.ID_InterestPaid_HC = \
+                int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[5])
+            nobenefits_calc.policy.ID_Charity_HC = \
+                int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[6])
+            nobenefits_calc.calc_one_year()
+            # pylint: disable=protected-access
+            tax_diff = np.where(
+                nobenefits_calc.records._iitax - self.records._iitax > 0.,
+                nobenefits_calc.records._iitax - self.records._iitax,
+                0.)
+            surtax_cap = nobenefits_calc.policy.ID_BenefitSurtax_crt *\
+                nobenefits_calc.records.c00100
+            _surtax = self.policy.ID_BenefitSurtax_trt *\
+                np.where(tax_diff > surtax_cap, tax_diff - surtax_cap, 0.)
+            self.records._iitax += _surtax
+            self.records._combined = self.records._iitax + self.records._fica
 
     @property
     def current_year(self):
