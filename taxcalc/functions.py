@@ -291,10 +291,11 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
     c17750 = ID_Medical_frt * _posagi
     c17000 = max(0., e17500 - c17750)
     # State and Local Income Tax, or Sales Tax
-    _statax = (1 - ID_StateLocalTax_HC) * max(e18400, 0.)
+    _statax = max(e18400, 0.)
     # Other Taxes (including state and local)
-    real_estate = (1 - ID_RealEstate_HC) * e18500
-    c18300 = _statax + real_estate + e18800 + e18900
+    real_estate = e18500
+    c18300 = (1 - ID_StateLocalTax_HC) * _statax + (1 - ID_RealEstate_HC) *\
+        real_estate + e18800 + e18900
     # Casualty
     if e20500 > 0:
         c37703 = e20500 + ID_Casualty_frt * _posagi
@@ -325,7 +326,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
     charity_floor = ID_Charity_frt * _posagi  # frt is zero in present law
     c19700 = max(0., c19700 - charity_floor)
     # Gross Itemized Deductions
-    c21060 = (e20900 + (1 - ID_Medical_HC) * c17000 + c18300 +
+    c21060 = (e20900 + (1 - ID_Medical_HC) * c17000 +
               (1 - ID_InterestPaid_HC) * c19200 +
               (1 - ID_Charity_HC) * c19700 +
               (1 - ID_Casualty_HC) * c20500 +
@@ -333,7 +334,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
               e21000 + e21010)
     # Limitations on deductions excluding medical, charity etc
     _phase2_i = ID_ps[MARS - 1]
-    _nonlimited = ((1 - ID_Medical_HC) * c17000 +
+    _nonlimited = ((1 - ID_Medical_HC) * c17000 + c18300 +
                    (1 - ID_Casualty_HC) * c20500 +
                    e19570 + e21010 + e20900)
     _limitratio = _phase2_i
@@ -346,7 +347,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
         c04470 = c21060 - c21040
     else:
         c21040 = 0.
-    return (c17750, c17000, _statax, c18300, c37703, c20500,
+    return (c17750, c17000, _statax, c18300, c37703, c20500, real_estate,
             c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
             _nonlimited, _limitratio, c04470, c21040)
 
@@ -746,9 +747,9 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
          e60440, e60420, e60410, e61400, e60660, e60480, c21060,
          e62000, e60250, _cmp, _standard, p04470,
          f6251, c00100, e60000, t04470,
-         c04470, c17000, e18500, c20800, c21040, e04805,
-         c02700,
-         e24515, x60130, e18400,
+         c04470, c17000, c20800, c21040, e04805,
+         c02700, real_estate, _statax,
+         e24515, x60130, e18500, e18400,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
          MARS, _sep, AMT_Child_em, AMT_CG_rt1,
          AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516,
@@ -795,11 +796,12 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
             _cmbtp = _cmbtp_itemizer
         else:
             _cmbtp = 0.
-        real_estate = (1 - ID_RealEstate_HC) * e18500
-        income_sales = (1 - ID_StateLocalTax_HC) * max(0., e18400)
+        real_estate = e18500
+        _statax = max(0., e18400)
         c62100 = (c00100 - c04470 +
                   max(0., min((1 - ID_Medical_HC) * c17000, 0.025 * c00100)) +
-                  income_sales + real_estate -
+                  (1 - ID_StateLocalTax_HC) * _statax +
+                  (1 - ID_RealEstate_HC) * real_estate -
                   c60260 + (1 - ID_Miscellaneous_HC) * c20800 - c21040)
         c62100 += _cmbtp
     if puf and _standard > 0:
@@ -877,7 +879,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
         c62100 = 0.
     c05800 = _taxbc + c63200
     return (c62720, c60260, c63100, c60200, c60240, c60220, c60000,
-            c60130, c62730, _addamt, c62100,
+            c60130, c62730, _addamt, c62100, c63200,
             _amtsepadd, c62600, c62700, c62760,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
             _ngamty, c62745, _tamt2, _amt5pc, _amt15pc,
