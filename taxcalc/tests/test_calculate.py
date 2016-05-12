@@ -14,8 +14,6 @@ from taxcalc import create_distribution_table, create_difference_table
 # use 1991 PUF-like data to emulate current puf.csv, which is private
 TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91taxdata.csv.gz')
 TAXDATA = pd.read_csv(TAXDATA_PATH, compression='gzip')
-PUF_PATH = os.path.join(CUR_PATH, '..', '..', 'puf.csv')
-PUFDATA = pd.read_csv(PUF_PATH,)
 WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
 WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
@@ -328,11 +326,11 @@ def test_make_Calculator_increment_years_first():
 
 def test_ID_hc_vs_surtax():
     policy1 = Policy()
-    puf1 = Records(PUFDATA, start_year=2009)
+    puf1 = Records(TAXDATA, start_year=2009)
     calc1 = Calculator(policy=policy1, records=puf1)
 
     policy2 = Policy()
-    puf2 = Records(PUFDATA, start_year=2009)
+    puf2 = Records(TAXDATA, start_year=2009)
     calc2 = Calculator(policy=policy2, records=puf2)
 
     reform1 = {2013: {'_ID_Medical_HC': [1],
