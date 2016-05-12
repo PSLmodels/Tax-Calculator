@@ -125,8 +125,9 @@ class Calculator(object):
         ExpandIncome(self.policy, self.records)
 
     def calc_all(self):
+        nobenefits_calc = copy.deepcopy(self)
         self.calc_one_year()
-        BenefitSurtax(self)
+        BenefitSurtax(self, nobenefits_calc)
 
     def increment_year(self):
         if self.growth.factor_adjustment != 0:
