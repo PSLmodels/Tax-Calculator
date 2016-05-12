@@ -173,7 +173,7 @@ class Calculator(object):
                 int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[1])
             nobenefits_calc.policy.ID_RealEstate_HC = \
                 int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[2])
-            nobenefits_calc.policy.ID_casualty_HC = \
+            nobenefits_calc.policy.ID_Casualty_HC = \
                 int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[3])
             nobenefits_calc.policy.ID_Miscellaneous_HC = \
                 int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[4])
