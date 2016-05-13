@@ -337,9 +337,6 @@ class Records(object):
         self.e00900p[:] = np.where(self.e00900p >= 0,
                                    self.e00900p * ASCHCI,
                                    self.e00900p * ASCHCL)
-        self.e01000[:] = np.where(self.e01000 >= 0,
-                                  self.e01000 * ACGNS,
-                                  self.e01000)
         self.e01100 *= ACGNS
         self.e01200 *= ACGNS
         self.e01400 *= ATXPY
@@ -396,7 +393,6 @@ class Records(object):
         self.p22250 *= ACGNS
         self.p23250 *= ACGNS
         self.e24515 *= ACGNS
-        self.e24516 *= ACGNS
         self.e24518 *= ACGNS
         # SCHEDULE E
         self.p25470 *= ASCHEI
@@ -409,9 +405,6 @@ class Records(object):
         self.e60000 *= ATXPY
         self.e62100 *= ATXPY
         self.e62900 *= ATXPY
-        self.e62720 *= ATXPY
-        self.e62730 *= ATXPY
-        self.e62740 *= ATXPY
         self.e87530 *= ATXPY
         self.p87521 *= ATXPY
         self._cmbtp_itemizer *= ATXPY
