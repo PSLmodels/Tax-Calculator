@@ -750,7 +750,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
          MARS, _sep, AMT_Child_em, AMT_CG_rt1,
          AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516,
-         c24520, c05700, e05800, e05100,
+         c24520, c05700,
          age_head, KT_c_Age, e62900, AMT_thd_MarriedS, _earned, e62600,
          AMT_em, AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer,
          _cmbtp_standard, ID_StateLocalTax_HC, ID_Medical_HC,
@@ -867,8 +867,6 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
     c63100 = max(0., c63100)
     c63200 = max(0., c63000 - c63100)
     c09600 = c63200
-    # no _othtax in SAS
-    _othtax = e05800 - (e05100 + c09600)
     c62100_everyone = c62100
     if c09600 == 0. and e60000 == 0.:
         c60000 = 0.
@@ -880,7 +878,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
             _ngamty, c62745, _tamt2, _amt5pc, _amt15pc,
             _amt25pc, c62747, c62755, c62770, _amt20pc, c62800,
-            c09600, _othtax, c05800, _cmbtp, c62100_everyone)
+            c09600, c05800, _cmbtp, c62100_everyone)
 
 
 @iterate_jit(nopython=True)
