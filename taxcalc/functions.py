@@ -16,7 +16,6 @@ import pandas as pd
 import math
 import numpy as np
 from .decorators import iterate_jit, jit
-import copy
 
 
 @iterate_jit(nopython=True)
