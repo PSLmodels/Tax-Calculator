@@ -264,9 +264,11 @@ class Records(object):
             msg = ('Records.constructor start_year is neither None nor '
                    'an integer')
             raise ValueError(msg)
-        if consider_imputations and self.current_year == Records.PUF_YEAR:
-            self._impute_variables()
-            self._extrapolate_2009_puf()
+        if self.current_year == Records.PUF_YEAR:
+            self._split_earnings()
+            if consider_imputations:
+                self._impute_variables()
+                self._extrapolate_2009_puf()
 
     @property
     def current_year(self):
@@ -525,13 +527,8 @@ class Records(object):
         BF = 1.0 + BF.pct_change()
         setattr(self, 'BF', BF)
 
-    def _impute_variables(self):
-        """
-        Impute variables in 2009 PUF Records data
-        """
-        self._cmbtp_itemizer = self._imputed_cmbtp_itemizer()
-        self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
-        # impute the ratio of household head in total household income
+    def _split_earnings(self):
+        # calculate the ratio of household head in total household income
         total = np.where(self.MARS == 2,
                          self.wage_head + self.wage_spouse, 0)
         earnings_split = np.where(total != 0,
@@ -543,6 +540,14 @@ class Records(object):
         self.e00900s[:] = one_minus_earnings_split * self.e00900
         self.e02100p[:] = earnings_split * self.e02100
         self.e02100s[:] = one_minus_earnings_split * self.e02100
+
+    def _impute_variables(self):
+        """
+        Impute variables in 2009 PUF Records data
+        """
+        self._cmbtp_itemizer = self._imputed_cmbtp_itemizer()
+        self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
+
 
     def _imputed_cmbtp_itemizer(self):
         """
