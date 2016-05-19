@@ -748,7 +748,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
          f6251, c00100, e60000, t04470, c17000,
          c04470, c20800, c21040, e04805,
          c02700, real_estate, _statax,
-         e24515, x60130, e18500, e18400, ID_BenefitSurtax_crt,
+         e24515, x60130, e18500, e18400,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
          MARS, _sep, AMT_Child_em, AMT_CG_rt1,
          AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516,
@@ -761,11 +761,6 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
     AMTI function: ...
     """
     # pylint: disable=too-many-statements,too-many-branches
-    if ID_BenefitSurtax_crt != 1:
-        ID_Medical_HC = 1
-        ID_Miscellaneous_HC = 1
-        ID_StateLocalTax_HC = 1
-        ID_RealEstate_HC = 1
     # State and Local Income Tax, or Sales Tax
     _statax = max(e18400, 0.)
     # Other Taxes (including state and local)
@@ -886,9 +881,9 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
     c05800 = _taxbc + c63200
     return (c62720, c60260, c63100, c60200, c60240, c60220, c60000,
             c60130, c62730, _addamt, c62100, c63200,
-            _amtsepadd, c62600, c62700, c62760,
+            _amtsepadd, c62600, c62700, c62760, _line45, _line47, _line48,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
-            _ngamty, c62745, _tamt2, _amt5pc, _amt15pc,
+            _ngamty, c62745, _tamt2, _amt5pc, _amt15pc, _line46,
             _amt25pc, c62747, c62755, c62770, _amt20pc, c62800,
             c09600, _othtax, c05800, _cmbtp, c62100_everyone)
 

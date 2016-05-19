@@ -67,32 +67,24 @@ class Calculator(object):
         MUI(self.policy, self.records)
         AMTI(self.policy, self.records)
 
-    def calc_one_year(self):
-        EI_FICA(self.policy, self.records)
-        Adj(self.policy, self.records)
-        CapGains(self.policy, self.records)
-        SSBenefits(self.policy, self.records)
-        AGI(self.policy, self.records)
-        ItemDed(self.policy, self.records)
-        AMED(self.policy, self.records)
-        StdDed(self.policy, self.records)
-        Personal_Credit(self.policy, self.records)
+    def STD_vs_ITM(self):
         # Store calculated standard deduction, calculate
         # taxes with standard deduction, store AMT + Regular Tax
-        std = copy.deepcopy(self.records._standard)
-        item = copy.deepcopy(self.records.c04470)
-        item_no_limit = copy.deepcopy(self.records.c21060)
-        self.records.c04470 = np.zeros(self.records.dim)
-        self.records.c21060 = np.zeros(self.records.dim)
-        self.TaxInc_to_AMTI()
-        std_taxes = copy.deepcopy(self.records.c05800)
+        copyself = copy.deepcopy(self)
+        std = copy.deepcopy(copyself.records._standard)
+        item = copy.deepcopy(copyself.records.c04470)
+        item_no_limit = copy.deepcopy(copyself.records.c21060)
+        copyself.records.c04470 = np.zeros(copyself.records.dim)
+        copyself.records.c21060 = np.zeros(copyself.records.dim)
+        copyself.TaxInc_to_AMTI()
+        std_taxes = copy.deepcopy(copyself.records.c05800)
         # Set standard deduction to zero, calculate taxes w/o
         # standard deduction, and store AMT + Regular Tax
-        self.records._standard = np.zeros(self.records.dim)
-        self.records.c21060 = item_no_limit
-        self.records.c04470 = item
-        self.TaxInc_to_AMTI()
-        item_taxes = copy.deepcopy(self.records.c05800)
+        copyself.records._standard = np.zeros(copyself.records.dim)
+        copyself.records.c21060 = item_no_limit
+        copyself.records.c04470 = item
+        copyself.TaxInc_to_AMTI()
+        item_taxes = copy.deepcopy(copyself.records.c05800)
         # Replace standard deduction with zero where the taxpayer
         # would be better off itemizing
         self.records._standard[:] = np.where(item_taxes < std_taxes,
@@ -101,13 +93,26 @@ class Calculator(object):
                                           item, 0.)
         self.records.c21060[:] = np.where(item_taxes < std_taxes,
                                           item_no_limit, 0.)
+
+    def calc_one_year(self):
+        policyghost = copy.deepcopy(self.policy)
+        EI_FICA(self.policy, self.records)
+        Adj(self.policy, self.records)
+        CapGains(self.policy, self.records)
+        SSBenefits(self.policy, self.records)
+        AGI(self.policy, self.records)
+        ItemDed(policyghost, self.records)
+        AMED(self.policy, self.records)
+        StdDed(policyghost, self.records)
+        Personal_Credit(self.policy, self.records)
         # Calculate taxes with optimal itemized deduction
+        self.STD_vs_ITM()
         TaxInc(self.policy, self.records)
         XYZD(self.policy, self.records)
         NonGain(self.policy, self.records)
         TaxGains(self.policy, self.records)
         MUI(self.policy, self.records)
-        AMTI(self.policy, self.records)
+        AMTI(policyghost, self.records)
         F2441(self.policy, self.records)
         DepCareBen(self.policy, self.records)
         ExpEarnedInc(self.policy, self.records)
