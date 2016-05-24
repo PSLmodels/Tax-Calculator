@@ -110,7 +110,7 @@ class Records(object):
         'e02000', 'e02100', 'e02300', 'e02400', 'e02500', 'e03150', 'e03210',
         'e02100p', 'e02100s',
         'e03220', 'e03230', 'e03260', 'e03270', 'e03240', 'e03290',
-        'e03400', 'e03500', 'e00100', 'p04470',
+        'e03400', 'e03500', 'p04470',
         'e05100', 'e05800',
         'e07200', 'e07240', 'e07260', 'e07300',
         'e07400', 'e07600', 'p08000', 'e08800', 'e09400',
@@ -120,18 +120,17 @@ class Records(object):
         'e11580',
         'e17500', 'e18400', 'e18500',
         'e19200', 'e19550', 'e19800', 'e20100', 'e19700', 'e20550', 'e20600',
-        'e20400', 'e20800', 'e20500', 'e21040', 'p22250',
+        'e20400', 'e20500', 'p22250',
         'p23250', 'e24515', 'e24516', 'e24518',
         'p25470',
         'e26270',
         'e27200', 'e32800', 'e03300',
         'e58990',
-        'p60100', 'e60000', 'e62100', 'e62900', 'e62720', 'e62730',
+        'p60100', 'e60000', 'e62900', 'e62720', 'e62730',
         'e62740', 'p87482', 'e87487', 'e87492', 'e87497', 'p87521',
         'e87530',
         'MARS', 'MIDR', 'RECID',
         'cmbtp_standard', 'cmbtp_itemizer',
-        'wage_head', 'wage_spouse',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
         's006', 'filer'])
 
@@ -385,9 +384,7 @@ class Records(object):
         self.e20550 *= ATXPY
         self.e20600 *= ATXPY
         self.e20400 *= ATXPY
-        self.e20800 *= ATXPY
         self.e20500 *= ATXPY
-        self.e21040 *= ATXPY
         # CAPITAL GAINS
         self.p22250 *= ACGNS
         self.p23250 *= ACGNS
@@ -402,7 +399,6 @@ class Records(object):
         self.e58990 *= ATXPY
         self.p60100 *= ATXPY
         self.e60000 *= ATXPY
-        self.e62100 *= ATXPY
         self.e62900 *= ATXPY
         self.e87530 *= ATXPY
         self.p87521 *= ATXPY
