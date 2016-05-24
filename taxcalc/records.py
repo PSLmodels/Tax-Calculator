@@ -11,7 +11,6 @@ import pandas as pd
 import numpy as np
 import os
 import six
-from numba import vectorize, float64
 from pkg_resources import resource_stream, Requirement
 
 
@@ -131,6 +130,7 @@ class Records(object):
         'e62740', 'p87482', 'e87487', 'e87492', 'e87497', 'p87521',
         'e87530',
         'MARS', 'MIDR', 'RECID',
+        'cmbtp_standard', 'cmbtp_itemizer',
         'wage_head', 'wage_spouse',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
         's006', 'filer'])
@@ -233,8 +233,8 @@ class Records(object):
         '_othertax', 'e82915', 'e82940', 'NIIT',
         'c59720', '_comb', 'c07150', 'c10300', '_iitax',
         '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
-        '_amed', '_cmbtp_itemizer',
-        '_cmbtp_standard', '_expanded_income', 'c07300',
+        '_amed',
+        '_expanded_income', 'c07300',
         'c07600', 'c07240', 'c62100_everyone',
         '_surtax', '_combined', '_personal_credit'])
 
@@ -265,7 +265,6 @@ class Records(object):
                    'an integer')
             raise ValueError(msg)
         if consider_imputations and self.current_year == Records.PUF_YEAR:
-            self._impute_variables()
             self._extrapolate_2009_puf()
 
     @property
@@ -407,8 +406,8 @@ class Records(object):
         self.e62900 *= ATXPY
         self.e87530 *= ATXPY
         self.p87521 *= ATXPY
-        self._cmbtp_itemizer *= ATXPY
-        self._cmbtp_standard *= ATXPY
+        self.cmbtp_itemizer *= ATXPY
+        self.cmbtp_standard *= ATXPY
 
     def _read_data(self, data):
         """
@@ -525,34 +524,6 @@ class Records(object):
         BF = 1.0 + BF.pct_change()
         setattr(self, 'BF', BF)
 
-    def _impute_variables(self):
-        """
-        Impute variables in 2009 PUF Records data
-        """
-        self._cmbtp_itemizer = self._imputed_cmbtp_itemizer()
-        self._cmbtp_standard = self.e62100 - self.e00100 + self.e00700
-        # impute the ratio of household head in total household income
-        total = np.where(self.MARS == 2,
-                         self.wage_head + self.wage_spouse, 0)
-        earnings_split = np.where(total != 0,
-                                  self.wage_head / total, 1.)
-        one_minus_earnings_split = 1.0 - earnings_split
-        self.e00200p[:] = earnings_split * self.e00200
-        self.e00200s[:] = one_minus_earnings_split * self.e00200
-        self.e00900p[:] = earnings_split * self.e00900
-        self.e00900s[:] = one_minus_earnings_split * self.e00900
-        self.e02100p[:] = earnings_split * self.e02100
-        self.e02100s[:] = one_minus_earnings_split * self.e02100
-
-    def _imputed_cmbtp_itemizer(self):
-        """
-        Private class method calls global function defined below.
-        """
-        return imputed_cmbtp_itemizer(self.e17500, self.e00100, self.e18400,
-                                      self.e62100, self.e00700,
-                                      self.p04470, self.e21040,
-                                      self.e18500, self.e20800)
-
     def _extrapolate_2009_puf(self):
         """
         Initial year blowup factors for 2009 IRS-PUF/Census-CPS merged data.
@@ -581,23 +552,3 @@ class Records(object):
         self.BF.AIPD[year] = 1.0
         self._blowup(year)
         self.s006 = self.WT["WT" + str(year)] * 0.01
-
-
-@vectorize([float64(float64, float64, float64,
-                    float64, float64,
-                    float64, float64,
-                    float64, float64)])
-def imputed_cmbtp_itemizer(e17500, e00100, e18400,
-                           e62100, e00700,
-                           p04470, e21040,
-                           e18500, e20800):
-    """
-    Global function that calculates _cmbtp_itemizer values
-    (uses vectorize decorator to speed up calculations with NumPy arrays)
-    """
-    # pylint: disable=too-many-arguments
-    medical_limited = max(0., e17500 - max(0., e00100) * 0.075)
-    medical_adjustment = min(medical_limited, 0.025 * max(0., e00100))
-    state_adjustment = max(0, e18400)
-    return (e62100 - medical_adjustment + e00700 + p04470 + e21040 -
-            state_adjustment - e00100 - e18500 - e20800)
