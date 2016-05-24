@@ -13,6 +13,8 @@ CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy, Records, Calculator
 from taxcalc.utils import *
+import matplotlib
+import matplotlib.pyplot as plt
 
 # use 1991 PUF-like data to emulate current puf.csv, which is private
 TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91taxdata.csv.gz')
@@ -309,6 +311,27 @@ def test_add_columns():
     npt.assert_array_equal(df.num_returns_ItemDed, np.array([10, 0, 0]))
     npt.assert_array_equal(df.num_returns_StandardDed, np.array([0, 20, 0]))
     npt.assert_array_equal(df.num_returns_AMT, np.array([0, 20, 30]))
+
+
+def test_mtr_graph():
+    # create a default Policy object
+    policy1 = Policy()
+    records1 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    calc1 = Calculator(policy=policy1, records=records1)
+    calc1.calc_all()
+    # generate a single mtr plot
+    create_mtr_graph(calc1, calc1, MARS=1, weights=weighted_mean,
+                     income_measure='c00100', kid_cap=0)
+    # create a policy-reform Policy object and Calculator calc2
+    reform = {2013: {'_II_rt4': [0.86]}}
+    policy2 = Policy()
+    policy2.implement_reform(reform)
+    records2 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    calc2 = Calculator(policy=policy2, records=records2)
+    calc2.calc_all()
+    # generate a plot that involves two calculator
+    create_mtr_graph(calc1, calc2, MARS=2, weights=weighted_mean,
+                     income_measure='c00100', kid_flo=1, combined_or_IIT='IIT')
 
 
 def test_dist_table_sum_row():

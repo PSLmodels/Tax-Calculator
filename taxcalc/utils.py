@@ -1,11 +1,15 @@
+import sys
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
 from collections import defaultdict
+import matplotlib
+import matplotlib.pyplot as plt
 
 STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600',
                  'c04800', 'c05200', 'c62100', 'c09600', 'c05800', 'c09200',
-                 '_refund', 'c07100', '_iitax', '_fica', '_combined', 's006']
+                 '_refund', 'c07100', '_iitax', '_fica', '_combined', 's006',
+                 'e00200', 'MARS', 'n24']
 
 # each entry in this array corresponds to the same entry in the array
 # TABLE_LABELS below. this allows us to use TABLE_LABELS to map a
@@ -101,12 +105,12 @@ def weighted_share_of_total(agg, col_name, total):
     return float(weighted_sum(agg, col_name)) / (float(total) + EPSILON)
 
 
-def add_weighted_decile_bins(df, income_measure='_expanded_income',
-                             labels=None):
+def add_weighted_decile_bins(df, num_bins=10,
+                             income_measure='_expanded_income', labels=None):
     """
 
-    Add a column of income bins based on each 10% of the income_measure,
-    weighted by s006.
+    Add a column of income bins based on each 10% (customizable) of the
+    income_measure, weighted by s006.
 
     The default income_measure is `expanded_income`, but `c00100` also works.
 
@@ -121,9 +125,9 @@ def add_weighted_decile_bins(df, income_measure='_expanded_income',
     # Max value of cum sum of weights
     max_ = df['cumsum_weights'].values[-1]
     # Create 10 bins and labels based on this cumulative weight
-    bins = [0] + list(np.arange(1, 11) * (max_ / 10.0))
+    bins = [0] + list(np.arange(1, (num_bins + 1)) * (max_ / float(num_bins)))
     if not labels:
-        labels = range(1, 11)
+        labels = range(1, (num_bins + 1))
     #  Groupby weighted deciles
     df['bins'] = pd.cut(df['cumsum_weights'], bins, labels=labels)
     return df
@@ -296,6 +300,91 @@ def add_columns(res):
     res['num_returns_AMT'] = res['s006'].where(res['c09600'] > 0, 0)
 
     return res
+
+
+def create_mtr_graph(calcX, calcY, MARS, weights, income_measure='c00100',
+                     kid_cap=1000, kid_flo=0, combined_or_IIT='Combined'):
+    """
+    The create_mtr_graph function plots the mtr w.r.t different income measure.
+
+    The function also allows filtering different MARS values, choosing from
+    different weighting measurements as well as setting cap and floor for
+    number of kids.
+
+    Notice that the second calculator, calcY, is optional.
+    """
+    # get the mtr w.r.t iit and combined liability
+    a, mtr_iit_x, mtr_combined_x = calcX.mtr()
+    a, mtr_iit_y, mtr_combined_y = calcY.mtr()
+
+    # call the results function to organize results in a table
+    df_x = results(calcX)
+    df_y = results(calcY)
+    df_x['mtr_iit'] = mtr_iit_x
+    df_y['mtr_iit'] = mtr_iit_y
+    df_x['mtr_combined'] = mtr_combined_x
+    df_y['mtr_combined'] = mtr_combined_y
+
+    df_y[income_measure] = df_x[income_measure]
+
+    # call the add_weighted_decile_bins function with 100 bins, that is, with
+    # each 1% of the income_measure.
+    df_x = add_weighted_decile_bins(df_x, 100, income_measure)
+    df_y = add_weighted_decile_bins(df_y, 100, income_measure)
+
+    # filtered the records according to inputed parameters
+    df_filtered_x = df_x[(df_x['MARS'] == MARS) & (df_x['n24'] >= kid_flo) &
+                         (df_x['n24'] <= kid_cap)].copy()
+    df_filtered_y = df_y[(df_y['MARS'] == MARS) & (df_x['n24'] >= kid_flo) &
+                         (df_x['n24'] <= kid_cap)].copy()
+
+    # create a GroupBy object with 100 groups
+    gp_x = df_filtered_x.groupby('bins', as_index=False)
+    gp_y = df_filtered_y.groupby('bins', as_index=False)
+
+    # create a series of size 100, and get the desired mtr
+    if combined_or_IIT == 'Combined':
+        wmtr_x = gp_x.apply(weights, 'mtr_combined')
+        wmtr_y = gp_y.apply(weights, 'mtr_combined')
+    elif combined_or_IIT == 'IIT':
+        wmtr_x = gp_x.apply(weights, 'mtr_iit')
+        wmtr_y = gp_y.apply(weights, 'mtr_iit')
+
+    # create a DataFrame out of this with a default index
+    wmtrx_df = DataFrame(data=wmtr_x, columns=['w_mtr'])
+    wmtry_df = DataFrame(data=wmtr_y, columns=['w_mtr'])
+
+    # add the bin labels
+    wmtrx_df['bins'] = np.arange(1, 101)
+    wmtry_df['bins'] = np.arange(1, 101)
+
+    # join df_x and apply on the bin, carrying along 'wmtr'
+    rsltx = pd.merge(df_filtered_x[['bins']], wmtrx_df, how='left')
+    rslty = pd.merge(df_filtered_y[['bins']], wmtry_df, how='left')
+
+    # put that column in df_filtered_x, disregarding index of rslt
+    df_filtered_x['w_mtr'] = rsltx['w_mtr'].values
+    df_filtered_y['w_mtr'] = rslty['w_mtr'].values
+
+    df_filtered_x.drop_duplicates(subset='bins', inplace=True)
+    df_filtered_y.drop_duplicates(subset='bins', inplace=True)
+
+    # plot the mtr against bins, notice that only one plot will be
+    # generated if two calculators are the same
+    layer = plt.figure()
+    layer.suptitle("MARS = %d, Kid Range: [%d, %d]" % (MARS, kid_cap, kid_flo),
+                   fontsize=12, fontweight='bold')
+
+    plt.plot(df_filtered_x.bins, df_filtered_x.w_mtr, label="Baseline")
+
+    background = layer.add_subplot(111)
+    layer.subplots_adjust(top=0.85)
+
+    background.set_xlabel('Income Percentiles' + '(' + income_measure + ')')
+    background.set_ylabel('Marginal Tax Rate' + '(' + combined_or_IIT + ')')
+    if calcX != calcY:
+        plt.plot(df_filtered_y.bins, df_filtered_y.w_mtr, label="Reform")
+        plt.legend(loc='upper left')
 
 
 def create_distribution_table(calc, groupby, result_type,
