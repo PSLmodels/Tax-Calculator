@@ -24,9 +24,9 @@ fact that the payroll tax is a tax on individuals, not on income-tax
 filing units.  Tax-Calculator expects that the filing-unit total for
 each of several earnings-related variables is split between the
 taxpayer and the spouse.  It is the responsibility of anyone preparing
-data for Tax-Calculator input to do this earnings splitting.  Here is
-a list of variables for which the taxpayer and spouse variables must
-add up to the filing-unit variable:
+data for Tax-Calculator input to do this earnings splitting.  Here are
+the relationships between the filing-unit variable and the taxpayer
+(`p`) and spouse (`s`) variables expected by Tax-Calculator:
 ```
 e00200 = e00200p + e00200s
 
@@ -36,11 +36,12 @@ e02100 = e02100p + e02100s
 ```
 Obviously, when `MARS` is not equal to 2 (married filing jointly), the
 values of the three `s` variables are zero and the values of the three
-`p` variables equal the value of their corresponding filing-unit variable.
-And obviously, data file can omit any one or all of these three variables.
+`p` variables are equal to the value of their corresponding
+filing-unit variable.  And obviously, data file can omit any one, or
+all, of these variables.
 
-But when including one of these variables, it is up to you to specify
-the split.  You will get unexpected results from Tax-Calculator if you
-do not split the filing-unit amount between taxpayer and spouse so
-that the above equality-equations hold for each filing unit in the
-input file.
+But when including one of these three variables, it is up to you to
+specify the taxpayer-spouse split.  You will get unexpected results
+from Tax-Calculator if you do not split the filing-unit amount between
+taxpayer and spouse so that the above equations hold for each filing
+unit in the input file.
