@@ -14,8 +14,6 @@ from taxcalc import create_distribution_table, create_difference_table
 # use 1991 PUF-like data to emulate current puf.csv, which is private
 TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91taxdata.csv.gz')
 TAXDATA = pd.read_csv(TAXDATA_PATH, compression='gzip')
-PUF_PATH = os.path.join(CUR_PATH, '..', '..', 'puf.csv')
-PUF = pd.read_csv(PUF_PATH)
 WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
 WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
@@ -328,11 +326,11 @@ def test_make_Calculator_increment_years_first():
 
 def test_ID_hc_vs_surtax():
     policy1 = Policy()
-    puf1 = Records(PUF, start_year=2009)
+    puf1 = Records(TAXDATA, start_year=2009)
     calc1 = Calculator(policy=policy1, records=puf1)
 
     policy2 = Policy()
-    puf2 = Records(PUF, start_year=2009)
+    puf2 = Records(TAXDATA, start_year=2009)
     calc2 = Calculator(policy=policy2, records=puf2)
 
     reform1 = {2013: {'_ID_Medical_HC': [1],
@@ -351,8 +349,24 @@ def test_ID_hc_vs_surtax():
     calc1.calc_all()
     calc2.calc_all()
 
-    assert_array_almost_equal(calc1.records._combined, calc2.records._combined,
-                              decimal=2)
+    '''
+    calculate the gap between individual income tax, alternative minimum tax
+    and income tax to give an exclusion to a special case where some unit would
+    get better-off when choose to have zero deduction
+    '''
+
+    epsilon = 0.01
+    iitgap = calc1.records._iitax - calc2.records._iitax - epsilon
+    amtgap = calc1.records.c63200 - calc2.records.c63200
+    taxgap = calc1.records._taxbc - calc2.records._taxbc
+
+    exclude_REC = calc1.records.RECID[(iitgap < 0) & (taxgap + amtgap <
+                                                      epsilon)]
+
+    # two reforms shall yield the same tax liability for the rest of records
+    assert_array_almost_equal(calc1.records._combined[calc1.records.RECID !=
+                              exclude_REC], calc2.records._combined[
+                              calc2.records.RECID != exclude_REC], decimal=2)
 
 
 def test_Calculator_using_nonstd_input(rawinputfile):
