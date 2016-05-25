@@ -37,8 +37,8 @@ e02100 = e02100p + e02100s
 Obviously, when `MARS` is not equal to 2 (married filing jointly), the
 values of the three `s` variables are zero and the values of the three
 `p` variables are equal to the value of their corresponding
-filing-unit variable.  And obviously, data file can omit any one, or
-all, of these variables.
+filing-unit variable.  And obviously, the data file can omit any one,
+or all, of these variables.
 
 But when including one of these three variables, it is up to you to
 specify the taxpayer-spouse split.  You will get unexpected results
