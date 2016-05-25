@@ -95,15 +95,14 @@ class Calculator(object):
                                           item_no_limit, 0.)
 
     def calc_one_year(self):
-        policyghost = copy.deepcopy(self.policy)
         EI_FICA(self.policy, self.records)
         Adj(self.policy, self.records)
         CapGains(self.policy, self.records)
         SSBenefits(self.policy, self.records)
         AGI(self.policy, self.records)
-        ItemDed(policyghost, self.records)
+        ItemDed(self.policy, self.records)
         AMED(self.policy, self.records)
-        StdDed(policyghost, self.records)
+        StdDed(self.policy, self.records)
         Personal_Credit(self.policy, self.records)
         # Calculate taxes with optimal itemized deduction
         self.STD_vs_ITM()
@@ -112,7 +111,7 @@ class Calculator(object):
         NonGain(self.policy, self.records)
         TaxGains(self.policy, self.records)
         MUI(self.policy, self.records)
-        AMTI(policyghost, self.records)
+        AMTI(self.policy, self.records)
         F2441(self.policy, self.records)
         DepCareBen(self.policy, self.records)
         ExpEarnedInc(self.policy, self.records)

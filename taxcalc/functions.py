@@ -881,9 +881,9 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
     c05800 = _taxbc + c63200
     return (c62720, c60260, c63100, c60200, c60240, c60220, c60000,
             c60130, c62730, _addamt, c62100, c63200,
-            _amtsepadd, c62600, c62700, c62760, _line45, _line47, _line48,
+            _amtsepadd, c62600, c62700, c62760,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
-            _ngamty, c62745, _tamt2, _amt5pc, _amt15pc, _line46,
+            _ngamty, c62745, _tamt2, _amt5pc, _amt15pc,
             _amt25pc, c62747, c62755, c62770, _amt20pc, c62800,
             c09600, _othtax, c05800, _cmbtp, c62100_everyone)
 
