@@ -11,7 +11,6 @@ be used to conduct revenue scoring and distributional analyses of tax
 policies.  The Tax-Calculator is written in Python, an interpreted
 language that can execute on Windows, Mac, or Linux.
 
-
 Disclaimer
 ==========
 
@@ -41,7 +40,6 @@ format](http://users.nber.org/~taxsim/taxsim-calc9/) using the
 You can also process your own CSV-formatted data using the `inctax.py`
 command-line interface to the Tax-Calculator, but when doing this be
 sure to read the [data-preparation guidelines](DATAPREP.md).
-
 
 The **second way** is to access the Tax-Calculator through our web
 application, [TaxBrain](http://www.ospc.org/taxbrain).  This way
