@@ -350,16 +350,20 @@ def test_ID_hc_vs_surtax():
     calc2.calc_all()
 
     '''
-    calculate the gap between individual income tax, alternative minimum tax
-    and income tax to give an exclusion to a special case where some unit would
-    get better-off when choose to have zero deduction
+    calculate the gap of individual income tax, alternative minimum tax and
+    income tax between two calculators to give an exclusion to a special case
+    where some unit would get better-off when choose to have zero deduction
     '''
 
     epsilon = 0.01
+    # calculate the gap of individual income tax
     iitgap = calc1.records._iitax - calc2.records._iitax - epsilon
+    # calculate the gap of alternative minimum tax
     amtgap = calc1.records.c63200 - calc2.records.c63200
+    # calculate the gap of income tax
     taxgap = calc1.records._taxbc - calc2.records._taxbc
-
+    # exclude records with larger, in terms of absolute value, amt gap than tax
+    # gap, which would result in lower iit liability
     exclude_REC = calc1.records.RECID[(iitgap < 0) & (taxgap + amtgap <
                                                       epsilon)]
 
