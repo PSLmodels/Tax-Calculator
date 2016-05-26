@@ -235,7 +235,7 @@ class Records(object):
         '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
         '_amed', '_cmbtp_itemizer',
         '_cmbtp_standard', '_expanded_income', 'c07300',
-        'c07600', 'c07240', 'c62100_everyone',
+        'c07600', 'c07240',
         '_surtax', '_combined', '_personal_credit'])
 
     INTEGER_CALCULATED_VARS = set([
@@ -402,7 +402,6 @@ class Records(object):
         self.e32800 *= ATXPY
         self.e58990 *= ATXPY
         self.p60100 *= ATXPY
-        self.e60000 *= ATXPY
         self.e62100 *= ATXPY
         self.e62900 *= ATXPY
         self.e87530 *= ATXPY
