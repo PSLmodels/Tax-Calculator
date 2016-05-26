@@ -125,7 +125,7 @@ class Records(object):
         'e26270',
         'e27200', 'e32800', 'e03300',
         'e58990',
-        'p60100', 'e60000', 'e62900',
+        'p60100', 'e62900',
         'p87482', 'e87487', 'e87492', 'e87497', 'p87521',
         'e87530',
         'MARS', 'MIDR', 'RECID',
@@ -233,7 +233,7 @@ class Records(object):
         '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
         '_amed',
         '_expanded_income', 'c07300',
-        'c07600', 'c07240', 'c62100_everyone',
+        'c07600', 'c07240',
         '_surtax', '_combined', '_personal_credit'])
 
     INTEGER_CALCULATED_VARS = set([
@@ -397,7 +397,6 @@ class Records(object):
         self.e32800 *= ATXPY
         self.e58990 *= ATXPY
         self.p60100 *= ATXPY
-        self.e60000 *= ATXPY
         self.e62900 *= ATXPY
         self.e87530 *= ATXPY
         self.p87521 *= ATXPY

@@ -413,8 +413,6 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
 
         e02400 : Gross social Security Benefit
 
-        e60000 : AMT taxable income
-
         DSI : Dependent Status Indicator:
             0 - not being claimed as a dependent
             1 - claimed as a dependent
@@ -741,7 +739,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
          e60720, e60430, e60500, e60340, e60680, e60600, e60405,
          e60440, e60420, e60410, e61400, e60660, e60480, c21060,
          e62000, e60250, _cmp, _standard, p04470,
-         f6251, c00100, e60000, t04470,
+         f6251, c00100, t04470,
          c04470, c17000, e18500, c20800, c21040, e04805,
          c02700,
          e24515, x60130, e18400,
@@ -865,10 +863,6 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
     c63100 = max(0., c63100)
     c63200 = max(0., c63000 - c63100)
     c09600 = c63200
-    c62100_everyone = c62100
-    if c09600 == 0. and e60000 == 0.:
-        c60000 = 0.
-        c62100 = 0.
     c05800 = _taxbc + c63200
     return (c62720, c60260, c63100, c60200, c60240, c60220, c60000,
             c60130, c62730, _addamt, c62100,
@@ -876,7 +870,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
             _ngamty, c62745, _tamt2, _amt5pc, _amt15pc,
             _amt25pc, c62747, c62755, c62770, _amt20pc, c62800,
-            c09600, c05800, _cmbtp, c62100_everyone)
+            c09600, c05800, _cmbtp)
 
 
 @iterate_jit(nopython=True)

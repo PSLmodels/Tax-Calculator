@@ -71,7 +71,6 @@ E27200 = Schedule E: Farm rent net income or loss
 E32800 = Form 2441 child/dependent care expense: Qualifying Individual Exp.s
 E58990 = Form 4952 Investment Income Amount
 E59560 = Schedule EIC: earned income
-E60000 = Form 6251 AMT: Taxable income
 E62900 = Form 6251: Form 6251 foreign tax credit
 E87530 = Form 8863: Lifetime Learning Total Qualified Exp.s
 EIC = Earned Income Credit code: categorical variable
