@@ -140,8 +140,7 @@ class Records(object):
     INTEGER_READ_VARS = set([
         'DSI', 'EIC', 'FDED', 'FLPDYR',
         'f2441', 'f6251',
-        'n24',
-        'XTOT',
+        'n24', 'XTOT',
         'MARS', 'MIDR', 'RECID',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse'])
 
