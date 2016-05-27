@@ -11,7 +11,6 @@ be used to conduct revenue scoring and distributional analyses of tax
 policies.  The Tax-Calculator is written in Python, an interpreted
 language that can execute on Windows, Mac, or Linux.
 
-
 Disclaimer
 ==========
 
@@ -37,7 +36,10 @@ representative sample of tax filing units, it does allow you to
 estimate tax liabilities and marginal tax rates for any collection of
 filing units specified in [Internet-TAXSIM input
 format](http://users.nber.org/~taxsim/taxsim-calc9/) using the
-```simtax.py``` command-line interface to the Tax-Calculator.
+`simtax.py` command-line interface to the Tax-Calculator.
+You can also process your own CSV-formatted data using the `inctax.py`
+command-line interface to the Tax-Calculator, but when doing this be
+sure to read the [data-preparation guidelines](DATAPREP.md).
 
 The **second way** is to access the Tax-Calculator through our web
 application, [TaxBrain](http://www.ospc.org/taxbrain).  This way
@@ -50,8 +52,8 @@ installing the taxcalc package on your local computer.  A new taxcalc
 package is generated for every release of the Tax-Calculator.  We use
 the package to install taxcalc on Amazon Web Services (AWS) instances
 that run the TaxBrain web application.  You can get the latest release
-of the Tax-Calculator to run on your computer via the command ```conda
-install -c ospc taxcalc```.  Note that this package does not include a
+of the Tax-Calculator to run on your computer via the command `conda
+install -c ospc taxcalc`.  Note that this package does not include a
 representative sample of the US population.  Also, note that there is
 some skill involved in Getting Started the first way and installing
 the taxcalc package on the same local computer, which is why we
