@@ -393,6 +393,7 @@ class Records(object):
         self.e26270 *= ASCHEI
         self.e27200 *= ASCHEI
         # MISCELLANOUS SCHEDULES
+        self.e07600 *= ATXPY
         self.e32800 *= ATXPY
         self.e58990 *= ATXPY
         self.p60100 *= ATXPY
