@@ -104,7 +104,7 @@ def main(start_year, delay_years, scale_factor, no_indexing, each_separate):
         param_names = param_names - excluded_names
 
     # write a JSON entry for each parameter
-    np.random.seed(seed=123456789)
+    np.random.seed(seed=987654321)
     if reform == PROVISIONS_ALL_TOGETHER:
         write_all_together(param_names, clp,
                            start_year, delay_years,
@@ -152,7 +152,13 @@ def write_all_together(param_names, clp, start_year,
     for name in sorted(param_names):
         num += 1
         yrs = np.random.random_integers(0, max_reform_delay_years)
-        reform_year = start_year + yrs
+        if name.startswith('_II_brk'):
+            if name.endswith('1'):
+                reform_year = start_year + yrs
+            else:  # make all inctax bracket breakpoints change in same year
+                pass
+        else:
+            reform_year = start_year + yrs
         sys.stdout.write('{}"{}": {}\n'.format(TAB, name, '{'))
         if name.endswith('_cpi'):
             sys.stdout.write('{}{}"{}": false\n'.format(TAB, SPC, reform_year))
@@ -191,7 +197,10 @@ def write_each_separate(param_names, clp, start_year,
         if name.endswith('_cpi'):
             sys.stdout.write('{}{}"{}": false\n'.format(TAB, SPC, reform_year))
         else:
-            value = new_value(clp, name, reform_year, scale_factor)
+            if name == '_II_brk5':
+                value = new_value(clp, name, reform_year, scale_factor, 1000.0)
+            else:
+                value = new_value(clp, name, reform_year, scale_factor)
             sys.stdout.write('{}{}"{}": [{}]\n'.format(TAB, SPC,
                                                        reform_year, value))
         sys.stdout.write('{}{}\n'.format(TAB, '}'))
@@ -204,7 +213,7 @@ def write_each_separate(param_names, clp, start_year,
     return
 
 
-def new_value(policy, name, reform_year, scale_factor):
+def new_value(policy, name, reform_year, scale_factor, add_factor=0.0):
     """
     Return new value for reform_year given policy, name, and scale_factor.
     """
@@ -213,12 +222,18 @@ def new_value(policy, name, reform_year, scale_factor):
         if name in PARAMS_NOT_SCALED:
             val = value
         else:
-            val = round(value * scale_factor, 5)
+            if add_factor == 0.0:
+                val = round(value * scale_factor, 5)
+            else:
+                val = round(value + add_factor, 5)
     else:  # value is a list
         if name in PARAMS_NOT_SCALED:
             val = value.tolist()
         else:
-            val = [round(v * scale_factor, 5) for v in value.tolist()]
+            if add_factor == 0.0:
+                val = [round(v * scale_factor, 5) for v in value.tolist()]
+            else:
+                val = [round(v + add_factor, 5) for v in value.tolist()]
     return val
 
 
