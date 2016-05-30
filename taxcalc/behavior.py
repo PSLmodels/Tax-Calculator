@@ -32,6 +32,7 @@ def update_ordinary_income(behavioral_effect, calc_y):
                               0.)
 
     calc_y.records.e00200 = calc_y.records.e00200 + delta_wages
+    calc_y.records.e00200p = calc_y.records.e00200p + delta_wages
 
     calc_y.records.e00300 = calc_y.records.e00300 + delta_other_inc
 
