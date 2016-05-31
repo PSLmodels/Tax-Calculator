@@ -7,7 +7,7 @@ from .parameters_base import ParametersBase
 def update_ordinary_income(behavioral_effect, calc_y):
     delta_inc = np.where(calc_y.records.c00100 > 0, behavioral_effect, 0.)
 
-    # Attribute the behavioral effects across itemized deductions,
+    # Allocate behavioral_effect across itemized deductions,
     # wages, and other income.
 
     itemized = np.where(calc_y.records.c04470 < calc_y.records._standard,
@@ -61,26 +61,25 @@ def behavior(calc_x, calc_y):
                                     mtr_of='e00200p',
                                     liability_type='combined')
 
-    CG_mtr_x, CG_mtr_y = mtr_xy(calc_x, calc_y,
+    cg_mtr_x, cg_mtr_y = mtr_xy(calc_x, calc_y,
                                 mtr_of='p23250',
                                 liability_type='iitax')
 
-    # Calculate the percent change in after-tax rate for wage and capital gain.
-    wage_pctdiff = ((1. - wage_mtr_y) - (1. - wage_mtr_x)) / (1. - wage_mtr_x)
-    CG_pctdiff = ((1. - CG_mtr_y) - (1. - CG_mtr_x)) / (1. - CG_mtr_x)
+    # Calculate proportional change (pch) in after-tax marginal tax rates
+    wage_pch = ((1. - wage_mtr_y) - (1. - wage_mtr_x)) / (1. - wage_mtr_x)
+    cg_pch = ((1. - cg_mtr_y) - (1. - cg_mtr_x)) / (1. - cg_mtr_x)
 
-    # Calculate the magnitude of the substitution and income effects
-    # Calculate the magnitude of behavior changes on cap gain
-    substitution_effect = (calc_y.behavior.BE_sub * wage_pctdiff *
-                           (calc_x.records.c04800))
-
-    income_effect = calc_y.behavior.BE_inc * (calc_y.records._combined -
-                                              calc_x.records._combined)
-
+    # Calculate magnitude of substitution and income effects and their sum
+    substitution_effect = (calc_y.behavior.BE_sub * wage_pch *
+                           calc_x.records.c04800)  # c04800 is taxable income
+    income_effect = (calc_y.behavior.BE_inc *
+                     (calc_y.records._combined -
+                      calc_x.records._combined))  # _combined is INC+FICA taxes
     combined_behavioral_effect = income_effect + substitution_effect
 
-    cap_gain_behavioral_effect = (calc_y.behavior.BE_CG_per * CG_pctdiff *
-                                  (calc_x.records.p23250))
+    # Calculate magnitude of behavior response in long-term capital gains
+    cap_gain_behavioral_effect = (calc_y.behavior.BE_CG_per * cg_pch *
+                                  calc_x.records.p23250)
 
     # Add the behavior changes to income sources
     calc_y_behavior = copy.deepcopy(calc_y)
@@ -95,11 +94,9 @@ def behavior(calc_x, calc_y):
     return calc_y_behavior
 
 
-def mtr_xy(calc_x, calc_y, mtr_of='e00200p', liability_type='combined'):
-
+def mtr_xy(calc_x, calc_y, mtr_of, liability_type):
     payroll_x, iitax_x, combined_x = calc_x.mtr(mtr_of)
     payroll_y, iitax_y, combined_y = calc_y.mtr(mtr_of)
-
     if liability_type == 'combined':
         return (combined_x, combined_y)
     elif liability_type == 'payroll':

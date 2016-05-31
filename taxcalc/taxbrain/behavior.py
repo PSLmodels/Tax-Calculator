@@ -31,6 +31,9 @@ def main(reform_year, calc_year, sub_elasticity, inc_elasticity):
     """
     # pylint: disable=too-many-locals
     # pylint: disable=protected-access
+    if not os.path.isfile(PUFCSV_PATH):
+        sys.stderr.write('ERROR: file {} does not exist\n'.format(PUFCSV_PATH))
+        return 1
     # create current-law-policy object
     cur = Policy()
     # specify policy reform
@@ -60,8 +63,9 @@ def main(reform_year, calc_year, sub_elasticity, inc_elasticity):
     behv.update_behavior(behv_params)
     itax_s, fica_s = revenue(cyr, calc_ref, None)  # static analysis
     itax_d, fica_d = revenue(cyr, calc_cur, calc_ref)  # dynamic analysis
-    bhv = 'SUB_ELASTICITY,INC_ELASTICITY= {} {}\n'
-    sys.stdout.write(bhv.format(behv._BE_sub[0], behv._BE_inc[0]))
+    bhv = '{},SUB_ELASTICITY,INC_ELASTICITY= {} {}\n'
+    yridx = cyr - behv.start_year
+    sys.stdout.write(bhv.format(cyr, behv._BE_sub[yridx], behv._BE_inc[yridx]))
     res = '{},{},REV_STATIC(S),REV_DYNAMIC(D),D-S= {:.1f} {:.1f} {:.1f}\n'
     sys.stdout.write(res.format(cyr, 'ITAX', itax_s, itax_d, itax_d - itax_s))
     sys.stdout.write(res.format(cyr, 'FICA', fica_s, fica_d, fica_d - fica_s))
