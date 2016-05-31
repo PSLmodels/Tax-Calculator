@@ -58,15 +58,15 @@ for i in range(1, num_reforms + 1):
     this_reform = 'r' + str(i)
     start_year = reforms_json.get(this_reform).get("start_year")
 
-    # implement behavior assumptions if any,
-    # and remove the node so it wont break policy object
+    # implement behavioral-response elasticities if any,
+    # and remove the node so it won't break policy object
     has_behavior = False
-    if "_BE_CG_per" in reforms_json.get(this_reform).get("value"):
-        persistent = reforms_json[this_reform]["value"]["_BE_CG_per"]
-        assumption = {start_year: {"_BE_CG_per": persistent}}
+    if "_BE_cg" in reforms_json.get(this_reform).get("value"):
+        elasticity = reforms_json[this_reform]["value"]["_BE_cg"]
+        assumption = {start_year: {"_BE_cg": elasticity}}
         c2.behavior.update_behavior(assumption)
         has_behavior = True
-        del reforms_json[this_reform]["value"]["_BE_CG_per"]
+        del reforms_json[this_reform]["value"]["_BE_cg"]
 
     # implement reforms on policy
     reform = {start_year: reforms_json.get(this_reform).get("value")}

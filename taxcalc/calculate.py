@@ -357,8 +357,9 @@ class Calculator(object):
         calc = copy.deepcopy(self)
         base_calc = copy.deepcopy(base_calc)
         for i in range(0, num_years):
-            has_behavior = (calc.behavior.BE_sub or calc.behavior.BE_inc or
-                            calc.behavior.BE_CG_per)
+            has_behavior = (calc.behavior.BE_sub or
+                            calc.behavior.BE_inc or
+                            calc.behavior.BE_cg)
             if has_behavior:
                 base_calc.calc_all()
                 behavior_calc = behavior(base_calc, calc)

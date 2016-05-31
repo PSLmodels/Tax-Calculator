@@ -13,7 +13,7 @@ WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
 WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
 
-def test_make_behavioral_Calculator():
+def test_make_behavioral_response_Calculator():
     # create Records objects
     records_x = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     records_y = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
@@ -32,11 +32,11 @@ def test_make_behavioral_Calculator():
     calc_x = Calculator(policy=policy_x, records=records_x)
     calc_y = Calculator(policy=policy_y, records=records_y,
                         behavior=behavior_y)
-    # create behavioral calculators and vary substitution and income effects
+    # vary substitution and income effects in calc_y
     behavior1 = {
         2013: {
             "_BE_sub": [0.4],
-            "_BE_inc": [0.15]
+            "_BE_inc": [-0.15]
         }
     }
     behavior_y.update_behavior(behavior1)
@@ -44,7 +44,7 @@ def test_make_behavioral_Calculator():
     behavior2 = {
         2013: {
             "_BE_sub": [0.5],
-            "_BE_inc": [0.15]
+            "_BE_inc": [-0.15]
         }
     }
     behavior_y.update_behavior(behavior2)
@@ -57,7 +57,8 @@ def test_make_behavioral_Calculator():
     }
     behavior_y.update_behavior(behavior3)
     calc_y_behavior3 = behavior(calc_x, calc_y)
-    # check that total income tax liability differs across the three behaviors
+    # check that total income tax liability differs across the
+    # three sets of behavioral-response elasticities
     assert (calc_y_behavior1.records._iitax.sum() !=
             calc_y_behavior2.records._iitax.sum() !=
             calc_y_behavior3.records._iitax.sum())
@@ -66,7 +67,7 @@ def test_make_behavioral_Calculator():
 def test_update_behavior():
     beh = Behavior(start_year=2013)
     beh.update_behavior({2014: {'_BE_sub': [0.5]},
-                         2015: {'_BE_CG_per': [1.2]}})
+                         2015: {'_BE_cg': [1.2]}})
     policy = Policy()
     should_be = np.full((Behavior.DEFAULT_NUM_YEARS,), 0.5)
     should_be[0] = 0.0
@@ -78,7 +79,7 @@ def test_update_behavior():
     assert beh.current_year == 2015
     assert beh.BE_sub == 0.5
     assert beh.BE_inc == 0.0
-    assert beh.BE_CG_per == 1.2
+    assert beh.BE_cg == 1.2
 
 
 def test_behavior_default_data():
