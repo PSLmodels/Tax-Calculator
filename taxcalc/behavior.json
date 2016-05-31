@@ -2,7 +2,7 @@
     "_BE_inc": {
         "start_year": 2013,
         "long_name": "Income effect",
-        "description": "Change in the demand for leisure (negative of labor supply) per penny of change in after tax income, evaluated at the pre-policy-change level of income and deductions. That is, the work response to a lump sum tax.",
+        "description": "The taxpayer's taxable income changes according to the product of this parameter and the dollar change (assuming no behavioral responses) in after tax income caused by the reform. ",
         "note": "Usually positive. ",
         "row_label": ["2013"],
         "col_label": "",
@@ -12,7 +12,7 @@
     "_BE_sub": {
         "start_year": 2013,
         "long_name": "Substitution effect",
-        "description": "The taxpayer's taxable income changes according to the product of this parameter, the taxpayer's taxable income before the policy change, and the percent change in the after tax rate (1-MTR). ",
+        "description": "The taxpayer's taxable income changes according to the product of this parameter, the taxpayer's taxable income before the policy change, and the proportional (not percentage) change in the after tax rate (1-MTR) on taxpayer earnings caused by the reform. ",
         "note": "Usually positive. ",
         "row_label": ["2013"],
         "col_label": "",
@@ -21,8 +21,8 @@
 
     "_BE_CG_per": {
         "start_year": 2013,
-        "long_name": "Persistent Elasticity of Capital gains",
-        "description": "Defined as percentage change of long term capital gain over percentage change of after tax rate. Usually positive. ",
+        "long_name": "Persistent Elasticity of capital gains",
+        "description": "Defined as proportional change of long-term capital gains divided by proportional change of after tax rate (1-MTR) on long-term capital gains caused by the reform. Usually positive. ",
         "row_label": ["2013"],
         "col_label": "",
         "value": [0.0]
