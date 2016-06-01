@@ -213,3 +213,14 @@ class Behavior(ParametersBase):
             # update valid elasticity values for year
             self._update({year: revisions[year]})
         self.set_year(precall_current_year)
+
+    def has_response(self):
+        """
+        Returns true if any behavioral-response elasticity is non-zero for
+        the current_year; returns false if all elasticities are zero.
+        """
+        # pylint: disable=no-member
+        if self.BE_inc or self.BE_sub or self.BE_cg:
+            return True
+        else:
+            return False
