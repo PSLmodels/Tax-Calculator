@@ -110,14 +110,14 @@ def test_incorrect_update_behavior():
 def test_future_update_behavior():
     behv = Behavior()
     assert behv.current_year == behv.start_year
-    assert behv.has_response() == False
+    assert behv.has_response() is False
     cyr = 2020
     behv.set_year(cyr)
     behv.update_behavior({cyr: {'_BE_cg': [1.0]}})
     assert behv.current_year == cyr
-    assert behv.has_response() == True
+    assert behv.has_response() is True
     behv.set_year(cyr - 1)
-    assert behv.has_response() == False
+    assert behv.has_response() is False
 
 
 def test_behavior_default_data():
