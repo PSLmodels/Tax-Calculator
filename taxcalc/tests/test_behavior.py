@@ -17,7 +17,9 @@ WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 def test_incorrect_Behavior_instantiation():
     with pytest.raises(ValueError):
         behv = Behavior(behavior_dict=list())
+    with pytest.raises(ValueError):
         behv = Behavior(num_years=0)
+    with pytest.raises(ValueError):
         behv = Behavior(inflation_rates=list())
 
 
@@ -49,26 +51,26 @@ def test_behavioral_response_Calculator():
     behavior1 = {
         2013: {
             "_BE_sub": [0.4],
-            "_BE_inc": [-0.15]
+            "_BE_inc": [-0.1]
         }
     }
     behavior_y.update_behavior(behavior1)
     assert behavior_y.has_response()
     assert behavior_y.BE_sub == 0.4
-    assert behavior_y.BE_inc == -0.15
+    assert behavior_y.BE_inc == -0.1
     calc_y_behavior1 = calc_y.behavior.response(calc_x, calc_y)
     behavior2 = {
         2013: {
             "_BE_sub": [0.5],
-            "_BE_inc": [-0.15]
+            "_BE_cg": [0.8]
         }
     }
     behavior_y.update_behavior(behavior2)
     calc_y_behavior2 = calc_y.behavior.response(calc_x, calc_y)
     behavior3 = {
         2013: {
-            "_BE_sub": [0.4],
-            "_BE_inc": [0.0]
+            "_BE_inc": [-0.2],
+            "_BE_cg": [0.6]
         }
     }
     behavior_y.update_behavior(behavior3)
@@ -102,8 +104,11 @@ def test_incorrect_update_behavior():
     behv = Behavior()
     with pytest.raises(ValueError):
         behv.update_behavior({2013: {'_BE_inc': [+0.2]}})
+    with pytest.raises(ValueError):
         behv.update_behavior({2013: {'_BE_sub': [-0.2]}})
+    with pytest.raises(ValueError):
         behv.update_behavior({2013: {'_BE_cg': [-0.8]}})
+    with pytest.raises(ValueError):
         behv.update_behavior({2013: {'_BE_xx': [0.0]}})
 
 
