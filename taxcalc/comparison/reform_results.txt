@@ -73,7 +73,7 @@ Tax-Calculator,35.6,37.7,39.8,41.8
 Tax Expenditure,34,36,39,41
 ""
 Home Mortgage
-Tax-Calculator,80.4,87.6,94.5,101.3
+Tax-Calculator,80.3,87.6,94.5,101.3
 Tax Expenditure,75,82,88,93
 ""
 Both real estate and state and local
