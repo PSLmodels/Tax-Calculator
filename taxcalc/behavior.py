@@ -120,40 +120,53 @@ class Behavior(ParametersBase):
         Returns new Calculator object --- a deepcopy of calc_y --- that
         incorporates behavioral responses to the reform.
         """
-        # Calculate marginal tax rates
-        #   e00200p is taxpayer's wages+salary
-        #   p23250 is filing unit's long-term capital gains
-        wage_mtr_x, wage_mtr_y = self._mtr_xy(calc_x, calc_y,
-                                              mtr_of='e00200p',
-                                              liability_type='combined')
-        ltcg_mtr_x, ltcg_mtr_y = self._mtr_xy(calc_x, calc_y,
-                                              mtr_of='p23250',
-                                              liability_type='iitax')
-        # Calculate proportional change (pch) in marginal net-of-tax rates
-        wage_pch = ((1. - wage_mtr_y) - (1. - wage_mtr_x)) / (1. - wage_mtr_x)
-        ltcg_pch = ((1. - ltcg_mtr_y) - (1. - ltcg_mtr_x)) / (1. - ltcg_mtr_x)
+        # pylint: disable=too-many-locals
+        assert calc_x.records.dim == calc_y.records.dim
+        # Calculate marginal tax rates and the corresponding
+        # proportional changes (pch) in marginal net-of-tax rates
+        if calc_y.behavior.BE_sub:
+            # e00200p is taxpayer's wages+salary
+            wage_mtr_x, wage_mtr_y = self._mtr_xy(calc_x, calc_y,
+                                                  mtr_of='e00200p',
+                                                  liability_type='combined')
+            wage_pch = ((1. - wage_mtr_y) / (1. - wage_mtr_x)) - 1.
+        if calc_y.behavior.BE_cg:
+            # p23250 is filing unit's long-term capital gains
+            ltcg_mtr_x, ltcg_mtr_y = self._mtr_xy(calc_x, calc_y,
+                                                  mtr_of='p23250',
+                                                  liability_type='iitax')
+            ltcg_pch = ((1. - ltcg_mtr_y) / (1. - ltcg_mtr_x)) - 1.
+        # Calculate proportional change (pch) in after-tax income, ati
+        if calc_y.behavior.BE_inc:
+            # c00100 is filing unit's adjusted gross income, AGI
+            # _combined is filing unit's income+payroll tax liability
+            # pylint: disable=protected-access
+            ati_x = calc_x.records.c00100 - calc_x.records._combined
+            ati_y = calc_y.records.c00100 - calc_y.records._combined
+            ati_pch = (ati_y / ati_x) - 1.
         # Calculate magnitude of substitution and income effects and their sum
         #   c04800 is filing unit's taxable income
-        #   _combined is filing unit's income+payroll tax liability
-        substitution_effect = (calc_y.behavior.BE_sub * wage_pch *
-                               calc_x.records.c04800)
-        # pylint: disable=protected-access
-        income_effect = (calc_y.behavior.BE_inc *
-                         (calc_y.records._combined -
-                          calc_x.records._combined))
-        tax_inc_change = income_effect + substitution_effect
+        if calc_y.behavior.BE_sub:
+            sub = calc_y.behavior.BE_sub * wage_pch * calc_x.records.c04800
+        else:
+            sub = np.zeros(calc_x.records.dim)
+        if calc_y.behavior.BE_inc:
+            inc = calc_y.behavior.BE_inc * ati_pch * ati_x
+        else:
+            inc = np.zeros(calc_x.records.dim)
+        taxinc_chg = sub + inc
         # Calculate magnitude of behavioral response in long-term capital gains
-        cap_gain_change = (calc_y.behavior.BE_cg * ltcg_pch *
-                           calc_x.records.p23250)
+        if calc_y.behavior.BE_cg:
+            ltcg_chg = calc_y.behavior.BE_cg * ltcg_pch * calc_x.records.p23250
+        else:
+            ltcg_chg = np.zeros(calc_x.records.dim)
         # Add behavioral-response changes to income sources
-        calc_y_behavior = copy.deepcopy(calc_y)
-        calc_y_behavior = self._update_ordinary_income(tax_inc_change,
-                                                       calc_y_behavior)
-        calc_y_behavior = self._update_cap_gain_income(cap_gain_change,
-                                                       calc_y_behavior)
+        calc_y_behv = copy.deepcopy(calc_y)
+        calc_y_behv = self._update_ordinary_income(taxinc_chg, calc_y_behv)
+        calc_y_behv = self._update_cap_gain_income(ltcg_chg, calc_y_behv)
         # Recalculate post-reform taxes incorporating behavioral responses
-        calc_y_behavior.calc_all()
-        return calc_y_behavior
+        calc_y_behv.calc_all()
+        return calc_y_behv
 
     # ----- begin private methods of Behavior class -----
 
