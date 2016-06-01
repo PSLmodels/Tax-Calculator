@@ -170,48 +170,47 @@ class Behavior(ParametersBase):
 
     # ----- begin private methods of Behavior class -----
 
-    def _update_ordinary_income(self, taxinc_change, calc_y):
+    def _update_ordinary_income(self, taxinc_change, calc):
         """
-        Implement total taxable income change induced by behavioral responses.
+        Implement total taxable income change induced by behavioral response.
         """
-        # pylint: disable=no-self-use
-        delta_inc = np.where(calc_y.records.c00100 > 0, taxinc_change, 0.)
-        # Allocate taxinc_change across different income sources
-        # pylint: disable=protected-access
-        itemized = np.where(calc_y.records.c04470 < calc_y.records._standard,
-                            0.,
-                            calc_y.records.c04470)
-        delta_wages = np.where(calc_y.records.c00100 + itemized > 0.,
-                               (delta_inc * calc_y.records.e00200 /
-                                (calc_y.records.c00100 + itemized)),
-                               0.)
-        other_inc = calc_y.records.c00100 - calc_y.records.e00200
-        delta_other_inc = np.where(calc_y.records.c00100 + itemized > 0.,
-                                   (delta_inc * other_inc /
-                                    (calc_y.records.c00100 + itemized)),
-                                   0.)
-        delta_itemized = np.where(calc_y.records.c00100 + itemized > 0.,
-                                  (delta_inc * itemized /
-                                   (calc_y.records.c00100 + itemized)),
-                                  0.)
-        calc_y.records.e00200 = calc_y.records.e00200 + delta_wages
-        calc_y.records.e00200p = calc_y.records.e00200p + delta_wages
-        calc_y.records.e00300 = calc_y.records.e00300 + delta_other_inc
-        calc_y.records.e19570 = np.where(itemized > 0.,
-                                         (calc_y.records.e19570 +
-                                          delta_itemized),
-                                         0.)
+        # pylint: disable=no-self-use,protected-access
+        # Assume no behv response for filing units with no, or negative, AGI
+        delta_income = np.where(calc.records.c00100 > 0., taxinc_change, 0.)
+        # Compute itemized deductions, ided
+        ided = np.where(calc.records.c04470 < calc.records._standard,
+                        0.,
+                        calc.records.c04470)
+        # Compute AGI plus itemized deductions, agi_ided
+        agi_ided = calc.records.c00100 + ided
+        # Allocate delta_income
+        delta_wage = np.where(agi_ided > 0.,
+                              delta_income * calc.records.e00200 / agi_ided,
+                              0.)
+        oinc = calc.records.c00100 - calc.records.e00200
+        delta_oinc = np.where(agi_ided > 0.,
+                              delta_income * oinc / agi_ided,
+                              0.)
+        delta_ided = np.where(agi_ided > 0.,
+                              delta_income * ided / agi_ided,
+                              0.)
+        calc.records.e00200 = calc.records.e00200 + delta_wage
+        calc.records.e00200p = calc.records.e00200p + delta_wage
+        calc.records.e00300 = calc.records.e00300 + delta_oinc
+        calc.records.e19570 = np.where(ided > 0.,
+                                       calc.records.e19570 + delta_ided,
+                                       0.)
         # TODO, we should create a behavioral modification
         # variable instead of using e19570
-        return calc_y
+        return calc
 
-    def _update_cap_gain_income(self, cap_gain_change, calc_y):
+    def _update_cap_gain_income(self, cap_gain_change, calc):
         """
         Implement capital gain change induced by behavioral responses.
         """
         # pylint: disable=no-self-use
-        calc_y.records.p23250 = calc_y.records.p23250 + cap_gain_change
-        return calc_y
+        calc.records.p23250 = calc.records.p23250 + cap_gain_change
+        return calc
 
     def _mtr_xy(self, calc_x, calc_y, mtr_of, liability_type):
         """
