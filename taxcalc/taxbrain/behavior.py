@@ -21,7 +21,7 @@ CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 PUFCSV_PATH = os.path.join(CUR_PATH, '..', '..', 'puf.csv')
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 # pylint: disable=import-error
-from taxcalc import Policy, Records, Calculator, Behavior, behavior
+from taxcalc import Policy, Records, Calculator, Behavior
 
 
 def main(reform_year, calc_year, sub_elasticity, inc_elasticity):
@@ -81,13 +81,13 @@ def revenue(year, calc0, calc1):
     """
     calc0.advance_to_year(year)
     # pylint: disable=protected-access
-    if calc1 is None:
-        calc0.calc_all()  # static analysis without any behavioral responses
+    if calc1 is None:  # static analysis without any behavioral responses
+        calc0.calc_all()
         itax_rev = (calc0.records._iitax * calc0.records.s006).sum()
         fica_rev = (calc0.records._fica * calc0.records.s006).sum()
-    else:
+    else:  # dynamic analysis with behavioral responses
         calc1.advance_to_year(year)
-        calc1b = behavior(calc0, calc1)  # dynamic analysis with behv responses
+        calc1b = calc1.behavior.response(calc0, calc1)
         itax_rev = (calc1b.records._iitax * calc1b.records.s006).sum()
         fica_rev = (calc1b.records._fica * calc1b.records.s006).sum()
     return (round(itax_rev * 1.0e-9, 3), round(fica_rev * 1.0e-9, 3))

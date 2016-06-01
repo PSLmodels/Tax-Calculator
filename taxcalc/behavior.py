@@ -12,119 +12,7 @@ from .policy import Policy
 from .parameters_base import ParametersBase
 
 
-def update_ordinary_income(taxinc_change, calc_y):
-    """
-    Implement total taxable income change induced by behavioral responses.
-    """
-    delta_inc = np.where(calc_y.records.c00100 > 0, taxinc_change, 0.)
-
-    # Allocate taxinc_change across itemized deductions, wages, other income
-    # pylint: disable=protected-access
-    itemized = np.where(calc_y.records.c04470 < calc_y.records._standard,
-                        0.,
-                        calc_y.records.c04470)
-
-    delta_wages = np.where(calc_y.records.c00100 + itemized > 0.,
-                           (delta_inc * calc_y.records.e00200 /
-                            (calc_y.records.c00100 + itemized)),
-                           0.)
-
-    other_inc = calc_y.records.c00100 - calc_y.records.e00200
-
-    delta_other_inc = np.where(calc_y.records.c00100 + itemized > 0.,
-                               (delta_inc * other_inc /
-                                (calc_y.records.c00100 + itemized)),
-                               0.)
-
-    delta_itemized = np.where(calc_y.records.c00100 + itemized > 0.,
-                              (delta_inc * itemized /
-                               (calc_y.records.c00100 + itemized)),
-                              0.)
-
-    calc_y.records.e00200 = calc_y.records.e00200 + delta_wages
-    calc_y.records.e00200p = calc_y.records.e00200p + delta_wages
-
-    calc_y.records.e00300 = calc_y.records.e00300 + delta_other_inc
-
-    calc_y.records.e19570 = np.where(itemized > 0.,
-                                     calc_y.records.e19570 + delta_itemized,
-                                     0.)
-    # TODO, we should create a behavioral modification
-    # variable instead of using e19570
-
-    return calc_y
-
-
-def update_cap_gain_income(cap_gain_change, calc_y):
-    """
-    Implement capital gain change induced by behavioral responses.
-    """
-    calc_y.records.p23250 = calc_y.records.p23250 + cap_gain_change
-    return calc_y
-
-
-def behavior(calc_x, calc_y):
-    """
-    Modify plan Y records to account for behavioral responses that arise
-    from the policy reform that involves moving from plan X to plan Y.
-    """
-
-    # Calculate marginal tax rates for plan X and plan Y
-    wage_mtr_x, wage_mtr_y = mtr_xy(calc_x, calc_y,
-                                    mtr_of='e00200p',  # taxpayer's wage+salary
-                                    liability_type='combined')
-    ltcg_mtr_x, ltcg_mtr_y = mtr_xy(calc_x, calc_y,
-                                    mtr_of='p23250',  # long-term capital gains
-                                    liability_type='iitax')
-
-    # Calculate proportional change (pch) in marginal net-of-tax rates
-    wage_pch = ((1. - wage_mtr_y) - (1. - wage_mtr_x)) / (1. - wage_mtr_x)
-    ltcg_pch = ((1. - ltcg_mtr_y) - (1. - ltcg_mtr_x)) / (1. - ltcg_mtr_x)
-
-    # Calculate magnitude of substitution and income effects and their sum
-    substitution_effect = (calc_y.behavior.BE_sub * wage_pch *
-                           calc_x.records.c04800)  # c04800 is taxable income
-    # pylint: disable=protected-access
-    income_effect = (calc_y.behavior.BE_inc *
-                     (calc_y.records._combined -
-                      calc_x.records._combined))  # _combined is INC+FICA taxes
-    combined_behavioral_effect = income_effect + substitution_effect
-
-    # Calculate magnitude of behavioral response in long-term capital gains
-    cap_gain_behavioral_effect = (calc_y.behavior.BE_cg * ltcg_pch *
-                                  calc_x.records.p23250)  # p23250 is ltcg
-
-    # Add the behavior changes to income sources
-    calc_y_behavior = copy.deepcopy(calc_y)
-    calc_y_behavior = update_ordinary_income(combined_behavioral_effect,
-                                             calc_y_behavior)
-    calc_y_behavior = update_cap_gain_income(cap_gain_behavioral_effect,
-                                             calc_y_behavior)
-
-    # Recalculate post-reform taxes taking behavioral responses into account
-    calc_y_behavior.calc_all()
-    return calc_y_behavior
-
-
-def mtr_xy(calc_x, calc_y, mtr_of, liability_type):
-    """
-    Compute marginal tax rates for plan X and plan Y for
-    specified mtr_of income type and liability_type.
-    """
-    payroll_x, iitax_x, combined_x = calc_x.mtr(mtr_of)
-    payroll_y, iitax_y, combined_y = calc_y.mtr(mtr_of)
-    if liability_type == 'combined':
-        return (combined_x, combined_y)
-    elif liability_type == 'payroll':
-        return (payroll_x, payroll_y)
-    elif liability_type == 'iitax':
-        return (iitax_x, iitax_y)
-    else:
-        raise ValueError('Choose from combined, iitax, and payroll.')
-
-
 class Behavior(ParametersBase):
-
     """
     Constructor for elasticity-based behavioral-response class.
 
@@ -224,3 +112,110 @@ class Behavior(ParametersBase):
             return True
         else:
             return False
+
+    def response(self, calc_x, calc_y):
+        """
+        Modify calc_y records to account for behavioral responses that arise
+        from the policy reform that involves moving from calc_x.policy to
+        calc_y.policy.
+        Returns new Calculator object --- a deepcopy of calc_y --- that
+        incorporates behavioral responses to the reform.
+        """
+        # Calculate marginal tax rates
+        #   e00200p is taxpayer's wages+salary
+        #   p23250 is filing unit's long-term capital gains
+        wage_mtr_x, wage_mtr_y = self._mtr_xy(calc_x, calc_y,
+                                              mtr_of='e00200p',
+                                              liability_type='combined')
+        ltcg_mtr_x, ltcg_mtr_y = self._mtr_xy(calc_x, calc_y,
+                                              mtr_of='p23250',
+                                              liability_type='iitax')
+        # Calculate proportional change (pch) in marginal net-of-tax rates
+        wage_pch = ((1. - wage_mtr_y) - (1. - wage_mtr_x)) / (1. - wage_mtr_x)
+        ltcg_pch = ((1. - ltcg_mtr_y) - (1. - ltcg_mtr_x)) / (1. - ltcg_mtr_x)
+        # Calculate magnitude of substitution and income effects and their sum
+        #   c04800 is filing unit's taxable income
+        #   _combined is filing unit's income+payroll tax liability
+        substitution_effect = (calc_y.behavior.BE_sub * wage_pch *
+                               calc_x.records.c04800)
+        # pylint: disable=protected-access
+        income_effect = (calc_y.behavior.BE_inc *
+                         (calc_y.records._combined -
+                          calc_x.records._combined))
+        tax_inc_change = income_effect + substitution_effect
+        # Calculate magnitude of behavioral response in long-term capital gains
+        cap_gain_change = (calc_y.behavior.BE_cg * ltcg_pch *
+                           calc_x.records.p23250)
+        # Add behavioral-response changes to income sources
+        calc_y_behavior = copy.deepcopy(calc_y)
+        calc_y_behavior = self._update_ordinary_income(tax_inc_change,
+                                                       calc_y_behavior)
+        calc_y_behavior = self._update_cap_gain_income(cap_gain_change,
+                                                       calc_y_behavior)
+        # Recalculate post-reform taxes incorporating behavioral responses
+        calc_y_behavior.calc_all()
+        return calc_y_behavior
+
+    # ----- begin private methods of Behavior class -----
+
+    def _update_ordinary_income(self, taxinc_change, calc_y):
+        """
+        Implement total taxable income change induced by behavioral responses.
+        """
+        # pylint: disable=no-self-use
+        delta_inc = np.where(calc_y.records.c00100 > 0, taxinc_change, 0.)
+        # Allocate taxinc_change across different income sources
+        # pylint: disable=protected-access
+        itemized = np.where(calc_y.records.c04470 < calc_y.records._standard,
+                            0.,
+                            calc_y.records.c04470)
+        delta_wages = np.where(calc_y.records.c00100 + itemized > 0.,
+                               (delta_inc * calc_y.records.e00200 /
+                                (calc_y.records.c00100 + itemized)),
+                               0.)
+        other_inc = calc_y.records.c00100 - calc_y.records.e00200
+        delta_other_inc = np.where(calc_y.records.c00100 + itemized > 0.,
+                                   (delta_inc * other_inc /
+                                    (calc_y.records.c00100 + itemized)),
+                                   0.)
+        delta_itemized = np.where(calc_y.records.c00100 + itemized > 0.,
+                                  (delta_inc * itemized /
+                                   (calc_y.records.c00100 + itemized)),
+                                  0.)
+        calc_y.records.e00200 = calc_y.records.e00200 + delta_wages
+        calc_y.records.e00200p = calc_y.records.e00200p + delta_wages
+        calc_y.records.e00300 = calc_y.records.e00300 + delta_other_inc
+        calc_y.records.e19570 = np.where(itemized > 0.,
+                                         (calc_y.records.e19570 +
+                                          delta_itemized),
+                                         0.)
+        # TODO, we should create a behavioral modification
+        # variable instead of using e19570
+        return calc_y
+
+    def _update_cap_gain_income(self, cap_gain_change, calc_y):
+        """
+        Implement capital gain change induced by behavioral responses.
+        """
+        # pylint: disable=no-self-use
+        calc_y.records.p23250 = calc_y.records.p23250 + cap_gain_change
+        return calc_y
+
+    def _mtr_xy(self, calc_x, calc_y, mtr_of, liability_type):
+        """
+        Computes marginal tax rates for Calculator objects calc_x and calc_y
+        for specified mtr_of income type and specified liability_type.
+        """
+        # pylint: disable=no-self-use
+        payroll_x, iitax_x, combined_x = calc_x.mtr(mtr_of)
+        payroll_y, iitax_y, combined_y = calc_y.mtr(mtr_of)
+        if liability_type == 'combined':
+            return (combined_x, combined_y)
+        elif liability_type == 'payroll':
+            return (payroll_x, payroll_y)
+        elif liability_type == 'iitax':
+            return (iitax_x, iitax_y)
+        else:
+            raise ValueError('Choose from combined, iitax, and payroll.')
+
+# end Behavior class

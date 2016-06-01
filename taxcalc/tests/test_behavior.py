@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
-from taxcalc import Policy, Records, Calculator, behavior, Behavior
+from taxcalc import Policy, Records, Calculator, Behavior
 
 # use 1991 PUF-like data to emulate current puf.csv, which is private
 TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91taxdata.csv.gz')
@@ -40,7 +40,7 @@ def test_make_behavioral_response_Calculator():
         }
     }
     behavior_y.update_behavior(behavior1)
-    calc_y_behavior1 = behavior(calc_x, calc_y)
+    calc_y_behavior1 = calc_y.behavior.response(calc_x, calc_y)
     behavior2 = {
         2013: {
             "_BE_sub": [0.5],
@@ -48,7 +48,7 @@ def test_make_behavioral_response_Calculator():
         }
     }
     behavior_y.update_behavior(behavior2)
-    calc_y_behavior2 = behavior(calc_x, calc_y)
+    calc_y_behavior2 = calc_y.behavior.response(calc_x, calc_y)
     behavior3 = {
         2013: {
             "_BE_sub": [0.4],
@@ -56,7 +56,7 @@ def test_make_behavioral_response_Calculator():
         }
     }
     behavior_y.update_behavior(behavior3)
-    calc_y_behavior3 = behavior(calc_x, calc_y)
+    calc_y_behavior3 = calc_y.behavior.response(calc_x, calc_y)
     # check that total income tax liability differs across the
     # three sets of behavioral-response elasticities
     assert (calc_y_behavior1.records._iitax.sum() !=
@@ -84,4 +84,6 @@ def test_update_behavior():
 
 def test_behavior_default_data():
     paramdata = Behavior.default_data()
+    assert paramdata['_BE_inc'] == [0.0]
     assert paramdata['_BE_sub'] == [0.0]
+    assert paramdata['_BE_cg'] == [0.0]
