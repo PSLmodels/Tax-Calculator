@@ -2,6 +2,7 @@ import os
 import sys
 import numpy as np
 import pandas as pd
+import pytest
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy, Records, Calculator, Behavior
@@ -13,7 +14,19 @@ WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
 WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
 
-def test_make_behavioral_response_Calculator():
+def test_incorrect_Behavior_instantiation():
+    with pytest.raises(ValueError):
+        behv = Behavior(behavior_dict=list())
+        behv = Behavior(num_years=0)
+        behv = Behavior(inflation_rates=list())
+
+
+def test_correct_but_not_recommended_Behavior_instantiation():
+    behv = Behavior(behavior_dict={})
+    assert behv
+
+
+def test_behavioral_response_Calculator():
     # create Records objects
     records_x = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     records_y = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
@@ -40,6 +53,9 @@ def test_make_behavioral_response_Calculator():
         }
     }
     behavior_y.update_behavior(behavior1)
+    assert behavior_y.has_response()
+    assert behavior_y.BE_sub == 0.4
+    assert behavior_y.BE_inc == -0.15
     calc_y_behavior1 = calc_y.behavior.response(calc_x, calc_y)
     behavior2 = {
         2013: {
@@ -64,7 +80,7 @@ def test_make_behavioral_response_Calculator():
             calc_y_behavior3.records._iitax.sum())
 
 
-def test_update_behavior():
+def test_correct_update_behavior():
     beh = Behavior(start_year=2013)
     beh.update_behavior({2014: {'_BE_sub': [0.5]},
                          2015: {'_BE_cg': [1.2]}})
@@ -80,6 +96,28 @@ def test_update_behavior():
     assert beh.BE_sub == 0.5
     assert beh.BE_inc == 0.0
     assert beh.BE_cg == 1.2
+
+
+def test_incorrect_update_behavior():
+    behv = Behavior()
+    with pytest.raises(ValueError):
+        behv.update_behavior({2013: {'_BE_inc': [+0.2]}})
+        behv.update_behavior({2013: {'_BE_sub': [-0.2]}})
+        behv.update_behavior({2013: {'_BE_cg': [-0.8]}})
+        behv.update_behavior({2013: {'_BE_xx': [0.0]}})
+
+
+def test_future_update_behavior():
+    behv = Behavior()
+    assert behv.current_year == behv.start_year
+    assert behv.has_response() == False
+    cyr = 2020
+    behv.set_year(cyr)
+    behv.update_behavior({cyr: {'_BE_cg': [1.0]}})
+    assert behv.current_year == cyr
+    assert behv.has_response() == True
+    behv.set_year(cyr - 1)
+    assert behv.has_response() == False
 
 
 def test_behavior_default_data():

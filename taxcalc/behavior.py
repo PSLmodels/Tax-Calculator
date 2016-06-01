@@ -52,14 +52,13 @@ class Behavior(ParametersBase):
                  num_years=DEFAULT_NUM_YEARS,
                  inflation_rates=None):
         # pylint: disable=super-init-not-called
-        if behavior_dict:
-            if not isinstance(behavior_dict, dict):
-                raise ValueError('behavior_dict is not a dictionary')
-            self._vals = behavior_dict
-        elif behavior_dict is None:
+        if behavior_dict is None:
             self._vals = self._params_dict_from_json_file()
         else:
-            raise ValueError('illegal value of behavior_dict in Behavior ctor')
+            if isinstance(behavior_dict, dict):
+                self._vals = behavior_dict
+            else:
+                raise ValueError('specified behavior_dict is not a dictionary')
         if num_years < 1:
             raise ValueError('num_years < 1 in Behavior ctor')
         if inflation_rates is not None:
@@ -207,15 +206,13 @@ class Behavior(ParametersBase):
         for specified mtr_of income type and specified liability_type.
         """
         # pylint: disable=no-self-use
-        payroll_x, iitax_x, combined_x = calc_x.mtr(mtr_of)
-        payroll_y, iitax_y, combined_y = calc_y.mtr(mtr_of)
+        _, iitax_x, combined_x = calc_x.mtr(mtr_of)
+        _, iitax_y, combined_y = calc_y.mtr(mtr_of)
         if liability_type == 'combined':
             return (combined_x, combined_y)
-        elif liability_type == 'payroll':
-            return (payroll_x, payroll_y)
         elif liability_type == 'iitax':
             return (iitax_x, iitax_y)
         else:
-            raise ValueError('Choose from combined, iitax, and payroll.')
+            raise ValueError('liability_type must be "combined" or "iitax"')
 
 # end Behavior class
