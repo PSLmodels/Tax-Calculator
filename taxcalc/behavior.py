@@ -217,7 +217,7 @@ class Behavior(ParametersBase):
         return calc
 
     @staticmethod
-    def _mtr_xy(calc_x, calc_y, mtr_of, tax_type):
+    def _mtr_xy(calc_x, calc_y, mtr_of='e00200p', tax_type='combined'):
         """
         Computes marginal tax rates for Calculator objects calc_x and calc_y
         for specified mtr_of income type and specified tax_type.
