@@ -51,7 +51,7 @@ def test_behavioral_response_Calculator():
     with pytest.raises(ValueError):
         behv = Behavior._mtr_xy(calc_x, calc_y,
                                 mtr_of='e00200p',
-                                mtr_type='nonsense')
+                                tax_type='nonsense')
     # vary substitution and income effects in calc_y
     behavior1 = {
         2013: {
