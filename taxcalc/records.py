@@ -14,6 +14,9 @@ import six
 from pkg_resources import resource_stream, Requirement
 
 
+PUFCSV_YEAR = 2009
+
+
 class Records(object):
     """
     Constructor for the tax-filing-unit records class.
@@ -28,36 +31,28 @@ class Records(object):
         look at the test_Calculator_using_nonstd_input() function in the
         tests/test_calculate.py file.
 
-    blowup_factors: string or Pandas DataFrame
+    blowup_factors: string or Pandas DataFrame or None
         string describes CSV file in which blowup factors reside;
         DataFrame already contains blowup factors;
+        None creates empty blowup-factors DataFrame;
         default value is filename of the default blowup factors
 
-    weights: string or Pandas DataFrame
+    weights: string or Pandas DataFrame or None
         string describes CSV file in which weights reside;
         DataFrame already contains weights;
+        None creates empty sample-weights DataFrame;
         default value is filename of the default weights
 
-    start_year: None or integer
-        None implies current_year is set to PUF_YEAR (see below);
-        integer implies current_year is set to start_year;
-        default value is None
-        NOTE: if specifying data (see above) as being a custom
+    start_year: integer
+        specifies calendar year of the data;
+        default value is PUFCSV_YEAR.
+        NOTE: if specifying your own data (see above) as being a custom
               data set, be sure to explicitly set start_year to the
               custom data's calendar year.  For details on how to
-              use your own data with the Tax-Calculator, look at the
-              test_Calculator_using_nonstd_input() function in the
-              tests/test_calculate.py file.
-
-    consider_blowup: boolean
-        True implies that if current_year (see start_year above) equals
-        PUF_YEAR (see below), then call _extrapolate_in_puf_year() method;
-        False implies never call _extrapolate_in_puf_year() method;
-        default value is True
-        For details on how to use your own data with the Tax-Calculator,
-        read the DATAPREP.md file in the top-level directory, and then
-        look at the test_Calculator_using_nonstd_input() function in the
-        tests/test_calculate.py file.
+              use your own data with the Tax-Calculator, read the
+              DATAPREP.md file in the top-level directory and then
+              look at the test_Calculator_using_nonstd_input()
+              function in the taxcalc/tests/test_calculate.py file.
 
     Raises
     ------
@@ -74,14 +69,9 @@ class Records(object):
     Typical usage is "recs = Records()", which uses all the default
     parameters of the constructor, and therefore, imputed variables
     are generated to augment the data and initial-year blowup factors
-    are applied to the data. Explicitly setting consider_blowup to False
-    and/or the start_year to something other than Records.PUF_YEAR will
-    cause the initial-year-blowup logic to be skipped.  There are
-    situations in which this is exactly what is desired, but more often
-    than not, skipping the initial-year blowup logic would be a mistake.
-    In other words, do not explicitly specify consider_blowup=False or
-    specify the start_year in the Records class constructor unless you
-    know exactly what you are doing.
+    are applied to the data.  There are situations in which you need
+    to specify the values of the Record constructor's arguments, but
+    be sure you know exactly what you are doing when attempting this.
     """
     # suppress pylint warnings about unrecognized Records variables:
     # pylint: disable=no-member
@@ -90,8 +80,7 @@ class Records(object):
     # suppress pylint warnings about too many class instance attributes:
     # pylint: disable=too-many-instance-attributes
 
-    PUF_YEAR = 2009
-
+    PUF_YEAR = PUFCSV_YEAR
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
     WEIGHTS_FILENAME = 'WEIGHTS.csv'
     WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
@@ -243,15 +232,13 @@ class Records(object):
                  data='puf.csv',
                  blowup_factors=BLOWUP_FACTORS_PATH,
                  weights=WEIGHTS_PATH,
-                 start_year=None,
-                 consider_blowup=True):
+                 start_year=PUFCSV_YEAR):
         """
         Records class constructor
         """
-        # pylint: disable=too-many-arguments
         # read specified data
         self._read_data(data)
-        # check that the three split-earnings variables have valid values
+        # check that three sets of split-earnings variables have valid values
         msg = 'expression "{0} == {0}p + {0}s" is not true for every record'
         if not np.allclose(self.e00200, (self.e00200p + self.e00200s),
                            rtol=0.0, atol=0.001):
@@ -266,17 +253,14 @@ class Records(object):
         self._read_blowup(blowup_factors)
         self._read_weights(weights)
         # specify current_year and FLPDYR values
-        if start_year is None:
-            self._current_year = Records.PUF_YEAR
-            self.FLPDYR.fill(Records.PUF_YEAR)
-        elif isinstance(start_year, int):
+        if isinstance(start_year, int):
             self._current_year = start_year
             self.FLPDYR.fill(start_year)
         else:
-            msg = 'start_year is neither None nor an integer'
+            msg = 'start_year is not an integer'
             raise ValueError(msg)
         # consider applying initial-year blowup factors
-        if consider_blowup and self.current_year == Records.PUF_YEAR:
+        if self.BF.empty is False and self.current_year == Records.PUF_YEAR:
             self._extrapolate_in_puf_year()
         # construct sample weights for current_year
         wt_colname = 'WT{}'.format(self.current_year)
@@ -476,8 +460,14 @@ class Records(object):
 
     def _read_weights(self, weights):
         """
-        Read Records weights from file or use specified DataFrame as data.
+        Read Records weights from file or
+        use specified DataFrame as data or
+        create empty DataFrame if None.
         """
+        if weights is None:
+            WT = pd.DataFrame({'nothing': []})
+            setattr(self, 'WT', WT)
+            return
         if isinstance(weights, pd.DataFrame):
             WT = weights
         elif isinstance(weights, six.string_types):
@@ -493,15 +483,20 @@ class Records(object):
                 msg = 'could not find weights file'
                 ValueError(msg)
         else:
-            msg = 'weights is neither a string nor a Pandas DataFrame'
+            msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
         setattr(self, 'WT', WT)
 
     def _read_blowup(self, blowup_factors):
         """
         Read Records blowup factors from file or
-        use specified DataFrame as data.
+        use specified DataFrame as data or
+        creates empty DataFrame if None.
         """
+        if blowup_factors is None:
+            BF = pd.DataFrame({'nothing': []})
+            setattr(self, 'BF', BF)
+            return
         if isinstance(blowup_factors, pd.DataFrame):
             BF = blowup_factors
         elif isinstance(blowup_factors, six.string_types):
@@ -517,7 +512,8 @@ class Records(object):
                 msg = 'could not find blowup_factors file'
                 ValueError(msg)
         else:
-            msg = 'blowup_factors is neither a string nor a Pandas DataFrame'
+            msg = ('blowup_factors is not None or a string '
+                   'or a Pandas DataFrame')
             raise ValueError(msg)
         BF.AGDPN = BF.AGDPN / BF.APOPN
         BF.ATXPY = BF. ATXPY / BF. APOPN

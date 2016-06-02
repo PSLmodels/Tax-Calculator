@@ -93,6 +93,7 @@ def test_1():
                          tax_year=2015,
                          policy_reform=reform,
                          blowup_input_data=False,
+                         output_weights=False,
                          output_records=False,
                          csv_dump=False)
     output = inctax.calculate()
@@ -141,6 +142,7 @@ def test_2():
                          tax_year=2015,
                          policy_reform=reform,
                          blowup_input_data=False,
+                         output_weights=False,
                          output_records=False,
                          csv_dump=False)
     output = inctax.calculate()

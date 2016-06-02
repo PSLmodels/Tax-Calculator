@@ -44,6 +44,9 @@ class IncomeTaxIO(object):
     blowup_input_data: boolean
         whether or not to age record data from data year to tax_year.
 
+    output_weights: boolean
+        whether or will be including sample weights in output.
+
     output_records: boolean
         whether or not to write CSV-formatted file containing the values
         of the Records.VALID_READ_VARS variables in the tax_year.
@@ -68,7 +71,8 @@ class IncomeTaxIO(object):
     """
 
     def __init__(self, input_data, tax_year, policy_reform,
-                 blowup_input_data, output_records, csv_dump):
+                 blowup_input_data, output_weights,
+                 output_records, csv_dump):
         """
         IncomeTaxIO class constructor.
         """
@@ -139,13 +143,18 @@ class IncomeTaxIO(object):
         policy.set_year(tax_year)
         # read input file contents into Records object
         if blowup_input_data:
-            recs = Records(data=input_data,
-                           start_year=Records.PUF_YEAR,
-                           consider_blowup=True)
+            if output_weights:
+                recs = Records(data=input_data)
+            else:
+                recs = Records(data=input_data,
+                               weights=None)
         else:
-            recs = Records(data=input_data,
-                           start_year=tax_year,
-                           consider_blowup=False)
+            if output_weights:
+                recs = Records(data=input_data,
+                               start_year=tax_year)
+            else:
+                recs = Records(data=input_data, blowup_factors=None,
+                               weights=None, start_year=tax_year)
         # create Calculator object
         self._calc = Calculator(policy=policy, records=recs,
                                 sync_years=blowup_input_data)
