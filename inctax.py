@@ -41,11 +41,7 @@ def main():
                      'http://users.nber.org/~taxsim/taxsim-calc9/'))
     parser.add_argument('--iohelp',
                         help=('optional flag to show INPUT and OUTPUT '
-                              'variable definitions and exit without trying '
-                              'to read the INPUT file, so INPUT and TAXYEAR '
-                              'can be any meaningless pair of character (as '
-                              'long as the second character is a digit) '
-                              '(e.g., "i 0" or "x 1" or ". 9")'),
+                              'variable definitions and exit'),
                         default=False,
                         action="store_true")
     parser.add_argument('--reform',
@@ -96,12 +92,12 @@ def main():
                               '".out-inctax" part is replaced by ".csvdump"'),
                         default=False,
                         action="store_true")
-    parser.add_argument('INPUT',
+    parser.add_argument('INPUT', nargs='?', default='',
                         help=('INPUT is name of required CSV file that '
                               'contains a subset of variables included in '
                               'the Records.VALID_READ_VARS set. '
                               'INPUT must end in ".csv".'))
-    parser.add_argument('TAXYEAR',
+    parser.add_argument('TAXYEAR', nargs='?', default=0,
                         help=('TAXYEAR is calendar year for which federal '
                               'income taxes are computed (e.g., 2013).'),
                         type=int)
@@ -110,6 +106,16 @@ def main():
     if args.iohelp:
         IncomeTaxIO.show_iovar_definitions()
         return 0
+    # check INPUT filename
+    if args.INPUT == '':
+        sys.stderr.write('ERROR: must specify INPUT file name;\n')
+        sys.stderr.write('USAGE: python inctax.py --help\n')
+        return 1
+    # check TAXYEAR value
+    if args.TAXYEAR == 0:
+        sys.stderr.write('ERROR: must specify TAXYEAR >= 2013;\n')
+        sys.stderr.write('USAGE: python inctax.py --help\n')
+        return 1
     # instantiate IncometaxIO object and do federal income tax calculations
     inctax = IncomeTaxIO(input_data=args.INPUT,
                          tax_year=args.TAXYEAR,

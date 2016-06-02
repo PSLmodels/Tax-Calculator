@@ -10,7 +10,7 @@ from .utils import *
 from .functions import *
 from .policy import Policy
 from .records import Records
-from .behavior import Behavior, behavior
+from .behavior import Behavior
 from .growth import Growth, adjustment, target
 
 
@@ -395,11 +395,9 @@ class Calculator(object):
         calc = copy.deepcopy(self)
         base_calc = copy.deepcopy(base_calc)
         for i in range(0, num_years):
-            has_behavior = (calc.behavior.BE_sub or calc.behavior.BE_inc or
-                            calc.behavior.BE_CG_per)
-            if has_behavior:
+            if calc.behavior.has_response():
                 base_calc.calc_all()
-                behavior_calc = behavior(base_calc, calc)
+                behavior_calc = calc.behavior.response(base_calc, calc)
                 behavior_calc.diagnostic_table_items(table)
             else:
                 calc.calc_all()

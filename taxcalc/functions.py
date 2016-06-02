@@ -21,7 +21,7 @@ from .decorators import iterate_jit, jit
 @iterate_jit(nopython=True)
 def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
             e11055, e00250, e30100, FICA_ss_trt, FICA_mc_trt,
-            e00900p, e00900s, e02100p, e02100s, e03260, _exact):
+            e00900p, e00900s, e02100p, e02100s):
     """
     EI_FICA function: computes total earned income and regular FICA taxes.
     """
@@ -60,8 +60,6 @@ def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
     # compute AGI deduction for "employer share" of self-employment FICA taxes
     c09400 = fica_ss_sey_p + fica_ss_sey_s + fica_mc_sey_p + fica_mc_sey_s
     c03260 = 0.5 * c09400  # half of c09400 represents the "employer share"
-    if _exact == 1:
-        c03260 = e03260
 
     # compute _earned
     c11055 = e11055
@@ -219,67 +217,43 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
             ID_Charity_HC, ID_InterestPaid_HC, ID_RealEstate_HC, puf):
     """
     ItemDed function:
-
     Itemized Deduction; Form 1040, Schedule A
-
     Notes
     -----
     Tax Law Parameters:
         ID_ps : Itemized deduction phaseout AGI start (Pease)
-
         ID_crt : Itemized deduction maximum phaseout
         as a percent of total itemized deduction (Pease)
-
         ID_prt : Itemized deduction phaseout rate (Pease)
-
         ID_Medical_frt : Deduction for medical expenses;
         floor as a percent of AGI
-
         ID_Casualty_frt : Deduction for casualty loss;
         floor as a percent of AGI
-
         ID_Miscellaneous_frt : Deduction for miscellaneous expenses;
         floor as a percent of AGI
-
         ID_Charity_crt_Cash : Deduction for charitable cash contributions;
         ceiling as a percent of AGI
-
         ID_Charity_crt_Asset : Deduction for charitable asset contributions;
         ceiling as a percent of AGI
-
         ID_Charity_frt : Deduction for charitable contributions;
         floor as a percent of AGI
-
     Taxpayer Characteristics:
         e17500 : Medical expense
-
         e18425 : Income taxes
-
         e18450 : General Sales Tax
-
         e18500 : Real Estate tax
-
         e19200 : Total interest deduction
-
         e19800 : Cash Contribution
-
         e19550 : Qualified Mortgage Insurance Premiums
-
         e20100 : Charity non-cash contribution
-
         e20400 : Total Miscellaneous expense
-
         e20550 : Unreimbursed employee business Expense
-
         e20600 : Tax preparation fee
-
     Intermediate Variables:
         _posagi: positive AGI
-
     Returns
     -------
     c04470 : Itemized deduction amount
-
     Warning
     -------
     Any additional keyword args, such as 'puf=True' here, must be
@@ -290,11 +264,10 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
     c17750 = ID_Medical_frt * _posagi
     c17000 = max(0., e17500 - c17750)
     # State and Local Income Tax, or Sales Tax
-    _statax = max(e18400, 0.)
+    _statax = (1 - ID_StateLocalTax_HC) * max(e18400, 0.)
     # Other Taxes (including state and local)
-    real_estate = e18500
-    c18300 = (1 - ID_StateLocalTax_HC) * _statax + (1 - ID_RealEstate_HC) *\
-        real_estate + e18800 + e18900
+    real_estate = (1 - ID_RealEstate_HC) * e18500
+    c18300 = _statax + real_estate + e18800 + e18900
     # Casualty
     if e20500 > 0:
         c37703 = e20500 + ID_Casualty_frt * _posagi
@@ -346,7 +319,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
         c04470 = c21060 - c21040
     else:
         c21040 = 0.
-    return (c17750, c17000, _statax, c18300, c37703, c20500, real_estate,
+    return (c17750, c17000, _statax, c18300, c37703, c20500,
             c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
             _nonlimited, _limitratio, c04470, c21040)
 
@@ -389,7 +362,7 @@ def AMED(_fica, e00200, MARS, AMED_thd, _sey, AMED_trt,
 
 @iterate_jit(nopython=True)
 def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
-           MARS, MIDR, e15360, blind_head, blind_spouse, _exact, e04200):
+           MARS, MIDR, blind_head, blind_spouse, _exact, e04200):
     """
     StdDed function:
 
@@ -414,8 +387,6 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
         _earned : (F2441) Earned income amount
 
         e02400 : Gross social Security Benefit
-
-        e60000 : AMT taxable income
 
         DSI : Dependent Status Indicator:
             0 - not being claimed as a dependent
@@ -442,8 +413,6 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
             c04100 = 0.
         else:
             c04100 = STD[MARS - 1]
-    # Add motor vehicle tax to standard deduction
-    c04100 = c04100 + e15360
     # Calculate extra standard deduction for aged and blind
     _extrastd = blind_head + blind_spouse
     if age_head >= 65:
@@ -745,26 +714,22 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
          e60720, e60430, e60500, e60340, e60680, e60600, e60405,
          e60440, e60420, e60410, e61400, e60660, e60480, c21060,
          e62000, e60250, _cmp, _standard, p04470,
-         f6251, c00100, e60000, t04470, c17000,
-         c04470, c20800, c21040, e04805,
-         c02700, real_estate, _statax,
-         e24515, x60130, e18500, e18400,
+         f6251, c00100, t04470,
+         c04470, c17000, e18500, c20800, c21040, e04805,
+         c02700,
+         e24515, x60130, e18400,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
          MARS, _sep, AMT_Child_em, AMT_CG_rt1,
          AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516,
-         c24520, c05700, e05800, e05100,
+         c24520, c05700,
          age_head, KT_c_Age, e62900, AMT_thd_MarriedS, _earned, e62600,
-         AMT_em, AMT_prt, AMT_trt1, AMT_trt2, _cmbtp_itemizer,
-         _cmbtp_standard, ID_StateLocalTax_HC, ID_Medical_HC,
+         AMT_em, AMT_prt, AMT_trt1, AMT_trt2, cmbtp_itemizer,
+         cmbtp_standard, ID_StateLocalTax_HC, ID_Medical_HC,
          ID_Miscellaneous_HC, ID_RealEstate_HC, puf):
     """
     AMTI function: ...
     """
     # pylint: disable=too-many-statements,too-many-branches
-    # State and Local Income Tax, or Sales Tax
-    _statax = max(e18400, 0.)
-    # Other Taxes (including state and local)
-    real_estate = e18500
     c62720 = c24517 + x62720
     c60260 = e00700
     c60200 = min((1 - ID_Medical_HC) * c17000, 0.025 * _posagi)
@@ -796,18 +761,19 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
                   e60660 - c60260 - e60480 - e62000 + c60000 - e60250)
     if puf and ((_standard == 0 or (_exact == 1 and p04470 > 0.))):
         if f6251 == 1:
-            _cmbtp = _cmbtp_itemizer
+            _cmbtp = cmbtp_itemizer
         else:
             _cmbtp = 0.
+        real_estate = (1 - ID_RealEstate_HC) * e18500
+        income_sales = (1 - ID_StateLocalTax_HC) * max(0., e18400)
         c62100 = (c00100 - c04470 +
                   max(0., min((1 - ID_Medical_HC) * c17000, 0.025 * c00100)) +
-                  (1 - ID_StateLocalTax_HC) * _statax +
-                  (1 - ID_RealEstate_HC) * real_estate -
+                  income_sales + real_estate -
                   c60260 + (1 - ID_Miscellaneous_HC) * c20800 - c21040)
         c62100 += _cmbtp
     if puf and _standard > 0:
         if f6251 == 1:
-            _cmbtp = _cmbtp_standard
+            _cmbtp = cmbtp_standard
         else:
             _cmbtp = 0.
         c62100 = c00100 - c60260
@@ -872,20 +838,14 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
     c63100 = max(0., c63100)
     c63200 = max(0., c63000 - c63100)
     c09600 = c63200
-    # no _othtax in SAS
-    _othtax = e05800 - (e05100 + c09600)
-    c62100_everyone = c62100
-    if c09600 == 0. and e60000 == 0.:
-        c60000 = 0.
-        c62100 = 0.
     c05800 = _taxbc + c63200
     return (c62720, c60260, c63100, c60200, c60240, c60220, c60000,
-            c60130, c62730, _addamt, c62100, c63200,
+            c60130, c62730, _addamt, c62100,
             _amtsepadd, c62600, c62700, c62760,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
             _ngamty, c62745, _tamt2, _amt5pc, _amt15pc,
             _amt25pc, c62747, c62755, c62770, _amt20pc, c62800,
-            c09600, _othtax, c05800, _cmbtp, c62100_everyone)
+            c09600, c05800, _cmbtp)
 
 
 @iterate_jit(nopython=True)
@@ -1328,13 +1288,13 @@ def F5405(pol, rec):
     return pd.DataFrame(data=np.column_stack((c64450,)), columns=['c64450'])
 
 
-@iterate_jit(nopython=True, puf=True)
+@iterate_jit(nopython=True)
 def C1040(e07400, e07200, c07220, c07230, c07300, c07240,
           e07260, c07970, x07400, e09720, c07600,
           e07500, e07700, p08000, e08001, e07960,
-          e07980, c05800, e08800, e09900, e09400, e09800,
+          e07980, c05800, e09900, c09400, e09800,
           e10000, e10100, e09700, e10050, e10075, e09805, e09710,
-          c07180, NIIT, puf):
+          c07180, NIIT):
     """
     C1040 function: ...
     """
@@ -1348,16 +1308,12 @@ def C1040(e07400, e07200, c07220, c07230, c07300, c07240,
     c07100 = min(c07100, c05800)
     # Tax After credits 1040 line 52
     c08795 = max(0., c05800 - c07100)  # SAS @1277
-    if puf:
-        e08795 = e08800
-    else:
-        e08795 = 0.
     # Tax before refundable credits
-    _othertax = e09900 + e09400 + e09800 + e10000 + e10100 + NIIT
+    _othertax = e09900 + c09400 + e09800 + e10000 + e10100 + NIIT
     c09200 = _othertax + c08795
     # assuming year (FLPDYR) > 2009
     c09200 = c09200 + e09700 + e10050 + e10075 + e09805 + e09710 + e09720
-    return (c07100, c07970, y07100, x07100, c08795, e08795, c09200, _othertax)
+    return (c07100, c07970, y07100, x07100, c08795, c09200, _othertax)
 
 
 @iterate_jit(nopython=True)

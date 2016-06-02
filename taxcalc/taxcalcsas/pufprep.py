@@ -27,6 +27,8 @@ def main(infilename, outfilename):
     vardf['e02100'] = 0
     vardf['e09400'] = 0
     vardf['e03260'] = 0
+    # (b) zero out NOL tax preference amount
+    vardf['p60100'] = 0
 
     # write vardf to OUTPUT file
     vardf.to_csv(outfilename, index=False)

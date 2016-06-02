@@ -18,7 +18,7 @@ import os
 import sys
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, "..", ".."))
-from taxcalc import Policy, Records, Calculator, behavior
+from taxcalc import Policy, Records, Calculator
 PUF_PATH = os.path.join(CUR_PATH, "..", "..", "puf.csv")
 
 # import all reforms from this JSON file
@@ -58,15 +58,13 @@ for i in range(1, num_reforms + 1):
     this_reform = 'r' + str(i)
     start_year = reforms_json.get(this_reform).get("start_year")
 
-    # implement behavior assumptions if any,
-    # and remove the node so it wont break policy object
-    has_behavior = False
-    if "_BE_CG_per" in reforms_json.get(this_reform).get("value"):
-        persistent = reforms_json[this_reform]["value"]["_BE_CG_per"]
-        assumption = {start_year: {"_BE_CG_per": persistent}}
+    # implement behavioral-response elasticities if any,
+    # and remove the node so it won't break policy object
+    if "_BE_cg" in reforms_json.get(this_reform).get("value"):
+        elasticity = reforms_json[this_reform]["value"]["_BE_cg"]
+        assumption = {start_year: {"_BE_cg": elasticity}}
         c2.behavior.update_behavior(assumption)
-        has_behavior = True
-        del reforms_json[this_reform]["value"]["_BE_CG_per"]
+        del reforms_json[this_reform]["value"]["_BE_cg"]
 
     # implement reforms on policy
     reform = {start_year: reforms_json.get(this_reform).get("value")}
@@ -79,8 +77,8 @@ for i in range(1, num_reforms + 1):
 
         c1.calc_all()
         baseline = getattr(c1.records, output_type)
-        if has_behavior:
-            c2_behavior = behavior(c1, c2)
+        if c2.behavior.has_response():
+            c2_behavior = c2.behavior.response(c1, c2)
             diff = getattr(c2_behavior.records, output_type) - baseline
         else:
             c2.calc_all()

@@ -265,7 +265,7 @@
                   "_AMT_CG_rt1": [0.02],
                   "_AMT_CG_rt2": [0.17],
                   "_AMT_CG_rt3": [0.22],
-                  "_BE_CG_per": [0.78]},
+                  "_BE_cg": [0.78]},
         "name": "Increase long term cap gain and dividends tax rates by 2 percentage, elasticity assumed to be 0.78",
         "output_type": "_iitax",
         "compare_with": {}
@@ -279,7 +279,7 @@
                   "_AMT_CG_rt1": [0.02],
                   "_AMT_CG_rt2": [0.17],
                   "_AMT_CG_rt3": [0.22],
-                  "_BE_CG_per": [1.2]},
+                  "_BE_cg": [1.2]},
         "name": "Increase long term cap gain and dividends tax rates by 2 percentage, elasticity assumed to be 1.2",
         "output_type": "_iitax",
         "compare_with": {"Budget Options": [4.6, 5, 5.3, 5.6]}

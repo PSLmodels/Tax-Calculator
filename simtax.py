@@ -34,9 +34,7 @@ def main():
                      'http://users.nber.org/~taxsim/taxsim-calc9/'))
     parser.add_argument('--iohelp',
                         help=('optional flag to show INPUT and OUTPUT '
-                              'variable definitions and exit without trying '
-                              'to read the INPUT file, so INPUT can be any '
-                              'meaningless character (e.g., x or ?'),
+                              'variable definitions and exit'),
                         default=False,
                         action="store_true")
     parser.add_argument('--reform',
@@ -67,7 +65,7 @@ def main():
                               '".out-simtax" part is replaced by ".records"'),
                         default=False,
                         action="store_true")
-    parser.add_argument('INPUT',
+    parser.add_argument('INPUT', nargs='?', default='',
                         help=('INPUT is name of required file that contains '
                               'tax-filing-unit information in Internet-TAXSIM '
                               'format.'))
@@ -76,6 +74,11 @@ def main():
     if args.iohelp:
         SimpleTaxIO.show_iovar_definitions()
         return 0
+    # check INPUT filename
+    if args.INPUT == '':
+        sys.stderr.write('ERROR: must specify INPUT file name;\n')
+        sys.stderr.write('USAGE: python simtax.py --help\n')
+        return 1
     # instantiate SimpleTaxIO object and do tax calculations
     simtax = SimpleTaxIO(input_filename=args.INPUT,
                          reform=args.reform,
