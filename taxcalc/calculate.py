@@ -359,7 +359,7 @@ class Calculator(object):
         for i in range(0, num_years):
             if calc.behavior.has_response():
                 base_calc.calc_all()
-                behavior_calc = calc.behavior.response(base_calc, calc)
+                behavior_calc = Behavior.response(base_calc, calc)
                 behavior_calc.diagnostic_table_items(table)
             else:
                 calc.calc_all()

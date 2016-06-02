@@ -47,6 +47,11 @@ def test_behavioral_response_Calculator():
     calc_x = Calculator(policy=policy_x, records=records_x)
     calc_y = Calculator(policy=policy_y, records=records_y,
                         behavior=behavior_y)
+    # test incorrect use of Behavior._mtr_xy method
+    with pytest.raises(ValueError):
+        behv = Behavior._mtr_xy(calc_x, calc_y,
+                                mtr_of='e00200p',
+                                mtr_type='nonsense')
     # vary substitution and income effects in calc_y
     behavior1 = {
         2013: {
@@ -55,10 +60,10 @@ def test_behavioral_response_Calculator():
         }
     }
     behavior_y.update_behavior(behavior1)
-    assert behavior_y.has_response()
+    assert behavior_y.has_response() is True
     assert behavior_y.BE_sub == 0.4
     assert behavior_y.BE_inc == -0.1
-    calc_y_behavior1 = calc_y.behavior.response(calc_x, calc_y)
+    calc_y_behavior1 = Behavior.response(calc_x, calc_y)
     behavior2 = {
         2013: {
             "_BE_sub": [0.5],
@@ -66,7 +71,7 @@ def test_behavioral_response_Calculator():
         }
     }
     behavior_y.update_behavior(behavior2)
-    calc_y_behavior2 = calc_y.behavior.response(calc_x, calc_y)
+    calc_y_behavior2 = Behavior.response(calc_x, calc_y)
     behavior3 = {
         2013: {
             "_BE_inc": [-0.2],
@@ -74,7 +79,7 @@ def test_behavioral_response_Calculator():
         }
     }
     behavior_y.update_behavior(behavior3)
-    calc_y_behavior3 = calc_y.behavior.response(calc_x, calc_y)
+    calc_y_behavior3 = Behavior.response(calc_x, calc_y)
     # check that total income tax liability differs across the
     # three sets of behavioral-response elasticities
     assert (calc_y_behavior1.records._iitax.sum() !=
