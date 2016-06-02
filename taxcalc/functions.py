@@ -217,43 +217,66 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
             ID_Charity_HC, ID_InterestPaid_HC, ID_RealEstate_HC, puf):
     """
     ItemDed function:
+
     Itemized Deduction; Form 1040, Schedule A
+
     Notes
     -----
     Tax Law Parameters:
         ID_ps : Itemized deduction phaseout AGI start (Pease)
+
         ID_crt : Itemized deduction maximum phaseout
         as a percent of total itemized deduction (Pease)
+
         ID_prt : Itemized deduction phaseout rate (Pease)
+
         ID_Medical_frt : Deduction for medical expenses;
         floor as a percent of AGI
+
         ID_Casualty_frt : Deduction for casualty loss;
         floor as a percent of AGI
+
         ID_Miscellaneous_frt : Deduction for miscellaneous expenses;
         floor as a percent of AGI
+
         ID_Charity_crt_Cash : Deduction for charitable cash contributions;
         ceiling as a percent of AGI
+
         ID_Charity_crt_Asset : Deduction for charitable asset contributions;
         ceiling as a percent of AGI
+
         ID_Charity_frt : Deduction for charitable contributions;
         floor as a percent of AGI
+
     Taxpayer Characteristics:
         e17500 : Medical expense
+
         e18425 : Income taxes
+
         e18450 : General Sales Tax
+
         e18500 : Real Estate tax
+
         e19200 : Total interest deduction
+
         e19800 : Cash Contribution
+
         e19550 : Qualified Mortgage Insurance Premiums
+
         e20100 : Charity non-cash contribution
+
         e20400 : Total Miscellaneous expense
+
         e20550 : Unreimbursed employee business Expense
+
         e20600 : Tax preparation fee
+
     Intermediate Variables:
         _posagi: positive AGI
     Returns
     -------
     c04470 : Itemized deduction amount
+
     Warning
     -------
     Any additional keyword args, such as 'puf=True' here, must be
