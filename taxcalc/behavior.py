@@ -71,11 +71,13 @@ class Behavior(ParametersBase):
         of one or more year:modification dictionaries.
         For example: {2014: {'_BE_sub': [0.4, 0.3]}}
         Also checks for valid elasticity values in revisions dictionary.
+        NOTE: this method uses the specified revisions to update the
+              DEFAULT elasticity values, so use this method just once
+              rather than calling it sequentially in an attempt to update
+              elasticities in several steps.
         """
         precall_current_year = self.current_year
         self.set_default_vals()
-        if self.current_year != self.start_year:
-            self.set_year(self.start_year)
         msg = '{} elasticity cannot be {}; value is {}'
         pos = 'positive'
         neg = 'negative'
