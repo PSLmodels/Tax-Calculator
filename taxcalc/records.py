@@ -93,9 +93,9 @@ class Records(object):
     PUF_YEAR = 2009
 
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-    WEIGHTS_FILENAME = "WEIGHTS.csv"
+    WEIGHTS_FILENAME = 'WEIGHTS.csv'
     WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
-    BLOWUP_FACTORS_FILENAME = "StageIFactors.csv"
+    BLOWUP_FACTORS_FILENAME = 'StageIFactors.csv'
     BLOWUP_FACTORS_PATH = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
 
     # specify set of all Record variables that MAY be read by Tax-Calculator:
@@ -240,7 +240,7 @@ class Records(object):
         '_num', '_sep', '_exact', '_hasgain', '_cmp', '_fixeic'])
 
     def __init__(self,
-                 data="puf.csv",
+                 data='puf.csv',
                  blowup_factors=BLOWUP_FACTORS_PATH,
                  weights=WEIGHTS_PATH,
                  start_year=None,
@@ -249,9 +249,23 @@ class Records(object):
         Records class constructor
         """
         # pylint: disable=too-many-arguments
+        # read specified data
         self._read_data(data)
+        # check that the three split-earnings variables have valid values
+        msg = 'expression "{0} == {0}p + {0}s" is not true for every record'
+        if not np.allclose(self.e00200, (self.e00200p + self.e00200s),
+                           rtol=0.0, atol=0.001):
+            raise ValueError(msg.format('e00200'))
+        if not np.allclose(self.e00900, (self.e00900p + self.e00900s),
+                           rtol=0.0, atol=0.001):
+            raise ValueError(msg.format('e00900'))
+        if not np.allclose(self.e02100, (self.e02100p + self.e02100s),
+                           rtol=0.0, atol=0.001):
+            raise ValueError(msg.format('e02100'))
+        # read extrapolation blowup factors and sample weights
         self._read_blowup(blowup_factors)
         self._read_weights(weights)
+        # specify current_year and FLPDYR values
         if start_year is None:
             self._current_year = Records.PUF_YEAR
             self.FLPDYR.fill(Records.PUF_YEAR)
@@ -259,12 +273,15 @@ class Records(object):
             self._current_year = start_year
             self.FLPDYR.fill(start_year)
         else:
-            msg = ('Records.constructor start_year is neither None nor '
-                   'an integer')
+            msg = 'start_year is neither None nor an integer'
             raise ValueError(msg)
+        # consider applying initial-year blowup factors
         if consider_blowup and self.current_year == Records.PUF_YEAR:
             self._extrapolate_in_puf_year()
-            self.s006 = self.WT["WT" + str(self.current_year)] * 0.01
+        # construct sample weights for current_year
+        wt_colname = 'WT{}'.format(self.current_year)
+        if wt_colname in self.WT.columns:
+            self.s006 = self.WT[wt_colname] * 0.01
 
     @property
     def current_year(self):
@@ -282,7 +299,9 @@ class Records(object):
         # apply Stage 1 Extrapolation blowup factors
         self._blowup(self.current_year)
         # specify Stage 2 Extrapolation sample weights
-        self.s006[:] = self.WT["WT" + str(self.current_year)] * 0.01
+        wt_colname = 'WT{}'.format(self.current_year)
+        if wt_colname in self.WT.columns:
+            self.s006 = self.WT[wt_colname] * 0.01
 
     def set_current_year(self, new_current_year):
         """
@@ -412,13 +431,12 @@ class Records(object):
         if isinstance(data, pd.DataFrame):
             taxdf = data
         elif isinstance(data, six.string_types):
-            if data.endswith("gz"):
+            if data.endswith('gz'):
                 taxdf = pd.read_csv(data, compression='gzip')
             else:
                 taxdf = pd.read_csv(data)
         else:
-            msg = ('Records.constructor data is neither a string nor '
-                   'a Pandas DataFrame')
+            msg = 'data is neither a string nor a Pandas DataFrame'
             raise ValueError(msg)
         self.dim = len(taxdf)
         # create class variables using taxdf column names
@@ -466,17 +484,16 @@ class Records(object):
             try:
                 if not os.path.exists(weights):
                     # grab weights out of EGG distribution
-                    path_in_egg = os.path.join("taxcalc",
+                    path_in_egg = os.path.join('taxcalc',
                                                self.WEIGHTS_FILENAME)
-                    weights = resource_stream(Requirement.parse("taxcalc"),
+                    weights = resource_stream(Requirement.parse('taxcalc'),
                                               path_in_egg)
                 WT = pd.read_csv(weights)
             except IOError:
                 msg = 'could not find weights file'
                 ValueError(msg)
         else:
-            msg = ('Records.constructor blowup_factors is neither a string '
-                   'nor a Pandas DataFrame')
+            msg = 'weights is neither a string nor a Pandas DataFrame'
             raise ValueError(msg)
         setattr(self, 'WT', WT)
 
@@ -491,17 +508,16 @@ class Records(object):
             try:
                 if not os.path.exists(blowup_factors):
                     # grab blowup factors out of EGG distribution
-                    path_in_egg = os.path.join("taxcalc",
+                    path_in_egg = os.path.join('taxcalc',
                                                self.BLOWUP_FACTORS_FILENAME)
                     blowup_factors = resource_stream(
-                        Requirement.parse("taxcalc"), path_in_egg)
+                        Requirement.parse('taxcalc'), path_in_egg)
                 BF = pd.read_csv(blowup_factors, index_col='YEAR')
             except IOError:
                 msg = 'could not find blowup_factors file'
                 ValueError(msg)
         else:
-            msg = ('Records.constructor blowup_factors is neither a string '
-                   'nor a Pandas DataFrame')
+            msg = 'blowup_factors is neither a string nor a Pandas DataFrame'
             raise ValueError(msg)
         BF.AGDPN = BF.AGDPN / BF.APOPN
         BF.ATXPY = BF. ATXPY / BF. APOPN
