@@ -131,13 +131,13 @@ class Behavior(ParametersBase):
             # e00200p is taxpayer's wages+salary
             wage_mtr_x, wage_mtr_y = Behavior._mtr_xy(calc_x, calc_y,
                                                       mtr_of='e00200p',
-                                                      mtr_type='combined')
+                                                      tax_type='combined')
             wage_pch = ((1. - wage_mtr_y) / (1. - wage_mtr_x)) - 1.
         if calc_y.behavior.BE_cg:
             # p23250 is filing unit's long-term capital gains
             ltcg_mtr_x, ltcg_mtr_y = Behavior._mtr_xy(calc_x, calc_y,
                                                       mtr_of='p23250',
-                                                      mtr_type='iitax')
+                                                      tax_type='iitax')
             ltcg_pch = ((1. - ltcg_mtr_y) / (1. - ltcg_mtr_x)) - 1.
         # Calculate proportional change (pch) in after-tax income, ati
         if calc_y.behavior.BE_inc:
@@ -217,18 +217,18 @@ class Behavior(ParametersBase):
         return calc
 
     @staticmethod
-    def _mtr_xy(calc_x, calc_y, mtr_of, mtr_type):
+    def _mtr_xy(calc_x, calc_y, mtr_of, tax_type):
         """
         Computes marginal tax rates for Calculator objects calc_x and calc_y
-        for specified mtr_of income type and specified mtr_type.
+        for specified mtr_of income type and specified tax_type.
         """
         _, iitax_x, combined_x = calc_x.mtr(mtr_of)
         _, iitax_y, combined_y = calc_y.mtr(mtr_of)
-        if mtr_type == 'combined':
+        if tax_type == 'combined':
             return (combined_x, combined_y)
-        elif mtr_type == 'iitax':
+        elif tax_type == 'iitax':
             return (iitax_x, iitax_y)
         else:
-            raise ValueError('mtr_type must be "combined" or "iitax"')
+            raise ValueError('tax_type must be "combined" or "iitax"')
 
 # end Behavior class
