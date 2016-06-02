@@ -49,12 +49,13 @@ class Records(object):
               test_Calculator_using_nonstd_input() function in the
               tests/test_calculate.py file.
 
-    consider_imputations: boolean
+    consider_blowup: boolean
         True implies that if current_year (see start_year above) equals
-        PUF_YEAR (see below), then call _impute_variables() method;
-        False implies never call _impute_variables() method;
+        PUF_YEAR (see below), then call _extrapolate_in_puf_year() method;
+        False implies never call _extrapolate_in_puf_year() method;
         default value is True
         For details on how to use your own data with the Tax-Calculator,
+        read the DATAPREP.md file in the top-level directory, and then
         look at the test_Calculator_using_nonstd_input() function in the
         tests/test_calculate.py file.
 
@@ -73,14 +74,14 @@ class Records(object):
     Typical usage is "recs = Records()", which uses all the default
     parameters of the constructor, and therefore, imputed variables
     are generated to augment the data and initial-year blowup factors
-    are applied to the data. Explicitly setting consider_imputation to
-    False and/or the start_year to something other than Records.PUF_YEAR
-    will cause this variable-imputation and initial-year-blowup logic to
-    be skipped.  There are situations in which this is exactly what is
-    desired, but more often than not, skipping the imputation and blowup
-    logic would be a mistake.  In other words, do not explicitly specify
-    consider_imputations=False or specify the start_year in the Records
-    class constructor unless you know exactly what you are doing.
+    are applied to the data. Explicitly setting consider_blowup to False
+    and/or the start_year to something other than Records.PUF_YEAR will
+    cause the initial-year-blowup logic to be skipped.  There are
+    situations in which this is exactly what is desired, but more often
+    than not, skipping the initial-year blowup logic would be a mistake.
+    In other words, do not explicitly specify consider_blowup=False or
+    specify the start_year in the Records class constructor unless you
+    know exactly what you are doing.
     """
     # suppress pylint warnings about unrecognized Records variables:
     # pylint: disable=no-member
@@ -243,11 +244,11 @@ class Records(object):
                  blowup_factors=BLOWUP_FACTORS_PATH,
                  weights=WEIGHTS_PATH,
                  start_year=None,
-                 consider_imputations=True):
+                 consider_blowup=True):
         """
         Records class constructor
         """
-        # pylint: disable=unused-argument,too-many-arguments
+        # pylint: disable=too-many-arguments
         self._read_data(data)
         self._read_blowup(blowup_factors)
         self._read_weights(weights)
@@ -261,8 +262,9 @@ class Records(object):
             msg = ('Records.constructor start_year is neither None nor '
                    'an integer')
             raise ValueError(msg)
-        if consider_imputations and self.current_year == Records.PUF_YEAR:
-            self._extrapolate_2009_puf()
+        if consider_blowup and self.current_year == Records.PUF_YEAR:
+            self._extrapolate_in_puf_year()
+            self.s006 = self.WT["WT" + str(self.current_year)] * 0.01
 
     @property
     def current_year(self):
@@ -277,11 +279,10 @@ class Records(object):
         Also, does variable blowup and reweighting for the new current year.
         """
         self._current_year += 1
-        # Implement Stage 1 Extrapolation blowup factors
+        # apply Stage 1 Extrapolation blowup factors
         self._blowup(self.current_year)
-        # Implement Stage 2 Extrapolation reweighting
-        # pylint: disable=attribute-defined-outside-init
-        self.s006 = self.WT["WT" + str(self.current_year)] * 0.01
+        # specify Stage 2 Extrapolation sample weights
+        self.s006[:] = self.WT["WT" + str(self.current_year)] * 0.01
 
     def set_current_year(self, new_current_year):
         """
@@ -518,6 +519,16 @@ class Records(object):
         BF = 1.0 + BF.pct_change()
         setattr(self, 'BF', BF)
 
+    def _extrapolate_in_puf_year(self):
+        """
+        Calls appropriate current_year extrapolation method.
+        """
+        if self.current_year == 2009:
+            self._extrapolate_2009_puf()
+        else:
+            msg = 'no extrapolation method available for current_year {}'
+            raise ValueError(msg.format(self.current_year))
+
     def _extrapolate_2009_puf(self):
         """
         Initial year blowup factors for 2009 IRS-PUF/Census-CPS merged data.
@@ -545,4 +556,3 @@ class Records(object):
         self.BF.APOPSNR[year] = 1.0
         self.BF.AIPD[year] = 1.0
         self._blowup(year)
-        self.s006 = self.WT["WT" + str(year)] * 0.01

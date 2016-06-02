@@ -141,11 +141,11 @@ class IncomeTaxIO(object):
         if blowup_input_data:
             recs = Records(data=input_data,
                            start_year=Records.PUF_YEAR,
-                           consider_imputations=True)
+                           consider_blowup=True)
         else:
             recs = Records(data=input_data,
                            start_year=tax_year,
-                           consider_imputations=False)
+                           consider_blowup=False)
         # create Calculator object
         self._calc = Calculator(policy=policy, records=recs,
                                 sync_years=blowup_input_data)

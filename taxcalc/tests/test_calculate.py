@@ -330,7 +330,7 @@ def test_Calculator_using_nonstd_input(rawinputfile):
     policy.set_year(RAWINPUTFILE_YEAR)  # set policy params to input data year
     nonpuf = Records(data=rawinputfile.name,
                      start_year=RAWINPUTFILE_YEAR,  # set raw input data year
-                     consider_imputations=False)  # keeps raw data unchanged
+                     consider_blowup=False)  # keeps raw data unchanged
     assert nonpuf.dim == RAWINPUTFILE_FUNITS
     calc = Calculator(policy=policy,
                       records=nonpuf,
