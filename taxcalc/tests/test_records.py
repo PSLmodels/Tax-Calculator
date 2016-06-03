@@ -3,6 +3,7 @@ import sys
 import numpy as np
 from numpy.testing import assert_array_equal
 import pandas as pd
+import pytest
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy, Records, Calculator, Growth
@@ -14,21 +15,50 @@ WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
 WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
 
-def test_create_records():
-    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=Records.PUF_YEAR)
-    assert recs
-    assert np.any(recs.MARS != 0)
+def test_incorrect_Records_instantiation():
+    with pytest.raises(ValueError):
+        recs = Records(data=list())
+    with pytest.raises(ValueError):
+        recs = Records(data=TAXDATA, blowup_factors=list())
+    with pytest.raises(ValueError):
+        recs = Records(data=TAXDATA, blowup_factors=None, weights=list())
+    with pytest.raises(ValueError):
+        recs = Records(data=TAXDATA, blowup_factors=None, weights=None,
+                       start_year=list())
 
 
-def test_blow_up():
-    tax_dta = pd.read_csv(TAXDATA_PATH, compression='gzip')
-    parms = Policy()
-    parms_start_year = parms.current_year
-    recs = Records(data=tax_dta, start_year=Records.PUF_YEAR)
-    assert recs.current_year == Records.PUF_YEAR
-    # r.current_year == PUF_YEAR ==> Calculator ctor will call r.blowup()
-    calc = Calculator(policy=parms, records=recs)
-    assert calc.current_year == parms_start_year
+def test_correct_Records_instantiation():
+    rec1 = Records(data=TAXDATA, blowup_factors=None, weights=WEIGHTS)
+    assert rec1
+    assert np.all(rec1.MARS != 0)
+    assert rec1.current_year == Records.PUF_YEAR
+    sum_e00200_in_puf_year = rec1.e00200.sum()
+    rec1.set_current_year(Records.PUF_YEAR + 1)
+    sum_e00200_in_puf_year_plus_one = rec1.e00200.sum()
+    assert sum_e00200_in_puf_year_plus_one == sum_e00200_in_puf_year
+    bf_df = pd.read_csv(Records.BLOWUP_FACTORS_PATH)
+    rec2 = Records(data=TAXDATA, blowup_factors=bf_df, weights=None)
+    assert rec2
+    assert np.all(rec2.MARS != 0)
+    assert rec2.current_year == Records.PUF_YEAR
+
+
+def test_blowup():
+    pol1 = Policy()
+    assert pol1.current_year == Policy.JSON_START_YEAR
+    rec1 = Records(data=TAXDATA, weights=WEIGHTS)
+    assert rec1.current_year == Records.PUF_YEAR
+    calc1 = Calculator(policy=pol1, records=rec1, sync_years=True)
+    assert calc1.records.current_year == Policy.JSON_START_YEAR
+    pol2 = Policy()
+    assert pol2.current_year == Policy.JSON_START_YEAR
+    rec2 = Records(data=TAXDATA, weights=WEIGHTS)
+    assert rec2.current_year == Records.PUF_YEAR
+    rec2.set_current_year(Policy.JSON_START_YEAR)
+    assert rec2.current_year == Policy.JSON_START_YEAR
+    calc2 = Calculator(policy=pol2, records=rec2, sync_years=False)
+    assert calc2.policy.current_year == Policy.JSON_START_YEAR
+    assert calc2.records.current_year == Policy.JSON_START_YEAR
 
 
 def test_for_duplicate_names():
