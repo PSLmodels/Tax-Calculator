@@ -90,9 +90,7 @@ class Records(object):
     # specify set of all Record variables that MAY be read by Tax-Calculator:
     VALID_READ_VARS = set([
         'DSI', 'EIC', 'FDED', 'FLPDYR',
-        'f2441', 'f6251',
-        'n24',
-        'XTOT',
+        'f2441', 'f6251', 'n24', 'XTOT',
         'e00200', 'e00300', 'e00400', 'e00600', 'e00650', 'e00700', 'e00800',
         'e00200p', 'e00200s',
         'e00900', 'e01100', 'e01200', 'e01400', 'e01500', 'e01700',

@@ -76,8 +76,8 @@ def test_read_data():
     with pytest.raises(ValueError):
         rec = Records(data=df4)
     funit5 = (
-        u'RECID\n'
-        u'1,   \n'
+        u'RECID,e00300\n'
+        u'1,   ,456789\n'
     )
     df5 = pd.read_csv(StringIO(funit5))
     with pytest.raises(ValueError):
