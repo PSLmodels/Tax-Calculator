@@ -435,10 +435,9 @@ class Records(object):
                 setattr(self, varname,
                         taxdf[varname].astype(np.float64).values)
         # check that MUST_READ_VARS are all present in taxdf
-        UNREAD_MUST_VARS = Records.MUST_READ_VARS - READ_VARS
-        if len(UNREAD_MUST_VARS) > 0:
-            msg = 'Records data missing {} MUST_READ_VARS'
-            raise ValueError(msg.format(len(UNREAD_MUST_VARS)))
+        if not Records.MUST_READ_VARS.issubset(READ_VARS):
+            msg = 'Records data missing one or more MUST_READ_VARS'
+            raise ValueError(msg)
         # create other class variables that are set to all zeros
         UNREAD_VARS = Records.VALID_READ_VARS - READ_VARS
         ZEROED_VARS = Records.CALCULATED_VARS | UNREAD_VARS
