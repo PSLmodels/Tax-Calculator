@@ -38,10 +38,12 @@ Obviously, when `MARS` is not equal to 2 (married filing jointly), the
 values of the three `s` variables are zero and the values of the three
 `p` variables are equal to the value of their corresponding
 filing-unit variable.  And obviously, the data file can omit any one,
-or all, of these variables.
+or all, of these three sets variables.  If the variables in one of these
+three sets are omitted, the required relationship will be satisfied
+because zero equals zero plus zero.
 
-But when including one of these three variables, it is up to you to
-specify the taxpayer-spouse split.  You will get unexpected results
-from Tax-Calculator if you do not split the filing-unit amount between
-taxpayer and spouse so that the above equations hold for each filing
-unit in the input file.
+But when including one of these three sets of variables, it is up to you
+to specify the taxpayer-spouse split.  You will get an error message
+from Tax-Calculator, and it will stop running, if you do not split the
+filing-unit amount between taxpayer and spouse so that the above equations
+hold for each filing unit in the input file.

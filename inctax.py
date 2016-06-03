@@ -121,6 +121,7 @@ def main():
                          tax_year=args.TAXYEAR,
                          policy_reform=args.reform,
                          blowup_input_data=args.blowup,
+                         output_weights=args.weights,
                          output_records=args.records,
                          csv_dump=args.csvdump)
     if args.records:

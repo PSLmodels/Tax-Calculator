@@ -11,7 +11,10 @@ import pandas as pd
 import numpy as np
 import os
 import six
-from pkg_resources import resource_stream, Requirement
+from pkg_resources import resource_stream, Requirement, DistributionNotFound
+
+
+PUFCSV_YEAR = 2009
 
 
 class Records(object):
@@ -28,35 +31,28 @@ class Records(object):
         look at the test_Calculator_using_nonstd_input() function in the
         tests/test_calculate.py file.
 
-    blowup_factors: string or Pandas DataFrame
+    blowup_factors: string or Pandas DataFrame or None
         string describes CSV file in which blowup factors reside;
         DataFrame already contains blowup factors;
+        None creates empty blowup-factors DataFrame;
         default value is filename of the default blowup factors
 
-    weights: string or Pandas DataFrame
+    weights: string or Pandas DataFrame or None
         string describes CSV file in which weights reside;
         DataFrame already contains weights;
+        None creates empty sample-weights DataFrame;
         default value is filename of the default weights
 
-    start_year: None or integer
-        None implies current_year is set to PUF_YEAR (see below);
-        integer implies current_year is set to start_year;
-        default value is None
-        NOTE: if specifying data (see above) as being a custom
+    start_year: integer
+        specifies calendar year of the data;
+        default value is PUFCSV_YEAR.
+        NOTE: if specifying your own data (see above) as being a custom
               data set, be sure to explicitly set start_year to the
               custom data's calendar year.  For details on how to
-              use your own data with the Tax-Calculator, look at the
-              test_Calculator_using_nonstd_input() function in the
-              tests/test_calculate.py file.
-
-    consider_imputations: boolean
-        True implies that if current_year (see start_year above) equals
-        PUF_YEAR (see below), then call _impute_variables() method;
-        False implies never call _impute_variables() method;
-        default value is True
-        For details on how to use your own data with the Tax-Calculator,
-        look at the test_Calculator_using_nonstd_input() function in the
-        tests/test_calculate.py file.
+              use your own data with the Tax-Calculator, read the
+              DATAPREP.md file in the top-level directory and then
+              look at the test_Calculator_using_nonstd_input()
+              function in the taxcalc/tests/test_calculate.py file.
 
     Raises
     ------
@@ -73,14 +69,9 @@ class Records(object):
     Typical usage is "recs = Records()", which uses all the default
     parameters of the constructor, and therefore, imputed variables
     are generated to augment the data and initial-year blowup factors
-    are applied to the data. Explicitly setting consider_imputation to
-    False and/or the start_year to something other than Records.PUF_YEAR
-    will cause this variable-imputation and initial-year-blowup logic to
-    be skipped.  There are situations in which this is exactly what is
-    desired, but more often than not, skipping the imputation and blowup
-    logic would be a mistake.  In other words, do not explicitly specify
-    consider_imputations=False or specify the start_year in the Records
-    class constructor unless you know exactly what you are doing.
+    are applied to the data.  There are situations in which you need
+    to specify the values of the Record constructor's arguments, but
+    be sure you know exactly what you are doing when attempting this.
     """
     # suppress pylint warnings about unrecognized Records variables:
     # pylint: disable=no-member
@@ -89,20 +80,17 @@ class Records(object):
     # suppress pylint warnings about too many class instance attributes:
     # pylint: disable=too-many-instance-attributes
 
-    PUF_YEAR = 2009
-
+    PUF_YEAR = PUFCSV_YEAR
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-    WEIGHTS_FILENAME = "WEIGHTS.csv"
+    WEIGHTS_FILENAME = 'WEIGHTS.csv'
     WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
-    BLOWUP_FACTORS_FILENAME = "StageIFactors.csv"
+    BLOWUP_FACTORS_FILENAME = 'StageIFactors.csv'
     BLOWUP_FACTORS_PATH = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
 
     # specify set of all Record variables that MAY be read by Tax-Calculator:
     VALID_READ_VARS = set([
         'DSI', 'EIC', 'FDED', 'FLPDYR',
-        'f2441', 'f6251',
-        'n24',
-        'XTOT',
+        'f2441', 'f6251', 'n24', 'XTOT',
         'e00200', 'e00300', 'e00400', 'e00600', 'e00650', 'e00700', 'e00800',
         'e00200p', 'e00200s',
         'e00900', 'e01100', 'e01200', 'e01400', 'e01500', 'e01700',
@@ -239,30 +227,43 @@ class Records(object):
         '_num', '_sep', '_exact', '_hasgain', '_cmp', '_fixeic'])
 
     def __init__(self,
-                 data="puf.csv",
+                 data='puf.csv',
                  blowup_factors=BLOWUP_FACTORS_PATH,
                  weights=WEIGHTS_PATH,
-                 start_year=None,
-                 consider_imputations=True):
+                 start_year=PUFCSV_YEAR):
         """
         Records class constructor
         """
-        # pylint: disable=unused-argument,too-many-arguments
+        # read specified data
         self._read_data(data)
+        # check that three sets of split-earnings variables have valid values
+        msg = 'expression "{0} == {0}p + {0}s" is not true for every record'
+        if not np.allclose(self.e00200, (self.e00200p + self.e00200s),
+                           rtol=0.0, atol=0.001):
+            raise ValueError(msg.format('e00200'))
+        if not np.allclose(self.e00900, (self.e00900p + self.e00900s),
+                           rtol=0.0, atol=0.001):
+            raise ValueError(msg.format('e00900'))
+        if not np.allclose(self.e02100, (self.e02100p + self.e02100s),
+                           rtol=0.0, atol=0.001):
+            raise ValueError(msg.format('e02100'))
+        # read extrapolation blowup factors and sample weights
         self._read_blowup(blowup_factors)
         self._read_weights(weights)
-        if start_year is None:
-            self._current_year = Records.PUF_YEAR
-            self.FLPDYR.fill(Records.PUF_YEAR)
-        elif isinstance(start_year, int):
+        # specify current_year and FLPDYR values
+        if isinstance(start_year, int):
             self._current_year = start_year
             self.FLPDYR.fill(start_year)
         else:
-            msg = ('Records.constructor start_year is neither None nor '
-                   'an integer')
+            msg = 'start_year is not an integer'
             raise ValueError(msg)
-        if consider_imputations and self.current_year == Records.PUF_YEAR:
-            self._extrapolate_2009_puf()
+        # consider applying initial-year blowup factors
+        if self.BF.empty is False and self.current_year == Records.PUF_YEAR:
+            self._extrapolate_in_puf_year()
+        # construct sample weights for current_year
+        wt_colname = 'WT{}'.format(self.current_year)
+        if wt_colname in self.WT.columns:
+            self.s006 = self.WT[wt_colname] * 0.01
 
     @property
     def current_year(self):
@@ -277,11 +278,12 @@ class Records(object):
         Also, does variable blowup and reweighting for the new current year.
         """
         self._current_year += 1
-        # Implement Stage 1 Extrapolation blowup factors
+        # apply Stage 1 Extrapolation blowup factors
         self._blowup(self.current_year)
-        # Implement Stage 2 Extrapolation reweighting
-        # pylint: disable=attribute-defined-outside-init
-        self.s006 = self.WT["WT" + str(self.current_year)] * 0.01
+        # specify Stage 2 Extrapolation sample weights
+        wt_colname = 'WT{}'.format(self.current_year)
+        if wt_colname in self.WT.columns:
+            self.s006 = self.WT[wt_colname] * 0.01
 
     def set_current_year(self, new_current_year):
         """
@@ -411,13 +413,12 @@ class Records(object):
         if isinstance(data, pd.DataFrame):
             taxdf = data
         elif isinstance(data, six.string_types):
-            if data.endswith("gz"):
+            if data.endswith('gz'):
                 taxdf = pd.read_csv(data, compression='gzip')
             else:
                 taxdf = pd.read_csv(data)
         else:
-            msg = ('Records.constructor data is neither a string nor '
-                   'a Pandas DataFrame')
+            msg = 'data is neither a string nor a Pandas DataFrame'
             raise ValueError(msg)
         self.dim = len(taxdf)
         # create class variables using taxdf column names
@@ -434,10 +435,9 @@ class Records(object):
                 setattr(self, varname,
                         taxdf[varname].astype(np.float64).values)
         # check that MUST_READ_VARS are all present in taxdf
-        UNREAD_MUST_VARS = Records.MUST_READ_VARS - READ_VARS
-        if len(UNREAD_MUST_VARS) > 0:
-            msg = 'Records data missing {} MUST_READ_VARS'
-            raise ValueError(msg.format(len(UNREAD_MUST_VARS)))
+        if not Records.MUST_READ_VARS.issubset(READ_VARS):
+            msg = 'Records data missing one or more MUST_READ_VARS'
+            raise ValueError(msg)
         # create other class variables that are set to all zeros
         UNREAD_VARS = Records.VALID_READ_VARS - READ_VARS
         ZEROED_VARS = Records.CALCULATED_VARS | UNREAD_VARS
@@ -457,50 +457,64 @@ class Records(object):
 
     def _read_weights(self, weights):
         """
-        Read Records weights from file or use specified DataFrame as data.
+        Read Records weights from file or
+        use specified DataFrame as data or
+        create empty DataFrame if None.
         """
+        if weights is None:
+            WT = pd.DataFrame({'nothing': []})
+            setattr(self, 'WT', WT)
+            return
         if isinstance(weights, pd.DataFrame):
             WT = weights
         elif isinstance(weights, six.string_types):
-            try:
-                if not os.path.exists(weights):
-                    # grab weights out of EGG distribution
-                    path_in_egg = os.path.join("taxcalc",
-                                               self.WEIGHTS_FILENAME)
-                    weights = resource_stream(Requirement.parse("taxcalc"),
-                                              path_in_egg)
+            if os.path.isfile(weights):
                 WT = pd.read_csv(weights)
-            except IOError:
-                msg = 'could not find weights file'
-                ValueError(msg)
+            else:
+                try:
+                    # grab weights out of EGG distribution
+                    path_in_egg = os.path.join('taxcalc',
+                                               self.WEIGHTS_FILENAME)
+                    weights_fname = resource_stream(
+                        Requirement.parse('taxcalc'), path_in_egg)
+                    WT = pd.read_csv(weights_fname)
+                except (DistributionNotFound, IOError):
+                    msg = 'could not read weights file from EGG'
+                    raise ValueError(msg)
         else:
-            msg = ('Records.constructor blowup_factors is neither a string '
-                   'nor a Pandas DataFrame')
+            msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
         setattr(self, 'WT', WT)
 
     def _read_blowup(self, blowup_factors):
         """
         Read Records blowup factors from file or
-        use specified DataFrame as data.
+        use specified DataFrame as data or
+        creates empty DataFrame if None.
         """
+        if blowup_factors is None:
+            BF = pd.DataFrame({'nothing': []})
+            setattr(self, 'BF', BF)
+            return
         if isinstance(blowup_factors, pd.DataFrame):
             BF = blowup_factors
         elif isinstance(blowup_factors, six.string_types):
-            try:
-                if not os.path.exists(blowup_factors):
-                    # grab blowup factors out of EGG distribution
-                    path_in_egg = os.path.join("taxcalc",
-                                               self.BLOWUP_FACTORS_FILENAME)
-                    blowup_factors = resource_stream(
-                        Requirement.parse("taxcalc"), path_in_egg)
+            if os.path.isfile(blowup_factors):
                 BF = pd.read_csv(blowup_factors, index_col='YEAR')
-            except IOError:
-                msg = 'could not find blowup_factors file'
-                ValueError(msg)
+            else:
+                try:
+                    # grab blowup factors out of EGG distribution
+                    path_in_egg = os.path.join('taxcalc',
+                                               self.BLOWUP_FACTORS_FILENAME)
+                    blowup_factors_fname = resource_stream(
+                        Requirement.parse('taxcalc'), path_in_egg)
+                    BF = pd.read_csv(blowup_factors_fname, index_col='YEAR')
+                except (DistributionNotFound, IOError):
+                    msg = 'could not read blowup_factors file from EGG'
+                    raise ValueError(msg)
         else:
-            msg = ('Records.constructor blowup_factors is neither a string '
-                   'nor a Pandas DataFrame')
+            msg = ('blowup_factors is not None or a string '
+                   'or a Pandas DataFrame')
             raise ValueError(msg)
         BF.AGDPN = BF.AGDPN / BF.APOPN
         BF.ATXPY = BF. ATXPY / BF. APOPN
@@ -517,6 +531,13 @@ class Records(object):
         BF.ASOCSEC = BF.ASOCSEC / BF.APOPSNR
         BF = 1.0 + BF.pct_change()
         setattr(self, 'BF', BF)
+
+    def _extrapolate_in_puf_year(self):
+        """
+        Calls appropriate current_year extrapolation method.
+        """
+        if self.current_year == 2009:
+            self._extrapolate_2009_puf()
 
     def _extrapolate_2009_puf(self):
         """
@@ -545,4 +566,3 @@ class Records(object):
         self.BF.APOPSNR[year] = 1.0
         self.BF.AIPD[year] = 1.0
         self._blowup(year)
-        self.s006 = self.WT["WT" + str(year)] * 0.01
