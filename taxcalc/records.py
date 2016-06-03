@@ -471,17 +471,19 @@ class Records(object):
         if isinstance(weights, pd.DataFrame):
             WT = weights
         elif isinstance(weights, six.string_types):
-            try:
-                if not os.path.exists(weights):
+            if os.path.isfile(weights):
+                WT = pd.read_csv(weights)
+            else:
+                try:
                     # grab weights out of EGG distribution
                     path_in_egg = os.path.join('taxcalc',
                                                self.WEIGHTS_FILENAME)
-                    weights = resource_stream(Requirement.parse('taxcalc'),
-                                              path_in_egg)
-                WT = pd.read_csv(weights)
-            except IOError:
-                msg = 'could not find weights file'
-                ValueError(msg)
+                    weights_fname = resource_stream(
+                        Requirement.parse('taxcalc'), path_in_egg)
+                    WT = pd.read_csv(weights_fname)
+                except:
+                    msg = 'could not find weights file {}'
+                    raise ValueError(msg.format(weights))
         else:
             msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
@@ -500,17 +502,19 @@ class Records(object):
         if isinstance(blowup_factors, pd.DataFrame):
             BF = blowup_factors
         elif isinstance(blowup_factors, six.string_types):
-            try:
-                if not os.path.exists(blowup_factors):
+            if os.path.isfile(blowup_factors):
+                BF = pd.read_csv(blowup_factors, index_col='YEAR')
+            else:
+                try:
                     # grab blowup factors out of EGG distribution
                     path_in_egg = os.path.join('taxcalc',
                                                self.BLOWUP_FACTORS_FILENAME)
-                    blowup_factors = resource_stream(
+                    blowup_factors_fname = resource_stream(
                         Requirement.parse('taxcalc'), path_in_egg)
-                BF = pd.read_csv(blowup_factors, index_col='YEAR')
-            except IOError:
-                msg = 'could not find blowup_factors file'
-                ValueError(msg)
+                    BF = pd.read_csv(blowup_factors_fname, index_col='YEAR')
+                except:
+                    msg = 'could not find blowup_factors file {}'
+                    raise ValueError(msg.format(blowup_factors))
         else:
             msg = ('blowup_factors is not None or a string '
                    'or a Pandas DataFrame')
@@ -537,9 +541,6 @@ class Records(object):
         """
         if self.current_year == 2009:
             self._extrapolate_2009_puf()
-        else:
-            msg = 'no extrapolation method available for current_year {}'
-            raise ValueError(msg.format(self.current_year))
 
     def _extrapolate_2009_puf(self):
         """

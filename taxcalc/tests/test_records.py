@@ -4,6 +4,9 @@ import numpy as np
 from numpy.testing import assert_array_equal
 import pandas as pd
 import pytest
+from io import StringIO
+
+
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy, Records, Calculator, Growth
@@ -21,7 +24,11 @@ def test_incorrect_Records_instantiation():
     with pytest.raises(ValueError):
         recs = Records(data=TAXDATA, blowup_factors=list())
     with pytest.raises(ValueError):
+        recs = Records(data=TAXDATA, blowup_factors='bad_fname')
+    with pytest.raises(ValueError):
         recs = Records(data=TAXDATA, blowup_factors=None, weights=list())
+    with pytest.raises(ValueError):
+        recs = Records(data=TAXDATA, blowup_factors=None, weights='bad_fname')
     with pytest.raises(ValueError):
         recs = Records(data=TAXDATA, blowup_factors=None, weights=None,
                        start_year=list())
@@ -41,6 +48,44 @@ def test_correct_Records_instantiation():
     assert rec2
     assert np.all(rec2.MARS != 0)
     assert rec2.current_year == Records.PUF_YEAR
+
+
+def test_read_data():
+    funit1 = (
+        u'RECID,MARS,e00200,e00200p,e00200s\n'
+        u'1,    2,   200000, 200000,   0.01\n'
+    )
+    df1 = pd.read_csv(StringIO(funit1))
+    with pytest.raises(ValueError):
+        rec = Records(data=df1)
+    funit2 = (
+        u'RECID,MARS,e00900,e00900p,e00900s\n'
+        u'1,    2,   200000, 200000,   0.01\n'
+    )
+    df2 = pd.read_csv(StringIO(funit2))
+    with pytest.raises(ValueError):
+        rec = Records(data=df2)
+    funit3 = (
+        u'RECID,MARS,e02100,e02100p,e02100s\n'
+        u'1,    2,   200000, 200000,   0.01\n'
+    )
+    df3 = pd.read_csv(StringIO(funit3))
+    with pytest.raises(ValueError):
+        rec = Records(data=df3)
+    funit4 = (
+        u'RxCID,MARS\n'
+        u'1,    2\n'
+    )
+    df4 = pd.read_csv(StringIO(funit4))
+    with pytest.raises(ValueError):
+        rec = Records(data=df4)
+    funit5 = (
+        u'RECID\n'
+        u'1,   \n'
+    )
+    df5 = pd.read_csv(StringIO(funit5))
+    with pytest.raises(ValueError):
+        rec = Records(data=df5)
 
 
 def test_blowup():
