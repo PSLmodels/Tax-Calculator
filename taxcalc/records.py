@@ -11,7 +11,7 @@ import pandas as pd
 import numpy as np
 import os
 import six
-from pkg_resources import resource_stream, Requirement
+from pkg_resources import resource_stream, Requirement, DistributionNotFound
 
 
 PUFCSV_YEAR = 2009
@@ -481,9 +481,9 @@ class Records(object):
                     weights_fname = resource_stream(
                         Requirement.parse('taxcalc'), path_in_egg)
                     WT = pd.read_csv(weights_fname)
-                except:
-                    msg = 'could not find weights file {}'
-                    raise ValueError(msg.format(weights))
+                except (DistributionNotFound, IOError):
+                    msg = 'could not read weights file from EGG'
+                    raise ValueError(msg)
         else:
             msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
@@ -512,9 +512,9 @@ class Records(object):
                     blowup_factors_fname = resource_stream(
                         Requirement.parse('taxcalc'), path_in_egg)
                     BF = pd.read_csv(blowup_factors_fname, index_col='YEAR')
-                except:
-                    msg = 'could not find blowup_factors file {}'
-                    raise ValueError(msg.format(blowup_factors))
+                except (DistributionNotFound, IOError):
+                    msg = 'could not read blowup_factors file from EGG'
+                    raise ValueError(msg)
         else:
             msg = ('blowup_factors is not None or a string '
                    'or a Pandas DataFrame')
