@@ -24,11 +24,7 @@ def test_incorrect_Records_instantiation():
     with pytest.raises(ValueError):
         recs = Records(data=TAXDATA, blowup_factors=list())
     with pytest.raises(ValueError):
-        recs = Records(data=TAXDATA, blowup_factors='bad_fname')
-    with pytest.raises(ValueError):
         recs = Records(data=TAXDATA, blowup_factors=None, weights=list())
-    with pytest.raises(ValueError):
-        recs = Records(data=TAXDATA, blowup_factors=None, weights='bad_fname')
     with pytest.raises(ValueError):
         recs = Records(data=TAXDATA, blowup_factors=None, weights=None,
                        start_year=list())
