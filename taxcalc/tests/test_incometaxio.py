@@ -52,7 +52,6 @@ def rawinputfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
-
 def test_0(rawinputfile):  # pylint: disable=redefined-outer-name
     """
     Test incorrect IncomeTaxIO instantiation.
