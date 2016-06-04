@@ -94,7 +94,10 @@ class IncomeTaxIO(object):
             msg = 'INPUT is neither string nor Pandas DataFrame'
             raise ValueError(msg)
         # construct output_filename and delete old output file if it exists
-        if policy_reform:
+        if policy_reform is None:
+            ref = ''
+            self._using_reform_file = True
+        else:
             if isinstance(policy_reform, six.string_types):
                 if policy_reform.endswith('.json'):
                     ref = '-{}'.format(policy_reform[:-5])
@@ -107,9 +110,6 @@ class IncomeTaxIO(object):
             else:
                 msg = 'IncomeTaxIO.ctor reform is neither None, str, nor dict'
                 raise ValueError(msg)
-        else:  # if policy_reform is None
-            ref = ''
-            self._using_reform_file = True
         if output_records:
             self._output_filename = '{}.records{}'.format(inp, ref)
         elif csv_dump:

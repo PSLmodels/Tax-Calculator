@@ -52,9 +52,64 @@ def rawinputfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
+def test_0(rawinputfile):  # pylint: disable=redefined-outer-name
+    """
+    Test incorrect IncomeTaxIO instantiation.
+    """
+    # pylint: disable=unused-variable
+    with pytest.raises(ValueError):
+        inctax = IncomeTaxIO(input_data='no-dot-csv-filename',
+                             tax_year=2013,
+                             policy_reform=None,
+                             blowup_input_data=True,
+                             output_weights=False,
+                             output_records=False,
+                             csv_dump=False)
+    with pytest.raises(ValueError):
+        inctax = IncomeTaxIO(input_data=list(),
+                             tax_year=2013,
+                             policy_reform=None,
+                             blowup_input_data=True,
+                             output_weights=False,
+                             output_records=False,
+                             csv_dump=False)
+    with pytest.raises(ValueError):
+        inctax = IncomeTaxIO(input_data=rawinputfile.name,
+                             tax_year=2013,
+                             policy_reform=list(),
+                             blowup_input_data=True,
+                             output_weights=False,
+                             output_records=False,
+                             csv_dump=False)
+    with pytest.raises(ValueError):
+        inctax = IncomeTaxIO(input_data='bad_filename.csv',
+                             tax_year=2013,
+                             policy_reform=None,
+                             blowup_input_data=True,
+                             output_weights=False,
+                             output_records=False,
+                             csv_dump=False)
+    with pytest.raises(ValueError):
+        inctax = IncomeTaxIO(input_data=rawinputfile.name,
+                             tax_year=2001,
+                             policy_reform=None,
+                             blowup_input_data=True,
+                             output_weights=False,
+                             output_records=False,
+                             csv_dump=False)
+    with pytest.raises(ValueError):
+        inctax = IncomeTaxIO(input_data=rawinputfile.name,
+                             tax_year=2099,
+                             policy_reform=None,
+                             blowup_input_data=True,
+                             output_weights=False,
+                             output_records=False,
+                             csv_dump=False)
+
+
 def test_1(rawinputfile):  # pylint: disable=redefined-outer-name
     """
-    Test IncomeTaxIO constructor with no policy reform and with blowup.
+    Test IncomeTaxIO instantiation with no policy reform and with blowup.
     """
     IncomeTaxIO.show_iovar_definitions()
     taxyear = 2021
@@ -63,6 +118,22 @@ def test_1(rawinputfile):  # pylint: disable=redefined-outer-name
                          policy_reform=None,
                          blowup_input_data=True,
                          output_weights=False,
+                         output_records=False,
+                         csv_dump=False)
+    assert inctax.tax_year() == taxyear
+    inctax = IncomeTaxIO(input_data=rawinputfile.name,
+                         tax_year=taxyear,
+                         policy_reform=None,
+                         blowup_input_data=True,
+                         output_weights=True,
+                         output_records=False,
+                         csv_dump=False)
+    assert inctax.tax_year() == taxyear
+    inctax = IncomeTaxIO(input_data=rawinputfile.name,
+                         tax_year=taxyear,
+                         policy_reform=None,
+                         blowup_input_data=False,
+                         output_weights=True,
                          output_records=False,
                          csv_dump=False)
     assert inctax.tax_year() == taxyear
@@ -130,7 +201,7 @@ REFORM_CONTENTS = """
 @pytest.yield_fixture
 def reformfile1():
     """
-    Temporary reform file with .json extension for IncomeTaxIO constructor.
+    Temporary reform file with .json extension.
     """
     rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     rfile.write(REFORM_CONTENTS)
@@ -147,7 +218,7 @@ def reformfile1():
 @pytest.yield_fixture
 def reformfile2():
     """
-    Temporary reform file without .json extension for IncomeTaxIO constructor.
+    Temporary reform file without .json extension.
     """
     rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
     rfile.write(REFORM_CONTENTS)
