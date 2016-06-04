@@ -43,7 +43,7 @@ class SimpleTaxIO(object):
     Raises
     ------
     ValueError:
-        if file with input_filename does not exist.
+        if file with input_filename is not a string or does not exist.
         if reform is neither None, string, nor dictionary.
         if earliest INPUT year before simtax start year.
         if latest INPUT year after simtax end year.
@@ -61,9 +61,16 @@ class SimpleTaxIO(object):
         """
         SimpleTaxIO class constructor.
         """
+        # check that input_filename is a string
+        if not isinstance(input_filename, six.string_types):
+            msg = 'SimpleTaxIO.ctor input_filename is not a string'
+            raise ValueError(msg)
         # construct output_filename and delete old output file if it exists
         # ... construct reform extension to output_filename
-        if reform:
+        if reform is None:
+            ref = ''
+            self._using_reform_file = True
+        else:  # if reform is not None
             if isinstance(reform, six.string_types):
                 if reform.endswith('.json'):
                     ref = '-{}'.format(reform[:-5])
@@ -76,9 +83,6 @@ class SimpleTaxIO(object):
             else:
                 msg = 'SimpleTaxIO.ctor reform is neither None, str, nor dict'
                 raise ValueError(msg)
-        else:  # if reform is None
-            ref = ''
-            self._using_reform_file = True
         # ... construct whole output_filename
         self._using_input_file = True
         self._output_filename = '{}.out-simtax{}'.format(input_filename, ref)
