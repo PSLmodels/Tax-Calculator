@@ -29,9 +29,38 @@ def policyfile():
     os.remove(f.name)
 
 
-def test_create_parameters():
-    p = Policy()
-    assert p
+def test_incorrect_Policy_instantiation():
+    with pytest.raises(ValueError):
+        p = Policy(parameter_dict=list())
+    with pytest.raises(ValueError):
+        p = Policy(num_years=0)
+    with pytest.raises(ValueError):
+        p = Policy(inflation_rates=list())
+    with pytest.raises(ValueError):
+        p = Policy(num_years=2, inflation_rates={2013: 0.02})
+    with pytest.raises(ValueError):
+        p = Policy(num_years=1, inflation_rates={2012: 0.02})
+    with pytest.raises(ValueError):
+        p = Policy(wage_growth_rates=list())
+    with pytest.raises(ValueError):
+        p = Policy(num_years=2, wage_growth_rates={2013: 0.02})
+    with pytest.raises(ValueError):
+        p = Policy(num_years=1, wage_growth_rates={2012: 0.02})
+
+
+def test_correct_Policy_instantiation():
+    pol = Policy()
+    assert pol
+    wrates = Policy.default_wage_growth_rates()
+    assert len(wrates) == Policy.DEFAULT_NUM_YEARS
+    pol.implement_reform({})
+    with pytest.raises(ValueError):
+        pol.implement_reform(list())
+    with pytest.raises(ValueError):
+        pol.implement_reform({2099: {'_II_em': [99000]}})
+    pol.set_year(2019)
+    with pytest.raises(ValueError):
+        pol.implement_reform({2018: {'_II_em': [99000]}})
 
 
 def test_policy_json_content():
@@ -659,3 +688,38 @@ def test_misspecified_reforms():
     # 2016 key:value pair in reform2 (2016:{'_II_em...}) overwrites and
     # replaces the first 2016 key:value pair in reform2 (2016:{'_SS_E...})
     assert not reform1 == reform2
+
+
+@pytest.yield_fixture
+def badreformfile():
+    # specify JSON text for policy reform
+    txt = """{ // example of incorrect JSON because 'x' must be "x"
+               'x': {"2014": [4000]}
+             }"""
+    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    f.write(txt + '\n')
+    f.close()
+    # Must close and then yield for Windows platform
+    yield f
+    os.remove(f.name)
+
+
+def test_read_bad_json_reform_file(badreformfile):
+    with pytest.raises(ValueError):
+        Policy.read_json_reform_file(badreformfile.name)
+
+
+def test_convert_reform_dictionary():
+    with pytest.raises(ValueError):
+        rdict = Policy.convert_reform_dictionary({2013: {'2013': [40000]}})
+    with pytest.raises(ValueError):
+        rdict = Policy.convert_reform_dictionary({'_II_em': {2013: [40000]}})
+
+
+def test_reform_pkey_year():
+    with pytest.raises(ValueError):
+        rdict = Policy._reform_pkey_year({4567: {2013: [40000]}})
+    with pytest.raises(ValueError):
+        rdict = Policy._reform_pkey_year({'_II_em': 40000})
+    with pytest.raises(ValueError):
+        rdict = Policy._reform_pkey_year({'_II_em': {'2013': [40000]}})
