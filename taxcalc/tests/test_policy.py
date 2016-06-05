@@ -58,8 +58,9 @@ def test_correct_Policy_instantiation():
         pol.implement_reform(list())
     with pytest.raises(ValueError):
         pol.implement_reform({2099: {'_II_em': [99000]}})
+    pol.set_year(2019)
     with pytest.raises(ValueError):
-        pol.implement_reform({1066: {'_II_em': [99000]}})
+        pol.implement_reform({2018: {'_II_em': [99000]}})
 
 
 def test_policy_json_content():
