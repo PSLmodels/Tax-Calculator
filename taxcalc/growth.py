@@ -1,5 +1,5 @@
 from .policy import Policy
-from .parameters_base import ParametersBase
+from .parameters import ParametersBase
 
 
 class Growth(ParametersBase):
@@ -15,6 +15,7 @@ class Growth(ParametersBase):
     def __init__(self, growth_dict=None,
                  start_year=JSON_START_YEAR,
                  num_years=DEFAULT_NUM_YEARS):
+        super(Growth, self).__init__()
         if growth_dict:
             if not isinstance(growth_dict, dict):
                 raise ValueError('growth_dict is not a dictionary')

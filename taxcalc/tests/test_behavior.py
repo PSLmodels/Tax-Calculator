@@ -17,7 +17,9 @@ WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 def test_incorrect_Behavior_instantiation():
     with pytest.raises(ValueError):
         behv = Behavior(behavior_dict=list())
+    with pytest.raises(ValueError):
         behv = Behavior(num_years=0)
+    with pytest.raises(ValueError):
         behv = Behavior(inflation_rates=list())
 
 
@@ -102,9 +104,14 @@ def test_incorrect_update_behavior():
     behv = Behavior()
     with pytest.raises(ValueError):
         behv.update_behavior({2013: {'_BE_inc': [+0.2]}})
+    with pytest.raises(ValueError):
         behv.update_behavior({2013: {'_BE_sub': [-0.2]}})
+    with pytest.raises(ValueError):
         behv.update_behavior({2013: {'_BE_cg': [-0.8]}})
+    with pytest.raises(ValueError):
         behv.update_behavior({2013: {'_BE_xx': [0.0]}})
+    with pytest.raises(ValueError):
+        behv.update_behavior({2013: {'_BE_xx_cpi': [True]}})
 
 
 def test_future_update_behavior():

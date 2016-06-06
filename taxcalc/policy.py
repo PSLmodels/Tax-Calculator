@@ -13,7 +13,7 @@ import json
 import re
 import six
 import numpy as np
-from .parameters_base import ParametersBase
+from .parameters import ParametersBase
 
 
 class Policy(ParametersBase):
@@ -118,7 +118,7 @@ class Policy(ParametersBase):
         """
         # pylint: disable=too-many-arguments
         # pylint: disable=too-many-branches
-        # pylint: disable=super-init-not-called
+        super(Policy, self).__init__()
         if parameter_dict is None:  # read default parameters
             self._vals = self._params_dict_from_json_file()
         else:
