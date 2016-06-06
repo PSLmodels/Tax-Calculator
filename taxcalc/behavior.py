@@ -54,11 +54,10 @@ class Behavior(ParametersBase):
         super(Behavior, self).__init__()
         if behavior_dict is None:
             self._vals = self._params_dict_from_json_file()
+        elif isinstance(behavior_dict, dict):
+            self._vals = behavior_dict
         else:
-            if isinstance(behavior_dict, dict):
-                self._vals = behavior_dict
-            else:
-                raise ValueError('specified behavior_dict is not a dictionary')
+            raise ValueError('behavior_dict is not None or a dictionary')
         if num_years < 1:
             raise ValueError('num_years < 1 in Behavior ctor')
         if inflation_rates is not None:
