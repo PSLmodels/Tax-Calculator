@@ -80,6 +80,9 @@ def test_behavioral_response_Calculator():
     assert (calc_y_behavior1.records._iitax.sum() !=
             calc_y_behavior2.records._iitax.sum() !=
             calc_y_behavior3.records._iitax.sum())
+    # test incorrect _mtr_xy() usage
+    with pytest.raises(ValueError):
+        Behavior._mtr_xy(calc_x, calc_y, mtr_of='e00200p', liability_type='?')
 
 
 def test_correct_update_behavior():
