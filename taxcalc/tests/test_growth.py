@@ -15,13 +15,16 @@ TAXDATA = pd.read_csv(TAXDATA_PATH, compression='gzip')
 WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
 WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
-
+@pytest.mark.one
 def test_make_calculator_with_growth():
     recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     grow = Growth()
     calc = Calculator(policy=Policy(), records=recs, growth=grow)
     assert calc.current_year == 2013
     assert isinstance(calc, Calculator)
+    # test correct Growth instantiation with dictionary
+    grow = Growth(growth_dict=dict())
+    assert isinstance(grow, Growth)
     # test incorrect Growth instantiation
     with pytest.raises(ValueError):
         grow = Growth(growth_dict=list())
