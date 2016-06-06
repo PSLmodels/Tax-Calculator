@@ -15,7 +15,7 @@ TAXDATA = pd.read_csv(TAXDATA_PATH, compression='gzip')
 WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
 WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
-@pytest.mark.one
+
 def test_make_calculator_with_growth():
     recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     grow = Growth()
