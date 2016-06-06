@@ -9,7 +9,7 @@ Tax-Calculator elasticity-based behavioral-response Behavior class.
 import copy
 import numpy as np
 from .policy import Policy
-from .parameters_base import ParametersBase
+from .parameters import ParametersBase
 
 
 class Behavior(ParametersBase):
@@ -51,14 +51,13 @@ class Behavior(ParametersBase):
                  start_year=JSON_START_YEAR,
                  num_years=DEFAULT_NUM_YEARS,
                  inflation_rates=None):
-        # pylint: disable=super-init-not-called
+        super(Behavior, self).__init__()
         if behavior_dict is None:
             self._vals = self._params_dict_from_json_file()
+        elif isinstance(behavior_dict, dict):
+            self._vals = behavior_dict
         else:
-            if isinstance(behavior_dict, dict):
-                self._vals = behavior_dict
-            else:
-                raise ValueError('specified behavior_dict is not a dictionary')
+            raise ValueError('behavior_dict is not None or a dictionary')
         if num_years < 1:
             raise ValueError('num_years < 1 in Behavior ctor')
         if inflation_rates is not None:

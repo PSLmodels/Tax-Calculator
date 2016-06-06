@@ -85,6 +85,9 @@ def test_behavioral_response_Calculator():
     assert (calc_y_behavior1.records._iitax.sum() !=
             calc_y_behavior2.records._iitax.sum() !=
             calc_y_behavior3.records._iitax.sum())
+    # test incorrect _mtr_xy() usage
+    with pytest.raises(ValueError):
+        Behavior._mtr_xy(calc_x, calc_y, mtr_of='e00200p', tax_type='?')
 
 
 def test_correct_update_behavior():
@@ -114,6 +117,8 @@ def test_incorrect_update_behavior():
         behv.update_behavior({2013: {'_BE_cg': [-0.8]}})
     with pytest.raises(ValueError):
         behv.update_behavior({2013: {'_BE_xx': [0.0]}})
+    with pytest.raises(ValueError):
+        behv.update_behavior({2013: {'_BE_xx_cpi': [True]}})
 
 
 def test_future_update_behavior():

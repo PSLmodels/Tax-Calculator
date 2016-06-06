@@ -1,5 +1,5 @@
 from .policy import Policy
-from .parameters_base import ParametersBase
+from .parameters import ParametersBase
 
 
 class Growth(ParametersBase):
@@ -15,12 +15,13 @@ class Growth(ParametersBase):
     def __init__(self, growth_dict=None,
                  start_year=JSON_START_YEAR,
                  num_years=DEFAULT_NUM_YEARS):
-        if growth_dict:
-            if not isinstance(growth_dict, dict):
-                raise ValueError('growth_dict is not a dictionary')
-            self._vals = growth_dict
-        else:  # if None, read defaults
+        super(Growth, self).__init__()
+        if growth_dict is None:
             self._vals = self._params_dict_from_json_file()
+        elif isinstance(growth_dict, dict):
+            self._vals = growth_dict
+        else:
+            raise ValueError('growth_dict is neither None nor a dictionary')
         self.initialize(start_year, num_years)
 
     def update_economic_growth(self, revisions):
@@ -30,8 +31,6 @@ class Growth(ParametersBase):
         For example: {2014: {'_BE_inc': [0.4, 0.3]}}
         """
         self.set_default_vals()
-        if self.current_year != self.start_year:
-            self.set_year(self.start_year)
         for year in revisions:
             if year != self.start_year:
                 self.set_year(year)

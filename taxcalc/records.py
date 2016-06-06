@@ -455,6 +455,23 @@ class Records(object):
         self._sep[:] = np.where(np.logical_or(self.MARS == 3, self.MARS == 6),
                                 2, 1)
 
+    @staticmethod
+    def _read_egg_csv(vname, fpath):
+        """
+        Read csv file with fpath containing vname data from EGG;
+        return dict of vname data
+        """
+        try:
+            # grab vname data from EGG distribution
+            path_in_egg = os.path.join('taxcalc', fpath)
+            vname_fname = resource_stream(
+                Requirement.parse('taxcalc'), path_in_egg)
+            vname_dict = pd.read_csv(vname_fname)
+        except (DistributionNotFound, IOError):
+            msg = 'could not read {} file from EGG'
+            raise ValueError(msg.format(vname))
+        return vname_dict
+
     def _read_weights(self, weights):
         """
         Read Records weights from file or
@@ -471,16 +488,8 @@ class Records(object):
             if os.path.isfile(weights):
                 WT = pd.read_csv(weights)
             else:
-                try:
-                    # grab weights out of EGG distribution
-                    path_in_egg = os.path.join('taxcalc',
-                                               self.WEIGHTS_FILENAME)
-                    weights_fname = resource_stream(
-                        Requirement.parse('taxcalc'), path_in_egg)
-                    WT = pd.read_csv(weights_fname)
-                except (DistributionNotFound, IOError):
-                    msg = 'could not read weights file from EGG'
-                    raise ValueError(msg)
+                WT = Records._read_egg_csv('weights',
+                                           Records.WEIGHTS_FILENAME)
         else:
             msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
@@ -502,16 +511,8 @@ class Records(object):
             if os.path.isfile(blowup_factors):
                 BF = pd.read_csv(blowup_factors, index_col='YEAR')
             else:
-                try:
-                    # grab blowup factors out of EGG distribution
-                    path_in_egg = os.path.join('taxcalc',
-                                               self.BLOWUP_FACTORS_FILENAME)
-                    blowup_factors_fname = resource_stream(
-                        Requirement.parse('taxcalc'), path_in_egg)
-                    BF = pd.read_csv(blowup_factors_fname, index_col='YEAR')
-                except (DistributionNotFound, IOError):
-                    msg = 'could not read blowup_factors file from EGG'
-                    raise ValueError(msg)
+                BF = Records._read_egg_csv('blowup_factors',
+                                           Records.BLOWUP_FACTORS_FILENAME)
         else:
             msg = ('blowup_factors is not None or a string '
                    'or a Pandas DataFrame')
