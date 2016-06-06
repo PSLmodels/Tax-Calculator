@@ -343,9 +343,6 @@ class ParametersBase(object):
             # set post-reform values of parameter with name
             used_names.add(name)
             cval = getattr(self, name, None)
-            if cval is None:
-                msg = 'parameter {} in year_mods for year {} is unknown'
-                raise ValueError(msg.format(name, year))
             index_rates = self.indexing_rates_for_update(name, year,
                                                          num_years_to_expand)
             nval = self.expand_array(values,
@@ -365,9 +362,6 @@ class ParametersBase(object):
             pindexed = year_mods[year][name]
             self._vals[pname]['cpi_inflated'] = pindexed  # remember status
             cval = getattr(self, pname, None)
-            if cval is None:
-                msg = 'parameter {} in year_mods for year {} is unknown'
-                raise ValueError(msg.format(pname, year))
             pvalues = [cval[year - self.start_year]]
             index_rates = self.indexing_rates_for_update(name, year,
                                                          num_years_to_expand)
