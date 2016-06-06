@@ -11,6 +11,7 @@ import pandas as pd
 import numpy as np
 import os
 import six
+from pkg_resources import resource_stream, Requirement, DistributionNotFound
 
 
 PUFCSV_YEAR = 2009
@@ -460,8 +461,6 @@ class Records(object):
         Read csv file with fpath containing vname data from EGG;
         return dict of vname data
         """
-        from pkg_resources import (resource_stream, Requirement,
-                                   DistributionNotFound)
         try:
             # grab vname data from EGG distribution
             path_in_egg = os.path.join('taxcalc', fpath)
