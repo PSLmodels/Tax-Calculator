@@ -22,6 +22,9 @@ def test_make_calculator_with_growth():
     calc = Calculator(policy=Policy(), records=recs, growth=grow)
     assert calc.current_year == 2013
     assert isinstance(calc, Calculator)
+    # test incorrect Growth instantiation
+    with pytest.raises(ValueError):
+        grow = Growth(growth_dict=list())
 
 
 def test_update_growth():
