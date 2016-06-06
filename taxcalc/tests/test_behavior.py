@@ -58,7 +58,7 @@ def test_behavioral_response_Calculator():
     assert behavior_y.has_response()
     assert behavior_y.BE_sub == 0.4
     assert behavior_y.BE_inc == -0.15
-    calc_y_behavior1 = calc_y.behavior.response(calc_x, calc_y)
+    calc_y_behavior1 = Behavior.response(calc_x, calc_y)
     behavior2 = {
         2013: {
             "_BE_sub": [0.5],
@@ -66,7 +66,7 @@ def test_behavioral_response_Calculator():
         }
     }
     behavior_y.update_behavior(behavior2)
-    calc_y_behavior2 = calc_y.behavior.response(calc_x, calc_y)
+    calc_y_behavior2 = Behavior.response(calc_x, calc_y)
     behavior3 = {
         2013: {
             "_BE_sub": [0.4],
@@ -74,7 +74,7 @@ def test_behavioral_response_Calculator():
         }
     }
     behavior_y.update_behavior(behavior3)
-    calc_y_behavior3 = calc_y.behavior.response(calc_x, calc_y)
+    calc_y_behavior3 = Behavior.response(calc_x, calc_y)
     # check that total income tax liability differs across the
     # three sets of behavioral-response elasticities
     assert (calc_y_behavior1.records._iitax.sum() !=
