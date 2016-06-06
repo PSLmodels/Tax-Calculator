@@ -489,7 +489,7 @@ class Records(object):
             if os.path.isfile(weights):
                 WT = pd.read_csv(weights)
             else:
-                WT = Records._read_eff_csv('weights',
+                WT = Records._read_egg_csv('weights',
                                            Records.WEIGHTS_FILENAME)
         else:
             msg = 'weights is not None or a string or a Pandas DataFrame'
