@@ -74,8 +74,6 @@ class Behavior(ParametersBase):
         """
         precall_current_year = self.current_year
         self.set_default_vals()
-        if self.current_year != self.start_year:
-            self.set_year(self.start_year)
         msg = '{} elasticity cannot be {}; value is {}'
         pos = 'positive'
         neg = 'negative'
@@ -112,7 +110,8 @@ class Behavior(ParametersBase):
         else:
             return False
 
-    def response(self, calc_x, calc_y):
+    @staticmethod
+    def response(calc_x, calc_y):
         """
         Modify calc_y records to account for behavioral responses that arise
         from the policy reform that involves moving from calc_x.policy to
@@ -123,12 +122,12 @@ class Behavior(ParametersBase):
         # Calculate marginal tax rates
         #   e00200p is taxpayer's wages+salary
         #   p23250 is filing unit's long-term capital gains
-        wage_mtr_x, wage_mtr_y = self._mtr_xy(calc_x, calc_y,
-                                              mtr_of='e00200p',
-                                              liability_type='combined')
-        ltcg_mtr_x, ltcg_mtr_y = self._mtr_xy(calc_x, calc_y,
-                                              mtr_of='p23250',
-                                              liability_type='iitax')
+        wage_mtr_x, wage_mtr_y = Behavior._mtr_xy(calc_x, calc_y,
+                                                  mtr_of='e00200p',
+                                                  liability_type='combined')
+        ltcg_mtr_x, ltcg_mtr_y = Behavior._mtr_xy(calc_x, calc_y,
+                                                  mtr_of='p23250',
+                                                  liability_type='iitax')
         # Calculate proportional change (pch) in marginal net-of-tax rates
         wage_pch = ((1. - wage_mtr_y) - (1. - wage_mtr_x)) / (1. - wage_mtr_x)
         ltcg_pch = ((1. - ltcg_mtr_y) - (1. - ltcg_mtr_x)) / (1. - ltcg_mtr_x)
@@ -147,21 +146,21 @@ class Behavior(ParametersBase):
                            calc_x.records.p23250)
         # Add behavioral-response changes to income sources
         calc_y_behavior = copy.deepcopy(calc_y)
-        calc_y_behavior = self._update_ordinary_income(tax_inc_change,
-                                                       calc_y_behavior)
-        calc_y_behavior = self._update_cap_gain_income(cap_gain_change,
-                                                       calc_y_behavior)
+        calc_y_behavior = Behavior._update_ordinary_income(tax_inc_change,
+                                                           calc_y_behavior)
+        calc_y_behavior = Behavior._update_cap_gain_income(cap_gain_change,
+                                                           calc_y_behavior)
         # Recalculate post-reform taxes incorporating behavioral responses
         calc_y_behavior.calc_all()
         return calc_y_behavior
 
     # ----- begin private methods of Behavior class -----
 
-    def _update_ordinary_income(self, taxinc_change, calc_y):
+    @staticmethod
+    def _update_ordinary_income(taxinc_change, calc_y):
         """
         Implement total taxable income change induced by behavioral responses.
         """
-        # pylint: disable=no-self-use
         delta_inc = np.where(calc_y.records.c00100 > 0, taxinc_change, 0.)
         # Allocate taxinc_change across different income sources
         # pylint: disable=protected-access
@@ -192,7 +191,8 @@ class Behavior(ParametersBase):
         # variable instead of using e19570
         return calc_y
 
-    def _update_cap_gain_income(self, cap_gain_change, calc_y):
+    @staticmethod
+    def _update_cap_gain_income(cap_gain_change, calc_y):
         """
         Implement capital gain change induced by behavioral responses.
         """
@@ -200,12 +200,12 @@ class Behavior(ParametersBase):
         calc_y.records.p23250 = calc_y.records.p23250 + cap_gain_change
         return calc_y
 
-    def _mtr_xy(self, calc_x, calc_y, mtr_of, liability_type):
+    @staticmethod
+    def _mtr_xy(calc_x, calc_y, mtr_of, liability_type):
         """
         Computes marginal tax rates for Calculator objects calc_x and calc_y
         for specified mtr_of income type and specified liability_type.
         """
-        # pylint: disable=no-self-use
         _, iitax_x, combined_x = calc_x.mtr(mtr_of)
         _, iitax_y, combined_y = calc_y.mtr(mtr_of)
         if liability_type == 'combined':
