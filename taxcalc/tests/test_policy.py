@@ -440,8 +440,8 @@ def test_Policy_reform_in_start_year():
 
 def test_implement_reform_Policy_raises_on_future_year():
     ppo = Policy(start_year=2013)
+    reform = {2010: {'_STD_Aged': [[1400, 1100, 1100, 1400, 1400, 1199]]}}
     with pytest.raises(ValueError):
-        reform = {2010: {'_STD_Aged': [[1400, 1100, 1100, 1400, 1400, 1199]]}}
         ppo.implement_reform(reform)
 
 

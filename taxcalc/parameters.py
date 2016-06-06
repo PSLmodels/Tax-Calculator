@@ -26,31 +26,30 @@ class ParametersBase(object):
         ----------
         metadata: boolean
 
-        start_year: int
+        start_year: int or None
 
         Returns
         -------
         params: dictionary of data
         """
         # extract different data from DEFAULT_FILENAME depending on start_year
-        if start_year:  # if start_year is not None
+        if start_year is None:
+            params = cls._params_dict_from_json_file()
+        else:
             nyrs = start_year - cls.JSON_START_YEAR + 1
             ppo = cls(num_years=nyrs)
             ppo.set_year(start_year)
             params = getattr(ppo, '_vals')
             params = ParametersBase._revised_default_data(params, start_year,
                                                           nyrs, ppo)
-        else:  # if start_year is None
-            params = cls._params_dict_from_json_file()
         # return different data from params dict depending on metadata value
         if metadata:
             return params
         else:
             return {name: data['value'] for name, data in params.items()}
 
-    def __init__(self, *args, **kwargs):
-        msg = 'Override __init__ and call self.initialize from it.'
-        raise NotImplementedError(msg)
+    def __init__(self):
+        pass
 
     def initialize(self, start_year, num_years):
         self._current_year = start_year
@@ -60,14 +59,15 @@ class ParametersBase(object):
         self.set_default_vals()
 
     def set_default_vals(self):
-        for name, data in self._vals.items():
-            cpi_inflated = data.get('cpi_inflated', False)
-            values = data['value']
-            index_rates = self.indexing_rates(name)
-            setattr(self, name,
-                    self.expand_array(values, inflate=cpi_inflated,
-                                      inflation_rates=index_rates,
-                                      num_years=self._num_years))
+        if hasattr(self, '_vals'):
+            for name, data in self._vals.items():
+                cpi_inflated = data.get('cpi_inflated', False)
+                values = data['value']
+                index_rates = self.indexing_rates(name)
+                setattr(self, name,
+                        self.expand_array(values, inflate=cpi_inflated,
+                                          inflation_rates=index_rates,
+                                          num_years=self._num_years))
         self.set_year(self._start_year)
 
     @property
@@ -87,15 +87,11 @@ class ParametersBase(object):
         return self._start_year
 
     def inflation_rates(self):
-        """
-        Override this method in subclass when appropriate.
-        """
+        # Override this method in subclass when appropriate.
         return None
 
     def wage_growth_rates(self):
-        """
-        Override this method in subclass when appropriate.
-        """
+        # Override this method in subclass when appropriate.
         return None
 
     def indexing_rates(self, param_name):
@@ -148,9 +144,10 @@ class ParametersBase(object):
             raise ValueError(msg.format(self.start_year, self.end_year))
         self._current_year = year
         year_zero_indexed = year - self._start_year
-        for name in self._vals:
-            arr = getattr(self, name)
-            setattr(self, name[1:], arr[year_zero_indexed])
+        if hasattr(self, '_vals'):
+            for name in self._vals:
+                arr = getattr(self, name)
+                setattr(self, name[1:], arr[year_zero_indexed])
 
     # ----- begin private methods of ParametersBase class -----
 
@@ -347,7 +344,7 @@ class ParametersBase(object):
             used_names.add(name)
             cval = getattr(self, name, None)
             if cval is None:
-                msg = 'parameter {} in year_mods for year [] is unknown'
+                msg = 'parameter {} in year_mods for year {} is unknown'
                 raise ValueError(msg.format(name, year))
             index_rates = self.indexing_rates_for_update(name, year,
                                                          num_years_to_expand)
@@ -369,7 +366,7 @@ class ParametersBase(object):
             self._vals[pname]['cpi_inflated'] = pindexed  # remember status
             cval = getattr(self, pname, None)
             if cval is None:
-                msg = 'parameter {} in year_mods for year [] is unknown'
+                msg = 'parameter {} in year_mods for year {} is unknown'
                 raise ValueError(msg.format(pname, year))
             pvalues = [cval[year - self.start_year]]
             index_rates = self.indexing_rates_for_update(name, year,
@@ -407,13 +404,10 @@ class ParametersBase(object):
                 else:
                     extra = [float(x[-1]) for i in
                              range(1, num_years - len(x) + 1)]
-
                 ans[len(x):] = extra
                 return ans
         return ParametersBase.expand_1D(np.array([x], dtype=np.float64),
-                                        inflate,
-                                        inflation_rates,
-                                        num_years)
+                                        inflate, inflation_rates, num_years)
 
     @staticmethod
     def expand_2D(x, inflate, inflation_rates, num_years):
@@ -443,7 +437,6 @@ class ParametersBase(object):
                     c = x[:last_good_row + 1]
                     keep_user_data_mask = np.array(keep_user_data_mask)
                     keep_calc_data_mask = np.array(keep_calc_data_mask)
-
                 else:
                     c = x
                 ans = np.zeros((num_years, c.shape[1]), dtype=np.float64)
@@ -457,7 +450,6 @@ class ParametersBase(object):
                                              (1. + inflation_rates[i - 1]))
                             else:
                                 ans[i, j] = ans[i - 1, j]
-
                 # Now, fill based on inflate flag:
                 for i in range(last_good_row + 1, ans.shape[0]):
                     for j in range(ans.shape[1]):
@@ -466,7 +458,6 @@ class ParametersBase(object):
                                          (1. + inflation_rates[i - 1]))
                         else:
                             ans[i, j] = ans[i - 1, j]
-
                 if has_nones:
                     # Use masks to "mask in" provided data and "mask out"
                     # data we don't need (produced in rows with a None value)
@@ -488,7 +479,6 @@ class ParametersBase(object):
                         ans = ans * keep_calc_data_mask
                         user_vals = x * keep_user_data_mask
                         ans = ans + user_vals
-
                 return ans
         return ParametersBase.expand_2D(np.array(x, dtype=np.float64),
                                         inflate, inflation_rates, num_years)
@@ -496,14 +486,14 @@ class ParametersBase(object):
     @staticmethod
     def strip_Nones(x):
         """
-        Takes a list of scalar values or a list of lists.
-        If it is a list of scalar values, when None is encountered, we
-        return everything encountered before. If a list of lists, we
-        replace None with -1 and return
+        Takes a 1D or 2D list, or a 1D or 2D numpy array.
+        If x is 1D, when None is encountered, we return everything
+        encountered before None.
+        If x is 2D, we replace None with -1 and return.
 
         Parameters
         ----------
-        x: list
+        x: list or numpy array
 
         Returns
         -------
@@ -520,21 +510,21 @@ class ParametersBase(object):
                     if v is None:
                         val[i] = -1
                 accum.append(val)
-
         return accum
 
     @staticmethod
     def expand_array(x, inflate, inflation_rates, num_years):
         """
         Dispatch to either expand_1D or expand_2D
-        depending on the dimension of x
+        depending on the dimension of x.
 
         Parameters
         ----------
-        x : value to expand --- either a list of scalars (1D)
-                                or a list of lists of scalars (2D)
+        x : value to expand
+            x must be either a scalar list or a 1D numpy array, or
+            be either a list of scalar lists or a 2D numpy array.
 
-        inflate: Boolean
+        inflate: boolean
             As we expand, inflate values if this is True, otherwise, just copy
 
         inflation_rates: list of inflation rates
@@ -547,15 +537,15 @@ class ParametersBase(object):
         -------
         expanded numpy array with dtype=np.float64
         """
+        if not isinstance(x, list) and not isinstance(x, np.ndarray):
+            msg = 'expand_array expects x to be a list or numpy array'
+            raise ValueError(msg)
+        if isinstance(x, np.ndarray) and len(x.shape) > 2:
+            raise ValueError('expand_array expects a 1D or 2D array')
         x = np.array(ParametersBase.strip_Nones(x), np.float64)
-        try:
-            if len(x.shape) == 1:
-                return ParametersBase.expand_1D(x, inflate, inflation_rates,
-                                                num_years)
-            elif len(x.shape) == 2:
-                return ParametersBase.expand_2D(x, inflate, inflation_rates,
-                                                num_years)
-            else:
-                raise ValueError('expand_array expects a 1D or 2D array')
-        except AttributeError:
-            raise ValueError('expand_array expects a numpy array')
+        if len(x.shape) == 1:
+            return ParametersBase.expand_1D(x, inflate, inflation_rates,
+                                            num_years)
+        elif len(x.shape) == 2:
+            return ParametersBase.expand_2D(x, inflate, inflation_rates,
+                                            num_years)
