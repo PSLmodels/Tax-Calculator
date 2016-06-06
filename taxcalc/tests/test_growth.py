@@ -31,6 +31,8 @@ def test_update_growth():
         grow.update_economic_growth({2013: list()})
     with pytest.raises(ValueError):
         grow.update_economic_growth({2013: {'bad_name': [0.02]}})
+    with pytest.raises(ValueError):
+        grow.update_economic_growth({2013: {'bad_name_cpi': True}})
     # change growth adjustment/target
     grow_x = Growth()
     factor_x = {2015: {'_factor_target': [0.04]}}
