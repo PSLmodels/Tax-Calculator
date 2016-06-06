@@ -18,11 +18,10 @@ class Growth(ParametersBase):
         super(Growth, self).__init__()
         if growth_dict is None:
             self._vals = self._params_dict_from_json_file()
+        elif isinstance(growth_dict, dict):
+            self._vals = growth_dict
         else:
-            if isinstance(growth_dict, dict):
-                self._vals = growth_dict
-            else:
-                raise ValueError('growth_dict is not None or a dictionary')
+            raise ValueError('growth_dict is neither None nor a dictionary')
         self.initialize(start_year, num_years)
 
     def update_economic_growth(self, revisions):

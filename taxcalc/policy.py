@@ -121,11 +121,10 @@ class Policy(ParametersBase):
         super(Policy, self).__init__()
         if parameter_dict is None:  # read default parameters
             self._vals = self._params_dict_from_json_file()
+        elif isinstance(parameter_dict, dict):
+            self._vals = parameter_dict
         else:
-            if isinstance(parameter_dict, dict):
-                self._vals = parameter_dict
-            else:
-                raise ValueError('parameter_dict is not a dictionary')
+            raise ValueError('parameter_dict is not None or a dictionary')
 
         if num_years < 1:
             raise ValueError('num_years cannot be less than one')
@@ -133,32 +132,30 @@ class Policy(ParametersBase):
         if inflation_rates is None:  # read default rates
             self._inflation_rates = [self.__pirates[start_year + i]
                                      for i in range(0, num_years)]
+        elif isinstance(inflation_rates, dict):
+            if len(inflation_rates) != num_years:
+                raise ValueError('len(inflation_rates) != num_years')
+            if min(list(inflation_rates.keys())) != start_year:
+                msg = 'min(inflation_rates.keys()) != start_year'
+                raise ValueError(msg)
+            self._inflation_rates = [inflation_rates[start_year + i]
+                                     for i in range(0, num_years)]
         else:
-            if isinstance(inflation_rates, dict):
-                if len(inflation_rates) != num_years:
-                    raise ValueError('len(inflation_rates) != num_years')
-                if min(list(inflation_rates.keys())) != start_year:
-                    msg = 'min(inflation_rates.keys()) != start_year'
-                    raise ValueError(msg)
-                self._inflation_rates = [inflation_rates[start_year + i]
-                                         for i in range(0, num_years)]
-            else:
-                raise ValueError('inflation_rates is not a dictionary')
+            raise ValueError('inflation_rates is not None or a dictionary')
 
         if wage_growth_rates is None:  # read default rates
             self._wage_growth_rates = [self.__wgrates[start_year + i]
                                        for i in range(0, num_years)]
+        elif isinstance(wage_growth_rates, dict):
+            if len(wage_growth_rates) != num_years:
+                raise ValueError('len(wage_growth_rates) != num_years')
+            if min(list(wage_growth_rates.keys())) != start_year:
+                msg = 'min(wage_growth_rates.keys()) != start_year'
+                raise ValueError(msg)
+            self._wage_growth_rates = [wage_growth_rates[start_year + i]
+                                       for i in range(0, num_years)]
         else:
-            if isinstance(wage_growth_rates, dict):
-                if len(wage_growth_rates) != num_years:
-                    raise ValueError('len(wage_growth_rates) != num_years')
-                if min(list(wage_growth_rates.keys())) != start_year:
-                    msg = 'min(wage_growth_rates.keys()) != start_year'
-                    raise ValueError(msg)
-                self._wage_growth_rates = [wage_growth_rates[start_year + i]
-                                           for i in range(0, num_years)]
-            else:
-                raise ValueError('wage_growth_rates is not a dictionary')
+            raise ValueError('wage_growth_rates is not None or a dictionary')
 
         self.initialize(start_year, num_years)
 
