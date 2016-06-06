@@ -404,13 +404,10 @@ class ParametersBase(object):
                 else:
                     extra = [float(x[-1]) for i in
                              range(1, num_years - len(x) + 1)]
-
                 ans[len(x):] = extra
                 return ans
         return ParametersBase.expand_1D(np.array([x], dtype=np.float64),
-                                        inflate,
-                                        inflation_rates,
-                                        num_years)
+                                        inflate, inflation_rates, num_years)
 
     @staticmethod
     def expand_2D(x, inflate, inflation_rates, num_years):
@@ -440,7 +437,6 @@ class ParametersBase(object):
                     c = x[:last_good_row + 1]
                     keep_user_data_mask = np.array(keep_user_data_mask)
                     keep_calc_data_mask = np.array(keep_calc_data_mask)
-
                 else:
                     c = x
                 ans = np.zeros((num_years, c.shape[1]), dtype=np.float64)
@@ -454,7 +450,6 @@ class ParametersBase(object):
                                              (1. + inflation_rates[i - 1]))
                             else:
                                 ans[i, j] = ans[i - 1, j]
-
                 # Now, fill based on inflate flag:
                 for i in range(last_good_row + 1, ans.shape[0]):
                     for j in range(ans.shape[1]):
@@ -463,7 +458,6 @@ class ParametersBase(object):
                                          (1. + inflation_rates[i - 1]))
                         else:
                             ans[i, j] = ans[i - 1, j]
-
                 if has_nones:
                     # Use masks to "mask in" provided data and "mask out"
                     # data we don't need (produced in rows with a None value)
@@ -485,7 +479,6 @@ class ParametersBase(object):
                         ans = ans * keep_calc_data_mask
                         user_vals = x * keep_user_data_mask
                         ans = ans + user_vals
-
                 return ans
         return ParametersBase.expand_2D(np.array(x, dtype=np.float64),
                                         inflate, inflation_rates, num_years)
