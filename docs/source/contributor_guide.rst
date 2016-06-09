@@ -2,10 +2,10 @@ Contributor Guide
 =================
 
 The purpose of this guide is to get you to the point where you can
-make improvements to the Tax Calculator and share them with the rest
+make improvements to the Tax-Calculator and share them with the rest
 of the team.
 
-We keep track of our Tax Calculator code using `Git`_, but we don't
+We keep track of our Tax-Calculator code using `Git`_, but we don't
 expect you to be an expert Git user. Where possible, we link to Git
 and GitHub documentation to help with some of the unfamiliar
 terminology. Following the next steps will get you up and running and
@@ -17,7 +17,7 @@ please skip to `Workflow`_.
 Setup Python
 -------------
 
-The Tax Calculator is written in the Python programming language.
+The Tax-Calculator is written in the Python programming language.
 Download and install the free Anaconda distribution of Python from
 `Continuum Analytics`_.  You must do this even if you already have
 Python installed on your computer because the Anaconda distribution
@@ -40,8 +40,8 @@ Setup Git
    `password setup`_.
 
 4. Sign in to GitHub and create your own `remote`_ `repository`_
-   (repo) of OSPC's tax calculator by clicking `Fork`_ in the upper
-   right corner of the `Tax Calculator's GitHub page`_. Select your
+   (repo) of Tax-Calculator by clicking `Fork`_ in the upper
+   right corner of the `Tax-Calculator's GitHub page`_. Select your
    username when asked "Where should we fork this repository?"
 
 5. From your command line, navigate to the directory on your computer
@@ -64,7 +64,7 @@ Setup Git
    .. code-block:: python
 
       $ cd tax-calculator
-      tax-calculator$ git remote add upstream https://github.com/opensourcepolicycenter/tax-calculator.git
+      tax-calculator$ git remote add upstream https://github.com/open-source-economics/tax-calculator.git
 
 9. Create a conda environment with all of the necessary packages to
    execute the source code:
@@ -80,17 +80,29 @@ Setup Git
 
        tax-calculator$ source activate taxcalc-dev
 
+    If you are working on Windows, use the following from the command line:
+
+    .. code-block:: python
+   
+       tax-calculator$ activate taxcalc-dev
+   
 11. To check that everything is working properly, run the following at
-    the command line from the tax-calculator directory.
+    the command line from the tax-calculator directory, but skip the
+    validation tests if you are working on Windows.  For more detail on
+    Tax-Calculator testing procedures, read the `testing documentation`_.
+
+
 
    .. code-block:: python
 
       tax-calculator$ cd taxcalc
-      tax-calculator/taxcalc$ py.test
+      tax-calculator/taxcalc$ py.test -m "not requires_pufcsv"
+      tax-calculator/taxcalc$ cd validation
+      tax-calculator/taxcalc/validation$ ./tests
 
    If all the tests pass, you're good to go. If they don't pass, enter
-   the following updates at the command line and then try running
-   py.test again. If the tests still don't pass, please contact us.
+   the following updates at the command line and then try running the
+   tests again. If the tests still don't pass, please contact us.
 
    .. code-block:: python
 
@@ -98,10 +110,10 @@ Setup Git
       tax-calculator$ conda update anaconda
 
 If you've made it this far, you've successfully made a remote copy (a
-fork) of OSPC Tax Calculator repo. That remote repo is hosted on
+fork) of central Tax-Calculator repo. That remote repo is hosted on
 GitHub.com. You've also created a local repo (a `clone`_) that lives
 on your machine and only you can see; you will make your changes to
-the Tax Calculator by editing the files in the tax-calculator
+the Tax-Calculator by editing the files in the tax-calculator
 directory on your machine and then submitting those changes to your
 local repo. As a new contributor, you will push your changes from your
 local repo to your remote repo when you're ready to share that work
@@ -116,17 +128,17 @@ the contribution process.
 Workflow
 --------
 
-The following text describes a typical workflow for the Tax Calculator
+The following text describes a typical workflow for the Tax-Calculator
 simulation model. Different workflows may be necessary in some
 situations, in which case other contributors are here to help.
 
 1. Before you edit the calculator on your machine, make sure you have
-   the latest version of the OSPC Tax Calculator by executing the
+   the latest version of the central Tax-Calculator by executing the
    following **four** Git commands:
 
-   a. Download all of the content from the main OSPC Tax Calculator
-      repo. Navigate to your local tax-calculator directory and enter
-      the following text at the command line.
+   a. Download all of the content from the central Tax-Calculator repo.
+      Navigate to your local tax-calculator directory and enter the
+      following text at the command line.
 
       .. code-block:: python
 
@@ -139,8 +151,8 @@ situations, in which case other contributors are here to help.
          tax-calculator$ git checkout master
 
    c. Update your local master branch to contain the latest content of
-      the OSPC master branch using `merge`_. This step ensures that
-      you are working with the latest version of the Tax Calculator.
+      the central master branch using `merge`_. This step ensures that
+      you are working with the latest version of the Tax-Calculator.
 
       .. code-block:: python
 
@@ -157,26 +169,29 @@ situations, in which case other contributors are here to help.
    branches as a way to organize your projects. If you want to work on
    this documentation, for example, create a separate branch for that
    work. If you want to change the maximum child care tax credit in
-   the Tax Calculator, create a different branch for that project.
+   the Tax-Calculator, create a different branch for that project.
 
    .. code-block:: python
 
       tax-calculator$ git checkout -b [new-branch-name]
 
-3. See :doc:`Making changes to your local copy of the Tax Calculator
+3. See :doc:`Making changes to your local copy of the Tax-Calculator
    </make_local_change>` for examples showing you how to do just that.
 
 4. As you make changes, frequently check that your changes do not
-   introduce bugs or degrade the accuracy of the Tax Calculator. To do
-   this, run the following at the command line from inside the
-   tax-calculator/taxcalc directory. If the tests do not pass, try to
+   introduce bugs or degrade the accuracy of the Tax-Calculator. To do
+   this, run the following commands from the command line from inside
+   the tax-calculator/taxcalc directory (but skip the validation tests
+   if you are working on Windows). If the tests do not pass, try to
    fix the issue by using the information provided by the error
    message. If this isn't possible or doesn't work, we are here to
    help.
 
    .. code-block:: python
 
-      tax-calculator/taxcalc$ py.test
+      tax-calculator/taxcalc$ py.test -m "not requires_pufcsv"
+      tax-calculator/taxcalc$ cd validation
+      tax-calculator/taxcalc/validation$ ./tests
 
 5. Now you're ready to `commit`_ your changes to your local repo using
    the code below. The first line of code tells Git to track a
@@ -216,9 +231,9 @@ situations, in which case other contributors are here to help.
 Simple Usage
 ------------
 
-For examples of Tax Calculator usage (without changing tax parameter
+For examples of Tax-Calculator usage (without changing tax parameter
 values and without adding a new tax parameter), you can view our code
-sample notebook: `10 Minutes To TaxCalc`_.
+sample notebook: `10 Minutes To Tax-Calculator`_.
 
 
 .. [1] The dollar sign is the end of the command prompt on a Mac.  If
@@ -247,8 +262,8 @@ sample notebook: `10 Minutes To TaxCalc`_.
 .. _`password setup`:
    https://help.github.com/articles/caching-your-github-password-in-git/
 
-.. _`Tax Calculator's GitHub page`: 
-   https://github.com/OpenSourcePolicyCenter/Tax-Calculator
+.. _`Tax-Calculator's GitHub page`: 
+   https://github.com/open-source-economics/Tax-Calculator
 
 .. _`repository`:
    https://help.github.com/articles/github-glossary/#repository
@@ -262,12 +277,12 @@ sample notebook: `10 Minutes To TaxCalc`_.
 .. _`Github Flow`:
    https://guides.github.com/introduction/flow/
 
-.. _`10 Minutes To TaxCalc`:
-   http://nbviewer.ipython.org/github/OpenSourcePolicyCenter/Tax-Calculator/
-   blob/master/docs/notebooks/10_Minutes_to_Taxcalc.ipynb
+.. _`10 Minutes To Tax-Calculator`:
+   http://nbviewer.ipython.org/github/open-source-economics/Tax-Calculator/
+   blob/master/docs/notebooks/10_Minutes_to_Tax-Calculator.ipynb
 
 .. _`Behavior Example`:
-   http://nbviewer.ipython.org/github/OpenSourcePolicyCenter/Tax-Calculator/
+   http://nbviewer.ipython.org/github/open-source-economics/Tax-Calculator/
    blob/master/docs/notebooks/Behavioral_example.ipynb
 
 .. _`Continuum Analytics`:
@@ -275,6 +290,9 @@ sample notebook: `10 Minutes To TaxCalc`_.
 
 .. _`remote`:
    https://help.github.com/articles/github-glossary/#remote
+
+.. _`testing documentation`:
+   https://github.com/open-source-economics/Tax-Calculator/blob/master/TESTING.md
 
 .. _`clone`:
    https://help.github.com/articles/github-glossary/#clone

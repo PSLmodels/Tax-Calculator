@@ -1,12 +1,13 @@
-import numpy as np
-import pandas as pd
 import inspect
-from .parameters import Parameters
+from .policy import Policy
 from numba import jit, vectorize, guvectorize
 from functools import wraps
 from six import StringIO
 import ast
 import toolz
+
+
+DO_JIT = True
 
 
 class GetReturnNode(ast.NodeVisitor):
@@ -29,11 +30,11 @@ def dataframe_guvectorize(dtype_args, dtype_sig):
         vecd_f = guvectorize(dtype_args, dtype_sig)(func)
 
         @wraps(func)
-        def wrapper(*args, **kwargs):
-            # np_arrays = [getattr(args[0], i).values for i in theargs]
+        def wrapper(*args):
             arrays = [arg.values for arg in args]
             ans = vecd_f(*arrays)
             return ans
+
         return wrapper
     return make_wrapper
 
@@ -47,10 +48,11 @@ def dataframe_vectorize(dtype_args):
         vecd_f = vectorize(dtype_args)(func)
 
         @wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args):
             arrays = [arg.values for arg in args]
             ans = vecd_f(*arrays)
             return ans
+
         return wrapper
     return make_wrapper
 
@@ -65,10 +67,11 @@ def dataframe_wrap_guvectorize(dtype_args, dtype_sig):
         theargs = inspect.getargspec(func).args
         vecd_f = guvectorize(dtype_args, dtype_sig)(func)
 
-        def wrapper(*args, **kwargs):
+        def wrapper(*args):
             np_arrays = [getattr(args[0], i).values for i in theargs]
             ans = vecd_f(*np_arrays)
             return ans
+
         return wrapper
     return make_wrapper
 
@@ -93,13 +96,12 @@ def create_apply_function_string(sigout, sigin, parameters):
 
     parameters: iterable of which of the args (from in_args) are parameter
                 variables (as opposed to column records). This influences
-                how we construct the '_apply' function
+                how we construct the apply-style function
 
     Returns
     -------
     a String representing the function
     """
-
     s = StringIO()
     total_len = len(sigout) + len(sigin)
     out_args = ["x_" + str(i) for i in range(0, len(sigout))]
@@ -107,7 +109,6 @@ def create_apply_function_string(sigout, sigin, parameters):
 
     s.write("def ap_func({0}):\n".format(",".join(out_args + in_args)))
     s.write("  for i in range(len(x_0)):\n")
-
     out_index = [x + "[i]" for x in out_args]
     in_index = []
     for arg, _var in zip(in_args, sigin):
@@ -115,7 +116,6 @@ def create_apply_function_string(sigout, sigin, parameters):
     s.write("    " + ",".join(out_index) + " = ")
     s.write("jitted_f(" + ",".join(in_index) + ")\n")
     s.write("  return " + ",".join(out_args) + "\n")
-
     return s.getvalue()
 
 
@@ -146,16 +146,12 @@ def create_toplevel_function_string(args_out, args_in, pm_or_pf,
     -------
     a String representing the function
     """
-
     s = StringIO()
-
     s.write("def hl_func(pm, pf")
-
     if kwargs_for_func:
         kwargs = ",".join(str(k) + "=" + str(v) for k, v in
                           kwargs_for_func.items())
         s.write(", " + kwargs + " ")
-
     s.write("):\n")
     s.write("    from pandas import DataFrame\n")
     s.write("    import numpy as np\n")
@@ -174,7 +170,6 @@ def create_toplevel_function_string(args_out, args_in, pm_or_pf,
     for arg in kwargs_for_func:
         s.write(arg + ", ")
     s.write(")\n")
-
     s.write("    header = [")
     col_headers = ["'" + out + "'" for out in args_out]
     s.write(", ".join(col_headers))
@@ -185,38 +180,38 @@ def create_toplevel_function_string(args_out, args_in, pm_or_pf,
     else:
         s.write("    return DataFrame(data=np.column_stack("
                 "outputs),columns=header)")
-
     return s.getvalue()
 
 
-def make_apply_function(func, out_args, in_args, parameters, do_jit=True,
-                        **kwargs):
+def make_apply_function(func, out_args, in_args, parameters,
+                        do_jit=DO_JIT, **kwargs):
     """
-    Takes a '_calc' function and creates the necessary Python code for an
-    _apply style function. Will also jit the function if desired
+    Takes a calc-style function and creates the necessary Python code for
+    an apply-style function. Will also jit the function if desired.
 
     Parameters
     ----------
-    func: the 'calc' style function
+    func: the calc-style function
 
-    out_args: list of out arguments for the apply function
+    out_args: list of out arguments for the apply-style function
 
-    in_args: list of in arguments for the apply function
+    in_args: list of in arguments for the apply-style function
 
     parameters: iterable of which of the args (from in_args) are parameter
-                variables (as opposed to column records). This influences
-                how we construct the '_apply' function
+                variables (as opposed to column records).  This influences
+                how we construct the apply-style function.
 
-    do_jit: Bool, if True, jit the resulting apply function
+    do_jit: Bool, if True, jit the resulting apply-style function
 
     Returns
     -------
-    '_apply' style function
-
+    apply-style function
     """
-    jitted_f = jit(**kwargs)(func)
+    if do_jit:
+        jitted_f = jit(**kwargs)(func)
+    else:
+        jitted_f = func
     apfunc = create_apply_function_string(out_args, in_args, parameters)
-
     func_code = compile(apfunc, "<string>", "exec")
     fakeglobals = {}
     eval(func_code, {"jitted_f": jitted_f}, fakeglobals)
@@ -228,21 +223,17 @@ def make_apply_function(func, out_args, in_args, parameters, do_jit=True,
 
 def apply_jit(dtype_sig_out, dtype_sig_in, parameters=None, **kwargs):
     """
-    make a decorator that takes in a _calc-style function, handle
-    the apply step
+    Make a decorator that takes in a calc-style function, handle apply step.
     """
     if not parameters:
         parameters = []
 
     def make_wrapper(func):
         theargs = inspect.getargspec(func).args
-        jitted_f = jit(**kwargs)(func)
-
         jitted_apply = make_apply_function(func, dtype_sig_out,
-                                           dtype_sig_in, parameters,
-                                           **kwargs)
+                                           dtype_sig_in, parameters, **kwargs)
 
-        def wrapper(*args, **kwargs):
+        def wrapper(*args):
             in_arrays = []
             out_arrays = []
             for farg in theargs:
@@ -250,13 +241,11 @@ def apply_jit(dtype_sig_out, dtype_sig_in, parameters=None, **kwargs):
                     in_arrays.append(getattr(args[0], farg))
                 else:
                     in_arrays.append(getattr(args[1], farg))
-
             for farg in dtype_sig_out:
                 if hasattr(args[0], farg):
                     out_arrays.append(getattr(args[0], farg))
                 else:
                     out_arrays.append(getattr(args[1], farg))
-
             final_array = out_arrays + in_arrays
             ans = jitted_apply(*final_array)
             return ans
@@ -267,9 +256,9 @@ def apply_jit(dtype_sig_out, dtype_sig_in, parameters=None, **kwargs):
 
 def iterate_jit(parameters=None, **kwargs):
     """
-    make a decorator that takes in a _calc-style function, create a
-    function that handles the "high-level" function and the "_apply"
-    style function
+    Make a decorator that takes in a calc-style function, create a
+    function that handles the "high-level" function and the apply-style
+    function.
 
     Note: perhaps a better "bigger picture" description of what this does?
     """
@@ -277,9 +266,7 @@ def iterate_jit(parameters=None, **kwargs):
         parameters = []
 
     def make_wrapper(func):
-
-        # Step 1. Wrap this function in apply_jit
-        # from apply_jit
+        # Wrap this function in apply_jit from apply_jit
 
         # Get the input arguments from the function
         in_args = inspect.getargspec(func).args
@@ -292,9 +279,10 @@ def iterate_jit(parameters=None, **kwargs):
         kwargs_for_func = toolz.keyfilter(in_args.__contains__, kwargs)
         kwargs_for_jit = toolz.keyfilter(jit_args.__contains__, kwargs)
 
-        # Any name that is a taxcalc parameter (or the special case 'puf'
-        # Boolean flag is given special treatment. Identify those names here
-        dd_key_list = list(Parameters.default_data(metadata=True).keys())
+        # Any name that is a parameter (or the special case 'puf')
+        # Boolean flag is given special treatment.
+        # Identify those names here
+        dd_key_list = list(Policy.default_data(metadata=True).keys())
         allowed_parameters = dd_key_list
         allowed_parameters += list(arg[1:] for arg in dd_key_list)
         allowed_parameters.append("puf")
@@ -308,28 +296,25 @@ def iterate_jit(parameters=None, **kwargs):
 
         # Discover the return arguments by walking
         # the AST of the function
-        all_returned_vals = []
         gnr = GetReturnNode()
         all_out_args = None
         for node in ast.walk(ast.parse(''.join(src))):
             all_out_args = gnr.visit(node)
             if all_out_args:
                 break
-
         if not all_out_args:
             raise ValueError("Can't find return statement in function!")
 
-        # Now create the apply jitted function
+        # Now create the apply-style possibly-jitted function
         applied_jitted_f = make_apply_function(func,
                                                list(reversed(all_out_args)),
                                                in_args,
                                                parameters=all_parameters,
-                                               do_jit=True,
+                                               do_jit=DO_JIT,
                                                **kwargs_for_jit)
 
         def wrapper(*args, **kwargs):
             in_arrays = []
-            out_arrays = []
             pm_or_pf = []
             for farg in all_out_args + in_args:
                 if hasattr(args[0], farg):
@@ -340,7 +325,6 @@ def iterate_jit(parameters=None, **kwargs):
                     pm_or_pf.append("pf")
                 elif farg not in kwargs_for_func:
                     raise ValueError("Unknown arg: " + farg)
-
             # Create the high level function
             high_level_func = create_toplevel_function_string(all_out_args,
                                                               list(in_args),
@@ -350,10 +334,8 @@ def iterate_jit(parameters=None, **kwargs):
             fakeglobals = {}
             eval(func_code, {"applied_f": applied_jitted_f}, fakeglobals)
             high_level_fn = fakeglobals['hl_func']
-
             ans = high_level_fn(*args, **kwargs)
             return ans
 
         return wrapper
-
     return make_wrapper

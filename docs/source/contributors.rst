@@ -1,17 +1,17 @@
 Contributors
 ============
 
-Many people have contributed to the Tax Calculator, and we hope this
+Many people have contributed to the Tax-Calculator, and we hope this
 list continues to grow.
 
-Origins of OSPC Tax Calculator
-------------------------------
+Origins of Tax-Calculator
+-------------------------
 
-The Tax Calculator is derived from taxcalc.sas, a program written by
+The Tax-Calculator is derived from TAXCALC, a SAS program written by
 Dan Feenberg (`NBER`_) and Inna Shapiro (`NBER`_).
 
-Contributors to OSPC Tax Calculator
------------------------------------
+Contributors to Tax-Calculator
+------------------------------
 
 Contributors include the following individuals:
 
@@ -26,6 +26,8 @@ Contributors include the following individuals:
 * `Regan Kuchan`_
 * `Maria Messick`_
 * `Martin Holmer`_
+* `Peter Steinberg`_
+* `Sean Wang`_
 
 
 .. _`NBER`: http://www.nber.org/
@@ -40,3 +42,5 @@ Contributors include the following individuals:
 .. _`Regan Kuchan`: https://github.com/rkuchan
 .. _`Maria Messick`: https://github.com/mmessick
 .. _`Martin Holmer`: http://www.polsim.com/MRH_vita.pdf
+.. _`Peter Steinberg`: https://github.com/peterdsteinberg
+.. _`Sean Wang`: https://github.com/gofroggyrun

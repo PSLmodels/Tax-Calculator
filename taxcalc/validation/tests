@@ -1,0 +1,69 @@
+#!/bin/bash
+# Executes current-law & reform validation TESTS by calling test bash script.
+# .... delete testerror file if it exists
+rm -f testerror
+# .... check number of command-line arguments
+if [[ "$#" -gt 1 ]]; then
+    echo "ERROR: can specify at most one command-line argument"
+    echo "USAGE: ./tests [all]"
+    echo "       (using the 'all' option may execute four tests at a time)"
+    exit 1
+fi
+# .... specify whether or not to execute all tests
+ALLTESTS=false
+if [[ "$#" -eq 1 ]]; then
+    if [[ "$1" == "all" ]]; then
+        ALLTESTS=true
+    else
+        echo "ERROR: optional command-line argument must be all"
+        echo "USAGE: ./tests [all]"
+        exit 1
+    fi
+fi
+# .... execute validation tests in parallel
+echo "STARTING WITH VALIDATION TESTS : `date`"
+rm -f testerror
+if [[ "$ALLTESTS" == true ]] ; then
+    bash test c13 . &
+    bash test c14 . &
+    bash test c15 . &
+    wait
+    bash test c13 19_0.05 &
+    bash test c14 19_0.05 &
+    wait
+    bash test c13 18_0.07 &
+    bash test c14 18_0.07 &
+    wait
+    bash test c13 50_1 &
+    bash test c14 50_1 &
+    wait
+    bash test c13 75_500 &
+    bash test c14 75_500 &
+    wait
+fi
+bash test d13 . &
+bash test d14 . &
+bash test d15 . &
+wait
+echo "FINISHED WITH VALIDATION TESTS : `date`"
+if [[ -f "testerror" ]]; then
+    ERROR=1
+else
+    ERROR=0
+fi
+rm -f testerror
+RED=$(tput setaf 1)
+GRN=$(tput setaf 2)
+BOLD=$(tput bold)
+NORMAL=$(tput sgr0)
+if [[ "$ERROR" -eq 1 ]] ; then
+    echo "TEST FAILURE: any red lines starting with F between the"
+    echo "              STARTING... and FINISHED... lines above"
+    echo "              indicate a test failure caused by the actual"
+    echo "              *.taxdiffs results being different from the"
+    echo "              expected *.taxdiffs results."
+    printf "$BOLD$RED============ SOME EXECUTED VALIDATION/TESTS FAIL$NORMAL\n"
+else
+    printf "$BOLD$GRN============ ALL EXECUTED VALIDATION/TESTS PASS$NORMAL\n"
+fi
+exit $ERROR

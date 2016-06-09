@@ -1,11 +1,11 @@
-OSPC Tax Calculator 
-===================
+Tax-Calculator 
+==============
 
-The Tax Calculator simulates the US federal individual income tax
+The Tax-Calculator simulates the US federal individual income tax
 system.  In conjunction with micro data that represent the US
-population and a set of behavioral assumptions, the Tax Calculator can
+population and a set of behavioral assumptions, the Tax-Calculator can
 be used to conduct revenue scoring and distributional analyses of tax
-policies.  The Tax Calculator is written in Python, an interpreted
+policies.  The Tax-Calculator is written in Python, an interpreted
 language that can execute on Windows, Mac, or Linux.
 
 Contents

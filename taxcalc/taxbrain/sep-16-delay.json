@@ -1,0 +1,713 @@
+{
+    "1": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ACTC_ChildNum": {
+                "2018": [3.0]
+            }
+        }
+    },
+    "2": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ACTC_rt": {
+                "2016": [0.165]
+            }
+        }
+    },
+    "3": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ALD_Alimony_HC": {
+                "2017": [0.0]
+            }
+        }
+    },
+    "4": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ALD_EarlyWithdraw_HC": {
+                "2017": [0.0]
+            }
+        }
+    },
+    "5": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ALD_KEOGH_SEP_HC": {
+                "2017": [0.0]
+            }
+        }
+    },
+    "6": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ALD_SelfEmp_HealthIns_HC": {
+                "2019": [0.0]
+            }
+        }
+    },
+    "7": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ALD_SelfEmploymentTax_HC": {
+                "2017": [0.0]
+            }
+        }
+    },
+    "8": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ALD_StudentLoan_HC": {
+                "2020": [0.0]
+            }
+        }
+    },
+    "9": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_AMED_thd": {
+                "2016": [[220000.0, 275000.0, 137500.0, 220000.0, 220000.0, 137500.0]]
+            }
+        }
+    },
+    "10": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_AMED_trt": {
+                "2018": [0.0099]
+            }
+        }
+    },
+    "11": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_AMT_CG_rt1": {
+                "2020": [0.0]
+            }
+        }
+    },
+    "12": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_AMT_CG_rt2": {
+                "2016": [0.165]
+            }
+        }
+    },
+    "13": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_AMT_CG_rt3": {
+                "2020": [0.22]
+            }
+        }
+    },
+    "14": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_AMT_CG_thd1": {
+                "2018": [[42952.09909, 85904.19818, 42952.09909, 57497.63065, 85904.19818, 42952.09909]]
+            }
+        }
+    },
+    "15": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_AMT_CG_thd2": {
+                "2018": [[473499.83338, 532708.70303, 266354.35152, 503104.26821, 532708.70303, 266354.35152]]
+            }
+        }
+    },
+    "16": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_AMT_em": {
+                "2018": [[61490.52167, 95601.21922, 47800.60961, 61490.52167, 95601.21922, 47800.60961]]
+            }
+        }
+    },
+    "17": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_AMT_em_ps": {
+                "2016": [[131670.0, 175670.0, 87835.0, 131670.0, 175670.0, 87835.0]]
+            }
+        }
+    },
+    "18": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_AMT_prt": {
+                "2019": [0.275]
+            }
+        }
+    },
+    "19": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_AMT_trt1": {
+                "2020": [0.286]
+            }
+        }
+    },
+    "20": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_AMT_trt2": {
+                "2018": [0.022]
+            }
+        }
+    },
+    "21": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_AMT_tthd": {
+                "2018": [212535.88473]
+            }
+        }
+    },
+    "22": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_CG_rt1": {
+                "2020": [0.0]
+            }
+        }
+    },
+    "23": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_CG_rt2": {
+                "2016": [0.165]
+            }
+        }
+    },
+    "24": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_CG_rt3": {
+                "2017": [0.22]
+            }
+        }
+    },
+    "25": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_CG_thd1": {
+                "2016": [[41415.0, 82830.0, 41415.0, 55440.0, 82830.0, 41415.0]]
+            }
+        }
+    },
+    "26": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_CG_thd2": {
+                "2018": [[473499.83338, 532708.70303, 266354.35152, 503104.26821, 532708.70303, 266354.35152]]
+            }
+        }
+    },
+    "27": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_CTC_c": {
+                "2018": [1100.0]
+            }
+        }
+    },
+    "28": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_CTC_prt": {
+                "2020": [0.055]
+            }
+        }
+    },
+    "29": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_CTC_ps": {
+                "2017": [[82500.0, 121000.0, 60500.0, 82500.0, 82500.0, 60500.0]]
+            }
+        }
+    },
+    "30": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_EITC_MaxEligAge": {
+                "2016": [70.4]
+            }
+        }
+    },
+    "31": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_EITC_MinEligAge": {
+                "2018": [27.5]
+            }
+        }
+    },
+    "32": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_EITC_c": {
+                "2017": [[564.1141, 3760.38905, 6211.9442, 6988.99465]]
+            }
+        }
+    },
+    "33": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_EITC_prt": {
+                "2018": [[0.08415, 0.17578, 0.23166, 0.23166]]
+            }
+        }
+    },
+    "34": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_EITC_ps": {
+                "2018": [[9434.63106, 20751.62503, 20751.62503, 20751.62503]]
+            }
+        }
+    },
+    "35": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_EITC_rt": {
+                "2020": [[0.08415, 0.374, 0.44, 0.495]]
+            }
+        }
+    },
+    "36": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_FICA_mc_trt": {
+                "2020": [0.0319]
+            }
+        }
+    },
+    "37": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_FICA_ss_trt": {
+                "2019": [0.1364]
+            }
+        }
+    },
+    "38": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ID_BenefitSurtax_Switch": {
+                "2018": [[1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
+            }
+        }
+    },
+    "39": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ID_BenefitSurtax_crt": {
+                "2018": [1.0]
+            }
+        }
+    },
+    "40": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ID_BenefitSurtax_trt": {
+                "2020": [1.0]
+            }
+        }
+    },
+    "41": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ID_Casualty_frt": {
+                "2017": [0.11]
+            }
+        }
+    },
+    "42": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ID_Charity_crt_Asset": {
+                "2019": [0.3]
+            }
+        }
+    },
+    "43": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ID_Charity_crt_Cash": {
+                "2019": [0.5]
+            }
+        }
+    },
+    "44": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ID_Charity_frt": {
+                "2020": [0.0]
+            }
+        }
+    },
+    "45": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ID_Medical_frt": {
+                "2016": [0.11]
+            }
+        }
+    },
+    "46": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ID_Miscellaneous_frt": {
+                "2016": [0.022]
+            }
+        }
+    },
+    "47": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ID_RealEstate_HC": {
+                "2020": [0.0]
+            }
+        }
+    },
+    "48": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ID_StateLocalTax_HC": {
+                "2016": [0.0]
+            }
+        }
+    },
+    "49": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ID_crt": {
+                "2020": [0.88]
+            }
+        }
+    },
+    "50": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ID_prt": {
+                "2018": [0.033]
+            }
+        }
+    },
+    "51": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_ID_ps": {
+                "2020": [[310123.5784, 372172.20492, 186086.10246, 341147.89166, 372172.20492, 186086.10246]]
+            }
+        }
+    },
+    "52": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_II_brk1": {
+                "2019": [[10830.8766, 21661.7532, 10830.8766, 15472.68086, 21661.7532, 10830.8766]]
+            }
+        }
+    },
+    "53": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_II_brk2": {
+                "2018": [[42952.09909, 85904.19818, 42952.09909, 57497.63065, 85904.19818, 42952.09909]]
+            }
+        }
+    },
+    "54": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_II_brk3": {
+                "2020": [[108973.64754, 181602.8202, 90801.4101, 155599.78307, 181602.8202, 90801.4101]]
+            }
+        }
+    },
+    "55": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_II_brk4": {
+                "2017": [[211988.7275, 258032.0325, 129016.01625, 235010.38, 258032.0325, 129016.01625]]
+            }
+        }
+    },
+    "56": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_II_brk5": {
+                "2018": [[429691.29924, 429691.29924, 215345.64962, 429691.29924, 429691.29924, 215345.64962]]
+            }
+        }
+    },
+    "57": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_II_brk6": {
+                "2020": [[496209.68086, 558258.30738, 279129.15369, 527233.99412, 558258.30738, 279129.15369]]
+            }
+        }
+    },
+    "58": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_II_credit": {
+                "2017": [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+            }
+        }
+    },
+    "59": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_II_credit_prt": {
+                "2019": [0.0]
+            }
+        }
+    },
+    "60": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_II_credit_ps": {
+                "2016": [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+            }
+        }
+    },
+    "61": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_II_em": {
+                "2020": [4841.94484]
+            }
+        }
+    },
+    "62": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_II_em_ps": {
+                "2016": [[285340.0, 342430.0, 171215.0, 313885.0, 342430.0, 171215.0]]
+            }
+        }
+    },
+    "63": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_II_prt": {
+                "2019": [0.022]
+            }
+        }
+    },
+    "64": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_II_rt1": {
+                "2019": [0.11]
+            }
+        }
+    },
+    "65": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_II_rt2": {
+                "2020": [0.165]
+            }
+        }
+    },
+    "66": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_II_rt3": {
+                "2018": [0.275]
+            }
+        }
+    },
+    "67": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_II_rt4": {
+                "2020": [0.308]
+            }
+        }
+    },
+    "68": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_II_rt5": {
+                "2019": [0.363]
+            }
+        }
+    },
+    "69": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_II_rt6": {
+                "2018": [0.385]
+            }
+        }
+    },
+    "70": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_II_rt7": {
+                "2019": [0.4356]
+            }
+        }
+    },
+    "71": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_NIIT_thd": {
+                "2017": [[220000.0, 275000.0, 137500.0, 220000.0, 275000.0, 137500.0]]
+            }
+        }
+    },
+    "72": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_NIIT_trt": {
+                "2020": [0.0418]
+            }
+        }
+    },
+    "73": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_SS_Earnings_c": {
+                "2017": [136593.765]
+            }
+        }
+    },
+    "74": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_SS_percentage1": {
+                "2019": [0.55]
+            }
+        }
+    },
+    "75": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_SS_percentage2": {
+                "2020": [0.935]
+            }
+        }
+    },
+    "76": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_SS_thd50": {
+                "2020": [[27500.0, 35200.0, 0.0, 27500.0, 27500.0, 0.0]]
+            }
+        }
+    },
+    "77": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_SS_thd85": {
+                "2016": [[37400.0, 48400.0, 0.0, 37400.0, 37400.0, 0.0]]
+            }
+        }
+    },
+    "78": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_STD": {
+                "2018": [[7187.20383, 14374.40766, 7187.20383, 10609.68185, 14374.40766, 7187.20383, 1197.86731]]
+            }
+        }
+    },
+    "79": {
+        "replications": 1,
+        "start_year": 2016,
+        "specification": {
+            "_STD_Aged": {
+                "2019": [[1810.01172, 1459.68687, 1459.68687, 1810.01172, 1810.01172, 1459.68687]]
+            }
+        }
+    }
+}

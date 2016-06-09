@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from timeit import default_timer as timer
 from contextlib import contextmanager
 from functools import wraps
@@ -65,7 +67,7 @@ def time_this(function, running_timer=None):
         else:
             result = function(*args, **kwargs)
         end = timer()
-        print ("~function: '{}' takes : {}s".format(function.__name__,
-                                                    end - start))
+        print("~function: '{}' takes : {}s".format(function.__name__,
+                                                   end - start))
         return result
     return wrapper

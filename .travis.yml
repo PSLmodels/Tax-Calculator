@@ -2,6 +2,7 @@ sudo: false
 
 language: python
 python:
+  - "3.5"
   - "3.4"
   - "2.7"
 
@@ -12,11 +13,17 @@ install:
   - export PATH="$HOME/miniconda/bin:$PATH"
   - conda config --set always_yes yes --set changeps1 no
   - conda update conda
-  - conda env create
-  - source activate taxcalc-dev
+  - conda create -n taxcalcdev python=$TRAVIS_PYTHON_VERSION pytest setuptools pandas=0.16.2 numba toolz six
+  - source activate taxcalcdev
+  - pip install pytest-pep8
+  - pip install coverage
+  - pip install codecov
   - python setup.py install
 
 
 # command to run tests, e.g. python setup.py test
 script:
-  - python -c "import taxcalc"; py.test --pep8
+  - python -c "import taxcalc"; coverage run -m py.test -v -m "not requires_pufcsv" --pep8
+
+after_success:
+  - codecov

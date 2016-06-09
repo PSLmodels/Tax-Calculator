@@ -8,7 +8,7 @@ requirements:
     - setuptools
     - python
     - numpy
-    - pandas <=0.16.1
+    - pandas <=0.16.2
     - numba
     - toolz
     - six
@@ -17,7 +17,7 @@ requirements:
     - setuptools
     - python
     - numpy
-    - pandas
+    - pandas <=0.16.2
     - numba
     - toolz
     - six

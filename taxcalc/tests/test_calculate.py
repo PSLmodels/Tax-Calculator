@@ -1,40 +1,65 @@
 import os
 import sys
 import json
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, "../../"))
 import numpy as np
-from numpy.testing import assert_array_equal
+from numpy.testing import assert_allclose
 import pandas as pd
 import tempfile
 import pytest
-from taxcalc import Parameters, Records, Calculator, expand_array
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(CUR_PATH, '..', '..'))
+from taxcalc import Policy, Records, Calculator
 from taxcalc import create_distribution_table, create_difference_table
 
-
-# use 1991 PUF-like data to emulate current PUF, which is private
-TAX_DTA_PATH = os.path.join(CUR_PATH, '../../tax_all1991_puf.gz')
-TAX_DTA = pd.read_csv(TAX_DTA_PATH, compression='gzip')
-# PUF-fix-up: MIdR needs to be type int64 to match PUF
-TAX_DTA['midr'] = TAX_DTA['midr'].astype('int64')
-# specify WEIGHTS appropriate for 1991 data
-WEIGHTS_FILENAME = '../../WEIGHTS_testing.csv'
-WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
-WEIGHTS = pd.read_csv(WEIGHTS_PATH)
+# use 1991 PUF-like data to emulate current puf.csv, which is private
+TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91taxdata.csv.gz')
+TAXDATA = pd.read_csv(TAXDATA_PATH, compression='gzip')
+WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
+WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
 IRATES = {1991: 0.015, 1992: 0.020, 1993: 0.022, 1994: 0.020, 1995: 0.021,
           1996: 0.022, 1997: 0.023, 1998: 0.024, 1999: 0.024, 2000: 0.024,
-          2001: 0.024, 2002: 0.024}
+          2001: 0.024, 2002: 0.024, 2003: 0.024, 2004: 0.024}
+
+WRATES = {1991: 0.0276, 1992: 0.0419, 1993: 0.0465, 1994: 0.0498,
+          1995: 0.0507, 1996: 0.0481, 1997: 0.0451, 1998: 0.0441,
+          1999: 0.0437, 2000: 0.0435, 2001: 0.0430, 2002: 0.0429,
+          2003: 0.0429, 2004: 0.0429}
+
+RAWINPUTFILE_FUNITS = 4
+RAWINPUTFILE_YEAR = 2015
+RAWINPUTFILE_CONTENTS = (
+    'RECID,MARS\n'
+    '1,2\n'
+    '2,1\n'
+    '3,4\n'
+    '4,6\n'
+)
 
 
 @pytest.yield_fixture
-def paramsfile():
+def rawinputfile():
+    """
+    Temporary input file that contains minimum required input varaibles.
+    """
+    ifile = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    ifile.write(RAWINPUTFILE_CONTENTS)
+    ifile.close()
+    # must close and then yield for Windows platform
+    yield ifile
+    if os.path.isfile(ifile.name):
+        try:
+            os.remove(ifile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
 
+
+@pytest.yield_fixture
+def policyfile():
     txt = """{"_almdep": {"value": [7150, 7250, 7400]},
              "_almsep": {"value": [40400, 41050]},
              "_rt5": {"value": [0.33 ]},
              "_rt7": {"value": [0.396]}}"""
-
     f = tempfile.NamedTemporaryFile(mode="a", delete=False)
     f.write(txt + "\n")
     f.close()
@@ -43,117 +68,88 @@ def paramsfile():
     os.remove(f.name)
 
 
-def run():
-    parm = Parameters()
-    assert parm.current_year == 2013
-    recs = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
-    calc = Calculator(params=parm, records=recs)
-    assert calc.current_year == 2013
-    totaldf = calc.calc_all_test()
-    totaldf = totaldf.T.groupby(level=0).first().T  # drop duplicates
-    exp_results_file = os.path.join(CUR_PATH, '../../exp_results.csv.gz')
-    exp_results = pd.read_csv(exp_results_file, compression='gzip')
-    exp_set = set(exp_results.columns)  # fix-up to bad colname in exp_results
-    cur_set = set(totaldf.columns)
-    assert exp_set == cur_set
-    for label in exp_results.columns:
-        lhs = exp_results[label].values.reshape(len(exp_results))
-        rhs = totaldf[label].values.reshape(len(exp_results))
-        res = np.allclose(lhs, rhs, atol=1e-02)
-        if not res:
-            print('Problem found in: ', label)
-
-
-def test_sequence():
-    run()
-
-
 def test_make_Calculator():
-    parm = Parameters()
+    parm = Policy()
     assert parm.current_year == 2013
-    recs = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
-    calc = Calculator(params=parm, records=recs)
+    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    calc = Calculator(policy=parm, records=recs)
     assert calc.current_year == 2013
 
 
 def test_make_Calculator_deepcopy():
     import copy
-    parm = Parameters()
-    recs = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
-    calc1 = Calculator(params=parm, records=recs)
+    parm = Policy()
+    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    calc1 = Calculator(policy=parm, records=recs)
     calc2 = copy.deepcopy(calc1)
     assert isinstance(calc2, Calculator)
 
 
-def test_make_Calculator_files_to_ctor(paramsfile):
-    with open(paramsfile.name) as pfile:
-        params = json.load(pfile)
-    ppo = Parameters(parameter_dict=params, start_year=1991,
-                     num_years=len(IRATES), inflation_rates=IRATES)
-    calc = Calculator(params=ppo, records=TAX_DTA_PATH,
-                      start_year=1991, inflation_rates=IRATES)
-    assert calc
-
-
 def test_make_Calculator_with_policy_reform():
-    # create a Parameters object and apply a policy reform
-    params2 = Parameters()
+    # create a Policy object and apply a policy reform
+    policy2 = Policy()
     reform2 = {2013: {'_II_em': np.array([4000]), '_II_em_cpi': False,
                       '_STD_Aged': [[1600, 1300, 1300, 1600, 1600, 1300]],
                       "_STD_Aged_cpi": False}}
-    params2.implement_reform(reform2)
+    policy2.implement_reform(reform2)
     # create a Calculator object using this policy-reform
-    puf = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
-    calc2 = Calculator(params=params2, records=puf)
-    # check that Parameters object embedded in Calculator object is correct
+    puf = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    calc2 = Calculator(policy=policy2, records=puf)
+    # check that Policy object embedded in Calculator object is correct
     assert calc2.current_year == 2013
-    assert calc2.params.II_em == 4000
-    assert_array_equal(calc2.params._II_em, np.array([4000] * 12))
-    exp_STD_Aged = [[1600, 1300, 1300, 1600, 1600, 1300]] * 12
-    assert_array_equal(calc2.params._STD_Aged, np.array(exp_STD_Aged))
-    assert_array_equal(calc2.params.STD_Aged,
-                       np.array([1600, 1300, 1300, 1600, 1600, 1300]))
+    assert calc2.policy.II_em == 4000
+    assert_allclose(calc2.policy._II_em,
+                    np.array([4000] * Policy.DEFAULT_NUM_YEARS),
+                    atol=0.01, rtol=0.0)
+    exp_STD_Aged = [[1600, 1300, 1300,
+                     1600, 1600, 1300]] * Policy.DEFAULT_NUM_YEARS
+    assert_allclose(calc2.policy._STD_Aged, np.array(exp_STD_Aged),
+                    atol=0.01, rtol=0.0)
+    assert_allclose(calc2.policy.STD_Aged,
+                    np.array([1600, 1300, 1300, 1600, 1600, 1300]),
+                    atol=0.01, rtol=0.0)
 
 
 def test_make_Calculator_with_multiyear_reform():
-    # create a Parameters object and apply a policy reform
-    params3 = Parameters()
+    # create a Policy object and apply a policy reform
+    policy3 = Policy()
     reform3 = {2015: {}}
     reform3[2015]['_STD_Aged'] = [[1600, 1300, 1600, 1300, 1600, 1300]]
     reform3[2015]['_II_em'] = [5000, 6000]  # reform values for 2015 and 2016
     reform3[2015]['_II_em_cpi'] = False
-    params3.implement_reform(reform3)
+    policy3.implement_reform(reform3)
     # create a Calculator object using this policy-reform
-    puf = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
-    calc3 = Calculator(params=params3, records=puf)
-    # check that Parameters object embedded in Calculator object is correct
+    puf = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    calc3 = Calculator(policy=policy3, records=puf)
+    # check that Policy object embedded in Calculator object is correct
     assert calc3.current_year == 2013
-    assert calc3.params.II_em == 3900
-    assert calc3.params.num_years == 12
-    exp_II_em = [3900, 3950, 5000] + [6000] * 9
-    assert_array_equal(calc3.params._II_em, np.array(exp_II_em))
+    assert calc3.policy.II_em == 3900
+    assert calc3.policy.num_years == Policy.DEFAULT_NUM_YEARS
+    exp_II_em = [3900, 3950, 5000] + [6000] * (Policy.DEFAULT_NUM_YEARS - 3)
+    assert_allclose(calc3.policy._II_em, np.array(exp_II_em),
+                    atol=0.01, rtol=0.0)
     calc3.increment_year()
     calc3.increment_year()
     assert calc3.current_year == 2015
-    assert_array_equal(calc3.params.STD_Aged,
-                       np.array([1600, 1300, 1600, 1300, 1600, 1300]))
+    assert_allclose(calc3.policy.STD_Aged,
+                    np.array([1600, 1300, 1600, 1300, 1600, 1300]),
+                    atol=0.01, rtol=0.0)
 
 
 def test_make_Calculator_with_reform_after_start_year():
-    # create Parameters object using custom indexing rates
+    # create Policy object using custom indexing rates
     irates = {2013: 0.01, 2014: 0.01, 2015: 0.02, 2016: 0.01, 2017: 0.03}
-    parm = Parameters(start_year=2013, num_years=len(irates),
-                      inflation_rates=irates)
-    # specify reform in 2015, which is two years after Parameters start_year
+    parm = Policy(start_year=2013, num_years=len(irates),
+                  inflation_rates=irates)
+    # specify reform in 2015, which is two years after Policy start_year
     reform = {2015: {}, 2016: {}}
     reform[2015]['_STD_Aged'] = [[1600, 1300, 1600, 1300, 1600, 1300]]
     reform[2015]['_II_em'] = [5000]
     reform[2016]['_II_em'] = [6000]
     reform[2016]['_II_em_cpi'] = False
     parm.implement_reform(reform)
-    tax_dta = pd.read_csv(TAX_DTA_PATH, compression='gzip')
-    recs = Records(data=tax_dta, weights=WEIGHTS, start_year=2009)
-    calc = Calculator(params=parm, records=recs)
+    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    calc = Calculator(policy=parm, records=recs)
     # compare actual and expected parameter values over all years
     exp_STD_Aged = np.array([[1500, 1200, 1200, 1500, 1500, 1200],
                              [1550, 1200, 1200, 1550, 1550, 1200],
@@ -161,63 +157,78 @@ def test_make_Calculator_with_reform_after_start_year():
                              [1632, 1326, 1632, 1326, 1632, 1326],
                              [1648, 1339, 1648, 1339, 1648, 1339]])
     exp_II_em = np.array([3900, 3950, 5000, 6000, 6000])
-    assert_array_equal(calc.params._STD_Aged, exp_STD_Aged)
-    assert_array_equal(calc.params._II_em, exp_II_em)
+    assert_allclose(calc.policy._STD_Aged, exp_STD_Aged, atol=0.5, rtol=0.0)
+    assert_allclose(calc.policy._II_em, exp_II_em, atol=0.001, rtol=0.0)
     # compare actual and expected values for 2015
     calc.increment_year()
     calc.increment_year()
     assert calc.current_year == 2015
     exp_2015_II_em = 5000
-    assert_array_equal(calc.params.II_em, exp_2015_II_em)
+    assert_allclose(calc.policy.II_em, exp_2015_II_em,
+                    atol=0.0, rtol=0.0)
     exp_2015_STD_Aged = np.array([1600, 1300, 1600, 1300, 1600, 1300])
-    assert_array_equal(calc.params.STD_Aged, exp_2015_STD_Aged)
+    assert_allclose(calc.policy.STD_Aged, exp_2015_STD_Aged,
+                    atol=0.0, rtol=0.0)
 
 
-def test_make_Calculator_user_mods_with_cpi_flags(paramsfile):
-    with open(paramsfile.name) as pfile:
-        params = json.load(pfile)
-    ppo = Parameters(parameter_dict=params, start_year=1991,
-                     num_years=len(IRATES), inflation_rates=IRATES)
-    calc = Calculator(params=ppo, records=TAX_DTA_PATH, start_year=1991,
-                      inflation_rates=IRATES)
+def test_Calculator_advance_to_year():
+    policy = Policy()
+    puf = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    calc = Calculator(policy=policy, records=puf)
+    calc.advance_to_year(2016)
+    assert calc.current_year == 2016
+    with pytest.raises(ValueError):
+        calc.advance_to_year(2015)
+
+
+def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
+    with open(policyfile.name) as pfile:
+        policy = json.load(pfile)
+    ppo = Policy(parameter_dict=policy, start_year=1991,
+                 num_years=len(IRATES), inflation_rates=IRATES,
+                 wage_growth_rates=WRATES)
+    rec = Records(data=TAXDATA, start_year=1991)
+    calc = Calculator(policy=ppo, records=rec)
     user_mods = {1991: {"_almdep": [7150, 7250, 7400],
                         "_almdep_cpi": True,
                         "_almsep": [40400, 41050],
                         "_almsep_cpi": False,
                         "_rt5": [0.33],
                         "_rt7": [0.396]}}
-    calc.params.implement_reform(user_mods)
-
-    inf_rates = [IRATES[1991 + i] for i in range(0, 12)]
-    exp_almdep = expand_array(np.array([7150, 7250, 7400]), inflate=True,
-                              inflation_rates=inf_rates, num_years=12)
-    act_almdep = getattr(calc.params, '_almdep')
-    assert_array_equal(act_almdep, exp_almdep)
-    exp_almsep_values = [40400] + [41050] * 11
+    calc.policy.implement_reform(user_mods)
+    # compare actual and expected values
+    inf_rates = [IRATES[1991 + i] for i in range(0, Policy.DEFAULT_NUM_YEARS)]
+    exp_almdep = Policy.expand_array(np.array([7150, 7250, 7400]),
+                                     inflate=True,
+                                     inflation_rates=inf_rates,
+                                     num_years=Policy.DEFAULT_NUM_YEARS)
+    act_almdep = getattr(calc.policy, '_almdep')
+    assert_allclose(act_almdep, exp_almdep, atol=0.01, rtol=0.0)
+    exp_almsep_values = [40400] + [41050] * (Policy.DEFAULT_NUM_YEARS - 1)
     exp_almsep = np.array(exp_almsep_values)
-    act_almsep = getattr(calc.params, '_almsep')
-    assert_array_equal(act_almsep, exp_almsep)
+    act_almsep = getattr(calc.policy, '_almsep')
+    assert_allclose(act_almsep, exp_almsep, atol=0.01, rtol=0.0)
 
 
-def test_make_Calculator_raises_on_no_params():
-    rec = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2013)
+def test_make_Calculator_raises_on_no_policy():
+    rec = Records(data=TAXDATA, weights=WEIGHTS, start_year=2013)
     with pytest.raises(ValueError):
         calc = Calculator(records=rec)
 
 
-def test_Calculator_attr_access_to_params():
-    params = Parameters()
-    puf = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
-    calc = Calculator(params=params, records=puf)
+def test_Calculator_attr_access_to_policy():
+    policy = Policy()
+    puf = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    calc = Calculator(policy=policy, records=puf)
     assert hasattr(calc.records, 'c01000')
-    assert hasattr(calc.params, '_AMT_Child_em')
-    assert hasattr(calc, 'params')
+    assert hasattr(calc.policy, '_AMT_Child_em')
+    assert hasattr(calc, 'policy')
 
 
 def test_Calculator_create_distribution_table():
-    params = Parameters()
-    puf = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
-    calc = Calculator(params=params, records=puf)
+    policy = Policy()
+    puf = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    calc = Calculator(policy=policy, records=puf)
     calc.calc_all()
     dist_labels = ['Returns', 'AGI', 'Standard Deduction Filers',
                    'Standard Deduction', 'Itemizers',
@@ -225,7 +236,9 @@ def test_Calculator_create_distribution_table():
                    'Taxable Income', 'Regular Tax', 'AMTI', 'AMT Filers',
                    'AMT', 'Tax before Credits', 'Non-refundable Credits',
                    'Tax before Refundable Credits', 'Refundable Credits',
-                   'Revenue']
+                   'Individual Income Tax Liabilities',
+                   'Payroll Tax Liablities',
+                   'Combined Payroll and Individual Income Tax Liabilities']
     dt1 = create_distribution_table(calc, groupby="weighted_deciles",
                                     result_type="weighted_sum")
     dt1.columns = dist_labels
@@ -235,47 +248,71 @@ def test_Calculator_create_distribution_table():
     assert isinstance(dt2, pd.DataFrame)
 
 
+def test_Calculator_mtr():
+    policy = Policy()
+    puf = Records(TAXDATA, weights=WEIGHTS, start_year=2009)
+    calc = Calculator(policy=policy, records=puf)
+    (mtr_FICA, mtr_IIT, mtr) = calc.mtr()
+    assert type(mtr) == np.ndarray
+    assert np.array_equal(mtr, mtr_FICA) is False
+    assert np.array_equal(mtr_FICA, mtr_IIT) is False
+
+
 def test_Calculator_create_difference_table():
-    # create current-law Parameters object and use to create Calculator calc1
-    params1 = Parameters()
-    puf1 = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
-    calc1 = Calculator(params=params1, records=puf1)
+    # create current-law Policy object and use to create Calculator calc1
+    policy1 = Policy()
+    puf1 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    calc1 = Calculator(policy=policy1, records=puf1)
     calc1.calc_all()
-    # create policy-reform Parameters object and use to create Calculator calc2
-    params2 = Parameters()
+    # create policy-reform Policy object and use to create Calculator calc2
+    policy2 = Policy()
     reform = {2013: {'_II_rt7': [0.45]}}
-    params2.implement_reform(reform)
-    puf2 = Records(data=TAX_DTA, weights=WEIGHTS, start_year=2009)
-    calc2 = Calculator(params=params2, records=puf2)
+    policy2.implement_reform(reform)
+    puf2 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    calc2 = Calculator(policy=policy2, records=puf2)
     # create difference table and check that it is a Pandas DataFrame
     dtable = create_difference_table(calc1, calc2, groupby="weighted_deciles")
     assert isinstance(dtable, pd.DataFrame)
 
 
-def test_diagnostic_table():
-    params = Parameters()
-    TAX_DTA.flpdyr += 18  # flpdyr==2009 so that Records ctor will apply blowup
-    puf = Records(data=TAX_DTA, weights=WEIGHTS)
-    calc = Calculator(params=params, records=puf)
+def test_Calculator_diagnostic_table():
+    policy = Policy()
+    puf = Records(data=TAXDATA, weights=WEIGHTS, start_year=Records.PUF_YEAR)
+    calc = Calculator(policy=policy, records=puf)
     calc.diagnostic_table()
 
 
+def test_Calculator_diagnostic_table_no_mutation():
+    policy_x = Policy()
+    record_x = Records(data=TAXDATA, weights=WEIGHTS,
+                       start_year=Records.PUF_YEAR)
+    policy_y = Policy()
+    record_y = Records(data=TAXDATA, weights=WEIGHTS,
+                       start_year=Records.PUF_YEAR)
+    calc_x = Calculator(policy=policy_x, records=record_x)
+    calc_y = Calculator(policy=policy_y, records=record_y)
+    x_start = calc_x.current_year
+    y_start = calc_y.current_year
+    calc_y.diagnostic_table(base_calc=calc_x)
+    assert calc_y.current_year == y_start
+    assert calc_x.current_year == x_start
+
+
 def test_make_Calculator_increment_years_first():
-    # create Parameters object with custom indexing rates and policy reform
+    # create Policy object with custom indexing rates and policy reform
     irates = {2013: 0.01, 2014: 0.01, 2015: 0.02, 2016: 0.01, 2017: 0.03}
-    params = Parameters(start_year=2013, inflation_rates=irates,
-                        num_years=len(irates))
+    policy = Policy(start_year=2013, inflation_rates=irates,
+                    num_years=len(irates))
     reform = {2015: {}, 2016: {}}
     reform[2015]['_STD_Aged'] = [[1600, 1300, 1600, 1300, 1600, 1300]]
     reform[2015]['_II_em'] = [5000]
     reform[2016]['_II_em'] = [6000]
     reform[2016]['_II_em_cpi'] = False
-    params.implement_reform(reform)
+    policy.implement_reform(reform)
     # create Records object by reading 1991 data and saying it is 2009 data
-    tax_dta = pd.read_csv(TAX_DTA_PATH, compression='gzip')
-    puf = Records(tax_dta, weights=WEIGHTS, start_year=2009)
-    # create Calculator object with Parameters object as modified by reform
-    calc = Calculator(params=params, records=puf)
+    puf = Records(TAXDATA, weights=WEIGHTS, start_year=2009)
+    # create Calculator object with Policy object as modified by reform
+    calc = Calculator(policy=policy, records=puf)
     # compare expected policy parameter values with those embedded in calc
     exp_STD_Aged = np.array([[1500, 1200, 1200, 1500, 1500, 1200],
                              [1550, 1200, 1200, 1550, 1550, 1200],
@@ -283,8 +320,30 @@ def test_make_Calculator_increment_years_first():
                              [1632, 1326, 1632, 1326, 1632, 1326],
                              [1648, 1339, 1648, 1339, 1648, 1339]])
     exp_II_em = np.array([3900, 3950, 5000, 6000, 6000])
-    assert_array_equal(calc.params._STD_Aged, exp_STD_Aged)
-    assert_array_equal(calc.params._II_em, exp_II_em)
+    assert_allclose(calc.policy._STD_Aged, exp_STD_Aged, atol=0.5, rtol=0.0)
+    assert_allclose(calc.policy._II_em, exp_II_em, atol=0.5, rtol=0.0)
+
+
+def test_Calculator_using_nonstd_input(rawinputfile):
+    # check Calculator handling of raw, non-standard input data with no aging
+    policy = Policy()
+    policy.set_year(RAWINPUTFILE_YEAR)  # set policy params to input data year
+    nonpuf = Records(data=rawinputfile.name,
+                     blowup_factors=None,  # keeps raw data unchanged
+                     weights=None,
+                     start_year=RAWINPUTFILE_YEAR)  # set raw input data year
+    assert nonpuf.dim == RAWINPUTFILE_FUNITS
+    calc = Calculator(policy=policy,
+                      records=nonpuf,
+                      sync_years=False)  # keeps raw data unchanged
+    assert calc.current_year == RAWINPUTFILE_YEAR
+    calc.calc_all()
+    exp_iitax = np.zeros((nonpuf.dim,))
+    assert_allclose(nonpuf._iitax, exp_iitax)
+    mtr_fica, _, _ = calc.mtr(wrt_full_compensation=False)
+    exp_mtr_fica = np.zeros((nonpuf.dim,))
+    exp_mtr_fica.fill(0.153)
+    assert_allclose(mtr_fica, exp_mtr_fica)
 
 
 class TaxCalcError(Exception):
