@@ -32,3 +32,13 @@ Say the United States collects $100 in corporate tax revenue one year and person
 ..[6]Discernment between assets that have a certain percentage from normal returns and supernormal returns was adapted from the Tax Policy Center.
 
 ..[7]This measure is modeled after that done by the JCT. Calculated in the method Dist_Corp_Inc_Tax in functions.py
+
+Bibliography
+------------
+Edward Harris. 2012. “The Distribution of Household Income and Federal Taxes, 2008 and 2009.” Edited by Sherry Snyder. Congressional Budget Office.http://www.cbo.gov/sites/default/files/cbofiles/attachments/43373-AverageTaxRates_screen.pdf.
+
+Jim Nunns. 2012. “How TPC Distributes the Corporate Income Tax.” Tax Policy Center. http://www.taxpolicycenter.org/UploadedPDF/412651-Tax-Model-Corporate-Tax-Incidence.pdf.
+
+Julie-Anne Cronin, Emily Y. Lin, Laura Power, and Michael Cooper. 2012. “Distributing the Corporate Income Tax: Revised U.S. Treasury Methodology.” The Department of the Treasury.http://www.treasury.gov/resource-center/tax-policy/tax-analysis/Documents/OTA-T2012-05-Distributing-the-Corporate-Income-Tax-Methodology-May-2012.pdf.
+
+The Staff of the Joint Committee on Taxation. 2013. “Modeling the Distribution of Taxes on Business Income.” The Joint Committee on Taxation. https://www.jct.gov/publications.html?func=showdown&id=4528.
