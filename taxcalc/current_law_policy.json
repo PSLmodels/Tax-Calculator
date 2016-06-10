@@ -1003,9 +1003,9 @@
         "value": [0.0]
     },
 
-    "_ID_Charity_crt_Cash": {
+    "_ID_Charity_crt": {
         "long_name": "Deduction for charitable cash contributions; ceiling as a decimal fraction of AGI",
-        "description": "The deduction for Charity in form of cash is capped at this fraction of AGI. ",
+        "description": "In general, contributions to charitable organizations may be deducted up to 50 percent of adjusted gross income computed without regard to net operating loss carrybacks.",
         "irs_ref": "Pub. 526, Limits on Deductions: 50% Limit Organizations. ",
         "notes": "This rate cannot be increased to higher 0.5 due to lack of data. ",
         "start_year": 2013,
