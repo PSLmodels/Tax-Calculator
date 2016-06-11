@@ -6,8 +6,7 @@ import pandas as pd
 import pytest
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
-from taxcalc import Policy, Records, Calculator, behavior, Behavior, Growth
-from taxcalc import adjustment, target
+from taxcalc import Policy, Records, Calculator, Behavior, Growth
 
 # use 1991 PUF-like data to emulate current puf.csv, which is private
 TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91taxdata.csv.gz')
@@ -28,6 +27,8 @@ def test_make_calculator_with_growth():
     # test incorrect Growth instantiation
     with pytest.raises(ValueError):
         grow = Growth(growth_dict=list())
+    with pytest.raises(ValueError):
+        grow = Growth(num_years=0)
 
 
 def test_update_growth():
@@ -39,7 +40,11 @@ def test_update_growth():
         grow.update_economic_growth({2013: {'bad_name': [0.02]}})
     with pytest.raises(ValueError):
         grow.update_economic_growth({2013: {'bad_name_cpi': True}})
-    # change growth adjustment/target
+    bad_params = {2105: {'_factor_adjustment': [0.01],
+                         '_factor_target': [0.08]}}
+    with pytest.raises(ValueError):
+        grow.update_economic_growth(bad_params)
+    # try correct updates
     grow_x = Growth()
     factor_x = {2015: {'_factor_target': [0.04]}}
     grow_x.update_economic_growth(factor_x)
@@ -65,19 +70,20 @@ def test_update_growth():
                                  0.01, 0.01]))
 
 
-def test_target():
-    # Calculator
+def test_factor_target():
     recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    grow = Growth()
-    calc = Calculator(policy=Policy(), records=recs, growth=grow)
-    # set target
-    factor_x = {2015: {'_factor_target': [0.04]}}
-    grow.update_economic_growth(factor_x)
+    calc = Calculator(policy=Policy(), records=recs, growth=Growth())
     AGDPN_pre = calc.records.BF.AGDPN[2015]
     ATXPY_pre = calc.records.BF.ATXPY[2015]
-    target(calc, grow._factor_target, 2015)
-    distance = ((grow._factor_target[2015 - 2013] -
-                 Growth.default_real_GDP_growth_rate(2015 - 2013)) /
+    # specify _factor_target
+    ft2015 = 0.04
+    factor_target = {2015: {'_factor_target': [ft2015]}}
+    calc.growth.update_economic_growth(factor_target)
+    assert calc.current_year == 2013
+    calc.increment_year()
+    calc.increment_year()
+    assert calc.current_year == 2015
+    distance = ((ft2015 - Growth.default_real_gdp_growth_rate(2015 - 2013)) /
                 calc.records.BF.APOPN[2015])
     AGDPN_post = AGDPN_pre + distance
     ATXPY_post = ATXPY_pre + distance
@@ -85,15 +91,21 @@ def test_target():
     assert calc.records.BF.ATXPY[2015] == ATXPY_post
 
 
-def test_adjustment():
+def test_factor_adjustment():
     recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    calc = Calculator(policy=Policy(), records=recs)
+    calc = Calculator(policy=Policy(), records=recs, growth=Growth())
     ATXPY_pre = calc.records.BF.ATXPY[2015]
     AGDPN_pre = calc.records.BF.AGDPN[2015]
-    # apply adjustment
-    adjustment(calc, 0.01, 2015)
-    assert calc.records.BF.AGDPN[2015] == AGDPN_pre + 0.01
-    assert calc.records.BF.ATXPY[2015] == ATXPY_pre + 0.01
+    # specify _factor_adjustment
+    fa2015 = 0.01
+    factor_adj = {2015: {'_factor_adjustment': [fa2015]}}
+    calc.growth.update_economic_growth(factor_adj)
+    assert calc.current_year == 2013
+    calc.increment_year()
+    calc.increment_year()
+    assert calc.current_year == 2015
+    assert calc.records.BF.AGDPN[2015] == AGDPN_pre + fa2015
+    assert calc.records.BF.ATXPY[2015] == ATXPY_pre + fa2015
 
 
 def test_growth_default_data():

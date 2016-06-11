@@ -74,6 +74,15 @@ def test_make_Calculator():
     recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     calc = Calculator(policy=parm, records=recs)
     assert calc.current_year == 2013
+    # test incorrect Calculator instantiation:
+    with pytest.raises(ValueError):
+        calc = Calculator(policy=None, records=recs)
+    with pytest.raises(ValueError):
+        calc = Calculator(policy=parm, records=None)
+    with pytest.raises(ValueError):
+        calc = Calculator(policy=parm, records=recs, behavior=list())
+    with pytest.raises(ValueError):
+        calc = Calculator(policy=parm, records=recs, growth=list())
 
 
 def test_make_Calculator_deepcopy():

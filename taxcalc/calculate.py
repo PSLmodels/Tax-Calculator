@@ -11,7 +11,7 @@ from .functions import *
 from .policy import Policy
 from .records import Records
 from .behavior import Behavior
-from .growth import Growth, adjustment, target
+from .growth import Growth
 
 
 class Calculator(object):
@@ -22,24 +22,22 @@ class Calculator(object):
             self._policy = policy
         else:
             raise ValueError('must specify policy as a Policy object')
-        if behavior:
-            if isinstance(behavior, Behavior):
-                self.behavior = behavior
-            else:
-                raise ValueError('behavior must be a Behavior object')
-        else:
-            self.behavior = Behavior(start_year=policy.start_year)
-        if growth:
-            if isinstance(growth, Growth):
-                self.growth = growth
-            else:
-                raise ValueError('growth must be a Growth object')
-        else:
-            self.growth = Growth(start_year=policy.start_year)
         if isinstance(records, Records):
             self._records = records
         else:
             raise ValueError('must specify records as a Records object')
+        if behavior is None:
+            self.behavior = Behavior(start_year=policy.start_year)
+        elif isinstance(behavior, Behavior):
+            self.behavior = behavior
+        else:
+            raise ValueError('behavior must be None or a Behavior object')
+        if growth is None:
+            self.growth = Growth(start_year=policy.start_year)
+        elif isinstance(growth, Growth):
+            self.growth = growth
+        else:
+            raise ValueError('growth must be None or a Growth object')
         if sync_years and self._records.current_year == Records.PUF_YEAR:
             if verbose:
                 print("You loaded data for " +
@@ -129,22 +127,12 @@ class Calculator(object):
         BenefitSurtax(self)
 
     def increment_year(self):
-        if self.growth.factor_adjustment != 0:
-            if not np.array_equal(self.growth._factor_target,
-                                  Growth.REAL_GDP_GROWTH_RATES):
-                msg = "adjustment and target factor \
-                       cannot be non-zero at the same time"
-                raise ValueError(msg)
-            else:
-                adjustment(self, self.growth.factor_adjustment,
-                           self.policy.current_year + 1)
-        elif not np.array_equal(self.growth._factor_target,
-                                Growth.REAL_GDP_GROWTH_RATES):
-            target(self, self.growth._factor_target,
-                   self.policy.current_year + 1)
+        next_year = self.policy.current_year + 1
+        self.growth.apply_change(self.records, next_year)
+        self.growth.set_year(next_year)
         self.records.increment_year()
-        self.policy.set_year(self.policy.current_year + 1)
-        self.behavior.set_year(self.policy.current_year)
+        self.policy.set_year(next_year)
+        self.behavior.set_year(next_year)
 
     def advance_to_year(self, year):
         '''
