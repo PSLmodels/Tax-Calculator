@@ -40,7 +40,7 @@ def test_update_growth():
         grow.update_economic_growth({2013: {'bad_name': [0.02]}})
     with pytest.raises(ValueError):
         grow.update_economic_growth({2013: {'bad_name_cpi': True}})
-    bad_params = {2105: {'_factor_adjustment': [0.01],
+    bad_params = {2015: {'_factor_adjustment': [0.01],
                          '_factor_target': [0.08]}}
     with pytest.raises(ValueError):
         grow.update_economic_growth(bad_params)
