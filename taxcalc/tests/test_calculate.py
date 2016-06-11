@@ -8,7 +8,7 @@ import tempfile
 import pytest
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
-from taxcalc import Policy, Records, Calculator
+from taxcalc import Policy, Records, Calculator, Behavior
 from taxcalc import create_distribution_table, create_difference_table
 
 # use 1991 PUF-like data to emulate current puf.csv, which is private
@@ -74,6 +74,15 @@ def test_make_Calculator():
     recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     calc = Calculator(policy=parm, records=recs)
     assert calc.current_year == 2013
+    # test incorrect Calculator instantiation:
+    with pytest.raises(ValueError):
+        calc = Calculator(policy=None, records=recs)
+    with pytest.raises(ValueError):
+        calc = Calculator(policy=parm, records=None)
+    with pytest.raises(ValueError):
+        calc = Calculator(policy=parm, records=recs, behavior=list())
+    with pytest.raises(ValueError):
+        calc = Calculator(policy=parm, records=recs, growth=list())
 
 
 def test_make_Calculator_deepcopy():
@@ -249,13 +258,19 @@ def test_Calculator_create_distribution_table():
 
 
 def test_Calculator_mtr():
-    policy = Policy()
     puf = Records(TAXDATA, weights=WEIGHTS, start_year=2009)
-    calc = Calculator(policy=policy, records=puf)
-    (mtr_FICA, mtr_IIT, mtr) = calc.mtr()
-    assert type(mtr) == np.ndarray
-    assert np.array_equal(mtr, mtr_FICA) is False
+    calc = Calculator(policy=Policy(), records=puf)
+    (mtr_FICA, mtr_IIT, mtr_combined) = calc.mtr()
+    assert type(mtr_combined) == np.ndarray
+    assert np.array_equal(mtr_combined, mtr_FICA) is False
     assert np.array_equal(mtr_FICA, mtr_IIT) is False
+    with pytest.raises(ValueError):
+        (_, _, mtr_combined) = calc.mtr(income_type_str='bad_income_type')
+    (_, _, mtr_combined) = calc.mtr(income_type_str='e00650',
+                                    negative_finite_diff=True)
+    assert type(mtr_combined) == np.ndarray
+    (_, _, mtr_combined) = calc.mtr(income_type_str='e00900p')
+    assert type(mtr_combined) == np.ndarray
 
 
 def test_Calculator_create_difference_table():
@@ -276,10 +291,12 @@ def test_Calculator_create_difference_table():
 
 
 def test_Calculator_diagnostic_table():
-    policy = Policy()
     puf = Records(data=TAXDATA, weights=WEIGHTS, start_year=Records.PUF_YEAR)
-    calc = Calculator(policy=policy, records=puf)
-    calc.diagnostic_table()
+    beh = Behavior()
+    beh.update_behavior({2013: {'_BE_sub': [0.4]}})
+    assert beh.has_response()
+    calc = Calculator(policy=Policy(), records=puf, behavior=beh)
+    calc.diagnostic_table(base_calc=calc)
 
 
 def test_Calculator_diagnostic_table_no_mutation():
