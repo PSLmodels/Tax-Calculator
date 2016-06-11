@@ -157,9 +157,12 @@ def some_calc(x, y, z):
 
 
 def test_make_apply_function():
-    ans = make_apply_function(some_calc, ['a', 'b'], ['x', 'y', 'z'], [],
-                              do_jit=True, no_python=True)
-    assert ans
+    ans_do_jit = make_apply_function(some_calc, ['a', 'b'], ['x', 'y', 'z'],
+                                     [], do_jit=True, no_python=True)
+    assert ans_do_jit
+    ans_no_jit = make_apply_function(some_calc, ['a', 'b'], ['x', 'y', 'z'],
+                                     [], do_jit=False, no_python=True)
+    assert ans_no_jit
 
 
 @apply_jit(["a", "b"], ["x", "y", "z"], nopython=True)
