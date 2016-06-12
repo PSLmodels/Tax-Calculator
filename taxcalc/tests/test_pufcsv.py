@@ -22,7 +22,6 @@ import sys
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
-from taxcalc import percentage_change_gdp  # pylint: disable=import-error
 PUFCSV_PATH = os.path.join(CUR_PATH, '..', '..', 'puf.csv')
 AGGRES_PATH = os.path.join(CUR_PATH, 'pufcsv_agg_expect.txt')
 MTRRES_PATH = os.path.join(CUR_PATH, 'pufcsv_mtr_expect.txt')
@@ -181,22 +180,3 @@ def test_mtr():
         sys.stdout.write('***            and rerun test.                ***\n')
         sys.stdout.write('*************************************************\n')
         assert False
-
-
-@pytest.mark.requires_pufcsv
-def test_percentage_change_gdp():
-    """
-    Test Tax-Calculator macro_elasticity.py capability.
-    """
-    calc1 = Calculator(policy=Policy(), records=Records(data=PUFCSV_PATH))
-    calc1.calc_all()
-    policy2 = Policy()
-    reform = {2013: {"_STD": [[12600, 25200, 12600,
-                               18600, 25300, 12600, 2100]],
-                     "_AMT_trt1": [0.0],
-                     "_AMT_trt2": [0.0]}}
-    policy2.implement_reform(reform)
-    calc2 = Calculator(policy=policy2, records=Records(data=PUFCSV_PATH))
-    calc2.calc_all()
-    gdp_diff = percentage_change_gdp(calc1, calc2, elasticity=0.36)
-    assert gdp_diff > 0
