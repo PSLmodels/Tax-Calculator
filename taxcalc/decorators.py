@@ -102,21 +102,21 @@ def create_apply_function_string(sigout, sigin, parameters):
     -------
     a String representing the function
     """
-    s = StringIO()
+    fstr = StringIO()
     total_len = len(sigout) + len(sigin)
     out_args = ["x_" + str(i) for i in range(0, len(sigout))]
     in_args = ["x_" + str(i) for i in range(len(sigout), total_len)]
 
-    s.write("def ap_func({0}):\n".format(",".join(out_args + in_args)))
-    s.write("  for i in range(len(x_0)):\n")
+    fstr.write("def ap_func({0}):\n".format(",".join(out_args + in_args)))
+    fstr.write("  for i in range(len(x_0)):\n")
     out_index = [x + "[i]" for x in out_args]
     in_index = []
     for arg, _var in zip(in_args, sigin):
         in_index.append(arg + "[i]" if _var not in parameters else arg)
-    s.write("    " + ",".join(out_index) + " = ")
-    s.write("jitted_f(" + ",".join(in_index) + ")\n")
-    s.write("  return " + ",".join(out_args) + "\n")
-    return s.getvalue()
+    fstr.write("    " + ",".join(out_index) + " = ")
+    fstr.write("jitted_f(" + ",".join(in_index) + ")\n")
+    fstr.write("  return " + ",".join(out_args) + "\n")
+    return fstr.getvalue()
 
 
 def create_toplevel_function_string(args_out, args_in, pm_or_pf,
@@ -146,16 +146,16 @@ def create_toplevel_function_string(args_out, args_in, pm_or_pf,
     -------
     a String representing the function
     """
-    s = StringIO()
-    s.write("def hl_func(pm, pf")
+    fstr = StringIO()
+    fstr.write("def hl_func(pm, pf")
     if kwargs_for_func:
         kwargs = ",".join(str(k) + "=" + str(v) for k, v in
                           kwargs_for_func.items())
-        s.write(", " + kwargs + " ")
-    s.write("):\n")
-    s.write("    from pandas import DataFrame\n")
-    s.write("    import numpy as np\n")
-    s.write("    outputs = \\\n")
+        fstr.write(", " + kwargs + " ")
+    fstr.write("):\n")
+    fstr.write("    from pandas import DataFrame\n")
+    fstr.write("    import numpy as np\n")
+    fstr.write("    outputs = \\\n")
     outs = []
     for arg in kwargs_for_func:
         args_in.remove(arg)
@@ -163,24 +163,24 @@ def create_toplevel_function_string(args_out, args_in, pm_or_pf,
     for p, attr in zip(pm_or_pf, args_out + args_in):
         outs.append(p + "." + attr + ", ")
     outs = [m_or_f + "." + arg for m_or_f, arg in zip(pm_or_pf, args_out)]
-    s.write("        (" + ", ".join(outs) + ") = \\\n")
-    s.write("        " + "applied_f(")
+    fstr.write("        (" + ", ".join(outs) + ") = \\\n")
+    fstr.write("        " + "applied_f(")
     for p, attr in zip(pm_or_pf, args_out + args_in):
-        s.write(p + "." + attr + ", ")
+        fstr.write(p + "." + attr + ", ")
     for arg in kwargs_for_func:
-        s.write(arg + ", ")
-    s.write(")\n")
-    s.write("    header = [")
+        fstr.write(arg + ", ")
+    fstr.write(")\n")
+    fstr.write("    header = [")
     col_headers = ["'" + out + "'" for out in args_out]
-    s.write(", ".join(col_headers))
-    s.write("]\n")
+    fstr.write(", ".join(col_headers))
+    fstr.write("]\n")
     if len(args_out) == 1:
-        s.write("    return DataFrame(data=outputs,"
-                "columns=header)")
+        fstr.write("    return DataFrame(data=outputs,"
+                   "columns=header)")
     else:
-        s.write("    return DataFrame(data=np.column_stack("
-                "outputs),columns=header)")
-    return s.getvalue()
+        fstr.write("    return DataFrame(data=np.column_stack("
+                   "outputs),columns=header)")
+    return fstr.getvalue()
 
 
 def make_apply_function(func, out_args, in_args, parameters,
