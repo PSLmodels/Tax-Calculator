@@ -137,7 +137,10 @@ def test_create_tables():
     records2 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
-    # create various distribution tables
+    # test incorrect call of results() function
+    with pytest.raises(ValueError):
+        res = results(dict())
+    # test creating various distribution tables
     dt1 = create_difference_table(calc1, calc2, groupby='large_income_bins')
     dt2 = create_difference_table(calc1, calc2, groupby='webapp_income_bins')
     with pytest.raises(ValueError):
@@ -145,6 +148,9 @@ def test_create_tables():
     with pytest.raises(ValueError):
         dt = create_distribution_table(calc2, groupby='small_income_bins',
                                        result_type='bad_result_type')
+    with pytest.raises(ValueError):
+        dt = create_distribution_table(calc2, groupby='bad_bins',
+                                       result_type='weighted_sum')
     dt3 = create_distribution_table(calc2, groupby='small_income_bins',
                                     result_type='weighted_sum',
                                     baseline_calc=calc1, diffs=True)

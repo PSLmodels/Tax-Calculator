@@ -235,6 +235,9 @@ def results(calc):
     -------
     DataFrame object
     """
+    if not hasattr(calc, 'records'):
+        msg = 'calc does not have records attribute in results(calc) utility'
+        raise ValueError(msg)
     outputs = []
     for col in STATS_COLUMNS:
         outputs.append(getattr(calc.records, col, np.nan))
@@ -283,7 +286,7 @@ def create_distribution_table(calc, groupby, result_type,
 
     Parameters
     ----------
-    calc : the Calculator object
+    calc : a Calculator object
 
     groupby : String object
         options for input: 'weighted_deciles', 'small_income_bins',
@@ -320,11 +323,11 @@ def create_distribution_table(calc, groupby, result_type,
     res = results(calc)
     res = add_columns(res)
     if baseline_calc is not None:
+        res_base = results(baseline_calc)
         if calc.current_year != baseline_calc.current_year:
             msg = 'The baseline calculator is not on the same year as reform.'
             raise ValueError(msg)
         baseline_income_measure = income_measure + '_baseline'
-        res_base = results(baseline_calc)
         res[baseline_income_measure] = res_base[income_measure]
         income_measure = baseline_income_measure
         if diffs:
@@ -344,10 +347,10 @@ def create_distribution_table(calc, groupby, result_type,
         df = add_income_bins(res, compare_with="webapp",
                              income_measure=income_measure)
     else:
-        err = ("groupby must be either 'weighted_deciles' or"
+        msg = ("groupby must be either 'weighted_deciles' or"
                "'small_income_bins' or 'large_income_bins' or"
                "'webapp_income_bins'")
-        raise ValueError(err)
+        raise ValueError(msg)
     # manipulates the data
     pd.options.display.float_format = '{:8,.0f}'.format
     if result_type == "weighted_sum":
@@ -369,13 +372,13 @@ def create_difference_table(calc1, calc2, groupby,
                             income_measure='_expanded_income',
                             income_to_present='_iitax'):
     """
-    Gets results given by the two different tax calculators and outputs
-        a table that compares the differing results.
-        The table is sorted according the the groupby input.
-        Notice that you always needs to run calc_all() for each year
-        before generating diffs table from this function. You can check
-        what year your calculator is using the current_year attribute
-        of your calculator. (usage: calc1.current_year)
+    Gets results given by the two different Calculator objects and
+    outputs a table that compares the differing results.
+    The table is sorted according the the groupby input.
+    Notice that you always needs to run calc_all() for each year
+    before generating diffs table from this function. You can check
+    what year your calculator is using the current_year attribute
+    of your calculator. (usage: calc1.current_year)
 
     Parameters
     ----------
