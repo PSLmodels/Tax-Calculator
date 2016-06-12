@@ -18,7 +18,7 @@ import os
 import sys
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, "..", ".."))
-from taxcalc import Policy, Records, Calculator
+from taxcalc import Policy, Records, Calculator, Behavior
 PUF_PATH = os.path.join(CUR_PATH, "..", "..", "puf.csv")
 
 # import all reforms from this JSON file
@@ -37,12 +37,9 @@ records2 = Records(tax_dta2)
 policy2 = Policy(start_year=2013)
 calc2 = Calculator(records=records2, policy=policy2)
 
-
 # increment both calculators to 2015, when most reforms start
-calc1.increment_year()
-calc1.increment_year()
-calc2.increment_year()
-calc2.increment_year()
+calc1.advance_to_year(2015)
+calc2.advance_to_year(2015)
 
 # create a dictionary to save all results
 results = {}
@@ -93,7 +90,6 @@ for i in range(1, num_reforms + 1):
 
     # put this reform results in the dictionary for final results
     results[reforms_json.get(this_reform).get("name")] = this_reform_results
-
 
 # export all results to a CSV file
 # write all results to a text file
