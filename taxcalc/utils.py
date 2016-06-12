@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 from pandas import DataFrame
 from collections import defaultdict
-import pytest
 
 
 STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600',
