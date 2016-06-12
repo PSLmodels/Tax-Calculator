@@ -105,7 +105,7 @@ def test_expand_2D_variable_rates():
     for i in range(0, 4):
         idx = i + len(x) - 1
         cur = np.array(cur * (1.0 + irates[idx]))
-        print("cur is ", cur)
+        print('cur is ', cur)
         exp2.append(cur)
     exp1 = np.array([1, 2, 3], dtype=np.float64)
     exp = np.zeros((5, 3), dtype=np.float64)
@@ -114,6 +114,14 @@ def test_expand_2D_variable_rates():
     res = Policy.expand_2D(x, inflate=True, inflation_rates=irates,
                            num_years=5)
     npt.assert_allclose(exp, res)
+
+
+def test_validity_of_name_lists():
+    assert len(TABLE_COLUMNS) == len(TABLE_LABELS)
+    calc_vars = Records.CALCULATED_VARS
+    calc_vars.add('s006')
+    stat_vars = set(STATS_COLUMNS)
+    assert stat_vars.issubset(calc_vars)
 
 
 def test_create_tables():
@@ -130,14 +138,25 @@ def test_create_tables():
     calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
     # create various distribution tables
-    t2 = create_distribution_table(calc2, groupby="small_income_bins",
-                                   result_type="weighted_sum")
-    tdiff = create_difference_table(calc1, calc2, groupby="large_income_bins")
-    tdiff_webapp = create_difference_table(calc1, calc2,
-                                           groupby="webapp_income_bins")
+    dt1 = create_difference_table(calc1, calc2, groupby='large_income_bins')
+    dt2 = create_difference_table(calc1, calc2, groupby='webapp_income_bins')
+    with pytest.raises(ValueError):
+        dt = create_difference_table(calc1, calc2, groupby='bad_bins')
+    with pytest.raises(ValueError):
+        dt = create_distribution_table(calc2, groupby='small_income_bins',
+                                       result_type='bad_result_type')
+    dt3 = create_distribution_table(calc2, groupby='small_income_bins',
+                                    result_type='weighted_sum',
+                                    baseline_calc=calc1, diffs=True)
+    calc1.increment_year()
+    with pytest.raises(ValueError):
+        dt = create_distribution_table(calc2, groupby='small_income_bins',
+                                       result_type='weighted_sum',
+                                       baseline_calc=calc1, diffs=True)
 
 
 def test_weighted_count_lt_zero():
+    assert count_lt_zero([0.0, 1, -1, 0, -2.2, 1.1]) == 2
     df1 = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df1.groupby('label')
     diffs = grped.apply(weighted_count_lt_zero, 'tax_diff')
@@ -153,6 +172,7 @@ def test_weighted_count_lt_zero():
 
 
 def test_weighted_count_gt_zero():
+    assert count_gt_zero([0.0, 1, -1, 0, -2.2, 1.1]) == 2
     df1 = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df1.groupby('label')
     diffs = grped.apply(weighted_count_gt_zero, 'tax_diff')
@@ -227,16 +247,16 @@ def test_add_income_bins():
     df = DataFrame(data=data, columns=['_expanded_income'])
     bins = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
             200000, 1e14]
-    df = add_income_bins(df, compare_with="tpc", bins=None)
+    df = add_income_bins(df, compare_with='tpc', bins=None)
     grpd = df.groupby('bins')
     grps = [grp for grp in grpd]
     for g, num in zip(grps, bins[1:-1]):
-        assert g[0].endswith(str(num) + "]")
-    grpdl = add_income_bins(df, compare_with="tpc", bins=None, right=False)
+        assert g[0].endswith(str(num) + ']')
+    grpdl = add_income_bins(df, compare_with='tpc', bins=None, right=False)
     grpdl = grpdl.groupby('bins')
     grps = [grp for grp in grpdl]
     for g, num in zip(grps, bins[1:-1]):
-        assert g[0].endswith(str(num) + ")")
+        assert g[0].endswith(str(num) + ')')
 
 
 def test_add_income_bins_soi():
@@ -245,16 +265,16 @@ def test_add_income_bins_soi():
     bins = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
             49999, 74999, 99999, 199999, 499999, 999999, 1499999,
             1999999, 4999999, 9999999, 1e14]
-    df = add_income_bins(df, compare_with="soi", bins=None)
+    df = add_income_bins(df, compare_with='soi', bins=None)
     grpd = df.groupby('bins')
     grps = [grp for grp in grpd]
     for g, num in zip(grps, bins[1:-1]):
-        assert g[0].endswith(str(num) + "]")
-    grpdl = add_income_bins(df, compare_with="soi", bins=None, right=False)
+        assert g[0].endswith(str(num) + ']')
+    grpdl = add_income_bins(df, compare_with='soi', bins=None, right=False)
     grpdl = grpdl.groupby('bins')
     grps = [grp for grp in grpdl]
     for g, num in zip(grps, bins[1:-1]):
-        assert g[0].endswith(str(num) + ")")
+        assert g[0].endswith(str(num) + ')')
 
 
 def test_add_income_bins_specify_bins():
@@ -266,19 +286,19 @@ def test_add_income_bins_specify_bins():
     grpd = df.groupby('bins')
     grps = [grp for grp in grpd]
     for g, num in zip(grps, bins[1:-1]):
-        assert g[0].endswith(str(num) + "]")
+        assert g[0].endswith(str(num) + ']')
     grpdl = add_income_bins(df, bins=bins, right=False)
     grpdl = grpdl.groupby('bins')
     grps = [grp for grp in grpdl]
     for g, num in zip(grps, bins[1:-1]):
-        assert g[0].endswith(str(num) + ")")
+        assert g[0].endswith(str(num) + ')')
 
 
 def test_add_income_bins_raises():
     data = np.arange(1, 1e6, 5000)
     df = DataFrame(data=data, columns=['_expanded_income'])
     with pytest.raises(ValueError):
-        df = add_income_bins(df, compare_with="stuff")
+        df = add_income_bins(df, compare_with='stuff')
 
 
 def test_add_weighted_decile_bins():
@@ -318,13 +338,13 @@ def test_dist_table_sum_row():
     # Create a Calculator
     calc1 = Calculator(policy=policy1, records=records1)
     calc1.calc_all()
-    t1 = create_distribution_table(calc1, groupby="small_income_bins",
-                                   result_type="weighted_sum")
-    t2 = create_distribution_table(calc1, groupby="large_income_bins",
-                                   result_type="weighted_sum")
+    t1 = create_distribution_table(calc1, groupby='small_income_bins',
+                                   result_type='weighted_sum')
+    t2 = create_distribution_table(calc1, groupby='large_income_bins',
+                                   result_type='weighted_sum')
     npt.assert_allclose(t1[-1:], t2[-1:])
-    t3 = create_distribution_table(calc1, groupby="small_income_bins",
-                                   result_type="weighted_avg")
+    t3 = create_distribution_table(calc1, groupby='small_income_bins',
+                                   result_type='weighted_avg')
 
 
 def test_diff_table_sum_row():
@@ -341,8 +361,8 @@ def test_diff_table_sum_row():
     calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
     # create two difference tables and compare their content
-    tdiff1 = create_difference_table(calc1, calc2, groupby="small_income_bins")
-    tdiff2 = create_difference_table(calc1, calc2, groupby="large_income_bins")
+    tdiff1 = create_difference_table(calc1, calc2, groupby='small_income_bins')
+    tdiff2 = create_difference_table(calc1, calc2, groupby='large_income_bins')
     non_digit_cols = ['mean', 'perc_inc', 'perc_cut', 'share_of_change']
     digit_cols = [x for x in tdiff1.columns.tolist() if
                   x not in non_digit_cols]
@@ -358,18 +378,18 @@ def test_row_classifier():
     calc1 = Calculator(policy=policy1, records=records1)
     calc1.calc_all()
     calc1_s006 = create_distribution_table(calc1,
-                                           groupby="webapp_income_bins",
-                                           result_type="weighted_sum").s006
+                                           groupby='webapp_income_bins',
+                                           result_type='weighted_sum').s006
     # create a policy-reform Policy object and Calculator calc2
-    reform = {2013: {"_ALD_StudentLoan_HC": [1]}}
+    reform = {2013: {'_ALD_StudentLoan_HC': [1]}}
     policy2 = Policy()
     policy2.implement_reform(reform)
     records2 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
     calc2_s006 = create_distribution_table(calc2,
-                                           groupby="webapp_income_bins",
-                                           result_type="weighted_sum",
+                                           groupby='webapp_income_bins',
+                                           result_type='weighted_sum',
                                            baseline_calc=calc1).s006
     # use weighted sum of weights in each cell to check classifer
     npt.assert_array_equal(calc1_s006, calc2_s006)
@@ -489,14 +509,14 @@ def test_expand_2D_accept_None_additional_row():
 
 @pytest.yield_fixture
 def csvfile():
-    txt = ("A,B,C,D,EFGH\n"
-           "1,2,3,4,0\n"
-           "5,6,7,8,0\n"
-           "9,10,11,12,0\n"
-           "100,200,300,400,500\n"
-           "123.45,678.912,000.000,87,92")
-    f = tempfile.NamedTemporaryFile(mode="a", delete=False)
-    f.write(txt + "\n")
+    txt = ('A,B,C,D,EFGH\n'
+           '1,2,3,4,0\n'
+           '5,6,7,8,0\n'
+           '9,10,11,12,0\n'
+           '100,200,300,400,500\n'
+           '123.45,678.912,000.000,87,92')
+    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    f.write(txt + '\n')
     f.close()
     # Must close and then yield for Windows platform
     yield f
@@ -506,14 +526,14 @@ def csvfile():
 @pytest.yield_fixture
 def asciifile():
     x = (
-        "A              \t1              \t100            \t123.45         \n"
-        "B              \t2              \t200            \t678.912        \n"
-        "C              \t3              \t300            \t000.000        \n"
-        "D              \t4              \t400            \t87             \n"
-        "EFGH           \t0              \t500            \t92             "
+        'A              \t1              \t100            \t123.45         \n'
+        'B              \t2              \t200            \t678.912        \n'
+        'C              \t3              \t300            \t000.000        \n'
+        'D              \t4              \t400            \t87             \n'
+        'EFGH           \t0              \t500            \t92             '
     )
-    f = tempfile.NamedTemporaryFile(mode="a", delete=False)
-    f.write(x + "\n")
+    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    f.write(x + '\n')
     f.close()
     # Must close and then yield for Windows platform
     yield f
@@ -521,7 +541,7 @@ def asciifile():
 
 
 def test_ascii_output_function(csvfile, asciifile):
-    output_test = tempfile.NamedTemporaryFile(mode="a", delete=False)
+    output_test = tempfile.NamedTemporaryFile(mode='a', delete=False)
     ascii_output(csv_filename=csvfile.name, ascii_filename=output_test.name)
     assert filecmp.cmp(output_test.name, asciifile.name)
     output_test.close()
