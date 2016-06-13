@@ -238,11 +238,8 @@ def results(calc):
     """
     outputs = []
     for col in STATS_COLUMNS:
-        if hasattr(calc, 'records') and hasattr(calc, 'policy'):
-            if hasattr(calc.policy, col):
-                outputs.append(getattr(calc.policy, col))
-            else:
-                outputs.append(getattr(calc.records, col))
+        if hasattr(calc, 'records'):
+            outputs.append(getattr(calc.records, col))
         else:
             outputs.append(getattr(calc, col))
     return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
