@@ -85,7 +85,7 @@ class Consumption(ParametersBase):
         returns false if all MPC parameters are zero.
         """
         # pylint: disable=no-member
-        if self.MPC_xxx > 0.0:
+        if self.MPC_xxx > 0.0 or self.MPC_yyy > 0.0:
             return True
         else:
             return False
