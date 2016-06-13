@@ -17,6 +17,9 @@ WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 def test_incorrect_Behavior_instantiation():
     with pytest.raises(ValueError):
         behv = Behavior(behavior_dict=list())
+    bad_behv_dict = {'_BE_bad': {'start_year': 2013, 'value': [0.0]}}
+    with pytest.raises(ValueError):
+        behv = Behavior(behavior_dict=bad_behv_dict)
     with pytest.raises(ValueError):
         behv = Behavior(num_years=0)
 
