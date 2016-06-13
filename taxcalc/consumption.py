@@ -75,14 +75,6 @@ class Consumption(ParametersBase):
         revision_years = sorted(list(revisions.keys()))
         for year in revision_years:
             self.set_year(year)
-            # enforce valid MPC values in each revisons[year] dictionary
-            for mpc in revisions[year]:
-                for idx in range(len(revisions[year][mpc])):
-                    val = revisions[year][mpc][idx]
-                    if val < 0.0 or val > 1.0:
-                        msg = '{} is outside [0,1] range; value is {}'
-                        raise ValueError(msg.format(mpc, val))
-            # update valid MPC parameter values for year
             self._update({year: revisions[year]})
         self.set_year(precall_current_year)
         self._validate_mpc_values()
