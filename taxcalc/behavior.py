@@ -29,14 +29,11 @@ class Behavior(ParametersBase):
         number of calendar years for which to specify elasticity
         values beginning with start_year.
 
-    inflation_rates: must be equal to None.
-
     Raises
     ------
     ValueError:
         if behavior_dict is neither None nor a dictionary.
         if num_years is less than one.
-        if inflation_rates is not equal to None.
 
     Returns
     -------
@@ -49,8 +46,7 @@ class Behavior(ParametersBase):
 
     def __init__(self, behavior_dict=None,
                  start_year=JSON_START_YEAR,
-                 num_years=DEFAULT_NUM_YEARS,
-                 inflation_rates=None):
+                 num_years=DEFAULT_NUM_YEARS):
         super(Behavior, self).__init__()
         if behavior_dict is None:
             self._vals = self._params_dict_from_json_file()
@@ -60,9 +56,8 @@ class Behavior(ParametersBase):
             raise ValueError('behavior_dict is not None or a dictionary')
         if num_years < 1:
             raise ValueError('num_years < 1 in Behavior ctor')
-        if inflation_rates is not None:
-            raise ValueError('inflation_rates != None in Behavior ctor')
         self.initialize(start_year, num_years)
+        self._validate_elasticity_values()
 
     def update_behavior(self, revisions):
         """
@@ -77,30 +72,12 @@ class Behavior(ParametersBase):
         """
         precall_current_year = self.current_year
         self.set_default_vals()
-        msg = '{} elasticity cannot be {}; value is {}'
-        pos = 'positive'
-        neg = 'negative'
         revision_years = sorted(list(revisions.keys()))
         for year in revision_years:
             self.set_year(year)
-            # enforce valid elasticity values in each revisons[year] dictionary
-            for elast in revisions[year]:
-                for idx in range(len(revisions[year][elast])):
-                    val = revisions[year][elast][idx]
-                    if elast == '_BE_inc':
-                        if val > 0.0:
-                            raise ValueError(msg.format(elast, pos, val))
-                    elif elast == '_BE_sub':
-                        if val < 0.0:
-                            raise ValueError(msg.format(elast, neg, val))
-                    elif elast == '_BE_cg':
-                        if val < 0.0:
-                            raise ValueError(msg.format(elast, neg, val))
-                    else:
-                        raise ValueError('illegal elasticity {}'.format(elast))
-            # update valid elasticity values for year
             self._update({year: revisions[year]})
         self.set_year(precall_current_year)
+        self._validate_elasticity_values()
 
     def has_response(self):
         """
@@ -175,6 +152,29 @@ class Behavior(ParametersBase):
         return calc_y_behv
 
     # ----- begin private methods of Behavior class -----
+
+    def _validate_elasticity_values(self):
+        """
+        Check that behavioral-response elasticities have valid values.
+        """
+        msg = '{} elasticity cannot be {} in year {}; value is {}'
+        pos = 'positive'
+        neg = 'negative'
+        for elast in self._vals:
+            values = getattr(self, elast)
+            for year in values:
+                val = values[year]
+                if elast == '_BE_inc':
+                    if val > 0.0:
+                        raise ValueError(msg.format(elast, pos, year, val))
+                elif elast == '_BE_sub':
+                    if val < 0.0:
+                        raise ValueError(msg.format(elast, neg, year, val))
+                elif elast == '_BE_cg':
+                    if val < 0.0:
+                        raise ValueError(msg.format(elast, neg, year, val))
+                else:
+                    raise ValueError('illegal elasticity {}'.format(elast))
 
     @staticmethod
     def _update_ordinary_income(taxinc_change, calc):
