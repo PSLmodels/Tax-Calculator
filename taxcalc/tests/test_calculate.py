@@ -14,6 +14,8 @@ from taxcalc import create_distribution_table, create_difference_table
 # use 1991 PUF-like data to emulate current puf.csv, which is private
 TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91taxdata.csv.gz')
 TAXDATA = pd.read_csv(TAXDATA_PATH, compression='gzip')
+PUF_PATH = os.path.join(CUR_PATH, '..', '..', 'puf.csv')
+PUFDATA = pd.read_csv(PUF_PATH,)
 WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
 WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
@@ -361,6 +363,44 @@ def test_Calculator_using_nonstd_input(rawinputfile):
     exp_mtr_fica = np.zeros((nonpuf.dim,))
     exp_mtr_fica.fill(0.153)
     assert_allclose(mtr_fica, exp_mtr_fica)
+
+
+def test_same_reform_expressed_two_ways_result():
+    """
+    Test that two ways of specifying the same reform produce the same results.
+    """
+    # specify the same reform in two different ways
+    reform1 = {2017: {'_STD': [[0, 0, 0, 0, 0, 0, 0]],
+                      '_EITC_MinEligAge': [26]}}
+    reform2 = {2017: {'_STD': [[0, 0, 0, 0, 0, 0, 0]]},
+               2017: {'_EITC_MinEligAge': [26]}
+               }
+    print reform1
+    print reform2
+    # specify two separate policies
+    policy_1 = Policy()
+    policy_2 = Policy()
+    # load the input data separately as well
+    TAXDATA_1 = Records(data=PUFDATA, start_year=2009)
+    TAXDATA_2 = Records(data=PUFDATA, start_year=2009)
+
+    # set up two parallel calculators
+    calcX = Calculator(policy=policy_1, records=TAXDATA_1)
+    calcY = Calculator(policy=policy_2, records=TAXDATA_2)
+
+    # implement the same reforms that are expressed in different ways
+    policy_1.implement_reform(reform1)
+    policy_2.implement_reform(reform2)
+
+    calcX.advance_to_year(2017)
+    calcY.advance_to_year(2017)
+
+    # calculate the results for the two calculators
+    calcX.calc_all()
+    calcY.calc_all()
+    # confirm that the two calculators yield the same iitax liability
+    assert (calcX.records._combined * calcX.records.s006).sum() == \
+        (calcY.records._combined * calcY.records.s006).sum()
 
 
 class TaxCalcError(Exception):
