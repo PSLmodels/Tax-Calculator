@@ -108,7 +108,7 @@ class Behavior(ParametersBase):
         the current_year; returns false if all elasticities are zero.
         """
         # pylint: disable=no-member
-        if self.BE_inc or self.BE_sub or self.BE_cg:
+        if self.BE_sub != 0.0 or self.BE_inc != 0.0 or self.BE_cg != 0.0:
             return True
         else:
             return False
@@ -117,51 +117,55 @@ class Behavior(ParametersBase):
     def response(calc_x, calc_y):
         """
         Modify calc_y records to account for behavioral responses that arise
-        from the policy reform that involves moving from calc_x.policy to
-        calc_y.policy.
+          from the policy reform that involves moving from calc_x.policy to
+          calc_y.policy.
         Returns new Calculator object --- a deepcopy of calc_y --- that
-        incorporates behavioral responses to the reform.
+          incorporates behavioral responses to the reform.
+        Note: the use here of a dollar-change income elasticity (rather than
+          a proportional-change elasticity) is consistent with Feldstein and
+          Feenberg, "The Taxation of Two Earner Families" NBER Working Paper
+          No. 5155 (June 1995).  A proportional-change elasticity has become
+          more common since the publication of Gruber and Saez, "The
+          elasticity of taxable income: evidence and implications", Journal
+          of Public Economics 84:1-32 (2002) [see equation 2 on page 10].
         """
         # pylint: disable=too-many-locals
         assert calc_x.records.dim == calc_y.records.dim
         # Calculate marginal tax rates and the corresponding
         # proportional changes (pch) in marginal net-of-tax rates
-        if calc_y.behavior.BE_sub:
+        if calc_y.behavior.BE_sub != 0.0:
             # e00200p is taxpayer's wages+salary
             wage_mtr_x, wage_mtr_y = Behavior._mtr_xy(calc_x, calc_y,
                                                       mtr_of='e00200p',
                                                       tax_type='combined')
             wage_pch = ((1. - wage_mtr_y) / (1. - wage_mtr_x)) - 1.
-        if calc_y.behavior.BE_cg:
+        if calc_y.behavior.BE_cg != 0.0:
             # p23250 is filing unit's long-term capital gains
             ltcg_mtr_x, ltcg_mtr_y = Behavior._mtr_xy(calc_x, calc_y,
                                                       mtr_of='p23250',
                                                       tax_type='iitax')
             ltcg_pch = ((1. - ltcg_mtr_y) / (1. - ltcg_mtr_x)) - 1.
-        # Calculate proportional change (pch) in after-tax income, ati
-        if calc_y.behavior.BE_inc:
-            # c00100 is filing unit's adjusted gross income, AGI
+        # Calculate dollar change (dch) in after-tax income, ati
+        if calc_y.behavior.BE_inc != 0.0:
             # _combined is filing unit's income+payroll tax liability
             # pylint: disable=protected-access
-            ati_x = calc_x.records.c00100 - calc_x.records._combined
-            ati_y = calc_y.records.c00100 - calc_y.records._combined
-            ati_pch = (ati_y / ati_x) - 1.
+            ati_dch = calc_x.records._combined - calc_y.records._combined
         # Calculate magnitude of substitution and income effects and their sum
         #   c04800 is filing unit's taxable income
-        if calc_y.behavior.BE_sub:
-            sub = calc_y.behavior.BE_sub * wage_pch * calc_x.records.c04800
-        else:
+        if calc_y.behavior.BE_sub == 0.0:
             sub = np.zeros(calc_x.records.dim)
-        if calc_y.behavior.BE_inc:
-            inc = calc_y.behavior.BE_inc * ati_pch * ati_x
         else:
+            sub = calc_y.behavior.BE_sub * wage_pch * calc_x.records.c04800
+        if calc_y.behavior.BE_inc == 0.0:
             inc = np.zeros(calc_x.records.dim)
+        else:
+            inc = calc_y.behavior.BE_inc * ati_dch
         taxinc_chg = sub + inc
         # Calculate magnitude of behavioral response in long-term capital gains
-        if calc_y.behavior.BE_cg:
-            ltcg_chg = calc_y.behavior.BE_cg * ltcg_pch * calc_x.records.p23250
-        else:
+        if calc_y.behavior.BE_cg == 0.0:
             ltcg_chg = np.zeros(calc_x.records.dim)
+        else:
+            ltcg_chg = calc_y.behavior.BE_cg * ltcg_pch * calc_x.records.p23250
         # Add behavioral-response changes to income sources
         calc_y_behv = copy.deepcopy(calc_y)
         calc_y_behv = Behavior._update_ordinary_income(taxinc_chg, calc_y_behv)
