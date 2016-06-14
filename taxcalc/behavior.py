@@ -100,11 +100,11 @@ class Behavior(ParametersBase):
           incorporates behavioral responses to the reform.
         Note: the use here of a dollar-change income elasticity (rather than
           a proportional-change elasticity) is consistent with Feldstein and
-          Feenberg, "The Taxation of Two Earner Families" NBER Working Paper
-          No. 5155 (June 1995).  A proportional-change elasticity has become
-          more common since the publication of Gruber and Saez, "The
-          elasticity of taxable income: evidence and implications", Journal
-          of Public Economics 84:1-32 (2002) [see equation 2 on page 10].
+          Feenberg, "The Taxation of Two Earner Families", NBER Working Paper
+          No. 5155 (June 1995).  A proportional-change elasticity was used by
+          Gruber and Saez, "The elasticity of taxable income: evidence and
+          implications", Journal of Public Economics 84:1-32 (2002) [see
+          equation 2 on page 10].
         """
         # pylint: disable=too-many-locals
         assert calc_x.records.dim == calc_y.records.dim
