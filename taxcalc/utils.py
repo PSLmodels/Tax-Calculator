@@ -224,22 +224,24 @@ def get_sums(df, na=False):
 
 def results(calc):
     """
-    Get results from Calculator object and organize them into a table.
+    Get all STATS_COLUMNS attributes from a Calculator-like object
+    and organize them into a DataFrame.
 
     Parameters
     ----------
-    calc : Calculator object
+    calc : a Calculator object or some other object with attribute names
+           matching the list in STATS_COLUMNS
 
     Returns
     -------
     DataFrame object
     """
-    if not hasattr(calc, 'records'):
-        msg = 'calc does not have records attribute in results(calc) utility'
-        raise ValueError(msg)
     outputs = []
     for col in STATS_COLUMNS:
-        outputs.append(getattr(calc.records, col, np.nan))
+        if hasattr(calc, 'records'):
+            outputs.append(getattr(calc.records, col))
+        else:
+            outputs.append(getattr(calc, col))
     return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
 
 

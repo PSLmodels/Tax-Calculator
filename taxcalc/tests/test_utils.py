@@ -137,9 +137,6 @@ def test_create_tables():
     records2 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
-    # test incorrect call of results() function
-    with pytest.raises(ValueError):
-        res = results(dict())
     # test creating various distribution tables
     dt1 = create_difference_table(calc1, calc2, groupby='large_income_bins')
     dt2 = create_difference_table(calc1, calc2, groupby='webapp_income_bins')
@@ -552,3 +549,16 @@ def test_ascii_output_function(csvfile, asciifile):
     assert filecmp.cmp(output_test.name, asciifile.name)
     output_test.close()
     os.remove(output_test.name)
+
+
+def test_results():
+    # create a current-law Policy object and Calculator object calc1
+    policy1 = Policy()
+    records1 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    calc1 = Calculator(policy=policy1, records=records1)
+    calc1.calc_all()
+    res_df = results(calc1)
+    assert all(res_df.columns == STATS_COLUMNS)
+    # results function works on DataFrames, too
+    res_df2 = results(res_df)
+    assert all(res_df2.columns == STATS_COLUMNS)
