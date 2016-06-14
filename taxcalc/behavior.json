@@ -2,7 +2,7 @@
     "_BE_inc": {
         "start_year": 2013,
         "long_name": "Income elasticity of taxable income",
-        "description": "Defined as proportional change in taxable income divided by proportional change in after-tax income (defined as AGI minus income taxes minus payroll taxes) caused by the reform.  Must be zero or negative.",
+        "description": "Defined as dollar change in taxable income divided by dollar change in after-tax income caused by the reform.  Must be zero or negative.",
         "row_label": ["2013"],
         "col_label": "",
         "value": [0.0],
