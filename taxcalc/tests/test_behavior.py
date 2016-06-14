@@ -17,10 +17,11 @@ WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 def test_incorrect_Behavior_instantiation():
     with pytest.raises(ValueError):
         behv = Behavior(behavior_dict=list())
+    bad_behv_dict = {'_BE_bad': {'start_year': 2013, 'value': [0.0]}}
+    with pytest.raises(ValueError):
+        behv = Behavior(behavior_dict=bad_behv_dict)
     with pytest.raises(ValueError):
         behv = Behavior(num_years=0)
-    with pytest.raises(ValueError):
-        behv = Behavior(inflation_rates=list())
 
 
 def test_correct_but_not_recommended_Behavior_instantiation():
@@ -36,43 +37,29 @@ def test_behavioral_response_Calculator():
     policy_x = Policy()
     policy_y = Policy()
     # implement policy_y reform
-    reform = {
-        2013: {
-            "_II_rt7": [0.496]
-        }
-    }
+    reform = {2013: {'_II_rt7': [0.496]}}
     policy_y.implement_reform(reform)
     # create two Calculator objects
     behavior_y = Behavior()
     calc_x = Calculator(policy=policy_x, records=records_x)
     calc_y = Calculator(policy=policy_y, records=records_y,
                         behavior=behavior_y)
+    # test incorrect use of Behavior._mtr_xy method
+    with pytest.raises(ValueError):
+        behv = Behavior._mtr_xy(calc_x, calc_y,
+                                mtr_of='e00200p',
+                                tax_type='nonsense')
     # vary substitution and income effects in calc_y
-    behavior1 = {
-        2013: {
-            "_BE_sub": [0.4],
-            "_BE_inc": [-0.15]
-        }
-    }
+    behavior1 = {2013: {'_BE_sub': [0.4], '_BE_inc': [-0.1]}}
     behavior_y.update_behavior(behavior1)
-    assert behavior_y.has_response()
+    assert behavior_y.has_response() is True
     assert behavior_y.BE_sub == 0.4
-    assert behavior_y.BE_inc == -0.15
+    assert behavior_y.BE_inc == -0.1
     calc_y_behavior1 = Behavior.response(calc_x, calc_y)
-    behavior2 = {
-        2013: {
-            "_BE_sub": [0.5],
-            "_BE_inc": [-0.15]
-        }
-    }
+    behavior2 = {2013: {'_BE_sub': [0.5], '_BE_cg': [0.8]}}
     behavior_y.update_behavior(behavior2)
     calc_y_behavior2 = Behavior.response(calc_x, calc_y)
-    behavior3 = {
-        2013: {
-            "_BE_sub": [0.4],
-            "_BE_inc": [0.0]
-        }
-    }
+    behavior3 = {2013: {'_BE_inc': [-0.2], '_BE_cg': [0.6]}}
     behavior_y.update_behavior(behavior3)
     calc_y_behavior3 = Behavior.response(calc_x, calc_y)
     # check that total income tax liability differs across the
@@ -82,14 +69,13 @@ def test_behavioral_response_Calculator():
             calc_y_behavior3.records._iitax.sum())
     # test incorrect _mtr_xy() usage
     with pytest.raises(ValueError):
-        Behavior._mtr_xy(calc_x, calc_y, mtr_of='e00200p', liability_type='?')
+        Behavior._mtr_xy(calc_x, calc_y, mtr_of='e00200p', tax_type='?')
 
 
 def test_correct_update_behavior():
     beh = Behavior(start_year=2013)
     beh.update_behavior({2014: {'_BE_sub': [0.5]},
                          2015: {'_BE_cg': [1.2]}})
-    policy = Policy()
     should_be = np.full((Behavior.DEFAULT_NUM_YEARS,), 0.5)
     should_be[0] = 0.0
     assert np.allclose(beh._BE_sub, should_be, rtol=0.0)
