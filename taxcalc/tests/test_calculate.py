@@ -8,7 +8,7 @@ import tempfile
 import pytest
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
-from taxcalc import Policy, Records, Calculator, Behavior
+from taxcalc import Policy, Records, Calculator, Behavior, Consumption
 from taxcalc import create_distribution_table, create_difference_table
 
 # use 1991 PUF-like data to emulate current puf.csv, which is private
@@ -83,6 +83,8 @@ def test_make_Calculator():
         calc = Calculator(policy=parm, records=recs, behavior=list())
     with pytest.raises(ValueError):
         calc = Calculator(policy=parm, records=recs, growth=list())
+    with pytest.raises(ValueError):
+        calc = Calculator(policy=parm, records=recs, consumption=list())
 
 
 def test_make_Calculator_deepcopy():
@@ -259,7 +261,8 @@ def test_Calculator_create_distribution_table():
 
 def test_Calculator_mtr():
     puf = Records(TAXDATA, weights=WEIGHTS, start_year=2009)
-    calc = Calculator(policy=Policy(), records=puf)
+    cons = Consumption()
+    calc = Calculator(policy=Policy(), records=puf, consumption=cons)
     (mtr_FICA, mtr_IIT, mtr_combined) = calc.mtr()
     assert type(mtr_combined) == np.ndarray
     assert np.array_equal(mtr_combined, mtr_FICA) is False

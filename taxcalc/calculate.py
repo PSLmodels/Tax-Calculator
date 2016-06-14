@@ -12,12 +12,14 @@ from .policy import Policy
 from .records import Records
 from .behavior import Behavior
 from .growth import Growth
+from .consumption import Consumption
 
 
 class Calculator(object):
 
     def __init__(self, policy=None, records=None, verbose=True,
-                 sync_years=True, behavior=None, growth=None):
+                 sync_years=True, behavior=None, growth=None,
+                 consumption=None):
         if isinstance(policy, Policy):
             self._policy = policy
         else:
@@ -31,22 +33,28 @@ class Calculator(object):
         elif isinstance(behavior, Behavior):
             self.behavior = behavior
         else:
-            raise ValueError('behavior must be None or a Behavior object')
+            raise ValueError('behavior must be None or Behavior object')
         if growth is None:
             self.growth = Growth(start_year=policy.start_year)
         elif isinstance(growth, Growth):
             self.growth = growth
         else:
-            raise ValueError('growth must be None or a Growth object')
+            raise ValueError('growth must be None or Growth object')
+        if consumption is None:
+            self.consumption = Consumption(start_year=policy.start_year)
+        elif isinstance(consumption, Consumption):
+            self.consumption = consumption
+        else:
+            raise ValueError('consumption must be None or Consumption object')
         if sync_years and self._records.current_year == Records.PUF_YEAR:
             if verbose:
-                print("You loaded data for " +
+                print('You loaded data for ' +
                       str(self._records.current_year) + '.')
             while self._records.current_year < self._policy.current_year:
                 self._records.increment_year()
             if verbose:
-                print("Your data have been extrapolated to " +
-                      str(self._records.current_year) + ".")
+                print('Your data have been extrapolated to ' +
+                      str(self._records.current_year) + '.')
         assert self._policy.current_year == self._records.current_year
 
     @property
@@ -133,6 +141,7 @@ class Calculator(object):
         self.records.increment_year()
         self.policy.set_year(next_year)
         self.behavior.set_year(next_year)
+        self.consumption.set_year(next_year)
 
     def advance_to_year(self, year):
         '''
@@ -142,8 +151,8 @@ class Calculator(object):
         '''
         iteration = year - self.records.current_year
         if iteration < 0:
-            raise ValueError("New current year must be " +
-                             "greater than current year!")
+            raise ValueError('New current year must be ' +
+                             'greater than current year!')
         for i in range(iteration):
             self.increment_year()
         assert self.records.current_year == year
@@ -358,18 +367,18 @@ class Calculator(object):
                 if base_calc is not None:
                     base_calc.increment_year()
         df = DataFrame(table, row_years,
-                       ["Returns (#m)", "AGI ($b)", "Itemizers (#m)",
-                        "Itemized Deduction ($b)",
-                        "Standard Deduction Filers (#m)",
-                        "Standard Deduction ($b)", "Personal Exemption ($b)",
-                        "Taxable income ($b)", "Regular Tax ($b)",
-                        "AMT income ($b)", "AMT amount ($b)",
-                        "AMT number (#m)", "Tax before credits ($b)",
-                        "refundable credits ($b)",
-                        "nonrefundable credits ($b)",
-                        "Misc. Surtax ($b)",
-                        "Ind inc tax ($b)", "Payroll tax ($b)",
-                        "Combined liability ($b)"])
+                       ['Returns (#m)', 'AGI ($b)', 'Itemizers (#m)',
+                        'Itemized Deduction ($b)',
+                        'Standard Deduction Filers (#m)',
+                        'Standard Deduction ($b)', 'Personal Exemption ($b)',
+                        'Taxable income ($b)', 'Regular Tax ($b)',
+                        'AMT income ($b)', 'AMT amount ($b)',
+                        'AMT number (#m)', 'Tax before credits ($b)',
+                        'refundable credits ($b)',
+                        'nonrefundable credits ($b)',
+                        'Misc. Surtax ($b)',
+                        'Ind inc tax ($b)', 'Payroll tax ($b)',
+                        'Combined liability ($b)'])
         df = df.transpose()
         pd.options.display.float_format = '{:8,.1f}'.format
         return df
