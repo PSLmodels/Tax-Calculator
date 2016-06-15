@@ -77,6 +77,8 @@ def test_consumption_default_data():
 def test_consumption_response():
     consump = Consumption()
     consump.update_consumption({2013: {'_MPC_xxx': [0.5]}})
+    with pytest.raises(ValueError):
+        consump.response(list(), 1)
     recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     e18400_pre = copy.deepcopy(recs.e18400)
     consump.response(recs, 1.0)
