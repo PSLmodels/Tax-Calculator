@@ -7,7 +7,7 @@ requirements:
     - pytest
     - setuptools
     - python
-    - numpy
+    - numpy ==1.10
     - pandas <=0.18.0
     - numba
     - toolz
@@ -16,7 +16,7 @@ requirements:
     - pytest
     - setuptools
     - python
-    - numpy
+    - numpy ==1.10
     - pandas <=0.18.0
     - numba
     - toolz
