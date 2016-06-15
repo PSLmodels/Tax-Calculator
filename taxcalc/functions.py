@@ -250,27 +250,27 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
         floor as a percent of AGI
 
     Taxpayer Characteristics:
-        e17500 : Medical expense
+        e17500 : Medical expenses
 
-        e18425 : Income taxes
+        e18400 : State and local taxes
 
-        e18450 : General Sales Tax
+        e18500 : Real-estate (property) taxes
 
-        e18500 : Real Estate tax
+        e19200 : Total interest deductions
 
-        e19200 : Total interest deduction
+        e19800 : Charity cash contributions
 
-        e19800 : Cash Contribution
+        e19550 : Qualified mortgage insurance premiums
 
-        e19550 : Qualified Mortgage Insurance Premiums
+        e20100 : Charity non-cash contributions
 
-        e20100 : Charity non-cash contribution
+        e20400 : Total miscellaneous deduction expenses
 
-        e20400 : Total Miscellaneous expense
+        e20500 : Casualty and theft losses
 
-        e20550 : Unreimbursed employee business Expense
+        e20550 : Unreimbursed employee business expenses
 
-        e20600 : Tax preparation fee
+        e20600 : Tax preparation fees
 
     Intermediate Variables:
         _posagi: positive AGI
