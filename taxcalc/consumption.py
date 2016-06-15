@@ -6,8 +6,9 @@ Tax-Calculator marginal Consumption class.
 # pylint --disable=locally-disabled consumption.py
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
-from .policy import Policy
 from .parameters import ParametersBase
+from .policy import Policy
+from .records import Records
 
 
 class Consumption(ParametersBase):
@@ -81,14 +82,23 @@ class Consumption(ParametersBase):
 
     def has_response(self):
         """
-        Returns true if any MPC parameters are positive for current_year;
-        returns false if all MPC parameters are zero.
+        Return true if any MPC parameters are positive for current_year;
+        return false if all MPC parameters are zero.
         """
         # pylint: disable=no-member
         if self.MPC_xxx > 0.0 or self.MPC_yyy > 0.0:
             return True
         else:
             return False
+
+    def response(self, records, income_change):
+        """
+        Changes consumption-related records variables given income_change.
+        """
+        if not isinstance(records, Records):
+            raise ValueError('records is not a Records object')
+        # pylint: disable=no-member
+        records.e18400[:] += self.MPC_xxx * income_change
 
     # ----- begin private methods of Consumption class -----
 

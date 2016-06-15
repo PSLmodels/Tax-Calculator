@@ -252,6 +252,8 @@ class Calculator(object):
             self.records.e00900 = seincome_type + finite_diff
         elif income_type_str == 'e00650':
             self.records.e00600 = divincome_type + finite_diff
+        if self.consumption.has_response():
+            self.consumption.response(self.records, finite_diff)
         self.calc_all()
         fica_up = copy.deepcopy(self.records._fica)
         iitax_up = copy.deepcopy(self.records._iitax)

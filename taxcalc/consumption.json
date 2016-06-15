@@ -2,7 +2,7 @@
     "_MPC_xxx": {
         "start_year": 2013,
         "long_name": "Marginal propensity to consume xxx",
-        "description": "Defined as dollar change in xxx consumption divided by dollar change in after-tax income.  Must be in [0,1] range.",
+        "description": "Defined as dollar change in xxx consumption divided by dollar change in income.  Must be in [0,1] range.",
         "row_label": ["2013"],
         "col_label": "",
         "value": [0.0],
@@ -12,7 +12,7 @@
     "_MPC_yyy": {
         "start_year": 2013,
         "long_name": "Marginal propensity to consume yyy",
-        "description": "Defined as dollar change in yyy consumption divided by dollar change in after-tax income.  Must be in [0,1] range.",
+        "description": "Defined as dollar change in yyy consumption divided by dollar change in income.  Must be in [0,1] range.",
         "row_label": ["2013"],
         "col_label": "",
         "value": [0.0],

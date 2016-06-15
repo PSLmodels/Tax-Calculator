@@ -3,6 +3,7 @@ import sys
 import numpy as np
 import pandas as pd
 import pytest
+import copy
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy, Records, Calculator, Consumption
@@ -71,3 +72,15 @@ def test_consumption_default_data():
     paramdata = Consumption.default_data()
     for param in paramdata:
         assert paramdata[param] == [0.0]
+
+
+def test_consumption_response():
+    consump = Consumption()
+    consump.update_consumption({2013: {'_MPC_xxx': [0.5]}})
+    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    e18400_pre = copy.deepcopy(recs.e18400)
+    consump.response(recs, 1.0)
+    e18400_post = recs.e18400
+    e18400_diff = e18400_post - e18400_pre
+    expected_diff = np.ones(recs.dim) * 0.5
+    assert np.allclose(e18400_diff, expected_diff)
