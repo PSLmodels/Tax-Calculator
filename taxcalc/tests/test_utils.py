@@ -138,10 +138,13 @@ def test_create_tables():
     calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
     # test creating various distribution tables
-    dt1 = create_difference_table(calc1, calc2, groupby='large_income_bins')
-    dt2 = create_difference_table(calc1, calc2, groupby='webapp_income_bins')
+    dt1 = create_difference_table(calc1.records, calc2.records,
+                                  groupby='large_income_bins')
+    dt2 = create_difference_table(calc1.records, calc2.records,
+                                  groupby='webapp_income_bins')
     with pytest.raises(ValueError):
-        dt = create_difference_table(calc1, calc2, groupby='bad_bins')
+        dt = create_difference_table(calc1.records, calc2.records,
+                                     groupby='bad_bins')
     with pytest.raises(ValueError):
         dt = create_distribution_table(calc2.records,
                                        groupby='small_income_bins',
@@ -155,6 +158,9 @@ def test_create_tables():
                                     result_type='weighted_sum',
                                     baseline_obj=calc1.records, diffs=True)
     calc1.increment_year()
+    with pytest.raises(ValueError):
+        dt = create_difference_table(calc1.records, calc2.records,
+                                     groupby='large_income_bins')
     with pytest.raises(ValueError):
         dt = create_distribution_table(calc2.records,
                                        groupby='small_income_bins',
@@ -371,8 +377,10 @@ def test_diff_table_sum_row():
     calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
     # create two difference tables and compare their content
-    tdiff1 = create_difference_table(calc1, calc2, groupby='small_income_bins')
-    tdiff2 = create_difference_table(calc1, calc2, groupby='large_income_bins')
+    tdiff1 = create_difference_table(calc1.records, calc2.records,
+                                     groupby='small_income_bins')
+    tdiff2 = create_difference_table(calc1.records, calc2.records,
+                                     groupby='large_income_bins')
     non_digit_cols = ['mean', 'perc_inc', 'perc_cut', 'share_of_change']
     digit_cols = [x for x in tdiff1.columns.tolist() if
                   x not in non_digit_cols]

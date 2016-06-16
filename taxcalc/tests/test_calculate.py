@@ -288,7 +288,8 @@ def test_Calculator_create_difference_table():
     puf2 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     calc2 = Calculator(policy=policy2, records=puf2)
     # create difference table and check that it is a Pandas DataFrame
-    dtable = create_difference_table(calc1, calc2, groupby="weighted_deciles")
+    dtable = create_difference_table(calc1.records, calc2.records,
+                                     groupby="weighted_deciles")
     assert isinstance(dtable, pd.DataFrame)
 
 
