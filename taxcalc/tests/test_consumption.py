@@ -58,7 +58,7 @@ def test_incorrect_update_consumption():
         consump.update_consumption({2017: {'_MPC_e20400': [1.02]}})
     with pytest.raises(ValueError):
         consump.update_consumption({2014: {'_MPC_e20400': [0.8],
-                                           '_MPC_yyy': [0.3]}})
+                                           '_MPC_e17500': [0.3]}})
 
 
 def test_future_update_consumption():
