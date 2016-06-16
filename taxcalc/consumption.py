@@ -80,16 +80,18 @@ class Consumption(ParametersBase):
         self.set_year(precall_current_year)
         self._validate_mpc_values()
 
+    RESPONSE_VARS = set(['e17500', 'e18400', 'e19800', 'e20400'])
+
     def has_response(self):
         """
         Return true if any MPC parameters are positive for current_year;
         return false if all MPC parameters are zero.
         """
         # pylint: disable=no-member
-        if self.MPC_xxx > 0.0 or self.MPC_yyy > 0.0:
-            return True
-        else:
-            return False
+        for var in Consumption.RESPONSE_VARS:
+            if getattr(self, 'MPC_{}'.format(var)) > 0.0:
+                return True
+        return False
 
     def response(self, records, income_change):
         """
@@ -98,7 +100,10 @@ class Consumption(ParametersBase):
         if not isinstance(records, Records):
             raise ValueError('records is not a Records object')
         # pylint: disable=no-member
-        records.e18400[:] += self.MPC_xxx * income_change
+        for var in Consumption.RESPONSE_VARS:
+            records_var = getattr(records, var)
+            mpc_var = getattr(self, 'MPC_{}'.format(var))
+            records_var[:] += mpc_var * income_change
 
     # ----- begin private methods of Consumption class -----
 

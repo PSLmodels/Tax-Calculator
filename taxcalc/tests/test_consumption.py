@@ -27,31 +27,37 @@ def test_correct_but_not_recommended_Consumption_instantiation():
     assert consump
 
 
+def test_validity_of_consumption_vars_set():
+    assert Consumption.RESPONSE_VARS.issubset(Records.VALID_READ_VARS)
+
+
 def test_correct_update_consumption():
     consump = Consumption(start_year=2013)
-    consump.update_consumption({2014: {'_MPC_xxx': [0.05]},
-                                2015: {'_MPC_xxx': [0.06]}})
-    should_be = np.full((Consumption.DEFAULT_NUM_YEARS,), 0.06)
-    should_be[0] = 0.0
-    should_be[1] = 0.05
-    assert np.allclose(consump._MPC_xxx, should_be, rtol=0.0)
-    assert np.allclose(consump._MPC_yyy,
+    consump.update_consumption({2014: {'_MPC_e20400': [0.05]},
+                                2015: {'_MPC_e20400': [0.06]}})
+    expected_mpc_e20400 = np.full((Consumption.DEFAULT_NUM_YEARS,), 0.06)
+    expected_mpc_e20400[0] = 0.0
+    expected_mpc_e20400[1] = 0.05
+    assert np.allclose(consump._MPC_e20400,
+                       expected_mpc_e20400,
+                       rtol=0.0)
+    assert np.allclose(consump._MPC_e17500,
                        np.zeros((Consumption.DEFAULT_NUM_YEARS,)),
                        rtol=0.0)
     consump.set_year(2015)
     assert consump.current_year == 2015
-    assert consump.MPC_xxx == 0.06
-    assert consump.MPC_yyy == 0.0
+    assert consump.MPC_e20400 == 0.06
+    assert consump.MPC_e17500 == 0.0
 
 
 def test_incorrect_update_consumption():
     consump = Consumption()
     with pytest.raises(ValueError):
-        consump.update_consumption({2016: {'_MPC_xxx': [-0.02]}})
+        consump.update_consumption({2016: {'_MPC_e20400': [-0.02]}})
     with pytest.raises(ValueError):
-        consump.update_consumption({2017: {'_MPC_xxx': [1.02]}})
+        consump.update_consumption({2017: {'_MPC_e20400': [1.02]}})
     with pytest.raises(ValueError):
-        consump.update_consumption({2014: {'_MPC_xxx': [0.8],
+        consump.update_consumption({2014: {'_MPC_e20400': [0.8],
                                            '_MPC_yyy': [0.3]}})
 
 
@@ -61,7 +67,7 @@ def test_future_update_consumption():
     assert consump.has_response() is False
     cyr = 2020
     consump.set_year(cyr)
-    consump.update_consumption({cyr: {'_MPC_xxx': [0.01]}})
+    consump.update_consumption({cyr: {'_MPC_e20400': [0.01]}})
     assert consump.current_year == cyr
     assert consump.has_response() is True
     consump.set_year(cyr - 1)
@@ -76,13 +82,13 @@ def test_consumption_default_data():
 
 def test_consumption_response():
     consump = Consumption()
-    consump.update_consumption({2013: {'_MPC_xxx': [0.5]}})
+    consump.update_consumption({2013: {'_MPC_e20400': [0.50]}})
     with pytest.raises(ValueError):
         consump.response(list(), 1)
     recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    e18400_pre = copy.deepcopy(recs.e18400)
+    pre = copy.deepcopy(recs.e20400)
     consump.response(recs, 1.0)
-    e18400_post = recs.e18400
-    e18400_diff = e18400_post - e18400_pre
-    expected_diff = np.ones(recs.dim) * 0.5
-    assert np.allclose(e18400_diff, expected_diff)
+    post = recs.e20400
+    actual_diff = post - pre
+    expected_diff = np.ones(recs.dim) * 0.50
+    assert np.allclose(actual_diff, expected_diff)
