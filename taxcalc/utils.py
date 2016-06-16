@@ -222,25 +222,22 @@ def get_sums(df, na=False):
     return pd.Series(sums, name='sums')
 
 
-def results(calc):
+def results(obj):
     """
-    Get results from Calculator object and organize them into a table.
+    Get results from object and organize them into a table.
 
     Parameters
     ----------
-    calc : Calculator object
+    obj : any object with array-like attributes named as in STATS_COLUMNS list
+          Examples include a Tax-Calculator Records object and a
+          Pandas DataFrame object
 
     Returns
     -------
-    DataFrame object
+    Pandas DataFrame object
     """
-    if not hasattr(calc, 'records'):
-        msg = 'calc does not have records attribute in results(calc) utility'
-        raise ValueError(msg)
-    outputs = []
-    for col in STATS_COLUMNS:
-        outputs.append(getattr(calc.records, col, np.nan))
-    return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
+    arrays = [getattr(obj, name) for name in STATS_COLUMNS]
+    return DataFrame(data=np.column_stack(arrays), columns=STATS_COLUMNS)
 
 
 def weighted_avg_allcols(df, cols, income_measure='_expanded_income'):
@@ -276,16 +273,19 @@ def add_columns(res):
     return res
 
 
-def create_distribution_table(calc, groupby, result_type,
+def create_distribution_table(obj, groupby, result_type,
                               income_measure='_expanded_income',
-                              baseline_calc=None, diffs=False):
+                              baseline_obj=None, diffs=False):
     """
-    Gets results given by the tax calculator, sorts them based on groupby, and
-        manipulates them based on result_type. Returns these as a table
+    Get results from object, sort them based on groupby, manipulate them
+    based on result_type, and return them as a table.
 
     Parameters
     ----------
-    calc : a Calculator object
+    obj : any object with array-like attributes named as in STATS_COLUMNS list
+        Examples include a Tax-Calculator Records object and a
+        Pandas DataFrame object, but if baseline_obj is specified, both obj
+        and baseline_obj must have a current_year attribute
 
     groupby : String object
         options for input: 'weighted_deciles', 'small_income_bins',
@@ -296,8 +296,9 @@ def create_distribution_table(calc, groupby, result_type,
         options for input: 'weighted_sum' or 'weighted_avg';
         determines how the data should be manipulated
 
-    baseline_calc : A Calculator object
-        carries the baseline plan
+    baseline_obj : any object with array-like attributes named as in
+        the STATS_COLUMNS list and having a current_year attribute
+        Examples include a Tax-Calculator Records object
 
     diffs : boolean
         indicates showing the results from reform or the difference between
@@ -319,12 +320,12 @@ def create_distribution_table(calc, groupby, result_type,
     -------
     DataFrame object
     """
-    res = results(calc)
+    res = results(obj)
     res = add_columns(res)
-    if baseline_calc is not None:
-        res_base = results(baseline_calc)
-        if calc.current_year != baseline_calc.current_year:
-            msg = 'The baseline calculator is not on the same year as reform.'
+    if baseline_obj is not None:
+        res_base = results(baseline_obj)
+        if obj.current_year != baseline_obj.current_year:
+            msg = 'current_year differs in baseline obj and reform obj'
             raise ValueError(msg)
         baseline_income_measure = income_measure + '_baseline'
         res[baseline_income_measure] = res_base[income_measure]
@@ -401,8 +402,8 @@ def create_difference_table(calc1, calc2, groupby,
     -------
     DataFrame object
     """
-    res1 = results(calc1)
-    res2 = results(calc2)
+    res1 = results(calc1.records)
+    res2 = results(calc2.records)
     baseline_income_measure = income_measure + '_baseline'
     res2[baseline_income_measure] = res1[income_measure]
     income_measure = baseline_income_measure

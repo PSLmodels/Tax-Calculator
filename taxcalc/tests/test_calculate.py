@@ -248,10 +248,12 @@ def test_Calculator_create_distribution_table():
                    'Individual Income Tax Liabilities',
                    'Payroll Tax Liablities',
                    'Combined Payroll and Individual Income Tax Liabilities']
-    dt1 = create_distribution_table(calc, groupby="weighted_deciles",
+    dt1 = create_distribution_table(calc.records,
+                                    groupby="weighted_deciles",
                                     result_type="weighted_sum")
     dt1.columns = dist_labels
-    dt2 = create_distribution_table(calc, groupby="small_income_bins",
+    dt2 = create_distribution_table(calc.records,
+                                    groupby="small_income_bins",
                                     result_type="weighted_avg")
     assert isinstance(dt1, pd.DataFrame)
     assert isinstance(dt2, pd.DataFrame)
@@ -361,10 +363,3 @@ def test_Calculator_using_nonstd_input(rawinputfile):
     exp_mtr_fica = np.zeros((nonpuf.dim,))
     exp_mtr_fica.fill(0.153)
     assert_allclose(mtr_fica, exp_mtr_fica)
-
-
-class TaxCalcError(Exception):
-    '''I've stripped this down to a simple extension of the basic Exception for
-    now. We can add functionality later as we see fit.
-    '''
-    pass
