@@ -82,13 +82,31 @@ def test_consumption_default_data():
 
 def test_consumption_response():
     consump = Consumption()
-    consump.update_consumption({2013: {'_MPC_e20400': [0.50]}})
+    mpc = 0.5
+    consump.update_consumption({2013: {'_MPC_e20400': [mpc]}})
+    # test incorrect call to response method
     with pytest.raises(ValueError):
         consump.response(list(), 1)
-    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    pre = copy.deepcopy(recs.e20400)
-    consump.response(recs, 1.0)
-    post = recs.e20400
+    # test correct call to response method
+    recs1 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    pre = copy.deepcopy(recs1.e20400)
+    consump.response(recs1, 1.0)
+    post = recs1.e20400
     actual_diff = post - pre
-    expected_diff = np.ones(recs.dim) * 0.50
+    expected_diff = np.ones(recs1.dim) * mpc
     assert np.allclose(actual_diff, expected_diff)
+    # compute earnings mtr with consumption response
+    calc1 = Calculator(policy=Policy(), records=recs1, consumption=consump)
+    (mtr1_fica, mtr1_itax, _) = calc1.mtr(income_type_str='e00200p',
+                                          wrt_full_compensation=False)
+    # compute earnings mtr with no consumption response
+    recs0 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    calc0 = Calculator(policy=Policy(), records=recs0, consumption=None)
+    (mtr0_fica, mtr0_itax, _) = calc0.mtr(income_type_str='e00200p',
+                                          wrt_full_compensation=False)
+    # confirm that FICA mtr values are no different
+    assert np.allclose(mtr1_fica, mtr0_fica)
+    # confirm that all mtr with cons-resp are no greater than without cons-resp
+    assert np.all(np.less_equal(mtr1_itax, mtr0_itax))
+    # confirm that some mtr with cons-resp are less than without cons-resp
+    assert np.any(np.less(mtr1_itax, mtr0_itax))
