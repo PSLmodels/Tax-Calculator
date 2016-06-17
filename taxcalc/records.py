@@ -456,7 +456,7 @@ class Records(object):
                                 2, 1)
 
     @staticmethod
-    def _read_egg_csv(vname, fpath):
+    def _read_egg_csv(vname, fpath, **kwargs):
         """
         Read csv file with fpath containing vname data from EGG;
         return dict of vname data
@@ -466,7 +466,7 @@ class Records(object):
             path_in_egg = os.path.join('taxcalc', fpath)
             vname_fname = resource_stream(
                 Requirement.parse('taxcalc'), path_in_egg)
-            vname_dict = pd.read_csv(vname_fname)
+            vname_dict = pd.read_csv(vname_fname, **kwargs)
         except (DistributionNotFound, IOError):
             msg = 'could not read {} file from EGG'
             raise ValueError(msg.format(vname))
@@ -512,7 +512,8 @@ class Records(object):
                 BF = pd.read_csv(blowup_factors, index_col='YEAR')
             else:
                 BF = Records._read_egg_csv('blowup_factors',
-                                           Records.BLOWUP_FACTORS_FILENAME)
+                                           Records.BLOWUP_FACTORS_FILENAME,
+                                           index_col='YEAR')
         else:
             msg = ('blowup_factors is not None or a string '
                    'or a Pandas DataFrame')
