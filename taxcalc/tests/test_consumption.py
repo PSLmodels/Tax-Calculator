@@ -80,30 +80,38 @@ def test_consumption_default_data():
         assert paramdata[param] == [0.0]
 
 
+@pytest.mark.one
 def test_consumption_response():
     consump = Consumption()
     mpc = 0.5
-    consump.update_consumption({2013: {'_MPC_e20400': [mpc]}})
+    consumption_response = {2013: {'_MPC_e20400': [mpc]}}
+    consump.update_consumption(consumption_response)
     # test incorrect call to response method
     with pytest.raises(ValueError):
         consump.response(list(), 1)
     # test correct call to response method
-    recs1 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    pre = copy.deepcopy(recs1.e20400)
-    consump.response(recs1, 1.0)
-    post = recs1.e20400
+    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    pre = copy.deepcopy(recs.e20400)
+    consump.response(recs, 1.0)
+    post = recs.e20400
     actual_diff = post - pre
-    expected_diff = np.ones(recs1.dim) * mpc
+    expected_diff = np.ones(recs.dim) * mpc
     assert np.allclose(actual_diff, expected_diff)
-    # compute earnings mtr with consumption response
-    calc1 = Calculator(policy=Policy(), records=recs1, consumption=consump)
-    (mtr1_fica, mtr1_itax, _) = calc1.mtr(income_type_str='e00200p',
-                                          wrt_full_compensation=False)
     # compute earnings mtr with no consumption response
     recs0 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     calc0 = Calculator(policy=Policy(), records=recs0, consumption=None)
+    ided0 = copy.deepcopy(recs0.e20400)
     (mtr0_fica, mtr0_itax, _) = calc0.mtr(income_type_str='e00200p',
                                           wrt_full_compensation=False)
+    assert np.allclose(calc0.records.e20400, ided0)
+    # compute earnings mtr with consumption response
+    recs1 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    calc1 = Calculator(policy=Policy(), records=recs1, consumption=None)
+    assert np.allclose(calc1.records.e20400, ided0)
+    calc1.consumption.update_consumption(consumption_response)
+    (mtr1_fica, mtr1_itax, _) = calc1.mtr(income_type_str='e00200p',
+                                          wrt_full_compensation=False)
+    assert np.allclose(calc1.records.e20400, ided0)
     # confirm that FICA mtr values are no different
     assert np.allclose(mtr1_fica, mtr0_fica)
     # confirm that all mtr with cons-resp are no greater than without cons-resp
