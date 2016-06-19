@@ -111,7 +111,7 @@ def add_weighted_decile_bins(df, income_measure='_expanded_income',
     This function will server as a 'grouper' later on.
     """
     # First, sort by income_measure
-    df.sort_values(by=income_measure)
+    df.sort(income_measure, inplace=True)
     # Next, do a cumulative sum by the weights
     df['cumsum_weights'] = np.cumsum(df['s006'].values)
     # Max value of cum sum of weights
@@ -292,7 +292,7 @@ def create_distribution_table(obj, groupby, result_type,
         'large_income_bins', 'webapp_income_bins';
         determines how the columns in the resulting DataFrame are sorted
 
-    results_type : String object
+    result_type : String object
         options for input: 'weighted_sum' or 'weighted_avg';
         determines how the data should be manipulated
 
