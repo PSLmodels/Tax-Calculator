@@ -9,7 +9,7 @@ import copy
 import pytest
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
-from taxcalc import Policy, Records, Calculator, Behavior
+from taxcalc import Policy, Records, Calculator, Behavior, Consumption
 from taxcalc import create_distribution_table, create_difference_table
 
 # use 1991 PUF-like data to emulate current puf.csv, which is private
@@ -73,7 +73,10 @@ def test_make_Calculator():
     parm = Policy()
     assert parm.current_year == 2013
     recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    calc = Calculator(policy=parm, records=recs)
+    consump = Consumption()
+    consump.update_consumption({2014: {'_MPC_e20400': [0.05]}})
+    assert consump.current_year == 2013
+    calc = Calculator(policy=parm, records=recs, consumption=consump)
     assert calc.current_year == 2013
     # test incorrect Calculator instantiation:
     with pytest.raises(ValueError):
@@ -84,6 +87,8 @@ def test_make_Calculator():
         calc = Calculator(policy=parm, records=recs, behavior=list())
     with pytest.raises(ValueError):
         calc = Calculator(policy=parm, records=recs, growth=list())
+    with pytest.raises(ValueError):
+        calc = Calculator(policy=parm, records=recs, consumption=list())
 
 
 def test_make_Calculator_deepcopy():
