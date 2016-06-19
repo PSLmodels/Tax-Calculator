@@ -80,7 +80,6 @@ def test_consumption_default_data():
         assert paramdata[param] == [0.0]
 
 
-@pytest.mark.one
 def test_consumption_response():
     consump = Consumption()
     mpc = 0.5

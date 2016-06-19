@@ -231,6 +231,8 @@ class Calculator(object):
         finite_diff = 0.01  # a one-cent difference
         if negative_finite_diff:
             finite_diff *= -1.0
+        # save records object in order to restore it after mtr computations
+        recs0 = copy.deepcopy(self.records)
         # extract income_type array(s) from embedded records object
         income_type = getattr(self.records, income_type_str)
         if income_type_str == 'e00200p':
@@ -239,11 +241,6 @@ class Calculator(object):
             seincome_type = self.records.e00900
         elif income_type_str == 'e00650':
             divincome_type = self.records.e00600
-        # calculate base level of taxes
-        self.calc_all()
-        fica_base = copy.deepcopy(self.records._fica)
-        iitax_base = copy.deepcopy(self.records._iitax)
-        combined_taxes_base = iitax_base + fica_base
         # calculate level of taxes after a marginal increase in income
         setattr(self.records, income_type_str, income_type + finite_diff)
         if income_type_str == 'e00200p':
@@ -255,22 +252,19 @@ class Calculator(object):
         if self.consumption.has_response():
             self.consumption.response(self.records, finite_diff)
         self.calc_all()
-        fica_up = copy.deepcopy(self.records._fica)
-        iitax_up = copy.deepcopy(self.records._iitax)
-        combined_taxes_up = iitax_up + fica_up
-        # compute marginal changes in tax liability
-        fica_delta = fica_up - fica_base
-        iitax_delta = iitax_up - iitax_base
-        combined_delta = combined_taxes_up - combined_taxes_base
-        # return embedded records object to its original state and recalculate
-        setattr(self.records, income_type_str, income_type)
-        if income_type_str == 'e00200p':
-            self.records.e00200 = earnings_type
-        elif income_type_str == 'e00900p':
-            self.records.e00900 = seincome_type
-        elif income_type_str == 'e00650':
-            self.records.e00600 = divincome_type
+        fica_delta = copy.deepcopy(self.records._fica)
+        iitax_delta = copy.deepcopy(self.records._iitax)
+        combined_taxes_delta = iitax_delta + fica_delta
+        # calculate base level of taxes after restoring records object
+        setattr(self, '_records', recs0)
         self.calc_all()
+        fica_base = copy.deepcopy(self.records._fica)
+        iitax_base = copy.deepcopy(self.records._iitax)
+        combined_taxes_base = iitax_base + fica_base
+        # compute marginal changes in tax liability
+        fica_del = fica_delta - fica_base
+        iitax_del = iitax_delta - iitax_base
+        combined_del = combined_taxes_delta - combined_taxes_base
         # specify optional adjustment for employer (er) OASDI+HI payroll taxes
         if wrt_full_compensation and income_type_str == 'e00200p':
             adj = np.where(income_type < self.policy.SS_Earnings_c,
@@ -280,9 +274,9 @@ class Calculator(object):
         else:
             adj = 0.0
         # compute marginal tax rates
-        mtr_fica = fica_delta / (finite_diff * (1.0 + adj))
-        mtr_iit = iitax_delta / (finite_diff * (1.0 + adj))
-        mtr_combined = combined_delta / (finite_diff * (1.0 + adj))
+        mtr_fica = fica_del / (finite_diff * (1.0 + adj))
+        mtr_iit = iitax_del / (finite_diff * (1.0 + adj))
+        mtr_combined = combined_del / (finite_diff * (1.0 + adj))
         # return the three marginal tax rate arrays
         return (mtr_fica, mtr_iit, mtr_combined)
 
