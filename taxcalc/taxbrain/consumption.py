@@ -31,6 +31,7 @@ def main(mpc_e17500, mpc_e18400, mpc_e19800, mpc_e20400):
     marginal-tax-rate results running the taxcalc package on this computer.
     """
     # pylint: disable=too-many-locals
+    # pylint: disable=too-many-statements
     if not os.path.isfile(PUFCSV_PATH):
         sys.stderr.write('ERROR: file {} does not exist\n'.format(PUFCSV_PATH))
         return 1
@@ -40,6 +41,7 @@ def main(mpc_e17500, mpc_e18400, mpc_e19800, mpc_e20400):
     calc0 = Calculator(policy=Policy(), records=recs0,
                        consumption=None, verbose=False)
     calc0.advance_to_year(cyr)
+    wghts = calc0.records.s006
     (mtr0_fica, mtr0_itax, _) = calc0.mtr(income_type_str='e00200p',
                                           wrt_full_compensation=False)
     # compute mtr under current-law policy with specified consumption response
@@ -56,23 +58,50 @@ def main(mpc_e17500, mpc_e18400, mpc_e19800, mpc_e20400):
     assert calc1.consumption.current_year == cyr
     (mtr1_fica, mtr1_itax, _) = calc1.mtr(income_type_str='e00200p',
                                           wrt_full_compensation=False)
-    # compare mtr results with and without consumption response
+    # compare unweighted mtr results with and without consumption response
     epsilon = 1.0e-6  # this would represent a mtr of 0.0001 percent
     assert np.allclose(mtr1_fica, mtr0_fica, atol=epsilon, rtol=0.0)
     mtr_raw_diff = mtr1_itax - mtr0_itax
     mtr1_itax = np.where(np.logical_and(mtr_raw_diff > 0.0,
                                         mtr_raw_diff < epsilon),
-                         mtr0_itax, mtr1_itax)
+                         mtr0_itax, mtr1_itax)  # zero out small positive diffs
     num_total = mtr1_itax.size
     num_increases = np.sum(np.greater(mtr1_itax, mtr0_itax))
     num_decreases = np.sum(np.less(mtr1_itax, mtr0_itax))
     num_nochanges = num_total - num_increases - num_decreases
-    res = 'number_of_mtr_{}_with_consump_response= {}\n'
-    sys.stdout.write(res.format('increases', num_increases))
-    sys.stdout.write(res.format('decreases', num_decreases))
-    sys.stdout.write(res.format('nochanges', num_nochanges))
-    # compute average size of decreases in itax mtr
-
+    res = 'unweighted_num_of_mtr_{}_with_consump_response= {:6d} ({:5.1f}%)\n'
+    sys.stdout.write(res.format('increases', num_increases,
+                                (100.0 * num_increases) / num_total))
+    sys.stdout.write(res.format('decreases', num_decreases,
+                                (100.0 * num_decreases) / num_total))
+    sys.stdout.write(res.format('nochanges', num_nochanges,
+                                (100.0 * num_nochanges) / num_total))
+    sys.stdout.write(res.format('all_units', num_total, 100.0))
+    # compute average size of decreases in mtr_itax
+    mtr_pre = mtr0_itax[mtr1_itax < mtr0_itax]
+    assert mtr_pre.size == num_decreases
+    avg_pre = np.mean(mtr_pre)
+    res = 'unweighted_abs_mean_no_c_resp(for_decreases)mtr_itax= {:.4f}\n'
+    sys.stdout.write(res.format(avg_pre))
+    mtr_diff = mtr1_itax - mtr0_itax
+    mtr_neg = mtr_diff[mtr_diff < 0.0]
+    assert mtr_neg.size == num_decreases
+    avg_neg = np.mean(mtr_neg)
+    assert avg_neg < 0.0
+    res = 'unweighted_abs_mean_change(for_decreases)in_mtr_itax= {:.4f}\n'
+    sys.stdout.write(res.format(-avg_neg))
+    res = '   ratio_of_abs_change_in_mtr_itax_and_no_c_resp_mtr_itax= {:.3f}\n'
+    sys.stdout.write(res.format(-avg_neg / avg_pre))
+    # compare weighted mtr results with and without consumption response
+    wghts_pre = wghts[mtr1_itax < mtr0_itax]
+    assert wghts_pre.size == num_decreases
+    res = 'weighted_percent_of_units_with_mtr_decrease= {:.1f}%\n'
+    frac = wghts_pre.sum() / wghts.sum()
+    sys.stdout.write(res.format(100.0 * frac))
+    res = '   ratio_of_abs_change_in_mtr_itax_and_no_c_resp_mtr_itax= {:.3f}\n'
+    w_avg_pre = np.mean((mtr_pre * wghts_pre).sum() / wghts_pre.sum())
+    w_avg_neg = np.mean((mtr_neg * wghts_pre).sum() / wghts_pre.sum())
+    sys.stdout.write(res.format(-w_avg_neg / w_avg_pre))
     # return no-error exit code
     return 0
 # end of main function code
