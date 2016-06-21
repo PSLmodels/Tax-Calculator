@@ -9,7 +9,14 @@ try:
     from numba import jit
     DO_JIT = True
 except ImportError:
-    jit = None
+    def id_wrapper(*dec_args, **dec_kwargs):
+        def wrap(f):
+            def wrapped_f(*args, **kwargs):
+                return f(*args, **kwargs)
+            return wrapped_f
+        return wrap
+
+    jit = id_wrapper
     DO_JIT = False
 
 
