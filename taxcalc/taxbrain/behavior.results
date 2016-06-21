@@ -1,0 +1,43 @@
+TAXCALC RESULTS
+===============
+iMac2:taxbrain$ date ; python behavior.py 2020 2020 0.0  0.0
+Mon Jun 20 21:00:00 EDT 2016
+REFORM: pop-the-cap in 2020
+2020,SUB_ELASTICITY,INC_ELASTICITY= 0.0 0.0
+2020,ITAX,REV_STATIC(S),REV_DYNAMIC(D),D-S= 1737.1 1737.1 0.0
+2020,FICA,REV_STATIC(S),REV_DYNAMIC(D),D-S= 1416.7 1416.7 0.0
+
+iMac2:taxbrain$ date ; python behavior.py 2020 2020 0.25 -0.05
+Mon Jun 20 21:05:00 EDT 2016
+REFORM: pop-the-cap in 2020
+2020,SUB_ELASTICITY,INC_ELASTICITY= 0.25 -0.05
+2020,ITAX,REV_STATIC(S),REV_DYNAMIC(D),D-S= 1737.1 1703.5 -33.7
+2020,FICA,REV_STATIC(S),REV_DYNAMIC(D),D-S= 1416.7 1405.7 -11.0
+
+
+TAXBRAIN RESULTS
+================
+
+STATIC RESULTS: http://www.ospc.org/taxbrain/4354/
+2020            ITAX       FICA
+-------------------------------
+baseline     1,727.6    1,233.7
+reform       1,737.1    1,416.7
+-------------------------------
+difference      +9.5     +183.0
+-------------------------------
+
+DYNAMIC RESULTS: http://www.ospc.org/dynamic/behavior_results/155/
+2020            ITAX       FICA
+-------------------------------
+baseline     1,727.6    1,233.7
+reform       1,703.5    1,405.7
+-------------------------------
+difference     -24.1     +172.0
+-------------------------------
+
+DYNAMIC-MINUS-STATIC REFORM-EFFECT DIFFERENCES:
+2020            ITAX       FICA
+-------------------------------
+D-S diff       -33.6      -11.0
+-------------------------------
