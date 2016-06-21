@@ -4,11 +4,9 @@ cur_path = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(cur_path, "../../"))
 sys.path.append(os.path.join(cur_path, "../"))
 import numpy as np
-import pandas as pd
 from pandas import DataFrame
+from taxcalc.decorators import *
 from pandas.util.testing import assert_frame_equal
-from taxcalc import *
-
 
 
 def test_create_apply_function_string():
