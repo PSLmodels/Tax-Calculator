@@ -18,7 +18,7 @@ install:
   - conda update conda
   - conda create -n taxcalcdev python=$TRAVIS_PYTHON_VERSION pytest setuptools pandas=0.18 toolz six
   - source activate taxcalcdev
-  - if [ $WITH_NUMBA == 'true' ]; then conda install numba
+  - if [ $WITH_NUMBA == 'true' ]; then conda install numba; fi
   - pip install pytest-pep8
   - pip install coverage
   - pip install codecov
