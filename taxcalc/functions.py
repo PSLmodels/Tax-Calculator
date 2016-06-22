@@ -387,7 +387,7 @@ def AMED(_fica, e00200, MARS, AMED_thd, _sey, AMED_trt,
 
 @iterate_jit(nopython=True)
 def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
-           MARS, MIDR, blind_head, blind_spouse, _exact, e04200):
+           MARS, MIDR, blind_head, blind_spouse):
     """
     StdDed function:
 
@@ -444,10 +444,7 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
         _extrastd += 1
     if MARS == 2 and age_spouse >= 65:
         _extrastd += 1
-    if _exact == 1 and MARS == 3 or MARS == 5:
-        c04200 = e04200
-    else:
-        c04200 = _extrastd * STD_Aged[MARS - 1]
+    c04200 = _extrastd * STD_Aged[MARS - 1]
     c15200 = c04200
     # Compute the total standard deduction
     _standard = c04100 + c04200
@@ -747,7 +744,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
          MARS, _sep, AMT_Child_em, AMT_CG_rt1,
          AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516,
          c24520, c05700,
-         age_head, KT_c_Age, e62900, AMT_thd_MarriedS, _earned, e62600,
+         age_head, KT_c_Age, e62900, AMT_thd_MarriedS, _earned,
          AMT_em, AMT_prt, AMT_trt1, AMT_trt2, cmbtp_itemizer,
          cmbtp_standard, ID_StateLocalTax_HC, ID_Medical_HC,
          ID_Miscellaneous_HC, ID_RealEstate_HC, puf):
@@ -775,7 +772,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
     else:
         c60000 = c00100
     c60000 = c60000 - e04805
-    if FDED == 1 or ((_prefded + e60290) > 0):
+    if FDED == 1 or ((_prefded + e60290) > 0.):
         _addamt = _prefded + e60290 - c60130
     else:
         _addamt = 0.
@@ -811,8 +808,6 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
     c62100 = c62100 + _amtsepadd
     c62600 = max(0., AMT_em[MARS - 1] - AMT_prt *
                  max(0., c62100 - AMT_em_ps[MARS - 1]))
-    if _cmp == 1 and f6251 == 1 and _exact == 1:
-        c62600 = e62600
     if age_head != 0 and age_head < KT_c_Age:
         c62600 = min(c62600, _earned + AMT_Child_em)
     c62700 = max(0., c62100 - c62600)
@@ -1248,7 +1243,7 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
 
 @iterate_jit(nopython=True)
 def AddCTC(_nctcr, _precrd, _earned, c07220, _fica_was,
-           _exact, e82880, ACTC_Income_thd, ACTC_rt,
+           ACTC_Income_thd, ACTC_rt,
            ALD_SelfEmploymentTax_HC, c03260, e09800, c59660, e11200,
            e11070, e82915, e82940, ACTC_ChildNum):
     """
@@ -1276,8 +1271,6 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, _fica_was,
         c82935 = c82925 - c82930
         # CTC not applied to tax
         c82880 = max(0., _earned)
-        if _exact == 1:
-            c82880 = e82880
         c82885 = max(0., c82880 - ACTC_Income_thd)
         c82890 = ACTC_rt * c82885
     # Part II of 2005 form 8812
