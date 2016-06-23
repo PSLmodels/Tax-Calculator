@@ -731,11 +731,11 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
 
 
 @iterate_jit(nopython=True, puf=True)
-def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
+def AMTI(c60000, e60290, _posagi, e07300, c24517,
          e60300, e60860, p60100, e60840, e60630, e60550, FDED,
          e60720, e60430, e60500, e60340, e60680, e60600, e60405,
          e60440, e60420, e60410, e61400, e60660, e60480, c21060,
-         e62000, e60250, _cmp, _standard, p04470,
+         e62000, e60250, _cmp, _standard,
          f6251, c00100, t04470,
          c04470, c17000, e18500, c20800, c21040, e04805,
          c02700,
@@ -781,7 +781,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
                   e60550 + e60720 + e60430 + e60500 + e60340 + e60680 +
                   e60600 + e60405 + e60440 + e60420 + e60410 + e61400 +
                   e60660 - c60260 - e60480 - e62000 + c60000 - e60250)
-    if puf and ((_standard == 0 or (_exact == 1 and p04470 > 0.))):
+    if puf and _standard == 0.0:
         if f6251 == 1:
             _cmbtp = cmbtp_itemizer
         else:
@@ -793,7 +793,7 @@ def AMTI(c60000, _exact, e60290, _posagi, e07300, c24517,
                   income_sales + real_estate -
                   c60260 + (1 - ID_Miscellaneous_HC) * c20800 - c21040)
         c62100 += _cmbtp
-    if puf and _standard > 0:
+    if puf and _standard > 0.0:
         if f6251 == 1:
             _cmbtp = cmbtp_standard
         else:
@@ -955,18 +955,13 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge, DSI,
            age_head, EITC_MaxEligAge, EITC_ps_MarriedJ, EITC_rt, c59560,
            EITC_c, age_spouse, EITC_prt, e83080, e00300, e00600, e40223,
            e25360, e25430, p25470, e25400, e25500, e26210, e26340, e27200,
-           e26205, e26320, EITC_InvestIncome_c, _earned, c59660, _exact,
-           e59560):
+           e26205, e26320, EITC_InvestIncome_c, _earned, c59660):
     """
     NumDep function: ...
     """
     # pylint: disable=too-many-branches
     _preeitc = 0.
-    if _exact == 1:
-        c59560 = e59560
-    else:
-        c59560 = _earned
-    # Modified AGI only through 2002
+    c59560 = _earned
     _modagi = c00100 + e00400
     if MARS == 2:
         _val_ymax = EITC_ps[EIC] + EITC_ps_MarriedJ[EIC]
