@@ -149,7 +149,6 @@ class Records(object):
         'e59440', 'e59470', 'e59400', 'e10105', 'e83200_0',
         'e59410', 'e59420', 'e74400', 'x62720', 'x60260',
         'x60240', 'x60220', 'x60130', 'e60290',
-        '_fixeic',
         'e33420', 'e33430',
         'e33450', 'e33460', 'e33465', 'e33470',
         'e83080', 'e25360',
@@ -224,7 +223,7 @@ class Records(object):
         '_surtax', '_combined', '_personal_credit'])
 
     INTEGER_CALCULATED_VARS = set([
-        '_num', '_sep', '_exact', '_hasgain', '_cmp', '_fixeic'])
+        '_num', '_sep', '_exact', '_hasgain', '_cmp'])
 
     def __init__(self,
                  data='puf.csv',
@@ -367,7 +366,6 @@ class Records(object):
         self.e09700 *= ATXPY
         self.e09800 *= ATXPY
         self.e09900 *= ATXPY
-        self.e59560 *= ATXPY
         self.e11550 *= ATXPY
         self.e11070 *= ATXPY
         self.e11200 *= ATXPY

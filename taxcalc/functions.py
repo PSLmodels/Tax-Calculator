@@ -881,13 +881,10 @@ def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
 
 
 @iterate_jit(nopython=True, puf=True)
-def F2441(_earned, _fixeic, e59560, MARS, f2441, DCC_c, e00200p, e00200s,
-          e32800, puf):
+def F2441(_earned, MARS, f2441, DCC_c, e00200p, e00200s, e32800, puf):
     """
     F2441 function: ...
     """
-    if _fixeic == 1:
-        _earned = e59560
     if MARS == 2 and puf:
         c32880 = e00200p
         c32890 = e00200s
