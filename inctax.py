@@ -51,6 +51,15 @@ def main():
                               '//-comments. No REFORM filename implies use '
                               'of current-law policy.'),
                         default=None)
+    parser.add_argument('--exact',
+                        help=('optional flag to suppress smoothing in income '
+                              'tax calculations that eliminate marginal-tax-'
+                              'rate-complicating "stair-steps".  The default '
+                              'is to smooth, and therefore, not to do the '
+                              ' exact calculations called for in the tax '
+                              'law.'),
+                        default=False,
+                        action="store_true")
     parser.add_argument('--blowup',
                         help=('optional flag that triggers the default '
                               'imputation and blowup (or aging) logic built '
@@ -120,6 +129,7 @@ def main():
     inctax = IncomeTaxIO(input_data=args.INPUT,
                          tax_year=args.TAXYEAR,
                          policy_reform=args.reform,
+                         exact_calculations=args.exact,
                          blowup_input_data=args.blowup,
                          output_weights=args.weights,
                          output_records=args.records,

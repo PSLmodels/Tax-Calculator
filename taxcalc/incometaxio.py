@@ -16,6 +16,7 @@ import sys
 import six
 import pandas as pd
 from .policy import Policy
+
 from .records import Records
 from .calculate import Calculator
 from .simpletaxio import SimpleTaxIO
@@ -40,6 +41,10 @@ class IncomeTaxIO(object):
         None implies no policy reform (current-law policy), or
         string is name of optional REFORM file, or
         dictionary suitable for passing to Policy.implement_reform() method.
+
+    exact_calculations: boolean
+        specifies whether or not exact tax calculations are done without
+        any smoothing of "stair-step" provisions in income tax law.
 
     blowup_input_data: boolean
         whether or not to age record data from data year to tax_year.
@@ -71,6 +76,7 @@ class IncomeTaxIO(object):
     """
 
     def __init__(self, input_data, tax_year, policy_reform,
+                 exact_calculations,
                  blowup_input_data, output_weights,
                  output_records, csv_dump):
         """
@@ -144,17 +150,22 @@ class IncomeTaxIO(object):
         # read input file contents into Records object
         if blowup_input_data:
             if output_weights:
-                recs = Records(data=input_data)
+                recs = Records(data=input_data,
+                               exact_calculations=exact_calculations)
             else:
                 recs = Records(data=input_data,
+                               exact_calculations=exact_calculations,
                                weights=None)
         else:
             if output_weights:
                 recs = Records(data=input_data,
+                               exact_calculations=exact_calculations,
                                start_year=tax_year)
             else:
-                recs = Records(data=input_data, blowup_factors=None,
-                               weights=None, start_year=tax_year)
+                recs = Records(data=input_data,
+                               exact_calculations=exact_calculations,
+                               blowup_factors=None, weights=None,
+                               start_year=tax_year)
         # create Calculator object
         self._calc = Calculator(policy=policy, records=recs,
                                 sync_years=blowup_input_data)
