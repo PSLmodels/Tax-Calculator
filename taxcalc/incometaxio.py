@@ -16,7 +16,6 @@ import sys
 import six
 import pandas as pd
 from .policy import Policy
-
 from .records import Records
 from .calculate import Calculator
 from .simpletaxio import SimpleTaxIO
