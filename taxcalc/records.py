@@ -31,17 +31,22 @@ class Records(object):
         look at the test_Calculator_using_nonstd_input() function in the
         tests/test_calculate.py file.
 
+    exact_calculations: boolean
+        specifies whether or not exact tax calculations are done without
+        any smoothing of "stair-step" provisions in income tax law;
+        default value is false.
+
     blowup_factors: string or Pandas DataFrame or None
         string describes CSV file in which blowup factors reside;
         DataFrame already contains blowup factors;
         None creates empty blowup-factors DataFrame;
-        default value is filename of the default blowup factors
+        default value is filename of the default blowup factors.
 
     weights: string or Pandas DataFrame or None
         string describes CSV file in which weights reside;
         DataFrame already contains weights;
         None creates empty sample-weights DataFrame;
-        default value is filename of the default weights
+        default value is filename of the default weights.
 
     start_year: integer
         specifies calendar year of the data;
@@ -227,14 +232,16 @@ class Records(object):
 
     def __init__(self,
                  data='puf.csv',
+                 exact_calculations=False,
                  blowup_factors=BLOWUP_FACTORS_PATH,
                  weights=WEIGHTS_PATH,
                  start_year=PUFCSV_YEAR):
         """
         Records class constructor
         """
+        # pylint: disable=too-many-arguments
         # read specified data
-        self._read_data(data)
+        self._read_data(data, exact_calculations)
         # check that three sets of split-earnings variables have valid values
         msg = 'expression "{0} == {0}p + {0}s" is not true for every record'
         if not np.allclose(self.e00200, (self.e00200p + self.e00200s),
@@ -403,9 +410,10 @@ class Records(object):
         self.cmbtp_itemizer *= ATXPY
         self.cmbtp_standard *= ATXPY
 
-    def _read_data(self, data):
+    def _read_data(self, data, exact_calcs):
         """
         Read Records data from file or use specified DataFrame as data.
+        Specifies _exact array depending on boolean value of exact_calcs.
         """
         # pylint: disable=too-many-branches
         if isinstance(data, pd.DataFrame):
@@ -452,6 +460,8 @@ class Records(object):
                                 2, 1)
         self._sep[:] = np.where(np.logical_or(self.MARS == 3, self.MARS == 6),
                                 2, 1)
+        # specify value of _exact array
+        self._exact[:] = np.where(exact_calcs is True, 1, 0)
 
     @staticmethod
     def _read_egg_csv(vname, fpath, **kwargs):
