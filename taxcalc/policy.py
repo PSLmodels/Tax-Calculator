@@ -272,6 +272,15 @@ class Policy(ParametersBase):
         Notice that each of the four YEAR:MODS pairs is specified as
         required by the private _update method, whose documentation
         provides several MODS dictionary examples.
+
+        IMPORTANT NOTICE: when specifying a reform dictionary always group
+        all reform provisions for a specified year into one YEAR:MODS pair.
+        If you make the mistake of specifying two or more YEAR:MODS pairs
+        with the same YEAR value, all but the last one will be overwritten,
+        and therefore, not part of the reform.  This is because Python
+        expects unique (not multiple) dictionary keys.  There is no way to
+        catch this error, so be careful to specify reform dictionaries
+        correctly.
         """
         if not isinstance(reform, dict):
             raise ValueError('reform is not a dictionary')
