@@ -1,14 +1,14 @@
 import inspect
 from .policy import Policy
-from functools import wraps
 from six import StringIO
 import ast
 import toolz
 
 try:
-    from numba import jit
+    import numba
+    jit = numba.jit
     DO_JIT = True
-except ImportError:
+except (ImportError, AttributeError):
     def id_wrapper(*dec_args, **dec_kwargs):
         def wrap(f):
             def wrapped_f(*args, **kwargs):

@@ -261,3 +261,21 @@ def test_function_parameters_optional():
     exp = DataFrame(data=[[2.0, 4.0]] * 5,
                     columns=["a", "b"])
     assert_frame_equal(ans, exp)
+
+
+def test_force_no_numba():
+    """
+    Force execution of code when failing to import Numba
+    """
+    def bad_import(*args, **kwargs):
+        raise ImportError
+    from mock import Mock
+    mck = Mock()
+    hasattr(mck, 'jit')
+    del mck.jit
+    import importlib
+    import taxcalc
+    nmba = sys.modules['numba']
+    sys.modules.update([('numba', mck)])
+    importlib.reload(taxcalc.decorators)
+    sys.modules['numba'] = nmba
