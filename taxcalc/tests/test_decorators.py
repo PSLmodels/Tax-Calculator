@@ -262,6 +262,7 @@ def Magic_calc5(w, x, y, z, puf):
         b = 42
     return (a, b)
 
+
 def test_function_parameters_optional():
     pm = Foo()
     pf = Foo()
