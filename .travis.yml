@@ -5,9 +5,6 @@ python:
   - "3.5"
   - "3.4"
   - "2.7"
-env:
-  - WITH_NUMBA=true
-  - WITH_NUMBA=false
 
 install:
   # Install conda
@@ -18,7 +15,7 @@ install:
   - conda update conda
   - conda create -n taxcalcdev python=$TRAVIS_PYTHON_VERSION pytest setuptools pandas=0.18 toolz six
   - source activate taxcalcdev
-  - if [ $WITH_NUMBA == 'true' ]; then conda install numba; fi
+  - if [ $TRAVIS_EVENT_TYPE != 'cron' ]; then conda install numba; fi
   - pip install pytest-pep8
   - pip install coverage
   - pip install codecov
