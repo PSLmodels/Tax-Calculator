@@ -3,6 +3,7 @@ import sys
 cur_path = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(cur_path, "../../"))
 sys.path.append(os.path.join(cur_path, "../"))
+from six.moves import reload_module
 import numpy as np
 from pandas import DataFrame
 from taxcalc.decorators import *
@@ -273,9 +274,8 @@ def test_force_no_numba():
     mck = Mock()
     hasattr(mck, 'jit')
     del mck.jit
-    import importlib
     import taxcalc
     nmba = sys.modules['numba']
     sys.modules.update([('numba', mck)])
-    importlib.reload(taxcalc.decorators)
+    reload_module(taxcalc.decorators)
     sys.modules['numba'] = nmba
