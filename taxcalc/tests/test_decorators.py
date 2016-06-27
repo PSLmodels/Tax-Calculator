@@ -249,6 +249,15 @@ def Magic_calc5(w, x, y, z, puf):
     return (a, b)
 
 
+def Magic_calc6(w, x, y, z, puf):
+    a = x + y
+    if (puf):
+        b = w[0] + x + y + z
+    else:
+        b = 42
+    return (a, b)
+
+
 def test_function_parameters_optional():
     pm = Foo()
     pf = Foo()
@@ -266,10 +275,11 @@ def test_function_parameters_optional():
 
 def test_force_no_numba():
     """
-    Force execution of code when failing to import Numba
+    Force execution of code for non-existence of Numba
     """
-    def bad_import(*args, **kwargs):
-        raise ImportError
+    global Magic_calc6
+
+    # Mock the numba module
     from mock import Mock
     mck = Mock()
     hasattr(mck, 'jit')
@@ -277,5 +287,25 @@ def test_force_no_numba():
     import taxcalc
     nmba = sys.modules['numba']
     sys.modules.update([('numba', mck)])
+    # Reload the decorators with faked out numba
     reload_module(taxcalc.decorators)
+    # Get access to iterate_jit and force to jit
+    ij = taxcalc.decorators.iterate_jit
+    taxcalc.decorators.DO_JIT = True
+    # Now use iterate_jit on a dummy function
+    Magic_calc6 = ij(parameters=['w'], nopython=True, puf=True)(Magic_calc6)
+    # Do work and verify function works as expected
+    pm = Foo()
+    pf = Foo()
+    pm.a = np.ones((5,))
+    pm.b = np.ones((5,))
+    pm.w = np.ones((5,))
+    pf.x = np.ones((5,))
+    pf.y = np.ones((5,))
+    pf.z = np.ones((5,))
+    ans = Magic_calc6(pm, pf)
+    exp = DataFrame(data=[[2.0, 4.0]] * 5,
+                    columns=["a", "b"])
+    assert_frame_equal(ans, exp)
+    # Restore numba module
     sys.modules['numba'] = nmba
