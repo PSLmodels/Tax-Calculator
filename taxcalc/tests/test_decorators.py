@@ -3,6 +3,7 @@ import sys
 cur_path = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(cur_path, "../../"))
 sys.path.append(os.path.join(cur_path, "../"))
+import pytest
 from six.moves import reload_module
 import numpy as np
 from pandas import DataFrame
@@ -139,6 +140,19 @@ def test_magic_apply_jit():
     assert_frame_equal(xx, exp)
 
 
+def test_magic_apply_jit_swap():
+    pm = Foo()
+    pf = Foo()
+    pm.a = np.ones((5,))
+    pm.b = np.ones((5,))
+    pf.x = np.ones((5,))
+    pf.y = np.ones((5,))
+    pf.z = np.ones((5,))
+    xx = Magic(pf, pm)
+    exp = DataFrame(data=[[2.0, 3.0]] * 5, columns=["a", "b"])
+    assert_frame_equal(xx, exp)
+
+
 def test_magic_iterate_jit():
     pm = Foo()
     pf = Foo()
@@ -248,16 +262,6 @@ def Magic_calc5(w, x, y, z, puf):
         b = 42
     return (a, b)
 
-
-def Magic_calc6(w, x, y, z, puf):
-    a = x + y
-    if (puf):
-        b = w[0] + x + y + z
-    else:
-        b = 42
-    return (a, b)
-
-
 def test_function_parameters_optional():
     pm = Foo()
     pf = Foo()
@@ -271,6 +275,53 @@ def test_function_parameters_optional():
     exp = DataFrame(data=[[2.0, 4.0]] * 5,
                     columns=["a", "b"])
     assert_frame_equal(ans, exp)
+
+
+def unjittable_function(w, x, y, z, puf):
+    a = x + y
+    if (puf):
+        b = w[0] + x + y + z
+    else:
+        b = 42
+
+
+def unjittable_function2(w, x, y, z, puf):
+    a = x + y
+    if (puf):
+        b = w[0] + x + y + z
+    else:
+        b = 42
+    return (a, b, c)
+
+
+def test_iterate_jit_raises_on_no_return():
+    with pytest.raises(ValueError):
+        ij = iterate_jit(parameters=['w'], nopython=True, puf=True)
+        ij(unjittable_function)
+
+
+def test_iterate_jit_raises_on_unknown_return_argument():
+    ij = iterate_jit(parameters=['w'], nopython=True, puf=True)
+    uf2 = ij(unjittable_function2)
+    pm = Foo()
+    pf = Foo()
+    pm.a = np.ones((5,))
+    pm.b = np.ones((5,))
+    pm.w = np.ones((5,))
+    pf.x = np.ones((5,))
+    pf.y = np.ones((5,))
+    pf.z = np.ones((5,))
+    with pytest.raises(ValueError):
+        ans = uf2(pm, pf)
+
+
+def Magic_calc6(w, x, y, z, puf):
+    a = x + y
+    if (puf):
+        b = w[0] + x + y + z
+    else:
+        b = 42
+    return (a, b)
 
 
 def test_force_no_numba():
