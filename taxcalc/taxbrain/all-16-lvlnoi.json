@@ -153,10 +153,10 @@
             "_ID_Casualty_frt": {
                 "2016": [0.11]
             },
-            "_ID_Charity_crt_Asset": {
+            "_ID_Charity_crt_noncash": {
                 "2016": [0.3]
             },
-            "_ID_Charity_crt_Cash": {
+            "_ID_Charity_crt_all": {
                 "2016": [0.5]
             },
             "_ID_Charity_frt": {

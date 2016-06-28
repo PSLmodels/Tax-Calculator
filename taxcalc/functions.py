@@ -212,7 +212,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e19700,
             e20500, e20400, e19200, e19800, e20100, e20200,
             MARS, c00100, ID_ps, ID_Medical_frt, ID_Medical_HC,
             ID_Casualty_frt, ID_Casualty_HC, ID_Miscellaneous_frt,
-            ID_Miscellaneous_HC, ID_Charity_crt_Cash, ID_Charity_crt_Asset,
+            ID_Miscellaneous_HC, ID_Charity_crt_all, ID_Charity_crt_noncash,
             ID_prt, ID_crt, ID_StateLocalTax_HC, ID_Charity_frt,
             ID_Charity_HC, ID_InterestPaid_HC, ID_RealEstate_HC, puf):
     """
@@ -224,27 +224,27 @@ def ItemDed(_posagi, e17500, e18400, e18500, e19700,
         ID_ps : Itemized deduction phaseout AGI start (Pease)
 
         ID_crt : Itemized deduction maximum phaseout
-        as a percent of total itemized deduction (Pease)
+        as a decimal fraction of total itemized deduction (Pease)
 
         ID_prt : Itemized deduction phaseout rate (Pease)
 
         ID_Medical_frt : Deduction for medical expenses;
-        floor as a percent of AGI
+        floor as a decimal fraction of AGI
 
         ID_Casualty_frt : Deduction for casualty loss;
-        floor as a percent of AGI
+        floor as a decimal fraction of AGI
 
         ID_Miscellaneous_frt : Deduction for miscellaneous expenses;
-        floor as a percent of AGI
+        floor as a decimal fraction of AGI
 
-        ID_Charity_crt_Cash : Deduction for charitable cash contributions;
-        ceiling as a percent of AGI
+        ID_Charity_crt_all : Deduction for all charitable contributions;
+        ceiling as a decimal fraction of AGI
 
-        ID_Charity_crt_Asset : Deduction for charitable asset contributions;
-        ceiling as a percent of AGI
+        ID_Charity_crt_noncash : Deduction for noncash charitable
+        contributions; ceiling as a decimal fraction of AGI
 
         ID_Charity_frt : Deduction for charitable contributions;
-        floor as a percent of AGI
+        floor as a decimal fraction of AGI
 
     Taxpayer Characteristics:
         e17500 : Medical expense
@@ -283,8 +283,8 @@ def ItemDed(_posagi, e17500, e18400, e18500, e19700,
     elif base_charity <= 0.2 * _posagi:
         c19700 = base_charity
     else:
-        lim30 = min(ID_Charity_crt_Asset * _posagi, e20100 + e20200)
-        c19700 = min(ID_Charity_crt_Cash * _posagi, lim30 + e19800)
+        lim30 = min(ID_Charity_crt_noncash * _posagi, e20100 + e20200)
+        c19700 = min(ID_Charity_crt_all * _posagi, lim30 + e19800)
     charity_floor = ID_Charity_frt * _posagi  # frt is zero in present law
     c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_HC)
     # Casualty
