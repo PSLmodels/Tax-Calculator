@@ -276,9 +276,9 @@ def ItemDed(_posagi, e17500, e18400, e18500, e19700,
     c18300 = ((1. - ID_StateLocalTax_HC) * max(e18400, 0.) +
               (1. - ID_RealEstate_HC) * e18500)
     # Casualty
-    if e20500 > 0:
-        c37703 = e20500 + ID_Casualty_frt * _posagi
-    else:
+    if e20500 > 0.0:  # assume e20500 was subject to a 10% disregard
+        c37703 = e20500 + 0.10 * _posagi  # add back disregarded amount
+    else:  # losses less than 10% of AGI are assumed to be zero
         c37703 = 0.
     c20500 = max(0., c37703 - ID_Casualty_frt * _posagi)
     # Miscellaneous
