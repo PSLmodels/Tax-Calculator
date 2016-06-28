@@ -209,17 +209,15 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, XTOT,
 
 @iterate_jit(nopython=True, puf=True)
 def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
-            e20500, e20400, e19200, e19500, e19570,
-            e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
+            e20500, e20400, e19200,
+            e19800, e20100, e20200, e20900, e21000, e21010,
             MARS, c00100, ID_ps, ID_Medical_frt, ID_Medical_HC,
             ID_Casualty_frt, ID_Casualty_HC, ID_Miscellaneous_frt,
             ID_Miscellaneous_HC, ID_Charity_crt_Cash, ID_Charity_crt_Asset,
             ID_prt, ID_crt, ID_StateLocalTax_HC, ID_Charity_frt,
             ID_Charity_HC, ID_InterestPaid_HC, ID_RealEstate_HC, puf):
     """
-    ItemDed function:
-
-    Itemized Deduction; Form 1040, Schedule A
+    ItemDed function: itemized deductions, Form 1040, Schedule A
 
     Notes
     -----
@@ -262,8 +260,6 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
 
         e19800 : Cash Contribution
 
-        e19550 : Qualified Mortgage Insurance Premiums
-
         e20100 : Charity non-cash contribution
 
         e20400 : Total Miscellaneous expense
@@ -274,12 +270,6 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
     Returns
     -------
     c04470 : Itemized deduction amount
-
-    Warning
-    -------
-    Any additional keyword args, such as 'puf=True' here, must be
-    passed to the function at the END of the argument list. If you stick the
-    argument somewhere in the middle of the signature, you will get errors.
     """
     # Medical
     c17750 = ID_Medical_frt * _posagi
@@ -299,11 +289,8 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
     c20400 = e20400
     c20750 = ID_Miscellaneous_frt * _posagi
     c20800 = max(0., c20400 - c20750)
-    # Interest paid deduction
-    if puf:
-        c19200 = e19200
-    else:
-        c19200 = e19500 + e19570 + e19400 + e19550
+    # Interest paid
+    c19200 = e19200
     # Charity (assumes carryover is non-cash)
     base_charity = e19800 + e20100 + e20200
     if puf:
@@ -326,7 +313,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
     _phase2_i = ID_ps[MARS - 1]
     _nonlimited = ((1 - ID_Medical_HC) * c17000 +
                    (1 - ID_Casualty_HC) * c20500 +
-                   e19570 + e21010 + e20900)
+                   e21010 + e20900)
     _limitratio = _phase2_i
     # Itemized deductions amount after limitation if any
     c04470 = c21060
