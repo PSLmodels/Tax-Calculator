@@ -209,7 +209,7 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, XTOT,
 
 @iterate_jit(nopython=True, puf=True)
 def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
-            e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
+            e20500, e20400, e19200, e19500, e19570,
             e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
             MARS, c00100, ID_ps, ID_Medical_frt, ID_Medical_HC,
             ID_Casualty_frt, ID_Casualty_HC, ID_Miscellaneous_frt,
@@ -268,10 +268,6 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
 
         e20400 : Total Miscellaneous expense
 
-        e20550 : Unreimbursed employee business Expense
-
-        e20600 : Tax preparation fee
-
     Intermediate Variables:
         _posagi: positive AGI
 
@@ -300,11 +296,8 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
         c37703 = 0.
     c20500 = max(0., c37703 - ID_Casualty_frt * _posagi)
     # Miscellaneous
+    c20400 = e20400
     c20750 = ID_Miscellaneous_frt * _posagi
-    if puf:
-        c20400 = e20400
-    else:
-        c20400 = e20550 + e20600 + e20950
     c20800 = max(0., c20400 - c20750)
     # Interest paid deduction
     if puf:
