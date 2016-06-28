@@ -208,7 +208,7 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, XTOT,
 
 
 @iterate_jit(nopython=True, puf=True)
-def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
+def ItemDed(_posagi, e17500, e18400, e18500, e19700,
             e20500, e20400, e19200,
             e19800, e20100, e20200, e20900, e21000, e21010,
             MARS, c00100, ID_ps, ID_Medical_frt, ID_Medical_HC,
@@ -250,19 +250,17 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
     Taxpayer Characteristics:
         e17500 : Medical expense
 
-        e18425 : Income taxes
+        e18400 : State and local taxes
 
-        e18450 : General Sales Tax
+        e18500 : Real-estate taxes
 
-        e18500 : Real Estate tax
+        e19200 : Interest paid
 
-        e19200 : Total interest deduction
-
-        e19800 : Cash Contribution
+        e19800 : Charity cash Contribution
 
         e20100 : Charity non-cash contribution
 
-        e20400 : Total Miscellaneous expense
+        e20400 : Total Miscellaneous expenses
 
     Intermediate Variables:
         _posagi: positive AGI
@@ -274,11 +272,9 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
     # Medical
     c17750 = ID_Medical_frt * _posagi
     c17000 = max(0., e17500 - c17750)
-    # State and Local Income Tax, or Sales Tax
-    _statax = (1 - ID_StateLocalTax_HC) * max(e18400, 0.)
-    # Other Taxes (including state and local)
-    real_estate = (1 - ID_RealEstate_HC) * e18500
-    c18300 = _statax + real_estate + e18800 + e18900
+    # State and local taxes
+    c18300 = ((1. - ID_StateLocalTax_HC) * max(e18400, 0.) +
+              (1. - ID_RealEstate_HC) * e18500)
     # Casualty
     if e20500 > 0:
         c37703 = e20500 + ID_Casualty_frt * _posagi
@@ -324,7 +320,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
         c04470 = c21060 - c21040
     else:
         c21040 = 0.
-    return (c17750, c17000, _statax, c18300, c37703, c20500,
+    return (c17750, c17000, c18300, c37703, c20500,
             c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
             _nonlimited, _limitratio, c04470, c21040)
 
@@ -717,19 +713,18 @@ def AMTI(c60000, e60290, _posagi, e07300, c24517,
          e60440, e60420, e60410, e61400, e60660, e60480, c21060,
          e62000, e60250, _cmp, _standard,
          f6251, c00100, t04470,
-         c04470, c17000, e18500, c20800, c21040, e04805,
+         c04470, c17000, c20800, c21040, e04805,
          c02700,
-         e24515, x60130, e18400,
+         e24515, x60130,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
          MARS, _sep, AMT_Child_em, AMT_CG_rt1,
          AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516,
          c24520, c05700,
          age_head, KT_c_Age, e62900, AMT_thd_MarriedS, _earned,
          AMT_em, AMT_prt, AMT_trt1, AMT_trt2, cmbtp_itemizer,
-         cmbtp_standard, ID_StateLocalTax_HC, ID_Medical_HC,
-         ID_Miscellaneous_HC, ID_RealEstate_HC, puf):
+         cmbtp_standard, ID_Medical_HC, ID_Miscellaneous_HC, puf):
     """
-    AMTI function: ...
+    AMTI function: AMT taxable income
     """
     # pylint: disable=too-many-statements,too-many-branches
     c62720 = c24517 + x62720
@@ -766,12 +761,10 @@ def AMTI(c60000, e60290, _posagi, e07300, c24517,
             _cmbtp = cmbtp_itemizer
         else:
             _cmbtp = 0.
-        real_estate = (1 - ID_RealEstate_HC) * e18500
-        income_sales = (1 - ID_StateLocalTax_HC) * max(0., e18400)
         c62100 = (c00100 - c04470 +
-                  max(0., min((1 - ID_Medical_HC) * c17000, 0.025 * c00100)) +
-                  income_sales + real_estate -
-                  c60260 + (1 - ID_Miscellaneous_HC) * c20800 - c21040)
+                  max(0., min((1. - ID_Medical_HC) * c17000, 0.025 * c00100)) +
+                  c18300 -
+                  c60260 + (1. - ID_Miscellaneous_HC) * c20800 - c21040)
         c62100 += _cmbtp
     if puf and _standard > 0.0:
         if f6251 == 1:
