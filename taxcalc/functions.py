@@ -209,8 +209,7 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, XTOT,
 
 @iterate_jit(nopython=True, puf=True)
 def ItemDed(_posagi, e17500, e18400, e18500, e19700,
-            e20500, e20400, e19200,
-            e19800, e20100, e20200, e20900, e21000, e21010,
+            e20500, e20400, e19200, e19800, e20100, e20200,
             MARS, c00100, ID_ps, ID_Medical_frt, ID_Medical_HC,
             ID_Casualty_frt, ID_Casualty_HC, ID_Miscellaneous_frt,
             ID_Miscellaneous_HC, ID_Charity_crt_Cash, ID_Charity_crt_Asset,
@@ -271,22 +270,12 @@ def ItemDed(_posagi, e17500, e18400, e18500, e19700,
     """
     # Medical
     c17750 = ID_Medical_frt * _posagi
-    c17000 = max(0., e17500 - c17750)
+    c17000 = max(0., e17500 - c17750) * (1. - ID_Medical_HC)
     # State and local taxes
     c18300 = ((1. - ID_StateLocalTax_HC) * max(e18400, 0.) +
               (1. - ID_RealEstate_HC) * e18500)
-    # Casualty
-    if e20500 > 0.0:  # assume e20500 was subject to a 10% disregard
-        c37703 = e20500 + 0.10 * _posagi  # add back disregarded amount
-    else:  # losses less than 10% of AGI are assumed to be zero
-        c37703 = 0.
-    c20500 = max(0., c37703 - ID_Casualty_frt * _posagi)
-    # Miscellaneous
-    c20400 = e20400
-    c20750 = ID_Miscellaneous_frt * _posagi
-    c20800 = max(0., c20400 - c20750)
     # Interest paid
-    c19200 = e19200
+    c19200 = e19200 * (1. - ID_InterestPaid_HC)
     # Charity (assumes carryover is non-cash)
     base_charity = e19800 + e20100 + e20200
     if puf:
@@ -297,32 +286,34 @@ def ItemDed(_posagi, e17500, e18400, e18500, e19700,
         lim30 = min(ID_Charity_crt_Asset * _posagi, e20100 + e20200)
         c19700 = min(ID_Charity_crt_Cash * _posagi, lim30 + e19800)
     charity_floor = ID_Charity_frt * _posagi  # frt is zero in present law
-    c19700 = max(0., c19700 - charity_floor)
+    c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_HC)
+    # Casualty
+    if e20500 > 0.0:  # assume e20500 was subject to a 10% disregard
+        c37703 = e20500 + 0.10 * _posagi  # add back disregarded amount
+    else:  # pre-disregard e20500 less than 10% of AGI is assumed to be zero
+        c37703 = 0.
+    c20500 = (max(0., c37703 - ID_Casualty_frt * _posagi) *
+              (1. - ID_Casualty_HC))
+    # Miscellaneous
+    c20400 = e20400
+    c20750 = ID_Miscellaneous_frt * _posagi
+    c20800 = max(0., c20400 - c20750) * (1. - ID_Miscellaneous_HC)
     # Gross Itemized Deductions
-    c21060 = (e20900 + (1 - ID_Medical_HC) * c17000 + c18300 +
-              (1 - ID_InterestPaid_HC) * c19200 +
-              (1 - ID_Charity_HC) * c19700 +
-              (1 - ID_Casualty_HC) * c20500 +
-              (1 - ID_Miscellaneous_HC) * c20800 +
-              e21000 + e21010)
-    # Limitations on deductions excluding medical, charity etc
-    _phase2_i = ID_ps[MARS - 1]
-    _nonlimited = ((1 - ID_Medical_HC) * c17000 +
-                   (1 - ID_Casualty_HC) * c20500 +
-                   e21010 + e20900)
-    _limitratio = _phase2_i
-    # Itemized deductions amount after limitation if any
-    c04470 = c21060
-    if c21060 > _nonlimited and c00100 > _limitratio:
+    c21060 = c17000 + c18300 + c19200 + c19700 + c20500 + c20800
+    # Limitation on deductions
+    _nonlimited = c17000 + c20500
+    _limitstart = ID_ps[MARS - 1]
+    if c21060 > _nonlimited and c00100 > _limitstart:
         dedmin = ID_crt * (c21060 - _nonlimited)
-        dedpho = ID_prt * max(0., _posagi - _limitratio)
+        dedpho = ID_prt * max(0., _posagi - _limitstart)
         c21040 = min(dedmin, dedpho)
         c04470 = c21060 - c21040
     else:
         c21040 = 0.
+        c04470 = c21060
     return (c17750, c17000, c18300, c37703, c20500,
-            c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
-            _nonlimited, _limitratio, c04470, c21040)
+            c20750, c20400, c19200, c20800, c19700, c21060,
+            _nonlimited, _limitstart, c04470, c21040)
 
 
 @iterate_jit(nopython=True)
@@ -722,16 +713,16 @@ def AMTI(c60000, e60290, _posagi, e07300, c24517,
          c24520, c05700,
          age_head, KT_c_Age, e62900, AMT_thd_MarriedS, _earned,
          AMT_em, AMT_prt, AMT_trt1, AMT_trt2, cmbtp_itemizer,
-         cmbtp_standard, ID_Medical_HC, ID_Miscellaneous_HC, puf):
+         cmbtp_standard, puf):
     """
     AMTI function: AMT taxable income
     """
     # pylint: disable=too-many-statements,too-many-branches
     c62720 = c24517 + x62720
     c60260 = e00700
-    c60200 = min((1 - ID_Medical_HC) * c17000, 0.025 * _posagi)
+    c60200 = min(c17000, 0.025 * _posagi)
     c60240 = c18300 + x60240
-    c60220 = (1 - ID_Miscellaneous_HC) * c20800 + x60220
+    c60220 = c20800 + x60220
     c60130 = c21040 + x60130
     c62730 = e24515
     if FDED == 2:
@@ -762,9 +753,9 @@ def AMTI(c60000, e60290, _posagi, e07300, c24517,
         else:
             _cmbtp = 0.
         c62100 = (c00100 - c04470 +
-                  max(0., min((1. - ID_Medical_HC) * c17000, 0.025 * c00100)) +
+                  max(0., min(c17000, 0.025 * c00100)) +
                   c18300 -
-                  c60260 + (1. - ID_Miscellaneous_HC) * c20800 - c21040)
+                  c60260 + c20800 - c21040)
         c62100 += _cmbtp
     if puf and _standard > 0.0:
         if f6251 == 1:
