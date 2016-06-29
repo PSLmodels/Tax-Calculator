@@ -144,7 +144,7 @@ class Records(object):
         'e23660', 'f2555', 'e02800', 'e02610', 'e02540',
         'e02615', 'SSIND',
         'c20400',
-        'e20200', 'e21000', 'e21010', 'e02600',
+        'e21000', 'e21010', 'e02600',
         '_exact', 'e11055', 'e00250', 'e30100',
         'e37717', 'e04805',
         't04470', 'e58980', 'c00650', 'c00100',
@@ -384,7 +384,6 @@ class Records(object):
         self.e19200 *= AIPD
         self.e19800 *= ATXPY
         self.e20100 *= ATXPY
-        self.e19700 *= ATXPY
         self.e20400 *= ATXPY
         self.e20500 *= ATXPY
         # CAPITAL GAINS

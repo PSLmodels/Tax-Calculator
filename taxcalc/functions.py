@@ -207,14 +207,14 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, XTOT,
     return (c02650, c00100, _posagi, _prexmp, c04600)
 
 
-@iterate_jit(nopython=True, puf=True)
-def ItemDed(_posagi, e17500, e18400, e18500, e19700,
-            e20500, e20400, e19200, e19800, e20100, e20200,
+@iterate_jit(nopython=True)
+def ItemDed(_posagi, e17500, e18400, e18500,
+            e20500, e20400, e19200, e19800, e20100,
             MARS, c00100, ID_ps, ID_Medical_frt, ID_Medical_HC,
             ID_Casualty_frt, ID_Casualty_HC, ID_Miscellaneous_frt,
             ID_Miscellaneous_HC, ID_Charity_crt_all, ID_Charity_crt_noncash,
             ID_prt, ID_crt, ID_StateLocalTax_HC, ID_Charity_frt,
-            ID_Charity_HC, ID_InterestPaid_HC, ID_RealEstate_HC, puf):
+            ID_Charity_HC, ID_InterestPaid_HC, ID_RealEstate_HC):
     """
     ItemDed function: itemized deductions, Form 1040, Schedule A
 
@@ -255,9 +255,9 @@ def ItemDed(_posagi, e17500, e18400, e18500, e19700,
 
         e19200 : Interest paid
 
-        e19800 : Charity cash Contribution
+        e19800 : Charity cash contributions
 
-        e20100 : Charity non-cash contribution
+        e20100 : Charity noncash contributions
 
         e20400 : Total Miscellaneous expenses
 
@@ -276,16 +276,10 @@ def ItemDed(_posagi, e17500, e18400, e18500, e19700,
               (1. - ID_RealEstate_HC) * e18500)
     # Interest paid
     c19200 = e19200 * (1. - ID_InterestPaid_HC)
-    # Charity (assumes carryover is non-cash)
-    base_charity = e19800 + e20100 + e20200
-    if puf:
-        c19700 = e19700
-    elif base_charity <= 0.2 * _posagi:
-        c19700 = base_charity
-    else:
-        lim30 = min(ID_Charity_crt_noncash * _posagi, e20100 + e20200)
-        c19700 = min(ID_Charity_crt_all * _posagi, lim30 + e19800)
-    charity_floor = ID_Charity_frt * _posagi  # frt is zero in present law
+    # Charity
+    lim30 = min(ID_Charity_crt_noncash * _posagi, e20100)
+    c19700 = min(ID_Charity_crt_all * _posagi, lim30 + e19800)
+    charity_floor = ID_Charity_frt * _posagi  # floor is zero in present law
     c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_HC)
     # Casualty
     if e20500 > 0.0:  # assume e20500 was subject to a 10% disregard
@@ -300,7 +294,7 @@ def ItemDed(_posagi, e17500, e18400, e18500, e19700,
     c20800 = max(0., c20400 - c20750) * (1. - ID_Miscellaneous_HC)
     # Gross Itemized Deductions
     c21060 = c17000 + c18300 + c19200 + c19700 + c20500 + c20800
-    # Limitation on deductions
+    # Limitation on total itemized deductions
     _nonlimited = c17000 + c20500
     _limitstart = ID_ps[MARS - 1]
     if c21060 > _nonlimited and c00100 > _limitstart:
