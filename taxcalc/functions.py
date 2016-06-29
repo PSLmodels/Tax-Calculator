@@ -887,7 +887,8 @@ def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
 @iterate_jit(nopython=True)
 def F2441(MARS, _earned_p, _earned_s, f2441, DCC_c, e32800):
     """
-    F2441 function: some of Part II of Form 2441
+    Form 2441 logic is in three functions: F2441, DepCareBen, ExpEarnedInc,
+    which are called in that order.
     """
     c32880 = _earned_p
     if MARS == 2:
@@ -903,7 +904,8 @@ def F2441(MARS, _earned_p, _earned_s, f2441, DCC_c, e32800):
 def DepCareBen(c32800, _cmp, f2441, MARS, c32880, c32890, e33420, e33430,
                e33450, e33460, e33465, e33470, _sep, _dclim):
     """
-    DepCareBen function: some of Part II and Part III of Form 2441
+    Form 2441 logic is in three functions: F2441, DepCareBen, ExpEarnedInc,
+    which are called in that order.
     """
     if f2441 != 0 and MARS == 2:
         _seywage = min(c32880, c32890, e33420 + e33430 - e33450, e33460)
@@ -926,12 +928,12 @@ def DepCareBen(c32800, _cmp, f2441, MARS, c32880, c32890, e33420, e33430,
 
 
 @iterate_jit(nopython=True)
-def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt,
-                 c33000, c05800, e07300, f2441):
+def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt, c33000, c05800, e07300):
     """
-    ExpEarnedInc function: ...
+    Form 2441 logic is in three functions: F2441, DepCareBen, ExpEarnedInc,
+    which are called in that order.
     """
-    # Expenses limited to earned income
+    # child & dependent care expense credit is limited by AGI-related fraction
     if _exact == 1:
         _tratio = math.ceil(max(((c00100 - CDCC_ps) / 2000.), 0.))
         c33200 = c33000 * 0.01 * max(20., CDCC_crt - min(15., _tratio))
@@ -939,14 +941,9 @@ def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt,
         _tratio = 0.
         c33200 = c33000 * 0.01 * max(20., CDCC_crt -
                                      max(((c00100 - CDCC_ps) / 2000.), 0.))
-    c33400 = min(max(0., c05800 - e07300), c33200)
-    # amount of the credit
-    if f2441 == 0:
-        c07180 = 0.
-        c33000 = 0.
-    else:
-        c07180 = c33400
-    return (_tratio, c33200, c33400, c07180, c33000)
+    # child & dependent care expense credit is limited by tax liability
+    c07180 = min(max(0., c05800 - e07300), c33200)
+    return (_tratio, c33200, c07180)
 
 
 @iterate_jit(nopython=True)

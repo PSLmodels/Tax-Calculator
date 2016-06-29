@@ -204,7 +204,7 @@ class Records(object):
         '_amt15pc', '_amt25pc', 'c62747', 'c62755', 'c62770',
         '_amt20pc', 'c62800', 'c09600',
         '_seywage', 'c33465', 'c33470', 'c33475', 'c33480',
-        'c32840', '_tratio', 'c33200', 'c33400',
+        'c32840', '_tratio', 'c33200',
         '_modagi', '_extrastd',
         '_val_ymax', '_preeitc', '_val_rtbase', '_val_rtless',
         '_dy', 'c11070', '_nctcr', '_ctcagi', 'c87482',
