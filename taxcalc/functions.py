@@ -1177,10 +1177,15 @@ def RefAmOpp(c87521, _num, c00100):
 @iterate_jit(nopython=True)
 def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
             e07600, e07240, e07960, e07260, e07300, e07700, e07250, t07950,
-            c05800, _precrd, ETC_pe_Single, c87668, c87620):
+            c05800, _precrd, ETC_pe_Single, c87668, c87620, _calc_sch_r):
     """
     NonEdCr function: ...
     """
+    # Schedule R credit
+    if not _calc_sch_r:
+        c07200 = e07200
+    else:
+        c07200 = 0.  # TODO: add Schedule R logic here
     # Nonrefundable Education Credits
     # Form 8863 Tentative Education Credits
     c87560 = c87550
@@ -1194,13 +1199,13 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
     c87600 = 10000. * _num
     c87610 = min(1., c87590 / c87600)
     c87620 = c87560 * c87610
-    _xlin4 = max(0., c05800 - (e07300 + c07180 + e07200))
+    _xlin4 = max(0., c05800 - (e07300 + c07180 + c07200))
     _xlin5 = min(c87620, _xlin4)
-    _xlin9 = max(0., c05800 - (e07300 + c07180 + e07200 + _xlin5))
+    _xlin9 = max(0., c05800 - (e07300 + c07180 + c07200 + _xlin5))
     _xlin10 = min(c87668, _xlin9)
     c87680 = _xlin5 + _xlin10
     c07230 = c87680
-    _ctc1 = c07180 + e07200 + c07230
+    _ctc1 = c07180 + c07200 + c07230
     _ctc2 = e07240 + e07960 + e07260 + e07300
     _regcrd = _ctc1 + _ctc2
     _exocrd = e07700 + e07250
@@ -1211,7 +1216,7 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
     _avail = c05800
     c07180 = min(c07180, _avail)
     _avail = _avail - c07180
-    c07200 = min(e07200, _avail)
+    c07200 = min(c07200, _avail)
     _avail = _avail - c07200
     c07300 = min(e07300, _avail)
     _avail = _avail - c07300
@@ -1230,7 +1235,7 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
     # Allocate credits to tax in order on the tax form
     return (c87560, c87570, c87580, c87590, c87600, c87610, c07300, c07600,
             c07240, c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220,
-            c07230, _avail)
+            c07200, c07230, _avail)
 
 
 @iterate_jit(nopython=True)
@@ -1299,7 +1304,7 @@ def F5405(pol, rec):
 
 
 @iterate_jit(nopython=True)
-def C1040(e07400, e07200, c07220, c07230, c07300, c07240,
+def C1040(e07400, c07200, c07220, c07230, c07300, c07240,
           e07260, c07970, x07400, e09720, c07600,
           e07500, e07700, p08000, e08001, e07960,
           e07980, c05800, e09900, c09400, e09800,
@@ -1310,7 +1315,7 @@ def C1040(e07400, e07200, c07220, c07230, c07300, c07240,
     """
     # Credits 1040 line 48
     x07400 = e07400
-    c07100 = (c07180 + e07200 + c07600 + c07300 + x07400 + e07980 + c07220 +
+    c07100 = (c07180 + c07200 + c07600 + c07300 + x07400 + e07980 + c07220 +
               e07500 + p08000)
     y07100 = c07100
     c07100 += e07700 + c07230 + c07970 + c07240 + e07260 + e08001 + e07960
