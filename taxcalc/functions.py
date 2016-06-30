@@ -1176,15 +1176,17 @@ def RefAmOpp(c87521, _num, c00100):
 def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
             e07600, e07240, e07960, e07260, e07300, e07700, e07250, t07950,
             c05800, _precrd, ETC_pe_Single, c87668, c87620,
-            _calc_sch_r, age_head, age_spouse):
+            _calc_sch_r, age_head, age_spouse, e02400, c02500,
+            e01500, e01700):
     """
     NonEdCr function: ...
     """
-    # pylint: disable=too-many-statements
+    # pylint: disable=too-many-statements,too-many-branches
     # Schedule R credit for the elderly and the disabled
     if not _calc_sch_r:
         c07200 = e07200
     else:  # calculate credit assuming nobody is disabled
+        # Note that all Schedule R policy parameters are hard-coded
         c07200 = 0.
         if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
             # Part I and first line in Part III
@@ -1199,29 +1201,23 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
                 c28300 = 5000.
             else:
                 c28300 = 0.
-    """
-    /* Credit for Elderly and Disabled */
-    c07200 = 0;
-    if _agep ge 65 or _ages ge 65 then do;
-       if (_agep ge 65 and _ages gt 65) or FLGSTR gt 0 then
-          c28300 = 7500/_sep;
-       else
-          c28300 = 5000;
-
-       c28400 = max(0,e28350 + e28375);
-       if MARS in(2,3,6) then
-          c28500 = max(0,c00100-10000/_sep);
-       else
-          c28500 = max(0,c00100-7500);
-
-       c28600 = .5*c28500;
-       c28700 = c28600 + c28400;
-       c28800 = max(0,c28300-c28700);
-       c28900 = min(.15*c28800,max(0,c05800-e07300-c07180));
-       c07200 = c28900;
-    end;
-    """
-
+            # nontaxable OASDI benefit plus nontaxable pension benefits
+            c28400 = max(0., (e02400 - c02500) + (e01500 - e01700))
+            # one-half of adjusted AGI
+            if MARS == 2:
+                c28500 = max(0., c00100 - 10000.)
+            elif MARS == 3:
+                c28500 = max(0., c00100 - 5000.)
+            elif MARS == 1 or MARS == 4:
+                c28500 = max(0., c00100 - 7500.)
+            else:
+                c28500 = 0.
+            c28600 = 0.5 * c28500
+            # compute credit amount, c07200
+            c28700 = c28400 + c28600
+            c28800 = max(0., c28300 - c28700)
+            c07200 = min(0.15 * c28800,
+                         max(0., (c05800 - e07300 - c07180)))
     # Nonrefundable Education Credits
     # Form 8863 Tentative Education Credits
     c87560 = c87550
@@ -1271,7 +1267,8 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
     # Allocate credits to tax in order on the tax form
     return (c87560, c87570, c87580, c87590, c87600, c87610, c07300, c07600,
             c07240, c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220,
-            c07200, c07230, _avail)
+            c28300, c28400, c28500, c28600, c28700, c28800, c07200,
+            c07230, _avail, )
 
 
 @iterate_jit(nopython=True)
