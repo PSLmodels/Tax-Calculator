@@ -691,7 +691,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
             _s1291, _parents, _taxbc, c05750)
 
 
-@iterate_jit(nopython=True, puf=True)
+@iterate_jit(nopython=True)
 def AMTI(c60000, e60290, _posagi, e07300, c24517,
          e60300, e60860, p60100, e60840, e60630, e60550, FDED,
          e60720, e60430, e60500, e60340, e60680, e60600, e60405,
@@ -706,8 +706,7 @@ def AMTI(c60000, e60290, _posagi, e07300, c24517,
          AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516,
          c24520, c05700,
          age_head, KT_c_Age, e62900, AMT_thd_MarriedS, _earned,
-         AMT_em, AMT_prt, AMT_trt1, AMT_trt2, cmbtp_itemizer,
-         cmbtp_standard, puf):
+         AMT_em, AMT_prt, AMT_trt1, AMT_trt2, cmbtp_itemizer, cmbtp_standard):
     """
     AMTI function: AMT taxable income
     """
@@ -741,7 +740,7 @@ def AMTI(c60000, e60290, _posagi, e07300, c24517,
                   e60550 + e60720 + e60430 + e60500 + e60340 + e60680 +
                   e60600 + e60405 + e60440 + e60420 + e60410 + e61400 +
                   e60660 - c60260 - e60480 - e62000 + c60000 - e60250)
-    if puf and _standard == 0.0:
+    if _standard == 0.0:
         if f6251 == 1:
             _cmbtp = cmbtp_itemizer
         else:
@@ -751,7 +750,7 @@ def AMTI(c60000, e60290, _posagi, e07300, c24517,
                   c18300 -
                   c60260 + c20800 - c21040)
         c62100 += _cmbtp
-    if puf and _standard > 0.0:
+    if _standard > 0.0:
         if f6251 == 1:
             _cmbtp = cmbtp_standard
         else:
