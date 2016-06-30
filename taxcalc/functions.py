@@ -168,14 +168,12 @@ def CapGains(p23250, p22250, e23660, _sep, _feided, FEI_ec_c, ALD_Interest_ec,
 
 
 @iterate_jit(nopython=True)
-def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, SS_thd50, SS_thd85,
+def SSBenefits(MARS, _ymod, e02400, SS_thd50, SS_thd85,
                SS_percentage1, SS_percentage2):
     """
-    SSBenefits function: ...
+    SSBenefits function calculates OASDI benefits included in AGI, c02500.
     """
-    if SSIND == 2 or MARS == 3 or MARS == 6:
-        c02500 = e02500
-    elif _ymod < SS_thd50[MARS - 1]:
+    if _ymod < SS_thd50[MARS - 1]:
         c02500 = 0.
     elif _ymod >= SS_thd50[MARS - 1] and _ymod < SS_thd85[MARS - 1]:
         c02500 = SS_percentage1 * min(_ymod - SS_thd50[MARS - 1], e02400)
@@ -184,7 +182,7 @@ def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, SS_thd50, SS_thd85,
                      SS_percentage1 *
                      min(e02400, SS_thd85[MARS - 1] -
                          SS_thd50[MARS - 1]), SS_percentage2 * e02400)
-    return (c02500, e02500)
+    return c02500
 
 
 @iterate_jit(nopython=True)
@@ -411,7 +409,7 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
     Taxpayer Characteristics:
         _earned : (F2441) Earned income amount
 
-        e02400 : Gross social Security Benefit
+        e02400 : Gross Social Security Benefit
 
         DSI : Dependent Status Indicator:
             0 - not being claimed as a dependent
@@ -1177,15 +1175,53 @@ def RefAmOpp(c87521, _num, c00100):
 @iterate_jit(nopython=True)
 def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
             e07600, e07240, e07960, e07260, e07300, e07700, e07250, t07950,
-            c05800, _precrd, ETC_pe_Single, c87668, c87620, _calc_sch_r):
+            c05800, _precrd, ETC_pe_Single, c87668, c87620,
+            _calc_sch_r, age_head, age_spouse):
     """
     NonEdCr function: ...
     """
-    # Schedule R credit
+    # pylint: disable=too-many-statements
+    # Schedule R credit for the elderly and the disabled
     if not _calc_sch_r:
         c07200 = e07200
-    else:
-        c07200 = 0.  # TODO: add Schedule R logic here
+    else:  # calculate credit assuming nobody is disabled
+        c07200 = 0.
+        if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
+            # Part I and first line in Part III
+            if MARS == 2:
+                if age_head >= 65 and age_spouse >= 65:
+                    c28300 = 7500.
+                else:
+                    c28300 = 5000.
+            elif MARS == 3:
+                c28300 = 3750.
+            elif MARS == 1 or MARS == 4:
+                c28300 = 5000.
+            else:
+                c28300 = 0.
+    """
+    /* Credit for Elderly and Disabled */
+    c07200 = 0;
+    if _agep ge 65 or _ages ge 65 then do;
+       if (_agep ge 65 and _ages gt 65) or FLGSTR gt 0 then
+          c28300 = 7500/_sep;
+       else
+          c28300 = 5000;
+
+       c28400 = max(0,e28350 + e28375);
+       if MARS in(2,3,6) then
+          c28500 = max(0,c00100-10000/_sep);
+       else
+          c28500 = max(0,c00100-7500);
+
+       c28600 = .5*c28500;
+       c28700 = c28600 + c28400;
+       c28800 = max(0,c28300-c28700);
+       c28900 = min(.15*c28800,max(0,c05800-e07300-c07180));
+       c07200 = c28900;
+    end;
+    """
+
     # Nonrefundable Education Credits
     # Form 8863 Tentative Education Credits
     c87560 = c87550

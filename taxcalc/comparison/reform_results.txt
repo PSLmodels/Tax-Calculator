@@ -21,7 +21,7 @@ Tax-Calculator,0.8,0.8,0.9,1.0
 SOCIAL SECURITY TAXABILITY
 ""
 Exclusion of untaxed social security and railroad retirement
-Tax-Calculator,39.2,41.0,43.6,46.0
+Tax-Calculator,39.5,41.3,43.9,46.4
 Tax Expenditure,39,42,44,47
 Budget Options,35,37,38,40
 ""
@@ -93,7 +93,7 @@ Tax-Calculator,0.4,0.5,0.5,0.5
 Tax Expenditure,0,0,0,0
 ""
 Charitable
-Tax-Calculator,44.4,47.0,49.7,52.5
+Tax-Calculator,44.4,47.0,49.7,52.4
 Tax Expenditure,46,47,48,50
 ""
 Decrease AGI floor for miscellaneous expenses by 1 pts
