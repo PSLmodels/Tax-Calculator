@@ -31,7 +31,7 @@ def test_validity_of_consumption_vars_set():
     assert Consumption.RESPONSE_VARS.issubset(Records.VALID_READ_VARS)
 
 
-def test_correct_update_consumption():
+def test_update_consumption():
     consump = Consumption(start_year=2013)
     consump.update_consumption({2014: {'_MPC_e20400': [0.05]},
                                 2015: {'_MPC_e20400': [0.06]}})
@@ -48,17 +48,6 @@ def test_correct_update_consumption():
     assert consump.current_year == 2015
     assert consump.MPC_e20400 == 0.06
     assert consump.MPC_e17500 == 0.0
-
-
-def test_incorrect_update_consumption():
-    consump = Consumption()
-    with pytest.raises(ValueError):
-        consump.update_consumption({2016: {'_MPC_e20400': [-0.02]}})
-    with pytest.raises(ValueError):
-        consump.update_consumption({2017: {'_MPC_e20400': [1.02]}})
-    with pytest.raises(ValueError):
-        consump.update_consumption({2014: {'_MPC_e20400': [0.8],
-                                           '_MPC_e17500': [0.3]}})
 
 
 def test_future_update_consumption():

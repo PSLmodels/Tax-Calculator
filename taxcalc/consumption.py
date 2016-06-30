@@ -56,15 +56,12 @@ class Consumption(ParametersBase):
         if num_years < 1:
             raise ValueError('num_years < 1 in Consumption ctor')
         self.initialize(start_year, num_years)
-        if consumption_dict is not None:
-            self._validate_mpc_values()
 
     def update_consumption(self, revisions):
         """
         Update consumption for given revisions, a dictionary consisting
         of one or more year:modification dictionaries.
         For example: {2014: {'_MPC_xxx': [0.2, 0.1]}}
-        Also checks for valid MPC parameter values in revisions dictionary.
         NOTE: this method uses the specified revisions to update the
               DEFAULT MPC parameter values, so use this method just once
               rather than calling it sequentially in an attempt to update
@@ -78,7 +75,6 @@ class Consumption(ParametersBase):
             self.set_year(year)
             self._update({year: revisions[year]})
         self.set_year(precall_current_year)
-        self._validate_mpc_values()
 
     RESPONSE_VARS = set(['e17500', 'e18400', 'e19800', 'e20400'])
 
@@ -104,25 +100,5 @@ class Consumption(ParametersBase):
             records_var = getattr(records, var)
             mpc_var = getattr(self, 'MPC_{}'.format(var))
             records_var[:] += mpc_var * income_change
-
-    # ----- begin private methods of Consumption class -----
-
-    def _validate_mpc_values(self):
-        """
-        Check that each MPC parameter is in [0,1] range and that
-        sum of all MPC parameters in a year is no more than one.
-        """
-        for iyr in range(0, self.num_years):
-            sum_mpc = 0.0
-            for mpc in self._vals:
-                val = getattr(self, mpc)[iyr]
-                sum_mpc += val
-                if val < 0.0 or val > 1.0:
-                    msg = '{} is outside [0,1] range in year {}; value is {}'
-                    cyr = iyr + self.start_year
-                    raise ValueError(msg.format(mpc, cyr, val))
-            if sum_mpc > 1.0:
-                msg = 'sum of MPC = {} is greater than one for year {}'
-                raise ValueError(msg.format(sum_mpc, iyr + self.start_year))
 
 # end Consumption class

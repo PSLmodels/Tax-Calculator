@@ -2,40 +2,36 @@
     "_MPC_e17500": {
         "start_year": 2013,
         "long_name": "Marginal propensity to consume medical expenses",
-        "description": "Defined as dollar change in medical-expense consumption divided by dollar change in income.  Must be in [0,1] range.",
+        "description": "Defined as dollar change in medical-expense consumption divided by dollar change in income.  Typical value is in [0,1] range.",
         "row_label": ["2013"],
         "col_label": "",
-        "value": [0.0],
-        "validations": {"min": 0.0, "max": 1.0}
-    },
+        "value": [0.0]
+     },
 
     "_MPC_e18400": {
         "start_year": 2013,
         "long_name": "Marginal propensity to consume state-and-local taxes",
-        "description": "Defined as dollar change in state-and-local-taxes consumption divided by dollar change in income.  Must be in [0,1] range.",
+        "description": "Defined as dollar change in state-and-local-taxes consumption divided by dollar change in income.  Typical value is in [0,1] range.",
         "row_label": ["2013"],
         "col_label": "",
-        "value": [0.0],
-        "validations": {"min": 0.0, "max": 1.0}
+        "value": [0.0]
     },
 
     "_MPC_e19800": {
         "start_year": 2013,
         "long_name": "Marginal propensity to consume charity cash contributions",
-        "description": "Defined as dollar change in charity-cash-contribution consumption divided by dollar change in income.  Must be in [0,1] range.",
+        "description": "Defined as dollar change in charity-cash-contribution consumption divided by dollar change in income.  Typical value is in [0,1] range.",
         "row_label": ["2013"],
         "col_label": "",
-        "value": [0.0],
-        "validations": {"min": 0.0, "max": 1.0}
+        "value": [0.0]
     },
 
     "_MPC_e20400": {
         "start_year": 2013,
         "long_name": "Marginal propensity to consume miscellaneous deduction expenses",
-        "description": "Defined as dollar change in miscellaneous-deduction-expense consumption divided by dollar change in income.  Must be in [0,1] range.",
+        "description": "Defined as dollar change in miscellaneous-deduction-expense consumption divided by dollar change in income.  Typical value is in [0,1] range.",
         "row_label": ["2013"],
         "col_label": "",
-        "value": [0.0],
-        "validations": {"min": 0.0, "max": 1.0}
+        "value": [0.0]
     }
 }
