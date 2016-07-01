@@ -205,7 +205,7 @@ class Records(object):
         '_amt20pc', 'c62800', 'c09600',
         '_seywage', 'c33465', 'c33470', 'c33475', 'c33480',
         'c32840', '_tratio', 'c33200', 'c33400',
-        '_modagi', '_extrastd',
+        '_modagi', '_extrastd', 'ID_Casualty_frt_in_pufcsv_year',
         '_val_ymax', '_preeitc', '_val_rtbase', '_val_rtless',
         '_dy', 'c11070', '_nctcr', '_ctcagi', 'c87482',
         'c87487', 'c87492', 'c87497', 'c87483', 'c87488',
@@ -458,6 +458,10 @@ class Records(object):
                                 2, 1)
         # specify value of _exact array
         self._exact[:] = np.where(exact_calcs is True, 1, 0)
+        # specify value of ID_Casualty_frt_in_pufcsv_year array
+        # (change next statement if future reform changes this frt value)
+        self.ID_Casualty_frt_in_pufcsv_year[:] = np.where(PUFCSV_YEAR <= 2016,
+                                                          0.10, 0.10)
 
     @staticmethod
     def _read_egg_csv(vname, fpath, **kwargs):

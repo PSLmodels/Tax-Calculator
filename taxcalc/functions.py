@@ -211,6 +211,7 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, XTOT,
 def ItemDed(_posagi, e17500, e18400, e18500,
             e20500, e20400, e19200, e19800, e20100,
             MARS, c00100, ID_ps, ID_Medical_frt, ID_Medical_HC,
+            ID_Casualty_frt_in_pufcsv_year,
             ID_Casualty_frt, ID_Casualty_HC, ID_Miscellaneous_frt,
             ID_Miscellaneous_HC, ID_Charity_crt_all, ID_Charity_crt_noncash,
             ID_prt, ID_crt, ID_StateLocalTax_HC, ID_Charity_frt,
@@ -282,9 +283,9 @@ def ItemDed(_posagi, e17500, e18400, e18500,
     charity_floor = ID_Charity_frt * _posagi  # floor is zero in present law
     c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_HC)
     # Casualty
-    if e20500 > 0.0:  # assume e20500 was subject to a 10% disregard
-        c37703 = e20500 + 0.10 * _posagi  # add back disregarded amount
-    else:  # pre-disregard e20500 less than 10% of AGI is assumed to be zero
+    if e20500 > 0.0:  # add back to e20500 the PUFCSV_YEAR disregard amount
+        c37703 = e20500 + ID_Casualty_frt_in_pufcsv_year * _posagi
+    else:  # small pre-disregard e20500 values are assumed to be zero
         c37703 = 0.
     c20500 = (max(0., c37703 - ID_Casualty_frt * _posagi) *
               (1. - ID_Casualty_HC))
