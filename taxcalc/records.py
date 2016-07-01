@@ -459,9 +459,10 @@ class Records(object):
         # specify value of _exact array
         self._exact[:] = np.where(exact_calcs is True, 1, 0)
         # specify value of ID_Casualty_frt_in_pufcsv_year array
-        # (change next statement if future reform changes this frt value)
-        self.ID_Casualty_frt_in_pufcsv_year[:] = np.where(PUFCSV_YEAR <= 2016,
-                                                          0.10, 0.10)
+        ryear = 9999  # specify reform year if ID_Casualty_frt changes
+        rvalue = 0.0  # specify value of ID_Casualty_frt beginning in ryear
+        self.ID_Casualty_frt_in_pufcsv_year[:] = np.where(PUFCSV_YEAR < ryear,
+                                                          0.10, rvalue)
 
     @staticmethod
     def _read_egg_csv(vname, fpath, **kwargs):
