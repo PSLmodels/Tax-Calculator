@@ -146,7 +146,7 @@ class Records(object):
         'e20950', 'e19500', 'e19570', 'e19400', 'c20400',
         'e20200', 'e20900', 'e21000', 'e21010', 'e02600',
         '_exact', 'e11055', 'e00250', 'e30100',
-        'e37717', 'e04805', '_calc_sch_r', 'c07200',
+        'e37717', 'e04805', '_calc_schR', 'c07200',
         'c28300', 'c28400', 'c28500', 'c28600', 'c28700', 'c28800',
         't04470', 'e58980', 'c00650', 'c00100',
         'c04470', 'c04600', 'c21060', 'c21040', 'c17000',
@@ -229,7 +229,7 @@ class Records(object):
         '_surtax', '_combined', '_personal_credit'])
 
     INTEGER_CALCULATED_VARS = set([
-        '_num', '_sep', '_exact', '_hasgain', '_cmp', '_calc_sch_r'])
+        '_num', '_sep', '_exact', '_hasgain', '_cmp', '_calc_schR'])
 
     def __init__(self,
                  data='puf.csv',
@@ -463,6 +463,9 @@ class Records(object):
                                 2, 1)
         # specify value of _exact array
         self._exact[:] = np.where(exact_calcs is True, 1, 0)
+        # specify value of _calc_schR array
+        schR_calcs = False
+        self._calc_schR[:] = np.where(schR_calcs is True, 1, 0)
 
     @staticmethod
     def _read_egg_csv(vname, fpath, **kwargs):

@@ -1176,14 +1176,14 @@ def RefAmOpp(c87521, _num, c00100):
 def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
             e07600, e07240, e07960, e07260, e07300, e07700, e07250, t07950,
             c05800, _precrd, ETC_pe_Single, c87668, c87620,
-            _calc_sch_r, age_head, age_spouse, e02400, c02500,
+            _calc_schR, age_head, age_spouse, e02400, c02500,
             e01500, e01700):
     """
     NonEdCr function: ...
     """
     # pylint: disable=too-many-statements,too-many-branches
     # Schedule R credit for the elderly and the disabled
-    if not _calc_sch_r:
+    if not _calc_schR:
         c07200 = e07200
     else:  # calculate credit assuming nobody is disabled
         # Note that all Schedule R policy parameters are hard-coded
