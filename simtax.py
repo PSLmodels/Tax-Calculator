@@ -53,6 +53,12 @@ def main():
                               'law.'),
                         default=False,
                         action="store_true")
+    parser.add_argument('--noschR',
+                        help=('optional flag to suppress Schedule R credit '
+                              'calculations.  The default (that is, without '
+                              'using this option) is to do the calculations.'),
+                        default=False,
+                        action="store_true")
     parser.add_argument('--taxsim2441',
                         help=('optional flag to emulate the Internet-TAXSIM '
                               'practice of approximating the number of '
@@ -92,6 +98,7 @@ def main():
     simtax = SimpleTaxIO(input_filename=args.INPUT,
                          reform=args.reform,
                          exact_calculations=args.exact,
+                         schR_calculations=(args.noschR is False),
                          emulate_taxsim_2441_logic=args.taxsim2441,
                          output_records=args.records)
     simtax.calculate(writing_output_file=True)

@@ -104,24 +104,28 @@ def test_0(input_file):  # pylint: disable=redefined-outer-name
         simtax = SimpleTaxIO(input_filename=list(),
                              reform=None,
                              exact_calculations=True,
+                             schR_calculations=True,
                              emulate_taxsim_2441_logic=False,
                              output_records=False)
     with pytest.raises(ValueError):
         simtax = SimpleTaxIO(input_filename='badname',
                              reform=None,
                              exact_calculations=False,
+                             schR_calculations=True,
                              emulate_taxsim_2441_logic=False,
                              output_records=False)
     with pytest.raises(ValueError):
         simtax = SimpleTaxIO(input_filename=input_file.name,
                              reform='badname.json',
                              exact_calculations=False,
+                             schR_calculations=True,
                              emulate_taxsim_2441_logic=False,
                              output_records=False)
     with pytest.raises(ValueError):
         simtax = SimpleTaxIO(input_filename=input_file.name,
                              reform=list(),
                              exact_calculations=False,
+                             schR_calculations=True,
                              emulate_taxsim_2441_logic=False,
                              output_records=False)
 
@@ -134,6 +138,7 @@ def test_1(input_file):  # pylint: disable=redefined-outer-name
     simtax = SimpleTaxIO(input_filename=input_file.name,
                          reform=None,
                          exact_calculations=False,
+                         schR_calculations=True,
                          emulate_taxsim_2441_logic=False,
                          output_records=False)
     assert simtax.number_input_lines() == NUM_INPUT_LINES
@@ -156,6 +161,7 @@ def test_2(input_file,  # pylint: disable=redefined-outer-name
     simtax = SimpleTaxIO(input_filename=input_file.name,
                          reform=reform_file.name,
                          exact_calculations=False,
+                         schR_calculations=True,
                          emulate_taxsim_2441_logic=False,
                          output_records=False)
     assert simtax.number_input_lines() == NUM_INPUT_LINES
@@ -195,6 +201,7 @@ def test_3(input_file):  # pylint: disable=redefined-outer-name
     simtax = SimpleTaxIO(input_filename=input_file.name,
                          reform=policy_reform,
                          exact_calculations=False,
+                         schR_calculations=True,
                          emulate_taxsim_2441_logic=True,
                          output_records=False)
     simtax.calculate()
@@ -232,6 +239,7 @@ def test_a_(bad_input_a_file):  # pylint: disable=redefined-outer-name
         simtax = SimpleTaxIO(input_filename=bad_input_a_file.name,
                              reform=None,
                              exact_calculations=False,
+                             schR_calculations=True,
                              emulate_taxsim_2441_logic=False,
                              output_records=False)
 
@@ -267,6 +275,7 @@ def test_b_(bad_input_b_file):  # pylint: disable=redefined-outer-name
         simtax = SimpleTaxIO(input_filename=bad_input_b_file.name,
                              reform=None,
                              exact_calculations=False,
+                             schR_calculations=True,
                              emulate_taxsim_2441_logic=False,
                              output_records=False)
 
@@ -302,6 +311,7 @@ def test_c_(bad_input_c_file):  # pylint: disable=redefined-outer-name
         simtax = SimpleTaxIO(input_filename=bad_input_c_file.name,
                              reform=None,
                              exact_calculations=False,
+                             schR_calculations=True,
                              emulate_taxsim_2441_logic=False,
                              output_records=False)
 
@@ -338,6 +348,7 @@ def test_d_(bad_input_d_file):  # pylint: disable=redefined-outer-name
         simtax = SimpleTaxIO(input_filename=bad_input_d_file.name,
                              reform=None,
                              exact_calculations=False,
+                             schR_calculations=True,
                              emulate_taxsim_2441_logic=False,
                              output_records=False)
 
@@ -373,6 +384,7 @@ def test_e_(bad_input_e_file):  # pylint: disable=redefined-outer-name
         simtax = SimpleTaxIO(input_filename=bad_input_e_file.name,
                              reform=None,
                              exact_calculations=False,
+                             schR_calculations=True,
                              emulate_taxsim_2441_logic=False,
                              output_records=False)
 
@@ -408,6 +420,7 @@ def test_f_(bad_input_f_file):  # pylint: disable=redefined-outer-name
         simtax = SimpleTaxIO(input_filename=bad_input_f_file.name,
                              reform=None,
                              exact_calculations=False,
+                             schR_calculations=True,
                              emulate_taxsim_2441_logic=False,
                              output_records=False)
 
@@ -443,6 +456,7 @@ def test_g_(bad_input_g_file):  # pylint: disable=redefined-outer-name
         simtax = SimpleTaxIO(input_filename=bad_input_g_file.name,
                              reform=None,
                              exact_calculations=False,
+                             schR_calculations=True,
                              emulate_taxsim_2441_logic=False,
                              output_records=False)
 
@@ -478,6 +492,7 @@ def test_h_(bad_input_h_file):  # pylint: disable=redefined-outer-name
         simtax = SimpleTaxIO(input_filename=bad_input_h_file.name,
                              reform=None,
                              exact_calculations=False,
+                             schR_calculations=True,
                              emulate_taxsim_2441_logic=False,
                              output_records=False)
 
@@ -513,6 +528,7 @@ def test_i_(bad_input_i_file):  # pylint: disable=redefined-outer-name
         simtax = SimpleTaxIO(input_filename=bad_input_i_file.name,
                              reform=None,
                              exact_calculations=False,
+                             schR_calculations=True,
                              emulate_taxsim_2441_logic=False,
                              output_records=False)
 
@@ -548,6 +564,7 @@ def test_j_(bad_input_j_file):  # pylint: disable=redefined-outer-name
         simtax = SimpleTaxIO(input_filename=bad_input_j_file.name,
                              reform=None,
                              exact_calculations=False,
+                             schR_calculations=True,
                              emulate_taxsim_2441_logic=False,
                              output_records=False)
 
@@ -583,6 +600,7 @@ def test_k_(bad_input_k_file):  # pylint: disable=redefined-outer-name
         simtax = SimpleTaxIO(input_filename=bad_input_k_file.name,
                              reform=None,
                              exact_calculations=False,
+                             schR_calculations=True,
                              emulate_taxsim_2441_logic=False,
                              output_records=False)
 
@@ -618,5 +636,6 @@ def test_l_(bad_input_l_file):  # pylint: disable=redefined-outer-name
         simtax = SimpleTaxIO(input_filename=bad_input_l_file.name,
                              reform=None,
                              exact_calculations=False,
+                             schR_calculations=True,
                              emulate_taxsim_2441_logic=False,
                              output_records=False)

@@ -35,12 +35,12 @@ YY=${LYY:1:2}
 tclsh make-in.tcl 20$YY $L > $LYY.in
 # Generate simtax.py OUTPUT for specified INPUT and REFORM
 if [[ "$REFORM" == "." ]] ; then
-    python ../../simtax.py --taxsim2441 $LYY.in
+    python ../../simtax.py --noschR --taxsim2441 $LYY.in
     SUFFIX=""
     OVAR4=""
 else
     RJSON="reform-$REFORM.json"
-    python ../../simtax.py --taxsim2441 --reform $RJSON $LYY.in
+    python ../../simtax.py --noschR --taxsim2441 --reform $RJSON $LYY.in
     SUFFIX="-reform-$REFORM"
     OVAR4="--ovar4"
 fi
