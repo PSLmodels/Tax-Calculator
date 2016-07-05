@@ -337,7 +337,7 @@ def test_force_no_numba():
     hasattr(mck, 'jit')
     del mck.jit
     import taxcalc
-    nmba = sys.modules['numba']
+    nmba = sys.modules.get('numba', None)
     sys.modules.update([('numba', mck)])
     # Reload the decorators with faked out numba
     reload_module(taxcalc.decorators)
@@ -360,4 +360,5 @@ def test_force_no_numba():
                     columns=["a", "b"])
     assert_frame_equal(ans, exp)
     # Restore numba module
-    sys.modules['numba'] = nmba
+    if nmba:
+        sys.modules['numba'] = nmba
