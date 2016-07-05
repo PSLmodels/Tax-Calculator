@@ -114,6 +114,7 @@ class Calculator(object):
         AmOppCr(self.policy, self.records)
         LLC(self.policy, self.records)
         RefAmOpp(self.policy, self.records)
+        SchR(self.policy, self.records)
         NonEdCr(self.policy, self.records)
         AddCTC(self.policy, self.records)
         F5405(self.policy, self.records)

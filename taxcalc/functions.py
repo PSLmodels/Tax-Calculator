@@ -1173,16 +1173,12 @@ def RefAmOpp(c87521, _num, c00100):
 
 
 @iterate_jit(nopython=True)
-def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
-            e07600, e07240, e07960, e07260, e07300, e07700, e07250, t07950,
-            c05800, _precrd, ETC_pe_Single, c87668, c87620,
-            _calc_schR, age_head, age_spouse, e02400, c02500,
-            e01500, e01700):
+def SchR(MARS, c00100, _calc_schR, age_head, age_spouse, e07200,
+         c05800, e07300, c07180, e02400, c02500, e01500, e01700):
     """
-    NonEdCr function: ...
+    Calculate Schedule R credit for the elderly and the disabled.
     """
-    # pylint: disable=too-many-statements,too-many-branches
-    # Schedule R credit for the elderly and the disabled
+    # pylint: disable=too-many-branches
     if not _calc_schR:
         c07200 = e07200
     else:  # calculate credit assuming nobody is disabled
@@ -1218,6 +1214,16 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
             c28800 = max(0., c28300 - c28700)
             c07200 = min(0.15 * c28800,
                          max(0., (c05800 - e07300 - c07180)))
+    return (c07200, c28300, c28400, c28500, c28600, c28700, c28800)
+
+
+@iterate_jit(nopython=True)
+def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, c07230,
+            e07600, e07240, e07960, e07260, e07300, e07700, e07250, t07950,
+            c05800, _precrd, ETC_pe_Single, c87668, c87620, c07200):
+    """
+    NonEdCr function: ...
+    """
     # Nonrefundable Education Credits
     # Form 8863 Tentative Education Credits
     c87560 = c87550
@@ -1267,7 +1273,6 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
     # Allocate credits to tax in order on the tax form
     return (c87560, c87570, c87580, c87590, c87600, c87610, c07300, c07600,
             c07240, c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220,
-            c28300, c28400, c28500, c28600, c28700, c28800, c07200,
             c07230, _avail, )
 
 
