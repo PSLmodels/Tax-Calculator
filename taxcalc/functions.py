@@ -1173,47 +1173,44 @@ def RefAmOpp(c87521, _num, c00100):
 
 
 @iterate_jit(nopython=True)
-def SchR(MARS, c00100, _calc_schR, age_head, age_spouse, e07200,
+def SchR(_calc_schR, age_head, age_spouse, MARS, c00100,
          c05800, e07300, c07180, e02400, c02500, e01500, e01700):
     """
     Calculate Schedule R credit for the elderly and the disabled.
     """
-    # pylint: disable=too-many-branches
-    if not _calc_schR:
-        c07200 = e07200
-    else:  # calculate credit assuming nobody is disabled
-        # Note that all Schedule R policy parameters are hard-coded
-        c07200 = 0.
-        if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
-            # Part I and first line in Part III
-            if MARS == 2:
-                if age_head >= 65 and age_spouse >= 65:
-                    c28300 = 7500.
-                else:
-                    c28300 = 5000.
-            elif MARS == 3:
-                c28300 = 3750.
-            elif MARS == 1 or MARS == 4:
+    c07200 = 0.
+    if _calc_schR and (age_head >= 65 or (MARS == 2 and age_spouse >= 65)):
+        # calculate credit assuming nobody is disabled
+        # (note that all Schedule R policy parameters are hard-coded)
+        # Part I and first line in Part III
+        if MARS == 2:
+            if age_head >= 65 and age_spouse >= 65:
+                c28300 = 7500.
+            else:
                 c28300 = 5000.
-            else:
-                c28300 = 0.
-            # nontaxable OASDI benefit plus nontaxable pension benefits
-            c28400 = max(0., (e02400 - c02500) + (e01500 - e01700))
-            # one-half of adjusted AGI
-            if MARS == 2:
-                c28500 = max(0., c00100 - 10000.)
-            elif MARS == 3:
-                c28500 = max(0., c00100 - 5000.)
-            elif MARS == 1 or MARS == 4:
-                c28500 = max(0., c00100 - 7500.)
-            else:
-                c28500 = 0.
-            c28600 = 0.5 * c28500
-            # compute credit amount, c07200
-            c28700 = c28400 + c28600
-            c28800 = max(0., c28300 - c28700)
-            c07200 = min(0.15 * c28800,
-                         max(0., (c05800 - e07300 - c07180)))
+        elif MARS == 3:
+            c28300 = 3750.
+        elif MARS == 1 or MARS == 4:
+            c28300 = 5000.
+        else:
+            c28300 = 0.
+        # nontaxable OASDI benefit plus nontaxable pension benefits
+        c28400 = max(0., (e02400 - c02500) + (e01500 - e01700))
+        # one-half of adjusted AGI
+        if MARS == 2:
+            c28500 = max(0., c00100 - 10000.)
+        elif MARS == 3:
+            c28500 = max(0., c00100 - 5000.)
+        elif MARS == 1 or MARS == 4:
+            c28500 = max(0., c00100 - 7500.)
+        else:
+            c28500 = 0.
+        c28600 = 0.5 * c28500
+        # compute credit amount, c07200
+        c28700 = c28400 + c28600
+        c28800 = max(0., c28300 - c28700)
+        c07200 = min(0.15 * c28800,
+                     max(0., (c05800 - e07300 - c07180)))
     return (c07200, c28300, c28400, c28500, c28600, c28700, c28800)
 
 
