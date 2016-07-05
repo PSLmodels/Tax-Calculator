@@ -1270,7 +1270,7 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, c07230,
     # Allocate credits to tax in order on the tax form
     return (c87560, c87570, c87580, c87590, c87600, c87610, c07300, c07600,
             c07240, c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220,
-            c07230, _avail, )
+            c07230, _avail)
 
 
 @iterate_jit(nopython=True)
