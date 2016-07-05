@@ -45,18 +45,6 @@ WEBAPP_INCOME_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
 EPSILON = 0.000000001
 
 
-def extract_array(fxx):
-    """
-    A sanity check decorator. When combined with numba.vectorize
-    or guvectorize, it provides the same capability as dataframe_vectorize
-    or dataframe_guvectorize
-    """
-    def wrapper(*args, **kwargs):
-        arrays = [arg.values for arg in args]
-        return fxx(*arrays)
-    return wrapper
-
-
 def count_gt_zero(agg):
     return sum([1 for a in agg if a > 0])
 

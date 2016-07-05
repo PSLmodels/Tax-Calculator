@@ -10,5 +10,6 @@ dependencies:
 - six
 - ipython
 - ipython-notebook
+- mock
 - pip:
   - pytest-pep8
