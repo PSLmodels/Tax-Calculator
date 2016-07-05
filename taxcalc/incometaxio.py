@@ -159,11 +159,13 @@ class IncomeTaxIO(object):
             if output_weights:
                 recs = Records(data=input_data,
                                exact_calculations=exact_calculations,
+                               blowup_factors=None,
                                start_year=tax_year)
             else:
                 recs = Records(data=input_data,
                                exact_calculations=exact_calculations,
-                               blowup_factors=None, weights=None,
+                               blowup_factors=None,
+                               weights=None,
                                start_year=tax_year)
         # create Calculator object
         self._calc = Calculator(policy=policy, records=recs,
