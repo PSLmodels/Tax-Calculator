@@ -109,7 +109,7 @@ Increase Itemized Deduction phaseout rate by 1 pts
 Tax-Calculator,3.6,3.8,4.0,4.1
 ""
 limit the tax value of ID to 6% of AGI
-Tax-Calculator,20.0,21.4,22.8,24.4
+Tax-Calculator,20.2,21.6,23.1,24.7
 Budget Options,11,9,8,7
 ""
 CAPITAL GAIN

@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import numpy as np
-from numpy.testing import assert_allclose
+from numpy.testing import assert_allclose, assert_array_almost_equal
 import pandas as pd
 import tempfile
 import pytest
@@ -342,6 +342,55 @@ def test_make_Calculator_increment_years_first():
     exp_II_em = np.array([3900, 3950, 5000, 6000, 6000])
     assert_allclose(calc.policy._STD_Aged, exp_STD_Aged, atol=0.5, rtol=0.0)
     assert_allclose(calc.policy._II_em, exp_II_em, atol=0.5, rtol=0.0)
+
+
+def test_ID_hc_vs_surtax():
+    policy1 = Policy()
+    puf1 = Records(TAXDATA, start_year=2009)
+    calc1 = Calculator(policy=policy1, records=puf1)
+
+    policy2 = Policy()
+    puf2 = Records(TAXDATA, start_year=2009)
+    calc2 = Calculator(policy=policy2, records=puf2)
+
+    reform1 = {2013: {'_ID_Medical_HC': [1],
+                      '_ID_StateLocalTax_HC': [1],
+                      '_ID_RealEstate_HC': [1],
+                      '_ID_Casualty_HC': [1],
+                      '_ID_Miscellaneous_HC': [1],
+                      '_ID_InterestPaid_HC': [1],
+                      '_ID_Charity_HC': [1]}}
+
+    reform2 = {2013: {'_ID_BenefitSurtax_crt': [0]}}
+
+    policy1.implement_reform(reform1)
+    policy2.implement_reform(reform2)
+
+    calc1.calc_all()
+    calc2.calc_all()
+
+    '''
+    calculate the gap of individual income tax, alternative minimum tax and
+    income tax between two calculators to give an exclusion to a special case
+    where some unit would get better-off when choose to have zero deduction
+    '''
+
+    epsilon = 0.01
+    # calculate the gap of individual income tax
+    iitgap = calc1.records._iitax - calc2.records._iitax - epsilon
+    # calculate the gap of alternative minimum tax
+    amtgap = calc1.records.c63200 - calc2.records.c63200
+    # calculate the gap of income tax
+    taxgap = calc1.records._taxbc - calc2.records._taxbc
+    # exclude records with larger, in terms of absolute value, amt gap than tax
+    # gap, which would result in lower iit liability
+    exclude_REC = calc1.records.RECID[(iitgap < 0) & (taxgap + amtgap <
+                                                      epsilon)]
+
+    # two reforms shall yield the same tax liability for the rest of records
+    assert_array_almost_equal(calc1.records._combined[calc1.records.RECID !=
+                              exclude_REC], calc2.records._combined[
+                              calc2.records.RECID != exclude_REC], decimal=2)
 
 
 def test_Calculator_using_nonstd_input(rawinputfile):

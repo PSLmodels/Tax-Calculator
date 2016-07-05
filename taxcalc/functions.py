@@ -274,7 +274,6 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
 
     Intermediate Variables:
         _posagi: positive AGI
-
     Returns
     -------
     c04470 : Itemized deduction amount
@@ -1409,20 +1408,20 @@ def ExpandIncome(_fica_was, e02400, c02500, c00100, e00400):
     return _expanded_income
 
 
-def BenefitSurtax(calc):
+def BenefitSurtax(self):
     """
     BenefitSurtax function: ...
     """
-    if calc.policy.ID_BenefitSurtax_crt != 1.:
-        nobenefits_calc = copy.deepcopy(calc)
-        # hard code the reform
+    nobenefits_calc = copy.deepcopy(self)
+    if self.policy.ID_BenefitSurtax_crt != 1.:
+                # hard code the reform
         nobenefits_calc.policy.ID_Medical_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[0])
         nobenefits_calc.policy.ID_StateLocalTax_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[1])
         nobenefits_calc.policy.ID_RealEstate_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[2])
-        nobenefits_calc.policy.ID_casualty_HC = \
+        nobenefits_calc.policy.ID_Casualty_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[3])
         nobenefits_calc.policy.ID_Miscellaneous_HC = \
             int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[4])
@@ -1433,12 +1432,12 @@ def BenefitSurtax(calc):
         nobenefits_calc.calc_one_year()
         # pylint: disable=protected-access
         tax_diff = np.where(
-            nobenefits_calc.records._iitax - calc.records._iitax > 0.,
-            nobenefits_calc.records._iitax - calc.records._iitax,
+            nobenefits_calc.records._iitax - self.records._iitax > 0.,
+            nobenefits_calc.records._iitax - self.records._iitax,
             0.)
         surtax_cap = nobenefits_calc.policy.ID_BenefitSurtax_crt *\
             nobenefits_calc.records.c00100
-        calc.records._surtax[:] = calc.policy.ID_BenefitSurtax_trt * np.where(
-            tax_diff > surtax_cap, tax_diff - surtax_cap, 0.)
-        calc.records._iitax += calc.records._surtax
-        calc.records._combined = calc.records._iitax + calc.records._fica
+        _surtax = self.policy.ID_BenefitSurtax_trt *\
+            np.where(tax_diff > surtax_cap, tax_diff - surtax_cap, 0.)
+        self.records._iitax += _surtax
+        self.records._combined = self.records._iitax + self.records._fica
