@@ -4,7 +4,7 @@ Tax-Calculator via the taxcalc package running on this computer.
 These results can be compared with hand-generated results produced
 by TaxBrain running in the cloud.
 
-COMMAND-LINE USAGE: python behavior.py POP-THE-CAP-YEAR
+COMMAND-LINE USAGE: python behavior.py --help
 
 Note that this script is intended for the use of core development team;
 it is not useful for conducting any kind of tax policy analysis.
