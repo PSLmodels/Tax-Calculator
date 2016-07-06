@@ -159,7 +159,6 @@ class Records(object):
         'e83080', 'e25360',
         'e25430', 'e25400', 'e25500', 'e26210', 'e26340',
         'e26205', 'e26320', 'e07170',
-        'e87526', 'e87522', 'e87524', 'e87528',
         'e07960', 'e07700', 'e07250', 't07950',
         'e07500', 'e08001',
         'e07980', 'e10000', 'e10100', 'e10050', 'e10075',
@@ -182,7 +181,7 @@ class Records(object):
         'c10950', '_ymod2', '_ymod3', 'c02650',
         '_prexmp', 'c17750',
         '_statax', 'c37703', 'c20500', 'c20750', 'c19200',
-        'c19700', '_nonlimited', '_limitratio', '_phase2_i',
+        'c19700', '_nonlimited', '_limitstart',
         '_fica', '_fica_was', 'c03260', 'c15100',
         '_sep', '_num', 'c15200', 'c04100', 'c04200',
         'c04500', '_amtstd', '_oldfei', 'c05200', '_cglong',
@@ -205,7 +204,7 @@ class Records(object):
         '_amt20pc', 'c62800', 'c09600',
         '_seywage', 'c33465', 'c33470', 'c33475', 'c33480',
         'c32840', '_tratio', 'c33200',
-        '_modagi', '_extrastd',
+        '_modagi', '_extrastd', 'ID_Casualty_frt_in_pufcsv_year',
         '_val_ymax', '_preeitc', '_val_rtbase', '_val_rtless',
         '_dy', 'c11070', '_nctcr', '_ctcagi', 'c87482',
         'c87487', 'c87492', 'c87497', 'c87483', 'c87488',
@@ -382,12 +381,8 @@ class Records(object):
         self.e18400 *= ATXPY
         self.e18500 *= ATXPY
         self.e19200 *= AIPD
-        self.e19550 *= ATXPY
         self.e19800 *= ATXPY
         self.e20100 *= ATXPY
-        self.e19700 *= ATXPY
-        self.e20550 *= ATXPY
-        self.e20600 *= ATXPY
         self.e20400 *= ATXPY
         self.e20500 *= ATXPY
         # CAPITAL GAINS
@@ -407,6 +402,10 @@ class Records(object):
         self.e62900 *= ATXPY
         self.e87530 *= ATXPY
         self.p87521 *= ATXPY
+        self.p87482 *= ATXPY
+        self.e87487 *= ATXPY
+        self.e87492 *= ATXPY
+        self.e87497 *= ATXPY
         self.cmbtp_itemizer *= ATXPY
         self.cmbtp_standard *= ATXPY
 
@@ -462,6 +461,11 @@ class Records(object):
                                 2, 1)
         # specify value of _exact array
         self._exact[:] = np.where(exact_calcs is True, 1, 0)
+        # specify value of ID_Casualty_frt_in_pufcsv_year array
+        ryear = 9999  # specify reform year if ID_Casualty_frt changes
+        rvalue = 0.0  # specify value of ID_Casualty_frt beginning in ryear
+        self.ID_Casualty_frt_in_pufcsv_year[:] = np.where(PUFCSV_YEAR < ryear,
+                                                          0.10, rvalue)
 
     @staticmethod
     def _read_egg_csv(vname, fpath, **kwargs):
