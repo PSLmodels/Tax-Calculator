@@ -996,8 +996,8 @@ def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
     return (_nctcr, _precrd, _ctcagi)
 
 
-@iterate_jit(nopython=True, puf=True)
-def AmOppCr(p87482, e87487, e87492, e87497, p87521, puf):
+@iterate_jit(nopython=True)
+def AmOppCr(p87482, e87487, e87492, e87497, p87521):
     """
     American Opportunity Credit 2009+; Form 8863
 
@@ -1029,9 +1029,11 @@ def AmOppCr(p87482, e87487, e87492, e87497, p87521, puf):
         c87498 = 2000. + 0.25 * max(0., c87497 - 2000.)
     # Sum of credits of all four students.
     c87521 = c87483 + c87488 + c87493 + c87498
-    if puf:
+    # Return larger of p87521 and c87521.
+    if p87521 > c87521:
         c87521 = p87521
-    return (c87482, c87487, c87492, c87497, c87483, c87488, c87493, c87498,
+    return (c87482, c87487, c87492, c87497,
+            c87483, c87488, c87493, c87498,
             c87521)
 
 

@@ -402,6 +402,10 @@ class Records(object):
         self.e62900 *= ATXPY
         self.e87530 *= ATXPY
         self.p87521 *= ATXPY
+        self.p87482 *= ATXPY
+        self.e87487 *= ATXPY
+        self.e87492 *= ATXPY
+        self.e87497 *= ATXPY
         self.cmbtp_itemizer *= ATXPY
         self.cmbtp_standard *= ATXPY
 
