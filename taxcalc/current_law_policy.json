@@ -1003,9 +1003,9 @@
         "value": [0.0]
     },
 
-    "_ID_Charity_crt_Cash": {
-        "long_name": "Deduction for charitable cash contributions; ceiling as a decimal fraction of AGI",
-        "description": "The deduction for Charity in form of cash is capped at this fraction of AGI. ",
+    "_ID_Charity_crt_all": {
+        "long_name": "Ceiling (as a decimal fraction of AGI) for all charitable contribution deductions",
+        "description": "The total deduction for charity is capped at this fraction of AGI. ",
         "irs_ref": "Pub. 526, Limits on Deductions: 50% Limit Organizations. ",
         "notes": "This rate cannot be increased to higher 0.5 due to lack of data. ",
         "start_year": 2013,
@@ -1018,9 +1018,9 @@
         "validations": {"max": "default"}
     },
 
-    "_ID_Charity_crt_Asset": {
-        "long_name": "Deduction for charitable asset contributions; ceiling as a decimal fraction of AGI",
-        "description": "The deduction for Charity contributed in the form of assets is capped at this fraction of AGI. ",
+    "_ID_Charity_crt_noncash": {
+        "long_name": "Ceiling (as a decimal fraction of AGI) for noncash charitable contribution deductions",
+        "description": "The deduction for noncash charity contributions is capped at this fraction of AGI. ",
         "irs_ref": "Pub 526, Limits on Deductions: Special 30% Limit for Capital Gain Property.",
         "notes": "This rate cannot be increased to higher than 0.3 due to lack of data. ",
         "start_year": 2013,
