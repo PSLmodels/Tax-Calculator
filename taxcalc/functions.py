@@ -21,12 +21,12 @@ import copy
 
 @iterate_jit(nopython=True)
 def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
-            e11055, e00250, e30100, FICA_ss_trt, FICA_mc_trt,
+            FICA_ss_trt, FICA_mc_trt,
             e00900p, e00900s, e02100p, e02100s):
     """
     EI_FICA function: computes total earned income and regular FICA taxes.
     """
-    # compute _sey
+    # compute _sey and its individual components
     sey_p = e00900p + e02100p
     sey_s = e00900s + e02100s
     _sey = sey_p + sey_s  # total self-employment income for filing unit
@@ -62,11 +62,15 @@ def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
     c09400 = fica_ss_sey_p + fica_ss_sey_s + fica_mc_sey_p + fica_mc_sey_s
     c03260 = 0.5 * c09400  # half of c09400 represents the "employer share"
 
-    # compute _earned
-    c11055 = e11055
-    _earned = max(0., e00200 + e00250 + c11055 + e30100 + _sey - c03260)
+    # compute _earned and its individual components
+    _earned = max(0., e00200 + _sey - c03260)
+    _earned_p = max(0., e00200p + sey_p -
+                    0.5 * (fica_ss_sey_p + fica_mc_sey_p))
+    _earned_s = max(0., e00200s + sey_s -
+                    0.5 * (fica_ss_sey_s + fica_mc_sey_s))
 
-    return (_sey, _fica, _fica_was, c09400, c03260, c11055, _earned)
+    return (_sey, _fica, _fica_was, c09400, c03260,
+            _earned, _earned_p, _earned_s)
 
 
 @iterate_jit(nopython=True)
@@ -371,7 +375,7 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
         respectively for lowest income bracket to the highest
 
     Taxpayer Characteristics:
-        _earned : (F2441) Earned income amount
+        _earned : Form 2441 earned income amount
 
         e02400 : Gross social Security Benefit
 
@@ -838,29 +842,29 @@ def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
     return NIIT
 
 
-@iterate_jit(nopython=True, puf=True)
-def F2441(_earned, MARS, f2441, DCC_c, e00200p, e00200s, e32800, puf):
+@iterate_jit(nopython=True)
+def F2441(MARS, _earned_p, _earned_s, f2441, DCC_c, e32800):
     """
-    F2441 function: ...
+    Form 2441 logic is in three functions: F2441, DepCareBen, ExpEarnedInc,
+    which are called in that order.
     """
-    if MARS == 2 and puf:
-        c32880 = e00200p
-        c32890 = e00200s
+    c32880 = _earned_p
+    if MARS == 2:
+        c32890 = _earned_s
     else:
-        c32880 = _earned
-        c32890 = _earned
-    _dclim = min(f2441, 2.) * DCC_c
+        c32890 = _earned_p
+    _dclim = min(f2441, 2) * DCC_c
     c32800 = min(e32800, _dclim)
-    return (_earned, c32880, c32890, _dclim, c32800)
+    return (c32880, c32890, _dclim, c32800)
 
 
 @iterate_jit(nopython=True)
 def DepCareBen(c32800, _cmp, f2441, MARS, c32880, c32890, e33420, e33430,
                e33450, e33460, e33465, e33470, _sep, _dclim):
     """
-    DepCareBen function: ...
+    Form 2441 logic is in three functions: F2441, DepCareBen, ExpEarnedInc,
+    which are called in that order.
     """
-    # Part III of dependent care benefits
     if f2441 != 0 and MARS == 2:
         _seywage = min(c32880, c32890, e33420 + e33430 - e33450, e33460)
     else:
@@ -882,12 +886,12 @@ def DepCareBen(c32800, _cmp, f2441, MARS, c32880, c32890, e33420, e33430,
 
 
 @iterate_jit(nopython=True)
-def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt,
-                 c33000, c05800, e07300, f2441):
+def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt, c33000, c05800, e07300):
     """
-    ExpEarnedInc function: ...
+    Form 2441 logic is in three functions: F2441, DepCareBen, ExpEarnedInc,
+    which are called in that order.
     """
-    # Expenses limited to earned income
+    # child & dependent care expense credit is limited by AGI-related fraction
     if _exact == 1:
         _tratio = math.ceil(max(((c00100 - CDCC_ps) / 2000.), 0.))
         c33200 = c33000 * 0.01 * max(20., CDCC_crt - min(15., _tratio))
@@ -895,14 +899,9 @@ def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt,
         _tratio = 0.
         c33200 = c33000 * 0.01 * max(20., CDCC_crt -
                                      max(((c00100 - CDCC_ps) / 2000.), 0.))
-    c33400 = min(max(0., c05800 - e07300), c33200)
-    # amount of the credit
-    if f2441 == 0:
-        c07180 = 0.
-        c33000 = 0.
-    else:
-        c07180 = c33400
-    return (_tratio, c33200, c33400, c07180, c33000)
+    # child & dependent care expense credit is limited by tax liability
+    c07180 = min(max(0., c05800 - e07300), c33200)
+    return (_tratio, c33200, c07180)
 
 
 @iterate_jit(nopython=True)
