@@ -34,6 +34,9 @@ class SimpleTaxIO(object):
         specifies whether or not exact tax calculations are done without
         any smoothing of "stair-step" provisions in income tax law.
 
+    schR_calculations: boolean
+        specifies whether or not Schedule R calculations are done or not.
+
     emulate_taxsim_2441_logic: boolean
         true implies emulation of questionable Internet-TAXSIM logic, which
         is necessary if the SimpleTaxIO class is being used in validation
@@ -61,6 +64,7 @@ class SimpleTaxIO(object):
                  input_filename,
                  reform,
                  exact_calculations,
+                 schR_calculations,
                  emulate_taxsim_2441_logic,
                  output_records):
         """
@@ -111,6 +115,7 @@ class SimpleTaxIO(object):
         # validate input variable values
         self._validate_input()
         self._calc = self._calc_object(exact_calculations,
+                                       schR_calculations,
                                        emulate_taxsim_2441_logic,
                                        output_records)
 
@@ -565,15 +570,16 @@ class SimpleTaxIO(object):
                 raise ValueError(msg.format(num_young_dependents, lnum,
                                             num_all_dependents))
 
-    def _calc_object(self, exact_calcs,
-                     emulate_taxsim_2441_logic,
-                     output_records):
+    def _calc_object(self, exact_calcs, schr_calcs,
+                     emulate_taxsim_2441_logic, output_records):
         """
         Create and return Calculator object to conduct the tax calculations.
 
         Parameters
         ----------
         exact_calcs: boolean
+
+        schr_calcs: boolean
 
         emulate_taxsim_2441_logic: boolean
 
@@ -591,6 +597,7 @@ class SimpleTaxIO(object):
         # use dict_list to create a Pandas DataFrame and Records object
         recsdf = pd.DataFrame(dict_list, dtype='int64')
         recs = Records(data=recsdf, exact_calculations=exact_calcs,
+                       schR_calculations=schr_calcs,
                        blowup_factors=None, weights=None,
                        start_year=self._policy.start_year)
         assert recs.dim == len(self._input)

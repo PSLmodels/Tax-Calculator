@@ -36,6 +36,11 @@ class Records(object):
         any smoothing of "stair-step" provisions in income tax law;
         default value is false.
 
+    schR_calculations: boolean
+        specifies whether or not Schedule R calculations are done or
+        whether the Schedule R credit is set to value of input variable;
+        default value is true.
+
     blowup_factors: string or Pandas DataFrame or None
         string describes CSV file in which blowup factors reside;
         DataFrame already contains blowup factors;
@@ -142,11 +147,12 @@ class Records(object):
         'e35300_0', 'e35600_0', 'e35910_0', 'e03600',
         'e03280', 'e03900', 'e04000', 'e03700',
         'e23660', 'f2555', 'e02800', 'e02610', 'e02540',
-        'e02615', 'SSIND', 'e18800', 'e18900',
+        'e02615', 'e18800', 'e18900',
         'e20950', 'e19500', 'e19570', 'e19400', 'c20400',
         'e20200', 'e20900', 'e21000', 'e21010', 'e02600',
-        '_exact',
-        'e37717', 'e04805',
+        '_exact', 'e11055', 'e00250', 'e30100',
+        'e37717', 'e04805', '_calc_schR', 'c07200',
+        'c28300', 'c28400', 'c28500', 'c28600', 'c28700', 'c28800',
         't04470', 'e58980', 'c00650', 'c00100',
         'c04470', 'c04600', 'c21060', 'c21040', 'c17000',
         'c18300', 'c20800', 'c02900', 'c02700', 'c23650',
@@ -227,11 +233,12 @@ class Records(object):
         '_surtax', '_combined', '_personal_credit'])
 
     INTEGER_CALCULATED_VARS = set([
-        '_num', '_sep', '_exact', '_hasgain', '_cmp'])
+        '_num', '_sep', '_exact', '_hasgain', '_cmp', '_calc_schR'])
 
     def __init__(self,
                  data='puf.csv',
                  exact_calculations=False,
+                 schR_calculations=True,
                  blowup_factors=BLOWUP_FACTORS_PATH,
                  weights=WEIGHTS_PATH,
                  start_year=PUFCSV_YEAR):
@@ -240,7 +247,7 @@ class Records(object):
         """
         # pylint: disable=too-many-arguments
         # read specified data
-        self._read_data(data, exact_calculations)
+        self._read_data(data, exact_calculations, schR_calculations)
         # check that three sets of split-earnings variables have valid values
         msg = 'expression "{0} == {0}p + {0}s" is not true for every record'
         if not np.allclose(self.e00200, (self.e00200p + self.e00200s),
@@ -409,10 +416,11 @@ class Records(object):
         self.cmbtp_itemizer *= ATXPY
         self.cmbtp_standard *= ATXPY
 
-    def _read_data(self, data, exact_calcs):
+    def _read_data(self, data, exact_calcs, schR_calcs):
         """
         Read Records data from file or use specified DataFrame as data.
         Specifies _exact array depending on boolean value of exact_calcs.
+        Specifies _calc_schR array depending on boolean value of schR_calcs.
         """
         # pylint: disable=too-many-branches
         if isinstance(data, pd.DataFrame):
@@ -461,6 +469,8 @@ class Records(object):
                                 2, 1)
         # specify value of _exact array
         self._exact[:] = np.where(exact_calcs is True, 1, 0)
+        # specify value of _calc_schR array
+        self._calc_schR[:] = np.where(schR_calcs is True, 1, 0)
         # specify value of ID_Casualty_frt_in_pufcsv_year array
         ryear = 9999  # specify reform year if ID_Casualty_frt changes
         rvalue = 0.0  # specify value of ID_Casualty_frt beginning in ryear

@@ -172,14 +172,12 @@ def CapGains(p23250, p22250, e23660, _sep, _feided, FEI_ec_c, ALD_Interest_ec,
 
 
 @iterate_jit(nopython=True)
-def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, SS_thd50, SS_thd85,
+def SSBenefits(MARS, _ymod, e02400, SS_thd50, SS_thd85,
                SS_percentage1, SS_percentage2):
     """
-    SSBenefits function: ...
+    SSBenefits function calculates OASDI benefits included in AGI, c02500.
     """
-    if SSIND == 2 or MARS == 3 or MARS == 6:
-        c02500 = e02500
-    elif _ymod < SS_thd50[MARS - 1]:
+    if _ymod < SS_thd50[MARS - 1]:
         c02500 = 0.
     elif _ymod >= SS_thd50[MARS - 1] and _ymod < SS_thd85[MARS - 1]:
         c02500 = SS_percentage1 * min(_ymod - SS_thd50[MARS - 1], e02400)
@@ -188,7 +186,7 @@ def SSBenefits(SSIND, MARS, e02500, _ymod, e02400, SS_thd50, SS_thd85,
                      SS_percentage1 *
                      min(e02400, SS_thd85[MARS - 1] -
                          SS_thd50[MARS - 1]), SS_percentage2 * e02400)
-    return (c02500, e02500)
+    return c02500
 
 
 @iterate_jit(nopython=True)
@@ -379,7 +377,7 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
     Taxpayer Characteristics:
         _earned : Form 2441 earned income amount
 
-        e02400 : Gross social Security Benefit
+        e02400 : Gross Social Security Benefit
 
         DSI : Dependent Status Indicator:
             0 - not being claimed as a dependent
@@ -1129,9 +1127,51 @@ def RefAmOpp(c87521, _num, c00100):
 
 
 @iterate_jit(nopython=True)
-def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
+def SchR(_calc_schR, age_head, age_spouse, MARS, c00100,
+         c05800, e07300, c07180, e02400, c02500, e01500, e01700):
+    """
+    Calculate Schedule R credit for the elderly and the disabled.
+    """
+    c07200 = 0.
+    if _calc_schR and (age_head >= 65 or (MARS == 2 and age_spouse >= 65)):
+        # calculate credit assuming nobody is disabled
+        # (note that all Schedule R policy parameters are hard-coded)
+        # Part I and first line in Part III
+        if MARS == 2:
+            if age_head >= 65 and age_spouse >= 65:
+                c28300 = 7500.
+            else:
+                c28300 = 5000.
+        elif MARS == 3:
+            c28300 = 3750.
+        elif MARS == 1 or MARS == 4:
+            c28300 = 5000.
+        else:
+            c28300 = 0.
+        # nontaxable OASDI benefit plus nontaxable pension benefits
+        c28400 = max(0., (e02400 - c02500) + (e01500 - e01700))
+        # one-half of adjusted AGI
+        if MARS == 2:
+            c28500 = max(0., c00100 - 10000.)
+        elif MARS == 3:
+            c28500 = max(0., c00100 - 5000.)
+        elif MARS == 1 or MARS == 4:
+            c28500 = max(0., c00100 - 7500.)
+        else:
+            c28500 = 0.
+        c28600 = 0.5 * c28500
+        # compute credit amount, c07200
+        c28700 = c28400 + c28600
+        c28800 = max(0., c28300 - c28700)
+        c07200 = min(0.15 * c28800,
+                     max(0., (c05800 - e07300 - c07180)))
+    return (c07200, c28300, c28400, c28500, c28600, c28700, c28800)
+
+
+@iterate_jit(nopython=True)
+def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, c07230,
             e07600, e07240, e07960, e07260, e07300, e07700, e07250, t07950,
-            c05800, _precrd, ETC_pe_Single, c87668, c87620):
+            c05800, _precrd, ETC_pe_Single, c87668, c87620, c07200):
     """
     NonEdCr function: ...
     """
@@ -1148,13 +1188,13 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
     c87600 = 10000. * _num
     c87610 = min(1., c87590 / c87600)
     c87620 = c87560 * c87610
-    _xlin4 = max(0., c05800 - (e07300 + c07180 + e07200))
+    _xlin4 = max(0., c05800 - (e07300 + c07180 + c07200))
     _xlin5 = min(c87620, _xlin4)
-    _xlin9 = max(0., c05800 - (e07300 + c07180 + e07200 + _xlin5))
+    _xlin9 = max(0., c05800 - (e07300 + c07180 + c07200 + _xlin5))
     _xlin10 = min(c87668, _xlin9)
     c87680 = _xlin5 + _xlin10
     c07230 = c87680
-    _ctc1 = c07180 + e07200 + c07230
+    _ctc1 = c07180 + c07200 + c07230
     _ctc2 = e07240 + e07960 + e07260 + e07300
     _regcrd = _ctc1 + _ctc2
     _exocrd = e07700 + e07250
@@ -1165,7 +1205,7 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, e07200, c07230,
     _avail = c05800
     c07180 = min(c07180, _avail)
     _avail = _avail - c07180
-    c07200 = min(e07200, _avail)
+    c07200 = min(c07200, _avail)
     _avail = _avail - c07200
     c07300 = min(e07300, _avail)
     _avail = _avail - c07300
@@ -1253,7 +1293,7 @@ def F5405(pol, rec):
 
 
 @iterate_jit(nopython=True)
-def C1040(e07400, e07200, c07220, c07230, c07300, c07240,
+def C1040(e07400, c07200, c07220, c07230, c07300, c07240,
           e07260, c07970, x07400, e09720, c07600,
           e07500, e07700, p08000, e08001, e07960,
           e07980, c05800, e09900, c09400, e09800,
@@ -1264,7 +1304,7 @@ def C1040(e07400, e07200, c07220, c07230, c07300, c07240,
     """
     # Credits 1040 line 48
     x07400 = e07400
-    c07100 = (c07180 + e07200 + c07600 + c07300 + x07400 + e07980 + c07220 +
+    c07100 = (c07180 + c07200 + c07600 + c07300 + x07400 + e07980 + c07220 +
               e07500 + p08000)
     y07100 = c07100
     c07100 += e07700 + c07230 + c07970 + c07240 + e07260 + e08001 + e07960
