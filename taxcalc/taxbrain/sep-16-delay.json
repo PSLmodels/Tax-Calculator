@@ -381,7 +381,7 @@
         "replications": 1,
         "start_year": 2016,
         "specification": {
-            "_ID_Charity_crt_Cash": {
+            "_ID_Charity_crt_all": {
                 "2019": [0.5]
             }
         }
