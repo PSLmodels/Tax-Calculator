@@ -207,19 +207,17 @@ def AGI(_ymod1, c02500, c02700, e02615, c02900, XTOT,
     return (c02650, c00100, _posagi, _prexmp, c04600)
 
 
-@iterate_jit(nopython=True, puf=True)
-def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
-            e20500, e20400, e19200, e20550, e20600, e20950, e19500, e19570,
-            e19400, e19550, e19800, e20100, e20200, e20900, e21000, e21010,
+@iterate_jit(nopython=True)
+def ItemDed(_posagi, e17500, e18400, e18500,
+            e20500, e20400, e19200, e19800, e20100,
             MARS, c00100, ID_ps, ID_Medical_frt, ID_Medical_HC,
+            ID_Casualty_frt_in_pufcsv_year,
             ID_Casualty_frt, ID_Casualty_HC, ID_Miscellaneous_frt,
-            ID_Miscellaneous_HC, ID_Charity_crt_Cash, ID_Charity_crt_Asset,
+            ID_Miscellaneous_HC, ID_Charity_crt_all, ID_Charity_crt_noncash,
             ID_prt, ID_crt, ID_StateLocalTax_HC, ID_Charity_frt,
-            ID_Charity_HC, ID_InterestPaid_HC, ID_RealEstate_HC, puf):
+            ID_Charity_HC, ID_InterestPaid_HC, ID_RealEstate_HC):
     """
-    ItemDed function:
-
-    Itemized Deduction; Form 1040, Schedule A
+    ItemDed function: itemized deductions, Form 1040, Schedule A
 
     Notes
     -----
@@ -227,50 +225,42 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
         ID_ps : Itemized deduction phaseout AGI start (Pease)
 
         ID_crt : Itemized deduction maximum phaseout
-        as a percent of total itemized deduction (Pease)
+        as a decimal fraction of total itemized deduction (Pease)
 
         ID_prt : Itemized deduction phaseout rate (Pease)
 
         ID_Medical_frt : Deduction for medical expenses;
-        floor as a percent of AGI
+        floor as a decimal fraction of AGI
 
         ID_Casualty_frt : Deduction for casualty loss;
-        floor as a percent of AGI
+        floor as a decimal fraction of AGI
 
         ID_Miscellaneous_frt : Deduction for miscellaneous expenses;
-        floor as a percent of AGI
+        floor as a decimal fraction of AGI
 
-        ID_Charity_crt_Cash : Deduction for charitable cash contributions;
-        ceiling as a percent of AGI
+        ID_Charity_crt_all : Deduction for all charitable contributions;
+        ceiling as a decimal fraction of AGI
 
-        ID_Charity_crt_Asset : Deduction for charitable asset contributions;
-        ceiling as a percent of AGI
+        ID_Charity_crt_noncash : Deduction for noncash charitable
+        contributions; ceiling as a decimal fraction of AGI
 
         ID_Charity_frt : Deduction for charitable contributions;
-        floor as a percent of AGI
+        floor as a decimal fraction of AGI
 
     Taxpayer Characteristics:
         e17500 : Medical expense
 
-        e18425 : Income taxes
+        e18400 : State and local taxes
 
-        e18450 : General Sales Tax
+        e18500 : Real-estate taxes
 
-        e18500 : Real Estate tax
+        e19200 : Interest paid
 
-        e19200 : Total interest deduction
+        e19800 : Charity cash contributions
 
-        e19800 : Cash Contribution
+        e20100 : Charity noncash contributions
 
-        e19550 : Qualified Mortgage Insurance Premiums
-
-        e20100 : Charity non-cash contribution
-
-        e20400 : Total Miscellaneous expense
-
-        e20550 : Unreimbursed employee business Expense
-
-        e20600 : Tax preparation fee
+        e20400 : Total Miscellaneous expenses
 
     Intermediate Variables:
         _posagi: positive AGI
@@ -278,75 +268,47 @@ def ItemDed(_posagi, e17500, e18400, e18500, e18800, e18900, e19700,
     Returns
     -------
     c04470 : Itemized deduction amount
-
-    Warning
-    -------
-    Any additional keyword args, such as 'puf=True' here, must be
-    passed to the function at the END of the argument list. If you stick the
-    argument somewhere in the middle of the signature, you will get errors.
     """
     # Medical
     c17750 = ID_Medical_frt * _posagi
-    c17000 = max(0., e17500 - c17750)
-    # State and Local Income Tax, or Sales Tax
-    _statax = (1 - ID_StateLocalTax_HC) * max(e18400, 0.)
-    # Other Taxes (including state and local)
-    real_estate = (1 - ID_RealEstate_HC) * e18500
-    c18300 = _statax + real_estate + e18800 + e18900
+    c17000 = max(0., e17500 - c17750) * (1. - ID_Medical_HC)
+    # State and local taxes
+    c18300 = ((1. - ID_StateLocalTax_HC) * max(e18400, 0.) +
+              (1. - ID_RealEstate_HC) * e18500)
+    # Interest paid
+    c19200 = e19200 * (1. - ID_InterestPaid_HC)
+    # Charity
+    lim30 = min(ID_Charity_crt_noncash * _posagi, e20100)
+    c19700 = min(ID_Charity_crt_all * _posagi, lim30 + e19800)
+    charity_floor = ID_Charity_frt * _posagi  # floor is zero in present law
+    c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_HC)
     # Casualty
-    if e20500 > 0:
-        c37703 = e20500 + ID_Casualty_frt * _posagi
-    else:
+    if e20500 > 0.0:  # add back to e20500 the PUFCSV_YEAR disregard amount
+        c37703 = e20500 + ID_Casualty_frt_in_pufcsv_year * _posagi
+    else:  # small pre-disregard e20500 values are assumed to be zero
         c37703 = 0.
-    c20500 = max(0., c37703 - ID_Casualty_frt * _posagi)
+    c20500 = (max(0., c37703 - ID_Casualty_frt * _posagi) *
+              (1. - ID_Casualty_HC))
     # Miscellaneous
+    c20400 = e20400
     c20750 = ID_Miscellaneous_frt * _posagi
-    if puf:
-        c20400 = e20400
-    else:
-        c20400 = e20550 + e20600 + e20950
-    c20800 = max(0., c20400 - c20750)
-    # Interest paid deduction
-    if puf:
-        c19200 = e19200
-    else:
-        c19200 = e19500 + e19570 + e19400 + e19550
-    # Charity (assumes carryover is non-cash)
-    base_charity = e19800 + e20100 + e20200
-    if puf:
-        c19700 = e19700
-    elif base_charity <= 0.2 * _posagi:
-        c19700 = base_charity
-    else:
-        lim30 = min(ID_Charity_crt_Asset * _posagi, e20100 + e20200)
-        c19700 = min(ID_Charity_crt_Cash * _posagi, lim30 + e19800)
-    charity_floor = ID_Charity_frt * _posagi  # frt is zero in present law
-    c19700 = max(0., c19700 - charity_floor)
+    c20800 = max(0., c20400 - c20750) * (1. - ID_Miscellaneous_HC)
     # Gross Itemized Deductions
-    c21060 = (e20900 + (1 - ID_Medical_HC) * c17000 + c18300 +
-              (1 - ID_InterestPaid_HC) * c19200 +
-              (1 - ID_Charity_HC) * c19700 +
-              (1 - ID_Casualty_HC) * c20500 +
-              (1 - ID_Miscellaneous_HC) * c20800 +
-              e21000 + e21010)
-    # Limitations on deductions excluding medical, charity etc
-    _phase2_i = ID_ps[MARS - 1]
-    _nonlimited = ((1 - ID_Medical_HC) * c17000 +
-                   (1 - ID_Casualty_HC) * c20500 +
-                   e19570 + e21010 + e20900)
-    _limitratio = _phase2_i
-    # Itemized deductions amount after limitation if any
-    c04470 = c21060
-    if c21060 > _nonlimited and c00100 > _limitratio:
+    c21060 = c17000 + c18300 + c19200 + c19700 + c20500 + c20800
+    # Limitation on total itemized deductions
+    _nonlimited = c17000 + c20500
+    _limitstart = ID_ps[MARS - 1]
+    if c21060 > _nonlimited and c00100 > _limitstart:
         dedmin = ID_crt * (c21060 - _nonlimited)
-        dedpho = ID_prt * max(0., _posagi - _limitratio)
+        dedpho = ID_prt * max(0., _posagi - _limitstart)
         c21040 = min(dedmin, dedpho)
         c04470 = c21060 - c21040
     else:
         c21040 = 0.
-    return (c17750, c17000, _statax, c18300, c37703, c20500,
-            c20750, c20400, c19200, c20800, c19700, c21060, _phase2_i,
-            _nonlimited, _limitratio, c04470, c21040)
+        c04470 = c21060
+    return (c17750, c17000, c18300, c37703, c20500,
+            c20750, c20400, c19200, c20800, c19700, c21060,
+            _nonlimited, _limitstart, c04470, c21040)
 
 
 @iterate_jit(nopython=True)
@@ -730,33 +692,31 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
             _s1291, _parents, _taxbc, c05750)
 
 
-@iterate_jit(nopython=True, puf=True)
+@iterate_jit(nopython=True)
 def AMTI(c60000, e60290, _posagi, e07300, c24517,
          e60300, e60860, p60100, e60840, e60630, e60550, FDED,
          e60720, e60430, e60500, e60340, e60680, e60600, e60405,
          e60440, e60420, e60410, e61400, e60660, e60480, c21060,
          e62000, e60250, _cmp, _standard,
          f6251, c00100, t04470,
-         c04470, c17000, e18500, c20800, c21040, e04805,
+         c04470, c17000, c20800, c21040, e04805,
          c02700,
-         e24515, x60130, e18400,
+         e24515, x60130,
          x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
          MARS, _sep, AMT_Child_em, AMT_CG_rt1,
          AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516,
          c24520, c05700,
          age_head, KT_c_Age, e62900, AMT_thd_MarriedS, _earned,
-         AMT_em, AMT_prt, AMT_trt1, AMT_trt2, cmbtp_itemizer,
-         cmbtp_standard, ID_StateLocalTax_HC, ID_Medical_HC,
-         ID_Miscellaneous_HC, ID_RealEstate_HC, puf):
+         AMT_em, AMT_prt, AMT_trt1, AMT_trt2, cmbtp_itemizer, cmbtp_standard):
     """
-    AMTI function: ...
+    AMTI function: AMT taxable income
     """
     # pylint: disable=too-many-statements,too-many-branches
     c62720 = c24517 + x62720
     c60260 = e00700
-    c60200 = min((1 - ID_Medical_HC) * c17000, 0.025 * _posagi)
+    c60200 = min(c17000, 0.025 * _posagi)
     c60240 = c18300 + x60240
-    c60220 = (1 - ID_Miscellaneous_HC) * c20800 + x60220
+    c60220 = c20800 + x60220
     c60130 = c21040 + x60130
     c62730 = e24515
     if FDED == 2:
@@ -781,19 +741,17 @@ def AMTI(c60000, e60290, _posagi, e07300, c24517,
                   e60550 + e60720 + e60430 + e60500 + e60340 + e60680 +
                   e60600 + e60405 + e60440 + e60420 + e60410 + e61400 +
                   e60660 - c60260 - e60480 - e62000 + c60000 - e60250)
-    if puf and _standard == 0.0:
+    if _standard == 0.0:
         if f6251 == 1:
             _cmbtp = cmbtp_itemizer
         else:
             _cmbtp = 0.
-        real_estate = (1 - ID_RealEstate_HC) * e18500
-        income_sales = (1 - ID_StateLocalTax_HC) * max(0., e18400)
         c62100 = (c00100 - c04470 +
-                  max(0., min((1 - ID_Medical_HC) * c17000, 0.025 * c00100)) +
-                  income_sales + real_estate -
-                  c60260 + (1 - ID_Miscellaneous_HC) * c20800 - c21040)
+                  max(0., min(c17000, 0.025 * c00100)) +
+                  c18300 -
+                  c60260 + c20800 - c21040)
         c62100 += _cmbtp
-    if puf and _standard > 0.0:
+    if _standard > 0.0:
         if f6251 == 1:
             _cmbtp = cmbtp_standard
         else:
