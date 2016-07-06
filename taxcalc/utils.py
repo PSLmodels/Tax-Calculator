@@ -351,8 +351,8 @@ def create_distribution_table(obj, groupby, result_type,
                                        income_measure=income_measure)
         sum_row = get_sums(df, na=True)[TABLE_COLUMNS]
     else:
-        err = ("result_type must be either 'weighted_sum' or 'weighted_avg")
-        raise ValueError(err)
+        msg = "result_type must be either 'weighted_sum' or 'weighted_avg'"
+        raise ValueError(msg)
     return gp_mean.append(sum_row)
 
 

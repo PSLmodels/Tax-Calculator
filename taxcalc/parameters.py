@@ -140,8 +140,8 @@ class ParametersBase(object):
         where behavior is a policy Behavior object.
         """
         if year < self.start_year or year > self.end_year:
-            msg = 'year passed to set_year() must be in [{},{}] range.'
-            raise ValueError(msg.format(self.start_year, self.end_year))
+            msg = 'year {} passed to set_year() must be in [{},{}] range.'
+            raise ValueError(msg.format(year, self.start_year, self.end_year))
         self._current_year = year
         year_zero_indexed = year - self._start_year
         if hasattr(self, '_vals'):

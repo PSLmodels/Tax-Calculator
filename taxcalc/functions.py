@@ -248,11 +248,11 @@ def ItemDed(_posagi, e17500, e18400, e18500,
         ID_Charity_crt_noncash : Deduction for noncash charitable
         contributions; ceiling as a decimal fraction of AGI
 
-        ID_Charity_frt : Deduction for charitable contributions;
+        ID_Charity_frt : Disregard for charitable contributions;
         floor as a decimal fraction of AGI
 
     Taxpayer Characteristics:
-        e17500 : Medical expense
+        e17500 : Medical expenses
 
         e18400 : State and local taxes
 
@@ -264,7 +264,9 @@ def ItemDed(_posagi, e17500, e18400, e18500,
 
         e20100 : Charity noncash contributions
 
-        e20400 : Total Miscellaneous expenses
+        e20400 : Total miscellaneous expenses
+
+        e20500 : Net [of disregard] casualty or theft loss
 
     Intermediate Variables:
         _posagi: positive AGI

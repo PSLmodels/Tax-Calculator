@@ -5,10 +5,11 @@ import numpy as np
 from numpy.testing import assert_allclose
 import pandas as pd
 import tempfile
+import copy
 import pytest
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
-from taxcalc import Policy, Records, Calculator, Behavior
+from taxcalc import Policy, Records, Calculator, Behavior, Consumption
 from taxcalc import create_distribution_table, create_difference_table
 
 # use 1991 PUF-like data to emulate current puf.csv, which is private
@@ -72,7 +73,10 @@ def test_make_Calculator():
     parm = Policy()
     assert parm.current_year == 2013
     recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    calc = Calculator(policy=parm, records=recs)
+    consump = Consumption()
+    consump.update_consumption({2014: {'_MPC_e20400': [0.05]}})
+    assert consump.current_year == 2013
+    calc = Calculator(policy=parm, records=recs, consumption=consump)
     assert calc.current_year == 2013
     # test incorrect Calculator instantiation:
     with pytest.raises(ValueError):
@@ -83,10 +87,11 @@ def test_make_Calculator():
         calc = Calculator(policy=parm, records=recs, behavior=list())
     with pytest.raises(ValueError):
         calc = Calculator(policy=parm, records=recs, growth=list())
+    with pytest.raises(ValueError):
+        calc = Calculator(policy=parm, records=recs, consumption=list())
 
 
 def test_make_Calculator_deepcopy():
-    import copy
     parm = Policy()
     recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     calc1 = Calculator(policy=parm, records=recs)
@@ -262,7 +267,10 @@ def test_Calculator_create_distribution_table():
 def test_Calculator_mtr():
     puf = Records(TAXDATA, weights=WEIGHTS, start_year=2009)
     calc = Calculator(policy=Policy(), records=puf)
-    (mtr_FICA, mtr_IIT, mtr_combined) = calc.mtr()
+    recs_pre_e00200p = copy.deepcopy(calc.records.e00200p)
+    (mtr_FICA, mtr_IIT, mtr_combined) = calc.mtr(income_type_str='e00200p')
+    recs_post_e00200p = copy.deepcopy(calc.records.e00200p)
+    assert np.allclose(recs_post_e00200p, recs_pre_e00200p)
     assert type(mtr_combined) == np.ndarray
     assert np.array_equal(mtr_combined, mtr_FICA) is False
     assert np.array_equal(mtr_FICA, mtr_IIT) is False

@@ -12,12 +12,14 @@ from .policy import Policy
 from .records import Records
 from .behavior import Behavior
 from .growth import Growth
+from .consumption import Consumption
 
 
 class Calculator(object):
 
     def __init__(self, policy=None, records=None, verbose=True,
-                 sync_years=True, behavior=None, growth=None):
+                 sync_years=True, behavior=None, growth=None,
+                 consumption=None):
         if isinstance(policy, Policy):
             self._policy = policy
         else:
@@ -31,22 +33,28 @@ class Calculator(object):
         elif isinstance(behavior, Behavior):
             self.behavior = behavior
         else:
-            raise ValueError('behavior must be None or a Behavior object')
+            raise ValueError('behavior must be None or Behavior object')
         if growth is None:
             self.growth = Growth(start_year=policy.start_year)
         elif isinstance(growth, Growth):
             self.growth = growth
         else:
-            raise ValueError('growth must be None or a Growth object')
+            raise ValueError('growth must be None or Growth object')
+        if consumption is None:
+            self.consumption = Consumption(start_year=policy.start_year)
+        elif isinstance(consumption, Consumption):
+            self.consumption = consumption
+        else:
+            raise ValueError('consumption must be None or Consumption object')
         if sync_years and self._records.current_year == Records.PUF_YEAR:
             if verbose:
-                print("You loaded data for " +
+                print('You loaded data for ' +
                       str(self._records.current_year) + '.')
             while self._records.current_year < self._policy.current_year:
                 self._records.increment_year()
             if verbose:
-                print("Your data have been extrapolated to " +
-                      str(self._records.current_year) + ".")
+                print('Your data have been extrapolated to ' +
+                      str(self._records.current_year) + '.')
         assert self._policy.current_year == self._records.current_year
 
     @property
@@ -133,6 +141,7 @@ class Calculator(object):
         self.records.increment_year()
         self.policy.set_year(next_year)
         self.behavior.set_year(next_year)
+        self.consumption.set_year(next_year)
 
     def advance_to_year(self, year):
         '''
@@ -142,8 +151,8 @@ class Calculator(object):
         '''
         iteration = year - self.records.current_year
         if iteration < 0:
-            raise ValueError("New current year must be " +
-                             "greater than current year!")
+            raise ValueError('New current year must be ' +
+                             'greater than current year!')
         for i in range(iteration):
             self.increment_year()
         assert self.records.current_year == year
@@ -222,6 +231,8 @@ class Calculator(object):
         finite_diff = 0.01  # a one-cent difference
         if negative_finite_diff:
             finite_diff *= -1.0
+        # save records object in order to restore it after mtr computations
+        recs0 = copy.deepcopy(self.records)
         # extract income_type array(s) from embedded records object
         income_type = getattr(self.records, income_type_str)
         if income_type_str == 'e00200p':
@@ -230,11 +241,6 @@ class Calculator(object):
             seincome_type = self.records.e00900
         elif income_type_str == 'e00650':
             divincome_type = self.records.e00600
-        # calculate base level of taxes
-        self.calc_all()
-        fica_base = copy.deepcopy(self.records._fica)
-        iitax_base = copy.deepcopy(self.records._iitax)
-        combined_taxes_base = iitax_base + fica_base
         # calculate level of taxes after a marginal increase in income
         setattr(self.records, income_type_str, income_type + finite_diff)
         if income_type_str == 'e00200p':
@@ -243,23 +249,22 @@ class Calculator(object):
             self.records.e00900 = seincome_type + finite_diff
         elif income_type_str == 'e00650':
             self.records.e00600 = divincome_type + finite_diff
+        if self.consumption.has_response():
+            self.consumption.response(self.records, finite_diff)
         self.calc_all()
-        fica_up = copy.deepcopy(self.records._fica)
-        iitax_up = copy.deepcopy(self.records._iitax)
-        combined_taxes_up = iitax_up + fica_up
+        fica_chng = copy.deepcopy(self.records._fica)
+        iitax_chng = copy.deepcopy(self.records._iitax)
+        combined_taxes_chng = iitax_chng + fica_chng
+        # calculate base level of taxes after restoring records object
+        setattr(self, '_records', recs0)
+        self.calc_all()
+        fica_base = copy.deepcopy(self.records._fica)
+        iitax_base = copy.deepcopy(self.records._iitax)
+        combined_taxes_base = iitax_base + fica_base
         # compute marginal changes in tax liability
-        fica_delta = fica_up - fica_base
-        iitax_delta = iitax_up - iitax_base
-        combined_delta = combined_taxes_up - combined_taxes_base
-        # return embedded records object to its original state and recalculate
-        setattr(self.records, income_type_str, income_type)
-        if income_type_str == 'e00200p':
-            self.records.e00200 = earnings_type
-        elif income_type_str == 'e00900p':
-            self.records.e00900 = seincome_type
-        elif income_type_str == 'e00650':
-            self.records.e00600 = divincome_type
-        self.calc_all()
+        fica_diff = fica_chng - fica_base
+        iitax_diff = iitax_chng - iitax_base
+        combined_diff = combined_taxes_chng - combined_taxes_base
         # specify optional adjustment for employer (er) OASDI+HI payroll taxes
         if wrt_full_compensation and income_type_str == 'e00200p':
             adj = np.where(income_type < self.policy.SS_Earnings_c,
@@ -269,9 +274,9 @@ class Calculator(object):
         else:
             adj = 0.0
         # compute marginal tax rates
-        mtr_fica = fica_delta / (finite_diff * (1.0 + adj))
-        mtr_iit = iitax_delta / (finite_diff * (1.0 + adj))
-        mtr_combined = combined_delta / (finite_diff * (1.0 + adj))
+        mtr_fica = fica_diff / (finite_diff * (1.0 + adj))
+        mtr_iit = iitax_diff / (finite_diff * (1.0 + adj))
+        mtr_combined = combined_diff / (finite_diff * (1.0 + adj))
         # return the three marginal tax rate arrays
         return (mtr_fica, mtr_iit, mtr_combined)
 
@@ -358,18 +363,18 @@ class Calculator(object):
                 if base_calc is not None:
                     base_calc.increment_year()
         df = DataFrame(table, row_years,
-                       ["Returns (#m)", "AGI ($b)", "Itemizers (#m)",
-                        "Itemized Deduction ($b)",
-                        "Standard Deduction Filers (#m)",
-                        "Standard Deduction ($b)", "Personal Exemption ($b)",
-                        "Taxable income ($b)", "Regular Tax ($b)",
-                        "AMT income ($b)", "AMT amount ($b)",
-                        "AMT number (#m)", "Tax before credits ($b)",
-                        "refundable credits ($b)",
-                        "nonrefundable credits ($b)",
-                        "Misc. Surtax ($b)",
-                        "Ind inc tax ($b)", "Payroll tax ($b)",
-                        "Combined liability ($b)"])
+                       ['Returns (#m)', 'AGI ($b)', 'Itemizers (#m)',
+                        'Itemized Deduction ($b)',
+                        'Standard Deduction Filers (#m)',
+                        'Standard Deduction ($b)', 'Personal Exemption ($b)',
+                        'Taxable income ($b)', 'Regular Tax ($b)',
+                        'AMT income ($b)', 'AMT amount ($b)',
+                        'AMT number (#m)', 'Tax before credits ($b)',
+                        'refundable credits ($b)',
+                        'nonrefundable credits ($b)',
+                        'Misc. Surtax ($b)',
+                        'Ind inc tax ($b)', 'Payroll tax ($b)',
+                        'Combined liability ($b)'])
         df = df.transpose()
         pd.options.display.float_format = '{:8,.1f}'.format
         return df
