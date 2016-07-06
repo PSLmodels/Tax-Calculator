@@ -191,13 +191,10 @@ def test_ret_everything_iterate_jit():
     assert_frame_equal(ans, exp)
 
 
-@iterate_jit(parameters=['puf'], nopython=True, puf=True)
-def Magic_calc3(x, y, z, puf):
+@iterate_jit(nopython=True)
+def Magic_calc3(x, y, z):
     a = x + y
-    if (puf):
-        b = x + y + z
-    else:
-        b = 42
+    b = a + z
     return (a, b)
 
 
@@ -215,27 +212,10 @@ def test_function_takes_kwarg():
     assert_frame_equal(ans, exp)
 
 
-def test_function_takes_kwarg_nondefault_value():
-    pm = Foo()
-    pf = Foo()
-    pm.a = np.ones((5,))
-    pm.b = np.ones((5,))
-    pf.x = np.ones((5,))
-    pf.y = np.ones((5,))
-    pf.z = np.ones((5,))
-    ans = Magic_calc3(pm, pf, puf=False)
-    exp = DataFrame(data=[[2.0, 42.0]] * 5,
-                    columns=["a", "b"])
-    assert_frame_equal(ans, exp)
-
-
-@iterate_jit(nopython=True, puf=True)
-def Magic_calc4(x, y, z, puf):
+@iterate_jit(nopython=True)
+def Magic_calc4(x, y, z):
     a = x + y
-    if (puf):
-        b = x + y + z
-    else:
-        b = 42
+    b = a + z
     return (a, b)
 
 
@@ -253,13 +233,10 @@ def test_function_no_parameters_listed():
     assert_frame_equal(ans, exp)
 
 
-@iterate_jit(parameters=['w'], nopython=True, puf=True)
-def Magic_calc5(w, x, y, z, puf):
+@iterate_jit(parameters=['w'], nopython=True)
+def Magic_calc5(w, x, y, z):
     a = x + y
-    if (puf):
-        b = w[0] + x + y + z
-    else:
-        b = 42
+    b = w[0] + x + y + z
     return (a, b)
 
 
@@ -278,31 +255,25 @@ def test_function_parameters_optional():
     assert_frame_equal(ans, exp)
 
 
-def unjittable_function(w, x, y, z, puf):
+def unjittable_function(w, x, y, z):
     a = x + y
-    if (puf):
-        b = w[0] + x + y + z
-    else:
-        b = 42
+    b = w[0] + x + y + z
 
 
-def unjittable_function2(w, x, y, z, puf):
+def unjittable_function2(w, x, y, z):
     a = x + y
-    if (puf):
-        b = w[0] + x + y + z
-    else:
-        b = 42
+    b = w[0] + x + y + z
     return (a, b, c)
 
 
 def test_iterate_jit_raises_on_no_return():
     with pytest.raises(ValueError):
-        ij = iterate_jit(parameters=['w'], nopython=True, puf=True)
+        ij = iterate_jit(parameters=['w'], nopython=True)
         ij(unjittable_function)
 
 
 def test_iterate_jit_raises_on_unknown_return_argument():
-    ij = iterate_jit(parameters=['w'], nopython=True, puf=True)
+    ij = iterate_jit(parameters=['w'], nopython=True)
     uf2 = ij(unjittable_function2)
     pm = Foo()
     pf = Foo()
@@ -316,12 +287,9 @@ def test_iterate_jit_raises_on_unknown_return_argument():
         ans = uf2(pm, pf)
 
 
-def Magic_calc6(w, x, y, z, puf):
+def Magic_calc6(w, x, y, z):
     a = x + y
-    if (puf):
-        b = w[0] + x + y + z
-    else:
-        b = 42
+    b = w[0] + x + y + z
     return (a, b)
 
 
@@ -345,7 +313,7 @@ def test_force_no_numba():
     ij = taxcalc.decorators.iterate_jit
     taxcalc.decorators.DO_JIT = True
     # Now use iterate_jit on a dummy function
-    Magic_calc6 = ij(parameters=['w'], nopython=True, puf=True)(Magic_calc6)
+    Magic_calc6 = ij(parameters=['w'], nopython=True)(Magic_calc6)
     # Do work and verify function works as expected
     pm = Foo()
     pf = Foo()
