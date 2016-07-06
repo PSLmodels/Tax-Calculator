@@ -69,7 +69,7 @@ class Consumption(ParametersBase):
         """
         precall_current_year = self.current_year
         self.set_default_vals()
-        # specify revisions
+        # specify revisions ordered by year
         revision_years = sorted(list(revisions.keys()))
         for year in revision_years:
             self.set_year(year)
