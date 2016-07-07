@@ -1,8 +1,18 @@
+"""
+Implement JIT-related decorators used to speed-up tax-calculating functions.
+"""
+# CODING-STYLE CHECKS:
+# pep8 --ignore=E402 decorators.py
+# pylint --disable=locally-disabled decorators.py
+# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
+
+
 import inspect
 from .policy import Policy
 from six import StringIO
 import ast
 import toolz
+
 
 try:
     import numba
@@ -10,12 +20,20 @@ try:
     DO_JIT = True
 except (ImportError, AttributeError):
     def id_wrapper(*dec_args, **dec_kwargs):
-        def wrap(f):
+        """
+        Function wrapper when numba package is not available.
+        """
+        def wrap(fnc):
+            """
+            wrap function nested in id_wrapper function.
+            """
             def wrapped_f(*args, **kwargs):
-                return f(*args, **kwargs)
+                """
+                wrapped_f function nested in wrap function.
+                """
+                return fnc(*args, **kwargs)
             return wrapped_f
         return wrap
-
     jit = id_wrapper
     DO_JIT = False
 
@@ -25,6 +43,9 @@ class GetReturnNode(ast.NodeVisitor):
     A Visitor to get the return tuple names from a calc-style function
     """
     def visit_Return(self, node):
+        """
+        visit_Return method in GetReturnNode class.
+        """
         if isinstance(node.value, ast.Tuple):
             return [e.id for e in node.value.elts]
         else:
@@ -172,11 +193,17 @@ def apply_jit(dtype_sig_out, dtype_sig_in, parameters=None, **kwargs):
         parameters = []
 
     def make_wrapper(func):
+        """
+        make_wrapper function nested in apply_jit function.
+        """
         theargs = inspect.getargspec(func).args
         jitted_apply = make_apply_function(func, dtype_sig_out,
                                            dtype_sig_in, parameters, **kwargs)
 
         def wrapper(*args):
+            """
+            wrapper function nested in make_wrapper function.
+            """
             in_arrays = []
             out_arrays = []
             for farg in theargs:
@@ -209,8 +236,10 @@ def iterate_jit(parameters=None, **kwargs):
         parameters = []
 
     def make_wrapper(func):
-        # Wrap this function in apply_jit from apply_jit
-
+        """
+        make_wrapper function nested in iterate_jit decorator
+        wraps specified func using apply_jit.
+        """
         # Get the input arguments from the function
         in_args = inspect.getargspec(func).args
         try:
@@ -255,6 +284,10 @@ def iterate_jit(parameters=None, **kwargs):
                                                **kwargs_for_jit)
 
         def wrapper(*args, **kwargs):
+            """
+            wrapper function nested in make_wrapper function nested
+            in iterate_jit decorator.
+            """
             in_arrays = []
             pm_or_pf = []
             for farg in all_out_args + in_args:
@@ -276,4 +309,5 @@ def iterate_jit(parameters=None, **kwargs):
             return ans
 
         return wrapper
+
     return make_wrapper
