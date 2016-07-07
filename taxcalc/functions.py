@@ -1133,6 +1133,12 @@ def SchR(_calc_schR, age_head, age_spouse, MARS, c00100,
     Calculate Schedule R credit for the elderly and the disabled.
     """
     c07200 = 0.
+    c28300 = 0.
+    c28400 = 0.
+    c28500 = 0.
+    c28600 = 0.
+    c28700 = 0.
+    c28800 = 0.
     if _calc_schR and (age_head >= 65 or (MARS == 2 and age_spouse >= 65)):
         # calculate credit assuming nobody is disabled
         # (note that all Schedule R policy parameters are hard-coded)
