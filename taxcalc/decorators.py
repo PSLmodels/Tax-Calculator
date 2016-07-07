@@ -40,11 +40,11 @@ except (ImportError, AttributeError):
 
 class GetReturnNode(ast.NodeVisitor):
     """
-    A Visitor to get the return tuple names from a calc-style function
+    A NodeVisitor to get the return tuple names from a calc-style function.
     """
-    def visit_Return(self, node):
+    def visit_Return(self, node):  # pylint: disable=invalid-name,no-self-use
         """
-        visit_Return method in GetReturnNode class.
+        visit_Return is used by NodeVisitor.visit method.
         """
         if isinstance(node.value, ast.Tuple):
             return [e.id for e in node.value.elts]
