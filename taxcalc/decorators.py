@@ -19,7 +19,7 @@ try:
     jit = numba.jit  # pylint: disable=invalid-name
     DO_JIT = True
 except (ImportError, AttributeError):
-    def id_wrapper(*dec_args, **dec_kwargs):
+    def id_wrapper(*dec_args, **dec_kwargs):  # pylint: disable=unused-argument
         """
         Function wrapper when numba package is not available.
         """
