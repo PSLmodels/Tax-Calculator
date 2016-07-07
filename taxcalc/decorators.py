@@ -74,8 +74,7 @@ def create_apply_function_string(sigout, sigin, parameters):
     return fstr.getvalue()
 
 
-def create_toplevel_function_string(args_out, args_in, pm_or_pf,
-                                    kwargs_for_func={}):
+def create_toplevel_function_string(args_out, args_in, pm_or_pf):
     """
     Create a string for a function of the form::
 
@@ -95,26 +94,17 @@ def create_toplevel_function_string(args_out, args_in, pm_or_pf,
 
     pm_or_pf: iterable of strings for object that holds each arg
 
-    kwargs_for_func: dictionary of keyword args for the function
-
     Returns
     -------
     a String representing the function
     """
     fstr = StringIO()
     fstr.write("def hl_func(pm, pf")
-    if kwargs_for_func:
-        kwargs = ",".join(str(k) + "=" + str(v) for k, v in
-                          kwargs_for_func.items())
-        fstr.write(", " + kwargs + " ")
     fstr.write("):\n")
     fstr.write("    from pandas import DataFrame\n")
     fstr.write("    import numpy as np\n")
     fstr.write("    outputs = \\\n")
     outs = []
-    for arg in kwargs_for_func:
-        args_in.remove(arg)
-
     for p, attr in zip(pm_or_pf, args_out + args_in):
         outs.append(p + "." + attr + ", ")
     outs = [m_or_f + "." + arg for m_or_f, arg in zip(pm_or_pf, args_out)]
@@ -122,8 +112,6 @@ def create_toplevel_function_string(args_out, args_in, pm_or_pf,
     fstr.write("        " + "applied_f(")
     for p, attr in zip(pm_or_pf, args_out + args_in):
         fstr.write(p + "." + attr + ", ")
-    for arg in kwargs_for_func:
-        fstr.write(arg + ", ")
     fstr.write(")\n")
     fstr.write("    header = [")
     col_headers = ["'" + out + "'" for out in args_out]
@@ -231,7 +219,6 @@ def iterate_jit(parameters=None, **kwargs):
             # print ("This should only be seen in RTD, if not install numba!")
             return func
 
-        kwargs_for_func = toolz.keyfilter(in_args.__contains__, kwargs)
         kwargs_for_jit = toolz.keyfilter(jit_args.__contains__, kwargs)
 
         # Any name that is a parameter
@@ -277,13 +264,10 @@ def iterate_jit(parameters=None, **kwargs):
                 elif hasattr(args[1], farg):
                     in_arrays.append(getattr(args[1], farg))
                     pm_or_pf.append("pf")
-                elif farg not in kwargs_for_func:
-                    raise ValueError("Unknown arg: " + farg)
             # Create the high level function
             high_level_func = create_toplevel_function_string(all_out_args,
                                                               list(in_args),
-                                                              pm_or_pf,
-                                                              kwargs_for_func)
+                                                              pm_or_pf)
             func_code = compile(high_level_func, "<string>", "exec")
             fakeglobals = {}
             eval(func_code, {"applied_f": applied_jitted_f}, fakeglobals)

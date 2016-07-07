@@ -255,7 +255,7 @@ def test_function_parameters_optional():
     assert_frame_equal(ans, exp)
 
 
-def unjittable_function(w, x, y, z):
+def unjittable_function1(w, x, y, z):
     a = x + y
     b = w[0] + x + y + z
 
@@ -269,7 +269,7 @@ def unjittable_function2(w, x, y, z):
 def test_iterate_jit_raises_on_no_return():
     with pytest.raises(ValueError):
         ij = iterate_jit(parameters=['w'], nopython=True)
-        ij(unjittable_function)
+        ij(unjittable_function1)
 
 
 def test_iterate_jit_raises_on_unknown_return_argument():
@@ -283,7 +283,7 @@ def test_iterate_jit_raises_on_unknown_return_argument():
     pf.x = np.ones((5,))
     pf.y = np.ones((5,))
     pf.z = np.ones((5,))
-    with pytest.raises(ValueError):
+    with pytest.raises(AttributeError):
         ans = uf2(pm, pf)
 
 
