@@ -16,7 +16,7 @@ import toolz
 
 try:
     import numba
-    jit = numba.jit
+    jit = numba.jit  # pylint: disable=invalid-name
     DO_JIT = True
 except (ImportError, AttributeError):
     def id_wrapper(*dec_args, **dec_kwargs):
@@ -34,7 +34,7 @@ except (ImportError, AttributeError):
                 return fnc(*args, **kwargs)
             return wrapped_f
         return wrap
-    jit = id_wrapper
+    jit = id_wrapper  # pylint: disable=invalid-name
     DO_JIT = False
 
 
@@ -54,7 +54,7 @@ class GetReturnNode(ast.NodeVisitor):
 
 def create_apply_function_string(sigout, sigin, parameters):
     """
-    Create a string for a function of the form::
+    Create a string for a function of the form:
 
         def ap_fuc(x_0, x_1, x_2, ...):
             for i in range(len(x_0)):
@@ -62,7 +62,7 @@ def create_apply_function_string(sigout, sigin, parameters):
             return x_0[i], ...
 
     where the specific args to jitted_f and the number of
-    values to return is determined by sigout and sigin
+    values to return is determined by sigout and sigin.
 
     Parameters
     ----------
@@ -97,15 +97,12 @@ def create_apply_function_string(sigout, sigin, parameters):
 
 def create_toplevel_function_string(args_out, args_in, pm_or_pf):
     """
-    Create a string for a function of the form::
+    Create a string for a function of the form:
 
         def hl_func(x_0, x_1, x_2, ...):
             outputs = (...) = calc_func(...)
             header = [...]
             return DataFrame(data, columns=header)
-
-    where the specific args to jitted_f and the number of
-    values to return is destermined by sigout and sigin
 
     Parameters
     ----------
@@ -126,13 +123,13 @@ def create_toplevel_function_string(args_out, args_in, pm_or_pf):
     fstr.write("    import numpy as np\n")
     fstr.write("    outputs = \\\n")
     outs = []
-    for p, attr in zip(pm_or_pf, args_out + args_in):
-        outs.append(p + "." + attr + ", ")
+    for ppp, attr in zip(pm_or_pf, args_out + args_in):
+        outs.append(ppp + "." + attr + ", ")
     outs = [m_or_f + "." + arg for m_or_f, arg in zip(pm_or_pf, args_out)]
     fstr.write("        (" + ", ".join(outs) + ") = \\\n")
     fstr.write("        " + "applied_f(")
-    for p, attr in zip(pm_or_pf, args_out + args_in):
-        fstr.write(p + "." + attr + ", ")
+    for ppp, attr in zip(pm_or_pf, args_out + args_in):
+        fstr.write(ppp + "." + attr + ", ")
     fstr.write(")\n")
     fstr.write("    header = [")
     col_headers = ["'" + out + "'" for out in args_out]
@@ -178,7 +175,8 @@ def make_apply_function(func, out_args, in_args, parameters,
     apfunc = create_apply_function_string(out_args, in_args, parameters)
     func_code = compile(apfunc, "<string>", "exec")
     fakeglobals = {}
-    eval(func_code, {"jitted_f": jitted_f}, fakeglobals)
+    eval(func_code,  # pylint: disable=eval-used
+         {"jitted_f": jitted_f}, fakeglobals)
     if do_jit:
         return jit(**kwargs)(fakeglobals['ap_func'])
     else:
@@ -266,10 +264,10 @@ def iterate_jit(parameters=None, **kwargs):
 
         # Discover the return arguments by walking
         # the AST of the function
-        gnr = GetReturnNode()
+        grn = GetReturnNode()
         all_out_args = None
         for node in ast.walk(ast.parse(''.join(src))):
-            all_out_args = gnr.visit(node)
+            all_out_args = grn.visit(node)
             if all_out_args:
                 break
         if not all_out_args:
@@ -303,7 +301,8 @@ def iterate_jit(parameters=None, **kwargs):
                                                               pm_or_pf)
             func_code = compile(high_level_func, "<string>", "exec")
             fakeglobals = {}
-            eval(func_code, {"applied_f": applied_jitted_f}, fakeglobals)
+            eval(func_code,  # pylint: disable=eval-used
+                 {"applied_f": applied_jitted_f}, fakeglobals)
             high_level_fn = fakeglobals['hl_func']
             ans = high_level_fn(*args, **kwargs)
             return ans
