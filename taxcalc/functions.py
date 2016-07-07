@@ -504,10 +504,10 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
     c00650 = e00650
     _addtax = 0.
     if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
-        _hasgain = 1
+        _hasqdivcgain = 1  # has qualified dividends or long-term capital gains
     else:
-        _hasgain = 0
-    if _hasgain == 1:
+        _hasqdivcgain = 0  # no qualified dividends or long-term capital gains
+    if _hasqdivcgain == 1:
         # if/else 1
         _dwks5 = max(0., e58990 - e58980)
         c24505 = max(0., c00650 - _dwks5)
@@ -686,7 +686,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
     _s1291 = e10105
     c05750 = max(c05100 + _parents + c05700, e74400)
     _taxbc = c05750
-    return (c00650, _hasgain, _dwks5, c24505, c24510, _dwks9, c24516,
+    return (c00650, _hasqdivcgain, _dwks5, c24505, c24510, _dwks9, c24516,
             c24580, _dwks12, c24517, c24520, c24530, _dwks16,
             _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
             _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
