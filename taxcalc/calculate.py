@@ -242,6 +242,8 @@ class Calculator(object):
             seincome_type = self.records.e00900
         elif income_type_str == 'e00650':
             divincome_type = self.records.e00600
+        elif income_type_str == 'e01700':
+            penben_type = self.records.e01500
         # calculate level of taxes after a marginal increase in income
         setattr(self.records, income_type_str, income_type + finite_diff)
         if income_type_str == 'e00200p':
@@ -250,6 +252,8 @@ class Calculator(object):
             self.records.e00900 = seincome_type + finite_diff
         elif income_type_str == 'e00650':
             self.records.e00600 = divincome_type + finite_diff
+        elif income_type_str == 'e01700':
+            self.records.e01500 = penben_type + finite_diff
         if self.consumption.has_response():
             self.consumption.response(self.records, finite_diff)
         self.calc_all()
