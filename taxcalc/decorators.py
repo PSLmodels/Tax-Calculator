@@ -1,5 +1,5 @@
 """
-Implement JIT-related decorators used to speed-up tax-calculating functions.
+Implement Numba JIT decorators used to speed-up tax-calculating functions.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 decorators.py
@@ -195,6 +195,7 @@ def apply_jit(dtype_sig_out, dtype_sig_in, parameters=None, **kwargs):
         make_wrapper function nested in apply_jit function.
         """
         theargs = inspect.getargspec(func).args
+        # pylint: disable=star-args
         jitted_apply = make_apply_function(func, dtype_sig_out,
                                            dtype_sig_in, parameters, **kwargs)
 
@@ -274,6 +275,7 @@ def iterate_jit(parameters=None, **kwargs):
             raise ValueError("Can't find return statement in function!")
 
         # Now create the apply-style possibly-jitted function
+        # pylint: disable=star-args
         applied_jitted_f = make_apply_function(func,
                                                list(reversed(all_out_args)),
                                                in_args,
