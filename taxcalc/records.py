@@ -191,7 +191,7 @@ class Records(object):
         '_fica', '_fica_was', 'c03260', 'c15100',
         '_sep', '_num', 'c15200', 'c04100', 'c04200',
         'c04500', '_amtstd', '_oldfei', 'c05200', '_cglong',
-        '_noncg', '_hasgain', '_dwks9', '_dwks5', '_dwks12',
+        '_noncg', '_hasqdivltcg', '_dwks9', '_dwks5', '_dwks12',
         '_dwks16', '_dwks17', '_dwks21', '_dwks25', '_dwks26',
         '_dwks28', '_dwks31', 'c24505', 'c24510', 'c24520',
         'c24530', 'c24540', 'c24534', 'c24597', 'c24598',
@@ -233,7 +233,7 @@ class Records(object):
         '_surtax', '_combined', '_personal_credit'])
 
     INTEGER_CALCULATED_VARS = set([
-        '_num', '_sep', '_exact', '_hasgain', '_cmp', '_calc_schR'])
+        '_num', '_sep', '_exact', '_hasqdivltcg', '_cmp', '_calc_schR'])
 
     def __init__(self,
                  data='puf.csv',
