@@ -697,11 +697,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
 
 
 @iterate_jit(nopython=True)
-def AMTI(c60000, e60290, _posagi, e07300, c24517,
-         e60300, e60860, p60100, e60840, e60630, e60550, FDED,
-         e60720, e60430, e60500, e60340, e60680, e60600, e60405,
-         e60440, e60420, e60410, e61400, e60660, e60480, c21060,
-         e62000, e60250, _cmp, _standard,
+def AMTI(_posagi, e07300, c24517, FDED, c21060, _standard,
          f6251, c00100, t04470,
          c04470, c17000, c20800, c21040, e04805,
          c02700,
@@ -736,15 +732,6 @@ def AMTI(c60000, e60290, _posagi, e07300, c24517,
     else:
         c60000 = c00100
     c60000 = c60000 - e04805
-    if FDED == 1 or ((_prefded + e60290) > 0.):
-        _addamt = _prefded + e60290 - c60130
-    else:
-        _addamt = 0.
-    if _cmp == 1:
-        c62100 = (_addamt + e60300 + e60860 + p60100 + e60840 + e60630 +
-                  e60550 + e60720 + e60430 + e60500 + e60340 + e60680 +
-                  e60600 + e60405 + e60440 + e60420 + e60410 + e61400 +
-                  e60660 - c60260 - e60480 - e62000 + c60000 - e60250)
     if _standard == 0.0:
         if f6251 == 1:
             _cmbtp = cmbtp_itemizer
@@ -822,7 +809,7 @@ def AMTI(c60000, e60290, _posagi, e07300, c24517,
     c09600 = c63200
     c05800 = _taxbc + c63200
     return (c62720, c60260, c63100, c60200, c60240, c60220, c60000,
-            c60130, c62730, _addamt, c62100,
+            c60130, c62730, c62100,
             _amtsepadd, c62600, c62700, c62760,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
             _ngamty, c62745, _tamt2, _amt5pc, _amt15pc,
