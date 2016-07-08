@@ -115,8 +115,6 @@ class Calculator(object):
         MUI(self.policy, self.records)
         AMTI(self.policy, self.records)
         F2441(self.policy, self.records)
-        DepCareBen(self.policy, self.records)
-        ExpEarnedInc(self.policy, self.records)
         NumDep(self.policy, self.records)
         ChildTaxCredit(self.policy, self.records)
         AmOppCr(self.policy, self.records)

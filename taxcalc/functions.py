@@ -843,55 +843,22 @@ def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
 
 
 @iterate_jit(nopython=True)
-def F2441(MARS, _earned_p, _earned_s, f2441, DCC_c, e32800):
+def F2441(MARS, _earned_p, _earned_s, f2441, DCC_c, e32800,
+          _exact, c00100, CDCC_ps, CDCC_crt, c05800, e07300):
     """
-    Form 2441 logic is in three functions: F2441, DepCareBen, ExpEarnedInc,
-    which are called in that order.
+    Form 2441 calculation of child & dependent care expense credit.
     """
-    c32880 = _earned_p
+    c32880 = _earned_p  # earned income of taxpayer
     if MARS == 2:
-        c32890 = _earned_s
+        c32890 = _earned_s  # earned income of spouse, if present
     else:
         c32890 = _earned_p
     _dclim = min(f2441, 2) * DCC_c
-    c32800 = min(e32800, _dclim)
-    return (c32880, c32890, _dclim, c32800)
-
-
-@iterate_jit(nopython=True)
-def DepCareBen(c32800, _cmp, f2441, MARS, c32880, c32890, e33420, e33430,
-               e33450, e33460, e33465, e33470, _sep, _dclim):
-    """
-    Form 2441 logic is in three functions: F2441, DepCareBen, ExpEarnedInc,
-    which are called in that order.
-    """
-    if f2441 != 0 and MARS == 2:
-        _seywage = min(c32880, c32890, e33420 + e33430 - e33450, e33460)
-    else:
-        _seywage = 0.
-    if _cmp == 1 and MARS != 2:  # this is same as above, why?
-        _seywage = min(c32880, c32890, e33420 + e33430 - e33450, e33460)
-    if f2441 != 0:
-        c33465 = e33465
-        c33470 = e33470
-        c33475 = max(0., min(_seywage, (5000. / _sep)) - c33470)
-        c33480 = max(0., e33420 + e33430 - e33450 - c33465 - c33475)
-        c32840 = c33470 + c33475
-        c32800 = min(max(0., _dclim - c32840), max(0., c32800 - c32840))
-    else:
-        c33465, c33470, c33475, c33480, c32840 = 0., 0., 0., 0., 0.
-        c32800 = c32800
+    # care expenses are limited by policy
+    c32800 = max(0., min(e32800, _dclim))
+    # credit is limited to minimum of individuals' earned income
     c33000 = max(0., min(c32800, min(c32880, c32890)))
-    return (_seywage, c33465, c33470, c33475, c33480, c32840, c32800, c33000)
-
-
-@iterate_jit(nopython=True)
-def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt, c33000, c05800, e07300):
-    """
-    Form 2441 logic is in three functions: F2441, DepCareBen, ExpEarnedInc,
-    which are called in that order.
-    """
-    # child & dependent care expense credit is limited by AGI-related fraction
+    # credit is limited by AGI-related fraction
     if _exact == 1:
         _tratio = math.ceil(max(((c00100 - CDCC_ps) / 2000.), 0.))
         c33200 = c33000 * 0.01 * max(20., CDCC_crt - min(15., _tratio))
@@ -899,9 +866,9 @@ def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt, c33000, c05800, e07300):
         _tratio = 0.
         c33200 = c33000 * 0.01 * max(20., CDCC_crt -
                                      max(((c00100 - CDCC_ps) / 2000.), 0.))
-    # child & dependent care expense credit is limited by tax liability
+    # credit is limited by tax liability
     c07180 = min(max(0., c05800 - e07300), c33200)
-    return (_tratio, c33200, c07180)
+    return (c32880, c32890, _dclim, c32800, c33000, _tratio, c33200, c07180)
 
 
 @iterate_jit(nopython=True)
