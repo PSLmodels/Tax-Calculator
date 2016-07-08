@@ -27,7 +27,7 @@ FICA and IIT mtr histogram bin counts for e01400:
 219814 :      0      0      0      0  60150  62825  47562  26866  21722    689
 FICA and IIT mtr histogram bin counts for e01700:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219814 :      0      0      0      0  60153  62822  47545  26882  21723    689
+219814 :      0      0      0      0  60146  62828  47545  26883  21723    689
 FICA and IIT mtr histogram bin counts for e02000:
 219814 : 219814      0      0      0      0      0      0      0      0      0
 219814 :      0      0      0      0  60173  62778  44325  26322  25517    699
