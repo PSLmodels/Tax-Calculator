@@ -75,7 +75,6 @@ FLPDYR = Filing (accounting) period (i.e., tax year)
 MARS = Marital (filing) status: categorical variable
 MIDR = Married filing separately itemized deductions requirement indicator
 N24 = Number of children eligible for Child Tax Credit
-P04470 = Total deductions (standard or itemized)
 P08000 = Other tax credits
 P22250 = Schedule D: Short-term gains less losses
 P23250 = Schedule D: Long-term gains less losses
