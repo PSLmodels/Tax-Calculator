@@ -492,9 +492,8 @@ def NonGain(c23650, p23250, e01100):
 @iterate_jit(nopython=True)
 def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
              e58980, e24515, e24518, MARS, _taxinc, _xyztax, _feided,
-             _feitax, _cmp, e59410, e59420, e59440, e59470, e59400,
-             e83200_0, e10105, e74400, II_rt1, II_rt2, II_rt3, II_rt4,
-             II_rt5, II_rt6, II_rt7,
+             _feitax,
+             II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6,
              CG_rt1, CG_rt2, CG_rt3, CG_thd1, CG_thd2):
     """
@@ -603,97 +602,15 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         c05100 = c24580
 
     # Form 4972, Lump Sum Distributions
-    if _cmp == 1:
-        c59430 = max(0., e59410 - e59420)
-        c59450 = c59430 + e59440  # income plus lump sum
-        c59460 = (max(0., min(0.5 * c59450, 10000.)) - 0.2 *
-                  max(0., 59450. - 20000.))
-        _line17 = c59450 - c59460
-        _line19 = c59450 - c59460 - e59470
-        if c59450 >= 0.:
-            _line22 = max(0., e59440 - e59440 * c59460 / c59450)
-        else:
-            _line22 = 0.
-        _line30 = 0.1 * max(0., c59450 - c59460 - e59470)
-        _line31 = (0.11 * min(_line30, 1190.) +
-                   0.12 * min(2270. - 1190., max(0., _line30 - 1190.)) +
-                   0.14 * min(4530. - 2270., max(0., _line30 - 2270.)) +
-                   0.15 * min(6690. - 4530., max(0., _line30 - 4530.)) +
-                   0.16 * min(9170. - 6690., max(0., _line30 - 6690.)) +
-                   0.18 * min(11440. - 9170., max(0., _line30 - 9170.)) +
-                   0.20 * min(13710. - 11440., max(0., _line30 - 11440.)) +
-                   0.23 * min(17160. - 13710., max(0., _line30 - 13710.)) +
-                   0.26 * min(22880. - 17160., max(0., _line30 - 17160.)) +
-                   0.30 * min(28600. - 22880., max(0., _line30 - 22880.)) +
-                   0.34 * min(34320. - 28600., max(0., _line30 - 28600.)) +
-                   0.38 * min(42300. - 34320., max(0., _line30 - 34320.)) +
-                   0.42 * min(57190. - 42300., max(0., _line30 - 42300.)) +
-                   0.48 * min(85790. - 57190., max(0., _line30 - 57190.)))
-        _line32 = 10. * _line31
-        if e59440 == 0.:
-            _line36 = _line32
-            # below are unused in calcs
-            _line33 = 0.
-            _line34 = 0.
-            _line35 = 0.
-        elif e59440 > 0.:
-            _line33 = 0.1 * _line22
-            _line34 = (0.11 * min(_line30, 1190.) +
-                       0.12 * min(2270. - 1190., max(0., _line30 - 1190.)) +
-                       0.14 * min(4530. - 2270., max(0., _line30 - 2270.)) +
-                       0.15 * min(6690. - 4530., max(0., _line30 - 4530.)) +
-                       0.16 * min(9170. - 6690., max(0., _line30 - 6690.)) +
-                       0.18 * min(11440. - 9170., max(0., _line30 - 9170.)) +
-                       0.20 * min(13710. - 11440., max(0., _line30 - 11440.)) +
-                       0.23 * min(17160. - 13710., max(0., _line30 - 13710.)) +
-                       0.26 * min(22880. - 17160., max(0., _line30 - 17160.)) +
-                       0.30 * min(28600. - 22880., max(0., _line30 - 22880.)) +
-                       0.34 * min(34320. - 28600., max(0., _line30 - 28600.)) +
-                       0.38 * min(42300. - 34320., max(0., _line30 - 34320.)) +
-                       0.42 * min(57190. - 42300., max(0., _line30 - 42300.)) +
-                       0.48 * min(85790. - 57190., max(0., _line30 - 57190.)))
-            _line35 = 10. * _line34
-            _line36 = max(0., _line32 - _line35)
-        else:
-            _line33 = 0.
-            _line34 = 0.
-            _line35 = 0.
-            _line36 = 0.
-        # tax saving from 10 yr option
-        c59485 = _line36
-        c59490 = c59485 + 0.2 * max(0., e59400)
-        # pension gains tax plus
-        c05700 = c59490
-    else:
-        # all but one unused in calcs
-        c59430 = 0.
-        c59450 = 0.
-        c59460 = 0.
-        _line17 = 0.
-        _line19 = 0.
-        _line22 = 0.
-        _line30 = 0.
-        _line31 = 0.
-        _line32 = 0.
-        _line33 = 0.
-        _line34 = 0.
-        _line35 = 0.
-        _line36 = 0.
-        c59485 = 0.
-        c59490 = 0.
-        c05700 = 0.
-    _parents = e83200_0
-    _s1291 = e10105
-    c05750 = max(c05100 + _parents + c05700, e74400)
+    c05700 = 0.
+
+    c05750 = c05700 + c05100
     _taxbc = c05750
     return (c00650, _hasqdivltcg, _dwks5, c24505, c24510, _dwks9, c24516,
             c24580, _dwks12, c24517, c24520, c24530, _dwks16,
             _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
             _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
-            _addtax, c24560, _taxspecial, c05100, c05700, c59430,
-            c59450, c59460, _line17, _line19, _line22, _line30, _line31,
-            _line32, _line36, _line33, _line34, _line35, c59485, c59490,
-            _s1291, _parents, _taxbc, c05750)
+            _addtax, c24560, _taxspecial, c05100, c05700, _taxbc, c05750)
 
 
 @iterate_jit(nopython=True)
