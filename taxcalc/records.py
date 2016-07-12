@@ -122,7 +122,7 @@ class Records(object):
         'e26270',
         'e27200', 'e32800', 'e03300',
         'e58990',
-        'p60100', 'e62900',
+        'e62900',
         'p87482', 'e87487', 'e87492', 'e87497', 'p87521',
         'e87530',
         'MARS', 'MIDR', 'RECID',
@@ -155,12 +155,9 @@ class Records(object):
         't04470', 'e58980', 'c00650', 'c00100',
         'c04470', 'c04600', 'c21060', 'c21040', 'c17000',
         'c18300', 'c20800', 'c02900', 'c02700', 'c23650',
-        'c01000', 'c02500', '_cmp',
-        'e59400',
-        'e59410', 'x62720', 'x60260',
-        'x60240', 'x60220', 'x60130', 'e60290',
-        'e33420', 'e33430',
-        'e33450', 'e33460', 'e33465', 'e33470',
+        'c01000', 'c02500',
+        'x62720',
+        'x60240', 'x60220', 'x60130',
         'e83080', 'e25360',
         'e25430', 'e25400', 'e25500', 'e26210', 'e26340',
         'e26205', 'e26320', 'e07170',
@@ -192,8 +189,7 @@ class Records(object):
         'c24530', 'c24540', 'c24534', 'c24597', 'c24598',
         'c24610', 'c24615', 'c24550', 'c24570', '_addtax',
         'c24560', '_taxspecial', 'c24580', 'c05100',
-        'c59450',
-        '_s1291', '_parents', 'c62720', 'c60260', 'c63100',
+        'c62720', 'c60260', 'c63100',
         'c60200', 'c60240', 'c60220', 'c60130', 'c62730',
         'c62100', '_cmbtp', '_amtsepadd',
         'c62600', 'c62700', '_alminc', 'c62760',
@@ -225,7 +221,7 @@ class Records(object):
         '_surtax', '_combined', '_personal_credit'])
 
     INTEGER_CALCULATED_VARS = set([
-        '_num', '_sep', '_exact', '_hasqdivltcg', '_cmp', '_calc_schR'])
+        '_num', '_sep', '_exact', '_hasqdivltcg', '_calc_schR'])
 
     def __init__(self,
                  data='puf.csv',
@@ -396,7 +392,6 @@ class Records(object):
         self.e07600 *= ATXPY
         self.e32800 *= ATXPY
         self.e58990 *= ATXPY
-        self.p60100 *= ATXPY
         self.e62900 *= ATXPY
         self.e87530 *= ATXPY
         self.p87521 *= ATXPY
