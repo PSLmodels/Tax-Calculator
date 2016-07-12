@@ -492,9 +492,8 @@ def NonGain(c23650, p23250, e01100):
 @iterate_jit(nopython=True)
 def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
              e58980, e24515, e24518, MARS, _taxinc, _xyztax, _feided,
-             _feitax, _cmp, e59410, e59420, e59440, e59470, e59400,
-             e83200_0, e10105, e74400, II_rt1, II_rt2, II_rt3, II_rt4,
-             II_rt5, II_rt6, II_rt7,
+             _feitax,
+             II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6,
              CG_rt1, CG_rt2, CG_rt3, CG_thd1, CG_thd2):
     """
@@ -603,105 +602,19 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         c05100 = c24580
 
     # Form 4972, Lump Sum Distributions
-    if _cmp == 1:
-        c59430 = max(0., e59410 - e59420)
-        c59450 = c59430 + e59440  # income plus lump sum
-        c59460 = (max(0., min(0.5 * c59450, 10000.)) - 0.2 *
-                  max(0., 59450. - 20000.))
-        _line17 = c59450 - c59460
-        _line19 = c59450 - c59460 - e59470
-        if c59450 >= 0.:
-            _line22 = max(0., e59440 - e59440 * c59460 / c59450)
-        else:
-            _line22 = 0.
-        _line30 = 0.1 * max(0., c59450 - c59460 - e59470)
-        _line31 = (0.11 * min(_line30, 1190.) +
-                   0.12 * min(2270. - 1190., max(0., _line30 - 1190.)) +
-                   0.14 * min(4530. - 2270., max(0., _line30 - 2270.)) +
-                   0.15 * min(6690. - 4530., max(0., _line30 - 4530.)) +
-                   0.16 * min(9170. - 6690., max(0., _line30 - 6690.)) +
-                   0.18 * min(11440. - 9170., max(0., _line30 - 9170.)) +
-                   0.20 * min(13710. - 11440., max(0., _line30 - 11440.)) +
-                   0.23 * min(17160. - 13710., max(0., _line30 - 13710.)) +
-                   0.26 * min(22880. - 17160., max(0., _line30 - 17160.)) +
-                   0.30 * min(28600. - 22880., max(0., _line30 - 22880.)) +
-                   0.34 * min(34320. - 28600., max(0., _line30 - 28600.)) +
-                   0.38 * min(42300. - 34320., max(0., _line30 - 34320.)) +
-                   0.42 * min(57190. - 42300., max(0., _line30 - 42300.)) +
-                   0.48 * min(85790. - 57190., max(0., _line30 - 57190.)))
-        _line32 = 10. * _line31
-        if e59440 == 0.:
-            _line36 = _line32
-            # below are unused in calcs
-            _line33 = 0.
-            _line34 = 0.
-            _line35 = 0.
-        elif e59440 > 0.:
-            _line33 = 0.1 * _line22
-            _line34 = (0.11 * min(_line30, 1190.) +
-                       0.12 * min(2270. - 1190., max(0., _line30 - 1190.)) +
-                       0.14 * min(4530. - 2270., max(0., _line30 - 2270.)) +
-                       0.15 * min(6690. - 4530., max(0., _line30 - 4530.)) +
-                       0.16 * min(9170. - 6690., max(0., _line30 - 6690.)) +
-                       0.18 * min(11440. - 9170., max(0., _line30 - 9170.)) +
-                       0.20 * min(13710. - 11440., max(0., _line30 - 11440.)) +
-                       0.23 * min(17160. - 13710., max(0., _line30 - 13710.)) +
-                       0.26 * min(22880. - 17160., max(0., _line30 - 17160.)) +
-                       0.30 * min(28600. - 22880., max(0., _line30 - 22880.)) +
-                       0.34 * min(34320. - 28600., max(0., _line30 - 28600.)) +
-                       0.38 * min(42300. - 34320., max(0., _line30 - 34320.)) +
-                       0.42 * min(57190. - 42300., max(0., _line30 - 42300.)) +
-                       0.48 * min(85790. - 57190., max(0., _line30 - 57190.)))
-            _line35 = 10. * _line34
-            _line36 = max(0., _line32 - _line35)
-        else:
-            _line33 = 0.
-            _line34 = 0.
-            _line35 = 0.
-            _line36 = 0.
-        # tax saving from 10 yr option
-        c59485 = _line36
-        c59490 = c59485 + 0.2 * max(0., e59400)
-        # pension gains tax plus
-        c05700 = c59490
-    else:
-        # all but one unused in calcs
-        c59430 = 0.
-        c59450 = 0.
-        c59460 = 0.
-        _line17 = 0.
-        _line19 = 0.
-        _line22 = 0.
-        _line30 = 0.
-        _line31 = 0.
-        _line32 = 0.
-        _line33 = 0.
-        _line34 = 0.
-        _line35 = 0.
-        _line36 = 0.
-        c59485 = 0.
-        c59490 = 0.
-        c05700 = 0.
-    _parents = e83200_0
-    _s1291 = e10105
-    c05750 = max(c05100 + _parents + c05700, e74400)
+    c05700 = 0.
+
+    c05750 = c05700 + c05100
     _taxbc = c05750
     return (c00650, _hasqdivltcg, _dwks5, c24505, c24510, _dwks9, c24516,
             c24580, _dwks12, c24517, c24520, c24530, _dwks16,
             _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
             _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
-            _addtax, c24560, _taxspecial, c05100, c05700, c59430,
-            c59450, c59460, _line17, _line19, _line22, _line30, _line31,
-            _line32, _line36, _line33, _line34, _line35, c59485, c59490,
-            _s1291, _parents, _taxbc, c05750)
+            _addtax, c24560, _taxspecial, c05100, c05700, _taxbc, c05750)
 
 
 @iterate_jit(nopython=True)
-def AMTI(c60000, e60290, _posagi, e07300, c24517,
-         e60300, e60860, p60100, e60840, e60630, e60550, FDED,
-         e60720, e60430, e60500, e60340, e60680, e60600, e60405,
-         e60440, e60420, e60410, e61400, e60660, e60480, c21060,
-         e62000, e60250, _cmp, _standard,
+def AMTI(_posagi, e07300, c24517, FDED, c21060, _standard,
          f6251, c00100, t04470,
          c04470, c17000, c20800, c21040, e04805,
          c02700,
@@ -736,15 +649,6 @@ def AMTI(c60000, e60290, _posagi, e07300, c24517,
     else:
         c60000 = c00100
     c60000 = c60000 - e04805
-    if FDED == 1 or ((_prefded + e60290) > 0.):
-        _addamt = _prefded + e60290 - c60130
-    else:
-        _addamt = 0.
-    if _cmp == 1:
-        c62100 = (_addamt + e60300 + e60860 + p60100 + e60840 + e60630 +
-                  e60550 + e60720 + e60430 + e60500 + e60340 + e60680 +
-                  e60600 + e60405 + e60440 + e60420 + e60410 + e61400 +
-                  e60660 - c60260 - e60480 - e62000 + c60000 - e60250)
     if _standard == 0.0:
         if f6251 == 1:
             _cmbtp = cmbtp_itemizer
@@ -822,7 +726,7 @@ def AMTI(c60000, e60290, _posagi, e07300, c24517,
     c09600 = c63200
     c05800 = _taxbc + c63200
     return (c62720, c60260, c63100, c60200, c60240, c60220, c60000,
-            c60130, c62730, _addamt, c62100,
+            c60130, c62730, c62100,
             _amtsepadd, c62600, c62700, c62760,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
             _ngamty, c62745, _tamt2, _amt5pc, _amt15pc,
@@ -843,55 +747,22 @@ def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
 
 
 @iterate_jit(nopython=True)
-def F2441(MARS, _earned_p, _earned_s, f2441, DCC_c, e32800):
+def F2441(MARS, _earned_p, _earned_s, f2441, DCC_c, e32800,
+          _exact, c00100, CDCC_ps, CDCC_crt, c05800, e07300):
     """
-    Form 2441 logic is in three functions: F2441, DepCareBen, ExpEarnedInc,
-    which are called in that order.
+    Form 2441 calculation of child & dependent care expense credit.
     """
-    c32880 = _earned_p
+    c32880 = _earned_p  # earned income of taxpayer
     if MARS == 2:
-        c32890 = _earned_s
+        c32890 = _earned_s  # earned income of spouse, if present
     else:
         c32890 = _earned_p
     _dclim = min(f2441, 2) * DCC_c
-    c32800 = min(e32800, _dclim)
-    return (c32880, c32890, _dclim, c32800)
-
-
-@iterate_jit(nopython=True)
-def DepCareBen(c32800, _cmp, f2441, MARS, c32880, c32890, e33420, e33430,
-               e33450, e33460, e33465, e33470, _sep, _dclim):
-    """
-    Form 2441 logic is in three functions: F2441, DepCareBen, ExpEarnedInc,
-    which are called in that order.
-    """
-    if f2441 != 0 and MARS == 2:
-        _seywage = min(c32880, c32890, e33420 + e33430 - e33450, e33460)
-    else:
-        _seywage = 0.
-    if _cmp == 1 and MARS != 2:  # this is same as above, why?
-        _seywage = min(c32880, c32890, e33420 + e33430 - e33450, e33460)
-    if f2441 != 0:
-        c33465 = e33465
-        c33470 = e33470
-        c33475 = max(0., min(_seywage, (5000. / _sep)) - c33470)
-        c33480 = max(0., e33420 + e33430 - e33450 - c33465 - c33475)
-        c32840 = c33470 + c33475
-        c32800 = min(max(0., _dclim - c32840), max(0., c32800 - c32840))
-    else:
-        c33465, c33470, c33475, c33480, c32840 = 0., 0., 0., 0., 0.
-        c32800 = c32800
+    # care expenses are limited by policy
+    c32800 = max(0., min(e32800, _dclim))
+    # credit is limited to minimum of individuals' earned income
     c33000 = max(0., min(c32800, min(c32880, c32890)))
-    return (_seywage, c33465, c33470, c33475, c33480, c32840, c32800, c33000)
-
-
-@iterate_jit(nopython=True)
-def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt, c33000, c05800, e07300):
-    """
-    Form 2441 logic is in three functions: F2441, DepCareBen, ExpEarnedInc,
-    which are called in that order.
-    """
-    # child & dependent care expense credit is limited by AGI-related fraction
+    # credit is limited by AGI-related fraction
     if _exact == 1:
         _tratio = math.ceil(max(((c00100 - CDCC_ps) / 2000.), 0.))
         c33200 = c33000 * 0.01 * max(20., CDCC_crt - min(15., _tratio))
@@ -899,9 +770,9 @@ def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt, c33000, c05800, e07300):
         _tratio = 0.
         c33200 = c33000 * 0.01 * max(20., CDCC_crt -
                                      max(((c00100 - CDCC_ps) / 2000.), 0.))
-    # child & dependent care expense credit is limited by tax liability
+    # credit is limited by tax liability
     c07180 = min(max(0., c05800 - e07300), c33200)
-    return (_tratio, c33200, c07180)
+    return (c32880, c32890, _dclim, c32800, c33000, _tratio, c33200, c07180)
 
 
 @iterate_jit(nopython=True)
