@@ -614,11 +614,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
 
 
 @iterate_jit(nopython=True)
-def AMTI(c60000, e60290, _posagi, e07300, c24517,
-         e60300, e60860, p60100, e60840, e60630, e60550, FDED,
-         e60720, e60430, e60500, e60340, e60680, e60600, e60405,
-         e60440, e60420, e60410, e61400, e60660, e60480, c21060,
-         e62000, e60250, _cmp, _standard,
+def AMTI(_posagi, e07300, c24517, FDED, c21060, _standard,
          f6251, c00100, t04470,
          c04470, c17000, c20800, c21040, e04805,
          c02700,
@@ -653,15 +649,6 @@ def AMTI(c60000, e60290, _posagi, e07300, c24517,
     else:
         c60000 = c00100
     c60000 = c60000 - e04805
-    if FDED == 1 or ((_prefded + e60290) > 0.):
-        _addamt = _prefded + e60290 - c60130
-    else:
-        _addamt = 0.
-    if _cmp == 1:
-        c62100 = (_addamt + e60300 + e60860 + p60100 + e60840 + e60630 +
-                  e60550 + e60720 + e60430 + e60500 + e60340 + e60680 +
-                  e60600 + e60405 + e60440 + e60420 + e60410 + e61400 +
-                  e60660 - c60260 - e60480 - e62000 + c60000 - e60250)
     if _standard == 0.0:
         if f6251 == 1:
             _cmbtp = cmbtp_itemizer
@@ -739,7 +726,7 @@ def AMTI(c60000, e60290, _posagi, e07300, c24517,
     c09600 = c63200
     c05800 = _taxbc + c63200
     return (c62720, c60260, c63100, c60200, c60240, c60220, c60000,
-            c60130, c62730, _addamt, c62100,
+            c60130, c62730, c62100,
             _amtsepadd, c62600, c62700, c62760,
             _alminc, _amtfei, c62780, c62900, c63000, c62740,
             _ngamty, c62745, _tamt2, _amt5pc, _amt15pc,
@@ -760,55 +747,22 @@ def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
 
 
 @iterate_jit(nopython=True)
-def F2441(MARS, _earned_p, _earned_s, f2441, DCC_c, e32800):
+def F2441(MARS, _earned_p, _earned_s, f2441, DCC_c, e32800,
+          _exact, c00100, CDCC_ps, CDCC_crt, c05800, e07300):
     """
-    Form 2441 logic is in three functions: F2441, DepCareBen, ExpEarnedInc,
-    which are called in that order.
+    Form 2441 calculation of child & dependent care expense credit.
     """
-    c32880 = _earned_p
+    c32880 = _earned_p  # earned income of taxpayer
     if MARS == 2:
-        c32890 = _earned_s
+        c32890 = _earned_s  # earned income of spouse, if present
     else:
         c32890 = _earned_p
     _dclim = min(f2441, 2) * DCC_c
-    c32800 = min(e32800, _dclim)
-    return (c32880, c32890, _dclim, c32800)
-
-
-@iterate_jit(nopython=True)
-def DepCareBen(c32800, _cmp, f2441, MARS, c32880, c32890, e33420, e33430,
-               e33450, e33460, e33465, e33470, _sep, _dclim):
-    """
-    Form 2441 logic is in three functions: F2441, DepCareBen, ExpEarnedInc,
-    which are called in that order.
-    """
-    if f2441 != 0 and MARS == 2:
-        _seywage = min(c32880, c32890, e33420 + e33430 - e33450, e33460)
-    else:
-        _seywage = 0.
-    if _cmp == 1 and MARS != 2:  # this is same as above, why?
-        _seywage = min(c32880, c32890, e33420 + e33430 - e33450, e33460)
-    if f2441 != 0:
-        c33465 = e33465
-        c33470 = e33470
-        c33475 = max(0., min(_seywage, (5000. / _sep)) - c33470)
-        c33480 = max(0., e33420 + e33430 - e33450 - c33465 - c33475)
-        c32840 = c33470 + c33475
-        c32800 = min(max(0., _dclim - c32840), max(0., c32800 - c32840))
-    else:
-        c33465, c33470, c33475, c33480, c32840 = 0., 0., 0., 0., 0.
-        c32800 = c32800
+    # care expenses are limited by policy
+    c32800 = max(0., min(e32800, _dclim))
+    # credit is limited to minimum of individuals' earned income
     c33000 = max(0., min(c32800, min(c32880, c32890)))
-    return (_seywage, c33465, c33470, c33475, c33480, c32840, c32800, c33000)
-
-
-@iterate_jit(nopython=True)
-def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt, c33000, c05800, e07300):
-    """
-    Form 2441 logic is in three functions: F2441, DepCareBen, ExpEarnedInc,
-    which are called in that order.
-    """
-    # child & dependent care expense credit is limited by AGI-related fraction
+    # credit is limited by AGI-related fraction
     if _exact == 1:
         _tratio = math.ceil(max(((c00100 - CDCC_ps) / 2000.), 0.))
         c33200 = c33000 * 0.01 * max(20., CDCC_crt - min(15., _tratio))
@@ -816,9 +770,9 @@ def ExpEarnedInc(_exact, c00100, CDCC_ps, CDCC_crt, c33000, c05800, e07300):
         _tratio = 0.
         c33200 = c33000 * 0.01 * max(20., CDCC_crt -
                                      max(((c00100 - CDCC_ps) / 2000.), 0.))
-    # child & dependent care expense credit is limited by tax liability
+    # credit is limited by tax liability
     c07180 = min(max(0., c05800 - e07300), c33200)
-    return (_tratio, c33200, c07180)
+    return (c32880, c32890, _dclim, c32800, c33000, _tratio, c33200, c07180)
 
 
 @iterate_jit(nopython=True)
