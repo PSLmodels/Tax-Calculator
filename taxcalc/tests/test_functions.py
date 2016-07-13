@@ -43,7 +43,7 @@ def test_function_args_usage():
             if fbody.find(arg) < 0:
                 msg = '{} function argument {} never used\n'.format(fname, arg)
                 sys.stdout.write(msg)
-                assert 'arg' == 'UNUSED'
+                assert 'argument' == 'UNUSED'
 
 
 def test_1():
