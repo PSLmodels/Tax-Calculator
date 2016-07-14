@@ -12,7 +12,6 @@ Tax-Calculator functions that calculate FICA and individual income taxes.
 # pylint: disable=too-many-locals
 
 
-import pandas as pd
 import math
 import numpy as np
 from .decorators import iterate_jit, jit
@@ -1154,13 +1153,13 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, _fica_was,
             _othadd)
 
 
-def F5405(pol, rec):
+@iterate_jit(nopython=True)
+def F5405(e11580, c11580):
     """
-    F5405 function: Form 5405 First-Time Homebuyer Credit is not needed
+    Form 5405, First-Time Homebuyer Credit
     """
-    if pol.current_year > 0:  # meaningless use of required first argument
-        c64450 = np.zeros((rec.dim,))
-    return pd.DataFrame(data=np.column_stack((c64450,)), columns=['c64450'])
+    c11580 = e11580
+    return c11580
 
 
 @iterate_jit(nopython=True)
@@ -1211,14 +1210,14 @@ def DEITC(c59660, c07100, c08800, c05800, _avail, e11601, e07170, _othertax):
 
 
 @iterate_jit(nopython=True)
-def IITAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, e11580,
+def IITAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, c11580,
           e11450, e11500, e82040, e11550, e10000, _fica, _personal_credit, n24,
           CTC_additional, CTC_additional_ps, CTC_additional_prt, c00100,
           _sep, MARS):
     """
     IITAX function: ...
     """
-    _refund = (c59660 + c11070 + c10960 + c10950 + c11600 + e11580 + e11450 +
+    _refund = (c59660 + c11070 + c10960 + c10950 + c11600 + c11580 + e11450 +
                e11500 + _personal_credit)
     _iitax = c09200 - _refund - e82040
     _combined = _iitax + _fica
