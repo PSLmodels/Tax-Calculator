@@ -165,7 +165,7 @@ class Records(object):
         'e07500', 'e08001',
         'e07980', 'e10000', 'e10100', 'e10050', 'e10075',
         'e09805', 'e09710', 'e09720',
-        'e11601',
+        'e11601', 'c11580',
         'e40223', '_sey', '_earned', '_earned_p', '_earned_s',
         'c09400', '_feided', '_ymod', '_ymod1', '_posagi',
         '_xyztax', '_avail', 'e85070',
