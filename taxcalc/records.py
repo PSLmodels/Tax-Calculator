@@ -152,14 +152,11 @@ class Records(object):
         'c04470', 'c04600', 'c21060', 'c21040', 'c17000',
         'c18300', 'c20800', 'c02900', 'c02700', 'c23650',
         'c01000', 'c02500',
-        'x62720',
-        'x60240', 'x60220', 'x60130',
-        'e83080',
         't07950',
         'c11580',
         '_sey', '_earned', '_earned_p', '_earned_s',
         'c09400', '_feided', '_ymod', '_ymod1', '_posagi',
-        '_xyztax', '_avail', 'e85070',
+        '_xyztax', '_avail',
         '_taxinc', 'c04800', '_feitax', 'c05750', 'c24517',
         '_taxbc', 'c60000', '_standard', 'c24516',
         'c05700', 'c32880', 'c32890', '_dclim', 'c32800',
@@ -201,9 +198,9 @@ class Records(object):
         '_ctctax', 'c82925', 'c82930', 'c82935',
         'c82880', 'c82885', 'c82890', 'c82900',
         'c82905', 'c82910', 'c82915', 'c82920', 'c82937',
-        'c82940', '_othadd', 'y07100',
+        'c82940', 'y07100',
         'x07100', 'c08800', 'x07400', 'c59680',
-        '_othertax', 'e82940', 'NIIT',
+        '_othertax', 'NIIT',
         'c59720', 'c07150', 'c10300', '_iitax',
         '_refund',
         '_amed',
@@ -358,7 +355,6 @@ class Records(object):
         self.e09800 *= ATXPY
         self.e09900 *= ATXPY
         self.e11550 *= ATXPY
-        self.e11070 *= ATXPY
         self.e11200 *= ATXPY
         self.e11580 *= ATXPY
         # ITEMIZED DEDUCTIONS

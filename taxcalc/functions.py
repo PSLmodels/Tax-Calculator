@@ -615,10 +615,10 @@ def AMTI(_posagi, e07300, c24517, FDED, c21060, _standard,
          f6251, c00100, t04470,
          c04470, c17000, c20800, c21040,
          c02700,
-         e24515, x60130,
-         x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
+         e24515,
+         c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
          MARS, _sep, AMT_Child_em, AMT_CG_rt1,
-         AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516,
+         AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, e00700, c24516,
          c24520, c05700,
          age_head, KT_c_Age, e62900, AMT_thd_MarriedS, _earned,
          AMT_em, AMT_prt, AMT_trt1, AMT_trt2, cmbtp_itemizer, cmbtp_standard):
@@ -626,12 +626,12 @@ def AMTI(_posagi, e07300, c24517, FDED, c21060, _standard,
     AMTI function: AMT taxable income
     """
     # pylint: disable=too-many-statements,too-many-branches
-    c62720 = c24517 + x62720
+    c62720 = c24517
     c60260 = e00700
     c60200 = min(c17000, 0.025 * _posagi)
-    c60240 = c18300 + x60240
-    c60220 = c20800 + x60220
-    c60130 = c21040 + x60130
+    c60240 = c18300
+    c60220 = c20800
+    c60130 = c21040
     c62730 = e24515
     if FDED == 2:
         _prefded = 0.
@@ -732,12 +732,12 @@ def AMTI(_posagi, e07300, c24517, FDED, c21060, _standard,
 
 @iterate_jit(nopython=True)
 def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
-        NIIT, e85070, e26270):
+        NIIT, e26270):
     """
     MUI function: ...
     """
     NIIT = NIIT_trt * min(e00300 + e00600 + max(0., c01000) +
-                          max(0., e02000 - e26270 + e85070),
+                          max(0., e02000 - e26270),
                           max(0., c00100 - NIIT_thd[MARS - 1]))
     return NIIT
 
@@ -774,7 +774,7 @@ def F2441(MARS, _earned_p, _earned_s, f2441, DCC_c, e32800,
 @iterate_jit(nopython=True)
 def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge, DSI,
            age_head, EITC_MaxEligAge, EITC_ps_MarriedJ, EITC_rt, c59560,
-           EITC_c, age_spouse, EITC_prt, e83080, e00300, e00600,
+           EITC_c, age_spouse, EITC_prt, e00300, e00600,
            p25470, e27200,
            EITC_InvestIncome_c, _earned, c59660):
     """
@@ -801,7 +801,7 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge, DSI,
     if MARS != 3 and MARS != 6:
         _val_rtbase = EITC_rt[EIC] * 100.
         _val_rtless = EITC_prt[EIC] * 100.
-        _dy = (e00400 + e83080 + e00300 + e00600 +
+        _dy = (e00400 + e00300 + e00600 +
                max(0., c01000) + max(0., 0. - p25470) + max(0., e27200))
     else:
         _val_rtbase = 0.
@@ -1090,9 +1090,9 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, c07230,
 
 @iterate_jit(nopython=True)
 def AddCTC(n24, _precrd, _earned, c07220, _fica_was,
-           ACTC_Income_thd, ACTC_rt,
-           ALD_SelfEmploymentTax_HC, c03260, e09800, c59660, e11200,
-           e11070, e82940, ACTC_ChildNum):
+           ACTC_Income_thd, ACTC_rt, ACTC_ChildNum,
+           ALD_SelfEmploymentTax_HC, c03260, e09800, c59660, e11200):
+
     """
     AddCTC function: calculates Additional Child Tax Credit
     """
@@ -1110,7 +1110,6 @@ def AddCTC(n24, _precrd, _earned, c07220, _fica_was,
     c82937 = 0.
     c82940 = 0.
     c11070 = 0.
-    _othadd = 0.
     # Part I of 2005 form 8812
     if n24 > 0:
         c82925 = _precrd
@@ -1137,11 +1136,8 @@ def AddCTC(n24, _precrd, _earned, c07220, _fica_was,
         else:
             c82940 = min(c82935, c82937)
     c11070 = c82940
-    if abs(e82940 - c82940) > 100:
-        _othadd = e11070 - c11070
     return (c82925, c82930, c82935, c82880, c82885, c82890,
-            c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070,
-            _othadd)
+            c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070)
 
 
 @iterate_jit(nopython=True)
