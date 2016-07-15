@@ -1034,7 +1034,7 @@ def SchR(_calc_schR, age_head, age_spouse, MARS, c00100,
 
 @iterate_jit(nopython=True)
 def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, c07230,
-            e07600, e07240, e07260, e07300, t07950,
+            e07600, e07240, e07260, e07300,
             c05800, _precrd, ETC_pe_Single, c87668, c87620, c07200):
     """
     NonEdCr function: ...
@@ -1060,9 +1060,7 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, c07230,
     c07230 = c87680
     _ctc1 = c07180 + c07200 + c07230
     _ctc2 = e07240 + e07260 + e07300
-    _regcrd = _ctc1 + _ctc2
-    _exocrd = t07950
-    _ctctax = c05800 - _regcrd - _exocrd
+    _ctctax = c05800 - _ctc1 - _ctc2
     c07220 = min(_precrd, max(0., _ctctax))
     # lt tax owed
     _avail = c05800
@@ -1084,7 +1082,7 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, c07230,
     _avail = _avail - c07220
     # Allocate credits to tax in order on the tax form
     return (c87560, c87570, c87580, c87590, c87600, c87610, c07300, c07600,
-            c07240, c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220,
+            c07240, c87620, _ctc1, _ctc2, _ctctax, c07220,
             c07230, _avail)
 
 
