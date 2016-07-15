@@ -845,19 +845,18 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge, DSI,
 
 @iterate_jit(nopython=True)
 def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
-                   _precrd, _nctcr, CTC_prt):
+                   _precrd, CTC_prt):
     """
     ChildTaxCredit function: ...
     """
-    _nctcr = n24
-    _precrd = CTC_c * _nctcr
+    _precrd = CTC_c * n24
     _ctcagi = c00100 + _feided
     if _ctcagi > CTC_ps[MARS - 1]:
         excess = _ctcagi - CTC_ps[MARS - 1]
         if _exact == 1:
             excess = 1000. * math.ceil(excess / 1000.)
         _precrd = max(0., _precrd - CTC_prt * excess)
-    return (_nctcr, _precrd, _ctcagi)
+    return (_precrd, _ctcagi)
 
 
 @iterate_jit(nopython=True)
@@ -1090,7 +1089,7 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, c07230,
 
 
 @iterate_jit(nopython=True)
-def AddCTC(_nctcr, _precrd, _earned, c07220, _fica_was,
+def AddCTC(n24, _precrd, _earned, c07220, _fica_was,
            ACTC_Income_thd, ACTC_rt,
            ALD_SelfEmploymentTax_HC, c03260, e09800, c59660, e11200,
            e11070, e82940, ACTC_ChildNum):
@@ -1113,7 +1112,7 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, _fica_was,
     c11070 = 0.
     _othadd = 0.
     # Part I of 2005 form 8812
-    if _nctcr > 0:
+    if n24 > 0:
         c82925 = _precrd
         c82930 = c07220
         c82935 = c82925 - c82930
@@ -1122,7 +1121,7 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, _fica_was,
         c82885 = max(0., c82880 - ACTC_Income_thd)
         c82890 = ACTC_rt * c82885
     # Part II of 2005 form 8812
-    if _nctcr >= ACTC_ChildNum and c82890 < c82935:
+    if n24 >= ACTC_ChildNum and c82890 < c82935:
         c82900 = 0.5 * _fica_was
         c82905 = (1. - ALD_SelfEmploymentTax_HC) * c03260 + e09800
         c82910 = c82900 + c82905
@@ -1130,9 +1129,9 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, _fica_was,
         c82920 = max(0., c82910 - c82915)
         c82937 = max(c82890, c82920)
     # Part II of 2005 form 8812
-    if _nctcr > 0 and _nctcr <= 2 and c82890 > 0:
+    if n24 > 0 and n24 <= 2 and c82890 > 0:
         c82940 = min(c82890, c82935)
-    if _nctcr > 2:
+    if n24 > 2:
         if c82890 >= c82935:
             c82940 = c82935
         else:

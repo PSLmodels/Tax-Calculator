@@ -191,7 +191,7 @@ class Records(object):
         '_tratio', 'c33200',
         '_modagi', '_extrastd', 'ID_Casualty_frt_in_pufcsv_year',
         '_val_ymax', '_preeitc', '_val_rtbase', '_val_rtless',
-        '_dy', 'c11070', '_nctcr', '_ctcagi', 'c87482',
+        '_dy', 'c11070', '_ctcagi', 'c87482',
         'c87487', 'c87492', 'c87497', 'c87483', 'c87488',
         'c87493', 'c87498', 'c87540', 'c87654',
         'c87656', 'c87658', 'c87660', 'c87662', 'c87664',
