@@ -1,6 +1,4 @@
-STARTING WITH TAXBRAINTEST : Mon Jun 20 20:41:57 EDT 2016
-1-000	FICA	2018	-0.1	-0.08	www.ospc.org/taxbrain/4350/
-1-000	FICA	2021	-0.1	-0.07	www.ospc.org/taxbrain/4350/
-1-000	FICA	2024	-0.1	-0.06	www.ospc.org/taxbrain/4350/
-1-000	FICA	2025	-0.1	-0.06	www.ospc.org/taxbrain/4350/
-FINISHED WITH TAXBRAINTEST : Mon Jun 20 20:45:04 EDT 2016
+1-000	ITAX	2022	0.1	0.09	www.ospc.org/taxbrain/4615/
+1-000	FICA	2018	-0.1	-0.08	www.ospc.org/taxbrain/4615/
+1-000	FICA	2024	-0.1	-0.06	www.ospc.org/taxbrain/4615/
+1-000	FICA	2025	-0.1	-0.06	www.ospc.org/taxbrain/4615/
