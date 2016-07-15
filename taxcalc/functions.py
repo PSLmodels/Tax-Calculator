@@ -488,7 +488,7 @@ def NonGain(c23650, p23250, e01100):
 
 @iterate_jit(nopython=True)
 def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
-             e58980, e24515, e24518, MARS, _taxinc, _xyztax, _feided,
+             e24515, e24518, MARS, _taxinc, _xyztax, _feided,
              _feitax,
              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6,
@@ -505,14 +505,14 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         _hasqdivltcg = 0  # no qualified dividends or long-term capital gains
     if _hasqdivltcg == 1:
         # if/else 1
-        _dwks5 = max(0., e58990 - e58980)
+        _dwks5 = max(0., e58990)
         c24505 = max(0., c00650 - _dwks5)
         # gain for tax computation
         if e01100 > 0.:
             c24510 = e01100
         else:
             c24510 = max(0., min(c23650, p23250)) + e01100
-        _dwks9 = max(0., c24510 - min(e58990, e58980))
+        _dwks9 = max(0., c24510 - min(0., e58990))
         c24516 = c24505 + _dwks9
 
         # if/else 2
@@ -1093,7 +1093,7 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, c07230,
 def AddCTC(_nctcr, _precrd, _earned, c07220, _fica_was,
            ACTC_Income_thd, ACTC_rt,
            ALD_SelfEmploymentTax_HC, c03260, e09800, c59660, e11200,
-           e11070, e82915, e82940, ACTC_ChildNum):
+           e11070, e82940, ACTC_ChildNum):
     """
     AddCTC function: calculates Additional Child Tax Credit
     """
@@ -1138,7 +1138,7 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, _fica_was,
         else:
             c82940 = min(c82935, c82937)
     c11070 = c82940
-    if e82915 > 0 and abs(e82940 - c82940) > 100:
+    if abs(e82940 - c82940) > 100:
         _othadd = e11070 - c11070
     return (c82925, c82930, c82935, c82880, c82885, c82890,
             c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070,
@@ -1199,14 +1199,14 @@ def DEITC(c59660, c07100, c08800, c05800, _avail, _othertax):
 
 @iterate_jit(nopython=True)
 def IITAX(c09200, c59660, c11070, c10960, c10950, _eitc, c11580,
-          e82040, e11550, _fica, _personal_credit, n24,
+          e11550, _fica, _personal_credit, n24,
           CTC_additional, CTC_additional_ps, CTC_additional_prt, c00100,
           _sep, MARS):
     """
     IITAX function: ...
     """
     _refund = (c59660 + c11070 + c10960 + c10950 + c11580 + _personal_credit)
-    _iitax = c09200 - _refund - e82040
+    _iitax = c09200 - _refund
     _combined = _iitax + _fica
     potential_add_CTC = max(0., min(_combined, CTC_additional * n24))
     phaseout = (c00100 -
