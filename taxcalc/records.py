@@ -207,7 +207,7 @@ class Records(object):
         '_surtax', '_combined', '_personal_credit'])
 
     INTEGER_CALCULATED_VARS = set([
-        '_num', '_sep', '_exact', '_hasqdivltcg', '_calc_schR'])
+        '_num', '_sep', '_exact', '_hasqdivltcg', '_calc_schR', 'f2555'])
 
     def __init__(self,
                  data='puf.csv',
