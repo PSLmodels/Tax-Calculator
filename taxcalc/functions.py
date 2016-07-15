@@ -612,7 +612,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
 
 @iterate_jit(nopython=True)
 def AMTI(_posagi, e07300, c24517, FDED, c21060, _standard,
-         f6251, c00100, t04470,
+         f6251, c00100,
          c04470, c17000, c20800, c21040,
          c02700,
          e24515,
@@ -642,7 +642,7 @@ def AMTI(_posagi, e07300, c24517, FDED, c21060, _standard,
     if FDED == 1:
         c60000 = c00100 - _totded
     elif FDED == 3:
-        c60000 = c00100 - max(c04470, t04470)
+        c60000 = c00100 - c04470
     else:
         c60000 = c00100
     if _standard == 0.0:
