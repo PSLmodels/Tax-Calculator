@@ -998,11 +998,11 @@ def RefAmOpp(c87521, _num, c00100):
 
 @iterate_jit(nopython=True)
 def SchR(_calc_schR, age_head, age_spouse, MARS, c00100,
-         c05800, e07300, c07180, e02400, c02500, e01500, e01700):
+         c05800, e07300, c07180, e02400, c02500, e01500, e01700,
+         c07200, c28300, c28400, c28500, c28600, c28700, c28800):
     """
     Calculate Schedule R credit for the elderly and the disabled.
     """
-    c07200 = 0.
     if _calc_schR and (age_head >= 65 or (MARS == 2 and age_spouse >= 65)):
         # calculate credit assuming nobody is disabled
         # (note that all Schedule R policy parameters are hard-coded)
@@ -1035,6 +1035,15 @@ def SchR(_calc_schR, age_head, age_spouse, MARS, c00100,
         c28800 = max(0., c28300 - c28700)
         c07200 = min(0.15 * c28800,
                      max(0., (c05800 - e07300 - c07180)))
+    else:  # if not calculating Schedule R credit
+        c07200 = 0.
+        c07200 = 0.
+        c28300 = 0.
+        c28400 = 0.
+        c28500 = 0.
+        c28600 = 0.
+        c28700 = 0.
+        c28800 = 0.
     return (c07200, c28300, c28400, c28500, c28600, c28700, c28800)
 
 
