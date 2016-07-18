@@ -34,10 +34,11 @@ def test_function_args_usage():
             line = '====================================================='
             sys.stdout.write('{}\n{}\n{}\n{}\n'.format(msg, line, fcode, line))
             assert False
-        else:
-            fname = match.group(1)
-            fargs = match.group(2).split(',')  # list of function arguments
-            fbody = match.group(3)
+        fname = match.group(1)
+        fargs = match.group(2).split(',')  # list of function arguments
+        fbody = match.group(3)
+        if fname == 'Taxer_i':
+            continue  # because Taxer_i function has no fbody (only a return)
         for farg in fargs:
             arg = farg.strip()
             if fbody.find(arg) < 0:
