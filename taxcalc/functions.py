@@ -350,8 +350,7 @@ def AMED(_fica, e00200, MARS, AMED_thd, _sey, AMED_trt,
 
 @iterate_jit(nopython=True)
 def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
-           MARS, MIDR, blind_head, blind_spouse,
-           _standard, c04100, c15100, c15200):
+           MARS, MIDR, blind_head, blind_spouse, _standard):
     """
     StdDed function:
 
@@ -369,8 +368,7 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
 
         II_brk* : Personal income tax bracket upper thresholds: range 1-6
 
-        II_rt* : Personal income tax rates: range 1-7,
-        respectively for lowest income bracket to the highest
+        II_rt* : Personal income tax rates: range 1-7
 
     Taxpayer Characteristics:
         _earned : Form 2441 earned income amount
@@ -413,7 +411,7 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
     _standard = c04100 + c15200
     if (MARS == 3 or MARS == 6) and (MIDR == 1):
         _standard = 0.
-    return (_standard, c04100, c15100, c15200)
+    return _standard
 
 
 @iterate_jit(nopython=True)
@@ -986,9 +984,9 @@ def RefAmOpp(c87521, _num, c00100, c10960, c87668):
 @iterate_jit(nopython=True)
 def SchR(_calc_schR, age_head, age_spouse, MARS, c00100,
          c05800, e07300, c07180, e02400, c02500, e01500, e01700,
-         c07200, c28300, c28400, c28500, c28600, c28700, c28800):
+         c07200):
     """
-    Calculate Schedule R credit for the elderly and the disabled.
+    Calculate Schedule R credit for the elderly and the disabled, c07200
     """
     if _calc_schR and (age_head >= 65 or (MARS == 2 and age_spouse >= 65)):
         # calculate credit assuming nobody is disabled
@@ -1024,14 +1022,7 @@ def SchR(_calc_schR, age_head, age_spouse, MARS, c00100,
                      max(0., (c05800 - e07300 - c07180)))
     else:  # if not calculating Schedule R credit
         c07200 = 0.
-        c07200 = 0.
-        c28300 = 0.
-        c28400 = 0.
-        c28500 = 0.
-        c28600 = 0.
-        c28700 = 0.
-        c28800 = 0.
-    return (c07200, c28300, c28400, c28500, c28600, c28700, c28800)
+    return c07200
 
 
 @iterate_jit(nopython=True)
