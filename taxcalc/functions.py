@@ -170,7 +170,7 @@ def CapGains(p23250, p22250, _sep, _feided, FEI_ec_c, ALD_Interest_ec,
 
 @iterate_jit(nopython=True)
 def SSBenefits(MARS, _ymod, e02400, SS_thd50, SS_thd85,
-               SS_percentage1, SS_percentage2):
+               SS_percentage1, SS_percentage2, c02500):
     """
     SSBenefits function calculates OASDI benefits included in AGI, c02500.
     """
@@ -937,7 +937,7 @@ def LLC(e87530, LLC_Expense_c):
 
 
 @iterate_jit(nopython=True)
-def RefAmOpp(c87521, _num, c00100):
+def RefAmOpp(c87521, _num, c00100, c10960, c87668):
     """
     Refundable American Opportunity Credit 2009+; Form 8863
 
@@ -966,34 +966,21 @@ def RefAmOpp(c87521, _num, c00100):
 
     Returns
     -------
-        c87666 : Refundable part of American Opportunity Credit
+        c10960 : Refundable part of American Opportunity Credit
 
         c87668 : Nonrefundable part of American Opportunity Credit
-
-        and intermediate variables used to compute these two credit amounts
     """
     if c87521 > 0:
-        c87654 = 90000. * _num
-        c87656 = c00100
-        c87658 = max(0., c87654 - c87656)
+        c87658 = max(0., 90000. * _num - c00100)
         c87660 = 10000. * _num
         c87662 = 1000. * min(1., c87658 / c87660)
         c87664 = c87662 * c87521 / 1000.
-        c87666 = 0.4 * c87664
-        c10960 = c87666
-        c87668 = c87664 - c87666
+        c10960 = 0.4 * c87664
+        c87668 = c87664 - c10960
     else:
-        c87654 = 0.
-        c87656 = 0.
-        c87658 = 0.
-        c87660 = 0.
-        c87662 = 0.
-        c87664 = 0.
-        c87666 = 0.
         c10960 = 0.
         c87668 = 0.
-    return (c87654, c87656, c87658, c87660, c87662, c87664, c87666, c10960,
-            c87668)
+    return (c10960, c87668)
 
 
 @iterate_jit(nopython=True)
