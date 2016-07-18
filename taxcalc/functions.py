@@ -853,7 +853,7 @@ def AmOppCr(p87482, e87487, e87492, e87497, p87521):
 
 
 @iterate_jit(nopython=True)
-def LLC(e87530, LLC_Expense_c):
+def LLC(e87530, LLC_Expense_c, c87550):
     """
     Lifetime Learning Credit; Form 8863
 
@@ -874,12 +874,9 @@ def LLC(e87530, LLC_Expense_c):
     Returns
     -------
         c87550 : Lifetime Learning Credit amount
-
-        c87540 : intermediate variable used to calculate the credit amount
     """
-    c87540 = min(e87530, LLC_Expense_c)
-    c87550 = 0.2 * c87540
-    return (c87540, c87550)
+    c87550 = 0.2 * min(e87530, LLC_Expense_c)
+    return c87550
 
 
 @iterate_jit(nopython=True)
