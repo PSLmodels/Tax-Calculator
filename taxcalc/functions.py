@@ -487,8 +487,13 @@ def NonGain(c23650, p23250, e01100):
 
 @iterate_jit(nopython=True)
 def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
-             e24515, e24518, MARS, _taxinc, _xyztax, _feided,
-             _feitax,
+             e24515, e24518, MARS, _taxinc, _xyztax, _feided, _addtax,
+             _feitax, _hasqdivltcg, c00650, c05100, c05700, _taxbc,
+             c24516, c24517, c24520, c24580,
+             _dwks5, _dwks9, _dwks12, _dwks16, _dwks17,
+             _dwks21, _dwks25, _dwks26, _dwks28, _dwks31,
+             c24505, c24510, _taxspecial, c24530, c24534, c24540,
+             c24550, c24560, c24570, c24597, c24598, c24610, c24615,
              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6,
              CG_rt1, CG_rt2, CG_rt3, CG_thd1, CG_thd2):
@@ -497,12 +502,13 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
     """
     # pylint: disable=too-many-statements,too-many-branches
     c00650 = e00650
-    _addtax = 0.
     if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
         _hasqdivltcg = 1  # has qualified dividends or long-term capital gains
     else:
         _hasqdivltcg = 0  # no qualified dividends or long-term capital gains
+
     if _hasqdivltcg == 1:
+
         # if/else 1
         _dwks5 = max(0., e58990)
         c24505 = max(0., c00650 - _dwks5)
@@ -544,10 +550,11 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
 
         if c24540 > CG_thd2[MARS - 1]:
             _addtax = (CG_rt3 - CG_rt2) * c24517
-
         elif c24540 <= CG_thd2[MARS - 1] and _taxinc > CG_thd2[MARS - 1]:
             _addtax = (CG_rt3 - CG_rt2) * min(_dwks21,
                                               _taxinc - CG_thd2[MARS - 1])
+        else:
+            _addtax = 0.
 
         c24560 = Taxer_i(c24540, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
                          II_rt6, II_rt7, II_brk1, II_brk2, II_brk3, II_brk4,
@@ -558,26 +565,21 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
 
         c24580 = min(_taxspecial, _xyztax)
 
-    else:
-        # these vars only to check accuracy? unused in calcs. (except c24580)
+    else:  # if hasqdivltcg is zero
+
+        # intermediate vars not used in subsequest calculations
         _dwks5 = 0.
         _dwks9 = 0.
         c24505 = 0.
         c24510 = 0.
-        c24516 = max(0., min(p23250, c23650)) + e01100
-
         _dwks12 = 0.
-        c24517 = 0.
-        c24520 = 0.
         c24530 = 0.
-
         _dwks16 = 0.
         _dwks17 = 0.
         c24540 = 0.
         c24534 = 0.
         _dwks21 = 0.
         c24597 = 0.
-
         c24598 = 0.
         _dwks25 = 0.
         _dwks26 = 0.
@@ -590,8 +592,14 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         _addtax = 0.
         c24560 = 0.
         _taxspecial = 0.
+
+        # vars used in subsequent calculations
+        c24516 = max(0., min(p23250, c23650)) + e01100
+        c24517 = 0.
+        c24520 = 0.
         c24580 = _xyztax
 
+    # final calculations done no matter what the value of hasqdivltcg
     if c04800 > 0. and _feided > 0.:
         c05100 = max(0., c24580 - _feitax)
     else:
@@ -600,13 +608,12 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
     # Form 4972, Lump Sum Distributions
     c05700 = 0.
 
-    c05750 = c05700 + c05100
-    _taxbc = c05750
+    _taxbc = c05700 + c05100
     return (c00650, _hasqdivltcg, _dwks5, c24505, c24510, _dwks9, c24516,
             c24580, _dwks12, c24517, c24520, c24530, _dwks16,
             _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
             _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
-            _addtax, c24560, _taxspecial, c05100, c05700, _taxbc, c05750)
+            _addtax, c24560, _taxspecial, c05100, c05700, _taxbc)
 
 
 @iterate_jit(nopython=True)

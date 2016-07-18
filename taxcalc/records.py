@@ -156,7 +156,7 @@ class Records(object):
         '_sey', '_earned', '_earned_p', '_earned_s',
         'c09400', '_feided', '_ymod', '_ymod1', '_posagi',
         '_xyztax', '_avail',
-        '_taxinc', 'c04800', '_feitax', 'c05750', 'c24517',
+        '_taxinc', 'c04800', '_feitax', 'c24517',
         '_taxbc', 'c60000', '_standard', 'c24516',
         'c05700', 'c32880', 'c32890', '_dclim', 'c32800',
         'c33000', 'c05800', 'c59560',
