@@ -416,7 +416,7 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
 
 @iterate_jit(nopython=True)
 def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
-           _feided, c04800, MARS, _feitax, _oldfei, _taxinc,
+           _feided, c04800, MARS, _feitax, _taxinc,
            II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
     """
@@ -433,12 +433,9 @@ def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
         _feitax = Taxer_i(_feided, MARS, II_rt1, II_rt2, II_rt3, II_rt4,
                           II_rt5, II_rt6, II_rt7, II_brk1, II_brk2, II_brk3,
                           II_brk4, II_brk5, II_brk6)
-        _oldfei = Taxer_i(c04800, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
-                          II_rt6, II_rt7, II_brk1, II_brk2, II_brk3, II_brk4,
-                          II_brk5, II_brk6)
     else:
-        _feitax, _oldfei = 0., 0.
-    return (c04500, c04800, _taxinc, _feitax, _oldfei, _standard)
+        _feitax = 0.
+    return (c04500, c04800, _taxinc, _feitax, _standard)
 
 
 @iterate_jit(nopython=True)
