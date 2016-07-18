@@ -748,37 +748,33 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge, DSI,
     NumDep function: ...
     """
     # pylint: disable=too-many-branches
-    _preeitc = 0.
+    preeitc = 0.
     c59560 = _earned
-    _modagi = c00100 + e00400
+    modagi = c00100 + e00400
     if MARS == 2:
-        _val_ymax = EITC_ps[EIC] + EITC_ps_MarriedJ[EIC]
+        val_ymax = EITC_ps[EIC] + EITC_ps_MarriedJ[EIC]
     elif MARS == 1 or MARS == 4 or MARS == 5 or MARS == 7:
-        _val_ymax = EITC_ps[EIC]
+        val_ymax = EITC_ps[EIC]
     else:
-        _val_ymax = 0.
+        val_ymax = 0.
     if MARS == 1 or MARS == 4 or MARS == 5 or MARS == 2 or MARS == 7:
         c59660 = min(EITC_rt[EIC] * c59560, EITC_c[EIC])
-        _preeitc = c59660
+        preeitc = c59660
     if (MARS != 3 and MARS != 6 and
-            (_modagi > _val_ymax or c59560 > _val_ymax)):
-        _preeitc = max(0., EITC_c[EIC] - EITC_prt[EIC] *
-                       (max(0., max(_modagi, c59560) - _val_ymax)))
-        _preeitc = min(_preeitc, c59660)
+            (modagi > val_ymax or c59560 > val_ymax)):
+        preeitc = max(0., EITC_c[EIC] - EITC_prt[EIC] *
+                      (max(0., max(modagi, c59560) - val_ymax)))
+        preeitc = min(preeitc, c59660)
     if MARS != 3 and MARS != 6:
-        _val_rtbase = EITC_rt[EIC] * 100.
-        _val_rtless = EITC_prt[EIC] * 100.
-        _dy = (e00400 + e00300 + e00600 +
-               max(0., c01000) + max(0., 0. - p25470) + max(0., e27200))
+        dy = (e00400 + e00300 + e00600 +
+              max(0., c01000) + max(0., 0. - p25470) + max(0., e27200))
     else:
-        _val_rtbase = 0.
-        _val_rtless = 0.
-        _dy = 0.
-    if MARS != 3 and MARS != 6 and _dy > EITC_InvestIncome_c:
-        _preeitc = 0.
+        dy = 0.
+    if MARS != 3 and MARS != 6 and dy > EITC_InvestIncome_c:
+        preeitc = 0.
 
     if DSI == 1:
-        _preeitc = 0.
+        preeitc = 0.
 
     if EIC == 0:
         # enforce age eligibility rule for those with no EITC-eligible children
@@ -791,23 +787,22 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge, DSI,
                 age_spouse <= EITC_MaxEligAge) or \
                age_head == 0 or \
                age_spouse == 0:
-                c59660 = _preeitc
+                c59660 = preeitc
             else:
                 c59660 = 0.
         else:
             if (age_head >= EITC_MinEligAge and
                 age_head <= EITC_MaxEligAge) or \
                age_head == 0:
-                c59660 = _preeitc
+                c59660 = preeitc
             else:
                 c59660 = 0.
     else:
-        c59660 = _preeitc
+        c59660 = preeitc
 
     if c59660 == 0:
         c59560 = 0.
-    return (_modagi, c59560, c59660, _val_ymax,
-            _preeitc, _val_rtbase, _val_rtless, _dy)
+    return (c59560, c59660)
 
 
 @iterate_jit(nopython=True)
