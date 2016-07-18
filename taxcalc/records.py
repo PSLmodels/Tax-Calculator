@@ -168,7 +168,7 @@ class Records(object):
         'c37703', 'c20500', 'c20750', 'c19200',
         'c19700', '_nonlimited', '_limitstart',
         '_fica', '_fica_was', 'c03260', 'c15100',
-        '_sep', '_num', 'c15200', 'c04100', 'c04200',
+        '_sep', '_num', 'c15200', 'c04100',
         'c04500', '_oldfei', 'c05200', '_cglong',
         '_noncg', '_hasqdivltcg', '_dwks9', '_dwks5', '_dwks12',
         '_dwks16', '_dwks17', '_dwks21', '_dwks25', '_dwks26',

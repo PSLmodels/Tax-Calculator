@@ -350,7 +350,8 @@ def AMED(_fica, e00200, MARS, AMED_thd, _sey, AMED_trt,
 
 @iterate_jit(nopython=True)
 def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
-           MARS, MIDR, blind_head, blind_spouse):
+           MARS, MIDR, blind_head, blind_spouse,
+           _standard, c04100, c15100, c15200):
     """
     StdDed function:
 
@@ -407,13 +408,12 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
         _extrastd += 1
     if MARS == 2 and age_spouse >= 65:
         _extrastd += 1
-    c04200 = _extrastd * STD_Aged[MARS - 1]
-    c15200 = c04200
+    c15200 = _extrastd * STD_Aged[MARS - 1]
     # Compute the total standard deduction
-    _standard = c04100 + c04200
+    _standard = c04100 + c15200
     if (MARS == 3 or MARS == 6) and (MIDR == 1):
         _standard = 0.
-    return (_standard, c04200, c15200, c15100, c04100)
+    return (_standard, c04100, c15100, c15200)
 
 
 @iterate_jit(nopython=True)
