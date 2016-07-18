@@ -16,6 +16,7 @@ import ast
 
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 FUNCTIONS_PY_PATH = os.path.join(CUR_PATH, '..', 'functions.py')
+PYTHON3 = sys.version_info >= (3, 0)
 
 
 class GetFuncDefs(ast.NodeVisitor):
@@ -41,7 +42,10 @@ class GetFuncDefs(ast.NodeVisitor):
         self.fnames.append(self.fname)
         self.fargs[self.fname] = list()
         for anode in ast.iter_child_nodes(node.args):
-            self.fargs[self.fname].append(anode.id)  # works only in Python 2.7
+            if PYTHON3:
+                self.fargs[self.fname].append(anode.arg)
+            else:  # in Python 2 anode is a Name node
+                self.fargs[self.fname].append(anode.id)
         self.cvars[self.fname] = list()
         for bodynode in node.body:
             if isinstance(bodynode, ast.Return):
@@ -66,8 +70,6 @@ def test_calculated_vars_are_used():
     """
     Check that each var in Records.CALCULATED_VARS is actually calculated.
     """
-    if sys.version_info >= (3, 0):
-        return  # skip this test when running under Python 3
     tree = ast.parse(open(FUNCTIONS_PY_PATH).read())
     gfd = GetFuncDefs()
     fnames, _, cvars, _ = gfd.visit(tree)
