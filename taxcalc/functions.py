@@ -417,18 +417,16 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
 
 
 @iterate_jit(nopython=True)
-def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600,
-           _feided, c04800, MARS,
-           II_rt1, II_rt2, II_rt3, II_rt4,
-           II_rt5, II_rt6, II_rt7, II_brk1, II_brk2, II_brk3,
-           II_brk4, II_brk5, II_brk6, c02700):
+def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
+           _feided, c04800, MARS, _feitax, _oldfei, _taxinc,
+           II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
+           II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
     """
     TaxInc function: ...
     """
     c04500 = max(0., c00100 - max(c21060 - c21040, _standard))
     c04800 = max(0., c04500 - c04600)
     # Some taxpayers iteimize only for AMT, not regular tax
-    _amtstd = 0.
     if c04800 > 0. and _feided > 0.:
         _taxinc = c04800 + c02700
     else:
@@ -442,7 +440,7 @@ def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600,
                           II_brk5, II_brk6)
     else:
         _feitax, _oldfei = 0., 0.
-    return (c04500, c04800, _amtstd, _taxinc, _feitax, _oldfei, _standard)
+    return (c04500, c04800, _taxinc, _feitax, _oldfei, _standard)
 
 
 @iterate_jit(nopython=True)
