@@ -439,19 +439,21 @@ def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
 
 
 @iterate_jit(nopython=True)
-def Personal_Credit(c04500, MARS, II_credit, II_credit_ps, II_credit_prt):
+def Personal_Credit(c04500, MARS,
+                    II_credit, II_credit_ps, II_credit_prt,
+                    personal_credit):
     """
     Personal_Credit function: ...
     """
     # full amount as defined in the parameter
-    _personal_credit = II_credit[MARS - 1]
+    personal_credit = II_credit[MARS - 1]
     # phaseout using taxable income
     if c04500 > II_credit_ps[MARS - 1]:
         credit_phaseout = II_credit_prt * (c04500 - II_credit_ps[MARS - 1])
     else:
         credit_phaseout = 0.
-    _personal_credit = max(0., _personal_credit - credit_phaseout)
-    return _personal_credit
+    personal_credit = max(0., personal_credit - credit_phaseout)
+    return personal_credit
 
 
 @iterate_jit(nopython=True)
@@ -482,13 +484,9 @@ def NonGain(c23650, p23250, e01100):
 
 @iterate_jit(nopython=True)
 def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
-             e24515, e24518, MARS, _taxinc, _xyztax, _feided, _addtax,
-             _feitax, _hasqdivltcg, c00650, c05100, c05700, _taxbc,
-             c24516, c24517, c24520, c24580,
-             _dwks5, _dwks9, _dwks12, _dwks16, _dwks17,
-             _dwks21, _dwks25, _dwks26, _dwks28, _dwks31,
-             c24505, c24510, _taxspecial, c24530, c24534, c24540,
-             c24550, c24560, c24570, c24597, c24598, c24610, c24615,
+             e24515, e24518, MARS, _taxinc, _xyztax, _feided,
+             _feitax, c00650, c05700, _taxbc,
+             c24516, c24517, c24520,
              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6,
              CG_rt1, CG_rt2, CG_rt3, CG_thd1, CG_thd2):
@@ -498,11 +496,11 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
     # pylint: disable=too-many-statements,too-many-branches
     c00650 = e00650
     if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
-        _hasqdivltcg = 1  # has qualified dividends or long-term capital gains
+        hasqdivltcg = 1  # has qualified dividends or long-term capital gains
     else:
-        _hasqdivltcg = 0  # no qualified dividends or long-term capital gains
+        hasqdivltcg = 0  # no qualified dividends or long-term capital gains
 
-    if _hasqdivltcg == 1:
+    if hasqdivltcg == 1:
 
         # if/else 1
         _dwks5 = max(0., e58990)
@@ -544,51 +542,23 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         c24570 = 0.28 * c24550
 
         if c24540 > CG_thd2[MARS - 1]:
-            _addtax = (CG_rt3 - CG_rt2) * c24517
+            addtax = (CG_rt3 - CG_rt2) * c24517
         elif c24540 <= CG_thd2[MARS - 1] and _taxinc > CG_thd2[MARS - 1]:
-            _addtax = (CG_rt3 - CG_rt2) * min(_dwks21,
-                                              _taxinc - CG_thd2[MARS - 1])
+            addtax = (CG_rt3 - CG_rt2) * min(_dwks21,
+                                             _taxinc - CG_thd2[MARS - 1])
         else:
-            _addtax = 0.
+            addtax = 0.
 
         c24560 = Taxer_i(c24540, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
                          II_rt6, II_rt7, II_brk1, II_brk2, II_brk3, II_brk4,
                          II_brk5, II_brk6)
 
-        _taxspecial = (lowest_rate_tax + c24598 + c24615 + c24570 + c24560 +
-                       _addtax)
+        tspecial = lowest_rate_tax + c24598 + c24615 + c24570 + c24560 + addtax
 
-        c24580 = min(_taxspecial, _xyztax)
+        c24580 = min(tspecial, _xyztax)
 
     else:  # if hasqdivltcg is zero
 
-        # intermediate vars not used in subsequest calculations
-        _dwks5 = 0.
-        _dwks9 = 0.
-        c24505 = 0.
-        c24510 = 0.
-        _dwks12 = 0.
-        c24530 = 0.
-        _dwks16 = 0.
-        _dwks17 = 0.
-        c24540 = 0.
-        c24534 = 0.
-        _dwks21 = 0.
-        c24597 = 0.
-        c24598 = 0.
-        _dwks25 = 0.
-        _dwks26 = 0.
-        _dwks28 = 0.
-        c24610 = 0.
-        c24615 = 0.
-        _dwks31 = 0.
-        c24550 = 0.
-        c24570 = 0.
-        _addtax = 0.
-        c24560 = 0.
-        _taxspecial = 0.
-
-        # vars used in subsequent calculations
         c24516 = max(0., min(p23250, c23650)) + e01100
         c24517 = 0.
         c24520 = 0.
@@ -604,11 +574,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
     c05700 = 0.
 
     _taxbc = c05700 + c05100
-    return (c00650, _hasqdivltcg, _dwks5, c24505, c24510, _dwks9, c24516,
-            c24580, _dwks12, c24517, c24520, c24530, _dwks16,
-            _dwks17, c24540, c24534, _dwks21, c24597, c24598, _dwks25,
-            _dwks26, _dwks28, c24610, c24615, _dwks31, c24550, c24570,
-            _addtax, c24560, _taxspecial, c05100, c05700, _taxbc)
+    return (c00650, c24516, c24517, c24520, c05700, _taxbc)
 
 
 @iterate_jit(nopython=True)
@@ -1181,13 +1147,13 @@ def DEITC(c59660, c07100, c08800, c05800, _avail, _othertax):
 
 @iterate_jit(nopython=True)
 def IITAX(c09200, c59660, c11070, c10960, c10950, _eitc, c11580,
-          e11550, _fica, _personal_credit, n24,
+          e11550, _fica, personal_credit, n24,
           CTC_additional, CTC_additional_ps, CTC_additional_prt, c00100,
           _sep, MARS):
     """
     IITAX function: ...
     """
-    _refund = (c59660 + c11070 + c10960 + c10950 + c11580 + _personal_credit)
+    _refund = (c59660 + c11070 + c10960 + c10950 + c11580 + personal_credit)
     _iitax = c09200 - _refund
     _combined = _iitax + _fica
     potential_add_CTC = max(0., min(_combined, CTC_additional * n24))
