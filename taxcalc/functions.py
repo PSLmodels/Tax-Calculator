@@ -462,8 +462,9 @@ def Personal_Credit(c04500, MARS, II_credit, II_credit_ps, II_credit_prt):
 
 
 @iterate_jit(nopython=True)
-def XYZD(_taxinc, c04800, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6,
-         II_rt7, II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
+def XYZD(_taxinc, c04800, MARS, _xyztax, c05200,
+         II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
+         II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
     """
     XYZD function: ...
     """
@@ -1216,25 +1217,24 @@ def IITAX(c09200, c59660, c11070, c10960, c10950, _eitc, c11580,
 
 
 @jit(nopython=True)
-def Taxer_i(inc_in, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6,
-            II_rt7, II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
+def Taxer_i(inc_in, MARS,
+            II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
+            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
     """
     Taxer_i function: ...
     """
-    _a6 = inc_in
-    inc_out = (II_rt1 * min(_a6, II_brk1[MARS - 1]) + II_rt2 *
-               min(II_brk2[MARS - 1] - II_brk1[MARS - 1],
-                   max(0., _a6 - II_brk1[MARS - 1])) + II_rt3 *
-               min(II_brk3[MARS - 1] - II_brk2[MARS - 1],
-                   max(0., _a6 - II_brk2[MARS - 1])) + II_rt4 *
-               min(II_brk4[MARS - 1] - II_brk3[MARS - 1],
-                   max(0., _a6 - II_brk3[MARS - 1])) + II_rt5 *
-               min(II_brk5[MARS - 1] - II_brk4[MARS - 1],
-                   max(0., _a6 - II_brk4[MARS - 1])) + II_rt6 *
-               min(II_brk6[MARS - 1] - II_brk5[MARS - 1],
-                   max(0., _a6 - II_brk5[MARS - 1])) + II_rt7 *
-               max(0., _a6 - II_brk6[MARS - 1]))
-    return inc_out
+    return (II_rt1 * min(inc_in, II_brk1[MARS - 1]) + II_rt2 *
+            min(II_brk2[MARS - 1] - II_brk1[MARS - 1],
+                max(0., inc_in - II_brk1[MARS - 1])) + II_rt3 *
+            min(II_brk3[MARS - 1] - II_brk2[MARS - 1],
+                max(0., inc_in - II_brk2[MARS - 1])) + II_rt4 *
+            min(II_brk4[MARS - 1] - II_brk3[MARS - 1],
+                max(0., inc_in - II_brk3[MARS - 1])) + II_rt5 *
+            min(II_brk5[MARS - 1] - II_brk4[MARS - 1],
+                max(0., inc_in - II_brk4[MARS - 1])) + II_rt6 *
+            min(II_brk6[MARS - 1] - II_brk5[MARS - 1],
+                max(0., inc_in - II_brk5[MARS - 1])) + II_rt7 *
+            max(0., inc_in - II_brk6[MARS - 1]))
 
 
 @iterate_jit(nopython=True)
