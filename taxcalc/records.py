@@ -143,38 +143,25 @@ class Records(object):
 
     # specify set of all Record variables that cannot be read in:
     CALCULATED_VARS = set([
-        'e35300_0', 'e35600_0', 'e35910_0', 'e03600',
-        'e03280', 'e03900', 'e04000', 'e03700',
-        'e23660', 'f2555', 'e02800', 'e02610', 'e02540',
-        'e02615',
+        'f2555',
         'c20400',
-        'e02600',
         '_exact',
-        'e37717', 'e04805', '_calc_schR', 'c07200',
+        '_calc_schR', 'c07200',
         'c28300', 'c28400', 'c28500', 'c28600', 'c28700', 'c28800',
-        't04470', 'e58980', 'c00650', 'c00100',
+        'c00650', 'c00100',
         'c04470', 'c04600', 'c21060', 'c21040', 'c17000',
         'c18300', 'c20800', 'c02900', 'c02700', 'c23650',
         'c01000', 'c02500',
-        'x62720',
-        'x60240', 'x60220', 'x60130',
-        'e83080', 'e25360',
-        'e25430', 'e25400', 'e25500', 'e26210', 'e26340',
-        'e26205', 'e26320', 'e07170',
-        'e07960', 'e07700', 'e07250', 't07950',
-        'e07500', 'e08001',
-        'e07980', 'e10000', 'e10100', 'e10050', 'e10075',
-        'e09805', 'e09710', 'e09720',
-        'e11601', 'c11580',
-        'e40223', '_sey', '_earned', '_earned_p', '_earned_s',
+        'c11580',
+        '_sey', '_earned', '_earned_p', '_earned_s',
         'c09400', '_feided', '_ymod', '_ymod1', '_posagi',
-        '_xyztax', '_avail', 'e85070',
+        '_xyztax', '_avail',
         '_taxinc', 'c04800', '_feitax', 'c05750', 'c24517',
         '_taxbc', 'c60000', '_standard', 'c24516',
         'c05700', 'c32880', 'c32890', '_dclim', 'c32800',
         'c33000', 'c05800', 'c59560',
         'c87521', 'c87550', 'c07180',
-        'c07230', '_precrd', 'c07220', 'c59660', 'c07970',
+        'c07230', '_precrd', 'c07220', 'c59660',
         'c08795', 'c09200', 'c07100', '_eitc', 'c59700',
         'c10950', '_ymod2', '_ymod3', 'c02650',
         '_prexmp', 'c17750',
@@ -200,28 +187,27 @@ class Records(object):
         '_tratio', 'c33200',
         '_modagi', '_extrastd', 'ID_Casualty_frt_in_pufcsv_year',
         '_val_ymax', '_preeitc', '_val_rtbase', '_val_rtless',
-        '_dy', 'c11070', '_nctcr', '_ctcagi', 'c87482',
+        '_dy', 'c11070', '_ctcagi', 'c87482',
         'c87487', 'c87492', 'c87497', 'c87483', 'c87488',
         'c87493', 'c87498', 'c87540', 'c87654',
         'c87656', 'c87658', 'c87660', 'c87662', 'c87664',
         'c87666', 'c10960', 'c87668', 'c87560',
         'c87570', 'c87580', 'c87590', 'c87600', 'c87610',
-        'c87620', '_ctc1', '_ctc2', '_regcrd', '_exocrd',
+        'c87620', '_ctc1', '_ctc2',
         '_ctctax', 'c82925', 'c82930', 'c82935',
         'c82880', 'c82885', 'c82890', 'c82900',
         'c82905', 'c82910', 'c82915', 'c82920', 'c82937',
-        'c82940', '_othadd', 'y07100',
-        'x07100', 'c08800', 'x07400', 'c59680',
-        '_othertax', 'e82915', 'e82940', 'NIIT',
-        'c59720', '_comb', 'c07150', 'c10300', '_iitax',
-        '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
+        'c82940', 'x07100', 'y07100', 'c08800', 'c59680',
+        '_othertax', 'NIIT',
+        'c59720', 'c07150', 'c10300', '_iitax',
+        '_refund',
         '_amed',
         '_expanded_income', 'c07300',
         'c07600', 'c07240',
         '_surtax', '_combined', '_personal_credit'])
 
     INTEGER_CALCULATED_VARS = set([
-        '_num', '_sep', '_exact', '_hasqdivltcg', '_calc_schR'])
+        '_num', '_sep', '_exact', '_hasqdivltcg', '_calc_schR', 'f2555'])
 
     def __init__(self,
                  data='puf.csv',
@@ -367,7 +353,6 @@ class Records(object):
         self.e09800 *= ATXPY
         self.e09900 *= ATXPY
         self.e11550 *= ATXPY
-        self.e11070 *= ATXPY
         self.e11200 *= ATXPY
         self.e11580 *= ATXPY
         # ITEMIZED DEDUCTIONS

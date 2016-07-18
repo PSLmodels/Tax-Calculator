@@ -73,9 +73,9 @@ def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
 
 
 @iterate_jit(nopython=True)
-def Adj(e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, c03260,
-        e03270, e03300, e03400, e03500, e03280, e03900, e04000,
-        e03700, e03220, e03230, e03240, e03290, ALD_StudentLoan_HC,
+def Adj(e03150, e03210, c03260,
+        e03270, e03300, e03400, e03500,
+        e03220, e03230, e03240, e03290, ALD_StudentLoan_HC,
         ALD_SelfEmploymentTax_HC, ALD_SelfEmp_HealthIns_HC, ALD_KEOGH_SEP_HC,
         ALD_EarlyWithdraw_HC, ALD_Alimony_HC):
     """
@@ -124,38 +124,36 @@ def Adj(e35300_0, e35600_0, e35910_0, e03150, e03210, e03600, c03260,
 
         ALD_Alimony_HC : Deduction for alimony payment haircut
 
-
     Returns
     -------
     _feided
-        Foreign earned income deduction
+        foreign earned income deduction
     c02900
         total adjustments
-
     """
-    # Form 2555: Foreign earned income
-    _feided = max(e35300_0, e35600_0 + e35910_0)
+    # Form 2555: foreign earned income deduction
+    _feided = 0.
     # Form 1040: adjustments
-    c02900 = (e03150 + (1 - ALD_StudentLoan_HC) * e03210 + e03600 +
+    c02900 = (e03150 + (1 - ALD_StudentLoan_HC) * e03210 +
               (1 - ALD_SelfEmploymentTax_HC) * c03260 +
               (1 - ALD_SelfEmp_HealthIns_HC) * e03270 +
               (1 - ALD_KEOGH_SEP_HC) * e03300 + (1 - ALD_EarlyWithdraw_HC) *
-              e03400 + (1 - ALD_Alimony_HC) * e03500 + e03280 + e03900 +
-              e04000 + e03700 + e03220 + e03230 + e03240 + e03290)
+              e03400 + (1 - ALD_Alimony_HC) * e03500 +
+              e03220 + e03230 + e03240 + e03290)
     return (_feided, c02900)
 
 
 @iterate_jit(nopython=True)
-def CapGains(p23250, p22250, e23660, _sep, _feided, FEI_ec_c, ALD_Interest_ec,
+def CapGains(p23250, p22250, _sep, _feided, FEI_ec_c, ALD_Interest_ec,
              ALD_StudentLoan_HC, f2555, e00200, e00300, e00600, e00700, e00800,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
-             e02300, e02600, e02610, e02800, e02540, e00400, e02400,
-             c02900, e03210, e03230, e03240, e02615):
+             e02300, e00400, e02400,
+             c02900, e03210, e03230, e03240):
     """
     CapGains function: ...
     """
     # Net capital gain (long term + short term) before exclusion
-    c23650 = p23250 + p22250 + e23660
+    c23650 = p23250 + p22250
     # Limitation for capital loss
     c01000 = max((-3000. / _sep), c23650)
     # Foreign earned income exclusion
@@ -163,9 +161,9 @@ def CapGains(p23250, p22250, e23660, _sep, _feided, FEI_ec_c, ALD_Interest_ec,
     # compute _ymod* variables
     _ymod1 = (e00200 + (1 - ALD_Interest_ec) * e00300 + e00600 + e00700 +
               e00800 + e00900 + c01000 + e01100 + e01200 + e01400 + e01700 +
-              e02000 + e02100 + e02300 + e02600 + e02610 + e02800 - e02540)
+              e02000 + e02100 + e02300)
     _ymod2 = e00400 + (0.50 * e02400) - c02900
-    _ymod3 = (1 - ALD_StudentLoan_HC) * e03210 + e03230 + e03240 + e02615
+    _ymod3 = (1 - ALD_StudentLoan_HC) * e03210 + e03230 + e03240
     _ymod = _ymod1 + _ymod2 + _ymod3
     return (c23650, c01000, c02700, _ymod1, _ymod2, _ymod3, _ymod)
 
@@ -189,12 +187,12 @@ def SSBenefits(MARS, _ymod, e02400, SS_thd50, SS_thd85,
 
 
 @iterate_jit(nopython=True)
-def AGI(_ymod1, c02500, c02700, e02615, c02900, XTOT,
+def AGI(_ymod1, c02500, c02700, c02900, XTOT,
         II_em, II_em_ps, MARS, _sep, II_prt, DSI):
     """
     AGI function: compute Adjusted Gross Income
     """
-    c02650 = _ymod1 + c02500 - c02700 + e02615  # Gross Income
+    c02650 = _ymod1 + c02500 - c02700  # Gross Income
     c00100 = c02650 - c02900
     _posagi = max(c00100, 0)
     _prexmp = XTOT * II_em
@@ -419,16 +417,16 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
 
 
 @iterate_jit(nopython=True)
-def TaxInc(c00100, _standard, e37717, c21060, c21040, c04500, c04600,
-           e04805, _feided, c04800, MARS,
+def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600,
+           _feided, c04800, MARS,
            II_rt1, II_rt2, II_rt3, II_rt4,
            II_rt5, II_rt6, II_rt7, II_brk1, II_brk2, II_brk3,
            II_brk4, II_brk5, II_brk6, c02700):
     """
     TaxInc function: ...
     """
-    c04500 = max(0., c00100 - max(c21060 - c21040, _standard + e37717))
-    c04800 = max(0., c04500 - c04600 - e04805)
+    c04500 = max(0., c00100 - max(c21060 - c21040, _standard))
+    c04800 = max(0., c04500 - c04600)
     # Some taxpayers iteimize only for AMT, not regular tax
     _amtstd = 0.
     if c04800 > 0. and _feided > 0.:
@@ -490,7 +488,7 @@ def NonGain(c23650, p23250, e01100):
 
 @iterate_jit(nopython=True)
 def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
-             e58980, e24515, e24518, MARS, _taxinc, _xyztax, _feided,
+             e24515, e24518, MARS, _taxinc, _xyztax, _feided,
              _feitax,
              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6,
@@ -507,14 +505,14 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         _hasqdivltcg = 0  # no qualified dividends or long-term capital gains
     if _hasqdivltcg == 1:
         # if/else 1
-        _dwks5 = max(0., e58990 - e58980)
+        _dwks5 = max(0., e58990)
         c24505 = max(0., c00650 - _dwks5)
         # gain for tax computation
         if e01100 > 0.:
             c24510 = e01100
         else:
             c24510 = max(0., min(c23650, p23250)) + e01100
-        _dwks9 = max(0., c24510 - min(e58990, e58980))
+        _dwks9 = max(0., c24510 - min(0., e58990))
         c24516 = c24505 + _dwks9
 
         # if/else 2
@@ -614,13 +612,13 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
 
 @iterate_jit(nopython=True)
 def AMTI(_posagi, e07300, c24517, FDED, c21060, _standard,
-         f6251, c00100, t04470,
-         c04470, c17000, c20800, c21040, e04805,
+         f6251, c00100,
+         c04470, c17000, c20800, c21040,
          c02700,
-         e24515, x60130,
-         x60220, x60240, c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
+         e24515,
+         c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
          MARS, _sep, AMT_Child_em, AMT_CG_rt1,
-         AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, x62720, e00700, c24516,
+         AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, e00700, c24516,
          c24520, c05700,
          age_head, KT_c_Age, e62900, AMT_thd_MarriedS, _earned,
          AMT_em, AMT_prt, AMT_trt1, AMT_trt2, cmbtp_itemizer, cmbtp_standard):
@@ -628,12 +626,12 @@ def AMTI(_posagi, e07300, c24517, FDED, c21060, _standard,
     AMTI function: AMT taxable income
     """
     # pylint: disable=too-many-statements,too-many-branches
-    c62720 = c24517 + x62720
+    c62720 = c24517
     c60260 = e00700
     c60200 = min(c17000, 0.025 * _posagi)
-    c60240 = c18300 + x60240
-    c60220 = c20800 + x60220
-    c60130 = c21040 + x60130
+    c60240 = c18300
+    c60220 = c20800
+    c60130 = c21040
     c62730 = e24515
     if FDED == 2:
         _prefded = 0.
@@ -644,10 +642,9 @@ def AMTI(_posagi, e07300, c24517, FDED, c21060, _standard,
     if FDED == 1:
         c60000 = c00100 - _totded
     elif FDED == 3:
-        c60000 = c00100 - max(c04470, t04470)
+        c60000 = c00100 - c04470
     else:
         c60000 = c00100
-    c60000 = c60000 - e04805
     if _standard == 0.0:
         if f6251 == 1:
             _cmbtp = cmbtp_itemizer
@@ -735,12 +732,12 @@ def AMTI(_posagi, e07300, c24517, FDED, c21060, _standard,
 
 @iterate_jit(nopython=True)
 def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
-        NIIT, e85070, e26270):
+        NIIT, e26270):
     """
     MUI function: ...
     """
     NIIT = NIIT_trt * min(e00300 + e00600 + max(0., c01000) +
-                          max(0., e02000 - e26270 + e85070),
+                          max(0., e02000 - e26270),
                           max(0., c00100 - NIIT_thd[MARS - 1]))
     return NIIT
 
@@ -777,9 +774,9 @@ def F2441(MARS, _earned_p, _earned_s, f2441, DCC_c, e32800,
 @iterate_jit(nopython=True)
 def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge, DSI,
            age_head, EITC_MaxEligAge, EITC_ps_MarriedJ, EITC_rt, c59560,
-           EITC_c, age_spouse, EITC_prt, e83080, e00300, e00600, e40223,
-           e25360, e25430, p25470, e25400, e25500, e26210, e26340, e27200,
-           e26205, e26320, EITC_InvestIncome_c, _earned, c59660):
+           EITC_c, age_spouse, EITC_prt, e00300, e00600,
+           p25470, e27200,
+           EITC_InvestIncome_c, _earned, c59660):
     """
     NumDep function: ...
     """
@@ -804,10 +801,8 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge, DSI,
     if MARS != 3 and MARS != 6:
         _val_rtbase = EITC_rt[EIC] * 100.
         _val_rtless = EITC_prt[EIC] * 100.
-        _dy = (e00400 + e83080 + e00300 + e00600 +
-               max(0., max(0., c01000) - max(0., e40223)) +
-               max(0., max(0., e25360) - e25430 - p25470 - e25400 - e25500) +
-               max(0., e26210 + e26340 + e27200 - e26205 - e26320))
+        _dy = (e00400 + e00300 + e00600 +
+               max(0., c01000) + max(0., 0. - p25470) + max(0., e27200))
     else:
         _val_rtbase = 0.
         _val_rtless = 0.
@@ -850,19 +845,18 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge, DSI,
 
 @iterate_jit(nopython=True)
 def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
-                   _precrd, _nctcr, CTC_prt):
+                   _precrd, CTC_prt):
     """
     ChildTaxCredit function: ...
     """
-    _nctcr = n24
-    _precrd = CTC_c * _nctcr
+    _precrd = CTC_c * n24
     _ctcagi = c00100 + _feided
     if _ctcagi > CTC_ps[MARS - 1]:
         excess = _ctcagi - CTC_ps[MARS - 1]
         if _exact == 1:
             excess = 1000. * math.ceil(excess / 1000.)
         _precrd = max(0., _precrd - CTC_prt * excess)
-    return (_nctcr, _precrd, _ctcagi)
+    return (_precrd, _ctcagi)
 
 
 @iterate_jit(nopython=True)
@@ -1040,7 +1034,7 @@ def SchR(_calc_schR, age_head, age_spouse, MARS, c00100,
 
 @iterate_jit(nopython=True)
 def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, c07230,
-            e07600, e07240, e07960, e07260, e07300, e07700, e07250, t07950,
+            e07600, e07240, e07260, e07300,
             c05800, _precrd, ETC_pe_Single, c87668, c87620, c07200):
     """
     NonEdCr function: ...
@@ -1065,11 +1059,8 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, c07230,
     c87680 = _xlin5 + _xlin10
     c07230 = c87680
     _ctc1 = c07180 + c07200 + c07230
-    _ctc2 = e07240 + e07960 + e07260 + e07300
-    _regcrd = _ctc1 + _ctc2
-    _exocrd = e07700 + e07250
-    _exocrd = _exocrd + t07950
-    _ctctax = c05800 - _regcrd - _exocrd
+    _ctc2 = e07240 + e07260 + e07300
+    _ctctax = c05800 - _ctc1 - _ctc2
     c07220 = min(_precrd, max(0., _ctctax))
     # lt tax owed
     _avail = c05800
@@ -1085,23 +1076,21 @@ def NonEdCr(c87550, MARS, ETC_pe_Married, c00100, _num, c07180, c07230,
     _avail = _avail - c07240
     c07260 = min(e07260, _avail)
     _avail = _avail - c07260
-    c07250 = min(e07250, _avail)
-    _avail = _avail - c07250
     c07600 = min(e07600, _avail)
     _avail = _avail - c07600
     c07220 = min(c07220, _avail)
     _avail = _avail - c07220
     # Allocate credits to tax in order on the tax form
     return (c87560, c87570, c87580, c87590, c87600, c87610, c07300, c07600,
-            c07240, c87620, _ctc1, _ctc2, _regcrd, _exocrd, _ctctax, c07220,
+            c07240, c87620, _ctc1, _ctc2, _ctctax, c07220,
             c07230, _avail)
 
 
 @iterate_jit(nopython=True)
-def AddCTC(_nctcr, _precrd, _earned, c07220, _fica_was,
-           ACTC_Income_thd, ACTC_rt,
-           ALD_SelfEmploymentTax_HC, c03260, e09800, c59660, e11200,
-           e11070, e82915, e82940, ACTC_ChildNum):
+def AddCTC(n24, _precrd, _earned, c07220, _fica_was,
+           ACTC_Income_thd, ACTC_rt, ACTC_ChildNum,
+           ALD_SelfEmploymentTax_HC, c03260, e09800, c59660, e11200):
+
     """
     AddCTC function: calculates Additional Child Tax Credit
     """
@@ -1119,9 +1108,8 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, _fica_was,
     c82937 = 0.
     c82940 = 0.
     c11070 = 0.
-    _othadd = 0.
     # Part I of 2005 form 8812
-    if _nctcr > 0:
+    if n24 > 0:
         c82925 = _precrd
         c82930 = c07220
         c82935 = c82925 - c82930
@@ -1130,7 +1118,7 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, _fica_was,
         c82885 = max(0., c82880 - ACTC_Income_thd)
         c82890 = ACTC_rt * c82885
     # Part II of 2005 form 8812
-    if _nctcr >= ACTC_ChildNum and c82890 < c82935:
+    if n24 >= ACTC_ChildNum and c82890 < c82935:
         c82900 = 0.5 * _fica_was
         c82905 = (1. - ALD_SelfEmploymentTax_HC) * c03260 + e09800
         c82910 = c82900 + c82905
@@ -1138,19 +1126,16 @@ def AddCTC(_nctcr, _precrd, _earned, c07220, _fica_was,
         c82920 = max(0., c82910 - c82915)
         c82937 = max(c82890, c82920)
     # Part II of 2005 form 8812
-    if _nctcr > 0 and _nctcr <= 2 and c82890 > 0:
+    if n24 > 0 and n24 <= 2 and c82890 > 0:
         c82940 = min(c82890, c82935)
-    if _nctcr > 2:
+    if n24 > 2:
         if c82890 >= c82935:
             c82940 = c82935
         else:
             c82940 = min(c82935, c82937)
     c11070 = c82940
-    if e82915 > 0 and abs(e82940 - c82940) > 100:
-        _othadd = e11070 - c11070
     return (c82925, c82930, c82935, c82880, c82885, c82890,
-            c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070,
-            _othadd)
+            c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070)
 
 
 @iterate_jit(nopython=True)
@@ -1164,62 +1149,56 @@ def F5405(e11580, c11580):
 
 @iterate_jit(nopython=True)
 def C1040(e07400, c07200, c07220, c07230, c07300, c07240,
-          e07260, c07970, x07400, e09720, c07600,
-          e07500, e07700, p08000, e08001, e07960,
-          e07980, c05800, e09900, c09400, e09800,
-          e10000, e10100, e09700, e10050, e10075, e09805, e09710,
+          e07260, c07600,
+          p08000,
+          c05800, e09900, c09400, e09800,
+          e09700,
           c07180, NIIT):
     """
     C1040 function: ...
     """
     # Credits 1040 line 48
-    x07400 = e07400
-    c07100 = (c07180 + c07200 + c07600 + c07300 + x07400 + e07980 + c07220 +
-              e07500 + p08000)
+    c07100 = (c07180 + c07200 + c07600 + c07300 + e07400 + c07220 + p08000)
     y07100 = c07100
-    c07100 += e07700 + c07230 + c07970 + c07240 + e07260 + e08001 + e07960
+    c07100 += c07230 + c07240 + e07260
     x07100 = c07100
     c07100 = min(c07100, c05800)
     # Tax After credits 1040 line 52
     c08795 = max(0., c05800 - c07100)  # SAS @1277
     # Tax before refundable credits
-    _othertax = e09900 + c09400 + e09800 + e10000 + e10100 + NIIT
+    _othertax = e09900 + c09400 + e09800 + NIIT
     c09200 = _othertax + c08795
     # assuming year (FLPDYR) > 2009
-    c09200 = c09200 + e09700 + e10050 + e10075 + e09805 + e09710 + e09720
-    return (c07100, c07970, y07100, x07100, c08795, c09200, _othertax)
+    c09200 = c09200 + e09700
+    return (c07100, y07100, x07100, c08795, c09200, _othertax)
 
 
 @iterate_jit(nopython=True)
-def DEITC(c59660, c07100, c08800, c05800, _avail, e11601, e07170, _othertax):
+def DEITC(c59660, c07100, c08800, c05800, _avail, _othertax):
     """
     DEITC function: decomposition of EITC
     """
-    _comb = 0.
     c10950 = 0.
     c59680 = min(c59660, _avail)
-    _avail = _avail - c59680
-    _avail = max(0., _avail - e07170)
-    _avail = _avail + _othertax
+    _avail = max(0., _avail - c59680) + _othertax
     c59700 = min(_avail, c59660 - c59680)
     c59720 = c59660 - c59680 - c59700
-    c07150 = c07100 + c59680 + e11601
+    c07150 = c07100 + c59680
     c07150 = min(c07150, c05800)
     c08800 = c05800 - c07150
-    return (c59680, c59700, c59720, _comb, c07150, c10950, c08800)
+    return (c59680, c59700, c59720, c07150, c10950, c08800)
 
 
 @iterate_jit(nopython=True)
-def IITAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, c11580,
-          e11450, e11500, e82040, e11550, e10000, _fica, _personal_credit, n24,
+def IITAX(c09200, c59660, c11070, c10960, c10950, _eitc, c11580,
+          e11550, _fica, _personal_credit, n24,
           CTC_additional, CTC_additional_ps, CTC_additional_prt, c00100,
           _sep, MARS):
     """
     IITAX function: ...
     """
-    _refund = (c59660 + c11070 + c10960 + c10950 + c11600 + c11580 + e11450 +
-               e11500 + _personal_credit)
-    _iitax = c09200 - _refund - e82040
+    _refund = (c59660 + c11070 + c10960 + c10950 + c11580 + _personal_credit)
+    _iitax = c09200 - _refund
     _combined = _iitax + _fica
     potential_add_CTC = max(0., min(_combined, CTC_additional * n24))
     phaseout = (c00100 -
@@ -1230,8 +1209,7 @@ def IITAX(c09200, c59660, c11070, c10960, c11600, c10950, _eitc, c11580,
     # updated combined tax liabilities after applying the credit
     _combined = _iitax + _fica
     _refund = _refund + final_add_CTC
-    _payments = (c59660 + c10950 + c10960 + c11070 + e10000 + e11550 +
-                 e11450 + e11500)
+    _payments = (c59660 + c10950 + c10960 + c11070 + e11550)
     c10300 = max(0., c09200 - _payments)
     _eitc = c59660
     return (c10300, _eitc, _refund, _iitax, _combined)
