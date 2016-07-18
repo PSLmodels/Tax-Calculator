@@ -473,16 +473,6 @@ def XYZD(_taxinc, c04800, MARS, _xyztax, c05200,
 
 
 @iterate_jit(nopython=True)
-def NonGain(c23650, p23250, e01100):
-    """
-    NonGain function: ...
-    """
-    _cglong = min(c23650, p23250) + e01100
-    _noncg = 0.
-    return (_cglong, _noncg)
-
-
-@iterate_jit(nopython=True)
 def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
              e24515, e24518, MARS, _taxinc, _xyztax, _feided,
              _feitax, c00650, c05700, _taxbc,
