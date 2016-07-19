@@ -22,5 +22,5 @@ echo "FINISHED changing meta.yaml"
 conda build --python 2.7 .
 echo "FINISHED CONDA BUILD"
 cd $TAXCALC_PACKAGE_DIR
-conda convert -p all ~/miniconda3/conda-bld/osx-64/taxcalc-$1-py27_0.tar.bz2 -o .
+conda convert -p all ~/miniconda3/conda-bld/osx-64/taxcalc-$1-np110py27_0.tar.bz2 -o .
 echo "FINISHED CONDA CONVERT"
