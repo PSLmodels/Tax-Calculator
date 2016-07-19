@@ -1084,28 +1084,22 @@ def F5405(e11580, c11580):
 
 @iterate_jit(nopython=True)
 def C1040(e07400, c07200, c07220, c07230, c07300, c07240,
-          e07260, c07600,
-          p08000,
-          c05800, e09900, c09400, e09800,
-          e09700,
-          c07180, NIIT):
+          e07260, c07600, p08000, c05800, e09900, c09400, e09800,
+          e09700, c07180, NIIT, _othertax, c07100, c09200):
     """
     C1040 function: ...
     """
     # Credits 1040 line 48
-    c07100 = (c07180 + c07200 + c07600 + c07300 + e07400 + c07220 + p08000)
-    y07100 = c07100
-    c07100 += c07230 + c07240 + e07260
-    x07100 = c07100
+    c07100 = (c07180 + c07200 + c07600 + c07300 + e07400 + c07220 + p08000 +
+              c07230 + c07240 + e07260)
     c07100 = min(c07100, c05800)
     # Tax After credits 1040 line 52
-    c08795 = max(0., c05800 - c07100)  # SAS @1277
+    c08795 = max(0., c05800 - c07100)
     # Tax before refundable credits
     _othertax = e09900 + c09400 + e09800 + NIIT
     c09200 = _othertax + c08795
-    # assuming year (FLPDYR) > 2009
-    c09200 = c09200 + e09700
-    return (c07100, y07100, x07100, c08795, c09200, _othertax)
+    c09200 += e09700  # assuming year tax year is after 2009
+    return (c07100, c09200, _othertax)
 
 
 @iterate_jit(nopython=True)
