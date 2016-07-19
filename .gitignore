@@ -55,3 +55,6 @@ docs/_build/
 
 # Sublime
 *.sublime-*
+
+# ignore puf data files
+puf.csv

@@ -9,9 +9,97 @@ Tests for Tax-Calculator functions.py logic.
 import os
 import sys
 import re
-from taxcalc import IncomeTaxIO  # pylint: disable=import-error
+from taxcalc import IncomeTaxIO, Records  # pylint: disable=import-error
 from io import StringIO
 import pandas as pd
+import ast
+import six
+
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+FUNCTIONS_PY_PATH = os.path.join(CUR_PATH, '..', 'functions.py')
+
+
+class GetFuncDefs(ast.NodeVisitor):
+    """
+    Return information about each function defined in the functions.py file.
+    """
+    def __init__(self):
+        """class constructor"""
+        self.fname = ''
+        self.fnames = list()  # function name (fname) list
+        self.fargs = dict()  # lists of function arguments indexed by fname
+        self.cvars = dict()  # lists of calc vars in function indexed by fname
+        self.rvars = dict()  # lists of function return vars indexed by fname
+
+    def visit_Module(self, node):  # pylint: disable=invalid-name
+        """visit the one Module node"""
+        self.generic_visit(node)
+        return (self.fnames, self.fargs, self.cvars, self.rvars)
+
+    def visit_FunctionDef(self, node):  # pylint: disable=invalid-name
+        """visit FunctionDef node"""
+        self.fname = node.name
+        self.fnames.append(self.fname)
+        self.fargs[self.fname] = list()
+        for anode in ast.iter_child_nodes(node.args):
+            if six.PY3:
+                self.fargs[self.fname].append(anode.arg)
+            else:  # in Python 2 anode is a Name node
+                self.fargs[self.fname].append(anode.id)
+        self.cvars[self.fname] = list()
+        for bodynode in node.body:
+            if isinstance(bodynode, ast.Return):
+                continue  # skip function's Return node
+            for bnode in ast.walk(bodynode):
+                if isinstance(bnode, ast.Name):
+                    if isinstance(bnode.ctx, ast.Store):
+                        if bnode.id not in self.cvars[self.fname]:
+                            self.cvars[self.fname].append(bnode.id)
+        self.generic_visit(node)
+
+    def visit_Return(self, node):  # pylint: disable=invalid-name
+        """visit Return node"""
+        if self.fname == 'Taxer_i':
+            pass  # because an expression (not a variable) is returned
+        elif isinstance(node.value, ast.Tuple):
+            self.rvars[self.fname] = [r_v.id for r_v in node.value.elts]
+        else:
+            self.rvars[self.fname] = [node.value.id]
+        self.generic_visit(node)
+
+
+def test_that_calculated_vars_are_calculated():
+    """
+    Check that each var in Records.CALCULATED_VARS is actually calculated.
+
+    If this test fails, a variable in Records.CALCULATED_VARS was not
+    calculated in any function in the functions.py file.  With the exception
+    of a few variables listed in this test, all Records.CALCULATED_VARS
+    must be calculated in the functions.py file.
+    """
+    tree = ast.parse(open(FUNCTIONS_PY_PATH).read())
+    gfd = GetFuncDefs()
+    fnames, _, cvars, _ = gfd.visit(tree)
+    # create set of vars that are actually calculated in functions.py file
+    all_cvars = set()
+    for fname in fnames:
+        if fname != 'BenefitSurtax':
+            all_cvars.update(set(cvars[fname]))
+    # add some special variables to all_cvars set
+    vars_calc_in_records = set(['ID_Casualty_frt_in_pufcsv_year',
+                                '_num', '_sep', '_exact', '_calc_schR'])
+    vars_calc_in_benefitsurtax = set(['_surtax'])
+    vars_ok_to_not_calc = set(['f2555'])
+    all_cvars.update(vars_calc_in_records,
+                     vars_calc_in_benefitsurtax,
+                     vars_ok_to_not_calc)
+    # check that each var in Records.CALCULATED_VARS is in the all_cvars set
+    if not Records.CALCULATED_VARS <= all_cvars:
+        missing = Records.CALCULATED_VARS - all_cvars
+        msg = 'all Records.CALCULATED_VARS not calculated in functions.py\n'
+        for var in missing:
+            msg += 'VAR NOT CALCULATED: {}\n'.format(var)
+        raise ValueError(msg)
 
 
 def test_function_args_usage():
