@@ -144,7 +144,6 @@ class Records(object):
     # specify set of all Record variables that cannot be read in:
     CALCULATED_VARS = set([
         'f2555',
-        'c20400',
         '_exact',
         '_calc_schR', 'c07200',
         'c00650', 'c00100',
@@ -163,9 +162,7 @@ class Records(object):
         'c07230', '_precrd', 'c07220', 'c59660',
         'c08795', 'c09200', 'c07100', '_eitc', 'c59700',
         'c10950', '_ymod2', '_ymod3', 'c02650',
-        '_prexmp', 'c17750',
-        'c37703', 'c20500', 'c20750', 'c19200',
-        'c19700', '_nonlimited', '_limitstart',
+        '_prexmp',
         '_fica', '_fica_was', 'c03260',
         '_sep', '_num',
         'c04500', 'c05200',
