@@ -149,8 +149,8 @@ def Adj(e03150, e03210, c03260,
 def CapGains(p23250, p22250, _sep, _feided, FEI_ec_c, ALD_Interest_ec,
              ALD_StudentLoan_HC, f2555, e00200, e00300, e00600, e00700, e00800,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
-             e02300, e00400, e02400,
-             c02900, e03210, e03230, e03240):
+             e02300, e00400, e02400, c02900, e03210, e03230, e03240,
+             c01000, c02700, c23650, ymod, ymod1):
     """
     CapGains function: ...
     """
@@ -160,28 +160,28 @@ def CapGains(p23250, p22250, _sep, _feided, FEI_ec_c, ALD_Interest_ec,
     c01000 = max((-3000. / _sep), c23650)
     # Foreign earned income exclusion
     c02700 = min(_feided, FEI_ec_c * f2555)
-    # compute _ymod* variables
-    _ymod1 = (e00200 + (1 - ALD_Interest_ec) * e00300 + e00600 + e00700 +
-              e00800 + e00900 + c01000 + e01100 + e01200 + e01400 + e01700 +
-              e02000 + e02100 + e02300)
-    _ymod2 = e00400 + (0.50 * e02400) - c02900
-    _ymod3 = (1 - ALD_StudentLoan_HC) * e03210 + e03230 + e03240
-    _ymod = _ymod1 + _ymod2 + _ymod3
-    return (c23650, c01000, c02700, _ymod1, _ymod2, _ymod3, _ymod)
+    # compute ymod* variables
+    ymod1 = (e00200 + (1 - ALD_Interest_ec) * e00300 + e00600 + e00700 +
+             e00800 + e00900 + c01000 + e01100 + e01200 + e01400 + e01700 +
+             e02000 + e02100 + e02300)
+    ymod2 = e00400 + (0.50 * e02400) - c02900
+    ymod3 = (1 - ALD_StudentLoan_HC) * e03210 + e03230 + e03240
+    ymod = ymod1 + ymod2 + ymod3
+    return (c23650, c01000, c02700, ymod1, ymod)
 
 
 @iterate_jit(nopython=True)
-def SSBenefits(MARS, _ymod, e02400, SS_thd50, SS_thd85,
+def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
                SS_percentage1, SS_percentage2, c02500):
     """
     SSBenefits function calculates OASDI benefits included in AGI, c02500.
     """
-    if _ymod < SS_thd50[MARS - 1]:
+    if ymod < SS_thd50[MARS - 1]:
         c02500 = 0.
-    elif _ymod >= SS_thd50[MARS - 1] and _ymod < SS_thd85[MARS - 1]:
-        c02500 = SS_percentage1 * min(_ymod - SS_thd50[MARS - 1], e02400)
+    elif ymod >= SS_thd50[MARS - 1] and ymod < SS_thd85[MARS - 1]:
+        c02500 = SS_percentage1 * min(ymod - SS_thd50[MARS - 1], e02400)
     else:
-        c02500 = min(SS_percentage2 * (_ymod - SS_thd85[MARS - 1]) +
+        c02500 = min(SS_percentage2 * (ymod - SS_thd85[MARS - 1]) +
                      SS_percentage1 *
                      min(e02400, SS_thd85[MARS - 1] -
                          SS_thd50[MARS - 1]), SS_percentage2 * e02400)
@@ -189,12 +189,12 @@ def SSBenefits(MARS, _ymod, e02400, SS_thd50, SS_thd85,
 
 
 @iterate_jit(nopython=True)
-def AGI(_ymod1, c02500, c02700, c02900, XTOT,
+def AGI(ymod1, c02500, c02700, c02900, XTOT,
         II_em, II_em_ps, MARS, _sep, II_prt, DSI):
     """
     AGI function: compute Adjusted Gross Income
     """
-    c02650 = _ymod1 + c02500 - c02700  # Gross Income
+    c02650 = ymod1 + c02500 - c02700  # Gross Income
     c00100 = c02650 - c02900
     _posagi = max(c00100, 0)
     _prexmp = XTOT * II_em
