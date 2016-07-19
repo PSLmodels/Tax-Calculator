@@ -1113,26 +1113,22 @@ def DEITC(c59660, c07100, c08800, c05800, _avail, _othertax):
     """
     DEITC function: decomposition of EITC
     """
-    c10950 = 0.
     c59680 = min(c59660, _avail)
     _avail = max(0., _avail - c59680) + _othertax
-    c59700 = min(_avail, c59660 - c59680)
-    c59720 = c59660 - c59680 - c59700
-    c07150 = c07100 + c59680
-    c07150 = min(c07150, c05800)
+    c07150 = min(c07100 + c59680, c05800)
     c08800 = c05800 - c07150
-    return (c59680, c59700, c59720, c07150, c10950, c08800)
+    return (c08800, _avail)
 
 
 @iterate_jit(nopython=True)
-def IITAX(c09200, c59660, c11070, c10960, c10950, _eitc, c11580,
-          e11550, _fica, personal_credit, n24, _iitax, _combined, _refund,
+def IITAX(c09200, c59660, c11070, c10960, _eitc, c11580,
+          _fica, personal_credit, n24, _iitax, _combined, _refund,
           CTC_additional, CTC_additional_ps, CTC_additional_prt, c00100,
           _sep, MARS):
     """
     IITAX function: ...
     """
-    _refund = c59660 + c11070 + c10960 + c10950 + c11580 + personal_credit
+    _refund = c59660 + c11070 + c10960 + c11580 + personal_credit
     _iitax = c09200 - _refund
     _combined = _iitax + _fica
     potential_add_CTC = max(0., min(_combined, CTC_additional * n24))
@@ -1145,7 +1141,6 @@ def IITAX(c09200, c59660, c11070, c10960, c10950, _eitc, c11580,
     _combined = _iitax + _fica
     _refund = _refund + final_add_CTC
     _eitc = c59660
-    # payments = c59660 + c10950 + c10960 + c11070 + e11550  # TODO: remove?
     return (_eitc, _refund, _iitax, _combined)
 
 

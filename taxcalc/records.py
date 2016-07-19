@@ -160,8 +160,8 @@ class Records(object):
         'c05800', 'c59560',
         'c87521', 'c87550', 'c07180',
         'c07230', '_precrd', 'c07220', 'c59660',
-        'c08795', 'c09200', 'c07100', '_eitc', 'c59700',
-        'c10950', '_ymod2', '_ymod3', 'c02650',
+        'c08795', 'c09200', 'c07100', '_eitc',
+        '_ymod2', '_ymod3', 'c02650',
         '_prexmp',
         '_fica', '_fica_was', 'c03260',
         '_sep', '_num',
@@ -185,9 +185,9 @@ class Records(object):
         'c82925', 'c82930', 'c82935',
         'c82880', 'c82885', 'c82890', 'c82900',
         'c82905', 'c82910', 'c82915', 'c82920', 'c82937',
-        'c82940', 'x07100', 'y07100', 'c08800', 'c59680',
+        'c82940', 'x07100', 'y07100', 'c08800',
         '_othertax', 'NIIT',
-        'c59720', 'c07150', '_iitax', '_refund', '_amed',
+        '_iitax', '_refund', '_amed',
         '_expanded_income', 'c07300',
         'c07600', 'c07240',
         '_surtax', '_combined', 'personal_credit'])
@@ -338,7 +338,6 @@ class Records(object):
         self.e09700 *= ATXPY
         self.e09800 *= ATXPY
         self.e09900 *= ATXPY
-        self.e11550 *= ATXPY
         self.e11200 *= ATXPY
         self.e11580 *= ATXPY
         # ITEMIZED DEDUCTIONS
