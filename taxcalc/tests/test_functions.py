@@ -69,6 +69,10 @@ class GetFuncDefs(ast.NodeVisitor):
 def test_calculated_vars_are_used():
     """
     Check that each var in Records.CALCULATED_VARS is actually calculated.
+    If this test fails, a variable in Records.CALCULATED_VARS was not
+    used in any function in functions.py. With the exception of a few
+    variables listed in this test, all Records.CALCULATED_VARS must be
+    used in functions.py
     """
     tree = ast.parse(open(FUNCTIONS_PY_PATH).read())
     gfd = GetFuncDefs()
@@ -89,9 +93,11 @@ def test_calculated_vars_are_used():
     # check that each var in Records.CALCULATED_VARS is in all_cvars set
     if not Records.CALCULATED_VARS <= all_cvars:
         missing = Records.CALCULATED_VARS - all_cvars
+        errs = ''
         for var in missing:
-            sys.stdout.write('VAR NOT CALCULATED: {}\n'.format(var))
-        assert 'all Records.CALCULATED_VARS' == 'calculated in functions.py'
+            errs += 'VAR NOT CALCULATED: {}\n'.format(var)
+        msg = 'all Records.CALCULATED_VARS != calculated in functions.py\n'
+        raise ValueError(msg + errs)
 
 
 def test_function_args_usage():
