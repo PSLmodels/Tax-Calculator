@@ -281,6 +281,8 @@ def test_Calculator_mtr():
     assert type(mtr_combined) == np.ndarray
     (_, _, mtr_combined) = calc.mtr(income_type_str='e00900p')
     assert type(mtr_combined) == np.ndarray
+    (_, _, mtr_combined) = calc.mtr(income_type_str='e01700')
+    assert type(mtr_combined) == np.ndarray
 
 
 def test_Calculator_create_difference_table():

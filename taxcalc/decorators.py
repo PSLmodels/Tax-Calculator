@@ -1,30 +1,51 @@
+"""
+Implement Numba JIT decorators used to speed-up tax-calculating functions.
+"""
+# CODING-STYLE CHECKS:
+# pep8 --ignore=E402 decorators.py
+# pylint --disable=locally-disabled decorators.py
+# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
+
+
 import inspect
 from .policy import Policy
 from six import StringIO
 import ast
 import toolz
 
+
 try:
     import numba
-    jit = numba.jit
+    jit = numba.jit  # pylint: disable=invalid-name
     DO_JIT = True
 except (ImportError, AttributeError):
-    def id_wrapper(*dec_args, **dec_kwargs):
-        def wrap(f):
+    def id_wrapper(*dec_args, **dec_kwargs):  # pylint: disable=unused-argument
+        """
+        Function wrapper when numba package is not available.
+        """
+        def wrap(fnc):
+            """
+            wrap function nested in id_wrapper function.
+            """
             def wrapped_f(*args, **kwargs):
-                return f(*args, **kwargs)
+                """
+                wrapped_f function nested in wrap function.
+                """
+                return fnc(*args, **kwargs)
             return wrapped_f
         return wrap
-
-    jit = id_wrapper
+    jit = id_wrapper  # pylint: disable=invalid-name
     DO_JIT = False
 
 
 class GetReturnNode(ast.NodeVisitor):
     """
-    A Visitor to get the return tuple names from a calc-style function
+    A NodeVisitor to get the return tuple names from a calc-style function.
     """
-    def visit_Return(self, node):
+    def visit_Return(self, node):  # pylint: disable=invalid-name,no-self-use
+        """
+        visit_Return is used by NodeVisitor.visit method.
+        """
         if isinstance(node.value, ast.Tuple):
             return [e.id for e in node.value.elts]
         else:
@@ -33,7 +54,7 @@ class GetReturnNode(ast.NodeVisitor):
 
 def create_apply_function_string(sigout, sigin, parameters):
     """
-    Create a string for a function of the form::
+    Create a string for a function of the form:
 
         def ap_fuc(x_0, x_1, x_2, ...):
             for i in range(len(x_0)):
@@ -41,7 +62,7 @@ def create_apply_function_string(sigout, sigin, parameters):
             return x_0[i], ...
 
     where the specific args to jitted_f and the number of
-    values to return is determined by sigout and sigin
+    values to return is determined by sigout and sigin.
 
     Parameters
     ----------
@@ -74,18 +95,14 @@ def create_apply_function_string(sigout, sigin, parameters):
     return fstr.getvalue()
 
 
-def create_toplevel_function_string(args_out, args_in, pm_or_pf,
-                                    kwargs_for_func={}):
+def create_toplevel_function_string(args_out, args_in, pm_or_pf):
     """
-    Create a string for a function of the form::
+    Create a string for a function of the form:
 
         def hl_func(x_0, x_1, x_2, ...):
             outputs = (...) = calc_func(...)
             header = [...]
             return DataFrame(data, columns=header)
-
-    where the specific args to jitted_f and the number of
-    values to return is destermined by sigout and sigin
 
     Parameters
     ----------
@@ -95,35 +112,24 @@ def create_toplevel_function_string(args_out, args_in, pm_or_pf,
 
     pm_or_pf: iterable of strings for object that holds each arg
 
-    kwargs_for_func: dictionary of keyword args for the function
-
     Returns
     -------
     a String representing the function
     """
     fstr = StringIO()
     fstr.write("def hl_func(pm, pf")
-    if kwargs_for_func:
-        kwargs = ",".join(str(k) + "=" + str(v) for k, v in
-                          kwargs_for_func.items())
-        fstr.write(", " + kwargs + " ")
     fstr.write("):\n")
     fstr.write("    from pandas import DataFrame\n")
     fstr.write("    import numpy as np\n")
     fstr.write("    outputs = \\\n")
     outs = []
-    for arg in kwargs_for_func:
-        args_in.remove(arg)
-
-    for p, attr in zip(pm_or_pf, args_out + args_in):
-        outs.append(p + "." + attr + ", ")
+    for ppp, attr in zip(pm_or_pf, args_out + args_in):
+        outs.append(ppp + "." + attr + ", ")
     outs = [m_or_f + "." + arg for m_or_f, arg in zip(pm_or_pf, args_out)]
     fstr.write("        (" + ", ".join(outs) + ") = \\\n")
     fstr.write("        " + "applied_f(")
-    for p, attr in zip(pm_or_pf, args_out + args_in):
-        fstr.write(p + "." + attr + ", ")
-    for arg in kwargs_for_func:
-        fstr.write(arg + ", ")
+    for ppp, attr in zip(pm_or_pf, args_out + args_in):
+        fstr.write(ppp + "." + attr + ", ")
     fstr.write(")\n")
     fstr.write("    header = [")
     col_headers = ["'" + out + "'" for out in args_out]
@@ -169,7 +175,8 @@ def make_apply_function(func, out_args, in_args, parameters,
     apfunc = create_apply_function_string(out_args, in_args, parameters)
     func_code = compile(apfunc, "<string>", "exec")
     fakeglobals = {}
-    eval(func_code, {"jitted_f": jitted_f}, fakeglobals)
+    eval(func_code,  # pylint: disable=eval-used
+         {"jitted_f": jitted_f}, fakeglobals)
     if do_jit:
         return jit(**kwargs)(fakeglobals['ap_func'])
     else:
@@ -184,11 +191,18 @@ def apply_jit(dtype_sig_out, dtype_sig_in, parameters=None, **kwargs):
         parameters = []
 
     def make_wrapper(func):
+        """
+        make_wrapper function nested in apply_jit function.
+        """
         theargs = inspect.getargspec(func).args
+        # pylint: disable=star-args
         jitted_apply = make_apply_function(func, dtype_sig_out,
                                            dtype_sig_in, parameters, **kwargs)
 
         def wrapper(*args):
+            """
+            wrapper function nested in make_wrapper function.
+            """
             in_arrays = []
             out_arrays = []
             for farg in theargs:
@@ -221,26 +235,22 @@ def iterate_jit(parameters=None, **kwargs):
         parameters = []
 
     def make_wrapper(func):
-        # Wrap this function in apply_jit from apply_jit
-
+        """
+        make_wrapper function nested in iterate_jit decorator
+        wraps specified func using apply_jit.
+        """
         # Get the input arguments from the function
         in_args = inspect.getargspec(func).args
-        try:
-            jit_args = inspect.getargspec(jit).args + ['nopython']
-        except TypeError:
-            # print ("This should only be seen in RTD, if not install numba!")
-            return func
-
-        kwargs_for_func = toolz.keyfilter(in_args.__contains__, kwargs)
+        # Get the numba.jit arguments
+        jit_args = inspect.getargspec(jit).args + ['nopython']
         kwargs_for_jit = toolz.keyfilter(jit_args.__contains__, kwargs)
 
-        # Any name that is a parameter (or the special case 'puf')
+        # Any name that is a parameter
         # Boolean flag is given special treatment.
         # Identify those names here
         dd_key_list = list(Policy.default_data(metadata=True).keys())
         allowed_parameters = dd_key_list
         allowed_parameters += list(arg[1:] for arg in dd_key_list)
-        allowed_parameters.append("puf")
         additional_parameters = [arg for arg in in_args if
                                  arg in allowed_parameters]
         additional_parameters += parameters
@@ -251,16 +261,17 @@ def iterate_jit(parameters=None, **kwargs):
 
         # Discover the return arguments by walking
         # the AST of the function
-        gnr = GetReturnNode()
+        grn = GetReturnNode()
         all_out_args = None
         for node in ast.walk(ast.parse(''.join(src))):
-            all_out_args = gnr.visit(node)
+            all_out_args = grn.visit(node)
             if all_out_args:
                 break
         if not all_out_args:
             raise ValueError("Can't find return statement in function!")
 
         # Now create the apply-style possibly-jitted function
+        # pylint: disable=star-args
         applied_jitted_f = make_apply_function(func,
                                                list(reversed(all_out_args)),
                                                in_args,
@@ -269,6 +280,10 @@ def iterate_jit(parameters=None, **kwargs):
                                                **kwargs_for_jit)
 
         def wrapper(*args, **kwargs):
+            """
+            wrapper function nested in make_wrapper function nested
+            in iterate_jit decorator.
+            """
             in_arrays = []
             pm_or_pf = []
             for farg in all_out_args + in_args:
@@ -278,19 +293,18 @@ def iterate_jit(parameters=None, **kwargs):
                 elif hasattr(args[1], farg):
                     in_arrays.append(getattr(args[1], farg))
                     pm_or_pf.append("pf")
-                elif farg not in kwargs_for_func:
-                    raise ValueError("Unknown arg: " + farg)
             # Create the high level function
             high_level_func = create_toplevel_function_string(all_out_args,
                                                               list(in_args),
-                                                              pm_or_pf,
-                                                              kwargs_for_func)
+                                                              pm_or_pf)
             func_code = compile(high_level_func, "<string>", "exec")
             fakeglobals = {}
-            eval(func_code, {"applied_f": applied_jitted_f}, fakeglobals)
+            eval(func_code,  # pylint: disable=eval-used
+                 {"applied_f": applied_jitted_f}, fakeglobals)
             high_level_fn = fakeglobals['hl_func']
             ans = high_level_fn(*args, **kwargs)
             return ans
 
         return wrapper
+
     return make_wrapper
