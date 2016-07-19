@@ -1134,9 +1134,9 @@ def Taxer_i(inc_in, MARS,
 
 
 @iterate_jit(nopython=True)
-def ExpandIncome(_fica_was, e02400, c02500, c00100, e00400):
+def ExpandIncome(_fica_was, e02400, c02500, c00100, e00400, _expanded_income):
     """
-    ExpandIncome function: ...
+    ExpandIncome function: calculates and returns _expanded_income
     """
     employer_share_fica = 0.5 * _fica_was
     non_taxable_ss_benefits = e02400 - c02500
