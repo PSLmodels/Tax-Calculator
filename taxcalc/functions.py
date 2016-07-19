@@ -1021,8 +1021,8 @@ def NonEdCr(c87550, MARS, ETC_pe_Single, ETC_pe_Married, c00100, _num,
 
 @iterate_jit(nopython=True)
 def AddCTC(n24, _precrd, _earned, c07220, _fica_was,
-           ACTC_Income_thd, ACTC_rt, ACTC_ChildNum,
-           ALD_SelfEmploymentTax_HC, c03260, e09800, c59660, e11200):
+           ACTC_Income_thd, ACTC_rt, ACTC_ChildNum, ALD_SelfEmploymentTax_HC,
+           c03260, e09800, c59660, e11200, c11070):
 
     """
     AddCTC function: calculates Additional Child Tax Credit
@@ -1067,8 +1067,7 @@ def AddCTC(n24, _precrd, _earned, c07220, _fica_was,
         else:
             c82940 = min(c82935, c82937)
     c11070 = c82940
-    return (c82925, c82930, c82935, c82880, c82885, c82890,
-            c82900, c82905, c82910, c82915, c82920, c82937, c82940, c11070)
+    return c11070
 
 
 @iterate_jit(nopython=True)
