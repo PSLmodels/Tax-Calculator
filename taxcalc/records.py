@@ -178,7 +178,7 @@ class Records(object):
         'c10960', 'c87668',
         'c08800',
         '_othertax', 'NIIT',
-        '_iitax', '_refund', '_amed',
+        '_iitax', '_refund',
         '_expanded_income', 'c07300',
         'c07600', 'c07240',
         '_surtax', '_combined', 'personal_credit'])

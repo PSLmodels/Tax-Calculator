@@ -334,16 +334,16 @@ def AMED(_fica, e00200, MARS, AMED_thd, _sey, AMED_trt,
 
     Returns
     -------
-    _amed : Additional medicare tax amount
+    _fica : OASDHI payroll tax augmented by the additional Medicare tax, amed
 
     """
     # ratio of income subject to AMED tax = (1 - 0.5*(FICA_mc_trt+FICA_ss_trt)
-    _amed = AMED_trt * (max(0., e00200 - AMED_thd[MARS - 1]) +
-                        max(0., max(0., _sey) *
-                            (1. - 0.5 * (FICA_mc_trt + FICA_ss_trt)) -
-                            max(0., AMED_thd[MARS - 1] - e00200)))
-    _fica = _fica + _amed
-    return (_amed, _fica)
+    amed = AMED_trt * (max(0., e00200 - AMED_thd[MARS - 1]) +
+                       max(0., max(0., _sey) *
+                           (1. - 0.5 * (FICA_mc_trt + FICA_ss_trt)) -
+                           max(0., AMED_thd[MARS - 1] - e00200)))
+    _fica = _fica + amed
+    return _fica
 
 
 @iterate_jit(nopython=True)
