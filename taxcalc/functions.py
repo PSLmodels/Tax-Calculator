@@ -79,7 +79,8 @@ def Adj(e03150, e03210, c03260,
         e03270, e03300, e03400, e03500,
         e03220, e03230, e03240, e03290, ALD_StudentLoan_HC,
         ALD_SelfEmploymentTax_HC, ALD_SelfEmp_HealthIns_HC, ALD_KEOGH_SEP_HC,
-        ALD_EarlyWithdraw_HC, ALD_Alimony_HC):
+        ALD_EarlyWithdraw_HC, ALD_Alimony_HC,
+        _feided, c02900):
     """
     Adj function:
 
@@ -128,10 +129,9 @@ def Adj(e03150, e03210, c03260,
 
     Returns
     -------
-    _feided
-        foreign earned income deduction
-    c02900
-        total adjustments
+    _feided : foreign earned income deduction
+
+    c02900 : total Form 1040 adjustments
     """
     # Form 2555: foreign earned income deduction
     _feided = 0.
