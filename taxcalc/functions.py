@@ -21,7 +21,9 @@ import copy
 @iterate_jit(nopython=True)
 def EI_FICA(SS_Earnings_c, e00200, e00200p, e00200s,
             FICA_ss_trt, FICA_mc_trt,
-            e00900p, e00900s, e02100p, e02100s):
+            e00900p, e00900s, e02100p, e02100s,
+            _fica, _fica_was, c03260, c09400,
+            _sey, _earned, _earned_p, _earned_s):
     """
     EI_FICA function: computes total earned income and regular FICA taxes.
     """
@@ -326,9 +328,9 @@ def AMED(_fica, e00200, MARS, AMED_thd, _sey, AMED_trt,
         FICA_mc_trt : FICA medicare tax rate
 
     Taxpayer Charateristics:
-        e00200 : Total wages and salaries
+        e00200 : Wages and salaries
 
-        _sey : Business and Farm net income/loss
+        _sey : Self-employment income
 
     Returns
     -------
