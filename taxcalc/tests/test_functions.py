@@ -13,10 +13,10 @@ from taxcalc import IncomeTaxIO, Records  # pylint: disable=import-error
 from io import StringIO
 import pandas as pd
 import ast
+import six
 
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 FUNCTIONS_PY_PATH = os.path.join(CUR_PATH, '..', 'functions.py')
-PYTHON3 = sys.version_info >= (3, 0)
 
 
 class GetFuncDefs(ast.NodeVisitor):
@@ -42,7 +42,7 @@ class GetFuncDefs(ast.NodeVisitor):
         self.fnames.append(self.fname)
         self.fargs[self.fname] = list()
         for anode in ast.iter_child_nodes(node.args):
-            if PYTHON3:
+            if six.PY3:
                 self.fargs[self.fname].append(anode.arg)
             else:  # in Python 2 anode is a Name node
                 self.fargs[self.fname].append(anode.id)
