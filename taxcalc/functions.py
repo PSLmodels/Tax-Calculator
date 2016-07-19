@@ -566,77 +566,60 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
 
 
 @iterate_jit(nopython=True)
-def AMTI(_posagi, e07300, c24517, FDED, c21060, _standard,
-         f6251, c00100,
-         c04470, c17000, c20800, c21040,
-         c02700,
-         e24515,
-         c18300, _taxbc, AMT_tthd, AMT_CG_thd1, AMT_CG_thd2,
-         MARS, _sep, AMT_Child_em, AMT_CG_rt1,
-         AMT_CG_rt2, AMT_CG_rt3, AMT_em_ps, AMT_em_pe, e00700, c24516,
-         c24520, c05700,
-         age_head, KT_c_Age, e62900, AMT_thd_MarriedS, _earned,
-         AMT_em, AMT_prt, AMT_trt1, AMT_trt2, cmbtp_itemizer, cmbtp_standard):
+def AMTI(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
+         c04470, c17000, c20800, c21040, c02700, e24515, MARS, _sep,
+         c24520, c05700, e62900, e00700, c24516, age_head, _earned,
+         cmbtp_itemizer, cmbtp_standard,
+         KT_c_Age, AMT_tthd, AMT_thd_MarriedS,
+         AMT_em, AMT_prt, AMT_trt1, AMT_trt2,
+         AMT_Child_em, AMT_em_ps, AMT_em_pe,
+         AMT_CG_thd1, AMT_CG_thd2, AMT_CG_rt1, AMT_CG_rt2, AMT_CG_rt3,
+         c05800, c09600, c62100):
+
     """
     AMTI function: AMT taxable income
     """
     # pylint: disable=too-many-statements,too-many-branches
     c62720 = c24517
     c60260 = e00700
-    c60200 = min(c17000, 0.025 * _posagi)
-    c60240 = c18300
-    c60220 = c20800
-    c60130 = c21040
     c62730 = e24515
-    if FDED == 2:
-        _prefded = 0.
-    else:
-        _prefded = c60200 + c60220 + c60240
-    _prefnot = c21060 - c21040 - _prefded
-    _totded = _prefded + _prefnot
-    if FDED == 1:
-        c60000 = c00100 - _totded
-    elif FDED == 3:
-        c60000 = c00100 - c04470
-    else:
-        c60000 = c00100
     if _standard == 0.0:
         if f6251 == 1:
-            _cmbtp = cmbtp_itemizer
+            cmbtp = cmbtp_itemizer
         else:
-            _cmbtp = 0.
+            cmbtp = 0.
         c62100 = (c00100 - c04470 +
                   max(0., min(c17000, 0.025 * c00100)) +
                   c18300 -
                   c60260 + c20800 - c21040)
-        c62100 += _cmbtp
+        c62100 += cmbtp
     if _standard > 0.0:
         if f6251 == 1:
-            _cmbtp = cmbtp_standard
+            cmbtp = cmbtp_standard
         else:
-            _cmbtp = 0.
+            cmbtp = 0.
         c62100 = c00100 - c60260
-        c62100 += _cmbtp
+        c62100 += cmbtp
     if MARS == 3 or MARS == 6:
-        _amtsepadd = max(0.,
-                         min(AMT_thd_MarriedS, 0.25 * (c62100 - AMT_em_pe)))
+        amtsepadd = max(0.,
+                        min(AMT_thd_MarriedS, 0.25 * (c62100 - AMT_em_pe)))
     else:
-        _amtsepadd = 0.
-    c62100 = c62100 + _amtsepadd
+        amtsepadd = 0.
+    c62100 = c62100 + amtsepadd
     c62600 = max(0., AMT_em[MARS - 1] - AMT_prt *
                  max(0., c62100 - AMT_em_ps[MARS - 1]))
     if age_head != 0 and age_head < KT_c_Age:
         c62600 = min(c62600, _earned + AMT_Child_em)
     c62700 = max(0., c62100 - c62600)
     if c02700 > 0.:
-        _alminc = max(0., c62100 - c62600)
-        _amtfei = (AMT_trt1 * c02700 + AMT_trt2 *
-                   max(0., (c02700 - (AMT_tthd / _sep))))
+        alminc = max(0., c62100 - c62600)
+        amtfei = (AMT_trt1 * c02700 + AMT_trt2 *
+                  max(0., (c02700 - (AMT_tthd / _sep))))
     else:
-        _alminc = c62700
-        _amtfei = 0.
-    c62780 = (AMT_trt1 * _alminc + AMT_trt2 *
-              max(0., (_alminc - (AMT_tthd / _sep) - _amtfei)))
+        alminc = c62700
+        amtfei = 0.
+    c62780 = (AMT_trt1 * alminc + AMT_trt2 *
+              max(0., (alminc - (AMT_tthd / _sep) - amtfei)))
     if f6251 == 1:
         c62900 = e62900
     else:
@@ -645,44 +628,38 @@ def AMTI(_posagi, e07300, c24517, FDED, c21060, _standard,
         c62740 = c62720 + c62730
     else:
         c62740 = min(max(0., c24516), c62720 + c62730)
-    _ngamty = max(0., _alminc - c62740)
-    c62745 = (AMT_trt1 * _ngamty +
-              AMT_trt2 * max(0., (_ngamty - (AMT_tthd / _sep))))
+    ngamty = max(0., alminc - c62740)
+    c62745 = (AMT_trt1 * ngamty +
+              AMT_trt2 * max(0., (ngamty - (AMT_tthd / _sep))))
     # Capital Gain for AMT
-    _tamt2 = 0.
-    _amt5pc = 0.
-    _line45 = max(0., AMT_CG_thd1[MARS - 1] - c24520)
-    _line46 = min(_alminc, c62720)
-    _line47 = min(_line45, _line46)
-    _line48 = min(_alminc, c62720) - _line47
-    _amt15pc = min(_line48, max(0., AMT_CG_thd2[MARS - 1] - c24520 - _line45))
-    if _ngamty != (_amt15pc + _line47):
-        _amt20pc = _line46 - _amt15pc - _line47
+    tamt2 = 0.
+    amt5pc = 0.
+    line45 = max(0., AMT_CG_thd1[MARS - 1] - c24520)
+    line46 = min(alminc, c62720)
+    line47 = min(line45, line46)
+    line48 = min(alminc, c62720) - line47
+    amt15pc = min(line48, max(0., AMT_CG_thd2[MARS - 1] - c24520 - line45))
+    if ngamty != (amt15pc + line47):
+        amt20pc = line46 - amt15pc - line47
     else:
-        _amt20pc = 0.
+        amt20pc = 0.
     if c62740 != 0.:
-        _amt25pc = max(0., _alminc - _ngamty - _line46)
+        amt25pc = max(0., alminc - ngamty - line46)
     else:
-        _amt25pc = 0.
-    c62747 = AMT_CG_rt1 * _amt5pc
-    c62755 = AMT_CG_rt2 * _amt15pc
-    c62760 = AMT_CG_rt3 * _amt20pc
-    c62770 = 0.25 * _amt25pc  # tax rate on "Unrecaptured Schedule E Gain"
-    _tamt2 = c62747 + c62755 + c62760 + c62770  # line62 without 42 being added
-    c62800 = min(c62780, c62745 + _tamt2 - _amtfei)
+        amt25pc = 0.
+    c62747 = AMT_CG_rt1 * amt5pc
+    c62755 = AMT_CG_rt2 * amt15pc
+    c62760 = AMT_CG_rt3 * amt20pc
+    c62770 = 0.25 * amt25pc  # tax rate on "Unrecaptured Schedule E Gain"
+    tamt2 = c62747 + c62755 + c62760 + c62770  # line62 without 42 being added
+    c62800 = min(c62780, c62745 + tamt2 - amtfei)
     c63000 = c62800 - c62900
     c63100 = _taxbc - e07300 - c05700
     c63100 = max(0., c63100)
     c63200 = max(0., c63000 - c63100)
     c09600 = c63200
     c05800 = _taxbc + c63200
-    return (c62720, c60260, c63100, c60200, c60240, c60220, c60000,
-            c60130, c62730, c62100,
-            _amtsepadd, c62600, c62700, c62760,
-            _alminc, _amtfei, c62780, c62900, c63000, c62740,
-            _ngamty, c62745, _tamt2, _amt5pc, _amt15pc,
-            _amt25pc, c62747, c62755, c62770, _amt20pc, c62800,
-            c09600, c05800, _cmbtp)
+    return (c62100, c09600, c05800)
 
 
 @iterate_jit(nopython=True)
