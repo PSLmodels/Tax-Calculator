@@ -809,7 +809,7 @@ def ChildTaxCredit(n24, MARS, c00100, _feided, _exact,
 
 
 @iterate_jit(nopython=True)
-def AmOppCr(p87482, e87487, e87492, e87497, p87521):
+def AmOppCr(p87482, e87487, e87492, e87497, p87521, c87521):
     """
     American Opportunity Credit 2009+; Form 8863
 
@@ -844,9 +844,7 @@ def AmOppCr(p87482, e87487, e87492, e87497, p87521):
     # Return larger of p87521 and c87521.
     if p87521 > c87521:
         c87521 = p87521
-    return (c87482, c87487, c87492, c87497,
-            c87483, c87488, c87493, c87498,
-            c87521)
+    return c87521
 
 
 @iterate_jit(nopython=True)
