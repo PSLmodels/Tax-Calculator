@@ -91,7 +91,7 @@ def Adj(e03150, e03210, c03260,
 
         e03220 : Education Expense deduction
 
-        e03150 : Total deduction IRS payments
+        e03150 : Total deduction IRA contributions
 
         e03230 : Education credit adjustments
 
@@ -697,31 +697,30 @@ def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
 
 @iterate_jit(nopython=True)
 def F2441(MARS, _earned_p, _earned_s, f2441, DCC_c, e32800,
-          _exact, c00100, CDCC_ps, CDCC_crt, c05800, e07300):
+          _exact, c00100, CDCC_ps, CDCC_crt, c05800, e07300, c07180):
     """
-    Form 2441 calculation of child & dependent care expense credit.
+    Form 2441 calculation of child & dependent care expense credit, c07180
     """
     c32880 = _earned_p  # earned income of taxpayer
     if MARS == 2:
         c32890 = _earned_s  # earned income of spouse, if present
     else:
         c32890 = _earned_p
-    _dclim = min(f2441, 2) * DCC_c
+    dclim = min(f2441, 2) * DCC_c
     # care expenses are limited by policy
-    c32800 = max(0., min(e32800, _dclim))
+    c32800 = max(0., min(e32800, dclim))
     # credit is limited to minimum of individuals' earned income
     c33000 = max(0., min(c32800, min(c32880, c32890)))
     # credit is limited by AGI-related fraction
     if _exact == 1:
-        _tratio = math.ceil(max(((c00100 - CDCC_ps) / 2000.), 0.))
-        c33200 = c33000 * 0.01 * max(20., CDCC_crt - min(15., _tratio))
+        tratio = math.ceil(max(((c00100 - CDCC_ps) / 2000.), 0.))
+        c33200 = c33000 * 0.01 * max(20., CDCC_crt - min(15., tratio))
     else:
-        _tratio = 0.
         c33200 = c33000 * 0.01 * max(20., CDCC_crt -
                                      max(((c00100 - CDCC_ps) / 2000.), 0.))
     # credit is limited by tax liability
     c07180 = min(max(0., c05800 - e07300), c33200)
-    return (c32880, c32890, _dclim, c32800, c33000, _tratio, c33200, c07180)
+    return c07180
 
 
 @iterate_jit(nopython=True)
@@ -1143,8 +1142,8 @@ def IITAX(c09200, c59660, c11070, c10960, c10950, _eitc, c11580,
     # updated combined tax liabilities after applying the credit
     _combined = _iitax + _fica
     _refund = _refund + final_add_CTC
-    payments = c59660 + c10950 + c10960 + c11070 + e11550
     _eitc = c59660
+    # payments = c59660 + c10950 + c10960 + c11070 + e11550  # TODO: remove?
     return (_eitc, _refund, _iitax, _combined)
 
 
