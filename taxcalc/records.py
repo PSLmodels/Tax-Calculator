@@ -161,7 +161,6 @@ class Records(object):
         'c87521', 'c87550', 'c07180',
         'c07230', '_precrd', 'c07220', 'c59660',
         'c09200', 'c07100', '_eitc',
-        'c02650',
         '_prexmp',
         '_fica', '_fica_was', 'c03260',
         '_sep', '_num',

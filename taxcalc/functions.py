@@ -189,14 +189,14 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
 
 
 @iterate_jit(nopython=True)
-def AGI(ymod1, c02500, c02700, c02900, XTOT,
-        II_em, II_em_ps, MARS, _sep, II_prt, DSI):
+def AGI(ymod1, c02500, c02700, c02900, XTOT, MARS, _sep, DSI,
+        II_em, II_em_ps, II_prt,
+        c00100, _posagi, _prexmp, c04600):
     """
-    AGI function: compute Adjusted Gross Income
+    AGI function: compute Adjusted Gross Income, c00100
     """
-    c02650 = ymod1 + c02500 - c02700  # Gross Income
-    c00100 = c02650 - c02900
-    _posagi = max(c00100, 0)
+    c00100 = ymod1 + c02500 - c02700 - c02900
+    _posagi = max(c00100, 0.)
     _prexmp = XTOT * II_em
     if DSI:
         _prexmp = 0.
@@ -205,7 +205,7 @@ def AGI(ymod1, c02500, c02700, c02900, XTOT,
     _dispc_denom = 2500. / _sep
     _dispc = min(1., max(0., _dispc_numer / _dispc_denom))
     c04600 = _prexmp * (1. - _dispc)
-    return (c02650, c00100, _posagi, _prexmp, c04600)
+    return (c00100, _posagi, _prexmp, c04600)
 
 
 @iterate_jit(nopython=True)
