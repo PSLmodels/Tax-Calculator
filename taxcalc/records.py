@@ -190,9 +190,7 @@ class Records(object):
         'c82905', 'c82910', 'c82915', 'c82920', 'c82937',
         'c82940', 'x07100', 'y07100', 'c08800', 'c59680',
         '_othertax', 'NIIT',
-        'c59720', 'c07150', 'c10300', '_iitax',
-        '_refund',
-        '_amed',
+        'c59720', 'c07150', '_iitax', '_refund', '_amed',
         '_expanded_income', 'c07300',
         'c07600', 'c07240',
         '_surtax', '_combined', 'personal_credit'])

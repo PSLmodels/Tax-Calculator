@@ -1129,7 +1129,7 @@ def DEITC(c59660, c07100, c08800, c05800, _avail, _othertax):
 
 @iterate_jit(nopython=True)
 def IITAX(c09200, c59660, c11070, c10960, c10950, _eitc, c11580,
-          e11550, _fica, personal_credit, n24,
+          e11550, _fica, personal_credit, n24, _iitax, _combined, _refund,
           CTC_additional, CTC_additional_ps, CTC_additional_prt, c00100,
           _sep, MARS):
     """
@@ -1147,10 +1147,10 @@ def IITAX(c09200, c59660, c11070, c10960, c10950, _eitc, c11580,
     # updated combined tax liabilities after applying the credit
     _combined = _iitax + _fica
     _refund = _refund + final_add_CTC
-    _payments = (c59660 + c10950 + c10960 + c11070 + e11550)
-    c10300 = max(0., c09200 - _payments)
+    payments = (c59660 + c10950 + c10960 + c11070 + e11550)
+    c10300 = max(0., c09200 - payments)
     _eitc = c59660
-    return (c10300, _eitc, _refund, _iitax, _combined)
+    return (_eitc, _refund, _iitax, _combined)
 
 
 @jit(nopython=True)
