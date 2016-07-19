@@ -796,19 +796,19 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge, DSI,
 
 
 @iterate_jit(nopython=True)
-def ChildTaxCredit(n24, MARS, CTC_c, c00100, _feided, CTC_ps, _exact,
-                   _precrd, CTC_prt):
+def ChildTaxCredit(n24, MARS, c00100, _feided, _exact,
+                   CTC_c, CTC_ps, CTC_prt, _precrd):
     """
     ChildTaxCredit function: ...
     """
     _precrd = CTC_c * n24
-    _ctcagi = c00100 + _feided
-    if _ctcagi > CTC_ps[MARS - 1]:
-        excess = _ctcagi - CTC_ps[MARS - 1]
+    ctcagi = c00100 + _feided
+    if ctcagi > CTC_ps[MARS - 1]:
+        excess = ctcagi - CTC_ps[MARS - 1]
         if _exact == 1:
             excess = 1000. * math.ceil(excess / 1000.)
         _precrd = max(0., _precrd - CTC_prt * excess)
-    return (_precrd, _ctcagi)
+    return _precrd
 
 
 @iterate_jit(nopython=True)
@@ -1135,7 +1135,7 @@ def IITAX(c09200, c59660, c11070, c10960, c10950, _eitc, c11580,
     """
     IITAX function: ...
     """
-    _refund = (c59660 + c11070 + c10960 + c10950 + c11580 + personal_credit)
+    _refund = c59660 + c11070 + c10960 + c10950 + c11580 + personal_credit
     _iitax = c09200 - _refund
     _combined = _iitax + _fica
     potential_add_CTC = max(0., min(_combined, CTC_additional * n24))
@@ -1147,8 +1147,7 @@ def IITAX(c09200, c59660, c11070, c10960, c10950, _eitc, c11580,
     # updated combined tax liabilities after applying the credit
     _combined = _iitax + _fica
     _refund = _refund + final_add_CTC
-    payments = (c59660 + c10950 + c10960 + c11070 + e11550)
-    c10300 = max(0., c09200 - payments)
+    payments = c59660 + c10950 + c10960 + c11070 + e11550
     _eitc = c59660
     return (_eitc, _refund, _iitax, _combined)
 

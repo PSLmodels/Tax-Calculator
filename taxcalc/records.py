@@ -180,7 +180,7 @@ class Records(object):
         '_amt20pc', 'c62800', 'c09600',
         '_tratio', 'c33200',
         '_extrastd', 'ID_Casualty_frt_in_pufcsv_year',
-        'c11070', '_ctcagi', 'c87482',
+        'c11070', 'c87482',
         'c87487', 'c87492', 'c87497', 'c87483', 'c87488',
         'c87493', 'c87498', 'c87654',
         'c87656', 'c87658', 'c87660', 'c87662',
