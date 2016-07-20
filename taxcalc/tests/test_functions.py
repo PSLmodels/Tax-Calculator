@@ -112,7 +112,7 @@ def test_calc_and_rtn_vars_are_arguments():  # pylint: disable=invalid-name
     gfd = GetFuncDefs()
     fnames, fargs, cvars, rvars = gfd.visit(tree)
     msg = 'calculated & returned variables are not function arguments\n'
-    found_errors = False
+    found_error = False
     for fname in fnames:
         if fname == 'BenefitSurtax':
             continue  # because BenefitSurtax is not really a function
@@ -124,7 +124,7 @@ def test_calc_and_rtn_vars_are_arguments():  # pylint: disable=invalid-name
             missing = crvars_set - set(fargs[fname])
             for var in missing:
                 msg += 'FUNCTION,VARIABLE: {} {}\n'.format(fname, var)
-    if found_errors:
+    if found_error:
         raise ValueError(msg)
 
 
