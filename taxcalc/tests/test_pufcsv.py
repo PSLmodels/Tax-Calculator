@@ -35,6 +35,7 @@ def test_agg():
     """
     Test Tax-Calculator aggregate taxes with no policy reform using puf.csv
     """
+    # pylint: disable=too-many-locals
     # create a Policy object (clp) containing current-law policy parameters
     clp = Policy()
     # create a Records object (puf) containing puf.csv input records
@@ -62,13 +63,14 @@ def test_agg():
         new_filename = '{}{}'.format(AGGRES_PATH[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
             new_file.write(adtstr)
-        sys.stdout.write('*************************************************\n')
-        sys.stdout.write('*** NEW RESULTS IN pufcsv_agg_actual.txt FILE ***\n')
-        sys.stdout.write('*** if new OK, copy pufcsv_agg_actual.txt to  ***\n')
-        sys.stdout.write('***                 pufcsv_agg_expect.txt     ***\n')
-        sys.stdout.write('***            and rerun test.                ***\n')
-        sys.stdout.write('*************************************************\n')
-        assert False
+        msg = 'PUFCSV AGG RESULTS DIFFER\n'
+        msg += '-------------------------------------------------\n'
+        msg += '--- NEW RESULTS IN pufcsv_agg_actual.txt FILE ---\n'
+        msg += '--- if new OK, copy pufcsv_agg_actual.txt to  ---\n'
+        msg += '---                 pufcsv_agg_expect.txt     ---\n'
+        msg += '---            and rerun test.                ---\n'
+        msg += '-------------------------------------------------\n'
+        raise ValueError(msg)
 
 
 MTR_TAX_YEAR = 2013
@@ -173,10 +175,11 @@ def test_mtr():
         new_filename = '{}{}'.format(MTRRES_PATH[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
             new_file.write(res)
-        sys.stdout.write('*************************************************\n')
-        sys.stdout.write('*** NEW RESULTS IN pufcsv_mtr_actual.txt FILE ***\n')
-        sys.stdout.write('*** if new OK, copy pufcsv_mtr_actual.txt to  ***\n')
-        sys.stdout.write('***                 pufcsv_mtr_expect.txt     ***\n')
-        sys.stdout.write('***            and rerun test.                ***\n')
-        sys.stdout.write('*************************************************\n')
-        assert False
+        msg = 'PUFCSV MTR RESULTS DIFFER\n'
+        msg += '-------------------------------------------------\n'
+        msg += '--- NEW RESULTS IN pufcsv_mtr_actual.txt FILE ---\n'
+        msg += '--- if new OK, copy pufcsv_mtr_actual.txt to  ---\n'
+        msg += '---                 pufcsv_mtr_expect.txt     ---\n'
+        msg += '---            and rerun test.                ---\n'
+        msg += '-------------------------------------------------\n'
+        raise ValueError(msg)
