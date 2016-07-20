@@ -185,22 +185,33 @@ def test_var_labels_txt_contents():
     # read variables in var_labels.txt file (checking for duplicates)
     var_labels_path = os.path.join(CUR_PATH, '..', 'var_labels.txt')
     var_labels_set = set()
-    with open(var_labels_path, 'r') as input:
-        for line in input:
+    with open(var_labels_path, 'r') as varlabels:
+        msg = 'DUPLICATE VARIABLE(S) IN VAR_LABELS.TXT:\n'
+        found_duplicates = False
+        for line in varlabels:
             var = (line.split())[0]
             if var in var_labels_set:
-                msg = 'DUPLICATE_IN_VAR_LABELS.TXT: {}\n'.format(var)
-                sys.stdout.write(msg)
-                assert False
+                found_duplicates = True
+                msg += 'VARIABLE= {}\n'.format(var)
             else:
                 var_labels_set.add(var)
-    # change all VALID variables to uppercase
-    var_used_set = set()
+        if found_duplicates:
+            raise ValueError(msg)
+    # change all Records.VALID_READ_VARS variables to uppercase
+    var_valid_set = set()
     for var in Records.VALID_READ_VARS:
-        var_used_set.add(var.upper())
-    # check for no extra var_used variables
-    used_less_labels = var_used_set - var_labels_set
-    assert len(used_less_labels) == 0
+        var_valid_set.add(var.upper())
+    # check for no extra var_valid variables
+    valid_less_labels = var_valid_set - var_labels_set
+    if len(valid_less_labels) > 0:
+        msg = 'VARIABLE(S) IN VALID_READ_VARS BUT NOT VAR_LABELS.TXT:\n'
+        for var in valid_less_labels:
+            msg += 'VARIABLE= {}\n'.format(var)
+        raise ValueError(msg)
     # check for no extra var_labels variables
-    labels_less_used = var_labels_set - var_used_set
-    assert len(labels_less_used) == 0
+    labels_less_valid = var_labels_set - var_valid_set
+    if len(labels_less_valid) > 0:
+        msg = 'VARIABLE(S) IN VAR_LABELS.TXT BUT NOT VALID_READ_VARS:\n'
+        for var in labels_less_valid:
+            msg += 'VARIABLE= {}\n'.format(var)
+        raise ValueError(msg)
