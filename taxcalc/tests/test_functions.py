@@ -59,7 +59,9 @@ class GetFuncDefs(ast.NodeVisitor):
 
     def visit_Return(self, node):  # pylint: disable=invalid-name
         """visit Return node"""
-        if isinstance(node.value, ast.Tuple):
+        if self.fname == 'Taxer_i':
+            pass  # because an expression (not a variable) is returned
+        elif isinstance(node.value, ast.Tuple):
             self.rvars[self.fname] = [r_v.id for r_v in node.value.elts]
         else:
             self.rvars[self.fname] = [node.value.id]
