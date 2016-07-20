@@ -113,26 +113,29 @@ def test_function_args_usage():
     fcontent = re.sub('#.*', '', fcontent)  # remove all '#...' comments
     fcontent = re.sub('\n', ' ', fcontent)  # replace EOL character with space
     funcs = fcontent.split('def ')  # list of function text
+    msg = 'FUNCTION ARGUMENT(S) NEVER USED:\n'
+    found_error = False
     for func in funcs[1:]:  # skip first item in list, which is imports, etc.
         fcode = func.split('return ')[0]  # fcode is between def and return
         match = re.search(r'^(.+?)\((.*?)\):(.*)$', fcode)
         if match is None:
             msg = ('Could not find function name, arguments, '
-                   'and code portions in the following text:')
-            line = '====================================================='
-            sys.stdout.write('{}\n{}\n{}\n{}\n'.format(msg, line, fcode, line))
-            assert False
-        fname = match.group(1)
-        fargs = match.group(2).split(',')  # list of function arguments
-        fbody = match.group(3)
-        if fname == 'Taxer_i':
-            continue  # because Taxer_i function has no fbody, only a return
+                   'and code portions in the following text:\n')
+            msg += '--------------------------------------------------------\n'
+            msg += '{}\n'.format(fcode)
+            msg += '--------------------------------------------------------\n'
+            raise ValueError(msg)
+        else:
+            fname = match.group(1)
+            fargs = match.group(2).split(',')  # list of function arguments
+            fbody = match.group(3)
         for farg in fargs:
             arg = farg.strip()
             if fbody.find(arg) < 0:
-                msg = '{} function argument {} never used\n'.format(fname, arg)
-                sys.stdout.write(msg)
-                assert 'argument' == 'UNUSED'
+                found_error = True
+                msg += 'FUNCTION,ARGUMENT= {} {}\n'.format(fname, arg)
+    if found_error:
+        raise ValueError(msg)
 
 
 def test_1():
