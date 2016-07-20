@@ -124,8 +124,8 @@ def test_calc_and_rtn_vars_are_arguments():  # pylint: disable=invalid-name
             missing = crvars_set - set(fargs[fname])
             for var in missing:
                 msg += 'FUNCTION,VARIABLE: {} {}\n'.format(fname, var)
-        if found_errors:
-            raise ValueError(msg)
+    if found_errors:
+        raise ValueError(msg)
 
 
 def test_function_args_usage():
