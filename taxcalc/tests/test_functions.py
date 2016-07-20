@@ -59,16 +59,16 @@ class GetFuncDefs(ast.NodeVisitor):
 
     def visit_Return(self, node):  # pylint: disable=invalid-name
         """visit Return node"""
-        if self.fname == 'Taxer_i':
-            pass  # because an expression (not a variable) is returned
-        elif isinstance(node.value, ast.Tuple):
+        if isinstance(node.value, ast.Tuple):
             self.rvars[self.fname] = [r_v.id for r_v in node.value.elts]
+        elif isinstance(node.value, ast.BinOp):
+            self.rvars[self.fname] = []  # no vars returned; only an expression
         else:
             self.rvars[self.fname] = [node.value.id]
         self.generic_visit(node)
 
 
-def test_that_calculated_vars_are_calculated():
+def test_calculated_vars_are_calculated():  # pylint: disable=invalid-name
     """
     Check that each var in Records.CALCULATED_VARS is actually calculated.
 
@@ -83,8 +83,9 @@ def test_that_calculated_vars_are_calculated():
     # create set of vars that are actually calculated in functions.py file
     all_cvars = set()
     for fname in fnames:
-        if fname != 'BenefitSurtax':
-            all_cvars.update(set(cvars[fname]))
+        if fname == 'BenefitSurtax':
+            continue  # because BenefitSurtax is not really a function
+        all_cvars.update(set(cvars[fname]))
     # add some special variables to all_cvars set
     vars_calc_in_records = set(['ID_Casualty_frt_in_pufcsv_year',
                                 '_num', '_sep', '_exact', '_calc_schR'])
@@ -100,6 +101,31 @@ def test_that_calculated_vars_are_calculated():
         for var in missing:
             msg += 'VAR NOT CALCULATED: {}\n'.format(var)
         raise ValueError(msg)
+
+
+def test_calc_and_rtn_vars_are_arguments():  # pylint: disable=invalid-name
+    """
+    Check that each variable that is calculated in a function and
+    returned by that function is an argument of that function.
+    """
+    tree = ast.parse(open(FUNCTIONS_PY_PATH).read())
+    gfd = GetFuncDefs()
+    fnames, fargs, cvars, rvars = gfd.visit(tree)
+    msg = 'calculated & returned variables are not function arguments\n'
+    found_errors = False
+    for fname in fnames:
+        if fname == 'BenefitSurtax':
+            continue  # because BenefitSurtax is not really a function
+        cvars_set = set(cvars[fname])
+        rvars_set = set(rvars[fname])
+        crvars_set = cvars_set & rvars_set
+        if not crvars_set <= set(fargs[fname]):
+            found_errors = True
+            missing = crvars_set - set(fargs[fname])
+            for var in missing:
+                msg += 'FUNCTION,VARIABLE: {} {}\n'.format(fname, var)
+        if found_errors:
+            raise ValueError(msg)
 
 
 def test_function_args_usage():
