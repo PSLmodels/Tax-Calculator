@@ -14,11 +14,6 @@ import ast
 import toolz
 
 
-# set DEBUGGING to True to allow use of Python debugger, but would also
-# need to import pdb package and call pdb.set_trace() in calculator.py
-DEBUGGING = False
-
-
 # pylint: disable=invalid-name
 def id_wrapper(*dec_args, **dec_kwargs):  # pylint: disable=unused-argument
     """
@@ -37,18 +32,18 @@ def id_wrapper(*dec_args, **dec_kwargs):  # pylint: disable=unused-argument
     return wrap
 
 
-if DEBUGGING:
-    # don't use jit even if numba package is installed
+try:
+    import numba
+    jit = numba.jit
+    DO_JIT = True
+except (ImportError, AttributeError):
     jit = id_wrapper
     DO_JIT = False
-else:  # try to import numba package
-    try:
-        import numba
-        jit = numba.jit
-        DO_JIT = True
-    except (ImportError, AttributeError):
-        jit = id_wrapper
-        DO_JIT = False
+# In order to use Python debugger, you can do these two things:
+#   (a) uncomment the two lines below item (b) in this comment, and
+#   (b) import pdb package and call pdb.set_trace() in calculator.py
+# jit = id_wrapper  # uncomment this and next line to use debugger
+# DO_JIT = False  # uncomment this and prior line to use debugger
 
 
 class GetReturnNode(ast.NodeVisitor):
