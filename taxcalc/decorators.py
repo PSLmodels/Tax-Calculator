@@ -14,35 +14,46 @@ import ast
 import toolz
 
 
-try:
-    import numba
-    jit = numba.jit  # pylint: disable=invalid-name
-    DO_JIT = True
-except (ImportError, AttributeError):
-    def id_wrapper(*dec_args, **dec_kwargs):  # pylint: disable=unused-argument
+DEBUGGING = False  # set to True to allow use of Python debugger
+
+
+# pylint: disable=invalid-name
+def id_wrapper(*dec_args, **dec_kwargs):  # pylint: disable=unused-argument
+    """
+    Function wrapper when numba package is not available or when DEBUGGING
+    """
+    def wrap(fnc):
         """
-        Function wrapper when numba package is not available.
+        wrap function nested in id_wrapper function.
         """
-        def wrap(fnc):
+        def wrapped_f(*args, **kwargs):
             """
-            wrap function nested in id_wrapper function.
+            wrapped_f function nested in wrap function.
             """
-            def wrapped_f(*args, **kwargs):
-                """
-                wrapped_f function nested in wrap function.
-                """
-                return fnc(*args, **kwargs)
-            return wrapped_f
-        return wrap
-    jit = id_wrapper  # pylint: disable=invalid-name
+            return fnc(*args, **kwargs)
+        return wrapped_f
+    return wrap
+
+
+if DEBUGGING:
+    # don't use jit even if numba package is installed
+    jit = id_wrapper
     DO_JIT = False
+else:  # try to import numba package
+    try:
+        import numba
+        jit = numba.jit
+        DO_JIT = True
+    except (ImportError, AttributeError):
+        jit = id_wrapper
+        DO_JIT = False
 
 
 class GetReturnNode(ast.NodeVisitor):
     """
     A NodeVisitor to get the return tuple names from a calc-style function.
     """
-    def visit_Return(self, node):  # pylint: disable=invalid-name,no-self-use
+    def visit_Return(self, node):  # pylint: disable=no-self-use
         """
         visit_Return is used by NodeVisitor.visit method.
         """
