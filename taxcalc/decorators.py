@@ -14,7 +14,9 @@ import ast
 import toolz
 
 
-DEBUGGING = False  # set to True to allow use of Python debugger
+# set DEBUGGING to True to allow use of Python debugger, but would also
+# need to import pdb package and call pdb.set_trace() in calculator.py
+DEBUGGING = False
 
 
 # pylint: disable=invalid-name

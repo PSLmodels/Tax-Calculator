@@ -14,8 +14,7 @@ from .behavior import Behavior
 from .growth import Growth
 from .consumption import Consumption
 from .decorators import DEBUGGING
-if DEBUGGING:
-    import pdb
+# import pdb
 
 
 class Calculator(object):
@@ -77,8 +76,7 @@ class Calculator(object):
         AMTI(self.policy, self.records)
 
     def calc_one_year(self):
-        if DEBUGGING:
-            pdb.set_trace()
+        # pdb.set_trace()
         EI_FICA(self.policy, self.records)
         Adj(self.policy, self.records)
         CapGains(self.policy, self.records)
