@@ -68,7 +68,6 @@ class Calculator(object):
     def TaxInc_to_AMTI(self):
         TaxInc(self.policy, self.records)
         XYZD(self.policy, self.records)
-        NonGain(self.policy, self.records)
         TaxGains(self.policy, self.records)
         MUI(self.policy, self.records)
         AMTI(self.policy, self.records)
@@ -110,7 +109,6 @@ class Calculator(object):
         # Calculate taxes with optimal itemized deduction
         TaxInc(self.policy, self.records)
         XYZD(self.policy, self.records)
-        NonGain(self.policy, self.records)
         TaxGains(self.policy, self.records)
         MUI(self.policy, self.records)
         AMTI(self.policy, self.records)
