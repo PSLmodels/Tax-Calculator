@@ -73,8 +73,9 @@ class Calculator(object):
         MUI(self.policy, self.records)
         AMTI(self.policy, self.records)
 
-    def calc_one_year(self):
-        self.records.zero_out_changing_calculated_vars()
+    def calc_one_year(self, zero_out_calc_vars=False):
+        if zero_out_calc_vars:
+            self.records.zero_out_changing_calculated_vars()
         # pdb.set_trace()
         EI_FICA(self.policy, self.records)
         Adj(self.policy, self.records)
@@ -130,8 +131,8 @@ class Calculator(object):
         IITAX(self.policy, self.records)
         ExpandIncome(self.policy, self.records)
 
-    def calc_all(self):
-        self.calc_one_year()
+    def calc_all(self, zero_out_calc_vars=False):
+        self.calc_one_year(zero_out_calc_vars)
         BenefitSurtax(self)
 
     def increment_year(self):
@@ -170,6 +171,7 @@ class Calculator(object):
 
     def mtr(self, income_type_str='e00200p',
             negative_finite_diff=False,
+            zero_out_calculated_vars=False,
             wrt_full_compensation=True):
         """
         Calculates the marginal FICA, individual income, and combined
@@ -195,6 +197,10 @@ class Calculator(object):
             specifies whether or not marginal tax rates are computed by
             subtracting (rather than adding) a small finite_diff amount
             to the specified income type.
+
+        zero_out_calculated_vars: boolean
+            specifies value of zero_out_calc_vars parameter used in calls
+            of Calculator.calc_all() method.
 
         wrt_full_compensation: boolean
             specifies whether or not marginal tax rates on earned income
@@ -255,13 +261,13 @@ class Calculator(object):
             self.records.e01500 = penben_type + finite_diff
         if self.consumption.has_response():
             self.consumption.response(self.records, finite_diff)
-        self.calc_all()
+        self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
         fica_chng = copy.deepcopy(self.records._fica)
         iitax_chng = copy.deepcopy(self.records._iitax)
         combined_taxes_chng = iitax_chng + fica_chng
         # calculate base level of taxes after restoring records object
         setattr(self, '_records', recs0)
-        self.calc_all()
+        self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
         fica_base = copy.deepcopy(self.records._fica)
         iitax_base = copy.deepcopy(self.records._iitax)
         combined_taxes_base = iitax_base + fica_base

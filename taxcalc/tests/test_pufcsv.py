@@ -152,8 +152,13 @@ def test_mtr():
     inctype_header = 'FICA and IIT mtr histogram bin counts for'
     # compute marginal tax rate (mtr) histograms for each mtr income type
     for inctype in Calculator.MTR_VALID_INCOME_TYPES:
+        if inctype == 'e01400':
+            zero_out = True
+        else:
+            zero_out = False
         (mtr_fica, mtr_iit, _) = calc.mtr(income_type_str=inctype,
                                           negative_finite_diff=MTR_NEG_DIFF,
+                                          zero_out_calculated_vars=zero_out,
                                           wrt_full_compensation=False)
         res += '{} {}:\n'.format(inctype_header, inctype)
         res += mtr_bin_counts(mtr_fica, FICA_MTR_BIN_EDGES, recid)
