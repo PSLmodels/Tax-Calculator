@@ -74,6 +74,7 @@ class Calculator(object):
         AMTI(self.policy, self.records)
 
     def calc_one_year(self):
+        self.records.zero_out_changing_calculated_vars()
         # pdb.set_trace()
         EI_FICA(self.policy, self.records)
         Adj(self.policy, self.records)
