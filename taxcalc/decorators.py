@@ -14,35 +14,43 @@ import ast
 import toolz
 
 
+def id_wrapper(*dec_args, **dec_kwargs):  # pylint: disable=unused-argument
+    """
+    Function wrapper when numba package is not available or when debugging
+    """
+    def wrap(fnc):
+        """
+        wrap function nested in id_wrapper function.
+        """
+        def wrapped_f(*args, **kwargs):
+            """
+            wrapped_f function nested in wrap function.
+            """
+            return fnc(*args, **kwargs)
+        return wrapped_f
+    return wrap
+
+
+# pylint: disable=invalid-name
 try:
     import numba
-    jit = numba.jit  # pylint: disable=invalid-name
+    jit = numba.jit
     DO_JIT = True
 except (ImportError, AttributeError):
-    def id_wrapper(*dec_args, **dec_kwargs):  # pylint: disable=unused-argument
-        """
-        Function wrapper when numba package is not available.
-        """
-        def wrap(fnc):
-            """
-            wrap function nested in id_wrapper function.
-            """
-            def wrapped_f(*args, **kwargs):
-                """
-                wrapped_f function nested in wrap function.
-                """
-                return fnc(*args, **kwargs)
-            return wrapped_f
-        return wrap
-    jit = id_wrapper  # pylint: disable=invalid-name
+    jit = id_wrapper
     DO_JIT = False
+# One way to use the Python debugger is to do these two things:
+#    (a) uncomment the two lines below item (b) in this comment, and
+#    (b) import pdb package and call pdb.set_trace() in calculator.py
+# jit = id_wrapper  # uncomment this and next line to use debugger
+# DO_JIT = False  # uncomment this and prior line to use debugger
 
 
 class GetReturnNode(ast.NodeVisitor):
     """
     A NodeVisitor to get the return tuple names from a calc-style function.
     """
-    def visit_Return(self, node):  # pylint: disable=invalid-name,no-self-use
+    def visit_Return(self, node):  # pylint: disable=no-self-use
         """
         visit_Return is used by NodeVisitor.visit method.
         """
