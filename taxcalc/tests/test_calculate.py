@@ -268,7 +268,8 @@ def test_Calculator_mtr():
     puf = Records(TAXDATA, weights=WEIGHTS, start_year=2009)
     calc = Calculator(policy=Policy(), records=puf)
     recs_pre_e00200p = copy.deepcopy(calc.records.e00200p)
-    (mtr_FICA, mtr_IIT, mtr_combined) = calc.mtr(income_type_str='e00200p')
+    (mtr_FICA, mtr_IIT, mtr_combined) = calc.mtr(income_type_str='e00200p',
+                                                 zero_out_calculated_vars=True)
     recs_post_e00200p = copy.deepcopy(calc.records.e00200p)
     assert np.allclose(recs_post_e00200p, recs_pre_e00200p)
     assert type(mtr_combined) == np.ndarray
