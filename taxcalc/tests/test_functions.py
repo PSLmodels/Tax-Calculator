@@ -7,7 +7,6 @@ Tests for Tax-Calculator functions.py logic.
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import os
-import sys
 import re
 from taxcalc import IncomeTaxIO, Records  # pylint: disable=import-error
 from io import StringIO
@@ -120,7 +119,7 @@ def test_calc_and_rtn_vars_are_arguments():  # pylint: disable=invalid-name
         rvars_set = set(rvars[fname])
         crvars_set = cvars_set & rvars_set
         if not crvars_set <= set(fargs[fname]):
-            found_errors = True
+            found_error = True
             missing = crvars_set - set(fargs[fname])
             for var in missing:
                 msg += 'FUNCTION,VARIABLE: {} {}\n'.format(fname, var)
