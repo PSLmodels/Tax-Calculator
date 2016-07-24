@@ -185,6 +185,9 @@ class Records(object):
     INTEGER_CALCULATED_VARS = set([
         '_num', '_sep', '_exact', '_calc_schR', 'f2555'])
 
+    CHANGING_CALCULATED_VARS = (CALCULATED_VARS - INTEGER_CALCULATED_VARS -
+                                set(['ID_Casualty_frt_in_pufcsv_year']))
+
     def __init__(self,
                  data='puf.csv',
                  exact_calculations=False,
@@ -427,7 +430,7 @@ class Records(object):
     def _read_egg_csv(vname, fpath, **kwargs):
         """
         Read csv file with fpath containing vname data from EGG;
-        return dict of vname data
+        return dict of vname data.
         """
         try:
             # grab vname data from EGG distribution
@@ -439,6 +442,14 @@ class Records(object):
             msg = 'could not read {} file from EGG'
             raise ValueError(msg.format(vname))
         return vname_dict
+
+    def zero_out_changing_calculated_vars(self):
+        """
+        Set all CHANGING_CALCULATED_VARS to zero.
+        """
+        for varname in Records.CHANGING_CALCULATED_VARS:
+            var = getattr(self, varname)
+            var.fill(0.)
 
     def _read_weights(self, weights):
         """
