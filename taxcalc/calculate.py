@@ -109,11 +109,7 @@ class Calculator(object):
         self.records.c21060[:] = np.where(item_taxes < std_taxes,
                                           item_no_limit, 0.)
         # Calculate taxes with optimal itemized deduction
-        TaxInc(self.policy, self.records)
-        XYZD(self.policy, self.records)
-        TaxGains(self.policy, self.records)
-        MUI(self.policy, self.records)
-        AMTI(self.policy, self.records)
+        self.TaxInc_to_AMTI()
         F2441(self.policy, self.records)
         NumDep(self.policy, self.records)
         ChildTaxCredit(self.policy, self.records)
