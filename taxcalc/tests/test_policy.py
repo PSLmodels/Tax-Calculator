@@ -587,6 +587,11 @@ def test_read_json_reform_file_and_implement_reform_a(reform_file):
     assert amt_em[2020 - syr, 0] == amt_em[2017 - syr, 0]
     assert amt_em[2021 - syr, 0] > amt_em[2020 - syr, 0]
     assert amt_em[2022 - syr, 0] > amt_em[2021 - syr, 0]
+    add4aged = policy._ID_Medical_frt_add4aged
+    assert add4aged[2015 - syr] == -0.025
+    assert add4aged[2016 - syr] == -0.025
+    assert add4aged[2017 - syr] == 0.0
+    assert add4aged[2022 - syr] == 0.0
 
 
 def test_read_json_reform_file_and_implement_reform_b(reform_file):
@@ -620,6 +625,11 @@ def test_read_json_reform_file_and_implement_reform_b(reform_file):
     assert amt_em[2020 - syr, 0] == amt_em[2017 - syr, 0]
     assert amt_em[2021 - syr, 0] > amt_em[2020 - syr, 0]
     assert amt_em[2022 - syr, 0] > amt_em[2021 - syr, 0]
+    add4aged = policy._ID_Medical_frt_add4aged
+    assert add4aged[2015 - syr] == -0.025
+    assert add4aged[2016 - syr] == -0.025
+    assert add4aged[2017 - syr] == 0.0
+    assert add4aged[2022 - syr] == 0.0
 
 
 def test_pop_the_cap_reform():
