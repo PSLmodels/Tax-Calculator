@@ -21,7 +21,7 @@ Tax-Calculator,0.8,0.8,0.9,1.0
 SOCIAL SECURITY TAXABILITY
 ""
 Exclusion of untaxed social security and railroad retirement
-Tax-Calculator,39.5,41.3,43.9,46.4
+Tax-Calculator,39.3,41.0,43.9,46.4
 Tax Expenditure,39,42,44,47
 Budget Options,35,37,38,40
 ""
@@ -50,7 +50,7 @@ Tax-Calculator,0.1,0.1,0.1,0.1
 EXEMPTION
 ""
 Increase personal and dependent exemption amount by 1000
-Tax-Calculator,-32.9,-32.3,-33.3,-34.5
+Tax-Calculator,-32.8,-32.2,-33.3,-34.5
 ""
 Increase personal exemption phaseout starting AGI by 10,000
 Tax-Calculator,-0.1,-0.1,-0.1,-0.1
@@ -64,28 +64,28 @@ Increase standard deduction by 100
 Tax-Calculator,-1.0,-1.1,-1.1,-1.1
 ""
 Increase additional standard deduction for aged and blind by 100
-Tax-Calculator,-0.3,-0.3,-0.3,-0.3
+Tax-Calculator,-0.2,-0.3,-0.3,-0.3
 ""
 ITEMIZED DEDUCTION
 ""
 Real Estate
-Tax-Calculator,35.6,37.7,39.8,41.8
+Tax-Calculator,35.7,37.8,39.8,41.8
 Tax Expenditure,34,36,39,41
 ""
 Home Mortgage
-Tax-Calculator,80.3,87.6,94.5,101.3
+Tax-Calculator,80.4,87.7,94.5,101.3
 Tax Expenditure,75,82,88,93
 ""
 Both real estate and state and local
-Tax-Calculator,99.0,105.3,111.4,117.5
+Tax-Calculator,99.3,105.6,111.4,117.5
 Tax Expenditure,75,82,88,93
 ""
 State & Local
-Tax-Calculator,64.2,67.8,71.3,75.0
+Tax-Calculator,64.3,67.9,71.3,75.0
 Tax Expenditure,59,63,67,71
 ""
 Medical
-Tax-Calculator,8.4,9.2,9.9,10.7
+Tax-Calculator,9.4,10.3,9.9,10.7
 Tax Expenditure,11,12,13,14
 ""
 Casualty
@@ -93,7 +93,7 @@ Tax-Calculator,0.4,0.5,0.5,0.5
 Tax Expenditure,0,0,0,0
 ""
 Charitable
-Tax-Calculator,43.1,45.6,48.2,50.9
+Tax-Calculator,43.2,45.8,48.2,50.9
 Tax Expenditure,46,47,48,50
 ""
 Decrease AGI floor for miscellaneous expenses by 1 pts
@@ -109,7 +109,7 @@ Increase Itemized Deduction phaseout rate by 1 pts
 Tax-Calculator,3.6,3.8,4.0,4.1
 ""
 limit the tax value of ID to 6% of AGI
-Tax-Calculator,19.3,20.6,22.0,23.5
+Tax-Calculator,19.4,20.8,22.0,23.5
 Budget Options,11,9,8,7
 ""
 CAPITAL GAIN
@@ -118,7 +118,7 @@ Increase long term cap gain and dividends tax rates by 2 percentage, no behavior
 Tax-Calculator,13.2,13.5,13.7,14.0
 ""
 Increase long term cap gain and dividends tax rates by 2 percentage, elasticity assumed to be 0.78
-Tax-Calculator,10.4,10.6,10.8,11.0
+Tax-Calculator,10.3,10.6,10.8,11.0
 ""
 Increase long term cap gain and dividends tax rates by 2 percentage, elasticity assumed to be 1.2
 Tax-Calculator,8.8,9.0,9.2,9.4
@@ -127,7 +127,7 @@ Budget Options,5,5,5,6
 REGULAR TAXES
 ""
 Increase each bracket rate by 1%
-Tax-Calculator,56.3,58.8,61.5,64.0
+Tax-Calculator,56.2,58.7,61.5,64.0
 Budget Options,56,60,65,69
 ""
 Increase top 4 rates by 1%
@@ -146,7 +146,7 @@ Tax-Calculator,-1.0,-0.8,-0.9,-0.9
 Alternative Minimum Tax
 ""
 Increase exemption phaseout starting AMTI by 10,000
-Tax-Calculator,-2.3,-2.3,-2.5,-2.6
+Tax-Calculator,-2.3,-2.4,-2.5,-2.6
 ""
 Alternative Minimum Tax
 ""
