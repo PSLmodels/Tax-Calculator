@@ -211,8 +211,9 @@ def AGI(ymod1, c02500, c02700, c02900, XTOT, MARS, _sep, DSI,
 @iterate_jit(nopython=True)
 def ItemDed(_posagi, e17500, e18400, e18500,
             e20500, e20400, e19200, e19800, e20100,
-            MARS, c00100, c04470, c17000, c18300, c20800, c21040, c21060,
-            ID_ps, ID_Medical_frt, ID_Medical_HC,
+            MARS, age_head, age_spouse,
+            c00100, c04470, c17000, c18300, c20800, c21040, c21060,
+            ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_HC,
             ID_Casualty_frt_in_pufcsv_year,
             ID_Casualty_frt, ID_Casualty_HC, ID_Miscellaneous_frt,
             ID_Miscellaneous_HC, ID_Charity_crt_all, ID_Charity_crt_noncash,
@@ -233,6 +234,9 @@ def ItemDed(_posagi, e17500, e18400, e18500,
 
         ID_Medical_frt : Deduction for medical expenses;
         floor as a decimal fraction of AGI
+
+        ID_Medical_frt_add4aged : Addon for medical expenses deduction for
+        elderly; addon as a decimal fraction of AGI
 
         ID_Casualty_frt : Deduction for casualty loss;
         floor as a decimal fraction of AGI
@@ -271,7 +275,10 @@ def ItemDed(_posagi, e17500, e18400, e18500,
     c04470 : Itemized deduction amount (and other intermediate variables)
     """
     # Medical
-    c17750 = ID_Medical_frt * _posagi
+    medical_frt = ID_Medical_frt
+    if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
+        medical_frt += ID_Medical_frt_add4aged
+    c17750 = medical_frt * _posagi
     c17000 = max(0., e17500 - c17750) * (1. - ID_Medical_HC)
     # State and local taxes
     c18300 = ((1. - ID_StateLocalTax_HC) * max(e18400, 0.) +

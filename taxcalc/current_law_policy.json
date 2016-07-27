@@ -902,6 +902,21 @@
         "validations": {"min": "default"}
     },
 
+    "_ID_Medical_frt_add4aged": {
+        "long_name": "Addon to _ID_Medical_frt for elderly filing units; addon as a decimal fraction of AGI",
+        "description": "Elderly taxpayers have this fraction added to the value of _ID_Medical_frt.",
+        "irs_ref": "Form 1040 Schedule A, line 3, in-line. ",
+        "notes": "This addon cannot be decreased to lower than -0.025 due to limited data on elderly non-itemizers.",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013", "2014", "2015", "2016", "2017"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [-0.025, -0.025, -0.025, -0.025, 0.0],
+        "validations": {"min": -0.025, "max": 0.0}
+    },
+
     "_ID_Medical_HC": {
         "long_name": "Medical expense deduction haircut",
         "description": "This decimal fraction can be applied to limit the amount of medical expense deduction allowed.",
