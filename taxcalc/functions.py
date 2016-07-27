@@ -371,10 +371,6 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
 
         STD_Aged : Additional standard deduction for blind and aged
 
-        II_brk* : Personal income tax bracket upper thresholds: range 1-6
-
-        II_rt* : Personal income tax rates: range 1-7
-
     Taxpayer Characteristics:
         _earned : Form 2441 earned income amount
 
