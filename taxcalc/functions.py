@@ -413,6 +413,24 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
 
 
 @iterate_jit(nopython=True)
+def Personal_Credit(c04500, MARS,
+                    II_credit, II_credit_ps, II_credit_prt,
+                    personal_credit):
+    """
+    Personal_Credit function: ...
+    """
+    # full amount as defined in the parameter
+    personal_credit = II_credit[MARS - 1]
+    # phaseout using taxable income
+    if c04500 > II_credit_ps[MARS - 1]:
+        credit_phaseout = II_credit_prt * (c04500 - II_credit_ps[MARS - 1])
+    else:
+        credit_phaseout = 0.
+    personal_credit = max(0., personal_credit - credit_phaseout)
+    return personal_credit
+
+
+@iterate_jit(nopython=True)
 def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
            _feided, c04800, MARS, _feitax, _taxinc,
            II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
@@ -434,24 +452,6 @@ def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
     else:
         _feitax = 0.
     return (c04500, c04800, _taxinc, _feitax, _standard)
-
-
-@iterate_jit(nopython=True)
-def Personal_Credit(c04500, MARS,
-                    II_credit, II_credit_ps, II_credit_prt,
-                    personal_credit):
-    """
-    Personal_Credit function: ...
-    """
-    # full amount as defined in the parameter
-    personal_credit = II_credit[MARS - 1]
-    # phaseout using taxable income
-    if c04500 > II_credit_ps[MARS - 1]:
-        credit_phaseout = II_credit_prt * (c04500 - II_credit_ps[MARS - 1])
-    else:
-        credit_phaseout = 0.
-    personal_credit = max(0., personal_credit - credit_phaseout)
-    return personal_credit
 
 
 @iterate_jit(nopython=True)
