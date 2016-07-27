@@ -14,6 +14,7 @@ from taxcalc import Policy, Records, Calculator, Growth
 # use 1991 PUF-like data to emulate current puf.csv, which is private
 TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91taxdata.csv.gz')
 TAXDATA = pd.read_csv(TAXDATA_PATH, compression='gzip')
+TAXDATA_SAMPLE = TAXDATA.sample(frac=0.10)
 WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
 WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
@@ -41,6 +42,22 @@ def test_correct_Records_instantiation():
     assert sum_e00200_in_puf_year_plus_one == sum_e00200_in_puf_year
     bf_df = pd.read_csv(Records.BLOWUP_FACTORS_PATH)
     rec2 = Records(data=TAXDATA, blowup_factors=bf_df, weights=None)
+    assert rec2
+    assert np.all(rec2.MARS != 0)
+    assert rec2.current_year == Records.PUF_YEAR
+
+
+def test_correct_Records_instantiation_sample():
+    rec1 = Records(data=TAXDATA_SAMPLE, blowup_factors=None, weights=WEIGHTS)
+    assert rec1
+    assert np.all(rec1.MARS != 0)
+    assert rec1.current_year == Records.PUF_YEAR
+    sum_e00200_in_puf_year = rec1.e00200.sum()
+    rec1.set_current_year(Records.PUF_YEAR + 1)
+    sum_e00200_in_puf_year_plus_one = rec1.e00200.sum()
+    assert sum_e00200_in_puf_year_plus_one == sum_e00200_in_puf_year
+    bf_df = pd.read_csv(Records.BLOWUP_FACTORS_PATH)
+    rec2 = Records(data=TAXDATA_SAMPLE, blowup_factors=bf_df, weights=None)
     assert rec2
     assert np.all(rec2.MARS != 0)
     assert rec2.current_year == Records.PUF_YEAR
