@@ -183,13 +183,15 @@ class Behavior(ParametersBase):
         """
         # assume no behv response for filing units with no, or negative, AGI
         agi = calc.records.c00100
-        delta_income = np.where(agi > 0., taxinc_change, 0.)
         # compute AGI minus itemized deductions, agi_m_ided
-        # pylint: disable=protected-access
         ided = np.where(calc.records.c04470 < calc.records._standard,
                         0.,
                         calc.records.c04470)
         agi_m_ided = agi - ided
+        delta_income = np.where(agi_m_ided > 0., taxinc_change, 0.)
+        # compute AGI minus itemized deductions, agi_m_ided
+        # pylint: disable=protected-access
+        
         # allocate delta_income into three parts
         delta_wage = np.where(agi_m_ided > 0.,
                               delta_income * calc.records.e00200 / agi_m_ided,
@@ -202,7 +204,7 @@ class Behavior(ParametersBase):
                               delta_income * ided / agi_m_ided,
                               0.)
         # confirm that the three parts add up to delta_income
-        assert np.allclose(delta_income, delta_wage + delta_oinc + delta_ided)
+        assert np.allclose(delta_income, delta_wage + delta_oinc - delta_ided)
         # add the three parts to different calc.records variables
         calc.records.e00200 = calc.records.e00200 + delta_wage
         calc.records.e00200p = calc.records.e00200p + delta_wage
