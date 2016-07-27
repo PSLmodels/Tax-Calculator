@@ -131,6 +131,26 @@
         "value": [0.0]
     },
 
+    "_FEI_ec_c": {
+        "long_name": "Maximum foreign earned income exclusion",
+        "description": "This amount is the maximum foreign earned income taxpayers could exclude from gross income.",
+        "irs_ref": "Form 2555, line 29b, instruction.",
+        "notes": "This parameter has no effect on taxes due to lack of data. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [97600,
+                  99200,
+                  100800,
+                  101300]
+    },
+
     "_ALD_Interest_ec": {
         "long_name": "Interest income exclusion",
         "description": "This decimal fraction can be applied to limit the interest income included in AGI. ",
@@ -506,17 +526,37 @@
         "value": [0.0]
     },
 
+    "_AMED_thd": {
+        "long_name": "Additional Medicare threshold",
+        "description": "If their Medicare wages, RRTA compensation and self-employment income is above this threshold, taxpayers are subject to additional Medicare tax. ",
+        "irs_ref": "Form 8959, line 5, in-line. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[200000, 250000, 125000, 200000, 200000, 125000]]
+    },
 
+    "_AMED_trt": {
+        "long_name": "Additional Medicare tax rate",
+        "description": "This is the rate applied to the portion of Medicare wages, RRTA compensation and self-employment income exceeding additional Medicare threshold. ",
+        "irs_ref": "Form 8959, line 7, in-line. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.009]
+    },
 
-
-
-
-
-    "_AMT_em": {
-        "long_name": "AMT exemption amount",
-        "description": "The amount of AMTI exempted from AMT.",
-        "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
-        "notes": "",
+    "_STD": {
+        "long_name": "Standard deduction amount",
+        "description": "",
+        "irs_ref": "form 1040, line 40, instruction (Formside notes).",
+        "notes": "This parameter cannot be decreased due to lack of data.",
         "start_year": 2013,
         "col_var": "MARS",
         "row_var": "FLPDYR",
@@ -525,25 +565,12 @@
                       "2015",
                       "2016"],
         "cpi_inflated": true,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[51900, 80800, 40400, 51900, 80800, 40400],
-                  [52800, 82100, 41050, 52800, 82100, 41050],
-                  [53600, 83400, 41700, 53600, 83400, 41700],
-                  [53900, 83800, 41900, 53900, 83800, 41900]]
-    },
-
-    "_ACTC_rt": {
-        "long_name": "Additional child tax credit rate",
-        "description": "This is the fraction of earnings used in calculating the ACTC, which is a partially refundable credit that supplements the CTC for some taxpayers. ",
-        "irs_ref": "Form 8812, line 6, inline.",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.15]
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate", "dependent"],
+        "value": [[6100, 12200, 6100, 8950, 12200, 6100, 1000],
+                  [6200, 12400, 6200, 9100, 12400, 6200, 1000],
+                  [6300, 12600, 6300, 9250, 12600, 6300, 1050],
+                  [6300, 12600, 6300, 9300, 12600, 6300, 1050]],
+        "validations": {"min": "default"}
     },
 
     "_STD_Aged": {
@@ -567,368 +594,47 @@
         "validations": {"min": "default"}
     },
 
-    "_AMT_Child_em": {
-        "long_name": "Child AMT exemption additional income base",
-        "description": "The child's AMT exemption is capped by this amount plus the child's earned income.",
-        "irs_ref": "Form 6251, line 29, instruction.",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label": "",
-        "value": [7150,
-                  7250,
-                  7400,
-                  7400]
-    },
-
-    "_AMT_thd_MarriedS": {
-        "long_name": "Extra alminc for married sep",
-        "description": "",
-        "irs_ref": "Form 6251, line 28, instruction.",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014"],
-        "cpi_inflated": true,
-        "col_label": "",
-        "value": [40400,
-                  41050]
-    },
-
-    "_AMT_tthd": {
-        "long_name": "AMT surtax threshold",
-        "description": "This threshold separates the 26%* and 28%* AMT tax rates: in order to get tentative minimum tax, income below this level is subject to 26% tax rate and above this level subject at 28%.",
-        "irs_ref": "Form 6251, line 31, instruction.",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label": "",
-        "value": [179500,
-                  182500,
-                  185400,
-                  186300]
-    },
-
-    "_KT_c_Age": {
-        "long_name": "Maximum age subject to Kiddie Tax",
-        "description": "At or under this age, the individual is subject to Kiddie Tax.",
-        "irs_ref": "Form 6251, line 28, instruction.",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [24]
-    },
-
-    "_AMT_em_pe": {
-        "long_name": "AMT exemption phaseout ending AMTI (Married filling Separately)",
-        "description": "The AMT exemption is entirely disallowed beyond this AMTI level for individuals who are married but filing separately.",
-        "irs_ref": "Form 6251, line 28, instruction.",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014"],
-        "cpi_inflated": true,
-        "col_label": "",
-        "value": [238550,
-                  242450]
-    },
-
-    "_CTC_c": {
-        "long_name": "Maximum child tax credit per child",
-        "description": "The maximum amount of credit allowed for each child. ",
-        "irs_ref": "form 1040, line 52, instructions (child tax credit worksheet, line 1). ",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [1000]
-    },
-
-    "_DCC_c": {
-        "long_name": "Max dependent care credit per dependent",
-        "description": "The maximum amount of credit allowed for each qualifying dependent.",
-        "irs_ref": "Form 2441, line 3c, in-line.",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [3000]
-    },
-
-    "_ACTC_Income_thd": {
-        "long_name": "ACTC income threshold",
-        "description": "The portion of earned income below this threshold does not count as base for the additional child tax credit.",
-        "irs_ref": "Form 2441, line 3, in-line.",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [3000]
-    },
-
-    "_ETC_pe_Single": {
-        "long_name": "Education tax credit phaseout ends (Single)",
-        "description": "The education tax credit will be zero for those taxpayers of single filing status with modified AGI (in thousands) higher than this level.",
-        "irs_ref": "Form 8863, line 13, inline.",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015"],
-        "cpi_inflated": true,
-        "col_label": "",
-        "value": [63,
-                  64,
-                  65]
-    },
-
-    "_ETC_pe_Married": {
-        "long_name": "Education tax credit phaseout ends (Married)",
-        "description": "The education tax credit will be zero for those taxpayers of married filing status with modified AGI level (in thousands) higher than this level.",
-        "irs_ref": "Form 8863, line 13, inline.",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015"],
-        "cpi_inflated": true,
-        "col_label": "",
-        "value": [127,
-                  128,
-                  130]
-    },
-
-    "_FEI_ec_c": {
-        "long_name": "Maximum foreign earned income exclusion",
-        "description": "This amount is the maximum foreign earned income taxpayers could exclude from gross income.",
-        "irs_ref": "Form 2555, line 29b, instruction.",
-        "notes": "This parameter has no effect on taxes due to lack of data. ",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [97600,
-                  99200,
-                  100800,
-                  101300]
-    },
-
-    "_LLC_Expense_c": {
-        "long_name": "Lifetime learning credit expense limit",
-        "description": "The maximum expense eligible for lifetime learning credit, per child.",
-        "irs_ref": "Form 8863, line 11, in-line.",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [10000]
-    },
-
-    "_CDCC_crt": {
-        "long_name": "Maximum child and dependent care credit rate",
-        "description": "This rate is the maximum rate that applied on AGI for child and dependent care credit; This rate decreases as AGI goes up.",
-        "irs_ref": "Form 2241, line 8, in-line.",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [35]
-    },
-
-    "_ID_BenefitSurtax_Switch": {
-        "long_name": "Deductions subject to the surtax on itemized deduction benefits",
-        "description": "The surtax on itemized deduction benefits applies to the benefits derived from the itemized deductions specified with this parameter. ",
+    "_II_credit": {
+        "long_name": "Personal refundable credit",
+        "description": "This credit amount is fully refundable, phased out based on taxable income.",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
-        "col_var": "",
+        "col_var": "MARS",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": ["Medical", "State & Local", "Real Estate", "Casualty", "Miscellaneous", "Interest", "Charity"],
-        "value": [[true, true, true, true, true, true, true]]
-    },
-
-    "_EITC_ps": {
-        "long_name": "Earned income credit phaseout AGI start",
-        "description": "If AGI is higher than this threshold, the amount of EITC will start to decrease. ",
-        "irs_ref": "Form 1040, line 66a&b, instructions.",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "EIC",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
         "cpi_inflated": true,
-        "col_label": ["0kids", "1kid", "2kids", "3+kids"],
-        "value": [[7970, 17530, 17530, 17530],
-                  [8110, 17830, 17830, 17830],
-                  [8250, 18150, 18150, 18150],
-                  [8270, 18190, 18190, 18190]]
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[0, 0, 0, 0, 0, 0]]
     },
 
-    "_EITC_MinEligAge": {
-        "long_name": "Minimum Age for Childless EITC Eligibility",
-        "description": "For a childless filling unit, at least one individual's age needs to be no less than this age (but no greater than the EITC_MaxEligAge) in order to be eligible for an earned income tax credit.",
-        "irs_ref": "Form 1040, line 66a&b, step 4, instructions.",
+    "_II_credit_ps": {
+        "long_name": "Personal refundable credit phaseout start",
+        "description": "The Personal Refundable credit amount will be reduced for taxpayers with taxable income higher than this level.",
+        "irs_ref": "",
         "notes": "",
         "start_year": 2013,
-        "col_var": "",
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[0, 0, 0, 0, 0, 0]]
+    },
+
+    "_II_credit_prt": {
+        "long_name": "Personal refundable credit phaseout rate",
+        "description": "The Personal Refundable credit amount will be reduced at this rate for each dollar of taxable income exceeding the thresholds.",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value": [25]
+        "value": [0.0]
     },
-
-    "_EITC_MaxEligAge": {
-        "long_name": "Maximum Age for Childless EITC Eligibility",
-        "description": "For a childless filling unit, at least one individual's age needs to be no greater than this age (but no less than the EITC_MinEligAge) in order to be eligible for an earned income tax credit.",
-        "irs_ref": "Form 1040, line 66a&b, step 4, instructions.",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [64]
-    },
-
-    "_EITC_ps_MarriedJ": {
-        "long_name": "EITC Phaseout Starting AGI (Married filling Jointly)",
-        "description": "This is the additional amount added on the regular EITC phaseout start, only for taxpayers with filling status of married filling jointly. ",
-        "irs_ref": "Form 1040, line 66a&b, calculation (the difference between EIC phaseout bases of married jointly fillers and other fillers).",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "EIC",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label": ["0kids", "1kid", "2kids", "3+kids"],
-        "value": [[5340, 5340, 5340, 5340],
-                  [5430, 5430, 5430, 5430],
-                  [5500, 5500, 5500, 5500],
-                  [5550, 5550, 5550, 5550]]
-    },
-
-    "_EITC_rt": {
-        "long_name": "Earned income credit rate",
-        "description": "If one taxpayer's AGI is below AGI phaseout start, he can apply this rate to his earned income to calculate the credit amount eligible. ",
-        "irs_ref": "Form 1040, line 66a&b, calculation (table: Max_EIC/Max_EIC_base_income).",
-        "notes": "Range of this parameter is between zero and one. ",
-        "start_year": 2013,
-        "col_var": "EIC",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": ["0kids", "1kid", "2kids", "3+kids"],
-        "value": [[0.0765, 0.3400, 0.4000, 0.4500]]
-    },
-
-    "_EITC_prt": {
-        "long_name": "Earned income credit phaseout rate",
-        "description": "Earned income credit will decrease at the this rate when AGI is higher than EITC phaseout start. ",
-        "irs_ref": "Form 1040, line 66a&b, calculation (table: Max_EIC_base_income/Phaseout_Base).",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "EIC",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": ["0kids", "1kid", "2kids", "3+kids"],
-        "value": [[0.0765, 0.1598, 0.2106, 0.2106]]
-    },
-
-    "_EITC_c": {
-        "long_name": "Maximum earned income credit",
-        "description": "This is the maximum amount of earned income credit taxpayers are eligible for; it depends on how many kids they have. ",
-        "irs_ref": "IRS reference: form 1040, line 66a&b, instruction (table).",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "EIC",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label": ["0kids", "1kid", "2kids", "3+kids"],
-        "value": [[487, 3250, 5372, 6044],
-                  [496, 3305, 5460, 6143],
-                  [503, 3359, 5548, 6242],
-                  [506, 3373, 5572, 6269]]
-    },
-
-    "_EITC_InvestIncome_c": {
-        "long_name": "Max disqualifying income for EITC",
-        "description": "The earned income credit may not be claimed by taxpayers whose investment income exceeds this limit.",
-        "irs_ref": "Form 1040, line 66a&b, instruction(step2)",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [3300,
-                  3350,
-                  3400,
-                  3400]
-    },
-
 
     "_II_rt1": {
         "long_name": "Personal income tax rate 1",
@@ -1026,75 +732,6 @@
         "cpi_inflated": false,
         "col_label": "",
         "value": [0.396]
-    },
-
-    "_AMT_em_ps": {
-        "long_name": "AMT exemption phaseout start",
-        "description": "AMT exemption starts to decrease when AMTI goes beyond this threshold.",
-        "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "MARS",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[115400, 153900, 76950, 115400, 153900, 76950],
-                  [117300, 156500, 78250, 117300, 156500, 78250],
-                  [119200, 158900, 79450, 119200, 158900, 79450],
-                  [119700, 159700, 79850, 119700, 159700, 79850]]
-    },
-
-    "_CTC_ps": {
-        "long_name": "Child tax credit phaseout MAGI start",
-        "description": "Child tax credit begins to decrease when MAGI is above this level.",
-        "irs_ref": "Form 1040, line 52, instruction (Worksheet).",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "MARS",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[75000, 110000, 55000, 75000, 75000, 55000]]
-    },
-
-    "_NIIT_thd": {
-        "long_name": "Net Investment Income Tax income threshold (UIMC)",
-        "description": "If one taxpayer's MAGI (modified AGI) is more than this threshold, he or she is subject to the additional Medicare tax. ",
-        "irs_ref": "Form 8960, line 14, instructions. ",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "MARS",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[200000, 250000, 125000, 200000, 250000, 125000]]
-    },
-
-    "_STD": {
-        "long_name": "Standard deduction amount",
-        "description": "",
-        "irs_ref": "form 1040, line 40, instruction (Formside notes).",
-        "notes": "This parameter cannot be decreased due to lack of data.",
-        "start_year": 2013,
-        "col_var": "MARS",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate", "dependent"],
-        "value": [[6100, 12200, 6100, 8950, 12200, 6100, 1000],
-                  [6200, 12400, 6200, 9100, 12400, 6200, 1000],
-                  [6300, 12600, 6300, 9250, 12600, 6300, 1050],
-                  [6300, 12600, 6300, 9300, 12600, 6300, 1050]],
-        "validations": {"min": "default"}
     },
 
     "_II_brk1": {
@@ -1223,201 +860,6 @@
         "validations": {"min": "_II_brk5"}
     },
 
-    "_ID_BenefitSurtax_crt": {
-        "long_name": "Credit on itemized deduction benefit surtax (decimal fraction of AGI)",
-        "description": "The surtax on specified itemized deductions applies to benefits in excess of this fraction of AGI. In http://www.nber.org/papers/w16921, Feldstein, Feenberg, and MacGuineas propose a credit of 2% of AGI against a 100% tax rate; in their proposal, however, a broader set of tax benefits, including the employer provided health exclusion, would be taxed.",
-        "irs_ref": "",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [1.0]
-    },
-
-    "_ID_BenefitSurtax_trt": {
-        "long_name": "Surtax rate on the benefits from specified itemized deductions",
-        "description": "The benefit from specified itemized deductions exceeding the credit is taxed at this rate. A surtax rate of 1 strictly limits the benefit from specified itemized deductions to the specified credit. In http://www.nber.org/papers/w16921, Feldstein, Feenberg, and MacGuineas propose a credit of 2% of AGI against a 100% tax rate; in their proposal, however, a broader set of tax benefits, including the employer provided health exclusion, would be taxed.",
-        "irs_ref": "",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [1.0]
-    },
-
-    "_NIIT_trt": {
-        "long_name": "Net Investment Income Tax rate (UIMC)",
-        "description": "Also called the Unearned Income Medicare Contribution. The lessor of net investment income and the amount by which MAGI exceeds a threshold is taxed at this rate.",
-        "irs_ref": "Form 8960, line 21, in-line. ",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.038]
-    },
-
-    "_AMT_prt": {
-        "long_name": "AMT exemption phaseout rate",
-        "description": "AMT exemption will decrease at this rate for each dollar of AMTI exceeding AMT phaseout start. ",
-        "irs_ref": "Form 6251, line 29, instructions. ",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.25]
-    },
-
-    "_AMT_trt1": {
-        "long_name": "AMT rate for AMTI under the surtax threshold",
-        "description": "The tax rate applied to the portion of AMT income below the surtax threshold. ",
-        "irs_ref": "Form 6251, line 31, in-line. ",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.26]
-    },
-
-    "_AMT_trt2": {
-        "long_name": "Additional AMT rate for AMTI above the surtax threshold",
-        "description": "The tax rate applied to the portion of AMT income above the surtax threshold.",
-        "irs_ref": "Form 6251, line 31, in-line. ",
-        "notes": "This is the additional tax rate (on top of .26) for AMT income",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.02]
-    },
-
-    "_CTC_prt": {
-        "long_name": "Child tax credit phaseout rate",
-        "description": "The amount of credit starts to decrease at this rate if MAGI is higher than child tax credit phaseout start. ",
-        "irs_ref": "Form 1040, line 52, instruction (child tax credit worksheet, line 5)",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.05]
-    },
-
-    "_CTC_additional": {
-        "long_name": "Additional additional child tax credit amount (Lee-Rubio)",
-        "description": "In addition to all the credits currently available for dependents, this parameter gives each qualifying child a fixed amount of partially refundable credit, limited by the sum of total income and payroll tax liabilities.",
-        "irs_ref": "",
-        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualification rules for the Child Tax Credit under current law. ",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0]
-    },
-
-    "_CTC_additional_ps": {
-        "long_name": "Additional additional child tax credit phaseout starting AGI (Lee-Rubio)",
-        "description": "The amount of additional additional child tax credit is reduced for taxpayers with AGI higher than this level. ",
-        "irs_ref": "",
-        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualification rules for the Child Tax Credit under current law. ",
-        "start_year": 2013,
-        "col_var": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "row_label": ["2013",
-                      "2014",
-                      "2015"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [[150000, 300000, 150000, 200000, 300000, 150000],
-                  [150000, 300000, 150000, 200000, 300000, 150000],
-                  [150000, 300000, 150000, 200000, 300000, 150000]]
-    },
-
-    "_CTC_additional_prt": {
-        "long_name": "Additional additional child tax credit amount phaseout rate (Lee-Rubio)",
-        "description": "The amount of additional additional child tax credit is reduced at this rate per dollar exceeding the phaseout starting AGI. ",
-        "irs_ref": "",
-        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualification rules for the Child Tax Credit under current law. ",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.4]
-    },
-
-    "_ACTC_ChildNum": {
-        "long_name": "Additional child tax credit minimum number of qualified children",
-        "description": "Families with this number of qualified children or more may qualify for the additional child tax credit, which is a partially refundable credit that supplements the CTC for some taxpayers.",
-        "irs_ref": "Form 8812, Part III. ",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [3]
-    },
-
-    "_CDCC_ps": {
-        "long_name": "Child and dependent care credit phaseout start",
-        "description": "For taxpayers with AGI over this amount, the credit, under the current law, is reduced by one percentage point each $2000 of AGI over this amount. ",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [15000]
-    },
-
-    "_AMED_thd": {
-        "long_name": "Additional Medicare threshold",
-        "description": "If their Medicare wages, RRTA compensation and self-employment income is above this threshold, taxpayers are subject to additional Medicare tax. ",
-        "irs_ref": "Form 8959, line 5, in-line. ",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[200000, 250000, 125000, 200000, 200000, 125000]]
-    },
-
-    "_AMED_trt": {
-        "long_name": "Additional Medicare tax rate",
-        "description": "This is the rate applied to the portion of Medicare wages, RRTA compensation and self-employment income exceeding additional Medicare threshold. ",
-        "irs_ref": "Form 8959, line 7, in-line. ",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.009]
-    },
-
     "_CG_rt1": {
         "long_name": "Long term capital gain and qualified dividends rate 1",
         "description": "The capital gain and dividends (stacked on top of regular income) that are below threshold 1 are taxed at this rate. ",
@@ -1493,6 +935,174 @@
                   [406750, 457600, 228800, 432200, 457600, 228800],
                   [413200, 464850, 232425, 439000, 464850, 232425],
                   [415050, 466950, 233475, 441000, 466950, 233475]]
+    },
+
+    "_KT_c_Age": {
+        "long_name": "Maximum age subject to Kiddie Tax",
+        "description": "At or under this age, the individual is subject to Kiddie Tax.",
+        "irs_ref": "Form 6251, line 28, instruction.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [24]
+    },
+
+    "_AMT_tthd": {
+        "long_name": "AMT surtax threshold",
+        "description": "This threshold separates the 26%* and 28%* AMT tax rates: in order to get tentative minimum tax, income below this level is subject to 26% tax rate and above this level subject at 28%.",
+        "irs_ref": "Form 6251, line 31, instruction.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": "",
+        "value": [179500,
+                  182500,
+                  185400,
+                  186300]
+    },
+
+    "_AMT_thd_MarriedS": {
+        "long_name": "Extra alminc for married sep",
+        "description": "",
+        "irs_ref": "Form 6251, line 28, instruction.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014"],
+        "cpi_inflated": true,
+        "col_label": "",
+        "value": [40400,
+                  41050]
+    },
+
+    "_AMT_em": {
+        "long_name": "AMT exemption amount",
+        "description": "The amount of AMTI exempted from AMT.",
+        "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[51900, 80800, 40400, 51900, 80800, 40400],
+                  [52800, 82100, 41050, 52800, 82100, 41050],
+                  [53600, 83400, 41700, 53600, 83400, 41700],
+                  [53900, 83800, 41900, 53900, 83800, 41900]]
+    },
+
+    "_AMT_prt": {
+        "long_name": "AMT exemption phaseout rate",
+        "description": "AMT exemption will decrease at this rate for each dollar of AMTI exceeding AMT phaseout start. ",
+        "irs_ref": "Form 6251, line 29, instructions. ",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.25]
+    },
+
+    "_AMT_trt1": {
+        "long_name": "AMT rate for AMTI under the surtax threshold",
+        "description": "The tax rate applied to the portion of AMT income below the surtax threshold. ",
+        "irs_ref": "Form 6251, line 31, in-line. ",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.26]
+    },
+
+    "_AMT_trt2": {
+        "long_name": "Additional AMT rate for AMTI above the surtax threshold",
+        "description": "The tax rate applied to the portion of AMT income above the surtax threshold.",
+        "irs_ref": "Form 6251, line 31, in-line. ",
+        "notes": "This is the additional tax rate (on top of .26) for AMT income",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.02]
+    },
+
+    "_AMT_Child_em": {
+        "long_name": "Child AMT exemption additional income base",
+        "description": "The child's AMT exemption is capped by this amount plus the child's earned income.",
+        "irs_ref": "Form 6251, line 29, instruction.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": "",
+        "value": [7150,
+                  7250,
+                  7400,
+                  7400]
+    },
+
+    "_AMT_em_ps": {
+        "long_name": "AMT exemption phaseout start",
+        "description": "AMT exemption starts to decrease when AMTI goes beyond this threshold.",
+        "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[115400, 153900, 76950, 115400, 153900, 76950],
+                  [117300, 156500, 78250, 117300, 156500, 78250],
+                  [119200, 158900, 79450, 119200, 158900, 79450],
+                  [119700, 159700, 79850, 119700, 159700, 79850]]
+    },
+
+    "_AMT_em_pe": {
+        "long_name": "AMT exemption phaseout ending AMTI (Married filling Separately)",
+        "description": "The AMT exemption is entirely disallowed beyond this AMTI level for individuals who are married but filing separately.",
+        "irs_ref": "Form 6251, line 28, instruction.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014"],
+        "cpi_inflated": true,
+        "col_label": "",
+        "value": [238550,
+                  242450]
     },
 
     "_AMT_CG_rt1": {
@@ -1572,45 +1182,428 @@
                   [415050, 466950, 233475, 441000, 466950, 233475]]
     },
 
-    "_II_credit": {
-        "long_name": "Personal refundable credit",
-        "description": "This credit amount is fully refundable, phased out based on taxable income.",
-        "irs_ref": "",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "MARS",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": true,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[0, 0, 0, 0, 0, 0]]
-    },
-
-    "_II_credit_ps": {
-        "long_name": "Personal refundable credit phaseout start",
-        "description": "The Personal Refundable credit amount will be reduced for taxpayers with taxable income higher than this level.",
-        "irs_ref": "",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "MARS",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": true,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[0, 0, 0, 0, 0, 0]]
-    },
-
-    "_II_credit_prt": {
-        "long_name": "Personal refundable credit phaseout rate",
-        "description": "The Personal Refundable credit amount will be reduced at this rate for each dollar of taxable income exceeding the thresholds.",
-        "irs_ref": "",
+    "_NIIT_thd": {
+        "long_name": "Net Investment Income Tax income threshold (UIMC)",
+        "description": "If one taxpayer's MAGI (modified AGI) is more than this threshold, he or she is subject to the additional Medicare tax. ",
+        "irs_ref": "Form 8960, line 14, instructions. ",
         "notes": "",
         "start_year": 2013,
         "col_var": "MARS",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "cpi_inflated": false,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[200000, 250000, 125000, 200000, 250000, 125000]]
+    },
+
+    "_NIIT_trt": {
+        "long_name": "Net Investment Income Tax rate (UIMC)",
+        "description": "Also called the Unearned Income Medicare Contribution. The lessor of net investment income and the amount by which MAGI exceeds a threshold is taxed at this rate.",
+        "irs_ref": "Form 8960, line 21, in-line. ",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
         "col_label": "",
-        "value": [0.0]
+        "value": [0.038]
+    },
+
+    "_DCC_c": {
+        "long_name": "Max dependent care credit per dependent",
+        "description": "The maximum amount of credit allowed for each qualifying dependent.",
+        "irs_ref": "Form 2441, line 3c, in-line.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [3000]
+    },
+
+    "_CDCC_ps": {
+        "long_name": "Child and dependent care credit phaseout start",
+        "description": "For taxpayers with AGI over this amount, the credit, under the current law, is reduced by one percentage point each $2000 of AGI over this amount. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [15000]
+    },
+
+    "_CDCC_crt": {
+        "long_name": "Maximum child and dependent care credit rate",
+        "description": "This rate is the maximum rate that applied on AGI for child and dependent care credit; This rate decreases as AGI goes up.",
+        "irs_ref": "Form 2241, line 8, in-line.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [35]
+    },
+
+    "_EITC_ps": {
+        "long_name": "Earned income credit phaseout AGI start",
+        "description": "If AGI is higher than this threshold, the amount of EITC will start to decrease. ",
+        "irs_ref": "Form 1040, line 66a&b, instructions.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "EIC",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["0kids", "1kid", "2kids", "3+kids"],
+        "value": [[7970, 17530, 17530, 17530],
+                  [8110, 17830, 17830, 17830],
+                  [8250, 18150, 18150, 18150],
+                  [8270, 18190, 18190, 18190]]
+    },
+
+    "_EITC_ps_MarriedJ": {
+        "long_name": "EITC Phaseout Starting AGI (Married filling Jointly)",
+        "description": "This is the additional amount added on the regular EITC phaseout start, only for taxpayers with filling status of married filling jointly. ",
+        "irs_ref": "Form 1040, line 66a&b, calculation (the difference between EIC phaseout bases of married jointly fillers and other fillers).",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "EIC",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["0kids", "1kid", "2kids", "3+kids"],
+        "value": [[5340, 5340, 5340, 5340],
+                  [5430, 5430, 5430, 5430],
+                  [5500, 5500, 5500, 5500],
+                  [5550, 5550, 5550, 5550]]
+    },
+
+    "_EITC_c": {
+        "long_name": "Maximum earned income credit",
+        "description": "This is the maximum amount of earned income credit taxpayers are eligible for; it depends on how many kids they have. ",
+        "irs_ref": "IRS reference: form 1040, line 66a&b, instruction (table).",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "EIC",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["0kids", "1kid", "2kids", "3+kids"],
+        "value": [[487, 3250, 5372, 6044],
+                  [496, 3305, 5460, 6143],
+                  [503, 3359, 5548, 6242],
+                  [506, 3373, 5572, 6269]]
+    },
+
+    "_EITC_rt": {
+        "long_name": "Earned income credit rate",
+        "description": "If one taxpayer's AGI is below AGI phaseout start, he can apply this rate to his earned income to calculate the credit amount eligible. ",
+        "irs_ref": "Form 1040, line 66a&b, calculation (table: Max_EIC/Max_EIC_base_income).",
+        "notes": "Range of this parameter is between zero and one. ",
+        "start_year": 2013,
+        "col_var": "EIC",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": ["0kids", "1kid", "2kids", "3+kids"],
+        "value": [[0.0765, 0.3400, 0.4000, 0.4500]]
+    },
+
+    "_EITC_prt": {
+        "long_name": "Earned income credit phaseout rate",
+        "description": "Earned income credit will decrease at the this rate when AGI is higher than EITC phaseout start. ",
+        "irs_ref": "Form 1040, line 66a&b, calculation (table: Max_EIC_base_income/Phaseout_Base).",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "EIC",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": ["0kids", "1kid", "2kids", "3+kids"],
+        "value": [[0.0765, 0.1598, 0.2106, 0.2106]]
+    },
+
+    "_EITC_InvestIncome_c": {
+        "long_name": "Max disqualifying income for EITC",
+        "description": "The earned income credit may not be claimed by taxpayers whose investment income exceeds this limit.",
+        "irs_ref": "Form 1040, line 66a&b, instruction(step2)",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [3300,
+                  3350,
+                  3400,
+                  3400]
+    },
+
+    "_EITC_MinEligAge": {
+        "long_name": "Minimum Age for Childless EITC Eligibility",
+        "description": "For a childless filling unit, at least one individual's age needs to be no less than this age (but no greater than the EITC_MaxEligAge) in order to be eligible for an earned income tax credit.",
+        "irs_ref": "Form 1040, line 66a&b, step 4, instructions.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [25]
+    },
+
+    "_EITC_MaxEligAge": {
+        "long_name": "Maximum Age for Childless EITC Eligibility",
+        "description": "For a childless filling unit, at least one individual's age needs to be no greater than this age (but no less than the EITC_MinEligAge) in order to be eligible for an earned income tax credit.",
+        "irs_ref": "Form 1040, line 66a&b, step 4, instructions.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [64]
+    },
+
+    "_CTC_c": {
+        "long_name": "Maximum child tax credit per child",
+        "description": "The maximum amount of credit allowed for each child. ",
+        "irs_ref": "form 1040, line 52, instructions (child tax credit worksheet, line 1). ",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [1000]
+    },
+
+    "_CTC_ps": {
+        "long_name": "Child tax credit phaseout MAGI start",
+        "description": "Child tax credit begins to decrease when MAGI is above this level.",
+        "irs_ref": "Form 1040, line 52, instruction (Worksheet).",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[75000, 110000, 55000, 75000, 75000, 55000]]
+    },
+
+    "_CTC_prt": {
+        "long_name": "Child tax credit phaseout rate",
+        "description": "The amount of credit starts to decrease at this rate if MAGI is higher than child tax credit phaseout start. ",
+        "irs_ref": "Form 1040, line 52, instruction (child tax credit worksheet, line 5)",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.05]
+    },
+
+    "_LLC_Expense_c": {
+        "long_name": "Lifetime learning credit expense limit",
+        "description": "The maximum expense eligible for lifetime learning credit, per child.",
+        "irs_ref": "Form 8863, line 11, in-line.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [10000]
+    },
+
+    "_ETC_pe_Single": {
+        "long_name": "Education tax credit phaseout ends (Single)",
+        "description": "The education tax credit will be zero for those taxpayers of single filing status with modified AGI (in thousands) higher than this level.",
+        "irs_ref": "Form 8863, line 13, inline.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015"],
+        "cpi_inflated": true,
+        "col_label": "",
+        "value": [63,
+                  64,
+                  65]
+    },
+
+    "_ETC_pe_Married": {
+        "long_name": "Education tax credit phaseout ends (Married)",
+        "description": "The education tax credit will be zero for those taxpayers of married filing status with modified AGI level (in thousands) higher than this level.",
+        "irs_ref": "Form 8863, line 13, inline.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015"],
+        "cpi_inflated": true,
+        "col_label": "",
+        "value": [127,
+                  128,
+                  130]
+    },
+
+    "_ACTC_Income_thd": {
+        "long_name": "ACTC income threshold",
+        "description": "The portion of earned income below this threshold does not count as base for the additional child tax credit.",
+        "irs_ref": "Form 2441, line 3, in-line.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [3000]
+    },
+
+    "_ACTC_rt": {
+        "long_name": "Additional child tax credit rate",
+        "description": "This is the fraction of earnings used in calculating the ACTC, which is a partially refundable credit that supplements the CTC for some taxpayers. ",
+        "irs_ref": "Form 8812, line 6, inline.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.15]
+    },
+
+    "_ACTC_ChildNum": {
+        "long_name": "Additional child tax credit minimum number of qualified children",
+        "description": "Families with this number of qualified children or more may qualify for the additional child tax credit, which is a partially refundable credit that supplements the CTC for some taxpayers.",
+        "irs_ref": "Form 8812, Part III. ",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [3]
+    },
+
+    "_CTC_additional": {
+        "long_name": "Additional additional child tax credit amount (Lee-Rubio)",
+        "description": "In addition to all the credits currently available for dependents, this parameter gives each qualifying child a fixed amount of partially refundable credit, limited by the sum of total income and payroll tax liabilities.",
+        "irs_ref": "",
+        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualification rules for the Child Tax Credit under current law. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0]
+    },
+
+    "_CTC_additional_ps": {
+        "long_name": "Additional additional child tax credit phaseout starting AGI (Lee-Rubio)",
+        "description": "The amount of additional additional child tax credit is reduced for taxpayers with AGI higher than this level. ",
+        "irs_ref": "",
+        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualification rules for the Child Tax Credit under current law. ",
+        "start_year": 2013,
+        "col_var": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "row_label": ["2013",
+                      "2014",
+                      "2015"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [[150000, 300000, 150000, 200000, 300000, 150000],
+                  [150000, 300000, 150000, 200000, 300000, 150000],
+                  [150000, 300000, 150000, 200000, 300000, 150000]]
+    },
+
+    "_CTC_additional_prt": {
+        "long_name": "Additional additional child tax credit amount phaseout rate (Lee-Rubio)",
+        "description": "The amount of additional additional child tax credit is reduced at this rate per dollar exceeding the phaseout starting AGI. ",
+        "irs_ref": "",
+        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualification rules for the Child Tax Credit under current law. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.4]
+    },
+
+    "_ID_BenefitSurtax_Switch": {
+        "long_name": "Deductions subject to the surtax on itemized deduction benefits",
+        "description": "The surtax on itemized deduction benefits applies to the benefits derived from the itemized deductions specified with this parameter. ",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": ["Medical", "State & Local", "Real Estate", "Casualty", "Miscellaneous", "Interest", "Charity"],
+        "value": [[true, true, true, true, true, true, true]]
+    },
+
+    "_ID_BenefitSurtax_crt": {
+        "long_name": "Credit on itemized deduction benefit surtax (decimal fraction of AGI)",
+        "description": "The surtax on specified itemized deductions applies to benefits in excess of this fraction of AGI. In http://www.nber.org/papers/w16921, Feldstein, Feenberg, and MacGuineas propose a credit of 2% of AGI against a 100% tax rate; in their proposal, however, a broader set of tax benefits, including the employer provided health exclusion, would be taxed.",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [1.0]
+    },
+
+    "_ID_BenefitSurtax_trt": {
+        "long_name": "Surtax rate on the benefits from specified itemized deductions",
+        "description": "The benefit from specified itemized deductions exceeding the credit is taxed at this rate. A surtax rate of 1 strictly limits the benefit from specified itemized deductions to the specified credit. In http://www.nber.org/papers/w16921, Feldstein, Feenberg, and MacGuineas propose a credit of 2% of AGI against a 100% tax rate; in their proposal, however, a broader set of tax benefits, including the employer provided health exclusion, would be taxed.",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [1.0]
     }
 }
