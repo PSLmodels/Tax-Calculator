@@ -1,22 +1,148 @@
 {
-    "_AMT_em": {
-        "long_name": "AMT exemption amount",
-        "description": "The amount of AMTI exempted from AMT.",
-        "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
-        "notes": "",
+    "_SS_Earnings_c": {
+        "long_name": "Maximum Taxable Earnings for Social Security",
+        "description": "Only individual earnings below this maximum amount are subjected to Social Security (OASDI) payroll tax.",
+        "irs_ref": "W-2, Box 4, instructions",
+        "notes": "This parameter is indexed by the rate of growth in average wages, not by the inflation rate.",
         "start_year": 2013,
-        "col_var": "MARS",
+        "col_var": "",
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
                       "2015",
                       "2016"],
         "cpi_inflated": true,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[51900, 80800, 40400, 51900, 80800, 40400],
-                  [52800, 82100, 41050, 52800, 82100, 41050],
-                  [53600, 83400, 41700, 53600, 83400, 41700],
-                  [53900, 83800, 41900, 53900, 83800, 41900]]
+        "col_label": "",
+        "value": [113700,
+                  117000,
+                  118500,
+                  118500]
+    },
+
+    "_FICA_ss_trt": {
+        "long_name": "Social Security payroll tax rate",
+        "description": "Social Security FICA rate, including both employer and employee.",
+        "irs_ref": "Form , line , ",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.124]
+    },
+
+    "_FICA_mc_trt": {
+        "long_name": "Medicare payroll tax rate",
+        "description": "Medicare FICA rate, including both employer and employee.",
+        "irs_ref": "Form , line , ",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.029]
+    },
+
+    "_ALD_StudentLoan_HC": {
+        "long_name": "Adjustment for student loan interest haircut",
+        "description": "This decimal fraction can be applied to limit the student loan interest adjustment allowed. ",
+        "irs_ref": "Form 1040, line 33",
+        "notes": "The final adjustment amount will be (1- Haircut) * Student Loan Interest. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ALD_SelfEmploymentTax_HC": {
+        "long_name": "Adjustment for self-employment tax haircut",
+        "description": "This decimal fraction, if greater than zero, reduces the employer equivalent portion of self-employment adjustment. ",
+        "irs_ref": "Form 1040, line 27",
+        "notes": "The final adjustment amount would be (1 - Haircut) * Self Employment Tax Adjustment. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ALD_SelfEmp_HealthIns_HC": {
+        "long_name": "Adjustment for self employed health insurance haircut",
+        "description": "This decimal fraction, if greater than zero, reduces the health insurance adjustment for self-employed taxpayers. ",
+        "irs_ref": "Form 1040, line 29",
+        "notes": "The final adjustment amount would be (1 - Haircut) * self-employed health insurance adjustment. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ALD_KEOGH_SEP_HC": {
+        "long_name": "Adjustment for payment to either KEOGH or SEP plan haircut",
+        "description": "Under current law, payments to Keogh or SEP plans can be fully deducted from gross income. Taxpayers can use this haircut to limit the adjustment allowed. ",
+        "irs_ref": "Form 1040, line 25",
+        "notes": "The final adjustment amount is (1 - Haircut) * KEOGH/SEP plan payments",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ALD_EarlyWithdraw_HC": {
+        "long_name": "Adjustment for forfeited interest penalty haircut",
+        "description": "Under current law, early withdraw penalty can be fully deducted from gross income. Taxpayers can use this haircut to limit the adjustment allowed.",
+        "irs_ref": "Form 1040, line 30",
+        "notes": "The final adjustment amount is (1 - Haircut) * Early withdraw penalty",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ALD_Alimony_HC": {
+        "long_name": "Adjustment for alimony payment haircut",
+        "description": "Under current law, the full amount of alimony payment is taken as an adjustment from gross income in arriving at AGI. Taxpayers can use this haircut to limit the deduction allowed.",
+        "irs_ref": "Form 1040, line 31",
+        "notes": "The final adjustment amount would be (1 - Haircut) * Alimony Payments",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ALD_Interest_ec": {
+        "long_name": "Interest income exclusion",
+        "description": "This decimal fraction can be applied to limit the interest income included in AGI. ",
+        "irs_ref": "Form 1040, line 8a",
+        "notes": "The final taxable interest amount will be (1- exclusion) * Interest. Even though this portion of interest wouldn't be included in AGI, it still contributes to Net Investment Income Tax and Earned Income Tax Credit.",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
     },
 
     "_SS_thd50": {
@@ -45,6 +171,365 @@
         "cpi_inflated": false,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
         "value": [[34000, 44000, 34000, 34000, 34000, 34000]]
+    },
+
+    "_SS_percentage1": {
+        "long_name": "Social Security taxable income decimal fraction 1",
+        "description": "Under current law if their provisional income is above the first threshold for Social Security taxability but below the second threshold, taxpayers need to apply this fraction to both the excess of their provisional income over the first threshold and their Social Security benefits, and then include the smaller one in their AGI.",
+        "irs_ref": "Form 1040, line 20b, instructions (Social Security Worksheets, line 2 & 13)",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.5]
+    },
+
+    "_SS_percentage2": {
+        "long_name": "Social Security taxable income decimal fraction 2",
+        "description": "Under current law if their provisional income is above the second threshold for Social Security taxability, taxpayers need to apply this fraction to both the excess of their provisional income over the second threshold and their social security benefits, and then include the smaller one in their AGI.",
+        "irs_ref": "Form 1040, line 20b, instructions (Social Security Worksheets, line 15)",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.85]
+    },
+
+    "_II_em": {
+        "long_name": "Personal and dependent exemption amount",
+        "description": "Subtracted from AGI in the calculation of taxable income, per taxpayer and dependent.",
+        "irs_ref": "IRS reference: form 1040, line 42. ",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": "",
+        "value": [3900,
+                  3950,
+                  4000,
+                  4050]
+    },
+
+    "_II_em_ps": {
+        "long_name": "Personal exemption phaseout starting income",
+        "description": "If taxpayers' AGI is above this level, their personal exemption will start to decrease at the personal exemption phaseout rate (PEP provision). ",
+        "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[250000, 300000, 150000, 275000, 300000, 150000],
+                  [254200, 305050, 152525, 279650, 305050, 152525],
+                  [258250, 309900, 154950, 284040, 309900, 154950],
+                  [259400, 311300, 155650, 285350, 311300, 155650]]
+    },
+
+    "_II_prt": {
+        "long_name": "Personal exemption phaseout rate",
+        "description": "Personal exemption amount will decrease by this rate for each dollar of AGI exceeding exemption phaseout start.",
+        "irs_ref": "Form , line , ",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.02]
+    },
+
+    "_ID_ps": {
+        "long_name": "Itemized deduction phaseout AGI start (Pease provision)",
+        "description": "The itemized deductions will be reduced for taxpayers with AGI higher than this level.",
+        "irs_ref": "Form 1040, line 42, instruction (table).",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[250000, 300000, 150000, 275000, 300000, 150000],
+                  [254200, 305050, 152525, 279650, 305050, 152525],
+                  [258250, 309900, 154950, 284050, 309900, 154950],
+                  [259400, 311300, 155650, 285350, 311300, 155650]]
+    },
+
+    "_ID_crt": {
+        "long_name": "Itemized deduction maximum phaseout as a decimal fraction of total itemized deductions (Pease)",
+        "description": "The phaseout amount is capped at this fraction of the original total deduction. ",
+        "irs_ref": "Form 1040 Schedule A, line 29, instructions. ",
+        "notes": "The ceiling rate cannot be increased above 0.8 due to limited data on non-itemizers.",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.8]
+    },
+
+    "_ID_prt": {
+        "long_name": "Itemized deduction phaseout rate (Pease)",
+        "description": "Taxpayers will not be eligible to deduct the full amount of itemized deduction if their AGI is above the phaseout start. The deductible portion would be decreased at this rate for each dollar exceeding the start.",
+        "irs_ref": "Schedule A, line 29, instructions. ",
+        "notes": "This phaseout rate cannot be lower than 0.03 for each dollar, due to limited data on non-itemizers.",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.03]
+    },
+
+    "_ID_Medical_frt": {
+        "long_name": "Deduction for medical expenses; floor as a decimal fraction of AGI",
+        "description": "Taxpayers are eligible to deduct the portion of their medical expense exceeding this fraction of AGI.",
+        "irs_ref": "Form 1040 Schedule A, line 3, in-line. ",
+        "notes": "This rate cannot be decreased to lower than 0.1 due to limited data on non-itemizers.",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.1],
+        "validations": {"min": "default"}
+    },
+
+    "_ID_Medical_frt_add4aged": {
+        "long_name": "Addon to _ID_Medical_frt for elderly filing units; addon as a decimal fraction of AGI",
+        "description": "Elderly taxpayers have this fraction added to the value of _ID_Medical_frt.",
+        "irs_ref": "Form 1040 Schedule A, line 3, in-line. ",
+        "notes": "This addon cannot be decreased to lower than -0.025 due to limited data on elderly non-itemizers.",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013", "2014", "2015", "2016", "2017"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [-0.025, -0.025, -0.025, -0.025, 0.0],
+        "validations": {"min": -0.025, "max": 0.0}
+    },
+
+    "_ID_Medical_HC": {
+        "long_name": "Medical expense deduction haircut",
+        "description": "This decimal fraction can be applied to limit the amount of medical expense deduction allowed.",
+        "irs_ref": "",
+        "notes": "This parameter is currently used to eliminate this part of itemized deduction. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ID_StateLocalTax_HC": {
+        "long_name": "State and local taxes (Income and Sales) deduction haircut.",
+        "description": "This decimal fraction reduces the state and local tax deduction.",
+        "irs_ref": "",
+        "notes": "This parameter allows for the implementation of Option 51 from https://www.cbo.gov/sites/default/files/cbofiles/attachments/49638-BudgetOptions.pdf.",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ID_RealEstate_HC": {
+        "long_name": "Real estate taxes deduction haircut.",
+        "description": "This decimal fraction reduces real estate taxes paid eligible to deduct in itemized deduction.",
+        "irs_ref": "",
+        "notes": "This parameter is currently used to eliminate real estate taxes paid itemized deduction.",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ID_InterestPaid_HC": {
+        "long_name": "Interest deduction haircut",
+        "description": "This decimal fraction can be applied to limit the amount of interest deduction allowed.",
+        "irs_ref": "",
+        "notes": "This parameter is currently used to eliminate this part of itemized deduction. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ID_Charity_frt": {
+        "long_name": "Deduction for charitable contributions; floor as a decimal fraction of AGI",
+        "description": "Taxpayers are eligible to deduct the portion of their charitable expense exceeding this fraction of AGI.",
+        "irs_ref": "",
+        "notes": "This parameter allows for implementation of Option 52 from https://www.cbo.gov/sites/default/files/cbofiles/attachments/49638-BudgetOptions.pdf.",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0],
+        "validations": {"min": "default"}
+    },
+
+    "_ID_Charity_crt_all": {
+        "long_name": "Ceiling (as a decimal fraction of AGI) for all charitable contribution deductions",
+        "description": "The total deduction for charity is capped at this fraction of AGI. ",
+        "irs_ref": "Pub. 526, Limits on Deductions: 50% Limit Organizations. ",
+        "notes": "This rate cannot be increased to higher 0.5 due to lack of data. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.5],
+        "validations": {"max": "default"}
+    },
+
+    "_ID_Charity_crt_noncash": {
+        "long_name": "Ceiling (as a decimal fraction of AGI) for noncash charitable contribution deductions",
+        "description": "The deduction for noncash charity contributions is capped at this fraction of AGI. ",
+        "irs_ref": "Pub 526, Limits on Deductions: Special 30% Limit for Capital Gain Property.",
+        "notes": "This rate cannot be increased to higher than 0.3 due to lack of data. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.3],
+        "validations": {"max": "default"}
+    },
+
+    "_ID_Charity_HC": {
+        "long_name": "Charity expense deduction haircut",
+        "description": "This decimal fraction can be applied to limit the amount of charity expense deduction allowed.",
+        "irs_ref": "",
+        "notes": "This parameter is currently used to eliminate this part of itemized deduction. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ID_Casualty_frt": {
+        "long_name": "Deduction for casualty loss; floor as a decimal fraction of AGI",
+        "description": "Taxpayers are eligible to deduct the portion of their casualty loss exceeding this fraction of AGI.",
+        "irs_ref": "Form 4684, line 17, in-line.",
+        "notes": "This rate cannot be decreased to lower than 0.1 due to lack of data. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.1],
+        "validations": {"min": "default"}
+    },
+
+    "_ID_Casualty_HC": {
+        "long_name": "Casualty expense deduction haircut",
+        "description": "This decimal fraction can be applied to limit the amount of casualty expense deduction allowed.",
+        "irs_ref": "",
+        "notes": "This parameter is currently used to eliminate this part of itemized deduction. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ID_Miscellaneous_frt": {
+        "long_name": "Deduction for miscellaneous expenses; floor as a decimal fraction of AGI",
+        "description": "Taxpayers are eligible to deduct the portion of their miscellaneous expense exceeding this fraction of AGI.",
+        "irs_ref": "Form 1040 Schedule A, line 28, instructions. ",
+        "notes": "This rate cannot be decreased to lower than 0.02 due to lack of data. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.02],
+        "validations": {"min": "default"}
+    },
+
+    "_ID_Miscellaneous_HC": {
+        "long_name": "Miscellaneous expense deduction haircut",
+        "description": "This decimal fraction can be applied to limit the amount of miscellaneous expense deduction allowed.",
+        "irs_ref": "",
+        "notes": "This parameter is currently used to eliminate this part of itemized deduction. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+
+
+
+
+
+
+    "_AMT_em": {
+        "long_name": "AMT exemption amount",
+        "description": "The amount of AMTI exempted from AMT.",
+        "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[51900, 80800, 40400, 51900, 80800, 40400],
+                  [52800, 82100, 41050, 52800, 82100, 41050],
+                  [53600, 83400, 41700, 53600, 83400, 41700],
+                  [53900, 83800, 41900, 53900, 83800, 41900]]
     },
 
     "_ACTC_rt": {
@@ -136,26 +621,6 @@
                   182500,
                   185400,
                   186300]
-    },
-
-    "_II_em": {
-        "long_name": "Personal and dependent exemption amount",
-        "description": "Subtracted from AGI in the calculation of taxable income, per taxpayer and dependent.",
-        "irs_ref": "IRS reference: form 1040, line 42. ",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label": "",
-        "value": [3900,
-                  3950,
-                  4000,
-                  4050]
     },
 
     "_KT_c_Age": {
@@ -314,26 +779,6 @@
         "value": [35]
     },
 
-    "_ID_ps": {
-        "long_name": "Itemized deduction phaseout AGI start (Pease provision)",
-        "description": "The itemized deductions will be reduced for taxpayers with AGI higher than this level.",
-        "irs_ref": "Form 1040, line 42, instruction (table).",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "MARS",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[250000, 300000, 150000, 275000, 300000, 150000],
-                  [254200, 305050, 152525, 279650, 305050, 152525],
-                  [258250, 309900, 154950, 284050, 309900, 154950],
-                  [259400, 311300, 155650, 285350, 311300, 155650]]
-    },
-
     "_ID_BenefitSurtax_Switch": {
         "long_name": "Deductions subject to the surtax on itemized deduction benefits",
         "description": "The surtax on itemized deduction benefits applies to the benefits derived from the itemized deductions specified with this parameter. ",
@@ -484,25 +929,6 @@
                   3400]
     },
 
-    "_SS_Earnings_c": {
-        "long_name": "Maximum Taxable Earnings for Social Security",
-        "description": "Only individual earnings below this maximum amount are subjected to Social Security (OASDI) payroll tax.",
-        "irs_ref": "W-2, Box 4, instructions",
-        "notes": "This parameter is indexed by the rate of growth in average wages, not by the inflation rate.",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label": "",
-        "value": [113700,
-                  117000,
-                  118500,
-                  118500]
-    },
 
     "_II_rt1": {
         "long_name": "Personal income tax rate 1",
@@ -650,26 +1076,6 @@
         "value": [[200000, 250000, 125000, 200000, 250000, 125000]]
     },
 
-    "_II_em_ps": {
-        "long_name": "Personal exemption phaseout starting income",
-        "description": "If taxpayers' AGI is above this level, their personal exemption will start to decrease at the personal exemption phaseout rate (PEP provision). ",
-        "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "MARS",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[250000, 300000, 150000, 275000, 300000, 150000],
-                  [254200, 305050, 152525, 279650, 305050, 152525],
-                  [258250, 309900, 154950, 284040, 309900, 154950],
-                  [259400, 311300, 155650, 285350, 311300, 155650]]
-    },
-
     "_STD": {
         "long_name": "Standard deduction amount",
         "description": "",
@@ -815,307 +1221,6 @@
                   [413200, 464850, 232425, 439000, 464850, 232425],
                   [415050, 466950, 233475, 441000, 466950, 233475]],
         "validations": {"min": "_II_brk5"}
-    },
-
-    "_FICA_ss_trt": {
-        "long_name": "Social Security payroll tax rate",
-        "description": "Social Security FICA rate, including both employer and employee.",
-        "irs_ref": "Form , line , ",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.124]
-    },
-
-    "_FICA_mc_trt": {
-        "long_name": "Medicare payroll tax rate",
-        "description": "Medicare FICA rate, including both employer and employee.",
-        "irs_ref": "Form , line , ",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.029]
-    },
-
-    "_SS_percentage1": {
-        "long_name": "Social Security taxable income decimal fraction 1",
-        "description": "Under current law if their provisional income is above the first threshold for Social Security taxability but below the second threshold, taxpayers need to apply this fraction to both the excess of their provisional income over the first threshold and their Social Security benefits, and then include the smaller one in their AGI.",
-        "irs_ref": "Form 1040, line 20b, instructions (Social Security Worksheets, line 2 & 13)",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.5]
-    },
-
-    "_SS_percentage2": {
-        "long_name": "Social Security taxable income decimal fraction 2",
-        "description": "Under current law if their provisional income is above the second threshold for Social Security taxability, taxpayers need to apply this fraction to both the excess of their provisional income over the second threshold and their social security benefits, and then include the smaller one in their AGI.",
-        "irs_ref": "Form 1040, line 20b, instructions (Social Security Worksheets, line 15)",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.85]
-    },
-
-    "_II_prt": {
-        "long_name": "Personal exemption phaseout rate",
-        "description": "Personal exemption amount will decrease by this rate for each dollar of AGI exceeding exemption phaseout start.",
-        "irs_ref": "Form , line , ",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.02]
-    },
-
-    "_ID_Medical_frt": {
-        "long_name": "Deduction for medical expenses; floor as a decimal fraction of AGI",
-        "description": "Taxpayers are eligible to deduct the portion of their medical expense exceeding this fraction of AGI.",
-        "irs_ref": "Form 1040 Schedule A, line 3, in-line. ",
-        "notes": "This rate cannot be decreased to lower than 0.1 due to limited data on non-itemizers.",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.1],
-        "validations": {"min": "default"}
-    },
-
-    "_ID_Medical_frt_add4aged": {
-        "long_name": "Addon to _ID_Medical_frt for elderly filing units; addon as a decimal fraction of AGI",
-        "description": "Elderly taxpayers have this fraction added to the value of _ID_Medical_frt.",
-        "irs_ref": "Form 1040 Schedule A, line 3, in-line. ",
-        "notes": "This addon cannot be decreased to lower than -0.025 due to limited data on elderly non-itemizers.",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013", "2014", "2015", "2016", "2017"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [-0.025, -0.025, -0.025, -0.025, 0.0],
-        "validations": {"min": -0.025, "max": 0.0}
-    },
-
-    "_ID_Medical_HC": {
-        "long_name": "Medical expense deduction haircut",
-        "description": "This decimal fraction can be applied to limit the amount of medical expense deduction allowed.",
-        "irs_ref": "",
-        "notes": "This parameter is currently used to eliminate this part of itemized deduction. ",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0]
-    },
-
-    "_ID_Charity_frt": {
-        "long_name": "Deduction for charitable contributions; floor as a decimal fraction of AGI",
-        "description": "Taxpayers are eligible to deduct the portion of their charitable expense exceeding this fraction of AGI.",
-        "irs_ref": "",
-        "notes": "This parameter allows for implementation of Option 52 from https://www.cbo.gov/sites/default/files/cbofiles/attachments/49638-BudgetOptions.pdf.",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0],
-        "validations": {"min": "default"}
-    },
-
-    "_ID_Charity_HC": {
-        "long_name": "Charity expense deduction haircut",
-        "description": "This decimal fraction can be applied to limit the amount of charity expense deduction allowed.",
-        "irs_ref": "",
-        "notes": "This parameter is currently used to eliminate this part of itemized deduction. ",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0]
-    },
-
-    "_ID_Casualty_frt": {
-        "long_name": "Deduction for casualty loss; floor as a decimal fraction of AGI",
-        "description": "Taxpayers are eligible to deduct the portion of their casualty loss exceeding this fraction of AGI.",
-        "irs_ref": "Form 4684, line 17, in-line.",
-        "notes": "This rate cannot be decreased to lower than 0.1 due to lack of data. ",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.1],
-        "validations": {"min": "default"}
-    },
-
-    "_ID_Casualty_HC": {
-        "long_name": "Casualty expense deduction haircut",
-        "description": "This decimal fraction can be applied to limit the amount of casualty expense deduction allowed.",
-        "irs_ref": "",
-        "notes": "This parameter is currently used to eliminate this part of itemized deduction. ",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0]
-    },
-
-    "_ID_Miscellaneous_frt": {
-        "long_name": "Deduction for miscellaneous expenses; floor as a decimal fraction of AGI",
-        "description": "Taxpayers are eligible to deduct the portion of their miscellaneous expense exceeding this fraction of AGI.",
-        "irs_ref": "Form 1040 Schedule A, line 28, instructions. ",
-        "notes": "This rate cannot be decreased to lower than 0.02 due to lack of data. ",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.02],
-        "validations": {"min": "default"}
-    },
-
-    "_ID_Miscellaneous_HC": {
-        "long_name": "Miscellaneous expense deduction haircut",
-        "description": "This decimal fraction can be applied to limit the amount of miscellaneous expense deduction allowed.",
-        "irs_ref": "",
-        "notes": "This parameter is currently used to eliminate this part of itemized deduction. ",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0]
-    },
-
-    "_ID_Charity_crt_all": {
-        "long_name": "Ceiling (as a decimal fraction of AGI) for all charitable contribution deductions",
-        "description": "The total deduction for charity is capped at this fraction of AGI. ",
-        "irs_ref": "Pub. 526, Limits on Deductions: 50% Limit Organizations. ",
-        "notes": "This rate cannot be increased to higher 0.5 due to lack of data. ",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.5],
-        "validations": {"max": "default"}
-    },
-
-    "_ID_Charity_crt_noncash": {
-        "long_name": "Ceiling (as a decimal fraction of AGI) for noncash charitable contribution deductions",
-        "description": "The deduction for noncash charity contributions is capped at this fraction of AGI. ",
-        "irs_ref": "Pub 526, Limits on Deductions: Special 30% Limit for Capital Gain Property.",
-        "notes": "This rate cannot be increased to higher than 0.3 due to lack of data. ",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.3],
-        "validations": {"max": "default"}
-    },
-
-    "_ID_prt": {
-        "long_name": "Itemized deduction phaseout rate (Pease)",
-        "description": "Taxpayers will not be eligible to deduct the full amount of itemized deduction if their AGI is above the phaseout start. The deductible portion would be decreased at this rate for each dollar exceeding the start.",
-        "irs_ref": "Schedule A, line 29, instructions. ",
-        "notes": "This phaseout rate cannot be lower than 0.03 for each dollar, due to limited data on non-itemizers.",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.03]
-    },
-
-    "_ID_crt": {
-        "long_name": "Itemized deduction maximum phaseout as a decimal fraction of total itemized deductions (Pease)",
-        "description": "The phaseout amount is capped at this fraction of the original total deduction. ",
-        "irs_ref": "Form 1040 Schedule A, line 29, instructions. ",
-        "notes": "The ceiling rate cannot be increased above 0.8 due to limited data on non-itemizers.",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.8]
-    },
-
-    "_ID_StateLocalTax_HC": {
-        "long_name": "State and local taxes (Income and Sales) deduction haircut.",
-        "description": "This decimal fraction reduces the state and local tax deduction.",
-        "irs_ref": "",
-        "notes": "This parameter allows for the implementation of Option 51 from https://www.cbo.gov/sites/default/files/cbofiles/attachments/49638-BudgetOptions.pdf.",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0]
-    },
-
-    "_ID_RealEstate_HC": {
-        "long_name": "Real estate taxes deduction haircut.",
-        "description": "This decimal fraction reduces real estate taxes paid eligible to deduct in itemized deduction.",
-        "irs_ref": "",
-        "notes": "This parameter is currently used to eliminate real estate taxes paid itemized deduction.",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0]
-    },
-
-    "_ID_InterestPaid_HC": {
-        "long_name": "Interest deduction haircut",
-        "description": "This decimal fraction can be applied to limit the amount of interest deduction allowed.",
-        "irs_ref": "",
-        "notes": "This parameter is currently used to eliminate this part of itemized deduction. ",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0]
     },
 
     "_ID_BenefitSurtax_crt": {
@@ -1273,104 +1378,6 @@
         "cpi_inflated": false,
         "col_label": "",
         "value": [3]
-    },
-
-    "_ALD_Interest_ec": {
-        "long_name": "Interest income exclusion",
-        "description": "This decimal fraction can be applied to limit the interest income included in AGI. ",
-        "irs_ref": "Form 1040, line 8a",
-        "notes": "The final taxable interest amount will be (1- exclusion) * Interest. Even though this portion of interest wouldn't be included in AGI, it still contributes to Net Investment Income Tax and Earned Income Tax Credit.",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0]
-    },
-
-    "_ALD_StudentLoan_HC": {
-        "long_name": "Adjustment for student loan interest haircut",
-        "description": "This decimal fraction can be applied to limit the student loan interest adjustment allowed. ",
-        "irs_ref": "Form 1040, line 33",
-        "notes": "The final adjustment amount will be (1- Haircut) * Student Loan Interest. ",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0]
-    },
-
-    "_ALD_SelfEmploymentTax_HC": {
-        "long_name": "Adjustment for self-employment tax haircut",
-        "description": "This decimal fraction, if greater than zero, reduces the employer equivalent portion of self-employment adjustment. ",
-        "irs_ref": "Form 1040, line 27",
-        "notes": "The final adjustment amount would be (1 - Haircut) * Self Employment Tax Adjustment. ",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0]
-    },
-
-    "_ALD_SelfEmp_HealthIns_HC": {
-        "long_name": "Adjustment for self employed health insurance haircut",
-        "description": "This decimal fraction, if greater than zero, reduces the health insurance adjustment for self-employed taxpayers. ",
-        "irs_ref": "Form 1040, line 29",
-        "notes": "The final adjustment amount would be (1 - Haircut) * self-employed health insurance adjustment. ",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0]
-    },
-
-    "_ALD_KEOGH_SEP_HC": {
-        "long_name": "Adjustment for payment to either KEOGH or SEP plan haircut",
-        "description": "Under current law, payments to Keogh or SEP plans can be fully deducted from gross income. Taxpayers can use this haircut to limit the adjustment allowed. ",
-        "irs_ref": "Form 1040, line 25",
-        "notes": "The final adjustment amount is (1 - Haircut) * KEOGH/SEP plan payments",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0]
-    },
-
-    "_ALD_EarlyWithdraw_HC": {
-        "long_name": "Adjustment for forfeited interest penalty haircut",
-        "description": "Under current law, early withdraw penalty can be fully deducted from gross income. Taxpayers can use this haircut to limit the adjustment allowed.",
-        "irs_ref": "Form 1040, line 30",
-        "notes": "The final adjustment amount is (1 - Haircut) * Early withdraw penalty",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0]
-    },
-
-    "_ALD_Alimony_HC": {
-        "long_name": "Adjustment for alimony payment haircut",
-        "description": "Under current law, the full amount of alimony payment is taken as an adjustment from gross income in arriving at AGI. Taxpayers can use this haircut to limit the deduction allowed.",
-        "irs_ref": "Form 1040, line 31",
-        "notes": "The final adjustment amount would be (1 - Haircut) * Alimony Payments",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0]
     },
 
     "_CDCC_ps": {
