@@ -22,6 +22,7 @@ import sys
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
+from taxcalc import create_diagnostic_table  # pylint: disable=import-error
 PUFCSV_PATH = os.path.join(CUR_PATH, '..', '..', 'puf.csv')
 AGGRES_PATH = os.path.join(CUR_PATH, 'pufcsv_agg_expect.txt')
 MTRRES_PATH = os.path.join(CUR_PATH, 'pufcsv_mtr_expect.txt')
@@ -48,7 +49,7 @@ def test_agg():
     adts = list()
     for iyr in range(-1, nyears - 1):
         calc.calc_all()
-        adts.append(calc.diagnostic_table())
+        adts.append(create_diagnostic_table(calc))
         if iyr < nyears:
             calc.increment_year()
     adt = pd.concat(adts, axis=1)

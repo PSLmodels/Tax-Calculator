@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 
 
 STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600',
@@ -434,6 +434,97 @@ def create_difference_table(recs1, recs2, groupby,
     for col in non_sum_cols:
         diffs.loc['sums', col] = 'n/a'
     return diffs
+
+
+def diagnostic_table_odict(recs):
+    """
+    Extract diagnostic table dictionary from specified Records object.
+
+    Parameters
+    ----------
+    recs : Records class object
+
+    Returns
+    -------
+    ordered dictionary of variable names and aggregate weighted values
+    """
+    # aggregate weighted values expressed in millions or billions
+    in_millions = 1.0e-6
+    in_billions = 1.0e-9
+    odict = OrderedDict()
+    # total number of filing units
+    odict['Returns (#m)'] = recs.s006.sum() * in_millions
+    # adjusted gross income
+    odict['AGI ($b)'] = (recs.c00100 * recs.s006).sum() * in_billions
+    # number of itemizers
+    num_itemizers = (recs.s006[(recs.c04470 > 0.) * (recs.c00100 > 0.)].sum())
+    odict['Itemizers (#m)'] = num_itemizers * in_millions
+    # itemized deduction
+    ID1 = recs.c04470 * recs.s006
+    ID = ID1[recs.c04470 > 0.].sum()
+    odict['Itemized Deduction ($b)'] = ID * in_billions
+    # number of standard deductions
+    num_std = recs.s006[(recs._standard > 0.) * (recs.c00100 > 0.)].sum()
+    odict['Standard Deduction Filers (#m)'] = num_std * in_millions
+    # standard deduction
+    STD1 = recs._standard * recs.s006
+    STD = STD1[(recs._standard > 0.) * (recs.c00100 > 0.)].sum()
+    odict['Standard Deduction ($b)'] = STD * in_billions
+    # personal exemption
+    PE = (recs.c04600 * recs.s006)[recs.c00100 > 0.].sum()
+    odict['Personal Exemption ($b)'] = PE * in_billions
+    # taxable income
+    taxinc = (recs.c04800 * recs.s006).sum()
+    odict['Taxable income ($b)'] = taxinc * in_billions
+    # regular tax liability
+    regular_tax = (recs.c05200 * recs.s006).sum()
+    odict['Regular Tax ($b)'] = regular_tax * in_billions
+    # AMT taxable income
+    odict['AMT income ($b)'] = (recs.c62100 * recs.s006).sum() * in_billions
+    # total AMT liability
+    odict['AMT amount ($b)'] = (recs.c09600 * recs.s006).sum() * in_billions
+    # number of people paying AMT
+    odict['AMT number (#m)'] = recs.s006[recs.c09600 > 0.].sum() * in_millions
+    # tax before credits
+    tax_before_credits = (recs.c05800 * recs.s006).sum()
+    odict['Tax before credits ($b)'] = tax_before_credits * in_billions
+    # refundable credits
+    refundable_credits = (recs._refund * recs.s006).sum()
+    odict['refundable credits ($b)'] = refundable_credits * in_billions
+    # nonrefuncable credits
+    nonrefundable_credits = (recs.c07100 * recs.s006).sum()
+    odict['nonrefundable credits ($b)'] = nonrefundable_credits * in_billions
+    # itemized-deduction surtax liability
+    odict['Misc. Surtax ($b)'] = (recs._surtax * recs.s006).sum() * in_billions
+    # federal individual income tax liability
+    odict['Ind inc tax ($b)'] = (recs._iitax * recs.s006).sum() * in_billions
+    # payroll (FICA) tax liability
+    odict['Payroll tax ($b)'] = (recs._fica * recs.s006).sum() * in_billions
+    # combined income and payroll tax liability
+    combined = (recs._combined * recs.s006).sum()
+    odict['Combined liability ($b)'] = combined * in_billions
+    return odict
+
+
+def create_diagnostic_table(calc):
+    """
+    Extract diagnostic table from specified Calculator object.
+
+    Parameters
+    ----------
+    calc : Calculator class object
+
+    Returns
+    -------
+    Pandas DataFrame object containing the table for calc.current_year
+    """
+    odict = diagnostic_table_odict(calc.records)
+    df = pd.DataFrame(data=odict,
+                      index=[calc.current_year],
+                      columns=odict.keys())
+    df = df.transpose()
+    pd.options.display.float_format = '{:8,.1f}'.format
+    return df
 
 
 def ascii_output(csv_filename, ascii_filename):

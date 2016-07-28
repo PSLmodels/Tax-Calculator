@@ -11,7 +11,7 @@ sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy, Records, Calculator, Behavior, Consumption
 from taxcalc import create_distribution_table
 from taxcalc import create_difference_table
-# from taxcalc import create_diagnostic_table
+from taxcalc import create_diagnostic_table
 
 # use 1991 PUF-like data to emulate current puf.csv, which is private
 TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91taxdata.csv.gz')
@@ -304,7 +304,7 @@ def test_Calculator_create_diagnostic_table():
     puf = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     calc = Calculator(policy=Policy(), records=puf)
     calc.calc_all()
-    adt = calc.diagnostic_table()
+    adt = create_diagnostic_table(calc)
     assert isinstance(adt, pd.DataFrame)
 
 
