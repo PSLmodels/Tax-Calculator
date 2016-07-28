@@ -87,7 +87,7 @@ def revenue(year, calc0, calc1):
         fica_rev = (calc0.records._fica * calc0.records.s006).sum()
     else:  # dynamic analysis with behavioral responses
         calc1.advance_to_year(year)
-        calc1b = calc1.behavior.response(calc0, calc1)
+        calc1b = Behavior.response(calc0, calc1)
         itax_rev = (calc1b.records._iitax * calc1b.records.s006).sum()
         fica_rev = (calc1b.records._fica * calc1b.records.s006).sum()
     return (round(itax_rev * 1.0e-9, 3), round(fica_rev * 1.0e-9, 3))
