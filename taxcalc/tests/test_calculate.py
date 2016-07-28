@@ -299,16 +299,15 @@ def test_Calculator_create_difference_table():
 
 
 def test_Calculator_behavioral_response():
-    # calculate AGI assuming no behavioral response to reform
+    # calculate AGI under base (current-law) policy
     pol1 = Policy()
-    pol1.implement_reform({2013: {'_II_rt7': [0.50]}})
     puf1 = Records(data=TAXDATA, weights=WEIGHTS, start_year=Records.PUF_YEAR)
     beh1 = Behavior()
     calc1 = Calculator(policy=pol1, records=puf1, behavior=beh1)
     assert calc1.records.current_year == Policy.JSON_START_YEAR
     calc1.calc_all()
     agi1 = calc1.records.c00100
-    # calulatie AGI assuming behavioral response to reform
+    # calulatie AGI under alternative (reform) policy
     pol2 = Policy()
     pol2.implement_reform({2013: {'_II_rt7': [0.50]}})
     puf2 = Records(data=TAXDATA, weights=WEIGHTS, start_year=Records.PUF_YEAR)
@@ -319,8 +318,13 @@ def test_Calculator_behavioral_response():
     assert calc2.records.current_year == Policy.JSON_START_YEAR
     calc2.calc_all()
     agi2 = calc2.records.c00100
-    # check that AGI amounts are not the same
-    assert np.allclose(agi1, agi2)  # TODO: add 'not' after assert
+    # check that AGI amounts are same before calculating behavioral response
+    assert np.allclose(agi1, agi2)
+    # calculate behavioral response of the alternative policy
+    calc2br = Behavior.response(calc1, calc2)
+    agi2br = calc2br.records.c00100
+    # check that AGI amounts are not same after calculating behavioral response
+    assert not np.allclose(agi1, agi2br)
 
 
 def test_make_Calculator_increment_years_first():
