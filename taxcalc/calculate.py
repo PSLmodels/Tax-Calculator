@@ -413,25 +413,12 @@ class Calculator(object):
                       payroll / math.pow(10, 9),
                       combined / math.pow(10, 9)])
 
-    def diagnostic_table(self, num_years=5, base_calc=None):
+    def diagnostic_table(self):
         table = []
-        row_years = []
-        calc = copy.deepcopy(self)
-        base_calc = copy.deepcopy(base_calc)
-        for i in range(0, num_years):
-            if calc.behavior.has_response():
-                base_calc.calc_all()
-                behavior_calc = Behavior.response(base_calc, calc)
-                behavior_calc.diagnostic_table_items(table)
-            else:
-                calc.calc_all()
-                calc.diagnostic_table_items(table)
-            row_years.append(calc.policy.current_year)
-            if i < num_years - 1:
-                calc.increment_year()
-                if base_calc is not None:
-                    base_calc.increment_year()
-        df = DataFrame(table, row_years,
+        row_year = []
+        self.diagnostic_table_items(table)
+        row_year.append(self.policy.current_year)
+        df = DataFrame(table, row_year,
                        ['Returns (#m)', 'AGI ($b)', 'Itemizers (#m)',
                         'Itemized Deduction ($b)',
                         'Standard Deduction Filers (#m)',

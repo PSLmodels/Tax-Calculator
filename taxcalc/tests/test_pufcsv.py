@@ -28,6 +28,7 @@ MTRRES_PATH = os.path.join(CUR_PATH, 'pufcsv_mtr_expect.txt')
 import pytest
 import difflib
 import numpy as np
+import pandas as pd
 
 
 @pytest.mark.requires_pufcsv
@@ -43,7 +44,14 @@ def test_agg():
     # create a Calculator object using clp policy and puf records
     calc = Calculator(policy=clp, records=puf)
     # create aggregate diagnostic table (adt) as a Pandas DataFrame object
-    adt = calc.diagnostic_table(num_years=10)
+    nyears = 10
+    adts = list()
+    for iyr in range(-1, nyears - 1):
+        calc.calc_all()
+        adts.append(calc.diagnostic_table())
+        if iyr < nyears:
+            calc.increment_year()
+    adt = pd.concat(adts, axis=1)
     # convert adt results to a string with a trailing EOL character
     adtstr = adt.to_string() + '\n'
     # generate differences between actual and expected results
