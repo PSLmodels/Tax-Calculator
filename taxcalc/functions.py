@@ -371,10 +371,6 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
 
         STD_Aged : Additional standard deduction for blind and aged
 
-        II_brk* : Personal income tax bracket upper thresholds: range 1-6
-
-        II_rt* : Personal income tax rates: range 1-7
-
     Taxpayer Characteristics:
         _earned : Form 2441 earned income amount
 
@@ -420,6 +416,24 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
 
 
 @iterate_jit(nopython=True)
+def Personal_Credit(c04500, MARS,
+                    II_credit, II_credit_ps, II_credit_prt,
+                    personal_credit):
+    """
+    Personal_Credit function: ...
+    """
+    # full amount as defined in the parameter
+    personal_credit = II_credit[MARS - 1]
+    # phaseout using taxable income
+    if c04500 > II_credit_ps[MARS - 1]:
+        credit_phaseout = II_credit_prt * (c04500 - II_credit_ps[MARS - 1])
+    else:
+        credit_phaseout = 0.
+    personal_credit = max(0., personal_credit - credit_phaseout)
+    return personal_credit
+
+
+@iterate_jit(nopython=True)
 def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
            _feided, c04800, MARS, _feitax, _taxinc,
            II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
@@ -441,24 +455,6 @@ def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
     else:
         _feitax = 0.
     return (c04500, c04800, _taxinc, _feitax, _standard)
-
-
-@iterate_jit(nopython=True)
-def Personal_Credit(c04500, MARS,
-                    II_credit, II_credit_ps, II_credit_prt,
-                    personal_credit):
-    """
-    Personal_Credit function: ...
-    """
-    # full amount as defined in the parameter
-    personal_credit = II_credit[MARS - 1]
-    # phaseout using taxable income
-    if c04500 > II_credit_ps[MARS - 1]:
-        credit_phaseout = II_credit_prt * (c04500 - II_credit_ps[MARS - 1])
-    else:
-        credit_phaseout = 0.
-    personal_credit = max(0., personal_credit - credit_phaseout)
-    return personal_credit
 
 
 @iterate_jit(nopython=True)
@@ -1159,31 +1155,32 @@ def BenefitSurtax(calc):
     BenefitSurtax function: ...
     """
     if calc.policy.ID_BenefitSurtax_crt != 1.:
-        nobenefits_calc = copy.deepcopy(calc)
-        # hard code the reform
-        nobenefits_calc.policy.ID_Medical_HC = \
-            int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[0])
-        nobenefits_calc.policy.ID_StateLocalTax_HC = \
-            int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[1])
-        nobenefits_calc.policy.ID_RealEstate_HC = \
-            int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[2])
-        nobenefits_calc.policy.ID_casualty_HC = \
-            int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[3])
-        nobenefits_calc.policy.ID_Miscellaneous_HC = \
-            int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[4])
-        nobenefits_calc.policy.ID_InterestPaid_HC = \
-            int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[5])
-        nobenefits_calc.policy.ID_Charity_HC = \
-            int(nobenefits_calc.policy.ID_BenefitSurtax_Switch[6])
-        nobenefits_calc.calc_one_year()
+        # compute income tax liability with no itemized deductions allowed for
+        # the types of itemized deductions covered under the BenefitSurtax
+        no_ID_calc = copy.deepcopy(calc)
+        if calc.policy.ID_BenefitSurtax_Switch[0]:
+            no_ID_calc.policy.ID_Medical_HC = 1.
+        if calc.policy.ID_BenefitSurtax_Switch[1]:
+            no_ID_calc.policy.ID_StateLocalTax_HC = 1.
+        if calc.policy.ID_BenefitSurtax_Switch[2]:
+            no_ID_calc.policy.ID_RealEstate_HC = 1.
+        if calc.policy.ID_BenefitSurtax_Switch[3]:
+            no_ID_calc.policy.ID_Casualty_HC = 1.
+        if calc.policy.ID_BenefitSurtax_Switch[4]:
+            no_ID_calc.policy.ID_Miscellaneous_HC = 1.
+        if calc.policy.ID_BenefitSurtax_Switch[5]:
+            no_ID_calc.policy.ID_InterestPaid_HC = 1.
+        if calc.policy.ID_BenefitSurtax_Switch[6]:
+            no_ID_calc.policy.ID_Charity_HC = 1.
+        no_ID_calc.calc_one_year()
         # pylint: disable=protected-access
-        tax_diff = np.where(
-            nobenefits_calc.records._iitax - calc.records._iitax > 0.,
-            nobenefits_calc.records._iitax - calc.records._iitax,
-            0.)
-        surtax_cap = nobenefits_calc.policy.ID_BenefitSurtax_crt *\
-            nobenefits_calc.records.c00100
+        benefit_amount = np.where(
+            no_ID_calc.records._iitax - calc.records._iitax > 0.,
+            no_ID_calc.records._iitax - calc.records._iitax, 0.)
+        benefit_deduction = (calc.policy.ID_BenefitSurtax_crt *
+                             calc.records.c00100)
         calc.records._surtax[:] = calc.policy.ID_BenefitSurtax_trt * np.where(
-            tax_diff > surtax_cap, tax_diff - surtax_cap, 0.)
+            benefit_amount > benefit_deduction,
+            benefit_amount - benefit_deduction, 0.)
         calc.records._iitax += calc.records._surtax
-        calc.records._combined = calc.records._iitax + calc.records._fica
+        calc.records._combined += calc.records._surtax
