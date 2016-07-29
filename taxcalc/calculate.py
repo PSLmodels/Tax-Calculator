@@ -195,12 +195,13 @@ class Calculator(object):
 
     def calc_all(self, zero_out_calc_vars=False):
         if self.behavior.has_response():
-            recs = copy.deepcopy(self.records)
+            recs = copy.deepcopy(self._records)
             recs_year = recs.current_year
             clp = Policy()
             clp.set_year(recs_year)
             calc_clp = Calculator(policy=clp, records=recs, sync_years=False)
-            self = Behavior.response(calc_clp, self)
+            calc_br = Behavior.response(calc_clp, self)
+            self._records = copy.deepcopy(calc_br._records)
         else:
             self.calc_one_year(zero_out_calc_vars)
         BenefitSurtax(self)
