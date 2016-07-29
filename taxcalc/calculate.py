@@ -140,6 +140,7 @@ class Calculator(object):
         AMTI(self.policy, self.records)
 
     def calc_one_year(self, zero_out_calc_vars=False):
+        # calls all the functions except BenefitSurtax and ExpandIncome
         if zero_out_calc_vars:
             self.records.zero_out_changing_calculated_vars()
         # pdb.set_trace()
@@ -323,13 +324,16 @@ class Calculator(object):
             self.records.e01500 = penben_type + finite_diff
         if self.consumption.has_response():
             self.consumption.response(self.records, finite_diff)
-        self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
+        self.calc_one_year(zero_out_calc_vars=zero_out_calculated_vars)
+        BenefitSurtax(self)
         fica_chng = copy.deepcopy(self.records._fica)
         iitax_chng = copy.deepcopy(self.records._iitax)
         combined_taxes_chng = iitax_chng + fica_chng
         # calculate base level of taxes after restoring records object
         setattr(self, '_records', recs0)
-        self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
+        self.calc_one_year(zero_out_calc_vars=zero_out_calculated_vars)
+        BenefitSurtax(self)
+        ExpandIncome(self.policy, self.records)
         fica_base = copy.deepcopy(self.records._fica)
         iitax_base = copy.deepcopy(self.records._iitax)
         combined_taxes_base = iitax_base + fica_base

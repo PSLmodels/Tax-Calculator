@@ -96,7 +96,7 @@ class Behavior(ParametersBase):
         Modify calc_y records to account for behavioral responses that arise
           from the policy reform that involves moving from calc_x.policy to
           calc_y.policy.  Neither calc_x nor calc_y need to have had calc_all()
-          called before calling this Behavior.reponse(calc_x, calc_y) method.
+          executed before calling this Behavior.reponse(calc_x, calc_y) method.
         Returns new Calculator object --- a deepcopy of calc_y --- that
           incorporates behavioral responses to the reform, but has called
           NEITHER the BenefitsSurtax() NOR the ExpandIncome() functions.
