@@ -3,13 +3,16 @@ Tax-Calculator federal tax Calculator class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 calculate.py
+# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy calculat.py
+#
+# pylint: disable=wildcard-import,unused-wildcard-import
+# pylint: disable=wildcard-import,missing-docstring,invalid-name
+# pylint: disable=too-many-arguments,too-many-branches,too-many-locals
+# pylint: disable=no-value-for-parameter,protected-access
 
 
-import math
 import copy
 import numpy as np
-import pandas as pd
-from pandas import DataFrame
 from .utils import *
 from .functions import *
 from .policy import Policy
@@ -188,11 +191,11 @@ class Calculator(object):
         C1040(self.policy, self.records)
         DEITC(self.policy, self.records)
         IITAX(self.policy, self.records)
-        ExpandIncome(self.policy, self.records)
 
     def calc_all(self, zero_out_calc_vars=False):
         self.calc_one_year(zero_out_calc_vars)
         BenefitSurtax(self)
+        ExpandIncome(self.policy, self.records)
 
     def increment_year(self):
         next_year = self.policy.current_year + 1
@@ -213,7 +216,7 @@ class Calculator(object):
         if iteration < 0:
             raise ValueError('New current year must be ' +
                              'greater than current year!')
-        for i in range(iteration):
+        for _ in range(iteration):
             self.increment_year()
         assert self.records.current_year == year
 

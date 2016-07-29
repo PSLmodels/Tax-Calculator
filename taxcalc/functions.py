@@ -1139,12 +1139,15 @@ def Taxer_i(inc_in, MARS,
 @iterate_jit(nopython=True)
 def ExpandIncome(_fica_was, e02400, c02500, c00100, e00400, _expanded_income):
     """
-    ExpandIncome function: calculates and returns _expanded_income
+    ExpandIncome function: calculates and returns _expanded_income.
+
+    Note: if behavioral responses to a policy reform are specified, then be
+    sure this function is called after the behavioral responses are calculated.
     """
     employer_share_fica = 0.5 * _fica_was
     non_taxable_ss_benefits = e02400 - c02500
-    _expanded_income = (c00100 +  # AGI
-                        e00400 +  # Non-taxable interest
+    _expanded_income = (c00100 +  # adjusted gross income
+                        e00400 +  # non-taxable interest income
                         non_taxable_ss_benefits +
                         employer_share_fica)
     return _expanded_income
@@ -1152,7 +1155,8 @@ def ExpandIncome(_fica_was, e02400, c02500, c00100, e00400, _expanded_income):
 
 def BenefitSurtax(calc):
     """
-    BenefitSurtax function: ...
+    BenefitSurtax function: computes itemized-deduction-benefit surtax and
+    adds the surtax amount to income tax and combined tax liabilities.
     """
     if calc.policy.ID_BenefitSurtax_crt != 1.:
         # compute income tax liability with no itemized deductions allowed for
@@ -1173,6 +1177,7 @@ def BenefitSurtax(calc):
         if calc.policy.ID_BenefitSurtax_Switch[6]:
             no_ID_calc.policy.ID_Charity_HC = 1.
         no_ID_calc.calc_one_year()
+        # compute surtax amount and add to income and combined taxes
         # pylint: disable=protected-access
         benefit_amount = np.where(
             no_ID_calc.records._iitax - calc.records._iitax > 0.,
