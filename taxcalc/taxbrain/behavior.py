@@ -44,25 +44,18 @@ def main(reform_year, calc_year, sub_elasticity, inc_elasticity):
     ref.implement_reform(reform_dict)
     # create behavioral-response object
     behv = Behavior()  # default object has all response parameters set to zero
-    # create current-law-policy Calculator object
-    calc_cur = Calculator(policy=cur, verbose=False,
-                          records=Records(data=PUFCSV_PATH))
-    # create reform-policy Calculator object with behavioral responses
+    # create reform-policy Calculator object with/without behavioral responses
     calc_ref = Calculator(policy=ref, verbose=False, behavior=behv,
                           records=Records(data=PUFCSV_PATH))
-    # compute behavorial-reponse effect on income and fica tax revenues
+    # compute no-behavorial-reponse effect on income and fica tax revenues
     cyr = calc_year
     # (a) with all behavioral-reponse parameters set to zero
-    itax_s, fica_s = revenue(cyr, calc_ref, None)  # static analysis
-    itax_d, fica_d = revenue(cyr, calc_cur, calc_ref)  # dynamic analysis
-    assert itax_d == itax_s
-    assert fica_d == fica_s
+    itax_s, fica_s = revenue(cyr, calc_ref)
     # (b) with both substitution- and income-effect behavioral-reponse params
     behv_params = {behv.start_year: {'_BE_sub': [sub_elasticity],
                                      '_BE_inc': [inc_elasticity]}}
-    behv.update_behavior(behv_params)
-    itax_s, fica_s = revenue(cyr, calc_ref, None)  # static analysis
-    itax_d, fica_d = revenue(cyr, calc_cur, calc_ref)  # dynamic analysis
+    behv.update_behavior(behv_params)  # now used by calc_ref object
+    itax_d, fica_d = revenue(cyr, calc_ref)  # dynamic analysis
     bhv = '{},SUB_ELASTICITY,INC_ELASTICITY= {} {}\n'
     yridx = cyr - behv.start_year
     sys.stdout.write(bhv.format(cyr, behv._BE_sub[yridx], behv._BE_inc[yridx]))
@@ -74,22 +67,15 @@ def main(reform_year, calc_year, sub_elasticity, inc_elasticity):
 # end of main function code
 
 
-def revenue(year, calc0, calc1):
+def revenue(year, calc):
     """
-    Return aggregate, weighted income and payroll tax revenue (in billions)
-    for calc0 if calc1==None or for calc1, using behavior, if calc1!=None.
+    Return aggregate, weighted income and payroll tax revenue (in billions).
     """
-    calc0.advance_to_year(year)
+    calc.advance_to_year(year)
+    calc.calc_all()
     # pylint: disable=protected-access
-    if calc1 is None:  # static analysis without any behavioral responses
-        calc0.calc_all()
-        itax_rev = (calc0.records._iitax * calc0.records.s006).sum()
-        fica_rev = (calc0.records._fica * calc0.records.s006).sum()
-    else:  # dynamic analysis with behavioral responses
-        calc1.advance_to_year(year)
-        calc1b = Behavior.response(calc0, calc1)
-        itax_rev = (calc1b.records._iitax * calc1b.records.s006).sum()
-        fica_rev = (calc1b.records._fica * calc1b.records.s006).sum()
+    itax_rev = (calc.records._iitax * calc.records.s006).sum()
+    fica_rev = (calc.records._fica * calc.records.s006).sum()
     return (round(itax_rev * 1.0e-9, 3), round(fica_rev * 1.0e-9, 3))
 
 
