@@ -33,6 +33,7 @@ import pyperclip
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 # pylint: disable=import-error
 from taxcalc import Policy, Records, Calculator
+import pandas as pd
 
 
 MIN_START_YEAR = 2013
@@ -159,8 +160,14 @@ def taxcalc_clp_results():
     calc = Calculator(policy=Policy(),
                       records=Records(data=PUF_PATH),
                       verbose=False)
-    nyrs = MAX_START_YEAR + NUMBER_OF_YEARS - MIN_START_YEAR
-    adt = calc.diagnostic_table(num_years=nyrs)
+    nyears = MAX_START_YEAR + NUMBER_OF_YEARS - MIN_START_YEAR - 1
+    adts = list()
+    for iyr in range(-1, nyears - 1):
+        calc.calc_all()
+        adts.append(calc.diagnostic_table())
+        if iyr < nyears:
+            calc.increment_year()
+    adt = pd.concat(adts, axis=1)
     # note that adt is Pandas DataFrame object
     return (adt.xs('Ind inc tax ($b)').to_dict(),
             adt.xs('Payroll tax ($b)').to_dict())
@@ -405,7 +412,14 @@ def taxcalc_results(start_year, reform_dict, itax_clp, fica_clp):
                       records=Records(data=PUF_PATH),
                       verbose=False)
     calc.advance_to_year(start_year)
-    adt = calc.diagnostic_table(num_years=NUMBER_OF_YEARS)
+    nyears = NUMBER_OF_YEARS
+    adts = list()
+    for iyr in range(-1, nyears - 1):
+        calc.calc_all()
+        adts.append(calc.diagnostic_table())
+        if iyr < nyears:
+            calc.increment_year()
+    adt = pd.concat(adts, axis=1)
     # note that adt is Pandas DataFrame object
     itax_ref = adt.xs('Ind inc tax ($b)').to_dict()
     fica_ref = adt.xs('Payroll tax ($b)').to_dict()
