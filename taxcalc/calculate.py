@@ -194,6 +194,8 @@ class Calculator(object):
         IITAX(self.policy, self.records)
 
     def calc_all(self, zero_out_calc_vars=False):
+        # handles behavioral response if self.behavior.has_response() is true;
+        # otherwise conducts static analysis
         if self.behavior.has_response():
             recs = copy.deepcopy(self._records)
             recs_year = recs.current_year
