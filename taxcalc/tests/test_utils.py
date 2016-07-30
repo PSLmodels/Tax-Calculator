@@ -525,6 +525,18 @@ def test_expand_2D_accept_None_additional_row():
     npt.assert_allclose(pol.II_brk2, exp_2020)
 
 
+def test_multiyear_diagnostic_table():
+    pol = Policy()
+    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    calc = Calculator(policy=pol, records=recs)
+    with pytest.raises(ValueError):
+        adt = multiyear_diagnostic_table(calc, 0)
+    with pytest.raises(ValueError):
+        adt = multiyear_diagnostic_table(calc, 20)
+    adt = multiyear_diagnostic_table(calc, 3)
+    assert isinstance(adt, DataFrame)
+
+
 @pytest.yield_fixture
 def csvfile():
     txt = ('A,B,C,D,EFGH\n'

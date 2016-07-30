@@ -1,3 +1,4 @@
+import copy
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
@@ -509,6 +510,7 @@ def diagnostic_table_odict(recs):
 def create_diagnostic_table(calc):
     """
     Extract diagnostic table from specified Calculator object.
+    This function leaves the specified calc object unchanged.
 
     Parameters
     ----------
@@ -525,6 +527,39 @@ def create_diagnostic_table(calc):
     df = df.transpose()
     pd.options.display.float_format = '{:8,.1f}'.format
     return df
+
+
+def multiyear_diagnostic_table(calc, num_years=0):
+    """
+    Generate multi-year diagnostic table from specified Calculator object.
+    This function leaves the specified calc object unchanged.
+
+    Parameters
+    ----------
+    calc : Calculator class object
+
+    num_years : integer (must be between 1 and number of available calc years)
+
+    Returns
+    -------
+    Pandas DataFrame object containing the multi-year diagnostic table
+    """
+    if num_years <= 1:
+        msg = 'num_year={} is less than one'.format(num_years)
+        raise ValueError(msg)
+    max_num_years = calc.policy.end_year - calc.policy.current_year + 1
+    if num_years > max_num_years:
+        msg = ('num_year={} is greater '
+               'than max_num_years={}').format(num_years, max_num_years)
+        raise ValueError(msg)
+    cal = copy.deepcopy(calc)
+    dtlist = list()
+    for iyr in range(-1, num_years - 1):
+        cal.calc_all()
+        dtlist.append(create_diagnostic_table(cal))
+        if iyr < num_years:
+            cal.increment_year()
+    return pd.concat(dtlist, axis=1)
 
 
 def ascii_output(csv_filename, ascii_filename):
