@@ -199,15 +199,17 @@ class Calculator(object):
         if self.behavior.has_response():
             recs = copy.deepcopy(self._records)
             recs_year = recs.current_year
-            clp = Policy()
+            clp = self._policy.current_law_version()
             clp.set_year(recs_year)
-            calc_clp = Calculator(policy=clp, records=recs, sync_years=False)
+            cons = copy.deepcopy(self.consumption)
+            calc_clp = Calculator(policy=clp, records=recs, sync_years=False,
+                                  behavior=None, growth=None, consumption=cons)
             calc_br = Behavior.response(calc_clp, self)
             self._records = copy.deepcopy(calc_br._records)
         else:
             self.calc_one_year(zero_out_calc_vars)
-        BenefitSurtax(self)
         ExpandIncome(self.policy, self.records)
+        BenefitSurtax(self)
 
     def increment_year(self):
         next_year = self.policy.current_year + 1
@@ -343,8 +345,8 @@ class Calculator(object):
         # calculate base level of taxes after restoring records object
         setattr(self, '_records', recs0)
         self.calc_one_year(zero_out_calc_vars=zero_out_calculated_vars)
-        BenefitSurtax(self)
         ExpandIncome(self.policy, self.records)
+        BenefitSurtax(self)
         fica_base = copy.deepcopy(self.records._fica)
         iitax_base = copy.deepcopy(self.records._iitax)
         combined_taxes_base = iitax_base + fica_base
