@@ -554,7 +554,7 @@ def multiyear_diagnostic_table(calc, num_years=0):
         raise ValueError(msg)
     cal = copy.deepcopy(calc)
     dtlist = list()
-    for iyr in range(-1, num_years - 1):
+    for iyr in range(1, num_years + 1):
         cal.calc_all()
         dtlist.append(create_diagnostic_table(cal))
         if iyr < num_years:

@@ -200,7 +200,6 @@ class Calculator(object):
             recs = copy.deepcopy(self._records)
             recs_year = recs.current_year
             clp = self._policy.current_law_version()
-            clp.set_year(recs_year)
             cons = copy.deepcopy(self.consumption)
             calc_clp = Calculator(policy=clp, records=recs, sync_years=False,
                                   behavior=None, growth=None, consumption=cons)
