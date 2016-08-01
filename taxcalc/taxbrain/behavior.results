@@ -1,12 +1,15 @@
 TAXCALC RESULTS
 ===============
-iMac2:taxbrain mrh$ python behavior.py 2020 2020 0.0  0.0
+
+iMac2:taxbrain mrh$ date ; python behavior.py 2020 2020 0.0 0.0
+Fri Jul 29 17:26:14 EDT 2016
 REFORM: pop-the-cap in 2020
 2020,SUB_ELASTICITY,INC_ELASTICITY= 0.0 0.0
 2020,ITAX,REV_STATIC(S),REV_DYNAMIC(D),D-S= 1738.9 1738.9 0.0
 2020,FICA,REV_STATIC(S),REV_DYNAMIC(D),D-S= 1416.7 1416.7 0.0
 
-iMac2:taxbrain mrh$ python behavior.py 2020 2020 0.25  -0.05
+iMac2:taxbrain mrh$ date ; python behavior.py 2020 2020 0.25 -0.05
+Fri Jul 29 17:25:16 EDT 2016
 REFORM: pop-the-cap in 2020
 2020,SUB_ELASTICITY,INC_ELASTICITY= 0.25 -0.05
 2020,ITAX,REV_STATIC(S),REV_DYNAMIC(D),D-S= 1738.9 1704.9 -33.9

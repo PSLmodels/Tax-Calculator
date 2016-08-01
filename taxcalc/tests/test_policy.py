@@ -733,3 +733,29 @@ def test_reform_pkey_year():
         rdict = Policy._reform_pkey_year({'_II_em': 40000})
     with pytest.raises(ValueError):
         rdict = Policy._reform_pkey_year({'_II_em': {'2013': [40000]}})
+
+
+def test_current_law_version():
+    syr = 2013
+    nyrs = 8
+    irate = 0.08
+    irates = {(syr + i): irate for i in range(0, nyrs)}
+    wrate = 0.10
+    wrates = {(syr + i): wrate for i in range(0, nyrs)}
+    pol = Policy(start_year=syr, num_years=nyrs,
+                 inflation_rates=irates, wage_growth_rates=wrates)
+    mte = pol._SS_Earnings_c
+    clp_mte_2015 = mte[2015 - syr]
+    clp_mte_2016 = mte[2016 - syr]
+    reform = {2016: {'_SS_Earnings_c': [500000]}}
+    pol.implement_reform(reform)
+    mte = pol._SS_Earnings_c
+    ref_mte_2015 = mte[2015 - syr]
+    ref_mte_2016 = mte[2016 - syr]
+    clv = pol.current_law_version()
+    mte = clv._SS_Earnings_c
+    clv_mte_2015 = mte[2015 - syr]
+    clv_mte_2016 = mte[2016 - syr]
+    assert (clp_mte_2015 == ref_mte_2015 == clv_mte_2015)
+    assert clp_mte_2016 != ref_mte_2016
+    assert clp_mte_2016 == clv_mte_2016

@@ -3,13 +3,16 @@ Tax-Calculator federal tax Calculator class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 calculate.py
+# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy calculat.py
+#
+# pylint: disable=wildcard-import,unused-wildcard-import
+# pylint: disable=wildcard-import,missing-docstring,invalid-name
+# pylint: disable=too-many-arguments,too-many-branches,too-many-locals
+# pylint: disable=no-value-for-parameter,protected-access
 
 
-import math
 import copy
 import numpy as np
-import pandas as pd
-from pandas import DataFrame
 from .utils import *
 from .functions import *
 from .policy import Policy
@@ -137,6 +140,7 @@ class Calculator(object):
         AMTI(self.policy, self.records)
 
     def calc_one_year(self, zero_out_calc_vars=False):
+        # calls all the functions except BenefitSurtax and ExpandIncome
         if zero_out_calc_vars:
             self.records.zero_out_changing_calculated_vars()
         # pdb.set_trace()
@@ -188,10 +192,23 @@ class Calculator(object):
         C1040(self.policy, self.records)
         DEITC(self.policy, self.records)
         IITAX(self.policy, self.records)
-        ExpandIncome(self.policy, self.records)
 
     def calc_all(self, zero_out_calc_vars=False):
-        self.calc_one_year(zero_out_calc_vars)
+        # handles behavioral response if self.behavior.has_response() is true;
+        # otherwise conducts static analysis
+        if self.behavior.has_response():
+            recs = copy.deepcopy(self._records)
+            recs_year = recs.current_year
+            clp = self._policy.current_law_version()
+            clp.set_year(recs_year)
+            cons = copy.deepcopy(self.consumption)
+            calc_clp = Calculator(policy=clp, records=recs, sync_years=False,
+                                  behavior=None, growth=None, consumption=cons)
+            calc_br = Behavior.response(calc_clp, self)
+            self._records = copy.deepcopy(calc_br._records)
+        else:
+            self.calc_one_year(zero_out_calc_vars)
+        ExpandIncome(self.policy, self.records)
         BenefitSurtax(self)
 
     def increment_year(self):
@@ -213,7 +230,7 @@ class Calculator(object):
         if iteration < 0:
             raise ValueError('New current year must be ' +
                              'greater than current year!')
-        for i in range(iteration):
+        for _ in range(iteration):
             self.increment_year()
         assert self.records.current_year == year
 
@@ -320,13 +337,16 @@ class Calculator(object):
             self.records.e01500 = penben_type + finite_diff
         if self.consumption.has_response():
             self.consumption.response(self.records, finite_diff)
-        self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
+        self.calc_one_year(zero_out_calc_vars=zero_out_calculated_vars)
+        BenefitSurtax(self)
         fica_chng = copy.deepcopy(self.records._fica)
         iitax_chng = copy.deepcopy(self.records._iitax)
         combined_taxes_chng = iitax_chng + fica_chng
         # calculate base level of taxes after restoring records object
         setattr(self, '_records', recs0)
-        self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
+        self.calc_one_year(zero_out_calc_vars=zero_out_calculated_vars)
+        ExpandIncome(self.policy, self.records)
+        BenefitSurtax(self)
         fica_base = copy.deepcopy(self.records._fica)
         iitax_base = copy.deepcopy(self.records._iitax)
         combined_taxes_base = iitax_base + fica_base

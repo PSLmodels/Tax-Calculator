@@ -341,6 +341,22 @@ class Policy(ParametersBase):
         # convert reform_pkey_param dictionary to reform_pkey_year dictionary
         return Policy._reform_pkey_year(reform_pkey_param)
 
+    def current_law_version(self):
+        """
+        Return Policy object the same as self except with current-law policy.
+        """
+        startyear = self.start_year
+        numyears = self.num_years
+        year_list = [startyear + i for i in range(0, numyears)]
+        irate_dict = dict(zip(year_list, self._inflation_rates))
+        wrate_dict = dict(zip(year_list, self._wage_growth_rates))
+        clv = Policy(parameter_dict=None,
+                     start_year=startyear,
+                     num_years=numyears,
+                     inflation_rates=irate_dict,
+                     wage_growth_rates=wrate_dict)
+        return clv
+
     # ----- begin private methods of Policy class -----
 
     @staticmethod
