@@ -65,10 +65,13 @@ def main(reform_year, calc_year,
     yridx = cyr - behv.start_year
     sys.stdout.write(bhv.format(cyr, behv._BE_sub[yridx],
                                 behv._BE_inc[yridx], behv._BE_cg[yridx]))
-    res = '{},{},REV_STATIC(S),REV_DYNAMIC(D),D-S= {:.1f} {:.1f} {:.1f}\n'
-    sys.stdout.write(res.format(cyr, 'ITAX', itax_s, itax_d, itax_d - itax_s))
-    sys.stdout.write(res.format(cyr, 'FICA', fica_s, fica_d, fica_d - fica_s))
-    sys.stdout.write(res.format(cyr, 'LTCG', ltcg_s, ltcg_d, ltcg_d - ltcg_s))
+    res = '{},{},{}_STATIC(S),{}_DYNAMIC(D),D-S= {:.1f} {:.1f} {:.1f}\n'
+    sys.stdout.write(res.format(cyr, 'ITAX', 'REV', 'REV',
+                                itax_s, itax_d, itax_d - itax_s))
+    sys.stdout.write(res.format(cyr, 'FICA', 'REV', 'REV',
+                                fica_s, fica_d, fica_d - fica_s))
+    sys.stdout.write(res.format(cyr, 'LTCG', 'AGG', 'AGG',
+                                ltcg_s, ltcg_d, ltcg_d - ltcg_s))
     # return no-error exit code
     return 0
 # end of main function code
