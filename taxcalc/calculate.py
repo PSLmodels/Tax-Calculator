@@ -198,7 +198,6 @@ class Calculator(object):
         # otherwise conducts static analysis
         if self.behavior.has_response():
             recs = copy.deepcopy(self._records)
-            recs_year = recs.current_year
             clp = self._policy.current_law_version()
             cons = copy.deepcopy(self.consumption)
             calc_clp = Calculator(policy=clp, records=recs, sync_years=False,

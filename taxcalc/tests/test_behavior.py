@@ -50,16 +50,17 @@ def test_behavioral_response_Calculator():
                                 mtr_of='e00200p',
                                 tax_type='nonsense')
     # vary substitution and income effects in calc_y
-    behavior1 = {2013: {'_BE_sub': [0.4], '_BE_inc': [-0.1]}}
+    behavior1 = {2013: {'_BE_sub': [0.0], '_BE_cg': [-0.8]}}
     behavior_y.update_behavior(behavior1)
     assert behavior_y.has_response() is True
-    assert behavior_y.BE_sub == 0.4
-    assert behavior_y.BE_inc == -0.1
+    assert behavior_y.BE_sub == 0.0
+    assert behavior_y.BE_inc == 0.0
+    assert behavior_y.BE_cg == -0.8
     calc_y_behavior1 = Behavior.response(calc_x, calc_y)
-    behavior2 = {2013: {'_BE_sub': [0.5], '_BE_cg': [0.8]}}
+    behavior2 = {2013: {'_BE_sub': [0.5], '_BE_cg': [-0.8]}}
     behavior_y.update_behavior(behavior2)
     calc_y_behavior2 = Behavior.response(calc_x, calc_y)
-    behavior3 = {2013: {'_BE_inc': [-0.2], '_BE_cg': [0.6]}}
+    behavior3 = {2013: {'_BE_inc': [-0.2], '_BE_cg': [-0.8]}}
     behavior_y.update_behavior(behavior3)
     calc_y_behavior3 = Behavior.response(calc_x, calc_y)
     # check that total income tax liability differs across the
@@ -75,7 +76,7 @@ def test_behavioral_response_Calculator():
 def test_correct_update_behavior():
     beh = Behavior(start_year=2013)
     beh.update_behavior({2014: {'_BE_sub': [0.5]},
-                         2015: {'_BE_cg': [1.2]}})
+                         2015: {'_BE_cg': [-1.2]}})
     should_be = np.full((Behavior.DEFAULT_NUM_YEARS,), 0.5)
     should_be[0] = 0.0
     assert np.allclose(beh._BE_sub, should_be, rtol=0.0)
@@ -86,7 +87,7 @@ def test_correct_update_behavior():
     assert beh.current_year == 2015
     assert beh.BE_sub == 0.5
     assert beh.BE_inc == 0.0
-    assert beh.BE_cg == 1.2
+    assert beh.BE_cg == -1.2
 
 
 def test_incorrect_update_behavior():
@@ -96,7 +97,7 @@ def test_incorrect_update_behavior():
     with pytest.raises(ValueError):
         behv.update_behavior({2013: {'_BE_sub': [-0.2]}})
     with pytest.raises(ValueError):
-        behv.update_behavior({2013: {'_BE_cg': [-0.8]}})
+        behv.update_behavior({2013: {'_BE_cg': [+0.8]}})
     with pytest.raises(ValueError):
         behv.update_behavior({2013: {'_BE_xx': [0.0]}})
     with pytest.raises(ValueError):
@@ -109,7 +110,7 @@ def test_future_update_behavior():
     assert behv.has_response() is False
     cyr = 2020
     behv.set_year(cyr)
-    behv.update_behavior({cyr: {'_BE_cg': [1.0]}})
+    behv.update_behavior({cyr: {'_BE_cg': [-1.0]}})
     assert behv.current_year == cyr
     assert behv.has_response() is True
     behv.set_year(cyr - 1)

@@ -85,10 +85,10 @@ class Behavior(ParametersBase):
         the current_year; returns false if all elasticities are zero.
         """
         # pylint: disable=no-member
-        if self.BE_sub != 0.0 or self.BE_inc != 0.0 or self.BE_cg != 0.0:
-            return True
-        else:
+        if self.BE_sub == 0.0 and self.BE_inc == 0.0 and self.BE_cg == 0.0:
             return False
+        else:
+            return True
 
     @staticmethod
     def response(calc_x, calc_y):
@@ -107,44 +107,53 @@ class Behavior(ParametersBase):
           Gruber and Saez, "The elasticity of taxable income: evidence and
           implications", Journal of Public Economics 84:1-32 (2002) [see
           equation 2 on page 10].
+        Note: the nature of the capital-gains elasticity used here is similar
+          to that used in Joint Committee on Taxation, "New Evidence on the
+          Tax Elasticity of Capital Gains: A Joint Working Paper of the Staff
+          of the Joint Committee on Taxation and the Congressional Budget
+          Office", (JCX-56-12), June 2012.
         """
-        # pylint: disable=too-many-locals
+        # pylint: disable=too-many-locals,protected-access
         assert calc_x.records.dim == calc_y.records.dim
-        # Calculate marginal tax rates and the corresponding
-        # proportional changes (pch) in marginal net-of-tax rates
-        if calc_y.behavior.BE_sub != 0.0:
-            # e00200p is taxpayer's wages+salary
+        # calculate sum of substitution and income effects
+        if calc_y.behavior.BE_sub == 0.0 and calc_y.behavior.BE_inc == 0.0:
+            sub = np.zeros(calc_x.records.dim)
+            inc = np.zeros(calc_x.records.dim)
+        else:
+            # calculate marginal tax rates on wages and combined taxes
+            # (e00200p is taxpayer's wages+salary)
             wage_mtr_x, wage_mtr_y = Behavior._mtr_xy(calc_x, calc_y,
                                                       mtr_of='e00200p',
                                                       tax_type='combined')
-            wage_pch = ((1. - wage_mtr_y) / (1. - wage_mtr_x)) - 1.
-        if calc_y.behavior.BE_cg != 0.0:
-            # p23250 is filing unit's long-term capital gains
+            # calculate magnitude of substitution and income effects
+            if calc_y.behavior.BE_sub == 0.0:
+                sub = np.zeros(calc_x.records.dim)
+            else:
+                # proportional change in marginal net-of-tax rates on wages
+                # (c04800 is filing unit's taxable income)
+                pch = ((1. - wage_mtr_y) / (1. - wage_mtr_x)) - 1.
+                sub = calc_y.behavior.BE_sub * pch * calc_x.records.c04800
+            if calc_y.behavior.BE_inc == 0.0:
+                inc = np.zeros(calc_x.records.dim)
+            else:
+                # dollar change in after-tax income
+                # (_combined is filing unit's income+payroll tax liability)
+                dch = calc_x.records._combined - calc_y.records._combined
+                inc = calc_y.behavior.BE_inc * dch
+        taxinc_chg = sub + inc
+        # calculate long-term capital-gains effect
+        if calc_y.behavior.BE_inc == 0.0:
+            ltcg_chg = np.zeros(calc_x.records.dim)
+        else:
+            # calculate marginal tax rates on long-term capital gains
+            # (p23250 is filing unit's long-term capital gains)
             ltcg_mtr_x, ltcg_mtr_y = Behavior._mtr_xy(calc_x, calc_y,
                                                       mtr_of='p23250',
                                                       tax_type='iitax')
-            ltcg_pch = ((1. - ltcg_mtr_y) / (1. - ltcg_mtr_x)) - 1.
-        # Calculate dollar change (dch) in after-tax income, ati
-        if calc_y.behavior.BE_inc != 0.0:
-            # _combined is filing unit's income+payroll tax liability
-            # pylint: disable=protected-access
-            ati_dch = calc_x.records._combined - calc_y.records._combined
-        # Calculate magnitude of substitution and income effects and their sum
-        #   c04800 is filing unit's taxable income
-        if calc_y.behavior.BE_sub == 0.0:
-            sub = np.zeros(calc_x.records.dim)
-        else:
-            sub = calc_y.behavior.BE_sub * wage_pch * calc_x.records.c04800
-        if calc_y.behavior.BE_inc == 0.0:
-            inc = np.zeros(calc_x.records.dim)
-        else:
-            inc = calc_y.behavior.BE_inc * ati_dch
-        taxinc_chg = sub + inc
-        # Calculate magnitude of behavioral response in long-term capital gains
-        if calc_y.behavior.BE_cg == 0.0:
-            ltcg_chg = np.zeros(calc_x.records.dim)
-        else:
-            ltcg_chg = calc_y.behavior.BE_cg * ltcg_pch * calc_x.records.p23250
+            rch = ltcg_mtr_y - ltcg_mtr_x
+            exp_term = np.exp(calc_y.behavior.BE_cg * rch)
+            new_ltcg = calc_x.records.p23250 * exp_term
+            ltcg_chg = new_ltcg - calc_x.records.p23250
         # Add behavioral-response changes to income sources
         calc_y_behv = copy.deepcopy(calc_y)
         calc_y_behv = Behavior._update_ordinary_income(taxinc_chg, calc_y_behv)
@@ -173,8 +182,8 @@ class Behavior(ParametersBase):
                     if val < 0.0:
                         raise ValueError(msg.format(elast, neg, year, val))
                 elif elast == '_BE_cg':
-                    if val < 0.0:
-                        raise ValueError(msg.format(elast, neg, year, val))
+                    if val > 0.0:
+                        raise ValueError(msg.format(elast, pos, year, val))
                 else:
                     raise ValueError('illegal elasticity {}'.format(elast))
 

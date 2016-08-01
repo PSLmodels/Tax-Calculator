@@ -22,7 +22,7 @@
     "_BE_cg": {
         "start_year": 2013,
         "long_name": "Elasticity of long-term capital gains",
-        "description": "Defined as proportional change in long-term capital gains divided by proportional change in marginal net-of-tax rate (1-MTR) on long-term capital gains caused by the reform.  Must be zero or positive.",
+        "description": "Defined as change in logarithm of long-term capital gains divided by change in marginal tax rate (MTR) on long-term capital gains caused by the reform.  Must be zero or negative.",
         "row_label": ["2013"],
         "col_label": "",
         "value": [0.0],
