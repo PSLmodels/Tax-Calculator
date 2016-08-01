@@ -1,7 +1,9 @@
+import copy
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
+
 
 STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600',
                  'c04800', 'c05200', 'c62100', 'c09600', 'c05800', 'c09200',
@@ -26,11 +28,10 @@ TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Combined Payroll and Individual Income Tax Liabilities']
 
 # used in our difference table to label the columns
-DIFF_TABLE_LABELS = ["Tax Units with Tax Cut", "Tax Units with Tax Increase",
-                     "Count", "Average Tax Change", "Total Tax Difference",
-                     "Percent with Tax Increase", "Percent with Tax Decrease",
-                     "Share of Overall Change"]
-
+DIFF_TABLE_LABELS = ['Tax Units with Tax Cut', 'Tax Units with Tax Increase',
+                     'Count', 'Average Tax Change', 'Total Tax Difference',
+                     'Percent with Tax Increase', 'Percent with Tax Decrease',
+                     'Share of Overall Change']
 
 LARGE_INCOME_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                      200000, 1e14]
@@ -41,21 +42,8 @@ SMALL_INCOME_BINS = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
 
 WEBAPP_INCOME_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                       199999, 499999, 1000000, 1e14]
-EPSILON = 1e-3
 
 EPSILON = 0.000000001
-
-
-def extract_array(f):
-    """
-    A sanity check decorator. When combined with numba.vectorize
-    or guvectorize, it provides the same capability as dataframe_vectorize
-    or dataframe_guvectorize
-    """
-    def wrapper(*args, **kwargs):
-        arrays = [arg.values for arg in args]
-        return f(*arrays)
-    return wrapper
 
 
 def count_gt_zero(agg):
@@ -104,16 +92,13 @@ def weighted_share_of_total(agg, col_name, total):
 def add_weighted_decile_bins(df, income_measure='_expanded_income',
                              labels=None):
     """
-
     Add a column of income bins based on each 10% of the income_measure,
     weighted by s006.
 
     The default income_measure is `expanded_income`, but `c00100` also works.
 
-    This function will server as a "grouper" later on.
-
+    This function will server as a 'grouper' later on.
     """
-
     # First, sort by income_measure
     df.sort(income_measure, inplace=True)
     # Next, do a cumulative sum by the weights
@@ -129,13 +114,11 @@ def add_weighted_decile_bins(df, income_measure='_expanded_income',
     return df
 
 
-def add_income_bins(df, compare_with="soi", bins=None, right=True,
+def add_income_bins(df, compare_with='soi', bins=None, right=True,
                     income_measure='_expanded_income'):
     """
-
     Add a column of income bins of income_measure using pandas 'cut'.
-    This will serve as a "grouper" later on.
-
+    This will serve as a 'grouper' later on.
 
     Parameters
     ----------
@@ -151,7 +134,6 @@ def add_income_bins(df, compare_with="soi", bins=None, right=True,
             Follows pandas convention. The breakpoint is inclusive if
             right=True. This argument overrides any choice of compare_with.
 
-
     right : bool, optional
         Indicates whether the bins include the rightmost edge or not.
         If right == True (the default), then the bins [1,2,3,4]
@@ -161,22 +143,20 @@ def add_income_bins(df, compare_with="soi", bins=None, right=True,
     -------
     df: DataFrame object
         the original input that bins have been added to
-
     """
     if not bins:
-        if compare_with == "tpc":
+        if compare_with == 'tpc':
             bins = LARGE_INCOME_BINS
 
-        elif compare_with == "soi":
+        elif compare_with == 'soi':
             bins = SMALL_INCOME_BINS
 
-        elif compare_with == "webapp":
+        elif compare_with == 'webapp':
             bins = WEBAPP_INCOME_BINS
 
         else:
-            msg = "Unknown compare_with arg {0}".format(compare_with)
+            msg = 'Unknown compare_with arg {0}'.format(compare_with)
             raise ValueError(msg)
-
     # Groupby income_measure bins
     df['bins'] = pd.cut(df[income_measure], bins, right=right)
     return df
@@ -184,14 +164,12 @@ def add_income_bins(df, compare_with="soi", bins=None, right=True,
 
 def means_and_comparisons(df, col_name, gp, weighted_total):
     """
-
     Using grouped values, perform aggregate operations
     to populate
     df: DataFrame for full results of calculation
     col_name: the column name to calculate against
     gp: grouped DataFrame
     """
-
     # Who has a tax cut, and who has a tax increase
     diffs = gp.apply(weighted_count_lt_zero, col_name)
     diffs = DataFrame(data=diffs, columns=['tax_cut'])
@@ -203,7 +181,6 @@ def means_and_comparisons(df, col_name, gp, weighted_total):
     diffs['perc_cut'] = gp.apply(weighted_perc_dec, col_name)
     diffs['share_of_change'] = gp.apply(weighted_share_of_total,
                                         col_name, weighted_total)
-
     return diffs
 
 
@@ -225,39 +202,31 @@ def get_sums(df, na=False):
     pandas.Series
     """
     sums = defaultdict(lambda: 0)
-
     for col in df.columns.tolist():
         if col != 'bins':
             if na:
                 sums[col] = 'n/a'
             else:
                 sums[col] = (df[col]).sum()
-
     return pd.Series(sums, name='sums')
 
 
-def results(c):
+def results(obj):
     """
-    Gets the results from the tax calculator and organizes them into a table
+    Get results from object and organize them into a table.
 
     Parameters
     ----------
-    c : Calculator object
+    obj : any object with array-like attributes named as in STATS_COLUMNS list
+          Examples include a Tax-Calculator Records object and a
+          Pandas DataFrame object
 
     Returns
     -------
-    DataFrame object
+    Pandas DataFrame object
     """
-    outputs = []
-    for col in STATS_COLUMNS:
-        if hasattr(c, 'records') and hasattr(c, 'policy'):
-            if hasattr(c.policy, col):
-                outputs.append(getattr(c.policy, col))
-            else:
-                outputs.append(getattr(c.records, col))
-        else:
-            outputs.append(getattr(c, col))
-    return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
+    arrays = [getattr(obj, name) for name in STATS_COLUMNS]
+    return DataFrame(data=np.column_stack(arrays), columns=STATS_COLUMNS)
 
 
 def weighted_avg_allcols(df, cols, income_measure='_expanded_income'):
@@ -265,59 +234,61 @@ def weighted_avg_allcols(df, cols, income_measure='_expanded_income'):
                                                               income_measure),
                      columns=[income_measure])
     for col in cols:
-        if (col == "s006" or col == 'num_returns_StandardDed' or
+        if (col == 's006' or col == 'num_returns_StandardDed' or
                 col == 'num_returns_ItemDed' or col == 'num_returns_AMT'):
             diff[col] = df.groupby('bins', as_index=False)[col].sum()[col]
         elif col != income_measure:
             diff[col] = df.groupby('bins', as_index=False).apply(weighted_mean,
                                                                  col)
-
     return diff
 
 
 def add_columns(res):
     # weight of returns with positive AGI and
     # itemized deduction greater than standard deduction
-    res['c04470'] = res['c04470'].where(((res['c00100'] > 0) &
-                                        (res['c04470'] > res['_standard'])),
-                                        0)
-
+    res['c04470'] = \
+        res['c04470'].where(((res['c00100'] > 0.) &
+                             (res['c04470'] > res['_standard'])), 0.)
     # weight of returns with positive AGI and itemized deduction
-    res['num_returns_ItemDed'] = res['s006'].where(((res['c00100'] > 0) &
-                                                   (res['c04470'] > 0)),
-                                                   0)
-
+    res['num_returns_ItemDed'] = \
+        res['s006'].where(((res['c00100'] > 0.) &
+                           (res['c04470'] > 0.)), 0.)
     # weight of returns with positive AGI and standard deduction
-    res['num_returns_StandardDed'] = res['s006'].where(((res['c00100'] > 0) &
-                                                       (res['_standard'] > 0)),
-                                                       0)
-
+    res['num_returns_StandardDed'] = \
+        res['s006'].where(((res['c00100'] > 0.) &
+                           (res['_standard'] > 0.)), 0.)
     # weight of returns with positive Alternative Minimum Tax (AMT)
-    res['num_returns_AMT'] = res['s006'].where(res['c09600'] > 0, 0)
-
+    res['num_returns_AMT'] = res['s006'].where(res['c09600'] > 0., 0.)
     return res
 
 
-def create_distribution_table(calc, groupby, result_type,
+def create_distribution_table(obj, groupby, result_type,
                               income_measure='_expanded_income',
-                              baseline_calc=None, diffs=False):
-
+                              baseline_obj=None, diffs=False):
     """
-    Gets results given by the tax calculator, sorts them based on groupby, and
-        manipulates them based on result_type. Returns these as a table
+    Get results from object, sort them based on groupby, manipulate them
+    based on result_type, and return them as a table.
 
     Parameters
     ----------
-    calc : the Calculator object
+    obj : any object with array-like attributes named as in STATS_COLUMNS list
+        Examples include a Tax-Calculator Records object and a
+        Pandas DataFrame object, but if baseline_obj is specified, both obj
+        and baseline_obj must have a current_year attribute
+
     groupby : String object
         options for input: 'weighted_deciles', 'small_income_bins',
         'large_income_bins', 'webapp_income_bins';
         determines how the columns in the resulting DataFrame are sorted
+
     result_type : String object
         options for input: 'weighted_sum' or 'weighted_avg';
         determines how the data should be manipulated
-    baseline_calc : A Calculator object
-        carries the baseline plan
+
+    baseline_obj : any object with array-like attributes named as in
+        the STATS_COLUMNS list and having a current_year attribute
+        Examples include a Tax-Calculator Records object
+
     diffs : boolean
         indicates showing the results from reform or the difference between
         the baseline and reform. Turn this switch to True if you want to see
@@ -332,151 +303,263 @@ def create_distribution_table(calc, groupby, result_type,
 
         c09600 : Alternative minimum tax
 
-        s006 : used to weight population
+        s006 : filing unit sample weight
 
     Returns
     -------
     DataFrame object
     """
-    res = results(calc)
+    res = results(obj)
     res = add_columns(res)
-
-    if baseline_calc is not None:
-        if calc.current_year != baseline_calc.current_year:
-            msg = 'The baseline calculator is not on the same year as reform.'
+    if baseline_obj is not None:
+        res_base = results(baseline_obj)
+        if obj.current_year != baseline_obj.current_year:
+            msg = 'current_year differs in baseline obj and reform obj'
             raise ValueError(msg)
         baseline_income_measure = income_measure + '_baseline'
-        res_base = results(baseline_calc)
         res[baseline_income_measure] = res_base[income_measure]
         income_measure = baseline_income_measure
-
         if diffs:
             res_base = add_columns(res_base)
             res = res.subtract(res_base)
             res['s006'] = res_base['s006']
-
     # sorts the data
-    if groupby == "weighted_deciles":
+    if groupby == 'weighted_deciles':
         df = add_weighted_decile_bins(res, income_measure=income_measure)
-    elif groupby == "small_income_bins":
-        df = add_income_bins(res, compare_with="soi",
+    elif groupby == 'small_income_bins':
+        df = add_income_bins(res, compare_with='soi',
                              income_measure=income_measure)
-    elif groupby == "large_income_bins":
-        df = add_income_bins(res, compare_with="tpc",
+    elif groupby == 'large_income_bins':
+        df = add_income_bins(res, compare_with='tpc',
                              income_measure=income_measure)
-    elif groupby == "webapp_income_bins":
-        df = add_income_bins(res, compare_with="webapp",
+    elif groupby == 'webapp_income_bins':
+        df = add_income_bins(res, compare_with='webapp',
                              income_measure=income_measure)
     else:
-        err = ("groupby must be either 'weighted_deciles' or"
-               "'small_income_bins' or 'large_income_bins' or"
+        msg = ("groupby must be either 'weighted_deciles' or "
+               "'small_income_bins' or 'large_income_bins' or "
                "'webapp_income_bins'")
-        raise ValueError(err)
-
+        raise ValueError(msg)
     # manipulates the data
     pd.options.display.float_format = '{:8,.0f}'.format
-    if result_type == "weighted_sum":
+    if result_type == 'weighted_sum':
         df = weighted(df, STATS_COLUMNS)
         gp_mean = df.groupby('bins', as_index=False)[TABLE_COLUMNS].sum()
         gp_mean.drop('bins', axis=1, inplace=True)
         sum_row = get_sums(df)[TABLE_COLUMNS]
-    elif result_type == "weighted_avg":
+    elif result_type == 'weighted_avg':
         gp_mean = weighted_avg_allcols(df, TABLE_COLUMNS,
                                        income_measure=income_measure)
         sum_row = get_sums(df, na=True)[TABLE_COLUMNS]
     else:
-        err = ("result_type must be either 'weighted_sum' or 'weighted_avg")
-        raise ValueError(err)
-
+        msg = "result_type must be either 'weighted_sum' or 'weighted_avg'"
+        raise ValueError(msg)
     return gp_mean.append(sum_row)
 
 
-def create_difference_table(calc1, calc2, groupby,
+def create_difference_table(recs1, recs2, groupby,
                             income_measure='_expanded_income',
                             income_to_present='_iitax'):
     """
-    Gets results given by the two different tax calculators and outputs
-        a table that compares the differing results.
-        The table is sorted according the the groupby input.
-        Notice that you always needs to run calc_all() for each year
-        before generating diffs table from this function. You can check
-        what year your calculator is using the current_year attribute
-        of your calculator. (usage: calc1.current_year)
+    Get results from two different Records objects for the same year,
+    compare the two results, and return the differences as a table, which
+    is sorted according to the variable specified by the groupby argument.
 
     Parameters
     ----------
-    calc1: the baseline Calculator on year t
-    calc2: the reform Calculator on year t
-    groupby: String
+    recs1 : a Tax-Calculator Records object that refers to the baseline
+
+    recs2 : a Tax-Calculator Records object that refers to the reform
+
+    groupby : String object
         options for input: 'weighted_deciles', 'small_income_bins',
         'large_income_bins', 'webapp_income_bins'
         determines how the columns in the resulting DataFrame are sorted
-    income_measure : string
+
+    income_measure : String object
         options for input: '_expanded_income', '_iitax'
         classifier of income bins/deciles
-    income_to_present : string
+
+    income_to_present : String object
         options for input: '_iitax', '_fica', '_combined'
 
     Returns
     -------
     DataFrame object
     """
-
-    res1 = results(calc1)
-    res2 = results(calc2)
-
+    if recs1.current_year != recs2.current_year:
+        msg = 'recs1.current_year not equal to recs2.current_year'
+        raise ValueError(msg)
+    res1 = results(recs1)
+    res2 = results(recs2)
     baseline_income_measure = income_measure + '_baseline'
     res2[baseline_income_measure] = res1[income_measure]
     income_measure = baseline_income_measure
-
-    if groupby == "weighted_deciles":
+    if groupby == 'weighted_deciles':
         df = add_weighted_decile_bins(res2, income_measure=income_measure)
-    elif groupby == "small_income_bins":
-        df = add_income_bins(res2, compare_with="soi",
+    elif groupby == 'small_income_bins':
+        df = add_income_bins(res2, compare_with='soi',
                              income_measure=income_measure)
-    elif groupby == "large_income_bins":
-        df = add_income_bins(res2, compare_with="tpc",
+    elif groupby == 'large_income_bins':
+        df = add_income_bins(res2, compare_with='tpc',
                              income_measure=income_measure)
-    elif groupby == "webapp_income_bins":
-        df = add_income_bins(res2, compare_with="webapp",
+    elif groupby == 'webapp_income_bins':
+        df = add_income_bins(res2, compare_with='webapp',
                              income_measure=income_measure)
     else:
-        err = ("groupby must be either"
-               "'weighted_deciles' or 'small_income_bins'"
+        msg = ("groupby must be either "
+               "'weighted_deciles' or 'small_income_bins' "
                "or 'large_income_bins' or 'webapp_income_bins'")
-        raise ValueError(err)
-
-    # Difference in plans
+        raise ValueError(msg)
+    # compute difference in results
     # Positive values are the magnitude of the tax increase
     # Negative values are the magnitude of the tax decrease
-
     res2['tax_diff'] = res2[income_to_present] - res1[income_to_present]
-
     diffs = means_and_comparisons(res2, 'tax_diff',
                                   df.groupby('bins', as_index=False),
                                   (res2['tax_diff'] * res2['s006']).sum())
-
     sum_row = get_sums(diffs)[diffs.columns.tolist()]
     diffs = diffs.append(sum_row)
-
     pd.options.display.float_format = '{:8,.0f}'.format
-    srs_inc = ["{0:.2f}%".format(val * 100) for val in diffs['perc_inc']]
+    srs_inc = ['{0:.2f}%'.format(val * 100) for val in diffs['perc_inc']]
     diffs['perc_inc'] = pd.Series(srs_inc, index=diffs.index)
 
-    srs_cut = ["{0:.2f}%".format(val * 100) for val in diffs['perc_cut']]
+    srs_cut = ['{0:.2f}%'.format(val * 100) for val in diffs['perc_cut']]
     diffs['perc_cut'] = pd.Series(srs_cut, index=diffs.index)
-
-    srs_change = ["{0:.2f}%".format(val * 100)
+    srs_change = ['{0:.2f}%'.format(val * 100)
                   for val in diffs['share_of_change']]
     diffs['share_of_change'] = pd.Series(srs_change, index=diffs.index)
-
     # columns containing weighted values relative to the binning mechanism
     non_sum_cols = [x for x in diffs.columns.tolist()
                     if 'mean' in x or 'perc' in x]
     for col in non_sum_cols:
         diffs.loc['sums', col] = 'n/a'
-
     return diffs
+
+
+def diagnostic_table_odict(recs):
+    """
+    Extract diagnostic table dictionary from specified Records object.
+
+    Parameters
+    ----------
+    recs : Records class object
+
+    Returns
+    -------
+    ordered dictionary of variable names and aggregate weighted values
+    """
+    # aggregate weighted values expressed in millions or billions
+    in_millions = 1.0e-6
+    in_billions = 1.0e-9
+    odict = OrderedDict()
+    # total number of filing units
+    odict['Returns (#m)'] = recs.s006.sum() * in_millions
+    # adjusted gross income
+    odict['AGI ($b)'] = (recs.c00100 * recs.s006).sum() * in_billions
+    # number of itemizers
+    num_itemizers = (recs.s006[(recs.c04470 > 0.) * (recs.c00100 > 0.)].sum())
+    odict['Itemizers (#m)'] = num_itemizers * in_millions
+    # itemized deduction
+    ID1 = recs.c04470 * recs.s006
+    ID = ID1[recs.c04470 > 0.].sum()
+    odict['Itemized Deduction ($b)'] = ID * in_billions
+    # number of standard deductions
+    num_std = recs.s006[(recs._standard > 0.) * (recs.c00100 > 0.)].sum()
+    odict['Standard Deduction Filers (#m)'] = num_std * in_millions
+    # standard deduction
+    STD1 = recs._standard * recs.s006
+    STD = STD1[(recs._standard > 0.) * (recs.c00100 > 0.)].sum()
+    odict['Standard Deduction ($b)'] = STD * in_billions
+    # personal exemption
+    PE = (recs.c04600 * recs.s006)[recs.c00100 > 0.].sum()
+    odict['Personal Exemption ($b)'] = PE * in_billions
+    # taxable income
+    taxinc = (recs.c04800 * recs.s006).sum()
+    odict['Taxable income ($b)'] = taxinc * in_billions
+    # regular tax liability
+    regular_tax = (recs.c05200 * recs.s006).sum()
+    odict['Regular Tax ($b)'] = regular_tax * in_billions
+    # AMT taxable income
+    odict['AMT income ($b)'] = (recs.c62100 * recs.s006).sum() * in_billions
+    # total AMT liability
+    odict['AMT amount ($b)'] = (recs.c09600 * recs.s006).sum() * in_billions
+    # number of people paying AMT
+    odict['AMT number (#m)'] = recs.s006[recs.c09600 > 0.].sum() * in_millions
+    # tax before credits
+    tax_before_credits = (recs.c05800 * recs.s006).sum()
+    odict['Tax before credits ($b)'] = tax_before_credits * in_billions
+    # refundable credits
+    refundable_credits = (recs._refund * recs.s006).sum()
+    odict['refundable credits ($b)'] = refundable_credits * in_billions
+    # nonrefuncable credits
+    nonrefundable_credits = (recs.c07100 * recs.s006).sum()
+    odict['nonrefundable credits ($b)'] = nonrefundable_credits * in_billions
+    # itemized-deduction surtax liability
+    odict['Misc. Surtax ($b)'] = (recs._surtax * recs.s006).sum() * in_billions
+    # federal individual income tax liability
+    odict['Ind inc tax ($b)'] = (recs._iitax * recs.s006).sum() * in_billions
+    # payroll (FICA) tax liability
+    odict['Payroll tax ($b)'] = (recs._fica * recs.s006).sum() * in_billions
+    # combined income and payroll tax liability
+    combined = (recs._combined * recs.s006).sum()
+    odict['Combined liability ($b)'] = combined * in_billions
+    return odict
+
+
+def create_diagnostic_table(calc):
+    """
+    Extract diagnostic table from specified Calculator object.
+    This function leaves the specified calc object unchanged.
+
+    Parameters
+    ----------
+    calc : Calculator class object
+
+    Returns
+    -------
+    Pandas DataFrame object containing the table for calc.current_year
+    """
+    odict = diagnostic_table_odict(calc.records)
+    df = pd.DataFrame(data=odict,
+                      index=[calc.current_year],
+                      columns=odict.keys())
+    df = df.transpose()
+    pd.options.display.float_format = '{:8,.1f}'.format
+    return df
+
+
+def multiyear_diagnostic_table(calc, num_years=0):
+    """
+    Generate multi-year diagnostic table from specified Calculator object.
+    This function leaves the specified calc object unchanged.
+
+    Parameters
+    ----------
+    calc : Calculator class object
+
+    num_years : integer (must be between 1 and number of available calc years)
+
+    Returns
+    -------
+    Pandas DataFrame object containing the multi-year diagnostic table
+    """
+    if num_years <= 1:
+        msg = 'num_year={} is less than one'.format(num_years)
+        raise ValueError(msg)
+    max_num_years = calc.policy.end_year - calc.policy.current_year + 1
+    if num_years > max_num_years:
+        msg = ('num_year={} is greater '
+               'than max_num_years={}').format(num_years, max_num_years)
+        raise ValueError(msg)
+    cal = copy.deepcopy(calc)
+    dtlist = list()
+    for iyr in range(1, num_years + 1):
+        cal.calc_all()
+        dtlist.append(create_diagnostic_table(cal))
+        if iyr < num_years:
+            cal.increment_year()
+    return pd.concat(dtlist, axis=1)
 
 
 def ascii_output(csv_filename, ascii_filename):

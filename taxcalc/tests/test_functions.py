@@ -7,11 +7,124 @@ Tests for Tax-Calculator functions.py logic.
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import os
-import sys
 import re
-from taxcalc import IncomeTaxIO  # pylint: disable=import-error
+from taxcalc import IncomeTaxIO, Records  # pylint: disable=import-error
 from io import StringIO
 import pandas as pd
+import ast
+import six
+
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+FUNCTIONS_PY_PATH = os.path.join(CUR_PATH, '..', 'functions.py')
+
+
+class GetFuncDefs(ast.NodeVisitor):
+    """
+    Return information about each function defined in the functions.py file.
+    """
+    def __init__(self):
+        """class constructor"""
+        self.fname = ''
+        self.fnames = list()  # function name (fname) list
+        self.fargs = dict()  # lists of function arguments indexed by fname
+        self.cvars = dict()  # lists of calc vars in function indexed by fname
+        self.rvars = dict()  # lists of function return vars indexed by fname
+
+    def visit_Module(self, node):  # pylint: disable=invalid-name
+        """visit the one Module node"""
+        self.generic_visit(node)
+        return (self.fnames, self.fargs, self.cvars, self.rvars)
+
+    def visit_FunctionDef(self, node):  # pylint: disable=invalid-name
+        """visit FunctionDef node"""
+        self.fname = node.name
+        self.fnames.append(self.fname)
+        self.fargs[self.fname] = list()
+        for anode in ast.iter_child_nodes(node.args):
+            if six.PY3:
+                self.fargs[self.fname].append(anode.arg)
+            else:  # in Python 2 anode is a Name node
+                self.fargs[self.fname].append(anode.id)
+        self.cvars[self.fname] = list()
+        for bodynode in node.body:
+            if isinstance(bodynode, ast.Return):
+                continue  # skip function's Return node
+            for bnode in ast.walk(bodynode):
+                if isinstance(bnode, ast.Name):
+                    if isinstance(bnode.ctx, ast.Store):
+                        if bnode.id not in self.cvars[self.fname]:
+                            self.cvars[self.fname].append(bnode.id)
+        self.generic_visit(node)
+
+    def visit_Return(self, node):  # pylint: disable=invalid-name
+        """visit Return node"""
+        if isinstance(node.value, ast.Tuple):
+            self.rvars[self.fname] = [r_v.id for r_v in node.value.elts]
+        elif isinstance(node.value, ast.BinOp):
+            self.rvars[self.fname] = []  # no vars returned; only an expression
+        else:
+            self.rvars[self.fname] = [node.value.id]
+        self.generic_visit(node)
+
+
+def test_calculated_vars_are_calculated():  # pylint: disable=invalid-name
+    """
+    Check that each var in Records.CALCULATED_VARS is actually calculated.
+
+    If this test fails, a variable in Records.CALCULATED_VARS was not
+    calculated in any function in the functions.py file.  With the exception
+    of a few variables listed in this test, all Records.CALCULATED_VARS
+    must be calculated in the functions.py file.
+    """
+    tree = ast.parse(open(FUNCTIONS_PY_PATH).read())
+    gfd = GetFuncDefs()
+    fnames, _, cvars, _ = gfd.visit(tree)
+    # create set of vars that are actually calculated in functions.py file
+    all_cvars = set()
+    for fname in fnames:
+        if fname == 'BenefitSurtax':
+            continue  # because BenefitSurtax is not really a function
+        all_cvars.update(set(cvars[fname]))
+    # add some special variables to all_cvars set
+    vars_calc_in_records = set(['ID_Casualty_frt_in_pufcsv_year',
+                                '_num', '_sep', '_exact', '_calc_schR'])
+    vars_calc_in_benefitsurtax = set(['_surtax'])
+    vars_ok_to_not_calc = set(['f2555'])
+    all_cvars.update(vars_calc_in_records,
+                     vars_calc_in_benefitsurtax,
+                     vars_ok_to_not_calc)
+    # check that each var in Records.CALCULATED_VARS is in the all_cvars set
+    if not Records.CALCULATED_VARS <= all_cvars:
+        missing = Records.CALCULATED_VARS - all_cvars
+        msg = 'all Records.CALCULATED_VARS not calculated in functions.py\n'
+        for var in missing:
+            msg += 'VAR NOT CALCULATED: {}\n'.format(var)
+        raise ValueError(msg)
+
+
+def test_calc_and_rtn_vars_are_arguments():  # pylint: disable=invalid-name
+    """
+    Check that each variable that is calculated in a function and
+    returned by that function is an argument of that function.
+    """
+    tree = ast.parse(open(FUNCTIONS_PY_PATH).read())
+    gfd = GetFuncDefs()
+    fnames, fargs, cvars, rvars = gfd.visit(tree)
+    msg = 'calculated & returned variables are not function arguments\n'
+    found_error = False
+    for fname in fnames:
+        if fname == 'BenefitSurtax':
+            continue  # because BenefitSurtax is not really a function
+        cvars_set = set(cvars[fname])
+        rvars_set = set(rvars[fname])
+        crvars_set = cvars_set & rvars_set
+        if not crvars_set <= set(fargs[fname]):
+            found_error = True
+            missing = crvars_set - set(fargs[fname])
+            for var in missing:
+                msg += 'FUNCTION,VARIABLE: {} {}\n'.format(fname, var)
+    if found_error:
+        raise ValueError(msg)
 
 
 def test_function_args_usage():
@@ -25,25 +138,31 @@ def test_function_args_usage():
     fcontent = re.sub('#.*', '', fcontent)  # remove all '#...' comments
     fcontent = re.sub('\n', ' ', fcontent)  # replace EOL character with space
     funcs = fcontent.split('def ')  # list of function text
+    msg = 'FUNCTION ARGUMENT(S) NEVER USED:\n'
+    found_error = False
     for func in funcs[1:]:  # skip first item in list, which is imports, etc.
         fcode = func.split('return ')[0]  # fcode is between def and return
         match = re.search(r'^(.+?)\((.*?)\):(.*)$', fcode)
         if match is None:
             msg = ('Could not find function name, arguments, '
-                   'and code portions in the following text:')
-            line = '====================================================='
-            sys.stdout.write('{}\n{}\n{}\n{}\n'.format(msg, line, fcode, line))
-            assert False
+                   'and code portions in the following text:\n')
+            msg += '--------------------------------------------------------\n'
+            msg += '{}\n'.format(fcode)
+            msg += '--------------------------------------------------------\n'
+            raise ValueError(msg)
         else:
             fname = match.group(1)
             fargs = match.group(2).split(',')  # list of function arguments
             fbody = match.group(3)
+        if fname == 'Taxer_i':
+            continue  # because Taxer_i has no fbody apart from its docstring
         for farg in fargs:
             arg = farg.strip()
             if fbody.find(arg) < 0:
-                msg = '{} function argument {} never used\n'.format(fname, arg)
-                sys.stdout.write(msg)
-                assert 'arg' == 'UNUSED'
+                found_error = True
+                msg += 'FUNCTION,ARGUMENT= {} {}\n'.format(fname, arg)
+    if found_error:
+        raise ValueError(msg)
 
 
 def test_1():
@@ -92,7 +211,9 @@ def test_1():
     inctax = IncomeTaxIO(input_data=input_dataframe,
                          tax_year=2015,
                          policy_reform=reform,
+                         exact_calculations=False,
                          blowup_input_data=False,
+                         output_weights=False,
                          output_records=False,
                          csv_dump=False)
     output = inctax.calculate()
@@ -140,7 +261,9 @@ def test_2():
     inctax = IncomeTaxIO(input_data=input_dataframe,
                          tax_year=2015,
                          policy_reform=reform,
+                         exact_calculations=False,
                          blowup_input_data=False,
+                         output_weights=False,
                          output_records=False,
                          csv_dump=False)
     output = inctax.calculate()

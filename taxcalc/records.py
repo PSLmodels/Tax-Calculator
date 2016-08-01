@@ -11,7 +11,10 @@ import pandas as pd
 import numpy as np
 import os
 import six
-from pkg_resources import resource_stream, Requirement
+from pkg_resources import resource_stream, Requirement, DistributionNotFound
+
+
+PUFCSV_YEAR = 2009
 
 
 class Records(object):
@@ -28,35 +31,38 @@ class Records(object):
         look at the test_Calculator_using_nonstd_input() function in the
         tests/test_calculate.py file.
 
-    blowup_factors: string or Pandas DataFrame
+    exact_calculations: boolean
+        specifies whether or not exact tax calculations are done without
+        any smoothing of "stair-step" provisions in income tax law;
+        default value is false.
+
+    schR_calculations: boolean
+        specifies whether or not Schedule R calculations are done or
+        whether the Schedule R credit is set to value of input variable;
+        default value is true.
+
+    blowup_factors: string or Pandas DataFrame or None
         string describes CSV file in which blowup factors reside;
         DataFrame already contains blowup factors;
-        default value is filename of the default blowup factors
+        None creates empty blowup-factors DataFrame;
+        default value is filename of the default blowup factors.
 
-    weights: string or Pandas DataFrame
+    weights: string or Pandas DataFrame or None
         string describes CSV file in which weights reside;
         DataFrame already contains weights;
-        default value is filename of the default weights
+        None creates empty sample-weights DataFrame;
+        default value is filename of the default weights.
 
-    start_year: None or integer
-        None implies current_year is set to PUF_YEAR (see below);
-        integer implies current_year is set to start_year;
-        default value is None
-        NOTE: if specifying data (see above) as being a custom
+    start_year: integer
+        specifies calendar year of the data;
+        default value is PUFCSV_YEAR.
+        NOTE: if specifying your own data (see above) as being a custom
               data set, be sure to explicitly set start_year to the
               custom data's calendar year.  For details on how to
-              use your own data with the Tax-Calculator, look at the
-              test_Calculator_using_nonstd_input() function in the
-              tests/test_calculate.py file.
-
-    consider_imputations: boolean
-        True implies that if current_year (see start_year above) equals
-        PUF_YEAR (see below), then call _impute_variables() method;
-        False implies never call _impute_variables() method;
-        default value is True
-        For details on how to use your own data with the Tax-Calculator,
-        look at the test_Calculator_using_nonstd_input() function in the
-        tests/test_calculate.py file.
+              use your own data with the Tax-Calculator, read the
+              DATAPREP.md file in the top-level directory and then
+              look at the test_Calculator_using_nonstd_input()
+              function in the taxcalc/tests/test_calculate.py file.
 
     Raises
     ------
@@ -73,14 +79,9 @@ class Records(object):
     Typical usage is "recs = Records()", which uses all the default
     parameters of the constructor, and therefore, imputed variables
     are generated to augment the data and initial-year blowup factors
-    are applied to the data. Explicitly setting consider_imputation to
-    False and/or the start_year to something other than Records.PUF_YEAR
-    will cause this variable-imputation and initial-year-blowup logic to
-    be skipped.  There are situations in which this is exactly what is
-    desired, but more often than not, skipping the imputation and blowup
-    logic would be a mistake.  In other words, do not explicitly specify
-    consider_imputations=False or specify the start_year in the Records
-    class constructor unless you know exactly what you are doing.
+    are applied to the data.  There are situations in which you need
+    to specify the values of the Record constructor's arguments, but
+    be sure you know exactly what you are doing when attempting this.
     """
     # suppress pylint warnings about unrecognized Records variables:
     # pylint: disable=no-member
@@ -89,43 +90,39 @@ class Records(object):
     # suppress pylint warnings about too many class instance attributes:
     # pylint: disable=too-many-instance-attributes
 
-    PUF_YEAR = 2009
-
+    PUF_YEAR = PUFCSV_YEAR
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-    WEIGHTS_FILENAME = "WEIGHTS.csv"
+    WEIGHTS_FILENAME = 'WEIGHTS.csv'
     WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
-    BLOWUP_FACTORS_FILENAME = "StageIFactors.csv"
+    BLOWUP_FACTORS_FILENAME = 'StageIFactors.csv'
     BLOWUP_FACTORS_PATH = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
 
     # specify set of all Record variables that MAY be read by Tax-Calculator:
     VALID_READ_VARS = set([
         'DSI', 'EIC', 'FDED', 'FLPDYR',
-        'f2441', 'f6251',
-        'n24',
-        'XTOT',
+        'f2441', 'f6251', 'n24', 'XTOT',
         'e00200', 'e00300', 'e00400', 'e00600', 'e00650', 'e00700', 'e00800',
         'e00200p', 'e00200s',
         'e00900', 'e01100', 'e01200', 'e01400', 'e01500', 'e01700',
         'e00900p', 'e00900s',
-        'e02000', 'e02100', 'e02300', 'e02400', 'e02500', 'e03150', 'e03210',
+        'e02000', 'e02100', 'e02300', 'e02400', 'e03150', 'e03210',
         'e02100p', 'e02100s',
         'e03220', 'e03230', 'e03270', 'e03240', 'e03290',
-        'e03400', 'e03500', 'p04470',
-        'e07200', 'e07240', 'e07260', 'e07300',
+        'e03400', 'e03500',
+        'e07240', 'e07260', 'e07300',
         'e07400', 'e07600', 'p08000',
         'e09700', 'e09800', 'e09900',
-        'e59560',
         'e11550', 'e11070', 'e11200',
         'e11580',
         'e17500', 'e18400', 'e18500',
-        'e19200', 'e19550', 'e19800', 'e20100', 'e19700', 'e20550', 'e20600',
+        'e19200', 'e19800', 'e20100',
         'e20400', 'e20500', 'p22250',
         'p23250', 'e24515', 'e24518',
         'p25470',
         'e26270',
         'e27200', 'e32800', 'e03300',
         'e58990',
-        'p60100', 'e62900',
+        'e62900',
         'p87482', 'e87487', 'e87492', 'e87497', 'p87521',
         'e87530',
         'MARS', 'MIDR', 'RECID',
@@ -146,123 +143,92 @@ class Records(object):
 
     # specify set of all Record variables that cannot be read in:
     CALCULATED_VARS = set([
-        'e35300_0', 'e35600_0', 'e35910_0', 'e03600',
-        'e03280', 'e03900', 'e04000', 'e03700',
-        'e23660', 'f2555', 'e02800', 'e02610', 'e02540',
-        'e02615', 'SSIND', 'e18800', 'e18900',
-        'e20950', 'e19500', 'e19570', 'e19400', 'c20400',
-        'e20200', 'e20900', 'e21000', 'e21010', 'e02600',
-        '_exact', 'e11055', 'e00250', 'e30100',
-        'e04200', 'e37717', 'e04805',
-        't04470', 'e58980', 'c00650', 'c00100',
+        'f2555',
+        '_exact',
+        '_calc_schR', 'c07200',
+        'c00650', 'c00100',
         'c04470', 'c04600', 'c21060', 'c21040', 'c17000',
         'c18300', 'c20800', 'c02900', 'c02700', 'c23650',
-        'c01000', 'c02500', '_cmp',
-        'e59440', 'e59470', 'e59400', 'e10105', 'e83200_0',
-        'e59410', 'e59420', 'e74400', 'x62720', 'x60260',
-        'x60240', 'x60220', 'x60130', 'e60290',
-        'e62600', '_fixeic',
-        'e33420', 'e33430',
-        'e33450', 'e33460', 'e33465', 'e33470',
-        'e83080', 'e25360',
-        'e25430', 'e25400', 'e25500', 'e26210', 'e26340',
-        'e26205', 'e26320', 'e07170',
-        'e87526', 'e87522', 'e87524', 'e87528',
-        'e07960', 'e07700', 'e07250', 't07950',
-        'e82880', 'e07500', 'e08001',
-        'e07980', 'e10000', 'e10100', 'e10050', 'e10075',
-        'e09805', 'e09710', 'e09720',
-        'e11601',
-        'e60300', 'e60860', 'e60840', 'e60630',
-        'e60550', 'e60720', 'e60430', 'e60500', 'e60340',
-        'e60680', 'e60600', 'e60405', 'e60440', 'e60420',
-        'e60410', 'e61400', 'e60660', 'e60480', 'e62000',
-        'e60250', 'e40223', '_earned', '_sey',
-        'c09400', '_feided', '_ymod', '_ymod1', '_posagi',
-        '_xyztax', '_avail', 'e85070',
-        '_taxinc', 'c04800', '_feitax', 'c05750', 'c24517',
-        '_taxbc', 'c60000', '_standard', 'c24516',
-        'c05700', 'c32880', 'c32890', '_dclim', 'c32800',
-        'c33000', 'c05800', 'c59560',
+        'c01000', 'c02500',
+        'c11580',
+        '_sey', '_earned', '_earned_p', '_earned_s',
+        'c09400', '_feided', 'ymod', 'ymod1', '_posagi',
+        '_xyztax', '_avail',
+        '_taxinc', 'c04800', '_feitax', 'c24517',
+        '_taxbc', '_standard', 'c24516',
+        'c05700', 'c32880', 'c32890', 'c32800',
+        'c05800', 'c59560',
         'c87521', 'c87550', 'c07180',
-        'c07230', '_precrd', 'c07220', 'c59660', 'c07970',
-        'c08795', 'c09200', 'c07100', '_eitc', 'c59700',
-        'c10950', '_ymod2', '_ymod3', 'c02650',
-        '_prexmp', 'c17750',
-        '_statax', 'c37703', 'c20500', 'c20750', 'c19200',
-        'c19700', '_nonlimited', '_limitratio', '_phase2_i',
-        '_fica', '_fica_was', 'c03260', 'c11055', 'c15100',
-        '_sep', '_num', 'c15200', 'c04100', 'c04200',
-        'c04500', '_amtstd', '_oldfei', 'c05200', '_cglong',
-        '_noncg', '_hasgain', '_dwks9', '_dwks5', '_dwks12',
-        '_dwks16', '_dwks17', '_dwks21', '_dwks25', '_dwks26',
-        '_dwks28', '_dwks31', 'c24505', 'c24510', 'c24520',
-        'c24530', 'c24540', 'c24534', 'c24597', 'c24598',
-        'c24610', 'c24615', 'c24550', 'c24570', '_addtax',
-        'c24560', '_taxspecial', 'c24580', 'c05100',
-        'c59430', 'c59450', 'c59460', '_line17', '_line19',
-        '_line22', '_line30', '_line31', '_line32', '_line36',
-        '_line33', '_line34', '_line35', 'c59485', 'c59490',
-        '_s1291', '_parents', 'c62720', 'c60260', 'c63100',
-        'c60200', 'c60240', 'c60220', 'c60130', 'c62730',
-        '_addamt', 'c62100', '_cmbtp', '_amtsepadd',
-        'c62600', 'c62700', '_alminc', 'c62760',
-        '_amtfei', 'c62780', 'c62900', 'c63000', 'c62740',
-        '_ngamty', 'c62745', '_tamt2', '_amt5pc',
-        '_amt15pc', '_amt25pc', 'c62747', 'c62755', 'c62770',
-        '_amt20pc', 'c62800', 'c09600',
-        '_seywage', 'c33465', 'c33470', 'c33475', 'c33480',
-        'c32840', '_tratio', 'c33200', 'c33400',
-        '_modagi', '_extrastd',
-        '_val_ymax', '_preeitc', '_val_rtbase', '_val_rtless',
-        '_dy', 'c11070', '_nctcr', '_ctcagi', 'c87482',
+        'c07230', '_precrd', 'c07220', 'c59660',
+        'c09200', 'c07100', '_eitc',
+        '_prexmp',
+        '_fica', '_fica_was', 'c03260',
+        '_sep', '_num',
+        'c04500', 'c05200',
+        'c24505', 'c24520',
+        'c62100',
+        'c09600',
+        'c33200',
+        '_extrastd', 'ID_Casualty_frt_in_pufcsv_year',
+        'c11070', 'c87482',
         'c87487', 'c87492', 'c87497', 'c87483', 'c87488',
-        'c87493', 'c87498', 'c87540', 'c87530', 'c87654',
-        'c87656', 'c87658', 'c87660', 'c87662', 'c87664',
-        'c87666', 'c10960', 'c87668', 'c87560',
-        'c87570', 'c87580', 'c87590', 'c87600', 'c87610',
-        'c87620', '_ctc1', '_ctc2', '_regcrd', '_exocrd',
-        '_ctctax', 'c82925', 'c82930', 'c82935',
-        'c82880', 'c82885', 'c82890', 'c82900',
-        'c82905', 'c82910', 'c82915', 'c82920', 'c82937',
-        'c82940', '_othadd', 'y07100',
-        'x07100', 'c08800', 'x07400', 'c59680',
-        '_othertax', 'e82915', 'e82940', 'NIIT',
-        'c59720', '_comb', 'c07150', 'c10300', '_iitax',
-        '_refund', 'c11600', 'e11450', 'e82040', 'e11500',
-        '_amed',
+        'c87493', 'c87498',
+        'c87658', 'c87660', 'c87662',
+        'c10960', 'c87668',
+        'c08800',
+        '_othertax', 'NIIT',
+        '_iitax', '_refund',
         '_expanded_income', 'c07300',
         'c07600', 'c07240',
-        '_surtax', '_combined', '_personal_credit'])
+        '_surtax', '_combined', 'personal_credit'])
 
     INTEGER_CALCULATED_VARS = set([
-        '_num', '_sep', '_exact', '_hasgain', '_cmp', '_fixeic'])
+        '_num', '_sep', '_exact', '_calc_schR', 'f2555'])
+
+    CHANGING_CALCULATED_VARS = (CALCULATED_VARS - INTEGER_CALCULATED_VARS -
+                                set(['ID_Casualty_frt_in_pufcsv_year']))
 
     def __init__(self,
-                 data="puf.csv",
+                 data='puf.csv',
+                 exact_calculations=False,
+                 schR_calculations=True,
                  blowup_factors=BLOWUP_FACTORS_PATH,
                  weights=WEIGHTS_PATH,
-                 start_year=None,
-                 consider_imputations=True):
+                 start_year=PUFCSV_YEAR):
         """
         Records class constructor
         """
-        # pylint: disable=unused-argument,too-many-arguments
-        self._read_data(data)
+        # pylint: disable=too-many-arguments
+        # read specified data
+        self._read_data(data, exact_calculations, schR_calculations)
+        # check that three sets of split-earnings variables have valid values
+        msg = 'expression "{0} == {0}p + {0}s" is not true for every record'
+        if not np.allclose(self.e00200, (self.e00200p + self.e00200s),
+                           rtol=0.0, atol=0.001):
+            raise ValueError(msg.format('e00200'))
+        if not np.allclose(self.e00900, (self.e00900p + self.e00900s),
+                           rtol=0.0, atol=0.001):
+            raise ValueError(msg.format('e00900'))
+        if not np.allclose(self.e02100, (self.e02100p + self.e02100s),
+                           rtol=0.0, atol=0.001):
+            raise ValueError(msg.format('e02100'))
+        # read extrapolation blowup factors and sample weights
         self._read_blowup(blowup_factors)
         self._read_weights(weights)
-        if start_year is None:
-            self._current_year = Records.PUF_YEAR
-            self.FLPDYR.fill(Records.PUF_YEAR)
-        elif isinstance(start_year, int):
+        # specify current_year and FLPDYR values
+        if isinstance(start_year, int):
             self._current_year = start_year
             self.FLPDYR.fill(start_year)
         else:
-            msg = ('Records.constructor start_year is neither None nor '
-                   'an integer')
+            msg = 'start_year is not an integer'
             raise ValueError(msg)
-        if consider_imputations and self.current_year == Records.PUF_YEAR:
-            self._extrapolate_2009_puf()
+        # consider applying initial-year blowup factors
+        if self.BF.empty is False and self.current_year == Records.PUF_YEAR:
+            self._extrapolate_in_puf_year()
+        # construct sample weights for current_year
+        wt_colname = 'WT{}'.format(self.current_year)
+        if wt_colname in self.WT.columns:
+            self.s006 = self.WT[wt_colname] * 0.01
 
     @property
     def current_year(self):
@@ -277,11 +243,12 @@ class Records(object):
         Also, does variable blowup and reweighting for the new current year.
         """
         self._current_year += 1
-        # Implement Stage 1 Extrapolation blowup factors
+        # apply Stage 1 Extrapolation blowup factors
         self._blowup(self.current_year)
-        # Implement Stage 2 Extrapolation reweighting
-        # pylint: disable=attribute-defined-outside-init
-        self.s006 = self.WT["WT" + str(self.current_year)] * 0.01
+        # specify Stage 2 Extrapolation sample weights
+        wt_colname = 'WT{}'.format(self.current_year)
+        if wt_colname in self.WT.columns:
+            self.s006 = self.WT[wt_colname] * 0.01
 
     def set_current_year(self, new_current_year):
         """
@@ -346,7 +313,6 @@ class Records(object):
         self.e02100s *= ASCHF
         self.e02300 *= AUCOMP
         self.e02400 *= ASOCSEC
-        self.e02500 *= ASOCSEC
         self.e03150 *= ATXPY
         self.e03210 *= ATXPY
         self.e03220 *= ATXPY
@@ -365,9 +331,6 @@ class Records(object):
         self.e09700 *= ATXPY
         self.e09800 *= ATXPY
         self.e09900 *= ATXPY
-        self.e59560 *= ATXPY
-        self.e11550 *= ATXPY
-        self.e11070 *= ATXPY
         self.e11200 *= ATXPY
         self.e11580 *= ATXPY
         # ITEMIZED DEDUCTIONS
@@ -375,12 +338,8 @@ class Records(object):
         self.e18400 *= ATXPY
         self.e18500 *= ATXPY
         self.e19200 *= AIPD
-        self.e19550 *= ATXPY
         self.e19800 *= ATXPY
         self.e20100 *= ATXPY
-        self.e19700 *= ATXPY
-        self.e20550 *= ATXPY
-        self.e20600 *= ATXPY
         self.e20400 *= ATXPY
         self.e20500 *= ATXPY
         # CAPITAL GAINS
@@ -393,30 +352,35 @@ class Records(object):
         self.e26270 *= ASCHEI
         self.e27200 *= ASCHEI
         # MISCELLANOUS SCHEDULES
+        self.e07600 *= ATXPY
         self.e32800 *= ATXPY
         self.e58990 *= ATXPY
-        self.p60100 *= ATXPY
         self.e62900 *= ATXPY
         self.e87530 *= ATXPY
         self.p87521 *= ATXPY
+        self.p87482 *= ATXPY
+        self.e87487 *= ATXPY
+        self.e87492 *= ATXPY
+        self.e87497 *= ATXPY
         self.cmbtp_itemizer *= ATXPY
         self.cmbtp_standard *= ATXPY
 
-    def _read_data(self, data):
+    def _read_data(self, data, exact_calcs, schR_calcs):
         """
         Read Records data from file or use specified DataFrame as data.
+        Specifies _exact array depending on boolean value of exact_calcs.
+        Specifies _calc_schR array depending on boolean value of schR_calcs.
         """
         # pylint: disable=too-many-branches
         if isinstance(data, pd.DataFrame):
             taxdf = data
         elif isinstance(data, six.string_types):
-            if data.endswith("gz"):
+            if data.endswith('gz'):
                 taxdf = pd.read_csv(data, compression='gzip')
             else:
                 taxdf = pd.read_csv(data)
         else:
-            msg = ('Records.constructor data is neither a string nor '
-                   'a Pandas DataFrame')
+            msg = 'data is neither a string nor a Pandas DataFrame'
             raise ValueError(msg)
         self.dim = len(taxdf)
         # create class variables using taxdf column names
@@ -433,10 +397,9 @@ class Records(object):
                 setattr(self, varname,
                         taxdf[varname].astype(np.float64).values)
         # check that MUST_READ_VARS are all present in taxdf
-        UNREAD_MUST_VARS = Records.MUST_READ_VARS - READ_VARS
-        if len(UNREAD_MUST_VARS) > 0:
-            msg = 'Records data missing {} MUST_READ_VARS'
-            raise ValueError(msg.format(len(UNREAD_MUST_VARS)))
+        if not Records.MUST_READ_VARS.issubset(READ_VARS):
+            msg = 'Records data missing one or more MUST_READ_VARS'
+            raise ValueError(msg)
         # create other class variables that are set to all zeros
         UNREAD_VARS = Records.VALID_READ_VARS - READ_VARS
         ZEROED_VARS = Records.CALCULATED_VARS | UNREAD_VARS
@@ -453,53 +416,86 @@ class Records(object):
                                 2, 1)
         self._sep[:] = np.where(np.logical_or(self.MARS == 3, self.MARS == 6),
                                 2, 1)
+        # specify value of _exact array
+        self._exact[:] = np.where(exact_calcs is True, 1, 0)
+        # specify value of _calc_schR array
+        self._calc_schR[:] = np.where(schR_calcs is True, 1, 0)
+        # specify value of ID_Casualty_frt_in_pufcsv_year array
+        ryear = 9999  # specify reform year if ID_Casualty_frt changes
+        rvalue = 0.0  # specify value of ID_Casualty_frt beginning in ryear
+        self.ID_Casualty_frt_in_pufcsv_year[:] = np.where(PUFCSV_YEAR < ryear,
+                                                          0.10, rvalue)
+
+    @staticmethod
+    def _read_egg_csv(vname, fpath, **kwargs):
+        """
+        Read csv file with fpath containing vname data from EGG;
+        return dict of vname data.
+        """
+        try:
+            # grab vname data from EGG distribution
+            path_in_egg = os.path.join('taxcalc', fpath)
+            vname_fname = resource_stream(
+                Requirement.parse('taxcalc'), path_in_egg)
+            vname_dict = pd.read_csv(vname_fname, **kwargs)
+        except (DistributionNotFound, IOError):
+            msg = 'could not read {} file from EGG'
+            raise ValueError(msg.format(vname))
+        return vname_dict
+
+    def zero_out_changing_calculated_vars(self):
+        """
+        Set all CHANGING_CALCULATED_VARS to zero.
+        """
+        for varname in Records.CHANGING_CALCULATED_VARS:
+            var = getattr(self, varname)
+            var.fill(0.)
 
     def _read_weights(self, weights):
         """
-        Read Records weights from file or use specified DataFrame as data.
+        Read Records weights from file or
+        use specified DataFrame as data or
+        create empty DataFrame if None.
         """
+        if weights is None:
+            WT = pd.DataFrame({'nothing': []})
+            setattr(self, 'WT', WT)
+            return
         if isinstance(weights, pd.DataFrame):
             WT = weights
         elif isinstance(weights, six.string_types):
-            try:
-                if not os.path.exists(weights):
-                    # grab weights out of EGG distribution
-                    path_in_egg = os.path.join("taxcalc",
-                                               self.WEIGHTS_FILENAME)
-                    weights = resource_stream(Requirement.parse("taxcalc"),
-                                              path_in_egg)
+            if os.path.isfile(weights):
                 WT = pd.read_csv(weights)
-            except IOError:
-                msg = 'could not find weights file'
-                ValueError(msg)
+            else:
+                WT = Records._read_egg_csv('weights',
+                                           Records.WEIGHTS_FILENAME)
         else:
-            msg = ('Records.constructor blowup_factors is neither a string '
-                   'nor a Pandas DataFrame')
+            msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
         setattr(self, 'WT', WT)
 
     def _read_blowup(self, blowup_factors):
         """
         Read Records blowup factors from file or
-        use specified DataFrame as data.
+        use specified DataFrame as data or
+        creates empty DataFrame if None.
         """
+        if blowup_factors is None:
+            BF = pd.DataFrame({'nothing': []})
+            setattr(self, 'BF', BF)
+            return
         if isinstance(blowup_factors, pd.DataFrame):
             BF = blowup_factors
         elif isinstance(blowup_factors, six.string_types):
-            try:
-                if not os.path.exists(blowup_factors):
-                    # grab blowup factors out of EGG distribution
-                    path_in_egg = os.path.join("taxcalc",
-                                               self.BLOWUP_FACTORS_FILENAME)
-                    blowup_factors = resource_stream(
-                        Requirement.parse("taxcalc"), path_in_egg)
+            if os.path.isfile(blowup_factors):
                 BF = pd.read_csv(blowup_factors, index_col='YEAR')
-            except IOError:
-                msg = 'could not find blowup_factors file'
-                ValueError(msg)
+            else:
+                BF = Records._read_egg_csv('blowup_factors',
+                                           Records.BLOWUP_FACTORS_FILENAME,
+                                           index_col='YEAR')
         else:
-            msg = ('Records.constructor blowup_factors is neither a string '
-                   'nor a Pandas DataFrame')
+            msg = ('blowup_factors is not None or a string '
+                   'or a Pandas DataFrame')
             raise ValueError(msg)
         BF.AGDPN = BF.AGDPN / BF.APOPN
         BF.ATXPY = BF. ATXPY / BF. APOPN
@@ -516,6 +512,13 @@ class Records(object):
         BF.ASOCSEC = BF.ASOCSEC / BF.APOPSNR
         BF = 1.0 + BF.pct_change()
         setattr(self, 'BF', BF)
+
+    def _extrapolate_in_puf_year(self):
+        """
+        Calls appropriate current_year extrapolation method.
+        """
+        if self.current_year == 2009:
+            self._extrapolate_2009_puf()
 
     def _extrapolate_2009_puf(self):
         """
@@ -544,4 +547,3 @@ class Records(object):
         self.BF.APOPSNR[year] = 1.0
         self.BF.AIPD[year] = 1.0
         self._blowup(year)
-        self.s006 = self.WT["WT" + str(year)] * 0.01

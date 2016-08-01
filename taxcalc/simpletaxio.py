@@ -30,6 +30,13 @@ class SimpleTaxIO(object):
         string is name of optional REFORM file, or
         dictionary suitable for passing to Policy.implement_reform() method.
 
+    exact_calculations: boolean
+        specifies whether or not exact tax calculations are done without
+        any smoothing of "stair-step" provisions in income tax law.
+
+    schR_calculations: boolean
+        specifies whether or not Schedule R calculations are done or not.
+
     emulate_taxsim_2441_logic: boolean
         true implies emulation of questionable Internet-TAXSIM logic, which
         is necessary if the SimpleTaxIO class is being used in validation
@@ -43,7 +50,7 @@ class SimpleTaxIO(object):
     Raises
     ------
     ValueError:
-        if file with input_filename does not exist.
+        if file with input_filename is not a string or does not exist.
         if reform is neither None, string, nor dictionary.
         if earliest INPUT year before simtax start year.
         if latest INPUT year after simtax end year.
@@ -56,14 +63,24 @@ class SimpleTaxIO(object):
     def __init__(self,
                  input_filename,
                  reform,
+                 exact_calculations,
+                 schR_calculations,
                  emulate_taxsim_2441_logic,
                  output_records):
         """
         SimpleTaxIO class constructor.
         """
+        # pylint: disable=too-many-arguments
+        # check that input_filename is a string
+        if not isinstance(input_filename, six.string_types):
+            msg = 'SimpleTaxIO.ctor input_filename is not a string'
+            raise ValueError(msg)
         # construct output_filename and delete old output file if it exists
         # ... construct reform extension to output_filename
-        if reform:
+        if reform is None:
+            ref = ''
+            self._using_reform_file = True
+        else:  # if reform is not None
             if isinstance(reform, six.string_types):
                 if reform.endswith('.json'):
                     ref = '-{}'.format(reform[:-5])
@@ -76,9 +93,6 @@ class SimpleTaxIO(object):
             else:
                 msg = 'SimpleTaxIO.ctor reform is neither None, str, nor dict'
                 raise ValueError(msg)
-        else:  # if reform is None
-            ref = ''
-            self._using_reform_file = True
         # ... construct whole output_filename
         self._using_input_file = True
         self._output_filename = '{}.out-simtax{}'.format(input_filename, ref)
@@ -100,7 +114,9 @@ class SimpleTaxIO(object):
             self._policy.implement_reform(reform_dict)
         # validate input variable values
         self._validate_input()
-        self._calc = self._calc_object(emulate_taxsim_2441_logic,
+        self._calc = self._calc_object(exact_calculations,
+                                       schR_calculations,
+                                       emulate_taxsim_2441_logic,
                                        output_records)
 
     def start_year(self):
@@ -554,12 +570,17 @@ class SimpleTaxIO(object):
                 raise ValueError(msg.format(num_young_dependents, lnum,
                                             num_all_dependents))
 
-    def _calc_object(self, emulate_taxsim_2441_logic, output_records):
+    def _calc_object(self, exact_calcs, schr_calcs,
+                     emulate_taxsim_2441_logic, output_records):
         """
         Create and return Calculator object to conduct the tax calculations.
 
         Parameters
         ----------
+        exact_calcs: boolean
+
+        schr_calcs: boolean
+
         emulate_taxsim_2441_logic: boolean
 
         output_records: boolean
@@ -575,8 +596,10 @@ class SimpleTaxIO(object):
         dict_list = [zero_dict for _ in range(0, len(self._input))]
         # use dict_list to create a Pandas DataFrame and Records object
         recsdf = pd.DataFrame(dict_list, dtype='int64')
-        recs = Records(data=recsdf, start_year=self._policy.start_year,
-                       consider_imputations=False)
+        recs = Records(data=recsdf, exact_calculations=exact_calcs,
+                       schR_calculations=schr_calcs,
+                       blowup_factors=None, weights=None,
+                       start_year=self._policy.start_year)
         assert recs.dim == len(self._input)
         # specify input for each tax filing unit in Records object
         lnum = 0

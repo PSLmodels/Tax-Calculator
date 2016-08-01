@@ -22,7 +22,7 @@ import sys
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
-from taxcalc import percentage_change_gdp  # pylint: disable=import-error
+from taxcalc import multiyear_diagnostic_table  # pylint: disable=import-error
 PUFCSV_PATH = os.path.join(CUR_PATH, '..', '..', 'puf.csv')
 AGGRES_PATH = os.path.join(CUR_PATH, 'pufcsv_agg_expect.txt')
 MTRRES_PATH = os.path.join(CUR_PATH, 'pufcsv_mtr_expect.txt')
@@ -36,6 +36,7 @@ def test_agg():
     """
     Test Tax-Calculator aggregate taxes with no policy reform using puf.csv
     """
+    # pylint: disable=too-many-locals
     # create a Policy object (clp) containing current-law policy parameters
     clp = Policy()
     # create a Records object (puf) containing puf.csv input records
@@ -43,7 +44,7 @@ def test_agg():
     # create a Calculator object using clp policy and puf records
     calc = Calculator(policy=clp, records=puf)
     # create aggregate diagnostic table (adt) as a Pandas DataFrame object
-    adt = calc.diagnostic_table(num_years=10)
+    adt = multiyear_diagnostic_table(calc, 10)
     # convert adt results to a string with a trailing EOL character
     adtstr = adt.to_string() + '\n'
     # generate differences between actual and expected results
@@ -63,13 +64,14 @@ def test_agg():
         new_filename = '{}{}'.format(AGGRES_PATH[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
             new_file.write(adtstr)
-        sys.stdout.write('*************************************************\n')
-        sys.stdout.write('*** NEW RESULTS IN pufcsv_agg_actual.txt FILE ***\n')
-        sys.stdout.write('*** if new OK, copy pufcsv_agg_actual.txt to  ***\n')
-        sys.stdout.write('***                 pufcsv_agg_expect.txt     ***\n')
-        sys.stdout.write('***            and rerun test.                ***\n')
-        sys.stdout.write('*************************************************\n')
-        assert False
+        msg = 'PUFCSV AGG RESULTS DIFFER\n'
+        msg += '-------------------------------------------------\n'
+        msg += '--- NEW RESULTS IN pufcsv_agg_actual.txt FILE ---\n'
+        msg += '--- if new OK, copy pufcsv_agg_actual.txt to  ---\n'
+        msg += '---                 pufcsv_agg_expect.txt     ---\n'
+        msg += '---            and rerun test.                ---\n'
+        msg += '-------------------------------------------------\n'
+        raise ValueError(msg)
 
 
 MTR_TAX_YEAR = 2013
@@ -151,8 +153,13 @@ def test_mtr():
     inctype_header = 'FICA and IIT mtr histogram bin counts for'
     # compute marginal tax rate (mtr) histograms for each mtr income type
     for inctype in Calculator.MTR_VALID_INCOME_TYPES:
+        if inctype == 'e01400':
+            zero_out = True
+        else:
+            zero_out = False
         (mtr_fica, mtr_iit, _) = calc.mtr(income_type_str=inctype,
                                           negative_finite_diff=MTR_NEG_DIFF,
+                                          zero_out_calculated_vars=zero_out,
                                           wrt_full_compensation=False)
         res += '{} {}:\n'.format(inctype_header, inctype)
         res += mtr_bin_counts(mtr_fica, FICA_MTR_BIN_EDGES, recid)
@@ -174,29 +181,11 @@ def test_mtr():
         new_filename = '{}{}'.format(MTRRES_PATH[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
             new_file.write(res)
-        sys.stdout.write('*************************************************\n')
-        sys.stdout.write('*** NEW RESULTS IN pufcsv_mtr_actual.txt FILE ***\n')
-        sys.stdout.write('*** if new OK, copy pufcsv_mtr_actual.txt to  ***\n')
-        sys.stdout.write('***                 pufcsv_mtr_expect.txt     ***\n')
-        sys.stdout.write('***            and rerun test.                ***\n')
-        sys.stdout.write('*************************************************\n')
-        assert False
-
-
-@pytest.mark.requires_pufcsv
-def test_percentage_change_gdp():
-    """
-    Test Tax-Calculator macro_elasticity.py capability.
-    """
-    calc1 = Calculator(policy=Policy(), records=Records(data=PUFCSV_PATH))
-    calc1.calc_all()
-    policy2 = Policy()
-    reform = {2013: {"_STD": [[12600, 25200, 12600,
-                               18600, 25300, 12600, 2100]],
-                     "_AMT_trt1": [0.0],
-                     "_AMT_trt2": [0.0]}}
-    policy2.implement_reform(reform)
-    calc2 = Calculator(policy=policy2, records=Records(data=PUFCSV_PATH))
-    calc2.calc_all()
-    gdp_diff = percentage_change_gdp(calc1, calc2, elasticity=0.36)
-    assert gdp_diff > 0
+        msg = 'PUFCSV MTR RESULTS DIFFER\n'
+        msg += '-------------------------------------------------\n'
+        msg += '--- NEW RESULTS IN pufcsv_mtr_actual.txt FILE ---\n'
+        msg += '--- if new OK, copy pufcsv_mtr_actual.txt to  ---\n'
+        msg += '---                 pufcsv_mtr_expect.txt     ---\n'
+        msg += '---            and rerun test.                ---\n'
+        msg += '-------------------------------------------------\n'
+        raise ValueError(msg)

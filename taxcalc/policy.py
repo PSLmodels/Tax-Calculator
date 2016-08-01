@@ -13,7 +13,7 @@ import json
 import re
 import six
 import numpy as np
-from .parameters_base import ParametersBase
+from .parameters import ParametersBase
 
 
 class Policy(ParametersBase):
@@ -47,8 +47,12 @@ class Policy(ParametersBase):
     ValueError:
         if parameter_dict is neither None nor a dictionary.
         if num_years is less than one.
+        if inflation_rates is neither None nor a dictionary.
         if len(inflation_rates) is not equal to num_years.
         if min(inflation_rates.keys()) is not equal to start_year.
+        if wage_growth_rates is neither None nor a dictionary.
+        if len(wage_growth_rates) is not equal to num_years.
+        if min(wage_growth_rates.keys()) is not equal to start_year.
 
     Returns
     -------
@@ -113,31 +117,36 @@ class Policy(ParametersBase):
         Policy class constructor.
         """
         # pylint: disable=too-many-arguments
-        # pylint: disable=super-init-not-called
-        if parameter_dict:
-            if not isinstance(parameter_dict, dict):
-                raise ValueError('parameter_dict is not a dictionary')
-            self._vals = parameter_dict
-        else:  # if None, read current-law policy parameters
+        # pylint: disable=too-many-branches
+        super(Policy, self).__init__()
+        if parameter_dict is None:  # read default parameters
             self._vals = self._params_dict_from_json_file()
+        elif isinstance(parameter_dict, dict):
+            self._vals = parameter_dict
+        else:
+            raise ValueError('parameter_dict is not None or a dictionary')
 
-        if parameter_dict is None and start_year < Policy.JSON_START_YEAR:
-            msg = 'start_year={} < JSON_START_YEAR={}'
-            raise ValueError(msg.format(start_year,
-                                        Policy.JSON_START_YEAR))
+        if num_years < 1:
+            raise ValueError('num_years cannot be less than one')
 
-        if inflation_rates:
+        if inflation_rates is None:  # read default rates
+            self._inflation_rates = [self.__pirates[start_year + i]
+                                     for i in range(0, num_years)]
+        elif isinstance(inflation_rates, dict):
             if len(inflation_rates) != num_years:
                 raise ValueError('len(inflation_rates) != num_years')
             if min(list(inflation_rates.keys())) != start_year:
-                raise ValueError('min(inflation_rates.keys()) != start_year')
+                msg = 'min(inflation_rates.keys()) != start_year'
+                raise ValueError(msg)
             self._inflation_rates = [inflation_rates[start_year + i]
                                      for i in range(0, num_years)]
-        else:  # if None, read default rates
-            self._inflation_rates = [self.__pirates[start_year + i]
-                                     for i in range(0, num_years)]
+        else:
+            raise ValueError('inflation_rates is not None or a dictionary')
 
-        if wage_growth_rates:
+        if wage_growth_rates is None:  # read default rates
+            self._wage_growth_rates = [self.__wgrates[start_year + i]
+                                       for i in range(0, num_years)]
+        elif isinstance(wage_growth_rates, dict):
             if len(wage_growth_rates) != num_years:
                 raise ValueError('len(wage_growth_rates) != num_years')
             if min(list(wage_growth_rates.keys())) != start_year:
@@ -145,9 +154,8 @@ class Policy(ParametersBase):
                 raise ValueError(msg)
             self._wage_growth_rates = [wage_growth_rates[start_year + i]
                                        for i in range(0, num_years)]
-        else:  # if None, read default rates
-            self._wage_growth_rates = [self.__wgrates[start_year + i]
-                                       for i in range(0, num_years)]
+        else:
+            raise ValueError('wage_growth_rates is not None or a dictionary')
 
         self.initialize(start_year, num_years)
 
@@ -264,11 +272,19 @@ class Policy(ParametersBase):
         Notice that each of the four YEAR:MODS pairs is specified as
         required by the private _update method, whose documentation
         provides several MODS dictionary examples.
+
+        IMPORTANT NOTICE: when specifying a reform dictionary always group
+        all reform provisions for a specified year into one YEAR:MODS pair.
+        If you make the mistake of specifying two or more YEAR:MODS pairs
+        with the same YEAR value, all but the last one will be overwritten,
+        and therefore, not part of the reform.  This is because Python
+        expects unique (not multiple) dictionary keys.  There is no way to
+        catch this error, so be careful to specify reform dictionaries
+        correctly.
         """
         if not isinstance(reform, dict):
-            msg = 'reform passed to implement_reform is not a dictionary'
-            ValueError(msg)
-        if not reform:
+            raise ValueError('reform is not a dictionary')
+        if len(reform) == 0:
             return  # no reform to implement
         reform_years = sorted(list(reform.keys()))
         for year in reform_years:
@@ -278,14 +294,14 @@ class Policy(ParametersBase):
         first_reform_year = min(reform_years)
         if first_reform_year < self.start_year:
             msg = 'reform provision in year={} < start_year={}'
-            ValueError(msg.format(first_reform_year, self.start_year))
+            raise ValueError(msg.format(first_reform_year, self.start_year))
         if first_reform_year < self.current_year:
             msg = 'reform provision in year={} < current_year={}'
-            ValueError(msg.format(first_reform_year, self.current_year))
+            raise ValueError(msg.format(first_reform_year, self.current_year))
         last_reform_year = max(reform_years)
         if last_reform_year > self.end_year:
             msg = 'reform provision in year={} > end_year={}'
-            ValueError(msg.format(last_reform_year, self.end_year))
+            raise ValueError(msg.format(last_reform_year, self.end_year))
         precall_current_year = self.current_year
         for year in reform_years:
             self.set_year(year)
@@ -324,6 +340,23 @@ class Policy(ParametersBase):
             reform_pkey_param[pkey] = rdict
         # convert reform_pkey_param dictionary to reform_pkey_year dictionary
         return Policy._reform_pkey_year(reform_pkey_param)
+
+    def current_law_version(self):
+        """
+        Return Policy object the same as self except with current-law policy.
+        """
+        startyear = self.start_year
+        numyears = self.num_years
+        year_list = [startyear + i for i in range(0, numyears)]
+        irate_dict = dict(zip(year_list, self._inflation_rates))
+        wrate_dict = dict(zip(year_list, self._wage_growth_rates))
+        clv = Policy(parameter_dict=None,
+                     start_year=startyear,
+                     num_years=numyears,
+                     inflation_rates=irate_dict,
+                     wage_growth_rates=wrate_dict)
+        clv.set_year(self.current_year)
+        return clv
 
     # ----- begin private methods of Policy class -----
 

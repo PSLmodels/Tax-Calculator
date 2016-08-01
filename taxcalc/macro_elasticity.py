@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def percentage_change_gdp(calc1, calc2, elasticity=0.0):
+def proportional_change_gdp(calc1, calc2, elasticity=0.0):
     '''
     This function harnesses econometric estimates of the historic relationship
     between tax policy and the macroeconomy to predict the effect of tax
@@ -35,24 +35,18 @@ def percentage_change_gdp(calc1, calc2, elasticity=0.0):
 
     Returns
     -------
-    Float estimate of the GDP impact of the reform.
+    Float estimate of proportional GDP impact of the reform.
     '''
-    mtr_fica_x, mtr_iit_x, mtr_combined_x = calc1.mtr()
-    mtr_fica_y, mtr_iit_y, mtr_combined_y = calc2.mtr()
-
-    after_tax_mtr_x = (1 - ((mtr_combined_x) * calc1.records.c00100 *
-                       calc1.records.s006).sum() /
-                       (calc1.records.c00100 * calc1.records.s006).sum())
-
-    after_tax_mtr_y = (1 - ((mtr_combined_y) * calc2.records.c00100 *
-                       calc2.records.s006).sum() /
-                       (calc2.records.c00100 * calc2.records.s006).sum())
-
-    diff_avg_mtr_combined_y = after_tax_mtr_y - after_tax_mtr_x
-    percent_diff_mtr = diff_avg_mtr_combined_y / after_tax_mtr_x
-
-    gdp_effect_y = percent_diff_mtr * elasticity
-
+    _, _, mtr_combined_x = calc1.mtr()
+    _, _, mtr_combined_y = calc2.mtr()
+    avg_one_mtr_x = (1. - (mtr_combined_x * calc1.records.c00100 *
+                           calc1.records.s006).sum() /
+                     (calc1.records.c00100 * calc1.records.s006).sum())
+    avg_one_mtr_y = (1. - (mtr_combined_y * calc2.records.c00100 *
+                           calc2.records.s006).sum() /
+                     (calc2.records.c00100 * calc2.records.s006).sum())
+    diff_avg_one_mtr = avg_one_mtr_y - avg_one_mtr_x
+    proportional_diff_mtr = diff_avg_one_mtr / avg_one_mtr_x
+    gdp_effect_y = proportional_diff_mtr * elasticity
     print(("%.5f" % gdp_effect_y))
-
     return gdp_effect_y

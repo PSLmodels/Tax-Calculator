@@ -3,6 +3,10 @@ import sys
 import numpy as np
 from numpy.testing import assert_array_equal
 import pandas as pd
+import pytest
+from io import StringIO
+
+
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy, Records, Calculator, Growth
@@ -14,21 +18,88 @@ WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
 WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
 
-def test_create_records():
-    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=Records.PUF_YEAR)
-    assert recs
-    assert np.any(recs.MARS != 0)
+def test_incorrect_Records_instantiation():
+    with pytest.raises(ValueError):
+        recs = Records(data=list())
+    with pytest.raises(ValueError):
+        recs = Records(data=TAXDATA, blowup_factors=list())
+    with pytest.raises(ValueError):
+        recs = Records(data=TAXDATA, blowup_factors=None, weights=list())
+    with pytest.raises(ValueError):
+        recs = Records(data=TAXDATA, blowup_factors=None, weights=None,
+                       start_year=list())
 
 
-def test_blow_up():
-    tax_dta = pd.read_csv(TAXDATA_PATH, compression='gzip')
-    parms = Policy()
-    parms_start_year = parms.current_year
-    recs = Records(data=tax_dta, start_year=Records.PUF_YEAR)
-    assert recs.current_year == Records.PUF_YEAR
-    # r.current_year == PUF_YEAR ==> Calculator ctor will call r.blowup()
-    calc = Calculator(policy=parms, records=recs)
-    assert calc.current_year == parms_start_year
+def test_correct_Records_instantiation():
+    rec1 = Records(data=TAXDATA, blowup_factors=None, weights=WEIGHTS)
+    assert rec1
+    assert np.all(rec1.MARS != 0)
+    assert rec1.current_year == Records.PUF_YEAR
+    sum_e00200_in_puf_year = rec1.e00200.sum()
+    rec1.set_current_year(Records.PUF_YEAR + 1)
+    sum_e00200_in_puf_year_plus_one = rec1.e00200.sum()
+    assert sum_e00200_in_puf_year_plus_one == sum_e00200_in_puf_year
+    bf_df = pd.read_csv(Records.BLOWUP_FACTORS_PATH)
+    rec2 = Records(data=TAXDATA, blowup_factors=bf_df, weights=None)
+    assert rec2
+    assert np.all(rec2.MARS != 0)
+    assert rec2.current_year == Records.PUF_YEAR
+
+
+def test_read_data():
+    funit1 = (
+        u'RECID,MARS,e00200,e00200p,e00200s\n'
+        u'1,    2,   200000, 200000,   0.01\n'
+    )
+    df1 = pd.read_csv(StringIO(funit1))
+    with pytest.raises(ValueError):
+        rec = Records(data=df1)
+    funit2 = (
+        u'RECID,MARS,e00900,e00900p,e00900s\n'
+        u'1,    2,   200000, 200000,   0.01\n'
+    )
+    df2 = pd.read_csv(StringIO(funit2))
+    with pytest.raises(ValueError):
+        rec = Records(data=df2)
+    funit3 = (
+        u'RECID,MARS,e02100,e02100p,e02100s\n'
+        u'1,    2,   200000, 200000,   0.01\n'
+    )
+    df3 = pd.read_csv(StringIO(funit3))
+    with pytest.raises(ValueError):
+        rec = Records(data=df3)
+    funit4 = (
+        u'RxCID,MARS\n'
+        u'1,    2\n'
+    )
+    df4 = pd.read_csv(StringIO(funit4))
+    with pytest.raises(ValueError):
+        rec = Records(data=df4)
+    funit5 = (
+        u'RECID,e00300\n'
+        u'1,   ,456789\n'
+    )
+    df5 = pd.read_csv(StringIO(funit5))
+    with pytest.raises(ValueError):
+        rec = Records(data=df5)
+
+
+def test_blowup():
+    pol1 = Policy()
+    assert pol1.current_year == Policy.JSON_START_YEAR
+    rec1 = Records(data=TAXDATA, weights=WEIGHTS)
+    assert rec1.current_year == Records.PUF_YEAR
+    calc1 = Calculator(policy=pol1, records=rec1, sync_years=True)
+    assert calc1.records.current_year == Policy.JSON_START_YEAR
+    pol2 = Policy()
+    assert pol2.current_year == Policy.JSON_START_YEAR
+    rec2 = Records(data=TAXDATA, weights=WEIGHTS)
+    assert rec2.current_year == Records.PUF_YEAR
+    rec2.set_current_year(Policy.JSON_START_YEAR)
+    assert rec2.current_year == Policy.JSON_START_YEAR
+    calc2 = Calculator(policy=pol2, records=rec2, sync_years=False)
+    assert calc2.policy.current_year == Policy.JSON_START_YEAR
+    assert calc2.records.current_year == Policy.JSON_START_YEAR
 
 
 def test_for_duplicate_names():
@@ -114,22 +185,33 @@ def test_var_labels_txt_contents():
     # read variables in var_labels.txt file (checking for duplicates)
     var_labels_path = os.path.join(CUR_PATH, '..', 'var_labels.txt')
     var_labels_set = set()
-    with open(var_labels_path, 'r') as input:
-        for line in input:
+    with open(var_labels_path, 'r') as varlabels:
+        msg = 'DUPLICATE VARIABLE(S) IN VAR_LABELS.TXT:\n'
+        found_duplicates = False
+        for line in varlabels:
             var = (line.split())[0]
             if var in var_labels_set:
-                msg = 'DUPLICATE_IN_VAR_LABELS.TXT: {}\n'.format(var)
-                sys.stdout.write(msg)
-                assert False
+                found_duplicates = True
+                msg += 'VARIABLE= {}\n'.format(var)
             else:
                 var_labels_set.add(var)
-    # change all VALID variables to uppercase
-    var_used_set = set()
+        if found_duplicates:
+            raise ValueError(msg)
+    # change all Records.VALID_READ_VARS variables to uppercase
+    var_valid_set = set()
     for var in Records.VALID_READ_VARS:
-        var_used_set.add(var.upper())
-    # check for no extra var_used variables
-    used_less_labels = var_used_set - var_labels_set
-    assert len(used_less_labels) == 0
+        var_valid_set.add(var.upper())
+    # check for no extra var_valid variables
+    valid_less_labels = var_valid_set - var_labels_set
+    if len(valid_less_labels) > 0:
+        msg = 'VARIABLE(S) IN VALID_READ_VARS BUT NOT VAR_LABELS.TXT:\n'
+        for var in valid_less_labels:
+            msg += 'VARIABLE= {}\n'.format(var)
+        raise ValueError(msg)
     # check for no extra var_labels variables
-    labels_less_used = var_labels_set - var_used_set
-    assert len(labels_less_used) == 0
+    labels_less_valid = var_labels_set - var_valid_set
+    if len(labels_less_valid) > 0:
+        msg = 'VARIABLE(S) IN VAR_LABELS.TXT BUT NOT VALID_READ_VARS:\n'
+        for var in labels_less_valid:
+            msg += 'VARIABLE= {}\n'.format(var)
+        raise ValueError(msg)

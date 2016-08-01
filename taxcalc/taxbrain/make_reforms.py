@@ -25,8 +25,8 @@ from taxcalc import Policy  # pylint: disable=import-error
 
 
 PARAMS_NOT_SCALED = set(['_ACTC_ChildNum',
-                         '_ID_Charity_crt_Cash',
-                         '_ID_Charity_crt_Asset',
+                         '_ID_Charity_crt_all',
+                         '_ID_Charity_crt_noncash',
                          '_ID_BenefitSurtax_Switch',
                          '_ID_BenefitSurtax_crt',
                          '_ID_BenefitSurtax_trt'])

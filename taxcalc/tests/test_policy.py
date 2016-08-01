@@ -29,9 +29,38 @@ def policyfile():
     os.remove(f.name)
 
 
-def test_create_parameters():
-    p = Policy()
-    assert p
+def test_incorrect_Policy_instantiation():
+    with pytest.raises(ValueError):
+        p = Policy(parameter_dict=list())
+    with pytest.raises(ValueError):
+        p = Policy(num_years=0)
+    with pytest.raises(ValueError):
+        p = Policy(inflation_rates=list())
+    with pytest.raises(ValueError):
+        p = Policy(num_years=2, inflation_rates={2013: 0.02})
+    with pytest.raises(ValueError):
+        p = Policy(num_years=1, inflation_rates={2012: 0.02})
+    with pytest.raises(ValueError):
+        p = Policy(wage_growth_rates=list())
+    with pytest.raises(ValueError):
+        p = Policy(num_years=2, wage_growth_rates={2013: 0.02})
+    with pytest.raises(ValueError):
+        p = Policy(num_years=1, wage_growth_rates={2012: 0.02})
+
+
+def test_correct_Policy_instantiation():
+    pol = Policy()
+    assert pol
+    wrates = Policy.default_wage_growth_rates()
+    assert len(wrates) == Policy.DEFAULT_NUM_YEARS
+    pol.implement_reform({})
+    with pytest.raises(ValueError):
+        pol.implement_reform(list())
+    with pytest.raises(ValueError):
+        pol.implement_reform({2099: {'_II_em': [99000]}})
+    pol.set_year(2019)
+    with pytest.raises(ValueError):
+        pol.implement_reform({2018: {'_II_em': [99000]}})
 
 
 def test_policy_json_content():
@@ -411,8 +440,8 @@ def test_Policy_reform_in_start_year():
 
 def test_implement_reform_Policy_raises_on_future_year():
     ppo = Policy(start_year=2013)
+    reform = {2010: {'_STD_Aged': [[1400, 1100, 1100, 1400, 1400, 1199]]}}
     with pytest.raises(ValueError):
-        reform = {2010: {'_STD_Aged': [[1400, 1100, 1100, 1400, 1400, 1199]]}}
         ppo.implement_reform(reform)
 
 
@@ -558,6 +587,11 @@ def test_read_json_reform_file_and_implement_reform_a(reform_file):
     assert amt_em[2020 - syr, 0] == amt_em[2017 - syr, 0]
     assert amt_em[2021 - syr, 0] > amt_em[2020 - syr, 0]
     assert amt_em[2022 - syr, 0] > amt_em[2021 - syr, 0]
+    add4aged = policy._ID_Medical_frt_add4aged
+    assert add4aged[2015 - syr] == -0.025
+    assert add4aged[2016 - syr] == -0.025
+    assert add4aged[2017 - syr] == 0.0
+    assert add4aged[2022 - syr] == 0.0
 
 
 def test_read_json_reform_file_and_implement_reform_b(reform_file):
@@ -591,6 +625,11 @@ def test_read_json_reform_file_and_implement_reform_b(reform_file):
     assert amt_em[2020 - syr, 0] == amt_em[2017 - syr, 0]
     assert amt_em[2021 - syr, 0] > amt_em[2020 - syr, 0]
     assert amt_em[2022 - syr, 0] > amt_em[2021 - syr, 0]
+    add4aged = policy._ID_Medical_frt_add4aged
+    assert add4aged[2015 - syr] == -0.025
+    assert add4aged[2016 - syr] == -0.025
+    assert add4aged[2017 - syr] == 0.0
+    assert add4aged[2022 - syr] == 0.0
 
 
 def test_pop_the_cap_reform():
@@ -659,3 +698,64 @@ def test_misspecified_reforms():
     # 2016 key:value pair in reform2 (2016:{'_II_em...}) overwrites and
     # replaces the first 2016 key:value pair in reform2 (2016:{'_SS_E...})
     assert not reform1 == reform2
+
+
+@pytest.yield_fixture
+def badreformfile():
+    # specify JSON text for policy reform
+    txt = """{ // example of incorrect JSON because 'x' must be "x"
+               'x': {"2014": [4000]}
+             }"""
+    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    f.write(txt + '\n')
+    f.close()
+    # Must close and then yield for Windows platform
+    yield f
+    os.remove(f.name)
+
+
+def test_read_bad_json_reform_file(badreformfile):
+    with pytest.raises(ValueError):
+        Policy.read_json_reform_file(badreformfile.name)
+
+
+def test_convert_reform_dictionary():
+    with pytest.raises(ValueError):
+        rdict = Policy.convert_reform_dictionary({2013: {'2013': [40000]}})
+    with pytest.raises(ValueError):
+        rdict = Policy.convert_reform_dictionary({'_II_em': {2013: [40000]}})
+
+
+def test_reform_pkey_year():
+    with pytest.raises(ValueError):
+        rdict = Policy._reform_pkey_year({4567: {2013: [40000]}})
+    with pytest.raises(ValueError):
+        rdict = Policy._reform_pkey_year({'_II_em': 40000})
+    with pytest.raises(ValueError):
+        rdict = Policy._reform_pkey_year({'_II_em': {'2013': [40000]}})
+
+
+def test_current_law_version():
+    syr = 2013
+    nyrs = 8
+    irate = 0.08
+    irates = {(syr + i): irate for i in range(0, nyrs)}
+    wrate = 0.10
+    wrates = {(syr + i): wrate for i in range(0, nyrs)}
+    pol = Policy(start_year=syr, num_years=nyrs,
+                 inflation_rates=irates, wage_growth_rates=wrates)
+    mte = pol._SS_Earnings_c
+    clp_mte_2015 = mte[2015 - syr]
+    clp_mte_2016 = mte[2016 - syr]
+    reform = {2016: {'_SS_Earnings_c': [500000]}}
+    pol.implement_reform(reform)
+    mte = pol._SS_Earnings_c
+    ref_mte_2015 = mte[2015 - syr]
+    ref_mte_2016 = mte[2016 - syr]
+    clv = pol.current_law_version()
+    mte = clv._SS_Earnings_c
+    clv_mte_2015 = mte[2015 - syr]
+    clv_mte_2016 = mte[2016 - syr]
+    assert (clp_mte_2015 == ref_mte_2015 == clv_mte_2015)
+    assert clp_mte_2016 != ref_mte_2016
+    assert clp_mte_2016 == clv_mte_2016

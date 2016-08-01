@@ -41,8 +41,15 @@ class IncomeTaxIO(object):
         string is name of optional REFORM file, or
         dictionary suitable for passing to Policy.implement_reform() method.
 
+    exact_calculations: boolean
+        specifies whether or not exact tax calculations are done without
+        any smoothing of "stair-step" provisions in income tax law.
+
     blowup_input_data: boolean
         whether or not to age record data from data year to tax_year.
+
+    output_weights: boolean
+        whether or will be including sample weights in output.
 
     output_records: boolean
         whether or not to write CSV-formatted file containing the values
@@ -68,7 +75,9 @@ class IncomeTaxIO(object):
     """
 
     def __init__(self, input_data, tax_year, policy_reform,
-                 blowup_input_data, output_records, csv_dump):
+                 exact_calculations,
+                 blowup_input_data, output_weights,
+                 output_records, csv_dump):
         """
         IncomeTaxIO class constructor.
         """
@@ -90,7 +99,10 @@ class IncomeTaxIO(object):
             msg = 'INPUT is neither string nor Pandas DataFrame'
             raise ValueError(msg)
         # construct output_filename and delete old output file if it exists
-        if policy_reform:
+        if policy_reform is None:
+            ref = ''
+            self._using_reform_file = True
+        else:
             if isinstance(policy_reform, six.string_types):
                 if policy_reform.endswith('.json'):
                     ref = '-{}'.format(policy_reform[:-5])
@@ -103,9 +115,6 @@ class IncomeTaxIO(object):
             else:
                 msg = 'IncomeTaxIO.ctor reform is neither None, str, nor dict'
                 raise ValueError(msg)
-        else:  # if policy_reform is None
-            ref = ''
-            self._using_reform_file = True
         if output_records:
             self._output_filename = '{}.records{}'.format(inp, ref)
         elif csv_dump:
@@ -139,13 +148,25 @@ class IncomeTaxIO(object):
         policy.set_year(tax_year)
         # read input file contents into Records object
         if blowup_input_data:
-            recs = Records(data=input_data,
-                           start_year=Records.PUF_YEAR,
-                           consider_imputations=True)
+            if output_weights:
+                recs = Records(data=input_data,
+                               exact_calculations=exact_calculations)
+            else:
+                recs = Records(data=input_data,
+                               exact_calculations=exact_calculations,
+                               weights=None)
         else:
-            recs = Records(data=input_data,
-                           start_year=tax_year,
-                           consider_imputations=False)
+            if output_weights:
+                recs = Records(data=input_data,
+                               exact_calculations=exact_calculations,
+                               blowup_factors=None,
+                               start_year=tax_year)
+            else:
+                recs = Records(data=input_data,
+                               exact_calculations=exact_calculations,
+                               blowup_factors=None,
+                               weights=None,
+                               start_year=tax_year)
         # create Calculator object
         self._calc = Calculator(policy=policy, records=recs,
                                 sync_years=blowup_input_data)
