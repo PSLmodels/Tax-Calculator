@@ -355,6 +355,7 @@ class Policy(ParametersBase):
                      num_years=numyears,
                      inflation_rates=irate_dict,
                      wage_growth_rates=wrate_dict)
+        clv.set_year(self.current_year)
         return clv
 
     # ----- begin private methods of Policy class -----

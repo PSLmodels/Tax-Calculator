@@ -34,8 +34,6 @@ def main(reform_year, calc_year, sub_elasticity, inc_elasticity):
     if not os.path.isfile(PUFCSV_PATH):
         sys.stderr.write('ERROR: file {} does not exist\n'.format(PUFCSV_PATH))
         return 1
-    # create current-law-policy object
-    cur = Policy()
     # specify policy reform
     reform_dict = {reform_year: {'_SS_Earnings_c': [1.0e99]}}
     sys.stdout.write('REFORM: pop-the-cap in {}\n'.format(reform_year))
