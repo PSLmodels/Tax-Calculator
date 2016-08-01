@@ -96,7 +96,7 @@ class Behavior(ParametersBase):
         Modify calc_y records to account for behavioral responses that arise
           from the policy reform that involves moving from calc_x.policy to
           calc_y.policy.  Neither calc_x nor calc_y need to have had calc_all()
-          executed before calling this Behavior.reponse(calc_x, calc_y) method.
+          executed before calling the Behavior.response(calc_x, calc_y) method.
         Returns new Calculator object --- a deepcopy of calc_y --- that
           incorporates behavioral responses to the reform, but has called
           NEITHER the BenefitsSurtax() NOR the ExpandIncome() functions.
@@ -111,7 +111,18 @@ class Behavior(ParametersBase):
           to that used in Joint Committee on Taxation, "New Evidence on the
           Tax Elasticity of Capital Gains: A Joint Working Paper of the Staff
           of the Joint Committee on Taxation and the Congressional Budget
-          Office", (JCX-56-12), June 2012.
+          Office", (JCX-56-12), June 2012.  In particular, the elasticity
+          use here is equivalent to the term inside the square brackets on
+          the right-hand side of equation (4) on page 11 --- not the epsilon
+          variable on the left-hand side of equation (4), which is equal to
+          the elasticity used here times the weighted average marginal tax
+          rate on long-term capital gains.  So, the JCT-CBO estimate of
+          -0.792 for the epsilon elasticity (see JCT-CBO, Table 5) translates
+          into a much larger absolute value for the _BE_cg elasticity used by
+          Tax-Calculator.  So, for example, if the capital-gains-weighted
+          average (pre-reform) marginal tax rate was, say, 0.216 (as reported
+          by Tax Policy Center), then the _BE_cg elasticity to use here (that
+          corresponds to the -0.792) would be about -3.67.
         """
         # pylint: disable=too-many-locals,protected-access
         assert calc_x.records.dim == calc_y.records.dim
