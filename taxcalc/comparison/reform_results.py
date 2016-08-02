@@ -35,30 +35,27 @@ RESULTS = {}
 # analyze one reform a time, simulating each reform for four years
 NUM_YEARS = 4
 for i in range(1, NUM_REFORMS + 1):
-    # fetch this reform from reforms_json after checking for behavior
-    this_reform = "r" + str(i)
-    start_year = REFORMS_JSON.get(this_reform).get("start_year")
-    if "_BE_cg" in REFORMS_JSON.get(this_reform).get("value"):
-        elasticity = REFORMS_JSON[this_reform]["value"]["_BE_cg"]
-        del REFORMS_JSON[this_reform]["value"]["_BE_cg"]  # to not break reform
-        beh2 = Behavior()
-        beh_assump = {start_year: {"_BE_cg": elasticity}}
-        beh2.update_behavior(beh_assump)
-    else:
-        beh2 = Behavior()
-    reform = {start_year: REFORMS_JSON.get(this_reform).get("value")}
-    output_type = REFORMS_JSON.get(this_reform).get("output_type")
-    reform_name = REFORMS_JSON.get(this_reform).get("name")
-
-    # create two calculators, one for prereform and the other for postreform
+    # create current-law-policy calculator
     pol1 = Policy()
     rec1 = Records(data=PUF_DATA)
     calc1 = Calculator(policy=pol1, records=rec1, verbose=False, behavior=None)
+
+    # create reform calculator with possible behavioral responses
+    this_reform = "r" + str(i)
+    start_year = REFORMS_JSON.get(this_reform).get("start_year")
+    beh2 = Behavior()
+    if "_BE_cg" in REFORMS_JSON.get(this_reform).get("value"):
+        elasticity = REFORMS_JSON[this_reform]["value"]["_BE_cg"]
+        del REFORMS_JSON[this_reform]["value"]["_BE_cg"]  # to not break reform
+        beh_assump = {start_year: {"_BE_cg": elasticity}}
+        beh2.update_behavior(beh_assump)
+    reform = {start_year: REFORMS_JSON.get(this_reform).get("value")}
     pol2 = Policy()
     pol2.implement_reform(reform)
     rec2 = Records(data=PUF_DATA)
-    beh2 = Behavior()
     calc2 = Calculator(policy=pol2, records=rec2, verbose=False, behavior=beh2)
+    output_type = REFORMS_JSON.get(this_reform).get("output_type")
+    reform_name = REFORMS_JSON.get(this_reform).get("name")
 
     # increment both calculators to reform's start_year
     calc1.advance_to_year(start_year)
