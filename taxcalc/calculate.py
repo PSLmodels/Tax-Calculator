@@ -192,21 +192,11 @@ class Calculator(object):
         C1040(self.policy, self.records)
         DEITC(self.policy, self.records)
         IITAX(self.policy, self.records)
+        ExpandIncome(self.policy, self.records)
 
     def calc_all(self, zero_out_calc_vars=False):
-        # handles behavioral response if self.behavior.has_response() is true;
-        # otherwise conducts static analysis
-        if self.behavior.has_response():
-            recs = copy.deepcopy(self._records)
-            clp = self._policy.current_law_version()
-            cons = copy.deepcopy(self.consumption)
-            calc_clp = Calculator(policy=clp, records=recs, sync_years=False,
-                                  behavior=None, growth=None, consumption=cons)
-            calc_br = Behavior.response(calc_clp, self)
-            self._records = copy.deepcopy(calc_br._records)
-        else:
-            self.calc_one_year(zero_out_calc_vars)
-        ExpandIncome(self.policy, self.records)
+        # conducts static analysis of Calculator object for current_year
+        self.calc_one_year(zero_out_calc_vars)
         BenefitSurtax(self)
 
     def increment_year(self):
@@ -335,16 +325,13 @@ class Calculator(object):
             self.records.e01500 = penben_type + finite_diff
         if self.consumption.has_response():
             self.consumption.response(self.records, finite_diff)
-        self.calc_one_year(zero_out_calc_vars=zero_out_calculated_vars)
-        BenefitSurtax(self)
+        self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
         fica_chng = copy.deepcopy(self.records._fica)
         iitax_chng = copy.deepcopy(self.records._iitax)
         combined_taxes_chng = iitax_chng + fica_chng
         # calculate base level of taxes after restoring records object
         setattr(self, '_records', recs0)
-        self.calc_one_year(zero_out_calc_vars=zero_out_calculated_vars)
-        ExpandIncome(self.policy, self.records)
-        BenefitSurtax(self)
+        self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
         fica_base = copy.deepcopy(self.records._fica)
         iitax_base = copy.deepcopy(self.records._iitax)
         combined_taxes_base = iitax_base + fica_base
@@ -366,3 +353,16 @@ class Calculator(object):
         mtr_combined = combined_diff / (finite_diff * (1.0 + adj))
         # return the three marginal tax rate arrays
         return (mtr_fica, mtr_iit, mtr_combined)
+
+    def current_law_version(self):
+        """
+        Return Calculator object same as self except with current-law policy.
+        """
+        clp = self._policy.current_law_version()
+        recs = copy.deepcopy(self._records)
+        behv = copy.deepcopy(self.behavior)
+        grow = copy.deepcopy(self.growth)
+        cons = copy.deepcopy(self.consumption)
+        calc = Calculator(policy=clp, records=recs, sync_years=False,
+                          behavior=behv, growth=grow, consumption=cons)
+        return calc

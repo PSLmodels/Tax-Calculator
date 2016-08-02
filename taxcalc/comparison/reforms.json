@@ -252,7 +252,7 @@
                   "_AMT_CG_rt2": [0.17],
                   "_AMT_CG_rt3": [0.22]},
         "section_name": "CAPITAL GAIN",
-        "name": "Increase long term cap gain and dividends tax rates by 2 percentage, no behavior",
+        "name": "Increase long term cap gain and dividends tax rates by 2 percentage, no behavioral response",
         "output_type": "_iitax",
         "compare_with": {}
     },
@@ -266,26 +266,12 @@
                   "_AMT_CG_rt2": [0.17],
                   "_AMT_CG_rt3": [0.22],
                   "_BE_cg": [-3.67]},
-        "name": "Increase long term cap gain and dividends tax rates by 2 percentage, CBO-JCT elasticity assumed to be -0.792, which translates to a _BE_cg value of about -3.67",
-        "output_type": "_iitax",
-        "compare_with": {}
-    },
-
-    "r32": {
-        "start_year": 2015,
-        "value": {"_CG_rt1": [0.02],
-                  "_CG_rt2": [0.17],
-                  "_CG_rt3": [0.22],
-                  "_AMT_CG_rt1": [0.02],
-                  "_AMT_CG_rt2": [0.17],
-                  "_AMT_CG_rt3": [0.22],
-                  "_BE_cg": [-5.56]},
-        "name": "Increase long term cap gain and dividends tax rates by 2 percentage, JCT-CBO elasticity assumed to be -1.2, which translates to a _BE_cg value of about -5.56",
+        "name": "Increase long term cap gain and dividends tax rates by 2 percentage, BE_cg elasticity assumed to be -3.67",
         "output_type": "_iitax",
         "compare_with": {"Budget Options": [4.6, 5, 5.3, 5.6]}
     },
 
-    "r33": {
+    "r32": {
         "start_year": 2015,
         "value": {"_II_rt1": [0.11],
                   "_II_rt2": [0.16],
@@ -300,7 +286,7 @@
         "compare_with": {"Budget Options": [56, 60, 65, 69]}
     },
 
-    "r34": {
+    "r33": {
         "start_year": 2015,
         "value": {"_II_rt1": [0.10],
                   "_II_rt2": [0.15],
@@ -314,7 +300,7 @@
         "compare_with": {"Budget Options": [11, 12, 14, 15]}
     },
 
-    "r35": {
+    "r34": {
         "start_year": 2015,
         "value": {"_II_rt1": [0.10],
                   "_II_rt2": [0.15],
@@ -328,7 +314,7 @@
         "compare_with": {"Budget Options": [7, 8, 9, 10]}
     },
 
-    "r36": {
+    "r35": {
         "start_year": 2015,
         "value": {"_AMT_em": [[54600, 84400, 42700, 54600, 84400, 42700]]},
         "section_name": "Alternative Minimum Tax",
@@ -337,7 +323,7 @@
         "compare_with": {}
     },
 
-    "r37": {
+    "r36": {
         "start_year": 2015,
         "value": {"_AMT_em_ps": [[129200, 168900, 89450, 129200, 168900, 89450]]},
         "section_name": "Alternative Minimum Tax",
@@ -346,7 +332,7 @@
         "compare_with": {}
     },
 
-    "r38": {
+    "r37": {
         "start_year": 2015,
         "value": {"_AMT_prt": [0.27]},
         "section_name": "Alternative Minimum Tax",
@@ -355,7 +341,7 @@
         "compare_with": {}
     },
 
-    "r39": {
+    "r38": {
         "start_year": 2015,
         "value": {"_AMT_trt1": [0.28]},
         "section_name": "Alternative Minimum Tax",
@@ -364,7 +350,7 @@
         "compare_with": {}
     },
 
-    "r40": {
+    "r39": {
         "start_year": 2015,
         "value": {"_AMT_trt2": [0.04]},
         "section_name": "Alternative Minimum Tax",
@@ -373,7 +359,7 @@
         "compare_with": {}
     },
 
-    "r41": {
+    "r40": {
         "start_year": 2015,
         "value": {"_AMT_tthd": [195400]},
         "name": "Increase AMT surtax threshold by 10,000",
@@ -381,7 +367,7 @@
         "compare_with": {}
     },
 
-    "r42": {
+    "r41": {
         "start_year": 2015,
         "value": {"_CTC_c": [0, 0, 0, 0, 0, 0, 0, 0, 0]},
         "section_name": "NONREFUNDABLE CREDIT",
@@ -390,7 +376,7 @@
         "compare_with": {"Tax Expenditure": [57.3, 57.0, 57.1, 56.8]}
     },
 
-    "r43": {
+    "r42": {
         "start_year": 2015,
         "value": {"_CTC_prt": [0.06]},
         "name": "Increase Child Tax Credit phaseout rate by 1 pts",
@@ -398,7 +384,7 @@
         "compare_with": {}
     },
 
-    "r44": {
+    "r43": {
         "start_year": 2015,
         "value": {"_CTC_ps": [[76000, 111000, 56000, 76000, 76000, 56000]]},
         "name": "Increase Child Tax Credit phaseout starting MAGI by 1000",
@@ -406,7 +392,7 @@
         "compare_with": {}
     },
 
-    "r45": {
+    "r44": {
         "start_year": 2015,
         "value": {"_EITC_rt": [[0, 0, 0, 0]]},
         "section_name": "REFUNDABLE CREDIT",
@@ -415,7 +401,7 @@
         "compare_with": {"Tax Expenditure": [70.4, 71.1, 72.2, 69.9]}
     },
 
-    "r46": {
+    "r45": {
         "start_year": 2015,
         "value": {"_EITC_prt": [[0.0865, 0.1698, 0.2206, 0.2206]]},
         "name": "Increase EITC phaseout rate by 1 pts",
@@ -423,7 +409,7 @@
         "compare_with": {}
     },
 
-    "r47": {
+    "r46": {
         "start_year": 2015,
         "value": {"_EITC_ps": [[9240, 19110, 19110, 19110]]},
         "name": "Increase EITC phaseout starting AGI by 1000",
@@ -431,7 +417,7 @@
         "compare_with": {}
     },
 
-    "r48": {
+    "r47": {
         "start_year": 2015,
         "value": {"_EITC_c": [[603, 3459, 5648, 6342]]},
         "name": "Increase Maximum EITC allowed by 100",
@@ -439,7 +425,7 @@
         "compare_with": {}
     },
 
-    "r49": {
+    "r48": {
         "start_year": 2015,
         "value": {"_ACTC_rt": [0.17]},
         "name": "Increase additional child tax credit rate by 2 pts",
@@ -447,7 +433,7 @@
         "compare_with": {}
     },
 
-    "r50": {
+    "r49": {
         "start_year": 2015,
         "value": {"_ACTC_ChildNum": [2]},
         "name": "Decrease additional child tax credit minimum number of child to two",
@@ -455,7 +441,7 @@
         "compare_with": {}
     },
 
-    "r51": {
+    "r50": {
         "start_year": 2015,
         "value": {"_NIIT_trt": [0]},
         "section_name": "OTHER TAXES",
@@ -464,7 +450,7 @@
         "compare_with": {"Tax Expenditure": [-32.6, -34.7, -36.6, -38.9]}
     },
 
-    "r52": {
+    "r51": {
         "start_year": 2015,
         "value": {"_NIIT_thd": [[210000, 260000, 135000, 210000, 260000, 135000]]},
         "name": "Increase Net Investment Income Tax threshold by 10,000",
@@ -472,7 +458,7 @@
         "compare_with": {}
     },
 
-    "r53": {
+    "r52": {
         "start_year": 2015,
         "value": {"_II_credit": [[1000, 1000, 1000, 1000, 1000, 1000]]},
         "section_name": "PERSONAL REFUNDABLE CREDIT",
@@ -481,7 +467,7 @@
         "compare_with": {}
     },
 
-    "r54": {
+    "r53": {
         "start_year": 2015,
         "value": {"_II_credit": [[1000, 1000, 1000, 1000, 1000, 1000]],
                   "_II_credit_ps": [[100000, 100000, 100000, 100000, 100000, 100000]],

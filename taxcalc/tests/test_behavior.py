@@ -50,12 +50,12 @@ def test_behavioral_response_Calculator():
                                 mtr_of='e00200p',
                                 tax_type='nonsense')
     # vary substitution and income effects in calc_y
-    behavior1 = {2013: {'_BE_sub': [0.0], '_BE_cg': [-0.8]}}
+    behavior1 = {2013: {'_BE_sub': [0.3], '_BE_cg': [0.0]}}
     behavior_y.update_behavior(behavior1)
     assert behavior_y.has_response() is True
-    assert behavior_y.BE_sub == 0.0
+    assert behavior_y.BE_sub == 0.3
     assert behavior_y.BE_inc == 0.0
-    assert behavior_y.BE_cg == -0.8
+    assert behavior_y.BE_cg == 0.0
     calc_y_behavior1 = Behavior.response(calc_x, calc_y)
     behavior2 = {2013: {'_BE_sub': [0.5], '_BE_cg': [-0.8]}}
     behavior_y.update_behavior(behavior2)
@@ -63,11 +63,15 @@ def test_behavioral_response_Calculator():
     behavior3 = {2013: {'_BE_inc': [-0.2], '_BE_cg': [-0.8]}}
     behavior_y.update_behavior(behavior3)
     calc_y_behavior3 = Behavior.response(calc_x, calc_y)
+    behavior4 = {2013: {'_BE_cg': [-0.8]}}
+    behavior_y.update_behavior(behavior4)
+    calc_y_behavior4 = Behavior.response(calc_x, calc_y)
     # check that total income tax liability differs across the
-    # three sets of behavioral-response elasticities
+    # four sets of behavioral-response elasticities
     assert (calc_y_behavior1.records._iitax.sum() !=
             calc_y_behavior2.records._iitax.sum() !=
-            calc_y_behavior3.records._iitax.sum())
+            calc_y_behavior3.records._iitax.sum() !=
+            calc_y_behavior4.records._iitax.sum())
     # test incorrect _mtr_xy() usage
     with pytest.raises(ValueError):
         Behavior._mtr_xy(calc_x, calc_y, mtr_of='e00200p', tax_type='?')

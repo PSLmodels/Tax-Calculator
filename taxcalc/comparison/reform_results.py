@@ -66,8 +66,13 @@ for i in range(1, NUM_REFORMS + 1):
     for _ in range(0, NUM_YEARS):
         calc1.calc_all()
         prereform = getattr(calc1.records, output_type)
-        calc2.calc_all()
-        postreform = getattr(calc2.records, output_type)
+        if calc2.behavior.has_response():
+            calc_clp = calc2.current_law_version()
+            calc2_br = Behavior.response(calc_clp, calc2)
+            postreform = getattr(calc2_br.records, output_type)
+        else:
+            calc2.calc_all()
+            postreform = getattr(calc2.records, output_type)
         diff = postreform - prereform
         weighted_sum_diff = (diff * calc1.records.s006).sum() * 1.0e-9
         reform_results.append(weighted_sum_diff)
