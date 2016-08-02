@@ -98,8 +98,7 @@ class Behavior(ParametersBase):
           calc_y.policy.  Neither calc_x nor calc_y need to have had calc_all()
           executed before calling the Behavior.response(calc_x, calc_y) method.
         Returns new Calculator object --- a deepcopy of calc_y --- that
-          incorporates behavioral responses to the reform, but has called
-          NEITHER the BenefitsSurtax() NOR the ExpandIncome() functions.
+          incorporates behavioral responses to the reform.
         Note: the use here of a dollar-change income elasticity (rather than
           a proportional-change elasticity) is consistent with Feldstein and
           Feenberg, "The Taxation of Two Earner Families", NBER Working Paper
@@ -153,7 +152,7 @@ class Behavior(ParametersBase):
                 inc = calc_y.behavior.BE_inc * dch
         taxinc_chg = sub + inc
         # calculate long-term capital-gains effect
-        if calc_y.behavior.BE_inc == 0.0:
+        if calc_y.behavior.BE_cg == 0.0:
             ltcg_chg = np.zeros(calc_x.records.dim)
         else:
             # calculate marginal tax rates on long-term capital gains
@@ -170,7 +169,7 @@ class Behavior(ParametersBase):
         calc_y_behv = Behavior._update_ordinary_income(taxinc_chg, calc_y_behv)
         calc_y_behv = Behavior._update_cap_gain_income(ltcg_chg, calc_y_behv)
         # Recalculate post-reform taxes incorporating behavioral responses
-        calc_y_behv.calc_one_year()
+        calc_y_behv.calc_all()
         return calc_y_behv
 
     # ----- begin private methods of Behavior class -----

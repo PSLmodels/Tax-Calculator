@@ -343,7 +343,7 @@ class Policy(ParametersBase):
 
     def current_law_version(self):
         """
-        Return Policy object the same as self except with current-law policy.
+        Return Policy object same as self except with current-law policy.
         """
         startyear = self.start_year
         numyears = self.num_years

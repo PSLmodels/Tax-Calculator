@@ -308,46 +308,6 @@ def test_Calculator_create_diagnostic_table():
     assert isinstance(adt, pd.DataFrame)
 
 
-def test_Calculator_behavioral_response_with_reform():
-    tax_rate_reform = {2013: {'_II_rt7': [0.50]}}
-    # calculate AGI under reform without behavioral response
-    pol1 = Policy()
-    pol1.implement_reform(tax_rate_reform)
-    puf1 = Records(data=TAXDATA, weights=WEIGHTS, start_year=Records.PUF_YEAR)
-    beh1 = Behavior()
-    calc1 = Calculator(policy=pol1, records=puf1, behavior=beh1)
-    calc1.calc_all()
-    agi1 = calc1.records.c00100
-    # calculate AGI under reform with behavioral response
-    pol2 = Policy()
-    pol2.implement_reform(tax_rate_reform)
-    puf2 = Records(data=TAXDATA, weights=WEIGHTS, start_year=Records.PUF_YEAR)
-    beh2 = Behavior()
-    beh2.update_behavior({2013: {'_BE_sub': [0.4]}})
-    assert beh2.has_response()
-    calc2 = Calculator(policy=pol2, records=puf2, behavior=beh2)
-    calc2.calc_all()
-    agi2 = calc2.records.c00100
-    # check that AGI amounts differ after reform-with-behavioral-response
-    assert not np.allclose(agi1, agi2)
-
-
-def test_Calculator_behavioral_response_with_no_reform():
-    # check that current-law-policy results are same with and without behavior
-    beh1 = Behavior()
-    puf1 = Records(data=TAXDATA, weights=WEIGHTS, start_year=Records.PUF_YEAR)
-    calc1 = Calculator(policy=Policy(), records=puf1, behavior=beh1)
-    calc1.calc_all()
-    agi1 = calc1.records.c00100
-    beh2 = Behavior()
-    beh2.update_behavior({2013: {'_BE_sub': [0.4]}})
-    puf2 = Records(data=TAXDATA, weights=WEIGHTS, start_year=Records.PUF_YEAR)
-    calc2 = Calculator(policy=Policy(), records=puf2, behavior=beh2)
-    calc2.calc_all()
-    agi2 = calc2.records.c00100
-    assert np.allclose(agi1, agi2)
-
-
 def test_make_Calculator_increment_years_first():
     # create Policy object with custom indexing rates and policy reform
     irates = {2013: 0.01, 2014: 0.01, 2015: 0.02, 2016: 0.01, 2017: 0.03}
