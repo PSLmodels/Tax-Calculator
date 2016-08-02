@@ -1,124 +1,110 @@
 """
-This script generates policy experiment results,
-and compare them with JCT Tax Expenditure or Budget Options if available.
+This script generates policy experiment results and
+compares them with JCT Tax Expenditure or Budget Options, if available.
 
-It uses reforms stored in 'reforms.json',
-and export and save all results and comparisons in a txt file
+It reads reforms stored in the 'reforms.json' file, and
+writes all results and comparisons to the 'reform_results.txt' file.
 
-puf.csv needs to be in the top level of Tax-calculator.
-Otherwise replace the file name with full path
+puf.csv needs to be in the top-level directory of Tax-Calculator source tree.
 
 USAGE: python reform_results.py
 """
+# CODING-STYLE CHECKS:
+# pep8 --ignore=E402 reform_results.py
+# pylint --disable=locally-disabled reform_results.py
 
 import json
-import copy
 import pandas as pd
 import os
 import sys
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, "..", ".."))
+# pylint: disable=import-error
 from taxcalc import Policy, Records, Calculator, Behavior
 PUF_PATH = os.path.join(CUR_PATH, "..", "..", "puf.csv")
+PUF_DATA = pd.read_csv(PUF_PATH)
 
-# import all reforms from this JSON file
+# read all reforms from JSON file
 with open("reforms.json") as json_file:
-    reforms_json = json.load(json_file)
-num_reforms = len(reforms_json)
+    REFORMS_JSON = json.load(json_file)
+NUM_REFORMS = len(REFORMS_JSON)
 
-# create two calculators, one for baseline and the other for reforms
-tax_dta1 = pd.read_csv(PUF_PATH)
-records1 = Records(tax_dta1)
-policy1 = Policy(start_year=2013)
-calc1 = Calculator(records=records1, policy=policy1)
+# create a dictionary of all reform results
+RESULTS = {}
 
-tax_dta2 = pd.read_csv(PUF_PATH)
-records2 = Records(tax_dta2)
-policy2 = Policy(start_year=2013)
-calc2 = Calculator(records=records2, policy=policy2)
+# analyze one reform a time, simulating each reform for four years
+NUM_YEARS = 4
+for i in range(1, NUM_REFORMS + 1):
+    # fetch this reform from reforms_json after checking for behavior
+    this_reform = "r" + str(i)
+    start_year = REFORMS_JSON.get(this_reform).get("start_year")
+    if "_BE_cg" in REFORMS_JSON.get(this_reform).get("value"):
+        elasticity = REFORMS_JSON[this_reform]["value"]["_BE_cg"]
+        del REFORMS_JSON[this_reform]["value"]["_BE_cg"]  # to not break reform
+        beh2 = Behavior()
+        beh_assump = {start_year: {"_BE_cg": elasticity}}
+        beh2.update_behavior(beh_assump)
+    else:
+        beh2 = Behavior()
+    reform = {start_year: REFORMS_JSON.get(this_reform).get("value")}
+    output_type = REFORMS_JSON.get(this_reform).get("output_type")
+    reform_name = REFORMS_JSON.get(this_reform).get("name")
 
-# increment both calculators to 2015, when most reforms start
-calc1.advance_to_year(2015)
-calc2.advance_to_year(2015)
+    # create two calculators, one for prereform and the other for postreform
+    pol1 = Policy()
+    rec1 = Records(data=PUF_DATA)
+    calc1 = Calculator(policy=pol1, records=rec1, verbose=False, behavior=None)
+    pol2 = Policy()
+    pol2.implement_reform(reform)
+    rec2 = Records(data=PUF_DATA)
+    beh2 = Behavior()
+    calc2 = Calculator(policy=pol2, records=rec2, verbose=False, behavior=beh2)
 
-# create a dictionary to save all results
-results = {}
+    # increment both calculators to reform's start_year
+    calc1.advance_to_year(start_year)
+    calc2.advance_to_year(start_year)
 
-# runs one reform a time, each reform for 4 years
-# modify the number of reform & number of years as needed
-for i in range(1, num_reforms + 1):
-    # make two deep copies so the originals could be used again in next loop
-    c1 = copy.deepcopy(calc1)
-    c2 = copy.deepcopy(calc2)
+    # calculate prereform and postreform for num_years
+    reform_results = []
+    for _ in range(0, NUM_YEARS):
+        calc1.calc_all()
+        prereform = getattr(calc1.records, output_type)
+        calc2.calc_all()
+        postreform = getattr(calc2.records, output_type)
+        diff = postreform - prereform
+        weighted_sum_diff = (diff * calc1.records.s006).sum() * 1.0e-9
+        reform_results.append(weighted_sum_diff)
+        calc1.increment_year()
+        calc2.increment_year()
 
-    # fetch this reform from json and implement in policy object
-    this_reform = 'r' + str(i)
-    start_year = reforms_json.get(this_reform).get("start_year")
+    # put reform_results in the dictionary of all results
+    RESULTS[reform_name] = reform_results
 
-    # implement behavioral-response elasticities if any,
-    # and remove the node so it won't break policy object
-    if "_BE_cg" in reforms_json.get(this_reform).get("value"):
-        elasticity = reforms_json[this_reform]["value"]["_BE_cg"]
-        assumption = {start_year: {"_BE_cg": elasticity}}
-        c2.behavior.update_behavior(assumption)
-        del reforms_json[this_reform]["value"]["_BE_cg"]
-
-    # implement reforms on policy
-    reform = {start_year: reforms_json.get(this_reform).get("value")}
-    c2.policy.implement_reform(reform)
-
-    # run the current reform for 4 years
-    this_reform_results = []
-    for j in range(1, start_year - 2010):
-        output_type = reforms_json.get(this_reform).get("output_type")
-
-        c1.calc_all()
-        baseline = getattr(c1.records, output_type)
-        if c2.behavior.has_response():
-            c2_behavior = c2.behavior.response(c1, c2)
-            diff = getattr(c2_behavior.records, output_type) - baseline
-        else:
-            c2.calc_all()
-            diff = getattr(c2.records, output_type) - baseline
-
-        weighted_sum_diff = (diff * c1.records.s006).sum() / 1000000000
-
-        this_reform_results.append(weighted_sum_diff)
-
-        c1.increment_year()
-        c2.increment_year()
-
-    # put this reform results in the dictionary for final results
-    results[reforms_json.get(this_reform).get("name")] = this_reform_results
-
-# export all results to a CSV file
-# write all results to a text file
-ofile = open('reform_results.txt', 'w')
-for i in range(1, num_reforms + 1):
-    reform = reforms_json['r' + str(i)]
-    ofile.write('""\n')
-
+# write RESULTS to text file
+OFILE = open('reform_results.txt', 'w')
+for i in range(1, NUM_REFORMS + 1):
+    reform = REFORMS_JSON['r' + str(i)]
+    OFILE.write('""\n')
     if "section_name" in reform:
-        ofile.write('{}\n'.format(reform["section_name"]))
-        ofile.write('""\n')
-
+        OFILE.write('{}\n'.format(reform["section_name"]))
+        OFILE.write('""\n')
     reform_name = reform["name"]
-    ofile.write('{}\n'.format(reform_name))
-
-    value = results[reform_name]
-    ofile.write('Tax-Calculator')
-    ofile.write(',{:.1f},{:.1f},{:.1f},{:.1f}\n'.format(value[0], value[1],
-                                                        value[2], value[3]))
-
+    OFILE.write('{}\n'.format(reform_name))
+    value = RESULTS[reform_name]
+    OFILE.write('Tax-Calculator')
+    for iyr in range(0, NUM_YEARS):
+        OFILE.write(',{:.1f}'.format(value[iyr]))
+    OFILE.write('\n')
     if "Tax Expenditure" in reform["compare_with"]:
         comp = reform["compare_with"]["Tax Expenditure"]
-        ofile.write('Tax Expenditure')
-        ofile.write(',{:.0f},{:.0f},{:.0f},{:.0f}\n'.format(comp[0], comp[1],
-                                                            comp[2], comp[3]))
-
+        OFILE.write('Tax Expenditure')
+        for iyr in range(0, NUM_YEARS):
+            OFILE.write(',{:.0f}'.format(comp[iyr]))
+        OFILE.write('\n')
     if "Budget Options" in reform["compare_with"]:
         comp = reform["compare_with"]["Budget Options"]
-        ofile.write('Budget Options')
-        ofile.write(',{:.0f},{:.0f},{:.0f},{:.0f}\n'.format(comp[0], comp[1],
-                                                            comp[2], comp[3]))
-ofile.close()
+        OFILE.write('Budget Options')
+        for iyr in range(0, NUM_YEARS):
+            OFILE.write(',{:.0f}'.format(comp[iyr]))
+        OFILE.write('\n')
+OFILE.close()
