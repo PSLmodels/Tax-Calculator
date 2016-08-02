@@ -557,7 +557,7 @@ def multiyear_diagnostic_table(calc, num_years=0):
     for iyr in range(1, num_years + 1):
         if cal.behavior.has_response():
             cal_clp = cal.current_law_version()
-            cal_br = Behavior.response(cal_clp, cal)
+            cal_br = cal.behavior.response(cal_clp, cal)
             dtlist.append(create_diagnostic_table(cal_br))
         else:
             cal.calc_all()

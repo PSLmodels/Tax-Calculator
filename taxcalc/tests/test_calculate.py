@@ -235,6 +235,18 @@ def test_Calculator_attr_access_to_policy():
     assert hasattr(calc, 'policy')
 
 
+def test_Calculator_current_law_version():
+    policy = Policy()
+    reform = {2013: {'_II_rt7': [0.45]}}
+    policy.implement_reform(reform)
+    puf = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    calc = Calculator(policy=policy, records=puf)
+    calc_clp = calc.current_law_version()
+    assert isinstance(calc_clp, Calculator)
+    assert calc.policy.II_rt6 == calc_clp.policy.II_rt6
+    assert calc.policy.II_rt7 != calc_clp.policy.II_rt7
+
+
 def test_Calculator_create_distribution_table():
     policy = Policy()
     puf = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)

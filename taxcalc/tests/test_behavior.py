@@ -50,12 +50,12 @@ def test_behavioral_response_Calculator():
                                 mtr_of='e00200p',
                                 tax_type='nonsense')
     # vary substitution and income effects in calc_y
-    behavior1 = {2013: {'_BE_sub': [0.0], '_BE_cg': [-0.8]}}
+    behavior1 = {2013: {'_BE_sub': [0.3], '_BE_cg': [0.0]}}
     behavior_y.update_behavior(behavior1)
     assert behavior_y.has_response() is True
-    assert behavior_y.BE_sub == 0.0
+    assert behavior_y.BE_sub == 0.3
     assert behavior_y.BE_inc == 0.0
-    assert behavior_y.BE_cg == -0.8
+    assert behavior_y.BE_cg == 0.0
     calc_y_behavior1 = Behavior.response(calc_x, calc_y)
     behavior2 = {2013: {'_BE_sub': [0.5], '_BE_cg': [-0.8]}}
     behavior_y.update_behavior(behavior2)

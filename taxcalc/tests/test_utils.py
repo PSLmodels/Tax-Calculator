@@ -11,7 +11,7 @@ from pandas import DataFrame, Series
 from pandas.util.testing import assert_series_equal
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
-from taxcalc import Policy, Records, Calculator
+from taxcalc import Policy, Records, Behavior, Calculator
 from taxcalc.utils import *
 
 # use 1991 PUF-like data to emulate current puf.csv, which is private
@@ -528,11 +528,16 @@ def test_expand_2D_accept_None_additional_row():
 def test_multiyear_diagnostic_table():
     pol = Policy()
     recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    calc = Calculator(policy=pol, records=recs)
+    behv = Behavior()
+    calc = Calculator(policy=pol, records=recs, behavior=behv)
     with pytest.raises(ValueError):
         adt = multiyear_diagnostic_table(calc, 0)
     with pytest.raises(ValueError):
         adt = multiyear_diagnostic_table(calc, 20)
+    adt = multiyear_diagnostic_table(calc, 3)
+    assert isinstance(adt, DataFrame)
+    behv.update_behavior({2013: {'_BE_sub': [0.3]}})
+    assert calc.behavior.has_response()
     adt = multiyear_diagnostic_table(calc, 3)
     assert isinstance(adt, DataFrame)
 
