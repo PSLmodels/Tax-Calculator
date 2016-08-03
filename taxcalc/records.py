@@ -217,7 +217,7 @@ class Records(object):
         self._read_weights(weights)
         # weights must be same size as tax record data
         if not self.WT.empty and self.dim != len(self.WT):
-            frac = self.dim / len(self.WT)
+            frac = float(self.dim) / len(self.WT)
             self.WT = self.WT.iloc[self.index]
             self.WT = self.WT / frac
 
