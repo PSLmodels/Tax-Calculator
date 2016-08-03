@@ -1,4 +1,3 @@
-from __future__ import print_function
 """
 Tax-Calculator tax-filing-unit Records class.
 """
@@ -218,7 +217,10 @@ class Records(object):
         self._read_weights(weights)
         # weights must be same size as tax record data
         if not self.WT.empty and self.dim != len(self.WT):
+            frac = self.dim / len(self.WT)
             self.WT = self.WT.iloc[self.index]
+            self.WT = self.WT / frac
+
         # specify current_year and FLPDYR values
         if isinstance(start_year, int):
             self._current_year = start_year
