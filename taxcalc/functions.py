@@ -1133,7 +1133,7 @@ def Taxer_i(inc_in, MARS,
                 max(0., inc_in - II_brk4[MARS - 1])) + II_rt6 *
             min(II_brk6[MARS - 1] - II_brk5[MARS - 1],
                 max(0., inc_in - II_brk5[MARS - 1])) + II_rt7 *
-            min(II_brk7[MARS - 1] - II_brk6[MARS - 1],
+            min(II_brk_xtr[MARS - 1] - II_brk6[MARS - 1],
                 max(0., inc_in - II_brk6[MARS - 1])) + II_rt_xtr *
             max(0., inc_in - II_brk_xtr[MARS - 1]))
 
