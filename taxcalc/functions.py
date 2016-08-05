@@ -436,8 +436,8 @@ def Personal_Credit(c04500, MARS,
 @iterate_jit(nopython=True)
 def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
            _feided, c04800, MARS, _feitax, _taxinc,
-           II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
-           II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
+           II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt_xtr,
+           II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk_xtr):
     """
     TaxInc function: ...
     """
@@ -450,8 +450,8 @@ def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
         _taxinc = c04800
     if c04800 > 0. and _feided > 0.:
         _feitax = Taxer_i(_feided, MARS, II_rt1, II_rt2, II_rt3, II_rt4,
-                          II_rt5, II_rt6, II_rt7, II_brk1, II_brk2, II_brk3,
-                          II_brk4, II_brk5, II_brk6)
+                          II_rt5, II_rt6, II_rt7, II_rt_xtr, II_brk1, II_brk2,
+                          II_brk3, II_brk4, II_brk5, II_brk6, II_brk_xtr)
     else:
         _feitax = 0.
     return (c04500, c04800, _taxinc, _feitax, _standard)
@@ -459,17 +459,17 @@ def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
 
 @iterate_jit(nopython=True)
 def XYZD(_taxinc, c04800, MARS, _xyztax, c05200,
-         II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
-         II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
+         II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt_xtr,
+         II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk_xtr):
     """
     XYZD function: ...
     """
     _xyztax = Taxer_i(_taxinc, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
-                      II_rt6, II_rt7, II_brk1, II_brk2, II_brk3, II_brk4,
-                      II_brk5, II_brk6)
+                      II_rt6, II_rt7, II_rt_xtr, II_brk1, II_brk2, II_brk3,
+                      II_brk4, II_brk5, II_brk6, II_brk_xtr)
     c05200 = Taxer_i(c04800, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
-                     II_rt6, II_rt7, II_brk1, II_brk2, II_brk3, II_brk4,
-                     II_brk5, II_brk6)
+                     II_rt6, II_rt7, II_rt_xtr, II_brk1, II_brk2, II_brk3,
+                     II_brk4, II_brk5, II_brk6, II_brk_xtr)
     return (_xyztax, c05200)
 
 
@@ -478,8 +478,8 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
              e24515, e24518, MARS, _taxinc, _xyztax, _feided,
              _feitax, c00650, c05700, _taxbc,
              c24516, c24517, c24520,
-             II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
-             II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6,
+             II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt_xtr,
+             II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk_xtr,
              CG_rt1, CG_rt2, CG_rt3, CG_thd1, CG_thd2):
     """
     TaxGains function: ...
@@ -541,8 +541,8 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
             addtax = 0.
 
         c24560 = Taxer_i(c24540, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
-                         II_rt6, II_rt7, II_brk1, II_brk2, II_brk3, II_brk4,
-                         II_brk5, II_brk6)
+                         II_rt6, II_rt7, II_rt_xtr, II_brk1, II_brk2, II_brk3,
+                         II_brk4, II_brk5, II_brk6, II_brk_xtr)
 
         tspecial = lowest_rate_tax + c24598 + c24615 + c24570 + c24560 + addtax
 
@@ -1117,8 +1117,8 @@ def IITAX(c09200, c59660, c11070, c10960, _eitc, c11580,
 
 @jit(nopython=True)
 def Taxer_i(inc_in, MARS,
-            II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
-            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
+            II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt_xtr,
+            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk_xtr):
     """
     Taxer_i function: ...
     """
@@ -1133,7 +1133,9 @@ def Taxer_i(inc_in, MARS,
                 max(0., inc_in - II_brk4[MARS - 1])) + II_rt6 *
             min(II_brk6[MARS - 1] - II_brk5[MARS - 1],
                 max(0., inc_in - II_brk5[MARS - 1])) + II_rt7 *
-            max(0., inc_in - II_brk6[MARS - 1]))
+            min(II_brk7[MARS - 1] - II_brk6[MARS - 1],
+                max(0., inc_in - II_brk6[MARS - 1])) + II_rt_xtr *
+            max(0., inc_in - II_brk_xtr[MARS - 1]))
 
 
 @iterate_jit(nopython=True)
