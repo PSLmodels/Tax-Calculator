@@ -543,8 +543,8 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         if c24540 > CG_thd_xtr[MARS - 1]:
             addtax = (CG_rt_xtr - CG_rt3) * c24517 + addtax
         elif c24540 <= CG_thd_xtr[MARS - 1] and _taxinc > CG_thd_xtr[MARS - 1]:
-            addtax = addtax + (CG_rt_xtr - CG_rt3) * \
-             min(_dwks21, _taxinc - CG_thd_xtr[MARS - 1])
+            addtax = addtax + (CG_rt_xtr - CG_rt3) * min(
+                _dwks21, _taxinc - CG_thd_xtr[MARS - 1])
         else:
             addtax = addtax + 0.
 
