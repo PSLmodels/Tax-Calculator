@@ -651,6 +651,7 @@ def AMTI(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
     line48 = min(alminc, c62720) - line47
     amt15pc = min(line48, max(0., AMT_CG_thd2[MARS - 1] - c24520 - line45))
     amt_xtr = min(line48, max(0., AMT_CG_thd_xtr[MARS - 1] - c24520 - line45))
+
     if ngamty != (amt15pc + line47) or ngamty != (amt_xtr + line47):
         amt20pc = max(amt_xtr - amt15pc, 0.)
         amtxtrpc = line46 - amt_xtr - line47
