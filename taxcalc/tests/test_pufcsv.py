@@ -46,7 +46,7 @@ def test_sample():
     # Sample sample dataset
     clp2 = Policy()
     tax_data_full = pd.read_csv(PUFCSV_PATH)
-    tax_data = tax_data_full.sample(frac=0.10)
+    tax_data = tax_data_full.sample(frac=0.02)
     puf_sample = Records(data=tax_data)
     calc_sample = Calculator(policy=clp2, records=puf_sample)
     adt_sample = calc_sample.diagnostic_table(num_years=10)
