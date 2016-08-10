@@ -37,8 +37,7 @@ def test_behavioral_response_Calculator():
     policy_x = Policy()
     policy_y = Policy()
     # implement policy_y reform
-    reform = {2013: {'_II_rt7': [0.496],
-                     '_II_rt_xtr': [0.496]}}
+    reform = {2013: {'_II_rt7': [0.496]}}
     policy_y.implement_reform(reform)
     # create two Calculator objects
     behavior_y = Behavior()
