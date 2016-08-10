@@ -29,6 +29,38 @@ MTRRES_PATH = os.path.join(CUR_PATH, 'pufcsv_mtr_expect.txt')
 import pytest
 import difflib
 import numpy as np
+import pandas as pd
+
+
+@pytest.mark.requires_pufcsv
+def test_sample():
+    """
+    Test if reading in a sample of the data produces a reasonable estimate
+    relative to the full data set
+    """
+    # Full dataset
+    clp = Policy()
+    puf = Records(data=PUFCSV_PATH)
+    calc = Calculator(policy=clp, records=puf)
+    adt = calc.diagnostic_table(num_years=10)
+
+    # Sample sample dataset
+    clp2 = Policy()
+    tax_data_full = pd.read_csv(PUFCSV_PATH)
+    tax_data = tax_data_full.sample(frac=0.02)
+    puf_sample = Records(data=tax_data)
+    calc_sample = Calculator(policy=clp2, records=puf_sample)
+    adt_sample = calc_sample.diagnostic_table(num_years=10)
+
+    # Get the final combined tax liability for the budget period
+    # in the sample and the full dataset and make sure they are close
+    full_tax_liability = adt.loc["Combined liability ($b)"]
+    sample_tax_liability = adt_sample.loc["Combined liability ($b)"]
+    max_val = max(full_tax_liability.max(), sample_tax_liability.max())
+    rel_diff = max(abs(full_tax_liability - sample_tax_liability)) / max_val
+
+    # Fail on greater than 5% releative difference in any budget year
+    assert rel_diff < 0.05
 
 
 @pytest.mark.requires_pufcsv
