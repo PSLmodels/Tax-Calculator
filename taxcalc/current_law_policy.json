@@ -596,7 +596,7 @@
 
     "_II_credit": {
         "long_name": "Personal refundable credit",
-        "description": "This credit amount is fully refundable, phased out based on taxable income.",
+        "description": "This credit amount is fully refundable, phased out based on taxable income. It is available to tax units who would otherwise not file.",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
