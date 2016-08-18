@@ -1153,39 +1153,47 @@ def ExpandIncome(_fica_was, e02400, c02500, c00100, e00400, _expanded_income):
     return _expanded_income
 
 
+def ComputeBenefit(calc, ID_switch):
+    """
+    Calculates the value of the benefits accrued from itemizing.
+    """
+    # compute income tax liability with no itemized deductions allowed for
+    # the types of itemized deductions covered under the BenefitSurtax
+    no_ID_calc = copy.deepcopy(calc)
+    if ID_switch[0]:
+        no_ID_calc.policy.ID_Medical_HC = 1.
+    if ID_switch[1]:
+        no_ID_calc.policy.ID_StateLocalTax_HC = 1.
+    if ID_switch[2]:
+        no_ID_calc.policy.ID_RealEstate_HC = 1.
+    if ID_switch[3]:
+        no_ID_calc.policy.ID_Casualty_HC = 1.
+    if ID_switch[4]:
+        no_ID_calc.policy.ID_Miscellaneous_HC = 1.
+    if ID_switch[5]:
+        no_ID_calc.policy.ID_InterestPaid_HC = 1.
+    if ID_switch[6]:
+        no_ID_calc.policy.ID_Charity_HC = 1.
+    no_ID_calc.calc_one_year()
+    # compute surtax amount and add to income and combined taxes
+    # pylint: disable=protected-access
+    benefit = np.where(
+        no_ID_calc.records._iitax - calc.records._iitax > 0.,
+        no_ID_calc.records._iitax - calc.records._iitax, 0.)
+    return benefit
+
+
 def BenefitSurtax(calc):
     """
     BenefitSurtax function: computes itemized-deduction-benefit surtax and
     adds the surtax amount to income tax and combined tax liabilities.
     """
     if calc.policy.ID_BenefitSurtax_crt != 1.:
-        # compute income tax liability with no itemized deductions allowed for
-        # the types of itemized deductions covered under the BenefitSurtax
-        no_ID_calc = copy.deepcopy(calc)
-        if calc.policy.ID_BenefitSurtax_Switch[0]:
-            no_ID_calc.policy.ID_Medical_HC = 1.
-        if calc.policy.ID_BenefitSurtax_Switch[1]:
-            no_ID_calc.policy.ID_StateLocalTax_HC = 1.
-        if calc.policy.ID_BenefitSurtax_Switch[2]:
-            no_ID_calc.policy.ID_RealEstate_HC = 1.
-        if calc.policy.ID_BenefitSurtax_Switch[3]:
-            no_ID_calc.policy.ID_Casualty_HC = 1.
-        if calc.policy.ID_BenefitSurtax_Switch[4]:
-            no_ID_calc.policy.ID_Miscellaneous_HC = 1.
-        if calc.policy.ID_BenefitSurtax_Switch[5]:
-            no_ID_calc.policy.ID_InterestPaid_HC = 1.
-        if calc.policy.ID_BenefitSurtax_Switch[6]:
-            no_ID_calc.policy.ID_Charity_HC = 1.
-        no_ID_calc.calc_one_year()
-        # compute surtax amount and add to income and combined taxes
-        # pylint: disable=protected-access
-        benefit_amount = np.where(
-            no_ID_calc.records._iitax - calc.records._iitax > 0.,
-            no_ID_calc.records._iitax - calc.records._iitax, 0.)
+        benefit = ComputeBenefit(calc, calc.policy.ID_BenefitSurtax_Switch)
         benefit_deduction = (calc.policy.ID_BenefitSurtax_crt *
                              calc.records.c00100)
         calc.records._surtax[:] = calc.policy.ID_BenefitSurtax_trt * np.where(
-            benefit_amount > benefit_deduction,
-            benefit_amount - benefit_deduction, 0.)
+            benefit > benefit_deduction,
+            benefit - benefit_deduction, 0.)
         calc.records._iitax += calc.records._surtax
         calc.records._combined += calc.records._surtax
