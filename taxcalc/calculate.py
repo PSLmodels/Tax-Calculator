@@ -198,6 +198,7 @@ class Calculator(object):
         # conducts static analysis of Calculator object for current_year
         self.calc_one_year(zero_out_calc_vars)
         BenefitSurtax(self)
+        BenefitCap(self)
 
     def increment_year(self):
         next_year = self.policy.current_year + 1

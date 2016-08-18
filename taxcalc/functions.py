@@ -314,7 +314,7 @@ def ItemDed(_posagi, e17500, e18400, e18500,
     else:
         c21040 = 0.
         c04470 = c21060
-    return (c17000, c18300, c20800, c21040, c21060, c04470)
+    return (c17000, c18300, c19200, c20500, c20800, c21040, c21060, c04470)
 
 
 @iterate_jit(nopython=True)
@@ -1207,26 +1207,27 @@ def BenefitCap(calc):
     if calc.policy.ID_BenefitCap_rt != 1.:
         benefit = ComputeBenefit(calc, calc.policy.ID_BenefitCap_Switch)
     # Calculate total deductible expenses under the cap.
-    expenses = 0.
-    if calc.policy.ID_BenefitCap_Switch[0]:  # Medical
-        expenses += calc.records.c17000
-    if calc.policy.ID_BenefitCap_Switch[1]:  # StateLocal
-        expenses += ((1. - calc.policy.ID_StateLocalTax_HC) *
-                     max(calc.records.e18400, 0.))
-    if calc.policy.ID_BenefitCap_Switch[2]:
-        expenses += (1. - calc.policy.ID_RealEstate_HC) * calc.records.e18500
-    if calc.policy.ID_BenefitCap_Switch[3]:  # Casualty
-        expenses += calc.records.c20500
-    if calc.policy.ID_BenefitCap_Switch[4]:  # Miscellaneous
-        expenses += calc.records.c20800
-    if calc.policy.ID_BenefitCap_Switch[5]:   # Mortgage and interest paid
-        expenses += calc.records.c19200
-    if calc.policy.ID_BenefitCap_Switch[6]:  # Charity
-        expenses += calc.records.c19700
-    # Calculate cap value for itemized deductions
-    capped_benefit = expenses * calc.policy.ID_BenefitCap_rt
-    # Add the difference between the actual benefit and capped benefit
-    # to income tax and combined tax liabilities.
-    excess_benefit = max(benefit - capped_benefit, 0)
-    calc.records._iitax += excess_benefit
-    calc.records._combined += excess_benefit
+        deductible_expenses = 0.
+        if calc.policy.ID_BenefitCap_Switch[0]:  # Medical
+            deductible_expenses += calc.records.c17000
+        if calc.policy.ID_BenefitCap_Switch[1]:  # StateLocal
+            deductible_expenses += ((1. - calc.policy.ID_StateLocalTax_HC) *
+                                    np.maximum(calc.records.e18400, 0.))
+        if calc.policy.ID_BenefitCap_Switch[2]:
+            deductible_expenses += ((1. - calc.policy.ID_RealEstate_HC) *
+                                    calc.records.e18500)
+        if calc.policy.ID_BenefitCap_Switch[3]:  # Casualty
+            deductible_expenses += calc.records.c20500
+        if calc.policy.ID_BenefitCap_Switch[4]:  # Miscellaneous
+            deductible_expenses += calc.records.c20800
+        if calc.policy.ID_BenefitCap_Switch[5]:   # Mortgage and interest paid
+            deductible_expenses += calc.records.c19200
+        if calc.policy.ID_BenefitCap_Switch[6]:  # Charity
+            deductible_expenses += calc.records.c19700
+        # Calculate cap value for itemized deductions
+        capped_benefit = deductible_expenses * calc.policy.ID_BenefitCap_rt
+        # Add the difference between the actual benefit and capped benefit
+        # to income tax and combined tax liabilities.
+        excess_benefit = np.maximum(benefit - capped_benefit, 0)
+        calc.records._iitax += excess_benefit
+        calc.records._combined += excess_benefit
