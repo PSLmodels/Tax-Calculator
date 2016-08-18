@@ -1605,5 +1605,33 @@
         "cpi_inflated": false,
         "col_label": "",
         "value": [1.0]
+    },
+
+    "_ID_BenefitCap_Switch": {
+        "long_name": "Deductions subject to the cap on itemized deduction benefits",
+        "description": "The cap on itemized deduction benefits applies to the benefits derived from the itemized deductions specified with this parameter. ",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": ["Medical", "State & Local", "Real Estate", "Casualty", "Miscellaneous", "Interest", "Charity"],
+        "value": [[true, true, true, true, true, true, true]]
+    },
+
+    "_ID_BenefitCap_rt": {
+        "long_name": "Percent cap on the benefits from itemized deductions",
+        "description": "The benefit from specified itemized deductions is capped at this percent of the total deductible expenses.",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [1.0]
     }
 }

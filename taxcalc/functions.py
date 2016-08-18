@@ -1197,3 +1197,36 @@ def BenefitSurtax(calc):
             benefit - benefit_deduction, 0.)
         calc.records._iitax += calc.records._surtax
         calc.records._combined += calc.records._surtax
+
+
+def BenefitCap(calc):
+    """
+    BenefitCap function: computes a cap on the benefit of itemized deductions
+    by limiting the benefit to a fraction of the deductible expenses.
+    """
+    if calc.policy.ID_BenefitCap_rt != 1.:
+        benefit = ComputeBenefit(calc, calc.policy.ID_BenefitCap_Switch)
+    # Calculate total deductible expenses under the cap.
+    expenses = 0.
+    if calc.policy.ID_BenefitCap_Switch[0]:  # Medical
+        expenses += calc.records.c17000
+    if calc.policy.ID_BenefitCap_Switch[1]:  # StateLocal
+        expenses += ((1. - calc.policy.ID_StateLocalTax_HC) *
+                     max(calc.records.e18400, 0.))
+    if calc.policy.ID_BenefitCap_Switch[2]:
+        expenses += (1. - calc.policy.ID_RealEstate_HC) * calc.records.e18500
+    if calc.policy.ID_BenefitCap_Switch[3]:  # Casualty
+        expenses += calc.records.c20500
+    if calc.policy.ID_BenefitCap_Switch[4]:  # Miscellaneous
+        expenses += calc.records.c20800
+    if calc.policy.ID_BenefitCap_Switch[5]:   # Mortgage and interest paid
+        expenses += calc.records.c19200
+    if calc.policy.ID_BenefitCap_Switch[6]:  # Charity
+        expenses += calc.records.c19700
+    # Calculate cap value for itemized deductions
+    capped_benefit = expenses * calc.policy.ID_BenefitCap_rt
+    # Add the difference between the actual benefit and capped benefit
+    # to income tax and combined tax liabilities.
+    excess_benefit = max(benefit - capped_benefit, 0)
+    calc.records._iitax += excess_benefit
+    calc.records._combined += excess_benefit
