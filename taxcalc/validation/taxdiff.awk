@@ -10,8 +10,8 @@
 #           value of all the variable differences.
 
 BEGIN {
-    DUMP_OUT = 1 # set to 1 for dump of ovar4 differences greater than DUMP_MIN
-    DUMP_MIN = 7400.0 # minimum absolute value of ovar4 difference to dump
+    DUMP_OUT = 0 # set to 1 for dump of ovar4 differences greater than DUMP_MIN
+    DUMP_MIN = 0 # minimum absolute value of ovar4 difference to dump
     error = 0
     if ( col < 2 || col > 28 ) {
         printf( "ERROR: col=%d not in [2,28] range\n", col ) > "/dev/stderr"
