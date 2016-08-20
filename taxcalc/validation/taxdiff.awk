@@ -9,9 +9,9 @@
 #       (d) the maxdiff amount is the signed value of the largest absolute
 #           value of all the variable differences.
 
-DUMP_NUM_TAXDIFFS = 0 # number of tax differences [abs(diff)>0.01] to print
-
 BEGIN {
+    DUMP_OUT = 0 # set to 1 for dump of ovar4 differences greater than DUMP_MIN
+    DUMP_MIN = 0 # minimum absolute value of ovar4 difference to dump
     error = 0
     if ( col < 2 || col > 28 ) {
         printf( "ERROR: col=%d not in [2,28] range\n", col ) > "/dev/stderr"
@@ -95,12 +95,10 @@ END {
                 }
             }
             num_diffs++
-            if ( col == 4 && DUMP_NUM_TAXDIFFS > 0 &&
-                 ( diff <= -0.011 || diff >= 0.011 ) &&
-                 num_diffs - num_onecent_diffs <= DUMP_NUM_TAXDIFFS ) {
-                printf( "TAXDIFF-DUMP:id,taxdiff= %6d %9.2f\n", id1[i], diff )
-            }
             if ( diff < 0.0 ) abs_vardiff = -diff; else abs_vardiff = diff
+            if ( col == 4 && DUMP_OUT == 1 && abs_vardiff > DUMP_MIN ) {
+                printf( "OVAR4-DUMP:id,diff= %6d %9.2f\n", id1[i], diff )
+            }
             if ( abs_vardiff > max_abs_vardiff ) {
                 max_abs_vardiff = abs_vardiff
                 if ( diff < 0.0 ) {
