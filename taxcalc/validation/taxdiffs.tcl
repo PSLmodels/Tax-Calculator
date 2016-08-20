@@ -2,17 +2,17 @@
 #              the two specified tax output files that are formatted like
 #              Internet-TAXSIM generated output
 # NOTE: taxdiff.awk file must be in same directory as this taxdiffs.tcl file.
-# USAGE: tclsh taxdiffs.tcl [--ovar4 | --taxcalc] 1st-out-file 2nd-out-file
+# USAGE: tclsh taxdiffs.tcl [--ovar4 | --drake] 1st-out-file 2nd-out-file
 # WHERE --ovar4 option computes differences only for output variable 4
-#    OR --taxcalc option skips output variables not produced by taxcalc.sas
+#    OR --drake option skips output variables not in Drake Software output
 
 proc usage {} {
-    set args "\[--ovar4 | --taxcalc\] 1st-out-file 2nd-out-file"
+    set args "\[--ovar4 | --drake\] 1st-out-file 2nd-out-file"
     puts stderr "USAGE: tclsh taxdiffs.tcl $args"
     set details "computes diffs only for output variable 4"
     puts stderr "       WHERE using --ovar4 option $details"
-    set details "skips output not produced by taxcalc.sas"
-    puts stderr "          OR using --taxcalc option $details"
+    set details "skips output not produced by Drake Software"
+    puts stderr "          OR using --drake option $details"
 }
 
 proc taxdiff { awkfilename vnum out1 out2 } {
@@ -31,7 +31,7 @@ if { $argc < 2 || $argc > 3 } {
     exit 1
 }
 set ovar4 0
-set taxcalc 0
+set drake 0
 if { $argc == 2 } {
     set iarg 0
 } else {
@@ -40,8 +40,8 @@ if { $argc == 2 } {
     set option [lindex $argv 0]
     if { [string compare $option "--ovar4"] == 0 } {
         set ovar4 1
-    } elseif { [string compare $option "--taxcalc"] == 0 } {
-        set taxcalc 1
+    } elseif { [string compare $option "--drake"] == 0 } {
+        set drake 1
     } else {
         puts stderr "ERROR: illegal command-line option: $option"
         usage
@@ -61,20 +61,18 @@ if { ![file exists $out2_filename] } {
 }
 set awkfilename [file join [file dirname [info script]] taxdiff.awk]
 if { $ovar4 == 0 } {
-    if { $taxcalc == 0 } {
-        taxdiff $awkfilename  6 $out1_filename $out2_filename
+    taxdiff $awkfilename  6 $out1_filename $out2_filename
+    if { $drake == 0 } {
         taxdiff $awkfilename  7 $out1_filename $out2_filename
         taxdiff $awkfilename  9 $out1_filename $out2_filename
     }
     taxdiff $awkfilename 10 $out1_filename $out2_filename
-    if { $taxcalc == 0 } {
+    if { $drake == 0 } {
         taxdiff $awkfilename 11 $out1_filename $out2_filename
     }
     taxdiff $awkfilename 12 $out1_filename $out2_filename
-    if { $taxcalc == 0 } {
-        taxdiff $awkfilename 14 $out1_filename $out2_filename
-        taxdiff $awkfilename 15 $out1_filename $out2_filename
-    }
+    taxdiff $awkfilename 14 $out1_filename $out2_filename
+    taxdiff $awkfilename 15 $out1_filename $out2_filename
     taxdiff $awkfilename 16 $out1_filename $out2_filename
     taxdiff $awkfilename 17 $out1_filename $out2_filename
     taxdiff $awkfilename 18 $out1_filename $out2_filename
@@ -83,11 +81,11 @@ if { $ovar4 == 0 } {
     taxdiff $awkfilename 23 $out1_filename $out2_filename
     taxdiff $awkfilename 24 $out1_filename $out2_filename
     taxdiff $awkfilename 25 $out1_filename $out2_filename
-    if { $taxcalc == 0 } {
-        taxdiff $awkfilename 26 $out1_filename $out2_filename
-    }
+    taxdiff $awkfilename 26 $out1_filename $out2_filename
     taxdiff $awkfilename 27 $out1_filename $out2_filename
-    taxdiff $awkfilename 28 $out1_filename $out2_filename
+    if { $drake == 0 } {
+        taxdiff $awkfilename 28 $out1_filename $out2_filename
+    }
 }
 taxdiff $awkfilename  4 $out1_filename $out2_filename
 exit 0
