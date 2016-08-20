@@ -438,8 +438,8 @@ def Personal_Credit(c04500, MARS,
 @iterate_jit(nopython=True)
 def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
            _feided, c04800, MARS, _feitax, _taxinc,
-           II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
-           II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
+           II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
+           II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7):
     """
     TaxInc function: ...
     """
@@ -452,8 +452,8 @@ def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
         _taxinc = c04800
     if c04800 > 0. and _feided > 0.:
         _feitax = Taxer_i(_feided, MARS, II_rt1, II_rt2, II_rt3, II_rt4,
-                          II_rt5, II_rt6, II_rt7, II_brk1, II_brk2, II_brk3,
-                          II_brk4, II_brk5, II_brk6)
+                          II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
+                          II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
     else:
         _feitax = 0.
     return (c04500, c04800, _taxinc, _feitax, _standard)
@@ -462,25 +462,27 @@ def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
 @iterate_jit(nopython=True)
 def XYZD(_taxinc, c04800, MARS, _xyztax, c05200, c00900, c26270,
          II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
-         II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6,
-         pt_rates, pt_special):
+         II_rt8, II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6,
+         II_brk7, pt_rates, pt_special):
     """
     XYZD function: ...
     """
     if pt_special == 0:
-        _xyztax = Taxer_i(_taxinc, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
-                          II_rt6, II_rt7, II_brk1, II_brk2, II_brk3, II_brk4,
-                          II_brk5, II_brk6)
+        _xyztax = Taxer_i(_taxinc, MARS, II_rt1, II_rt2, II_rt3, II_rt4,
+                          II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
+                          II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
         c05200 = Taxer_i(c04800, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
-                         II_rt6, II_rt7, II_brk1, II_brk2, II_brk3, II_brk4,
-                         II_brk5, II_brk6)
+                         II_rt6, II_rt7, II_rt8, II_brk1, II_brk2, II_brk3,
+                         II_brk4, II_brk5, II_brk6, II_brk7)
     else:
         _xyztax = ptTaxer(_taxinc, MARS, c00900, c26270, pt_rates,
-                          II_rt1, II_rt2, II_rt3,II_rt4, II_rt5, II_rt6, II_rt7,
-                          II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6)
+                          II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6,
+                          II_rt7, II_rt8, II_brk1, II_brk2, II_brk3, II_brk4,
+                          II_brk5, II_brk6, II_brk7)
         c05200 = ptTaxer(c04800, MARS, c00900, c26270, pt_rates,
-                         II_rt1, II_rt2, II_rt3,II_rt4, II_rt5, II_rt6, II_rt7,
-                         II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6)
+                         II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6,
+                         II_rt7, II_rt8, II_brk1, II_brk2, II_brk3, II_brk4,
+                         II_brk5, II_brk6, II_brk7)
     return (_xyztax, c05200)
 
 
@@ -489,9 +491,9 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
              e24515, e24518, MARS, _taxinc, _xyztax, _feided,
              _feitax, c00650, c05700, _taxbc,
              c24516, c24517, c24520,
-             II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
-             II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6,
-             CG_rt1, CG_rt2, CG_rt3, CG_thd1, CG_thd2):
+             II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
+             II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7,
+             CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3):
     """
     TaxGains function: ...
     """
@@ -551,9 +553,17 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         else:
             addtax = 0.
 
+        if c24540 > CG_thd3[MARS - 1]:
+            addtax = (CG_rt4 - CG_rt3) * c24517 + addtax
+        elif c24540 <= CG_thd3[MARS - 1] and _taxinc > CG_thd3[MARS - 1]:
+            addtax = addtax + (CG_rt4 - CG_rt3) * min(
+                _dwks21, _taxinc - CG_thd3[MARS - 1])
+        else:
+            addtax = addtax + 0.
+
         c24560 = Taxer_i(c24540, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
-                         II_rt6, II_rt7, II_brk1, II_brk2, II_brk3, II_brk4,
-                         II_brk5, II_brk6)
+                         II_rt6, II_rt7, II_rt8, II_brk1, II_brk2, II_brk3,
+                         II_brk4, II_brk5, II_brk6, II_brk7)
 
         tspecial = lowest_rate_tax + c24598 + c24615 + c24570 + c24560 + addtax
 
@@ -587,8 +597,8 @@ def AMTI(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
          KT_c_Age, AMT_tthd, AMT_thd_MarriedS,
          AMT_em, AMT_prt, AMT_trt1, AMT_trt2,
          AMT_Child_em, AMT_em_ps, AMT_em_pe,
-         AMT_CG_thd1, AMT_CG_thd2, AMT_CG_rt1, AMT_CG_rt2, AMT_CG_rt3,
-         c05800, c09600, c62100):
+         AMT_CG_thd1, AMT_CG_thd2, AMT_CG_thd3, AMT_CG_rt1, AMT_CG_rt2,
+         AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
 
     """
     AMTI function: AMT taxable income
@@ -653,10 +663,15 @@ def AMTI(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
     line47 = min(line45, line46)
     line48 = min(alminc, c62720) - line47
     amt15pc = min(line48, max(0., AMT_CG_thd2[MARS - 1] - c24520 - line45))
+    amt_xtr = min(line48, max(0., AMT_CG_thd3[MARS - 1] - c24520 - line45))
+
     if ngamty != (amt15pc + line47):
         amt20pc = line46 - amt15pc - line47
+        amtxtrpc = max(0, amt15pc - amt_xtr)
     else:
         amt20pc = 0.
+        amtxtrpc = 0.
+
     if c62740 != 0.:
         amt25pc = max(0., alminc - ngamty - line46)
     else:
@@ -664,8 +679,10 @@ def AMTI(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
     c62747 = AMT_CG_rt1 * amt5pc
     c62755 = AMT_CG_rt2 * amt15pc
     c62760 = AMT_CG_rt3 * amt20pc
+    amt_xtr = AMT_CG_rt4 * amtxtrpc
     c62770 = 0.25 * amt25pc  # tax rate on "Unrecaptured Schedule E Gain"
-    tamt2 = c62747 + c62755 + c62760 + c62770  # line62 without 42 being added
+    # tamt2 is the amount of line62 without 42 being added
+    tamt2 = c62747 + c62755 + c62760 + c62770 + amt_xtr
     c62800 = min(c62780, c62745 + tamt2 - amtfei)
     c63000 = c62800 - c62900
     c63100 = _taxbc - e07300 - c05700
@@ -1128,8 +1145,8 @@ def IITAX(c09200, c59660, c11070, c10960, _eitc, c11580,
 
 @jit(nopython=True)
 def Taxer_i(inc_in, MARS,
-            II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
-            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
+            II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
+            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7):
     """
     Taxer_i function: ...
     """
@@ -1144,28 +1161,31 @@ def Taxer_i(inc_in, MARS,
                 max(0., inc_in - II_brk4[MARS - 1])) + II_rt6 *
             min(II_brk6[MARS - 1] - II_brk5[MARS - 1],
                 max(0., inc_in - II_brk5[MARS - 1])) + II_rt7 *
-            max(0., inc_in - II_brk6[MARS - 1]))
+            min(II_brk7[MARS - 1] - II_brk6[MARS - 1],
+                max(0., inc_in - II_brk6[MARS - 1])) + II_rt8 *
+            max(0., inc_in - II_brk7[MARS - 1]))
 
 
 @jit(nopython=True)
 def ptTaxer(inc_in, MARS, c00900, c26270, pt_rates,
-            II_rt1, II_rt2, II_rt3,II_rt4, II_rt5, II_rt6, II_rt7,
-            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6):
+            II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
+            II_rt8, II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
+            II_brk6, II_brk7):
     """
     This function taxes separates pass-through income from regular income.
     It stacks pass-through income on top of regular income
     """
     ptinc = max(0., c00900 + c26270)
-    #negative ptinc already deducted from taxable income
-    #Separate pass-thru income from non-pass-thru income
+    # negative ptinc already deducted from taxable income
+    # Separate pass-thru income from non-pass-thru income
     winc = inc_in - ptinc
     if winc < 0.:
         winc = 0
         ptinc = inc_in
-    wtax = Taxer_i(winc, MARS, II_rt1, II_rt2, II_rt3,II_rt4, II_rt5,
-                   II_rt6, II_rt7, II_brk1, II_brk2, II_brk3, II_brk4,
-                   II_brk5, II_brk6)
-    pt_g = [0, 0, 0, 0, 0, 0, 0]
+    wtax = Taxer_i(winc, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
+                   II_rt6, II_rt7, II_rt8, II_brk1, II_brk2, II_brk3, II_brk4,
+                   II_brk5, II_brk6, II_brk7)
+    pt_g = [0, 0, 0, 0, 0, 0, 0, 0]
     pt_g[0] = max(0., min(II_brk1[MARS - 1] - winc, ptinc))
     pt_g[1] = max(0., min(II_brk2[MARS - 1] - max(II_brk1[MARS - 1], winc),
                           ptinc - pt_g[0]))
@@ -1178,12 +1198,15 @@ def ptTaxer(inc_in, MARS, c00900, c26270, pt_rates,
     pt_g[5] = max(0., min(II_brk6[MARS - 1] - max(II_brk5[MARS - 1], winc),
                           (ptinc - pt_g[0] - pt_g[1] - pt_g[2] -
                            pt_g[3] - pt_g[4])))
-    pt_g[6] = max(0., (ptinc - pt_g[0] - pt_g[1] - pt_g[2] - pt_g[3] -
-                       pt_g[4] - pt_g[5]))
+    pt_g[6] = max(0., min(II_brk7[MARS - 1] - max(II_brk6[MARS - 1], winc),
+                          ptinc - pt_g[0] - pt_g[1] - pt_g[2] - pt_g[3] -
+                          pt_g[4] - pt_g[5]))
+    pt_g[7] = max(0., (ptinc - pt_g[0] - pt_g[1] - pt_g[2] - pt_g[3] -
+                       pt_g[5] - pt_g[6]))
     pttax = (pt_g[0] * pt_rates[0] + pt_g[1] * pt_rates[1] +
              pt_g[2] * pt_rates[2] + pt_g[3] * pt_rates[3] +
              pt_g[4] * pt_rates[4] + pt_g[5] * pt_rates[5] +
-             pt_g[6] * pt_rates[6])
+             pt_g[6] * pt_rates[6] + pt_g[7] * pt_rates[7])
     totaltax = wtax + pttax
     return totaltax
 

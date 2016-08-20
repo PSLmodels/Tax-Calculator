@@ -218,6 +218,12 @@ class Records(object):
         # read extrapolation blowup factors and sample weights
         self._read_blowup(blowup_factors)
         self._read_weights(weights)
+        # weights must be same size as tax record data
+        if not self.WT.empty and self.dim != len(self.WT):
+            frac = float(self.dim) / len(self.WT)
+            self.WT = self.WT.iloc[self.index]
+            self.WT = self.WT / frac
+
         # specify current_year and FLPDYR values
         if isinstance(start_year, int):
             self._current_year = start_year
@@ -386,6 +392,7 @@ class Records(object):
             msg = 'data is neither a string nor a Pandas DataFrame'
             raise ValueError(msg)
         self.dim = len(taxdf)
+        self.index = taxdf.index
         # create class variables using taxdf column names
         READ_VARS = set()
         for varname in list(taxdf.columns.values):
