@@ -654,7 +654,7 @@ def AMTI(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
 
     if ngamty != (amt15pc + line47):
         amt20pc = line46 - amt15pc - line47
-        amtxtrpc = max(0, amt15pc - amt_xtr)
+        amtxtrpc = max(0., amt15pc - amt_xtr)
     else:
         amt20pc = 0.
         amtxtrpc = 0.
@@ -1137,20 +1137,20 @@ def Taxer_i(inc_in, MARS,
     """
     Taxer_i function: ...
     """
-    return (II_rt1 * min(inc_in, II_brk1[MARS - 1]) + II_rt2 *
-            min(II_brk2[MARS - 1] - II_brk1[MARS - 1],
-                max(0., inc_in - II_brk1[MARS - 1])) + II_rt3 *
-            min(II_brk3[MARS - 1] - II_brk2[MARS - 1],
-                max(0., inc_in - II_brk2[MARS - 1])) + II_rt4 *
-            min(II_brk4[MARS - 1] - II_brk3[MARS - 1],
-                max(0., inc_in - II_brk3[MARS - 1])) + II_rt5 *
-            min(II_brk5[MARS - 1] - II_brk4[MARS - 1],
-                max(0., inc_in - II_brk4[MARS - 1])) + II_rt6 *
-            min(II_brk6[MARS - 1] - II_brk5[MARS - 1],
-                max(0., inc_in - II_brk5[MARS - 1])) + II_rt7 *
-            min(II_brk7[MARS - 1] - II_brk6[MARS - 1],
-                max(0., inc_in - II_brk6[MARS - 1])) + II_rt8 *
-            max(0., inc_in - II_brk7[MARS - 1]))
+    return (II_rt1 * min(inc_in, II_brk1[MARS - 1]) +
+            II_rt2 * min(II_brk2[MARS - 1] - II_brk1[MARS - 1],
+                         max(0., inc_in - II_brk1[MARS - 1])) +
+            II_rt3 * min(II_brk3[MARS - 1] - II_brk2[MARS - 1],
+                         max(0., inc_in - II_brk2[MARS - 1])) +
+            II_rt4 * min(II_brk4[MARS - 1] - II_brk3[MARS - 1],
+                         max(0., inc_in - II_brk3[MARS - 1])) +
+            II_rt5 * min(II_brk5[MARS - 1] - II_brk4[MARS - 1],
+                         max(0., inc_in - II_brk4[MARS - 1])) +
+            II_rt6 * min(II_brk6[MARS - 1] - II_brk5[MARS - 1],
+                         max(0., inc_in - II_brk5[MARS - 1])) +
+            II_rt7 * min(II_brk7[MARS - 1] - II_brk6[MARS - 1],
+                         max(0., inc_in - II_brk6[MARS - 1])) +
+            II_rt8 * max(0., inc_in - II_brk7[MARS - 1]))
 
 
 @iterate_jit(nopython=True)
