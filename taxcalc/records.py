@@ -213,14 +213,15 @@ class Records(object):
                            rtol=0.0, atol=0.001):
             raise ValueError(msg.format('e02100'))
         # read extrapolation blowup factors and sample weights
+        self.BF = None
         self._read_blowup(blowup_factors)
+        self.WT = None
         self._read_weights(weights)
         # weights must be same size as tax record data
         if not self.WT.empty and self.dim != len(self.WT):
             frac = float(self.dim) / len(self.WT)
             self.WT = self.WT.iloc[self.index]
             self.WT = self.WT / frac
-
         # specify current_year and FLPDYR values
         if isinstance(start_year, int):
             self._current_year = start_year
@@ -229,7 +230,7 @@ class Records(object):
             msg = 'start_year is not an integer'
             raise ValueError(msg)
         # consider applying initial-year blowup factors
-        if self.BF.empty is False and self.current_year == Records.PUF_YEAR:
+        if not self.BF.empty and self.current_year == Records.PUF_YEAR:
             self._extrapolate_in_puf_year()
         # construct sample weights for current_year
         wt_colname = 'WT{}'.format(self.current_year)
