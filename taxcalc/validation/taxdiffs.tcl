@@ -62,12 +62,16 @@ if { ![file exists $out2_filename] } {
 set awkfilename [file join [file dirname [info script]] taxdiff.awk]
 if { $ovar4 == 0 } {
     taxdiff $awkfilename  6 $out1_filename $out2_filename
-    if { $drake == 0 } {
+    if { $drake == 1 } {
+        # skip 7 and 9
+    } else {
         taxdiff $awkfilename  7 $out1_filename $out2_filename
         taxdiff $awkfilename  9 $out1_filename $out2_filename
     }
     taxdiff $awkfilename 10 $out1_filename $out2_filename
-    if { $drake == 0 } {
+    if { $drake == 1 } {
+        # skip 11
+    } else {
         taxdiff $awkfilename 11 $out1_filename $out2_filename
     }
     taxdiff $awkfilename 12 $out1_filename $out2_filename
@@ -76,14 +80,24 @@ if { $ovar4 == 0 } {
     taxdiff $awkfilename 16 $out1_filename $out2_filename
     taxdiff $awkfilename 17 $out1_filename $out2_filename
     taxdiff $awkfilename 18 $out1_filename $out2_filename
-    taxdiff $awkfilename 19 $out1_filename $out2_filename
+    if { $drake == 1 } {
+        # skip 19
+    } else {
+        taxdiff $awkfilename 19 $out1_filename $out2_filename
+    }
     taxdiff $awkfilename 22 $out1_filename $out2_filename
     taxdiff $awkfilename 23 $out1_filename $out2_filename
     taxdiff $awkfilename 24 $out1_filename $out2_filename
     taxdiff $awkfilename 25 $out1_filename $out2_filename
-    taxdiff $awkfilename 26 $out1_filename $out2_filename
+    if { $drake == 1 } {
+        # skip 26
+    } else {
+        taxdiff $awkfilename 26 $out1_filename $out2_filename
+    }
     taxdiff $awkfilename 27 $out1_filename $out2_filename
-    if { $drake == 0 } {
+    if { $drake == 1 } {
+        # skip 28
+    } else {
         taxdiff $awkfilename 28 $out1_filename $out2_filename
     }
 }
