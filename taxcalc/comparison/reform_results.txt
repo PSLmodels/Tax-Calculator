@@ -199,7 +199,7 @@ Tax-Calculator,0.0,0.0,0.0,0.0
 OTHER TAXES
 ""
 Net investment income tax, total
-Tax-Calculator,-25.8,-26.4,-27.0,-27.6
+Tax-Calculator,-25.6,-26.2,-26.8,-27.4
 Tax Expenditure,-33,-35,-37,-39
 ""
 Increase Net Investment Income Tax threshold by 10,000
