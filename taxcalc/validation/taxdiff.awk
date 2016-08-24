@@ -1,5 +1,5 @@
 # TAXDIFF.AWK compares a variable in two output files that are formatted
-#             like Internet-TAXSIM generated output
+#             like Internet-TAXSIM generated output files
 # NOTE: this file must be in same directory as the taxdiffs.tcl file.
 # USAGE: awk -f taxdiff.awk -v col=NUM first-output-file second-output-file
 # NOTE: (a) the output files must have identical var[1] id variables;
@@ -64,32 +64,38 @@ END {
     if ( error==1 ) exit
     if ( i1 != i2 ) {
         printf( "ERROR: %s %d != %s %d\n",
-                ".out-simtax row count ", i1,
-                ".out-taxsim row count ", i2 ) > "/dev/stderr"
+                "first-output-file row count ", i1,
+                "second-output-file row count ", i2 ) > "/dev/stderr"
         exit
     }
     n = i2
     for ( i = 1; i <= n; i++ ) {
         if ( id1[i] != id2[i] ) {
             printf( "ERROR: %s %d != %s %d on row %d\n",
-                    ".out-simtax id ", id1[i],
-                    ".out-taxsim id ", id2[i], i ) > "/dev/stderr"
+                    "first-output-file id ", id1[i],
+                    "second-output-file id ", id2[i], i ) > "/dev/stderr"
             exit
         }
     }
     num_diffs = 0
-    num_onecent_diffs = 0
+    num_small_diffs = 0
     num_big_vardiff_with_big_taxdiff = 0
     max_abs_vardiff = 0.0
+    if ( col == 7 || col == 9 ) {
+        smallamt = 0.011 # one-hundredth of a percentage point
+    } else {
+        smallamt = 1.001 # one dollar
+    }
+    small_taxdiff = 1.001 # one dollar
     for ( i = 1; i <= n; i++ ) {
         if ( var1[i] != var2[i] ) {
             diff = var1[i] - var2[i]
-            if ( -0.011 < diff && diff < 0.011 ) {
-                num_onecent_diffs++
+            if ( -smallamt < diff && diff < smallamt ) {
+                num_small_diffs++
             } else {
                 taxdiff = tax1[i] - tax2[i]
-                if ( -0.011 < taxdiff && taxdiff < 0.011 ) {
-                    # taxdiff is one cent or less
+                if ( -small_taxdiff < taxdiff && taxdiff < small_taxdiff ) {
+                    # taxdiff is relatively small
                 } else {
                     num_big_vardiff_with_big_taxdiff++
                 }
@@ -117,15 +123,15 @@ END {
             signed_max_abs_vardiff = -max_abs_vardiff
         }
         printf( "%s= %2d %6d %6d %9.2f [%d]\n",
-                "TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]",
+                "TAXDIFF:ovar,#diffs,#smdiffs,maxdiff[id]",
                 col,
                 num_diffs,
-                num_onecent_diffs,
+                num_small_diffs,
                 signed_max_abs_vardiff,
                 max_abs_vardiff_id )
         if ( num_big_vardiff_with_big_taxdiff > 0 ) {
             if ( col == 4 ) {
-                num_big_diffs = num_diffs - num_onecent_diffs
+                num_big_diffs = num_diffs - num_small_diffs
                 if ( num_big_vardiff_with_big_taxdiff != num_big_diffs ) {
                     printf( "ERROR: %s=%d != %s=%d\n",
                             "num_big_diffs",
