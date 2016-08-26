@@ -1,2 +1,2 @@
-TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]=  4   8131    567   -114.01 [733]
-                       #big_inctax_diffs=             7564
+TAXDIFF:ovar,#diffs,#smdiffs,maxdiff[id]=  4   8131    568   -114.01 [733]
+                       #big_inctax_diffs=             7563
