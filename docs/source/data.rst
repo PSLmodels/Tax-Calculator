@@ -1,10 +1,9 @@
 Micro Data
 ==========
 
-The Tax-Calculator simulates federal individual income and FICA
-taxes for each tax filing unit in a sample. For revenue
-estimation, that sample must be representative of the US
-population. 
+The Tax-Calculator simulates federal individual income and payroll taxes
+for each tax filing unit in a sample. For revenue estimation, that sample
+must be representative of the US population.
 
 Description
 -----------
