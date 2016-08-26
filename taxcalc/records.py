@@ -162,7 +162,7 @@ class Records(object):
         'c07230', '_precrd', 'c07220', 'c59660',
         'c09200', 'c07100', '_eitc',
         '_prexmp',
-        '_fica', '_fica_was', 'c03260',
+        '_payrolltax', '_ptax_was', 'c03260',
         '_sep', '_num',
         'c04500', 'c05200',
         'c24505', 'c24520',

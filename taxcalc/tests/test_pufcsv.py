@@ -108,14 +108,14 @@ def test_agg():
 
 MTR_TAX_YEAR = 2013
 MTR_NEG_DIFF = False  # set True to subtract (rather than add) small amount
-# specify FICA mtr histogram bin boundaries (or edges):
-FICA_MTR_BIN_EDGES = [0.0, 0.02, 0.04, 0.06, 0.08,
+# specify payrolltax mtr histogram bin boundaries (or edges):
+PTAX_MTR_BIN_EDGES = [0.0, 0.02, 0.04, 0.06, 0.08,
                       0.10, 0.12, 0.14, 0.16, 0.18, 1.0]
 #        the bin boundaries above are arbitrary, so users
 #        may want to experiment with alternative boundaries
-# specify IIT mtr histogram bin boundaries (or edges):
-IIT_MTR_BIN_EDGES = [-1.0, -0.30, -0.20, -0.10, 0.0,
-                     0.10, 0.20, 0.30, 0.40, 0.50, 1.0]
+# specify incometax mtr histogram bin boundaries (or edges):
+ITAX_MTR_BIN_EDGES = [-1.0, -0.30, -0.20, -0.10, 0.0,
+                      0.10, 0.20, 0.30, 0.40, 0.50, 1.0]
 #        the bin boundaries above are arbitrary, so users
 #        may want to experiment with alternative boundaries
 
@@ -161,7 +161,7 @@ def test_mtr():
     which is then compared for differences with EXPECTED_MTR_RESULTS.
     """
     # pylint: disable=too-many-locals
-    assert len(FICA_MTR_BIN_EDGES) == len(IIT_MTR_BIN_EDGES)
+    assert len(PTAX_MTR_BIN_EDGES) == len(ITAX_MTR_BIN_EDGES)
     # construct actual results string, res
     res = ''
     if MTR_NEG_DIFF:
@@ -178,24 +178,24 @@ def test_mtr():
     # create a Calculator object using clp policy and puf records
     calc = Calculator(policy=clp, records=puf)
     res += '{} = {}\n'.format('Total number of data records', puf.dim)
-    res += 'FICA mtr histogram bin edges:\n'
-    res += '     {}\n'.format(FICA_MTR_BIN_EDGES)
-    res += 'IIT mtr histogram bin edges:\n'
-    res += '     {}\n'.format(IIT_MTR_BIN_EDGES)
-    inctype_header = 'FICA and IIT mtr histogram bin counts for'
+    res += 'PTAX mtr histogram bin edges:\n'
+    res += '     {}\n'.format(PTAX_MTR_BIN_EDGES)
+    res += 'ITAX mtr histogram bin edges:\n'
+    res += '     {}\n'.format(ITAX_MTR_BIN_EDGES)
+    inctype_header = 'PTAX and ITAX mtr histogram bin counts for'
     # compute marginal tax rate (mtr) histograms for each mtr income type
     for inctype in Calculator.MTR_VALID_INCOME_TYPES:
         if inctype == 'e01400':
             zero_out = True
         else:
             zero_out = False
-        (mtr_fica, mtr_iit, _) = calc.mtr(income_type_str=inctype,
-                                          negative_finite_diff=MTR_NEG_DIFF,
-                                          zero_out_calculated_vars=zero_out,
-                                          wrt_full_compensation=False)
+        (mtr_ptax, mtr_itax, _) = calc.mtr(income_type_str=inctype,
+                                           negative_finite_diff=MTR_NEG_DIFF,
+                                           zero_out_calculated_vars=zero_out,
+                                           wrt_full_compensation=False)
         res += '{} {}:\n'.format(inctype_header, inctype)
-        res += mtr_bin_counts(mtr_fica, FICA_MTR_BIN_EDGES, recid)
-        res += mtr_bin_counts(mtr_iit, IIT_MTR_BIN_EDGES, recid)
+        res += mtr_bin_counts(mtr_ptax, PTAX_MTR_BIN_EDGES, recid)
+        res += mtr_bin_counts(mtr_itax, ITAX_MTR_BIN_EDGES, recid)
     # generate differences between actual and expected results
     actual = res.splitlines(True)
     with open(MTRRES_PATH, 'r') as expected_file:

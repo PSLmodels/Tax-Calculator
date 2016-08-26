@@ -55,7 +55,7 @@ def main(reforms_json_filename, tracing):
         check_complete_reform_dict(ref, reforms_dict[ref])
 
     # compute taxcalc results for current-law policy
-    (itax_taxcalc_clp, fica_taxcalc_clp) = taxcalc_clp_results()
+    (itax_taxcalc_clp, ptax_taxcalc_clp) = taxcalc_clp_results()
 
     # check that selenium package and chromedriver program are available
     check_selenium_and_chromedriver()
@@ -66,16 +66,16 @@ def main(reforms_json_filename, tracing):
         refspec = reforms_dict[ref]['specification']
         refdict = Policy.convert_reform_dictionary(refspec)
         (itax_taxcalc,
-         fica_taxcalc) = taxcalc_results(syr, refdict,
+         ptax_taxcalc) = taxcalc_results(syr, refdict,
                                          itax_taxcalc_clp,
-                                         fica_taxcalc_clp)
+                                         ptax_taxcalc_clp)
         for repl in range(reforms_dict[ref]['replications']):
             ref_repl = '{}-{:03d}'.format(ref, repl)
             if tracing:
                 sys.stderr.write('==> {}\n'.format(ref_repl))
                 sys.stderr.flush()
             (itax_taxbrain,
-             fica_taxbrain,
+             ptax_taxbrain,
              taxbrain_output_url) = taxbrain_results(ref_repl, syr, refspec)
             if len(taxbrain_output_url) == 0:
                 if tracing:
@@ -88,8 +88,8 @@ def main(reforms_json_filename, tracing):
                     sys.stderr.flush()
             check_for_differences(ref_repl, 'ITAX', taxbrain_output_url,
                                   itax_taxbrain, itax_taxcalc)
-            check_for_differences(ref_repl, 'FICA', taxbrain_output_url,
-                                  fica_taxbrain, fica_taxcalc)
+            check_for_differences(ref_repl, 'PTAX', taxbrain_output_url,
+                                  ptax_taxbrain, ptax_taxcalc)
 
     # return no-error exit code
     return 0
@@ -378,25 +378,25 @@ def taxbrain_vector_pval_insert(driver, start_year, param_name, param_dict):
 def taxbrain_output_table_extract(table):
     """
     Extract from specified "TOTAL LIABILITIES CHANGE BY CALENDAR YEAR" table
-    reform-vs-current-law-policy differences in itax and fica aggregate
+    reform-vs-current-law-policy differences in itax and ptax aggregate
     revenue by calendar year, which are returned as dictionaries.
     Also, extract the URL of the complete TaxBrain results and return it.
     """
     tlines = table.split('\n')
     tyears = tlines[0].split()
     titaxd = (tlines[2].split())[5:]
-    tficad = (tlines[3].split())[4:]
+    tptaxd = (tlines[3].split())[4:]
     url_list = (tlines[5].split())[1:]
     url = (url_list[0])[7:]
     itax = {}
-    fica = {}
-    for year, itaxd, ficad in zip(tyears, titaxd, tficad):
+    ptax = {}
+    for year, itaxd, ficad in zip(tyears, titaxd, tptaxd):
         itax[int(year)] = float(re.sub(',', '', itaxd))
-        fica[int(year)] = float(re.sub(',', '', ficad))
-    return (itax, fica, url)
+        ptax[int(year)] = float(re.sub(',', '', ptaxd))
+    return (itax, ptax, url)
 
 
-def taxcalc_results(start_year, reform_dict, itax_clp, fica_clp):
+def taxcalc_results(start_year, reform_dict, itax_clp, ptax_clp):
     """
     Use taxcalc package on this computer to compute aggregate income tax and
     payroll tax revenue difference (between reform and current-law policy)
@@ -422,13 +422,13 @@ def taxcalc_results(start_year, reform_dict, itax_clp, fica_clp):
     adt = pd.concat(adts, axis=1)
     # note that adt is Pandas DataFrame object
     itax_ref = adt.xs('Ind inc tax ($b)').to_dict()
-    fica_ref = adt.xs('Payroll tax ($b)').to_dict()
+    ptax_ref = adt.xs('Payroll tax ($b)').to_dict()
     itax_diff = {}
-    fica_diff = {}
+    ptax_diff = {}
     for year in itax_ref:
         itax_diff[year] = round(itax_ref[year] - itax_clp[year], 1)
-        fica_diff[year] = round(fica_ref[year] - fica_clp[year], 1)
-    return (itax_diff, fica_diff)
+        ptax_diff[year] = round(ptax_ref[year] - ptax_clp[year], 1)
+    return (itax_diff, ptax_diff)
 
 
 def check_for_differences(ref_repl, taxkind, out_url, taxbrain, taxcalc):
@@ -476,7 +476,7 @@ if __name__ == '__main__':
                      'running on this computer.\n'
                      'Each output line contains six tab-delimited fields:\n'
                      '(1) reform-replication\n'
-                     '(2) tax type (ITAX or FICA)\n'
+                     '(2) tax type (ITAX or PTAX)\n'
                      '(3) calendar year of difference\n'
                      '(4) difference amount in $billion (TaxBrain change '
                      'minus taxcalc change)\n'

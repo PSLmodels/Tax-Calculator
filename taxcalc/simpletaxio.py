@@ -155,7 +155,7 @@ class SimpleTaxIO(object):
             if calcyr != self._calc.policy.current_year:
                 self._calc.policy.set_year(calcyr)
             self._calc.calc_all()
-            (mtr_fica, mtr_itax,
+            (mtr_ptax, mtr_itax,
              _) = self._calc.mtr(wrt_full_compensation=False)
             cr_taxyr = self._calc.records.FLPDYR  # pylint: disable=no-member
             for idx in range(0, self._calc.records.dim):
@@ -163,7 +163,7 @@ class SimpleTaxIO(object):
                 if indyr == calcyr:
                     ovar = SimpleTaxIO.extract_output(self._calc.records, idx)
                     ovar[7] = 100 * mtr_itax[idx]
-                    ovar[9] = 100 * mtr_fica[idx]
+                    ovar[9] = 100 * mtr_ptax[idx]
                     output[idx] = ovar
         assert len(output) == len(self._input)
         # handle disposition of calculated output
@@ -229,10 +229,10 @@ class SimpleTaxIO(object):
                '[ 3] state code [ALWAYS ZERO]\n'
                '[ 4] federal income tax liability\n'
                '[ 5] state income tax liability [ALWAYS ZERO]\n'
-               '[ 6] FICA (OASDI+HI) tax liability (sum of ee and er share)\n'
+               '[ 6] OASDI+HI payroll tax liability (sum of ee and er share)\n'
                '[ 7] marginal federal income tax rate as percent\n'
                '[ 8] marginal state income tax rate [ALWAYS ZERO]\n'
-               '[ 9] marginal FICA tax rate as percent\n'
+               '[ 9] marginal payroll tax rate as percent\n'
                '[10] federal adjusted gross income, AGI\n'
                '[11] unemployment (UI) benefits included in AGI\n'
                '[12] social security (OASDI) benefits included in AGI\n'
@@ -290,10 +290,10 @@ class SimpleTaxIO(object):
         # pylint: disable=protected-access
         ovar[4] = crecs._iitax[idx]  # federal income tax liability
         ovar[5] = 0.0  # no state income tax calculation
-        ovar[6] = crecs._fica[idx]  # FICA taxes (ee+er) for OASDI+HI
+        ovar[6] = crecs._payrolltax[idx]  # payroll taxes (ee+er) for OASDI+HI
         ovar[7] = 0.0  # marginal federal income tax rate as percent
         ovar[8] = 0.0  # no state income tax calculation
-        ovar[9] = 0.0  # marginal FICA tax rate as percent
+        ovar[9] = 0.0  # marginal payroll tax rate as percent
         ovar[10] = crecs.c00100[idx]  # federal AGI
         ovar[11] = crecs.e02300[idx]  # UI benefits in AGI
         ovar[12] = crecs.c02500[idx]  # OASDI benefits in AGI

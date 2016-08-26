@@ -168,7 +168,7 @@ def test_function_args_usage():
 def test_1():
     """
     Test calculation of AGI adjustment for half of Self-Employment Tax,
-    which is the FICA payroll tax on self-employment income.
+    which is the payroll tax on self-employment income.
     """
     agi_ovar_num = 10
     # specify a reform that simplifies the hand calculations
