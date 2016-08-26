@@ -390,7 +390,7 @@ def taxbrain_output_table_extract(table):
     url = (url_list[0])[7:]
     itax = {}
     ptax = {}
-    for year, itaxd, ficad in zip(tyears, titaxd, tptaxd):
+    for year, itaxd, ptaxd in zip(tyears, titaxd, tptaxd):
         itax[int(year)] = float(re.sub(',', '', itaxd))
         ptax[int(year)] = float(re.sub(',', '', ptaxd))
     return (itax, ptax, url)
