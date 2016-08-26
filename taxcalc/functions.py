@@ -681,14 +681,15 @@ def AMTI(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
 
 
 @iterate_jit(nopython=True)
-def MUI(c00100, NIIT_thd, MARS, e00300, e00600, c01000, e02000, NIIT_trt,
-        NIIT, e26270):
+def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
+                 c00100, _feided, NIIT_thd, MARS, NIIT_trt, NIIT):
     """
-    MUI function: ...
+    NetInvIncTax function computes Net Investment Income Tax amount
+    (assume all annuity income is excluded from net investment income)
     """
-    NIIT = NIIT_trt * min(e00300 + e00600 + max(0., c01000) +
-                          max(0., e02000 - e26270),
-                          max(0., c00100 - NIIT_thd[MARS - 1]))
+    modAGI = c00100 + _feided
+    NII = max(0., e00300 + e00600 + (e02000 - e26270) + c01000)
+    NIIT = NIIT_trt * min(NII, max(0., modAGI - NIIT_thd[MARS - 1]))
     return NIIT
 
 
