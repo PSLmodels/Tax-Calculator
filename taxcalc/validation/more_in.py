@@ -15,22 +15,44 @@ import pandas as pd
 import numpy as np
 
 
-def add_vars(input_filename):
+MAX_VARSET = 1
+
+
+def add_vars(input_filename, varset_id):
     """
-    Adds extra input variables to specified input file and
-    writes augmented input file to stdout.
+    Adds extra input variables indicated by varset_id value to the specified
+    input file and writes augmented CSV-formatted input file to stdout.
     """
-    # read input file into a DataFrame
-    if not os.path.isfile(input_filename):
-        msg = 'INPUT file named {} could not be found'.format(input_filename)
-        sys.stderr.write('ERROR: {}\n'.format(msg))
-        return 1
+    # read CSV-formatted input file into a DataFrame
     idf = pd.read_csv(input_filename)
-    # add extra variables to idf DataFrame
-    # ...
+    # add extra variables to idf DataFrame as indicated by value of varset_id
+    if varset_id == 1:
+        rcode = add_varset_1(idf)
+    elif varset_id == 2:
+        rcode = add_varset_2(idf)
+    if rcode != 0:
+        return rcode
     # write augmented idf DataFrame to a CSV string and write string to stdout
     csv_str = idf.to_csv(index=False)
     sys.stdout.write('{}'.format(csv_str))
+    return 0
+
+
+def add_varset_1(idf):
+    """
+    Add to idf DataFrame variables in VARSET 1
+    """
+    nobs = len(idf['RECID'])
+    rints = np.random.random_integers(0, 100, nobs) * 2500
+    idf['extra1'] = pd.Series(rints)
+    idf['extra2'] = pd.Series(np.random.random_integers(0, 4, nobs))
+    return 0
+
+
+def add_varset_2(idf):
+    """
+    Add to idf DataFrame variables in VARSET 2
+    """
     return 0
 
 
@@ -47,14 +69,27 @@ def main():
     parser.add_argument('INPUT', nargs='?', default='',
                         help=('INPUT is name of input file that is going to '
                               'be augmented; the file must be in CSV format.'))
+    parser.add_argument('VARSET', nargs='?', type=int, default=0,
+                        help=('VARSET is the integer number of the set of '
+                              'additional input variables that will be added '
+                              'to the INPUT file; must be greater than zero.'))
     args = parser.parse_args()
-    # check INPUT filename
-    if args.INPUT == '':
-        sys.stderr.write('ERROR: must specify INPUT file name\n')
+    # check for invalid command-line parameters
+    args_error = False
+    if args.INPUT == '' or not os.path.isfile(args.INPUT):
+        errmsg = 'INPUT file "{}" could not be found'.format(args.INPUT)
+        sys.stderr.write('ERROR: {}\n'.format(errmsg))
+        args_error = True
+    if args.VARSET < 1 or args.VARSET > MAX_VARSET:
+        range = '[1,{}] range'.format(MAX_VARSET)
+        sys.stderr.write('ERROR: VARSET {} not in {}\n'.format(args.VARSET,
+                                                               range))
+        args_error = True
+    if args_error:
         sys.stderr.write('USAGE: python more_in.py --help\n')
         return 1
-    # instantiate SimpleTaxIO object and do tax calculations
-    rcode = add_vars(input_filename=args.INPUT)
+    # call add_vars() function
+    rcode = add_vars(input_filename=args.INPUT, varset_id=args.VARSET)
     # return rcode as exit code
     return rcode
 # end of main function code
