@@ -1,9 +1,9 @@
-# MAKE-IN.TCL writes an Internet-TAXSIM-9.3-formatted input file to stdout
-# USAGE: tclsh make-in.tcl calyear letter [rng_offset]
-# PRODUCTION: tclsh make-in.tcl yyYY L > LYY.in
+# MAKE_IN.TCL writes an Internet-TAXSIM-9-formatted input file to stdout
+# USAGE: tclsh make_in.tcl calyear letter [rng_offset]
+# PRODUCTION: tclsh make_in.tcl yyYY L > LYY.in
 
 if { $argc < 2 || $argc > 3 } {
-    puts stderr "USAGE: tclsh make-in.tcl calyear letter \[rng_offset\]"
+    puts stderr "USAGE: tclsh make_in.tcl calyear letter \[rng_offset\]"
     exit 1
 }
 set cyr [lindex $argv 0]
@@ -108,7 +108,7 @@ proc uniform { lo hi } {
 
 set use_new_agecode 1 ;# Internet-TAXSIM revised ivar[6] coding in March 2016
 
-# write $num TAXSIM-input lines, one for each filing unit
+# write $num TAXSIM input lines, one for each filing unit
 for {set id 1} {$id <= $num} {incr id} {
     set raw_ms [uniform 1 5]
     set pnconpct 0
