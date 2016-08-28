@@ -28,8 +28,8 @@ def add_vars(input_filename, varset_id):
     # add extra variables to idf DataFrame as indicated by value of varset_id
     if varset_id == 1:
         rcode = add_varset_1(idf)
-    elif varset_id == 2:
-        rcode = add_varset_2(idf)
+    # elif varset_id == 2:
+    #    rcode = add_varset_2(idf)
     if rcode != 0:
         return rcode
     # write augmented idf DataFrame to a CSV string and write string to stdout
@@ -52,13 +52,6 @@ def add_varset_1(idf):
     idf['e00900p'] = pd.Series(rints_p)
     idf['e00900s'] = pd.Series(rints_s)
     # ... add more variables ...
-    return 0
-
-
-def add_varset_2(idf):
-    """
-    Add to idf DataFrame variables in VARSET 2
-    """
     return 0
 
 
@@ -87,9 +80,9 @@ def main():
         sys.stderr.write('ERROR: {}\n'.format(errmsg))
         args_error = True
     if args.VARSET < 1 or args.VARSET > MAX_VARSET:
-        range = '[1,{}] range'.format(MAX_VARSET)
+        rangestr = '[1,{}] range'.format(MAX_VARSET)
         sys.stderr.write('ERROR: VARSET {} not in {}\n'.format(args.VARSET,
-                                                               range))
+                                                               rangestr))
         args_error = True
     if args_error:
         sys.stderr.write('USAGE: python more_in.py --help\n')
