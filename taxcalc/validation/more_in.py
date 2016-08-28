@@ -40,12 +40,18 @@ def add_vars(input_filename, varset_id):
 
 def add_varset_1(idf):
     """
-    Add to idf DataFrame variables in VARSET 1
+    Add to idf DataFrame variables in VARSET 1:
+    e00900, e00900p, e00900s (Schedule C self-employment income)
+    [farm income (e02100, e02100p, e02100s) is equivalent to SchC income]
+    ... add more variables ...
     """
     nobs = len(idf['RECID'])
-    rints = np.random.random_integers(0, 100, nobs) * 2500
-    idf['extra1'] = pd.Series(rints)
-    idf['extra2'] = pd.Series(np.random.random_integers(0, 4, nobs))
+    rints_p = np.random.random_integers(-1, 2, nobs) * 70000
+    rints_s = np.random.random_integers(-1, 2, nobs) * 70000
+    idf['e00900'] = pd.Series(rints_p + rints_s)
+    idf['e00900p'] = pd.Series(rints_p)
+    idf['e00900s'] = pd.Series(rints_s)
+    # ... add more variables ...
     return 0
 
 
@@ -88,6 +94,8 @@ def main():
     if args_error:
         sys.stderr.write('USAGE: python more_in.py --help\n')
         return 1
+    # specify random-number seed
+    np.random.seed(12345)
     # call add_vars() function
     rcode = add_vars(input_filename=args.INPUT, varset_id=args.VARSET)
     # return rcode as exit code
