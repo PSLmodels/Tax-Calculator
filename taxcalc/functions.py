@@ -190,22 +190,30 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
 
 
 @iterate_jit(nopython=True)
-def AGI(ymod1, c02500, c02700, c02900, XTOT, MARS, _sep, DSI,
+def AGI(ymod1, c02500, c02700, c02900, XTOT, MARS, _sep, DSI, _exact,
         II_em, II_em_ps, II_prt,
         c00100, _posagi, _prexmp, c04600):
     """
-    AGI function: compute Adjusted Gross Income, c00100
+    AGI function: compute Adjusted Gross Income, c00100, and
+                  compute personal exemption amout, c04600.
     """
     c00100 = ymod1 + c02500 - c02700 - c02900
     _posagi = max(c00100, 0.)
+    # calculate personal exemption amount
     _prexmp = XTOT * II_em
     if DSI:
         _prexmp = 0.
-    # Personal Exemptions (_phaseout smoothed)
-    _dispc_numer = II_prt * (_posagi - II_em_ps[MARS - 1])
-    _dispc_denom = 2500. / _sep
-    _dispc = min(1., max(0., _dispc_numer / _dispc_denom))
-    c04600 = _prexmp * (1. - _dispc)
+    # phase-out personal exemption amount
+    if _exact == 1:  # exact calculation as on tax forms
+        line5 = max(0., c00100 - II_em_ps[MARS - 1])
+        line6 = math.ceil(line5 / (2500. / _sep))
+        line7 = II_prt * line6
+        c04600 = max(0., _prexmp * (1. - line7))
+    else:  # smoothed calculation needed for sensible mtr calculation
+        dispc_numer = II_prt * (c00100 - II_em_ps[MARS - 1])
+        dispc_denom = 2500. / _sep
+        dispc = min(1., max(0., dispc_numer / dispc_denom))
+        c04600 = _prexmp * (1. - dispc)
     return (c00100, _posagi, _prexmp, c04600)
 
 
