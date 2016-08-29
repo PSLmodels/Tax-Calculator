@@ -144,13 +144,13 @@ class Calculator(object):
         if zero_out_calc_vars:
             self.records.zero_out_changing_calculated_vars()
         # pdb.set_trace()
-        EI_FICA(self.policy, self.records)
+        EI_PayrollTax(self.policy, self.records)
         Adj(self.policy, self.records)
         CapGains(self.policy, self.records)
         SSBenefits(self.policy, self.records)
         AGI(self.policy, self.records)
         ItemDed(self.policy, self.records)
-        AMED(self.policy, self.records)
+        AdditionalMedicareTax(self.policy, self.records)
         StdDed(self.policy, self.records)
         Personal_Credit(self.policy, self.records)
         # Store calculated standard deduction, calculate
@@ -238,7 +238,7 @@ class Calculator(object):
             zero_out_calculated_vars=False,
             wrt_full_compensation=True):
         """
-        Calculates the marginal FICA, individual income, and combined
+        Calculates the marginal payroll, individual income, and combined
         tax rates for every tax filing unit.
           The marginal tax rates are approximated as the change in tax
         liability caused by a small increase (the finite_diff) in income
@@ -248,7 +248,7 @@ class Calculator(object):
         are computed as the change in tax liability divided by the change
         in total compensation caused by the small increase in income
         (where the change in total compensation is the sum of the small
-        increase in income and any increase in the employer share of FICA
+        increase in income and any increase in the employer share of payroll
         taxes caused by the small increase in income).
 
         Parameters
@@ -273,9 +273,10 @@ class Calculator(object):
 
         Returns
         -------
-        mtr_fica: an array of marginal FICA tax rates.
-        mtr_iit: an array of marginal individual income tax (IIT) rates.
-        mtr_combined: an array of marginal combined FICA and IIT tax rates.
+        mtr_payrolltax: an array of marginal payroll tax rates.
+        mtr_incometax: an array of marginal individual income tax rates.
+        mtr_combined: an array of marginal combined tax rates, which is
+                      the sum of mtr_payrolltax and mtr_incometax.
 
         Notes
         -----
@@ -326,18 +327,18 @@ class Calculator(object):
         if self.consumption.has_response():
             self.consumption.response(self.records, finite_diff)
         self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
-        fica_chng = copy.deepcopy(self.records._fica)
-        iitax_chng = copy.deepcopy(self.records._iitax)
-        combined_taxes_chng = iitax_chng + fica_chng
+        payrolltax_chng = copy.deepcopy(self.records._payrolltax)
+        incometax_chng = copy.deepcopy(self.records._iitax)
+        combined_taxes_chng = incometax_chng + payrolltax_chng
         # calculate base level of taxes after restoring records object
         setattr(self, '_records', recs0)
         self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
-        fica_base = copy.deepcopy(self.records._fica)
-        iitax_base = copy.deepcopy(self.records._iitax)
-        combined_taxes_base = iitax_base + fica_base
-        # compute marginal changes in tax liability
-        fica_diff = fica_chng - fica_base
-        iitax_diff = iitax_chng - iitax_base
+        payrolltax_base = copy.deepcopy(self.records._payrolltax)
+        incometax_base = copy.deepcopy(self.records._iitax)
+        combined_taxes_base = incometax_base + payrolltax_base
+        # compute marginal changes in combined tax liability
+        payrolltax_diff = payrolltax_chng - payrolltax_base
+        incometax_diff = incometax_chng - incometax_base
         combined_diff = combined_taxes_chng - combined_taxes_base
         # specify optional adjustment for employer (er) OASDI+HI payroll taxes
         if wrt_full_compensation and income_type_str == 'e00200p':
@@ -348,11 +349,11 @@ class Calculator(object):
         else:
             adj = 0.0
         # compute marginal tax rates
-        mtr_fica = fica_diff / (finite_diff * (1.0 + adj))
-        mtr_iit = iitax_diff / (finite_diff * (1.0 + adj))
+        mtr_payrolltax = payrolltax_diff / (finite_diff * (1.0 + adj))
+        mtr_incometax = incometax_diff / (finite_diff * (1.0 + adj))
         mtr_combined = combined_diff / (finite_diff * (1.0 + adj))
         # return the three marginal tax rate arrays
-        return (mtr_fica, mtr_iit, mtr_combined)
+        return (mtr_payrolltax, mtr_incometax, mtr_combined)
 
     def current_law_version(self):
         """

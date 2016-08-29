@@ -7,7 +7,8 @@ from collections import defaultdict, OrderedDict
 
 STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600',
                  'c04800', 'c05200', 'c62100', 'c09600', 'c05800', 'c09200',
-                 '_refund', 'c07100', '_iitax', '_fica', '_combined', 's006']
+                 '_refund', 'c07100', '_iitax', '_payrolltax', '_combined',
+                 's006']
 
 # each entry in this array corresponds to the same entry in the array
 # TABLE_LABELS below. this allows us to use TABLE_LABELS to map a
@@ -16,7 +17,7 @@ STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600',
 TABLE_COLUMNS = ['s006', 'c00100', 'num_returns_StandardDed', '_standard',
                  'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'c05200',
                  'c62100', 'num_returns_AMT', 'c09600', 'c05800', 'c07100',
-                 'c09200', '_refund', '_iitax', '_fica', '_combined']
+                 'c09200', '_refund', '_iitax', '_payrolltax', '_combined']
 
 TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Standard Deduction', 'Itemizers',
@@ -381,7 +382,7 @@ def create_difference_table(recs1, recs2, groupby,
         classifier of income bins/deciles
 
     income_to_present : String object
-        options for input: '_iitax', '_fica', '_combined'
+        options for input: '_iitax', '_payrolltax', '_combined'
 
     Returns
     -------
@@ -499,8 +500,9 @@ def diagnostic_table_odict(recs):
     odict['Misc. Surtax ($b)'] = (recs._surtax * recs.s006).sum() * in_billions
     # federal individual income tax liability
     odict['Ind inc tax ($b)'] = (recs._iitax * recs.s006).sum() * in_billions
-    # payroll (FICA) tax liability
-    odict['Payroll tax ($b)'] = (recs._fica * recs.s006).sum() * in_billions
+    # OASDI+HI payroll tax liability (including employer share)
+    payrolltax = (recs._payrolltax * recs.s006).sum()
+    odict['Payroll tax ($b)'] = payrolltax * in_billions
     # combined income and payroll tax liability
     combined = (recs._combined * recs.s006).sum()
     odict['Combined liability ($b)'] = combined * in_billions

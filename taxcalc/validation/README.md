@@ -1,7 +1,7 @@
 Validation of Tax-Calculator against Internet-TAXSIM
 ====================================================
 
-The Tax-Calculator computes federal income taxes and FICA taxes for
+The Tax-Calculator computes federal income and payroll taxes for
 a sample of tax filing units in years beginning with 2013.  The
 Python code that performs the tax calculations has been validated in a
 number of ways.  First, Tax-Calculator results for a number of tax filing
@@ -259,12 +259,12 @@ about two minutes.
 Current Validation Results
 ==========================
 
-Since early November, 2015, there have been no FICA tax liability
+Since early November, 2015, there have been no payroll tax liability
 and no federal income tax liability differences (of more than one cent
 in absolute value) between Tax-Calculator results and Internet-TAXSIM
 results for the 200,000 randomly-generated tax filing units in the
 `c13.in` and `c14.in` samples.  Since late February, 2016,
-there have been no FICA tax liability and no federal income tax
+there have been no payroll tax liability and no federal income tax
 liability differences (of more than one cent in absolute value)
 between Tax-Calculator results and Internet-TAXSIM results for the
 100,000 randomly-generated tax filing units in the `c15.in` sample.
@@ -275,15 +275,15 @@ Among these 300,000 filing units there are only a handful of marginal
 tax rate differences (of more than one basis point).
 
 There are 24 filing units for which Tax-Calculator generates a
-marginal FICA tax rate of 3.80 percent while Internet-TAXSIM generates
+marginal payroll tax rate of 3.80 percent while Internet-TAXSIM generates
 a rate of 2.90 percent.  All of these units are exactly at the 200,000
-(or 250,000 for couples) dollar threshold for the additional Medicare
-tax on high earnings.  The derivative of the total FICA tax function
+(or 250,000 for couples) dollar threshold for the Additional Medicare
+Tax on high earnings.  The derivative of the total payroll tax function
 at this point is not well defined: Tax-Calculator generates 3.80
 because it approximates the derivative using a one-cent **increase**
 in earnings, while Internet-TAXSIM appears to be focusing on decreases
 in earnings.  But the main point here is that the only significant
-differences in marginal FICA tax rates are completely understandable.
+differences in marginal payroll tax rates are completely understandable.
 
 And there is one filing unit for which Tax-Calculator generates a
 marginal federal income tax rate of 35.00 percent while
@@ -294,11 +294,11 @@ In earlier validation work, a and b samples for 2013 and 2014 were
 tested successfully under current-law policy.  And c samples for 2013
 and 2014 were tested successfully under four simple income tax policy
 reforms.  In all twelve of these earlier validation tests, the
-Tax-Calculator and Internet-TAXSIM income and FICA tax liabilities
-differed by no more than one-cent.
+Tax-Calculator and Internet-TAXSIM income and payroll tax liabilities
+differed by no more than one cent.
 
 At the end of April, 2016, three new samples were added to the
 validation test suite: the `d13.in`, `d14.in`, and `d15.in` samples.
 For all three of these samples of 100,000 tax filing units, the
-Tax-Calculator and Internet-TAXSIM income and FICA tax liabilities
-differ by no more than one-cent.
+Tax-Calculator and Internet-TAXSIM income and payroll tax liabilities
+differ by no more than one cent.

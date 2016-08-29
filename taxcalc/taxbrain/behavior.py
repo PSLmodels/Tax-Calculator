@@ -53,13 +53,13 @@ def main(reform_year, calc_year,
     cyr = calc_year
     # (a) with all behavioral-reponse parameters set to zero
     assert not calc_ref.behavior.has_response()
-    itax_s, fica_s, ltcg_s = results(cyr, calc_ref)
+    itax_s, ptax_s, ltcg_s = results(cyr, calc_ref)
     # (b) with behavioral-reponse parameters set to those specified in call
     behv_params = {behv.start_year: {'_BE_sub': [sub_elasticity],
                                      '_BE_inc': [inc_elasticity],
                                      '_BE_cg': [cg_elasticity]}}
     behv.update_behavior(behv_params)  # now used by calc_ref object
-    itax_d, fica_d, ltcg_d = results(cyr, calc_ref)  # dynamic analysis
+    itax_d, ptax_d, ltcg_d = results(cyr, calc_ref)  # dynamic analysis
     # write results to stdout
     bhv = '{},SUB_ELAST,INC_ELAST,CG_ELAST= {} {} {}\n'
     yridx = cyr - behv.start_year
@@ -68,8 +68,8 @@ def main(reform_year, calc_year,
     res = '{},{},{}_STATIC(S),{}_DYNAMIC(D),D-S= {:.1f} {:.1f} {:.1f}\n'
     sys.stdout.write(res.format(cyr, 'ITAX', 'REV', 'REV',
                                 itax_s, itax_d, itax_d - itax_s))
-    sys.stdout.write(res.format(cyr, 'FICA', 'REV', 'REV',
-                                fica_s, fica_d, fica_d - fica_s))
+    sys.stdout.write(res.format(cyr, 'PTAX', 'REV', 'REV',
+                                ptax_s, ptax_d, ptax_d - ptax_s))
     sys.stdout.write(res.format(cyr, 'LTCG', 'AGG', 'AGG',
                                 ltcg_s, ltcg_d, ltcg_d - ltcg_s))
     # return no-error exit code
@@ -87,16 +87,16 @@ def results(year, calc):
         calc_br = Behavior.response(calc_clp, calc)
         # pylint: disable=protected-access
         itax_rev = (calc_br.records._iitax * calc.records.s006).sum()
-        fica_rev = (calc_br.records._fica * calc.records.s006).sum()
+        ptax_rev = (calc_br.records._payrolltax * calc.records.s006).sum()
         ltcg_amt = (calc_br.records.p23250 * calc.records.s006).sum()
     else:
         calc.calc_all()
         # pylint: disable=protected-access
         itax_rev = (calc.records._iitax * calc.records.s006).sum()
-        fica_rev = (calc.records._fica * calc.records.s006).sum()
+        ptax_rev = (calc.records._payrolltax * calc.records.s006).sum()
         ltcg_amt = (calc.records.p23250 * calc.records.s006).sum()
     return (round(itax_rev * 1.0e-9, 3),
-            round(fica_rev * 1.0e-9, 3),
+            round(ptax_rev * 1.0e-9, 3),
             round(ltcg_amt * 1.0e-9, 3))
 
 
