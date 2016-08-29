@@ -226,14 +226,14 @@ class Calculator(object):
     def current_year(self):
         return self.policy.current_year
 
-    MTR_VALID_INCOME_TYPES = ['e00200p', 'e00900p',
-                              'e00300', 'e00400',
-                              'e00600', 'e00650',
-                              'e01400', 'e01700',
-                              'e02000', 'e02400',
-                              'p22250', 'p23250']
+    MTR_VALID_VARIABLES = ['e00200p', 'e00900p',
+                           'e00300', 'e00400',
+                           'e00600', 'e00650',
+                           'e01400', 'e01700',
+                           'e02000', 'e02400',
+                           'p22250', 'p23250']
 
-    def mtr(self, income_type_str='e00200p',
+    def mtr(self, variable_str='e00200p',
             negative_finite_diff=False,
             zero_out_calculated_vars=False,
             wrt_full_compensation=True):
@@ -241,26 +241,26 @@ class Calculator(object):
         Calculates the marginal payroll, individual income, and combined
         tax rates for every tax filing unit.
           The marginal tax rates are approximated as the change in tax
-        liability caused by a small increase (the finite_diff) in income
-        (specified by the income_type_str) divided by that small increase
-        in income, when wrt_full_compensation is false.
+        liability caused by a small increase (the finite_diff) in the variable
+        specified by the variable_str divided by that small increase in the
+        variable, when wrt_full_compensation is false.
           If wrt_full_compensation is true, then the marginal tax rates
         are computed as the change in tax liability divided by the change
-        in total compensation caused by the small increase in income
+        in total compensation caused by the small increase in the variable
         (where the change in total compensation is the sum of the small
         increase in income and any increase in the employer share of payroll
         taxes caused by the small increase in income).
 
         Parameters
         ----------
-        income_type_str: string
-            specifies type of income that is increased to compute the
-            marginal tax rates.  See Notes for list of valid income types.
+        variable_str: string
+            specifies type of income or expense that is increased to compute
+            the marginal tax rates.  See Notes for list of valid variables.
 
         negative_finite_diff: boolean
             specifies whether or not marginal tax rates are computed by
             subtracting (rather than adding) a small finite_diff amount
-            to the specified income type.
+            to the specified variable.
 
         zero_out_calculated_vars: boolean
             specifies value of zero_out_calc_vars parameter used in calls
@@ -269,7 +269,7 @@ class Calculator(object):
         wrt_full_compensation: boolean
             specifies whether or not marginal tax rates on earned income
             are computed with respect to (wrt) changes in total compensation
-            that includes the employer share of OASDI+HI payroll taxes.
+            that includes the employer share of OASDI and HI payroll taxes.
 
         Returns
         -------
@@ -280,7 +280,7 @@ class Calculator(object):
 
         Notes
         -----
-        Valid income_type_str values are:
+        Valid variable_str values are:
         'e00200p', taxpayer wage/salary earnings (also included in e00200);
         'e00900p', taxpayer Schedule C self-employment income (also in e00900);
         'e00300',  taxable interest income;
@@ -294,36 +294,36 @@ class Calculator(object):
         'p22250',  short-term capital gains;
         'p23250',  long-term capital gains.
         """
-        # check validity of income_type_str parameter
-        if income_type_str not in Calculator.MTR_VALID_INCOME_TYPES:
-            msg = 'mtr income_type_str="{}" is not valid'
-            raise ValueError(msg.format(income_type_str))
+        # check validity of variable_str parameter
+        if variable_str not in Calculator.MTR_VALID_VARIABLES:
+            msg = 'mtr variable_str="{}" is not valid'
+            raise ValueError(msg.format(variable_str))
         # specify value for finite_diff parameter
         finite_diff = 0.01  # a one-cent difference
         if negative_finite_diff:
             finite_diff *= -1.0
         # save records object in order to restore it after mtr computations
         recs0 = copy.deepcopy(self.records)
-        # extract income_type array(s) from embedded records object
-        income_type = getattr(self.records, income_type_str)
-        if income_type_str == 'e00200p':
-            earnings_type = self.records.e00200
-        elif income_type_str == 'e00900p':
-            seincome_type = self.records.e00900
-        elif income_type_str == 'e00650':
-            divincome_type = self.records.e00600
-        elif income_type_str == 'e01700':
-            penben_type = self.records.e01500
+        # extract variable array(s) from embedded records object
+        variable = getattr(self.records, variable_str)
+        if variable_str == 'e00200p':
+            earnings_var = self.records.e00200
+        elif variable_str == 'e00900p':
+            seincome_var = self.records.e00900
+        elif variable_str == 'e00650':
+            divincome_var = self.records.e00600
+        elif variable_str == 'e01700':
+            penben_var = self.records.e01500
         # calculate level of taxes after a marginal increase in income
-        setattr(self.records, income_type_str, income_type + finite_diff)
-        if income_type_str == 'e00200p':
-            self.records.e00200 = earnings_type + finite_diff
-        elif income_type_str == 'e00900p':
-            self.records.e00900 = seincome_type + finite_diff
-        elif income_type_str == 'e00650':
-            self.records.e00600 = divincome_type + finite_diff
-        elif income_type_str == 'e01700':
-            self.records.e01500 = penben_type + finite_diff
+        setattr(self.records, variable_str, variable + finite_diff)
+        if variable_str == 'e00200p':
+            self.records.e00200 = earnings_var + finite_diff
+        elif variable_str == 'e00900p':
+            self.records.e00900 = seincome_var + finite_diff
+        elif variable_str == 'e00650':
+            self.records.e00600 = divincome_var + finite_diff
+        elif variable_str == 'e01700':
+            self.records.e01500 = penben_var + finite_diff
         if self.consumption.has_response():
             self.consumption.response(self.records, finite_diff)
         self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
@@ -341,8 +341,8 @@ class Calculator(object):
         incometax_diff = incometax_chng - incometax_base
         combined_diff = combined_taxes_chng - combined_taxes_base
         # specify optional adjustment for employer (er) OASDI+HI payroll taxes
-        if wrt_full_compensation and income_type_str == 'e00200p':
-            adj = np.where(income_type < self.policy.SS_Earnings_c,
+        if wrt_full_compensation and variable_str == 'e00200p':
+            adj = np.where(variable < self.policy.SS_Earnings_c,
                            0.5 * (self.policy.FICA_ss_trt +
                                   self.policy.FICA_mc_trt),
                            0.5 * self.policy.FICA_mc_trt)

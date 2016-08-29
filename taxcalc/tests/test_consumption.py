@@ -89,7 +89,7 @@ def test_consumption_response():
     recs0 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     calc0 = Calculator(policy=Policy(), records=recs0, consumption=None)
     ided0 = copy.deepcopy(recs0.e20400)
-    (mtr0_ptax, mtr0_itax, _) = calc0.mtr(income_type_str='e00200p',
+    (mtr0_ptax, mtr0_itax, _) = calc0.mtr(variable_str='e00200p',
                                           wrt_full_compensation=False)
     assert np.allclose(calc0.records.e20400, ided0)
     # compute earnings mtr with consumption response
@@ -97,7 +97,7 @@ def test_consumption_response():
     calc1 = Calculator(policy=Policy(), records=recs1, consumption=None)
     assert np.allclose(calc1.records.e20400, ided0)
     calc1.consumption.update_consumption(consumption_response)
-    (mtr1_ptax, mtr1_itax, _) = calc1.mtr(income_type_str='e00200p',
+    (mtr1_ptax, mtr1_itax, _) = calc1.mtr(variable_str='e00200p',
                                           wrt_full_compensation=False)
     assert np.allclose(calc1.records.e20400, ided0)
     # confirm that payroll mtr values are no different

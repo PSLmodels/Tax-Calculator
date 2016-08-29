@@ -276,7 +276,7 @@ def test_Calculator_mtr():
     puf = Records(TAXDATA, weights=WEIGHTS, start_year=2009)
     calc = Calculator(policy=Policy(), records=puf)
     recs_pre_e00200p = copy.deepcopy(calc.records.e00200p)
-    (mtr_ptx, mtr_itx, mtr_combined) = calc.mtr(income_type_str='e00200p',
+    (mtr_ptx, mtr_itx, mtr_combined) = calc.mtr(variable_str='e00200p',
                                                 zero_out_calculated_vars=True)
     recs_post_e00200p = copy.deepcopy(calc.records.e00200p)
     assert np.allclose(recs_post_e00200p, recs_pre_e00200p)
@@ -284,13 +284,13 @@ def test_Calculator_mtr():
     assert np.array_equal(mtr_combined, mtr_ptx) is False
     assert np.array_equal(mtr_ptx, mtr_itx) is False
     with pytest.raises(ValueError):
-        (_, _, mtr_combined) = calc.mtr(income_type_str='bad_income_type')
-    (_, _, mtr_combined) = calc.mtr(income_type_str='e00650',
+        (_, _, mtr_combined) = calc.mtr(variable_str='bad_income_type')
+    (_, _, mtr_combined) = calc.mtr(variable_str='e00650',
                                     negative_finite_diff=True)
     assert type(mtr_combined) == np.ndarray
-    (_, _, mtr_combined) = calc.mtr(income_type_str='e00900p')
+    (_, _, mtr_combined) = calc.mtr(variable_str='e00900p')
     assert type(mtr_combined) == np.ndarray
-    (_, _, mtr_combined) = calc.mtr(income_type_str='e01700')
+    (_, _, mtr_combined) = calc.mtr(variable_str='e01700')
     assert type(mtr_combined) == np.ndarray
 
 

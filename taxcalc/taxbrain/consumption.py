@@ -42,7 +42,7 @@ def main(mpc_e17500, mpc_e18400, mpc_e19800, mpc_e20400):
                        consumption=None, verbose=False)
     calc0.advance_to_year(cyr)
     wghts = calc0.records.s006
-    (mtr0_ptax, mtr0_itax, _) = calc0.mtr(income_type_str='e00200p',
+    (mtr0_ptax, mtr0_itax, _) = calc0.mtr(variable_str='e00200p',
                                           wrt_full_compensation=False)
     # compute mtr under current-law policy with specified consumption response
     consump = Consumption()
@@ -56,7 +56,7 @@ def main(mpc_e17500, mpc_e18400, mpc_e19800, mpc_e20400):
                        consumption=consump, verbose=False)
     calc1.advance_to_year(cyr)
     assert calc1.consumption.current_year == cyr
-    (mtr1_ptax, mtr1_itax, _) = calc1.mtr(income_type_str='e00200p',
+    (mtr1_ptax, mtr1_itax, _) = calc1.mtr(variable_str='e00200p',
                                           wrt_full_compensation=False)
     # compare unweighted mtr results with and without consumption response
     epsilon = 1.0e-6  # this would represent a mtr of 0.0001 percent

@@ -182,18 +182,18 @@ def test_mtr():
     res += '     {}\n'.format(PTAX_MTR_BIN_EDGES)
     res += 'ITAX mtr histogram bin edges:\n'
     res += '     {}\n'.format(ITAX_MTR_BIN_EDGES)
-    inctype_header = 'PTAX and ITAX mtr histogram bin counts for'
-    # compute marginal tax rate (mtr) histograms for each mtr income type
-    for inctype in Calculator.MTR_VALID_INCOME_TYPES:
-        if inctype == 'e01400':
+    variable_header = 'PTAX and ITAX mtr histogram bin counts for'
+    # compute marginal tax rate (mtr) histograms for each mtr variable
+    for var_str in Calculator.MTR_VALID_VARIABLES:
+        if var_str == 'e01400':
             zero_out = True
         else:
             zero_out = False
-        (mtr_ptax, mtr_itax, _) = calc.mtr(income_type_str=inctype,
+        (mtr_ptax, mtr_itax, _) = calc.mtr(variable_str=var_str,
                                            negative_finite_diff=MTR_NEG_DIFF,
                                            zero_out_calculated_vars=zero_out,
                                            wrt_full_compensation=False)
-        res += '{} {}:\n'.format(inctype_header, inctype)
+        res += '{} {}:\n'.format(variable_header, var_str)
         res += mtr_bin_counts(mtr_ptax, PTAX_MTR_BIN_EDGES, recid)
         res += mtr_bin_counts(mtr_itax, ITAX_MTR_BIN_EDGES, recid)
     # generate differences between actual and expected results
