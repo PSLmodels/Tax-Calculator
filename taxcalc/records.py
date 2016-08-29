@@ -128,9 +128,7 @@ class Records(object):
         'MARS', 'MIDR', 'RECID',
         'cmbtp_standard', 'cmbtp_itemizer',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
-        's006', 'filer',
-        'e02500', 'p04470', 'e07200', 'e59560', 'e19550',
-        'e19700', 'e20550', 'e20600', 'p60100', 'e19570'])
+        's006', 'filer'])
 
     # specify set of all Record variables that MUST be read by Tax-Calculator:
     MUST_READ_VARS = set(['RECID', 'MARS'])
@@ -182,8 +180,7 @@ class Records(object):
         '_iitax', '_refund',
         '_expanded_income', 'c07300',
         'c07600', 'c07240',
-        '_surtax', '_combined', 'personal_credit',
-        'c00300', 'c00900', 'c26270'])
+        '_surtax', '_combined', 'personal_credit'])
 
     INTEGER_CALCULATED_VARS = set([
         '_num', '_sep', '_exact', '_calc_schR', 'f2555'])
@@ -218,6 +215,12 @@ class Records(object):
         # read extrapolation blowup factors and sample weights
         self._read_blowup(blowup_factors)
         self._read_weights(weights)
+        # weights must be same size as tax record data
+        if not self.WT.empty and self.dim != len(self.WT):
+            frac = float(self.dim) / len(self.WT)
+            self.WT = self.WT.iloc[self.index]
+            self.WT = self.WT / frac
+
         # specify current_year and FLPDYR values
         if isinstance(start_year, int):
             self._current_year = start_year
@@ -386,6 +389,7 @@ class Records(object):
             msg = 'data is neither a string nor a Pandas DataFrame'
             raise ValueError(msg)
         self.dim = len(taxdf)
+        self.index = taxdf.index
         # create class variables using taxdf column names
         READ_VARS = set()
         for varname in list(taxdf.columns.values):

@@ -596,7 +596,7 @@
 
     "_II_credit": {
         "long_name": "Personal refundable credit",
-        "description": "This credit amount is fully refundable, phased out based on taxable income.",
+        "description": "This credit amount is fully refundable, phased out based on taxable income. It is available to tax units who would otherwise not file.",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
@@ -734,6 +734,20 @@
         "value": [0.396]
     },
 
+    "_II_rt8": {
+        "long_name": "Extra personal income tax rate",
+        "description": "The extra tax rate, applied to the portion of taxable income above the extra tax bracket. Default value repeats the current last bracket.",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [1.0]
+    },
+
     "_II_brk1": {
         "long_name": "Personal income tax bracket (upper threshold) 1",
         "description": "Taxable income below this threshold is taxed at tax rate 1. ",
@@ -860,6 +874,27 @@
         "validations": {"min": "_II_brk5"}
     },
 
+    "_II_brk7": {
+        "long_name": "Extra personal income tax bracket",
+        "description": "Income below this threshold and above tax bracket 6 is taxed at tax rate 7. Default value sets to infinity",
+        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[1e14, 1e14, 1e14, 1e14, 1e14, 1e14],
+                  [1e14, 1e14, 1e14, 1e14, 1e14, 1e14],
+                  [1e14, 1e14, 1e14, 1e14, 1e14, 1e14],
+                  [1e14, 1e14, 1e14, 1e14, 1e14, 1e14]],
+        "validations": {"min": "_II_brk6"}
+    },
+
     "_CG_rt1": {
         "long_name": "Long term capital gain and qualified dividends rate 1",
         "description": "The capital gain and dividends (stacked on top of regular income) that are below threshold 1 are taxed at this rate. ",
@@ -897,6 +932,19 @@
         "cpi_inflated": false,
         "col_label": "",
         "value": [0.20]
+    },
+
+    "_CG_rt4": {
+        "long_name": "Long term capital gain and qualified dividends extra rate",
+        "description": "The capital gain and dividends (stacked on top of regular income) that are above the extra threshold are taxed at this rate. Default value repeats the current last bracket.",
+        "irs_ref": "Form 1040 Schedule D tax worksheet, line 32, in-line. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [1.0]
     },
 
     "_CG_thd1": {
@@ -937,6 +985,24 @@
                   [415050, 466950, 233475, 441000, 466950, 233475]]
     },
 
+    "_CG_thd3": {
+        "long_name": "Long term capital gain and qualified dividend extra threshold",
+        "description": "The capital gain and dividends (stacked on top of regular income)  above this threshold are taxed at the extra capital gain rate. Default value sets to infinity.",
+        "irs_ref": "Form 1040 Schedule D tax worksheet, line 24, in-line. ",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[1e14, 1e14, 1e14, 1e14, 1e14, 1e14],
+                  [1e14, 1e14, 1e14, 1e14, 1e14, 1e14],
+                  [1e14, 1e14, 1e14, 1e14, 1e14, 1e14],
+                  [1e14, 1e14, 1e14, 1e14, 1e14, 1e14]]
+    },
     "_KT_c_Age": {
         "long_name": "Maximum age subject to Kiddie Tax",
         "description": "At or under this age, the individual is subject to Kiddie Tax.",
@@ -1144,6 +1210,19 @@
         "value": [0.20]
     },
 
+    "_AMT_CG_rt4": {
+        "long_name": "Long term capital gain and qualified dividend extra rate",
+        "description": "The capital gain and dividends (stacked on top of regular income) that are above the extra threshold are taxed at this rate. Default value repeats the current last bracket.",
+        "irs_ref": "Form 6251, line 57, in-line. ",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [1.0]
+    },
+
     "_AMT_CG_thd1": {
         "long_name": "Long term capital gain and qualified dividend threshold 1",
         "description": "The capital gain plus dividends portion, stacked last, of income below this threshold is taxed at capital gain rate 1.",
@@ -1180,6 +1259,25 @@
                   [406750, 457600, 228800, 432200, 457600, 228800],
                   [413200, 464850, 232425, 439000, 464850, 223425],
                   [415050, 466950, 233475, 441000, 466950, 233475]]
+    },
+
+    "_AMT_CG_thd3": {
+        "long_name": "Long term capital gain and qualified dividend extra threshold",
+        "description": "The capital gain plus dividends portion, stacked last, of income above this threshold is taxed at the extra capital gain rate. Default value sets to infinity.",
+        "irs_ref": "Form 6251, line 49, in-line. ",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[1e14, 1e14, 1e14, 1e14, 1e14, 1e14],
+                  [1e14, 1e14, 1e14, 1e14, 1e14, 1e14],
+                  [1e14, 1e14, 1e14, 1e14, 1e14, 1e14],
+                  [1e14, 1e14, 1e14, 1e14, 1e14, 1e14]]
     },
 
     "_NIIT_thd": {
@@ -1609,7 +1707,7 @@
 
     "_pt_rates": {
         "long_name": "Tax rates on pass-through income",
-	"description": "The seven tax rates (one per income tax bracket) on income from sole proprietorships, partnerships and S corporations",
+	"description": "The eight tax rates (one per income tax bracket) on income from sole proprietorships, partnerships and S corporations",
 	"irs_ref": "",
 	"notes": "",
 	"start_year": 2013,
@@ -1618,7 +1716,7 @@
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-	"value": [[0.1, 0.15, 0.25, 0.28, 0.33, 0.35, 0.396]]
+	"value": [[0.1, 0.15, 0.25, 0.28, 0.33, 0.35, 0.396, 1]]
     },
 
     "_pt_special": {
