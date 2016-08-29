@@ -231,7 +231,8 @@ class Calculator(object):
                            'e00600', 'e00650',
                            'e01400', 'e01700',
                            'e02000', 'e02400',
-                           'p22250', 'p23250']
+                           'p22250', 'p23250',
+                           'e18500', 'e19200']
 
     def mtr(self, variable_str='e00200p',
             negative_finite_diff=False,
@@ -248,8 +249,8 @@ class Calculator(object):
         are computed as the change in tax liability divided by the change
         in total compensation caused by the small increase in the variable
         (where the change in total compensation is the sum of the small
-        increase in income and any increase in the employer share of payroll
-        taxes caused by the small increase in income).
+        increase in the variable and any increase in the employer share of
+        payroll taxes caused by the small increase in the variable).
 
         Parameters
         ----------
@@ -292,7 +293,9 @@ class Calculator(object):
         'e02000',  Schedule E net income/loss
         'e02400',  all social security (OASDI) benefits;
         'p22250',  short-term capital gains;
-        'p23250',  long-term capital gains.
+        'p23250',  long-term capital gains;
+        'e18500',  Schedule A real-estate-tax deduction;
+        'e19200',  Schedule A total-interest deduction.
         """
         # check validity of variable_str parameter
         if variable_str not in Calculator.MTR_VALID_VARIABLES:
