@@ -180,7 +180,7 @@ class Calculator(object):
         # Calculate taxes with optimal itemized deduction
         self.TaxInc_to_AMTI()
         F2441(self.policy, self.records)
-        NumDep(self.policy, self.records)
+        EITC(self.policy, self.records)
         ChildTaxCredit(self.policy, self.records)
         AmOppCreditBase(self.policy, self.records)
         LLC(self.policy, self.records)
@@ -191,7 +191,7 @@ class Calculator(object):
         AdditionalCTC(self.policy, self.records)
         F5405(self.policy, self.records)
         C1040(self.policy, self.records)
-        DEITC(self.policy, self.records)
+        DecomposeEITC(self.policy, self.records)
         IITAX(self.policy, self.records)
         ExpandIncome(self.policy, self.records)
 

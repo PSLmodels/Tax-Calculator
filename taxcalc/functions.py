@@ -731,18 +731,17 @@ def F2441(MARS, _earned_p, _earned_s, f2441, DCC_c, e32800,
 
 
 @iterate_jit(nopython=True)
-def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge, DSI,
-           age_head, EITC_MaxEligAge, EITC_ps_MarriedJ, EITC_rt, c59560,
-           EITC_c, age_spouse, EITC_prt, e00300, e00600,
-           p25470, e27200,
-           EITC_InvestIncome_c, _earned, c59660):
+def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
+         p25470, e27200, age_head, age_spouse, _earned,
+         EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_MarriedJ,
+         EITC_rt, EITC_c, EITC_prt, EITC_InvestIncome_c,
+         c59660):
     """
-    NumDep function: ...
+    EITC function computes EITC amount, c59660
     """
     # pylint: disable=too-many-branches
-    preeitc = 0.
-    c59560 = _earned
-    modagi = c00100 + e00400
+    pre_eitc = 0.
+    eitc_agi = c00100 + e00400
     if MARS == 2:
         val_ymax = EITC_ps[EIC] + EITC_ps_MarriedJ[EIC]
     elif MARS == 1 or MARS == 4 or MARS == 5 or MARS == 7:
@@ -750,23 +749,23 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge, DSI,
     else:
         val_ymax = 0.
     if MARS == 1 or MARS == 4 or MARS == 5 or MARS == 2 or MARS == 7:
-        c59660 = min(EITC_rt[EIC] * c59560, EITC_c[EIC])
-        preeitc = c59660
+        c59660 = min(EITC_rt[EIC] * _earned, EITC_c[EIC])
+        pre_eitc = c59660
     if (MARS != 3 and MARS != 6 and
-            (modagi > val_ymax or c59560 > val_ymax)):
-        preeitc = max(0., EITC_c[EIC] - EITC_prt[EIC] *
-                      (max(0., max(modagi, c59560) - val_ymax)))
-        preeitc = min(preeitc, c59660)
+            (eitc_agi > val_ymax or _earned > val_ymax)):
+        pre_eitc = max(0., EITC_c[EIC] - EITC_prt[EIC] *
+                      (max(0., max(eitc_agi, _earned) - val_ymax)))
+        pre_eitc = min(pre_eitc, c59660)
     if MARS != 3 and MARS != 6:
         dy = (e00400 + e00300 + e00600 +
               max(0., c01000) + max(0., 0. - p25470) + max(0., e27200))
     else:
         dy = 0.
     if MARS != 3 and MARS != 6 and dy > EITC_InvestIncome_c:
-        preeitc = 0.
+        pre_eitc = 0.
 
     if DSI == 1:
-        preeitc = 0.
+        pre_eitc = 0.
 
     if EIC == 0:
         # enforce age eligibility rule for those with no EITC-eligible children
@@ -779,22 +778,19 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge, DSI,
                 age_spouse <= EITC_MaxEligAge) or \
                age_head == 0 or \
                age_spouse == 0:
-                c59660 = preeitc
+                c59660 = pre_eitc
             else:
                 c59660 = 0.
         else:
             if (age_head >= EITC_MinEligAge and
                 age_head <= EITC_MaxEligAge) or \
                age_head == 0:
-                c59660 = preeitc
+                c59660 = pre_eitc
             else:
                 c59660 = 0.
     else:
-        c59660 = preeitc
-
-    if c59660 == 0:
-        c59560 = 0.
-    return (c59560, c59660)
+        c59660 = pre_eitc
+    return c59660
 
 
 @iterate_jit(nopython=True)
@@ -1120,9 +1116,9 @@ def C1040(e07400, c07200, c07220, c07230, c07300, c07240,
 
 
 @iterate_jit(nopython=True)
-def DEITC(c59660, c07100, c08800, c05800, _avail, _othertax):
+def DecomposeEITC(c59660, c07100, c08800, c05800, _avail, _othertax):
     """
-    DEITC function: decomposition of EITC
+    DecomposeEITC function ...
     """
     c59680 = min(c59660, _avail)
     _avail = max(0., _avail - c59680) + _othertax
