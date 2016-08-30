@@ -799,18 +799,18 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge, DSI,
 
 @iterate_jit(nopython=True)
 def ChildTaxCredit(n24, MARS, c00100, _feided, _exact,
-                   CTC_c, CTC_ps, CTC_prt, _precrd):
+                   CTC_c, CTC_ps, CTC_prt, pre_ctc):
     """
-    ChildTaxCredit function: ...
+    ChildTaxCredit function computes pre_ctc amount
     """
-    _precrd = CTC_c * n24
-    ctcagi = c00100 + _feided
-    if ctcagi > CTC_ps[MARS - 1]:
-        excess = ctcagi - CTC_ps[MARS - 1]
+    pre_ctc = CTC_c * n24
+    ctc_agi = c00100 + _feided
+    if ctc_agi > CTC_ps[MARS - 1]:
+        excess = ctc_agi - CTC_ps[MARS - 1]
         if _exact == 1:
             excess = 1000. * math.ceil(excess / 1000.)
-        _precrd = max(0., _precrd - CTC_prt * excess)
-    return _precrd
+        pre_ctc = max(0., pre_ctc - CTC_prt * excess)
+    return pre_ctc
 
 
 @iterate_jit(nopython=True)
@@ -974,35 +974,31 @@ def SchR(_calc_schR, age_head, age_spouse, MARS, c00100,
 def NonEdCr(c87550, MARS, ETC_pe_Single, ETC_pe_Married, c00100, _num,
             c07180, c07230,
             e07600, e07240, e07260, e07300,
-            c05800, _precrd, c87668, c07200,
+            c05800, pre_ctc, c87668, c07200,
             c07220, c07240, c07300, c07600, _avail):
     """
     NonEdCr function: ...
     """
-    # Nonrefundable Education Credits
-    # Form 8863 Tentative Education Credits
+    # nonrefundable education credit, c07230
     c87560 = c87550
-    # Phase Out
     if MARS == 2:
         c87570 = ETC_pe_Married * 1000.
     else:
         c87570 = ETC_pe_Single * 1000.
-    c87580 = c00100
-    c87590 = max(0., c87570 - c87580)
+    c87590 = max(0., c87570 - c00100)
     c87600 = 10000. * _num
     c87610 = min(1., c87590 / c87600)
     c87620 = c87560 * c87610
-    _xlin4 = max(0., c05800 - (e07300 + c07180 + c07200))
-    _xlin5 = min(c87620, _xlin4)
-    _xlin9 = max(0., c05800 - (e07300 + c07180 + c07200 + _xlin5))
-    _xlin10 = min(c87668, _xlin9)
-    c87680 = _xlin5 + _xlin10
+    xline4 = max(0., c05800 - (e07300 + c07180 + c07200))
+    xline5 = min(c87620, xline4)
+    xline9 = max(0., c05800 - (e07300 + c07180 + c07200 + xline5))
+    xline10 = min(c87668, xline9)
+    c87680 = xline5 + xline10
     c07230 = c87680
-    ctc1 = c07180 + c07200 + c07230
-    ctc2 = e07240 + e07260 + e07300
-    ctctax = c05800 - ctc1 - ctc2
-    c07220 = min(_precrd, max(0., ctctax))
-    # lt tax owed
+    # reduce nonrefundable child tax credit, c07220
+    c07220 = min(pre_ctc, max(0., c05800 - (c07180 + c07200 + c07230 +
+                                            e07240 + e07260 + e07300)))
+    # apply credits to tax liability in order on the tax form
     _avail = c05800
     c07180 = min(c07180, _avail)
     _avail = _avail - c07180
@@ -1020,12 +1016,11 @@ def NonEdCr(c87550, MARS, ETC_pe_Single, ETC_pe_Married, c00100, _num,
     _avail = _avail - c07600
     c07220 = min(c07220, _avail)
     _avail = _avail - c07220
-    # Allocate credits to tax in order on the tax form
     return (c07300, c07600, c07240, c07220, c07230, _avail)
 
 
 @iterate_jit(nopython=True)
-def AddCTC(n24, _precrd, _earned, c07220, _ptax_was,
+def AddCTC(n24, pre_ctc, _earned, c07220, _ptax_was,
            ACTC_Income_thd, ACTC_rt, ACTC_ChildNum, ALD_SelfEmploymentTax_HC,
            c03260, e09800, c59660, e11200, c11070):
 
@@ -1048,7 +1043,7 @@ def AddCTC(n24, _precrd, _earned, c07220, _ptax_was,
     c11070 = 0.
     # Part I of 2005 form 8812
     if n24 > 0:
-        c82925 = _precrd
+        c82925 = pre_ctc
         c82930 = c07220
         c82935 = c82925 - c82930
         # CTC not applied to tax
