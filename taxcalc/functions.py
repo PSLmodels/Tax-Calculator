@@ -506,7 +506,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         dwks3 = e58990
         dwks4 = 0.  # always assumed to be zero
         dwks5 = max(0., dwks3 - dwks4)
-        dwks6 = max(0., dwks2 - dwks5)  # dwks6 same as c24505
+        dwks6 = max(0., dwks2 - dwks5)
         dwks7 = min(p23250, c23650)  # SchD lines 15 and 16, respectively
         dwks8 = min(dwks3, dwks4)
         # dwks9 = max(0., dwks7 - dwks8)
