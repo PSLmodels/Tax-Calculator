@@ -508,7 +508,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         dwks5 = max(0., dwks3 - dwks4)
         dwks6 = max(0., dwks2 - dwks5)
         dwks7 = min(p23250, c23650)  # SchD lines 15 and 16, respectively
-        dwks8 = min(dwks3, dwks4)
+        # dwks8 = min(dwks3, dwks4)
         # dwks9 = max(0., dwks7 - dwks8)
         # BELOW TWO STATEMENTS ARE UNCLEAR IN LIGHT OF dwks9=... COMMENT
         if e01100 > 0.:
@@ -527,6 +527,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         dwks18 = max(0., dwks1 - dwks10)
         dwks19 = max(dwks17, dwks18)
         dwks20 = dwks16 - dwks17
+        lowest_rate_tax = CG_rt1 * dwks20
         # break in worksheet lines
         dwks21 = min(dwks1, dwks13)
         dwks22 = dwks20
@@ -539,6 +540,9 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         dwks30 = dwks22 + dwks28
         dwks31 = dwks21 - dwks30
         dwks32 = CG_rt3 * dwks31
+        hi_base = max(0., dwks31 - CG_thd3[MARS - 1])
+        hi_incremental_rate = CG_rt4 - CG_rt3
+        highest_rate_incremental_tax = hi_incremental_rate * hi_base
         # break in worksheet lines
         dwks33 = min(dwks9, e24518)
         dwks34 = dwks10 + dwks19
@@ -552,7 +556,8 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         dwks42 = Taxer_i(dwks19, MARS, II_rt1, II_rt2, II_rt3, II_rt4,
                          II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
                          II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
-        dwks43 = dwks29 + dwks32 + dwks38 + dwks41 + dwks42
+        dwks43 = (dwks29 + dwks32 + dwks38 + dwks41 + dwks42 +
+                  lowest_rate_tax + highest_rate_incremental_tax)
         dwks44 = _xyztax
         dwks45 = min(dwks43, dwks44)
 
