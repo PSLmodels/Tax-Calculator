@@ -484,17 +484,16 @@ def XYZD(_taxinc, c04800, MARS, _xyztax, c05200,
 
 @iterate_jit(nopython=True)
 def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
-             e24515, e24518, MARS, _taxinc, _xyztax, _feided,
-             _feitax, c00650, c05700, _taxbc,
-             c24516, c24517, c24520,
+             e24515, e24518, MARS, _taxinc, _xyztax, _feided, _feitax,
              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7,
-             CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3):
+             CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3,
+             c24516, c24517, c24520, c05700, _taxbc):
     """
-    TaxGains function: ...
+    TaxGains function implements special taxation of
+    long-term capital gains and qualified dividends
     """
     # pylint: disable=too-many-statements,too-many-branches
-    c00650 = e00650
     if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
         hasqdivltcg = 1  # has qualified dividends or long-term capital gains
     else:
@@ -504,7 +503,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
 
         # if/else 1
         _dwks5 = max(0., e58990)
-        c24505 = max(0., c00650 - _dwks5)
+        c24505 = max(0., e00650 - _dwks5)
         # gain for tax computation
         if e01100 > 0.:
             c24510 = e01100
@@ -582,7 +581,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
     c05700 = 0.
 
     _taxbc = c05700 + c05100
-    return (c00650, c24516, c24517, c24520, c05700, _taxbc)
+    return (c24516, c24517, c24520, c05700, _taxbc)
 
 
 @iterate_jit(nopython=True)
