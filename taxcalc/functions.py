@@ -731,18 +731,17 @@ def F2441(MARS, _earned_p, _earned_s, f2441, DCC_c, e32800,
 
 
 @iterate_jit(nopython=True)
-def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge, DSI,
-           age_head, EITC_MaxEligAge, EITC_ps_MarriedJ, EITC_rt, c59560,
-           EITC_c, age_spouse, EITC_prt, e00300, e00600,
-           p25470, e27200,
-           EITC_InvestIncome_c, _earned, c59660):
+def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
+         p25470, e27200, age_head, age_spouse, _earned,
+         EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_MarriedJ,
+         EITC_rt, EITC_c, EITC_prt, EITC_InvestIncome_c,
+         c59660):
     """
-    NumDep function: ...
+    EITC function computes EITC amount, c59660
     """
     # pylint: disable=too-many-branches
-    preeitc = 0.
-    c59560 = _earned
-    modagi = c00100 + e00400
+    pre_eitc = 0.
+    eitc_agi = c00100 + e00400
     if MARS == 2:
         val_ymax = EITC_ps[EIC] + EITC_ps_MarriedJ[EIC]
     elif MARS == 1 or MARS == 4 or MARS == 5 or MARS == 7:
@@ -750,23 +749,23 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge, DSI,
     else:
         val_ymax = 0.
     if MARS == 1 or MARS == 4 or MARS == 5 or MARS == 2 or MARS == 7:
-        c59660 = min(EITC_rt[EIC] * c59560, EITC_c[EIC])
-        preeitc = c59660
+        c59660 = min(EITC_rt[EIC] * _earned, EITC_c[EIC])
+        pre_eitc = c59660
     if (MARS != 3 and MARS != 6 and
-            (modagi > val_ymax or c59560 > val_ymax)):
-        preeitc = max(0., EITC_c[EIC] - EITC_prt[EIC] *
-                      (max(0., max(modagi, c59560) - val_ymax)))
-        preeitc = min(preeitc, c59660)
+            (eitc_agi > val_ymax or _earned > val_ymax)):
+        pre_eitc = max(0., EITC_c[EIC] - EITC_prt[EIC] *
+                       (max(0., max(eitc_agi, _earned) - val_ymax)))
+        pre_eitc = min(pre_eitc, c59660)
     if MARS != 3 and MARS != 6:
         dy = (e00400 + e00300 + e00600 +
               max(0., c01000) + max(0., 0. - p25470) + max(0., e27200))
     else:
         dy = 0.
     if MARS != 3 and MARS != 6 and dy > EITC_InvestIncome_c:
-        preeitc = 0.
+        pre_eitc = 0.
 
     if DSI == 1:
-        preeitc = 0.
+        pre_eitc = 0.
 
     if EIC == 0:
         # enforce age eligibility rule for those with no EITC-eligible children
@@ -779,22 +778,19 @@ def NumDep(EIC, c00100, c01000, e00400, MARS, EITC_ps, EITC_MinEligAge, DSI,
                 age_spouse <= EITC_MaxEligAge) or \
                age_head == 0 or \
                age_spouse == 0:
-                c59660 = preeitc
+                c59660 = pre_eitc
             else:
                 c59660 = 0.
         else:
             if (age_head >= EITC_MinEligAge and
                 age_head <= EITC_MaxEligAge) or \
                age_head == 0:
-                c59660 = preeitc
+                c59660 = pre_eitc
             else:
                 c59660 = 0.
     else:
-        c59660 = preeitc
-
-    if c59660 == 0:
-        c59560 = 0.
-    return (c59560, c59660)
+        c59660 = pre_eitc
+    return c59660
 
 
 @iterate_jit(nopython=True)
@@ -814,9 +810,9 @@ def ChildTaxCredit(n24, MARS, c00100, _feided, _exact,
 
 
 @iterate_jit(nopython=True)
-def AmOppCr(p87482, e87487, e87492, e87497, p87521, c87521):
+def AmOppCreditBase(p87482, e87487, e87492, e87497, p87521, c87521):
     """
-    American Opportunity Credit 2009+; Form 8863
+    American Opportunity Credit (Form 8863) base amount, c87521
 
     This function calculates American Opportunity Credit
     for up to four eligible students.
@@ -855,21 +851,31 @@ def AmOppCr(p87482, e87487, e87492, e87497, p87521, c87521):
 @iterate_jit(nopython=True)
 def LLC(e87530, LLC_Expense_c, c87550):
     """
-    Lifetime Learning Credit; Form 8863
+    Lifetime Learning Credit (Form 8863) amount, c87550
 
     Notes
     -----
     Tax Law Parameters that are not parameterized:
 
-        0.2 : Lifetime Learning Credit ratio against expense:
+        0.2 : Lifetime Learning Credit ratio against expense
 
     Tax Law Parameters that are parameterized:
 
         LLC_Expense_c : Lifetime Learning Credit expense limit
 
+        ETC_pe_Married : Education Tax Credit phaseout end for married
+
+        ETC_pe_Single : Education Tax Credit phaseout end for single
+
     Taxpayer Charateristics:
 
         e87530 : Lifetime Learning Credit total qualified expenses
+
+        e07300 : Foreign tax credit - Form 1116
+
+        c07180 : Child/dependent care expense credit - Form 2441
+
+        c07200 : Schedule R credit
 
     Returns
     -------
@@ -880,12 +886,14 @@ def LLC(e87530, LLC_Expense_c, c87550):
 
 
 @iterate_jit(nopython=True)
-def RefAmOpp(c87521, _num, c00100, c10960, c87668):
+def AmOppCreditParts(c87521, _num, c00100, c10960, c87668):
     """
-    Refundable American Opportunity Credit 2009+; Form 8863
+    American Opportunity Credit (Form 8863) nonrefundable (c87668) and
+                                            refundable (c10960) parts
 
-    This function checks the previously calculated American Opportunity Credit
-    with the phaseout range and then applies the 0.4 refundable rate.
+    This function applies a phaseout to the previously calculated base
+    American Opportunity Credit amount, c87521, and then applies the
+    0.4 refundable rate.
 
     Notes
     -----
@@ -901,7 +909,7 @@ def RefAmOpp(c87521, _num, c00100, c10960, c87668):
 
     Parameters
     ----------
-        c87521 : gross American Opportunity Credit
+        c87521 : base American Opportunity Credit
 
         _num : number of people filing jointly
 
@@ -971,15 +979,13 @@ def SchR(_calc_schR, age_head, age_spouse, MARS, c00100,
 
 
 @iterate_jit(nopython=True)
-def NonEdCr(c87550, MARS, ETC_pe_Single, ETC_pe_Married, c00100, _num,
-            c07180, c07230,
-            e07600, e07240, e07260, e07300,
-            c05800, pre_ctc, c87668, c07200,
-            c07220, c07240, c07300, c07600, _avail):
+def EducationTaxCredit(c87550, MARS, c00100, _num, c05800,
+                       e07300, c07180, c07200, c87668,
+                       ETC_pe_Single, ETC_pe_Married,
+                       c07230):
     """
-    NonEdCr function: ...
+    Education Tax Credit (Form 8863) amount, c07230
     """
-    # nonrefundable education credit, c07230
     c87560 = c87550
     if MARS == 2:
         c87570 = ETC_pe_Married * 1000.
@@ -995,37 +1001,47 @@ def NonEdCr(c87550, MARS, ETC_pe_Single, ETC_pe_Married, c00100, _num,
     xline10 = min(c87668, xline9)
     c87680 = xline5 + xline10
     c07230 = c87680
-    # reduce nonrefundable child tax credit, c07220
-    c07220 = min(pre_ctc, max(0., c05800 - (c07180 + c07200 + c07230 +
-                                            e07240 + e07260 + e07300)))
-    # apply credits to tax liability in order on the tax form
-    _avail = c05800
-    c07180 = min(c07180, _avail)
-    _avail = _avail - c07180
-    c07200 = min(c07200, _avail)
-    _avail = _avail - c07200
-    c07300 = min(e07300, _avail)
-    _avail = _avail - c07300
-    c07230 = min(c07230, _avail)
-    _avail = _avail - c07230
-    c07240 = min(e07240, _avail)
-    _avail = _avail - c07240
-    c07260 = min(e07260, _avail)
-    _avail = _avail - c07260
-    c07600 = min(e07600, _avail)
-    _avail = _avail - c07600
-    c07220 = min(c07220, _avail)
-    _avail = _avail - c07220
-    return (c07300, c07600, c07240, c07220, c07230, _avail)
+    return c07230
 
 
 @iterate_jit(nopython=True)
-def AddCTC(n24, pre_ctc, _earned, c07220, _ptax_was,
-           ACTC_Income_thd, ACTC_rt, ACTC_ChildNum, ALD_SelfEmploymentTax_HC,
-           c03260, e09800, c59660, e11200, c11070):
-
+def NonrefundableCredits(c05800, e07240, e07260, e07300, e07600,
+                         c07180, c07200, c07220, c07230, c07240,
+                         pre_ctc, c07300, c07600, _avail):
     """
-    AddCTC function: calculates Additional Child Tax Credit
+    NonRefundableCredits function serially applies credits to tax liability
+    """
+    # reduce nonrefundable child tax credit, c07220
+    c07220 = min(pre_ctc, max(0., c05800 - (c07180 + c07200 + c07230 +
+                                            e07240 + e07260 + e07300)))
+    # apply tax credits to tax liability in order on tax form
+    _avail = c05800
+    c07180 = min(c07180, _avail)  # child & dependent care expense credit
+    _avail = _avail - c07180
+    c07200 = min(c07200, _avail)  # Schedule R credit
+    _avail = _avail - c07200
+    c07300 = min(e07300, _avail)  # Foreign tax credit - Form 1116
+    _avail = _avail - c07300
+    c07230 = min(c07230, _avail)  # Education tax credit
+    _avail = _avail - c07230
+    c07240 = min(e07240, _avail)  # Retirement savings contribution credit
+    _avail = _avail - c07240
+    c07260 = min(e07260, _avail)  # Residential energy credit
+    _avail = _avail - c07260
+    c07600 = min(e07600, _avail)  # Prior year minimum tax credit
+    _avail = _avail - c07600
+    c07220 = min(c07220, _avail)  # Nonrefundable child tax credit
+    _avail = _avail - c07220
+    return (c07220, c07230, c07240, c07300, c07600, _avail)
+
+
+@iterate_jit(nopython=True)
+def AdditionalCTC(n24, pre_ctc, _earned, c07220, _ptax_was,
+                  ACTC_Income_thd, ACTC_rt, ACTC_ChildNum,
+                  ALD_SelfEmploymentTax_HC,
+                  c03260, e09800, c59660, e11200, c11070):
+    """
+    AdditionalCTC function calculates Additional (refundable) Child Tax Credit
     """
     c82925 = 0.
     c82930 = 0.
@@ -1100,9 +1116,9 @@ def C1040(e07400, c07200, c07220, c07230, c07300, c07240,
 
 
 @iterate_jit(nopython=True)
-def DEITC(c59660, c07100, c08800, c05800, _avail, _othertax):
+def DecomposeEITC(c59660, c07100, c08800, c05800, _avail, _othertax):
     """
-    DEITC function: decomposition of EITC
+    DecomposeEITC function ...
     """
     c59680 = min(c59660, _avail)
     _avail = max(0., _avail - c59680) + _othertax
