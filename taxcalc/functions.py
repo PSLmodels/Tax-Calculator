@@ -506,37 +506,37 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         dwks5 = max(0., dwks3 - dwks4)
         dwks6 = max(0., e00650 - dwks5)  # dwks6 same as c24505
         dwks7 = min(p23250, c23650)  # SchD lines 15 and 16, respectively
+        dwks8 = min(dwks3, dwks4)
         # dwks9 = max(0., dwks7 - dwks8)
-        # BELOW TWO STATEMENTS ARE QUESTIONABLE IN LIGHT OF dwks9=... COMMENT
+        # BELOW TWO STATEMENTS ARE UNCLEAR IN LIGHT OF dwks9=... COMMENT
         if e01100 > 0.:
             c24510 = e01100
         else:
             c24510 = max(0., dwks7) + e01100
         dwks9 = max(0., c24510 - min(0., e58990))
-        # ABOVE TWO STATEMENTS ARE QUESTIONABLE IN LIGHT OF dwks9=... COMMENT
-        c24516 = dwks6 + dwks9
-
-        # if/else 2
-        dwks12 = min(dwks9, e24515 + e24518)
-        c24517 = c24516 - dwks12
-        c24520 = max(0., _taxinc - c24517)
+        # ABOVE TWO STATEMENTS ARE UNCLEAR IN LIGHT OF dwks9=... COMMENT
+        dwks10 = dwks6 + dwks9
+        dwks11 = e24515 + e24518  # SchD lines 18 and 19, respectively
+        dwks12 = min(dwks9, dwks11)
+        dwks13 = dwks10 - dwks12
+        c24520 = max(0., _taxinc - dwks13)
         # tentative TI less schD gain
         c24530 = min(CG_thd1[MARS - 1], _taxinc)
 
         # if/else 3
         dwks16 = min(c24520, c24530)
-        dwks17 = max(0., _taxinc - c24516)
+        dwks17 = max(0., _taxinc - dwks10)
         c24540 = max(dwks16, dwks17)
         c24534 = c24530 - dwks16
         lowest_rate_tax = CG_rt1 * c24534
-        dwks21 = min(_taxinc, c24517)
+        dwks21 = min(_taxinc, dwks13)
         c24597 = max(0., dwks21 - c24534)
 
         # if/else 4
         # income subject to 15% tax
         c24598 = CG_rt2 * c24597  # actual 15% tax
         dwks25 = min(dwks9, e24515)
-        dwks26 = c24516 + c24540
+        dwks26 = dwks10 + c24540
         dwks28 = max(0., dwks26 - _taxinc)
         c24610 = max(0., dwks25 - dwks28)
         c24615 = 0.25 * c24610
@@ -545,7 +545,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         c24570 = 0.28 * c24550
 
         if c24540 > CG_thd2[MARS - 1]:
-            addtax = (CG_rt3 - CG_rt2) * c24517
+            addtax = (CG_rt3 - CG_rt2) * dwks13
         elif c24540 <= CG_thd2[MARS - 1] and _taxinc > CG_thd2[MARS - 1]:
             addtax = (CG_rt3 - CG_rt2) * min(dwks21,
                                              _taxinc - CG_thd2[MARS - 1])
@@ -553,7 +553,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
             addtax = 0.
 
         if c24540 > CG_thd3[MARS - 1]:
-            addtax = (CG_rt4 - CG_rt3) * c24517 + addtax
+            addtax = (CG_rt4 - CG_rt3) * dwks13 + addtax
         elif c24540 <= CG_thd3[MARS - 1] and _taxinc > CG_thd3[MARS - 1]:
             addtax = addtax + (CG_rt4 - CG_rt3) * min(
                 dwks21, _taxinc - CG_thd3[MARS - 1])
@@ -567,6 +567,9 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         tspecial = lowest_rate_tax + c24598 + c24615 + c24570 + c24560 + addtax
 
         c24580 = min(tspecial, _xyztax)
+
+        c24516 = dwks10
+        c24517 = dwks13
 
     else:  # if hasqdivltcg is zero
 
