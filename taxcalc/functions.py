@@ -490,8 +490,8 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3,
              c24516, c24517, c24520, c05700, _taxbc):
     """
-    TaxGains function implements Schedule D Tax Worksheet logic for the
-    special taxation of long-term capital gains and qualified dividends
+    TaxGains function implements (2015) Schedule D Tax Worksheet logic for
+    the special taxation of long-term capital gains and qualified dividends
     """
     # pylint: disable=too-many-statements,too-many-branches
     if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
@@ -519,57 +519,58 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         dwks11 = e24515 + e24518  # SchD lines 18 and 19, respectively
         dwks12 = min(dwks9, dwks11)
         dwks13 = dwks10 - dwks12
-        c24520 = max(0., _taxinc - dwks13)
-        # tentative TI less schD gain
-        c24530 = min(CG_thd1[MARS - 1], _taxinc)
-
-        # if/else 3
-        dwks16 = min(c24520, c24530)
-        dwks17 = max(0., _taxinc - dwks10)
-        c24540 = max(dwks16, dwks17)
-        c24534 = c24530 - dwks16
-        lowest_rate_tax = CG_rt1 * c24534
+        dwks14 = max(0., _taxinc - dwks13)
+        dwks16 = min(CG_thd1[MARS - 1], _taxinc)
+        dwks17 = min(dwks14, dwks16)
+        dwks18 = max(0., _taxinc - dwks10)
+        dwks19 = max(dwks17, dwks18)
+        # c24540 = dwks19 .................
+        # c24534 = dwks20 = dwks16 - dwks17 ........
+        dwks20 = dwks16 - dwks17
+        first_rate_tax = CG_rt1 * dwks20
         dwks21 = min(_taxinc, dwks13)
-        c24597 = max(0., dwks21 - c24534)
+
+        c24597 = max(0., dwks21 - dwks20)
 
         # if/else 4
         # income subject to 15% tax
         c24598 = CG_rt2 * c24597  # actual 15% tax
         dwks25 = min(dwks9, e24515)
-        dwks26 = dwks10 + c24540
+        dwks26 = dwks10 + dwks19
         dwks28 = max(0., dwks26 - _taxinc)
         c24610 = max(0., dwks25 - dwks28)
         c24615 = 0.25 * c24610
-        dwks31 = c24540 + c24534 + c24597 + c24610
+        dwks31 = dwks19 + dwks20 + c24597 + c24610
         c24550 = max(0., _taxinc - dwks31)
         c24570 = 0.28 * c24550
 
-        if c24540 > CG_thd2[MARS - 1]:
+        if dwks19 > CG_thd2[MARS - 1]:
             addtax = (CG_rt3 - CG_rt2) * dwks13
-        elif c24540 <= CG_thd2[MARS - 1] and _taxinc > CG_thd2[MARS - 1]:
+        elif dwks19 <= CG_thd2[MARS - 1] and _taxinc > CG_thd2[MARS - 1]:
             addtax = (CG_rt3 - CG_rt2) * min(dwks21,
                                              _taxinc - CG_thd2[MARS - 1])
         else:
             addtax = 0.
 
-        if c24540 > CG_thd3[MARS - 1]:
+        if dwks19 > CG_thd3[MARS - 1]:
             addtax = (CG_rt4 - CG_rt3) * dwks13 + addtax
-        elif c24540 <= CG_thd3[MARS - 1] and _taxinc > CG_thd3[MARS - 1]:
+        elif dwks19 <= CG_thd3[MARS - 1] and _taxinc > CG_thd3[MARS - 1]:
             addtax = addtax + (CG_rt4 - CG_rt3) * min(
                 dwks21, _taxinc - CG_thd3[MARS - 1])
         else:
             addtax = addtax + 0.
 
-        c24560 = Taxer_i(c24540, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
+        c24560 = Taxer_i(dwks19, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
                          II_rt6, II_rt7, II_rt8, II_brk1, II_brk2, II_brk3,
                          II_brk4, II_brk5, II_brk6, II_brk7)
 
-        tspecial = lowest_rate_tax + c24598 + c24615 + c24570 + c24560 + addtax
+        tspecial = first_rate_tax + c24598 + c24615 + c24570 + c24560 + addtax
 
         c24580 = min(tspecial, _xyztax)
 
         c24516 = dwks10
         c24517 = dwks13
+        c24520 = dwks14
 
     else:  # if hasqdivltcg is zero
 
