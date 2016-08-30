@@ -490,8 +490,8 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3,
              c24516, c24517, c24520, c05700, _taxbc):
     """
-    TaxGains function implements special taxation of
-    long-term capital gains and qualified dividends
+    TaxGains function implements Schedule D Tax Worksheet logic for the
+    special taxation of long-term capital gains and qualified dividends
     """
     # pylint: disable=too-many-statements,too-many-branches
     if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
@@ -501,49 +501,53 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
 
     if hasqdivltcg == 1:
 
-        # if/else 1
-        _dwks5 = max(0., e58990)
-        c24505 = max(0., e00650 - _dwks5)
-        # gain for tax computation
+        dwks3 = e58990
+        dwks4 = 0.  # always assumed to be zero
+        dwks5 = max(0., dwks3 - dwks4)
+        dwks6 = max(0., e00650 - dwks5)  # dwks6 same as c24505
+        dwks7 = min(p23250, c23650)  # SchD lines 15 and 16, respectively
+        # dwks9 = max(0., dwks7 - dwks8)
+        # BELOW TWO STATEMENTS ARE QUESTIONABLE IN LIGHT OF dwks9=... COMMENT
         if e01100 > 0.:
             c24510 = e01100
         else:
-            c24510 = max(0., min(c23650, p23250)) + e01100
-        _dwks9 = max(0., c24510 - min(0., e58990))
-        c24516 = c24505 + _dwks9
+            c24510 = max(0., dwks7) + e01100
+        dwks9 = max(0., c24510 - min(0., e58990))
+        # ABOVE TWO STATEMENTS ARE QUESTIONABLE IN LIGHT OF dwks9=... COMMENT
+        c24516 = dwks6 + dwks9
 
         # if/else 2
-        _dwks12 = min(_dwks9, e24515 + e24518)
-        c24517 = c24516 - _dwks12
+        dwks12 = min(dwks9, e24515 + e24518)
+        c24517 = c24516 - dwks12
         c24520 = max(0., _taxinc - c24517)
         # tentative TI less schD gain
         c24530 = min(CG_thd1[MARS - 1], _taxinc)
 
         # if/else 3
-        _dwks16 = min(c24520, c24530)
-        _dwks17 = max(0., _taxinc - c24516)
-        c24540 = max(_dwks16, _dwks17)
-        c24534 = c24530 - _dwks16
+        dwks16 = min(c24520, c24530)
+        dwks17 = max(0., _taxinc - c24516)
+        c24540 = max(dwks16, dwks17)
+        c24534 = c24530 - dwks16
         lowest_rate_tax = CG_rt1 * c24534
-        _dwks21 = min(_taxinc, c24517)
-        c24597 = max(0., _dwks21 - c24534)
+        dwks21 = min(_taxinc, c24517)
+        c24597 = max(0., dwks21 - c24534)
 
         # if/else 4
         # income subject to 15% tax
         c24598 = CG_rt2 * c24597  # actual 15% tax
-        _dwks25 = min(_dwks9, e24515)
-        _dwks26 = c24516 + c24540
-        _dwks28 = max(0., _dwks26 - _taxinc)
-        c24610 = max(0., _dwks25 - _dwks28)
+        dwks25 = min(dwks9, e24515)
+        dwks26 = c24516 + c24540
+        dwks28 = max(0., dwks26 - _taxinc)
+        c24610 = max(0., dwks25 - dwks28)
         c24615 = 0.25 * c24610
-        _dwks31 = c24540 + c24534 + c24597 + c24610
-        c24550 = max(0., _taxinc - _dwks31)
+        dwks31 = c24540 + c24534 + c24597 + c24610
+        c24550 = max(0., _taxinc - dwks31)
         c24570 = 0.28 * c24550
 
         if c24540 > CG_thd2[MARS - 1]:
             addtax = (CG_rt3 - CG_rt2) * c24517
         elif c24540 <= CG_thd2[MARS - 1] and _taxinc > CG_thd2[MARS - 1]:
-            addtax = (CG_rt3 - CG_rt2) * min(_dwks21,
+            addtax = (CG_rt3 - CG_rt2) * min(dwks21,
                                              _taxinc - CG_thd2[MARS - 1])
         else:
             addtax = 0.
@@ -552,7 +556,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
             addtax = (CG_rt4 - CG_rt3) * c24517 + addtax
         elif c24540 <= CG_thd3[MARS - 1] and _taxinc > CG_thd3[MARS - 1]:
             addtax = addtax + (CG_rt4 - CG_rt3) * min(
-                _dwks21, _taxinc - CG_thd3[MARS - 1])
+                dwks21, _taxinc - CG_thd3[MARS - 1])
         else:
             addtax = addtax + 0.
 
