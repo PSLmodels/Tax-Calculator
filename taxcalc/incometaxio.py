@@ -225,6 +225,7 @@ class IncomeTaxIO(object):
                          float_format='%.4f', index=False)
 
     def calculate(self, writing_output_file=False,
+                  exact_output=False,
                   output_weights=False):
         """
         Calculate taxes for all INPUT lines and write or return OUTPUT lines.
@@ -250,6 +251,7 @@ class IncomeTaxIO(object):
         (mtr_ptax, mtr_itax, _) = self._calc.mtr(wrt_full_compensation=False)
         for idx in range(0, self._calc.records.dim):
             ovar = SimpleTaxIO.extract_output(self._calc.records, idx,
+                                              exact=exact_output,
                                               extract_weight=output_weights)
             ovar[7] = 100 * mtr_itax[idx]
             ovar[9] = 100 * mtr_ptax[idx]
@@ -302,7 +304,9 @@ class IncomeTaxIO(object):
                '[17] itemized deduction after phase-out '
                '(zero for non-itemizer)\n'
                '[18] federal regular taxable income\n'
-               '[19] regular tax on regular taxable income\n'
+               '[19] regular tax on regular taxable income '
+               '(no special capital gains rates)\n'
+               '     EXCEPT use special rates WHEN --exact OPTION SPECIFIED\n'
                '[20] [ALWAYS ZERO]\n'
                '[21] [ALWAYS ZERO]\n'
                '[22] child tax credit (adjusted)\n'
