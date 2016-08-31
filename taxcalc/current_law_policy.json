@@ -1605,5 +1605,47 @@
         "cpi_inflated": false,
         "col_label": "",
         "value": [1.0]
+    },
+
+    "_Buffett_tentRate":{
+        "long_name": "Rate applied to AGI to determine tentative FST",
+        "description": "The result of multiplying AGI by this is the tentative FST used to calculate final FST",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_Buffett_minAGI":{
+        "long_name": "Minimum AGI needed to be subject to FST",
+        "description": "A taxpayer is only subject to the FST if they exceed this level of AGI",
+        "irs_ref": "",
+        "note": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [1000000]
+    },
+
+    "_Buffett_phaseRate":{
+        "long_name": "Rate the FST will be phased in linearly",
+        "description": "The FST will be phased in linearly at this rate",
+        "irs_ref": "",
+        "note": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [1.0]
     }
 }
