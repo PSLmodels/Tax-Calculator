@@ -1192,7 +1192,8 @@ def BenefitSurtax(calc):
 
 
 @iterate_jit(nopython=True)
-def BuffettRule(c00100, c05200, Buffett_tentRate, Buffett_minAGI, Buffett_phaseRate, fst):
+def BuffettRule(c00100, c05200, Buffett_tentRate, Buffett_minAGI,
+                Buffett_phaseRate, fst):
 
     """
 
@@ -1200,8 +1201,10 @@ def BuffettRule(c00100, c05200, Buffett_tentRate, Buffett_minAGI, Buffett_phaseR
     ----------
     c00100: AGI
     c05200: Regular Tax Liability
-    Buffett_tentRate: Percent of AGI the tentative FST will be. Default = 0.0
-    Buffett_minAGI: The minimum AGI needed to be subject to the FST. Default = 1000000
+    Buffett_tentRate: Percent of AGI the tentative FST will be.
+    Default = 0.0
+    Buffett_minAGI: The minimum AGI needed to be subject to the FST.
+    Default = 1000000
     Buffett_phaseRate: Rate the FST will be phased in linearly. Default = 1
     fst
 
@@ -1213,7 +1216,8 @@ def BuffettRule(c00100, c05200, Buffett_tentRate, Buffett_minAGI, Buffett_phaseR
 
     if c00100 >= Buffett_minAGI:
         tentFST = c00100 * Buffett_tentRate
-        rate = (float(c00100 - Buffett_minAGI))/Buffett_minAGI * Buffett_phaseRate
+        rate = ((float(c00100 - Buffett_minAGI)) / Buffett_minAGI
+                * Buffett_phaseRate)
         if rate > 1:
             rate = 1
         fst = (tentFST - c05200) * rate
