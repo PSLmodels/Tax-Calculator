@@ -50,10 +50,11 @@ file_number==1 {
         exit
     }
     id1[i1] = $1
-    tax1[i1] = $4
     if ( net_eitc == 1 ) {
+        tax1[i1] = $4 - $25
         var1[i1] = $col - $25
     } else {
+        tax1[i1] = $4
         var1[i1] = $col
     }
 }
@@ -67,10 +68,11 @@ file_number==2 {
         exit
     }
     id2[i2] = $1
-    tax2[i2] = $4
     if ( net_eitc == 1 ) {
+        tax2[i2] = $4 - $25
         var2[i2] = $col - $25
     } else {
+        tax2[i2] = $4
         var2[i2] = $col
     }
 }
