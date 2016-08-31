@@ -484,17 +484,16 @@ def XYZD(_taxinc, c04800, MARS, _xyztax, c05200,
 
 @iterate_jit(nopython=True)
 def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
-             e24515, e24518, MARS, _taxinc, _xyztax, _feided,
-             _feitax, c00650, c05700, _taxbc,
-             c24516, c24517, c24520,
+             e24515, e24518, MARS, _taxinc, _xyztax, _feided, _feitax,
              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7,
-             CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3):
+             CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3,
+             c24516, c24517, c24520, c05700, _taxbc):
     """
-    TaxGains function: ...
+    TaxGains function implements (2015) Schedule D Tax Worksheet logic for
+    the special taxation of long-term capital gains and qualified dividends
     """
     # pylint: disable=too-many-statements,too-many-branches
-    c00650 = e00650
     if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
         hasqdivltcg = 1  # has qualified dividends or long-term capital gains
     else:
@@ -502,75 +501,77 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
 
     if hasqdivltcg == 1:
 
-        # if/else 1
-        _dwks5 = max(0., e58990)
-        c24505 = max(0., c00650 - _dwks5)
-        # gain for tax computation
+        dwks1 = _taxinc
+        dwks2 = e00650
+        dwks3 = e58990
+        dwks4 = 0.  # always assumed to be zero
+        dwks5 = max(0., dwks3 - dwks4)
+        dwks6 = max(0., dwks2 - dwks5)
+        dwks7 = min(p23250, c23650)  # SchD lines 15 and 16, respectively
+        # dwks8 = min(dwks3, dwks4)
+        # dwks9 = max(0., dwks7 - dwks8)
+        # BELOW TWO STATEMENTS ARE UNCLEAR IN LIGHT OF dwks9=... COMMENT
         if e01100 > 0.:
             c24510 = e01100
         else:
-            c24510 = max(0., min(c23650, p23250)) + e01100
-        _dwks9 = max(0., c24510 - min(0., e58990))
-        c24516 = c24505 + _dwks9
+            c24510 = max(0., dwks7) + e01100
+        dwks9 = max(0., c24510 - min(0., e58990))
+        # ABOVE TWO STATEMENTS ARE UNCLEAR IN LIGHT OF dwks9=... COMMENT
+        dwks10 = dwks6 + dwks9
+        dwks11 = e24515 + e24518  # SchD lines 18 and 19, respectively
+        dwks12 = min(dwks9, dwks11)
+        dwks13 = dwks10 - dwks12
+        dwks14 = max(0., dwks1 - dwks13)
+        dwks16 = min(CG_thd1[MARS - 1], dwks1)
+        dwks17 = min(dwks14, dwks16)
+        dwks18 = max(0., dwks1 - dwks10)
+        dwks19 = max(dwks17, dwks18)
+        dwks20 = dwks16 - dwks17
+        lowest_rate_tax = CG_rt1 * dwks20
+        # break in worksheet lines
+        dwks21 = min(dwks1, dwks13)
+        dwks22 = dwks20
+        dwks23 = max(0., dwks21 - dwks22)
+        dwks25 = min(CG_thd2[MARS - 1], dwks1)
+        dwks26 = dwks19 + dwks20
+        dwks27 = max(0., dwks25 - dwks26)
+        dwks28 = min(dwks23, dwks27)
+        dwks29 = CG_rt2 * dwks28
+        dwks30 = dwks22 + dwks28
+        dwks31 = dwks21 - dwks30
+        dwks32 = CG_rt3 * dwks31
+        hi_base = max(0., dwks31 - CG_thd3[MARS - 1])
+        hi_incremental_rate = CG_rt4 - CG_rt3
+        highest_rate_incremental_tax = hi_incremental_rate * hi_base
+        # break in worksheet lines
+        dwks33 = min(dwks9, e24518)
+        dwks34 = dwks10 + dwks19
+        dwks36 = max(0., dwks34 - dwks1)
+        dwks37 = max(0., dwks33 - dwks36)
+        dwks38 = 0.25 * dwks37
+        # break in worksheet lines
+        dwks39 = dwks19 + dwks20 + dwks28 + dwks31 + dwks37
+        dwks40 = dwks1 - dwks39
+        dwks41 = 0.28 * dwks40
+        dwks42 = Taxer_i(dwks19, MARS, II_rt1, II_rt2, II_rt3, II_rt4,
+                         II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
+                         II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
+        dwks43 = (dwks29 + dwks32 + dwks38 + dwks41 + dwks42 +
+                  lowest_rate_tax + highest_rate_incremental_tax)
+        dwks44 = _xyztax
+        dwks45 = min(dwks43, dwks44)
 
-        # if/else 2
-        _dwks12 = min(_dwks9, e24515 + e24518)
-        c24517 = c24516 - _dwks12
-        c24520 = max(0., _taxinc - c24517)
-        # tentative TI less schD gain
-        c24530 = min(CG_thd1[MARS - 1], _taxinc)
-
-        # if/else 3
-        _dwks16 = min(c24520, c24530)
-        _dwks17 = max(0., _taxinc - c24516)
-        c24540 = max(_dwks16, _dwks17)
-        c24534 = c24530 - _dwks16
-        lowest_rate_tax = CG_rt1 * c24534
-        _dwks21 = min(_taxinc, c24517)
-        c24597 = max(0., _dwks21 - c24534)
-
-        # if/else 4
-        # income subject to 15% tax
-        c24598 = CG_rt2 * c24597  # actual 15% tax
-        _dwks25 = min(_dwks9, e24515)
-        _dwks26 = c24516 + c24540
-        _dwks28 = max(0., _dwks26 - _taxinc)
-        c24610 = max(0., _dwks25 - _dwks28)
-        c24615 = 0.25 * c24610
-        _dwks31 = c24540 + c24534 + c24597 + c24610
-        c24550 = max(0., _taxinc - _dwks31)
-        c24570 = 0.28 * c24550
-
-        if c24540 > CG_thd2[MARS - 1]:
-            addtax = (CG_rt3 - CG_rt2) * c24517
-        elif c24540 <= CG_thd2[MARS - 1] and _taxinc > CG_thd2[MARS - 1]:
-            addtax = (CG_rt3 - CG_rt2) * min(_dwks21,
-                                             _taxinc - CG_thd2[MARS - 1])
-        else:
-            addtax = 0.
-
-        if c24540 > CG_thd3[MARS - 1]:
-            addtax = (CG_rt4 - CG_rt3) * c24517 + addtax
-        elif c24540 <= CG_thd3[MARS - 1] and _taxinc > CG_thd3[MARS - 1]:
-            addtax = addtax + (CG_rt4 - CG_rt3) * min(
-                _dwks21, _taxinc - CG_thd3[MARS - 1])
-        else:
-            addtax = addtax + 0.
-
-        c24560 = Taxer_i(c24540, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
-                         II_rt6, II_rt7, II_rt8, II_brk1, II_brk2, II_brk3,
-                         II_brk4, II_brk5, II_brk6, II_brk7)
-
-        tspecial = lowest_rate_tax + c24598 + c24615 + c24570 + c24560 + addtax
-
-        c24580 = min(tspecial, _xyztax)
+        c24580 = dwks45
+        c24516 = dwks10
+        c24517 = dwks13
+        c24520 = dwks14
 
     else:  # if hasqdivltcg is zero
 
+        c24580 = _xyztax
         c24516 = max(0., min(p23250, c23650)) + e01100
         c24517 = 0.
         c24520 = 0.
-        c24580 = _xyztax
 
     # final calculations done no matter what the value of hasqdivltcg
     if c04800 > 0. and _feided > 0.:
@@ -582,7 +583,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
     c05700 = 0.
 
     _taxbc = c05700 + c05100
-    return (c00650, c24516, c24517, c24520, c05700, _taxbc)
+    return (c24516, c24517, c24520, c05700, _taxbc)
 
 
 @iterate_jit(nopython=True)
