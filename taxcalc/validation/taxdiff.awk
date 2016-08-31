@@ -12,15 +12,22 @@
 BEGIN {
     DUMP_OUT = 0 # set to 1 for dump of ovar4 differences greater than DUMP_MIN
     DUMP_MIN = 0 # minimum absolute value of ovar4 difference to dump
+    file_number = 0
+    file_name = ""
+    if ( col == "4-25" ) {
+        min_num_vars = 25
+        col = 4
+        net_eitc = 1
+    } else {
+        min_num_vars = col
+        net_eitc = 0
+    }
     error = 0
     if ( col < 2 || col > 28 ) {
         printf( "ERROR: col=%d not in [2,28] range\n", col ) > "/dev/stderr"
         error = 1
         exit
     }
-    file_number = 0
-    file_name = ""
-    min_num_vars = col
 }
 error==1 { exit }
 
@@ -44,7 +51,11 @@ file_number==1 {
     }
     id1[i1] = $1
     tax1[i1] = $4
-    var1[i1] = $col
+    if ( net_eitc == 1 ) {
+        var1[i1] = $col - $25
+    } else {
+        var1[i1] = $col
+    }
 }
 
 file_number==2 {
@@ -57,7 +68,11 @@ file_number==2 {
     }
     id2[i2] = $1
     tax2[i2] = $4
-    var2[i2] = $col
+    if ( net_eitc == 1 ) {
+        var2[i2] = $col - $25
+    } else {
+        var2[i2] = $col
+    }
 }
 
 END {
@@ -122,9 +137,14 @@ END {
         } else {
             signed_max_abs_vardiff = -max_abs_vardiff
         }
-        printf( "%s= %2d %6d %6d %9.2f [%d]\n",
+        if ( net_eitc == 1 ) {
+            colstr = "4-"
+        } else {
+            colstr = sprintf("%2s", col)
+        }
+        printf( "%s= %s %6d %6d %9.2f [%d]\n",
                 "TAXDIFF:ovar,#diffs,#smdiffs,maxdiff[id]",
-                col,
+                colstr,
                 num_diffs,
                 num_small_diffs,
                 signed_max_abs_vardiff,

@@ -7,11 +7,14 @@
 #    OR --drake option skips output variables not in Drake Software output
 
 proc usage {} {
-    set args "\[--ovar4 | --drake\] 1st-out-file 2nd-out-file"
+    set options "--ovar4 | --ovar4-eitc | --drake"
+    set args "\[$options\] file1 file2"
     puts stderr "USAGE: tclsh taxdiffs.tcl $args"
     set details "computes diffs only for output variable 4"
     puts stderr "       WHERE using --ovar4 option $details"
-    set details "skips output not produced by Drake Software"
+    set details "computes diffs only for ovar4 less ovar25"
+    puts stderr "       WHERE using --ovar4-eitc option $details"
+    set details "skips output not in Drake Software files"
     puts stderr "          OR using --drake option $details"
 }
 
@@ -31,6 +34,7 @@ if { $argc < 2 || $argc > 3 } {
     exit 1
 }
 set ovar4 0
+set ovar4_eitc 0
 set drake 0
 if { $argc == 2 } {
     set iarg 0
@@ -40,6 +44,8 @@ if { $argc == 2 } {
     set option [lindex $argv 0]
     if { [string compare $option "--ovar4"] == 0 } {
         set ovar4 1
+    } elseif { [string compare $option "--ovar4-eitc"] == 0 } {
+        set ovar4_eitc 1
     } elseif { [string compare $option "--drake"] == 0 } {
         set drake 1
     } else {
@@ -60,42 +66,47 @@ if { ![file exists $out2_filename] } {
     exit 1
 }
 set awkfilename [file join [file dirname [info script]] taxdiff.awk]
-if { $ovar4 == 0 } {
-    taxdiff $awkfilename  6 $out1_filename $out2_filename
-    if { $drake == 1 } {
-        # skip 7 and 9
-    } else {
-        taxdiff $awkfilename  7 $out1_filename $out2_filename
-        taxdiff $awkfilename  9 $out1_filename $out2_filename
-    }
-    taxdiff $awkfilename 10 $out1_filename $out2_filename
-    if { $drake == 1 } {
-        # skip 11
-    } else {
-        taxdiff $awkfilename 11 $out1_filename $out2_filename
-    }
-    taxdiff $awkfilename 12 $out1_filename $out2_filename
-    taxdiff $awkfilename 14 $out1_filename $out2_filename
-    taxdiff $awkfilename 15 $out1_filename $out2_filename
-    taxdiff $awkfilename 16 $out1_filename $out2_filename
-    taxdiff $awkfilename 17 $out1_filename $out2_filename
-    taxdiff $awkfilename 18 $out1_filename $out2_filename
-    taxdiff $awkfilename 19 $out1_filename $out2_filename
-    taxdiff $awkfilename 22 $out1_filename $out2_filename
-    taxdiff $awkfilename 23 $out1_filename $out2_filename
-    taxdiff $awkfilename 24 $out1_filename $out2_filename
-    taxdiff $awkfilename 25 $out1_filename $out2_filename
-    if { $drake == 1 } {
-        # skip 26
-    } else {
-        taxdiff $awkfilename 26 $out1_filename $out2_filename
-    }
-    taxdiff $awkfilename 27 $out1_filename $out2_filename
-    if { $drake == 1 } {
-        # skip 28
-    } else {
-        taxdiff $awkfilename 28 $out1_filename $out2_filename
-    }
+if { $ovar4 == 1 } {
+    taxdiff $awkfilename  4 $out1_filename $out2_filename
+    exit 0
+} elseif { $ovar4_eitc == 1} {
+    taxdiff $awkfilename 4-25 $out1_filename $out2_filename
+    exit 0
+}
+taxdiff $awkfilename  6 $out1_filename $out2_filename
+if { $drake == 1 } {
+    # skip 7 and 9
+} else {
+    taxdiff $awkfilename  7 $out1_filename $out2_filename
+    taxdiff $awkfilename  9 $out1_filename $out2_filename
+}
+taxdiff $awkfilename 10 $out1_filename $out2_filename
+if { $drake == 1 } {
+    # skip 11
+} else {
+    taxdiff $awkfilename 11 $out1_filename $out2_filename
+}
+taxdiff $awkfilename 12 $out1_filename $out2_filename
+taxdiff $awkfilename 14 $out1_filename $out2_filename
+taxdiff $awkfilename 15 $out1_filename $out2_filename
+taxdiff $awkfilename 16 $out1_filename $out2_filename
+taxdiff $awkfilename 17 $out1_filename $out2_filename
+taxdiff $awkfilename 18 $out1_filename $out2_filename
+taxdiff $awkfilename 19 $out1_filename $out2_filename
+taxdiff $awkfilename 22 $out1_filename $out2_filename
+taxdiff $awkfilename 23 $out1_filename $out2_filename
+taxdiff $awkfilename 24 $out1_filename $out2_filename
+taxdiff $awkfilename 25 $out1_filename $out2_filename
+if { $drake == 1 } {
+    # skip 26
+} else {
+    taxdiff $awkfilename 26 $out1_filename $out2_filename
+}
+taxdiff $awkfilename 27 $out1_filename $out2_filename
+if { $drake == 1 } {
+    # skip 28
+} else {
+    taxdiff $awkfilename 28 $out1_filename $out2_filename
 }
 taxdiff $awkfilename  4 $out1_filename $out2_filename
 exit 0
