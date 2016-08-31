@@ -131,7 +131,8 @@ class SimpleTaxIO(object):
         """
         return self._policy.end_year
 
-    def calculate(self, writing_output_file=False):
+    def calculate(self, writing_output_file=False,
+                  exact_output=False):
         """
         Calculate taxes for all INPUT lines and write or return OUTPUT lines.
 
@@ -142,6 +143,8 @@ class SimpleTaxIO(object):
         Parameters
         ----------
         writing_output_file: boolean
+
+        exact_output: boolean
 
         Returns
         -------
@@ -161,7 +164,8 @@ class SimpleTaxIO(object):
             for idx in range(0, self._calc.records.dim):
                 indyr = cr_taxyr[idx]
                 if indyr == calcyr:
-                    ovar = SimpleTaxIO.extract_output(self._calc.records, idx)
+                    ovar = SimpleTaxIO.extract_output(self._calc.records, idx,
+                                                      exact=exact_output)
                     ovar[7] = 100 * mtr_itax[idx]
                     ovar[9] = 100 * mtr_ptax[idx]
                     output[idx] = ovar
@@ -243,7 +247,9 @@ class SimpleTaxIO(object):
                '[17] itemized deduction after phase-out '
                '(zero for non-itemizer)\n'
                '[18] federal regular taxable income\n'
-               '[19] regular tax on regular taxable income\n'
+               '[19] regular tax on regular taxable income '
+               '(no special capital gains rates)\n'
+               '     EXCEPT use special rates WHEN --exact OPTION SPECIFIED\n'
                '[20] [ALWAYS ZERO]\n'
                '[21] [ALWAYS ZERO]\n'
                '[22] child tax credit (adjusted)\n'
@@ -256,7 +262,7 @@ class SimpleTaxIO(object):
         sys.stdout.write(ovd)
 
     @staticmethod
-    def extract_output(crecs, idx, extract_weight=False):
+    def extract_output(crecs, idx, exact=False, extract_weight=False):
         """
         Extracts tax output from crecs object for one tax filing unit.
 
@@ -268,8 +274,11 @@ class SimpleTaxIO(object):
         idx: integer
             crecs object index of the one tax filing unit.
 
+        exact: boolean
+            whether or not ovar[19] is exact regular tax on regular income.
+
         extract_weight: boolean
-            whether or not to extract s006 sample weight into ovar[29]
+            whether or not to extract s006 sample weight into ovar[29].
 
         Returns
         -------
@@ -308,7 +317,10 @@ class SimpleTaxIO(object):
         # ovar[17] is zero for non-itemizer:
         ovar[17] = crecs.c04470[idx]  # post-phase-out itemized deduction
         ovar[18] = crecs.c04800[idx]  # federal regular taxable income
-        ovar[19] = crecs.c05200[idx]  # regular tax on taxable income
+        if exact:
+            ovar[19] = crecs._taxbc[idx]  # regular tax on taxable income
+        else:  # Internet-TAXSIM ovar[19] that ignores special qdiv+ltcg rates
+            ovar[19] = crecs.c05200[idx]  # regular tax on taxable income
         ovar[20] = 0.0  # always set exemption surtax to zero
         ovar[21] = 0.0  # always set general tax credit to zero
         ovar[22] = crecs.c07220[idx]  # child tax credit (adjusted)

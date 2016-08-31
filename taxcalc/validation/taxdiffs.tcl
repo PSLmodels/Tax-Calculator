@@ -80,11 +80,7 @@ if { $ovar4 == 0 } {
     taxdiff $awkfilename 16 $out1_filename $out2_filename
     taxdiff $awkfilename 17 $out1_filename $out2_filename
     taxdiff $awkfilename 18 $out1_filename $out2_filename
-    if { $drake == 1 } {
-        # skip 19
-    } else {
-        taxdiff $awkfilename 19 $out1_filename $out2_filename
-    }
+    taxdiff $awkfilename 19 $out1_filename $out2_filename
     taxdiff $awkfilename 22 $out1_filename $out2_filename
     taxdiff $awkfilename 23 $out1_filename $out2_filename
     taxdiff $awkfilename 24 $out1_filename $out2_filename
