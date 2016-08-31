@@ -101,8 +101,7 @@ def main():
                          schR_calculations=(args.noschR is False),
                          emulate_taxsim_2441_logic=args.taxsim2441,
                          output_records=args.records)
-    simtax.calculate(writing_output_file=True,
-                     exact_output=args.exact)
+    simtax.calculate(writing_output_file=True, exact_output=args.exact)
     # return no-error exit code
     return 0
 # end of main function code
