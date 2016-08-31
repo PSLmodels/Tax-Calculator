@@ -146,7 +146,8 @@ def test_1(input_file):  # pylint: disable=redefined-outer-name
     crecs = simtax._calc.records  # pylint: disable=protected-access
     SimpleTaxIO.DVAR_NAMES = ['f2441']
     # pylint: disable=unused-variable
-    ovar = SimpleTaxIO.extract_output(crecs, 0, extract_weight=True)
+    ovar = SimpleTaxIO.extract_output(crecs, 0,
+                                      exact=True, extract_weight=True)
     SimpleTaxIO.DVAR_NAMES = ['badvar']
     with pytest.raises(ValueError):
         ovar = SimpleTaxIO.extract_output(crecs, 0)

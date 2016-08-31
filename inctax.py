@@ -139,8 +139,7 @@ def main():
     elif args.csvdump:
         inctax.csv_dump(writing_output_file=True)
     else:
-        inctax.calculate(writing_output_file=True,
-                         exact_output=args.exact,
+        inctax.calculate(writing_output_file=True, exact_output=args.exact,
                          output_weights=args.weights)
     # return no-error exit code
     return 0
