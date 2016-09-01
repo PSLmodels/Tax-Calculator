@@ -56,5 +56,8 @@ docs/_build/
 # Sublime
 *.sublime-*
 
+# Mac OS X
+*.DS_Store
+
 # ignore puf data files
 puf.csv
