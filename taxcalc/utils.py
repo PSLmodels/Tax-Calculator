@@ -597,3 +597,12 @@ def ascii_output(csv_filename, ascii_filename):
     out = out.applymap(fstring.format)
     out.to_csv(ascii_filename, header=False, index=False,
                delim_whitespace=True, sep='\t')
+
+
+def string_to_number(string):
+    if not string:
+        return 0
+    try:
+        return int(string)
+    except ValueError:
+        return float(string)
