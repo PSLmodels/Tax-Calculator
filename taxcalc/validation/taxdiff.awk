@@ -10,8 +10,8 @@
 #           value of all the variable differences.
 
 BEGIN {
-    DUMP_OUT = 0 # set to 1 for dump of ovar4 differences greater than DUMP_MIN
-    DUMP_MIN = 0 # minimum absolute value of ovar4 difference to dump
+    DUMP_OUT = 1 # set to 1 for dump of ovar4 differences greater than DUMP_MIN
+    DUMP_MIN = 10 # absolute value of ovar4 difference must exceed this to DUMP
     file_number = 0
     file_name = ""
     if ( col == "4-25" ) {
@@ -51,8 +51,8 @@ file_number==1 {
     }
     id1[i1] = $1
     if ( net_eitc == 1 ) {
-        tax1[i1] = $4 - $25
-        var1[i1] = $col - $25
+        tax1[i1] = $4 + $25
+        var1[i1] = $col + $25
     } else {
         tax1[i1] = $4
         var1[i1] = $col
@@ -69,8 +69,8 @@ file_number==2 {
     }
     id2[i2] = $1
     if ( net_eitc == 1 ) {
-        tax2[i2] = $4 - $25
-        var2[i2] = $col - $25
+        tax2[i2] = $4 + $25
+        var2[i2] = $col + $25
     } else {
         tax2[i2] = $4
         var2[i2] = $col
@@ -101,17 +101,17 @@ END {
     if ( col == 7 || col == 9 ) {
         smallamt = 0.011 # one-hundredth of a percentage point
     } else {
-        smallamt = 1.001 # one dollar
+        smallamt = DUMP_MIN
     }
-    small_taxdiff = 1.001 # one dollar
+    small_taxdiff = DUMP_MIN
     for ( i = 1; i <= n; i++ ) {
         if ( var1[i] != var2[i] ) {
             diff = var1[i] - var2[i]
-            if ( -smallamt < diff && diff < smallamt ) {
+            if ( -smallamt <= diff && diff <= smallamt ) {
                 num_small_diffs++
             } else {
                 taxdiff = tax1[i] - tax2[i]
-                if ( -small_taxdiff < taxdiff && taxdiff < small_taxdiff ) {
+                if ( -small_taxdiff <= taxdiff && taxdiff <= small_taxdiff ) {
                     # taxdiff is relatively small
                 } else {
                     num_big_vardiff_with_big_taxdiff++
@@ -120,7 +120,8 @@ END {
             num_diffs++
             if ( diff < 0.0 ) abs_vardiff = -diff; else abs_vardiff = diff
             if ( col == 4 && DUMP_OUT == 1 && abs_vardiff > DUMP_MIN ) {
-                printf( "OVAR4-DUMP:id,diff= %6d %9.2f\n", id1[i], diff )
+                printf( "OVAR4-DUMP_MIN(%d):id,diff= %6d %9.2f\n",
+                        DUMP_MIN, id1[i], diff )
             }
             if ( abs_vardiff > max_abs_vardiff ) {
                 max_abs_vardiff = abs_vardiff
