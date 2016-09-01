@@ -1,0 +1,17 @@
+TAXDIFF:ovar,#diffs,#smdiffs,maxdiff[id]=  7    259     14    114.00 [52727]
+      #big_vardiffs_with_big_inctax_diff=               79
+TAXDIFF:ovar,#diffs,#smdiffs,maxdiff[id]=  9      9      0      0.90 [8665]
+TAXDIFF:ovar,#diffs,#smdiffs,maxdiff[id]= 10  99966  99966      0.14 [114]
+TAXDIFF:ovar,#diffs,#smdiffs,maxdiff[id]= 12  25068  25068      0.06 [1]
+TAXDIFF:ovar,#diffs,#smdiffs,maxdiff[id]= 14   1014    903     -1.28 [421]
+TAXDIFF:ovar,#diffs,#smdiffs,maxdiff[id]= 15   1014    903      1.28 [438]
+TAXDIFF:ovar,#diffs,#smdiffs,maxdiff[id]= 18  98507  98396      1.30 [9198]
+TAXDIFF:ovar,#diffs,#smdiffs,maxdiff[id]= 19  93006  93006      0.43 [5018]
+TAXDIFF:ovar,#diffs,#smdiffs,maxdiff[id]= 22    215    215      0.01 [31980]
+TAXDIFF:ovar,#diffs,#smdiffs,maxdiff[id]= 23    343    343      0.01 [12011]
+TAXDIFF:ovar,#diffs,#smdiffs,maxdiff[id]= 25    913    913      0.03 [1802]
+TAXDIFF:ovar,#diffs,#smdiffs,maxdiff[id]= 26  99966  99963  -2900.00 [63254]
+TAXDIFF:ovar,#diffs,#smdiffs,maxdiff[id]= 27    603    603     -0.43 [5018]
+TAXDIFF:ovar,#diffs,#smdiffs,maxdiff[id]= 28  91699  91699      0.43 [5018]
+TAXDIFF:ovar,#diffs,#smdiffs,maxdiff[id]=  4  92752  92672    185.00 [20081]
+                       #big_inctax_diffs=               80
