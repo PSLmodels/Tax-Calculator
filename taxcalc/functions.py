@@ -1216,8 +1216,8 @@ def BuffettRule(c00100, c05200, Buffett_tentRate, Buffett_minAGI,
 
     if c00100 >= Buffett_minAGI:
         tentFST = c00100 * Buffett_tentRate
-        rate = ((float(c00100 - Buffett_minAGI)) / Buffett_minAGI
-                * Buffett_phaseRate)
+        rate = ((float(c00100 - Buffett_minAGI)) / Buffett_minAGI *
+                Buffett_phaseRate)
         if rate > 1:
             rate = 1
         fst = (tentFST - c05200) * rate
