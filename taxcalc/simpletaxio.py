@@ -209,7 +209,8 @@ class SimpleTaxIO(object):
                '[ 4] filing status [MUST BE 1, 2, or 3]\n'
                '     1=single, 2=married_filing_jointly, 3=head_of_household\n'
                '[ 5] total number of dependents\n'
-               '[ 6] number of taxpayer/spouse who are age 65+\n'
+               '[ 6] taxpayer/spouse age code: 100*taxpayer_age+spouse_age\n'
+               '     where spouse_age is zero when there is no spouse\n'
                '[ 7] taxpayer wage and salary income\n'
                '[ 8] spouse wage and salary income\n'
                '[ 9] qualified dividend income\n'
@@ -675,7 +676,7 @@ class SimpleTaxIO(object):
                 recs.age_head[idx] = 70
                 if ivar[6] >= 2:
                     recs.age_spouse[idx] = 70
-        else:  # new coding of Internet-TAXSIM ivar[6]
+        else:  # new coding of Internet-TAXSIM ivar[6] since March 2016
             recs.age_head[idx] = ivar[6] // 100  # integer division
             recs.age_spouse[idx] = ivar[6] % 100  # division remainder
         recs.e00200p[idx] = ivar[7]  # wage+salary income of taxpayer
