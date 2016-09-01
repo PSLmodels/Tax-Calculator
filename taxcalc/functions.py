@@ -936,13 +936,13 @@ def AmOppCreditParts(c87521, _num, c00100, c10960, c87668):
 
 
 @iterate_jit(nopython=True)
-def SchR(_calc_schR, age_head, age_spouse, MARS, c00100,
+def SchR(age_head, age_spouse, MARS, c00100,
          c05800, e07300, c07180, e02400, c02500, e01500, e01700,
          c07200):
     """
     Calculate Schedule R credit for the elderly and the disabled, c07200
     """
-    if _calc_schR and (age_head >= 65 or (MARS == 2 and age_spouse >= 65)):
+    if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
         # calculate credit assuming nobody is disabled
         # (note that all Schedule R policy parameters are hard-coded)
         # Part I and first line in Part III

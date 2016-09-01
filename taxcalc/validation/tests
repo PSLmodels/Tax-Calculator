@@ -41,9 +41,10 @@ if [[ "$ALLTESTS" == true ]] ; then
     bash test c14 75_500 &
     wait
 fi
-bash test d13 . &
-bash test d14 . &
-bash test d15 . &
+# bash test d13 . &
+# bash test d14 . &
+# bash test d15 . &
+bash test a15 . &
 wait
 echo "FINISHED WITH VALIDATION TESTS : `date`"
 if [[ -f "testerror" ]]; then
