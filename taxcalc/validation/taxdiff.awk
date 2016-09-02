@@ -1,17 +1,16 @@
-# TAXDIFF.AWK compares a variable in two output files that are formatted
+# TAXDIFF.AWK compares a variable in two output files that are format
 #             like Internet-TAXSIM generated output files
 # NOTE: this file must be in same directory as the taxdiffs.tcl file.
-# USAGE: awk -f taxdiff.awk -v col=NUM first-output-file second-output-file
-# NOTE: (a) the output files must have identical var[1] id variables;
-#       (b) the output files must have at least NUM output variables per line;
-#       (c) the difference is the variable value in first output file minus
-#           the variable value in the second output file; and
+# USAGE: awk -f taxdiff.awk -v col=NUM outfile1 outfile2 [dump=1]
+# NOTE: (a) the outfiles must have identical var[1] id variables;
+#       (b) the outfiles must have at least NUM output variables per line;
+#       (c) the difference is the variable value in outfile1 minus the
+#           variable value in outfile2; and
 #       (d) the maxdiff amount is the signed value of the largest absolute
 #           value of all the variable differences.
 
 BEGIN {
-    DUMP_OUT = 1 # set to 1 for dump of ovar4 differences greater than DUMP_MIN
-    DUMP_MIN = 10 # absolute value of ovar4 difference must exceed this to DUMP
+    DUMP_MIN = 10 # absolute value of ovar4 difference must exceed this to dump
     file_number = 0
     file_name = ""
     if ( col == "4-25" ) {
@@ -119,7 +118,7 @@ END {
             }
             num_diffs++
             if ( diff < 0.0 ) abs_vardiff = -diff; else abs_vardiff = diff
-            if ( col == 4 && DUMP_OUT == 1 && abs_vardiff > DUMP_MIN ) {
+            if ( col == 4 && dump == 1 && abs_vardiff > DUMP_MIN ) {
                 printf( "OVAR4-DUMP_MIN(%d):id,diff= %6d %9.2f\n",
                         DUMP_MIN, id1[i], diff )
             }
