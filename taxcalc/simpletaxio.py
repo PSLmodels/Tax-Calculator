@@ -678,6 +678,7 @@ class SimpleTaxIO(object):
         recs.e00600[idx] = ivar[9]  # qual.div. included in ordinary dividends
         recs.e00300[idx] = ivar[10]  # other property income (+/-)
         recs.e01700[idx] = ivar[11]  # federally taxable pensions
+        recs.e01500[idx] = ivar[11]  # total pensions (taxable plus nontaxable)
         recs.e02400[idx] = ivar[12]  # gross social security benefits
         recs.e00400[idx] = ivar[13]  # federal tax-exempt interest
         # no use of ivar[14] because no state income tax calculations
