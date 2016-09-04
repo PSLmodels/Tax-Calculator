@@ -27,7 +27,7 @@ PTAX and ITAX mtr histogram bin counts for e01400:
 219814 :      0      0      0      0  60219  63053  47685  26433  21750    674
 PTAX and ITAX mtr histogram bin counts for e01700:
 219814 : 219814      0      0      0      0      0      0      0      0      0
-219814 :      0      0      0      0  60215  63056  47666  26453  21750    674
+219814 :      0      0      0      0  60222  63050  47666  26452  21750    674
 PTAX and ITAX mtr histogram bin counts for e02000:
 219814 : 219814      0      0      0      0      0      0      0      0      0
 219814 :      0      0      0      0  60239  63005  44356  25888  25637    689
