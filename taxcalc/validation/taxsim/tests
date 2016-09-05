@@ -21,7 +21,7 @@ if [[ "$#" -eq 1 ]]; then
     fi
 fi
 # .... execute validation tests in parallel
-echo "STARTING WITH VALIDATION TESTS : `date`"
+echo "STARTING WITH TAXSIM VALIDATION TESTS : `date`"
 rm -f testerror
 if [[ "$ALLTESTS" == true ]] ; then
     bash test c13 . &
@@ -46,7 +46,7 @@ fi
 # bash test d15 . &
 bash test a15 . &
 wait
-echo "FINISHED WITH VALIDATION TESTS : `date`"
+echo "FINISHED WITH TAXSIM VALIDATION TESTS : `date`"
 if [[ -f "testerror" ]]; then
     ERROR=1
 else
@@ -57,14 +57,15 @@ RED=$(tput setaf 1)
 GRN=$(tput setaf 2)
 BOLD=$(tput bold)
 NORMAL=$(tput sgr0)
+VALID="TAXSIM VALIDATION TESTS"
 if [[ "$ERROR" -eq 1 ]] ; then
     echo "TEST FAILURE: any red lines starting with F between the"
     echo "              STARTING... and FINISHED... lines above"
     echo "              indicate a test failure caused by the actual"
     echo "              *.taxdiffs results being different from the"
     echo "              expected *.taxdiffs results."
-    printf "$BOLD$RED============ SOME EXECUTED VALIDATION/TESTS FAIL$NORMAL\n"
+    printf "$BOLD$RED============ SOME EXECUTED $VALID FAIL$NORMAL\n"
 else
-    printf "$BOLD$GRN============ ALL EXECUTED VALIDATION/TESTS PASS$NORMAL\n"
+    printf "$BOLD$GRN============ ALL EXECUTED $VALID PASS$NORMAL\n"
 fi
 exit $ERROR

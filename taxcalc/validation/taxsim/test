@@ -32,23 +32,23 @@ fi
 # Generate specified INPUT file
 L=${LYY:0:1}    
 YY=${LYY:1:2}
-tclsh make_in.tcl 20$YY $L > $LYY.in
+tclsh ../make_in.tcl 20$YY $L > $LYY.in
 # Generate simtax.py OUTPUT for specified INPUT and REFORM
 if [[ "$REFORM" == "." ]] ; then
-    python ../../simtax.py --taxsim2441 $LYY.in
+    python ../../../simtax.py --taxsim2441 $LYY.in
     SUFFIX=""
     OVAR4=""
 else
     RJSON="reform-$REFORM.json"
-    python ../../simtax.py --taxsim2441 --reform $RJSON $LYY.in
+    python ../../../simtax.py --taxsim2441 --reform $RJSON $LYY.in
     SUFFIX="-reform-$REFORM"
     OVAR4="--ovar4"
 fi
 # Unzip Internet-TAXSIM output for specified INPUT and REFORM
 unzip -oq out-taxsim.zip $LYY.in.out-taxsim$SUFFIX
 # Compare simtax and Internet-TAXSIM OUTPUT
-tclsh taxdiffs.tcl $OVAR4 $LYY.in.out-simtax$SUFFIX \
-                          $LYY.in.out-taxsim$SUFFIX > $LYY$SUFFIX.taxdiffs
+tclsh ../taxdiffs.tcl $OVAR4 $LYY.in.out-simtax$SUFFIX \
+                             $LYY.in.out-taxsim$SUFFIX > $LYY$SUFFIX.taxdiffs
 # Check for difference between actual .taxdiffs and expected .taxdiffs files
 RC=0
 DIFF=$(git diff --name-status $LYY$SUFFIX.taxdiffs)
