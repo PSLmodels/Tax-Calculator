@@ -1,7 +1,0 @@
-// REFORM: raise second top marginal income tax rate by five percentage points in 2013
-// (same as Internet-TAXSIM reform option "19 0.05")
-{
-    "_II_rt6": {
-        "2013": [0.40] // up from current-law value of 35 percent
-    }
-}
