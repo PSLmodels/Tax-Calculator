@@ -1253,7 +1253,7 @@ def FairShareTax(c00100, _iitax, _payrolltax, FST_tentRate, FST_minAGI,
     """
     if c00100 >= FST_minAGI:
         tentFST = c00100 * FST_tentRate
-        rate = min((float(c00100 - FST_minAGI))/FST_minAGI *
+        rate = min((float(c00100 - FST_minAGI)) / FST_minAGI *
                    FST_phaseRate, 1.0)
         fst = max((tentFST - _iitax - (_payrolltax * 0.5)) * rate, 0.0)
     else:
