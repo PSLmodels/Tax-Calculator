@@ -174,7 +174,7 @@ class Records(object):
         '_iitax', '_refund',
         '_expanded_income', 'c07300',
         'c07600', 'c07240',
-        '_surtax', '_combined', 'personal_credit'])
+        '_surtax', '_combined', 'personal_credit', 'fst'])
 
     INTEGER_CALCULATED_VARS = set([
         '_num', '_sep', '_exact', 'f2555'])

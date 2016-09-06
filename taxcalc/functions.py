@@ -1228,3 +1228,37 @@ def BenefitSurtax(calc):
             benefit_amount - benefit_deduction, 0.)
         calc.records._iitax += calc.records._surtax
         calc.records._combined += calc.records._surtax
+
+@iterate_jit(nopython=True)
+def FairShareTax(c00100, _iitax, _payrolltax, FST_tentRate, FST_minAGI,
+                FST_phaseRate, _combined, fst):
+    """
+
+    Parameters
+    ----------
+    c00100: AGI
+    _iitax: Individual Income Tax
+    _payrolltax:
+    FST_tentRate: Percent of AGI the tentative FST will be. Default = 0.0
+    FST_minAGI: Minimum AGI needed to be subject to the tax.
+    Default = 1000000
+    FST_phaseRate: Rate the FST is phased in. Default = 1
+    _combined: Total tax liability
+    fst:
+
+    Returns
+    -------
+    fst: Fair Share Tax
+
+    """
+    if c00100 >= FST_minAGI:
+        tentFST = c00100 * FST_tentRate
+        rate = min((float(c00100 - FST_minAGI))/FST_minAGI *
+                   FST_phaseRate, 1.0)
+        fst = max((tentFST - _iitax - (_payrolltax * 0.5)) * rate, 0.0)
+    else:
+        fst = 0.0
+    _combined += fst
+    _iitax += fst
+
+    return fst, _combined, _iitax
