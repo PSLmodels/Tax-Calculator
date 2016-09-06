@@ -1192,8 +1192,8 @@ def BenefitSurtax(calc):
 
 
 @iterate_jit(nopython=True)
-def BuffettRule(c00100, c05200, Buffett_tentRate, Buffett_minAGI,
-                Buffett_phaseRate, fst):
+def BuffettRule(c00100, _iitax, _fica, c05200, Buffett_tentRate,
+                Buffett_minAGI, Buffett_phaseRate, fst):
 
     """
 
@@ -1220,7 +1220,8 @@ def BuffettRule(c00100, c05200, Buffett_tentRate, Buffett_minAGI,
                 Buffett_phaseRate)
         if rate > 1:
             rate = 1
-        fst = (tentFST - c05200) * rate
+        #fst = (tentFST - c05200) * rate
+        fst = (tentFST - _iitax - _fica) * rate
         if fst < 0.0:
             fst = 0.0
     else:
