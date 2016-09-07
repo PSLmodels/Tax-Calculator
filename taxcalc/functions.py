@@ -964,7 +964,15 @@ def SchR(age_head, age_spouse, MARS, c00100,
         else:
             schr12 = 0.
             schr15 = 0.
+        # nontaxable portion of OASDI benefits, line 13a
         schr13a = max(0., e02400 - c02500)
+        # nontaxable portion of pension benefits, line 13b
+        # NOTE: the following approximation (required because of inadequate IRS
+        #       data) will be accurate if all pensions are partially taxable
+        #       or if all pensions are fully taxable.  But if a filing unit
+        #       receives at least one partially taxable pension and at least
+        #       one fully taxable pension, then the following approximation
+        #       is not exactly correct.
         schr13b = max(0., e01500 - e01700)
         schr13c = schr13a + schr13b
         schr16 = max(0., c00100 - schr15)
