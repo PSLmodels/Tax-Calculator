@@ -40,6 +40,7 @@ switch $letter {
         set yng_spouses 0
     }
     b { # assumptions for bYY.in sample:
+        # same as a except add itemized-ded exps, ivar[15], ivar[16], ivar[20]
         set num 100000
         set max_wage_yng 300
         set max_wage_old  20
