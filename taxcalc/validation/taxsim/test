@@ -45,7 +45,7 @@ else
     OVAR4="--ovar4"
 fi
 # Unzip Internet-TAXSIM output for specified INPUT and REFORM
-unzip -oq out-taxsim.zip $LYY.in.out-taxsim$SUFFIX
+unzip -oq output-taxsim.zip $LYY.in.out-taxsim$SUFFIX
 # Compare simtax and Internet-TAXSIM OUTPUT
 tclsh ../taxdiffs.tcl $OVAR4 $LYY.in.out-simtax$SUFFIX \
                              $LYY.in.out-taxsim$SUFFIX > $LYY$SUFFIX.taxdiffs

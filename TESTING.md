@@ -73,17 +73,9 @@ Testing with validation/tests
 -----------------------------
 
 The current version of the validation/tests runs only under Mac and Linux;
-if you are working under Windows, skip this second phase of testing.
-
-The validation/tests generate samples of tax filing
-units whose attributes are specified in a random, non-representative
-manner.  Each sample is used to generate tax liabilities, intermediate
-income tax results, and marginal tax rates using Internet-TAXSIM and
-simtax.py, which is a command-line interface to the Tax-Calculator.
-And then the output from the two models are compared item-by-item and
-unit-by-unit to produce cross-model-validation summary results.  See
-the [description of the Internet-TAXSIM validation
-tests](taxcalc/validation/README.md) for more details.
+if you are working under Windows, skip this second phase of testing.  See
+the [description of the validation tests](taxcalc/validation/README.md)
+for more details.
 
 Run the second-phase of testing as follows at the Mac or Linux command
 prompt in the tax-calculator directory at the top of the repository
