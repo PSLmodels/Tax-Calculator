@@ -1020,12 +1020,9 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07600,
     """
     NonRefundableCredits function serially applies credits to tax liability
     """
-    # reduce nonrefundable child tax credit, c07220
-    c07220 = min(pre_ctc, max(0., c05800 - (c07180 + c07200 + c07230 +
-                                            e07240 + e07260 + e07300)))
-    # apply tax credits to tax liability in order on tax form
+    # apply tax credits to tax liability in order they are on 2015 1040 form
     _avail = c05800
-    c07180 = min(c07180, _avail)  # child & dependent care expense credit
+    c07180 = min(c07180, _avail)  # Child & dependent care expense credit
     _avail = _avail - c07180
     c07200 = min(c07200, _avail)  # Schedule R credit
     _avail = _avail - c07200
@@ -1039,7 +1036,7 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07600,
     _avail = _avail - c07260
     c07600 = min(e07600, _avail)  # Prior year minimum tax credit
     _avail = _avail - c07600
-    c07220 = min(c07220, _avail)  # Nonrefundable child tax credit
+    c07220 = min(pre_ctc, _avail)  # Nonrefundable child tax credit
     _avail = _avail - c07220
     return (c07220, c07230, c07240, c07300, c07600, _avail)
 
