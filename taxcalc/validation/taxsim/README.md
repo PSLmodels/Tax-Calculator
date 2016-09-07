@@ -20,7 +20,11 @@ See the `tests` and `test` scripts in this directory for more details.
 Validation Results
 ------------------
 
-As of 06-Sep-2016, we have compared OUTPUT files for a 2015 `a` sample
+Here is a summary of the cross-model validation results.
+
+### 2015 `a` Sample ###
+
+As of 07-Sep-2016, we have compared OUTPUT files for a 2015 `a` sample
 of 100,000 randomly-generated filing units.  The payroll tax
 liabilities and marginal payroll tax rates are exactly the same
 (except for nine marginal payroll tax rates for filing units exactly
@@ -29,7 +33,7 @@ marginal rate is not well defined).  The intermediate income tax
 results are in close agreement with the largest difference being
 slightly more that a dollar (except for some large differences in AMT
 taxable income, which do not translate into differences in AMT
-liability).  The large differences (more than ten dollars in absolute
-value) are in the income tat liability and are probably caused by
-differences in the two model's calculation of the Schedule R credit.
-See the `a15.taxdiffs` file for details on the differences.
+liability).  The largest difference in total income tax liability is
+five cents in absolute value.  There are, however, large differences
+in a few marginal income tax rates, which will be investigated in the
+future.  See the `a15.taxdiffs` file for details on the differences.

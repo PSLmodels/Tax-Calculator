@@ -76,5 +76,12 @@ the number of large and small tax differences between two OUTPUT files
 that are formatted like Internet-TAXSIM 28-variable output files.  See
 [this link](http://users.nber.org/~taxsim/taxsim-calc9/index.html) for
 details on the space-delimited Internet-TAXSIM output file format.
-Read the source code of the `taxdiffs.tcl` script for additional
-details on how to use it.
+All dollar amount differences of one cent or more are reported but
+those differences are divided into small and large differences, where
+small is defined as being ten dollars or less and large being greater
+than ten dollars in absolute value.  This small/large borderline is
+arbitrary and has been specified in an attempt to separate out
+cumulative differences that arise from applying IRS-approved
+rounding-to-the-nearest dollar rules (which Tax-Calculator does not
+implement).  Read the source code of the `taxdiffs.tcl` script for
+additional details on how to use it.
