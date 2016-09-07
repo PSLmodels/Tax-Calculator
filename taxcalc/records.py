@@ -205,6 +205,12 @@ class Records(object):
         if not np.allclose(self.e02100, (self.e02100p + self.e02100s),
                            rtol=0.0, atol=0.001):
             raise ValueError(msg.format('e02100'))
+        # check that ordinary dividends are no less than qualified dividends
+        other_dividends = np.maximum(0., self.e00600 - self.e00650)
+        if not np.allclose(self.e00600, self.e00650 + other_dividends,
+                           rtol=0.0, atol=0.001):
+            msg = 'expression "e00600 >= e00650" is not true for every record'
+            raise ValueError(msg)
         # read extrapolation blowup factors and sample weights
         self.BF = None
         self._read_blowup(blowup_factors)
