@@ -22,7 +22,7 @@ import copy
 def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
                   FICA_ss_trt, FICA_mc_trt,
                   e00900p, e00900s, e02100p, e02100s,
-                  _payrolltax, _ptax_was, c03260, c09400,
+                  _payrolltax, ptax_was, ptax_sey, c03260,
                   _sey, _earned, _earned_p, _earned_s):
     """
     EI_PayrollTax function: computes total earned income and some part of
@@ -52,17 +52,15 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     ptax_mc_sey_p = FICA_mc_trt * max(0., sey_p * sey_frac)
     ptax_mc_sey_s = FICA_mc_trt * max(0., sey_s * sey_frac)
 
+    # compute regular payroll taxes on wage-and-salary and on sey earnings
+    ptax_was = ptax_ss_was_p + ptax_ss_was_s + ptax_mc_was_p + ptax_mc_was_s
+    ptax_sey = ptax_ss_sey_p + ptax_ss_sey_s + ptax_mc_sey_p + ptax_mc_sey_s
+
     # compute total regular payroll taxes for filing unit
-    ptax_ss = ptax_ss_was_p + ptax_ss_was_s + ptax_ss_sey_p + ptax_ss_sey_s
-    ptax_mc = ptax_mc_was_p + ptax_mc_was_s + ptax_mc_sey_p + ptax_mc_sey_s
-    _payrolltax = ptax_ss + ptax_mc
+    _payrolltax = ptax_was + ptax_sey
 
-    # compute regular payroll taxes on wage-and-salary income
-    _ptax_was = ptax_ss_was_p + ptax_ss_was_s + ptax_mc_was_p + ptax_mc_was_s
-
-    # compute AGI deduction for "employer share" of self-employment FICA taxes
-    c09400 = ptax_ss_sey_p + ptax_ss_sey_s + ptax_mc_sey_p + ptax_mc_sey_s
-    c03260 = 0.5 * c09400  # half of c09400 represents the "employer share"
+    # compute AGI deduction for "employer share" of self-employment taxes
+    c03260 = 0.5 * ptax_sey  # half of ptax_sey represents the "employer share"
 
     # compute _earned and its individual components
     _earned = max(0., e00200 + _sey - c03260)
@@ -71,7 +69,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     _earned_s = max(0., e00200s + sey_s -
                     0.5 * (ptax_ss_sey_s + ptax_mc_sey_s))
 
-    return (_sey, _payrolltax, _ptax_was, c09400, c03260,
+    return (_sey, _payrolltax, ptax_was, ptax_sey, c03260,
             _earned, _earned_p, _earned_s)
 
 
@@ -327,17 +325,19 @@ def ItemDed(_posagi, e17500, e18400, e18500,
 
 
 @iterate_jit(nopython=True)
-def AdditionalMedicareTax(e00200, MARS, AMED_thd, _sey, AMED_trt,
-                          FICA_mc_trt, FICA_ss_trt, _payrolltax):
+def AdditionalMedicareTax(e00200, MARS,
+                          AMED_thd, _sey, AMED_trt,
+                          FICA_mc_trt, FICA_ss_trt,
+                          ptax_amc, _payrolltax):
     """
     AMED function: computes additional Medicare Tax as a part of payroll taxes
 
     Notes
     -----
     Tax Law Parameters:
-        AMED_thd : Additional medicare threshold
+        AMED_thd : Additional Medicare Tax earnings threshold
 
-        AMED_trt : Additional medicare tax rate
+        AMED_trt : Additional Medicare Tax rate
 
         FICA_ss_trt : FICA Social Security tax rate
 
@@ -350,16 +350,17 @@ def AdditionalMedicareTax(e00200, MARS, AMED_thd, _sey, AMED_trt,
 
     Returns
     -------
-    _payrolltax : payroll tax augmented by Additional Medicare Tax, amed
+    ptax_amc : Additional Medicare Tax
 
+    _payrolltax : payroll tax augmented by Additional Medicare Tax
     """
     # ratio of income subject to AMED tax = (1 - 0.5*(FICA_mc_trt+FICA_ss_trt)
-    amed = AMED_trt * (max(0., e00200 - AMED_thd[MARS - 1]) +
-                       max(0., max(0., _sey) *
-                           (1. - 0.5 * (FICA_mc_trt + FICA_ss_trt)) -
-                           max(0., AMED_thd[MARS - 1] - e00200)))
-    _payrolltax = _payrolltax + amed
-    return _payrolltax
+    ptax_amc = AMED_trt * (max(0., e00200 - AMED_thd[MARS - 1]) +
+                           max(0., max(0., _sey) *
+                               (1. - 0.5 * (FICA_mc_trt + FICA_ss_trt)) -
+                               max(0., AMED_thd[MARS - 1] - e00200)))
+    _payrolltax = _payrolltax + ptax_amc
+    return (ptax_amc, _payrolltax)
 
 
 @iterate_jit(nopython=True)
@@ -1042,7 +1043,7 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07600,
 
 
 @iterate_jit(nopython=True)
-def AdditionalCTC(n24, prectc, _earned, c07220, _ptax_was,
+def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
                   ACTC_Income_thd, ACTC_rt, ACTC_ChildNum,
                   ALD_SelfEmploymentTax_HC,
                   c03260, e09800, c59660, e11200, c11070):
@@ -1074,7 +1075,7 @@ def AdditionalCTC(n24, prectc, _earned, c07220, _ptax_was,
         c82890 = ACTC_rt * c82885
     # Part II of 2005 Form 8812
     if n24 >= ACTC_ChildNum and c82890 < c82935:
-        c82900 = 0.5 * _ptax_was
+        c82900 = 0.5 * ptax_was
         c82905 = (1. - ALD_SelfEmploymentTax_HC) * c03260 + e09800
         c82910 = c82900 + c82905
         c82915 = c59660 + e11200
@@ -1103,7 +1104,7 @@ def F5405(e11580, c11580):
 
 @iterate_jit(nopython=True)
 def C1040(e07400, c07200, c07220, c07230, c07300, c07240,
-          e07260, c07600, p08000, c05800, e09900, c09400, e09800,
+          e07260, c07600, p08000, c05800, e09900, ptax_sey, e09800,
           e09700, c07180, NIIT, _othertax, c07100, c09200):
     """
     C1040 function: ...
@@ -1115,7 +1116,7 @@ def C1040(e07400, c07200, c07220, c07230, c07300, c07240,
     # Tax After credits 1040 line 52
     c08795 = max(0., c05800 - c07100)
     # Tax before refundable credits
-    _othertax = e09900 + c09400 + e09800 + NIIT
+    _othertax = e09900 + ptax_sey + e09800 + NIIT
     c09200 = _othertax + c08795
     c09200 += e09700  # assuming year tax year is after 2009
     return (c07100, c09200, _othertax)
@@ -1181,14 +1182,14 @@ def Taxer_i(inc_in, MARS,
 
 
 @iterate_jit(nopython=True)
-def ExpandIncome(_ptax_was, e02400, c02500, c00100, e00400, _expanded_income):
+def ExpandIncome(ptax_was, e02400, c02500, c00100, e00400, _expanded_income):
     """
     ExpandIncome function: calculates and returns _expanded_income.
 
     Note: if behavioral responses to a policy reform are specified, then be
     sure this function is called after the behavioral responses are calculated.
     """
-    employer_share = 0.5 * _ptax_was  # share of payroll tax on wages & salary
+    employer_share = 0.5 * ptax_was  # share of payroll tax on wages & salary
     non_taxable_ss_benefits = e02400 - c02500
     _expanded_income = (c00100 +  # adjusted gross income
                         e00400 +  # non-taxable interest income
