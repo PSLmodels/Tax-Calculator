@@ -44,8 +44,8 @@ if [[ "$ALLTESTS" == true ]] ; then
 fi
 # bash test d13 . &
 # bash test d14 . &
-# bash test d15 . &
 bash test a15 . &
+bash test d15 . &
 wait
 echo "FINISHED WITH TAXSIM VALIDATION TESTS : `date`"
 if [[ -f "testerror" ]]; then

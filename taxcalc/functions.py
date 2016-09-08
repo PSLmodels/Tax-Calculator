@@ -796,18 +796,18 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
 
 @iterate_jit(nopython=True)
 def ChildTaxCredit(n24, MARS, c00100, _feided, _exact,
-                   CTC_c, CTC_ps, CTC_prt, pre_ctc):
+                   CTC_c, CTC_ps, CTC_prt, prectc):
     """
-    ChildTaxCredit function computes pre_ctc amount
+    ChildTaxCredit function computes prectc amount
     """
-    pre_ctc = CTC_c * n24
+    prectc = CTC_c * n24
     ctc_agi = c00100 + _feided
     if ctc_agi > CTC_ps[MARS - 1]:
         excess = ctc_agi - CTC_ps[MARS - 1]
         if _exact == 1:
             excess = 1000. * math.ceil(excess / 1000.)
-        pre_ctc = max(0., pre_ctc - CTC_prt * excess)
-    return pre_ctc
+        prectc = max(0., prectc - CTC_prt * excess)
+    return prectc
 
 
 @iterate_jit(nopython=True)
@@ -1016,36 +1016,33 @@ def EducationTaxCredit(c87550, MARS, c00100, _num, c05800,
 @iterate_jit(nopython=True)
 def NonrefundableCredits(c05800, e07240, e07260, e07300, e07600,
                          c07180, c07200, c07220, c07230, c07240,
-                         pre_ctc, c07300, c07600, _avail):
+                         prectc, c07300, c07600, _avail):
     """
     NonRefundableCredits function serially applies credits to tax liability
     """
-    # reduce nonrefundable child tax credit, c07220
-    c07220 = min(pre_ctc, max(0., c05800 - (c07180 + c07200 + c07230 +
-                                            e07240 + e07260 + e07300)))
-    # apply tax credits to tax liability in order on tax form
+    # apply tax credits to tax liability in order they are on 2015 1040 form
     _avail = c05800
-    c07180 = min(c07180, _avail)  # child & dependent care expense credit
-    _avail = _avail - c07180
-    c07200 = min(c07200, _avail)  # Schedule R credit
-    _avail = _avail - c07200
     c07300 = min(e07300, _avail)  # Foreign tax credit - Form 1116
     _avail = _avail - c07300
+    c07180 = min(c07180, _avail)  # Child & dependent care expense credit
+    _avail = _avail - c07180
     c07230 = min(c07230, _avail)  # Education tax credit
     _avail = _avail - c07230
-    c07240 = min(e07240, _avail)  # Retirement savings contribution credit
+    c07240 = min(e07240, _avail)  # Retirement savings credit - Form 8880
     _avail = _avail - c07240
-    c07260 = min(e07260, _avail)  # Residential energy credit
-    _avail = _avail - c07260
-    c07600 = min(e07600, _avail)  # Prior year minimum tax credit
-    _avail = _avail - c07600
-    c07220 = min(c07220, _avail)  # Nonrefundable child tax credit
+    c07220 = min(prectc, _avail)  # Child tax credit
     _avail = _avail - c07220
+    c07260 = min(e07260, _avail)  # Residential energy credit - Form 5695
+    _avail = _avail - c07260
+    c07600 = min(e07600, _avail)  # Prior year minimum tax credit - Form 8801
+    _avail = _avail - c07600
+    c07200 = min(c07200, _avail)  # Schedule R credit
+    _avail = _avail - c07200
     return (c07220, c07230, c07240, c07300, c07600, _avail)
 
 
 @iterate_jit(nopython=True)
-def AdditionalCTC(n24, pre_ctc, _earned, c07220, _ptax_was,
+def AdditionalCTC(n24, prectc, _earned, c07220, _ptax_was,
                   ACTC_Income_thd, ACTC_rt, ACTC_ChildNum,
                   ALD_SelfEmploymentTax_HC,
                   c03260, e09800, c59660, e11200, c11070):
@@ -1066,16 +1063,16 @@ def AdditionalCTC(n24, pre_ctc, _earned, c07220, _ptax_was,
     c82937 = 0.
     c82940 = 0.
     c11070 = 0.
-    # Part I of 2005 form 8812
+    # Part I of 2005 Form 8812
     if n24 > 0:
-        c82925 = pre_ctc
+        c82925 = prectc
         c82930 = c07220
         c82935 = c82925 - c82930
         # CTC not applied to tax
         c82880 = max(0., _earned)
         c82885 = max(0., c82880 - ACTC_Income_thd)
         c82890 = ACTC_rt * c82885
-    # Part II of 2005 form 8812
+    # Part II of 2005 Form 8812
     if n24 >= ACTC_ChildNum and c82890 < c82935:
         c82900 = 0.5 * _ptax_was
         c82905 = (1. - ALD_SelfEmploymentTax_HC) * c03260 + e09800
@@ -1083,7 +1080,7 @@ def AdditionalCTC(n24, pre_ctc, _earned, c07220, _ptax_was,
         c82915 = c59660 + e11200
         c82920 = max(0., c82910 - c82915)
         c82937 = max(c82890, c82920)
-    # Part II of 2005 form 8812
+    # Part II of 2005 Form 8812
     if n24 > 0 and n24 <= 2 and c82890 > 0:
         c82940 = min(c82890, c82935)
     if n24 > 2:
