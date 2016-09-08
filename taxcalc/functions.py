@@ -1231,8 +1231,8 @@ def BenefitSurtax(calc):
 
 
 @iterate_jit(nopython=True)
-def FairShareTax(c00100, _iitax, _payrolltax, FST_tentRate, FST_minAGI,
-                 FST_phaseRate, _combined, fst):
+def FairShareTax(c00100, _iitax, _ptax_was, c03260, NIIT, MARS, FST_tentRate,
+                 FST_minAGI, FST_phaseRate, _combined, fst):
     """
 
     Parameters
@@ -1252,11 +1252,12 @@ def FairShareTax(c00100, _iitax, _payrolltax, FST_tentRate, FST_minAGI,
     fst: Fair Share Tax
 
     """
-    if c00100 >= FST_minAGI:
+    if c00100 >= FST_minAGI[MARS - 1]:
         tentFST = c00100 * FST_tentRate
-        rate = (min((float(c00100 - FST_minAGI)) / FST_minAGI *
+        rate = (min((float(c00100 - FST_minAGI[MARS - 1])) / FST_minAGI[MARS - 1] *
                 FST_phaseRate, 1.0))
-        fst = max((tentFST - _iitax - (_payrolltax * 0.5)) * rate, 0.0)
+        fst = max((tentFST - _iitax - (_ptax_was * 0.5) - c03260 - NIIT) *
+                   rate, 0.0)
     else:
         fst = 0.0
     _combined += fst
