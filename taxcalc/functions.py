@@ -22,7 +22,7 @@ import copy
 def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
                   FICA_ss_trt, FICA_mc_trt,
                   e00900p, e00900s, e02100p, e02100s,
-                  _payrolltax, _ptax_was, c03260, c09400,
+                  _payrolltax, ptax_was, ptax_sey, c03260,
                   _sey, _earned, _earned_p, _earned_s):
     """
     EI_PayrollTax function: computes total earned income and some part of
@@ -52,17 +52,15 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     ptax_mc_sey_p = FICA_mc_trt * max(0., sey_p * sey_frac)
     ptax_mc_sey_s = FICA_mc_trt * max(0., sey_s * sey_frac)
 
+    # compute regular payroll taxes on wage-and-salary and on sey earnings
+    ptax_was = ptax_ss_was_p + ptax_ss_was_s + ptax_mc_was_p + ptax_mc_was_s
+    ptax_sey = ptax_ss_sey_p + ptax_ss_sey_s + ptax_mc_sey_p + ptax_mc_sey_s
+
     # compute total regular payroll taxes for filing unit
-    ptax_ss = ptax_ss_was_p + ptax_ss_was_s + ptax_ss_sey_p + ptax_ss_sey_s
-    ptax_mc = ptax_mc_was_p + ptax_mc_was_s + ptax_mc_sey_p + ptax_mc_sey_s
-    _payrolltax = ptax_ss + ptax_mc
+    _payrolltax = ptax_was + ptax_sey
 
-    # compute regular payroll taxes on wage-and-salary income
-    _ptax_was = ptax_ss_was_p + ptax_ss_was_s + ptax_mc_was_p + ptax_mc_was_s
-
-    # compute AGI deduction for "employer share" of self-employment FICA taxes
-    c09400 = ptax_ss_sey_p + ptax_ss_sey_s + ptax_mc_sey_p + ptax_mc_sey_s
-    c03260 = 0.5 * c09400  # half of c09400 represents the "employer share"
+    # compute AGI deduction for "employer share" of self-employment taxes
+    c03260 = 0.5 * ptax_sey  # half of ptax_sey represents the "employer share"
 
     # compute _earned and its individual components
     _earned = max(0., e00200 + _sey - c03260)
@@ -71,7 +69,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     _earned_s = max(0., e00200s + sey_s -
                     0.5 * (ptax_ss_sey_s + ptax_mc_sey_s))
 
-    return (_sey, _payrolltax, _ptax_was, c09400, c03260,
+    return (_sey, _payrolltax, ptax_was, ptax_sey, c03260,
             _earned, _earned_p, _earned_s)
 
 
@@ -327,17 +325,19 @@ def ItemDed(_posagi, e17500, e18400, e18500,
 
 
 @iterate_jit(nopython=True)
-def AdditionalMedicareTax(e00200, MARS, AMED_thd, _sey, AMED_trt,
-                          FICA_mc_trt, FICA_ss_trt, _payrolltax):
+def AdditionalMedicareTax(e00200, MARS,
+                          AMED_thd, _sey, AMED_trt,
+                          FICA_mc_trt, FICA_ss_trt,
+                          ptax_amc, _payrolltax):
     """
     AMED function: computes additional Medicare Tax as a part of payroll taxes
 
     Notes
     -----
     Tax Law Parameters:
-        AMED_thd : Additional medicare threshold
+        AMED_thd : Additional Medicare Tax earnings threshold
 
-        AMED_trt : Additional medicare tax rate
+        AMED_trt : Additional Medicare Tax rate
 
         FICA_ss_trt : FICA Social Security tax rate
 
@@ -350,16 +350,17 @@ def AdditionalMedicareTax(e00200, MARS, AMED_thd, _sey, AMED_trt,
 
     Returns
     -------
-    _payrolltax : payroll tax augmented by Additional Medicare Tax, amed
+    ptax_amc : Additional Medicare Tax
 
+    _payrolltax : payroll tax augmented by Additional Medicare Tax
     """
     # ratio of income subject to AMED tax = (1 - 0.5*(FICA_mc_trt+FICA_ss_trt)
-    amed = AMED_trt * (max(0., e00200 - AMED_thd[MARS - 1]) +
-                       max(0., max(0., _sey) *
-                           (1. - 0.5 * (FICA_mc_trt + FICA_ss_trt)) -
-                           max(0., AMED_thd[MARS - 1] - e00200)))
-    _payrolltax = _payrolltax + amed
-    return _payrolltax
+    ptax_amc = AMED_trt * (max(0., e00200 - AMED_thd[MARS - 1]) +
+                           max(0., max(0., _sey) *
+                               (1. - 0.5 * (FICA_mc_trt + FICA_ss_trt)) -
+                               max(0., AMED_thd[MARS - 1] - e00200)))
+    _payrolltax = _payrolltax + ptax_amc
+    return (ptax_amc, _payrolltax)
 
 
 @iterate_jit(nopython=True)
@@ -796,18 +797,18 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
 
 @iterate_jit(nopython=True)
 def ChildTaxCredit(n24, MARS, c00100, _feided, _exact,
-                   CTC_c, CTC_ps, CTC_prt, pre_ctc):
+                   CTC_c, CTC_ps, CTC_prt, prectc):
     """
-    ChildTaxCredit function computes pre_ctc amount
+    ChildTaxCredit function computes prectc amount
     """
-    pre_ctc = CTC_c * n24
+    prectc = CTC_c * n24
     ctc_agi = c00100 + _feided
     if ctc_agi > CTC_ps[MARS - 1]:
         excess = ctc_agi - CTC_ps[MARS - 1]
         if _exact == 1:
             excess = 1000. * math.ceil(excess / 1000.)
-        pre_ctc = max(0., pre_ctc - CTC_prt * excess)
-    return pre_ctc
+        prectc = max(0., prectc - CTC_prt * excess)
+    return prectc
 
 
 @iterate_jit(nopython=True)
@@ -964,7 +965,15 @@ def SchR(age_head, age_spouse, MARS, c00100,
         else:
             schr12 = 0.
             schr15 = 0.
+        # nontaxable portion of OASDI benefits, line 13a
         schr13a = max(0., e02400 - c02500)
+        # nontaxable portion of pension benefits, line 13b
+        # NOTE: the following approximation (required because of inadequate IRS
+        #       data) will be accurate if all pensions are partially taxable
+        #       or if all pensions are fully taxable.  But if a filing unit
+        #       receives at least one partially taxable pension and at least
+        #       one fully taxable pension, then the following approximation
+        #       is not exactly correct.
         schr13b = max(0., e01500 - e01700)
         schr13c = schr13a + schr13b
         schr16 = max(0., c00100 - schr15)
@@ -1008,36 +1017,33 @@ def EducationTaxCredit(c87550, MARS, c00100, _num, c05800,
 @iterate_jit(nopython=True)
 def NonrefundableCredits(c05800, e07240, e07260, e07300, e07600,
                          c07180, c07200, c07220, c07230, c07240,
-                         pre_ctc, c07300, c07600, _avail):
+                         prectc, c07300, c07600, _avail):
     """
     NonRefundableCredits function serially applies credits to tax liability
     """
-    # reduce nonrefundable child tax credit, c07220
-    c07220 = min(pre_ctc, max(0., c05800 - (c07180 + c07200 + c07230 +
-                                            e07240 + e07260 + e07300)))
-    # apply tax credits to tax liability in order on tax form
+    # apply tax credits to tax liability in order they are on 2015 1040 form
     _avail = c05800
-    c07180 = min(c07180, _avail)  # child & dependent care expense credit
-    _avail = _avail - c07180
-    c07200 = min(c07200, _avail)  # Schedule R credit
-    _avail = _avail - c07200
     c07300 = min(e07300, _avail)  # Foreign tax credit - Form 1116
     _avail = _avail - c07300
+    c07180 = min(c07180, _avail)  # Child & dependent care expense credit
+    _avail = _avail - c07180
     c07230 = min(c07230, _avail)  # Education tax credit
     _avail = _avail - c07230
-    c07240 = min(e07240, _avail)  # Retirement savings contribution credit
+    c07240 = min(e07240, _avail)  # Retirement savings credit - Form 8880
     _avail = _avail - c07240
-    c07260 = min(e07260, _avail)  # Residential energy credit
-    _avail = _avail - c07260
-    c07600 = min(e07600, _avail)  # Prior year minimum tax credit
-    _avail = _avail - c07600
-    c07220 = min(c07220, _avail)  # Nonrefundable child tax credit
+    c07220 = min(prectc, _avail)  # Child tax credit
     _avail = _avail - c07220
+    c07260 = min(e07260, _avail)  # Residential energy credit - Form 5695
+    _avail = _avail - c07260
+    c07600 = min(e07600, _avail)  # Prior year minimum tax credit - Form 8801
+    _avail = _avail - c07600
+    c07200 = min(c07200, _avail)  # Schedule R credit
+    _avail = _avail - c07200
     return (c07220, c07230, c07240, c07300, c07600, _avail)
 
 
 @iterate_jit(nopython=True)
-def AdditionalCTC(n24, pre_ctc, _earned, c07220, _ptax_was,
+def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
                   ACTC_Income_thd, ACTC_rt, ACTC_ChildNum,
                   ALD_SelfEmploymentTax_HC,
                   c03260, e09800, c59660, e11200, c11070):
@@ -1058,24 +1064,24 @@ def AdditionalCTC(n24, pre_ctc, _earned, c07220, _ptax_was,
     c82937 = 0.
     c82940 = 0.
     c11070 = 0.
-    # Part I of 2005 form 8812
+    # Part I of 2005 Form 8812
     if n24 > 0:
-        c82925 = pre_ctc
+        c82925 = prectc
         c82930 = c07220
         c82935 = c82925 - c82930
         # CTC not applied to tax
         c82880 = max(0., _earned)
         c82885 = max(0., c82880 - ACTC_Income_thd)
         c82890 = ACTC_rt * c82885
-    # Part II of 2005 form 8812
+    # Part II of 2005 Form 8812
     if n24 >= ACTC_ChildNum and c82890 < c82935:
-        c82900 = 0.5 * _ptax_was
+        c82900 = 0.5 * ptax_was
         c82905 = (1. - ALD_SelfEmploymentTax_HC) * c03260 + e09800
         c82910 = c82900 + c82905
         c82915 = c59660 + e11200
         c82920 = max(0., c82910 - c82915)
         c82937 = max(c82890, c82920)
-    # Part II of 2005 form 8812
+    # Part II of 2005 Form 8812
     if n24 > 0 and n24 <= 2 and c82890 > 0:
         c82940 = min(c82890, c82935)
     if n24 > 2:
@@ -1098,7 +1104,7 @@ def F5405(e11580, c11580):
 
 @iterate_jit(nopython=True)
 def C1040(e07400, c07200, c07220, c07230, c07300, c07240,
-          e07260, c07600, p08000, c05800, e09900, c09400, e09800,
+          e07260, c07600, p08000, c05800, e09900, ptax_sey, e09800,
           e09700, c07180, NIIT, _othertax, c07100, c09200):
     """
     C1040 function: ...
@@ -1110,7 +1116,7 @@ def C1040(e07400, c07200, c07220, c07230, c07300, c07240,
     # Tax After credits 1040 line 52
     c08795 = max(0., c05800 - c07100)
     # Tax before refundable credits
-    _othertax = e09900 + c09400 + e09800 + NIIT
+    _othertax = e09900 + ptax_sey + e09800 + NIIT
     c09200 = _othertax + c08795
     c09200 += e09700  # assuming year tax year is after 2009
     return (c07100, c09200, _othertax)
@@ -1176,14 +1182,14 @@ def Taxer_i(inc_in, MARS,
 
 
 @iterate_jit(nopython=True)
-def ExpandIncome(_ptax_was, e02400, c02500, c00100, e00400, _expanded_income):
+def ExpandIncome(ptax_was, e02400, c02500, c00100, e00400, _expanded_income):
     """
     ExpandIncome function: calculates and returns _expanded_income.
 
     Note: if behavioral responses to a policy reform are specified, then be
     sure this function is called after the behavioral responses are calculated.
     """
-    employer_share = 0.5 * _ptax_was  # share of payroll tax on wages & salary
+    employer_share = 0.5 * ptax_was  # share of payroll tax on wages & salary
     non_taxable_ss_benefits = e02400 - c02500
     _expanded_income = (c00100 +  # adjusted gross income
                         e00400 +  # non-taxable interest income
@@ -1231,32 +1237,38 @@ def BenefitSurtax(calc):
 
 
 @iterate_jit(nopython=True)
-def FairShareTax(c00100, _iitax, _ptax_was, c03260, NIIT, MARS, FST_tentRate,
-                 FST_minAGI, FST_phaseRate, _combined, fst):
+def FairShareTax(c00100, _iitax, ptax_was, ptax_sey, ptax_amc, NIIT, MARS,
+                 FST_tentRate, FST_AGI_thd, FST_phaseRate, _combined, fst):
     """
 
     Parameters
     ----------
     c00100: AGI
     _iitax: Individual Income Tax
-    _payrolltax:
+    ptax_was: Payroll tax on wages and salaries
+    ptax_sey: Self-employment tax
+    ptax_amc: Additional medicare tax on high earnings
+    NIIT: Net Investment Income Tax
+    MARS: Marital Status
     FST_tentRate: Percent of AGI the tentative FST will be. Default = 0.0
-    FST_minAGI: Minimum AGI needed to be subject to the tax.
-    Default = 1000000
-    FST_phaseRate: Rate the FST is phased in. Default = 1
-    _combined: Total tax liability
-    fst:
+    FST_AGI_thd: Minimum AGI needed to be subjected to this tax. Default =
+    500000 for married filing separately, 1000000 for all others
+    FST_phaseRate: Rate the FST will be phased in. Default = 1
+    _combined: Combined individual and payroll tax liabilites
+    fst
 
     Returns
     -------
     fst: Fair Share Tax
 
     """
-    if c00100 >= FST_minAGI[MARS - 1]:
+    # Only compute if the unit's AGI is above minimum threshold
+    if c00100 >= FST_AGI_thd[MARS - 1]:
         tentFST = c00100 * FST_tentRate
-        rate = (min((float(c00100 - FST_minAGI[MARS - 1])) / FST_minAGI[MARS - 1] *
-                FST_phaseRate, 1.0))
-        fst = max((tentFST - _iitax - (_ptax_was * 0.5) - c03260 - NIIT) *
+        employee_share = (0.5 * ptax_was) + (0.5 * ptax_sey) + ptax_amc
+        rate = (min((float(c00100 - FST_AGI_thd[MARS - 1])) /
+                FST_AGI_thd[MARS - 1] * FST_phaseRate, 1.0))
+        fst = max((tentFST - _iitax - employee_share - NIIT) *
                    rate, 0.0)
     else:
         fst = 0.0

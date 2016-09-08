@@ -147,17 +147,17 @@ class Records(object):
         'c01000', 'c02500',
         'c11580',
         '_sey', '_earned', '_earned_p', '_earned_s',
-        'c09400', '_feided', 'ymod', 'ymod1', '_posagi',
+        '_feided', 'ymod', 'ymod1', '_posagi',
         '_xyztax', '_avail',
         '_taxinc', 'c04800', '_feitax',
         '_taxbc', '_standard', 'c24516', 'c24517', 'c24520',
         'c05700', 'c32880', 'c32890', 'c32800',
         'c05800',
         'c87521', 'c87550', 'c07180',
-        'c07230', 'pre_ctc', 'c07220', 'c59660',
+        'c07230', 'prectc', 'c07220', 'c59660',
         'c09200', 'c07100', '_eitc',
         '_prexmp',
-        '_payrolltax', '_ptax_was', 'c03260',
+        '_payrolltax', 'ptax_was', 'ptax_sey', 'c03260', 'ptax_amc',
         '_sep', '_num',
         'c04500', 'c05200',
         'c62100',
@@ -205,6 +205,12 @@ class Records(object):
         if not np.allclose(self.e02100, (self.e02100p + self.e02100s),
                            rtol=0.0, atol=0.001):
             raise ValueError(msg.format('e02100'))
+        # check that ordinary dividends are no less than qualified dividends
+        other_dividends = np.maximum(0., self.e00600 - self.e00650)
+        if not np.allclose(self.e00600, self.e00650 + other_dividends,
+                           rtol=0.0, atol=0.001):
+            msg = 'expression "e00600 >= e00650" is not true for every record'
+            raise ValueError(msg)
         # read extrapolation blowup factors and sample weights
         self.BF = None
         self._read_blowup(blowup_factors)

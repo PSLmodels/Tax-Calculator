@@ -77,7 +77,7 @@ Tax-Calculator,80.4,87.7,94.5,101.3
 Tax Expenditure,75,82,88,93
 ""
 Both real estate and state and local
-Tax-Calculator,99.3,105.6,111.4,117.6
+Tax-Calculator,99.3,105.6,111.4,117.5
 Tax Expenditure,75,82,88,93
 ""
 State & Local
@@ -93,7 +93,7 @@ Tax-Calculator,0.4,0.5,0.5,0.5
 Tax Expenditure,0,0,0,0
 ""
 Charitable
-Tax-Calculator,43.2,45.8,48.2,50.9
+Tax-Calculator,43.2,45.7,48.2,50.9
 Tax Expenditure,46,47,48,50
 ""
 Decrease AGI floor for miscellaneous expenses by 1 pts
@@ -124,7 +124,7 @@ Budget Options,5,5,5,6
 REGULAR TAXES
 ""
 Increase each bracket rate by 1%
-Tax-Calculator,56.3,58.8,61.5,64.0
+Tax-Calculator,56.2,58.7,61.5,64.0
 Budget Options,56,60,65,69
 ""
 Increase top 4 rates by 1%
@@ -166,7 +166,7 @@ Tax-Calculator,-0.4,-0.5,-0.5,-0.5
 NONREFUNDABLE CREDIT
 ""
 Total expenditure from child tax credit
-Tax-Calculator,51.6,51.2,50.8,50.2
+Tax-Calculator,51.5,51.1,50.7,50.1
 Tax Expenditure,57,57,57,57
 ""
 Increase Child Tax Credit phaseout rate by 1 pts
