@@ -68,7 +68,7 @@ provides a free Tcl interpreter for Windows (tclsh.exe).
 
 The `make_in.tcl` and `more_in.py` scripts are used to randomly
 generate INPUT files, which have increasingly longer sets of filing
-unit attributes and typically contain 100,000 filing units.  Read the
+unit attributes and contain as many as 100,000 filing units.  Read the
 source code of the scripts for additional details on how to use them.
 
 The `taxdiffs.tcl` script calls the `taxdiff.awk` script to compute
