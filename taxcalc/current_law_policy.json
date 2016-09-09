@@ -1729,8 +1729,8 @@
         "row_var": "",
         "row_label": ["2013"],
         "cpi_inflated": true,
-        "col_label": ["Single", "Married filing jointly", "Married filing separately", "Head of Household"],
-        "value": [[1000000, 1000000, 500000, 1000000]]
+        "col_label": ["single", "joint", "separate", "head of household", "separate"],
+        "value": [[1000000, 1000000, 500000, 1000000, 1000000, 500000]]
     },
 
     "_FST_phaseRate": {

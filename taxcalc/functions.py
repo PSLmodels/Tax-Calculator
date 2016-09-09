@@ -1198,6 +1198,50 @@ def ExpandIncome(ptax_was, e02400, c02500, c00100, e00400, _expanded_income):
     return _expanded_income
 
 
+@iterate_jit(nopython=True)
+def FairShareTax(c00100, _iitax, ptax_was, ptax_sey, ptax_amc, NIIT, MARS,
+                 FST_tentRate, FST_AGI_thd, FST_phaseRate, _combined, fst):
+    """
+
+    Parameters
+    ----------
+    c00100: AGI
+    _iitax: Individual Income Tax
+    ptax_was: Payroll tax on wages and salaries
+    ptax_sey: Self-employment tax
+    ptax_amc: Additional medicare tax on high earnings
+    NIIT: Net Investment Income Tax
+    MARS: Marital Status
+    FST_tentRate: Percent of AGI the tentative FST will be. Default = 0.0
+    FST_AGI_thd: Minimum AGI needed to be subjected to this tax. Default =
+    500000 for married filing separately, 1000000 for all others
+    FST_phaseRate: Rate the FST will be phased in. Default = 1
+    _combined: Combined individual and payroll tax liabilites
+    fst
+
+    Returns
+    -------
+    fst: Fair Share Tax
+
+    """
+    # Only compute if the unit's AGI is above minimum threshold
+    if c00100 >= FST_AGI_thd[MARS - 1] and FST_AGI_thd[MARS - 1] != 0:
+        tentFST = c00100 * FST_tentRate
+        employee_share = 0.5 * ptax_was + 0.5 * ptax_sey + ptax_amc
+        #rate = (min(((float(c00100 - FST_AGI_thd[MARS - 1])) /
+                #FST_AGI_thd[MARS - 1]) * FST_phaseRate, 1.0))
+        rate = min(((c00100 - FST_AGI_thd[MARS - 1]) /
+                     FST_AGI_thd[MARS - 1]) * FST_phaseRate, 1.0)
+        fst = max((tentFST - _iitax - employee_share - NIIT) *
+                   rate, 0.0)
+    else:
+        fst = 0.0
+    _combined += fst
+    _iitax += fst
+
+    return fst, _combined, _iitax
+
+
 def BenefitSurtax(calc):
     """
     BenefitSurtax function: computes itemized-deduction-benefit surtax and
@@ -1234,45 +1278,3 @@ def BenefitSurtax(calc):
             benefit_amount - benefit_deduction, 0.)
         calc.records._iitax += calc.records._surtax
         calc.records._combined += calc.records._surtax
-
-
-@iterate_jit(nopython=True)
-def FairShareTax(c00100, _iitax, ptax_was, ptax_sey, ptax_amc, NIIT, MARS,
-                 FST_tentRate, FST_AGI_thd, FST_phaseRate, _combined, fst):
-    """
-
-    Parameters
-    ----------
-    c00100: AGI
-    _iitax: Individual Income Tax
-    ptax_was: Payroll tax on wages and salaries
-    ptax_sey: Self-employment tax
-    ptax_amc: Additional medicare tax on high earnings
-    NIIT: Net Investment Income Tax
-    MARS: Marital Status
-    FST_tentRate: Percent of AGI the tentative FST will be. Default = 0.0
-    FST_AGI_thd: Minimum AGI needed to be subjected to this tax. Default =
-    500000 for married filing separately, 1000000 for all others
-    FST_phaseRate: Rate the FST will be phased in. Default = 1
-    _combined: Combined individual and payroll tax liabilites
-    fst
-
-    Returns
-    -------
-    fst: Fair Share Tax
-
-    """
-    # Only compute if the unit's AGI is above minimum threshold
-    if c00100 >= FST_AGI_thd[MARS - 1]:
-        tentFST = c00100 * FST_tentRate
-        employee_share = 0.5 * ptax_was + 0.5 * ptax_sey + ptax_amc
-        rate = min(((float(c00100 - FST_AGI_thd[MARS - 1])) /
-                     FST_AGI_thd[MARS - 1]) * FST_phaseRate, 1.0)
-        fst = max((tentFST - _iitax - employee_share - NIIT) *
-                   rate, 0.0)
-    else:
-        fst = 0.0
-    _combined += fst
-    _iitax += fst
-
-    return fst, _combined, _iitax
