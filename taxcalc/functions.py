@@ -1265,9 +1265,9 @@ def FairShareTax(c00100, _iitax, ptax_was, ptax_sey, ptax_amc, NIIT, MARS,
     # Only compute if the unit's AGI is above minimum threshold
     if c00100 >= FST_AGI_thd[MARS - 1]:
         tentFST = c00100 * FST_tentRate
-        employee_share = (0.5 * ptax_was) + (0.5 * ptax_sey) + ptax_amc
-        rate = (min((float(c00100 - FST_AGI_thd[MARS - 1])) /
-                FST_AGI_thd[MARS - 1] * FST_phaseRate, 1.0))
+        employee_share = 0.5 * ptax_was + 0.5 * ptax_sey + ptax_amc
+        rate = min(((float(c00100 - FST_AGI_thd[MARS - 1])) /
+                     FST_AGI_thd[MARS - 1]) * FST_phaseRate, 1.0)
         fst = max((tentFST - _iitax - employee_share - NIIT) *
                    rate, 0.0)
     else:
