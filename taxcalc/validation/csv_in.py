@@ -193,11 +193,12 @@ def main(taxyear, rnseed, ssize):
 
     # sample xdf without replacement to get ssize observations
     if DEBUG:
+        (sample_size, _) = xdf.shape
         xxdf = xdf
-        (ssize, _) = xxdf.shape
     else:
-        xxdf = xdf.sample(n=ssize, random_state=rnseed)
-    xxdf['RECID'] = [rid + 1 for rid in range(ssize)]
+        sample_size = ssize
+        xxdf = xdf.sample(n=sample_size, random_state=rnseed)
+    xxdf['RECID'] = [rid + 1 for rid in range(sample_size)]
     print 'df.shape  after sampling = {}'.format(xxdf.shape)
 
     # write randomized and sampled xxdf to xYY.csv file
