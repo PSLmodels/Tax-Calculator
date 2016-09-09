@@ -23,21 +23,27 @@ MAX_YEAR = 2023  # maximum tax year allowed for tax calculations
 MAX_SEED = 999999999  # maximum allowed seed for random-number generator
 MAX_SIZE = 100000  # maximum size of sample to draw from puf.csv
 
-# specify set of variables slated for removal from puf.csv
-DROP1_VARS = set(['e11070', 'e11550'])
+DEBUG = True  # True implies no variable randomization or record sampling
 
-# specify set of variables not included in the xYY.csv file
-DROP2_VARS = set(['s006', 'filer', 'cmbtp_standard', 'cmbtp_itemizer'])
+# specify set of variables slated for removal from puf.csv
+DROP1_VARS = set(['e11070', 'e11550', 'FDED'])
+
+# specify set of variables not included in xYY.csv file
+if DEBUG:
+    DROP2_VARS = set(['filer'])
+else:
+    DROP2_VARS = set(['filer', 's006', 'cmbtp_standard', 'cmbtp_itemizer'])
 
 DROP_VARS = DROP1_VARS | DROP2_VARS
 
-# specify set of variables whose value is to not be randomized
-SKIP_VARS = set(['RECID', 'MARS', 'FLPDYR',
-                 'age_head', 'age_spouse',
-                 'DSI', 'EIC', 'FDED',
-                 'f2441', 'f6251',
-                 'MIDR',
-                 'n24', 'XTOT'])
+# specify set of variables whose value is not to be randomized
+if DEBUG:
+    SKIP_VARS = Records.VALID_READ_VARS
+else:
+    SKIP_VARS = set(['RECID', 'MARS', 'FLPDYR',
+                     'age_head', 'age_spouse',
+                     'DSI', 'MIDR', 'XTOT', 'EIC', 'n24',
+                     'f2441', 'f6251'])
 """
 iMac2:validation mrh$ ~/work/OSPC/csvvars x15.csv
 1 age_head
@@ -147,6 +153,14 @@ def randomize_data(xdf, taxyear, rnseed):
     """
     xdf['FLPDYR'] = taxyear
     np.random.seed(rnseed)
+    num_skips = 0
+    for varname in list(xdf):
+        if varname in SKIP_VARS:
+            num_skips += 1
+            continue
+        # randomize amounts for varname
+        pass
+    print 'num_skips={}'.format(num_skips)
     return 0
 
 
@@ -162,15 +176,15 @@ def main(taxyear, rnseed, ssize):
         return 1
     xdf = pd.read_csv(pufcsv_filename)
 
-    # remove xdf variables slated for removal from VALID_READ_VARS set
-    print xdf.shape
+    # remove xdf variables not needed in xYY.csv file
+    print 'df.shape before dropping = {}'.format(xdf.shape)
     for var in DROP_VARS:
         if var not in Records.VALID_READ_VARS:
             msg = 'ERROR: variable {} already dropped'.format(var)
             sys.stderr.write(msg + '\n')
             return 1
         xdf.drop(var, axis=1, inplace=True)
-    print xdf.shape
+    print 'df.shape  after dropping = {}'.format(xdf.shape)
 
     # add random amounts to xdf variables
     rtncode = randomize_data(xdf, taxyear, rnseed)
@@ -178,10 +192,15 @@ def main(taxyear, rnseed, ssize):
         return rtncode
 
     # sample xdf without replacement to get ssize observations
-    xxdf = xdf.sample(n=ssize, random_state=rnseed)
+    if DEBUG:
+        xxdf = xdf
+        (ssize, _) = xxdf.shape
+    else:
+        xxdf = xdf.sample(n=ssize, random_state=rnseed)
     xxdf['RECID'] = [rid + 1 for rid in range(ssize)]
+    print 'df.shape  after sampling = {}'.format(xxdf.shape)
 
-    # write modified xdf to xYY.csv file
+    # write randomized and sampled xxdf to xYY.csv file
     xxdf.to_csv('x{}.csv'.format(taxyear % 100), index=False)
 
     # normal return code
