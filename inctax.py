@@ -62,7 +62,7 @@ def main():
                         action="store_true")
     parser.add_argument('--blowup',
                         help=('optional flag that triggers the default '
-                              'imputation and blowup (or aging) logic built '
+                              'blowup (or aging) logic built '
                               'into the Tax-Calculator that will age the '
                               'INPUT data from Records.PUF_YEAR to TAXYEAR. '
                               'No --blowup option implies INPUT data are '
