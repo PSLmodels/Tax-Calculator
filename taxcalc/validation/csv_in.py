@@ -23,7 +23,9 @@ MAX_YEAR = 2023  # maximum tax year allowed for tax calculations
 MAX_SEED = 999999999  # maximum allowed seed for random-number generator
 MAX_SIZE = 100000  # maximum size of sample to draw from puf.csv
 
-DEBUG = True  # True implies no variable randomization or record sampling
+DEBUG = False  # True implies no variable randomization or record sampling
+
+TRACE = True  # True implies tracing output written to stdout
 
 # specify set of variables slated for removal from puf.csv
 DROP1_VARS = set(['e11070', 'e11550', 'FDED'])
@@ -40,21 +42,21 @@ DROP_VARS = DROP1_VARS | DROP2_VARS
 if DEBUG:
     SKIP_VARS = Records.VALID_READ_VARS
 else:
-    SKIP_VARS = set(['RECID', 'MARS', 'FLPDYR',
+    SKIP_VARS = set(['RECID', 'MARS', 'DSI', 'MIDR', 'FLPDYR',
                      'age_head', 'age_spouse',
-                     'DSI', 'MIDR', 'XTOT', 'EIC', 'n24',
-                     'f2441', 'f6251'])
+                     'XTOT', 'EIC', 'n24', 'f2441',
+                     'f6251'])
 """
-iMac2:validation mrh$ ~/work/OSPC/csvvars x15.csv
-1 age_head
-2 age_spouse
-3 DSI
-4 EIC
-5 FDED
-6 FLPDYR
-7 f2441
-8 f6251
-9 MARS
+validation$ ~/work/OSPC/csvvars ~/work/OSPC/tax-calculator-data/puf.csv
+ 1 age_head
+ 2 age_spouse
+ 3 DSI
+ 4 EIC
+ 5 FDED
+ 6 FLPDYR
+ 7 f2441
+ 8 f6251
+ 9 MARS
 10 MIDR
 11 n24
 12 XTOT
@@ -94,46 +96,51 @@ iMac2:validation mrh$ ~/work/OSPC/csvvars x15.csv
 46 e09700
 47 e09800
 48 e09900
-49 e11200
-50 e11580
-51 e17500
-52 e18400
-53 e18500
-54 e19200
-55 e19800
-56 e20100
-57 e20400
-58 e20500
-59 p22250
-60 p23250
-61 e24515
-62 e24518
-63 p25470
-64 e26270
-65 e27200
-66 e32800
-67 e58990
-68 e62900
-69 p87482
-70 p87521
-71 e87530
-72 RECID
-73 s006
-74 filer
-75 cmbtp_standard
-76 cmbtp_itemizer
-77 e00200p
-78 e00200s
-79 e00900p
-80 e00900s
-81 e02100p
-82 e02100s
+49 e11550
+50 e11070
+51 e11200
+52 e11580
+53 e17500
+54 e18400
+55 e18500
+56 e19200
+57 e19800
+58 e20100
+59 e20400
+60 e20500
+61 p22250
+62 p23250
+63 e24515
+64 e24518
+65 p25470
+66 e26270
+67 e27200
+68 e32800
+69 e58990
+70 e62900
+71 p87482
+72 p87521
+73 e87530
+74 RECID
+75 s006
+76 filer
+77 cmbtp_standard
+78 cmbtp_itemizer
+79 e00200p
+80 e00200s
+81 e00900p
+82 e00900s
+83 e02100p
+84 e02100s
 """
+
+ANNUAL_DRIFT = 0.03
+NORM_STD_DEV = 0.25
 
 
 def randomize_data(xdf, taxyear, rnseed):
     """
-    Function randomizes data variables.
+    Randomizes data variables.
 
     Parameters
     ----------
@@ -152,15 +159,33 @@ def randomize_data(xdf, taxyear, rnseed):
         where zero indicates success and nonzero indicates an error.
     """
     xdf['FLPDYR'] = taxyear
+    num = xdf['FLPDYR'].size
+    nmean = 1.0 + ANNUAL_DRIFT * (taxyear - 2009)
+    nsdev = NORM_STD_DEV
     np.random.seed(rnseed)
     num_skips = 0
     for varname in list(xdf):
         if varname in SKIP_VARS:
             num_skips += 1
             continue
-        # randomize amounts for varname
-        pass
-    print 'num_skips={}'.format(num_skips)
+        # randomize varname amounts
+        old = xdf[varname]
+        rfactor = np.random.normal(loc=nmean, scale=nsdev, size=num)
+        addon = old * rfactor
+        raw = old + addon
+        raw = raw.round(decimals=0)
+        raw = raw.astype(dtype=np.int64)
+        if old.min() < 0:
+            new = raw
+        else:
+            new = raw.clip(lower=0)
+        if TRACE:
+            info = '{} {} {} {} {}'.format(varname, old.dtype, old.min(),
+                                           new.dtype, new.min())
+            sys.stdout.write(info + '\n')
+    if TRACE:
+        info = 'number_variable_randomization_skips={}'.format(num_skips)
+        sys.stdout.write(info + '\n')
     return 0
 
 
@@ -171,20 +196,24 @@ def main(taxyear, rnseed, ssize):
     # read puf.csv file into a Pandas DataFrame
     pufcsv_filename = os.path.join(CUR_PATH, '..', '..', 'puf.csv')
     if not os.path.isfile(pufcsv_filename):
-        msg = 'ERROR: puf.csv file [{}] not found'.format(pufcsv_filename)
+        msg = 'ERROR: puf.csv file not found in top-level directory'
         sys.stderr.write(msg + '\n')
         return 1
     xdf = pd.read_csv(pufcsv_filename)
 
     # remove xdf variables not needed in xYY.csv file
-    print 'df.shape before dropping = {}'.format(xdf.shape)
+    if TRACE:
+        info = 'df.shape before dropping = {}'.format(xdf.shape)
+        sys.stdout.write(info + '\n')
     for var in DROP_VARS:
         if var not in Records.VALID_READ_VARS:
             msg = 'ERROR: variable {} already dropped'.format(var)
             sys.stderr.write(msg + '\n')
             return 1
         xdf.drop(var, axis=1, inplace=True)
-    print 'df.shape  after dropping = {}'.format(xdf.shape)
+    if TRACE:
+        info = 'df.shape  after dropping = {}'.format(xdf.shape)
+        sys.stdout.write(info + '\n')
 
     # add random amounts to xdf variables
     rtncode = randomize_data(xdf, taxyear, rnseed)
@@ -199,7 +228,9 @@ def main(taxyear, rnseed, ssize):
         sample_size = ssize
         xxdf = xdf.sample(n=sample_size, random_state=rnseed)
     xxdf['RECID'] = [rid + 1 for rid in range(sample_size)]
-    print 'df.shape  after sampling = {}'.format(xxdf.shape)
+    if TRACE:
+        info = 'df.shape  after sampling = {}'.format(xxdf.shape)
+        sys.stdout.write(info + '\n')
 
     # write randomized and sampled xxdf to xYY.csv file
     xxdf.to_csv('x{}.csv'.format(taxyear % 100), index=False)
