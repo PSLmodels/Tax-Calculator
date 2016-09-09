@@ -1729,7 +1729,7 @@
         "row_var": "",
         "row_label": ["2013"],
         "cpi_inflated": true,
-        "col_label": ["Single", "Married filing jointly", "Married filing separately"],
+        "col_label": ["Single", "Married filing jointly", "Married filing separately", "Head of Household"],
         "value": [[1000000, 1000000, 500000, 1000000]]
     },
 
