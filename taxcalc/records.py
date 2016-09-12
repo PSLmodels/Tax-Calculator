@@ -145,7 +145,6 @@ class Records(object):
         'c04470', 'c04600', 'c21060', 'c21040', 'c17000',
         'c18300', 'c20800', 'c02900', 'c02700', 'c23650',
         'c01000', 'c02500',
-        'c11580',
         '_sey', '_earned', '_earned_p', '_earned_s',
         '_feided', 'ymod', 'ymod1', '_posagi',
         '_xyztax', '_avail',
@@ -338,7 +337,6 @@ class Records(object):
         self.e09800 *= ATXPY
         self.e09900 *= ATXPY
         self.e11200 *= ATXPY
-        self.e11580 *= ATXPY
         # ITEMIZED DEDUCTIONS
         self.e17500 *= ACPIM
         self.e18400 *= ATXPY
