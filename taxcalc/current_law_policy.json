@@ -1708,29 +1708,29 @@
 
     "_pt_rates": {
         "long_name": "Tax rates on pass-through income",
-	"description": "The eight tax rates (one per income tax bracket) on income from sole proprietorships, partnerships and S corporations",
-	"irs_ref": "",
-	"notes": "",
-	"start_year": 2013,
-	"col_var": "",
+        "description": "The eight tax rates (one per income tax bracket) on income from sole proprietorships, partnerships and S corporations",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-	"value": [[0.1, 0.15, 0.25, 0.28, 0.33, 0.35, 0.396, 1]]
+        "value": [[0.1, 0.15, 0.25, 0.28, 0.33, 0.35, 0.396, 1]]
     },
 
     "_pt_special": {
-	"long_name": "Different taxation of pass-through income",
-	"description": "Indicator for whether pass-through income faces different tax rates than wage/salary income",
-	"irs_ref": "",
-	"notes": "",
-	"start_year": 2013,
-	"col_var": "",
+        "long_name": "Different taxation of pass-through income",
+        "description": "Indicator for whether pass-through income faces different tax rates than wage/salary income",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-	"value": [0.0]
+        "value": [0.0]
     }
 }
