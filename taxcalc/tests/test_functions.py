@@ -115,8 +115,6 @@ def test_calc_and_rtn_vars_are_arguments():  # pylint: disable=invalid-name
     for fname in fnames:
         if fname == 'BenefitSurtax':
             continue  # because BenefitSurtax is not really a function
-        if fname == 'ptTaxer':
-            continue  # because ptTaxer is not really a function
         cvars_set = set(cvars[fname])
         rvars_set = set(rvars[fname])
         crvars_set = cvars_set & rvars_set
