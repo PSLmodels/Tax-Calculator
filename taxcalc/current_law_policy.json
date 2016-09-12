@@ -876,7 +876,7 @@
 
     "_II_brk7": {
         "long_name": "Extra personal income tax bracket",
-        "description": "Income below this threshold and above tax bracket 6 is taxed at tax rate 7. Default value sets to infinity",
+        "description": "Income below this threshold and above tax bracket 6 is taxed at tax rate 7. Default value is essentially infinity",
         "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
         "notes": "",
         "start_year": 2013,
@@ -888,10 +888,10 @@
                       "2016"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[1e14, 1e14, 1e14, 1e14, 1e14, 1e14],
-                  [1e14, 1e14, 1e14, 1e14, 1e14, 1e14],
-                  [1e14, 1e14, 1e14, 1e14, 1e14, 1e14],
-                  [1e14, 1e14, 1e14, 1e14, 1e14, 1e14]],
+        "value": [[9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99]],
         "validations": {"min": "_II_brk6"}
     },
 
@@ -936,7 +936,7 @@
 
     "_CG_rt4": {
         "long_name": "Long term capital gain and qualified dividends extra rate",
-        "description": "The capital gain and dividends (stacked on top of regular income) that are above the extra threshold are taxed at this rate. Default value repeats the current last bracket.",
+        "description": "The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate. ",
         "irs_ref": "Form 1040 Schedule D tax worksheet, line 32, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -987,7 +987,7 @@
 
     "_CG_thd3": {
         "long_name": "Long term capital gain and qualified dividend extra threshold",
-        "description": "The capital gain and dividends (stacked on top of regular income)  above this threshold are taxed at the extra capital gain rate. Default value sets to infinity.",
+        "description": "The capital gain and dividends (stacked on top of regular income)  above this threshold are taxed at the capital gain rate 4. Default value is essentially infinity.",
         "irs_ref": "Form 1040 Schedule D tax worksheet, line 24, in-line. ",
         "start_year": 2013,
         "col_var": "MARS",
@@ -998,11 +998,12 @@
                       "2016"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[1e14, 1e14, 1e14, 1e14, 1e14, 1e14],
-                  [1e14, 1e14, 1e14, 1e14, 1e14, 1e14],
-                  [1e14, 1e14, 1e14, 1e14, 1e14, 1e14],
-                  [1e14, 1e14, 1e14, 1e14, 1e14, 1e14]]
+        "value": [[9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99]]
     },
+
     "_KT_c_Age": {
         "long_name": "Maximum age subject to Kiddie Tax",
         "description": "At or under this age, the individual is subject to Kiddie Tax.",
@@ -1263,7 +1264,7 @@
 
     "_AMT_CG_thd3": {
         "long_name": "Long term capital gain and qualified dividend extra threshold",
-        "description": "The capital gain plus dividends portion, stacked last, of income above this threshold is taxed at the extra capital gain rate. Default value sets to infinity.",
+        "description": "The capital gain plus dividends portion, stacked last, of income above this threshold is taxed at the extra capital gain rate. Default value is essentially infinity.",
         "irs_ref": "Form 6251, line 49, in-line. ",
         "start_year": 2013,
         "col_var": "MARS",
@@ -1274,10 +1275,10 @@
                       "2016"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[1e14, 1e14, 1e14, 1e14, 1e14, 1e14],
-                  [1e14, 1e14, 1e14, 1e14, 1e14, 1e14],
-                  [1e14, 1e14, 1e14, 1e14, 1e14, 1e14],
-                  [1e14, 1e14, 1e14, 1e14, 1e14, 1e14]]
+        "value": [[9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99]]
     },
 
     "_NIIT_thd": {

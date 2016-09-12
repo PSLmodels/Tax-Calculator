@@ -5,14 +5,14 @@ Mon Aug  1 17:50:40 EDT 2016
 REFORM: pop-the-cap + cg-rate-up-one-percent in 2020
 2020,SUB_ELAST,INC_ELAST,CG_ELAST= 0.0 0.0 0.0
 2020,ITAX,REV_STATIC(S),REV_DYNAMIC(D),D-S= 1744.0 1744.0 0.0
-2020,FICA,REV_STATIC(S),REV_DYNAMIC(D),D-S= 1416.7 1416.7 0.0
+2020,PTAX,REV_STATIC(S),REV_DYNAMIC(D),D-S= 1416.7 1416.7 0.0
 2020,LTCG,AGG_STATIC(S),AGG_DYNAMIC(D),D-S= -72.0 -72.0 0.0
 
 Mon Aug  1 17:52:55 EDT 2016
 REFORM: pop-the-cap + cg-rate-up-one-percent in 2020
 2020,SUB_ELAST,INC_ELAST,CG_ELAST= 0.25 -0.05 -3.67
 2020,ITAX,REV_STATIC(S),REV_DYNAMIC(D),D-S= 1744.0 1706.9 -37.1
-2020,FICA,REV_STATIC(S),REV_DYNAMIC(D),D-S= 1416.7 1404.1 -12.7
+2020,PTAX,REV_STATIC(S),REV_DYNAMIC(D),D-S= 1416.7 1404.1 -12.7
 2020,LTCG,AGG_STATIC(S),AGG_DYNAMIC(D),D-S= -72.0 -88.2 -16.3
 
 
@@ -20,7 +20,7 @@ TAXBRAIN RESULTS
 ================
 
 STATIC RESULTS: http://www.ospc.org/taxbrain/4354/
-2020            ITAX       FICA
+2020            ITAX       PTAX
 -------------------------------
 baseline     1,727.6    1,233.7
 reform       1,737.1    1,416.7
@@ -29,7 +29,7 @@ difference      +9.5     +183.0
 -------------------------------
 
 DYNAMIC RESULTS: http://www.ospc.org/dynamic/behavior_results/155/
-2020            ITAX       FICA
+2020            ITAX       PTAX
 -------------------------------
 baseline     1,727.6    1,233.7
 reform       1,703.5    1,405.7
@@ -38,7 +38,7 @@ difference     -24.1     +172.0
 -------------------------------
 
 DYNAMIC-MINUS-STATIC REFORM-EFFECT DIFFERENCES:
-2020            ITAX       FICA
+2020            ITAX       PTAX
 -------------------------------
 D-S diff       -33.6      -11.0
 -------------------------------

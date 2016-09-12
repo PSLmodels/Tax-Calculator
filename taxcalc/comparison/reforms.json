@@ -4,7 +4,7 @@
         "value": {"_FICA_ss_trt": [0.134]},
         "section_name": "PAYROLL TAXES",
         "name": "Increase the Social Security payroll tax rate by 1pts",
-        "output_type": "_fica",
+        "output_type": "_payrolltax",
         "compare_with": {}
     },
 
@@ -12,31 +12,31 @@
         "start_year": 2015,
         "value": {"_SS_Earnings_c": [177500]},
         "name": "Increase the maximum taxable earnings (177500) for the social security payroll tax",
-        "output_type": "_fica",
+        "output_type": "_payrolltax",
         "compare_with": {"Budget Options": [40, 46, 49, 51]}
     },
 
     "r3": {
         "start_year": 2015,
         "value": {"_FICA_mc_trt": [0.039]},
-        "name": "Increase the Payroll tax rate for medicare hospital insurance by 1pts",
-        "output_type": "_fica",
+        "name": "Increase the payroll tax rate for Medicare (HI) by 1pts",
+        "output_type": "_payrolltax",
         "compare_with": {"Budget Options": [73, 77, 82, 87]}
     },
 
     "r4": {
         "start_year": 2015,
         "value": {"_AMED_thd": [[210000, 260000, 135000, 210000, 210000, 135000]]},
-        "name": "Increase the Additional Medicare threshold by 10,000",
-        "output_type": "_fica",
+        "name": "Increase the Additional Medicare Tax threshold by 10,000",
+        "output_type": "_payrolltax",
         "compare_with": {}
     },
 
     "r5": {
         "start_year": 2015,
         "value": {"_AMED_trt": [0.01]},
-        "name": "Increase the Additional Medicare tax rate by 0.1 pts",
-        "output_type": "_fica",
+        "name": "Increase the Additional Medicare Tax rate by 0.1 pts",
+        "output_type": "_payrolltax",
         "compare_with": {}
     },
 

@@ -99,6 +99,13 @@ def test_read_data():
     df5 = pd.read_csv(StringIO(funit5))
     with pytest.raises(ValueError):
         rec = Records(data=df5)
+    funit6 = (
+        u'RECID,MARS,e00600,e00650\n'
+        u'1,    1,        8,     9\n'
+    )
+    df6 = pd.read_csv(StringIO(funit6))
+    with pytest.raises(ValueError):
+        rec = Records(data=df6)
 
 
 def test_blowup():

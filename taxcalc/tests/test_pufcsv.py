@@ -33,50 +33,23 @@ import pandas as pd
 
 
 @pytest.mark.requires_pufcsv
-def test_sample():
-    """
-    Test if reading in a sample of the data produces a reasonable estimate
-    relative to the full data set
-    """
-    # Full dataset
-    clp = Policy()
-    puf = Records(data=PUFCSV_PATH)
-    calc = Calculator(policy=clp, records=puf)
-    adt = multiyear_diagnostic_table(calc, num_years=10)
-
-    # Sample sample dataset
-    clp2 = Policy()
-    tax_data_full = pd.read_csv(PUFCSV_PATH)
-    tax_data = tax_data_full.sample(frac=0.02)
-    puf_sample = Records(data=tax_data)
-    calc_sample = Calculator(policy=clp2, records=puf_sample)
-    adt_sample = multiyear_diagnostic_table(calc_sample, num_years=10)
-
-    # Get the final combined tax liability for the budget period
-    # in the sample and the full dataset and make sure they are close
-    full_tax_liability = adt.loc["Combined liability ($b)"]
-    sample_tax_liability = adt_sample.loc["Combined liability ($b)"]
-    max_val = max(full_tax_liability.max(), sample_tax_liability.max())
-    rel_diff = max(abs(full_tax_liability - sample_tax_liability)) / max_val
-
-    # Fail on greater than 5% releative difference in any budget year
-    assert rel_diff < 0.05
-
-
-@pytest.mark.requires_pufcsv
 def test_agg():
     """
-    Test Tax-Calculator aggregate taxes with no policy reform using puf.csv
+    Test Tax-Calculator aggregate taxes with no policy reform using
+    the full-sample puf.csv and a two-percent sub-sample of puf.csv
     """
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-locals,too-many-statements
+    nyrs = 10
     # create a Policy object (clp) containing current-law policy parameters
     clp = Policy()
-    # create a Records object (puf) containing puf.csv input records
-    puf = Records(data=PUFCSV_PATH)
+    # create a Records object (rec) containing all puf.csv input records
+    rec = Records(data=PUFCSV_PATH)
     # create a Calculator object using clp policy and puf records
-    calc = Calculator(policy=clp, records=puf)
+    calc = Calculator(policy=clp, records=rec)
+    calc_start_year = calc.current_year
     # create aggregate diagnostic table (adt) as a Pandas DataFrame object
-    adt = multiyear_diagnostic_table(calc, 10)
+    adt = multiyear_diagnostic_table(calc, nyrs)
+    taxes_fullsample = adt.loc["Combined liability ($b)"]
     # convert adt results to a string with a trailing EOL character
     adtstr = adt.to_string() + '\n'
     # generate differences between actual and expected results
@@ -96,7 +69,7 @@ def test_agg():
         new_filename = '{}{}'.format(AGGRES_PATH[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
             new_file.write(adtstr)
-        msg = 'PUFCSV AGG RESULTS DIFFER\n'
+        msg = 'PUFCSV AGG RESULTS DIFFER FOR FULL-SAMPLE\n'
         msg += '-------------------------------------------------\n'
         msg += '--- NEW RESULTS IN pufcsv_agg_actual.txt FILE ---\n'
         msg += '--- if new OK, copy pufcsv_agg_actual.txt to  ---\n'
@@ -104,18 +77,45 @@ def test_agg():
         msg += '---            and rerun test.                ---\n'
         msg += '-------------------------------------------------\n'
         raise ValueError(msg)
+    # create aggregate diagnostic table using sub sample of records
+    fullsample = pd.read_csv(PUFCSV_PATH)
+    rn_seed = 80  # to ensure two-percent sub-sample is always the same
+    subsample = fullsample.sample(frac=0.02, random_state=rn_seed)
+    rec_subsample = Records(data=subsample)
+    calc_subsample = Calculator(policy=Policy(), records=rec_subsample)
+    adt_subsample = multiyear_diagnostic_table(calc_subsample, num_years=nyrs)
+    # compare combined tax liability from full and sub samples for each year
+    taxes_subsample = adt_subsample.loc["Combined liability ($b)"]
+    reltol = 0.01  # maximum allowed relative difference in tax liability
+    if not np.allclose(taxes_subsample, taxes_fullsample,
+                       atol=0.0, rtol=reltol):
+        msg = 'PUFCSV AGG RESULTS DIFFER IN SUB-SAMPLE AND FULL-SAMPLE\n'
+        msg += 'WHEN reltol = {:.4f}\n'.format(reltol)
+        it_sub = np.nditer(taxes_subsample, flags=['f_index'])
+        it_all = np.nditer(taxes_fullsample, flags=['f_index'])
+        while not it_sub.finished:
+            cyr = it_sub.index + calc_start_year
+            tax_sub = float(it_sub[0])
+            tax_all = float(it_all[0])
+            reldiff = abs(tax_sub - tax_all) / abs(tax_all)
+            if reldiff > reltol:
+                msgstr = ' year,sub,full,reldif= {}\t{:.2f}\t{:.2f}\t{:.4f}\n'
+                msg += msgstr.format(cyr, tax_sub, tax_all, reldiff)
+            it_sub.iternext()
+            it_all.iternext()
+        raise ValueError(msg)
 
 
 MTR_TAX_YEAR = 2013
 MTR_NEG_DIFF = False  # set True to subtract (rather than add) small amount
-# specify FICA mtr histogram bin boundaries (or edges):
-FICA_MTR_BIN_EDGES = [0.0, 0.02, 0.04, 0.06, 0.08,
+# specify payrolltax mtr histogram bin boundaries (or edges):
+PTAX_MTR_BIN_EDGES = [0.0, 0.02, 0.04, 0.06, 0.08,
                       0.10, 0.12, 0.14, 0.16, 0.18, 1.0]
 #        the bin boundaries above are arbitrary, so users
 #        may want to experiment with alternative boundaries
-# specify IIT mtr histogram bin boundaries (or edges):
-IIT_MTR_BIN_EDGES = [-1.0, -0.30, -0.20, -0.10, 0.0,
-                     0.10, 0.20, 0.30, 0.40, 0.50, 1.0]
+# specify incometax mtr histogram bin boundaries (or edges):
+ITAX_MTR_BIN_EDGES = [-1.0, -0.30, -0.20, -0.10, 0.0,
+                      0.10, 0.20, 0.30, 0.40, 0.50, 1.0]
 #        the bin boundaries above are arbitrary, so users
 #        may want to experiment with alternative boundaries
 
@@ -161,7 +161,7 @@ def test_mtr():
     which is then compared for differences with EXPECTED_MTR_RESULTS.
     """
     # pylint: disable=too-many-locals
-    assert len(FICA_MTR_BIN_EDGES) == len(IIT_MTR_BIN_EDGES)
+    assert len(PTAX_MTR_BIN_EDGES) == len(ITAX_MTR_BIN_EDGES)
     # construct actual results string, res
     res = ''
     if MTR_NEG_DIFF:
@@ -178,24 +178,24 @@ def test_mtr():
     # create a Calculator object using clp policy and puf records
     calc = Calculator(policy=clp, records=puf)
     res += '{} = {}\n'.format('Total number of data records', puf.dim)
-    res += 'FICA mtr histogram bin edges:\n'
-    res += '     {}\n'.format(FICA_MTR_BIN_EDGES)
-    res += 'IIT mtr histogram bin edges:\n'
-    res += '     {}\n'.format(IIT_MTR_BIN_EDGES)
-    inctype_header = 'FICA and IIT mtr histogram bin counts for'
-    # compute marginal tax rate (mtr) histograms for each mtr income type
-    for inctype in Calculator.MTR_VALID_INCOME_TYPES:
-        if inctype == 'e01400':
+    res += 'PTAX mtr histogram bin edges:\n'
+    res += '     {}\n'.format(PTAX_MTR_BIN_EDGES)
+    res += 'ITAX mtr histogram bin edges:\n'
+    res += '     {}\n'.format(ITAX_MTR_BIN_EDGES)
+    variable_header = 'PTAX and ITAX mtr histogram bin counts for'
+    # compute marginal tax rate (mtr) histograms for each mtr variable
+    for var_str in Calculator.MTR_VALID_VARIABLES:
+        if var_str == 'e01400':
             zero_out = True
         else:
             zero_out = False
-        (mtr_fica, mtr_iit, _) = calc.mtr(income_type_str=inctype,
-                                          negative_finite_diff=MTR_NEG_DIFF,
-                                          zero_out_calculated_vars=zero_out,
-                                          wrt_full_compensation=False)
-        res += '{} {}:\n'.format(inctype_header, inctype)
-        res += mtr_bin_counts(mtr_fica, FICA_MTR_BIN_EDGES, recid)
-        res += mtr_bin_counts(mtr_iit, IIT_MTR_BIN_EDGES, recid)
+        (mtr_ptax, mtr_itax, _) = calc.mtr(variable_str=var_str,
+                                           negative_finite_diff=MTR_NEG_DIFF,
+                                           zero_out_calculated_vars=zero_out,
+                                           wrt_full_compensation=False)
+        res += '{} {}:\n'.format(variable_header, var_str)
+        res += mtr_bin_counts(mtr_ptax, PTAX_MTR_BIN_EDGES, recid)
+        res += mtr_bin_counts(mtr_itax, ITAX_MTR_BIN_EDGES, recid)
     # generate differences between actual and expected results
     actual = res.splitlines(True)
     with open(MTRRES_PATH, 'r') as expected_file:

@@ -87,7 +87,7 @@ def test_calculated_vars_are_calculated():  # pylint: disable=invalid-name
         all_cvars.update(set(cvars[fname]))
     # add some special variables to all_cvars set
     vars_calc_in_records = set(['ID_Casualty_frt_in_pufcsv_year',
-                                '_num', '_sep', '_exact', '_calc_schR'])
+                                '_num', '_sep', '_exact'])
     vars_calc_in_benefitsurtax = set(['_surtax'])
     vars_ok_to_not_calc = set(['f2555'])
     all_cvars.update(vars_calc_in_records,
@@ -170,7 +170,7 @@ def test_function_args_usage():
 def test_1():
     """
     Test calculation of AGI adjustment for half of Self-Employment Tax,
-    which is the FICA payroll tax on self-employment income.
+    which is the payroll tax on self-employment income.
     """
     agi_ovar_num = 10
     # specify a reform that simplifies the hand calculations
