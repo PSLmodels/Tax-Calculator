@@ -1216,10 +1216,12 @@ def ptTaxer(inc_in, MARS, e00900, e26270, pt_rates,
     pt_g_ini = max(0., min(II_brk1[MARS - 1] - winc, ptinc))
     pttax = pt_g_ini * pt_rates[0]
     pt_g_cum = pt_g_ini
-    II = [II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7]
+    II = [II_brk1[MARS - 1], II_brk2[MARS - 1], II_brk3[MARS - 1],
+          II_brk4[MARS - 1], II_brk5[MARS - 1], II_brk6[MARS - 1],
+          II_brk7[MARS - 1]]
 
     for i in range(6):
-        pt_temp = max(0., min(II[i + 1, MARS - 1] - max(II[i, MARS - 1], winc),
+        pt_temp = max(0., min(II[i + 1] - max(II[i], winc),
                               ptinc - pt_g_cum))
         pt_g_cum += pt_temp
         pttax += pt_temp * pt_rates[i + 1]
