@@ -1175,37 +1175,30 @@ def ptTaxer(inc_in, MARS, e00900, e26270, pt_rates,
     ptinc = max(0., e00900 + e26270)
     # negative ptinc already deducted from taxable income
     # Separate pass-thru income from non-pass-thru income
-    winc = inc_in - ptinc
-    if winc < 0.:
-        winc = 0
+    winc = max(inc_in - ptinc, 0.)
+
+    if winc == 0:
         ptinc = inc_in
+
     wtax = Taxer_i(winc, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
                    II_rt6, II_rt7, II_rt8, II_brk1, II_brk2, II_brk3, II_brk4,
                    II_brk5, II_brk6, II_brk7)
-    pt_g = [0, 0, 0, 0, 0, 0, 0, 0]
-    pt_g[0] = max(0., min(II_brk1[MARS - 1] - winc, ptinc))
-    pt_g[1] = max(0., min(II_brk2[MARS - 1] - max(II_brk1[MARS - 1], winc),
-                          ptinc - pt_g[0]))
-    pt_g[2] = max(0., min(II_brk3[MARS - 1] - max(II_brk2[MARS - 1], winc),
-                          ptinc - pt_g[0] - pt_g[1]))
-    pt_g[3] = max(0., min(II_brk4[MARS - 1] - max(II_brk3[MARS - 1], winc),
-                          ptinc - pt_g[0] - pt_g[1] - pt_g[2]))
-    pt_g[4] = max(0., min(II_brk5[MARS - 1] - max(II_brk4[MARS - 1], winc),
-                          ptinc - pt_g[0] - pt_g[1] - pt_g[2] - pt_g[3]))
-    pt_g[5] = max(0., min(II_brk6[MARS - 1] - max(II_brk5[MARS - 1], winc),
-                          (ptinc - pt_g[0] - pt_g[1] - pt_g[2] -
-                           pt_g[3] - pt_g[4])))
-    pt_g[6] = max(0., min(II_brk7[MARS - 1] - max(II_brk6[MARS - 1], winc),
-                          ptinc - pt_g[0] - pt_g[1] - pt_g[2] - pt_g[3] -
-                          pt_g[4] - pt_g[5]))
-    pt_g[7] = max(0., (ptinc - pt_g[0] - pt_g[1] - pt_g[2] - pt_g[3] -
-                       pt_g[5] - pt_g[6]))
-    pttax = (pt_g[0] * pt_rates[0] + pt_g[1] * pt_rates[1] +
-             pt_g[2] * pt_rates[2] + pt_g[3] * pt_rates[3] +
-             pt_g[4] * pt_rates[4] + pt_g[5] * pt_rates[5] +
-             pt_g[6] * pt_rates[6] + pt_g[7] * pt_rates[7])
-    totaltax = wtax + pttax
-    return totaltax
+
+    pt_g_ini = max(0., min(II_brk1[MARS - 1] - winc, ptinc))
+    pttax = pt_g_ini * pt_rates[0]
+    pt_g_cum = pt_g_ini
+    II = [II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7]
+
+    for i in range(6):
+        pt_temp = max(0., min(II[i + 1, MARS - 1] - max(II[i, MARS - 1], winc),
+                              ptinc - pt_g_cum))
+        pt_g_cum += pt_temp
+        pttax += pt_temp * pt_rates[i + 1]
+
+    pt_g_lst = mac(0., ptinc - pt_g_cum)
+    pttax += pt_g_lst * pt_rates[7]
+
+    return (wtax + pttax)
 
 
 @iterate_jit(nopython=True)
