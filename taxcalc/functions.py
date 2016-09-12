@@ -1224,7 +1224,7 @@ def ptTaxer(inc_in, MARS, e00900, e26270, pt_rates,
         pt_g_cum += pt_temp
         pttax += pt_temp * pt_rates[i + 1]
 
-    pt_g_lst = mac(0., ptinc - pt_g_cum)
+    pt_g_lst = max(0., ptinc - pt_g_cum)
     pttax += pt_g_lst * pt_rates[7]
 
     return (wtax + pttax)
