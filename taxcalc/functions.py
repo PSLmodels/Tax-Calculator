@@ -468,29 +468,19 @@ def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
 
 
 @iterate_jit(nopython=True)
-def XYZD(_taxinc, c04800, MARS, _xyztax, c05200, e00900, e26270,
-         II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
-         II_rt8, II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6,
-         II_brk7, pt_rates, pt_special):
+def XYZD(_taxinc, c04800, MARS, _xyztax, c05200,
+         PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5, PT_rt6, PT_rt7,
+         PT_rt8, PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6,
+         PT_brk7):
     """
     XYZD function: ...
     """
-    if pt_special == 0:
-        _xyztax = Taxer_i(_taxinc, MARS, II_rt1, II_rt2, II_rt3, II_rt4,
-                          II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
-                          II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
-        c05200 = Taxer_i(c04800, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
-                         II_rt6, II_rt7, II_rt8, II_brk1, II_brk2, II_brk3,
-                         II_brk4, II_brk5, II_brk6, II_brk7)
-    else:
-        _xyztax = ptTaxer(_taxinc, MARS, e00900, e26270, pt_rates,
-                          II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6,
-                          II_rt7, II_rt8, II_brk1, II_brk2, II_brk3, II_brk4,
-                          II_brk5, II_brk6, II_brk7)
-        c05200 = ptTaxer(c04800, MARS, e00900, e26270, pt_rates,
-                         II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6,
-                         II_rt7, II_rt8, II_brk1, II_brk2, II_brk3, II_brk4,
-                         II_brk5, II_brk6, II_brk7)
+    _xyztax = Taxer_i(_taxinc, MARS, PT_rt1, PT_rt2, PT_rt3, PT_rt4,
+                      PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1, PT_brk2,
+                      PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
+    c05200 = Taxer_i(c04800, MARS, PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
+                     PT_rt6, PT_rt7, PT_rt8, PT_brk1, PT_brk2, PT_brk3,
+                     PT_brk4, PT_brk5, PT_brk6, PT_brk7)
     return (_xyztax, c05200)
 
 
@@ -1190,46 +1180,6 @@ def Taxer_i(inc_in, MARS,
             II_rt7 * min(II_brk7[MARS - 1] - II_brk6[MARS - 1],
                          max(0., inc_in - II_brk6[MARS - 1])) +
             II_rt8 * max(0., inc_in - II_brk7[MARS - 1]))
-
-
-@jit(nopython=True)
-def ptTaxer(inc_in, MARS, e00900, e26270, pt_rates,
-            II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
-            II_rt8, II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
-            II_brk6, II_brk7):
-    """
-    This function taxes separates pass-through income from regular income.
-    It stacks pass-through income on top of regular income
-    """
-    ptinc = max(0., e00900 + e26270)
-    # negative ptinc already deducted from taxable income
-    # Separate pass-thru income from non-pass-thru income
-    winc = max(inc_in - ptinc, 0.)
-
-    if winc == 0:
-        ptinc = inc_in
-
-    wtax = Taxer_i(winc, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
-                   II_rt6, II_rt7, II_rt8, II_brk1, II_brk2, II_brk3, II_brk4,
-                   II_brk5, II_brk6, II_brk7)
-
-    pt_g_ini = max(0., min(II_brk1[MARS - 1] - winc, ptinc))
-    pttax = pt_g_ini * pt_rates[0]
-    pt_g_cum = pt_g_ini
-    II = [II_brk1[MARS - 1], II_brk2[MARS - 1], II_brk3[MARS - 1],
-          II_brk4[MARS - 1], II_brk5[MARS - 1], II_brk6[MARS - 1],
-          II_brk7[MARS - 1]]
-
-    for i in range(6):
-        pt_temp = max(0., min(II[i + 1] - max(II[i], winc),
-                              ptinc - pt_g_cum))
-        pt_g_cum += pt_temp
-        pttax += pt_temp * pt_rates[i + 1]
-
-    pt_g_lst = max(0., ptinc - pt_g_cum)
-    pttax += pt_g_lst * pt_rates[7]
-
-    return (wtax + pttax)
 
 
 @iterate_jit(nopython=True)
