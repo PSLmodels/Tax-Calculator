@@ -485,7 +485,7 @@ def XYZD(_taxinc, c04800, MARS, _xyztax, c05200, e00900, e26270,
     RegXYZ_tax = Taxer_i(RegXYZ_inc, MARS, 0, II_rt1, II_rt2, II_rt3, II_rt4,
                          II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
                          II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
-    PTXYZ_tax = Taxer_i(PT_inc, MARS, RegXYZ_tax, PT_rt1, PT_rt2, PT_rt3,
+    PTXYZ_tax = Taxer_i(PT_inc, MARS, RegXYZ_inc, PT_rt1, PT_rt2, PT_rt3,
                         PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1,
                         PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
     _xyztax = RegXYZ_tax + PTXYZ_tax
@@ -498,7 +498,7 @@ def XYZD(_taxinc, c04800, MARS, _xyztax, c05200, e00900, e26270,
     Reg_c05200 = Taxer_i(Reg_c04800, MARS, 0, II_rt1, II_rt2, II_rt3, II_rt4,
                          II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
                          II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
-    PT_c05200 = Taxer_i(PT_inc, MARS, Reg_c05200, PT_rt1, PT_rt2, PT_rt3,
+    PT_c05200 = Taxer_i(PT_inc, MARS, Reg_c04800, PT_rt1, PT_rt2, PT_rt3,
                         PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1,
                         PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
     c05200 = Reg_c05200 + PT_c05200
