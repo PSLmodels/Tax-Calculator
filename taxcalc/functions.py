@@ -1187,13 +1187,13 @@ def Taxer_i(inc_in, MARS, brk_base,
     """
     Taxer_i function: ...
     """
-    II_brk1 = II_brk1[MARS - 1] - brk_base
-    II_brk2 = II_brk2[MARS - 1] - brk_base
-    II_brk3 = II_brk3[MARS - 1] - brk_base
-    II_brk4 = II_brk4[MARS - 1] - brk_base
-    II_brk5 = II_brk5[MARS - 1] - brk_base
-    II_brk6 = II_brk6[MARS - 1] - brk_base
-    II_brk7 = II_brk7[MARS - 1] - brk_base
+    II_brk1 = max(II_brk1[MARS - 1] - brk_base, 0.)
+    II_brk2 = max(II_brk2[MARS - 1] - brk_base, 0.)
+    II_brk3 = max(II_brk3[MARS - 1] - brk_base, 0.)
+    II_brk4 = max(II_brk4[MARS - 1] - brk_base, 0.)
+    II_brk5 = max(II_brk5[MARS - 1] - brk_base, 0.)
+    II_brk6 = max(II_brk6[MARS - 1] - brk_base, 0.)
+    II_brk7 = max(II_brk7[MARS - 1] - brk_base, 0.)
     return (II_rt1 * min(inc_in, II_brk1) + II_rt2 *
             min(II_brk2 - II_brk1, max(0., inc_in - II_brk1)) + II_rt3 *
             min(II_brk3 - II_brk2, max(0., inc_in - II_brk2)) + II_rt4 *
