@@ -459,7 +459,7 @@ def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
     else:
         _taxinc = c04800
     if c04800 > 0. and _feided > 0.:
-        _feitax = Taxer_i(_feided, MARS, II_rt1, II_rt2, II_rt3, II_rt4,
+        _feitax = Taxer_i(_feided, MARS, 0, II_rt1, II_rt2, II_rt3, II_rt4,
                           II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
                           II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
     else:
@@ -468,19 +468,40 @@ def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
 
 
 @iterate_jit(nopython=True)
-def XYZD(_taxinc, c04800, MARS, _xyztax, c05200,
+def XYZD(_taxinc, c04800, MARS, _xyztax, c05200, e00900, e26270,
          PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5, PT_rt6, PT_rt7,
          PT_rt8, PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6,
-         PT_brk7):
+         PT_brk7, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
+         II_rt8, II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6,
+         II_brk7):
     """
     XYZD function: ...
     """
-    _xyztax = Taxer_i(_taxinc, MARS, PT_rt1, PT_rt2, PT_rt3, PT_rt4,
-                      PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1, PT_brk2,
-                      PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
-    c05200 = Taxer_i(c04800, MARS, PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
-                     PT_rt6, PT_rt7, PT_rt8, PT_brk1, PT_brk2, PT_brk3,
-                     PT_brk4, PT_brk5, PT_brk6, PT_brk7)
+    PT_inc = max(0., e00900 + e26270)
+    RegXYZ_inc = max(_taxinc - PT_inc, 0.)
+    if RegXYZ_inc == 0.:
+        PT_inc = _taxinc
+
+    RegXYZ_tax = Taxer_i(RegXYZ_inc, MARS, 0, II_rt1, II_rt2, II_rt3, II_rt4,
+                         II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
+                         II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
+    PTXYZ_tax = Taxer_i(PT_inc, MARS, RegXYZ_tax, PT_rt1, PT_rt2, PT_rt3,
+                        PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1,
+                        PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
+    _xyztax = RegXYZ_tax + PTXYZ_tax
+
+    PT_inc = max(0., e00900 + e26270)
+    Reg_c04800 = max(c04800 - PT_inc, 0.)
+    if Reg_c04800 == 0.:
+        PT_inc = c04800
+
+    Reg_c05200 = Taxer_i(Reg_c04800, MARS, 0, II_rt1, II_rt2, II_rt3, II_rt4,
+                         II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
+                         II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
+    PT_c05200 = Taxer_i(PT_inc, MARS, Reg_c05200, PT_rt1, PT_rt2, PT_rt3,
+                        PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1,
+                        PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
+    c05200 = Reg_c05200 + PT_c05200
     return (_xyztax, c05200)
 
 
@@ -555,7 +576,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         dwks39 = dwks19 + dwks20 + dwks28 + dwks31 + dwks37
         dwks40 = dwks1 - dwks39
         dwks41 = 0.28 * dwks40
-        dwks42 = Taxer_i(dwks19, MARS, II_rt1, II_rt2, II_rt3, II_rt4,
+        dwks42 = Taxer_i(dwks19, MARS, 0, II_rt1, II_rt2, II_rt3, II_rt4,
                          II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
                          II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
         dwks43 = (dwks29 + dwks32 + dwks38 + dwks41 + dwks42 +
@@ -1160,26 +1181,27 @@ def IITAX(c09200, c59660, c11070, c10960, _eitc, c11580,
 
 
 @jit(nopython=True)
-def Taxer_i(inc_in, MARS,
+def Taxer_i(inc_in, MARS, brk_base,
             II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
             II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7):
     """
     Taxer_i function: ...
     """
-    return (II_rt1 * min(inc_in, II_brk1[MARS - 1]) +
-            II_rt2 * min(II_brk2[MARS - 1] - II_brk1[MARS - 1],
-                         max(0., inc_in - II_brk1[MARS - 1])) +
-            II_rt3 * min(II_brk3[MARS - 1] - II_brk2[MARS - 1],
-                         max(0., inc_in - II_brk2[MARS - 1])) +
-            II_rt4 * min(II_brk4[MARS - 1] - II_brk3[MARS - 1],
-                         max(0., inc_in - II_brk3[MARS - 1])) +
-            II_rt5 * min(II_brk5[MARS - 1] - II_brk4[MARS - 1],
-                         max(0., inc_in - II_brk4[MARS - 1])) +
-            II_rt6 * min(II_brk6[MARS - 1] - II_brk5[MARS - 1],
-                         max(0., inc_in - II_brk5[MARS - 1])) +
-            II_rt7 * min(II_brk7[MARS - 1] - II_brk6[MARS - 1],
-                         max(0., inc_in - II_brk6[MARS - 1])) +
-            II_rt8 * max(0., inc_in - II_brk7[MARS - 1]))
+    II_brk1 = II_brk1[MARS - 1] - brk_base
+    II_brk2 = II_brk2[MARS - 1] - brk_base
+    II_brk3 = II_brk3[MARS - 1] - brk_base
+    II_brk4 = II_brk4[MARS - 1] - brk_base
+    II_brk5 = II_brk5[MARS - 1] - brk_base
+    II_brk6 = II_brk6[MARS - 1] - brk_base
+    II_brk7 = II_brk7[MARS - 1] - brk_base
+    return (II_rt1 * min(inc_in, II_brk1) + II_rt2 *
+            min(II_brk2 - II_brk1, max(0., inc_in - II_brk1)) + II_rt3 *
+            min(II_brk3 - II_brk2, max(0., inc_in - II_brk2)) + II_rt4 *
+            min(II_brk4 - II_brk3, max(0., inc_in - II_brk3)) + II_rt5 *
+            min(II_brk5 - II_brk4, max(0., inc_in - II_brk4)) + II_rt6 *
+            min(II_brk6 - II_brk5, max(0., inc_in - II_brk5)) + II_rt7 *
+            min(II_brk7 - II_brk6, max(0., inc_in - II_brk6)) + II_rt8 *
+            max(0., inc_in - II_brk7))
 
 
 @iterate_jit(nopython=True)
