@@ -183,7 +183,6 @@ class Calculator(object):
         EITC(self.policy, self.records)
         ChildTaxCredit(self.policy, self.records)
         AmOppCreditBase(self.policy, self.records)
-        LLC(self.policy, self.records)
         AmOppCreditParts(self.policy, self.records)
         SchR(self.policy, self.records)
         EducationTaxCredit(self.policy, self.records)
