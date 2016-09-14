@@ -837,17 +837,18 @@ def ChildTaxCredit(n24, MARS, c00100, _feided, _exact,
 def AmOppCreditBase(p87482, e87487, e87492, e87497, p87521, c87521):
     """
     American Opportunity Credit (Form 8863) base amount, c87521
+    Logic corresponds to Form 8863, Part III
 
-    This function calculates American Opportunity Credit
+    This function calculates tentative American Opportunity Credit amounts
     for up to four eligible students.
     """
-    # Expense should not exceed the cap of $4000.
+    # Each student's expense should not exceed the cap of $4000
     c87482 = max(0., min(p87482, 4000.))
     c87487 = max(0., min(e87487, 4000.))
     c87492 = max(0., min(e87492, 4000.))
     c87497 = max(0., min(e87497, 4000.))
     # Credit calculated as 100% of the first $2000 expense plus
-    # 25% of amount exceeding $2000.
+    # 25% of amount exceeding $2000
     if max(0., c87482 - 2000.) == 0.:
         c87483 = c87482
     else:
@@ -864,49 +865,14 @@ def AmOppCreditBase(p87482, e87487, e87492, e87497, p87521, c87521):
         c87498 = c87497
     else:
         c87498 = 2000. + 0.25 * max(0., c87497 - 2000.)
-    # Sum of credits of all four students.
+    # Sum of credits of all four students
     c87521 = c87483 + c87488 + c87493 + c87498
-    # Return larger of p87521 and c87521.
+    # Return larger of p87521 and c87521, so as to handle the situation
+    # where we don't have all the students' expenses, but we do have the
+    # aggregate tentative credit amount
     if p87521 > c87521:
         c87521 = p87521
     return c87521
-
-
-@iterate_jit(nopython=True)
-def LLC(e87530, LLC_Expense_c, c87550):
-    """
-    Lifetime Learning Credit (Form 8863) amount, c87550
-
-    Notes
-    -----
-    Tax Law Parameters that are not parameterized:
-
-        0.2 : Lifetime Learning Credit ratio against expense
-
-    Tax Law Parameters that are parameterized:
-
-        LLC_Expense_c : Lifetime Learning Credit expense limit
-
-        ETC_pe_Married : Education Tax Credit phaseout end for married
-
-        ETC_pe_Single : Education Tax Credit phaseout end for single
-
-    Taxpayer Charateristics:
-
-        e87530 : Lifetime Learning Credit total qualified expenses
-
-        e07300 : Foreign tax credit - Form 1116
-
-        c07180 : Child/dependent care expense credit - Form 2441
-
-        c07200 : Schedule R credit
-
-    Returns
-    -------
-        c87550 : Lifetime Learning Credit amount
-    """
-    c87550 = 0.2 * min(e87530, LLC_Expense_c)
-    return c87550
 
 
 @iterate_jit(nopython=True)
@@ -914,6 +880,7 @@ def AmOppCreditParts(c87521, _num, c00100, c10960, c87668):
     """
     American Opportunity Credit (Form 8863) nonrefundable (c87668) and
                                             refundable (c10960) parts
+    Logic corresponds to Form 8863, Part I
 
     This function applies a phaseout to the previously calculated base
     American Opportunity Credit amount, c87521, and then applies the
@@ -943,7 +910,7 @@ def AmOppCreditParts(c87521, _num, c00100, c10960, c87668):
     -------
         c10960 : Refundable part of American Opportunity Credit
 
-        c87668 : Nonrefundable part of American Opportunity Credit
+        c87668 : Tentative nonrefundable part of American Opportunity Credit
     """
     if c87521 > 0:
         c87658 = max(0., 90000. * _num - c00100)
@@ -1011,14 +978,43 @@ def SchR(age_head, age_spouse, MARS, c00100,
 
 
 @iterate_jit(nopython=True)
-def EducationTaxCredit(c87550, MARS, c00100, _num, c05800,
+def EducationTaxCredit(e87530, MARS, c00100, _num, c05800,
                        e07300, c07180, c07200, c87668,
-                       ETC_pe_Single, ETC_pe_Married,
+                       LLC_Expense_c, ETC_pe_Single, ETC_pe_Married,
                        c07230):
     """
-    Education Tax Credit (Form 8863) amount, c07230
+    Education Tax Credit (Form 8863) nonrefundable amount, c07230
+    Logic corresponds to Form 8863, Part II
+
+    Notes
+    -----
+    Tax Law Parameters that are not parameterized:
+
+        0.2 : Lifetime Learning Credit ratio against expense
+
+    Tax Law Parameters that are parameterized:
+
+        LLC_Expense_c : Lifetime Learning Credit expense limit
+
+        ETC_pe_Married : Education Tax Credit phaseout end for married
+
+        ETC_pe_Single : Education Tax Credit phaseout end for single
+
+    Taxpayer Charateristics:
+
+        e87530 : Lifetime Learning Credit total qualified expenses
+
+        e07300 : Foreign tax credit - Form 1116
+
+        c07180 : Child/dependent care expense credit - Form 2441
+
+        c07200 : Schedule R credit
+
+    Returns
+    -------
+    c07230 : Education Tax Credit (Form 8863) nonrefundable amount
     """
-    c87560 = c87550
+    c87560 = 0.2 * min(e87530, LLC_Expense_c)
     if MARS == 2:
         c87570 = ETC_pe_Married * 1000.
     else:
@@ -1116,15 +1112,6 @@ def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
 
 
 @iterate_jit(nopython=True)
-def F5405(e11580, c11580):
-    """
-    Form 5405, First-Time Homebuyer Credit
-    """
-    c11580 = e11580
-    return c11580
-
-
-@iterate_jit(nopython=True)
 def C1040(e07400, c07200, c07220, c07230, c07300, c07240,
           e07260, c07600, p08000, c05800, e09900, ptax_sey, e09800,
           e09700, c07180, NIIT, _othertax, c07100, c09200):
@@ -1157,14 +1144,14 @@ def DecomposeEITC(c59660, c07100, c08800, c05800, _avail, _othertax):
 
 
 @iterate_jit(nopython=True)
-def IITAX(c09200, c59660, c11070, c10960, _eitc, c11580,
+def IITAX(c09200, c59660, c11070, c10960, _eitc,
           _payrolltax, personal_credit, n24, _iitax, _combined, _refund,
           CTC_additional, CTC_additional_ps, CTC_additional_prt, c00100,
           _sep, MARS):
     """
     IITAX function: ...
     """
-    _refund = c59660 + c11070 + c10960 + c11580 + personal_credit
+    _refund = c59660 + c11070 + c10960 + personal_credit
     _iitax = c09200 - _refund
     _combined = _iitax + _payrolltax
     potential_add_CTC = max(0., min(_combined, CTC_additional * n24))
