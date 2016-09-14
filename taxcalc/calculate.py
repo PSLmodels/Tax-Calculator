@@ -189,7 +189,6 @@ class Calculator(object):
         EducationTaxCredit(self.policy, self.records)
         NonrefundableCredits(self.policy, self.records)
         AdditionalCTC(self.policy, self.records)
-        F5405(self.policy, self.records)
         C1040(self.policy, self.records)
         DecomposeEITC(self.policy, self.records)
         IITAX(self.policy, self.records)

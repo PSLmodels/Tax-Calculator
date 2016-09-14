@@ -1094,15 +1094,6 @@ def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
 
 
 @iterate_jit(nopython=True)
-def F5405(e11580, c11580):
-    """
-    Form 5405, First-Time Homebuyer Credit
-    """
-    c11580 = e11580
-    return c11580
-
-
-@iterate_jit(nopython=True)
 def C1040(e07400, c07200, c07220, c07230, c07300, c07240,
           e07260, c07600, p08000, c05800, e09900, ptax_sey, e09800,
           e09700, c07180, NIIT, _othertax, c07100, c09200):
@@ -1135,14 +1126,14 @@ def DecomposeEITC(c59660, c07100, c08800, c05800, _avail, _othertax):
 
 
 @iterate_jit(nopython=True)
-def IITAX(c09200, c59660, c11070, c10960, _eitc, c11580,
+def IITAX(c09200, c59660, c11070, c10960, _eitc,
           _payrolltax, personal_credit, n24, _iitax, _combined, _refund,
           CTC_additional, CTC_additional_ps, CTC_additional_prt, c00100,
           _sep, MARS):
     """
     IITAX function: ...
     """
-    _refund = c59660 + c11070 + c10960 + c11580 + personal_credit
+    _refund = c59660 + c11070 + c10960 + personal_credit
     _iitax = c09200 - _refund
     _combined = _iitax + _payrolltax
     potential_add_CTC = max(0., min(_combined, CTC_additional * n24))
