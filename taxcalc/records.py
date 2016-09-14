@@ -118,8 +118,8 @@ class Records(object):
         'e27200', 'e32800', 'e03300',
         'e58990',
         'e62900',
-        'p87482', 'e87487', 'e87492', 'e87497', 'p87521',
-        'e87530',
+        'p87482',
+        'p87521', 'e87530',
         'MARS', 'MIDR', 'RECID',
         'cmbtp_standard', 'cmbtp_itemizer',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
@@ -152,7 +152,7 @@ class Records(object):
         '_taxbc', '_standard', 'c24516', 'c24517', 'c24520',
         'c05700', 'c32880', 'c32890', 'c32800',
         'c05800',
-        'c87521', 'c07180',
+        'c07180',
         'c07230', 'prectc', 'c07220', 'c59660',
         'c09200', 'c07100', '_eitc',
         '_prexmp',
@@ -163,10 +163,7 @@ class Records(object):
         'c09600',
         'c33200',
         '_extrastd', 'ID_Casualty_frt_in_pufcsv_year',
-        'c11070', 'c87482',
-        'c87487', 'c87492', 'c87497', 'c87483', 'c87488',
-        'c87493', 'c87498',
-        'c87658', 'c87660', 'c87662',
+        'c11070',
         'c10960', 'c87668',
         'c08800',
         '_othertax', 'NIIT',
@@ -362,10 +359,6 @@ class Records(object):
         self.e62900 *= ATXPY
         self.e87530 *= ATXPY
         self.p87521 *= ATXPY
-        self.p87482 *= ATXPY
-        self.e87487 *= ATXPY
-        self.e87492 *= ATXPY
-        self.e87497 *= ATXPY
         self.cmbtp_itemizer *= ATXPY
         self.cmbtp_standard *= ATXPY
 
