@@ -40,7 +40,7 @@ DEBUG = False  # True implies no variable randomization or record sampling
 TRACE = False  # True implies tracing output written to stdout
 
 # specify set of variables slated for removal from puf.csv
-DROP1_VARS = set(['e11070', 'e11550', 'FDED'])
+DROP1_VARS = set(['p87482'])
 
 # specify set of variables not included in xYY.csv file
 if DEBUG:
