@@ -459,9 +459,9 @@ def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
     else:
         _taxinc = c04800
     if c04800 > 0. and _feided > 0.:
-        _feitax = Taxer_i(_feided, MARS, 0, II_rt1, II_rt2, II_rt3, II_rt4,
-                          II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
-                          II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
+        _feitax = Taxes(_feided, MARS, 0., II_rt1, II_rt2, II_rt3, II_rt4,
+                        II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
+                        II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
     else:
         _feitax = 0.
     return (c04500, c04800, _taxinc, _feitax, _standard)
@@ -482,12 +482,12 @@ def XYZD(_taxinc, c04800, MARS, _xyztax, c05200, e00900, e26270,
     if RegXYZ_inc == 0.:
         PT_inc = _taxinc
 
-    RegXYZ_tax = Taxer_i(RegXYZ_inc, MARS, 0, II_rt1, II_rt2, II_rt3, II_rt4,
-                         II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
-                         II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
-    PTXYZ_tax = Taxer_i(PT_inc, MARS, RegXYZ_inc, PT_rt1, PT_rt2, PT_rt3,
-                        PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1,
-                        PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
+    RegXYZ_tax = Taxes(RegXYZ_inc, MARS, 0., II_rt1, II_rt2, II_rt3, II_rt4,
+                       II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
+                       II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
+    PTXYZ_tax = Taxes(PT_inc, MARS, RegXYZ_inc, PT_rt1, PT_rt2, PT_rt3,
+                      PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1,
+                      PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
     _xyztax = RegXYZ_tax + PTXYZ_tax
 
     PT_inc = max(0., e00900 + e26270)
@@ -495,12 +495,12 @@ def XYZD(_taxinc, c04800, MARS, _xyztax, c05200, e00900, e26270,
     if Reg_c04800 == 0.:
         PT_inc = c04800
 
-    Reg_c05200 = Taxer_i(Reg_c04800, MARS, 0, II_rt1, II_rt2, II_rt3, II_rt4,
-                         II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
-                         II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
-    PT_c05200 = Taxer_i(PT_inc, MARS, Reg_c04800, PT_rt1, PT_rt2, PT_rt3,
-                        PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1,
-                        PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
+    Reg_c05200 = Taxes(Reg_c04800, MARS, 0., II_rt1, II_rt2, II_rt3, II_rt4,
+                       II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
+                       II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
+    PT_c05200 = Taxes(PT_inc, MARS, Reg_c04800, PT_rt1, PT_rt2, PT_rt3,
+                      PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1,
+                      PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
     c05200 = Reg_c05200 + PT_c05200
     return (_xyztax, c05200)
 
@@ -576,9 +576,9 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         dwks39 = dwks19 + dwks20 + dwks28 + dwks31 + dwks37
         dwks40 = dwks1 - dwks39
         dwks41 = 0.28 * dwks40
-        dwks42 = Taxer_i(dwks19, MARS, 0, II_rt1, II_rt2, II_rt3, II_rt4,
-                         II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
-                         II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
+        dwks42 = Taxes(dwks19, MARS, 0., II_rt1, II_rt2, II_rt3, II_rt4,
+                       II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
+                       II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
         dwks43 = (dwks29 + dwks32 + dwks38 + dwks41 + dwks42 +
                   lowest_rate_tax + highest_rate_incremental_tax)
         dwks44 = _xyztax
@@ -1168,27 +1168,38 @@ def IITAX(c09200, c59660, c11070, c10960, _eitc,
 
 
 @jit(nopython=True)
-def Taxer_i(inc_in, MARS, brk_base,
-            II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
-            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7):
+def Taxes(income, MARS, tbrk_base,
+          rate1, rate2, rate3, rate4, rate5, rate6, rate7, rate8,
+          tbrk1, tbrk2, tbrk3, tbrk4, tbrk5, tbrk6, tbrk7):
     """
-    Taxer_i function: ...
+    Taxes function returns tax amount given the progressive tax rate
+    schedule specified by the rate* and (upper) tbrk* parameters and
+    given income, filing status (MARS), and tax bracket base (tbrk_base).
     """
-    II_brk1 = max(II_brk1[MARS - 1] - brk_base, 0.)
-    II_brk2 = max(II_brk2[MARS - 1] - brk_base, 0.)
-    II_brk3 = max(II_brk3[MARS - 1] - brk_base, 0.)
-    II_brk4 = max(II_brk4[MARS - 1] - brk_base, 0.)
-    II_brk5 = max(II_brk5[MARS - 1] - brk_base, 0.)
-    II_brk6 = max(II_brk6[MARS - 1] - brk_base, 0.)
-    II_brk7 = max(II_brk7[MARS - 1] - brk_base, 0.)
-    return (II_rt1 * min(inc_in, II_brk1) + II_rt2 *
-            min(II_brk2 - II_brk1, max(0., inc_in - II_brk1)) + II_rt3 *
-            min(II_brk3 - II_brk2, max(0., inc_in - II_brk2)) + II_rt4 *
-            min(II_brk4 - II_brk3, max(0., inc_in - II_brk3)) + II_rt5 *
-            min(II_brk5 - II_brk4, max(0., inc_in - II_brk4)) + II_rt6 *
-            min(II_brk6 - II_brk5, max(0., inc_in - II_brk5)) + II_rt7 *
-            min(II_brk7 - II_brk6, max(0., inc_in - II_brk6)) + II_rt8 *
-            max(0., inc_in - II_brk7))
+    if tbrk_base > 0.:
+        brk1 = max(tbrk1[MARS - 1] - tbrk_base, 0.)
+        brk2 = max(tbrk2[MARS - 1] - tbrk_base, 0.)
+        brk3 = max(tbrk3[MARS - 1] - tbrk_base, 0.)
+        brk4 = max(tbrk4[MARS - 1] - tbrk_base, 0.)
+        brk5 = max(tbrk5[MARS - 1] - tbrk_base, 0.)
+        brk6 = max(tbrk6[MARS - 1] - tbrk_base, 0.)
+        brk7 = max(tbrk7[MARS - 1] - tbrk_base, 0.)
+    else:
+        brk1 = tbrk1[MARS - 1]
+        brk2 = tbrk2[MARS - 1]
+        brk3 = tbrk3[MARS - 1]
+        brk4 = tbrk4[MARS - 1]
+        brk5 = tbrk5[MARS - 1]
+        brk6 = tbrk6[MARS - 1]
+        brk7 = tbrk7[MARS - 1]
+    return (rate1 * min(income, brk1) +
+            rate2 * min(brk2 - brk1, max(0., income - brk1)) +
+            rate3 * min(brk3 - brk2, max(0., income - brk2)) +
+            rate4 * min(brk4 - brk3, max(0., income - brk3)) +
+            rate5 * min(brk5 - brk4, max(0., income - brk4)) +
+            rate6 * min(brk6 - brk5, max(0., income - brk5)) +
+            rate7 * min(brk7 - brk6, max(0., income - brk6)) +
+            rate8 * max(0., income - brk7))
 
 
 @iterate_jit(nopython=True)
