@@ -1705,7 +1705,7 @@
         "col_label": "",
         "value": [1.0]
     },
-    "_FST_tentRate":{
+    "_FST_AGI_trt":{
         "long_name": "Rate applied to AGI to determine tentative FST",
         "description": "The result of multiplying AGI by this is the tentative FST used to calculate final FST",
         "irs_ref": "",
@@ -1719,7 +1719,7 @@
         "value": [0.0]
      },
 
-    "_FST_AGI_thd":{
+    "_FST_AGI_thd_lo":{
         "long_name": "Minimum AGI needed to be subject to FST",
         "description": "A taxpayer is only subject to the FST if they exceed this level of AGI",
         "irs_ref": "",
@@ -1733,7 +1733,7 @@
         "value": [[1000000, 1000000, 500000, 1000000, 1000000, 500000]]
     },
 
-    "_FST_phaseRate": {
+    "_FST_AGI_thd_hi": {
         "long_name": "Rate the FST will be phased in linearly",
         "description": "The FST will be phased in linearly at this rate",
         "irs_ref": "",
@@ -1742,8 +1742,8 @@
         "col_var": "",
         "row_var": "",
         "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [1.0]
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "separate"],
+        "value": [[2000000, 2000000, 1000000, 2000000, 2000000, 1000000]]
     }
 }

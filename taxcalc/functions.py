@@ -1199,8 +1199,9 @@ def ExpandIncome(ptax_was, e02400, c02500, c00100, e00400, _expanded_income):
 
 
 @iterate_jit(nopython=True)
-def FairShareTax(c00100, _iitax, ptax_was, ptax_sey, ptax_amc, NIIT, MARS,
-                 FST_tentRate, FST_AGI_thd, FST_phaseRate, _combined, fst):
+def FairShareTax(c00100, _iitax, _combined, ptax_was, ptax_sey, ptax_amc,
+                 NIIT, MARS, FST_AGI_trt, FST_AGI_thd_hi, FST_AGI_thd_lo,
+                 fst):
     """
 
     Parameters
@@ -1212,10 +1213,11 @@ def FairShareTax(c00100, _iitax, ptax_was, ptax_sey, ptax_amc, NIIT, MARS,
     ptax_amc: Additional medicare tax on high earnings
     NIIT: Net Investment Income Tax
     MARS: Marital Status
-    FST_tentRate: Percent of AGI the tentative FST will be. Default = 0.0
-    FST_AGI_thd: Minimum AGI needed to be subjected to this tax. Default =
+    FST_AGI_trt: Percent of AGI the tentative FST will be. Default = 0.0
+    FST_AGI_thd_lo: Minimum AGI needed to be subjected to this tax. Default =
     500000 for married filing separately, 1000000 for all others
-    FST_phaseRate: Rate the FST will be phased in. Default = 1
+    FST_AGI_thd_hi: Level of AGI where the tax is fully phased in. If there is
+    no phase in, it is equivalent to FST_AGI_thd_lo
     _combined: Combined individual and payroll tax liabilites
     fst
 
@@ -1225,13 +1227,19 @@ def FairShareTax(c00100, _iitax, ptax_was, ptax_sey, ptax_amc, NIIT, MARS,
 
     """
     # Only compute if the unit's AGI is above minimum threshold
-    if c00100 >= FST_AGI_thd[MARS - 1]:
-        tentFST = c00100 * FST_tentRate
+    if c00100 >= FST_AGI_thd_lo[MARS - 1]:
+        tentFST = c00100 * FST_AGI_trt
         employee_share = 0.5 * ptax_was + 0.5 * ptax_sey + ptax_amc
-        rate = min(((c00100 - FST_AGI_thd[MARS - 1]) /
-                   FST_AGI_thd[MARS - 1]) * FST_phaseRate, 1.0)
-        fst = max((tentFST - _iitax - employee_share - NIIT) *
-                  rate, 0.0)
+        # If the unit's AGI is above FST_thd_hi or there is no phase in
+        # their FST will be the entirety of tentFST less taxes
+        if (c00100 >= FST_AGI_thd_hi[MARS - 1] or
+            FST_AGI_thd_hi[MARS - 1] == FST_AGI_thd_lo[MARS - 1]):
+            fst = max(tentFST - _iitax - employee_share - NIIT, 0.0)
+        # Otherwise the tax is phased in
+        else:
+            fst = max(((c00100 - FST_AGI_thd_lo[MARS - 1]) /
+                      (FST_AGI_thd_hi[MARS - 1] - FST_AGI_thd_lo[MARS - 1])) *
+                      (tentFST - _iitax - employee_share - NIIT), 0.0)
     else:
         fst = 0.0
     _combined += fst
