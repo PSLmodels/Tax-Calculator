@@ -154,8 +154,8 @@ def test_function_args_usage():
             fname = match.group(1)
             fargs = match.group(2).split(',')  # list of function arguments
             fbody = match.group(3)
-        if fname == 'Taxer_i':
-            continue  # because Taxer_i has no fbody apart from its docstring
+        if fname == 'Taxes':
+            continue  # because Taxes has part of fbody in return statement
         for farg in fargs:
             arg = farg.strip()
             if fbody.find(arg) < 0:

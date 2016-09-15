@@ -722,7 +722,7 @@
 
     "_II_rt7": {
         "long_name": "Personal income tax rate 7",
-        "description": "The highest tax rate, applied to the portion of taxable income below tax bracket 7 and above tax bracket 6. ",
+        "description": "The tax rate applied to the portion of taxable income below tax bracket 7 and above tax bracket 6. ",
         "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
         "notes": "",
         "start_year": 2013,
@@ -735,8 +735,8 @@
     },
 
     "_II_rt8": {
-        "long_name": "Extra personal income tax rate",
-        "description": "The extra tax rate, applied to the portion of taxable income above the extra tax bracket. Default value repeats the current last bracket.",
+        "long_name": "Personal income tax rate 8",
+        "description": "The tax rate applied to the portion of taxable income above tax bracket 7.",
         "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
         "notes": "",
         "start_year": 2013,
@@ -854,7 +854,7 @@
     },
 
     "_II_brk6": {
-        "long_name": "Personal income tax bracket (upper threshold) 6",
+        "long_name": "Personal income tax bracket 6",
         "description": "Income below this threshold and above tax bracket 5 is taxed at tax rate 6.",
         "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
         "notes": "",
@@ -875,8 +875,8 @@
     },
 
     "_II_brk7": {
-        "long_name": "Extra personal income tax bracket",
-        "description": "Income below this threshold and above tax bracket 6 is taxed at tax rate 7. Default value is essentially infinity",
+        "long_name": "Personal income tax bracket 7",
+        "description": "Income below this threshold and above tax bracket 6 is taxed at tax rate 7; income above this threshold is taxed at tax rate 8.  Default value is essentially infinity",
         "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
         "notes": "",
         "start_year": 2013,
@@ -923,7 +923,7 @@
 
     "_CG_rt3": {
         "long_name": "Long term capital gain and qualified dividends rate 3",
-        "description": "The capital gain and dividends (stacked on top of regular income) that are above threshold 2 are taxed at this rate. ",
+        "description": "The capital gain and dividends (stacked on top of regular income) that are above threshold 2 and below threshold 3 are taxed at this rate. ",
         "irs_ref": "Form 1040 Schedule D tax worksheet, line 32, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -935,7 +935,7 @@
     },
 
     "_CG_rt4": {
-        "long_name": "Long term capital gain and qualified dividends extra rate",
+        "long_name": "Long term capital gain and qualified dividends rate 4",
         "description": "The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate. ",
         "irs_ref": "Form 1040 Schedule D tax worksheet, line 32, in-line. ",
         "start_year": 2013,
@@ -968,7 +968,7 @@
 
     "_CG_thd2": {
         "long_name": "Long term capital gain and qualified dividend threshold 2",
-        "description": "The capital gain and dividends (stacked on top of regular income)  above this threshold are taxed at capital gain rate 3.",
+        "description": "The capital gain and dividends (stacked on top of regular income) below this threshold and above threshold 1 are taxed at capital gain rate 2.",
         "irs_ref": "Form 1040 Schedule D tax worksheet, line 24, in-line. ",
         "start_year": 2013,
         "col_var": "MARS",
@@ -986,8 +986,8 @@
     },
 
     "_CG_thd3": {
-        "long_name": "Long term capital gain and qualified dividend extra threshold",
-        "description": "The capital gain and dividends (stacked on top of regular income)  above this threshold are taxed at the capital gain rate 4. Default value is essentially infinity.",
+        "long_name": "Long term capital gain and qualified dividend threshold 3",
+        "description": "The capital gain and dividends (stacked on top of regular income) below this threshold and above threshold 2 are taxed at the capital gain rate 3; above this threshold are taxed at capital gain rate 4.  Default value is essentially infinity.",
         "irs_ref": "Form 1040 Schedule D tax worksheet, line 24, in-line. ",
         "start_year": 2013,
         "col_var": "MARS",
@@ -1200,7 +1200,7 @@
 
     "_AMT_CG_rt3": {
         "long_name": "Long term capital gain and qualified dividend rate 3",
-        "description": "The capital gain and qualified dividend (stacked on top of regular income) above threshold 2 are taxed at this rate.",
+        "description": "The capital gain and qualified dividend (stacked on top of regular income) above threshold 2 and below threshold 3 are taxed at this rate.",
         "irs_ref": "Form 6251, line 57, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -1212,8 +1212,8 @@
     },
 
     "_AMT_CG_rt4": {
-        "long_name": "Long term capital gain and qualified dividend extra rate",
-        "description": "The capital gain and dividends (stacked on top of regular income) that are above the extra threshold are taxed at this rate. Default value repeats the current last bracket.",
+        "long_name": "Long term capital gain and qualified dividend rate 4",
+        "description": "The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.",
         "irs_ref": "Form 6251, line 57, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -1245,7 +1245,7 @@
 
     "_AMT_CG_thd2": {
         "long_name": "Long term capital gain and qualified dividend threshold 2",
-        "description": "The capital gain plus dividends portion, stacked last, of income above this threshold is taxed at capital gain rate 3.",
+        "description": "The capital gain plus dividends portion, stacked last, of income below this threshold and above threshold 1 is taxed at capital gain rate 2.",
         "irs_ref": "Form 6251, line 49, in-line. ",
         "start_year": 2013,
         "col_var": "MARS",
@@ -1263,8 +1263,8 @@
     },
 
     "_AMT_CG_thd3": {
-        "long_name": "Long term capital gain and qualified dividend extra threshold",
-        "description": "The capital gain plus dividends portion, stacked last, of income above this threshold is taxed at the extra capital gain rate. Default value is essentially infinity.",
+        "long_name": "Long term capital gain and qualified dividend threshold 3",
+        "description": "The capital gain plus dividends portion, stacked last, of income below this threshold and above threshold 2 is taxed at capital gain rate 3; above this threshold taxed at capital gain rate 4.  Default value is essentially infinity.",
         "irs_ref": "Form 6251, line 49, in-line. ",
         "start_year": 2013,
         "col_var": "MARS",
@@ -1806,7 +1806,7 @@
 
     "_PT_rt8": {
         "long_name": "Extra pass-through income tax rate",
-        "description": "The extra tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporationsabove the extra tax bracket. Default value repeats the current last bracket.",
+        "description": "The extra tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations above the tax bracket 7.",
         "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
         "notes": "",
         "start_year": 2013,
