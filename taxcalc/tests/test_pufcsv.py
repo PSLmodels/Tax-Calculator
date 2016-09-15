@@ -125,7 +125,7 @@ def mtr_bin_counts(mtr_data, bin_edges, recid):
     Compute mtr histogram bin counts and return results as a string.
     """
     res = ''
-    (bincount, _) = np.histogram(mtr_data, bins=bin_edges)
+    (bincount, _) = np.histogram(mtr_data.round(decimals=4), bins=bin_edges)
     sum_bincount = np.sum(bincount)
     res += '{} :'.format(sum_bincount)
     for idx in range(len(bin_edges) - 1):
