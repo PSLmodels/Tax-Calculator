@@ -481,23 +481,36 @@ def XYZD(_taxinc, c04800, MARS, _xyztax, c05200, e00900, e26270,
     reg_tinc = max(_taxinc - pt_tinc, 0.)  # non-pass-through taxable income
     if reg_tinc == 0.:
         pt_tinc = _taxinc
-    reg_tax = Taxes(reg_tinc, MARS, 0.0, II_rt1, II_rt2, II_rt3, II_rt4,
-                    II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
-                    II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
-    pt_tax = Taxes(pt_tinc, MARS, reg_tinc, PT_rt1, PT_rt2, PT_rt3, PT_rt4,
-                   PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1, PT_brk2,
-                   PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
+    if reg_tinc > 0.:
+        reg_tax = Taxes(reg_tinc, MARS, 0.0, II_rt1, II_rt2, II_rt3, II_rt4,
+                        II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
+                        II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
+    else:
+        reg_tax = 0.
+    if pt_tinc > 0.:
+        pt_tax = Taxes(pt_tinc, MARS, reg_tinc, PT_rt1, PT_rt2, PT_rt3, PT_rt4,
+                       PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1, PT_brk2,
+                       PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
+    else:
+        pt_tax = 0.
     _xyztax = reg_tax + pt_tax
     pt_tinc = max(0., e00900 + e26270)
     reg_c04800 = max(c04800 - pt_tinc, 0.)
     if reg_c04800 == 0.:
         pt_tinc = c04800
-    reg_c05200 = Taxes(reg_c04800, MARS, 0.0, II_rt1, II_rt2, II_rt3, II_rt4,
-                       II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
-                       II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
-    pt_c05200 = Taxes(pt_tinc, MARS, reg_c04800, PT_rt1, PT_rt2, PT_rt3,
-                      PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1,
-                      PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
+    if reg_c04800 > 0.:
+        reg_c05200 = Taxes(reg_c04800, MARS, 0.0, II_rt1, II_rt2, II_rt3,
+                           II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
+                           II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
+                           II_brk6, II_brk7)
+    else:
+        reg_c05200 = 0.
+    if pt_tinc > 0.:
+        pt_c05200 = Taxes(pt_tinc, MARS, reg_c04800, PT_rt1, PT_rt2, PT_rt3,
+                          PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1,
+                          PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
+    else:
+        pt_c05200 = 0.
     c05200 = reg_c05200 + pt_c05200
     return (_xyztax, c05200)
 
