@@ -459,7 +459,7 @@ def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
     else:
         _taxinc = c04800
     if c04800 > 0. and _feided > 0.:
-        _feitax = Taxes(_feided, MARS, 0., II_rt1, II_rt2, II_rt3, II_rt4,
+        _feitax = Taxes(_feided, MARS, 0.0, II_rt1, II_rt2, II_rt3, II_rt4,
                         II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
                         II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
     else:
@@ -477,31 +477,28 @@ def XYZD(_taxinc, c04800, MARS, _xyztax, c05200, e00900, e26270,
     """
     XYZD function: ...
     """
-    PT_inc = max(0., e00900 + e26270)
-    RegXYZ_inc = max(_taxinc - PT_inc, 0.)
-    if RegXYZ_inc == 0.:
-        PT_inc = _taxinc
-
-    RegXYZ_tax = Taxes(RegXYZ_inc, MARS, 0., II_rt1, II_rt2, II_rt3, II_rt4,
+    pt_tinc = max(0., e00900 + e26270)  # positive pass-through income
+    reg_tinc = max(_taxinc - pt_tinc, 0.)  # non-pass-through taxable income
+    if reg_tinc == 0.:
+        pt_tinc = _taxinc
+    reg_tax = Taxes(reg_tinc, MARS, 0.0, II_rt1, II_rt2, II_rt3, II_rt4,
+                    II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
+                    II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
+    pt_tax = Taxes(pt_tinc, MARS, reg_tinc, PT_rt1, PT_rt2, PT_rt3, PT_rt4,
+                   PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1, PT_brk2,
+                   PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
+    _xyztax = reg_tax + pt_tax
+    pt_tinc = max(0., e00900 + e26270)
+    reg_c04800 = max(c04800 - pt_tinc, 0.)
+    if reg_c04800 == 0.:
+        pt_tinc = c04800
+    reg_c05200 = Taxes(reg_c04800, MARS, 0.0, II_rt1, II_rt2, II_rt3, II_rt4,
                        II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
                        II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
-    PTXYZ_tax = Taxes(PT_inc, MARS, RegXYZ_inc, PT_rt1, PT_rt2, PT_rt3,
+    pt_c05200 = Taxes(pt_tinc, MARS, reg_c04800, PT_rt1, PT_rt2, PT_rt3,
                       PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1,
                       PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
-    _xyztax = RegXYZ_tax + PTXYZ_tax
-
-    PT_inc = max(0., e00900 + e26270)
-    Reg_c04800 = max(c04800 - PT_inc, 0.)
-    if Reg_c04800 == 0.:
-        PT_inc = c04800
-
-    Reg_c05200 = Taxes(Reg_c04800, MARS, 0., II_rt1, II_rt2, II_rt3, II_rt4,
-                       II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
-                       II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
-    PT_c05200 = Taxes(PT_inc, MARS, Reg_c04800, PT_rt1, PT_rt2, PT_rt3,
-                      PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1,
-                      PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
-    c05200 = Reg_c05200 + PT_c05200
+    c05200 = reg_c05200 + pt_c05200
     return (_xyztax, c05200)
 
 
@@ -576,7 +573,7 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
         dwks39 = dwks19 + dwks20 + dwks28 + dwks31 + dwks37
         dwks40 = dwks1 - dwks39
         dwks41 = 0.28 * dwks40
-        dwks42 = Taxes(dwks19, MARS, 0., II_rt1, II_rt2, II_rt3, II_rt4,
+        dwks42 = Taxes(dwks19, MARS, 0.0, II_rt1, II_rt2, II_rt3, II_rt4,
                        II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
                        II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
         dwks43 = (dwks29 + dwks32 + dwks38 + dwks41 + dwks42 +
