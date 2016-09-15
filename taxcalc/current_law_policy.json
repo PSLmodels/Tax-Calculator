@@ -722,7 +722,7 @@
 
     "_II_rt7": {
         "long_name": "Personal income tax rate 7",
-        "description": "The tax rate, applied to the portion of taxable income below tax bracket 7 and above tax bracket 6. ",
+        "description": "The tax rate applied to the portion of taxable income below tax bracket 7 and above tax bracket 6. ",
         "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
         "notes": "",
         "start_year": 2013,
