@@ -94,7 +94,7 @@ class Records(object):
 
     # specify set of all Record variables that MAY be read by Tax-Calculator:
     VALID_READ_VARS = set([
-        'DSI', 'EIC', 'FDED', 'FLPDYR',
+        'DSI', 'EIC', 'FLPDYR',
         'f2441', 'f6251', 'n24', 'XTOT',
         'e00200', 'e00300', 'e00400', 'e00600', 'e00650', 'e00700', 'e00800',
         'e00200p', 'e00200s',
@@ -107,8 +107,7 @@ class Records(object):
         'e07240', 'e07260', 'e07300',
         'e07400', 'e07600', 'p08000',
         'e09700', 'e09800', 'e09900',
-        'e11550', 'e11070', 'e11200',
-        'e11580',
+        'e11200',
         'e17500', 'e18400', 'e18500',
         'e19200', 'e19800', 'e20100',
         'e20400', 'e20500', 'p22250',
@@ -130,7 +129,7 @@ class Records(object):
 
     # specify which VALID_READ_VARS should be int64 (rather than float64):
     INTEGER_READ_VARS = set([
-        'DSI', 'EIC', 'FDED', 'FLPDYR',
+        'DSI', 'EIC', 'FLPDYR',
         'f2441', 'f6251',
         'n24', 'XTOT',
         'MARS', 'MIDR', 'RECID',
