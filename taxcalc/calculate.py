@@ -182,7 +182,6 @@ class Calculator(object):
         F2441(self.policy, self.records)
         EITC(self.policy, self.records)
         ChildTaxCredit(self.policy, self.records)
-        AmOppCreditBase(self.policy, self.records)
         AmOppCreditParts(self.policy, self.records)
         SchR(self.policy, self.records)
         EducationTaxCredit(self.policy, self.records)

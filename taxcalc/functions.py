@@ -853,57 +853,15 @@ def ChildTaxCredit(n24, MARS, c00100, _feided, _exact,
 
 
 @iterate_jit(nopython=True)
-def AmOppCreditBase(p87482, e87487, e87492, e87497, p87521, c87521):
-    """
-    American Opportunity Credit (Form 8863) base amount, c87521
-    Logic corresponds to Form 8863, Part III
-
-    This function calculates tentative American Opportunity Credit amounts
-    for up to four eligible students.
-    """
-    # Each student's expense should not exceed the cap of $4000
-    c87482 = max(0., min(p87482, 4000.))
-    c87487 = max(0., min(e87487, 4000.))
-    c87492 = max(0., min(e87492, 4000.))
-    c87497 = max(0., min(e87497, 4000.))
-    # Credit calculated as 100% of the first $2000 expense plus
-    # 25% of amount exceeding $2000
-    if max(0., c87482 - 2000.) == 0.:
-        c87483 = c87482
-    else:
-        c87483 = 2000. + 0.25 * max(0., c87482 - 2000.)
-    if max(0., c87487 - 2000.) == 0.:
-        c87488 = c87487
-    else:
-        c87488 = 2000 + 0.25 * max(0., c87487 - 2000)
-    if max(0., c87492 - 2000.) == 0.:
-        c87493 = c87492
-    else:
-        c87493 = 2000. + 0.25 * max(0., c87492 - 2000.)
-    if max(0., c87497 - 2000.) == 0.:
-        c87498 = c87497
-    else:
-        c87498 = 2000. + 0.25 * max(0., c87497 - 2000.)
-    # Sum of credits of all four students
-    c87521 = c87483 + c87488 + c87493 + c87498
-    # Return larger of p87521 and c87521, so as to handle the situation
-    # where we don't have all the students' expenses, but we do have the
-    # aggregate tentative credit amount
-    if p87521 > c87521:
-        c87521 = p87521
-    return c87521
-
-
-@iterate_jit(nopython=True)
-def AmOppCreditParts(c87521, _num, c00100, c10960, c87668):
+def AmOppCreditParts(p87521, _num, c00100, c10960, c87668):
     """
     American Opportunity Credit (Form 8863) nonrefundable (c87668) and
                                             refundable (c10960) parts
     Logic corresponds to Form 8863, Part I
 
-    This function applies a phaseout to the previously calculated base
-    American Opportunity Credit amount, c87521, and then applies the
-    0.4 refundable rate.
+    This function applies a phaseout to the Form 8863, line 1,
+    American Opportunity Credit amount, p87521, and then applies
+    the 0.4 refundable rate.
 
     Notes
     -----
@@ -919,7 +877,8 @@ def AmOppCreditParts(c87521, _num, c00100, c10960, c87668):
 
     Parameters
     ----------
-        c87521 : base American Opportunity Credit
+        p87521 : total tentative American Opportunity Credit for all students,
+                 Form 8863, line 1
 
         _num : number of people filing jointly
 
@@ -931,11 +890,11 @@ def AmOppCreditParts(c87521, _num, c00100, c10960, c87668):
 
         c87668 : Tentative nonrefundable part of American Opportunity Credit
     """
-    if c87521 > 0:
+    if p87521 > 0.:
         c87658 = max(0., 90000. * _num - c00100)
         c87660 = 10000. * _num
         c87662 = 1000. * min(1., c87658 / c87660)
-        c87664 = c87662 * c87521 / 1000.
+        c87664 = c87662 * p87521 / 1000.
         c10960 = 0.4 * c87664
         c87668 = c87664 - c10960
     else:
@@ -1021,7 +980,8 @@ def EducationTaxCredit(e87530, MARS, c00100, _num, c05800,
 
     Taxpayer Charateristics:
 
-        e87530 : Lifetime Learning Credit total qualified expenses
+        e87530 : Lifetime Learning Credit total qualified expenses,
+                 Form 8863, line 10
 
         e07300 : Foreign tax credit - Form 1116
 
