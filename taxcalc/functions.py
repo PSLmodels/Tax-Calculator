@@ -190,13 +190,12 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
 @iterate_jit(nopython=True)
 def AGI(ymod1, c02500, c02700, c02900, XTOT, MARS, _sep, DSI, _exact,
         II_em, II_em_ps, II_prt,
-        c00100, _posagi, _prexmp, c04600):
+        c00100, _prexmp, c04600):
     """
     AGI function: compute Adjusted Gross Income, c00100, and
                   compute personal exemption amout, c04600.
     """
     c00100 = ymod1 + c02500 - c02700 - c02900
-    _posagi = max(c00100, 0.)
     # calculate personal exemption amount
     _prexmp = XTOT * II_em
     if DSI:
@@ -212,11 +211,11 @@ def AGI(ymod1, c02500, c02700, c02900, XTOT, MARS, _sep, DSI, _exact,
         dispc_denom = 2500. / _sep
         dispc = min(1., max(0., dispc_numer / dispc_denom))
         c04600 = _prexmp * (1. - dispc)
-    return (c00100, _posagi, _prexmp, c04600)
+    return (c00100, _prexmp, c04600)
 
 
 @iterate_jit(nopython=True)
-def ItemDed(_posagi, e17500, e18400, e18500,
+def ItemDed(e17500, e18400, e18500,
             e20500, e20400, e19200, e19800, e20100,
             MARS, age_head, age_spouse,
             c00100, c04470, c17000, c18300, c20800, c21040, c21060,
@@ -281,11 +280,12 @@ def ItemDed(_posagi, e17500, e18400, e18500,
     -------
     c04470 : Itemized deduction amount (and other intermediate variables)
     """
+    posagi = max(c00100, 0.)
     # Medical
     medical_frt = ID_Medical_frt
     if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
         medical_frt += ID_Medical_frt_add4aged
-    c17750 = medical_frt * _posagi
+    c17750 = medical_frt * posagi
     c17000 = max(0., e17500 - c17750) * (1. - ID_Medical_HC)
     # State and local taxes
     c18300 = ((1. - ID_StateLocalTax_HC) * max(e18400, 0.) +
@@ -293,20 +293,20 @@ def ItemDed(_posagi, e17500, e18400, e18500,
     # Interest paid
     c19200 = e19200 * (1. - ID_InterestPaid_HC)
     # Charity
-    lim30 = min(ID_Charity_crt_noncash * _posagi, e20100)
-    c19700 = min(ID_Charity_crt_all * _posagi, lim30 + e19800)
-    charity_floor = ID_Charity_frt * _posagi  # floor is zero in present law
+    lim30 = min(ID_Charity_crt_noncash * posagi, e20100)
+    c19700 = min(ID_Charity_crt_all * posagi, lim30 + e19800)
+    charity_floor = ID_Charity_frt * posagi  # floor is zero in present law
     c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_HC)
     # Casualty
     if e20500 > 0.0:  # add back to e20500 the PUFCSV_YEAR disregard amount
-        c37703 = e20500 + ID_Casualty_frt_in_pufcsv_year * _posagi
+        c37703 = e20500 + ID_Casualty_frt_in_pufcsv_year * posagi
     else:  # small pre-disregard e20500 values are assumed to be zero
         c37703 = 0.
-    c20500 = (max(0., c37703 - ID_Casualty_frt * _posagi) *
+    c20500 = (max(0., c37703 - ID_Casualty_frt * posagi) *
               (1. - ID_Casualty_HC))
     # Miscellaneous
     c20400 = e20400
-    c20750 = ID_Miscellaneous_frt * _posagi
+    c20750 = ID_Miscellaneous_frt * posagi
     c20800 = max(0., c20400 - c20750) * (1. - ID_Miscellaneous_HC)
     # Gross Itemized Deductions
     c21060 = c17000 + c18300 + c19200 + c19700 + c20500 + c20800
@@ -315,7 +315,7 @@ def ItemDed(_posagi, e17500, e18400, e18500,
     limitstart = ID_ps[MARS - 1]
     if c21060 > nonlimited and c00100 > limitstart:
         dedmin = ID_crt * (c21060 - nonlimited)
-        dedpho = ID_prt * max(0., _posagi - limitstart)
+        dedpho = ID_prt * max(0., posagi - limitstart)
         c21040 = min(dedmin, dedpho)
         c04470 = c21060 - c21040
     else:
