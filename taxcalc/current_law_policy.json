@@ -1700,7 +1700,7 @@
         "col_var": "MARS",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
-        "cpi_inflated": false,
+        "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
         "value": [[0, 0, 0, 0, 0, 0]]
     },
