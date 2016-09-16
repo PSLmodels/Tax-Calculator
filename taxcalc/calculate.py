@@ -134,10 +134,10 @@ class Calculator(object):
 
     def TaxInc_to_AMTI(self):
         TaxInc(self.policy, self.records)
-        XYZD(self.policy, self.records)
-        TaxGains(self.policy, self.records)
+        SchXYZTax(self.policy, self.records)
+        GainsTax(self.policy, self.records)
         NetInvIncTax(self.policy, self.records)
-        AMTI(self.policy, self.records)
+        AMTInc(self.policy, self.records)
 
     def calc_one_year(self, zero_out_calc_vars=False):
         # calls all the functions except BenefitSurtax and ExpandIncome

@@ -468,27 +468,36 @@ def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
 
 
 @iterate_jit(nopython=True)
-def XYZD(_taxinc, c04800, MARS, _xyztax, c05200, e00900, e26270,
-         PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5, PT_rt6, PT_rt7,
-         PT_rt8, PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6,
-         PT_brk7, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
-         II_rt8, II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6,
-         II_brk7):
+def SchXYZTax(_taxinc, c04800, MARS, _xyztax, c05200, e00900, e26270,
+              PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5, PT_rt6, PT_rt7,
+              PT_rt8, PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6,
+              PT_brk7, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
+              II_rt8, II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6,
+              II_brk7):
     """
-    XYZD function: ...
+    SchXYZTax uses the tax rates in Schedule X, Y, or Z, to compute a tax.
     """
-    pt_tinc = max(0., e00900 + e26270)  # positive pass-through income
-    reg_tinc = max(_taxinc - pt_tinc, 0.)  # non-pass-through taxable income
-    if reg_tinc == 0.:
-        pt_tinc = _taxinc
-    if reg_tinc > 0.:
-        reg_tax = Taxes(reg_tinc, MARS, 0.0, II_rt1, II_rt2, II_rt3, II_rt4,
+    # separate non-negative _taxinc into two non-negative components,
+    # doing this in a way so that the components add up to _taxinc
+    pt_taxinc = max(0., e00900 + e26270)  # non-negative pass-through income
+    if pt_taxinc >= _taxinc:
+        pt_taxinc = _taxinc
+        reg_taxinc = 0.
+    else:
+        # pt_taxinc is unchanged
+        reg_taxinc = _taxinc - pt_taxinc
+    # compute Schedule X,Y,Z tax using the two components of _taxinc,
+    # stacking pass-through taxable income on top of regular taxable income
+    if reg_taxinc > 0.:
+        reg_tax = Taxes(reg_taxinc, MARS, 0.0,
+                        II_rt1, II_rt2, II_rt3, II_rt4,
                         II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
                         II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
     else:
         reg_tax = 0.
-    if pt_tinc > 0.:
-        pt_tax = Taxes(pt_tinc, MARS, reg_tinc, PT_rt1, PT_rt2, PT_rt3, PT_rt4,
+    if pt_taxinc > 0.:
+        pt_tax = Taxes(pt_taxinc, MARS, reg_taxinc,
+                       PT_rt1, PT_rt2, PT_rt3, PT_rt4,
                        PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1, PT_brk2,
                        PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
     else:
@@ -516,14 +525,14 @@ def XYZD(_taxinc, c04800, MARS, _xyztax, c05200, e00900, e26270,
 
 
 @iterate_jit(nopython=True)
-def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
+def GainsTax(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
              e24515, e24518, MARS, _taxinc, _xyztax, _feided, _feitax,
              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3,
              c24516, c24517, c24520, c05700, _taxbc):
     """
-    TaxGains function implements (2015) Schedule D Tax Worksheet logic for
+    GainsTax function implements (2015) Schedule D Tax Worksheet logic for
     the special taxation of long-term capital gains and qualified dividends
     """
     # pylint: disable=too-many-statements,too-many-branches
@@ -620,18 +629,18 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
 
 
 @iterate_jit(nopython=True)
-def AMTI(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
-         c04470, c17000, c20800, c21040, c02700, e24515, MARS, _sep,
-         c24520, c05700, e62900, e00700, c24516, age_head, _earned,
-         cmbtp_itemizer, cmbtp_standard,
-         KT_c_Age, AMT_tthd, AMT_thd_MarriedS,
-         AMT_em, AMT_prt, AMT_trt1, AMT_trt2,
-         AMT_Child_em, AMT_em_ps, AMT_em_pe,
-         AMT_CG_thd1, AMT_CG_thd2, AMT_CG_thd3, AMT_CG_rt1, AMT_CG_rt2,
-         AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
+def AMTInc(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
+           c04470, c17000, c20800, c21040, c02700, e24515, MARS, _sep,
+           c24520, c05700, e62900, e00700, c24516, age_head, _earned,
+           cmbtp_itemizer, cmbtp_standard,
+           KT_c_Age, AMT_tthd, AMT_thd_MarriedS,
+           AMT_em, AMT_prt, AMT_trt1, AMT_trt2,
+           AMT_Child_em, AMT_em_ps, AMT_em_pe,
+           AMT_CG_thd1, AMT_CG_thd2, AMT_CG_thd3, AMT_CG_rt1, AMT_CG_rt2,
+           AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
 
     """
-    AMTI function: AMT taxable income
+    AMTInc function computes Alternative Minimum Tax taxable income
     """
     # pylint: disable=too-many-statements,too-many-branches
     c62720 = c24517
