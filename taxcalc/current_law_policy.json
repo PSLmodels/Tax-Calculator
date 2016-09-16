@@ -1693,7 +1693,7 @@
 
     "_ID_BenefitSurtax_em": {
         "long_name": "Itemized deduction benefit surtax exemption ",
-        "description": "This amount is subtracted from itemized deduction benefits in the calculation of the itemized deduction benefit surtax. With _ID_BenefitSurtax_trt set to 1.0, it serves as a dollar limit on the value of itemized deductions.",
+        "description": "This amount is subtracted from itemized deduction benefits in the calculation of the itemized deduction benefit surtax. With _ID_BenefitSurtax_crt set to 0.0 and _ID_BenefitSurtax_trt set to 1.0, this amount serves as a dollar limit on the value of itemized deductions.",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
