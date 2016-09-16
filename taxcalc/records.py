@@ -145,7 +145,7 @@ class Records(object):
         'c18300', 'c20800', 'c02900', 'c02700', 'c23650',
         'c01000', 'c02500',
         '_sey', '_earned', '_earned_p', '_earned_s',
-        '_feided', 'ymod', 'ymod1', '_posagi',
+        '_feided', 'ymod', 'ymod1',
         '_xyztax', '_avail',
         '_taxinc', 'c04800', '_feitax',
         '_taxbc', '_standard', 'c24516', 'c24517', 'c24520',
