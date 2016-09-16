@@ -134,7 +134,7 @@ class Calculator(object):
 
     def TaxInc_to_AMTI(self):
         TaxInc(self.policy, self.records)
-        XYZD(self.policy, self.records)
+        SchXYZTax(self.policy, self.records)
         TaxGains(self.policy, self.records)
         NetInvIncTax(self.policy, self.records)
         AMTI(self.policy, self.records)
