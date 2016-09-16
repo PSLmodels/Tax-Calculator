@@ -525,14 +525,14 @@ def SchXYZTax(_taxinc, c04800, MARS, _xyztax, c05200, e00900, e26270,
 
 
 @iterate_jit(nopython=True)
-def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
+def GainsTax(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
              e24515, e24518, MARS, _taxinc, _xyztax, _feided, _feitax,
              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3,
              c24516, c24517, c24520, c05700, _taxbc):
     """
-    TaxGains function implements (2015) Schedule D Tax Worksheet logic for
+    GainsTax function implements (2015) Schedule D Tax Worksheet logic for
     the special taxation of long-term capital gains and qualified dividends
     """
     # pylint: disable=too-many-statements,too-many-branches
@@ -629,18 +629,18 @@ def TaxGains(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
 
 
 @iterate_jit(nopython=True)
-def AMTI(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
-         c04470, c17000, c20800, c21040, c02700, e24515, MARS, _sep,
-         c24520, c05700, e62900, e00700, c24516, age_head, _earned,
-         cmbtp_itemizer, cmbtp_standard,
-         KT_c_Age, AMT_tthd, AMT_thd_MarriedS,
-         AMT_em, AMT_prt, AMT_trt1, AMT_trt2,
-         AMT_Child_em, AMT_em_ps, AMT_em_pe,
-         AMT_CG_thd1, AMT_CG_thd2, AMT_CG_thd3, AMT_CG_rt1, AMT_CG_rt2,
-         AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
+def AMTInc(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
+           c04470, c17000, c20800, c21040, c02700, e24515, MARS, _sep,
+           c24520, c05700, e62900, e00700, c24516, age_head, _earned,
+           cmbtp_itemizer, cmbtp_standard,
+           KT_c_Age, AMT_tthd, AMT_thd_MarriedS,
+           AMT_em, AMT_prt, AMT_trt1, AMT_trt2,
+           AMT_Child_em, AMT_em_ps, AMT_em_pe,
+           AMT_CG_thd1, AMT_CG_thd2, AMT_CG_thd3, AMT_CG_rt1, AMT_CG_rt2,
+           AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
 
     """
-    AMTI function: AMT taxable income
+    AMTInc function computes Alternative Minimum Tax taxable income
     """
     # pylint: disable=too-many-statements,too-many-branches
     c62720 = c24517
