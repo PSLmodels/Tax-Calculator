@@ -1692,6 +1692,20 @@
         "value": [1.0]
     },
 
+    "_ID_BenefitSurtax_em": {
+        "long_name": "Itemized deduction benefit surtax exemption ",
+        "description": "This amount is subtracted from itemized deduction benefits in the calculation of the itemized deduction benefit surtax. With _ID_BenefitSurtax_crt set to 0.0 and _ID_BenefitSurtax_trt set to 1.0, this amount serves as a dollar limit on the value of itemized deductions.",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[0, 0, 0, 0, 0, 0]]
+    },
+
     "_ID_BenefitSurtax_trt": {
         "long_name": "Surtax rate on the benefits from specified itemized deductions",
         "description": "The benefit from specified itemized deductions exceeding the credit is taxed at this rate. A surtax rate of 1 strictly limits the benefit from specified itemized deductions to the specified credit. In http://www.nber.org/papers/w16921, Feldstein, Feenberg, and MacGuineas propose a credit of 2% of AGI against a 100% tax rate; in their proposal, however, a broader set of tax benefits, including the employer provided health exclusion, would be taxed.",

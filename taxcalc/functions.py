@@ -1229,8 +1229,10 @@ def BenefitSurtax(calc):
             no_ID_calc.records._iitax - calc.records._iitax, 0.)
         benefit_deduction = (calc.policy.ID_BenefitSurtax_crt *
                              calc.records.c00100)
+        benefit_exemption = \
+            calc.policy.ID_BenefitSurtax_em[calc.records.MARS - 1]
         calc.records._surtax[:] = calc.policy.ID_BenefitSurtax_trt * np.where(
-            benefit_amount > benefit_deduction,
-            benefit_amount - benefit_deduction, 0.)
+            benefit_amount > (benefit_deduction + benefit_exemption),
+            benefit_amount - (benefit_deduction + benefit_exemption), 0.)
         calc.records._iitax += calc.records._surtax
         calc.records._combined += calc.records._surtax
