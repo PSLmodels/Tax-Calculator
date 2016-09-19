@@ -137,17 +137,16 @@ class Records(object):
 
     # specify set of all Record variables that cannot be read in:
     CALCULATED_VARS = set([
-        'f2555',
         '_exact',
         'c07200',
         'c00100',
         'c04470', 'c04600', 'c21060', 'c21040', 'c17000',
-        'c18300', 'c20800', 'c02900', 'c02700', 'c23650',
+        'c18300', 'c20800', 'c02900', 'c23650',
         'c01000', 'c02500',
         '_sey', '_earned', '_earned_p', '_earned_s',
-        '_feided', 'ymod', 'ymod1',
-        '_xyztax', '_avail',
-        '_taxinc', 'c04800', '_feitax',
+        'ymod', 'ymod1',
+        '_avail',
+        'c04800',
         '_taxbc', '_standard', 'c24516', 'c24517', 'c24520',
         'c05700', 'c32880', 'c32890', 'c32800',
         'c05800',
@@ -171,8 +170,7 @@ class Records(object):
         'c07600', 'c07240',
         '_surtax', '_combined', 'personal_credit', 'fst'])
 
-    INTEGER_CALCULATED_VARS = set([
-        '_num', '_sep', '_exact', 'f2555'])
+    INTEGER_CALCULATED_VARS = set(['_num', '_sep', '_exact'])
 
     CHANGING_CALCULATED_VARS = (CALCULATED_VARS - INTEGER_CALCULATED_VARS -
                                 set(['ID_Casualty_frt_in_pufcsv_year']))

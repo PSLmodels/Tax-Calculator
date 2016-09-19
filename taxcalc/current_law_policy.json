@@ -131,26 +131,6 @@
         "value": [0.0]
     },
 
-    "_FEI_ec_c": {
-        "long_name": "Maximum foreign earned income exclusion",
-        "description": "This amount is the maximum foreign earned income taxpayers could exclude from gross income.",
-        "irs_ref": "Form 2555, line 29b, instruction.",
-        "notes": "This parameter has no effect on taxes due to lack of data. ",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [97600,
-                  99200,
-                  100800,
-                  101300]
-    },
-
     "_ALD_Interest_ec": {
         "long_name": "Interest income exclusion",
         "description": "This decimal fraction can be applied to limit the interest income included in AGI. ",
