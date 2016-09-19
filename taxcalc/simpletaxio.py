@@ -303,7 +303,7 @@ class SimpleTaxIO(object):
         ovar[11] = crecs.e02300[idx]  # UI benefits in AGI
         ovar[12] = crecs.c02500[idx]  # OASDI benefits in AGI
         ovar[13] = 0.0  # always set zero-bracket amount to zero
-        pre_phase_out_pe = crecs._prexmp[idx]
+        pre_phase_out_pe = crecs.pre_c04600[idx]
         post_phase_out_pe = crecs.c04600[idx]
         phased_out_pe = pre_phase_out_pe - post_phase_out_pe
         ovar[14] = post_phase_out_pe  # post-phase-out personal exemption
