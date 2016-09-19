@@ -94,7 +94,7 @@ class Records(object):
 
     # specify set of all Record variables that MAY be read by Tax-Calculator:
     VALID_READ_VARS = set([
-        'DSI', 'EIC', 'FDED', 'FLPDYR',
+        'DSI', 'EIC', 'FLPDYR',
         'f2441', 'f6251', 'n24', 'XTOT',
         'e00200', 'e00300', 'e00400', 'e00600', 'e00650', 'e00700', 'e00800',
         'e00200p', 'e00200s',
@@ -107,8 +107,7 @@ class Records(object):
         'e07240', 'e07260', 'e07300',
         'e07400', 'e07600', 'p08000',
         'e09700', 'e09800', 'e09900',
-        'e11550', 'e11070', 'e11200',
-        'e11580',
+        'e11200',
         'e17500', 'e18400', 'e18500',
         'e19200', 'e19800', 'e20100',
         'e20400', 'e20500', 'p22250',
@@ -118,8 +117,8 @@ class Records(object):
         'e27200', 'e32800', 'e03300',
         'e58990',
         'e62900',
-        'p87482', 'e87487', 'e87492', 'e87497', 'p87521',
-        'e87530',
+        'p87482',
+        'p87521', 'e87530',
         'MARS', 'MIDR', 'RECID',
         'cmbtp_standard', 'cmbtp_itemizer',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
@@ -130,7 +129,7 @@ class Records(object):
 
     # specify which VALID_READ_VARS should be int64 (rather than float64):
     INTEGER_READ_VARS = set([
-        'DSI', 'EIC', 'FDED', 'FLPDYR',
+        'DSI', 'EIC', 'FLPDYR',
         'f2441', 'f6251',
         'n24', 'XTOT',
         'MARS', 'MIDR', 'RECID',
@@ -145,15 +144,14 @@ class Records(object):
         'c04470', 'c04600', 'c21060', 'c21040', 'c17000',
         'c18300', 'c20800', 'c02900', 'c02700', 'c23650',
         'c01000', 'c02500',
-        'c11580',
         '_sey', '_earned', '_earned_p', '_earned_s',
-        '_feided', 'ymod', 'ymod1', '_posagi',
+        '_feided', 'ymod', 'ymod1',
         '_xyztax', '_avail',
         '_taxinc', 'c04800', '_feitax',
         '_taxbc', '_standard', 'c24516', 'c24517', 'c24520',
         'c05700', 'c32880', 'c32890', 'c32800',
         'c05800',
-        'c87521', 'c87550', 'c07180',
+        'c07180',
         'c07230', 'prectc', 'c07220', 'c59660',
         'c09200', 'c07100', '_eitc',
         '_prexmp',
@@ -164,17 +162,14 @@ class Records(object):
         'c09600',
         'c33200',
         '_extrastd', 'ID_Casualty_frt_in_pufcsv_year',
-        'c11070', 'c87482',
-        'c87487', 'c87492', 'c87497', 'c87483', 'c87488',
-        'c87493', 'c87498',
-        'c87658', 'c87660', 'c87662',
+        'c11070',
         'c10960', 'c87668',
         'c08800',
         '_othertax', 'NIIT',
         '_iitax', '_refund',
         '_expanded_income', 'c07300',
         'c07600', 'c07240',
-        '_surtax', '_combined', 'personal_credit', 'fst'])
+        '_surtax', '_combined', 'personal_credit'])
 
     INTEGER_CALCULATED_VARS = set([
         '_num', '_sep', '_exact', 'f2555'])
@@ -338,7 +333,6 @@ class Records(object):
         self.e09800 *= ATXPY
         self.e09900 *= ATXPY
         self.e11200 *= ATXPY
-        self.e11580 *= ATXPY
         # ITEMIZED DEDUCTIONS
         self.e17500 *= ACPIM
         self.e18400 *= ATXPY
@@ -364,10 +358,6 @@ class Records(object):
         self.e62900 *= ATXPY
         self.e87530 *= ATXPY
         self.p87521 *= ATXPY
-        self.p87482 *= ATXPY
-        self.e87487 *= ATXPY
-        self.e87492 *= ATXPY
-        self.e87497 *= ATXPY
         self.cmbtp_itemizer *= ATXPY
         self.cmbtp_standard *= ATXPY
 
