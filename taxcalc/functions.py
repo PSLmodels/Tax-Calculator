@@ -1200,7 +1200,7 @@ def ExpandIncome(ptax_was, e02400, c02500, c00100, e00400, _expanded_income):
 
 @iterate_jit(nopython=True)
 def FairShareTax(c00100, _iitax, _combined, ptax_was, ptax_sey, ptax_amc,
-                 NIIT, MARS, FST_AGI_trt, FST_AGI_thd_lo, FST_AGI_thd_hi,
+                 MARS, FST_AGI_trt, FST_AGI_thd_lo, FST_AGI_thd_hi,
                  fst):
     """
 
@@ -1212,7 +1212,6 @@ def FairShareTax(c00100, _iitax, _combined, ptax_was, ptax_sey, ptax_amc,
     ptax_was: Payroll tax on wages and salaries
     ptax_sey: Payroll tax on self-employment income
     ptax_amc: Additional medicare tax on high earnings
-    NIIT: Net Inventsment Income Tax
     MARS: Marital status
     FST_AGI_trt: Percent of AGI the tentative FST will be. Default = 0.0
     FST_AGI_thd_lo: Minimum AGI needed to be subject to FST. Default = 500,000
@@ -1233,12 +1232,12 @@ def FairShareTax(c00100, _iitax, _combined, ptax_was, ptax_sey, ptax_amc,
         employee_share = 0.5 * ptax_was + 0.5 * ptax_sey + ptax_amc
         if (c00100 >= FST_AGI_thd_hi[MARS - 1] or
                 FST_AGI_thd_hi[MARS - 1] == FST_AGI_thd_lo[MARS - 1]):
-            fst = max(tentFST - _iitax - employee_share - NIIT, 0.0)
+            fst = max(tentFST - _iitax - employee_share, 0.0)
         else:
             fst = max((((c00100 - FST_AGI_thd_lo[MARS - 1]) /
                         (FST_AGI_thd_hi[MARS - 1] -
                          FST_AGI_thd_lo[MARS - 1])) *
-                       (tentFST - _iitax - employee_share - NIIT)), 0.0)
+                       (tentFST - _iitax - employee_share)), 0.0)
     else:
         fst = 0.0
     _iitax += fst
