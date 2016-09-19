@@ -239,3 +239,38 @@ def test_var_labels_txt_contents():
         for var in labels_less_valid:
             msg += 'VARIABLE= {}\n'.format(var)
         raise ValueError(msg)
+
+
+def test_csv_input_vars_md_contents():
+    """
+    Check validation/CSV_INPUT_VARS.md contents against Records.VALID_READ_VARS
+    """
+    # read variable names in CSV_INPUT_VARS.md file (checking for duplicates)
+    civ_path = os.path.join(CUR_PATH, '..', 'validation',
+                            'CSV_INPUT_VARS.md')
+    civ_set = set()
+    with open(civ_path, 'r') as civfile:
+        msg = 'DUPLICATE VARIABLE(S) IN CSV_INPUT_VARS.MD FILE:\n'
+        found_duplicates = False
+        for line in civfile:
+            str_list = line.split('|', 2)
+            if len(str_list) != 3:
+                continue  # because line is not part of the markdown table
+            assert str_list[0] == ''  # because line starts with | character
+            var = (str_list[1]).strip()  # remove surrounding whitespace
+            if var == 'Var-name' or var[0] == ':':
+                continue  # skip two lines that are the table head
+            if var in civ_set:
+                found_duplicates = True
+                msg += 'VARIABLE= {}\n'.format(var)
+            else:
+                civ_set.add(var)
+        if found_duplicates:
+            raise ValueError(msg)
+    # check that civ_set is a subset of Records.VALID_READ_VARS set
+    if not civ_set.issubset(Records.VALID_READ_VARS):
+        valid_less_civ = Records.VALID_READ_VARS - civ_set
+        msg = 'VARIABLE(S) IN VALID_READ_VARS BUT NOT CSV_INPUT_VARS.MD:\n'
+        for var in valid_less_civ:
+            msg += 'VARIABLE= {}\n'.format(var)
+        raise ValueError(msg)
