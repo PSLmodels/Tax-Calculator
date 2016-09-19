@@ -79,12 +79,9 @@ def Adj(e03150, e03210, c03260,
         e03220, e03230, e03240, e03290, ALD_StudentLoan_HC,
         ALD_SelfEmploymentTax_HC, ALD_SelfEmp_HealthIns_HC, ALD_KEOGH_SEP_HC,
         ALD_EarlyWithdraw_HC, ALD_Alimony_HC,
-        _feided, c02900):
+        c02900):
     """
-    Adj function:
-
-    Adjustments: Form 1040, Form 2555.
-    Calculates foreign earned income and total adjustments
+    Adj calculated Form 1040 adjustments
 
     Notes
     -----
@@ -128,37 +125,34 @@ def Adj(e03150, e03210, c03260,
 
     Returns
     -------
-    _feided : foreign earned income deduction
-
     c02900 : total Form 1040 adjustments
     """
-    # Form 2555: foreign earned income deduction
-    _feided = 0.
-    # Form 1040: adjustments
-    c02900 = (e03150 + (1 - ALD_StudentLoan_HC) * e03210 +
+    # Form 2555 foreign earned income deduction is always zero
+    # Form 1040 adjustments
+    c02900 = (e03150 +
+              (1 - ALD_StudentLoan_HC) * e03210 +
               (1 - ALD_SelfEmploymentTax_HC) * c03260 +
               (1 - ALD_SelfEmp_HealthIns_HC) * e03270 +
-              (1 - ALD_KEOGH_SEP_HC) * e03300 + (1 - ALD_EarlyWithdraw_HC) *
-              e03400 + (1 - ALD_Alimony_HC) * e03500 +
+              (1 - ALD_KEOGH_SEP_HC) * e03300 +
+              (1 - ALD_EarlyWithdraw_HC) * e03400 +
+              (1 - ALD_Alimony_HC) * e03500 +
               e03220 + e03230 + e03240 + e03290)
-    return (_feided, c02900)
+    return c02900
 
 
 @iterate_jit(nopython=True)
-def CapGains(p23250, p22250, _sep, _feided, FEI_ec_c, ALD_Interest_ec,
-             ALD_StudentLoan_HC, f2555, e00200, e00300, e00600, e00700, e00800,
+def CapGains(p23250, p22250, _sep, ALD_Interest_ec, ALD_StudentLoan_HC,
+             e00200, e00300, e00600, e00700, e00800,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
              e02300, e00400, e02400, c02900, e03210, e03230, e03240,
-             c01000, c02700, c23650, ymod, ymod1):
+             c01000, c23650, ymod, ymod1):
     """
     CapGains function: ...
     """
-    # Net capital gain (long term + short term) before exclusion
+    # net capital gain (long term + short term) before exclusion
     c23650 = p23250 + p22250
-    # Limitation for capital loss
+    # limitation on capital losses
     c01000 = max((-3000. / _sep), c23650)
-    # Foreign earned income exclusion
-    c02700 = min(_feided, FEI_ec_c * f2555)
     # compute ymod* variables
     ymod1 = (e00200 + (1 - ALD_Interest_ec) * e00300 + e00600 + e00700 +
              e00800 + e00900 + c01000 + e01100 + e01200 + e01400 + e01700 +
@@ -166,7 +160,7 @@ def CapGains(p23250, p22250, _sep, _feided, FEI_ec_c, ALD_Interest_ec,
     ymod2 = e00400 + (0.50 * e02400) - c02900
     ymod3 = (1 - ALD_StudentLoan_HC) * e03210 + e03230 + e03240
     ymod = ymod1 + ymod2 + ymod3
-    return (c23650, c01000, c02700, ymod1, ymod)
+    return (c01000, c23650, ymod, ymod1)
 
 
 @iterate_jit(nopython=True)
@@ -188,7 +182,7 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
 
 
 @iterate_jit(nopython=True)
-def AGI(ymod1, c02500, c02700, c02900, XTOT, MARS, _sep, DSI, _exact,
+def AGI(ymod1, c02500, c02900, XTOT, MARS, _sep, DSI, _exact,
         II_em, II_em_ps, II_prt,
         II_credit, II_credit_ps, II_credit_prt,
         c00100, pre_c04600, c04600, personal_credit):
@@ -197,8 +191,8 @@ def AGI(ymod1, c02500, c02700, c02900, XTOT, MARS, _sep, DSI, _exact,
                   compute personal exemption amount, c04600, and
                   compute personal_credit amount
     """
-    # calculate AGI
-    c00100 = ymod1 + c02500 - c02700 - c02900
+    # calculate AGI assuming no foreign earned income exclusion
+    c00100 = ymod1 + c02500 - c02900
     # calculate personal exemption amount
     pre_c04600 = XTOT * II_em
     if DSI:
@@ -435,49 +429,34 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
 
 
 @iterate_jit(nopython=True)
-def TaxInc(c00100, _standard, c21060, c21040, c04500, c04600, c02700,
-           _feided, c04800, MARS, _feitax, _taxinc,
-           II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
-           II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7):
+def TaxInc(c00100, _standard, c21060, c21040, c04600, c04800):
     """
     TaxInc function: ...
     """
-    c04500 = max(0., c00100 - max(c21060 - c21040, _standard))
-    c04800 = max(0., c04500 - c04600)
-    # Some taxpayers iteimize only for AMT, not regular tax
-    if c04800 > 0. and _feided > 0.:
-        _taxinc = c04800 + c02700
-    else:
-        _taxinc = c04800
-    if c04800 > 0. and _feided > 0.:
-        _feitax = Taxes(_feided, MARS, 0.0, II_rt1, II_rt2, II_rt3, II_rt4,
-                        II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
-                        II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
-    else:
-        _feitax = 0.
-    return (c04500, c04800, _taxinc, _feitax, _standard)
+    c04800 = max(0., c00100 - max(c21060 - c21040, _standard) - c04600)
+    return c04800
 
 
 @iterate_jit(nopython=True)
-def SchXYZTax(_taxinc, c04800, MARS, _xyztax, c05200, e00900, e26270,
+def SchXYZTax(c04800, MARS, e00900, e26270,
               PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5, PT_rt6, PT_rt7,
               PT_rt8, PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6,
               PT_brk7, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
               II_rt8, II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6,
-              II_brk7):
+              II_brk7, c05200):
     """
-    SchXYZTax uses the tax rates in Schedule X, Y, or Z, to compute a tax.
+    SchXYZTax uses the tax rates in Schedule X, Y, or Z, to compute tax.
     """
-    # separate non-negative _taxinc into two non-negative components,
-    # doing this in a way so that the components add up to _taxinc
+    # separate non-negative taxable income into two non-negative components,
+    # doing this in a way so that the components add up to taxable income
     pt_taxinc = max(0., e00900 + e26270)  # non-negative pass-through income
-    if pt_taxinc >= _taxinc:
-        pt_taxinc = _taxinc
+    if pt_taxinc >= c04800:
+        pt_taxinc = c04800
         reg_taxinc = 0.
     else:
         # pt_taxinc is unchanged
-        reg_taxinc = _taxinc - pt_taxinc
-    # compute Schedule X,Y,Z tax using the two components of _taxinc,
+        reg_taxinc = c04800 - pt_taxinc
+    # compute Schedule X,Y,Z tax using the two components of taxable income,
     # stacking pass-through taxable income on top of regular taxable income
     if reg_taxinc > 0.:
         reg_tax = Taxes(reg_taxinc, MARS, 0.0,
@@ -493,31 +472,13 @@ def SchXYZTax(_taxinc, c04800, MARS, _xyztax, c05200, e00900, e26270,
                        PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
     else:
         pt_tax = 0.
-    _xyztax = reg_tax + pt_tax
-    pt_tinc = max(0., e00900 + e26270)
-    reg_c04800 = max(c04800 - pt_tinc, 0.)
-    if reg_c04800 == 0.:
-        pt_tinc = c04800
-    if reg_c04800 > 0.:
-        reg_c05200 = Taxes(reg_c04800, MARS, 0.0, II_rt1, II_rt2, II_rt3,
-                           II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
-                           II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
-                           II_brk6, II_brk7)
-    else:
-        reg_c05200 = 0.
-    if pt_tinc > 0.:
-        pt_c05200 = Taxes(pt_tinc, MARS, reg_c04800, PT_rt1, PT_rt2, PT_rt3,
-                          PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1,
-                          PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
-    else:
-        pt_c05200 = 0.
-    c05200 = reg_c05200 + pt_c05200
-    return (_xyztax, c05200)
+    c05200 = reg_tax + pt_tax
+    return c05200
 
 
 @iterate_jit(nopython=True)
-def GainsTax(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
-             e24515, e24518, MARS, _taxinc, _xyztax, _feided, _feitax,
+def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
+             e24515, e24518, MARS, c04800, c05200,
              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3,
@@ -534,7 +495,7 @@ def GainsTax(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
 
     if hasqdivltcg == 1:
 
-        dwks1 = _taxinc
+        dwks1 = c04800
         dwks2 = e00650
         dwks3 = e58990
         dwks4 = 0.  # always assumed to be zero
@@ -591,7 +552,7 @@ def GainsTax(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
                        II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
         dwks43 = (dwks29 + dwks32 + dwks38 + dwks41 + dwks42 +
                   lowest_rate_tax + highest_rate_incremental_tax)
-        dwks44 = _xyztax
+        dwks44 = c05200
         dwks45 = min(dwks43, dwks44)
 
         c24580 = dwks45
@@ -601,27 +562,22 @@ def GainsTax(e00650, c01000, c04800, c23650, p23250, e01100, e58990,
 
     else:  # if hasqdivltcg is zero
 
-        c24580 = _xyztax
+        c24580 = c05200
         c24516 = max(0., min(p23250, c23650)) + e01100
         c24517 = 0.
         c24520 = 0.
 
     # final calculations done no matter what the value of hasqdivltcg
-    if c04800 > 0. and _feided > 0.:
-        c05100 = max(0., c24580 - _feitax)
-    else:
-        c05100 = c24580
-
-    # Form 4972, Lump Sum Distributions
-    c05700 = 0.
-
+    c05100 = c24580  # because no foreign earned income deduction
+    c05700 = 0.  # no Form 4972, Lump Sum Distributions
     _taxbc = c05700 + c05100
+
     return (c24516, c24517, c24520, c05700, _taxbc)
 
 
 @iterate_jit(nopython=True)
 def AMTInc(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
-           c04470, c17000, c20800, c21040, c02700, e24515, MARS, _sep,
+           c04470, c17000, c20800, c21040, e24515, MARS, _sep,
            c24520, c05700, e62900, e00700, c24516, age_head, _earned,
            cmbtp_itemizer, cmbtp_standard,
            KT_c_Age, AMT_tthd, AMT_thd_MarriedS,
@@ -665,15 +621,10 @@ def AMTInc(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
     if age_head != 0 and age_head < KT_c_Age:
         c62600 = min(c62600, _earned + AMT_Child_em)
     c62700 = max(0., c62100 - c62600)
-    if c02700 > 0.:
-        alminc = max(0., c62100 - c62600)
-        amtfei = (AMT_trt1 * c02700 + AMT_trt2 *
-                  max(0., (c02700 - (AMT_tthd / _sep))))
-    else:
-        alminc = c62700
-        amtfei = 0.
-    c62780 = (AMT_trt1 * alminc + AMT_trt2 *
-              max(0., (alminc - (AMT_tthd / _sep) - amtfei)))
+    alminc = c62700  # because no foreign earned income exclusion
+    amtfei = 0.
+    c62780 = (AMT_trt1 * alminc +
+              AMT_trt2 * max(0., (alminc - (AMT_tthd / _sep) - amtfei)))
     if f6251 == 1:
         c62900 = e62900
     else:
@@ -725,12 +676,12 @@ def AMTInc(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
 
 @iterate_jit(nopython=True)
 def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
-                 c00100, _feided, NIIT_thd, MARS, NIIT_trt, NIIT):
+                 c00100, NIIT_thd, MARS, NIIT_trt, NIIT):
     """
     NetInvIncTax function computes Net Investment Income Tax amount
     (assume all annuity income is excluded from net investment income)
     """
-    modAGI = c00100 + _feided
+    modAGI = c00100  # no deducted foreign earned income to add
     NII = max(0., e00300 + e00600 + (e02000 - e26270) + c01000)
     NIIT = NIIT_trt * min(NII, max(0., modAGI - NIIT_thd[MARS - 1]))
     return NIIT
@@ -828,15 +779,15 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
 
 
 @iterate_jit(nopython=True)
-def ChildTaxCredit(n24, MARS, c00100, _feided, _exact,
+def ChildTaxCredit(n24, MARS, c00100, _exact,
                    CTC_c, CTC_ps, CTC_prt, prectc):
     """
     ChildTaxCredit function computes prectc amount
     """
     prectc = CTC_c * n24
-    ctc_agi = c00100 + _feided
-    if ctc_agi > CTC_ps[MARS - 1]:
-        excess = ctc_agi - CTC_ps[MARS - 1]
+    modAGI = c00100  # no deducted foreign earned income to add
+    if modAGI > CTC_ps[MARS - 1]:
+        excess = modAGI - CTC_ps[MARS - 1]
         if _exact == 1:
             excess = 1000. * math.ceil(excess / 1000.)
         prectc = max(0., prectc - CTC_prt * excess)
@@ -1187,6 +1138,53 @@ def ExpandIncome(ptax_was, e02400, c02500, c00100, e00400, _expanded_income):
                         non_taxable_ss_benefits +
                         employer_share)
     return _expanded_income
+
+
+@iterate_jit(nopython=True)
+def FairShareTax(c00100, _iitax, _combined, ptax_was, ptax_sey, ptax_amc,
+                 MARS, FST_AGI_trt, FST_AGI_thd_lo, FST_AGI_thd_hi,
+                 fst):
+    """
+
+    Parameters
+    ----------
+    c00100: AGI
+    _iitax: Individual income tax
+    _combined: Combined payroll and income tax
+    ptax_was: Payroll tax on wages and salaries
+    ptax_sey: Payroll tax on self-employment income
+    ptax_amc: Additional medicare tax on high earnings
+    MARS: Marital status
+    FST_AGI_trt: Percent of AGI the tentative FST will be. Default = 0.0
+    FST_AGI_thd_lo: Minimum AGI needed to be subject to FST. Default = 500,000
+    for married filling separetly, 1,000,000 for all others.
+    FST_AGI_thd_hi: Level of AGI at which the tax is fully phased in. If
+    equivalent to FST_AGI_thd_lo, the there is no phase in for the tax.
+    Default = 1,000,000 for married filing separetly and 2,000,000 for all
+    others.
+    fst
+
+    Returns
+    -------
+    fst: Fair Share Tax
+
+    """
+    if c00100 >= FST_AGI_thd_lo[MARS - 1]:
+        tentFST = c00100 * FST_AGI_trt
+        employee_share = 0.5 * ptax_was + 0.5 * ptax_sey + ptax_amc
+        if (c00100 >= FST_AGI_thd_hi[MARS - 1] or
+                FST_AGI_thd_hi[MARS - 1] == FST_AGI_thd_lo[MARS - 1]):
+            fst = max(tentFST - _iitax - employee_share, 0.0)
+        else:
+            fst = max((((c00100 - FST_AGI_thd_lo[MARS - 1]) /
+                        (FST_AGI_thd_hi[MARS - 1] -
+                         FST_AGI_thd_lo[MARS - 1])) *
+                       (tentFST - _iitax - employee_share)), 0.0)
+    else:
+        fst = 0.0
+    _iitax += fst
+    _combined += fst
+    return fst, _iitax, _combined
 
 
 def BenefitSurtax(calc):
