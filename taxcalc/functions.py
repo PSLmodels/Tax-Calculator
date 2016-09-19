@@ -1236,8 +1236,8 @@ def FairShareTax(c00100, _iitax, _combined, ptax_was, ptax_sey, ptax_amc,
             fst = max(tentFST - _iitax - employee_share - NIIT, 0.0)
         else:
             fst = max((((c00100 - FST_AGI_thd_lo[MARS - 1]) /
-                      (FST_AGI_thd_hi[MARS - 1] - FST_AGI_thd_lo[MARS - 1])) *
-                      (tentFST - _iitax - employee_share - NIIT)), 0.0)
+                     (FST_AGI_thd_hi[MARS - 1] - FST_AGI_thd_lo[MARS - 1])) *
+                     (tentFST - _iitax - employee_share - NIIT)), 0.0)
     else:
         fst = 0.0
     _iitax += fst
