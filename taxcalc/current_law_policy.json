@@ -576,7 +576,7 @@
 
     "_II_credit": {
         "long_name": "Personal refundable credit",
-        "description": "This credit amount is fully refundable, phased out based on taxable income. It is available to tax units who would otherwise not file.",
+        "description": "This credit amount is fully refundable and phased out based on AGI. It is available to tax units who would otherwise not file.",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
@@ -590,7 +590,7 @@
 
     "_II_credit_ps": {
         "long_name": "Personal refundable credit phaseout start",
-        "description": "The Personal Refundable credit amount will be reduced for taxpayers with taxable income higher than this level.",
+        "description": "The Personal Refundable credit amount will be reduced for taxpayers with AGI higher than this level.",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
@@ -604,7 +604,7 @@
 
     "_II_credit_prt": {
         "long_name": "Personal refundable credit phaseout rate",
-        "description": "The Personal Refundable credit amount will be reduced at this rate for each dollar of taxable income exceeding the thresholds.",
+        "description": "The Personal Refundable credit amount will be reduced at this rate for each dollar of AGI exceeding the _II_credit_ps threshold.",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
@@ -613,7 +613,8 @@
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "validations": {"min": 0}
     },
 
     "_II_rt1": {

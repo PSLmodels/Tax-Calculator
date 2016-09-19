@@ -184,29 +184,37 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
 @iterate_jit(nopython=True)
 def AGI(ymod1, c02500, c02900, XTOT, MARS, _sep, DSI, _exact,
         II_em, II_em_ps, II_prt,
-        c00100, _prexmp, c04600):
+        II_credit, II_credit_ps, II_credit_prt,
+        c00100, pre_c04600, c04600, personal_credit):
     """
-    AGI function: compute Adjusted Gross Income, c00100, and
-                  compute personal exemption amout, c04600.
+    AGI function: compute Adjusted Gross Income, c00100,
+                  compute personal exemption amount, c04600, and
+                  compute personal_credit amount
     """
     # calculate AGI assuming no foreign earned income exclusion
     c00100 = ymod1 + c02500 - c02900
     # calculate personal exemption amount
-    _prexmp = XTOT * II_em
+    pre_c04600 = XTOT * II_em
     if DSI:
-        _prexmp = 0.
+        pre_c04600 = 0.
     # phase-out personal exemption amount
     if _exact == 1:  # exact calculation as on tax forms
         line5 = max(0., c00100 - II_em_ps[MARS - 1])
         line6 = math.ceil(line5 / (2500. / _sep))
         line7 = II_prt * line6
-        c04600 = max(0., _prexmp * (1. - line7))
+        c04600 = max(0., pre_c04600 * (1. - line7))
     else:  # smoothed calculation needed for sensible mtr calculation
         dispc_numer = II_prt * (c00100 - II_em_ps[MARS - 1])
         dispc_denom = 2500. / _sep
         dispc = min(1., max(0., dispc_numer / dispc_denom))
-        c04600 = _prexmp * (1. - dispc)
-    return (c00100, _prexmp, c04600)
+        c04600 = pre_c04600 * (1. - dispc)
+    # calculate personal credit amount
+    personal_credit = II_credit[MARS - 1]
+    # phase-out personal credit amount
+    if II_credit_prt > 0. and c00100 > II_credit_ps[MARS - 1]:
+        credit_phaseout = II_credit_prt * (c00100 - II_credit_ps[MARS - 1])
+        personal_credit = max(0., personal_credit - credit_phaseout)
+    return (c00100, pre_c04600, c04600, personal_credit)
 
 
 @iterate_jit(nopython=True)
@@ -421,31 +429,12 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
 
 
 @iterate_jit(nopython=True)
-def Personal_Credit(c04500, MARS,
-                    II_credit, II_credit_ps, II_credit_prt,
-                    personal_credit):
-    """
-    Personal_Credit function: ...
-    """
-    # full amount as defined in the parameter
-    personal_credit = II_credit[MARS - 1]
-    # phaseout using taxable income
-    if c04500 > II_credit_ps[MARS - 1]:
-        credit_phaseout = II_credit_prt * (c04500 - II_credit_ps[MARS - 1])
-    else:
-        credit_phaseout = 0.
-    personal_credit = max(0., personal_credit - credit_phaseout)
-    return personal_credit
-
-
-@iterate_jit(nopython=True)
-def TaxInc(c00100, _standard, c21060, c21040, c04600, c04500, c04800):
+def TaxInc(c00100, _standard, c21060, c21040, c04600, c04800):
     """
     TaxInc function: ...
     """
-    c04500 = max(0., c00100 - max(c21060 - c21040, _standard))
-    c04800 = max(0., c04500 - c04600)  # taxable income
-    return (c04500, c04800)
+    c04800 = max(0., c00100 - max(c21060 - c21040, _standard) - c04600)
+    return c04800
 
 
 @iterate_jit(nopython=True)
