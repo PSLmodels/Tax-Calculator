@@ -191,6 +191,7 @@ class Calculator(object):
         DecomposeEITC(self.policy, self.records)
         IITAX(self.policy, self.records)
         ExpandIncome(self.policy, self.records)
+        FairShareTax(self.policy, self.records)
 
     def calc_all(self, zero_out_calc_vars=False):
         # conducts static analysis of Calculator object for current_year
