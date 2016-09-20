@@ -1194,12 +1194,10 @@ def FairShareTax(c00100, MARS, ptax_was, ptax_sey, ptax_amc,
     """
     if c00100 >= FST_AGI_thd_lo[MARS - 1]:
         employee_share = 0.5 * ptax_was + 0.5 * ptax_sey + ptax_amc
-        tentFST = max(c00100 * FST_AGI_trt - _iitax - employee_share, 0.)
+        fst = max(c00100 * FST_AGI_trt - _iitax - employee_share, 0.)
         gap = max(FST_AGI_thd_hi[MARS - 1] - FST_AGI_thd_lo[MARS - 1], 0.)
-        if gap == 0. or c00100 >= FST_AGI_thd_hi[MARS - 1]:
-            fst = tentFST
-        else:
-            fst = tentFST * (c00100 - FST_AGI_thd_lo[MARS - 1]) / gap
+        if gap > 0. and c00100 < FST_AGI_thd_hi[MARS - 1]:
+            fst *= (c00100 - FST_AGI_thd_lo[MARS - 1]) / gap
         _iitax += fst
         _combined += fst
     else:

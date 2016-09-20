@@ -1961,8 +1961,8 @@
     },
 
     "_FST_AGI_trt": {
-        "long_name": "Rate applied to AGI to determine tentative Fair Share Tax",
-        "description": "The result of multiplying AGI by this is the tentative FST, which is used to calculate final FST.",
+        "long_name": "Rate applied to AGI to determine full Fair Share Tax",
+        "description": "The result of multiplying AGI by this is full FST (before credit for income tax and employee share of payroll taxes).",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
