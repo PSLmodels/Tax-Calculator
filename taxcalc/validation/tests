@@ -8,15 +8,30 @@ if [[ "$#" -gt 1 ]]; then
     exit 1
 fi
 # .... specify whether or not to execute all tests
-ALL=""
+ALLTESTS=false
 if [[ "$#" -eq 1 ]]; then
     if [[ "$1" == "all" ]]; then
-        ALL="all"
+        ALLTESTS=true
     else
         echo "ERROR: optional command-line argument must be all"
         echo "USAGE: ./tests [all]"
         exit 1
     fi
 fi
-cd taxsim ; bash tests $ALL ; cd ..
+if [[ $ALLTESTS == true ]] ; then
+    echo "STARTING WITH ALL VALIDATION TESTS : `date`"
+    # execute all tests sequentially
+    cd taxsim ; bash tests all ; cd ..
+    # cd drake ; bash tests all ; cd ..
+    echo "FINISHED WITH ALL VALIDATION TESTS : `date`"
+else
+    # execute basic tests simultaneously
+    cd taxsim
+    bash tests &
+    cd ..
+    # cd drake
+    # bash tests &
+    # cd ..
+    wait
+fi
 exit 0

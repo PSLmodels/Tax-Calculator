@@ -50,6 +50,7 @@ unzip -oq output-taxsim.zip $LYY.in.out-taxsim$SUFFIX
 tclsh ../taxdiffs.tcl $OVAR4 $LYY.in.out-simtax$SUFFIX \
                              $LYY.in.out-taxsim$SUFFIX > $LYY$SUFFIX.taxdiffs
 # Check for difference between actual .taxdiffs and expected .taxdiffs files
+DIR="taxsim"
 RC=0
 DIFF=$(git diff --name-status $LYY$SUFFIX.taxdiffs)
 if [[ "$DIFF" != "" ]] ; then
@@ -59,9 +60,9 @@ if [[ "$DIFF" != "" ]] ; then
     RED=$(tput setaf 1)
     BOLD=$(tput bold)
     NORMAL=$(tput sgr0)
-    printf "$BOLD$RED$DIF$NORMAL\n"
+    printf "$BOLD$RED$DIR/$DIF$NORMAL\n"
 else
-    printf ". $LYY$SUFFIX\n"
+    printf ". $DIR/$LYY$SUFFIX\n"
 fi
 # Remove temporary files
 if [[ "$SAVE" == false ]] ; then
