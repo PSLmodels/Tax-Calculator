@@ -1192,16 +1192,16 @@ def FairShareTax(c00100, MARS, ptax_was, ptax_sey, ptax_amc,
 
     _combined : individual income tax plus payroll taxes augmented by fst
     """
-    if c00100 >= FST_AGI_thd_lo[MARS - 1]:
+    if FST_AGI_trt > 0. and c00100 >= FST_AGI_thd_lo[MARS - 1]:
         employee_share = 0.5 * ptax_was + 0.5 * ptax_sey + ptax_amc
         fst = max(c00100 * FST_AGI_trt - _iitax - employee_share, 0.)
-        gap = max(FST_AGI_thd_hi[MARS - 1] - FST_AGI_thd_lo[MARS - 1], 0.)
-        if gap > 0. and c00100 < FST_AGI_thd_hi[MARS - 1]:
-            fst *= (c00100 - FST_AGI_thd_lo[MARS - 1]) / gap
+        thd_gap = max(FST_AGI_thd_hi[MARS - 1] - FST_AGI_thd_lo[MARS - 1], 0.)
+        if thd_gap > 0. and c00100 < FST_AGI_thd_hi[MARS - 1]:
+            fst *= (c00100 - FST_AGI_thd_lo[MARS - 1]) / thd_gap
         _iitax += fst
         _combined += fst
     else:
-        fst = 0.0
+        fst = 0.
     return (fst, _iitax, _combined)
 
 
