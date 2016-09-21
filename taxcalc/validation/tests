@@ -18,12 +18,15 @@ if [[ "$#" -eq 1 ]]; then
         exit 1
     fi
 fi
+echo "STARTING WITH VALIDATION TESTS : `date`"
 if [[ $ALLTESTS == true ]] ; then
-    echo "STARTING WITH ALL VALIDATION TESTS : `date`"
     # execute all tests sequentially
-    cd taxsim ; bash tests all ; cd ..
-    # cd drake ; bash tests all ; cd ..
-    echo "FINISHED WITH ALL VALIDATION TESTS : `date`"
+    cd taxsim
+    bash tests all
+    cd ..
+    # cd drake
+    # bash tests all
+    # cd ..
 else
     # execute basic tests simultaneously
     cd taxsim
@@ -34,4 +37,5 @@ else
     # cd ..
     wait
 fi
+echo "FINISHED WITH VALIDATION TESTS : `date`"
 exit 0
