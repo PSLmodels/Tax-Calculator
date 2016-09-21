@@ -60,7 +60,7 @@ if [[ "$DIFF" != "" ]] ; then
     RED=$(tput setaf 1)
     BOLD=$(tput bold)
     NORMAL=$(tput sgr0)
-    printf "$BOLD$RED$DIR/$DIF$NORMAL\n"
+    printf "$BOLD$RED$DIF$NORMAL\n"
 else
     printf ". $DIR/$LYY$SUFFIX\n"
 fi
