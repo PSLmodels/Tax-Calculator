@@ -21,9 +21,6 @@ if [[ "$#" -eq 1 ]]; then
     fi
 fi
 # .... execute validation tests
-if [[ $ALLTESTS == false ]] ; then
-    echo "STARTING WITH TAXSIM VALIDATION TESTS : `date`"
-fi
 rm -f testerror
 if [[ "$ALLTESTS" == true ]] ; then
     bash test a15 . &
@@ -31,9 +28,6 @@ if [[ "$ALLTESTS" == true ]] ; then
     wait
 else
     bash test d15 .
-fi
-if [[ $ALLTESTS == false ]] ; then
-    echo "FINISHED WITH TAXSIM VALIDATION TESTS : `date`"
 fi
 if [[ -f "testerror" ]]; then
     ERROR=1
