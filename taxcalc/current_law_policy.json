@@ -1959,9 +1959,10 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99, 9e99]],
         "validations": {"min": "_PT_brk6"}
     },
-    "_FST_AGI_trt":{
-        "long_name": "Rate applied to AGI to determine tentative FST",
-        "description": "The result of multiplying AGI by this is the tentative FST used to calculate final FST",
+
+    "_FST_AGI_trt": {
+        "long_name": "Rate applied to AGI to determine full Fair Share Tax",
+        "description": "The result of multiplying AGI by this is full FST (before credit for income tax and employee share of payroll taxes).",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
@@ -1970,11 +1971,12 @@
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value": [0.0]
-     },
+        "value": [0.0],
+        "validations": {"min": 0.0}
+    },
 
-    "_FST_AGI_thd_lo":{
-        "long_name": "Minimum AGI needed to be subject to FST",
+    "_FST_AGI_thd_lo": {
+        "long_name": "Minimum AGI needed to be subject to Fair Share Tax",
         "description": "A taxpayer is only subject to the FST if they exceed this level of AGI",
         "irs_ref": "",
         "note": "",
@@ -1984,11 +1986,13 @@
         "row_label": ["2013"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[1000000, 1000000, 500000, 1000000, 1000000, 500000]]
+        "value": [[1.0e6, 1.0e6, 0.5e6, 1.0e6, 1.0e6, 0.5e6]],
+        "validations": {"min": 0.0, "max": "_FST_AGI_thd_hi"}
     },
-    "_FST_AGI_thd_hi":{
-        "long_name": "AGI level at which the FST is fully phased in",
-        "description": "The FST will be fully phased in at this level of AGI. If there is no phase in, this is equivalent to the lower AGI threshold",
+
+    "_FST_AGI_thd_hi": {
+        "long_name": "AGI level at which the Fair Share Tax is fully phased in",
+        "description": "The FST will be fully phased in at this level of AGI. If there is no phase-in, this upper threshold should be set equal to the lower AGI threshold",
         "irs_ref": "",
         "note": "",
         "start_year": 2013,
@@ -1997,7 +2001,7 @@
         "row_label": ["2013"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[2000000, 2000000, 1000000, 2000000, 2000000, 1000000]]
-
+        "value": [[2.0e6, 2.0e6, 1.0e6, 2.0e6, 2.0e6, 1.0e6]],
+        "validations": {"min": "_FST_AGI_thd_lo"}
     }
 }

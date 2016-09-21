@@ -496,5 +496,16 @@
         "name": "Increase Personal Refundable credit amount to 1000 with phaseout starting at AGI 10,000 and phaseout rate at 0.01",
         "output_type": "_iitax",
         "compare_with": {}
+    },
+
+    "r54": {
+        "start_year": 2017,
+        "value": {"_FST_AGI_trt": [0.3],
+                  "_FST_AGI_thd_lo": [[1.0e6, 1.0e6, 0.5e6, 1.0e6, 1.0e6, 0.5e6]],
+                  "_FST_AGI_thd_hi": [[2.0e6, 2.0e6, 1.0e6, 2.0e6, 2.0e6, 1.0e6]]},
+        "section_name": "FAIR SHARE TAX",
+        "name": "Increase FST rate from zero to 0.30 beginning in 2017",
+        "output_type": "_iitax",
+        "compare_with": {}
     }
 }

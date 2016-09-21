@@ -189,13 +189,13 @@ class Calculator(object):
         C1040(self.policy, self.records)
         DecomposeEITC(self.policy, self.records)
         IITAX(self.policy, self.records)
-        ExpandIncome(self.policy, self.records)
-        FairShareTax(self.policy, self.records)
 
     def calc_all(self, zero_out_calc_vars=False):
         # conducts static analysis of Calculator object for current_year
         self.calc_one_year(zero_out_calc_vars)
         BenefitSurtax(self)
+        FairShareTax(self.policy, self.records)
+        ExpandIncome(self.policy, self.records)
 
     def increment_year(self):
         next_year = self.policy.current_year + 1
