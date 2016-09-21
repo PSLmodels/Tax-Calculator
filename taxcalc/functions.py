@@ -404,25 +404,25 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
         Standard deduction amount for each taxpayer
         who files standard deduction. Otherwise value is zero.
     """
-    # Calculate deduction for dependents
+    # calculate deduction for dependents
     if DSI == 1:
         c15100 = max(350. + _earned, STD[6])
-        c04100 = min(STD[MARS - 1], c15100)
+        basic_stded = min(STD[MARS - 1], c15100)
     else:
         c15100 = 0.
         if MIDR == 1:
-            c04100 = 0.
+            basic_stded = 0.
         else:
-            c04100 = STD[MARS - 1]
-    # Calculate extra standard deduction for aged and blind
-    _extrastd = blind_head + blind_spouse
+            basic_stded = STD[MARS - 1]
+    # calculate extra standard deduction for aged and blind
+    num_extra_stded = blind_head + blind_spouse
     if age_head >= 65:
-        _extrastd += 1
+        num_extra_stded += 1
     if MARS == 2 and age_spouse >= 65:
-        _extrastd += 1
-    c15200 = _extrastd * STD_Aged[MARS - 1]
-    # Compute the total standard deduction
-    _standard = c04100 + c15200
+        num_extra_stded += 1
+    extra_stded = num_extra_stded * STD_Aged[MARS - 1]
+    # calculate the total standard deduction
+    _standard = basic_stded + extra_stded
     if (MARS == 3 or MARS == 6) and (MIDR == 1):
         _standard = 0.
     return _standard
