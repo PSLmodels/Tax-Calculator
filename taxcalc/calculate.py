@@ -187,7 +187,6 @@ class Calculator(object):
         NonrefundableCredits(self.policy, self.records)
         AdditionalCTC(self.policy, self.records)
         C1040(self.policy, self.records)
-        DecomposeEITC(self.policy, self.records)
         IITAX(self.policy, self.records)
 
     def calc_all(self, zero_out_calc_vars=False):

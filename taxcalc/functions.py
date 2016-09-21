@@ -956,29 +956,29 @@ def EducationTaxCredit(e87530, MARS, c00100, _num, c05800,
 @iterate_jit(nopython=True)
 def NonrefundableCredits(c05800, e07240, e07260, e07300, e07600,
                          c07180, c07200, c07220, c07230, c07240,
-                         prectc, c07300, c07600, _avail):
+                         prectc, c07300, c07600):
     """
     NonRefundableCredits function serially applies credits to tax liability
     """
     # apply tax credits to tax liability in order they are on 2015 1040 form
-    _avail = c05800
-    c07300 = min(e07300, _avail)  # Foreign tax credit - Form 1116
-    _avail = _avail - c07300
-    c07180 = min(c07180, _avail)  # Child & dependent care expense credit
-    _avail = _avail - c07180
-    c07230 = min(c07230, _avail)  # Education tax credit
-    _avail = _avail - c07230
-    c07240 = min(e07240, _avail)  # Retirement savings credit - Form 8880
-    _avail = _avail - c07240
-    c07220 = min(prectc, _avail)  # Child tax credit
-    _avail = _avail - c07220
-    c07260 = min(e07260, _avail)  # Residential energy credit - Form 5695
-    _avail = _avail - c07260
-    c07600 = min(e07600, _avail)  # Prior year minimum tax credit - Form 8801
-    _avail = _avail - c07600
-    c07200 = min(c07200, _avail)  # Schedule R credit
-    _avail = _avail - c07200
-    return (c07220, c07230, c07240, c07300, c07600, _avail)
+    avail = c05800
+    c07300 = min(e07300, avail)  # Foreign tax credit - Form 1116
+    avail = avail - c07300
+    c07180 = min(c07180, avail)  # Child & dependent care expense credit
+    avail = avail - c07180
+    c07230 = min(c07230, avail)  # Education tax credit
+    avail = avail - c07230
+    c07240 = min(e07240, avail)  # Retirement savings credit - Form 8880
+    avail = avail - c07240
+    c07220 = min(prectc, avail)  # Child tax credit
+    avail = avail - c07220
+    c07260 = min(e07260, avail)  # Residential energy credit - Form 5695
+    avail = avail - c07260
+    c07600 = min(e07600, avail)  # Prior year minimum tax credit - Form 8801
+    avail = avail - c07600
+    c07200 = min(c07200, avail)  # Schedule R credit
+    avail = avail - c07200
+    return (c07220, c07230, c07240, c07300, c07600)
 
 
 @iterate_jit(nopython=True)
@@ -1033,35 +1033,23 @@ def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
 
 
 @iterate_jit(nopython=True)
-def C1040(e07400, c07200, c07220, c07230, c07300, c07240,
-          e07260, c07600, p08000, c05800, e09900, ptax_sey, e09800,
-          e09700, c07180, NIIT, _othertax, c07100, c09200):
+def C1040(c05800, c07180, c07200, c07220, c07230, c07240, e07260, c07300,
+          e07400, c07600, p08000, e09700, e09800, e09900, ptax_sey, NIIT,
+          c07100, c09200):
     """
-    C1040 function: ...
+    C1040 function computes total nonrefundable credits, c07100, and
+                            income tax before refundable credits, c09200
     """
-    # Credits 1040 line 48
+    # total (nonrefundable) credits (2015 Form 1040, line 55)
     c07100 = (c07180 + c07200 + c07600 + c07300 + e07400 + c07220 + p08000 +
               c07230 + c07240 + e07260)
-    c07100 = min(c07100, c05800)
-    # Tax After credits 1040 line 52
-    c08795 = max(0., c05800 - c07100)
-    # Tax before refundable credits
-    _othertax = e09900 + ptax_sey + e09800 + NIIT
-    c09200 = _othertax + c08795
-    c09200 += e09700  # assuming year tax year is after 2009
-    return (c07100, c09200, _othertax)
-
-
-@iterate_jit(nopython=True)
-def DecomposeEITC(c59660, c07100, c08800, c05800, _avail, _othertax):
-    """
-    DecomposeEITC function ...
-    """
-    c59680 = min(c59660, _avail)
-    _avail = max(0., _avail - c59680) + _othertax
-    c07150 = min(c07100 + c59680, c05800)
-    c08800 = c05800 - c07150
-    return (c08800, _avail)
+    # tax after credits (2015 Form 1040, line 56)
+    nonrefundable_credits = max(0., c05800 - c07100)
+    # tax before refundable credits
+    othertaxes = e09900 + ptax_sey + e09800 + NIIT
+    c09200 = othertaxes + nonrefundable_credits
+    c09200 += e09700  # assuming tax year is after 2009
+    return (c07100, c09200)
 
 
 @iterate_jit(nopython=True)
