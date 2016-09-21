@@ -1986,6 +1986,7 @@
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
         "value": [[1000000, 1000000, 500000, 1000000, 1000000, 500000]]
     },
+
     "_FST_AGI_thd_hi":{
         "long_name": "AGI level at which the FST is fully phased in",
         "description": "The FST will be fully phased in at this level of AGI. If there is no phase in, this is equivalent to the lower AGI threshold",
@@ -1998,6 +1999,33 @@
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
         "value": [[2000000, 2000000, 1000000, 2000000, 2000000, 1000000]]
+    },
 
+    "_AGI_surtax_thd":{
+        "long_name": "Threshold for surtax on AGI",
+        "description": "Taxpayers are subject to extra surtax if they exceed this level of AGI",
+        "irs_ref": "",
+        "note": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[9e99, 9e99, 9e99, 9e99, 9e99, 9e99]]
+    },
+    
+    "_AGI_surtax_rt":{
+        "long_name": "Surtax rate on AGI",
+        "description": "Taxpayers are subject to this amount of surtax if they exceed certain level of AGI",
+        "irs_ref": "",
+        "note": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": true,
+        "col_label": "",
+        "value": [0.0]
     }
 }
