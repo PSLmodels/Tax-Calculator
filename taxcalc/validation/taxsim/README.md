@@ -7,7 +7,7 @@ to generate step-three results.
 
 We are in the process of comparing Tax-Calculator and Internet-TAXSIM
 results generated from the `a` and `d` assumption sets in the
-`make_in.tcl` script for the year 2015.  Each INPUT file is used to
+`taxsim_in.tcl` script for the year 2015.  Each INPUT file is used to
 generate a Tax-Calculator OUTPUT file using the `simtax.py` interface
 to the Tax-Calculator with the `--taxsim2441` option.  And each INPUT
 file is used to generate an Internet-TAXSIM OUTPUT file by uploading

@@ -66,7 +66,7 @@ into a Windows batch file (tests.bat).  The Free Software Foundation
 provides a free AWK interpreter for Windows (gawk.exe) and ActiveState
 provides a free Tcl interpreter for Windows (tclsh.exe).
 
-The `make_in.tcl` and `more_in.py` scripts are used to randomly
+The `taxsim_in.tcl` and `csv_in.py` scripts are used to randomly
 generate INPUT files, which have increasingly longer sets of filing
 unit attributes and contain as many as 100,000 filing units.  Read the
 source code of the scripts for additional details on how to use them.
