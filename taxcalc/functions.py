@@ -959,29 +959,29 @@ def EducationTaxCredit(e87530, MARS, c00100, _num, c05800,
 @iterate_jit(nopython=True)
 def NonrefundableCredits(c05800, e07240, e07260, e07300, e07600,
                          c07180, c07200, c07220, c07230, c07240,
-                         prectc, c07300, c07600, _avail):
+                         prectc, c07300, c07600):
     """
     NonRefundableCredits function serially applies credits to tax liability
     """
     # apply tax credits to tax liability in order they are on 2015 1040 form
-    _avail = c05800
-    c07300 = min(e07300, _avail)  # Foreign tax credit - Form 1116
-    _avail = _avail - c07300
-    c07180 = min(c07180, _avail)  # Child & dependent care expense credit
-    _avail = _avail - c07180
-    c07230 = min(c07230, _avail)  # Education tax credit
-    _avail = _avail - c07230
-    c07240 = min(e07240, _avail)  # Retirement savings credit - Form 8880
-    _avail = _avail - c07240
-    c07220 = min(prectc, _avail)  # Child tax credit
-    _avail = _avail - c07220
-    c07260 = min(e07260, _avail)  # Residential energy credit - Form 5695
-    _avail = _avail - c07260
-    c07600 = min(e07600, _avail)  # Prior year minimum tax credit - Form 8801
-    _avail = _avail - c07600
-    c07200 = min(c07200, _avail)  # Schedule R credit
-    _avail = _avail - c07200
-    return (c07220, c07230, c07240, c07300, c07600, _avail)
+    avail = c05800
+    c07300 = min(e07300, avail)  # Foreign tax credit - Form 1116
+    avail = avail - c07300
+    c07180 = min(c07180, avail)  # Child & dependent care expense credit
+    avail = avail - c07180
+    c07230 = min(c07230, avail)  # Education tax credit
+    avail = avail - c07230
+    c07240 = min(e07240, avail)  # Retirement savings credit - Form 8880
+    avail = avail - c07240
+    c07220 = min(prectc, avail)  # Child tax credit
+    avail = avail - c07220
+    c07260 = min(e07260, avail)  # Residential energy credit - Form 5695
+    avail = avail - c07260
+    c07600 = min(e07600, avail)  # Prior year minimum tax credit - Form 8801
+    avail = avail - c07600
+    c07200 = min(c07200, avail)  # Schedule R credit
+    avail = avail - c07200
+    return (c07220, c07230, c07240, c07300, c07600)
 
 
 @iterate_jit(nopython=True)
@@ -1036,35 +1036,23 @@ def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
 
 
 @iterate_jit(nopython=True)
-def C1040(e07400, c07200, c07220, c07230, c07300, c07240,
-          e07260, c07600, p08000, c05800, e09900, ptax_sey, e09800,
-          e09700, c07180, NIIT, _othertax, c07100, c09200):
+def C1040(c05800, c07180, c07200, c07220, c07230, c07240, e07260, c07300,
+          e07400, c07600, p08000, e09700, e09800, e09900, ptax_sey, NIIT,
+          c07100, c09200):
     """
-    C1040 function: ...
+    C1040 function computes total nonrefundable credits, c07100, and
+                            income tax before refundable credits, c09200
     """
-    # Credits 1040 line 48
+    # total (nonrefundable) credits (2015 Form 1040, line 55)
     c07100 = (c07180 + c07200 + c07600 + c07300 + e07400 + c07220 + p08000 +
               c07230 + c07240 + e07260)
-    c07100 = min(c07100, c05800)
-    # Tax After credits 1040 line 52
-    c08795 = max(0., c05800 - c07100)
-    # Tax before refundable credits
-    _othertax = e09900 + ptax_sey + e09800 + NIIT
-    c09200 = _othertax + c08795
-    c09200 += e09700  # assuming year tax year is after 2009
-    return (c07100, c09200, _othertax)
-
-
-@iterate_jit(nopython=True)
-def DecomposeEITC(c59660, c07100, c08800, c05800, _avail, _othertax):
-    """
-    DecomposeEITC function ...
-    """
-    c59680 = min(c59660, _avail)
-    _avail = max(0., _avail - c59680) + _othertax
-    c07150 = min(c07100 + c59680, c05800)
-    c08800 = c05800 - c07150
-    return (c08800, _avail)
+    # tax after credits (2015 Form 1040, line 56)
+    nonrefundable_credits = max(0., c05800 - c07100)
+    # tax before refundable credits
+    othertaxes = e09900 + ptax_sey + e09800 + NIIT
+    c09200 = othertaxes + nonrefundable_credits
+    c09200 += e09700  # assuming tax year is after 2009
+    return (c07100, c09200)
 
 
 @iterate_jit(nopython=True)
@@ -1126,70 +1114,6 @@ def Taxes(income, MARS, tbrk_base,
             rate8 * max(0., income - brk7))
 
 
-@iterate_jit(nopython=True)
-def ExpandIncome(ptax_was, e02400, c02500, c00100, e00400, _expanded_income):
-    """
-    ExpandIncome function: calculates and returns _expanded_income.
-
-    Note: if behavioral responses to a policy reform are specified, then be
-    sure this function is called after the behavioral responses are calculated.
-    """
-    employer_share = 0.5 * ptax_was  # share of payroll tax on wages & salary
-    non_taxable_ss_benefits = e02400 - c02500
-    _expanded_income = (c00100 +  # adjusted gross income
-                        e00400 +  # non-taxable interest income
-                        non_taxable_ss_benefits +
-                        employer_share)
-    return _expanded_income
-
-
-@iterate_jit(nopython=True)
-def FairShareTax(c00100, _iitax, _combined, ptax_was, ptax_sey, ptax_amc,
-                 MARS, FST_AGI_trt, FST_AGI_thd_lo, FST_AGI_thd_hi,
-                 fst):
-    """
-
-    Parameters
-    ----------
-    c00100: AGI
-    _iitax: Individual income tax
-    _combined: Combined payroll and income tax
-    ptax_was: Payroll tax on wages and salaries
-    ptax_sey: Payroll tax on self-employment income
-    ptax_amc: Additional medicare tax on high earnings
-    MARS: Marital status
-    FST_AGI_trt: Percent of AGI the tentative FST will be. Default = 0.0
-    FST_AGI_thd_lo: Minimum AGI needed to be subject to FST. Default = 500,000
-    for married filling separetly, 1,000,000 for all others.
-    FST_AGI_thd_hi: Level of AGI at which the tax is fully phased in. If
-    equivalent to FST_AGI_thd_lo, the there is no phase in for the tax.
-    Default = 1,000,000 for married filing separetly and 2,000,000 for all
-    others.
-    fst
-
-    Returns
-    -------
-    fst: Fair Share Tax
-
-    """
-    if c00100 >= FST_AGI_thd_lo[MARS - 1]:
-        tentFST = c00100 * FST_AGI_trt
-        employee_share = 0.5 * ptax_was + 0.5 * ptax_sey + ptax_amc
-        if (c00100 >= FST_AGI_thd_hi[MARS - 1] or
-                FST_AGI_thd_hi[MARS - 1] == FST_AGI_thd_lo[MARS - 1]):
-            fst = max(tentFST - _iitax - employee_share, 0.0)
-        else:
-            fst = max((((c00100 - FST_AGI_thd_lo[MARS - 1]) /
-                        (FST_AGI_thd_hi[MARS - 1] -
-                         FST_AGI_thd_lo[MARS - 1])) *
-                       (tentFST - _iitax - employee_share)), 0.0)
-    else:
-        fst = 0.0
-    _iitax += fst
-    _combined += fst
-    return fst, _iitax, _combined
-
-
 def BenefitSurtax(calc):
     """
     BenefitSurtax function: computes itemized-deduction-benefit surtax and
@@ -1228,3 +1152,62 @@ def BenefitSurtax(calc):
             benefit_amount - (benefit_deduction + benefit_exemption), 0.)
         calc.records._iitax += calc.records._surtax
         calc.records._combined += calc.records._surtax
+
+
+@iterate_jit(nopython=True)
+def FairShareTax(c00100, MARS, ptax_was, ptax_sey, ptax_amc,
+                 FST_AGI_trt, FST_AGI_thd_lo, FST_AGI_thd_hi,
+                 fst, _iitax, _combined):
+    """
+    Computes Fair Share Tax, or "Buffet Rule", types of reforms
+
+    Taxpayer Characteristics
+    ------------------------
+
+    c00100 : AGI
+
+    MARS : filing (marital) status
+
+    ptax_was : payroll tax on wages and salaries
+
+    ptax_sey : payroll tax on self-employment income
+
+    ptax_amc : additional Medicare tax on high earnings
+
+    Returns
+    -------
+
+    fst : Fair Share Tax amount
+
+    _iitax : individual income tax augmented by fst
+
+    _combined : individual income tax plus payroll taxes augmented by fst
+    """
+    if FST_AGI_trt > 0. and c00100 >= FST_AGI_thd_lo[MARS - 1]:
+        employee_share = 0.5 * ptax_was + 0.5 * ptax_sey + ptax_amc
+        fst = max(c00100 * FST_AGI_trt - _iitax - employee_share, 0.)
+        thd_gap = max(FST_AGI_thd_hi[MARS - 1] - FST_AGI_thd_lo[MARS - 1], 0.)
+        if thd_gap > 0. and c00100 < FST_AGI_thd_hi[MARS - 1]:
+            fst *= (c00100 - FST_AGI_thd_lo[MARS - 1]) / thd_gap
+        _iitax += fst
+        _combined += fst
+    else:
+        fst = 0.
+    return (fst, _iitax, _combined)
+
+
+@iterate_jit(nopython=True)
+def ExpandIncome(ptax_was, e02400, c02500, c00100, e00400, _expanded_income):
+    """
+    ExpandIncome function: calculates and returns _expanded_income.
+
+    Note: if behavioral responses to a policy reform are specified, then be
+    sure this function is called after the behavioral responses are calculated.
+    """
+    employer_share = 0.5 * ptax_was  # share of payroll tax on wages & salary
+    non_taxable_ss_benefits = e02400 - c02500
+    _expanded_income = (c00100 +  # adjusted gross income
+                        e00400 +  # non-taxable interest income
+                        non_taxable_ss_benefits +
+                        employer_share)
+    return _expanded_income
