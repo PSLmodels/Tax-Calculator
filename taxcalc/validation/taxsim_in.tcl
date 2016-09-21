@@ -1,9 +1,9 @@
-# MAKE_IN.TCL writes an Internet-TAXSIM-9-formatted input file to stdout
-# USAGE: tclsh make_in.tcl calyear letter [rng_offset]
-# PRODUCTION: tclsh make_in.tcl yyYY L > LYY.in
+# TAXSIM_IN.TCL writes an Internet-TAXSIM-9-formatted input file to stdout
+# USAGE: tclsh taxsim_in.tcl calyear letter [rng_offset]
+# PRODUCTION: tclsh taxsim_in.tcl yyYY L > LYY.in
 
 if { $argc < 2 || $argc > 3 } {
-    puts stderr "USAGE: tclsh make_in.tcl calyear letter \[rng_offset\]"
+    puts stderr "USAGE: tclsh taxsim_in.tcl calyear letter \[rng_offset\]"
     exit 1
 }
 set cyr [lindex $argv 0]
