@@ -17,28 +17,28 @@ should follow on your local computer before submitting a development
 branch as a pull request to the central Tax-Calculator repository at
 GitHub.
 
-Currently there are two phases of testing.
+Currently there are three phases of testing.
 
 Testing with py.test
 --------------------
 
 There are two variants of this first testing phase depending on
-whether or not you have access to a file called ```puf.csv``` that
+whether or not you have access to a file called `puf.csv` that
 contains a representative sample of tax filing units used by the
 [TaxBrain web application](http://www.ospc.org/taxbrain) and by core
 Tax-Calculator developers.
 
-A brief description of the ```puf.csv``` file is followed by
+A brief description of the `puf.csv` file is followed by
 instructions on how to run the two variants of the first-phase tests.
 
-The Tax-Calculator ```puf.csv``` file has been constructed by the core
+The Tax-Calculator `puf.csv` file has been constructed by the core
 development team by merging information from the most recent publicly
 available IRS SOI PUF file and from the Census CPS file for the
 corresponding year.  If you have acquired from IRS the most recent SOI
-PUF file and want to execute the tests that require the ```puf.csv```
+PUF file and want to execute the tests that require the `puf.csv`
 file, contact the core development team to discuss your options.
 
-**NO PUF.CSV**: If you do not have access to the ```puf.csv``` file,
+**NO PUF.CSV**: If you do not have access to the `puf.csv` file,
 run the first-phase of testing as follows at the command prompt in the
 tax-calculator directory at the top of the repository directory tree:
 
@@ -49,11 +49,11 @@ py.test -m "not requires_pufcsv"
 
 This will start executing a pytest suite containing more than one
 hundred tests, but will skip the few tests that require the
-```puf.csv``` file as input.  Depending on your computer, the
+`puf.csv` file as input.  Depending on your computer, the
 execution time for this incomplete suite of tests is about three
 minutes.
 
-**HAVE PUF.CSV**: If you do have access to the ```puf.csv``` file,
+**HAVE PUF.CSV**: If you do have access to the `puf.csv` file,
 copy it into the tax-calculator directory at the top of the repository
 directory tree (but **never** add it to your repository) and run the
 first-phase of testing as follows at the command prompt in the
@@ -65,7 +65,7 @@ py.test
 ```
 
 This will start executing a pytest suite containing more than one
-hundred tests, including the few tests that require the ```puf.csv```
+hundred tests, including the few tests that require the `puf.csv`
 file as input.  Depending on your computer, the execution time for
 this complete suite of tests is about five minutes.
 
@@ -73,17 +73,9 @@ Testing with validation/tests
 -----------------------------
 
 The current version of the validation/tests runs only under Mac and Linux;
-if you are working under Windows, skip this second phase of testing.
-
-The validation/tests generate samples of tax filing
-units whose attributes are specified in a random, non-representative
-manner.  Each sample is used to generate tax liabilities, intermediate
-income tax results, and marginal tax rates using Internet-TAXSIM and
-simtax.py, which is a command-line interface to the Tax-Calculator.
-And then the output from the two models are compared item-by-item and
-unit-by-unit to produce cross-model-validation summary results.  See
-the [description of the Internet-TAXSIM validation
-tests](taxcalc/validation/README.md) for more details.
+if you are working under Windows, skip this second phase of testing.  See
+the [description of the validation tests](taxcalc/validation/README.md)
+for more details.
 
 Run the second-phase of testing as follows at the Mac or Linux command
 prompt in the tax-calculator directory at the top of the repository
@@ -97,6 +89,29 @@ cd taxcalc/validation
 This will start executing the validation/tests.  Depending
 on your computer, the execution time for this suite of
 validation/tests is about two minutes.
+
+Testing with comparison/reform_results.py
+-----------------------------------------
+
+This is the longest running test, which takes roughly ten minutes.  It
+generates aggregate revenue estimates for over fifty reform proposals
+writing those results to the `reform_results.txt` file.  This test
+requires access to the `puf.csv` file.  So, if you do not have access
+to this file, skip this test.  If you do have access to the `puf.csv`
+file, copy it into the tax-calculator directory at the top of the
+repository directory tree (but **never** add it to your repository)
+and run the third-phase of testing as follows at the command prompt in
+the tax-calculator directory at the top of the repository directory
+tree:
+
+```
+cd taxcalc/comparison
+python reform_results.py
+```
+
+The output from this command, the `reform_results.txt` file, is under
+version control, so difference can been seen by using the `git diff`
+command.
 
 Interpreting the Test Results
 -----------------------------
@@ -119,17 +134,17 @@ Updating the Test Results
 -------------------------
 
 After an enhancement or bug fix, you may be convinced that the new and
-different test results are, in fact, correct.  How do you eliminate
-the test failures?  For all but the few tests that require the
-```puf.csv``` file as input, simply edit the appropriate
-```taxcalc/tests/test_*.py``` file so that the test passes when you
-rerun the pytests.  If there are failures for the tests that require
-the ```puf.csv``` file as input, the new test results will be written
-to a file named ```pufcsv_*_actual.txt``` (where the value of `*`
+different first-phase test results are, in fact, correct.  How do you
+eliminate the test failures?  For all but the few tests that require
+the `puf.csv` file as input, simply edit the appropriate
+`taxcalc/tests/test_*.py` file so that the test passes when you
+rerun py.test.  If there are failures for the tests that require
+the `puf.csv` file as input, the new test results will be written
+to a file named `pufcsv_*_actual.txt` (where the value of `*`
 depends on the test).  Use any diff utility to see the differences
-between this new ```pufcsv_*_actual.txt``` file and the old
-```pufcsv_*_expect.txt``` file.  Then copy the new ```actual``` file
-to the ```expect``` file overwriting the old expected test results.  When
-all this is done, rerunning the pytests should produce no failures.
-If so, then delete any ```pufcsv_*_actual.txt``` files and commit all
-the revised ```test_*.py``` and ```pufcsv_*_expect.txt``` files.
+between this new `pufcsv_*_actual.txt` file and the old
+`pufcsv_*_expect.txt` file.  Then copy the new `actual` file
+to the `expect` file overwriting the old expected test results.  When
+all this is done, rerunning py.test should produce no failures.
+If so, then delete any `pufcsv_*_actual.txt` files and commit all
+the revised `test_*.py` and `pufcsv_*_expect.txt` files.

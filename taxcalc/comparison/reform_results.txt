@@ -8,14 +8,14 @@ Increase the maximum taxable earnings (177500) for the social security payroll t
 Tax-Calculator,52.2,62.2,63.8,65.9
 Budget Options,40,46,49,51
 ""
-Increase the Payroll tax rate for medicare hospital insurance by 1pts
+Increase the payroll tax rate for Medicare (HI) by 1pts
 Tax-Calculator,74.6,78.2,81.6,85.0
 Budget Options,73,77,82,87
 ""
-Increase the Additional Medicare threshold by 10,000
+Increase the Additional Medicare Tax threshold by 10,000
 Tax-Calculator,-0.3,-0.3,-0.3,-0.4
 ""
-Increase the Additional Medicare tax rate by 0.1 pts
+Increase the Additional Medicare Tax rate by 0.1 pts
 Tax-Calculator,0.8,0.8,0.9,1.0
 ""
 SOCIAL SECURITY TAXABILITY
@@ -93,7 +93,7 @@ Tax-Calculator,0.4,0.5,0.5,0.5
 Tax Expenditure,0,0,0,0
 ""
 Charitable
-Tax-Calculator,43.2,45.8,48.2,50.9
+Tax-Calculator,43.2,45.7,48.2,50.9
 Tax Expenditure,46,47,48,50
 ""
 Decrease AGI floor for miscellaneous expenses by 1 pts
@@ -143,7 +143,7 @@ Tax-Calculator,-1.0,-0.8,-0.9,-0.9
 Alternative Minimum Tax
 ""
 Increase exemption phaseout starting AMTI by 10,000
-Tax-Calculator,-2.3,-2.4,-2.5,-2.6
+Tax-Calculator,-2.3,-2.3,-2.5,-2.6
 ""
 Alternative Minimum Tax
 ""
@@ -166,7 +166,7 @@ Tax-Calculator,-0.4,-0.5,-0.5,-0.5
 NONREFUNDABLE CREDIT
 ""
 Total expenditure from child tax credit
-Tax-Calculator,51.6,51.2,50.8,50.2
+Tax-Calculator,51.5,51.1,50.7,50.1
 Tax Expenditure,57,57,57,57
 ""
 Increase Child Tax Credit phaseout rate by 1 pts
@@ -199,7 +199,7 @@ Tax-Calculator,0.0,0.0,0.0,0.0
 OTHER TAXES
 ""
 Net investment income tax, total
-Tax-Calculator,-25.8,-26.4,-27.0,-27.6
+Tax-Calculator,-25.6,-26.2,-26.8,-27.4
 Tax Expenditure,-33,-35,-37,-39
 ""
 Increase Net Investment Income Tax threshold by 10,000
@@ -210,5 +210,10 @@ PERSONAL REFUNDABLE CREDIT
 Increase Personal Refundable credit amount to 1000
 Tax-Calculator,-167.7,-170.3,-175.0,-180.8
 ""
-Increase Personal Refundable credit amount to 1000, with phaseout starting AGI 10,000 and phaseout rate at 0.01
-Tax-Calculator,-167.7,-160.7,-164.8,-170.1
+Increase Personal Refundable credit amount to 1000 with phaseout starting at AGI 10,000 and phaseout rate at 0.01
+Tax-Calculator,-111.7,-112.1,-114.3,-117.7
+""
+FAIR SHARE TAX
+""
+Increase FST rate from zero to 0.30 beginning in 2017
+Tax-Calculator,30.0,30.7,31.0,31.9

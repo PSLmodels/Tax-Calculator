@@ -225,6 +225,7 @@ class IncomeTaxIO(object):
                          float_format='%.4f', index=False)
 
     def calculate(self, writing_output_file=False,
+                  exact_output=False,
                   output_weights=False):
         """
         Calculate taxes for all INPUT lines and write or return OUTPUT lines.
@@ -247,12 +248,13 @@ class IncomeTaxIO(object):
             otherwise output_lines contain all OUTPUT lines
         """
         output = {}  # dictionary indexed by Records index for filing unit
-        (mtr_fica, mtr_iitx, _) = self._calc.mtr(wrt_full_compensation=False)
+        (mtr_ptax, mtr_itax, _) = self._calc.mtr(wrt_full_compensation=False)
         for idx in range(0, self._calc.records.dim):
             ovar = SimpleTaxIO.extract_output(self._calc.records, idx,
+                                              exact=exact_output,
                                               extract_weight=output_weights)
-            ovar[7] = 100 * mtr_iitx[idx]
-            ovar[9] = 100 * mtr_fica[idx]
+            ovar[7] = 100 * mtr_itax[idx]
+            ovar[9] = 100 * mtr_ptax[idx]
             output[idx] = ovar
         assert len(output) == self._calc.records.dim
         # handle disposition of calculated output
@@ -288,10 +290,10 @@ class IncomeTaxIO(object):
                '[ 3] state code [ALWAYS ZERO]\n'
                '[ 4] federal income tax liability\n'
                '[ 5] state income tax liability [ALWAYS ZERO]\n'
-               '[ 6] FICA tax liability\n'
+               '[ 6] OASDI+HI payroll tax liability (sum of ee and er share)\n'
                '[ 7] marginal federal income tax rate\n'
                '[ 8] marginal state income tax rate [ALWAYS ZERO]\n'
-               '[ 9] marginal FICA tax rate\n'
+               '[ 9] marginal payroll tax rate\n'
                '[10] federal adjusted gross income, AGI\n'
                '[11] unemployment (UI) benefits included in AGI\n'
                '[12] social security (OASDI) benefits included in AGI\n'
@@ -302,7 +304,9 @@ class IncomeTaxIO(object):
                '[17] itemized deduction after phase-out '
                '(zero for non-itemizer)\n'
                '[18] federal regular taxable income\n'
-               '[19] regular tax on regular taxable income\n'
+               '[19] regular tax on regular taxable income '
+               '(no special capital gains rates)\n'
+               '     EXCEPT use special rates WHEN --exact OPTION SPECIFIED\n'
                '[20] [ALWAYS ZERO]\n'
                '[21] [ALWAYS ZERO]\n'
                '[22] child tax credit (adjusted)\n'

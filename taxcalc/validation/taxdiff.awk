@@ -1,26 +1,32 @@
-# TAXDIFF.AWK compares a variable in two output files that are formatted
-#             like Internet-TAXSIM generated output
+# TAXDIFF.AWK compares a variable in two output files that are format
+#             like Internet-TAXSIM generated output files
 # NOTE: this file must be in same directory as the taxdiffs.tcl file.
-# USAGE: awk -f taxdiff.awk -v col=NUM first-output-file second-output-file
-# NOTE: (a) the output files must have identical var[1] id variables;
-#       (b) the output files must have at least NUM output variables per line;
-#       (c) the difference is the variable value in first output file minus
-#           the variable value in the second output file; and
+# USAGE: awk -f taxdiff.awk -v col=NUM outfile1 outfile2 [dump=1]
+# NOTE: (a) the outfiles must have identical var[1] id variables;
+#       (b) the outfiles must have at least NUM output variables per line;
+#       (c) the difference is the variable value in outfile1 minus the
+#           variable value in outfile2; and
 #       (d) the maxdiff amount is the signed value of the largest absolute
 #           value of all the variable differences.
 
-DUMP_NUM_TAXDIFFS = 0 # number of tax differences [abs(diff)>0.01] to print
-
 BEGIN {
+    DUMP_MIN = 10 # absolute value of ovar4 difference must exceed this to dump
+    file_number = 0
+    file_name = ""
+    if ( col == "4-25" ) {
+        min_num_vars = 25
+        col = 4
+        net_eitc = 1
+    } else {
+        min_num_vars = col
+        net_eitc = 0
+    }
     error = 0
     if ( col < 2 || col > 28 ) {
         printf( "ERROR: col=%d not in [2,28] range\n", col ) > "/dev/stderr"
         error = 1
         exit
     }
-    file_number = 0
-    file_name = ""
-    min_num_vars = col
 }
 error==1 { exit }
 
@@ -43,8 +49,13 @@ file_number==1 {
         exit
     }
     id1[i1] = $1
-    tax1[i1] = $4
-    var1[i1] = $col
+    if ( net_eitc == 1 ) {
+        tax1[i1] = $4 + $25
+        var1[i1] = $col + $25
+    } else {
+        tax1[i1] = $4
+        var1[i1] = $col
+    }
 }
 
 file_number==2 {
@@ -56,51 +67,61 @@ file_number==2 {
         exit
     }
     id2[i2] = $1
-    tax2[i2] = $4
-    var2[i2] = $col
+    if ( net_eitc == 1 ) {
+        tax2[i2] = $4 + $25
+        var2[i2] = $col + $25
+    } else {
+        tax2[i2] = $4
+        var2[i2] = $col
+    }
 }
 
 END {
     if ( error==1 ) exit
     if ( i1 != i2 ) {
         printf( "ERROR: %s %d != %s %d\n",
-                ".out-simtax row count ", i1,
-                ".out-taxsim row count ", i2 ) > "/dev/stderr"
+                "first-output-file row count ", i1,
+                "second-output-file row count ", i2 ) > "/dev/stderr"
         exit
     }
     n = i2
     for ( i = 1; i <= n; i++ ) {
         if ( id1[i] != id2[i] ) {
             printf( "ERROR: %s %d != %s %d on row %d\n",
-                    ".out-simtax id ", id1[i],
-                    ".out-taxsim id ", id2[i], i ) > "/dev/stderr"
+                    "first-output-file id ", id1[i],
+                    "second-output-file id ", id2[i], i ) > "/dev/stderr"
             exit
         }
     }
     num_diffs = 0
-    num_onecent_diffs = 0
+    num_small_diffs = 0
     num_big_vardiff_with_big_taxdiff = 0
     max_abs_vardiff = 0.0
+    if ( col == 7 || col == 9 ) {
+        smallamt = 0.011 # one-hundredth of a percentage point
+    } else {
+        smallamt = DUMP_MIN
+    }
+    small_taxdiff = DUMP_MIN
     for ( i = 1; i <= n; i++ ) {
         if ( var1[i] != var2[i] ) {
             diff = var1[i] - var2[i]
-            if ( -0.011 < diff && diff < 0.011 ) {
-                num_onecent_diffs++
+            if ( -smallamt <= diff && diff <= smallamt ) {
+                num_small_diffs++
             } else {
                 taxdiff = tax1[i] - tax2[i]
-                if ( -0.011 < taxdiff && taxdiff < 0.011 ) {
-                    # taxdiff is one cent or less
+                if ( -small_taxdiff <= taxdiff && taxdiff <= small_taxdiff ) {
+                    # taxdiff is relatively small
                 } else {
                     num_big_vardiff_with_big_taxdiff++
                 }
             }
             num_diffs++
-            if ( col == 4 && DUMP_NUM_TAXDIFFS > 0 &&
-                 ( diff <= -0.011 || diff >= 0.011 ) &&
-                 num_diffs - num_onecent_diffs <= DUMP_NUM_TAXDIFFS ) {
-                printf( "TAXDIFF-DUMP:id,taxdiff= %6d %9.2f\n", id1[i], diff )
-            }
             if ( diff < 0.0 ) abs_vardiff = -diff; else abs_vardiff = diff
+            if ( col == 4 && dump == 1 && abs_vardiff > DUMP_MIN ) {
+                printf( "OVAR4-DUMP_MIN(%d):id,diff= %6d %9.2f\n",
+                        DUMP_MIN, id1[i], diff )
+            }
             if ( abs_vardiff > max_abs_vardiff ) {
                 max_abs_vardiff = abs_vardiff
                 if ( diff < 0.0 ) {
@@ -118,16 +139,21 @@ END {
         } else {
             signed_max_abs_vardiff = -max_abs_vardiff
         }
-        printf( "%s= %2d %6d %6d %9.2f [%d]\n",
-                "TAXDIFF:ovar,#diffs,#1cdiffs,maxdiff[id]",
-                col,
+        if ( net_eitc == 1 ) {
+            colstr = "4-"
+        } else {
+            colstr = sprintf("%2s", col)
+        }
+        printf( "%s= %s %6d %6d %9.2f [%d]\n",
+                "TAXDIFF:ovar,#diffs,#smdiffs,maxdiff[id]",
+                colstr,
                 num_diffs,
-                num_onecent_diffs,
+                num_small_diffs,
                 signed_max_abs_vardiff,
                 max_abs_vardiff_id )
         if ( num_big_vardiff_with_big_taxdiff > 0 ) {
             if ( col == 4 ) {
-                num_big_diffs = num_diffs - num_onecent_diffs
+                num_big_diffs = num_diffs - num_small_diffs
                 if ( num_big_vardiff_with_big_taxdiff != num_big_diffs ) {
                     printf( "ERROR: %s=%d != %s=%d\n",
                             "num_big_diffs",

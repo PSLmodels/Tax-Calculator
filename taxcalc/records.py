@@ -36,11 +36,6 @@ class Records(object):
         any smoothing of "stair-step" provisions in income tax law;
         default value is false.
 
-    schR_calculations: boolean
-        specifies whether or not Schedule R calculations are done or
-        whether the Schedule R credit is set to value of input variable;
-        default value is true.
-
     blowup_factors: string or Pandas DataFrame or None
         string describes CSV file in which blowup factors reside;
         DataFrame already contains blowup factors;
@@ -99,7 +94,7 @@ class Records(object):
 
     # specify set of all Record variables that MAY be read by Tax-Calculator:
     VALID_READ_VARS = set([
-        'DSI', 'EIC', 'FDED', 'FLPDYR',
+        'DSI', 'EIC', 'FLPDYR',
         'f2441', 'f6251', 'n24', 'XTOT',
         'e00200', 'e00300', 'e00400', 'e00600', 'e00650', 'e00700', 'e00800',
         'e00200p', 'e00200s',
@@ -112,8 +107,7 @@ class Records(object):
         'e07240', 'e07260', 'e07300',
         'e07400', 'e07600', 'p08000',
         'e09700', 'e09800', 'e09900',
-        'e11550', 'e11070', 'e11200',
-        'e11580',
+        'e11200',
         'e17500', 'e18400', 'e18500',
         'e19200', 'e19800', 'e20100',
         'e20400', 'e20500', 'p22250',
@@ -123,8 +117,8 @@ class Records(object):
         'e27200', 'e32800', 'e03300',
         'e58990',
         'e62900',
-        'p87482', 'e87487', 'e87492', 'e87497', 'p87521',
-        'e87530',
+        'p87482',
+        'p87521', 'e87530',
         'MARS', 'MIDR', 'RECID',
         'cmbtp_standard', 'cmbtp_itemizer',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
@@ -135,7 +129,7 @@ class Records(object):
 
     # specify which VALID_READ_VARS should be int64 (rather than float64):
     INTEGER_READ_VARS = set([
-        'DSI', 'EIC', 'FDED', 'FLPDYR',
+        'DSI', 'EIC', 'FLPDYR',
         'f2441', 'f6251',
         'n24', 'XTOT',
         'MARS', 'MIDR', 'RECID',
@@ -143,47 +137,36 @@ class Records(object):
 
     # specify set of all Record variables that cannot be read in:
     CALCULATED_VARS = set([
-        'f2555',
         '_exact',
-        '_calc_schR', 'c07200',
-        'c00650', 'c00100',
-        'c04470', 'c04600', 'c21060', 'c21040', 'c17000',
-        'c18300', 'c19200', 'c20500', 'c20800', 'c02900', 'c02700', 'c23650',
+        'c07200',
+        'c00100', 'pre_c04600', 'c04600',
+        'c04470', 'c21060', 'c21040', 'c17000',
+        'c18300', 'c20800', 'c02900', 'c23650',
         'c01000', 'c02500',
-        'c11580',
         '_sey', '_earned', '_earned_p', '_earned_s',
-        'c09400', '_feided', 'ymod', 'ymod1', '_posagi',
-        '_xyztax', '_avail',
-        '_taxinc', 'c04800', '_feitax', 'c24517',
-        '_taxbc', '_standard', 'c24516',
-        'c05700', 'c32880', 'c32890', 'c32800',
-        'c05800', 'c59560',
-        'c87521', 'c87550', 'c07180',
-        'c07230', '_precrd', 'c07220', 'c59660',
+        'ymod', 'ymod1',
+        'c04800', 'c19200', 'c20500',
+        '_taxbc', '_standard', 'c24516', 'c24517', 'c24520',
+        'c05700',
+        'c05800',
+        'c07180',
+        'c07230', 'prectc', 'c07220', 'c59660',
         'c09200', 'c07100', '_eitc',
-        '_prexmp',
-        '_fica', '_fica_was', 'c03260',
+        '_payrolltax', 'ptax_was', 'ptax_sey', 'c03260', 'ptax_amc',
         '_sep', '_num',
-        'c04500', 'c05200',
-        'c24505', 'c24520',
+        'c05200',
         'c62100',
         'c09600',
-        'c33200',
-        '_extrastd', 'ID_Casualty_frt_in_pufcsv_year',
-        'c11070', 'c87482',
-        'c87487', 'c87492', 'c87497', 'c87483', 'c87488',
-        'c87493', 'c87498',
-        'c87658', 'c87660', 'c87662',
+        'ID_Casualty_frt_in_pufcsv_year',
+        'c11070',
         'c10960', 'c87668',
-        'c08800',
-        '_othertax', 'NIIT',
+        'NIIT',
         '_iitax', '_refund',
         '_expanded_income', 'c07300',
         'c07600', 'c07240',
-        '_surtax', '_combined', 'personal_credit'])
+        '_surtax', '_combined', 'personal_credit', 'fst'])
 
-    INTEGER_CALCULATED_VARS = set([
-        '_num', '_sep', '_exact', '_calc_schR', 'f2555'])
+    INTEGER_CALCULATED_VARS = set(['_num', '_sep', '_exact'])
 
     CHANGING_CALCULATED_VARS = (CALCULATED_VARS - INTEGER_CALCULATED_VARS -
                                 set(['ID_Casualty_frt_in_pufcsv_year']))
@@ -191,7 +174,6 @@ class Records(object):
     def __init__(self,
                  data='puf.csv',
                  exact_calculations=False,
-                 schR_calculations=True,
                  blowup_factors=BLOWUP_FACTORS_PATH,
                  weights=WEIGHTS_PATH,
                  start_year=PUFCSV_YEAR):
@@ -200,7 +182,7 @@ class Records(object):
         """
         # pylint: disable=too-many-arguments
         # read specified data
-        self._read_data(data, exact_calculations, schR_calculations)
+        self._read_data(data, exact_calculations)
         # check that three sets of split-earnings variables have valid values
         msg = 'expression "{0} == {0}p + {0}s" is not true for every record'
         if not np.allclose(self.e00200, (self.e00200p + self.e00200s),
@@ -212,15 +194,22 @@ class Records(object):
         if not np.allclose(self.e02100, (self.e02100p + self.e02100s),
                            rtol=0.0, atol=0.001):
             raise ValueError(msg.format('e02100'))
+        # check that ordinary dividends are no less than qualified dividends
+        other_dividends = np.maximum(0., self.e00600 - self.e00650)
+        if not np.allclose(self.e00600, self.e00650 + other_dividends,
+                           rtol=0.0, atol=0.001):
+            msg = 'expression "e00600 >= e00650" is not true for every record'
+            raise ValueError(msg)
         # read extrapolation blowup factors and sample weights
+        self.BF = None
         self._read_blowup(blowup_factors)
+        self.WT = None
         self._read_weights(weights)
         # weights must be same size as tax record data
         if not self.WT.empty and self.dim != len(self.WT):
             frac = float(self.dim) / len(self.WT)
             self.WT = self.WT.iloc[self.index]
             self.WT = self.WT / frac
-
         # specify current_year and FLPDYR values
         if isinstance(start_year, int):
             self._current_year = start_year
@@ -229,7 +218,7 @@ class Records(object):
             msg = 'start_year is not an integer'
             raise ValueError(msg)
         # consider applying initial-year blowup factors
-        if self.BF.empty is False and self.current_year == Records.PUF_YEAR:
+        if not self.BF.empty and self.current_year == Records.PUF_YEAR:
             self._extrapolate_in_puf_year()
         # construct sample weights for current_year
         wt_colname = 'WT{}'.format(self.current_year)
@@ -338,7 +327,6 @@ class Records(object):
         self.e09800 *= ATXPY
         self.e09900 *= ATXPY
         self.e11200 *= ATXPY
-        self.e11580 *= ATXPY
         # ITEMIZED DEDUCTIONS
         self.e17500 *= ACPIM
         self.e18400 *= ATXPY
@@ -364,18 +352,13 @@ class Records(object):
         self.e62900 *= ATXPY
         self.e87530 *= ATXPY
         self.p87521 *= ATXPY
-        self.p87482 *= ATXPY
-        self.e87487 *= ATXPY
-        self.e87492 *= ATXPY
-        self.e87497 *= ATXPY
         self.cmbtp_itemizer *= ATXPY
         self.cmbtp_standard *= ATXPY
 
-    def _read_data(self, data, exact_calcs, schR_calcs):
+    def _read_data(self, data, exact_calcs):
         """
         Read Records data from file or use specified DataFrame as data.
         Specifies _exact array depending on boolean value of exact_calcs.
-        Specifies _calc_schR array depending on boolean value of schR_calcs.
         """
         # pylint: disable=too-many-branches
         if isinstance(data, pd.DataFrame):
@@ -425,8 +408,6 @@ class Records(object):
                                 2, 1)
         # specify value of _exact array
         self._exact[:] = np.where(exact_calcs is True, 1, 0)
-        # specify value of _calc_schR array
-        self._calc_schR[:] = np.where(schR_calcs is True, 1, 0)
         # specify value of ID_Casualty_frt_in_pufcsv_year array
         ryear = 9999  # specify reform year if ID_Casualty_frt changes
         rvalue = 0.0  # specify value of ID_Casualty_frt beginning in ryear

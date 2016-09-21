@@ -134,25 +134,24 @@ class Calculator(object):
 
     def TaxInc_to_AMTI(self):
         TaxInc(self.policy, self.records)
-        XYZD(self.policy, self.records)
-        TaxGains(self.policy, self.records)
-        MUI(self.policy, self.records)
-        AMTI(self.policy, self.records)
+        SchXYZTax(self.policy, self.records)
+        GainsTax(self.policy, self.records)
+        NetInvIncTax(self.policy, self.records)
+        AMTInc(self.policy, self.records)
 
     def calc_one_year(self, zero_out_calc_vars=False):
         # calls all the functions except BenefitSurtax and ExpandIncome
         if zero_out_calc_vars:
             self.records.zero_out_changing_calculated_vars()
         # pdb.set_trace()
-        EI_FICA(self.policy, self.records)
+        EI_PayrollTax(self.policy, self.records)
         Adj(self.policy, self.records)
         CapGains(self.policy, self.records)
         SSBenefits(self.policy, self.records)
         AGI(self.policy, self.records)
         ItemDed(self.policy, self.records)
-        AMED(self.policy, self.records)
+        AdditionalMedicareTax(self.policy, self.records)
         StdDed(self.policy, self.records)
-        Personal_Credit(self.policy, self.records)
         # Store calculated standard deduction, calculate
         # taxes with standard deduction, store AMT + Regular Tax
         std = copy.deepcopy(self.records._standard)
@@ -180,25 +179,23 @@ class Calculator(object):
         # Calculate taxes with optimal itemized deduction
         self.TaxInc_to_AMTI()
         F2441(self.policy, self.records)
-        NumDep(self.policy, self.records)
+        EITC(self.policy, self.records)
         ChildTaxCredit(self.policy, self.records)
-        AmOppCr(self.policy, self.records)
-        LLC(self.policy, self.records)
-        RefAmOpp(self.policy, self.records)
+        AmOppCreditParts(self.policy, self.records)
         SchR(self.policy, self.records)
-        NonEdCr(self.policy, self.records)
-        AddCTC(self.policy, self.records)
-        F5405(self.policy, self.records)
+        EducationTaxCredit(self.policy, self.records)
+        NonrefundableCredits(self.policy, self.records)
+        AdditionalCTC(self.policy, self.records)
         C1040(self.policy, self.records)
-        DEITC(self.policy, self.records)
         IITAX(self.policy, self.records)
-        ExpandIncome(self.policy, self.records)
 
     def calc_all(self, zero_out_calc_vars=False):
         # conducts static analysis of Calculator object for current_year
         self.calc_one_year(zero_out_calc_vars)
         BenefitSurtax(self)
         BenefitCap(self)
+        FairShareTax(self.policy, self.records)
+        ExpandIncome(self.policy, self.records)
 
     def increment_year(self):
         next_year = self.policy.current_year + 1
@@ -227,41 +224,42 @@ class Calculator(object):
     def current_year(self):
         return self.policy.current_year
 
-    MTR_VALID_INCOME_TYPES = ['e00200p', 'e00900p',
-                              'e00300', 'e00400',
-                              'e00600', 'e00650',
-                              'e01400', 'e01700',
-                              'e02000', 'e02400',
-                              'p22250', 'p23250']
+    MTR_VALID_VARIABLES = ['e00200p', 'e00900p',
+                           'e00300', 'e00400',
+                           'e00600', 'e00650',
+                           'e01400', 'e01700',
+                           'e02000', 'e02400',
+                           'p22250', 'p23250',
+                           'e18500', 'e19200']
 
-    def mtr(self, income_type_str='e00200p',
+    def mtr(self, variable_str='e00200p',
             negative_finite_diff=False,
             zero_out_calculated_vars=False,
             wrt_full_compensation=True):
         """
-        Calculates the marginal FICA, individual income, and combined
+        Calculates the marginal payroll, individual income, and combined
         tax rates for every tax filing unit.
           The marginal tax rates are approximated as the change in tax
-        liability caused by a small increase (the finite_diff) in income
-        (specified by the income_type_str) divided by that small increase
-        in income, when wrt_full_compensation is false.
+        liability caused by a small increase (the finite_diff) in the variable
+        specified by the variable_str divided by that small increase in the
+        variable, when wrt_full_compensation is false.
           If wrt_full_compensation is true, then the marginal tax rates
         are computed as the change in tax liability divided by the change
-        in total compensation caused by the small increase in income
+        in total compensation caused by the small increase in the variable
         (where the change in total compensation is the sum of the small
-        increase in income and any increase in the employer share of FICA
-        taxes caused by the small increase in income).
+        increase in the variable and any increase in the employer share of
+        payroll taxes caused by the small increase in the variable).
 
         Parameters
         ----------
-        income_type_str: string
-            specifies type of income that is increased to compute the
-            marginal tax rates.  See Notes for list of valid income types.
+        variable_str: string
+            specifies type of income or expense that is increased to compute
+            the marginal tax rates.  See Notes for list of valid variables.
 
         negative_finite_diff: boolean
             specifies whether or not marginal tax rates are computed by
             subtracting (rather than adding) a small finite_diff amount
-            to the specified income type.
+            to the specified variable.
 
         zero_out_calculated_vars: boolean
             specifies value of zero_out_calc_vars parameter used in calls
@@ -270,17 +268,18 @@ class Calculator(object):
         wrt_full_compensation: boolean
             specifies whether or not marginal tax rates on earned income
             are computed with respect to (wrt) changes in total compensation
-            that includes the employer share of OASDI+HI payroll taxes.
+            that includes the employer share of OASDI and HI payroll taxes.
 
         Returns
         -------
-        mtr_fica: an array of marginal FICA tax rates.
-        mtr_iit: an array of marginal individual income tax (IIT) rates.
-        mtr_combined: an array of marginal combined FICA and IIT tax rates.
+        mtr_payrolltax: an array of marginal payroll tax rates.
+        mtr_incometax: an array of marginal individual income tax rates.
+        mtr_combined: an array of marginal combined tax rates, which is
+                      the sum of mtr_payrolltax and mtr_incometax.
 
         Notes
         -----
-        Valid income_type_str values are:
+        Valid variable_str values are:
         'e00200p', taxpayer wage/salary earnings (also included in e00200);
         'e00900p', taxpayer Schedule C self-employment income (also in e00900);
         'e00300',  taxable interest income;
@@ -292,68 +291,66 @@ class Calculator(object):
         'e02000',  Schedule E net income/loss
         'e02400',  all social security (OASDI) benefits;
         'p22250',  short-term capital gains;
-        'p23250',  long-term capital gains.
+        'p23250',  long-term capital gains;
+        'e18500',  Schedule A real-estate-tax deduction;
+        'e19200',  Schedule A total-interest deduction.
         """
-        # check validity of income_type_str parameter
-        if income_type_str not in Calculator.MTR_VALID_INCOME_TYPES:
-            msg = 'mtr income_type_str="{}" is not valid'
-            raise ValueError(msg.format(income_type_str))
+        # check validity of variable_str parameter
+        if variable_str not in Calculator.MTR_VALID_VARIABLES:
+            msg = 'mtr variable_str="{}" is not valid'
+            raise ValueError(msg.format(variable_str))
         # specify value for finite_diff parameter
         finite_diff = 0.01  # a one-cent difference
         if negative_finite_diff:
             finite_diff *= -1.0
         # save records object in order to restore it after mtr computations
         recs0 = copy.deepcopy(self.records)
-        # extract income_type array(s) from embedded records object
-        income_type = getattr(self.records, income_type_str)
-        if income_type_str == 'e00200p':
-            earnings_type = self.records.e00200
-        elif income_type_str == 'e00900p':
-            seincome_type = self.records.e00900
-        elif income_type_str == 'e00650':
-            divincome_type = self.records.e00600
-        elif income_type_str == 'e01700':
-            penben_type = self.records.e01500
+        # extract variable array(s) from embedded records object
+        variable = getattr(self.records, variable_str)
+        if variable_str == 'e00200p':
+            earnings_var = self.records.e00200
+        elif variable_str == 'e00900p':
+            seincome_var = self.records.e00900
+        elif variable_str == 'e00650':
+            divincome_var = self.records.e00600
         # calculate level of taxes after a marginal increase in income
-        setattr(self.records, income_type_str, income_type + finite_diff)
-        if income_type_str == 'e00200p':
-            self.records.e00200 = earnings_type + finite_diff
-        elif income_type_str == 'e00900p':
-            self.records.e00900 = seincome_type + finite_diff
-        elif income_type_str == 'e00650':
-            self.records.e00600 = divincome_type + finite_diff
-        elif income_type_str == 'e01700':
-            self.records.e01500 = penben_type + finite_diff
+        setattr(self.records, variable_str, variable + finite_diff)
+        if variable_str == 'e00200p':
+            self.records.e00200 = earnings_var + finite_diff
+        elif variable_str == 'e00900p':
+            self.records.e00900 = seincome_var + finite_diff
+        elif variable_str == 'e00650':
+            self.records.e00600 = divincome_var + finite_diff
         if self.consumption.has_response():
             self.consumption.response(self.records, finite_diff)
         self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
-        fica_chng = copy.deepcopy(self.records._fica)
-        iitax_chng = copy.deepcopy(self.records._iitax)
-        combined_taxes_chng = iitax_chng + fica_chng
+        payrolltax_chng = copy.deepcopy(self.records._payrolltax)
+        incometax_chng = copy.deepcopy(self.records._iitax)
+        combined_taxes_chng = incometax_chng + payrolltax_chng
         # calculate base level of taxes after restoring records object
         setattr(self, '_records', recs0)
         self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
-        fica_base = copy.deepcopy(self.records._fica)
-        iitax_base = copy.deepcopy(self.records._iitax)
-        combined_taxes_base = iitax_base + fica_base
-        # compute marginal changes in tax liability
-        fica_diff = fica_chng - fica_base
-        iitax_diff = iitax_chng - iitax_base
+        payrolltax_base = copy.deepcopy(self.records._payrolltax)
+        incometax_base = copy.deepcopy(self.records._iitax)
+        combined_taxes_base = incometax_base + payrolltax_base
+        # compute marginal changes in combined tax liability
+        payrolltax_diff = payrolltax_chng - payrolltax_base
+        incometax_diff = incometax_chng - incometax_base
         combined_diff = combined_taxes_chng - combined_taxes_base
         # specify optional adjustment for employer (er) OASDI+HI payroll taxes
-        if wrt_full_compensation and income_type_str == 'e00200p':
-            adj = np.where(income_type < self.policy.SS_Earnings_c,
+        if wrt_full_compensation and variable_str == 'e00200p':
+            adj = np.where(variable < self.policy.SS_Earnings_c,
                            0.5 * (self.policy.FICA_ss_trt +
                                   self.policy.FICA_mc_trt),
                            0.5 * self.policy.FICA_mc_trt)
         else:
             adj = 0.0
         # compute marginal tax rates
-        mtr_fica = fica_diff / (finite_diff * (1.0 + adj))
-        mtr_iit = iitax_diff / (finite_diff * (1.0 + adj))
+        mtr_payrolltax = payrolltax_diff / (finite_diff * (1.0 + adj))
+        mtr_incometax = incometax_diff / (finite_diff * (1.0 + adj))
         mtr_combined = combined_diff / (finite_diff * (1.0 + adj))
         # return the three marginal tax rate arrays
-        return (mtr_fica, mtr_iit, mtr_combined)
+        return (mtr_payrolltax, mtr_incometax, mtr_combined)
 
     def current_law_version(self):
         """

@@ -47,3 +47,10 @@ to specify the taxpayer-spouse split.  You will get an error message
 from Tax-Calculator, and it will stop running, if you do not split the
 filing-unit amount between taxpayer and spouse so that the above equations
 hold for each filing unit in the input file.
+
+In addition to this earning-splitting data-preparation issue,
+Tax-Calculator expects that the value of ordinary dividends (e00600)
+will be no less than the value of qualified dividends (e00650) for
+each filing unit.  Again, it is the responsibility of anyone preparing
+data for Tax-Calculator input to ensure that this relationship is
+true.
