@@ -477,13 +477,12 @@ def SchXYZTax(c04800, MARS, e00900, e26270,
 
 
 @iterate_jit(nopython=True)
-def GainsTax(e00650, c00100, c01000, c23650, p23250, e01100, e58990,
+def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
              e24515, e24518, MARS, c04800, c05200,
              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3,
-             c24516, c24517, c24520, c05700, _taxbc, AGI_surtax_thd,
-             AGI_surtax_rt):
+             c24516, c24517, c24520, c05700, _taxbc):
     """
     GainsTax function implements (2015) Schedule D Tax Worksheet logic for
     the special taxation of long-term capital gains and qualified dividends
@@ -577,8 +576,9 @@ def GainsTax(e00650, c00100, c01000, c23650, p23250, e01100, e58990,
 
 @iterate_jit(nopython=True)
 def AGIsurtax(_taxbc, c00100, MARS, AGI_surtax_trt, AGI_surtax_thd):
-    if AGI_surtax_rt > 0:
+    if AGI_surtax_trt > 0:
         _taxbc += AGI_surtax_trt * max(c00100 - AGI_surtax_thd[MARS - 1], 0)
+
     return _taxbc
 
 
