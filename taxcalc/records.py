@@ -162,9 +162,9 @@ class Records(object):
         'c10960', 'c87668',
         'NIIT',
         '_iitax', '_refund',
-        '_expanded_income', 'c07300',
-        'c07600', 'c07240',
-        '_surtax', '_combined', 'personal_credit', 'fst'])
+        '_expanded_income', 'c07300', 'c07400',
+        'c07600', 'c07240', 'c07260', 'c08000',
+        '_surtax', '_combined', 'personal_credit', 'fstax'])
 
     INTEGER_CALCULATED_VARS = set(['_num', '_sep', '_exact'])
 

@@ -577,6 +577,18 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
 
 
 @iterate_jit(nopython=True)
+def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, _taxbc, _surtax):
+    """
+    AGIsurtax computes surtax on AGI above some threshold
+    """
+    if AGI_surtax_trt > 0.:
+        hiAGItax = AGI_surtax_trt * max(c00100 - AGI_surtax_thd[MARS - 1], 0.)
+        _taxbc += hiAGItax
+        _surtax += hiAGItax
+    return (_taxbc, _surtax)
+
+
+@iterate_jit(nopython=True)
 def AMTInc(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
            c04470, c17000, c20800, c21040, e24515, MARS, _sep,
            c24520, c05700, e62900, e00700, c24516, age_head, _earned,
@@ -955,13 +967,14 @@ def EducationTaxCredit(e87530, MARS, c00100, _num, c05800,
 
 
 @iterate_jit(nopython=True)
-def NonrefundableCredits(c05800, e07240, e07260, e07300, e07600,
+def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
+                         e07600, p08000, prectc,
                          c07180, c07200, c07220, c07230, c07240,
-                         prectc, c07300, c07600):
+                         c07260, c07300, c07400, c07600, c08000):
     """
-    NonRefundableCredits function serially applies credits to tax liability
+    NonRefundableCredits function sequentially limits credits to tax liability
     """
-    # apply tax credits to tax liability in order they are on 2015 1040 form
+    # limit tax credits to tax liability in order they are on 2015 1040 form
     avail = c05800
     c07300 = min(e07300, avail)  # Foreign tax credit - Form 1116
     avail = avail - c07300
@@ -975,11 +988,16 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07600,
     avail = avail - c07220
     c07260 = min(e07260, avail)  # Residential energy credit - Form 5695
     avail = avail - c07260
+    c07400 = min(e07400, avail)  # General business credit - Form 3800
+    avail = avail - c07400
     c07600 = min(e07600, avail)  # Prior year minimum tax credit - Form 8801
     avail = avail - c07600
     c07200 = min(c07200, avail)  # Schedule R credit
     avail = avail - c07200
-    return (c07220, c07230, c07240, c07300, c07600)
+    c08000 = min(p08000, avail)  # Other credits
+    avail = avail - c08000
+    return (c07180, c07200, c07220, c07230, c07240,
+            c07260, c07300, c07400, c07600, c08000)
 
 
 @iterate_jit(nopython=True)
@@ -1034,16 +1052,16 @@ def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
 
 
 @iterate_jit(nopython=True)
-def C1040(c05800, c07180, c07200, c07220, c07230, c07240, e07260, c07300,
-          e07400, c07600, p08000, e09700, e09800, e09900, ptax_sey, NIIT,
+def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
+          c07400, c07600, c08000, e09700, e09800, e09900, ptax_sey, NIIT,
           c07100, c09200):
     """
     C1040 function computes total nonrefundable credits, c07100, and
                             income tax before refundable credits, c09200
     """
     # total (nonrefundable) credits (2015 Form 1040, line 55)
-    c07100 = (c07180 + c07200 + c07600 + c07300 + e07400 + c07220 + p08000 +
-              c07230 + c07240 + e07260)
+    c07100 = (c07180 + c07200 + c07600 + c07300 + c07400 + c07220 + c08000 +
+              c07230 + c07240 + c07260)
     # tax after credits (2015 Form 1040, line 56)
     nonrefundable_credits = max(0., c05800 - c07100)
     # tax before refundable credits
@@ -1153,11 +1171,13 @@ def BenefitSurtax(calc):
                              calc.records.c00100)
         benefit_exemption = \
             calc.policy.ID_BenefitSurtax_em[calc.records.MARS - 1]
-        calc.records._surtax[:] = calc.policy.ID_BenefitSurtax_trt * np.where(
+        benefit_surtax = calc.policy.ID_BenefitSurtax_trt * np.where(
             benefit > (benefit_deduction + benefit_exemption),
             benefit - (benefit_deduction + benefit_exemption), 0.)
-        calc.records._iitax += calc.records._surtax
-        calc.records._combined += calc.records._surtax
+        # add benefit_surtax to income & combined taxes and to surtax subtotal
+        calc.records._iitax += benefit_surtax
+        calc.records._combined += benefit_surtax
+        calc.records._surtax += benefit_surtax
 
 
 def BenefitCap(calc):
@@ -1192,12 +1212,13 @@ def BenefitCap(calc):
         excess_benefit = np.maximum(benefit - capped_benefit, 0)
         calc.records._iitax += excess_benefit
         calc.records._combined += excess_benefit
+        calc.records._surtax += excess_benefit
 
 
 @iterate_jit(nopython=True)
 def FairShareTax(c00100, MARS, ptax_was, ptax_sey, ptax_amc,
                  FST_AGI_trt, FST_AGI_thd_lo, FST_AGI_thd_hi,
-                 fst, _iitax, _combined):
+                 fstax, _iitax, _combined, _surtax):
     """
     Computes Fair Share Tax, or "Buffet Rule", types of reforms
 
@@ -1217,23 +1238,26 @@ def FairShareTax(c00100, MARS, ptax_was, ptax_sey, ptax_amc,
     Returns
     -------
 
-    fst : Fair Share Tax amount
+    fstax : Fair Share Tax amount
 
-    _iitax : individual income tax augmented by fst
+    _iitax : individual income tax augmented by fstax
 
-    _combined : individual income tax plus payroll taxes augmented by fst
+    _combined : individual income tax plus payroll taxes augmented by fstax
+
+    _surtax : individual income tax subtotal augmented by fstax
     """
     if FST_AGI_trt > 0. and c00100 >= FST_AGI_thd_lo[MARS - 1]:
         employee_share = 0.5 * ptax_was + 0.5 * ptax_sey + ptax_amc
-        fst = max(c00100 * FST_AGI_trt - _iitax - employee_share, 0.)
+        fstax = max(c00100 * FST_AGI_trt - _iitax - employee_share, 0.)
         thd_gap = max(FST_AGI_thd_hi[MARS - 1] - FST_AGI_thd_lo[MARS - 1], 0.)
         if thd_gap > 0. and c00100 < FST_AGI_thd_hi[MARS - 1]:
-            fst *= (c00100 - FST_AGI_thd_lo[MARS - 1]) / thd_gap
-        _iitax += fst
-        _combined += fst
+            fstax *= (c00100 - FST_AGI_thd_lo[MARS - 1]) / thd_gap
+        _iitax += fstax
+        _combined += fstax
+        _surtax += fstax
     else:
-        fst = 0.
-    return (fst, _iitax, _combined)
+        fstax = 0.
+    return (fstax, _iitax, _combined, _surtax)
 
 
 @iterate_jit(nopython=True)
