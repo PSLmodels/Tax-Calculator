@@ -954,13 +954,14 @@ def EducationTaxCredit(e87530, MARS, c00100, _num, c05800,
 
 
 @iterate_jit(nopython=True)
-def NonrefundableCredits(c05800, e07240, e07260, e07300, e07600,
+def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
+                         e07600, p08000, prectc,
                          c07180, c07200, c07220, c07230, c07240,
-                         prectc, c07300, c07600):
+                         c07260, c07300, c07400, c07600, c08000):
     """
-    NonRefundableCredits function serially applies credits to tax liability
+    NonRefundableCredits function sequentially limits credits to tax liability
     """
-    # apply tax credits to tax liability in order they are on 2015 1040 form
+    # limit tax credits to tax liability in order they are on 2015 1040 form
     avail = c05800
     c07300 = min(e07300, avail)  # Foreign tax credit - Form 1116
     avail = avail - c07300
@@ -974,11 +975,16 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07600,
     avail = avail - c07220
     c07260 = min(e07260, avail)  # Residential energy credit - Form 5695
     avail = avail - c07260
+    c07400 = min(e07400, avail)  # General business credit - Form 3800
+    avail = avail - c07400
     c07600 = min(e07600, avail)  # Prior year minimum tax credit - Form 8801
     avail = avail - c07600
     c07200 = min(c07200, avail)  # Schedule R credit
     avail = avail - c07200
-    return (c07220, c07230, c07240, c07300, c07600)
+    c08000 = min(p08000, avail)  # Other credits
+    avail = avail - c08000
+    return (c07180, c07200, c07220, c07230, c07240,
+            c07260, c07300, c07400, c07600, c08000)
 
 
 @iterate_jit(nopython=True)
@@ -1033,16 +1039,16 @@ def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
 
 
 @iterate_jit(nopython=True)
-def C1040(c05800, c07180, c07200, c07220, c07230, c07240, e07260, c07300,
-          e07400, c07600, p08000, e09700, e09800, e09900, ptax_sey, NIIT,
+def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
+          c07400, c07600, c08000, e09700, e09800, e09900, ptax_sey, NIIT,
           c07100, c09200):
     """
     C1040 function computes total nonrefundable credits, c07100, and
                             income tax before refundable credits, c09200
     """
     # total (nonrefundable) credits (2015 Form 1040, line 55)
-    c07100 = (c07180 + c07200 + c07600 + c07300 + e07400 + c07220 + p08000 +
-              c07230 + c07240 + e07260)
+    c07100 = (c07180 + c07200 + c07600 + c07300 + c07400 + c07220 + c08000 +
+              c07230 + c07240 + c07260)
     # tax after credits (2015 Form 1040, line 56)
     nonrefundable_credits = max(0., c05800 - c07100)
     # tax before refundable credits
