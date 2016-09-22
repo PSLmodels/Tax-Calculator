@@ -477,35 +477,36 @@ def diagnostic_table_odict(recs):
     odict['Personal Exemption ($b)'] = PE * in_billions
     # taxable income
     taxinc = (recs.c04800 * recs.s006).sum()
-    odict['Taxable income ($b)'] = taxinc * in_billions
+    odict['Taxable Income ($b)'] = taxinc * in_billions
     # regular tax liability
     regular_tax = (recs.c05200 * recs.s006).sum()
     odict['Regular Tax ($b)'] = regular_tax * in_billions
     # AMT taxable income
-    odict['AMT income ($b)'] = (recs.c62100 * recs.s006).sum() * in_billions
+    odict['AMT Income ($b)'] = (recs.c62100 * recs.s006).sum() * in_billions
     # total AMT liability
-    odict['AMT amount ($b)'] = (recs.c09600 * recs.s006).sum() * in_billions
+    odict['AMT Liability ($b)'] = (recs.c09600 * recs.s006).sum() * in_billions
     # number of people paying AMT
-    odict['AMT number (#m)'] = recs.s006[recs.c09600 > 0.].sum() * in_millions
+    odict['AMT Filers (#m)'] = recs.s006[recs.c09600 > 0.].sum() * in_millions
     # tax before credits
     tax_before_credits = (recs.c05800 * recs.s006).sum()
-    odict['Tax before credits ($b)'] = tax_before_credits * in_billions
+    odict['Tax before Credits ($b)'] = tax_before_credits * in_billions
     # refundable credits
     refundable_credits = (recs._refund * recs.s006).sum()
-    odict['refundable credits ($b)'] = refundable_credits * in_billions
+    odict['Refundable Credits ($b)'] = refundable_credits * in_billions
     # nonrefuncable credits
     nonrefundable_credits = (recs.c07100 * recs.s006).sum()
-    odict['nonrefundable credits ($b)'] = nonrefundable_credits * in_billions
-    # itemized-deduction surtax liability
-    odict['Misc. Surtax ($b)'] = (recs._surtax * recs.s006).sum() * in_billions
+    odict['Nonrefundable Credits ($b)'] = nonrefundable_credits * in_billions
+    # reform surtaxes (part of federal individual income tax liability)
+    odict['Reform Surtaxes ($b)'] = ((recs._surtax * recs.s006).sum() *
+                                     in_billions)
     # federal individual income tax liability
-    odict['Ind inc tax ($b)'] = (recs._iitax * recs.s006).sum() * in_billions
+    odict['Ind Income Tax ($b)'] = (recs._iitax * recs.s006).sum() * in_billions
     # OASDI+HI payroll tax liability (including employer share)
     payrolltax = (recs._payrolltax * recs.s006).sum()
-    odict['Payroll tax ($b)'] = payrolltax * in_billions
+    odict['Payroll Taxes ($b)'] = payrolltax * in_billions
     # combined income and payroll tax liability
     combined = (recs._combined * recs.s006).sum()
-    odict['Combined liability ($b)'] = combined * in_billions
+    odict['Combined Liability ($b)'] = combined * in_billions
     return odict
 
 

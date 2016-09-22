@@ -1153,7 +1153,7 @@ def BenefitSurtax(calc):
         if calc.policy.ID_BenefitSurtax_Switch[6]:
             no_ID_calc.policy.ID_Charity_HC = 1.
         no_ID_calc.calc_one_year()
-        # compute surtax amount and add to income and combined taxes
+        # compute surtax amount
         # pylint: disable=protected-access
         benefit_amount = np.where(
             no_ID_calc.records._iitax - calc.records._iitax > 0.,
@@ -1165,6 +1165,7 @@ def BenefitSurtax(calc):
         benefit_surtax = calc.policy.ID_BenefitSurtax_trt * np.where(
             benefit_amount > (benefit_deduction + benefit_exemption),
             benefit_amount - (benefit_deduction + benefit_exemption), 0.)
+        # add benefit_surtax to income & combined taxes and to surtax subtotal
         calc.records._iitax += benefit_surtax
         calc.records._combined += benefit_surtax
         calc.records._surtax += benefit_surtax
