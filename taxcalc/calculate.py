@@ -136,6 +136,7 @@ class Calculator(object):
         TaxInc(self.policy, self.records)
         SchXYZTax(self.policy, self.records)
         GainsTax(self.policy, self.records)
+        AGIsurtax(self.policy, self.records)
         NetInvIncTax(self.policy, self.records)
         AMTInc(self.policy, self.records)
 

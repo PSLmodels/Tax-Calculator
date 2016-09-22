@@ -571,8 +571,15 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
     c05100 = c24580  # because no foreign earned income deduction
     c05700 = 0.  # no Form 4972, Lump Sum Distributions
     _taxbc = c05700 + c05100
-
     return (c24516, c24517, c24520, c05700, _taxbc)
+
+
+@iterate_jit(nopython=True)
+def AGIsurtax(_taxbc, c00100, MARS, AGI_surtax_trt, AGI_surtax_thd):
+    if AGI_surtax_trt > 0:
+        _taxbc += AGI_surtax_trt * max(c00100 - AGI_surtax_thd[MARS - 1], 0)
+
+    return _taxbc
 
 
 @iterate_jit(nopython=True)
