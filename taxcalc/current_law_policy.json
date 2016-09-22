@@ -985,7 +985,7 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99, 9e99]]
     },
 
-    "_AGI_surtax_thd":{
+    "_AGI_surtax_thd": {
         "long_name": "Threshold for surtax on AGI",
         "description": "The aggregate gross income above this AGI surtax threshold is taxed at surtax rate on AGI.",
         "irs_ref": "",
@@ -998,8 +998,8 @@
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
         "value": [[9e99, 9e99, 9e99, 9e99, 9e99, 9e99]]
     },
-    
-    "_AGI_surtax_trt":{
+
+    "_AGI_surtax_trt": {
         "long_name": "Surtax rate on AGI",
         "description": "The surtax rate applied to the portion of aggregate gross income above the AGI surtax threshold.",
         "irs_ref": "",
@@ -1010,7 +1010,8 @@
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "validations": {"min": 0.0}
     },
 
     "_KT_c_Age": {
@@ -2032,5 +2033,4 @@
         "value": [[2.0e6, 2.0e6, 1.0e6, 2.0e6, 2.0e6, 1.0e6]],
         "validations": {"min": "_FST_AGI_thd_lo"}
     }
-
 }

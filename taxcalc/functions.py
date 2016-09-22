@@ -571,15 +571,20 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
     c05100 = c24580  # because no foreign earned income deduction
     c05700 = 0.  # no Form 4972, Lump Sum Distributions
     _taxbc = c05700 + c05100
+
     return (c24516, c24517, c24520, c05700, _taxbc)
 
 
 @iterate_jit(nopython=True)
-def AGIsurtax(_taxbc, c00100, MARS, AGI_surtax_trt, AGI_surtax_thd):
-    if AGI_surtax_trt > 0:
-        _taxbc += AGI_surtax_trt * max(c00100 - AGI_surtax_thd[MARS - 1], 0)
-
-    return _taxbc
+def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, _taxbc, _surtax):
+    """
+    AGIsurtax computes surtax on AGI above some threshold
+    """
+    if AGI_surtax_trt > 0.:
+        hiAGItax = AGI_surtax_trt * max(c00100 - AGI_surtax_thd[MARS - 1], 0.)
+        _taxbc += hiAGItax
+        _surtax += hiAGItax
+    return (_taxbc, _surtax)
 
 
 @iterate_jit(nopython=True)
@@ -1148,7 +1153,7 @@ def BenefitSurtax(calc):
         if calc.policy.ID_BenefitSurtax_Switch[6]:
             no_ID_calc.policy.ID_Charity_HC = 1.
         no_ID_calc.calc_one_year()
-        # compute surtax amount and add to income and combined taxes
+        # compute surtax amount
         # pylint: disable=protected-access
         benefit_amount = np.where(
             no_ID_calc.records._iitax - calc.records._iitax > 0.,
@@ -1157,17 +1162,19 @@ def BenefitSurtax(calc):
                              calc.records.c00100)
         benefit_exemption = \
             calc.policy.ID_BenefitSurtax_em[calc.records.MARS - 1]
-        calc.records._surtax[:] = calc.policy.ID_BenefitSurtax_trt * np.where(
+        benefit_surtax = calc.policy.ID_BenefitSurtax_trt * np.where(
             benefit_amount > (benefit_deduction + benefit_exemption),
             benefit_amount - (benefit_deduction + benefit_exemption), 0.)
-        calc.records._iitax += calc.records._surtax
-        calc.records._combined += calc.records._surtax
+        # add benefit_surtax to income & combined taxes and to surtax subtotal
+        calc.records._iitax += benefit_surtax
+        calc.records._combined += benefit_surtax
+        calc.records._surtax += benefit_surtax
 
 
 @iterate_jit(nopython=True)
 def FairShareTax(c00100, MARS, ptax_was, ptax_sey, ptax_amc,
                  FST_AGI_trt, FST_AGI_thd_lo, FST_AGI_thd_hi,
-                 fst, _iitax, _combined):
+                 fstax, _iitax, _combined, _surtax):
     """
     Computes Fair Share Tax, or "Buffet Rule", types of reforms
 
@@ -1187,23 +1194,26 @@ def FairShareTax(c00100, MARS, ptax_was, ptax_sey, ptax_amc,
     Returns
     -------
 
-    fst : Fair Share Tax amount
+    fstax : Fair Share Tax amount
 
-    _iitax : individual income tax augmented by fst
+    _iitax : individual income tax augmented by fstax
 
-    _combined : individual income tax plus payroll taxes augmented by fst
+    _combined : individual income tax plus payroll taxes augmented by fstax
+
+    _surtax : individual income tax subtotal augmented by fstax
     """
     if FST_AGI_trt > 0. and c00100 >= FST_AGI_thd_lo[MARS - 1]:
         employee_share = 0.5 * ptax_was + 0.5 * ptax_sey + ptax_amc
-        fst = max(c00100 * FST_AGI_trt - _iitax - employee_share, 0.)
+        fstax = max(c00100 * FST_AGI_trt - _iitax - employee_share, 0.)
         thd_gap = max(FST_AGI_thd_hi[MARS - 1] - FST_AGI_thd_lo[MARS - 1], 0.)
         if thd_gap > 0. and c00100 < FST_AGI_thd_hi[MARS - 1]:
-            fst *= (c00100 - FST_AGI_thd_lo[MARS - 1]) / thd_gap
-        _iitax += fst
-        _combined += fst
+            fstax *= (c00100 - FST_AGI_thd_lo[MARS - 1]) / thd_gap
+        _iitax += fstax
+        _combined += fstax
+        _surtax += fstax
     else:
-        fst = 0.
-    return (fst, _iitax, _combined)
+        fstax = 0.
+    return (fstax, _iitax, _combined, _surtax)
 
 
 @iterate_jit(nopython=True)

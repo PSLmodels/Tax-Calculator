@@ -49,7 +49,7 @@ def test_agg():
     calc_start_year = calc.current_year
     # create aggregate diagnostic table (adt) as a Pandas DataFrame object
     adt = multiyear_diagnostic_table(calc, nyrs)
-    taxes_fullsample = adt.loc["Combined liability ($b)"]
+    taxes_fullsample = adt.loc["Combined Liability ($b)"]
     # convert adt results to a string with a trailing EOL character
     adtstr = adt.to_string() + '\n'
     # generate differences between actual and expected results
@@ -85,7 +85,7 @@ def test_agg():
     calc_subsample = Calculator(policy=Policy(), records=rec_subsample)
     adt_subsample = multiyear_diagnostic_table(calc_subsample, num_years=nyrs)
     # compare combined tax liability from full and sub samples for each year
-    taxes_subsample = adt_subsample.loc["Combined liability ($b)"]
+    taxes_subsample = adt_subsample.loc["Combined Liability ($b)"]
     reltol = 0.01  # maximum allowed relative difference in tax liability
     if not np.allclose(taxes_subsample, taxes_fullsample,
                        atol=0.0, rtol=reltol):

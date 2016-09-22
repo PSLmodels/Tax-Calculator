@@ -141,7 +141,7 @@ class Calculator(object):
         AMTInc(self.policy, self.records)
 
     def calc_one_year(self, zero_out_calc_vars=False):
-        # calls all the functions except BenefitSurtax and ExpandIncome
+        # calls all the functions except those in calc_all() function
         if zero_out_calc_vars:
             self.records.zero_out_changing_calculated_vars()
         # pdb.set_trace()
