@@ -222,7 +222,7 @@ def ItemDed(e17500, e18400, e18500,
             e20500, e20400, e19200, e19800, e20100,
             MARS, age_head, age_spouse,
             c00100, c04470, c17000, c18300, c20500, c19200,
-            c20800, c21040, c21060,
+            c20800, c21040, c21060, c19700,
             ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_HC,
             ID_Casualty_frt_in_pufcsv_year,
             ID_Casualty_frt, ID_Casualty_HC, ID_Miscellaneous_frt,
@@ -325,7 +325,8 @@ def ItemDed(e17500, e18400, e18500,
     else:
         c21040 = 0.
         c04470 = c21060
-    return (c17000, c18300, c19200, c20500, c20800, c21040, c21060, c04470)
+    return (c17000, c18300, c19200, c20500, c20800, c21040, c21060, c04470,
+            c19700)
 
 
 @iterate_jit(nopython=True)
@@ -1163,7 +1164,7 @@ def ComputeBenefit(calc, ID_switch):
 def BenefitSurtax(calc):
     """
     BenefitSurtax function: computes itemized-deduction-benefit surtax and
-    adds the surtax amount to income tax and combined tax liabilities.
+    adds the surtax amount to income tax, combined tax, and surtax liabilities.
     """
     if calc.policy.ID_BenefitSurtax_crt != 1.:
         benefit = ComputeBenefit(calc, calc.policy.ID_BenefitSurtax_Switch)
@@ -1211,8 +1212,8 @@ def BenefitCap(calc):
         # to income tax and combined tax liabilities.
         excess_benefit = np.maximum(benefit - capped_benefit, 0)
         calc.records._iitax += excess_benefit
-        calc.records._combined += excess_benefit
         calc.records._surtax += excess_benefit
+        calc.records._combined += excess_benefit
 
 
 @iterate_jit(nopython=True)
