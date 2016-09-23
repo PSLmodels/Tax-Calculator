@@ -5,10 +5,10 @@ from pandas import DataFrame
 from collections import defaultdict, OrderedDict
 
 
-STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600',
-                 'c04800', 'c05200', 'c62100', 'c09600', 'c05800', 'c09200',
-                 '_refund', 'c07100', '_iitax', '_payrolltax', '_combined',
-                 's006']
+STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard',
+                 'c04470', 'c04600', 'c04800', 'c05200', 'c62100', 'c09600',
+                 'c05800', 'c09200', '_refund', 'c07100', '_iitax',
+                 '_payrolltax', '_combined', 's006']
 
 # each entry in this array corresponds to the same entry in the array
 # TABLE_LABELS below. this allows us to use TABLE_LABELS to map a
@@ -72,6 +72,11 @@ def weighted_mean(agg, col_name):
             float(agg['s006'].sum() + EPSILON))
 
 
+def wage_weighted(agg, col_name):
+    return (float((agg[col_name] * agg['s006'] * agg['e00200']).sum()) /
+            float((agg['s006']*agg['e00200']).sum() + EPSILON))
+
+
 def weighted_sum(agg, col_name):
     return (agg[col_name] * agg['s006']).sum()
 
@@ -91,7 +96,7 @@ def weighted_share_of_total(agg, col_name, total):
 
 
 def add_weighted_decile_bins(df, income_measure='_expanded_income',
-                             labels=None):
+                             num_bins=10, labels=None):
     """
     Add a column of income bins based on each 10% of the income_measure,
     weighted by s006.
@@ -107,11 +112,12 @@ def add_weighted_decile_bins(df, income_measure='_expanded_income',
     # Max value of cum sum of weights
     max_ = df['cumsum_weights'].values[-1]
     # Create 10 bins and labels based on this cumulative weight
-    bins = [0] + list(np.arange(1, 11) * (max_ / 10.0))
+    bin_edges = [0] + list(np.arange(1, (num_bins+1)) *
+                           (max_ / float(num_bins)))
     if not labels:
-        labels = range(1, 11)
+        labels = range(1, (num_bins+1))
     #  Groupby weighted deciles
-    df['bins'] = pd.cut(df['cumsum_weights'], bins, labels=labels)
+    df['bins'] = pd.cut(df['cumsum_weights'], bins=bin_edges, labels=labels)
     return df
 
 
