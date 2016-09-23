@@ -96,7 +96,7 @@ def weighted_share_of_total(agg, col_name, total):
 
 
 def add_weighted_decile_bins(df, income_measure='_expanded_income',
-                             num_bins=10, labels=None):
+                             num_bins=10, labels=None, complex_weight=False):
     """
     Add a column of income bins based on each 10% of the income_measure,
     weighted by s006.
@@ -105,10 +105,17 @@ def add_weighted_decile_bins(df, income_measure='_expanded_income',
 
     This function will server as a 'grouper' later on.
     """
-    # First, sort by income_measure
+    # First, weight income measure by s006 if desired
+    if complex_weight:
+        df['s006_weighted'] = np.multiply(df[income_measure].values,
+                                          df['s006'].values)
+    # Next, sort by income_measure
     df.sort(income_measure, inplace=True)
-    # Next, do a cumulative sum by the weights
-    df['cumsum_weights'] = np.cumsum(df['s006'].values)
+    # Do a cumulative sum by the desired weights
+    if complex_weight:
+        df['cumsum_weights'] = np.cumsum(df['s006_weighted'].values)
+    else:
+        df['cumsum_weights'] = np.cumsum(df['s006'].values)
     # Max value of cum sum of weights
     max_ = df['cumsum_weights'].values[-1]
     # Create 10 bins and labels based on this cumulative weight
