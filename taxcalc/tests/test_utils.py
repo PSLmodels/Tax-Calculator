@@ -581,3 +581,11 @@ def test_ascii_output_function(csvfile, asciifile):
     assert filecmp.cmp(output_test.name, asciifile.name)
     output_test.close()
     os.remove(output_test.name)
+
+
+def test_string_to_number():
+    assert string_to_number(None) == 0
+    assert string_to_number('') == 0
+    assert string_to_number('1') == 1
+    assert string_to_number('1.') == 1.
+    assert string_to_number('1.23') == 1.23
