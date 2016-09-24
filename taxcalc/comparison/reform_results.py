@@ -109,4 +109,10 @@ for i in range(1, NUM_REFORMS + 1):
         for iyr in range(0, NUM_YEARS):
             OFILE.write(',{:.0f}'.format(comp[iyr]))
         OFILE.write('\n')
+    if "Tax Foundation" in reform["compare_with"]:
+        comp = reform["compare_with"]["Tax Foundation"]
+        OFILE.write('Tax Foundation:')
+        for idx in range(0, len(comp)):
+            OFILE.write(' {}'.format(comp[idx]))
+        OFILE.write('\n')
 OFILE.close()
