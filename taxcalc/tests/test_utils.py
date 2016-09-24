@@ -10,7 +10,6 @@ import numpy.testing as npt
 from pandas import DataFrame, Series
 from pandas.util.testing import assert_series_equal
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy, Records, Behavior, Calculator
 from taxcalc.utils import *
 

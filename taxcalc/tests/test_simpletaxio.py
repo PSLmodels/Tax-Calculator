@@ -9,8 +9,6 @@ Tests for Tax-Calculator SimpleTaxIO class.
 
 import os
 import sys
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, '../../'))
 from taxcalc import SimpleTaxIO  # pylint: disable=import-error
 import pytest
 import tempfile

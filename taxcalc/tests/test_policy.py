@@ -1,7 +1,5 @@
 import os
 import sys
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 import json
 import numpy as np
 from numpy.testing import assert_allclose

@@ -20,7 +20,6 @@ Read tax-calculator/TESTING.md for details.
 import os
 import sys
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
 from taxcalc import multiyear_diagnostic_table  # pylint: disable=import-error
 PUFCSV_PATH = os.path.join(CUR_PATH, '..', '..', 'puf.csv')

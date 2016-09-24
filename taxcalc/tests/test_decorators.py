@@ -1,8 +1,5 @@
 import os
 import sys
-cur_path = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(cur_path, "../../"))
-sys.path.append(os.path.join(cur_path, "../"))
 import pytest
 from six.moves import reload_module
 import numpy as np

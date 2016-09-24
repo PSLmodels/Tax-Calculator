@@ -2,9 +2,6 @@ import os
 import pytest
 import sys
 
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, '..', '..', '..', '..'))
-
 from taxcalc.filings.forms import TaxForm
 from taxcalc.filings.forms import UnsupportedFormYearError
 from taxcalc.utils import string_to_number
