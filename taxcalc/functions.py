@@ -1181,10 +1181,10 @@ def BenefitSurtax(calc):
         calc.records._surtax += benefit_surtax
 
 
-def BenefitCap(calc):
+def BenefitLimitation(calc):
     """
-    BenefitCap function: computes a cap on the benefit of itemized deductions
-    by limiting the benefit to a fraction of the deductible expenses.
+    BenefitLimitation function: limits the benefits of select itemized
+    deductions to a fraction of deductible expenses.
     """
     if calc.policy.ID_BenefitCap_rt != 1.:
         benefit = ComputeBenefit(calc, calc.policy.ID_BenefitCap_Switch)
@@ -1207,10 +1207,10 @@ def BenefitCap(calc):
         if calc.policy.ID_BenefitCap_Switch[6]:  # Charity
             deductible_expenses += calc.records.c19700
         # Calculate cap value for itemized deductions
-        capped_benefit = deductible_expenses * calc.policy.ID_BenefitCap_rt
+        benefit_limit = deductible_expenses * calc.policy.ID_BenefitCap_rt
         # Add the difference between the actual benefit and capped benefit
         # to income tax and combined tax liabilities.
-        excess_benefit = np.maximum(benefit - capped_benefit, 0)
+        excess_benefit = np.maximum(benefit - benefit_limit, 0)
         calc.records._iitax += excess_benefit
         calc.records._surtax += excess_benefit
         calc.records._combined += excess_benefit
