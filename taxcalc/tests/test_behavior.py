@@ -1,16 +1,7 @@
-import os
-import sys
 import numpy as np
-import pandas as pd
 import pytest
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-from taxcalc import Policy, Records, Calculator, Behavior
 
-# use 1991 PUF-like data to emulate current puf.csv, which is private
-TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91taxdata.csv.gz')
-TAXDATA = pd.read_csv(TAXDATA_PATH, compression='gzip')
-WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
-WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
+from taxcalc import Policy, Records, Calculator, Behavior
 
 
 def test_incorrect_Behavior_instantiation():
@@ -28,10 +19,10 @@ def test_correct_but_not_recommended_Behavior_instantiation():
     assert behv
 
 
-def test_behavioral_response_Calculator():
+def test_behavioral_response_Calculator(puf_1991, weights_1991):
     # create Records objects
-    records_x = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    records_y = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    records_x = Records(data=puf_1991, weights=weights_1991, start_year=2009)
+    records_y = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     # create Policy objects
     policy_x = Policy()
     policy_y = Policy()

@@ -18,31 +18,35 @@ Read tax-calculator/TESTING.md for details.
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import os
-import sys
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
 from taxcalc import multiyear_diagnostic_table  # pylint: disable=import-error
-PUFCSV_PATH = os.path.join(CUR_PATH, '..', '..', 'puf.csv')
-AGGRES_PATH = os.path.join(CUR_PATH, 'pufcsv_agg_expect.txt')
-MTRRES_PATH = os.path.join(CUR_PATH, 'pufcsv_mtr_expect.txt')
 import pytest
 import difflib
 import numpy as np
 import pandas as pd
 
 
+@pytest.fixture(scope='session')
+def puf_path(tests_path):
+    """
+    The path to the puf.csv taxpayer data file at repo root
+    """
+    return os.path.join(tests_path, '..', '..', 'puf.csv')
+
+
 @pytest.mark.requires_pufcsv
-def test_agg():
+def test_agg(tests_path, puf_path):
     """
     Test Tax-Calculator aggregate taxes with no policy reform using
     the full-sample puf.csv and a two-percent sub-sample of puf.csv
     """
     # pylint: disable=too-many-locals,too-many-statements
+    # for fixture args, pylint: disable=redefined-outer-name
     nyrs = 10
     # create a Policy object (clp) containing current-law policy parameters
     clp = Policy()
     # create a Records object (rec) containing all puf.csv input records
-    rec = Records(data=PUFCSV_PATH)
+    rec = Records(data=puf_path)
     # create a Calculator object using clp policy and puf records
     calc = Calculator(policy=clp, records=rec)
     calc_start_year = calc.current_year
@@ -53,7 +57,8 @@ def test_agg():
     adtstr = adt.to_string() + '\n'
     # generate differences between actual and expected results
     actual = adtstr.splitlines(True)
-    with open(AGGRES_PATH, 'r') as expected_file:
+    aggres_path = os.path.join(tests_path, 'pufcsv_agg_expect.txt')
+    with open(aggres_path, 'r') as expected_file:
         txt = expected_file.read()
     expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
     expected = expected_results.splitlines(True)
@@ -65,7 +70,7 @@ def test_agg():
         diff_lines.append(line)
     # test failure if there are any diff_lines
     if len(diff_lines) > 0:
-        new_filename = '{}{}'.format(AGGRES_PATH[:-10], 'actual.txt')
+        new_filename = '{}{}'.format(aggres_path[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
             new_file.write(adtstr)
         msg = 'PUFCSV AGG RESULTS DIFFER FOR FULL-SAMPLE\n'
@@ -77,7 +82,7 @@ def test_agg():
         msg += '-------------------------------------------------\n'
         raise ValueError(msg)
     # create aggregate diagnostic table using sub sample of records
-    fullsample = pd.read_csv(PUFCSV_PATH)
+    fullsample = pd.read_csv(puf_path)
     rn_seed = 80  # to ensure two-percent sub-sample is always the same
     subsample = fullsample.sample(frac=0.02, random_state=rn_seed)
     rec_subsample = Records(data=subsample)
@@ -151,7 +156,7 @@ def mtr_bin_counts(mtr_data, bin_edges, recid):
 
 
 @pytest.mark.requires_pufcsv
-def test_mtr():
+def test_mtr(tests_path, puf_path):
     """
     Test Tax-Calculator marginal tax rates with no policy reform using puf.csv
 
@@ -160,6 +165,7 @@ def test_mtr():
     which is then compared for differences with EXPECTED_MTR_RESULTS.
     """
     # pylint: disable=too-many-locals
+    # for fixture args, pylint: disable=redefined-outer-name
     assert len(PTAX_MTR_BIN_EDGES) == len(ITAX_MTR_BIN_EDGES)
     # construct actual results string, res
     res = ''
@@ -172,7 +178,7 @@ def test_mtr():
     clp = Policy()
     clp.set_year(MTR_TAX_YEAR)
     # create a Records object (puf) containing puf.csv input records
-    puf = Records(data=PUFCSV_PATH)
+    puf = Records(data=puf_path)
     recid = puf.RECID  # pylint: disable=no-member
     # create a Calculator object using clp policy and puf records
     calc = Calculator(policy=clp, records=puf)
@@ -197,7 +203,8 @@ def test_mtr():
         res += mtr_bin_counts(mtr_itax, ITAX_MTR_BIN_EDGES, recid)
     # generate differences between actual and expected results
     actual = res.splitlines(True)
-    with open(MTRRES_PATH, 'r') as expected_file:
+    mtrres_path = os.path.join(tests_path, 'pufcsv_mtr_expect.txt')
+    with open(mtrres_path, 'r') as expected_file:
         txt = expected_file.read()
     expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
     expected = expected_results.splitlines(True)
@@ -209,7 +216,7 @@ def test_mtr():
         diff_lines.append(line)
     # test failure if there are any diff_lines
     if len(diff_lines) > 0:
-        new_filename = '{}{}'.format(MTRRES_PATH[:-10], 'actual.txt')
+        new_filename = '{}{}'.format(mtrres_path[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
             new_file.write(res)
         msg = 'PUFCSV MTR RESULTS DIFFER\n'

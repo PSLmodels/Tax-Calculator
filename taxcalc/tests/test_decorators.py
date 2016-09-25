@@ -1,4 +1,3 @@
-import os
 import sys
 import pytest
 from six.moves import reload_module
