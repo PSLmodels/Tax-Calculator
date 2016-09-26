@@ -704,3 +704,32 @@ def get_mtr_data(calcX, calcY, MARS='ALL', weights='weighted_mean',
     merged.columns = ['base', 'reform']
 
     return merged
+
+
+def mtr_plot(source, xlab='Percentile', ylab='Avg. MTR', title='MTR plot',
+             plot_width=425, plot_height=250, loc='top_left'):
+
+    QQ = figure(plot_width=plot_width, plot_height=plot_height, title=title)
+
+    QQ.line((source.reset_index()).index,
+            (source.reset_index()).base, line_color=BLUE, line_width=0.8,
+            line_alpha=.8, legend="Base")
+
+    QQ.line((source.reset_index()).index,
+            (source.reset_index()).reform, line_color=RED, line_width=0.8,
+            line_alpha=1, legend="Reform")
+
+    QQ.legend.label_text_font = "times"
+    QQ.legend.label_text_font_style = "italic"
+    QQ.legend.location = loc
+
+    QQ.legend.label_width = 2
+    QQ.legend.label_height = 2
+    QQ.legend.label_standoff = 2
+    QQ.legend.glyph_width = 14
+    QQ.legend.glyph_height = 14
+    QQ.legend.legend_spacing = 5
+    QQ.legend.legend_padding = 5
+    QQ.yaxis.axis_label = ylab
+    QQ.xaxis.axis_label = xlab
+    return show(QQ)
