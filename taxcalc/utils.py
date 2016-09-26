@@ -89,7 +89,7 @@ def weighted_mean(agg, col_name):
 
 def wage_weighted(agg, col_name):
     return (float((agg[col_name] * agg['s006'] * agg['e00200']).sum()) /
-            float((agg['s006']*agg['e00200']).sum() + EPSILON))
+            float((agg['s006'] * agg['e00200']).sum() + EPSILON))
 
 
 def weighted_sum(agg, col_name):
@@ -134,10 +134,10 @@ def add_weighted_decile_bins(df, income_measure='_expanded_income',
     # Max value of cum sum of weights
     max_ = df['cumsum_weights'].values[-1]
     # Create 10 bins and labels based on this cumulative weight
-    bin_edges = [0] + list(np.arange(1, (num_bins+1)) *
+    bin_edges = [0] + list(np.arange(1, (num_bins + 1)) *
                            (max_ / float(num_bins)))
     if not labels:
-        labels = range(1, (num_bins+1))
+        labels = range(1, (num_bins + 1))
     #  Groupby weighted deciles
     df['bins'] = pd.cut(df['cumsum_weights'], bins=bin_edges, labels=labels)
     return df
