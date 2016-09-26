@@ -592,3 +592,11 @@ def test_mtr_plot():
     calc.calc_all()
     source = get_mtr_data(calc, calc, weights=weighted_mean)
     plot = mtr_plot(source)
+
+
+def test_string_to_number():
+    assert string_to_number(None) == 0
+    assert string_to_number('') == 0
+    assert string_to_number('1') == 1
+    assert string_to_number('1.') == 1.
+    assert string_to_number('1.23') == 1.23

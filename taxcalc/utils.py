@@ -800,3 +800,12 @@ def mtr_plot(source, xlab='Percentile', ylab='Avg. MTR', title='MTR plot',
     PP.yaxis.axis_label = ylab
     PP.xaxis.axis_label = xlab
     return PP
+
+
+def string_to_number(string):
+    if not string:
+        return 0
+    try:
+        return int(string)
+    except ValueError:
+        return float(string)

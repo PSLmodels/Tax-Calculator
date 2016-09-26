@@ -506,6 +506,6 @@
         "section_name": "FAIR SHARE TAX",
         "name": "Increase FST rate from zero to 0.30 beginning in 2017",
         "output_type": "_iitax",
-        "compare_with": {}
+        "compare_with": {"Tax Foundation": [321, "ten-year(2016-25)", "static", "estimate"]}
     }
 }

@@ -26,7 +26,7 @@ config = {
     'version': version,
     'cmdclass': cmdclass,
     'license': 'MIT',
-    'packages': ['taxcalc'],
+    'packages': ['taxcalc', 'taxcalc.filings', 'taxcalc.filings.forms'],
     'include_package_data': True,
     'name': 'taxcalc',
     'install_requires': ['numpy', 'pandas'],
