@@ -626,7 +626,8 @@ def ascii_output(csv_filename, ascii_filename):
 
 
 def get_mtr_data(calcX, calcY, MARS='ALL', weights='weighted_mean',
-                 tab='e00200', mtr_measure='IIT', complex_weight=False):
+                 income_measure='e00200', mtr_measure='IIT',
+                 complex_weight=False):
     df_x = exp_results(calcX)
     df_y = exp_results(calcY)
 
@@ -637,14 +638,16 @@ def get_mtr_data(calcX, calcY, MARS='ALL', weights='weighted_mean',
     df_x['mtr_combined'] = mtr_combined_x
     df_y['mtr_combined'] = mtr_combined_y
 
-    df_y[tab] = df_x[tab]
+    df_y[income_measure] = df_x[income_measure]
 
     if complex_weight:
-        df_x = add_weighted_decile_bins(df_x, tab, 100, complex_weight=True)
-        df_y = add_weighted_decile_bins(df_y, tab, 100, complex_weight=True)
+        df_x = add_weighted_decile_bins(df_x, income_measure, 100,
+                                        complex_weight=True)
+        df_y = add_weighted_decile_bins(df_y, income_measure, 100,
+                                        complex_weight=True)
     else:
-        df_x = add_weighted_decile_bins(df_x, tab, 100)
-        df_y = add_weighted_decile_bins(df_y, tab, 100)
+        df_x = add_weighted_decile_bins(df_x, income_measure, 100)
+        df_y = add_weighted_decile_bins(df_y, income_measure, 100)
 
     if MARS == 'ALL':
         df_filtered_x = df_x.copy()
