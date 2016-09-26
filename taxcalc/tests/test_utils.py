@@ -582,3 +582,13 @@ def test_ascii_output_function(csvfile, asciifile):
     assert filecmp.cmp(output_test.name, asciifile.name)
     output_test.close()
     os.remove(output_test.name)
+
+
+def test_mtr_plot():
+    pol = Policy()
+    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    behv = Behavior()
+    calc = Calculator(policy=pol, records=recs, behavior=behv)
+    calc.calc_all()
+    source = get_mtr_data(calc, calc, weights=weighted_mean)
+    plot = mtr_plot(source)

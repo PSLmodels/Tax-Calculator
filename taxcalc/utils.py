@@ -126,7 +126,7 @@ def add_weighted_decile_bins(df, income_measure='_expanded_income',
                                           df['s006'].values)
     # Next, sort by income_measure
     df.sort(income_measure, inplace=True)
-    # Do a cumulative sum by the desired weights
+    # Do a cumulative sum
     if complex_weight:
         df['cumsum_weights'] = np.cumsum(df['s006_weighted'].values)
     else:
@@ -640,7 +640,7 @@ def ascii_output(csv_filename, ascii_filename):
                delim_whitespace=True, sep='\t')
 
 
-def get_mtr_data(calcX, calcY, MARS='ALL', weights='weighted_mean',
+def get_mtr_data(calcX, calcY, weights, MARS='ALL',
                  income_measure='e00200', mtr_measure='IIT',
                  complex_weight=False):
     df_x = exp_results(calcX)
@@ -709,27 +709,27 @@ def get_mtr_data(calcX, calcY, MARS='ALL', weights='weighted_mean',
 def mtr_plot(source, xlab='Percentile', ylab='Avg. MTR', title='MTR plot',
              plot_width=425, plot_height=250, loc='top_left'):
 
-    QQ = figure(plot_width=plot_width, plot_height=plot_height, title=title)
+    PP = figure(plot_width=plot_width, plot_height=plot_height, title=title)
 
-    QQ.line((source.reset_index()).index,
+    PP.line((source.reset_index()).index,
             (source.reset_index()).base, line_color=BLUE, line_width=0.8,
             line_alpha=.8, legend="Base")
 
-    QQ.line((source.reset_index()).index,
+    PP.line((source.reset_index()).index,
             (source.reset_index()).reform, line_color=RED, line_width=0.8,
             line_alpha=1, legend="Reform")
 
-    QQ.legend.label_text_font = "times"
-    QQ.legend.label_text_font_style = "italic"
-    QQ.legend.location = loc
+    PP.legend.label_text_font = "times"
+    PP.legend.label_text_font_style = "italic"
+    PP.legend.location = loc
 
-    QQ.legend.label_width = 2
-    QQ.legend.label_height = 2
-    QQ.legend.label_standoff = 2
-    QQ.legend.glyph_width = 14
-    QQ.legend.glyph_height = 14
-    QQ.legend.legend_spacing = 5
-    QQ.legend.legend_padding = 5
-    QQ.yaxis.axis_label = ylab
-    QQ.xaxis.axis_label = xlab
-    return show(QQ)
+    PP.legend.label_width = 2
+    PP.legend.label_height = 2
+    PP.legend.label_standoff = 2
+    PP.legend.glyph_width = 14
+    PP.legend.glyph_height = 14
+    PP.legend.legend_spacing = 5
+    PP.legend.legend_padding = 5
+    PP.yaxis.axis_label = ylab
+    PP.xaxis.axis_label = xlab
+    return PP
