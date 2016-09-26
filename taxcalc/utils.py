@@ -643,9 +643,44 @@ def ascii_output(csv_filename, ascii_filename):
 def get_mtr_data(calcX, calcY, weights, MARS='ALL',
                  income_measure='e00200', mtr_measure='IIT',
                  complex_weight=False):
+    """
+    This function prepares the MTR data for two calculators.
+
+    Parameters
+    ----------
+    calcX : a Tax-Calculator Records object that refers to the baseline
+
+    calcY : a Tax-Calculator Records object that refers to the reform
+
+    weights : String object
+        options for input: 'weighted_count_lt_zero', 'weighted_count_gt_zero',
+            'weighted_count', 'weighted_mean', 'wage_weighted', 'weighted_sum',
+            'weighted_perc_inc', 'weighted_perc_dec', 'weighted_share_of_total'
+        Choose different weight measure
+
+    MARS : Integer
+        options for input: 1, 2, 3, 4
+        Choose different filling status
+
+    income_measure : String object
+        options for input: '_expanded_income', '_iitax'
+        classifier of income bins/deciles
+
+    mtr_measure : String object
+        options for input: '_iitax', '_payrolltax', '_combined'
+
+    complex_weight : Boolean
+        The cumulated sum will be carried out based on weighted income measure
+        if this option is true
+    Returns
+    -------
+    DataFrame object
+    """
+    # Get output columns
     df_x = exp_results(calcX)
     df_y = exp_results(calcY)
 
+    # Calculate MTR
     a, mtr_iit_x, mtr_combined_x = calcX.mtr()
     a, mtr_iit_y, mtr_combined_y = calcY.mtr()
     df_x['mtr_iit'] = mtr_iit_x
@@ -655,6 +690,7 @@ def get_mtr_data(calcX, calcY, weights, MARS='ALL',
 
     df_y[income_measure] = df_x[income_measure]
 
+    # Complex weighted bins or not
     if complex_weight:
         df_x = add_weighted_decile_bins(df_x, income_measure, 100,
                                         complex_weight=True)
@@ -664,6 +700,7 @@ def get_mtr_data(calcX, calcY, weights, MARS='ALL',
         df_x = add_weighted_decile_bins(df_x, income_measure, 100)
         df_y = add_weighted_decile_bins(df_y, income_measure, 100)
 
+    # Select either all filers or one filling status
     if MARS == 'ALL':
         df_filtered_x = df_x.copy()
         df_filtered_y = df_y.copy()
@@ -684,6 +721,7 @@ def get_mtr_data(calcX, calcY, weights, MARS='ALL',
     wpct_x = DataFrame(data=wgtpct_x, columns=['w_mtr'])
     wpct_y = DataFrame(data=wgtpct_y, columns=['w_mtr'])
 
+    # Add bin labels
     wpct_x['bins'] = np.arange(1, 101)
     wpct_y['bins'] = np.arange(1, 101)
 
@@ -708,7 +746,36 @@ def get_mtr_data(calcX, calcY, weights, MARS='ALL',
 
 def mtr_plot(source, xlab='Percentile', ylab='Avg. MTR', title='MTR plot',
              plot_width=425, plot_height=250, loc='top_left'):
+    """
+    This function prepares the MTR data for two calculators.
 
+    Parameters
+    ----------
+    source : DataFrame which can be obtained using get_mtr_data() function
+
+    xlab : String object
+        Name for X axis
+
+    ylab : String object
+        Name for Y axis
+
+    title : String object
+        Caption for the plot
+
+    plot_width : Numeric (Usually integer)
+        Width of the plot
+
+    plot_height : Numeric (Usually integer)
+        Height of the plot
+
+    loc : String object
+        Toptions for input: "top_right", "top_left", "bottom_left",
+            "bottom_right"
+        Choose the location of the legend label
+    Returns
+    -------
+    Figure Object (Use show() option to visualize)
+    """
     PP = figure(plot_width=plot_width, plot_height=plot_height, title=title)
 
     PP.line((source.reset_index()).index,
