@@ -243,6 +243,17 @@ def results(obj):
     return DataFrame(data=np.column_stack(arrays), columns=STATS_COLUMNS)
 
 
+def exp_results(c):
+    RES_COLUMNS = STATS_COLUMNS + ['e00200'] + ['MARS']
+    outputs = []
+    for col in RES_COLUMNS:
+        if hasattr(c.policy, col):
+            outputs.append(getattr(c.policy, col))
+        else:
+            outputs.append(getattr(c.records, col))
+    return DataFrame(data=np.column_stack(outputs), columns=RES_COLUMNS)
+
+
 def weighted_avg_allcols(df, cols, income_measure='_expanded_income'):
     diff = DataFrame(df.groupby('bins', as_index=False).apply(weighted_mean,
                                                               income_measure),
@@ -612,3 +623,66 @@ def ascii_output(csv_filename, ascii_filename):
     out = out.applymap(fstring.format)
     out.to_csv(ascii_filename, header=False, index=False,
                delim_whitespace=True, sep='\t')
+
+
+def get_mtr_data(calcX, calcY, MARS='ALL', weights='weighted_mean',
+                 tab='e00200', mtr_measure='IIT', complex_weight=False):
+    df_x = exp_results(calcX)
+    df_y = exp_results(calcY)
+
+    a, mtr_iit_x, mtr_combined_x = calcX.mtr()
+    a, mtr_iit_y, mtr_combined_y = calcY.mtr()
+    df_x['mtr_iit'] = mtr_iit_x
+    df_y['mtr_iit'] = mtr_iit_y
+    df_x['mtr_combined'] = mtr_combined_x
+    df_y['mtr_combined'] = mtr_combined_y
+
+    df_y[tab] = df_x[tab]
+
+    if complex_weight:
+        df_x = add_weighted_decile_bins(df_x, tab, 100, complex_weight=True)
+        df_y = add_weighted_decile_bins(df_y, tab, 100, complex_weight=True)
+    else:
+        df_x = add_weighted_decile_bins(df_x, tab, 100)
+        df_y = add_weighted_decile_bins(df_y, tab, 100)
+
+    if MARS == 'ALL':
+        df_filtered_x = df_x.copy()
+        df_filtered_y = df_y.copy()
+    else:
+        df_filtered_x = df_x[(df_x['MARS'] == MARS)].copy()
+        df_filtered_y = df_y[(df_y['MARS'] == MARS)].copy()
+
+    gp_x = df_filtered_x.groupby('bins', as_index=False)
+    gp_y = df_filtered_y.groupby('bins', as_index=False)
+
+    if mtr_measure == 'combined':
+        wgtpct_x = gp_x.apply(weights, 'mtr_combined')
+        wgtpct_y = gp_y.apply(weights, 'mtr_combined')
+    elif mtr_measure == 'IIT':
+        wgtpct_x = gp_x.apply(weights, 'mtr_iit')
+        wgtpct_y = gp_y.apply(weights, 'mtr_iit')
+
+    wpct_x = DataFrame(data=wgtpct_x, columns=['w_mtr'])
+    wpct_y = DataFrame(data=wgtpct_y, columns=['w_mtr'])
+
+    wpct_x['bins'] = np.arange(1, 101)
+    wpct_y['bins'] = np.arange(1, 101)
+
+    rsltx = pd.merge(df_filtered_x[['bins']], wpct_x, how='left')
+    rslty = pd.merge(df_filtered_y[['bins']], wpct_y, how='left')
+
+    df_filtered_x['w_mtr'] = rsltx['w_mtr'].values
+    df_filtered_y['w_mtr'] = rslty['w_mtr'].values
+
+    df_filtered_x.drop_duplicates(subset='bins', inplace=True)
+    df_filtered_y.drop_duplicates(subset='bins', inplace=True)
+
+    df_filtered_x = df_filtered_x['w_mtr']
+    df_filtered_y = df_filtered_y['w_mtr']
+
+    merged = pd.concat([df_filtered_x, df_filtered_y], axis=1,
+                       ignore_index=True)
+    merged.columns = ['base', 'reform']
+
+    return merged
