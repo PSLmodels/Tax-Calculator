@@ -53,49 +53,36 @@ def test_correct_Records_instantiation_sample(puf_1991, weights_1991):
     assert rec2.current_year == Records.PUF_YEAR
 
 
-def test_read_data():
-    funit1 = (
+@pytest.mark.parametrize("csv", [
+    (
         u'RECID,MARS,e00200,e00200p,e00200s\n'
         u'1,    2,   200000, 200000,   0.01\n'
-    )
-    df1 = pd.read_csv(StringIO(funit1))
-    with pytest.raises(ValueError):
-        rec = Records(data=df1)
-    funit2 = (
+    ),
+    (
         u'RECID,MARS,e00900,e00900p,e00900s\n'
         u'1,    2,   200000, 200000,   0.01\n'
-    )
-    df2 = pd.read_csv(StringIO(funit2))
-    with pytest.raises(ValueError):
-        rec = Records(data=df2)
-    funit3 = (
+    ),
+    (
         u'RECID,MARS,e02100,e02100p,e02100s\n'
         u'1,    2,   200000, 200000,   0.01\n'
-    )
-    df3 = pd.read_csv(StringIO(funit3))
-    with pytest.raises(ValueError):
-        rec = Records(data=df3)
-    funit4 = (
+    ),
+    (
         u'RxCID,MARS\n'
         u'1,    2\n'
-    )
-    df4 = pd.read_csv(StringIO(funit4))
-    with pytest.raises(ValueError):
-        rec = Records(data=df4)
-    funit5 = (
+    ),
+    (
         u'RECID,e00300\n'
         u'1,   ,456789\n'
-    )
-    df5 = pd.read_csv(StringIO(funit5))
-    with pytest.raises(ValueError):
-        rec = Records(data=df5)
-    funit6 = (
+    ),
+    (
         u'RECID,MARS,e00600,e00650\n'
         u'1,    1,        8,     9\n'
     )
-    df6 = pd.read_csv(StringIO(funit6))
+])
+def test_read_data(csv):
+    df = pd.read_csv(StringIO(csv))
     with pytest.raises(ValueError):
-        rec = Records(data=df6)
+        Records(data=df)
 
 
 def test_blowup(puf_1991, weights_1991):
