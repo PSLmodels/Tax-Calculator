@@ -11,15 +11,8 @@ import re
 from taxcalc import IncomeTaxIO, Records  # pylint: disable=import-error
 from io import StringIO
 import pandas as pd
-import pytest
 import ast
 import six
-
-
-@pytest.fixture(scope='module')
-def function_tree(tests_path):
-    path = os.path.join(tests_path, '..', 'functions.py')
-    return ast.parse(open(path).read())
 
 
 class GetFuncDefs(ast.NodeVisitor):
@@ -71,64 +64,56 @@ class GetFuncDefs(ast.NodeVisitor):
         self.generic_visit(node)
 
 
-def test_calcd_vars_are_calcd(function_tree):
+def test_calc_and_used_vars(tests_path):
     """
-    Check that each var in Records.CALCULATED_VARS is actually calculated.
+    Runs two kinds of tests on variables used in the functions.py file:
 
-    If this test fails, a variable in Records.CALCULATED_VARS was not
+    (1) Checks that each var in Records.CALCULATED_VARS is actually calculated
+
+    If test (1) fails, a variable in Records.CALCULATED_VARS was not
     calculated in any function in the functions.py file.  With the exception
     of a few variables listed in this test, all Records.CALCULATED_VARS
     must be calculated in the functions.py file.
+
+    (2) Check that each variable that is calculated in a function and
+    returned by that function is an argument of that function.
     """
-    # for fixture args, pylint: disable=redefined-outer-name
+    funcpath = os.path.join(tests_path, '..', 'functions.py')
     gfd = GetFuncDefs()
-    fnames, _, cvars, _ = gfd.visit(function_tree)
-    # create set of vars that are actually calculated in functions.py file
+    fnames, fargs, cvars, rvars = gfd.visit(ast.parse(open(funcpath).read()))
+    # Test (1):
+    # .. create set of vars that are actually calculated in functions.py file
     all_cvars = set()
     for fname in fnames:
         if fname == 'BenefitSurtax':
             continue  # because BenefitSurtax is not really a function
         all_cvars.update(set(cvars[fname]))
-    # add some special variables to all_cvars set
-    vars_calc_in_records = set(['ID_Casualty_frt_in_pufcsv_year',
-                                '_num', '_sep', '_exact'])
-    vars_calc_in_benefitsurtax = set(['_surtax'])
-    vars_ok_to_not_calc = set(['f2555'])
-    all_cvars.update(vars_calc_in_records,
-                     vars_calc_in_benefitsurtax,
-                     vars_ok_to_not_calc)
-    # check that each var in Records.CALCULATED_VARS is in the all_cvars set
+    # .. add to all_cvars set some variables calculated in Records class
+    all_cvars.update(set(['ID_Casualty_frt_in_pufcsv_year',
+                          '_num', '_sep', '_exact']))
+    # .. check that each var in Records.CALCULATED_VARS is in the all_cvars set
+    found_error1 = False
     if not Records.CALCULATED_VARS <= all_cvars:
-        missing = Records.CALCULATED_VARS - all_cvars
-        msg = 'all Records.CALCULATED_VARS not calculated in functions.py\n'
-        for var in missing:
-            msg += 'VAR NOT CALCULATED: {}\n'.format(var)
-        raise ValueError(msg)
-
-
-def test_affected_vars_are_args(function_tree):
-    """
-    Check that each variable that is calculated in a function and
-    returned by that function is an argument of that function.
-    """
-    # for fixture args, pylint: disable=redefined-outer-name
-    gfd = GetFuncDefs()
-    fnames, fargs, cvars, rvars = gfd.visit(function_tree)
-    msg = 'calculated & returned variables are not function arguments\n'
-    found_error = False
+        msg1 = 'all Records.CALCULATED_VARS not calculated in functions.py\n'
+        for var in Records.CALCULATED_VARS - all_cvars:
+            found_error1 = True
+            msg1 += 'VAR NOT CALCULATED: {}\n'.format(var)
+    # Test (2):
+    found_error2 = False
+    msg2 = 'calculated & returned variables are not function arguments\n'
     for fname in fnames:
         if fname == 'BenefitSurtax':
             continue  # because BenefitSurtax is not really a function
-        cvars_set = set(cvars[fname])
-        rvars_set = set(rvars[fname])
-        crvars_set = cvars_set & rvars_set
+        crvars_set = set(cvars[fname]) & set(rvars[fname])
         if not crvars_set <= set(fargs[fname]):
-            found_error = True
-            missing = crvars_set - set(fargs[fname])
-            for var in missing:
-                msg += 'FUNCTION,VARIABLE: {} {}\n'.format(fname, var)
-    if found_error:
-        raise ValueError(msg)
+            found_error2 = True
+            for var in crvars_set - set(fargs[fname]):
+                msg2 += 'FUNCTION,VARIABLE: {} {}\n'.format(fname, var)
+    # Report errors for the two tests:
+    if found_error1:
+        raise ValueError(msg1)
+    if found_error2:
+        raise ValueError(msg2)
 
 
 def test_function_args_usage(tests_path):
