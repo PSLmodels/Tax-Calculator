@@ -1,9 +1,5 @@
-import os
-import sys
 import numpy as np
 import pytest
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import ParametersBase
 
 

@@ -1,9 +1,4 @@
-import os
 import pytest
-import sys
-
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, '..', '..', '..', '..'))
 
 from taxcalc.filings.forms import TaxForm
 from taxcalc.filings.forms import UnsupportedFormYearError
@@ -11,7 +6,7 @@ from taxcalc.utils import string_to_number
 
 
 def test_tax_form_creation_valid():
-    form = TaxForm(1999)
+    TaxForm(1999)
     form = TaxForm(1999, {'field_1': 47})
     assert form.form_id()
     assert form.form_name()
@@ -21,7 +16,7 @@ def test_tax_form_creation_valid():
 
 def test_tax_form_creation_invalid():
     with pytest.raises(ValueError):
-        form = TaxForm('should be an integer')
+        TaxForm('should be an integer')
 
 
 def test_tax_form_basic_inheritance():
@@ -40,10 +35,11 @@ def test_tax_form_year_support():
         '_SUPPORTED_YEARS': [2014, 2015],
     })
     with pytest.raises(UnsupportedFormYearError):
-        form = child_class(2013)
+        child_class(2013)
+    child_class(2014)
+    child_class(2015)
     with pytest.raises(UnsupportedFormYearError):
-        form = child_class(2016)
-    form = child_class(2015)
+        child_class(2016)
 
 
 def test_tax_form_tax_id():
@@ -95,7 +91,7 @@ def test_tax_form_evar_mapping_direct_conflict():
 
 
 def test_tax_form_evar_mapping_indirect():
-    def test_to_evars_indirect(self):
+    def example_to_evars_indirect(self):
         fields = self._fields
         if 'field_1' in fields and 'field_1_checked' in fields:
             return {'e00001': string_to_number(fields['field_1'])}
@@ -103,7 +99,7 @@ def test_tax_form_evar_mapping_indirect():
             return None
 
     child_class = type("TestTaxForm", (TaxForm,), {
-        'to_evars_indirect': test_to_evars_indirect
+        'to_evars_indirect': example_to_evars_indirect
     })
     form = child_class(1999)
     assert not form.to_evars_indirect()
@@ -117,7 +113,7 @@ def test_tax_form_evar_mapping_indirect():
 
 
 def test_tax_form_evar_mapping_both():
-    def test_to_evars_indirect(self):
+    def example_to_evars_indirect(self):
         fields = self._fields
         if 'field_2' in fields and 'field_2_checked' in fields:
             return {'e00002': string_to_number(fields['field_2'])}
@@ -128,7 +124,7 @@ def test_tax_form_evar_mapping_both():
         '_EVAR_MAP': {
             'field_1': 'e00001',
         },
-        'to_evars_indirect': test_to_evars_indirect
+        'to_evars_indirect': example_to_evars_indirect
     })
     form = child_class(1999)
     assert form.to_evars() == {}

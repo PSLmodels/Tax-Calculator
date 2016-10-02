@@ -8,9 +8,6 @@ Tests for Tax-Calculator SimpleTaxIO class.
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import os
-import sys
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, '../../'))
 from taxcalc import SimpleTaxIO  # pylint: disable=import-error
 import pytest
 import tempfile
@@ -95,35 +92,38 @@ def reform_file():
             pass  # sometimes we can't remove a generated temporary file
 
 
-def test_0(input_file):  # pylint: disable=redefined-outer-name
+@pytest.mark.parametrize("filename, exact", [
+    (list(), True),
+    ('badname', False),
+])
+def test_incorrect_creation(filename, exact):
     """
     Test incorrect SimpleTaxIO instantiation.
     """
-    # pylint: disable=unused-variable
     with pytest.raises(ValueError):
-        simtax = SimpleTaxIO(input_filename=list(),
-                             reform=None,
-                             exact_calculations=True,
-                             emulate_taxsim_2441_logic=False,
-                             output_records=False)
+        SimpleTaxIO(
+            input_filename=filename,
+            reform=None,
+            exact_calculations=exact,
+            emulate_taxsim_2441_logic=False,
+            output_records=False
+        )
+
+
+@pytest.mark.parametrize("reform", ['badname.json', list()])
+def test_invalid_creation_w_file(input_file, reform):
+    """
+    Test incorrect SimpleTaxIO instantiation with input_file
+    """
+    # for fixture args, pylint: disable=redefined-outer-name
     with pytest.raises(ValueError):
-        simtax = SimpleTaxIO(input_filename='badname',
-                             reform=None,
-                             exact_calculations=False,
-                             emulate_taxsim_2441_logic=False,
-                             output_records=False)
-    with pytest.raises(ValueError):
-        simtax = SimpleTaxIO(input_filename=input_file.name,
-                             reform='badname.json',
-                             exact_calculations=False,
-                             emulate_taxsim_2441_logic=False,
-                             output_records=False)
-    with pytest.raises(ValueError):
-        simtax = SimpleTaxIO(input_filename=input_file.name,
-                             reform=list(),
-                             exact_calculations=False,
-                             emulate_taxsim_2441_logic=False,
-                             output_records=False)
+        SimpleTaxIO(
+            input_filename=input_file.name,
+            reform=reform,
+            exact_calculations=False,
+            emulate_taxsim_2441_logic=False,
+            output_records=False
+        )
 
 
 def test_1(input_file):  # pylint: disable=redefined-outer-name
@@ -202,422 +202,40 @@ def test_3(input_file):  # pylint: disable=redefined-outer-name
     assert simtax.number_input_lines() == NUM_INPUT_LINES
 
 
-BAD_INPUT_A_CONTENTS = (
-    '1 2013 0 2 0\n'
-)
-
-
-@pytest.yield_fixture
-def bad_input_a_file():
+@pytest.mark.parametrize("contents", [
+    '1 2013 0 2 0\n',
+    '1 2014 0 1 0 0 zyzab 0 5000 0 0 0 0 0 0 0 0 0 0 0 9000 -1000\n',
+    '1 2014 0 1 0 0 95000 0 -500 0 0 0 0 0 0 0 0 0 0 0 9000 -1000\n',
+    '1 2001 0 1 0 0 95000 0 5000 0 0 0 0 0 0 0 0 0 0 0 9000 -1000\n',
+    '1 2014 6 1 0 0 95000 0 5000 0 0 0 0 0 0 0 0 0 0 0 9000 -1000\n',
+    '1 2014 0 4 0 0 95000 0 5000 0 0 0 0 0 0 0 0 0 0 0 9000 -1000\n',
+    '1 2014 0 3 0 0 95000 0 5000 0 0 0 0 0 0 0 0 0 0 0 9000 -1000\n',
+    '1 2014 0 1 0 2 95000 0 5000 0 0 0 0 0 0 0 0 0 0 0 9000 -1000\n',
+    '1 2014 0 1 0 0 95000 0 5000 0 0 0 9 0 0 0 0 0 0 0 9000 -1000\n',
+    '1 2014 0 1 0 0 95000 0 5000 0 0 0 0 9 0 0 0 0 0 0 9000 -1000\n',
+    '1 2014 0 1 0 0 95000 0 5000 0 0 0 0 0 0 0 0 0 1 0 9000 -1000\n',
+    ('1 2014 0 1 0 0 95000 0 5000 0     0     0 0 0 0 0 0 0 0 0 9000 -1000\n'
+     '1 2013 0 2 0 2 15000 0    0 0 50000 70000 0 0 0 0 0 0 0 0    0 -3000\n'),
+])
+def test_bad_input_file(contents):
     """
-    Temporary input file for SimpleTaxIO constructor.
+    Ensure the provided file contents force a ValueError when used as input
     """
     ifile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    ifile.write(BAD_INPUT_A_CONTENTS)
+    ifile.write(contents)
     ifile.close()
-    # must close and then yield for Windows platform
-    yield ifile
+
+    with pytest.raises(ValueError):
+        SimpleTaxIO(
+            input_filename=ifile.name,
+            reform=None,
+            exact_calculations=False,
+            emulate_taxsim_2441_logic=False,
+            output_records=False
+        )
+
     if os.path.isfile(ifile.name):
         try:
             os.remove(ifile.name)
         except OSError:
             pass  # sometimes we can't remove a generated temporary file
-
-
-def test_a_(bad_input_a_file):  # pylint: disable=redefined-outer-name
-    """
-    Test SimpleTaxIO read of BAD_INPUT_A_CONTENTS.
-    """
-    # pylint: disable=unused-variable
-    with pytest.raises(ValueError):
-        simtax = SimpleTaxIO(input_filename=bad_input_a_file.name,
-                             reform=None,
-                             exact_calculations=False,
-                             emulate_taxsim_2441_logic=False,
-                             output_records=False)
-
-
-BAD_INPUT_B_CONTENTS = (
-    '1 2014 0 1 0    0 zyzab 0 5000 0     0     0 0 0 0 0 0 0 0 0 9000 -1000\n'
-)
-
-
-@pytest.yield_fixture
-def bad_input_b_file():
-    """
-    Temporary input file for SimpleTaxIO constructor.
-    """
-    ifile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    ifile.write(BAD_INPUT_B_CONTENTS)
-    ifile.close()
-    # must close and then yield for Windows platform
-    yield ifile
-    if os.path.isfile(ifile.name):
-        try:
-            os.remove(ifile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
-def test_b_(bad_input_b_file):  # pylint: disable=redefined-outer-name
-    """
-    Test SimpleTaxIO read of BAD_INPUT_B_CONTENTS.
-    """
-    # pylint: disable=unused-variable
-    with pytest.raises(ValueError):
-        simtax = SimpleTaxIO(input_filename=bad_input_b_file.name,
-                             reform=None,
-                             exact_calculations=False,
-                             emulate_taxsim_2441_logic=False,
-                             output_records=False)
-
-
-BAD_INPUT_C_CONTENTS = (
-    '1 2014 0 1 0    0 95000 0 -500 0     0     0 0 0 0 0 0 0 0 0 9000 -1000\n'
-)
-
-
-@pytest.yield_fixture
-def bad_input_c_file():
-    """
-    Temporary input file for SimpleTaxIO constructor.
-    """
-    ifile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    ifile.write(BAD_INPUT_C_CONTENTS)
-    ifile.close()
-    # must close and then yield for Windows platform
-    yield ifile
-    if os.path.isfile(ifile.name):
-        try:
-            os.remove(ifile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
-def test_c_(bad_input_c_file):  # pylint: disable=redefined-outer-name
-    """
-    Test SimpleTaxIO read of BAD_INPUT_C_CONTENTS.
-    """
-    # pylint: disable=unused-variable
-    with pytest.raises(ValueError):
-        simtax = SimpleTaxIO(input_filename=bad_input_c_file.name,
-                             reform=None,
-                             exact_calculations=False,
-                             emulate_taxsim_2441_logic=False,
-                             output_records=False)
-
-
-BAD_INPUT_D_CONTENTS = (
-    '1 2014 0 1 0    0 95000 0 5000 0     0     0 0 0 0 0 0 0 0 0 9000 -1000\n'
-    '1 2013 0 2 0    2 15000 0    0 0 50000 70000 0 0 0 0 0 0 0 0    0 -3000\n'
-)
-
-
-@pytest.yield_fixture
-def bad_input_d_file():
-    """
-    Temporary input file for SimpleTaxIO constructor.
-    """
-    ifile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    ifile.write(BAD_INPUT_D_CONTENTS)
-    ifile.close()
-    # must close and then yield for Windows platform
-    yield ifile
-    if os.path.isfile(ifile.name):
-        try:
-            os.remove(ifile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
-def test_d_(bad_input_d_file):  # pylint: disable=redefined-outer-name
-    """
-    Test SimpleTaxIO read of BAD_INPUT_D_CONTENTS.
-    """
-    # pylint: disable=unused-variable
-    with pytest.raises(ValueError):
-        simtax = SimpleTaxIO(input_filename=bad_input_d_file.name,
-                             reform=None,
-                             exact_calculations=False,
-                             emulate_taxsim_2441_logic=False,
-                             output_records=False)
-
-
-BAD_INPUT_E_CONTENTS = (
-    '1 2001 0 1 0    0 95000 0 5000 0     0     0 0 0 0 0 0 0 0 0 9000 -1000\n'
-)
-
-
-@pytest.yield_fixture
-def bad_input_e_file():
-    """
-    Temporary input file for SimpleTaxIO constructor.
-    """
-    ifile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    ifile.write(BAD_INPUT_E_CONTENTS)
-    ifile.close()
-    # must close and then yield for Windows platform
-    yield ifile
-    if os.path.isfile(ifile.name):
-        try:
-            os.remove(ifile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
-def test_e_(bad_input_e_file):  # pylint: disable=redefined-outer-name
-    """
-    Test SimpleTaxIO read of BAD_INPUT_E_CONTENTS.
-    """
-    # pylint: disable=unused-variable
-    with pytest.raises(ValueError):
-        simtax = SimpleTaxIO(input_filename=bad_input_e_file.name,
-                             reform=None,
-                             exact_calculations=False,
-                             emulate_taxsim_2441_logic=False,
-                             output_records=False)
-
-
-BAD_INPUT_F_CONTENTS = (
-    '1 2014 6 1 0    0 95000 0 5000 0     0     0 0 0 0 0 0 0 0 0 9000 -1000\n'
-)
-
-
-@pytest.yield_fixture
-def bad_input_f_file():
-    """
-    Temporary input file for SimpleTaxIO constructor.
-    """
-    ifile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    ifile.write(BAD_INPUT_F_CONTENTS)
-    ifile.close()
-    # must close and then yield for Windows platform
-    yield ifile
-    if os.path.isfile(ifile.name):
-        try:
-            os.remove(ifile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
-def test_f_(bad_input_f_file):  # pylint: disable=redefined-outer-name
-    """
-    Test SimpleTaxIO read of BAD_INPUT_F_CONTENTS.
-    """
-    # pylint: disable=unused-variable
-    with pytest.raises(ValueError):
-        simtax = SimpleTaxIO(input_filename=bad_input_f_file.name,
-                             reform=None,
-                             exact_calculations=False,
-                             emulate_taxsim_2441_logic=False,
-                             output_records=False)
-
-
-BAD_INPUT_G_CONTENTS = (
-    '1 2014 0 4 0    0 95000 0 5000 0     0     0 0 0 0 0 0 0 0 0 9000 -1000\n'
-)
-
-
-@pytest.yield_fixture
-def bad_input_g_file():
-    """
-    Temporary input file for SimpleTaxIO constructor.
-    """
-    ifile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    ifile.write(BAD_INPUT_G_CONTENTS)
-    ifile.close()
-    # must close and then yield for Windows platform
-    yield ifile
-    if os.path.isfile(ifile.name):
-        try:
-            os.remove(ifile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
-def test_g_(bad_input_g_file):  # pylint: disable=redefined-outer-name
-    """
-    Test SimpleTaxIO read of BAD_INPUT_G_CONTENTS.
-    """
-    # pylint: disable=unused-variable
-    with pytest.raises(ValueError):
-        simtax = SimpleTaxIO(input_filename=bad_input_g_file.name,
-                             reform=None,
-                             exact_calculations=False,
-                             emulate_taxsim_2441_logic=False,
-                             output_records=False)
-
-
-BAD_INPUT_H_CONTENTS = (
-    '1 2014 0 3 0    0 95000 0 5000 0     0     0 0 0 0 0 0 0 0 0 9000 -1000\n'
-)
-
-
-@pytest.yield_fixture
-def bad_input_h_file():
-    """
-    Temporary input file for SimpleTaxIO constructor.
-    """
-    ifile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    ifile.write(BAD_INPUT_H_CONTENTS)
-    ifile.close()
-    # must close and then yield for Windows platform
-    yield ifile
-    if os.path.isfile(ifile.name):
-        try:
-            os.remove(ifile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
-def test_h_(bad_input_h_file):  # pylint: disable=redefined-outer-name
-    """
-    Test SimpleTaxIO read of BAD_INPUT_H_CONTENTS.
-    """
-    # pylint: disable=unused-variable
-    with pytest.raises(ValueError):
-        simtax = SimpleTaxIO(input_filename=bad_input_h_file.name,
-                             reform=None,
-                             exact_calculations=False,
-                             emulate_taxsim_2441_logic=False,
-                             output_records=False)
-
-
-BAD_INPUT_I_CONTENTS = (
-    '1 2014 0 1 0    2 95000 0 5000 0     0     0 0 0 0 0 0 0 0 0 9000 -1000\n'
-)
-
-
-@pytest.yield_fixture
-def bad_input_i_file():
-    """
-    Temporary input file for SimpleTaxIO constructor.
-    """
-    ifile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    ifile.write(BAD_INPUT_I_CONTENTS)
-    ifile.close()
-    # must close and then yield for Windows platform
-    yield ifile
-    if os.path.isfile(ifile.name):
-        try:
-            os.remove(ifile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
-def test_i_(bad_input_i_file):  # pylint: disable=redefined-outer-name
-    """
-    Test SimpleTaxIO read of BAD_INPUT_I_CONTENTS.
-    """
-    # pylint: disable=unused-variable
-    with pytest.raises(ValueError):
-        simtax = SimpleTaxIO(input_filename=bad_input_i_file.name,
-                             reform=None,
-                             exact_calculations=False,
-                             emulate_taxsim_2441_logic=False,
-                             output_records=False)
-
-
-BAD_INPUT_J_CONTENTS = (
-    '1 2014 0 1 0    0 95000 0 5000 0     0     0 9 0 0 0 0 0 0 0 9000 -1000\n'
-)
-
-
-@pytest.yield_fixture
-def bad_input_j_file():
-    """
-    Temporary input file for SimpleTaxIO constructor.
-    """
-    ifile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    ifile.write(BAD_INPUT_J_CONTENTS)
-    ifile.close()
-    # must close and then yield for Windows platform
-    yield ifile
-    if os.path.isfile(ifile.name):
-        try:
-            os.remove(ifile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
-def test_j_(bad_input_j_file):  # pylint: disable=redefined-outer-name
-    """
-    Test SimpleTaxIO read of BAD_INPUT_J_CONTENTS.
-    """
-    # pylint: disable=unused-variable
-    with pytest.raises(ValueError):
-        simtax = SimpleTaxIO(input_filename=bad_input_j_file.name,
-                             reform=None,
-                             exact_calculations=False,
-                             emulate_taxsim_2441_logic=False,
-                             output_records=False)
-
-
-BAD_INPUT_K_CONTENTS = (
-    '1 2014 0 1 0    0 95000 0 5000 0     0     0 0 9 0 0 0 0 0 0 9000 -1000\n'
-)
-
-
-@pytest.yield_fixture
-def bad_input_k_file():
-    """
-    Temporary input file for SimpleTaxIO constructor.
-    """
-    ifile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    ifile.write(BAD_INPUT_K_CONTENTS)
-    ifile.close()
-    # must close and then yield for Windows platform
-    yield ifile
-    if os.path.isfile(ifile.name):
-        try:
-            os.remove(ifile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
-def test_k_(bad_input_k_file):  # pylint: disable=redefined-outer-name
-    """
-    Test SimpleTaxIO read of BAD_INPUT_K_CONTENTS.
-    """
-    # pylint: disable=unused-variable
-    with pytest.raises(ValueError):
-        simtax = SimpleTaxIO(input_filename=bad_input_k_file.name,
-                             reform=None,
-                             exact_calculations=False,
-                             emulate_taxsim_2441_logic=False,
-                             output_records=False)
-
-
-BAD_INPUT_L_CONTENTS = (
-    '1 2014 0 1 0    0 95000 0 5000 0     0     0 0 0 0 0 0 0 1 0 9000 -1000\n'
-)
-
-
-@pytest.yield_fixture
-def bad_input_l_file():
-    """
-    Temporary input file for SimpleTaxIO constructor.
-    """
-    ifile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    ifile.write(BAD_INPUT_L_CONTENTS)
-    ifile.close()
-    # must close and then yield for Windows platform
-    yield ifile
-    if os.path.isfile(ifile.name):
-        try:
-            os.remove(ifile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
-def test_l_(bad_input_l_file):  # pylint: disable=redefined-outer-name
-    """
-    Test SimpleTaxIO read of BAD_INPUT_L_CONTENTS.
-    """
-    # pylint: disable=unused-variable
-    with pytest.raises(ValueError):
-        simtax = SimpleTaxIO(input_filename=bad_input_l_file.name,
-                             reform=None,
-                             exact_calculations=False,
-                             emulate_taxsim_2441_logic=False,
-                             output_records=False)

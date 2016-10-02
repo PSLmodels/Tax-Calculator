@@ -9,16 +9,8 @@ import pytest
 import numpy.testing as npt
 from pandas import DataFrame, Series
 from pandas.util.testing import assert_series_equal
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy, Records, Behavior, Calculator
 from taxcalc.utils import *
-
-# use 1991 PUF-like data to emulate current puf.csv, which is private
-TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91taxdata.csv.gz')
-TAXDATA = pd.read_csv(TAXDATA_PATH, compression='gzip')
-WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
-WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
 data = [[1.0, 2, 'a'],
         [-1.0, 4, 'a'],
@@ -124,17 +116,17 @@ def test_validity_of_name_lists():
     assert stat_vars.issubset(calc_vars)
 
 
-def test_create_tables():
+def test_create_tables(puf_1991, weights_1991):
     # create a current-law Policy object and Calculator object calc1
     policy1 = Policy()
-    records1 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    records1 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc1 = Calculator(policy=policy1, records=records1)
     calc1.calc_all()
     # create a policy-reform Policy object and Calculator object calc2
     reform = {2013: {'_II_rt4': [0.56]}}
     policy2 = Policy()
     policy2.implement_reform(reform)
-    records2 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    records2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
     # test creating various distribution tables
@@ -344,12 +336,11 @@ def test_add_columns():
     npt.assert_array_equal(df.num_returns_AMT, np.array([0, 20, 30]))
 
 
-def test_dist_table_sum_row():
+def test_dist_table_sum_row(records_2009):
     # Create a default Policy object
     policy1 = Policy()
-    records1 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     # Create a Calculator
-    calc1 = Calculator(policy=policy1, records=records1)
+    calc1 = Calculator(policy=policy1, records=records_2009)
     calc1.calc_all()
     t1 = create_distribution_table(calc1.records,
                                    groupby='small_income_bins',
@@ -363,17 +354,17 @@ def test_dist_table_sum_row():
                                    result_type='weighted_avg')
 
 
-def test_diff_table_sum_row():
+def test_diff_table_sum_row(puf_1991, weights_1991):
     # create a current-law Policy object and Calculator calc1
     policy1 = Policy()
-    records1 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    records1 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc1 = Calculator(policy=policy1, records=records1)
     calc1.calc_all()
     # create a policy-reform Policy object and Calculator calc2
     reform = {2013: {'_II_rt4': [0.56]}}
     policy2 = Policy()
     policy2.implement_reform(reform)
-    records2 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    records2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
     # create two difference tables and compare their content
@@ -389,10 +380,10 @@ def test_diff_table_sum_row():
                           tdiff2[non_digit_cols][-1:])
 
 
-def test_row_classifier():
+def test_row_classifier(puf_1991, weights_1991):
     # create a current-law Policy object and Calculator calc1
     policy1 = Policy()
-    records1 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    records1 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc1 = Calculator(policy=policy1, records=records1)
     calc1.calc_all()
     calc1_s006 = create_distribution_table(calc1.records,
@@ -402,7 +393,7 @@ def test_row_classifier():
     reform = {2013: {'_ALD_StudentLoan_HC': [1]}}
     policy2 = Policy()
     policy2.implement_reform(reform)
-    records2 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    records2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
     calc2_s006 = create_distribution_table(calc2.records,
@@ -525,11 +516,10 @@ def test_expand_2D_accept_None_additional_row():
     npt.assert_allclose(pol.II_brk2, exp_2020)
 
 
-def test_multiyear_diagnostic_table():
+def test_multiyear_diagnostic_table(records_2009):
     pol = Policy()
-    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
     behv = Behavior()
-    calc = Calculator(policy=pol, records=recs, behavior=behv)
+    calc = Calculator(policy=pol, records=records_2009, behavior=behv)
     with pytest.raises(ValueError):
         adt = multiyear_diagnostic_table(calc, 0)
     with pytest.raises(ValueError):

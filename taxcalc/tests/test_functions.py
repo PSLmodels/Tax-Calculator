@@ -11,11 +11,15 @@ import re
 from taxcalc import IncomeTaxIO, Records  # pylint: disable=import-error
 from io import StringIO
 import pandas as pd
+import pytest
 import ast
 import six
 
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-FUNCTIONS_PY_PATH = os.path.join(CUR_PATH, '..', 'functions.py')
+
+@pytest.fixture(scope='module')
+def function_tree(tests_path):
+    path = os.path.join(tests_path, '..', 'functions.py')
+    return ast.parse(open(path).read())
 
 
 class GetFuncDefs(ast.NodeVisitor):
@@ -67,7 +71,7 @@ class GetFuncDefs(ast.NodeVisitor):
         self.generic_visit(node)
 
 
-def test_calculated_vars_are_calculated():  # pylint: disable=invalid-name
+def test_calcd_vars_are_calcd(function_tree):
     """
     Check that each var in Records.CALCULATED_VARS is actually calculated.
 
@@ -76,9 +80,9 @@ def test_calculated_vars_are_calculated():  # pylint: disable=invalid-name
     of a few variables listed in this test, all Records.CALCULATED_VARS
     must be calculated in the functions.py file.
     """
-    tree = ast.parse(open(FUNCTIONS_PY_PATH).read())
+    # for fixture args, pylint: disable=redefined-outer-name
     gfd = GetFuncDefs()
-    fnames, _, cvars, _ = gfd.visit(tree)
+    fnames, _, cvars, _ = gfd.visit(function_tree)
     # create set of vars that are actually calculated in functions.py file
     all_cvars = set()
     for fname in fnames:
@@ -102,14 +106,14 @@ def test_calculated_vars_are_calculated():  # pylint: disable=invalid-name
         raise ValueError(msg)
 
 
-def test_calc_and_rtn_vars_are_arguments():  # pylint: disable=invalid-name
+def test_affected_vars_are_args(function_tree):
     """
     Check that each variable that is calculated in a function and
     returned by that function is an argument of that function.
     """
-    tree = ast.parse(open(FUNCTIONS_PY_PATH).read())
+    # for fixture args, pylint: disable=redefined-outer-name
     gfd = GetFuncDefs()
-    fnames, fargs, cvars, rvars = gfd.visit(tree)
+    fnames, fargs, cvars, rvars = gfd.visit(function_tree)
     msg = 'calculated & returned variables are not function arguments\n'
     found_error = False
     for fname in fnames:
@@ -127,12 +131,11 @@ def test_calc_and_rtn_vars_are_arguments():  # pylint: disable=invalid-name
         raise ValueError(msg)
 
 
-def test_function_args_usage():
+def test_function_args_usage(tests_path):
     """
     Checks each function argument in functions.py for use in its function body.
     """
-    cur_path = os.path.abspath(os.path.dirname(__file__))
-    funcfilename = os.path.join(cur_path, '..', 'functions.py')
+    funcfilename = os.path.join(tests_path, '..', 'functions.py')
     with open(funcfilename, 'r') as funcfile:
         fcontent = funcfile.read()
     fcontent = re.sub('#.*', '', fcontent)  # remove all '#...' comments
