@@ -1,24 +1,12 @@
-import os
-import sys
 import numpy as np
 from numpy.testing import assert_array_equal
-import pandas as pd
 import pytest
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy, Records, Calculator, Growth
 
-# use 1991 PUF-like data to emulate current puf.csv, which is private
-TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91taxdata.csv.gz')
-TAXDATA = pd.read_csv(TAXDATA_PATH, compression='gzip')
-WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
-WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
-
-def test_make_calculator_with_growth():
-    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+def test_make_calculator_with_growth(records_2009):
     grow = Growth()
-    calc = Calculator(policy=Policy(), records=recs, growth=grow)
+    calc = Calculator(policy=Policy(), records=records_2009, growth=grow)
     assert calc.current_year == 2013
     assert isinstance(calc, Calculator)
     # test correct Growth instantiation with dictionary
@@ -31,7 +19,7 @@ def test_make_calculator_with_growth():
         grow = Growth(num_years=0)
 
 
-def test_update_growth():
+def test_update_growth(puf_1991, weights_1991):
     # try incorrect updates
     grow = Growth()
     with pytest.raises(ValueError):
@@ -52,8 +40,8 @@ def test_update_growth():
     factor_y = {2015: {'_factor_adjustment': [0.01]}}
     grow_y.update_economic_growth(factor_y)
     # create two Calculators
-    recs_x = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    recs_y = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    recs_x = Records(data=puf_1991, weights=weights_1991, start_year=2009)
+    recs_y = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc_x = Calculator(policy=Policy(), records=recs_x, growth=grow_x)
     calc_y = Calculator(policy=Policy(), records=recs_y, growth=grow_y)
     assert_array_equal(calc_x.growth.factor_target,
@@ -70,9 +58,8 @@ def test_update_growth():
                                  0.01, 0.01]))
 
 
-def test_factor_target():
-    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    calc = Calculator(policy=Policy(), records=recs, growth=Growth())
+def test_factor_target(records_2009):
+    calc = Calculator(policy=Policy(), records=records_2009, growth=Growth())
     AGDPN_pre = calc.records.BF.AGDPN[2015]
     ATXPY_pre = calc.records.BF.ATXPY[2015]
     # specify _factor_target
@@ -91,9 +78,8 @@ def test_factor_target():
     assert calc.records.BF.ATXPY[2015] == ATXPY_post
 
 
-def test_factor_adjustment():
-    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    calc = Calculator(policy=Policy(), records=recs, growth=Growth())
+def test_factor_adjustment(records_2009):
+    calc = Calculator(policy=Policy(), records=records_2009, growth=Growth())
     ATXPY_pre = calc.records.BF.ATXPY[2015]
     AGDPN_pre = calc.records.BF.AGDPN[2015]
     # specify _factor_adjustment

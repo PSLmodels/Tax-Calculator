@@ -1,7 +1,5 @@
 import os
 import sys
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 import json
 import numpy as np
 from numpy.testing import assert_allclose
@@ -557,7 +555,8 @@ def reform_file():
             pass  # sometimes we can't remove a generated temporary file
 
 
-def test_read_json_reform_file_and_implement_reform_a(reform_file):
+@pytest.mark.parametrize("set_year", [False, True])
+def test_read_json_reform_file_and_implement_reform(reform_file, set_year):
     """
     Test reading and translation of reform file into a reform dictionary
     that is then used to call implement_reform method.
@@ -565,44 +564,8 @@ def test_read_json_reform_file_and_implement_reform_a(reform_file):
     """
     reform = Policy.read_json_reform_file(reform_file.name)
     policy = Policy()
-    policy.implement_reform(reform)
-    syr = policy.start_year
-    amt_tthd = policy._AMT_tthd
-    assert amt_tthd[2015 - syr] == 200000
-    assert amt_tthd[2016 - syr] > 200000
-    assert amt_tthd[2017 - syr] == 300000
-    assert amt_tthd[2018 - syr] > 300000
-    ii_em = policy._II_em
-    assert ii_em[2016 - syr] == 6000
-    assert ii_em[2017 - syr] == 6000
-    assert ii_em[2018 - syr] == 7500
-    assert ii_em[2019 - syr] > 7500
-    assert ii_em[2020 - syr] == 9000
-    assert ii_em[2021 - syr] > 9000
-    amt_em = policy._AMT_em
-    assert amt_em[2016 - syr, 0] > amt_em[2015 - syr, 0]
-    assert amt_em[2017 - syr, 0] > amt_em[2016 - syr, 0]
-    assert amt_em[2018 - syr, 0] == amt_em[2017 - syr, 0]
-    assert amt_em[2019 - syr, 0] == amt_em[2017 - syr, 0]
-    assert amt_em[2020 - syr, 0] == amt_em[2017 - syr, 0]
-    assert amt_em[2021 - syr, 0] > amt_em[2020 - syr, 0]
-    assert amt_em[2022 - syr, 0] > amt_em[2021 - syr, 0]
-    add4aged = policy._ID_Medical_frt_add4aged
-    assert add4aged[2015 - syr] == -0.025
-    assert add4aged[2016 - syr] == -0.025
-    assert add4aged[2017 - syr] == 0.0
-    assert add4aged[2022 - syr] == 0.0
-
-
-def test_read_json_reform_file_and_implement_reform_b(reform_file):
-    """
-    Test reading and translation of reform file into a reform dictionary
-    that is then used to call implement_reform method.
-    NOTE: implement_reform called when policy.current_year > policy.start_year
-    """
-    reform = Policy.read_json_reform_file(reform_file.name)
-    policy = Policy()
-    policy.set_year(2015)  # the only difference between this and prior test
+    if set_year:
+        policy.set_year(2015)
     policy.implement_reform(reform)
     syr = policy.start_year
     amt_tthd = policy._AMT_tthd

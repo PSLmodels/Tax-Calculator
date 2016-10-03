@@ -1,38 +1,27 @@
 import os
-import sys
 import numpy as np
 from numpy.testing import assert_array_equal
 import pandas as pd
 import pytest
 from io import StringIO
-
-
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 from taxcalc import Policy, Records, Calculator, Growth
 
-# use 1991 PUF-like data to emulate current puf.csv, which is private
-TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91taxdata.csv.gz')
-TAXDATA = pd.read_csv(TAXDATA_PATH, compression='gzip')
-TAXDATA_SAMPLE = TAXDATA.sample(frac=0.10)
-WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
-WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
-
-def test_incorrect_Records_instantiation():
+def test_incorrect_Records_instantiation(puf_1991):
     with pytest.raises(ValueError):
         recs = Records(data=list())
     with pytest.raises(ValueError):
-        recs = Records(data=TAXDATA, blowup_factors=list())
+        recs = Records(data=puf_1991, blowup_factors=list())
     with pytest.raises(ValueError):
-        recs = Records(data=TAXDATA, blowup_factors=None, weights=list())
+        recs = Records(data=puf_1991, blowup_factors=None, weights=list())
     with pytest.raises(ValueError):
-        recs = Records(data=TAXDATA, blowup_factors=None, weights=None,
+        recs = Records(data=puf_1991, blowup_factors=None, weights=None,
                        start_year=list())
 
 
-def test_correct_Records_instantiation():
-    rec1 = Records(data=TAXDATA, blowup_factors=None, weights=WEIGHTS)
+def test_correct_Records_instantiation(puf_1991, puf_1991_path, weights_1991):
+    rec1 = Records(data=puf_1991_path, blowup_factors=None,
+                   weights=weights_1991)
     assert rec1
     assert np.all(rec1.MARS != 0)
     assert rec1.current_year == Records.PUF_YEAR
@@ -41,14 +30,15 @@ def test_correct_Records_instantiation():
     sum_e00200_in_puf_year_plus_one = rec1.e00200.sum()
     assert sum_e00200_in_puf_year_plus_one == sum_e00200_in_puf_year
     bf_df = pd.read_csv(Records.BLOWUP_FACTORS_PATH)
-    rec2 = Records(data=TAXDATA, blowup_factors=bf_df, weights=None)
+    rec2 = Records(data=puf_1991, blowup_factors=bf_df, weights=None)
     assert rec2
     assert np.all(rec2.MARS != 0)
     assert rec2.current_year == Records.PUF_YEAR
 
 
-def test_correct_Records_instantiation_sample():
-    rec1 = Records(data=TAXDATA_SAMPLE, blowup_factors=None, weights=WEIGHTS)
+def test_correct_Records_instantiation_sample(puf_1991, weights_1991):
+    sample = puf_1991.sample(frac=0.10)
+    rec1 = Records(data=sample, blowup_factors=None, weights=weights_1991)
     assert rec1
     assert np.all(rec1.MARS != 0)
     assert rec1.current_year == Records.PUF_YEAR
@@ -57,67 +47,54 @@ def test_correct_Records_instantiation_sample():
     sum_e00200_in_puf_year_plus_one = rec1.e00200.sum()
     assert sum_e00200_in_puf_year_plus_one == sum_e00200_in_puf_year
     bf_df = pd.read_csv(Records.BLOWUP_FACTORS_PATH)
-    rec2 = Records(data=TAXDATA_SAMPLE, blowup_factors=bf_df, weights=None)
+    rec2 = Records(data=sample, blowup_factors=bf_df, weights=None)
     assert rec2
     assert np.all(rec2.MARS != 0)
     assert rec2.current_year == Records.PUF_YEAR
 
 
-def test_read_data():
-    funit1 = (
+@pytest.mark.parametrize("csv", [
+    (
         u'RECID,MARS,e00200,e00200p,e00200s\n'
         u'1,    2,   200000, 200000,   0.01\n'
-    )
-    df1 = pd.read_csv(StringIO(funit1))
-    with pytest.raises(ValueError):
-        rec = Records(data=df1)
-    funit2 = (
+    ),
+    (
         u'RECID,MARS,e00900,e00900p,e00900s\n'
         u'1,    2,   200000, 200000,   0.01\n'
-    )
-    df2 = pd.read_csv(StringIO(funit2))
-    with pytest.raises(ValueError):
-        rec = Records(data=df2)
-    funit3 = (
+    ),
+    (
         u'RECID,MARS,e02100,e02100p,e02100s\n'
         u'1,    2,   200000, 200000,   0.01\n'
-    )
-    df3 = pd.read_csv(StringIO(funit3))
-    with pytest.raises(ValueError):
-        rec = Records(data=df3)
-    funit4 = (
+    ),
+    (
         u'RxCID,MARS\n'
         u'1,    2\n'
-    )
-    df4 = pd.read_csv(StringIO(funit4))
-    with pytest.raises(ValueError):
-        rec = Records(data=df4)
-    funit5 = (
+    ),
+    (
         u'RECID,e00300\n'
         u'1,   ,456789\n'
-    )
-    df5 = pd.read_csv(StringIO(funit5))
-    with pytest.raises(ValueError):
-        rec = Records(data=df5)
-    funit6 = (
+    ),
+    (
         u'RECID,MARS,e00600,e00650\n'
         u'1,    1,        8,     9\n'
     )
-    df6 = pd.read_csv(StringIO(funit6))
+])
+def test_read_data(csv):
+    df = pd.read_csv(StringIO(csv))
     with pytest.raises(ValueError):
-        rec = Records(data=df6)
+        Records(data=df)
 
 
-def test_blowup():
+def test_blowup(puf_1991, weights_1991):
     pol1 = Policy()
     assert pol1.current_year == Policy.JSON_START_YEAR
-    rec1 = Records(data=TAXDATA, weights=WEIGHTS)
+    rec1 = Records(data=puf_1991, weights=weights_1991)
     assert rec1.current_year == Records.PUF_YEAR
     calc1 = Calculator(policy=pol1, records=rec1, sync_years=True)
     assert calc1.records.current_year == Policy.JSON_START_YEAR
     pol2 = Policy()
     assert pol2.current_year == Policy.JSON_START_YEAR
-    rec2 = Records(data=TAXDATA, weights=WEIGHTS)
+    rec2 = Records(data=puf_1991, weights=weights_1991)
     assert rec2.current_year == Records.PUF_YEAR
     rec2.set_current_year(Policy.JSON_START_YEAR)
     assert rec2.current_year == Policy.JSON_START_YEAR
@@ -144,13 +121,13 @@ def test_for_duplicate_names():
         assert varname in Records.VALID_READ_VARS
 
 
-def test_default_rates_and_those_implied_by_blowup_factors():
+def test_default_rates_and_those_implied_by_blowup_factors(puf_1991):
     """
     Check that default GDP growth rates, default wage growth rates, and
     default price inflation rates, are consistent with the rates embedded
     in the Records blowup factors (BF).
     """
-    record = Records(TAXDATA_PATH)  # contains the blowup factors
+    record = Records(data=puf_1991)  # contains the blowup factors
     policy = Policy()  # contains the default indexing rates
     syr = Policy.JSON_START_YEAR
     endyr = Policy.LAST_BUDGET_YEAR
@@ -201,13 +178,13 @@ def test_default_rates_and_those_implied_by_blowup_factors():
     assert_array_equal(wage_growth_rates[1:], policy._wage_growth_rates[1:-1])
 
 
-def test_var_labels_txt_contents():
+def test_var_labels_txt_contents(tests_path):
     """
     Check that every Records variable used by taxcalc is in var_labels.txt
     and that all variables in var_labels.txt are used by taxcalc.
     """
     # read variables in var_labels.txt file (checking for duplicates)
-    var_labels_path = os.path.join(CUR_PATH, '..', 'var_labels.txt')
+    var_labels_path = os.path.join(tests_path, '..', 'var_labels.txt')
     var_labels_set = set()
     with open(var_labels_path, 'r') as varlabels:
         msg = 'DUPLICATE VARIABLE(S) IN VAR_LABELS.TXT:\n'
@@ -241,12 +218,12 @@ def test_var_labels_txt_contents():
         raise ValueError(msg)
 
 
-def test_csv_input_vars_md_contents():
+def test_csv_input_vars_md_contents(tests_path):
     """
     Check validation/CSV_INPUT_VARS.md contents against Records.VALID_READ_VARS
     """
     # read variable names in CSV_INPUT_VARS.md file (checking for duplicates)
-    civ_path = os.path.join(CUR_PATH, '..', 'validation',
+    civ_path = os.path.join(tests_path, '..', 'validation',
                             'CSV_INPUT_VARS.md')
     civ_set = set()
     with open(civ_path, 'r') as civfile:

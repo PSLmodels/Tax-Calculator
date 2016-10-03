@@ -52,97 +52,69 @@ def rawinputfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
-def test_0(rawinputfile):  # pylint: disable=redefined-outer-name
+@pytest.mark.parametrize("input_data, exact", [
+    ('no-dot-csv-filename', True),
+    (list(), False),
+    ('bad_filename.csv', False),
+])
+def test_incorrect_creation_1(input_data, exact):
     """
-    Test incorrect IncomeTaxIO instantiation.
+    Ensure a ValueError is raised when created with invalid data pointers
     """
-    # pylint: disable=unused-variable
     with pytest.raises(ValueError):
-        inctax = IncomeTaxIO(input_data='no-dot-csv-filename',
-                             tax_year=2013,
-                             policy_reform=None,
-                             exact_calculations=True,
-                             blowup_input_data=True,
-                             output_weights=False,
-                             output_records=False,
-                             csv_dump=False)
-    with pytest.raises(ValueError):
-        inctax = IncomeTaxIO(input_data=list(),
-                             tax_year=2013,
-                             policy_reform=None,
-                             exact_calculations=False,
-                             blowup_input_data=True,
-                             output_weights=False,
-                             output_records=False,
-                             csv_dump=False)
-    with pytest.raises(ValueError):
-        inctax = IncomeTaxIO(input_data=rawinputfile.name,
-                             tax_year=2013,
-                             policy_reform=list(),
-                             exact_calculations=False,
-                             blowup_input_data=True,
-                             output_weights=False,
-                             output_records=False,
-                             csv_dump=False)
-    with pytest.raises(ValueError):
-        inctax = IncomeTaxIO(input_data='bad_filename.csv',
-                             tax_year=2013,
-                             policy_reform=None,
-                             exact_calculations=False,
-                             blowup_input_data=True,
-                             output_weights=False,
-                             output_records=False,
-                             csv_dump=False)
-    with pytest.raises(ValueError):
-        inctax = IncomeTaxIO(input_data=rawinputfile.name,
-                             tax_year=2001,
-                             policy_reform=None,
-                             exact_calculations=False,
-                             blowup_input_data=True,
-                             output_weights=False,
-                             output_records=False,
-                             csv_dump=False)
-    with pytest.raises(ValueError):
-        inctax = IncomeTaxIO(input_data=rawinputfile.name,
-                             tax_year=2099,
-                             policy_reform=None,
-                             exact_calculations=False,
-                             blowup_input_data=True,
-                             output_weights=False,
-                             output_records=False,
-                             csv_dump=False)
+        IncomeTaxIO(
+            input_data=input_data,
+            tax_year=2013,
+            policy_reform=None,
+            exact_calculations=exact,
+            blowup_input_data=True,
+            output_weights=False,
+            output_records=False,
+            csv_dump=False
+        )
 
 
-def test_1(rawinputfile):  # pylint: disable=redefined-outer-name
+@pytest.mark.parametrize("year, reform", [
+    (2013, list()),
+    (2001, None),
+    (2099, None),
+])
+def test_incorrect_creation_2(rawinputfile, year, reform):
+    """
+    Ensure a ValueError is raised when created with invalid reform params
+    """
+    # for fixture args, pylint: disable=redefined-outer-name
+    with pytest.raises(ValueError):
+        IncomeTaxIO(
+            input_data=rawinputfile.name,
+            tax_year=year,
+            policy_reform=reform,
+            exact_calculations=False,
+            blowup_input_data=True,
+            output_weights=False,
+            output_records=False,
+            csv_dump=False
+        )
+
+
+@pytest.mark.parametrize("blowup, weights_out", [
+    (True, False),
+    (True, True),
+    (False, True),
+])
+def test_creation_with_blowup(rawinputfile, blowup, weights_out):
     """
     Test IncomeTaxIO instantiation with no policy reform and with blowup.
     """
+    # for fixture args, pylint: disable=redefined-outer-name
     IncomeTaxIO.show_iovar_definitions()
     taxyear = 2021
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
                          policy_reform=None,
                          exact_calculations=False,
-                         blowup_input_data=True,
-                         output_weights=False,
-                         output_records=False,
-                         csv_dump=False)
-    assert inctax.tax_year() == taxyear
-    inctax = IncomeTaxIO(input_data=rawinputfile.name,
-                         tax_year=taxyear,
-                         policy_reform=None,
-                         exact_calculations=False,
-                         blowup_input_data=True,
-                         output_weights=True,
-                         output_records=False,
-                         csv_dump=False)
-    assert inctax.tax_year() == taxyear
-    inctax = IncomeTaxIO(input_data=rawinputfile.name,
-                         tax_year=taxyear,
-                         policy_reform=None,
-                         exact_calculations=False,
-                         blowup_input_data=False,
-                         output_weights=True,
+                         blowup_input_data=blowup,
+                         output_weights=weights_out,
                          output_records=False,
                          csv_dump=False)
     assert inctax.tax_year() == taxyear
