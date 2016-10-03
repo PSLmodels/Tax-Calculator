@@ -104,6 +104,12 @@ def test_calc_and_used_vars(tests_path):
     for fname in fnames:
         if fname == 'BenefitSurtax':
             continue  # because BenefitSurtax is not really a function
+        if fname == 'ComputeBenefit':
+            continue  # because ComputeBenefit is not really a function
+        if fname == 'BenefitLimitation':
+            continue  # because BenefitLimitation is not really a function
+        cvars_set = set(cvars[fname])
+        rvars_set = set(rvars[fname])
         crvars_set = set(cvars[fname]) & set(rvars[fname])
         if not crvars_set <= set(fargs[fname]):
             found_error2 = True
