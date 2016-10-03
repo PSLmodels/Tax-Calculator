@@ -110,9 +110,11 @@ def test_calc_and_used_vars(tests_path):
             for var in crvars_set - set(fargs[fname]):
                 msg2 += 'FUNCTION,VARIABLE: {} {}\n'.format(fname, var)
     # Report errors for the two tests:
-    if found_error1:
+    if found_error1 and found_error2:
+        raise ValueError('{}\n{}'.format(msg1, msg2))
+    elif found_error1:
         raise ValueError(msg1)
-    if found_error2:
+    elif found_error2:
         raise ValueError(msg2)
 
 
