@@ -313,7 +313,10 @@ def taxbrain_scalar_pval_insert(driver, start_year, param_name, param_dict):
         pval = param_dict[pyr][0]  # [0] removes the outer brackets
         pyr_int = int(pyr)
         if pyr_int == first_segment_year:
-            txt = '{}'.format(pval)
+            if first_segment_year == start_year:
+                txt = '{}'.format(pval)
+            else:
+                txt += ',{}'.format(pval)
         else:  # pyr_int > first_segment_year
             if first_segment_year == start_year:
                 txt = '*'
@@ -353,7 +356,10 @@ def taxbrain_vector_pval_insert(driver, start_year, param_name, param_dict):
             pval = param_dict[pyr][0]  # [0] removes the outer brackets
             pyr_int = int(pyr)
             if pyr_int == first_segment_year:
-                txt = '{}'.format(pval[idx])
+                if first_segment_year == start_year:
+                    txt = '{}'.format(pval[idx])
+                else:
+                    txt += ',{}'.format(pval[idx])
             else:  # pyr_int > first_segment_year
                 if first_segment_year == start_year:
                     txt = '*'
