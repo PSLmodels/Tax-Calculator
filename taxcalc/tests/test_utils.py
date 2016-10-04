@@ -517,12 +517,22 @@ def test_expand_2D_accept_None_additional_row():
     npt.assert_allclose(pol.II_brk2, exp_2020)
 
 
+def test_get_mtr_data(records_2009):
+    pol = Policy()
+    behv = Behavior()
+    calc = Calculator(policy=pol, records=records_2009, behavior=behv)
+    calc.calc_all()
+    source = get_mtr_data(calc, calc, weights=wage_weighted, MARS=1,
+                          mtr_measure='combined')
+
+
 def test_mtr_plot(records_2009):
     pol = Policy()
     behv = Behavior()
     calc = Calculator(policy=pol, records=records_2009, behavior=behv)
     calc.calc_all()
-    source = get_mtr_data(calc, calc, weights=weighted_mean)
+    source = get_mtr_data(calc, calc, weights=wage_weighted,
+                          complex_weight=True)
     plot = mtr_plot(source)
 
 

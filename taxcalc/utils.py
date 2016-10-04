@@ -254,10 +254,7 @@ def exp_results(c):
     RES_COLUMNS = STATS_COLUMNS + ['e00200'] + ['MARS']
     outputs = []
     for col in RES_COLUMNS:
-        if hasattr(c.policy, col):
-            outputs.append(getattr(c.policy, col))
-        else:
-            outputs.append(getattr(c.records, col))
+        outputs.append(getattr(c.records, col))
     return DataFrame(data=np.column_stack(outputs), columns=RES_COLUMNS)
 
 
