@@ -208,8 +208,8 @@ class Policy(ParametersBase):
         # convert JSON text into a dictionary with year skeys as strings
         try:
             reform_dict_raw = json.loads(json_without_comments)
-        except ValueError:
-            msg = 'Policy reform text contains invalid JSON'
+        except ValueError as ve:
+            msg = 'Policy reform text contains invalid JSON:'
             txt = ('\nTO FIND FIRST JSON SYNTAX ERROR,\n'
                    'COPY TEXT BETWEEN LINES AND '
                    'PASTE INTO BOX AT jsonlint.com\n')
@@ -217,7 +217,7 @@ class Policy(ParametersBase):
             txt += line + '\n'
             txt += json_without_comments.strip() + '\n'
             txt += line + '\n'
-            raise ValueError(msg + txt)
+            raise ValueError(msg + str(ve) + txt)
         return Policy.convert_reform_dictionary(reform_dict_raw)
 
     def implement_reform(self, reform):
