@@ -526,6 +526,16 @@ def test_expand_2D_accept_None_additional_row():
     npt.assert_allclose(pol.II_brk2, exp_2020)
 
 
+def test_mtr_plot():
+    pol = Policy()
+    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    behv = Behavior()
+    calc = Calculator(policy=pol, records=recs, behavior=behv)
+    calc.calc_all()
+    source = get_mtr_data(calc, calc, weights=weighted_mean)
+    plot = mtr_plot(source)
+
+
 def test_multiyear_diagnostic_table():
     pol = Policy()
     recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
@@ -582,16 +592,6 @@ def test_ascii_output_function(csvfile, asciifile):
     assert filecmp.cmp(output_test.name, asciifile.name)
     output_test.close()
     os.remove(output_test.name)
-
-
-def test_mtr_plot():
-    pol = Policy()
-    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    behv = Behavior()
-    calc = Calculator(policy=pol, records=recs, behavior=behv)
-    calc.calc_all()
-    source = get_mtr_data(calc, calc, weights=weighted_mean)
-    plot = mtr_plot(source)
 
 
 def test_string_to_number():
