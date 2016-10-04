@@ -197,15 +197,14 @@ class Policy(ParametersBase):
             reform_dict_raw = json.loads(json_without_comments)
         except ValueError:
             msg = 'simtax REFORM file {} contains invalid JSON'
-            line = '----------------------------------------------------------'
-            txt = ('TO FIND FIRST JSON SYNTAX ERROR,\n'
+            line = '\n----------------------------------------------------------\n'
+            txt = ('\nTO FIND FIRST JSON SYNTAX ERROR,\n'
                    'COPY TEXT BETWEEN LINES AND '
                    'PASTE INTO BOX AT jsonlint.com')
-            sys.stderr.write(txt + '\n')
-            sys.stderr.write(line + '\n')
-            sys.stderr.write(json_without_comments.strip() + '\n')
-            sys.stderr.write(line + '\n')
-            raise ValueError(msg.format(reform_filename))
+            txt += line
+            txt += json_without_comments.strip() + '\n'
+            txt += line
+            raise ValueError(msg.format(reform_filename) + txt)
         return Policy.convert_reform_dictionary(reform_dict_raw)
 
     def implement_reform(self, reform):
