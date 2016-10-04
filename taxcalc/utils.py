@@ -6,19 +6,11 @@ from collections import defaultdict, OrderedDict
 from bokeh.models import Plot, Range1d, ImageURL, DataRange1d
 from bokeh.embed import components
 from bokeh.layouts import layout
+from bokeh.palettes import Blues4, Reds4
 from bokeh.plotting import figure, hplot, vplot, output_file, show
 from bokeh.models import (ColumnDataSource, LogAxis, LinearAxis, Rect,
                           FactorRange, CategoricalAxis, Line, Text, Square,
                           HoverTool)
-
-from styles import (PLOT_FORMATS,
-                    AXIS_FORMATS,
-                    FONT_PROPS_SM,
-                    DARK_GRAY,
-                    GREEN,
-                    PURPLE,
-                    RED,
-                    BLUE)
 
 STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard',
                  'c04470', 'c04600', 'c04800', 'c05200', 'c62100', 'c09600',
@@ -779,11 +771,11 @@ def mtr_plot(source, xlab='Percentile', ylab='Avg. MTR', title='MTR plot',
     PP = figure(plot_width=plot_width, plot_height=plot_height, title=title)
 
     PP.line((source.reset_index()).index,
-            (source.reset_index()).base, line_color=BLUE, line_width=0.8,
+            (source.reset_index()).base, line_color=Blues4[0], line_width=0.8,
             line_alpha=.8, legend="Base")
 
     PP.line((source.reset_index()).index,
-            (source.reset_index()).reform, line_color=RED, line_width=0.8,
+            (source.reset_index()).reform, line_color=Reds4[1], line_width=0.8,
             line_alpha=1, legend="Reform")
 
     PP.legend.label_text_font = "times"
