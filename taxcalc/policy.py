@@ -8,7 +8,6 @@ Tax-Calculator federal tax policy Policy class.
 
 
 import os
-import sys
 import json
 import re
 import six
@@ -184,28 +183,41 @@ class Policy(ParametersBase):
         The returned dictionary is suitable as the argument to the
            implement_reform(reform_dict) method (see below).
         """
-        # check existence of specified reform file
-        if not os.path.isfile(reform_filename):
-            msg = 'simtax REFORM file {} could not be found'
+        if os.path.isfile(reform_filename):
+            txt = open(reform_filename, 'r').read()
+            return Policy.read_json_reform_text(txt)
+        else:
+            msg = 'Policy reform file {} could not be found'
             raise ValueError(msg.format(reform_filename))
-        # read contents of reform file and remove // comments
-        with open(reform_filename, 'r') as reform_file:
-            json_with_comments = reform_file.read()
-            json_without_comments = re.sub('//.*', '', json_with_comments)
+
+    @staticmethod
+    def read_json_reform_text(text_string):
+        """
+        Strip //-comments from text_string and return dict based on JSON.
+        The reform text is JSON with string policy-parameter primary keys and
+           string years as secondary keys.  See tests/test_policy.py for an
+           extended example of a commented JSON reform text that can be read
+           by this method.
+        Returned dictionary has integer years as primary keys and
+           string policy-parameters as secondary keys.
+        The returned dictionary is suitable as the argument to the
+           implement_reform(reform_dict) method (see below).
+        """
+        # strip out //-comments without changing line numbers
+        json_without_comments = re.sub('//.*', '', text_string)
         # convert JSON text into a dictionary with year skeys as strings
         try:
             reform_dict_raw = json.loads(json_without_comments)
         except ValueError:
-            msg = 'simtax REFORM file {} contains invalid JSON'
-            line = '----------------------------------------------------------'
-            txt = ('TO FIND FIRST JSON SYNTAX ERROR,\n'
+            msg = 'Policy reform text contains invalid JSON'
+            txt = ('\nTO FIND FIRST JSON SYNTAX ERROR,\n'
                    'COPY TEXT BETWEEN LINES AND '
-                   'PASTE INTO BOX AT jsonlint.com')
-            sys.stderr.write(txt + '\n')
-            sys.stderr.write(line + '\n')
-            sys.stderr.write(json_without_comments.strip() + '\n')
-            sys.stderr.write(line + '\n')
-            raise ValueError(msg.format(reform_filename))
+                   'PASTE INTO BOX AT jsonlint.com\n')
+            line = '----------------------------------------------------------'
+            txt += line + '\n'
+            txt += json_without_comments.strip() + '\n'
+            txt += line + '\n'
+            raise ValueError(msg + txt)
         return Policy.convert_reform_dictionary(reform_dict_raw)
 
     def implement_reform(self, reform):
