@@ -8,7 +8,6 @@ Tax-Calculator federal tax policy Policy class.
 
 
 import os
-import sys
 import json
 import re
 import six
@@ -210,15 +209,15 @@ class Policy(ParametersBase):
         try:
             reform_dict_raw = json.loads(json_without_comments)
         except ValueError:
-            line = '----------------------------------------------------------'
-            txt = ('TO FIND FIRST JSON SYNTAX ERROR,\n'
+            msg = 'Policy reform text contains invalid JSON'
+            txt = ('\nTO FIND FIRST JSON SYNTAX ERROR,\n'
                    'COPY TEXT BETWEEN LINES AND '
-                   'PASTE INTO BOX AT jsonlint.com')
-            sys.stderr.write(txt + '\n')
-            sys.stderr.write(line + '\n')
-            sys.stderr.write(json_without_comments.strip() + '\n')
-            sys.stderr.write(line + '\n')
-            raise ValueError('Policy reform text contains invalid JSON')
+                   'PASTE INTO BOX AT jsonlint.com\n')
+            line = '----------------------------------------------------------'
+            txt += line + '\n'
+            txt += json_without_comments.strip() + '\n'
+            txt += line + '\n'
+            raise ValueError(msg + txt)
         return Policy.convert_reform_dictionary(reform_dict_raw)
 
     def implement_reform(self, reform):
