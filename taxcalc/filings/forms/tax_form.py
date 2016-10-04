@@ -121,12 +121,10 @@ class TaxForm(object):
         indirect = self.to_evars_indirect() or {}
 
         # Check for conflicts
-        for key in direct:
-            if key in indirect and direct[key] != indirect[key]:
-                raise ValueError('Different calc for same evar.')
-        for key in indirect:
-            if key in direct and direct[key] != indirect[key]:
-                raise ValueError('Different calc for same evar.')
+        for key in direct.keys() + indirect.keys():
+            if key in direct and key in indirect:
+                if direct[key] != indirect[key]:
+                    raise ValueError('Different calc for same evar.')
 
         direct.update(indirect)
         return direct
