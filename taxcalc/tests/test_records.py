@@ -72,7 +72,7 @@ def test_correct_Records_instantiation_sample(puf_1991, weights_1991):
     ),
     (
         u'RECID,e00300\n'
-        u'1,   ,456789\n'
+        u'1,    456789\n'
     ),
     (
         u'RECID,MARS,e00600,e00650\n'
