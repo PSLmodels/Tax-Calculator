@@ -52,7 +52,6 @@ def test_tax_form_tax_id():
     assert form.tax_unit_id == '47'
 
 
-@pytest.mark.one
 def test_tax_form_evar_mapping_direct():
     child_class = type("TestTaxForm", (TaxForm,), {
         '_EVAR_MAP': {
