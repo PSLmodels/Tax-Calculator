@@ -32,7 +32,7 @@ from selenium.common.exceptions import TimeoutException
 import pyperclip
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 # pylint: disable=import-error
-from taxcalc import Policy, Records, Calculator
+from taxcalc import Policy, Records, Calculator, create_diagnostic_table
 import pandas as pd
 
 
@@ -164,13 +164,13 @@ def taxcalc_clp_results():
     adts = list()
     for iyr in range(-1, nyears - 1):
         calc.calc_all()
-        adts.append(calc.diagnostic_table())
+        adts.append(create_diagnostic_table(calc))
         if iyr < nyears:
             calc.increment_year()
     adt = pd.concat(adts, axis=1)
     # note that adt is Pandas DataFrame object
-    return (adt.xs('Ind inc tax ($b)').to_dict(),
-            adt.xs('Payroll tax ($b)').to_dict())
+    return (adt.xs('Ind Income Tax ($b)').to_dict(),
+            adt.xs('Payroll Taxes ($b)').to_dict())
 
 
 def check_selenium_and_chromedriver():
@@ -313,7 +313,10 @@ def taxbrain_scalar_pval_insert(driver, start_year, param_name, param_dict):
         pval = param_dict[pyr][0]  # [0] removes the outer brackets
         pyr_int = int(pyr)
         if pyr_int == first_segment_year:
-            txt = '{}'.format(pval)
+            if first_segment_year == start_year:
+                txt = '{}'.format(pval)
+            else:
+                txt += ',{}'.format(pval)
         else:  # pyr_int > first_segment_year
             if first_segment_year == start_year:
                 txt = '*'
@@ -353,7 +356,10 @@ def taxbrain_vector_pval_insert(driver, start_year, param_name, param_dict):
             pval = param_dict[pyr][0]  # [0] removes the outer brackets
             pyr_int = int(pyr)
             if pyr_int == first_segment_year:
-                txt = '{}'.format(pval[idx])
+                if first_segment_year == start_year:
+                    txt = '{}'.format(pval[idx])
+                else:
+                    txt += ',{}'.format(pval[idx])
             else:  # pyr_int > first_segment_year
                 if first_segment_year == start_year:
                     txt = '*'
@@ -416,13 +422,13 @@ def taxcalc_results(start_year, reform_dict, itax_clp, ptax_clp):
     adts = list()
     for iyr in range(-1, nyears - 1):
         calc.calc_all()
-        adts.append(calc.diagnostic_table())
+        adts.append(create_diagnostic_table(calc))
         if iyr < nyears:
             calc.increment_year()
     adt = pd.concat(adts, axis=1)
     # note that adt is Pandas DataFrame object
-    itax_ref = adt.xs('Ind inc tax ($b)').to_dict()
-    ptax_ref = adt.xs('Payroll tax ($b)').to_dict()
+    itax_ref = adt.xs('Ind Income Tax ($b)').to_dict()
+    ptax_ref = adt.xs('Payroll Taxes ($b)').to_dict()
     itax_diff = {}
     ptax_diff = {}
     for year in itax_ref:

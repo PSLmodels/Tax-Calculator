@@ -221,7 +221,8 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, _sep, DSI, _exact,
 def ItemDed(e17500, e18400, e18500,
             e20500, e20400, e19200, e19800, e20100,
             MARS, age_head, age_spouse,
-            c00100, c04470, c17000, c18300, c20800, c21040, c21060,
+            c00100, c04470, c17000, c18300, c20500, c19200,
+            c20800, c21040, c21060, c19700,
             ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_HC,
             ID_Casualty_frt_in_pufcsv_year,
             ID_Casualty_frt, ID_Casualty_HC, ID_Miscellaneous_frt,
@@ -324,7 +325,8 @@ def ItemDed(e17500, e18400, e18500,
     else:
         c21040 = 0.
         c04470 = c21060
-    return (c17000, c18300, c20800, c21040, c21060, c04470)
+    return (c17000, c18300, c19200, c20500, c20800, c21040, c21060, c04470,
+            c19700)
 
 
 @iterate_jit(nopython=True)
@@ -1129,46 +1131,89 @@ def Taxes(income, MARS, tbrk_base,
             rate8 * max(0., income - brk7))
 
 
+def ComputeBenefit(calc, ID_switch):
+    """
+    Calculates the value of the benefits accrued from itemizing.
+    """
+    # compute income tax liability with no itemized deductions allowed for
+    # the types of itemized deductions covered under the BenefitSurtax
+    no_ID_calc = copy.deepcopy(calc)
+    if ID_switch[0]:
+        no_ID_calc.policy.ID_Medical_HC = 1.
+    if ID_switch[1]:
+        no_ID_calc.policy.ID_StateLocalTax_HC = 1.
+    if ID_switch[2]:
+        no_ID_calc.policy.ID_RealEstate_HC = 1.
+    if ID_switch[3]:
+        no_ID_calc.policy.ID_Casualty_HC = 1.
+    if ID_switch[4]:
+        no_ID_calc.policy.ID_Miscellaneous_HC = 1.
+    if ID_switch[5]:
+        no_ID_calc.policy.ID_InterestPaid_HC = 1.
+    if ID_switch[6]:
+        no_ID_calc.policy.ID_Charity_HC = 1.
+    no_ID_calc.calc_one_year()
+    # compute surtax amount and add to income and combined taxes
+    # pylint: disable=protected-access
+    benefit = np.where(
+        no_ID_calc.records._iitax - calc.records._iitax > 0.,
+        no_ID_calc.records._iitax - calc.records._iitax, 0.)
+    return benefit
+
+
 def BenefitSurtax(calc):
     """
     BenefitSurtax function: computes itemized-deduction-benefit surtax and
-    adds the surtax amount to income tax and combined tax liabilities.
+    adds the surtax amount to income tax, combined tax, and surtax liabilities.
     """
     if calc.policy.ID_BenefitSurtax_crt != 1.:
-        # compute income tax liability with no itemized deductions allowed for
-        # the types of itemized deductions covered under the BenefitSurtax
-        no_ID_calc = copy.deepcopy(calc)
-        if calc.policy.ID_BenefitSurtax_Switch[0]:
-            no_ID_calc.policy.ID_Medical_HC = 1.
-        if calc.policy.ID_BenefitSurtax_Switch[1]:
-            no_ID_calc.policy.ID_StateLocalTax_HC = 1.
-        if calc.policy.ID_BenefitSurtax_Switch[2]:
-            no_ID_calc.policy.ID_RealEstate_HC = 1.
-        if calc.policy.ID_BenefitSurtax_Switch[3]:
-            no_ID_calc.policy.ID_Casualty_HC = 1.
-        if calc.policy.ID_BenefitSurtax_Switch[4]:
-            no_ID_calc.policy.ID_Miscellaneous_HC = 1.
-        if calc.policy.ID_BenefitSurtax_Switch[5]:
-            no_ID_calc.policy.ID_InterestPaid_HC = 1.
-        if calc.policy.ID_BenefitSurtax_Switch[6]:
-            no_ID_calc.policy.ID_Charity_HC = 1.
-        no_ID_calc.calc_one_year()
-        # compute surtax amount
-        # pylint: disable=protected-access
-        benefit_amount = np.where(
-            no_ID_calc.records._iitax - calc.records._iitax > 0.,
-            no_ID_calc.records._iitax - calc.records._iitax, 0.)
+        benefit = ComputeBenefit(calc, calc.policy.ID_BenefitSurtax_Switch)
         benefit_deduction = (calc.policy.ID_BenefitSurtax_crt *
                              calc.records.c00100)
         benefit_exemption = \
             calc.policy.ID_BenefitSurtax_em[calc.records.MARS - 1]
         benefit_surtax = calc.policy.ID_BenefitSurtax_trt * np.where(
-            benefit_amount > (benefit_deduction + benefit_exemption),
-            benefit_amount - (benefit_deduction + benefit_exemption), 0.)
+            benefit > (benefit_deduction + benefit_exemption),
+            benefit - (benefit_deduction + benefit_exemption), 0.)
         # add benefit_surtax to income & combined taxes and to surtax subtotal
         calc.records._iitax += benefit_surtax
         calc.records._combined += benefit_surtax
         calc.records._surtax += benefit_surtax
+
+
+def BenefitLimitation(calc):
+    """
+    BenefitLimitation function: limits the benefits of select itemized
+    deductions to a fraction of deductible expenses.
+    """
+    if calc.policy.ID_BenefitCap_rt != 1.:
+        benefit = ComputeBenefit(calc, calc.policy.ID_BenefitCap_Switch)
+    # Calculate total deductible expenses under the cap.
+        deductible_expenses = 0.
+        if calc.policy.ID_BenefitCap_Switch[0]:  # Medical
+            deductible_expenses += calc.records.c17000
+        if calc.policy.ID_BenefitCap_Switch[1]:  # StateLocal
+            deductible_expenses += ((1. - calc.policy.ID_StateLocalTax_HC) *
+                                    np.maximum(calc.records.e18400, 0.))
+        if calc.policy.ID_BenefitCap_Switch[2]:
+            deductible_expenses += ((1. - calc.policy.ID_RealEstate_HC) *
+                                    calc.records.e18500)
+        if calc.policy.ID_BenefitCap_Switch[3]:  # Casualty
+            deductible_expenses += calc.records.c20500
+        if calc.policy.ID_BenefitCap_Switch[4]:  # Miscellaneous
+            deductible_expenses += calc.records.c20800
+        if calc.policy.ID_BenefitCap_Switch[5]:   # Mortgage and interest paid
+            deductible_expenses += calc.records.c19200
+        if calc.policy.ID_BenefitCap_Switch[6]:  # Charity
+            deductible_expenses += calc.records.c19700
+        # Calculate cap value for itemized deductions
+        benefit_limit = deductible_expenses * calc.policy.ID_BenefitCap_rt
+        # Add the difference between the actual benefit and capped benefit
+        # to income tax and combined tax liabilities.
+        excess_benefit = np.maximum(benefit - benefit_limit, 0)
+        calc.records._iitax += excess_benefit
+        calc.records._surtax += excess_benefit
+        calc.records._combined += excess_benefit
 
 
 @iterate_jit(nopython=True)
