@@ -3,12 +3,19 @@ import numpy as np
 import pandas as pd
 from pandas import DataFrame
 from collections import defaultdict, OrderedDict
+from bokeh.models import Plot, Range1d, ImageURL, DataRange1d
+from bokeh.embed import components
+from bokeh.layouts import layout
+from bokeh.palettes import Blues4, Reds4
+from bokeh.plotting import figure, hplot, vplot, output_file, show
+from bokeh.models import (ColumnDataSource, LogAxis, LinearAxis, Rect,
+                          FactorRange, CategoricalAxis, Line, Text, Square,
+                          HoverTool)
 
-
-STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600',
-                 'c04800', 'c05200', 'c62100', 'c09600', 'c05800', 'c09200',
-                 '_refund', 'c07100', '_iitax', '_payrolltax', '_combined',
-                 's006']
+STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard',
+                 'c04470', 'c04600', 'c04800', 'c05200', 'c62100', 'c09600',
+                 'c05800', 'c09200', '_refund', 'c07100', '_iitax',
+                 '_payrolltax', '_combined', 's006']
 
 # each entry in this array corresponds to the same entry in the array
 # TABLE_LABELS below. this allows us to use TABLE_LABELS to map a
@@ -72,6 +79,11 @@ def weighted_mean(agg, col_name):
             float(agg['s006'].sum() + EPSILON))
 
 
+def wage_weighted(agg, col_name):
+    return (float((agg[col_name] * agg['s006'] * agg['e00200']).sum()) /
+            float((agg['s006'] * agg['e00200']).sum() + EPSILON))
+
+
 def weighted_sum(agg, col_name):
     return (agg[col_name] * agg['s006']).sum()
 
@@ -91,7 +103,7 @@ def weighted_share_of_total(agg, col_name, total):
 
 
 def add_weighted_decile_bins(df, income_measure='_expanded_income',
-                             labels=None):
+                             num_bins=10, labels=None, complex_weight=False):
     """
     Add a column of income bins based on each 10% of the income_measure,
     weighted by s006.
@@ -100,18 +112,26 @@ def add_weighted_decile_bins(df, income_measure='_expanded_income',
 
     This function will server as a 'grouper' later on.
     """
-    # First, sort by income_measure
+    # First, weight income measure by s006 if desired
+    if complex_weight:
+        df['s006_weighted'] = np.multiply(df[income_measure].values,
+                                          df['s006'].values)
+    # Next, sort by income_measure
     df.sort(income_measure, inplace=True)
-    # Next, do a cumulative sum by the weights
-    df['cumsum_weights'] = np.cumsum(df['s006'].values)
+    # Do a cumulative sum
+    if complex_weight:
+        df['cumsum_weights'] = np.cumsum(df['s006_weighted'].values)
+    else:
+        df['cumsum_weights'] = np.cumsum(df['s006'].values)
     # Max value of cum sum of weights
     max_ = df['cumsum_weights'].values[-1]
     # Create 10 bins and labels based on this cumulative weight
-    bins = [0] + list(np.arange(1, 11) * (max_ / 10.0))
+    bin_edges = [0] + list(np.arange(1, (num_bins + 1)) *
+                           (max_ / float(num_bins)))
     if not labels:
-        labels = range(1, 11)
+        labels = range(1, (num_bins + 1))
     #  Groupby weighted deciles
-    df['bins'] = pd.cut(df['cumsum_weights'], bins, labels=labels)
+    df['bins'] = pd.cut(df['cumsum_weights'], bins=bin_edges, labels=labels)
     return df
 
 
@@ -228,6 +248,14 @@ def results(obj):
     """
     arrays = [getattr(obj, name) for name in STATS_COLUMNS]
     return DataFrame(data=np.column_stack(arrays), columns=STATS_COLUMNS)
+
+
+def exp_results(c):
+    RES_COLUMNS = STATS_COLUMNS + ['e00200'] + ['MARS']
+    outputs = []
+    for col in RES_COLUMNS:
+        outputs.append(getattr(c.records, col))
+    return DataFrame(data=np.column_stack(outputs), columns=RES_COLUMNS)
 
 
 def weighted_avg_allcols(df, cols, income_measure='_expanded_income'):
@@ -599,6 +627,168 @@ def ascii_output(csv_filename, ascii_filename):
     out = out.applymap(fstring.format)
     out.to_csv(ascii_filename, header=False, index=False,
                delim_whitespace=True, sep='\t')
+
+
+def get_mtr_data(calcX, calcY, weights, MARS='ALL',
+                 income_measure='e00200', mtr_measure='IIT',
+                 complex_weight=False):
+    """
+    This function prepares the MTR data for two calculators.
+
+    Parameters
+    ----------
+    calcX : a Tax-Calculator Records object that refers to the baseline
+
+    calcY : a Tax-Calculator Records object that refers to the reform
+
+    weights : String object
+        options for input: 'weighted_count_lt_zero', 'weighted_count_gt_zero',
+            'weighted_count', 'weighted_mean', 'wage_weighted', 'weighted_sum',
+            'weighted_perc_inc', 'weighted_perc_dec', 'weighted_share_of_total'
+        Choose different weight measure
+
+    MARS : Integer
+        options for input: 1, 2, 3, 4
+        Choose different filling status
+
+    income_measure : String object
+        options for input: '_expanded_income', '_iitax'
+        classifier of income bins/deciles
+
+    mtr_measure : String object
+        options for input: '_iitax', '_payrolltax', '_combined'
+
+    complex_weight : Boolean
+        The cumulated sum will be carried out based on weighted income measure
+        if this option is true
+    Returns
+    -------
+    DataFrame object
+    """
+    # Get output columns
+    df_x = exp_results(calcX)
+    df_y = exp_results(calcY)
+
+    # Calculate MTR
+    a, mtr_iit_x, mtr_combined_x = calcX.mtr()
+    a, mtr_iit_y, mtr_combined_y = calcY.mtr()
+    df_x['mtr_iit'] = mtr_iit_x
+    df_y['mtr_iit'] = mtr_iit_y
+    df_x['mtr_combined'] = mtr_combined_x
+    df_y['mtr_combined'] = mtr_combined_y
+
+    df_y[income_measure] = df_x[income_measure]
+
+    # Complex weighted bins or not
+    if complex_weight:
+        df_x = add_weighted_decile_bins(df_x, income_measure, 100,
+                                        complex_weight=True)
+        df_y = add_weighted_decile_bins(df_y, income_measure, 100,
+                                        complex_weight=True)
+    else:
+        df_x = add_weighted_decile_bins(df_x, income_measure, 100)
+        df_y = add_weighted_decile_bins(df_y, income_measure, 100)
+
+    # Select either all filers or one filling status
+    if MARS == 'ALL':
+        df_filtered_x = df_x.copy()
+        df_filtered_y = df_y.copy()
+    else:
+        df_filtered_x = df_x[(df_x['MARS'] == MARS)].copy()
+        df_filtered_y = df_y[(df_y['MARS'] == MARS)].copy()
+
+    gp_x = df_filtered_x.groupby('bins', as_index=False)
+    gp_y = df_filtered_y.groupby('bins', as_index=False)
+
+    if mtr_measure == 'combined':
+        wgtpct_x = gp_x.apply(weights, 'mtr_combined')
+        wgtpct_y = gp_y.apply(weights, 'mtr_combined')
+    elif mtr_measure == 'IIT':
+        wgtpct_x = gp_x.apply(weights, 'mtr_iit')
+        wgtpct_y = gp_y.apply(weights, 'mtr_iit')
+
+    wpct_x = DataFrame(data=wgtpct_x, columns=['w_mtr'])
+    wpct_y = DataFrame(data=wgtpct_y, columns=['w_mtr'])
+
+    # Add bin labels
+    wpct_x['bins'] = np.arange(1, 101)
+    wpct_y['bins'] = np.arange(1, 101)
+
+    rsltx = pd.merge(df_filtered_x[['bins']], wpct_x, how='left')
+    rslty = pd.merge(df_filtered_y[['bins']], wpct_y, how='left')
+
+    df_filtered_x['w_mtr'] = rsltx['w_mtr'].values
+    df_filtered_y['w_mtr'] = rslty['w_mtr'].values
+
+    df_filtered_x.drop_duplicates(subset='bins', inplace=True)
+    df_filtered_y.drop_duplicates(subset='bins', inplace=True)
+
+    df_filtered_x = df_filtered_x['w_mtr']
+    df_filtered_y = df_filtered_y['w_mtr']
+
+    merged = pd.concat([df_filtered_x, df_filtered_y], axis=1,
+                       ignore_index=True)
+    merged.columns = ['base', 'reform']
+
+    return merged
+
+
+def mtr_plot(source, xlab='Percentile', ylab='Avg. MTR', title='MTR plot',
+             plot_width=425, plot_height=250, loc='top_left'):
+    """
+    This function prepares the MTR data for two calculators.
+
+    Parameters
+    ----------
+    source : DataFrame which can be obtained using get_mtr_data() function
+
+    xlab : String object
+        Name for X axis
+
+    ylab : String object
+        Name for Y axis
+
+    title : String object
+        Caption for the plot
+
+    plot_width : Numeric (Usually integer)
+        Width of the plot
+
+    plot_height : Numeric (Usually integer)
+        Height of the plot
+
+    loc : String object
+        Toptions for input: "top_right", "top_left", "bottom_left",
+            "bottom_right"
+        Choose the location of the legend label
+    Returns
+    -------
+    Figure Object (Use show() option to visualize)
+    """
+    PP = figure(plot_width=plot_width, plot_height=plot_height, title=title)
+
+    PP.line((source.reset_index()).index,
+            (source.reset_index()).base, line_color=Blues4[0], line_width=0.8,
+            line_alpha=.8, legend="Base")
+
+    PP.line((source.reset_index()).index,
+            (source.reset_index()).reform, line_color=Reds4[1], line_width=0.8,
+            line_alpha=1, legend="Reform")
+
+    PP.legend.label_text_font = "times"
+    PP.legend.label_text_font_style = "italic"
+    PP.legend.location = loc
+
+    PP.legend.label_width = 2
+    PP.legend.label_height = 2
+    PP.legend.label_standoff = 2
+    PP.legend.glyph_width = 14
+    PP.legend.glyph_height = 14
+    PP.legend.legend_spacing = 5
+    PP.legend.legend_padding = 5
+    PP.yaxis.axis_label = ylab
+    PP.xaxis.axis_label = xlab
+    return PP
 
 
 def string_to_number(string):
