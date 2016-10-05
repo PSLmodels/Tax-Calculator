@@ -536,6 +536,20 @@ def test_mtr_plot(records_2009):
     plot = mtr_plot(source)
 
 
+def test_mtr_plot_force_no_bokeh(records_2009):
+    import taxcalc
+    taxcalc.utils.BOKEH_AVAILABLE = False
+    pol = Policy()
+    behv = Behavior()
+    calc = Calculator(policy=pol, records=records_2009, behavior=behv)
+    calc.calc_all()
+    source = get_mtr_data(calc, calc, weights=wage_weighted,
+                          complex_weight=True)
+    with pytest.raises(RuntimeError):
+        plot = mtr_plot(source)
+    taxcalc.utils.BOKEH_AVAILABLE = True
+
+
 def test_multiyear_diagnostic_table(records_2009):
     pol = Policy()
     behv = Behavior()
