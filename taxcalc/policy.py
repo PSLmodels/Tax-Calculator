@@ -211,12 +211,16 @@ class Policy(ParametersBase):
         except ValueError as valerr:
             msg = 'Policy reform text below contains invalid JSON:\n'
             msg += str(valerr) + '\n'
+            msg += 'The above location of the first error is approximate.\n'
             msg += 'The invalid JSON reform text is between the lines:\n'
-            line = '---------|---------|---------|'
-            line += '---------|---------|---------|'
-            msg += line + '\n'
-            msg += json_without_comments + '\n'
-            msg += line + '\n'
+            bline = 'XX----.----1----.----2----.----3----.----4'
+            bline += '----.----5----.----6----.----7'
+            msg += bline + '\n'
+            linenum = 0
+            for line in json_without_comments.split('\n'):
+                linenum += 1
+                msg += '{:02d}{}'.format(linenum, line) + '\n'
+            msg += bline + '\n'
             raise ValueError(msg)
         return Policy.convert_reform_dictionary(reform_dict_raw)
 
