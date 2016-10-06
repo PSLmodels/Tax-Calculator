@@ -985,6 +985,20 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99, 9e99]]
     },
 
+    "_CG_ec": {
+        "long_name": "Capital gains and dividend income exclusion",
+        "description": "This decimal fraction can be applied to limit the taxable net capital gains and dividend income. ",
+        "irs_ref": "Form 1040, line 8a",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
     "_AGI_surtax_thd": {
         "long_name": "Threshold for surtax on AGI",
         "description": "The aggregate gross income above this AGI surtax threshold is taxed at surtax rate on AGI.",
@@ -2062,19 +2076,5 @@
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
         "value": [[2.0e6, 2.0e6, 1.0e6, 2.0e6, 2.0e6, 1.0e6]],
         "validations": {"min": "_FST_AGI_thd_lo"}
-    },
-
-    "_cgdiv_ec": {
-        "long_name": "Capital gains and dividend income exclusion",
-        "description": "This decimal fraction can be applied to limit the taxable net capital gains and dividend income. ",
-        "irs_ref": "Form 1040, line 8a",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0]
     }
 }
