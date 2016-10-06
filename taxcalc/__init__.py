@@ -2,6 +2,7 @@ from .calculate import *
 from .policy import *
 from .behavior import *
 from .consumption import *
+from .filings import *
 from .growth import *
 from .records import *
 from .simpletaxio import *

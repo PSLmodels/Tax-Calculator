@@ -4,7 +4,7 @@
         "value": {"_FICA_ss_trt": [0.134]},
         "section_name": "PAYROLL TAXES",
         "name": "Increase the Social Security payroll tax rate by 1pts",
-        "output_type": "_fica",
+        "output_type": "_payrolltax",
         "compare_with": {}
     },
 
@@ -12,31 +12,31 @@
         "start_year": 2015,
         "value": {"_SS_Earnings_c": [177500]},
         "name": "Increase the maximum taxable earnings (177500) for the social security payroll tax",
-        "output_type": "_fica",
+        "output_type": "_payrolltax",
         "compare_with": {"Budget Options": [40, 46, 49, 51]}
     },
 
     "r3": {
         "start_year": 2015,
         "value": {"_FICA_mc_trt": [0.039]},
-        "name": "Increase the Payroll tax rate for medicare hospital insurance by 1pts",
-        "output_type": "_fica",
+        "name": "Increase the payroll tax rate for Medicare (HI) by 1pts",
+        "output_type": "_payrolltax",
         "compare_with": {"Budget Options": [73, 77, 82, 87]}
     },
 
     "r4": {
         "start_year": 2015,
         "value": {"_AMED_thd": [[210000, 260000, 135000, 210000, 210000, 135000]]},
-        "name": "Increase the Additional Medicare threshold by 10,000",
-        "output_type": "_fica",
+        "name": "Increase the Additional Medicare Tax threshold by 10,000",
+        "output_type": "_payrolltax",
         "compare_with": {}
     },
 
     "r5": {
         "start_year": 2015,
         "value": {"_AMED_trt": [0.01]},
-        "name": "Increase the Additional Medicare tax rate by 0.1 pts",
-        "output_type": "_fica",
+        "name": "Increase the Additional Medicare Tax rate by 0.1 pts",
+        "output_type": "_payrolltax",
         "compare_with": {}
     },
 
@@ -279,7 +279,14 @@
                   "_II_rt4": [0.29],
                   "_II_rt5": [0.34],
                   "_II_rt6": [0.36],
-                  "_II_rt7": [0.406]},
+                  "_II_rt7": [0.406],
+                  "_PT_rt1": [0.11],
+                  "_PT_rt2": [0.16],
+                  "_PT_rt3": [0.26],
+                  "_PT_rt4": [0.29],
+                  "_PT_rt5": [0.34],
+                  "_PT_rt6": [0.36],
+                  "_PT_rt7": [0.406]},
         "section_name": "REGULAR TAXES",
         "name": "Increase each bracket rate by 1%",
         "output_type": "_iitax",
@@ -294,7 +301,14 @@
                   "_II_rt4": [0.29],
                   "_II_rt5": [0.34],
                   "_II_rt6": [0.36],
-                  "_II_rt7": [0.406]},
+                  "_II_rt7": [0.406],
+                  "_PT_rt1": [0.10],
+                  "_PT_rt2": [0.15],
+                  "_PT_rt3": [0.25],
+                  "_PT_rt4": [0.29],
+                  "_PT_rt5": [0.34],
+                  "_PT_rt6": [0.36],
+                  "_PT_rt7": [0.406]},
         "name": "Increase top 4 rates by 1%",
         "output_type": "_iitax",
         "compare_with": {"Budget Options": [11, 12, 14, 15]}
@@ -308,7 +322,14 @@
                   "_II_rt4": [0.28],
                   "_II_rt5": [0.33],
                   "_II_rt6": [0.36],
-                  "_II_rt7": [0.406]},
+                  "_II_rt7": [0.406],
+                  "_PT_rt1": [0.10],
+                  "_PT_rt2": [0.15],
+                  "_PT_rt3": [0.25],
+                  "_PT_rt4": [0.28],
+                  "_PT_rt5": [0.33],
+                  "_PT_rt6": [0.36],
+                  "_PT_rt7": [0.406]},
         "name": "Increase top 2 rates by 1%",
         "output_type": "_iitax",
         "compare_with": {"Budget Options": [7, 8, 9, 10]}
@@ -470,10 +491,21 @@
     "r53": {
         "start_year": 2015,
         "value": {"_II_credit": [[1000, 1000, 1000, 1000, 1000, 1000]],
-                  "_II_credit_ps": [[100000, 100000, 100000, 100000, 100000, 100000]],
+                  "_II_credit_ps": [[10000, 10000, 10000, 10000, 10000, 10000]],
                   "_II_credit_prt": [0.01]},
-        "name": "Increase Personal Refundable credit amount to 1000, with phaseout starting AGI 10,000 and phaseout rate at 0.01",
+        "name": "Increase Personal Refundable credit amount to 1000 with phaseout starting at AGI 10,000 and phaseout rate at 0.01",
         "output_type": "_iitax",
         "compare_with": {}
+    },
+
+    "r54": {
+        "start_year": 2017,
+        "value": {"_FST_AGI_trt": [0.3],
+                  "_FST_AGI_thd_lo": [[1.0e6, 1.0e6, 0.5e6, 1.0e6, 1.0e6, 0.5e6]],
+                  "_FST_AGI_thd_hi": [[2.0e6, 2.0e6, 1.0e6, 2.0e6, 2.0e6, 1.0e6]]},
+        "section_name": "FAIR SHARE TAX",
+        "name": "Increase FST rate from zero to 0.30 beginning in 2017",
+        "output_type": "_iitax",
+        "compare_with": {"Tax Foundation": [321, "ten-year(2016-25)", "static", "estimate"]}
     }
 }

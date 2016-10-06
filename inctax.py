@@ -62,7 +62,7 @@ def main():
                         action="store_true")
     parser.add_argument('--blowup',
                         help=('optional flag that triggers the default '
-                              'imputation and blowup (or aging) logic built '
+                              'blowup (or aging) logic built '
                               'into the Tax-Calculator that will age the '
                               'INPUT data from Records.PUF_YEAR to TAXYEAR. '
                               'No --blowup option implies INPUT data are '
@@ -139,7 +139,7 @@ def main():
     elif args.csvdump:
         inctax.csv_dump(writing_output_file=True)
     else:
-        inctax.calculate(writing_output_file=True,
+        inctax.calculate(writing_output_file=True, exact_output=args.exact,
                          output_weights=args.weights)
     # return no-error exit code
     return 0

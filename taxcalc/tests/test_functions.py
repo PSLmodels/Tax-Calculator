@@ -14,9 +14,6 @@ import pandas as pd
 import ast
 import six
 
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-FUNCTIONS_PY_PATH = os.path.join(CUR_PATH, '..', 'functions.py')
-
 
 class GetFuncDefs(ast.NodeVisitor):
     """
@@ -67,72 +64,67 @@ class GetFuncDefs(ast.NodeVisitor):
         self.generic_visit(node)
 
 
-def test_calculated_vars_are_calculated():  # pylint: disable=invalid-name
+def test_calc_and_used_vars(tests_path):
     """
-    Check that each var in Records.CALCULATED_VARS is actually calculated.
+    Runs two kinds of tests on variables used in the functions.py file:
 
-    If this test fails, a variable in Records.CALCULATED_VARS was not
+    (1) Checks that each var in Records.CALCULATED_VARS is actually calculated
+
+    If test (1) fails, a variable in Records.CALCULATED_VARS was not
     calculated in any function in the functions.py file.  With the exception
     of a few variables listed in this test, all Records.CALCULATED_VARS
     must be calculated in the functions.py file.
+
+    (2) Check that each variable that is calculated in a function and
+    returned by that function is an argument of that function.
     """
-    tree = ast.parse(open(FUNCTIONS_PY_PATH).read())
+    funcpath = os.path.join(tests_path, '..', 'functions.py')
     gfd = GetFuncDefs()
-    fnames, _, cvars, _ = gfd.visit(tree)
-    # create set of vars that are actually calculated in functions.py file
+    fnames, fargs, cvars, rvars = gfd.visit(ast.parse(open(funcpath).read()))
+    # Test (1):
+    # .. create set of vars that are actually calculated in functions.py file
     all_cvars = set()
     for fname in fnames:
         if fname == 'BenefitSurtax':
             continue  # because BenefitSurtax is not really a function
         all_cvars.update(set(cvars[fname]))
-    # add some special variables to all_cvars set
-    vars_calc_in_records = set(['ID_Casualty_frt_in_pufcsv_year',
-                                '_num', '_sep', '_exact', '_calc_schR'])
-    vars_calc_in_benefitsurtax = set(['_surtax'])
-    vars_ok_to_not_calc = set(['f2555'])
-    all_cvars.update(vars_calc_in_records,
-                     vars_calc_in_benefitsurtax,
-                     vars_ok_to_not_calc)
-    # check that each var in Records.CALCULATED_VARS is in the all_cvars set
+    # .. add to all_cvars set some variables calculated in Records class
+    all_cvars.update(set(['ID_Casualty_frt_in_pufcsv_year',
+                          '_num', '_sep', '_exact']))
+    # .. check that each var in Records.CALCULATED_VARS is in the all_cvars set
+    found_error1 = False
     if not Records.CALCULATED_VARS <= all_cvars:
-        missing = Records.CALCULATED_VARS - all_cvars
-        msg = 'all Records.CALCULATED_VARS not calculated in functions.py\n'
-        for var in missing:
-            msg += 'VAR NOT CALCULATED: {}\n'.format(var)
-        raise ValueError(msg)
-
-
-def test_calc_and_rtn_vars_are_arguments():  # pylint: disable=invalid-name
-    """
-    Check that each variable that is calculated in a function and
-    returned by that function is an argument of that function.
-    """
-    tree = ast.parse(open(FUNCTIONS_PY_PATH).read())
-    gfd = GetFuncDefs()
-    fnames, fargs, cvars, rvars = gfd.visit(tree)
-    msg = 'calculated & returned variables are not function arguments\n'
-    found_error = False
+        msg1 = 'all Records.CALCULATED_VARS not calculated in functions.py\n'
+        for var in Records.CALCULATED_VARS - all_cvars:
+            found_error1 = True
+            msg1 += 'VAR NOT CALCULATED: {}\n'.format(var)
+    # Test (2):
+    found_error2 = False
+    msg2 = 'calculated & returned variables are not function arguments\n'
     for fname in fnames:
-        if fname == 'BenefitSurtax':
-            continue  # because BenefitSurtax is not really a function
-        cvars_set = set(cvars[fname])
-        rvars_set = set(rvars[fname])
-        crvars_set = cvars_set & rvars_set
+        if fname == 'ComputeBenefit' or \
+           fname == 'BenefitSurtax' or \
+           fname == 'BenefitLimitation':
+            continue  # because fname is not really a function
+        crvars_set = set(cvars[fname]) & set(rvars[fname])
         if not crvars_set <= set(fargs[fname]):
-            found_error = True
-            missing = crvars_set - set(fargs[fname])
-            for var in missing:
-                msg += 'FUNCTION,VARIABLE: {} {}\n'.format(fname, var)
-    if found_error:
-        raise ValueError(msg)
+            found_error2 = True
+            for var in crvars_set - set(fargs[fname]):
+                msg2 += 'FUNCTION,VARIABLE: {} {}\n'.format(fname, var)
+    # Report errors for the two tests:
+    if found_error1 and found_error2:
+        raise ValueError('{}\n{}'.format(msg1, msg2))
+    elif found_error1:
+        raise ValueError(msg1)
+    elif found_error2:
+        raise ValueError(msg2)
 
 
-def test_function_args_usage():
+def test_function_args_usage(tests_path):
     """
     Checks each function argument in functions.py for use in its function body.
     """
-    cur_path = os.path.abspath(os.path.dirname(__file__))
-    funcfilename = os.path.join(cur_path, '..', 'functions.py')
+    funcfilename = os.path.join(tests_path, '..', 'functions.py')
     with open(funcfilename, 'r') as funcfile:
         fcontent = funcfile.read()
     fcontent = re.sub('#.*', '', fcontent)  # remove all '#...' comments
@@ -154,8 +146,8 @@ def test_function_args_usage():
             fname = match.group(1)
             fargs = match.group(2).split(',')  # list of function arguments
             fbody = match.group(3)
-        if fname == 'Taxer_i':
-            continue  # because Taxer_i has no fbody apart from its docstring
+        if fname == 'Taxes':
+            continue  # because Taxes has part of fbody in return statement
         for farg in fargs:
             arg = farg.strip()
             if fbody.find(arg) < 0:
@@ -168,7 +160,7 @@ def test_function_args_usage():
 def test_1():
     """
     Test calculation of AGI adjustment for half of Self-Employment Tax,
-    which is the FICA payroll tax on self-employment income.
+    which is the payroll tax on self-employment income.
     """
     agi_ovar_num = 10
     # specify a reform that simplifies the hand calculations

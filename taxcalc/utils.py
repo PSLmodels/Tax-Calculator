@@ -7,7 +7,8 @@ from collections import defaultdict, OrderedDict
 
 STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600',
                  'c04800', 'c05200', 'c62100', 'c09600', 'c05800', 'c09200',
-                 '_refund', 'c07100', '_iitax', '_fica', '_combined', 's006']
+                 '_refund', 'c07100', '_iitax', '_payrolltax', '_combined',
+                 's006']
 
 # each entry in this array corresponds to the same entry in the array
 # TABLE_LABELS below. this allows us to use TABLE_LABELS to map a
@@ -16,7 +17,7 @@ STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600',
 TABLE_COLUMNS = ['s006', 'c00100', 'num_returns_StandardDed', '_standard',
                  'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'c05200',
                  'c62100', 'num_returns_AMT', 'c09600', 'c05800', 'c07100',
-                 'c09200', '_refund', '_iitax', '_fica', '_combined']
+                 'c09200', '_refund', '_iitax', '_payrolltax', '_combined']
 
 TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Standard Deduction', 'Itemizers',
@@ -381,7 +382,7 @@ def create_difference_table(recs1, recs2, groupby,
         classifier of income bins/deciles
 
     income_to_present : String object
-        options for input: '_iitax', '_fica', '_combined'
+        options for input: '_iitax', '_payrolltax', '_combined'
 
     Returns
     -------
@@ -458,52 +459,55 @@ def diagnostic_table_odict(recs):
     # adjusted gross income
     odict['AGI ($b)'] = (recs.c00100 * recs.s006).sum() * in_billions
     # number of itemizers
-    num_itemizers = (recs.s006[(recs.c04470 > 0.) * (recs.c00100 > 0.)].sum())
-    odict['Itemizers (#m)'] = num_itemizers * in_millions
+    num = (recs.s006[(recs.c04470 > 0.) * (recs.c00100 > 0.)].sum())
+    odict['Itemizers (#m)'] = num * in_millions
     # itemized deduction
     ID1 = recs.c04470 * recs.s006
-    ID = ID1[recs.c04470 > 0.].sum()
-    odict['Itemized Deduction ($b)'] = ID * in_billions
+    val = ID1[recs.c04470 > 0.].sum()
+    odict['Itemized Deduction ($b)'] = val * in_billions
     # number of standard deductions
-    num_std = recs.s006[(recs._standard > 0.) * (recs.c00100 > 0.)].sum()
-    odict['Standard Deduction Filers (#m)'] = num_std * in_millions
+    num = recs.s006[(recs._standard > 0.) * (recs.c00100 > 0.)].sum()
+    odict['Standard Deduction Filers (#m)'] = num * in_millions
     # standard deduction
     STD1 = recs._standard * recs.s006
-    STD = STD1[(recs._standard > 0.) * (recs.c00100 > 0.)].sum()
-    odict['Standard Deduction ($b)'] = STD * in_billions
+    val = STD1[(recs._standard > 0.) * (recs.c00100 > 0.)].sum()
+    odict['Standard Deduction ($b)'] = val * in_billions
     # personal exemption
-    PE = (recs.c04600 * recs.s006)[recs.c00100 > 0.].sum()
-    odict['Personal Exemption ($b)'] = PE * in_billions
+    val = (recs.c04600 * recs.s006)[recs.c00100 > 0.].sum()
+    odict['Personal Exemption ($b)'] = val * in_billions
     # taxable income
-    taxinc = (recs.c04800 * recs.s006).sum()
-    odict['Taxable income ($b)'] = taxinc * in_billions
+    val = (recs.c04800 * recs.s006).sum()
+    odict['Taxable Income ($b)'] = val * in_billions
     # regular tax liability
-    regular_tax = (recs.c05200 * recs.s006).sum()
-    odict['Regular Tax ($b)'] = regular_tax * in_billions
+    val = (recs.c05200 * recs.s006).sum()
+    odict['Regular Tax ($b)'] = val * in_billions
     # AMT taxable income
-    odict['AMT income ($b)'] = (recs.c62100 * recs.s006).sum() * in_billions
+    odict['AMT Income ($b)'] = (recs.c62100 * recs.s006).sum() * in_billions
     # total AMT liability
-    odict['AMT amount ($b)'] = (recs.c09600 * recs.s006).sum() * in_billions
+    odict['AMT Liability ($b)'] = (recs.c09600 * recs.s006).sum() * in_billions
     # number of people paying AMT
-    odict['AMT number (#m)'] = recs.s006[recs.c09600 > 0.].sum() * in_millions
+    odict['AMT Filers (#m)'] = recs.s006[recs.c09600 > 0.].sum() * in_millions
     # tax before credits
-    tax_before_credits = (recs.c05800 * recs.s006).sum()
-    odict['Tax before credits ($b)'] = tax_before_credits * in_billions
+    val = (recs.c05800 * recs.s006).sum()
+    odict['Tax before Credits ($b)'] = val * in_billions
     # refundable credits
-    refundable_credits = (recs._refund * recs.s006).sum()
-    odict['refundable credits ($b)'] = refundable_credits * in_billions
+    val = (recs._refund * recs.s006).sum()
+    odict['Refundable Credits ($b)'] = val * in_billions
     # nonrefuncable credits
-    nonrefundable_credits = (recs.c07100 * recs.s006).sum()
-    odict['nonrefundable credits ($b)'] = nonrefundable_credits * in_billions
-    # itemized-deduction surtax liability
-    odict['Misc. Surtax ($b)'] = (recs._surtax * recs.s006).sum() * in_billions
+    val = (recs.c07100 * recs.s006).sum()
+    odict['Nonrefundable Credits ($b)'] = val * in_billions
+    # reform surtaxes (part of federal individual income tax liability)
+    val = (recs._surtax * recs.s006).sum()
+    odict['Reform Surtaxes ($b)'] = val * in_billions
     # federal individual income tax liability
-    odict['Ind inc tax ($b)'] = (recs._iitax * recs.s006).sum() * in_billions
-    # payroll (FICA) tax liability
-    odict['Payroll tax ($b)'] = (recs._fica * recs.s006).sum() * in_billions
+    val = (recs._iitax * recs.s006).sum()
+    odict['Ind Income Tax ($b)'] = val * in_billions
+    # OASDI+HI payroll tax liability (including employer share)
+    val = (recs._payrolltax * recs.s006).sum()
+    odict['Payroll Taxes ($b)'] = val * in_billions
     # combined income and payroll tax liability
-    combined = (recs._combined * recs.s006).sum()
-    odict['Combined liability ($b)'] = combined * in_billions
+    val = (recs._combined * recs.s006).sum()
+    odict['Combined Liability ($b)'] = val * in_billions
     return odict
 
 
@@ -595,3 +599,12 @@ def ascii_output(csv_filename, ascii_filename):
     out = out.applymap(fstring.format)
     out.to_csv(ascii_filename, header=False, index=False,
                delim_whitespace=True, sep='\t')
+
+
+def string_to_number(string):
+    if not string:
+        return 0
+    try:
+        return int(string)
+    except ValueError:
+        return float(string)

@@ -1,23 +1,15 @@
 import os
-import sys
 import json
 import numpy as np
 import pandas as pd
 import tempfile
 import copy
 import pytest
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, '..', '..'))
+
 from taxcalc import Policy, Records, Calculator, Behavior, Consumption
 from taxcalc import create_distribution_table
 from taxcalc import create_difference_table
 from taxcalc import create_diagnostic_table
-
-# use 1991 PUF-like data to emulate current puf.csv, which is private
-TAXDATA_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91taxdata.csv.gz')
-TAXDATA = pd.read_csv(TAXDATA_PATH, compression='gzip')
-WEIGHTS_PATH = os.path.join(CUR_PATH, '..', 'altdata', 'puf91weights.csv.gz')
-WEIGHTS = pd.read_csv(WEIGHTS_PATH, compression='gzip')
 
 IRATES = {1991: 0.015, 1992: 0.020, 1993: 0.022, 1994: 0.020, 1995: 0.021,
           1996: 0.022, 1997: 0.023, 1998: 0.024, 1999: 0.024, 2000: 0.024,
@@ -70,10 +62,10 @@ def policyfile():
     os.remove(f.name)
 
 
-def test_make_Calculator():
+def test_make_Calculator(records_2009):
     parm = Policy()
     assert parm.current_year == 2013
-    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    recs = records_2009
     consump = Consumption()
     consump.update_consumption({2014: {'_MPC_e20400': [0.05]}})
     assert consump.current_year == 2013
@@ -92,15 +84,14 @@ def test_make_Calculator():
         calc = Calculator(policy=parm, records=recs, consumption=list())
 
 
-def test_make_Calculator_deepcopy():
+def test_make_Calculator_deepcopy(records_2009):
     parm = Policy()
-    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    calc1 = Calculator(policy=parm, records=recs)
+    calc1 = Calculator(policy=parm, records=records_2009)
     calc2 = copy.deepcopy(calc1)
     assert isinstance(calc2, Calculator)
 
 
-def test_make_Calculator_with_policy_reform():
+def test_make_Calculator_with_policy_reform(records_2009):
     # create a Policy object and apply a policy reform
     policy2 = Policy()
     reform2 = {2013: {'_II_em': np.array([4000]), '_II_em_cpi': False,
@@ -108,8 +99,7 @@ def test_make_Calculator_with_policy_reform():
                       "_STD_Aged_cpi": False}}
     policy2.implement_reform(reform2)
     # create a Calculator object using this policy-reform
-    puf = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    calc2 = Calculator(policy=policy2, records=puf)
+    calc2 = Calculator(policy=policy2, records=records_2009)
     # check that Policy object embedded in Calculator object is correct
     assert calc2.current_year == 2013
     assert calc2.policy.II_em == 4000
@@ -123,7 +113,7 @@ def test_make_Calculator_with_policy_reform():
                        np.array([1600, 1300, 1300, 1600, 1600, 1300]))
 
 
-def test_make_Calculator_with_multiyear_reform():
+def test_make_Calculator_with_multiyear_reform(records_2009):
     # create a Policy object and apply a policy reform
     policy3 = Policy()
     reform3 = {2015: {}}
@@ -132,8 +122,7 @@ def test_make_Calculator_with_multiyear_reform():
     reform3[2015]['_II_em_cpi'] = False
     policy3.implement_reform(reform3)
     # create a Calculator object using this policy-reform
-    puf = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    calc3 = Calculator(policy=policy3, records=puf)
+    calc3 = Calculator(policy=policy3, records=records_2009)
     # check that Policy object embedded in Calculator object is correct
     assert calc3.current_year == 2013
     assert calc3.policy.II_em == 3900
@@ -148,7 +137,7 @@ def test_make_Calculator_with_multiyear_reform():
                        np.array([1600, 1300, 1600, 1300, 1600, 1300]))
 
 
-def test_make_Calculator_with_reform_after_start_year():
+def test_make_Calculator_with_reform_after_start_year(records_2009):
     # create Policy object using custom indexing rates
     irates = {2013: 0.01, 2014: 0.01, 2015: 0.02, 2016: 0.01, 2017: 0.03}
     parm = Policy(start_year=2013, num_years=len(irates),
@@ -160,8 +149,7 @@ def test_make_Calculator_with_reform_after_start_year():
     reform[2016]['_II_em'] = [6000]
     reform[2016]['_II_em_cpi'] = False
     parm.implement_reform(reform)
-    recs = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    calc = Calculator(policy=parm, records=recs)
+    calc = Calculator(policy=parm, records=records_2009)
     # compare actual and expected parameter values over all years
     assert np.allclose(calc.policy._STD_Aged,
                        np.array([[1500, 1200, 1200, 1500, 1500, 1200],
@@ -181,23 +169,22 @@ def test_make_Calculator_with_reform_after_start_year():
                        np.array([1600, 1300, 1600, 1300, 1600, 1300]))
 
 
-def test_Calculator_advance_to_year():
+def test_Calculator_advance_to_year(records_2009):
     policy = Policy()
-    puf = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    calc = Calculator(policy=policy, records=puf)
+    calc = Calculator(policy=policy, records=records_2009)
     calc.advance_to_year(2016)
     assert calc.current_year == 2016
     with pytest.raises(ValueError):
         calc.advance_to_year(2015)
 
 
-def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
+def test_make_Calculator_user_mods_with_cpi_flags(policyfile, puf_1991):
     with open(policyfile.name) as pfile:
         policy = json.load(pfile)
     ppo = Policy(parameter_dict=policy, start_year=1991,
                  num_years=len(IRATES), inflation_rates=IRATES,
                  wage_growth_rates=WRATES)
-    rec = Records(data=TAXDATA, start_year=1991)
+    rec = Records(data=puf_1991, start_year=1991)
     calc = Calculator(policy=ppo, records=rec)
     user_mods = {1991: {"_almdep": [7150, 7250, 7400],
                         "_almdep_cpi": True,
@@ -220,37 +207,33 @@ def test_make_Calculator_user_mods_with_cpi_flags(policyfile):
     assert np.allclose(act_almsep, exp_almsep)
 
 
-def test_make_Calculator_raises_on_no_policy():
-    rec = Records(data=TAXDATA, weights=WEIGHTS, start_year=2013)
+def test_make_Calculator_raises_on_no_policy(records_2009):
     with pytest.raises(ValueError):
-        calc = Calculator(records=rec)
+        calc = Calculator(records=records_2009)
 
 
-def test_Calculator_attr_access_to_policy():
+def test_Calculator_attr_access_to_policy(records_2009):
     policy = Policy()
-    puf = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    calc = Calculator(policy=policy, records=puf)
+    calc = Calculator(policy=policy, records=records_2009)
     assert hasattr(calc.records, 'c01000')
     assert hasattr(calc.policy, '_AMT_Child_em')
     assert hasattr(calc, 'policy')
 
 
-def test_Calculator_current_law_version():
+def test_Calculator_current_law_version(records_2009):
     policy = Policy()
     reform = {2013: {'_II_rt7': [0.45]}}
     policy.implement_reform(reform)
-    puf = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    calc = Calculator(policy=policy, records=puf)
+    calc = Calculator(policy=policy, records=records_2009)
     calc_clp = calc.current_law_version()
     assert isinstance(calc_clp, Calculator)
     assert calc.policy.II_rt6 == calc_clp.policy.II_rt6
     assert calc.policy.II_rt7 != calc_clp.policy.II_rt7
 
 
-def test_Calculator_create_distribution_table():
+def test_Calculator_create_distribution_table(records_2009):
     policy = Policy()
-    puf = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    calc = Calculator(policy=policy, records=puf)
+    calc = Calculator(policy=policy, records=records_2009)
     calc.calc_all()
     dist_labels = ['Returns', 'AGI', 'Standard Deduction Filers',
                    'Standard Deduction', 'Itemizers',
@@ -272,39 +255,38 @@ def test_Calculator_create_distribution_table():
     assert isinstance(dt2, pd.DataFrame)
 
 
-def test_Calculator_mtr():
-    puf = Records(TAXDATA, weights=WEIGHTS, start_year=2009)
-    calc = Calculator(policy=Policy(), records=puf)
+def test_Calculator_mtr(records_2009):
+    calc = Calculator(policy=Policy(), records=records_2009)
     recs_pre_e00200p = copy.deepcopy(calc.records.e00200p)
-    (mtr_FICA, mtr_IIT, mtr_combined) = calc.mtr(income_type_str='e00200p',
-                                                 zero_out_calculated_vars=True)
+    (mtr_ptx, mtr_itx, mtr_combined) = calc.mtr(variable_str='e00200p',
+                                                zero_out_calculated_vars=True)
     recs_post_e00200p = copy.deepcopy(calc.records.e00200p)
     assert np.allclose(recs_post_e00200p, recs_pre_e00200p)
     assert type(mtr_combined) == np.ndarray
-    assert np.array_equal(mtr_combined, mtr_FICA) is False
-    assert np.array_equal(mtr_FICA, mtr_IIT) is False
+    assert np.array_equal(mtr_combined, mtr_ptx) is False
+    assert np.array_equal(mtr_ptx, mtr_itx) is False
     with pytest.raises(ValueError):
-        (_, _, mtr_combined) = calc.mtr(income_type_str='bad_income_type')
-    (_, _, mtr_combined) = calc.mtr(income_type_str='e00650',
+        (_, _, mtr_combined) = calc.mtr(variable_str='bad_income_type')
+    (_, _, mtr_combined) = calc.mtr(variable_str='e00650',
                                     negative_finite_diff=True)
     assert type(mtr_combined) == np.ndarray
-    (_, _, mtr_combined) = calc.mtr(income_type_str='e00900p')
+    (_, _, mtr_combined) = calc.mtr(variable_str='e00900p')
     assert type(mtr_combined) == np.ndarray
-    (_, _, mtr_combined) = calc.mtr(income_type_str='e01700')
+    (_, _, mtr_combined) = calc.mtr(variable_str='e01700')
     assert type(mtr_combined) == np.ndarray
 
 
-def test_Calculator_create_difference_table():
+def test_Calculator_create_difference_table(puf_1991, weights_1991):
     # create current-law Policy object and use to create Calculator calc1
     policy1 = Policy()
-    puf1 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    puf1 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc1 = Calculator(policy=policy1, records=puf1)
     calc1.calc_all()
     # create policy-reform Policy object and use to create Calculator calc2
     policy2 = Policy()
     reform = {2013: {'_II_rt7': [0.45]}}
     policy2.implement_reform(reform)
-    puf2 = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    puf2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc2 = Calculator(policy=policy2, records=puf2)
     # create difference table and check that it is a Pandas DataFrame
     dtable = create_difference_table(calc1.records, calc2.records,
@@ -312,15 +294,14 @@ def test_Calculator_create_difference_table():
     assert isinstance(dtable, pd.DataFrame)
 
 
-def test_Calculator_create_diagnostic_table():
-    puf = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
-    calc = Calculator(policy=Policy(), records=puf)
+def test_Calculator_create_diagnostic_table(records_2009):
+    calc = Calculator(policy=Policy(), records=records_2009)
     calc.calc_all()
     adt = create_diagnostic_table(calc)
     assert isinstance(adt, pd.DataFrame)
 
 
-def test_make_Calculator_increment_years_first():
+def test_make_Calculator_increment_years_first(records_2009):
     # create Policy object with custom indexing rates and policy reform
     irates = {2013: 0.01, 2014: 0.01, 2015: 0.02, 2016: 0.01, 2017: 0.03}
     policy = Policy(start_year=2013, inflation_rates=irates,
@@ -331,10 +312,8 @@ def test_make_Calculator_increment_years_first():
     reform[2016]['_II_em'] = [6000]
     reform[2016]['_II_em_cpi'] = False
     policy.implement_reform(reform)
-    # create Records object by reading 1991 data and saying it is 2009 data
-    puf = Records(TAXDATA, weights=WEIGHTS, start_year=2009)
     # create Calculator object with Policy object as modified by reform
-    calc = Calculator(policy=policy, records=puf)
+    calc = Calculator(policy=policy, records=records_2009)
     # compare expected policy parameter values with those embedded in calc
     exp_STD_Aged = np.array([[1500, 1200, 1200, 1500, 1500, 1200],
                              [1550, 1200, 1200, 1550, 1550, 1200],
@@ -347,7 +326,7 @@ def test_make_Calculator_increment_years_first():
     assert np.allclose(calc.policy._II_em, exp_II_em)
 
 
-def test_ID_HC_vs_BS():
+def test_ID_HC_vs_BS(puf_1991, weights_1991):
     """
     Test that complete haircut of itemized deductions produces same
     results as a 100% benefit surtax with no benefit deduction.
@@ -364,7 +343,7 @@ def test_ID_HC_vs_BS():
     }
     hc_policy = Policy()
     hc_policy.implement_reform(hc_reform)
-    hc_records = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    hc_records = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     hc_calc = Calculator(policy=hc_policy, records=hc_records)
     # specify benefit-surtax reform policy and Calculator object
     bs_reform = {2013: {
@@ -373,13 +352,15 @@ def test_ID_HC_vs_BS():
     }
     bs_policy = Policy()
     bs_policy.implement_reform(bs_reform)
-    bs_records = Records(data=TAXDATA, weights=WEIGHTS, start_year=2009)
+    bs_records = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     bs_calc = Calculator(policy=bs_policy, records=bs_records)
     # compare calculated tax results generated by the two reforms
     hc_calc.calc_all()
     bs_calc.calc_all()
-    assert np.allclose(hc_calc.records._fica, bs_calc.records._fica)
-    assert np.allclose(hc_calc.records._iitax, bs_calc.records._iitax)
+    assert np.allclose(hc_calc.records._payrolltax,
+                       bs_calc.records._payrolltax)
+    assert np.allclose(hc_calc.records._iitax,
+                       bs_calc.records._iitax)
 
 
 def test_Calculator_using_nonstd_input(rawinputfile):
@@ -398,7 +379,7 @@ def test_Calculator_using_nonstd_input(rawinputfile):
     calc.calc_all()
     exp_iitax = np.zeros((nonpuf.dim,))
     assert np.allclose(nonpuf._iitax, exp_iitax)
-    mtr_fica, _, _ = calc.mtr(wrt_full_compensation=False)
-    exp_mtr_fica = np.zeros((nonpuf.dim,))
-    exp_mtr_fica.fill(0.153)
-    assert np.allclose(mtr_fica, exp_mtr_fica)
+    mtr_ptax, _, _ = calc.mtr(wrt_full_compensation=False)
+    exp_mtr_ptax = np.zeros((nonpuf.dim,))
+    exp_mtr_ptax.fill(0.153)
+    assert np.allclose(mtr_ptax, exp_mtr_ptax)

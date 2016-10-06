@@ -34,9 +34,6 @@ class SimpleTaxIO(object):
         specifies whether or not exact tax calculations are done without
         any smoothing of "stair-step" provisions in income tax law.
 
-    schR_calculations: boolean
-        specifies whether or not Schedule R calculations are done or not.
-
     emulate_taxsim_2441_logic: boolean
         true implies emulation of questionable Internet-TAXSIM logic, which
         is necessary if the SimpleTaxIO class is being used in validation
@@ -64,7 +61,6 @@ class SimpleTaxIO(object):
                  input_filename,
                  reform,
                  exact_calculations,
-                 schR_calculations,
                  emulate_taxsim_2441_logic,
                  output_records):
         """
@@ -115,7 +111,6 @@ class SimpleTaxIO(object):
         # validate input variable values
         self._validate_input()
         self._calc = self._calc_object(exact_calculations,
-                                       schR_calculations,
                                        emulate_taxsim_2441_logic,
                                        output_records)
 
@@ -131,7 +126,8 @@ class SimpleTaxIO(object):
         """
         return self._policy.end_year
 
-    def calculate(self, writing_output_file=False):
+    def calculate(self, writing_output_file=False,
+                  exact_output=False):
         """
         Calculate taxes for all INPUT lines and write or return OUTPUT lines.
 
@@ -142,6 +138,8 @@ class SimpleTaxIO(object):
         Parameters
         ----------
         writing_output_file: boolean
+
+        exact_output: boolean
 
         Returns
         -------
@@ -155,15 +153,16 @@ class SimpleTaxIO(object):
             if calcyr != self._calc.policy.current_year:
                 self._calc.policy.set_year(calcyr)
             self._calc.calc_all()
-            (mtr_fica, mtr_itax,
+            (mtr_ptax, mtr_itax,
              _) = self._calc.mtr(wrt_full_compensation=False)
             cr_taxyr = self._calc.records.FLPDYR  # pylint: disable=no-member
             for idx in range(0, self._calc.records.dim):
                 indyr = cr_taxyr[idx]
                 if indyr == calcyr:
-                    ovar = SimpleTaxIO.extract_output(self._calc.records, idx)
+                    ovar = SimpleTaxIO.extract_output(self._calc.records, idx,
+                                                      exact=exact_output)
                     ovar[7] = 100 * mtr_itax[idx]
-                    ovar[9] = 100 * mtr_fica[idx]
+                    ovar[9] = 100 * mtr_ptax[idx]
                     output[idx] = ovar
         assert len(output) == len(self._input)
         # handle disposition of calculated output
@@ -205,7 +204,8 @@ class SimpleTaxIO(object):
                '[ 4] filing status [MUST BE 1, 2, or 3]\n'
                '     1=single, 2=married_filing_jointly, 3=head_of_household\n'
                '[ 5] total number of dependents\n'
-               '[ 6] number of taxpayer/spouse who are age 65+\n'
+               '[ 6] taxpayer/spouse age code: 100*taxpayer_age+spouse_age\n'
+               '     where spouse_age is zero when there is no spouse\n'
                '[ 7] taxpayer wage and salary income\n'
                '[ 8] spouse wage and salary income\n'
                '[ 9] qualified dividend income\n'
@@ -229,10 +229,10 @@ class SimpleTaxIO(object):
                '[ 3] state code [ALWAYS ZERO]\n'
                '[ 4] federal income tax liability\n'
                '[ 5] state income tax liability [ALWAYS ZERO]\n'
-               '[ 6] FICA (OASDI+HI) tax liability (sum of ee and er share)\n'
+               '[ 6] OASDI+HI payroll tax liability (sum of ee and er share)\n'
                '[ 7] marginal federal income tax rate as percent\n'
                '[ 8] marginal state income tax rate [ALWAYS ZERO]\n'
-               '[ 9] marginal FICA tax rate as percent\n'
+               '[ 9] marginal payroll tax rate as percent\n'
                '[10] federal adjusted gross income, AGI\n'
                '[11] unemployment (UI) benefits included in AGI\n'
                '[12] social security (OASDI) benefits included in AGI\n'
@@ -243,7 +243,9 @@ class SimpleTaxIO(object):
                '[17] itemized deduction after phase-out '
                '(zero for non-itemizer)\n'
                '[18] federal regular taxable income\n'
-               '[19] regular tax on regular taxable income\n'
+               '[19] regular tax on regular taxable income '
+               '(no special capital gains rates)\n'
+               '     EXCEPT use special rates WHEN --exact OPTION SPECIFIED\n'
                '[20] [ALWAYS ZERO]\n'
                '[21] [ALWAYS ZERO]\n'
                '[22] child tax credit (adjusted)\n'
@@ -256,7 +258,7 @@ class SimpleTaxIO(object):
         sys.stdout.write(ovd)
 
     @staticmethod
-    def extract_output(crecs, idx, extract_weight=False):
+    def extract_output(crecs, idx, exact=False, extract_weight=False):
         """
         Extracts tax output from crecs object for one tax filing unit.
 
@@ -268,8 +270,11 @@ class SimpleTaxIO(object):
         idx: integer
             crecs object index of the one tax filing unit.
 
+        exact: boolean
+            whether or not ovar[19] is exact regular tax on regular income.
+
         extract_weight: boolean
-            whether or not to extract s006 sample weight into ovar[29]
+            whether or not to extract s006 sample weight into ovar[29].
 
         Returns
         -------
@@ -290,15 +295,15 @@ class SimpleTaxIO(object):
         # pylint: disable=protected-access
         ovar[4] = crecs._iitax[idx]  # federal income tax liability
         ovar[5] = 0.0  # no state income tax calculation
-        ovar[6] = crecs._fica[idx]  # FICA taxes (ee+er) for OASDI+HI
+        ovar[6] = crecs._payrolltax[idx]  # payroll taxes (ee+er) for OASDI+HI
         ovar[7] = 0.0  # marginal federal income tax rate as percent
         ovar[8] = 0.0  # no state income tax calculation
-        ovar[9] = 0.0  # marginal FICA tax rate as percent
+        ovar[9] = 0.0  # marginal payroll tax rate as percent
         ovar[10] = crecs.c00100[idx]  # federal AGI
         ovar[11] = crecs.e02300[idx]  # UI benefits in AGI
         ovar[12] = crecs.c02500[idx]  # OASDI benefits in AGI
         ovar[13] = 0.0  # always set zero-bracket amount to zero
-        pre_phase_out_pe = crecs._prexmp[idx]
+        pre_phase_out_pe = crecs.pre_c04600[idx]
         post_phase_out_pe = crecs.c04600[idx]
         phased_out_pe = pre_phase_out_pe - post_phase_out_pe
         ovar[14] = post_phase_out_pe  # post-phase-out personal exemption
@@ -308,7 +313,10 @@ class SimpleTaxIO(object):
         # ovar[17] is zero for non-itemizer:
         ovar[17] = crecs.c04470[idx]  # post-phase-out itemized deduction
         ovar[18] = crecs.c04800[idx]  # federal regular taxable income
-        ovar[19] = crecs.c05200[idx]  # regular tax on taxable income
+        if exact:
+            ovar[19] = crecs._taxbc[idx]  # regular tax on taxable income
+        else:  # Internet-TAXSIM ovar[19] that ignores special qdiv+ltcg rates
+            ovar[19] = crecs.c05200[idx]  # regular tax on taxable income
         ovar[20] = 0.0  # always set exemption surtax to zero
         ovar[21] = 0.0  # always set general tax credit to zero
         ovar[22] = crecs.c07220[idx]  # child tax credit (adjusted)
@@ -570,7 +578,7 @@ class SimpleTaxIO(object):
                 raise ValueError(msg.format(num_young_dependents, lnum,
                                             num_all_dependents))
 
-    def _calc_object(self, exact_calcs, schr_calcs,
+    def _calc_object(self, exact_calcs,
                      emulate_taxsim_2441_logic, output_records):
         """
         Create and return Calculator object to conduct the tax calculations.
@@ -578,8 +586,6 @@ class SimpleTaxIO(object):
         Parameters
         ----------
         exact_calcs: boolean
-
-        schr_calcs: boolean
 
         emulate_taxsim_2441_logic: boolean
 
@@ -597,7 +603,6 @@ class SimpleTaxIO(object):
         # use dict_list to create a Pandas DataFrame and Records object
         recsdf = pd.DataFrame(dict_list, dtype='int64')
         recs = Records(data=recsdf, exact_calculations=exact_calcs,
-                       schR_calculations=schr_calcs,
                        blowup_factors=None, weights=None,
                        start_year=self._policy.start_year)
         assert recs.dim == len(self._input)
@@ -663,7 +668,7 @@ class SimpleTaxIO(object):
                 recs.age_head[idx] = 70
                 if ivar[6] >= 2:
                     recs.age_spouse[idx] = 70
-        else:  # new coding of Internet-TAXSIM ivar[6]
+        else:  # new coding of Internet-TAXSIM ivar[6] since March 2016
             recs.age_head[idx] = ivar[6] // 100  # integer division
             recs.age_spouse[idx] = ivar[6] % 100  # division remainder
         recs.e00200p[idx] = ivar[7]  # wage+salary income of taxpayer

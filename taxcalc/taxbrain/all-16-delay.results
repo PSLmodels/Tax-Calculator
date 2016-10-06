@@ -3,5 +3,5 @@
 1-000	ITAX	2019	0.1	0.35	www.ospc.org/taxbrain/4619/
 1-000	ITAX	2022	0.1	0.09	www.ospc.org/taxbrain/4619/
 1-000	ITAX	2025	0.1	0.08	www.ospc.org/taxbrain/4619/
-1-000	FICA	2024	-0.1	-0.06	www.ospc.org/taxbrain/4619/
-1-000	FICA	2025	-0.1	-0.06	www.ospc.org/taxbrain/4619/
+1-000	PTAX	2024	-0.1	-0.06	www.ospc.org/taxbrain/4619/
+1-000	PTAX	2025	-0.1	-0.06	www.ospc.org/taxbrain/4619/
