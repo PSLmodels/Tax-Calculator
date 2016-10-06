@@ -985,7 +985,7 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99, 9e99]]
     },
 
-    "_CG_ec": {
+    "_CG_ec_rt": {
         "long_name": "Capital gains and dividend income exclusion",
         "description": "This decimal fraction can be applied to limit the taxable net capital gains and dividend income. ",
         "irs_ref": "Form 1040, line 8a",
