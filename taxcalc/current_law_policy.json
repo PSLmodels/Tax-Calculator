@@ -131,8 +131,8 @@
         "value": [0.0]
     },
 
-    "_ALD_Interest_ec": {
-        "long_name": "Interest income exclusion",
+    "_ALD_Interest_ec_rt": {
+        "long_name": "Interest income exclusion rate",
         "description": "This decimal fraction can be applied to limit the interest income included in AGI. ",
         "irs_ref": "Form 1040, line 8a",
         "notes": "The final taxable interest amount will be (1- exclusion) * Interest. Even though this portion of interest wouldn't be included in AGI, it still contributes to Net Investment Income Tax and Earned Income Tax Credit.",
