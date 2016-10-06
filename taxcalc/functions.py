@@ -483,8 +483,8 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
              e24515, e24518, MARS, c04800, c05200,
              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7,
-             CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3, cgdiv_ec,
-             c24516, c24517, c24520, c05700, _taxbc):
+             CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3,
+             c24516, c24517, c24520, c05700, _taxbc, cgdiv_ec):
     """
     GainsTax function implements (2015) Schedule D Tax Worksheet logic for
     the special taxation of long-term capital gains and qualified dividends
@@ -503,7 +503,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks4 = 0.  # always assumed to be zero
         dwks5 = max(0., dwks3 - dwks4)
         dwks6 = max(0., dwks2 - dwks5)
-        dwks7 = min(p23250, c23650) * (1 - cgdiv_ec)  # SchD lines 15 and 16, respectively
+        dwks7 = min(p23250, c23650) * (1 - cgdiv_ec)  # SchD lines 15 and 16
         # dwks8 = min(dwks3, dwks4)
         # dwks9 = max(0., dwks7 - dwks8)
         # BELOW TWO STATEMENTS ARE UNCLEAR IN LIGHT OF dwks9=... COMMENT
@@ -514,7 +514,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks9 = max(0., c24510 - min(0., dwks3))
         # ABOVE TWO STATEMENTS ARE UNCLEAR IN LIGHT OF dwks9=... COMMENT
         dwks10 = dwks6 + dwks9
-        dwks11 = (e24515 + e24518) * (1 - cgdiv_ec)  # SchD lines 18 and 19, respectively
+        dwks11 = (e24515 + e24518) * (1 - cgdiv_ec)  # SchD lines 18 and 19
         dwks12 = min(dwks9, dwks11)
         dwks13 = dwks10 - dwks12
         dwks14 = max(0., dwks1 - dwks13)
