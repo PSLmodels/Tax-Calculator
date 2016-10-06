@@ -87,3 +87,13 @@ P87521 = Form 8863: Tentative American Opportunity Credit
 RECID = ID for filing unit
 S006 = Sample weight for filing unit
 XTOT = Total number of exemptions for filing unit
+E59560 = Sch EIC: earned income
+E19700 = Sch A: Total contrib. deducted
+E20550 = Sch A: Unreimbursed employee business Exp.
+E07200 = Credit for Elderly or disabled - Sch R
+E19550 = Qualified Mortgage Insurance Premiums New 2007
+P04470 = Total itemized deduction
+E20600 = Sch A: Tax preparation fee
+E02500 = Social security benefits, taxable
+E19570 = Sch A: Investment interest paid
+
