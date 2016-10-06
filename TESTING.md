@@ -7,7 +7,9 @@ Tax-Calculator Testing Procedures
 This description of Tax-Calculator testing procedure is written for a
 person who wants to contribute changes to Tax-Calculator source code.
 It assumes that you have read the [Contributor
-Guide](http://taxcalc.readthedocs.org/en/latest/contributor_guide.html),
+Guide](http://taxcalc.readthedocs.io/en/latest/contributor_guide.html)
+and the [conventions about naming and placing new policy
+parameters](http://taxcalc.readthedocs.io/en/latest/parameter_naming.html),
 have cloned the [central GitHub Tax-Calculator
 repository](https://github.com/open-source-economics/Tax-Calculator)
 to your GitHub account and to your local computer, and are familiar
