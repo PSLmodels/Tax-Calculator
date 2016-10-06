@@ -504,7 +504,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks4 = 0.  # always assumed to be zero
         dwks5 = max(0., dwks3 - dwks4)
         dwks6 = max(0., dwks2 - dwks5)
-        dwks7 = min(p23250, c23650) * (1 - CG_ec_rt)  # SchD lines 15 and 16, respectively
+        dwks7 = min(p23250, c23650) * (1 - CG_ec_rt)  # SchD lines 15 and 16
         # dwks8 = min(dwks3, dwks4)
         # dwks9 = max(0., dwks7 - dwks8)
         # BELOW TWO STATEMENTS ARE UNCLEAR IN LIGHT OF dwks9=... COMMENT
@@ -515,7 +515,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks9 = max(0., c24510 - min(0., dwks3))
         # ABOVE TWO STATEMENTS ARE UNCLEAR IN LIGHT OF dwks9=... COMMENT
         dwks10 = dwks6 + dwks9
-        dwks11 = (e24515 + e24518) * (1 - CG_ec_rt)  # SchD lines 18 and 19, respectively
+        dwks11 = (e24515 + e24518) * (1 - CG_ec_rt)  # SchD lines 18 and 19
         dwks12 = min(dwks9, dwks11)
         dwks13 = dwks10 - dwks12
         dwks14 = max(0., dwks1 - dwks13)
