@@ -644,9 +644,9 @@ def get_mtr_data(calcX, calcY, weights, MARS='ALL',
     calcY : a Tax-Calculator Records object that refers to the reform
 
     weights : String object
-        options for input: 'weighted_count_lt_zero', 'weighted_count_gt_zero',
-            'weighted_count', 'weighted_mean', 'wage_weighted', 'weighted_sum',
-            'weighted_perc_inc', 'weighted_perc_dec', 'weighted_share_of_total'
+        options for input: weighted_count_lt_zero, weighted_count_gt_zero,
+            weighted_mean, wage_weighted, weighted_sum,
+            weighted_perc_inc, weighted_perc_dec
         Choose different weight measure
 
     MARS : Integer
@@ -654,7 +654,7 @@ def get_mtr_data(calcX, calcY, weights, MARS='ALL',
         Choose different filling status
 
     income_measure : String object
-        options for input: '_expanded_income', '_iitax'
+        options for input: '_expanded_income', 'c00100', 'e00200'
         classifier of income bins/deciles
 
     mtr_measure : String object
