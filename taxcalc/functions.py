@@ -141,7 +141,7 @@ def Adj(e03150, e03210, c03260,
 
 
 @iterate_jit(nopython=True)
-def CapGains(p23250, p22250, _sep, ALD_Interest_ec, ALD_StudentLoan_HC,
+def CapGains(p23250, p22250, _sep, ALD_Investment_ec, ALD_StudentLoan_HC,
              e00200, e00300, e00600, e00700, e00800,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
              e02300, e00400, e02400, c02900, e03210, e03230, e03240,
