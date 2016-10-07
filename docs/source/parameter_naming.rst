@@ -105,7 +105,7 @@ Examples
 Placing New Parameters in ``current_law_policy.json``
 -----------------------------------------------------
 
-All new parameters should be added to the ``current_law_polciy.json``
+All new parameters should be added to the ``current_law_policy.json``
 file in a location that maintains the convention that the policy
 parameters appear in that file in the order they are first used in the
 ``functions.py`` file.
