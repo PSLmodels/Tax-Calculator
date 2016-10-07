@@ -155,8 +155,8 @@ def CapGains(p23250, p22250, _sep, ALD_Investment_ec, ALD_StudentLoan_HC,
     c01000 = max((-3000. / _sep), c23650)
     # compute ymod* variables
     ymod1 = (e00200 + e00700 + e00800 + e00900 + e01400 + e01700 +
-             (1 - ALD_Interest_ec) * (e00300 + e00600 +
-                                      c01000 + e01100 + e01200) +
+             (1 - ALD_Investment_ec) * (e00300 + e00600 +
+                                        c01000 + e01100 + e01200) +
              e02000 + e02100 + e02300)
     ymod2 = e00400 + (0.50 * e02400) - c02900
     ymod3 = (1 - ALD_StudentLoan_HC) * e03210 + e03230 + e03240
