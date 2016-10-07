@@ -699,9 +699,11 @@ def get_mtr_data(calcX, calcY, weights, MARS='ALL',
         df_filtered_x = df_x[(df_x['MARS'] == MARS)].copy()
         df_filtered_y = df_y[(df_y['MARS'] == MARS)].copy()
 
+    # Split into groups by 'bins'
     gp_x = df_filtered_x.groupby('bins', as_index=False)
     gp_y = df_filtered_y.groupby('bins', as_index=False)
 
+    # Apply desired weights to mtr
     if mtr_measure == 'combined':
         wgtpct_x = gp_x.apply(weights, 'mtr_combined')
         wgtpct_y = gp_y.apply(weights, 'mtr_combined')
@@ -716,15 +718,18 @@ def get_mtr_data(calcX, calcY, weights, MARS='ALL',
     wpct_x['bins'] = np.arange(1, 101)
     wpct_y['bins'] = np.arange(1, 101)
 
+    # Merge two dataframes
     rsltx = pd.merge(df_filtered_x[['bins']], wpct_x, how='left')
     rslty = pd.merge(df_filtered_y[['bins']], wpct_y, how='left')
 
     df_filtered_x['w_mtr'] = rsltx['w_mtr'].values
     df_filtered_y['w_mtr'] = rslty['w_mtr'].values
 
+    # Get rid of duplicated bins
     df_filtered_x.drop_duplicates(subset='bins', inplace=True)
     df_filtered_y.drop_duplicates(subset='bins', inplace=True)
 
+    # Prepare cleaned mtr data and concatenate into one datafram
     df_filtered_x = df_filtered_x['w_mtr']
     df_filtered_y = df_filtered_y['w_mtr']
 
@@ -758,7 +763,8 @@ def requires_bokeh(fn):
 def mtr_plot(source, xlab='Percentile', ylab='Avg. MTR', title='MTR plot',
              plot_width=425, plot_height=250, loc='top_left'):
     """
-    This function prepares the MTR data for two calculators.
+    This function generates marginal tax rate plot.
+    Source data can be obtained from get_mtr_data function.
 
     Parameters
     ----------
@@ -786,7 +792,8 @@ def mtr_plot(source, xlab='Percentile', ylab='Avg. MTR', title='MTR plot',
     Returns
     -------
     Figure Object (Use show(FIGURE_NAME) option to visualize)
-        Note that, when using command line, output file needs to be first specified using command output_file("FILE_NAME.html")
+        Note that, when using command line, output file needs to be
+        first specified using command output_file("FILE_NAME.html")
     """
     PP = figure(plot_width=plot_width, plot_height=plot_height, title=title)
 
