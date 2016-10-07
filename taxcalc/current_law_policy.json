@@ -876,6 +876,19 @@
         "validations": {"min": "_II_brk6"}
     },
 
+    "_CG_as_II": {
+        "long_name": "Long term capital gains and qualified dividends taxed same as other income",
+        "description": "This zero/one parameter specifies whether or not long term capital gains and qualified dividends are taxed like other income.",
+        "irs_ref": "Current-law value is zero and Schedule D tax rules are used.",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0]
+    },
+
     "_CG_rt1": {
         "long_name": "Long term capital gain and qualified dividends rate 1",
         "description": "The capital gain and dividends (stacked on top of regular income) that are below threshold 1 are taxed at this rate. ",

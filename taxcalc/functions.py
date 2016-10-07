@@ -155,8 +155,8 @@ def CapGains(p23250, p22250, _sep, ALD_Investment_ec, ALD_StudentLoan_HC,
     c01000 = max((-3000. / _sep), c23650)
     # compute ymod* variables
     ymod1 = (e00200 + e00700 + e00800 + e00900 + e01400 + e01700 +
-             (1 - ALD_Investment_ec) *
-             (e00300 + e00600 + c01000 + e01100 + e01200) +
+             (1 - ALD_Investment_ec) * (e00300 + e00600 +
+                                        c01000 + e01100 + e01200) +
              e02000 + e02100 + e02300)
     ymod2 = e00400 + (0.50 * e02400) - c02900
     ymod3 = (1 - ALD_StudentLoan_HC) * e03210 + e03230 + e03240
@@ -484,17 +484,22 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
              e24515, e24518, MARS, c04800, c05200,
              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7,
+             CG_as_II,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3,
              c24516, c24517, c24520, c05700, _taxbc):
     """
     GainsTax function implements (2015) Schedule D Tax Worksheet logic for
     the special taxation of long-term capital gains and qualified dividends
+    if CG_as_II is false (that is, zero)
     """
     # pylint: disable=too-many-statements,too-many-branches
     if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
         hasqdivltcg = 1  # has qualified dividends or long-term capital gains
     else:
         hasqdivltcg = 0  # no qualified dividends or long-term capital gains
+
+    if CG_as_II != 0.:
+        hasqdivltcg = 0  # no special taxation of qual divids and l-t cap gains
 
     if hasqdivltcg == 1:
 
