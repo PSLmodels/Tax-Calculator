@@ -785,7 +785,8 @@ def mtr_plot(source, xlab='Percentile', ylab='Avg. MTR', title='MTR plot',
         Choose the location of the legend label
     Returns
     -------
-    Figure Object (Use show() option to visualize)
+    Figure Object (Use show(FIGURE_NAME) option to visualize)
+        Note that, when using command line, output file needs to be first specified using command output_file("FILE_NAME.html")
     """
     PP = figure(plot_width=plot_width, plot_height=plot_height, title=title)
 
