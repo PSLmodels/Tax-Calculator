@@ -508,7 +508,7 @@
 
     "_AMED_thd": {
         "long_name": "Additional Medicare threshold",
-        "description": "If their Medicare wages, RRTA compensation and self-employment income is above this threshold, taxpayers are subject to additional Medicare tax. ",
+        "description": "If their Medicare wages, RRTA compensation and self-employment income is above this threshold, taxpayers are subject to additional Medicare tax.",
         "irs_ref": "Form 8959, line 5, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -521,7 +521,7 @@
 
     "_AMED_trt": {
         "long_name": "Additional Medicare tax rate",
-        "description": "This is the rate applied to the portion of Medicare wages, RRTA compensation and self-employment income exceeding additional Medicare threshold. ",
+        "description": "This is the rate applied to the portion of Medicare wages, RRTA compensation and self-employment income exceeding additional Medicare threshold.",
         "irs_ref": "Form 8959, line 7, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -1307,7 +1307,7 @@
 
     "_NIIT_thd": {
         "long_name": "Net Investment Income Tax income threshold (UIMC)",
-        "description": "If one taxpayer's MAGI (modified AGI) is more than this threshold, he or she is subject to the additional Medicare tax. ",
+        "description": "If MAGI (modified AGI) is more than this threshold, tax unit is subject to the Net Investment Income Tax.",
         "irs_ref": "Form 8960, line 14, instructions. ",
         "notes": "",
         "start_year": 2013,
@@ -1320,8 +1320,8 @@
     },
 
     "_NIIT_trt": {
-        "long_name": "Net Investment Income Tax rate (UIMC)",
-        "description": "Also called the Unearned Income Medicare Contribution. The lessor of net investment income and the amount by which MAGI exceeds a threshold is taxed at this rate.",
+        "long_name": "Net Investment Income Tax rate",
+        "description": "The amount by which MAGI exceeds _NIIT_thd is taxed at this rate.",
         "irs_ref": "Form 8960, line 21, in-line. ",
         "notes": "",
         "start_year": 2013,
