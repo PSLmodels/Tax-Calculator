@@ -135,7 +135,7 @@
         "long_name": "Investment income exclusion",
         "description": "This decimal fraction can be applied to limit the investment income included in AGI. ",
         "irs_ref": "Form 1040, line 8a",
-        "notes": "The final taxable investment income will be (1- exclusion) * Investment income. Even though this portion of income wouldn't be included in AGI, it still contributes to Net Investment Income Tax and Earned Income Tax Credit.",
+        "notes": "The final taxable investment income will be (1-_ALD_Investment_ec)*Investment income. Even though the excluded portion of investment income is not included in AGI, it still is included in investment income used to calculate Net Investment Income Tax and Earned Income Tax Credit.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -1080,7 +1080,7 @@
 
     "_AMT_em": {
         "long_name": "AMT exemption amount",
-        "description": "The amount of AMTI exempted from AMT.",
+        "description": "The amount of AMT taxable income exempted from AMT.",
         "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
         "notes": "",
         "start_year": 2013,
@@ -1100,7 +1100,7 @@
 
     "_AMT_prt": {
         "long_name": "AMT exemption phaseout rate",
-        "description": "AMT exemption will decrease at this rate for each dollar of AMTI exceeding AMT phaseout start. ",
+        "description": "AMT exemption will decrease at this rate for each dollar of AMT taxable income exceeding AMT phaseout start. ",
         "irs_ref": "Form 6251, line 29, instructions. ",
         "notes": "",
         "start_year": 2013,
@@ -1113,7 +1113,7 @@
     },
 
     "_AMT_trt1": {
-        "long_name": "AMT rate for AMTI under the surtax threshold",
+        "long_name": "AMT rate for AMT taxable income under the surtax threshold",
         "description": "The tax rate applied to the portion of AMT income below the surtax threshold. ",
         "irs_ref": "Form 6251, line 31, in-line. ",
         "notes": "",
@@ -1127,7 +1127,7 @@
     },
 
     "_AMT_trt2": {
-        "long_name": "Additional AMT rate for AMTI above the surtax threshold",
+        "long_name": "Additional AMT rate for AMT taxable income above the surtax threshold",
         "description": "The tax rate applied to the portion of AMT income above the surtax threshold.",
         "irs_ref": "Form 6251, line 31, in-line. ",
         "notes": "This is the additional tax rate (on top of .26) for AMT income",
@@ -1162,7 +1162,7 @@
 
     "_AMT_em_ps": {
         "long_name": "AMT exemption phaseout start",
-        "description": "AMT exemption starts to decrease when AMTI goes beyond this threshold.",
+        "description": "AMT exemption starts to decrease when AMT taxable income goes beyond this threshold.",
         "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
         "notes": "",
         "start_year": 2013,
@@ -1181,8 +1181,8 @@
     },
 
     "_AMT_em_pe": {
-        "long_name": "AMT exemption phaseout ending AMTI (Married filling Separately)",
-        "description": "The AMT exemption is entirely disallowed beyond this AMTI level for individuals who are married but filing separately.",
+        "long_name": "AMT exemption phaseout ending AMT taxable income (Married filling Separately)",
+        "description": "The AMT exemption is entirely disallowed beyond this AMT taxable income level for individuals who are married but filing separately.",
         "irs_ref": "Form 6251, line 28, instruction.",
         "notes": "",
         "start_year": 2013,
