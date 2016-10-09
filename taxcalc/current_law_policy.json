@@ -145,6 +145,61 @@
         "value": [0.0]
     },
 
+        "_ALD_Dependents_HC":{
+        "long_name": "Deduction for childcare costs",
+        "description": "This decimal fraction, if greater than zero, reduces the portion of childcare costs that can be deducted from AGI",
+        "irs_ref": "",
+        "notes": "The final adjustment would be (1 - Haircut) * Average childcare costs",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "value": [1.0]
+    },
+
+    "_ALD_Dependents_Child_ec":{
+        "long_name": "National average childcare costs",
+        "description": "The weighted average of childcare costs in the US",
+        "irs_ref":"",
+        "notes": "This is a weighted average of childcare costs in each state",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": true,
+        "value": [7156]
+    },
+
+    "_ALD_Dependents_Elder_ec": {
+        "long_name": "Elderly care exclusion proposed in Trump's tax plan",
+        "description": "A tax payer can take this above the line deduction if they have an elderly dependent",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": [
+            "2013"
+        ],
+        "cpi_inflated": true,
+        "value": [5000]
+    },
+
+    "_ALD_Dependents_thd": {
+        "long_name": "Maximum level of income to qualify for the deduction",
+        "description": "A taxpayer can only claim this deduction if their total income is below this level",
+        "irs_ref": "Form 2441",
+        "note": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[250000, 500000, 250000, 500000, 500000, 250000]]
+    },
+
     "_SS_thd50": {
         "long_name": "Threshold for Social Security benefit taxability 1",
         "description": "The first threshold for Social Security benefit taxability: if taxpayers have provisional income greater than this threshold, up to 50% of their Social Security benefit will be subject to tax under current law.",
