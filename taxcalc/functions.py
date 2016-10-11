@@ -484,7 +484,9 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
              e24515, e24518, MARS, c04800, c05200,
              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7,
-             CG_as_II,
+             PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8,
+             PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7,
+             CG_as_II, e00900, e26270,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3,
              c24516, c24517, c24520, c05700, _taxbc):
     """
@@ -555,9 +557,29 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks39 = dwks19 + dwks20 + dwks28 + dwks31 + dwks37
         dwks40 = dwks1 - dwks39
         dwks41 = 0.28 * dwks40
-        dwks42 = Taxes(dwks19, MARS, 0.0, II_rt1, II_rt2, II_rt3, II_rt4,
-                       II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
-                       II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
+        
+        # duplicate logic for pass-through taxation from SchXYZTax
+        pt_taxinc = max(0., e00900 + e26270)
+        if pt_taxinc >= dwks19:
+            pt_taxinc = dwks19
+            reg_taxinc = 0.
+        else:
+            reg_taxinc = dwks19 - pt_taxinc
+        if reg_taxinc > 0.:
+            reg_tax = Taxes(reg_taxinc, MARS, 0.0,
+                            II_rt1, II_rt2, II_rt3, II_rt4,
+                            II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
+                            II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
+        else:
+            reg_tax = 0.
+        if pt_taxinc > 0.:
+            pt_tax = Taxes(pt_taxinc, MARS, reg_taxinc,
+                           PT_rt1, PT_rt2, PT_rt3, PT_rt4,
+                           PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1, PT_brk2,
+                           PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
+        else:
+            pt_tax = 0.
+        dwks42 = reg_tax + pt_tax
         dwks43 = (dwks29 + dwks32 + dwks38 + dwks41 + dwks42 +
                   lowest_rate_tax + highest_rate_incremental_tax)
         dwks44 = c05200
