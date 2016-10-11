@@ -557,8 +557,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks39 = dwks19 + dwks20 + dwks28 + dwks31 + dwks37
         dwks40 = dwks1 - dwks39
         dwks41 = 0.28 * dwks40
-        
-        # duplicate logic for pass-through taxation from SchXYZTax
+        # duplicate the logic for pass-through taxation from SchXYZTax
         pt_taxinc = max(0., e00900 + e26270)
         if pt_taxinc >= dwks19:
             pt_taxinc = dwks19
