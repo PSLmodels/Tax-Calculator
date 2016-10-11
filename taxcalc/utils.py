@@ -8,7 +8,7 @@ try:
     import bokeh
     BOKEH_AVAILABLE = True
     from bokeh.palettes import Blues4, Reds4
-    from bokeh.plotting import figure
+    from bokeh.plotting import figure, output_file, show
 
 except ImportError:
     BOKEH_AVAILABLE = False
