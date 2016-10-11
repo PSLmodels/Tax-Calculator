@@ -28,8 +28,10 @@ At the moment there are three ways to start using the Tax-Calculator.
 
 The **first way** is to install the Tax-Calculator repository on your
 computer.  Do this by following the instructions in our [Contributor
-Guide](http://taxcalc.readthedocs.org/en/latest/contributor_guide.html)
-and then reading about our [testing procedures](TESTING.md).  This way
+Guide](http://taxcalc.readthedocs.io/en/latest/contributor_guide.html)
+and then reading about our [new parameter naming
+conventions](http://taxcalc.readthedocs.io/en/latest/parameter_naming.html)
+and our [testing procedures](TESTING.md).  This way
 allows you to read the source code and contribute enhancements to the
 source code.  While this way does not provide you with a
 representative sample of tax filing units, it does allow you to
