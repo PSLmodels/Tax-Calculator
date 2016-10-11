@@ -13,9 +13,9 @@ Tax-Calculator functions that calculate payroll and individual income taxes.
 
 
 import math
+import copy
 import numpy as np
 from .decorators import iterate_jit, jit
-import copy
 
 
 @iterate_jit(nopython=True)
@@ -775,7 +775,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
     if EIC == 0:
         # enforce age eligibility rule for those with no EITC-eligible children
         # (assume that an unknown age_* value implies EITC age eligibility)
-        # pylint: disable=bad-continuation
+        # pylint: disable=bad-continuation,too-many-boolean-expressions
         if MARS == 2:
             if (age_head >= EITC_MinEligAge and
                 age_head <= EITC_MaxEligAge) or \

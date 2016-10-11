@@ -18,12 +18,12 @@ Read tax-calculator/TESTING.md for details.
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import os
-from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
-from taxcalc import multiyear_diagnostic_table  # pylint: disable=import-error
-import pytest
 import difflib
+import pytest
 import numpy as np
 import pandas as pd
+from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
+from taxcalc import multiyear_diagnostic_table  # pylint: disable=import-error
 
 
 @pytest.fixture(scope='session')
@@ -84,7 +84,8 @@ def test_agg(tests_path, puf_path):
     # create aggregate diagnostic table using sub sample of records
     fullsample = pd.read_csv(puf_path)
     rn_seed = 80  # to ensure two-percent sub-sample is always the same
-    subsample = fullsample.sample(frac=0.02, random_state=rn_seed)
+    subsample = fullsample.sample(frac=0.02,  # pylint: disable=no-member
+                                  random_state=rn_seed)
     rec_subsample = Records(data=subsample)
     calc_subsample = Calculator(policy=Policy(), records=rec_subsample)
     adt_subsample = multiyear_diagnostic_table(calc_subsample, num_years=nyrs)
@@ -190,10 +191,7 @@ def test_mtr(tests_path, puf_path):
     variable_header = 'PTAX and ITAX mtr histogram bin counts for'
     # compute marginal tax rate (mtr) histograms for each mtr variable
     for var_str in Calculator.MTR_VALID_VARIABLES:
-        if var_str == 'e01400':
-            zero_out = True
-        else:
-            zero_out = False
+        zero_out = (var_str == 'e01400')
         (mtr_ptax, mtr_itax, _) = calc.mtr(variable_str=var_str,
                                            negative_finite_diff=MTR_NEG_DIFF,
                                            zero_out_calculated_vars=zero_out,

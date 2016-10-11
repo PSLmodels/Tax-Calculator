@@ -20,9 +20,11 @@ import sys
 import re
 import json
 from time import sleep
+import pandas as pd
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 PUF_PATH = os.path.join(CUR_PATH, '..', '..', 'puf.csv')
 CWD_PATH = os.path.join(CUR_PATH, '..', '..', 'chromedriver')
+# pylint: disable=wrong-import-position
 import selenium
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -33,7 +35,6 @@ import pyperclip
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
 # pylint: disable=import-error
 from taxcalc import Policy, Records, Calculator, create_diagnostic_table
-import pandas as pd
 
 
 MIN_START_YEAR = 2013

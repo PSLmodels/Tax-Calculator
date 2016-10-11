@@ -7,10 +7,10 @@ Tax-Calculator tax-filing-unit Records class.
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 
-import pandas as pd
-import numpy as np
 import os
 import six
+import numpy as np
+import pandas as pd
 from pkg_resources import resource_stream, Requirement, DistributionNotFound
 
 

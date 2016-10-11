@@ -21,7 +21,7 @@ import numpy as np
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 PUFCSV_PATH = os.path.join(CUR_PATH, '..', '..', 'puf.csv')
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
-# pylint: disable=import-error
+# pylint: disable=wrong-import-position,import-error
 from taxcalc import Policy, Records, Calculator, Consumption
 
 
