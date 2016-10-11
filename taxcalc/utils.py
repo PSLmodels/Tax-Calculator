@@ -119,7 +119,7 @@ def add_weighted_decile_bins(df, income_measure='_expanded_income',
         df['s006_weighted'] = np.multiply(df[income_measure].values,
                                           df['s006'].values)
     # Next, sort by income_measure
-    df.sort(income_measure, inplace=True)
+    df.sort_values(by=income_measure, inplace=True)
     # Do a cumulative sum
     if complex_weight:
         df['cumsum_weights'] = np.cumsum(df['s006_weighted'].values)
@@ -632,7 +632,7 @@ def ascii_output(csv_filename, ascii_filename):
 
 
 def get_mtr_data(calcX, calcY, weights, MARS='ALL',
-                 income_measure='e00200', mtr_measure='IIT',
+                 income_measure='e00200', mtr_measure='_iitax',
                  complex_weight=False):
     """
     This function prepares the MTR data for two calculators.
@@ -658,7 +658,8 @@ def get_mtr_data(calcX, calcY, weights, MARS='ALL',
         classifier of income bins/deciles
 
     mtr_measure : String object
-        options for input: '_iitax', '_payrolltax', '_combined'
+        options for input: '_iitax', '_combined'
+        Choose different marginal tax rate measure
 
     complex_weight : Boolean
         The cumulated sum will be carried out based on weighted income measure
@@ -704,10 +705,10 @@ def get_mtr_data(calcX, calcY, weights, MARS='ALL',
     gp_y = df_filtered_y.groupby('bins', as_index=False)
 
     # Apply desired weights to mtr
-    if mtr_measure == 'combined':
+    if mtr_measure == '_combined':
         wgtpct_x = gp_x.apply(weights, 'mtr_combined')
         wgtpct_y = gp_y.apply(weights, 'mtr_combined')
-    elif mtr_measure == 'IIT':
+    elif mtr_measure == '_iitax':
         wgtpct_x = gp_x.apply(weights, 'mtr_iit')
         wgtpct_y = gp_y.apply(weights, 'mtr_iit')
 
@@ -814,8 +815,8 @@ def mtr_plot(source, xlab='Percentile', ylab='Avg. MTR', title='MTR plot',
     PP.legend.label_standoff = 2
     PP.legend.glyph_width = 14
     PP.legend.glyph_height = 14
-    PP.legend.legend_spacing = 5
-    PP.legend.legend_padding = 5
+    PP.legend.spacing = 5
+    PP.legend.padding = 5
     PP.yaxis.axis_label = ylab
     PP.xaxis.axis_label = xlab
     return PP
