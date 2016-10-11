@@ -276,7 +276,6 @@ def test_Calculator_mtr(records_2009):
     assert type(mtr_combined) == np.ndarray
 
 
-@pytest.mark.one
 def test_Calculator_mtr_when_PT_rates_differ():
     reform = {2013: {'_II_rt1': [0.40],
                      '_II_rt2': [0.40],
