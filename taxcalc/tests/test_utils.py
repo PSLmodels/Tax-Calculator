@@ -523,7 +523,7 @@ def test_get_mtr_data(records_2009):
     calc = Calculator(policy=pol, records=records_2009, behavior=behv)
     calc.calc_all()
     source = get_mtr_data(calc, calc, weights=wage_weighted, MARS=1,
-                          mtr_measure='combined')
+                          mtr_measure='_combined')
 
 
 def test_mtr_plot(records_2009):
