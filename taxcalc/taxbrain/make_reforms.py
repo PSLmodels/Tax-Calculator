@@ -21,7 +21,8 @@ import argparse
 import numpy as np
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
-from taxcalc import Policy  # pylint: disable=import-error
+# pylint: disable=wrong-import-position,import-error
+from taxcalc import Policy
 
 
 PARAMS_NOT_SCALED = set(['_ACTC_ChildNum',

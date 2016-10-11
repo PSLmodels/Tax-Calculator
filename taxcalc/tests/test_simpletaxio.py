@@ -8,9 +8,9 @@ Tests for Tax-Calculator SimpleTaxIO class.
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import os
-from taxcalc import SimpleTaxIO  # pylint: disable=import-error
-import pytest
 import tempfile
+import pytest
+from taxcalc import SimpleTaxIO  # pylint: disable=import-error
 
 
 NUM_INPUT_LINES = 4
