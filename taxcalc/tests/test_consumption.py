@@ -1,7 +1,6 @@
 import numpy as np
 import pytest
 import copy
-
 from taxcalc import Policy, Records, Calculator, Consumption
 
 
