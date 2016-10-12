@@ -815,8 +815,8 @@ def mtr_plot(source, xlab='Percentile', ylab='Avg. MTR', title='MTR plot',
     PP.legend.label_standoff = 2
     PP.legend.glyph_width = 14
     PP.legend.glyph_height = 14
-    PP.legend.spacing = 5
-    PP.legend.padding = 5
+    PP.legend.legend_spacing = 5
+    PP.legend.legend_padding = 5
     PP.yaxis.axis_label = ylab
     PP.xaxis.axis_label = xlab
     return PP
