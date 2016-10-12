@@ -6,12 +6,11 @@ Implement Numba JIT decorators used to speed-up tax-calculating functions.
 # pylint --disable=locally-disabled decorators.py
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
-
-import inspect
-from .policy import Policy
-from six import StringIO
 import ast
+import inspect
 import toolz
+from six import StringIO
+from .policy import Policy
 
 
 def id_wrapper(*dec_args, **dec_kwargs):  # pylint: disable=unused-argument
@@ -31,26 +30,25 @@ def id_wrapper(*dec_args, **dec_kwargs):  # pylint: disable=unused-argument
     return wrap
 
 
-# pylint: disable=invalid-name
 try:
-    import numba
-    jit = numba.jit
+    import numba  # pylint: disable=wrong-import-order,wrong-import-position
+    jit = numba.jit  # pylint: disable=invalid-name
     DO_JIT = True
 except (ImportError, AttributeError):
-    jit = id_wrapper
+    jit = id_wrapper  # pylint: disable=invalid-name
     DO_JIT = False
 # One way to use the Python debugger is to do these two things:
 #    (a) uncomment the two lines below item (b) in this comment, and
 #    (b) import pdb package and call pdb.set_trace() in calculator.py
-# jit = id_wrapper  # uncomment this and next line to use debugger
-# DO_JIT = False  # uncomment this and prior line to use debugger
+# jit = id_wrapper
+# DO_JIT = False
 
 
 class GetReturnNode(ast.NodeVisitor):
     """
     A NodeVisitor to get the return tuple names from a calc-style function.
     """
-    def visit_Return(self, node):  # pylint: disable=no-self-use
+    def visit_Return(self, node):  # pylint: disable=invalid-name,no-self-use
         """
         visit_Return is used by NodeVisitor.visit method.
         """
@@ -203,7 +201,6 @@ def apply_jit(dtype_sig_out, dtype_sig_in, parameters=None, **kwargs):
         make_wrapper function nested in apply_jit function.
         """
         theargs = inspect.getargspec(func).args
-        # pylint: disable=star-args
         jitted_apply = make_apply_function(func, dtype_sig_out,
                                            dtype_sig_in, parameters, **kwargs)
 
@@ -279,7 +276,6 @@ def iterate_jit(parameters=None, **kwargs):
             raise ValueError("Can't find return statement in function!")
 
         # Now create the apply-style possibly-jitted function
-        # pylint: disable=star-args
         applied_jitted_f = make_apply_function(func,
                                                list(reversed(all_out_args)),
                                                in_args,
