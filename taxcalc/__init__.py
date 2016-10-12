@@ -10,6 +10,7 @@ from .incometaxio import *
 from .utils import *
 from .decorators import *
 from .macro_elasticity import *
+from .dropq import *
 
 from ._version import get_versions
 __version__ = get_versions()['version']
