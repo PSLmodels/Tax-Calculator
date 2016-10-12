@@ -5,11 +5,11 @@ import pandas as pd
 import tempfile
 import copy
 import pytest
-
 from taxcalc import Policy, Records, Calculator, Behavior, Consumption
 from taxcalc import create_distribution_table
 from taxcalc import create_difference_table
 from taxcalc import create_diagnostic_table
+
 
 IRATES = {1991: 0.015, 1992: 0.020, 1993: 0.022, 1994: 0.020, 1995: 0.021,
           1996: 0.022, 1997: 0.023, 1998: 0.024, 1999: 0.024, 2000: 0.024,
