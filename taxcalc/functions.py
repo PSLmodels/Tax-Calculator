@@ -440,25 +440,28 @@ def TaxInc(c00100, _standard, c21060, c21040, c04600, c04800):
     return c04800
 
 
-@iterate_jit(nopython=True)
-def SchXYZTax(c04800, MARS, e00900, e26270,
-              PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5, PT_rt6, PT_rt7,
-              PT_rt8, PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6,
-              PT_brk7, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
-              II_rt8, II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6,
-              II_brk7, c05200):
+@jit(nopython=True)
+def SchXYZ(taxable_income, MARS, e00900, e26270,
+           PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
+           PT_rt6, PT_rt7, PT_rt8,
+           PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
+           PT_brk6, PT_brk7,
+           II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
+           II_rt6, II_rt7, II_rt8,
+           II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
+           II_brk6, II_brk7):
     """
-    SchXYZTax uses the tax rates in Schedule X, Y, or Z, to compute tax.
+    Return Schedule X, Y, Z tax amount for specified taxable_income.
     """
     # separate non-negative taxable income into two non-negative components,
     # doing this in a way so that the components add up to taxable income
     pt_taxinc = max(0., e00900 + e26270)  # non-negative pass-through income
-    if pt_taxinc >= c04800:
-        pt_taxinc = c04800
+    if pt_taxinc >= taxable_income:
+        pt_taxinc = taxable_income
         reg_taxinc = 0.
     else:
         # pt_taxinc is unchanged
-        reg_taxinc = c04800 - pt_taxinc
+        reg_taxinc = taxable_income - pt_taxinc
     # compute Schedule X,Y,Z tax using the two components of taxable income,
     # stacking pass-through taxable income on top of regular taxable income
     if reg_taxinc > 0.:
@@ -475,15 +478,42 @@ def SchXYZTax(c04800, MARS, e00900, e26270,
                        PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
     else:
         pt_tax = 0.
-    c05200 = reg_tax + pt_tax
+    return reg_tax + pt_tax
+
+
+@iterate_jit(nopython=True)
+def SchXYZTax(c04800, MARS, e00900, e26270,
+              PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
+              PT_rt6, PT_rt7, PT_rt8,
+              PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
+              PT_brk6, PT_brk7,
+              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
+              II_rt6, II_rt7, II_rt8,
+              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
+              II_brk6, II_brk7,
+              c05200):
+    """
+    SchXYZTax calls SchXYZ function and sets c05200 to returned amount.
+    """
+    c05200 = SchXYZ(c04800, MARS, e00900, e26270,
+                    PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
+                    PT_rt6, PT_rt7, PT_rt8,
+                    PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
+                    PT_brk6, PT_brk7,
+                    II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
+                    II_rt6, II_rt7, II_rt8,
+                    II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
+                    II_brk6, II_brk7)
     return c05200
 
 
 @iterate_jit(nopython=True)
 def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
-             e24515, e24518, MARS, c04800, c05200,
+             e24515, e24518, MARS, c04800, c05200, e00900, e26270,
              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7,
+             PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8,
+             PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7,
              CG_as_II,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3,
              c24516, c24517, c24520, c05700, _taxbc):
@@ -555,9 +585,15 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks39 = dwks19 + dwks20 + dwks28 + dwks31 + dwks37
         dwks40 = dwks1 - dwks39
         dwks41 = 0.28 * dwks40
-        dwks42 = Taxes(dwks19, MARS, 0.0, II_rt1, II_rt2, II_rt3, II_rt4,
-                       II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
-                       II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
+        dwks42 = SchXYZ(dwks19, MARS, e00900, e26270,
+                        PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
+                        PT_rt6, PT_rt7, PT_rt8,
+                        PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
+                        PT_brk6, PT_brk7,
+                        II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
+                        II_rt6, II_rt7, II_rt8,
+                        II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
+                        II_brk6, II_brk7)
         dwks43 = (dwks29 + dwks32 + dwks38 + dwks41 + dwks42 +
                   lowest_rate_tax + highest_rate_incremental_tax)
         dwks44 = c05200

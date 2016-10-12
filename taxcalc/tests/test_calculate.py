@@ -1,10 +1,11 @@
 import os
 import json
-import numpy as np
-import pandas as pd
+from io import StringIO
 import tempfile
 import copy
 import pytest
+import numpy as np
+import pandas as pd
 from taxcalc import Policy, Records, Calculator, Behavior, Consumption
 from taxcalc import create_distribution_table
 from taxcalc import create_difference_table
@@ -276,6 +277,37 @@ def test_Calculator_mtr(records_2009):
     assert type(mtr_combined) == np.ndarray
 
 
+def test_Calculator_mtr_when_PT_rates_differ():
+    reform = {2013: {'_II_rt1': [0.40],
+                     '_II_rt2': [0.40],
+                     '_II_rt3': [0.40],
+                     '_II_rt4': [0.40],
+                     '_II_rt5': [0.40],
+                     '_II_rt6': [0.40],
+                     '_II_rt7': [0.40],
+                     '_PT_rt1': [0.30],
+                     '_PT_rt2': [0.30],
+                     '_PT_rt3': [0.30],
+                     '_PT_rt4': [0.30],
+                     '_PT_rt5': [0.30],
+                     '_PT_rt6': [0.30],
+                     '_PT_rt7': [0.30]}}
+    funit = (
+        u'RECID,MARS,FLPDYR,e00200,e00200p,e00900,e00900p\n'
+        u'1,    1,   2015,  200000,200000, 100000,100000\n'
+    )
+    pol1 = Policy()
+    rec1 = Records(pd.read_csv(StringIO(funit)))
+    calc1 = Calculator(policy=pol1, records=rec1)
+    (_, mtr1, _) = calc1.mtr(variable_str='p23250')
+    pol2 = Policy()
+    pol2.implement_reform(reform)
+    rec2 = Records(pd.read_csv(StringIO(funit)))
+    calc2 = Calculator(policy=pol2, records=rec2)
+    (_, mtr2, _) = calc2.mtr(variable_str='p23250')
+    assert np.allclose(mtr1, mtr2, rtol=0.0, atol=1e-06)
+
+
 def test_Calculator_create_difference_table(puf_1991, weights_1991):
     # create current-law Policy object and use to create Calculator calc1
     policy1 = Policy()
@@ -332,24 +364,20 @@ def test_ID_HC_vs_BS(puf_1991, weights_1991):
     results as a 100% benefit surtax with no benefit deduction.
     """
     # specify complete-haircut reform policy and Calculator object
-    hc_reform = {2013: {
-        '_ID_Medical_HC': [1.0],
-        '_ID_StateLocalTax_HC': [1.0],
-        '_ID_RealEstate_HC': [1.0],
-        '_ID_Casualty_HC': [1.0],
-        '_ID_Miscellaneous_HC': [1.0],
-        '_ID_InterestPaid_HC': [1.0],
-        '_ID_Charity_HC': [1.0]}
-    }
+    hc_reform = {2013: {'_ID_Medical_HC': [1.0],
+                        '_ID_StateLocalTax_HC': [1.0],
+                        '_ID_RealEstate_HC': [1.0],
+                        '_ID_Casualty_HC': [1.0],
+                        '_ID_Miscellaneous_HC': [1.0],
+                        '_ID_InterestPaid_HC': [1.0],
+                        '_ID_Charity_HC': [1.0]}}
     hc_policy = Policy()
     hc_policy.implement_reform(hc_reform)
     hc_records = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     hc_calc = Calculator(policy=hc_policy, records=hc_records)
     # specify benefit-surtax reform policy and Calculator object
-    bs_reform = {2013: {
-        '_ID_BenefitSurtax_crt': [0.0],
-        '_ID_BenefitSurtax_trt': [1.0]}
-    }
+    bs_reform = {2013: {'_ID_BenefitSurtax_crt': [0.0],
+                        '_ID_BenefitSurtax_trt': [1.0]}}
     bs_policy = Policy()
     bs_policy.implement_reform(bs_reform)
     bs_records = Records(data=puf_1991, weights=weights_1991, start_year=2009)
