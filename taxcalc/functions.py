@@ -528,9 +528,6 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
     else:
         hasqdivltcg = 0  # no qualified dividends or long-term capital gains
 
-    if CG_nodiff != 0.:
-        hasqdivltcg = 0  # no special taxation of qual divids and l-t cap gains
-
     if hasqdivltcg == 1:
 
         dwks1 = c04800
@@ -554,52 +551,52 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks12 = min(dwks9, dwks11)
         dwks13 = dwks10 - dwks12
         dwks14 = max(0., dwks1 - dwks13)
-        dwks16 = min(CG_thd1[MARS - 1], dwks1)
-        dwks17 = min(dwks14, dwks16)
-        dwks18 = max(0., dwks1 - dwks10)
-        dwks19 = max(dwks17, dwks18)
-        dwks20 = dwks16 - dwks17
-        lowest_rate_tax = CG_rt1 * dwks20
-        # break in worksheet lines
-        dwks21 = min(dwks1, dwks13)
-        dwks22 = dwks20
-        dwks23 = max(0., dwks21 - dwks22)
-        dwks25 = min(CG_thd2[MARS - 1], dwks1)
-        dwks26 = dwks19 + dwks20
-        dwks27 = max(0., dwks25 - dwks26)
-        dwks28 = min(dwks23, dwks27)
-        dwks29 = CG_rt2 * dwks28
-        dwks30 = dwks22 + dwks28
-        dwks31 = dwks21 - dwks30
-        dwks32 = CG_rt3 * dwks31
-        hi_base = max(0., dwks31 - CG_thd3[MARS - 1])
-        hi_incremental_rate = CG_rt4 - CG_rt3
-        highest_rate_incremental_tax = hi_incremental_rate * hi_base
-        # break in worksheet lines
-        dwks33 = min(dwks9, e24518)
-        dwks34 = dwks10 + dwks19
-        dwks36 = max(0., dwks34 - dwks1)
-        dwks37 = max(0., dwks33 - dwks36)
-        dwks38 = 0.25 * dwks37
-        # break in worksheet lines
-        dwks39 = dwks19 + dwks20 + dwks28 + dwks31 + dwks37
-        dwks40 = dwks1 - dwks39
-        dwks41 = 0.28 * dwks40
-        dwks42 = SchXYZ(dwks19, MARS, e00900, e26270,
-                        PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
-                        PT_rt6, PT_rt7, PT_rt8,
-                        PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
-                        PT_brk6, PT_brk7,
-                        II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
-                        II_rt6, II_rt7, II_rt8,
-                        II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
-                        II_brk6, II_brk7)
-        dwks43 = (dwks29 + dwks32 + dwks38 + dwks41 + dwks42 +
-                  lowest_rate_tax + highest_rate_incremental_tax)
-        dwks44 = c05200
-        dwks45 = min(dwks43, dwks44)
-
-        c24580 = dwks45
+        if CG_nodiff == 0.:
+            dwks16 = min(CG_thd1[MARS - 1], dwks1)
+            dwks17 = min(dwks14, dwks16)
+            dwks18 = max(0., dwks1 - dwks10)
+            dwks19 = max(dwks17, dwks18)
+            dwks20 = dwks16 - dwks17
+            lowest_rate_tax = CG_rt1 * dwks20
+            # break in worksheet lines
+            dwks21 = min(dwks1, dwks13)
+            dwks22 = dwks20
+            dwks23 = max(0., dwks21 - dwks22)
+            dwks25 = min(CG_thd2[MARS - 1], dwks1)
+            dwks26 = dwks19 + dwks20
+            dwks27 = max(0., dwks25 - dwks26)
+            dwks28 = min(dwks23, dwks27)
+            dwks29 = CG_rt2 * dwks28
+            dwks30 = dwks22 + dwks28
+            dwks31 = dwks21 - dwks30
+            dwks32 = CG_rt3 * dwks31
+            hi_base = max(0., dwks31 - CG_thd3[MARS - 1])
+            hi_incremental_rate = CG_rt4 - CG_rt3
+            highest_rate_incremental_tax = hi_incremental_rate * hi_base
+            # break in worksheet lines
+            dwks33 = min(dwks9, e24518)
+            dwks34 = dwks10 + dwks19
+            dwks36 = max(0., dwks34 - dwks1)
+            dwks37 = max(0., dwks33 - dwks36)
+            dwks38 = 0.25 * dwks37
+            # break in worksheet lines
+            dwks39 = dwks19 + dwks20 + dwks28 + dwks31 + dwks37
+            dwks40 = dwks1 - dwks39
+            dwks41 = 0.28 * dwks40
+            dwks42 = SchXYZ(dwks19, MARS, e00900, e26270,
+                            PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
+                            PT_rt6, PT_rt7, PT_rt8,
+                            PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
+                            PT_brk6, PT_brk7,
+                            II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
+                            II_rt6, II_rt7, II_rt8,
+                            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
+                            II_brk6, II_brk7)
+            dwks43 = (dwks29 + dwks32 + dwks38 + dwks41 + dwks42 +
+                      lowest_rate_tax + highest_rate_incremental_tax)
+            dwks44 = c05200
+            dwks45 = min(dwks43, dwks44)
+            c24580 = dwks45
         c24516 = dwks10
         c24517 = dwks13
         c24520 = dwks14
