@@ -222,7 +222,7 @@ class IncomeTaxIO(object):
         writing_possible = self._using_input_file and self._using_reform_file
         if writing_possible and writing_output_file:
             recdf.to_csv(self._output_filename,
-                         float_format='%.4f', index=False)
+                         float_format='%.2f', index=False)
 
     def calculate(self, writing_output_file=False,
                   exact_output=False,
