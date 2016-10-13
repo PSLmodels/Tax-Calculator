@@ -20,7 +20,8 @@ import pandas as pd
 import numpy as np
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
-from taxcalc import Records  # pylint: disable=import-error
+# pylint: disable=wrong-import-position,import-error
+from taxcalc import Records
 
 # specify maximum allowed values for command-line parameters
 MAX_YEAR = 2023  # maximum tax year allowed for tax calculations
@@ -134,6 +135,7 @@ def main(taxyear, rnseed, ssize):
         sys.stderr.write(msg + '\n')
         return 1
     xdf = pd.read_csv(pufcsv_filename)
+    # pylint: disable=no-member
 
     # remove xdf variables not needed in xYY.csv file
     if TRACE:

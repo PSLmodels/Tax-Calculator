@@ -8,8 +8,8 @@ Tax-Calculator simple tax input-output class.
 
 import os
 import sys
-import six
 import re
+import six
 import pandas as pd
 from .policy import Policy
 from .records import Records

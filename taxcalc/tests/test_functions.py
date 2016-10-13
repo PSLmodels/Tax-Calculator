@@ -8,11 +8,11 @@ Tests for Tax-Calculator functions.py logic.
 
 import os
 import re
-from taxcalc import IncomeTaxIO, Records  # pylint: disable=import-error
-from io import StringIO
-import pandas as pd
 import ast
+from io import StringIO
 import six
+import pandas as pd
+from taxcalc import IncomeTaxIO, Records  # pylint: disable=import-error
 
 
 class GetFuncDefs(ast.NodeVisitor):
