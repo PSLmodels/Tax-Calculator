@@ -548,7 +548,7 @@ def multiyear_diagnostic_table(calc, num_years=0):
     -------
     Pandas DataFrame object containing the multi-year diagnostic table
     """
-    if num_years <= 1:
+    if num_years < 1:
         msg = 'num_year={} is less than one'.format(num_years)
         raise ValueError(msg)
     max_num_years = calc.policy.end_year - calc.policy.current_year + 1
