@@ -548,13 +548,14 @@ def test_multiyear_diagnostic_table_wo_behv(records_2009):
     # extract combined liabilities as a float and
     # adopt units of the raw calculator data in liabilities_x
     liabilities_y = adt.iloc[18].tolist()[0] * 1000000000
-    assert liabilities_x == liabilities_y
+    npt.assert_almost_equal(liabilities_x, liabilities_y, 2)
 
 
 def test_multiyear_diagnostic_table_w_behv(records_2009):
     pol = Policy()
     behv = Behavior()
     calc = Calculator(policy=pol, records=records_2009, behavior=behv)
+    assert calc.current_year == 2013
     reform = {
         2013: {
             '_II_rt7': [0.33],
@@ -573,7 +574,7 @@ def test_multiyear_diagnostic_table_w_behv(records_2009):
     # extract combined liabilities as a float and
     # adopt units of the raw calculator data in liabilities_x
     liabilities_y = adt.iloc[18].tolist()[0] * 1000000000
-    assert liabilities_x == liabilities_y
+    npt.assert_almost_equal(liabilities_x, liabilities_y, 2)
 
 
 @pytest.yield_fixture
