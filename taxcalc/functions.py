@@ -686,20 +686,21 @@ def AMT(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
         ngamtinc = max(0., amtinc - c62740)  # amtinc net of LTCG+QDIV income
         ngtax = (AMT_trt1 * ngamtinc +
                  AMT_trt2 * max(0., (ngamtinc - (AMT_tthd / _sep))))
-        base_rt1 = 0.
         line45 = max(0., AMT_CG_thd1[MARS - 1] - c24520)
         line46 = min(amtinc, c24517)
-        line47 = min(line45, line46)
-        line48 = min(amtinc, c24517) - line47
-        base_rt2 = min(line48,
-                       max(0., AMT_CG_thd2[MARS - 1] - c24520 - line45))
+        base_rt1 = min(line45, line46)  # line47 amount
+        line48 = line46 - base_rt1
+        line53 = max(0., AMT_CG_thd2[MARS - 1] - c24520 - line45)
+        # line53 use of c24520 ia questionable   ^^^^^^
+        #   because line45 already subtracts out c24520
+        base_rt2 = min(line48, line53)  # line54 amount
         base_xtr = min(line48,
                        max(0., AMT_CG_thd3[MARS - 1] - c24520 - line45))
-        if ngamtinc == (base_rt2 + line47):
+        if ngamtinc == (base_rt2 + base_rt1):
             base_rt3 = 0.
             base_rt4 = 0.
         else:
-            base_rt3 = line46 - base_rt2 - line47
+            base_rt3 = line46 - base_rt2 - base_rt1
             base_rt4 = max(0., base_rt2 - base_xtr)
         if c62740 == 0.:
             amt25pc = 0.
