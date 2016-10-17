@@ -631,7 +631,7 @@ def ascii_output(csv_filename, ascii_filename):
                delim_whitespace=True, sep='\t')
 
 
-def get_mtr_data(calcX, calcY, weights, MARS='ALL',
+def get_mtr_data(calcX, calcY, weighting, MARS='ALL',
                  income_measure='e00200', mtr_measure='_iitax',
                  complex_weight=False):
     """
@@ -643,11 +643,18 @@ def get_mtr_data(calcX, calcY, weights, MARS='ALL',
 
     calcY : a Tax-Calculator Records object that refers to the reform
 
-    weights : String object
-        options for input: weighted_count_lt_zero, weighted_count_gt_zero,
-            weighted_mean, wage_weighted, weighted_sum,
-            weighted_perc_inc, weighted_perc_dec
-        Choose different weight measure
+    weighting : String that coincides with tax-calculator defined function
+        options for input:
+            weighted_mean: Averaging marginal tax rate by the
+                weight of each record. This option would be
+                helpful if you are interested in the MTR after
+                taking weights into consideration.
+            wage_weighted: Averaging marginal tax rate by the
+                product of weight and wage of each record. This
+                option would be helpful if you are interested in
+                the MTR after taking both weights and wages
+                into consideration.
+        Choose different weighting method
 
     MARS : Integer
         options for input: 1, 2, 3, 4
@@ -704,13 +711,13 @@ def get_mtr_data(calcX, calcY, weights, MARS='ALL',
     gp_x = df_filtered_x.groupby('bins', as_index=False)
     gp_y = df_filtered_y.groupby('bins', as_index=False)
 
-    # Apply desired weights to mtr
+    # Apply desired weighting method to mtr
     if mtr_measure == '_combined':
-        wgtpct_x = gp_x.apply(weights, 'mtr_combined')
-        wgtpct_y = gp_y.apply(weights, 'mtr_combined')
+        wgtpct_x = gp_x.apply(weighting, 'mtr_combined')
+        wgtpct_y = gp_y.apply(weighting, 'mtr_combined')
     elif mtr_measure == '_iitax':
-        wgtpct_x = gp_x.apply(weights, 'mtr_iit')
-        wgtpct_y = gp_y.apply(weights, 'mtr_iit')
+        wgtpct_x = gp_x.apply(weighting, 'mtr_iit')
+        wgtpct_y = gp_y.apply(weighting, 'mtr_iit')
 
     wpct_x = DataFrame(data=wgtpct_x, columns=['w_mtr'])
     wpct_y = DataFrame(data=wgtpct_y, columns=['w_mtr'])
