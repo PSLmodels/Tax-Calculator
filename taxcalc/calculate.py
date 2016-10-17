@@ -231,7 +231,8 @@ class Calculator(object):
                            'e01400', 'e01700',
                            'e02000', 'e02400',
                            'p22250', 'p23250',
-                           'e18500', 'e19200']
+                           'e18500', 'e19200',
+                           'e26270']
 
     def mtr(self, variable_str='e00200p',
             negative_finite_diff=False,
@@ -294,7 +295,8 @@ class Calculator(object):
         'p22250',  short-term capital gains;
         'p23250',  long-term capital gains;
         'e18500',  Schedule A real-estate-tax deduction;
-        'e19200',  Schedule A total-interest deduction.
+        'e19200',  Schedule A total-interest deduction;
+        'e26270',  Income from S-corps/partnerships (also in e02000).
         """
         # check validity of variable_str parameter
         if variable_str not in Calculator.MTR_VALID_VARIABLES:
@@ -314,6 +316,8 @@ class Calculator(object):
             seincome_var = self.records.e00900
         elif variable_str == 'e00650':
             divincome_var = self.records.e00600
+        elif variable_str == 'e26270':
+            schEincome_var = self.records.e02000
         # calculate level of taxes after a marginal increase in income
         setattr(self.records, variable_str, variable + finite_diff)
         if variable_str == 'e00200p':
@@ -322,6 +326,8 @@ class Calculator(object):
             self.records.e00900 = seincome_var + finite_diff
         elif variable_str == 'e00650':
             self.records.e00600 = divincome_var + finite_diff
+        elif variable_str == 'e26270':
+            self.records.e02000 = schEincome_var + finite_diff
         if self.consumption.has_response():
             self.consumption.response(self.records, finite_diff)
         self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
