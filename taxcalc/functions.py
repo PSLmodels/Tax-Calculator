@@ -650,26 +650,21 @@ def AMT(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
     # pylint: disable=too-many-statements,too-many-branches
 
     # taxation of all AMT taxable income, AMT liability is sameamt
-    c62720 = c24517
-    c60260 = e00700
-    c62730 = e24515
     if _standard == 0.0:
         if f6251 == 1:
             cmbtp = cmbtp_itemizer
         else:
             cmbtp = 0.
-        c62100 = (c00100 - c04470 +
+        c62100 = (c00100 - e00700 - c04470 +
                   max(0., min(c17000, 0.025 * c00100)) +
-                  c18300 -
-                  c60260 + c20800 - c21040)
-        c62100 += cmbtp
+                  c18300 + c20800 - c21040)
     if _standard > 0.0:
         if f6251 == 1:
             cmbtp = cmbtp_standard
         else:
             cmbtp = 0.
-        c62100 = c00100 - c60260
-        c62100 += cmbtp
+        c62100 = c00100 - e00700
+    c62100 += cmbtp
     if MARS == 3 or MARS == 6:
         amtsepadd = max(0.,
                         min(AMT_thd_MarriedS, 0.25 * (c62100 - AMT_em_pe)))
@@ -688,18 +683,18 @@ def AMT(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
     # different AMT taxation of LTCG+QDIV income
     if CG_nodiff == 0.:
         if c24516 == 0.:
-            c62740 = c62720 + c62730
+            c62740 = c24517 + e24515
         else:
-            c62740 = min(max(0., c24516), c62720 + c62730)
+            c62740 = min(max(0., c24516), c24517 + e24515)
         ngamtinc = max(0., amtinc - c62740)  # amtinc net of LTCG+QDIV income
         c62745 = (AMT_trt1 * ngamtinc +
                   AMT_trt2 * max(0., (ngamtinc - (AMT_tthd / _sep))))
 
         amt5pc = 0.
         line45 = max(0., AMT_CG_thd1[MARS - 1] - c24520)
-        line46 = min(amtinc, c62720)
+        line46 = min(amtinc, c24517)
         line47 = min(line45, line46)
-        line48 = min(amtinc, c62720) - line47
+        line48 = min(amtinc, c24517) - line47
         amt15pc = min(line48, max(0., AMT_CG_thd2[MARS - 1] - c24520 - line45))
         amtxtr = min(line48, max(0., AMT_CG_thd3[MARS - 1] - c24520 - line45))
         if ngamtinc == (amt15pc + line47):
