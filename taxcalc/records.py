@@ -122,8 +122,7 @@ class Records(object):
         'MARS', 'MIDR', 'RECID',
         'cmbtp_standard', 'cmbtp_itemizer',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
-        's006', 'filer',
-        'FDED', 'e11550', 'e11070', 'e11580'])
+        's006', 'filer'])
 
     # specify set of all Record variables that MUST be read by Tax-Calculator:
     MUST_READ_VARS = set(['RECID', 'MARS'])
