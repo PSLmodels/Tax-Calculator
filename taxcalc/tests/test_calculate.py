@@ -275,6 +275,8 @@ def test_Calculator_mtr(records_2009):
     assert type(mtr_combined) == np.ndarray
     (_, _, mtr_combined) = calc.mtr(variable_str='e01700')
     assert type(mtr_combined) == np.ndarray
+    (_, _, mtr_combined) = calc.mtr(variable_str='e26270')
+    assert type(mtr_combined) == np.ndarray
 
 
 def test_Calculator_mtr_when_PT_rates_differ():
