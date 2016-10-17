@@ -682,14 +682,10 @@ def AMT(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
 
     # different AMT taxation of LTCG+QDIV income
     if CG_nodiff == 0.:
-        if c24516 == 0.:
-            c62740 = c24517 + e24515
-        else:
-            c62740 = min(max(0., c24516), c24517 + e24515)
+        c62740 = min(c24516, e24515 + c24517)
         ngamtinc = max(0., amtinc - c62740)  # amtinc net of LTCG+QDIV income
-        c62745 = (AMT_trt1 * ngamtinc +
-                  AMT_trt2 * max(0., (ngamtinc - (AMT_tthd / _sep))))
-
+        ngtax = (AMT_trt1 * ngamtinc +
+                 AMT_trt2 * max(0., (ngamtinc - (AMT_tthd / _sep))))
         base_rt1 = 0.
         line45 = max(0., AMT_CG_thd1[MARS - 1] - c24520)
         line46 = min(amtinc, c24517)
@@ -716,7 +712,7 @@ def AMT(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
                  AMT_CG_rt3 * base_rt3 +
                  AMT_CG_rt4 * base_rt4)
         cgtax += c62770
-        diffamt = c62745 + cgtax  # AMT tax liab with differential taxation
+        diffamt = ngtax + cgtax  # AMT tax liab with differential taxation
     else:  # if CG_nodiff is not zero
         diffamt = sameamt  # AMT tax liab with same tax treatment of all income
 
