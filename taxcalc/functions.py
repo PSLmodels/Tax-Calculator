@@ -690,31 +690,33 @@ def AMT(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
         c62745 = (AMT_trt1 * ngamtinc +
                   AMT_trt2 * max(0., (ngamtinc - (AMT_tthd / _sep))))
 
-        amt5pc = 0.
+        base_rt1 = 0.
         line45 = max(0., AMT_CG_thd1[MARS - 1] - c24520)
         line46 = min(amtinc, c24517)
         line47 = min(line45, line46)
         line48 = min(amtinc, c24517) - line47
-        amt15pc = min(line48, max(0., AMT_CG_thd2[MARS - 1] - c24520 - line45))
-        amtxtr = min(line48, max(0., AMT_CG_thd3[MARS - 1] - c24520 - line45))
-        if ngamtinc == (amt15pc + line47):
-            amt20pc = 0.
-            amtxtrpc = 0.
+        base_rt2 = min(line48,
+                       max(0., AMT_CG_thd2[MARS - 1] - c24520 - line45))
+        amtxtr = min(line48,
+                     max(0., AMT_CG_thd3[MARS - 1] - c24520 - line45))
+        if ngamtinc == (base_rt2 + line47):
+            base_rt3 = 0.
+            base_rt4 = 0.
         else:
-            amt20pc = line46 - amt15pc - line47
-            amtxtrpc = max(0., amt15pc - amtxtr)
+            base_rt3 = line46 - base_rt2 - line47
+            base_rt4 = max(0., base_rt2 - amtxtr)
         if c62740 == 0.:
             amt25pc = 0.
         else:
             amt25pc = max(0., amtinc - ngamtinc - line46)
-        c62747 = AMT_CG_rt1 * amt5pc
-        c62755 = AMT_CG_rt2 * amt15pc
-        c62760 = AMT_CG_rt3 * amt20pc
-        amtxtr = AMT_CG_rt4 * amtxtrpc
         c62770 = 0.25 * amt25pc  # tax rate on "Unrecaptured Schedule E Gain"
         # cgtxamt is the amount of line62 without line42 being added
-        cgtxamt = c62747 + c62755 + c62760 + amtxtr + c62770
-        diffamt = c62745 + cgtxamt  # AMT tax liab with differential taxation
+        cgtax = (AMT_CG_rt1 * base_rt1 +
+                 AMT_CG_rt2 * base_rt2 +
+                 AMT_CG_rt3 * base_rt3 +
+                 AMT_CG_rt4 * base_rt4)
+        cgtax += c62770
+        diffamt = c62745 + cgtax  # AMT tax liab with differential taxation
     else:  # if CG_nodiff is not zero
         diffamt = sameamt  # AMT tax liab with same tax treatment of all income
 
