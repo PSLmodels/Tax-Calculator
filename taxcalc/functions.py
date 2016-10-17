@@ -697,20 +697,20 @@ def AMT(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
         line48 = min(amtinc, c24517) - line47
         base_rt2 = min(line48,
                        max(0., AMT_CG_thd2[MARS - 1] - c24520 - line45))
-        amtxtr = min(line48,
-                     max(0., AMT_CG_thd3[MARS - 1] - c24520 - line45))
+        base_xtr = min(line48,
+                       max(0., AMT_CG_thd3[MARS - 1] - c24520 - line45))
         if ngamtinc == (base_rt2 + line47):
             base_rt3 = 0.
             base_rt4 = 0.
         else:
             base_rt3 = line46 - base_rt2 - line47
-            base_rt4 = max(0., base_rt2 - amtxtr)
+            base_rt4 = max(0., base_rt2 - base_xtr)
         if c62740 == 0.:
             amt25pc = 0.
         else:
             amt25pc = max(0., amtinc - ngamtinc - line46)
         c62770 = 0.25 * amt25pc  # tax rate on "Unrecaptured Schedule E Gain"
-        # cgtxamt is the amount of line62 without line42 being added
+        # cgtax is the amount of line62 without line42 being added
         cgtax = (AMT_CG_rt1 * base_rt1 +
                  AMT_CG_rt2 * base_rt2 +
                  AMT_CG_rt3 * base_rt3 +
