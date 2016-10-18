@@ -516,7 +516,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
              PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7,
              CG_nodiff,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3,
-             c24516, c24517, c24520, c05700, _taxbc):
+             dwks10, dwks13, dwks14, c05700, _taxbc):
     """
     GainsTax function implements (2015) Schedule D Tax Worksheet logic for
     the special taxation of long-term capital gains and qualified dividends
@@ -598,25 +598,20 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
                   lowest_rate_tax + highest_rate_incremental_tax)
         dwks44 = c05200
         dwks45 = min(dwks43, dwks44)
-
         c24580 = dwks45
-        c24516 = dwks10
-        c24517 = dwks13
-        c24520 = dwks14
 
     else:  # if hasqdivltcg is zero
 
         c24580 = c05200
-        c24516 = max(0., min(p23250, c23650)) + e01100
-        c24517 = 0.
-        c24520 = 0.
+        dwks10 = max(0., min(p23250, c23650)) + e01100
+        dwks13 = 0.
+        dwks14 = 0.
 
     # final calculations done no matter what the value of hasqdivltcg
     c05100 = c24580  # because no foreign earned income deduction
     c05700 = 0.  # no Form 4972, Lump Sum Distributions
     _taxbc = c05700 + c05100
-
-    return (c24516, c24517, c24520, c05700, _taxbc)
+    return (dwks10, dwks13, dwks14, c05700, _taxbc)
 
 
 @iterate_jit(nopython=True)
@@ -632,9 +627,9 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, _taxbc, _surtax):
 
 
 @iterate_jit(nopython=True)
-def AMT(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
+def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         c04470, c17000, c20800, c21040, e24515, MARS, _sep,
-        c24520, c05700, e62900, e00700, c24516, age_head, _earned,
+        dwks14, c05700, e62900, e00700, dwks10, age_head, _earned,
         cmbtp_itemizer, cmbtp_standard,
         KT_c_Age, AMT_tthd, AMT_thd_MarriedS,
         AMT_em, AMT_prt, AMT_trt1, AMT_trt2,
@@ -645,7 +640,7 @@ def AMT(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
     AMT function computes Alternative Minimum Tax taxable income
     """
     # pylint: disable=too-many-statements,too-many-branches
-    c62720 = c24517
+    c62720 = dwks13
     c60260 = e00700
     c62730 = e24515
     if _standard == 0.0:
@@ -684,22 +679,22 @@ def AMT(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
         c62900 = e62900
     else:
         c62900 = e07300
-    if c24516 == 0.:
+    if dwks10 == 0.:
         c62740 = c62720 + c62730
     else:
-        c62740 = min(max(0., c24516), c62720 + c62730)
+        c62740 = min(max(0., dwks10), c62720 + c62730)
     ngamty = max(0., alminc - c62740)
     c62745 = (AMT_trt1 * ngamty +
               AMT_trt2 * max(0., (ngamty - (AMT_tthd / _sep))))
     # Capital Gain for AMT
     tamt2 = 0.
     amt5pc = 0.
-    line45 = max(0., AMT_CG_thd1[MARS - 1] - c24520)
+    line45 = max(0., AMT_CG_thd1[MARS - 1] - dwks14)
     line46 = min(alminc, c62720)
     line47 = min(line45, line46)
     line48 = min(alminc, c62720) - line47
-    amt15pc = min(line48, max(0., AMT_CG_thd2[MARS - 1] - c24520 - line45))
-    amt_xtr = min(line48, max(0., AMT_CG_thd3[MARS - 1] - c24520 - line45))
+    amt15pc = min(line48, max(0., AMT_CG_thd2[MARS - 1] - dwks14 - line45))
+    amt_xtr = min(line48, max(0., AMT_CG_thd3[MARS - 1] - dwks14 - line45))
 
     if ngamty != (amt15pc + line47):
         amt20pc = line46 - amt15pc - line47
