@@ -522,8 +522,7 @@ def test_get_mtr_data(records_2009):
     behv = Behavior()
     calc = Calculator(policy=pol, records=records_2009, behavior=behv)
     calc.calc_all()
-    source = get_mtr_data(calc, calc, weighting, MARS=1,
-                          mtr_measure='_combined')
+    source = get_mtr_data(calc, calc, MARS=1, mtr_measure='_combined')
 
 
 def test_mtr_plot(records_2009):
@@ -543,7 +542,7 @@ def test_mtr_plot_force_no_bokeh(records_2009):
     behv = Behavior()
     calc = Calculator(policy=pol, records=records_2009, behavior=behv)
     calc.calc_all()
-    source = get_mtr_data(calc, calc, weighting,
+    source = get_mtr_data(calc, calc, weighting='weighted_mean',
                           complex_weight=True)
     with pytest.raises(RuntimeError):
         plot = mtr_plot(source)
