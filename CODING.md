@@ -22,6 +22,13 @@ in style from existing code in the repository.  In other words, after
 your new code is merged with existing code it should be difficult for
 somebody else to determine what you contributed.
 
+In order to achieve this objective any new policy parameter names must
+comply with the [parameter naming and placement
+conventions](http://taxcalc.readthedocs.io/en/latest/parameter_naming.html).
+
+In addition, any new or revised code must meet certain coding style
+guidelines.
+
 There are two recommended tools that can help you develop seamless and
 correct code enhancements.
 
