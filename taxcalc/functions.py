@@ -651,34 +651,30 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
             cmbtp = cmbtp_itemizer
         else:
             cmbtp = 0.
-        c62100 = (c00100 - c04470 +
+        c62100 = (c00100 - e00700 - c04470 +
                   max(0., min(c17000, 0.025 * c00100)) +
-                  c18300 -
-                  e00700 + c20800 - c21040)
-        c62100 += cmbtp
+                  c18300 + c20800 - c21040)
     if _standard > 0.0:
         if f6251 == 1:
             cmbtp = cmbtp_standard
         else:
             cmbtp = 0.
         c62100 = c00100 - e00700
-        c62100 += cmbtp
-    # Form 6251, Part II
+    c62100 += cmbtp
     if MARS == 3 or MARS == 6:
         amtsepadd = max(0.,
                         min(AMT_thd_MarriedS, 0.25 * (c62100 - AMT_em_pe)))
     else:
         amtsepadd = 0.
-    c62100 = c62100 + amtsepadd
-    c62600 = max(0., AMT_em[MARS - 1] - AMT_prt *
+    c62100 = c62100 + amtsepadd  # AMT taxable income, which is line28
+    # Form 6251, Part II
+    line29 = max(0., AMT_em[MARS - 1] - AMT_prt *
                  max(0., c62100 - AMT_em_ps[MARS - 1]))
     if age_head != 0 and age_head < KT_c_Age:
-        c62600 = min(c62600, _earned + AMT_Child_em)
-    c62700 = max(0., c62100 - c62600)
-    alminc = c62700  # because no foreign earned income exclusion
-    amtfei = 0.
-    c62780 = (AMT_trt1 * alminc +
-              AMT_trt2 * max(0., (alminc - (AMT_tthd / _sep) - amtfei)))
+        line29 = min(line29, _earned + AMT_Child_em)
+    line30 = max(0., c62100 - line29)
+    line31 = (AMT_trt1 * line30 +
+              AMT_trt2 * max(0., (line30 - (AMT_tthd / _sep))))
     # Form 6251, Part III
     if f6251 == 1:
         c62900 = e62900
@@ -688,15 +684,15 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         c62740 = dwks13 + e24515
     else:
         c62740 = min(max(0., dwks10), dwks13 + e24515)
-    ngamty = max(0., alminc - c62740)
+    ngamty = max(0., line30 - c62740)
     c62745 = (AMT_trt1 * ngamty +
               AMT_trt2 * max(0., (ngamty - (AMT_tthd / _sep))))
     tamt2 = 0.
     amt5pc = 0.
     line45 = max(0., AMT_CG_thd1[MARS - 1] - dwks14)
-    line46 = min(alminc, dwks13)
+    line46 = min(line30, dwks13)
     line47 = min(line45, line46)
-    line48 = min(alminc, dwks13) - line47
+    line48 = min(line30, dwks13) - line47
     amt15pc = min(line48, max(0., AMT_CG_thd2[MARS - 1] - dwks14 - line45))
     amt_xtr = min(line48, max(0., AMT_CG_thd3[MARS - 1] - dwks14 - line45))
 
@@ -708,7 +704,7 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         amtxtrpc = 0.
 
     if c62740 != 0.:
-        amt25pc = max(0., alminc - ngamty - line46)
+        amt25pc = max(0., line30 - ngamty - line46)
     else:
         amt25pc = 0.
     c62747 = AMT_CG_rt1 * amt5pc
@@ -718,7 +714,9 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
     c62770 = 0.25 * amt25pc  # tax rate on "Unrecaptured Schedule E Gain"
     # tamt2 is the amount of line62 without 42 being added
     tamt2 = c62747 + c62755 + c62760 + c62770 + amt_xtr
-    c62800 = min(c62780, c62745 + tamt2 - amtfei)
+    c62800 = min(line31, c62745 + tamt2)
+    # line32 = 0.  # AMT foreign tax credit is always zero
+    # line33 = line31 - line32
     c63000 = c62800 - c62900
     c63100 = _taxbc - e07300 - c05700
     c63100 = max(0., c63100)
