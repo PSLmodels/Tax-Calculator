@@ -631,7 +631,7 @@ def ascii_output(csv_filename, ascii_filename):
                delim_whitespace=True, sep='\t')
 
 
-def get_mtr_data(calcX, calcY, weighting, MARS='ALL',
+def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
                  income_measure='e00200', mtr_measure='_iitax',
                  complex_weight=False):
     """
@@ -643,13 +643,13 @@ def get_mtr_data(calcX, calcY, weighting, MARS='ALL',
 
     calcY : a Tax-Calculator Records object that refers to the reform
 
-    weighting : String that coincides with tax-calculator defined function
+    weighting : String object
         options for input:
-            weighted_mean: Averaging marginal tax rate by the
+            'weighted_mean': Averaging marginal tax rate by the
                 weight of each record. This option would be
                 helpful if you are interested in the MTR after
                 taking weights into consideration.
-            wage_weighted: Averaging marginal tax rate by the
+            'wage_weighted': Averaging marginal tax rate by the
                 product of weight and wage of each record. This
                 option would be helpful if you are interested in
                 the MTR after taking both weights and wages
@@ -711,10 +711,19 @@ def get_mtr_data(calcX, calcY, weighting, MARS='ALL',
     gp_x = df_filtered_x.groupby('bins', as_index=False)
     gp_y = df_filtered_y.groupby('bins', as_index=False)
 
+    # Extract proper weighting method
+    if weighting == 'weighted_mean':
+        weighting_method = weighted_mean
+    elif weighting == 'wage_weighted':
+        weighting_method = wage_weighted
+    else:
+        msg = 'weighting option "{}" is not valid'
+        raise ValueError(msg.format(weighting))
+
     # Apply desired weighting method to mtr
     if mtr_measure == '_combined':
-        wgtpct_x = gp_x.apply(weighting, 'mtr_combined')
-        wgtpct_y = gp_y.apply(weighting, 'mtr_combined')
+        wgtpct_x = gp_x.apply(weighting_method, 'mtr_combined')
+        wgtpct_y = gp_y.apply(weighting_method, 'mtr_combined')
     elif mtr_measure == '_iitax':
         wgtpct_x = gp_x.apply(weighting, 'mtr_iit')
         wgtpct_y = gp_y.apply(weighting, 'mtr_iit')
