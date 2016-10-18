@@ -637,12 +637,15 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         AMT_CG_thd1, AMT_CG_thd2, AMT_CG_thd3, AMT_CG_rt1, AMT_CG_rt2,
         AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
     """
-    AMT function computes Alternative Minimum Tax taxable income
+    AMT function computes Alternative Minimum Tax taxable income and liability:
+    c62100 is AMT taxable income
+    c09600 is AMT tax liability
+    c05800 is total (reg + AMT) income tax liability before credits
+
+    Note that line-number variable names refer to (2015) Form 6251.
     """
     # pylint: disable=too-many-statements,too-many-branches
-    c62720 = dwks13
-    c60260 = e00700
-    c62730 = e24515
+    # Form 6251, Part I
     if _standard == 0.0:
         if f6251 == 1:
             cmbtp = cmbtp_itemizer
@@ -651,15 +654,16 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         c62100 = (c00100 - c04470 +
                   max(0., min(c17000, 0.025 * c00100)) +
                   c18300 -
-                  c60260 + c20800 - c21040)
+                  e00700 + c20800 - c21040)
         c62100 += cmbtp
     if _standard > 0.0:
         if f6251 == 1:
             cmbtp = cmbtp_standard
         else:
             cmbtp = 0.
-        c62100 = c00100 - c60260
+        c62100 = c00100 - e00700
         c62100 += cmbtp
+    # Form 6251, Part II
     if MARS == 3 or MARS == 6:
         amtsepadd = max(0.,
                         min(AMT_thd_MarriedS, 0.25 * (c62100 - AMT_em_pe)))
@@ -675,24 +679,24 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
     amtfei = 0.
     c62780 = (AMT_trt1 * alminc +
               AMT_trt2 * max(0., (alminc - (AMT_tthd / _sep) - amtfei)))
+    # Form 6251, Part III
     if f6251 == 1:
         c62900 = e62900
     else:
         c62900 = e07300
     if dwks10 == 0.:
-        c62740 = c62720 + c62730
+        c62740 = dwks13 + e24515
     else:
-        c62740 = min(max(0., dwks10), c62720 + c62730)
+        c62740 = min(max(0., dwks10), dwks13 + e24515)
     ngamty = max(0., alminc - c62740)
     c62745 = (AMT_trt1 * ngamty +
               AMT_trt2 * max(0., (ngamty - (AMT_tthd / _sep))))
-    # Capital Gain for AMT
     tamt2 = 0.
     amt5pc = 0.
     line45 = max(0., AMT_CG_thd1[MARS - 1] - dwks14)
-    line46 = min(alminc, c62720)
+    line46 = min(alminc, dwks13)
     line47 = min(line45, line46)
-    line48 = min(alminc, c62720) - line47
+    line48 = min(alminc, dwks13) - line47
     amt15pc = min(line48, max(0., AMT_CG_thd2[MARS - 1] - dwks14 - line45))
     amt_xtr = min(line48, max(0., AMT_CG_thd3[MARS - 1] - dwks14 - line45))
 
