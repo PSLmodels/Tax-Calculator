@@ -132,13 +132,13 @@ class Calculator(object):
     def records(self):
         return self._records
 
-    def TaxInc_to_AMTI(self):
+    def TaxInc_to_AMT(self):
         TaxInc(self.policy, self.records)
         SchXYZTax(self.policy, self.records)
         GainsTax(self.policy, self.records)
         AGIsurtax(self.policy, self.records)
         NetInvIncTax(self.policy, self.records)
-        AMTInc(self.policy, self.records)
+        AMT(self.policy, self.records)
 
     def calc_one_year(self, zero_out_calc_vars=False):
         # calls all the functions except those in calc_all() function
@@ -160,14 +160,14 @@ class Calculator(object):
         item_no_limit = copy.deepcopy(self.records.c21060)
         self.records.c04470 = np.zeros(self.records.dim)
         self.records.c21060 = np.zeros(self.records.dim)
-        self.TaxInc_to_AMTI()
+        self.TaxInc_to_AMT()
         std_taxes = copy.deepcopy(self.records.c05800)
         # Set standard deduction to zero, calculate taxes w/o
         # standard deduction, and store AMT + Regular Tax
         self.records._standard = np.zeros(self.records.dim)
         self.records.c21060 = item_no_limit
         self.records.c04470 = item
-        self.TaxInc_to_AMTI()
+        self.TaxInc_to_AMT()
         item_taxes = copy.deepcopy(self.records.c05800)
         # Replace standard deduction with zero where the taxpayer
         # would be better off itemizing
@@ -178,7 +178,7 @@ class Calculator(object):
         self.records.c21060[:] = np.where(item_taxes < std_taxes,
                                           item_no_limit, 0.)
         # Calculate taxes with optimal itemized deduction
-        self.TaxInc_to_AMTI()
+        self.TaxInc_to_AMT()
         F2441(self.policy, self.records)
         EITC(self.policy, self.records)
         ChildTaxCredit(self.policy, self.records)
