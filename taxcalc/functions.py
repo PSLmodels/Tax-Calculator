@@ -516,7 +516,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
              PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7,
              CG_nodiff,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3,
-             dwks10, dwks13, dwks14, c05700, _taxbc):
+             dwks10, dwks13, dwks14, dwks19, c05700, _taxbc):
     """
     GainsTax function implements (2015) Schedule D Tax Worksheet logic for
     the special taxation of long-term capital gains and qualified dividends
@@ -628,7 +628,7 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, _taxbc, _surtax):
 
 @iterate_jit(nopython=True)
 def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
-        c04470, c17000, c20800, c21040, e24515, MARS, _sep,
+        c04470, c17000, c20800, c21040, e24515, MARS, _sep, dwks19,
         dwks14, c05700, e62900, e00700, dwks10, age_head, _earned,
         cmbtp_itemizer, cmbtp_standard,
         KT_c_Age, AMT_tthd, AMT_thd_MarriedS,
@@ -691,12 +691,18 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
     cgtax1 = line47 * AMT_CG_rt1  # FORM 6251 INSTRUCTION PARAMETERIZED
     cgtax1 = 0.  # ORGINAL CODE WITHOUT ANY PARAMETERIZATION OF TAX RATE
     line48 = line46 - line47
+    line51 = dwks19  # FORM 6251 INSTRUCTION
+    line51 = dwks14  # ORIGINAL CODE
+    line52 = line45 + line51
+    line53 = max(0., AMT_CG_thd2[MARS - 1] - line52)  # FORM 6251 INSTRUCTION
+    line53 = max(0., AMT_CG_thd2[MARS - 1] - line45 - line44)  # ORIGINAL CODE
+    line54 = min(line48, line53)  # line54 is amount taxed at AMT_CG_rt2
+    cgtax2 = line54 * AMT_CG_rt2  # FORM 6251 INSTRUCTION PARAMETERIZED
 
-    amt15pc = min(line48, max(0., AMT_CG_thd2[MARS - 1] - line44 - line45))
     amt_xtr = min(line48, max(0., AMT_CG_thd3[MARS - 1] - line44 - line45))
-    if line41 != (amt15pc + line47):
-        amt20pc = line46 - amt15pc - line47
-        amtxtrpc = max(0., amt15pc - amt_xtr)
+    if line41 != (line54 + line47):
+        amt20pc = line46 - line54 - line47
+        amtxtrpc = max(0., line54 - amt_xtr)
     else:
         amt20pc = 0.
         amtxtrpc = 0.
@@ -704,12 +710,11 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         amt25pc = max(0., line30 - line41 - line46)
     else:
         amt25pc = 0.
-    c62755 = AMT_CG_rt2 * amt15pc
     c62760 = AMT_CG_rt3 * amt20pc
     amt_xtr = AMT_CG_rt4 * amtxtrpc
     c62770 = 0.25 * amt25pc  # tax rate on "Unrecaptured Schedule E Gain"
     # cgtax is the amount on line62 without line42 being added
-    cgtax = cgtax1 + c62755 + c62760 + c62770 + amt_xtr
+    cgtax = cgtax1 + cgtax2 + c62760 + c62770 + amt_xtr
     c62800 = min(line31, line42 + cgtax)
     # line32 = 0.  # AMT foreign tax credit is always zero
     # line33 = line31 - line32
