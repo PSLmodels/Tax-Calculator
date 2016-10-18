@@ -514,13 +514,13 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7,
              PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8,
              PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7,
-             CG_as_II,
+             CG_nodiff,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3,
              c24516, c24517, c24520, c05700, _taxbc):
     """
     GainsTax function implements (2015) Schedule D Tax Worksheet logic for
     the special taxation of long-term capital gains and qualified dividends
-    if CG_as_II is false (that is, zero)
+    if CG_nodiff is false (that is, zero)
     """
     # pylint: disable=too-many-statements,too-many-branches
     if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
@@ -528,7 +528,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
     else:
         hasqdivltcg = 0  # no qualified dividends or long-term capital gains
 
-    if CG_as_II != 0.:
+    if CG_nodiff != 0.:
         hasqdivltcg = 0  # no special taxation of qual divids and l-t cap gains
 
     if hasqdivltcg == 1:
@@ -632,18 +632,17 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, _taxbc, _surtax):
 
 
 @iterate_jit(nopython=True)
-def AMTInc(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
-           c04470, c17000, c20800, c21040, e24515, MARS, _sep,
-           c24520, c05700, e62900, e00700, c24516, age_head, _earned,
-           cmbtp_itemizer, cmbtp_standard,
-           KT_c_Age, AMT_tthd, AMT_thd_MarriedS,
-           AMT_em, AMT_prt, AMT_trt1, AMT_trt2,
-           AMT_Child_em, AMT_em_ps, AMT_em_pe,
-           AMT_CG_thd1, AMT_CG_thd2, AMT_CG_thd3, AMT_CG_rt1, AMT_CG_rt2,
-           AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
-
+def AMT(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
+        c04470, c17000, c20800, c21040, e24515, MARS, _sep,
+        c24520, c05700, e62900, e00700, c24516, age_head, _earned,
+        cmbtp_itemizer, cmbtp_standard,
+        KT_c_Age, AMT_tthd, AMT_thd_MarriedS,
+        AMT_em, AMT_prt, AMT_trt1, AMT_trt2,
+        AMT_Child_em, AMT_em_ps, AMT_em_pe,
+        AMT_CG_thd1, AMT_CG_thd2, AMT_CG_thd3, AMT_CG_rt1, AMT_CG_rt2,
+        AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
     """
-    AMTInc function computes Alternative Minimum Tax taxable income
+    AMT function computes Alternative Minimum Tax taxable income
     """
     # pylint: disable=too-many-statements,too-many-branches
     c62720 = c24517
