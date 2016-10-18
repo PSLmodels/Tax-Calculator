@@ -675,16 +675,10 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
     line30 = max(0., c62100 - line29)
     line31 = (AMT_trt1 * line30 +
               AMT_trt2 * max(0., (line30 - (AMT_tthd / _sep))))
-    # Form 6251, Part III
-    if f6251 == 1:
-        c62900 = e62900
-    else:
-        c62900 = e07300
-    if dwks10 == 0.:
-        c62740 = dwks13 + e24515
-    else:
-        c62740 = min(max(0., dwks10), dwks13 + e24515)
-    ngamty = max(0., line30 - c62740)
+    # Form 6251, Part III (line36 is equal to line30)
+    line39 = min(dwks13 + e24515, dwks10)
+    line40 = min(line30, line39)
+    ngamty = max(0., line30 - line39)
     c62745 = (AMT_trt1 * ngamty +
               AMT_trt2 * max(0., (ngamty - (AMT_tthd / _sep))))
     tamt2 = 0.
@@ -703,7 +697,7 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         amt20pc = 0.
         amtxtrpc = 0.
 
-    if c62740 != 0.:
+    if line39 != 0.:
         amt25pc = max(0., line30 - ngamty - line46)
     else:
         amt25pc = 0.
@@ -717,6 +711,10 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
     c62800 = min(line31, c62745 + tamt2)
     # line32 = 0.  # AMT foreign tax credit is always zero
     # line33 = line31 - line32
+    if f6251 == 1:
+        c62900 = e62900
+    else:
+        c62900 = e07300
     c63000 = c62800 - c62900
     c63100 = _taxbc - e07300 - c05700
     c63100 = max(0., c63100)
