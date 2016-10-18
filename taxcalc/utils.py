@@ -725,8 +725,8 @@ def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
         wgtpct_x = gp_x.apply(weighting_method, 'mtr_combined')
         wgtpct_y = gp_y.apply(weighting_method, 'mtr_combined')
     elif mtr_measure == '_iitax':
-        wgtpct_x = gp_x.apply(weighting, 'mtr_iit')
-        wgtpct_y = gp_y.apply(weighting, 'mtr_iit')
+        wgtpct_x = gp_x.apply(weighting_method, 'mtr_iit')
+        wgtpct_y = gp_y.apply(weighting_method, 'mtr_iit')
 
     wpct_x = DataFrame(data=wgtpct_x, columns=['w_mtr'])
     wpct_y = DataFrame(data=wgtpct_y, columns=['w_mtr'])
