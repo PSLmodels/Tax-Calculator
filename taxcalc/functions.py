@@ -514,13 +514,13 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7,
              PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8,
              PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7,
-             CG_as_II,
+             CG_nodiff,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3,
              c24516, c24517, c24520, c05700, _taxbc):
     """
     GainsTax function implements (2015) Schedule D Tax Worksheet logic for
     the special taxation of long-term capital gains and qualified dividends
-    if CG_as_II is false (that is, zero)
+    if CG_nodiff is false (that is, zero)
     """
     # pylint: disable=too-many-statements,too-many-branches
     if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
@@ -528,8 +528,8 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
     else:
         hasqdivltcg = 0  # no qualified dividends or long-term capital gains
 
-    if CG_as_II != 0.:
-        hasqdivltcg = 0  # no special taxation of qual divids and l-t cap gains
+    if CG_nodiff != 0.:
+        hasqdivltcg = 0  # no qualified dividends or long-term capital gains
 
     if hasqdivltcg == 1:
 
@@ -632,40 +632,39 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, _taxbc, _surtax):
 
 
 @iterate_jit(nopython=True)
-def AMTInc(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
-           c04470, c17000, c20800, c21040, e24515, MARS, _sep,
-           c24520, c05700, e62900, e00700, c24516, age_head, _earned,
-           cmbtp_itemizer, cmbtp_standard,
-           KT_c_Age, AMT_tthd, AMT_thd_MarriedS,
-           AMT_em, AMT_prt, AMT_trt1, AMT_trt2,
-           AMT_Child_em, AMT_em_ps, AMT_em_pe,
-           AMT_CG_thd1, AMT_CG_thd2, AMT_CG_thd3, AMT_CG_rt1, AMT_CG_rt2,
-           AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
-
+def AMT(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
+        c04470, c17000, c20800, c21040, e24515, MARS, _sep,
+        c24520, c05700, e62900, e00700, c24516, age_head, _earned,
+        cmbtp_itemizer, cmbtp_standard,
+        KT_c_Age, AMT_tthd, AMT_thd_MarriedS,
+        AMT_em, AMT_prt, AMT_trt1, AMT_trt2,
+        AMT_Child_em, AMT_em_ps, AMT_em_pe, CG_nodiff,
+        AMT_CG_thd1, AMT_CG_thd2, AMT_CG_thd3, AMT_CG_rt1, AMT_CG_rt2,
+        AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
     """
-    AMTInc function computes Alternative Minimum Tax taxable income
+    AMT function computes Alternative Minimum Tax taxable income and liability:
+    c62100 is AMT taxable income
+    c09600 is AMT tax liability
+    c05800 is total (reg + AMT) income tax liability before credits
     """
     # pylint: disable=too-many-statements,too-many-branches
-    c62720 = c24517
-    c60260 = e00700
-    c62730 = e24515
+
+    # taxation of all AMT taxable income, AMT liability is sameamt
     if _standard == 0.0:
         if f6251 == 1:
             cmbtp = cmbtp_itemizer
         else:
             cmbtp = 0.
-        c62100 = (c00100 - c04470 +
+        c62100 = (c00100 - e00700 - c04470 +
                   max(0., min(c17000, 0.025 * c00100)) +
-                  c18300 -
-                  c60260 + c20800 - c21040)
-        c62100 += cmbtp
+                  c18300 + c20800 - c21040)
     if _standard > 0.0:
         if f6251 == 1:
             cmbtp = cmbtp_standard
         else:
             cmbtp = 0.
-        c62100 = c00100 - c60260
-        c62100 += cmbtp
+        c62100 = c00100 - e00700
+    c62100 += cmbtp
     if MARS == 3 or MARS == 6:
         amtsepadd = max(0.,
                         min(AMT_thd_MarriedS, 0.25 * (c62100 - AMT_em_pe)))
@@ -677,53 +676,55 @@ def AMTInc(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
     if age_head != 0 and age_head < KT_c_Age:
         c62600 = min(c62600, _earned + AMT_Child_em)
     c62700 = max(0., c62100 - c62600)
-    alminc = c62700  # because no foreign earned income exclusion
-    amtfei = 0.
-    c62780 = (AMT_trt1 * alminc +
-              AMT_trt2 * max(0., (alminc - (AMT_tthd / _sep) - amtfei)))
+    amtinc = c62700  # because no foreign earned income exclusion
+    sameamt = (AMT_trt1 * amtinc +
+               AMT_trt2 * max(0., (amtinc - (AMT_tthd / _sep))))
+
+    # different AMT taxation of LTCG+QDIV income
+    if CG_nodiff == 0.:
+        c62740 = min(c24516, e24515 + c24517)
+        ngamtinc = max(0., amtinc - c62740)  # amtinc net of LTCG+QDIV income
+        ngtax = (AMT_trt1 * ngamtinc +
+                 AMT_trt2 * max(0., (ngamtinc - (AMT_tthd / _sep))))
+        line45 = max(0., AMT_CG_thd1[MARS - 1] - c24520)
+        line46 = min(amtinc, c24517)
+        base_rt1 = min(line45, line46)  # line47 amount
+        line48 = line46 - base_rt1
+        line53 = max(0., AMT_CG_thd2[MARS - 1] - c24520 - line45)
+        # line53 use of c24520 ia questionable   ^^^^^^
+        #   because line45 already subtracts out c24520
+        base_rt2 = min(line48, line53)  # line54 amount
+        base_xtr = min(line48,
+                       max(0., AMT_CG_thd3[MARS - 1] - c24520 - line45))
+        if ngamtinc == (base_rt2 + base_rt1):
+            base_rt3 = 0.
+            base_rt4 = 0.
+        else:
+            base_rt3 = line46 - base_rt2 - base_rt1
+            base_rt4 = max(0., base_rt2 - base_xtr)
+        if c62740 == 0.:
+            amt25pc = 0.
+        else:
+            amt25pc = max(0., amtinc - ngamtinc - line46)
+        c62770 = 0.25 * amt25pc  # tax rate on "Unrecaptured Schedule E Gain"
+        # cgtax is the amount of line62 without line42 being added
+        cgtax = (AMT_CG_rt1 * base_rt1 +
+                 AMT_CG_rt2 * base_rt2 +
+                 AMT_CG_rt3 * base_rt3 +
+                 AMT_CG_rt4 * base_rt4)
+        cgtax += c62770
+        diffamt = ngtax + cgtax  # AMT tax liab with differential taxation
+    else:  # if CG_nodiff is not zero
+        diffamt = sameamt  # AMT tax liab with same tax treatment of all income
+
+    # final AMT calculations
+    c62800 = min(sameamt, diffamt)
     if f6251 == 1:
         c62900 = e62900
     else:
         c62900 = e07300
-    if c24516 == 0.:
-        c62740 = c62720 + c62730
-    else:
-        c62740 = min(max(0., c24516), c62720 + c62730)
-    ngamty = max(0., alminc - c62740)
-    c62745 = (AMT_trt1 * ngamty +
-              AMT_trt2 * max(0., (ngamty - (AMT_tthd / _sep))))
-    # Capital Gain for AMT
-    tamt2 = 0.
-    amt5pc = 0.
-    line45 = max(0., AMT_CG_thd1[MARS - 1] - c24520)
-    line46 = min(alminc, c62720)
-    line47 = min(line45, line46)
-    line48 = min(alminc, c62720) - line47
-    amt15pc = min(line48, max(0., AMT_CG_thd2[MARS - 1] - c24520 - line45))
-    amt_xtr = min(line48, max(0., AMT_CG_thd3[MARS - 1] - c24520 - line45))
-
-    if ngamty != (amt15pc + line47):
-        amt20pc = line46 - amt15pc - line47
-        amtxtrpc = max(0., amt15pc - amt_xtr)
-    else:
-        amt20pc = 0.
-        amtxtrpc = 0.
-
-    if c62740 != 0.:
-        amt25pc = max(0., alminc - ngamty - line46)
-    else:
-        amt25pc = 0.
-    c62747 = AMT_CG_rt1 * amt5pc
-    c62755 = AMT_CG_rt2 * amt15pc
-    c62760 = AMT_CG_rt3 * amt20pc
-    amt_xtr = AMT_CG_rt4 * amtxtrpc
-    c62770 = 0.25 * amt25pc  # tax rate on "Unrecaptured Schedule E Gain"
-    # tamt2 is the amount of line62 without 42 being added
-    tamt2 = c62747 + c62755 + c62760 + c62770 + amt_xtr
-    c62800 = min(c62780, c62745 + tamt2 - amtfei)
     c63000 = c62800 - c62900
-    c63100 = _taxbc - e07300 - c05700
-    c63100 = max(0., c63100)
+    c63100 = max(0., _taxbc - e07300 - c05700)
     c63200 = max(0., c63000 - c63100)
     c09600 = c63200
     c05800 = _taxbc + c63200

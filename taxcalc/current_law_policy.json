@@ -135,7 +135,7 @@
         "long_name": "Investment income exclusion",
         "description": "This decimal fraction can be applied to limit the investment income included in AGI. ",
         "irs_ref": "Form 1040, line 8a",
-        "notes": "The final taxable investment income will be (1- exclusion) * Investment income. Even though this portion of income wouldn't be included in AGI, it still contributes to Net Investment Income Tax and Earned Income Tax Credit.",
+        "notes": "The final taxable investment income will be (1-_ALD_Investment_ec)*Investment income. Even though the excluded portion of investment income is not included in AGI, it still is included in investment income used to calculate Net Investment Income Tax and Earned Income Tax Credit.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -508,7 +508,7 @@
 
     "_AMED_thd": {
         "long_name": "Additional Medicare threshold",
-        "description": "If their Medicare wages, RRTA compensation and self-employment income is above this threshold, taxpayers are subject to additional Medicare tax. ",
+        "description": "If their Medicare wages, RRTA compensation and self-employment income is above this threshold, taxpayers are subject to additional Medicare tax.",
         "irs_ref": "Form 8959, line 5, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -521,7 +521,7 @@
 
     "_AMED_trt": {
         "long_name": "Additional Medicare tax rate",
-        "description": "This is the rate applied to the portion of Medicare wages, RRTA compensation and self-employment income exceeding additional Medicare threshold. ",
+        "description": "This is the rate applied to the portion of Medicare wages, RRTA compensation and self-employment income exceeding additional Medicare threshold.",
         "irs_ref": "Form 8959, line 7, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -876,17 +876,18 @@
         "validations": {"min": "_II_brk6"}
     },
 
-    "_CG_as_II": {
-        "long_name": "Long term capital gains and qualified dividends taxed same as other income",
-        "description": "This zero/one parameter specifies whether or not long term capital gains and qualified dividends are taxed like other income.",
-        "irs_ref": "Current-law value is zero and Schedule D tax rules are used.",
+    "_CG_nodiff": {
+        "long_name": "Long term capital gains and qualified dividends taxed no different than other income",
+        "description": "Specifies whether or not long term capital gains and qualified dividends are taxed like other income.",
+        "irs_ref": "Current-law value is zero implying different tax treatment in Schedule D and AMT; a value of one implies no different tax treatment in both regular and alternative minimum tax rules.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value": [0]
+        "value": [0],
+        "validations": {"min": 0, "max": 1}
     },
 
     "_CG_rt1": {
@@ -1079,7 +1080,7 @@
 
     "_AMT_em": {
         "long_name": "AMT exemption amount",
-        "description": "The amount of AMTI exempted from AMT.",
+        "description": "The amount of AMT taxable income exempted from AMT.",
         "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
         "notes": "",
         "start_year": 2013,
@@ -1099,7 +1100,7 @@
 
     "_AMT_prt": {
         "long_name": "AMT exemption phaseout rate",
-        "description": "AMT exemption will decrease at this rate for each dollar of AMTI exceeding AMT phaseout start. ",
+        "description": "AMT exemption will decrease at this rate for each dollar of AMT taxable income exceeding AMT phaseout start. ",
         "irs_ref": "Form 6251, line 29, instructions. ",
         "notes": "",
         "start_year": 2013,
@@ -1112,7 +1113,7 @@
     },
 
     "_AMT_trt1": {
-        "long_name": "AMT rate for AMTI under the surtax threshold",
+        "long_name": "AMT rate for AMT taxable income under the surtax threshold",
         "description": "The tax rate applied to the portion of AMT income below the surtax threshold. ",
         "irs_ref": "Form 6251, line 31, in-line. ",
         "notes": "",
@@ -1126,7 +1127,7 @@
     },
 
     "_AMT_trt2": {
-        "long_name": "Additional AMT rate for AMTI above the surtax threshold",
+        "long_name": "Additional AMT rate for AMT taxable income above the surtax threshold",
         "description": "The tax rate applied to the portion of AMT income above the surtax threshold.",
         "irs_ref": "Form 6251, line 31, in-line. ",
         "notes": "This is the additional tax rate (on top of .26) for AMT income",
@@ -1161,7 +1162,7 @@
 
     "_AMT_em_ps": {
         "long_name": "AMT exemption phaseout start",
-        "description": "AMT exemption starts to decrease when AMTI goes beyond this threshold.",
+        "description": "AMT exemption starts to decrease when AMT taxable income goes beyond this threshold.",
         "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
         "notes": "",
         "start_year": 2013,
@@ -1180,8 +1181,8 @@
     },
 
     "_AMT_em_pe": {
-        "long_name": "AMT exemption phaseout ending AMTI (Married filling Separately)",
-        "description": "The AMT exemption is entirely disallowed beyond this AMTI level for individuals who are married but filing separately.",
+        "long_name": "AMT exemption phaseout ending AMT taxable income (Married filling Separately)",
+        "description": "The AMT exemption is entirely disallowed beyond this AMT taxable income level for individuals who are married but filing separately.",
         "irs_ref": "Form 6251, line 28, instruction.",
         "notes": "",
         "start_year": 2013,
@@ -1306,7 +1307,7 @@
 
     "_NIIT_thd": {
         "long_name": "Net Investment Income Tax income threshold (UIMC)",
-        "description": "If one taxpayer's MAGI (modified AGI) is more than this threshold, he or she is subject to the additional Medicare tax. ",
+        "description": "If MAGI (modified AGI) is more than this threshold, tax unit is subject to the Net Investment Income Tax.",
         "irs_ref": "Form 8960, line 14, instructions. ",
         "notes": "",
         "start_year": 2013,
@@ -1319,8 +1320,8 @@
     },
 
     "_NIIT_trt": {
-        "long_name": "Net Investment Income Tax rate (UIMC)",
-        "description": "Also called the Unearned Income Medicare Contribution. The lessor of net investment income and the amount by which MAGI exceeds a threshold is taxed at this rate.",
+        "long_name": "Net Investment Income Tax rate",
+        "description": "The amount by which MAGI exceeds _NIIT_thd is taxed at this rate.",
         "irs_ref": "Form 8960, line 21, in-line. ",
         "notes": "",
         "start_year": 2013,

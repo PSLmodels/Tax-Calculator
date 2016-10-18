@@ -211,7 +211,7 @@ class Policy(ParametersBase):
         except ValueError as valerr:
             msg = 'Policy reform text below contains invalid JSON:\n'
             msg += str(valerr) + '\n'
-            msg += 'The above location of the first error is approximate.\n'
+            msg += 'Above location of the first error may be approximate.\n'
             msg += 'The invalid JSON reform text is between the lines:\n'
             bline = 'XX----.----1----.----2----.----3----.----4'
             bline += '----.----5----.----6----.----7'
