@@ -676,39 +676,41 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
     line31 = (AMT_trt1 * line30 +
               AMT_trt2 * max(0., (line30 - (AMT_tthd / _sep))))
     # Form 6251, Part III (line36 is equal to line30)
-    line39 = min(dwks13 + e24515, dwks10)
+    line37 = dwks13
+    line38 = e24515
+    line39 = min(line37 + line38, dwks10)
     line40 = min(line30, line39)
-    ngamty = max(0., line30 - line39)
-    c62745 = (AMT_trt1 * ngamty +
-              AMT_trt2 * max(0., (ngamty - (AMT_tthd / _sep))))
-    tamt2 = 0.
-    amt5pc = 0.
-    line45 = max(0., AMT_CG_thd1[MARS - 1] - dwks14)
-    line46 = min(line30, dwks13)
-    line47 = min(line45, line46)
-    line48 = min(line30, dwks13) - line47
-    amt15pc = min(line48, max(0., AMT_CG_thd2[MARS - 1] - dwks14 - line45))
-    amt_xtr = min(line48, max(0., AMT_CG_thd3[MARS - 1] - dwks14 - line45))
+    line41 = max(0., line30 - line40)  # FORM 6251 INSTRUCTION
+    line41 = max(0., line30 - line39)  # ORIGINAL CODE
+    line42 = (AMT_trt1 * line41 +
+              AMT_trt2 * max(0., (line41 - (AMT_tthd / _sep))))
+    line44 = dwks14
+    line45 = max(0., AMT_CG_thd1[MARS - 1] - line44)
+    line46 = min(line30, line37)
+    line47 = min(line45, line46)  # line47 is amount taxed at AMT_CG_rt1
+    cgtax1 = line47 * AMT_CG_rt1  # FORM 6251 INSTRUCTION PARAMETERIZED
+    cgtax1 = 0.  # ORGINAL CODE WITHOUT ANY PARAMETERIZATION OF TAX RATE
+    line48 = line46 - line47
 
-    if ngamty != (amt15pc + line47):
+    amt15pc = min(line48, max(0., AMT_CG_thd2[MARS - 1] - line44 - line45))
+    amt_xtr = min(line48, max(0., AMT_CG_thd3[MARS - 1] - line44 - line45))
+    if line41 != (amt15pc + line47):
         amt20pc = line46 - amt15pc - line47
         amtxtrpc = max(0., amt15pc - amt_xtr)
     else:
         amt20pc = 0.
         amtxtrpc = 0.
-
     if line39 != 0.:
-        amt25pc = max(0., line30 - ngamty - line46)
+        amt25pc = max(0., line30 - line41 - line46)
     else:
         amt25pc = 0.
-    c62747 = AMT_CG_rt1 * amt5pc
     c62755 = AMT_CG_rt2 * amt15pc
     c62760 = AMT_CG_rt3 * amt20pc
     amt_xtr = AMT_CG_rt4 * amtxtrpc
     c62770 = 0.25 * amt25pc  # tax rate on "Unrecaptured Schedule E Gain"
-    # tamt2 is the amount of line62 without 42 being added
-    tamt2 = c62747 + c62755 + c62760 + c62770 + amt_xtr
-    c62800 = min(line31, c62745 + tamt2)
+    # cgtax is the amount on line62 without line42 being added
+    cgtax = cgtax1 + c62755 + c62760 + c62770 + amt_xtr
+    c62800 = min(line31, line42 + cgtax)
     # line32 = 0.  # AMT foreign tax credit is always zero
     # line33 = line31 - line32
     if f6251 == 1:
