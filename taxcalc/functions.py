@@ -682,8 +682,7 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         line38 = e24515
         line39 = min(line37 + line38, dwks10)
         line40 = min(line30, line39)
-        line41 = max(0., line30 - line40)  # FORM 6251 INSTRUCTION
-        line41 = max(0., line30 - line39)  # ORIGINAL CODE
+        line41 = max(0., line30 - line40)
         line42 = (AMT_trt1 * line41 +
                   AMT_trt2 * max(0., (line41 - (AMT_tthd / _sep))))
         line44 = dwks14
@@ -692,13 +691,11 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         line47 = min(line45, line46)  # line47 is amount taxed at AMT_CG_rt1
         cgtax1 = line47 * AMT_CG_rt1
         line48 = line46 - line47
-        line51 = dwks19  # FORM 6251 INSTRUCTION
-        line51 = dwks14  # ORIGINAL CODE
+        line51 = dwks19
         line52 = line45 + line51
-        line53 = max(0., AMT_CG_thd2[MARS - 1] - line52)  # FORM 6251 INSTRUCT
-        line53 = max(0., AMT_CG_thd2[MARS - 1] - line45 - line44)  # ORIG CODE
+        line53 = max(0., AMT_CG_thd2[MARS - 1] - line52)
         line54 = min(line48, line53)  # line54 is amount taxed at AMT_CG_rt2
-        cgtax2 = line54 * AMT_CG_rt2  # FORM 6251 INSTRUCTION PARAMETERIZED
+        cgtax2 = line54 * AMT_CG_rt2
         line56 = line47 + line54  # total amount in lower two brackets
         if line41 == line56:
             line57 = 0.  # line57 is amount taxed at AMT_CG_rt3
@@ -708,18 +705,12 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
             linex1 = min(line48,
                          max(0., AMT_CG_thd3[MARS - 1] - line44 - line45))
             linex2 = max(0., line54 - linex1)
-        cgtax3 = line57 * AMT_CG_rt3  # FORM 6251 INSTRUCTION PARAMETERIZED
+        cgtax3 = line57 * AMT_CG_rt3
         cgtax4 = linex2 * AMT_CG_rt4
-        # FOLLOWING IF-ELSE STATEMENT CORRESPONDS TO FORM 6251 INSTRUCTIONS
         if line38 == 0.:
             line61 = 0.
         else:
             line61 = 0.25 * max(0., line30 - line41 - line56 - line57 - linex2)
-        # FOLLOWING IF-ELSE STATEMENT IS FROM ORIGINAL CODE
-        if line39 != 0.:
-            line61 = 0.25 * max(0., line30 - line41 - line46)
-        else:
-            line61 = 0.
         line62 = line42 + cgtax1 + cgtax2 + cgtax3 + cgtax4 + line61
         line64 = min(line3163, line62)
         line31 = line64
