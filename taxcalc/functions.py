@@ -74,9 +74,49 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
 
 
 @iterate_jit(nopython=True)
+def DependentCare(age_dep1, age_dep2, age_dep3, age_dep4, age_dep5, _earned,
+                  MARS, ALD_Dependents_thd, ALD_Dependents_HC,
+                  ALD_Dependents_Child_ec, ALD_Dependents_Elder_ec, care_ded):
+    """
+
+    Parameters
+    ----------
+    age_dep1: Age of first dependent
+    age_dep2: Age of second dependent
+    age_dep3: Age of third dependent
+    age_dep4: Age of fourth dependent
+    age_dep5: Age of fifth dependent
+    _earned: Form 2441 earned income amount
+    MARS: Marital Status
+    ALD_Dependents_thd: Maximum income to qualify for deduction
+    ALD_Dependents_HC: Deduction for dependent care haircut
+    ALD_Dependents_Child_ec: national weighted average cost of childcare
+    ALD_Dependents_Elder_ec: eldercare exclusion
+
+    Returns
+    -------
+    care_ded: Total above the line deductions available
+
+    """
+
+    if _earned <= ALD_Dependents_thd[MARS - 1]:
+        ages = np.array([age_dep1, age_dep2, age_dep3, age_dep4, age_dep5])
+        # Count the number of qualifying dependents
+        children = min(((1 <= ages)&(ages <=13)).sum(), 4)
+        elderly = (ages >= 65).sum()
+        care_ded = (((1 - ALD_Dependents_HC) * children *
+                    ALD_Dependents_Child_ec) +
+                    ((1- ALD_Dependents_HC) * elderly *
+                    ALD_Dependents_Elder_ec))
+    else:
+        care_ded = 0.
+    return care_deduction
+
+
+@iterate_jit(nopython=True)
 def Adj(e03150, e03210, c03260,
         e03270, e03300, e03400, e03500,
-        e03220, e03230, e03240, e03290, ALD_StudentLoan_HC,
+        e03220, e03230, e03240, e03290, care_deduction, ALD_StudentLoan_HC,
         ALD_SelfEmploymentTax_HC, ALD_SelfEmp_HealthIns_HC, ALD_KEOGH_SEP_HC,
         ALD_EarlyWithdraw_HC, ALD_Alimony_HC,
         c02900):
@@ -108,6 +148,8 @@ def Adj(e03150, e03210, c03260,
 
         e03500 : Alimony withdraw
 
+        care_deduction: Dependent care deduction
+
     Tax law parameters:
         ALD_StudentLoan_HC : Deduction for student loan interest haircut
 
@@ -136,7 +178,7 @@ def Adj(e03150, e03210, c03260,
               (1 - ALD_KEOGH_SEP_HC) * e03300 +
               (1 - ALD_EarlyWithdraw_HC) * e03400 +
               (1 - ALD_Alimony_HC) * e03500 +
-              e03220 + e03230 + e03240 + e03290)
+              e03220 + e03230 + e03240 + e03290 + care_deduction)
     return c02900
 
 

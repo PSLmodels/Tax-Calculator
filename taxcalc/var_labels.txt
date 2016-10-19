@@ -1,3 +1,8 @@
+AGE_DEP1 = Age of first dependent
+AGE_DEP2 = Age of second dependent
+AGE_DEP3 = Age of third dependent
+AGE_DEP4 = Age of fourth dependent
+AGE_DEP5 = Age of fifth dependent
 AGE_HEAD = Age in years of taxpayer (i.e., primary filer)
 AGE_SPOUSE = Age in years of spouse (i.e., secondary filer if present)
 BLIND_HEAD = zero/one indicator for taxpayer (i.e., primary filer)
