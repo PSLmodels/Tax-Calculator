@@ -100,7 +100,7 @@ def DependentCare(agedp1, agedp2, agedp3, _earned,
 
     if _earned <= ALD_Dependents_thd[MARS - 1]:
         # Randomly assign a fourth dependent to tax units with at least three
-        if agedp3 != 0:
+        if 1<= agedp3 <= 2:
             x = np.random.random()
             if x <= 0.020545:
                 agedp4 = 1
