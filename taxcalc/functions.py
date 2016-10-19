@@ -94,7 +94,7 @@ def DependentCare(agedp1, agedp2, agedp3, _earned,
 
     Returns
     -------
-    care_deduction: Total above the line deductions for dependent care
+    care_deduction: Total above the line deductions for dependent care.
 
     """
 
