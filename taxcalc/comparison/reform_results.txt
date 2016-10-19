@@ -115,10 +115,10 @@ Budget Options,11,9,8,7
 CAPITAL GAIN
 ""
 Increase long term cap gain and dividends tax rates by 2 percentage, no behavioral response
-Tax-Calculator,13.2,13.5,13.7,14.0
+Tax-Calculator,13.3,13.7,13.9,14.1
 ""
 Increase long term cap gain and dividends tax rates by 2 percentage, BE_cg elasticity assumed to be -3.67
-Tax-Calculator,3.3,3.4,3.5,3.7
+Tax-Calculator,3.4,3.4,3.6,3.7
 Budget Options,5,5,5,6
 ""
 REGULAR TAXES

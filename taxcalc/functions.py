@@ -690,8 +690,7 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         line45 = max(0., AMT_CG_thd1[MARS - 1] - line44)
         line46 = min(line30, line37)
         line47 = min(line45, line46)  # line47 is amount taxed at AMT_CG_rt1
-        cgtax1 = line47 * AMT_CG_rt1  # FORM 6251 INSTRUCTION PARAMETERIZED
-        cgtax1 = 0.  # ORGINAL CODE WITHOUT ANY PARAMETERIZATION OF TAX RATE
+        cgtax1 = line47 * AMT_CG_rt1
         line48 = line46 - line47
         line51 = dwks19  # FORM 6251 INSTRUCTION
         line51 = dwks14  # ORIGINAL CODE
