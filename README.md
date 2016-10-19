@@ -4,11 +4,11 @@
 Tax-Calculator
 ==============
 
-The Tax-Calculator simulates the US federal individual income tax
+Tax-Calculator simulates the US federal individual income tax
 system.  In conjunction with micro data that represent the US
-population and a set of behavioral assumptions, the Tax-Calculator can
+population and a set of behavioral assumptions, Tax-Calculator can
 be used to conduct revenue scoring and distributional analyses of tax
-policies.  The Tax-Calculator is written in Python, an interpreted
+policies.  Tax-Calculator is written in Python, an interpreted
 language that can execute on Windows, Mac, or Linux.
 
 Disclaimer
@@ -24,40 +24,34 @@ results.
 Getting Started
 ===============
 
-At the moment there are three ways to start using the Tax-Calculator.
+There are two common ways to get started with Tax-Calculator:
 
 The **first way** is to install the Tax-Calculator repository on your
 computer.  Do this by following the instructions in our [Contributor
-Guide](http://taxcalc.readthedocs.org/en/latest/contributor_guide.html)
-and then reading about our [testing procedures](TESTING.md).  This way
-allows you to read the source code and contribute enhancements to the
-source code.  While this way does not provide you with a
-representative sample of tax filing units, it does allow you to
-estimate tax liabilities and marginal tax rates for any collection of
-filing units specified in [Internet-TAXSIM input
+Guide](http://taxcalc.readthedocs.io/en/latest/contributor_guide.html).
+After the installation you can read the source code and either use
+Tax-Calculator as is or develop new Tax-Calculator capabilities.
+
+When using Tax-Calculator on your computer you will have to supply
+your own input data on tax filing units because the repository does
+not include a representative sample of tax filing units.  However, you
+can use it to estimate tax liabilities and marginal tax rates for any
+collection of filing units specified in [Internet-TAXSIM input
 format](http://users.nber.org/~taxsim/taxsim-calc9/) using the
-`simtax.py` command-line interface to the Tax-Calculator.
-You can also process your own CSV-formatted data using the `inctax.py`
-command-line interface to the Tax-Calculator, but when doing this be
+`simtax.py` command-line interface to Tax-Calculator.  And you can
+also process your own CSV-formatted data using the `inctax.py`
+command-line interface to Tax-Calculator, but when doing this be
 sure to read the [data-preparation guidelines](DATAPREP.md).
 
-The **second way** is to access the Tax-Calculator through our web
+When developing new Tax-Calculator capabilities be sure to read about
+our [coding style](CODING.md) and [testing procedures](TESTING.md)
+after you have read completely the [Contributor
+Guide](http://taxcalc.readthedocs.io/en/latest/contributor_guide.html).
+
+The **second way** is to access Tax-Calculator through our web
 application, [TaxBrain](http://www.ospc.org/taxbrain).  This way
 allows you to generate aggregate and distributional tax reform
 estimates using a nationally representative sample of tax filing units
 that is not part of the Tax-Calculator repository.
 
-The **third way**, which is for advanced Anaconda users, involves
-installing the taxcalc package on your local computer.  A new taxcalc
-package is generated for every release of the Tax-Calculator.  We use
-the package to install taxcalc on Amazon Web Services (AWS) instances
-that run the TaxBrain web application.  You can get the latest release
-of the Tax-Calculator to run on your computer via the command `conda
-install -c ospc taxcalc`.  Note that this package does not include a
-representative sample of the US population.  Also, note that there is
-some skill involved in Getting Started the first way and installing
-the taxcalc package on the same local computer, which is why we
-describe this way as being for advanced Anaconda users.
-
-And, of course, you can get started with any combination of these
-three ways of using the Tax-Calculator.
+And, of course, you can get started with Tax-Calculator both ways.

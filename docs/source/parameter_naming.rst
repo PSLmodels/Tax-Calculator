@@ -1,5 +1,5 @@
-Parameter Naming Conventions
-============================
+Parameter Naming and Placing Conventions
+========================================
 
 Parameter names have two components; the first component is an
 abbreviation for the parameter's tax category and the second component
@@ -101,3 +101,11 @@ Examples
 
    **_EITC_MinEligAge**: Earned Income Tax Credit minimum eligibility
    age for those with no EITC-eligible children
+
+Placing New Parameters in ``current_law_policy.json``
+-----------------------------------------------------
+
+All new parameters should be added to the ``current_law_policy.json``
+file in a location that maintains the convention that the policy
+parameters appear in that file in the order they are first used in the
+``functions.py`` file.

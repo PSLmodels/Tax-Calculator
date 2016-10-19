@@ -12,5 +12,7 @@ dependencies:
 - ipython
 - ipython-notebook
 - mock
+- pep8
+- pylint
 - pip:
   - pytest-pep8

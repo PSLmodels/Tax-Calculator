@@ -116,7 +116,7 @@ the charitable deduction floor rate looks like this:
 The new parameter's name consists of _ID (for Itemized Deduction), the
 deduction's name (_Charity), and the parameter's type (_frt for floor
 rate). For other parameter name and type abbreviations, see
-:doc:`parameter naming conventions</parameter_naming>`.
+:doc:`parameter naming and placing conventions</parameter_naming>`.
 
 The parameter has several attributes; the first year that we have a
 value for is 2013 and it is not adjusted for inflation. The charitable

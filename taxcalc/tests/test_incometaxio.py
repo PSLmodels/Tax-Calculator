@@ -7,11 +7,11 @@ Tests for Tax-Calculator IncomeTaxIO class.
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import os
-from taxcalc import IncomeTaxIO  # pylint: disable=import-error
-from io import StringIO
-import pandas as pd
-import pytest
 import tempfile
+from io import StringIO
+import pytest
+import pandas as pd
+from taxcalc import IncomeTaxIO  # pylint: disable=import-error
 
 
 RAWINPUTFILE_FUNITS = 4

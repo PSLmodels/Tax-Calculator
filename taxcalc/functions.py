@@ -13,9 +13,9 @@ Tax-Calculator functions that calculate payroll and individual income taxes.
 
 
 import math
+import copy
 import numpy as np
 from .decorators import iterate_jit, jit
-import copy
 
 
 @iterate_jit(nopython=True)
@@ -141,7 +141,7 @@ def Adj(e03150, e03210, c03260,
 
 
 @iterate_jit(nopython=True)
-def CapGains(p23250, p22250, _sep, ALD_Interest_ec, ALD_StudentLoan_HC,
+def CapGains(p23250, p22250, _sep, ALD_Investment_ec, ALD_StudentLoan_HC,
              e00200, e00300, e00600, e00700, e00800,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
              e02300, e00400, e02400, c02900, e03210, e03230, e03240,
@@ -154,8 +154,9 @@ def CapGains(p23250, p22250, _sep, ALD_Interest_ec, ALD_StudentLoan_HC,
     # limitation on capital losses
     c01000 = max((-3000. / _sep), c23650)
     # compute ymod* variables
-    ymod1 = (e00200 + (1 - ALD_Interest_ec) * e00300 + e00600 + e00700 +
-             e00800 + e00900 + c01000 + e01100 + e01200 + e01400 + e01700 +
+    ymod1 = (e00200 + e00700 + e00800 + e00900 + e01400 + e01700 +
+             (1 - ALD_Investment_ec) * (e00300 + e00600 +
+                                        c01000 + e01100 + e01200) +
              e02000 + e02100 + e02300)
     ymod2 = e00400 + (0.50 * e02400) - c02900
     ymod3 = (1 - ALD_StudentLoan_HC) * e03210 + e03230 + e03240
@@ -439,25 +440,28 @@ def TaxInc(c00100, _standard, c21060, c21040, c04600, c04800):
     return c04800
 
 
-@iterate_jit(nopython=True)
-def SchXYZTax(c04800, MARS, e00900, e26270,
-              PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5, PT_rt6, PT_rt7,
-              PT_rt8, PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6,
-              PT_brk7, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7,
-              II_rt8, II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6,
-              II_brk7, c05200):
+@jit(nopython=True)
+def SchXYZ(taxable_income, MARS, e00900, e26270,
+           PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
+           PT_rt6, PT_rt7, PT_rt8,
+           PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
+           PT_brk6, PT_brk7,
+           II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
+           II_rt6, II_rt7, II_rt8,
+           II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
+           II_brk6, II_brk7):
     """
-    SchXYZTax uses the tax rates in Schedule X, Y, or Z, to compute tax.
+    Return Schedule X, Y, Z tax amount for specified taxable_income.
     """
     # separate non-negative taxable income into two non-negative components,
     # doing this in a way so that the components add up to taxable income
     pt_taxinc = max(0., e00900 + e26270)  # non-negative pass-through income
-    if pt_taxinc >= c04800:
-        pt_taxinc = c04800
+    if pt_taxinc >= taxable_income:
+        pt_taxinc = taxable_income
         reg_taxinc = 0.
     else:
         # pt_taxinc is unchanged
-        reg_taxinc = c04800 - pt_taxinc
+        reg_taxinc = taxable_income - pt_taxinc
     # compute Schedule X,Y,Z tax using the two components of taxable income,
     # stacking pass-through taxable income on top of regular taxable income
     if reg_taxinc > 0.:
@@ -474,26 +478,58 @@ def SchXYZTax(c04800, MARS, e00900, e26270,
                        PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
     else:
         pt_tax = 0.
-    c05200 = reg_tax + pt_tax
+    return reg_tax + pt_tax
+
+
+@iterate_jit(nopython=True)
+def SchXYZTax(c04800, MARS, e00900, e26270,
+              PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
+              PT_rt6, PT_rt7, PT_rt8,
+              PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
+              PT_brk6, PT_brk7,
+              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
+              II_rt6, II_rt7, II_rt8,
+              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
+              II_brk6, II_brk7,
+              c05200):
+    """
+    SchXYZTax calls SchXYZ function and sets c05200 to returned amount.
+    """
+    c05200 = SchXYZ(c04800, MARS, e00900, e26270,
+                    PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
+                    PT_rt6, PT_rt7, PT_rt8,
+                    PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
+                    PT_brk6, PT_brk7,
+                    II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
+                    II_rt6, II_rt7, II_rt8,
+                    II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
+                    II_brk6, II_brk7)
     return c05200
 
 
 @iterate_jit(nopython=True)
 def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
-             e24515, e24518, MARS, c04800, c05200,
+             e24515, e24518, MARS, c04800, c05200, e00900, e26270,
              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7,
+             PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8,
+             PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7,
+             CG_nodiff,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3,
-             c24516, c24517, c24520, c05700, _taxbc):
+             dwks10, dwks13, dwks14, dwks19, c05700, _taxbc):
     """
     GainsTax function implements (2015) Schedule D Tax Worksheet logic for
     the special taxation of long-term capital gains and qualified dividends
+    if CG_nodiff is false (that is, zero)
     """
     # pylint: disable=too-many-statements,too-many-branches
     if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
         hasqdivltcg = 1  # has qualified dividends or long-term capital gains
     else:
         hasqdivltcg = 0  # no qualified dividends or long-term capital gains
+
+    if CG_nodiff != 0.:
+        hasqdivltcg = 0  # no special taxation of qual divids and l-t cap gains
 
     if hasqdivltcg == 1:
 
@@ -549,32 +585,34 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks39 = dwks19 + dwks20 + dwks28 + dwks31 + dwks37
         dwks40 = dwks1 - dwks39
         dwks41 = 0.28 * dwks40
-        dwks42 = Taxes(dwks19, MARS, 0.0, II_rt1, II_rt2, II_rt3, II_rt4,
-                       II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
-                       II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
+        dwks42 = SchXYZ(dwks19, MARS, e00900, e26270,
+                        PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
+                        PT_rt6, PT_rt7, PT_rt8,
+                        PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
+                        PT_brk6, PT_brk7,
+                        II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
+                        II_rt6, II_rt7, II_rt8,
+                        II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
+                        II_brk6, II_brk7)
         dwks43 = (dwks29 + dwks32 + dwks38 + dwks41 + dwks42 +
                   lowest_rate_tax + highest_rate_incremental_tax)
         dwks44 = c05200
         dwks45 = min(dwks43, dwks44)
-
         c24580 = dwks45
-        c24516 = dwks10
-        c24517 = dwks13
-        c24520 = dwks14
 
     else:  # if hasqdivltcg is zero
 
         c24580 = c05200
-        c24516 = max(0., min(p23250, c23650)) + e01100
-        c24517 = 0.
-        c24520 = 0.
+        dwks10 = max(0., min(p23250, c23650)) + e01100
+        dwks13 = 0.
+        dwks14 = 0.
+        dwks19 = 0.
 
     # final calculations done no matter what the value of hasqdivltcg
     c05100 = c24580  # because no foreign earned income deduction
     c05700 = 0.  # no Form 4972, Lump Sum Distributions
     _taxbc = c05700 + c05100
-
-    return (c24516, c24517, c24520, c05700, _taxbc)
+    return (dwks10, dwks13, dwks14, dwks19, c05700, _taxbc)
 
 
 @iterate_jit(nopython=True)
@@ -590,101 +628,111 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, _taxbc, _surtax):
 
 
 @iterate_jit(nopython=True)
-def AMTInc(e07300, c24517, _standard, f6251, c00100, c18300, _taxbc,
-           c04470, c17000, c20800, c21040, e24515, MARS, _sep,
-           c24520, c05700, e62900, e00700, c24516, age_head, _earned,
-           cmbtp_itemizer, cmbtp_standard,
-           KT_c_Age, AMT_tthd, AMT_thd_MarriedS,
-           AMT_em, AMT_prt, AMT_trt1, AMT_trt2,
-           AMT_Child_em, AMT_em_ps, AMT_em_pe,
-           AMT_CG_thd1, AMT_CG_thd2, AMT_CG_thd3, AMT_CG_rt1, AMT_CG_rt2,
-           AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
-
+def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
+        c04470, c17000, c20800, c21040, e24515, MARS, _sep, dwks19,
+        dwks14, c05700, e62900, e00700, dwks10, age_head, _earned,
+        cmbtp_itemizer, cmbtp_standard,
+        KT_c_Age, AMT_tthd, AMT_thd_MarriedS,
+        AMT_em, AMT_prt, AMT_trt1, AMT_trt2,
+        AMT_Child_em, AMT_em_ps, AMT_em_pe,
+        AMT_CG_thd1, AMT_CG_thd2, AMT_CG_thd3, AMT_CG_rt1, AMT_CG_rt2,
+        AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
     """
-    AMTInc function computes Alternative Minimum Tax taxable income
+    AMT function computes Alternative Minimum Tax taxable income and liability:
+    c62100 is AMT taxable income
+    c09600 is AMT tax liability
+    c05800 is total (reg + AMT) income tax liability before credits
+
+    Note that line-number variable names refer to (2015) Form 6251.
     """
     # pylint: disable=too-many-statements,too-many-branches
-    c62720 = c24517
-    c60260 = e00700
-    c62730 = e24515
+    # Form 6251, Part I
     if _standard == 0.0:
         if f6251 == 1:
             cmbtp = cmbtp_itemizer
         else:
             cmbtp = 0.
-        c62100 = (c00100 - c04470 +
+        c62100 = (c00100 - e00700 - c04470 +
                   max(0., min(c17000, 0.025 * c00100)) +
-                  c18300 -
-                  c60260 + c20800 - c21040)
-        c62100 += cmbtp
+                  c18300 + c20800 - c21040)
     if _standard > 0.0:
         if f6251 == 1:
             cmbtp = cmbtp_standard
         else:
             cmbtp = 0.
-        c62100 = c00100 - c60260
-        c62100 += cmbtp
+        c62100 = c00100 - e00700
+    c62100 += cmbtp
     if MARS == 3 or MARS == 6:
         amtsepadd = max(0.,
                         min(AMT_thd_MarriedS, 0.25 * (c62100 - AMT_em_pe)))
     else:
         amtsepadd = 0.
-    c62100 = c62100 + amtsepadd
-    c62600 = max(0., AMT_em[MARS - 1] - AMT_prt *
+    c62100 = c62100 + amtsepadd  # AMT taxable income, which is line28
+    # Form 6251, Part II top
+    line29 = max(0., AMT_em[MARS - 1] - AMT_prt *
                  max(0., c62100 - AMT_em_ps[MARS - 1]))
     if age_head != 0 and age_head < KT_c_Age:
-        c62600 = min(c62600, _earned + AMT_Child_em)
-    c62700 = max(0., c62100 - c62600)
-    alminc = c62700  # because no foreign earned income exclusion
-    amtfei = 0.
-    c62780 = (AMT_trt1 * alminc +
-              AMT_trt2 * max(0., (alminc - (AMT_tthd / _sep) - amtfei)))
+        line29 = min(line29, _earned + AMT_Child_em)
+    line30 = max(0., c62100 - line29)
+    line3163 = (AMT_trt1 * line30 +
+                AMT_trt2 * max(0., (line30 - (AMT_tthd / _sep))))
+    if dwks10 > 0. or dwks13 > 0. or dwks14 > 0. or dwks19 > 0. or e24515 > 0.:
+        # complete Form 6251, Part III (line36 is equal to line30)
+        line37 = dwks13
+        line38 = e24515
+        line39 = min(line37 + line38, dwks10)
+        line40 = min(line30, line39)
+        line41 = max(0., line30 - line40)  # FORM 6251 INSTRUCTION
+        line41 = max(0., line30 - line39)  # ORIGINAL CODE
+        line42 = (AMT_trt1 * line41 +
+                  AMT_trt2 * max(0., (line41 - (AMT_tthd / _sep))))
+        line44 = dwks14
+        line45 = max(0., AMT_CG_thd1[MARS - 1] - line44)
+        line46 = min(line30, line37)
+        line47 = min(line45, line46)  # line47 is amount taxed at AMT_CG_rt1
+        cgtax1 = line47 * AMT_CG_rt1
+        line48 = line46 - line47
+        line51 = dwks19  # FORM 6251 INSTRUCTION
+        line51 = dwks14  # ORIGINAL CODE
+        line52 = line45 + line51
+        line53 = max(0., AMT_CG_thd2[MARS - 1] - line52)  # FORM 6251 INSTRUCT
+        line53 = max(0., AMT_CG_thd2[MARS - 1] - line45 - line44)  # ORIG CODE
+        line54 = min(line48, line53)  # line54 is amount taxed at AMT_CG_rt2
+        cgtax2 = line54 * AMT_CG_rt2  # FORM 6251 INSTRUCTION PARAMETERIZED
+        line56 = line47 + line54  # total amount in lower two brackets
+        if line41 == line56:
+            line57 = 0.  # line57 is amount taxed at AMT_CG_rt3
+            linex2 = 0.  # linex2 is amount taxed at AMT_CG_rt4
+        else:
+            line57 = line46 - line56
+            linex1 = min(line48,
+                         max(0., AMT_CG_thd3[MARS - 1] - line44 - line45))
+            linex2 = max(0., line54 - linex1)
+        cgtax3 = line57 * AMT_CG_rt3  # FORM 6251 INSTRUCTION PARAMETERIZED
+        cgtax4 = linex2 * AMT_CG_rt4
+        # FOLLOWING IF-ELSE STATEMENT CORRESPONDS TO FORM 6251 INSTRUCTIONS
+        if line38 == 0.:
+            line61 = 0.
+        else:
+            line61 = 0.25 * max(0., line30 - line41 - line56 - line57 - linex2)
+        # FOLLOWING IF-ELSE STATEMENT IS FROM ORIGINAL CODE
+        if line39 != 0.:
+            line61 = 0.25 * max(0., line30 - line41 - line46)
+        else:
+            line61 = 0.
+        line62 = line42 + cgtax1 + cgtax2 + cgtax3 + cgtax4 + line61
+        line64 = min(line3163, line62)
+        line31 = line64
+    else:  # if not completing Form 6251, Part III
+        line31 = line3163
+    # Form 6251, Part II bottom
     if f6251 == 1:
-        c62900 = e62900
+        line32 = e62900
     else:
-        c62900 = e07300
-    if c24516 == 0.:
-        c62740 = c62720 + c62730
-    else:
-        c62740 = min(max(0., c24516), c62720 + c62730)
-    ngamty = max(0., alminc - c62740)
-    c62745 = (AMT_trt1 * ngamty +
-              AMT_trt2 * max(0., (ngamty - (AMT_tthd / _sep))))
-    # Capital Gain for AMT
-    tamt2 = 0.
-    amt5pc = 0.
-    line45 = max(0., AMT_CG_thd1[MARS - 1] - c24520)
-    line46 = min(alminc, c62720)
-    line47 = min(line45, line46)
-    line48 = min(alminc, c62720) - line47
-    amt15pc = min(line48, max(0., AMT_CG_thd2[MARS - 1] - c24520 - line45))
-    amt_xtr = min(line48, max(0., AMT_CG_thd3[MARS - 1] - c24520 - line45))
-
-    if ngamty != (amt15pc + line47):
-        amt20pc = line46 - amt15pc - line47
-        amtxtrpc = max(0., amt15pc - amt_xtr)
-    else:
-        amt20pc = 0.
-        amtxtrpc = 0.
-
-    if c62740 != 0.:
-        amt25pc = max(0., alminc - ngamty - line46)
-    else:
-        amt25pc = 0.
-    c62747 = AMT_CG_rt1 * amt5pc
-    c62755 = AMT_CG_rt2 * amt15pc
-    c62760 = AMT_CG_rt3 * amt20pc
-    amt_xtr = AMT_CG_rt4 * amtxtrpc
-    c62770 = 0.25 * amt25pc  # tax rate on "Unrecaptured Schedule E Gain"
-    # tamt2 is the amount of line62 without 42 being added
-    tamt2 = c62747 + c62755 + c62760 + c62770 + amt_xtr
-    c62800 = min(c62780, c62745 + tamt2 - amtfei)
-    c63000 = c62800 - c62900
-    c63100 = _taxbc - e07300 - c05700
-    c63100 = max(0., c63100)
-    c63200 = max(0., c63000 - c63100)
-    c09600 = c63200
-    c05800 = _taxbc + c63200
+        line32 = e07300
+    line33 = line31 - line32
+    c09600 = max(0., line33 - max(0., _taxbc - e07300 - c05700))
+    c05800 = _taxbc + c09600
     return (c62100, c09600, c05800)
 
 
@@ -769,7 +817,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
     if EIC == 0:
         # enforce age eligibility rule for those with no EITC-eligible children
         # (assume that an unknown age_* value implies EITC age eligibility)
-        # pylint: disable=bad-continuation
+        # pylint: disable=bad-continuation,too-many-boolean-expressions
         if MARS == 2:
             if (age_head >= EITC_MinEligAge and
                 age_head <= EITC_MaxEligAge) or \
