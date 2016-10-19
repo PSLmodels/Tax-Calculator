@@ -1,3 +1,6 @@
+AGEDP1 = Age of first dependent
+AGEDP2 = Age of second dependent
+AGEDP3 = age of third dependent
 AGE_HEAD = Age in years of taxpayer (i.e., primary filer)
 AGE_SPOUSE = Age in years of spouse (i.e., secondary filer if present)
 BLIND_HEAD = zero/one indicator for taxpayer (i.e., primary filer)
