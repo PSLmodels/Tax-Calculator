@@ -606,12 +606,13 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks10 = max(0., min(p23250, c23650)) + e01100
         dwks13 = 0.
         dwks14 = 0.
+        dwks19 = 0.
 
     # final calculations done no matter what the value of hasqdivltcg
     c05100 = c24580  # because no foreign earned income deduction
     c05700 = 0.  # no Form 4972, Lump Sum Distributions
     _taxbc = c05700 + c05100
-    return (dwks10, dwks13, dwks14, c05700, _taxbc)
+    return (dwks10, dwks13, dwks14, dwks19, c05700, _taxbc)
 
 
 @iterate_jit(nopython=True)
@@ -667,67 +668,72 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
     else:
         amtsepadd = 0.
     c62100 = c62100 + amtsepadd  # AMT taxable income, which is line28
-    # Form 6251, Part II
+    # Form 6251, Part II top
     line29 = max(0., AMT_em[MARS - 1] - AMT_prt *
                  max(0., c62100 - AMT_em_ps[MARS - 1]))
     if age_head != 0 and age_head < KT_c_Age:
         line29 = min(line29, _earned + AMT_Child_em)
     line30 = max(0., c62100 - line29)
-    line31 = (AMT_trt1 * line30 +
-              AMT_trt2 * max(0., (line30 - (AMT_tthd / _sep))))
-    # Form 6251, Part III (line36 is equal to line30)
-    line37 = dwks13
-    line38 = e24515
-    line39 = min(line37 + line38, dwks10)
-    line40 = min(line30, line39)
-    line41 = max(0., line30 - line40)  # FORM 6251 INSTRUCTION
-    line41 = max(0., line30 - line39)  # ORIGINAL CODE
-    line42 = (AMT_trt1 * line41 +
-              AMT_trt2 * max(0., (line41 - (AMT_tthd / _sep))))
-    line44 = dwks14
-    line45 = max(0., AMT_CG_thd1[MARS - 1] - line44)
-    line46 = min(line30, line37)
-    line47 = min(line45, line46)  # line47 is amount taxed at AMT_CG_rt1
-    cgtax1 = line47 * AMT_CG_rt1  # FORM 6251 INSTRUCTION PARAMETERIZED
-    cgtax1 = 0.  # ORGINAL CODE WITHOUT ANY PARAMETERIZATION OF TAX RATE
-    line48 = line46 - line47
-    line51 = dwks19  # FORM 6251 INSTRUCTION
-    line51 = dwks14  # ORIGINAL CODE
-    line52 = line45 + line51
-    line53 = max(0., AMT_CG_thd2[MARS - 1] - line52)  # FORM 6251 INSTRUCTION
-    line53 = max(0., AMT_CG_thd2[MARS - 1] - line45 - line44)  # ORIGINAL CODE
-    line54 = min(line48, line53)  # line54 is amount taxed at AMT_CG_rt2
-    cgtax2 = line54 * AMT_CG_rt2  # FORM 6251 INSTRUCTION PARAMETERIZED
-
-    amt_xtr = min(line48, max(0., AMT_CG_thd3[MARS - 1] - line44 - line45))
-    if line41 != (line54 + line47):
-        amt20pc = line46 - line54 - line47
-        amtxtrpc = max(0., line54 - amt_xtr)
-    else:
-        amt20pc = 0.
-        amtxtrpc = 0.
-    if line39 != 0.:
-        amt25pc = max(0., line30 - line41 - line46)
-    else:
-        amt25pc = 0.
-    c62760 = AMT_CG_rt3 * amt20pc
-    amt_xtr = AMT_CG_rt4 * amtxtrpc
-    c62770 = 0.25 * amt25pc  # tax rate on "Unrecaptured Schedule E Gain"
-    # cgtax is the amount on line62 without line42 being added
-    cgtax = cgtax1 + cgtax2 + c62760 + c62770 + amt_xtr
-    c62800 = min(line31, line42 + cgtax)
-    # line32 = 0.  # AMT foreign tax credit is always zero
-    # line33 = line31 - line32
+    line3163 = (AMT_trt1 * line30 +
+                AMT_trt2 * max(0., (line30 - (AMT_tthd / _sep))))
+    if dwks10 > 0. or dwks13 > 0. or dwks14 > 0. or dwks19 > 0. or e24515 > 0.:
+        # complete Form 6251, Part III (line36 is equal to line30)
+        line37 = dwks13
+        line38 = e24515
+        line39 = min(line37 + line38, dwks10)
+        line40 = min(line30, line39)
+        line41 = max(0., line30 - line40)  # FORM 6251 INSTRUCTION
+        line41 = max(0., line30 - line39)  # ORIGINAL CODE
+        line42 = (AMT_trt1 * line41 +
+                  AMT_trt2 * max(0., (line41 - (AMT_tthd / _sep))))
+        line44 = dwks14
+        line45 = max(0., AMT_CG_thd1[MARS - 1] - line44)
+        line46 = min(line30, line37)
+        line47 = min(line45, line46)  # line47 is amount taxed at AMT_CG_rt1
+        cgtax1 = line47 * AMT_CG_rt1  # FORM 6251 INSTRUCTION PARAMETERIZED
+        cgtax1 = 0.  # ORGINAL CODE WITHOUT ANY PARAMETERIZATION OF TAX RATE
+        line48 = line46 - line47
+        line51 = dwks19  # FORM 6251 INSTRUCTION
+        line51 = dwks14  # ORIGINAL CODE
+        line52 = line45 + line51
+        line53 = max(0., AMT_CG_thd2[MARS - 1] - line52)  # FORM 6251 INSTRUCT
+        line53 = max(0., AMT_CG_thd2[MARS - 1] - line45 - line44)  # ORIG CODE
+        line54 = min(line48, line53)  # line54 is amount taxed at AMT_CG_rt2
+        cgtax2 = line54 * AMT_CG_rt2  # FORM 6251 INSTRUCTION PARAMETERIZED
+        line56 = line47 + line54  # total amount in lower two brackets
+        if line41 == line56:
+            line57 = 0.  # line57 is amount taxed at AMT_CG_rt3
+            linex2 = 0.  # linex2 is amount taxed at AMT_CG_rt4
+        else:
+            line57 = line46 - line56
+            linex1 = min(line48,
+                         max(0., AMT_CG_thd3[MARS - 1] - line44 - line45))
+            linex2 = max(0., line54 - linex1)
+        cgtax3 = line57 * AMT_CG_rt3  # FORM 6251 INSTRUCTION PARAMETERIZED
+        cgtax4 = linex2 * AMT_CG_rt4
+        # FOLLOWING IF-ELSE STATEMENT CORRESPONDS TO FORM 6251 INSTRUCTIONS
+        if line38 == 0.:
+            line61 = 0.
+        else:
+            line61 = 0.25 * max(0., line30 - line41 - line56 - line57 - linex2)
+        # FOLLOWING IF-ELSE STATEMENT IS FROM ORIGINAL CODE
+        if line39 != 0.:
+            line61 = 0.25 * max(0., line30 - line41 - line46)
+        else:
+            line61 = 0.
+        line62 = line42 + cgtax1 + cgtax2 + cgtax3 + cgtax4 + line61
+        line64 = min(line3163, line62)
+        line31 = line64
+    else:  # if not completing Form 6251, Part III
+        line31 = line3163
+    # Form 6251, Part II bottom
     if f6251 == 1:
-        c62900 = e62900
+        line32 = e62900
     else:
-        c62900 = e07300
-    c63000 = c62800 - c62900
-    c63100 = _taxbc - e07300 - c05700
-    c63100 = max(0., c63100)
-    c63200 = max(0., c63000 - c63100)
-    c09600 = c63200
-    c05800 = _taxbc + c63200
+        line32 = e07300
+    line33 = line31 - line32
+    c09600 = max(0., line33 - max(0., _taxbc - e07300 - c05700))
+    c05800 = _taxbc + c09600
     return (c62100, c09600, c05800)
 
 
