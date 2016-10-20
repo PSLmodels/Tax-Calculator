@@ -3,7 +3,7 @@ from .. import (Calculator, Records, Policy, Behavior,
                 TABLE_LABELS, TABLE_COLUMNS, STATS_COLUMNS,
                 DIFF_TABLE_LABELS)
 
-from .. import growth, policy, utils
+from .. import growth, policy
 
 import numpy as np
 from pandas import DataFrame
@@ -11,6 +11,8 @@ import pandas as pd
 import hashlib
 import copy
 import time
+from .utils import create_dropq_difference_table as dropq_diff_table
+from .utils import create_dropq_distribution_table as dropq_dist_table
 from .utils import *
 
 planY_column_types = [float] * len(TABLE_LABELS)
@@ -30,7 +32,7 @@ bin_row_names = ["less_than_10", "ten_twenty", "twenty_thirty", "thirty_forty",
 
 total_row_names = ["ind_tax", "payroll_tax", "combined_tax"]
 
-GDP_elasticity_row_names = ["gdp_elasticity"]
+GDP_elast_row_names = ["gdp_elasticity"]
 
 ogusa_row_names = ["GDP", "Consumption", "Investment", "Hours Worked", "Wages",
                    "Interest Rates", "Total Taxes"]
@@ -125,13 +127,18 @@ def elasticity_of_gdp_year_n(user_mods, year_n):
         return ELASTICITY_LIST[year_n]
 
 
-def random_seed_from_plan(calc):
+def random_seed_from_plan(user_mods):
     all_vals = []
-    all_params = sorted([str(k) for k in policy.Policy.default_data()])
-    for param in all_params:
-        if hasattr(calc, param):
-            print("calc has ", param)
-            all_vals.append(str((param, tuple(getattr(calc, param)))))
+    for year in sorted(user_mods.keys()):
+        all_vals.append(str(year))
+        reform = user_mods[year]
+        for param in sorted(reform.keys()):
+            try:
+                tple = tuple(reform[param])
+            except TypeError:
+                # Not iterable value
+                tple = tuple((reform[param],))
+            all_vals.append(str((param, tple)))
 
     txt = u"".join(all_vals).encode("utf-8")
     hsh = hashlib.sha512(txt)
@@ -161,21 +168,26 @@ def chooser(agg):
     return ans
 
 
-def label_and_group_size(grp, msg):
-    print(msg)
-    for k, v in grp.groups.items():
-        print(str(k), ": ", str(len(v)))
-
-
-def groupby_means_and_comparisons(df1, df2, mask, debug=False):
+def drop_records(df1, df2, mask):
     """
+    Modify datasets df1 and df2 by adding statistical 'fuzz'.
     df1 is the standard plan X and X'
     df2 is the user-specified plan (Plan Y)
     mask is the boolean mask where X and X' match
+    This function groups both datasets based on the web application's
+    income groupings (both weighted decile and income bins), and then
+    pseudo-randomly picks three records to 'drop' within each bin.
+    We keep track of the three dropped records in both group-by
+    strategies and then use these 'flag' columns to modify all
+    columns of interest, creating new '*_dec' columns for later
+    statistics based on weighted deciles and '*_bin' columns
+    for statitistics based on grouping by income bins.
+    in each bin in two group-by actions. Lastly we calculate
+    individual income tax differences, payroll tax differences, and
+    combined tax differences between the baseline and reform
+    for the two groupings.
     """
-
     # perform all statistics on (Y + X') - X
-    # so df2['c05200'] should be replaced with df2['c05200_noise']
 
     # Group first
     df2['mask'] = mask
@@ -190,10 +202,6 @@ def groupby_means_and_comparisons(df1, df2, mask, debug=False):
     df2 = add_income_bins(df2, bins=income_bins)
     df1 = add_income_bins(df1, bins=income_bins)
     gp2_bin = df2.groupby('bins')
-
-    if debug:
-        label_and_group_size(gp2_dec, "decile groups:")
-        label_and_group_size(gp2_bin, "income binned groups:")
 
     # Transform to get the 'flag' column (3 choices to drop in each bin)
     df2['flag_dec'] = gp2_dec['mask'].transform(chooser)
@@ -221,6 +229,18 @@ def groupby_means_and_comparisons(df1, df2, mask, debug=False):
     df2['combined_diff_dec'] = df2['_combined_dec'] - df1['_combined']
     df2['combined_diff_bin'] = df2['_combined_bin'] - df1['_combined']
 
+    return df1, df2
+
+
+def groupby_means_and_comparisons(df1, df2, mask, debug=False):
+    """
+    df1 is the standard plan X and X'
+    df2 is the user-specified plan (Plan Y)
+    mask is the boolean mask where X and X' match
+    """
+
+    df1, df2 = drop_records(df1, df2, mask)
+
     dec_sum = (df2['tax_diff_dec'] * df2['s006']).sum()
     bin_sum = (df2['tax_diff_bin'] * df2['s006']).sum()
     pr_dec_sum = (df2['payrolltax_diff_dec'] * df2['s006']).sum()
@@ -229,53 +249,53 @@ def groupby_means_and_comparisons(df1, df2, mask, debug=False):
     combined_bin_sum = (df2['combined_diff_bin'] * df2['s006']).sum()
 
     # Create Difference tables, grouped by deciles and bins
-    diffs_dec = create_dropq_difference_table(df1, df2,
-                                              groupby="weighted_deciles",
-                                              res_col='tax_diff',
-                                              diff_col='_iitax',
-                                              suffix="_dec", wsum=dec_sum)
+    diffs_dec = dropq_diff_table(df1, df2,
+                                 groupby="weighted_deciles",
+                                 res_col='tax_diff',
+                                 diff_col='_iitax',
+                                 suffix="_dec", wsum=dec_sum)
 
-    diffs_bin = create_dropq_difference_table(df1, df2,
-                                              groupby="webapp_income_bins",
-                                              res_col='tax_diff',
-                                              diff_col='_iitax',
-                                              suffix="_bin", wsum=bin_sum)
+    diffs_bin = dropq_diff_table(df1, df2,
+                                 groupby="webapp_income_bins",
+                                 res_col='tax_diff',
+                                 diff_col='_iitax',
+                                 suffix="_bin", wsum=bin_sum)
 
-    pr_diffs_dec = create_dropq_difference_table(df1, df2,
-                                                 groupby="weighted_deciles",
-                                                 res_col='payrolltax_diff',
-                                                 diff_col='_payrolltax',
-                                                 suffix="_dec", wsum=pr_dec_sum)
+    pr_diffs_dec = dropq_diff_table(df1, df2,
+                                    groupby="weighted_deciles",
+                                    res_col='payrolltax_diff',
+                                    diff_col='_payrolltax',
+                                    suffix="_dec", wsum=pr_dec_sum)
 
-    pr_diffs_bin = create_dropq_difference_table(df1, df2,
-                                                 groupby="webapp_income_bins",
-                                                 res_col='payrolltax_diff',
-                                                 diff_col='_payrolltax',
-                                                 suffix="_bin", wsum=pr_bin_sum)
+    pr_diffs_bin = dropq_diff_table(df1, df2,
+                                    groupby="webapp_income_bins",
+                                    res_col='payrolltax_diff',
+                                    diff_col='_payrolltax',
+                                    suffix="_bin", wsum=pr_bin_sum)
 
-    comb_diffs_dec = create_dropq_difference_table(df1, df2,
-                                                   groupby="weighted_deciles",
-                                                   res_col='combined_diff',
-                                                   diff_col='_combined',
-                                                   suffix="_dec", wsum=combined_dec_sum)
+    comb_diffs_dec = dropq_diff_table(df1, df2,
+                                      groupby="weighted_deciles",
+                                      res_col='combined_diff',
+                                      diff_col='_combined',
+                                      suffix="_dec", wsum=combined_dec_sum)
 
-    comb_diffs_bin = create_dropq_difference_table(df1, df2,
-                                                   groupby="webapp_income_bins",
-                                                   res_col='combined_diff',
-                                                   diff_col='_combined',
-                                                   suffix="_bin", wsum=combined_bin_sum)
+    comb_diffs_bin = dropq_diff_table(df1, df2,
+                                      groupby="webapp_income_bins",
+                                      res_col='combined_diff',
+                                      diff_col='_combined',
+                                      suffix="_bin", wsum=combined_bin_sum)
 
     mX_dec = create_distribution_table(df1, groupby='weighted_deciles',
                                        result_type='weighted_sum')
 
-    mY_dec = create_dropq_distribution_table(df2, groupby='weighted_deciles',
-                                             result_type='weighted_sum', suffix='_dec')
+    mY_dec = dropq_dist_table(df2, groupby='weighted_deciles',
+                              result_type='weighted_sum', suffix='_dec')
 
     mX_bin = create_distribution_table(df1, groupby='webapp_income_bins',
                                        result_type='weighted_sum')
 
-    mY_bin = create_dropq_distribution_table(df2, groupby='webapp_income_bins',
-                                             result_type='weighted_sum', suffix='_bin')
+    mY_bin = dropq_dist_table(df2, groupby='webapp_income_bins',
+                              result_type='weighted_sum', suffix='_bin')
 
     return (mY_dec, mX_dec, diffs_dec, pr_diffs_dec, comb_diffs_dec,
             mY_bin, mX_bin, diffs_bin, pr_diffs_bin, comb_diffs_bin,
@@ -293,8 +313,8 @@ def results(c):
     return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
 
 
-def run_nth_year_mtr_calc(year_n, start_year, tax_dta, user_mods="", return_json=True):
-
+def run_nth_year_mtr_calc(year_n, start_year, tax_dta, user_mods="",
+                          return_json=True):
     # Only makes sense to run for budget years 1 through n-1 (not for year 0)
     assert year_n > 0
 
@@ -335,7 +355,7 @@ def run_nth_year_mtr_calc(year_n, start_year, tax_dta, user_mods="", return_json
         calc3.increment_year()
     assert calc3.current_year == start_year
     # Get a random seed based on user specified plan
-    seed = random_seed_from_plan(calc3)
+    seed = random_seed_from_plan(user_mods)
     np.random.seed(seed)
 
     for i in range(0, year_n - 1):
@@ -370,7 +390,7 @@ def run_nth_year_mtr_calc(year_n, start_year, tax_dta, user_mods="", return_json
     if not return_json:
         return gdp_effect_y
 
-    gdp_elast_names_i = [x + '_' + str(year_n) for x in GDP_elasticity_row_names]
+    gdp_elast_names_i = [x + '_' + str(year_n) for x in GDP_elast_row_names]
 
     gdp_elast_total = create_json_table(gdp_df, row_names=gdp_elast_names_i,
                                         num_decimals=5)
@@ -381,8 +401,8 @@ def run_nth_year_mtr_calc(year_n, start_year, tax_dta, user_mods="", return_json
     return gdp_elast_total
 
 
-def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
-                 return_json=True):
+def calculate_baseline_and_reform(year_n, start_year, is_strict,
+                                   tax_dta="", user_mods=""):
 
     #########################################################################
     # Create Calculators and Masks
@@ -451,10 +471,9 @@ def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
 
     calc3.calc_all()
     # Get a random seed based on user specified plan
-    seed = random_seed_from_plan(calc3)
+    seed = random_seed_from_plan(user_mods)
     np.random.seed(seed)
 
-    start_time = time.time()
     for i in range(0, year_n):
         calc1.increment_year()
         calc3.increment_year()
@@ -466,13 +485,24 @@ def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
         calc3.calc_all()
     soit1 = results(calc1)
     soit3 = results(calc3)
+
+    return soit1, soit3, mask
+
+
+def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
+                 return_json=True):
+
+    start_time = time.time()
+    soit_baseline, soit_reform, mask = calculate_baseline_and_reform(
+        year_n, start_year, is_strict, tax_dta, user_mods)
+
     # Means of plan Y by decile
     # diffs of plan Y by decile
     # Means of plan Y by income bin
     # diffs of plan Y by income bin
     mY_dec, mX_dec, df_dec, pdf_dec, cdf_dec, mY_bin, mX_bin, df_bin, \
         pdf_bin, cdf_bin, diff_sum, payrolltax_diff_sum, combined_diff_sum = \
-        groupby_means_and_comparisons(soit1, soit3, mask)
+        groupby_means_and_comparisons(soit_baseline, soit_reform, mask)
 
     elapsed_time = time.time() - start_time
     print("elapsed time for this run: ", elapsed_time)
@@ -538,7 +568,8 @@ def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
                                         row_names=bin_row_names_i,
                                         column_types=diff_column_types)
 
-    fiscal_yr_total = create_json_table(fiscal_tots, row_names=total_row_names_i)
+    fiscal_yr_total = create_json_table(fiscal_tots,
+                                        row_names=total_row_names_i)
     # Make the one-item lists of strings just strings
     fiscal_yr_total = dict((k, v[0]) for k, v in fiscal_yr_total.items())
 
@@ -547,7 +578,8 @@ def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
             pdf_bin_table_i, cdf_bin_table_i, fiscal_yr_total)
 
 
-def run_models(tax_dta, start_year, is_strict=False, user_mods="", return_json=True, num_years=NUM_YEARS_DEFAULT):
+def run_models(tax_dta, start_year, is_strict=False, user_mods="",
+               return_json=True, num_years=NUM_YEARS_DEFAULT):
 
     mY_dec_table = {}
     mX_dec_table = {}
@@ -565,7 +597,8 @@ def run_models(tax_dta, start_year, is_strict=False, user_mods="", return_json=T
     #   Create Calculators and Masks
     #########################################################################
     for year_n in range(0, num_years):
-        json_tables = run_nth_year(year_n, start_year=start_year, tax_dta=tax_dta,
+        json_tables = run_nth_year(year_n, start_year=start_year,
+                                   tax_dta=tax_dta,
                                    is_strict=is_strict, user_mods=user_mods,
                                    return_json=return_json)
 
@@ -598,7 +631,8 @@ def run_gdp_elast_models(tax_dta, start_year, user_mods="",
     #########################################################################
     for year_n in range(1, num_years):
         gdp_elast_i = run_nth_year_mtr_calc(year_n, tax_dta=tax_dta,
-                                            user_mods=user_mods, start_year=start_year,
+                                            user_mods=user_mods,
+                                            start_year=start_year,
                                             return_json=return_json)
 
         gdp_elasticity_totals.append(gdp_elast_i)

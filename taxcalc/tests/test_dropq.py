@@ -17,23 +17,27 @@ def puf_path(tests_path):
     return os.path.join(tests_path, '..', '..', 'puf.csv')
 
 
-@pytest.mark.parametrize("is_strict, return_json", [(True, False),
-    (False, False), (True, True)])
-def test_run_dropq_nth_year(is_strict, return_json, puf_1991_path):
+@pytest.mark.parametrize("is_strict, return_json, growth_params",
+                         [(True, False, False), (False, False, False),
+                          (True, True, False), (False, True, True)])
+def test_run_dropq_nth_year(is_strict, return_json, growth_params,
+                            puf_1991_path):
     myvars = {}
     myvars['_II_em_cpi'] = False
     myvars['_II_rt4'] = [0.39, 0.40, 0.41]
     myvars['_II_rt3'] = [0.31, 0.32, 0.33]
+    if growth_params:
+        myvars['_factor_adjustment'] = [0.01]
     first_year = 2016
     user_mods = {first_year: myvars}
 
     # Create a Public Use File object
     tax_data = pd.read_csv(puf_1991_path)
     (mY_dec, mX_dec, df_dec, pdf_dec, cdf_dec, mY_bin, mX_bin, df_bin,
-     pdf_bin, cdf_bin, fiscal_tots) = dropq.run_models(tax_data, 
+     pdf_bin, cdf_bin, fiscal_tots) = dropq.run_models(tax_data,
                                                        start_year=first_year,
                                                        is_strict=is_strict,
-                                                       user_mods=user_mods, 
+                                                       user_mods=user_mods,
                                                        return_json=return_json,
                                                        num_years=3)
 
@@ -48,14 +52,13 @@ def test_run_dropq_nth_year_mtr(return_json, puf_1991_path):
     first_year = 2016
     user_mods = {first_year: myvars}
 
-    #Create a Public Use File object
+    # Create a Public Use File object
     tax_data = pd.read_csv(puf_1991_path)
 
     gdp_elast_tots = dropq.run_gdp_elast_models(tax_data, start_year=first_year,
                                                 user_mods=user_mods,
                                                 return_json=return_json,
                                                 num_years=3)
-
 
 
 def test_only_growth_assumptions():
@@ -235,3 +238,24 @@ def test_create_json_table():
            '1': ['4.00', '5', '6'],
            '2': ['7.00', '8', '9']}
     assert ans == exp
+
+def test_format_print_not_implemented():
+    x = b'123'
+    with pytest.raises(NotImplementedError):
+        format_print(x, bytes, 2)
+
+def test_create_dropq_dist_table_groupby_options():
+    pass
+    """create_dropq_distribution_table(calc, groupby="small_income_bins", result_type, suffix)
+    create_dropq_distribution_table(calc, groupby="large_income_bins", result_type, suffix)
+    create_dropq_distribution_table(calc, groupby="large_income_bins", result_type="weighted_average", suffix)
+    with pytest.raises(NotImplementedError):
+        create_dropq_distribution_table(calc, groupby="other_income_bins", result_type, suffix)"""
+
+def test_create_dropq_diff_table_groupby_options():
+    pass
+    """create_dropq_difference_table(calc, groupby="small_income_bins", result_type, suffix)
+    create_dropq_difference_table(calc, groupby="large_income_bins", result_type, suffix)
+    with pytest.raises(NotImplementedError):
+        create_dropq_difference_table(calc, groupby="other_income_bins", result_type, suffix)"""
+
