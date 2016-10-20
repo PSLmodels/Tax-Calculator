@@ -632,7 +632,7 @@ def ascii_output(csv_filename, ascii_filename):
 
 
 def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
-                 income_measure='e00200', mtr_measure='_iitax',
+                 income_measure='e00200', mtr_measure='_combined',
                  complex_weight=False):
     """
     This function prepares the MTR data for two calculators.
@@ -656,16 +656,25 @@ def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
                 into consideration.
         Choose different weighting method
 
-    MARS : Integer
-        options for input: 1, 2, 3, 4
+    MARS : Integer or String
+        options for input: 'ALL', 1, 2, 3, 4
         Choose different filling status
 
     income_measure : String object
-        options for input: '_expanded_income', 'c00100', 'e00200'
+        options for input:
+            '_expanded_income': The sum of adjusted gross income, non-taxable
+                interest income, non-taxable social security benefits and
+                employer share of FICA.
+            'c00100': Adjusted gross income
+            'e00200': Salaries and wages.
         classifier of income bins/deciles
 
     mtr_measure : String object
-        options for input: '_iitax', '_combined'
+        options for input:
+            '_iitax': Marginal individual income tax rates.
+            '_combined': Marginal combined tax rates, which is
+                the sum of marginal payroll tax rates and marginal individual
+                income tax rates.
         Choose different marginal tax rate measure
 
     complex_weight : Boolean
