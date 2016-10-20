@@ -654,7 +654,7 @@ def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
                 option would be helpful if you are interested in
                 the MTR after taking both weights and wages
                 into consideration.
-        Choose different weighting method
+        Choose different weighting methods
 
     MARS : Integer or String
         options for input: 'ALL', 1, 2, 3, 4
@@ -671,15 +671,18 @@ def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
 
     mtr_measure : String object
         options for input:
-            '_iitax': Marginal individual income tax rates.
+            '_iitax': Marginal individual income tax rate.
             '_combined': Marginal combined tax rates, which is
-                the sum of marginal payroll tax rates and marginal individual
-                income tax rates.
-        Choose different marginal tax rate measure
+                the sum of marginal payroll tax rate and marginal individual
+                income tax rate.
+        Choose different marginal tax rate measures
 
     complex_weight : Boolean
-        The cumulated sum will be carried out based on weighted income measure
-        if this option is true
+        If this option is true, the desired income measure will be weighted by
+        s006. And thus this will allow users to obtain aggregate activity for
+        selected income measure. For example, if income measure is 'e00200' and
+        this option is true, then the bin (or x-axis in the plot)
+        is the (percentile of) economic activity.
     Returns
     -------
     DataFrame object
@@ -755,7 +758,7 @@ def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
     df_filtered_x.drop_duplicates(subset='bins', inplace=True)
     df_filtered_y.drop_duplicates(subset='bins', inplace=True)
 
-    # Prepare cleaned mtr data and concatenate into one datafram
+    # Prepare cleaned mtr data and concatenate into one dataframe
     df_filtered_x = df_filtered_x['w_mtr']
     df_filtered_y = df_filtered_y['w_mtr']
 
