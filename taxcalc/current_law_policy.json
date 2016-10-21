@@ -877,7 +877,7 @@
     },
 
     "_CG_nodiff": {
-        "long_name": "Long term capital gains and qualified dividends taxed no different than other income",
+        "long_name": "Long term capital gains and qualified dividends taxed no differently than other income",
         "description": "Specifies whether or not long term capital gains and qualified dividends are taxed like other income.",
         "irs_ref": "Current-law value is zero implying different tax treatment in Schedule D and AMT; a value of one implies same tax treatment in both regular and alternative minimum tax rules, but the same treatment can differ for regular and AMT.",
         "start_year": 2013,
