@@ -314,7 +314,7 @@ def test_add_weighted_decile_bins():
     for lab in bin_labels:
         assert lab in default_labels
     # Custom labels
-    df = add_weighted_decile_bins(df, complex_weight=True)
+    df = add_weighted_decile_bins(df, weight_by_income_measure=True)
     assert 'bins' in df
     custom_labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
     df = add_weighted_decile_bins(df, labels=custom_labels)
@@ -531,7 +531,7 @@ def test_mtr_plot(records_2009):
     calc = Calculator(policy=pol, records=records_2009, behavior=behv)
     calc.calc_all()
     source = get_mtr_data(calc, calc, weighting='wage_weighted',
-                          complex_weight=True)
+                          weight_by_income_measure=True)
     plot = mtr_plot(source)
 
 
@@ -543,7 +543,7 @@ def test_mtr_plot_force_no_bokeh(records_2009):
     calc = Calculator(policy=pol, records=records_2009, behavior=behv)
     calc.calc_all()
     source = get_mtr_data(calc, calc, weighting='weighted_mean',
-                          complex_weight=True)
+                          weight_by_income_measure=True)
     with pytest.raises(RuntimeError):
         plot = mtr_plot(source)
     taxcalc.utils.BOKEH_AVAILABLE = True

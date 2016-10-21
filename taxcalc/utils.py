@@ -105,7 +105,8 @@ def weighted_share_of_total(agg, col_name, total):
 
 
 def add_weighted_decile_bins(df, income_measure='_expanded_income',
-                             num_bins=10, labels=None, complex_weight=False):
+                             num_bins=10, labels=None,
+                             weight_by_income_measure=False):
     """
     Add a column of income bins based on each 10% of the income_measure,
     weighted by s006.
@@ -115,13 +116,13 @@ def add_weighted_decile_bins(df, income_measure='_expanded_income',
     This function will server as a 'grouper' later on.
     """
     # First, weight income measure by s006 if desired
-    if complex_weight:
+    if weight_by_income_measure:
         df['s006_weighted'] = np.multiply(df[income_measure].values,
                                           df['s006'].values)
     # Next, sort by income_measure
     df.sort_values(by=income_measure, inplace=True)
     # Do a cumulative sum
-    if complex_weight:
+    if weight_by_income_measure:
         df['cumsum_weights'] = np.cumsum(df['s006_weighted'].values)
     else:
         df['cumsum_weights'] = np.cumsum(df['s006'].values)
@@ -633,7 +634,7 @@ def ascii_output(csv_filename, ascii_filename):
 
 def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
                  income_measure='e00200', mtr_measure='_combined',
-                 complex_weight=False):
+                 weight_by_income_measure=False):
     """
     This function prepares the MTR data for two calculators.
 
@@ -677,7 +678,7 @@ def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
                 income tax rate.
         Choose different marginal tax rate measures
 
-    complex_weight : Boolean
+    weight_by_income_measure : Boolean
         If this option is true, for each record, s006 (weight) will be weighted
         by the desired income measure. And thus this will allow users to obtain
         aggregate activity for selected income measure. For example, if income
@@ -702,11 +703,11 @@ def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
     df_y[income_measure] = df_x[income_measure]
 
     # Complex weighted bins or not
-    if complex_weight:
+    if weight_by_income_measure:
         df_x = add_weighted_decile_bins(df_x, income_measure, 100,
-                                        complex_weight=True)
+                                        weight_by_income_measure=True)
         df_y = add_weighted_decile_bins(df_y, income_measure, 100,
-                                        complex_weight=True)
+                                        weight_by_income_measure=True)
     else:
         df_x = add_weighted_decile_bins(df_x, income_measure, 100)
         df_y = add_weighted_decile_bins(df_y, income_measure, 100)
@@ -766,7 +767,7 @@ def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
                        ignore_index=True)
     merged.columns = ['base', 'reform']
     merged.index = (merged.reset_index()).index
-    if complex_weight:
+    if weight_by_income_measure:
         merged = merged[1:]
     return merged
 
