@@ -678,11 +678,11 @@ def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
         Choose different marginal tax rate measures
 
     complex_weight : Boolean
-        If this option is true, the desired income measure will be weighted by
-        s006. And thus this will allow users to obtain aggregate activity for
-        selected income measure. For example, if income measure is 'e00200' and
-        this option is true, then the bin (or x-axis in the plot)
-        is the (percentile of) economic activity.
+        If this option is true, for each record, s006 (weight) will be weighted
+        by the desired income measure. And thus this will allow users to obtain
+        aggregate activity for selected income measure. For example, if income
+        measure is 'e00200' and this option is true, then the bin (or x-axis in
+        the plot) is the (percentile of) total economic activity.
     Returns
     -------
     DataFrame object
@@ -765,7 +765,9 @@ def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
     merged = pd.concat([df_filtered_x, df_filtered_y], axis=1,
                        ignore_index=True)
     merged.columns = ['base', 'reform']
-
+    merged.index = (merged.reset_index()).index
+    if complex_weight:
+        merged = merged[1:]
     return merged
 
 
