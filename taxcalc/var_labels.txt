@@ -1,6 +1,7 @@
 AGEDP1 = Age of first dependent
 AGEDP2 = Age of second dependent
-AGEDP3 = age of third dependent
+AGEDP3 = Age of third dependent
+AGEDP4 = Age of forth dependent
 AGE_HEAD = Age in years of taxpayer (i.e., primary filer)
 AGE_SPOUSE = Age in years of spouse (i.e., secondary filer if present)
 BLIND_HEAD = zero/one indicator for taxpayer (i.e., primary filer)
@@ -67,6 +68,7 @@ E58990 = Form 4952 investment income elected amount (line 4g)
 E62900 = Form 6251: Form 6251 foreign tax credit
 E87530 = Lifetime Learning Credit total qualified expenses (Form 8863, line 10)
 EIC = Earned Income Credit code: categorical variable
+ELDERLY_DEPENDENT = 1 if unit has elderly dependent; 0 if no elderly dependent
 F2441 = Form 2441 number of Child Care Credit qualified individuals
 F6251 = Form 6251, Alternative Minimum Tax, attached to return or not
 FILER = 1 if unit from IRS-SOI PUF; 0 if unit from CPS

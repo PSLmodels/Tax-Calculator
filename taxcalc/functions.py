@@ -74,7 +74,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
 
 
 @iterate_jit(nopython=True)
-def DependentCare(agedp1, agedp2, agedp3, _earned,
+def DependentCare(agedp1, agedp2, agedp3, agedp4, elderly_dependent, _earned,
                   MARS, ALD_Dependents_thd, ALD_Dependents_HC,
                   ALD_Dependents_Child_ec, ALD_Dependents_Elder_ec,
                   care_deduction):
@@ -85,6 +85,8 @@ def DependentCare(agedp1, agedp2, agedp3, _earned,
     agedp1: Age of first dependent
     agedp2: Age of second dependent
     agedp3: Age of third dependent
+    agedp4: Age of fourth dependent
+    elderly_dependent: 1 if unit has an elderly dependent 0 otherwise
     _earned: Form 2441 earned income amount
     MARS: Marital Status
     ALD_Dependents_thd: Maximum income to qualify for deduction
@@ -99,26 +101,13 @@ def DependentCare(agedp1, agedp2, agedp3, _earned,
     """
 
     if _earned <= ALD_Dependents_thd[MARS - 1]:
-        # Randomly assign a fourth dependent to tax units with at least three
-        if 1<= agedp3 <= 2:
-            x = np.random.random()
-            if x <= 0.020545:
-                agedp4 = 1
-            else:
-                agedp4 = 0
         ages = np.array([agedp1, agedp2, agedp3, agedp4])
         # Count the number of qualifying dependents
-        children = ((1 == ages)|(ages ==2)).sum()
-        # Randomly assign an elderly dependent
-        x = np.random.random()
-        if x <= 0.00008509:
-            elderly = 1
-        else:
-            elderly = 0
+        children = ((1 == ages) | (ages == 2)).sum()
         care_deduction = (((1 - ALD_Dependents_HC) * children *
-                    ALD_Dependents_Child_ec) +
-                    ((1- ALD_Dependents_HC) * elderly *
-                    ALD_Dependents_Elder_ec))
+                          ALD_Dependents_Child_ec) +
+                          ((1 - ALD_Dependents_HC) * elderly_dependent *
+                          ALD_Dependents_Elder_ec))
     else:
         care_deduction = 0.
     return care_deduction
