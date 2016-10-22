@@ -532,6 +532,51 @@ def test_multiyear_diagnostic_table(records_2009):
     assert isinstance(adt, DataFrame)
 
 
+def test_multiyear_diagnostic_table_wo_behv(records_2009):
+    pol = Policy()
+    calc = Calculator(policy=pol, records=records_2009)
+    reform = {
+        2013: {
+            '_II_rt7': [0.33],
+            '_PT_rt7': [0.33],
+        }}
+    pol.implement_reform(reform)
+    calc.calc_all()
+    liabilities_x = (calc.records._combined *
+                     calc.records.s006).sum()
+    adt = multiyear_diagnostic_table(calc, 1)
+    # extract combined liabilities as a float and
+    # adopt units of the raw calculator data in liabilities_x
+    liabilities_y = adt.iloc[18].tolist()[0] * 1000000000
+    npt.assert_almost_equal(liabilities_x, liabilities_y, 2)
+
+
+def test_multiyear_diagnostic_table_w_behv(records_2009):
+    pol = Policy()
+    behv = Behavior()
+    calc = Calculator(policy=pol, records=records_2009, behavior=behv)
+    assert calc.current_year == 2013
+    reform = {
+        2013: {
+            '_II_rt7': [0.33],
+            '_PT_rt7': [0.33],
+        }}
+    pol.implement_reform(reform)
+    reform_be = {2013: {'_BE_sub': [0.4],
+                        '_BE_cg': [-3.67]}}
+    behv.update_behavior(reform_be)
+    calc_clp = calc.current_law_version()
+    calc_behv = Behavior.response(calc_clp, calc)
+    calc_behv.calc_all()
+    liabilities_x = (calc_behv.records._combined *
+                     calc_behv.records.s006).sum()
+    adt = multiyear_diagnostic_table(calc_behv, 1)
+    # extract combined liabilities as a float and
+    # adopt units of the raw calculator data in liabilities_x
+    liabilities_y = adt.iloc[18].tolist()[0] * 1000000000
+    npt.assert_almost_equal(liabilities_x, liabilities_y, 2)
+
+
 @pytest.yield_fixture
 def csvfile():
     txt = ('A,B,C,D,EFGH\n'
