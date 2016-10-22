@@ -777,57 +777,43 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
     """
     EITC function computes EITC amount, c59660
     """
-    # pylint: disable=too-many-branches
-    pre_eitc = 0.
-    eitc_agi = c00100 + e00400
-    if MARS == 2:
-        val_ymax = EITC_ps[EIC] + EITC_ps_MarriedJ[EIC]
-    elif MARS == 1 or MARS == 4 or MARS == 5 or MARS == 7:
-        val_ymax = EITC_ps[EIC]
+    invinc = (e00400 + e00300 + e00600 +
+              max(0., c01000) + max(0., (0. - p25470)) + max(0., e27200))
+    if MARS == 3 or MARS == 6 or DSI == 1 or invinc > EITC_InvestIncome_c:
+        c59660 = 0.
     else:
-        val_ymax = 0.
-    if MARS == 1 or MARS == 4 or MARS == 5 or MARS == 2 or MARS == 7:
-        c59660 = min(EITC_rt[EIC] * _earned, EITC_c[EIC])
-        pre_eitc = c59660
-    if (MARS != 3 and MARS != 6 and
-            (eitc_agi > val_ymax or _earned > val_ymax)):
-        pre_eitc = max(0., EITC_c[EIC] - EITC_prt[EIC] *
-                       (max(0., max(eitc_agi, _earned) - val_ymax)))
-        pre_eitc = min(pre_eitc, c59660)
-    if MARS != 3 and MARS != 6:
-        dy = (e00400 + e00300 + e00600 +
-              max(0., c01000) + max(0., 0. - p25470) + max(0., e27200))
-    else:
-        dy = 0.
-    if MARS != 3 and MARS != 6 and dy > EITC_InvestIncome_c:
-        pre_eitc = 0.
-
-    if DSI == 1:
-        pre_eitc = 0.
-
-    if EIC == 0:
-        # enforce age eligibility rule for those with no EITC-eligible children
-        # (assume that an unknown age_* value implies EITC age eligibility)
-        # pylint: disable=bad-continuation,too-many-boolean-expressions
+        eitc = min(EITC_rt[EIC] * _earned, EITC_c[EIC])
+        ymax = EITC_ps[EIC]
         if MARS == 2:
-            if (age_head >= EITC_MinEligAge and
-                age_head <= EITC_MaxEligAge) or \
-               (age_spouse >= EITC_MinEligAge and
-                age_spouse <= EITC_MaxEligAge) or \
-               age_head == 0 or \
-               age_spouse == 0:
-                c59660 = pre_eitc
-            else:
-                c59660 = 0.
-        else:
-            if (age_head >= EITC_MinEligAge and
-                age_head <= EITC_MaxEligAge) or \
-               age_head == 0:
-                c59660 = pre_eitc
-            else:
-                c59660 = 0.
-    else:
-        c59660 = pre_eitc
+            ymax += EITC_ps_MarriedJ[EIC]
+        eitc_agi = c00100 + e00400
+        if eitc_agi > ymax or _earned > ymax:
+            eitcx = max(0., (EITC_c[EIC] - EITC_prt[EIC] *
+                             (max(0., max(eitc_agi, _earned) - ymax))))
+            eitc = min(eitc, eitcx)
+        if EIC == 0:
+            # enforce age eligibility rule for those with no EITC-eligible kids
+            # (assume that an unknown age_* value implies EITC age eligibility)
+            # pylint: disable=bad-continuation,too-many-boolean-expressions
+            if MARS == 2:
+                if (age_head >= EITC_MinEligAge and
+                    age_head <= EITC_MaxEligAge) or \
+                   (age_spouse >= EITC_MinEligAge and
+                    age_spouse <= EITC_MaxEligAge) or \
+                   age_head == 0 or \
+                   age_spouse == 0:
+                    c59660 = eitc
+                else:
+                    c59660 = 0.
+            else:  # if MARS != 2
+                if (age_head >= EITC_MinEligAge and
+                    age_head <= EITC_MaxEligAge) or \
+                   age_head == 0:
+                    c59660 = eitc
+                else:
+                    c59660 = 0.
+        else:  # if EIC != 0
+            c59660 = eitc
     return c59660
 
 
