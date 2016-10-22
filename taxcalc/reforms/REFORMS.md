@@ -53,48 +53,48 @@ on the [TaxBrain webpage](http://www.ospc.org/taxbrain/).
 
 ### Payroll Taxes
 
-
+Links will be added here.
 
 ### Social Security Taxability
 
-
+Links will be added here.
 
 ### Adjustments
 
-
+Links will be added here.
 
 ### Exemptions
 
-
+Links will be added here.
 
 ### Standard Deduction
 
-
+Links will be added here.
 
 ### Personal Refundable Credit
 
-
+Links will be added here.
 
 ### Itemized Deductions
 
-
+Links will be added here.
 
 ### Regular Taxes
 
-
+Links will be added here.
 
 ### Alternative Minimum Tax
 
-
+Links will be added here.
 
 ### Nonrefundable Credits
 
-
+Links will be added here.
 
 ### Other Taxes
 
-
+Links will be added here.
 
 ### Refundable Credits
 
-
+Links will be added here.
