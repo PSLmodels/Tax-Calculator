@@ -402,7 +402,7 @@ def run_nth_year_mtr_calc(year_n, start_year, tax_dta, user_mods="",
 
 
 def calculate_baseline_and_reform(year_n, start_year, is_strict,
-                                   tax_dta="", user_mods=""):
+                                  tax_dta="", user_mods=""):
 
     #########################################################################
     # Create Calculators and Masks

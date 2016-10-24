@@ -55,10 +55,10 @@ def test_run_dropq_nth_year_mtr(return_json, puf_1991_path):
     # Create a Public Use File object
     tax_data = pd.read_csv(puf_1991_path)
 
-    gdp_elast_tots = dropq.run_gdp_elast_models(tax_data, start_year=first_year,
-                                                user_mods=user_mods,
-                                                return_json=return_json,
-                                                num_years=3)
+    dropq.run_gdp_elast_models(tax_data, start_year=first_year,
+                               user_mods=user_mods,
+                               return_json=return_json,
+                               num_years=3)
 
 
 def test_only_growth_assumptions():
@@ -113,6 +113,7 @@ def test_only_reform_mods2():
     exp = {first_year: {'_FICA_ss_trt': [0.15], '_II_em': [4700.0]}}
     assert ans == exp
 
+
 def test_only_reform_mods_with_cpi():
     myvars = {}
     myvars['_FICA_ss_trt'] = [0.15]
@@ -129,8 +130,10 @@ def test_only_reform_mods_with_cpi():
     first_year = 2013
     user_mods = {first_year: myvars}
     ans = only_reform_mods(user_mods, 2015)
-    exp = {first_year: {'_FICA_ss_trt': [0.15], '_II_em': [4700.0], '_II_em_cpi': False}}
+    exp = {first_year: {'_FICA_ss_trt': [0.15], '_II_em': [4700.0],
+                        '_II_em_cpi': False}}
     assert ans == exp
+
 
 def test_unknown_parameters_with_cpi():
     myvars = {}
@@ -152,21 +155,20 @@ def test_unknown_parameters_with_cpi():
     assert set(ans) == exp
 
 
-
 def test_format_macro_results():
 
-    data = [[  1.875e-03,  1.960e-03,  2.069e-03,  2.131e-03,  2.179e-03,  2.226e-03,
-                2.277e-03,  2.324e-03,  2.375e-03,  2.426e-03,  2.184e-03,  2.806e-03],
-            [  2.538e-04,  4.452e-04,  6.253e-04,  7.886e-04,  9.343e-04,  1.064e-03,
-                1.180e-03,  1.284e-03,  1.378e-03,  1.463e-03,  9.419e-04,  2.224e-03],
-            [  5.740e-03,  5.580e-03,  5.524e-03,  5.347e-03,  5.161e-03,  5.011e-03,
-                4.907e-03,  4.818e-03,  4.768e-03,  4.739e-03,  5.160e-03,  4.211e-03],
-            [  2.883e-03,  2.771e-03,  2.721e-03,  2.620e-03,  2.520e-03,  2.440e-03,
-                2.384e-03,  2.337e-03,  2.309e-03,  2.292e-03,  2.528e-03,  2.051e-03],
+    data = [[ 1.875e-03, 1.960e-03, 2.069e-03, 2.131e-03, 2.179e-03, 2.226e-03,
+                2.277e-03, 2.324e-03, 2.375e-03, 2.426e-03, 2.184e-03, 2.806e-03],
+            [ 2.538e-04, 4.452e-04, 6.253e-04, 7.886e-04, 9.343e-04, 1.064e-03,
+                1.180e-03, 1.284e-03, 1.378e-03, 1.463e-03, 9.419e-04, 2.224e-03],
+            [ 5.740e-03, 5.580e-03, 5.524e-03, 5.347e-03, 5.161e-03, 5.011e-03,
+                4.907e-03, 4.818e-03, 4.768e-03, 4.739e-03, 5.160e-03, 4.211e-03],
+            [ 2.883e-03, 2.771e-03, 2.721e-03, 2.620e-03, 2.520e-03, 2.440e-03,
+                2.384e-03, 2.337e-03, 2.309e-03, 2.292e-03, 2.528e-03, 2.051e-03],
             [ -1.012e-03, -8.141e-04, -6.552e-04, -4.912e-04, -3.424e-04, -2.150e-04,
-            -1.081e-04, -1.372e-05,  6.513e-05,  1.336e-04, -3.450e-04,  7.538e-04],
-            [  3.900e-03,  3.143e-03,  2.532e-03,  1.900e-03,  1.325e-03,  8.325e-04,
-                4.189e-04,  5.315e-05, -2.525e-04, -5.180e-04,  1.337e-03, -2.917e-03],
+            -1.081e-04, -1.372e-05, 6.513e-05, 1.336e-04, -3.450e-04, 7.538e-04],
+            [ 3.900e-03, 3.143e-03, 2.532e-03, 1.900e-03, 1.325e-03, 8.325e-04,
+                4.189e-04, 5.315e-05, -2.525e-04, -5.180e-04, 1.337e-03, -2.917e-03],
             [ -2.577e-02, -2.517e-02, -2.507e-02, -2.464e-02, -2.419e-02, -2.388e-02,
             -2.368e-02, -2.350e-02, -2.342e-02, -2.341e-02, -2.427e-02, -2.275e-02]]
 
@@ -240,22 +242,96 @@ def test_create_json_table():
     assert ans == exp
 
 def test_format_print_not_implemented():
-    x = b'123'
+    x = np.array([1], dtype='i4')
     with pytest.raises(NotImplementedError):
-        format_print(x, bytes, 2)
+        format_print(x[0], x.dtype, 2)
 
-def test_create_dropq_dist_table_groupby_options():
-    pass
-    """create_dropq_distribution_table(calc, groupby="small_income_bins", result_type, suffix)
-    create_dropq_distribution_table(calc, groupby="large_income_bins", result_type, suffix)
-    create_dropq_distribution_table(calc, groupby="large_income_bins", result_type="weighted_average", suffix)
-    with pytest.raises(NotImplementedError):
-        create_dropq_distribution_table(calc, groupby="other_income_bins", result_type, suffix)"""
+@pytest.mark.parametrize("groupby, result_type",
+                         [("small_income_bins", "weighted_sum"),
+                          ("large_income_bins", "weighted_sum"), 
+                          ("large_income_bins", "weighted_avg"), 
+                          ("other_income_bins", "weighted_avg"),
+                          ("large_income_bins", "other_avg")] )
+def test_create_dropq_dist_table_groupby_options(groupby, result_type, puf_1991_path):
+    year_n = 0
+    start_year = 2016
+    is_strict = False
+    # Create a Public Use File object
+    tax_data = pd.read_csv(puf_1991_path)
+    suffix = '_bin'
+    myvars = {}
+    myvars['_II_em_cpi'] = False
+    myvars['_II_rt4'] = [0.39, 0.40, 0.41]
+    myvars['_II_rt3'] = [0.31, 0.32, 0.33]
+    first_year = start_year
+    user_mods = {first_year: myvars}
 
-def test_create_dropq_diff_table_groupby_options():
-    pass
-    """create_dropq_difference_table(calc, groupby="small_income_bins", result_type, suffix)
-    create_dropq_difference_table(calc, groupby="large_income_bins", result_type, suffix)
-    with pytest.raises(NotImplementedError):
-        create_dropq_difference_table(calc, groupby="other_income_bins", result_type, suffix)"""
+    soit_baseline, soit_reform, mask = calculate_baseline_and_reform(
+        year_n, start_year, is_strict, tax_data, user_mods)
 
+    df1, df2 = drop_records(soit_baseline, soit_reform, mask)
+    dec_sum = (df2['tax_diff_dec'] * df2['s006']).sum()
+    bin_sum = (df2['tax_diff_bin'] * df2['s006']).sum()
+    pr_dec_sum = (df2['payrolltax_diff_dec'] * df2['s006']).sum()
+    pr_bin_sum = (df2['payrolltax_diff_bin'] * df2['s006']).sum()
+    combined_dec_sum = (df2['combined_diff_dec'] * df2['s006']).sum()
+    combined_bin_sum = (df2['combined_diff_bin'] * df2['s006']).sum()
+
+    if groupby == "other_income_bins" or result_type == "other_avg":
+        with pytest.raises(ValueError):
+            create_dropq_distribution_table(df2, groupby=groupby,
+                                            result_type=result_type,
+                                            suffix=suffix)
+    else:
+        create_dropq_distribution_table(df2, groupby=groupby,
+                                        result_type=result_type, suffix=suffix)
+
+    #create_dropq_distribution_table(df2, groupby=groupby, result_type=result_type, suffix='_bin')
+    #create_dropq_distribution_table(df2, groupby="large_income_bins", result_type, suffix)
+    #create_dropq_distribution_table(calc, groupby="large_income_bins", result_type="weighted_average", suffix)
+    #with pytest.raises(NotImplementedError):
+    #    create_dropq_distribution_table(calc, groupby="other_income_bins", result_type, suffix)"""
+
+
+@pytest.mark.parametrize("groupby, res_col",
+                         [("weighted_deciles", "tax_diff"),
+                          ("webapp_income_bins", "tax_diff"), 
+                          ("webapp_income_bins", "tax_diff"), 
+                          ("webapp_income_bins", "tax_diff"),
+                          ("other_deciles", "tax_diff")] )
+def test_create_dropq_diff_table_groupby_options(groupby, res_col, puf_1991_path):
+    year_n = 0
+    start_year = 2016
+    is_strict = False
+    # Create a Public Use File object
+    tax_data = pd.read_csv(puf_1991_path)
+    suffix = '_bin'
+    myvars = {}
+    myvars['_II_em_cpi'] = False
+    myvars['_II_rt4'] = [0.39, 0.40, 0.41]
+    myvars['_II_rt3'] = [0.31, 0.32, 0.33]
+    first_year = start_year
+    user_mods = {first_year: myvars}
+
+    soit_baseline, soit_reform, mask = calculate_baseline_and_reform(
+        year_n, start_year, is_strict, tax_data, user_mods)
+
+    df1, df2 = drop_records(soit_baseline, soit_reform, mask)
+    dec_sum = (df2['tax_diff_dec'] * df2['s006']).sum()
+    bin_sum = (df2['tax_diff_bin'] * df2['s006']).sum()
+    pr_dec_sum = (df2['payrolltax_diff_dec'] * df2['s006']).sum()
+    pr_bin_sum = (df2['payrolltax_diff_bin'] * df2['s006']).sum()
+    combined_dec_sum = (df2['combined_diff_dec'] * df2['s006']).sum()
+    combined_bin_sum = (df2['combined_diff_bin'] * df2['s006']).sum()
+
+    if groupby == "other_deciles":
+        with pytest.raises(ValueError):
+            create_dropq_difference_table(df1, df2, groupby=groupby,
+                                          res_col=res_col, diff_col='_iitax',
+                                          suffix='_dec',
+                                          wsum=dec_sum)
+    else:
+        create_dropq_difference_table(df1, df2, groupby=groupby,
+                                      res_col=res_col, diff_col='_iitax',
+                                      suffix='_dec',
+                                      wsum=dec_sum)
