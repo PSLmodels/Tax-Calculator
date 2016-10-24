@@ -34,7 +34,7 @@ particular order) included in CSV-formatted output files.
 
 **NOTE on composition of payroll taxes (V06) and income taxes (V04):**
 
-The total payroll taxes (V06) variable is assumed to include the
+The **total payroll taxes (V06) variable** is assumed to include the
 following components: (a) employee plus employer share of OASDI FICA
 taxes; (b) employee plus employer share of HI FICA taxes; (c)
 self-employment tax from Form 1040 line57; and (d) additional Medicare
@@ -45,7 +45,7 @@ year so that Form 1040 line71 is always zero, and that employers
 (illegally) never withhold for the Additional Medicare Tax so that
 Form 8959 line24 is always zero.
 
-The total income taxes (V04) variable is assumed to include all the
+The **total income taxes (V04) variable** is assumed to include all the
 Form 1040 components except for the payroll tax components (c) and (d)
 defined above.  In other words, on Form 1040 the V04 amount is line63
 minus line57 minus line62a.
