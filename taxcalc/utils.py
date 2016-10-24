@@ -680,10 +680,13 @@ def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
 
     weight_by_income_measure : Boolean
         If this option is true, for each record, s006 (weight) will be weighted
-        by the desired income measure. And thus this will allow users to obtain
-        aggregate activity for selected income measure. For example, if income
-        measure is 'e00200' and this option is true, then the bin (or x-axis in
-        the plot) is the (percentile of) total economic activity.
+        by the desired income measure of choice. (Note that this option
+        is not about 'weighted' vs 'unweighted', but rather about what to
+        weight s006 by.) And thus this will allow users to investigate
+        different aggregated targets (via choices of income_measure).
+        For example, if income measure is 'e00200' and this option is true,
+        then the bin (or x-axis in the plot) is the (percentile of) total
+        wages and salaries.
     Returns
     -------
     DataFrame object
@@ -824,8 +827,11 @@ def mtr_plot(source, xlab='Percentile', ylab='Avg. MTR', title='MTR plot',
     Returns
     -------
     Figure Object (Use show(FIGURE_NAME) option to visualize)
+        The default output is in HTML format. To obtain a PNG copy, use the
+        'Save' option on the Toolbar (usually located on the top-right corner
+        of the plot).
         Note that, when using command line, output file needs to be
-        first specified using command output_file("FILE_NAME.html")
+        first specified using command output_file("FILE_NAME.html").
     """
     PP = figure(plot_width=plot_width, plot_height=plot_height, title=title)
 
