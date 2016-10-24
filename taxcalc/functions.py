@@ -76,23 +76,30 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
 @iterate_jit(nopython=True)
 def DependentCare(agedp1, agedp2, agedp3, agedp4, elderly_dependent, _earned,
                   MARS, ALD_Dependents_thd, ALD_Dependents_HC,
-                  ALD_Dependents_Child_ec, ALD_Dependents_Elder_ec,
+                  ALD_Dependents_Child_c, ALD_Dependents_Elder_c,
                   care_deduction):
     """
 
     Parameters
     ----------
-    agedp1: Age of first dependent
-    agedp2: Age of second dependent
-    agedp3: Age of third dependent
-    agedp4: Age of fourth dependent
-    elderly_dependent: 1 if unit has an elderly dependent 0 otherwise
+    agedp1: Age range of first dependent
+        0: Not present
+        1: Under 5
+        2: 5 - 13
+        3: 13 - 17
+        4: 17 - 19
+        5: 19 - 24
+        6: 24 or older
+    agedp2: Age range of second dependent
+    agedp3: Age range of third dependent
+    agedp4: 1 if tax unit has fourth dependent under 13; 0 otherwise
+    elderly_dependent: 1 if unit has an elderly dependent; 0 otherwise
     _earned: Form 2441 earned income amount
     MARS: Marital Status
     ALD_Dependents_thd: Maximum income to qualify for deduction
     ALD_Dependents_HC: Deduction for dependent care haircut
-    ALD_Dependents_Child_ec: national weighted average cost of childcare
-    ALD_Dependents_Elder_ec: eldercare exclusion
+    ALD_Dependents_Child_c: National weighted average cost of childcare
+    ALD_Dependents_Elder_c: Eldercare deduction ceiling
 
     Returns
     -------
@@ -105,9 +112,9 @@ def DependentCare(agedp1, agedp2, agedp3, agedp4, elderly_dependent, _earned,
         # Count the number of qualifying dependents
         children = ((1 == ages) | (ages == 2)).sum()
         care_deduction = (((1 - ALD_Dependents_HC) * children *
-                          ALD_Dependents_Child_ec) +
+                          ALD_Dependents_Child_c) +
                           ((1 - ALD_Dependents_HC) * elderly_dependent *
-                          ALD_Dependents_Elder_ec))
+                          ALD_Dependents_Elder_c))
     else:
         care_deduction = 0.
     return care_deduction

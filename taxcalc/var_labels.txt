@@ -1,7 +1,7 @@
-AGEDP1 = Age of first dependent
-AGEDP2 = Age of second dependent
-AGEDP3 = Age of third dependent
-AGEDP4 = Age of forth dependent
+AGEDP1 = Age range of dependent one (2009 PUF documentation p. 14)
+AGEDP2 = Age range of dependent two (2009 PUF documentation p. 14)
+AGEDP3 = Age range of dependent three (2009 PUF documentation p. 14)
+AGEDP4 = 1 if tax unit has fourth dependent under 13; otherwise 0
 AGE_HEAD = Age in years of taxpayer (i.e., primary filer)
 AGE_SPOUSE = Age in years of spouse (i.e., secondary filer if present)
 BLIND_HEAD = zero/one indicator for taxpayer (i.e., primary filer)
