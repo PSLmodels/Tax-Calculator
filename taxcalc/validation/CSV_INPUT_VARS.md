@@ -1,4 +1,4 @@
-2015 CSV-Input Variables Documentation
+2015 CSV Input Variables Documentation
 ======================================
 
 First an alphabetical list of all input variables and then an
@@ -98,7 +98,7 @@ Example Input File
 
 The following input file contains only 24 of the input variables
 listed above (all others are assumed to have a value of zero) and
-contains only the variable-name header row and three filing unit rows.
+contains only the variable-name header row and three filing-unit rows.
 
 ```
 e00200p,XTOT,e00200s,e00650,e01700,e18500,EIC,RECID,p22250,e00300,e00200,age_head,f2441,age_spouse,n24,p23250,e00600,e18400,FLPDYR,e02400,e02300,MARS,e32800,e19200
