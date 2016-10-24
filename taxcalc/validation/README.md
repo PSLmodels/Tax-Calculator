@@ -81,7 +81,7 @@ those differences are divided into small and large differences, where
 small is defined as being ten dollars or less and large being greater
 than ten dollars in absolute value.  This small/large borderline is
 arbitrary and has been specified in an attempt to separate out
-cumulative differences that arise from applying IRS-approved
+differences that arise from repeatedly applying IRS-approved
 rounding-to-the-nearest dollar rules (which Tax-Calculator does not
 implement).  Read the source code of the `taxdiffs.tcl` script for
 additional details on how to use it.
