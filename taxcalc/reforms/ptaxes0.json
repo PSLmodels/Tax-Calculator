@@ -1,0 +1,11 @@
+// Raise OASDI ("social security") and HI ("Medicare") payroll tax rates
+{
+    "_FICA_ss_trt": {    // currently at 0.124 (employee+employer share)
+        "2018": [0.130], // raise by 0.6 percentage point
+        "2020": [0.140]  // raise by another 1.0 percentage point
+    },
+    "_FICA_mc_trt": {    // currently at 0.029 (employee+employer share)
+        "2019": [0.030], // raise by 0.1 percentage point
+        "2021": [0.032]  // raise by another 0.2 percentage point
+    }        
+}
