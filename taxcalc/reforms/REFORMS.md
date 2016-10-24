@@ -2,20 +2,45 @@
 
 First an example of a complex tax reform, then links to reform files
 that specify individual reform provisions.  These reform provisions
-can be combined to construct more complex tax reform proposals.
+can be combined to construct more complex tax reform proposals that
+are stored as text files on your local computer.  Such reform
+proposals can then be uploaded to the [TaxBrain
+webapp](http://www.ospc.org/taxbrain/file/) (or used on your local
+computer) to estimate reform effects.
 
 ## Example Reform File
 
 Here is an example of a tax reform proposal that consists of several
-reform provisions.
+reform provisions.  The structure of this file is as follows:
 
 ```
-// Example of a reform file suitable for Policy read_json_reform_file function.
+{
+   <parameter_name>: {<calyear>: <parameter-value>},
+   <parameter_name>: {<calyear>: <parameter-value>},
+   ...
+   <parameter_name>: {<calyear>: <parameter-value>}
+}
+```
+
+Notice each reform provision (exexpt the last one) must end in a
+comma.  Also, the <parameter_name> and <calyear> must be enclosed in
+quotes (").  The <parameter_value> is enclosed in single brackets when
+the <parameter_value> is a scalar and encloded in double brackets when
+the <parameter_value> is a vector.  The most common vector of values
+is one that varies by filing status (MARS) with the vector containing
+six parameter values for single, married filing joint, married filing
+separate, head of household, widow, separate.
+
+```
+// Example of a reform file suitable for local use or uploading to TaxBrain.
 // This JSON file can contain any number of trailing //-style comments, which
-// will be removed before the contents are converted from JSON to a dictionary.
-// The primary keys are policy parameters and secondary keys are years.
-// Both the primary and secondary key values must be enclosed in quotes (").
-// Boolean variables are specified as true or false (no quotes; all lowercase).
+// will be removed before the remaining JSON is parsed.
+// The JSON primary keys are policy parameter names and the secondary keys
+// are calendar years.  Both these primary and secondary key values must be
+// enclosed in quotes (").
+// Policy parameter values are enclosed in single brackets when the parameter
+// is a scalar and encloded in double brackets when the parameter is a vector.
+// Boolean values are specified as true or false (no quotes; all lowercase).
 {
     "_AMT_tthd": // AMT taxinc threshold separating the two AMT tax brackets
     {"2015": [200000],
@@ -51,9 +76,19 @@ reform provisions.
 These are organized in the order that policy parameters are presented
 on the [TaxBrain webpage](http://www.ospc.org/taxbrain/).
 
+The value of each of these policy parameters under current law is
+shown in [this JSON file](../current_law_policy.json).
+
 ### Payroll Taxes
 
-Links will be added here.
+[Raise OASDI and HI payroll tax rates](ptaxes0.json)
+
+[Raise OASDI maximum taxable earnings](ptaxes1.json)
+
+[Eliminate OASDI maximum taxable earnings](ptaxes2.json)
+
+[Raise Additional Medicare Tax (Form 8959) tax rate and
+thresholds](ptaxes3.json)
 
 ### Social Security Taxability
 
