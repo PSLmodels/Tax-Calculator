@@ -308,13 +308,14 @@ def test_add_income_bins_raises():
 
 def test_add_weighted_decile_bins():
     df = DataFrame(data=data, columns=['_expanded_income', 's006', 'label'])
-    df = add_weighted_decile_bins(df)
-    assert 'bins' in df
+    df = add_weighted_decile_bins(df, num_bins=100)
     bin_labels = df['bins'].unique()
-    default_labels = set(range(1, 11))
+    default_labels = set(range(1, 101))
     for lab in bin_labels:
         assert lab in default_labels
     # Custom labels
+    df = add_weighted_decile_bins(df, weight_by_income_measure=True)
+    assert 'bins' in df
     custom_labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
     df = add_weighted_decile_bins(df, labels=custom_labels)
     assert 'bins' in df
@@ -514,6 +515,38 @@ def test_expand_2D_accept_None_additional_row():
                            for i in _II_brk2[2][1:]]
     exp_2020 = np.array(exp_2020)
     npt.assert_allclose(pol.II_brk2, exp_2020)
+
+
+def test_get_mtr_data(records_2009):
+    pol = Policy()
+    behv = Behavior()
+    calc = Calculator(policy=pol, records=records_2009, behavior=behv)
+    calc.calc_all()
+    source = get_mtr_data(calc, calc, MARS=1, mtr_measure='_combined')
+
+
+def test_mtr_plot(records_2009):
+    pol = Policy()
+    behv = Behavior()
+    calc = Calculator(policy=pol, records=records_2009, behavior=behv)
+    calc.calc_all()
+    source = get_mtr_data(calc, calc, weighting='wage_weighted',
+                          weight_by_income_measure=True)
+    plot = mtr_plot(source)
+
+
+def test_mtr_plot_force_no_bokeh(records_2009):
+    import taxcalc
+    taxcalc.utils.BOKEH_AVAILABLE = False
+    pol = Policy()
+    behv = Behavior()
+    calc = Calculator(policy=pol, records=records_2009, behavior=behv)
+    calc.calc_all()
+    source = get_mtr_data(calc, calc, weighting='weighted_mean',
+                          weight_by_income_measure=True)
+    with pytest.raises(RuntimeError):
+        plot = mtr_plot(source)
+    taxcalc.utils.BOKEH_AVAILABLE = True
 
 
 def test_multiyear_diagnostic_table(records_2009):
