@@ -691,13 +691,13 @@ def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
     -------
     DataFrame object
     """
+    # Calculate MTR
+    a, mtr_iit_x, mtr_combined_x = calcX.mtr()
+    a, mtr_iit_y, mtr_combined_y = calcY.mtr()
     # Get output columns
     df_x = exp_results(calcX)
     df_y = exp_results(calcY)
 
-    # Calculate MTR
-    a, mtr_iit_x, mtr_combined_x = calcX.mtr()
-    a, mtr_iit_y, mtr_combined_y = calcY.mtr()
     df_x['mtr_iit'] = mtr_iit_x
     df_y['mtr_iit'] = mtr_iit_y
     df_x['mtr_combined'] = mtr_combined_x
