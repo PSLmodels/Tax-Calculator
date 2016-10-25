@@ -74,7 +74,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
 
 
 @iterate_jit(nopython=True)
-def DependentCare(agedp1, agedp2, agedp3, agedp4, elderly_dependent, _earned,
+def DependentCare(nu13, elderly_dependent, _earned,
                   MARS, ALD_Dependents_thd, ALD_Dependents_HC,
                   ALD_Dependents_Child_c, ALD_Dependents_Elder_c,
                   care_deduction):
@@ -82,17 +82,7 @@ def DependentCare(agedp1, agedp2, agedp3, agedp4, elderly_dependent, _earned,
 
     Parameters
     ----------
-    agedp1: Age range of first dependent
-        0: Not present
-        1: Under 5
-        2: 5 - 13
-        3: 13 - 17
-        4: 17 - 19
-        5: 19 - 24
-        6: 24 or older
-    agedp2: Age range of second dependent
-    agedp3: Age range of third dependent
-    agedp4: 1 if tax unit has fourth dependent under 13; 0 otherwise
+    nu13: Number of dependents under 13 years old
     elderly_dependent: 1 if unit has an elderly dependent; 0 otherwise
     _earned: Form 2441 earned income amount
     MARS: Marital Status
@@ -108,10 +98,7 @@ def DependentCare(agedp1, agedp2, agedp3, agedp4, elderly_dependent, _earned,
     """
 
     if _earned <= ALD_Dependents_thd[MARS - 1]:
-        ages = np.array([agedp1, agedp2, agedp3, agedp4])
-        # Count the number of qualifying dependents
-        children = ((1 == ages) | (ages == 2)).sum()
-        care_deduction = (((1 - ALD_Dependents_HC) * children *
+        care_deduction = (((1 - ALD_Dependents_HC) * nu13 *
                           ALD_Dependents_Child_c) +
                           ((1 - ALD_Dependents_HC) * elderly_dependent *
                           ALD_Dependents_Elder_c))

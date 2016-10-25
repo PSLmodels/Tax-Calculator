@@ -122,7 +122,7 @@ class Records(object):
         'MARS', 'MIDR', 'RECID',
         'cmbtp_standard', 'cmbtp_itemizer',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
-        'agedp1', 'agedp2', 'agedp3', 'agedp4', 'elderly_dependent',
+        'nu13', 'elderly_dependent',
         's006', 'filer'])
 
     # specify set of all Record variables that MUST be read by Tax-Calculator:
@@ -135,7 +135,7 @@ class Records(object):
         'n24', 'XTOT',
         'MARS', 'MIDR', 'RECID',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
-        'agedp1', 'agedp2', 'agedp3', 'agedp4', 'elderly_dependent'])
+        'nu13', 'elderly_dependent'])
 
     # specify set of all Record variables that cannot be read in:
     CALCULATED_VARS = set([

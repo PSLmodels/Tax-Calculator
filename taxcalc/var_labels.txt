@@ -1,7 +1,3 @@
-AGEDP1 = Age range of dependent one (2009 PUF documentation p. 14)
-AGEDP2 = Age range of dependent two (2009 PUF documentation p. 14)
-AGEDP3 = Age range of dependent three (2009 PUF documentation p. 14)
-AGEDP4 = 1 if tax unit has fourth dependent under 13; otherwise 0
 AGE_HEAD = Age in years of taxpayer (i.e., primary filer)
 AGE_SPOUSE = Age in years of spouse (i.e., secondary filer if present)
 BLIND_HEAD = zero/one indicator for taxpayer (i.e., primary filer)
@@ -75,6 +71,7 @@ FILER = 1 if unit from IRS-SOI PUF; 0 if unit from CPS
 FLPDYR = Filing (accounting) period (i.e., tax year)
 MARS = Marital (filing) status: categorical variable
 MIDR = Married filing separately itemized deductions requirement indicator
+NU13 = Number of dependents under 13
 N24 = Number of children eligible for Child Tax Credit
 P08000 = Other tax credits
 P22250 = Schedule D: Short-term gains less losses
