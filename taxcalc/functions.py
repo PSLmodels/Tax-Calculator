@@ -729,13 +729,15 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
 
 @iterate_jit(nopython=True)
 def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
-                 c00100, NIIT_thd, MARS, NIIT_trt, NIIT):
+                 c00100, NIIT_thd, MARS, NIIT_PT_taxed, NIIT_trt, NIIT):
     """
     NetInvIncTax function computes Net Investment Income Tax amount
     (assume all annuity income is excluded from net investment income)
     """
     modAGI = c00100  # no deducted foreign earned income to add
     NII = max(0., e00300 + e00600 + (e02000 - e26270) + c01000)
+    if NIIT_PT_taxed != 0.:
+        NII += e26270
     NIIT = NIIT_trt * min(NII, max(0., modAGI - NIIT_thd[MARS - 1]))
     return NIIT
 
