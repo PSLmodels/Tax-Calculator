@@ -75,7 +75,6 @@ P08000 = Other tax credits
 P22250 = Schedule D: Short-term gains less losses
 P23250 = Schedule D: Long-term gains less losses
 P25470 = Schedule E: Royalty depletion and/or rental depreciation
-P87482 = unused variable slated for removal from puf.csv file
 P87521 = American Opportunity Credit total tentative amount (Form 8863, line 1)
 RECID = ID for filing unit
 S006 = Sample weight for filing unit
