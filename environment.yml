@@ -6,10 +6,13 @@ dependencies:
 - numpy =1.10.4
 - pandas =0.18.0
 - numba
+- bokeh
 - toolz
 - six
 - ipython
 - ipython-notebook
 - mock
+- pep8
+- pylint
 - pip:
   - pytest-pep8

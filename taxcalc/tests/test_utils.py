@@ -308,13 +308,14 @@ def test_add_income_bins_raises():
 
 def test_add_weighted_decile_bins():
     df = DataFrame(data=data, columns=['_expanded_income', 's006', 'label'])
-    df = add_weighted_decile_bins(df)
-    assert 'bins' in df
+    df = add_weighted_decile_bins(df, num_bins=100)
     bin_labels = df['bins'].unique()
-    default_labels = set(range(1, 11))
+    default_labels = set(range(1, 101))
     for lab in bin_labels:
         assert lab in default_labels
     # Custom labels
+    df = add_weighted_decile_bins(df, weight_by_income_measure=True)
+    assert 'bins' in df
     custom_labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
     df = add_weighted_decile_bins(df, labels=custom_labels)
     assert 'bins' in df
@@ -516,6 +517,38 @@ def test_expand_2D_accept_None_additional_row():
     npt.assert_allclose(pol.II_brk2, exp_2020)
 
 
+def test_get_mtr_data(records_2009):
+    pol = Policy()
+    behv = Behavior()
+    calc = Calculator(policy=pol, records=records_2009, behavior=behv)
+    calc.calc_all()
+    source = get_mtr_data(calc, calc, MARS=1, mtr_measure='_combined')
+
+
+def test_mtr_plot(records_2009):
+    pol = Policy()
+    behv = Behavior()
+    calc = Calculator(policy=pol, records=records_2009, behavior=behv)
+    calc.calc_all()
+    source = get_mtr_data(calc, calc, weighting='wage_weighted',
+                          weight_by_income_measure=True)
+    plot = mtr_plot(source)
+
+
+def test_mtr_plot_force_no_bokeh(records_2009):
+    import taxcalc
+    taxcalc.utils.BOKEH_AVAILABLE = False
+    pol = Policy()
+    behv = Behavior()
+    calc = Calculator(policy=pol, records=records_2009, behavior=behv)
+    calc.calc_all()
+    source = get_mtr_data(calc, calc, weighting='weighted_mean',
+                          weight_by_income_measure=True)
+    with pytest.raises(RuntimeError):
+        plot = mtr_plot(source)
+    taxcalc.utils.BOKEH_AVAILABLE = True
+
+
 def test_multiyear_diagnostic_table(records_2009):
     pol = Policy()
     behv = Behavior()
@@ -530,6 +563,51 @@ def test_multiyear_diagnostic_table(records_2009):
     assert calc.behavior.has_response()
     adt = multiyear_diagnostic_table(calc, 3)
     assert isinstance(adt, DataFrame)
+
+
+def test_multiyear_diagnostic_table_wo_behv(records_2009):
+    pol = Policy()
+    calc = Calculator(policy=pol, records=records_2009)
+    reform = {
+        2013: {
+            '_II_rt7': [0.33],
+            '_PT_rt7': [0.33],
+        }}
+    pol.implement_reform(reform)
+    calc.calc_all()
+    liabilities_x = (calc.records._combined *
+                     calc.records.s006).sum()
+    adt = multiyear_diagnostic_table(calc, 1)
+    # extract combined liabilities as a float and
+    # adopt units of the raw calculator data in liabilities_x
+    liabilities_y = adt.iloc[18].tolist()[0] * 1000000000
+    npt.assert_almost_equal(liabilities_x, liabilities_y, 2)
+
+
+def test_multiyear_diagnostic_table_w_behv(records_2009):
+    pol = Policy()
+    behv = Behavior()
+    calc = Calculator(policy=pol, records=records_2009, behavior=behv)
+    assert calc.current_year == 2013
+    reform = {
+        2013: {
+            '_II_rt7': [0.33],
+            '_PT_rt7': [0.33],
+        }}
+    pol.implement_reform(reform)
+    reform_be = {2013: {'_BE_sub': [0.4],
+                        '_BE_cg': [-3.67]}}
+    behv.update_behavior(reform_be)
+    calc_clp = calc.current_law_version()
+    calc_behv = Behavior.response(calc_clp, calc)
+    calc_behv.calc_all()
+    liabilities_x = (calc_behv.records._combined *
+                     calc_behv.records.s006).sum()
+    adt = multiyear_diagnostic_table(calc_behv, 1)
+    # extract combined liabilities as a float and
+    # adopt units of the raw calculator data in liabilities_x
+    liabilities_y = adt.iloc[18].tolist()[0] * 1000000000
+    npt.assert_almost_equal(liabilities_x, liabilities_y, 2)
 
 
 @pytest.yield_fixture

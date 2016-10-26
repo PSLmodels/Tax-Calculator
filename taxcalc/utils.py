@@ -4,11 +4,20 @@ import pandas as pd
 from pandas import DataFrame
 from collections import defaultdict, OrderedDict
 
+try:
+    import bokeh
+    BOKEH_AVAILABLE = True
+    from bokeh.palettes import Blues4, Reds4
+    from bokeh.plotting import figure, output_file, show
 
-STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard', 'c04470', 'c04600',
-                 'c04800', 'c05200', 'c62100', 'c09600', 'c05800', 'c09200',
-                 '_refund', 'c07100', '_iitax', '_payrolltax', '_combined',
-                 's006']
+except ImportError:
+    BOKEH_AVAILABLE = False
+#
+
+STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard',
+                 'c04470', 'c04600', 'c04800', 'c05200', 'c62100', 'c09600',
+                 'c05800', 'c09200', '_refund', 'c07100', '_iitax',
+                 '_payrolltax', '_combined', 's006']
 
 # each entry in this array corresponds to the same entry in the array
 # TABLE_LABELS below. this allows us to use TABLE_LABELS to map a
@@ -72,6 +81,11 @@ def weighted_mean(agg, col_name):
             float(agg['s006'].sum() + EPSILON))
 
 
+def wage_weighted(agg, col_name):
+    return (float((agg[col_name] * agg['s006'] * agg['e00200']).sum()) /
+            float((agg['s006'] * agg['e00200']).sum() + EPSILON))
+
+
 def weighted_sum(agg, col_name):
     return (agg[col_name] * agg['s006']).sum()
 
@@ -91,7 +105,8 @@ def weighted_share_of_total(agg, col_name, total):
 
 
 def add_weighted_decile_bins(df, income_measure='_expanded_income',
-                             labels=None):
+                             num_bins=10, labels=None,
+                             weight_by_income_measure=False):
     """
     Add a column of income bins based on each 10% of the income_measure,
     weighted by s006.
@@ -100,18 +115,26 @@ def add_weighted_decile_bins(df, income_measure='_expanded_income',
 
     This function will server as a 'grouper' later on.
     """
-    # First, sort by income_measure
-    df.sort(income_measure, inplace=True)
-    # Next, do a cumulative sum by the weights
-    df['cumsum_weights'] = np.cumsum(df['s006'].values)
+    # First, weight income measure by s006 if desired
+    if weight_by_income_measure:
+        df['s006_weighted'] = np.multiply(df[income_measure].values,
+                                          df['s006'].values)
+    # Next, sort by income_measure
+    df.sort_values(by=income_measure, inplace=True)
+    # Do a cumulative sum
+    if weight_by_income_measure:
+        df['cumsum_weights'] = np.cumsum(df['s006_weighted'].values)
+    else:
+        df['cumsum_weights'] = np.cumsum(df['s006'].values)
     # Max value of cum sum of weights
     max_ = df['cumsum_weights'].values[-1]
     # Create 10 bins and labels based on this cumulative weight
-    bins = [0] + list(np.arange(1, 11) * (max_ / 10.0))
+    bin_edges = [0] + list(np.arange(1, (num_bins + 1)) *
+                           (max_ / float(num_bins)))
     if not labels:
-        labels = range(1, 11)
+        labels = range(1, (num_bins + 1))
     #  Groupby weighted deciles
-    df['bins'] = pd.cut(df['cumsum_weights'], bins, labels=labels)
+    df['bins'] = pd.cut(df['cumsum_weights'], bins=bin_edges, labels=labels)
     return df
 
 
@@ -228,6 +251,14 @@ def results(obj):
     """
     arrays = [getattr(obj, name) for name in STATS_COLUMNS]
     return DataFrame(data=np.column_stack(arrays), columns=STATS_COLUMNS)
+
+
+def exp_results(c):
+    RES_COLUMNS = STATS_COLUMNS + ['e00200'] + ['MARS']
+    outputs = []
+    for col in RES_COLUMNS:
+        outputs.append(getattr(c.records, col))
+    return DataFrame(data=np.column_stack(outputs), columns=RES_COLUMNS)
 
 
 def weighted_avg_allcols(df, cols, income_measure='_expanded_income'):
@@ -548,7 +579,7 @@ def multiyear_diagnostic_table(calc, num_years=0):
     -------
     Pandas DataFrame object containing the multi-year diagnostic table
     """
-    if num_years <= 1:
+    if num_years < 1:
         msg = 'num_year={} is less than one'.format(num_years)
         raise ValueError(msg)
     max_num_years = calc.policy.end_year - calc.policy.current_year + 1
@@ -559,13 +590,8 @@ def multiyear_diagnostic_table(calc, num_years=0):
     cal = copy.deepcopy(calc)
     dtlist = list()
     for iyr in range(1, num_years + 1):
-        if cal.behavior.has_response():
-            cal_clp = cal.current_law_version()
-            cal_br = cal.behavior.response(cal_clp, cal)
-            dtlist.append(create_diagnostic_table(cal_br))
-        else:
-            cal.calc_all()
-            dtlist.append(create_diagnostic_table(cal))
+        cal.calc_all()
+        dtlist.append(create_diagnostic_table(cal))
         if iyr < num_years:
             cal.increment_year()
     return pd.concat(dtlist, axis=1)
@@ -599,6 +625,233 @@ def ascii_output(csv_filename, ascii_filename):
     out = out.applymap(fstring.format)
     out.to_csv(ascii_filename, header=False, index=False,
                delim_whitespace=True, sep='\t')
+
+
+def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
+                 income_measure='e00200', mtr_measure='_combined',
+                 weight_by_income_measure=False):
+    """
+    This function prepares the MTR data for two calculators.
+
+    Parameters
+    ----------
+    calcX : a Tax-Calculator Records object that refers to the baseline
+
+    calcY : a Tax-Calculator Records object that refers to the reform
+
+    weighting : String object
+        options for input:
+            'weighted_mean': Averaging marginal tax rate by the
+                weight of each record. This option would be
+                helpful if you are interested in the MTR after
+                taking weights into consideration.
+            'wage_weighted': Averaging marginal tax rate by the
+                product of weight and wage of each record. This
+                option would be helpful if you are interested in
+                the MTR after taking both weights and wages
+                into consideration.
+        Choose different weighting methods
+
+    MARS : Integer or String
+        options for input: 'ALL', 1, 2, 3, 4
+        Choose different filling status
+
+    income_measure : String object
+        options for input:
+            '_expanded_income': The sum of adjusted gross income, non-taxable
+                interest income, non-taxable social security benefits and
+                employer share of FICA.
+            'c00100': Adjusted gross income
+            'e00200': Salaries and wages.
+        classifier of income bins/deciles
+
+    mtr_measure : String object
+        options for input:
+            '_iitax': Marginal individual income tax rate.
+            '_combined': Marginal combined tax rates, which is
+                the sum of marginal payroll tax rate and marginal individual
+                income tax rate.
+        Choose different marginal tax rate measures
+
+    weight_by_income_measure : Boolean
+        If this option is true, for each record, s006 (weight) will be weighted
+        by the desired income measure of choice. (Note that this option
+        is not about 'weighted' vs 'unweighted', but rather about what to
+        weight s006 by.) And thus this will allow users to investigate
+        different aggregated targets (via choices of income_measure).
+        For example, if income measure is 'e00200' and this option is true,
+        then the bin (or x-axis in the plot) is the (percentile of) total
+        wages and salaries.
+    Returns
+    -------
+    DataFrame object
+    """
+    # Calculate MTR
+    a, mtr_iit_x, mtr_combined_x = calcX.mtr()
+    a, mtr_iit_y, mtr_combined_y = calcY.mtr()
+    # Get output columns
+    df_x = exp_results(calcX)
+    df_y = exp_results(calcY)
+
+    df_x['mtr_iit'] = mtr_iit_x
+    df_y['mtr_iit'] = mtr_iit_y
+    df_x['mtr_combined'] = mtr_combined_x
+    df_y['mtr_combined'] = mtr_combined_y
+
+    df_y[income_measure] = df_x[income_measure]
+
+    # Complex weighted bins or not
+    if weight_by_income_measure:
+        df_x = add_weighted_decile_bins(df_x, income_measure, 100,
+                                        weight_by_income_measure=True)
+        df_y = add_weighted_decile_bins(df_y, income_measure, 100,
+                                        weight_by_income_measure=True)
+    else:
+        df_x = add_weighted_decile_bins(df_x, income_measure, 100)
+        df_y = add_weighted_decile_bins(df_y, income_measure, 100)
+
+    # Select either all filers or one filling status
+    if MARS == 'ALL':
+        df_filtered_x = df_x.copy()
+        df_filtered_y = df_y.copy()
+    else:
+        df_filtered_x = df_x[(df_x['MARS'] == MARS)].copy()
+        df_filtered_y = df_y[(df_y['MARS'] == MARS)].copy()
+
+    # Split into groups by 'bins'
+    gp_x = df_filtered_x.groupby('bins', as_index=False)
+    gp_y = df_filtered_y.groupby('bins', as_index=False)
+
+    # Extract proper weighting method
+    if weighting == 'weighted_mean':
+        weighting_method = weighted_mean
+    elif weighting == 'wage_weighted':
+        weighting_method = wage_weighted
+    else:
+        msg = 'weighting option "{}" is not valid'
+        raise ValueError(msg.format(weighting))
+
+    # Apply desired weighting method to mtr
+    if mtr_measure == '_combined':
+        wgtpct_x = gp_x.apply(weighting_method, 'mtr_combined')
+        wgtpct_y = gp_y.apply(weighting_method, 'mtr_combined')
+    elif mtr_measure == '_iitax':
+        wgtpct_x = gp_x.apply(weighting_method, 'mtr_iit')
+        wgtpct_y = gp_y.apply(weighting_method, 'mtr_iit')
+
+    wpct_x = DataFrame(data=wgtpct_x, columns=['w_mtr'])
+    wpct_y = DataFrame(data=wgtpct_y, columns=['w_mtr'])
+
+    # Add bin labels
+    wpct_x['bins'] = np.arange(1, 101)
+    wpct_y['bins'] = np.arange(1, 101)
+
+    # Merge two dataframes
+    rsltx = pd.merge(df_filtered_x[['bins']], wpct_x, how='left')
+    rslty = pd.merge(df_filtered_y[['bins']], wpct_y, how='left')
+
+    df_filtered_x['w_mtr'] = rsltx['w_mtr'].values
+    df_filtered_y['w_mtr'] = rslty['w_mtr'].values
+
+    # Get rid of duplicated bins
+    df_filtered_x.drop_duplicates(subset='bins', inplace=True)
+    df_filtered_y.drop_duplicates(subset='bins', inplace=True)
+
+    # Prepare cleaned mtr data and concatenate into one dataframe
+    df_filtered_x = df_filtered_x['w_mtr']
+    df_filtered_y = df_filtered_y['w_mtr']
+
+    merged = pd.concat([df_filtered_x, df_filtered_y], axis=1,
+                       ignore_index=True)
+    merged.columns = ['base', 'reform']
+    merged.index = (merged.reset_index()).index
+    if weight_by_income_measure:
+        merged = merged[1:]
+    return merged
+
+
+def requires_bokeh(fn):
+    """
+    Decorator for functions that require bokeh.
+    If BOKEH_AVAILABLE=True, this does nothing.
+    IF BOKEH_AVAILABEL=False, we raise an exception and tell the caller
+    that they must install bokeh in order to use the function.
+    """
+    def wrapped_f(*args, **kwargs):
+        if BOKEH_AVAILABLE:
+            return fn(*args, **kwargs)
+        else:
+            msg = ("`bokeh` is not installed. Please install "
+                   "`bokeh` to use this package (`conda install "
+                   "bokeh`)")
+            raise RuntimeError(msg)
+
+    return wrapped_f
+
+
+@requires_bokeh
+def mtr_plot(source, xlab='Percentile', ylab='Avg. MTR', title='MTR plot',
+             plot_width=425, plot_height=250, loc='top_left'):
+    """
+    This function generates marginal tax rate plot.
+    Source data can be obtained from get_mtr_data function.
+
+    Parameters
+    ----------
+    source : DataFrame which can be obtained using get_mtr_data() function
+
+    xlab : String object
+        Name for X axis
+
+    ylab : String object
+        Name for Y axis
+
+    title : String object
+        Caption for the plot
+
+    plot_width : Numeric (Usually integer)
+        Width of the plot
+
+    plot_height : Numeric (Usually integer)
+        Height of the plot
+
+    loc : String object
+        Toptions for input: "top_right", "top_left", "bottom_left",
+            "bottom_right"
+        Choose the location of the legend label
+    Returns
+    -------
+    Figure Object (Use show(FIGURE_NAME) option to visualize)
+        The default output is in HTML format. To obtain a PNG copy, use the
+        'Save' option on the Toolbar (usually located on the top-right corner
+        of the plot).
+        Note that, when using command line, output file needs to be
+        first specified using command output_file("FILE_NAME.html").
+    """
+    PP = figure(plot_width=plot_width, plot_height=plot_height, title=title)
+
+    PP.line((source.reset_index()).index,
+            (source.reset_index()).base, line_color=Blues4[0], line_width=0.8,
+            line_alpha=.8, legend="Base")
+
+    PP.line((source.reset_index()).index,
+            (source.reset_index()).reform, line_color=Reds4[1], line_width=0.8,
+            line_alpha=1, legend="Reform")
+
+    PP.legend.label_text_font = "times"
+    PP.legend.label_text_font_style = "italic"
+    PP.legend.location = loc
+
+    PP.legend.label_width = 2
+    PP.legend.label_height = 2
+    PP.legend.label_standoff = 2
+    PP.legend.glyph_width = 14
+    PP.legend.glyph_height = 14
+    PP.legend.legend_spacing = 5
+    PP.legend.legend_padding = 5
+    PP.yaxis.axis_label = ylab
+    PP.xaxis.axis_label = xlab
+    return PP
 
 
 def string_to_number(string):

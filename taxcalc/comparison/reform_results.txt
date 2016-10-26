@@ -77,11 +77,11 @@ Tax-Calculator,80.4,87.7,94.5,101.3
 Tax Expenditure,75,82,88,93
 ""
 Both real estate and state and local
-Tax-Calculator,99.3,105.6,111.4,117.5
+Tax-Calculator,99.3,105.6,111.4,117.6
 Tax Expenditure,75,82,88,93
 ""
 State & Local
-Tax-Calculator,64.3,67.9,71.3,75.0
+Tax-Calculator,64.3,67.9,71.4,75.0
 Tax Expenditure,59,63,67,71
 ""
 Medical
@@ -93,7 +93,7 @@ Tax-Calculator,0.4,0.5,0.5,0.5
 Tax Expenditure,0,0,0,0
 ""
 Charitable
-Tax-Calculator,43.2,45.7,48.2,50.9
+Tax-Calculator,43.2,45.8,48.2,50.9
 Tax Expenditure,46,47,48,50
 ""
 Decrease AGI floor for miscellaneous expenses by 1 pts
@@ -115,10 +115,10 @@ Budget Options,11,9,8,7
 CAPITAL GAIN
 ""
 Increase long term cap gain and dividends tax rates by 2 percentage, no behavioral response
-Tax-Calculator,13.2,13.5,13.7,14.0
+Tax-Calculator,13.3,13.7,13.9,14.1
 ""
 Increase long term cap gain and dividends tax rates by 2 percentage, BE_cg elasticity assumed to be -3.67
-Tax-Calculator,3.3,3.4,3.5,3.7
+Tax-Calculator,3.4,3.5,3.6,3.7
 Budget Options,5,5,5,6
 ""
 REGULAR TAXES
@@ -153,7 +153,7 @@ Tax-Calculator,2.4,2.6,2.7,2.9
 Alternative Minimum Tax
 ""
 Increase AMT rate under the surtax threshold by 2 pts
-Tax-Calculator,24.8,26.7,28.3,29.9
+Tax-Calculator,24.8,26.6,28.3,29.9
 ""
 Alternative Minimum Tax
 ""
@@ -216,5 +216,5 @@ Tax-Calculator,-111.7,-112.1,-114.3,-117.7
 FAIR SHARE TAX
 ""
 Increase FST rate from zero to 0.30 beginning in 2017
-Tax-Calculator,30.0,30.7,31.0,31.9
+Tax-Calculator,30.0,30.7,31.1,31.9
 Tax Foundation: 321 ten-year(2016-25) static estimate

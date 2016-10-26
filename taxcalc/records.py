@@ -146,7 +146,7 @@ class Records(object):
         '_sey', '_earned', '_earned_p', '_earned_s',
         'ymod', 'ymod1',
         'c04800', 'c19200', 'c20500',
-        '_taxbc', '_standard', 'c24516', 'c24517', 'c24520',
+        '_taxbc', '_standard', 'dwks10', 'dwks13', 'dwks14', 'dwks19',
         'c05700',
         'c05800',
         'c07180',
