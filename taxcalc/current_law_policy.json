@@ -1319,6 +1319,20 @@
         "value": [[200000, 250000, 125000, 200000, 250000, 125000]]
     },
 
+    "_NIIT_PT_taxed": {
+        "long_name": "Whether or not partnership and S-corp income is in NIIT base",
+        "description": "0 ==> e26270 excluded from NIIT base; 1 ==> e26270 is in NIIT base",
+        "irs_ref": "",
+        "notes": "Current law has _NIIT_PT_taxed equal to zero",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0]
+    },
+
     "_NIIT_trt": {
         "long_name": "Net Investment Income Tax rate",
         "description": "The amount by which MAGI exceeds _NIIT_thd is taxed at this rate.",
