@@ -735,9 +735,10 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
     (assume all annuity income is excluded from net investment income)
     """
     modAGI = c00100  # no deducted foreign earned income to add
-    NII = max(0., e00300 + e00600 + (e02000 - e26270) + c01000)
-    if NIIT_PT_taxed != 0.:
-        NII += e26270
+    if NIIT_PT_taxed == 0.:
+        NII = max(0., e00300 + e00600 + c01000 + e02000 - e26270)
+    else:  # do not subtract e26270 from e02000
+        NII = max(0., e00300 + e00600 + c01000 + e02000)
     NIIT = NIIT_trt * min(NII, max(0., modAGI - NIIT_thd[MARS - 1]))
     return NIIT
 
