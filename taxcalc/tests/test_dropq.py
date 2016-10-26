@@ -2,7 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 import pytest
-from pandas import DataFrame
+from pandas import DataFrame, Series
 
 from taxcalc.dropq.utils import *
 from taxcalc.dropq import *
@@ -17,48 +17,81 @@ def puf_path(tests_path):
     return os.path.join(tests_path, '..', '..', 'puf.csv')
 
 
-@pytest.mark.parametrize("is_strict, return_json, growth_params",
-                         [(True, False, False), (False, False, False),
-                          (True, True, False), (False, True, True)])
-def test_run_dropq_nth_year(is_strict, return_json, growth_params,
-                            puf_1991_path):
+@pytest.mark.parametrize("is_strict, ret_json, growth_params, behavior_params",
+                         [(True, False, False, False),
+                          (False, False, False, False),
+                          (True, True, False, True),
+                          (False, True, True, True)])
+def test_run_dropq_nth_year(is_strict, ret_json, growth_params,
+                            behavior_params, puf_1991_path):
     myvars = {}
     myvars['_II_em_cpi'] = False
     myvars['_II_rt4'] = [0.39, 0.40, 0.41]
     myvars['_II_rt3'] = [0.31, 0.32, 0.33]
     if growth_params:
         myvars['_factor_adjustment'] = [0.01]
-    first_year = 2016
-    user_mods = {first_year: myvars}
+    if behavior_params:
+        myvars['_BE_inc'] = [0.8]
+    if is_strict:
+        myvars['unknown_param'] = [0.01]
+    first= 2016
+    user_mods = {first: myvars}
 
     # Create a Public Use File object
     tax_data = pd.read_csv(puf_1991_path)
-    (mY_dec, mX_dec, df_dec, pdf_dec, cdf_dec, mY_bin, mX_bin, df_bin,
-     pdf_bin, cdf_bin, fiscal_tots) = dropq.run_models(tax_data,
-                                                       start_year=first_year,
-                                                       is_strict=is_strict,
-                                                       user_mods=user_mods,
-                                                       return_json=return_json,
-                                                       num_years=3)
+
+    if is_strict:
+        with pytest.raises(ValueError):
+            dropq.run_models(tax_data, start_year=first,
+                             is_strict=is_strict, user_mods=user_mods,
+                             return_json=ret_json, num_years=3)
+
+    else:
+        (mY_dec, mX_dec, df_dec, pdf_dec, cdf_dec, mY_bin, mX_bin, df_bin,
+        pdf_bin, cdf_bin, fiscal_tots) = dropq.run_models(tax_data,
+                                                          start_year=first,
+                                                          is_strict=is_strict,
+                                                          user_mods=user_mods,
+                                                          return_json=ret_json,
+                                                          num_years=3)
 
 
-@pytest.mark.parametrize("return_json", [True, False])
-def test_run_dropq_nth_year_mtr(return_json, puf_1991_path):
+@pytest.mark.parametrize("is_strict, ret_json, growth_params, no_elast",
+                        [(True, True, False, False), (True, True, True, True),
+                         (False, False, False, False),
+                         (False, True, True, False)])
+def test_run_dropq_nth_year_mtr(is_strict, ret_json, growth_params, no_elast,
+                                puf_1991_path):
     myvars = {}
     myvars['_STD'] = [[12600, 25200, 12600, 18600, 25300, 12600, 2100]]
     myvars['_AMT_trt1'] = [.0]
     myvars['_AMT_trt2'] = [.0]
-    myvars['elastic_gdp'] = [.54]
+    myvars['elastic_gdp'] = [.54, .56]
+    if growth_params:
+        myvars['_factor_adjustment'] = [0.01]
+    if is_strict:
+        myvars['unknown_param'] = [0.01]
+    if no_elast:
+        del myvars['elastic_gdp']
     first_year = 2016
     user_mods = {first_year: myvars}
 
     # Create a Public Use File object
     tax_data = pd.read_csv(puf_1991_path)
 
-    dropq.run_gdp_elast_models(tax_data, start_year=first_year,
-                               user_mods=user_mods,
-                               return_json=return_json,
-                               num_years=3)
+    if is_strict or no_elast:
+        with pytest.raises(ValueError):
+            dropq.run_gdp_elast_models(tax_data, start_year=first_year,
+                                    is_strict=is_strict,
+                                    user_mods=user_mods,
+                                    return_json=ret_json,
+                                    num_years=3)
+    else:
+        dropq.run_gdp_elast_models(tax_data, start_year=first_year,
+                                is_strict=is_strict,
+                                user_mods=user_mods,
+                                return_json=ret_json,
+                                num_years=3)
 
 
 def test_only_growth_assumptions():
@@ -157,19 +190,19 @@ def test_unknown_parameters_with_cpi():
 
 def test_format_macro_results():
 
-    data = [[ 1.875e-03, 1.960e-03, 2.069e-03, 2.131e-03, 2.179e-03, 2.226e-03,
-                2.277e-03, 2.324e-03, 2.375e-03, 2.426e-03, 2.184e-03, 2.806e-03],
-            [ 2.538e-04, 4.452e-04, 6.253e-04, 7.886e-04, 9.343e-04, 1.064e-03,
-                1.180e-03, 1.284e-03, 1.378e-03, 1.463e-03, 9.419e-04, 2.224e-03],
-            [ 5.740e-03, 5.580e-03, 5.524e-03, 5.347e-03, 5.161e-03, 5.011e-03,
-                4.907e-03, 4.818e-03, 4.768e-03, 4.739e-03, 5.160e-03, 4.211e-03],
-            [ 2.883e-03, 2.771e-03, 2.721e-03, 2.620e-03, 2.520e-03, 2.440e-03,
-                2.384e-03, 2.337e-03, 2.309e-03, 2.292e-03, 2.528e-03, 2.051e-03],
-            [ -1.012e-03, -8.141e-04, -6.552e-04, -4.912e-04, -3.424e-04, -2.150e-04,
+    data = [[1.875e-03, 1.960e-03, 2.069e-03, 2.131e-03, 2.179e-03, 2.226e-03,
+             2.277e-03, 2.324e-03, 2.375e-03, 2.426e-03, 2.184e-03, 2.806e-03],
+            [2.538e-04, 4.452e-04, 6.253e-04, 7.886e-04, 9.343e-04, 1.064e-03,
+             1.180e-03, 1.284e-03, 1.378e-03, 1.463e-03, 9.419e-04, 2.224e-03],
+            [5.740e-03, 5.580e-03, 5.524e-03, 5.347e-03, 5.161e-03, 5.011e-03,
+             4.907e-03, 4.818e-03, 4.768e-03, 4.739e-03, 5.160e-03, 4.211e-03],
+            [2.883e-03, 2.771e-03, 2.721e-03, 2.620e-03, 2.520e-03, 2.440e-03,
+             2.384e-03, 2.337e-03, 2.309e-03, 2.292e-03, 2.528e-03, 2.051e-03],
+            [-1.012e-03, -8.141e-04, -6.552e-04, -4.912e-04, -3.424e-04, -2.150e-04,
             -1.081e-04, -1.372e-05, 6.513e-05, 1.336e-04, -3.450e-04, 7.538e-04],
-            [ 3.900e-03, 3.143e-03, 2.532e-03, 1.900e-03, 1.325e-03, 8.325e-04,
-                4.189e-04, 5.315e-05, -2.525e-04, -5.180e-04, 1.337e-03, -2.917e-03],
-            [ -2.577e-02, -2.517e-02, -2.507e-02, -2.464e-02, -2.419e-02, -2.388e-02,
+            [3.900e-03, 3.143e-03, 2.532e-03, 1.900e-03, 1.325e-03, 8.325e-04,
+             4.189e-04, 5.315e-05, -2.525e-04, -5.180e-04, 1.337e-03, -2.917e-03],
+            [-2.577e-02, -2.517e-02, -2.507e-02, -2.464e-02, -2.419e-02, -2.388e-02,
             -2.368e-02, -2.350e-02, -2.342e-02, -2.341e-02, -2.427e-02, -2.275e-02]]
 
     data = np.array(data)
@@ -193,6 +226,10 @@ def test_format_macro_results():
                          '0.002', '0.002', '0.002', '0.002', '0.003', '0.002']}
 
     assert diff_table == x
+
+    diff_df = format_macro_results(data, return_json=False)
+
+    assert diff_df.equals(DataFrame(data))
 
 
 def test_create_json_blob():
@@ -233,6 +270,7 @@ def test_create_json_blob_float():
            '2': {'a': '7.00', 'b': '8.00', 'c': '9.00'}}
     assert ans == json.dumps(exp)
 
+
 def test_create_json_table():
     df = DataFrame(data=[[1.,2,3],[4.,5,6],[7,8,9]], columns=['a','b','c'])
     ans = create_json_table(df)
@@ -240,6 +278,16 @@ def test_create_json_table():
            '1': ['4.00', '5', '6'],
            '2': ['7.00', '8', '9']}
     assert ans == exp
+
+
+def test_chooser():
+    sr = Series(data=[False]*100, name="name")
+    with pytest.raises(ValueError):
+        chooser(sr)
+
+    sr[0:3] = True
+    chooser(sr)
+
 
 def test_format_print_not_implemented():
     x = np.array([1], dtype='i4')
@@ -286,12 +334,6 @@ def test_create_dropq_dist_table_groupby_options(groupby, result_type, puf_1991_
         create_dropq_distribution_table(df2, groupby=groupby,
                                         result_type=result_type, suffix=suffix)
 
-    #create_dropq_distribution_table(df2, groupby=groupby, result_type=result_type, suffix='_bin')
-    #create_dropq_distribution_table(df2, groupby="large_income_bins", result_type, suffix)
-    #create_dropq_distribution_table(calc, groupby="large_income_bins", result_type="weighted_average", suffix)
-    #with pytest.raises(NotImplementedError):
-    #    create_dropq_distribution_table(calc, groupby="other_income_bins", result_type, suffix)"""
-
 
 @pytest.mark.parametrize("groupby, res_col",
                          [("weighted_deciles", "tax_diff"),
@@ -305,7 +347,6 @@ def test_create_dropq_diff_table_groupby_options(groupby, res_col, puf_1991_path
     is_strict = False
     # Create a Public Use File object
     tax_data = pd.read_csv(puf_1991_path)
-    suffix = '_bin'
     myvars = {}
     myvars['_II_em_cpi'] = False
     myvars['_II_rt4'] = [0.39, 0.40, 0.41]
@@ -318,11 +359,6 @@ def test_create_dropq_diff_table_groupby_options(groupby, res_col, puf_1991_path
 
     df1, df2 = drop_records(soit_baseline, soit_reform, mask)
     dec_sum = (df2['tax_diff_dec'] * df2['s006']).sum()
-    bin_sum = (df2['tax_diff_bin'] * df2['s006']).sum()
-    pr_dec_sum = (df2['payrolltax_diff_dec'] * df2['s006']).sum()
-    pr_bin_sum = (df2['payrolltax_diff_bin'] * df2['s006']).sum()
-    combined_dec_sum = (df2['combined_diff_dec'] * df2['s006']).sum()
-    combined_bin_sum = (df2['combined_diff_bin'] * df2['s006']).sum()
 
     if groupby == "other_deciles":
         with pytest.raises(ValueError):

@@ -158,9 +158,9 @@ def chooser(agg):
     if len(indices[0]) > 2:
         choices = np.random.choice(indices[0], size=3, replace=False)
     else:
-        choices = []
-        print("Not enough difference in taxable income when adding 1 dollar"
-              "for chunk with name: " + agg.name)
+        msg = ("Not enough difference in taxable income when adding 1 dollar"
+               "for chunk with name: " + agg.name)
+        raise ValueError(msg)
 
     ans = [1] * len(agg)
     for ix in choices:
@@ -305,15 +305,12 @@ def groupby_means_and_comparisons(df1, df2, mask, debug=False):
 def results(c):
     outputs = []
     for col in STATS_COLUMNS:
-        if hasattr(c.policy, col):
-            outputs.append(getattr(c.policy, col))
-        else:
-            outputs.append(getattr(c.records, col))
+        outputs.append(getattr(c.records, col))
 
     return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
 
 
-def run_nth_year_mtr_calc(year_n, start_year, tax_dta, user_mods="",
+def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta, user_mods="",
                           return_json=True):
     # Only makes sense to run for budget years 1 through n-1 (not for year 0)
     assert year_n > 0
@@ -331,6 +328,11 @@ def run_nth_year_mtr_calc(year_n, start_year, tax_dta, user_mods="",
     params = Policy(start_year=2013)
     # Create a Calculator
     calc1 = Calculator(policy=params, records=records)
+
+    if is_strict:
+        unknown_params = get_unknown_parameters(user_mods, start_year)
+        if unknown_params:
+            raise ValueError("Unknown parameters: {}".format(unknown_params))
 
     growth_assumptions = only_growth_assumptions(user_mods, start_year)
     if growth_assumptions:
@@ -598,8 +600,9 @@ def run_models(tax_dta, start_year, is_strict=False, user_mods="",
     #########################################################################
     for year_n in range(0, num_years):
         json_tables = run_nth_year(year_n, start_year=start_year,
+                                   is_strict=is_strict,
                                    tax_dta=tax_dta,
-                                   is_strict=is_strict, user_mods=user_mods,
+                                   user_mods=user_mods,
                                    return_json=return_json)
 
         (mY_dec_table_i, mX_dec_table_i, df_dec_table_i, pdf_dec_table_i,
@@ -621,7 +624,7 @@ def run_models(tax_dta, start_year, is_strict=False, user_mods="",
             pdf_bin_table, cdf_bin_table, num_fiscal_year_totals)
 
 
-def run_gdp_elast_models(tax_dta, start_year, user_mods="",
+def run_gdp_elast_models(tax_dta, start_year, is_strict=False, user_mods="",
                          return_json=True, num_years=NUM_YEARS_DEFAULT):
 
     gdp_elasticity_totals = []
@@ -630,9 +633,10 @@ def run_gdp_elast_models(tax_dta, start_year, user_mods="",
     #   Create Calculators and Masks
     #########################################################################
     for year_n in range(1, num_years):
-        gdp_elast_i = run_nth_year_mtr_calc(year_n, tax_dta=tax_dta,
+        gdp_elast_i = run_nth_year_mtr_calc(year_n, start_year=start_year,
+                                            is_strict=is_strict,
+                                            tax_dta=tax_dta,
                                             user_mods=user_mods,
-                                            start_year=start_year,
                                             return_json=return_json)
 
         gdp_elasticity_totals.append(gdp_elast_i)
@@ -645,7 +649,7 @@ def format_macro_results(diff_data, return_json=True):
     ogusadf = pd.DataFrame(diff_data)
 
     if not return_json:
-        return df
+        return ogusadf
 
     column_types = [float] * diff_data.shape[1]
 
