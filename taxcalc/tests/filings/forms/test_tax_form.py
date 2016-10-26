@@ -52,6 +52,17 @@ def test_tax_form_tax_id():
     assert form.tax_unit_id == '47'
 
 
+def test_incorrect_set_fields_calls():
+    child_class = type("TestTaxForm", (TaxForm,), {
+        '_VALID_FIELDS': ['field1', 'field2', 'field3'],
+    })
+    form = child_class(2013)
+    with pytest.raises(ValueError):
+        form.set_fields(list())
+    with pytest.raises(ValueError):
+        form.set_fields({'field9': '12345'})
+
+
 def test_tax_form_evar_mapping_direct():
     child_class = type("TestTaxForm", (TaxForm,), {
         '_EVAR_MAP': {

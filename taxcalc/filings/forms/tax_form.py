@@ -106,8 +106,8 @@ class TaxForm(object):
         valid_fields = self.__class__._VALID_FIELDS
         for key, value in data.items():
             if valid_fields and key not in valid_fields:
-                print('Unknown field {0} for form {2}'.
-                      format(key, self.form_name()))
+                msg = 'Unknown field {0} for form {1}'
+                raise ValueError(msg.format(key, self.form_name()))
             else:
                 self._fields[key] = value
 
