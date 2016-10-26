@@ -11,9 +11,9 @@ import pandas as pd
 import hashlib
 import copy
 import time
-from .utils import create_dropq_difference_table as dropq_diff_table
-from .utils import create_dropq_distribution_table as dropq_dist_table
-from .utils import *
+from .dropq_utils import create_dropq_difference_table as dropq_diff_table
+from .dropq_utils import create_dropq_distribution_table as dropq_dist_table
+from .dropq_utils import *
 
 planY_column_types = [float] * len(TABLE_LABELS)
 

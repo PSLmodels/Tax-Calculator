@@ -4,7 +4,7 @@ import pandas as pd
 import pytest
 from pandas import DataFrame, Series
 
-from taxcalc.dropq.utils import *
+from taxcalc.dropq.dropq_utils import *
 from taxcalc.dropq import *
 import json
 
