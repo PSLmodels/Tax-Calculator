@@ -88,6 +88,12 @@ def test_tax_form_evar_mapping_direct():
         'e00003': 3,
     }
 
+    child_class = type("EmptyTaxForm", (TaxForm,), {
+        '_EVAR_MAP': {}, '_EVAR_MAP_BY_YEAR': {}
+    })
+    form = child_class(2013, fields={'field_1': '47', 'field_2': '59'})
+    assert form.to_evars_direct() == {}
+
 
 def test_tax_form_evar_mapping_direct_conflict():
     child_class = type("TestTaxForm", (TaxForm,), {

@@ -137,17 +137,20 @@ class TaxForm(object):
         """
         results = {}
 
-        if self._EVAR_MAP_BY_YEAR:
+        if self._EVAR_MAP_BY_YEAR and self.year in self._EVAR_MAP_BY_YEAR:
             year_evar_map = self._EVAR_MAP_BY_YEAR[self.year]
         else:
             year_evar_map = None
 
         for key, value in self._fields.items():
             if self._EVAR_MAP and key in self._EVAR_MAP:
+                # print('(a) key, value = {} : {}'.format(key, value))
                 evar = self._EVAR_MAP[key]
             elif year_evar_map and key in year_evar_map:
+                # print('(b) key, value = {} : {}'.format(key, value))
                 evar = year_evar_map[key]
             else:
+                # print('(c) key, value = {} : {}'.format(key, value))
                 continue
             if evar in results and results[evar] != value:
                 raise ValueError('Different calc for same evar.')
