@@ -686,7 +686,7 @@ def get_mtr_data(calc1, calc2,
                  wrt_full_compensation=False,
                  income_measure='wages',
                  weighting='weighted_mean',
-                 weight_by_income_measure=False):
+                 dollar_weighting=False):
     """
     This function prepares data needed by the mtr_plot utility function.
 
@@ -718,7 +718,7 @@ def get_mtr_data(calc1, calc2,
 
     wrt_full_compensation : boolean
         see documentation of this mtr() method argument in calculate.py file
-        (value has an effect only if mtr_wrt_variable='e00200p')
+        (value has an effect only if mtr_wrt_variable is 'e00200p')
 
     income_measure : string
         options:
@@ -728,6 +728,16 @@ def get_mtr_data(calc1, calc2,
                                non-taxable social security benefits, and
                                employer share of FICA taxes.
         specifies which income variable to show on the graph's x axis
+
+    dollar_weighting : boolean
+        False implies both income_measure percentiles on x axis and
+        mtr values for each percentile on the y axis are computed
+        without using dollar income_measure weights (just sampling weights);
+        True implies both income_measure percentiles on x axis and
+        mtr values for each percentile on the y axis are computed
+        using dollar income_measure weights (in addition to sampling weights).
+        Specifying True produces a graph x axis that shows income_measure
+        (not filing unit) percentiles.
 
 
 
@@ -742,16 +752,6 @@ def get_mtr_data(calc1, calc2,
                 option would be helpful if you are interested in
                 the MTR after taking both weights and wages
                 into consideration.
-
-    weight_by_income_measure : boolean
-        If this option is true, for each record, s006 (weight) will be weighted
-        by the desired income measure of choice. (Note that this option
-        is not about 'weighted' vs 'unweighted', but rather about what to
-        weight s006 by.) And thus this will allow users to investigate
-        different aggregated targets (via choices of income_measure).
-        For example, if income measure is 'e00200' and this option is true,
-        then the bin (or x-axis in the plot) is the (percentile of) total
-        wages and salaries.
 
     Returns
     -------
@@ -801,28 +801,24 @@ def get_mtr_data(calc1, calc2,
         msg = ('mtr_measure="{}" is neither '
                '"itax" nor "ptax" nor "combined"')
         raise ValueError(msg.format(mtr_measure))
+    # select filing-status subgroup, if any
+    if mars != 'ALL':
+        df1 = df1[df1['MARS'] == mars]
+        df2 = df2[df2['MARS'] == mars]
 
-    # Complex weighted bins or not
-    if weight_by_income_measure:
-        df1 = add_weighted_decile_bins(df1, income_var, 100,
-                                       weight_by_income_measure=True)
-        df2 = add_weighted_decile_bins(df2, income_var, 100,
-                                       weight_by_income_measure=True)
-    else:
-        df1 = add_weighted_decile_bins(df1, income_var, 100)
-        df2 = add_weighted_decile_bins(df2, income_var, 100)
-
-    # Select either all filers or one filling status  <<MOVE UP>>
-    if mars == 'ALL':
-        df_filtered_x = df1.copy()
-        df_filtered_y = df2.copy()
-    else:
-        df_filtered_x = df1[(df1['MARS'] == mars)].copy()
-        df_filtered_y = df2[(df2['MARS'] == mars)].copy()
+    # weight income_var as specified by dollar_weighting
+    df1 = add_weighted_decile_bins(df1,
+                                   income_measure=income_var,
+                                   num_bins=100,
+                                   weight_by_income_measure=dollar_weighting)
+    df2 = add_weighted_decile_bins(df2,
+                                   income_measure=income_var,
+                                   num_bins=100,
+                                   weight_by_income_measure=dollar_weighting)
 
     # Split into groups by 'bins'
-    gpdf1 = df_filtered_x.groupby('bins', as_index=False)
-    gpdf2 = df_filtered_y.groupby('bins', as_index=False)
+    gpdf1 = df1.groupby('bins', as_index=False)
+    gpdf2 = df2.groupby('bins', as_index=False)
 
     # Extract proper weighting method
     if weighting == 'weighted_mean':
@@ -844,25 +840,24 @@ def get_mtr_data(calc1, calc2,
     wpct2['bins'] = np.arange(1, 101)
 
     # Merge two dataframes
-    rsltx = pd.merge(df_filtered_x[['bins']], wpct1, how='left')
-    rslty = pd.merge(df_filtered_y[['bins']], wpct2, how='left')
+    rsltx = pd.merge(df1[['bins']], wpct1, how='left')
+    rslty = pd.merge(df2[['bins']], wpct2, how='left')
 
-    df_filtered_x['wmtr'] = rsltx['wmtr'].values
-    df_filtered_y['wmtr'] = rslty['wmtr'].values
+    df1['wmtr'] = rsltx['wmtr'].values
+    df2['wmtr'] = rslty['wmtr'].values
 
     # Get rid of duplicated bins
-    df_filtered_x.drop_duplicates(subset='bins', inplace=True)
-    df_filtered_y.drop_duplicates(subset='bins', inplace=True)
+    df1.drop_duplicates(subset='bins', inplace=True)
+    df2.drop_duplicates(subset='bins', inplace=True)
 
     # Prepare cleaned mtr data and concatenate into one dataframe
-    df_filtered_x = df_filtered_x['wmtr']
-    df_filtered_y = df_filtered_y['wmtr']
+    df1 = df1['wmtr']
+    df2 = df2['wmtr']
 
-    merged = pd.concat([df_filtered_x, df_filtered_y], axis=1,
-                       ignore_index=True)
+    merged = pd.concat([df1, df2], axis=1, ignore_index=True)
     merged.columns = ['base', 'reform']
     merged.index = (merged.reset_index()).index
-    if weight_by_income_measure:
+    if dollar_weighting:
         merged = merged[1:]
     return merged
 

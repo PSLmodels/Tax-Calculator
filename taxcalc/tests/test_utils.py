@@ -530,7 +530,7 @@ def test_mtr_plot(records_2009):
     behv = Behavior()
     calc = Calculator(policy=pol, records=records_2009, behavior=behv)
     source = get_mtr_data(calc, calc, weighting='wage_weighted',
-                          weight_by_income_measure=True)
+                          dollar_weighting=True)
     plot = mtr_plot(source)
     assert plot
 
@@ -542,7 +542,7 @@ def test_mtr_plot_force_no_bokeh(records_2009):
     behv = Behavior()
     calc = Calculator(policy=pol, records=records_2009, behavior=behv)
     source = get_mtr_data(calc, calc, weighting='weighted_mean',
-                          weight_by_income_measure=True)
+                          dollar_weighting=True)
     with pytest.raises(RuntimeError):
         plot = mtr_plot(source)
     taxcalc.utils.BOKEH_AVAILABLE = True
