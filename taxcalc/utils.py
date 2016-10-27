@@ -1,28 +1,33 @@
+"""
+Tax-Calculator utility functions.
+"""
+# CODING-STYLE CHECKS:
+# pep8 --ignore=E402 utils.py
+# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy utils.py
+# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
+
 import copy
+from collections import defaultdict, OrderedDict
 import numpy as np
 import pandas as pd
-from pandas import DataFrame
-from collections import defaultdict, OrderedDict
-
 try:
-    import bokeh
     BOKEH_AVAILABLE = True
     from bokeh.palettes import Blues4, Reds4
-    from bokeh.plotting import figure, output_file, show
-
+    from bokeh.plotting import figure
+    from bokeh.plotting import output_file  # pylint: disable=unused-import
+    from bokeh.plotting import show  # pylint: disable=unused-import
 except ImportError:
     BOKEH_AVAILABLE = False
-#
+
 
 STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard',
                  'c04470', 'c04600', 'c04800', 'c05200', 'c62100', 'c09600',
                  'c05800', 'c09200', '_refund', 'c07100', '_iitax',
                  '_payrolltax', '_combined', 's006']
 
-# each entry in this array corresponds to the same entry in the array
-# TABLE_LABELS below. this allows us to use TABLE_LABELS to map a
-# label to the correct column in our distribution table
-
+# Items in the TABLE_COLUMNS list below correspond to the items in the
+# TABLE_LABELS list below; this correspondence allows us to use TABLE_LABELS
+# to map a label to the correct column in our distribution tables.
 TABLE_COLUMNS = ['s006', 'c00100', 'num_returns_StandardDed', '_standard',
                  'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'c05200',
                  'c62100', 'num_returns_AMT', 'c09600', 'c05800', 'c07100',
@@ -37,7 +42,7 @@ TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Individual Income Tax Liabilities', 'Payroll Tax Liablities',
                 'Combined Payroll and Individual Income Tax Liabilities']
 
-# used in our difference table to label the columns
+# Following list is used in our difference table to label its columns.
 DIFF_TABLE_LABELS = ['Tax Units with Tax Cut', 'Tax Units with Tax Increase',
                      'Count', 'Average Tax Change', 'Total Tax Difference',
                      'Percent with Tax Increase', 'Percent with Tax Decrease',
@@ -56,55 +61,90 @@ WEBAPP_INCOME_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
 EPSILON = 0.000000001
 
 
-def count_gt_zero(agg):
-    return sum([1 for a in agg if a > 0])
+def count_gt_zero(data):
+    """
+    Return unweighted count of positive data items.
+    """
+    return sum([1 for item in data if item > 0])
 
 
-def count_lt_zero(agg):
-    return sum([1 for a in agg if a < 0])
+def count_lt_zero(data):
+    """
+    Return unweighted count of negative data items.
+    """
+    return sum([1 for item in data if item < 0])
 
 
-def weighted_count_lt_zero(agg, col_name, tolerance=-0.001):
-    return agg[agg[col_name] < tolerance]['s006'].sum()
+def weighted_count_lt_zero(pdf, col_name, tolerance=-0.001):
+    """
+    Return weighted count of negative Pandas DateFrame col_name items.
+    """
+    return pdf[pdf[col_name] < tolerance]['s006'].sum()
 
 
-def weighted_count_gt_zero(agg, col_name, tolerance=0.001):
-    return agg[agg[col_name] > tolerance]['s006'].sum()
+def weighted_count_gt_zero(pdf, col_name, tolerance=0.001):
+    """
+    Return weighted count of positive Pandas DateFrame col_name items.
+    """
+    return pdf[pdf[col_name] > tolerance]['s006'].sum()
 
 
-def weighted_count(agg):
-    return agg['s006'].sum()
+def weighted_count(pdf):
+    """
+    Return weighted count of items in Pandas DataFrame.
+    """
+    return pdf['s006'].sum()
 
 
-def weighted_mean(agg, col_name):
-    return (float((agg[col_name] * agg['s006']).sum()) /
-            float(agg['s006'].sum() + EPSILON))
+def weighted_mean(pdf, col_name):
+    """
+    Return weighted mean of Pandas DataFrame col_name items.
+    """
+    return (float((pdf[col_name] * pdf['s006']).sum()) /
+            float(pdf['s006'].sum() + EPSILON))
 
 
-def wage_weighted(agg, col_name):
-    return (float((agg[col_name] * agg['s006'] * agg['e00200']).sum()) /
-            float((agg['s006'] * agg['e00200']).sum() + EPSILON))
+def wage_weighted(pdf, col_name):
+    """
+    Return wage-weighted mean of Pandas DataFrame col_name items.
+    """
+    return (float((pdf[col_name] * pdf['s006'] * pdf['e00200']).sum()) /
+            float((pdf['s006'] * pdf['e00200']).sum() + EPSILON))
 
 
-def weighted_sum(agg, col_name):
-    return (agg[col_name] * agg['s006']).sum()
+def weighted_sum(pdf, col_name):
+    """
+    Return weighted sum of Pandas DataFrame col_name items.
+    """
+    return (pdf[col_name] * pdf['s006']).sum()
 
 
-def weighted_perc_inc(agg, col_name):
-    return (float(weighted_count_gt_zero(agg, col_name)) /
-            float(weighted_count(agg) + EPSILON))
+def weighted_perc_inc(pdf, col_name):
+    """
+    Return weighted fraction (not percent) of positive values for the
+    variable with col_name in the specified Pandas DataFrame.
+    """
+    return (float(weighted_count_gt_zero(pdf, col_name)) /
+            float(weighted_count(pdf) + EPSILON))
 
 
-def weighted_perc_dec(agg, col_name):
-    return (float(weighted_count_lt_zero(agg, col_name)) /
-            float(weighted_count(agg) + EPSILON))
+def weighted_perc_dec(pdf, col_name):
+    """
+    Return weighted fraction (not percent) of negative values for the
+    variable with col_name in the specified Pandas DataFrame.
+    """
+    return (float(weighted_count_lt_zero(pdf, col_name)) /
+            float(weighted_count(pdf) + EPSILON))
 
 
-def weighted_share_of_total(agg, col_name, total):
-    return float(weighted_sum(agg, col_name)) / (float(total) + EPSILON)
+def weighted_share_of_total(pdf, col_name, total):
+    """
+    Return ratio of weighted_sum(pdf, col_name) and specified total.
+    """
+    return float(weighted_sum(pdf, col_name)) / (float(total) + EPSILON)
 
 
-def add_weighted_decile_bins(df, income_measure='_expanded_income',
+def add_weighted_decile_bins(pdf, income_measure='_expanded_income',
                              num_bins=10, labels=None,
                              weight_by_income_measure=False):
     """
@@ -117,28 +157,28 @@ def add_weighted_decile_bins(df, income_measure='_expanded_income',
     """
     # First, weight income measure by s006 if desired
     if weight_by_income_measure:
-        df['s006_weighted'] = np.multiply(df[income_measure].values,
-                                          df['s006'].values)
+        pdf['s006_weighted'] = np.multiply(pdf[income_measure].values,
+                                           pdf['s006'].values)
     # Next, sort by income_measure
-    df.sort_values(by=income_measure, inplace=True)
+    pdf.sort_values(by=income_measure, inplace=True)
     # Do a cumulative sum
     if weight_by_income_measure:
-        df['cumsum_weights'] = np.cumsum(df['s006_weighted'].values)
+        pdf['cumsum_weights'] = np.cumsum(pdf['s006_weighted'].values)
     else:
-        df['cumsum_weights'] = np.cumsum(df['s006'].values)
+        pdf['cumsum_weights'] = np.cumsum(pdf['s006'].values)
     # Max value of cum sum of weights
-    max_ = df['cumsum_weights'].values[-1]
+    max_ = pdf['cumsum_weights'].values[-1]
     # Create 10 bins and labels based on this cumulative weight
     bin_edges = [0] + list(np.arange(1, (num_bins + 1)) *
                            (max_ / float(num_bins)))
     if not labels:
         labels = range(1, (num_bins + 1))
     #  Groupby weighted deciles
-    df['bins'] = pd.cut(df['cumsum_weights'], bins=bin_edges, labels=labels)
-    return df
+    pdf['bins'] = pd.cut(pdf['cumsum_weights'], bins=bin_edges, labels=labels)
+    return pdf
 
 
-def add_income_bins(df, compare_with='soi', bins=None, right=True,
+def add_income_bins(pdf, compare_with='soi', bins=None, right=True,
                     income_measure='_expanded_income'):
     """
     Add a column of income bins of income_measure using pandas 'cut'.
@@ -146,7 +186,7 @@ def add_income_bins(df, compare_with='soi', bins=None, right=True,
 
     Parameters
     ----------
-    df: DataFrame object
+    pdf: Pandas DataFrame object
         the object to which we are adding bins
 
     compare_with: String, optional
@@ -165,7 +205,7 @@ def add_income_bins(df, compare_with='soi', bins=None, right=True,
 
     Returns
     -------
-    df: DataFrame object
+    pdf: Pandas DataFrame object
         the original input that bins have been added to
     """
     if not bins:
@@ -182,56 +222,60 @@ def add_income_bins(df, compare_with='soi', bins=None, right=True,
             msg = 'Unknown compare_with arg {0}'.format(compare_with)
             raise ValueError(msg)
     # Groupby income_measure bins
-    df['bins'] = pd.cut(df[income_measure], bins, right=right)
-    return df
+    pdf['bins'] = pd.cut(pdf[income_measure], bins, right=right)
+    return pdf
 
 
-def means_and_comparisons(df, col_name, gp, weighted_total):
+def means_and_comparisons(pdf, col_name, gpdf, weighted_total):
     """
-    Using grouped values, perform aggregate operations
-    to populate
-    df: DataFrame for full results of calculation
+    Return Pandas DataFrame based specified grouped values of col_name in
+    specified gpdf Pandas DataFrame.
+    pdf: Pandas DataFrame for full results of calculation (NEVER USED)
     col_name: the column name to calculate against
-    gp: grouped DataFrame
+    gpdf: grouped Pandas DataFrame
     """
+    # pylint: disable=unused-argument
     # Who has a tax cut, and who has a tax increase
-    diffs = gp.apply(weighted_count_lt_zero, col_name)
-    diffs = DataFrame(data=diffs, columns=['tax_cut'])
-    diffs['tax_inc'] = gp.apply(weighted_count_gt_zero, col_name)
-    diffs['count'] = gp.apply(weighted_count)
-    diffs['mean'] = gp.apply(weighted_mean, col_name)
-    diffs['tot_change'] = gp.apply(weighted_sum, col_name)
-    diffs['perc_inc'] = gp.apply(weighted_perc_inc, col_name)
-    diffs['perc_cut'] = gp.apply(weighted_perc_dec, col_name)
-    diffs['share_of_change'] = gp.apply(weighted_share_of_total,
-                                        col_name, weighted_total)
+    diffs = gpdf.apply(weighted_count_lt_zero, col_name)
+    diffs = pd.DataFrame(data=diffs, columns=['tax_cut'])
+    diffs['tax_inc'] = gpdf.apply(weighted_count_gt_zero, col_name)
+    diffs['count'] = gpdf.apply(weighted_count)
+    diffs['mean'] = gpdf.apply(weighted_mean, col_name)
+    diffs['tot_change'] = gpdf.apply(weighted_sum, col_name)
+    diffs['perc_inc'] = gpdf.apply(weighted_perc_inc, col_name)
+    diffs['perc_cut'] = gpdf.apply(weighted_perc_dec, col_name)
+    diffs['share_of_change'] = gpdf.apply(weighted_share_of_total,
+                                          col_name, weighted_total)
     return diffs
 
 
-def weighted(df, X):
-    agg = df
-    for colname in X:
+def weighted(pdf, col_names):
+    """
+    Return Pandas DataFrame in which each pdf column variable has been
+    multiplied by the s006 weight variable in the specified Pandas DataFrame.
+    """
+    agg = pdf
+    for colname in col_names:
         if not colname.startswith('s006'):
-            agg[colname] = df[colname] * df['s006']
+            agg[colname] = pdf[colname] * pdf['s006']
     return agg
 
 
-def get_sums(df, na=False):
+def get_sums(pdf, not_available=False):
     """
-    Gets the unweighted sum of each column, saving the col name
-    and the corresponding sum
+    Compute unweighted sum of items in each column of a Pandas DataFrame.
 
     Returns
     -------
-    pandas.Series
+    Pandas Series object containing column sums indexed by pdf colum names.
     """
     sums = defaultdict(lambda: 0)
-    for col in df.columns.tolist():
+    for col in pdf.columns.values.tolist():
         if col != 'bins':
-            if na:
+            if not_available:
                 sums[col] = 'n/a'
             else:
-                sums[col] = (df[col]).sum()
+                sums[col] = (pdf[col]).sum()
     return pd.Series(sums, name='sums')
 
 
@@ -250,48 +294,61 @@ def results(obj):
     Pandas DataFrame object
     """
     arrays = [getattr(obj, name) for name in STATS_COLUMNS]
-    return DataFrame(data=np.column_stack(arrays), columns=STATS_COLUMNS)
+    return pd.DataFrame(data=np.column_stack(arrays), columns=STATS_COLUMNS)
 
 
-def exp_results(c):
-    RES_COLUMNS = STATS_COLUMNS + ['e00200'] + ['MARS']
+def exp_results(calc):
+    """
+    Return Pandas DataFrame containing STATS_COLUMNS variables plus two more.
+    """
+    res_columns = STATS_COLUMNS + ['e00200'] + ['MARS']
     outputs = []
-    for col in RES_COLUMNS:
-        outputs.append(getattr(c.records, col))
-    return DataFrame(data=np.column_stack(outputs), columns=RES_COLUMNS)
+    for col in res_columns:
+        outputs.append(getattr(calc.records, col))
+    return pd.DataFrame(data=np.column_stack(outputs), columns=res_columns)
 
 
-def weighted_avg_allcols(df, cols, income_measure='_expanded_income'):
-    diff = DataFrame(df.groupby('bins', as_index=False).apply(weighted_mean,
-                                                              income_measure),
-                     columns=[income_measure])
-    for col in cols:
+def weighted_avg_allcols(pdf, col_list, income_measure='_expanded_income'):
+    """
+    Return Pandas DataFrame in which variables in col_list of pdf have
+    their weighted_mean computed using the specifed income_measure, except
+    for certain count-like column variables whose sum is computed.
+    """
+    wadf = pd.DataFrame(pdf.groupby('bins',
+                                    as_index=False).apply(weighted_mean,
+                                                          income_measure),
+                        columns=[income_measure])
+    for col in col_list:
         if (col == 's006' or col == 'num_returns_StandardDed' or
                 col == 'num_returns_ItemDed' or col == 'num_returns_AMT'):
-            diff[col] = df.groupby('bins', as_index=False)[col].sum()[col]
+            wadf[col] = pdf.groupby('bins',
+                                    as_index=False)[col].sum()[col]
         elif col != income_measure:
-            diff[col] = df.groupby('bins', as_index=False).apply(weighted_mean,
-                                                                 col)
-    return diff
+            wadf[col] = pdf.groupby('bins',
+                                    as_index=False).apply(weighted_mean, col)
+    return wadf
 
 
-def add_columns(res):
+def add_columns(pdf):
+    """
+    Add several columns to specified Pandas DataFrame.
+    """
     # weight of returns with positive AGI and
     # itemized deduction greater than standard deduction
-    res['c04470'] = \
-        res['c04470'].where(((res['c00100'] > 0.) &
-                             (res['c04470'] > res['_standard'])), 0.)
+    pdf['c04470'] = \
+        pdf['c04470'].where(((pdf['c00100'] > 0.) &
+                             (pdf['c04470'] > pdf['_standard'])), 0.)
     # weight of returns with positive AGI and itemized deduction
-    res['num_returns_ItemDed'] = \
-        res['s006'].where(((res['c00100'] > 0.) &
-                           (res['c04470'] > 0.)), 0.)
+    pdf['num_returns_ItemDed'] = \
+        pdf['s006'].where(((pdf['c00100'] > 0.) &
+                           (pdf['c04470'] > 0.)), 0.)
     # weight of returns with positive AGI and standard deduction
-    res['num_returns_StandardDed'] = \
-        res['s006'].where(((res['c00100'] > 0.) &
-                           (res['_standard'] > 0.)), 0.)
+    pdf['num_returns_StandardDed'] = \
+        pdf['s006'].where(((pdf['c00100'] > 0.) &
+                           (pdf['_standard'] > 0.)), 0.)
     # weight of returns with positive Alternative Minimum Tax (AMT)
-    res['num_returns_AMT'] = res['s006'].where(res['c09600'] > 0., 0.)
-    return res
+    pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
+    return pdf
 
 
 def create_distribution_table(obj, groupby, result_type,
@@ -311,7 +368,7 @@ def create_distribution_table(obj, groupby, result_type,
     groupby : String object
         options for input: 'weighted_deciles', 'small_income_bins',
         'large_income_bins', 'webapp_income_bins';
-        determines how the columns in the resulting DataFrame are sorted
+        determines how the columns in the resulting Pandas DataFrame are sorted
 
     result_type : String object
         options for input: 'weighted_sum' or 'weighted_avg';
@@ -339,8 +396,9 @@ def create_distribution_table(obj, groupby, result_type,
 
     Returns
     -------
-    DataFrame object
+    Pandas DataFrame object
     """
+    # pylint: disable=too-many-arguments
     res = results(obj)
     res = add_columns(res)
     if baseline_obj is not None:
@@ -357,16 +415,16 @@ def create_distribution_table(obj, groupby, result_type,
             res['s006'] = res_base['s006']
     # sorts the data
     if groupby == 'weighted_deciles':
-        df = add_weighted_decile_bins(res, income_measure=income_measure)
+        pdf = add_weighted_decile_bins(res, income_measure=income_measure)
     elif groupby == 'small_income_bins':
-        df = add_income_bins(res, compare_with='soi',
-                             income_measure=income_measure)
+        pdf = add_income_bins(res, compare_with='soi',
+                              income_measure=income_measure)
     elif groupby == 'large_income_bins':
-        df = add_income_bins(res, compare_with='tpc',
-                             income_measure=income_measure)
+        pdf = add_income_bins(res, compare_with='tpc',
+                              income_measure=income_measure)
     elif groupby == 'webapp_income_bins':
-        df = add_income_bins(res, compare_with='webapp',
-                             income_measure=income_measure)
+        pdf = add_income_bins(res, compare_with='webapp',
+                              income_measure=income_measure)
     else:
         msg = ("groupby must be either 'weighted_deciles' or "
                "'small_income_bins' or 'large_income_bins' or "
@@ -375,27 +433,27 @@ def create_distribution_table(obj, groupby, result_type,
     # manipulates the data
     pd.options.display.float_format = '{:8,.0f}'.format
     if result_type == 'weighted_sum':
-        df = weighted(df, STATS_COLUMNS)
-        gp_mean = df.groupby('bins', as_index=False)[TABLE_COLUMNS].sum()
-        gp_mean.drop('bins', axis=1, inplace=True)
-        sum_row = get_sums(df)[TABLE_COLUMNS]
+        pdf = weighted(pdf, STATS_COLUMNS)
+        gpdf_mean = pdf.groupby('bins', as_index=False)[TABLE_COLUMNS].sum()
+        gpdf_mean.drop('bins', axis=1, inplace=True)
+        sum_row = get_sums(pdf)[TABLE_COLUMNS]
     elif result_type == 'weighted_avg':
-        gp_mean = weighted_avg_allcols(df, TABLE_COLUMNS,
-                                       income_measure=income_measure)
-        sum_row = get_sums(df, na=True)[TABLE_COLUMNS]
+        gpdf_mean = weighted_avg_allcols(pdf, TABLE_COLUMNS,
+                                         income_measure=income_measure)
+        sum_row = get_sums(pdf, not_available=True)[TABLE_COLUMNS]
     else:
         msg = "result_type must be either 'weighted_sum' or 'weighted_avg'"
         raise ValueError(msg)
-    return gp_mean.append(sum_row)
+    return gpdf_mean.append(sum_row)
 
 
 def create_difference_table(recs1, recs2, groupby,
                             income_measure='_expanded_income',
                             income_to_present='_iitax'):
     """
-    Get results from two different Records objects for the same year,
-    compare the two results, and return the differences as a table, which
-    is sorted according to the variable specified by the groupby argument.
+    Get results from two different Records objects for the same year, compare
+    the two results, and return the differences as a Pandas DataFrame that is
+    sorted according to the variable specified by the groupby argument.
 
     Parameters
     ----------
@@ -406,7 +464,7 @@ def create_difference_table(recs1, recs2, groupby,
     groupby : String object
         options for input: 'weighted_deciles', 'small_income_bins',
         'large_income_bins', 'webapp_income_bins'
-        determines how the columns in the resulting DataFrame are sorted
+        determines how the columns in the resulting Pandas DataFrame are sorted
 
     income_measure : String object
         options for input: '_expanded_income', '_iitax'
@@ -417,8 +475,9 @@ def create_difference_table(recs1, recs2, groupby,
 
     Returns
     -------
-    DataFrame object
+    Pandas DataFrame object
     """
+    # pylint: disable=too-many-locals
     if recs1.current_year != recs2.current_year:
         msg = 'recs1.current_year not equal to recs2.current_year'
         raise ValueError(msg)
@@ -428,16 +487,16 @@ def create_difference_table(recs1, recs2, groupby,
     res2[baseline_income_measure] = res1[income_measure]
     income_measure = baseline_income_measure
     if groupby == 'weighted_deciles':
-        df = add_weighted_decile_bins(res2, income_measure=income_measure)
+        pdf = add_weighted_decile_bins(res2, income_measure=income_measure)
     elif groupby == 'small_income_bins':
-        df = add_income_bins(res2, compare_with='soi',
-                             income_measure=income_measure)
+        pdf = add_income_bins(res2, compare_with='soi',
+                              income_measure=income_measure)
     elif groupby == 'large_income_bins':
-        df = add_income_bins(res2, compare_with='tpc',
-                             income_measure=income_measure)
+        pdf = add_income_bins(res2, compare_with='tpc',
+                              income_measure=income_measure)
     elif groupby == 'webapp_income_bins':
-        df = add_income_bins(res2, compare_with='webapp',
-                             income_measure=income_measure)
+        pdf = add_income_bins(res2, compare_with='webapp',
+                              income_measure=income_measure)
     else:
         msg = ("groupby must be either "
                "'weighted_deciles' or 'small_income_bins' "
@@ -448,10 +507,10 @@ def create_difference_table(recs1, recs2, groupby,
     # Negative values are the magnitude of the tax decrease
     res2['tax_diff'] = res2[income_to_present] - res1[income_to_present]
     diffs = means_and_comparisons(res2, 'tax_diff',
-                                  df.groupby('bins', as_index=False),
+                                  pdf.groupby('bins', as_index=False),
                                   (res2['tax_diff'] * res2['s006']).sum())
-    sum_row = get_sums(diffs)[diffs.columns.tolist()]
-    diffs = diffs.append(sum_row)
+    sum_row = get_sums(diffs)[diffs.columns.values.tolist()]
+    diffs = diffs.append(sum_row)  # pylint: disable=redefined-variable-type
     pd.options.display.float_format = '{:8,.0f}'.format
     srs_inc = ['{0:.2f}%'.format(val * 100) for val in diffs['perc_inc']]
     diffs['perc_inc'] = pd.Series(srs_inc, index=diffs.index)
@@ -462,8 +521,8 @@ def create_difference_table(recs1, recs2, groupby,
                   for val in diffs['share_of_change']]
     diffs['share_of_change'] = pd.Series(srs_change, index=diffs.index)
     # columns containing weighted values relative to the binning mechanism
-    non_sum_cols = [x for x in diffs.columns.tolist()
-                    if 'mean' in x or 'perc' in x]
+    non_sum_cols = [col for col in diffs.columns
+                    if 'mean' in col or 'perc' in col]
     for col in non_sum_cols:
         diffs.loc['sums', col] = 'n/a'
     return diffs
@@ -481,6 +540,7 @@ def diagnostic_table_odict(recs):
     -------
     ordered dictionary of variable names and aggregate weighted values
     """
+    # pylint: disable=protected-access
     # aggregate weighted values expressed in millions or billions
     in_millions = 1.0e-6
     in_billions = 1.0e-9
@@ -493,15 +553,15 @@ def diagnostic_table_odict(recs):
     num = (recs.s006[(recs.c04470 > 0.) * (recs.c00100 > 0.)].sum())
     odict['Itemizers (#m)'] = num * in_millions
     # itemized deduction
-    ID1 = recs.c04470 * recs.s006
-    val = ID1[recs.c04470 > 0.].sum()
+    ided1 = recs.c04470 * recs.s006
+    val = ided1[recs.c04470 > 0.].sum()
     odict['Itemized Deduction ($b)'] = val * in_billions
     # number of standard deductions
     num = recs.s006[(recs._standard > 0.) * (recs.c00100 > 0.)].sum()
     odict['Standard Deduction Filers (#m)'] = num * in_millions
     # standard deduction
-    STD1 = recs._standard * recs.s006
-    val = STD1[(recs._standard > 0.) * (recs.c00100 > 0.)].sum()
+    sded1 = recs._standard * recs.s006
+    val = sded1[(recs._standard > 0.) * (recs.c00100 > 0.)].sum()
     odict['Standard Deduction ($b)'] = val * in_billions
     # personal exemption
     val = (recs.c04600 * recs.s006)[recs.c00100 > 0.].sum()
@@ -556,12 +616,12 @@ def create_diagnostic_table(calc):
     Pandas DataFrame object containing the table for calc.current_year
     """
     odict = diagnostic_table_odict(calc.records)
-    df = pd.DataFrame(data=odict,
-                      index=[calc.current_year],
-                      columns=odict.keys())
-    df = df.transpose()
+    pdf = pd.DataFrame(data=odict,
+                       index=[calc.current_year],
+                       columns=odict.keys())
+    pdf = pdf.transpose()
     pd.options.display.float_format = '{:8,.1f}'.format
-    return df
+    return pdf
 
 
 def multiyear_diagnostic_table(calc, num_years=0):
@@ -603,31 +663,34 @@ def ascii_output(csv_filename, ascii_filename):
     columns and transposes data so columns are rows and rows are columns.
     In an ipython notebook, you can import this function from the utils module.
     """
-    # list of integers corresponding to the number(s) of the row(s) in the
-    # csv file, only rows in list will be recorded in final output
-    # if left as [], results in entire file being converted to ascii
-    # put in order from smallest to largest, for example:
-    # recids = [33180, 64023, 68020, 74700, 84723, 98001, 107039, 108820]
+    # ** List of integers corresponding to the numbers of the rows in the
+    #    csv file, only rows in list will be recorded in final output.
+    #    If left as [], results in entire file are being converted to ascii.
+    #    Put in order from smallest to largest, for example:
+    #    recids = [33180, 64023, 68020, 74700, 84723, 98001, 107039, 108820]
     recids = [1, 4, 5]
-    # Number of characters in each column, must be whole nonnegative integer
+    # ** Number of characters in each column, must be a nonnegative integer.
     col_size = 15
-    df = pd.read_csv(csv_filename, dtype=object)
-    # keeps only listed recid's
+    # read csv_filename into a Pandas DataFrame
+    pdf = pd.read_csv(csv_filename, dtype=object)
+    # keep only listed recids if recids list is not empty
     if recids != []:
-        def f(x):
-            return x - 1
-        recids = map(f, recids)  # maps recids to correct index in df
-        df = df.ix[recids]
-    # does transposition
-    out = df.T.reset_index()
-    # formats data into uniform columns
+        def pdf_recid(recid):
+            """ Return Pandas DataFrame recid value for specified recid """
+            return recid - 1
+        recids = map(pdf_recid, recids)  # pylint: disable=bad-builtin
+        pdf = pdf.ix[recids]  # pylint: disable=no-member
+    # do transposition
+    out = pdf.T.reset_index()  # pylint: disable=no-member
+    # format data into uniform columns
     fstring = '{:' + str(col_size) + '}'
     out = out.applymap(fstring.format)
+    # write ascii output to specified ascii_filename
     out.to_csv(ascii_filename, header=False, index=False,
                delim_whitespace=True, sep='\t')
 
 
-def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
+def get_mtr_data(calc1, calc2, weighting='weighted_mean', mars='ALL',
                  income_measure='e00200', mtr_measure='_combined',
                  weight_by_income_measure=False):
     """
@@ -635,9 +698,9 @@ def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
 
     Parameters
     ----------
-    calcX : a Tax-Calculator Records object that refers to the baseline
+    calc1 : a Tax-Calculator Records object that refers to the baseline
 
-    calcY : a Tax-Calculator Records object that refers to the reform
+    calc2 : a Tax-Calculator Records object that refers to the reform
 
     weighting : String object
         options for input:
@@ -652,7 +715,7 @@ def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
                 into consideration.
         Choose different weighting methods
 
-    MARS : Integer or String
+    mars : Integer or String
         options for input: 'ALL', 1, 2, 3, 4
         Choose different filling status
 
@@ -684,14 +747,15 @@ def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
         wages and salaries.
     Returns
     -------
-    DataFrame object
+    Pandas DataFrame object
     """
+    # pylint: disable=too-many-arguments,too-many-statements,too-many-locals
     # Calculate MTR
-    a, mtr_iit_x, mtr_combined_x = calcX.mtr()
-    a, mtr_iit_y, mtr_combined_y = calcY.mtr()
+    _, mtr_iit_x, mtr_combined_x = calc1.mtr()
+    _, mtr_iit_y, mtr_combined_y = calc2.mtr()
     # Get output columns
-    df_x = exp_results(calcX)
-    df_y = exp_results(calcY)
+    df_x = exp_results(calc1)
+    df_y = exp_results(calc2)
 
     df_x['mtr_iit'] = mtr_iit_x
     df_y['mtr_iit'] = mtr_iit_y
@@ -711,16 +775,16 @@ def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
         df_y = add_weighted_decile_bins(df_y, income_measure, 100)
 
     # Select either all filers or one filling status
-    if MARS == 'ALL':
+    if mars == 'ALL':
         df_filtered_x = df_x.copy()
         df_filtered_y = df_y.copy()
     else:
-        df_filtered_x = df_x[(df_x['MARS'] == MARS)].copy()
-        df_filtered_y = df_y[(df_y['MARS'] == MARS)].copy()
+        df_filtered_x = df_x[(df_x['MARS'] == mars)].copy()
+        df_filtered_y = df_y[(df_y['MARS'] == mars)].copy()
 
     # Split into groups by 'bins'
-    gp_x = df_filtered_x.groupby('bins', as_index=False)
-    gp_y = df_filtered_y.groupby('bins', as_index=False)
+    gpdf_x = df_filtered_x.groupby('bins', as_index=False)
+    gpdf_y = df_filtered_y.groupby('bins', as_index=False)
 
     # Extract proper weighting method
     if weighting == 'weighted_mean':
@@ -733,14 +797,14 @@ def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
 
     # Apply desired weighting method to mtr
     if mtr_measure == '_combined':
-        wgtpct_x = gp_x.apply(weighting_method, 'mtr_combined')
-        wgtpct_y = gp_y.apply(weighting_method, 'mtr_combined')
+        wgtpct_x = gpdf_x.apply(weighting_method, 'mtr_combined')
+        wgtpct_y = gpdf_y.apply(weighting_method, 'mtr_combined')
     elif mtr_measure == '_iitax':
-        wgtpct_x = gp_x.apply(weighting_method, 'mtr_iit')
-        wgtpct_y = gp_y.apply(weighting_method, 'mtr_iit')
+        wgtpct_x = gpdf_x.apply(weighting_method, 'mtr_iit')
+        wgtpct_y = gpdf_y.apply(weighting_method, 'mtr_iit')
 
-    wpct_x = DataFrame(data=wgtpct_x, columns=['w_mtr'])
-    wpct_y = DataFrame(data=wgtpct_y, columns=['w_mtr'])
+    wpct_x = pd.DataFrame(data=wgtpct_x, columns=['w_mtr'])
+    wpct_y = pd.DataFrame(data=wgtpct_y, columns=['w_mtr'])
 
     # Add bin labels
     wpct_x['bins'] = np.arange(1, 101)
@@ -770,22 +834,24 @@ def get_mtr_data(calcX, calcY, weighting='weighted_mean', MARS='ALL',
     return merged
 
 
-def requires_bokeh(fn):
+def requires_bokeh(func):
     """
-    Decorator for functions that require bokeh.
+    Decorator for functions that require the bokeh package.
     If BOKEH_AVAILABLE=True, this does nothing.
-    IF BOKEH_AVAILABEL=False, we raise an exception and tell the caller
-    that they must install bokeh in order to use the function.
+    IF BOKEH_AVAILABLE=False, we raise an exception and tell the caller
+    that they must install the bokeh package in order to use the function.
     """
     def wrapped_f(*args, **kwargs):
+        """
+        Raise error if bokeh package is not available.
+        """
         if BOKEH_AVAILABLE:
-            return fn(*args, **kwargs)
+            return func(*args, **kwargs)
         else:
             msg = ("`bokeh` is not installed. Please install "
                    "`bokeh` to use this package (`conda install "
                    "bokeh`)")
             raise RuntimeError(msg)
-
     return wrapped_f
 
 
@@ -798,7 +864,7 @@ def mtr_plot(source, xlab='Percentile', ylab='Avg. MTR', title='MTR plot',
 
     Parameters
     ----------
-    source : DataFrame which can be obtained using get_mtr_data() function
+    source : Pandas DataFrame returned from get_mtr_data() utility function
 
     xlab : String object
         Name for X axis
@@ -819,42 +885,48 @@ def mtr_plot(source, xlab='Percentile', ylab='Avg. MTR', title='MTR plot',
         Toptions for input: "top_right", "top_left", "bottom_left",
             "bottom_right"
         Choose the location of the legend label
+
     Returns
     -------
-    Figure Object (Use show(FIGURE_NAME) option to visualize)
-        The default output is in HTML format. To obtain a PNG copy, use the
-        'Save' option on the Toolbar (usually located on the top-right corner
-        of the plot).
-        Note that, when using command line, output file needs to be
-        first specified using command output_file("FILE_NAME.html").
+    bokeh.plotting figure object
+
+    Note
+    ----
+    The ONLY output option for the figure object is HTML format.
+    To obtain a PNG copy, use the 'Save' option on the Toolbar (usually
+    located on the top-right corner of the plot).
+
+    Use show(FIGURE_NAME) to visualize when working in an iPython Notebook.
+    Note that, when using the command-line Python interpreter, an output
+    file needs to be saved using command output_file("FILENAME.html").
     """
-    PP = figure(plot_width=plot_width, plot_height=plot_height, title=title)
-
-    PP.line((source.reset_index()).index,
-            (source.reset_index()).base, line_color=Blues4[0], line_width=0.8,
-            line_alpha=.8, legend="Base")
-
-    PP.line((source.reset_index()).index,
-            (source.reset_index()).reform, line_color=Reds4[1], line_width=0.8,
-            line_alpha=1, legend="Reform")
-
-    PP.legend.label_text_font = "times"
-    PP.legend.label_text_font_style = "italic"
-    PP.legend.location = loc
-
-    PP.legend.label_width = 2
-    PP.legend.label_height = 2
-    PP.legend.label_standoff = 2
-    PP.legend.glyph_width = 14
-    PP.legend.glyph_height = 14
-    PP.legend.legend_spacing = 5
-    PP.legend.legend_padding = 5
-    PP.yaxis.axis_label = ylab
-    PP.xaxis.axis_label = xlab
-    return PP
+    # pylint: disable=too-many-arguments
+    fig = figure(plot_width=plot_width, plot_height=plot_height, title=title)
+    fig.line((source.reset_index()).index, (source.reset_index()).base,
+             line_color=Blues4[0], line_width=0.8, line_alpha=.8,
+             legend="Base")
+    fig.line((source.reset_index()).index, (source.reset_index()).reform,
+             line_color=Reds4[1], line_width=0.8, line_alpha=1,
+             legend="Reform")
+    fig.legend.label_text_font = "times"
+    fig.legend.label_text_font_style = "italic"
+    fig.legend.location = loc
+    fig.legend.label_width = 2
+    fig.legend.label_height = 2
+    fig.legend.label_standoff = 2
+    fig.legend.glyph_width = 14
+    fig.legend.glyph_height = 14
+    fig.legend.legend_spacing = 5
+    fig.legend.legend_padding = 5
+    fig.yaxis.axis_label = ylab
+    fig.xaxis.axis_label = xlab
+    return fig
 
 
 def string_to_number(string):
+    """
+    Return either integer or float conversion of specified string.
+    """
     if not string:
         return 0
     try:
