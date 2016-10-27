@@ -108,8 +108,30 @@ def wage_weighted(pdf, col_name):
     """
     Return wage-weighted mean of Pandas DataFrame col_name items.
     """
-    return (float((pdf[col_name] * pdf['s006'] * pdf['e00200']).sum()) /
-            float((pdf['s006'] * pdf['e00200']).sum() + EPSILON))
+    swght = 's006'
+    wage = 'e00200'
+    return (float((pdf[col_name] * pdf[swght] * pdf[wage]).sum()) /
+            float((pdf[swght] * pdf[wage]).sum() + EPSILON))
+
+
+def agi_weighted(pdf, col_name):
+    """
+    Return AGI-weighted mean of Pandas DataFrame col_name items.
+    """
+    swght = 's006'
+    agi = 'c00100'
+    return (float((pdf[col_name] * pdf[swght] * pdf[agi]).sum()) /
+            float((pdf[swght] * pdf[agi]).sum() + EPSILON))
+
+
+def expanded_income_weighted(pdf, col_name):
+    """
+    Return expanded-income-weighted mean of Pandas DataFrame col_name items.
+    """
+    swght = 's006'
+    expinc = '_expanded_income'
+    return (float((pdf[col_name] * pdf[swght] * pdf[expinc]).sum()) /
+            float((pdf[swght] * pdf[expinc]).sum() + EPSILON))
 
 
 def weighted_sum(pdf, col_name):
@@ -685,7 +707,6 @@ def get_mtr_data(calc1, calc2,
                  mtr_wrt_variable='e00200p',
                  wrt_full_compensation=False,
                  income_measure='wages',
-                 weighting='weighted_mean',
                  dollar_weighting=False):
     """
     This function prepares data needed by the mtr_plot utility function.
@@ -738,20 +759,6 @@ def get_mtr_data(calc1, calc2,
         using dollar income_measure weights (in addition to sampling weights).
         Specifying True produces a graph x axis that shows income_measure
         (not filing unit) percentiles.
-
-
-
-    weighting : string
-        options for input:
-            'weighted_mean': Averaging marginal tax rate by the
-                weight of each record. This option would be
-                helpful if you are interested in the MTR after
-                taking weights into consideration.
-            'wage_weighted': Averaging marginal tax rate by the
-                product of weight and wage of each record. This
-                option would be helpful if you are interested in
-                the MTR after taking both weights and wages
-                into consideration.
 
     Returns
     -------
@@ -817,37 +824,33 @@ def get_mtr_data(calc1, calc2,
     # split into groups specified by 'bins'
     gdf1 = df1.groupby('bins', as_index=False)
     gdf2 = df2.groupby('bins', as_index=False)
-
-    # Extract proper weighting method <<BEGIN HERE>>
-    if weighting == 'weighted_mean':
-        weighting_method = weighted_mean
-    elif weighting == 'wage_weighted':
-        weighting_method = wage_weighted
+    # specify mtr weighting function given dollar_weghting and income_measure
+    if dollar_weighting:
+        if income_measure == 'wages':
+            weighting_method = wage_weighted
+        elif income_measure == 'agi':
+            weighting_method = agi_weighted
+        else:  # if income_measure == 'expanded_income'
+            weighting_method = expanded_income_weighted
     else:
-        msg = 'weighting option "{}" is not valid'
-        raise ValueError(msg.format(weighting))
-
-    # Apply desired weighting method to mtr
+        weighting_method = weighted_mean
+    # apply the weighting_method to mtr
     wghtmtr1 = gdf1.apply(weighting_method, 'mtr')
     wghtmtr2 = gdf2.apply(weighting_method, 'mtr')
     wmtr1 = pd.DataFrame(data=wghtmtr1, columns=['wmtr'])
     wmtr2 = pd.DataFrame(data=wghtmtr2, columns=['wmtr'])
-
     # add bin labels to wmtr1 and wmtr2 DataFrames
     wmtr1['bins'] = np.arange(1, 101)
     wmtr2['bins'] = np.arange(1, 101)
-
     # merge dfN['bins'] and wmtrN DataFrames into a single DataFrame
-    rdf1 = pd.merge(df1[['bins']], wmtr1, how='left')
-    rdf2 = pd.merge(df2[['bins']], wmtr2, how='left')
-    df1['wmtr'] = rdf1['wmtr'].values
-    df2['wmtr'] = rdf2['wmtr'].values
-
-    # Get rid of duplicated bins
+    xdf1 = pd.merge(df1[['bins']], wmtr1, how='left')
+    xdf2 = pd.merge(df2[['bins']], wmtr2, how='left')
+    df1['wmtr'] = xdf1['wmtr'].values
+    df2['wmtr'] = xdf2['wmtr'].values
+    # eliminate duplicated bins
     df1.drop_duplicates(subset='bins', inplace=True)
     df2.drop_duplicates(subset='bins', inplace=True)
-
-    # Prepare cleaned mtr data and concatenate into one dataframe
+    # merge weighted mtr data inot a single DataFrame
     df1 = df1['wmtr']
     df2 = df2['wmtr']
     merged = pd.concat([df1, df2], axis=1, ignore_index=True)
