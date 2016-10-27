@@ -297,17 +297,6 @@ def results(obj):
     return pd.DataFrame(data=np.column_stack(arrays), columns=STATS_COLUMNS)
 
 
-def exp_results(calc):
-    """
-    Return Pandas DataFrame containing STATS_COLUMNS variables plus two more.
-    """
-    res_columns = STATS_COLUMNS + ['e00200'] + ['MARS']
-    outputs = []
-    for col in res_columns:
-        outputs.append(getattr(calc.records, col))
-    return pd.DataFrame(data=np.column_stack(outputs), columns=res_columns)
-
-
 def weighted_avg_allcols(pdf, col_list, income_measure='_expanded_income'):
     """
     Return Pandas DataFrame in which variables in col_list of pdf have
@@ -694,15 +683,15 @@ def get_mtr_data(calc1, calc2, weighting='weighted_mean', mars='ALL',
                  income_measure='e00200', mtr_measure='_combined',
                  weight_by_income_measure=False):
     """
-    This function prepares the MTR data for two calculators.
+    This function prepares data needed by the mtr_plot utility function.
 
     Parameters
     ----------
-    calc1 : a Tax-Calculator Records object that refers to the baseline
+    calc1 : a Calculator object that refers to baseline policy
 
-    calc2 : a Tax-Calculator Records object that refers to the reform
+    calc2 : a Calculator object that refers to reform policy
 
-    weighting : String object
+    weighting : string
         options for input:
             'weighted_mean': Averaging marginal tax rate by the
                 weight of each record. This option would be
@@ -713,20 +702,17 @@ def get_mtr_data(calc1, calc2, weighting='weighted_mean', mars='ALL',
                 option would be helpful if you are interested in
                 the MTR after taking both weights and wages
                 into consideration.
-        Choose different weighting methods
 
-    mars : Integer or String
+    mars : integer or string
         options for input: 'ALL', 1, 2, 3, 4
-        Choose different filling status
 
-    income_measure : String object
+    income_measure : string
         options for input:
             '_expanded_income': The sum of adjusted gross income, non-taxable
                 interest income, non-taxable social security benefits and
                 employer share of FICA.
-            'c00100': Adjusted gross income
-            'e00200': Salaries and wages.
-        classifier of income bins/deciles
+            'c00100': AGI, adjusted gross income
+            'e00200': wage and salary income
 
     mtr_measure : String object
         options for input:
@@ -736,7 +722,7 @@ def get_mtr_data(calc1, calc2, weighting='weighted_mean', mars='ALL',
                 income tax rate.
         Choose different marginal tax rate measures
 
-    weight_by_income_measure : Boolean
+    weight_by_income_measure : boolean
         If this option is true, for each record, s006 (weight) will be weighted
         by the desired income measure of choice. (Note that this option
         is not about 'weighted' vs 'unweighted', but rather about what to
@@ -745,46 +731,50 @@ def get_mtr_data(calc1, calc2, weighting='weighted_mean', mars='ALL',
         For example, if income measure is 'e00200' and this option is true,
         then the bin (or x-axis in the plot) is the (percentile of) total
         wages and salaries.
+
     Returns
     -------
-    Pandas DataFrame object
+    Pandas DataFrame object suitable for passing to mtr_plot function
     """
     # pylint: disable=too-many-arguments,too-many-statements,too-many-locals
-    # Calculate MTR
-    _, mtr_iit_x, mtr_combined_x = calc1.mtr()
-    _, mtr_iit_y, mtr_combined_y = calc2.mtr()
-    # Get output columns
-    df_x = exp_results(calc1)
-    df_y = exp_results(calc2)
+    # calculate marginal tax rates
+    mtr1_ptax, mtr1_itax, mtr1_combined = calc1.mtr()
+    mtr2_ptax, mtr2_itax, mtr2_combined = calc2.mtr()
+    # extract needed output from calc1 that is unchanged by reform
+    record_columns = ['s006']
+    if mars != 'ALL':
+        record_columns.append('MARS')
+    record_columns.append(income_measure)
+    output = [getattr(calc1.records, col) for col in record_columns]
+    df1 = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
+    df2 = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
 
-    df_x['mtr_iit'] = mtr_iit_x
-    df_y['mtr_iit'] = mtr_iit_y
-    df_x['mtr_combined'] = mtr_combined_x
-    df_y['mtr_combined'] = mtr_combined_y
-
-    df_y[income_measure] = df_x[income_measure]
+    df1['mtr_iit'] = mtr1_itax
+    df2['mtr_iit'] = mtr2_itax
+    df1['mtr_combined'] = mtr1_combined
+    df2['mtr_combined'] = mtr2_combined
 
     # Complex weighted bins or not
     if weight_by_income_measure:
-        df_x = add_weighted_decile_bins(df_x, income_measure, 100,
-                                        weight_by_income_measure=True)
-        df_y = add_weighted_decile_bins(df_y, income_measure, 100,
-                                        weight_by_income_measure=True)
+        df1 = add_weighted_decile_bins(df1, income_measure, 100,
+                                       weight_by_income_measure=True)
+        df2 = add_weighted_decile_bins(df2, income_measure, 100,
+                                       weight_by_income_measure=True)
     else:
-        df_x = add_weighted_decile_bins(df_x, income_measure, 100)
-        df_y = add_weighted_decile_bins(df_y, income_measure, 100)
+        df1 = add_weighted_decile_bins(df1, income_measure, 100)
+        df2 = add_weighted_decile_bins(df2, income_measure, 100)
 
     # Select either all filers or one filling status
     if mars == 'ALL':
-        df_filtered_x = df_x.copy()
-        df_filtered_y = df_y.copy()
+        df_filtered_x = df1.copy()
+        df_filtered_y = df2.copy()
     else:
-        df_filtered_x = df_x[(df_x['MARS'] == mars)].copy()
-        df_filtered_y = df_y[(df_y['MARS'] == mars)].copy()
+        df_filtered_x = df1[(df1['MARS'] == mars)].copy()
+        df_filtered_y = df2[(df2['MARS'] == mars)].copy()
 
     # Split into groups by 'bins'
-    gpdf_x = df_filtered_x.groupby('bins', as_index=False)
-    gpdf_y = df_filtered_y.groupby('bins', as_index=False)
+    gpdf1 = df_filtered_x.groupby('bins', as_index=False)
+    gpdf2 = df_filtered_y.groupby('bins', as_index=False)
 
     # Extract proper weighting method
     if weighting == 'weighted_mean':
@@ -797,14 +787,14 @@ def get_mtr_data(calc1, calc2, weighting='weighted_mean', mars='ALL',
 
     # Apply desired weighting method to mtr
     if mtr_measure == '_combined':
-        wgtpct_x = gpdf_x.apply(weighting_method, 'mtr_combined')
-        wgtpct_y = gpdf_y.apply(weighting_method, 'mtr_combined')
+        wghtmtr1 = gpdf1.apply(weighting_method, 'mtr_combined')
+        wghtmtr2 = gpdf2.apply(weighting_method, 'mtr_combined')
     elif mtr_measure == '_iitax':
-        wgtpct_x = gpdf_x.apply(weighting_method, 'mtr_iit')
-        wgtpct_y = gpdf_y.apply(weighting_method, 'mtr_iit')
+        wghtmtr1 = gpdf1.apply(weighting_method, 'mtr_iit')
+        wghtmtr2 = gpdf2.apply(weighting_method, 'mtr_iit')
 
-    wpct_x = pd.DataFrame(data=wgtpct_x, columns=['w_mtr'])
-    wpct_y = pd.DataFrame(data=wgtpct_y, columns=['w_mtr'])
+    wpct_x = pd.DataFrame(data=wghtmtr1, columns=['w_mtr'])
+    wpct_y = pd.DataFrame(data=wghtmtr2, columns=['w_mtr'])
 
     # Add bin labels
     wpct_x['bins'] = np.arange(1, 101)
