@@ -81,6 +81,7 @@ def test_tax_form_evar_mapping_direct():
         'field_1': '1',
         'field_2': '2',
         'field_3': '3',
+        'field_4': '4',
     })
     assert form.to_evars_direct() == {
         'e00001': 1,
