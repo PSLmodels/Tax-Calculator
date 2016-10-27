@@ -521,7 +521,7 @@ def test_get_mtr_data(records_2009):
     pol = Policy()
     behv = Behavior()
     calc = Calculator(policy=pol, records=records_2009, behavior=behv)
-    source = get_mtr_data(calc, calc, mars=1, mtr_measure='_combined')
+    source = get_mtr_data(calc, calc, mars=1, mtr_measure='combined')
     assert type(source) == DataFrame
 
 
