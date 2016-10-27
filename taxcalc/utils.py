@@ -805,8 +805,7 @@ def get_mtr_data(calc1, calc2,
     if mars != 'ALL':
         df1 = df1[df1['MARS'] == mars]
         df2 = df2[df2['MARS'] == mars]
-
-    # weight income_var as specified by dollar_weighting
+    # create 'bins' column given specified income_var and dollar_weighting
     df1 = add_weighted_decile_bins(df1,
                                    income_measure=income_var,
                                    num_bins=100,
@@ -815,12 +814,11 @@ def get_mtr_data(calc1, calc2,
                                    income_measure=income_var,
                                    num_bins=100,
                                    weight_by_income_measure=dollar_weighting)
+    # split into groups specified by 'bins'
+    gdf1 = df1.groupby('bins', as_index=False)
+    gdf2 = df2.groupby('bins', as_index=False)
 
-    # Split into groups by 'bins'
-    gpdf1 = df1.groupby('bins', as_index=False)
-    gpdf2 = df2.groupby('bins', as_index=False)
-
-    # Extract proper weighting method
+    # Extract proper weighting method <<BEGIN HERE>>
     if weighting == 'weighted_mean':
         weighting_method = weighted_mean
     elif weighting == 'wage_weighted':
@@ -830,21 +828,20 @@ def get_mtr_data(calc1, calc2,
         raise ValueError(msg.format(weighting))
 
     # Apply desired weighting method to mtr
-    wghtmtr1 = gpdf1.apply(weighting_method, 'mtr')
-    wghtmtr2 = gpdf2.apply(weighting_method, 'mtr')
-    wpct1 = pd.DataFrame(data=wghtmtr1, columns=['wmtr'])
-    wpct2 = pd.DataFrame(data=wghtmtr2, columns=['wmtr'])
+    wghtmtr1 = gdf1.apply(weighting_method, 'mtr')
+    wghtmtr2 = gdf2.apply(weighting_method, 'mtr')
+    wmtr1 = pd.DataFrame(data=wghtmtr1, columns=['wmtr'])
+    wmtr2 = pd.DataFrame(data=wghtmtr2, columns=['wmtr'])
 
-    # Add bin labels
-    wpct1['bins'] = np.arange(1, 101)
-    wpct2['bins'] = np.arange(1, 101)
+    # add bin labels to wmtr1 and wmtr2 DataFrames
+    wmtr1['bins'] = np.arange(1, 101)
+    wmtr2['bins'] = np.arange(1, 101)
 
-    # Merge two dataframes
-    rsltx = pd.merge(df1[['bins']], wpct1, how='left')
-    rslty = pd.merge(df2[['bins']], wpct2, how='left')
-
-    df1['wmtr'] = rsltx['wmtr'].values
-    df2['wmtr'] = rslty['wmtr'].values
+    # merge dfN['bins'] and wmtrN DataFrames into a single DataFrame
+    rdf1 = pd.merge(df1[['bins']], wmtr1, how='left')
+    rdf2 = pd.merge(df2[['bins']], wmtr2, how='left')
+    df1['wmtr'] = rdf1['wmtr'].values
+    df2['wmtr'] = rdf2['wmtr'].values
 
     # Get rid of duplicated bins
     df1.drop_duplicates(subset='bins', inplace=True)
@@ -853,7 +850,6 @@ def get_mtr_data(calc1, calc2,
     # Prepare cleaned mtr data and concatenate into one dataframe
     df1 = df1['wmtr']
     df2 = df2['wmtr']
-
     merged = pd.concat([df1, df2], axis=1, ignore_index=True)
     merged.columns = ['base', 'reform']
     merged.index = (merged.reset_index()).index
