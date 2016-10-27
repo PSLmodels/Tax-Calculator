@@ -61,18 +61,6 @@ WEBAPP_INCOME_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
 EPSILON = 0.000000001
 
 
-def string_to_number(string):
-    """
-    Return either integer or float conversion of specified string.
-    """
-    if not string:
-        return 0
-    try:
-        return int(string)
-    except ValueError:
-        return float(string)
-
-
 def count_gt_zero(data):
     """
     Return unweighted count of positive data items.
@@ -87,18 +75,18 @@ def count_lt_zero(data):
     return sum([1 for item in data if item < 0])
 
 
-def weighted_count_gt_zero(pdf, col_name, tolerance=0.001):
-    """
-    Return weighted count of positive Pandas DateFrame col_name items.
-    """
-    return pdf[pdf[col_name] > tolerance]['s006'].sum()
-
-
 def weighted_count_lt_zero(pdf, col_name, tolerance=-0.001):
     """
     Return weighted count of negative Pandas DateFrame col_name items.
     """
     return pdf[pdf[col_name] < tolerance]['s006'].sum()
+
+
+def weighted_count_gt_zero(pdf, col_name, tolerance=0.001):
+    """
+    Return weighted count of positive Pandas DateFrame col_name items.
+    """
+    return pdf[pdf[col_name] > tolerance]['s006'].sum()
 
 
 def weighted_count(pdf):
@@ -131,27 +119,29 @@ def weighted_sum(pdf, col_name):
     return (pdf[col_name] * pdf['s006']).sum()
 
 
-def weighted_perc_inc(data, col_name):
+def weighted_perc_inc(pdf, col_name):
     """
-    This function ever used?
+    Return weighted fraction (not percent) of positive values for the
+    variable with col_name in the specified Pandas DataFrame.
     """
-    return (float(weighted_count_gt_zero(data, col_name)) /
-            float(weighted_count(data) + EPSILON))
+    return (float(weighted_count_gt_zero(pdf, col_name)) /
+            float(weighted_count(pdf) + EPSILON))
 
 
-def weighted_perc_dec(data, col_name):
+def weighted_perc_dec(pdf, col_name):
     """
-    This function ever used?
+    Return weighted fraction (not percent) of negative values for the
+    variable with col_name in the specified Pandas DataFrame.
     """
-    return (float(weighted_count_lt_zero(data, col_name)) /
-            float(weighted_count(data) + EPSILON))
+    return (float(weighted_count_lt_zero(pdf, col_name)) /
+            float(weighted_count(pdf) + EPSILON))
 
 
-def weighted_share_of_total(data, col_name, total):
+def weighted_share_of_total(pdf, col_name, total):
     """
-    This function ever used?
+    Return ratio of weighted_sum(pdf, col_name) and specified total.
     """
-    return float(weighted_sum(data, col_name)) / (float(total) + EPSILON)
+    return float(weighted_sum(pdf, col_name)) / (float(total) + EPSILON)
 
 
 def add_weighted_decile_bins(pdf, income_measure='_expanded_income',
@@ -238,12 +228,13 @@ def add_income_bins(pdf, compare_with='soi', bins=None, right=True,
 
 def means_and_comparisons(pdf, col_name, gpdf, weighted_total):
     """
-    Using grouped values, perform aggregate operations
-    to populate
-    pdf: Pandas DataFrame for full results of calculation
+    Return Pandas DataFrame based specified grouped values of col_name in
+    specified gpdf Pandas DataFrame.
+    pdf: Pandas DataFrame for full results of calculation (NEVER USED)
     col_name: the column name to calculate against
     gpdf: grouped Pandas DataFrame
     """
+    # pylint: disable=unused-argument
     # Who has a tax cut, and who has a tax increase
     diffs = gpdf.apply(weighted_count_lt_zero, col_name)
     diffs = pd.DataFrame(data=diffs, columns=['tax_cut'])
@@ -260,7 +251,8 @@ def means_and_comparisons(pdf, col_name, gpdf, weighted_total):
 
 def weighted(pdf, col_names):
     """
-    This function ever used?
+    Return Pandas DataFrame in which each pdf column variable has been
+    multiplied by the s006 weight variable in the specified Pandas DataFrame.
     """
     agg = pdf
     for colname in col_names:
@@ -278,7 +270,7 @@ def get_sums(pdf, not_available=False):
     Pandas Series object containing column sums indexed by pdf colum names.
     """
     sums = defaultdict(lambda: 0)
-    for col in pdf.columns.tolist():
+    for col in pdf.columns.values.tolist():
         if col != 'bins':
             if not_available:
                 sums[col] = 'n/a'
@@ -307,7 +299,7 @@ def results(obj):
 
 def exp_results(calc):
     """
-    This function ever used?
+    Return Pandas DataFrame containing STATS_COLUMNS variables plus two more.
     """
     res_columns = STATS_COLUMNS + ['e00200'] + ['MARS']
     outputs = []
@@ -316,45 +308,47 @@ def exp_results(calc):
     return pd.DataFrame(data=np.column_stack(outputs), columns=res_columns)
 
 
-def weighted_avg_allcols(pdf, cols, income_measure='_expanded_income'):
+def weighted_avg_allcols(pdf, col_list, income_measure='_expanded_income'):
     """
-    This function ever used?
+    Return Pandas DataFrame in which variables in col_list of pdf have
+    their weighted_mean computed using the specifed income_measure, except
+    for certain count-like column variables whose sum is computed.
     """
-    diff = pd.DataFrame(pdf.groupby('bins',
+    wadf = pd.DataFrame(pdf.groupby('bins',
                                     as_index=False).apply(weighted_mean,
                                                           income_measure),
                         columns=[income_measure])
-    for col in cols:
+    for col in col_list:
         if (col == 's006' or col == 'num_returns_StandardDed' or
                 col == 'num_returns_ItemDed' or col == 'num_returns_AMT'):
-            diff[col] = pdf.groupby('bins',
+            wadf[col] = pdf.groupby('bins',
                                     as_index=False)[col].sum()[col]
         elif col != income_measure:
-            diff[col] = pdf.groupby('bins',
+            wadf[col] = pdf.groupby('bins',
                                     as_index=False).apply(weighted_mean, col)
-    return diff
+    return wadf
 
 
-def add_columns(res):
+def add_columns(pdf):
     """
-    This function ever used?
+    Add several columns to specified Pandas DataFrame.
     """
     # weight of returns with positive AGI and
     # itemized deduction greater than standard deduction
-    res['c04470'] = \
-        res['c04470'].where(((res['c00100'] > 0.) &
-                             (res['c04470'] > res['_standard'])), 0.)
+    pdf['c04470'] = \
+        pdf['c04470'].where(((pdf['c00100'] > 0.) &
+                             (pdf['c04470'] > pdf['_standard'])), 0.)
     # weight of returns with positive AGI and itemized deduction
-    res['num_returns_ItemDed'] = \
-        res['s006'].where(((res['c00100'] > 0.) &
-                           (res['c04470'] > 0.)), 0.)
+    pdf['num_returns_ItemDed'] = \
+        pdf['s006'].where(((pdf['c00100'] > 0.) &
+                           (pdf['c04470'] > 0.)), 0.)
     # weight of returns with positive AGI and standard deduction
-    res['num_returns_StandardDed'] = \
-        res['s006'].where(((res['c00100'] > 0.) &
-                           (res['_standard'] > 0.)), 0.)
+    pdf['num_returns_StandardDed'] = \
+        pdf['s006'].where(((pdf['c00100'] > 0.) &
+                           (pdf['_standard'] > 0.)), 0.)
     # weight of returns with positive Alternative Minimum Tax (AMT)
-    res['num_returns_AMT'] = res['s006'].where(res['c09600'] > 0., 0.)
-    return res
+    pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
+    return pdf
 
 
 def create_distribution_table(obj, groupby, result_type,
@@ -457,9 +451,9 @@ def create_difference_table(recs1, recs2, groupby,
                             income_measure='_expanded_income',
                             income_to_present='_iitax'):
     """
-    Get results from two different Records objects for the same year,
-    compare the two results, and return the differences as a table, which
-    is sorted according to the variable specified by the groupby argument.
+    Get results from two different Records objects for the same year, compare
+    the two results, and return the differences as a Pandas DataFrame that is
+    sorted according to the variable specified by the groupby argument.
 
     Parameters
     ----------
@@ -515,8 +509,8 @@ def create_difference_table(recs1, recs2, groupby,
     diffs = means_and_comparisons(res2, 'tax_diff',
                                   pdf.groupby('bins', as_index=False),
                                   (res2['tax_diff'] * res2['s006']).sum())
-    sum_row = get_sums(diffs)[diffs.columns.tolist()]
-    diffs = diffs.append(sum_row)
+    sum_row = get_sums(diffs)[diffs.columns.values.tolist()]
+    diffs = diffs.append(sum_row)  # pylint: disable=redefined-variable-type
     pd.options.display.float_format = '{:8,.0f}'.format
     srs_inc = ['{0:.2f}%'.format(val * 100) for val in diffs['perc_inc']]
     diffs['perc_inc'] = pd.Series(srs_inc, index=diffs.index)
@@ -684,10 +678,10 @@ def ascii_output(csv_filename, ascii_filename):
         def pdf_recid(recid):
             """ Return Pandas DataFrame recid value for specified recid """
             return recid - 1
-        recids = map(pdf_recid, recids)
-        pdf = pdf.ix[recids]
+        recids = map(pdf_recid, recids)  # pylint: disable=bad-builtin
+        pdf = pdf.ix[recids]  # pylint: disable=no-member
     # do transposition
-    out = pdf.T.reset_index()
+    out = pdf.T.reset_index()  # pylint: disable=no-member
     # format data into uniform columns
     fstring = '{:' + str(col_size) + '}'
     out = out.applymap(fstring.format)
@@ -849,7 +843,7 @@ def requires_bokeh(func):
     """
     def wrapped_f(*args, **kwargs):
         """
-        Raise error is bokeh package is not available.
+        Raise error if bokeh package is not available.
         """
         if BOKEH_AVAILABLE:
             return func(*args, **kwargs)
@@ -927,3 +921,15 @@ def mtr_plot(source, xlab='Percentile', ylab='Avg. MTR', title='MTR plot',
     fig.yaxis.axis_label = ylab
     fig.xaxis.axis_label = xlab
     return fig
+
+
+def string_to_number(string):
+    """
+    Return either integer or float conversion of specified string.
+    """
+    if not string:
+        return 0
+    try:
+        return int(string)
+    except ValueError:
+        return float(string)
