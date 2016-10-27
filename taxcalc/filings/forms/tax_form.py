@@ -138,7 +138,7 @@ class TaxForm(object):
         results = {}
 
         if self._EVAR_MAP_BY_YEAR:
-            year_evar_map = self._EVAR_MAP_BY_YEAR[self.year]
+            year_evar_map = self._EVAR_MAP_BY_YEAR.get(self.year)
         else:
             year_evar_map = None
 
@@ -148,7 +148,7 @@ class TaxForm(object):
             elif year_evar_map and key in year_evar_map:
                 evar = year_evar_map[key]
             else:
-                continue
+                continue  # pragma: no cover
             if evar in results and results[evar] != value:
                 raise ValueError('Different calc for same evar.')
             results[evar] = value
