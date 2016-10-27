@@ -138,7 +138,7 @@ class TaxForm(object):
         results = {}
 
         if self._EVAR_MAP_BY_YEAR:
-            year_evar_map = self._EVAR_MAP_BY_YEAR[self.year]
+            year_evar_map = self._EVAR_MAP_BY_YEAR.get(self.year)
         else:
             year_evar_map = None
 

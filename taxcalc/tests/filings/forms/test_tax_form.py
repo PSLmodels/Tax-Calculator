@@ -89,6 +89,14 @@ def test_tax_form_evar_mapping_direct():
     }
 
 
+def test_tax_form_evar_mapping_direct_missing_year():
+    child_class = type("TestTaxForm", (TaxForm,), {
+        '_EVAR_MAP_BY_YEAR': {1998: {'field_1': 'e00001'}}
+    })
+    form = child_class(1999)
+    form.to_evars_direct() == {}
+
+
 def test_tax_form_evar_mapping_direct_conflict():
     child_class = type("TestTaxForm", (TaxForm,), {
         '_EVAR_MAP': {
