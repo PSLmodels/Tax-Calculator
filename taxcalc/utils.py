@@ -684,7 +684,7 @@ def get_mtr_data(calc1, calc2,
                  mtr_measure='combined',
                  mtr_wrt_variable='e00200p',
                  wrt_full_compensation=False,
-                 income_measure='e00200',
+                 income_measure='wages',
                  weighting='weighted_mean',
                  weight_by_income_measure=False):
     """
@@ -710,7 +710,7 @@ def get_mtr_data(calc1, calc2,
             'itax': marginal individual income tax rate;
             'ptax': marginal payroll tax rate; and
             'combined': sum of marginal income and payroll tax rates.
-        specifies which marginal tax rate to show in the graph
+        specifies which marginal tax rate to show on graph's y axis
 
     mtr_wrt_variable : string
         any string in the Calculator.VALID_MTR_VARS set
@@ -719,6 +719,15 @@ def get_mtr_data(calc1, calc2,
     wrt_full_compensation : boolean
         see documentation of this mtr() method argument in calculate.py file
         (value has an effect only if mtr_wrt_variable='e00200p')
+
+    income_measure : string
+        options:
+            'wages': wage and salary income (e00200);
+            'agi': adjusted gross income, AGI (c00100); and
+            'expanded_income': sum of AGI, non-taxable interest income,
+                               non-taxable social security benefits, and
+                               employer share of FICA taxes.
+        specifies which income variable to show on the graph's x axis
 
 
 
@@ -733,14 +742,6 @@ def get_mtr_data(calc1, calc2,
                 option would be helpful if you are interested in
                 the MTR after taking both weights and wages
                 into consideration.
-
-    income_measure : string
-        options for input:
-            '_expanded_income': The sum of adjusted gross income, non-taxable
-                interest income, non-taxable social security benefits and
-                employer share of FICA.
-            'c00100': AGI, adjusted gross income
-            'e00200': wage and salary income
 
     weight_by_income_measure : boolean
         If this option is true, for each record, s006 (weight) will be weighted
@@ -765,15 +766,28 @@ def get_mtr_data(calc1, calc2,
     (mtr2_ptax, mtr2_itax,
      mtr2_combined) = calc2.mtr(variable_str=mtr_wrt_variable,
                                 wrt_full_compensation=wrt_full_compensation)
-    # extract needed output from calc1 that is unchanged by reform
+    # extract needed output that is unchanged by reform from calc1
     record_columns = ['s006']
     if mars != 'ALL':
+        if mars < 1 or mars > 4:
+            msg = 'mars="{}" is not in [1,4] range'
+            raise ValueError(msg.format(mars))
         record_columns.append('MARS')
-    record_columns.append(income_measure)
+    if income_measure == 'wages':
+        income_var = 'e00200'
+    elif income_measure == 'agi':
+        income_var = 'c00100'
+    elif income_measure == 'expanded_income':
+        income_var = '_expanded_income'
+    else:
+        msg = ('income_measure="{}" is neither '
+               '"wages", "agi", nor "expanded_income"')
+        raise ValueError(msg.format(income_measure))
+    record_columns.append(income_var)
     output = [getattr(calc1.records, col) for col in record_columns]
     df1 = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
     df2 = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
-    # extract mtr for specified mtr_measure
+    # set mtr given specified mtr_measure
     if mtr_measure == 'itax':
         df1['mtr'] = mtr1_itax
         df2['mtr'] = mtr2_itax
@@ -784,18 +798,19 @@ def get_mtr_data(calc1, calc2,
         df1['mtr'] = mtr1_combined
         df2['mtr'] = mtr2_combined
     else:
-        msg = 'mtr_measure="{}" is not valid'
+        msg = ('mtr_measure="{}" is neither '
+               '"itax" nor "ptax" nor "combined"')
         raise ValueError(msg.format(mtr_measure))
 
     # Complex weighted bins or not
     if weight_by_income_measure:
-        df1 = add_weighted_decile_bins(df1, income_measure, 100,
+        df1 = add_weighted_decile_bins(df1, income_var, 100,
                                        weight_by_income_measure=True)
-        df2 = add_weighted_decile_bins(df2, income_measure, 100,
+        df2 = add_weighted_decile_bins(df2, income_var, 100,
                                        weight_by_income_measure=True)
     else:
-        df1 = add_weighted_decile_bins(df1, income_measure, 100)
-        df2 = add_weighted_decile_bins(df2, income_measure, 100)
+        df1 = add_weighted_decile_bins(df1, income_var, 100)
+        df2 = add_weighted_decile_bins(df2, income_var, 100)
 
     # Select either all filers or one filling status  <<MOVE UP>>
     if mars == 'ALL':
