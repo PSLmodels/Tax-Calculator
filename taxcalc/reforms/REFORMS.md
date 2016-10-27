@@ -81,14 +81,14 @@ shown in [this JSON file](../current_law_policy.json).
 
 ### Payroll Taxes
 
-[Raise OASDI and HI payroll tax rates](ptaxes0.json)
+[Raise OASDI and HI payroll tax rates](ptaxes0.txt)
 
-[Raise OASDI maximum taxable earnings](ptaxes1.json)
+[Raise OASDI maximum taxable earnings](ptaxes1.txt)
 
-[Eliminate OASDI maximum taxable earnings](ptaxes2.json)
+[Eliminate OASDI maximum taxable earnings](ptaxes2.txt)
 
 [Raise Additional Medicare Tax (Form 8959) tax rate and
-thresholds](ptaxes3.json)
+thresholds](ptaxes3.txt)
 
 ### Social Security Taxability
 
