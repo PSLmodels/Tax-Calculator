@@ -957,7 +957,8 @@ def mtr_graph_plot(data,
     # pylint: disable=too-many-arguments
     if title == '':
         title = data['title']
-    fig = bp.figure(plot_width=width, plot_height=height, title=title)
+    fig = bp.figure(plot_width=width, plot_height=height,
+                    title=title, title_text_font_size='12pt')
     lines = data['lines']
     fig.line((lines.reset_index()).index, (lines.reset_index()).base,
              line_color='blue', legend='Base')
