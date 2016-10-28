@@ -146,6 +146,7 @@ class Calculator(object):
             self.records.zero_out_changing_calculated_vars()
         # pdb.set_trace()
         EI_PayrollTax(self.policy, self.records)
+        DependentCare(self.policy, self.records)
         Adj(self.policy, self.records)
         CapGains(self.policy, self.records)
         SSBenefits(self.policy, self.records)
