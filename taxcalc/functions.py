@@ -99,9 +99,9 @@ def DependentCare(nu13, elderly_dependent, _earned,
 
     if _earned <= ALD_Dependents_thd[MARS - 1]:
         care_deduction = (((1 - ALD_Dependents_HC) * nu13 *
-                          ALD_Dependents_Child_c) +
+                           ALD_Dependents_Child_c) +
                           ((1 - ALD_Dependents_HC) * elderly_dependent *
-                          ALD_Dependents_Elder_c))
+                           ALD_Dependents_Elder_c))
     else:
         care_deduction = 0.
     return care_deduction

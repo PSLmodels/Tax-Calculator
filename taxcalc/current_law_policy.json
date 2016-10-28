@@ -145,7 +145,7 @@
         "value": [0.0]
     },
 
-    "_ALD_Dependents_HC":{
+    "_ALD_Dependents_HC": {
         "long_name": "Deduction for childcare costs",
         "description": "This decimal fraction, if greater than zero, reduces the portion of childcare costs that can be deducted from AGI",
         "irs_ref": "",
@@ -158,10 +158,10 @@
         "value": [1.0]
     },
 
-    "_ALD_Dependents_Child_c":{
+    "_ALD_Dependents_Child_c": {
         "long_name": "National average childcare costs. Ceiling for available childcare deduction.",
         "description": "The weighted average of childcare costs in the US",
-        "irs_ref":"",
+        "irs_ref": "",
         "notes": "This is a weighted average of childcare costs in each state",
         "start_year": 2013,
         "col_var": "",
