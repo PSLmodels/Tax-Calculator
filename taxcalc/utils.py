@@ -12,10 +12,8 @@ import numpy as np
 import pandas as pd
 try:
     BOKEH_AVAILABLE = True
-    from bokeh.palettes import Blues4, Reds4
-    from bokeh.plotting import figure
-    from bokeh.plotting import output_file  # pylint: disable=unused-import
-    from bokeh.plotting import show  # pylint: disable=unused-import
+    import bokeh.plotting as bp
+    import bokeh.palettes as bc
 except ImportError:
     BOKEH_AVAILABLE = False
 
@@ -701,15 +699,15 @@ def ascii_output(csv_filename, ascii_filename):
                delim_whitespace=True, sep='\t')
 
 
-def get_mtr_data(calc1, calc2,
-                 mars='ALL',
-                 mtr_measure='combined',
-                 mtr_wrt_variable='e00200p',
-                 wrt_full_compensation=False,
-                 income_measure='wages',
-                 dollar_weighting=False):
+def mtr_graph_data(calc1, calc2,
+                   mars='ALL',
+                   mtr_measure='combined',
+                   mtr_variable='e00200p',
+                   mtr_wrt_full_compen=True,
+                   income_measure='wages',
+                   dollar_weighting=False):
     """
-    This function prepares data needed by the mtr_plot utility function.
+    Prepare data needed by the mtr_graph_plot utility function.
 
     Parameters
     ----------
@@ -733,13 +731,13 @@ def get_mtr_data(calc1, calc2,
             'combined': sum of marginal income and payroll tax rates.
         specifies which marginal tax rate to show on graph's y axis
 
-    mtr_wrt_variable : string
+    mtr_variable : string
         any string in the Calculator.VALID_MTR_VARS set
         specifies variable to change in order to compute marginal tax rates
 
-    wrt_full_compensation : boolean
-        see documentation of this mtr() method argument in calculate.py file
-        (value has an effect only if mtr_wrt_variable is 'e00200p')
+    mtr_wrt_full_compen : boolean
+        see documentation of Calculator.mtr() argument wrt_full_compensation
+        (value has an effect only if mtr_variable is 'e00200p')
 
     income_measure : string
         options:
@@ -762,17 +760,17 @@ def get_mtr_data(calc1, calc2,
 
     Returns
     -------
-    Pandas DataFrame object suitable for passing to mtr_plot function
+    dictionary object suitable for passing to mtr_graph_plot utility function
     """
     # pylint: disable=too-many-arguments,too-many-statements,
     # pylint: disable=too-many-locals,too-many-branches
     # calculate marginal tax rates
     (mtr1_ptax, mtr1_itax,
-     mtr1_combined) = calc1.mtr(variable_str=mtr_wrt_variable,
-                                wrt_full_compensation=wrt_full_compensation)
+     mtr1_combined) = calc1.mtr(variable_str=mtr_variable,
+                                wrt_full_compensation=mtr_wrt_full_compen)
     (mtr2_ptax, mtr2_itax,
-     mtr2_combined) = calc2.mtr(variable_str=mtr_wrt_variable,
-                                wrt_full_compensation=wrt_full_compensation)
+     mtr2_combined) = calc2.mtr(variable_str=mtr_variable,
+                                wrt_full_compensation=mtr_wrt_full_compen)
     # extract needed output that is unchanged by reform from calc1
     record_columns = ['s006']
     if mars != 'ALL':
@@ -858,7 +856,10 @@ def get_mtr_data(calc1, calc2,
     merged.index = (merged.reset_index()).index
     if dollar_weighting:
         merged = merged[1:]
-    return merged
+    # construct dictionary containing merged data and auto-generated labels
+    data = dict()
+    data['lines'] = merged
+    return data
 
 
 def requires_bokeh(func):
@@ -883,15 +884,19 @@ def requires_bokeh(func):
 
 
 @requires_bokeh
-def mtr_plot(source, xlab='Percentile', ylab='Avg. MTR', title='MTR plot',
-             plot_width=425, plot_height=250, loc='top_left'):
+def mtr_graph_plot(data,
+                   xlab='Percentile',
+                   ylab='Avg. MTR',
+                   title='MTR plot',
+                   plot_width=425,
+                   plot_height=250,
+                   loc='top_left'):
     """
-    This function generates marginal tax rate plot.
-    Source data can be obtained from get_mtr_data function.
+    Plot a marginal tax rate graph using data from mtr_graph_data function.
 
     Parameters
     ----------
-    source : Pandas DataFrame returned from get_mtr_data() utility function
+    data : dictionary object returned from mtr_graph_data() utility function
 
     xlab : String object
         Name for X axis
@@ -915,25 +920,40 @@ def mtr_plot(source, xlab='Percentile', ylab='Avg. MTR', title='MTR plot',
 
     Returns
     -------
-    bokeh.plotting figure object
+    bokeh.plotting figure object containing a raster graphics plot
 
-    Note
-    ----
-    The ONLY output option for the figure object is HTML format.
-    To obtain a PNG copy, use the 'Save' option on the Toolbar (usually
-    located on the top-right corner of the plot).
+    Notes
+    -----
+    USAGE EXAMPLE:
+      gdata = mtr_graph_data(calc1, calc2)
+      gplot = mtr_graph_plot(gdata)
+    THEN  # when working interactively in a Python notebook
+      bp.show(gplot)
+    OR    # when executing script using Python command-line interpreter
+      bp.output_file('anyname.html')
+      bp.show(gplot)
+    WILL VISUALIZE GRAPH IN BROWSER
 
-    Use show(FIGURE_NAME) to visualize when working in an iPython Notebook.
-    Note that, when using the command-line Python interpreter, an output
-    file needs to be saved using command output_file("FILENAME.html").
+    To convert the visualized graph into PNG-formatted file, left click
+    on the "Preview/Save" icon on the Toolbar (located in the top-right
+    corner of the visualized graph), then while pointing at the graph
+    itself, right-click the mouse and select the "Save Image As" option.
+
+    The ONLY output option the bokeh.plotting figure has is HTML format,
+    which (as described above) can be converted into a PNG-formatted
+    raster graphics file.  There is no option to make the bokeh.plotting
+    figure generate a vector graphics file such as an EPS file.
     """
     # pylint: disable=too-many-arguments
-    fig = figure(plot_width=plot_width, plot_height=plot_height, title=title)
-    fig.line((source.reset_index()).index, (source.reset_index()).base,
-             line_color=Blues4[0], line_width=0.8, line_alpha=.8,
+    fig = bp.figure(plot_width=plot_width,
+                    plot_height=plot_height,
+                    title=title)
+    lines = data['lines']
+    fig.line((lines.reset_index()).index, (lines.reset_index()).base,
+             line_color=bc.Blues4[0], line_width=0.8, line_alpha=.8,
              legend="Base")
-    fig.line((source.reset_index()).index, (source.reset_index()).reform,
-             line_color=Reds4[1], line_width=0.8, line_alpha=1,
+    fig.line((lines.reset_index()).index, (lines.reset_index()).reform,
+             line_color=bc.Reds4[1], line_width=0.8, line_alpha=1,
              legend="Reform")
     fig.legend.label_text_font = "times"
     fig.legend.label_text_font_style = "italic"

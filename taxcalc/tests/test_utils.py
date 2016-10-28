@@ -521,17 +521,17 @@ def test_get_mtr_data(records_2009):
     pol = Policy()
     behv = Behavior()
     calc = Calculator(policy=pol, records=records_2009, behavior=behv)
-    source = get_mtr_data(calc, calc, mars=1, mtr_measure='combined')
-    assert type(source) == DataFrame
+    gdata = mtr_graph_data(calc, calc, mars=1, mtr_measure='combined')
+    assert type(gdata) == dict
 
 
-def test_mtr_plot(records_2009):
+def test_mtr_graph_plot(records_2009):
     pol = Policy()
     behv = Behavior()
     calc = Calculator(policy=pol, records=records_2009, behavior=behv)
-    source = get_mtr_data(calc, calc, dollar_weighting=True)
-    plot = mtr_plot(source)
-    assert plot
+    gdata = mtr_graph_data(calc, calc, dollar_weighting=True)
+    gplot = mtr_graph_plot(gdata)
+    assert gplot
 
 
 def test_mtr_plot_force_no_bokeh(records_2009):
@@ -540,9 +540,9 @@ def test_mtr_plot_force_no_bokeh(records_2009):
     pol = Policy()
     behv = Behavior()
     calc = Calculator(policy=pol, records=records_2009, behavior=behv)
-    source = get_mtr_data(calc, calc, dollar_weighting=True)
+    gdata = mtr_graph_data(calc, calc, dollar_weighting=True)
     with pytest.raises(RuntimeError):
-        plot = mtr_plot(source)
+        gplot = mtr_graph_plot(gdata)
     taxcalc.utils.BOKEH_AVAILABLE = True
 
 
