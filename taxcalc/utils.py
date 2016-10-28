@@ -5,9 +5,12 @@ Tax-Calculator utility functions.
 # pep8 --ignore=E402 utils.py
 # pylint --disable=locally-disabled --extension-pkg-whitelist=numpy utils.py
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
+#
+# pylint: disable=too-many-lines
 
 import copy
 from collections import defaultdict, OrderedDict
+import six
 import numpy as np
 import pandas as pd
 try:
@@ -763,20 +766,31 @@ def mtr_graph_data(calc1, calc2,
     """
     # pylint: disable=too-many-arguments,too-many-statements,
     # pylint: disable=too-many-locals,too-many-branches
-    # calculate marginal tax rates
-    (mtr1_ptax, mtr1_itax,
-     mtr1_combined) = calc1.mtr(variable_str=mtr_variable,
-                                wrt_full_compensation=mtr_wrt_full_compen)
-    (mtr2_ptax, mtr2_itax,
-     mtr2_combined) = calc2.mtr(variable_str=mtr_variable,
-                                wrt_full_compensation=mtr_wrt_full_compen)
-    # extract needed output that is unchanged by reform from calc1
-    record_columns = ['s006']
-    if mars != 'ALL':
-        if mars < 1 or mars > 4:
-            msg = 'mars="{}" is not in [1,4] range'
+    # check validity of function arguments
+    # . . check mars value
+    if isinstance(mars, six.string_types):
+        if mars != 'ALL':
+            msg = 'string value of mars="{}" is not "ALL"'
             raise ValueError(msg.format(mars))
-        record_columns.append('MARS')
+    elif isinstance(mars, int):
+        if mars < 1 or mars > 4:
+            msg = 'integer mars="{}" is not in [1,4] range'
+            raise ValueError(msg.format(mars))
+    else:
+        msg = 'mars="{}" is neither a string nor an integer'
+        raise ValueError(msg.format(mars))
+    # . . check mtr_measure value
+    if mtr_measure == 'itax':
+        mtr_str = 'Income-Tax'
+    elif mtr_measure == 'ptax':
+        mtr_str = 'Payroll-Tax'
+    elif mtr_measure == 'combined':
+        mtr_str = 'Income+Payroll-Tax'
+    else:
+        msg = ('mtr_measure="{}" is neither '
+               '"itax" nor "ptax" nor "combined"')
+        raise ValueError(msg.format(mtr_measure))
+    # . . check income_measure value
     if income_measure == 'wages':
         income_var = 'e00200'
         income_str = 'Wage'
@@ -790,6 +804,17 @@ def mtr_graph_data(calc1, calc2,
         msg = ('income_measure="{}" is neither '
                '"wages", "agi", nor "expanded_income"')
         raise ValueError(msg.format(income_measure))
+    # calculate marginal tax rates
+    (mtr1_ptax, mtr1_itax,
+     mtr1_combined) = calc1.mtr(variable_str=mtr_variable,
+                                wrt_full_compensation=mtr_wrt_full_compen)
+    (mtr2_ptax, mtr2_itax,
+     mtr2_combined) = calc2.mtr(variable_str=mtr_variable,
+                                wrt_full_compensation=mtr_wrt_full_compen)
+    # extract needed output that is unchanged by reform from calc1
+    record_columns = ['s006']
+    if mars != 'ALL':
+        record_columns.append('MARS')
     record_columns.append(income_var)
     output = [getattr(calc1.records, col) for col in record_columns]
     df1 = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
@@ -798,19 +823,12 @@ def mtr_graph_data(calc1, calc2,
     if mtr_measure == 'itax':
         df1['mtr'] = mtr1_itax
         df2['mtr'] = mtr2_itax
-        mtr_str = 'Income-Tax'
     elif mtr_measure == 'ptax':
         df1['mtr'] = mtr1_ptax
         df2['mtr'] = mtr2_ptax
-        mtr_str = 'Payroll-Tax'
     elif mtr_measure == 'combined':
         df1['mtr'] = mtr1_combined
         df2['mtr'] = mtr2_combined
-        mtr_str = 'Income+Payroll-Tax'
-    else:
-        msg = ('mtr_measure="{}" is neither '
-               '"itax" nor "ptax" nor "combined"')
-        raise ValueError(msg.format(mtr_measure))
     # select filing-status subgroup, if any
     if mars != 'ALL':
         df1 = df1[df1['MARS'] == mars]
@@ -944,10 +962,10 @@ def mtr_graph_plot(data,
       bp.show(gplot, title='MTR by Income Percentile')
     WILL VISUALIZE GRAPH IN BROWSER
 
-    To convert the visualized graph into a PNG-formatted file, left click
-    on the "Preview/Save" icon on the Toolbar (located in the top-right
-    corner of the visualized graph), then while pointing at the graph
-    itself, right-click the mouse and select the "Save Image As" option.
+    To convert the visualized graph into a PNG-formatted file, click on
+    the "Save" icon on the Toolbar (located in the top-right corner of
+    the visualized graph) and a PNG-formatted file will written to your
+    Download directory.
 
     The ONLY output option the bokeh.plotting figure has is HTML format,
     which (as described above) can be converted into a PNG-formatted
