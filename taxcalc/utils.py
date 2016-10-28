@@ -13,7 +13,6 @@ import pandas as pd
 try:
     BOKEH_AVAILABLE = True
     import bokeh.plotting as bp
-    import bokeh.palettes as bc
 except ImportError:
     BOKEH_AVAILABLE = False
 
@@ -780,10 +779,13 @@ def mtr_graph_data(calc1, calc2,
         record_columns.append('MARS')
     if income_measure == 'wages':
         income_var = 'e00200'
+        income_str = 'Wage'
     elif income_measure == 'agi':
         income_var = 'c00100'
+        income_str = 'AGI'
     elif income_measure == 'expanded_income':
         income_var = '_expanded_income'
+        income_str = 'Expanded Income'
     else:
         msg = ('income_measure="{}" is neither '
                '"wages", "agi", nor "expanded_income"')
@@ -796,12 +798,15 @@ def mtr_graph_data(calc1, calc2,
     if mtr_measure == 'itax':
         df1['mtr'] = mtr1_itax
         df2['mtr'] = mtr2_itax
+        mtr_str = 'Income-Tax'
     elif mtr_measure == 'ptax':
         df1['mtr'] = mtr1_ptax
         df2['mtr'] = mtr2_ptax
+        mtr_str = 'Payroll-Tax'
     elif mtr_measure == 'combined':
         df1['mtr'] = mtr1_combined
         df2['mtr'] = mtr2_combined
+        mtr_str = 'Income+Payroll-Tax'
     else:
         msg = ('mtr_measure="{}" is neither '
                '"itax" nor "ptax" nor "combined"')
@@ -859,6 +864,12 @@ def mtr_graph_data(calc1, calc2,
     # construct dictionary containing merged data and auto-generated labels
     data = dict()
     data['lines'] = merged
+    if dollar_weighting:
+        income_str = 'Dollar-weighted {}'.format(income_str)
+        mtr_str = 'Dollar-weighted {}'.format(mtr_str)
+    data['xlabel'] = '{} Percentile'.format(income_str)
+    data['ylabel'] = '{} MTR'.format(mtr_str)
+    data['title'] = 'Mean Marginal Tax Rate by Percentile'
     return data
 
 
@@ -885,12 +896,12 @@ def requires_bokeh(func):
 
 @requires_bokeh
 def mtr_graph_plot(data,
-                   xlab='Percentile',
-                   ylab='Avg. MTR',
-                   title='MTR plot',
-                   plot_width=425,
-                   plot_height=250,
-                   loc='top_left'):
+                   width=850,
+                   height=500,
+                   xlabel='',
+                   ylabel='',
+                   title='',
+                   legloc='top_left'):
     """
     Plot a marginal tax rate graph using data from mtr_graph_data function.
 
@@ -898,25 +909,24 @@ def mtr_graph_plot(data,
     ----------
     data : dictionary object returned from mtr_graph_data() utility function
 
-    xlab : String object
-        Name for X axis
+    width : integer
+        width of plot expressed in pixels
 
-    ylab : String object
-        Name for Y axis
+    height : integer
+        height of plot expressed in pixels
 
-    title : String object
-        Caption for the plot
+    xlabel : string
+        x-axis label
 
-    plot_width : Numeric (Usually integer)
-        Width of the plot
+    ylabel : string
+        y-axis label
 
-    plot_height : Numeric (Usually integer)
-        Height of the plot
+    title : string
+        title displayed at top of plot
 
-    loc : String object
-        Toptions for input: "top_right", "top_left", "bottom_left",
-            "bottom_right"
-        Choose the location of the legend label
+    legloc : string
+        options: 'top_right', 'top_left', 'bottom_left', 'bottom_right'
+        specifies location of the legend in the plot
 
     Returns
     -------
@@ -930,11 +940,11 @@ def mtr_graph_plot(data,
     THEN  # when working interactively in a Python notebook
       bp.show(gplot)
     OR    # when executing script using Python command-line interpreter
-      bp.output_file('anyname.html')
-      bp.show(gplot)
+      bp.output_file('anyname.html')  # file to write to when invoking bp.show
+      bp.show(gplot, title='MTR by Income Percentile')
     WILL VISUALIZE GRAPH IN BROWSER
 
-    To convert the visualized graph into PNG-formatted file, left click
+    To convert the visualized graph into a PNG-formatted file, left click
     on the "Preview/Save" icon on the Toolbar (located in the top-right
     corner of the visualized graph), then while pointing at the graph
     itself, right-click the mouse and select the "Save Image As" option.
@@ -945,19 +955,26 @@ def mtr_graph_plot(data,
     figure generate a vector graphics file such as an EPS file.
     """
     # pylint: disable=too-many-arguments
-    fig = bp.figure(plot_width=plot_width,
-                    plot_height=plot_height,
-                    title=title)
+    if title == '':
+        title = data['title']
+    fig = bp.figure(plot_width=width, plot_height=height, title=title)
     lines = data['lines']
     fig.line((lines.reset_index()).index, (lines.reset_index()).base,
-             line_color=bc.Blues4[0], line_width=0.8, line_alpha=.8,
-             legend="Base")
+             line_color='blue', legend='Base')
     fig.line((lines.reset_index()).index, (lines.reset_index()).reform,
-             line_color=bc.Reds4[1], line_width=0.8, line_alpha=1,
-             legend="Reform")
-    fig.legend.label_text_font = "times"
-    fig.legend.label_text_font_style = "italic"
-    fig.legend.location = loc
+             line_color='red', legend='Reform')
+    fig.circle(0, 0, visible=False)  # force zero to be included on y axis
+    if xlabel == '':
+        xlabel = data['xlabel']
+    fig.xaxis.axis_label = xlabel
+    fig.xaxis.axis_label_text_font_size = '12pt'
+    if ylabel == '':
+        ylabel = data['ylabel']
+    fig.yaxis.axis_label = ylabel
+    fig.yaxis.axis_label_text_font_size = '12pt'
+    fig.legend.location = legloc
+    fig.legend.label_text_font = 'times'
+    fig.legend.label_text_font_style = 'italic'
     fig.legend.label_width = 2
     fig.legend.label_height = 2
     fig.legend.label_standoff = 2
@@ -965,8 +982,6 @@ def mtr_graph_plot(data,
     fig.legend.glyph_height = 14
     fig.legend.legend_spacing = 5
     fig.legend.legend_padding = 5
-    fig.yaxis.axis_label = ylab
-    fig.xaxis.axis_label = xlab
     return fig
 
 
