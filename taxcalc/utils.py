@@ -869,7 +869,7 @@ def mtr_graph_data(calc1, calc2,
         mtr_str = 'Dollar-weighted {}'.format(mtr_str)
     data['xlabel'] = '{} Percentile'.format(income_str)
     data['ylabel'] = '{} MTR'.format(mtr_str)
-    data['title'] = 'Mean Marginal Tax Rate by Percentile'
+    data['title'] = 'Mean Marginal Tax Rate by Income Percentile'
     return data
 
 
