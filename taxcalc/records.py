@@ -117,7 +117,6 @@ class Records(object):
         'e27200', 'e32800', 'e03300',
         'e58990',
         'e62900',
-        'p87482',
         'p87521', 'e87530',
         'MARS', 'MIDR', 'RECID',
         'cmbtp_standard', 'cmbtp_itemizer',
