@@ -557,7 +557,9 @@ def test_mtr_graph_data(records_2009):
         gdata = mtr_graph_data(calc, calc, mtr_measure='badtax')
     with pytest.raises(ValueError):
         gdata = mtr_graph_data(calc, calc, income_measure='badincome')
-    gdata = mtr_graph_data(calc, calc, mars=1, dollar_weighting=True)
+    gdata = mtr_graph_data(calc, calc, mars=1,
+                           mtr_wrt_full_compen=True,
+                           dollar_weighting=True)
     assert type(gdata) == dict
 
 

@@ -38,8 +38,8 @@ The **total payroll taxes (V06) variable** is assumed to include the
 following components: (a) employee plus employer share of OASDI FICA
 taxes; (b) employee plus employer share of HI FICA taxes; (c)
 self-employment tax from Form 1040 line57; and (d) additional Medicare
-tax from from Form 1040 line62a or Form 8959 line18.  These payroll
-tax components are calculated under the assumption that taxpayer and
+tax from Form 1040 line62a or Form 8959 line18.  These payroll tax
+components are calculated under the assumption that taxpayer and
 spouse, if present, each hold only one wage-or-salary job during the
 year so that Form 1040 line71 is always zero, and that employers
 (illegally) never withhold for the Additional Medicare Tax so that
