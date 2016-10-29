@@ -544,9 +544,13 @@ def test_mtr_graph_data(records_2009):
     pol = Policy()
     calc = Calculator(policy=pol, records=records_2009)
     with pytest.raises(ValueError):
-        gdata = mtr_graph_data(calc, calc, mars='bad')
+        gdata = mtr_graph_data(calc, calc, mars='bad',
+                               income_measure='agi',
+                               dollar_weighting=True)
     with pytest.raises(ValueError):
-        gdata = mtr_graph_data(calc, calc, mars=0)
+        gdata = mtr_graph_data(calc, calc, mars=0,
+                               income_measure='expanded_income',
+                               dollar_weighting=True)
     with pytest.raises(ValueError):
         gdata = mtr_graph_data(calc, calc, mars=list())
     with pytest.raises(ValueError):

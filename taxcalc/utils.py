@@ -767,6 +767,27 @@ def mtr_graph_data(calc1, calc2,
     # pylint: disable=too-many-arguments,too-many-statements,
     # pylint: disable=too-many-locals,too-many-branches
     # check validity of function arguments
+    # . . check income_measure value
+    weighting_function = weighted_mean
+    if income_measure == 'wages':
+        income_var = 'e00200'
+        income_str = 'Wage'
+        if dollar_weighting:
+            weighting_function = wage_weighted
+    elif income_measure == 'agi':
+        income_var = 'c00100'
+        income_str = 'AGI'
+        if dollar_weighting:
+            weighting_function = agi_weighted
+    elif income_measure == 'expanded_income':
+        income_var = '_expanded_income'
+        income_str = 'Expanded Income'
+        if dollar_weighting:
+            weighting_function = expanded_income_weighted
+    else:
+        msg = ('income_measure="{}" is neither '
+               '"wages", "agi", nor "expanded_income"')
+        raise ValueError(msg.format(income_measure))
     # . . check mars value
     if isinstance(mars, six.string_types):
         if mars != 'ALL':
@@ -790,20 +811,6 @@ def mtr_graph_data(calc1, calc2,
         msg = ('mtr_measure="{}" is neither '
                '"itax" nor "ptax" nor "combined"')
         raise ValueError(msg.format(mtr_measure))
-    # . . check income_measure value
-    if income_measure == 'wages':
-        income_var = 'e00200'
-        income_str = 'Wage'
-    elif income_measure == 'agi':
-        income_var = 'c00100'
-        income_str = 'AGI'
-    elif income_measure == 'expanded_income':
-        income_var = '_expanded_income'
-        income_str = 'Expanded Income'
-    else:
-        msg = ('income_measure="{}" is neither '
-               '"wages", "agi", nor "expanded_income"')
-        raise ValueError(msg.format(income_measure))
     # calculate marginal tax rates
     (mtr1_ptax, mtr1_itax,
      mtr1_combined) = calc1.mtr(variable_str=mtr_variable,
@@ -845,19 +852,9 @@ def mtr_graph_data(calc1, calc2,
     # split into groups specified by 'bins'
     gdf1 = df1.groupby('bins', as_index=False)
     gdf2 = df2.groupby('bins', as_index=False)
-    # specify mtr weighting function given dollar_weghting and income_measure
-    if dollar_weighting:
-        if income_measure == 'expanded_income':
-            weighting_method = expanded_income_weighted
-        elif income_measure == 'agi':
-            weighting_method = agi_weighted
-        else:  # if income_measure == 'wages'
-            weighting_method = wage_weighted
-    else:
-        weighting_method = weighted_mean
-    # apply the weighting_method to mtr
-    wghtmtr1 = gdf1.apply(weighting_method, 'mtr')
-    wghtmtr2 = gdf2.apply(weighting_method, 'mtr')
+    # apply the weighting_function to grouped mtr values
+    wghtmtr1 = gdf1.apply(weighting_function, 'mtr')
+    wghtmtr2 = gdf2.apply(weighting_function, 'mtr')
     wmtr1 = pd.DataFrame(data=wghtmtr1, columns=['wmtr'])
     wmtr2 = pd.DataFrame(data=wghtmtr2, columns=['wmtr'])
     # add bin labels to wmtr1 and wmtr2 DataFrames
