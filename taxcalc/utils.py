@@ -847,12 +847,12 @@ def mtr_graph_data(calc1, calc2,
     gdf2 = df2.groupby('bins', as_index=False)
     # specify mtr weighting function given dollar_weghting and income_measure
     if dollar_weighting:
-        if income_measure == 'wages':
-            weighting_method = wage_weighted
+        if income_measure == 'expanded_income':
+            weighting_method = expanded_income_weighted
         elif income_measure == 'agi':
             weighting_method = agi_weighted
-        else:  # if income_measure == 'expanded_income'
-            weighting_method = expanded_income_weighted
+        else:  # if income_measure == 'wages'
+            weighting_method = wage_weighted
     else:
         weighting_method = weighted_mean
     # apply the weighting_method to mtr
