@@ -12,9 +12,12 @@ import math
 import copy
 from collections import defaultdict, OrderedDict
 import json
+import os
+import re
 import six
 import numpy as np
 import pandas as pd
+import versioneer
 try:
     BOKEH_AVAILABLE = True
     import bokeh.plotting as bp
@@ -1113,12 +1116,15 @@ def xtr_graph_plot(data,
     return fig
 
 
-def read_json_from_file(path):
+def read_json_from_file(path, sort=False):
     """
     Return a dict of data loaded from the json file stored at path.
     """
     with open(path, 'r') as rfile:
-        data = json.load(rfile)
+        if sort:
+            data = json.load(rfile, object_pairs_hook=OrderedDict)
+        else:
+            data = json.load(rfile)
     return data
 
 
@@ -1126,8 +1132,29 @@ def write_json_to_file(data, path, indent=4, sort_keys=False):
     """
     Write data to a file at path in json format.
     """
+    if sort_keys:
+        data = sort_dict_deep(data, sorter=lambda kvp: pad_nums_in_str(kvp[0]))
+
     with open(path, 'w') as wfile:
-        json.dump(data, wfile, indent=indent, sort_keys=sort_keys)
+        json.dump(data, wfile, indent=indent)
+
+
+def sort_dict_deep(_dict, depth=5, sorter=None):
+    """
+    Sort a dict to arbitrary depth with a given sorter
+    """
+    if not isinstance(_dict, dict) or depth < 1:
+        return _dict
+    for key in list(_dict.keys()):
+        _dict[key] = sort_dict_deep(_dict[key], depth=depth - 1, sorter=sorter)
+    return OrderedDict(sorted(_dict.items(), key=sorter))
+
+
+def pad_nums_in_str(string, padding=5):
+    """
+    Add padding to digit sub strings in string to assist in sorting.
+    """
+    return re.sub(r'\d+', lambda x: x.group().zfill(padding), str(string))
 
 
 def string_to_number(string):
@@ -1140,6 +1167,60 @@ def string_to_number(string):
         return int(string)
     except ValueError:
         return float(string)
+
+
+def get_tc_version():
+    """
+    When built as a package, taxcalc stores its version.
+    But when used directly from source we must fetch the version manually.
+    """
+    versioneer.parentdir_prefix = 'taxcalc-'
+    versioneer.tag_prefix = ''
+    versioneer.versionfile_source = 'taxcalc/_version.py'
+    versioneer.VCS = 'git'
+    return versioneer.get_version()
+
+
+def resolve_paths_with_cwd(paths):
+    """
+    Run resolve_path_with_cwd for a list of paths
+    """
+    return [resolve_path_with_cwd(path) for path in paths]
+
+
+def resolve_path_with_cwd(path):
+    """
+    Add cwd to the front of path if it's relative.
+    Return None if path isn't a string.
+    """
+    if not isinstance(path, six.string_types):
+        return None
+    if not os.path.isabs(path):
+        path = os.path.join(os.getcwd(), path)
+    return path
+
+
+def merge_dicts_ex(dict1, dict2, matching_ok=True):
+    """
+    Merge two dicts that should be exclusive of each other.
+    """
+    result = dict1.copy()
+    for key, value in dict2.items():
+        update_dict_ex(result, key, value, matching_ok)
+    return result
+
+
+def update_dict_ex(_dict, key, value, matching_ok=True):
+    """
+    Add value to _dict at key, but guard against key collisions with an error.
+    Optionally avoids the error if the values match.
+    """
+    if key in _dict:
+        if not matching_ok or value != _dict[key]:
+            raise ValueError("{0}: {1} conflicts with stored {2}"
+                             .format(key, value, _dict[key]))
+    else:
+        _dict[key] = value
 
 
 def isoelastic_utility_function(consumption, crra, cmin):

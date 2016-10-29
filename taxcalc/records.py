@@ -172,6 +172,8 @@ class Records(object):
     CHANGING_CALCULATED_VARS = (CALCULATED_VARS - INTEGER_CALCULATED_VARS -
                                 set(['ID_Casualty_frt_in_pufcsv_year']))
 
+    ALL_VARS = USABLE_READ_VARS | CALCULATED_VARS
+
     def __init__(self,
                  data='puf.csv',
                  exact_calculations=False,
@@ -253,6 +255,12 @@ class Records(object):
         """
         self._current_year = new_current_year
         self.FLPDYR.fill(new_current_year)
+
+    def to_df(self):
+        result = pd.DataFrame()
+        for var in self.ALL_VARS:
+            result[var] = getattr(self, var).astype(str)
+        return result
 
     # --- begin private methods of Records class --- #
 
