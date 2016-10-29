@@ -705,7 +705,7 @@ def mtr_graph_data(calc1, calc2,
                    mars='ALL',
                    mtr_measure='combined',
                    mtr_variable='e00200p',
-                   mtr_wrt_full_compen=True,
+                   mtr_wrt_full_compen=False,
                    income_measure='wages',
                    dollar_weighting=False):
     """
@@ -852,7 +852,7 @@ def mtr_graph_data(calc1, calc2,
     # split into groups specified by 'bins'
     gdf1 = df1.groupby('bins', as_index=False)
     gdf2 = df2.groupby('bins', as_index=False)
-    # apply the weighting_function to grouped mtr values
+    # apply the weighting_function to percentile-grouped mtr values
     wghtmtr1 = gdf1.apply(weighting_function, 'mtr')
     wghtmtr2 = gdf2.apply(weighting_function, 'mtr')
     wmtr1 = pd.DataFrame(data=wghtmtr1, columns=['wmtr'])
@@ -884,9 +884,13 @@ def mtr_graph_data(calc1, calc2,
         mtr_str = 'Dollar-weighted {}'.format(mtr_str)
     data['xlabel'] = '{} Percentile'.format(income_str)
     data['ylabel'] = '{} MTR'.format(mtr_str)
-    title_str = 'Mean Marginal Tax Rate by Income Percentile'
+    var_str = '{}'.format(mtr_variable)
     if mtr_variable == 'e00200p' and mtr_wrt_full_compen:
-        title_str = '{} (wrt full compensation)'.format(title_str)
+        var_str = '{} wrt full compensation'.format(var_str)
+    title_str = 'Mean Marginal Tax Rate for {} by Income Percentile'
+    title_str = title_str.format(var_str)
+    if mars != 'ALL':
+        title_str = '{} for MARS={}'.format(title_str, mars)
     data['title'] = title_str
     return data
 
