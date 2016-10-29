@@ -548,10 +548,12 @@ def test_mtr_graph_data(records_2009):
     with pytest.raises(ValueError):
         gdata = mtr_graph_data(calc, calc, mars=0)
     with pytest.raises(ValueError):
+        gdata = mtr_graph_data(calc, calc, mars=list())
+    with pytest.raises(ValueError):
         gdata = mtr_graph_data(calc, calc, mtr_measure='badtax')
     with pytest.raises(ValueError):
-        gdata = mtr_graph_data(calc, calc, income_measure='badinc')
-    gdata = mtr_graph_data(calc, calc, mars=1)
+        gdata = mtr_graph_data(calc, calc, income_measure='badincome')
+    gdata = mtr_graph_data(calc, calc, mars=1, dollar_weighting=True)
     assert type(gdata) == dict
 
 
