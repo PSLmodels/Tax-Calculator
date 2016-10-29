@@ -882,8 +882,11 @@ def mtr_graph_data(calc1, calc2,
     if dollar_weighting:
         income_str = 'Dollar-weighted {}'.format(income_str)
         mtr_str = 'Dollar-weighted {}'.format(mtr_str)
-    data['xlabel'] = '{} Percentile'.format(income_str)
     data['ylabel'] = '{} MTR'.format(mtr_str)
+    xlabel_str = '{} Percentile'.format(income_str)
+    if mars != 'ALL':
+        xlabel_str = '{} for MARS={}'.format(xlabel_str, mars)
+    data['xlabel'] = xlabel_str
     var_str = '{}'.format(mtr_variable)
     if mtr_variable == 'e00200p' and mtr_wrt_full_compen:
         var_str = '{} wrt full compensation'.format(var_str)
