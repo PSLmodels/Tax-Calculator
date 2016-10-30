@@ -715,6 +715,15 @@ def test_ascii_output_function(csvfile, asciifile):
     os.remove(output_test.name)
 
 
+def test_json_read_write():
+    test_file = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    test_dict = {1: 1, 'b': 'b', 3: '3'}
+    write_json_to_file(test_dict, test_file.name)
+    assert read_json_from_file(test_file.name) == {'1': 1, 'b': 'b', '3': '3'}
+    test_file.close()
+    os.remove(test_file.name)
+
+
 def test_string_to_number():
     assert string_to_number(None) == 0
     assert string_to_number('') == 0
