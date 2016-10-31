@@ -1291,7 +1291,7 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
 
     ptax_was : payroll tax on wages and salaries
 
-    setax : payroll tax on self-employment income
+    setax : self-employment tax
 
     ptax_amc : Additional Medicare Tax on high earnings
 
