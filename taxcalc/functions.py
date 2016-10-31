@@ -22,11 +22,10 @@ from .decorators import iterate_jit, jit
 def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
                   FICA_ss_trt, FICA_mc_trt,
                   e00900p, e00900s, e02100p, e02100s,
-                  _payrolltax, ptax_was, ptax_sey, c03260,
+                  _payrolltax, ptax_was, setax, c03260,
                   _sey, _earned, _earned_p, _earned_s):
     """
-    EI_PayrollTax function: computes total earned income and some part of
-    total OASDI+HI payroll taxes.
+    Compute part of total OASDI+HI payroll taxes and earned income variables.
     """
     # compute _sey and its individual components
     sey_p = e00900p + e02100p
@@ -40,36 +39,32 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     txearn_sey_p = min(max(0., sey_p * sey_frac), SS_Earnings_c - txearn_was_p)
     txearn_sey_s = min(max(0., sey_s * sey_frac), SS_Earnings_c - txearn_was_s)
 
-    # compute OASDI payroll taxes on was and sey taxable earnings separately
+    # compute OASDI and HI payroll taxes on wage-and-salary income
     ptax_ss_was_p = FICA_ss_trt * txearn_was_p
     ptax_ss_was_s = FICA_ss_trt * txearn_was_s
-    ptax_ss_sey_p = FICA_ss_trt * txearn_sey_p
-    ptax_ss_sey_s = FICA_ss_trt * txearn_sey_s
-
-    # compute regular HI payroll taxes for all was and sey earnings separately
     ptax_mc_was_p = FICA_mc_trt * e00200p
     ptax_mc_was_s = FICA_mc_trt * e00200s
-    ptax_mc_sey_p = FICA_mc_trt * max(0., sey_p * sey_frac)
-    ptax_mc_sey_s = FICA_mc_trt * max(0., sey_s * sey_frac)
-
-    # compute regular payroll taxes on wage-and-salary and on sey earnings
     ptax_was = ptax_ss_was_p + ptax_ss_was_s + ptax_mc_was_p + ptax_mc_was_s
-    ptax_sey = ptax_ss_sey_p + ptax_ss_sey_s + ptax_mc_sey_p + ptax_mc_sey_s
 
-    # compute total regular payroll taxes for filing unit
-    _payrolltax = ptax_was + ptax_sey
+    # compute self-employment tax on taxable self-employment income
+    setax_ss_p = FICA_ss_trt * txearn_sey_p
+    setax_ss_s = FICA_ss_trt * txearn_sey_s
+    setax_mc_p = FICA_mc_trt * max(0., sey_p * sey_frac)
+    setax_mc_s = FICA_mc_trt * max(0., sey_s * sey_frac)
+    setax = setax_ss_p + setax_ss_s + setax_mc_p + setax_mc_s
 
-    # compute AGI deduction for "employer share" of self-employment taxes
-    c03260 = 0.5 * ptax_sey  # half of ptax_sey represents the "employer share"
+    # compute part of total regular payroll taxes for filing unit
+    _payrolltax = ptax_was + setax
+
+    # compute AGI deduction for "employer share" of self-employment tax
+    c03260 = 0.5 * setax  # half of setax represents the "employer share"
 
     # compute _earned and its individual components
     _earned = max(0., e00200 + _sey - c03260)
-    _earned_p = max(0., e00200p + sey_p -
-                    0.5 * (ptax_ss_sey_p + ptax_mc_sey_p))
-    _earned_s = max(0., e00200s + sey_s -
-                    0.5 * (ptax_ss_sey_s + ptax_mc_sey_s))
+    _earned_p = max(0., e00200p + sey_p - 0.5 * (setax_ss_p + setax_mc_p))
+    _earned_s = max(0., e00200s + sey_s - 0.5 * (setax_ss_s + setax_mc_s))
 
-    return (_sey, _payrolltax, ptax_was, ptax_sey, c03260,
+    return (_sey, _payrolltax, ptax_was, setax, c03260,
             _earned, _earned_p, _earned_s)
 
 
@@ -372,7 +367,7 @@ def AdditionalMedicareTax(e00200, MARS,
                           FICA_mc_trt, FICA_ss_trt,
                           ptax_amc, _payrolltax):
     """
-    AMED function: computes additional Medicare Tax as a part of payroll taxes
+    Computes Additional Medicare Tax (Form 8959) included in payroll taxes.
 
     Notes
     -----
@@ -396,7 +391,8 @@ def AdditionalMedicareTax(e00200, MARS,
 
     _payrolltax : payroll tax augmented by Additional Medicare Tax
     """
-    # ratio of income subject to AMED tax = (1 - 0.5*(FICA_mc_trt+FICA_ss_trt)
+    # Note: ratio of self-employment income subject to AMED tax
+    #       equals (1 - 0.5*(FICA_mc_trt+FICA_ss_trt)
     ptax_amc = AMED_trt * (max(0., e00200 - AMED_thd[MARS - 1]) +
                            max(0., max(0., _sey) *
                                (1. - 0.5 * (FICA_mc_trt + FICA_ss_trt)) -
@@ -1118,7 +1114,7 @@ def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
 
 @iterate_jit(nopython=True)
 def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
-          c07400, c07600, c08000, e09700, e09800, e09900, ptax_sey, NIIT,
+          c07400, c07600, c08000, e09700, e09800, e09900, NIIT,
           c07100, c09200):
     """
     C1040 function computes total nonrefundable credits, c07100, and
@@ -1130,9 +1126,8 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
     # tax after credits (2015 Form 1040, line 56)
     nonrefundable_credits = max(0., c05800 - c07100)
     # tax before refundable credits
-    othertaxes = e09900 + ptax_sey + e09800 + NIIT
+    othertaxes = e09700 + e09800 + e09900 + NIIT
     c09200 = othertaxes + nonrefundable_credits
-    c09200 += e09700  # assuming tax year is after 2009
     return (c07100, c09200)
 
 
@@ -1281,7 +1276,7 @@ def BenefitLimitation(calc):
 
 
 @iterate_jit(nopython=True)
-def FairShareTax(c00100, MARS, ptax_was, ptax_sey, ptax_amc,
+def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
                  FST_AGI_trt, FST_AGI_thd_lo, FST_AGI_thd_hi,
                  fstax, _iitax, _combined, _surtax):
     """
@@ -1296,9 +1291,9 @@ def FairShareTax(c00100, MARS, ptax_was, ptax_sey, ptax_amc,
 
     ptax_was : payroll tax on wages and salaries
 
-    ptax_sey : payroll tax on self-employment income
+    setax : payroll tax on self-employment income
 
-    ptax_amc : additional Medicare tax on high earnings
+    ptax_amc : Additional Medicare Tax on high earnings
 
     Returns
     -------
@@ -1312,7 +1307,7 @@ def FairShareTax(c00100, MARS, ptax_was, ptax_sey, ptax_amc,
     _surtax : individual income tax subtotal augmented by fstax
     """
     if FST_AGI_trt > 0. and c00100 >= FST_AGI_thd_lo[MARS - 1]:
-        employee_share = 0.5 * ptax_was + 0.5 * ptax_sey + ptax_amc
+        employee_share = 0.5 * ptax_was + 0.5 * setax + ptax_amc
         fstax = max(c00100 * FST_AGI_trt - _iitax - employee_share, 0.)
         thd_gap = max(FST_AGI_thd_hi[MARS - 1] - FST_AGI_thd_lo[MARS - 1], 0.)
         if thd_gap > 0. and c00100 < FST_AGI_thd_hi[MARS - 1]:
