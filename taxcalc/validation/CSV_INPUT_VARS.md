@@ -57,10 +57,6 @@ in the IRS-SOI Public Use File (PUF).
 | e07300 | 1040 | 48 | foreign tax credit (Form 1116)
 | e07400 | 1040 | 54a | general business credit (Form 3800)
 | e07600 | 1040 | 54b | prior year minimum tax credit (Form 8801)
-| e09700 | 4255 | 15 | recapture of investment credit
-| e09800 | 1040 | 58 | unreported social security (Forms 4137 and 8919)
-| e09900 | 1040 | 59 | penalty tax on qualified retirement plans
-| e11200 | 1040 | 65 | excess social security and RRTA tax withheld
 | e17500 | Sch A | 1 | medical and dental expenses
 | e18400 | Sch A | 5 | state and local income/sales taxes
 | e18500 | Sch A | 6 | real-estate taxes
