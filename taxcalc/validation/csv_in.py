@@ -33,22 +33,24 @@ DEBUG = False  # True implies no variable randomization or record sampling
 TRACE = False  # True implies tracing output written to stdout
 
 # specify set of variables slated for removal from puf.csv
-DROP1_VARS = set(['p87482'])
+DROP1_VARS = set([])
 
 # specify set of variables not included in xYY.csv file
 if DEBUG:
     DROP2_VARS = set(['filer'])
 else:
-    DROP2_VARS = set(['filer', 's006', 'cmbtp_standard', 'cmbtp_itemizer'])
+    DROP2_VARS = set(['filer', 's006', 'cmbtp_standard', 'cmbtp_itemizer',
+                      'e09700', 'e09800', 'e09900', 'e11200'])
 
 DROP_VARS = DROP1_VARS | DROP2_VARS
 
-# specify set of variables whose value is not to be randomized
+# specify set of variables whose values are not to be randomized
 if DEBUG:
     SKIP_VARS = Records.VALID_READ_VARS
 else:
     SKIP_VARS = set(['RECID', 'MARS', 'DSI', 'MIDR', 'FLPDYR',
                      'age_head', 'age_spouse',
+                     'nu13', 'elderly_dependent',
                      'XTOT', 'EIC', 'n24', 'f2441',
                      'f6251'])
 
