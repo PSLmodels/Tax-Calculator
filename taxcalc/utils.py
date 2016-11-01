@@ -5,17 +5,17 @@ Tax-Calculator utility functions.
 # pep8 --ignore=E402 utils.py
 # pylint --disable=locally-disabled --extension-pkg-whitelist=numpy utils.py
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
+#
+# pylint: disable=too-many-lines
 
 import copy
 from collections import defaultdict, OrderedDict
+import six
 import numpy as np
 import pandas as pd
 try:
     BOKEH_AVAILABLE = True
-    from bokeh.palettes import Blues4, Reds4
-    from bokeh.plotting import figure
-    from bokeh.plotting import output_file  # pylint: disable=unused-import
-    from bokeh.plotting import show  # pylint: disable=unused-import
+    import bokeh.plotting as bp
 except ImportError:
     BOKEH_AVAILABLE = False
 
@@ -108,8 +108,30 @@ def wage_weighted(pdf, col_name):
     """
     Return wage-weighted mean of Pandas DataFrame col_name items.
     """
-    return (float((pdf[col_name] * pdf['s006'] * pdf['e00200']).sum()) /
-            float((pdf['s006'] * pdf['e00200']).sum() + EPSILON))
+    swght = 's006'
+    wage = 'e00200'
+    return (float((pdf[col_name] * pdf[swght] * pdf[wage]).sum()) /
+            float((pdf[swght] * pdf[wage]).sum() + EPSILON))
+
+
+def agi_weighted(pdf, col_name):
+    """
+    Return AGI-weighted mean of Pandas DataFrame col_name items.
+    """
+    swght = 's006'
+    agi = 'c00100'
+    return (float((pdf[col_name] * pdf[swght] * pdf[agi]).sum()) /
+            float((pdf[swght] * pdf[agi]).sum() + EPSILON))
+
+
+def expanded_income_weighted(pdf, col_name):
+    """
+    Return expanded-income-weighted mean of Pandas DataFrame col_name items.
+    """
+    swght = 's006'
+    expinc = '_expanded_income'
+    return (float((pdf[col_name] * pdf[swght] * pdf[expinc]).sum()) /
+            float((pdf[swght] * pdf[expinc]).sum() + EPSILON))
 
 
 def weighted_sum(pdf, col_name):
@@ -295,17 +317,6 @@ def results(obj):
     """
     arrays = [getattr(obj, name) for name in STATS_COLUMNS]
     return pd.DataFrame(data=np.column_stack(arrays), columns=STATS_COLUMNS)
-
-
-def exp_results(calc):
-    """
-    Return Pandas DataFrame containing STATS_COLUMNS variables plus two more.
-    """
-    res_columns = STATS_COLUMNS + ['e00200'] + ['MARS']
-    outputs = []
-    for col in res_columns:
-        outputs.append(getattr(calc.records, col))
-    return pd.DataFrame(data=np.column_stack(outputs), columns=res_columns)
 
 
 def weighted_avg_allcols(pdf, col_list, income_measure='_expanded_income'):
@@ -690,148 +701,201 @@ def ascii_output(csv_filename, ascii_filename):
                delim_whitespace=True, sep='\t')
 
 
-def get_mtr_data(calc1, calc2, weighting='weighted_mean', mars='ALL',
-                 income_measure='e00200', mtr_measure='_combined',
-                 weight_by_income_measure=False):
+def mtr_graph_data(calc1, calc2,
+                   mars='ALL',
+                   mtr_measure='combined',
+                   mtr_variable='e00200p',
+                   mtr_wrt_full_compen=False,
+                   income_measure='wages',
+                   dollar_weighting=False):
     """
-    This function prepares the MTR data for two calculators.
+    Prepare data needed by the mtr_graph_plot utility function.
 
     Parameters
     ----------
-    calc1 : a Tax-Calculator Records object that refers to the baseline
+    calc1 : a Calculator object that refers to baseline policy
 
-    calc2 : a Tax-Calculator Records object that refers to the reform
+    calc2 : a Calculator object that refers to reform policy
 
-    weighting : String object
-        options for input:
-            'weighted_mean': Averaging marginal tax rate by the
-                weight of each record. This option would be
-                helpful if you are interested in the MTR after
-                taking weights into consideration.
-            'wage_weighted': Averaging marginal tax rate by the
-                product of weight and wage of each record. This
-                option would be helpful if you are interested in
-                the MTR after taking both weights and wages
-                into consideration.
-        Choose different weighting methods
+    mars : integer or string
+        options:
+            'ALL': include all filing units in sample;
+            1: include only single filing units;
+            2: include only married-filing-jointly filing units;
+            3: include only married-filing-separately filing units; and
+            4: include only head-of-household filing units.
+        specifies which filing status subgroup to show in the graph
 
-    mars : Integer or String
-        options for input: 'ALL', 1, 2, 3, 4
-        Choose different filling status
+    mtr_measure : string
+        options:
+            'itax': marginal individual income tax rate;
+            'ptax': marginal payroll tax rate; and
+            'combined': sum of marginal income and payroll tax rates.
+        specifies which marginal tax rate to show on graph's y axis
 
-    income_measure : String object
-        options for input:
-            '_expanded_income': The sum of adjusted gross income, non-taxable
-                interest income, non-taxable social security benefits and
-                employer share of FICA.
-            'c00100': Adjusted gross income
-            'e00200': Salaries and wages.
-        classifier of income bins/deciles
+    mtr_variable : string
+        any string in the Calculator.VALID_MTR_VARS set
+        specifies variable to change in order to compute marginal tax rates
 
-    mtr_measure : String object
-        options for input:
-            '_iitax': Marginal individual income tax rate.
-            '_combined': Marginal combined tax rates, which is
-                the sum of marginal payroll tax rate and marginal individual
-                income tax rate.
-        Choose different marginal tax rate measures
+    mtr_wrt_full_compen : boolean
+        see documentation of Calculator.mtr() argument wrt_full_compensation
+        (value has an effect only if mtr_variable is 'e00200p')
 
-    weight_by_income_measure : Boolean
-        If this option is true, for each record, s006 (weight) will be weighted
-        by the desired income measure of choice. (Note that this option
-        is not about 'weighted' vs 'unweighted', but rather about what to
-        weight s006 by.) And thus this will allow users to investigate
-        different aggregated targets (via choices of income_measure).
-        For example, if income measure is 'e00200' and this option is true,
-        then the bin (or x-axis in the plot) is the (percentile of) total
-        wages and salaries.
+    income_measure : string
+        options:
+            'wages': wage and salary income (e00200);
+            'agi': adjusted gross income, AGI (c00100); and
+            'expanded_income': sum of AGI, non-taxable interest income,
+                               non-taxable social security benefits, and
+                               employer share of FICA taxes.
+        specifies which income variable to show on the graph's x axis
+
+    dollar_weighting : boolean
+        False implies both income_measure percentiles on x axis and
+        mtr values for each percentile on the y axis are computed
+        without using dollar income_measure weights (just sampling weights);
+        True implies both income_measure percentiles on x axis and
+        mtr values for each percentile on the y axis are computed
+        using dollar income_measure weights (in addition to sampling weights).
+        Specifying True produces a graph x axis that shows income_measure
+        (not filing unit) percentiles.
+
     Returns
     -------
-    Pandas DataFrame object
+    dictionary object suitable for passing to mtr_graph_plot utility function
     """
-    # pylint: disable=too-many-arguments,too-many-statements,too-many-locals
-    # Calculate MTR
-    _, mtr_iit_x, mtr_combined_x = calc1.mtr()
-    _, mtr_iit_y, mtr_combined_y = calc2.mtr()
-    # Get output columns
-    df_x = exp_results(calc1)
-    df_y = exp_results(calc2)
-
-    df_x['mtr_iit'] = mtr_iit_x
-    df_y['mtr_iit'] = mtr_iit_y
-    df_x['mtr_combined'] = mtr_combined_x
-    df_y['mtr_combined'] = mtr_combined_y
-
-    df_y[income_measure] = df_x[income_measure]
-
-    # Complex weighted bins or not
-    if weight_by_income_measure:
-        df_x = add_weighted_decile_bins(df_x, income_measure, 100,
-                                        weight_by_income_measure=True)
-        df_y = add_weighted_decile_bins(df_y, income_measure, 100,
-                                        weight_by_income_measure=True)
+    # pylint: disable=too-many-arguments,too-many-statements,
+    # pylint: disable=too-many-locals,too-many-branches
+    # check validity of function arguments
+    # . . check income_measure value
+    weighting_function = weighted_mean
+    if income_measure == 'wages':
+        income_var = 'e00200'
+        income_str = 'Wage'
+        if dollar_weighting:
+            weighting_function = wage_weighted
+    elif income_measure == 'agi':
+        income_var = 'c00100'
+        income_str = 'AGI'
+        if dollar_weighting:
+            weighting_function = agi_weighted
+    elif income_measure == 'expanded_income':
+        income_var = '_expanded_income'
+        income_str = 'Expanded Income'
+        if dollar_weighting:
+            weighting_function = expanded_income_weighted
     else:
-        df_x = add_weighted_decile_bins(df_x, income_measure, 100)
-        df_y = add_weighted_decile_bins(df_y, income_measure, 100)
-
-    # Select either all filers or one filling status
-    if mars == 'ALL':
-        df_filtered_x = df_x.copy()
-        df_filtered_y = df_y.copy()
+        msg = ('income_measure="{}" is neither '
+               '"wages", "agi", nor "expanded_income"')
+        raise ValueError(msg.format(income_measure))
+    # . . check mars value
+    if isinstance(mars, six.string_types):
+        if mars != 'ALL':
+            msg = 'string value of mars="{}" is not "ALL"'
+            raise ValueError(msg.format(mars))
+    elif isinstance(mars, int):
+        if mars < 1 or mars > 4:
+            msg = 'integer mars="{}" is not in [1,4] range'
+            raise ValueError(msg.format(mars))
     else:
-        df_filtered_x = df_x[(df_x['MARS'] == mars)].copy()
-        df_filtered_y = df_y[(df_y['MARS'] == mars)].copy()
-
-    # Split into groups by 'bins'
-    gpdf_x = df_filtered_x.groupby('bins', as_index=False)
-    gpdf_y = df_filtered_y.groupby('bins', as_index=False)
-
-    # Extract proper weighting method
-    if weighting == 'weighted_mean':
-        weighting_method = weighted_mean
-    elif weighting == 'wage_weighted':
-        weighting_method = wage_weighted
+        msg = 'mars="{}" is neither a string nor an integer'
+        raise ValueError(msg.format(mars))
+    # . . check mtr_measure value
+    if mtr_measure == 'itax':
+        mtr_str = 'Income-Tax'
+    elif mtr_measure == 'ptax':
+        mtr_str = 'Payroll-Tax'
+    elif mtr_measure == 'combined':
+        mtr_str = 'Income+Payroll-Tax'
     else:
-        msg = 'weighting option "{}" is not valid'
-        raise ValueError(msg.format(weighting))
-
-    # Apply desired weighting method to mtr
-    if mtr_measure == '_combined':
-        wgtpct_x = gpdf_x.apply(weighting_method, 'mtr_combined')
-        wgtpct_y = gpdf_y.apply(weighting_method, 'mtr_combined')
-    elif mtr_measure == '_iitax':
-        wgtpct_x = gpdf_x.apply(weighting_method, 'mtr_iit')
-        wgtpct_y = gpdf_y.apply(weighting_method, 'mtr_iit')
-
-    wpct_x = pd.DataFrame(data=wgtpct_x, columns=['w_mtr'])
-    wpct_y = pd.DataFrame(data=wgtpct_y, columns=['w_mtr'])
-
-    # Add bin labels
-    wpct_x['bins'] = np.arange(1, 101)
-    wpct_y['bins'] = np.arange(1, 101)
-
-    # Merge two dataframes
-    rsltx = pd.merge(df_filtered_x[['bins']], wpct_x, how='left')
-    rslty = pd.merge(df_filtered_y[['bins']], wpct_y, how='left')
-
-    df_filtered_x['w_mtr'] = rsltx['w_mtr'].values
-    df_filtered_y['w_mtr'] = rslty['w_mtr'].values
-
-    # Get rid of duplicated bins
-    df_filtered_x.drop_duplicates(subset='bins', inplace=True)
-    df_filtered_y.drop_duplicates(subset='bins', inplace=True)
-
-    # Prepare cleaned mtr data and concatenate into one dataframe
-    df_filtered_x = df_filtered_x['w_mtr']
-    df_filtered_y = df_filtered_y['w_mtr']
-
-    merged = pd.concat([df_filtered_x, df_filtered_y], axis=1,
-                       ignore_index=True)
+        msg = ('mtr_measure="{}" is neither '
+               '"itax" nor "ptax" nor "combined"')
+        raise ValueError(msg.format(mtr_measure))
+    # calculate marginal tax rates
+    (mtr1_ptax, mtr1_itax,
+     mtr1_combined) = calc1.mtr(variable_str=mtr_variable,
+                                wrt_full_compensation=mtr_wrt_full_compen)
+    (mtr2_ptax, mtr2_itax,
+     mtr2_combined) = calc2.mtr(variable_str=mtr_variable,
+                                wrt_full_compensation=mtr_wrt_full_compen)
+    # extract needed output that is unchanged by reform from calc1
+    record_columns = ['s006']
+    if mars != 'ALL':
+        record_columns.append('MARS')
+    record_columns.append(income_var)
+    output = [getattr(calc1.records, col) for col in record_columns]
+    df1 = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
+    df2 = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
+    # set mtr given specified mtr_measure
+    if mtr_measure == 'itax':
+        df1['mtr'] = mtr1_itax
+        df2['mtr'] = mtr2_itax
+    elif mtr_measure == 'ptax':
+        df1['mtr'] = mtr1_ptax
+        df2['mtr'] = mtr2_ptax
+    elif mtr_measure == 'combined':
+        df1['mtr'] = mtr1_combined
+        df2['mtr'] = mtr2_combined
+    # select filing-status subgroup, if any
+    if mars != 'ALL':
+        df1 = df1[df1['MARS'] == mars]
+        df2 = df2[df2['MARS'] == mars]
+    # create 'bins' column given specified income_var and dollar_weighting
+    df1 = add_weighted_decile_bins(df1,
+                                   income_measure=income_var,
+                                   num_bins=100,
+                                   weight_by_income_measure=dollar_weighting)
+    df2 = add_weighted_decile_bins(df2,
+                                   income_measure=income_var,
+                                   num_bins=100,
+                                   weight_by_income_measure=dollar_weighting)
+    # split into groups specified by 'bins'
+    gdf1 = df1.groupby('bins', as_index=False)
+    gdf2 = df2.groupby('bins', as_index=False)
+    # apply the weighting_function to percentile-grouped mtr values
+    wghtmtr1 = gdf1.apply(weighting_function, 'mtr')
+    wghtmtr2 = gdf2.apply(weighting_function, 'mtr')
+    wmtr1 = pd.DataFrame(data=wghtmtr1, columns=['wmtr'])
+    wmtr2 = pd.DataFrame(data=wghtmtr2, columns=['wmtr'])
+    # add bin labels to wmtr1 and wmtr2 DataFrames
+    wmtr1['bins'] = np.arange(1, 101)
+    wmtr2['bins'] = np.arange(1, 101)
+    # merge dfN['bins'] and wmtrN DataFrames into a single DataFrame
+    xdf1 = pd.merge(df1[['bins']], wmtr1, how='left')
+    xdf2 = pd.merge(df2[['bins']], wmtr2, how='left')
+    df1['wmtr'] = xdf1['wmtr'].values
+    df2['wmtr'] = xdf2['wmtr'].values
+    # eliminate duplicated bins
+    df1.drop_duplicates(subset='bins', inplace=True)
+    df2.drop_duplicates(subset='bins', inplace=True)
+    # merge weighted mtr data inot a single DataFrame
+    df1 = df1['wmtr']
+    df2 = df2['wmtr']
+    merged = pd.concat([df1, df2], axis=1, ignore_index=True)
     merged.columns = ['base', 'reform']
     merged.index = (merged.reset_index()).index
-    if weight_by_income_measure:
+    if dollar_weighting:
         merged = merged[1:]
-    return merged
+    # construct dictionary containing merged data and auto-generated labels
+    data = dict()
+    data['lines'] = merged
+    if dollar_weighting:
+        income_str = 'Dollar-weighted {}'.format(income_str)
+        mtr_str = 'Dollar-weighted {}'.format(mtr_str)
+    data['ylabel'] = '{} MTR'.format(mtr_str)
+    xlabel_str = '{} Percentile'.format(income_str)
+    if mars != 'ALL':
+        xlabel_str = '{} for MARS={}'.format(xlabel_str, mars)
+    data['xlabel'] = xlabel_str
+    var_str = '{}'.format(mtr_variable)
+    if mtr_variable == 'e00200p' and mtr_wrt_full_compen:
+        var_str = '{} wrt full compensation'.format(var_str)
+    title_str = 'Mean Marginal Tax Rate for {} by Income Percentile'
+    title_str = title_str.format(var_str)
+    if mars != 'ALL':
+        title_str = '{} for MARS={}'.format(title_str, mars)
+    data['title'] = title_str
+    return data
 
 
 def requires_bokeh(func):
@@ -856,70 +920,96 @@ def requires_bokeh(func):
 
 
 @requires_bokeh
-def mtr_plot(source, xlab='Percentile', ylab='Avg. MTR', title='MTR plot',
-             plot_width=425, plot_height=250, loc='top_left'):
+def mtr_graph_plot(data,
+                   width=850,
+                   height=500,
+                   xlabel='',
+                   ylabel='',
+                   title='',
+                   legendloc='bottom_right'):
     """
-    This function generates marginal tax rate plot.
-    Source data can be obtained from get_mtr_data function.
+    Plot a marginal tax rate graph using data from mtr_graph_data function.
 
     Parameters
     ----------
-    source : Pandas DataFrame returned from get_mtr_data() utility function
+    data : dictionary object returned from mtr_graph_data() utility function
 
-    xlab : String object
-        Name for X axis
+    width : integer
+        width of plot expressed in pixels
 
-    ylab : String object
-        Name for Y axis
+    height : integer
+        height of plot expressed in pixels
 
-    title : String object
-        Caption for the plot
+    xlabel : string
+        x-axis label; if '', then use label generated by mtr_graph_data
 
-    plot_width : Numeric (Usually integer)
-        Width of the plot
+    ylabel : string
+        y-axis label; if '', then use label generated by mtr_graph_data
 
-    plot_height : Numeric (Usually integer)
-        Height of the plot
+    title : string
+        graph title; if '', then use title generated by mtr_graph_data
 
-    loc : String object
-        Toptions for input: "top_right", "top_left", "bottom_left",
-            "bottom_right"
-        Choose the location of the legend label
+    legendloc : string
+        options: 'top_right', 'top_left', 'bottom_left', 'bottom_right'
+        specifies location of the legend in the plot
 
     Returns
     -------
-    bokeh.plotting figure object
+    bokeh.plotting figure object containing a raster graphics plot
 
-    Note
-    ----
-    The ONLY output option for the figure object is HTML format.
-    To obtain a PNG copy, use the 'Save' option on the Toolbar (usually
-    located on the top-right corner of the plot).
+    Notes
+    -----
+    USAGE EXAMPLE:
+      gdata = mtr_graph_data(calc1, calc2)
+      gplot = mtr_graph_plot(gdata)
+    THEN  # when working interactively in a Python notebook
+      bp.show(gplot)
+    OR    # when executing script using Python command-line interpreter
+      bp.output_file('anyname.html')  # file to write to when invoking bp.show
+      bp.show(gplot, title='MTR by Income Percentile')
+    WILL VISUALIZE GRAPH IN BROWSER
 
-    Use show(FIGURE_NAME) to visualize when working in an iPython Notebook.
-    Note that, when using the command-line Python interpreter, an output
-    file needs to be saved using command output_file("FILENAME.html").
+    To convert the visualized graph into a PNG-formatted file, click on
+    the "Save" icon on the Toolbar (located in the top-right corner of
+    the visualized graph) and a PNG-formatted file will written to your
+    Download directory.
+
+    The ONLY output option the bokeh.plotting figure has is HTML format,
+    which (as described above) can be converted into a PNG-formatted
+    raster graphics file.  There is no option to make the bokeh.plotting
+    figure generate a vector graphics file such as an EPS file.
     """
     # pylint: disable=too-many-arguments
-    fig = figure(plot_width=plot_width, plot_height=plot_height, title=title)
-    fig.line((source.reset_index()).index, (source.reset_index()).base,
-             line_color=Blues4[0], line_width=0.8, line_alpha=.8,
-             legend="Base")
-    fig.line((source.reset_index()).index, (source.reset_index()).reform,
-             line_color=Reds4[1], line_width=0.8, line_alpha=1,
-             legend="Reform")
-    fig.legend.label_text_font = "times"
-    fig.legend.label_text_font_style = "italic"
-    fig.legend.location = loc
+    if title == '':
+        title = data['title']
+    fig = bp.figure(plot_width=width, plot_height=height, title=title)
+    fig.title.text_font_size = '12pt'
+    lines = data['lines']
+    fig.line((lines.reset_index()).index, (lines.reset_index()).base,
+             line_color='blue', legend='Base')
+    fig.line((lines.reset_index()).index, (lines.reset_index()).reform,
+             line_color='red', legend='Reform')
+    fig.circle(0, 0, visible=False)  # force zero to be included on y axis
+    if xlabel == '':
+        xlabel = data['xlabel']
+    fig.xaxis.axis_label = xlabel
+    fig.xaxis.axis_label_text_font_size = '12pt'
+    fig.xaxis.axis_label_text_font_style = 'normal'
+    if ylabel == '':
+        ylabel = data['ylabel']
+    fig.yaxis.axis_label = ylabel
+    fig.yaxis.axis_label_text_font_size = '12pt'
+    fig.yaxis.axis_label_text_font_style = 'normal'
+    fig.legend.location = legendloc
+    fig.legend.label_text_font = 'times'
+    fig.legend.label_text_font_style = 'italic'
     fig.legend.label_width = 2
     fig.legend.label_height = 2
     fig.legend.label_standoff = 2
     fig.legend.glyph_width = 14
     fig.legend.glyph_height = 14
-    fig.legend.legend_spacing = 5
-    fig.legend.legend_padding = 5
-    fig.yaxis.axis_label = ylab
-    fig.xaxis.axis_label = xlab
+    fig.legend.spacing = 5
+    fig.legend.padding = 5
     return fig
 
 

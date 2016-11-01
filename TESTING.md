@@ -65,7 +65,7 @@ cd taxcalc
 py.test
 ```
 
-This will start executing a pytest suite containing more than 250
+This will start executing a pytest suite containing more than 260
 tests, including the few tests that require the `puf.csv` file as
 input.  Depending on your computer, the execution time for this
 complete suite of unit tests is roughly two minutes.
