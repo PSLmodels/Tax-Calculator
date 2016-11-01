@@ -40,6 +40,7 @@ if DEBUG:
     DROP2_VARS = set(['filer'])
 else:
     DROP2_VARS = set(['filer', 's006', 'cmbtp_standard', 'cmbtp_itemizer',
+                      'nu13', 'elderly_dependent',
                       'e09700', 'e09800', 'e09900', 'e11200'])
 
 DROP_VARS = DROP1_VARS | DROP2_VARS
@@ -50,7 +51,6 @@ if DEBUG:
 else:
     SKIP_VARS = set(['RECID', 'MARS', 'DSI', 'MIDR', 'FLPDYR',
                      'age_head', 'age_spouse',
-                     'nu13', 'elderly_dependent',
                      'XTOT', 'EIC', 'n24', 'f2441',
                      'f6251'])
 
