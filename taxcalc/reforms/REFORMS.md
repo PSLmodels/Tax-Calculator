@@ -15,17 +15,22 @@ reform provisions.  The structure of this file is as follows:
 
 ```
 {
-   <parameter_name>: {<calyear>: <parameter-value>},
+   <parameter_name>: {<calyear>: <parameter-value>,
+                      ... 
+                      <calyear>: <parameter-value>},
    <parameter_name>: {<calyear>: <parameter-value>},
    ...
-   <parameter_name>: {<calyear>: <parameter-value>}
+   <parameter_name>: {<calyear>: <parameter-value>,
+                      ... 
+                      <calyear>: <parameter-value>}
 }
 ```
 
-Notice each reform provision (exexpt the last one) must end in a
-comma.  Also, the <parameter_name> and <calyear> must be enclosed in
+Notice each reform provision (except the last one) must end in a
+comma.  Each reform provision may have one or multiple year-value
+pairs.  Also, the <parameter_name> and <calyear> must be enclosed in
 quotes (").  The <parameter_value> is enclosed in single brackets when
-the <parameter_value> is a scalar and encloded in double brackets when
+the <parameter_value> is a scalar and enclosed in double brackets when
 the <parameter_value> is a vector.  The most common vector of values
 is one that varies by filing status (MARS) with the vector containing
 six parameter values for single, married filing joint, married filing
@@ -39,7 +44,7 @@ separate, head of household, widow, separate.
 // are calendar years.  Both these primary and secondary key values must be
 // enclosed in quotes (").
 // Policy parameter values are enclosed in single brackets when the parameter
-// is a scalar and encloded in double brackets when the parameter is a vector.
+// is a scalar and enclosed in double brackets when the parameter is a vector.
 // Boolean values are specified as true or false (no quotes; all lowercase).
 {
     "_AMT_tthd": // AMT taxinc threshold separating the two AMT tax brackets
@@ -74,7 +79,9 @@ separate, head of household, widow, separate.
 ## Example Reform Provisions
 
 These are organized in the order that policy parameters are presented
-on the [TaxBrain webpage](http://www.ospc.org/taxbrain/).
+on the [TaxBrain webpage](http://www.ospc.org/taxbrain/).  They can be
+copied and pasted into a file and then edited in order to represent a
+complex reform proposal.
 
 The value of each of these policy parameters under current law is
 shown in [this JSON file](../current_law_policy.json).
