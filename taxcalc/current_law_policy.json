@@ -943,6 +943,32 @@
         "validations": {"min": 0, "max": 1}
     },
 
+    "_CG_dollar_ec": {
+        "long_name": "Dollar amount of all capital gains and qualified dividends that are excluded from AGI.",
+        "description": "Current-law value is zero; positive value used only if _CG_nodiff is non-zero.",
+        "irs_ref": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": true,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_CG_reinvest_ec": {
+        "long_name": "Fraction of all capital gains and qualified dividends in excess of _CG_dollar_ec that are excluded from AGI.",
+        "description": "Current-law value is zero; positive value used only if _CG_nodiff is non-zero.  If positive, set to statutory exclusion rate times the fraction of capital gains and qualified dividends in excess of _CG_dollar_ec that are assumed to be reinvested within the year.",
+        "irs_ref": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
     "_CG_rt1": {
         "long_name": "Long term capital gain and qualified dividends rate 1",
         "description": "The capital gain and dividends (stacked on top of regular income) that are below threshold 1 are taxed at this rate. ",
