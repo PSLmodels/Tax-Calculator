@@ -1440,6 +1440,21 @@
         "value": [35]
     },
 
+    "_EITC_indiv": {
+        "long_name": "EITC is individual-based rather than filing-unit based",
+        "description": "Current-law value is zero implying EITC is filing-unit based; a value of one implies EITC parameters for EIC=0 apply to each wage earner.",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0],
+        "validations": {"min": 0, "max": 1}
+    },
+
     "_EITC_ps": {
         "long_name": "Earned income credit phaseout AGI start",
         "description": "If AGI is higher than this threshold, the amount of EITC will start to decrease. ",
