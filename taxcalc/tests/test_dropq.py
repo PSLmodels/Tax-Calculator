@@ -6,6 +6,8 @@ from pandas import DataFrame, Series
 
 from taxcalc.dropq.dropq_utils import *
 from taxcalc.dropq import *
+from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
+from taxcalc import multiyear_diagnostic_table  # pylint: disable=import-error
 import json
 
 
@@ -54,6 +56,52 @@ def test_run_dropq_nth_year(is_strict, rjson, growth_params,
                                                            user_mods=user_mods,
                                                            return_json=rjson,
                                                            num_years=3)
+
+
+@pytest.mark.requires_pufcsv
+def test_full_dropq_puf(puf_path):
+
+    myvars = {}
+    myvars['_II_rt4'] = [0.39, 0.40, 0.41]
+    myvars['_PT_rt4'] = [0.39, 0.40, 0.41]
+    myvars['_II_rt3'] = [0.31, 0.32, 0.33]
+    myvars['_PT_rt3'] = [0.31, 0.32, 0.33]
+    first = 2016
+    user_mods = {first: myvars}
+
+    nyrs = 2
+    # create a Policy object (clp) containing current-law policy parameters
+    clp = Policy()
+    clp.implement_reform(user_mods)
+    # create a Records object (rec) containing all puf.csv input records
+    rec = Records(data=puf_path)
+    # create a Calculator object using clp policy and puf records
+    calc = Calculator(policy=clp, records=rec)
+    calc.increment_year()
+    calc.increment_year()
+    calc.increment_year()
+    # create aggregate diagnostic table (adt) as a Pandas DataFrame object
+    adt = multiyear_diagnostic_table(calc, nyrs)
+    taxes_fullsample = adt.loc["Combined Liability ($b)"]
+
+    assert taxes_fullsample is not None
+
+    # Create a Public Use File object
+    tax_data = pd.read_csv(puf_path)
+
+    (mY_dec, mX_dec, df_dec, pdf_dec, cdf_dec, mY_bin, mX_bin, df_bin,
+        pdf_bin, cdf_bin, fiscal_tots) = dropq.run_models(tax_data,
+                                                          start_year=first,
+                                                          user_mods=user_mods,
+                                                          return_json=False,
+                                                          num_years=2)
+
+    pure_reform_revenue = taxes_fullsample.loc[first]
+    dropq_reform_revenue = mY_dec['_combined_dec_0'].loc['sums']
+    dropq_reform_revenue /= 1e9  # Round to billions of dollars
+    diff = abs(pure_reform_revenue - dropq_reform_revenue)
+    # Assert that dropq revenue is similar to the "pure" calculation
+    assert diff / dropq_reform_revenue < 0.02
 
 
 @pytest.mark.parametrize("is_strict, rjson, growth_params, no_elast",
@@ -347,8 +395,8 @@ def test_create_dropq_dist_table_groupby_options(groupby, result_type,
 @pytest.mark.parametrize("groupby, res_col",
                          [("weighted_deciles", "tax_diff"),
                           ("webapp_income_bins", "tax_diff"),
-                          ("webapp_income_bins", "tax_diff"),
-                          ("webapp_income_bins", "tax_diff"),
+                          ("small_income_bins", "tax_diff"),
+                          ("large_income_bins", "tax_diff"),
                           ("other_deciles", "tax_diff")])
 def test_create_dropq_diff_table_groupby_options(groupby, res_col,
                                                  puf_1991_path):

@@ -520,9 +520,20 @@ def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
     mY_bin.drop(mY_bin.index[0], inplace=True)
     mX_bin.drop(mX_bin.index[0], inplace=True)
 
+    def append_year(x):
+        try:
+            x.columns = [str(col) + "_{}".format(year_n) for col in x.columns]
+        except TypeError:
+            import pdb;pdb.set_trace()
+            print("messed up")
+        return x
+
     if not return_json:
-        return (mY_dec, mX_dec, df_dec, pdf_dec, cdf_dec, mY_bin, mX_bin,
-                df_bin, pdf_bin, cdf_bin, fiscal_tots)
+        return (append_year(mY_dec), append_year(mX_dec), append_year(df_dec),
+                append_year(pdf_dec), append_year(cdf_dec),
+                append_year(mY_bin), append_year(mX_bin), append_year(df_bin),
+                append_year(pdf_bin), append_year(cdf_bin),
+                append_year(fiscal_tots))
 
     decile_row_names_i = [x + '_' + str(year_n) for x in decile_row_names]
 
