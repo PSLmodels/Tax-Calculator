@@ -521,11 +521,7 @@ def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
     mX_bin.drop(mX_bin.index[0], inplace=True)
 
     def append_year(x):
-        try:
-            x.columns = [str(col) + "_{}".format(year_n) for col in x.columns]
-        except TypeError:
-            import pdb;pdb.set_trace()
-            print("messed up")
+        x.columns = [str(col) + "_{}".format(year_n) for col in x.columns]
         return x
 
     if not return_json:
