@@ -18,6 +18,10 @@ data = [[1.0, 2, 'a'],
         [2.0, 4, 'b'],
         [3.0, 6, 'b']]
 
+weight_data = [[1.0, 2.0, 10.0],
+               [2.0, 4.0, 20.0],
+               [3.0, 6.0, 30.0]]
+
 data_float = [[1.0, 2, 'a'],
               [-1.0, 4, 'a'],
               [0.0000000001, 3, 'a'],
@@ -208,6 +212,25 @@ def test_weighted_mean():
     exp = Series(data=[16.0 / 12.0, 26.0 / 10.0], index=['a', 'b'])
     exp.index.name = 'label'
     assert_series_equal(exp, diffs)
+
+
+def test_wage_weighted():
+    df = DataFrame(data=weight_data, columns=['var', 's006', 'e00200'])
+    wvar = wage_weighted(df, 'var')
+    assert round(wvar, 4) == 2.5714
+
+
+def test_agi_weighted():
+    df = DataFrame(data=weight_data, columns=['var', 's006', 'c00100'])
+    wvar = agi_weighted(df, 'var')
+    assert round(wvar, 4) == 2.5714
+
+
+def test_expanded_income_weighted():
+    df = DataFrame(data=weight_data,
+                   columns=['var', 's006', '_expanded_income'])
+    wvar = expanded_income_weighted(df, 'var')
+    assert round(wvar, 4) == 2.5714
 
 
 def test_weighted_sum():
@@ -517,35 +540,53 @@ def test_expand_2D_accept_None_additional_row():
     npt.assert_allclose(pol.II_brk2, exp_2020)
 
 
-def test_get_mtr_data(records_2009):
+def test_mtr_graph_data(records_2009):
+    pol = Policy()
+    calc = Calculator(policy=pol, records=records_2009)
+    with pytest.raises(ValueError):
+        gdata = mtr_graph_data(calc, calc, mars='bad',
+                               income_measure='agi',
+                               dollar_weighting=True)
+    with pytest.raises(ValueError):
+        gdata = mtr_graph_data(calc, calc, mars=0,
+                               income_measure='expanded_income',
+                               dollar_weighting=True)
+    with pytest.raises(ValueError):
+        gdata = mtr_graph_data(calc, calc, mars=list())
+    with pytest.raises(ValueError):
+        gdata = mtr_graph_data(calc, calc, mtr_measure='badtax')
+    with pytest.raises(ValueError):
+        gdata = mtr_graph_data(calc, calc, income_measure='badincome')
+    gdata = mtr_graph_data(calc, calc, mars=1,
+                           mtr_wrt_full_compen=True,
+                           dollar_weighting=True)
+    assert type(gdata) == dict
+
+
+def test_mtr_graph_plot(records_2009):
     pol = Policy()
     behv = Behavior()
     calc = Calculator(policy=pol, records=records_2009, behavior=behv)
-    calc.calc_all()
-    source = get_mtr_data(calc, calc, MARS=1, mtr_measure='_combined')
+    gdata = mtr_graph_data(calc, calc, mtr_measure='ptax',
+                           income_measure='agi',
+                           dollar_weighting=False)
+    gplot = mtr_graph_plot(gdata)
+    assert gplot
+    gdata = mtr_graph_data(calc, calc, mtr_measure='itax',
+                           income_measure='expanded_income',
+                           dollar_weighting=False)
+    assert type(gdata) == dict
 
 
-def test_mtr_plot(records_2009):
-    pol = Policy()
-    behv = Behavior()
-    calc = Calculator(policy=pol, records=records_2009, behavior=behv)
-    calc.calc_all()
-    source = get_mtr_data(calc, calc, weighting='wage_weighted',
-                          weight_by_income_measure=True)
-    plot = mtr_plot(source)
-
-
-def test_mtr_plot_force_no_bokeh(records_2009):
+def test_mtr_graph_plot_no_bokeh(records_2009):
     import taxcalc
     taxcalc.utils.BOKEH_AVAILABLE = False
     pol = Policy()
     behv = Behavior()
     calc = Calculator(policy=pol, records=records_2009, behavior=behv)
-    calc.calc_all()
-    source = get_mtr_data(calc, calc, weighting='weighted_mean',
-                          weight_by_income_measure=True)
+    gdata = mtr_graph_data(calc, calc)
     with pytest.raises(RuntimeError):
-        plot = mtr_plot(source)
+        gplot = mtr_graph_plot(gdata)
     taxcalc.utils.BOKEH_AVAILABLE = True
 
 

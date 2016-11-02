@@ -106,8 +106,8 @@ class TaxForm(object):
         valid_fields = self.__class__._VALID_FIELDS
         for key, value in data.items():
             if valid_fields and key not in valid_fields:
-                print('Unknown field {0} for form {2}'.
-                      format(key, self.form_name()))
+                msg = 'Unknown field {0} for form {1}'
+                raise ValueError(msg.format(key, self.form_name()))
             else:
                 self._fields[key] = value
 
@@ -121,12 +121,10 @@ class TaxForm(object):
         indirect = self.to_evars_indirect() or {}
 
         # Check for conflicts
-        for key in direct:
-            if key in indirect and direct[key] != indirect[key]:
-                raise ValueError('Different calc for same evar.')
-        for key in indirect:
-            if key in direct and direct[key] != indirect[key]:
-                raise ValueError('Different calc for same evar.')
+        for key in list(direct.keys()) + list(indirect.keys()):
+            if key in direct and key in indirect:
+                if direct[key] != indirect[key]:
+                    raise ValueError('Different calc for same evar.')
 
         direct.update(indirect)
         return direct
@@ -140,7 +138,7 @@ class TaxForm(object):
         results = {}
 
         if self._EVAR_MAP_BY_YEAR:
-            year_evar_map = self._EVAR_MAP_BY_YEAR[self.year]
+            year_evar_map = self._EVAR_MAP_BY_YEAR.get(self.year)
         else:
             year_evar_map = None
 
@@ -150,7 +148,7 @@ class TaxForm(object):
             elif year_evar_map and key in year_evar_map:
                 evar = year_evar_map[key]
             else:
-                continue
+                continue  # pragma: no cover
             if evar in results and results[evar] != value:
                 raise ValueError('Different calc for same evar.')
             results[evar] = value
