@@ -164,7 +164,7 @@ def create_dropq_distribution_table(calc, groupby, result_type, suffix):
     elif result_type == "weighted_avg":
         gp_mean = weighted_avg_allcols(df,
                                        [col + suffix for col in TABLE_COLUMNS])
-        all_sums = get_sums(df, na=True)
+        all_sums = get_sums(df, not_available=True)
         sum_row = all_sums[[col + suffix for col in TABLE_COLUMNS]]
     else:
         err = ("result_type must be either 'weighted_sum' or "
