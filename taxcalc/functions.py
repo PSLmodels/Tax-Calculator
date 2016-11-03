@@ -1067,7 +1067,7 @@ def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
                   ALD_SelfEmploymentTax_HC,
                   c03260, e09800, c59660, e11200, c11070):
     """
-    AdditionalCTC function calculates Additional (refundable) Child Tax Credit
+    Calculates Additional (refundable) Child Tax Credit, c11070
     """
     c82925 = 0.
     c82930 = 0.
@@ -1132,27 +1132,36 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
 
 
 @iterate_jit(nopython=True)
-def IITAX(c09200, c59660, c11070, c10960, _eitc,
-          _payrolltax, personal_credit, n24, _iitax, _combined, _refund,
-          CTC_additional, CTC_additional_ps, CTC_additional_prt, c00100,
-          _sep, MARS):
+def IITAX(c09200, c59660, c11070, c10960, personal_credit,
+          _payrolltax,
+          CTC_additional_rt, CTC_additional_c,
+          n24, c00100, MARS,
+          CTC_additional_ps, CTC_additional_prt,
+          CTC_add_additional,
+          _eitc, _refund, _iitax, _combined):
     """
-    IITAX function: ...
+    Compute final taxes including additional additional child tax credit
     """
-    _refund = c59660 + c11070 + c10960 + personal_credit
-    _iitax = c09200 - _refund
-    _combined = _iitax + _payrolltax
-    potential_add_CTC = max(0., min(_combined, CTC_additional * n24))
-    phaseout = (c00100 -
-                CTC_additional_ps[MARS - 1]) * (CTC_additional_prt / _sep)
-    final_add_CTC = max(0., potential_add_CTC - max(0., phaseout))
-
-    _iitax = _iitax - final_add_CTC
-    # updated combined tax liabilities after applying the credit
-    _combined = _iitax + _payrolltax
-    _refund = _refund + final_add_CTC
     _eitc = c59660
-    return (_eitc, _refund, _iitax, _combined)
+    _refund = _eitc + c11070 + c10960 + personal_credit
+    _iitax = c09200 - _refund
+    # compute additional additional (refundable) child tax credit, which
+    # is not part of current-law policy
+    if CTC_additional_c > 0.:
+        agi = max(0., c00100)
+        ctc = min(CTC_additional_rt * agi, CTC_additional_c)  # per kid credit
+        ymax = CTC_additional_ps[MARS - 1]
+        if agi > ymax:
+            ctcx = max(0.,
+                       CTC_additional_c - CTC_additional_prt * (agi - ymax))
+            ctc = min(ctc, ctcx)
+        CTC_add_additional = min(ctc * n24, _payrolltax)
+        _refund = _refund + CTC_add_additional
+        _iitax = _iitax - CTC_add_additional
+    else:
+        CTC_add_additional = 0.
+    _combined = _iitax + _payrolltax
+    return (CTC_add_additional, _eitc, _refund, _iitax, _combined)
 
 
 @jit(nopython=True)

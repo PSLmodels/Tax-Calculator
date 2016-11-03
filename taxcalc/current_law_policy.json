@@ -1710,49 +1710,59 @@
         "value": [3]
     },
 
-    "_CTC_additional": {
-        "long_name": "Additional additional child tax credit amount (Lee-Rubio)",
-        "description": "In addition to all the credits currently available for dependents, this parameter gives each qualifying child a fixed amount of partially refundable credit, limited by the sum of total income and payroll tax liabilities.",
+    "_CTC_additional_c": {
+        "long_name": "Additional additional child tax credit amount",
+        "description": "In addition to all credits currently available for dependents, this parameter gives each qualifying child a refundable credit that is limited by payroll tax liability.",
         "irs_ref": "",
-        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualification rules for the Child Tax Credit under current law. ",
+        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualification rules for the Child Tax Credit under current law.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value": [0]
+        "value": [0.0]
+    },
+
+    "_CTC_additional_rt": {
+        "long_name": "Additional additional child tax credit amount phasein rate",
+        "description": "The amount of additional additional child tax credit is increased at this rate per dollar of AGI until the _CTC_addition_c is reached.",
+        "irs_ref": "",
+        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualification rules for the Child Tax Credit under current law.",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
     },
 
     "_CTC_additional_ps": {
-        "long_name": "Additional additional child tax credit phaseout starting AGI (Lee-Rubio)",
-        "description": "The amount of additional additional child tax credit is reduced for taxpayers with AGI higher than this level. ",
+        "long_name": "Additional additional child tax credit phaseout starting AGI",
+        "description": "The amount of additional additional child tax credit is reduced for taxpayers with AGI higher than this level.",
         "irs_ref": "",
-        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualification rules for the Child Tax Credit under current law. ",
+        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualification rules for the Child Tax Credit under current law.",
         "start_year": 2013,
         "col_var": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "row_label": ["2013",
-                      "2014",
-                      "2015"],
+        "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value": [[150000, 300000, 150000, 200000, 300000, 150000],
-                  [150000, 300000, 150000, 200000, 300000, 150000],
-                  [150000, 300000, 150000, 200000, 300000, 150000]]
+        "value": [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
     },
 
     "_CTC_additional_prt": {
-        "long_name": "Additional additional child tax credit amount phaseout rate (Lee-Rubio)",
-        "description": "The amount of additional additional child tax credit is reduced at this rate per dollar exceeding the phaseout starting AGI. ",
+        "long_name": "Additional additional child tax credit amount phaseout rate",
+        "description": "The amount of additional additional child tax credit is reduced at this rate per dollar exceeding the phaseout starting AGI.",
         "irs_ref": "",
-        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualification rules for the Child Tax Credit under current law. ",
+        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualification rules for the Child Tax Credit under current law.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value": [0.4]
+        "value": [0.0]
     },
 
     "_ID_BenefitSurtax_Switch": {
