@@ -117,6 +117,12 @@ class Calculator(object):
             if verbose:
                 print('You loaded data for ' +
                       str(self._records.current_year) + '.')
+                if len(self._records.IGNORED_VARS) > 0:
+                    print('Your data include the following unused ' +
+                          'variables that will be ignored:')
+                    for var in self._records.IGNORED_VARS:
+                        print('  ' +
+                              var)
             while self._records.current_year < self._policy.current_year:
                 self._records.increment_year()
             if verbose:

@@ -92,8 +92,8 @@ class Records(object):
     BLOWUP_FACTORS_FILENAME = 'StageIFactors.csv'
     BLOWUP_FACTORS_PATH = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
 
-    # specify set of all Record variables that MAY be read by Tax-Calculator:
-    VALID_READ_VARS = set([
+    # specify set of input variables used in Tax-Calculator calculations:
+    USABLE_READ_VARS = set([
         'DSI', 'EIC', 'FLPDYR',
         'f2441', 'f6251', 'n24', 'XTOT',
         'e00200', 'e00300', 'e00400', 'e00600', 'e00650', 'e00700', 'e00800',
@@ -122,12 +122,12 @@ class Records(object):
         'cmbtp_standard', 'cmbtp_itemizer',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
         'nu13', 'elderly_dependent',
-        's006', 'filer'])
+        's006'])
 
-    # specify set of all Record variables that MUST be read by Tax-Calculator:
+    # specify set of input variables that MUST be read by Tax-Calculator:
     MUST_READ_VARS = set(['RECID', 'MARS'])
 
-    # specify which VALID_READ_VARS should be int64 (rather than float64):
+    # specify which USABLE_READ_VARS should be int64 (rather than float64):
     INTEGER_READ_VARS = set([
         'DSI', 'EIC', 'FLPDYR',
         'f2441', 'f6251',
@@ -136,7 +136,7 @@ class Records(object):
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
         'nu13', 'elderly_dependent'])
 
-    # specify set of all Record variables that cannot be read in:
+    # specify set of Record variables that are calculated by Tax-Calculator:
     CALCULATED_VARS = set([
         '_exact',
         'c07200',
@@ -376,23 +376,24 @@ class Records(object):
         self.index = taxdf.index
         # create class variables using taxdf column names
         READ_VARS = set()
+        self.IGNORED_VARS = set()
         for varname in list(taxdf.columns.values):
-            if varname not in Records.VALID_READ_VARS:
-                msg = 'Records data variable name {} not in VALID_READ_VARS'
-                raise ValueError(msg.format(varname))
-            READ_VARS.add(varname)
-            if varname in Records.INTEGER_READ_VARS:
-                setattr(self, varname,
-                        taxdf[varname].astype(np.int64).values)
+            if varname in Records.USABLE_READ_VARS:
+                READ_VARS.add(varname)
+                if varname in Records.INTEGER_READ_VARS:
+                    setattr(self, varname,
+                            taxdf[varname].astype(np.int64).values)
+                else:
+                    setattr(self, varname,
+                            taxdf[varname].astype(np.float64).values)
             else:
-                setattr(self, varname,
-                        taxdf[varname].astype(np.float64).values)
+                self.IGNORED_VARS.add(varname)
         # check that MUST_READ_VARS are all present in taxdf
         if not Records.MUST_READ_VARS.issubset(READ_VARS):
             msg = 'Records data missing one or more MUST_READ_VARS'
             raise ValueError(msg)
         # create other class variables that are set to all zeros
-        UNREAD_VARS = Records.VALID_READ_VARS - READ_VARS
+        UNREAD_VARS = Records.USABLE_READ_VARS - READ_VARS
         ZEROED_VARS = Records.CALCULATED_VARS | UNREAD_VARS
         INT_VARS = Records.INTEGER_READ_VARS | Records.INTEGER_CALCULATED_VARS
         for varname in ZEROED_VARS:
