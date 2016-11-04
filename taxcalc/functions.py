@@ -128,7 +128,7 @@ def Adj(e03150, e03210, c03260,
 
         e03240 : Domestic Production Activity Deduction
 
-        c03260 : Self employed payroll tax deduction (after haircut)
+        c03260 : Self-employed tax AGI deduction (after haircut)
 
         e03270 : Self employed health insurance deduction
 
@@ -393,7 +393,7 @@ def AdditionalMedicareTax(e00200, MARS,
     _payrolltax : payroll tax augmented by Additional Medicare Tax
     """
     # Note: ratio of self-employment income subject to AMED tax
-    #       equals (1. - 0.5*(FICA_mc_trt+FICA_ss_trt)
+    #       equals (1 - 0.5*(FICA_mc_trt+FICA_ss_trt)
     ptax_amc = AMED_trt * (max(0., e00200 - AMED_thd[MARS - 1]) +
                            max(0., max(0., _sey) *
                                (1. - 0.5 * (FICA_mc_trt + FICA_ss_trt)) -
