@@ -36,7 +36,7 @@ Tax-Calculator,1.7,1.8,2.0,2.1
 Tax Expenditure,2,2,2,2
 ""
 Eliminate adjustment for self-employment tax
-Tax-Calculator,4.2,4.3,4.6,4.8
+Tax-Calculator,3.8,4.0,4.3,4.5
 ""
 Eliminate adjustment for self-employed health insurance
 Tax-Calculator,6.0,6.3,6.6,6.9
