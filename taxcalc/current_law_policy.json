@@ -1669,8 +1669,8 @@
     },
 
     "_ACTC_Income_thd": {
-        "long_name": "ACTC income threshold",
-        "description": "The portion of earned income below this threshold does not count as base for the additional child tax credit.",
+        "long_name": "Additional Child Tax Credit income threshold",
+        "description": "The portion of earned income below this threshold does not count as base for the Additional Child Tax Credit.",
         "irs_ref": "Form 2441, line 3, in-line.",
         "notes": "",
         "start_year": 2013,
@@ -1683,7 +1683,7 @@
     },
 
     "_ACTC_rt": {
-        "long_name": "Additional child tax credit rate",
+        "long_name": "Additional Child Tax Credit rate",
         "description": "This is the fraction of earnings used in calculating the ACTC, which is a partially refundable credit that supplements the CTC for some taxpayers. ",
         "irs_ref": "Form 8812, line 6, inline.",
         "notes": "",
@@ -1697,8 +1697,8 @@
     },
 
     "_ACTC_ChildNum": {
-        "long_name": "Additional child tax credit minimum number of qualified children",
-        "description": "Families with this number of qualified children or more may qualify for the additional child tax credit, which is a partially refundable credit that supplements the CTC for some taxpayers.",
+        "long_name": "Additional Child Tax Credit minimum number of qualified children",
+        "description": "Families with this number of qualified children or more may qualify for the Additional Child Tax Credit, which is a partially refundable credit that supplements the Child Tax Credit for some taxpayers.",
         "irs_ref": "Form 8812, Part III. ",
         "notes": "",
         "start_year": 2013,
@@ -1710,11 +1710,11 @@
         "value": [3]
     },
 
-    "_CTC_additional_c": {
-        "long_name": "Additional additional child tax credit amount",
-        "description": "In addition to all credits currently available for dependents, this parameter gives each qualifying child a refundable credit that is limited by payroll tax liability.",
+    "_CTC_new_c": {
+        "long_name": "New refundable child tax credit amount",
+        "description": "In addition to all credits currently available for dependents, this parameter gives each qualifying child a new refundable credit.",
         "irs_ref": "",
-        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualification rules for the Child Tax Credit under current law.",
+        "notes": "Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -1724,11 +1724,11 @@
         "value": [0.0]
     },
 
-    "_CTC_additional_rt": {
-        "long_name": "Additional additional child tax credit amount phasein rate",
-        "description": "The amount of additional additional child tax credit is increased at this rate per dollar of AGI until the _CTC_addition_c is reached.",
+    "_CTC_new_rt": {
+        "long_name": "New refundable child tax credit amount phasein rate",
+        "description": "The amount of new child tax credit is increased at this rate per dollar of AGI until _CTC_new_c is reached.",
         "irs_ref": "",
-        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualification rules for the Child Tax Credit under current law.",
+        "notes": "Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -1738,11 +1738,11 @@
         "value": [0.0]
     },
 
-    "_CTC_additional_ps": {
-        "long_name": "Additional additional child tax credit phaseout starting AGI",
-        "description": "The amount of additional additional child tax credit is reduced for taxpayers with AGI higher than this level.",
+    "_CTC_new_ps": {
+        "long_name": "New refundable child tax credit phaseout starting AGI",
+        "description": "The amount of new child tax credit is reduced for taxpayers with AGI higher than this level.",
         "irs_ref": "",
-        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualification rules for the Child Tax Credit under current law.",
+        "notes": "Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.",
         "start_year": 2013,
         "col_var": ["single", "joint", "separate", "head of household", "widow", "separate"],
         "row_label": ["2013"],
@@ -1751,11 +1751,11 @@
         "value": [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
     },
 
-    "_CTC_additional_prt": {
-        "long_name": "Additional additional child tax credit amount phaseout rate",
-        "description": "The amount of additional additional child tax credit is reduced at this rate per dollar exceeding the phaseout starting AGI.",
+    "_CTC_new_prt": {
+        "long_name": "New refundable child tax credit amount phaseout rate",
+        "description": "The amount of new child tax credit is reduced at this rate per dollar exceeding the phaseout starting AGI.",
         "irs_ref": "",
-        "notes": "In this model, qualification for the Additional Additional Child Tax Credit is the same as qualification rules for the Child Tax Credit under current law.",
+        "notes": "Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -1763,6 +1763,21 @@
         "cpi_inflated": false,
         "col_label": "",
         "value": [0.0]
+    },
+
+    "_CTC_new_refund_limit_rt": {
+        "long_name": "New child tax credit refund limit",
+        "description": "The fraction of payroll taxes that serves as a limit to the amount of new child tax credit that can be refunded.",
+        "irs_ref": "",
+        "notes": "Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0],
+        "validations": {"min": 0, "max": 1}
     },
 
     "_ID_BenefitSurtax_Switch": {

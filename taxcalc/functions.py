@@ -1134,34 +1134,37 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
 @iterate_jit(nopython=True)
 def IITAX(c09200, c59660, c11070, c10960, personal_credit,
           _payrolltax,
-          CTC_additional_rt, CTC_additional_c,
+          CTC_new_c, CTC_new_rt,
           n24, c00100, MARS,
-          CTC_additional_ps, CTC_additional_prt,
-          CTC_add_additional,
-          _eitc, _refund, _iitax, _combined):
+          CTC_new_ps, CTC_new_prt, CTC_new_refund_limit_rt,
+          ctc_new, _eitc, _refund, _iitax, _combined):
     """
     Compute final taxes including additional additional child tax credit
     """
     _eitc = c59660
     _refund = _eitc + c11070 + c10960 + personal_credit
     _iitax = c09200 - _refund
-    # compute additional additional (refundable) child tax credit, which
-    # is not part of current-law policy
-    if CTC_additional_c > 0.:
+    # compute new refundable child tax credit
+    if CTC_new_c > 0. and n24 > 0:
         agi = max(0., c00100)
-        ctc = min(CTC_additional_rt * agi, CTC_additional_c)  # per kid credit
-        ymax = CTC_additional_ps[MARS - 1]
+        ctc = min(CTC_new_rt * agi, CTC_new_c)  # per kid credit
+        ymax = CTC_new_ps[MARS - 1]
         if agi > ymax:
             ctcx = max(0.,
-                       CTC_additional_c - CTC_additional_prt * (agi - ymax))
+                       CTC_new_c - CTC_new_prt * (agi - ymax))
             ctc = min(ctc, ctcx)
-        CTC_add_additional = min(ctc * n24, _payrolltax)
-        _refund = _refund + CTC_add_additional
-        _iitax = _iitax - CTC_add_additional
+        ctc_new = ctc * n24
+        if CTC_new_refund_limit_rt > 0. and ctc_new > 0.:
+            refund = max(0., ctc_new - _iitax)
+            limit = CTC_new_refund_limit_rt * _payrolltax
+            excess = max(0., refund - limit)
+            ctc_new = max(0., ctc_new - excess)
+        _refund = _refund + ctc_new
+        _iitax = _iitax - ctc_new
     else:
-        CTC_add_additional = 0.
+        ctc_new = 0.
     _combined = _iitax + _payrolltax
-    return (CTC_add_additional, _eitc, _refund, _iitax, _combined)
+    return (ctc_new, _eitc, _refund, _iitax, _combined)
 
 
 @jit(nopython=True)
