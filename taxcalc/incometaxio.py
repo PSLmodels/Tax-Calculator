@@ -57,7 +57,7 @@ class IncomeTaxIO(object):
 
     csv_dump: boolean
         whether or not to write CSV-formatted output file containing the
-        values of the Records.VALID_READ_VARS and Records.CALCULATE_VARS
+        values of the Records.VALID_READ_VARS and Records.CALCULATED_VARS
         variables.  If true, the CSV-formatted output file replaces the
         usual space-separated-values Internet-TAXSIM output file.
 
