@@ -67,7 +67,7 @@ def main():
                         help=('optional flag that causes the output file to '
                               'be a CSV-formatted file containing for each '
                               'INPUT filing unit the TAXYEAR values of each '
-                              'variable in the Records.VALID_READ_VARS set. '
+                              'variable in the Records.USABLE_READ_VARS set. '
                               'If the --records option is specified, the '
                               'output file name will be the same as if the '
                               'option was not specified, except that the '
