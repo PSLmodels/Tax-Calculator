@@ -17,7 +17,7 @@ def test_correct_but_not_recommended_Consumption_instantiation():
 
 
 def test_validity_of_consumption_vars_set():
-    assert Consumption.RESPONSE_VARS.issubset(Records.VALID_READ_VARS)
+    assert Consumption.RESPONSE_VARS.issubset(Records.USABLE_READ_VARS)
 
 
 def test_update_consumption():

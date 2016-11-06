@@ -42,7 +42,7 @@ class SimpleTaxIO(object):
     output_records: boolean
         true implies write a CSV-formatted file containing for each
         INPUT filing unit the TAXYEAR values of each variable in the
-        Records.VALID_READ_VARS set.
+        Records.USABLE_READ_VARS set.
 
     Raises
     ------
@@ -597,7 +597,7 @@ class SimpleTaxIO(object):
         """
         # create all-zeros dictionary and then list of all-zero dictionaries
         zero_dict = {}
-        for varname in Records.VALID_READ_VARS:
+        for varname in Records.USABLE_READ_VARS:
             zero_dict[varname] = 0
         dict_list = [zero_dict for _ in range(0, len(self._input))]
         # use dict_list to create a Pandas DataFrame and Records object
@@ -612,10 +612,10 @@ class SimpleTaxIO(object):
             lnum += 1
             SimpleTaxIO._specify_input(recs, idx, self._input[lnum],
                                        emulate_taxsim_2441_logic)
-        # optionally write Records.VALID_READ_VARS content to file
+        # optionally write Records.USABLE_READ_VARS content to file
         if output_records:
             recdf = pd.DataFrame()
-            for varname in Records.VALID_READ_VARS:
+            for varname in Records.USABLE_READ_VARS:
                 vardata = getattr(recs, varname)
                 recdf[varname] = vardata
             recdf.to_csv(re.sub('out-simtax', 'records',

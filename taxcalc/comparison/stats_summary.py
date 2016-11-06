@@ -82,7 +82,7 @@ def creat_table_base():
                          'e00900p', 'e00900s', 'e02100p', 'e02100s',
                          'age_head', 'age_spouse',
                          'blind_head', 'blind_spouse'])
-    used_vars_set = list(Records.VALID_READ_VARS - codes_imp_set)
+    used_vars_set = list(Records.USABLE_READ_VARS - codes_imp_set)
     # read variable description from e_variable_info.csv
     table = {}
     for i in range(0, len(used_vars_set) - 1):
