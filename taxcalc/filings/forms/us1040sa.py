@@ -21,8 +21,8 @@ class US1040SA(TaxForm):
         fields = self._fields
 
         # e18400 - State and local income taxes
-        if fields.get('line5') and fields.get('line5a') and \
-                not fields.get('line5b'):
+        if (fields.get('line5') and fields.get('line5a') and
+                not fields.get('line5b')):
             results['e18400'] = string_to_number(fields['line5'])
 
         return results

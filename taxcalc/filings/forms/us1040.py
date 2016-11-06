@@ -119,14 +119,14 @@ class US1040(TaxForm):
 
         # e07600 - Prior year minimum tax credit
         line = self.__EVAR_INDIRECT_FIELDS[self.year]['e07600']
-        if fields.get(line) and fields.get(line + 'b') and \
-                not (fields.get(line + 'a') or fields.get(line + 'c')):
+        if (fields.get(line) and fields.get(line + 'b') and
+                not (fields.get(line + 'a') or fields.get(line + 'c'))):
             results['e07600'] = string_to_number(fields[line])
 
         # e09800 - Social security tax on tip income
         line = self.__EVAR_INDIRECT_FIELDS[self.year]['e09800']
-        if fields.get(line) and fields.get(line + 'a') and \
-                not fields.get(line + 'b'):
+        if (fields.get(line) and fields.get(line + 'a') and
+                not fields.get(line + 'b')):
             results['e09800'] = string_to_number(fields[line])
 
         return results

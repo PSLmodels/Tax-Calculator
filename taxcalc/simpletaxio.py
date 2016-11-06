@@ -554,8 +554,8 @@ class SimpleTaxIO(object):
                 raise ValueError(msg.format(num_all_dependents, lnum))
             agecode = var[6]
             if agecode < 100:  # using old Internet-TAXSIM agecode
-                if (filing_status == 2 and agecode > 2) or \
-                   (filing_status != 2 and agecode > 1):
+                if ((filing_status == 2 and agecode > 2) or
+                        (filing_status != 2 and agecode > 1)):
                     msg = ('var[6]={} on line {} of simtax INPUT is has '
                            'illegal value')
                     raise ValueError(msg.format(agecode, lnum))

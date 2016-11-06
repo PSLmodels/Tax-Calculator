@@ -832,19 +832,18 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
             # (assume that an unknown age_* value implies EITC age eligibility)
             # pylint: disable=bad-continuation,too-many-boolean-expressions
             if MARS == 2:
-                if (age_head >= EITC_MinEligAge and
-                    age_head <= EITC_MaxEligAge) or \
-                   (age_spouse >= EITC_MinEligAge and
-                    age_spouse <= EITC_MaxEligAge) or \
-                   age_head == 0 or \
-                   age_spouse == 0:
+                if (age_head == 0 or age_spouse == 0 or
+                    (age_head >= EITC_MinEligAge and
+                     age_head <= EITC_MaxEligAge) or
+                    (age_spouse >= EITC_MinEligAge and
+                     age_spouse <= EITC_MaxEligAge)):
                     c59660 = eitc
                 else:
                     c59660 = 0.
             else:  # if MARS != 2
-                if (age_head >= EITC_MinEligAge and
-                    age_head <= EITC_MaxEligAge) or \
-                   age_head == 0:
+                if (age_head == 0 or
+                    (age_head >= EITC_MinEligAge and
+                     age_head <= EITC_MaxEligAge)):
                     c59660 = eitc
                 else:
                     c59660 = 0.
@@ -1226,18 +1225,16 @@ def BenefitSurtax(calc):
     adds the surtax amount to income tax, combined tax, and surtax liabilities.
     """
     if calc.policy.ID_BenefitSurtax_crt != 1.:
-        benefit = ComputeBenefit(calc, calc.policy.ID_BenefitSurtax_Switch)
-        benefit_deduction = (calc.policy.ID_BenefitSurtax_crt *
-                             calc.records.c00100)
-        benefit_exemption = \
-            calc.policy.ID_BenefitSurtax_em[calc.records.MARS - 1]
-        benefit_surtax = calc.policy.ID_BenefitSurtax_trt * np.where(
-            benefit > (benefit_deduction + benefit_exemption),
-            benefit - (benefit_deduction + benefit_exemption), 0.)
-        # add benefit_surtax to income & combined taxes and to surtax subtotal
-        calc.records._iitax += benefit_surtax
-        calc.records._combined += benefit_surtax
-        calc.records._surtax += benefit_surtax
+        ben = ComputeBenefit(calc, calc.policy.ID_BenefitSurtax_Switch)
+        ben_deduct = (calc.policy.ID_BenefitSurtax_crt * calc.records.c00100)
+        ben_exempt = calc.policy.ID_BenefitSurtax_em[calc.records.MARS - 1]
+        ben_surtax = calc.policy.ID_BenefitSurtax_trt * np.where(
+            ben > (ben_deduct + ben_exempt),
+            ben - (ben_deduct + ben_exempt), 0.)
+        # add ben_surtax to income & combined taxes and to surtax subtotal
+        calc.records._iitax += ben_surtax
+        calc.records._combined += ben_surtax
+        calc.records._surtax += ben_surtax
 
 
 def BenefitLimitation(calc):
