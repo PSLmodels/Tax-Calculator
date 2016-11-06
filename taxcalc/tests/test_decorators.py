@@ -83,12 +83,9 @@ def Magic_calc(x, y, z):
 
 def Magic(pm, pf):
     # Adjustments
-    outputs = \
-        pf.a, pf.b = Magic_calc(pm, pf)
-
+    outputs = pf.a, pf.b = Magic_calc(pm, pf)
     header = ['a', 'b']
-    return DataFrame(data=np.column_stack(outputs),
-                     columns=header)
+    return DataFrame(data=np.column_stack(outputs), columns=header)
 
 
 @iterate_jit(nopython=True)
