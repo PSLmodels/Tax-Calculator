@@ -1096,9 +1096,9 @@ def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
         if nu05 == 0:
             ACTC_rate = ACTC_rt
         else:
-            ACTC_rate += ACTC_rt_bonus_under5family
+            ACTC_rate = ACTC_rt + ACTC_rt_bonus_under5family
         c82890 = ACTC_rate * c82885
-    # Part II of 2005 Form 8812
+    # Part II of 2005 Foreignorm 8812
     if n24 >= ACTC_ChildNum and c82890 < c82935:
         c82900 = 0.5 * ptax_was
         c82905 = c03260 + e09800
