@@ -22,7 +22,7 @@ from .decorators import iterate_jit, jit
 def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
                   FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_HC,
                   e00900p, e00900s, e02100p, e02100s,
-                  _payrolltax, ptax_was, setax, c03260,
+                  _payrolltax, ptax_was, setax, c03260, ptax_oasdi,
                   _sey, _earned, _earned_p, _earned_s):
     """
     Compute part of total OASDI+HI payroll taxes and earned income variables.
@@ -58,6 +58,13 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     # compute part of total regular payroll taxes for filing unit
     _payrolltax = ptax_was + setax
 
+    # compute OASDI part of payroll taxes
+    ptax_oasdi = ptax_ss_was_p + ptax_ss_was_s + setax_ss_p + setax_ss_s
+
+    # compute self-employment tax on taxable self-employment income
+    setax_ss_p = FICA_ss_trt * txearn_sey_p
+    setax_ss_s = FICA_ss_trt * txearn_sey_s
+
     # compute _earned* variables and AGI deduction for
     # "employer share" of self-employment tax, c03260
     # Note: c03260 is the amount on 2015 Form 1040, line 27
@@ -67,7 +74,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
                          (1. - ALD_SelfEmploymentTax_HC) * 0.5 * setax_p))
     _earned_s = max(0., (e00200s + sey_s -
                          (1. - ALD_SelfEmploymentTax_HC) * 0.5 * setax_s))
-    return (_sey, _payrolltax, ptax_was, setax, c03260,
+    return (_sey, _payrolltax, ptax_was, setax, c03260, ptax_oasdi,
             _earned, _earned_p, _earned_s)
 
 
@@ -128,7 +135,7 @@ def Adj(e03150, e03210, c03260,
 
         e03240 : Domestic Production Activity Deduction
 
-        c03260 : Self-employed tax AGI deduction (after haircut)
+        c03260 : Self-employment tax AGI deduction (after haircut)
 
         e03270 : Self employed health insurance deduction
 
@@ -174,7 +181,8 @@ def Adj(e03150, e03210, c03260,
 
 @iterate_jit(nopython=True)
 def CapGains(p23250, p22250, _sep, ALD_Investment_ec, ALD_StudentLoan_HC,
-             e00200, e00300, e00600, e00700, e00800,
+             e00200, e00300, e00600, e00650, e00700, e00800,
+             CG_nodiff, CG_ec, CG_reinvest_ec_rt,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
              e02300, e00400, e02400, c02900, e03210, e03230, e03240,
              c01000, c23650, ymod, ymod1):
@@ -185,11 +193,18 @@ def CapGains(p23250, p22250, _sep, ALD_Investment_ec, ALD_StudentLoan_HC,
     c23650 = p23250 + p22250
     # limitation on capital losses
     c01000 = max((-3000. / _sep), c23650)
-    # compute ymod* variables
+    # compute ymod1 variable that is included in AGI
     ymod1 = (e00200 + e00700 + e00800 + e00900 + e01400 + e01700 +
              (1. - ALD_Investment_ec) * (e00300 + e00600 +
                                          c01000 + e01100 + e01200) +
              e02000 + e02100 + e02300)
+    if CG_nodiff != 0.:
+        # apply QDIV+CG exclusion if QDIV+LTCG receive no special tax treatment
+        qdcg_pos = max(0., e00650 + c01000)
+        qdcg_exclusion = (max(CG_ec, qdcg_pos) +
+                          CG_reinvest_ec_rt * max(0., qdcg_pos - CG_ec))
+        ymod1 = max(0., ymod1 - qdcg_exclusion)
+    # compute ymod variable that is used in OASDI benefit taxation logic
     ymod2 = e00400 + (0.50 * e02400) - c02900
     ymod3 = (1. - ALD_StudentLoan_HC) * e03210 + e03230 + e03240
     ymod = ymod1 + ymod2 + ymod3
@@ -1091,7 +1106,7 @@ def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
                   ACTC_Income_thd, ACTC_rt, ACTC_ChildNum,
                   c03260, e09800, c59660, e11200, c11070):
     """
-    AdditionalCTC function calculates Additional (refundable) Child Tax Credit
+    Calculates Additional (refundable) Child Tax Credit, c11070
     """
     c82925 = 0.
     c82930 = 0.
@@ -1144,39 +1159,49 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
     C1040 function computes total nonrefundable credits, c07100, and
                             income tax before refundable credits, c09200
     """
-    # total (nonrefundable) credits (2015 Form 1040, line 55)
+    # total nonrefundable credits (2015 Form 1040, line 55)
     c07100 = (c07180 + c07200 + c07600 + c07300 + c07400 + c07220 + c08000 +
               c07230 + c07240 + c07260)
     # tax after credits (2015 Form 1040, line 56)
-    nonrefundable_credits = max(0., c05800 - c07100)
+    tax_net_nonrefundable_credits = max(0., c05800 - c07100)
     # tax before refundable credits
     othertaxes = e09700 + e09800 + e09900 + NIIT
-    c09200 = othertaxes + nonrefundable_credits
+    c09200 = othertaxes + tax_net_nonrefundable_credits
     return (c07100, c09200)
 
 
 @iterate_jit(nopython=True)
-def IITAX(c09200, c59660, c11070, c10960, _eitc,
-          _payrolltax, personal_credit, n24, _iitax, _combined, _refund,
-          CTC_additional, CTC_additional_ps, CTC_additional_prt, c00100,
-          _sep, MARS):
+def IITAX(c59660, c11070, c10960, personal_credit,
+          c09200, _payrolltax,
+          CTC_new_c, CTC_new_rt,
+          n24, c00100, MARS, ptax_oasdi,
+          CTC_new_ps, CTC_new_prt, CTC_new_refund_limit_rt,
+          ctc_new, _eitc, _refund, _iitax, _combined):
     """
-    IITAX function: ...
+    Compute final taxes including new refundable child tax credit
     """
-    _refund = c59660 + c11070 + c10960 + personal_credit
+    # compute new refundable child tax credit
+    if n24 > 0:
+        posagi = max(c00100, 0.)
+        ctc_new = min(CTC_new_rt * posagi, CTC_new_c * n24)
+        ymax = CTC_new_ps[MARS - 1]
+        if posagi > ymax:
+            ctc_new_reduced = max(0.,
+                                  ctc_new - CTC_new_prt * (posagi - ymax))
+            ctc_new = min(ctc_new, ctc_new_reduced)
+        if CTC_new_refund_limit_rt >= 0. and ctc_new > 0.:
+            refund_new = max(0., ctc_new - c09200)
+            limit_new = CTC_new_refund_limit_rt * ptax_oasdi
+            limited_new = max(0., refund_new - limit_new)
+            ctc_new = max(0., ctc_new - limited_new)
+    else:
+        ctc_new = 0.
+    # compute final taxes
+    _eitc = c59660
+    _refund = _eitc + c11070 + c10960 + personal_credit + ctc_new
     _iitax = c09200 - _refund
     _combined = _iitax + _payrolltax
-    potential_add_CTC = max(0., min(_combined, CTC_additional * n24))
-    phaseout = (c00100 -
-                CTC_additional_ps[MARS - 1]) * (CTC_additional_prt / _sep)
-    final_add_CTC = max(0., potential_add_CTC - max(0., phaseout))
-
-    _iitax = _iitax - final_add_CTC
-    # updated combined tax liabilities after applying the credit
-    _combined = _iitax + _payrolltax
-    _refund = _refund + final_add_CTC
-    _eitc = c59660
-    return (_eitc, _refund, _iitax, _combined)
+    return (ctc_new, _eitc, _refund, _iitax, _combined)
 
 
 @jit(nopython=True)

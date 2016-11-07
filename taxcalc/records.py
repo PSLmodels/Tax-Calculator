@@ -153,7 +153,7 @@ class Records(object):
         'c07180',
         'c07230', 'prectc', 'c07220', 'c59660',
         'c09200', 'c07100', '_eitc',
-        '_payrolltax', 'ptax_was', 'setax', 'c03260', 'ptax_amc',
+        '_payrolltax', 'ptax_was', 'setax', 'c03260', 'ptax_amc', 'ptax_oasdi',
         '_sep', '_num',
         'c05200',
         'c62100',
@@ -162,7 +162,7 @@ class Records(object):
         'c11070',
         'c10960', 'c87668',
         'NIIT',
-        '_iitax', '_refund',
+        '_iitax', '_refund', 'ctc_new',
         '_expanded_income', 'c07300', 'c07400',
         'c07600', 'c07240', 'c07260', 'c08000',
         '_surtax', '_combined', 'personal_credit', 'fstax', 'care_deduction'])
