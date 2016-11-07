@@ -162,7 +162,7 @@ class Records(object):
         'c11070',
         'c10960', 'c87668',
         'NIIT',
-        '_iitax', '_refund',
+        '_iitax', '_refund', 'ctc_new',
         '_expanded_income', 'c07300', 'c07400',
         'c07600', 'c07240', 'c07260', 'c08000',
         '_surtax', '_combined', 'personal_credit', 'fstax', 'care_deduction'])

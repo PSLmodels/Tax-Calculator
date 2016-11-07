@@ -1066,7 +1066,7 @@ def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
                   ACTC_Income_thd, ACTC_rt, ACTC_ChildNum,
                   c03260, e09800, c59660, e11200, c11070):
     """
-    AdditionalCTC function calculates Additional (refundable) Child Tax Credit
+    Calculates Additional (refundable) Child Tax Credit, c11070
     """
     c82925 = 0.
     c82930 = 0.
@@ -1119,39 +1119,50 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
     C1040 function computes total nonrefundable credits, c07100, and
                             income tax before refundable credits, c09200
     """
-    # total (nonrefundable) credits (2015 Form 1040, line 55)
+    # total nonrefundable credits (2015 Form 1040, line 55)
     c07100 = (c07180 + c07200 + c07600 + c07300 + c07400 + c07220 + c08000 +
               c07230 + c07240 + c07260)
     # tax after credits (2015 Form 1040, line 56)
-    nonrefundable_credits = max(0., c05800 - c07100)
+    tax_net_nonrefundable_credits = max(0., c05800 - c07100)
     # tax before refundable credits
     othertaxes = e09700 + e09800 + e09900 + NIIT
-    c09200 = othertaxes + nonrefundable_credits
+    c09200 = othertaxes + tax_net_nonrefundable_credits
     return (c07100, c09200)
 
 
 @iterate_jit(nopython=True)
-def IITAX(c09200, c59660, c11070, c10960, _eitc,
-          _payrolltax, personal_credit, n24, _iitax, _combined, _refund,
-          CTC_additional, CTC_additional_ps, CTC_additional_prt, c00100,
-          _sep, MARS):
+def IITAX(c59660, c11070, c10960, personal_credit,
+          c09200, _payrolltax,
+          CTC_new_c, CTC_new_rt,
+          n24, c00100, MARS,
+          CTC_new_ps, CTC_new_prt, CTC_new_refund_limit_rt,
+          ctc_new, _eitc, _refund, _iitax, _combined):
     """
-    IITAX function: ...
+    Compute final taxes including new refundable child tax credit
     """
-    _refund = c59660 + c11070 + c10960 + personal_credit
+    # compute new refundable child tax credit
+    if n24 > 0:
+        posagi = max(c00100, 0.)
+        ctc = min(CTC_new_rt * posagi, CTC_new_c)  # per kid credit
+        ymax = CTC_new_ps[MARS - 1]
+        if posagi > ymax:
+            ctcx = max(0.,
+                       CTC_new_c - CTC_new_prt * (posagi - ymax))
+            ctc = min(ctc, ctcx)
+        ctc_new = ctc * n24
+        if CTC_new_refund_limit_rt > 0. and ctc_new > 0.:
+            refund_new = max(0., ctc_new - c09200)
+            limit_new = CTC_new_refund_limit_rt * _payrolltax
+            excess_new = max(0., refund_new - limit_new)
+            ctc_new = max(0., ctc_new - excess_new)
+    else:
+        ctc_new = 0.
+    # compute final taxes
+    _eitc = c59660
+    _refund = _eitc + c11070 + c10960 + personal_credit + ctc_new
     _iitax = c09200 - _refund
     _combined = _iitax + _payrolltax
-    potential_add_CTC = max(0., min(_combined, CTC_additional * n24))
-    phaseout = (c00100 -
-                CTC_additional_ps[MARS - 1]) * (CTC_additional_prt / _sep)
-    final_add_CTC = max(0., potential_add_CTC - max(0., phaseout))
-
-    _iitax = _iitax - final_add_CTC
-    # updated combined tax liabilities after applying the credit
-    _combined = _iitax + _payrolltax
-    _refund = _refund + final_add_CTC
-    _eitc = c59660
-    return (_eitc, _refund, _iitax, _combined)
+    return (ctc_new, _eitc, _refund, _iitax, _combined)
 
 
 @jit(nopython=True)
