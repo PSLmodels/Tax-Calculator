@@ -174,7 +174,7 @@ def Adj(e03150, e03210, c03260,
 @iterate_jit(nopython=True)
 def CapGains(p23250, p22250, _sep, ALD_Investment_ec, ALD_StudentLoan_HC,
              e00200, e00300, e00600, e00650, e00700, e00800,
-             CG_nodiff, CG_dollar_ec, CG_reinvest_ec,
+             CG_nodiff, CG_ec, CG_reinvest_ec_rt,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
              e02300, e00400, e02400, c02900, e03210, e03230, e03240,
              c01000, c23650, ymod, ymod1):
@@ -193,8 +193,8 @@ def CapGains(p23250, p22250, _sep, ALD_Investment_ec, ALD_StudentLoan_HC,
     if CG_nodiff != 0.:
         # apply QDIV+CG exclusion if QDIV+LTCG receive no special tax treatment
         qdcg_pos = max(0., e00650 + c01000)
-        qdcg_exclusion = (max(CG_dollar_ec, qdcg_pos) +
-                          CG_reinvest_ec * max(0., qdcg_pos - CG_dollar_ec))
+        qdcg_exclusion = (max(CG_ec, qdcg_pos) +
+                          CG_reinvest_ec_rt * max(0., qdcg_pos - CG_ec))
         ymod1 = max(0., ymod1 - qdcg_exclusion)
     # compute ymod variable that is used in OASDI benefit taxation logic
     ymod2 = e00400 + (0.50 * e02400) - c02900
