@@ -26,8 +26,8 @@
 
     "r4": {
         "start_year": 2015,
-        "value": {"_AMED_thd": [[210000, 260000, 135000, 210000, 210000, 135000]]},
-        "name": "Increase the Additional Medicare Tax threshold by 10,000",
+        "value": {"_AMED_ec": [[210000, 260000, 135000, 210000, 210000, 135000]]},
+        "name": "Increase the Additional Medicare Tax exclusion by 10,000",
         "output_type": "_payrolltax",
         "compare_with": {}
     },

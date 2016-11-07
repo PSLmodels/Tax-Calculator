@@ -131,11 +131,11 @@
         "value": [0.0]
     },
 
-    "_ALD_Investment_ec": {
-        "long_name": "Investment income exclusion",
-        "description": "This decimal fraction can be applied to limit the investment income included in AGI. ",
+    "_ALD_Investment_ec_rt": {
+        "long_name": "Investment income exclusion rate",
+        "description": "Decimal fraction of investment income that can be excluded from AGI.",
         "irs_ref": "Form 1040, line 8a",
-        "notes": "The final taxable investment income will be (1-_ALD_Investment_ec)*Investment income. Even though the excluded portion of investment income is not included in AGI, it still is included in investment income used to calculate Net Investment Income Tax and Earned Income Tax Credit.",
+        "notes": "The final taxable investment income will be (1-_ALD_Investment_ec_rt)*investment_income. Even though the excluded portion of investment income is not included in AGI, it still is included in investment income used to calculate the Net Investment Income Tax and Earned Income Tax Credit.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -559,9 +559,9 @@
         "value": [0.0]
     },
 
-    "_AMED_thd": {
-        "long_name": "Additional Medicare threshold",
-        "description": "If their Medicare wages, RRTA compensation and self-employment income is above this threshold, taxpayers are subject to additional Medicare tax.",
+    "_AMED_ec": {
+        "long_name": "Additional Medicare Tax earnings exclusion",
+        "description": "The Additional Medicare Tax rate, _AMED_trt, applies to all earnings in excess of this excluded amount.",
         "irs_ref": "Form 8959, line 5, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -573,7 +573,7 @@
     },
 
     "_AMED_trt": {
-        "long_name": "Additional Medicare tax rate",
+        "long_name": "Additional Medicare Tax rate",
         "description": "This is the rate applied to the portion of Medicare wages, RRTA compensation and self-employment income exceeding additional Medicare threshold.",
         "irs_ref": "Form 8959, line 7, in-line. ",
         "start_year": 2013,
