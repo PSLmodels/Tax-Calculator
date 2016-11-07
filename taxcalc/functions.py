@@ -854,11 +854,12 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
 
 @iterate_jit(nopython=True)
 def ChildTaxCredit(n24, MARS, c00100, _exact,
-                   CTC_c, CTC_ps, CTC_prt, prectc):
+                   CTC_c, CTC_ps, CTC_prt, prectc, nu05,
+                   CTC_c_under5_bonus):
     """
     ChildTaxCredit function computes prectc amount
     """
-    prectc = CTC_c * n24
+    prectc = CTC_c * n24 + CTC_c_under5_bonus * nu05
     modAGI = c00100  # no deducted foreign earned income to add
     if modAGI > CTC_ps[MARS - 1]:
         excess = modAGI - CTC_ps[MARS - 1]
@@ -1064,7 +1065,8 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
 @iterate_jit(nopython=True)
 def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
                   ACTC_Income_thd, ACTC_rt, ACTC_ChildNum,
-                  c03260, e09800, c59660, e11200, c11070):
+                  c03260, e09800, c59660, e11200, c11070, nu05,
+                  ACTC_rt_bonus_under5family):
     """
     Calculates Additional (refundable) Child Tax Credit, c11070
     """
@@ -1090,7 +1092,12 @@ def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
         # CTC not applied to tax
         c82880 = max(0., _earned)
         c82885 = max(0., c82880 - ACTC_Income_thd)
-        c82890 = ACTC_rt * c82885
+        # Accomodate ACTC rate bonus for families with children under 5
+        if nu05 == 0:
+            ACTC_rate = ACTC_rt
+        else:
+            ACTC_rate += ACTC_rt_bonus_under5family
+        c82890 = ACTC_rate * c82885
     # Part II of 2005 Form 8812
     if n24 >= ACTC_ChildNum and c82890 < c82935:
         c82900 = 0.5 * ptax_was
