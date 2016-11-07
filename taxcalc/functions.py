@@ -22,7 +22,7 @@ from .decorators import iterate_jit, jit
 def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
                   FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_HC,
                   e00900p, e00900s, e02100p, e02100s,
-                  _payrolltax, ptax_was, setax, c03260,
+                  _payrolltax, ptax_was, setax, c03260, ptax_oasdi,
                   _sey, _earned, _earned_p, _earned_s):
     """
     Compute part of total OASDI+HI payroll taxes and earned income variables.
@@ -58,6 +58,13 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     # compute part of total regular payroll taxes for filing unit
     _payrolltax = ptax_was + setax
 
+    # compute OASDI part of payroll taxes
+    ptax_oasdi = ptax_ss_was_p + ptax_ss_was_s + setax_ss_p + setax_ss_s
+
+    # compute self-employment tax on taxable self-employment income
+    setax_ss_p = FICA_ss_trt * txearn_sey_p
+    setax_ss_s = FICA_ss_trt * txearn_sey_s
+
     # compute _earned* variables and AGI deduction for
     # "employer share" of self-employment tax, c03260
     # Note: c03260 is the amount on 2015 Form 1040, line 27
@@ -67,7 +74,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
                          (1. - ALD_SelfEmploymentTax_HC) * 0.5 * setax_p))
     _earned_s = max(0., (e00200s + sey_s -
                          (1. - ALD_SelfEmploymentTax_HC) * 0.5 * setax_s))
-    return (_sey, _payrolltax, ptax_was, setax, c03260,
+    return (_sey, _payrolltax, ptax_was, setax, c03260, ptax_oasdi,
             _earned, _earned_p, _earned_s)
 
 
@@ -128,7 +135,7 @@ def Adj(e03150, e03210, c03260,
 
         e03240 : Domestic Production Activity Deduction
 
-        c03260 : Self-employed tax AGI deduction (after haircut)
+        c03260 : Self-employment tax AGI deduction (after haircut)
 
         e03270 : Self employed health insurance deduction
 
@@ -1134,7 +1141,7 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
 def IITAX(c59660, c11070, c10960, personal_credit,
           c09200, _payrolltax,
           CTC_new_c, CTC_new_rt,
-          n24, c00100, MARS,
+          n24, c00100, MARS, ptax_oasdi,
           CTC_new_ps, CTC_new_prt, CTC_new_refund_limit_rt,
           ctc_new, _eitc, _refund, _iitax, _combined):
     """
@@ -1143,18 +1150,17 @@ def IITAX(c59660, c11070, c10960, personal_credit,
     # compute new refundable child tax credit
     if n24 > 0:
         posagi = max(c00100, 0.)
-        ctc = min(CTC_new_rt * posagi, CTC_new_c)  # per kid credit
+        ctc_new = min(CTC_new_rt * posagi, CTC_new_c * n24)
         ymax = CTC_new_ps[MARS - 1]
         if posagi > ymax:
-            ctcx = max(0.,
-                       CTC_new_c - CTC_new_prt * (posagi - ymax))
-            ctc = min(ctc, ctcx)
-        ctc_new = ctc * n24
-        if CTC_new_refund_limit_rt > 0. and ctc_new > 0.:
+            ctc_new_reduced = max(0.,
+                                  ctc_new - CTC_new_prt * (posagi - ymax))
+            ctc_new = min(ctc_new, ctc_new_reduced)
+        if CTC_new_refund_limit_rt >= 0. and ctc_new > 0.:
             refund_new = max(0., ctc_new - c09200)
-            limit_new = CTC_new_refund_limit_rt * _payrolltax
-            excess_new = max(0., refund_new - limit_new)
-            ctc_new = max(0., ctc_new - excess_new)
+            limit_new = CTC_new_refund_limit_rt * ptax_oasdi
+            limited_new = max(0., refund_new - limit_new)
+            ctc_new = max(0., ctc_new - limited_new)
     else:
         ctc_new = 0.
     # compute final taxes

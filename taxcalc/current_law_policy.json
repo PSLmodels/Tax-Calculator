@@ -1711,8 +1711,8 @@
     },
 
     "_CTC_new_c": {
-        "long_name": "New refundable child tax credit amount per child",
-        "description": "In addition to all credits currently available for dependents, this parameter gives each qualifying child a new refundable credit.",
+        "long_name": "New refundable child tax credit maximum amount per child",
+        "description": "In addition to all credits currently available for dependents, this parameter gives each qualifying child a new refundable credit with this maximum amount.",
         "irs_ref": "",
         "notes": "Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.",
         "start_year": 2013,
@@ -1726,7 +1726,7 @@
 
     "_CTC_new_rt": {
         "long_name": "New refundable child tax credit amount phasein rate",
-        "description": "The amount of the new child tax credit, per child, is increased at this rate per dollar of AGI until _CTC_new_c is reached.",
+        "description": "The total amount of the new child tax credit is increased at this rate per dollar of AGI until _CTC_new_c times the number of qualified children is reached.",
         "irs_ref": "",
         "notes": "Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.",
         "start_year": 2013,
@@ -1740,22 +1740,22 @@
 
     "_CTC_new_ps": {
         "long_name": "New refundable child tax credit phaseout starting AGI",
-        "description": "The amount of new child tax credit is reduced for taxpayers with AGI higher than this level.",
+        "description": "The total amount of new child tax credit is reduced for taxpayers with AGI higher than this level.",
         "irs_ref": "",
-        "notes": "Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.",
+        "notes": "",
         "start_year": 2013,
         "col_var": ["single", "joint", "separate", "head of household", "widow", "separate"],
         "row_label": ["2013"],
-        "cpi_inflated": false,
+        "cpi_inflated": true,
         "col_label": "",
         "value": [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
     },
 
     "_CTC_new_prt": {
-        "long_name": "New refundable child tax credit amount, per child phaseout rate",
-        "description": "The amount of the new child tax credit, per child, is reduced at this rate per dollar exceeding the phaseout starting AGI (_CTC_new_ps).",
+        "long_name": "New refundable child tax credit amount phaseout rate",
+        "description": "The total amount of the new child tax credit is reduced at this rate per dollar exceeding the phaseout starting AGI, _CTC_new_ps.",
         "irs_ref": "",
-        "notes": "Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.",
+        "notes": "",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -1766,10 +1766,10 @@
     },
 
     "_CTC_new_refund_limit_rt": {
-        "long_name": "New child tax credit refund limit",
-        "description": "The fraction of payroll taxes that serves as a limit to the amount of new child tax credit that can be refunded.",
+        "long_name": "New child tax credit refund limit rate",
+        "description": "The fraction of payroll taxes (employee plus employer shares, but excluding all Medicare payroll taxes) that serves as a limit to the amount of new child tax credit that can be refunded.",
         "irs_ref": "",
-        "notes": "Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.",
+        "notes": "Set this parameter to zero for no refundability; set it to 9e99 for unlimited refundability.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -1777,7 +1777,7 @@
         "cpi_inflated": false,
         "col_label": "",
         "value": [0.0],
-        "validations": {"min": 0, "max": 1}
+        "validations": {"min": 0}
     },
 
     "_ID_BenefitSurtax_Switch": {
