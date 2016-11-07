@@ -128,7 +128,7 @@ def Adj(e03150, e03210, c03260,
 
         e03240 : Domestic Production Activity Deduction
 
-        c03260 : Self-employed tax AGI deduction (after haircut)
+        c03260 : Self-employment tax AGI deduction (after haircut)
 
         e03270 : Self employed health insurance deduction
 
@@ -1143,18 +1143,17 @@ def IITAX(c59660, c11070, c10960, personal_credit,
     # compute new refundable child tax credit
     if n24 > 0:
         posagi = max(c00100, 0.)
-        ctc = min(CTC_new_rt * posagi, CTC_new_c)  # per kid credit
+        ctc_new = min(CTC_new_rt * posagi, CTC_new_c * n24)
         ymax = CTC_new_ps[MARS - 1]
         if posagi > ymax:
-            ctcx = max(0.,
-                       CTC_new_c - CTC_new_prt * (posagi - ymax))
-            ctc = min(ctc, ctcx)
-        ctc_new = ctc * n24
-        if CTC_new_refund_limit_rt > 0. and ctc_new > 0.:
+            ctc_new_reduced = max(0.,
+                                  ctc_new - CTC_new_prt * (posagi - ymax))
+            ctc_new = min(ctc_new, ctc_new_reduced)
+        if CTC_new_refund_limit_rt >= 0. and ctc_new > 0.:
             refund_new = max(0., ctc_new - c09200)
             limit_new = CTC_new_refund_limit_rt * _payrolltax
-            excess_new = max(0., refund_new - limit_new)
-            ctc_new = max(0., ctc_new - excess_new)
+            limited_new = max(0., refund_new - limit_new)
+            ctc_new = max(0., ctc_new - limited_new)
     else:
         ctc_new = 0.
     # compute final taxes
