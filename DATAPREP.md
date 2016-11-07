@@ -10,13 +10,14 @@ correspond to those expected by Tax-Calculator.  The only required
 input variables are `RECID` (a unique filing-unit record identifier)
 and `MARS` (a positive-valued filing-status indicator as defined in
 the IRS-SOI Public Use File).  Other variables in the input file must
-have variable names that are in the `VALID_READ_VARS` set in the
+have variable names that are in the `USABLE_READ_VARS` set in the
 [records.py
-file](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/records.py).
+file](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/records.py) in order for them to affect tax calculations.
 These other variable names are usually the same as those in the
-IRS-SOI Public Use File.
+IRS-SOI Public Use File.  Variables in the input file that are
+not in the `USABLE_READ_VARS` set are ignored by Tax-Calculator.
 
-Any variable in the `VALID_READ_VARS` set that is not in an input file
+Any variable in the `USABLE_READ_VARS` set that is not in an input file
 is automatically set to a value of zero for every filing unit.
 
 However, there are important data-preparation issues related to the

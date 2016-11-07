@@ -28,10 +28,11 @@ class IncomeTaxIO(object):
     Parameters
     ----------
     input_data: string or Pandas DataFrame
-        string is name of INPUT file that is CSV formatted containing only
-        variable names in the Records.VALID_READ_VARS set, or
-        Pandas DataFrame is INPUT data containing only variable names in
-        the Records.VALID_READ_VARS set.
+        string is name of INPUT file that is CSV formatted containing
+        variable names in the Records.USABLE_READ_VARS set, or
+        Pandas DataFrame is INPUT data containing variable names in
+        the Records.USABLE_READ_VARS set.  INPUT vsrisbles not in the
+        Records.USABLE_READ_VARS set can be present but are ignored.
 
     tax_year: integer
         calendar year for which income taxes will be computed for INPUT.
@@ -53,11 +54,11 @@ class IncomeTaxIO(object):
 
     output_records: boolean
         whether or not to write CSV-formatted file containing the values
-        of the Records.VALID_READ_VARS variables in the tax_year.
+        of the Records.USABLE_READ_VARS variables in the tax_year.
 
     csv_dump: boolean
         whether or not to write CSV-formatted output file containing the
-        values of the Records.VALID_READ_VARS and Records.CALCULATE_VARS
+        values of the Records.USABLE_READ_VARS and Records.CALCULATED_VARS
         variables.  If true, the CSV-formatted output file replaces the
         usual space-separated-values Internet-TAXSIM output file.
 
@@ -180,7 +181,7 @@ class IncomeTaxIO(object):
     def output_records(self, writing_output_file=False):
         """
         Write CSV-formatted file containing the values of the
-        Records.VALID_READ_VARS in the tax_year.  The order of the
+        Records.USABLE_READ_VARS in the tax_year.  The order of the
         columns in this output file might not be the same as in the
         input_data passed to IncomeTaxIO constructor.
 
@@ -193,7 +194,7 @@ class IncomeTaxIO(object):
         Nothing
         """
         recdf = pd.DataFrame()
-        for varname in Records.VALID_READ_VARS:
+        for varname in Records.USABLE_READ_VARS:
             vardata = getattr(self._calc.records, varname)
             recdf[varname] = vardata
         writing_possible = self._using_input_file and self._using_reform_file
@@ -204,7 +205,7 @@ class IncomeTaxIO(object):
     def csv_dump(self, writing_output_file=False):
         """
         Write CSV-formatted file containing the values of all the
-        Records.VALID_READ_VARS variables and all the Records.CALCULATED_VARS
+        Records.USABLE_READ_VARS variables and all the Records.CALCULATED_VARS
         variables in the tax_year.
 
         Parameters
@@ -216,7 +217,7 @@ class IncomeTaxIO(object):
         Nothing
         """
         recdf = pd.DataFrame()
-        for varname in Records.VALID_READ_VARS | Records.CALCULATED_VARS:
+        for varname in Records.USABLE_READ_VARS | Records.CALCULATED_VARS:
             vardata = getattr(self._calc.records, varname)
             recdf[varname] = vardata
         writing_possible = self._using_input_file and self._using_reform_file
@@ -282,7 +283,7 @@ class IncomeTaxIO(object):
         """
         ivd = ('**** IncomeTaxIO INPUT variables determined by INPUT file,\n'
                'which is a CSV-formatted text file whose name ends in .csv\n'
-               'and whose column names are all in Records.VALID_READ_VARS.\n')
+               'and whose column names include the Records.MUST_READ_VARS.\n')
         sys.stdout.write(ivd)
         ovd = ('**** IncomeTaxIO OUTPUT variables in Internet-TAXSIM format:\n'
                '[ 1] arbitrary id of income tax filing unit\n'

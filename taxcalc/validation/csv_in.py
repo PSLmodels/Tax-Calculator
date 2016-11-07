@@ -47,7 +47,7 @@ DROP_VARS = DROP1_VARS | DROP2_VARS
 
 # specify set of variables whose values are not to be randomized
 if DEBUG:
-    SKIP_VARS = Records.VALID_READ_VARS
+    SKIP_VARS = Records.USABLE_READ_VARS
 else:
     SKIP_VARS = set(['RECID', 'MARS', 'DSI', 'MIDR', 'FLPDYR',
                      'age_head', 'age_spouse',
@@ -144,7 +144,7 @@ def main(taxyear, rnseed, ssize):
         info = 'df.shape before dropping = {}'.format(xdf.shape)
         sys.stdout.write(info + '\n')
     for var in DROP_VARS:
-        if var not in Records.VALID_READ_VARS:
+        if var not in Records.USABLE_READ_VARS:
             msg = 'ERROR: variable {} already dropped'.format(var)
             sys.stderr.write(msg + '\n')
             return 1

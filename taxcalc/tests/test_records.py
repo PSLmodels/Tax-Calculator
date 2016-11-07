@@ -105,7 +105,7 @@ def test_blowup(puf_1991, weights_1991):
 
 def test_for_duplicate_names():
     varnames = set()
-    for varname in Records.VALID_READ_VARS:
+    for varname in Records.USABLE_READ_VARS:
         assert varname not in varnames
         varnames.add(varname)
         assert varname not in Records.CALCULATED_VARS
@@ -113,12 +113,12 @@ def test_for_duplicate_names():
     for varname in Records.CALCULATED_VARS:
         assert varname not in varnames
         varnames.add(varname)
-        assert varname not in Records.VALID_READ_VARS
+        assert varname not in Records.USABLE_READ_VARS
     varnames = set()
     for varname in Records.INTEGER_READ_VARS:
         assert varname not in varnames
         varnames.add(varname)
-        assert varname in Records.VALID_READ_VARS
+        assert varname in Records.USABLE_READ_VARS
 
 
 def test_default_rates_and_those_implied_by_blowup_factors(puf_1991):
@@ -198,21 +198,21 @@ def test_var_labels_txt_contents(tests_path):
                 var_labels_set.add(var)
         if found_duplicates:
             raise ValueError(msg)
-    # change all Records.VALID_READ_VARS variables to uppercase
+    # change all Records.USABLE_READ_VARS variables to uppercase
     var_valid_set = set()
-    for var in Records.VALID_READ_VARS:
+    for var in Records.USABLE_READ_VARS:
         var_valid_set.add(var.upper())
     # check for no extra var_valid variables
     valid_less_labels = var_valid_set - var_labels_set
     if len(valid_less_labels) > 0:
-        msg = 'VARIABLE(S) IN VALID_READ_VARS BUT NOT VAR_LABELS.TXT:\n'
+        msg = 'VARIABLE(S) IN USABLE_READ_VARS BUT NOT VAR_LABELS.TXT:\n'
         for var in valid_less_labels:
             msg += 'VARIABLE= {}\n'.format(var)
         raise ValueError(msg)
     # check for no extra var_labels variables
     labels_less_valid = var_labels_set - var_valid_set
     if len(labels_less_valid) > 0:
-        msg = 'VARIABLE(S) IN VAR_LABELS.TXT BUT NOT VALID_READ_VARS:\n'
+        msg = 'VARIABLE(S) IN VAR_LABELS.TXT BUT NOT USABLE_READ_VARS:\n'
         for var in labels_less_valid:
             msg += 'VARIABLE= {}\n'.format(var)
         raise ValueError(msg)
@@ -220,7 +220,7 @@ def test_var_labels_txt_contents(tests_path):
 
 def test_csv_input_vars_md_contents(tests_path):
     """
-    Check validation/CSV_INPUT_VARS.md contents against Records.VALID_READ_VARS
+    Check CSV_INPUT_VARS.md contents against Records.USABLE_READ_VARS
     """
     # read variable names in CSV_INPUT_VARS.md file (checking for duplicates)
     civ_path = os.path.join(tests_path, '..', 'validation',
@@ -244,10 +244,10 @@ def test_csv_input_vars_md_contents(tests_path):
                 civ_set.add(var)
         if found_duplicates:
             raise ValueError(msg)
-    # check that civ_set is a subset of Records.VALID_READ_VARS set
-    if not civ_set.issubset(Records.VALID_READ_VARS):
-        valid_less_civ = Records.VALID_READ_VARS - civ_set
-        msg = 'VARIABLE(S) IN VALID_READ_VARS BUT NOT CSV_INPUT_VARS.MD:\n'
+    # check that civ_set is a subset of Records.USABLE_READ_VARS set
+    if not civ_set.issubset(Records.USABLE_READ_VARS):
+        valid_less_civ = Records.USABLE_READ_VARS - civ_set
+        msg = 'VARIABLE(S) IN USABLE_READ_VARS BUT NOT CSV_INPUT_VARS.MD:\n'
         for var in valid_less_civ:
             msg += 'VARIABLE= {}\n'.format(var)
         raise ValueError(msg)

@@ -23,8 +23,8 @@ def main():
                      'OUTPUT computed from the INPUT for the TAXYEAR using '
                      'the Tax-Calculator. '
                      'The INPUT file is a CSV-formatted file that contains '
-                     'variable names that are a subset of the '
-                     'Records.VALID_READ_VARS set.  The OUTPUT file is in '
+                     'variable names that include the Records.MUST_READ_VARS '
+                     'set plus other variables.  The OUTPUT file is in '
                      'Internet-TAXSIM format.  The OUTPUT filename is the '
                      'INPUT filename (excluding the .csv suffix or '
                      '.gz suffix, or both) followed by '
@@ -82,7 +82,7 @@ def main():
                         help=('optional flag that causes the output file to '
                               'be a CSV-formatted file containing for each '
                               'INPUT filing unit the TAXYEAR values of each '
-                              'variable in the Records.VALID_READ_VARS set. '
+                              'variable in the Records.USABLE_READ_VARS set. '
                               'If the --records option is specified, the '
                               'output file name will be the same as if the '
                               'option was not specified, except that the '
@@ -93,7 +93,7 @@ def main():
                         help=('optional flag that causes the output file to '
                               'be a CSV-formatted file containing for each '
                               'INPUT filing unit the TAXYEAR values of each '
-                              'variable in the Records.VALID_READ_VARS set '
+                              'variable in the Records.USABLE_READ_VARS set '
                               'and in the Records.CALCULATED_VARS set. '
                               'If the --csvdump option is specified, the '
                               'output file name will be the same as if the '
@@ -104,7 +104,7 @@ def main():
     parser.add_argument('INPUT', nargs='?', default='',
                         help=('INPUT is name of required CSV file that '
                               'contains a subset of variables included in '
-                              'the Records.VALID_READ_VARS set. '
+                              'the Records.USABLE_READ_VARS set. '
                               'INPUT must end in ".csv".'))
     parser.add_argument('TAXYEAR', nargs='?', default=0,
                         help=('TAXYEAR is calendar year for which federal '

@@ -20,7 +20,7 @@ from .decorators import iterate_jit, jit
 
 @iterate_jit(nopython=True)
 def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
-                  FICA_ss_trt, FICA_mc_trt,
+                  FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_HC,
                   e00900p, e00900s, e02100p, e02100s,
                   _payrolltax, ptax_was, setax, c03260,
                   _sey, _earned, _earned_p, _earned_s):
@@ -51,19 +51,22 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     setax_ss_s = FICA_ss_trt * txearn_sey_s
     setax_mc_p = FICA_mc_trt * max(0., sey_p * sey_frac)
     setax_mc_s = FICA_mc_trt * max(0., sey_s * sey_frac)
-    setax = setax_ss_p + setax_ss_s + setax_mc_p + setax_mc_s
+    setax_p = setax_ss_p + setax_mc_p
+    setax_s = setax_ss_s + setax_mc_s
+    setax = setax_p + setax_s
 
     # compute part of total regular payroll taxes for filing unit
     _payrolltax = ptax_was + setax
 
-    # compute AGI deduction for "employer share" of self-employment tax
-    c03260 = 0.5 * setax  # half of setax represents the "employer share"
-
-    # compute _earned and its individual components
+    # compute _earned* variables and AGI deduction for
+    # "employer share" of self-employment tax, c03260
+    # Note: c03260 is the amount on 2015 Form 1040, line 27
+    c03260 = (1. - ALD_SelfEmploymentTax_HC) * 0.5 * setax
     _earned = max(0., e00200 + _sey - c03260)
-    _earned_p = max(0., e00200p + sey_p - 0.5 * (setax_ss_p + setax_mc_p))
-    _earned_s = max(0., e00200s + sey_s - 0.5 * (setax_ss_s + setax_mc_s))
-
+    _earned_p = max(0., (e00200p + sey_p -
+                         (1. - ALD_SelfEmploymentTax_HC) * 0.5 * setax_p))
+    _earned_s = max(0., (e00200s + sey_s -
+                         (1. - ALD_SelfEmploymentTax_HC) * 0.5 * setax_s))
     return (_sey, _payrolltax, ptax_was, setax, c03260,
             _earned, _earned_p, _earned_s)
 
@@ -93,9 +96,9 @@ def DependentCare(nu13, elderly_dependent, _earned,
     """
 
     if _earned <= ALD_Dependents_thd[MARS - 1]:
-        care_deduction = (((1 - ALD_Dependents_HC) * nu13 *
+        care_deduction = (((1. - ALD_Dependents_HC) * nu13 *
                            ALD_Dependents_Child_c) +
-                          ((1 - ALD_Dependents_HC) * elderly_dependent *
+                          ((1. - ALD_Dependents_HC) * elderly_dependent *
                            ALD_Dependents_Elder_c))
     else:
         care_deduction = 0.
@@ -105,8 +108,8 @@ def DependentCare(nu13, elderly_dependent, _earned,
 @iterate_jit(nopython=True)
 def Adj(e03150, e03210, c03260,
         e03270, e03300, e03400, e03500,
-        e03220, e03230, e03240, e03290, care_deduction, ALD_StudentLoan_HC,
-        ALD_SelfEmploymentTax_HC, ALD_SelfEmp_HealthIns_HC, ALD_KEOGH_SEP_HC,
+        e03220, e03230, e03240, e03290, care_deduction,
+        ALD_StudentLoan_HC, ALD_SelfEmp_HealthIns_HC, ALD_KEOGH_SEP_HC,
         ALD_EarlyWithdraw_HC, ALD_Alimony_HC,
         c02900):
     """
@@ -125,7 +128,7 @@ def Adj(e03150, e03210, c03260,
 
         e03240 : Domestic Production Activity Deduction
 
-        c03260 : Self employed payroll tax deduction
+        c03260 : Self-employed tax AGI deduction (after haircut)
 
         e03270 : Self employed health insurance deduction
 
@@ -141,8 +144,6 @@ def Adj(e03150, e03210, c03260,
 
     Tax law parameters:
         ALD_StudentLoan_HC : Deduction for student loan interest haircut
-
-        ALD_SelfEmploymentTax_HC : Deduction for self-employment tax haircut
 
         ALD_SelfEmp_HealthIns_HC :
         Deduction for self employed health insurance haircut
@@ -161,12 +162,12 @@ def Adj(e03150, e03210, c03260,
     # Form 2555 foreign earned income deduction is always zero
     # Form 1040 adjustments
     c02900 = (e03150 +
-              (1 - ALD_StudentLoan_HC) * e03210 +
-              (1 - ALD_SelfEmploymentTax_HC) * c03260 +
-              (1 - ALD_SelfEmp_HealthIns_HC) * e03270 +
-              (1 - ALD_KEOGH_SEP_HC) * e03300 +
-              (1 - ALD_EarlyWithdraw_HC) * e03400 +
-              (1 - ALD_Alimony_HC) * e03500 +
+              (1. - ALD_StudentLoan_HC) * e03210 +
+              c03260 +
+              (1. - ALD_SelfEmp_HealthIns_HC) * e03270 +
+              (1. - ALD_KEOGH_SEP_HC) * e03300 +
+              (1. - ALD_EarlyWithdraw_HC) * e03400 +
+              (1. - ALD_Alimony_HC) * e03500 +
               e03220 + e03230 + e03240 + e03290 + care_deduction)
     return c02900
 
@@ -186,11 +187,11 @@ def CapGains(p23250, p22250, _sep, ALD_Investment_ec, ALD_StudentLoan_HC,
     c01000 = max((-3000. / _sep), c23650)
     # compute ymod* variables
     ymod1 = (e00200 + e00700 + e00800 + e00900 + e01400 + e01700 +
-             (1 - ALD_Investment_ec) * (e00300 + e00600 +
-                                        c01000 + e01100 + e01200) +
+             (1. - ALD_Investment_ec) * (e00300 + e00600 +
+                                         c01000 + e01100 + e01200) +
              e02000 + e02100 + e02300)
     ymod2 = e00400 + (0.50 * e02400) - c02900
-    ymod3 = (1 - ALD_StudentLoan_HC) * e03210 + e03230 + e03240
+    ymod3 = (1. - ALD_StudentLoan_HC) * e03210 + e03230 + e03240
     ymod = ymod1 + ymod2 + ymod3
     return (c01000, c23650, ymod, ymod1)
 
@@ -813,7 +814,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
     EITC function computes EITC amount, c59660
     """
     # pylint: disable=too-many-branches
-    if EITC_indiv == 0.:
+    if not EITC_indiv:
         # filing-unit and number-of-kids based EITC
         invinc = (e00400 + e00300 + e00600 +
                   max(0., c01000) + max(0., (0. - p25470)) + max(0., e27200))
@@ -829,25 +830,25 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
                 eitcx = max(0., (EITC_c[EIC] - EITC_prt[EIC] *
                                  max(0., max(eitc_agi, _earned) - ymax)))
                 eitc = min(eitc, eitcx)
+
             if EIC == 0:
                 # enforce age eligibility rule for those with no EITC-eligible
                 # kids assuming that an unknown age_* value implies EITC age
                 # eligibility
                 # pylint: disable=bad-continuation,too-many-boolean-expressions
                 if MARS == 2:
-                    if (age_head >= EITC_MinEligAge and
-                        age_head <= EITC_MaxEligAge) or \
-                       (age_spouse >= EITC_MinEligAge and
-                        age_spouse <= EITC_MaxEligAge) or \
-                       age_head == 0 or \
-                       age_spouse == 0:
+                    if (age_head == 0 or age_spouse == 0 or
+                        (age_head >= EITC_MinEligAge and
+                         age_head <= EITC_MaxEligAge) or
+                        (age_spouse >= EITC_MinEligAge and
+                         age_spouse <= EITC_MaxEligAge)):
                         c59660 = eitc
                     else:
                         c59660 = 0.
                 else:  # if MARS != 2
-                    if (age_head >= EITC_MinEligAge and
-                        age_head <= EITC_MaxEligAge) or \
-                       age_head == 0:
+                    if (age_head == 0 or
+                        (age_head >= EITC_MinEligAge and
+                         age_head <= EITC_MaxEligAge)):
                         c59660 = eitc
                     else:
                         c59660 = 0.
@@ -862,7 +863,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
             eitcx = max(0., (EITC_c[0] - EITC_prt[0] *
                              max(0., _earned_p - EITC_ps[0])))
             eitc_p = min(eitc_p, eitcx)
-        # .. calculate eitc amount for spouse, if present
+        # .. calculate eitc amount for spouse
         if MARS == 2:
             eitc_s = min(EITC_rt[0] * _earned_s, EITC_c[0])
             if _earned_s > EITC_ps[0]:
@@ -1088,7 +1089,6 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
 @iterate_jit(nopython=True)
 def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
                   ACTC_Income_thd, ACTC_rt, ACTC_ChildNum,
-                  ALD_SelfEmploymentTax_HC,
                   c03260, e09800, c59660, e11200, c11070):
     """
     AdditionalCTC function calculates Additional (refundable) Child Tax Credit
@@ -1119,7 +1119,7 @@ def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
     # Part II of 2005 Form 8812
     if n24 >= ACTC_ChildNum and c82890 < c82935:
         c82900 = 0.5 * ptax_was
-        c82905 = (1. - ALD_SelfEmploymentTax_HC) * c03260 + e09800
+        c82905 = c03260 + e09800
         c82910 = c82900 + c82905
         c82915 = c59660 + e11200
         c82920 = max(0., c82910 - c82915)
@@ -1250,18 +1250,16 @@ def BenefitSurtax(calc):
     adds the surtax amount to income tax, combined tax, and surtax liabilities.
     """
     if calc.policy.ID_BenefitSurtax_crt != 1.:
-        benefit = ComputeBenefit(calc, calc.policy.ID_BenefitSurtax_Switch)
-        benefit_deduction = (calc.policy.ID_BenefitSurtax_crt *
-                             calc.records.c00100)
-        benefit_exemption = \
-            calc.policy.ID_BenefitSurtax_em[calc.records.MARS - 1]
-        benefit_surtax = calc.policy.ID_BenefitSurtax_trt * np.where(
-            benefit > (benefit_deduction + benefit_exemption),
-            benefit - (benefit_deduction + benefit_exemption), 0.)
-        # add benefit_surtax to income & combined taxes and to surtax subtotal
-        calc.records._iitax += benefit_surtax
-        calc.records._combined += benefit_surtax
-        calc.records._surtax += benefit_surtax
+        ben = ComputeBenefit(calc, calc.policy.ID_BenefitSurtax_Switch)
+        ben_deduct = (calc.policy.ID_BenefitSurtax_crt * calc.records.c00100)
+        ben_exempt = calc.policy.ID_BenefitSurtax_em[calc.records.MARS - 1]
+        ben_surtax = calc.policy.ID_BenefitSurtax_trt * np.where(
+            ben > (ben_deduct + ben_exempt),
+            ben - (ben_deduct + ben_exempt), 0.)
+        # add ben_surtax to income & combined taxes and to surtax subtotal
+        calc.records._iitax += ben_surtax
+        calc.records._combined += ben_surtax
+        calc.records._surtax += ben_surtax
 
 
 def BenefitLimitation(calc):
@@ -1345,7 +1343,8 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
 
 
 @iterate_jit(nopython=True)
-def ExpandIncome(ptax_was, e02400, c02500, c00100, e00400, _expanded_income):
+def ExpandIncome(ptax_was, c03260, e02400, c02500, c00100, e00400,
+                 _expanded_income):
     """
     ExpandIncome function: calculates and returns _expanded_income.
 
@@ -1355,6 +1354,7 @@ def ExpandIncome(ptax_was, e02400, c02500, c00100, e00400, _expanded_income):
     employer_share = 0.5 * ptax_was  # share of payroll tax on wages & salary
     non_taxable_ss_benefits = e02400 - c02500
     _expanded_income = (c00100 +  # adjusted gross income
+                        c03260 +  # "employer share" of setax
                         e00400 +  # non-taxable interest income
                         non_taxable_ss_benefits +
                         employer_share)

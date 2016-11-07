@@ -49,10 +49,10 @@ cd taxcalc
 py.test -m "not requires_pufcsv"
 ```
 
-This will start executing a pytest suite containing more than two
-hundred and fifty tests, but will skip the few tests that require the
-`puf.csv` file as input.  Depending on your computer, the execution
-time for this incomplete suite of tests is roughly one minute.
+This will start executing a pytest suite containing about 300 tests,
+but will skip the few tests that require the `puf.csv` file as input.
+Depending on your computer, the execution time for this incomplete
+suite of tests is roughly two minutes.
 
 **HAVE PUF.CSV**: If you do have access to the `puf.csv` file, copy it
 into the tax-calculator directory at the top of the repository
@@ -65,10 +65,10 @@ cd taxcalc
 py.test
 ```
 
-This will start executing a pytest suite containing more than 260
-tests, including the few tests that require the `puf.csv` file as
-input.  Depending on your computer, the execution time for this
-complete suite of unit tests is roughly two minutes.
+This will start executing a pytest suite containing about 300 tests,
+including the few tests that require the `puf.csv` file as input.
+Depending on your computer, the execution time for this complete suite
+of unit tests is roughly three minutes.
 
 Testing with validation/tests
 -----------------------------

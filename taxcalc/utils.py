@@ -346,17 +346,14 @@ def add_columns(pdf):
     """
     # weight of returns with positive AGI and
     # itemized deduction greater than standard deduction
-    pdf['c04470'] = \
-        pdf['c04470'].where(((pdf['c00100'] > 0.) &
-                             (pdf['c04470'] > pdf['_standard'])), 0.)
+    pdf['c04470'] = pdf['c04470'].where(
+        ((pdf['c00100'] > 0.) & (pdf['c04470'] > pdf['_standard'])), 0.)
     # weight of returns with positive AGI and itemized deduction
-    pdf['num_returns_ItemDed'] = \
-        pdf['s006'].where(((pdf['c00100'] > 0.) &
-                           (pdf['c04470'] > 0.)), 0.)
+    pdf['num_returns_ItemDed'] = pdf['s006'].where(
+        ((pdf['c00100'] > 0.) & (pdf['c04470'] > 0.)), 0.)
     # weight of returns with positive AGI and standard deduction
-    pdf['num_returns_StandardDed'] = \
-        pdf['s006'].where(((pdf['c00100'] > 0.) &
-                           (pdf['_standard'] > 0.)), 0.)
+    pdf['num_returns_StandardDed'] = pdf['s006'].where(
+        ((pdf['c00100'] > 0.) & (pdf['_standard'] > 0.)), 0.)
     # weight of returns with positive Alternative Minimum Tax (AMT)
     pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
     return pdf
