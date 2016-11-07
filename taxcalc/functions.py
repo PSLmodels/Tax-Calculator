@@ -830,7 +830,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
     """
     # pylint: disable=too-many-branches
     if not EITC_indiv:
-        # filing-unit and number-of-kids based EITC
+        # filing-unit and number-of-kids based EITC (rather than indiv EITC)
         invinc = (e00400 + e00300 + e00600 +
                   max(0., c01000) + max(0., (0. - p25470)) + max(0., e27200))
         if MARS == 3 or MARS == 6 or DSI == 1 or invinc > EITC_InvestIncome_c:
@@ -870,20 +870,19 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
             else:  # if EIC != 0
                 c59660 = eitc
     else:
-        # individual EITC that is same regardless of number of eligible kids
-        # (uses EIC=0 policy parameter and ignores parameters for EIC != 0)
+        # individual EITC rather than a filing-unit EITC
         # .. calculate eitc amount for taxpayer
-        eitc_p = min(EITC_rt[0] * _earned_p, EITC_c[0])
-        if _earned_p > EITC_ps[0]:
-            eitcx = max(0., (EITC_c[0] - EITC_prt[0] *
-                             max(0., _earned_p - EITC_ps[0])))
+        eitc_p = min(EITC_rt[EIC] * _earned_p, EITC_c[EIC])
+        if _earned_p > EITC_ps[EIC]:
+            eitcx = max(0., (EITC_c[EIC] - EITC_prt[EIC] *
+                             max(0., _earned_p - EITC_ps[EIC])))
             eitc_p = min(eitc_p, eitcx)
         # .. calculate eitc amount for spouse
         if MARS == 2:
-            eitc_s = min(EITC_rt[0] * _earned_s, EITC_c[0])
-            if _earned_s > EITC_ps[0]:
-                eitcx = max(0., (EITC_c[0] - EITC_prt[0] *
-                                 max(0., _earned_s - EITC_ps[0])))
+            eitc_s = min(EITC_rt[EIC] * _earned_s, EITC_c[EIC])
+            if _earned_s > EITC_ps[EIC]:
+                eitcx = max(0., (EITC_c[EIC] - EITC_prt[EIC] *
+                                 max(0., _earned_s - EITC_ps[EIC])))
                 eitc_s = min(eitc_s, eitcx)
         else:
             eitc_s = 0.
