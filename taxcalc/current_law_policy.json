@@ -1711,7 +1711,7 @@
     },
 
     "_CTC_new_c": {
-        "long_name": "New refundable child tax credit amount",
+        "long_name": "New refundable child tax credit amount per child",
         "description": "In addition to all credits currently available for dependents, this parameter gives each qualifying child a new refundable credit.",
         "irs_ref": "",
         "notes": "Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.",
@@ -1726,7 +1726,7 @@
 
     "_CTC_new_rt": {
         "long_name": "New refundable child tax credit amount phasein rate",
-        "description": "The amount of new child tax credit is increased at this rate per dollar of AGI until _CTC_new_c is reached.",
+        "description": "The amount of the new child tax credit, per child, is increased at this rate per dollar of AGI until _CTC_new_c is reached.",
         "irs_ref": "",
         "notes": "Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.",
         "start_year": 2013,
@@ -1752,8 +1752,8 @@
     },
 
     "_CTC_new_prt": {
-        "long_name": "New refundable child tax credit amount phaseout rate",
-        "description": "The amount of new child tax credit is reduced at this rate per dollar exceeding the phaseout starting AGI.",
+        "long_name": "New refundable child tax credit amount, per child phaseout rate",
+        "description": "The amount of the new child tax credit, per child, is reduced at this rate per dollar exceeding the phaseout starting AGI (_CTC_new_ps).",
         "irs_ref": "",
         "notes": "Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.",
         "start_year": 2013,

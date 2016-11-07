@@ -1142,13 +1142,13 @@ def IITAX(c59660, c11070, c10960, personal_credit,
     Compute final taxes including new refundable child tax credit
     """
     # compute new refundable child tax credit
-    if CTC_new_c > 0. and n24 > 0:
-        agi = max(0., c00100)
-        ctc = min(CTC_new_rt * agi, CTC_new_c)  # per kid credit
+    if n24 > 0:
+        posagi = max(c00100, 0.)
+        ctc = min(CTC_new_rt * posagi, CTC_new_c)  # per kid credit
         ymax = CTC_new_ps[MARS - 1]
-        if agi > ymax:
+        if posagi > ymax:
             ctcx = max(0.,
-                       CTC_new_c - CTC_new_prt * (agi - ymax))
+                       CTC_new_c - CTC_new_prt * (posagi - ymax))
             ctc = min(ctc, ctcx)
         ctc_new = ctc * n24
         if CTC_new_refund_limit_rt > 0. and ctc_new > 0.:
