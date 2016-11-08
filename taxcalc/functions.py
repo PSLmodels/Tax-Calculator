@@ -1192,7 +1192,7 @@ def IITAX(c59660, c11070, c10960, personal_credit,
             ctc_new_reduced = max(0.,
                                   ctc_new - CTC_new_prt * (posagi - ymax))
             ctc_new = min(ctc_new, ctc_new_reduced)
-        if CTC_new_refund_limit_rt >= 0. and ctc_new > 0.:
+        if ctc_new > 0.:
             refund_new = max(0., ctc_new - c09200)
             limit_new = CTC_new_refund_limit_rt * ptax_oasdi
             limited_new = max(0., refund_new - limit_new)
