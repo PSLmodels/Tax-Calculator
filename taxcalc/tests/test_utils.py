@@ -541,8 +541,7 @@ def test_expand_2D_accept_None_additional_row():
 
 
 def test_mtr_graph_data(records_2009):
-    pol = Policy()
-    calc = Calculator(policy=pol, records=records_2009)
+    calc = Calculator(policy=Policy(), records=records_2009)
     with pytest.raises(ValueError):
         gdata = mtr_graph_data(calc, calc, mars='bad',
                                income_measure='agi',
@@ -557,6 +556,10 @@ def test_mtr_graph_data(records_2009):
         gdata = mtr_graph_data(calc, calc, mtr_measure='badtax')
     with pytest.raises(ValueError):
         gdata = mtr_graph_data(calc, calc, income_measure='badincome')
+    with pytest.raises(ValueError):
+        calcx = Calculator(policy=Policy(), records=records_2009)
+        calcx.advance_to_year(2020)
+        gdata = mtr_graph_data(calcx, calc)
     gdata = mtr_graph_data(calc, calc, mars=1,
                            mtr_wrt_full_compen=True,
                            dollar_weighting=True)
@@ -564,9 +567,9 @@ def test_mtr_graph_data(records_2009):
 
 
 def test_mtr_graph_plot(records_2009):
-    pol = Policy()
-    behv = Behavior()
-    calc = Calculator(policy=pol, records=records_2009, behavior=behv)
+    calc = Calculator(policy=Policy(),
+                      records=records_2009,
+                      behavior=Behavior())
     gdata = mtr_graph_data(calc, calc, mtr_measure='ptax',
                            income_measure='agi',
                            dollar_weighting=False)
@@ -581,9 +584,9 @@ def test_mtr_graph_plot(records_2009):
 def test_mtr_graph_plot_no_bokeh(records_2009):
     import taxcalc
     taxcalc.utils.BOKEH_AVAILABLE = False
-    pol = Policy()
-    behv = Behavior()
-    calc = Calculator(policy=pol, records=records_2009, behavior=behv)
+    calc = Calculator(policy=Policy(),
+                      records=records_2009,
+                      behavior=Behavior())
     gdata = mtr_graph_data(calc, calc)
     with pytest.raises(RuntimeError):
         gplot = mtr_graph_plot(gdata)
@@ -591,9 +594,8 @@ def test_mtr_graph_plot_no_bokeh(records_2009):
 
 
 def test_multiyear_diagnostic_table(records_2009):
-    pol = Policy()
     behv = Behavior()
-    calc = Calculator(policy=pol, records=records_2009, behavior=behv)
+    calc = Calculator(policy=Policy(), records=records_2009, behavior=behv)
     with pytest.raises(ValueError):
         adt = multiyear_diagnostic_table(calc, 0)
     with pytest.raises(ValueError):
@@ -608,13 +610,13 @@ def test_multiyear_diagnostic_table(records_2009):
 
 def test_multiyear_diagnostic_table_wo_behv(records_2009):
     pol = Policy()
-    calc = Calculator(policy=pol, records=records_2009)
     reform = {
         2013: {
             '_II_rt7': [0.33],
             '_PT_rt7': [0.33],
         }}
     pol.implement_reform(reform)
+    calc = Calculator(policy=pol, records=records_2009)
     calc.calc_all()
     liabilities_x = (calc.records._combined *
                      calc.records.s006).sum()

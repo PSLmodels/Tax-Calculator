@@ -763,6 +763,12 @@ def mtr_graph_data(calc1, calc2,
     """
     # pylint: disable=too-many-arguments,too-many-statements,
     # pylint: disable=too-many-locals,too-many-branches
+    # check that two calculator objects have the same current_year
+    if calc1.current_year == calc2.current_year:
+        year = calc1.current_year
+    else:
+        msg = 'calc1.current_year={} != calc2.current_year={}'
+        raise ValueError(msg.format(calc1.current_year, calc2.current_year))
     # check validity of function arguments
     # . . check income_measure value
     weighting_function = weighted_mean
@@ -891,6 +897,7 @@ def mtr_graph_data(calc1, calc2,
     title_str = title_str.format(var_str)
     if mars != 'ALL':
         title_str = '{} for MARS={}'.format(title_str, mars)
+    title_str = '{} for {}'.format(title_str, year)
     data['title'] = title_str
     return data
 
