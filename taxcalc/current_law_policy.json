@@ -1468,7 +1468,7 @@
 
     "_EITC_indiv": {
         "long_name": "EITC is individual-based rather than filing-unit based",
-        "description": "Current-law value is zero implying EITC is filing-unit based; a value of one implies EITC parameters for EIC=0 apply to each wage earner.",
+        "description": "Current-law value is zero implying EITC is filing-unit based; a value of one implies EITC is computed for each individual wage earner.  The phase-out of the credit works slightly differently between the two.  Individual-based calculation ignore investment income and age eligibilty rules used in filing-unit-based calculations.",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,

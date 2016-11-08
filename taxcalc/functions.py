@@ -819,6 +819,20 @@ def F2441(MARS, _earned_p, _earned_s, f2441, DCC_c, e32800,
     return c07180
 
 
+@jit(nopython=True)
+def EITCamount(phasein_rate, earnings, max_amount,
+               phaseout_start, eitc_agi, phaseout_rate):
+    """
+    Return EITC amount given specified parameters
+    """
+    eitc = min(phasein_rate * earnings, max_amount)
+    if earnings > phaseout_start or eitc_agi > phaseout_start:
+        eitcx = max(0., (max_amount - phaseout_rate *
+                         max(0., max(earnings, eitc_agi) - phaseout_start)))
+        eitc = min(eitc, eitcx)
+    return eitc
+
+
 @iterate_jit(nopython=True)
 def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
          p25470, e27200, age_head, age_spouse, _earned, _earned_p, _earned_s,
@@ -836,16 +850,12 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
         if MARS == 3 or MARS == 6 or DSI == 1 or invinc > EITC_InvestIncome_c:
             c59660 = 0.
         else:
-            eitc = min(EITC_rt[EIC] * _earned, EITC_c[EIC])
-            ymax = EITC_ps[EIC]
+            po_start = EITC_ps[EIC]
             if MARS == 2:
-                ymax += EITC_ps_MarriedJ[EIC]
+                po_start += EITC_ps_MarriedJ[EIC]
             eitc_agi = c00100 + e00400
-            if eitc_agi > ymax or _earned > ymax:
-                eitcx = max(0., (EITC_c[EIC] - EITC_prt[EIC] *
-                                 max(0., max(eitc_agi, _earned) - ymax)))
-                eitc = min(eitc, eitcx)
-
+            eitc = EITCamount(EITC_rt[EIC], _earned, EITC_c[EIC],
+                              po_start, eitc_agi, EITC_prt[EIC])
             if EIC == 0:
                 # enforce age eligibility rule for those with no EITC-eligible
                 # kids assuming that an unknown age_* value implies EITC age
@@ -872,18 +882,12 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
     else:
         # individual EITC rather than a filing-unit EITC
         # .. calculate eitc amount for taxpayer
-        eitc_p = min(EITC_rt[EIC] * _earned_p, EITC_c[EIC])
-        if _earned_p > EITC_ps[EIC]:
-            eitcx = max(0., (EITC_c[EIC] - EITC_prt[EIC] *
-                             max(0., _earned_p - EITC_ps[EIC])))
-            eitc_p = min(eitc_p, eitcx)
+        eitc_p = EITCamount(EITC_rt[EIC], _earned_p, EITC_c[EIC],
+                            EITC_ps[EIC], _earned_p, EITC_prt[EIC])
         # .. calculate eitc amount for spouse
         if MARS == 2:
-            eitc_s = min(EITC_rt[EIC] * _earned_s, EITC_c[EIC])
-            if _earned_s > EITC_ps[EIC]:
-                eitcx = max(0., (EITC_c[EIC] - EITC_prt[EIC] *
-                                 max(0., _earned_s - EITC_ps[EIC])))
-                eitc_s = min(eitc_s, eitcx)
+            eitc_s = EITCamount(EITC_rt[EIC], _earned_s, EITC_c[EIC],
+                                EITC_ps[EIC], _earned_s, EITC_prt[EIC])
         else:
             eitc_s = 0.
         # .. combine taxpayer and spouse individual EITC amounts
