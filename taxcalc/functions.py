@@ -198,7 +198,7 @@ def CapGains(p23250, p22250, _sep, ALD_Investment_ec, ALD_StudentLoan_HC,
              (1. - ALD_Investment_ec) * (e00300 + e00600 +
                                          c01000 + e01100 + e01200) +
              e02000 + e02100 + e02300)
-    if CG_nodiff != 0.:
+    if CG_nodiff:
         # apply QDIV+CG exclusion if QDIV+LTCG receive no special tax treatment
         qdcg_pos = max(0., e00650 + c01000)
         qdcg_exclusion = (max(CG_ec, qdcg_pos) +
@@ -576,7 +576,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
     else:
         hasqdivltcg = 0  # no qualified dividends or long-term capital gains
 
-    if CG_nodiff != 0.:
+    if CG_nodiff:
         hasqdivltcg = 0  # no special taxation of qual divids and l-t cap gains
 
     if hasqdivltcg == 1:
