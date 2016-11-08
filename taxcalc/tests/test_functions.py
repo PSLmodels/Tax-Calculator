@@ -102,7 +102,8 @@ def test_calc_and_used_vars(tests_path):
     found_error2 = False
     msg2 = 'calculated & returned variables are not function arguments\n'
     for fname in fnames:
-        if (fname == 'ComputeBenefit' or
+        if (fname == 'EITCamount' or
+                fname == 'ComputeBenefit' or
                 fname == 'BenefitSurtax' or
                 fname == 'BenefitLimitation'):
             continue  # because fname is not really a function

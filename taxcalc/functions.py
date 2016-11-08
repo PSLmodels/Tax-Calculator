@@ -819,51 +819,79 @@ def F2441(MARS, _earned_p, _earned_s, f2441, DCC_c, e32800,
     return c07180
 
 
+@jit(nopython=True)
+def EITCamount(phasein_rate, earnings, max_amount,
+               phaseout_start, eitc_agi, phaseout_rate):
+    """
+    Return EITC amount given specified parameters
+    """
+    eitc = min(phasein_rate * earnings, max_amount)
+    if earnings > phaseout_start or eitc_agi > phaseout_start:
+        eitcx = max(0., (max_amount - phaseout_rate *
+                         max(0., max(earnings, eitc_agi) - phaseout_start)))
+        eitc = min(eitc, eitcx)
+    return eitc
+
+
 @iterate_jit(nopython=True)
 def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
-         p25470, e27200, age_head, age_spouse, _earned,
+         p25470, e27200, age_head, age_spouse, _earned, _earned_p, _earned_s,
          EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_MarriedJ,
-         EITC_rt, EITC_c, EITC_prt, EITC_InvestIncome_c,
+         EITC_rt, EITC_c, EITC_prt, EITC_InvestIncome_c, EITC_indiv,
          c59660):
     """
     EITC function computes EITC amount, c59660
     """
-    invinc = (e00400 + e00300 + e00600 +
-              max(0., c01000) + max(0., (0. - p25470)) + max(0., e27200))
-    if MARS == 3 or MARS == 6 or DSI == 1 or invinc > EITC_InvestIncome_c:
-        c59660 = 0.
-    else:
-        eitc = min(EITC_rt[EIC] * _earned, EITC_c[EIC])
-        ymax = EITC_ps[EIC]
-        if MARS == 2:
-            ymax += EITC_ps_MarriedJ[EIC]
-        eitc_agi = c00100 + e00400
-        if eitc_agi > ymax or _earned > ymax:
-            eitcx = max(0., (EITC_c[EIC] - EITC_prt[EIC] *
-                             (max(0., max(eitc_agi, _earned) - ymax))))
-            eitc = min(eitc, eitcx)
-        if EIC == 0:
-            # enforce age eligibility rule for those with no EITC-eligible kids
-            # (assume that an unknown age_* value implies EITC age eligibility)
-            # pylint: disable=bad-continuation,too-many-boolean-expressions
+    # pylint: disable=too-many-branches
+    if not EITC_indiv:
+        # filing-unit and number-of-kids based EITC (rather than indiv EITC)
+        invinc = (e00400 + e00300 + e00600 +
+                  max(0., c01000) + max(0., (0. - p25470)) + max(0., e27200))
+        if MARS == 3 or MARS == 6 or DSI == 1 or invinc > EITC_InvestIncome_c:
+            c59660 = 0.
+        else:
+            po_start = EITC_ps[EIC]
             if MARS == 2:
-                if (age_head == 0 or age_spouse == 0 or
-                    (age_head >= EITC_MinEligAge and
-                     age_head <= EITC_MaxEligAge) or
-                    (age_spouse >= EITC_MinEligAge and
-                     age_spouse <= EITC_MaxEligAge)):
-                    c59660 = eitc
-                else:
-                    c59660 = 0.
-            else:  # if MARS != 2
-                if (age_head == 0 or
-                    (age_head >= EITC_MinEligAge and
-                     age_head <= EITC_MaxEligAge)):
-                    c59660 = eitc
-                else:
-                    c59660 = 0.
-        else:  # if EIC != 0
-            c59660 = eitc
+                po_start += EITC_ps_MarriedJ[EIC]
+            eitc_agi = c00100 + e00400
+            eitc = EITCamount(EITC_rt[EIC], _earned, EITC_c[EIC],
+                              po_start, eitc_agi, EITC_prt[EIC])
+            if EIC == 0:
+                # enforce age eligibility rule for those with no EITC-eligible
+                # kids assuming that an unknown age_* value implies EITC age
+                # eligibility
+                # pylint: disable=bad-continuation,too-many-boolean-expressions
+                if MARS == 2:
+                    if (age_head == 0 or age_spouse == 0 or
+                        (age_head >= EITC_MinEligAge and
+                         age_head <= EITC_MaxEligAge) or
+                        (age_spouse >= EITC_MinEligAge and
+                         age_spouse <= EITC_MaxEligAge)):
+                        c59660 = eitc
+                    else:
+                        c59660 = 0.
+                else:  # if MARS != 2
+                    if (age_head == 0 or
+                        (age_head >= EITC_MinEligAge and
+                         age_head <= EITC_MaxEligAge)):
+                        c59660 = eitc
+                    else:
+                        c59660 = 0.
+            else:  # if EIC != 0
+                c59660 = eitc
+    else:
+        # individual EITC rather than a filing-unit EITC
+        # .. calculate eitc amount for taxpayer
+        eitc_p = EITCamount(EITC_rt[EIC], _earned_p, EITC_c[EIC],
+                            EITC_ps[EIC], _earned_p, EITC_prt[EIC])
+        # .. calculate eitc amount for spouse
+        if MARS == 2:
+            eitc_s = EITCamount(EITC_rt[EIC], _earned_s, EITC_c[EIC],
+                                EITC_ps[EIC], _earned_s, EITC_prt[EIC])
+        else:
+            eitc_s = 0.
+        # .. combine taxpayer and spouse individual EITC amounts
+        c59660 = eitc_p + eitc_s
     return c59660
 
 
@@ -1164,7 +1192,7 @@ def IITAX(c59660, c11070, c10960, personal_credit,
             ctc_new_reduced = max(0.,
                                   ctc_new - CTC_new_prt * (posagi - ymax))
             ctc_new = min(ctc_new, ctc_new_reduced)
-        if CTC_new_refund_limit_rt >= 0. and ctc_new > 0.:
+        if ctc_new > 0.:
             refund_new = max(0., ctc_new - c09200)
             limit_new = CTC_new_refund_limit_rt * ptax_oasdi
             limited_new = max(0., refund_new - limit_new)
