@@ -166,37 +166,27 @@ def weighted_share_of_total(pdf, col_name, total):
     return float(weighted_sum(pdf, col_name)) / (float(total) + EPSILON)
 
 
-def add_weighted_decile_bins(pdf, income_measure='_expanded_income',
-                             num_bins=10, labels=None,
+def add_weighted_income_bins(pdf, num_bins=10, labels=None,
+                             income_measure='_expanded_income',
                              weight_by_income_measure=False):
     """
-    Add a column of income bins based on each 10% of the income_measure,
-    weighted by s006.
-
-    The default income_measure is `expanded_income`, but `c00100` also works.
-
-    This function will server as a 'grouper' later on.
+    Add a column of income bins to specified Pandas DataFrame, pdf, with
+    the new column being named 'bins'.  Assumes that specified pdf contains
+    columns for the specified income_measure and for sample weights, s006.
     """
-    # First, weight income measure by s006 if desired
-    if weight_by_income_measure:
-        pdf['s006_weighted'] = np.multiply(pdf[income_measure].values,
-                                           pdf['s006'].values)
-    # Next, sort by income_measure
     pdf.sort_values(by=income_measure, inplace=True)
-    # Do a cumulative sum
     if weight_by_income_measure:
-        pdf['cumsum_weights'] = np.cumsum(pdf['s006_weighted'].values)
+        pdf['cumsum_temp'] = np.cumsum(np.multiply(pdf[income_measure].values,
+                                                   pdf['s006'].values))
     else:
-        pdf['cumsum_weights'] = np.cumsum(pdf['s006'].values)
-    # Max value of cum sum of weights
-    max_ = pdf['cumsum_weights'].values[-1]
-    # Create 10 bins and labels based on this cumulative weight
+        pdf['cumsum_temp'] = np.cumsum(pdf['s006'].values)
+    max_cumsum = pdf['cumsum_temp'].values[-1]
     bin_edges = [0] + list(np.arange(1, (num_bins + 1)) *
-                           (max_ / float(num_bins)))
+                           (max_cumsum / float(num_bins)))
     if not labels:
         labels = range(1, (num_bins + 1))
-    #  Groupby weighted deciles
-    pdf['bins'] = pd.cut(pdf['cumsum_weights'], bins=bin_edges, labels=labels)
+    pdf['bins'] = pd.cut(pdf['cumsum_temp'], bins=bin_edges, labels=labels)
+    pdf.drop('cumsum_temp', axis=1, inplace=True)
     return pdf
 
 
@@ -233,13 +223,10 @@ def add_income_bins(pdf, compare_with='soi', bins=None, right=True,
     if not bins:
         if compare_with == 'tpc':
             bins = LARGE_INCOME_BINS
-
         elif compare_with == 'soi':
             bins = SMALL_INCOME_BINS
-
         elif compare_with == 'webapp':
             bins = WEBAPP_INCOME_BINS
-
         else:
             msg = 'Unknown compare_with arg {0}'.format(compare_with)
             raise ValueError(msg)
@@ -423,7 +410,8 @@ def create_distribution_table(obj, groupby, result_type,
             res['s006'] = res_base['s006']
     # sorts the data
     if groupby == 'weighted_deciles':
-        pdf = add_weighted_decile_bins(res, income_measure=income_measure)
+        pdf = add_weighted_income_bins(res, num_bins=10,
+                                       income_measure=income_measure)
     elif groupby == 'small_income_bins':
         pdf = add_income_bins(res, compare_with='soi',
                               income_measure=income_measure)
@@ -495,7 +483,8 @@ def create_difference_table(recs1, recs2, groupby,
     res2[baseline_income_measure] = res1[income_measure]
     income_measure = baseline_income_measure
     if groupby == 'weighted_deciles':
-        pdf = add_weighted_decile_bins(res2, income_measure=income_measure)
+        pdf = add_weighted_income_bins(res2, num_bins=10,
+                                       income_measure=income_measure)
     elif groupby == 'small_income_bins':
         pdf = add_income_bins(res2, compare_with='soi',
                               income_measure=income_measure)
@@ -844,13 +833,11 @@ def mtr_graph_data(calc1, calc2,
         df1 = df1[df1['MARS'] == mars]
         df2 = df2[df2['MARS'] == mars]
     # create 'bins' column given specified income_var and dollar_weighting
-    df1 = add_weighted_decile_bins(df1,
+    df1 = add_weighted_income_bins(df1, num_bins=100,
                                    income_measure=income_var,
-                                   num_bins=100,
                                    weight_by_income_measure=dollar_weighting)
-    df2 = add_weighted_decile_bins(df2,
+    df2 = add_weighted_income_bins(df2, num_bins=100,
                                    income_measure=income_var,
-                                   num_bins=100,
                                    weight_by_income_measure=dollar_weighting)
     # split into groups specified by 'bins'
     gdf1 = df1.groupby('bins', as_index=False)
