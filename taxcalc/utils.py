@@ -248,15 +248,13 @@ def add_income_bins(pdf, compare_with='soi', bins=None, right=True,
     return pdf
 
 
-def means_and_comparisons(pdf, col_name, gpdf, weighted_total):
+def means_and_comparisons(col_name, gpdf, weighted_total):
     """
-    Return Pandas DataFrame based specified grouped values of col_name in
-    specified gpdf Pandas DataFrame.
-    pdf: Pandas DataFrame for full results of calculation (NEVER USED)
+    Return new Pandas DataFrame based on grouped values of specified
+    col_name in specified gpdf Pandas DataFrame.
     col_name: the column name to calculate against
     gpdf: grouped Pandas DataFrame
     """
-    # pylint: disable=unused-argument
     # Who has a tax cut, and who has a tax increase
     diffs = gpdf.apply(weighted_count_lt_zero, col_name)
     diffs = pd.DataFrame(data=diffs, columns=['tax_cut'])
@@ -514,7 +512,7 @@ def create_difference_table(recs1, recs2, groupby,
     # Positive values are the magnitude of the tax increase
     # Negative values are the magnitude of the tax decrease
     res2['tax_diff'] = res2[income_to_present] - res1[income_to_present]
-    diffs = means_and_comparisons(res2, 'tax_diff',
+    diffs = means_and_comparisons('tax_diff',
                                   pdf.groupby('bins', as_index=False),
                                   (res2['tax_diff'] * res2['s006']).sum())
     sum_row = get_sums(diffs)[diffs.columns.values.tolist()]
