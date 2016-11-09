@@ -561,7 +561,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
              PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8,
              PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7,
              CG_nodiff,
-             CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3,
+             CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_brk1, CG_brk2, CG_brk3,
              dwks10, dwks13, dwks14, dwks19, c05700, _taxbc):
     """
     GainsTax function implements (2015) Schedule D Tax Worksheet logic for
@@ -600,7 +600,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks12 = min(dwks9, dwks11)
         dwks13 = dwks10 - dwks12
         dwks14 = max(0., dwks1 - dwks13)
-        dwks16 = min(CG_thd1[MARS - 1], dwks1)
+        dwks16 = min(CG_brk1[MARS - 1], dwks1)
         dwks17 = min(dwks14, dwks16)
         dwks18 = max(0., dwks1 - dwks10)
         dwks19 = max(dwks17, dwks18)
@@ -610,7 +610,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks21 = min(dwks1, dwks13)
         dwks22 = dwks20
         dwks23 = max(0., dwks21 - dwks22)
-        dwks25 = min(CG_thd2[MARS - 1], dwks1)
+        dwks25 = min(CG_brk2[MARS - 1], dwks1)
         dwks26 = dwks19 + dwks20
         dwks27 = max(0., dwks25 - dwks26)
         dwks28 = min(dwks23, dwks27)
@@ -618,7 +618,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks30 = dwks22 + dwks28
         dwks31 = dwks21 - dwks30
         dwks32 = CG_rt3 * dwks31
-        hi_base = max(0., dwks31 - CG_thd3[MARS - 1])
+        hi_base = max(0., dwks31 - CG_brk3[MARS - 1])
         hi_incremental_rate = CG_rt4 - CG_rt3
         highest_rate_incremental_tax = hi_incremental_rate * hi_base
         # break in worksheet lines
@@ -681,7 +681,7 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         KT_c_Age, AMT_brk1, AMT_thd_MarriedS,
         AMT_em, AMT_prt, AMT_rt1, AMT_rt2,
         AMT_Child_em, AMT_em_ps, AMT_em_pe,
-        AMT_CG_thd1, AMT_CG_thd2, AMT_CG_thd3, AMT_CG_rt1, AMT_CG_rt2,
+        AMT_CG_brk1, AMT_CG_brk2, AMT_CG_brk3, AMT_CG_rt1, AMT_CG_rt2,
         AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
     """
     AMT function computes Alternative Minimum Tax taxable income and liability:
@@ -732,14 +732,14 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         line42 = (AMT_rt1 * line41 +
                   AMT_rt2 * max(0., (line41 - (AMT_brk1 / _sep))))
         line44 = dwks14
-        line45 = max(0., AMT_CG_thd1[MARS - 1] - line44)
+        line45 = max(0., AMT_CG_brk1[MARS - 1] - line44)
         line46 = min(line30, line37)
         line47 = min(line45, line46)  # line47 is amount taxed at AMT_CG_rt1
         cgtax1 = line47 * AMT_CG_rt1
         line48 = line46 - line47
         line51 = dwks19
         line52 = line45 + line51
-        line53 = max(0., AMT_CG_thd2[MARS - 1] - line52)
+        line53 = max(0., AMT_CG_brk2[MARS - 1] - line52)
         line54 = min(line48, line53)  # line54 is amount taxed at AMT_CG_rt2
         cgtax2 = line54 * AMT_CG_rt2
         line56 = line47 + line54  # total amount in lower two brackets
@@ -749,7 +749,7 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         else:
             line57 = line46 - line56
             linex1 = min(line48,
-                         max(0., AMT_CG_thd3[MARS - 1] - line44 - line45))
+                         max(0., AMT_CG_brk3[MARS - 1] - line44 - line45))
             linex2 = max(0., line54 - linex1)
         cgtax3 = line57 * AMT_CG_rt3
         cgtax4 = linex2 * AMT_CG_rt4

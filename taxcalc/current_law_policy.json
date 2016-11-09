@@ -1021,9 +1021,9 @@
         "value": [1.0]
     },
 
-    "_CG_thd1": {
-        "long_name": "Long term capital gain and qualified dividends threshold 1",
-        "description": "The capital gain and dividends (stacked on top of regular income)  below this threshold are taxed at capital gain rate 1. ",
+    "_CG_brk1": {
+        "long_name": "Top of long-term capital gains and qualified dividends tax bracket 1",
+        "description": "The gains and dividends (stacked on top of regular income) below this are taxed at capital gain rate 1. ",
         "irs_ref": "Form 1040 Schedule D tax worksheet, line 15, in-line. ",
         "start_year": 2013,
         "col_var": "MARS",
@@ -1040,9 +1040,9 @@
                   [37650, 75300, 37650, 50400, 75300, 37650]]
     },
 
-    "_CG_thd2": {
-        "long_name": "Long term capital gain and qualified dividend threshold 2",
-        "description": "The capital gain and dividends (stacked on top of regular income) below this threshold and above threshold 1 are taxed at capital gain rate 2.",
+    "_CG_brk2": {
+        "long_name": "Top of long-term capital gains and qualified dividends tax bracket 2",
+        "description": "The gains and dividends (stacked on top of regular income) below this and above top of bracket 1 are taxed at capital gain rate 2.",
         "irs_ref": "Form 1040 Schedule D tax worksheet, line 24, in-line. ",
         "start_year": 2013,
         "col_var": "MARS",
@@ -1059,9 +1059,9 @@
                   [415050, 466950, 233475, 441000, 466950, 233475]]
     },
 
-    "_CG_thd3": {
-        "long_name": "Long term capital gain and qualified dividend threshold 3",
-        "description": "The capital gain and dividends (stacked on top of regular income) below this threshold and above threshold 2 are taxed at the capital gain rate 3; above this threshold are taxed at capital gain rate 4.  Default value is essentially infinity.",
+    "_CG_brk3": {
+        "long_name": "Top of long-term capital gains and qualified dividend tax bracket 3",
+        "description": "The gains and dividends (stacked on top of regular income) below this and above top of bracket 2 are taxed at the capital gain rate 3; above this they are taxed at capital gain rate 4.  Default value is essentially infinity.",
         "irs_ref": "Form 1040 Schedule D tax worksheet, line 24, in-line. ",
         "start_year": 2013,
         "col_var": "MARS",
@@ -1327,9 +1327,9 @@
         "value": [1.0]
     },
 
-    "_AMT_CG_thd1": {
-        "long_name": "Long term capital gain and qualified dividend threshold 1",
-        "description": "The capital gain plus dividends portion, stacked last, of income below this threshold is taxed at capital gain rate 1.",
+    "_AMT_CG_brk1": {
+        "long_name": "Top of long-term capital gains and qualified dividends AMT tax bracket 1",
+        "description": "The gains and dividends, stacked last, of AMT taxable income below this are taxed at AMT capital gain rate 1.",
         "irs_ref": "Form 6251, line 43, in-line. ",
         "start_year": 2013,
         "col_var": "MARS",
@@ -1346,9 +1346,9 @@
                   [37650, 75300, 37650, 50400, 75300, 37650]]
     },
 
-    "_AMT_CG_thd2": {
-        "long_name": "Long term capital gain and qualified dividend threshold 2",
-        "description": "The capital gain plus dividends portion, stacked last, of income below this threshold and above threshold 1 is taxed at capital gain rate 2.",
+    "_AMT_CG_brk2": {
+        "long_name": "Top of long-term capital gains and qualified dividends AMT tax bracket 2",
+        "description": "The gains and dividends, stacked last, of AMT taxable income below this threshold and above bracket 1 are taxed at AMT capital gain rate 2.",
         "irs_ref": "Form 6251, line 49, in-line. ",
         "start_year": 2013,
         "col_var": "MARS",
@@ -1365,9 +1365,9 @@
                   [415050, 466950, 233475, 441000, 466950, 233475]]
     },
 
-    "_AMT_CG_thd3": {
+    "_AMT_CG_brk3": {
         "long_name": "Long term capital gain and qualified dividend threshold 3",
-        "description": "The capital gain plus dividends portion, stacked last, of income below this threshold and above threshold 2 is taxed at capital gain rate 3; above this threshold taxed at capital gain rate 4.  Default value is essentially infinity.",
+        "description": "The gains and dividends, stacked last, of AMT taxable income below this and above bracket 2 are taxed at capital gain rate 3; above thisthey are taxed at AMT capital gain rate 4.  Default value is essentially infinity.",
         "irs_ref": "Form 6251, line 49, in-line. ",
         "start_year": 2013,
         "col_var": "MARS",
