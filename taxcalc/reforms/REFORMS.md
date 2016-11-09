@@ -47,7 +47,7 @@ separate, head of household, widow, separate.
 // is a scalar and enclosed in double brackets when the parameter is a vector.
 // Boolean values are specified as true or false (no quotes; all lowercase).
 {
-    "_AMT_tthd": // AMT taxinc threshold separating the two AMT tax brackets
+    "_AMT_brk1": // top of first AMT taxable income brackets
     {"2015": [200000],
      "2017": [300000]
     },

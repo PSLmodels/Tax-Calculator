@@ -88,7 +88,7 @@ Examples
 
    **_ID_ps**: Itemized Deduction phaseout Adjusted Gross Income start (Pease)
 
-   **_AMT_tthd**: Alternative Minimum Tax surtax threshold
+   **_AMT_brk1**: Alternative Minimum Tax first rate bracket top
 
    **_SS_Earnings_c**: Maximum taxable earnings for Social Security
 

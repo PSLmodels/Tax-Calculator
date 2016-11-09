@@ -1121,9 +1121,9 @@
         "value": [24]
     },
 
-    "_AMT_tthd": {
-        "long_name": "AMT surtax threshold",
-        "description": "This threshold separates the 26%* and 28%* AMT tax rates: in order to get tentative minimum tax, income below this level is subject to 26% tax rate and above this level subject at 28%.",
+    "_AMT_brk1": {
+        "long_name": "AMT tax bracket (upper threshold) 1",
+        "description": "AMT taxable income below this is subject to _AMT_rt1 and above it is subject to _AMT_rt1 + _AMT_rt2.",
         "irs_ref": "Form 6251, line 31, instruction.",
         "notes": "",
         "start_year": 2013,
@@ -1191,9 +1191,9 @@
         "value": [0.25]
     },
 
-    "_AMT_trt1": {
-        "long_name": "AMT rate for AMT taxable income under the surtax threshold",
-        "description": "The tax rate applied to the portion of AMT income below the surtax threshold. ",
+    "_AMT_rt1": {
+        "long_name": "AMT rate for AMT taxable income below _AMT_brk1",
+        "description": "The tax rate applied to the portion of AMT taxable income below the surtax threshold, _AMT_brk1.",
         "irs_ref": "Form 6251, line 31, in-line. ",
         "notes": "",
         "start_year": 2013,
@@ -1205,11 +1205,11 @@
         "value": [0.26]
     },
 
-    "_AMT_trt2": {
-        "long_name": "Additional AMT rate for AMT taxable income above the surtax threshold",
-        "description": "The tax rate applied to the portion of AMT income above the surtax threshold.",
+    "_AMT_rt2": {
+        "long_name": "Additional AMT rate for AMT taxable income above _AMT_brk1",
+        "description": "The additional tax rate applied to the portion of AMT income above the _AMT_brk1.",
         "irs_ref": "Form 6251, line 31, in-line. ",
-        "notes": "This is the additional tax rate (on top of .26) for AMT income",
+        "notes": "This is the additional tax rate (on top of _AMT_rt1) for AMT income above _AMT_brk1",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
