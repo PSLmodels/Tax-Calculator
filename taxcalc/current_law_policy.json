@@ -47,7 +47,7 @@
         "value": [0.029]
     },
 
-    "_ALD_StudentLoan_HC": {
+    "_ALD_StudentLoan_hc": {
         "long_name": "Adjustment for student loan interest haircut",
         "description": "This decimal fraction can be applied to limit the student loan interest adjustment allowed. ",
         "irs_ref": "Form 1040, line 33",
@@ -61,7 +61,7 @@
         "value": [0.0]
     },
 
-    "_ALD_SelfEmploymentTax_HC": {
+    "_ALD_SelfEmploymentTax_hc": {
         "long_name": "Adjustment for self-employment tax haircut",
         "description": "This decimal fraction, if greater than zero, reduces the employer equivalent portion of self-employment adjustment. ",
         "irs_ref": "Form 1040, line 27",
@@ -75,7 +75,7 @@
         "value": [0.0]
     },
 
-    "_ALD_SelfEmp_HealthIns_HC": {
+    "_ALD_SelfEmp_HealthIns_hc": {
         "long_name": "Adjustment for self employed health insurance haircut",
         "description": "This decimal fraction, if greater than zero, reduces the health insurance adjustment for self-employed taxpayers. ",
         "irs_ref": "Form 1040, line 29",
@@ -89,7 +89,7 @@
         "value": [0.0]
     },
 
-    "_ALD_KEOGH_SEP_HC": {
+    "_ALD_KEOGH_SEP_hc": {
         "long_name": "Adjustment for payment to either KEOGH or SEP plan haircut",
         "description": "Under current law, payments to Keogh or SEP plans can be fully deducted from gross income. Taxpayers can use this haircut to limit the adjustment allowed. ",
         "irs_ref": "Form 1040, line 25",
@@ -103,7 +103,7 @@
         "value": [0.0]
     },
 
-    "_ALD_EarlyWithdraw_HC": {
+    "_ALD_EarlyWithdraw_hc": {
         "long_name": "Adjustment for forfeited interest penalty haircut",
         "description": "Under current law, early withdraw penalty can be fully deducted from gross income. Taxpayers can use this haircut to limit the adjustment allowed.",
         "irs_ref": "Form 1040, line 30",
@@ -117,7 +117,7 @@
         "value": [0.0]
     },
 
-    "_ALD_Alimony_HC": {
+    "_ALD_Alimony_hc": {
         "long_name": "Adjustment for alimony payment haircut",
         "description": "Under current law, the full amount of alimony payment is taken as an adjustment from gross income in arriving at AGI. Taxpayers can use this haircut to limit the deduction allowed.",
         "irs_ref": "Form 1040, line 31",
@@ -145,7 +145,7 @@
         "value": [0.0]
     },
 
-    "_ALD_Dependents_HC": {
+    "_ALD_Dependents_hc": {
         "long_name": "Deduction for childcare costs",
         "description": "This decimal fraction, if greater than zero, reduces the portion of childcare costs that can be deducted from AGI",
         "irs_ref": "",
@@ -386,7 +386,7 @@
         "validations": {"min": -0.025, "max": 0.0}
     },
 
-    "_ID_Medical_HC": {
+    "_ID_Medical_hc": {
         "long_name": "Medical expense deduction haircut",
         "description": "This decimal fraction can be applied to limit the amount of medical expense deduction allowed.",
         "irs_ref": "",
@@ -400,7 +400,7 @@
         "value": [0.0]
     },
 
-    "_ID_StateLocalTax_HC": {
+    "_ID_StateLocalTax_hc": {
         "long_name": "State and local taxes (Income and Sales) deduction haircut.",
         "description": "This decimal fraction reduces the state and local tax deduction.",
         "irs_ref": "",
@@ -414,7 +414,7 @@
         "value": [0.0]
     },
 
-    "_ID_RealEstate_HC": {
+    "_ID_RealEstate_hc": {
         "long_name": "Real estate taxes deduction haircut.",
         "description": "This decimal fraction reduces real estate taxes paid eligible to deduct in itemized deduction.",
         "irs_ref": "",
@@ -428,7 +428,7 @@
         "value": [0.0]
     },
 
-    "_ID_InterestPaid_HC": {
+    "_ID_InterestPaid_hc": {
         "long_name": "Interest deduction haircut",
         "description": "This decimal fraction can be applied to limit the amount of interest deduction allowed.",
         "irs_ref": "",
@@ -487,7 +487,7 @@
         "validations": {"max": "default"}
     },
 
-    "_ID_Charity_HC": {
+    "_ID_Charity_hc": {
         "long_name": "Charity expense deduction haircut",
         "description": "This decimal fraction can be applied to limit the amount of charity expense deduction allowed.",
         "irs_ref": "",
@@ -516,7 +516,7 @@
         "validations": {"min": "default"}
     },
 
-    "_ID_Casualty_HC": {
+    "_ID_Casualty_hc": {
         "long_name": "Casualty expense deduction haircut",
         "description": "This decimal fraction can be applied to limit the amount of casualty expense deduction allowed.",
         "irs_ref": "",
@@ -545,7 +545,7 @@
         "validations": {"min": "default"}
     },
 
-    "_ID_Miscellaneous_HC": {
+    "_ID_Miscellaneous_hc": {
         "long_name": "Miscellaneous expense deduction haircut",
         "description": "This decimal fraction can be applied to limit the amount of miscellaneous expense deduction allowed.",
         "irs_ref": "",

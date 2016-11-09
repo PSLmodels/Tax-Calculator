@@ -414,7 +414,7 @@ def test_row_classifier(puf_1991, weights_1991):
                                            groupby='webapp_income_bins',
                                            result_type='weighted_sum').s006
     # create a policy-reform Policy object and Calculator calc2
-    reform = {2013: {'_ALD_StudentLoan_HC': [1]}}
+    reform = {2013: {'_ALD_StudentLoan_hc': [1]}}
     policy2 = Policy()
     policy2.implement_reform(reform)
     records2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)

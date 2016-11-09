@@ -20,7 +20,7 @@ from .decorators import iterate_jit, jit
 
 @iterate_jit(nopython=True)
 def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
-                  FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_HC,
+                  FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_hc,
                   e00900p, e00900s, e02100p, e02100s,
                   _payrolltax, ptax_was, setax, c03260, ptax_oasdi,
                   _sey, _earned, _earned_p, _earned_s):
@@ -68,19 +68,19 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     # compute _earned* variables and AGI deduction for
     # "employer share" of self-employment tax, c03260
     # Note: c03260 is the amount on 2015 Form 1040, line 27
-    c03260 = (1. - ALD_SelfEmploymentTax_HC) * 0.5 * setax
+    c03260 = (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax
     _earned = max(0., e00200 + _sey - c03260)
     _earned_p = max(0., (e00200p + sey_p -
-                         (1. - ALD_SelfEmploymentTax_HC) * 0.5 * setax_p))
+                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_p))
     _earned_s = max(0., (e00200s + sey_s -
-                         (1. - ALD_SelfEmploymentTax_HC) * 0.5 * setax_s))
+                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_s))
     return (_sey, _payrolltax, ptax_was, setax, c03260, ptax_oasdi,
             _earned, _earned_p, _earned_s)
 
 
 @iterate_jit(nopython=True)
 def DependentCare(nu13, elderly_dependent, _earned,
-                  MARS, ALD_Dependents_thd, ALD_Dependents_HC,
+                  MARS, ALD_Dependents_thd, ALD_Dependents_hc,
                   ALD_Dependents_Child_c, ALD_Dependents_Elder_c,
                   care_deduction):
     """
@@ -92,7 +92,7 @@ def DependentCare(nu13, elderly_dependent, _earned,
     _earned: Form 2441 earned income amount
     MARS: Marital Status
     ALD_Dependents_thd: Maximum income to qualify for deduction
-    ALD_Dependents_HC: Deduction for dependent care haircut
+    ALD_Dependents_hc: Deduction for dependent care haircut
     ALD_Dependents_Child_c: National weighted average cost of childcare
     ALD_Dependents_Elder_c: Eldercare deduction ceiling
 
@@ -103,9 +103,9 @@ def DependentCare(nu13, elderly_dependent, _earned,
     """
 
     if _earned <= ALD_Dependents_thd[MARS - 1]:
-        care_deduction = (((1. - ALD_Dependents_HC) * nu13 *
+        care_deduction = (((1. - ALD_Dependents_hc) * nu13 *
                            ALD_Dependents_Child_c) +
-                          ((1. - ALD_Dependents_HC) * elderly_dependent *
+                          ((1. - ALD_Dependents_hc) * elderly_dependent *
                            ALD_Dependents_Elder_c))
     else:
         care_deduction = 0.
@@ -116,8 +116,8 @@ def DependentCare(nu13, elderly_dependent, _earned,
 def Adj(e03150, e03210, c03260,
         e03270, e03300, e03400, e03500,
         e03220, e03230, e03240, e03290, care_deduction,
-        ALD_StudentLoan_HC, ALD_SelfEmp_HealthIns_HC, ALD_KEOGH_SEP_HC,
-        ALD_EarlyWithdraw_HC, ALD_Alimony_HC,
+        ALD_StudentLoan_hc, ALD_SelfEmp_HealthIns_hc, ALD_KEOGH_SEP_hc,
+        ALD_EarlyWithdraw_hc, ALD_Alimony_hc,
         c02900):
     """
     Adj calculated Form 1040 adjustments
@@ -150,17 +150,17 @@ def Adj(e03150, e03210, c03260,
         care_deduction : Deduction for dependent care
 
     Tax law parameters:
-        ALD_StudentLoan_HC : Deduction for student loan interest haircut
+        ALD_StudentLoan_hc : Deduction for student loan interest haircut
 
-        ALD_SelfEmp_HealthIns_HC :
+        ALD_SelfEmp_HealthIns_hc :
         Deduction for self employed health insurance haircut
 
-        ALD_KEOGH_SEP_HC :
+        ALD_KEOGH_SEP_hc :
         Deduction for payment to either KEOGH or SEP plan haircut
 
-        ALD_EarlyWithdraw_HC : Deduction for forfeited interest penalty haricut
+        ALD_EarlyWithdraw_hc : Deduction for forfeited interest penalty haricut
 
-        ALD_Alimony_HC : Deduction for alimony payment haircut
+        ALD_Alimony_hc : Deduction for alimony payment haircut
 
     Returns
     -------
@@ -169,18 +169,18 @@ def Adj(e03150, e03210, c03260,
     # Form 2555 foreign earned income deduction is always zero
     # Form 1040 adjustments
     c02900 = (e03150 +
-              (1. - ALD_StudentLoan_HC) * e03210 +
+              (1. - ALD_StudentLoan_hc) * e03210 +
               c03260 +
-              (1. - ALD_SelfEmp_HealthIns_HC) * e03270 +
-              (1. - ALD_KEOGH_SEP_HC) * e03300 +
-              (1. - ALD_EarlyWithdraw_HC) * e03400 +
-              (1. - ALD_Alimony_HC) * e03500 +
+              (1. - ALD_SelfEmp_HealthIns_hc) * e03270 +
+              (1. - ALD_KEOGH_SEP_hc) * e03300 +
+              (1. - ALD_EarlyWithdraw_hc) * e03400 +
+              (1. - ALD_Alimony_hc) * e03500 +
               e03220 + e03230 + e03240 + e03290 + care_deduction)
     return c02900
 
 
 @iterate_jit(nopython=True)
-def CapGains(p23250, p22250, _sep, ALD_Investment_ec, ALD_StudentLoan_HC,
+def CapGains(p23250, p22250, _sep, ALD_Investment_ec, ALD_StudentLoan_hc,
              e00200, e00300, e00600, e00650, e00700, e00800,
              CG_nodiff, CG_ec, CG_reinvest_ec_rt,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
@@ -206,7 +206,7 @@ def CapGains(p23250, p22250, _sep, ALD_Investment_ec, ALD_StudentLoan_HC,
         ymod1 = max(0., ymod1 - qdcg_exclusion)
     # compute ymod variable that is used in OASDI benefit taxation logic
     ymod2 = e00400 + (0.50 * e02400) - c02900
-    ymod3 = (1. - ALD_StudentLoan_HC) * e03210 + e03230 + e03240
+    ymod3 = (1. - ALD_StudentLoan_hc) * e03210 + e03230 + e03240
     ymod = ymod1 + ymod2 + ymod3
     return (c01000, c23650, ymod, ymod1)
 
@@ -271,12 +271,12 @@ def ItemDed(e17500, e18400, e18500,
             MARS, age_head, age_spouse,
             c00100, c04470, c17000, c18300, c20500, c19200,
             c20800, c21040, c21060, c19700,
-            ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_HC,
+            ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_hc,
             ID_Casualty_frt_in_pufcsv_year,
-            ID_Casualty_frt, ID_Casualty_HC, ID_Miscellaneous_frt,
-            ID_Miscellaneous_HC, ID_Charity_crt_all, ID_Charity_crt_noncash,
-            ID_prt, ID_crt, ID_StateLocalTax_HC, ID_Charity_frt,
-            ID_Charity_HC, ID_InterestPaid_HC, ID_RealEstate_HC):
+            ID_Casualty_frt, ID_Casualty_hc, ID_Miscellaneous_frt,
+            ID_Miscellaneous_hc, ID_Charity_crt_all, ID_Charity_crt_noncash,
+            ID_prt, ID_crt, ID_StateLocalTax_hc, ID_Charity_frt,
+            ID_Charity_hc, ID_InterestPaid_hc, ID_RealEstate_hc):
     """
     ItemDed function: itemized deductions, Form 1040, Schedule A
 
@@ -338,28 +338,28 @@ def ItemDed(e17500, e18400, e18500,
     if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
         medical_frt += ID_Medical_frt_add4aged
     c17750 = medical_frt * posagi
-    c17000 = max(0., e17500 - c17750) * (1. - ID_Medical_HC)
+    c17000 = max(0., e17500 - c17750) * (1. - ID_Medical_hc)
     # State and local taxes
-    c18300 = ((1. - ID_StateLocalTax_HC) * max(e18400, 0.) +
-              (1. - ID_RealEstate_HC) * e18500)
+    c18300 = ((1. - ID_StateLocalTax_hc) * max(e18400, 0.) +
+              (1. - ID_RealEstate_hc) * e18500)
     # Interest paid
-    c19200 = e19200 * (1. - ID_InterestPaid_HC)
+    c19200 = e19200 * (1. - ID_InterestPaid_hc)
     # Charity
     lim30 = min(ID_Charity_crt_noncash * posagi, e20100)
     c19700 = min(ID_Charity_crt_all * posagi, lim30 + e19800)
     charity_floor = ID_Charity_frt * posagi  # floor is zero in present law
-    c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_HC)
+    c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_hc)
     # Casualty
     if e20500 > 0.0:  # add back to e20500 the PUFCSV_YEAR disregard amount
         c37703 = e20500 + ID_Casualty_frt_in_pufcsv_year * posagi
     else:  # small pre-disregard e20500 values are assumed to be zero
         c37703 = 0.
     c20500 = (max(0., c37703 - ID_Casualty_frt * posagi) *
-              (1. - ID_Casualty_HC))
+              (1. - ID_Casualty_hc))
     # Miscellaneous
     c20400 = e20400
     c20750 = ID_Miscellaneous_frt * posagi
-    c20800 = max(0., c20400 - c20750) * (1. - ID_Miscellaneous_HC)
+    c20800 = max(0., c20400 - c20750) * (1. - ID_Miscellaneous_hc)
     # Gross Itemized Deductions
     c21060 = c17000 + c18300 + c19200 + c19700 + c20500 + c20800
     # Limitation on total itemized deductions
@@ -1250,19 +1250,19 @@ def ComputeBenefit(calc, ID_switch):
     # the types of itemized deductions covered under the BenefitSurtax
     no_ID_calc = copy.deepcopy(calc)
     if ID_switch[0]:
-        no_ID_calc.policy.ID_Medical_HC = 1.
+        no_ID_calc.policy.ID_Medical_hc = 1.
     if ID_switch[1]:
-        no_ID_calc.policy.ID_StateLocalTax_HC = 1.
+        no_ID_calc.policy.ID_StateLocalTax_hc = 1.
     if ID_switch[2]:
-        no_ID_calc.policy.ID_RealEstate_HC = 1.
+        no_ID_calc.policy.ID_RealEstate_hc = 1.
     if ID_switch[3]:
-        no_ID_calc.policy.ID_Casualty_HC = 1.
+        no_ID_calc.policy.ID_Casualty_hc = 1.
     if ID_switch[4]:
-        no_ID_calc.policy.ID_Miscellaneous_HC = 1.
+        no_ID_calc.policy.ID_Miscellaneous_hc = 1.
     if ID_switch[5]:
-        no_ID_calc.policy.ID_InterestPaid_HC = 1.
+        no_ID_calc.policy.ID_InterestPaid_hc = 1.
     if ID_switch[6]:
-        no_ID_calc.policy.ID_Charity_HC = 1.
+        no_ID_calc.policy.ID_Charity_hc = 1.
     no_ID_calc.calc_one_year()
     # compute surtax amount and add to income and combined taxes
     # pylint: disable=protected-access
@@ -1302,10 +1302,10 @@ def BenefitLimitation(calc):
         if calc.policy.ID_BenefitCap_Switch[0]:  # Medical
             deductible_expenses += calc.records.c17000
         if calc.policy.ID_BenefitCap_Switch[1]:  # StateLocal
-            deductible_expenses += ((1. - calc.policy.ID_StateLocalTax_HC) *
+            deductible_expenses += ((1. - calc.policy.ID_StateLocalTax_hc) *
                                     np.maximum(calc.records.e18400, 0.))
         if calc.policy.ID_BenefitCap_Switch[2]:
-            deductible_expenses += ((1. - calc.policy.ID_RealEstate_HC) *
+            deductible_expenses += ((1. - calc.policy.ID_RealEstate_hc) *
                                     calc.records.e18500)
         if calc.policy.ID_BenefitCap_Switch[3]:  # Casualty
             deductible_expenses += calc.records.c20500
