@@ -680,8 +680,8 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         c04470, c17000, c20800, c21040, e24515, MARS, _sep, dwks19,
         dwks14, c05700, e62900, e00700, dwks10, age_head, _earned,
         cmbtp_itemizer, cmbtp_standard,
-        KT_c_Age, AMT_tthd, AMT_thd_MarriedS,
-        AMT_em, AMT_prt, AMT_trt1, AMT_trt2,
+        KT_c_Age, AMT_brk1, AMT_thd_MarriedS,
+        AMT_em, AMT_prt, AMT_rt1, AMT_rt2,
         AMT_Child_em, AMT_em_ps, AMT_em_pe,
         AMT_CG_thd1, AMT_CG_thd2, AMT_CG_thd3, AMT_CG_rt1, AMT_CG_rt2,
         AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
@@ -722,8 +722,8 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
     if age_head != 0 and age_head < KT_c_Age:
         line29 = min(line29, _earned + AMT_Child_em)
     line30 = max(0., c62100 - line29)
-    line3163 = (AMT_trt1 * line30 +
-                AMT_trt2 * max(0., (line30 - (AMT_tthd / _sep))))
+    line3163 = (AMT_rt1 * line30 +
+                AMT_rt2 * max(0., (line30 - (AMT_brk1 / _sep))))
     if dwks10 > 0. or dwks13 > 0. or dwks14 > 0. or dwks19 > 0. or e24515 > 0.:
         # complete Form 6251, Part III (line36 is equal to line30)
         line37 = dwks13
@@ -731,8 +731,8 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         line39 = min(line37 + line38, dwks10)
         line40 = min(line30, line39)
         line41 = max(0., line30 - line40)
-        line42 = (AMT_trt1 * line41 +
-                  AMT_trt2 * max(0., (line41 - (AMT_tthd / _sep))))
+        line42 = (AMT_rt1 * line41 +
+                  AMT_rt2 * max(0., (line41 - (AMT_brk1 / _sep))))
         line44 = dwks14
         line45 = max(0., AMT_CG_thd1[MARS - 1] - line44)
         line46 = min(line30, line37)

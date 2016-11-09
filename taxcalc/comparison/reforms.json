@@ -364,7 +364,7 @@
 
     "r38": {
         "start_year": 2015,
-        "value": {"_AMT_trt1": [0.28]},
+        "value": {"_AMT_rt1": [0.28]},
         "section_name": "Alternative Minimum Tax",
         "name": "Increase AMT rate under the surtax threshold by 2 pts",
         "output_type": "_iitax",
@@ -373,7 +373,7 @@
 
     "r39": {
         "start_year": 2015,
-        "value": {"_AMT_trt2": [0.04]},
+        "value": {"_AMT_rt2": [0.04]},
         "section_name": "Alternative Minimum Tax",
         "name": "Increase AMT rate above the surtax threshold by 2 pts",
         "output_type": "_iitax",
@@ -382,7 +382,7 @@
 
     "r40": {
         "start_year": 2015,
-        "value": {"_AMT_tthd": [195400]},
+        "value": {"_AMT_brk1": [195400]},
         "name": "Increase AMT surtax threshold by 10,000",
         "output_type": "_iitax",
         "compare_with": {}

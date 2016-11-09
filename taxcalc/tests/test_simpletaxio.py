@@ -28,7 +28,7 @@ REFORM_CONTENTS = """
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
 {
-    "_AMT_tthd": // AMT taxinc threshold separating the two AMT tax brackets
+    "_AMT_brk1": // top of first AMT tax bracket
     {"2015": [200000],
      "2017": [300000]
     },
@@ -162,11 +162,11 @@ def test_2(input_file,  # pylint: disable=redefined-outer-name
     assert simtax.number_input_lines() == NUM_INPUT_LINES
     # check that reform was implemented as specified above in REFORM_CONTENTS
     syr = simtax.start_year()
-    amt_tthd = simtax._policy._AMT_tthd  # pylint: disable=protected-access
-    assert amt_tthd[2015 - syr] == 200000
-    assert amt_tthd[2016 - syr] > 200000
-    assert amt_tthd[2017 - syr] == 300000
-    assert amt_tthd[2018 - syr] > 300000
+    amt_brk1 = simtax._policy._AMT_brk1  # pylint: disable=protected-access
+    assert amt_brk1[2015 - syr] == 200000
+    assert amt_brk1[2016 - syr] > 200000
+    assert amt_brk1[2017 - syr] == 300000
+    assert amt_brk1[2018 - syr] > 300000
     ii_em = simtax._policy._II_em  # pylint: disable=protected-access
     assert ii_em[2016 - syr] == 6000
     assert ii_em[2017 - syr] == 6000

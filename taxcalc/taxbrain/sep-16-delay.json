@@ -165,7 +165,7 @@
         "replications": 1,
         "start_year": 2016,
         "specification": {
-            "_AMT_trt1": {
+            "_AMT_rt1": {
                 "2020": [0.286]
             }
         }
@@ -174,7 +174,7 @@
         "replications": 1,
         "start_year": 2016,
         "specification": {
-            "_AMT_trt2": {
+            "_AMT_rt2": {
                 "2018": [0.022]
             }
         }
@@ -183,7 +183,7 @@
         "replications": 1,
         "start_year": 2016,
         "specification": {
-            "_AMT_tthd": {
+            "_AMT_brk1": {
                 "2018": [212535.88473]
             }
         }
