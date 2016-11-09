@@ -792,17 +792,17 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
 
 
 @iterate_jit(nopython=True)
-def F2441(MARS, _earned_p, _earned_s, f2441, DCC_c, e32800,
+def F2441(MARS, _earned_p, _earned_s, f2441, CDCC_c, e32800,
           _exact, c00100, CDCC_ps, CDCC_crt, c05800, e07300, c07180):
     """
-    Form 2441 calculation of child & dependent care expense credit, c07180
+    Form 2441 calculation of child and dependent care expense credit, c07180
     """
     c32880 = _earned_p  # earned income of taxpayer
     if MARS == 2:
         c32890 = _earned_s  # earned income of spouse, if present
     else:
         c32890 = _earned_p
-    dclim = min(f2441, 2) * DCC_c
+    dclim = min(f2441, 2) * CDCC_c
     # care expenses are limited by policy
     c32800 = max(0., min(e32800, dclim))
     # credit is limited to minimum of individuals' earned income

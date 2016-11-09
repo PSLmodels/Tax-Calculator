@@ -27,8 +27,6 @@ Tax categories are uppercase:
 
    **CTC**: Child Tax Credit
 
-   **DCC**: Dependent Care Credit
-
    **EITC**: Earned Income Tax Credit
 
    **ETC**: Education Tax Credit
