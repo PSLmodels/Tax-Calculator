@@ -1617,6 +1617,20 @@
         "value": [64]
     },
 
+        "_CTC_c_under5_bonus": {
+        "long_name": "Bonus child tax credit maximum for qualifying children under five",
+        "description": "The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old. ",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
     "_CTC_c": {
         "long_name": "Maximum child tax credit per child",
         "description": "The maximum amount of credit allowed for each child. ",
@@ -1721,6 +1735,21 @@
         "cpi_inflated": false,
         "col_label": "",
         "value": [3000]
+    },
+
+
+    "_ACTC_rt_bonus_under5family": {
+        "long_name": "Bonus additional child tax credit rate for families with qualifying children under 5",
+        "description": "For families with qualifying children under 5 years old, this bonus rate is added to the fraction of earnings used in calculating the ACTC (_ACTC_rt).",
+        "irs_ref": "Form 8812, line 6, inline.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
     },
 
     "_ACTC_rt": {

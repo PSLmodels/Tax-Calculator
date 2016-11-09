@@ -72,6 +72,7 @@ MARS = Marital (filing) status: categorical variable
 MIDR = Married filing separately itemized deductions requirement indicator
 N24 = Number of children eligible for Child Tax Credit
 NU13 = Number of dependents under 13
+NU05 = Number of dependents under 5
 P08000 = Other tax credits
 P22250 = Schedule D: Short-term gains less losses
 P23250 = Schedule D: Long-term gains less losses
