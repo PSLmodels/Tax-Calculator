@@ -55,7 +55,7 @@
 
     "r7": {
         "start_year": 2015,
-        "value": {"_ALD_KEOGH_SEP_HC": [1]},
+        "value": {"_ALD_KEOGH_SEP_hc": [1]},
         "section_name": "ADJUSTMENTS",
         "name": "Net exclusion of KEOGH plan",
         "output_type": "_iitax",
@@ -64,7 +64,7 @@
 
     "r8": {
         "start_year": 2015,
-        "value": {"_ALD_StudentLoan_HC": [1]},
+        "value": {"_ALD_StudentLoan_hc": [1]},
         "name": "Deduction for student loans",
         "output_type": "_iitax",
         "compare_with": {"Tax Expenditure": [1.8, 1.9, 1.9, 2.1]}
@@ -72,7 +72,7 @@
 
     "r9": {
         "start_year": 2015,
-        "value": {"_ALD_SelfEmploymentTax_HC": [1]},
+        "value": {"_ALD_SelfEmploymentTax_hc": [1]},
         "name": "Eliminate adjustment for self-employment tax",
         "output_type": "_iitax",
         "compare_with": {}
@@ -80,7 +80,7 @@
 
     "r10": {
         "start_year": 2015,
-        "value": {"_ALD_SelfEmp_HealthIns_HC": [1]},
+        "value": {"_ALD_SelfEmp_HealthIns_hc": [1]},
         "name": "Eliminate adjustment for self-employed health insurance",
         "output_type": "_iitax",
         "compare_with": {}
@@ -88,7 +88,7 @@
 
     "r11": {
         "start_year": 2015,
-        "value": {"_ALD_Alimony_HC": [1]},
+        "value": {"_ALD_Alimony_hc": [1]},
         "name": "Eliminate adjustment for alimony payments",
         "output_type": "_iitax",
         "compare_with": {}
@@ -96,7 +96,7 @@
 
     "r12": {
         "start_year": 2015,
-        "value": {"_ALD_EarlyWithdraw_HC": [1]},
+        "value": {"_ALD_EarlyWithdraw_hc": [1]},
         "name": "Eliminate adjustment for forfeited interest penalty",
         "output_type": "_iitax",
         "compare_with": {}
@@ -146,7 +146,7 @@
 
     "r18": {
         "start_year": 2015,
-        "value": {"_ID_RealEstate_HC": [1]},
+        "value": {"_ID_RealEstate_hc": [1]},
         "section_name": "ITEMIZED DEDUCTION",
         "name": "Real Estate",
         "output_type": "_iitax",
@@ -155,7 +155,7 @@
 
     "r19": {
         "start_year": 2015,
-        "value": {"_ID_InterestPaid_HC": [1]},
+        "value": {"_ID_InterestPaid_hc": [1]},
         "name": "Home Mortgage",
         "output_type": "_iitax",
         "compare_with": {"Tax Expenditure": [74.8, 81.6, 87.8, 93.2]}
@@ -163,8 +163,8 @@
 
     "r20": {
         "start_year": 2015,
-        "value": {"_ID_StateLocalTax_HC": [1],
-                  "_ID_RealEstate_HC": [1]},
+        "value": {"_ID_StateLocalTax_hc": [1],
+                  "_ID_RealEstate_hc": [1]},
         "name": "Both real estate and state and local",
         "output_type": "_iitax",
         "compare_with": {"Tax Expenditure": [74.8, 81.6, 87.8, 93.2]}
@@ -172,7 +172,7 @@
 
     "r21": {
         "start_year": 2015,
-        "value": {"_ID_StateLocalTax_HC": [1]},
+        "value": {"_ID_StateLocalTax_hc": [1]},
         "name": "State & Local",
         "output_type": "_iitax",
         "compare_with": {"Tax Expenditure": [59.2, 63.0, 66.9, 70.7]}
@@ -180,7 +180,7 @@
 
     "r22": {
         "start_year": 2015,
-        "value": {"_ID_Medical_HC": [1]},
+        "value": {"_ID_Medical_hc": [1]},
         "name": "Medical",
         "output_type": "_iitax",
         "compare_with": {"Tax Expenditure": [11.0, 12.4, 12.7, 13.9]}
@@ -188,7 +188,7 @@
 
     "r23": {
         "start_year": 2015,
-        "value": {"_ID_Casualty_HC": [1]},
+        "value": {"_ID_Casualty_hc": [1]},
         "name": "Casualty",
         "output_type": "_iitax",
         "compare_with": {"Tax Expenditure": [0.4, 0.5, 0.5, 0.5]}
@@ -196,7 +196,7 @@
 
     "r24": {
         "start_year": 2015,
-        "value": {"_ID_Charity_HC": [1]},
+        "value": {"_ID_Charity_hc": [1]},
         "name": "Charitable",
         "output_type": "_iitax",
         "compare_with": {"Tax Expenditure": [45.6, 47.0, 48.5, 50.1]}

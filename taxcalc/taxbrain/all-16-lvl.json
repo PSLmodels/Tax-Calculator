@@ -9,22 +9,22 @@
             "_ACTC_rt": {
                 "2016": [0.165]
             },
-            "_ALD_Alimony_HC": {
+            "_ALD_Alimony_hc": {
                 "2016": [0.0]
             },
-            "_ALD_EarlyWithdraw_HC": {
+            "_ALD_EarlyWithdraw_hc": {
                 "2016": [0.0]
             },
-            "_ALD_KEOGH_SEP_HC": {
+            "_ALD_KEOGH_SEP_hc": {
                 "2016": [0.0]
             },
-            "_ALD_SelfEmp_HealthIns_HC": {
+            "_ALD_SelfEmp_HealthIns_hc": {
                 "2016": [0.0]
             },
-            "_ALD_SelfEmploymentTax_HC": {
+            "_ALD_SelfEmploymentTax_hc": {
                 "2016": [0.0]
             },
-            "_ALD_StudentLoan_HC": {
+            "_ALD_StudentLoan_hc": {
                 "2016": [0.0]
             },
             "_AMEDT_ec": {
@@ -141,10 +141,10 @@
             "_ID_Miscellaneous_frt": {
                 "2016": [0.022]
             },
-            "_ID_RealEstate_HC": {
+            "_ID_RealEstate_hc": {
                 "2016": [0.0]
             },
-            "_ID_StateLocalTax_HC": {
+            "_ID_StateLocalTax_hc": {
                 "2016": [0.0]
             },
             "_ID_crt": {

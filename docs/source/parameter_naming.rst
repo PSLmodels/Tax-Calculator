@@ -45,7 +45,9 @@ Tax categories are uppercase:
 
    **NIIT**: Net Investment Income Tax
 
-   **SS**: Social Security (meaning OASDI)
+   **PT**: Pass-Through Income
+
+   **SS**: Social Security
 
    **STD**: Standard Deduction
 
@@ -65,7 +67,7 @@ usually lowercase:
 
    **f**: floor (or use **Min** especially for integer variables)
 
-   **HC**: haircut
+   **hc**: haircut
 
    **p**: phaseout
 
