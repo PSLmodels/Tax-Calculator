@@ -91,7 +91,7 @@ def create_dropq_difference_table(df1, df2, groupby, res_col, diff_col,
     # Negative values are the magnitude of the tax decrease
     df2[res_col + suffix] = df2[diff_col + suffix] - df1[diff_col]
 
-    diffs = means_and_comparisons(df2, res_col + suffix,
+    diffs = means_and_comparisons(res_col + suffix,
                                   df.groupby('bins', as_index=False),
                                   wsum + EPSILON)
 
