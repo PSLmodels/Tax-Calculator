@@ -559,9 +559,9 @@
         "value": [0.0]
     },
 
-    "_AMED_ec": {
+    "_AMEDT_ec": {
         "long_name": "Additional Medicare Tax earnings exclusion",
-        "description": "The Additional Medicare Tax rate, _AMED_trt, applies to all earnings in excess of this excluded amount.",
+        "description": "The Additional Medicare Tax rate, _AMEDT_rt, applies to all earnings in excess of this excluded amount.",
         "irs_ref": "Form 8959, line 5, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -572,9 +572,9 @@
         "value": [[200000, 250000, 125000, 200000, 200000, 125000]]
     },
 
-    "_AMED_trt": {
+    "_AMEDT_rt": {
         "long_name": "Additional Medicare Tax rate",
-        "description": "This is the rate applied to the portion of Medicare wages, RRTA compensation and self-employment income exceeding additional Medicare threshold.",
+        "description": "This is the rate applied to the portion of Medicare wages, RRTA compensation and self-employment income exceeding the Additional Medicare Tax earning exclusion.",
         "irs_ref": "Form 8959, line 7, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -1385,8 +1385,8 @@
     },
 
     "_NIIT_thd": {
-        "long_name": "Net Investment Income Tax income threshold",
-        "description": "If MAGI (modified AGI) is more than this threshold, filing unit is subject to the Net Investment Income Tax.",
+        "long_name": "Net Investment Income Tax modified AGI threshold",
+        "description": "If modified AGI is more than this threshold, filing unit is subject to the Net Investment Income Tax.",
         "irs_ref": "Form 8960, line 14, instructions. ",
         "notes": "",
         "start_year": 2013,
@@ -1412,9 +1412,9 @@
         "value": [0]
     },
 
-    "_NIIT_trt": {
+    "_NIIT_rt": {
         "long_name": "Net Investment Income Tax rate",
-        "description": "The amount by which MAGI exceeds _NIIT_thd is taxed at this rate.",
+        "description": "If modified AGI exceeds _NIIT_thd, all net investment income is taxed at this rate.",
         "irs_ref": "Form 8960, line 21, in-line. ",
         "notes": "",
         "start_year": 2013,

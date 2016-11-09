@@ -379,7 +379,7 @@ def ItemDed(e17500, e18400, e18500,
 
 @iterate_jit(nopython=True)
 def AdditionalMedicareTax(e00200, MARS,
-                          AMED_ec, _sey, AMED_trt,
+                          AMEDT_ec, _sey, AMEDT_rt,
                           FICA_mc_trt, FICA_ss_trt,
                           ptax_amc, _payrolltax):
     """
@@ -388,9 +388,9 @@ def AdditionalMedicareTax(e00200, MARS,
     Notes
     -----
     Tax Law Parameters:
-        AMED_ec : Additional Medicare Tax earnings exclusion
+        AMEDT_ec : Additional Medicare Tax earnings exclusion
 
-        AMED_trt : Additional Medicare Tax rate
+        AMEDT_rt : Additional Medicare Tax rate
 
         FICA_ss_trt : FICA Social Security tax rate
 
@@ -408,8 +408,8 @@ def AdditionalMedicareTax(e00200, MARS,
     _payrolltax : payroll tax augmented by Additional Medicare Tax
     """
     line8 = max(0., _sey) * (1. - 0.5 * (FICA_mc_trt + FICA_ss_trt))
-    line11 = max(0., AMED_ec[MARS - 1] - e00200)
-    ptax_amc = AMED_trt * (max(0., e00200 - AMED_ec[MARS - 1]) +
+    line11 = max(0., AMEDT_ec[MARS - 1] - e00200)
+    ptax_amc = AMEDT_rt * (max(0., e00200 - AMEDT_ec[MARS - 1]) +
                            max(0., line8 - line11))
     _payrolltax = _payrolltax + ptax_amc
     return (ptax_amc, _payrolltax)
@@ -775,7 +775,7 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
 
 @iterate_jit(nopython=True)
 def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
-                 c00100, NIIT_thd, MARS, NIIT_PT_taxed, NIIT_trt, NIIT):
+                 c00100, NIIT_thd, MARS, NIIT_PT_taxed, NIIT_rt, NIIT):
     """
     NetInvIncTax function computes Net Investment Income Tax amount
     (assume all annuity income is excluded from net investment income)
@@ -785,7 +785,7 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
         NII = max(0., e00300 + e00600 + c01000 + e02000 - e26270)
     else:  # do not subtract e26270 from e02000
         NII = max(0., e00300 + e00600 + c01000 + e02000)
-    NIIT = NIIT_trt * min(NII, max(0., modAGI - NIIT_thd[MARS - 1]))
+    NIIT = NIIT_rt * min(NII, max(0., modAGI - NIIT_thd[MARS - 1]))
     return NIIT
 
 

@@ -198,7 +198,7 @@ Tax-Calculator,0.0,0.0,0.0,0.0
 ""
 OTHER TAXES
 ""
-Net investment income tax, total
+Eliminate Net Investment Income Tax
 Tax-Calculator,-25.6,-26.2,-26.8,-27.4
 Tax Expenditure,-33,-35,-37,-39
 ""

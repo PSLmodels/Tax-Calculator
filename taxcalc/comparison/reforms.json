@@ -26,7 +26,7 @@
 
     "r4": {
         "start_year": 2015,
-        "value": {"_AMED_ec": [[210000, 260000, 135000, 210000, 210000, 135000]]},
+        "value": {"_AMEDT_ec": [[210000, 260000, 135000, 210000, 210000, 135000]]},
         "name": "Increase the Additional Medicare Tax exclusion by 10,000",
         "output_type": "_payrolltax",
         "compare_with": {}
@@ -34,7 +34,7 @@
 
     "r5": {
         "start_year": 2015,
-        "value": {"_AMED_trt": [0.01]},
+        "value": {"_AMEDT_rt": [0.01]},
         "name": "Increase the Additional Medicare Tax rate by 0.1 pts",
         "output_type": "_payrolltax",
         "compare_with": {}
@@ -464,9 +464,9 @@
 
     "r50": {
         "start_year": 2015,
-        "value": {"_NIIT_trt": [0]},
+        "value": {"_NIIT_rt": [0]},
         "section_name": "OTHER TAXES",
-        "name": "Net investment income tax, total",
+        "name": "Eliminate Net Investment Income Tax",
         "output_type": "_iitax",
         "compare_with": {"Tax Expenditure": [-32.6, -34.7, -36.6, -38.9]}
     },
