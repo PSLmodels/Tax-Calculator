@@ -1617,7 +1617,7 @@
         "value": [64]
     },
 
-        "_CTC_c_under5_bonus": {
+    "_CTC_c_under5_bonus": {
         "long_name": "Bonus child tax credit maximum for qualifying children under five",
         "description": "The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old. ",
         "irs_ref": "",
