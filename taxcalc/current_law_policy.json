@@ -1426,8 +1426,8 @@
         "value": [0.038]
     },
 
-    "_DCC_c": {
-        "long_name": "Max dependent care credit per dependent",
+    "_CDCC_c": {
+        "long_name": "Maximum child & dependent care credit per dependent",
         "description": "The maximum amount of credit allowed for each qualifying dependent.",
         "irs_ref": "Form 2441, line 3c, in-line.",
         "notes": "",
@@ -1441,8 +1441,8 @@
     },
 
     "_CDCC_ps": {
-        "long_name": "Child and dependent care credit phaseout start",
-        "description": "For taxpayers with AGI over this amount, the credit, under the current law, is reduced by one percentage point each $2000 of AGI over this amount. ",
+        "long_name": "Child & dependent care credit phaseout start",
+        "description": "For taxpayers with AGI over this amount, the credit is reduced by one percentage point each $2000 of AGI over this amount. ",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -1453,8 +1453,8 @@
     },
 
     "_CDCC_crt": {
-        "long_name": "Maximum child and dependent care credit rate",
-        "description": "This rate is the maximum rate that applied on AGI for child and dependent care credit; This rate decreases as AGI goes up.",
+        "long_name": "Child & dependent care credit phaseout percentage rate ceiling",
+        "description": "The maximum percentage rate in the AGI phaseout; this percentage rate decreases as AGI rises above the _CDCC_ps level.",
         "irs_ref": "Form 2241, line 8, in-line.",
         "notes": "",
         "start_year": 2013,
