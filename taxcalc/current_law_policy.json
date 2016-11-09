@@ -47,7 +47,7 @@
         "value": [0.029]
     },
 
-    "_ALD_StudentLoan_HC": {
+    "_ALD_StudentLoan_hc": {
         "long_name": "Adjustment for student loan interest haircut",
         "description": "This decimal fraction can be applied to limit the student loan interest adjustment allowed. ",
         "irs_ref": "Form 1040, line 33",
@@ -61,7 +61,7 @@
         "value": [0.0]
     },
 
-    "_ALD_SelfEmploymentTax_HC": {
+    "_ALD_SelfEmploymentTax_hc": {
         "long_name": "Adjustment for self-employment tax haircut",
         "description": "This decimal fraction, if greater than zero, reduces the employer equivalent portion of self-employment adjustment. ",
         "irs_ref": "Form 1040, line 27",
@@ -75,7 +75,7 @@
         "value": [0.0]
     },
 
-    "_ALD_SelfEmp_HealthIns_HC": {
+    "_ALD_SelfEmp_HealthIns_hc": {
         "long_name": "Adjustment for self employed health insurance haircut",
         "description": "This decimal fraction, if greater than zero, reduces the health insurance adjustment for self-employed taxpayers. ",
         "irs_ref": "Form 1040, line 29",
@@ -89,7 +89,7 @@
         "value": [0.0]
     },
 
-    "_ALD_KEOGH_SEP_HC": {
+    "_ALD_KEOGH_SEP_hc": {
         "long_name": "Adjustment for payment to either KEOGH or SEP plan haircut",
         "description": "Under current law, payments to Keogh or SEP plans can be fully deducted from gross income. Taxpayers can use this haircut to limit the adjustment allowed. ",
         "irs_ref": "Form 1040, line 25",
@@ -103,7 +103,7 @@
         "value": [0.0]
     },
 
-    "_ALD_EarlyWithdraw_HC": {
+    "_ALD_EarlyWithdraw_hc": {
         "long_name": "Adjustment for forfeited interest penalty haircut",
         "description": "Under current law, early withdraw penalty can be fully deducted from gross income. Taxpayers can use this haircut to limit the adjustment allowed.",
         "irs_ref": "Form 1040, line 30",
@@ -117,7 +117,7 @@
         "value": [0.0]
     },
 
-    "_ALD_Alimony_HC": {
+    "_ALD_Alimony_hc": {
         "long_name": "Adjustment for alimony payment haircut",
         "description": "Under current law, the full amount of alimony payment is taken as an adjustment from gross income in arriving at AGI. Taxpayers can use this haircut to limit the deduction allowed.",
         "irs_ref": "Form 1040, line 31",
@@ -131,11 +131,11 @@
         "value": [0.0]
     },
 
-    "_ALD_Investment_ec": {
-        "long_name": "Investment income exclusion",
-        "description": "This decimal fraction can be applied to limit the investment income included in AGI. ",
+    "_ALD_Investment_ec_rt": {
+        "long_name": "Investment income exclusion rate",
+        "description": "Decimal fraction of investment income that can be excluded from AGI.",
         "irs_ref": "Form 1040, line 8a",
-        "notes": "The final taxable investment income will be (1-_ALD_Investment_ec)*Investment income. Even though the excluded portion of investment income is not included in AGI, it still is included in investment income used to calculate Net Investment Income Tax and Earned Income Tax Credit.",
+        "notes": "The final taxable investment income will be (1-_ALD_Investment_ec_rt)*investment_income. Even though the excluded portion of investment income is not included in AGI, it still is included in investment income used to calculate the Net Investment Income Tax and Earned Income Tax Credit.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -145,7 +145,7 @@
         "value": [0.0]
     },
 
-    "_ALD_Dependents_HC": {
+    "_ALD_Dependents_hc": {
         "long_name": "Deduction for childcare costs",
         "description": "This decimal fraction, if greater than zero, reduces the portion of childcare costs that can be deducted from AGI",
         "irs_ref": "",
@@ -386,7 +386,7 @@
         "validations": {"min": -0.025, "max": 0.0}
     },
 
-    "_ID_Medical_HC": {
+    "_ID_Medical_hc": {
         "long_name": "Medical expense deduction haircut",
         "description": "This decimal fraction can be applied to limit the amount of medical expense deduction allowed.",
         "irs_ref": "",
@@ -400,7 +400,7 @@
         "value": [0.0]
     },
 
-    "_ID_StateLocalTax_HC": {
+    "_ID_StateLocalTax_hc": {
         "long_name": "State and local taxes (Income and Sales) deduction haircut.",
         "description": "This decimal fraction reduces the state and local tax deduction.",
         "irs_ref": "",
@@ -414,7 +414,7 @@
         "value": [0.0]
     },
 
-    "_ID_RealEstate_HC": {
+    "_ID_RealEstate_hc": {
         "long_name": "Real estate taxes deduction haircut.",
         "description": "This decimal fraction reduces real estate taxes paid eligible to deduct in itemized deduction.",
         "irs_ref": "",
@@ -428,7 +428,7 @@
         "value": [0.0]
     },
 
-    "_ID_InterestPaid_HC": {
+    "_ID_InterestPaid_hc": {
         "long_name": "Interest deduction haircut",
         "description": "This decimal fraction can be applied to limit the amount of interest deduction allowed.",
         "irs_ref": "",
@@ -487,7 +487,7 @@
         "validations": {"max": "default"}
     },
 
-    "_ID_Charity_HC": {
+    "_ID_Charity_hc": {
         "long_name": "Charity expense deduction haircut",
         "description": "This decimal fraction can be applied to limit the amount of charity expense deduction allowed.",
         "irs_ref": "",
@@ -516,7 +516,7 @@
         "validations": {"min": "default"}
     },
 
-    "_ID_Casualty_HC": {
+    "_ID_Casualty_hc": {
         "long_name": "Casualty expense deduction haircut",
         "description": "This decimal fraction can be applied to limit the amount of casualty expense deduction allowed.",
         "irs_ref": "",
@@ -545,7 +545,7 @@
         "validations": {"min": "default"}
     },
 
-    "_ID_Miscellaneous_HC": {
+    "_ID_Miscellaneous_hc": {
         "long_name": "Miscellaneous expense deduction haircut",
         "description": "This decimal fraction can be applied to limit the amount of miscellaneous expense deduction allowed.",
         "irs_ref": "",
@@ -559,9 +559,9 @@
         "value": [0.0]
     },
 
-    "_AMED_thd": {
-        "long_name": "Additional Medicare threshold",
-        "description": "If their Medicare wages, RRTA compensation and self-employment income is above this threshold, taxpayers are subject to additional Medicare tax.",
+    "_AMEDT_ec": {
+        "long_name": "Additional Medicare Tax earnings exclusion",
+        "description": "The Additional Medicare Tax rate, _AMEDT_rt, applies to all earnings in excess of this excluded amount.",
         "irs_ref": "Form 8959, line 5, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -572,9 +572,9 @@
         "value": [[200000, 250000, 125000, 200000, 200000, 125000]]
     },
 
-    "_AMED_trt": {
-        "long_name": "Additional Medicare tax rate",
-        "description": "This is the rate applied to the portion of Medicare wages, RRTA compensation and self-employment income exceeding additional Medicare threshold.",
+    "_AMEDT_rt": {
+        "long_name": "Additional Medicare Tax rate",
+        "description": "This is the rate applied to the portion of Medicare wages, RRTA compensation and self-employment income exceeding the Additional Medicare Tax earning exclusion.",
         "irs_ref": "Form 8959, line 7, in-line. ",
         "start_year": 2013,
         "col_var": "",
@@ -1021,9 +1021,9 @@
         "value": [1.0]
     },
 
-    "_CG_thd1": {
-        "long_name": "Long term capital gain and qualified dividends threshold 1",
-        "description": "The capital gain and dividends (stacked on top of regular income)  below this threshold are taxed at capital gain rate 1. ",
+    "_CG_brk1": {
+        "long_name": "Top of long-term capital gains and qualified dividends tax bracket 1",
+        "description": "The gains and dividends (stacked on top of regular income) below this are taxed at capital gain rate 1. ",
         "irs_ref": "Form 1040 Schedule D tax worksheet, line 15, in-line. ",
         "start_year": 2013,
         "col_var": "MARS",
@@ -1040,9 +1040,9 @@
                   [37650, 75300, 37650, 50400, 75300, 37650]]
     },
 
-    "_CG_thd2": {
-        "long_name": "Long term capital gain and qualified dividend threshold 2",
-        "description": "The capital gain and dividends (stacked on top of regular income) below this threshold and above threshold 1 are taxed at capital gain rate 2.",
+    "_CG_brk2": {
+        "long_name": "Top of long-term capital gains and qualified dividends tax bracket 2",
+        "description": "The gains and dividends (stacked on top of regular income) below this and above top of bracket 1 are taxed at capital gain rate 2.",
         "irs_ref": "Form 1040 Schedule D tax worksheet, line 24, in-line. ",
         "start_year": 2013,
         "col_var": "MARS",
@@ -1059,9 +1059,9 @@
                   [415050, 466950, 233475, 441000, 466950, 233475]]
     },
 
-    "_CG_thd3": {
-        "long_name": "Long term capital gain and qualified dividend threshold 3",
-        "description": "The capital gain and dividends (stacked on top of regular income) below this threshold and above threshold 2 are taxed at the capital gain rate 3; above this threshold are taxed at capital gain rate 4.  Default value is essentially infinity.",
+    "_CG_brk3": {
+        "long_name": "Top of long-term capital gains and qualified dividend tax bracket 3",
+        "description": "The gains and dividends (stacked on top of regular income) below this and above top of bracket 2 are taxed at the capital gain rate 3; above this they are taxed at capital gain rate 4.  Default value is essentially infinity.",
         "irs_ref": "Form 1040 Schedule D tax worksheet, line 24, in-line. ",
         "start_year": 2013,
         "col_var": "MARS",
@@ -1121,9 +1121,9 @@
         "value": [24]
     },
 
-    "_AMT_tthd": {
-        "long_name": "AMT surtax threshold",
-        "description": "This threshold separates the 26%* and 28%* AMT tax rates: in order to get tentative minimum tax, income below this level is subject to 26% tax rate and above this level subject at 28%.",
+    "_AMT_brk1": {
+        "long_name": "AMT tax bracket (upper threshold) 1",
+        "description": "AMT taxable income below this is subject to _AMT_rt1 and above it is subject to _AMT_rt1 + _AMT_rt2.",
         "irs_ref": "Form 6251, line 31, instruction.",
         "notes": "",
         "start_year": 2013,
@@ -1191,9 +1191,9 @@
         "value": [0.25]
     },
 
-    "_AMT_trt1": {
-        "long_name": "AMT rate for AMT taxable income under the surtax threshold",
-        "description": "The tax rate applied to the portion of AMT income below the surtax threshold. ",
+    "_AMT_rt1": {
+        "long_name": "AMT rate for AMT taxable income below _AMT_brk1",
+        "description": "The tax rate applied to the portion of AMT taxable income below the surtax threshold, _AMT_brk1.",
         "irs_ref": "Form 6251, line 31, in-line. ",
         "notes": "",
         "start_year": 2013,
@@ -1205,11 +1205,11 @@
         "value": [0.26]
     },
 
-    "_AMT_trt2": {
-        "long_name": "Additional AMT rate for AMT taxable income above the surtax threshold",
-        "description": "The tax rate applied to the portion of AMT income above the surtax threshold.",
+    "_AMT_rt2": {
+        "long_name": "Additional AMT rate for AMT taxable income above _AMT_brk1",
+        "description": "The additional tax rate applied to the portion of AMT income above the _AMT_brk1.",
         "irs_ref": "Form 6251, line 31, in-line. ",
-        "notes": "This is the additional tax rate (on top of .26) for AMT income",
+        "notes": "This is the additional tax rate (on top of _AMT_rt1) for AMT income above _AMT_brk1",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -1327,9 +1327,9 @@
         "value": [1.0]
     },
 
-    "_AMT_CG_thd1": {
-        "long_name": "Long term capital gain and qualified dividend threshold 1",
-        "description": "The capital gain plus dividends portion, stacked last, of income below this threshold is taxed at capital gain rate 1.",
+    "_AMT_CG_brk1": {
+        "long_name": "Top of long-term capital gains and qualified dividends AMT tax bracket 1",
+        "description": "The gains and dividends, stacked last, of AMT taxable income below this are taxed at AMT capital gain rate 1.",
         "irs_ref": "Form 6251, line 43, in-line. ",
         "start_year": 2013,
         "col_var": "MARS",
@@ -1346,9 +1346,9 @@
                   [37650, 75300, 37650, 50400, 75300, 37650]]
     },
 
-    "_AMT_CG_thd2": {
-        "long_name": "Long term capital gain and qualified dividend threshold 2",
-        "description": "The capital gain plus dividends portion, stacked last, of income below this threshold and above threshold 1 is taxed at capital gain rate 2.",
+    "_AMT_CG_brk2": {
+        "long_name": "Top of long-term capital gains and qualified dividends AMT tax bracket 2",
+        "description": "The gains and dividends, stacked last, of AMT taxable income below this threshold and above bracket 1 are taxed at AMT capital gain rate 2.",
         "irs_ref": "Form 6251, line 49, in-line. ",
         "start_year": 2013,
         "col_var": "MARS",
@@ -1365,9 +1365,9 @@
                   [415050, 466950, 233475, 441000, 466950, 233475]]
     },
 
-    "_AMT_CG_thd3": {
+    "_AMT_CG_brk3": {
         "long_name": "Long term capital gain and qualified dividend threshold 3",
-        "description": "The capital gain plus dividends portion, stacked last, of income below this threshold and above threshold 2 is taxed at capital gain rate 3; above this threshold taxed at capital gain rate 4.  Default value is essentially infinity.",
+        "description": "The gains and dividends, stacked last, of AMT taxable income below this and above bracket 2 are taxed at capital gain rate 3; above thisthey are taxed at AMT capital gain rate 4.  Default value is essentially infinity.",
         "irs_ref": "Form 6251, line 49, in-line. ",
         "start_year": 2013,
         "col_var": "MARS",
@@ -1385,8 +1385,8 @@
     },
 
     "_NIIT_thd": {
-        "long_name": "Net Investment Income Tax income threshold",
-        "description": "If MAGI (modified AGI) is more than this threshold, filing unit is subject to the Net Investment Income Tax.",
+        "long_name": "Net Investment Income Tax modified AGI threshold",
+        "description": "If modified AGI is more than this threshold, filing unit is subject to the Net Investment Income Tax.",
         "irs_ref": "Form 8960, line 14, instructions. ",
         "notes": "",
         "start_year": 2013,
@@ -1412,9 +1412,9 @@
         "value": [0]
     },
 
-    "_NIIT_trt": {
+    "_NIIT_rt": {
         "long_name": "Net Investment Income Tax rate",
-        "description": "The amount by which MAGI exceeds _NIIT_thd is taxed at this rate.",
+        "description": "If modified AGI exceeds _NIIT_thd, all net investment income is taxed at this rate.",
         "irs_ref": "Form 8960, line 21, in-line. ",
         "notes": "",
         "start_year": 2013,
@@ -1426,8 +1426,8 @@
         "value": [0.038]
     },
 
-    "_DCC_c": {
-        "long_name": "Max dependent care credit per dependent",
+    "_CDCC_c": {
+        "long_name": "Maximum child & dependent care credit per dependent",
         "description": "The maximum amount of credit allowed for each qualifying dependent.",
         "irs_ref": "Form 2441, line 3c, in-line.",
         "notes": "",
@@ -1441,8 +1441,8 @@
     },
 
     "_CDCC_ps": {
-        "long_name": "Child and dependent care credit phaseout start",
-        "description": "For taxpayers with AGI over this amount, the credit, under the current law, is reduced by one percentage point each $2000 of AGI over this amount. ",
+        "long_name": "Child & dependent care credit phaseout start",
+        "description": "For taxpayers with AGI over this amount, the credit is reduced by one percentage point each $2000 of AGI over this amount. ",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -1453,8 +1453,8 @@
     },
 
     "_CDCC_crt": {
-        "long_name": "Maximum child and dependent care credit rate",
-        "description": "This rate is the maximum rate that applied on AGI for child and dependent care credit; This rate decreases as AGI goes up.",
+        "long_name": "Child & dependent care credit phaseout percentage rate ceiling",
+        "description": "The maximum percentage rate in the AGI phaseout; this percentage rate decreases as AGI rises above the _CDCC_ps level.",
         "irs_ref": "Form 2241, line 8, in-line.",
         "notes": "",
         "start_year": 2013,
@@ -1617,7 +1617,7 @@
         "value": [64]
     },
 
-        "_CTC_c_under5_bonus": {
+    "_CTC_c_under5_bonus": {
         "long_name": "Bonus child tax credit maximum for qualifying children under five",
         "description": "The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old. ",
         "irs_ref": "",

@@ -3,10 +3,10 @@
         "replications": 1,
         "start_year": 2016,
         "specification": {
-            "_AMT_CG_thd1_cpi": {
+            "_AMT_CG_brk1_cpi": {
                 "2016": false
             },
-            "_AMT_CG_thd2_cpi": {
+            "_AMT_CG_brk2_cpi": {
                 "2016": false
             },
             "_AMT_em_cpi": {
@@ -15,13 +15,13 @@
             "_AMT_em_ps_cpi": {
                 "2016": false
             },
-            "_AMT_tthd_cpi": {
+            "_AMT_brk1_cpi": {
                 "2016": false
             },
-            "_CG_thd1_cpi": {
+            "_CG_brk1_cpi": {
                 "2016": false
             },
-            "_CG_thd2_cpi": {
+            "_CG_brk2_cpi": {
                 "2016": false
             },
             "_EITC_c_cpi": {

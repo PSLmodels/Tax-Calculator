@@ -12,7 +12,7 @@ Increase the payroll tax rate for Medicare (HI) by 1pts
 Tax-Calculator,74.6,78.2,81.6,85.0
 Budget Options,73,77,82,87
 ""
-Increase the Additional Medicare Tax threshold by 10,000
+Increase the Additional Medicare Tax exclusion by 10,000
 Tax-Calculator,-0.3,-0.3,-0.3,-0.4
 ""
 Increase the Additional Medicare Tax rate by 0.1 pts
@@ -198,7 +198,7 @@ Tax-Calculator,0.0,0.0,0.0,0.0
 ""
 OTHER TAXES
 ""
-Net investment income tax, total
+Eliminate Net Investment Income Tax
 Tax-Calculator,-25.6,-26.2,-26.8,-27.4
 Tax Expenditure,-33,-35,-37,-39
 ""

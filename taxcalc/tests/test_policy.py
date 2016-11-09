@@ -508,7 +508,7 @@ REFORM_CONTENTS = """
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
 {
-    "_AMT_tthd": // AMT taxinc threshold separating the two AMT tax brackets
+    "_AMT_brk1": // top of first AMT tax bracket
     {"2015": [200000],
      "2017": [300000]
     },
@@ -568,11 +568,11 @@ def test_read_json_reform_file_and_implement_reform(reform_file, set_year):
         policy.set_year(2015)
     policy.implement_reform(reform)
     syr = policy.start_year
-    amt_tthd = policy._AMT_tthd
-    assert amt_tthd[2015 - syr] == 200000
-    assert amt_tthd[2016 - syr] > 200000
-    assert amt_tthd[2017 - syr] == 300000
-    assert amt_tthd[2018 - syr] > 300000
+    amt_brk1 = policy._AMT_brk1
+    assert amt_brk1[2015 - syr] == 200000
+    assert amt_brk1[2016 - syr] > 200000
+    assert amt_brk1[2017 - syr] == 300000
+    assert amt_brk1[2018 - syr] > 300000
     ii_em = policy._II_em
     assert ii_em[2016 - syr] == 6000
     assert ii_em[2017 - syr] == 6000

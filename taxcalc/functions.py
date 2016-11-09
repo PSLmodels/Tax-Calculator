@@ -20,7 +20,7 @@ from .decorators import iterate_jit, jit
 
 @iterate_jit(nopython=True)
 def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
-                  FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_HC,
+                  FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_hc,
                   e00900p, e00900s, e02100p, e02100s,
                   _payrolltax, ptax_was, setax, c03260, ptax_oasdi,
                   _sey, _earned, _earned_p, _earned_s):
@@ -68,19 +68,19 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     # compute _earned* variables and AGI deduction for
     # "employer share" of self-employment tax, c03260
     # Note: c03260 is the amount on 2015 Form 1040, line 27
-    c03260 = (1. - ALD_SelfEmploymentTax_HC) * 0.5 * setax
+    c03260 = (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax
     _earned = max(0., e00200 + _sey - c03260)
     _earned_p = max(0., (e00200p + sey_p -
-                         (1. - ALD_SelfEmploymentTax_HC) * 0.5 * setax_p))
+                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_p))
     _earned_s = max(0., (e00200s + sey_s -
-                         (1. - ALD_SelfEmploymentTax_HC) * 0.5 * setax_s))
+                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_s))
     return (_sey, _payrolltax, ptax_was, setax, c03260, ptax_oasdi,
             _earned, _earned_p, _earned_s)
 
 
 @iterate_jit(nopython=True)
 def DependentCare(nu13, elderly_dependent, _earned,
-                  MARS, ALD_Dependents_thd, ALD_Dependents_HC,
+                  MARS, ALD_Dependents_thd, ALD_Dependents_hc,
                   ALD_Dependents_Child_c, ALD_Dependents_Elder_c,
                   care_deduction):
     """
@@ -92,7 +92,7 @@ def DependentCare(nu13, elderly_dependent, _earned,
     _earned: Form 2441 earned income amount
     MARS: Marital Status
     ALD_Dependents_thd: Maximum income to qualify for deduction
-    ALD_Dependents_HC: Deduction for dependent care haircut
+    ALD_Dependents_hc: Deduction for dependent care haircut
     ALD_Dependents_Child_c: National weighted average cost of childcare
     ALD_Dependents_Elder_c: Eldercare deduction ceiling
 
@@ -103,9 +103,9 @@ def DependentCare(nu13, elderly_dependent, _earned,
     """
 
     if _earned <= ALD_Dependents_thd[MARS - 1]:
-        care_deduction = (((1. - ALD_Dependents_HC) * nu13 *
+        care_deduction = (((1. - ALD_Dependents_hc) * nu13 *
                            ALD_Dependents_Child_c) +
-                          ((1. - ALD_Dependents_HC) * elderly_dependent *
+                          ((1. - ALD_Dependents_hc) * elderly_dependent *
                            ALD_Dependents_Elder_c))
     else:
         care_deduction = 0.
@@ -116,8 +116,8 @@ def DependentCare(nu13, elderly_dependent, _earned,
 def Adj(e03150, e03210, c03260,
         e03270, e03300, e03400, e03500,
         e03220, e03230, e03240, e03290, care_deduction,
-        ALD_StudentLoan_HC, ALD_SelfEmp_HealthIns_HC, ALD_KEOGH_SEP_HC,
-        ALD_EarlyWithdraw_HC, ALD_Alimony_HC,
+        ALD_StudentLoan_hc, ALD_SelfEmp_HealthIns_hc, ALD_KEOGH_SEP_hc,
+        ALD_EarlyWithdraw_hc, ALD_Alimony_hc,
         c02900):
     """
     Adj calculated Form 1040 adjustments
@@ -150,17 +150,17 @@ def Adj(e03150, e03210, c03260,
         care_deduction : Deduction for dependent care
 
     Tax law parameters:
-        ALD_StudentLoan_HC : Deduction for student loan interest haircut
+        ALD_StudentLoan_hc : Deduction for student loan interest haircut
 
-        ALD_SelfEmp_HealthIns_HC :
+        ALD_SelfEmp_HealthIns_hc :
         Deduction for self employed health insurance haircut
 
-        ALD_KEOGH_SEP_HC :
+        ALD_KEOGH_SEP_hc :
         Deduction for payment to either KEOGH or SEP plan haircut
 
-        ALD_EarlyWithdraw_HC : Deduction for forfeited interest penalty haricut
+        ALD_EarlyWithdraw_hc : Deduction for forfeited interest penalty haricut
 
-        ALD_Alimony_HC : Deduction for alimony payment haircut
+        ALD_Alimony_hc : Deduction for alimony payment haircut
 
     Returns
     -------
@@ -169,18 +169,18 @@ def Adj(e03150, e03210, c03260,
     # Form 2555 foreign earned income deduction is always zero
     # Form 1040 adjustments
     c02900 = (e03150 +
-              (1. - ALD_StudentLoan_HC) * e03210 +
+              (1. - ALD_StudentLoan_hc) * e03210 +
               c03260 +
-              (1. - ALD_SelfEmp_HealthIns_HC) * e03270 +
-              (1. - ALD_KEOGH_SEP_HC) * e03300 +
-              (1. - ALD_EarlyWithdraw_HC) * e03400 +
-              (1. - ALD_Alimony_HC) * e03500 +
+              (1. - ALD_SelfEmp_HealthIns_hc) * e03270 +
+              (1. - ALD_KEOGH_SEP_hc) * e03300 +
+              (1. - ALD_EarlyWithdraw_hc) * e03400 +
+              (1. - ALD_Alimony_hc) * e03500 +
               e03220 + e03230 + e03240 + e03290 + care_deduction)
     return c02900
 
 
 @iterate_jit(nopython=True)
-def CapGains(p23250, p22250, _sep, ALD_Investment_ec, ALD_StudentLoan_HC,
+def CapGains(p23250, p22250, _sep, ALD_Investment_ec_rt, ALD_StudentLoan_hc,
              e00200, e00300, e00600, e00650, e00700, e00800,
              CG_nodiff, CG_ec, CG_reinvest_ec_rt,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
@@ -195,8 +195,8 @@ def CapGains(p23250, p22250, _sep, ALD_Investment_ec, ALD_StudentLoan_HC,
     c01000 = max((-3000. / _sep), c23650)
     # compute ymod1 variable that is included in AGI
     ymod1 = (e00200 + e00700 + e00800 + e00900 + e01400 + e01700 +
-             (1. - ALD_Investment_ec) * (e00300 + e00600 +
-                                         c01000 + e01100 + e01200) +
+             (1. - ALD_Investment_ec_rt) * (e00300 + e00600 +
+                                            c01000 + e01100 + e01200) +
              e02000 + e02100 + e02300)
     if CG_nodiff:
         # apply QDIV+CG exclusion if QDIV+LTCG receive no special tax treatment
@@ -206,7 +206,7 @@ def CapGains(p23250, p22250, _sep, ALD_Investment_ec, ALD_StudentLoan_HC,
         ymod1 = max(0., ymod1 - qdcg_exclusion)
     # compute ymod variable that is used in OASDI benefit taxation logic
     ymod2 = e00400 + (0.50 * e02400) - c02900
-    ymod3 = (1. - ALD_StudentLoan_HC) * e03210 + e03230 + e03240
+    ymod3 = (1. - ALD_StudentLoan_hc) * e03210 + e03230 + e03240
     ymod = ymod1 + ymod2 + ymod3
     return (c01000, c23650, ymod, ymod1)
 
@@ -271,12 +271,12 @@ def ItemDed(e17500, e18400, e18500,
             MARS, age_head, age_spouse,
             c00100, c04470, c17000, c18300, c20500, c19200,
             c20800, c21040, c21060, c19700,
-            ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_HC,
+            ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_hc,
             ID_Casualty_frt_in_pufcsv_year,
-            ID_Casualty_frt, ID_Casualty_HC, ID_Miscellaneous_frt,
-            ID_Miscellaneous_HC, ID_Charity_crt_all, ID_Charity_crt_noncash,
-            ID_prt, ID_crt, ID_StateLocalTax_HC, ID_Charity_frt,
-            ID_Charity_HC, ID_InterestPaid_HC, ID_RealEstate_HC):
+            ID_Casualty_frt, ID_Casualty_hc, ID_Miscellaneous_frt,
+            ID_Miscellaneous_hc, ID_Charity_crt_all, ID_Charity_crt_noncash,
+            ID_prt, ID_crt, ID_StateLocalTax_hc, ID_Charity_frt,
+            ID_Charity_hc, ID_InterestPaid_hc, ID_RealEstate_hc):
     """
     ItemDed function: itemized deductions, Form 1040, Schedule A
 
@@ -338,28 +338,28 @@ def ItemDed(e17500, e18400, e18500,
     if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
         medical_frt += ID_Medical_frt_add4aged
     c17750 = medical_frt * posagi
-    c17000 = max(0., e17500 - c17750) * (1. - ID_Medical_HC)
+    c17000 = max(0., e17500 - c17750) * (1. - ID_Medical_hc)
     # State and local taxes
-    c18300 = ((1. - ID_StateLocalTax_HC) * max(e18400, 0.) +
-              (1. - ID_RealEstate_HC) * e18500)
+    c18300 = ((1. - ID_StateLocalTax_hc) * max(e18400, 0.) +
+              (1. - ID_RealEstate_hc) * e18500)
     # Interest paid
-    c19200 = e19200 * (1. - ID_InterestPaid_HC)
+    c19200 = e19200 * (1. - ID_InterestPaid_hc)
     # Charity
     lim30 = min(ID_Charity_crt_noncash * posagi, e20100)
     c19700 = min(ID_Charity_crt_all * posagi, lim30 + e19800)
     charity_floor = ID_Charity_frt * posagi  # floor is zero in present law
-    c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_HC)
+    c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_hc)
     # Casualty
     if e20500 > 0.0:  # add back to e20500 the PUFCSV_YEAR disregard amount
         c37703 = e20500 + ID_Casualty_frt_in_pufcsv_year * posagi
     else:  # small pre-disregard e20500 values are assumed to be zero
         c37703 = 0.
     c20500 = (max(0., c37703 - ID_Casualty_frt * posagi) *
-              (1. - ID_Casualty_HC))
+              (1. - ID_Casualty_hc))
     # Miscellaneous
     c20400 = e20400
     c20750 = ID_Miscellaneous_frt * posagi
-    c20800 = max(0., c20400 - c20750) * (1. - ID_Miscellaneous_HC)
+    c20800 = max(0., c20400 - c20750) * (1. - ID_Miscellaneous_hc)
     # Gross Itemized Deductions
     c21060 = c17000 + c18300 + c19200 + c19700 + c20500 + c20800
     # Limitation on total itemized deductions
@@ -379,7 +379,7 @@ def ItemDed(e17500, e18400, e18500,
 
 @iterate_jit(nopython=True)
 def AdditionalMedicareTax(e00200, MARS,
-                          AMED_thd, _sey, AMED_trt,
+                          AMEDT_ec, _sey, AMEDT_rt,
                           FICA_mc_trt, FICA_ss_trt,
                           ptax_amc, _payrolltax):
     """
@@ -388,9 +388,9 @@ def AdditionalMedicareTax(e00200, MARS,
     Notes
     -----
     Tax Law Parameters:
-        AMED_thd : Additional Medicare Tax earnings threshold
+        AMEDT_ec : Additional Medicare Tax earnings exclusion
 
-        AMED_trt : Additional Medicare Tax rate
+        AMEDT_rt : Additional Medicare Tax rate
 
         FICA_ss_trt : FICA Social Security tax rate
 
@@ -407,12 +407,10 @@ def AdditionalMedicareTax(e00200, MARS,
 
     _payrolltax : payroll tax augmented by Additional Medicare Tax
     """
-    # Note: ratio of self-employment income subject to AMED tax
-    #       equals (1 - 0.5*(FICA_mc_trt+FICA_ss_trt)
-    ptax_amc = AMED_trt * (max(0., e00200 - AMED_thd[MARS - 1]) +
-                           max(0., max(0., _sey) *
-                               (1. - 0.5 * (FICA_mc_trt + FICA_ss_trt)) -
-                               max(0., AMED_thd[MARS - 1] - e00200)))
+    line8 = max(0., _sey) * (1. - 0.5 * (FICA_mc_trt + FICA_ss_trt))
+    line11 = max(0., AMEDT_ec[MARS - 1] - e00200)
+    ptax_amc = AMEDT_rt * (max(0., e00200 - AMEDT_ec[MARS - 1]) +
+                           max(0., line8 - line11))
     _payrolltax = _payrolltax + ptax_amc
     return (ptax_amc, _payrolltax)
 
@@ -563,7 +561,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
              PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8,
              PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7,
              CG_nodiff,
-             CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_thd1, CG_thd2, CG_thd3,
+             CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_brk1, CG_brk2, CG_brk3,
              dwks10, dwks13, dwks14, dwks19, c05700, _taxbc):
     """
     GainsTax function implements (2015) Schedule D Tax Worksheet logic for
@@ -602,7 +600,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks12 = min(dwks9, dwks11)
         dwks13 = dwks10 - dwks12
         dwks14 = max(0., dwks1 - dwks13)
-        dwks16 = min(CG_thd1[MARS - 1], dwks1)
+        dwks16 = min(CG_brk1[MARS - 1], dwks1)
         dwks17 = min(dwks14, dwks16)
         dwks18 = max(0., dwks1 - dwks10)
         dwks19 = max(dwks17, dwks18)
@@ -612,7 +610,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks21 = min(dwks1, dwks13)
         dwks22 = dwks20
         dwks23 = max(0., dwks21 - dwks22)
-        dwks25 = min(CG_thd2[MARS - 1], dwks1)
+        dwks25 = min(CG_brk2[MARS - 1], dwks1)
         dwks26 = dwks19 + dwks20
         dwks27 = max(0., dwks25 - dwks26)
         dwks28 = min(dwks23, dwks27)
@@ -620,7 +618,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks30 = dwks22 + dwks28
         dwks31 = dwks21 - dwks30
         dwks32 = CG_rt3 * dwks31
-        hi_base = max(0., dwks31 - CG_thd3[MARS - 1])
+        hi_base = max(0., dwks31 - CG_brk3[MARS - 1])
         hi_incremental_rate = CG_rt4 - CG_rt3
         highest_rate_incremental_tax = hi_incremental_rate * hi_base
         # break in worksheet lines
@@ -680,10 +678,10 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         c04470, c17000, c20800, c21040, e24515, MARS, _sep, dwks19,
         dwks14, c05700, e62900, e00700, dwks10, age_head, _earned,
         cmbtp_itemizer, cmbtp_standard,
-        KT_c_Age, AMT_tthd, AMT_thd_MarriedS,
-        AMT_em, AMT_prt, AMT_trt1, AMT_trt2,
+        KT_c_Age, AMT_brk1, AMT_thd_MarriedS,
+        AMT_em, AMT_prt, AMT_rt1, AMT_rt2,
         AMT_Child_em, AMT_em_ps, AMT_em_pe,
-        AMT_CG_thd1, AMT_CG_thd2, AMT_CG_thd3, AMT_CG_rt1, AMT_CG_rt2,
+        AMT_CG_brk1, AMT_CG_brk2, AMT_CG_brk3, AMT_CG_rt1, AMT_CG_rt2,
         AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
     """
     AMT function computes Alternative Minimum Tax taxable income and liability:
@@ -722,8 +720,8 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
     if age_head != 0 and age_head < KT_c_Age:
         line29 = min(line29, _earned + AMT_Child_em)
     line30 = max(0., c62100 - line29)
-    line3163 = (AMT_trt1 * line30 +
-                AMT_trt2 * max(0., (line30 - (AMT_tthd / _sep))))
+    line3163 = (AMT_rt1 * line30 +
+                AMT_rt2 * max(0., (line30 - (AMT_brk1 / _sep))))
     if dwks10 > 0. or dwks13 > 0. or dwks14 > 0. or dwks19 > 0. or e24515 > 0.:
         # complete Form 6251, Part III (line36 is equal to line30)
         line37 = dwks13
@@ -731,17 +729,17 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         line39 = min(line37 + line38, dwks10)
         line40 = min(line30, line39)
         line41 = max(0., line30 - line40)
-        line42 = (AMT_trt1 * line41 +
-                  AMT_trt2 * max(0., (line41 - (AMT_tthd / _sep))))
+        line42 = (AMT_rt1 * line41 +
+                  AMT_rt2 * max(0., (line41 - (AMT_brk1 / _sep))))
         line44 = dwks14
-        line45 = max(0., AMT_CG_thd1[MARS - 1] - line44)
+        line45 = max(0., AMT_CG_brk1[MARS - 1] - line44)
         line46 = min(line30, line37)
         line47 = min(line45, line46)  # line47 is amount taxed at AMT_CG_rt1
         cgtax1 = line47 * AMT_CG_rt1
         line48 = line46 - line47
         line51 = dwks19
         line52 = line45 + line51
-        line53 = max(0., AMT_CG_thd2[MARS - 1] - line52)
+        line53 = max(0., AMT_CG_brk2[MARS - 1] - line52)
         line54 = min(line48, line53)  # line54 is amount taxed at AMT_CG_rt2
         cgtax2 = line54 * AMT_CG_rt2
         line56 = line47 + line54  # total amount in lower two brackets
@@ -751,7 +749,7 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         else:
             line57 = line46 - line56
             linex1 = min(line48,
-                         max(0., AMT_CG_thd3[MARS - 1] - line44 - line45))
+                         max(0., AMT_CG_brk3[MARS - 1] - line44 - line45))
             linex2 = max(0., line54 - linex1)
         cgtax3 = line57 * AMT_CG_rt3
         cgtax4 = linex2 * AMT_CG_rt4
@@ -777,7 +775,7 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
 
 @iterate_jit(nopython=True)
 def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
-                 c00100, NIIT_thd, MARS, NIIT_PT_taxed, NIIT_trt, NIIT):
+                 c00100, NIIT_thd, MARS, NIIT_PT_taxed, NIIT_rt, NIIT):
     """
     NetInvIncTax function computes Net Investment Income Tax amount
     (assume all annuity income is excluded from net investment income)
@@ -787,22 +785,22 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
         NII = max(0., e00300 + e00600 + c01000 + e02000 - e26270)
     else:  # do not subtract e26270 from e02000
         NII = max(0., e00300 + e00600 + c01000 + e02000)
-    NIIT = NIIT_trt * min(NII, max(0., modAGI - NIIT_thd[MARS - 1]))
+    NIIT = NIIT_rt * min(NII, max(0., modAGI - NIIT_thd[MARS - 1]))
     return NIIT
 
 
 @iterate_jit(nopython=True)
-def F2441(MARS, _earned_p, _earned_s, f2441, DCC_c, e32800,
+def F2441(MARS, _earned_p, _earned_s, f2441, CDCC_c, e32800,
           _exact, c00100, CDCC_ps, CDCC_crt, c05800, e07300, c07180):
     """
-    Form 2441 calculation of child & dependent care expense credit, c07180
+    Form 2441 calculation of child and dependent care expense credit, c07180
     """
     c32880 = _earned_p  # earned income of taxpayer
     if MARS == 2:
         c32890 = _earned_s  # earned income of spouse, if present
     else:
         c32890 = _earned_p
-    dclim = min(f2441, 2) * DCC_c
+    dclim = min(f2441, 2) * CDCC_c
     # care expenses are limited by policy
     c32800 = max(0., min(e32800, dclim))
     # credit is limited to minimum of individuals' earned income
@@ -1257,19 +1255,19 @@ def ComputeBenefit(calc, ID_switch):
     # the types of itemized deductions covered under the BenefitSurtax
     no_ID_calc = copy.deepcopy(calc)
     if ID_switch[0]:
-        no_ID_calc.policy.ID_Medical_HC = 1.
+        no_ID_calc.policy.ID_Medical_hc = 1.
     if ID_switch[1]:
-        no_ID_calc.policy.ID_StateLocalTax_HC = 1.
+        no_ID_calc.policy.ID_StateLocalTax_hc = 1.
     if ID_switch[2]:
-        no_ID_calc.policy.ID_RealEstate_HC = 1.
+        no_ID_calc.policy.ID_RealEstate_hc = 1.
     if ID_switch[3]:
-        no_ID_calc.policy.ID_Casualty_HC = 1.
+        no_ID_calc.policy.ID_Casualty_hc = 1.
     if ID_switch[4]:
-        no_ID_calc.policy.ID_Miscellaneous_HC = 1.
+        no_ID_calc.policy.ID_Miscellaneous_hc = 1.
     if ID_switch[5]:
-        no_ID_calc.policy.ID_InterestPaid_HC = 1.
+        no_ID_calc.policy.ID_InterestPaid_hc = 1.
     if ID_switch[6]:
-        no_ID_calc.policy.ID_Charity_HC = 1.
+        no_ID_calc.policy.ID_Charity_hc = 1.
     no_ID_calc.calc_one_year()
     # compute surtax amount and add to income and combined taxes
     # pylint: disable=protected-access
@@ -1309,10 +1307,10 @@ def BenefitLimitation(calc):
         if calc.policy.ID_BenefitCap_Switch[0]:  # Medical
             deductible_expenses += calc.records.c17000
         if calc.policy.ID_BenefitCap_Switch[1]:  # StateLocal
-            deductible_expenses += ((1. - calc.policy.ID_StateLocalTax_HC) *
+            deductible_expenses += ((1. - calc.policy.ID_StateLocalTax_hc) *
                                     np.maximum(calc.records.e18400, 0.))
         if calc.policy.ID_BenefitCap_Switch[2]:
-            deductible_expenses += ((1. - calc.policy.ID_RealEstate_HC) *
+            deductible_expenses += ((1. - calc.policy.ID_RealEstate_hc) *
                                     calc.records.e18500)
         if calc.policy.ID_BenefitCap_Switch[3]:  # Casualty
             deductible_expenses += calc.records.c20500

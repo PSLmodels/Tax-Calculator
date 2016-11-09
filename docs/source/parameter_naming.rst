@@ -15,9 +15,9 @@ Tax categories are uppercase:
 
    **ACTC**: Additional Child Tax Credit
 
-   **ALD**: Above-the-line Deduction
+   **ALD**: Above-the-Line Deduction
 
-   **AMED**: Additional Medicare
+   **AMEDT**: Additional Medicare Tax
 
    **AMT**: Alternative Minimum Tax
 
@@ -27,13 +27,9 @@ Tax categories are uppercase:
 
    **CTC**: Child Tax Credit
 
-   **DCC**: Dependent Care Credit
-
    **EITC**: Earned Income Tax Credit
 
    **ETC**: Education Tax Credit
-
-   **FEI**: Foreign Earned Income
 
    **FICA**: Federal Income Contributions Act
 
@@ -45,9 +41,9 @@ Tax categories are uppercase:
 
    **LLC**: Lifetime Learning Credit
 
-   **MED**: Medicare
-
    **NIIT**: Net Investment Income Tax
+
+   **PT**: Pass-Through Income
 
    **SS**: Social Security
 
@@ -69,7 +65,7 @@ usually lowercase:
 
    **f**: floor (or use **Min** especially for integer variables)
 
-   **HC**: haircut
+   **hc**: haircut
 
    **p**: phaseout
 
@@ -90,7 +86,7 @@ Examples
 
    **_ID_ps**: Itemized Deduction phaseout Adjusted Gross Income start (Pease)
 
-   **_AMT_tthd**: Alternative Minimum Tax surtax threshold
+   **_AMT_brk1**: Alternative Minimum Tax first rate bracket top
 
    **_SS_Earnings_c**: Maximum taxable earnings for Social Security
 

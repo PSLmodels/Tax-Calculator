@@ -366,13 +366,13 @@ def test_ID_HC_vs_BS(puf_1991, weights_1991):
     results as a 100% benefit surtax with no benefit deduction.
     """
     # specify complete-haircut reform policy and Calculator object
-    hc_reform = {2013: {'_ID_Medical_HC': [1.0],
-                        '_ID_StateLocalTax_HC': [1.0],
-                        '_ID_RealEstate_HC': [1.0],
-                        '_ID_Casualty_HC': [1.0],
-                        '_ID_Miscellaneous_HC': [1.0],
-                        '_ID_InterestPaid_HC': [1.0],
-                        '_ID_Charity_HC': [1.0]}}
+    hc_reform = {2013: {'_ID_Medical_hc': [1.0],
+                        '_ID_StateLocalTax_hc': [1.0],
+                        '_ID_RealEstate_hc': [1.0],
+                        '_ID_Casualty_hc': [1.0],
+                        '_ID_Miscellaneous_hc': [1.0],
+                        '_ID_InterestPaid_hc': [1.0],
+                        '_ID_Charity_hc': [1.0]}}
     hc_policy = Policy()
     hc_policy.implement_reform(hc_reform)
     hc_records = Records(data=puf_1991, weights=weights_1991, start_year=2009)

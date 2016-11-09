@@ -150,7 +150,7 @@ REFORM_CONTENTS = """
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
 {
-    "_AMT_tthd": // AMT taxinc threshold separating the two AMT tax brackets
+    "_AMT_brk1": // top of first AMT tax bracket
     {"2015": [200000],
      "2017": [300000]
     },
