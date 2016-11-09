@@ -193,8 +193,8 @@ def drop_records(df1, df2, mask):
     df2['mask'] = mask
     df1['mask'] = mask
 
-    df2 = add_weighted_decile_bins(df2)
-    df1 = add_weighted_decile_bins(df1)
+    df2 = add_weighted_income_bins(df2)
+    df1 = add_weighted_income_bins(df1)
     gp2_dec = df2.groupby('bins')
 
     income_bins = WEBAPP_INCOME_BINS

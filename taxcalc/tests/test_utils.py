@@ -329,18 +329,18 @@ def test_add_income_bins_raises():
         df = add_income_bins(df, compare_with='stuff')
 
 
-def test_add_weighted_decile_bins():
+def test_add_weighted_income_bins():
     df = DataFrame(data=data, columns=['_expanded_income', 's006', 'label'])
-    df = add_weighted_decile_bins(df, num_bins=100)
+    df = add_weighted_income_bins(df, num_bins=100)
     bin_labels = df['bins'].unique()
     default_labels = set(range(1, 101))
     for lab in bin_labels:
         assert lab in default_labels
     # Custom labels
-    df = add_weighted_decile_bins(df, weight_by_income_measure=True)
+    df = add_weighted_income_bins(df, weight_by_income_measure=True)
     assert 'bins' in df
     custom_labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
-    df = add_weighted_decile_bins(df, labels=custom_labels)
+    df = add_weighted_income_bins(df, labels=custom_labels)
     assert 'bins' in df
     bin_labels = df['bins'].unique()
     for lab in bin_labels:

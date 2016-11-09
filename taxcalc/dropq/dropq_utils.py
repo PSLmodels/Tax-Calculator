@@ -73,7 +73,7 @@ def create_json_table(df, row_names=None, column_types=None, num_decimals=2):
 def create_dropq_difference_table(df1, df2, groupby, res_col, diff_col,
                                   suffix, wsum):
     if groupby == "weighted_deciles":
-        df = add_weighted_decile_bins(df2)
+        df = add_weighted_income_bins(df2, num_bins=10)
     elif groupby == "small_income_bins":
         df = add_income_bins(df2, compare_with="soi")
     elif groupby == "large_income_bins":
@@ -141,7 +141,7 @@ def create_dropq_distribution_table(calc, groupby, result_type, suffix):
     res[returnsAMTsuf] = res[s006suf].where(res[c09600suf] > 0, 0)
 
     if groupby == "weighted_deciles":
-        df = add_weighted_decile_bins(res)
+        df = add_weighted_income_bins(res, num_bins=10)
     elif groupby == "small_income_bins":
         df = add_income_bins(res, compare_with="soi")
     elif groupby == "large_income_bins":
