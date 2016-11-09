@@ -75,7 +75,7 @@
         "replications": 1,
         "start_year": 2016,
         "specification": {
-            "_AMED_thd": {
+            "_AMEDT_ec": {
                 "2016": [[220000.0, 275000.0, 137500.0, 220000.0, 220000.0, 137500.0]]
             }
         }
@@ -84,7 +84,7 @@
         "replications": 1,
         "start_year": 2016,
         "specification": {
-            "_AMED_trt": {
+            "_AMEDT_rt": {
                 "2018": [0.0099]
             }
         }
@@ -642,7 +642,7 @@
         "replications": 1,
         "start_year": 2016,
         "specification": {
-            "_NIIT_trt": {
+            "_NIIT_rt": {
                 "2020": [0.0418]
             }
         }

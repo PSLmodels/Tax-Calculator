@@ -15,9 +15,9 @@ Tax categories are uppercase:
 
    **ACTC**: Additional Child Tax Credit
 
-   **ALD**: Above-the-line Deduction
+   **ALD**: Above-the-Line Deduction
 
-   **AMED**: Additional Medicare
+   **AMEDT**: Additional Medicare Tax
 
    **AMT**: Alternative Minimum Tax
 
@@ -33,8 +33,6 @@ Tax categories are uppercase:
 
    **ETC**: Education Tax Credit
 
-   **FEI**: Foreign Earned Income
-
    **FICA**: Federal Income Contributions Act
 
    **ID**: Itemized Deduction
@@ -45,11 +43,9 @@ Tax categories are uppercase:
 
    **LLC**: Lifetime Learning Credit
 
-   **MED**: Medicare
-
    **NIIT**: Net Investment Income Tax
 
-   **SS**: Social Security
+   **SS**: Social Security (meaning OASDI)
 
    **STD**: Standard Deduction
 
