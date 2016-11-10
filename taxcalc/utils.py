@@ -889,7 +889,8 @@ def mtr_graph_data(calc1, calc2,
 
 def atr_graph_data(calc1, calc2,
                    mars='ALL',
-                   atr_measure='combined'):
+                   atr_measure='combined',
+                   min_avginc=1000):
     """
     Prepare average tax rate data needed by xtr_graph_plot utility function.
 
@@ -914,6 +915,10 @@ def atr_graph_data(calc1, calc2,
             'ptax': average payroll tax rate; and
             'combined': sum of average income and payroll tax rates.
         specifies which average tax rate to show on graph's y axis
+
+    min_avginc : float
+        specifies the minimum average expanded income for a percentile to
+        be included in the graph data
 
     Returns
     -------
@@ -988,8 +993,12 @@ def atr_graph_data(calc1, calc2,
     atr2_series = np.divide(avgtax2_series, avginc_series)
     # construct DataFrame containing the two atr?_series
     lines = pd.DataFrame()
+    lines['avginc'] = avginc_series
     lines['base'] = atr1_series
     lines['reform'] = atr2_series
+    # drop percentiles with average income below the specified minimum
+    lines = lines[lines['avginc'] >= min_avginc]
+    lines.drop('avginc', axis=1, inplace=True)
     # construct dictionary containing plot lines and auto-generated labels
     data = dict()
     data['lines'] = lines
@@ -1094,10 +1103,8 @@ def xtr_graph_plot(data,
     fig = bp.figure(plot_width=width, plot_height=height, title=title)
     fig.title.text_font_size = '12pt'
     lines = data['lines']
-    fig.line((lines.reset_index()).index, (lines.reset_index()).base,
-             line_color='blue', legend='Base')
-    fig.line((lines.reset_index()).index, (lines.reset_index()).reform,
-             line_color='red', legend='Reform')
+    fig.line(lines.index, lines.base, line_color='blue', legend='Base')
+    fig.line(lines.index, lines.reform, line_color='red', legend='Reform')
     fig.circle(0, 0, visible=False)  # force zero to be included on y axis
     if xlabel == '':
         xlabel = data['xlabel']
