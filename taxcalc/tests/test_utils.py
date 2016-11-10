@@ -566,6 +566,24 @@ def test_mtr_graph_data(records_2009):
     assert type(gdata) == dict
 
 
+def test_atr_graph_data(records_2009):
+    calc = Calculator(policy=Policy(), records=records_2009)
+    with pytest.raises(ValueError):
+        gdata = atr_graph_data(calc, calc, mars='bad')
+    with pytest.raises(ValueError):
+        gdata = atr_graph_data(calc, calc, mars=0)
+    with pytest.raises(ValueError):
+        gdata = atr_graph_data(calc, calc, mars=list())
+    with pytest.raises(ValueError):
+        gdata = atr_graph_data(calc, calc, atr_measure='badtax')
+    with pytest.raises(ValueError):
+        calcx = Calculator(policy=Policy(), records=records_2009)
+        calcx.advance_to_year(2020)
+        gdata = atr_graph_data(calcx, calc)
+    gdata = atr_graph_data(calc, calc, mars=1)
+    assert type(gdata) == dict
+
+
 def test_xtr_graph_plot(records_2009):
     calc = Calculator(policy=Policy(),
                       records=records_2009,
