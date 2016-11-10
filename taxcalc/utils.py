@@ -814,59 +814,36 @@ def mtr_graph_data(calc1, calc2,
         record_columns.append('MARS')
     record_columns.append(income_var)
     output = [getattr(calc1.records, col) for col in record_columns]
-    df1 = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
-    df2 = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
+    dfx = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
     # set mtr given specified mtr_measure
     if mtr_measure == 'itax':
-        df1['mtr'] = mtr1_itax
-        df2['mtr'] = mtr2_itax
+        dfx['mtr1'] = mtr1_itax
+        dfx['mtr2'] = mtr2_itax
     elif mtr_measure == 'ptax':
-        df1['mtr'] = mtr1_ptax
-        df2['mtr'] = mtr2_ptax
+        dfx['mtr1'] = mtr1_ptax
+        dfx['mtr2'] = mtr2_ptax
     elif mtr_measure == 'combined':
-        df1['mtr'] = mtr1_combined
-        df2['mtr'] = mtr2_combined
+        dfx['mtr1'] = mtr1_combined
+        dfx['mtr2'] = mtr2_combined
     # select filing-status subgroup, if any
     if mars != 'ALL':
-        df1 = df1[df1['MARS'] == mars]
-        df2 = df2[df2['MARS'] == mars]
+        dfx = dfx[dfx['MARS'] == mars]
     # create 'bins' column given specified income_var and dollar_weighting
-    df1 = add_weighted_income_bins(df1, num_bins=100,
+    dfx = add_weighted_income_bins(dfx, num_bins=100,
                                    income_measure=income_var,
                                    weight_by_income_measure=dollar_weighting)
-    df2 = add_weighted_income_bins(df2, num_bins=100,
-                                   income_measure=income_var,
-                                   weight_by_income_measure=dollar_weighting)
-    # split into groups specified by 'bins'
-    gdf1 = df1.groupby('bins', as_index=False)
-    gdf2 = df2.groupby('bins', as_index=False)
+    # split dfx into groups specified by 'bins' column
+    gdfx = dfx.groupby('bins', as_index=False)
     # apply the weighting_function to percentile-grouped mtr values
-    wghtmtr1 = gdf1.apply(weighting_function, 'mtr')
-    wghtmtr2 = gdf2.apply(weighting_function, 'mtr')
-    wmtr1 = pd.DataFrame(data=wghtmtr1, columns=['wmtr'])
-    wmtr2 = pd.DataFrame(data=wghtmtr2, columns=['wmtr'])
-    # add bin labels to wmtr1 and wmtr2 DataFrames
-    wmtr1['bins'] = np.arange(1, 101)
-    wmtr2['bins'] = np.arange(1, 101)
-    # merge dfN['bins'] and wmtrN DataFrames into a single DataFrame
-    xdf1 = pd.merge(df1[['bins']], wmtr1, how='left')
-    xdf2 = pd.merge(df2[['bins']], wmtr2, how='left')
-    df1['wmtr'] = xdf1['wmtr'].values
-    df2['wmtr'] = xdf2['wmtr'].values
-    # eliminate duplicated bins
-    df1.drop_duplicates(subset='bins', inplace=True)
-    df2.drop_duplicates(subset='bins', inplace=True)
-    # merge weighted mtr data into a single DataFrame
-    df1 = df1['wmtr']
-    df2 = df2['wmtr']
-    merged = pd.concat([df1, df2], axis=1, ignore_index=True)
-    merged.columns = ['base', 'reform']
-    merged.index = (merged.reset_index()).index
-    if dollar_weighting:
-        merged = merged[1:]
+    mtr1_series = gdfx.apply(weighting_function, 'mtr1')
+    mtr2_series = gdfx.apply(weighting_function, 'mtr2')
+    # construct DataFrame containing the two mtr?_series
+    lines = pd.DataFrame()
+    lines['base'] = mtr1_series
+    lines['reform'] = mtr2_series
     # construct dictionary containing merged data and auto-generated labels
     data = dict()
-    data['lines'] = merged
+    data['lines'] = lines
     if dollar_weighting:
         income_str = 'Dollar-weighted {}'.format(income_str)
         mtr_str = 'Dollar-weighted {}'.format(mtr_str)
