@@ -580,7 +580,9 @@ def test_atr_graph_data(records_2009):
         calcx = Calculator(policy=Policy(), records=records_2009)
         calcx.advance_to_year(2020)
         gdata = atr_graph_data(calcx, calc)
-    gdata = atr_graph_data(calc, calc, mars=1)
+    gdata = atr_graph_data(calc, calc, mars=1, atr_measure='combined')
+    gdata = atr_graph_data(calc, calc, atr_measure='itax')
+    gdata = atr_graph_data(calc, calc, atr_measure='ptax')
     assert type(gdata) == dict
 
 
