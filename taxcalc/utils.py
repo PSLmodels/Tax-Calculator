@@ -693,7 +693,7 @@ def mtr_graph_data(calc1, calc2,
                    income_measure='wages',
                    dollar_weighting=False):
     """
-    Prepare data needed by the mtr_graph_plot utility function.
+    Prepare marginal tax rate data needed by xtr_graph_plot utility function.
 
     Parameters
     ----------
@@ -746,7 +746,7 @@ def mtr_graph_data(calc1, calc2,
 
     Returns
     -------
-    dictionary object suitable for passing to mtr_graph_plot utility function
+    dictionary object suitable for passing to xtr_graph_plot utility function
     """
     # pylint: disable=too-many-arguments,too-many-statements,
     # pylint: disable=too-many-locals,too-many-branches
@@ -808,65 +808,42 @@ def mtr_graph_data(calc1, calc2,
     (mtr2_ptax, mtr2_itax,
      mtr2_combined) = calc2.mtr(variable_str=mtr_variable,
                                 wrt_full_compensation=mtr_wrt_full_compen)
-    # extract needed output that is unchanged by reform from calc1
+    # extract needed output that is assumed unchanged by reform from calc1
     record_columns = ['s006']
     if mars != 'ALL':
         record_columns.append('MARS')
     record_columns.append(income_var)
     output = [getattr(calc1.records, col) for col in record_columns]
-    df1 = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
-    df2 = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
+    dfx = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
     # set mtr given specified mtr_measure
     if mtr_measure == 'itax':
-        df1['mtr'] = mtr1_itax
-        df2['mtr'] = mtr2_itax
+        dfx['mtr1'] = mtr1_itax
+        dfx['mtr2'] = mtr2_itax
     elif mtr_measure == 'ptax':
-        df1['mtr'] = mtr1_ptax
-        df2['mtr'] = mtr2_ptax
+        dfx['mtr1'] = mtr1_ptax
+        dfx['mtr2'] = mtr2_ptax
     elif mtr_measure == 'combined':
-        df1['mtr'] = mtr1_combined
-        df2['mtr'] = mtr2_combined
+        dfx['mtr1'] = mtr1_combined
+        dfx['mtr2'] = mtr2_combined
     # select filing-status subgroup, if any
     if mars != 'ALL':
-        df1 = df1[df1['MARS'] == mars]
-        df2 = df2[df2['MARS'] == mars]
+        dfx = dfx[dfx['MARS'] == mars]
     # create 'bins' column given specified income_var and dollar_weighting
-    df1 = add_weighted_income_bins(df1, num_bins=100,
+    dfx = add_weighted_income_bins(dfx, num_bins=100,
                                    income_measure=income_var,
                                    weight_by_income_measure=dollar_weighting)
-    df2 = add_weighted_income_bins(df2, num_bins=100,
-                                   income_measure=income_var,
-                                   weight_by_income_measure=dollar_weighting)
-    # split into groups specified by 'bins'
-    gdf1 = df1.groupby('bins', as_index=False)
-    gdf2 = df2.groupby('bins', as_index=False)
+    # split dfx into groups specified by 'bins' column
+    gdfx = dfx.groupby('bins', as_index=False)
     # apply the weighting_function to percentile-grouped mtr values
-    wghtmtr1 = gdf1.apply(weighting_function, 'mtr')
-    wghtmtr2 = gdf2.apply(weighting_function, 'mtr')
-    wmtr1 = pd.DataFrame(data=wghtmtr1, columns=['wmtr'])
-    wmtr2 = pd.DataFrame(data=wghtmtr2, columns=['wmtr'])
-    # add bin labels to wmtr1 and wmtr2 DataFrames
-    wmtr1['bins'] = np.arange(1, 101)
-    wmtr2['bins'] = np.arange(1, 101)
-    # merge dfN['bins'] and wmtrN DataFrames into a single DataFrame
-    xdf1 = pd.merge(df1[['bins']], wmtr1, how='left')
-    xdf2 = pd.merge(df2[['bins']], wmtr2, how='left')
-    df1['wmtr'] = xdf1['wmtr'].values
-    df2['wmtr'] = xdf2['wmtr'].values
-    # eliminate duplicated bins
-    df1.drop_duplicates(subset='bins', inplace=True)
-    df2.drop_duplicates(subset='bins', inplace=True)
-    # merge weighted mtr data inot a single DataFrame
-    df1 = df1['wmtr']
-    df2 = df2['wmtr']
-    merged = pd.concat([df1, df2], axis=1, ignore_index=True)
-    merged.columns = ['base', 'reform']
-    merged.index = (merged.reset_index()).index
-    if dollar_weighting:
-        merged = merged[1:]
+    mtr1_series = gdfx.apply(weighting_function, 'mtr1')
+    mtr2_series = gdfx.apply(weighting_function, 'mtr2')
+    # construct DataFrame containing the two mtr?_series
+    lines = pd.DataFrame()
+    lines['base'] = mtr1_series
+    lines['reform'] = mtr2_series
     # construct dictionary containing merged data and auto-generated labels
     data = dict()
-    data['lines'] = merged
+    data['lines'] = lines
     if dollar_weighting:
         income_str = 'Dollar-weighted {}'.format(income_str)
         mtr_str = 'Dollar-weighted {}'.format(mtr_str)
@@ -880,6 +857,134 @@ def mtr_graph_data(calc1, calc2,
         var_str = '{} wrt full compensation'.format(var_str)
     title_str = 'Mean Marginal Tax Rate for {} by Income Percentile'
     title_str = title_str.format(var_str)
+    if mars != 'ALL':
+        title_str = '{} for MARS={}'.format(title_str, mars)
+    title_str = '{} for {}'.format(title_str, year)
+    data['title'] = title_str
+    return data
+
+
+def atr_graph_data(calc1, calc2,
+                   mars='ALL',
+                   atr_measure='combined',
+                   min_avginc=1000):
+    """
+    Prepare average tax rate data needed by xtr_graph_plot utility function.
+
+    Parameters
+    ----------
+    calc1 : a Calculator object that refers to baseline policy
+
+    calc2 : a Calculator object that refers to reform policy
+
+    mars : integer or string
+        options:
+            'ALL': include all filing units in sample;
+            1: include only single filing units;
+            2: include only married-filing-jointly filing units;
+            3: include only married-filing-separately filing units; and
+            4: include only head-of-household filing units.
+        specifies which filing status subgroup to show in the graph
+
+    atr_measure : string
+        options:
+            'itax': average individual income tax rate;
+            'ptax': average payroll tax rate; and
+            'combined': sum of average income and payroll tax rates.
+        specifies which average tax rate to show on graph's y axis
+
+    min_avginc : float
+        specifies the minimum average expanded income for a percentile to
+        be included in the graph data
+
+    Returns
+    -------
+    dictionary object suitable for passing to xtr_graph_plot utility function
+    """
+    # pylint: disable=too-many-statements,too-many-locals,too-many-branches
+    # check that two calculator objects have the same current_year
+    if calc1.current_year == calc2.current_year:
+        year = calc1.current_year
+    else:
+        msg = 'calc1.current_year={} != calc2.current_year={}'
+        raise ValueError(msg.format(calc1.current_year, calc2.current_year))
+    # check validity of function arguments
+    # . . check mars value
+    if isinstance(mars, six.string_types):
+        if mars != 'ALL':
+            msg = 'string value of mars="{}" is not "ALL"'
+            raise ValueError(msg.format(mars))
+    elif isinstance(mars, int):
+        if mars < 1 or mars > 4:
+            msg = 'integer mars="{}" is not in [1,4] range'
+            raise ValueError(msg.format(mars))
+    else:
+        msg = 'mars="{}" is neither a string nor an integer'
+        raise ValueError(msg.format(mars))
+    # . . check atr_measure value
+    if atr_measure == 'itax':
+        atr_str = 'Income-Tax'
+    elif atr_measure == 'ptax':
+        atr_str = 'Payroll-Tax'
+    elif atr_measure == 'combined':
+        atr_str = 'Income+Payroll-Tax'
+    else:
+        msg = ('atr_measure="{}" is neither '
+               '"itax" nor "ptax" nor "combined"')
+        raise ValueError(msg.format(atr_measure))
+    # calculate taxes and expanded income
+    calc1.calc_all()
+    calc2.calc_all()
+    # extract needed output that is assumed unchanged by reform from calc1
+    record_columns = ['s006']
+    if mars != 'ALL':
+        record_columns.append('MARS')
+    record_columns.append('_expanded_income')
+    output = [getattr(calc1.records, col) for col in record_columns]
+    dfx = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
+    # create 'tax1' and 'tax2' columns given specified atr_measure
+    # pylint: disable=protected-access
+    if atr_measure == 'itax':
+        dfx['tax1'] = calc1.records._iitax
+        dfx['tax2'] = calc2.records._iitax
+    elif atr_measure == 'ptax':
+        dfx['tax1'] = calc1.records._payrolltax
+        dfx['tax2'] = calc2.records._payrolltax
+    elif atr_measure == 'combined':
+        dfx['tax1'] = calc1.records._combined
+        dfx['tax2'] = calc2.records._combined
+    # select filing-status subgroup, if any
+    if mars != 'ALL':
+        dfx = dfx[dfx['MARS'] == mars]
+    # create 'bins' column
+    dfx = add_weighted_income_bins(dfx, num_bins=100,
+                                   income_measure='_expanded_income')
+    # split dfx into groups specified by 'bins' column
+    gdfx = dfx.groupby('bins', as_index=False)
+    # apply weighted_mean function to percentile-grouped income/tax values
+    avginc_series = gdfx.apply(weighted_mean, '_expanded_income')
+    avgtax1_series = gdfx.apply(weighted_mean, 'tax1')
+    avgtax2_series = gdfx.apply(weighted_mean, 'tax2')
+    # compute average tax rates by income percentile
+    atr1_series = np.divide(avgtax1_series, avginc_series)
+    atr2_series = np.divide(avgtax2_series, avginc_series)
+    # construct DataFrame containing the two atr?_series
+    lines = pd.DataFrame()
+    lines['avginc'] = avginc_series
+    lines['base'] = atr1_series
+    lines['reform'] = atr2_series
+    # drop percentiles with average income below the specified minimum
+    lines = lines[lines['avginc'] >= min_avginc]
+    lines.drop('avginc', axis=1, inplace=True)
+    # construct dictionary containing plot lines and auto-generated labels
+    data = dict()
+    data['lines'] = lines
+    data['ylabel'] = '{} Average Tax Rate'.format(atr_str)
+    xlabel_str = 'Expanded Income Percentile'
+    if mars != 'ALL':
+        xlabel_str = '{} for MARS={}'.format(xlabel_str, mars)
+    data['xlabel'] = xlabel_str
+    title_str = 'Average Tax Rate by Income Percentile'
     if mars != 'ALL':
         title_str = '{} for MARS={}'.format(title_str, mars)
     title_str = '{} for {}'.format(title_str, year)
@@ -909,7 +1014,7 @@ def requires_bokeh(func):
 
 
 @requires_bokeh
-def mtr_graph_plot(data,
+def xtr_graph_plot(data,
                    width=850,
                    height=500,
                    xlabel='',
@@ -917,11 +1022,12 @@ def mtr_graph_plot(data,
                    title='',
                    legendloc='bottom_right'):
     """
-    Plot a marginal tax rate graph using data from mtr_graph_data function.
+    Plot marginal/average tax rate graph using data returned from either the
+    mtr_graph_data function or the atr_graph_data function.
 
     Parameters
     ----------
-    data : dictionary object returned from mtr_graph_data() utility function
+    data : dictionary object returned from ?tr_graph_data() utility function
 
     width : integer
         width of plot expressed in pixels
@@ -930,13 +1036,13 @@ def mtr_graph_plot(data,
         height of plot expressed in pixels
 
     xlabel : string
-        x-axis label; if '', then use label generated by mtr_graph_data
+        x-axis label; if '', then use label generated by ?tr_graph_data
 
     ylabel : string
-        y-axis label; if '', then use label generated by mtr_graph_data
+        y-axis label; if '', then use label generated by ?tr_graph_data
 
     title : string
-        graph title; if '', then use title generated by mtr_graph_data
+        graph title; if '', then use title generated by ?tr_graph_data
 
     legendloc : string
         options: 'top_right', 'top_left', 'bottom_left', 'bottom_right'
@@ -950,7 +1056,7 @@ def mtr_graph_plot(data,
     -----
     USAGE EXAMPLE:
       gdata = mtr_graph_data(calc1, calc2)
-      gplot = mtr_graph_plot(gdata)
+      gplot = xtr_graph_plot(gdata)
     THEN  # when working interactively in a Python notebook
       bp.show(gplot)
     OR    # when executing script using Python command-line interpreter
@@ -974,10 +1080,8 @@ def mtr_graph_plot(data,
     fig = bp.figure(plot_width=width, plot_height=height, title=title)
     fig.title.text_font_size = '12pt'
     lines = data['lines']
-    fig.line((lines.reset_index()).index, (lines.reset_index()).base,
-             line_color='blue', legend='Base')
-    fig.line((lines.reset_index()).index, (lines.reset_index()).reform,
-             line_color='red', legend='Reform')
+    fig.line(lines.index, lines.base, line_color='blue', legend='Base')
+    fig.line(lines.index, lines.reform, line_color='red', legend='Reform')
     fig.circle(0, 0, visible=False)  # force zero to be included on y axis
     if xlabel == '':
         xlabel = data['xlabel']
