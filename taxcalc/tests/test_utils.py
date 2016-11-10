@@ -566,14 +566,14 @@ def test_mtr_graph_data(records_2009):
     assert type(gdata) == dict
 
 
-def test_mtr_graph_plot(records_2009):
+def test_xtr_graph_plot(records_2009):
     calc = Calculator(policy=Policy(),
                       records=records_2009,
                       behavior=Behavior())
     gdata = mtr_graph_data(calc, calc, mtr_measure='ptax',
                            income_measure='agi',
                            dollar_weighting=False)
-    gplot = mtr_graph_plot(gdata)
+    gplot = xtr_graph_plot(gdata)
     assert gplot
     gdata = mtr_graph_data(calc, calc, mtr_measure='itax',
                            income_measure='expanded_income',
@@ -581,7 +581,7 @@ def test_mtr_graph_plot(records_2009):
     assert type(gdata) == dict
 
 
-def test_mtr_graph_plot_no_bokeh(records_2009):
+def test_xtr_graph_plot_no_bokeh(records_2009):
     import taxcalc
     taxcalc.utils.BOKEH_AVAILABLE = False
     calc = Calculator(policy=Policy(),
@@ -589,7 +589,7 @@ def test_mtr_graph_plot_no_bokeh(records_2009):
                       behavior=Behavior())
     gdata = mtr_graph_data(calc, calc)
     with pytest.raises(RuntimeError):
-        gplot = mtr_graph_plot(gdata)
+        gplot = xtr_graph_plot(gdata)
     taxcalc.utils.BOKEH_AVAILABLE = True
 
 
