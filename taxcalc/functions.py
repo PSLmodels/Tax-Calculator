@@ -185,7 +185,7 @@ def CapGains(p23250, p22250, _sep, ALD_Investment_ec_rt, ALD_StudentLoan_hc,
              CG_nodiff, CG_ec, CG_reinvest_ec_rt,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
              e02300, e00400, e02400, c02900, e03210, e03230, e03240,
-             c01000, c23650, ymod, ymod1):
+             c01000, c23650, ymod, ymod1, invinc_agi_ec):
     """
     CapGains function: ...
     """
@@ -194,9 +194,10 @@ def CapGains(p23250, p22250, _sep, ALD_Investment_ec_rt, ALD_StudentLoan_hc,
     # limitation on capital losses
     c01000 = max((-3000. / _sep), c23650)
     # compute ymod1 variable that is included in AGI
+    invinc = e00300 + e00600 + c01000 + e01100 + e01200
+    invinc_agi_ec = ALD_Investment_ec_rt * invinc
     ymod1 = (e00200 + e00700 + e00800 + e00900 + e01400 + e01700 +
-             (1. - ALD_Investment_ec_rt) * (e00300 + e00600 +
-                                            c01000 + e01100 + e01200) +
+             invinc - invinc_agi_ec +
              e02000 + e02100 + e02300)
     if CG_nodiff:
         # apply QDIV+CG exclusion if QDIV+LTCG receive no special tax treatment
@@ -204,11 +205,12 @@ def CapGains(p23250, p22250, _sep, ALD_Investment_ec_rt, ALD_StudentLoan_hc,
         qdcg_exclusion = (max(CG_ec, qdcg_pos) +
                           CG_reinvest_ec_rt * max(0., qdcg_pos - CG_ec))
         ymod1 = max(0., ymod1 - qdcg_exclusion)
+        invinc_agi_ec += qdcg_exclusion
     # compute ymod variable that is used in OASDI benefit taxation logic
     ymod2 = e00400 + (0.50 * e02400) - c02900
     ymod3 = (1. - ALD_StudentLoan_hc) * e03210 + e03230 + e03240
     ymod = ymod1 + ymod2 + ymod3
-    return (c01000, c23650, ymod, ymod1)
+    return (c01000, c23650, ymod, ymod1, invinc_agi_ec)
 
 
 @iterate_jit(nopython=True)
@@ -1376,7 +1378,8 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
 
 
 @iterate_jit(nopython=True)
-def ExpandIncome(ptax_was, c03260, e02400, c02500, c00100, e00400,
+def ExpandIncome(c00100, ptax_was, e02400, c02500,
+                 c03260, e00400, invinc_agi_ec,
                  _expanded_income):
     """
     ExpandIncome function: calculates and returns _expanded_income.
@@ -1387,8 +1390,10 @@ def ExpandIncome(ptax_was, c03260, e02400, c02500, c00100, e00400,
     employer_share = 0.5 * ptax_was  # share of payroll tax on wages & salary
     non_taxable_ss_benefits = e02400 - c02500
     _expanded_income = (c00100 +  # adjusted gross income
-                        c03260 +  # "employer share" of setax
+                        c03260 +  # "employer share" of setax ===> c02900
                         e00400 +  # non-taxable interest income
-                        non_taxable_ss_benefits +
-                        employer_share)
+                        invinc_agi_ec +  # investment income excluded from AGI
+                        employer_share +
+                        non_taxable_ss_benefits)
+
     return _expanded_income
