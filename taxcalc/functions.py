@@ -1379,7 +1379,8 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
 
 @iterate_jit(nopython=True)
 def ExpandIncome(c00100, ptax_was, e02400, c02500,
-                 c03260, e00400, invinc_agi_ec,
+                 c02900, e00400, invinc_agi_ec,
+                 f6251, _standard, cmbtp_itemizer, cmbtp_standard,
                  _expanded_income):
     """
     ExpandIncome function: calculates and returns _expanded_income.
@@ -1387,13 +1388,24 @@ def ExpandIncome(c00100, ptax_was, e02400, c02500,
     Note: if behavioral responses to a policy reform are specified, then be
     sure this function is called after the behavioral responses are calculated.
     """
-    employer_share = 0.5 * ptax_was  # share of payroll tax on wages & salary
+    # compute Form 6251 items not in AGI but added into AMT taxable income
+    if f6251 == 1:
+        if _standard == 0.0:
+            cmbtp = cmbtp_itemizer
+        else:
+            cmbtp = cmbtp_standard
+    else:
+        cmbtp = 0.
+    # compute employer share of OASDI+HI payroll tax on wages and salaries
+    employer_share = 0.5 * ptax_was
+    # compute OASDI benefits not included in AGI
     non_taxable_ss_benefits = e02400 - c02500
+    # compute expanded income as AGI plus several additional amounts
     _expanded_income = (c00100 +  # adjusted gross income
-                        c03260 +  # "employer share" of setax ===> c02900
+                        c02900 +  # ajustments to AGI
                         e00400 +  # non-taxable interest income
-                        invinc_agi_ec +  # investment income excluded from AGI
+                        invinc_agi_ec +  # AGI-excluded taxable invest income
+                        cmbtp +  # AMT taxable income items from Form 6251
                         employer_share +
                         non_taxable_ss_benefits)
-
     return _expanded_income
