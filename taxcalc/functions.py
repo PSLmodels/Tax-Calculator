@@ -120,51 +120,51 @@ def Adj(e03150, e03210, c03260,
         ALD_EarlyWithdraw_hc, ALD_Alimony_hc,
         c02900):
     """
-    Adj calculated Form 1040 adjustments
+    Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions)
 
     Notes
     -----
     Taxpayer characteristics:
-        e03210 : Student loan interst deduction
 
-        e03220 : Education Expense deduction
+        e03210 : Student loan interest deduction
 
-        e03150 : Total deduction IRA contributions
+        e03220 : Educator expense deduction
 
-        e03230 : Education credit adjustments
+        e03150 : Total deductible IRA plan contributions
 
-        e03240 : Domestic Production Activity Deduction
+        e03230 : Tuition and fees (Form 8917)
 
-        c03260 : Self-employment tax AGI deduction (after haircut)
+        e03240 : Domestic production activity deduction (Form 8903)
 
-        e03270 : Self employed health insurance deduction
+        c03260 : Self-employment tax deduction (after haircut)
 
-        e03290 : HSA deduction computer amount
+        e03270 : Self-employed health insurance deduction
 
-        e03300 : Payments to a KEOGH plan and SEP deduction
+        e03290 : HSA deduction (Form 8889)
 
-        e03400 : Forfeited interest penalty early withdraw
+        e03300 : Total deductible KEOGH/SEP/SIMPLE/etc. plan contributions
 
-        e03500 : Alimony withdraw
+        e03400 : Penalty on early withdrawal of savings deduction
 
-        care_deduction : Deduction for dependent care
+        e03500 : Alimony paid deduction
+
+        care_deduction : Dependent care expense deduction
 
     Tax law parameters:
-        ALD_StudentLoan_hc : Deduction for student loan interest haircut
 
-        ALD_SelfEmp_HealthIns_hc :
-        Deduction for self employed health insurance haircut
+        ALD_StudentLoan_hc : Student loan interest deduction haircut
 
-        ALD_KEOGH_SEP_hc :
-        Deduction for payment to either KEOGH or SEP plan haircut
+        ALD_SelfEmp_HealthIns_hc : Self-employed h.i. deduction haircut
 
-        ALD_EarlyWithdraw_hc : Deduction for forfeited interest penalty haricut
+        ALD_KEOGH_SEP_hc : KEOGH/etc. plan contribution deduction haircut
 
-        ALD_Alimony_hc : Deduction for alimony payment haircut
+        ALD_EarlyWithdraw_hc : Penalty on early withdrawl deduction haricut
+
+        ALD_Alimony_hc : Alimony paid deduction haircut
 
     Returns
     -------
-    c02900 : total Form 1040 adjustments
+    c02900 : total Form 1040 adjustments, which are not included in AGI
     """
     # Form 2555 foreign earned income deduction is always zero
     # Form 1040 adjustments
