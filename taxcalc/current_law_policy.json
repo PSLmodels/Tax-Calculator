@@ -1794,6 +1794,21 @@
         "value": [0.0]
     },
 
+
+    "_CTC_new_c_under5_bonus": {
+        "long_name": "Bonus new refundable child tax credit maximum for qualifying children under five",
+        "description": "The maximum amount of the new refundable child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old. ",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
     "_CTC_new_rt": {
         "long_name": "New refundable child tax credit amount phasein rate",
         "description": "The total amount of the new child tax credit is increased at this rate per dollar of AGI until _CTC_new_c times the number of qualified children is reached.",
