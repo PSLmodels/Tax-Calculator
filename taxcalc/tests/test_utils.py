@@ -562,6 +562,7 @@ def test_mtr_graph_data(records_2009):
         gdata = mtr_graph_data(calcx, calc)
     gdata = mtr_graph_data(calc, calc, mars=1,
                            mtr_wrt_full_compen=True,
+                           income_measure='wages',
                            dollar_weighting=True)
     assert type(gdata) == dict
 

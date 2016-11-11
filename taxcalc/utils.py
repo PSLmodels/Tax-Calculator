@@ -690,7 +690,7 @@ def mtr_graph_data(calc1, calc2,
                    mtr_measure='combined',
                    mtr_variable='e00200p',
                    mtr_wrt_full_compen=False,
-                   income_measure='wages',
+                   income_measure='expanded_income',
                    dollar_weighting=False):
     """
     Prepare marginal tax rate data needed by xtr_graph_plot utility function.
