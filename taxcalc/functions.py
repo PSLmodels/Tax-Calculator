@@ -1406,6 +1406,6 @@ def ExpandIncome(c00100, ptax_was, e02400, c02500,
                         e00400 +  # non-taxable interest income
                         invinc_agi_ec +  # AGI-excluded taxable invest income
                         cmbtp +  # AMT taxable income items from Form 6251
-                        employer_share +
-                        non_taxable_ss_benefits)
+                        non_taxable_ss_benefits +
+                        employer_share)
     return _expanded_income
