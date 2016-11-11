@@ -1388,6 +1388,10 @@ def ExpandIncome(c00100, ptax_was, e02400, c02500,
     Note: if behavioral responses to a policy reform are specified, then be
     sure this function is called after the behavioral responses are calculated.
     """
+    # compute employer share of OASDI+HI payroll tax on wages and salaries
+    employer_share = 0.5 * ptax_was
+    # compute OASDI benefits not included in AGI
+    non_taxable_ss_benefits = e02400 - c02500
     # compute Form 6251 items not in AGI but added into AMT taxable income
     if f6251 == 1:
         if _standard == 0.0:
@@ -1396,10 +1400,6 @@ def ExpandIncome(c00100, ptax_was, e02400, c02500,
             cmbtp = cmbtp_standard
     else:
         cmbtp = 0.
-    # compute employer share of OASDI+HI payroll tax on wages and salaries
-    employer_share = 0.5 * ptax_was
-    # compute OASDI benefits not included in AGI
-    non_taxable_ss_benefits = e02400 - c02500
     # compute expanded income as AGI plus several additional amounts
     _expanded_income = (c00100 +  # adjusted gross income
                         c02900 +  # ajustments to AGI
