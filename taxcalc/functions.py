@@ -1383,10 +1383,7 @@ def ExpandIncome(c00100, ptax_was, e02400, c02500,
                  f6251, _standard, cmbtp_itemizer, cmbtp_standard,
                  _expanded_income):
     """
-    ExpandIncome function: calculates and returns _expanded_income.
-
-    Note: if behavioral responses to a policy reform are specified, then be
-    sure this function is called after the behavioral responses are calculated.
+    ExpandIncome function calculates and returns _expanded_income.
     """
     # compute employer share of OASDI+HI payroll tax on wages and salaries
     employer_share = 0.5 * ptax_was
