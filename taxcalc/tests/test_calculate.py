@@ -24,19 +24,18 @@ WRATES = {1991: 0.0276, 1992: 0.0419, 1993: 0.0465, 1994: 0.0498,
 RAWINPUTFILE_FUNITS = 4
 RAWINPUTFILE_YEAR = 2015
 RAWINPUTFILE_CONTENTS = (
-    'RECID,MARS,extraneous\n'
-    '1,2,0\n'
-    '2,1,1\n'
-    '3,4,0\n'
-    '4,6,1\n'
+    'RECID,MARS\n'
+    '1,2\n'
+    '2,1\n'
+    '3,4\n'
+    '4,6\n'
 )
 
 
 @pytest.yield_fixture
 def rawinputfile():
     """
-    Temporary input file that contains the minimum required input varaibles
-    plus one completely unrelated variable.
+    Temporary input file that contains the minimum required input varaibles.
     """
     ifile = tempfile.NamedTemporaryFile(mode='a', delete=False)
     ifile.write(RAWINPUTFILE_CONTENTS)
@@ -296,8 +295,8 @@ def test_Calculator_mtr_when_PT_rates_differ():
                      '_PT_rt6': [0.30],
                      '_PT_rt7': [0.30]}}
     funit = (
-        u'RECID,MARS,FLPDYR,e00200,e00200p,e00900,e00900p\n'
-        u'1,    1,   2015,  200000,200000, 100000,100000\n'
+        u'RECID,MARS,FLPDYR,e00200,e00200p,e00900,e00900p,extraneous\n'
+        u'1,    1,   2009,  200000,200000, 100000,100000, 9999999999\n'
     )
     pol1 = Policy()
     rec1 = Records(pd.read_csv(StringIO(funit)))
