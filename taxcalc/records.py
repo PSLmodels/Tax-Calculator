@@ -118,7 +118,7 @@ class Records(object):
         'e58990',
         'e62900',
         'p87521', 'e87530',
-        'MARS', 'MIDR', 'RECID',
+        'MARS', 'MIDR', 'RECID', 'filer',
         'cmbtp_standard', 'cmbtp_itemizer',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
         'nu13', 'elderly_dependent',
