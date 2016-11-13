@@ -170,19 +170,19 @@ def Adj(e03150, e03210, c03260,
     """
     # Form 2555 foreign earned income deduction is assumed to be zero
     # Form 1040 adjustments that are included in expanded income:
-    #  NOTE: add e03270 after health-insurance imputations are available
-    #  NOTE: add e03150,e03300 after pension-contribution imputations avail
     c02900_less = ((1. - ALD_StudentLoan_hc) * e03210 +
                    c03260 +
                    (1. - ALD_EarlyWithdraw_hc) * e03400 +
                    (1. - ALD_Alimony_hc) * e03500 +
                    e03220 + e03230 + e03240 + e03290 + care_deduction)
     # add in Form 1040 adjustments that are not included in expanded income:
-    #  NOTE: remove e03270 after health-insurance imputations are available
-    #  NOTE: remove e03150,e03300 after pension-contribution imputations avail
     c02900 = c02900_less + ((1. - ALD_SelfEmp_HealthIns_hc) * e03270 +
                             e03150 +  # deductible IRA contributions
                             (1. - ALD_KEOGH_SEP_hc) * e03300)
+    # TODO: move e03270 term into c02900_less after health-insurance-premium
+    #       imputations are available
+    # TODO: move e03150 and e03300 term into c02900_less after pension-
+    #       contribution imputations are available
     return (c02900, c02900_less)
 
 

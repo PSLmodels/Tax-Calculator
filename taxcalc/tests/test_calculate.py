@@ -24,18 +24,19 @@ WRATES = {1991: 0.0276, 1992: 0.0419, 1993: 0.0465, 1994: 0.0498,
 RAWINPUTFILE_FUNITS = 4
 RAWINPUTFILE_YEAR = 2015
 RAWINPUTFILE_CONTENTS = (
-    'RECID,MARS\n'
-    '1,2\n'
-    '2,1\n'
-    '3,4\n'
-    '4,6\n'
+    'RECID,MARS,extraneous\n'
+    '1,2,0\n'
+    '2,1,1\n'
+    '3,4,0\n'
+    '4,6,1\n'
 )
 
 
 @pytest.yield_fixture
 def rawinputfile():
     """
-    Temporary input file that contains minimum required input varaibles.
+    Temporary input file that contains the minimum required input varaibles
+    plus one completely unrelated variable.
     """
     ifile = tempfile.NamedTemporaryFile(mode='a', delete=False)
     ifile.write(RAWINPUTFILE_CONTENTS)
