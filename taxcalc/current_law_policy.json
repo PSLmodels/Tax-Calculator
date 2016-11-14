@@ -1861,7 +1861,7 @@
         "cpi_inflated": false,
         "col_label": "",
         "value": [false]
-    },    
+    },
 
     "_CTC_new_refund_limit_payroll_rt": {
         "long_name": "New child tax credit refund limit rate (decimal fraction of payroll taxes)",
