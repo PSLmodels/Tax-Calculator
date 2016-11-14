@@ -32,6 +32,7 @@ bin_row_names = ["less_than_10", "ten_twenty", "twenty_thirty", "thirty_forty",
 
 total_row_names = ["ind_tax", "payroll_tax", "combined_tax"]
 
+
 GDP_elast_row_names = ["gdp_elasticity"]
 
 ogusa_row_names = ["GDP", "Consumption", "Investment", "Hours Worked", "Wages",
@@ -241,12 +242,25 @@ def groupby_means_and_comparisons(df1, df2, mask, debug=False):
 
     df1, df2 = drop_records(df1, df2, mask)
 
+    # Totals for diff between baseline and reform
     dec_sum = (df2['tax_diff_dec'] * df2['s006']).sum()
     bin_sum = (df2['tax_diff_bin'] * df2['s006']).sum()
     pr_dec_sum = (df2['payrolltax_diff_dec'] * df2['s006']).sum()
     pr_bin_sum = (df2['payrolltax_diff_bin'] * df2['s006']).sum()
     combined_dec_sum = (df2['combined_diff_dec'] * df2['s006']).sum()
     combined_bin_sum = (df2['combined_diff_bin'] * df2['s006']).sum()
+
+    # Totals for baseline
+    sum_baseline = (df1['_iitax'] * df1['s006']).sum()
+    pr_sum_baseline = (df1['_payrolltax'] * df1['s006']).sum()
+    combined_sum_baseline = (df1['_combined'] * df1['s006']).sum()
+
+    # Totals for reform
+    sum_reform = (df2['_iitax_dec'] * df2['s006']).sum()
+    pr_sum_reform = (df2['_payrolltax_dec'] * df2['s006']).sum()
+    combined_sum_reform = (df2['_combined_dec'] * df2['s006']).sum()
+
+    # Totals for reform
 
     # Create Difference tables, grouped by deciles and bins
     diffs_dec = dropq_diff_table(df1, df2,
@@ -299,7 +313,9 @@ def groupby_means_and_comparisons(df1, df2, mask, debug=False):
 
     return (mY_dec, mX_dec, diffs_dec, pr_diffs_dec, comb_diffs_dec,
             mY_bin, mX_bin, diffs_bin, pr_diffs_bin, comb_diffs_bin,
-            dec_sum, pr_dec_sum, combined_dec_sum)
+            dec_sum, pr_dec_sum, combined_dec_sum, sum_baseline,
+            pr_sum_baseline, combined_sum_baseline, sum_reform,
+            pr_sum_reform, combined_sum_reform)
 
 
 def results(c):
@@ -503,7 +519,9 @@ def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
     # Means of plan Y by income bin
     # diffs of plan Y by income bin
     mY_dec, mX_dec, df_dec, pdf_dec, cdf_dec, mY_bin, mX_bin, df_bin, \
-        pdf_bin, cdf_bin, diff_sum, payrolltax_diff_sum, combined_diff_sum = \
+        pdf_bin, cdf_bin, diff_sum, payrolltax_diff_sum, combined_diff_sum, \
+        sum_baseline, pr_sum_baseline, combined_sum_baseline, sum_reform, \
+        pr_sum_reform, combined_sum_reform =\
         groupby_means_and_comparisons(soit_baseline, soit_reform, mask)
 
     elapsed_time = time.time() - start_time
@@ -511,7 +529,15 @@ def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
     start_year += 1
 
     tots = [diff_sum, payrolltax_diff_sum, combined_diff_sum]
-    fiscal_tots = pd.DataFrame(data=tots, index=total_row_names)
+    fiscal_tots_diff = pd.DataFrame(data=tots, index=total_row_names)
+
+    tots_baseline = [sum_baseline, pr_sum_baseline, combined_sum_baseline]
+    fiscal_tots_baseline = pd.DataFrame(data=tots_baseline,
+                                        index=total_row_names)
+
+    tots_reform = [sum_reform, pr_sum_reform, combined_sum_reform]
+    fiscal_tots_reform = pd.DataFrame(data=tots_reform,
+                                      index=total_row_names)
 
     # Get rid of negative incomes
     df_bin.drop(df_bin.index[0], inplace=True)
@@ -529,7 +555,9 @@ def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
                 append_year(pdf_dec), append_year(cdf_dec),
                 append_year(mY_bin), append_year(mX_bin), append_year(df_bin),
                 append_year(pdf_bin), append_year(cdf_bin),
-                append_year(fiscal_tots))
+                append_year(fiscal_tots_diff),
+                append_year(fiscal_tots_baseline),
+                append_year(fiscal_tots_reform))
 
     decile_row_names_i = [x + '_' + str(year_n) for x in decile_row_names]
 
@@ -577,14 +605,24 @@ def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
                                         row_names=bin_row_names_i,
                                         column_types=diff_column_types)
 
-    fiscal_yr_total = create_json_table(fiscal_tots,
-                                        row_names=total_row_names_i)
+    fiscal_yr_total_df = create_json_table(fiscal_tots_diff,
+                                           row_names=total_row_names_i)
+
+    fiscal_yr_total_bl = create_json_table(fiscal_tots_baseline,
+                                           row_names=total_row_names_i)
+
+    fiscal_yr_total_rf = create_json_table(fiscal_tots_reform,
+                                           row_names=total_row_names_i)
+
     # Make the one-item lists of strings just strings
-    fiscal_yr_total = dict((k, v[0]) for k, v in fiscal_yr_total.items())
+    fiscal_yr_total_df = dict((k, v[0]) for k, v in fiscal_yr_total_df.items())
+    fiscal_yr_total_bl = dict((k, v[0]) for k, v in fiscal_yr_total_bl.items())
+    fiscal_yr_total_rf = dict((k, v[0]) for k, v in fiscal_yr_total_rf.items())
 
     return (mY_dec_table_i, mX_dec_table_i, df_dec_table_i, pdf_dec_table_i,
             cdf_dec_table_i, mY_bin_table_i, mX_bin_table_i, df_bin_table_i,
-            pdf_bin_table_i, cdf_bin_table_i, fiscal_yr_total)
+            pdf_bin_table_i, cdf_bin_table_i, fiscal_yr_total_df,
+            fiscal_yr_total_bl, fiscal_yr_total_rf)
 
 
 def run_models(tax_dta, start_year, is_strict=False, user_mods="",
@@ -614,9 +652,12 @@ def run_models(tax_dta, start_year, is_strict=False, user_mods="",
 
         (mY_dec_table_i, mX_dec_table_i, df_dec_table_i, pdf_dec_table_i,
          cdf_dec_table_i, mY_bin_table_i, mX_bin_table_i, df_bin_table_i,
-         pdf_bin_table_i, cdf_bin_table_i, num_fiscal_year_total) = json_tables
+         pdf_bin_table_i, cdf_bin_table_i, num_fiscal_year_total,
+         num_fiscal_year_total_bl, num_fiscal_year_total_rf) = json_tables
 
         num_fiscal_year_totals.append(num_fiscal_year_total)
+        num_fiscal_year_totals.append(num_fiscal_year_total_bl)
+        num_fiscal_year_totals.append(num_fiscal_year_total_rf)
         mY_dec_table.update(mY_dec_table_i)
         mX_dec_table.update(mX_dec_table_i)
         df_dec_table.update(df_dec_table_i)

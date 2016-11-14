@@ -2,6 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 import pytest
+import numpy.testing as npt
 from pandas import DataFrame, Series
 
 from taxcalc.dropq.dropq_utils import *
@@ -102,6 +103,15 @@ def test_full_dropq_puf(puf_path):
     diff = abs(pure_reform_revenue - dropq_reform_revenue)
     # Assert that dropq revenue is similar to the "pure" calculation
     assert diff / dropq_reform_revenue < 0.02
+
+    # Assert that Reform - Baseline = Reported Delta
+    delta_yr0 = fiscal_tots[0]
+    baseline_yr0 = fiscal_tots[1]
+    reform_yr0 = fiscal_tots[2]
+    diff_yr0 = (reform_yr0.loc['combined_tax'] -
+                baseline_yr0.loc['combined_tax']).values
+    delta_yr0 = delta_yr0.loc['combined_tax'].values
+    npt.assert_array_almost_equal(diff_yr0, delta_yr0, decimal=3)
 
 
 @pytest.mark.parametrize("is_strict, rjson, growth_params, no_elast",
