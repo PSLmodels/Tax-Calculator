@@ -118,65 +118,72 @@ def Adj(e03150, e03210, c03260,
         e03220, e03230, e03240, e03290, care_deduction,
         ALD_StudentLoan_hc, ALD_SelfEmp_HealthIns_hc, ALD_KEOGH_SEP_hc,
         ALD_EarlyWithdraw_hc, ALD_Alimony_hc,
-        c02900):
+        c02900, c02900_in_ei):
     """
-    Adj calculated Form 1040 adjustments
+    Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions)
 
     Notes
     -----
     Taxpayer characteristics:
-        e03210 : Student loan interst deduction
 
-        e03220 : Education Expense deduction
+        e03210 : Student loan interest deduction
 
-        e03150 : Total deduction IRA contributions
+        e03220 : Educator expense deduction
 
-        e03230 : Education credit adjustments
+        e03150 : Total deductible IRA plan contributions
 
-        e03240 : Domestic Production Activity Deduction
+        e03230 : Tuition and fees (Form 8917)
 
-        c03260 : Self-employment tax AGI deduction (after haircut)
+        e03240 : Domestic production activity deduction (Form 8903)
 
-        e03270 : Self employed health insurance deduction
+        c03260 : Self-employment tax deduction (after haircut)
 
-        e03290 : HSA deduction computer amount
+        e03270 : Self-employed health insurance deduction
 
-        e03300 : Payments to a KEOGH plan and SEP deduction
+        e03290 : HSA deduction (Form 8889)
 
-        e03400 : Forfeited interest penalty early withdraw
+        e03300 : Total deductible KEOGH/SEP/SIMPLE/etc. plan contributions
 
-        e03500 : Alimony withdraw
+        e03400 : Penalty on early withdrawal of savings deduction
 
-        care_deduction : Deduction for dependent care
+        e03500 : Alimony paid deduction
+
+        care_deduction : Dependent care expense deduction
 
     Tax law parameters:
-        ALD_StudentLoan_hc : Deduction for student loan interest haircut
 
-        ALD_SelfEmp_HealthIns_hc :
-        Deduction for self employed health insurance haircut
+        ALD_StudentLoan_hc : Student loan interest deduction haircut
 
-        ALD_KEOGH_SEP_hc :
-        Deduction for payment to either KEOGH or SEP plan haircut
+        ALD_SelfEmp_HealthIns_hc : Self-employed h.i. deduction haircut
 
-        ALD_EarlyWithdraw_hc : Deduction for forfeited interest penalty haricut
+        ALD_KEOGH_SEP_hc : KEOGH/etc. plan contribution deduction haircut
 
-        ALD_Alimony_hc : Deduction for alimony payment haircut
+        ALD_EarlyWithdraw_hc : Penalty on early withdrawal deduction haricut
+
+        ALD_Alimony_hc : Alimony paid deduction haircut
 
     Returns
     -------
-    c02900 : total Form 1040 adjustments
+    c02900 : total Form 1040 adjustments, which are not included in AGI
+
+    c02900_in_ei : total adjustments included in expanded income
     """
-    # Form 2555 foreign earned income deduction is always zero
-    # Form 1040 adjustments
-    c02900 = (e03150 +
-              (1. - ALD_StudentLoan_hc) * e03210 +
-              c03260 +
-              (1. - ALD_SelfEmp_HealthIns_hc) * e03270 +
-              (1. - ALD_KEOGH_SEP_hc) * e03300 +
-              (1. - ALD_EarlyWithdraw_hc) * e03400 +
-              (1. - ALD_Alimony_hc) * e03500 +
-              e03220 + e03230 + e03240 + e03290 + care_deduction)
-    return c02900
+    # Form 2555 foreign earned income deduction is assumed to be zero
+    # Form 1040 adjustments that are included in expanded income:
+    c02900_in_ei = ((1. - ALD_StudentLoan_hc) * e03210 +
+                    c03260 +
+                    (1. - ALD_EarlyWithdraw_hc) * e03400 +
+                    (1. - ALD_Alimony_hc) * e03500 +
+                    e03220 + e03230 + e03240 + e03290 + care_deduction)
+    # add in Form 1040 adjustments that are not included in expanded income:
+    c02900 = c02900_in_ei + ((1. - ALD_SelfEmp_HealthIns_hc) * e03270 +
+                             e03150 +  # deductible IRA contributions
+                             (1. - ALD_KEOGH_SEP_hc) * e03300)
+    # TODO: move e03270 term into c02900_in_ei after health-insurance-premium
+    #       imputations are available
+    # TODO: move e03150 and e03300 term into c02900_in_ei after pension-
+    #       contribution imputations are available
+    return (c02900, c02900_in_ei)
 
 
 @iterate_jit(nopython=True)
@@ -185,7 +192,7 @@ def CapGains(p23250, p22250, _sep, ALD_Investment_ec_rt, ALD_StudentLoan_hc,
              CG_nodiff, CG_ec, CG_reinvest_ec_rt,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
              e02300, e00400, e02400, c02900, e03210, e03230, e03240,
-             c01000, c23650, ymod, ymod1):
+             c01000, c23650, ymod, ymod1, invinc_agi_ec):
     """
     CapGains function: ...
     """
@@ -194,9 +201,10 @@ def CapGains(p23250, p22250, _sep, ALD_Investment_ec_rt, ALD_StudentLoan_hc,
     # limitation on capital losses
     c01000 = max((-3000. / _sep), c23650)
     # compute ymod1 variable that is included in AGI
+    invinc = e00300 + e00600 + c01000 + e01100 + e01200
+    invinc_agi_ec = ALD_Investment_ec_rt * invinc
     ymod1 = (e00200 + e00700 + e00800 + e00900 + e01400 + e01700 +
-             (1. - ALD_Investment_ec_rt) * (e00300 + e00600 +
-                                            c01000 + e01100 + e01200) +
+             invinc - invinc_agi_ec +
              e02000 + e02100 + e02300)
     if CG_nodiff:
         # apply QDIV+CG exclusion if QDIV+LTCG receive no special tax treatment
@@ -204,11 +212,12 @@ def CapGains(p23250, p22250, _sep, ALD_Investment_ec_rt, ALD_StudentLoan_hc,
         qdcg_exclusion = (max(CG_ec, qdcg_pos) +
                           CG_reinvest_ec_rt * max(0., qdcg_pos - CG_ec))
         ymod1 = max(0., ymod1 - qdcg_exclusion)
+        invinc_agi_ec += qdcg_exclusion
     # compute ymod variable that is used in OASDI benefit taxation logic
     ymod2 = e00400 + (0.50 * e02400) - c02900
     ymod3 = (1. - ALD_StudentLoan_hc) * e03210 + e03230 + e03240
     ymod = ymod1 + ymod2 + ymod3
-    return (c01000, c23650, ymod, ymod1)
+    return (c01000, c23650, ymod, ymod1, invinc_agi_ec)
 
 
 @iterate_jit(nopython=True)
@@ -566,7 +575,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
     """
     GainsTax function implements (2015) Schedule D Tax Worksheet logic for
     the special taxation of long-term capital gains and qualified dividends
-    if CG_nodiff is false (that is, zero)
+    if CG_nodiff is false
     """
     # pylint: disable=too-many-statements,too-many-branches
     if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
@@ -1376,19 +1385,31 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
 
 
 @iterate_jit(nopython=True)
-def ExpandIncome(ptax_was, c03260, e02400, c02500, c00100, e00400,
+def ExpandIncome(c00100, ptax_was, e02400, c02500,
+                 c02900_in_ei, e00400, invinc_agi_ec,
+                 f6251, _standard, cmbtp_itemizer, cmbtp_standard,
                  _expanded_income):
     """
-    ExpandIncome function: calculates and returns _expanded_income.
-
-    Note: if behavioral responses to a policy reform are specified, then be
-    sure this function is called after the behavioral responses are calculated.
+    ExpandIncome function calculates and returns _expanded_income.
     """
-    employer_share = 0.5 * ptax_was  # share of payroll tax on wages & salary
+    # compute employer share of OASDI+HI payroll tax on wages and salaries
+    employer_fica_share = 0.5 * ptax_was
+    # compute OASDI benefits not included in AGI
     non_taxable_ss_benefits = e02400 - c02500
+    # compute Form 6251 items not in AGI but added into AMT taxable income
+    if f6251 == 1:
+        if _standard == 0.0:
+            cmbtp = cmbtp_itemizer
+        else:
+            cmbtp = cmbtp_standard
+    else:
+        cmbtp = 0.
+    # compute expanded income as AGI plus several additional amounts
     _expanded_income = (c00100 +  # adjusted gross income
-                        c03260 +  # "employer share" of setax
+                        c02900_in_ei +  # ajustments to AGI
                         e00400 +  # non-taxable interest income
+                        invinc_agi_ec +  # AGI-excluded taxable invest income
+                        cmbtp +  # AMT taxable income items from Form 6251
                         non_taxable_ss_benefits +
-                        employer_share)
+                        employer_fica_share)
     return _expanded_income

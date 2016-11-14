@@ -35,7 +35,7 @@ RAWINPUTFILE_CONTENTS = (
 @pytest.yield_fixture
 def rawinputfile():
     """
-    Temporary input file that contains minimum required input varaibles.
+    Temporary input file that contains the minimum required input varaibles.
     """
     ifile = tempfile.NamedTemporaryFile(mode='a', delete=False)
     ifile.write(RAWINPUTFILE_CONTENTS)
@@ -295,8 +295,8 @@ def test_Calculator_mtr_when_PT_rates_differ():
                      '_PT_rt6': [0.30],
                      '_PT_rt7': [0.30]}}
     funit = (
-        u'RECID,MARS,FLPDYR,e00200,e00200p,e00900,e00900p\n'
-        u'1,    1,   2015,  200000,200000, 100000,100000\n'
+        u'RECID,MARS,FLPDYR,e00200,e00200p,e00900,e00900p,extraneous\n'
+        u'1,    1,   2009,  200000,200000, 100000,100000, 9999999999\n'
     )
     pol1 = Policy()
     rec1 = Records(pd.read_csv(StringIO(funit)))
