@@ -118,7 +118,7 @@ def Adj(e03150, e03210, c03260,
         e03220, e03230, e03240, e03290, care_deduction,
         ALD_StudentLoan_hc, ALD_SelfEmp_HealthIns_hc, ALD_KEOGH_SEP_hc,
         ALD_EarlyWithdraw_hc, ALD_Alimony_hc,
-        c02900, c02900_less):
+        c02900, c02900_in_ei):
     """
     Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions)
 
@@ -158,7 +158,7 @@ def Adj(e03150, e03210, c03260,
 
         ALD_KEOGH_SEP_hc : KEOGH/etc. plan contribution deduction haircut
 
-        ALD_EarlyWithdraw_hc : Penalty on early withdrawl deduction haricut
+        ALD_EarlyWithdraw_hc : Penalty on early withdrawal deduction haricut
 
         ALD_Alimony_hc : Alimony paid deduction haircut
 
@@ -166,24 +166,24 @@ def Adj(e03150, e03210, c03260,
     -------
     c02900 : total Form 1040 adjustments, which are not included in AGI
 
-    c02900_less : total adjustments less those not included in expanded income
+    c02900_in_ei : total adjustments included in expanded income
     """
     # Form 2555 foreign earned income deduction is assumed to be zero
     # Form 1040 adjustments that are included in expanded income:
-    c02900_less = ((1. - ALD_StudentLoan_hc) * e03210 +
-                   c03260 +
-                   (1. - ALD_EarlyWithdraw_hc) * e03400 +
-                   (1. - ALD_Alimony_hc) * e03500 +
-                   e03220 + e03230 + e03240 + e03290 + care_deduction)
+    c02900_in_ei = ((1. - ALD_StudentLoan_hc) * e03210 +
+                    c03260 +
+                    (1. - ALD_EarlyWithdraw_hc) * e03400 +
+                    (1. - ALD_Alimony_hc) * e03500 +
+                    e03220 + e03230 + e03240 + e03290 + care_deduction)
     # add in Form 1040 adjustments that are not included in expanded income:
-    c02900 = c02900_less + ((1. - ALD_SelfEmp_HealthIns_hc) * e03270 +
-                            e03150 +  # deductible IRA contributions
-                            (1. - ALD_KEOGH_SEP_hc) * e03300)
-    # TODO: move e03270 term into c02900_less after health-insurance-premium
+    c02900 = c02900_in_ei + ((1. - ALD_SelfEmp_HealthIns_hc) * e03270 +
+                             e03150 +  # deductible IRA contributions
+                             (1. - ALD_KEOGH_SEP_hc) * e03300)
+    # TODO: move e03270 term into c02900_in_ei after health-insurance-premium
     #       imputations are available
-    # TODO: move e03150 and e03300 term into c02900_less after pension-
+    # TODO: move e03150 and e03300 term into c02900_in_ei after pension-
     #       contribution imputations are available
-    return (c02900, c02900_less)
+    return (c02900, c02900_in_ei)
 
 
 @iterate_jit(nopython=True)
@@ -1386,7 +1386,7 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
 
 @iterate_jit(nopython=True)
 def ExpandIncome(c00100, ptax_was, e02400, c02500,
-                 c02900_less, e00400, invinc_agi_ec,
+                 c02900_in_ei, e00400, invinc_agi_ec,
                  f6251, _standard, cmbtp_itemizer, cmbtp_standard,
                  _expanded_income):
     """
@@ -1406,7 +1406,7 @@ def ExpandIncome(c00100, ptax_was, e02400, c02500,
         cmbtp = 0.
     # compute expanded income as AGI plus several additional amounts
     _expanded_income = (c00100 +  # adjusted gross income
-                        c02900_less +  # ajustments to AGI
+                        c02900_in_ei +  # ajustments to AGI
                         e00400 +  # non-taxable interest income
                         invinc_agi_ec +  # AGI-excluded taxable invest income
                         cmbtp +  # AMT taxable income items from Form 6251
