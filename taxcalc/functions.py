@@ -575,7 +575,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
     """
     GainsTax function implements (2015) Schedule D Tax Worksheet logic for
     the special taxation of long-term capital gains and qualified dividends
-    if CG_nodiff is false (that is, zero)
+    if CG_nodiff is false
     """
     # pylint: disable=too-many-statements,too-many-branches
     if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
