@@ -1189,10 +1189,10 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
 
 @iterate_jit(nopython=True)
 def IITAX(c59660, c11070, c10960, personal_credit,
-          c09200, _payrolltax,
-          CTC_new_c, CTC_new_rt,
-          n24, c00100, MARS, ptax_oasdi,
-          CTC_new_ps, CTC_new_prt, CTC_new_refund_limit_rt,
+          c09200, _payrolltax, nu05,
+          CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
+          n24, c00100, MARS, ptax_oasdi, CTC_new_refund_limited,
+          CTC_new_ps, CTC_new_prt, CTC_new_refund_limit_payroll_rt,
           ctc_new, _eitc, _refund, _iitax, _combined):
     """
     Compute final taxes including new refundable child tax credit
@@ -1200,15 +1200,16 @@ def IITAX(c59660, c11070, c10960, personal_credit,
     # compute new refundable child tax credit
     if n24 > 0:
         posagi = max(c00100, 0.)
-        ctc_new = min(CTC_new_rt * posagi, CTC_new_c * n24)
+        ctc_new = min(CTC_new_rt * posagi,
+                      CTC_new_c * n24 + CTC_new_c_under5_bonus * nu05)
         ymax = CTC_new_ps[MARS - 1]
         if posagi > ymax:
             ctc_new_reduced = max(0.,
                                   ctc_new - CTC_new_prt * (posagi - ymax))
             ctc_new = min(ctc_new, ctc_new_reduced)
-        if ctc_new > 0.:
+        if ctc_new > 0. and CTC_new_refund_limited:
             refund_new = max(0., ctc_new - c09200)
-            limit_new = CTC_new_refund_limit_rt * ptax_oasdi
+            limit_new = CTC_new_refund_limit_payroll_rt * ptax_oasdi
             limited_new = max(0., refund_new - limit_new)
             ctc_new = max(0., ctc_new - limited_new)
     else:

@@ -939,8 +939,7 @@
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value": [0],
-        "validations": {"min": 0, "max": 1}
+        "value": [false]
     },
 
     "_CG_ec": {
@@ -1794,6 +1793,21 @@
         "value": [0.0]
     },
 
+
+    "_CTC_new_c_under5_bonus": {
+        "long_name": "Bonus new refundable child tax credit maximum for qualifying children under five",
+        "description": "The maximum amount of the new refundable child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old. ",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
     "_CTC_new_rt": {
         "long_name": "New refundable child tax credit amount phasein rate",
         "description": "The total amount of the new child tax credit is increased at this rate per dollar of AGI until _CTC_new_c times the number of qualified children is reached.",
@@ -1835,11 +1849,25 @@
         "value": [0.0]
     },
 
-    "_CTC_new_refund_limit_rt": {
-        "long_name": "New child tax credit refund limit rate",
+    "_CTC_new_refund_limited": {
+        "long_name": "New child tax credit refund limited to a decimal fraction of payroll taxes",
+        "description": "Specifies whether the new child tax credit refund is limited by the new child tax credit refund limit rate (_CTC_new_refund_limit_payroll_rt)",
+        "irs_ref": "",
+        "notes": "Set this parameter to true to limit the refundability or false to allow full refundability for all taxpayers.",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [false]
+    },    
+
+    "_CTC_new_refund_limit_payroll_rt": {
+        "long_name": "New child tax credit refund limit rate (decimal fraction of payroll taxes)",
         "description": "The fraction of payroll taxes (employee plus employer shares, but excluding all Medicare payroll taxes) that serves as a limit to the amount of new child tax credit that can be refunded.",
         "irs_ref": "",
-        "notes": "Set this parameter to zero for no refundability; set it to 9e99 for unlimited refundability.",
+        "notes": "Set this parameter to zero for no refundability; set it to 9e99 for unlimited refundability for taxpayers with payroll tax liabilities.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
