@@ -1853,7 +1853,7 @@
         "long_name": "New child tax credit refund limited to a decimal fraction of payroll taxes",
         "description": "Specifies whether the new child tax credit refund is limited by the new child tax credit refund limit rate (_CTC_new_refund_limit_payroll_rt)",
         "irs_ref": "",
-        "notes": "Set this parameter to True to limit the refundability or False to allow full refundability for all taxpayers.",
+        "notes": "Set this parameter to true to limit the refundability or false to allow full refundability for all taxpayers.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
