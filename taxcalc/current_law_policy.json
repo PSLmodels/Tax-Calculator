@@ -2237,8 +2237,8 @@
     },
 
     "_LST_per_adult": {
-        "long_name": "Whether lump-sum tax levied per adult",
-        "description": "false implies each filing unit pays _LST; true implies MARS=2 units pay twice _LST, others pay _LST.",
+        "long_name": "Whether lump-sum tax is levied per adult",
+        "description": "false implies each filing unit pays _LST; true implies MARS=2 units pay twice _LST while others pay _LST.",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
