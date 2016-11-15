@@ -1399,16 +1399,16 @@
 
     "_NIIT_PT_taxed": {
         "long_name": "Whether or not partnership and S-corp income is in NIIT base",
-        "description": "0 ==> e26270 excluded from NIIT base; 1 ==> e26270 is in NIIT base",
+        "description": "false ==> e26270 excluded from NIIT base; true ==> e26270 is in NIIT base",
         "irs_ref": "",
-        "notes": "Current law has _NIIT_PT_taxed equal to zero",
+        "notes": "",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value": [0]
+        "value": [false]
     },
 
     "_NIIT_rt": {
