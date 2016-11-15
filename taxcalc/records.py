@@ -132,7 +132,7 @@ class Records(object):
         'DSI', 'EIC', 'FLPDYR',
         'f2441', 'f6251',
         'n24', 'XTOT',
-        'MARS', 'MIDR', 'RECID',
+        'MARS', 'MIDR', 'RECID', 'filer',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
         'nu13', 'elderly_dependent'])
 
