@@ -518,11 +518,12 @@ def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
     # diffs of plan Y by decile
     # Means of plan Y by income bin
     # diffs of plan Y by income bin
-    mY_dec, mX_dec, df_dec, pdf_dec, cdf_dec, mY_bin, mX_bin, df_bin, \
-        pdf_bin, cdf_bin, diff_sum, payrolltax_diff_sum, combined_diff_sum, \
-        sum_baseline, pr_sum_baseline, combined_sum_baseline, sum_reform, \
-        pr_sum_reform, combined_sum_reform =\
-        groupby_means_and_comparisons(soit_baseline, soit_reform, mask)
+    (mY_dec, mX_dec, df_dec, pdf_dec, cdf_dec, mY_bin, mX_bin, df_bin,
+        pdf_bin, cdf_bin, diff_sum, payrolltax_diff_sum, combined_diff_sum,
+        sum_baseline, pr_sum_baseline, combined_sum_baseline, sum_reform,
+        pr_sum_reform,
+        combined_sum_reform) = groupby_means_and_comparisons(soit_baseline,
+                                                             soit_reform, mask)
 
     elapsed_time = time.time() - start_time
     print("elapsed time for this run: ", elapsed_time)
