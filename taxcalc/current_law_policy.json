@@ -2222,6 +2222,34 @@
         "validations": {"min": "_PT_brk6"}
     },
 
+    "_LST": {
+        "long_name": "Lump-sum tax",
+        "description": "Lump-sum tax is included in income tax total.",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_LST_per_adult": {
+        "long_name": "Whether lump-sum tax levied per adult",
+        "description": "false implies each filing unit pays _LST; true implies MARS=2 units pay twice _LST, others pay _LST.",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [true]
+    },
+
     "_FST_AGI_trt": {
         "long_name": "Rate applied to AGI to determine full Fair Share Tax",
         "description": "The result of multiplying AGI by this is full FST (before credit for income tax and employee share of payroll taxes).",
