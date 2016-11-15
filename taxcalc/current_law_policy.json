@@ -22,7 +22,7 @@
     "_FICA_ss_trt": {
         "long_name": "Social Security payroll tax rate",
         "description": "Social Security FICA rate, including both employer and employee.",
-        "irs_ref": "Form , line , ",
+        "irs_ref": "",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -36,7 +36,7 @@
     "_FICA_mc_trt": {
         "long_name": "Medicare payroll tax rate",
         "description": "Medicare FICA rate, including both employer and employee.",
-        "irs_ref": "Form , line , ",
+        "irs_ref": "",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -92,7 +92,7 @@
     "_ALD_KEOGH_SEP_hc": {
         "long_name": "Adjustment for payment to either KEOGH or SEP plan haircut",
         "description": "Under current law, payments to Keogh or SEP plans can be fully deducted from gross income. Taxpayers can use this haircut to limit the adjustment allowed. ",
-        "irs_ref": "Form 1040, line 25",
+        "irs_ref": "Form 1040, line 28",
         "notes": "The final adjustment amount is (1 - Haircut) * KEOGH/SEP plan payments",
         "start_year": 2013,
         "col_var": "",
@@ -277,7 +277,7 @@
     "_II_em_ps": {
         "long_name": "Personal exemption phaseout starting income",
         "description": "If taxpayers' AGI is above this level, their personal exemption will start to decrease at the personal exemption phaseout rate (PEP provision). ",
-        "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
+        "irs_ref": "Form 1040, line 42, instruction (Worksheet).",
         "notes": "",
         "start_year": 2013,
         "col_var": "MARS",
@@ -297,7 +297,7 @@
     "_II_prt": {
         "long_name": "Personal exemption phaseout rate",
         "description": "Personal exemption amount will decrease by this rate for each dollar of AGI exceeding exemption phaseout start.",
-        "irs_ref": "Form , line , ",
+        "irs_ref": "Form 1040, line 42, instruction (Worksheet).",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -311,7 +311,7 @@
     "_ID_ps": {
         "long_name": "Itemized deduction phaseout AGI start (Pease provision)",
         "description": "The itemized deductions will be reduced for taxpayers with AGI higher than this level.",
-        "irs_ref": "Form 1040, line 42, instruction (table).",
+        "irs_ref": "Form 1040 Schedule A, line 29, instructions.",
         "notes": "",
         "start_year": 2013,
         "col_var": "MARS",
@@ -673,7 +673,7 @@
     "_II_rt1": {
         "long_name": "Personal income tax rate 1",
         "description": "The lowest tax rate, applied to the portion of taxable income below tax bracket 1. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -687,7 +687,7 @@
     "_II_rt2": {
         "long_name": "Personal income tax rate 2",
         "description": "The second lowest tax rate, applied to the portion of taxable income below tax bracket 2 and above tax bracket 1. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -701,7 +701,7 @@
     "_II_rt3": {
         "long_name": "Personal income tax rate 3",
         "description": "The third lowest tax rate, applied to the portion of taxable income below tax bracket 3 and above tax bracket 2. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -715,7 +715,7 @@
     "_II_rt4": {
         "long_name": "Personal income tax rate 4",
         "description": "The tax rate applied to the portion of taxable income below tax bracket 4 and above tax bracket 3. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -729,7 +729,7 @@
     "_II_rt5": {
         "long_name": "Personal income tax rate 5",
         "description": "The third highest tax rate, applied to the portion of taxable income below tax bracket 5 and above tax bracket 4. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -743,7 +743,7 @@
     "_II_rt6": {
         "long_name": "Personal income tax rate 6",
         "description": "The second higher tax rate, applied to the portion of taxable income below tax bracket 6 and above tax bracket 5. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -757,7 +757,7 @@
     "_II_rt7": {
         "long_name": "Personal income tax rate 7",
         "description": "The tax rate applied to the portion of taxable income below tax bracket 7 and above tax bracket 6. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -771,7 +771,7 @@
     "_II_rt8": {
         "long_name": "Personal income tax rate 8",
         "description": "The tax rate applied to the portion of taxable income above tax bracket 7.",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -785,7 +785,7 @@
     "_II_brk1": {
         "long_name": "Personal income tax bracket (upper threshold) 1",
         "description": "Taxable income below this threshold is taxed at tax rate 1. ",
-        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
         "col_var": "MARS",
@@ -806,7 +806,7 @@
     "_II_brk2": {
         "long_name": "Personal income tax bracket (upper threshold) 2",
         "description": "Income below this threshold and above tax bracket 1 is taxed at tax rate 2. ",
-        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
         "col_var": "MARS",
@@ -827,7 +827,7 @@
     "_II_brk3": {
         "long_name": "Personal income tax bracket (upper threshold) 3",
         "description": "Income below this threshold and above tax bracket 2 is taxed at tax rate 3.",
-        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
         "col_var": "MARS",
@@ -848,7 +848,7 @@
     "_II_brk4": {
         "long_name": "Personal income tax bracket (upper threshold) 4",
         "description": "Income below this threshold and above tax bracket 3 is taxed at tax rate 4.",
-        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
         "col_var": "MARS",
@@ -869,7 +869,7 @@
     "_II_brk5": {
         "long_name": "Personal income tax bracket (upper threshold) 5",
         "description": "Income below this threshold and above tax bracket 4 is taxed at tax rate 5.",
-        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
         "col_var": "MARS",
@@ -890,7 +890,7 @@
     "_II_brk6": {
         "long_name": "Personal income tax bracket 6",
         "description": "Income below this threshold and above tax bracket 5 is taxed at tax rate 6.",
-        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
         "col_var": "MARS",
@@ -911,7 +911,7 @@
     "_II_brk7": {
         "long_name": "Personal income tax bracket 7",
         "description": "Income below this threshold and above tax bracket 6 is taxed at tax rate 7; income above this threshold is taxed at tax rate 8.  Default value is essentially infinity",
-        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
         "col_var": "MARS",
@@ -1010,7 +1010,7 @@
     "_CG_rt4": {
         "long_name": "Long term capital gain and qualified dividends rate 4",
         "description": "The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate. ",
-        "irs_ref": "Form 1040 Schedule D tax worksheet, line 32, in-line. ",
+        "irs_ref": "",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -1277,7 +1277,7 @@
     "_AMT_CG_rt1": {
         "long_name": "Long term capital gain and qualified dividend rate1",
         "description": "Capital gain and qualified dividends (stacked on top of regular income) below threshold 1 are taxed at this rate. ",
-        "irs_ref": "Form 6251, line 46, in-line. ",
+        "irs_ref": "Form 6251, line 47, in-line. ",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -1303,7 +1303,7 @@
     "_AMT_CG_rt3": {
         "long_name": "Long term capital gain and qualified dividend rate 3",
         "description": "The capital gain and qualified dividend (stacked on top of regular income) above threshold 2 and below threshold 3 are taxed at this rate.",
-        "irs_ref": "Form 6251, line 57, in-line. ",
+        "irs_ref": "Form 6251, line 58, in-line. ",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -1316,7 +1316,7 @@
     "_AMT_CG_rt4": {
         "long_name": "Long term capital gain and qualified dividend rate 4",
         "description": "The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.",
-        "irs_ref": "Form 6251, line 57, in-line. ",
+        "irs_ref": "",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -1367,7 +1367,7 @@
     "_AMT_CG_brk3": {
         "long_name": "Long term capital gain and qualified dividend threshold 3",
         "description": "The gains and dividends, stacked last, of AMT taxable income below this and above bracket 2 are taxed at capital gain rate 3; above thisthey are taxed at AMT capital gain rate 4.  Default value is essentially infinity.",
-        "irs_ref": "Form 6251, line 49, in-line. ",
+        "irs_ref": "",
         "start_year": 2013,
         "col_var": "MARS",
         "row_var": "FLPDYR",
@@ -1428,7 +1428,7 @@
     "_CDCC_c": {
         "long_name": "Maximum child & dependent care credit per dependent",
         "description": "The maximum amount of credit allowed for each qualifying dependent.",
-        "irs_ref": "Form 2441, line 3c, in-line.",
+        "irs_ref": "Form 2441, line 3, in-line.",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -1647,7 +1647,7 @@
     "_CTC_ps": {
         "long_name": "Child tax credit phaseout MAGI start",
         "description": "Child tax credit begins to decrease when MAGI is above this level.",
-        "irs_ref": "Form 1040, line 52, instruction (Worksheet).",
+        "irs_ref": "Form 1040, line 52, instruction (Worksheet, line 3).",
         "notes": "",
         "start_year": 2013,
         "col_var": "MARS",
@@ -1740,7 +1740,7 @@
     "_ACTC_rt_bonus_under5family": {
         "long_name": "Bonus additional child tax credit rate for families with qualifying children under 5",
         "description": "For families with qualifying children under 5 years old, this bonus rate is added to the fraction of earnings used in calculating the ACTC (_ACTC_rt).",
-        "irs_ref": "Form 8812, line 6, inline.",
+        "irs_ref": "",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -1754,7 +1754,7 @@
     "_ACTC_rt": {
         "long_name": "Additional Child Tax Credit rate",
         "description": "This is the fraction of earnings used in calculating the ACTC, which is a partially refundable credit that supplements the CTC for some taxpayers. ",
-        "irs_ref": "Form 8812, line 6, inline.",
+        "irs_ref": "Form 8812, line 8, inline.",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -1966,7 +1966,7 @@
     "_PT_rt1": {
         "long_name": "Pass-through income tax rate 1",
         "description": "The lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 1. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -1980,7 +1980,7 @@
     "_PT_rt2": {
         "long_name": "Pass-through income tax rate 2",
         "description": "The second lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 2 and above tax bracket 1. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -1994,7 +1994,7 @@
     "_PT_rt3": {
         "long_name": "Pass-through income tax rate 3",
         "description": "The third lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 3 and above tax bracket 2. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -2008,7 +2008,7 @@
     "_PT_rt4": {
         "long_name": "Pass-through income tax rate 4",
         "description": "The tax rate applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 4 and above tax bracket 3. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -2022,7 +2022,7 @@
     "_PT_rt5": {
         "long_name": "Pass-through income tax rate 5",
         "description": "The third highest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 5 and above tax bracket 4. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -2036,7 +2036,7 @@
     "_PT_rt6": {
         "long_name": "Pass-through income tax rate 6",
         "description": "The second higher tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 6 and above tax bracket 5. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -2050,7 +2050,7 @@
     "_PT_rt7": {
         "long_name": "Pass-through income tax rate 7",
         "description": "The highest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 7 and above tax bracket 6. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -2064,7 +2064,7 @@
     "_PT_rt8": {
         "long_name": "Extra pass-through income tax rate",
         "description": "The extra tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations above the tax bracket 7.",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule X)",
+        "irs_ref": "",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -2079,7 +2079,7 @@
     "_PT_brk1": {
         "long_name": "Pass-through income tax bracket (upper threshold) 1",
         "description": "Income from sole proprietorships, partnerships and S corporations below this threshold is taxed at tax rate 1. ",
-        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
         "col_var": "MARS",
@@ -2100,7 +2100,7 @@
     "_PT_brk2": {
         "long_name": "Pass-through income tax bracket (upper threshold) 2",
         "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 1 is taxed at tax rate 2. ",
-        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
         "col_var": "MARS",
@@ -2121,7 +2121,7 @@
     "_PT_brk3": {
         "long_name": "Pass-through income tax bracket (upper threshold) 3",
         "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 2 is taxed at tax rate 3.",
-        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
         "col_var": "MARS",
@@ -2142,7 +2142,7 @@
     "_PT_brk4": {
         "long_name": "Pass-through income tax bracket (upper threshold) 4",
         "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 3 is taxed at tax rate 4.",
-        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
         "col_var": "MARS",
@@ -2163,7 +2163,7 @@
     "_PT_brk5": {
         "long_name": "Pass-through income tax bracket (upper threshold) 5",
         "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 4 is taxed at tax rate 5.",
-        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
         "col_var": "MARS",
@@ -2184,7 +2184,7 @@
     "_PT_brk6": {
         "long_name": "Pass-through income tax bracket (upper threshold) 6",
         "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 5 is taxed at tax rate 6.",
-        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
         "col_var": "MARS",
@@ -2205,7 +2205,7 @@
     "_PT_brk7": {
         "long_name": "Extra pass-through income tax bracket",
         "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 6 is taxed at tax rate 7. Default value is essentially infinity",
-        "irs_ref": "Form 1040, line 40, in-line (Formside notes).",
+        "irs_ref": "",
         "notes": "",
         "start_year": 2013,
         "col_var": "MARS",
