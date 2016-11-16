@@ -203,6 +203,7 @@ class Calculator(object):
         BenefitSurtax(self)
         BenefitLimitation(self)
         FairShareTax(self.policy, self.records)
+        LumpSumTax(self.policy, self.records)
         ExpandIncome(self.policy, self.records)
 
     def increment_year(self):

@@ -1193,8 +1193,7 @@ def IITAX(c59660, c11070, c10960, personal_credit,
           CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
           n24, c00100, MARS, ptax_oasdi, CTC_new_refund_limited,
           CTC_new_ps, CTC_new_prt, CTC_new_refund_limit_payroll_rt,
-          LST, LST_per_adult,
-          lumpsum_tax, ctc_new, _eitc, _refund, _iitax, _combined):
+          ctc_new, _eitc, _refund, _iitax, _combined):
     """
     Compute final taxes including new refundable child tax credit
     """
@@ -1215,16 +1214,12 @@ def IITAX(c59660, c11070, c10960, personal_credit,
             ctc_new = max(0., ctc_new - limited_new)
     else:
         ctc_new = 0.
-    # compute lump-sum tax
-    lumpsum_tax = LST
-    if LST_per_adult and MARS == 2:
-        lumpsum_tax += LST
     # compute final taxes
     _eitc = c59660
     _refund = _eitc + c11070 + c10960 + personal_credit + ctc_new
-    _iitax = c09200 - _refund + lumpsum_tax
+    _iitax = c09200 - _refund
     _combined = _iitax + _payrolltax
-    return (lumpsum_tax, ctc_new, _eitc, _refund, _iitax, _combined)
+    return (ctc_new, _eitc, _refund, _iitax, _combined)
 
 
 @jit(nopython=True)
@@ -1284,7 +1279,6 @@ def ComputeBenefit(calc, ID_switch):
     if ID_switch[6]:
         no_ID_calc.policy.ID_Charity_hc = 1.
     no_ID_calc.calc_one_year()
-    # compute surtax amount and add to income and combined taxes
     # pylint: disable=protected-access
     benefit = np.where(
         no_ID_calc.records._iitax - calc.records._iitax > 0.,
@@ -1388,6 +1382,19 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
     else:
         fstax = 0.
     return (fstax, _iitax, _combined, _surtax)
+
+
+@iterate_jit(nopython=True)
+def LumpSumTax(MARS, LST,  # DSI, age_head,
+               lumpsum_tax, _combined):
+    """
+    Compute lump-sum tax and add it to combined taxes.
+    """
+    lumpsum_tax = LST
+    if MARS == 2:
+        lumpsum_tax += LST
+    _combined += lumpsum_tax
+    return (lumpsum_tax, _combined)
 
 
 @iterate_jit(nopython=True)

@@ -2223,8 +2223,8 @@
     },
 
     "_LST": {
-        "long_name": "Lump-sum tax",
-        "description": "Lump-sum tax is included in income tax total.",
+        "long_name": "Dollar amount of lump-sum tax",
+        "description": "Lump-sum tax is included only in combined taxes; it is not included in income or payroll taxes.",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
@@ -2234,20 +2234,6 @@
         "cpi_inflated": false,
         "col_label": "",
         "value": [0.0]
-    },
-
-    "_LST_per_adult": {
-        "long_name": "Whether lump-sum tax is levied per adult",
-        "description": "false implies each filing unit pays _LST; true implies MARS=2 units pay twice _LST while others pay _LST.",
-        "irs_ref": "",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [true]
     },
 
     "_FST_AGI_trt": {
