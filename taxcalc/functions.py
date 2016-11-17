@@ -1385,14 +1385,16 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
 
 
 @iterate_jit(nopython=True)
-def LumpSumTax(MARS, LST,  # DSI, age_head,
+def LumpSumTax(DSI, _num, XTOT,
+               LST,
                lumpsum_tax, _combined):
     """
     Compute lump-sum tax and add it to combined taxes.
     """
-    lumpsum_tax = LST
-    if MARS == 2:
-        lumpsum_tax += LST
+    if LST == 0.0 or DSI == 1:
+        lumpsum_tax = 0.
+    else:
+        lumpsum_tax = LST * max(_num, XTOT)
     _combined += lumpsum_tax
     return (lumpsum_tax, _combined)
 
