@@ -242,8 +242,8 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
 def AGI(ymod1, c02500, c02900, XTOT, MARS, _sep, DSI, _exact,
         II_em, II_em_ps, II_prt,
         II_credit, II_credit_ps, II_credit_prt,
-        c00100, pre_c04600, c04600, personal_credit, n24,
-        DependentCredit_c, CTC_prt, CTC_ps, _exact, dep_credit):
+        c00100, pre_c04600, c04600, personal_credit,
+        DependentCredit_c, CTC_prt, CTC_ps, n24, dep_credit):
     """
     AGI function: compute Adjusted Gross Income, c00100,
                   compute personal exemption amount, c04600, and
