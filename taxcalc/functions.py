@@ -905,7 +905,8 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
 @iterate_jit(nopython=True)
 def ChildTaxCredit(n24, MARS, c00100, _exact,
                    CTC_c, CTC_ps, CTC_prt, prectc, nu05,
-                   CTC_c_under5_bonus):
+                   CTC_c_under5_bonus, XTOT, _num,
+                   DependentCredit_c, dep_credit):
     """
     ChildTaxCredit function computes prectc amount
     """
@@ -916,7 +917,17 @@ def ChildTaxCredit(n24, MARS, c00100, _exact,
         if _exact == 1:
             excess = 1000. * math.ceil(excess / 1000.)
         prectc = max(0., prectc - CTC_prt * excess)
-    return prectc
+    # calculate dependent credit
+    dep_credit = DependentCredit_c * max(0, XTOT - _num)
+    # phase-out dependent credit
+    if CTC_prt > 0. and c00100 > CTC_ps[MARS - 1]:
+        thresh = CTC_ps[MARS - 1] + n24 * CTC_c / CTC_prt
+        excess = c00100 - thresh
+        if _exact == 1:
+            excess = 1000. * math.ceil(excess / 1000.)
+        dep_phaseout = CTC_prt * (c00100 - excess)
+        dep_credit = max(0., dep_credit - dep_phaseout)
+    return (prectc, dep_credit)
 
 
 @iterate_jit(nopython=True)
@@ -1080,7 +1091,7 @@ def EducationTaxCredit(e87530, MARS, c00100, _num, c05800,
 
 @iterate_jit(nopython=True)
 def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
-                         e07600, p08000, prectc,
+                         e07600, p08000, prectc, dep_credit,
                          c07180, c07200, c07220, c07230, c07240,
                          c07260, c07300, c07400, c07600, c08000):
     """
@@ -1106,9 +1117,11 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     avail = avail - c07600
     c07200 = min(c07200, avail)  # Schedule R credit
     avail = avail - c07200
+    dep_credit = min(avail, dep_credit)  # Dependent credit
+    avail = avail - dep_credit
     c08000 = min(p08000, avail)  # Other credits
     avail = avail - c08000
-    return (c07180, c07200, c07220, c07230, c07240,
+    return (c07180, c07200, c07220, c07230, c07240, dep_credit,
             c07260, c07300, c07400, c07600, c08000)
 
 
@@ -1171,14 +1184,14 @@ def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
 @iterate_jit(nopython=True)
 def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
           c07400, c07600, c08000, e09700, e09800, e09900, NIIT,
-          c07100, c09200):
+          c07100, c09200, dep_credit):
     """
     C1040 function computes total nonrefundable credits, c07100, and
                             income tax before refundable credits, c09200
     """
     # total nonrefundable credits (2015 Form 1040, line 55)
     c07100 = (c07180 + c07200 + c07600 + c07300 + c07400 + c07220 + c08000 +
-              c07230 + c07240 + c07260)
+              c07230 + c07240 + c07260 + dep_credit)
     # tax after credits (2015 Form 1040, line 56)
     tax_net_nonrefundable_credits = max(0., c05800 - c07100)
     # tax before refundable credits

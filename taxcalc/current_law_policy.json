@@ -670,6 +670,20 @@
         "validations": {"min": 0}
     },
 
+    "_DependentCredit_c": {
+	"long_name": "Nonrefundable credit for dependents",
+	"description": "This nonrefundable credit is applied to dependents and phases out with the Child Tax Credit. The dependent credit's phaseout begins when the CTC's phaseout ends.",
+        "irs_ref": "",
+        "notes": "The Ryan-Brady tax plan sets this at $500",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0]
+    },
+
     "_II_rt1": {
         "long_name": "Personal income tax rate 1",
         "description": "The lowest tax rate, applied to the portion of taxable income below tax bracket 1. ",
