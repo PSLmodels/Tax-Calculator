@@ -242,7 +242,8 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
 def AGI(ymod1, c02500, c02900, XTOT, MARS, _sep, DSI, _exact,
         II_em, II_em_ps, II_prt,
         II_credit, II_credit_ps, II_credit_prt,
-        c00100, pre_c04600, c04600, personal_credit):
+        c00100, pre_c04600, c04600, personal_credit, n24,
+        DependentCredit_c, CTC_prt, CTC_ps, _exact, dep_credit):
     """
     AGI function: compute Adjusted Gross Income, c00100,
                   compute personal exemption amount, c04600, and
@@ -271,7 +272,21 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, _sep, DSI, _exact,
     if II_credit_prt > 0. and c00100 > II_credit_ps[MARS - 1]:
         credit_phaseout = II_credit_prt * (c00100 - II_credit_ps[MARS - 1])
         personal_credit = max(0., personal_credit - credit_phaseout)
-    return (c00100, pre_c04600, c04600, personal_credit)
+    # calculate dependent credit
+    if MARS == 2:
+        dep_count = XTOT - 2
+    else:
+        dep_count = XTOT - 1
+    dep_credit = DependentCredit_c * dep_count
+    # phase-out dependent credit
+    if CTC_prt > 0. and c00100 > CTC_ps[MARS - 1]:
+        thresh = CTC_ps[MARS - 1] + n24 * CTC_c / CTC_prt
+        excess = c00100 - thresh
+        if _exact == 1:
+            excess = 1000. * math.ceil(excess / 1000.)
+        dep_phaseout = dep_phaseout = CTC_prt * (c00100 - excess)
+        dep_credit = max(0., dep_credit - dep_phaseout)
+    return (c00100, pre_c04600, c04600, personal_credit, dep_credit)
 
 
 @iterate_jit(nopython=True)
@@ -1080,7 +1095,7 @@ def EducationTaxCredit(e87530, MARS, c00100, _num, c05800,
 
 @iterate_jit(nopython=True)
 def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
-                         e07600, p08000, prectc,
+                         e07600, p08000, prectc, dep_credit,
                          c07180, c07200, c07220, c07230, c07240,
                          c07260, c07300, c07400, c07600, c08000):
     """
@@ -1106,9 +1121,11 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     avail = avail - c07600
     c07200 = min(c07200, avail)  # Schedule R credit
     avail = avail - c07200
+    dep_credit = min(avail, dep_credit) # Dependent credit
+    avail = avail - dep_credit
     c08000 = min(p08000, avail)  # Other credits
     avail = avail - c08000
-    return (c07180, c07200, c07220, c07230, c07240,
+    return (c07180, c07200, c07220, c07230, c07240, dep_credit,
             c07260, c07300, c07400, c07600, c08000)
 
 
@@ -1171,14 +1188,14 @@ def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
 @iterate_jit(nopython=True)
 def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
           c07400, c07600, c08000, e09700, e09800, e09900, NIIT,
-          c07100, c09200):
+          c07100, c09200, dep_credit):
     """
     C1040 function computes total nonrefundable credits, c07100, and
                             income tax before refundable credits, c09200
     """
     # total nonrefundable credits (2015 Form 1040, line 55)
     c07100 = (c07180 + c07200 + c07600 + c07300 + c07400 + c07220 + c08000 +
-              c07230 + c07240 + c07260)
+              c07230 + c07240 + c07260 + dep_credit)
     # tax after credits (2015 Form 1040, line 56)
     tax_net_nonrefundable_credits = max(0., c05800 - c07100)
     # tax before refundable credits
