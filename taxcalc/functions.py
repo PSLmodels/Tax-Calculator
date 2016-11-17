@@ -905,7 +905,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
 @iterate_jit(nopython=True)
 def ChildTaxCredit(n24, MARS, c00100, _exact,
                    CTC_c, CTC_ps, CTC_prt, prectc, nu05,
-                   CTC_c_under5_bonus,
+                   CTC_c_under5_bonus, XTOT,
                    DependentCredit_c, dep_credit):
     """
     ChildTaxCredit function computes prectc amount
