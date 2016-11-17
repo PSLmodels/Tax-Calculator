@@ -242,8 +242,7 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
 def AGI(ymod1, c02500, c02900, XTOT, MARS, _sep, DSI, _exact,
         II_em, II_em_ps, II_prt,
         II_credit, II_credit_ps, II_credit_prt,
-        c00100, pre_c04600, c04600, personal_credit, n24,
-        DependentCredit_c, CTC_c, CTC_prt, CTC_ps, dep_credit):
+        c00100, pre_c04600, c04600, personal_credit):
     """
     AGI function: compute Adjusted Gross Income, c00100,
                   compute personal exemption amount, c04600, and
@@ -272,21 +271,7 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, _sep, DSI, _exact,
     if II_credit_prt > 0. and c00100 > II_credit_ps[MARS - 1]:
         credit_phaseout = II_credit_prt * (c00100 - II_credit_ps[MARS - 1])
         personal_credit = max(0., personal_credit - credit_phaseout)
-    # calculate dependent credit
-    if MARS == 2:
-        dep_count = XTOT - 2
-    else:
-        dep_count = XTOT - 1
-    dep_credit = DependentCredit_c * dep_count
-    # phase-out dependent credit
-    if CTC_prt > 0. and c00100 > CTC_ps[MARS - 1]:
-        thresh = CTC_ps[MARS - 1] + n24 * CTC_c / CTC_prt
-        excess = c00100 - thresh
-        if _exact == 1:
-            excess = 1000. * math.ceil(excess / 1000.)
-        dep_phaseout = dep_phaseout = CTC_prt * (c00100 - excess)
-        dep_credit = max(0., dep_credit - dep_phaseout)
-    return (c00100, pre_c04600, c04600, personal_credit, dep_credit)
+    return (c00100, pre_c04600, c04600, personal_credit)
 
 
 @iterate_jit(nopython=True)
@@ -920,7 +905,8 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
 @iterate_jit(nopython=True)
 def ChildTaxCredit(n24, MARS, c00100, _exact,
                    CTC_c, CTC_ps, CTC_prt, prectc, nu05,
-                   CTC_c_under5_bonus):
+                   CTC_c_under5_bonus,
+                   DependentCredit_c, dep_credit):
     """
     ChildTaxCredit function computes prectc amount
     """
@@ -931,7 +917,21 @@ def ChildTaxCredit(n24, MARS, c00100, _exact,
         if _exact == 1:
             excess = 1000. * math.ceil(excess / 1000.)
         prectc = max(0., prectc - CTC_prt * excess)
-    return prectc
+    # calculate dependent credit
+    if MARS == 2:
+        dep_count = XTOT - 2
+    else:
+        dep_count = XTOT - 1
+    dep_credit = DependentCredit_c * dep_count
+    # phase-out dependent credit
+    if CTC_prt > 0. and c00100 > CTC_ps[MARS - 1]:
+        thresh = CTC_ps[MARS - 1] + n24 * CTC_c / CTC_prt
+        excess = c00100 - thresh
+        if _exact == 1:
+            excess = 1000. * math.ceil(excess / 1000.)
+        dep_phaseout = dep_phaseout = CTC_prt * (c00100 - excess)
+        dep_credit = max(0., dep_credit - dep_phaseout)
+    return (prectc, dep_credit)
 
 
 @iterate_jit(nopython=True)
