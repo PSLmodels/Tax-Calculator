@@ -1121,7 +1121,7 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     avail = avail - c07600
     c07200 = min(c07200, avail)  # Schedule R credit
     avail = avail - c07200
-    dep_credit = min(avail, dep_credit) # Dependent credit
+    dep_credit = min(avail, dep_credit)  # Dependent credit
     avail = avail - dep_credit
     c08000 = min(p08000, avail)  # Other credits
     avail = avail - c08000
