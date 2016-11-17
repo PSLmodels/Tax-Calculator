@@ -103,10 +103,10 @@ def test_full_dropq_puf(puf_path):
     delta_yr0 = fiscal_tots[0]
     baseline_yr0 = fiscal_tots[1]
     reform_yr0 = fiscal_tots[2]
-    diff_yr0 = 1e-9 * (reform_yr0.loc['combined_tax'] -
-                       baseline_yr0.loc['combined_tax']).values
-    delta_yr0 = 1e-9 * delta_yr0.loc['combined_tax'].values
-    npt.assert_array_almost_equal(diff_yr0, delta_yr0, decimal=9)
+    diff_yr0 = (reform_yr0.loc['combined_tax'] -
+                baseline_yr0.loc['combined_tax']).values
+    delta_yr0 = delta_yr0.loc['combined_tax'].values
+    npt.assert_allclose(diff_yr0, delta_yr0)
 
 
 @pytest.mark.parametrize("is_strict, rjson, growth_params, no_elast",
