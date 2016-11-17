@@ -922,7 +922,7 @@ def ChildTaxCredit(n24, MARS, c00100, _exact,
         dep_count = XTOT - 2
     else:
         dep_count = XTOT - 1
-    dep_credit = DependentCredit_c * dep_count
+    dep_credit = DependentCredit_c * max(0, dep_count)
     # phase-out dependent credit
     if CTC_prt > 0. and c00100 > CTC_ps[MARS - 1]:
         thresh = CTC_ps[MARS - 1] + n24 * CTC_c / CTC_prt
