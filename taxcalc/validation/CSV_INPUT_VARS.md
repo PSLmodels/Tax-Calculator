@@ -34,7 +34,7 @@ in the IRS-SOI Public Use File (PUF).
 | e01100 | 1040 | 13 | capital gain distributions not reported on Sch D
 | e01200 | 1040 | 14 | other net gain/loss (Form 4797)
 | e01400 | 1040 | 15b | taxable IRA distributions
-| e01500 | 1040 | 16a | some (not all) nontaxable pensions and annuities
+| e01500 | 1040 | 16a | partial total of pensions and annuities
 | e01700 | 1040 | 16b | taxable pensions and annuities
 | e02000 | 1040 | 17 | Sch E rental, royalty, S-corp, etc, income/loss
 | e02100 | 1040 | 18 | farm net income/loss for filing unit (Sch F)
