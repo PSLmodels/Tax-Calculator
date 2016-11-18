@@ -235,7 +235,7 @@ def test_2():
         2015: {
             '_ACTC_Income_thd': [actc_thd],
             '_SS_Earnings_c': [mte],
-            '_ALD_Investment_ec_base_all': [false]
+            '_ALD_Investment_ec_base_all': [False]
         }
     }
     funit = (
