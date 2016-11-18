@@ -908,8 +908,9 @@ def ChildTaxCredit(n24, MARS, c00100, _exact,
                    CTC_c_under5_bonus, XTOT, _num,
                    DependentCredit_c, dep_credit):
     """
-    ChildTaxCredit function computes prectc amount
+    ChildTaxCredit function computes prectc amount and dependent credit
     """
+    # calculate prectc amount
     prectc = CTC_c * n24 + CTC_c_under5_bonus * nu05
     modAGI = c00100  # no deducted foreign earned income to add
     if modAGI > CTC_ps[MARS - 1]:
@@ -917,9 +918,8 @@ def ChildTaxCredit(n24, MARS, c00100, _exact,
         if _exact == 1:
             excess = 1000. * math.ceil(excess / 1000.)
         prectc = max(0., prectc - CTC_prt * excess)
-    # calculate dependent credit
+    # calculate and phase-out dependent credit
     dep_credit = DependentCredit_c * max(0, XTOT - _num)
-    # phase-out dependent credit
     if CTC_prt > 0. and c00100 > CTC_ps[MARS - 1]:
         thresh = CTC_ps[MARS - 1] + n24 * CTC_c / CTC_prt
         excess = c00100 - thresh

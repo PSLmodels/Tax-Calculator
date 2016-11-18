@@ -670,20 +670,6 @@
         "validations": {"min": 0}
     },
 
-    "_DependentCredit_c": {
-        "long_name": "Nonrefundable credit for dependents",
-        "description": "This nonrefundable credit is applied to dependents and phases out with the Child Tax Credit. The dependent credit's phaseout begins when the CTC's phaseout ends.",
-        "irs_ref": "",
-        "notes": "The Ryan-Brady tax plan sets this at $500",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0]
-    },
-
     "_II_rt1": {
         "long_name": "Personal income tax rate 1",
         "description": "The lowest tax rate, applied to the portion of taxable income below tax bracket 1. ",
@@ -1629,20 +1615,6 @@
         "value": [64]
     },
 
-    "_CTC_c_under5_bonus": {
-        "long_name": "Bonus child tax credit maximum for qualifying children under five",
-        "description": "The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old. ",
-        "irs_ref": "",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0]
-    },
-
     "_CTC_c": {
         "long_name": "Maximum child tax credit per child",
         "description": "The maximum amount of credit allowed for each child. ",
@@ -1655,6 +1627,20 @@
         "cpi_inflated": false,
         "col_label": "",
         "value": [1000]
+    },
+
+    "_CTC_c_under5_bonus": {
+        "long_name": "Bonus child tax credit maximum for qualifying children under five",
+        "description": "The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old. ",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
     },
 
     "_CTC_ps": {
@@ -1683,6 +1669,20 @@
         "cpi_inflated": false,
         "col_label": "",
         "value": [0.05]
+    },
+
+    "_DependentCredit_c": {
+        "long_name": "Nonrefundable credit for dependents",
+        "description": "This nonrefundable credit is applied to dependents and phases out with the Child Tax Credit. The dependent credit's phaseout begins when the CTC's phaseout ends.",
+        "irs_ref": "",
+        "notes": "The Ryan-Brady tax plan sets this at $500",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0]
     },
 
     "_LLC_Expense_c": {
@@ -1946,7 +1946,6 @@
         "col_label": "",
         "value": [0.0]
     },
-
 
     "_ID_BenefitCap_Switch": {
         "long_name": "Deductions subject to the cap on itemized deduction benefits",
