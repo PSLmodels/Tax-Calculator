@@ -133,9 +133,9 @@
 
     "_ALD_Investment_ec_rt": {
         "long_name": "Investment income exclusion rate",
-        "description": "Decimal fraction of investment income that can be excluded from AGI.",
+        "description": "Decimal fraction of investment income base that can be excluded from AGI.",
         "irs_ref": "Form 1040, line 8a",
-        "notes": "The final taxable investment income will be (1-_ALD_Investment_ec_rt)*investment_income. Even though the excluded portion of investment income is not included in AGI, it still is included in investment income used to calculate the Net Investment Income Tax and Earned Income Tax Credit.",
+        "notes": "The final taxable investment income will be (1-_ALD_Investment_ec_rt)*investment_income_base. Even though the excluded portion of investment income is not included in AGI, it still is included in investment income used to calculate the Net Investment Income Tax and Earned Income Tax Credit.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -143,6 +143,20 @@
         "cpi_inflated": false,
         "col_label": "",
         "value": [0.0]
+    },
+
+    "_ALD_Investment_ec_base_all": {
+        "long_name": "Investment income exclusion comprehensive base",
+        "description": "Defines scope of base: true implies investment income base includes all investment income; false implies base includes only qualified dividends, long-term capital gains, and taxable interest income.",
+        "irs_ref": "",
+        "notes": "Value of false characterizes Ryan-Brady tax plan.",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [true]
     },
 
     "_ALD_Dependents_hc": {

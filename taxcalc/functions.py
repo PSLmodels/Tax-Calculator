@@ -187,7 +187,8 @@ def Adj(e03150, e03210, c03260,
 
 
 @iterate_jit(nopython=True)
-def CapGains(p23250, p22250, _sep, ALD_Investment_ec_rt, ALD_StudentLoan_hc,
+def CapGains(p23250, p22250, _sep, ALD_StudentLoan_hc,
+             ALD_Investment_ec_rt, ALD_Investment_ec_base_all,
              e00200, e00300, e00600, e00650, e00700, e00800,
              CG_nodiff, CG_ec, CG_reinvest_ec_rt,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
@@ -200,9 +201,13 @@ def CapGains(p23250, p22250, _sep, ALD_Investment_ec_rt, ALD_StudentLoan_hc,
     c23650 = p23250 + p22250
     # limitation on capital losses
     c01000 = max((-3000. / _sep), c23650)
+    # compute exclusion of investment income from AGI
+    if ALD_Investment_ec_base_all:
+        invinc = e00300 + e00600 + c01000 + e01100 + e01200
+    else:
+        invinc = e00300 + e00650 + p23250
+    invinc_agi_ec = ALD_Investment_ec_rt * max(0., invinc)
     # compute ymod1 variable that is included in AGI
-    invinc = e00300 + e00600 + c01000 + e01100 + e01200
-    invinc_agi_ec = ALD_Investment_ec_rt * invinc
     ymod1 = (e00200 + e00700 + e00800 + e00900 + e01400 + e01700 +
              invinc - invinc_agi_ec +
              e02000 + e02100 + e02300)
