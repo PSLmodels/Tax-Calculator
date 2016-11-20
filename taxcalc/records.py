@@ -94,7 +94,7 @@ class Records(object):
 
     # specify set of input variables used in Tax-Calculator calculations:
     USABLE_READ_VARS = set([
-        'DSI', 'EIC', 'FLPDYR',
+        'DSI', 'EIC', 'FLPDYR', 'FDED',
         'f2441', 'f6251', 'n24', 'XTOT',
         'e00200', 'e00300', 'e00400', 'e00600', 'e00650', 'e00700', 'e00800',
         'e00200p', 'e00200s',
@@ -129,7 +129,7 @@ class Records(object):
 
     # specify which USABLE_READ_VARS should be int64 (rather than float64):
     INTEGER_READ_VARS = set([
-        'DSI', 'EIC', 'FLPDYR',
+        'DSI', 'EIC', 'FLPDYR', 'FDED',
         'f2441', 'f6251',
         'n24', 'XTOT',
         'MARS', 'MIDR', 'RECID', 'filer',
@@ -138,7 +138,7 @@ class Records(object):
 
     # specify set of Record variables that are calculated by Tax-Calculator:
     CALCULATED_VARS = set([
-        '_exact',
+        '_exact', 'nonAGI_income',
         'c07200',
         'c00100', 'pre_c04600', 'c04600',
         'c04470', 'c21060', 'c21040', 'c17000',
@@ -356,6 +356,7 @@ class Records(object):
         self.p87521 *= ATXPY
         self.cmbtp_itemizer *= ATXPY
         self.cmbtp_standard *= ATXPY
+        self.nonAGI_income *= ATXPY
 
     def _read_data(self, data, exact_calcs):
         """
@@ -416,6 +417,12 @@ class Records(object):
         rvalue = 0.0  # specify value of ID_Casualty_frt beginning in ryear
         self.ID_Casualty_frt_in_pufcsv_year[:] = np.where(PUFCSV_YEAR < ryear,
                                                           0.10, rvalue)
+        # specify value of nonAGI_income array
+        self.nonAGI_income[:] = np.where(self.FDED == 1,
+                                         self.cmbtp_itemizer,
+                                         self.cmbtp_standard)
+        self.nonAGI_income[:] = np.where(self.f6251 == 1,
+                                         self.nonAGI_income, 0.)
 
     @staticmethod
     def _read_egg_csv(vname, fpath, **kwargs):
