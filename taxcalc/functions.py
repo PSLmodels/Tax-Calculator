@@ -1022,8 +1022,8 @@ def SchR(age_head, age_spouse, MARS, c00100,
         #       data) will be accurate if all pensions are partially taxable
         #       or if all pensions are fully taxable.  But if a filing unit
         #       receives at least one partially taxable pension and at least
-        #       one fully taxable pension, then the following approximation
-        #       is not exactly correct.
+        #       one fully taxable pension, then the approximation in the
+        #       following line is not exactly correct.
         schr13b = max(0., e01500 - e01700)
         schr13c = schr13a + schr13b
         schr16 = max(0., c00100 - schr15)
@@ -1297,7 +1297,6 @@ def ComputeBenefit(calc, ID_switch):
     if ID_switch[6]:
         no_ID_calc.policy.ID_Charity_hc = 1.
     no_ID_calc.calc_one_year()
-    # compute surtax amount and add to income and combined taxes
     # pylint: disable=protected-access
     benefit = np.where(
         no_ID_calc.records._iitax - calc.records._iitax > 0.,
@@ -1401,6 +1400,21 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
     else:
         fstax = 0.
     return (fstax, _iitax, _combined, _surtax)
+
+
+@iterate_jit(nopython=True)
+def LumpSumTax(DSI, _num, XTOT,
+               LST,
+               lumpsum_tax, _combined):
+    """
+    Compute lump-sum tax and add it to combined taxes.
+    """
+    if LST == 0.0 or DSI == 1:
+        lumpsum_tax = 0.
+    else:
+        lumpsum_tax = LST * max(_num, XTOT)
+    _combined += lumpsum_tax
+    return (lumpsum_tax, _combined)
 
 
 @iterate_jit(nopython=True)
