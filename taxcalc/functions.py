@@ -1406,7 +1406,7 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
 @iterate_jit(nopython=True)
 def ExpandIncome(c00100, ptax_was, e02400, c02500,
                  c02900_in_ei, e00400, invinc_agi_ec,
-                 f6251, _standard, cmbtp_itemizer, cmbtp_standard,
+                 nonAGI_income,
                  _expanded_income):
     """
     ExpandIncome function calculates and returns _expanded_income.
@@ -1415,20 +1415,12 @@ def ExpandIncome(c00100, ptax_was, e02400, c02500,
     employer_fica_share = 0.5 * ptax_was
     # compute OASDI benefits not included in AGI
     non_taxable_ss_benefits = e02400 - c02500
-    # compute Form 6251 items not in AGI but added into AMT taxable income
-    if f6251 == 1:
-        if _standard == 0.0:
-            cmbtp = cmbtp_itemizer
-        else:
-            cmbtp = cmbtp_standard
-    else:
-        cmbtp = 0.
     # compute expanded income as AGI plus several additional amounts
     _expanded_income = (c00100 +  # adjusted gross income
                         c02900_in_ei +  # ajustments to AGI
                         e00400 +  # non-taxable interest income
                         invinc_agi_ec +  # AGI-excluded taxable invest income
-                        cmbtp +  # AMT taxable income items from Form 6251
+                        nonAGI_income +  # AMT taxable income items on Form6251
                         non_taxable_ss_benefits +
                         employer_fica_share)
     return _expanded_income
