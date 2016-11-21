@@ -117,7 +117,7 @@ class Behavior(ParametersBase):
           the elasticity used here times the weighted average marginal tax
           rate on long-term capital gains.  So, the JCT-CBO estimate of
           -0.792 for the epsilon elasticity (see JCT-CBO, Table 5) translates
-          into a much larger absolute value for the _BE_cg semi-elasticity 
+          into a much larger absolute value for the _BE_cg semi-elasticity
           used by Tax-Calculator.
           To calculate the elasticity from a semi-elasticity, we multiply by
           MTRs from TC and weight by shares of taxable gains. To avoid those
