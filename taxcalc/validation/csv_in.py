@@ -32,18 +32,13 @@ DEBUG = False  # True implies no variable randomization or record sampling
 
 TRACE = False  # True implies tracing output written to stdout
 
-# specify set of variables slated for removal from puf.csv
-DROP1_VARS = set([])
-
 # specify set of variables not included in xYY.csv file
 if DEBUG:
-    DROP2_VARS = set(['filer'])
+    DROP_VARS = set(['filer'])
 else:
-    DROP2_VARS = set(['filer', 's006', 'cmbtp_standard', 'cmbtp_itemizer',
-                      'nu13', 'elderly_dependent',
-                      'e09700', 'e09800', 'e09900', 'e11200'])
-
-DROP_VARS = DROP1_VARS | DROP2_VARS
+    DROP_VARS = set(['filer', 's006', 'cmbtp',
+                     'nu05', 'nu13', 'elderly_dependent',
+                     'e09700', 'e09800', 'e09900', 'e11200'])
 
 # specify set of variables whose values are not to be randomized
 if DEBUG:
@@ -123,7 +118,9 @@ def constrain_data(xdf):
     # constraint: e02100 = e02100p + e02100s
     xdf['e02100'] = xdf['e02100p'] + xdf['e02100s']
     # constraint: e00600 >= e00650
-    xdf['e00600'] = xdf['e00600'].clip(lower=xdf['e00650'])
+    xdf['e00600'] = np.maximum(xdf['e00600'], xdf['e00650'])
+    # constraint: e01500 >= e01700
+    xdf['e01500'] = np.maximum(xdf['e01500'], xdf['e01700'])
 
 
 def main(taxyear, rnseed, ssize):
