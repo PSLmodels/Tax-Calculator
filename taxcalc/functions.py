@@ -690,8 +690,7 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, _taxbc, _surtax):
 @iterate_jit(nopython=True)
 def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         c04470, c17000, c20800, c21040, e24515, MARS, _sep, dwks19,
-        dwks14, c05700, e62900, e00700, dwks10, age_head, _earned,
-        cmbtp_itemizer, cmbtp_standard,
+        dwks14, c05700, e62900, e00700, dwks10, age_head, _earned, cmbtp,
         KT_c_Age, AMT_brk1, AMT_thd_MarriedS,
         AMT_em, AMT_prt, AMT_rt1, AMT_rt2,
         AMT_Child_em, AMT_em_ps, AMT_em_pe,
@@ -708,20 +707,12 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
     # pylint: disable=too-many-statements,too-many-branches
     # Form 6251, Part I
     if _standard == 0.0:
-        if f6251 == 1:
-            cmbtp = cmbtp_itemizer
-        else:
-            cmbtp = 0.
         c62100 = (c00100 - e00700 - c04470 +
                   max(0., min(c17000, 0.025 * c00100)) +
                   c18300 + c20800 - c21040)
     if _standard > 0.0:
-        if f6251 == 1:
-            cmbtp = cmbtp_standard
-        else:
-            cmbtp = 0.
         c62100 = c00100 - e00700
-    c62100 += cmbtp
+    c62100 += cmbtp  # add income not in AGI but considered income for AMT
     if MARS == 3 or MARS == 6:
         amtsepadd = max(0.,
                         min(AMT_thd_MarriedS, 0.25 * (c62100 - AMT_em_pe)))
@@ -1419,8 +1410,7 @@ def LumpSumTax(DSI, _num, XTOT,
 
 @iterate_jit(nopython=True)
 def ExpandIncome(c00100, ptax_was, e02400, c02500,
-                 c02900_in_ei, e00400, invinc_agi_ec,
-                 f6251, _standard, cmbtp_itemizer, cmbtp_standard,
+                 c02900_in_ei, e00400, invinc_agi_ec, cmbtp,
                  _expanded_income):
     """
     ExpandIncome function calculates and returns _expanded_income.
@@ -1429,14 +1419,6 @@ def ExpandIncome(c00100, ptax_was, e02400, c02500,
     employer_fica_share = 0.5 * ptax_was
     # compute OASDI benefits not included in AGI
     non_taxable_ss_benefits = e02400 - c02500
-    # compute Form 6251 items not in AGI but added into AMT taxable income
-    if f6251 == 1:
-        if _standard == 0.0:
-            cmbtp = cmbtp_itemizer
-        else:
-            cmbtp = cmbtp_standard
-    else:
-        cmbtp = 0.
     # compute expanded income as AGI plus several additional amounts
     _expanded_income = (c00100 +  # adjusted gross income
                         c02900_in_ei +  # ajustments to AGI

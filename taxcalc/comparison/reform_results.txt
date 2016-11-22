@@ -50,7 +50,7 @@ Tax-Calculator,0.1,0.1,0.1,0.1
 EXEMPTION
 ""
 Increase personal and dependent exemption amount by 1000
-Tax-Calculator,-32.8,-32.2,-33.3,-34.5
+Tax-Calculator,-32.7,-32.1,-33.2,-34.4
 ""
 Increase personal exemption phaseout starting AGI by 10,000
 Tax-Calculator,-0.1,-0.1,-0.1,-0.1
@@ -61,7 +61,7 @@ Tax-Calculator,0.2,0.2,0.2,0.2
 STANDARD DEDUCTION
 ""
 Increase standard deduction by 100
-Tax-Calculator,-1.0,-1.1,-1.1,-1.1
+Tax-Calculator,-1.0,-1.0,-1.1,-1.1
 ""
 Increase additional standard deduction for aged and blind by 100
 Tax-Calculator,-0.2,-0.3,-0.3,-0.3
@@ -69,23 +69,23 @@ Tax-Calculator,-0.2,-0.3,-0.3,-0.3
 ITEMIZED DEDUCTION
 ""
 Real Estate
-Tax-Calculator,35.7,37.8,39.8,41.8
+Tax-Calculator,35.7,37.9,39.8,41.9
 Tax Expenditure,34,36,39,41
 ""
 Home Mortgage
-Tax-Calculator,80.4,87.7,94.5,101.3
+Tax-Calculator,82.6,90.0,96.9,103.7
 Tax Expenditure,75,82,88,93
 ""
 Both real estate and state and local
-Tax-Calculator,99.3,105.6,111.4,117.6
+Tax-Calculator,99.7,106.0,111.8,118.0
 Tax Expenditure,75,82,88,93
 ""
 State & Local
-Tax-Calculator,64.3,67.9,71.4,75.0
+Tax-Calculator,64.4,68.0,71.5,75.1
 Tax Expenditure,59,63,67,71
 ""
 Medical
-Tax-Calculator,9.4,10.3,9.9,10.7
+Tax-Calculator,9.5,10.3,9.9,10.7
 Tax Expenditure,11,12,13,14
 ""
 Casualty
@@ -93,7 +93,7 @@ Tax-Calculator,0.4,0.5,0.5,0.5
 Tax Expenditure,0,0,0,0
 ""
 Charitable
-Tax-Calculator,43.2,45.8,48.2,50.9
+Tax-Calculator,44.4,46.9,49.4,52.1
 Tax Expenditure,46,47,48,50
 ""
 Decrease AGI floor for miscellaneous expenses by 1 pts
@@ -109,13 +109,13 @@ Increase Itemized Deduction phaseout rate by 1 pts
 Tax-Calculator,3.6,3.8,4.0,4.1
 ""
 limit the tax value of ID to 6% of AGI
-Tax-Calculator,19.6,21.0,22.2,23.7
+Tax-Calculator,20.0,21.4,22.7,24.2
 Budget Options,11,9,8,7
 ""
 CAPITAL GAIN
 ""
 Increase long term cap gain and dividends tax rates by 2 percentage, no behavioral response
-Tax-Calculator,13.3,13.7,13.9,14.1
+Tax-Calculator,13.4,13.7,13.9,14.1
 ""
 Increase long term cap gain and dividends tax rates by 2 percentage, BE_cg elasticity assumed to be -3.67
 Tax-Calculator,3.4,3.5,3.6,3.7
@@ -124,15 +124,15 @@ Budget Options,5,5,5,6
 REGULAR TAXES
 ""
 Increase each bracket rate by 1%
-Tax-Calculator,56.2,58.7,61.5,64.0
+Tax-Calculator,56.1,58.5,61.3,63.8
 Budget Options,56,60,65,69
 ""
 Increase top 4 rates by 1%
-Tax-Calculator,11.8,12.3,13.0,13.4
+Tax-Calculator,11.7,12.2,12.9,13.3
 Budget Options,11,12,14,15
 ""
 Increase top 2 rates by 1%
-Tax-Calculator,7.4,7.6,8.0,8.3
+Tax-Calculator,7.4,7.6,8.0,8.2
 Budget Options,7,8,9,10
 ""
 Alternative Minimum Tax
@@ -143,25 +143,25 @@ Tax-Calculator,-1.0,-0.8,-0.9,-0.9
 Alternative Minimum Tax
 ""
 Increase exemption phaseout starting AMTI by 10,000
-Tax-Calculator,-2.3,-2.3,-2.5,-2.6
+Tax-Calculator,-2.4,-2.4,-2.5,-2.7
 ""
 Alternative Minimum Tax
 ""
 Increase exemption phaseout rate by 2 pts
-Tax-Calculator,2.4,2.6,2.7,2.9
+Tax-Calculator,2.5,2.7,2.8,3.0
 ""
 Alternative Minimum Tax
 ""
 Increase AMT rate under the surtax threshold by 2 pts
-Tax-Calculator,24.8,26.6,28.3,29.9
+Tax-Calculator,26.0,27.8,29.5,31.1
 ""
 Alternative Minimum Tax
 ""
 Increase AMT rate above the surtax threshold by 2 pts
-Tax-Calculator,8.1,8.7,9.2,9.7
+Tax-Calculator,8.4,9.0,9.5,10.0
 ""
 Increase AMT surtax threshold by 10,000
-Tax-Calculator,-0.4,-0.5,-0.5,-0.5
+Tax-Calculator,-0.5,-0.5,-0.5,-0.5
 ""
 NONREFUNDABLE CREDIT
 ""
@@ -216,5 +216,5 @@ Tax-Calculator,-111.7,-112.1,-114.3,-117.7
 FAIR SHARE TAX
 ""
 Increase FST rate from zero to 0.30 beginning in 2017
-Tax-Calculator,30.2,30.9,31.3,32.1
+Tax-Calculator,30.1,30.8,31.2,32.1
 Tax Foundation: 321 ten-year(2016-25) static estimate

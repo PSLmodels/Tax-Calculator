@@ -118,8 +118,7 @@ class Records(object):
         'e58990',
         'e62900',
         'p87521', 'e87530',
-        'MARS', 'MIDR', 'RECID', 'filer',
-        'cmbtp_standard', 'cmbtp_itemizer',
+        'MARS', 'MIDR', 'RECID', 'filer', 'cmbtp',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
         'nu13', 'elderly_dependent',
         's006', 'nu05'])
@@ -354,8 +353,7 @@ class Records(object):
         self.e62900 *= ATXPY
         self.e87530 *= ATXPY
         self.p87521 *= ATXPY
-        self.cmbtp_itemizer *= ATXPY
-        self.cmbtp_standard *= ATXPY
+        self.cmbtp *= ATXPY
 
     def _read_data(self, data, exact_calcs):
         """
