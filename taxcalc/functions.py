@@ -202,11 +202,12 @@ def CapGains(p23250, p22250, _sep, ALD_StudentLoan_hc,
     # limitation on capital losses
     c01000 = max((-3000. / _sep), c23650)
     # compute exclusion of investment income from AGI
+    invinc = e00300 + e00600 + c01000 + e01100 + e01200
     if ALD_Investment_ec_base_all:
-        invinc = e00300 + e00600 + c01000 + e01100 + e01200
+        invinc_ec_base = invinc
     else:
-        invinc = e00300 + e00650 + p23250
-    invinc_agi_ec = ALD_Investment_ec_rt * max(0., invinc)
+        invinc_ec_base = e00300 + e00650 + p23250
+    invinc_agi_ec = ALD_Investment_ec_rt * max(0., invinc_ec_base)
     # compute ymod1 variable that is included in AGI
     ymod1 = (e00200 + e00700 + e00800 + e00900 + e01400 + e01700 +
              invinc - invinc_agi_ec +
