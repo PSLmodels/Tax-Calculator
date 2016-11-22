@@ -90,7 +90,7 @@ def test_calc_and_used_vars(tests_path):
         all_cvars.update(set(cvars[fname]))
     # .. add to all_cvars set some variables calculated in Records class
     all_cvars.update(set(['ID_Casualty_frt_in_pufcsv_year',
-                          '_num', '_sep', '_exact']))
+                          '_num', '_sep', '_exact', 'nonAGI_income']))
     # .. check that each var in Records.CALCULATED_VARS is in the all_cvars set
     found_error1 = False
     if not Records.CALCULATED_VARS <= all_cvars:
