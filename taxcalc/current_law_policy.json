@@ -145,20 +145,6 @@
         "value": [0.0]
     },
 
-    "_ALD_Investment_ec_base_all": {
-        "long_name": "Investment income exclusion comprehensive base",
-        "description": "Defines scope of base: true implies investment income base includes all investment income; false implies base includes only qualified dividends, long-term capital gains, and taxable interest income.",
-        "irs_ref": "",
-        "notes": "Value of false characterizes Ryan-Brady tax plan.",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [true]
-    },
-
     "_ALD_Investment_ec_base_code_active": {
         "long_name": "Use code expression to compute investment income exclusion base",
         "description": "False implies base includes all investment income; otherwise code defines base.",
