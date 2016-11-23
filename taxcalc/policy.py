@@ -75,6 +75,8 @@ class Policy(ParametersBase):
                  2021: 0.0403, 2022: 0.0413, 2023: 0.0417, 2024: 0.0417,
                  2025: 0.0415, 2026: 0.0416}
 
+    VALID_PARAM_CODE_NAMES = set(['ALD_Investment_ec_base_code'])
+
     @staticmethod
     def default_inflation_rates():
         """
@@ -129,7 +131,7 @@ class Policy(ParametersBase):
             raise ValueError('num_years cannot be less than one')
 
         if inflation_rates is None:  # read default rates
-            self._inflation_rates = [self.__pirates[start_year + i]
+            self._inflation_rates = [Policy.__pirates[start_year + i]
                                      for i in range(0, num_years)]
         elif isinstance(inflation_rates, dict):
             if len(inflation_rates) != num_years:
@@ -143,7 +145,7 @@ class Policy(ParametersBase):
             raise ValueError('inflation_rates is not None or a dictionary')
 
         if wage_growth_rates is None:  # read default rates
-            self._wage_growth_rates = [self.__wgrates[start_year + i]
+            self._wage_growth_rates = [Policy.__wgrates[start_year + i]
                                        for i in range(0, num_years)]
         elif isinstance(wage_growth_rates, dict):
             if len(wage_growth_rates) != num_years:
@@ -157,11 +159,8 @@ class Policy(ParametersBase):
             raise ValueError('wage_growth_rates is not None or a dictionary')
 
         self.param_code = dict()
-        params_with_code = ['ALD_Investment_ec_base_code']
-        for param in params_with_code:
+        for param in Policy.VALID_PARAM_CODE_NAMES:
             self.param_code[param] = ''
-        param = 'ALD_Investment_ec_base_code'
-        self.param_code[param] = 'e00300 + e00650 + p23250'
 
         self.initialize(start_year, num_years)
 
@@ -305,6 +304,7 @@ class Policy(ParametersBase):
         catch this error, so be careful to specify reform dictionaries
         correctly.
         """
+        # check that all reform dictionary keys are integers
         if not isinstance(reform, dict):
             raise ValueError('reform is not a dictionary')
         if len(reform) == 0:
@@ -314,6 +314,14 @@ class Policy(ParametersBase):
             if not isinstance(year, int):
                 msg = 'key={} in reform is not an integer calendar year'
                 raise ValueError(msg.format(year))
+        # remove and process param_code information
+        zero = 0  # param_code information is marked with year equal to 0
+        param_code_dict = reform.pop(zero, None)
+        if param_code_dict:
+            reform_years.remove(zero)
+            for param in param_code_dict.keys():
+                self.param_code[param] = param_code_dict[param]
+        # check range of remaining reform_years
         first_reform_year = min(reform_years)
         if first_reform_year < self.start_year:
             msg = 'reform provision in year={} < start_year={}'
@@ -325,6 +333,7 @@ class Policy(ParametersBase):
         if last_reform_year > self.end_year:
             msg = 'reform provision in year={} > end_year={}'
             raise ValueError(msg.format(last_reform_year, self.end_year))
+        # implement the reform year by year
         precall_current_year = self.current_year
         for year in reform_years:
             self.set_year(year)
