@@ -159,6 +159,20 @@
         "value": [true]
     },
 
+    "_ALD_Investment_ec_base_code": {
+        "long_name": "Use code expression to compute investment income exclusion base",
+        "description": "False implies base includes all investment income; otherwise code defines base.",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [false]
+    },
+
     "_ALD_Dependents_hc": {
         "long_name": "Deduction for childcare costs",
         "description": "This decimal fraction, if greater than zero, reduces the portion of childcare costs that can be deducted from AGI",

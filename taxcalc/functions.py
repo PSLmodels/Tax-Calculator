@@ -186,9 +186,25 @@ def Adj(e03150, e03210, c03260,
     return (c02900, c02900_in_ei)
 
 
+def Investment_ec_base_code(calc):
+    """
+    Compute investment_ec_base from code
+    """
+    # pylint: disable=eval-used
+    code = calc.policy.param_code['investment_ec_base']
+    global_vars = dict()
+    var_names = ['e00300', 'e00600', 'e01100', 'e01200',
+                 'c01000', 'p22250', 'p23250']
+    for var in var_names:
+        global_vars[var] = getattr(calc.records, var)
+    calc.records.investment_ec_base = eval(compile(code, '<string>', 'eval'),
+                                           global_vars)
+
+
 @iterate_jit(nopython=True)
 def CapGains(p23250, p22250, _sep, ALD_StudentLoan_hc,
              ALD_Investment_ec_rt, ALD_Investment_ec_base_all,
+             ALD_Investment_ec_base_code, investment_ec_base,
              e00200, e00300, e00600, e00650, e00700, e00800,
              CG_nodiff, CG_ec, CG_reinvest_ec_rt,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
@@ -203,10 +219,17 @@ def CapGains(p23250, p22250, _sep, ALD_StudentLoan_hc,
     c01000 = max((-3000. / _sep), c23650)
     # compute exclusion of investment income from AGI
     invinc = e00300 + e00600 + c01000 + e01100 + e01200
-    if ALD_Investment_ec_base_all:
-        invinc_ec_base = invinc
-    else:
-        invinc_ec_base = e00300 + e00650 + p23250
+    new_logic = False
+    if new_logic:  # NEW  CODE
+        if ALD_Investment_ec_base_code:
+            invinc_ec_base = investment_ec_base
+        else:
+            invinc_ec_base = invinc
+    else:  # OLD CODE
+        if ALD_Investment_ec_base_all:
+            invinc_ec_base = invinc
+        else:
+            invinc_ec_base = e00300 + e00600 + p23250
     invinc_agi_ec = ALD_Investment_ec_rt * max(0., invinc_ec_base)
     # compute ymod1 variable that is included in AGI
     ymod1 = (e00200 + e00700 + e00800 + e00900 + e01400 + e01700 +

@@ -154,6 +154,8 @@ class Calculator(object):
         EI_PayrollTax(self.policy, self.records)
         DependentCare(self.policy, self.records)
         Adj(self.policy, self.records)
+        if self.policy.active_param_code('investment_ec_base'):
+            Investment_ec_base_code(self)
         CapGains(self.policy, self.records)
         SSBenefits(self.policy, self.records)
         AGI(self.policy, self.records)
