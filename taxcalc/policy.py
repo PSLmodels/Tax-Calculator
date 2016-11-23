@@ -161,7 +161,7 @@ class Policy(ParametersBase):
         for param in params_with_code:
             self.param_code[param] = ''
         param = 'ALD_Investment_ec_base_code'
-        self.param_code[param] = 'e00300 + e00600 + p23250'
+        self.param_code[param] = 'e00300 + e00650 + p23250'
 
         self.initialize(start_year, num_years)
 

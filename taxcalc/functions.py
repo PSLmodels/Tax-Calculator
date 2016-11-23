@@ -192,7 +192,7 @@ def ALD_Investment_ec_base_code_function(calc):
     """
     code = calc.policy.param_code['ALD_Investment_ec_base_code']
     visible_vars = dict()
-    var_names = ['e00300', 'e00600', 'e01100', 'e01200',
+    var_names = ['e00300', 'e00600', 'e00650', 'e01100', 'e01200',
                  'c01000', 'p22250', 'p23250']
     for var in var_names:
         visible_vars[var] = getattr(calc.records, var)
