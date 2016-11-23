@@ -315,13 +315,20 @@ def test_Calculator_create_difference_table(puf_1991, weights_1991):
     policy1 = Policy()
     puf1 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc1 = Calculator(policy=policy1, records=puf1)
+    calc1.advance_to_year(2013)
     calc1.calc_all()
     # create policy-reform Policy object and use to create Calculator calc2
     policy2 = Policy()
-    reform = {2013: {'_II_rt7': [0.45]}}
+    reform = {
+        2013: {'_II_rt7': [0.45]},
+        2013: {'_ALD_Investment_ec_base_code_active': [True]},
+        0: {'ALD_Investment_ec_base_code': 'e00300 + e00650 + p23250'}
+    }
     policy2.implement_reform(reform)
     puf2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc2 = Calculator(policy=policy2, records=puf2)
+    calc2.advance_to_year(2013)
+    calc2.calc_all()
     # create difference table and check that it is a Pandas DataFrame
     dtable = create_difference_table(calc1.records, calc2.records,
                                      groupby="weighted_deciles")
