@@ -159,7 +159,7 @@
         "value": [true]
     },
 
-    "_ALD_Investment_ec_base_code": {
+    "_ALD_Investment_ec_base_code_active": {
         "long_name": "Use code expression to compute investment income exclusion base",
         "description": "False implies base includes all investment income; otherwise code defines base.",
         "irs_ref": "",

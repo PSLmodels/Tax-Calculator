@@ -157,7 +157,11 @@ class Policy(ParametersBase):
             raise ValueError('wage_growth_rates is not None or a dictionary')
 
         self.param_code = dict()
-        self.param_code['investment_ec_base'] = 'e00300 + e00600 + p23250'
+        params_with_code = ['ALD_Investment_ec_base_code']
+        for param in params_with_code:
+            self.param_code[param] = ''
+        param = 'ALD_Investment_ec_base_code'
+        self.param_code[param] = 'e00300 + e00600 + p23250'
 
         self.initialize(start_year, num_years)
 
@@ -376,12 +380,6 @@ class Policy(ParametersBase):
                      wage_growth_rates=wrate_dict)
         clv.set_year(self.current_year)
         return clv
-
-    def active_param_code(self, param):
-        """
-        Return True if specified param is in param_code dictionary
-        """
-        return param in self.param_code.keys()
 
     # ----- begin private methods of Policy class -----
 
