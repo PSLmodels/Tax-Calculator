@@ -228,6 +228,12 @@ class Policy(ParametersBase):
                 msg += '{:02d}{}'.format(linenum, line) + '\n'
             msg += bline + '\n'
             raise ValueError(msg)
+        # handle special param_code key in reform_dict_raw
+        paramcode = reform_dict_raw.pop('param_code', None)
+        if paramcode:
+            for param, code in paramcode.items():
+                reform_dict_raw[param] = {'0': code}
+        # convert reform_dict_raw
         return Policy.convert_reform_dictionary(reform_dict_raw)
 
     def implement_reform(self, reform):
