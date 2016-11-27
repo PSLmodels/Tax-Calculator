@@ -88,11 +88,11 @@ class Calculator(object):
                  sync_years=True, behavior=None, growth=None,
                  consumption=None):
         if isinstance(policy, Policy):
-            self._policy = policy
+            self.policy = policy
         else:
             raise ValueError('must specify policy as a Policy object')
         if isinstance(records, Records):
-            self._records = records
+            self.records = records
         else:
             raise ValueError('must specify records as a Records object')
         if behavior is None:
@@ -113,30 +113,22 @@ class Calculator(object):
             self.consumption = consumption
         else:
             raise ValueError('consumption must be None or Consumption object')
-        if sync_years and self._records.current_year == Records.PUF_YEAR:
+        if sync_years and self.records.current_year == Records.PUF_YEAR:
             if verbose:
                 print('You loaded data for ' +
-                      str(self._records.current_year) + '.')
-                if len(self._records.IGNORED_VARS) > 0:
+                      str(self.records.current_year) + '.')
+                if len(self.records.IGNORED_VARS) > 0:
                     print('Your data include the following unused ' +
                           'variables that will be ignored:')
-                    for var in self._records.IGNORED_VARS:
+                    for var in self.records.IGNORED_VARS:
                         print('  ' +
                               var)
-            while self._records.current_year < self._policy.current_year:
-                self._records.increment_year()
+            while self.records.current_year < self.policy.current_year:
+                self.records.increment_year()
             if verbose:
                 print('Your data have been extrapolated to ' +
-                      str(self._records.current_year) + '.')
-        assert self._policy.current_year == self._records.current_year
-
-    @property
-    def policy(self):
-        return self._policy
-
-    @property
-    def records(self):
-        return self._records
+                      str(self.records.current_year) + '.')
+        assert self.policy.current_year == self.records.current_year
 
     def TaxInc_to_AMT(self):
         TaxInc(self.policy, self.records)
@@ -343,7 +335,7 @@ class Calculator(object):
         incometax_chng = copy.deepcopy(self.records._iitax)
         combined_taxes_chng = incometax_chng + payrolltax_chng
         # calculate base level of taxes after restoring records object
-        setattr(self, '_records', recs0)
+        setattr(self, 'records', recs0)
         self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
         payrolltax_base = copy.deepcopy(self.records._payrolltax)
         incometax_base = copy.deepcopy(self.records._iitax)
@@ -371,8 +363,8 @@ class Calculator(object):
         """
         Return Calculator object same as self except with current-law policy.
         """
-        clp = self._policy.current_law_version()
-        recs = copy.deepcopy(self._records)
+        clp = self.policy.current_law_version()
+        recs = copy.deepcopy(self.records)
         behv = copy.deepcopy(self.behavior)
         grow = copy.deepcopy(self.growth)
         cons = copy.deepcopy(self.consumption)
