@@ -7,9 +7,6 @@ Tax-Calculator federal tax policy Policy class.
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 
-import os
-import json
-import re
 import six
 import numpy as np
 from .parameters import ParametersBase
@@ -169,60 +166,6 @@ class Policy(ParametersBase):
         Returns list of wage growth rates starting with JSON_START_YEAR.
         """
         return self._wage_growth_rates
-
-    @staticmethod
-    def read_json_reform_file(reform_filename):
-        """
-        Read reform file, strip //-comments, and return dict based on JSON.
-        The reform file is JSON with string policy-parameter primary keys and
-           string years as secondary keys.  See tests/test_policy.py for an
-           extended example of a commented JSON reform file that can be read
-           by this method.
-        Returned dictionary has integer years as primary keys and
-           string policy-parameters as secondary keys.
-        The returned dictionary is suitable as the argument to the
-           implement_reform(reform_dict) method (see below).
-        """
-        if os.path.isfile(reform_filename):
-            txt = open(reform_filename, 'r').read()
-            return Policy.read_json_reform_text(txt)
-        else:
-            msg = 'Policy reform file {} could not be found'
-            raise ValueError(msg.format(reform_filename))
-
-    @staticmethod
-    def read_json_reform_text(text_string):
-        """
-        Strip //-comments from text_string and return dict based on JSON.
-        The reform text is JSON with string policy-parameter primary keys and
-           string years as secondary keys.  See tests/test_policy.py for an
-           extended example of a commented JSON reform text that can be read
-           by this method.
-        Returned dictionary has integer years as primary keys and
-           string policy-parameters as secondary keys.
-        The returned dictionary is suitable as the argument to the
-           implement_reform(reform_dict) method (see below).
-        """
-        # strip out //-comments without changing line numbers
-        json_without_comments = re.sub('//.*', ' ', text_string)
-        # convert JSON text into a dictionary with year skeys as strings
-        try:
-            reform_dict_raw = json.loads(json_without_comments)
-        except ValueError as valerr:
-            msg = 'Policy reform text below contains invalid JSON:\n'
-            msg += str(valerr) + '\n'
-            msg += 'Above location of the first error may be approximate.\n'
-            msg += 'The invalid JSON reform text is between the lines:\n'
-            bline = 'XX----.----1----.----2----.----3----.----4'
-            bline += '----.----5----.----6----.----7'
-            msg += bline + '\n'
-            linenum = 0
-            for line in json_without_comments.split('\n'):
-                linenum += 1
-                msg += '{:02d}{}'.format(linenum, line) + '\n'
-            msg += bline + '\n'
-            raise ValueError(msg)
-        return Policy.convert_reform_dictionary(reform_dict_raw)
 
     def implement_reform(self, reform):
         """
