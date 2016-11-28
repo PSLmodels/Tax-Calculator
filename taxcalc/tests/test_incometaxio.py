@@ -65,7 +65,7 @@ def test_incorrect_creation_1(input_data, exact):
         IncomeTaxIO(
             input_data=input_data,
             tax_year=2013,
-            policy_reform=None,
+            reform=None,
             exact_calculations=exact,
             blowup_input_data=True,
             output_weights=False,
@@ -88,7 +88,7 @@ def test_incorrect_creation_2(rawinputfile, year, reform):
         IncomeTaxIO(
             input_data=rawinputfile.name,
             tax_year=year,
-            policy_reform=reform,
+            reform=reform,
             exact_calculations=False,
             blowup_input_data=True,
             output_weights=False,
@@ -111,7 +111,7 @@ def test_creation_with_blowup(rawinputfile, blowup, weights_out):
     taxyear = 2021
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
-                         policy_reform=None,
+                         reform=None,
                          exact_calculations=False,
                          blowup_input_data=blowup,
                          output_weights=weights_out,
@@ -132,7 +132,7 @@ def test_2(rawinputfile):  # pylint: disable=redefined-outer-name
     }
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
-                         policy_reform=reform_dict,
+                         reform=reform_dict,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,
@@ -229,7 +229,7 @@ def test_3(rawinputfile, reformfile1):  # pylint: disable=redefined-outer-name
     taxyear = 2021
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
-                         policy_reform=reformfile1.name,
+                         reform=reformfile1.name,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,
@@ -249,7 +249,7 @@ def test_4(reformfile2):  # pylint: disable=redefined-outer-name
     taxyear = 2021
     inctax = IncomeTaxIO(input_data=input_dataframe,
                          tax_year=taxyear,
-                         policy_reform=reformfile2.name,
+                         reform=reformfile2.name,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,
@@ -267,7 +267,7 @@ def test_5(rawinputfile):  # pylint: disable=redefined-outer-name
     taxyear = 2021
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
-                         policy_reform=None,
+                         reform=None,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,
@@ -285,7 +285,7 @@ def test_6(rawinputfile):  # pylint: disable=redefined-outer-name
     taxyear = 2021
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
-                         policy_reform=None,
+                         reform=None,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,

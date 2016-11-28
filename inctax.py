@@ -128,7 +128,7 @@ def main():
     # instantiate IncometaxIO object and do federal income tax calculations
     inctax = IncomeTaxIO(input_data=args.INPUT,
                          tax_year=args.TAXYEAR,
-                         policy_reform=args.reform,
+                         reform=args.reform,
                          exact_calculations=args.exact,
                          blowup_input_data=args.blowup,
                          output_weights=args.weights,

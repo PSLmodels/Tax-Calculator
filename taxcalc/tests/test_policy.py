@@ -568,22 +568,6 @@ def test_misspecified_reforms():
     assert not reform1 == reform2
 
 
-def test_convert_reform_dictionary():
-    with pytest.raises(ValueError):
-        rdict = Policy.convert_reform_dictionary({2013: {'2013': [40000]}})
-    with pytest.raises(ValueError):
-        rdict = Policy.convert_reform_dictionary({'_II_em': {2013: [40000]}})
-
-
-def test_reform_pkey_year():
-    with pytest.raises(ValueError):
-        rdict = Policy._reform_pkey_year({4567: {2013: [40000]}})
-    with pytest.raises(ValueError):
-        rdict = Policy._reform_pkey_year({'_II_em': 40000})
-    with pytest.raises(ValueError):
-        rdict = Policy._reform_pkey_year({'_II_em': {'2013': [40000]}})
-
-
 def test_current_law_version():
     syr = 2013
     nyrs = 8

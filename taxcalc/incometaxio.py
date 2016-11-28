@@ -75,7 +75,7 @@ class IncomeTaxIO(object):
     class instance: IncomeTaxIO
     """
 
-    def __init__(self, input_data, tax_year, policy_reform,
+    def __init__(self, input_data, tax_year, reform,
                  exact_calculations,
                  blowup_input_data, output_weights,
                  output_records, csv_dump):
@@ -101,17 +101,17 @@ class IncomeTaxIO(object):
             msg = 'INPUT is neither string nor Pandas DataFrame'
             raise ValueError(msg)
         # construct output_filename and delete old output file if it exists
-        if policy_reform is None:
+        if reform is None:
             ref = ''
             self._using_reform_file = True
         else:
-            if isinstance(policy_reform, six.string_types):
-                if policy_reform.endswith('.json'):
-                    ref = '-{}'.format(policy_reform[:-5])
+            if isinstance(reform, six.string_types):
+                if reform.endswith('.json'):
+                    ref = '-{}'.format(reform[:-5])
                 else:
-                    ref = '-{}'.format(policy_reform)
+                    ref = '-{}'.format(reform)
                 self._using_reform_file = True
-            elif isinstance(policy_reform, dict):
+            elif isinstance(reform, dict):
                 ref = ''
                 self._using_reform_file = False
             else:
@@ -139,13 +139,16 @@ class IncomeTaxIO(object):
         if tax_year > policy.end_year:
             msg = 'tax_year {} greater than policy.end_year {}'
             raise ValueError(msg.format(tax_year, policy.end_year))
-        # implement policy reform if one is specified
-        if policy_reform:
+        # implement reform if one is specified
+        if reform:
             if self._using_reform_file:
-                r_pol, _, _ = Calculator.read_json_reform_file(policy_reform)
+                r_pol, r_beh, r_gro = Calculator.read_json_reform_file(reform)
             else:
-                r_pol = policy_reform
+                r_pol = reform
+                r_beh = None
+                r_gro = None
             policy.implement_reform(r_pol)
+
         # set tax policy parameters to specified tax_year
         policy.set_year(tax_year)
         # read input file contents into Records object
