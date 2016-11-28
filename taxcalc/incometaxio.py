@@ -85,6 +85,7 @@ class IncomeTaxIO(object):
         # pylint: disable=too-many-arguments
         # pylint: disable=too-many-statements
         # pylint: disable=too-many-branches
+        # pylint: disable=too-many-locals
         if isinstance(input_data, six.string_types):
             self._using_input_file = True
             # check that input_data string ends with ".csv"
@@ -141,10 +142,10 @@ class IncomeTaxIO(object):
         # implement policy reform if one is specified
         if policy_reform:
             if self._using_reform_file:
-                reform = Calculator.read_json_reform_file(policy_reform)
+                r_pol, _, _ = Calculator.read_json_reform_file(policy_reform)
             else:
-                reform = policy_reform
-            policy.implement_reform(reform)
+                r_pol = policy_reform
+            policy.implement_reform(r_pol)
         # set tax policy parameters to specified tax_year
         policy.set_year(tax_year)
         # read input file contents into Records object

@@ -378,15 +378,7 @@ class Calculator(object):
     @staticmethod
     def read_json_reform_file(reform_filename):
         """
-        Read reform file, strip //-comments, and return dict based on JSON.
-        The reform file is JSON with string policy-parameter primary keys and
-           string years as secondary keys.  See tests/test_policy.py for an
-           extended example of a commented JSON reform file that can be read
-           by this method.
-        Returned dictionary has integer years as primary keys and
-           string policy-parameters as secondary keys.
-        The returned dictionary is suitable as the argument to the
-           implement_reform(reform_dict) method (see below).
+        Read JSON reform file and call Calculator.read_json_reform_text method.
         """
         if os.path.isfile(reform_filename):
             txt = open(reform_filename, 'r').read()
@@ -398,19 +390,27 @@ class Calculator(object):
     @staticmethod
     def read_json_reform_text(text_string):
         """
-        Strip //-comments from text_string and return dict based on JSON.
-        The reform text is JSON with string policy-parameter primary keys and
-           string years as secondary keys.  See tests/test_policy.py for an
-           extended example of a commented JSON reform text that can be read
+        Strip //-comments from text_string and return 3 dict based on the JSON.
+        The reform text is JSON with three high-level string:object pairs:
+           a "policy": {...} pair,
+           a "behavior": {...} pair, and
+           a "growth": {...} pair.
+           In all three cases the {...} object may be empty (that is, be {}),
+           or may contain one or more pairs with parameter string primary keys
+           and string years as secondary keys.  See tests/test_calculate.py for
+           an extended example of a commented JSON reform text that can be read
            by this method.
-        Returned dictionary has integer years as primary keys and
-           string policy-parameters as secondary keys.
-        The returned dictionary is suitable as the argument to the
-           implement_reform(reform_dict) method (see below).
+        Returned dictionaries (reform_policy, reform_behavior, reform_growth)
+           have integer years as primary keys
+           and string parameters as secondary keys.
+        The returned dictionaries are suitable as the argument to
+           the Policy implement_reform(reform_policy) method,
+           the Behavior update_behavior(reform_behavior) method, or
+           the Growth update_economic_growth(reform_growth) method.
         """
         # strip out //-comments without changing line numbers
         json_without_comments = re.sub('//.*', ' ', text_string)
-        # convert JSON text into a dictionary with year skeys as strings
+        # convert JSON text into a Python dictionary
         try:
             reform_dict_raw = json.loads(json_without_comments)
         except ValueError as valerr:
@@ -427,4 +427,19 @@ class Calculator(object):
                 msg += '{:02d}{}'.format(linenum, line) + '\n'
             msg += bline + '\n'
             raise ValueError(msg)
-        return Policy.convert_reform_dictionary(reform_dict_raw)
+        # check contents of dictionary
+        expect_keys = set(['policy', 'behavior', 'growth'])
+        actual_keys = set(reform_dict_raw.keys())
+        if actual_keys != expect_keys:
+            msg = 'reform keys {} not equal to {}'
+            raise ValueError(msg.format(actual_keys, expect_keys))
+        # handle special param_code key in policy dictionary
+        paramcode = reform_dict_raw['policy'].pop('param_code', None)
+        if paramcode:
+            for param, code in paramcode.items():
+                reform_dict_raw[param] = {'0': code}
+        # convert reform_dict_raw component dictionaries
+        pol_dict = Policy.convert_reform_dictionary(reform_dict_raw['policy'])
+        beh_dict = None
+        gro_dict = None
+        return (pol_dict, beh_dict, gro_dict)

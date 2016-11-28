@@ -104,10 +104,10 @@ class SimpleTaxIO(object):
         # implement reform if reform is specified
         if reform:
             if self._using_reform_file:
-                reform_dict = Calculator.read_json_reform_file(reform)
+                r_pol, _, _ = Calculator.read_json_reform_file(reform)
             else:
-                reform_dict = reform
-            self._policy.implement_reform(reform_dict)
+                r_pol = reform
+            self._policy.implement_reform(r_pol)
         # validate input variable values
         self._validate_input()
         self._calc = self._calc_object(exact_calculations,

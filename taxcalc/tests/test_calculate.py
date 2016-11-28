@@ -419,10 +419,12 @@ REFORM_CONTENTS = """
 // Example of a reform file suitable for the read_json_reform_file function.
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
-// The primary keys are policy parameters and secondary keys are years.
+// Within each "policy", "behavior", and "growth" object, the
+// primary keys are parameters and secondary keys are years.
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
 {
+  "policy": {
     "_AMT_brk1": // top of first AMT tax bracket
     {"2015": [200000],
      "2017": [300000]
@@ -449,6 +451,11 @@ REFORM_CONTENTS = """
     {"2017": false, // values in future years are same as this year value
      "2020": true   // values in future years indexed with this year as base
     }
+  },
+  "behavior": {
+  },
+  "growth": {
+  }
 }
 """
 
@@ -477,7 +484,7 @@ def test_read_json_reform_file_and_implement_reform(reform_file, set_year):
     that is then used to call implement_reform method.
     NOTE: implement_reform called when policy.current_year == policy.start_year
     """
-    reform = Calculator.read_json_reform_file(reform_file.name)
+    reform, _, _ = Calculator.read_json_reform_file(reform_file.name)
     policy = Policy()
     if set_year:
         policy.set_year(2015)
@@ -511,11 +518,19 @@ def test_read_json_reform_file_and_implement_reform(reform_file, set_year):
 
 
 @pytest.yield_fixture
-def badreformfile():
-    # specify JSON text for policy reform
-    txt = """{ // example of incorrect JSON because 'x' must be "x"
-               'x': {"2014": [4000]}
-             }"""
+def bad1reformfile():
+    # specify JSON text for reform
+    txt = """
+    {
+      "policy": { // example of incorrect JSON because 'x' must be "x"
+        'x': {"2014": [4000]}
+      },
+      "behavior": {
+      },
+      "growth": {
+      }
+    }
+    """
     f = tempfile.NamedTemporaryFile(mode='a', delete=False)
     f.write(txt + '\n')
     f.close()
@@ -524,6 +539,30 @@ def badreformfile():
     os.remove(f.name)
 
 
-def test_read_bad_json_reform_file(badreformfile):
+@pytest.yield_fixture
+def bad2reformfile():
+    # specify JSON text for reform
+    txt = """
+    {
+      "policy": {
+        "_SS_Earnings_c": {"2018": [9e99]}
+      },
+      "behavior": {
+      },
+      "growthx": {
+      }
+    }
+    """
+    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    f.write(txt + '\n')
+    f.close()
+    # Must close and then yield for Windows platform
+    yield f
+    os.remove(f.name)
+
+
+def test_read_bad_json_reform_file(bad1reformfile, bad2reformfile):
     with pytest.raises(ValueError):
-        Calculator.read_json_reform_file(badreformfile.name)
+        Calculator.read_json_reform_file(bad1reformfile.name)
+    with pytest.raises(ValueError):
+        Calculator.read_json_reform_file(bad2reformfile.name)
