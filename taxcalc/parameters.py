@@ -133,11 +133,9 @@ class ParametersBase(object):
 
         Notes
         -----
-        To increment the current year, use the following statement::
-
+        To increment the current year, use the following statement:
             behavior.set_year(behavior.current_year + 1)
-
-        where behavior is a policy Behavior object.
+        where, in this example, behavior is a Behavior object.
         """
         if year < self.start_year or year > self.end_year:
             msg = 'year {} passed to set_year() must be in [{},{}] range.'
