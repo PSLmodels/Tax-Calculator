@@ -127,6 +127,16 @@ class Calculator(object):
                         print('  ' +
                               var)
             while self.records.current_year < self.policy.current_year:
+                if self.behavior.current_year < self.policy.current_year:
+                    next_year = self.behavior.current_year + 1
+                    self.behavior.set_year(next_year)
+                if self.growth.current_year < self.policy.current_year:
+                    next_year = self.growth.current_year + 1
+                    self.growth.set_year(next_year)
+                    self.growth.apply_change(self.records, next_year)
+                if self.consumption.current_year < self.policy.current_year:
+                    next_year = self.consumption.current_year + 1
+                    self.consumption.set_year(next_year)
                 self.records.increment_year()
             if verbose:
                 print('Your data have been extrapolated to ' +
