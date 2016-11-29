@@ -46,9 +46,10 @@ def main():
                         action="store_true")
     parser.add_argument('--reform',
                         help=('REFORM is name of optional file that contains '
-                              'tax reform provisions; the provisions are '
-                              'specified using JSON that may include '
-                              '//-comments. No REFORM filename implies use '
+                              'tax reform "policy" parameters and "behavior" '
+                              'parameters and "growth" parameters; the '
+                              'REFORM file is specified using JSON that may '
+                              'include //-comments. No --reform implies use '
                               'of current-law policy.'),
                         default=None)
     parser.add_argument('--exact',
