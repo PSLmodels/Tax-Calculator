@@ -17,6 +17,8 @@ import six
 import pandas as pd
 from .policy import Policy
 from .records import Records
+from .behavior import Behavior
+from .growth import Growth
 from .calculate import Calculator
 from .simpletaxio import SimpleTaxIO
 
@@ -37,7 +39,7 @@ class IncomeTaxIO(object):
     tax_year: integer
         calendar year for which income taxes will be computed for INPUT.
 
-    policy_reform: None or string or dictionary
+    reform: None or string or dictionary
         None implies no policy reform (current-law policy), or
         string is name of optional REFORM file, or
         dictionary suitable for passing to Policy.implement_reform() method.
@@ -66,7 +68,7 @@ class IncomeTaxIO(object):
     ------
     ValueError:
         if file specified by input_data string does not exist.
-        if policy_reform is neither None, string, nor dictionary.
+        if reform is neither None, string, nor dictionary.
         if tax_year before Policy start_year.
         if tax_year after Policy end_year.
 
@@ -103,8 +105,10 @@ class IncomeTaxIO(object):
         # construct output_filename and delete old output file if it exists
         if reform is None:
             ref = ''
+            self._reform = False
             self._using_reform_file = True
         else:
+            self._reform = True
             if isinstance(reform, six.string_types):
                 if reform.endswith('.json'):
                     ref = '-{}'.format(reform[:-5])
@@ -131,26 +135,23 @@ class IncomeTaxIO(object):
                 msg = 'INPUT file named {} could not be found'
                 raise ValueError(msg.format(input_data))
         # create Policy object assuming current-law policy
-        policy = Policy()
+        pol = Policy()
         # check for valid tax_year value
-        if tax_year < policy.start_year:
+        if tax_year < pol.start_year:
             msg = 'tax_year {} less than policy.start_year {}'
-            raise ValueError(msg.format(tax_year, policy.start_year))
-        if tax_year > policy.end_year:
+            raise ValueError(msg.format(tax_year, pol.start_year))
+        if tax_year > pol.end_year:
             msg = 'tax_year {} greater than policy.end_year {}'
-            raise ValueError(msg.format(tax_year, policy.end_year))
+            raise ValueError(msg.format(tax_year, pol.end_year))
         # implement reform if one is specified
-        if reform:
+        if self._reform:
             if self._using_reform_file:
                 r_pol, r_beh, r_gro = Calculator.read_json_reform_file(reform)
             else:
                 r_pol = reform
-                r_beh = None
-                r_gro = None
-            policy.implement_reform(r_pol)
-
+            pol.implement_reform(r_pol)
         # set tax policy parameters to specified tax_year
-        policy.set_year(tax_year)
+        pol.set_year(tax_year)
         # read input file contents into Records object
         if blowup_input_data:
             if output_weights:
@@ -173,8 +174,19 @@ class IncomeTaxIO(object):
                                weights=None,
                                start_year=tax_year)
         # create Calculator object
-        self._calc = Calculator(policy=policy, records=recs,
-                                sync_years=blowup_input_data)
+        if self._reform and self._using_reform_file:
+            clp = Policy()
+            clp.set_year(tax_year)
+            self._calc_clp = Calculator(policy=clp, records=recs,
+                                        sync_years=blowup_input_data)
+            self._calc = Calculator(policy=pol, records=recs,
+                                    behavior=Behavior(), growth=Growth(),
+                                    sync_years=blowup_input_data)
+            self._calc.behavior.update_behavior(r_beh)
+            self._calc.growth.update_economic_growth(r_gro)
+        else:
+            self._calc = Calculator(policy=pol, records=recs,
+                                    sync_years=blowup_input_data)
 
     def tax_year(self):
         """
@@ -254,6 +266,8 @@ class IncomeTaxIO(object):
         """
         output = {}  # dictionary indexed by Records index for filing unit
         (mtr_ptax, mtr_itax, _) = self._calc.mtr(wrt_full_compensation=False)
+        if self._reform and self._using_reform_file:
+            self._calc = Behavior.response(self._calc_clp, self._calc)
         for idx in range(0, self._calc.records.dim):
             ovar = SimpleTaxIO.extract_output(self._calc.records, idx,
                                               exact=exact_output,
@@ -322,7 +336,3 @@ class IncomeTaxIO(object):
                '[27] federal AMT liability\n'
                '[28] federal income tax (excluding AMT) before credits\n')
         sys.stdout.write(ovd)
-
-    # --- begin private methods of IncomeTaxIO class --- #
-
-# end IncomeTaxIO class

@@ -164,5 +164,3 @@ class Growth(ParametersBase):
             records.BF.ASOCSEC[year] += distance
             records.BF.AUCOMP[year] += distance
             records.BF.AIPD[year] += distance
-
-# end Growth class

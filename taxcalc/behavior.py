@@ -255,5 +255,3 @@ class Behavior(ParametersBase):
             return (iitax_x, iitax_y)
         else:
             raise ValueError('tax_type must be "combined" or "iitax"')
-
-# end Behavior class
