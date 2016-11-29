@@ -117,7 +117,10 @@ def test_incorrect_creation(filename, exact):
         )
 
 
-@pytest.mark.parametrize("reform", ['badname.json', list()])
+@pytest.mark.parametrize("reform", [
+    'badname.json',
+    list(),
+    {"policy": {}, "behavior": {"_BE_sub": {"2013": [0.2]}}, "growth":{}}])
 def test_invalid_creation_w_file(input_file, reform):
     """
     Test incorrect SimpleTaxIO instantiation with input_file
