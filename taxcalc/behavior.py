@@ -127,6 +127,7 @@ class Behavior(ParametersBase):
         """
         # pylint: disable=too-many-locals,protected-access
         assert calc_x.records.dim == calc_y.records.dim
+        assert calc_x.records.current_year == calc_y.records.current_year
         # calculate sum of substitution and income effects
         if calc_y.behavior.BE_sub == 0.0 and calc_y.behavior.BE_inc == 0.0:
             sub = np.zeros(calc_x.records.dim)
