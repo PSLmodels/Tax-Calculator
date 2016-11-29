@@ -105,11 +105,7 @@ class SimpleTaxIO(object):
         # implement reform if reform is specified (no behavior or growth)
         if reform:
             if self._using_reform_file:
-                r_pol, r_beh, r_gro = Calculator.read_json_reform_file(reform)
-                if r_beh != {} or r_gro != {}:
-                    msg = ('JSON reform file for simtax.py must '
-                           'have empty "behavior" and "growth" objects')
-                    raise ValueError(msg)
+                r_pol, _, _ = Calculator.read_json_reform_file(reform)
             else:
                 r_pol = reform
             self._policy.implement_reform(r_pol)
