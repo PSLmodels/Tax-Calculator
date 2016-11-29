@@ -117,41 +117,7 @@ def test_incorrect_creation(filename, exact):
         )
 
 
-BAD_REFORM_CONTENTS = """
-{
-  "policy": {
-    "_AMT_brk1": {"2015": [200000], "2017": [300000]}
-  },
-  "behavior": {
-    "_BE_sub": {"2013": [0.2]} // non-empty is illegal for SimpleTaxIO class
-  },
-  "growth": {
-  }
-}
-"""
-
-
-@pytest.yield_fixture
-def bad_reform_file():
-    """
-    Temporary reform file for SimpleTaxIO constructor.
-    """
-    rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    rfile.write(BAD_REFORM_CONTENTS)
-    rfile.close()
-    # must close and then yield for Windows platform
-    yield rfile
-    if os.path.isfile(rfile.name):
-        try:
-            os.remove(rfile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
-@pytest.mark.parametrize("reform", [
-    'badname.json',
-    list(),
-    bad_reform_file])
+@pytest.mark.parametrize("reform", ['badname.json', list()])
 def test_invalid_creation_w_file(input_file, reform):
     """
     Test incorrect SimpleTaxIO instantiation with input_file
