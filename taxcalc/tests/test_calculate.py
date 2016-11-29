@@ -425,6 +425,9 @@ REFORM_CONTENTS = """
 // Boolean variables are specified as true or false (no quotes; all lowercase).
 {
   "policy": {
+    "param_code": {
+        "ALD_Investment_ec_base_code": "e00300 + e00650 + p23250"
+    },
     "_AMT_brk1": // top of first AMT tax bracket
     {"2015": [200000],
      "2017": [300000]
