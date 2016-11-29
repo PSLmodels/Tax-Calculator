@@ -488,20 +488,11 @@ class Calculator(object):
             reform_pkey_param[pkey] = rdict
         # convert reform_pkey_param dictionary to reform_pkey_year dictionary
         years = set()
-        reform_pk_yr = dict()
+        reform_pkey_year = dict()
         for param, sdict in reform_pkey_param.items():
-            if not isinstance(param, six.string_types):
-                msg = 'pkey {} in reform is not a string'
-                raise ValueError(msg.format(param))
-            elif not isinstance(sdict, dict):
-                msg = 'pkey {} value {} is not a dictionary'
-                raise ValueError(msg.format(param, sdict))
             for year, val in sdict.items():
-                if not isinstance(year, int):
-                    msg = 'year skey {} in reform is not an integer'
-                    raise ValueError(msg.format(year))
                 if year not in years:
                     years.add(year)
-                    reform_pk_yr[year] = {}
-                reform_pk_yr[year][param] = val
-        return reform_pk_yr
+                    reform_pkey_year[year] = {}
+                reform_pkey_year[year][param] = val
+        return reform_pkey_year
