@@ -13,6 +13,7 @@ takes DataFrame input and returns Internet-TAXSIM-formatted output as string.
 
 import os
 import sys
+import copy
 import six
 import pandas as pd
 from .policy import Policy
@@ -177,15 +178,21 @@ class IncomeTaxIO(object):
         if self._reform and self._using_reform_file:
             clp = Policy()
             clp.set_year(tax_year)
-            self._calc_clp = Calculator(policy=clp, records=recs,
+            recs_clp = copy.deepcopy(recs)
+            self._calc_clp = Calculator(policy=clp, records=recs_clp,
+                                        verbose=False,
                                         sync_years=blowup_input_data)
+            beh = Behavior()
+            beh.update_behavior(r_beh)
+            gro = Growth()
+            gro.update_economic_growth(r_gro)
             self._calc = Calculator(policy=pol, records=recs,
-                                    behavior=Behavior(), growth=Growth(),
+                                    verbose=False,
+                                    behavior=beh, growth=gro,
                                     sync_years=blowup_input_data)
-            self._calc.behavior.update_behavior(r_beh)
-            self._calc.growth.update_economic_growth(r_gro)
         else:
             self._calc = Calculator(policy=pol, records=recs,
+                                    verbose=False,
                                     sync_years=blowup_input_data)
 
     def tax_year(self):
