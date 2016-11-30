@@ -102,18 +102,27 @@ class Calculator(object):
             self.behavior = Behavior(start_year=policy.start_year)
         elif isinstance(behavior, Behavior):
             self.behavior = behavior
+            while self.behavior.current_year < self.policy.current_year:
+                next_year = self.behavior.current_year + 1
+                self.behavior.set_year(next_year)
         else:
             raise ValueError('behavior must be None or Behavior object')
         if growth is None:
             self.growth = Growth(start_year=policy.start_year)
         elif isinstance(growth, Growth):
             self.growth = growth
+            while self.growth.current_year < self.policy.current_year:
+                next_year = self.growth.current_year + 1
+                self.growth.set_year(next_year)
         else:
             raise ValueError('growth must be None or Growth object')
         if consumption is None:
             self.consumption = Consumption(start_year=policy.start_year)
         elif isinstance(consumption, Consumption):
             self.consumption = consumption
+            while self.consumption.current_year < self.policy.current_year:
+                next_year = self.consumption.current_year + 1
+                self.consumption.set_year(next_year)
         else:
             raise ValueError('consumption must be None or Consumption object')
         if sync_years and self.records.current_year == Records.PUF_YEAR:
@@ -127,16 +136,8 @@ class Calculator(object):
                         print('  ' +
                               var)
             while self.records.current_year < self.policy.current_year:
-                if self.behavior.current_year < self.policy.current_year:
-                    next_year = self.behavior.current_year + 1
-                    self.behavior.set_year(next_year)
-                if self.growth.current_year < self.policy.current_year:
-                    next_year = self.growth.current_year + 1
-                    self.growth.set_year(next_year)
-                    self.growth.apply_change(self.records, next_year)
-                if self.consumption.current_year < self.policy.current_year:
-                    next_year = self.consumption.current_year + 1
-                    self.consumption.set_year(next_year)
+                next_year = self.records.current_year + 1
+                self.growth.apply_change(self.records, next_year)
                 self.records.increment_year()
             if verbose:
                 print('Your data have been extrapolated to ' +
@@ -213,8 +214,8 @@ class Calculator(object):
 
     def increment_year(self):
         next_year = self.policy.current_year + 1
-        self.growth.apply_change(self.records, next_year)
         self.growth.set_year(next_year)
+        self.growth.apply_change(self.records, next_year)
         self.records.increment_year()
         self.policy.set_year(next_year)
         self.behavior.set_year(next_year)

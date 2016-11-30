@@ -187,12 +187,12 @@ class IncomeTaxIO(object):
             gro = Growth()
             gro.update_economic_growth(r_gro)
             self._calc = Calculator(policy=pol, records=recs,
-                                    verbose=False,
+                                    verbose=True,
                                     behavior=beh, growth=gro,
                                     sync_years=blowup_input_data)
         else:
             self._calc = Calculator(policy=pol, records=recs,
-                                    verbose=False,
+                                    verbose=True,
                                     sync_years=blowup_input_data)
 
     def tax_year(self):

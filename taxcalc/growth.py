@@ -102,10 +102,11 @@ class Growth(ParametersBase):
         """
         # pylint: disable=no-member
         iyr = year - self.start_year
-        if self._factor_adjustment[iyr] != 0.0:
-            self._adjustment_change(records, year)
-        elif self._factor_target[iyr] != Growth.REAL_GDP_GROWTH_RATES[iyr]:
-            self._target_change(records, year)
+        if iyr >= 0:
+            if self._factor_adjustment[iyr] != 0.0:
+                self._adjustment_change(records, year)
+            elif self._factor_target[iyr] != Growth.REAL_GDP_GROWTH_RATES[iyr]:
+                self._target_change(records, year)
 
     # ----- begin private methods of Growth class -----
 
