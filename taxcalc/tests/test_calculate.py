@@ -64,14 +64,14 @@ def policyfile():
 
 
 def test_make_Calculator(records_2009):
-    parm = Policy()
-    assert parm.current_year == 2013
+    parm = Policy(start_year=2014, num_years=9)
+    assert parm.current_year == 2014
     recs = records_2009
     consump = Consumption()
     consump.update_consumption({2014: {'_MPC_e20400': [0.05]}})
     assert consump.current_year == 2013
     calc = Calculator(policy=parm, records=recs, consumption=consump)
-    assert calc.current_year == 2013
+    assert calc.current_year == 2014
     # test incorrect Calculator instantiation:
     with pytest.raises(ValueError):
         calc = Calculator(policy=None, records=recs)
