@@ -137,7 +137,9 @@ class Calculator(object):
                               var)
             while self.records.current_year < self.policy.current_year:
                 next_year = self.records.current_year + 1
-                self.growth.apply_change(self.records, next_year)
+                if next_year >= self.growth.start_year:
+                    self.growth.set_year(next_year)
+                    self.growth.apply_change(self.records)
                 self.records.increment_year()
             if verbose:
                 print('Your data have been extrapolated to ' +
@@ -215,7 +217,7 @@ class Calculator(object):
     def increment_year(self):
         next_year = self.policy.current_year + 1
         self.growth.set_year(next_year)
-        self.growth.apply_change(self.records, next_year)
+        self.growth.apply_change(self.records)
         self.records.increment_year()
         self.policy.set_year(next_year)
         self.behavior.set_year(next_year)
@@ -417,7 +419,7 @@ class Calculator(object):
         The returned dictionaries are suitable as the argument to
            the Policy implement_reform(reform_policy) method, or
            the Behavior update_behavior(reform_behavior) method, or
-           the Growth update_economic_growth(reform_growth) method.
+           the Growth update_growth(reform_growth) method.
         """
         # strip out //-comments without changing line numbers
         json_without_comments = re.sub('//.*', ' ', text_string)
@@ -462,7 +464,7 @@ class Calculator(object):
           keys are calendary years, and hence, is suitable as the argument to
           the Policy implement_reform(reform_policy) method, or
           the Behavior update_behavior(reform_behavior) method, or
-          the Growth update_economic_growth(reform_growth) method.
+          the Growth update_growth(reform_growth) method.
         Specified input dictionary has string parameter primary keys and
            string years as secondary keys.
         Returned dictionary has integer years as primary keys and

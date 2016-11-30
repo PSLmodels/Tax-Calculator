@@ -60,14 +60,22 @@ class Growth(ParametersBase):
             raise ValueError('num_years < 1 in Growth ctor')
         self.initialize(start_year, num_years)
 
-    def update_economic_growth(self, revisions):
+    def default_real_gdp_growth_rate(self):
+        """
+        Return REAL_GDP_GROWTH_RATES array element for current_year.
+        """
+        iyr = self.current_year - Growth.JSON_START_YEAR
+        return Growth.REAL_GDP_GROWTH_RATES[iyr]
+
+    def update_growth(self, revisions):
         """
         Update economic growth rates/targets as specified in revisions, which
         is a dictionary containing one or more year:modification dictionaries.
         For example: {2014: {'_factor_adjustment': [0.04, 0.03]}}
-        Also, checks that at least one of these two relationships is true:
-        (a) _factor_adjustment[yr] == 0.0
-        (b) _factor_target[yr] = Growth.REAL_GDP_GROWTH_RATES[yr-start_year].
+        Also, checks that at least one of these two relationships is true
+        (a) _factor_adjustment[iyr] == 0.0
+        (b) _factor_target[iyr] = Growth.REAL_GDP_GROWTH_RATES[iyr]
+        for each index year iyr.
         """
         precall_current_year = self.current_year
         self.set_default_vals()
@@ -88,35 +96,27 @@ class Growth(ParametersBase):
         # set year to year value before this method was called
         self.set_year(precall_current_year)
 
-    @staticmethod
-    def default_real_gdp_growth_rate(year_index):
+    def apply_change(self, records):
         """
-        Return REAL_GDP_GROWTH_RATE for year_index = (year - start_year).
-        """
-        return Growth.REAL_GDP_GROWTH_RATES[year_index]
-
-    def apply_change(self, records, year):
-        """
-        Apply either _factor_adjustment or _factor_target change to
-        specified records object's blowup_factors for specified calendar year.
+        Apply either factor_adjustment or factor_target change to
+        specified records object's blowup factors for current_year.
         """
         # pylint: disable=no-member
-        iyr = year - self.start_year
-        if iyr >= 0:
-            if self._factor_adjustment[iyr] != 0.0:
-                self._adjustment_change(records, year)
-            elif self._factor_target[iyr] != Growth.REAL_GDP_GROWTH_RATES[iyr]:
-                self._target_change(records, year)
+        if self.factor_adjustment != 0.0:
+            self._adjustment_change(records)
+        else:
+            if self.factor_target != self.default_real_gdp_growth_rate():
+                self._target_change(records)
 
     # ----- begin private methods of Growth class -----
 
-    def _adjustment_change(self, records, year):
+    def _adjustment_change(self, records):
         """
-        Add _factor_adjustment to specified records object's
-        blowup_factors for specified calendar year.
+        Add factor_adjustment to specified records object's
+        blowup factors for current_year.
         """
-        # pylint: disable=no-member
-        diff = self._factor_adjustment[year - self.start_year]
+        diff = self.factor_adjustment  # pylint: disable=no-member
+        year = self.current_year
         records.BF.AGDPN[year] += diff
         records.BF.ATXPY[year] += diff
         records.BF.AWAGE[year] += diff
@@ -135,18 +135,17 @@ class Growth(ParametersBase):
         records.BF.AUCOMP[year] += diff
         records.BF.AIPD[year] += diff
 
-    def _target_change(self, records, year):
+    def _target_change(self, records):
         """
-        Add distance to records object's blowup_factors for
-        specified calendar year.
+        Add distance to records object's blowup factors for current_year.
         """
+        year = self.current_year
         pgr = records.BF.APOPN[year]
-        syr = self.start_year
-        dgr = Growth.default_real_gdp_growth_rate(year - syr)
+        dgr = self.default_real_gdp_growth_rate()
         # pylint: disable=no-member
-        if year >= syr and self._factor_target[year - syr] != dgr:
+        if self.factor_target != dgr:
             # user inputs theoretically should be based on GDP
-            distance = (self._factor_target[year - syr] - dgr) / pgr
+            distance = (self.factor_target - dgr) / pgr
             # add this distance to all the dollar amount factors
             records.BF.AGDPN[year] += distance
             records.BF.ATXPY[year] += distance

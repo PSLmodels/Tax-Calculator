@@ -185,7 +185,7 @@ class IncomeTaxIO(object):
             beh = Behavior()
             beh.update_behavior(r_beh)
             gro = Growth()
-            gro.update_economic_growth(r_gro)
+            gro.update_growth(r_gro)
             self._calc = Calculator(policy=pol, records=recs,
                                     verbose=True,
                                     behavior=beh, growth=gro,
