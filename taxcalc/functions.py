@@ -290,7 +290,7 @@ def ItemDed(e17500, e18400, e18500,
             ID_Casualty_frt_in_pufcsv_year,
             ID_Casualty_frt, ID_Casualty_hc, ID_Miscellaneous_frt,
             ID_Miscellaneous_hc, ID_Charity_crt_all, ID_Charity_crt_noncash,
-            ID_prt, ID_crt, ID_cap, ID_StateLocalTax_hc, ID_Charity_frt,
+            ID_prt, ID_crt, ID_c, ID_StateLocalTax_hc, ID_Charity_frt,
             ID_Charity_hc, ID_InterestPaid_hc, ID_RealEstate_hc):
     """
     ItemDed function: itemized deductions, Form 1040, Schedule A
@@ -305,7 +305,7 @@ def ItemDed(e17500, e18400, e18500,
 
         ID_prt : Itemized deduction phaseout rate (Pease)
         
-        ID_cap: Dollar limit on itemized deductions
+        ID_c: Dollar limit on itemized deductions
 
         ID_Medical_frt : Deduction for medical expenses;
         floor as a decimal fraction of AGI
@@ -390,7 +390,7 @@ def ItemDed(e17500, e18400, e18500,
     else:
         c21040 = 0.
         c04470 = c21060
-    c04470 = min(c04470, ID_cap[MARS - 1])
+    c04470 = min(c04470, ID_c[MARS - 1])
     return (c17000, c18300, c19200, c20500, c20800, c21040, c21060, c04470,
             c19700)
 
