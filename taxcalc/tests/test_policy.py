@@ -739,4 +739,6 @@ def test_scan_param_code():
     with pytest.raises(ValueError):
         Policy.scan_param_code('lambda x: x**2')
     with pytest.raises(ValueError):
-        Policy.scan_param_code('[x**2 for x in range(9)]')
+        Policy.scan_param_code('[x*x for x in range(9)]')
+    with pytest.raises(ValueError):
+        Policy.scan_param_code('9999**99999999')

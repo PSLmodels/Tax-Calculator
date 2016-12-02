@@ -364,6 +364,10 @@ class Policy(ParametersBase):
             msg = 'Following param_code includes illegal "[":\n'
             msg += code
             raise ValueError(msg)
+        if re.search(r'\*\*', code) is not None:
+            msg = 'Following param_code includes illegal "**":\n'
+            msg += code
+            raise ValueError(msg)
 
     @staticmethod
     def convert_reform_dictionary(param_key_dict):
