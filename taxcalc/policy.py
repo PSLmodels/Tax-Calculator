@@ -325,8 +325,9 @@ class Policy(ParametersBase):
         param_code_dict = reform.pop(zero, None)
         if param_code_dict:
             reform_years.remove(zero)
-            for param in param_code_dict.keys():
-                self.param_code[param] = param_code_dict[param]
+            for param, code in param_code_dict.items():
+                Policy.scan_param_code(code)
+                self.param_code[param] = code
         # check range of remaining reform_years
         first_reform_year = min(reform_years)
         if first_reform_year < self.start_year:
@@ -345,6 +346,24 @@ class Policy(ParametersBase):
             self.set_year(year)
             self._update({year: reform[year]})
         self.set_year(precall_current_year)
+
+    @staticmethod
+    def scan_param_code(code):
+        """
+        Raise ValueError if certain character strings found in specified code.
+        """
+        if re.search(r'__', code) is not None:
+            msg = 'Following param_code includes illegal "__":\n'
+            msg += code
+            raise ValueError(msg)
+        if re.search(r'lambda', code) is not None:
+            msg = 'Following param_code includes illegal "lambda":\n'
+            msg += code
+            raise ValueError(msg)
+        if re.search(r'\[', code) is not None:
+            msg = 'Following param_code includes illegal "[":\n'
+            msg += code
+            raise ValueError(msg)
 
     @staticmethod
     def convert_reform_dictionary(param_key_dict):

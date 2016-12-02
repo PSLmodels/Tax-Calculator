@@ -1,10 +1,10 @@
 import os
 import sys
 import json
+import tempfile
 import numpy as np
 from numpy.testing import assert_allclose
 import pytest
-import tempfile
 from taxcalc import Policy
 
 
@@ -725,6 +725,18 @@ def test_current_law_version():
     mte = clv._SS_Earnings_c
     clv_mte_2015 = mte[2015 - syr]
     clv_mte_2016 = mte[2016 - syr]
-    assert (clp_mte_2015 == ref_mte_2015 == clv_mte_2015)
+    assert clp_mte_2015 == ref_mte_2015 == clv_mte_2015
     assert clp_mte_2016 != ref_mte_2016
     assert clp_mte_2016 == clv_mte_2016
+
+
+def test_scan_param_code():
+    """
+    Test scan_param_code function.
+    """
+    with pytest.raises(ValueError):
+        Policy.scan_param_code('__builtins__')
+    with pytest.raises(ValueError):
+        Policy.scan_param_code('lambda x: x**2')
+    with pytest.raises(ValueError):
+        Policy.scan_param_code('[x**2 for x in range(9)]')
