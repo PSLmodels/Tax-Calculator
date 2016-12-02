@@ -356,7 +356,7 @@
         "value": [0.8]
     },
 
-    "_ID_cap": {
+    "_ID_c": {
         "long_name": "Itemized deduction cap",
         "description": "The amount of itemized deductions is capped at this dollar amount. ",
         "irs_ref": "",
