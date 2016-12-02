@@ -356,6 +356,26 @@
         "value": [0.8]
     },
 
+    "_ID_cap": {
+        "long_name": "Itemized deduction cap",
+        "description": "The amount of itemized deductions is capped at this dollar amount. ",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[1e99, 1e99, 1e99, 1e99, 1e99, 1e99],
+                  [1e99, 1e99, 1e99, 1e99, 1e99, 1e99],
+                  [1e99, 1e99, 1e99, 1e99, 1e99, 1e99],
+                  [1e99, 1e99, 1e99, 1e99, 1e99, 1e99]]
+    },
+
     "_ID_prt": {
         "long_name": "Itemized deduction phaseout rate (Pease)",
         "description": "Taxpayers will not be eligible to deduct the full amount of itemized deduction if their AGI is above the phaseout start. The deductible portion would be decreased at this rate for each dollar exceeding the start.",
