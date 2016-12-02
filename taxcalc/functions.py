@@ -304,7 +304,7 @@ def ItemDed(e17500, e18400, e18500,
         as a decimal fraction of total itemized deduction (Pease)
 
         ID_prt : Itemized deduction phaseout rate (Pease)
-        
+
         ID_c: Dollar limit on itemized deductions
 
         ID_Medical_frt : Deduction for medical expenses;
