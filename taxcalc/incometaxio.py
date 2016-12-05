@@ -20,6 +20,7 @@ from .policy import Policy
 from .records import Records
 from .behavior import Behavior
 from .growth import Growth
+from .consumption import Consumption
 from .calculate import Calculator
 from .simpletaxio import SimpleTaxIO
 
@@ -147,7 +148,8 @@ class IncomeTaxIO(object):
         # implement reform if one is specified
         if self._reform:
             if self._using_reform_file:
-                r_pol, r_beh, r_gro = Calculator.read_json_reform_file(reform)
+                (r_pol, r_beh,
+                 r_gro, r_con) = Calculator.read_json_reform_file(reform)
             else:
                 r_pol = reform
             pol.implement_reform(r_pol)
@@ -186,9 +188,13 @@ class IncomeTaxIO(object):
             beh.update_behavior(r_beh)
             gro = Growth()
             gro.update_growth(r_gro)
+            con = Consumption()
+            con.update_consumption(r_con)
             self._calc = Calculator(policy=pol, records=recs,
                                     verbose=True,
-                                    behavior=beh, growth=gro,
+                                    behavior=beh,
+                                    growth=gro,
+                                    consumption=con,
                                     sync_years=blowup_input_data)
         else:
             self._calc = Calculator(policy=pol, records=recs,

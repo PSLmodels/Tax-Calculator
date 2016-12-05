@@ -24,7 +24,7 @@ REFORM_CONTENTS = """
 // Example of a reform file suitable for the read_json_reform_file function.
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
-// Within each "policy", "behavior", and "growth" object, the
+// Within each "policy", "behavior", "growth", and "consumption" object, the
 // primary keys are parameters and secondary keys are years.
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
@@ -60,6 +60,8 @@ REFORM_CONTENTS = """
   "behavior": {
   },
   "growth": {
+  },
+  "consumption": {
   }
 }
 """

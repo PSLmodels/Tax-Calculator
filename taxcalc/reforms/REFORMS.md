@@ -32,6 +32,9 @@ reform provisions.  The structure of this file is as follows:
   },
   "growth": {
      <parameter_name>: {<calyear>: <parameter-value>}
+  },
+  "consumption": {
+     <parameter_name>: {<calyear>: <parameter-value>}
   }
 ```
 
@@ -49,7 +52,7 @@ separate, head of household, widow, separate.
 // Example of a reform file suitable for local use or uploading to TaxBrain.
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
-// Within each "policy", "behavior", and "growth" object, the
+// Within each "policy", "behavior", "growth", and "consumption" object, the
 // primary keys are parameters and secondary keys are years.
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
@@ -85,6 +88,8 @@ separate, head of household, widow, separate.
   "behavior": {
   },
   "growth": {
+  },
+  "consumption": {
   }
 }
 ```

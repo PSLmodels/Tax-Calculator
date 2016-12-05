@@ -419,7 +419,7 @@ REFORM_CONTENTS = """
 // Example of a reform file suitable for the read_json_reform_file function.
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
-// Within each "policy", "behavior", and "growth" object, the
+// Within each "policy", "behavior", "growth", and "consumption" object, the
 // primary keys are parameters and secondary keys are years.
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
@@ -458,6 +458,8 @@ REFORM_CONTENTS = """
   "behavior": {
   },
   "growth": {
+  },
+  "consumption": {
   }
 }
 """
@@ -487,7 +489,7 @@ def test_read_json_reform_file_and_implement_reform(reform_file, set_year):
     that is then used to call implement_reform method.
     NOTE: implement_reform called when policy.current_year == policy.start_year
     """
-    reform, _, _ = Calculator.read_json_reform_file(reform_file.name)
+    reform, _, _, _ = Calculator.read_json_reform_file(reform_file.name)
     policy = Policy()
     if set_year:
         policy.set_year(2015)
@@ -531,6 +533,8 @@ def bad1reformfile():
       "behavior": {
       },
       "growth": {
+      },
+      "consumption": {
       }
     }
     """
@@ -553,6 +557,8 @@ def bad2reformfile():
       "behavior": {
       },
       "growthx": {
+      },
+      "consumption": {
       }
     }
     """

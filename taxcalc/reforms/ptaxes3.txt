@@ -16,5 +16,7 @@
   "behavior": {
   },
   "growth": {
+  },
+  "consumption": {
   }
 }

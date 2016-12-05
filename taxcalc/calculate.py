@@ -403,29 +403,32 @@ class Calculator(object):
     @staticmethod
     def read_json_reform_text(text_string):
         """
-        Strip //-comments from text_string and return 3 dict based on the JSON.
-        The reform text is JSON with three high-level string:object pairs:
+        Strip //-comments from text_string and return 4 dict based on the JSON.
+        The reform text is JSON with four high-level string:object pairs:
            a "policy": {...} pair,
-           a "behavior": {...} pair, and
-           a "growth": {...} pair.
-           In all three cases the {...} object may be empty (that is, be {}),
+           a "behavior": {...} pair,
+           a "growth": {...} pair, and
+           a "consumption": {...} pair.
+           In all four cases the {...} object may be empty (that is, be {}),
            or may contain one or more pairs with parameter string primary keys
            and string years as secondary keys.  See tests/test_calculate.py for
            an extended example of a commented JSON reform text that can be read
            by this method.
-        Returned dictionaries (reform_policy, reform_behavior, reform_growth)
+        Returned dictionaries (reform_policy, reform_behavior,
+                               reform_growth reform_consumption)
            have integer years as primary keys
            and string parameters as secondary keys.
         The returned dictionaries are suitable as the argument to
            the Policy implement_reform(reform_policy) method, or
            the Behavior update_behavior(reform_behavior) method, or
-           the Growth update_growth(reform_growth) method.
+           the Growth update_growth(reform_growth) method, or
+           the Consumption update_consumption(reform_consumption) method.
         """
         # strip out //-comments without changing line numbers
         json_without_comments = re.sub('//.*', ' ', text_string)
         # convert JSON text into a Python dictionary
         try:
-            reform_dict_raw = json.loads(json_without_comments)
+            raw_dict = json.loads(json_without_comments)
         except ValueError as valerr:
             msg = 'Policy reform text below contains invalid JSON:\n'
             msg += str(valerr) + '\n'
@@ -441,21 +444,22 @@ class Calculator(object):
             msg += bline + '\n'
             raise ValueError(msg)
         # check contents of dictionary
-        expect_keys = set(['policy', 'behavior', 'growth'])
-        actual_keys = set(reform_dict_raw.keys())
+        expect_keys = set(['policy', 'behavior', 'growth', 'consumption'])
+        actual_keys = set(raw_dict.keys())
         if actual_keys != expect_keys:
             msg = 'reform keys {} not equal to {}'
             raise ValueError(msg.format(actual_keys, expect_keys))
         # handle special param_code key in policy dictionary
-        paramcode = reform_dict_raw['policy'].pop('param_code', None)
+        paramcode = raw_dict['policy'].pop('param_code', None)
         if paramcode:
             for param, code in paramcode.items():
-                reform_dict_raw[param] = {'0': code}
-        # convert reform_dict_raw component dictionaries
-        pol_dict = Calculator.convert_reform_dict(reform_dict_raw['policy'])
-        beh_dict = Calculator.convert_reform_dict(reform_dict_raw['behavior'])
-        gro_dict = Calculator.convert_reform_dict(reform_dict_raw['growth'])
-        return (pol_dict, beh_dict, gro_dict)
+                raw_dict[param] = {'0': code}
+        # convert raw_dict component dictionaries
+        pol_dict = Calculator.convert_reform_dict(raw_dict['policy'])
+        beh_dict = Calculator.convert_reform_dict(raw_dict['behavior'])
+        gro_dict = Calculator.convert_reform_dict(raw_dict['growth'])
+        con_dict = Calculator.convert_reform_dict(raw_dict['consumption'])
+        return (pol_dict, beh_dict, gro_dict, con_dict)
 
     @staticmethod
     def convert_reform_dict(param_key_dict):
@@ -464,7 +468,8 @@ class Calculator(object):
           keys are calendary years, and hence, is suitable as the argument to
           the Policy implement_reform(reform_policy) method, or
           the Behavior update_behavior(reform_behavior) method, or
-          the Growth update_growth(reform_growth) method.
+          the Growth update_growth(reform_growth) method, or
+          the Consumption update_consumption(reform_consumption) method.
         Specified input dictionary has string parameter primary keys and
            string years as secondary keys.
         Returned dictionary has integer years as primary keys and

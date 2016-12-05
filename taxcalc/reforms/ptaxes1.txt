@@ -9,6 +9,8 @@
   "behavior": {
   },
   "growth": {
+  },
+  "consumption": {
   }
 }
 
