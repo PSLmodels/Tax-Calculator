@@ -248,8 +248,8 @@ class Behavior(ParametersBase):
         Computes marginal tax rates for Calculator objects calc_x and calc_y
         for specified mtr_of income type and specified tax_type.
         """
-        _, iitax_x, combined_x = calc_x.mtr(mtr_of)
-        _, iitax_y, combined_y = calc_y.mtr(mtr_of)
+        _, iitax_x, combined_x = calc_x.mtr(mtr_of, wrt_full_compensation=True)
+        _, iitax_y, combined_y = calc_y.mtr(mtr_of, wrt_full_compensation=True)
         if tax_type == 'combined':
             return (combined_x, combined_y)
         elif tax_type == 'iitax':

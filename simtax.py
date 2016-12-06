@@ -40,10 +40,10 @@ def main():
     parser.add_argument('--reform',
                         help=('REFORM is name of optional file that contains '
                               'tax reform "policy" parameters (any "behavior" '
-                              'or "growth" parameters are ignored); the '
-                              'REFORM file is specified using JSON that may '
-                              'include //-comments. No --reform implies use '
-                              'of current-law policy.'),
+                              'or "growth" or "consumption" parameters are '
+                              'ignored); the REFORM file is specified using '
+                              'JSON that may include //-comments. No --reform '
+                              'implies use of current-law policy.'),
                         default=None)
     parser.add_argument('--exact',
                         help=('optional flag to suppress smoothing in income '
