@@ -1,5 +1,6 @@
 // Raise Additional Medicare Tax (Form 8959) tax rate and earnings exclusion
 {
+  "policy": {
     "_AMEDT_rt": { // currently at 0.009 on non-excluded earnings
         "2019": [0.010] // raise by 0.1 percentage point
     },
@@ -11,4 +12,11 @@
     "_AMEDT_ec_cpi": { // start price-indexing the exclusion
         "2019": true // values in future years price indexed
     }
+  },
+  "behavior": {
+  },
+  "growth": {
+  },
+  "consumption": {
+  }
 }

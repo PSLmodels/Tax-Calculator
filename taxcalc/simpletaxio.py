@@ -27,7 +27,7 @@ class SimpleTaxIO(object):
 
     reform: None or string or dictionary
         None implies no reform (current-law policy), or
-        string is name of optional REFORM file, or
+        string is name of optional json REFORM file, or
         dictionary suitable for passing to Policy.implement_reform() method.
 
     exact_calculations: boolean
@@ -67,6 +67,7 @@ class SimpleTaxIO(object):
         SimpleTaxIO class constructor.
         """
         # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-branches
         # check that input_filename is a string
         if not isinstance(input_filename, six.string_types):
             msg = 'SimpleTaxIO.ctor input_filename is not a string'
@@ -101,13 +102,13 @@ class SimpleTaxIO(object):
         # read input file contents into self._input dictionary
         self._read_input(input_filename)
         self._policy = Policy()
-        # implement reform if reform is specified
+        # implement reform if reform is specified (no behavior, growth or cons)
         if reform:
             if self._using_reform_file:
-                reform_dict = Policy.read_json_reform_file(reform)
+                r_pol, _, _, _ = Calculator.read_json_reform_file(reform)
             else:
-                reform_dict = reform
-            self._policy.implement_reform(reform_dict)
+                r_pol = reform
+            self._policy.implement_reform(r_pol)
         # validate input variable values
         self._validate_input()
         self._calc = self._calc_object(exact_calculations,
@@ -697,5 +698,3 @@ class SimpleTaxIO(object):
         recs.e19200[idx] = ivar[20]  # AMT-nonpreferred deductions
         recs.p22250[idx] = ivar[21]  # short-term capital gains (+/-)
         recs.p23250[idx] = ivar[22]  # long-term capital gains (+/-)
-
-# end SimpleTaxIO class

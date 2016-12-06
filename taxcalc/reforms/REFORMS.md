@@ -15,15 +15,27 @@ reform provisions.  The structure of this file is as follows:
 
 ```
 {
-   <parameter_name>: {<calyear>: <parameter-value>,
-                      ... 
-                      <calyear>: <parameter-value>},
-   <parameter_name>: {<calyear>: <parameter-value>},
-   ...
-   <parameter_name>: {<calyear>: <parameter-value>,
-                      ... 
-                      <calyear>: <parameter-value>}
-}
+  "policy": {
+     <parameter_name>: {<calyear>: <parameter-value>,
+                        ...
+                        <calyear>: <parameter-value>},
+     <parameter_name>: {<calyear>: <parameter-value>},
+     ...
+     <parameter_name>: {<calyear>: <parameter-value>,
+                        ...
+                        <calyear>: <parameter-value>}
+  },
+  "behavior": {
+     <parameter_name>: {<calyear>: <parameter-value>},
+     ...
+     <parameter_name>: {<calyear>: <parameter-value>}
+  },
+  "growth": {
+     <parameter_name>: {<calyear>: <parameter-value>}
+  },
+  "consumption": {
+     <parameter_name>: {<calyear>: <parameter-value>}
+  }
 ```
 
 Notice each reform provision (except the last one) must end in a
@@ -39,15 +51,14 @@ separate, head of household, widow, separate.
 ```
 // Example of a reform file suitable for local use or uploading to TaxBrain.
 // This JSON file can contain any number of trailing //-style comments, which
-// will be removed before the remaining JSON is parsed.
-// The JSON primary keys are policy parameter names and the secondary keys
-// are calendar years.  Both these primary and secondary key values must be
-// enclosed in quotes (").
-// Policy parameter values are enclosed in single brackets when the parameter
-// is a scalar and enclosed in double brackets when the parameter is a vector.
-// Boolean values are specified as true or false (no quotes; all lowercase).
+// will be removed before the contents are converted from JSON to a dictionary.
+// Within each "policy", "behavior", "growth", and "consumption" object, the
+// primary keys are parameters and secondary keys are years.
+// Both the primary and secondary key values must be enclosed in quotes (").
+// Boolean variables are specified as true or false (no quotes; all lowercase).
 {
-    "_AMT_brk1": // top of first AMT taxable income brackets
+  "policy": {
+    "_AMT_brk1": // top of first AMT tax bracket
     {"2015": [200000],
      "2017": [300000]
     },
@@ -73,6 +84,13 @@ separate, head of household, widow, separate.
     {"2017": false, // values in future years are same as this year value
      "2020": true   // values in future years indexed with this year as base
     }
+  },
+  "behavior": {
+  },
+  "growth": {
+  },
+  "consumption": {
+  }
 }
 ```
 
