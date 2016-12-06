@@ -256,7 +256,8 @@ class IncomeTaxIO(object):
 
     def calculate(self, writing_output_file=False,
                   exact_output=False,
-                  output_weights=False):
+                  output_weights=False,
+                  output_mtr_wrt_fullcomp=False):
         """
         Calculate taxes for all INPUT lines and write or return OUTPUT lines.
 
@@ -271,6 +272,10 @@ class IncomeTaxIO(object):
         output_weights: boolean
             whether or not to use s006 as an additional output variable.
 
+        output_mtr_wrt_fullcomp: boolean
+           whether or not to calculate marginal tax rates in OUTPUT file with
+           respect to full compensation.
+
         Returns
         -------
         output_lines: string
@@ -278,7 +283,8 @@ class IncomeTaxIO(object):
             otherwise output_lines contain all OUTPUT lines
         """
         output = {}  # dictionary indexed by Records index for filing unit
-        (mtr_ptax, mtr_itax, _) = self._calc.mtr(wrt_full_compensation=False)
+        (mtr_ptax, mtr_itax,
+         _) = self._calc.mtr(wrt_full_compensation=output_mtr_wrt_fullcomp)
         if self._reform and self._using_reform_file:
             self._calc = Behavior.response(self._calc_clp, self._calc)
         for idx in range(0, self._calc.records.dim):

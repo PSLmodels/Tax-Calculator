@@ -78,6 +78,17 @@ def main():
                               '--blowup option is used'),
                         default=False,
                         action="store_true")
+    parser.add_argument('--fullcomp',
+                        help=('optional flag that causes OUTPUT to have '
+                              'marginal tax rates (MTRs) calculated with '
+                              'respect to full compensation (but any '
+                              'behavioral-response calculations always use '
+                              'MTRs that are calculated with respect to full '
+                              'compensation).  No --fullcomp option implies '
+                              'MTRs reported in OUTPUT are not calculated '
+                              'with respect to full compensation'),
+                        default=False,
+                        action="store_true")
     output = parser.add_mutually_exclusive_group(required=False)
     output.add_argument('--records',
                         help=('optional flag that causes the output file to '
@@ -138,12 +149,16 @@ def main():
     if args.records:
         inctax.output_records(writing_output_file=True)
     elif args.csvdump:
-        inctax.calculate(writing_output_file=False, exact_output=args.exact,
-                         output_weights=args.weights)
+        inctax.calculate(writing_output_file=False,
+                         exact_output=args.exact,
+                         output_weights=args.weights,
+                         output_mtr_wrt_fullcomp=args.fullcomp)
         inctax.csv_dump(writing_output_file=True)
     else:
-        inctax.calculate(writing_output_file=True, exact_output=args.exact,
-                         output_weights=args.weights)
+        inctax.calculate(writing_output_file=True,
+                         exact_output=args.exact,
+                         output_weights=args.weights,
+                         output_mtr_wrt_fullcomp=args.fullcomp)
     # return no-error exit code
     return 0
 # end of main function code
