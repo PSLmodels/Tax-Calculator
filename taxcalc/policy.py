@@ -77,6 +77,8 @@ class Policy(ParametersBase):
 
     VALID_PARAM_CODE_NAMES = set(['ALD_Investment_ec_base_code'])
 
+    PROHIBIT_PARAM_CODE = False
+
     @staticmethod
     def default_inflation_rates():
         """
@@ -213,7 +215,7 @@ class Policy(ParametersBase):
         json_without_comments = re.sub('//.*', ' ', text_string)
         # convert JSON text into a dictionary with year skeys as strings
         try:
-            reform_dict_raw = json.loads(json_without_comments)
+            raw_dict = json.loads(json_without_comments)
         except ValueError as valerr:
             msg = 'Policy reform text below contains invalid JSON:\n'
             msg += str(valerr) + '\n'
@@ -228,13 +230,16 @@ class Policy(ParametersBase):
                 msg += '{:02d}{}'.format(linenum, line) + '\n'
             msg += bline + '\n'
             raise ValueError(msg)
-        # handle special param_code key in reform_dict_raw
-        paramcode = reform_dict_raw.pop('param_code', None)
+        # handle special param_code key in raw_dict
+        paramcode = raw_dict.pop('param_code', None)
         if paramcode:
+            if Policy.PROHIBIT_PARAM_CODE:
+                msg = 'JSON reform file containing "param_code" is not allowed'
+                raise ValueError(msg)
             for param, code in paramcode.items():
-                reform_dict_raw[param] = {'0': code}
-        # convert reform_dict_raw
-        return Policy.convert_reform_dictionary(reform_dict_raw)
+                raw_dict[param] = {'0': code}
+        # convert raw_dict
+        return Policy.convert_reform_dictionary(raw_dict)
 
     def implement_reform(self, reform):
         """

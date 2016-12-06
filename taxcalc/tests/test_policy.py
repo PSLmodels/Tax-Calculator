@@ -561,6 +561,13 @@ def reform_file():
             pass  # sometimes we can't remove a generated temporary file
 
 
+def test_prohibit_param_code(reform_file):
+    Policy.PROHIBIT_PARAM_CODE = True
+    with pytest.raises(ValueError):
+        Policy.read_json_reform_file(reform_file.name)
+    Policy.PROHIBIT_PARAM_CODE = False
+
+
 @pytest.mark.parametrize("set_year", [False, True])
 def test_read_json_reform_file_and_implement_reform(reform_file, set_year):
     """
@@ -690,18 +697,18 @@ def test_read_bad_json_reform_file(badreformfile):
 
 def test_convert_reform_dictionary():
     with pytest.raises(ValueError):
-        rdict = Policy.convert_reform_dictionary({2013: {'2013': [40000]}})
+        Policy.convert_reform_dictionary({2013: {'2013': [40000]}})
     with pytest.raises(ValueError):
-        rdict = Policy.convert_reform_dictionary({'_II_em': {2013: [40000]}})
+        Policy.convert_reform_dictionary({'_II_em': {2013: [40000]}})
 
 
 def test_reform_pkey_year():
     with pytest.raises(ValueError):
-        rdict = Policy._reform_pkey_year({4567: {2013: [40000]}})
+        Policy._reform_pkey_year({4567: {2013: [40000]}})
     with pytest.raises(ValueError):
-        rdict = Policy._reform_pkey_year({'_II_em': 40000})
+        Policy._reform_pkey_year({'_II_em': 40000})
     with pytest.raises(ValueError):
-        rdict = Policy._reform_pkey_year({'_II_em': {'2013': [40000]}})
+        Policy._reform_pkey_year({'_II_em': {'2013': [40000]}})
 
 
 def test_current_law_version():
