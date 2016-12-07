@@ -7,6 +7,7 @@ Tax-Calculator federal tax policy Policy class.
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 
+import re
 from .parameters import ParametersBase
 
 
@@ -70,6 +71,10 @@ class Policy(ParametersBase):
                  2021: 0.0403, 2022: 0.0413, 2023: 0.0417, 2024: 0.0417,
                  2025: 0.0415, 2026: 0.0416}
 
+    VALID_PARAM_CODE_NAMES = set(['ALD_Investment_ec_base_code'])
+
+    PROHIBIT_PARAM_CODE = False
+
     @staticmethod
     def default_inflation_rates():
         """
@@ -124,7 +129,7 @@ class Policy(ParametersBase):
             raise ValueError('num_years cannot be less than one')
 
         if inflation_rates is None:  # read default rates
-            self._inflation_rates = [self.__pirates[start_year + i]
+            self._inflation_rates = [Policy.__pirates[start_year + i]
                                      for i in range(0, num_years)]
         elif isinstance(inflation_rates, dict):
             if len(inflation_rates) != num_years:
@@ -138,7 +143,7 @@ class Policy(ParametersBase):
             raise ValueError('inflation_rates is not None or a dictionary')
 
         if wage_growth_rates is None:  # read default rates
-            self._wage_growth_rates = [self.__wgrates[start_year + i]
+            self._wage_growth_rates = [Policy.__wgrates[start_year + i]
                                        for i in range(0, num_years)]
         elif isinstance(wage_growth_rates, dict):
             if len(wage_growth_rates) != num_years:
@@ -150,6 +155,10 @@ class Policy(ParametersBase):
                                        for i in range(0, num_years)]
         else:
             raise ValueError('wage_growth_rates is not None or a dictionary')
+
+        self.param_code = dict()
+        for param in Policy.VALID_PARAM_CODE_NAMES:
+            self.param_code[param] = ''
 
         self.initialize(start_year, num_years)
 
@@ -237,6 +246,7 @@ class Policy(ParametersBase):
         catch this error, so be careful to specify reform dictionaries
         correctly.
         """
+        # check that all reform dictionary keys are integers
         if not isinstance(reform, dict):
             raise ValueError('reform is not a dictionary')
         if len(reform) == 0:
@@ -246,6 +256,15 @@ class Policy(ParametersBase):
             if not isinstance(year, int):
                 msg = 'key={} in reform is not an integer calendar year'
                 raise ValueError(msg.format(year))
+        # remove and process param_code information
+        zero = 0  # param_code information is marked with year equal to 0
+        param_code_dict = reform.pop(zero, None)
+        if param_code_dict:
+            reform_years.remove(zero)
+            for param, code in param_code_dict.items():
+                Policy.scan_param_code(code)
+                self.param_code[param] = code
+        # check range of remaining reform_years
         first_reform_year = min(reform_years)
         if first_reform_year < self.start_year:
             msg = 'reform provision in year={} < start_year={}'
@@ -257,11 +276,34 @@ class Policy(ParametersBase):
         if last_reform_year > self.end_year:
             msg = 'reform provision in year={} > end_year={}'
             raise ValueError(msg.format(last_reform_year, self.end_year))
+        # implement the reform year by year
         precall_current_year = self.current_year
         for year in reform_years:
             self.set_year(year)
             self._update({year: reform[year]})
         self.set_year(precall_current_year)
+
+    @staticmethod
+    def scan_param_code(code):
+        """
+        Raise ValueError if certain character strings found in specified code.
+        """
+        if re.search(r'__', code) is not None:
+            msg = 'Following param_code includes illegal "__":\n'
+            msg += code
+            raise ValueError(msg)
+        if re.search(r'lambda', code) is not None:
+            msg = 'Following param_code includes illegal "lambda":\n'
+            msg += code
+            raise ValueError(msg)
+        if re.search(r'\[', code) is not None:
+            msg = 'Following param_code includes illegal "[":\n'
+            msg += code
+            raise ValueError(msg)
+        if re.search(r'\*\*', code) is not None:
+            msg = 'Following param_code includes illegal "**":\n'
+            msg += code
+            raise ValueError(msg)
 
     def current_law_version(self):
         """

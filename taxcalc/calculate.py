@@ -162,6 +162,8 @@ class Calculator(object):
         EI_PayrollTax(self.policy, self.records)
         DependentCare(self.policy, self.records)
         Adj(self.policy, self.records)
+        if self.policy.ALD_Investment_ec_base_code_active:
+            ALD_Investment_ec_base_code_function(self)
         CapGains(self.policy, self.records)
         SSBenefits(self.policy, self.records)
         AGI(self.policy, self.records)
@@ -449,11 +451,14 @@ class Calculator(object):
         if actual_keys != expect_keys:
             msg = 'reform keys {} not equal to {}'
             raise ValueError(msg.format(actual_keys, expect_keys))
-        # handle special param_code key in policy dictionary
+        # handle special param_code key in raw_dict policy component dictionary
         paramcode = raw_dict['policy'].pop('param_code', None)
         if paramcode:
+            if Policy.PROHIBIT_PARAM_CODE:
+                msg = 'JSON reform file containing "param_code" is not allowed'
+                raise ValueError(msg)
             for param, code in paramcode.items():
-                raw_dict[param] = {'0': code}
+                raw_dict['policy'][param] = {'0': code}
         # convert raw_dict component dictionaries
         pol_dict = Calculator.convert_reform_dict(raw_dict['policy'])
         beh_dict = Calculator.convert_reform_dict(raw_dict['behavior'])
