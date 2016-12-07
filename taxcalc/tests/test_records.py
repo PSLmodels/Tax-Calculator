@@ -178,46 +178,6 @@ def test_default_rates_and_those_implied_by_blowup_factors(puf_1991):
     assert_array_equal(wage_growth_rates[1:], policy._wage_growth_rates[1:-1])
 
 
-def test_var_labels_txt_contents(tests_path):
-    """
-    Check that every Records variable used by taxcalc is in var_labels.txt
-    and that all variables in var_labels.txt are used by taxcalc.
-    """
-    # read variables in var_labels.txt file (checking for duplicates)
-    var_labels_path = os.path.join(tests_path, '..', 'var_labels.txt')
-    var_labels_set = set()
-    with open(var_labels_path, 'r') as varlabels:
-        msg = 'DUPLICATE VARIABLE(S) IN VAR_LABELS.TXT:\n'
-        found_duplicates = False
-        for line in varlabels:
-            var = (line.split())[0]
-            if var in var_labels_set:
-                found_duplicates = True
-                msg += 'VARIABLE= {}\n'.format(var)
-            else:
-                var_labels_set.add(var)
-        if found_duplicates:
-            raise ValueError(msg)
-    # change all Records.USABLE_READ_VARS variables to uppercase
-    var_valid_set = set()
-    for var in Records.USABLE_READ_VARS:
-        var_valid_set.add(var.upper())
-    # check for no extra var_valid variables
-    valid_less_labels = var_valid_set - var_labels_set
-    if len(valid_less_labels) > 0:
-        msg = 'VARIABLE(S) IN USABLE_READ_VARS BUT NOT VAR_LABELS.TXT:\n'
-        for var in valid_less_labels:
-            msg += 'VARIABLE= {}\n'.format(var)
-        raise ValueError(msg)
-    # check for no extra var_labels variables
-    labels_less_valid = var_labels_set - var_valid_set
-    if len(labels_less_valid) > 0:
-        msg = 'VARIABLE(S) IN VAR_LABELS.TXT BUT NOT USABLE_READ_VARS:\n'
-        for var in labels_less_valid:
-            msg += 'VARIABLE= {}\n'.format(var)
-        raise ValueError(msg)
-
-
 def test_csv_input_vars_md_contents(tests_path):
     """
     Check CSV_INPUT_VARS.md contents against Records.USABLE_READ_VARS

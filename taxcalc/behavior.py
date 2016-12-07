@@ -127,6 +127,7 @@ class Behavior(ParametersBase):
         """
         # pylint: disable=too-many-locals,protected-access
         assert calc_x.records.dim == calc_y.records.dim
+        assert calc_x.records.current_year == calc_y.records.current_year
         # calculate sum of substitution and income effects
         if calc_y.behavior.BE_sub == 0.0 and calc_y.behavior.BE_inc == 0.0:
             sub = np.zeros(calc_x.records.dim)
@@ -247,13 +248,11 @@ class Behavior(ParametersBase):
         Computes marginal tax rates for Calculator objects calc_x and calc_y
         for specified mtr_of income type and specified tax_type.
         """
-        _, iitax_x, combined_x = calc_x.mtr(mtr_of)
-        _, iitax_y, combined_y = calc_y.mtr(mtr_of)
+        _, iitax_x, combined_x = calc_x.mtr(mtr_of, wrt_full_compensation=True)
+        _, iitax_y, combined_y = calc_y.mtr(mtr_of, wrt_full_compensation=True)
         if tax_type == 'combined':
             return (combined_x, combined_y)
         elif tax_type == 'iitax':
             return (iitax_x, iitax_y)
         else:
             raise ValueError('tax_type must be "combined" or "iitax"')
-
-# end Behavior class

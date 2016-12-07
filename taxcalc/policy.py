@@ -7,11 +7,7 @@ Tax-Calculator federal tax policy Policy class.
 # (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 
-import os
-import json
 import re
-import six
-import numpy as np
 from .parameters import ParametersBase
 
 
@@ -178,69 +174,6 @@ class Policy(ParametersBase):
         """
         return self._wage_growth_rates
 
-    @staticmethod
-    def read_json_reform_file(reform_filename):
-        """
-        Read reform file, strip //-comments, and return dict based on JSON.
-        The reform file is JSON with string policy-parameter primary keys and
-           string years as secondary keys.  See tests/test_policy.py for an
-           extended example of a commented JSON reform file that can be read
-           by this method.
-        Returned dictionary has integer years as primary keys and
-           string policy-parameters as secondary keys.
-        The returned dictionary is suitable as the argument to the
-           implement_reform(reform_dict) method (see below).
-        """
-        if os.path.isfile(reform_filename):
-            txt = open(reform_filename, 'r').read()
-            return Policy.read_json_reform_text(txt)
-        else:
-            msg = 'Policy reform file {} could not be found'
-            raise ValueError(msg.format(reform_filename))
-
-    @staticmethod
-    def read_json_reform_text(text_string):
-        """
-        Strip //-comments from text_string and return dict based on JSON.
-        The reform text is JSON with string policy-parameter primary keys and
-           string years as secondary keys.  See tests/test_policy.py for an
-           extended example of a commented JSON reform text that can be read
-           by this method.
-        Returned dictionary has integer years as primary keys and
-           string policy-parameters as secondary keys.
-        The returned dictionary is suitable as the argument to the
-           implement_reform(reform_dict) method (see below).
-        """
-        # strip out //-comments without changing line numbers
-        json_without_comments = re.sub('//.*', ' ', text_string)
-        # convert JSON text into a dictionary with year skeys as strings
-        try:
-            raw_dict = json.loads(json_without_comments)
-        except ValueError as valerr:
-            msg = 'Policy reform text below contains invalid JSON:\n'
-            msg += str(valerr) + '\n'
-            msg += 'Above location of the first error may be approximate.\n'
-            msg += 'The invalid JSON reform text is between the lines:\n'
-            bline = 'XX----.----1----.----2----.----3----.----4'
-            bline += '----.----5----.----6----.----7'
-            msg += bline + '\n'
-            linenum = 0
-            for line in json_without_comments.split('\n'):
-                linenum += 1
-                msg += '{:02d}{}'.format(linenum, line) + '\n'
-            msg += bline + '\n'
-            raise ValueError(msg)
-        # handle special param_code key in raw_dict
-        paramcode = raw_dict.pop('param_code', None)
-        if paramcode:
-            if Policy.PROHIBIT_PARAM_CODE:
-                msg = 'JSON reform file containing "param_code" is not allowed'
-                raise ValueError(msg)
-            for param, code in paramcode.items():
-                raw_dict[param] = {'0': code}
-        # convert raw_dict
-        return Policy.convert_reform_dictionary(raw_dict)
-
     def implement_reform(self, reform):
         """
         Implement multi-year policy reform and leave current_year unchanged.
@@ -248,10 +181,8 @@ class Policy(ParametersBase):
         Parameters
         ----------
         reform: dictionary of one or more YEAR:MODS pairs
-            see Notes to _update method for details on MODS structure, and
-            see read_json_reform_file method above for how to specify a
-            reform in a JSON file and translate it into a reform dictionary
-            suitable for input into this implement_reform method.
+            see Notes to Parameters _update method for info on MODS structure
+
         Raises
         ------
         ValueError:
@@ -374,39 +305,6 @@ class Policy(ParametersBase):
             msg += code
             raise ValueError(msg)
 
-    @staticmethod
-    def convert_reform_dictionary(param_key_dict):
-        """
-        Converts specified param_key_dict into a dictionary whose primary
-        keys are calendary years, and hence, is suitable as the argument
-        to the implement_reform(reform_dict) method (see above).
-
-        Specified input dictionary has string policy-parameter primary keys
-           and string years as secondary keys.  See read_json_reform_file
-           method above.
-
-        Returned dictionary has integer years as primary keys and
-           string policy-parameters as secondary keys.
-        """
-        # convert year skey strings to integers and lists into np.arrays
-        reform_pkey_param = {}
-        for pkey, sdict in param_key_dict.items():
-            if not isinstance(pkey, six.string_types):
-                msg = 'pkey {} in reform is not a string'
-                raise ValueError(msg.format(pkey))
-            rdict = {}
-            for skey, val in sdict.items():
-                if not isinstance(skey, six.string_types):
-                    msg = 'skey {} in reform is not a string'
-                    raise ValueError(msg.format(skey))
-                else:
-                    year = int(skey)
-                rdict[year] = (np.array(val)
-                               if isinstance(val, list) else val)
-            reform_pkey_param[pkey] = rdict
-        # convert reform_pkey_param dictionary to reform_pkey_year dictionary
-        return Policy._reform_pkey_year(reform_pkey_param)
-
     def current_law_version(self):
         """
         Return Policy object same as self except with current-law policy.
@@ -423,37 +321,3 @@ class Policy(ParametersBase):
                      wage_growth_rates=wrate_dict)
         clv.set_year(self.current_year)
         return clv
-
-    # ----- begin private methods of Policy class -----
-
-    @staticmethod
-    def _reform_pkey_year(reform_pkey_param):
-        """
-        The input reform_pkey_param dictionary has string policy-parameter
-           primary keys and integer years as secondary keys.
-        Returned dictionary has integer years as primary keys and
-           string policy-parameters as secondary keys.
-        The returned dictionary is suitable as the argument to the
-           implement_reform(reform_dict) method (see above).
-        """
-        years = set()
-        reform_pk_yr = {}
-        for param, sdict in reform_pkey_param.items():
-            if not isinstance(param, six.string_types):
-                msg = 'pkey {} in reform is not a string'
-                raise ValueError(msg.format(param))
-            elif not isinstance(sdict, dict):
-                msg = 'pkey {} value {} is not a dictionary'
-                raise ValueError(msg.format(param, sdict))
-            for year, val in sdict.items():
-                if not isinstance(year, int):
-                    msg = 'year skey {} in reform is not an integer'
-                    raise ValueError(msg.format(year))
-                if year not in years:
-                    years.add(year)
-                    reform_pk_yr[year] = {}
-                reform_pk_yr[year][param] = val
-        return reform_pk_yr
-
-
-# end Policy class

@@ -231,7 +231,7 @@ def CapGains(p23250, p22250, _sep, ALD_StudentLoan_hc,
     if CG_nodiff:
         # apply QDIV+CG exclusion if QDIV+LTCG receive no special tax treatment
         qdcg_pos = max(0., e00650 + c01000)
-        qdcg_exclusion = (max(CG_ec, qdcg_pos) +
+        qdcg_exclusion = (min(CG_ec, qdcg_pos) +
                           CG_reinvest_ec_rt * max(0., qdcg_pos - CG_ec))
         ymod1 = max(0., ymod1 - qdcg_exclusion)
         invinc_agi_ec += qdcg_exclusion

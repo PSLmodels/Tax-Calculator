@@ -23,22 +23,22 @@ def test_update_growth(puf_1991, weights_1991):
     # try incorrect updates
     grow = Growth()
     with pytest.raises(ValueError):
-        grow.update_economic_growth({2013: list()})
+        grow.update_growth({2013: list()})
     with pytest.raises(ValueError):
-        grow.update_economic_growth({2013: {'bad_name': [0.02]}})
+        grow.update_growth({2013: {'bad_name': [0.02]}})
     with pytest.raises(ValueError):
-        grow.update_economic_growth({2013: {'bad_name_cpi': True}})
+        grow.update_growth({2013: {'bad_name_cpi': True}})
     bad_params = {2015: {'_factor_adjustment': [0.01],
                          '_factor_target': [0.08]}}
     with pytest.raises(ValueError):
-        grow.update_economic_growth(bad_params)
+        grow.update_growth(bad_params)
     # try correct updates
     grow_x = Growth()
     factor_x = {2015: {'_factor_target': [0.04]}}
-    grow_x.update_economic_growth(factor_x)
+    grow_x.update_growth(factor_x)
     grow_y = Growth()
     factor_y = {2015: {'_factor_adjustment': [0.01]}}
-    grow_y.update_economic_growth(factor_y)
+    grow_y.update_growth(factor_y)
     # create two Calculators
     recs_x = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     recs_y = Records(data=puf_1991, weights=weights_1991, start_year=2009)
@@ -65,12 +65,12 @@ def test_factor_target(records_2009):
     # specify _factor_target
     ft2015 = 0.04
     factor_target = {2015: {'_factor_target': [ft2015]}}
-    calc.growth.update_economic_growth(factor_target)
+    calc.growth.update_growth(factor_target)
     assert calc.current_year == 2013
     calc.increment_year()
     calc.increment_year()
     assert calc.current_year == 2015
-    distance = ((ft2015 - Growth.default_real_gdp_growth_rate(2015 - 2013)) /
+    distance = ((ft2015 - calc.growth.default_real_gdp_growth_rate()) /
                 calc.records.BF.APOPN[2015])
     AGDPN_post = AGDPN_pre + distance
     ATXPY_post = ATXPY_pre + distance
@@ -85,7 +85,7 @@ def test_factor_adjustment(records_2009):
     # specify _factor_adjustment
     fa2015 = 0.01
     factor_adj = {2015: {'_factor_adjustment': [fa2015]}}
-    calc.growth.update_economic_growth(factor_adj)
+    calc.growth.update_growth(factor_adj)
     assert calc.current_year == 2013
     calc.increment_year()
     calc.increment_year()

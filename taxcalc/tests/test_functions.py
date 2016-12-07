@@ -171,7 +171,7 @@ def test_1():
     mte = 100000  # lower than current-law to simplify hand calculations
     ssr = 0.124  # current law OASDI ee+er payroll tax rate
     mrr = 0.029  # current law HI ee+er payroll tax rate
-    reform = {
+    policy_reform = {
         2015: {
             '_SS_Earnings_c': [mte],
             '_FICA_ss_trt': [ssr],
@@ -206,7 +206,7 @@ def test_1():
     input_dataframe = pd.read_csv(StringIO(funit))
     inctax = IncomeTaxIO(input_data=input_dataframe,
                          tax_year=2015,
-                         policy_reform=reform,
+                         reform=policy_reform,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,
@@ -234,7 +234,7 @@ def test_2():
     # in order to make the hand calculations easier
     actc_thd = 35000
     mte = 53000
-    reform = {
+    policy_reform = {
         2015: {
             '_ACTC_Income_thd': [actc_thd],
             '_SS_Earnings_c': [mte]
@@ -256,7 +256,7 @@ def test_2():
     input_dataframe = pd.read_csv(StringIO(funit))
     inctax = IncomeTaxIO(input_data=input_dataframe,
                          tax_year=2015,
-                         policy_reform=reform,
+                         reform=policy_reform,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,

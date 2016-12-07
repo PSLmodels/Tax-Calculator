@@ -352,7 +352,7 @@ def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta, user_mods="",
 
     growth_assumptions = only_growth_assumptions(user_mods, start_year)
     if growth_assumptions:
-        calc1.growth.update_economic_growth(growth_assumptions)
+        calc1.growth.update_growth(growth_assumptions)
 
     while calc1.current_year < start_year:
         calc1.increment_year()
@@ -367,7 +367,7 @@ def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta, user_mods="",
     # Create a Calculator for the user specified plan
     calc3 = Calculator(policy=params3, records=records3, behavior=behavior3)
     if growth_assumptions:
-        calc3.growth.update_economic_growth(growth_assumptions)
+        calc3.growth.update_growth(growth_assumptions)
 
     while calc3.current_year < start_year:
         calc3.increment_year()
@@ -443,7 +443,7 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
 
     growth_assumptions = only_growth_assumptions(user_mods, start_year)
     if growth_assumptions:
-        calc1.growth.update_economic_growth(growth_assumptions)
+        calc1.growth.update_growth(growth_assumptions)
 
     while calc1.current_year < start_year:
         calc1.increment_year()
@@ -454,7 +454,7 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
     # Create a Calculator with one extra dollar of income
     calc2 = Calculator(policy=params2, records=records2)
     if growth_assumptions:
-        calc2.growth.update_economic_growth(growth_assumptions)
+        calc2.growth.update_growth(growth_assumptions)
 
     while calc2.current_year < start_year:
         calc2.increment_year()
@@ -478,7 +478,7 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
     # Create a Calculator for the user specified plan
     calc3 = Calculator(policy=params3, records=records3, behavior=behavior3)
     if growth_assumptions:
-        calc3.growth.update_economic_growth(growth_assumptions)
+        calc3.growth.update_growth(growth_assumptions)
 
     if behavior_assumptions:
         calc3.behavior.update_behavior(behavior_assumptions)

@@ -46,9 +46,10 @@ def main():
                         action="store_true")
     parser.add_argument('--reform',
                         help=('REFORM is name of optional file that contains '
-                              'tax reform provisions; the provisions are '
-                              'specified using JSON that may include '
-                              '//-comments. No REFORM filename implies use '
+                              'tax reform "policy" parameters and "behavior" '
+                              'parameters and "growth" parameters; the '
+                              'REFORM file is specified using JSON that may '
+                              'include //-comments. No --reform implies use '
                               'of current-law policy.'),
                         default=None)
     parser.add_argument('--exact',
@@ -75,6 +76,17 @@ def main():
                               'additional variable [29] containing the s006 '
                               'sample weight, which will be aged if the '
                               '--blowup option is used'),
+                        default=False,
+                        action="store_true")
+    parser.add_argument('--fullcomp',
+                        help=('optional flag that causes OUTPUT to have '
+                              'marginal tax rates (MTRs) calculated with '
+                              'respect to full compensation (but any '
+                              'behavioral-response calculations always use '
+                              'MTRs that are calculated with respect to full '
+                              'compensation).  No --fullcomp option implies '
+                              'MTRs reported in OUTPUT are not calculated '
+                              'with respect to full compensation'),
                         default=False,
                         action="store_true")
     output = parser.add_mutually_exclusive_group(required=False)
@@ -128,7 +140,7 @@ def main():
     # instantiate IncometaxIO object and do federal income tax calculations
     inctax = IncomeTaxIO(input_data=args.INPUT,
                          tax_year=args.TAXYEAR,
-                         policy_reform=args.reform,
+                         reform=args.reform,
                          exact_calculations=args.exact,
                          blowup_input_data=args.blowup,
                          output_weights=args.weights,
@@ -137,12 +149,16 @@ def main():
     if args.records:
         inctax.output_records(writing_output_file=True)
     elif args.csvdump:
-        inctax.calculate(writing_output_file=False, exact_output=args.exact,
-                         output_weights=args.weights)
+        inctax.calculate(writing_output_file=False,
+                         exact_output=args.exact,
+                         output_weights=args.weights,
+                         output_mtr_wrt_fullcomp=args.fullcomp)
         inctax.csv_dump(writing_output_file=True)
     else:
-        inctax.calculate(writing_output_file=True, exact_output=args.exact,
-                         output_weights=args.weights)
+        inctax.calculate(writing_output_file=True,
+                         exact_output=args.exact,
+                         output_weights=args.weights,
+                         output_mtr_wrt_fullcomp=args.fullcomp)
     # return no-error exit code
     return 0
 # end of main function code

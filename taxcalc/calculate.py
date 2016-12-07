@@ -11,6 +11,9 @@ Tax-Calculator federal tax Calculator class.
 # pylint: disable=no-value-for-parameter,protected-access
 
 
+import os
+import json
+import re
 import copy
 import numpy as np
 from .utils import *
@@ -88,55 +91,60 @@ class Calculator(object):
                  sync_years=True, behavior=None, growth=None,
                  consumption=None):
         if isinstance(policy, Policy):
-            self._policy = policy
+            self.policy = policy
         else:
             raise ValueError('must specify policy as a Policy object')
         if isinstance(records, Records):
-            self._records = records
+            self.records = records
         else:
             raise ValueError('must specify records as a Records object')
         if behavior is None:
             self.behavior = Behavior(start_year=policy.start_year)
         elif isinstance(behavior, Behavior):
             self.behavior = behavior
+            while self.behavior.current_year < self.policy.current_year:
+                next_year = self.behavior.current_year + 1
+                self.behavior.set_year(next_year)
         else:
             raise ValueError('behavior must be None or Behavior object')
         if growth is None:
             self.growth = Growth(start_year=policy.start_year)
         elif isinstance(growth, Growth):
             self.growth = growth
+            while self.growth.current_year < self.policy.current_year:
+                next_year = self.growth.current_year + 1
+                self.growth.set_year(next_year)
         else:
             raise ValueError('growth must be None or Growth object')
         if consumption is None:
             self.consumption = Consumption(start_year=policy.start_year)
         elif isinstance(consumption, Consumption):
             self.consumption = consumption
+            while self.consumption.current_year < self.policy.current_year:
+                next_year = self.consumption.current_year + 1
+                self.consumption.set_year(next_year)
         else:
             raise ValueError('consumption must be None or Consumption object')
-        if sync_years and self._records.current_year == Records.PUF_YEAR:
+        if sync_years and self.records.current_year == Records.PUF_YEAR:
             if verbose:
                 print('You loaded data for ' +
-                      str(self._records.current_year) + '.')
-                if len(self._records.IGNORED_VARS) > 0:
+                      str(self.records.current_year) + '.')
+                if len(self.records.IGNORED_VARS) > 0:
                     print('Your data include the following unused ' +
                           'variables that will be ignored:')
-                    for var in self._records.IGNORED_VARS:
+                    for var in self.records.IGNORED_VARS:
                         print('  ' +
                               var)
-            while self._records.current_year < self._policy.current_year:
-                self._records.increment_year()
+            while self.records.current_year < self.policy.current_year:
+                next_year = self.records.current_year + 1
+                if next_year >= self.growth.start_year:
+                    self.growth.set_year(next_year)
+                    self.growth.apply_change(self.records)
+                self.records.increment_year()
             if verbose:
                 print('Your data have been extrapolated to ' +
-                      str(self._records.current_year) + '.')
-        assert self._policy.current_year == self._records.current_year
-
-    @property
-    def policy(self):
-        return self._policy
-
-    @property
-    def records(self):
-        return self._records
+                      str(self.records.current_year) + '.')
+        assert self.policy.current_year == self.records.current_year
 
     def TaxInc_to_AMT(self):
         TaxInc(self.policy, self.records)
@@ -210,8 +218,8 @@ class Calculator(object):
 
     def increment_year(self):
         next_year = self.policy.current_year + 1
-        self.growth.apply_change(self.records, next_year)
         self.growth.set_year(next_year)
+        self.growth.apply_change(self.records)
         self.records.increment_year()
         self.policy.set_year(next_year)
         self.behavior.set_year(next_year)
@@ -345,7 +353,7 @@ class Calculator(object):
         incometax_chng = copy.deepcopy(self.records._iitax)
         combined_taxes_chng = incometax_chng + payrolltax_chng
         # calculate base level of taxes after restoring records object
-        setattr(self, '_records', recs0)
+        setattr(self, 'records', recs0)
         self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
         payrolltax_base = copy.deepcopy(self.records._payrolltax)
         incometax_base = copy.deepcopy(self.records._iitax)
@@ -373,11 +381,131 @@ class Calculator(object):
         """
         Return Calculator object same as self except with current-law policy.
         """
-        clp = self._policy.current_law_version()
-        recs = copy.deepcopy(self._records)
+        clp = self.policy.current_law_version()
+        recs = copy.deepcopy(self.records)
         behv = copy.deepcopy(self.behavior)
         grow = copy.deepcopy(self.growth)
         cons = copy.deepcopy(self.consumption)
         calc = Calculator(policy=clp, records=recs, sync_years=False,
                           behavior=behv, growth=grow, consumption=cons)
         return calc
+
+    @staticmethod
+    def read_json_reform_file(reform_filename):
+        """
+        Read JSON reform file and call Calculator.read_json_reform_text method.
+        """
+        if os.path.isfile(reform_filename):
+            txt = open(reform_filename, 'r').read()
+            return Calculator.read_json_reform_text(txt)
+        else:
+            msg = 'reform file {} could not be found'
+            raise ValueError(msg.format(reform_filename))
+
+    @staticmethod
+    def read_json_reform_text(text_string):
+        """
+        Strip //-comments from text_string and return 4 dict based on the JSON.
+        The reform text is JSON with four high-level string:object pairs:
+           a "policy": {...} pair,
+           a "behavior": {...} pair,
+           a "growth": {...} pair, and
+           a "consumption": {...} pair.
+           In all four cases the {...} object may be empty (that is, be {}),
+           or may contain one or more pairs with parameter string primary keys
+           and string years as secondary keys.  See tests/test_calculate.py for
+           an extended example of a commented JSON reform text that can be read
+           by this method.
+        Returned dictionaries (reform_policy, reform_behavior,
+                               reform_growth reform_consumption)
+           have integer years as primary keys
+           and string parameters as secondary keys.
+        The returned dictionaries are suitable as the argument to
+           the Policy implement_reform(reform_policy) method, or
+           the Behavior update_behavior(reform_behavior) method, or
+           the Growth update_growth(reform_growth) method, or
+           the Consumption update_consumption(reform_consumption) method.
+        """
+        # strip out //-comments without changing line numbers
+        json_without_comments = re.sub('//.*', ' ', text_string)
+        # convert JSON text into a Python dictionary
+        try:
+            raw_dict = json.loads(json_without_comments)
+        except ValueError as valerr:
+            msg = 'Policy reform text below contains invalid JSON:\n'
+            msg += str(valerr) + '\n'
+            msg += 'Above location of the first error may be approximate.\n'
+            msg += 'The invalid JSON reform text is between the lines:\n'
+            bline = 'XX----.----1----.----2----.----3----.----4'
+            bline += '----.----5----.----6----.----7'
+            msg += bline + '\n'
+            linenum = 0
+            for line in json_without_comments.split('\n'):
+                linenum += 1
+                msg += '{:02d}{}'.format(linenum, line) + '\n'
+            msg += bline + '\n'
+            raise ValueError(msg)
+        # check contents of dictionary
+        expect_keys = set(['policy', 'behavior', 'growth', 'consumption'])
+        actual_keys = set(raw_dict.keys())
+        if actual_keys != expect_keys:
+            msg = 'reform keys {} not equal to {}'
+            raise ValueError(msg.format(actual_keys, expect_keys))
+        # handle special param_code key in raw_dict's policy dict
+        paramcode = raw_dict['policy'].pop('param_code', None)
+        if paramcode:
+            if Policy.PROHIBIT_PARAM_CODE:
+                msg = 'JSON reform file containing "param_code" is not allowed'
+                raise ValueError(msg)
+            for param, code in paramcode.items():
+                raw_dict[param] = {'0': code}
+        # convert raw_dict component dictionaries
+        pol_dict = Calculator.convert_reform_dict(raw_dict['policy'])
+        beh_dict = Calculator.convert_reform_dict(raw_dict['behavior'])
+        gro_dict = Calculator.convert_reform_dict(raw_dict['growth'])
+        con_dict = Calculator.convert_reform_dict(raw_dict['consumption'])
+        return (pol_dict, beh_dict, gro_dict, con_dict)
+
+    @staticmethod
+    def convert_reform_dict(param_key_dict):
+        """
+        Converts specified param_key_dict into a dictionary whose primary
+          keys are calendary years, and hence, is suitable as the argument to
+          the Policy implement_reform(reform_policy) method, or
+          the Behavior update_behavior(reform_behavior) method, or
+          the Growth update_growth(reform_growth) method, or
+          the Consumption update_consumption(reform_consumption) method.
+        Specified input dictionary has string parameter primary keys and
+           string years as secondary keys.
+        Returned dictionary has integer years as primary keys and
+           string parameters as secondary keys.
+        """
+        # convert year skey strings to integers and lists into np.arrays
+        reform_pkey_param = {}
+        for pkey, sdict in param_key_dict.items():
+            if not isinstance(pkey, six.string_types):
+                msg = 'pkey {} in reform is not a string'
+                raise ValueError(msg.format(pkey))
+            rdict = {}
+            if not isinstance(sdict, dict):
+                msg = 'pkey {} in reform is not paired with a dict'
+                raise ValueError(msg.format(pkey))
+            for skey, val in sdict.items():
+                if not isinstance(skey, six.string_types):
+                    msg = 'skey {} in reform is not a string'
+                    raise ValueError(msg.format(skey))
+                else:
+                    year = int(skey)
+                rdict[year] = (np.array(val)
+                               if isinstance(val, list) else val)
+            reform_pkey_param[pkey] = rdict
+        # convert reform_pkey_param dictionary to reform_pkey_year dictionary
+        years = set()
+        reform_pkey_year = dict()
+        for param, sdict in reform_pkey_param.items():
+            for year, val in sdict.items():
+                if year not in years:
+                    years.add(year)
+                    reform_pkey_year[year] = {}
+                reform_pkey_year[year][param] = val
+        return reform_pkey_year
