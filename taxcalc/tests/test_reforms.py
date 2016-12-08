@@ -11,7 +11,7 @@ import glob
 import re
 import json
 import pytest
-from taxcalc import Policy  # pylint: disable=import-error
+from taxcalc import Calculator, Policy  # pylint: disable=import-error
 
 
 @pytest.fixture(scope='session')
@@ -25,7 +25,8 @@ def reforms_path(tests_path):
 def test_reforms(reforms_path):  # pylint: disable=redefined-outer-name
     """
     Check that each JSON reform file can be converted into a reform dictionary,
-    which can then be passed to the Policy.implement_reform() method.
+    the policy component part of which can then be passed to the Policy class
+    implement_reform() method.
     While doing this, construct a set of Policy parameters (other than those
     ending in '_cpi') included in the JSON reform files.
     """
@@ -35,7 +36,7 @@ def test_reforms(reforms_path):  # pylint: disable=redefined-outer-name
         with open(jrf) as jrfile:
             jrf_text = jrfile.read()
         # check that jrf_text can be implemented as a Policy reform
-        jrf_dict = Policy.read_json_reform_text(jrf_text)
+        jrf_dict, _, _, _ = Calculator.read_json_reform_text(jrf_text)
         policy = Policy()
         policy.implement_reform(jrf_dict)
         # identify policy parameters included in jrf after removing //-comments

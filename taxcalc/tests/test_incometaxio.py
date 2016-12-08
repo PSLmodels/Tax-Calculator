@@ -65,7 +65,7 @@ def test_incorrect_creation_1(input_data, exact):
         IncomeTaxIO(
             input_data=input_data,
             tax_year=2013,
-            policy_reform=None,
+            reform=None,
             exact_calculations=exact,
             blowup_input_data=True,
             output_weights=False,
@@ -88,7 +88,7 @@ def test_incorrect_creation_2(rawinputfile, year, reform):
         IncomeTaxIO(
             input_data=rawinputfile.name,
             tax_year=year,
-            policy_reform=reform,
+            reform=reform,
             exact_calculations=False,
             blowup_input_data=True,
             output_weights=False,
@@ -111,7 +111,7 @@ def test_creation_with_blowup(rawinputfile, blowup, weights_out):
     taxyear = 2021
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
-                         policy_reform=None,
+                         reform=None,
                          exact_calculations=False,
                          blowup_input_data=blowup,
                          output_weights=weights_out,
@@ -132,7 +132,7 @@ def test_2(rawinputfile):  # pylint: disable=redefined-outer-name
     }
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
-                         policy_reform=reform_dict,
+                         reform=reform_dict,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,
@@ -143,13 +143,15 @@ def test_2(rawinputfile):  # pylint: disable=redefined-outer-name
 
 
 REFORM_CONTENTS = """
-// Example of a reform suitable for use as an optional IncomeTaxIO reform file.
+// Example of a reform file suitable for the read_json_reform_file function.
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
-// The primary keys are policy parameters and secondary keys are years.
+// Within each "policy", "behavior", "growth", and "consumption" object, the
+// primary keys are parameters and secondary keys are years.
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
 {
+  "policy": {
     "_AMT_brk1": // top of first AMT tax bracket
     {"2015": [200000],
      "2017": [300000]
@@ -176,6 +178,13 @@ REFORM_CONTENTS = """
     {"2017": false, // values in future years are same as this year value
      "2020": true   // values in future years indexed with this year as base
     }
+  },
+  "behavior": {
+  },
+  "growth": {
+  },
+  "consumption": {
+  }
 }
 """
 
@@ -222,7 +231,7 @@ def test_3(rawinputfile, reformfile1):  # pylint: disable=redefined-outer-name
     taxyear = 2021
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
-                         policy_reform=reformfile1.name,
+                         reform=reformfile1.name,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,
@@ -242,7 +251,7 @@ def test_4(reformfile2):  # pylint: disable=redefined-outer-name
     taxyear = 2021
     inctax = IncomeTaxIO(input_data=input_dataframe,
                          tax_year=taxyear,
-                         policy_reform=reformfile2.name,
+                         reform=reformfile2.name,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,
@@ -260,7 +269,7 @@ def test_5(rawinputfile):  # pylint: disable=redefined-outer-name
     taxyear = 2021
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
-                         policy_reform=None,
+                         reform=None,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,
@@ -278,7 +287,7 @@ def test_6(rawinputfile):  # pylint: disable=redefined-outer-name
     taxyear = 2021
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
-                         policy_reform=None,
+                         reform=None,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,

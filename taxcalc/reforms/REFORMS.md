@@ -6,30 +6,48 @@ can be combined to construct more complex tax reform proposals that
 are stored as text files on your local computer.  Such reform
 proposals can then be uploaded to the [TaxBrain
 webapp](http://www.ospc.org/taxbrain/file/) (or used on your local
-computer) to estimate reform effects.
+computer with the `--reform` option to the `inctax.py` command-line
+interface to Tax-Calculator) to estimate reform effects.
 
-## Example Reform File
+## Example JSON Reform File
 
 Here is an example of a tax reform proposal that consists of several
 reform provisions.  The structure of this file is as follows:
 
 ```
 {
-   <parameter_name>: {<calyear>: <parameter-value>,
-                      ... 
-                      <calyear>: <parameter-value>},
-   <parameter_name>: {<calyear>: <parameter-value>},
-   ...
-   <parameter_name>: {<calyear>: <parameter-value>,
-                      ... 
-                      <calyear>: <parameter-value>}
-}
+  "policy": {
+     <parameter_name>: {<calyear>: <parameter-value>,
+                        ...,
+                        <calyear>: <parameter-value>},
+     "param_code": {<param_code_name>: <expression>,
+                    ...,
+                    <param_code_name>: <expression>},
+     <parameter_name>: {<calyear>: <parameter-value>},
+     ...,
+     <parameter_name>: {<calyear>: <parameter-value>,
+                        ...,
+                        <calyear>: <parameter-value>}
+  },
+  "behavior": {
+     <parameter_name>: {<calyear>: <parameter-value>},
+     ...,
+     <parameter_name>: {<calyear>: <parameter-value>}
+  },
+  "growth": {
+     <parameter_name>: {<calyear>: <parameter-value>}
+  },
+  "consumption": {
+     <parameter_name>: {<calyear>: <parameter-value>},
+     ...,
+     <parameter_name>: {<calyear>: <parameter-value>}
+  }
 ```
 
-Notice each reform provision (except the last one) must end in a
-comma.  Each reform provision may have one or multiple year-value
-pairs.  Also, the <parameter_name> and <calyear> must be enclosed in
-quotes (").  The <parameter_value> is enclosed in single brackets when
+Notice each pair of reform provision is separated by commas.
+Each reform provision may have one or multiple year-value pairs.
+Also, the <parameter_name> and <calyear> must be enclosed in quotes (").
+The <parameter_value> is enclosed in single brackets when
 the <parameter_value> is a scalar and enclosed in double brackets when
 the <parameter_value> is a vector.  The most common vector of values
 is one that varies by filing status (MARS) with the vector containing
@@ -39,15 +57,20 @@ separate, head of household, widow, separate.
 ```
 // Example of a reform file suitable for local use or uploading to TaxBrain.
 // This JSON file can contain any number of trailing //-style comments, which
-// will be removed before the remaining JSON is parsed.
-// The JSON primary keys are policy parameter names and the secondary keys
-// are calendar years.  Both these primary and secondary key values must be
-// enclosed in quotes (").
-// Policy parameter values are enclosed in single brackets when the parameter
-// is a scalar and enclosed in double brackets when the parameter is a vector.
-// Boolean values are specified as true or false (no quotes; all lowercase).
+// will be removed before the contents are converted from JSON to a dictionary.
+// Within each "policy", "behavior", "growth", and "consumption" object, the
+// primary keys are parameters and secondary keys are years.
+// Both the primary and secondary key values must be enclosed in quotes (").
+// Boolean variables are specified as true or false (no quotes; all lowercase).
 {
-    "_AMT_brk1": // top of first AMT taxable income brackets
+  "policy": {
+    "param_code": {
+        "ALD_Investment_ec_base_code": "e00300 + e00650 + p23250"
+    },
+    "_ALD_Investment_ec_base_code_active":
+    {"2016": [true]
+    },
+    "_AMT_brk1": // top of first AMT tax bracket
     {"2015": [200000],
      "2017": [300000]
     },
@@ -73,10 +96,17 @@ separate, head of household, widow, separate.
     {"2017": false, // values in future years are same as this year value
      "2020": true   // values in future years indexed with this year as base
     }
+  },
+  "behavior": {
+  },
+  "growth": {
+  },
+  "consumption": {
+  }
 }
 ```
 
-## Example Reform Provisions
+## Example Policy Reform Provisions
 
 These are organized in the order that policy parameters are presented
 on the [TaxBrain webpage](http://www.ospc.org/taxbrain/).  They can be
@@ -103,7 +133,10 @@ Links will be added here.
 
 ### Adjustments
 
-Links will be added here.
+[Specify AGI exclusion of some fraction of investment
+income](adjust0.txt)
+
+Other links will be added here.
 
 ### Exemptions
 
@@ -140,3 +173,25 @@ Links will be added here.
 ### Refundable Credits
 
 Links will be added here.
+
+## Example Behavioral-Response Assumptions
+
+The definition of each of behavioral-response parameter is shown in
+[this JSON file](../behavior.json).
+
+A link will be added here.
+
+## Example Growth-Response Assumptions
+
+The definition of each of growth-response parameter is shown in [this
+JSON file](../growth.json).
+
+A link will be added here.
+
+## Example Consumption-Response Assumptions
+
+The definition of each of consumption-response parameter (used in
+marginal tax rate calculations) is shown in [this JSON
+file](../consumption.json).
+
+A link will be added here.

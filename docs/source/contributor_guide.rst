@@ -91,8 +91,6 @@ Setup Git
     validation tests if you are working on Windows.  For more detail on
     Tax-Calculator testing procedures, read the `testing documentation`_.
 
-
-
    .. code-block:: python
 
       tax-calculator$ cd taxcalc
@@ -108,6 +106,7 @@ Setup Git
 
       tax-calculator$ conda update conda
       tax-calculator$ conda update anaconda
+      tax-calculator$ conda env update
 
 If you've made it this far, you've successfully made a remote copy (a
 fork) of central Tax-Calculator repo. That remote repo is hosted on

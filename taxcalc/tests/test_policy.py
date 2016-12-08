@@ -1,11 +1,11 @@
 import os
 import sys
 import json
+import tempfile
 import numpy as np
 from numpy.testing import assert_allclose
 import pytest
-import tempfile
-from taxcalc import Policy
+from taxcalc import Policy, Calculator
 
 
 @pytest.yield_fixture
@@ -501,13 +501,20 @@ def test_parameters_get_default_start_year():
 
 
 REFORM_CONTENTS = """
-// Example of a reform file suitable for Policy read_json_reform_file function.
+// Example of a reform file suitable for Calculator read_json_reform_file().
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
 // The primary keys are policy parameters and secondary keys are years.
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
 {
+"policy": {
+    "param_code": {
+        "ALD_Investment_ec_base_code": "e00300 + e00650 + p23250"
+    },
+    "_ALD_Investment_ec_base_code_active": {
+        "2016": [true]
+    },
     "_AMT_brk1": // top of first AMT tax bracket
     {"2015": [200000],
      "2017": [300000]
@@ -534,6 +541,13 @@ REFORM_CONTENTS = """
     {"2017": false, // values in future years are same as this year value
      "2020": true   // values in future years indexed with this year as base
     }
+},
+"behavior": {
+},
+"growth": {
+},
+"consumption": {
+}
 }
 """
 
@@ -541,7 +555,7 @@ REFORM_CONTENTS = """
 @pytest.yield_fixture
 def reform_file():
     """
-    Temporary reform file for Policy read_json_reform_file function.
+    Temporary reform file for Calculator read_json_reform_file function.
     """
     rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
     rfile.write(REFORM_CONTENTS)
@@ -555,6 +569,13 @@ def reform_file():
             pass  # sometimes we can't remove a generated temporary file
 
 
+def test_prohibit_param_code(reform_file):
+    Policy.PROHIBIT_PARAM_CODE = True
+    with pytest.raises(ValueError):
+        Calculator.read_json_reform_file(reform_file.name)
+    Policy.PROHIBIT_PARAM_CODE = False
+
+
 @pytest.mark.parametrize("set_year", [False, True])
 def test_read_json_reform_file_and_implement_reform(reform_file, set_year):
     """
@@ -562,7 +583,7 @@ def test_read_json_reform_file_and_implement_reform(reform_file, set_year):
     that is then used to call implement_reform method.
     NOTE: implement_reform called when policy.current_year == policy.start_year
     """
-    reform = Policy.read_json_reform_file(reform_file.name)
+    reform, rb, rg, rc = Calculator.read_json_reform_file(reform_file.name)
     policy = Policy()
     if set_year:
         policy.set_year(2015)
@@ -663,41 +684,6 @@ def test_misspecified_reforms():
     assert not reform1 == reform2
 
 
-@pytest.yield_fixture
-def badreformfile():
-    # specify JSON text for policy reform
-    txt = """{ // example of incorrect JSON because 'x' must be "x"
-               'x': {"2014": [4000]}
-             }"""
-    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    f.write(txt + '\n')
-    f.close()
-    # Must close and then yield for Windows platform
-    yield f
-    os.remove(f.name)
-
-
-def test_read_bad_json_reform_file(badreformfile):
-    with pytest.raises(ValueError):
-        Policy.read_json_reform_file(badreformfile.name)
-
-
-def test_convert_reform_dictionary():
-    with pytest.raises(ValueError):
-        rdict = Policy.convert_reform_dictionary({2013: {'2013': [40000]}})
-    with pytest.raises(ValueError):
-        rdict = Policy.convert_reform_dictionary({'_II_em': {2013: [40000]}})
-
-
-def test_reform_pkey_year():
-    with pytest.raises(ValueError):
-        rdict = Policy._reform_pkey_year({4567: {2013: [40000]}})
-    with pytest.raises(ValueError):
-        rdict = Policy._reform_pkey_year({'_II_em': 40000})
-    with pytest.raises(ValueError):
-        rdict = Policy._reform_pkey_year({'_II_em': {'2013': [40000]}})
-
-
 def test_current_law_version():
     syr = 2013
     nyrs = 8
@@ -719,6 +705,20 @@ def test_current_law_version():
     mte = clv._SS_Earnings_c
     clv_mte_2015 = mte[2015 - syr]
     clv_mte_2016 = mte[2016 - syr]
-    assert (clp_mte_2015 == ref_mte_2015 == clv_mte_2015)
+    assert clp_mte_2015 == ref_mte_2015 == clv_mte_2015
     assert clp_mte_2016 != ref_mte_2016
     assert clp_mte_2016 == clv_mte_2016
+
+
+def test_scan_param_code():
+    """
+    Test scan_param_code function.
+    """
+    with pytest.raises(ValueError):
+        Policy.scan_param_code('__builtins__')
+    with pytest.raises(ValueError):
+        Policy.scan_param_code('lambda x: x**2')
+    with pytest.raises(ValueError):
+        Policy.scan_param_code('[x*x for x in range(9)]')
+    with pytest.raises(ValueError):
+        Policy.scan_param_code('9999**99999999')

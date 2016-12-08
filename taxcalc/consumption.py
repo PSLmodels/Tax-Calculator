@@ -100,5 +100,3 @@ class Consumption(ParametersBase):
             records_var = getattr(records, var)
             mpc_var = getattr(self, 'MPC_{}'.format(var))
             records_var[:] += mpc_var * income_change
-
-# end Consumption class

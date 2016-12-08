@@ -64,14 +64,14 @@ def policyfile():
 
 
 def test_make_Calculator(records_2009):
-    parm = Policy()
-    assert parm.current_year == 2013
+    parm = Policy(start_year=2014, num_years=9)
+    assert parm.current_year == 2014
     recs = records_2009
     consump = Consumption()
     consump.update_consumption({2014: {'_MPC_e20400': [0.05]}})
     assert consump.current_year == 2013
     calc = Calculator(policy=parm, records=recs, consumption=consump)
-    assert calc.current_year == 2013
+    assert calc.current_year == 2014
     # test incorrect Calculator instantiation:
     with pytest.raises(ValueError):
         calc = Calculator(policy=None, records=recs)
@@ -315,13 +315,20 @@ def test_Calculator_create_difference_table(puf_1991, weights_1991):
     policy1 = Policy()
     puf1 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc1 = Calculator(policy=policy1, records=puf1)
+    calc1.advance_to_year(2013)
     calc1.calc_all()
     # create policy-reform Policy object and use to create Calculator calc2
     policy2 = Policy()
-    reform = {2013: {'_II_rt7': [0.45]}}
+    reform = {
+        2013: {'_II_rt7': [0.45]},
+        2013: {'_ALD_Investment_ec_base_code_active': [True]},
+        0: {'ALD_Investment_ec_base_code': 'e00300 + e00650 + p23250'}
+    }
     policy2.implement_reform(reform)
     puf2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc2 = Calculator(policy=policy2, records=puf2)
+    calc2.advance_to_year(2013)
+    calc2.calc_all()
     # create difference table and check that it is a Pandas DataFrame
     dtable = create_difference_table(calc1.records, calc2.records,
                                      groupby="weighted_deciles")
@@ -413,3 +420,179 @@ def test_Calculator_using_nonstd_input(rawinputfile):
     exp_mtr_ptax = np.zeros((nonpuf.dim,))
     exp_mtr_ptax.fill(0.153)
     assert np.allclose(mtr_ptax, exp_mtr_ptax)
+
+
+REFORM_CONTENTS = """
+// Example of a reform file suitable for the read_json_reform_file function.
+// This JSON file can contain any number of trailing //-style comments, which
+// will be removed before the contents are converted from JSON to a dictionary.
+// Within each "policy", "behavior", "growth", and "consumption" object, the
+// primary keys are parameters and secondary keys are years.
+// Both the primary and secondary key values must be enclosed in quotes (").
+// Boolean variables are specified as true or false (no quotes; all lowercase).
+{
+  "policy": {
+    "param_code": {
+        "ALD_Investment_ec_base_code": "e00300 + e00650 + p23250"
+    },
+    "_ALD_Investment_ec_base_code_active":
+    {"2016": [true]
+    },
+    "_AMT_brk1": // top of first AMT tax bracket
+    {"2015": [200000],
+     "2017": [300000]
+    },
+    "_EITC_c": // maximum EITC amount by number of qualifying kids (0,1,2,3+)
+    {"2016": [[ 900, 5000,  8000,  9000]],
+     "2019": [[1200, 7000, 10000, 12000]]
+    },
+    "_II_em": // personal exemption amount (see indexing changes below)
+    {"2016": [6000],
+     "2018": [7500],
+     "2020": [9000]
+    },
+    "_II_em_cpi": // personal exemption amount indexing status
+    {"2016": false, // values in future years are same as this year value
+     "2018": true   // values in future years indexed with this year as base
+    },
+    "_SS_Earnings_c": // social security (OASDI) maximum taxable earnings
+    {"2016": [300000],
+     "2018": [500000],
+     "2020": [700000]
+    },
+    "_AMT_em_cpi": // AMT exemption amount indexing status
+    {"2017": false, // values in future years are same as this year value
+     "2020": true   // values in future years indexed with this year as base
+    }
+  },
+  "behavior": {
+  },
+  "growth": {
+  },
+  "consumption": {
+  }
+}
+"""
+
+
+@pytest.yield_fixture
+def reform_file():
+    """
+    Temporary reform file for read_json_reform_file function.
+    """
+    rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    rfile.write(REFORM_CONTENTS)
+    rfile.close()
+    # must close and then yield for Windows platform
+    yield rfile
+    if os.path.isfile(rfile.name):
+        try:
+            os.remove(rfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+@pytest.mark.parametrize("set_year", [False, True])
+def test_read_json_reform_file_and_implement_reform(reform_file, set_year):
+    """
+    Test reading and translation of reform file into a reform dictionary
+    that is then used to call implement_reform method.
+    NOTE: implement_reform called when policy.current_year == policy.start_year
+    """
+    reform, _, _, _ = Calculator.read_json_reform_file(reform_file.name)
+    policy = Policy()
+    if set_year:
+        policy.set_year(2015)
+    policy.implement_reform(reform)
+    syr = policy.start_year
+    amt_brk1 = policy._AMT_brk1
+    assert amt_brk1[2015 - syr] == 200000
+    assert amt_brk1[2016 - syr] > 200000
+    assert amt_brk1[2017 - syr] == 300000
+    assert amt_brk1[2018 - syr] > 300000
+    ii_em = policy._II_em
+    assert ii_em[2016 - syr] == 6000
+    assert ii_em[2017 - syr] == 6000
+    assert ii_em[2018 - syr] == 7500
+    assert ii_em[2019 - syr] > 7500
+    assert ii_em[2020 - syr] == 9000
+    assert ii_em[2021 - syr] > 9000
+    amt_em = policy._AMT_em
+    assert amt_em[2016 - syr, 0] > amt_em[2015 - syr, 0]
+    assert amt_em[2017 - syr, 0] > amt_em[2016 - syr, 0]
+    assert amt_em[2018 - syr, 0] == amt_em[2017 - syr, 0]
+    assert amt_em[2019 - syr, 0] == amt_em[2017 - syr, 0]
+    assert amt_em[2020 - syr, 0] == amt_em[2017 - syr, 0]
+    assert amt_em[2021 - syr, 0] > amt_em[2020 - syr, 0]
+    assert amt_em[2022 - syr, 0] > amt_em[2021 - syr, 0]
+    add4aged = policy._ID_Medical_frt_add4aged
+    assert add4aged[2015 - syr] == -0.025
+    assert add4aged[2016 - syr] == -0.025
+    assert add4aged[2017 - syr] == 0.0
+    assert add4aged[2022 - syr] == 0.0
+
+
+@pytest.yield_fixture
+def bad1reformfile():
+    # specify JSON text for reform
+    txt = """
+    {
+      "policy": { // example of incorrect JSON because 'x' must be "x"
+        'x': {"2014": [4000]}
+      },
+      "behavior": {
+      },
+      "growth": {
+      },
+      "consumption": {
+      }
+    }
+    """
+    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    f.write(txt + '\n')
+    f.close()
+    # Must close and then yield for Windows platform
+    yield f
+    os.remove(f.name)
+
+
+@pytest.yield_fixture
+def bad2reformfile():
+    # specify JSON text for reform
+    txt = """
+    {
+      "policy": {
+        "_SS_Earnings_c": {"2018": [9e99]}
+      },
+      "behavior": {
+      },
+      "growthx": {
+      },
+      "consumption": {
+      }
+    }
+    """
+    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    f.write(txt + '\n')
+    f.close()
+    # Must close and then yield for Windows platform
+    yield f
+    os.remove(f.name)
+
+
+def test_read_bad_json_reform_file(bad1reformfile, bad2reformfile):
+    with pytest.raises(ValueError):
+        Calculator.read_json_reform_file(bad1reformfile.name)
+    with pytest.raises(ValueError):
+        Calculator.read_json_reform_file(bad2reformfile.name)
+
+
+def test_convert_reform_dict():
+    with pytest.raises(ValueError):
+        rdict = Calculator.convert_reform_dict({2013: {'2013': [40000]}})
+    with pytest.raises(ValueError):
+        rdict = Calculator.convert_reform_dict({'_II_em': {2013: [40000]}})
+    with pytest.raises(ValueError):
+        rdict = Calculator.convert_reform_dict({4567: {2013: [40000]}})
+    with pytest.raises(ValueError):
+        rdict = Calculator.convert_reform_dict({'_II_em': 40000})

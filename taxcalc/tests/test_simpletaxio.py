@@ -21,13 +21,15 @@ INPUT_CONTENTS = (
     '4 2015 0 2 0 4039 15000 0    0 0 50000 70000 0 0 0 0 0 0 0 0    0 -3000\n'
 )
 REFORM_CONTENTS = """
-// Example of a reform suitable for use as an optional SimpleTaxIO reform file.
+// Example of a reform file suitable for the read_json_reform_file function.
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
-// The primary keys are policy parameters and secondary keys are years.
+// Within each "policy", "behavior", "growth", and "consumption" object, the
+// primary keys are parameters and secondary keys are years.
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
 {
+  "policy": {
     "_AMT_brk1": // top of first AMT tax bracket
     {"2015": [200000],
      "2017": [300000]
@@ -54,6 +56,13 @@ REFORM_CONTENTS = """
     {"2017": false, // values in future years are same as this year value
      "2020": true   // values in future years indexed with this year as base
     }
+  },
+  "behavior": {
+  },
+  "growth": {
+  },
+  "consumption": {
+  }
 }
 """
 

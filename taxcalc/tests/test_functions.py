@@ -78,6 +78,7 @@ def test_calc_and_used_vars(tests_path):
     (2) Check that each variable that is calculated in a function and
     returned by that function is an argument of that function.
     """
+    # pylint: disable=too-many-locals
     funcpath = os.path.join(tests_path, '..', 'functions.py')
     gfd = GetFuncDefs()
     fnames, fargs, cvars, rvars = gfd.visit(ast.parse(open(funcpath).read()))
@@ -91,6 +92,8 @@ def test_calc_and_used_vars(tests_path):
     # .. add to all_cvars set some variables calculated in Records class
     all_cvars.update(set(['ID_Casualty_frt_in_pufcsv_year',
                           '_num', '_sep', '_exact']))
+    # .. add to all_cvars set some variables calculated in *_code_function
+    all_cvars.update(set(['investment_ec_base']))
     # .. check that each var in Records.CALCULATED_VARS is in the all_cvars set
     found_error1 = False
     if not Records.CALCULATED_VARS <= all_cvars:
@@ -99,14 +102,14 @@ def test_calc_and_used_vars(tests_path):
             found_error1 = True
             msg1 += 'VAR NOT CALCULATED: {}\n'.format(var)
     # Test (2):
+    faux_functions = ['EITCamount', 'ComputeBenefit',
+                      'BenefitSurtax', 'BenefitLimitation',
+                      'ALD_Investment_ec_base_code_function']
     found_error2 = False
     msg2 = 'calculated & returned variables are not function arguments\n'
     for fname in fnames:
-        if (fname == 'EITCamount' or
-                fname == 'ComputeBenefit' or
-                fname == 'BenefitSurtax' or
-                fname == 'BenefitLimitation'):
-            continue  # because fname is not really a function
+        if fname in faux_functions:
+            continue  # because fname is not a genuine function
         crvars_set = set(cvars[fname]) & set(rvars[fname])
         if not crvars_set <= set(fargs[fname]):
             found_error2 = True
@@ -168,7 +171,7 @@ def test_1():
     mte = 100000  # lower than current-law to simplify hand calculations
     ssr = 0.124  # current law OASDI ee+er payroll tax rate
     mrr = 0.029  # current law HI ee+er payroll tax rate
-    reform = {
+    policy_reform = {
         2015: {
             '_SS_Earnings_c': [mte],
             '_FICA_ss_trt': [ssr],
@@ -203,7 +206,7 @@ def test_1():
     input_dataframe = pd.read_csv(StringIO(funit))
     inctax = IncomeTaxIO(input_data=input_dataframe,
                          tax_year=2015,
-                         policy_reform=reform,
+                         reform=policy_reform,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,
@@ -231,11 +234,10 @@ def test_2():
     # in order to make the hand calculations easier
     actc_thd = 35000
     mte = 53000
-    reform = {
+    policy_reform = {
         2015: {
             '_ACTC_Income_thd': [actc_thd],
-            '_SS_Earnings_c': [mte],
-            '_ALD_Investment_ec_base_all': [False]
+            '_SS_Earnings_c': [mte]
         }
     }
     funit = (
@@ -254,7 +256,7 @@ def test_2():
     input_dataframe = pd.read_csv(StringIO(funit))
     inctax = IncomeTaxIO(input_data=input_dataframe,
                          tax_year=2015,
-                         policy_reform=reform,
+                         reform=policy_reform,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,
