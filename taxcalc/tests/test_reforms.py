@@ -25,7 +25,8 @@ def reforms_path(tests_path):
 def test_reforms(reforms_path):  # pylint: disable=redefined-outer-name
     """
     Check that each JSON reform file can be converted into a reform dictionary,
-    which can then be passed to the Policy.implement_reform() method.
+    the policy component part of which can then be passed to the Policy class
+    implement_reform() method.
     While doing this, construct a set of Policy parameters (other than those
     ending in '_cpi') included in the JSON reform files.
     """
