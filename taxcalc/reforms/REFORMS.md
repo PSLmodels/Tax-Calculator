@@ -58,6 +58,12 @@ separate, head of household, widow, separate.
 // Boolean variables are specified as true or false (no quotes; all lowercase).
 {
   "policy": {
+    "param_code": {
+        "ALD_Investment_ec_base_code": "e00300 + e00650 + p23250"
+    },
+    "_ALD_Investment_ec_base_code_active":
+    {"2016": [true]
+    },
     "_AMT_brk1": // top of first AMT tax bracket
     {"2015": [200000],
      "2017": [300000]
@@ -121,7 +127,10 @@ Links will be added here.
 
 ### Adjustments
 
-Links will be added here.
+[Specify AGI exclusion of some fraction of investment
+income](adjust0.txt)
+
+Other links will be added here.
 
 ### Exemptions
 
