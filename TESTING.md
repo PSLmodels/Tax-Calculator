@@ -50,7 +50,7 @@ py.test -m "not requires_pufcsv"
 ```
 
 This will start executing a pytest suite containing about 300 tests,
-but will skip the four tests that require the `puf.csv` file as input.
+but will skip the three tests that require the `puf.csv` file as input.
 Depending on your computer, the execution time for this incomplete
 suite of tests is roughly two minutes.
 
@@ -66,7 +66,7 @@ py.test
 ```
 
 This will start executing a pytest suite containing about 300 tests,
-including the four tests that require the `puf.csv` file as input.
+including the three tests that require the `puf.csv` file as input.
 Depending on your computer, the execution time for this complete suite
 of unit tests is roughly four minutes.
 
