@@ -6,9 +6,10 @@ can be combined to construct more complex tax reform proposals that
 are stored as text files on your local computer.  Such reform
 proposals can then be uploaded to the [TaxBrain
 webapp](http://www.ospc.org/taxbrain/file/) (or used on your local
-computer) to estimate reform effects.
+computer with the `--reform` option to the `inctax.py` command-line
+interface to Tax-Calculator) to estimate reform effects.
 
-## Example Reform File
+## Example JSON Reform File
 
 Here is an example of a tax reform proposal that consists of several
 reform provisions.  The structure of this file is as follows:
@@ -17,31 +18,36 @@ reform provisions.  The structure of this file is as follows:
 {
   "policy": {
      <parameter_name>: {<calyear>: <parameter-value>,
-                        ...
+                        ...,
                         <calyear>: <parameter-value>},
+     "param_code": {<param_code_name>: <expression>,
+                    ...,
+                    <param_code_name>: <expression>},
      <parameter_name>: {<calyear>: <parameter-value>},
-     ...
+     ...,
      <parameter_name>: {<calyear>: <parameter-value>,
-                        ...
+                        ...,
                         <calyear>: <parameter-value>}
   },
   "behavior": {
      <parameter_name>: {<calyear>: <parameter-value>},
-     ...
+     ...,
      <parameter_name>: {<calyear>: <parameter-value>}
   },
   "growth": {
      <parameter_name>: {<calyear>: <parameter-value>}
   },
   "consumption": {
+     <parameter_name>: {<calyear>: <parameter-value>},
+     ...,
      <parameter_name>: {<calyear>: <parameter-value>}
   }
 ```
 
-Notice each reform provision (except the last one) must end in a
-comma.  Each reform provision may have one or multiple year-value
-pairs.  Also, the <parameter_name> and <calyear> must be enclosed in
-quotes (").  The <parameter_value> is enclosed in single brackets when
+Notice each pair of reform provision is separated by commas.
+Each reform provision may have one or multiple year-value pairs.
+Also, the <parameter_name> and <calyear> must be enclosed in quotes (").
+The <parameter_value> is enclosed in single brackets when
 the <parameter_value> is a scalar and enclosed in double brackets when
 the <parameter_value> is a vector.  The most common vector of values
 is one that varies by filing status (MARS) with the vector containing
@@ -100,7 +106,7 @@ separate, head of household, widow, separate.
 }
 ```
 
-## Example Reform Provisions
+## Example Policy Reform Provisions
 
 These are organized in the order that policy parameters are presented
 on the [TaxBrain webpage](http://www.ospc.org/taxbrain/).  They can be
@@ -167,3 +173,25 @@ Links will be added here.
 ### Refundable Credits
 
 Links will be added here.
+
+## Example Behavioral-Response Assumptions
+
+The definition of each of behavioral-response parameter is shown in
+[this JSON file](../behavior.json).
+
+A link will be added here.
+
+## Example Growth-Response Assumptions
+
+The definition of each of growth-response parameter is shown in [this
+JSON file](../growth.json).
+
+A link will be added here.
+
+## Example Consumption-Response Assumptions
+
+The definition of each of consumption-response parameter (used in
+marginal tax rate calculations) is shown in [this JSON
+file](../consumption.json).
+
+A link will be added here.
