@@ -1231,10 +1231,8 @@ def ce_aftertax_income(calc1, calc2,
             msg += '\n taxes2= {:9.3f}'
             msg += '\n txdiff= {:9.3f}'
             raise ValueError(msg.format(cedict['tax1'], cedict['tax2'], diff))
-    inc = weighted_sum(df1, '_expanded_income') * billion
-    cedict['ati1'] = inc - cedict['tax1']
-    inc = weighted_sum(df2, '_expanded_income') * billion
-    cedict['ati2'] = inc - cedict['tax2']
+    cedict['inc1'] = weighted_sum(df1, '_expanded_income') * billion
+    cedict['inc2'] = weighted_sum(df2, '_expanded_income') * billion
     # calculate sample-weighted probability of each filing unit
     prob_raw = np.divide(df1['s006'], df1['s006'].sum())
     prob = np.divide(prob_raw, prob_raw.sum())  # handle any rounding error

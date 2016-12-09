@@ -298,13 +298,25 @@ class IncomeTaxIO(object):
                 if not self._calc.behavior.has_response():
                     self._calc_clp.calc_all()
                 cedict = ce_aftertax_income(self._calc_clp, self._calc)
-                for key in sorted(cedict.keys()):
-                    if key not in ['crra', 'ceeu1', 'ceeu2']:
-                        print "{} {:.3f}".format(key, cedict[key])
+                str = 'Aggregate {} Pre-Tax Income and Tax Revenue ($billion)'
+                print(str.format(cedict['year']))
+                str = '          baseline    reform   difference'
+                print(str)
+                str = '{}   {:9.1f} {:9.1f}    {:9.1f}'
+                print(str.format('income', cedict['inc1'], cedict['inc2'],
+                                 cedict['inc2'] - cedict['inc1']))
+                print(str.format('alltax', cedict['tax1'], cedict['tax2'],
+                                 cedict['tax2'] - cedict['tax1']))
+                str = 'Certainty-Equivalent After-Tax Expanded Income ($)\n'
+                str += '(assuming consumption equals after-tax income)\n'
+                str += 'crra    baseline    reform    pctdiff'
+                print(str)
+                str = '{} {:14.2f} {:9.2f} {:10.2f}'
                 for crra, ceeu1, ceeu2 in zip(cedict['crra'],
                                               cedict['ceeu1'],
                                               cedict['ceeu2']):
-                    print "{} {:9.2f} {:9.2f}".format(crra, ceeu1, ceeu2)
+                    print(str.format(crra, ceeu1, ceeu2,
+                                     100.0 * (ceeu2 - ceeu1) / ceeu1))
         for idx in range(0, self._calc.records.dim):
             ovar = SimpleTaxIO.extract_output(self._calc.records, idx,
                                               exact=exact_output,

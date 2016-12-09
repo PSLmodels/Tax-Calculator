@@ -92,10 +92,14 @@ def main():
     parser.add_argument('--ceeu',
                         help=('optional flag that causes normative welfare '
                               'statistics, including certainty-equivalent '
-                              'expected-utility values for different '
-                              'constant-relative-risk-aversion parameter '
-                              'values, to be written to stdout.  No --ceeu '
-                              'option implies nothing is written to stdout'),
+                              'expected-utility of after-tax income values '
+                              'for different constant-relative-risk-aversion '
+                              'parameter values, to be written to stdout.  '
+                              'No --ceeu option implies nothing is written '
+                              'to stdout.  Note that --reform  option must '
+                              'be specified and aggregate combined taxes '
+                              'under that reform must be same as under '
+                              'current-law policy for this option to work'),
                         default=False,
                         action="store_true")
     output = parser.add_mutually_exclusive_group(required=False)
