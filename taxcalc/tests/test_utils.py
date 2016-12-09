@@ -747,10 +747,12 @@ def test_ce_aftertax_income(puf_1991, weights_1991):
     calc2 = Calculator(policy=pol2, records=rec2)
     calc2.advance_to_year(cyr)
     calc2.calc_all()
-    cedict = ce_aftertax_income(calc1, calc2, crra_value=crra,
-                                require_no_agg_tax_change=False)
+    cedict = ce_aftertax_income(calc1, calc2, require_no_agg_tax_change=False)
     assert cedict['year'] == cyr
-    assert cedict['crra'] == crra
     # test with require_no_agg_tax_change equal to True
     with pytest.raises(ValueError):
         ce_aftertax_income(calc1, calc2, require_no_agg_tax_change=True)
+    params = {'crra_list': [0, 2], 'cmin_value': 2000}
+    with pytest.raises(ValueError):
+        ce_aftertax_income(calc1, calc2, require_no_agg_tax_change=True,
+                           custom_params=params)

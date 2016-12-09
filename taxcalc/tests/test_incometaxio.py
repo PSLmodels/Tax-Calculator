@@ -295,3 +295,20 @@ def test_6(rawinputfile):  # pylint: disable=redefined-outer-name
                          csv_dump=True)
     inctax.csv_dump(writing_output_file=False)
     assert inctax.tax_year() == taxyear
+
+
+def test_7(rawinputfile, reformfile1):  # pylint: disable=redefined-outer-name
+    """
+    Test IncomeTaxIO calculate method with no output writing using ceeu option.
+    """
+    taxyear = 2020
+    inctax = IncomeTaxIO(input_data=rawinputfile.name,
+                         tax_year=taxyear,
+                         reform=reformfile1.name,
+                         exact_calculations=False,
+                         blowup_input_data=False,
+                         output_weights=False,
+                         output_records=False,
+                         csv_dump=False)
+    inctax.calculate(writing_output_file=False, output_ceeu=True)
+    assert inctax.tax_year() == taxyear
