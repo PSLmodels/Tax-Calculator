@@ -724,6 +724,8 @@ def test_string_to_number():
 
 
 def test_ce_aftertax_income(puf_1991, weights_1991):
+    # test certainty_equivalen() function
+    assert 1.0e4 == round(certainty_equivalent(1.0e4, 0, 1.0e3), 3)
     # test with require_no_agg_tax_change equal to False
     cyr = 2020
     crra = 1
@@ -744,12 +746,6 @@ def test_ce_aftertax_income(puf_1991, weights_1991):
     calc2 = Calculator(policy=pol2, records=rec2)
     calc2.advance_to_year(cyr)
     calc2.calc_all()
-    cedict = ce_aftertax_income(calc1, calc2, crra_value=crra,
-                                require_no_agg_tax_change=False)
-    assert cedict['year'] == cyr
-    assert cedict['crra'] == crra
-    # test with require_no_agg_tax_change equal to False and higher income
-    calc2.records._expanded_income += 1.0e5
     cedict = ce_aftertax_income(calc1, calc2, crra_value=crra,
                                 require_no_agg_tax_change=False)
     assert cedict['year'] == cyr

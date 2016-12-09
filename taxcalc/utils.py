@@ -1119,6 +1119,28 @@ def string_to_number(string):
         return float(string)
 
 
+def certainty_equivalent(exputil, crra, c_min):
+    """
+    Return certainty-equivalent consumption for the specified value of
+    expected utility, exputil, and the specified constant-relative-risk-
+    aversion, crra, of an isoelastic utility function.
+    Note: exputil and crra and c_min are floats
+    Note: returned certainty equivalent value is a float
+    """
+    if crra == 1.0:
+        tu_at_c_min = math.log(c_min)
+    else:
+        tu_at_c_min = math.pow(c_min, (1.0 - crra)) / (1.0 - crra)
+    if exputil >= tu_at_c_min:
+        if crra == 1.0:
+            return math.exp(exputil)
+        else:
+            return math.pow((exputil * (1.0 - crra)), (1.0 / (1.0 - crra)))
+    else:
+        mu_at_c_min = math.pow(c_min, -crra)
+        return ((exputil - tu_at_c_min) / mu_at_c_min) + c_min
+
+
 def ce_aftertax_income(calc1, calc2,
                        crra_value=2,
                        require_no_agg_tax_change=True,
@@ -1177,27 +1199,6 @@ def ce_aftertax_income(calc1, calc2,
         utility = consumption.apply(isoelastic_utility_function, args=(crra,))
         return np.inner(utility, probability)
 
-    def certainty_equivalent(exputil, crra):
-        """
-        Return certainty-equivalent consumption for the specified value of
-        expected utility, exputil, and the specified constant-relative-risk-
-        aversion, crra, of an isoelastic utility function.
-        Note: exputil and crra are floats
-        Note: returned certainty equivalent value is a float
-        """
-        if crra == 1.0:
-            tu_at_c_min = math.log(c_min)
-        else:
-            tu_at_c_min = math.pow(c_min, (1.0 - crra)) / (1.0 - crra)
-        if exputil >= tu_at_c_min:
-            if crra == 1.0:
-                return math.exp(exputil)
-            else:
-                return math.pow((exputil * (1.0 - crra)), (1.0 / (1.0 - crra)))
-        else:
-            mu_at_c_min = math.pow(c_min, -crra)
-            return ((exputil - tu_at_c_min) / mu_at_c_min) + c_min
-
     # extract calc_all() data from calc1 and calc2
     record_columns = ['s006', '_payrolltax', '_iitax',
                       '_combined', '_expanded_income']
@@ -1232,14 +1233,14 @@ def ce_aftertax_income(calc1, calc2,
     # calculate certainty-equivaluent after-tax income in calc1 and calc2
     crra = 0
     e_u = expected_utility(ati1, prob, crra)
-    cedict['ce1zero'] = certainty_equivalent(e_u, crra)
+    cedict['ce1zero'] = certainty_equivalent(e_u, crra, c_min)
     e_u = expected_utility(ati2, prob, crra)
-    cedict['ce2zero'] = certainty_equivalent(e_u, crra)
+    cedict['ce2zero'] = certainty_equivalent(e_u, crra, c_min)
     crra = crra_value
     cedict['crra'] = crra_value
     e_u = expected_utility(ati1, prob, crra)
-    cedict['ce1crra'] = certainty_equivalent(e_u, crra)
+    cedict['ce1crra'] = certainty_equivalent(e_u, crra, c_min)
     e_u = expected_utility(ati2, prob, crra)
-    cedict['ce2crra'] = certainty_equivalent(e_u, crra)
+    cedict['ce2crra'] = certainty_equivalent(e_u, crra, c_min)
     # return cedict
     return cedict
