@@ -1266,10 +1266,12 @@ def ce_aftertax_income(calc1, calc2,
     if require_no_agg_tax_change:
         diff = cedict['tax2'] - cedict['tax1']
         if abs(diff) > 0.0005:
-            msg = 'Aggregate taxes not equal when required is True:'
-            msg += '\n taxes1= {:9.3f}'
-            msg += '\n taxes2= {:9.3f}'
-            msg += '\n txdiff= {:9.3f}'
+            msg = 'Aggregate taxes not equal when required_... arg is True:'
+            msg += '\n            taxes1= {:9.3f}'
+            msg += '\n            taxes2= {:9.3f}'
+            msg += '\n            txdiff= {:9.3f}'
+            msg += ('\n(adjust _LST or other parameter to bracket txdiff=0 '
+                    'and then interpolate)')
             raise ValueError(msg.format(cedict['tax1'], cedict['tax2'], diff))
     cedict['inc1'] = weighted_sum(df1, '_expanded_income') * billion
     cedict['inc2'] = weighted_sum(df2, '_expanded_income') * billion
