@@ -748,6 +748,12 @@ def test_ce_aftertax_income(puf_1991, weights_1991):
                                 require_no_agg_tax_change=False)
     assert cedict['year'] == cyr
     assert cedict['crra'] == crra
+    # test with require_no_agg_tax_change equal to False and higher income
+    calc2.records._expanded_income += 1.0e5
+    cedict = ce_aftertax_income(calc1, calc2, crra_value=crra,
+                                require_no_agg_tax_change=False)
+    assert cedict['year'] == cyr
+    assert cedict['crra'] == crra
     # test with require_no_agg_tax_change equal to True
     with pytest.raises(ValueError):
         ce_aftertax_income(calc1, calc2, require_no_agg_tax_change=True)
