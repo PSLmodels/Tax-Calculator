@@ -1123,7 +1123,9 @@ def certainty_equivalent(exputil, crra, c_min):
     """
     Return certainty-equivalent consumption for the specified value of
     expected utility, exputil, and the specified constant-relative-risk-
-    aversion, crra, of an isoelastic utility function.
+    aversion, crra, of an isoelastic utility function.  The c_min value
+    is the consumption level below which marginal utility is considered
+    to be constant.
     Note: exputil and crra and c_min are floats
     Note: returned certainty equivalent value is a float
     """
@@ -1166,6 +1168,10 @@ def ce_aftertax_income(calc1, calc2,
     assert crra_value > 0.0
     assert minimum_ati > 0.0
     c_min = minimum_ati
+    # The c_min==minimum_ati value is the consumption level below which
+    # marginal utility is considered to be constant.  This allows the
+    # handling of filing units with very low or even negative after-tax
+    # income in the expected-utility and certainty-equivalent calculations.
 
     def isoelastic_utility_function(consumption, crra):
         """
