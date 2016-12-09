@@ -23,6 +23,7 @@ from .growth import Growth
 from .consumption import Consumption
 from .calculate import Calculator
 from .simpletaxio import SimpleTaxIO
+from .utils import ce_aftertax_income
 
 
 class IncomeTaxIO(object):
@@ -257,7 +258,8 @@ class IncomeTaxIO(object):
     def calculate(self, writing_output_file=False,
                   exact_output=False,
                   output_weights=False,
-                  output_mtr_wrt_fullcomp=False):
+                  output_mtr_wrt_fullcomp=False,
+                  output_ceeu=False):
         """
         Calculate taxes for all INPUT lines and write or return OUTPUT lines.
 
@@ -276,17 +278,27 @@ class IncomeTaxIO(object):
            whether or not to calculate marginal tax rates in OUTPUT file with
            respect to full compensation.
 
+        output_ceeu: boolean
+           whether or not to calculate and write to stdout standard
+           certainty-equivalent expected-utility statistics
+
         Returns
         -------
         output_lines: string
             empty string if OUTPUT lines are written to a file;
             otherwise output_lines contain all OUTPUT lines
         """
+        # pylint: disable=too-many-arguments
         output = {}  # dictionary indexed by Records index for filing unit
         (mtr_ptax, mtr_itax,
          _) = self._calc.mtr(wrt_full_compensation=output_mtr_wrt_fullcomp)
         if self._reform and self._using_reform_file:
             self._calc = Behavior.response(self._calc_clp, self._calc)
+            if output_ceeu:
+                if not self._calc.behavior.has_response():
+                    self._calc_clp.calc_all()
+                cedict = ce_aftertax_income(self._calc_clp, self._calc)
+                print cedict
         for idx in range(0, self._calc.records.dim):
             ovar = SimpleTaxIO.extract_output(self._calc.records, idx,
                                               exact=exact_output,
