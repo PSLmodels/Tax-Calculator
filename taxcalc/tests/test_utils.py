@@ -723,10 +723,10 @@ def test_string_to_number():
     assert string_to_number('1.23') == 1.23
 
 
-@pytest.mark.one
 def test_ce_aftertax_income(puf_1991, weights_1991):
     # test with require_no_agg_tax_change equal to False
     cyr = 2020
+    crra = 1
     # specify calc1 and calc_all() for cyr
     pol1 = Policy()
     rec1 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
@@ -736,7 +736,7 @@ def test_ce_aftertax_income(puf_1991, weights_1991):
     calc1.calc_all()
     # specify calc2 and calc_all() for cyr
     pol2 = Policy()
-    reform = {2018: {'_II_em': [0.0], '_LST': [0.0]}}
+    reform = {2018: {'_II_em': [0.0]}}
     pol2.implement_reform(reform)
     rec2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     num_rec2 = rec2.dim
@@ -744,9 +744,10 @@ def test_ce_aftertax_income(puf_1991, weights_1991):
     calc2 = Calculator(policy=pol2, records=rec2)
     calc2.advance_to_year(cyr)
     calc2.calc_all()
-    cedict = ce_aftertax_income(calc1, calc2, require_no_agg_tax_change=False)
+    cedict = ce_aftertax_income(calc1, calc2, crra_value=crra,
+                                require_no_agg_tax_change=False)
     assert cedict['year'] == cyr
-    assert cedict['crra'] == 2
+    assert cedict['crra'] == crra
     # test with require_no_agg_tax_change equal to True
     with pytest.raises(ValueError):
         ce_aftertax_income(calc1, calc2, require_no_agg_tax_change=True)
