@@ -288,7 +288,7 @@ class IncomeTaxIO(object):
             empty string if OUTPUT lines are written to a file;
             otherwise output_lines contain all OUTPUT lines
         """
-        # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments,too-many-locals
         output = {}  # dictionary indexed by Records index for filing unit
         (mtr_ptax, mtr_itax,
          _) = self._calc.mtr(wrt_full_compensation=output_mtr_wrt_fullcomp)
@@ -298,24 +298,25 @@ class IncomeTaxIO(object):
                 if not self._calc.behavior.has_response():
                     self._calc_clp.calc_all()
                 cedict = ce_aftertax_income(self._calc_clp, self._calc)
-                str = 'Aggregate {} Pre-Tax Income and Tax Revenue ($billion)'
-                print(str.format(cedict['year']))
-                str = '          baseline    reform   difference'
-                print(str)
-                str = '{}   {:9.1f} {:9.1f}    {:9.1f}'
-                print(str.format('income', cedict['inc1'], cedict['inc2'],
+                # pylint: disable=superfluous-parens
+                msg = 'Aggregate {} Pre-Tax Income and Tax Revenue ($billion)'
+                print(msg.format(cedict['year']))
+                msg = '          baseline    reform   difference'
+                print(msg)
+                msg = '{}   {:9.1f} {:9.1f}    {:9.1f}'
+                print(msg.format('income', cedict['inc1'], cedict['inc2'],
                                  cedict['inc2'] - cedict['inc1']))
-                print(str.format('alltax', cedict['tax1'], cedict['tax2'],
+                print(msg.format('alltax', cedict['tax1'], cedict['tax2'],
                                  cedict['tax2'] - cedict['tax1']))
-                str = 'Certainty-Equivalent After-Tax Expanded Income ($)\n'
-                str += '(assuming consumption equals after-tax income)\n'
-                str += 'crra    baseline    reform    pctdiff'
-                print(str)
-                str = '{} {:14.2f} {:9.2f} {:10.2f}'
+                msg = 'Certainty-Equivalent After-Tax Expanded Income ($)\n'
+                msg += '(assuming consumption equals after-tax income)\n'
+                msg += 'crra    baseline    reform    pctdiff'
+                print(msg)
+                msg = '{} {:14.2f} {:9.2f} {:10.2f}'
                 for crra, ceeu1, ceeu2 in zip(cedict['crra'],
                                               cedict['ceeu1'],
                                               cedict['ceeu2']):
-                    print(str.format(crra, ceeu1, ceeu2,
+                    print(msg.format(crra, ceeu1, ceeu2,
                                      100.0 * (ceeu2 - ceeu1) / ceeu1))
         for idx in range(0, self._calc.records.dim):
             ovar = SimpleTaxIO.extract_output(self._calc.records, idx,
