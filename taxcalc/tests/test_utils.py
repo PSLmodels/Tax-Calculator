@@ -726,6 +726,7 @@ def test_string_to_number():
 def test_ce_aftertax_income(puf_1991, weights_1991):
     # test certainty_equivalen() function
     assert 1.0e4 == round(certainty_equivalent(1.0e4, 0, 1.0e3), 3)
+    assert 1.0e4 > round(certainty_equivalent(9.2, 1, 1.0e3), 3)
     # test with require_no_agg_tax_change equal to False
     cyr = 2020
     crra = 1
