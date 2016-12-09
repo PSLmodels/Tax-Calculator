@@ -1119,34 +1119,33 @@ def string_to_number(string):
         return float(string)
 
 
-def certainty_equivalent(exputil, crra, c_min):
+def certainty_equivalent(exputil, crra, cmin):
     """
     Return certainty-equivalent consumption for the specified value of
     expected utility, exputil, and the specified constant-relative-risk-
-    aversion, crra, of an isoelastic utility function.  The c_min value
+    aversion, crra, of an isoelastic utility function.  The cmin value
     is the consumption level below which marginal utility is considered
     to be constant.
-    Note: exputil and crra and c_min are floats
+    Note: exputil and crra and cmin are floats
     Note: returned certainty equivalent value is a float
     """
     if crra == 1.0:
-        tu_at_c_min = math.log(c_min)
+        tu_at_cmin = math.log(cmin)
     else:
-        tu_at_c_min = math.pow(c_min, (1.0 - crra)) / (1.0 - crra)
-    if exputil >= tu_at_c_min:
+        tu_at_cmin = math.pow(cmin, (1.0 - crra)) / (1.0 - crra)
+    if exputil >= tu_at_cmin:
         if crra == 1.0:
             return math.exp(exputil)
         else:
             return math.pow((exputil * (1.0 - crra)), (1.0 / (1.0 - crra)))
     else:
-        mu_at_c_min = math.pow(c_min, -crra)
-        return ((exputil - tu_at_c_min) / mu_at_c_min) + c_min
+        mu_at_cmin = math.pow(cmin, -crra)
+        return ((exputil - tu_at_cmin) / mu_at_cmin) + cmin
 
 
 def ce_aftertax_income(calc1, calc2,
-                       crra_value=2,
-                       require_no_agg_tax_change=True,
-                       minimum_ati=1000):
+                       custom_params=None,
+                       require_no_agg_tax_change=True):
     """
     Return dictionary that contains certainty-equivalent after-tax income
     computed for two constant-relative-risk-aversion parameter values
@@ -1165,13 +1164,19 @@ def ce_aftertax_income(calc1, calc2,
     # pylint: disable=too-many-locals
     assert calc1.records.dim == calc2.records.dim
     assert calc1.current_year == calc2.current_year
-    assert crra_value > 0.0
-    assert minimum_ati > 0.0
-    c_min = minimum_ati
-    # The c_min==minimum_ati value is the consumption level below which
-    # marginal utility is considered to be constant.  This allows the
-    # handling of filing units with very low or even negative after-tax
-    # income in the expected-utility and certainty-equivalent calculations.
+    if custom_params:
+        crras = custom_params['crra_list']
+        for crra in crras:
+            assert crra >= 0
+        cmin = custom_params['cmin_value']
+        assert cmin > 0
+    else:
+        crras = [0, 1, 2, 3, 4]
+        cmin = 1000
+    # The cmin value is the consumption level below which marginal utility
+    # is considered to be constant.  This allows the handling of filing units
+    # with very low or even negative after-tax income in the expected-utility
+    # and certainty-equivalent calculations.
 
     def isoelastic_utility_function(consumption, crra):
         """
@@ -1181,18 +1186,18 @@ def ce_aftertax_income(calc1, calc2,
         Note: consumption and crra are floats
         Note: returned utility value is a float
         """
-        if consumption >= c_min:
+        if consumption >= cmin:
             if crra == 1.0:
                 return math.log(consumption)
             else:
                 return math.pow(consumption, (1.0 - crra)) / (1.0 - crra)
-        else:  # if consumption < c_min
+        else:  # if consumption < cmin
             if crra == 1.0:
-                tu_at_c_min = math.log(c_min)
+                tu_at_cmin = math.log(cmin)
             else:
-                tu_at_c_min = math.pow(c_min, (1.0 - crra)) / (1.0 - crra)
-            mu_at_c_min = math.pow(c_min, -crra)
-            tu_at_c = tu_at_c_min + mu_at_c_min * (consumption - c_min)
+                tu_at_cmin = math.pow(cmin, (1.0 - crra)) / (1.0 - crra)
+            mu_at_cmin = math.pow(cmin, -crra)
+            tu_at_c = tu_at_cmin + mu_at_cmin * (consumption - cmin)
             return tu_at_c
 
     def expected_utility(consumption, probability, crra):
@@ -1237,16 +1242,15 @@ def ce_aftertax_income(calc1, calc2,
     ati1 = df1['_expanded_income'] - df1['_combined']
     ati2 = df2['_expanded_income'] - df2['_combined']
     # calculate certainty-equivaluent after-tax income in calc1 and calc2
-    crra = 0
-    e_u = expected_utility(ati1, prob, crra)
-    cedict['ce1zero'] = certainty_equivalent(e_u, crra, c_min)
-    e_u = expected_utility(ati2, prob, crra)
-    cedict['ce2zero'] = certainty_equivalent(e_u, crra, c_min)
-    crra = crra_value
-    cedict['crra'] = crra_value
-    e_u = expected_utility(ati1, prob, crra)
-    cedict['ce1crra'] = certainty_equivalent(e_u, crra, c_min)
-    e_u = expected_utility(ati2, prob, crra)
-    cedict['ce2crra'] = certainty_equivalent(e_u, crra, c_min)
+    cedict['crra'] = crras
+    ce1 = list()
+    ce2 = list()
+    for crra in crras:
+        eu1 = expected_utility(ati1, prob, crra)
+        ce1.append(certainty_equivalent(eu1, crra, cmin))
+        eu2 = expected_utility(ati2, prob, crra)
+        ce2.append(certainty_equivalent(eu2, crra, cmin))
+    cedict['ceeu1'] = ce1
+    cedict['ceeu2'] = ce2
     # return cedict
     return cedict

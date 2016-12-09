@@ -298,7 +298,13 @@ class IncomeTaxIO(object):
                 if not self._calc.behavior.has_response():
                     self._calc_clp.calc_all()
                 cedict = ce_aftertax_income(self._calc_clp, self._calc)
-                print cedict
+                for key in sorted(cedict.keys()):
+                    if key not in ['crra', 'ceeu1', 'ceeu2']:
+                        print "{} {:.3f}".format(key, cedict[key])
+                for crra, ceeu1, ceeu2 in zip(cedict['crra'],
+                                              cedict['ceeu1'],
+                                              cedict['ceeu2']):
+                    print "{} {:9.2f} {:9.2f}".format(crra, ceeu1, ceeu2)
         for idx in range(0, self._calc.records.dim):
             ovar = SimpleTaxIO.extract_output(self._calc.records, idx,
                                               exact=exact_output,
