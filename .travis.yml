@@ -13,8 +13,9 @@ install:
   - export PATH="$HOME/miniconda/bin:$PATH"
   - conda config --set always_yes yes --set changeps1 no
   - conda update conda
-  - conda env create
+  - conda create -n taxcalc-dev python=$TRAVIS_PYTHON_VERSION;
   - source activate taxcalc-dev
+  - conda env update -f environment.yml
   - if [ $TRAVIS_EVENT_TYPE == 'cron' ]; then conda remove  numba; fi
   - pip install pytest-pep8
   - pip install coverage
