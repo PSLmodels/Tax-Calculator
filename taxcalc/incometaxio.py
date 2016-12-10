@@ -299,24 +299,24 @@ class IncomeTaxIO(object):
                     self._calc_clp.calc_all()
                 cedict = ce_aftertax_income(self._calc_clp, self._calc)
                 # pylint: disable=superfluous-parens
-                msg = 'Aggregate {} Pre-Tax Income and Tax Revenue ($billion)'
-                print(msg.format(cedict['year']))
-                msg = '          baseline    reform   difference'
-                print(msg)
-                msg = '{}   {:9.1f} {:9.1f}    {:9.1f}'
-                print(msg.format('income', cedict['inc1'], cedict['inc2'],
+                txt = 'Aggregate {} Pre-Tax Income and Tax Revenue ($billion)'
+                print(txt.format(cedict['year']))
+                txt = '          baseline    reform   difference'
+                print(txt)
+                txt = '{}   {:9.1f} {:9.1f}    {:9.1f}'
+                print(txt.format('income', cedict['inc1'], cedict['inc2'],
                                  cedict['inc2'] - cedict['inc1']))
-                print(msg.format('alltax', cedict['tax1'], cedict['tax2'],
+                print(txt.format('alltax', cedict['tax1'], cedict['tax2'],
                                  cedict['tax2'] - cedict['tax1']))
-                msg = 'Certainty-Equivalent After-Tax Expanded Income ($)\n'
-                msg += '(assuming consumption equals after-tax income)\n'
-                msg += 'crra    baseline    reform    pctdiff'
-                print(msg)
-                msg = '{} {:14.2f} {:9.2f} {:10.2f}'
+                txt = 'Certainty-Equivalent After-Tax Expanded Income ($)\n'
+                txt += '(assuming consumption equals after-tax income)\n'
+                txt += 'crra    baseline    reform    pctdiff'
+                print(txt)
+                txt = '{} {:14.2f} {:9.2f} {:10.2f}'
                 for crra, ceeu1, ceeu2 in zip(cedict['crra'],
                                               cedict['ceeu1'],
                                               cedict['ceeu2']):
-                    print(msg.format(crra, ceeu1, ceeu2,
+                    print(txt.format(crra, ceeu1, ceeu2,
                                      100.0 * (ceeu2 - ceeu1) / ceeu1))
         for idx in range(0, self._calc.records.dim):
             ovar = SimpleTaxIO.extract_output(self._calc.records, idx,

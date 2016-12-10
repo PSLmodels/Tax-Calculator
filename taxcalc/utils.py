@@ -1128,10 +1128,10 @@ def isoelastic_utility_function(consumption, crra, cmin):
     consumption : float
       consumption for a filing unit
 
-    crra : float
+    crra : non-negative float
       constant relative risk aversion parameter
 
-    cmin : float
+    cmin : positive float
       consumption level below which marginal utility is assumed to be constant
 
     Returns
@@ -1165,10 +1165,10 @@ def expected_utility(consumption, probability, crra, cmin):
     probability : numpy array
       samplying probability of each filing unit
 
-    crra : float
+    crra : non-negative float
       constant relative risk aversion parameter of isoelastic utility function
 
-    cmin : float
+    cmin : positive float
       consumption level below which marginal utility is assumed to be constant
 
     Returns
@@ -1190,10 +1190,10 @@ def certainty_equivalent(exputil, crra, cmin):
     exputil : float
       expected utility value
 
-    crra : float
+    crra : non-negative float
       constant relative risk aversion parameter of isoelastic utility function
 
-    cmin : float
+    cmin : positive float
       consumption level below which marginal utility is assumed to be constant
 
     Returns
@@ -1218,12 +1218,12 @@ def ce_aftertax_income(calc1, calc2,
                        custom_params=None,
                        require_no_agg_tax_change=True):
     """
-    Return dictionary that contains certainty-equivalent after-tax income
-    computed for two constant-relative-risk-aversion parameter values
-    (zero and the specified crra_value) for each of two specified
-    Calculator objects: calc1, which represents the pre-reform situation,
-    and calc2, which represents the post-reform situation, both of which
-    MUST have had calc_call() called before being passed to this function.
+    Return dictionary that contains certainty-equivalent of the expected
+    utility of after-tax income computed for constant-relative-risk-aversion
+    parameter values for each of two Calculator objects: calc1, which
+    represents the pre-reform situation, and calc2, which represents the
+    post-reform situation, both of which MUST have had calc_call() called
+    before being passed to this function.
 
     IMPORTANT NOTES: These normative welfare calculations are very simple.
     It is assumed that utility is a function of only consumption, and that
