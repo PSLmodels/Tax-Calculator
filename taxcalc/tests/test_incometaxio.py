@@ -318,7 +318,6 @@ def test_7(rawinputfile, reformfile1):  # pylint: disable=redefined-outer-name
     assert inctax.tax_year() == taxyear
 
 
-@pytest.mark.one
 def test_8(reformfile1):  # pylint: disable=redefined-outer-name
     """
     Test IncomeTaxIO calculate method with no output writing using ceeu option.
@@ -337,3 +336,4 @@ def test_8(reformfile1):  # pylint: disable=redefined-outer-name
                          csv_dump=False)
     output = inctax.calculate(writing_output_file=False, output_ceeu=True)
     assert inctax.tax_year() == taxyear
+    assert len(output) > 0
