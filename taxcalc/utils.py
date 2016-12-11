@@ -1265,7 +1265,7 @@ def ce_aftertax_income(calc1, calc2,
     cedict['tax2'] = weighted_sum(df2, '_combined') * billion
     if require_no_agg_tax_change:
         diff = cedict['tax2'] - cedict['tax1']
-        if abs(diff) > 0.0005:
+        if abs(diff) >= 0.0005:
             msg = 'Aggregate taxes not equal when required_... arg is True:'
             msg += '\n            taxes1= {:9.3f}'
             msg += '\n            taxes2= {:9.3f}'

@@ -292,32 +292,47 @@ class IncomeTaxIO(object):
         output = {}  # dictionary indexed by Records index for filing unit
         (mtr_ptax, mtr_itax,
          _) = self._calc.mtr(wrt_full_compensation=output_mtr_wrt_fullcomp)
+        txt = None
         if self._reform and self._using_reform_file:
             self._calc = Behavior.response(self._calc_clp, self._calc)
             if output_ceeu:
                 if not self._calc.behavior.has_response():
                     self._calc_clp.calc_all()
-                cedict = ce_aftertax_income(self._calc_clp, self._calc)
-                # pylint: disable=superfluous-parens
-                txt = 'Aggregate {} Pre-Tax Income and Tax Revenue ($billion)'
-                print(txt.format(cedict['year']))
-                txt = '          baseline    reform   difference'
-                print(txt)
-                txt = '{}   {:9.1f} {:9.1f}    {:9.1f}'
-                print(txt.format('income', cedict['inc1'], cedict['inc2'],
-                                 cedict['inc2'] - cedict['inc1']))
-                print(txt.format('alltax', cedict['tax1'], cedict['tax2'],
-                                 cedict['tax2'] - cedict['tax1']))
-                txt = 'Certainty-Equivalent After-Tax Expanded Income ($)\n'
-                txt += '(assuming consumption equals after-tax income)\n'
-                txt += 'crra    baseline    reform    pctdiff'
-                print(txt)
-                txt = '{} {:14.2f} {:9.2f} {:10.2f}'
+                cedict = ce_aftertax_income(self._calc_clp, self._calc,
+                                            require_no_agg_tax_change=False)
+                text = ('Aggregate {} Pre-Tax Expanded Income and '
+                        'Tax Revenue ($billion)\n')
+                txt = text.format(cedict['year'])
+                txt += '           baseline     reform   difference\n'
+                fmt = '{} {:12.3f} {:10.3f} {:12.3f}\n'
+                txt += fmt.format('income', cedict['inc1'], cedict['inc2'],
+                                  cedict['inc2'] - cedict['inc1'])
+                alltaxdiff = cedict['tax2'] - cedict['tax1']
+                txt += fmt.format('alltax', cedict['tax1'], cedict['tax2'],
+                                  alltaxdiff)
+                txt += ('Certainty Equivalent of Expected Utility of '
+                        'After-Tax Expanded Income ($)\n')
+                txt += ('(assuming consumption equals '
+                        'after-tax expanded income)\n')
+                txt += 'crra       baseline     reform     pctdiff\n'
+                fmt = '{} {:17.2f} {:10.2f} {:11.2f}\n'
                 for crra, ceeu1, ceeu2 in zip(cedict['crra'],
                                               cedict['ceeu1'],
                                               cedict['ceeu2']):
-                    print(txt.format(crra, ceeu1, ceeu2,
-                                     100.0 * (ceeu2 - ceeu1) / ceeu1))
+                    txt += fmt.format(crra, ceeu1, ceeu2,
+                                      100.0 * (ceeu2 - ceeu1) / ceeu1)
+                if abs(alltaxdiff) >= 0.0005:
+                    txt += ('WARN: baseline and reform cannot be '
+                            'sensibly compared\n')
+                    text = ('because alltax difference is '
+                            '{:.3f} which is not zero\n')
+                    txt += text.format(alltaxdiff)
+                    txt += 'FIX: adjust _LST or other parameter to bracket\n'
+                    txt += 'alltax difference equals zero and then interpolate'
+                else:
+                    txt += ('NOTE: baseline and reform can be '
+                            'sensibly compared\n')
+                    txt += 'because alltax difference is essentially zero'
         for idx in range(0, self._calc.records.dim):
             ovar = SimpleTaxIO.extract_output(self._calc.records, idx,
                                               exact=exact_output,
@@ -334,6 +349,8 @@ class IncomeTaxIO(object):
         else:
             for idx in range(0, len(output)):
                 olines += SimpleTaxIO.construct_output_line(output[idx])
+        if txt:
+            print(txt)  # pylint: disable=superfluous-parens
         return olines
 
     @staticmethod
