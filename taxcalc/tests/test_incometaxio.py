@@ -23,6 +23,7 @@ RAWINPUTFILE_CONTENTS = (
     u'    4,   6\n'
 )
 
+
 EXPECTED_OUTPUT = (  # from using RAWINPUTFILE_CONTENTS as input
     '1. 2021 0 0.00 0.00 0.00 -7.65 0.00 15.30 0.00 0.00 0.00 0.00 0.00 '
     '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
@@ -177,6 +178,9 @@ REFORM_CONTENTS = """
     "_AMT_em_cpi": // AMT exemption amount indexing status
     {"2017": false, // values in future years are same as this year value
      "2020": true   // values in future years indexed with this year as base
+    },
+    "_LST": // Lump-Sum Tax
+    {"2013": [500]
     }
   },
   "behavior": {
@@ -302,7 +306,6 @@ def test_7(rawinputfile, reformfile1):  # pylint: disable=redefined-outer-name
     Test IncomeTaxIO calculate method with no output writing using ceeu option.
     """
     taxyear = 2020
-    # test using reformfile1
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
                          reform=reformfile1.name,
@@ -313,15 +316,24 @@ def test_7(rawinputfile, reformfile1):  # pylint: disable=redefined-outer-name
                          csv_dump=False)
     inctax.calculate(writing_output_file=False, output_ceeu=True)
     assert inctax.tax_year() == taxyear
-    # test using reform dictionary
-    reformdict = {2013: {'_LST': [500]}}
-    inctax = IncomeTaxIO(input_data=rawinputfile.name,
+
+
+@pytest.mark.one
+def test_8(reformfile1):  # pylint: disable=redefined-outer-name
+    """
+    Test IncomeTaxIO calculate method with no output writing using ceeu option.
+    """
+    # test using reform dictionary and weights
+    taxyear = 2020
+    recdict = {'RECID': 1, 'MARS': 1, 's006': 99}
+    recdf = pd.DataFrame(data=recdict, index=[0])
+    inctax = IncomeTaxIO(input_data=recdf,
                          tax_year=taxyear,
-                         reform=reformdict,
+                         reform=reformfile1.name,
                          exact_calculations=False,
                          blowup_input_data=False,
-                         output_weights=False,
+                         output_weights=True,
                          output_records=False,
                          csv_dump=False)
-    inctax.calculate(writing_output_file=False, output_ceeu=True)
+    output = inctax.calculate(writing_output_file=False, output_ceeu=True)
     assert inctax.tax_year() == taxyear
