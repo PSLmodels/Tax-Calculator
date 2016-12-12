@@ -1213,13 +1213,28 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
     return (c07100, c09200)
 
 
+def new_refundable_credit_code_function(calc):
+    """
+    Compute new refubdable credit from code
+    """
+    code = calc.policy.param_code['new_refundable_credit_code']
+    visible = {'min': np.minimum, 'max': np.maximum, 'where': np.where}
+    variables = ['n24', 'c00100', 'nu05', 'MARS', 'ptax_oasdi', 'c09200']
+    for var in variables:
+        visible[var] = getattr(calc.records, var)
+    # pylint: disable=eval-used
+    calc.records.new_refundable_credit = eval(compile(code, "<str>", "eval"),
+                                              {"__builtins__": {}}, visible)
+
+
 @iterate_jit(nopython=True)
 def IITAX(c59660, c11070, c10960, personal_credit,
           c09200, _payrolltax, nu05,
           CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
           n24, c00100, MARS, ptax_oasdi, CTC_new_refund_limited,
           CTC_new_ps, CTC_new_prt, CTC_new_refund_limit_payroll_rt,
-          ctc_new, _eitc, _refund, _iitax, _combined):
+          ctc_new, _eitc, _refund, _iitax, _combined,
+          new_refundable_credit, new_refundable_credit_code_active):
     """
     Compute final taxes including new refundable child tax credit
     """
@@ -1240,9 +1255,15 @@ def IITAX(c59660, c11070, c10960, personal_credit,
             ctc_new = max(0., ctc_new - limited_new)
     else:
         ctc_new = 0.
+
+    if new_refundable_credit_code_active:
+        new_refundable_credit = new_refundable_credit
+    else:
+        new_refundable_credit = 0
     # compute final taxes
     _eitc = c59660
-    _refund = _eitc + c11070 + c10960 + personal_credit + ctc_new
+    _refund = (_eitc + c11070 + c10960 + personal_credit + ctc_new +
+               new_refundable_credit)
     _iitax = c09200 - _refund
     _combined = _iitax + _payrolltax
     return (ctc_new, _eitc, _refund, _iitax, _combined)

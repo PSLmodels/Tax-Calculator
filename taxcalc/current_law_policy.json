@@ -1806,6 +1806,20 @@
         "value": [3]
     },
 
+    "_new_refundable_credit_code_active": {
+        "long_name": "Use code expression to compute new refundable credit",
+        "description": "False implies no additional refundable credit; otherwise code defines credit.",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [false]
+    },
+
     "_CTC_new_c": {
         "long_name": "New refundable child tax credit maximum amount per child",
         "description": "In addition to all credits currently available for dependents, this parameter gives each qualifying child a new refundable credit with this maximum amount.",

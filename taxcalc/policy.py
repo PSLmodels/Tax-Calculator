@@ -71,7 +71,8 @@ class Policy(ParametersBase):
                  2021: 0.0403, 2022: 0.0413, 2023: 0.0417, 2024: 0.0417,
                  2025: 0.0415, 2026: 0.0416}
 
-    VALID_PARAM_CODE_NAMES = set(['ALD_Investment_ec_base_code'])
+    VALID_PARAM_CODE_NAMES = set(['ALD_Investment_ec_base_code',
+                                 'new_refundable_credit_code'])
 
     PROHIBIT_PARAM_CODE = False
 

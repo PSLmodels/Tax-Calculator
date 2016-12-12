@@ -143,6 +143,7 @@ class Records(object):
         'c04470', 'c21060', 'c21040', 'c17000',
         'c18300', 'c20800', 'c02900', 'c02900_in_ei', 'c23650',
         'c01000', 'c02500', 'c19700', 'investment_ec_base', 'invinc_agi_ec',
+        'new_refundable_credit',
         '_sey', '_earned', '_earned_p', '_earned_s',
         'ymod', 'ymod1',
         'c04800', 'c19200', 'c20500',
