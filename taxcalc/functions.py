@@ -1218,7 +1218,8 @@ def new_refundable_credit_code_function(calc):
     Compute new refubdable credit from code
     """
     code = calc.policy.param_code['new_refundable_credit_code']
-    visible = {'min': np.minimum, 'max': np.maximum, 'where': np.where}
+    visible = {'min': np.minimum, 'max': np.maximum,
+               'where': np.where, 'equal': np.equal}
     variables = ['n24', 'c00100', 'nu05', 'MARS', 'ptax_oasdi', 'c09200']
     for var in variables:
         visible[var] = getattr(calc.records, var)
