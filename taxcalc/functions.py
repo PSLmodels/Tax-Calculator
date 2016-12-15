@@ -1222,9 +1222,10 @@ def new_refundable_credit_code_function(calc):
     variables = ['n24', 'c00100', 'nu05', 'MARS', 'ptax_oasdi', 'c09200']
     for var in variables:
         visible[var] = getattr(calc.records, var)
-    # pylint: disable=eval-used
-    calc.records.new_refundable_credit = eval(compile(code, "<str>", "eval"),
-                                              {"__builtins__": {}}, visible)
+    visible['credit'] = calc.records.new_refundable_credit
+    # pylint: disable=exec-used
+    exec(compile(code, '<str>', 'exec'), {'__builtins__': {}}, visible)
+    calc.records.new_refundable_credit = visible['credit']
 
 
 @iterate_jit(nopython=True)
