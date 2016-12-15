@@ -252,7 +252,7 @@ class Calculator(object):
                            'e02000', 'e02400',
                            'p22250', 'p23250',
                            'e18500', 'e19200',
-                           'e26270']
+                           'e26270', 'e19800']
 
     def mtr(self, variable_str='e00200p',
             negative_finite_diff=False,
@@ -316,7 +316,8 @@ class Calculator(object):
         'p23250',  long-term capital gains;
         'e18500',  Schedule A real-estate-tax deduction;
         'e19200',  Schedule A total-interest deduction;
-        'e26270',  S-corporation/partnership income (also included in e02000).
+        'e26270',  S-corporation/partnership income (also included in e02000);
+        'e19800',  Charity cash contributions.
         """
         # check validity of variable_str parameter
         if variable_str not in Calculator.MTR_VALID_VARIABLES:
