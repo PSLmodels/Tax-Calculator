@@ -317,9 +317,7 @@ class Policy(ParametersBase):
         Return inflation index for current_year that has
         a value of one in first year param_code is active.
         """
-        if param_code_name not in Policy.VALID_PARAM_CODE_NAMES:
-            msg = 'param_code_name={} not in VALID_PARAM_CODE_NAMES'
-            raise ValueError(msg.format(param_code_name))
+        assert param_code_name in Policy.VALID_PARAM_CODE_NAMES
         active_name = '_{}_active'.format(param_code_name)
         active_param = getattr(self, active_name, None)
         zero_year = Policy.JSON_START_YEAR
@@ -328,11 +326,7 @@ class Policy(ParametersBase):
             if active_param[idx]:
                 first_active_year = idx + zero_year
                 break
-        if first_active_year > Policy.LAST_BUDGET_YEAR:
-            msg = 'param_code_name={} has first_active_year={} > {}'
-            raise ValueError(msg.format(param_code_name,
-                                        first_active_year,
-                                        Policy.LAST_BUDGET_YEAR))
+        assert first_active_year <= Policy.LAST_BUDGET_YEAR
         cpi_current_year = self._inflation_index[self.current_year - zero_year]
         cpi_active_year = self._inflation_index[first_active_year - zero_year]
         cpi_rebased = cpi_current_year / cpi_active_year
