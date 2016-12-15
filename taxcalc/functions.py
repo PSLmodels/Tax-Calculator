@@ -1215,7 +1215,7 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
 
 def new_refundable_credit_code_function(calc):
     """
-    Compute new refubdable credit from code
+    Compute new refundable child tax credit from code
     """
     code = calc.policy.param_code['new_refundable_credit_code']
     visible = {'min': np.minimum, 'max': np.maximum,
@@ -1223,10 +1223,11 @@ def new_refundable_credit_code_function(calc):
     variables = ['n24', 'c00100', 'nu05', 'MARS', 'ptax_oasdi', 'c09200']
     for var in variables:
         visible[var] = getattr(calc.records, var)
-    visible['credit'] = calc.records.new_refundable_credit
+    visible['cpi'] = calc.policy.cpi('new_refundable_credit_code')
+    visible['returned_value'] = calc.records.new_refundable_credit
     # pylint: disable=exec-used
     exec(compile(code, '<str>', 'exec'), {'__builtins__': {}}, visible)
-    calc.records.new_refundable_credit = visible['credit']
+    calc.records.new_refundable_credit = visible['returned_value']
 
 
 @iterate_jit(nopython=True)

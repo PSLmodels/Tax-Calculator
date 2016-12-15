@@ -72,7 +72,7 @@ class Policy(ParametersBase):
                  2025: 0.0415, 2026: 0.0416}
 
     VALID_PARAM_CODE_NAMES = set(['ALD_Investment_ec_base_code',
-                                 'new_refundable_credit_code'])
+                                  'new_refundable_credit_code'])
 
     PROHIBIT_PARAM_CODE = False
 
@@ -142,6 +142,12 @@ class Policy(ParametersBase):
                                      for i in range(0, num_years)]
         else:
             raise ValueError('inflation_rates is not None or a dictionary')
+
+        cpi = 1.0
+        self._inflation_index = [cpi]
+        for idx in range(0, num_years):
+            cpi *= (1.0 + self._inflation_rates[idx])
+            self._inflation_index.append(cpi)
 
         if wage_growth_rates is None:  # read default rates
             self._wage_growth_rates = [Policy.__wgrates[start_year + i]
@@ -305,6 +311,32 @@ class Policy(ParametersBase):
             msg = 'Following param_code includes illegal "**":\n'
             msg += code
             raise ValueError(msg)
+
+    def cpi(self, param_code_name):
+        """
+        Return inflation index for current_year that has
+        a value of one in first year param_code is active.
+        """
+        if param_code_name not in Policy.VALID_PARAM_CODE_NAMES:
+            msg = 'param_code_name={} not in VALID_PARAM_CODE_NAMES'
+            raise ValueError(msg.format(param_code_name))
+        active_name = '_{}_active'.format(param_code_name)
+        active_param = getattr(self, active_name, None)
+        zero_year = Policy.JSON_START_YEAR
+        first_active_year = 9999
+        for idx in range(0, len(active_param)):
+            if active_param[idx]:
+                first_active_year = idx + zero_year
+                break
+        if first_active_year > Policy.LAST_BUDGET_YEAR:
+            msg = 'param_code_name={} has first_active_year={} > {}'
+            raise ValueError(msg.format(param_code_name,
+                                        first_active_year,
+                                        Policy.LAST_BUDGET_YEAR))
+        cpi_current_year = self._inflation_index[self.current_year - zero_year]
+        cpi_active_year = self._inflation_index[first_active_year - zero_year]
+        cpi_rebased = cpi_current_year / cpi_active_year
+        return cpi_rebased
 
     def current_law_version(self):
         """
