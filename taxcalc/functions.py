@@ -450,7 +450,7 @@ def AdditionalMedicareTax(e00200, MARS,
 
 
 @iterate_jit(nopython=True)
-def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
+def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
            MARS, MIDR, blind_head, blind_spouse, _standard):
     """
     StdDed function:
@@ -464,6 +464,8 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
     -----
     Tax Law Parameters:
         STD : Standard deduction amount, filing status dependent
+
+        STD_Dep : Standard deduction for dependents
 
         STD_Aged : Additional standard deduction for blind and aged
 
@@ -489,7 +491,7 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
     """
     # calculate deduction for dependents
     if DSI == 1:
-        c15100 = max(350. + _earned, STD[6])
+        c15100 = max(350. + _earned, STD_Dep)
         basic_stded = min(STD[MARS - 1], c15100)
     else:
         c15100 = 0.

@@ -411,6 +411,28 @@
         "validations": {"min": "default"}
     },
 
+    "_STD_Dep": {
+        "long_name": "Standard deduction for dependents",
+        "description": "This is the maximum standard deduction for dependents.",
+        "section_1": "Standard deduction",
+        "irs_ref": "form 1040, line 40, instructions.",
+        "notes": "This parameter cannot be decreased due to lack of data.",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["dependent"],
+        "value": [ 1000,
+                   1000,
+                   1050,
+                   1050],
+        "validations": {"min": "default"}
+    },
+
     "_STD_Aged": {
         "long_name": "Additional standard deduction for blind and aged",
         "description": "To get the standard deduction for aged or blind individuals, taxpayers need to add this value to regular standard deduction",
