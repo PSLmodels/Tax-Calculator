@@ -1162,7 +1162,7 @@
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax rate 1",
         "description": "The lowest tax rate, applied to the portion of taxable income below tax bracket 1. ",
         "section_1": "Personal income",
-        "section_2": "Regular - non-AMT, non-pass-through",
+        "section_2": "Regular: non-AMT, non-pass-through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
@@ -1178,7 +1178,7 @@
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 1",
         "description": "Taxable income below this threshold is taxed at tax rate 1. ",
         "section_1": "Personal income",
-        "section_2": "Regular - non-AMT, non-pass-through",
+        "section_2": "Regular: non-AMT, non-pass-through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
@@ -1201,7 +1201,7 @@
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax rate 2",
         "description": "The second lowest tax rate, applied to the portion of taxable income below tax bracket 2 and above tax bracket 1. ",
         "section_1": "Personal income",
-        "section_2": "Regular - non-AMT, non-pass-through",
+        "section_2": "Regular: non-AMT, non-pass-through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
@@ -1218,7 +1218,7 @@
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 2",
         "description": "Income below this threshold and above tax bracket 1 is taxed at tax rate 2. ",
         "section_1": "Personal income",
-        "section_2": "Regular - non-AMT, non-pass-through",
+        "section_2": "Regular: non-AMT, non-pass-through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
@@ -1241,7 +1241,7 @@
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax rate 3",
         "description": "The third lowest tax rate, applied to the portion of taxable income below tax bracket 3 and above tax bracket 2. ",
         "section_1": "Personal income",
-        "section_2": "Regular - non-AMT, non-pass-through",
+        "section_2": "Regular: non-AMT, non-pass-through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
@@ -1257,7 +1257,7 @@
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 3",
         "description": "Income below this threshold and above tax bracket 2 is taxed at tax rate 3.",
         "section_1": "Personal income",
-        "section_2": "Regular - non-AMT, non-pass-through",
+        "section_2": "Regular: non-AMT, non-pass-through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
@@ -1280,7 +1280,7 @@
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax rate 4",
         "description": "The tax rate applied to the portion of taxable income below tax bracket 4 and above tax bracket 3. ",
         "section_1": "Personal income",
-        "section_2": "Regular - non-AMT, non-pass-through",
+        "section_2": "Regular: non-AMT, non-pass-through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
@@ -1296,7 +1296,7 @@
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 4",
         "description": "Income below this threshold and above tax bracket 3 is taxed at tax rate 4.",
         "section_1": "Personal income",
-        "section_2": "Regular - non-AMT, non-pass-through",
+        "section_2": "Regular: non-AMT, non-pass-through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
@@ -1319,7 +1319,7 @@
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax rate 5",
         "description": "The third highest tax rate, applied to the portion of taxable income below tax bracket 5 and above tax bracket 4. ",
         "section_1": "Personal income",
-        "section_2": "Regular - non-AMT, non-pass-through",
+        "section_2": "Regular: non-AMT, non-pass-through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
@@ -1335,7 +1335,7 @@
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 5",
         "description": "Income below this threshold and above tax bracket 4 is taxed at tax rate 5.",
         "section_1": "Personal income",
-        "section_2": "Regular - non-AMT, non-pass-through",
+        "section_2": "Regular: non-AMT, non-pass-through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
@@ -1359,7 +1359,7 @@
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax rate 6",
         "description": "The second higher tax rate, applied to the portion of taxable income below tax bracket 6 and above tax bracket 5. ",
         "section_1": "Personal income",
-        "section_2": "Regular - non-AMT, non-pass-through",
+        "section_2": "Regular: non-AMT, non-pass-through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
@@ -1375,7 +1375,7 @@
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax bracket 6",
         "description": "Income below this threshold and above tax bracket 5 is taxed at tax rate 6.",
         "section_1": "Personal income",
-        "section_2": "Regular - non-AMT, non-pass-through",
+        "section_2": "Regular: non-AMT, non-pass-through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
@@ -1398,7 +1398,7 @@
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax rate 7",
         "description": "The tax rate applied to the portion of taxable income below tax bracket 7 and above tax bracket 6. ",
         "section_1": "Personal income",
-        "section_2": "Regular - non-AMT, non-pass-through",
+        "section_2": "Regular: non-AMT, non-pass-through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
@@ -1414,7 +1414,7 @@
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax bracket 7",
         "description": "Income below this threshold and above tax bracket 6 is taxed at tax rate 7; income above this threshold is taxed at tax rate 8.  Default value is essentially infinity",
         "section_1": "Personal income",
-        "section_2": "Regular - non-AMT, non-pass-through",
+        "section_2": "Regular: non-AMT, non-pass-through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
@@ -1437,7 +1437,7 @@
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax rate 8",
         "description": "The tax rate applied to the portion of taxable income above tax bracket 7.",
         "section_1": "Personal income",
-        "section_2": "Regular - non-AMT, non-pass-through",
+        "section_2": "Regular: non-AMT, non-pass-through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
@@ -1449,39 +1449,14 @@
         "value": [1.0]
     },
 
-    "_AGI_surtax_thd": {
-        "long_name": "Threshold for surtax on AGI",
-        "description": "The aggregate gross income above this AGI surtax threshold is taxed at surtax rate on AGI.",
-        "irs_ref": "",
-        "note": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "",
-        "row_label": ["2013"],
-        "cpi_inflated": true,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[9e99, 9e99, 9e99, 9e99, 9e99, 9e99]]
-    },
 
-    "_AGI_surtax_trt": {
-        "long_name": "Surtax rate on AGI",
-        "description": "The surtax rate applied to the portion of aggregate gross income above the AGI surtax threshold.",
-        "irs_ref": "",
-        "note": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0],
-        "validations": {"min": 0.0}
-    },
 
-    "_KT_c_Age": {
-        "long_name": "Maximum age subject to Kiddie Tax",
-        "description": "At or under this age, the individual is subject to Kiddie Tax.",
-        "irs_ref": "Form 6251, line 28, instruction.",
+    "_PT_rt1": {
+        "long_name": "Pass-through income tax rate 1",
+        "description": "The lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 1. ",
+        "section_1": "Personal income",
+        "section_2": "Pass-through",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
@@ -1489,48 +1464,291 @@
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value": [24]
+        "value": [0.1]
     },
 
-    "_AMT_brk1": {
-        "long_name": "AMT tax bracket (upper threshold) 1",
-        "description": "AMT taxable income below this is subject to _AMT_rt1 and above it is subject to _AMT_rt1 + _AMT_rt2.",
-        "irs_ref": "Form 6251, line 31, instruction.",
+     "_PT_brk1": {
+        "long_name": "Pass-through income tax bracket (upper threshold) 1",
+        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold is taxed at tax rate 1. ",
+        "section_1": "Personal income",
+        "section_2": "Pass-through",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
         "notes": "",
         "start_year": 2013,
-        "col_var": "",
+        "col_var": "MARS",
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
                       "2015",
                       "2016"],
         "cpi_inflated": true,
-        "col_label": "",
-        "value": [179500,
-                  182500,
-                  185400,
-                  186300]
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[8925, 17850, 8925, 12750, 17850, 8925],
+                  [9075, 18150, 9075, 12950, 18150, 9075],
+                  [9225, 18450, 9225, 13150, 18450, 9225],
+                  [9275, 18550, 9275, 13250, 18550, 9275]],
+        "validations": {"min": 0, "max": "_PT_brk2"}
     },
 
-    "_AMT_thd_MarriedS": {
-        "long_name": "Extra alminc for married sep",
-        "description": "",
-        "irs_ref": "Form 6251, line 28, instruction.",
+    "_PT_rt2": {
+        "long_name": "Pass-through income tax rate 2",
+        "description": "The second lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 2 and above tax bracket 1. ",
+        "section_1": "Personal income",
+        "section_2": "Pass-through",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
         "notes": "",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014"],
-        "cpi_inflated": true,
+        "row_label": ["2013"],
+        "cpi_inflated": false,
         "col_label": "",
-        "value": [40400,
-                  41050]
+        "value": [0.15]
     },
+
+
+    "_PT_brk2": {
+        "long_name": "Pass-through income tax bracket (upper threshold) 2",
+        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 1 is taxed at tax rate 2. ",
+        "section_1": "Personal income",
+        "section_2": "Pass-through",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[36250, 72500, 36250, 48600, 72500, 36250],
+                  [36900, 73800, 36900, 49400, 73800, 36900],
+                  [37450, 74900, 37450, 50200, 74900, 37450],
+                  [37650, 75300, 37650, 50400, 75300, 37650]],
+        "validations": {"min": "_PT_brk1", "max": "_PT_brk3"}
+    },
+
+    "_PT_rt3": {
+        "long_name": "Pass-through income tax rate 3",
+        "description": "The third lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 3 and above tax bracket 2. ",
+        "section_1": "Personal income",
+        "section_2": "Pass-through",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.25]
+    },
+
+    "_PT_brk3": {
+        "long_name": "Pass-through income tax bracket (upper threshold) 3",
+        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 2 is taxed at tax rate 3.",
+        "section_1": "Personal income",
+        "section_2": "Pass-through",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[87850, 146400, 73200, 125450, 146400, 73200],
+                  [89350, 148850, 74425, 127550, 148850, 74425],
+                  [90750, 151200, 75600, 129600, 151200, 75600],
+                  [91150, 151900, 75950, 130150, 151900, 75950]],
+        "validations": {"min": "_PT_brk2", "max": "_PT_brk4"}
+    },
+
+    "_PT_rt4": {
+        "long_name": "Pass-through income tax rate 4",
+        "description": "The tax rate applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 4 and above tax bracket 3. ",
+        "section_1": "Personal income",
+        "section_2": "Pass-through",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.28]
+    },
+
+    "_PT_brk4": {
+        "long_name": "Pass-through income tax bracket (upper threshold) 4",
+        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 3 is taxed at tax rate 4.",
+        "section_1": "Personal income",
+        "section_2": "Pass-through",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[183250, 223050, 111525, 203150, 223050, 111525],
+                  [186350, 226850, 113425, 206600, 226850, 113425],
+                  [189300, 230450, 115225, 209850, 230450, 115225],
+                  [190150, 231450, 115725, 210800, 231450, 115725]],
+        "validations": {"min": "_PT_brk3", "max": "_PT_brk5"}
+    },
+
+    "_PT_rt5": {
+        "long_name": "Pass-through income tax rate 5",
+        "description": "The third highest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 5 and above tax bracket 4. ",
+        "section_1": "Personal income",
+        "section_2": "Pass-through",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.33]
+    },
+
+    "_PT_brk5": {
+        "long_name": "Pass-through income tax bracket (upper threshold) 5",
+        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 4 is taxed at tax rate 5.",
+        "section_1": "Personal income",
+        "section_2": "Pass-through",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[398350, 398350, 199175, 398350, 398350, 199175],
+                  [405100, 405100, 202550, 405100, 405100, 202550],
+                  [411500, 411500, 205750, 411500, 411500, 205750],
+                  [413350, 413350, 206675, 413350, 413350, 206675]],
+        "validations": {"min": "_PT_brk4", "max": "_PT_brk6"}
+    },
+
+    "_PT_rt6": {
+        "long_name": "Pass-through income tax rate 6",
+        "description": "The second higher tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 6 and above tax bracket 5. ",
+        "section_1": "Personal income",
+        "section_2": "Pass-through",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.35]
+    },
+
+    "_PT_brk6": {
+        "long_name": "Pass-through income tax bracket (upper threshold) 6",
+        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 5 is taxed at tax rate 6.",
+        "section_1": "Personal income",
+        "section_2": "Pass-through",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[400000, 450000, 225000, 425000, 450000, 225000],
+                  [406750, 457600, 228800, 432200, 457600, 228800],
+                  [413200, 464850, 232425, 439000, 464850, 232425],
+                  [415050, 466950, 233475, 441000, 466950, 233475]],
+        "validations": {"min": "_PT_brk5", "max": "_PT_brk7"}
+    },
+
+    "_PT_rt7": {
+        "long_name": "Pass-through income tax rate 7",
+        "description": "The highest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 7 and above tax bracket 6. ",
+        "section_1": "Personal income",
+        "section_2": "Pass-through",
+        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.396]
+    },
+
+    "_PT_brk7": {
+        "long_name": "Extra pass-through income tax bracket",
+        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 6 is taxed at tax rate 7. Default value is essentially infinity",
+        "section_1": "Personal income",
+        "section_2": "Pass-through",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99]],
+        "validations": {"min": "_PT_brk6"}
+    },
+
+    "_PT_rt8": {
+        "long_name": "Extra pass-through income tax rate",
+        "description": "The extra tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations above the tax bracket 7.",
+        "section_1": "Personal income",
+        "section_2": "Pass-through",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [1.0]
+
+    },
+
 
     "_AMT_em": {
         "long_name": "AMT exemption amount",
         "description": "The amount of AMT taxable income exempted from AMT.",
+        "section_1": "Personal income",
+        "section_2": "Alternative minimum tax",
+        "section_3": "Exemption",
         "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
         "notes": "",
         "start_year": 2013,
@@ -1551,6 +1769,9 @@
     "_AMT_prt": {
         "long_name": "AMT exemption phaseout rate",
         "description": "AMT exemption will decrease at this rate for each dollar of AMT taxable income exceeding AMT phaseout start. ",
+        "section_1": "Personal income",
+        "section_2": "Alternative minimum tax",
+        "section_3": "Exemption",
         "irs_ref": "Form 6251, line 29, instructions. ",
         "notes": "",
         "start_year": 2013,
@@ -1562,32 +1783,27 @@
         "value": [0.25]
     },
 
-    "_AMT_rt1": {
-        "long_name": "AMT rate for AMT taxable income below _AMT_brk1",
-        "description": "The tax rate applied to the portion of AMT taxable income below the surtax threshold, _AMT_brk1.",
-        "irs_ref": "Form 6251, line 31, in-line. ",
+    "_AMT_em_ps": {
+        "long_name": "AMT exemption phaseout start",
+        "description": "AMT exemption starts to decrease when AMT taxable income goes beyond this threshold.",
+        "section_1": "Personal income",
+        "section_2": "Alternative minimum tax",
+        "section_3": "Exemption",
+        "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
         "notes": "",
         "start_year": 2013,
-        "col_var": "",
+        "col_var": "MARS",
         "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.26]
-    },
-
-    "_AMT_rt2": {
-        "long_name": "Additional AMT rate for AMT taxable income above _AMT_brk1",
-        "description": "The additional tax rate applied to the portion of AMT income above the _AMT_brk1.",
-        "irs_ref": "Form 6251, line 31, in-line. ",
-        "notes": "This is the additional tax rate (on top of _AMT_rt1) for AMT income above _AMT_brk1",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.02]
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[115400, 153900, 76950, 115400, 153900, 76950],
+                  [117300, 156500, 78250, 117300, 156500, 78250],
+                  [119200, 158900, 79450, 119200, 158900, 79450],
+                  [119700, 159700, 79850, 119700, 159700, 79850]]
     },
 
     "_AMT_Child_em": {
@@ -1610,25 +1826,93 @@
                   7400]
     },
 
-    "_AMT_em_ps": {
-        "long_name": "AMT exemption phaseout start",
-        "description": "AMT exemption starts to decrease when AMT taxable income goes beyond this threshold.",
-        "irs_ref": "Form 1040, line 45, instruction (Worksheet).",
+       "_AMT_KT_c_Age": {
+        "long_name": "Maximum age subject to Kiddie Tax",
+        "description": "At or under this age, the individual is subject to Kiddie Tax.",
+        "irs_ref": "Form 6251, line 28, instruction.",
         "notes": "",
         "start_year": 2013,
-        "col_var": "MARS",
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [24]
+    },
+
+    "_AMT_rt1": {
+        "long_name": "AMT rate for AMT taxable income below _AMT_brk1",
+        "description": "The tax rate applied to the portion of AMT taxable income below the surtax threshold, _AMT_brk1.",
+        "section_1": "Personal income",
+        "section_2": "Alternative minimum tax",
+        "section_3": "Tax rates",
+        "irs_ref": "Form 6251, line 31, in-line. ",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.26]
+    },
+
+    "_AMT_brk1": {
+        "long_name": "AMT tax bracket (upper threshold) 1",
+        "description": "AMT taxable income below this is subject to _AMT_rt1 and above it is subject to _AMT_rt1 + _AMT_rt2.",
+        "section_1": "Personal income",
+        "section_2": "Alternative minimum tax",
+        "section_3": "Tax rates",
+        "irs_ref": "Form 6251, line 31, instruction.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
                       "2015",
                       "2016"],
         "cpi_inflated": true,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[115400, 153900, 76950, 115400, 153900, 76950],
-                  [117300, 156500, 78250, 117300, 156500, 78250],
-                  [119200, 158900, 79450, 119200, 158900, 79450],
-                  [119700, 159700, 79850, 119700, 159700, 79850]]
+        "col_label": "",
+        "value": [179500,
+                  182500,
+                  185400,
+                  186300]
     },
+
+    "_AMT_rt2": {
+        "long_name": "Additional AMT rate for AMT taxable income above _AMT_brk1",
+        "description": "The additional tax rate applied to the portion of AMT income above the _AMT_brk1.",
+        "section_1": "Personal income",
+        "section_2": "Alternative minimum tax",
+        "section_3": "Tax rates",
+        "irs_ref": "Form 6251, line 31, in-line. ",
+        "notes": "This is the additional tax rate (on top of _AMT_rt1) for AMT income above _AMT_brk1",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.02]
+    },
+
+    "_AMT_thd_MarriedS": {
+        "long_name": "Extra alminc for married sep",
+        "description": "",
+        "irs_ref": "Form 6251, line 28, instruction.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014"],
+        "cpi_inflated": true,
+        "col_label": "",
+        "value": [40400,
+                  41050]
+    },
+
 
     "_AMT_em_pe": {
         "long_name": "AMT exemption phaseout ending AMT taxable income (Married filling Separately)",
@@ -1646,51 +1930,11 @@
                   242450]
     },
 
-    "_NIIT_thd": {
-        "long_name": "Net Investment Income Tax modified AGI threshold",
-        "description": "If modified AGI is more than this threshold, filing unit is subject to the Net Investment Income Tax.",
-        "irs_ref": "Form 8960, line 14, instructions. ",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "MARS",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[200000, 250000, 125000, 200000, 250000, 125000]]
-    },
-
-    "_NIIT_PT_taxed": {
-        "long_name": "Whether or not partnership and S-corp income is in NIIT base",
-        "description": "false ==> e26270 excluded from NIIT base; true ==> e26270 is in NIIT base",
-        "irs_ref": "",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [false]
-    },
-
-    "_NIIT_rt": {
-        "long_name": "Net Investment Income Tax rate",
-        "description": "If modified AGI exceeds _NIIT_thd, all net investment income is taxed at this rate.",
-        "irs_ref": "Form 8960, line 21, in-line. ",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.038]
-    },
-
     "_CDCC_c": {
         "long_name": "Maximum child & dependent care credit per dependent",
         "description": "The maximum amount of credit allowed for each qualifying dependent.",
+        "section_1": "Nonrefundable credits",
+        "section_2": "Child and dependent care",
         "irs_ref": "Form 2441, line 3, in-line.",
         "notes": "",
         "start_year": 2013,
@@ -1705,6 +1949,8 @@
     "_CDCC_ps": {
         "long_name": "Child & dependent care credit phaseout start",
         "description": "For taxpayers with AGI over this amount, the credit is reduced by one percentage point each $2000 of AGI over this amount. ",
+        "section_1": "Nonrefundable credits",
+        "section_2": "Child and dependent care",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -1717,6 +1963,8 @@
     "_CDCC_crt": {
         "long_name": "Child & dependent care credit phaseout percentage rate ceiling",
         "description": "The maximum percentage rate in the AGI phaseout; this percentage rate decreases as AGI rises above the _CDCC_ps level.",
+        "section_1": "Nonrefundable credits",
+        "section_2": "Child and dependent care",
         "irs_ref": "Form 2241, line 8, in-line.",
         "notes": "",
         "start_year": 2013,
@@ -1728,9 +1976,107 @@
         "value": [35]
     },
 
-    "_EITC_indiv": {
-        "long_name": "EITC is individual-based rather than filing-unit based",
-        "description": "Current-law value is false implying EITC is filing-unit based; a value of true implies EITC is computed for each individual wage earner.  The phase-out of the credit works slightly differently between the two.  Individual-based calculation ignore investment income and age eligibilty rules used in filing-unit-based calculations.",
+     "_CTC_c": {
+        "long_name": "Maximum child tax credit per child",
+        "description": "The maximum amount of credit allowed for each child. ",
+        "section_1": "Nonrefundable credits",
+        "section_2": "Child tax credit",
+        "irs_ref": "form 1040, line 52, instructions (child tax credit worksheet, line 1).",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [1000]
+    },
+
+    "_CTC_c_under5_bonus": {
+        "long_name": "Bonus child tax credit maximum for qualifying children under five",
+        "description": "The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old. ",
+        "section_1": "Nonrefundable credits",
+        "section_2": "Child tax credit",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_CTC_ps": {
+        "long_name": "Child tax credit phaseout MAGI start",
+        "description": "Child tax credit begins to decrease when MAGI is above this level.",
+        "section_1": "Nonrefundable credits",
+        "section_2": "Child tax credit",
+        "irs_ref": "Form 1040, line 52, instruction (Worksheet, line 3).",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[75000, 110000, 55000, 75000, 75000, 55000]]
+    },
+
+    "_CTC_prt": {
+        "long_name": "Child tax credit phaseout rate",
+        "description": "The amount of credit starts to decrease at this rate if MAGI is higher than child tax credit phaseout start. ",
+        "section_1": "Nonrefundable credits",
+        "section_2": "Child tax credit",
+        "irs_ref": "Form 1040, line 52, instruction (child tax credit worksheet, line 5)",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.05]
+    },
+
+    "_DependentCredit_c": {
+        "long_name": "Nonrefundable credit for dependents",
+        "description": "This nonrefundable credit is applied to dependents and phases out with the Child Tax Credit. The dependent credit's phaseout begins when the CTC's phaseout ends.",
+        "section_1": "Nonrefundable credits",
+        "section_2": "Child tax credit",
+        "irs_ref": "",
+        "notes": "The Ryan-Brady tax plan sets this at $500",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0]
+    },
+
+    "_NIIT_thd": {
+        "long_name": "Net Investment Income Tax modified AGI threshold",
+        "description": "If modified AGI is more than this threshold, filing unit is subject to the Net Investment Income Tax.",
+        "section_1": "Other taxes",
+        "section_2": "Net investment income tax",
+        "irs_ref": "Form 8960, line 14, instructions. ",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "MARS",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[200000, 250000, 125000, 200000, 250000, 125000]]
+    },
+
+    "_NIIT_PT_taxed": {
+        "long_name": "Whether or not partnership and S-corp income is in NIIT base",
+        "description": "false ==> partnership and S-corp income excluded from NIIT base; true ==> partnership and s-corp income is in NIIT base",
+        "section_1": "Other taxes",
+        "section_2": "Net investment income tax",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
@@ -1742,49 +2088,27 @@
         "value": [false]
     },
 
-    "_EITC_ps": {
-        "long_name": "Earned income credit phaseout AGI start",
-        "description": "If AGI is higher than this threshold, the amount of EITC will start to decrease. ",
-        "irs_ref": "Form 1040, line 66a&b, instructions.",
+    "_NIIT_rt": {
+        "long_name": "Net Investment Income Tax rate",
+        "description": "If modified AGI exceeds _NIIT_thd, all net investment income is taxed at this rate.",
+        "section_1": "Other taxes",
+        "section_2": "Net investment income tax",
+        "irs_ref": "Form 8960, line 21, in-line. ",
         "notes": "",
         "start_year": 2013,
-        "col_var": "EIC",
+        "col_var": "",
         "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label": ["0kids", "1kid", "2kids", "3+kids"],
-        "value": [[7970, 17530, 17530, 17530],
-                  [8110, 17830, 17830, 17830],
-                  [8250, 18150, 18150, 18150],
-                  [8270, 18190, 18190, 18190]]
-    },
-
-    "_EITC_ps_MarriedJ": {
-        "long_name": "EITC Phaseout Starting AGI (Married filling Jointly)",
-        "description": "This is the additional amount added on the regular EITC phaseout start, only for taxpayers with filling status of married filling jointly. ",
-        "irs_ref": "Form 1040, line 66a&b, calculation (the difference between EIC phaseout bases of married jointly fillers and other fillers).",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "EIC",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label": ["0kids", "1kid", "2kids", "3+kids"],
-        "value": [[5340, 5340, 5340, 5340],
-                  [5430, 5430, 5430, 5430],
-                  [5500, 5500, 5500, 5500],
-                  [5550, 5550, 5550, 5550]]
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.038]
     },
 
     "_EITC_c": {
         "long_name": "Maximum earned income credit",
         "description": "This is the maximum amount of earned income credit taxpayers are eligible for; it depends on how many kids they have. ",
+        "section_1": "Refundable credits",
+        "section_2": "Earned income tax credit",
         "irs_ref": "IRS reference: form 1040, line 66a&b, instruction (table).",
         "notes": "",
         "start_year": 2013,
@@ -1805,6 +2129,8 @@
     "_EITC_rt": {
         "long_name": "Earned income credit rate",
         "description": "If one taxpayer's AGI is below AGI phaseout start, he can apply this rate to his earned income to calculate the credit amount eligible. ",
+        "section_1": "Refundable credits",
+        "section_2": "Earned income tax credit",
         "irs_ref": "Form 1040, line 66a&b, calculation (table: Max_EIC/Max_EIC_base_income).",
         "notes": "Range of this parameter is between zero and one. ",
         "start_year": 2013,
@@ -1816,9 +2142,12 @@
         "value": [[0.0765, 0.3400, 0.4000, 0.4500]]
     },
 
+
     "_EITC_prt": {
         "long_name": "Earned income credit phaseout rate",
         "description": "Earned income credit will decrease at the this rate when AGI is higher than EITC phaseout start. ",
+        "section_1": "Refundable credits",
+        "section_2": "Earned income tax credit",
         "irs_ref": "Form 1040, line 66a&b, calculation (table: Max_EIC_base_income/Phaseout_Base).",
         "notes": "",
         "start_year": 2013,
@@ -1830,9 +2159,88 @@
         "value": [[0.0765, 0.1598, 0.2106, 0.2106]]
     },
 
+    "_EITC_ps": {
+        "long_name": "Earned income credit phaseout AGI start",
+        "description": "If AGI is higher than this threshold, the amount of EITC will start to decrease. ",
+        "section_1": "Refundable credits",
+        "section_2": "Earned income tax credit",
+        "irs_ref": "Form 1040, line 66a&b, instructions.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "EIC",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["0kids", "1kid", "2kids", "3+kids"],
+        "value": [[7970, 17530, 17530, 17530],
+                  [8110, 17830, 17830, 17830],
+                  [8250, 18150, 18150, 18150],
+                  [8270, 18190, 18190, 18190]]
+    },
+
+    "_EITC_ps_MarriedJ": {
+        "long_name": "EITC Phaseout Starting AGI (Married filling Jointly)",
+        "description": "This is the additional amount added on the regular EITC phaseout start, only for taxpayers with filling status of married filling jointly. ",
+        "section_1": "Refundable credits",
+        "section_2": "Earned income tax credit",
+        "irs_ref": "Form 1040, line 66a&b, calculation (the difference between EIC phaseout bases of married jointly fillers and other fillers).",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "EIC",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016"],
+        "cpi_inflated": true,
+        "col_label": ["0kids", "1kid", "2kids", "3+kids"],
+        "value": [[5340, 5340, 5340, 5340],
+                  [5430, 5430, 5430, 5430],
+                  [5500, 5500, 5500, 5500],
+                  [5550, 5550, 5550, 5550]]
+    },
+
+    "_EITC_MinEligAge": {
+        "long_name": "Minimum Age for Childless EITC Eligibility",
+        "description": "For a childless filling unit, at least one individual's age needs to be no less than this age (but no greater than the EITC_MaxEligAge) in order to be eligible for an earned income tax credit.",
+        "section_1": "Refundable credits",
+        "section_2": "Earned income tax credit",
+        "irs_ref": "Form 1040, line 66a&b, step 4, instructions.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [25]
+    },
+
+    "_EITC_MaxEligAge": {
+        "long_name": "Maximum Age for Childless EITC Eligibility",
+        "description": "For a childless filling unit, at least one individual's age needs to be no greater than this age (but no less than the EITC_MinEligAge) in order to be eligible for an earned income tax credit.",
+        "section_1": "Refundable credits",
+        "section_2": "Earned income tax credit",
+        "irs_ref": "Form 1040, line 66a&b, step 4, instructions.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [64]
+    },
+
+
     "_EITC_InvestIncome_c": {
         "long_name": "Max disqualifying income for EITC",
         "description": "The earned income credit may not be claimed by taxpayers whose investment income exceeds this limit.",
+        "section_1": "Refundable credits",
+        "section_2": "Earned income tax credit",
         "irs_ref": "Form 1040, line 66a&b, instruction(step2)",
         "notes": "",
         "start_year": 2013,
@@ -1850,51 +2258,11 @@
                   3400]
     },
 
-    "_EITC_MinEligAge": {
-        "long_name": "Minimum Age for Childless EITC Eligibility",
-        "description": "For a childless filling unit, at least one individual's age needs to be no less than this age (but no greater than the EITC_MaxEligAge) in order to be eligible for an earned income tax credit.",
-        "irs_ref": "Form 1040, line 66a&b, step 4, instructions.",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [25]
-    },
-
-    "_EITC_MaxEligAge": {
-        "long_name": "Maximum Age for Childless EITC Eligibility",
-        "description": "For a childless filling unit, at least one individual's age needs to be no greater than this age (but no less than the EITC_MinEligAge) in order to be eligible for an earned income tax credit.",
-        "irs_ref": "Form 1040, line 66a&b, step 4, instructions.",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [64]
-    },
-
-    "_CTC_c": {
-        "long_name": "Maximum child tax credit per child",
-        "description": "The maximum amount of credit allowed for each child. ",
-        "irs_ref": "form 1040, line 52, instructions (child tax credit worksheet, line 1). ",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [1000]
-    },
-
-    "_CTC_c_under5_bonus": {
-        "long_name": "Bonus child tax credit maximum for qualifying children under five",
-        "description": "The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old. ",
+    "_EITC_indiv": {
+        "long_name": "EITC is individual-based rather than filing-unit based",
+        "description": "Current-law value is false implying EITC is filing-unit based; a value of true implies EITC is computed for each individual wage earner.  The phase-out of the credit works slightly differently between the two.  Individual-based calculation ignore investment income and age eligibilty rules used in filing-unit-based calculations.",
+        "section_1": "Refundable credits",
+        "section_2": "Earned income tax credit",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
@@ -1903,49 +2271,7 @@
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value": [0.0]
-    },
-
-    "_CTC_ps": {
-        "long_name": "Child tax credit phaseout MAGI start",
-        "description": "Child tax credit begins to decrease when MAGI is above this level.",
-        "irs_ref": "Form 1040, line 52, instruction (Worksheet, line 3).",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "MARS",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[75000, 110000, 55000, 75000, 75000, 55000]]
-    },
-
-    "_CTC_prt": {
-        "long_name": "Child tax credit phaseout rate",
-        "description": "The amount of credit starts to decrease at this rate if MAGI is higher than child tax credit phaseout start. ",
-        "irs_ref": "Form 1040, line 52, instruction (child tax credit worksheet, line 5)",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.05]
-    },
-
-    "_DependentCredit_c": {
-        "long_name": "Nonrefundable credit for dependents",
-        "description": "This nonrefundable credit is applied to dependents and phases out with the Child Tax Credit. The dependent credit's phaseout begins when the CTC's phaseout ends.",
-        "irs_ref": "",
-        "notes": "The Ryan-Brady tax plan sets this at $500",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0]
+        "value": [false]
     },
 
     "_LLC_Expense_c": {
@@ -1998,38 +2324,11 @@
                   130]
     },
 
-    "_ACTC_Income_thd": {
-        "long_name": "Additional Child Tax Credit income threshold",
-        "description": "The portion of earned income below this threshold does not count as base for the Additional Child Tax Credit.",
-        "irs_ref": "Form 2441, line 3, in-line.",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [3000]
-    },
-
-
-    "_ACTC_rt_bonus_under5family": {
-        "long_name": "Bonus additional child tax credit rate for families with qualifying children under 5",
-        "description": "For families with qualifying children under 5 years old, this bonus rate is added to the fraction of earnings used in calculating the ACTC (_ACTC_rt).",
-        "irs_ref": "",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0]
-    },
-
     "_ACTC_rt": {
         "long_name": "Additional Child Tax Credit rate",
         "description": "This is the fraction of earnings used in calculating the ACTC, which is a partially refundable credit that supplements the CTC for some taxpayers. ",
+        "section_1": "Refundable credits",
+        "section_2": "Additional child tax credit",
         "irs_ref": "Form 8812, line 8, inline.",
         "notes": "",
         "start_year": 2013,
@@ -2041,9 +2340,43 @@
         "value": [0.15]
     },
 
+    "_ACTC_rt_bonus_under5family": {
+        "long_name": "Bonus additional child tax credit rate for families with qualifying children under 5",
+        "description": "For families with qualifying children under 5 years old, this bonus rate is added to the fraction of earnings (additional child tax credit rate) used in calculating the ACTC.",
+        "section_1": "Refundable credits",
+        "section_2": "Additional child tax credit",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ACTC_Income_thd": {
+        "long_name": "Additional Child Tax Credit income threshold",
+        "description": "The portion of earned income below this threshold does not count as base for the Additional Child Tax Credit.",
+        "section_1": "Refundable credits",
+        "section_2": "Additional child tax credit",
+        "irs_ref": "Form 2441, line 3, in-line.",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [3000]
+    },
+
     "_ACTC_ChildNum": {
         "long_name": "Additional Child Tax Credit minimum number of qualified children",
         "description": "Families with this number of qualified children or more may qualify for the Additional Child Tax Credit, which is a partially refundable credit that supplements the Child Tax Credit for some taxpayers.",
+        "section_1": "Refundable credits",
+        "section_2": "Additional child tax credit",
         "irs_ref": "Form 8812, Part III. ",
         "notes": "",
         "start_year": 2013,
@@ -2058,6 +2391,8 @@
     "_CTC_new_c": {
         "long_name": "New refundable child tax credit maximum amount per child",
         "description": "In addition to all credits currently available for dependents, this parameter gives each qualifying child a new refundable credit with this maximum amount.",
+        "section_1": "Refundable credits",
+        "section_2": "New refundable child tax credit",
         "irs_ref": "",
         "notes": "Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.",
         "start_year": 2013,
@@ -2073,6 +2408,8 @@
     "_CTC_new_c_under5_bonus": {
         "long_name": "Bonus new refundable child tax credit maximum for qualifying children under five",
         "description": "The maximum amount of the new refundable child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old. ",
+        "section_1": "Refundable credits",
+        "section_2": "New refundable child tax credit",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
@@ -2087,6 +2424,8 @@
     "_CTC_new_rt": {
         "long_name": "New refundable child tax credit amount phasein rate",
         "description": "The total amount of the new child tax credit is increased at this rate per dollar of AGI until _CTC_new_c times the number of qualified children is reached.",
+        "section_1": "Refundable credits",
+        "section_2": "New refundable child tax credit",
         "irs_ref": "",
         "notes": "Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.",
         "start_year": 2013,
@@ -2101,6 +2440,8 @@
     "_CTC_new_ps": {
         "long_name": "New refundable child tax credit phaseout starting AGI",
         "description": "The total amount of new child tax credit is reduced for taxpayers with AGI higher than this level.",
+        "section_1": "Refundable credits",
+        "section_2": "New refundable child tax credit",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
@@ -2114,6 +2455,8 @@
     "_CTC_new_prt": {
         "long_name": "New refundable child tax credit amount phaseout rate",
         "description": "The total amount of the new child tax credit is reduced at this rate per dollar exceeding the phaseout starting AGI, _CTC_new_ps.",
+        "section_1": "Refundable credits",
+        "section_2": "New refundable child tax credit",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
@@ -2128,6 +2471,8 @@
     "_CTC_new_refund_limited": {
         "long_name": "New child tax credit refund limited to a decimal fraction of payroll taxes",
         "description": "Specifies whether the new child tax credit refund is limited by the new child tax credit refund limit rate (_CTC_new_refund_limit_payroll_rt)",
+        "section_1": "Refundable credits",
+        "section_2": "New refundable child tax credit",
         "irs_ref": "",
         "notes": "Set this parameter to true to limit the refundability or false to allow full refundability for all taxpayers.",
         "start_year": 2013,
@@ -2142,6 +2487,8 @@
     "_CTC_new_refund_limit_payroll_rt": {
         "long_name": "New child tax credit refund limit rate (decimal fraction of payroll taxes)",
         "description": "The fraction of payroll taxes (employee plus employer shares, but excluding all Medicare payroll taxes) that serves as a limit to the amount of new child tax credit that can be refunded.",
+        "section_1": "Refundable credits",
+        "section_2": "New refundable child tax credit",
         "irs_ref": "",
         "notes": "Set this parameter to zero for no refundability; set it to 9e99 for unlimited refundability for taxpayers with payroll tax liabilities.",
         "start_year": 2013,
@@ -2154,284 +2501,11 @@
         "validations": {"min": 0}
     },
 
-
-    "_PT_rt1": {
-        "long_name": "Pass-through income tax rate 1",
-        "description": "The lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 1. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.1]
-    },
-
-    "_PT_rt2": {
-        "long_name": "Pass-through income tax rate 2",
-        "description": "The second lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 2 and above tax bracket 1. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.15]
-    },
-
-    "_PT_rt3": {
-        "long_name": "Pass-through income tax rate 3",
-        "description": "The third lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 3 and above tax bracket 2. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.25]
-    },
-
-    "_PT_rt4": {
-        "long_name": "Pass-through income tax rate 4",
-        "description": "The tax rate applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 4 and above tax bracket 3. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.28]
-    },
-
-    "_PT_rt5": {
-        "long_name": "Pass-through income tax rate 5",
-        "description": "The third highest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 5 and above tax bracket 4. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.33]
-    },
-
-    "_PT_rt6": {
-        "long_name": "Pass-through income tax rate 6",
-        "description": "The second higher tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 6 and above tax bracket 5. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.35]
-    },
-
-    "_PT_rt7": {
-        "long_name": "Pass-through income tax rate 7",
-        "description": "The highest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 7 and above tax bracket 6. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.396]
-    },
-
-    "_PT_rt8": {
-        "long_name": "Extra pass-through income tax rate",
-        "description": "The extra tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations above the tax bracket 7.",
-        "irs_ref": "",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [1.0]
-
-    },
-
-    "_PT_brk1": {
-        "long_name": "Pass-through income tax bracket (upper threshold) 1",
-        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold is taxed at tax rate 1. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "MARS",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[8925, 17850, 8925, 12750, 17850, 8925],
-                  [9075, 18150, 9075, 12950, 18150, 9075],
-                  [9225, 18450, 9225, 13150, 18450, 9225],
-                  [9275, 18550, 9275, 13250, 18550, 9275]],
-        "validations": {"min": 0, "max": "_PT_brk2"}
-    },
-
-    "_PT_brk2": {
-        "long_name": "Pass-through income tax bracket (upper threshold) 2",
-        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 1 is taxed at tax rate 2. ",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "MARS",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[36250, 72500, 36250, 48600, 72500, 36250],
-                  [36900, 73800, 36900, 49400, 73800, 36900],
-                  [37450, 74900, 37450, 50200, 74900, 37450],
-                  [37650, 75300, 37650, 50400, 75300, 37650]],
-        "validations": {"min": "_PT_brk1", "max": "_PT_brk3"}
-    },
-
-    "_PT_brk3": {
-        "long_name": "Pass-through income tax bracket (upper threshold) 3",
-        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 2 is taxed at tax rate 3.",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "MARS",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[87850, 146400, 73200, 125450, 146400, 73200],
-                  [89350, 148850, 74425, 127550, 148850, 74425],
-                  [90750, 151200, 75600, 129600, 151200, 75600],
-                  [91150, 151900, 75950, 130150, 151900, 75950]],
-        "validations": {"min": "_PT_brk2", "max": "_PT_brk4"}
-    },
-
-    "_PT_brk4": {
-        "long_name": "Pass-through income tax bracket (upper threshold) 4",
-        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 3 is taxed at tax rate 4.",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "MARS",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[183250, 223050, 111525, 203150, 223050, 111525],
-                  [186350, 226850, 113425, 206600, 226850, 113425],
-                  [189300, 230450, 115225, 209850, 230450, 115225],
-                  [190150, 231450, 115725, 210800, 231450, 115725]],
-        "validations": {"min": "_PT_brk3", "max": "_PT_brk5"}
-    },
-
-    "_PT_brk5": {
-        "long_name": "Pass-through income tax bracket (upper threshold) 5",
-        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 4 is taxed at tax rate 5.",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "MARS",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[398350, 398350, 199175, 398350, 398350, 199175],
-                  [405100, 405100, 202550, 405100, 405100, 202550],
-                  [411500, 411500, 205750, 411500, 411500, 205750],
-                  [413350, 413350, 206675, 413350, 413350, 206675]],
-        "validations": {"min": "_PT_brk4", "max": "_PT_brk6"}
-    },
-
-    "_PT_brk6": {
-        "long_name": "Pass-through income tax bracket (upper threshold) 6",
-        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 5 is taxed at tax rate 6.",
-        "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "MARS",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[400000, 450000, 225000, 425000, 450000, 225000],
-                  [406750, 457600, 228800, 432200, 457600, 228800],
-                  [413200, 464850, 232425, 439000, 464850, 232425],
-                  [415050, 466950, 233475, 441000, 466950, 233475]],
-        "validations": {"min": "_PT_brk5", "max": "_PT_brk7"}
-    },
-
-    "_PT_brk7": {
-        "long_name": "Extra pass-through income tax bracket",
-        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 6 is taxed at tax rate 7. Default value is essentially infinity",
-        "irs_ref": "",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "MARS",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "cpi_inflated": true,
-        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
-                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
-                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
-                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99]],
-        "validations": {"min": "_PT_brk6"}
-    },
-
-    "_LST": {
-        "long_name": "Dollar amount of lump-sum tax",
-        "description": "Lump-sum tax is included only in combined taxes; it is not included in income or payroll taxes.",
-        "irs_ref": "",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0]
-    },
-
     "_FST_AGI_trt": {
-        "long_name": "Rate applied to AGI to determine full Fair Share Tax",
-        "description": "The result of multiplying AGI by this is full FST (before credit for income tax and employee share of payroll taxes).",
+        "long_name": "New minimum tax; rate as a decimal fraction of AGI",
+        "description": "Individual income taxes and the employee share of payroll taxes are credited against this minimum tax, so the surtax is the difference between the tax rate times AGI and the credited taxes. The new minimum tax is similar to the Fair Share Tax, except that no credits are exempted from the base.",
+        "section_1": "Surtaxes",
+        "section_2": "New minimum tax",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
@@ -2445,8 +2519,10 @@
     },
 
     "_FST_AGI_thd_lo": {
-        "long_name": "Minimum AGI needed to be subject to Fair Share Tax",
-        "description": "A taxpayer is only subject to the FST if they exceed this level of AGI",
+        "long_name": "Minimum AGI needed to be subject to the new minimum tax",
+        "description": "A taxpayer is only subject to the new minimum tax if they exceed this level of AGI",
+        "section_1": "Surtaxes",
+        "section_2": "New minimum tax",
         "irs_ref": "",
         "note": "",
         "start_year": 2013,
@@ -2460,8 +2536,10 @@
     },
 
     "_FST_AGI_thd_hi": {
-        "long_name": "AGI level at which the Fair Share Tax is fully phased in",
-        "description": "The FST will be fully phased in at this level of AGI. If there is no phase-in, this upper threshold should be set equal to the lower AGI threshold",
+        "long_name": "AGI level at which the New Minimum Tax is fully phased in",
+        "description": "The new minimum tax will be fully phased in at this level of AGI. If there is no phase-in, this upper threshold should be set equal to the lower AGI threshold",
+        "section_1": "Surtaxes",
+        "section_2": "New minimum tax",
         "irs_ref": "",
         "note": "",
         "start_year": 2013,
@@ -2472,5 +2550,57 @@
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
         "value": [[2.0e6, 2.0e6, 1.0e6, 2.0e6, 2.0e6, 1.0e6]],
         "validations": {"min": "_FST_AGI_thd_lo"}
+    },
+
+
+    "_AGI_surtax_trt": {
+        "long_name": "New AGI surtax rate",
+        "description": "The surtax rate is applied to the portion of Adjusted Gross Income above the AGI surtax threshold.",
+        "section_1": "Surtaxes",
+        "section_2": "New AGI surtax",
+        "irs_ref": "",
+        "note": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0],
+        "validations": {"min": 0.0}
+    },
+
+    "_AGI_surtax_thd": {
+        "long_name": "Threshold for the new AGI surtax",
+        "description": "The aggregate gross income above this AGI surtax threshold is taxed at surtax rate on AGI.",
+        "section_1": "Surtaxes",
+        "section_2": "New AGI surtax",
+        "irs_ref": "",
+        "note": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": true,
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "value": [[9e99, 9e99, 9e99, 9e99, 9e99, 9e99]]
+    },
+
+    "_LST": {
+        "long_name": "Dollar amount of lump-sum tax",
+        "description": "The lump-sum tax is available to every member of a tax filing unit. The lump-sum tax is included only in combined taxes; it is not included in income or payroll taxes.",
+        "section_1": "Surtaxes",
+        "section_2": "Lump-sum tax",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
     }
 }
+
+
