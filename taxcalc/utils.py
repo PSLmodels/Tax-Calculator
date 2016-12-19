@@ -681,8 +681,7 @@ def ascii_output(csv_filename, ascii_filename):
     fstring = '{:' + str(col_size) + '}'
     out = out.applymap(fstring.format)
     # write ascii output to specified ascii_filename
-    out.to_csv(ascii_filename, header=False, index=False,
-               delim_whitespace=True, sep='\t')
+    out.to_csv(ascii_filename, header=False, index=False, sep='\t')
 
 
 def mtr_graph_data(calc1, calc2,
