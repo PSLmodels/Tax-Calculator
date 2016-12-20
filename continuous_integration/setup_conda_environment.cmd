@@ -15,13 +15,13 @@ conda remove --all -q -y -n %CONDA_ENV%
 
 @rem Create test environment
 @rem (note: no cytoolz as it seems to prevent faulthandler tracebacks on crash)
-conda create -n %CONDA_ENV% -q -y python=%PYTHON% pytest setuptools
+conda create -n %CONDA_ENV% -q -y python=%PYTHON% pytest toolz setuptools
 
 call activate %CONDA_ENV%
 
 @rem Install optional dependencies for tests
 %CONDA_INSTALL% numpy=%NUMPY% pandas=%PANDAS% 
-%CONDA_INSTALL% numba bokeh=0.12.3 toolz six mock pep8 pylist
+%CONDA_INSTALL% numba bokeh=0.12.3 toolz six mock pep8 pylint
 
 %PIP_INSTALL% pytest-pep8
 
