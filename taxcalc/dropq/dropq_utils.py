@@ -8,12 +8,13 @@ EPSILON = 1e-3
 
 def format_print(x, _type, num_decimals):
     float_types = [float, np.dtype('f8')]
+    int_types = [int, np.dtype('i8')]
     frmat_str = "0:.{num}f".format(num=num_decimals)
     frmat_str = "{" + frmat_str + "}"
     try:
         if _type in float_types or _type is None:
             return frmat_str.format(x)
-        elif _type == int:
+        elif _type in int_types:
             return str(int(x))
         elif _type == str:
             return str(x)
