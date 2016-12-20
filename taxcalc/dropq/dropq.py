@@ -1,5 +1,5 @@
 from __future__ import print_function
-from .. import (Calculator, Records, Policy, Behavior,
+from .. import (Calculator, Records, Policy, Behavior, Consumption,
                 TABLE_LABELS, TABLE_COLUMNS, STATS_COLUMNS,
                 DIFF_TABLE_LABELS)
 
@@ -40,7 +40,28 @@ ogusa_row_names = ["GDP", "Consumption", "Investment", "Hours Worked", "Wages",
 
 NUM_YEARS_DEFAULT = 1
 
+def call_over_iterable(fn):
+    """
+    A modifier for the only_* functions in this module. The idea is that
+    these functions may be passed a tuple of reform dictionaries, instead
+    of just a dictionary (since file-based reforms can result in a tuple
+    of reform dictionaries. In that case, this decorator will call its
+    wrapped function for each dictionary in the tuple, then collect
+    and return the results
+    """
+    def wrapper(user_mods, start_year):
+        if isinstance(user_mods, tuple):
+            ans = [fn(mod, start_year) for mod in user_mods]
+            params = ans[0]
+            for a in ans:
+                params.update(a)
+            return params
+        else:
+            return fn(user_mods, start_year)
 
+    return wrapper
+
+@call_over_iterable
 def only_growth_assumptions(user_mods, start_year):
     """
     Extract any reform parameters that are pertinent to growth
@@ -55,6 +76,7 @@ def only_growth_assumptions(user_mods, start_year):
     return ga
 
 
+@call_over_iterable
 def only_behavior_assumptions(user_mods, start_year):
     """
     Extract any reform parameters that are pertinent to behavior
@@ -69,6 +91,7 @@ def only_behavior_assumptions(user_mods, start_year):
     return ba
 
 
+@call_over_iterable
 def only_reform_mods(user_mods, start_year):
     """
     Extract parameters that are just for policy reforms
@@ -88,13 +111,15 @@ def only_reform_mods(user_mods, start_year):
     return pol_refs
 
 
+@call_over_iterable
 def get_unknown_parameters(user_mods, start_year):
     """
-    Extract parameters that are just for policy reforms
+    Returns any parameters that are not known to Tax-Calculator
     """
     beh_dd = Behavior.default_data(start_year=start_year)
     growth_dd = growth.Growth.default_data(start_year=start_year)
     policy_dd = policy.Policy.default_data(start_year=start_year)
+    consump_dd = Consumption.default_data(start_year=start_year)
     unknown_params = []
     for year, reforms in user_mods.items():
         everything = set(reforms.keys())
@@ -106,7 +131,7 @@ def get_unknown_parameters(user_mods, start_year):
         if bad_cpis:
             unknown_params += list(bad_cpis)
         pols = (remaining - set(beh_dd.keys()) - set(growth_dd.keys()) -
-                set(policy_dd.keys()))
+                set(policy_dd.keys()) - set(consump_dd.keys()))
         if pols:
             unknown_params += list(pols)
 
