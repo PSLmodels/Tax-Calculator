@@ -15,17 +15,14 @@ conda remove --all -q -y -n %CONDA_ENV%
 
 @rem Create test environment
 @rem (note: no cytoolz as it seems to prevent faulthandler tracebacks on crash)
-conda create -n %CONDA_ENV% -q -y python=%PYTHON% pytest toolz setuptools
+conda create -n %CONDA_ENV% -q -y python=%PYTHON%
 
 call activate %CONDA_ENV%
 
-@rem Install optional dependencies for tests
-%CONDA_INSTALL% numpy=%NUMPY% pandas=%PANDAS% 
-%CONDA_INSTALL% numba bokeh=0.12.3 toolz six mock pep8 pylint
+%CONDA% env update -f environment.yml
 
 %PIP_INSTALL% pytest-pep8
 
-if %PYTHON% LSS 3.0 (%PIP_INSTALL% git+https://github.com/Blosc/castra)
 if %PYTHON% LSS 3.0 (%PIP_INSTALL% backports.lzma mock)
 
 @rem Display final environment (for reproducing)

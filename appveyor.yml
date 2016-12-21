@@ -13,10 +13,8 @@ environment:
     - PYTHON: "3.5"
       ARCH: "64"
       NUMPY: "1.10"
-      # Note Pandas 0.19 crashes in test_split_apply_combine_on_series,
-      # see https://ci.appveyor.com/project/pitrou/dask/build/1.0.40#L316
       PANDAS: "0.18"
-      CONDA_ENV: testenv
+      CONDA_ENV: taxcalc-dev
 
 init:
   # Use AppVeyor's provided Miniconda: https://www.appveyor.com/docs/installed-software#python
