@@ -8,6 +8,7 @@ Tax-Calculator utility functions.
 #
 # pylint: disable=too-many-lines
 
+import math
 import copy
 from collections import defaultdict, OrderedDict
 import six
@@ -1115,3 +1116,180 @@ def string_to_number(string):
         return int(string)
     except ValueError:
         return float(string)
+
+
+def isoelastic_utility_function(consumption, crra, cmin):
+    """
+    Calculate and return utility of consumption.
+
+    Parameters
+    ----------
+    consumption : float
+      consumption for a filing unit
+
+    crra : non-negative float
+      constant relative risk aversion parameter
+
+    cmin : positive float
+      consumption level below which marginal utility is assumed to be constant
+
+    Returns
+    -------
+    utility of consumption
+    """
+    if consumption >= cmin:
+        if crra == 1.0:
+            return math.log(consumption)
+        else:
+            return math.pow(consumption, (1.0 - crra)) / (1.0 - crra)
+    else:  # if consumption < cmin
+        if crra == 1.0:
+            tu_at_cmin = math.log(cmin)
+        else:
+            tu_at_cmin = math.pow(cmin, (1.0 - crra)) / (1.0 - crra)
+        mu_at_cmin = math.pow(cmin, -crra)
+        tu_at_c = tu_at_cmin + mu_at_cmin * (consumption - cmin)
+        return tu_at_c
+
+
+def expected_utility(consumption, probability, crra, cmin):
+    """
+    Calculate and return expected utility of consumption.
+
+    Parameters
+    ----------
+    consumption : numpy array
+      consumption for each filing unit
+
+    probability : numpy array
+      samplying probability of each filing unit
+
+    crra : non-negative float
+      constant relative risk aversion parameter of isoelastic utility function
+
+    cmin : positive float
+      consumption level below which marginal utility is assumed to be constant
+
+    Returns
+    -------
+    expected utility of consumption array
+    """
+    utility = consumption.apply(isoelastic_utility_function,
+                                args=(crra, cmin,))
+    return np.inner(utility, probability)
+
+
+def certainty_equivalent(exputil, crra, cmin):
+    """
+    Calculate and return certainty-equivalent of exputil of consumption
+    assuming an isoelastic utility function with crra and cmin as parameters.
+
+    Parameters
+    ----------
+    exputil : float
+      expected utility value
+
+    crra : non-negative float
+      constant relative risk aversion parameter of isoelastic utility function
+
+    cmin : positive float
+      consumption level below which marginal utility is assumed to be constant
+
+    Returns
+    -------
+    certainty-equivalent of specified expected utility, exputil
+    """
+    if crra == 1.0:
+        tu_at_cmin = math.log(cmin)
+    else:
+        tu_at_cmin = math.pow(cmin, (1.0 - crra)) / (1.0 - crra)
+    if exputil >= tu_at_cmin:
+        if crra == 1.0:
+            return math.exp(exputil)
+        else:
+            return math.pow((exputil * (1.0 - crra)), (1.0 / (1.0 - crra)))
+    else:
+        mu_at_cmin = math.pow(cmin, -crra)
+        return ((exputil - tu_at_cmin) / mu_at_cmin) + cmin
+
+
+def ce_aftertax_income(calc1, calc2,
+                       custom_params=None,
+                       require_no_agg_tax_change=True):
+    """
+    Return dictionary that contains certainty-equivalent of the expected
+    utility of after-tax income computed for constant-relative-risk-aversion
+    parameter values for each of two Calculator objects: calc1, which
+    represents the pre-reform situation, and calc2, which represents the
+    post-reform situation, both of which MUST have had calc_call() called
+    before being passed to this function.
+
+    IMPORTANT NOTES: These normative welfare calculations are very simple.
+    It is assumed that utility is a function of only consumption, and that
+    consumption is equal to after-tax income.  This means that any assumed
+    behavioral responses that change work effort will not affect utility via
+    the correpsonding change in leisure.  And any saving response to changes
+    in after-tax income do not affect consumption.
+    """
+    # pylint: disable=too-many-locals
+    # ... check that calc1 and calc2 are consistent
+    assert calc1.records.dim == calc2.records.dim
+    assert calc1.current_year == calc2.current_year
+    # ... specify utility function parameters
+    if custom_params:
+        crras = custom_params['crra_list']
+        for crra in crras:
+            assert crra >= 0
+        cmin = custom_params['cmin_value']
+        assert cmin > 0
+    else:
+        crras = [0, 1, 2, 3, 4]
+        cmin = 1000
+    # The cmin value is the consumption level below which marginal utility
+    # is considered to be constant.  This allows the handling of filing units
+    # with very low or even negative after-tax income in the expected-utility
+    # and certainty-equivalent calculations.
+    # ... extract calc_all() data from calc1 and calc2
+    record_columns = ['s006', '_payrolltax', '_iitax',
+                      '_combined', '_expanded_income']
+    out = [getattr(calc1.records, col) for col in record_columns]
+    df1 = pd.DataFrame(data=np.column_stack(out), columns=record_columns)
+    out = [getattr(calc2.records, col) for col in record_columns]
+    df2 = pd.DataFrame(data=np.column_stack(out), columns=record_columns)
+    # ... compute aggregate combined tax revenue and aggregate after-tax income
+    billion = 1.0e-9
+    cedict = dict()
+    cedict['year'] = calc1.current_year
+    cedict['tax1'] = weighted_sum(df1, '_combined') * billion
+    cedict['tax2'] = weighted_sum(df2, '_combined') * billion
+    if require_no_agg_tax_change:
+        diff = cedict['tax2'] - cedict['tax1']
+        if abs(diff) >= 0.0005:
+            msg = 'Aggregate taxes not equal when required_... arg is True:'
+            msg += '\n            taxes1= {:9.3f}'
+            msg += '\n            taxes2= {:9.3f}'
+            msg += '\n            txdiff= {:9.3f}'
+            msg += ('\n(adjust _LST or other parameter to bracket txdiff=0 '
+                    'and then interpolate)')
+            raise ValueError(msg.format(cedict['tax1'], cedict['tax2'], diff))
+    cedict['inc1'] = weighted_sum(df1, '_expanded_income') * billion
+    cedict['inc2'] = weighted_sum(df2, '_expanded_income') * billion
+    # ... calculate sample-weighted probability of each filing unit
+    prob_raw = np.divide(df1['s006'], df1['s006'].sum())
+    prob = np.divide(prob_raw, prob_raw.sum())  # handle any rounding error
+    # ... calculate after-tax income of each filing unit in calc1 and calc2
+    ati1 = df1['_expanded_income'] - df1['_combined']
+    ati2 = df2['_expanded_income'] - df2['_combined']
+    # ... calculate certainty-equivaluent after-tax income in calc1 and calc2
+    cedict['crra'] = crras
+    ce1 = list()
+    ce2 = list()
+    for crra in crras:
+        eu1 = expected_utility(ati1, prob, crra, cmin)
+        ce1.append(certainty_equivalent(eu1, crra, cmin))
+        eu2 = expected_utility(ati2, prob, crra, cmin)
+        ce2.append(certainty_equivalent(eu2, crra, cmin))
+    cedict['ceeu1'] = ce1
+    cedict['ceeu2'] = ce2
+    # ... return cedict
+    return cedict
