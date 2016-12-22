@@ -15,7 +15,7 @@
         "value": [0.124]
     },
 
-        "_SS_Earnings_c": {
+    "_SS_Earnings_c": {
         "long_name": "Maximum taxable earnings for Social Security",
         "description": "Only individual earnings below this maximum amount are subjected to Social Security (OASDI) payroll tax.",
         "section_1": "Payroll Taxes",
@@ -53,7 +53,7 @@
         "value": [0.029]
     },
 
-        "_AMEDT_ec": {
+    "_AMEDT_ec": {
         "long_name": "Additional Medicare tax earnings exclusion",
         "description": "The Additional Medicare Tax rate, _AMEDT_rt, applies to all earnings in excess of this excluded amount.",
         "section_1": "Payroll taxes",
@@ -99,7 +99,7 @@
         "value": [[25000, 32000, 25000, 25000, 25000, 25000]]
     },
 
-        "_SS_percentage1": {
+    "_SS_percentage1": {
         "long_name": "Social Security taxable income decimal fraction 1",
         "description": "Under current law if their provisional income is above the first threshold for Social Security taxability but below the second threshold, taxpayers need to apply this fraction to both the excess of their provisional income over the first threshold and their Social Security benefits, and then include the smaller one in their AGI.",
         "section_1": "Social Security taxability",
@@ -426,10 +426,10 @@
                       "2016"],
         "cpi_inflated": true,
         "col_label": ["dependent"],
-        "value": [ 1000,
-                   1000,
-                   1050,
-                   1050],
+        "value": [1000,
+                  1000,
+                  1050,
+                  1050],
         "validations": {"min": "default"}
     },
 
@@ -1511,7 +1511,7 @@
         "value": [0.1]
     },
 
-     "_PT_brk1": {
+    "_PT_brk1": {
         "long_name": "Pass-through income tax bracket (upper threshold) 1",
         "description": "Income from sole proprietorships, partnerships and S corporations below this threshold is taxed at tax rate 1. ",
         "section_1": "Personal income",
@@ -1870,7 +1870,7 @@
                   7400]
     },
 
-       "_AMT_KT_c_Age": {
+    "_AMT_KT_c_Age": {
         "long_name": "Maximum age subject to Kiddie Tax",
         "description": "At or under this age, the individual is subject to Kiddie Tax.",
         "irs_ref": "Form 6251, line 28, instruction.",
@@ -2020,7 +2020,7 @@
         "value": [35]
     },
 
-     "_CTC_c": {
+    "_CTC_c": {
         "long_name": "Maximum child tax credit per child",
         "description": "The maximum amount of credit allowed for each child. ",
         "section_1": "Nonrefundable credits",
@@ -2646,5 +2646,3 @@
         "value": [0.0]
     }
 }
-
-
