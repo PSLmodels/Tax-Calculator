@@ -435,13 +435,13 @@ REFORM_CONTENTS = """
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
 // Parameter code in the policy object is enclosed inside a pair of double
-// ampersand characters (&&).
+// pipe characters (||).
 {
   "policy": {
     "param_code": {
-        "ALD_Investment_ec_base_code": &&
+        "ALD_Investment_ec_base_code": ||
 returned_value = e00300 + e00650 + p23250
-&&},
+||},
     "_ALD_Investment_ec_base_code_active":
     {"2016": [true]
     },

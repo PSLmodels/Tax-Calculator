@@ -419,7 +419,7 @@ class Calculator(object):
            and string years as secondary keys.  See tests/test_calculate.py for
            an extended example of a commented JSON reform text that can be read
            by this method.  Note that parameter code in the policy object is
-           enclosed inside a pair of double ampersand characters (&&) as shown
+           enclosed inside a pair of double pipe characters (||) as shown
            in the REFORM_CONTENTS string in the tests/test_calculate.py file.
         Returned dictionaries (reform_policy, reform_behavior,
                                reform_growth reform_consumption)
@@ -433,13 +433,13 @@ class Calculator(object):
         """
         # strip out //-comments without changing line numbers
         json_without_comments = re.sub('//.*', ' ', text_string)
-        # convert multi-line string between pairs of && into a simple string
+        # convert multi-line string between pairs of || into a simple string
 
         def repl(mat):
             code = mat.group(2).replace('\r', '\\r').replace('\n', '\\n')
             return '"' + code + '"'
 
-        json_str = re.sub('(&&)(.*)(&&)', repl, json_without_comments,
+        json_str = re.sub('(\|\|)(.*)(\|\|)', repl, json_without_comments,
                           flags=re.DOTALL)
         # convert JSON text into a Python dictionary
         try:
