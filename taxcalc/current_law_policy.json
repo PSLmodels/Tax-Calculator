@@ -2050,22 +2050,6 @@
         "value": [false]
     },
 
-    "_CTC_new_c": {
-        "long_name": "New refundable child tax credit maximum amount per child",
-        "description": "In addition to all credits currently available for dependents, this parameter gives each qualifying child a new refundable credit with this maximum amount.",
-        "section_1": "Refundable credits",
-        "section_2": "New refundable child tax credit",
-        "irs_ref": "",
-        "notes": "Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [0.0]
-    },
-
     "_CTC_c_under5_bonus": {
         "long_name": "Bonus child tax credit maximum for qualifying children under five",
         "description": "The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old. ",
