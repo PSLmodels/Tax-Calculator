@@ -433,10 +433,12 @@ class Calculator(object):
         """
         # strip out //-comments without changing line numbers
         json_without_comments = re.sub('//.*', ' ', text_string)
-        # convert multi-line string between pairs of && into a single string
+        # convert multi-line string between pairs of && into a simple string
+
         def repl(mat):
             code = mat.group(2).replace('\r', '\\r').replace('\n', '\\n')
             return '"' + code + '"'
+
         json_str = re.sub('(&&)(.*)(&&)', repl, json_without_comments,
                           flags=re.DOTALL)
         # convert JSON text into a Python dictionary

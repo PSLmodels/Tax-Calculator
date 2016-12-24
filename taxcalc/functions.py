@@ -191,14 +191,17 @@ def ALD_Investment_ec_base_code_function(calc):
     Compute investment_ec_base from code
     """
     code = calc.policy.param_code['ALD_Investment_ec_base_code']
-    visible = {'min': np.minimum, 'max': np.maximum, 'where': np.where}
+    visible = {'min': np.minimum, 'max': np.maximum,
+               'where': np.where, 'equal': np.equal}
     variables = ['e00300', 'e00600', 'e00650', 'e01100', 'e01200',
                  'p22250', 'p23250', '_sep']
     for var in variables:
         visible[var] = getattr(calc.records, var)
-    # pylint: disable=eval-used
-    calc.records.investment_ec_base = eval(compile(code, '<str>', 'eval'),
-                                           {'__builtins__': {}}, visible)
+    visible['cpi'] = calc.policy.cpi('ALD_Investment_ec_base_code')
+    visible['returned_value'] = calc.records.investment_ec_base
+    # pylint: disable=exec-used
+    exec(compile(code, '<str>', 'exec'), {'__builtins__': {}}, visible)
+    calc.records.investment_ec_base = visible['returned_value']
 
 
 @iterate_jit(nopython=True)
