@@ -418,7 +418,9 @@ class Calculator(object):
            or may contain one or more pairs with parameter string primary keys
            and string years as secondary keys.  See tests/test_calculate.py for
            an extended example of a commented JSON reform text that can be read
-           by this method.
+           by this method.  Note that parameter code in the policy object is
+           enclosed inside a pair of double ampersand characters (&&) as shown
+           in the REFORM_CONTENTS string in the tests/test_calculate.py file.
         Returned dictionaries (reform_policy, reform_behavior,
                                reform_growth reform_consumption)
            have integer years as primary keys
@@ -431,9 +433,15 @@ class Calculator(object):
         """
         # strip out //-comments without changing line numbers
         json_without_comments = re.sub('//.*', ' ', text_string)
+        # convert multi-line string between pairs of && into a single string
+        def repl(mat):
+            code = mat.group(2).replace('\r', '\\r').replace('\n', '\\n')
+            return '"' + code + '"'
+        json_str = re.sub('(&&)(.*)(&&)', repl, json_without_comments,
+                          flags=re.DOTALL)
         # convert JSON text into a Python dictionary
         try:
-            raw_dict = json.loads(json_without_comments)
+            raw_dict = json.loads(json_str)
         except ValueError as valerr:
             msg = 'Policy reform text below contains invalid JSON:\n'
             msg += str(valerr) + '\n'
@@ -443,7 +451,7 @@ class Calculator(object):
             bline += '----.----5----.----6----.----7'
             msg += bline + '\n'
             linenum = 0
-            for line in json_without_comments.split('\n'):
+            for line in json_str.split('\n'):
                 linenum += 1
                 msg += '{:02d}{}'.format(linenum, line) + '\n'
             msg += bline + '\n'

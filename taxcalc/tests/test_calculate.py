@@ -433,6 +433,8 @@ REFORM_CONTENTS = """
 // primary keys are parameters and secondary keys are years.
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
+// Parameter code in the policy object is enclosed inside a pair of double
+// ampersand characters (&&).
 {
   "policy": {
     "param_code": {
