@@ -494,7 +494,7 @@ def test_parameters_get_default_start_year():
     should_be = 41050 * (1.0 + Policy.default_inflation_rates()[2014])
     meta_amt_thd_marrieds['value'] == should_be
     # 1D data, doesn't have 2015 values, is not CPI inflated
-    meta_kt_c_age = paramdata['_KT_c_Age']
+    meta_kt_c_age = paramdata['_AMT_KT_c_Age']
     assert meta_kt_c_age['start_year'] == 2015
     assert meta_kt_c_age['row_label'] == ['2015']
     assert meta_kt_c_age['value'] == [24]
