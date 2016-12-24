@@ -93,7 +93,7 @@ def test_calc_and_used_vars(tests_path):
     all_cvars.update(set(['ID_Casualty_frt_in_pufcsv_year',
                           '_num', '_sep', '_exact']))
     # .. add to all_cvars set some variables calculated in *_code_function
-    all_cvars.update(set(['investment_ec_base']))
+    all_cvars.update(set(['investment_ec_base', 'new_ctc']))
     # .. check that each var in Records.CALCULATED_VARS is in the all_cvars set
     found_error1 = False
     if not Records.CALCULATED_VARS <= all_cvars:
@@ -105,7 +105,7 @@ def test_calc_and_used_vars(tests_path):
     faux_functions = ['EITCamount', 'ComputeBenefit',
                       'BenefitSurtax', 'BenefitLimitation',
                       'ALD_Investment_ec_base_code_function',
-                      'new_refundable_credit_code_function']
+                      'CTC_new_code_function']
     found_error2 = False
     msg2 = 'calculated & returned variables are not function arguments\n'
     for fname in fnames:

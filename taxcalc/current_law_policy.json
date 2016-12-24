@@ -258,7 +258,7 @@
     },
 
     "_ALD_Investment_ec_base_code_active": {
-        "long_name": "Use code expression to compute investment income exclusion base",
+        "long_name": "Use parameter code to compute investment income exclusion base",
         "description": "False implies base includes all investment income; otherwise code defines base.",
         "irs_ref": "",
         "notes": "",
@@ -2036,20 +2036,6 @@
         "value": [1000]
     },
 
-    "_new_refundable_credit_code_active": {
-        "long_name": "Use code expression to compute new refundable credit",
-        "description": "False implies no additional refundable credit; otherwise code defines credit.",
-        "irs_ref": "",
-        "notes": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "cpi_inflated": false,
-        "col_label": "",
-        "value": [false]
-    },
-
     "_CTC_c_under5_bonus": {
         "long_name": "Bonus child tax credit maximum for qualifying children under five",
         "description": "The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old. ",
@@ -2446,9 +2432,9 @@
         "value": [3]
     },
 
-    "_new_refundable_credit_code_active": {
-        "long_name": "Use code expression to compute new refundable credit",
-        "description": "False implies no additional refundable credit; otherwise code defines credit.",
+    "_CTC_new_code_active": {
+        "long_name": "Use parameter code to compute new refundable child tax credit",
+        "description": "False implies additional refundable child tax credit computed using numeric parameters; otherwise code defines credit.",
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,

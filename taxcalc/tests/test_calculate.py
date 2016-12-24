@@ -322,10 +322,10 @@ def test_Calculator_create_difference_table(puf_1991, weights_1991):
     reform = {
         2013: {'_II_rt7': [0.45]},
         2013: {'_ALD_Investment_ec_base_code_active': [True]},
-        2013: {'_new_refundable_credit_code_active': [True]},
+        2013: {'_CTC_new_code_active': [True]},
         0: {'ALD_Investment_ec_base_code':
             'returned_value = e00300 + e00650 + p23250',
-            'new_refundable_credit_code':
+            'CTC_new_code':
             'returned_value = where(n24>0, 100, 0)'}
     }
     policy2.implement_reform(reform)

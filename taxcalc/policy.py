@@ -72,7 +72,7 @@ class Policy(ParametersBase):
                  2025: 0.0415, 2026: 0.0416}
 
     VALID_PARAM_CODE_NAMES = set(['ALD_Investment_ec_base_code',
-                                  'new_refundable_credit_code'])
+                                  'CTC_new_code'])
 
     PROHIBIT_PARAM_CODE = False
 

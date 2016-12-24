@@ -1221,21 +1221,21 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
     return (c07100, c09200)
 
 
-def new_refundable_credit_code_function(calc):
+def CTC_new_code_function(calc):
     """
-    Compute new refundable child tax credit from code
+    Compute new refundable child tax credit using parameter code
     """
-    code = calc.policy.param_code['new_refundable_credit_code']
+    code = calc.policy.param_code['CTC_new_code']
     visible = {'min': np.minimum, 'max': np.maximum,
                'where': np.where, 'equal': np.equal}
     variables = ['n24', 'c00100', 'nu05', 'MARS', 'ptax_oasdi', 'c09200']
     for var in variables:
         visible[var] = getattr(calc.records, var)
-    visible['cpi'] = calc.policy.cpi('new_refundable_credit_code')
-    visible['returned_value'] = calc.records.new_refundable_credit
+    visible['cpi'] = calc.policy.cpi('CTC_new_code')
+    visible['returned_value'] = calc.records.new_ctc
     # pylint: disable=exec-used
     exec(compile(code, '<str>', 'exec'), {'__builtins__': {}}, visible)
-    calc.records.new_refundable_credit = visible['returned_value']
+    calc.records.new_ctc = visible['returned_value']
 
 
 @iterate_jit(nopython=True)
@@ -1245,11 +1245,11 @@ def IITAX(c59660, c11070, c10960, personal_credit,
           n24, c00100, MARS, ptax_oasdi, CTC_new_refund_limited,
           CTC_new_ps, CTC_new_prt, CTC_new_refund_limit_payroll_rt,
           ctc_new, _eitc, _refund, _iitax, _combined,
-          new_refundable_credit, new_refundable_credit_code_active):
+          new_ctc, CTC_new_code_active):
     """
     Compute final taxes including new refundable child tax credit
     """
-    # compute new refundable child tax credit
+    # compute new refundable child tax credit with numeric parameters
     if n24 > 0:
         posagi = max(c00100, 0.)
         ctc_new = min(CTC_new_rt * posagi,
@@ -1266,15 +1266,14 @@ def IITAX(c59660, c11070, c10960, personal_credit,
             ctc_new = max(0., ctc_new - limited_new)
     else:
         ctc_new = 0.
-
-    if new_refundable_credit_code_active:
-        new_refundable_credit = new_refundable_credit
+    # use either numeric parameters or parameter code, but not both
+    if CTC_new_code_active:
+        new_refundable_ctc = new_ctc
     else:
-        new_refundable_credit = 0
+        new_refundable_ctc = ctc_new
     # compute final taxes
     _eitc = c59660
-    _refund = (_eitc + c11070 + c10960 + personal_credit + ctc_new +
-               new_refundable_credit)
+    _refund = _eitc + c11070 + c10960 + personal_credit + new_refundable_ctc
     _iitax = c09200 - _refund
     _combined = _iitax + _payrolltax
     return (ctc_new, _eitc, _refund, _iitax, _combined)
