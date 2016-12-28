@@ -162,8 +162,10 @@ class Calculator(object):
         EI_PayrollTax(self.policy, self.records)
         DependentCare(self.policy, self.records)
         Adj(self.policy, self.records)
-        if self.policy.ALD_Investment_ec_base_code_active:
-            ALD_Investment_ec_base_code_function(self)
+        if self.policy.ALD_invinc_ec_base_code_active:
+            ALD_invinc_ec_base_code(self)
+        else:
+            ALD_invinc_ec_base_nocode(self.policy, self.records)
         CapGains(self.policy, self.records)
         SSBenefits(self.policy, self.records)
         AGI(self.policy, self.records)

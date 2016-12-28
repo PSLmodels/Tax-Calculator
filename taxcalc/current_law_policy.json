@@ -241,13 +241,13 @@
         "value": [0.0]
     },
 
-    "_ALD_Investment_ec_rt": {
+    "_ALD_invinc_ec_rt": {
         "long_name": "Investment income exclusion rate",
         "description": "Decimal fraction of investment income base that can be excluded from AGI.",
         "section_1": "Above the line deductions",
         "section_2": "Misc. exclusions",
         "irs_ref": "Form 1040, line 8a",
-        "notes": "The final taxable investment income will be (1-_ALD_Investment_ec_rt)*investment_income_base. Even though the excluded portion of investment income is not included in AGI, it still is included in investment income used to calculate the Net Investment Income Tax and Earned Income Tax Credit.",
+        "notes": "The final taxable investment income will be (1-_ALD_invinc_ec_rt)*investment_income_base. Even though the excluded portion of investment income is not included in AGI, it still is included in investment income used to calculate the Net Investment Income Tax and Earned Income Tax Credit.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -257,7 +257,7 @@
         "value": [0.0]
     },
 
-    "_ALD_Investment_ec_base_code_active": {
+    "_ALD_invinc_ec_base_code_active": {
         "long_name": "Use parameter code to compute investment income exclusion base",
         "description": "False implies base includes all investment income; otherwise code defines base.",
         "irs_ref": "",

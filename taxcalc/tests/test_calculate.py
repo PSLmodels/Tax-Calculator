@@ -321,12 +321,12 @@ def test_Calculator_create_difference_table(puf_1991, weights_1991):
     policy2 = Policy()
     reform = {
         2013: {'_II_rt7': [0.45]},
-        2013: {'_ALD_Investment_ec_base_code_active': [True]},
+        2013: {'_ALD_invinc_ec_base_code_active': [True]},
         2013: {'_CTC_new_code_active': [True]},
-        0: {'ALD_Investment_ec_base_code':
-            'returned_value = e00300 + e00650 + p23250',
+        0: {'ALD_invinc_ec_base_code':
+                'returned_value = e00300 + e00650 + p23250',
             'CTC_new_code':
-            'returned_value = where(n24>0, 100, 0)'}
+                'returned_value = where(n24>0, 100, 0)'}
     }
     policy2.implement_reform(reform)
     puf2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
@@ -439,10 +439,11 @@ REFORM_CONTENTS = """
 {
   "policy": {
     "param_code": {
-        "ALD_Investment_ec_base_code": ||
+"ALD_invinc_ec_base_code":
+||
 returned_value = e00300 + e00650 + p23250
 ||},
-    "_ALD_Investment_ec_base_code_active":
+    "_ALD_invinc_ec_base_code_active":
     {"2016": [true]
     },
     "_AMT_brk1": // top of first AMT tax bracket
