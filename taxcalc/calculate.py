@@ -439,8 +439,8 @@ class Calculator(object):
             code = mat.group(2).replace('\r', '\\r').replace('\n', '\\n')
             return '"' + code + '"'
 
-        json_str = re.sub('(\|\|)(.*)(\|\|)', repl, json_without_comments,
-                          flags=re.DOTALL)
+        json_str = re.sub('(\|\|)(.*?)(\|\|)',  # pylint: disable=W1401
+                          repl, json_without_comments, flags=re.DOTALL)
         # convert JSON text into a Python dictionary
         try:
             raw_dict = json.loads(json_str)
