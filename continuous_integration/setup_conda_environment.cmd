@@ -21,10 +21,6 @@ call activate %CONDA_ENV%
 
 %CONDA% env update -f environment.yml
 
-%PIP_INSTALL% pytest-pep8
-
-if %PYTHON% LSS 3.0 (%PIP_INSTALL% backports.lzma mock)
-
 @rem Display final environment (for reproducing)
 %CONDA% list
 %CONDA% list --explicit
