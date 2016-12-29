@@ -356,7 +356,7 @@ def test_chooser():
 
 
 def test_format_print_not_implemented():
-    x = np.array([1], dtype='i4')
+    x = np.array([1], dtype='i2')
     with pytest.raises(NotImplementedError):
         format_print(x[0], x.dtype, 2)
 
