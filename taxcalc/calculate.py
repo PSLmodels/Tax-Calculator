@@ -23,7 +23,6 @@ from .records import Records
 from .behavior import Behavior
 from .growth import Growth
 from .consumption import Consumption
-# import pdb
 
 
 class Calculator(object):
@@ -158,7 +157,6 @@ class Calculator(object):
         # calls all the functions except those in calc_all() function
         if zero_out_calc_vars:
             self.records.zero_out_changing_calculated_vars()
-        # pdb.set_trace()
         EI_PayrollTax(self.policy, self.records)
         DependentCare(self.policy, self.records)
         Adj(self.policy, self.records)

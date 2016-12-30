@@ -40,6 +40,7 @@ ogusa_row_names = ["GDP", "Consumption", "Investment", "Hours Worked", "Wages",
 
 NUM_YEARS_DEFAULT = 1
 
+
 def call_over_iterable(fn):
     """
     A modifier for the only_* functions in this module. The idea is that
@@ -60,6 +61,7 @@ def call_over_iterable(fn):
             return fn(user_mods, start_year)
 
     return wrapper
+
 
 @call_over_iterable
 def only_growth_assumptions(user_mods, start_year):
@@ -92,6 +94,21 @@ def only_behavior_assumptions(user_mods, start_year):
 
 
 @call_over_iterable
+def only_consumption_assumptions(user_mods, start_year):
+    """
+    Extract any reform parameters that are pertinent to behavior
+    assumptions
+    """
+    con_dd = Consumption.default_data(start_year=start_year)
+    ca = {}
+    for year, reforms in user_mods.items():
+        overlap = set(con_dd.keys()) & set(reforms.keys())
+        if overlap:
+            ca[year] = {param: reforms[param] for param in overlap}
+    return ca
+
+
+@call_over_iterable
 def only_reform_mods(user_mods, start_year):
     """
     Extract parameters that are just for policy reforms
@@ -100,11 +117,12 @@ def only_reform_mods(user_mods, start_year):
     beh_dd = Behavior.default_data(start_year=start_year)
     growth_dd = growth.Growth.default_data(start_year=start_year)
     policy_dd = policy.Policy.default_data(start_year=start_year)
+    param_code_names = policy.Policy.VALID_PARAM_CODE_NAMES
     for year, reforms in user_mods.items():
         all_cpis = {p for p in reforms.keys() if p.endswith("_cpi") and
                     p[:-4] in policy_dd.keys()}
         pols = set(reforms.keys()) - set(beh_dd.keys()) - set(growth_dd.keys())
-        pols &= set(policy_dd.keys())
+        pols &= set(policy_dd.keys()) | param_code_names
         pols ^= all_cpis
         if pols:
             pol_refs[year] = {param: reforms[param] for param in pols}
@@ -154,6 +172,23 @@ def elasticity_of_gdp_year_n(user_mods, year_n):
 
 
 def random_seed_from_plan(user_mods):
+    """
+    Handles the case of getting a tuple of reform mods
+    """
+
+    if isinstance(user_mods, tuple):
+        ans = 0
+        for mod in user_mods:
+            ans += _random_seed_from_plan(mod)
+        return ans % np.iinfo(np.uint32).max
+    else:
+        return _random_seed_from_plan(user_mods)
+
+
+def _random_seed_from_plan(user_mods):
+    """
+    Handles the case of getting a single reform mod dictionary
+    """
     all_vals = []
     for year in sorted(user_mods.keys()):
         all_vals.append(str(year))
@@ -470,6 +505,10 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
     if growth_assumptions:
         calc1.growth.update_growth(growth_assumptions)
 
+    consump_assumptions = only_consumption_assumptions(user_mods, start_year)
+    if consump_assumptions:
+        calc1.consumption.update_consumption(consump_assumptions)
+
     while calc1.current_year < start_year:
         calc1.increment_year()
     calc1.calc_all()
@@ -480,6 +519,10 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
     calc2 = Calculator(policy=params2, records=records2)
     if growth_assumptions:
         calc2.growth.update_growth(growth_assumptions)
+
+    consump_assumptions = only_consumption_assumptions(user_mods, start_year)
+    if consump_assumptions:
+        calc2.consumption.update_consumption(consump_assumptions)
 
     while calc2.current_year < start_year:
         calc2.increment_year()
@@ -504,6 +547,9 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
     calc3 = Calculator(policy=params3, records=records3, behavior=behavior3)
     if growth_assumptions:
         calc3.growth.update_growth(growth_assumptions)
+
+    if consump_assumptions:
+        calc3.consumption.update_consumption(consump_assumptions)
 
     if behavior_assumptions:
         calc3.behavior.update_behavior(behavior_assumptions)
