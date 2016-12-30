@@ -11,6 +11,7 @@ import pandas as pd
 import hashlib
 import copy
 import time
+import collections
 from .dropq_utils import create_dropq_difference_table as dropq_diff_table
 from .dropq_utils import create_dropq_distribution_table as dropq_dist_table
 from .dropq_utils import *
@@ -138,7 +139,8 @@ def get_unknown_parameters(user_mods, start_year):
     growth_dd = growth.Growth.default_data(start_year=start_year)
     policy_dd = policy.Policy.default_data(start_year=start_year)
     consump_dd = Consumption.default_data(start_year=start_year)
-    unknown_params = []
+    param_code_names = policy.Policy.VALID_PARAM_CODE_NAMES
+    unknown_params = collections.defaultdict(list)
     for year, reforms in user_mods.items():
         everything = set(reforms.keys())
         all_cpis = {p for p in reforms.keys() if p.endswith("_cpi")}
@@ -147,11 +149,12 @@ def get_unknown_parameters(user_mods, start_year):
         bad_cpis = all_cpis - all_good_cpis
         remaining = everything - all_cpis
         if bad_cpis:
-            unknown_params += list(bad_cpis)
+            unknown_params['bad_cpis'] += list(bad_cpis)
         pols = (remaining - set(beh_dd.keys()) - set(growth_dd.keys()) -
-                set(policy_dd.keys()) - set(consump_dd.keys()))
+                set(policy_dd.keys()) - set(consump_dd.keys()) -
+                param_code_names)
         if pols:
-            unknown_params += list(pols)
+            unknown_params['policy'] += list(pols)
 
     return unknown_params
 

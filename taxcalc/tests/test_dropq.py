@@ -106,7 +106,8 @@ def test_run_dropq_nth_year(is_strict, rjson, growth_params,
         assert fiscal_tots is not None
 
 
-def test_run_dropq_nth_year_from_file(puf_1991_path, reform_file):
+@pytest.mark.parametrize("is_strict", [True, False])
+def test_run_dropq_nth_year_from_file(is_strict, puf_1991_path, reform_file):
 
     user_reform = Calculator.read_json_reform_file(reform_file.name)
     user_mods = user_reform
@@ -114,7 +115,6 @@ def test_run_dropq_nth_year_from_file(puf_1991_path, reform_file):
     # Create a Public Use File object
     tax_data = pd.read_csv(puf_1991_path)
     first = 2016
-    is_strict = False
     rjson = True
 
     (_, _, _, _, _, _, _, _,
@@ -307,8 +307,11 @@ def test_unknown_parameters_with_cpi():
     first_year = 2013
     user_mods = {first_year: myvars}
     ans = get_unknown_parameters(user_mods, 2015)
+    final_ans = []
+    for a in ans.values():
+        final_ans += a
     exp = set(["NOGOOD_cpi", "NO", "ELASTICITY_GDP_WRT_AMTR"])
-    assert set(ans) == exp
+    assert set(final_ans) == exp
 
 
 def test_format_macro_results():
