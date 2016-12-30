@@ -89,6 +89,19 @@ def main():
                               'with respect to full compensation'),
                         default=False,
                         action="store_true")
+    parser.add_argument('--ceeu',
+                        help=('optional flag that causes normative welfare '
+                              'statistics, including certainty-equivalent '
+                              'expected-utility of after-tax income values '
+                              'for different constant-relative-risk-aversion '
+                              'parameter values, to be written to stdout.  '
+                              'No --ceeu option implies nothing is written '
+                              'to stdout.  Note that --reform  option must '
+                              'be specified and aggregate combined taxes '
+                              'under that reform must be same as under '
+                              'current-law policy for this option to work'),
+                        default=False,
+                        action="store_true")
     output = parser.add_mutually_exclusive_group(required=False)
     output.add_argument('--records',
                         help=('optional flag that causes the output file to '
@@ -152,13 +165,15 @@ def main():
         inctax.calculate(writing_output_file=False,
                          exact_output=args.exact,
                          output_weights=args.weights,
-                         output_mtr_wrt_fullcomp=args.fullcomp)
+                         output_mtr_wrt_fullcomp=args.fullcomp,
+                         output_ceeu=args.ceeu)
         inctax.csv_dump(writing_output_file=True)
     else:
         inctax.calculate(writing_output_file=True,
                          exact_output=args.exact,
                          output_weights=args.weights,
-                         output_mtr_wrt_fullcomp=args.fullcomp)
+                         output_mtr_wrt_fullcomp=args.fullcomp,
+                         output_ceeu=args.ceeu)
     # return no-error exit code
     return 0
 # end of main function code

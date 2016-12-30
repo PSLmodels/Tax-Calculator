@@ -306,7 +306,7 @@ def ItemDed(e17500, e18400, e18500,
             ID_Casualty_frt_in_pufcsv_year,
             ID_Casualty_frt, ID_Casualty_hc, ID_Miscellaneous_frt,
             ID_Miscellaneous_hc, ID_Charity_crt_all, ID_Charity_crt_noncash,
-            ID_prt, ID_crt, ID_StateLocalTax_hc, ID_Charity_frt,
+            ID_prt, ID_crt, ID_c, ID_StateLocalTax_hc, ID_Charity_frt,
             ID_Charity_hc, ID_InterestPaid_hc, ID_RealEstate_hc):
     """
     ItemDed function: itemized deductions, Form 1040, Schedule A
@@ -320,6 +320,8 @@ def ItemDed(e17500, e18400, e18500,
         as a decimal fraction of total itemized deduction (Pease)
 
         ID_prt : Itemized deduction phaseout rate (Pease)
+
+        ID_c: Dollar limit on itemized deductions
 
         ID_Medical_frt : Deduction for medical expenses;
         floor as a decimal fraction of AGI
@@ -404,6 +406,7 @@ def ItemDed(e17500, e18400, e18500,
     else:
         c21040 = 0.
         c04470 = c21060
+    c04470 = min(c04470, ID_c[MARS - 1])
     return (c17000, c18300, c19200, c20500, c20800, c21040, c21060, c04470,
             c19700)
 
@@ -447,7 +450,7 @@ def AdditionalMedicareTax(e00200, MARS,
 
 
 @iterate_jit(nopython=True)
-def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
+def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
            MARS, MIDR, blind_head, blind_spouse, _standard):
     """
     StdDed function:
@@ -461,6 +464,8 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
     -----
     Tax Law Parameters:
         STD : Standard deduction amount, filing status dependent
+
+        STD_Dep : Standard deduction for dependents
 
         STD_Aged : Additional standard deduction for blind and aged
 
@@ -486,7 +491,7 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
     """
     # calculate deduction for dependents
     if DSI == 1:
-        c15100 = max(350. + _earned, STD[6])
+        c15100 = max(350. + _earned, STD_Dep)
         basic_stded = min(STD[MARS - 1], c15100)
     else:
         c15100 = 0.
@@ -509,11 +514,11 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
 
 
 @iterate_jit(nopython=True)
-def TaxInc(c00100, _standard, c21060, c21040, c04600, c04800):
+def TaxInc(c00100, _standard, c04470, c04600, c04800):
     """
     TaxInc function: ...
     """
-    c04800 = max(0., c00100 - max(c21060 - c21040, _standard) - c04600)
+    c04800 = max(0., c00100 - max(c04470, _standard) - c04600)
     return c04800
 
 
@@ -708,7 +713,7 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, _taxbc, _surtax):
 def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         c04470, c17000, c20800, c21040, e24515, MARS, _sep, dwks19,
         dwks14, c05700, e62900, e00700, dwks10, age_head, _earned, cmbtp,
-        KT_c_Age, AMT_brk1, AMT_thd_MarriedS,
+        AMT_KT_c_Age, AMT_brk1, AMT_thd_MarriedS,
         AMT_em, AMT_prt, AMT_rt1, AMT_rt2,
         AMT_Child_em, AMT_em_ps, AMT_em_pe,
         AMT_CG_brk1, AMT_CG_brk2, AMT_CG_brk3, AMT_CG_rt1, AMT_CG_rt2,
@@ -739,7 +744,7 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
     # Form 6251, Part II top
     line29 = max(0., AMT_em[MARS - 1] - AMT_prt *
                  max(0., c62100 - AMT_em_ps[MARS - 1]))
-    if age_head != 0 and age_head < KT_c_Age:
+    if age_head != 0 and age_head < AMT_KT_c_Age:
         line29 = min(line29, _earned + AMT_Child_em)
     line30 = max(0., c62100 - line29)
     line3163 = (AMT_rt1 * line30 +

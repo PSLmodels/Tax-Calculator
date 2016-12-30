@@ -13,9 +13,10 @@ install:
   - export PATH="$HOME/miniconda/bin:$PATH"
   - conda config --set always_yes yes --set changeps1 no
   - conda update conda
-  - conda create -n taxcalcdev python=$TRAVIS_PYTHON_VERSION pytest setuptools pandas=0.18 toolz six mock bokeh
-  - source activate taxcalcdev
-  - if [ $TRAVIS_EVENT_TYPE != 'cron' ]; then conda install numba; fi
+  - conda create -n taxcalc-dev python=$TRAVIS_PYTHON_VERSION;
+  - source activate taxcalc-dev
+  - conda env update -f environment.yml
+  - if [ $TRAVIS_EVENT_TYPE == 'cron' ]; then conda remove  numba; fi
   - pip install pytest-pep8
   - pip install coverage
   - pip install codecov
