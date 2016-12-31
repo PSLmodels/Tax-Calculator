@@ -13,7 +13,6 @@ import copy
 from collections import defaultdict, OrderedDict
 import json
 import six
-import os
 import numpy as np
 import pandas as pd
 try:
@@ -22,7 +21,6 @@ try:
 except ImportError:
     BOKEH_AVAILABLE = False
 
-TAXCALC_PATH = os.path.dirname(os.path.realpath(__file__))
 
 STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard',
                  'c04470', 'c04600', 'c04800', 'c05200', 'c62100', 'c09600',
