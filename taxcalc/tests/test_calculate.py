@@ -435,7 +435,7 @@ REFORM_CONTENTS = """
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
 // Parameter code in the policy object is enclosed inside a pair of double
-// pipe characters (||). 
+// pipe characters (||).
 {
   "policy": {
     "param_code": { // all the parameter code must go in one place
