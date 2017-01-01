@@ -1111,8 +1111,8 @@ def read_json_from_file(path):
     """
     Return a dict of data loaded from the json file stored at path.
     """
-    with open(path, 'r') as file:
-        data = json.load(file)
+    with open(path, 'r') as rfile:
+        data = json.load(rfile)
     return data
 
 
@@ -1120,8 +1120,8 @@ def write_json_to_file(data, path, indent=4, sort_keys=False):
     """
     Write data to a file at path in json format.
     """
-    with open(path, 'w') as file:
-        json.dump(data, file, indent=indent, sort_keys=sort_keys)
+    with open(path, 'w') as wfile:
+        json.dump(data, wfile, indent=indent, sort_keys=sort_keys)
 
 
 def string_to_number(string):
