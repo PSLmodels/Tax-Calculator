@@ -104,7 +104,7 @@ def test_calc_and_used_vars(tests_path):
     # Test (2):
     faux_functions = ['EITCamount', 'ComputeBenefit',
                       'BenefitSurtax', 'BenefitLimitation',
-                      'ALD_invinc_ec_base_code', 'CTC_new_code_function']
+                      'ALD_InvInc_ec_base_code', 'CTC_new_code_function']
     found_error2 = False
     msg2 = 'calculated & returned variables are not function arguments\n'
     for fname in fnames:

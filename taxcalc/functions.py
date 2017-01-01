@@ -187,7 +187,7 @@ def Adj(e03150, e03210, c03260,
 
 
 @iterate_jit(nopython=True)
-def ALD_invinc_ec_base_nocode(p22250, p23250, _sep,
+def ALD_InvInc_ec_base_nocode(p22250, p23250, _sep,
                               e00300, e00600, e01100, e01200,
                               invinc_ec_base):
     """
@@ -200,18 +200,18 @@ def ALD_invinc_ec_base_nocode(p22250, p23250, _sep,
     return invinc_ec_base
 
 
-def ALD_invinc_ec_base_code(calc):
+def ALD_InvInc_ec_base_code(calc):
     """
     Compute invinc_ec_base from code
     """
-    code = calc.policy.param_code['ALD_invinc_ec_base_code']
+    code = calc.policy.param_code['ALD_InvInc_ec_base_code']
     visible = {'min': np.minimum, 'max': np.maximum,
                'where': np.where, 'equal': np.equal}
     variables = ['e00300', 'e00600', 'e00650', 'e01100', 'e01200',
                  'p22250', 'p23250', '_sep']
     for var in variables:
         visible[var] = getattr(calc.records, var)
-    visible['cpi'] = calc.policy.cpi('ALD_invinc_ec_base_code')
+    visible['cpi'] = calc.policy.cpi('ALD_InvInc_ec_base_code')
     visible['returned_value'] = calc.records.invinc_ec_base
     # pylint: disable=exec-used
     exec(compile(code, '<str>', 'exec'), {'__builtins__': {}}, visible)
@@ -220,7 +220,7 @@ def ALD_invinc_ec_base_code(calc):
 
 @iterate_jit(nopython=True)
 def CapGains(p23250, p22250, _sep, ALD_StudentLoan_hc,
-             ALD_invinc_ec_rt, invinc_ec_base,
+             ALD_InvInc_ec_rt, invinc_ec_base,
              e00200, e00300, e00600, e00650, e00700, e00800,
              CG_nodiff, CG_ec, CG_reinvest_ec_rt,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
@@ -236,7 +236,7 @@ def CapGains(p23250, p22250, _sep, ALD_StudentLoan_hc,
     # compute total investment income
     invinc = e00300 + e00600 + c01000 + e01100 + e01200
     # compute exclusion of investment income from AGI
-    invinc_agi_ec = ALD_invinc_ec_rt * max(0., invinc_ec_base)
+    invinc_agi_ec = ALD_InvInc_ec_rt * max(0., invinc_ec_base)
     # compute ymod1 variable that is included in AGI
     ymod1 = (e00200 + e00700 + e00800 + e00900 + e01400 + e01700 +
              invinc - invinc_agi_ec +

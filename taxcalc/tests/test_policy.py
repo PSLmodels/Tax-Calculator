@@ -512,12 +512,12 @@ REFORM_CONTENTS = """
 {
 "policy": {
     "param_code": {
-"ALD_invinc_ec_base_code":
+"ALD_InvInc_ec_base_code":
 ||
 returned_value = e00300 + e00650 + p23250
 ||
 },
-    "_ALD_invinc_ec_base_code_active": {
+    "_ALD_InvInc_ec_base_code_active": {
         "2016": [true]
     },
     "_AMT_brk1": // top of first AMT tax bracket
