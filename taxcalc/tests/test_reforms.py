@@ -8,8 +8,6 @@ Tests all the example JSON reform files located in taxcalc/reforms directory.
 
 import os
 import glob
-import re
-import json
 import pytest
 from taxcalc import Calculator, Policy  # pylint: disable=import-error
 
@@ -35,15 +33,18 @@ def test_reforms(reforms_path):  # pylint: disable=redefined-outer-name
         # read contents of jrf (JSON reform filename)
         with open(jrf) as jrfile:
             jrf_text = jrfile.read()
-        # check that jrf_text can be implemented as a Policy reform
-        jrf_dict, _, _, _ = Calculator.read_json_reform_text(jrf_text)
+        # check that jrf_text has "policy" that can be implemented as a reform
+        policy_dict, _, _, _ = Calculator.read_json_reform_text(jrf_text)
         policy = Policy()
-        policy.implement_reform(jrf_dict)
-        # identify policy parameters included in jrf after removing //-comments
-        json_without_comments = re.sub('//.*', ' ', jrf_text)
-        json_dict = json.loads(json_without_comments)
-        for param in json_dict.keys():
-            if param.endswith('_cpi'):
-                continue
-            params_set.add(param)
+        policy.implement_reform(policy_dict)
+        # identify "policy" parameters included in jrf
+        for year in policy_dict.keys():
+            if year == 0:
+                continue  # skip param_code info which is marked with year zero
+            policy_year_dict = policy_dict[year]
+            for param in policy_year_dict.keys():
+                if param.endswith('_cpi'):
+                    continue  # skip "policy" parameters ending in _cpi
+                params_set.add(param)
     # TODO: compare params_set to set of parameters in current_law_policy.json
+    assert len(params_set) > 0
