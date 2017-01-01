@@ -11,6 +11,7 @@ Tax-Calculator utility functions.
 import math
 import copy
 from collections import defaultdict, OrderedDict
+import json
 import six
 import numpy as np
 import pandas as pd
@@ -1104,6 +1105,23 @@ def xtr_graph_plot(data,
     fig.legend.spacing = 5
     fig.legend.padding = 5
     return fig
+
+
+def read_json_from_file(path):
+    """
+    Return a dict of data loaded from the json file stored at path.
+    """
+    with open(path, 'r') as file:
+        data = json.load(file)
+    return data
+
+
+def write_json_to_file(data, path, indent=4, sort_keys=False):
+    """
+    Write data to a file at path in json format.
+    """
+    with open(path, 'w') as file:
+        json.dump(data, file, indent=indent, sort_keys=sort_keys)
 
 
 def string_to_number(string):
