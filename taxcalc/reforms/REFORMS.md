@@ -62,11 +62,16 @@ separate, head of household, widow, separate.
 // primary keys are parameters and secondary keys are years.
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
+// Parameter code in the policy object is enclosed inside a pair of double
+// pipe characters (||).
 {
   "policy": {
-    "param_code": {
-        "ALD_Investment_ec_base_code": "e00300 + e00650 + p23250"
-    },
+    "param_code": { // all the parameter code must go in one place
+"ALD_InvInc_ec_base_code":
+||
+// base is sum of taxable interest, qualified dividends and long-term cap gains
+returned_value = e00300 + e00650 + p23250
+||},
     "_ALD_Investment_ec_base_code_active":
     {"2016": [true]
     },
