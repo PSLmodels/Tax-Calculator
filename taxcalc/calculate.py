@@ -208,7 +208,9 @@ class Calculator(object):
         AdditionalCTC(self.policy, self.records)
         C1040(self.policy, self.records)
         if self.policy.CTC_new_code_active:
-            CTC_new_code_function(self)
+            CTC_new_code(self)
+        else:
+            CTC_new_nocode(self.policy, self.records)
         IITAX(self.policy, self.records)
 
     def calc_all(self, zero_out_calc_vars=False):
