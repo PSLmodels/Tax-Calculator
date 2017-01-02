@@ -17,16 +17,16 @@ REFORM_CONTENTS = """
 {
   "policy": {
     // specify fraction of investment income that can be excluded from AGI
-    "_ALD_Investment_ec_rt": {"2016": [0.50]},
+    "_ALD_InvInc_ec_rt": {"2016": [0.50]},
 
     // specify "investment income" base to mean the sum of three things:
     // taxable interest (e00300), qualified dividends (e00650), and
     // long-term capital gains (p23250) [see functions.py for other
     // types of investment income that can be included in the base]
-    "param_code": {"ALD_Investment_ec_base_code":
-                   "e00300 + e00650 + p23250"},
+    "param_code": {"ALD_InvInc_ec_base_code":
+                   ||returned_value = e00300 + e00650 + p23250||},
 
-    "_ALD_Investment_ec_base_code_active": {"2016": [true]}
+    "_ALD_InvInc_ec_base_code_active": {"2016": [true]}
     // the dollar exclusion is the product of the base defined by code
     // and the fraction defined above
   },
