@@ -1,5 +1,6 @@
 import os
 import json
+import tempfile
 import numpy as np
 import numpy.testing as npt
 import pandas as pd
@@ -9,6 +10,53 @@ from taxcalc.dropq.dropq_utils import *
 from taxcalc.dropq import *
 from taxcalc import Policy, Records, Calculator
 from taxcalc import multiyear_diagnostic_table
+
+
+REFORM_CONTENTS = """
+// Specify AGI exclusion of some fraction of investment income
+{
+  "policy": {
+    // specify fraction of investment income that can be excluded from AGI
+    "_ALD_Investment_ec_rt": {"2016": [0.50]},
+
+    // specify "investment income" base to mean the sum of three things:
+    // taxable interest (e00300), qualified dividends (e00650), and
+    // long-term capital gains (p23250) [see functions.py for other
+    // types of investment income that can be included in the base]
+    "param_code": {"ALD_Investment_ec_base_code":
+                   "e00300 + e00650 + p23250"},
+
+    "_ALD_Investment_ec_base_code_active": {"2016": [true]}
+    // the dollar exclusion is the product of the base defined by code
+    // and the fraction defined above
+  },
+  "behavior": {
+    "_BE_sub": {"2016": [0.25]}
+  },
+  "growth": {
+  },
+  "consumption": {
+    "_MPC_e20400": {"2016": [0.01]}
+  }
+}
+"""
+
+
+@pytest.yield_fixture
+def reform_file():
+    """
+    Temporary reform file for testing dropq functions with reform file.
+    """
+    rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    rfile.write(REFORM_CONTENTS)
+    rfile.close()
+    # must close and then yield for Windows platform
+    yield rfile
+    if os.path.isfile(rfile.name):
+        try:
+            os.remove(rfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
 
 
 @pytest.fixture(scope='session')
@@ -56,6 +104,28 @@ def test_run_dropq_nth_year(is_strict, rjson, growth_params,
                                                return_json=rjson,
                                                num_years=3)
         assert fiscal_tots is not None
+
+
+@pytest.mark.parametrize("is_strict", [True, False])
+def test_run_dropq_nth_year_from_file(is_strict, puf_1991_path, reform_file):
+
+    user_reform = Calculator.read_json_reform_file(reform_file.name)
+    user_mods = user_reform
+
+    # Create a Public Use File object
+    tax_data = pd.read_csv(puf_1991_path)
+    first = 2016
+    rjson = True
+
+    (_, _, _, _, _, _, _, _,
+     _, _, fiscal_tots) = dropq.run_models(tax_data,
+                                           start_year=first,
+                                           is_strict=is_strict,
+                                           user_mods=user_mods,
+                                           return_json=rjson,
+                                           num_years=3)
+
+    assert fiscal_tots is not None
 
 
 @pytest.mark.requires_pufcsv
@@ -237,8 +307,11 @@ def test_unknown_parameters_with_cpi():
     first_year = 2013
     user_mods = {first_year: myvars}
     ans = get_unknown_parameters(user_mods, 2015)
+    final_ans = []
+    for a in ans.values():
+        final_ans += a
     exp = set(["NOGOOD_cpi", "NO", "ELASTICITY_GDP_WRT_AMTR"])
-    assert set(ans) == exp
+    assert set(final_ans) == exp
 
 
 def test_format_macro_results():
