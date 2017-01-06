@@ -50,7 +50,6 @@ def test_reforms(reforms_path):  # pylint: disable=redefined-outer-name
                 continue
             params_set.add(param)
     # TODO: compare params_set to set of parameters in current_law_policy.json
-    print params_set
 
 
 @pytest.fixture(scope='session')
