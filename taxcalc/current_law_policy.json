@@ -283,12 +283,12 @@
         "row_var": "",
         "row_label": ["2013"],
         "cpi_inflated": false,
-        "value": [1.0]
+        "value": [0.0]
     },
 
     "_ALD_Dependents_Child_c": {
         "long_name": "National average childcare costs. Ceiling for available childcare deduction.",
-        "description": "The weighted average of childcare costs in the US",
+        "description": "The weighted average of childcare costs in the US. 7165 is the weighted average from the 'Child Care in America: 2016 State Fact Sheets'",
         "section_1": "Above the line deductions",
         "section_2": "Child and elderly care",
         "irs_ref": "",
@@ -298,12 +298,12 @@
         "row_var": "",
         "row_label": ["2013"],
         "cpi_inflated": true,
-        "value": [7156]
+        "value": [0.0]
     },
 
     "_ALD_Dependents_Elder_c": {
         "long_name": "Ceiling for elderly care deduction proposed in Trump's tax plan.",
-        "description": "A tax payer can take an above the line deduction up to this amount if they have an elderly dependent.",
+        "description": "A tax payer can take an above the line deduction up to this amount if they have an elderly dependent. The Trump 2016 campaign proposal was for $5000.",
         "section_1": "Above the line deductions",
         "section_2": "Child and elderly care",
         "irs_ref": "",
@@ -313,12 +313,12 @@
         "row_var": "",
         "row_label": ["2013"],
         "cpi_inflated": true,
-        "value": [5000]
+        "value": [0.0]
     },
 
     "_ALD_Dependents_thd": {
         "long_name": "Maximum level of income to qualify for the dependent care deduction",
-        "description": "A taxpayer can only claim the dependent care deduction if their total income is below this level",
+        "description": "A taxpayer can only claim the dependent care deduction if their total income is below this level. The Trump 2016 campaign proposal was for 250000 single, 500000 joint, 250000 separate, 500000 head of household].",
         "section_1": "Above the line deductions",
         "section_2": "Child and elderly care",
         "irs_ref": "Form 2441",
@@ -329,7 +329,7 @@
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[250000, 500000, 250000, 500000, 500000, 250000]]
+        "value": [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
     },
 
     "_II_em": {
