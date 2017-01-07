@@ -1,12 +1,12 @@
 // 2022 RESULTS from taxcalc-inctax and taxbrain-upload version 0.7.3
-// INCOME TAX ($B)   1672.23            1,672.2        <-- same
-// PAYROLL TAX ($B)  1485.37            1,485.4        <-- same
+// INCOME TAX ($B)   1651.70            1,651.7        <-- same
+// PAYROLL TAX ($B)  1475.65            1,475.6        <-- same
 // taxcalc-inctax results from:
 //   python ../../inctax.py puf.csv 2022 --blowup --weights --reform file0.json
 //   awk '{r+=$4*$29}END{print r*1e-9}' puf-22.out-inctax-file0
 //   awk '{r+=$6*$29}END{print r*1e-9}' puf-22.out-inctax-file0
 // taxbrain-upload results from:
-//   http://www.ospc.org/taxbrain/9441/
+//   http://www.ospc.org/taxbrain/9444/
 {
     "policy": {
         "_SS_Earnings_c": // social security (OASDI) maximum taxable earnings
@@ -35,6 +35,7 @@
         }
     },
     "behavior": {
+        "_BE_sub": {"2018": [0.25]}
     },
     "consumption": {
     },
