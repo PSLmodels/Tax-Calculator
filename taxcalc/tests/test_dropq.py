@@ -128,6 +128,28 @@ def test_run_dropq_nth_year_from_file(is_strict, puf_1991_path, reform_file):
     assert fiscal_tots is not None
 
 
+def test_run_dropq_nth_year_mtr_from_file(puf_1991_path, reform_file):
+
+    user_reform = Calculator.read_json_reform_file(reform_file.name)
+    first_year = 2016
+    elast_params = {'elastic_gdp': [.54, .56, .58]}
+    user_reform[0][first_year].update(elast_params)
+
+    # Create a Public Use File object
+    tax_data = pd.read_csv(puf_1991_path)
+
+    # Create a Public Use File object
+    tax_data = pd.read_csv(puf_1991_path)
+
+    ans = dropq.run_gdp_elast_models(tax_data, start_year=first_year,
+                                     is_strict=True,
+                                     user_mods=user_reform,
+                                     return_json=True,
+                                     num_years=3)
+
+    assert len(ans) == 2  # num_years-1 calculations done
+
+
 @pytest.mark.requires_pufcsv
 def test_full_dropq_puf(puf_path):
 
