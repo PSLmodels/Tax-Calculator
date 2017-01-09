@@ -129,7 +129,7 @@
 
     "r16": {
         "start_year": 2015,
-        "value": {"_STD": [[6400, 12700, 6400, 9350, 12700, 6400, 1150]]},
+        "value": {"_STD": [[6400, 12700, 6400, 9350, 12700, 6400]]},
         "section_name": "STANDARD DEDUCTION",
         "name": "Increase standard deduction by 100",
         "output_type": "_iitax",
