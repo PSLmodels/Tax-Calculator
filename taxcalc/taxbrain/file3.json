@@ -1,6 +1,6 @@
 // 2022 RESULTS from taxcalc-inctax and taxbrain-upload version 0.7.3
-// INCOME TAX ($B)   1659.23            1,650.9        <-- diff
-// PAYROLL TAX ($B)  1478.04            1,475.2        <-- diff
+// INCOME TAX ($B)   1650.91            1,650.9        <-- same
+// PAYROLL TAX ($B)  1475.24            1,475.2        <-- same
 // taxcalc-inctax results from:
 //   python ../../inctax.py puf.csv 2022 --blowup --weights --reform file3.json
 //   awk '{r+=$4*$29}END{print r*1e-9}' puf-22.out-inctax-file3
