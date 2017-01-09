@@ -1,5 +1,6 @@
 """
-Tests all the example JSON reform files located in taxcalc/reforms directory.
+Tests all the example JSON reform files located in taxcalc/reforms directory
+      and all the JSON reform files located in taxcalc/taxbrain directory
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 test_reforms.py
@@ -9,7 +10,8 @@ Tests all the example JSON reform files located in taxcalc/reforms directory.
 import os
 import glob
 import pytest
-from taxcalc import Calculator, Policy  # pylint: disable=import-error
+# pylint: disable=import-error
+from taxcalc import Calculator, Policy, Behavior, Consumption, Growth
 
 
 @pytest.fixture(scope='session')
@@ -48,3 +50,32 @@ def test_reforms(reforms_path):  # pylint: disable=redefined-outer-name
                 params_set.add(param)
     # TODO: compare params_set to set of parameters in current_law_policy.json
     assert len(params_set) > 0
+
+
+@pytest.fixture(scope='session')
+def taxbrain_path(tests_path):
+    """
+    Return path to taxcalc/taxbrain/*.json files
+    """
+    return os.path.join(tests_path, '..', 'taxbrain', '*.json')
+
+
+def test_taxbrain_json(taxbrain_path):  # pylint: disable=redefined-outer-name
+    """
+    Check that each JSON reform file can be converted into a four dictionaries
+    that can be used to construct objects needed for a Calculator object.
+    """
+    for jrf in glob.glob(taxbrain_path):
+        # read contents of jrf (JSON reform filename)
+        with open(jrf) as jrfile:
+            jrf_text = jrfile.read()
+        # check that jrf_text can be used to instantiate Calculator object
+        pol, beh, gro, con = Calculator.read_json_reform_text(jrf_text)
+        policy = Policy()
+        policy.implement_reform(pol)
+        behv = Behavior()
+        behv.update_behavior(beh)
+        grow = Growth()
+        grow.update_growth(gro)
+        cons = Consumption()
+        cons.update_consumption(con)
