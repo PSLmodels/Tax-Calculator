@@ -186,7 +186,7 @@ def test_full_dropq_puf(puf_path):
 def test_run_dropq_nth_year_mtr(is_strict, rjson, growth_params, no_elast,
                                 puf_1991_path):
     myvars = {}
-    myvars['_STD'] = [[12600, 25200, 12600, 18600, 25300, 12600, 2100]]
+    myvars['_STD'] = [[12600, 25200, 12600, 18600, 25300, 12600]]
     myvars['_AMT_rt1'] = [.0]
     myvars['_AMT_rt2'] = [.0]
     myvars['elastic_gdp'] = [.54, .56]
