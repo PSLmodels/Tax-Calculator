@@ -182,20 +182,22 @@ class IncomeTaxIO(object):
             clp = Policy()
             clp.set_year(tax_year)
             recs_clp = copy.deepcopy(recs)
+            con = Consumption()
+            con.update_consumption(r_con)
+            gro = Growth()
+            gro.update_growth(r_gro)
             self._calc_clp = Calculator(policy=clp, records=recs_clp,
                                         verbose=False,
+                                        consumption=con,
+                                        growth=gro,
                                         sync_years=blowup_input_data)
             beh = Behavior()
             beh.update_behavior(r_beh)
-            gro = Growth()
-            gro.update_growth(r_gro)
-            con = Consumption()
-            con.update_consumption(r_con)
             self._calc = Calculator(policy=pol, records=recs,
                                     verbose=True,
                                     behavior=beh,
-                                    growth=gro,
                                     consumption=con,
+                                    growth=gro,
                                     sync_years=blowup_input_data)
         else:
             self._calc = Calculator(policy=pol, records=recs,
