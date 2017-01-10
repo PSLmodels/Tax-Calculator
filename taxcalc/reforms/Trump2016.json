@@ -2,15 +2,26 @@
 // Reform_File_Author: Matt Jensen
 // Reform_Reference: https://www.donaldjtrump.com/policies/tax-plan   
 // Reform_Description:
-// -  New personal income tax schedule (regular/non-AMT/non-pass-through) -- _II_rt*, II_brk*
-// -  New pass-through income tax schedule -- _PT_*
-// -  New long-term capital gains and qualified dividends tax schedule -- _CG_*
-// -  Repeal Alternative Minimum Tax -- _AMT_*
-// -  Repeal Net Investment Income Tax -- _NIIT_rt
-// -  Raise the Standard Deduction -- _STD
-// -  Repeal the Personal Exemption -- _II_em
-// -  New above the line deduction for child and elder care -- _ALD_Dependents*
-// -  Cap itemized deductions -- _ID_c
+// -  New personal income tax schedule (regular/non-AMT/non-pass-through) (1) 
+// -  New pass-through income tax schedule (2) 
+// -  New long-term capital gains and qualified dividends tax schedule (3) 
+// -  Repeal Alternative Minimum Tax (4) 
+// -  Repeal Net Investment Income Tax (5) 
+// -  Raise the Standard Deduction (6) 
+// -  Repeal the Personal Exemption (7) 
+// -  New above the line deduction for child and elder care (8)
+// -  Cap itemized deductions (9) 
+// Reform_Parameter_Map:
+// - 1: _II_rt*, II_brk*
+// - 2: _PT_*
+// - 3: _CG_*
+// - 4: _AMT_*
+// - 5: _NIIT_rt
+// - 6: _STD
+// - 7: _II_em
+// - 8: _ALD_Dependents*
+// - 9: _ID_c
+
 
 {
   "policy": {
