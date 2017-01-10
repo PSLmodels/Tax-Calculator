@@ -1,17 +1,16 @@
-// This reform file contains the individual income and payroll tax reforms
-// in the 2016 Trump campaign's tax proposal. 
-// https://www.donaldjtrump.com/policies/tax-plan
-//    
-//    REFORMS
-// -  New personal income tax schedule (regular/non-AMT/non-pass-through) 
-// -  New pass-through income tax schedule 
-// -  New long-term capital gains and qualified dividends tax schedule
-// -  Repeal Alternative Minimum Tax
-// -  Repeal Net Investment Income Tax
-// -  Raise the Standard Deduction
-// -  Repeal the Personal Exemption
-// -  New above the line deduction for child and elder care
-// -  Cap itemized deductions
+// Title: 2016 Trump Campaign Tax Plan 
+// Reform_File_Author: Matt Jensen
+// Reform_Reference: https://www.donaldjtrump.com/policies/tax-plan   
+// Reform_Description:
+// -  New personal income tax schedule (regular/non-AMT/non-pass-through) -- _II_rt*, II_brk*
+// -  New pass-through income tax schedule -- _PT_*
+// -  New long-term capital gains and qualified dividends tax schedule -- _CG_*
+// -  Repeal Alternative Minimum Tax -- _AMT_*
+// -  Repeal Net Investment Income Tax -- _NIIT_rt
+// -  Raise the Standard Deduction -- _STD
+// -  Repeal the Personal Exemption -- _II_em
+// -  New above the line deduction for child and elder care -- _ALD_Dependents*
+// -  Cap itemized deductions -- _ID_c
 
 {
   "policy": {
