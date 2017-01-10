@@ -79,8 +79,8 @@ entered for line number without an asterisk.
 | EIC | Sch EIC | ? | number of EIC qualifying children (range: 0 to 3)
 | f2441 | 2441 | 2b | number of child/dependent-care qualifying persons
 | f6251 | 6251 | ? | 1 if Form 6251 (AMT) attached to return; otherwise 0
-| FLPDYR | - | - | tax filing year (value is 2015)
-| MARS | 1040 | 1-5 | Filing (marital) status: categorical variable
+| FLPDYR | - | - | tax filing year (value is 2015 or 2016)
+| MARS | 1040 | 1-5 | Filing (marital) status: number of the checked box
 | MIDR | 1040 | 39b | 1 if separately filing spouse itemizes; otherwise 0
 | n24 | ? | ? | number of children eligible for Child Tax Credit
 | p08000 | 1040 | 54 | other tax credits (but not including Sch R credit)
