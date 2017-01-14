@@ -727,3 +727,24 @@ def test_scan_param_code():
         Policy.scan_param_code('[x*x for x in range(9)]')
     with pytest.raises(ValueError):
         Policy.scan_param_code('9999**99999999')
+
+
+@pytest.mark.one
+def test_cpi_for_param_code():
+    """
+    Test cpi_for_param_code function.
+    """
+    pol = Policy()
+    with pytest.raises(ValueError):
+        cpi = pol.cpi_for_param_code('badname')
+    reform = {
+        0: {"ALD_InvInc_ec_base_code":
+            "returned_value = e00300 + e00650 + p23250"},
+        2020: {"_ALD_InvInc_ec_base_code_active": [True]}
+    }
+    pol.implement_reform(reform)
+    with pytest.raises(ValueError):
+        cpi = pol.cpi_for_param_code('ALD_InvInc_ec_base_code')
+    pol.set_year(2020)
+    cpi = pol.cpi_for_param_code('ALD_InvInc_ec_base_code')
+    assert cpi == 1.0

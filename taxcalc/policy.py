@@ -312,12 +312,19 @@ class Policy(ParametersBase):
             msg += code
             raise ValueError(msg)
 
-    def cpi(self, param_code_name):
+    def cpi_for_param_code(self, param_code_name):
         """
-        Return inflation index for current_year that has
-        a value of one in first year param_code is active.
+        Return inflation index for current_year that has a base value
+        of one in the first year the named param_code is active.
+
+        Note that a ValueError is raised if the specified
+        param_code_name is not a valid parameter code name or
+        if the specified parameter code is not active in the range of
+        years from Policy.JSON_START_YEAR through Policy.LAST_BUDGET_YEAR.
         """
-        assert param_code_name in Policy.VALID_PARAM_CODE_NAMES
+        if param_code_name not in Policy.VALID_PARAM_CODE_NAMES:
+            msg = '{} is not in Policy.VALID_PARAM_CODE_NAMES'
+            raise ValueError(msg.format(param_code_name))
         active_name = '_{}_active'.format(param_code_name)
         active_param = getattr(self, active_name, None)
         zero_year = Policy.JSON_START_YEAR
@@ -326,7 +333,14 @@ class Policy(ParametersBase):
             if active_param[idx]:
                 first_active_year = idx + zero_year
                 break
-        assert first_active_year <= Policy.LAST_BUDGET_YEAR
+        if self.current_year < first_active_year:
+            msg = 'current_year={} < {} first active year {}'
+            raise ValueError(msg.format(self.current_year,
+                                        param_code_name, first_active_year))
+        if first_active_year > Policy.LAST_BUDGET_YEAR:
+            msg = '{} first_active_year={} > LAST_BUDGET_YEAR={}'
+            raise ValueError(msg.format(param_code_name, first_active_year,
+                                        Policy.LAST_BUDGET_YEAR))
         cpi_current_year = self._inflation_index[self.current_year - zero_year]
         cpi_active_year = self._inflation_index[first_active_year - zero_year]
         cpi_rebased = cpi_current_year / cpi_active_year

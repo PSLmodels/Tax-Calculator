@@ -211,7 +211,7 @@ def ALD_InvInc_ec_base_code(calc):
                  'p22250', 'p23250', '_sep']
     for var in variables:
         visible[var] = getattr(calc.records, var)
-    visible['cpi'] = calc.policy.cpi('ALD_InvInc_ec_base_code')
+    visible['cpi'] = calc.policy.cpi_for_param_code('ALD_InvInc_ec_base_code')
     visible['returned_value'] = calc.records.invinc_ec_base
     # pylint: disable=exec-used
     exec(compile(code, '<str>', 'exec'), {'__builtins__': {}}, visible)
@@ -1269,7 +1269,7 @@ def CTC_new_code(calc):
     variables = ['n24', 'c00100', 'nu05', 'MARS', 'ptax_oasdi', 'c09200']
     for var in variables:
         visible[var] = getattr(calc.records, var)
-    visible['cpi'] = calc.policy.cpi('CTC_new_code')
+    visible['cpi'] = calc.policy.cpi_for_param_code('CTC_new_code')
     visible['returned_value'] = calc.records.ctc_new
     # pylint: disable=exec-used
     exec(compile(code, '<str>', 'exec'), {'__builtins__': {}}, visible)
