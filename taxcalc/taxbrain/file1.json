@@ -21,17 +21,17 @@
         {"2018": false, // values in future years are same as this year value
          "2020": true // values in future years indexed with this year as base
         },
-        "_ALD_Investment_ec_rt": // investment income AGI exclusion rate
+        "_ALD_InvInc_ec_rt": // investment income AGI exclusion rate
         {"2019": [0.20]
         },
         // investment income AGI exclusion base is not all investment income
         // but rather the sum of taxable interest, qualified dividends, and
         // long-term capital gains
-        "_ALD_Investment_ec_base_code_active":
+        "_ALD_InvInc_ec_base_code_active":
         {"2019": [true]
         },
         "param_code":
-        {"ALD_Investment_ec_base_code": "e00300 + e00650 + p23250"
+        {"ALD_InvInc_ec_base_code": "e00300 + e00650 + p23250"
         }
     },
     "behavior": {

@@ -186,25 +186,41 @@ def Adj(e03150, e03210, c03260,
     return (c02900, c02900_in_ei)
 
 
-def ALD_Investment_ec_base_code_function(calc):
+@iterate_jit(nopython=True)
+def ALD_InvInc_ec_base_nocode(p22250, p23250, _sep,
+                              e00300, e00600, e01100, e01200,
+                              invinc_ec_base):
     """
-    Compute investment_ec_base from code
+    Compute invinc_ec_base without code
     """
-    code = calc.policy.param_code['ALD_Investment_ec_base_code']
-    visible = {'min': np.minimum, 'max': np.maximum, 'where': np.where}
+    # limitation on net short-term and long-term capital losses
+    cgain = max((-3000. / _sep), p22250 + p23250)
+    # compute exclusion of investment income from AGI
+    invinc_ec_base = e00300 + e00600 + cgain + e01100 + e01200
+    return invinc_ec_base
+
+
+def ALD_InvInc_ec_base_code(calc):
+    """
+    Compute invinc_ec_base from code
+    """
+    code = calc.policy.param_code['ALD_InvInc_ec_base_code']
+    visible = {'min': np.minimum, 'max': np.maximum,
+               'where': np.where, 'equal': np.equal}
     variables = ['e00300', 'e00600', 'e00650', 'e01100', 'e01200',
                  'p22250', 'p23250', '_sep']
     for var in variables:
         visible[var] = getattr(calc.records, var)
-    # pylint: disable=eval-used
-    calc.records.investment_ec_base = eval(compile(code, '<str>', 'eval'),
-                                           {'__builtins__': {}}, visible)
+    visible['cpi'] = calc.policy.cpi_for_param_code('ALD_InvInc_ec_base_code')
+    visible['returned_value'] = calc.records.invinc_ec_base
+    # pylint: disable=exec-used
+    exec(compile(code, '<str>', 'exec'), {'__builtins__': {}}, visible)
+    calc.records.invinc_ec_base = visible['returned_value']
 
 
 @iterate_jit(nopython=True)
 def CapGains(p23250, p22250, _sep, ALD_StudentLoan_hc,
-             ALD_Investment_ec_rt, ALD_Investment_ec_base_code_active,
-             investment_ec_base,
+             ALD_InvInc_ec_rt, invinc_ec_base,
              e00200, e00300, e00600, e00650, e00700, e00800,
              CG_nodiff, CG_ec, CG_reinvest_ec_rt,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
@@ -217,13 +233,10 @@ def CapGains(p23250, p22250, _sep, ALD_StudentLoan_hc,
     c23650 = p23250 + p22250
     # limitation on capital losses
     c01000 = max((-3000. / _sep), c23650)
-    # compute exclusion of investment income from AGI
+    # compute total investment income
     invinc = e00300 + e00600 + c01000 + e01100 + e01200
-    if ALD_Investment_ec_base_code_active:
-        invinc_ec_base = investment_ec_base
-    else:
-        invinc_ec_base = invinc
-    invinc_agi_ec = ALD_Investment_ec_rt * max(0., invinc_ec_base)
+    # compute exclusion of investment income from AGI
+    invinc_agi_ec = ALD_InvInc_ec_rt * max(0., invinc_ec_base)
     # compute ymod1 variable that is included in AGI
     ymod1 = (e00200 + e00700 + e00800 + e00900 + e01400 + e01700 +
              invinc - invinc_agi_ec +
@@ -1219,16 +1232,14 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
 
 
 @iterate_jit(nopython=True)
-def IITAX(c59660, c11070, c10960, personal_credit,
-          c09200, _payrolltax, nu05,
-          CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
-          n24, c00100, MARS, ptax_oasdi, CTC_new_refund_limited,
-          CTC_new_ps, CTC_new_prt, CTC_new_refund_limit_payroll_rt,
-          ctc_new, _eitc, _refund, _iitax, _combined):
+def CTC_new_nocode(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
+                   CTC_new_ps, CTC_new_prt,
+                   CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
+                   n24, nu05, c00100, MARS, ptax_oasdi, c09200,
+                   ctc_new):
     """
-    Compute final taxes including new refundable child tax credit
+    Compute new refundable child tax credit with numeric parameters
     """
-    # compute new refundable child tax credit
     if n24 > 0:
         posagi = max(c00100, 0.)
         ctc_new = min(CTC_new_rt * posagi,
@@ -1245,12 +1256,38 @@ def IITAX(c59660, c11070, c10960, personal_credit,
             ctc_new = max(0., ctc_new - limited_new)
     else:
         ctc_new = 0.
-    # compute final taxes
+    return ctc_new
+
+
+def CTC_new_code(calc):
+    """
+    Compute new refundable child tax credit using parameter code
+    """
+    code = calc.policy.param_code['CTC_new_code']
+    visible = {'min': np.minimum, 'max': np.maximum,
+               'where': np.where, 'equal': np.equal}
+    variables = ['n24', 'c00100', 'nu05', 'MARS', 'ptax_oasdi', 'c09200']
+    for var in variables:
+        visible[var] = getattr(calc.records, var)
+    visible['cpi'] = calc.policy.cpi_for_param_code('CTC_new_code')
+    visible['returned_value'] = calc.records.ctc_new
+    # pylint: disable=exec-used
+    exec(compile(code, '<str>', 'exec'), {'__builtins__': {}}, visible)
+    calc.records.ctc_new = visible['returned_value']
+
+
+@iterate_jit(nopython=True)
+def IITAX(c59660, c11070, c10960, personal_credit, ctc_new,
+          c09200, _payrolltax,
+          _eitc, _refund, _iitax, _combined):
+    """
+    Compute final taxes
+    """
     _eitc = c59660
     _refund = _eitc + c11070 + c10960 + personal_credit + ctc_new
     _iitax = c09200 - _refund
     _combined = _iitax + _payrolltax
-    return (ctc_new, _eitc, _refund, _iitax, _combined)
+    return (_eitc, _refund, _iitax, _combined)
 
 
 @jit(nopython=True)
