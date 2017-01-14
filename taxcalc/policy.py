@@ -337,10 +337,6 @@ class Policy(ParametersBase):
             msg = 'current_year={} < {} first active year {}'
             raise ValueError(msg.format(self.current_year,
                                         param_code_name, first_active_year))
-        if first_active_year > Policy.LAST_BUDGET_YEAR:
-            msg = '{} first_active_year={} > LAST_BUDGET_YEAR={}'
-            raise ValueError(msg.format(param_code_name, first_active_year,
-                                        Policy.LAST_BUDGET_YEAR))
         cpi_current_year = self._inflation_index[self.current_year - zero_year]
         cpi_active_year = self._inflation_index[first_active_year - zero_year]
         cpi_rebased = cpi_current_year / cpi_active_year

@@ -734,15 +734,16 @@ def test_cpi_for_param_code():
     """
     Test cpi_for_param_code function.
     """
-    pol = Policy()
-    with pytest.raises(ValueError):
-        cpi = pol.cpi_for_param_code('badname')
-    reform = {
+    reform2020 = {
         0: {"ALD_InvInc_ec_base_code":
             "returned_value = e00300 + e00650 + p23250"},
         2020: {"_ALD_InvInc_ec_base_code_active": [True]}
     }
-    pol.implement_reform(reform)
+    pol = Policy()
+    pol.implement_reform(reform2020)
+    assert pol.current_year == 2013
+    with pytest.raises(ValueError):
+        cpi = pol.cpi_for_param_code('badname')
     with pytest.raises(ValueError):
         cpi = pol.cpi_for_param_code('ALD_InvInc_ec_base_code')
     pol.set_year(2020)
