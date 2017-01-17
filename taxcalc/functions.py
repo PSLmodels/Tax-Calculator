@@ -186,25 +186,41 @@ def Adj(e03150, e03210, c03260,
     return (c02900, c02900_in_ei)
 
 
-def ALD_Investment_ec_base_code_function(calc):
+@iterate_jit(nopython=True)
+def ALD_InvInc_ec_base_nocode(p22250, p23250, _sep,
+                              e00300, e00600, e01100, e01200,
+                              invinc_ec_base):
     """
-    Compute investment_ec_base from code
+    Compute invinc_ec_base without code
     """
-    code = calc.policy.param_code['ALD_Investment_ec_base_code']
-    visible = {'min': np.minimum, 'max': np.maximum, 'where': np.where}
+    # limitation on net short-term and long-term capital losses
+    cgain = max((-3000. / _sep), p22250 + p23250)
+    # compute exclusion of investment income from AGI
+    invinc_ec_base = e00300 + e00600 + cgain + e01100 + e01200
+    return invinc_ec_base
+
+
+def ALD_InvInc_ec_base_code(calc):
+    """
+    Compute invinc_ec_base from code
+    """
+    code = calc.policy.param_code['ALD_InvInc_ec_base_code']
+    visible = {'min': np.minimum, 'max': np.maximum,
+               'where': np.where, 'equal': np.equal}
     variables = ['e00300', 'e00600', 'e00650', 'e01100', 'e01200',
                  'p22250', 'p23250', '_sep']
     for var in variables:
         visible[var] = getattr(calc.records, var)
-    # pylint: disable=eval-used
-    calc.records.investment_ec_base = eval(compile(code, '<str>', 'eval'),
-                                           {'__builtins__': {}}, visible)
+    visible['cpi'] = calc.policy.cpi_for_param_code('ALD_InvInc_ec_base_code')
+    visible['returned_value'] = calc.records.invinc_ec_base
+    # pylint: disable=exec-used
+    exec(compile(code, '<str>', 'exec'), {'__builtins__': {}}, visible)
+    calc.records.invinc_ec_base = visible['returned_value']
 
 
 @iterate_jit(nopython=True)
 def CapGains(p23250, p22250, _sep, ALD_StudentLoan_hc,
-             ALD_Investment_ec_rt, ALD_Investment_ec_base_code_active,
-             investment_ec_base,
+             ALD_InvInc_ec_rt, invinc_ec_base,
              e00200, e00300, e00600, e00650, e00700, e00800,
              CG_nodiff, CG_ec, CG_reinvest_ec_rt,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
@@ -217,13 +233,10 @@ def CapGains(p23250, p22250, _sep, ALD_StudentLoan_hc,
     c23650 = p23250 + p22250
     # limitation on capital losses
     c01000 = max((-3000. / _sep), c23650)
-    # compute exclusion of investment income from AGI
+    # compute total investment income
     invinc = e00300 + e00600 + c01000 + e01100 + e01200
-    if ALD_Investment_ec_base_code_active:
-        invinc_ec_base = investment_ec_base
-    else:
-        invinc_ec_base = invinc
-    invinc_agi_ec = ALD_Investment_ec_rt * max(0., invinc_ec_base)
+    # compute exclusion of investment income from AGI
+    invinc_agi_ec = ALD_InvInc_ec_rt * max(0., invinc_ec_base)
     # compute ymod1 variable that is included in AGI
     ymod1 = (e00200 + e00700 + e00800 + e00900 + e01400 + e01700 +
              invinc - invinc_agi_ec +
@@ -306,7 +319,7 @@ def ItemDed(e17500, e18400, e18500,
             ID_Casualty_frt_in_pufcsv_year,
             ID_Casualty_frt, ID_Casualty_hc, ID_Miscellaneous_frt,
             ID_Miscellaneous_hc, ID_Charity_crt_all, ID_Charity_crt_noncash,
-            ID_prt, ID_crt, ID_StateLocalTax_hc, ID_Charity_frt,
+            ID_prt, ID_crt, ID_c, ID_StateLocalTax_hc, ID_Charity_frt,
             ID_Charity_hc, ID_InterestPaid_hc, ID_RealEstate_hc):
     """
     ItemDed function: itemized deductions, Form 1040, Schedule A
@@ -320,6 +333,8 @@ def ItemDed(e17500, e18400, e18500,
         as a decimal fraction of total itemized deduction (Pease)
 
         ID_prt : Itemized deduction phaseout rate (Pease)
+
+        ID_c: Dollar limit on itemized deductions
 
         ID_Medical_frt : Deduction for medical expenses;
         floor as a decimal fraction of AGI
@@ -404,6 +419,7 @@ def ItemDed(e17500, e18400, e18500,
     else:
         c21040 = 0.
         c04470 = c21060
+    c04470 = min(c04470, ID_c[MARS - 1])
     return (c17000, c18300, c19200, c20500, c20800, c21040, c21060, c04470,
             c19700)
 
@@ -447,7 +463,7 @@ def AdditionalMedicareTax(e00200, MARS,
 
 
 @iterate_jit(nopython=True)
-def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
+def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
            MARS, MIDR, blind_head, blind_spouse, _standard):
     """
     StdDed function:
@@ -461,6 +477,8 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
     -----
     Tax Law Parameters:
         STD : Standard deduction amount, filing status dependent
+
+        STD_Dep : Standard deduction for dependents
 
         STD_Aged : Additional standard deduction for blind and aged
 
@@ -486,7 +504,7 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
     """
     # calculate deduction for dependents
     if DSI == 1:
-        c15100 = max(350. + _earned, STD[6])
+        c15100 = max(350. + _earned, STD_Dep)
         basic_stded = min(STD[MARS - 1], c15100)
     else:
         c15100 = 0.
@@ -509,11 +527,11 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged,
 
 
 @iterate_jit(nopython=True)
-def TaxInc(c00100, _standard, c21060, c21040, c04600, c04800):
+def TaxInc(c00100, _standard, c04470, c04600, c04800):
     """
     TaxInc function: ...
     """
-    c04800 = max(0., c00100 - max(c21060 - c21040, _standard) - c04600)
+    c04800 = max(0., c00100 - max(c04470, _standard) - c04600)
     return c04800
 
 
@@ -708,7 +726,7 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, _taxbc, _surtax):
 def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         c04470, c17000, c20800, c21040, e24515, MARS, _sep, dwks19,
         dwks14, c05700, e62900, e00700, dwks10, age_head, _earned, cmbtp,
-        KT_c_Age, AMT_brk1, AMT_thd_MarriedS,
+        AMT_KT_c_Age, AMT_brk1, AMT_thd_MarriedS,
         AMT_em, AMT_prt, AMT_rt1, AMT_rt2,
         AMT_Child_em, AMT_em_ps, AMT_em_pe,
         AMT_CG_brk1, AMT_CG_brk2, AMT_CG_brk3, AMT_CG_rt1, AMT_CG_rt2,
@@ -739,7 +757,7 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
     # Form 6251, Part II top
     line29 = max(0., AMT_em[MARS - 1] - AMT_prt *
                  max(0., c62100 - AMT_em_ps[MARS - 1]))
-    if age_head != 0 and age_head < KT_c_Age:
+    if age_head != 0 and age_head < AMT_KT_c_Age:
         line29 = min(line29, _earned + AMT_Child_em)
     line30 = max(0., c62100 - line29)
     line3163 = (AMT_rt1 * line30 +
@@ -1214,16 +1232,14 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
 
 
 @iterate_jit(nopython=True)
-def IITAX(c59660, c11070, c10960, personal_credit,
-          c09200, _payrolltax, nu05,
-          CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
-          n24, c00100, MARS, ptax_oasdi, CTC_new_refund_limited,
-          CTC_new_ps, CTC_new_prt, CTC_new_refund_limit_payroll_rt,
-          ctc_new, _eitc, _refund, _iitax, _combined):
+def CTC_new_nocode(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
+                   CTC_new_ps, CTC_new_prt,
+                   CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
+                   n24, nu05, c00100, MARS, ptax_oasdi, c09200,
+                   ctc_new):
     """
-    Compute final taxes including new refundable child tax credit
+    Compute new refundable child tax credit with numeric parameters
     """
-    # compute new refundable child tax credit
     if n24 > 0:
         posagi = max(c00100, 0.)
         ctc_new = min(CTC_new_rt * posagi,
@@ -1240,12 +1256,38 @@ def IITAX(c59660, c11070, c10960, personal_credit,
             ctc_new = max(0., ctc_new - limited_new)
     else:
         ctc_new = 0.
-    # compute final taxes
+    return ctc_new
+
+
+def CTC_new_code(calc):
+    """
+    Compute new refundable child tax credit using parameter code
+    """
+    code = calc.policy.param_code['CTC_new_code']
+    visible = {'min': np.minimum, 'max': np.maximum,
+               'where': np.where, 'equal': np.equal}
+    variables = ['n24', 'c00100', 'nu05', 'MARS', 'ptax_oasdi', 'c09200']
+    for var in variables:
+        visible[var] = getattr(calc.records, var)
+    visible['cpi'] = calc.policy.cpi_for_param_code('CTC_new_code')
+    visible['returned_value'] = calc.records.ctc_new
+    # pylint: disable=exec-used
+    exec(compile(code, '<str>', 'exec'), {'__builtins__': {}}, visible)
+    calc.records.ctc_new = visible['returned_value']
+
+
+@iterate_jit(nopython=True)
+def IITAX(c59660, c11070, c10960, personal_credit, ctc_new,
+          c09200, _payrolltax,
+          _eitc, _refund, _iitax, _combined):
+    """
+    Compute final taxes
+    """
     _eitc = c59660
     _refund = _eitc + c11070 + c10960 + personal_credit + ctc_new
     _iitax = c09200 - _refund
     _combined = _iitax + _payrolltax
-    return (ctc_new, _eitc, _refund, _iitax, _combined)
+    return (_eitc, _refund, _iitax, _combined)
 
 
 @jit(nopython=True)

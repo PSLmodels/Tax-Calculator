@@ -1,5 +1,0 @@
-pandas
-numpy >= 1.7
-numba
-six
-toolz

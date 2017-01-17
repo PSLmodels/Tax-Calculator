@@ -71,7 +71,8 @@ class Policy(ParametersBase):
                  2021: 0.0386, 2022: 0.0394, 2023: 0.0395, 2024: 0.0394,
                  2025: 0.0394, 2026: 0.0393}
 
-    VALID_PARAM_CODE_NAMES = set(['ALD_Investment_ec_base_code'])
+    VALID_PARAM_CODE_NAMES = set(['ALD_InvInc_ec_base_code',
+                                  'CTC_new_code'])
 
     PROHIBIT_PARAM_CODE = False
 
@@ -141,6 +142,12 @@ class Policy(ParametersBase):
                                      for i in range(0, num_years)]
         else:
             raise ValueError('inflation_rates is not None or a dictionary')
+
+        cpi = 1.0
+        self._inflation_index = [cpi]
+        for idx in range(0, num_years):
+            cpi *= (1.0 + self._inflation_rates[idx])
+            self._inflation_index.append(cpi)
 
         if wage_growth_rates is None:  # read default rates
             self._wage_growth_rates = [Policy.__wgrates[start_year + i]
@@ -304,6 +311,36 @@ class Policy(ParametersBase):
             msg = 'Following param_code includes illegal "**":\n'
             msg += code
             raise ValueError(msg)
+
+    def cpi_for_param_code(self, param_code_name):
+        """
+        Return inflation index for current_year that has a base value
+        of one in the first year the named param_code is active.
+
+        Note that a ValueError is raised if the specified
+        param_code_name is not a valid parameter code name or
+        if the specified parameter code is not active in the range of
+        years from Policy.JSON_START_YEAR through Policy.LAST_BUDGET_YEAR.
+        """
+        if param_code_name not in Policy.VALID_PARAM_CODE_NAMES:
+            msg = '{} is not in Policy.VALID_PARAM_CODE_NAMES'
+            raise ValueError(msg.format(param_code_name))
+        active_name = '_{}_active'.format(param_code_name)
+        active_param = getattr(self, active_name, None)
+        zero_year = Policy.JSON_START_YEAR
+        first_active_year = 9999
+        for idx in range(0, len(active_param)):
+            if active_param[idx]:
+                first_active_year = idx + zero_year
+                break
+        if self.current_year < first_active_year:
+            msg = 'current_year={} < {} first active year {}'
+            raise ValueError(msg.format(self.current_year,
+                                        param_code_name, first_active_year))
+        cpi_current_year = self._inflation_index[self.current_year - zero_year]
+        cpi_active_year = self._inflation_index[first_active_year - zero_year]
+        cpi_rebased = cpi_current_year / cpi_active_year
+        return cpi_rebased
 
     def current_law_version(self):
         """

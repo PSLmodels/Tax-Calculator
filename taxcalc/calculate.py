@@ -162,8 +162,10 @@ class Calculator(object):
         EI_PayrollTax(self.policy, self.records)
         DependentCare(self.policy, self.records)
         Adj(self.policy, self.records)
-        if self.policy.ALD_Investment_ec_base_code_active:
-            ALD_Investment_ec_base_code_function(self)
+        if self.policy.ALD_InvInc_ec_base_code_active:
+            ALD_InvInc_ec_base_code(self)
+        else:
+            ALD_InvInc_ec_base_nocode(self.policy, self.records)
         CapGains(self.policy, self.records)
         SSBenefits(self.policy, self.records)
         AGI(self.policy, self.records)
@@ -205,6 +207,10 @@ class Calculator(object):
         NonrefundableCredits(self.policy, self.records)
         AdditionalCTC(self.policy, self.records)
         C1040(self.policy, self.records)
+        if self.policy.CTC_new_code_active:
+            CTC_new_code(self)
+        else:
+            CTC_new_nocode(self.policy, self.records)
         IITAX(self.policy, self.records)
 
     def calc_all(self, zero_out_calc_vars=False):
@@ -250,7 +256,7 @@ class Calculator(object):
                            'e02000', 'e02400',
                            'p22250', 'p23250',
                            'e18500', 'e19200',
-                           'e26270']
+                           'e26270', 'e19800']
 
     def mtr(self, variable_str='e00200p',
             negative_finite_diff=False,
@@ -314,7 +320,8 @@ class Calculator(object):
         'p23250',  long-term capital gains;
         'e18500',  Schedule A real-estate-tax deduction;
         'e19200',  Schedule A total-interest deduction;
-        'e26270',  S-corporation/partnership income (also included in e02000).
+        'e26270',  S-corporation/partnership income (also included in e02000);
+        'e19800',  Charity cash contributions.
         """
         # check validity of variable_str parameter
         if variable_str not in Calculator.MTR_VALID_VARIABLES:
@@ -415,7 +422,9 @@ class Calculator(object):
            or may contain one or more pairs with parameter string primary keys
            and string years as secondary keys.  See tests/test_calculate.py for
            an extended example of a commented JSON reform text that can be read
-           by this method.
+           by this method.  Note that parameter code in the policy object is
+           enclosed inside a pair of double pipe characters (||) as shown
+           in the REFORM_CONTENTS string in the tests/test_calculate.py file.
         Returned dictionaries (reform_policy, reform_behavior,
                                reform_growth reform_consumption)
            have integer years as primary keys
@@ -428,9 +437,17 @@ class Calculator(object):
         """
         # strip out //-comments without changing line numbers
         json_without_comments = re.sub('//.*', ' ', text_string)
+        # convert multi-line string between pairs of || into a simple string
+
+        def repl(mat):
+            code = mat.group(2).replace('\r', '\\r').replace('\n', '\\n')
+            return '"' + code + '"'
+
+        json_str = re.sub('(\|\|)(.*?)(\|\|)',  # pylint: disable=W1401
+                          repl, json_without_comments, flags=re.DOTALL)
         # convert JSON text into a Python dictionary
         try:
-            raw_dict = json.loads(json_without_comments)
+            raw_dict = json.loads(json_str)
         except ValueError as valerr:
             msg = 'Policy reform text below contains invalid JSON:\n'
             msg += str(valerr) + '\n'
@@ -440,7 +457,7 @@ class Calculator(object):
             bline += '----.----5----.----6----.----7'
             msg += bline + '\n'
             linenum = 0
-            for line in json_without_comments.split('\n'):
+            for line in json_str.split('\n'):
                 linenum += 1
                 msg += '{:02d}{}'.format(linenum, line) + '\n'
             msg += bline + '\n'

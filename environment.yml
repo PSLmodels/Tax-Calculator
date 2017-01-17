@@ -2,8 +2,7 @@ name: taxcalc-dev
 dependencies:
 - pytest
 - setuptools
-- python
-- numpy =1.10.4
+- numpy =1.11.2
 - pandas =0.18.0
 - numba
 - bokeh =0.12.3

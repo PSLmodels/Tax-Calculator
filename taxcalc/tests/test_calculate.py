@@ -321,8 +321,12 @@ def test_Calculator_create_difference_table(puf_1991, weights_1991):
     policy2 = Policy()
     reform = {
         2013: {'_II_rt7': [0.45]},
-        2013: {'_ALD_Investment_ec_base_code_active': [True]},
-        0: {'ALD_Investment_ec_base_code': 'e00300 + e00650 + p23250'}
+        2013: {'_ALD_InvInc_ec_base_code_active': [True]},
+        2013: {'_CTC_new_code_active': [True]},
+        0: {'ALD_InvInc_ec_base_code':
+            'returned_value = e00300 + e00650 + p23250',
+            'CTC_new_code':
+            'returned_value = where(n24>0, 100, 0)'}
     }
     policy2.implement_reform(reform)
     puf2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
@@ -430,12 +434,17 @@ REFORM_CONTENTS = """
 // primary keys are parameters and secondary keys are years.
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
+// Parameter code in the policy object is enclosed inside a pair of double
+// pipe characters (||).
 {
   "policy": {
-    "param_code": {
-        "ALD_Investment_ec_base_code": "e00300 + e00650 + p23250"
-    },
-    "_ALD_Investment_ec_base_code_active":
+    "param_code": { // all the parameter code must go in one place
+"ALD_InvInc_ec_base_code":
+||
+// base is sum of taxable interest, qualified dividends and long-term cap gains
+returned_value = e00300 + e00650 + p23250
+||},
+    "_ALD_InvInc_ec_base_code_active":
     {"2016": [true]
     },
     "_AMT_brk1": // top of first AMT tax bracket
@@ -496,7 +505,7 @@ def reform_file():
 def test_read_json_reform_file_and_implement_reform(reform_file, set_year):
     """
     Test reading and translation of reform file into a reform dictionary
-    that is then used to call implement_reform method.
+    that is then used to call implement_reform method and Calculate.calc_all()
     NOTE: implement_reform called when policy.current_year == policy.start_year
     """
     reform, _, _, _ = Calculator.read_json_reform_file(reform_file.name)
@@ -596,3 +605,19 @@ def test_convert_reform_dict():
         rdict = Calculator.convert_reform_dict({4567: {2013: [40000]}})
     with pytest.raises(ValueError):
         rdict = Calculator.convert_reform_dict({'_II_em': 40000})
+
+
+def test_param_code_calc_all(reform_file, rawinputfile):
+    cyr = 2016
+    reform, _, _, _ = Calculator.read_json_reform_file(reform_file.name)
+    policy = Policy()
+    policy.implement_reform(reform)
+    policy.set_year(cyr)
+    nonpuf = Records(data=rawinputfile.name, blowup_factors=None,
+                     weights=None, start_year=cyr)
+    assert nonpuf.dim == RAWINPUTFILE_FUNITS
+    calc = Calculator(policy=policy,
+                      records=nonpuf,
+                      sync_years=False)  # keeps raw data unchanged
+    assert calc.current_year == cyr
+    calc.calc_all()
