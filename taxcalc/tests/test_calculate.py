@@ -596,15 +596,15 @@ def test_read_bad_json_reform_file(bad1reformfile, bad2reformfile):
         Calculator.read_json_reform_file(bad2reformfile.name)
 
 
-def test_convert_reform_dict():
+def test_convert_parameter_dict():
     with pytest.raises(ValueError):
-        rdict = Calculator.convert_reform_dict({2013: {'2013': [40000]}})
+        rdict = Calculator.convert_parameter_dict({2013: {'2013': [40000]}})
     with pytest.raises(ValueError):
-        rdict = Calculator.convert_reform_dict({'_II_em': {2013: [40000]}})
+        rdict = Calculator.convert_parameter_dict({'_II_em': {2013: [40000]}})
     with pytest.raises(ValueError):
-        rdict = Calculator.convert_reform_dict({4567: {2013: [40000]}})
+        rdict = Calculator.convert_parameter_dict({4567: {2013: [40000]}})
     with pytest.raises(ValueError):
-        rdict = Calculator.convert_reform_dict({'_II_em': 40000})
+        rdict = Calculator.convert_parameter_dict({'_II_em': 40000})
 
 
 def test_param_code_calc_all(reform_file, rawinputfile):

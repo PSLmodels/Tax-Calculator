@@ -477,33 +477,33 @@ class Calculator(object):
             for param, code in paramcode.items():
                 raw_dict['policy'][param] = {'0': code}
         # convert raw_dict component dictionaries
-        pol_dict = Calculator.convert_reform_dict(raw_dict['policy'])
-        beh_dict = Calculator.convert_reform_dict(raw_dict['behavior'])
-        gro_dict = Calculator.convert_reform_dict(raw_dict['growth'])
-        con_dict = Calculator.convert_reform_dict(raw_dict['consumption'])
+        pol_dict = Calculator.convert_parameter_dict(raw_dict['policy'])
+        beh_dict = Calculator.convert_parameter_dict(raw_dict['behavior'])
+        con_dict = Calculator.convert_parameter_dict(raw_dict['consumption'])
+        gro_dict = Calculator.convert_parameter_dict(raw_dict['growth'])
         return (pol_dict, beh_dict, gro_dict, con_dict)
 
     @staticmethod
-    def convert_reform_dict(param_key_dict):
+    def convert_parameter_dict(param_key_dict):
         """
         Converts specified param_key_dict into a dictionary whose primary
           keys are calendary years, and hence, is suitable as the argument to
           the Policy implement_reform(reform_policy) method, or
           the Behavior update_behavior(reform_behavior) method, or
-          the Growth update_growth(reform_growth) method, or
-          the Consumption update_consumption(reform_consumption) method.
+          the Consumption update_consumption(reform_consumption) method, or
+          the Growth update_growth(reform_growth) method.
         Specified input dictionary has string parameter primary keys and
            string years as secondary keys.
         Returned dictionary has integer years as primary keys and
            string parameters as secondary keys.
         """
         # convert year skey strings to integers and lists into np.arrays
-        reform_pkey_param = {}
+        year_param = dict()
         for pkey, sdict in param_key_dict.items():
             if not isinstance(pkey, six.string_types):
                 msg = 'pkey {} in reform is not a string'
                 raise ValueError(msg.format(pkey))
-            rdict = {}
+            rdict = dict()
             if not isinstance(sdict, dict):
                 msg = 'pkey {} in reform is not paired with a dict'
                 raise ValueError(msg.format(pkey))
@@ -515,14 +515,14 @@ class Calculator(object):
                     year = int(skey)
                 rdict[year] = (np.array(val)
                                if isinstance(val, list) else val)
-            reform_pkey_param[pkey] = rdict
-        # convert reform_pkey_param dictionary to reform_pkey_year dictionary
+            year_param[pkey] = rdict
+        # convert year_param dictionary to year_key_dict dictionary
+        year_key_dict = dict()
         years = set()
-        reform_pkey_year = dict()
-        for param, sdict in reform_pkey_param.items():
+        for param, sdict in year_param.items():
             for year, val in sdict.items():
                 if year not in years:
                     years.add(year)
-                    reform_pkey_year[year] = {}
-                reform_pkey_year[year][param] = val
-        return reform_pkey_year
+                    year_key_dict[year] = dict()
+                year_key_dict[year][param] = val
+        return year_key_dict
