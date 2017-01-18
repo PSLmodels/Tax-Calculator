@@ -40,6 +40,14 @@ corresponding year.  If you have acquired from IRS the most recent SOI
 PUF file and want to execute the tests that require the `puf.csv`
 file, contact the core development team to discuss your options.
 
+If you have access to the Tax-Calculator `puf.csv` file, you should
+have access to the private GitHub repository `taxpuf`, from which
+updates of the `puf.csv` are distributed.  When you receive a private
+email announcing a new version of the `puf.csv` file, be sure to
+execute a `conda update ... taxpuf` command (as described in the
+`taxpuf` repository's README file) before executing the tests
+described below.
+
 **NO PUF.CSV**: If you do not have access to the `puf.csv` file, run
 the first-phase of testing as follows at the command prompt in the
 tax-calculator directory at the top of the repository directory tree:
