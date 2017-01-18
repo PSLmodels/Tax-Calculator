@@ -504,6 +504,8 @@ class Calculator(object):
           and string years as secondary keys.  See tests/test_calculate.py for
           an extended example of a commented JSON economic assumption text
           that can be read by this method.
+        Note that an example is shown in the ASSUMP_CONTENTS string in
+          tests/test_calculate.py file.
         Returned dictionaries (behv_dict, cons_dict, grow_dict)
            have integer years as primary keys
            and string parameters as secondary keys.

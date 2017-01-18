@@ -427,11 +427,11 @@ def test_Calculator_using_nonstd_input(rawinputfile):
 
 
 REFORM_CONTENTS = """
-// Example of a reform file suitable for read_json_parameter_files function.
+// Example of a reform file suitable for read_json_param_files() function.
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
-// Within each "policy", "behavior", "growth", and "consumption" object, the
-// primary keys are parameters and secondary keys are years.
+// Within each "policy" object, the primary keys are parameters and
+// the secondary keys are years.
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
 // Parameter code in the policy object is enclosed inside a pair of double
@@ -484,7 +484,7 @@ returned_value = e00300 + e00650 + p23250
 @pytest.yield_fixture
 def reform_file():
     """
-    Temporary reform file for read_json_policy_reform_file function.
+    Temporary reform file for read_json_param_files() function.
     """
     rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
     rfile.write(REFORM_CONTENTS)
@@ -498,14 +498,53 @@ def reform_file():
             pass  # sometimes we can't remove a generated temporary file
 
 
+ASSUMP_CONTENTS = """
+// Example of an assump file suitable for the read_json_param_files() function.
+// This JSON file can contain any number of trailing //-style comments, which
+// will be removed before the contents are converted from JSON to a dictionary.
+// Within each "behavior", "consumption" and "growth" object, the
+// primary keys are parameters and the secondary keys are years.
+// Both the primary and secondary key values must be enclosed in quotes (").
+// Boolean variables are specified as true or false (no quotes; all lowercase).
+{
+  "title": "",
+  "author": "",
+  "date": "",
+  "behavior": {},
+  "consumption": { "_MPC_e18400": {"2018": [0.05]} },
+  "growth": {}
+}
+"""
+
+
+@pytest.yield_fixture
+def assump_file():
+    """
+    Temporary assumption file for read_json_params_files() function.
+    """
+    afile = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    afile.write(ASSUMP_CONTENTS)
+    afile.close()
+    # must close and then yield for Windows platform
+    yield afile
+    if os.path.isfile(afile.name):
+        try:
+            os.remove(afile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
 @pytest.mark.parametrize("set_year", [False, True])
-def test_read_json_reform_file_and_implement_reform(reform_file, set_year):
+def test_read_json_reform_file_and_implement_reform(reform_file,
+                                                    assump_file,
+                                                    set_year):
     """
     Test reading and translation of reform file into a reform dictionary
     that is then used to call implement_reform method and Calculate.calc_all()
     NOTE: implement_reform called when policy.current_year == policy.start_year
     """
-    reform, _, _, _ = Calculator.read_json_param_files(reform_file.name, None)
+    reform, _, _, _ = Calculator.read_json_param_files(reform_file.name,
+                                                       assump_file.name)
     policy = Policy()
     if set_year:
         policy.set_year(2015)
@@ -545,7 +584,7 @@ def bad1reformfile():
     {
       "policy": { // example of incorrect JSON because 'x' must be "x"
         'x': {"2014": [4000]}
-      },
+      }
     }
     """
     f = tempfile.NamedTemporaryFile(mode='a', delete=False)
@@ -561,9 +600,10 @@ def bad2reformfile():
     # specify JSON text for reform
     txt = """
     {
+      "title": "",
       "policyx": { // example of reform file not containing "policy" key
         "_SS_Earnings_c": {"2018": [9e99]}
-      },
+      }
     }
     """
     f = tempfile.NamedTemporaryFile(mode='a', delete=False)
@@ -579,6 +619,54 @@ def test_read_bad_json_reform_file(bad1reformfile, bad2reformfile):
         Calculator.read_json_param_files(bad1reformfile.name, None)
     with pytest.raises(ValueError):
         Calculator.read_json_param_files(bad2reformfile.name, None)
+
+
+@pytest.yield_fixture
+def bad1assumpfile():
+    # specify JSON text for assumptions
+    txt = """
+    {
+      "behavior": { // example of incorrect JSON because 'x' must be "x"
+        'x': {"2014": [0.25]}
+      }
+    }
+    """
+    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    f.write(txt + '\n')
+    f.close()
+    # Must close and then yield for Windows platform
+    yield f
+    os.remove(f.name)
+
+
+@pytest.yield_fixture
+def bad2assumpfile():
+    # specify JSON text for assumptions
+    txt = """
+    {
+      "title": "",
+      "author": "",
+      "date": "",
+      "behaviorx": {}, // example of assump file not containing "behavior" key
+      "consumption": {},
+      "growth": {}
+    }
+    """
+    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    f.write(txt + '\n')
+    f.close()
+    # Must close and then yield for Windows platform
+    yield f
+    os.remove(f.name)
+
+
+def test_read_bad_json_assump_file(bad1assumpfile, bad2assumpfile):
+    with pytest.raises(ValueError):
+        Calculator.read_json_param_files(None, bad1assumpfile.name)
+    with pytest.raises(ValueError):
+        Calculator.read_json_param_files(None, bad2assumpfile.name)
+    with pytest.raises(ValueError):
+        Calculator.read_json_param_files(None, 'unknown_file_name')
 
 
 def test_convert_parameter_dict():
