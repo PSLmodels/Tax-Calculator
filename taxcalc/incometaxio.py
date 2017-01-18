@@ -47,6 +47,11 @@ class IncomeTaxIO(object):
         string is name of optional REFORM file, or
         dictionary suitable for passing to Policy.implement_reform() method.
 
+    assump: None or string
+        None implies economic assumptions are baseline and statuc analysis
+        of reform is conducted, or
+        string is name of optional ASSUMP file.
+
     exact_calculations: boolean
         specifies whether or not exact tax calculations are done without
         any smoothing of "stair-step" provisions in income tax law.
@@ -72,6 +77,7 @@ class IncomeTaxIO(object):
     ValueError:
         if file specified by input_data string does not exist.
         if reform is neither None, string, nor dictionary.
+        if assump is neither None nor string.
         if tax_year before Policy start_year.
         if tax_year after Policy end_year.
 
@@ -80,7 +86,7 @@ class IncomeTaxIO(object):
     class instance: IncomeTaxIO
     """
 
-    def __init__(self, input_data, tax_year, reform,
+    def __init__(self, input_data, tax_year, reform, assump,
                  exact_calculations,
                  blowup_input_data, output_weights,
                  output_records, csv_dump):
@@ -106,6 +112,18 @@ class IncomeTaxIO(object):
             msg = 'INPUT is neither string nor Pandas DataFrame'
             raise ValueError(msg)
         # construct output_filename and delete old output file if it exists
+        if assump is None:
+            asm = ''
+            self._assump = False
+        elif isinstance(assump, six.string_types):
+            if assump.endswith('.json'):
+                asm = '-{}'.format(assump[:-5])
+            else:
+                asm = '-{}'.format(assump)
+            self._assump = True
+        else:
+            msg = 'IncomeTaxIO.ctor assump is neither None nor str'
+            raise ValueError(msg)
         if reform is None:
             ref = ''
             self._reform = False
@@ -125,11 +143,11 @@ class IncomeTaxIO(object):
                 msg = 'IncomeTaxIO.ctor reform is neither None, str, nor dict'
                 raise ValueError(msg)
         if output_records:
-            self._output_filename = '{}.records{}'.format(inp, ref)
+            self._output_filename = '{}.records{}{}'.format(inp, ref, asm)
         elif csv_dump:
-            self._output_filename = '{}.csvdump{}'.format(inp, ref)
+            self._output_filename = '{}.csvdump{}{}'.format(inp, ref, asm)
         else:
-            self._output_filename = '{}.out-inctax{}'.format(inp, ref)
+            self._output_filename = '{}.out-inctax{}{}'.format(inp, ref, asm)
         if os.path.isfile(self._output_filename):
             os.remove(self._output_filename)
         # check for existence of INPUT file
@@ -146,16 +164,21 @@ class IncomeTaxIO(object):
         if tax_year > pol.end_year:
             msg = 'tax_year {} greater than policy.end_year {}'
             raise ValueError(msg.format(tax_year, pol.end_year))
-        # implement reform if one is specified
+        # implement reform and assump if specified
+        ref_d = dict()
+        beh_d = dict()
+        con_d = dict()
+        gro_d = dict()
         if self._reform:
             if self._using_reform_file:
-                (r_pol,
-                 r_beh,
-                 r_con,
-                 r_gro) = Calculator.read_json_param_files(reform, None)
+                (ref_d, beh_d, con_d,
+                 gro_d) = Calculator.read_json_param_files(reform, assump)
             else:
-                r_pol = reform
-            pol.implement_reform(r_pol)
+                ref_d = reform
+                beh_d = dict()
+                con_d = dict()
+                gro_d = dict()
+            pol.implement_reform(ref_d)
         # set tax policy parameters to specified tax_year
         pol.set_year(tax_year)
         # read input file contents into Records object
@@ -185,16 +208,16 @@ class IncomeTaxIO(object):
             clp.set_year(tax_year)
             recs_clp = copy.deepcopy(recs)
             con = Consumption()
-            con.update_consumption(r_con)
+            con.update_consumption(con_d)
             gro = Growth()
-            gro.update_growth(r_gro)
+            gro.update_growth(gro_d)
             self._calc_clp = Calculator(policy=clp, records=recs_clp,
                                         verbose=False,
                                         consumption=con,
                                         growth=gro,
                                         sync_years=blowup_input_data)
             beh = Behavior()
-            beh.update_behavior(r_beh)
+            beh.update_behavior(beh_d)
             self._calc = Calculator(policy=pol, records=recs,
                                     verbose=True,
                                     behavior=beh,

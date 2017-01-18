@@ -46,11 +46,18 @@ def main():
                         action="store_true")
     parser.add_argument('--reform',
                         help=('REFORM is name of optional file that contains '
-                              'tax reform "policy" parameters and "behavior" '
-                              'parameters and "growth" parameters; the '
-                              'REFORM file is specified using JSON that may '
-                              'include //-comments. No --reform implies use '
-                              'of current-law policy.'),
+                              'reform "policy" parameters; the REFORM file '
+                              'is specified using JSON that may include '
+                              '//-comments. No --reform implies use of '
+                              'current-law policy.'),
+                        default=None)
+    parser.add_argument('--assump',
+                        help=('ASSUMP is name of optional file that contains '
+                              'economic assumption parameters ("behavior", '
+                              '"consumption" and "growth" parameters); the '
+                              'ASSUMP file is specified using JSON that may '
+                              'include //-comments. No --assump implies use '
+                              'of static analysis assumptions.'),
                         default=None)
     parser.add_argument('--exact',
                         help=('optional flag to suppress smoothing in income '
@@ -150,10 +157,16 @@ def main():
         sys.stderr.write('ERROR: must specify TAXYEAR >= 2013;\n')
         sys.stderr.write('USAGE: python inctax.py --help\n')
         return 1
+    # check consistency of REFORM and ASSUMP options
+    if args.assump and not args.reform:
+        sys.stderr.write('ERROR: cannot specify ASSUMP without a REFORM\n')
+        sys.stderr.write('USAGE: python inctax.py --help\n')
+        return 1
     # instantiate IncometaxIO object and do federal income tax calculations
     inctax = IncomeTaxIO(input_data=args.INPUT,
                          tax_year=args.TAXYEAR,
                          reform=args.reform,
+                         assump=args.assump,
                          exact_calculations=args.exact,
                          blowup_input_data=args.blowup,
                          output_weights=args.weights,

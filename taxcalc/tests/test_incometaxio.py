@@ -67,6 +67,7 @@ def test_incorrect_creation_1(input_data, exact):
             input_data=input_data,
             tax_year=2013,
             reform=None,
+            assump=None,
             exact_calculations=exact,
             blowup_input_data=True,
             output_weights=False,
@@ -75,21 +76,25 @@ def test_incorrect_creation_1(input_data, exact):
         )
 
 
-@pytest.mark.parametrize("year, reform", [
-    (2013, list()),
-    (2001, None),
-    (2099, None),
+# for fixture args, pylint: disable=redefined-outer-name
+
+
+@pytest.mark.parametrize("year, reform, assump", [
+    (2013, list(), None),
+    (2013, None, list()),
+    (2001, None, None),
+    (2099, None, None),
 ])
-def test_incorrect_creation_2(rawinputfile, year, reform):
+def test_incorrect_creation_2(rawinputfile, year, reform, assump):
     """
-    Ensure a ValueError is raised when created with invalid reform params
+    Ensure a ValueError is raised when created with invalid parameters
     """
-    # for fixture args, pylint: disable=redefined-outer-name
     with pytest.raises(ValueError):
         IncomeTaxIO(
             input_data=rawinputfile.name,
             tax_year=year,
             reform=reform,
+            assump=assump,
             exact_calculations=False,
             blowup_input_data=True,
             output_weights=False,
@@ -107,12 +112,12 @@ def test_creation_with_blowup(rawinputfile, blowup, weights_out):
     """
     Test IncomeTaxIO instantiation with no policy reform and with blowup.
     """
-    # for fixture args, pylint: disable=redefined-outer-name
     IncomeTaxIO.show_iovar_definitions()
     taxyear = 2021
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
                          reform=None,
+                         assump=None,
                          exact_calculations=False,
                          blowup_input_data=blowup,
                          output_weights=weights_out,
@@ -121,7 +126,7 @@ def test_creation_with_blowup(rawinputfile, blowup, weights_out):
     assert inctax.tax_year() == taxyear
 
 
-def test_2(rawinputfile):  # pylint: disable=redefined-outer-name
+def test_2(rawinputfile):
     """
     Test IncomeTaxIO calculate method with no output writing and no blowup.
     """
@@ -134,6 +139,7 @@ def test_2(rawinputfile):  # pylint: disable=redefined-outer-name
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
                          reform=reform_dict,
+                         assump=None,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,
@@ -144,7 +150,7 @@ def test_2(rawinputfile):  # pylint: disable=redefined-outer-name
 
 
 REFORM_CONTENTS = """
-// Example of a reform file suitable for the read_json_param_files function.
+// Example of a reform file suitable for the read_json_param_files() function.
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
 // Within the "policy" object, the primary keys are parameters and
@@ -182,12 +188,6 @@ REFORM_CONTENTS = """
     "_LST": // Lump-Sum Tax
     {"2013": [500]
     }
-  },
-  "behavior": {
-  },
-  "growth": {
-  },
-  "consumption": {
   }
 }
 """
@@ -227,7 +227,60 @@ def reformfile2():
             pass  # sometimes we can't remove a generated temporary file
 
 
-def test_3(rawinputfile, reformfile1):  # pylint: disable=redefined-outer-name
+ASSUMP_CONTENTS = """
+// Example of an assump file suitable for the read_json_param_files() function.
+// This JSON file can contain any number of trailing //-style comments, which
+// will be removed before the contents are converted from JSON to a dictionary.
+// Within each "behavior", "consumption" and "growth" object, the
+// primary keys are parameters and the secondary keys are years.
+// Both the primary and secondary key values must be enclosed in quotes (").
+// Boolean variables are specified as true or false (no quotes; all lowercase).
+{
+  "title": "",
+  "author": "",
+  "date": "",
+  "behavior": {},
+  "consumption": { "_MPC_e18400": {"2018": [0.05]} },
+  "growth": {}
+}
+"""
+
+
+@pytest.yield_fixture
+def assumpfile1():
+    """
+    Temporary assumption file with .json extension.
+    """
+    afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    afile.write(ASSUMP_CONTENTS)
+    afile.close()
+    # must close and then yield for Windows platform
+    yield afile
+    if os.path.isfile(afile.name):
+        try:
+            os.remove(afile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+@pytest.yield_fixture
+def assumpfile2():
+    """
+    Temporary assumption file without .json extension.
+    """
+    afile = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    afile.write(ASSUMP_CONTENTS)
+    afile.close()
+    # must close and then yield for Windows platform
+    yield afile
+    if os.path.isfile(afile.name):
+        try:
+            os.remove(afile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+def test_3(rawinputfile, reformfile1, assumpfile1):
     """
     Test IncomeTaxIO calculate method with no output writing and no blowup,
     using file name for IncomeTaxIO constructor input_data.
@@ -236,6 +289,7 @@ def test_3(rawinputfile, reformfile1):  # pylint: disable=redefined-outer-name
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
                          reform=reformfile1.name,
+                         assump=assumpfile1.name,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,
@@ -245,7 +299,7 @@ def test_3(rawinputfile, reformfile1):  # pylint: disable=redefined-outer-name
     assert output == EXPECTED_OUTPUT
 
 
-def test_4(reformfile2):  # pylint: disable=redefined-outer-name
+def test_4(reformfile2, assumpfile2):
     """
     Test IncomeTaxIO calculate method with no output writing and no blowup,
     using DataFrame for IncomeTaxIO constructor input_data.
@@ -256,6 +310,7 @@ def test_4(reformfile2):  # pylint: disable=redefined-outer-name
     inctax = IncomeTaxIO(input_data=input_dataframe,
                          tax_year=taxyear,
                          reform=reformfile2.name,
+                         assump=assumpfile2.name,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,
@@ -265,7 +320,7 @@ def test_4(reformfile2):  # pylint: disable=redefined-outer-name
     assert output == EXPECTED_OUTPUT
 
 
-def test_5(rawinputfile):  # pylint: disable=redefined-outer-name
+def test_5(rawinputfile):
     """
     Test IncomeTaxIO calculate method with no output writing and no blowup and
     no reform, using the output_records option.
@@ -274,6 +329,7 @@ def test_5(rawinputfile):  # pylint: disable=redefined-outer-name
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
                          reform=None,
+                         assump=None,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,
@@ -283,7 +339,7 @@ def test_5(rawinputfile):  # pylint: disable=redefined-outer-name
     assert inctax.tax_year() == taxyear
 
 
-def test_6(rawinputfile):  # pylint: disable=redefined-outer-name
+def test_6(rawinputfile):
     """
     Test IncomeTaxIO calculate method with no output writing and no blowup and
     no reform, using the csv_dump option.
@@ -292,6 +348,7 @@ def test_6(rawinputfile):  # pylint: disable=redefined-outer-name
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
                          reform=None,
+                         assump=None,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,
@@ -301,7 +358,7 @@ def test_6(rawinputfile):  # pylint: disable=redefined-outer-name
     assert inctax.tax_year() == taxyear
 
 
-def test_7(rawinputfile, reformfile1):  # pylint: disable=redefined-outer-name
+def test_7(rawinputfile, reformfile1):
     """
     Test IncomeTaxIO calculate method with no output writing using ceeu option.
     """
@@ -309,6 +366,7 @@ def test_7(rawinputfile, reformfile1):  # pylint: disable=redefined-outer-name
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
                          reform=reformfile1.name,
+                         assump=None,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,
@@ -318,7 +376,7 @@ def test_7(rawinputfile, reformfile1):  # pylint: disable=redefined-outer-name
     assert inctax.tax_year() == taxyear
 
 
-def test_8(reformfile1):  # pylint: disable=redefined-outer-name
+def test_8(reformfile1):
     """
     Test IncomeTaxIO calculate method with no output writing using ceeu option.
     """
@@ -329,6 +387,7 @@ def test_8(reformfile1):  # pylint: disable=redefined-outer-name
     inctax = IncomeTaxIO(input_data=recdf,
                          tax_year=taxyear,
                          reform=reformfile1.name,
+                         assump=None,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=True,
