@@ -149,8 +149,10 @@ class IncomeTaxIO(object):
         # implement reform if one is specified
         if self._reform:
             if self._using_reform_file:
-                (r_pol, r_beh,
-                 r_gro, r_con) = Calculator.read_json_reform_file(reform)
+                (r_pol,
+                 r_beh,
+                 r_con,
+                 r_gro) = Calculator.read_json_param_files(reform, None)
             else:
                 r_pol = reform
             pol.implement_reform(r_pol)

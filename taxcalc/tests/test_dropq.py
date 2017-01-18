@@ -109,7 +109,7 @@ def test_run_dropq_nth_year(is_strict, rjson, growth_params,
 @pytest.mark.parametrize("is_strict", [True, False])
 def test_run_dropq_nth_year_from_file(is_strict, puf_1991_path, reform_file):
 
-    user_reform = Calculator.read_json_reform_file(reform_file.name)
+    user_reform = Calculator.read_json_param_files(reform_file.name, None)
     user_mods = user_reform
 
     # Create a Public Use File object
@@ -130,7 +130,7 @@ def test_run_dropq_nth_year_from_file(is_strict, puf_1991_path, reform_file):
 
 def test_run_dropq_nth_year_mtr_from_file(puf_1991_path, reform_file):
 
-    user_reform = Calculator.read_json_reform_file(reform_file.name)
+    user_reform = Calculator.read_json_param_files(reform_file.name, None)
     first_year = 2016
     elast_params = {'elastic_gdp': [.54, .56, .58]}
     user_reform[0][first_year].update(elast_params)

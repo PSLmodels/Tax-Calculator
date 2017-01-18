@@ -427,7 +427,7 @@ def test_Calculator_using_nonstd_input(rawinputfile):
 
 
 REFORM_CONTENTS = """
-// Example of a reform file suitable for the read_json_reform_file function.
+// Example of a reform file suitable for read_json_parameter_files function.
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
 // Within each "policy", "behavior", "growth", and "consumption" object, the
@@ -437,6 +437,9 @@ REFORM_CONTENTS = """
 // Parameter code in the policy object is enclosed inside a pair of double
 // pipe characters (||).
 {
+  "title": "",
+  "author": "",
+  "date": "",
   "policy": {
     "param_code": { // all the parameter code must go in one place
 "ALD_InvInc_ec_base_code":
@@ -473,12 +476,6 @@ returned_value = e00300 + e00650 + p23250
     {"2017": false, // values in future years are same as this year value
      "2020": true   // values in future years indexed with this year as base
     }
-  },
-  "behavior": {
-  },
-  "growth": {
-  },
-  "consumption": {
   }
 }
 """
@@ -487,7 +484,7 @@ returned_value = e00300 + e00650 + p23250
 @pytest.yield_fixture
 def reform_file():
     """
-    Temporary reform file for read_json_reform_file function.
+    Temporary reform file for read_json_policy_reform_file function.
     """
     rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
     rfile.write(REFORM_CONTENTS)
@@ -508,7 +505,7 @@ def test_read_json_reform_file_and_implement_reform(reform_file, set_year):
     that is then used to call implement_reform method and Calculate.calc_all()
     NOTE: implement_reform called when policy.current_year == policy.start_year
     """
-    reform, _, _, _ = Calculator.read_json_reform_file(reform_file.name)
+    reform, _, _, _ = Calculator.read_json_param_files(reform_file.name, None)
     policy = Policy()
     if set_year:
         policy.set_year(2015)
@@ -549,12 +546,6 @@ def bad1reformfile():
       "policy": { // example of incorrect JSON because 'x' must be "x"
         'x': {"2014": [4000]}
       },
-      "behavior": {
-      },
-      "growth": {
-      },
-      "consumption": {
-      }
     }
     """
     f = tempfile.NamedTemporaryFile(mode='a', delete=False)
@@ -570,15 +561,9 @@ def bad2reformfile():
     # specify JSON text for reform
     txt = """
     {
-      "policy": {
+      "policyx": { // example of reform file not containing "policy" key
         "_SS_Earnings_c": {"2018": [9e99]}
       },
-      "behavior": {
-      },
-      "growthx": {
-      },
-      "consumption": {
-      }
     }
     """
     f = tempfile.NamedTemporaryFile(mode='a', delete=False)
@@ -591,9 +576,9 @@ def bad2reformfile():
 
 def test_read_bad_json_reform_file(bad1reformfile, bad2reformfile):
     with pytest.raises(ValueError):
-        Calculator.read_json_reform_file(bad1reformfile.name)
+        Calculator.read_json_param_files(bad1reformfile.name, None)
     with pytest.raises(ValueError):
-        Calculator.read_json_reform_file(bad2reformfile.name)
+        Calculator.read_json_param_files(bad2reformfile.name, None)
 
 
 def test_convert_parameter_dict():
@@ -609,9 +594,9 @@ def test_convert_parameter_dict():
 
 def test_param_code_calc_all(reform_file, rawinputfile):
     cyr = 2016
-    reform, _, _, _ = Calculator.read_json_reform_file(reform_file.name)
+    (ref, _, _, _) = Calculator.read_json_param_files(reform_file.name, None)
     policy = Policy()
-    policy.implement_reform(reform)
+    policy.implement_reform(ref)
     policy.set_year(cyr)
     nonpuf = Records(data=rawinputfile.name, blowup_factors=None,
                      weights=None, start_year=cyr)
