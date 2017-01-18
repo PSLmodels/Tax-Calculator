@@ -49,3 +49,6 @@ PTAX and ITAX mtr histogram bin counts for e19200:
 PTAX and ITAX mtr histogram bin counts for e26270:
 219814 : 219814      0      0      0      0      0      0      0      0      0
 219814 :      0      0      0      0  53480  69398  46183  28411  21647    695
+PTAX and ITAX mtr histogram bin counts for e19800:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219814 :  33314  29291  18172   5035 134002      0      0      0      0      0
