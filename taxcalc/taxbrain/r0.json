@@ -1,12 +1,12 @@
-// 2022 RESULTS from taxcalc-inctax and taxbrain-upload version 0.7.3
-// INCOME TAX ($B)   1651.70            1,651.7        <-- same
-// PAYROLL TAX ($B)  1475.65            1,475.6        <-- same
+// 2022 RESULTS from taxcalc-inctax and taxbrain-upload version 0.7.4
+// INCOME TAX ($B)   1818.54            [1,672.2]      <-- ??????????
+// PAYROLL TAX ($B)  1475.43            [1,485.4]      <-- ??????????
 // taxcalc-inctax results from:
-//   python ../../inctax.py puf.csv 2022 --blowup --weights --reform file1.json
-//   awk '{r+=$4*$29}END{print r*1e-9}' puf-22.out-inctax-file1
-//   awk '{r+=$6*$29}END{print r*1e-9}' puf-22.out-inctax-file1
+//   python ../../inctax.py puf.csv 2022 --blowup --weights --reform r0.json
+//   awk '{r+=$4*$29}END{print r*1e-9}' puf-22.out-inctax-r0
+//   awk '{r+=$6*$29}END{print r*1e-9}' puf-22.out-inctax-r0
 // taxbrain-upload results from:
-//   http://www.ospc.org/taxbrain/9462/
+//   http://www.ospc.org/taxbrain/????/  ????????????????????????????
 {
     "policy": {
         "_SS_Earnings_c": // social security (OASDI) maximum taxable earnings
@@ -31,14 +31,8 @@
         {"2019": [true]
         },
         "param_code":
-        {"ALD_InvInc_ec_base_code": "e00300 + e00650 + p23250"
+        {"ALD_InvInc_ec_base_code":
+         "returned_value = e00300 + e00650 + p23250"
         }
-    },
-    "behavior": {
-        "_BE_sub": {"2018": [0.25]}
-    },
-    "consumption": {
-    },
-    "growth": {
     }
 }
