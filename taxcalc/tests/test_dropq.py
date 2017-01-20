@@ -15,6 +15,9 @@ from taxcalc import multiyear_diagnostic_table
 REFORM_CONTENTS = """
 // Specify AGI exclusion of some fraction of investment income
 {
+  "title": "",
+  "author": "",
+  "date": "",
   "policy": {
     // specify fraction of investment income that can be excluded from AGI
     "_ALD_InvInc_ec_rt": {"2016": [0.50]},
@@ -29,14 +32,6 @@ REFORM_CONTENTS = """
     "_ALD_InvInc_ec_base_code_active": {"2016": [true]}
     // the dollar exclusion is the product of the base defined by code
     // and the fraction defined above
-  },
-  "behavior": {
-    "_BE_sub": {"2016": [0.25]}
-  },
-  "consumption": {
-    "_MPC_e20400": {"2016": [0.01]}
-  },
-  "growth": {
   }
 }
 """
@@ -44,6 +39,9 @@ REFORM_CONTENTS = """
 
 ASSUMP_CONTENTS = """
 {
+  "title": "",
+  "author": "",
+  "date": "",
   "behavior": {
     "_BE_sub": {"2016": [0.25]}
   },
