@@ -424,13 +424,17 @@ class Calculator(object):
             raise ValueError(msg.format(assump_filename))
         return (rpol_dict, behv_dict, cons_dict, grow_dict)
 
+    REQUIRED_REFORM_KEYS = set(['policy'])
+    REQUIRED_ASSUMP_KEYS = set(['behavior', 'consumption', 'growth'])
+
     @staticmethod
     def read_json_policy_reform_text(text_string):
         """
         Strip //-comments from text_string and return 1 dict based on the JSON.
         Specified text is JSON with at least 1 high-level string:object pair:
           a "policy": {...} pair.
-          Other high-level pairs will be ignored by this method.
+          Other high-level pairs will be ignored by this method, except that
+          a "behavior", "consumption" or "growth" key will raise a ValueError.
           The {...}  object may be empty (that is, be {}), or
           may contain one or more pairs with parameter string primary keys
           and string years as secondary keys.  See tests/test_calculate.py for
@@ -471,12 +475,15 @@ class Calculator(object):
                 msg += '{:02d}{}'.format(linenum, line) + '\n'
             msg += bline + '\n'
             raise ValueError(msg)
-        # check contents of dictionary
-        required_keys = ['policy']
+        # check key contents of dictionary
         actual_keys = raw_dict.keys()
-        for rkey in required_keys:
+        for rkey in Calculator.REQUIRED_REFORM_KEYS:
             if rkey not in actual_keys:
-                msg = 'policy reform key "{}" not among high-level keys'
+                msg = 'key "{}" is not in policy reform file'
+                raise ValueError(msg.format(rkey))
+        for rkey in actual_keys:
+            if rkey in Calculator.REQUIRED_ASSUMP_KEYS:
+                msg = 'key "{}" should be in economic assumption file'
                 raise ValueError(msg.format(rkey))
         # handle special param_code key in raw_dict policy component dictionary
         paramcode = raw_dict['policy'].pop('param_code', None)
@@ -498,7 +505,8 @@ class Calculator(object):
           a "behavior": {...} pair,
           a "consumption": {...} pair, and
           a "growth": {...} pair.
-          Other high-level pairs will be ignored by this method.
+          Other high-level pairs will be ignored by this method, except that
+          a "policy" key will raise a ValueError.
           The {...}  object may be empty (that is, be {}), or
           may contain one or more pairs with parameter string primary keys
           and string years as secondary keys.  See tests/test_calculate.py for
@@ -533,12 +541,15 @@ class Calculator(object):
                 msg += '{:02d}{}'.format(linenum, line) + '\n'
             msg += bline + '\n'
             raise ValueError(msg)
-        # check contents of dictionary
-        required_keys = ['behavior', 'consumption', 'growth']
+        # check key contents of dictionary
         actual_keys = raw_dict.keys()
-        for rkey in required_keys:
+        for rkey in Calculator.REQUIRED_ASSUMP_KEYS:
             if rkey not in actual_keys:
-                msg = 'economic assumption key "{}" not among high-level keys'
+                msg = 'key "{}" is not in economic assumption file'
+                raise ValueError(msg.format(rkey))
+        for rkey in actual_keys:
+            if rkey in Calculator.REQUIRED_REFORM_KEYS:
+                msg = 'key "{}" should be in policy reform file'
                 raise ValueError(msg.format(rkey))
         # convert the assumption dictionaries in raw_dict
         behv_dict = Calculator.convert_parameter_dict(raw_dict['behavior'])

@@ -614,11 +614,35 @@ def bad2reformfile():
     os.remove(f.name)
 
 
-def test_read_bad_json_reform_file(bad1reformfile, bad2reformfile):
+@pytest.yield_fixture
+def bad3reformfile():
+    # specify JSON text for reform
+    txt = """
+    {
+      "title": "",
+      "policy": {
+        "_SS_Earnings_c": {"2018": [9e99]}
+      },
+      "behavior": { // example of misplaced "behavior" key
+      }
+    }
+    """
+    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    f.write(txt + '\n')
+    f.close()
+    # Must close and then yield for Windows platform
+    yield f
+    os.remove(f.name)
+
+
+def test_read_bad_json_reform_file(bad1reformfile, bad2reformfile,
+                                   bad3reformfile):
     with pytest.raises(ValueError):
         Calculator.read_json_param_files(bad1reformfile.name, None)
     with pytest.raises(ValueError):
         Calculator.read_json_param_files(bad2reformfile.name, None)
+    with pytest.raises(ValueError):
+        Calculator.read_json_param_files(bad3reformfile.name, None)
 
 
 @pytest.yield_fixture
@@ -628,7 +652,9 @@ def bad1assumpfile():
     {
       "behavior": { // example of incorrect JSON because 'x' must be "x"
         'x': {"2014": [0.25]}
-      }
+      },
+      "consumption": {},
+      "growth": {}
     }
     """
     f = tempfile.NamedTemporaryFile(mode='a', delete=False)
@@ -660,11 +686,36 @@ def bad2assumpfile():
     os.remove(f.name)
 
 
-def test_read_bad_json_assump_file(bad1assumpfile, bad2assumpfile):
+@pytest.yield_fixture
+def bad3assumpfile():
+    # specify JSON text for assump
+    txt = """
+    {
+      "title": "",
+      "behavior": {},
+      "consumption": {},
+      "growth": {},
+      "policy": { // example of misplaced policy key
+        "_SS_Earnings_c": {"2018": [9e99]}
+      }
+    }
+    """
+    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    f.write(txt + '\n')
+    f.close()
+    # Must close and then yield for Windows platform
+    yield f
+    os.remove(f.name)
+
+
+def test_read_bad_json_assump_file(bad1assumpfile, bad2assumpfile,
+                                   bad3assumpfile):
     with pytest.raises(ValueError):
         Calculator.read_json_param_files(None, bad1assumpfile.name)
     with pytest.raises(ValueError):
         Calculator.read_json_param_files(None, bad2assumpfile.name)
+    with pytest.raises(ValueError):
+        Calculator.read_json_param_files(None, bad3assumpfile.name)
     with pytest.raises(ValueError):
         Calculator.read_json_param_files(None, 'unknown_file_name')
 

@@ -17,11 +17,5 @@ returned_value = e00300 + e00650 + p23250
     "_ALD_InvInc_ec_base_code_active": {"2016": [true]}
     // the dollar exclusion is the product of the base defined by code
     // and the fraction defined above
-  },
-  "behavior": {
-  },
-  "growth": {
-  },
-  "consumption": {
   }
 }

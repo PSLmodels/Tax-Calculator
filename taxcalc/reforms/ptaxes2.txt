@@ -4,11 +4,5 @@
     "_SS_Earnings_c": { // at $118,500 in 2016; wage indexed after that
         "2022": [9e99]  // raise to essentially infinity
     }
-  },
-  "behavior": {
-  },
-  "growth": {
-  },
-  "consumption": {
   }
 }
