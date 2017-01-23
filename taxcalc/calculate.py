@@ -142,7 +142,8 @@ class Calculator(object):
                     self.growth.apply_change(self.records)
                 self.records.increment_year()
             if verbose:
-                print('Your data have been extrapolated to ' +
+                print('Instantiation of the calculator automatically ' +
+                      'extrapolated your data to ' +
                       str(self.records.current_year) + '.')
         assert self.policy.current_year == self.records.current_year
 
