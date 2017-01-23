@@ -91,6 +91,8 @@ class Records(object):
     WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
     BLOWUP_FACTORS_FILENAME = 'StageIFactors.csv'
     BLOWUP_FACTORS_PATH = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
+    ADJUST_FACTORS_FILENAME = 'adjustment_factors.csv'
+    ADJUST_FACTORS_PATH = os.path.join(CUR_PATH, ADJUST_FACTORS_FILENAME)
 
     # specify set of input variables used in Tax-Calculator calculations:
     USABLE_READ_VARS = set([
@@ -176,6 +178,7 @@ class Records(object):
                  data='puf.csv',
                  exact_calculations=False,
                  blowup_factors=BLOWUP_FACTORS_PATH,
+                 adjust_factors=ADJUST_FACTORS_PATH,
                  weights=WEIGHTS_PATH,
                  start_year=PUFCSV_YEAR):
         """
@@ -206,6 +209,8 @@ class Records(object):
         self._read_blowup(blowup_factors)
         self.WT = None
         self._read_weights(weights)
+        self.ADJ = None
+        self._read_adjust(adjust_factors)
         # weights must be same size as tax record data
         if not self.WT.empty and self.dim != len(self.WT):
             frac = float(self.dim) / len(self.WT)
@@ -241,6 +246,8 @@ class Records(object):
         self._current_year += 1
         # apply Stage 1 Extrapolation blowup factors
         self._blowup(self.current_year)
+        # apply Stage 3 adjustment factors
+        self._adjust(self.current_year)
         # specify Stage 2 Extrapolation sample weights
         wt_colname = 'WT{}'.format(self.current_year)
         if wt_colname in self.WT.columns:
@@ -354,6 +361,13 @@ class Records(object):
         self.e87530 *= ATXPY
         self.p87521 *= ATXPY
         self.cmbtp *= ATXPY
+
+    def _adjust(self, year):
+        """
+        Adjust value of income variables to match SOI distributions
+        """
+        # Interest income
+        self.e00300 *= self.ADJ['INT{}'.format(year)]
 
     def _read_data(self, data, exact_calcs):
         """
@@ -501,6 +515,29 @@ class Records(object):
         BF.ASOCSEC = BF.ASOCSEC / BF.APOPSNR
         BF = 1.0 + BF.pct_change()
         setattr(self, 'BF', BF)
+
+    def _read_adjust(self, adjust_factors):
+        """
+        Read Records adjustment factors from file or uses specified DataFrame
+        as data or creates empty DataFrame if None
+        """
+        if adjust_factors is None:
+            ADJ = pd.DataFrame({'nothing': []})
+            setattr(self, 'ADJ', ADJ)
+            return
+        if isinstance(adjust_factors, pd.DataFrame):
+            ADJ = adjust_factors
+        elif isinstance(adjust_factors, six.string_types):
+            if os.path.isfile(adjust_factors):
+                ADJ = pd.read_csv(adjust_factors)
+            else:
+                ADJ = Records._read_egg_csv('adjust_factors',
+                                            Records.ADJUST_FACTORS_FILENAME)
+        else:
+            msg = ('adjust_factors is not None or a string'
+                   'or a Pandas DataFrame')
+            raise ValueError(msg)
+        setattr(self, 'ADJ', ADJ)
 
     def _extrapolate_in_puf_year(self):
         """
