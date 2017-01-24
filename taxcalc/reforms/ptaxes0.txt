@@ -9,11 +9,5 @@
         "2019": [0.030], // raise by 0.1 percentage point
         "2021": [0.032]  // raise by another 0.2 percentage point
     }        
-  },
-  "behavior": {
-  },
-  "growth": {
-  },
-  "consumption": {
   }
 }

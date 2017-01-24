@@ -15,6 +15,9 @@ from taxcalc import multiyear_diagnostic_table
 REFORM_CONTENTS = """
 // Specify AGI exclusion of some fraction of investment income
 {
+  "title": "",
+  "author": "",
+  "date": "",
   "policy": {
     // specify fraction of investment income that can be excluded from AGI
     "_ALD_InvInc_ec_rt": {"2016": [0.50]},
@@ -29,14 +32,23 @@ REFORM_CONTENTS = """
     "_ALD_InvInc_ec_base_code_active": {"2016": [true]}
     // the dollar exclusion is the product of the base defined by code
     // and the fraction defined above
-  },
+  }
+}
+"""
+
+
+ASSUMP_CONTENTS = """
+{
+  "title": "",
+  "author": "",
+  "date": "",
   "behavior": {
     "_BE_sub": {"2016": [0.25]}
   },
-  "growth": {
-  },
   "consumption": {
     "_MPC_e20400": {"2016": [0.01]}
+  },
+  "growth": {
   }
 }
 """
@@ -55,6 +67,23 @@ def reform_file():
     if os.path.isfile(rfile.name):
         try:
             os.remove(rfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+@pytest.yield_fixture
+def assump_file():
+    """
+    Temporary assump file for testing dropq functions with assump file.
+    """
+    afile = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    afile.write(ASSUMP_CONTENTS)
+    afile.close()
+    # must close and then yield for Windows platform
+    yield afile
+    if os.path.isfile(afile.name):
+        try:
+            os.remove(afile.name)
         except OSError:
             pass  # sometimes we can't remove a generated temporary file
 
@@ -107,9 +136,11 @@ def test_run_dropq_nth_year(is_strict, rjson, growth_params,
 
 
 @pytest.mark.parametrize("is_strict", [True, False])
-def test_run_dropq_nth_year_from_file(is_strict, puf_1991_path, reform_file):
+def test_run_dropq_nth_year_from_file(is_strict, puf_1991_path,
+                                      reform_file, assump_file):
 
-    user_reform = Calculator.read_json_reform_file(reform_file.name)
+    user_reform = Calculator.read_json_param_files(reform_file.name,
+                                                   assump_file.name)
     user_mods = user_reform
 
     # Create a Public Use File object
@@ -130,7 +161,7 @@ def test_run_dropq_nth_year_from_file(is_strict, puf_1991_path, reform_file):
 
 def test_run_dropq_nth_year_mtr_from_file(puf_1991_path, reform_file):
 
-    user_reform = Calculator.read_json_reform_file(reform_file.name)
+    user_reform = Calculator.read_json_param_files(reform_file.name, None)
     first_year = 2016
     elast_params = {'elastic_gdp': [.54, .56, .58]}
     user_reform[0][first_year].update(elast_params)

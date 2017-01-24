@@ -501,7 +501,7 @@ def test_parameters_get_default_start_year():
 
 
 REFORM_CONTENTS = """
-// Example of a reform file suitable for Calculator read_json_reform_file().
+// Example of a reform file suitable for Calculator read_json_param_files().
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
 // The primary keys are policy parameters and secondary keys are years.
@@ -546,12 +546,6 @@ returned_value = e00300 + e00650 + p23250
     {"2017": false, // values in future years are same as this year value
      "2020": true   // values in future years indexed with this year as base
     }
-},
-"behavior": {
-},
-"growth": {
-},
-"consumption": {
 }
 }
 """
@@ -560,7 +554,7 @@ returned_value = e00300 + e00650 + p23250
 @pytest.yield_fixture
 def reform_file():
     """
-    Temporary reform file for Calculator read_json_reform_file function.
+    Temporary reform file for Calculator read_json_param_files function.
     """
     rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
     rfile.write(REFORM_CONTENTS)
@@ -577,22 +571,22 @@ def reform_file():
 def test_prohibit_param_code(reform_file):
     Policy.PROHIBIT_PARAM_CODE = True
     with pytest.raises(ValueError):
-        Calculator.read_json_reform_file(reform_file.name)
+        Calculator.read_json_param_files(reform_file.name, None)
     Policy.PROHIBIT_PARAM_CODE = False
 
 
 @pytest.mark.parametrize("set_year", [False, True])
-def test_read_json_reform_file_and_implement_reform(reform_file, set_year):
+def test_read_json_param_files_and_implement_reform(reform_file, set_year):
     """
     Test reading and translation of reform file into a reform dictionary
     that is then used to call implement_reform method.
     NOTE: implement_reform called when policy.current_year == policy.start_year
     """
-    reform, rb, rg, rc = Calculator.read_json_reform_file(reform_file.name)
+    ref, _, _, _ = Calculator.read_json_param_files(reform_file.name, None)
     policy = Policy()
     if set_year:
         policy.set_year(2015)
-    policy.implement_reform(reform)
+    policy.implement_reform(ref)
     syr = policy.start_year
     amt_brk1 = policy._AMT_brk1
     assert amt_brk1[2015 - syr] == 200000
@@ -729,7 +723,6 @@ def test_scan_param_code():
         Policy.scan_param_code('9999**99999999')
 
 
-@pytest.mark.one
 def test_cpi_for_param_code():
     """
     Test cpi_for_param_code function.

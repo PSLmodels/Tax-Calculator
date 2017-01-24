@@ -12,11 +12,5 @@
     "_AMEDT_ec_cpi": { // start price-indexing the exclusion
         "2019": true // values in future years price indexed
     }
-  },
-  "behavior": {
-  },
-  "growth": {
-  },
-  "consumption": {
   }
 }
