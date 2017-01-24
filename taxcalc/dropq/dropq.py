@@ -406,8 +406,8 @@ def results(c):
     return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
 
 
-def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta, user_mods="",
-                          return_json=True):
+def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta, adj_fac,
+                          user_mods="", return_json=True):
     # Only makes sense to run for budget years 1 through n-1 (not for year 0)
     assert year_n > 0
 
@@ -416,8 +416,10 @@ def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta, user_mods="",
     #########################################################################
     #   Create Calculators and Masks
     #########################################################################
-    records = Records(tax_dta.copy(deep=True))
-    records3 = Records(tax_dta.copy(deep=True))
+    records = Records(tax_dta.copy(deep=True),
+                      adjust_factors=adj_fac.copy(deep=True))
+    records3 = Records(tax_dta.copy(deep=True),
+                       adjust_factors=adj_fac.copy(deep=True))
 
     # Default Plans
     # Create a default Policy object
@@ -501,12 +503,13 @@ def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta, user_mods="",
 
 
 def calculate_baseline_and_reform(year_n, start_year, is_strict,
-                                  tax_dta="", user_mods=""):
+                                  tax_dta="", adj_fac="", user_mods=""):
 
     #########################################################################
     # Create Calculators and Masks
     #########################################################################
-    records = Records(tax_dta.copy(deep=True))
+    records = Records(tax_dta.copy(deep=True),
+                      adjust_factors=adj_fac.copy(deep=True))
     records2 = copy.deepcopy(records)
     records3 = copy.deepcopy(records)
     # add 1 dollar to gross income
@@ -599,12 +602,12 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
     return soit1, soit3, mask
 
 
-def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
-                 return_json=True):
+def run_nth_year(year_n, start_year, is_strict, tax_dta="", adj_fac="",
+                 user_mods="", return_json=True):
 
     start_time = time.time()
     soit_baseline, soit_reform, mask = calculate_baseline_and_reform(
-        year_n, start_year, is_strict, tax_dta, user_mods)
+        year_n, start_year, is_strict, tax_dta, adj_fac, user_mods)
 
     # Means of plan Y by decile
     # diffs of plan Y by decile
@@ -718,7 +721,7 @@ def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
             fiscal_yr_total_bl, fiscal_yr_total_rf)
 
 
-def run_models(tax_dta, start_year, is_strict=False, user_mods="",
+def run_models(tax_dta, adj_fac, start_year, is_strict=False, user_mods="",
                return_json=True, num_years=NUM_YEARS_DEFAULT):
 
     mY_dec_table = {}
@@ -740,6 +743,7 @@ def run_models(tax_dta, start_year, is_strict=False, user_mods="",
         json_tables = run_nth_year(year_n, start_year=start_year,
                                    is_strict=is_strict,
                                    tax_dta=tax_dta,
+                                   adj_fac=adj_fac,
                                    user_mods=user_mods,
                                    return_json=return_json)
 
@@ -765,8 +769,9 @@ def run_models(tax_dta, start_year, is_strict=False, user_mods="",
             pdf_bin_table, cdf_bin_table, num_fiscal_year_totals)
 
 
-def run_gdp_elast_models(tax_dta, start_year, is_strict=False, user_mods="",
-                         return_json=True, num_years=NUM_YEARS_DEFAULT):
+def run_gdp_elast_models(tax_dta, adj_fac, start_year, is_strict=False,
+                         user_mods="", return_json=True,
+                         num_years=NUM_YEARS_DEFAULT):
 
     gdp_elasticity_totals = []
 
@@ -777,6 +782,7 @@ def run_gdp_elast_models(tax_dta, start_year, is_strict=False, user_mods="",
         gdp_elast_i = run_nth_year_mtr_calc(year_n, start_year=start_year,
                                             is_strict=is_strict,
                                             tax_dta=tax_dta,
+                                            adj_fac=adj_fac,
                                             user_mods=user_mods,
                                             return_json=return_json)
 
