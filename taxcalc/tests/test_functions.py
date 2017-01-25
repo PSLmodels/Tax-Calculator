@@ -209,6 +209,7 @@ def test_1():
                          reform=policy_reform,
                          exact_calculations=False,
                          blowup_input_data=False,
+                         adjust_input_data=False,
                          output_weights=False,
                          output_records=False,
                          csv_dump=False)
@@ -259,6 +260,7 @@ def test_2():
                          reform=policy_reform,
                          exact_calculations=False,
                          blowup_input_data=False,
+                         adjust_input_data=False,
                          output_weights=False,
                          output_records=False,
                          csv_dump=False)

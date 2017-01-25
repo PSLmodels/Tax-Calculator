@@ -372,8 +372,9 @@ class Records(object):
         """
         Adjust value of income variables to match SOI distributions
         """
-        # Interest income
-        self.e00300 *= self.ADJ['INT{}'.format(year)]
+        if len(self.ADJ) != 0:
+            # Interest income
+            self.e00300 *= self.ADJ['INT{}'.format(year)]
 
     def _read_data(self, data, exact_calcs):
         """

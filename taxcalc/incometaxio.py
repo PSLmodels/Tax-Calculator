@@ -82,7 +82,7 @@ class IncomeTaxIO(object):
 
     def __init__(self, input_data, tax_year, reform,
                  exact_calculations,
-                 blowup_input_data, output_weights,
+                 blowup_input_data, adjust_input_data, output_weights,
                  output_records, csv_dump):
         """
         IncomeTaxIO class constructor.
@@ -159,24 +159,50 @@ class IncomeTaxIO(object):
         # read input file contents into Records object
         if blowup_input_data:
             if output_weights:
-                recs = Records(data=input_data,
-                               exact_calculations=exact_calculations)
+                if adjust_input_data:
+                    recs = Records(data=input_data,
+                                   exact_calculations=exact_calculations)
+                else:
+                    recs = Records(data=input_data,
+                                   exact_calculations=exact_calculations,
+                                   adjust_factors=None)
             else:
-                recs = Records(data=input_data,
-                               exact_calculations=exact_calculations,
-                               weights=None)
+                if adjust_input_data:
+                    recs = Records(data=input_data,
+                                   exact_calculations=exact_calculations,
+                                   weights=None)
+                else:
+                    recs = Records(data=input_data,
+                                   exact_calculations=exact_calculations,
+                                   adjust_factors=None,
+                                   weights=None)
         else:
             if output_weights:
-                recs = Records(data=input_data,
-                               exact_calculations=exact_calculations,
-                               blowup_factors=None,
-                               start_year=tax_year)
+                if adjust_input_data:
+                    recs = Records(data=input_data,
+                                   exact_calculations=exact_calculations,
+                                   blowup_factors=None,
+                                   start_year=tax_year)
+                else:
+                    recs = Records(data=input_data,
+                                   exact_calculations=exact_calculations,
+                                   blowup_factors=None,
+                                   adjust_factors=None,
+                                   start_year=tax_year)
             else:
-                recs = Records(data=input_data,
-                               exact_calculations=exact_calculations,
-                               blowup_factors=None,
-                               weights=None,
-                               start_year=tax_year)
+                if adjust_input_data:
+                    recs = Records(data=input_data,
+                                   exact_calculations=exact_calculations,
+                                   blowup_factors=None,
+                                   weights=None,
+                                   start_year=tax_year)
+                else:
+                    recs = Records(data=input_data,
+                                   exact_calculations=exact_calculations,
+                                   blowup_factors=None,
+                                   adjust_factors=None,
+                                   weights=None,
+                                   start_year=tax_year)
         # create Calculator object
         if self._reform and self._using_reform_file:
             clp = Policy()

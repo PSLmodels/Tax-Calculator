@@ -89,6 +89,7 @@ def test_incorrect_creation_1(input_data, exact):
             reform=None,
             exact_calculations=exact,
             blowup_input_data=True,
+            adjust_input_data=False,
             output_weights=False,
             output_records=False,
             csv_dump=False
@@ -112,6 +113,7 @@ def test_incorrect_creation_2(rawinputfile, year, reform):
             reform=reform,
             exact_calculations=False,
             blowup_input_data=True,
+            adjust_input_data=False,
             output_weights=False,
             output_records=False,
             csv_dump=False
@@ -123,7 +125,7 @@ def test_incorrect_creation_2(rawinputfile, year, reform):
     (True, True),
     (False, True),
 ])
-def test_creation_with_blowup(rawinputfile, rawadjustfile, blowup,
+def test_creation_with_blowup(rawinputfile, blowup,
                               weights_out):
     """
     Test IncomeTaxIO instantiation with no policy reform and with blowup.
@@ -136,6 +138,7 @@ def test_creation_with_blowup(rawinputfile, rawadjustfile, blowup,
                          reform=None,
                          exact_calculations=False,
                          blowup_input_data=blowup,
+                         adjust_input_data=False,
                          output_weights=weights_out,
                          output_records=False,
                          csv_dump=False)
@@ -157,6 +160,7 @@ def test_2(rawinputfile):  # pylint: disable=redefined-outer-name
                          reform=reform_dict,
                          exact_calculations=False,
                          blowup_input_data=False,
+                         adjust_input_data=False,
                          output_weights=False,
                          output_records=False,
                          csv_dump=False)
@@ -259,6 +263,7 @@ def test_3(rawinputfile, reformfile1):  # pylint: disable=redefined-outer-name
                          reform=reformfile1.name,
                          exact_calculations=False,
                          blowup_input_data=False,
+                         adjust_input_data=False,
                          output_weights=False,
                          output_records=False,
                          csv_dump=False)
@@ -279,6 +284,7 @@ def test_4(reformfile2):  # pylint: disable=redefined-outer-name
                          reform=reformfile2.name,
                          exact_calculations=False,
                          blowup_input_data=False,
+                         adjust_input_data=False,
                          output_weights=False,
                          output_records=False,
                          csv_dump=False)
@@ -297,6 +303,7 @@ def test_5(rawinputfile):  # pylint: disable=redefined-outer-name
                          reform=None,
                          exact_calculations=False,
                          blowup_input_data=False,
+                         adjust_input_data=False,
                          output_weights=False,
                          output_records=True,
                          csv_dump=False)
@@ -315,6 +322,7 @@ def test_6(rawinputfile):  # pylint: disable=redefined-outer-name
                          reform=None,
                          exact_calculations=False,
                          blowup_input_data=False,
+                         adjust_input_data=False,
                          output_weights=False,
                          output_records=False,
                          csv_dump=True)
@@ -332,6 +340,7 @@ def test_7(rawinputfile, reformfile1):  # pylint: disable=redefined-outer-name
                          reform=reformfile1.name,
                          exact_calculations=False,
                          blowup_input_data=False,
+                         adjust_input_data=False,
                          output_weights=False,
                          output_records=False,
                          csv_dump=False)
@@ -352,6 +361,7 @@ def test_8(reformfile1):  # pylint: disable=redefined-outer-name
                          reform=reformfile1.name,
                          exact_calculations=False,
                          blowup_input_data=False,
+                         adjust_input_data=False,
                          output_weights=True,
                          output_records=False,
                          csv_dump=False)
