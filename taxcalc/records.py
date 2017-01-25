@@ -42,6 +42,12 @@ class Records(object):
         None creates empty blowup-factors DataFrame;
         default value is filename of the default blowup factors.
 
+    adjust_factors: string or Pandas DataFrame or None
+        string describes CSV file in which adjustment factors reside;
+        DataFrame already contains adjustment factors;
+        None creates empty adjustment-factors DataFrame;
+        default value is filename of the default adjustment factors.
+
     weights: string or Pandas DataFrame or None
         string describes CSV file in which weights reside;
         DataFrame already contains weights;
