@@ -42,14 +42,13 @@ class IncomeTaxIO(object):
     tax_year: integer
         calendar year for which income taxes will be computed for INPUT.
 
-    reform: None or string or dictionary
+    reform: None or string
         None implies no policy reform (current-law policy), or
-        string is name of optional REFORM file, or
-        dictionary suitable for passing to Policy.implement_reform() method.
+        string is name of optional REFORM file.
 
     assump: None or string
-        None implies economic assumptions are baseline and statuc analysis
-        of reform is conducted, or
+        None implies economic assumptions are baseline assumptions and
+        a static analysis of reform is conducted, or
         string is name of optional ASSUMP file.
 
     exact_calculations: boolean
@@ -76,7 +75,7 @@ class IncomeTaxIO(object):
     ------
     ValueError:
         if file specified by input_data string does not exist.
-        if reform is neither None, string, nor dictionary.
+        if reform is neither None nor string.
         if assump is neither None nor string.
         if tax_year before Policy start_year.
         if tax_year after Policy end_year.
@@ -114,34 +113,26 @@ class IncomeTaxIO(object):
         # construct output_filename and delete old output file if it exists
         if assump is None:
             asm = ''
-            self._assump = False
         elif isinstance(assump, six.string_types):
             if assump.endswith('.json'):
                 asm = '-{}'.format(assump[:-5])
             else:
                 asm = '-{}'.format(assump)
-            self._assump = True
         else:
             msg = 'IncomeTaxIO.ctor assump is neither None nor str'
             raise ValueError(msg)
         if reform is None:
-            ref = ''
             self._reform = False
-            self._using_reform_file = True
-        else:
+            ref = ''
+        elif isinstance(reform, six.string_types):
             self._reform = True
-            if isinstance(reform, six.string_types):
-                if reform.endswith('.json'):
-                    ref = '-{}'.format(reform[:-5])
-                else:
-                    ref = '-{}'.format(reform)
-                self._using_reform_file = True
-            elif isinstance(reform, dict):
-                ref = ''
-                self._using_reform_file = False
+            if reform.endswith('.json'):
+                ref = '-{}'.format(reform[:-5])
             else:
-                msg = 'IncomeTaxIO.ctor reform is neither None, str, nor dict'
-                raise ValueError(msg)
+                ref = '-{}'.format(reform)
+        else:
+            msg = 'IncomeTaxIO.ctor reform is neither None nor str'
+            raise ValueError(msg)
         if output_records:
             self._output_filename = '{}.records{}{}'.format(inp, ref, asm)
         elif csv_dump:
@@ -164,21 +155,10 @@ class IncomeTaxIO(object):
         if tax_year > pol.end_year:
             msg = 'tax_year {} greater than policy.end_year {}'
             raise ValueError(msg.format(tax_year, pol.end_year))
-        # implement reform and assump if specified
-        ref_d = dict()
-        beh_d = dict()
-        con_d = dict()
-        gro_d = dict()
-        if self._reform:
-            if self._using_reform_file:
-                (ref_d, beh_d, con_d,
-                 gro_d) = Calculator.read_json_param_files(reform, assump)
-            else:
-                ref_d = reform
-                beh_d = dict()
-                con_d = dict()
-                gro_d = dict()
-            pol.implement_reform(ref_d)
+        # get reform & assump dictionaries and implement reform
+        (ref_d, beh_d, con_d,
+         gro_d) = Calculator.read_json_param_files(reform, assump)
+        pol.implement_reform(ref_d)
         # set tax policy parameters to specified tax_year
         pol.set_year(tax_year)
         # read input file contents into Records object
@@ -203,14 +183,14 @@ class IncomeTaxIO(object):
                                weights=None,
                                start_year=tax_year)
         # create Calculator object
-        if self._reform and self._using_reform_file:
+        con = Consumption()
+        con.update_consumption(con_d)
+        gro = Growth()
+        gro.update_growth(gro_d)
+        if self._reform:
             clp = Policy()
             clp.set_year(tax_year)
             recs_clp = copy.deepcopy(recs)
-            con = Consumption()
-            con.update_consumption(con_d)
-            gro = Growth()
-            gro.update_growth(gro_d)
             self._calc_clp = Calculator(policy=clp, records=recs_clp,
                                         verbose=False,
                                         consumption=con,
@@ -227,6 +207,8 @@ class IncomeTaxIO(object):
         else:
             self._calc = Calculator(policy=pol, records=recs,
                                     verbose=True,
+                                    consumption=con,
+                                    growth=gro,
                                     sync_years=blowup_input_data)
 
     def tax_year(self):
@@ -254,8 +236,7 @@ class IncomeTaxIO(object):
         for varname in Records.USABLE_READ_VARS:
             vardata = getattr(self._calc.records, varname)
             recdf[varname] = vardata
-        writing_possible = self._using_input_file and self._using_reform_file
-        if writing_possible and writing_output_file:
+        if self._using_input_file and writing_output_file:
             recdf.to_csv(self._output_filename,
                          float_format='%.4f', index=False)
 
@@ -277,8 +258,7 @@ class IncomeTaxIO(object):
         for varname in Records.USABLE_READ_VARS | Records.CALCULATED_VARS:
             vardata = getattr(self._calc.records, varname)
             recdf[varname] = vardata
-        writing_possible = self._using_input_file and self._using_reform_file
-        if writing_possible and writing_output_file:
+        if self._using_input_file and writing_output_file:
             recdf.to_csv(self._output_filename,
                          float_format='%.2f', index=False)
 
@@ -320,7 +300,7 @@ class IncomeTaxIO(object):
         (mtr_ptax, mtr_itax,
          _) = self._calc.mtr(wrt_full_compensation=output_mtr_wrt_fullcomp)
         txt = None
-        if self._reform and self._using_reform_file:
+        if self._reform:
             self._calc = Behavior.response(self._calc_clp, self._calc)
             if output_ceeu:
                 if not self._calc.behavior.has_response():
@@ -370,8 +350,7 @@ class IncomeTaxIO(object):
         assert len(output) == self._calc.records.dim
         # handle disposition of calculated output
         olines = ''
-        writing_possible = self._using_input_file and self._using_reform_file
-        if writing_possible and writing_output_file:
+        if self._using_input_file and writing_output_file:
             SimpleTaxIO.write_output_file(output, self._output_filename)
         else:
             for idx in range(0, len(output)):
