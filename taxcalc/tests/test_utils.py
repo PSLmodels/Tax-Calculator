@@ -120,11 +120,11 @@ def test_validity_of_name_lists():
     assert stat_vars.issubset(calc_vars)
 
 
-def test_create_tables(puf_1991, weights_1991, adjust_1991):
+def test_create_tables(puf_1991, weights_1991):
     # create a current-law Policy object and Calculator object calc1
     policy1 = Policy()
     records1 = Records(data=puf_1991, weights=weights_1991,
-                       adjust_factors=adjust_1991, start_year=2009)
+                       adjust_factors=None, start_year=2009)
     calc1 = Calculator(policy=policy1, records=records1)
     calc1.calc_all()
     # create a policy-reform Policy object and Calculator object calc2
@@ -132,7 +132,7 @@ def test_create_tables(puf_1991, weights_1991, adjust_1991):
     policy2 = Policy()
     policy2.implement_reform(reform)
     records2 = Records(data=puf_1991, weights=weights_1991,
-                       adjust_factors=adjust_1991, start_year=2009)
+                       adjust_factors=None, start_year=2009)
     calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
     # test creating various distribution tables
@@ -380,11 +380,11 @@ def test_dist_table_sum_row(records_2009):
                                    result_type='weighted_avg')
 
 
-def test_diff_table_sum_row(puf_1991, weights_1991, adjust_1991):
+def test_diff_table_sum_row(puf_1991, weights_1991):
     # create a current-law Policy object and Calculator calc1
     policy1 = Policy()
     records1 = Records(data=puf_1991, weights=weights_1991,
-                       adjust_factors=adjust_1991, start_year=2009)
+                       adjust_factors=None, start_year=2009)
     calc1 = Calculator(policy=policy1, records=records1)
     calc1.calc_all()
     # create a policy-reform Policy object and Calculator calc2
@@ -392,7 +392,7 @@ def test_diff_table_sum_row(puf_1991, weights_1991, adjust_1991):
     policy2 = Policy()
     policy2.implement_reform(reform)
     records2 = Records(data=puf_1991, weights=weights_1991,
-                       adjust_factors=adjust_1991, start_year=2009)
+                       adjust_factors=None, start_year=2009)
     calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
     # create two difference tables and compare their content
@@ -408,11 +408,11 @@ def test_diff_table_sum_row(puf_1991, weights_1991, adjust_1991):
                           tdiff2[non_digit_cols][-1:])
 
 
-def test_row_classifier(puf_1991, weights_1991, adjust_1991):
+def test_row_classifier(puf_1991, weights_1991):
     # create a current-law Policy object and Calculator calc1
     policy1 = Policy()
     records1 = Records(data=puf_1991, weights=weights_1991,
-                       adjust_factors=adjust_1991, start_year=2009)
+                       adjust_factors=None, start_year=2009)
     calc1 = Calculator(policy=policy1, records=records1)
     calc1.calc_all()
     calc1_s006 = create_distribution_table(calc1.records,
@@ -423,7 +423,7 @@ def test_row_classifier(puf_1991, weights_1991, adjust_1991):
     policy2 = Policy()
     policy2.implement_reform(reform)
     records2 = Records(data=puf_1991, weights=weights_1991,
-                       adjust_factors=adjust_1991, start_year=2009)
+                       adjust_factors=None, start_year=2009)
     calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
     calc2_s006 = create_distribution_table(calc2.records,
@@ -738,7 +738,7 @@ def test_string_to_number():
     assert string_to_number('1.23') == 1.23
 
 
-def test_ce_aftertax_income(puf_1991, weights_1991, adjust_1991):
+def test_ce_aftertax_income(puf_1991, weights_1991):
     # test certainty_equivalent() function
     con = 10000
     cmin = 1000
@@ -750,7 +750,7 @@ def test_ce_aftertax_income(puf_1991, weights_1991, adjust_1991):
     # specify calc1 and calc_all() for cyr
     pol1 = Policy()
     rec1 = Records(data=puf_1991, weights=weights_1991,
-                   adjust_factors=adjust_1991, start_year=2009)
+                   adjust_factors=None, start_year=2009)
     calc1 = Calculator(policy=pol1, records=rec1)
     calc1.advance_to_year(cyr)
     calc1.calc_all()
@@ -759,7 +759,7 @@ def test_ce_aftertax_income(puf_1991, weights_1991, adjust_1991):
     reform = {2018: {'_II_em': [0.0]}}
     pol2.implement_reform(reform)
     rec2 = Records(data=puf_1991, weights=weights_1991,
-                   adjust_factors=adjust_1991, start_year=2009)
+                   adjust_factors=None, start_year=2009)
     calc2 = Calculator(policy=pol2, records=rec2)
     calc2.advance_to_year(cyr)
     calc2.calc_all()

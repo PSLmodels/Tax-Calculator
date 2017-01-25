@@ -73,7 +73,7 @@ def puf_path(tests_path):
                           (True, True, False, True),
                           (False, True, True, True)])
 def test_run_dropq_nth_year(is_strict, rjson, growth_params,
-                            behavior_params, puf_1991_path, adjust_1991_path):
+                            behavior_params, puf_1991_path):
     myvars = {}
     myvars['_II_em_cpi'] = False
     myvars['_II_rt4'] = [0.39, 0.40, 0.41]
@@ -90,17 +90,14 @@ def test_run_dropq_nth_year(is_strict, rjson, growth_params,
     # Create a Public Use File object
     tax_data = pd.read_csv(puf_1991_path)
 
-    # Create adjustment factors object
-    adj_fac = pd.read_csv(adjust_1991_path)
-
     if is_strict:
         with pytest.raises(ValueError):
-            dropq.run_models(tax_data, adj_fac, start_year=first,
+            dropq.run_models(tax_data, start_year=first,
                              is_strict=is_strict, user_mods=user_mods,
                              return_json=rjson, num_years=3)
     else:
         (_, _, _, _, _, _, _, _,
-         _, _, fiscal_tots) = dropq.run_models(tax_data, adj_fac,
+         _, _, fiscal_tots) = dropq.run_models(tax_data,
                                                start_year=first,
                                                is_strict=is_strict,
                                                user_mods=user_mods,
@@ -110,8 +107,7 @@ def test_run_dropq_nth_year(is_strict, rjson, growth_params,
 
 
 @pytest.mark.parametrize("is_strict", [True, False])
-def test_run_dropq_nth_year_from_file(is_strict, puf_1991_path,
-                                      adjust_1991_path, reform_file):
+def test_run_dropq_nth_year_from_file(is_strict, puf_1991_path, reform_file):
 
     user_reform = Calculator.read_json_reform_file(reform_file.name)
     user_mods = user_reform
@@ -121,11 +117,8 @@ def test_run_dropq_nth_year_from_file(is_strict, puf_1991_path,
     first = 2016
     rjson = True
 
-    # Create adjustment factors object
-    adj_fac = pd.read_csv(adjust_1991_path)
-
     (_, _, _, _, _, _, _, _,
-     _, _, fiscal_tots) = dropq.run_models(tax_data, adj_fac,
+     _, _, fiscal_tots) = dropq.run_models(tax_data,
                                            start_year=first,
                                            is_strict=is_strict,
                                            user_mods=user_mods,
@@ -135,8 +128,7 @@ def test_run_dropq_nth_year_from_file(is_strict, puf_1991_path,
     assert fiscal_tots is not None
 
 
-def test_run_dropq_nth_year_mtr_from_file(puf_1991_path,
-                                          adjust_1991_path, reform_file):
+def test_run_dropq_nth_year_mtr_from_file(puf_1991_path, reform_file):
 
     user_reform = Calculator.read_json_reform_file(reform_file.name)
     first_year = 2016
@@ -149,10 +141,7 @@ def test_run_dropq_nth_year_mtr_from_file(puf_1991_path,
     # Create a Public Use File object
     tax_data = pd.read_csv(puf_1991_path)
 
-    # Create adjustment factors object
-    adj_fac = pd.read_csv(adjust_1991_path)
-
-    ans = dropq.run_gdp_elast_models(tax_data, adj_fac, start_year=first_year,
+    ans = dropq.run_gdp_elast_models(tax_data, start_year=first_year,
                                      is_strict=True,
                                      user_mods=user_reform,
                                      return_json=True,
@@ -217,7 +206,7 @@ def test_full_dropq_puf(puf_path):
                           (False, False, False, False),
                           (False, True, True, False)])
 def test_run_dropq_nth_year_mtr(is_strict, rjson, growth_params, no_elast,
-                                puf_1991_path, adjust_1991_path):
+                                puf_1991_path):
     myvars = {}
     myvars['_STD'] = [[12600, 25200, 12600, 18600, 25300, 12600]]
     myvars['_AMT_rt1'] = [.0]
@@ -235,19 +224,16 @@ def test_run_dropq_nth_year_mtr(is_strict, rjson, growth_params, no_elast,
     # Create a Public Use File object
     tax_data = pd.read_csv(puf_1991_path)
 
-    # Create adjustment factors object
-    adj_fac = pd.read_csv(adjust_1991_path)
-
     if is_strict or no_elast:
         with pytest.raises(ValueError):
-            dropq.run_gdp_elast_models(tax_data, adj_fac,
+            dropq.run_gdp_elast_models(tax_data,
                                        start_year=first_year,
                                        is_strict=is_strict,
                                        user_mods=user_mods,
                                        return_json=rjson,
                                        num_years=3)
     else:
-        dropq.run_gdp_elast_models(tax_data, adj_fac, start_year=first_year,
+        dropq.run_gdp_elast_models(tax_data, start_year=first_year,
                                    is_strict=is_strict,
                                    user_mods=user_mods,
                                    return_json=rjson,
@@ -478,15 +464,12 @@ def test_format_print_not_implemented():
                           ("other_income_bins", "weighted_avg"),
                           ("large_income_bins", "other_avg")])
 def test_create_dropq_dist_table_groupby_options(groupby, result_type,
-                                                 puf_1991_path,
-                                                 adjust_1991_path):
+                                                 puf_1991_path):
     year_n = 0
     start_year = 2016
     is_strict = False
     # Create a Public Use File object
     tax_data = pd.read_csv(puf_1991_path)
-    # Create adjustment factors object
-    adj_fac = pd.read_csv(adjust_1991_path)
     suffix = '_bin'
     myvars = {}
     myvars['_II_em_cpi'] = False
@@ -496,7 +479,7 @@ def test_create_dropq_dist_table_groupby_options(groupby, result_type,
     user_mods = {first_year: myvars}
 
     soit_baseline, soit_reform, mask = calculate_baseline_and_reform(
-        year_n, start_year, is_strict, tax_data, adj_fac, user_mods)
+        year_n, start_year, is_strict, tax_data, user_mods)
 
     _, df2 = drop_records(soit_baseline, soit_reform, mask)
 

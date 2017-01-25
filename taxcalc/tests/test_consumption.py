@@ -58,7 +58,7 @@ def test_consumption_default_data():
         assert paramdata[param] == [0.0]
 
 
-def test_consumption_response(puf_1991, weights_1991, adjust_1991):
+def test_consumption_response(puf_1991, weights_1991):
     consump = Consumption()
     mpc = 0.5
     consumption_response = {2013: {'_MPC_e20400': [mpc]}}
@@ -68,7 +68,7 @@ def test_consumption_response(puf_1991, weights_1991, adjust_1991):
         consump.response(list(), 1)
     # test correct call to response method
     recs = Records(data=puf_1991, weights=weights_1991,
-                   adjust_factors=adjust_1991, start_year=2009)
+                   adjust_factors=None, start_year=2009)
     pre = copy.deepcopy(recs.e20400)
     consump.response(recs, 1.0)
     post = recs.e20400
@@ -77,7 +77,7 @@ def test_consumption_response(puf_1991, weights_1991, adjust_1991):
     assert np.allclose(actual_diff, expected_diff)
     # compute earnings mtr with no consumption response
     recs0 = Records(data=puf_1991, weights=weights_1991,
-                    adjust_factors=adjust_1991, start_year=2009)
+                    adjust_factors=None, start_year=2009)
     calc0 = Calculator(policy=Policy(), records=recs0, consumption=None)
     ided0 = copy.deepcopy(recs0.e20400)
     (mtr0_ptax, mtr0_itax, _) = calc0.mtr(variable_str='e00200p',
@@ -85,7 +85,7 @@ def test_consumption_response(puf_1991, weights_1991, adjust_1991):
     assert np.allclose(calc0.records.e20400, ided0)
     # compute earnings mtr with consumption response
     recs1 = Records(data=puf_1991, weights=weights_1991,
-                    adjust_factors=adjust_1991, start_year=2009)
+                    adjust_factors=None, start_year=2009)
     calc1 = Calculator(policy=Policy(), records=recs1, consumption=None)
     assert np.allclose(calc1.records.e20400, ided0)
     calc1.consumption.update_consumption(consumption_response)
