@@ -29,7 +29,7 @@ def test_update_growth(puf_1991, weights_1991):
     with pytest.raises(ValueError):
         grow.update_growth({2013: {'bad_name_cpi': True}})
     double_factor_change = {2015: {'_factor_adjustment': [0.01],
-                                    '_factor_target': [0.08]}}
+                                   '_factor_target': [0.08]}}
     with pytest.raises(ValueError):
         grow.update_growth(double_factor_change)
     # try correct updates
