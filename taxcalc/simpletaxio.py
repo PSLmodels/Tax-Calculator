@@ -102,10 +102,10 @@ class SimpleTaxIO(object):
         # read input file contents into self._input dictionary
         self._read_input(input_filename)
         self._policy = Policy()
-        # implement reform if reform is specified (no behavior, growth or cons)
+        # implement reform if reform is specified
         if reform:
             if self._using_reform_file:
-                r_pol, _, _, _ = Calculator.read_json_reform_file(reform)
+                r_pol, _, _, _ = Calculator.read_json_param_files(reform, None)
             else:
                 r_pol = reform
             self._policy.implement_reform(r_pol)

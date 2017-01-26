@@ -12,5 +12,5 @@ The contents of this directory include JSON reform files used
 in the cross-checking, which should be done immediately after each
 TaxBrain upgrade to a new Tax-Calculator release.
 
-See the comments in `file0.json` for an example of how the
+See the comments in `r0.json` and `a1.json` for examples of how the
 cross-checking is done.

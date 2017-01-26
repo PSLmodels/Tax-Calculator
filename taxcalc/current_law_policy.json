@@ -2,7 +2,7 @@
     "_FICA_ss_trt": {
         "long_name": "Social Security payroll tax rate",
         "description": "Social Security FICA rate, including both employer and employee.",
-        "section_1": "Payroll Taxes",
+        "section_1": "Payroll taxes",
         "section_2": "Social Security FICA",
         "irs_ref": "",
         "notes": "",
@@ -18,7 +18,7 @@
     "_SS_Earnings_c": {
         "long_name": "Maximum taxable earnings for Social Security",
         "description": "Only individual earnings below this maximum amount are subjected to Social Security (OASDI) payroll tax.",
-        "section_1": "Payroll Taxes",
+        "section_1": "Payroll taxes",
         "section_2": "Social Security FICA",
         "irs_ref": "W-2, Box 4, instructions",
         "notes": "This parameter is indexed by the rate of growth in average wages, not by the inflation rate.",

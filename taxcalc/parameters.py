@@ -5,6 +5,7 @@ import os
 import json
 import numpy as np
 from abc import ABCMeta
+from collections import OrderedDict
 
 
 class ParametersBase(object):
@@ -218,14 +219,14 @@ class ParametersBase(object):
                             cls.DEFAULTS_FILENAME)
         if os.path.exists(path):
             with open(path) as pfile:
-                params_dict = json.load(pfile)
+                params_dict = json.load(pfile, object_pairs_hook=OrderedDict)
         else:
             from pkg_resources import resource_stream, Requirement
             path_in_egg = os.path.join('taxcalc', cls.DEFAULTS_FILENAME)
             buf = resource_stream(Requirement.parse('taxcalc'), path_in_egg)
             as_bytes = buf.read()
             as_string = as_bytes.decode("utf-8")
-            params_dict = json.loads(as_string)
+            params_dict = json.loads(as_string, object_pairs_hook=OrderedDict)
         return params_dict
 
     def _update(self, year_mods):
