@@ -126,19 +126,36 @@ def test_creation_with_blowup(rawinputfile, blowup, weights_out):
     assert inctax.tax_year() == taxyear
 
 
-def test_2(rawinputfile):
+@pytest.yield_fixture
+def reformfile0():
+    """
+    specify JSON text for reform
+    """
+    txt = """
+    {
+        "policy": {
+            "_SS_Earnings_c": {"2016": [300000],
+                               "2018": [500000],
+                               "2020": [700000]}
+        }
+    }
+    """
+    rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    rfile.write(txt + '\n')
+    rfile.close()
+    # Must close and then yield for Windows platform
+    yield rfile
+    os.remove(rfile.name)
+
+
+def test_2(rawinputfile, reformfile0):
     """
     Test IncomeTaxIO calculate method with no output writing and no blowup.
     """
     taxyear = 2021
-    reform_dict = {
-        2016: {'_SS_Earnings_c': [300000]},
-        2018: {'_SS_Earnings_c': [500000]},
-        2020: {'_SS_Earnings_c': [700000]}
-    }
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
-                         reform=reform_dict,
+                         reform=reformfile0.name,
                          assump=None,
                          exact_calculations=False,
                          blowup_input_data=False,
