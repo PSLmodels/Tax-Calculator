@@ -186,7 +186,7 @@ class Behavior(ParametersBase):
         neg = 'negative'
         for elast in self._vals:
             values = getattr(self, elast)
-            for year in values:
+            for year in np.ndindex(values.shape):
                 val = values[year]
                 if elast == '_BE_inc':
                     if val > 0.0:
