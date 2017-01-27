@@ -406,8 +406,8 @@ def results(c):
     return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
 
 
-def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta,
-                          user_mods="", return_json=True):
+def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta, user_mods="",
+                          return_json=True):
     # Only makes sense to run for budget years 1 through n-1 (not for year 0)
     assert year_n > 0
 
@@ -602,8 +602,8 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
     return soit1, soit3, mask
 
 
-def run_nth_year(year_n, start_year, is_strict, tax_dta="",
-                 user_mods="", return_json=True):
+def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
+                 return_json=True):
 
     start_time = time.time()
     soit_baseline, soit_reform, mask = calculate_baseline_and_reform(
@@ -768,9 +768,8 @@ def run_models(tax_dta, start_year, is_strict=False, user_mods="",
             pdf_bin_table, cdf_bin_table, num_fiscal_year_totals)
 
 
-def run_gdp_elast_models(tax_dta, start_year, is_strict=False,
-                         user_mods="", return_json=True,
-                         num_years=NUM_YEARS_DEFAULT):
+def run_gdp_elast_models(tax_dta, start_year, is_strict=False, user_mods="",
+                         return_json=True, num_years=NUM_YEARS_DEFAULT):
 
     gdp_elasticity_totals = []
 
