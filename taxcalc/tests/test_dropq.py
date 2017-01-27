@@ -110,7 +110,7 @@ def test_run_dropq_nth_year(is_strict, rjson, growth_params,
     if growth_params:
         myvars['_factor_adjustment'] = [0.01]
     if behavior_params:
-        myvars['_BE_inc'] = [0.8]
+        myvars['_BE_inc'] = [-0.8]
     if is_strict:
         myvars['unknown_param'] = [0.01]
     first = 2016
