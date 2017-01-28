@@ -129,7 +129,6 @@ class Growth(ParametersBase):
         records.BF.ASCHEI[year] += diff
         records.BF.ASCHEL[year] += diff
         records.BF.ABOOK[year] += diff
-        records.BF.ACPIU[year] += diff
         records.BF.ACPIM[year] += diff
         records.BF.ASOCSEC[year] += diff
         records.BF.AUCOMP[year] += diff
@@ -159,7 +158,6 @@ class Growth(ParametersBase):
             records.BF.ASCHEI[year] += distance
             records.BF.ASCHEL[year] += distance
             records.BF.ABOOK[year] += distance
-            records.BF.ACPIU[year] += distance
             records.BF.ACPIM[year] += distance
             records.BF.ASOCSEC[year] += distance
             records.BF.AUCOMP[year] += distance
