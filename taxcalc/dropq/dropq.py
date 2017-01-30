@@ -51,15 +51,15 @@ def call_over_iterable(fn):
     wrapped function for each dictionary in the tuple, then collect
     and return the results
     """
-    def wrapper(user_mods, start_year):
+    def wrapper(user_mods, start_year, **kwargs):
         if isinstance(user_mods, tuple):
-            ans = [fn(mod, start_year) for mod in user_mods]
+            ans = [fn(mod, start_year, **kwargs) for mod in user_mods]
             params = ans[0]
             for a in ans:
                 params.update(a)
             return params
         else:
-            return fn(user_mods, start_year)
+            return fn(user_mods, start_year, **kwargs)
 
     return wrapper
 
@@ -131,9 +131,12 @@ def only_reform_mods(user_mods, start_year):
 
 
 @call_over_iterable
-def get_unknown_parameters(user_mods, start_year):
+def get_unknown_parameters(user_mods, start_year, additional=None):
     """
-    Returns any parameters that are not known to Tax-Calculator
+    Returns any parameters that are not known to Tax-Calculator.
+    Subtract out any behavior, growth, policy, or consumptions parameters,
+    plus any additional parameters passed by the user. The results are
+    considered unknown and returned
     """
     beh_dd = Behavior.default_data(start_year=start_year)
     growth_dd = growth.Growth.default_data(start_year=start_year)
@@ -141,6 +144,8 @@ def get_unknown_parameters(user_mods, start_year):
     consump_dd = Consumption.default_data(start_year=start_year)
     param_code_names = policy.Policy.VALID_PARAM_CODE_NAMES
     unknown_params = collections.defaultdict(list)
+    if additional is None:
+        additional = set()
     for year, reforms in user_mods.items():
         everything = set(reforms.keys())
         all_cpis = {p for p in reforms.keys() if p.endswith("_cpi")}
@@ -152,26 +157,38 @@ def get_unknown_parameters(user_mods, start_year):
             unknown_params['bad_cpis'] += list(bad_cpis)
         pols = (remaining - set(beh_dd.keys()) - set(growth_dd.keys()) -
                 set(policy_dd.keys()) - set(consump_dd.keys()) -
-                param_code_names)
+                param_code_names - additional)
         if pols:
             unknown_params['policy'] += list(pols)
 
     return unknown_params
 
 
-def elasticity_of_gdp_year_n(user_mods, year_n):
+def elasticity_of_gdp_year_n(user_mods, start_year, year_n):
     """
     Extract elasticity of GDP parameter for the proper year
     """
-    allkeys = sorted(user_mods.keys())
-    reforms = user_mods[allkeys[0]]
-    ELASTICITY_LIST = reforms.get("elastic_gdp", None)
-    if not ELASTICITY_LIST:
+    if isinstance(user_mods, tuple):
+        # file-based reforms have policy parameters in first item of tuple
+        user_mods = user_mods[0]
+    # Sorted list of all years (0 is used for parameter code expressions)
+    allyears = sorted(filter(lambda x: x != 0, user_mods.keys()))
+    elasticity_list = []
+    elasticity_specified = False
+    for year in allyears:
+        reforms = user_mods[year]
+        if 'elastic_gdp' in reforms:
+            elasticity_list += reforms['elastic_gdp']
+            elasticity_specified = True
+        else:
+            elasticity_list += [0.0]
+
+    if not elasticity_specified:
         raise ValueError("user_mods should specify elastic_gdp")
-    if year_n >= len(ELASTICITY_LIST):
-        return ELASTICITY_LIST[-1]
+    if year_n >= len(elasticity_list):
+        return elasticity_list[-1]
     else:
-        return ELASTICITY_LIST[year_n]
+        return elasticity_list[year_n]
 
 
 def random_seed_from_plan(user_mods):
@@ -394,7 +411,7 @@ def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta, user_mods="",
     # Only makes sense to run for budget years 1 through n-1 (not for year 0)
     assert year_n > 0
 
-    elasticity_gdp = elasticity_of_gdp_year_n(user_mods, year_n)
+    elasticity_gdp = elasticity_of_gdp_year_n(user_mods, start_year, year_n)
 
     #########################################################################
     #   Create Calculators and Masks
@@ -409,7 +426,8 @@ def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta, user_mods="",
     calc1 = Calculator(policy=params, records=records)
 
     if is_strict:
-        unknown_params = get_unknown_parameters(user_mods, start_year)
+        unknown_params = get_unknown_parameters(user_mods, start_year,
+                                                additional={'elastic_gdp'})
         if unknown_params:
             raise ValueError("Unknown parameters: {}".format(unknown_params))
 

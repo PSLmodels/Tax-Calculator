@@ -2,7 +2,7 @@
     "_FICA_ss_trt": {
         "long_name": "Social Security payroll tax rate",
         "description": "Social Security FICA rate, including both employer and employee.",
-        "section_1": "Payroll Taxes",
+        "section_1": "Payroll taxes",
         "section_2": "Social Security FICA",
         "irs_ref": "",
         "notes": "",
@@ -18,7 +18,7 @@
     "_SS_Earnings_c": {
         "long_name": "Maximum taxable earnings for Social Security",
         "description": "Only individual earnings below this maximum amount are subjected to Social Security (OASDI) payroll tax.",
-        "section_1": "Payroll Taxes",
+        "section_1": "Payroll taxes",
         "section_2": "Social Security FICA",
         "irs_ref": "W-2, Box 4, instructions",
         "notes": "This parameter is indexed by the rate of growth in average wages, not by the inflation rate.",
@@ -241,13 +241,13 @@
         "value": [0.0]
     },
 
-    "_ALD_Investment_ec_rt": {
+    "_ALD_InvInc_ec_rt": {
         "long_name": "Investment income exclusion rate",
         "description": "Decimal fraction of investment income base that can be excluded from AGI.",
         "section_1": "Above the line deductions",
         "section_2": "Misc. exclusions",
         "irs_ref": "Form 1040, line 8a",
-        "notes": "The final taxable investment income will be (1-_ALD_Investment_ec_rt)*investment_income_base. Even though the excluded portion of investment income is not included in AGI, it still is included in investment income used to calculate the Net Investment Income Tax and Earned Income Tax Credit.",
+        "notes": "The final taxable investment income will be (1-_ALD_InvInc_ec_rt)*investment_income_base. Even though the excluded portion of investment income is not included in AGI, it still is included in investment income used to calculate the Net Investment Income Tax and Earned Income Tax Credit.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
@@ -257,8 +257,8 @@
         "value": [0.0]
     },
 
-    "_ALD_Investment_ec_base_code_active": {
-        "long_name": "Use code expression to compute investment income exclusion base",
+    "_ALD_InvInc_ec_base_code_active": {
+        "long_name": "Use parameter code to compute investment income exclusion base",
         "description": "False implies base includes all investment income; otherwise code defines base.",
         "irs_ref": "",
         "notes": "",
@@ -2432,6 +2432,20 @@
         "value": [3]
     },
 
+    "_CTC_new_code_active": {
+        "long_name": "Use parameter code to compute new refundable child tax credit",
+        "description": "False implies additional refundable child tax credit computed using numeric parameters; otherwise code defines credit.",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [false]
+    },
+
     "_CTC_new_c": {
         "long_name": "New refundable child tax credit maximum amount per child",
         "description": "In addition to all credits currently available for dependents, this parameter gives each qualifying child a new refundable credit with this maximum amount.",
@@ -2447,7 +2461,6 @@
         "col_label": "",
         "value": [0.0]
     },
-
 
     "_CTC_new_c_under5_bonus": {
         "long_name": "Bonus new refundable child tax credit maximum for qualifying children under five",

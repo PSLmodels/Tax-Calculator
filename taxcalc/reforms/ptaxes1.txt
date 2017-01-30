@@ -5,12 +5,6 @@
         "2018": [200000], // raise to $200,000 and wage index after that
         "2020": [250000]  // raise to $250,000 and wage index after that
     }
-  },
-  "behavior": {
-  },
-  "growth": {
-  },
-  "consumption": {
   }
 }
 

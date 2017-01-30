@@ -10,9 +10,14 @@ import os
 import re
 import ast
 from io import StringIO
+import tempfile
 import six
+import pytest
 import pandas as pd
 from taxcalc import IncomeTaxIO, Records  # pylint: disable=import-error
+
+
+# for fixture args, pylint: disable=redefined-outer-name
 
 
 class GetFuncDefs(ast.NodeVisitor):
@@ -92,8 +97,8 @@ def test_calc_and_used_vars(tests_path):
     # .. add to all_cvars set some variables calculated in Records class
     all_cvars.update(set(['ID_Casualty_frt_in_pufcsv_year',
                           '_num', '_sep', '_exact']))
-    # .. add to all_cvars set some variables calculated in *_code_function
-    all_cvars.update(set(['investment_ec_base']))
+    # .. add to all_cvars set variables calculated only in *_code functions
+    all_cvars.update(set([]))
     # .. check that each var in Records.CALCULATED_VARS is in the all_cvars set
     found_error1 = False
     if not Records.CALCULATED_VARS <= all_cvars:
@@ -104,7 +109,7 @@ def test_calc_and_used_vars(tests_path):
     # Test (2):
     faux_functions = ['EITCamount', 'ComputeBenefit',
                       'BenefitSurtax', 'BenefitLimitation',
-                      'ALD_Investment_ec_base_code_function']
+                      'ALD_InvInc_ec_base_code', 'CTC_new_code']
     found_error2 = False
     msg2 = 'calculated & returned variables are not function arguments\n'
     for fname in fnames:
@@ -161,23 +166,34 @@ def test_function_args_usage(tests_path):
         raise ValueError(msg)
 
 
-def test_1():
+@pytest.yield_fixture
+def reformfile1():
+    """
+    specify JSON text for reform
+    """
+    txt = """
+    {
+        "policy": {
+            "_SS_Earnings_c": {"2015": [100000]},
+            "_FICA_ss_trt": {"2015": [0.124]},
+            "_FICA_mc_trt": {"2015": [0.029]}
+        }
+    }
+    """
+    rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    rfile.write(txt + '\n')
+    rfile.close()
+    # Must close and then yield for Windows platform
+    yield rfile
+    os.remove(rfile.name)
+
+
+def test_1(reformfile1):
     """
     Test calculation of AGI adjustment for half of Self-Employment Tax,
     which is the payroll tax on self-employment income.
     """
     agi_ovar_num = 10
-    # specify a reform that simplifies the hand calculations
-    mte = 100000  # lower than current-law to simplify hand calculations
-    ssr = 0.124  # current law OASDI ee+er payroll tax rate
-    mrr = 0.029  # current law HI ee+er payroll tax rate
-    policy_reform = {
-        2015: {
-            '_SS_Earnings_c': [mte],
-            '_FICA_ss_trt': [ssr],
-            '_FICA_mc_trt': [mrr]
-        }
-    }
     funit = (
         u'RECID,MARS,e00200,e00200p,e00900,e00900p,e00900s\n'
         u'1,    2,   200000, 200000,200000,      0, 200000\n'
@@ -206,7 +222,8 @@ def test_1():
     input_dataframe = pd.read_csv(StringIO(funit))
     inctax = IncomeTaxIO(input_data=input_dataframe,
                          tax_year=2015,
-                         reform=policy_reform,
+                         reform=reformfile1.name,
+                         assump=None,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,
@@ -222,7 +239,28 @@ def test_1():
     assert agi == expected_agi_2
 
 
-def test_2():
+@pytest.yield_fixture
+def reformfile2():
+    """
+    specify JSON text for implausible reform to make hand calcs easier
+    """
+    txt = """
+    {
+        "policy": {
+            "_ACTC_Income_thd": {"2015": [35000]},
+            "_SS_Earnings_c": {"2015": [53000]}
+        }
+    }
+    """
+    rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    rfile.write(txt + '\n')
+    rfile.close()
+    # Must close and then yield for Windows platform
+    yield rfile
+    os.remove(rfile.name)
+
+
+def test_2(reformfile2):
     """
     Test calculation of Additional Child Tax Credit (CTC) when at least one
     of taxpayer and spouse have wage-and-salary income above the FICA maximum
@@ -230,16 +268,6 @@ def test_2():
     """
     ctc_ovar_num = 22
     actc_ovar_num = 23
-    # specify a contrived example -- implausible policy and a large family ---
-    # in order to make the hand calculations easier
-    actc_thd = 35000
-    mte = 53000
-    policy_reform = {
-        2015: {
-            '_ACTC_Income_thd': [actc_thd],
-            '_SS_Earnings_c': [mte]
-        }
-    }
     funit = (
         u'RECID,MARS,XTOT,n24,e00200,e00200p\n'
         u'1,    2,   9,     7, 60000,  60000\n'
@@ -256,7 +284,8 @@ def test_2():
     input_dataframe = pd.read_csv(StringIO(funit))
     inctax = IncomeTaxIO(input_data=input_dataframe,
                          tax_year=2015,
-                         reform=policy_reform,
+                         reform=reformfile2.name,
+                         assump=None,
                          exact_calculations=False,
                          blowup_input_data=False,
                          output_weights=False,

@@ -1,0 +1,38 @@
+// 2022 RESULTS from taxcalc-inctax and taxbrain-upload version 0.7.4
+// INCOME TAX ($B)   1818.54            [1,672.2]      <-- ??????????
+// PAYROLL TAX ($B)  1475.43            [1,485.4]      <-- ??????????
+// taxcalc-inctax results from:
+//   python ../../inctax.py puf.csv 2022 --blowup --weights --reform r0.json
+//   awk '{r+=$4*$29}END{print r*1e-9}' puf-22.out-inctax-r0
+//   awk '{r+=$6*$29}END{print r*1e-9}' puf-22.out-inctax-r0
+// taxbrain-upload results from:
+//   http://www.ospc.org/taxbrain/????/  ????????????????????????????
+{
+    "policy": {
+        "_SS_Earnings_c": // social security (OASDI) maximum taxable earnings
+        {"2018": [400000],
+         "2019": [500000],
+         "2020": [600000]
+        },
+        "_II_em": // personal exemption amount
+        {"2018": [8000]
+        },
+        "_II_em_cpi": // personal exemption amount indexing status
+        {"2018": false, // values in future years are same as this year value
+         "2020": true // values in future years indexed with this year as base
+        },
+        "_ALD_InvInc_ec_rt": // investment income AGI exclusion rate
+        {"2019": [0.20]
+        },
+        // investment income AGI exclusion base is not all investment income
+        // but rather the sum of taxable interest, qualified dividends, and
+        // long-term capital gains
+        "_ALD_InvInc_ec_base_code_active":
+        {"2019": [true]
+        },
+        "param_code":
+        {"ALD_InvInc_ec_base_code":
+         "returned_value = e00300 + e00650 + p23250"
+        }
+    }
+}
