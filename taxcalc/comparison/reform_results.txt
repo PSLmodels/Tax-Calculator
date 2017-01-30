@@ -2,14 +2,14 @@
 PAYROLL TAXES
 ""
 Increase the Social Security payroll tax rate by 1pts
-Tax-Calculator,62.2,64.6,67.7,70.6
+Tax-Calculator,62.1,64.5,67.6,70.5
 ""
 Increase the maximum taxable earnings (177500) for the social security payroll tax
-Tax-Calculator,55.0,65.3,66.7,68.3
+Tax-Calculator,54.9,65.1,66.5,68.0
 Budget Options,40,46,49,51
 ""
 Increase the payroll tax rate for Medicare (HI) by 1pts
-Tax-Calculator,75.1,78.6,82.1,85.5
+Tax-Calculator,75.0,78.5,81.9,85.3
 Budget Options,73,77,82,87
 ""
 Increase the Additional Medicare Tax exclusion by 10,000
