@@ -121,7 +121,6 @@ def test_for_duplicate_names():
         assert varname in Records.USABLE_READ_VARS
 
 
-@pytest.mark.one
 def test_hard_coded_rates_vs_blowup_factor_implied_rates(puf_1991):
     """
     Check that default real GDP growth rates, default wage growth rates, and
@@ -215,7 +214,6 @@ def test_hard_coded_rates_vs_blowup_factor_implied_rates(puf_1991):
     # --TEMP--                   Growth.REAL_GDP_GROWTH_RATES)
 
 
-@pytest.mark.one
 def test_default_rates_and_those_implied_by_blowup_factors(puf_1991):
     """
     Check that default GDP growth rates, default wage growth rates, and
