@@ -2,10 +2,10 @@
 PAYROLL TAXES
 ""
 Increase the Social Security payroll tax rate by 1pts
-Tax-Calculator,62.1,64.5,67.6,70.5
+Tax-Calculator,62.1,64.5,67.5,70.3
 ""
 Increase the maximum taxable earnings (177500) for the social security payroll tax
-Tax-Calculator,54.9,65.1,66.5,68.0
+Tax-Calculator,54.9,64.3,66.3,68.5
 Budget Options,40,46,49,51
 ""
 Increase the payroll tax rate for Medicare (HI) by 1pts
@@ -36,7 +36,7 @@ Tax-Calculator,1.7,1.8,1.9,2.0
 Tax Expenditure,2,2,2,2
 ""
 Eliminate adjustment for self-employment tax
-Tax-Calculator,4.1,4.3,4.6,4.9
+Tax-Calculator,4.1,4.3,4.6,4.8
 ""
 Eliminate adjustment for self-employed health insurance
 Tax-Calculator,5.8,5.9,6.1,6.4
@@ -216,5 +216,5 @@ Tax-Calculator,-109.1,-112.4,-116.6,-120.9
 FAIR SHARE TAX
 ""
 Increase FST rate from zero to 0.30 beginning in 2017
-Tax-Calculator,42.4,42.3,42.2,42.7
+Tax-Calculator,42.4,42.3,42.2,42.8
 Tax Foundation: 321 ten-year(2016-25) static estimate
