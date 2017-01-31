@@ -2365,7 +2365,7 @@
                       "2015",
                       "2016",
                       "2017"],
-        "cpi_inflated": false,
+        "cpi_inflated": true,
         "col_label": "",
         "value": [3300,
                   3350,
