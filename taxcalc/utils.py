@@ -596,6 +596,12 @@ def diagnostic_table_odict(recs):
     # combined income and payroll tax liability
     val = (recs._combined * recs.s006).sum()
     odict['Combined Liability ($b)'] = val * in_billions
+    # number of tax units with non-positive income tax liability
+    num = (recs.s006[recs._iitax <= 0]).sum()
+    odict['Non-Positive Income Tax Liability (#m)'] = num * in_millions
+    # number of tax units with non-positive payroll tax liability
+    num = (recs.s006[recs._payrolltax <= 0]).sum()
+    odict['Non-Positive Payroll Tax Liability (#m)'] = num * in_millions
     return odict
 
 
