@@ -166,8 +166,7 @@ def test_hard_coded_rates_vs_blowup_factor_implied_rates(puf_1991):
                 idx = year - Policy.JSON_START_YEAR
                 direct_wgr[idx] = pc_wage[indx] / pc_wage[indx - 1] - 1.0
         assert_array_equal(np.round(implied_wgr, 4), np.round(direct_wgr, 4))
-    # --TEMP--assert_array_equal(np.round(implied_wgr, 4),
-    # --TEMP--                   policy._wage_growth_rates)
+    assert_array_equal(np.round(implied_wgr, 4), policy._wage_growth_rates)
 
     # real GDP growth rates
     # .. convert pct_changes to indexes
@@ -210,45 +209,6 @@ def test_hard_coded_rates_vs_blowup_factor_implied_rates(puf_1991):
                 direct_rgr[idx] = real_gdp[indx] / real_gdp[indx - 1] - 1.0
         assert_array_equal(np.round(implied_rgr, 4), np.round(direct_rgr, 4))
     assert_array_equal(np.round(implied_rgr, 4), Growth.REAL_GDP_GROWTH_RATES)
-
-
-def test_default_rates_and_those_implied_by_blowup_factors(puf_1991):
-    """
-    Check that default GDP growth rates, default wage growth rates, and
-    default price inflation rates, are consistent with the rates embedded
-    in the Records blowup factors (BF).
-    """
-    record = Records(data=puf_1991)  # contains the blowup factors
-    policy = Policy()  # contains the default indexing rates
-    syr = Policy.JSON_START_YEAR
-    endyr = Policy.LAST_BUDGET_YEAR
-    nyrs = endyr - syr
-
-    # back out stage I inflation rates from blowup factors
-    cpi_u = np.zeros(nyrs)
-    for year in range(syr, endyr):
-        cpi_u[year - syr] = record.BF.ACPIU[year] - 1
-
-    # check that blowup rates are same as default inflation rates
-    cpi_u = np.round(cpi_u, 4)
-    assert_array_equal(cpi_u, policy._inflation_rates[:-1])
-
-    # back out original stage I wage growth rates from blowup factors
-    record.BF.AWAGE[Records.PUF_YEAR] = 1
-    for year in range(Records.PUF_YEAR + 1, endyr):
-        record.BF.AWAGE[year] = (record.BF.AWAGE[year] *
-                                 record.BF.AWAGE[year - 1] *
-                                 record.BF.APOPN[year])
-
-    # calculate nominal wage growth rates from original wage growth rates
-    wage_growth_rates = np.zeros(nyrs)
-    for year in range(syr + 1, endyr):
-        wage_growth_rates[year - syr] = (record.BF.AWAGE[year] /
-                                         record.BF.AWAGE[year - 1] - 1)
-
-    # check that blowup rates are same as default wage growth rates
-    wage_growth_rates = np.round(wage_growth_rates, 4)
-    assert_array_equal(wage_growth_rates[1:], policy._wage_growth_rates[1:-1])
 
 
 def test_csv_input_vars_md_contents(tests_path):
