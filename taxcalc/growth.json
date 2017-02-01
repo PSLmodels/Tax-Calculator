@@ -1,7 +1,7 @@
 {
     "_factor_adjustment": {
-        "long_name": "Deviation from CBO real GDP growth projection",
-        "description": "The data underlying this model are extrapolated to roughly match the CBO's projection of the economy's development over the 10-year federal budget window, with each type of economic data extrapolated at a different (decimal, not percentage) growth rate.  This parameter specifies a (decimal, not percentage) factor that is added to those growth rates for the construction of the economic baseline.  For example if you supply 0.02, then 0.02 will be added to the wage and salary growth rate, interest income growth rate, dividend growth rate, schedule E income growth rate, and all other growth rates used to extrapolate the underlying dataset.",
+        "long_name": "Deviation from baseline growth projection",
+        "description": "The data underlying this model are extrapolated to roughly match the CBO's projection of the economy's development over a 10-year federal budget window, with each type of economic data extrapolated at a different (decimal, not percentage) growth rate.  This parameter specifies a (decimal, not percentage) factor that is added to those growth rates for the construction of an alternative economic baseline.  For example, if you supply 0.02, then 0.02 will be added to the wage and salary growth rate, interest income growth rate, dividend growth rate, schedule E income growth rate, and all other growth rates used to extrapolate the variables in the base-year data.",
         "irs_ref": "",
         "start_year": 2013,
         "col_var": "",
@@ -12,8 +12,8 @@
     },
 
     "_factor_target": {
-        "long_name": "Replacement for CBO real GDP growth projection",
-        "description": "The data underlying this model are extrapolated to roughly match the CBO's projection of the economy's development over the 10-year federal budget window, with each type of economic data extrapolated at a different (decimal, not percentage) growth rate.  Annual real GDP growth rates are part of the CBO projection.  This parameter specifies an alternative real GDP growth rate (in decimal, not percentage, terms).  All other growth rates will be modified so that they change by the same amount as the specified change in the real per-capita GDP growth rate.  For more detail, read the growth.py source code file.",
+        "long_name": "Replacement for real growth projection",
+        "description": "The data underlying this model are extrapolated to roughly match the CBO's projection of the economy's development over a 10-year federal budget window, with each type of economic data extrapolated at a different (decimal, not percentage) growth rate.  This parameter specifies an alternative real GDP growth rate (in decimal, not percentage, terms).  All other growth rates will be modified so that they change by the same amount as the specified change in default real per-capita GDP growth rates.  For more detail, read the growth.py source code file.  Note that the baseline real GDP growth rates used in this replacement calculation are computed using real GDP defined as nominal GDP deflated by CPI (not by the GDP-deflator index), which means the baseline real GDP growth rates used here are roughly 0.004 lower than the real GDP growth rates in CBO 10-year projections.",
         "irs_ref": "",
         "start_year": 2013,
         "col_var": "",
