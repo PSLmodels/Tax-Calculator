@@ -145,8 +145,7 @@ def test_hard_coded_rates_vs_blowup_factor_implied_rates(puf_1991):
     for idx in range(0, nyrs):
         year = syr + idx
         implied_pir[idx] = rec.BF.ACPIU[year] - 1.0
-    assert_array_equal(np.round(implied_pir, 4),
-                       policy._inflation_rates)
+    assert_array_equal(np.round(implied_pir, 4), policy._inflation_rates)
 
     # nominal wage growth rates (i.e., growth rates in the average wage rate)
     implied_wgr = np.zeros(nyrs)
@@ -210,8 +209,7 @@ def test_hard_coded_rates_vs_blowup_factor_implied_rates(puf_1991):
                 idx = year - Policy.JSON_START_YEAR
                 direct_rgr[idx] = real_gdp[indx] / real_gdp[indx - 1] - 1.0
         assert_array_equal(np.round(implied_rgr, 4), np.round(direct_rgr, 4))
-    # --TEMP--assert_array_equal(np.round(implied_rgr, 4),
-    # --TEMP--                   Growth.REAL_GDP_GROWTH_RATES)
+    assert_array_equal(np.round(implied_rgr, 4), Growth.REAL_GDP_GROWTH_RATES)
 
 
 def test_default_rates_and_those_implied_by_blowup_factors(puf_1991):
@@ -225,24 +223,6 @@ def test_default_rates_and_those_implied_by_blowup_factors(puf_1991):
     syr = Policy.JSON_START_YEAR
     endyr = Policy.LAST_BUDGET_YEAR
     nyrs = endyr - syr
-
-    # back out original stage I GDP growth rates from blowup factors
-    record.BF.AGDPN[Records.PUF_YEAR] = 1
-    for year in range(Records.PUF_YEAR + 1, endyr + 1):
-        record.BF.AGDPN[year] = (record.BF.AGDPN[year] *
-                                 record.BF.AGDPN[year - 1] *
-                                 record.BF.APOPN[year])
-
-    # calculate nominal GDP growth rates from original GDP growth rates
-    nominal_rates = np.zeros(nyrs)
-    for year in range(syr + 1, endyr):
-        irate = policy._inflation_rates[year - syr]
-        nominal_rates[year - syr] = (record.BF.AGDPN[year] /
-                                     record.BF.AGDPN[year - 1] - 1 - irate)
-
-    # check that nominal_rates are same as default GDP growth rates
-    nominal_rates = np.round(nominal_rates, 4)
-    assert_array_equal(nominal_rates[1:], Growth.REAL_GDP_GROWTH_RATES[1:-1])
 
     # back out stage I inflation rates from blowup factors
     cpi_u = np.zeros(nyrs)
