@@ -42,9 +42,9 @@ class Growth(ParametersBase):
     DEFAULTS_FILENAME = 'growth.json'
     DEFAULT_NUM_YEARS = Policy.DEFAULT_NUM_YEARS
     # REAL_GDP_GROWTH_RATES is a list indexed starting with JSON_START_YEAR
-    REAL_GDP_GROWTH_RATES = [0.0247, 0.0115, 0.0162, 0.0096, 0.0196,
-                             0.0176, 0.0133, 0.0126, 0.0159, 0.0165,
-                             0.0169, 0.0169, 0.0170, 0.0168]
+    REAL_GDP_GROWTH_RATES = [0.0243, 0.0113, 0.0159, 0.0093, 0.0191,
+                             0.0172, 0.0130, 0.0123, 0.0155, 0.0161,
+                             0.0165, 0.0165, 0.0166, 0.0164]
 
     def __init__(self, growth_dict=None,
                  start_year=JSON_START_YEAR,

@@ -47,7 +47,7 @@ def test_update_growth(puf_1991, weights_1991):
     assert_array_equal(calc_x.growth.factor_target,
                        grow_x.factor_target)
     assert_array_equal(calc_x.growth._factor_target,
-                       np.array([0.0247, 0.0115, 0.04, 0.04, 0.04,
+                       np.array([0.0243, 0.0113, 0.04, 0.04, 0.04,
                                 0.04, 0.04, 0.04, 0.04, 0.04, 0.04,
                                 0.04, 0.04, 0.04]))
     assert_array_equal(calc_y.growth.factor_adjustment,
