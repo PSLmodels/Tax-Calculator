@@ -11,8 +11,8 @@ interface to Tax-Calculator) to estimate reform effects.
 
 ## Example JSON Reform File
 
-Here is an example of a tax reform proposal that consists of several
-reform provisions.  The structure of this file is as follows:
+Here is an abstract example of a tax reform proposal that consists of
+several reform provisions.  The structure of this file is as follows:
 
 ```
 {
@@ -20,28 +20,13 @@ reform provisions.  The structure of this file is as follows:
      <parameter_name>: {<calyear>: <parameter-value>,
                         ...,
                         <calyear>: <parameter-value>},
-     "param_code": {<param_code_name>: <expression>,
-                    ...,
-                    <param_code_name>: <expression>},
      <parameter_name>: {<calyear>: <parameter-value>},
      ...,
      <parameter_name>: {<calyear>: <parameter-value>,
                         ...,
                         <calyear>: <parameter-value>}
-  },
-  "behavior": {
-     <parameter_name>: {<calyear>: <parameter-value>},
-     ...,
-     <parameter_name>: {<calyear>: <parameter-value>}
-  },
-  "growth": {
-     <parameter_name>: {<calyear>: <parameter-value>}
-  },
-  "consumption": {
-     <parameter_name>: {<calyear>: <parameter-value>},
-     ...,
-     <parameter_name>: {<calyear>: <parameter-value>}
   }
+}
 ```
 
 Notice each pair of reform provision is separated by commas.
@@ -54,62 +39,8 @@ is one that varies by filing status (MARS) with the vector containing
 six parameter values for single, married filing joint, married filing
 separate, head of household, widow, separate.
 
-```
-// Example of a reform file suitable for local use or uploading to TaxBrain.
-// This JSON file can contain any number of trailing //-style comments, which
-// will be removed before the contents are converted from JSON to a dictionary.
-// Within each "policy", "behavior", "growth", and "consumption" object, the
-// primary keys are parameters and secondary keys are years.
-// Both the primary and secondary key values must be enclosed in quotes (").
-// Boolean variables are specified as true or false (no quotes; all lowercase).
-// Parameter code in the policy object is enclosed inside a pair of double
-// pipe characters (||).
-{
-  "policy": {
-    "param_code": { // all the parameter code must go in one place
-"ALD_InvInc_ec_base_code":
-||
-// base is sum of taxable interest, qualified dividends and long-term cap gains
-returned_value = e00300 + e00650 + p23250
-||},
-    "_ALD_InvInc_ec_base_code_active":
-    {"2016": [true]
-    },
-    "_AMT_brk1": // top of first AMT tax bracket
-    {"2015": [200000],
-     "2017": [300000]
-    },
-    "_EITC_c": // maximum EITC amount by number of qualifying kids (0,1,2,3+)
-    {"2016": [[ 900, 5000,  8000,  9000]],
-     "2019": [[1200, 7000, 10000, 12000]]
-    },
-    "_II_em": // personal exemption amount (see indexing changes below)
-    {"2016": [6000],
-     "2018": [7500],
-     "2020": [9000]
-    },
-    "_II_em_cpi": // personal exemption amount indexing status
-    {"2016": false, // values in future years are same as this year value
-     "2018": true   // values in future years indexed with this year as base
-    },
-    "_SS_Earnings_c": // social security (OASDI) maximum taxable earnings
-    {"2016": [300000],
-     "2018": [500000],
-     "2020": [700000]
-    },
-    "_AMT_em_cpi": // AMT exemption amount indexing status
-    {"2017": false, // values in future years are same as this year value
-     "2020": true   // values in future years indexed with this year as base
-    }
-  },
-  "behavior": {
-  },
-  "growth": {
-  },
-  "consumption": {
-  }
-}
-```
+A concrete example of a JSON reform file characterizes the 2016 Trump
+Campaign Tax Plan is [here](Trump2016.json).
 
 ## Example Policy Reform Provisions
 
@@ -123,14 +54,14 @@ shown in [this JSON file](../current_law_policy.json).
 
 ### Payroll Taxes
 
-[Raise OASDI and HI payroll tax rates](ptaxes0.txt)
+[Raise OASDI and HI payroll tax rates](ptaxes0.json)
 
-[Raise OASDI maximum taxable earnings](ptaxes1.txt)
+[Raise OASDI maximum taxable earnings](ptaxes1.json)
 
-[Eliminate OASDI maximum taxable earnings](ptaxes2.txt)
+[Eliminate OASDI maximum taxable earnings](ptaxes2.json)
 
 [Raise Additional Medicare Tax (Form 8959) tax rate and
-thresholds](ptaxes3.txt)
+thresholds](ptaxes3.json)
 
 ### Social Security Taxability
 
@@ -139,7 +70,7 @@ Links will be added here.
 ### Adjustments
 
 [Specify AGI exclusion of some fraction of investment
-income](adjust0.txt)
+income](adjust0.json)
 
 Other links will be added here.
 
@@ -186,17 +117,17 @@ The definition of each of behavioral-response parameter is shown in
 
 A link will be added here.
 
-## Example Growth-Response Assumptions
-
-The definition of each of growth-response parameter is shown in [this
-JSON file](../growth.json).
-
-A link will be added here.
-
 ## Example Consumption-Response Assumptions
 
 The definition of each of consumption-response parameter (used in
 marginal tax rate calculations) is shown in [this JSON
 file](../consumption.json).
+
+A link will be added here.
+
+## Example Growth-Response Assumptions
+
+The definition of each of growth-response parameter is shown in [this
+JSON file](../growth.json).
 
 A link will be added here.

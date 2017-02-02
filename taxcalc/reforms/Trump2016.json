@@ -1,4 +1,4 @@
-// Title: 2016 Trump Campaign Tax Plan 
+// Title: 2016 Trump Campaign Tax Plan
 // Reform_File_Author: Matt Jensen
 // Reform_Reference: https://www.donaldjtrump.com/policies/tax-plan   
 // Reform_Description:
@@ -21,10 +21,8 @@
 // - 7: _II_em
 // - 8: _ALD_Dependents*
 // - 9: _ID_c
-
-
 {
-  "policy": {
+    "policy": {
         "_II_rt1":
             {"2017": [0.12]},
         "_II_brk1":
@@ -99,5 +97,5 @@
             {"2017": [7156]},
         "_ID_c":
             {"2017": [[100000, 200000, 100000, 100000, 200000, 100000]]}
-  }
+    }
 }
