@@ -33,7 +33,10 @@ def main():
                      'trailing string.  The trailing string is ".out-inctax" '
                      'if no --reform option is specified; otherwise the '
                      'trailing string is ".out-inctax-REFORM" (excluding any '
-                     '".json" ending to the REFORM filename).  The OUTPUT '
+                     '".json" ending to the REFORM filename) if no --assump '
+                     'option is specified or ".out-inctax-REFORM-ASSUMP" '
+                     '(excluding any .json ending to the ASSUMP filename) '
+                     'if an --assump option is specified.  The OUTPUT '
                      'file contains the first 28 Internet-TAXSIM output '
                      'variables.  Use --iohelp flag for more information. '
                      'For details on the Internet-TAXSIM version 9.3 '
@@ -57,7 +60,11 @@ def main():
                               '"consumption" and "growth" parameters); the '
                               'ASSUMP file is specified using JSON that may '
                               'include //-comments. No --assump implies use '
-                              'of static analysis assumptions.'),
+                              'of static analysis assumptions.  Note that '
+                              'use of the --assump option requires use of '
+                              'the --reform option (although the specified '
+                              'reform could be empty, meaning it could be '
+                              'current-law policy).'),
                         default=None)
     parser.add_argument('--exact',
                         help=('optional flag to suppress smoothing in income '

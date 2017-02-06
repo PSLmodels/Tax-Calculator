@@ -28,16 +28,16 @@ def test_update_growth(puf_1991, weights_1991):
         grow.update_growth({2013: {'bad_name': [0.02]}})
     with pytest.raises(ValueError):
         grow.update_growth({2013: {'bad_name_cpi': True}})
-    bad_params = {2015: {'_factor_adjustment': [0.01],
-                         '_factor_target': [0.08]}}
+    double_factor_change = {2015: {'_factor_adjustment': [0.01],
+                                   '_factor_target': [0.08]}}
     with pytest.raises(ValueError):
-        grow.update_growth(bad_params)
+        grow.update_growth(double_factor_change)
     # try correct updates
     grow_x = Growth()
     factor_x = {2015: {'_factor_target': [0.04]}}
     grow_x.update_growth(factor_x)
     grow_y = Growth()
-    factor_y = {2015: {'_factor_adjustment': [0.01]}}
+    factor_y = {2017: {'_factor_adjustment': [0.01]}}
     grow_y.update_growth(factor_y)
     # create two Calculators
     recs_x = Records(data=puf_1991, weights=weights_1991,
@@ -49,13 +49,13 @@ def test_update_growth(puf_1991, weights_1991):
     assert_array_equal(calc_x.growth.factor_target,
                        grow_x.factor_target)
     assert_array_equal(calc_x.growth._factor_target,
-                       np.array([0.0247, 0.0115, 0.04, 0.04, 0.04,
+                       np.array([0.0243, 0.0113, 0.04, 0.04, 0.04,
                                 0.04, 0.04, 0.04, 0.04, 0.04, 0.04,
                                 0.04, 0.04, 0.04]))
     assert_array_equal(calc_y.growth.factor_adjustment,
                        grow_y.factor_adjustment)
     assert_array_equal(calc_y.growth._factor_adjustment,
-                       np.array([0.0, 0.0, 0.01, 0.01, 0.01, 0.01,
+                       np.array([0.0, 0.0, 0.0, 0.0, 0.01, 0.01,
                                  0.01, 0.01, 0.01, 0.01, 0.01, 0.01,
                                  0.01, 0.01]))
 

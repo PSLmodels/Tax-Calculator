@@ -51,4 +51,8 @@ PTAX and ITAX mtr histogram bin counts for e26270:
 219814 :      0      0      0      0  54014  69113  45861  28384  21771    671
 PTAX and ITAX mtr histogram bin counts for e19800:
 219814 : 219814      0      0      0      0      0      0      0      0      0
+<<<<<<< HEAD
 219814 :  33365  29192  18070   5015 134172      0      0      0      0      0
+=======
+219814 :  33314  29291  18172   5035 134002      0      0      0      0      0
+>>>>>>> open-source-economics/master

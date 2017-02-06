@@ -557,26 +557,23 @@ class Records(object):
         """
         Initial year blowup factors for 2009 IRS-PUF/Census-CPS merged data.
         """
-        year = 2009
-        self.BF.AGDPN[year] = 1.0
-        self.BF.ATXPY[year] = 1.0
-        self.BF.AWAGE[year] = 1.0053
-        self.BF.ASCHCI[year] = 1.0041
-        self.BF.ASCHCL[year] = 1.1629
-        self.BF.ASCHF[year] = 1.0
-        self.BF.AINTS[year] = 1.0357
-        self.BF.ADIVS[year] = 1.0606
-        self.BF.ASCHEI[year] = 1.1089
-        self.BF.ASCHEL[year] = 1.2953
-        self.BF.ACGNS[year] = 1.1781
-        self.BF.ABOOK[year] = 1.0
-        self.BF.ARETS[year] = 1.0026
-        self.BF.APOPN[year] = 1.0
-        self.BF.ACPIU[year] = 1.0
-        self.BF.APOPDEP[year] = 1.0
-        self.BF.ASOCSEC[year] = 0.9941
-        self.BF.ACPIM[year] = 1.0
-        self.BF.AUCOMP[year] = 1.0034
-        self.BF.APOPSNR[year] = 1.0
-        self.BF.AIPD[year] = 1.0
-        self._blowup(year)
+        self.BF.AGDPN[2009] = 1.0
+        self.BF.ATXPY[2009] = 1.0
+        self.BF.AWAGE[2009] = 1.0053
+        self.BF.ASCHCI[2009] = 1.0041
+        self.BF.ASCHCL[2009] = 1.1629
+        self.BF.ASCHF[2009] = 1.0
+        self.BF.AINTS[2009] = 1.0357
+        self.BF.ADIVS[2009] = 1.0606
+        self.BF.ASCHEI[2009] = 1.1089
+        self.BF.ASCHEL[2009] = 1.2953
+        self.BF.ACGNS[2009] = 1.1781
+        self.BF.ABOOK[2009] = 1.0
+        self.BF.APOPN[2009] = 1.0
+        self.BF.ACPIU[2009] = 1.0
+        self.BF.ASOCSEC[2009] = 0.9941
+        self.BF.ACPIM[2009] = 1.0
+        self.BF.AUCOMP[2009] = 1.0034
+        self.BF.APOPSNR[2009] = 1.0
+        self.BF.AIPD[2009] = 1.0
+        self._blowup(2009)

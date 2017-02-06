@@ -123,61 +123,94 @@ def test_for_duplicate_names():
         assert varname in Records.USABLE_READ_VARS
 
 
-def test_default_rates_and_those_implied_by_blowup_factors(puf_1991):
+def test_hard_coded_rates_vs_blowup_factor_implied_rates(puf_1991):
     """
-    Check that default GDP growth rates, default wage growth rates, and
-    default price inflation rates, are consistent with the rates embedded
-    in the Records blowup factors (BF).
+    Check that default real GDP growth rates, default wage growth rates, and
+    default price inflation rates, are consistent with the rates implied by
+    the default blowup factors (BF) in the Records class.
     """
-    record = Records(data=puf_1991)  # contains the blowup factors
-    policy = Policy()  # contains the default indexing rates
+    rec = Records(data=puf_1991)
+    # Note Records._read_blowup makes a population-growth adjustment for
+    #                             the wagebill-blowup-factor and for the
+    #                             the nominal-GDP-blowup-factor, and then
+    #                           applies Pandas DataFrame 1+pct_change() to all
+    policy = Policy()
+    # Note policy object contains hard-coded default price inflation rates and
+    #                             hard-coded default wage growth rates
+    # Note Growth.REAL_GDP_GROWTH_RATES list contains those hard-coded values
     syr = Policy.JSON_START_YEAR
-    endyr = Policy.LAST_BUDGET_YEAR
-    nyrs = endyr - syr
+    nyrs = Policy.LAST_BUDGET_YEAR - syr + 1
+    numyrs = Policy.LAST_BUDGET_YEAR - Records.PUF_YEAR + 1
 
-    # back out original stage I GDP growth rates from blowup factors
-    record.BF.AGDPN[Records.PUF_YEAR] = 1
-    for year in range(Records.PUF_YEAR + 1, endyr + 1):
-        record.BF.AGDPN[year] = (record.BF.AGDPN[year] *
-                                 record.BF.AGDPN[year - 1] *
-                                 record.BF.APOPN[year])
+    # price inflation rates
+    implied_pir = np.zeros(nyrs)
+    for idx in range(0, nyrs):
+        year = syr + idx
+        implied_pir[idx] = rec.BF.ACPIU[year] - 1.0
+    assert_array_equal(np.round(implied_pir, 4), policy._inflation_rates)
 
-    # calculate nominal GDP growth rates from original GDP growth rates
-    nominal_rates = np.zeros(nyrs)
-    for year in range(syr + 1, endyr):
-        irate = policy._inflation_rates[year - syr]
-        nominal_rates[year - syr] = (record.BF.AGDPN[year] /
-                                     record.BF.AGDPN[year - 1] - 1 - irate)
+    # nominal wage growth rates (i.e., growth rates in the average wage rate)
+    implied_wgr = np.zeros(nyrs)
+    for idx in range(0, nyrs):
+        year = syr + idx
+        implied_wgr[idx] = rec.BF.AWAGE[year] - 1.0
+    DIRECT_WGR_COMPARE = True
+    if DIRECT_WGR_COMPARE:
+        direct_wgr = np.zeros(nyrs)
+        s1filename = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                  '..', 'StageIFactors.csv')
+        s1df = pd.read_csv(s1filename)
+        pc_wage = np.zeros(numyrs)  # per-capita wagebill (i.e., average wage)
+        for indx in range(0, numyrs):
+            pc_wage[indx] = s1df['AWAGE'][indx] / s1df['APOPN'][indx]
+            year = Records.PUF_YEAR + indx
+            if year >= Policy.JSON_START_YEAR:
+                idx = year - Policy.JSON_START_YEAR
+                direct_wgr[idx] = pc_wage[indx] / pc_wage[indx - 1] - 1.0
+        assert_array_equal(np.round(implied_wgr, 4), np.round(direct_wgr, 4))
+    assert_array_equal(np.round(implied_wgr, 4), policy._wage_growth_rates)
 
-    # check that nominal_rates are same as default GDP growth rates
-    nominal_rates = np.round(nominal_rates, 4)
-    assert_array_equal(nominal_rates[1:], Growth.REAL_GDP_GROWTH_RATES[1:-1])
-
-    # back out stage I inflation rates from blowup factors
-    cpi_u = np.zeros(nyrs)
-    for year in range(syr, endyr):
-        cpi_u[year - syr] = record.BF.ACPIU[year] - 1
-
-    # check that blowup rates are same as default inflation rates
-    cpi_u = np.round(cpi_u, 4)
-    assert_array_equal(cpi_u, policy._inflation_rates[:-1])
-
-    # back out original stage I wage growth rates from blowup factors
-    record.BF.AWAGE[Records.PUF_YEAR] = 1
-    for year in range(Records.PUF_YEAR + 1, endyr):
-        record.BF.AWAGE[year] = (record.BF.AWAGE[year] *
-                                 record.BF.AWAGE[year - 1] *
-                                 record.BF.APOPN[year])
-
-    # calculate nominal wage growth rates from original wage growth rates
-    wage_growth_rates = np.zeros(nyrs)
-    for year in range(syr + 1, endyr):
-        wage_growth_rates[year - syr] = (record.BF.AWAGE[year] /
-                                         record.BF.AWAGE[year - 1] - 1)
-
-    # check that blowup rates are same as default wage growth rates
-    wage_growth_rates = np.round(wage_growth_rates, 4)
-    assert_array_equal(wage_growth_rates[1:], policy._wage_growth_rates[1:-1])
+    # real GDP growth rates
+    # .. convert pct_changes to indexes
+    gdp_index = np.zeros(numyrs)
+    gdp_index[0] = 1.0
+    pop_index = np.zeros(numyrs)
+    pop_index[0] = 1.0
+    cpi_index = np.zeros(numyrs)
+    cpi_index[0] = 1.0
+    for indx in range(1, numyrs):
+        year = Records.PUF_YEAR + indx
+        gdp_index[indx] = rec.BF.AGDPN[year] * gdp_index[indx - 1]
+        pop_index[indx] = rec.BF.APOPN[year] * pop_index[indx - 1]
+        cpi_index[indx] = rec.BF.ACPIU[year] * cpi_index[indx - 1]
+    # .. convert per-capita gdp index to aggregate gdp index
+    for indx in range(0, numyrs):
+        gdp_index[indx] *= pop_index[indx]
+    # .. convert nominal aggregate gdp index to real aggregate gdp index
+    for indx in range(0, numyrs):
+        gdp_index[indx] /= cpi_index[indx]
+    # .. convert real aggregate gdp index to real gdp growth rate
+    implied_rgr = np.zeros(nyrs)
+    for indx in range(0, numyrs):
+        year = Records.PUF_YEAR + indx
+        if year >= Policy.JSON_START_YEAR:
+            idx = year - Policy.JSON_START_YEAR
+            implied_rgr[idx] = gdp_index[indx] / gdp_index[indx - 1] - 1.0
+    DIRECT_RGR_COMPARE = True
+    if DIRECT_RGR_COMPARE:
+        direct_rgr = np.zeros(nyrs)
+        s1filename = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                  '..', 'StageIFactors.csv')
+        s1df = pd.read_csv(s1filename)
+        real_gdp = np.zeros(numyrs)
+        for indx in range(0, numyrs):
+            real_gdp[indx] = s1df['AGDPN'][indx] / s1df['ACPIU'][indx]
+            year = Records.PUF_YEAR + indx
+            if year >= Policy.JSON_START_YEAR:
+                idx = year - Policy.JSON_START_YEAR
+                direct_rgr[idx] = real_gdp[indx] / real_gdp[indx - 1] - 1.0
+        assert_array_equal(np.round(implied_rgr, 4), np.round(direct_rgr, 4))
+    assert_array_equal(np.round(implied_rgr, 4), Growth.REAL_GDP_GROWTH_RATES)
 
 
 def test_csv_input_vars_md_contents(tests_path):
