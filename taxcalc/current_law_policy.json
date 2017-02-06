@@ -531,8 +531,8 @@
     },
 
     "_ID_Medical_frt_add4aged": {
-        "long_name": "Addon to _ID_Medical_frt for elderly filing units; addon as a decimal fraction of AGI",
-        "description": "Elderly taxpayers have this fraction added to the value of _ID_Medical_frt.",
+        "long_name": "Addon to the deduction medical expenses floor rate for elderly filing units; addon as a decimal fraction of AGI",
+        "description": "Elderly taxpayers have this fraction added to the value of the deduction for medical expenses floor rate.",
         "section_1": "Itemized deductions",
         "section_2": "Medical expenses",
         "irs_ref": "Form 1040 Schedule A, line 3, in-line. ",
@@ -1947,8 +1947,8 @@
     },
 
     "_AMT_rt1": {
-        "long_name": "AMT rate for AMT taxable income below _AMT_brk1",
-        "description": "The tax rate applied to the portion of AMT taxable income below the surtax threshold, _AMT_brk1.",
+        "long_name": "AMT rate 1",
+        "description": "The tax rate applied to the portion of AMT taxable income below the surtax threshold, AMT bracket 1.",
         "section_1": "Personal income",
         "section_2": "Alternative minimum tax",
         "section_3": "Tax rates",
@@ -1964,8 +1964,8 @@
     },
 
     "_AMT_brk1": {
-        "long_name": "AMT tax bracket (upper threshold) 1",
-        "description": "AMT taxable income below this is subject to _AMT_rt1 and above it is subject to _AMT_rt1 + _AMT_rt2.",
+        "long_name": "AMT bracket 1 (upper threshold)",
+        "description": "AMT taxable income below this is subject to AMT rate 1 and above it is subject to AMT rate 1 + the additional AMT rate.",
         "section_1": "Personal income",
         "section_2": "Alternative minimum tax",
         "section_3": "Tax rates",
@@ -1989,13 +1989,13 @@
     },
 
     "_AMT_rt2": {
-        "long_name": "Additional AMT rate for AMT taxable income above _AMT_brk1",
-        "description": "The additional tax rate applied to the portion of AMT income above the _AMT_brk1.",
+        "long_name": "Additional AMT rate for AMT taxable income above AMT bracket 1",
+        "description": "The additional tax rate applied to the portion of AMT income above the AMT bracket 1.",
         "section_1": "Personal income",
         "section_2": "Alternative minimum tax",
         "section_3": "Tax rates",
         "irs_ref": "Form 6251, line 31, in-line. ",
-        "notes": "This is the additional tax rate (on top of _AMT_rt1) for AMT income above _AMT_brk1",
+        "notes": "This is the additional tax rate (on top of AMT rate 1) for AMT income above AMT bracket 1.",
         "start_year": 2013,
         "col_var": "",
         "row_var": "FLPDYR",
