@@ -17,9 +17,9 @@ from taxcalc import Calculator, Policy, Behavior, Consumption, Growth
 @pytest.fixture(scope='session')
 def reforms_path(tests_path):
     """
-    Return path to taxcalc/reforms/*.txt files
+    Return path to taxcalc/reforms/*.json files
     """
-    return os.path.join(tests_path, '..', 'reforms', '*.txt')
+    return os.path.join(tests_path, '..', 'reforms', '*.json')
 
 
 def test_reforms(reforms_path):  # pylint: disable=redefined-outer-name
