@@ -13,5 +13,6 @@ dependencies:
 - mock
 - pep8
 - pylint
+- mock
 - pip:
   - pytest-pep8
