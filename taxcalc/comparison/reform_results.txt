@@ -22,7 +22,11 @@ SOCIAL SECURITY TAXABILITY
 ""
 Exclusion of untaxed social security and railroad retirement
 <<<<<<< HEAD
+<<<<<<< HEAD
 Tax-Calculator,38.1,39.3,40.4,42.5
+=======
+Tax-Calculator,38.8,40.0,41.7,43.8
+>>>>>>> open-source-economics/master
 =======
 Tax-Calculator,38.8,40.0,41.7,43.8
 >>>>>>> open-source-economics/master
@@ -44,7 +48,11 @@ Tax-Calculator,4.1,4.3,4.7,5.0
 ""
 Eliminate adjustment for self-employed health insurance
 <<<<<<< HEAD
+<<<<<<< HEAD
 Tax-Calculator,5.7,5.9,6.1,6.3
+=======
+Tax-Calculator,5.8,5.9,6.2,6.4
+>>>>>>> open-source-economics/master
 =======
 Tax-Calculator,5.8,5.9,6.2,6.4
 >>>>>>> open-source-economics/master
@@ -59,7 +67,11 @@ EXEMPTION
 ""
 Increase personal and dependent exemption amount by 1000
 <<<<<<< HEAD
+<<<<<<< HEAD
 Tax-Calculator,-32.3,-34.5,-35.9,-37.2
+=======
+Tax-Calculator,-32.4,-34.6,-39.4,-40.8
+>>>>>>> open-source-economics/master
 =======
 Tax-Calculator,-32.4,-34.6,-39.4,-40.8
 >>>>>>> open-source-economics/master
@@ -77,7 +89,11 @@ Tax-Calculator,-1.0,-2.5,-4.1,-4.3
 ""
 Increase additional standard deduction for aged and blind by 100
 <<<<<<< HEAD
+<<<<<<< HEAD
 Tax-Calculator,-0.2,-0.3,-0.3,-0.4
+=======
+Tax-Calculator,-0.3,-0.3,-0.4,-0.5
+>>>>>>> open-source-economics/master
 =======
 Tax-Calculator,-0.3,-0.3,-0.4,-0.5
 >>>>>>> open-source-economics/master
@@ -86,7 +102,11 @@ ITEMIZED DEDUCTION
 ""
 Real Estate
 <<<<<<< HEAD
+<<<<<<< HEAD
 Tax-Calculator,36.0,38.1,39.8,41.8
+=======
+Tax-Calculator,36.1,38.2,40.2,42.1
+>>>>>>> open-source-economics/master
 =======
 Tax-Calculator,36.1,38.2,40.2,42.1
 >>>>>>> open-source-economics/master
@@ -98,7 +118,11 @@ Tax Expenditure,75,82,88,93
 ""
 Both real estate and state and local
 <<<<<<< HEAD
+<<<<<<< HEAD
 Tax-Calculator,101.6,107.7,112.4,117.8
+=======
+Tax-Calculator,101.7,107.7,113.3,118.7
+>>>>>>> open-source-economics/master
 =======
 Tax-Calculator,101.7,107.7,113.3,118.7
 >>>>>>> open-source-economics/master
@@ -110,7 +134,11 @@ Tax Expenditure,59,63,67,71
 ""
 Medical
 <<<<<<< HEAD
+<<<<<<< HEAD
 Tax-Calculator,8.0,8.4,7.6,7.9
+=======
+Tax-Calculator,8.1,8.5,7.9,8.1
+>>>>>>> open-source-economics/master
 =======
 Tax-Calculator,8.1,8.5,7.9,8.1
 >>>>>>> open-source-economics/master
@@ -122,7 +150,11 @@ Tax Expenditure,0,0,0,0
 ""
 Charitable
 <<<<<<< HEAD
+<<<<<<< HEAD
 Tax-Calculator,46.7,49.3,51.4,53.7
+=======
+Tax-Calculator,46.7,49.2,51.7,53.9
+>>>>>>> open-source-economics/master
 =======
 Tax-Calculator,46.7,49.2,51.7,53.9
 >>>>>>> open-source-economics/master
@@ -139,10 +171,17 @@ Tax-Calculator,0.1,0.1,0.0,0.0
 ""
 Increase Itemized Deduction phaseout rate by 1 pts
 <<<<<<< HEAD
+<<<<<<< HEAD
 Tax-Calculator,4.4,4.6,4.7,4.8
 ""
 limit the tax value of ID to 6% of AGI
 Tax-Calculator,19.9,20.9,21.7,22.7
+=======
+Tax-Calculator,4.4,4.5,4.7,4.8
+""
+limit the tax value of ID to 6% of AGI
+Tax-Calculator,19.9,20.9,22.0,23.0
+>>>>>>> open-source-economics/master
 =======
 Tax-Calculator,4.4,4.5,4.7,4.8
 ""
@@ -164,6 +203,7 @@ REGULAR TAXES
 ""
 Increase each bracket rate by 1%
 <<<<<<< HEAD
+<<<<<<< HEAD
 Tax-Calculator,58.8,61.3,63.9,66.3
 Budget Options,56,60,65,69
 ""
@@ -174,6 +214,8 @@ Budget Options,11,12,14,15
 Increase top 2 rates by 1%
 Tax-Calculator,9.4,9.7,9.8,9.9
 =======
+=======
+>>>>>>> open-source-economics/master
 Tax-Calculator,58.7,61.3,64.0,66.5
 Budget Options,56,60,65,69
 ""
@@ -183,6 +225,9 @@ Budget Options,11,12,14,15
 ""
 Increase top 2 rates by 1%
 Tax-Calculator,9.3,9.5,9.7,9.8
+<<<<<<< HEAD
+>>>>>>> open-source-economics/master
+=======
 >>>>>>> open-source-economics/master
 Budget Options,7,8,9,10
 ""
@@ -210,7 +255,11 @@ Alternative Minimum Tax
 ""
 Increase AMT rate above the surtax threshold by 2 pts
 <<<<<<< HEAD
+<<<<<<< HEAD
 Tax-Calculator,9.1,9.6,10.1,10.6
+=======
+Tax-Calculator,9.0,9.6,10.2,10.7
+>>>>>>> open-source-economics/master
 =======
 Tax-Calculator,9.0,9.6,10.2,10.7
 >>>>>>> open-source-economics/master
@@ -234,7 +283,11 @@ REFUNDABLE CREDIT
 ""
 Earned income tax credit, total
 <<<<<<< HEAD
+<<<<<<< HEAD
 Tax-Calculator,65.5,64.8,66.4,68.0
+=======
+Tax-Calculator,65.4,64.8,64.6,66.2
+>>>>>>> open-source-economics/master
 =======
 Tax-Calculator,65.4,64.8,64.6,66.2
 >>>>>>> open-source-economics/master
@@ -276,7 +329,11 @@ FAIR SHARE TAX
 ""
 Increase FST rate from zero to 0.30 beginning in 2017
 <<<<<<< HEAD
+<<<<<<< HEAD
 Tax-Calculator,41.8,41.7,41.6,42.0
+=======
+Tax-Calculator,42.3,42.2,42.1,42.6
+>>>>>>> open-source-economics/master
 =======
 Tax-Calculator,42.3,42.2,42.1,42.6
 >>>>>>> open-source-economics/master
