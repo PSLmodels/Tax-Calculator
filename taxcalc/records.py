@@ -87,7 +87,7 @@ class Records(object):
 
     PUF_YEAR = PUFCSV_YEAR
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-    WEIGHTS_FILENAME = 'WEIGHTS.csv'
+    WEIGHTS_FILENAME = 'puf_weights.csv'
     WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
     BLOWUP_FACTORS_FILENAME = 'growfactors.csv'
     BLOWUP_FACTORS_PATH = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
