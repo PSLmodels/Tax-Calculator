@@ -254,6 +254,23 @@ class Records(object):
         self._current_year = new_current_year
         self.FLPDYR.fill(new_current_year)
 
+    @staticmethod
+    def read_egg_csv(vname, fpath, **kwargs):
+        """
+        Read csv file with fpath containing vname data from EGG;
+        return dict of vname data.
+        """
+        try:
+            # grab vname data from EGG distribution
+            path_in_egg = os.path.join('taxcalc', fpath)
+            vname_fname = resource_stream(
+                Requirement.parse('taxcalc'), path_in_egg)
+            vname_dict = pd.read_csv(vname_fname, **kwargs)
+        except (DistributionNotFound, IOError):
+            msg = 'could not read {} file from EGG'
+            raise ValueError(msg.format(vname))
+        return vname_dict
+
     # --- begin private methods of Records class --- #
 
     def _blowup(self, year):
@@ -414,23 +431,6 @@ class Records(object):
         rvalue = 0.0  # specify value of ID_Casualty_frt beginning in ryear
         self.ID_Casualty_frt_in_pufcsv_year[:] = np.where(PUFCSV_YEAR < ryear,
                                                           0.10, rvalue)
-
-    @staticmethod
-    def _read_egg_csv(vname, fpath, **kwargs):
-        """
-        Read csv file with fpath containing vname data from EGG;
-        return dict of vname data.
-        """
-        try:
-            # grab vname data from EGG distribution
-            path_in_egg = os.path.join('taxcalc', fpath)
-            vname_fname = resource_stream(
-                Requirement.parse('taxcalc'), path_in_egg)
-            vname_dict = pd.read_csv(vname_fname, **kwargs)
-        except (DistributionNotFound, IOError):
-            msg = 'could not read {} file from EGG'
-            raise ValueError(msg.format(vname))
-        return vname_dict
 
     def zero_out_changing_calculated_vars(self):
         """
