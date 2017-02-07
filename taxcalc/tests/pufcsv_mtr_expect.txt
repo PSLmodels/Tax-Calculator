@@ -5,6 +5,7 @@ PTAX mtr histogram bin edges:
 ITAX mtr histogram bin edges:
      [-1.0, -0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 1.0]
 PTAX and ITAX mtr histogram bin counts for e00200p:
+<<<<<<< HEAD
 219814 :      0  31905      0      0      0      0      0 183735   4174      0
 219814 :   4596     96   1870   8916  39420  68124  45894  28050  22177    671
 PTAX and ITAX mtr histogram bin counts for e00900p:
@@ -59,4 +60,53 @@ PTAX and ITAX mtr histogram bin counts for e19800:
 >>>>>>> open-source-economics/master
 =======
 219814 :  33314  29291  18172   5035 134002      0      0      0      0      0
+>>>>>>> open-source-economics/master
+=======
+219814 :      0  31904      0      0      0      0      0 183736   4174      0
+219814 :   4596     95   1874   8829  39004  68355  46241  28076  22049    695
+PTAX and ITAX mtr histogram bin counts for e00900p:
+219814 :  14116  29198      0      0      0      0      0 176500      0      0
+219814 :   4596     95   1870   8705  52407  57473  52714  25808  15843    303
+PTAX and ITAX mtr histogram bin counts for e00300:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219814 :      0      0      0      0  53461  69353  42817  28013  25462    708
+PTAX and ITAX mtr histogram bin counts for e00400:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219814 :      0      0      0      0 205640   7919   6115    104     28      8
+PTAX and ITAX mtr histogram bin counts for e00600:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219814 :      0      0      0      0  53461  69353  42817  28013  25462    708
+PTAX and ITAX mtr histogram bin counts for e00650:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219814 :      0      0     11     68 123813  43516  51379    603    399     25
+PTAX and ITAX mtr histogram bin counts for e01400:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219814 :      0      0      0      0  53463  69386  46209  28412  21649    695
+PTAX and ITAX mtr histogram bin counts for e01700:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219814 :      0      0      0      0  53470  69380  46209  28411  21649    695
+PTAX and ITAX mtr histogram bin counts for e02000:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219814 :      0      0      0      0  53461  69353  42817  28013  25462    708
+PTAX and ITAX mtr histogram bin counts for e02400:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219814 :      0      0      0      0  96380  40685  52462  29390    789    108
+PTAX and ITAX mtr histogram bin counts for p22250:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219814 :      0      0      0      0  75882  67066  41100  20723  14633    410
+PTAX and ITAX mtr histogram bin counts for p23250:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219814 :      0      0      4     44 141618  38041  34772   2256   3033     46
+PTAX and ITAX mtr histogram bin counts for e18500:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219814 :  22426  23519  18030   6865 148974      0      0      0      0      0
+PTAX and ITAX mtr histogram bin counts for e19200:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219814 :  33458  29635  18244   5068 133409      0      0      0      0      0
+PTAX and ITAX mtr histogram bin counts for e26270:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219814 :      0      0      0      0  53463  69386  46209  28412  21649    695
+PTAX and ITAX mtr histogram bin counts for e19800:
+219814 : 219814      0      0      0      0      0      0      0      0      0
+219814 :  33314  29298  18164   5040 133998      0      0      0      0      0
 >>>>>>> open-source-economics/master

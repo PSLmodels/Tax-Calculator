@@ -23,12 +23,16 @@ SOCIAL SECURITY TAXABILITY
 Exclusion of untaxed social security and railroad retirement
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 Tax-Calculator,38.1,39.3,40.4,42.5
 =======
 Tax-Calculator,38.8,40.0,41.7,43.8
 >>>>>>> open-source-economics/master
 =======
 Tax-Calculator,38.8,40.0,41.7,43.8
+>>>>>>> open-source-economics/master
+=======
+Tax-Calculator,39.1,40.3,42.0,44.2
 >>>>>>> open-source-economics/master
 Tax Expenditure,39,42,44,47
 Budget Options,35,37,38,40
@@ -103,12 +107,16 @@ ITEMIZED DEDUCTION
 Real Estate
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 Tax-Calculator,36.0,38.1,39.8,41.8
 =======
 Tax-Calculator,36.1,38.2,40.2,42.1
 >>>>>>> open-source-economics/master
 =======
 Tax-Calculator,36.1,38.2,40.2,42.1
+>>>>>>> open-source-economics/master
+=======
+Tax-Calculator,36.1,38.2,40.2,42.2
 >>>>>>> open-source-economics/master
 Tax Expenditure,34,36,39,41
 ""
@@ -119,12 +127,16 @@ Tax Expenditure,75,82,88,93
 Both real estate and state and local
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 Tax-Calculator,101.6,107.7,112.4,117.8
 =======
 Tax-Calculator,101.7,107.7,113.3,118.7
 >>>>>>> open-source-economics/master
 =======
 Tax-Calculator,101.7,107.7,113.3,118.7
+>>>>>>> open-source-economics/master
+=======
+Tax-Calculator,101.7,107.7,113.4,118.7
 >>>>>>> open-source-economics/master
 Tax Expenditure,75,82,88,93
 ""
@@ -135,12 +147,16 @@ Tax Expenditure,59,63,67,71
 Medical
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 Tax-Calculator,8.0,8.4,7.6,7.9
 =======
 Tax-Calculator,8.1,8.5,7.9,8.1
 >>>>>>> open-source-economics/master
 =======
 Tax-Calculator,8.1,8.5,7.9,8.1
+>>>>>>> open-source-economics/master
+=======
+Tax-Calculator,8.1,8.6,7.9,8.1
 >>>>>>> open-source-economics/master
 Tax Expenditure,11,12,13,14
 ""
@@ -151,12 +167,16 @@ Tax Expenditure,0,0,0,0
 Charitable
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 Tax-Calculator,46.7,49.3,51.4,53.7
 =======
 Tax-Calculator,46.7,49.2,51.7,53.9
 >>>>>>> open-source-economics/master
 =======
 Tax-Calculator,46.7,49.2,51.7,53.9
+>>>>>>> open-source-economics/master
+=======
+Tax-Calculator,46.7,49.3,51.7,54.0
 >>>>>>> open-source-economics/master
 Tax Expenditure,46,47,48,50
 ""
@@ -204,6 +224,7 @@ REGULAR TAXES
 Increase each bracket rate by 1%
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 Tax-Calculator,58.8,61.3,63.9,66.3
 Budget Options,56,60,65,69
 ""
@@ -217,6 +238,9 @@ Tax-Calculator,9.4,9.7,9.8,9.9
 =======
 >>>>>>> open-source-economics/master
 Tax-Calculator,58.7,61.3,64.0,66.5
+=======
+Tax-Calculator,58.8,61.3,64.0,66.5
+>>>>>>> open-source-economics/master
 Budget Options,56,60,65,69
 ""
 Increase top 4 rates by 1%
@@ -311,7 +335,11 @@ Tax-Calculator,0.0,0.0,0.0,0.0
 OTHER TAXES
 ""
 Eliminate Net Investment Income Tax
+<<<<<<< HEAD
 Tax-Calculator,-37.1,-40.1,-40.6,-40.9
+=======
+Tax-Calculator,-36.3,-39.3,-39.7,-40.0
+>>>>>>> open-source-economics/master
 Tax Expenditure,-33,-35,-37,-39
 ""
 Increase Net Investment Income Tax threshold by 10,000
