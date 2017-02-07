@@ -89,7 +89,7 @@ class Records(object):
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
     WEIGHTS_FILENAME = 'WEIGHTS.csv'
     WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
-    BLOWUP_FACTORS_FILENAME = 'grow_factors.csv'
+    BLOWUP_FACTORS_FILENAME = 'growfactors.csv'
     BLOWUP_FACTORS_PATH = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
 
     # specify set of input variables used in Tax-Calculator calculations:
