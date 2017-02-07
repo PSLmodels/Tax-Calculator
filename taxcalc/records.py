@@ -129,7 +129,7 @@ class Records(object):
         'MARS', 'MIDR', 'RECID', 'filer', 'cmbtp',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
         'nu13', 'elderly_dependent',
-        's006', 'nu05'])
+        's006', 'nu05', 'agi_bin'])
 
     # specify set of input variables that MUST be read by Tax-Calculator:
     MUST_READ_VARS = set(['RECID', 'MARS'])
@@ -374,7 +374,11 @@ class Records(object):
         """
         if len(self.ADJ) != 0:
             # Interest income
-            self.e00300 *= self.ADJ['INT{}'.format(year)]
+            for i in range(0, 19):
+                self.e00300 = np.where(self.agi_bin == i,
+                                       self.e00300 *
+                                       self.ADJ['INT{}'.format(year)][i],
+                                       self.e00300)
 
     def _read_data(self, data, exact_calcs):
         """
