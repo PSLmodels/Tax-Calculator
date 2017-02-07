@@ -89,7 +89,7 @@ class Records(object):
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
     WEIGHTS_FILENAME = 'WEIGHTS.csv'
     WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
-    BLOWUP_FACTORS_FILENAME = 'StageIFactors.csv'
+    BLOWUP_FACTORS_FILENAME = 'growfactors.csv'
     BLOWUP_FACTORS_PATH = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
 
     # specify set of input variables used in Tax-Calculator calculations:
@@ -220,7 +220,7 @@ class Records(object):
             raise ValueError(msg)
         # consider applying initial-year blowup factors
         if not self.BF.empty and self.current_year == Records.PUF_YEAR:
-            self._extrapolate_in_puf_year()
+            self._blowup(Records.PUF_YEAR)
         # construct sample weights for current_year
         wt_colname = 'WT{}'.format(self.current_year)
         if wt_colname in self.WT.columns:
@@ -262,22 +262,22 @@ class Records(object):
         """
         # pylint: disable=too-many-statements
         # pylint: disable=too-many-locals
-        AWAGE = self.BF.AWAGE[year]
-        AINTS = self.BF.AINTS[year]
-        ADIVS = self.BF.ADIVS[year]
-        ATXPY = self.BF.ATXPY[year]
-        ASCHCI = self.BF.ASCHCI[year]
-        ASCHCL = self.BF.ASCHCL[year]
-        ACGNS = self.BF.ACGNS[year]
-        ASCHEI = self.BF.ASCHEI[year]
-        ASCHEL = self.BF.ASCHEL[year]
-        ASCHF = self.BF.ASCHF[year]
-        AUCOMP = self.BF.AUCOMP[year]
-        ASOCSEC = self.BF.ASOCSEC[year]
-        ACPIM = self.BF.ACPIM[year]
-        AGDPN = self.BF.AGDPN[year]
-        ABOOK = self.BF.ABOOK[year]
-        AIPD = self.BF.AIPD[year]
+        AWAGE = self.BF['AWAGE'][year]
+        AINTS = self.BF['AINTS'][year]
+        ADIVS = self.BF['ADIVS'][year]
+        ATXPY = self.BF['ATXPY'][year]
+        ASCHCI = self.BF['ASCHCI'][year]
+        ASCHCL = self.BF['ASCHCL'][year]
+        ACGNS = self.BF['ACGNS'][year]
+        ASCHEI = self.BF['ASCHEI'][year]
+        ASCHEL = self.BF['ASCHEL'][year]
+        ASCHF = self.BF['ASCHF'][year]
+        AUCOMP = self.BF['AUCOMP'][year]
+        ASOCSEC = self.BF['ASOCSEC'][year]
+        ACPIM = self.BF['ACPIM'][year]
+        AGDPN = self.BF['AGDPN'][year]
+        ABOOK = self.BF['ABOOK'][year]
+        AIPD = self.BF['AIPD'][year]
         self.e00200 *= AWAGE
         self.e00200p *= AWAGE
         self.e00200s *= AWAGE
@@ -471,9 +471,7 @@ class Records(object):
         """
         if blowup_factors is None:
             BF = pd.DataFrame({'nothing': []})
-            setattr(self, 'BF', BF)
-            return
-        if isinstance(blowup_factors, pd.DataFrame):
+        elif isinstance(blowup_factors, pd.DataFrame):
             BF = blowup_factors
         elif isinstance(blowup_factors, six.string_types):
             if os.path.isfile(blowup_factors):
@@ -486,50 +484,4 @@ class Records(object):
             msg = ('blowup_factors is not None or a string '
                    'or a Pandas DataFrame')
             raise ValueError(msg)
-        BF.AGDPN = BF.AGDPN / BF.APOPN
-        BF.ATXPY = BF. ATXPY / BF. APOPN
-        BF.AWAGE = BF.AWAGE / BF.APOPN
-        BF.ASCHCI = BF.ASCHCI / BF.APOPN
-        BF.ASCHCL = BF.ASCHCL / BF.APOPN
-        BF.ASCHF = BF.ASCHF / BF.APOPN
-        BF.AINTS = BF.AINTS / BF.APOPN
-        BF.ADIVS = BF.ADIVS / BF.APOPN
-        BF.ASCHEI = BF.ASCHEI / BF.APOPN
-        BF.ASCHEL = BF.ASCHEL / BF.APOPN
-        BF.ACGNS = BF.ACGNS / BF.APOPN
-        BF.ABOOK = BF.ABOOK / BF.APOPN
-        BF.ASOCSEC = BF.ASOCSEC / BF.APOPSNR
-        BF = 1.0 + BF.pct_change()
         setattr(self, 'BF', BF)
-
-    def _extrapolate_in_puf_year(self):
-        """
-        Calls appropriate current_year extrapolation method.
-        """
-        if self.current_year == 2009:
-            self._extrapolate_2009_puf()
-
-    def _extrapolate_2009_puf(self):
-        """
-        Initial year blowup factors for 2009 IRS-PUF/Census-CPS merged data.
-        """
-        self.BF.AGDPN[2009] = 1.0
-        self.BF.ATXPY[2009] = 1.0
-        self.BF.AWAGE[2009] = 1.0053
-        self.BF.ASCHCI[2009] = 1.0041
-        self.BF.ASCHCL[2009] = 1.1629
-        self.BF.ASCHF[2009] = 1.0
-        self.BF.AINTS[2009] = 1.0357
-        self.BF.ADIVS[2009] = 1.0606
-        self.BF.ASCHEI[2009] = 1.1089
-        self.BF.ASCHEL[2009] = 1.2953
-        self.BF.ACGNS[2009] = 1.1781
-        self.BF.ABOOK[2009] = 1.0
-        self.BF.APOPN[2009] = 1.0
-        self.BF.ACPIU[2009] = 1.0
-        self.BF.ASOCSEC[2009] = 0.9941
-        self.BF.ACPIM[2009] = 1.0
-        self.BF.AUCOMP[2009] = 1.0034
-        self.BF.APOPSNR[2009] = 1.0
-        self.BF.AIPD[2009] = 1.0
-        self._blowup(2009)
