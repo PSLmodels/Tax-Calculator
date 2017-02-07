@@ -531,7 +531,7 @@
     },
 
     "_ID_Medical_frt_add4aged": {
-        "long_name": "Addon to the deduction medical expenses floor rate for elderly filing units; addon as a decimal fraction of AGI",
+        "long_name": "Addon to the deduction for medical expenses floor rate for elderly filing units; addon as a decimal fraction of AGI",
         "description": "Elderly taxpayers have this fraction added to the value of the deduction for medical expenses floor rate.",
         "section_1": "Itemized deductions",
         "section_2": "Medical expenses",
