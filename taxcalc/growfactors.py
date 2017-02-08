@@ -67,14 +67,11 @@ class Growfactors(object):
             raise ValueError('growfactors_filename is not a string')
         # check validity of gfdf column names
         gfdf_names = set(list(gfdf))
-        if gfdf_names < Growfactors.VALID_NAMES:
-            msg = 'missing growfactors names are: {}'
+        if gfdf_names != Growfactors.VALID_NAMES:
+            msg = ('missing names are: {} and invalid names are: {}')
             missing = Growfactors.VALID_NAMES - gfdf_names
-            raise ValueError(msg.format(missing))
-        if gfdf_names > Growfactors.VALID_NAMES:
-            msg = 'invalid growfactors names are: {}'
             invalid = gfdf_names - Growfactors.VALID_NAMES
-            raise ValueError(msg.format(invalid))
+            raise ValueError(msg.format(missing, invalid))
         # determine first_year and last_year from gfdf
         self.first_year = min(gfdf.index)
         self.last_year = max(gfdf.index)
