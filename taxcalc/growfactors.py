@@ -10,7 +10,6 @@ Tax-Calculator Growfactors class.
 import os
 import six
 import pandas as pd
-from .records import Records
 from .utils import read_egg_csv
 
 

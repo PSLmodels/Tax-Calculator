@@ -11,7 +11,6 @@ import os
 import six
 import numpy as np
 import pandas as pd
-from pkg_resources import resource_stream, Requirement, DistributionNotFound
 from .utils import read_egg_csv
 
 
@@ -263,6 +262,7 @@ class Records(object):
         """
         # pylint: disable=too-many-statements
         # pylint: disable=too-many-locals
+        # pylint: disable=unsubscriptable-object
         AWAGE = self.BF['AWAGE'][year]
         AINTS = self.BF['AINTS'][year]
         ADIVS = self.BF['ADIVS'][year]

@@ -8,10 +8,12 @@ Tax-Calculator utility functions.
 #
 # pylint: disable=too-many-lines
 
+import os
 import math
 import copy
-from collections import defaultdict, OrderedDict
 import json
+from collections import defaultdict, OrderedDict
+from pkg_resources import resource_stream, Requirement, DistributionNotFound
 import six
 import numpy as np
 import pandas as pd
