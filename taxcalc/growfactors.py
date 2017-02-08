@@ -11,6 +11,7 @@ import os
 import six
 import pandas as pd
 from .records import Records
+from .utils import read_egg_csv
 
 
 class Growfactors(object):
@@ -60,9 +61,8 @@ class Growfactors(object):
             if os.path.isfile(growfactors_filename):
                 gfdf = pd.read_csv(growfactors_filename, index_col='YEAR')
             else:
-                gfdf = Records.read_egg_csv('blowup_factors',
-                                            Growfactors.FILENAME,
-                                            index_col='YEAR')
+                gfdf = read_egg_csv('blowup_factors',
+                                    Growfactors.FILENAME, index_col='YEAR')
         else:
             raise ValueError('growfactors_filename is not a string')
         # check validity of gfdf column names
