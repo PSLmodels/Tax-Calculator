@@ -97,7 +97,7 @@ class Records(object):
     WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
     BLOWUP_FACTORS_FILENAME = 'growfactors.csv'
     BLOWUP_FACTORS_PATH = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
-    ADJUST_FACTORS_FILENAME = 'adjustment_factors.csv'
+    ADJUST_FACTORS_FILENAME = 'pufadj_factors.csv'
     ADJUST_FACTORS_PATH = os.path.join(CUR_PATH, ADJUST_FACTORS_FILENAME)
 
     # specify set of input variables used in Tax-Calculator calculations:
@@ -374,11 +374,45 @@ class Records(object):
         """
         if len(self.ADJ) != 0:
             # Interest income
-            for i in range(0, 19):
-                self.e00300 = np.where(self.agi_bin == i,
-                                       self.e00300 *
-                                       self.ADJ['INT{}'.format(year)][i],
-                                       self.e00300)
+            bin_0 = self.ADJ['INT{}'.format(year)][0]
+            bin_1 = self.ADJ['INT{}'.format(year)][1]
+            bin_2 = self.ADJ['INT{}'.format(year)][2]
+            bin_3 = self.ADJ['INT{}'.format(year)][3]
+            bin_4 = self.ADJ['INT{}'.format(year)][4]
+            bin_5 = self.ADJ['INT{}'.format(year)][5]
+            bin_6 = self.ADJ['INT{}'.format(year)][6]
+            bin_7 = self.ADJ['INT{}'.format(year)][7]
+            bin_8 = self.ADJ['INT{}'.format(year)][8]
+            bin_9 = self.ADJ['INT{}'.format(year)][9]
+            bin_10 = self.ADJ['INT{}'.format(year)][10]
+            bin_11 = self.ADJ['INT{}'.format(year)][11]
+            bin_12 = self.ADJ['INT{}'.format(year)][12]
+            bin_13 = self.ADJ['INT{}'.format(year)][13]
+            bin_14 = self.ADJ['INT{}'.format(year)][14]
+            bin_15 = self.ADJ['INT{}'.format(year)][15]
+            bin_16 = self.ADJ['INT{}'.format(year)][16]
+            bin_17 = self.ADJ['INT{}'.format(year)][17]
+            bin_18 = self.ADJ['INT{}'.format(year)][18]
+
+            self.e00300[self.agi_bin == 0] *= bin_0
+            self.e00300[self.agi_bin == 1] *= bin_1
+            self.e00300[self.agi_bin == 2] *= bin_2
+            self.e00300[self.agi_bin == 3] *= bin_3
+            self.e00300[self.agi_bin == 4] *= bin_4
+            self.e00300[self.agi_bin == 5] *= bin_5
+            self.e00300[self.agi_bin == 6] *= bin_6
+            self.e00300[self.agi_bin == 7] *= bin_7
+            self.e00300[self.agi_bin == 8] *= bin_8
+            self.e00300[self.agi_bin == 9] *= bin_9
+            self.e00300[self.agi_bin == 10] *= bin_10
+            self.e00300[self.agi_bin == 11] *= bin_11
+            self.e00300[self.agi_bin == 12] *= bin_12
+            self.e00300[self.agi_bin == 13] *= bin_13
+            self.e00300[self.agi_bin == 14] *= bin_14
+            self.e00300[self.agi_bin == 15] *= bin_15
+            self.e00300[self.agi_bin == 16] *= bin_16
+            self.e00300[self.agi_bin == 17] *= bin_17
+            self.e00300[self.agi_bin == 18] *= bin_18
 
     def _read_data(self, data, exact_calcs):
         """
@@ -510,7 +544,6 @@ class Records(object):
                    'or a Pandas DataFrame')
             raise ValueError(msg)
         setattr(self, 'BF', BF)
-<<<<<<< HEAD
 
     def _read_adjust(self, adjust_factors):
         """
@@ -534,37 +567,3 @@ class Records(object):
                    'or a Pandas DataFrame')
             raise ValueError(msg)
         setattr(self, 'ADJ', ADJ)
-
-    def _extrapolate_in_puf_year(self):
-        """
-        Calls appropriate current_year extrapolation method.
-        """
-        if self.current_year == 2009:
-            self._extrapolate_2009_puf()
-
-    def _extrapolate_2009_puf(self):
-        """
-        Initial year blowup factors for 2009 IRS-PUF/Census-CPS merged data.
-        """
-        self.BF.AGDPN[2009] = 1.0
-        self.BF.ATXPY[2009] = 1.0
-        self.BF.AWAGE[2009] = 1.0053
-        self.BF.ASCHCI[2009] = 1.0041
-        self.BF.ASCHCL[2009] = 1.1629
-        self.BF.ASCHF[2009] = 1.0
-        self.BF.AINTS[2009] = 1.0357
-        self.BF.ADIVS[2009] = 1.0606
-        self.BF.ASCHEI[2009] = 1.1089
-        self.BF.ASCHEL[2009] = 1.2953
-        self.BF.ACGNS[2009] = 1.1781
-        self.BF.ABOOK[2009] = 1.0
-        self.BF.APOPN[2009] = 1.0
-        self.BF.ACPIU[2009] = 1.0
-        self.BF.ASOCSEC[2009] = 0.9941
-        self.BF.ACPIM[2009] = 1.0
-        self.BF.AUCOMP[2009] = 1.0034
-        self.BF.APOPSNR[2009] = 1.0
-        self.BF.AIPD[2009] = 1.0
-        self._blowup(2009)
-=======
->>>>>>> open-source-economics/master
