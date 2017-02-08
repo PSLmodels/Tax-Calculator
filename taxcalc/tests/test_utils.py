@@ -114,10 +114,7 @@ def test_expand_2D_variable_rates():
 
 def test_validity_of_name_lists():
     assert len(TABLE_COLUMNS) == len(TABLE_LABELS)
-    calc_vars = Records.CALCULATED_VARS
-    calc_vars.add('s006')
-    stat_vars = set(STATS_COLUMNS)
-    assert stat_vars.issubset(calc_vars)
+    assert set(STATS_COLUMNS).issubset(Records.CALCULATED_VARS | {'s006'})
 
 
 def test_create_tables(puf_1991, weights_1991):
