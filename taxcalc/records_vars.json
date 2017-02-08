@@ -10,7 +10,7 @@
     },
     "FLPDYR": {
       "format": "int",
-      "description": ""
+      "description": "Tax year"
     },
     "MARS": {
       "format": "int",
@@ -24,11 +24,11 @@
     "RECID": {
       "format": "int",
       "required": true,
-      "description": ""
+      "description": "Record ID for tax filing unit"
     },
     "XTOT": {
       "format": "int",
-      "description": ""
+      "description": "Total number of exemptions for filing unit"
     },
     "age_head": {
       "format": "int",
@@ -288,7 +288,7 @@
     },
     "elderly_dependent": {
       "format": "int",
-      "description": ""
+      "description": "Has an elderly dependent?"
     },
     "f2441": {
       "format": "int",
@@ -308,11 +308,11 @@
     },
     "nu05": {
       "format": "float",
-      "description": ""
+      "description": "Eligible for ACTC rate bonus for families with less than 5 children?"
     },
     "nu13": {
       "format": "int",
-      "description": ""
+      "description": "Number of dependents under 13 years old"
     },
     "p08000": {
       "format": "float",
@@ -378,7 +378,7 @@
     },
     "_iitax": {
       "format": "float",
-      "description": ""
+      "description": "Federal income tax liability"
     },
     "_num": {
       "format": "int",
