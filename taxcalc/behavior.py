@@ -3,8 +3,7 @@ Tax-Calculator elasticity-based behavioral-response Behavior class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 behavior.py
-# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy behavior.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
+# pylint --disable=locally-disabled behavior.py
 
 import copy
 import numpy as np

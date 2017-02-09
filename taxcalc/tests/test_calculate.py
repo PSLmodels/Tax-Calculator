@@ -12,15 +12,6 @@ from taxcalc import create_difference_table
 from taxcalc import create_diagnostic_table
 
 
-IRATES = {1991: 0.015, 1992: 0.020, 1993: 0.022, 1994: 0.020, 1995: 0.021,
-          1996: 0.022, 1997: 0.023, 1998: 0.024, 1999: 0.024, 2000: 0.024,
-          2001: 0.024, 2002: 0.024, 2003: 0.024, 2004: 0.024}
-
-WRATES = {1991: 0.0276, 1992: 0.0419, 1993: 0.0465, 1994: 0.0498,
-          1995: 0.0507, 1996: 0.0481, 1997: 0.0451, 1998: 0.0441,
-          1999: 0.0437, 2000: 0.0435, 2001: 0.0430, 2002: 0.0429,
-          2003: 0.0429, 2004: 0.0429}
-
 RAWINPUTFILE_FUNITS = 4
 RAWINPUTFILE_YEAR = 2015
 RAWINPUTFILE_CONTENTS = (
@@ -138,38 +129,6 @@ def test_make_Calculator_with_multiyear_reform(records_2009):
                        np.array([1600, 1300, 1600, 1300, 1600, 1300]))
 
 
-def test_make_Calculator_with_reform_after_start_year(records_2009):
-    # create Policy object using custom indexing rates
-    irates = {2013: 0.01, 2014: 0.01, 2015: 0.02, 2016: 0.01, 2017: 0.03}
-    parm = Policy(start_year=2013, num_years=len(irates),
-                  inflation_rates=irates)
-    # specify reform in 2015, which is two years after Policy start_year
-    reform = {2015: {}, 2016: {}}
-    reform[2015]['_STD_Aged'] = [[1600, 1300, 1600, 1300, 1600, 1300]]
-    reform[2015]['_II_em'] = [5000]
-    reform[2016]['_II_em'] = [6000]
-    reform[2016]['_II_em_cpi'] = False
-    parm.implement_reform(reform)
-    calc = Calculator(policy=parm, records=records_2009)
-    # compare actual and expected parameter values over all years
-    assert np.allclose(calc.policy._STD_Aged,
-                       np.array([[1500, 1200, 1200, 1500, 1500, 1200],
-                                 [1550, 1200, 1200, 1550, 1550, 1200],
-                                 [1600, 1300, 1600, 1300, 1600, 1300],
-                                 [1632, 1326, 1632, 1326, 1632, 1326],
-                                 [1648, 1339, 1648, 1339, 1648, 1339]]),
-                       atol=0.5, rtol=0.0)  # handles rounding to dollars
-    assert np.allclose(calc.policy._II_em,
-                       np.array([3900, 3950, 5000, 6000, 6000]))
-    # compare actual and expected values for 2015
-    calc.increment_year()
-    calc.increment_year()
-    assert calc.current_year == 2015
-    assert np.allclose(calc.policy.II_em, 5000)
-    assert np.allclose(calc.policy.STD_Aged,
-                       np.array([1600, 1300, 1600, 1300, 1600, 1300]))
-
-
 def test_Calculator_advance_to_year(records_2009):
     policy = Policy()
     calc = Calculator(policy=policy, records=records_2009)
@@ -177,35 +136,6 @@ def test_Calculator_advance_to_year(records_2009):
     assert calc.current_year == 2016
     with pytest.raises(ValueError):
         calc.advance_to_year(2015)
-
-
-def test_make_Calculator_user_mods_with_cpi_flags(policyfile, puf_1991):
-    with open(policyfile.name) as pfile:
-        policy = json.load(pfile)
-    ppo = Policy(parameter_dict=policy, start_year=1991,
-                 num_years=len(IRATES), inflation_rates=IRATES,
-                 wage_growth_rates=WRATES)
-    rec = Records(data=puf_1991, start_year=1991)
-    calc = Calculator(policy=ppo, records=rec)
-    user_mods = {1991: {"_almdep": [7150, 7250, 7400],
-                        "_almdep_cpi": True,
-                        "_almsep": [40400, 41050],
-                        "_almsep_cpi": False,
-                        "_rt5": [0.33],
-                        "_rt7": [0.396]}}
-    calc.policy.implement_reform(user_mods)
-    # compare actual and expected values
-    inf_rates = [IRATES[1991 + i] for i in range(0, Policy.DEFAULT_NUM_YEARS)]
-    exp_almdep = Policy.expand_array(np.array([7150, 7250, 7400]),
-                                     inflate=True,
-                                     inflation_rates=inf_rates,
-                                     num_years=Policy.DEFAULT_NUM_YEARS)
-    act_almdep = getattr(calc.policy, '_almdep')
-    assert np.allclose(act_almdep, exp_almdep)
-    exp_almsep_values = [40400] + [41050] * (Policy.DEFAULT_NUM_YEARS - 1)
-    exp_almsep = np.array(exp_almsep_values)
-    act_almsep = getattr(calc.policy, '_almsep')
-    assert np.allclose(act_almsep, exp_almsep)
 
 
 def test_make_Calculator_raises_on_no_policy(records_2009):
@@ -347,26 +277,30 @@ def test_Calculator_create_diagnostic_table(records_2009):
 
 
 def test_make_Calculator_increment_years_first(records_2009):
-    # create Policy object with custom indexing rates and policy reform
-    irates = {2013: 0.01, 2014: 0.01, 2015: 0.02, 2016: 0.01, 2017: 0.03}
-    policy = Policy(start_year=2013, inflation_rates=irates,
-                    num_years=len(irates))
+    # create Policy object with policy reform
+    syr = 2013
+    pol = Policy(start_year=syr, num_years=5)
     reform = {2015: {}, 2016: {}}
-    reform[2015]['_STD_Aged'] = [[1600, 1300, 1600, 1300, 1600, 1300]]
+    std5 = 2000
+    reform[2015]['_STD_Aged'] = [[std5, std5, std5, std5, std5, std5]]
     reform[2015]['_II_em'] = [5000]
     reform[2016]['_II_em'] = [6000]
     reform[2016]['_II_em_cpi'] = False
-    policy.implement_reform(reform)
+    pol.implement_reform(reform)
     # create Calculator object with Policy object as modified by reform
-    calc = Calculator(policy=policy, records=records_2009)
+    calc = Calculator(policy=pol, records=records_2009)
     # compare expected policy parameter values with those embedded in calc
+    irates = pol.inflation_rates()
+    irate2015 = irates[2015 - syr]
+    irate2016 = irates[2016 - syr]
+    std6 = std5 * (1.0 + irate2015)
+    std7 = std6 * (1.0 + irate2016)
     exp_STD_Aged = np.array([[1500, 1200, 1200, 1500, 1500, 1200],
                              [1550, 1200, 1200, 1550, 1550, 1200],
-                             [1600, 1300, 1600, 1300, 1600, 1300],
-                             [1632, 1326, 1632, 1326, 1632, 1326],
-                             [1648, 1339, 1648, 1339, 1648, 1339]])
-    assert np.allclose(calc.policy._STD_Aged, exp_STD_Aged,
-                       atol=0.5, rtol=0.0)  # handles rounding to dollars
+                             [std5, std5, std5, std5, std5, std5],
+                             [std6, std6, std6, std6, std6, std6],
+                             [std7, std7, std7, std7, std7, std7]])
+    assert np.allclose(calc.policy._STD_Aged, exp_STD_Aged)
     exp_II_em = np.array([3900, 3950, 5000, 6000, 6000])
     assert np.allclose(calc.policy._II_em, exp_II_em)
 

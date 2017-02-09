@@ -121,35 +121,6 @@ def test_for_duplicate_names():
         assert varname in Records.USABLE_READ_VARS
 
 
-def test_hard_coded_rates_vs_blowup_factor_implied_rates(puf_1991):
-    """
-    Check that default price inflation rates and default wage growth rates
-    are consistent with the rates implied by the default blowup factors (BF)
-    in the Records class.
-    """
-    rec = Records(data=puf_1991)
-    policy = Policy()
-    # Note policy object contains hard-coded default price inflation rates and
-    #                             hard-coded default wage growth rates
-    syr = Policy.JSON_START_YEAR
-    nyrs = Policy.LAST_BUDGET_YEAR - syr + 1
-    numyrs = Policy.LAST_BUDGET_YEAR - Records.PUF_YEAR + 1
-
-    # price inflation rates
-    implied_pir = np.zeros(nyrs)
-    for idx in range(0, nyrs):
-        year = syr + idx
-        implied_pir[idx] = rec.BF.ACPIU[year] - 1.0
-    assert_array_equal(np.round(implied_pir, 4), policy._inflation_rates)
-
-    # nominal wage growth rates (i.e., growth rates in the average wage)
-    implied_wgr = np.zeros(nyrs)
-    for idx in range(0, nyrs):
-        year = syr + idx
-        implied_wgr[idx] = rec.BF.AWAGE[year] - 1.0
-    assert_array_equal(np.round(implied_wgr, 4), policy._wage_growth_rates)
-
-
 def test_csv_input_vars_md_contents(tests_path):
     """
     Check CSV_INPUT_VARS.md contents against Records.USABLE_READ_VARS

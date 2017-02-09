@@ -4,7 +4,6 @@ Tests for Tax-Calculator functions.py logic.
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 test_functions.py
 # pylint --disable=locally-disabled test_functions.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import os
 import re

@@ -3,9 +3,7 @@ Tax-Calculator tax-filing-unit Records class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 records.py
-# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy records.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
-
+# pylint --disable=locally-disabled records.py
 
 import os
 import six

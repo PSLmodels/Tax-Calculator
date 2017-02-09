@@ -4,8 +4,6 @@ Tax-Calculator Growfactors class.
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 growfactors.py
 # pylint --disable=locally-disabled growfactors.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
-
 
 import os
 import six

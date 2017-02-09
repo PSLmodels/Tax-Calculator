@@ -4,7 +4,6 @@ INCome TAX input-output capabilities for Tax-Calculator.
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 inctax.py
 # pylint --disable=locally-disabled inctax.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import argparse
 import sys

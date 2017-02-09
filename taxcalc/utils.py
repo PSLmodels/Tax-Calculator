@@ -3,8 +3,7 @@ Tax-Calculator utility functions.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 utils.py
-# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy utils.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
+# pylint --disable=locally-disabled utils.py
 #
 # pylint: disable=too-many-lines
 
@@ -975,6 +974,8 @@ def atr_graph_data(calc1, calc2,
     avgtax1_series = gdfx.apply(weighted_mean, 'tax1')
     avgtax2_series = gdfx.apply(weighted_mean, 'tax2')
     # compute average tax rates by income percentile
+    # pylint: disable=no-member
+    # (above pylint comment eliminates bogus np.divide warnings)
     atr1_series = np.divide(avgtax1_series, avginc_series)
     atr2_series = np.divide(avgtax2_series, avginc_series)
     # construct DataFrame containing the two atr?_series
@@ -1301,6 +1302,8 @@ def ce_aftertax_income(calc1, calc2,
     cedict['inc1'] = weighted_sum(df1, '_expanded_income') * billion
     cedict['inc2'] = weighted_sum(df2, '_expanded_income') * billion
     # ... calculate sample-weighted probability of each filing unit
+    # pylint: disable=no-member
+    # (above pylint comment eliminates bogus np.divide warnings)
     prob_raw = np.divide(df1['s006'], df1['s006'].sum())
     prob = np.divide(prob_raw, prob_raw.sum())  # handle any rounding error
     # ... calculate after-tax income of each filing unit in calc1 and calc2
