@@ -97,8 +97,8 @@ class Records(object):
     WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
     BLOWUP_FACTORS_FILENAME = 'growfactors.csv'
     BLOWUP_FACTORS_PATH = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
-    ADJUST_FACTORS_FILENAME = 'pufadj_factors.csv'
-    ADJUST_FACTORS_PATH = os.path.join(CUR_PATH, ADJUST_FACTORS_FILENAME)
+    ADJUST_RATIOS_FILENAME = 'puf_ratios.csv'
+    ADJUST_RATIOS_PATH = os.path.join(CUR_PATH, ADJUST_RATIOS_FILENAME)
 
     # specify set of input variables used in Tax-Calculator calculations:
     USABLE_READ_VARS = set([
@@ -141,7 +141,7 @@ class Records(object):
         'n24', 'XTOT',
         'MARS', 'MIDR', 'RECID', 'filer',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
-        'nu13', 'elderly_dependent'])
+        'nu13', 'elderly_dependent', 'agi_bin'])
 
     # specify set of Record variables that are calculated by Tax-Calculator:
     CALCULATED_VARS = set([
@@ -184,7 +184,7 @@ class Records(object):
                  data='puf.csv',
                  exact_calculations=False,
                  blowup_factors=BLOWUP_FACTORS_PATH,
-                 adjust_factors=ADJUST_FACTORS_PATH,
+                 adjust_ratios=ADJUST_RATIOS_PATH,
                  weights=WEIGHTS_PATH,
                  start_year=PUFCSV_YEAR):
         """
@@ -210,13 +210,14 @@ class Records(object):
                            rtol=0.0, atol=0.001):
             msg = 'expression "e00600 >= e00650" is not true for every record'
             raise ValueError(msg)
-        # read extrapolation blowup factors and sample weights
+        # read extrapolation blowup factors, adjustment ratios, and
+        # sample weights
         self.BF = None
         self._read_blowup(blowup_factors)
         self.WT = None
         self._read_weights(weights)
         self.ADJ = None
-        self._read_adjust(adjust_factors)
+        self._read_adjust(adjust_ratios)
         # weights must be same size as tax record data
         if not self.WT.empty and self.dim != len(self.WT):
             frac = float(self.dim) / len(self.WT)
@@ -252,7 +253,7 @@ class Records(object):
         self._current_year += 1
         # apply Stage 1 Extrapolation blowup factors
         self._blowup(self.current_year)
-        # apply Stage 3 adjustment factors
+        # apply Stage 3 adjustment ratios
         self._adjust(self.current_year)
         # specify Stage 2 Extrapolation sample weights
         wt_colname = 'WT{}'.format(self.current_year)
@@ -374,45 +375,8 @@ class Records(object):
         """
         if len(self.ADJ) != 0:
             # Interest income
-            bin_0 = self.ADJ['INT{}'.format(year)][0]
-            bin_1 = self.ADJ['INT{}'.format(year)][1]
-            bin_2 = self.ADJ['INT{}'.format(year)][2]
-            bin_3 = self.ADJ['INT{}'.format(year)][3]
-            bin_4 = self.ADJ['INT{}'.format(year)][4]
-            bin_5 = self.ADJ['INT{}'.format(year)][5]
-            bin_6 = self.ADJ['INT{}'.format(year)][6]
-            bin_7 = self.ADJ['INT{}'.format(year)][7]
-            bin_8 = self.ADJ['INT{}'.format(year)][8]
-            bin_9 = self.ADJ['INT{}'.format(year)][9]
-            bin_10 = self.ADJ['INT{}'.format(year)][10]
-            bin_11 = self.ADJ['INT{}'.format(year)][11]
-            bin_12 = self.ADJ['INT{}'.format(year)][12]
-            bin_13 = self.ADJ['INT{}'.format(year)][13]
-            bin_14 = self.ADJ['INT{}'.format(year)][14]
-            bin_15 = self.ADJ['INT{}'.format(year)][15]
-            bin_16 = self.ADJ['INT{}'.format(year)][16]
-            bin_17 = self.ADJ['INT{}'.format(year)][17]
-            bin_18 = self.ADJ['INT{}'.format(year)][18]
+            self.e00300 *= self.ADJ['INT{}'.format(year)][self.agi_bin]
 
-            self.e00300[self.agi_bin == 0] *= bin_0
-            self.e00300[self.agi_bin == 1] *= bin_1
-            self.e00300[self.agi_bin == 2] *= bin_2
-            self.e00300[self.agi_bin == 3] *= bin_3
-            self.e00300[self.agi_bin == 4] *= bin_4
-            self.e00300[self.agi_bin == 5] *= bin_5
-            self.e00300[self.agi_bin == 6] *= bin_6
-            self.e00300[self.agi_bin == 7] *= bin_7
-            self.e00300[self.agi_bin == 8] *= bin_8
-            self.e00300[self.agi_bin == 9] *= bin_9
-            self.e00300[self.agi_bin == 10] *= bin_10
-            self.e00300[self.agi_bin == 11] *= bin_11
-            self.e00300[self.agi_bin == 12] *= bin_12
-            self.e00300[self.agi_bin == 13] *= bin_13
-            self.e00300[self.agi_bin == 14] *= bin_14
-            self.e00300[self.agi_bin == 15] *= bin_15
-            self.e00300[self.agi_bin == 16] *= bin_16
-            self.e00300[self.agi_bin == 17] *= bin_17
-            self.e00300[self.agi_bin == 18] *= bin_18
 
     def _read_data(self, data, exact_calcs):
         """
@@ -545,25 +509,26 @@ class Records(object):
             raise ValueError(msg)
         setattr(self, 'BF', BF)
 
-    def _read_adjust(self, adjust_factors):
+    def _read_adjust(self, adjust_ratios):
         """
         Read Records adjustment factors from file or uses specified DataFrame
         as data or creates empty DataFrame if None
         """
-        if adjust_factors is None:
+        if adjust_ratios is None:
             ADJ = pd.DataFrame({'nothing': []})
             setattr(self, 'ADJ', ADJ)
             return
-        if isinstance(adjust_factors, pd.DataFrame):
-            ADJ = adjust_factors
-        elif isinstance(adjust_factors, six.string_types):
-            if os.path.isfile(adjust_factors):
-                ADJ = pd.read_csv(adjust_factors)
+        if isinstance(adjust_ratios, pd.DataFrame):
+            ADJ = adjust_ratios
+        elif isinstance(adjust_ratios, six.string_types):
+            if os.path.isfile(adjust_ratios):
+                ADJ = pd.read_csv(adjust_ratios, index_col=0)
+                ADJ = ADJ.transpose()
             else:
-                ADJ = Records._read_egg_csv('adjust_factors',
+                ADJ = Records._read_egg_csv('adjust_ratios',
                                             Records.ADJUST_FACTORS_FILENAME)
         else:
-            msg = ('adjust_factors is not None or a string'
+            msg = ('adjust_ratios is not None or a string'
                    'or a Pandas DataFrame')
             raise ValueError(msg)
         setattr(self, 'ADJ', ADJ)
