@@ -10,7 +10,7 @@ import os
 import glob
 import pytest
 # pylint: disable=import-error
-from taxcalc import Calculator, Policy, Behavior, Consumption, Growth
+from taxcalc import Calculator, Policy, Behavior, Consumption
 
 
 @pytest.fixture(scope='session')
@@ -80,7 +80,7 @@ def test_taxbrain_json(taxbrain_path):  # pylint: disable=redefined-outer-name
             behv.update_behavior(beh)
             cons = Consumption()
             cons.update_consumption(con)
-            grow = Growth()
-            grow.update_growth(gro)
+            # TODO grow = Growth()
+            # TODO grow.update_growth(gro)
         else:  # jpf_text is not a valid JSON parameter file
             assert False

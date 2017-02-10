@@ -20,7 +20,6 @@ from .functions import *
 from .policy import Policy
 from .records import Records
 from .behavior import Behavior
-from .growth import Growth
 from .consumption import Consumption
 # import pdb
 
@@ -87,7 +86,7 @@ class Calculator(object):
     """
 
     def __init__(self, policy=None, records=None, verbose=True,
-                 sync_years=True, behavior=None, growth=None,
+                 sync_years=True, behavior=None,  # TODO: growth=None,
                  consumption=None):
         if isinstance(policy, Policy):
             self.policy = policy
@@ -106,6 +105,7 @@ class Calculator(object):
                 self.behavior.set_year(next_year)
         else:
             raise ValueError('behavior must be None or Behavior object')
+        """
         if growth is None:
             self.growth = Growth(start_year=policy.start_year)
         elif isinstance(growth, Growth):
@@ -115,6 +115,7 @@ class Calculator(object):
                 self.growth.set_year(next_year)
         else:
             raise ValueError('growth must be None or Growth object')
+        """
         if consumption is None:
             self.consumption = Consumption(start_year=policy.start_year)
         elif isinstance(consumption, Consumption):
@@ -136,9 +137,12 @@ class Calculator(object):
                               var)
             while self.records.current_year < self.policy.current_year:
                 next_year = self.records.current_year + 1
+                # TODO fix below
+                """
                 if next_year >= self.growth.start_year:
                     self.growth.set_year(next_year)
                     self.growth.apply_change(self.records)
+                """
                 self.records.increment_year()
             if verbose:
                 print('Instantiation of the calculator automatically ' +
@@ -224,8 +228,8 @@ class Calculator(object):
 
     def increment_year(self):
         next_year = self.policy.current_year + 1
-        self.growth.set_year(next_year)
-        self.growth.apply_change(self.records)
+        # TODO self.growth.set_year(next_year)
+        # TODO self.growth.apply_change(self.records)
         self.records.increment_year()
         self.policy.set_year(next_year)
         self.behavior.set_year(next_year)
@@ -391,10 +395,11 @@ class Calculator(object):
         clp = self.policy.current_law_version()
         recs = copy.deepcopy(self.records)
         behv = copy.deepcopy(self.behavior)
-        grow = copy.deepcopy(self.growth)
+        # TODO grow = copy.deepcopy(self.growth)
         cons = copy.deepcopy(self.consumption)
         calc = Calculator(policy=clp, records=recs, sync_years=False,
-                          behavior=behv, growth=grow, consumption=cons)
+                          behavior=behv,  # TODO growth=grow,
+                          consumption=cons)
         return calc
 
     @staticmethod
@@ -520,7 +525,7 @@ class Calculator(object):
         The returned dictionaries are suitable as the arguments to
            the Behavior update_behavior(behv_dict) method, or
            the Consumption update_consumption(cons_dict) method, or
-           the Growth update_growth(grow_dict) method.
+           the Growdiff update_growdiff(growdiff_dict) method.
         """
         # strip out //-comments without changing line numbers
         json_str = re.sub('//.*', ' ', text_string)
@@ -562,10 +567,10 @@ class Calculator(object):
         """
         Converts specified param_key_dict into a dictionary whose primary
           keys are calendary years, and hence, is suitable as the argument to
-          the Policy implement_reform(reform_policy) method, or
-          the Behavior update_behavior(reform_behavior) method, or
-          the Consumption update_consumption(reform_consumption) method, or
-          the Growth update_growth(reform_growth) method.
+          the Policy.implement_reform() method, or
+          the Behavior.update_behavior() method, or
+          the Consumption.update_consumption() method, or
+          the Growdiff,update_growdiff() method.
         Specified input dictionary has string parameter primary keys and
            string years as secondary keys.
         Returned dictionary has integer years as primary keys and

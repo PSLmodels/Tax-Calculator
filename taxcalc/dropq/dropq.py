@@ -3,7 +3,7 @@ from .. import (Calculator, Records, Policy, Behavior, Consumption,
                 TABLE_LABELS, TABLE_COLUMNS, STATS_COLUMNS,
                 DIFF_TABLE_LABELS)
 
-from .. import growth, policy
+from .. import policy    # TODO, growth
 
 import numpy as np
 from pandas import DataFrame
@@ -64,12 +64,16 @@ def call_over_iterable(fn):
     return wrapper
 
 
+# TODO
 @call_over_iterable
 def only_growth_assumptions(user_mods, start_year):
-    """
-    Extract any reform parameters that are pertinent to growth
-    assumptions
-    """
+    pass
+
+# TODO
+"""
+@call_over_iterable
+def only_growth_assumptions(user_mods, start_year):
+    # Extract any reform parameters that are pertinent to growth assumptions
     growth_dd = growth.Growth.default_data(start_year=start_year)
     ga = {}
     for year, reforms in user_mods.items():
@@ -77,7 +81,7 @@ def only_growth_assumptions(user_mods, start_year):
         if overlap:
             ga[year] = {param: reforms[param] for param in overlap}
     return ga
-
+"""
 
 @call_over_iterable
 def only_behavior_assumptions(user_mods, start_year):
@@ -116,13 +120,13 @@ def only_reform_mods(user_mods, start_year):
     """
     pol_refs = {}
     beh_dd = Behavior.default_data(start_year=start_year)
-    growth_dd = growth.Growth.default_data(start_year=start_year)
+    # TODO growth_dd = growth.Growth.default_data(start_year=start_year)
     policy_dd = policy.Policy.default_data(start_year=start_year)
     param_code_names = policy.Policy.VALID_PARAM_CODE_NAMES
     for year, reforms in user_mods.items():
         all_cpis = {p for p in reforms.keys() if p.endswith("_cpi") and
                     p[:-4] in policy_dd.keys()}
-        pols = set(reforms.keys()) - set(beh_dd.keys()) - set(growth_dd.keys())
+        pols = set(reforms.keys()) - set(beh_dd.keys()) # TODO - set(growth_dd.keys())
         pols &= set(policy_dd.keys()) | param_code_names
         pols ^= all_cpis
         if pols:
@@ -139,7 +143,7 @@ def get_unknown_parameters(user_mods, start_year, additional=None):
     considered unknown and returned
     """
     beh_dd = Behavior.default_data(start_year=start_year)
-    growth_dd = growth.Growth.default_data(start_year=start_year)
+    # TODO growth_dd = growth.Growth.default_data(start_year=start_year)
     policy_dd = policy.Policy.default_data(start_year=start_year)
     consump_dd = Consumption.default_data(start_year=start_year)
     param_code_names = policy.Policy.VALID_PARAM_CODE_NAMES
@@ -155,7 +159,7 @@ def get_unknown_parameters(user_mods, start_year, additional=None):
         remaining = everything - all_cpis
         if bad_cpis:
             unknown_params['bad_cpis'] += list(bad_cpis)
-        pols = (remaining - set(beh_dd.keys()) - set(growth_dd.keys()) -
+        pols = (remaining - set(beh_dd.keys()) -  # TODO set(growth_dd.keys()) -
                 set(policy_dd.keys()) - set(consump_dd.keys()) -
                 param_code_names - additional)
         if pols:
@@ -431,9 +435,12 @@ def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta, user_mods="",
         if unknown_params:
             raise ValueError("Unknown parameters: {}".format(unknown_params))
 
+    # TODO
+    """
     growth_assumptions = only_growth_assumptions(user_mods, start_year)
     if growth_assumptions:
         calc1.growth.update_growth(growth_assumptions)
+    """
 
     while calc1.current_year < start_year:
         calc1.increment_year()
@@ -447,8 +454,11 @@ def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta, user_mods="",
     behavior3 = Behavior(start_year=2013)
     # Create a Calculator for the user specified plan
     calc3 = Calculator(policy=params3, records=records3, behavior=behavior3)
+    # TODO
+    """
     if growth_assumptions:
         calc3.growth.update_growth(growth_assumptions)
+    """
 
     while calc3.current_year < start_year:
         calc3.increment_year()
@@ -522,9 +532,12 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
         if unknown_params:
             raise ValueError("Unknown parameters: {}".format(unknown_params))
 
+    # TODO
+    """
     growth_assumptions = only_growth_assumptions(user_mods, start_year)
     if growth_assumptions:
         calc1.growth.update_growth(growth_assumptions)
+    """
 
     consump_assumptions = only_consumption_assumptions(user_mods, start_year)
     if consump_assumptions:
@@ -538,8 +551,11 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
     params2 = Policy(start_year=2013)
     # Create a Calculator with one extra dollar of income
     calc2 = Calculator(policy=params2, records=records2)
+    # TODO
+    """
     if growth_assumptions:
         calc2.growth.update_growth(growth_assumptions)
+    """
 
     consump_assumptions = only_consumption_assumptions(user_mods, start_year)
     if consump_assumptions:
@@ -566,8 +582,11 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
     behavior3 = Behavior(start_year=2013)
     # Create a Calculator for the user specified plan
     calc3 = Calculator(policy=params3, records=records3, behavior=behavior3)
+    # TODO
+    """
     if growth_assumptions:
         calc3.growth.update_growth(growth_assumptions)
+    """
 
     if consump_assumptions:
         calc3.consumption.update_consumption(consump_assumptions)

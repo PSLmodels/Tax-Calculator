@@ -4,7 +4,7 @@ from .behavior import *
 from .consumption import *
 from .filings import *
 from .growfactors import *
-from .growth import *
+from .growdiff import *
 from .records import *
 from .simpletaxio import *
 from .incometaxio import *

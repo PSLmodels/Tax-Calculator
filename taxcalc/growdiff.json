@@ -1,7 +1,7 @@
 {
-    "_factor_adjustment": {
-        "long_name": "Deviation from baseline growth projection",
-        "description": "The data underlying this model are extrapolated to roughly match the CBO's projection of the economy's development over a 10-year federal budget window, with each type of economic data extrapolated at a different (decimal, not percentage) growth rate.  This parameter specifies a (decimal, not percentage) factor that is added to those growth rates for the construction of an alternative economic baseline.  For example, if you supply 0.02, then 0.02 will be added to the wage and salary growth rate, interest income growth rate, dividend growth rate, schedule E income growth rate, and all other growth rates used to extrapolate the variables in the base-year data.",
+    "_ABOOK": {
+        "long_name": "ABOOK additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ABOOK extrapolates Records variables: e07300 and e07400.",
         "irs_ref": "",
         "start_year": 2013,
         "col_var": "",
@@ -11,28 +11,195 @@
         "value": [0.0]
     },
 
-    "_factor_target": {
-        "long_name": "Replacement for real growth projection",
-        "description": "The data underlying this model are extrapolated to roughly match the CBO's projection of the economy's development over a 10-year federal budget window, with each type of economic data extrapolated at a different (decimal, not percentage) growth rate.  This parameter specifies an alternative real GDP growth rate (in decimal, not percentage, terms).  All other growth rates will be modified so that they change by the same amount as the specified change in default real per-capita GDP growth rates.  For more detail, read the growth.py source code file.  Note that the baseline real GDP growth rates used in this replacement calculation are computed using real GDP defined as nominal GDP deflated by CPI (not by the GDP-deflator index), which means the baseline real GDP growth rates used here are roughly 0.004 lower than the real GDP growth rates in CBO 10-year projections.",
+    "_ACGNS": {
+        "long_name": "ACGNS additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ACGNS extrapolates Records variables: e01200, p22250, p23250, e24515 and e24518.",
         "irs_ref": "",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
         "row_label": ["2013"],
         "col_label": "",
-        "value": [0.0243,
-                  0.0113,
-                  0.0159,
-                  0.0093,
-                  0.0191,
-                  0.0172,
-                  0.0130,
-                  0.0123,
-                  0.0155,
-                  0.0161,
-                  0.0165,
-                  0.0165,
-                  0.0166,
-                  0.0164]
+        "value": [0.0]
+    },
+
+    "_ACPIM": {
+        "long_name": "ACPIM additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ACPIM extrapolates Records variables: e03270, e03290 and e17500.",
+        "irs_ref": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ACPIU": {
+        "long_name": "ACPIU additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ACPIU is the price inflation rate used in Policy class.",
+        "irs_ref": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ADIVS": {
+        "long_name": "ADIVS additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ADIVS extrapolates Records variables: e00600 and e00650.",
+        "irs_ref": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_AGDPN": {
+        "long_name": "AGDPN additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  AGDPN extrapolates Records variable: e03240.",
+        "irs_ref": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_AINTS": {
+        "long_name": "AINTS additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  AINTS extrapolates Records variables: e00300 and e00400.",
+        "irs_ref": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_AIPD": {
+        "long_name": "AIPD additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  AIPD extrapolates Records variables: e19200.",
+        "irs_ref": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ASCHCI": {
+        "long_name": "ASCHCI additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ASCHCI extrapolates Records variables: e00900, e00900p and e00900s when they are positive.",
+        "irs_ref": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ASCHCL": {
+        "long_name": "ASCHCL additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ASCHCL extrapolates Records variables: e00900, e00900p and e00900s when they are negative.",
+        "irs_ref": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ASCHEI": {
+        "long_name": "ASCHEI additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ASCHEI extrapolates Records variables: p25470, e26270 and e27200 when they are positive.",
+        "irs_ref": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ASCHEL": {
+        "long_name": "ASCHEL additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ASCHEI extrapolates Records variables: p25470, e26270 and e27200 when they are negative.",
+        "irs_ref": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ASCHF": {
+        "long_name": "ASCHF additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ASCHF extrapolates Records variables: e02100, e02100p and e02100s.",
+        "irs_ref": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ASOCSEC": {
+        "long_name": "ASOCSEC additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ASOCSEC extrapolates Records variable: e02400.",
+        "irs_ref": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ATXPY": {
+        "long_name": "ATXPY additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ATXPY extrapolates Records variables: e00700, e00800, e01400, e01500, e01700, e03150, e03210, e03220, e03230, e03300, e03400, e03500, e07240, e07260, p08000, e09700, e09800, e09900, e11200, e18400, e18500, e19800, e20100, e20400, e20500, e07600, e32800, e58990, e62900, e87530, p87521 and cmbtp.",
+        "irs_ref": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_AUCOMP": {
+        "long_name": "AUCOMP additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  AUCOMP extrapolates Records variable: e02300.",
+        "irs_ref": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_AWAGE": {
+        "long_name": "AWAGE additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  AWAGE extrapolates Records variables: e00200, e00200p and e00200s.  Also, AWAGE is the wage growth rate used in Policy class.",
+        "irs_ref": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "col_label": "",
+        "value": [0.0]
     }
 }

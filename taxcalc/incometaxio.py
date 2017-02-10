@@ -17,7 +17,6 @@ import pandas as pd
 from .policy import Policy
 from .records import Records
 from .behavior import Behavior
-from .growth import Growth
 from .consumption import Consumption
 from .calculate import Calculator
 from .simpletaxio import SimpleTaxIO
@@ -183,8 +182,8 @@ class IncomeTaxIO(object):
         # create Calculator object
         con = Consumption()
         con.update_consumption(con_d)
-        gro = Growth()
-        gro.update_growth(gro_d)
+        # TODO gro = Growth()
+        # TODO gro.update_growth(gro_d)
         if self._reform:
             clp = Policy()
             clp.set_year(tax_year)
@@ -192,7 +191,7 @@ class IncomeTaxIO(object):
             self._calc_clp = Calculator(policy=clp, records=recs_clp,
                                         verbose=False,
                                         consumption=con,
-                                        growth=gro,
+                                        # TODO growth=gro,
                                         sync_years=blowup_input_data)
             beh = Behavior()
             beh.update_behavior(beh_d)
@@ -200,13 +199,13 @@ class IncomeTaxIO(object):
                                     verbose=True,
                                     behavior=beh,
                                     consumption=con,
-                                    growth=gro,
+                                    # TODO growth=gro,
                                     sync_years=blowup_input_data)
         else:
             self._calc = Calculator(policy=pol, records=recs,
                                     verbose=True,
                                     consumption=con,
-                                    growth=gro,
+                                    # TODO growth=gro,
                                     sync_years=blowup_input_data)
 
     def tax_year(self):
