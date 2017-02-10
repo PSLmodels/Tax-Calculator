@@ -70,56 +70,69 @@ class Growfactors(object):
             invalid = gfdf_names - Growfactors.VALID_NAMES
             raise ValueError(msg.format(missing, invalid))
         # determine first_year and last_year from gfdf
-        self.first_year = min(gfdf.index)
-        self.last_year = max(gfdf.index)
+        self._first_year = min(gfdf.index)
+        self._last_year = max(gfdf.index)
         # set gfdf as attribute of class
         setattr(self, 'gfdf', gfdf)
         # specify factors as being unused (that is, not yet accessed)
         self.used = False
 
-    def price_inflation_rates(self, first_year, last_year):
+    @property
+    def first_year(self):
+        """
+        Growfactors class start_year property
+        """
+        return self._first_year
+
+    @property
+    def last_year(self):
+        """
+        Growfactors class last_year property
+        """
+        return self._last_year
+
+    def price_inflation_rates(self, firstyear, lastyear):
         """
         Return list of price inflation rates rounded to four decimal digits
         """
         # pylint: disable=no-member
         self.used = True
-        if first_year > last_year:
+        if firstyear > lastyear:
             msg = 'first_year={} > last_year={}'
-            raise ValueError(msg.format(first_year, last_year))
-        if first_year < self.first_year:
-            msg = 'first_year={} < Growfactors.first_year={}'
-            raise ValueError(msg.format(first_year, self.first_year))
-        if last_year > self.last_year:
+            raise ValueError(msg.format(firstyear, lastyear))
+        if firstyear < self.first_year:
+            msg = 'firstyear={} < Growfactors.first_year={}'
+            raise ValueError(msg.format(firstyear, self.first_year))
+        if lastyear > self.last_year:
             msg = 'last_year={} > Growfactors.last_year={}'
-            raise ValueError(msg.format(last_year, self.last_year))
+            raise ValueError(msg.format(lastyear, self.last_year))
         rates = [round((self.gfdf['ACPIU'][cyr] - 1.0), 4)
-                 for cyr in range(first_year, last_year + 1)]
+                 for cyr in range(firstyear, lastyear + 1)]
         return rates
 
-    def wage_growth_rates(self, first_year, last_year):
+    def wage_growth_rates(self, firstyear, lastyear):
         """
         Return list of wage growth rates rounded to four decimal digits
         """
         # pylint: disable=no-member
         self.used = True
-        if first_year > last_year:
-            msg = 'first_year={} > last_year={}'
-            raise ValueError(msg.format(first_year, last_year))
-        if first_year < self.first_year:
-            msg = 'first_year={} < Growfactors.first_year={}'
-            raise ValueError(msg.format(first_year, self.first_year))
-        if last_year > self.last_year:
-            msg = 'last_year={} > Growfactors.last_year={}'
-            raise ValueError(msg.format(last_year, self.last_year))
+        if firstyear > lastyear:
+            msg = 'firstyear={} > lastyear={}'
+            raise ValueError(msg.format(firstyear, lastyear))
+        if firstyear < self.first_year:
+            msg = 'firstyear={} < Growfactors.first_year={}'
+            raise ValueError(msg.format(firstyear, self.first_year))
+        if lastyear > self.last_year:
+            msg = 'lastyear={} > Growfactors.last_year={}'
+            raise ValueError(msg.format(lastyear, self.last_year))
         rates = [round((self.gfdf['AWAGE'][cyr] - 1.0), 4)
-                 for cyr in range(first_year, last_year + 1)]
+                 for cyr in range(firstyear, lastyear + 1)]
         return rates
 
     def factor_value(self, name, year):
         """
         Return value of factor with specified name for specified year
         """
-        # pylint: disable=no-member
         self.used = True
         if name not in Growfactors.VALID_NAMES:
             msg = 'name={} not in Growfactors.VALID_NAMES'
@@ -130,4 +143,13 @@ class Growfactors(object):
         if year > self.last_year:
             msg = 'year={} > Growfactors.last_year={}'
             raise ValueError(msg.format(year, self.last_year))
-        return self.gfdf[name][year]
+        return self.gfdf[name][year]  # pylint: disable=no-member
+
+    def update(self, name, year, diff):
+        """
+        Add to self.gfdf[name][year] the specified diff amount
+        """
+        if self.used:
+            msg = 'cannot update growfactors after they have been used'
+            raise ValueError(msg)
+        self.gfdf[name][year] += diff  # pylint: disable=no-member
