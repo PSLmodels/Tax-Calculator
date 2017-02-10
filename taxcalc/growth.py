@@ -116,6 +116,7 @@ class Growth(ParametersBase):
         """
         diff = self.factor_adjustment  # pylint: disable=no-member
         year = self.current_year
+        """
         records.BF.AGDPN[year] += diff
         records.BF.ATXPY[year] += diff
         records.BF.AWAGE[year] += diff
@@ -132,16 +133,20 @@ class Growth(ParametersBase):
         records.BF.ASOCSEC[year] += diff
         records.BF.AUCOMP[year] += diff
         records.BF.AIPD[year] += diff
+        """
 
     def _target_change(self, records):
         """
         Add distance to records object's blowup factors for current_year.
         """
         year = self.current_year
+        """
         pgr = records.BF.APOPN[year]
+        """
         dgr = self.default_real_gdp_growth_rate()
         # pylint: disable=no-member
         if self.factor_target != dgr:
+            """
             # user inputs theoretically should be based on GDP
             distance = (self.factor_target - dgr) / pgr
             # add this distance to all the dollar amount factors
@@ -161,3 +166,4 @@ class Growth(ParametersBase):
             records.BF.ASOCSEC[year] += distance
             records.BF.AUCOMP[year] += distance
             records.BF.AIPD[year] += distance
+            """
