@@ -408,27 +408,7 @@ def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta,
     # Only makes sense to run for budget years 1 through n-1 (not for year 0)
     assert year_n > 0
 
-    growfactors = Growfactors()
-    growdiff_baseline = Growdiff()
-    growdiff_response = Growdiff()
-    # PROBLEM: dropq makes no distinction between the two Growdiff instances
-    # PROBLEM: code here is using growdiff_baseline assumptions
-    # PROBLEM: code here is missing growdiff_response assumptions
-    growdiff_baseline_assumptions = only_growdiff_assumptions(user_mods,
-                                                              start_year)
-    if growdiff_baseline_assumptions:
-        growdiff_baseline.update_growdiff(growdiff_baseline_assumptions)
-        growdiff_baseline.apply(growfactors)
-
-    # Create pre-reform Calculator instance
-    records1 = Records(data=tax_dta.copy(deep=True), gfactors=growfactors)
-    policy1 = Policy(gfactors=growfactors)
-    calc1 = Calculator(policy=policy1, records=records1)
-    while calc1.current_year < start_year:
-        calc1.increment_year()
-    assert calc1.current_year == start_year
-
-    # TODO: does the following elasticity_gdp code do anything?
+    # Specify elasticity_gdp and check for unknown parameters in user_mods
     elasticity_gdp = elasticity_of_gdp_year_n(user_mods, start_year, year_n)
     if is_strict:
         unknown_params = get_unknown_parameters(user_mods, start_year,
@@ -436,18 +416,48 @@ def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta,
         if unknown_params:
             raise ValueError('Unknown parameters: {}'.format(unknown_params))
 
-    # Create post-reform Calculator instance
+    # Specify Consumption instance
+    consump = Consumption()
+    consump_assumptions = only_consumption_assumptions(user_mods, start_year)
+    if consump_assumptions:
+        consump.update_consumption(consump_assumptions)
+
+    # Specify growdiff_baseline and growdiff_response
+    growdiff_baseline = Growdiff()
+    growdiff_response = Growdiff()
+    # PROBLEM: dropq makes no distinction between the two Growdiff instances
+    # PROBLEM: code here is using growdiff_baseline assumptions
+    # PROBLEM: code here is missing growdiff_response assumptions
+    growdiff_baseline_assumptions = only_growdiff_assumptions(user_mods,
+                                                              start_year)
+    # Apply growdiff_baseline to growfactors
+    growfactors = Growfactors()
+    if growdiff_baseline_assumptions:
+        growdiff_baseline.update_growdiff(growdiff_baseline_assumptions)
+        growdiff_baseline.apply(growfactors)
+
+    # Create pre-reform Calculator instance
+    records1 = Records(data=tax_dta.copy(deep=True), gfactors=growfactors)
+    policy1 = Policy(gfactors=growfactors)
+    calc1 = Calculator(policy=policy1, records=records1, consumption=consump)
+    while calc1.current_year < start_year:
+        calc1.increment_year()
+    assert calc1.current_year == start_year
+
+    # Apply growdiff_response to growfactors
     # PROBLEM: growfactor should be updated by growdiff_response, but can not
     # PROBLEM: tell difference between the two sets of growdiff assumptions
     growdiff_response_assumptions = None
     if growdiff_response_assumptions:
         growdiff_response.update_growdiff(growdiff_response_assumptions)
         growdiff_response.apply(growfactors)
+
+    # Create post-reform Calculator instance
     records2 = Records(data=tax_dta.copy(deep=True), gfactors=growfactors)
     policy2 = Policy(gfactors=growfactors)
     policy_reform = only_reform_mods(user_mods, start_year)
     policy2.implement_reform(policy_reform)
-    calc2 = Calculator(policy=policy2, records=records2)
+    calc2 = Calculator(policy=policy2, records=records2, consumption=consump)
     while calc2.current_year < start_year:
         calc2.increment_year()
     assert calc2.current_year == start_year
@@ -499,110 +509,99 @@ def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta,
 
 def calculate_baseline_and_reform(year_n, start_year, is_strict,
                                   tax_dta="", user_mods=""):
-
-    #########################################################################
-    # Create Calculators and Masks
-    #########################################################################
-    records = Records(tax_dta.copy(deep=True))
-    records2 = copy.deepcopy(records)
-    records3 = copy.deepcopy(records)
-    # add 1 dollar to gross income
-    records2.e00200 += 1
-    # Default Plans
-    # Create a default Policy object
-    params = Policy(start_year=2013)
-    # Create a Calculator
-    calc1 = Calculator(policy=params, records=records)
-
+    # Check user_mods for unknown parameters
     if is_strict:
         unknown_params = get_unknown_parameters(user_mods, start_year)
         if unknown_params:
             raise ValueError("Unknown parameters: {}".format(unknown_params))
 
-    # TODO
-    """
-    growth_assumptions = only_growth_assumptions(user_mods, start_year)
-    if growth_assumptions:
-        calc1.growth.update_growth(growth_assumptions)
-    """
-
+    # Specify Consumption instance
+    consump = Consumption()
     consump_assumptions = only_consumption_assumptions(user_mods, start_year)
     if consump_assumptions:
-        calc1.consumption.update_consumption(consump_assumptions)
+        consump.update_consumption(consump_assumptions)
 
+    # Specify growdiff_baseline and growdiff_response
+    growdiff_baseline = Growdiff()
+    growdiff_response = Growdiff()
+    # PROBLEM: dropq makes no distinction between the two Growdiff instances
+    # PROBLEM: code here is using growdiff_baseline assumptions
+    # PROBLEM: code here is missing growdiff_response assumptions
+    growdiff_baseline_assumptions = only_growdiff_assumptions(user_mods,
+                                                              start_year)
+    # Apply growdiff_baseline to growfactors
+    growfactors = Growfactors()
+    if growdiff_baseline_assumptions:
+        growdiff_baseline.update_growdiff(growdiff_baseline_assumptions)
+        growdiff_baseline.apply(growfactors)
+
+    # Create post-reform Calculator instance
+    recs1 = Records(data=tax_dta.copy(deep=True), gfactors=growfactors)
+    policy1 = Policy(gfactors=growfactors)
+    calc1 = Calculator(policy=policy1, records=recs1, consumption=consump)
     while calc1.current_year < start_year:
         calc1.increment_year()
     calc1.calc_all()
     assert calc1.current_year == start_year
 
-    params2 = Policy(start_year=2013)
-    # Create a Calculator with one extra dollar of income
-    calc2 = Calculator(policy=params2, records=records2)
-    # TODO
-    """
-    if growth_assumptions:
-        calc2.growth.update_growth(growth_assumptions)
-    """
+    # Create pre-reform Calculator instance with extra income
+    recs1p = Records(data=tax_dta.copy(deep=True), gfactors=growfactors)
+    # add one dollar to total wages and salaries of each filing unit
+    recs1p.e00200 += 1.0
+    policy1p = Policy(gfactors=growfactors)
+    calc1p = Calculator(policy=policy1p, records=recs1p, consumption=consump)
+    while calc1p.current_year < start_year:
+        calc1p.increment_year()
+    calc1p.calc_all()
+    assert calc1p.current_year == start_year
 
-    consump_assumptions = only_consumption_assumptions(user_mods, start_year)
-    if consump_assumptions:
-        calc2.consumption.update_consumption(consump_assumptions)
+    # Construct mask to show which of the calc1 and calc1p results differ
+    soit1 = results(calc1)
+    soit1p = results(calc1p)
+    mask = (soit1._iitax != soit1p._iitax)
 
+    # Apply growdiff_response to growfactor
+    # PROBLEM: growfactor should be updated by growdiff_response, but can not
+    # PROBLEM: tell difference between the two sets of growdiff assumptions
+    growdiff_response_assumptions = None
+    if growdiff_response_assumptions:
+        growdiff_response.update_growdiff(growdiff_response_assumptions)
+        growdiff_response.apply(growfactors)
+
+    # Specify Behavior instance
+    behv = Behavior()
+    behavior_assumptions = only_behavior_assumptions(user_mods, start_year)
+    if behavior_assumptions:
+        behv.update_behavior(behavior_assumptions)
+
+    # Create post-reform Calculator instance with behavior
+    recs2 = Records(data=tax_dta.copy(deep=True), gfactors=growfactors)
+    policy2 = Policy(gfactors=growfactors)
+    policy_reform = only_reform_mods(user_mods, start_year)
+    policy2.implement_reform(policy_reform)
+    calc2 = Calculator(policy=policy2, records=recs2, consumption=consump,
+                       behavior=behv)
     while calc2.current_year < start_year:
         calc2.increment_year()
     calc2.calc_all()
     assert calc2.current_year == start_year
 
-    # where do the results differ..
-    soit1 = results(calc1)
-    soit2 = results(calc2)
-    mask = (soit1._iitax != soit2._iitax)
-
-    # User specified Plans
-    behavior_assumptions = only_behavior_assumptions(user_mods, start_year)
-
-    reform_mods = only_reform_mods(user_mods, start_year)
-
-    params3 = Policy(start_year=2013)
-    params3.implement_reform(reform_mods)
-
-    behavior3 = Behavior(start_year=2013)
-    # Create a Calculator for the user specified plan
-    calc3 = Calculator(policy=params3, records=records3, behavior=behavior3)
-    # TODO
-    """
-    if growth_assumptions:
-        calc3.growth.update_growth(growth_assumptions)
-    """
-
-    if consump_assumptions:
-        calc3.consumption.update_consumption(consump_assumptions)
-
-    if behavior_assumptions:
-        calc3.behavior.update_behavior(behavior_assumptions)
-
-    while calc3.current_year < start_year:
-        calc3.increment_year()
-    assert calc3.current_year == start_year
-
-    calc3.calc_all()
-    # Get a random seed based on user specified plan
+    # Get a random seed based on user_mods and calc_all() for nth year
     seed = random_seed_from_plan(user_mods)
     np.random.seed(seed)
-
     for i in range(0, year_n):
         calc1.increment_year()
-        calc3.increment_year()
-
+        calc2.increment_year()
     calc1.calc_all()
-    if calc3.behavior.has_response():
-        calc3 = Behavior.response(calc1, calc3)
+    if calc2.behavior.has_response():
+        calc2 = Behavior.response(calc1, calc2)
     else:
-        calc3.calc_all()
-    soit1 = results(calc1)
-    soit3 = results(calc3)
+        calc2.calc_all()
 
-    return soit1, soit3, mask
+    # Return results and mask
+    soit1 = results(calc1)
+    soit2 = results(calc2)
+    return soit1, soit2, mask
 
 
 def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
