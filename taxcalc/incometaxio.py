@@ -153,8 +153,8 @@ class IncomeTaxIO(object):
             msg = 'tax_year {} greater than policy.end_year {}'
             raise ValueError(msg.format(tax_year, pol.end_year))
         # get reform & assump dictionaries and implement reform
-        (ref_d, beh_d, con_d,
-         gro_d) = Calculator.read_json_param_files(reform, assump)
+        (ref_d, con_d, beh_d, gdiff_base_d,
+         gdiff_resp_d) = Calculator.read_json_param_files(reform, assump)
         pol.implement_reform(ref_d)
         # set tax policy parameters to specified tax_year
         pol.set_year(tax_year)

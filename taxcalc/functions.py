@@ -177,10 +177,10 @@ def Adj(e03150, e03210, c03260,
     c02900 = c02900_in_ei + ((1. - ALD_SelfEmp_HealthIns_hc) * e03270 +
                              e03150 +  # deductible IRA contributions
                              (1. - ALD_KEOGH_SEP_hc) * e03300)
-    # TODO: move e03270 term into c02900_in_ei after health-insurance-premium
-    #       imputations are available
-    # TODO: move e03150 and e03300 term into c02900_in_ei after pension-
-    #       contribution imputations are available
+    # FUTURE: move e03270 term into c02900_in_ei after
+    #         health-insurance-premium imputations are available
+    # FUTURE: move e03150 and e03300 term into c02900_in_ei after
+    #         pension-contribution imputations are available
     return (c02900, c02900_in_ei)
 
 

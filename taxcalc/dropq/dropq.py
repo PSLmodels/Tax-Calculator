@@ -1,10 +1,7 @@
 from __future__ import print_function
-from .. import (Calculator, Records, Policy, Behavior, Consumption,
-                TABLE_LABELS, TABLE_COLUMNS, STATS_COLUMNS,
-                DIFF_TABLE_LABELS)
-
-from .. import policy    # TODO, growth
-
+from .. import (Calculator, Records,
+                Policy, Consumption, Behavior, Growdiff,
+                TABLE_LABELS, TABLE_COLUMNS, STATS_COLUMNS, DIFF_TABLE_LABELS)
 import numpy as np
 from pandas import DataFrame
 import pandas as pd
@@ -64,30 +61,24 @@ def call_over_iterable(fn):
     return wrapper
 
 
-# TODO
 @call_over_iterable
-def only_growth_assumptions(user_mods, start_year):
-    pass
-
-# TODO
-"""
-@call_over_iterable
-def only_growth_assumptions(user_mods, start_year):
-    # Extract any reform parameters that are pertinent to growth assumptions
-    growth_dd = growth.Growth.default_data(start_year=start_year)
+def only_growdiff_assumptions(user_mods, start_year):
+    """
+    Extract any user_mods parameters pertinent to growdiff assumptions
+    """
+    growdiff_dd = Growdiff.default_data(start_year=start_year)
     ga = {}
     for year, reforms in user_mods.items():
-        overlap = set(growth_dd.keys()) & set(reforms.keys())
+        overlap = set(growdiff_dd.keys()) & set(reforms.keys())
         if overlap:
             ga[year] = {param: reforms[param] for param in overlap}
     return ga
-"""
+
 
 @call_over_iterable
 def only_behavior_assumptions(user_mods, start_year):
     """
-    Extract any reform parameters that are pertinent to behavior
-    assumptions
+    Extract any user_mods parameters pertinent to behavior assumptions
     """
     beh_dd = Behavior.default_data(start_year=start_year)
     ba = {}
@@ -101,8 +92,7 @@ def only_behavior_assumptions(user_mods, start_year):
 @call_over_iterable
 def only_consumption_assumptions(user_mods, start_year):
     """
-    Extract any reform parameters that are pertinent to behavior
-    assumptions
+    Extract any user_mods parameters pertinent to consumption assumptions
     """
     con_dd = Consumption.default_data(start_year=start_year)
     ca = {}
@@ -116,17 +106,21 @@ def only_consumption_assumptions(user_mods, start_year):
 @call_over_iterable
 def only_reform_mods(user_mods, start_year):
     """
-    Extract parameters that are just for policy reforms
+    Extract any user_mods parameters pertinent to policy reforms
     """
     pol_refs = {}
+    con_dd = Consumption.default_data(start_year=start_year)
     beh_dd = Behavior.default_data(start_year=start_year)
-    # TODO growth_dd = growth.Growth.default_data(start_year=start_year)
-    policy_dd = policy.Policy.default_data(start_year=start_year)
-    param_code_names = policy.Policy.VALID_PARAM_CODE_NAMES
+    growdiff_dd = Growdiff.default_data(start_year=start_year)
+    policy_dd = Policy.default_data(start_year=start_year)
+    param_code_names = Policy.VALID_PARAM_CODE_NAMES
     for year, reforms in user_mods.items():
         all_cpis = {p for p in reforms.keys() if p.endswith("_cpi") and
                     p[:-4] in policy_dd.keys()}
-        pols = set(reforms.keys()) - set(beh_dd.keys()) # TODO - set(growth_dd.keys())
+        pols = (set(reforms.keys()) -
+                set(con_dd.keys()) -
+                set(beh_dd.keys()) -
+                set(growdiff_dd.keys()))
         pols &= set(policy_dd.keys()) | param_code_names
         pols ^= all_cpis
         if pols:
@@ -142,11 +136,11 @@ def get_unknown_parameters(user_mods, start_year, additional=None):
     plus any additional parameters passed by the user. The results are
     considered unknown and returned
     """
-    beh_dd = Behavior.default_data(start_year=start_year)
-    # TODO growth_dd = growth.Growth.default_data(start_year=start_year)
-    policy_dd = policy.Policy.default_data(start_year=start_year)
     consump_dd = Consumption.default_data(start_year=start_year)
-    param_code_names = policy.Policy.VALID_PARAM_CODE_NAMES
+    beh_dd = Behavior.default_data(start_year=start_year)
+    growdiff_dd = Growdiff.default_data(start_year=start_year)
+    policy_dd = Policy.default_data(start_year=start_year)
+    param_code_names = Policy.VALID_PARAM_CODE_NAMES
     unknown_params = collections.defaultdict(list)
     if additional is None:
         additional = set()
@@ -159,12 +153,11 @@ def get_unknown_parameters(user_mods, start_year, additional=None):
         remaining = everything - all_cpis
         if bad_cpis:
             unknown_params['bad_cpis'] += list(bad_cpis)
-        pols = (remaining - set(beh_dd.keys()) -  # TODO set(growth_dd.keys()) -
+        pols = (remaining - set(beh_dd.keys()) - set(growdiff_dd.keys()) -
                 set(policy_dd.keys()) - set(consump_dd.keys()) -
                 param_code_names - additional)
         if pols:
             unknown_params['policy'] += list(pols)
-
     return unknown_params
 
 

@@ -65,11 +65,11 @@ class Calculator(object):
     consumption: Consumption class object
         specifies consumption response assumptions used to calculate
         "effective" marginal tax rates; default is None, which implies
-        no consumption responses.
+        no consumption responses assumed in marginal tax rate calculations.
 
     behavior: Behavior class object
         specifies behaviorial responses used by Calculator; default is None,
-        which implies no behavioral responses.
+        which implies no behavioral responses to policy reform.
 
     Raises
     ------
@@ -378,7 +378,10 @@ class Calculator(object):
     @staticmethod
     def read_json_param_files(reform_filename, assump_filename):
         """
-        Read JSON files and call Calculator.read_json_*_text methods.
+        Read JSON files and call Calculator.read_json_*_text methods
+        returning 5 dictionaries containing policy reforms, consumption
+        assumptions, behavioral assumptions, growdiff_baseline assumptions
+        and growdiff_response assumptions.
         """
         if reform_filename is None:
             rpol_dict = dict()
@@ -389,21 +392,25 @@ class Calculator(object):
             msg = 'policy reform file {} could not be found'
             raise ValueError(msg.format(reform_filename))
         if assump_filename is None:
-            behv_dict = dict()
             cons_dict = dict()
-            grow_dict = dict()
+            behv_dict = dict()
+            gdiff_base_dict = dict()
+            gdiff_resp_dict = dict()
         elif os.path.isfile(assump_filename):
             txt = open(assump_filename, 'r').read()
-            (behv_dict,
-             cons_dict,
-             grow_dict) = Calculator.read_json_econ_assump_text(txt)
+            (cons_dict,
+             behv_dict,
+             gdiff_base_dict,
+             gdiff_resp_dict) = Calculator.read_json_econ_assump_text(txt)
         else:
             msg = 'economic assumption file {} could not be found'
             raise ValueError(msg.format(assump_filename))
-        return (rpol_dict, behv_dict, cons_dict, grow_dict)
+        return (rpol_dict, cons_dict, behv_dict,
+                gdiff_base_dict, gdiff_resp_dict)
 
     REQUIRED_REFORM_KEYS = set(['policy'])
-    REQUIRED_ASSUMP_KEYS = set(['behavior', 'consumption', 'growth'])
+    REQUIRED_ASSUMP_KEYS = set(['consumption', 'behavior',
+                                'growdiff_baseline', 'growdiff_response'])
 
     @staticmethod
     def read_json_policy_reform_text(text_string):
@@ -411,8 +418,9 @@ class Calculator(object):
         Strip //-comments from text_string and return 1 dict based on the JSON.
         Specified text is JSON with at least 1 high-level string:object pair:
           a "policy": {...} pair.
-          Other high-level pairs will be ignored by this method, except that
-          a "behavior", "consumption" or "growth" key will raise a ValueError.
+          Other high-level pairs will be ignored by this method, except
+          that a "consumption", "behavior", "growdiff_baseline" or
+          "growdiff_response" key will raise a ValueError.
           The {...}  object may be empty (that is, be {}), or
           may contain one or more pairs with parameter string primary keys
           and string years as secondary keys.  See tests/test_calculate.py for
@@ -478,11 +486,12 @@ class Calculator(object):
     @staticmethod
     def read_json_econ_assump_text(text_string):
         """
-        Strip //-comments from text_string and return 3 dict based on the JSON.
-        Specified text is JSON with at least 3 high-level string:object pairs:
+        Strip //-comments from text_string and return 4 dict based on the JSON.
+        Specified text is JSON with at least 4 high-level string:object pairs:
+          a "consumption": {...} pair,
           a "behavior": {...} pair,
-          a "consumption": {...} pair, and
-          a "growth": {...} pair.
+          a "growdiff_baseline": {...} pair, and
+          a "growdiff_response": {...} pair.
           Other high-level pairs will be ignored by this method, except that
           a "policy" key will raise a ValueError.
           The {...}  object may be empty (that is, be {}), or
@@ -492,13 +501,16 @@ class Calculator(object):
           that can be read by this method.
         Note that an example is shown in the ASSUMP_CONTENTS string in
           tests/test_calculate.py file.
-        Returned dictionaries (behv_dict, cons_dict, grow_dict)
+        Returned dictionaries (cons_dict,
+                               behv_dict,
+                               gdiff_baseline_dict,
+                               gdiff_respose_dict)
            have integer years as primary keys
            and string parameters as secondary keys.
         The returned dictionaries are suitable as the arguments to
-           the Behavior update_behavior(behv_dict) method, or
-           the Consumption update_consumption(cons_dict) method, or
-           the Growdiff update_growdiff(growdiff_dict) method.
+           the Consumption.update_consumption(cons_dict) method, or
+           the Behavior.update_behavior(behv_dict) method, or
+           the Growdiff.update_growdiff(gdiff_dict) method.
         """
         # strip out //-comments without changing line numbers
         json_str = re.sub('//.*', ' ', text_string)
@@ -530,10 +542,15 @@ class Calculator(object):
                 msg = 'key "{}" should be in policy reform file'
                 raise ValueError(msg.format(rkey))
         # convert the assumption dictionaries in raw_dict
-        behv_dict = Calculator.convert_parameter_dict(raw_dict['behavior'])
-        cons_dict = Calculator.convert_parameter_dict(raw_dict['consumption'])
-        grow_dict = Calculator.convert_parameter_dict(raw_dict['growth'])
-        return (behv_dict, cons_dict, grow_dict)
+        key = 'consumption'
+        cons_dict = Calculator.convert_parameter_dict(raw_dict[key])
+        key = 'behavior'
+        behv_dict = Calculator.convert_parameter_dict(raw_dict[key])
+        key = 'growdiff_baseline'
+        gdiff_base_dict = Calculator.convert_parameter_dict(raw_dict[key])
+        key = 'growdiff_response'
+        gdiff_resp_dict = Calculator.convert_parameter_dict(raw_dict[key])
+        return (cons_dict, behv_dict, gdiff_base_dict, gdiff_resp_dict)
 
     @staticmethod
     def convert_parameter_dict(param_key_dict):
@@ -541,9 +558,9 @@ class Calculator(object):
         Converts specified param_key_dict into a dictionary whose primary
           keys are calendary years, and hence, is suitable as the argument to
           the Policy.implement_reform() method, or
-          the Behavior.update_behavior() method, or
           the Consumption.update_consumption() method, or
-          the Growdiff,update_growdiff() method.
+          the Behavior.update_behavior() method, or
+          the Growdiff.update_growdiff() method.
         Specified input dictionary has string parameter primary keys and
            string years as secondary keys.
         Returned dictionary has integer years as primary keys and

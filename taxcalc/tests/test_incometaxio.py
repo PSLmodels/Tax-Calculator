@@ -255,9 +255,10 @@ ASSUMP_CONTENTS = """
   "title": "",
   "author": "",
   "date": "",
-  "behavior": {},
   "consumption": { "_MPC_e18400": {"2018": [0.05]} },
-  "growth": {}
+  "behavior": {},
+  "growdiff_baseline": {},
+  "growdiff_response": {}
 }
 """
 
