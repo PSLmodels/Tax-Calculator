@@ -62,18 +62,14 @@ class Calculator(object):
         specifies whether or not to syncronize policy year and records year;
         default value is true.
 
-    behavior: Behavior class object
-        specifies behaviorial responses used by Calculator; default is None,
-        which implies no behavioral responses.
-
-    growth: Growth class object
-        specifies economic growth assumptions used by Calculator; default is
-        None, which implies use of standard economic growth assumptions.
-
     consumption: Consumption class object
         specifies consumption response assumptions used to calculate
         "effective" marginal tax rates; default is None, which implies
         no consumption responses.
+
+    behavior: Behavior class object
+        specifies behaviorial responses used by Calculator; default is None,
+        which implies no behavioral responses.
 
     Raises
     ------
@@ -86,8 +82,7 @@ class Calculator(object):
     """
 
     def __init__(self, policy=None, records=None, verbose=True,
-                 sync_years=True, behavior=None,  # TODO: growth=None,
-                 consumption=None):
+                 sync_years=True, consumption=None, behavior=None):
         if isinstance(policy, Policy):
             self.policy = policy
         else:
@@ -96,26 +91,6 @@ class Calculator(object):
             self.records = records
         else:
             raise ValueError('must specify records as a Records object')
-        if behavior is None:
-            self.behavior = Behavior(start_year=policy.start_year)
-        elif isinstance(behavior, Behavior):
-            self.behavior = behavior
-            while self.behavior.current_year < self.policy.current_year:
-                next_year = self.behavior.current_year + 1
-                self.behavior.set_year(next_year)
-        else:
-            raise ValueError('behavior must be None or Behavior object')
-        """
-        if growth is None:
-            self.growth = Growth(start_year=policy.start_year)
-        elif isinstance(growth, Growth):
-            self.growth = growth
-            while self.growth.current_year < self.policy.current_year:
-                next_year = self.growth.current_year + 1
-                self.growth.set_year(next_year)
-        else:
-            raise ValueError('growth must be None or Growth object')
-        """
         if consumption is None:
             self.consumption = Consumption(start_year=policy.start_year)
         elif isinstance(consumption, Consumption):
@@ -125,6 +100,15 @@ class Calculator(object):
                 self.consumption.set_year(next_year)
         else:
             raise ValueError('consumption must be None or Consumption object')
+        if behavior is None:
+            self.behavior = Behavior(start_year=policy.start_year)
+        elif isinstance(behavior, Behavior):
+            self.behavior = behavior
+            while self.behavior.current_year < self.policy.current_year:
+                next_year = self.behavior.current_year + 1
+                self.behavior.set_year(next_year)
+        else:
+            raise ValueError('behavior must be None or Behavior object')
         if sync_years and self.records.current_year == Records.PUF_YEAR:
             if verbose:
                 print('You loaded data for ' +
@@ -136,16 +120,9 @@ class Calculator(object):
                         print('  ' +
                               var)
             while self.records.current_year < self.policy.current_year:
-                next_year = self.records.current_year + 1
-                # TODO fix below
-                """
-                if next_year >= self.growth.start_year:
-                    self.growth.set_year(next_year)
-                    self.growth.apply_change(self.records)
-                """
                 self.records.increment_year()
             if verbose:
-                print('Instantiation of the calculator automatically ' +
+                print('Calculator instantiation automatically ' +
                       'extrapolated your data to ' +
                       str(self.records.current_year) + '.')
         assert self.policy.current_year == self.records.current_year
@@ -228,12 +205,10 @@ class Calculator(object):
 
     def increment_year(self):
         next_year = self.policy.current_year + 1
-        # TODO self.growth.set_year(next_year)
-        # TODO self.growth.apply_change(self.records)
         self.records.increment_year()
         self.policy.set_year(next_year)
-        self.behavior.set_year(next_year)
         self.consumption.set_year(next_year)
+        self.behavior.set_year(next_year)
 
     def advance_to_year(self, year):
         '''
@@ -394,12 +369,10 @@ class Calculator(object):
         """
         clp = self.policy.current_law_version()
         recs = copy.deepcopy(self.records)
-        behv = copy.deepcopy(self.behavior)
-        # TODO grow = copy.deepcopy(self.growth)
         cons = copy.deepcopy(self.consumption)
+        behv = copy.deepcopy(self.behavior)
         calc = Calculator(policy=clp, records=recs, sync_years=False,
-                          behavior=behv,  # TODO growth=grow,
-                          consumption=cons)
+                          consumption=cons, behavior=behv)
         return calc
 
     @staticmethod
