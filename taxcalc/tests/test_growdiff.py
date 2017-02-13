@@ -31,7 +31,7 @@ def test_update_and_apply_growdiff():
     pir_pre = gf.price_inflation_rates(syr, lyr)
     wgr_pre = gf.wage_growth_rates(syr, lyr)
     gfactors = Growfactors()
-    gdiff.apply_growdiff(gfactors)
+    gdiff.apply(gfactors)
     pir_pst = gfactors.price_inflation_rates(syr, lyr)
     wgr_pst = gfactors.wage_growth_rates(syr, lyr)
     expected_wgr_pst = [wgr_pre[i] + expected_wage_diffs[i]

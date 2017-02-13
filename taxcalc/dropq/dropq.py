@@ -1,5 +1,5 @@
 from __future__ import print_function
-from .. import (Calculator, Records,
+from .. import (Calculator, Growfactors, Records,
                 Policy, Consumption, Behavior, Growdiff,
                 TABLE_LABELS, TABLE_COLUMNS, STATS_COLUMNS, DIFF_TABLE_LABELS)
 import numpy as np
@@ -403,84 +403,78 @@ def results(c):
     return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
 
 
-def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta, user_mods="",
-                          return_json=True):
+def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta,
+                          user_mods="", return_json=True):
     # Only makes sense to run for budget years 1 through n-1 (not for year 0)
     assert year_n > 0
 
-    elasticity_gdp = elasticity_of_gdp_year_n(user_mods, start_year, year_n)
+    growfactors = Growfactors()
+    growdiff_baseline = Growdiff()
+    growdiff_response = Growdiff()
+    # PROBLEM: dropq makes no distinction between the two Growdiff instances
+    # PROBLEM: code here is using growdiff_baseline assumptions
+    # PROBLEM: code here is missing growdiff_response assumptions
+    growdiff_baseline_assumptions = only_growdiff_assumptions(user_mods,
+                                                              start_year)
+    if growdiff_baseline_assumptions:
+        growdiff_baseline.update_growdiff(growdiff_baseline_assumptions)
+        growdiff_baseline.apply(growfactors)
 
-    #########################################################################
-    #   Create Calculators and Masks
-    #########################################################################
-    records = Records(tax_dta.copy(deep=True))
-    records3 = Records(tax_dta.copy(deep=True))
-
-    # Default Plans
-    # Create a default Policy object
-    params = Policy(start_year=2013)
-    # Create a Calculator
-    calc1 = Calculator(policy=params, records=records)
-
-    if is_strict:
-        unknown_params = get_unknown_parameters(user_mods, start_year,
-                                                additional={'elastic_gdp'})
-        if unknown_params:
-            raise ValueError("Unknown parameters: {}".format(unknown_params))
-
-    # TODO
-    """
-    growth_assumptions = only_growth_assumptions(user_mods, start_year)
-    if growth_assumptions:
-        calc1.growth.update_growth(growth_assumptions)
-    """
-
+    # Create pre-reform Calculator instance
+    records1 = Records(data=tax_dta.copy(deep=True), gfactors=growfactors)
+    policy1 = Policy(gfactors=growfactors)
+    calc1 = Calculator(policy=policy1, records=records1)
     while calc1.current_year < start_year:
         calc1.increment_year()
     assert calc1.current_year == start_year
 
-    # User specified Plans
-    reform_mods = only_reform_mods(user_mods, start_year)
-    params3 = Policy(start_year=2013)
-    params3.implement_reform(reform_mods)
+    # TODO: does the following elasticity_gdp code do anything?
+    elasticity_gdp = elasticity_of_gdp_year_n(user_mods, start_year, year_n)
+    if is_strict:
+        unknown_params = get_unknown_parameters(user_mods, start_year,
+                                                additional={'elastic_gdp'})
+        if unknown_params:
+            raise ValueError('Unknown parameters: {}'.format(unknown_params))
 
-    behavior3 = Behavior(start_year=2013)
-    # Create a Calculator for the user specified plan
-    calc3 = Calculator(policy=params3, records=records3, behavior=behavior3)
-    # TODO
-    """
-    if growth_assumptions:
-        calc3.growth.update_growth(growth_assumptions)
-    """
+    # Create post-reform Calculator instance
+    # PROBLEM: growfactor should be updated by growdiff_response, but can not
+    # PROBLEM: tell difference between the two sets of growdiff assumptions
+    growdiff_response_assumptions = None
+    if growdiff_response_assumptions:
+        growdiff_response.update_growdiff(growdiff_response_assumptions)
+        growdiff_response.apply(growfactors)
+    records2 = Records(data=tax_dta.copy(deep=True), gfactors=growfactors)
+    policy2 = Policy(gfactors=growfactors)
+    policy_reform = only_reform_mods(user_mods, start_year)
+    policy2.implement_reform(policy_reform)
+    calc2 = Calculator(policy=policy2, records=records2)
+    while calc2.current_year < start_year:
+        calc2.increment_year()
+    assert calc2.current_year == start_year
 
-    while calc3.current_year < start_year:
-        calc3.increment_year()
-    assert calc3.current_year == start_year
     # Get a random seed based on user specified plan
     seed = random_seed_from_plan(user_mods)
     np.random.seed(seed)
-
     for i in range(0, year_n - 1):
         calc1.increment_year()
-        calc3.increment_year()
-
+        calc2.increment_year()
     calc1.calc_all()
-    calc3.calc_all()
+    calc2.calc_all()
 
     mtr_fica_x, mtr_iit_x, mtr_combined_x = calc1.mtr()
-    mtr_fica_y, mtr_iit_y, mtr_combined_y = calc3.mtr()
+    mtr_fica_y, mtr_iit_y, mtr_combined_y = calc2.mtr()
 
     # Assert that the current year is one behind the year we are calculating
     assert (calc1.current_year + 1) == (start_year + year_n)
-    assert (calc3.current_year + 1) == (start_year + year_n)
+    assert (calc2.current_year + 1) == (start_year + year_n)
 
     after_tax_mtr_x = 1 - ((mtr_combined_x * calc1.records.c00100 *
                             calc1.records.s006).sum() /
                            (calc1.records.c00100 * calc1.records.s006).sum())
 
-    after_tax_mtr_y = 1 - ((mtr_combined_y * calc3.records.c00100 *
-                            calc3.records.s006).sum() /
-                           (calc3.records.c00100 * calc3.records.s006).sum())
+    after_tax_mtr_y = 1 - ((mtr_combined_y * calc2.records.c00100 *
+                            calc2.records.s006).sum() /
+                           (calc2.records.c00100 * calc2.records.s006).sum())
 
     diff_avg_mtr_combined_y = after_tax_mtr_y - after_tax_mtr_x
     percent_diff_mtr = diff_avg_mtr_combined_y / after_tax_mtr_x
@@ -732,34 +726,29 @@ def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
 
 def run_models(tax_dta, start_year, is_strict=False, user_mods="",
                return_json=True, num_years=NUM_YEARS_DEFAULT):
-
-    mY_dec_table = {}
-    mX_dec_table = {}
-    df_dec_table = {}
-    pdf_dec_table = {}
-    cdf_dec_table = {}
-    mY_bin_table = {}
-    mX_bin_table = {}
-    df_bin_table = {}
-    pdf_bin_table = {}
-    cdf_bin_table = {}
-    num_fiscal_year_totals = []
-
-    #########################################################################
-    #   Create Calculators and Masks
-    #########################################################################
+    num_fiscal_year_totals = list()
+    mY_dec_table = dict()
+    mX_dec_table = dict()
+    df_dec_table = dict()
+    pdf_dec_table = dict()
+    cdf_dec_table = dict()
+    mY_bin_table = dict()
+    mX_bin_table = dict()
+    df_bin_table = dict()
+    pdf_bin_table = dict()
+    cdf_bin_table = dict()
     for year_n in range(0, num_years):
         json_tables = run_nth_year(year_n, start_year=start_year,
                                    is_strict=is_strict,
                                    tax_dta=tax_dta,
                                    user_mods=user_mods,
                                    return_json=return_json)
-
+        # map json_tables to named tables
         (mY_dec_table_i, mX_dec_table_i, df_dec_table_i, pdf_dec_table_i,
          cdf_dec_table_i, mY_bin_table_i, mX_bin_table_i, df_bin_table_i,
          pdf_bin_table_i, cdf_bin_table_i, num_fiscal_year_total,
          num_fiscal_year_total_bl, num_fiscal_year_total_rf) = json_tables
-
+        # update list and dictionaries
         num_fiscal_year_totals.append(num_fiscal_year_total)
         num_fiscal_year_totals.append(num_fiscal_year_total_bl)
         num_fiscal_year_totals.append(num_fiscal_year_total_rf)
@@ -771,7 +760,6 @@ def run_models(tax_dta, start_year, is_strict=False, user_mods="",
         mY_bin_table.update(mY_bin_table_i)
         mX_bin_table.update(mX_bin_table_i)
         df_bin_table.update(df_bin_table_i)
-
     return (mY_dec_table, mX_dec_table, df_dec_table, pdf_dec_table,
             cdf_dec_table, mY_bin_table, mX_bin_table, df_bin_table,
             pdf_bin_table, cdf_bin_table, num_fiscal_year_totals)
@@ -779,36 +767,24 @@ def run_models(tax_dta, start_year, is_strict=False, user_mods="",
 
 def run_gdp_elast_models(tax_dta, start_year, is_strict=False, user_mods="",
                          return_json=True, num_years=NUM_YEARS_DEFAULT):
-
     gdp_elasticity_totals = []
-
-    #########################################################################
-    #   Create Calculators and Masks
-    #########################################################################
     for year_n in range(1, num_years):
         gdp_elast_i = run_nth_year_mtr_calc(year_n, start_year=start_year,
                                             is_strict=is_strict,
                                             tax_dta=tax_dta,
                                             user_mods=user_mods,
                                             return_json=return_json)
-
         gdp_elasticity_totals.append(gdp_elast_i)
-
     return gdp_elasticity_totals
 
 
 def format_macro_results(diff_data, return_json=True):
-
     ogusadf = pd.DataFrame(diff_data)
-
     if not return_json:
         return ogusadf
-
     column_types = [float] * diff_data.shape[1]
-
     df_ogusa_table = create_json_table(ogusadf,
                                        row_names=ogusa_row_names,
                                        column_types=column_types,
                                        num_decimals=3)
-
     return df_ogusa_table
