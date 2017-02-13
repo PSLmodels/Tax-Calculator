@@ -917,11 +917,11 @@
                       "2017"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[1e99, 1e99, 1e99, 1e99, 1e99, 1e99],
-                  [1e99, 1e99, 1e99, 1e99, 1e99, 1e99],
-                  [1e99, 1e99, 1e99, 1e99, 1e99, 1e99],
-                  [1e99, 1e99, 1e99, 1e99, 1e99, 1e99],
-                  [1e99, 1e99, 1e99, 1e99, 1e99, 1e99]]
+        "value": [[9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99]]
     },
 
     "_CG_rt1": {
@@ -2712,7 +2712,11 @@
         "row_label": ["2013"],
         "cpi_inflated": true,
         "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
-        "value": [[9e99, 9e99, 9e99, 9e99, 9e99, 9e99]]
+        "value": [[9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99, 9e99]]
     },
 
     "_LST": {
