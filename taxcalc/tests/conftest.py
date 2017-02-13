@@ -40,4 +40,4 @@ def records_2009(puf_1991, weights_1991):
     Uses 1991 PUF-like data to emulate taxpayer data, which is private.
     """
     return Records(data=puf_1991, weights=weights_1991,
-                   adjust_factors=None, start_year=2009)
+                   adjust_ratios=None, start_year=2009)

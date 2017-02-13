@@ -34,16 +34,8 @@ def puf_path(tests_path):
     return os.path.join(tests_path, '..', '..', 'puf.csv')
 
 
-@pytest.fixture(scope='session')
-def adjustments_path(tests_path):
-    """
-    The path to the adjustment_factors.csv data
-    """
-    return os.path.join(tests_path, '..', 'adjustment_factors.csv')
-
-
 @pytest.mark.requires_pufcsv
-def test_agg(tests_path, puf_path, adjustments_path):
+def test_agg(tests_path, puf_path):
     """
     Test Tax-Calculator aggregate taxes with no policy reform using
     the full-sample puf.csv and a two-percent sub-sample of puf.csv
@@ -91,13 +83,10 @@ def test_agg(tests_path, puf_path, adjustments_path):
         raise ValueError(msg)
     # create aggregate diagnostic table using sub sample of records
     fullsample = pd.read_csv(puf_path)
-    fulladjust = pd.read_csv(adjustments_path)
     rn_seed = 80  # to ensure two-percent sub-sample is always the same
     subsample = fullsample.sample(frac=0.02,  # pylint: disable=no-member
                                   random_state=rn_seed)
-    subadjust = fulladjust.sample(frac=0.02,  # pylint: disable=no-member
-                                  random_state=rn_seed)
-    rec_subsample = Records(data=subsample, adjust_factors=subadjust)
+    rec_subsample = Records(data=subsample, adjust_ratios=None)
     calc_subsample = Calculator(policy=Policy(), records=rec_subsample)
     adt_subsample = multiyear_diagnostic_table(calc_subsample, num_years=nyrs)
     # compare combined tax liability from full and sub samples for each year

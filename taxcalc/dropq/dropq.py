@@ -416,10 +416,8 @@ def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta, user_mods="",
     #########################################################################
     #   Create Calculators and Masks
     #########################################################################
-    records = Records(tax_dta.copy(deep=True),
-                      adjust_factors=None)
-    records3 = Records(tax_dta.copy(deep=True),
-                       adjust_factors=None)
+    records = Records(tax_dta.copy(deep=True))
+    records3 = Records(tax_dta.copy(deep=True))
 
     # Default Plans
     # Create a default Policy object
@@ -508,8 +506,7 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
     #########################################################################
     # Create Calculators and Masks
     #########################################################################
-    records = Records(tax_dta.copy(deep=True),
-                      adjust_factors=None)
+    records = Records(tax_dta.copy(deep=True))
     records2 = copy.deepcopy(records)
     records3 = copy.deepcopy(records)
     # add 1 dollar to gross income

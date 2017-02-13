@@ -41,9 +41,9 @@ def test_update_growth(puf_1991, weights_1991):
     grow_y.update_growth(factor_y)
     # create two Calculators
     recs_x = Records(data=puf_1991, weights=weights_1991,
-                     adjust_factors=None, start_year=2009)
+                     adjust_ratios=None, start_year=2009)
     recs_y = Records(data=puf_1991, weights=weights_1991,
-                     adjust_factors=None, start_year=2009)
+                     adjust_ratios=None, start_year=2009)
     calc_x = Calculator(policy=Policy(), records=recs_x, growth=grow_x)
     calc_y = Calculator(policy=Policy(), records=recs_y, growth=grow_y)
     assert_array_equal(calc_x.growth.factor_target,

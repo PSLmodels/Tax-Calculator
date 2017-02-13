@@ -42,11 +42,11 @@ class Records(object):
         None creates empty blowup-factors DataFrame;
         default value is filename of the default blowup factors.
 
-    adjust_factors: string or Pandas DataFrame or None
-        string describes CSV file in which adjustment factors reside;
-        DataFrame already contains adjustment factors;
-        None creates empty adjustment-factors DataFrame;
-        default value is filename of the default adjustment factors.
+    adjust_ratios: string or Pandas DataFrame or None
+        string describes CSV file in which adjustment ratios reside;
+        DataFrame already contains adjustment ratios;
+        None creates empty adjustment-ratios DataFrame;
+        default value is filename of the default adjustment ratios.
 
     weights: string or Pandas DataFrame or None
         string describes CSV file in which weights reside;
@@ -511,7 +511,7 @@ class Records(object):
 
     def _read_adjust(self, adjust_ratios):
         """
-        Read Records adjustment factors from file or uses specified DataFrame
+        Read Records adjustment ratios from file or uses specified DataFrame
         as data or creates empty DataFrame if None
         """
         if adjust_ratios is None:
@@ -526,7 +526,7 @@ class Records(object):
                 ADJ = ADJ.transpose()
             else:
                 ADJ = Records._read_egg_csv('adjust_ratios',
-                                            Records.ADJUST_FACTORS_FILENAME)
+                                            Records.ADJUST_RATIOS_FILENAME)
         else:
             msg = ('adjust_ratios is not None or a string'
                    'or a Pandas DataFrame')
