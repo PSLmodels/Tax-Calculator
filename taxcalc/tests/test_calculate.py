@@ -70,8 +70,6 @@ def test_make_Calculator(records_2009):
         calc = Calculator(policy=parm, records=None)
     with pytest.raises(ValueError):
         calc = Calculator(policy=parm, records=recs, behavior=list())
-    # TODO with pytest.raises(ValueError):
-    # TODO    calc = Calculator(policy=parm, records=recs, growth=list())
     with pytest.raises(ValueError):
         calc = Calculator(policy=parm, records=recs, consumption=list())
 

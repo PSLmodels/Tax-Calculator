@@ -158,9 +158,11 @@ def test_run_dropq_nth_year_from_files(is_strict, puf_1991_path,
     assert fiscal_tots is not None
 
 
-def test_run_dropq_nth_year_mtr_from_files(puf_1991_path, reform_file):
+def test_run_dropq_nth_year_mtr_from_files(puf_1991_path,
+                                           reform_file, assump_file):
     # specify usermods dictionary from files
-    usermods = Calculator.read_json_param_files(reform_file.name, None)
+    usermods = Calculator.read_json_param_files(reform_file.name,
+                                                assump_file.name)
     first_year = 2016
     elast_params = {'elastic_gdp': [.54, .56, .58]}
     usermods[0][first_year].update(elast_params)
