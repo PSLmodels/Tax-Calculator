@@ -20,10 +20,8 @@ def test_correct_but_not_recommended_Behavior_instantiation():
 
 def test_behavioral_response_Calculator(puf_1991, weights_1991):
     # create Records objects
-    records_x = Records(data=puf_1991, weights=weights_1991,
-                        adjust_ratios=None, start_year=2009)
-    records_y = Records(data=puf_1991, weights=weights_1991,
-                        adjust_ratios=None, start_year=2009)
+    records_x = Records(data=puf_1991, weights=weights_1991, start_year=2009)
+    records_y = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     # create Policy objects
     policy_x = Policy()
     policy_y = Policy()

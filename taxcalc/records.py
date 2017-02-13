@@ -377,7 +377,6 @@ class Records(object):
             # Interest income
             self.e00300 *= self.ADJ['INT{}'.format(year)][self.agi_bin]
 
-
     def _read_data(self, data, exact_calcs):
         """
         Read Records data from file or use specified DataFrame as data.

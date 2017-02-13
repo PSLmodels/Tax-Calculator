@@ -86,7 +86,7 @@ def test_agg(tests_path, puf_path):
     rn_seed = 80  # to ensure two-percent sub-sample is always the same
     subsample = fullsample.sample(frac=0.02,  # pylint: disable=no-member
                                   random_state=rn_seed)
-    rec_subsample = Records(data=subsample, adjust_ratios=None)
+    rec_subsample = Records(data=subsample)
     calc_subsample = Calculator(policy=Policy(), records=rec_subsample)
     adt_subsample = multiyear_diagnostic_table(calc_subsample, num_years=nyrs)
     # compare combined tax liability from full and sub samples for each year

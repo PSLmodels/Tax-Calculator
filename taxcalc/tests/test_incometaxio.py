@@ -22,10 +22,6 @@ RAWINPUTFILE_CONTENTS = (
     u'    3,   4\n'
     u'    4,   6\n'
 )
-RAWADJUSTFILE_CONTENTS = (
-    u'INT2010,INT2011,INT2012,INT2013\n'
-    u'      1,      1,      1,      1\n'
-)
 
 
 EXPECTED_OUTPUT = (  # from using RAWINPUTFILE_CONTENTS as input
@@ -55,22 +51,6 @@ def rawinputfile():
             os.remove(ifile.name)
         except OSError:
             pass  # sometimes we can't remove a generated temporary file
-
-
-@pytest.yield_fixture
-def rawadjustfile():
-    """
-    Temporary adjustment factors file
-    """
-    afile = tempfile.NamedTemporaryFile(suffix='.csv', mode='a', delete=False)
-    afile.write(RAWADJUSTFILE_CONTENTS)
-    afile.close()
-    yield afile
-    if os.path.isfile(afile.name):
-        try:
-            os.remove(afile.name)
-        except OSError:
-            pass
 
 
 @pytest.mark.parametrize("input_data, exact", [

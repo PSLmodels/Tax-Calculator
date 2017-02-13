@@ -88,15 +88,13 @@ def test_read_data(csv):
 def test_blowup(puf_1991, weights_1991):
     pol1 = Policy()
     assert pol1.current_year == Policy.JSON_START_YEAR
-    rec1 = Records(data=puf_1991, weights=weights_1991,
-                   adjust_ratios=None)
+    rec1 = Records(data=puf_1991, weights=weights_1991)
     assert rec1.current_year == Records.PUF_YEAR
     calc1 = Calculator(policy=pol1, records=rec1, sync_years=True)
     assert calc1.records.current_year == Policy.JSON_START_YEAR
     pol2 = Policy()
     assert pol2.current_year == Policy.JSON_START_YEAR
-    rec2 = Records(data=puf_1991, weights=weights_1991,
-                   adjust_ratios=None)
+    rec2 = Records(data=puf_1991, weights=weights_1991)
     assert rec2.current_year == Records.PUF_YEAR
     rec2.set_current_year(Policy.JSON_START_YEAR)
     assert rec2.current_year == Policy.JSON_START_YEAR

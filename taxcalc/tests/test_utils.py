@@ -749,8 +749,7 @@ def test_ce_aftertax_income(puf_1991, weights_1991):
     crra = 1
     # specify calc1 and calc_all() for cyr
     pol1 = Policy()
-    rec1 = Records(data=puf_1991, weights=weights_1991,
-                   adjust_ratios=None, start_year=2009)
+    rec1 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc1 = Calculator(policy=pol1, records=rec1)
     calc1.advance_to_year(cyr)
     calc1.calc_all()
@@ -758,8 +757,7 @@ def test_ce_aftertax_income(puf_1991, weights_1991):
     pol2 = Policy()
     reform = {2018: {'_II_em': [0.0]}}
     pol2.implement_reform(reform)
-    rec2 = Records(data=puf_1991, weights=weights_1991,
-                   adjust_ratios=None, start_year=2009)
+    rec2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc2 = Calculator(policy=pol2, records=rec2)
     calc2.advance_to_year(cyr)
     calc2.calc_all()
