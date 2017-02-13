@@ -123,16 +123,14 @@ def test_validity_of_name_lists():
 def test_create_tables(puf_1991, weights_1991):
     # create a current-law Policy object and Calculator object calc1
     policy1 = Policy()
-    records1 = Records(data=puf_1991, weights=weights_1991,
-                       adjust_ratios=None, start_year=2009)
+    records1 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc1 = Calculator(policy=policy1, records=records1)
     calc1.calc_all()
     # create a policy-reform Policy object and Calculator object calc2
     reform = {2013: {'_II_rt4': [0.56]}}
     policy2 = Policy()
     policy2.implement_reform(reform)
-    records2 = Records(data=puf_1991, weights=weights_1991,
-                       adjust_ratios=None, start_year=2009)
+    records2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
     # test creating various distribution tables
@@ -383,16 +381,14 @@ def test_dist_table_sum_row(records_2009):
 def test_diff_table_sum_row(puf_1991, weights_1991):
     # create a current-law Policy object and Calculator calc1
     policy1 = Policy()
-    records1 = Records(data=puf_1991, weights=weights_1991,
-                       adjust_ratios=None, start_year=2009)
+    records1 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc1 = Calculator(policy=policy1, records=records1)
     calc1.calc_all()
     # create a policy-reform Policy object and Calculator calc2
     reform = {2013: {'_II_rt4': [0.56]}}
     policy2 = Policy()
     policy2.implement_reform(reform)
-    records2 = Records(data=puf_1991, weights=weights_1991,
-                       adjust_ratios=None, start_year=2009)
+    records2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
     # create two difference tables and compare their content
@@ -411,8 +407,7 @@ def test_diff_table_sum_row(puf_1991, weights_1991):
 def test_row_classifier(puf_1991, weights_1991):
     # create a current-law Policy object and Calculator calc1
     policy1 = Policy()
-    records1 = Records(data=puf_1991, weights=weights_1991,
-                       adjust_ratios=None, start_year=2009)
+    records1 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc1 = Calculator(policy=policy1, records=records1)
     calc1.calc_all()
     calc1_s006 = create_distribution_table(calc1.records,
@@ -422,8 +417,7 @@ def test_row_classifier(puf_1991, weights_1991):
     reform = {2013: {'_ALD_StudentLoan_hc': [1]}}
     policy2 = Policy()
     policy2.implement_reform(reform)
-    records2 = Records(data=puf_1991, weights=weights_1991,
-                       adjust_ratios=None, start_year=2009)
+    records2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
     calc2_s006 = create_distribution_table(calc2.records,

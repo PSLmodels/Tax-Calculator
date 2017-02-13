@@ -257,8 +257,7 @@ def test_run_dropq_nth_year_mtr(is_strict, rjson, growth_params, no_elast,
 
     if is_strict or no_elast:
         with pytest.raises(ValueError):
-            dropq.run_gdp_elast_models(tax_data,
-                                       start_year=first_year,
+            dropq.run_gdp_elast_models(tax_data, start_year=first_year,
                                        is_strict=is_strict,
                                        user_mods=user_mods,
                                        return_json=rjson,
