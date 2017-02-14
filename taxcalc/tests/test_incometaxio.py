@@ -453,12 +453,12 @@ def test_9(reformfile2, assumpfile3):
     input_dataframe = pd.read_csv(input_stream)
     taxyear = 2022
     with pytest.raises(ValueError):
-        inctax = IncomeTaxIO(input_data=input_dataframe,
-                             tax_year=taxyear,
-                             reform=reformfile2.name,
-                             assump=assumpfile3.name,
-                             exact_calculations=False,
-                             blowup_input_data=False,
-                             output_weights=False,
-                             output_records=False,
-                             csv_dump=False)
+        IncomeTaxIO(input_data=input_dataframe,
+                    tax_year=taxyear,
+                    reform=reformfile2.name,
+                    assump=assumpfile3.name,
+                    exact_calculations=False,
+                    blowup_input_data=False,
+                    output_weights=False,
+                    output_records=False,
+                    csv_dump=False)
