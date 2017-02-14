@@ -522,11 +522,10 @@ class Records(object):
         elif isinstance(adjust_ratios, six.string_types):
             if os.path.isfile(adjust_ratios):
                 ADJ = pd.read_csv(adjust_ratios, index_col=0)
-                ADJ = ADJ.transpose()
             else:
                 ADJ = Records._read_egg_csv('adjust_ratios',
                                             Records.ADJUST_RATIOS_FILENAME)
-                ADJ = ADJ.transpose()
+            ADJ = ADJ.transpose()
         else:
             msg = ('adjust_ratios is not None or a string'
                    'or a Pandas DataFrame')
