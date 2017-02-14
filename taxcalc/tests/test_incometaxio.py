@@ -419,10 +419,16 @@ def test_8(reformfile1):
 
 BAD_ASSUMP_CONTENTS = """
 {
-  "consumption": {},
-  "behavior": {"_BE_sub": {"2020": [0.05]} },},
-  "growdiff_baseline": {},
-  "growdiff_response": {"_ABOOK": {"2015": [-0.01]}
+  "consumption": {
+  },
+  "behavior": {
+      "_BE_sub": {"2020": [0.05]}
+  },
+  "growdiff_baseline": {
+  },
+  "growdiff_response": {
+      "_ABOOK": {"2015": [-0.01]}
+  }
 }
 """
 
