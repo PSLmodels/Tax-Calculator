@@ -221,12 +221,17 @@ class IncomeTaxIO(object):
                                         sync_years=blowup_input_data)
             beh = Behavior()
             beh.update_behavior(beh_d)
+            # Prevent both behavioral response and growdiff response
+            if beh.has_response() and growdiff_response.has_response():
+                msg = ('behavior.has_response AND '
+                       'growdiff_response.has_response')
+                raise ValueError(msg)
             self._calc = Calculator(policy=pol, records=recs,
                                     verbose=True,
                                     consumption=con,
                                     behavior=beh,
                                     sync_years=blowup_input_data)
-        else:
+        else:  # if no reform
             self._calc = Calculator(policy=pol, records=recs,
                                     verbose=True,
                                     consumption=con,

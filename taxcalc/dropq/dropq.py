@@ -575,6 +575,11 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
     if behavior_assumptions:
         behv.update_behavior(behavior_assumptions)
 
+    # Prevent both behavioral response and growdiff response
+    if behv.has_response() and growdiff_response.has_response():
+        msg = 'behavior.has_response AND growdiff_response.has_response'
+        raise ValueError(msg)
+
     # Create post-reform Calculator instance with behavior
     recs2 = Records(data=tax_dta.copy(deep=True),
                     gfactors=growfactors_post)

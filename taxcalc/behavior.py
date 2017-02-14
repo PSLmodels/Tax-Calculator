@@ -80,14 +80,17 @@ class Behavior(ParametersBase):
 
     def has_response(self):
         """
-        Returns true if any behavioral-response elasticity is non-zero for
-        the current_year; returns false if all elasticities are zero.
+        Returns true if any behavioral-response elasticity is non-zero in
+        any year; returns false if all elasticities are zero.
         """
         # pylint: disable=no-member
-        if self.BE_sub == 0.0 and self.BE_inc == 0.0 and self.BE_cg == 0.0:
-            return False
-        else:
-            return True
+        for elast in self._vals:
+            values = getattr(self, elast)
+            for year in np.ndindex(values.shape):
+                val = values[year]
+                if val != 0.0:
+                    return True
+        return False
 
     @staticmethod
     def response(calc_x, calc_y):

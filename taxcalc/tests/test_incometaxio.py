@@ -247,8 +247,9 @@ ASSUMP_CONTENTS = """
 // Example of an assump file suitable for the read_json_param_files() function.
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
-// Within each "behavior", "consumption" and "growth" object, the
-// primary keys are parameters and the secondary keys are years.
+// Within each "consumption", "behavior", "growdiff_baseline" and
+// "growdiff_response" object, the primary keys are parameters and
+// the secondary keys are years.
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
 {
@@ -414,3 +415,50 @@ def test_8(reformfile1):
     output = inctax.calculate(writing_output_file=False, output_ceeu=True)
     assert inctax.tax_year() == taxyear
     assert len(output) > 0
+
+
+BAD_ASSUMP_CONTENTS = """
+{
+  "consumption": {},
+  "behavior": {"_BE_sub": {"2020": [0.05]} },},
+  "growdiff_baseline": {},
+  "growdiff_response": {"_ABOOK": {"2015": [-0.01]}
+}
+"""
+
+
+@pytest.yield_fixture
+def assumpfile3():
+    """
+    Temporary assumption file with .json extension.
+    """
+    afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    afile.write(BAD_ASSUMP_CONTENTS)
+    afile.close()
+    # must close and then yield for Windows platform
+    yield afile
+    if os.path.isfile(afile.name):
+        try:
+            os.remove(afile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+def test_9(reformfile2, assumpfile3):
+    """
+    Test IncomeTaxIO calculate method with no output writing and no blowup,
+    using DataFrame for IncomeTaxIO constructor input_data.
+    """
+    input_stream = StringIO(RAWINPUTFILE_CONTENTS)
+    input_dataframe = pd.read_csv(input_stream)
+    taxyear = 2022
+    with pytest.raises(ValueError):
+        inctax = IncomeTaxIO(input_data=input_dataframe,
+                             tax_year=taxyear,
+                             reform=reformfile2.name,
+                             assump=assumpfile3.name,
+                             exact_calculations=False,
+                             blowup_input_data=False,
+                             output_weights=False,
+                             output_records=False,
+                             csv_dump=False)

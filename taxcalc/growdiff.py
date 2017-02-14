@@ -5,6 +5,7 @@ Tax-Calculator Growdiff class.
 # pep8 --ignore=E402 growdiff.py
 # pylint --disable=locally-disabled growdiff.py
 
+import numpy as np
 from .policy import Policy
 from .parameters import ParametersBase
 
@@ -68,6 +69,19 @@ class Growdiff(ParametersBase):
             self.set_year(year)
             self._update({year: revisions[year]})
         self.set_year(precall_current_year)
+
+    def has_response(self):
+        """
+        Returns true if any parameter is non-zero for any year;
+        returns false if all parameters are zero.
+        """
+        for param in self._vals:
+            values = getattr(self, param)
+            for year in np.ndindex(values.shape):
+                val = values[year]
+                if val != 0.0:
+                    return True
+        return False
 
     def apply_to(self, growfactors):
         """
