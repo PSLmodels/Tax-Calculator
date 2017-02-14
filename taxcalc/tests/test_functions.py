@@ -226,6 +226,7 @@ def test_1(reformfile1):
                          assump=None,
                          exact_calculations=False,
                          blowup_input_data=False,
+                         adjust_input_data=False,
                          output_weights=False,
                          output_records=False,
                          csv_dump=False)
@@ -288,6 +289,7 @@ def test_2(reformfile2):
                          assump=None,
                          exact_calculations=False,
                          blowup_input_data=False,
+                         adjust_input_data=False,
                          output_weights=False,
                          output_records=False,
                          csv_dump=False)

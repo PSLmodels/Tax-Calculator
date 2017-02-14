@@ -70,6 +70,7 @@ def test_incorrect_creation_1(input_data, exact):
             assump=None,
             exact_calculations=exact,
             blowup_input_data=True,
+            adjust_input_data=False,
             output_weights=False,
             output_records=False,
             csv_dump=False
@@ -97,18 +98,25 @@ def test_incorrect_creation_2(rawinputfile, year, reform, assump):
             assump=assump,
             exact_calculations=False,
             blowup_input_data=True,
+            adjust_input_data=False,
             output_weights=False,
             output_records=False,
             csv_dump=False
         )
 
 
-@pytest.mark.parametrize("blowup, weights_out", [
-    (True, False),
-    (True, True),
-    (False, True),
+@pytest.mark.parametrize("blowup, weights_out, adjust", [
+    (True, False, True),
+    (True, True, True),
+    (False, True, True),
+    (True, True, False),
+    (True, False, False),
+    (False, True, False),
+    (False, False, True),
+    (False, False, False)
 ])
-def test_creation_with_blowup(rawinputfile, blowup, weights_out):
+def test_creation_with_blowup(rawinputfile, blowup,
+                              weights_out, adjust):
     """
     Test IncomeTaxIO instantiation with no policy reform and with blowup.
     """
@@ -120,6 +128,7 @@ def test_creation_with_blowup(rawinputfile, blowup, weights_out):
                          assump=None,
                          exact_calculations=False,
                          blowup_input_data=blowup,
+                         adjust_input_data=adjust,
                          output_weights=weights_out,
                          output_records=False,
                          csv_dump=False)
@@ -159,6 +168,7 @@ def test_2(rawinputfile, reformfile0):
                          assump=None,
                          exact_calculations=False,
                          blowup_input_data=False,
+                         adjust_input_data=False,
                          output_weights=False,
                          output_records=False,
                          csv_dump=False)
@@ -309,6 +319,7 @@ def test_3(rawinputfile, reformfile1, assumpfile1):
                          assump=assumpfile1.name,
                          exact_calculations=False,
                          blowup_input_data=False,
+                         adjust_input_data=False,
                          output_weights=False,
                          output_records=False,
                          csv_dump=False)
@@ -330,6 +341,7 @@ def test_4(reformfile2, assumpfile2):
                          assump=assumpfile2.name,
                          exact_calculations=False,
                          blowup_input_data=False,
+                         adjust_input_data=False,
                          output_weights=False,
                          output_records=False,
                          csv_dump=False)
@@ -349,6 +361,7 @@ def test_5(rawinputfile):
                          assump=None,
                          exact_calculations=False,
                          blowup_input_data=False,
+                         adjust_input_data=False,
                          output_weights=False,
                          output_records=True,
                          csv_dump=False)
@@ -368,6 +381,7 @@ def test_6(rawinputfile):
                          assump=None,
                          exact_calculations=False,
                          blowup_input_data=False,
+                         adjust_input_data=False,
                          output_weights=False,
                          output_records=False,
                          csv_dump=True)
@@ -386,6 +400,7 @@ def test_7(rawinputfile, reformfile1):
                          assump=None,
                          exact_calculations=False,
                          blowup_input_data=False,
+                         adjust_input_data=False,
                          output_weights=False,
                          output_records=False,
                          csv_dump=False)
@@ -407,6 +422,7 @@ def test_8(reformfile1):
                          assump=None,
                          exact_calculations=False,
                          blowup_input_data=False,
+                         adjust_input_data=False,
                          output_weights=True,
                          output_records=False,
                          csv_dump=False)

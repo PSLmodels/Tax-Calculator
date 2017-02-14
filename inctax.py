@@ -85,6 +85,13 @@ def main():
                               'adjusted in any way.'),
                         default=False,
                         action="store_true")
+    parser.add_argument('--adjust',
+                        help=('optional flag that triggers the default '
+                              'adjustment logic built into the Tax-Calculator '
+                              'that will adjust the distribution of income.'),
+                        default=False,
+                        action="store_true")
+
     parser.add_argument('--weights',
                         help=('optional flag that causes OUTPUT to have an '
                               'additional variable [29] containing the s006 '
@@ -176,6 +183,7 @@ def main():
                          assump=args.assump,
                          exact_calculations=args.exact,
                          blowup_input_data=args.blowup,
+                         adjust_input_data=args.adjust,
                          output_weights=args.weights,
                          output_records=args.records,
                          csv_dump=args.csvdump)
