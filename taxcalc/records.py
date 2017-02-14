@@ -526,6 +526,7 @@ class Records(object):
             else:
                 ADJ = Records._read_egg_csv('adjust_ratios',
                                             Records.ADJUST_RATIOS_FILENAME)
+                ADJ = ADJ.transpose()
         else:
             msg = ('adjust_ratios is not None or a string'
                    'or a Pandas DataFrame')
