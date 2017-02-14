@@ -105,13 +105,18 @@ def test_incorrect_creation_2(rawinputfile, year, reform, assump):
         )
 
 
-@pytest.mark.parametrize("blowup, weights_out", [
-    (True, False),
-    (True, True),
-    (False, True),
+@pytest.mark.parametrize("blowup, weights_out, adjust", [
+    (True, False, True),
+    (True, True, True),
+    (False, True, True),
+    (True, True, False),
+    (True, False, False),
+    (False, True, False),
+    (False, False, True),
+    (False, False, False)
 ])
 def test_creation_with_blowup(rawinputfile, blowup,
-                              weights_out):
+                              weights_out, adjust):
     """
     Test IncomeTaxIO instantiation with no policy reform and with blowup.
     """
@@ -123,7 +128,7 @@ def test_creation_with_blowup(rawinputfile, blowup,
                          assump=None,
                          exact_calculations=False,
                          blowup_input_data=blowup,
-                         adjust_input_data=False,
+                         adjust_input_data=adjust,
                          output_weights=weights_out,
                          output_records=False,
                          csv_dump=False)
