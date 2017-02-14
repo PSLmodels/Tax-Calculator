@@ -70,10 +70,10 @@ class Growdiff(ParametersBase):
             self._update({year: revisions[year]})
         self.set_year(precall_current_year)
 
-    def has_response(self):
+    def has_any_response(self):
         """
         Returns true if any parameter is non-zero for any year;
-        returns false if all parameters are zero.
+        returns false if all parameters are zero in all years.
         """
         for param in self._vals:
             values = getattr(self, param)

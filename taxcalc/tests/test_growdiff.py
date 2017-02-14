@@ -38,3 +38,12 @@ def test_update_and_apply_growdiff():
                         for i in range(0, nyrs)]
     assert_allclose(pir_pre, pir_pst, atol=0.0, rtol=0.0)
     assert_allclose(wgr_pst, expected_wgr_pst, atol=1.0e-9, rtol=0.0)
+
+
+def test_has_any_response():
+    syr = 2014
+    gdiff = Growdiff(start_year=syr)
+    assert gdiff.has_any_response() == False
+    gdiff.update_growdiff({2020: {'_AWAGE': [0.01]}})
+    assert gdiff.current_year == syr
+    assert gdiff.has_any_response() == True

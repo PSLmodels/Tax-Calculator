@@ -222,9 +222,8 @@ class IncomeTaxIO(object):
             beh = Behavior()
             beh.update_behavior(beh_d)
             # Prevent both behavioral response and growdiff response
-            if beh.has_response() and growdiff_response.has_response():
-                msg = ('behavior.has_response AND '
-                       'growdiff_response.has_response')
+            if beh.has_any_response() and growdiff_response.has_any_response():
+                msg = 'BOTH behavior AND growdiff_response HAVE RESPONSE'
                 raise ValueError(msg)
             self._calc = Calculator(policy=pol, records=recs,
                                     verbose=True,
