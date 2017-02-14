@@ -16,8 +16,10 @@ import six
 import pandas as pd
 from .policy import Policy
 from .records import Records
-from .behavior import Behavior
 from .consumption import Consumption
+from .behavior import Behavior
+from .growdiff import Growdiff
+from .growfactors import Growfactors
 from .calculate import Calculator
 from .simpletaxio import SimpleTaxIO
 from .utils import ce_aftertax_income
@@ -143,8 +145,26 @@ class IncomeTaxIO(object):
             if not os.path.isfile(input_data):
                 msg = 'INPUT file named {} could not be found'
                 raise ValueError(msg.format(input_data))
-        # create Policy object assuming current-law policy
-        pol = Policy()
+        # get reform and assumption dictionaries
+        (ref_d, con_d, beh_d, gdiff_base_d,
+         gdiff_resp_d) = Calculator.read_json_param_files(reform, assump)
+        # create growdiff_baseline and growdiff_response objects
+        growdiff_baseline = Growdiff()
+        growdiff_baseline.update_growdiff(gdiff_base_d)
+        growdiff_response = Growdiff()
+        growdiff_response.update_growdiff(gdiff_resp_d)
+        # create pre-reform and post-reform Growfactors objects
+        growfactors_pre = Growfactors()
+        growdiff_baseline.apply_to(growfactors_pre)
+        growfactors_post = Growfactors()
+        growdiff_baseline.apply_to(growfactors_post)
+        growdiff_response.apply_to(growfactors_post)
+        # create Policy object and implement reform
+        if self._reform:
+            pol = Policy(gfactors=growfactors_post)
+            pol.implement_reform(ref_d)
+        else:
+            pol = Policy(gfactors=growfactors_pre)
         # check for valid tax_year value
         if tax_year < pol.start_year:
             msg = 'tax_year {} less than policy.start_year {}'
@@ -152,38 +172,45 @@ class IncomeTaxIO(object):
         if tax_year > pol.end_year:
             msg = 'tax_year {} greater than policy.end_year {}'
             raise ValueError(msg.format(tax_year, pol.end_year))
-        # get reform & assump dictionaries and implement reform
-        (ref_d, con_d, beh_d, gdiff_base_d,
-         gdiff_resp_d) = Calculator.read_json_param_files(reform, assump)
-        pol.implement_reform(ref_d)
         # set tax policy parameters to specified tax_year
         pol.set_year(tax_year)
         # read input file contents into Records object
         if blowup_input_data:
+            if self._reform:
+                if output_weights:
+                    recs = Records(data=input_data,
+                                   gfactors=growfactors_post,
+                                   exact_calculations=exact_calculations)
+                else:
+                    recs = Records(data=input_data,
+                                   gfactors=growfactors_post,
+                                   exact_calculations=exact_calculations,
+                                   weights=None)
+            else:  # if no reform
+                if output_weights:
+                    recs = Records(data=input_data,
+                                   gfactors=growfactors_pre,
+                                   exact_calculations=exact_calculations)
+                else:
+                    recs = Records(data=input_data,
+                                   gfactors=growfactors_pre,
+                                   exact_calculations=exact_calculations,
+                                   weights=None)
+        else:  # if no blowup of input data
             if output_weights:
                 recs = Records(data=input_data,
-                               exact_calculations=exact_calculations)
-            else:
-                recs = Records(data=input_data,
-                               exact_calculations=exact_calculations,
-                               weights=None)
-        else:
-            if output_weights:
-                recs = Records(data=input_data,
-                               exact_calculations=exact_calculations,
                                gfactors=None,
+                               exact_calculations=exact_calculations,
                                start_year=tax_year)
             else:
                 recs = Records(data=input_data,
-                               exact_calculations=exact_calculations,
                                gfactors=None,
+                               exact_calculations=exact_calculations,
                                weights=None,
                                start_year=tax_year)
         # create Calculator object
         con = Consumption()
         con.update_consumption(con_d)
-        # TODO gro = Growth()
-        # TODO gro.update_growth(gro_d)
         if self._reform:
             clp = Policy()
             clp.set_year(tax_year)
@@ -191,21 +218,18 @@ class IncomeTaxIO(object):
             self._calc_clp = Calculator(policy=clp, records=recs_clp,
                                         verbose=False,
                                         consumption=con,
-                                        # TODO growth=gro,
                                         sync_years=blowup_input_data)
             beh = Behavior()
             beh.update_behavior(beh_d)
             self._calc = Calculator(policy=pol, records=recs,
                                     verbose=True,
-                                    behavior=beh,
                                     consumption=con,
-                                    # TODO growth=gro,
+                                    behavior=beh,
                                     sync_years=blowup_input_data)
         else:
             self._calc = Calculator(policy=pol, records=recs,
                                     verbose=True,
                                     consumption=con,
-                                    # TODO growth=gro,
                                     sync_years=blowup_input_data)
 
     def tax_year(self):

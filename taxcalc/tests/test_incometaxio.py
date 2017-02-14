@@ -337,19 +337,20 @@ def test_4(reformfile2, assumpfile2):
     assert output == EXPECTED_OUTPUT
 
 
-def test_5(rawinputfile):
+@pytest.mark.parametrize("weights_out", [(True), (False)])
+def test_5(rawinputfile, reformfile1, weights_out):
     """
-    Test IncomeTaxIO calculate method with no output writing and no blowup and
-    no reform, using the output_records option.
+    Test IncomeTaxIO calculate method with no output writing and blowup and
+    reform, using the output_records option.
     """
-    taxyear = 2021
+    taxyear = 2020
     inctax = IncomeTaxIO(input_data=rawinputfile.name,
                          tax_year=taxyear,
-                         reform=None,
+                         reform=reformfile1.name,
                          assump=None,
                          exact_calculations=False,
-                         blowup_input_data=False,
-                         output_weights=False,
+                         blowup_input_data=True,
+                         output_weights=weights_out,
                          output_records=True,
                          csv_dump=False)
     inctax.output_records(writing_output_file=False)

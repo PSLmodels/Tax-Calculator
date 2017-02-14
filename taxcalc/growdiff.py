@@ -69,7 +69,7 @@ class Growdiff(ParametersBase):
             self._update({year: revisions[year]})
         self.set_year(precall_current_year)
 
-    def apply(self, growfactors):
+    def apply_to(self, growfactors):
         """
         Apply updated growdiff values to specified Growfactors instance.
         """

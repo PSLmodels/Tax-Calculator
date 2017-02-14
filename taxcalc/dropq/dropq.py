@@ -430,31 +430,32 @@ def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta,
     # PROBLEM: code here is missing growdiff_response assumptions
     growdiff_baseline_assumptions = only_growdiff_assumptions(user_mods,
                                                               start_year)
-    # Apply growdiff_baseline to growfactors
-    growfactors = Growfactors()
+    growdiff_response_assumptions = None  # PROBLEM: temporary "fix"
+
+    # Create pre-reform and post-reform Growfactors instances
+    growfactors_pre = Growfactors()
+    growfactors_post = Growfactors()
     if growdiff_baseline_assumptions:
         growdiff_baseline.update_growdiff(growdiff_baseline_assumptions)
-        growdiff_baseline.apply(growfactors)
+        growdiff_baseline.apply_to(growfactors_pre)
+        growdiff_baseline.apply_to(growfactors_post)
+    if growdiff_response_assumptions:
+        growdiff_response.update_growdiff(growdiff_response_assumptions)
+        growdiff_response.apply_to(growfactors_post)
 
     # Create pre-reform Calculator instance
-    records1 = Records(data=tax_dta.copy(deep=True), gfactors=growfactors)
-    policy1 = Policy(gfactors=growfactors)
+    records1 = Records(data=tax_dta.copy(deep=True),
+                       gfactors=growfactors_pre)
+    policy1 = Policy(gfactors=growfactors_pre)
     calc1 = Calculator(policy=policy1, records=records1, consumption=consump)
     while calc1.current_year < start_year:
         calc1.increment_year()
     assert calc1.current_year == start_year
 
-    # Apply growdiff_response to growfactors
-    # PROBLEM: growfactor should be updated by growdiff_response, but can not
-    # PROBLEM: tell difference between the two sets of growdiff assumptions
-    growdiff_response_assumptions = None
-    if growdiff_response_assumptions:
-        growdiff_response.update_growdiff(growdiff_response_assumptions)
-        growdiff_response.apply(growfactors)
-
     # Create post-reform Calculator instance
-    records2 = Records(data=tax_dta.copy(deep=True), gfactors=growfactors)
-    policy2 = Policy(gfactors=growfactors)
+    records2 = Records(data=tax_dta.copy(deep=True),
+                       gfactors=growfactors_post)
+    policy2 = Policy(gfactors=growfactors_post)
     policy_reform = only_reform_mods(user_mods, start_year)
     policy2.implement_reform(policy_reform)
     calc2 = Calculator(policy=policy2, records=records2, consumption=consump)
@@ -529,15 +530,23 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
     # PROBLEM: code here is missing growdiff_response assumptions
     growdiff_baseline_assumptions = only_growdiff_assumptions(user_mods,
                                                               start_year)
-    # Apply growdiff_baseline to growfactors
-    growfactors = Growfactors()
+    growdiff_response_assumptions = None  # PROBLEM: temporary "fix"
+
+    # Create pre-reform and post-reform Growfactors instances
+    growfactors_pre = Growfactors()
+    growfactors_post = Growfactors()
     if growdiff_baseline_assumptions:
         growdiff_baseline.update_growdiff(growdiff_baseline_assumptions)
-        growdiff_baseline.apply(growfactors)
+        growdiff_baseline.apply_to(growfactors_pre)
+        growdiff_baseline.apply_to(growfactors_post)
+    if growdiff_response_assumptions:
+        growdiff_response.update_growdiff(growdiff_response_assumptions)
+        growdiff_response.apply_to(growfactors_post)
 
-    # Create post-reform Calculator instance
-    recs1 = Records(data=tax_dta.copy(deep=True), gfactors=growfactors)
-    policy1 = Policy(gfactors=growfactors)
+    # Create pre-reform Calculator instance
+    recs1 = Records(data=tax_dta.copy(deep=True),
+                    gfactors=growfactors_pre)
+    policy1 = Policy(gfactors=growfactors_pre)
     calc1 = Calculator(policy=policy1, records=recs1, consumption=consump)
     while calc1.current_year < start_year:
         calc1.increment_year()
@@ -545,10 +554,10 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
     assert calc1.current_year == start_year
 
     # Create pre-reform Calculator instance with extra income
-    recs1p = Records(data=tax_dta.copy(deep=True), gfactors=growfactors)
-    # add one dollar to total wages and salaries of each filing unit
-    recs1p.e00200 += 1.0
-    policy1p = Policy(gfactors=growfactors)
+    recs1p = Records(data=tax_dta.copy(deep=True),
+                     gfactors=growfactors_pre)
+    recs1p.e00200 += 1.0  # add $1 to total wages&salaries of each filing unit
+    policy1p = Policy(gfactors=growfactors_pre)
     calc1p = Calculator(policy=policy1p, records=recs1p, consumption=consump)
     while calc1p.current_year < start_year:
         calc1p.increment_year()
@@ -560,14 +569,6 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
     soit1p = results(calc1p)
     mask = (soit1._iitax != soit1p._iitax)
 
-    # Apply growdiff_response to growfactor
-    # PROBLEM: growfactor should be updated by growdiff_response, but can not
-    # PROBLEM: tell difference between the two sets of growdiff assumptions
-    growdiff_response_assumptions = None
-    if growdiff_response_assumptions:
-        growdiff_response.update_growdiff(growdiff_response_assumptions)
-        growdiff_response.apply(growfactors)
-
     # Specify Behavior instance
     behv = Behavior()
     behavior_assumptions = only_behavior_assumptions(user_mods, start_year)
@@ -575,8 +576,9 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
         behv.update_behavior(behavior_assumptions)
 
     # Create post-reform Calculator instance with behavior
-    recs2 = Records(data=tax_dta.copy(deep=True), gfactors=growfactors)
-    policy2 = Policy(gfactors=growfactors)
+    recs2 = Records(data=tax_dta.copy(deep=True),
+                    gfactors=growfactors_post)
+    policy2 = Policy(gfactors=growfactors_post)
     policy_reform = only_reform_mods(user_mods, start_year)
     policy2.implement_reform(policy_reform)
     calc2 = Calculator(policy=policy2, records=recs2, consumption=consump,
