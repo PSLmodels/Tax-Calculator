@@ -43,7 +43,7 @@ def test_update_and_apply_growdiff():
 def test_has_any_response():
     syr = 2014
     gdiff = Growdiff(start_year=syr)
-    assert gdiff.has_any_response() == False
+    assert gdiff.has_any_response() is False
     gdiff.update_growdiff({2020: {'_AWAGE': [0.01]}})
     assert gdiff.current_year == syr
-    assert gdiff.has_any_response() == True
+    assert gdiff.has_any_response() is True
