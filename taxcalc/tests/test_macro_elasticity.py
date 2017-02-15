@@ -1,5 +1,5 @@
-from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
-from taxcalc import proportional_change_gdp  # pylint: disable=import-error
+from taxcalc import Policy, Records, Calculator
+from taxcalc import proportional_change_gdp
 
 
 def test_proportional_change_gdp(puf_1991, weights_1991):
