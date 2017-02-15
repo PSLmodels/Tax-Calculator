@@ -21,32 +21,31 @@ from .dropq_utils import (WEBAPP_INCOME_BINS,
                           create_json_table)
 from .. import (Calculator, Growfactors, Records,
                 Policy, Consumption, Behavior, Growdiff,
-                TABLE_LABELS, TABLE_COLUMNS, STATS_COLUMNS, DIFF_TABLE_LABELS)
+                TABLE_LABELS, TABLE_COLUMNS, STATS_COLUMNS)
 
-
-# specify several constants
+# TODO : remove the following pylint disable=invalid-name
 # pylint: disable=invalid-name
-planY_column_types = [float] * len(TABLE_LABELS)
 
-diff_column_names = DIFF_TABLE_LABELS
+# specify constants
+PLAN_COLUMN_TYPES = [float] * len(TABLE_LABELS)
 
-diff_column_types = [int, int, int, float, float, str, str, str]
+DIFF_COLUMN_TYPES = [int, int, int, float, float, str, str, str]
 
-decile_row_names = ["perc0-10", "perc10-20", "perc20-30", "perc30-40",
+DECILE_ROW_NAMES = ["perc0-10", "perc10-20", "perc20-30", "perc30-40",
                     "perc40-50", "perc50-60", "perc60-70", "perc70-80",
                     "perc80-90", "perc90-100", "all"]
 
-bin_row_names = ["less_than_10", "ten_twenty", "twenty_thirty", "thirty_forty",
+BIN_ROW_NAMES = ["less_than_10", "ten_twenty", "twenty_thirty", "thirty_forty",
                  "forty_fifty", "fifty_seventyfive", "seventyfive_hundred",
                  "hundred_twohundred", "twohundred_fivehundred",
                  "fivehundred_thousand", "thousand_up", "all"]
 
-total_row_names = ["ind_tax", "payroll_tax", "combined_tax"]
+TOTAL_ROW_NAMES = ["ind_tax", "payroll_tax", "combined_tax"]
 
-GDP_elast_row_names = ["gdp_elasticity"]
+GDP_ELAST_ROW_NAMES = ["gdp_elasticity"]
 
-ogusa_row_names = ["GDP", "Consumption", "Investment", "Hours Worked", "Wages",
-                   "Interest Rates", "Total Taxes"]
+OGUSA_ROW_NAMES = ["GDP", "Consumption", "Investment", "Hours Worked",
+                   "Wages", "Interest Rates", "Total Taxes"]
 
 NUM_YEARS_DEFAULT = 1
 
@@ -515,7 +514,7 @@ def run_nth_year_mtr_calc(year_n, start_year, is_strict, taxrec_df,
     if not return_json:
         return gdp_effect_y
 
-    gdp_elast_names_i = [x + '_' + str(year_n) for x in GDP_elast_row_names]
+    gdp_elast_names_i = [x + '_' + str(year_n) for x in GDP_ELAST_ROW_NAMES]
 
     gdp_elast_total = create_json_table(gdp_df, row_names=gdp_elast_names_i,
                                         num_decimals=5)
@@ -658,15 +657,15 @@ def run_nth_year(year_n, start_year, is_strict, taxrec_df, user_mods,
     start_year += 1
 
     tots = [diff_sum, payrolltax_diff_sum, combined_diff_sum]
-    fiscal_tots_diff = pd.DataFrame(data=tots, index=total_row_names)
+    fiscal_tots_diff = pd.DataFrame(data=tots, index=TOTAL_ROW_NAMES)
 
     tots_baseline = [sum_baseline, pr_sum_baseline, combined_sum_baseline]
     fiscal_tots_baseline = pd.DataFrame(data=tots_baseline,
-                                        index=total_row_names)
+                                        index=TOTAL_ROW_NAMES)
 
     tots_reform = [sum_reform, pr_sum_reform, combined_sum_reform]
     fiscal_tots_reform = pd.DataFrame(data=tots_reform,
-                                      index=total_row_names)
+                                      index=TOTAL_ROW_NAMES)
 
     # Get rid of negative incomes
     df_bin.drop(df_bin.index[0], inplace=True)
@@ -691,51 +690,51 @@ def run_nth_year(year_n, start_year, is_strict, taxrec_df, user_mods,
                 append_year(fiscal_tots_baseline),
                 append_year(fiscal_tots_reform))
 
-    decile_row_names_i = [x + '_' + str(year_n) for x in decile_row_names]
+    decile_row_names_i = [x + '_' + str(year_n) for x in DECILE_ROW_NAMES]
 
-    bin_row_names_i = [x + '_' + str(year_n) for x in bin_row_names]
+    bin_row_names_i = [x + '_' + str(year_n) for x in BIN_ROW_NAMES]
 
-    total_row_names_i = [x + '_' + str(year_n) for x in total_row_names]
+    total_row_names_i = [x + '_' + str(year_n) for x in TOTAL_ROW_NAMES]
 
     mY_dec_table_i = create_json_table(mY_dec,
                                        row_names=decile_row_names_i,
-                                       column_types=planY_column_types)
+                                       column_types=PLAN_COLUMN_TYPES)
 
     mX_dec_table_i = create_json_table(mX_dec,
                                        row_names=decile_row_names_i,
-                                       column_types=planY_column_types)
+                                       column_types=PLAN_COLUMN_TYPES)
 
     df_dec_table_i = create_json_table(df_dec,
                                        row_names=decile_row_names_i,
-                                       column_types=diff_column_types)
+                                       column_types=DIFF_COLUMN_TYPES)
 
     pdf_dec_table_i = create_json_table(pdf_dec,
                                         row_names=decile_row_names_i,
-                                        column_types=diff_column_types)
+                                        column_types=DIFF_COLUMN_TYPES)
 
     cdf_dec_table_i = create_json_table(cdf_dec,
                                         row_names=decile_row_names_i,
-                                        column_types=diff_column_types)
+                                        column_types=DIFF_COLUMN_TYPES)
 
     mY_bin_table_i = create_json_table(mY_bin,
                                        row_names=bin_row_names_i,
-                                       column_types=planY_column_types)
+                                       column_types=PLAN_COLUMN_TYPES)
 
     mX_bin_table_i = create_json_table(mX_bin,
                                        row_names=bin_row_names_i,
-                                       column_types=planY_column_types)
+                                       column_types=PLAN_COLUMN_TYPES)
 
     df_bin_table_i = create_json_table(df_bin,
                                        row_names=bin_row_names_i,
-                                       column_types=diff_column_types)
+                                       column_types=DIFF_COLUMN_TYPES)
 
     pdf_bin_table_i = create_json_table(pdf_bin,
                                         row_names=bin_row_names_i,
-                                        column_types=diff_column_types)
+                                        column_types=DIFF_COLUMN_TYPES)
 
     cdf_bin_table_i = create_json_table(cdf_bin,
                                         row_names=bin_row_names_i,
-                                        column_types=diff_column_types)
+                                        column_types=DIFF_COLUMN_TYPES)
 
     fiscal_yr_total_df = create_json_table(fiscal_tots_diff,
                                            row_names=total_row_names_i)
@@ -830,7 +829,7 @@ def format_macro_results(diff_data, return_json=True):
         return ogusadf
     column_types = [float] * diff_data.shape[1]
     df_ogusa_table = create_json_table(ogusadf,
-                                       row_names=ogusa_row_names,
+                                       row_names=OGUSA_ROW_NAMES,
                                        column_types=column_types,
                                        num_decimals=3)
     return df_ogusa_table
