@@ -1,4 +1,6 @@
-import pandas as pd
+"""
+Implementation of TaxBrain "Macroeconomic Elasticities" dynamic analysis.
+"""
 
 
 def proportional_change_gdp(calc1, calc2, elasticity=0.0):
@@ -29,24 +31,24 @@ def proportional_change_gdp(calc1, calc2, elasticity=0.0):
 
     Parameters
     ----------
-    calc1 : Calculator object for the baseline
-    calc2 : Calculator object for the reform
+    calc1 : Calculator object for the pre-reform baseline
+    calc2 : Calculator object for the policy reform
     elasticity: Float estimate of elasticity of GDP wrt 1-AMTR
 
     Returns
     -------
     Float estimate of proportional GDP impact of the reform.
     '''
-    _, _, mtr_combined_x = calc1.mtr()
-    _, _, mtr_combined_y = calc2.mtr()
-    avg_one_mtr_x = (1. - (mtr_combined_x * calc1.records.c00100 *
+    _, _, mtr_combined1 = calc1.mtr()
+    _, _, mtr_combined2 = calc2.mtr()
+    avg_one_mtr1 = (1.0 - (mtr_combined1 * calc1.records.c00100 *
                            calc1.records.s006).sum() /
-                     (calc1.records.c00100 * calc1.records.s006).sum())
-    avg_one_mtr_y = (1. - (mtr_combined_y * calc2.records.c00100 *
+                    (calc1.records.c00100 * calc1.records.s006).sum())
+    avg_one_mtr2 = (1.0 - (mtr_combined2 * calc2.records.c00100 *
                            calc2.records.s006).sum() /
-                     (calc2.records.c00100 * calc2.records.s006).sum())
-    diff_avg_one_mtr = avg_one_mtr_y - avg_one_mtr_x
-    proportional_diff_mtr = diff_avg_one_mtr / avg_one_mtr_x
-    gdp_effect_y = proportional_diff_mtr * elasticity
-    print(("%.5f" % gdp_effect_y))
-    return gdp_effect_y
+                    (calc2.records.c00100 * calc2.records.s006).sum())
+    diff_avg_one_mtr = avg_one_mtr2 - avg_one_mtr1
+    proportional_diff_mtr = diff_avg_one_mtr / avg_one_mtr1
+    gdp_effect_of_reform = proportional_diff_mtr * elasticity
+    print('{:.5f}'.format(gdp_effect_of_reform))
+    return gdp_effect_of_reform
