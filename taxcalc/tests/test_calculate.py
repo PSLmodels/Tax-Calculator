@@ -476,12 +476,12 @@ def test_read_json_reform_file_and_implement_reform(reform_file,
     that is then used to call implement_reform method and Calculate.calc_all()
     NOTE: implement_reform called when policy.current_year == policy.start_year
     """
-    reform, _, _, _, _ = Calculator.read_json_param_files(reform_file.name,
-                                                          assump_file.name)
     policy = Policy()
     if set_year:
         policy.set_year(2015)
-    policy.implement_reform(reform)
+    param_dict = Calculator.read_json_param_files(reform_file.name,
+                                                  assump_file.name)
+    policy.implement_reform(param_dict['policy'])
     syr = policy.start_year
     amt_brk1 = policy._AMT_brk1
     assert amt_brk1[2015 - syr] == 200000
@@ -669,9 +669,9 @@ def test_convert_parameter_dict():
 
 def test_param_code_calc_all(reform_file, rawinputfile):
     cyr = 2016
-    ref, _, _, _, _ = Calculator.read_json_param_files(reform_file.name, None)
     policy = Policy()
-    policy.implement_reform(ref)
+    param_dict = Calculator.read_json_param_files(reform_file.name, None)
+    policy.implement_reform(param_dict['policy'])
     policy.set_year(cyr)
     nonpuf = Records(data=rawinputfile.name, gfactors=None,
                      weights=None, start_year=cyr)

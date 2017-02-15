@@ -145,14 +145,13 @@ class IncomeTaxIO(object):
             if not os.path.isfile(input_data):
                 msg = 'INPUT file named {} could not be found'
                 raise ValueError(msg.format(input_data))
-        # get reform and assumption dictionaries
-        (ref_d, con_d, beh_d, gdiff_base_d,
-         gdiff_resp_d) = Calculator.read_json_param_files(reform, assump)
+        # get parameter dictionaries
+        param_dict = Calculator.read_json_param_files(reform, assump)
         # create growdiff_baseline and growdiff_response objects
         growdiff_baseline = Growdiff()
-        growdiff_baseline.update_growdiff(gdiff_base_d)
+        growdiff_baseline.update_growdiff(param_dict['growdiff_baseline'])
         growdiff_response = Growdiff()
-        growdiff_response.update_growdiff(gdiff_resp_d)
+        growdiff_response.update_growdiff(param_dict['growdiff_response'])
         # create pre-reform and post-reform Growfactors objects
         growfactors_pre = Growfactors()
         growdiff_baseline.apply_to(growfactors_pre)
@@ -162,7 +161,7 @@ class IncomeTaxIO(object):
         # create Policy object and implement reform
         if self._reform:
             pol = Policy(gfactors=growfactors_post)
-            pol.implement_reform(ref_d)
+            pol.implement_reform(param_dict['policy'])
         else:
             pol = Policy(gfactors=growfactors_pre)
         # check for valid tax_year value
@@ -210,7 +209,7 @@ class IncomeTaxIO(object):
                                start_year=tax_year)
         # create Calculator object
         con = Consumption()
-        con.update_consumption(con_d)
+        con.update_consumption(param_dict['consumption'])
         if self._reform:
             clp = Policy()
             clp.set_year(tax_year)
@@ -220,7 +219,7 @@ class IncomeTaxIO(object):
                                         consumption=con,
                                         sync_years=blowup_input_data)
             beh = Behavior()
-            beh.update_behavior(beh_d)
+            beh.update_behavior(param_dict['behavior'])
             # Prevent both behavioral response and growdiff response
             if beh.has_any_response() and growdiff_response.has_any_response():
                 msg = 'BOTH behavior AND growdiff_response HAVE RESPONSE'

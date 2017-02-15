@@ -379,9 +379,9 @@ class Calculator(object):
     def read_json_param_files(reform_filename, assump_filename):
         """
         Read JSON files and call Calculator.read_json_*_text methods
-        returning 5 dictionaries containing policy reforms, consumption
-        assumptions, behavioral assumptions, growdiff_baseline assumptions
-        and growdiff_response assumptions.
+        returning a single dictionary containing five key:dict pairs:
+        'policy':dict, 'consumption':dict, 'behavior':dict,
+        'growdiff_baseline':dict and 'growdiff_response':dict.
         """
         if reform_filename is None:
             rpol_dict = dict()
@@ -405,8 +405,13 @@ class Calculator(object):
         else:
             msg = 'economic assumption file {} could not be found'
             raise ValueError(msg.format(assump_filename))
-        return (rpol_dict, cons_dict, behv_dict,
-                gdiff_base_dict, gdiff_resp_dict)
+        param_dict = dict()
+        param_dict['policy'] = rpol_dict
+        param_dict['consumption'] = cons_dict
+        param_dict['behavior'] = behv_dict
+        param_dict['growdiff_baseline'] = gdiff_base_dict
+        param_dict['growdiff_response'] = gdiff_resp_dict
+        return param_dict
 
     REQUIRED_REFORM_KEYS = set(['policy'])
     REQUIRED_ASSUMP_KEYS = set(['consumption', 'behavior',
