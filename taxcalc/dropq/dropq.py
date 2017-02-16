@@ -29,31 +29,49 @@ PLAN_COLUMN_TYPES = [float] * len(TABLE_LABELS)
 
 DIFF_COLUMN_TYPES = [int, int, int, float, float, str, str, str]
 
-DECILE_ROW_NAMES = ["perc0-10", "perc10-20", "perc20-30", "perc30-40",
-                    "perc40-50", "perc50-60", "perc60-70", "perc70-80",
-                    "perc80-90", "perc90-100", "all"]
+DECILE_ROW_NAMES = ['perc0-10', 'perc10-20', 'perc20-30', 'perc30-40',
+                    'perc40-50', 'perc50-60', 'perc60-70', 'perc70-80',
+                    'perc80-90', 'perc90-100', 'all']
 
-BIN_ROW_NAMES = ["less_than_10", "ten_twenty", "twenty_thirty", "thirty_forty",
-                 "forty_fifty", "fifty_seventyfive", "seventyfive_hundred",
-                 "hundred_twohundred", "twohundred_fivehundred",
-                 "fivehundred_thousand", "thousand_up", "all"]
+BIN_ROW_NAMES = ['less_than_10', 'ten_twenty', 'twenty_thirty', 'thirty_forty',
+                 'forty_fifty', 'fifty_seventyfive', 'seventyfive_hundred',
+                 'hundred_twohundred', 'twohundred_fivehundred',
+                 'fivehundred_thousand', 'thousand_up', 'all']
 
-TOTAL_ROW_NAMES = ["ind_tax", "payroll_tax", "combined_tax"]
+TOTAL_ROW_NAMES = ['ind_tax', 'payroll_tax', 'combined_tax']
 
-GDP_ELAST_ROW_NAMES = ["gdp_elasticity"]
+GDP_ELAST_ROW_NAMES = ['gdp_elasticity']
 
-OGUSA_ROW_NAMES = ["GDP", "Consumption", "Investment", "Hours Worked",
-                   "Wages", "Interest Rates", "Total Taxes"]
+OGUSA_ROW_NAMES = ['GDP', 'Consumption', 'Investment', 'Hours Worked',
+                   'Wages', 'Interest Rates', 'Total Taxes']
 
 NUM_YEARS_DEFAULT = 1
+
+
+def check_user_mods(user_mods):
+    """
+    Ensure specified user_mods is properly structured.
+    """
+    if not isinstance(user_mods, dict):
+        raise ValueError('user_mods is not a dictionary')
+    actual_keys = set(list(user_mods.keys()))
+    expected_keys = set(['policy', 'consumption', 'behavior',
+                         'growdiff_baseline', 'growdiff_response',
+                         'gdp_elasticity'])
+    missing_keys = expected_keys - actual_keys
+    if len(missing_keys) > 0:
+        raise ValueError('user_mods has missing keys: {}'.format(missing_keys))
+    extra_keys = actual_keys - expected_keys
+    if len(extra_keys) > 0:
+        raise ValueError('user_mods has extra keys: {}'.format(extra_keys))
 
 
 def random_seed(user_mods):
     """
     Compute random seed based on specified user_mods, which is a
     dictionary returned by the Calculator.read_json_parameter_files()
-    function with an optional extra subdictionary that is specified as
-    {'gdp_elasticity': {'value': <float_value>}}.
+    function with an extra key:value pair that is specified as
+    'gdp_elasticity': {'value': <float_value>}.
     """
     ans = 0
     for subdict_name in user_mods:
@@ -77,7 +95,7 @@ def random_seed_from_subdict(subdict):
                 # params[param] is not an iterable value; make it so
                 tple = tuple((params[param],))
             all_vals.append(str((param, tple)))
-    txt = u"".join(all_vals).encode("utf-8")
+    txt = u''.join(all_vals).encode('utf-8')
     hsh = hashlib.sha512(txt)
     seed = int(hsh.hexdigest(), 16)
     return seed % np.iinfo(np.uint32).max  # pylint: disable=no-member
@@ -202,40 +220,40 @@ def groupby_means_and_comparisons(df1, df2, mask):
 
     # Create Difference tables, grouped by deciles and bins
     diffs_dec = dropq_diff_table(df1, df2,
-                                 groupby="weighted_deciles",
+                                 groupby='weighted_deciles',
                                  res_col='tax_diff',
                                  diff_col='_iitax',
-                                 suffix="_dec", wsum=dec_sum)
+                                 suffix='_dec', wsum=dec_sum)
 
     diffs_bin = dropq_diff_table(df1, df2,
-                                 groupby="webapp_income_bins",
+                                 groupby='webapp_income_bins',
                                  res_col='tax_diff',
                                  diff_col='_iitax',
-                                 suffix="_bin", wsum=bin_sum)
+                                 suffix='_bin', wsum=bin_sum)
 
     pr_diffs_dec = dropq_diff_table(df1, df2,
-                                    groupby="weighted_deciles",
+                                    groupby='weighted_deciles',
                                     res_col='payrolltax_diff',
                                     diff_col='_payrolltax',
-                                    suffix="_dec", wsum=pr_dec_sum)
+                                    suffix='_dec', wsum=pr_dec_sum)
 
     pr_diffs_bin = dropq_diff_table(df1, df2,
-                                    groupby="webapp_income_bins",
+                                    groupby='webapp_income_bins',
                                     res_col='payrolltax_diff',
                                     diff_col='_payrolltax',
-                                    suffix="_bin", wsum=pr_bin_sum)
+                                    suffix='_bin', wsum=pr_bin_sum)
 
     comb_diffs_dec = dropq_diff_table(df1, df2,
-                                      groupby="weighted_deciles",
+                                      groupby='weighted_deciles',
                                       res_col='combined_diff',
                                       diff_col='_combined',
-                                      suffix="_dec", wsum=combined_dec_sum)
+                                      suffix='_dec', wsum=combined_dec_sum)
 
     comb_diffs_bin = dropq_diff_table(df1, df2,
-                                      groupby="webapp_income_bins",
+                                      groupby='webapp_income_bins',
                                       res_col='combined_diff',
                                       diff_col='_combined',
-                                      suffix="_bin", wsum=combined_bin_sum)
+                                      suffix='_bin', wsum=combined_bin_sum)
 
     mX_dec = create_distribution_table(df1, groupby='weighted_deciles',
                                        result_type='weighted_sum')
@@ -271,10 +289,12 @@ def run_nth_year_gdp_elast_model(year_n, start_year, taxrec_df, user_mods,
     """
     The run_nth_year_gdp_elast_model function assumes user_mods is a
     dictionary returned by the Calculator.read_json_parameter_files()
-    function with an extra subdictionary that is specified as
-    {'gdp_elasticity': {'value': <float_value>}}.
+    function with an extra key:value pair that is specified as
+    'gdp_elasticity': {'value': <float_value>}.
     """
     # pylint: disable=too-many-arguments,too-many-locals,too-many-statements
+
+    check_user_mods(user_mods)
 
     # Only makes sense to run for budget years 1 through n-1 (not for year 0)
     assert year_n > 0
@@ -340,7 +360,7 @@ def run_nth_year_gdp_elast_model(year_n, start_year, taxrec_df, user_mods,
 
     # Return gdp_effect results
     if return_json:
-        gdp_df = pd.DataFrame(data=[gdp_effect], columns=["col0"])
+        gdp_df = pd.DataFrame(data=[gdp_effect], columns=['col0'])
         gdp_elast_names_i = [x + '_' + str(year_n)
                              for x in GDP_ELAST_ROW_NAMES]
         gdp_elast_total = create_json_table(gdp_df,
@@ -356,10 +376,12 @@ def calculate_baseline_and_reform(year_n, start_year, taxrec_df, user_mods):
     """
     calculate_baseline_and_reform function assumes specified user_mods is
     a dictionary returned by the Calculator.read_json_parameter_files()
-    function with an optional extra subdictionary that is specified as
-    {'gdp_elasticity': {'value': <float_value>}}.
+    function with an extra key:value pair that is specified as
+    'gdp_elasticity': {'value': <float_value>}.
     """
     # pylint: disable=too-many-locals,too-many-branches,too-many-statements
+
+    check_user_mods(user_mods)
 
     # Specify Consumption instance
     consump = Consumption()
@@ -433,7 +455,7 @@ def calculate_baseline_and_reform(year_n, start_year, taxrec_df, user_mods):
 
     # Seed random number generator with a seed value based on user_mods
     seed = random_seed(user_mods)
-    print("seed={}".format(seed))
+    print('seed={}'.format(seed))
     np.random.seed(seed)  # pylint: disable=no-member
 
     # Increment Calculator objects for year_n years and calculate
@@ -457,10 +479,12 @@ def run_nth_year_model(year_n, start_year, taxrec_df, user_mods,
     """
     run_nth_year_model function assumes specified specified user_mods is
     a dictionary returned by the Calculator.read_json_parameter_files()
-    function with an optional extra subdictionary that is specified as
-    {'gdp_elasticity': {'value': <float_value>}}.
+    function with an extra key:value pair that is specified as
+    'gdp_elasticity': {'value': <float_value>}.
     """
     # pylint: disable=too-many-arguments,too-many-locals,invalid-name
+
+    check_user_mods(user_mods)
 
     start_time = time.time()
     (soit_baseline, soit_reform,
@@ -478,7 +502,7 @@ def run_nth_year_model(year_n, start_year, taxrec_df, user_mods,
      combined_sum_reform) = groupby_means_and_comparisons(soit_baseline,
                                                           soit_reform, mask)
     elapsed_time = time.time() - start_time
-    print("elapsed time for this run: ", elapsed_time)
+    print('elapsed time for this run: ', elapsed_time)
 
     tots = [diff_sum, payrolltax_diff_sum, combined_diff_sum]
     fiscal_tots_diff = pd.DataFrame(data=tots, index=TOTAL_ROW_NAMES)
@@ -502,7 +526,7 @@ def run_nth_year_model(year_n, start_year, taxrec_df, user_mods,
         """
         append_year embedded function
         """
-        x.columns = [str(col) + "_{}".format(year_n) for col in x.columns]
+        x.columns = [str(col) + '_{}'.format(year_n) for col in x.columns]
         return x
 
     if not return_json:
@@ -585,10 +609,12 @@ def run_model(taxrec_df, start_year, user_mods,
     """
     run_model function assumes specified user_mods is a
     dictionary returned by the Calculator.read_json_parameter_files()
-    function with an optional extra subdictionary that is specified as
-    {'gdp_elasticity': {'value': <float_value>}}.
+    function with an extra key:value pair that is specified as
+    'gdp_elasticity': {'value': <float_value>}.
     """
     # pylint: disable=too-many-arguments,too-many-locals,invalid-name
+
+    check_user_mods(user_mods)
 
     num_fiscal_year_totals = list()
     mY_dec_table = dict()
@@ -633,10 +659,11 @@ def run_gdp_elast_model(taxrec_df, start_year, user_mods,
     """
     run_gdp_elast_model function assumes specified user_mods is a
     dictionary returned by the Calculator.read_json_parameter_files()
-    function with an optional extra subdictionary that is specified as
-    {'gdp_elasticity': {'value': <float_value>}}.
+    function with an extra key:value pair that is specified as
+    'gdp_elasticity': {'value': <float_value>}.
     """
     # pylint: disable=too-many-arguments
+    check_user_mods(user_mods)
     gdp_elasticity_totals = []
     for year_n in range(1, num_years):
         gdp_elast_i = run_nth_year_gdp_elast_model(year_n,

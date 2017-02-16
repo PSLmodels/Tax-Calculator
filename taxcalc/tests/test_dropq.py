@@ -98,6 +98,21 @@ def puf_path(tests_path):
     return os.path.join(tests_path, '..', '..', 'puf.csv')
 
 
+def test_check_user_mods(puf_1991_path, reform_file, assump_file):
+    usermods = list()
+    with pytest.raises(ValueError):
+        check_user_mods(usermods)
+    usermods = Calculator.read_json_param_files(reform_file.name,
+                                                assump_file.name)
+    with pytest.raises(ValueError):
+        check_user_mods(usermods)
+    usermods['gdp_elasticity'] = dict()
+    check_user_mods(usermods)
+    usermods['unknown_key'] = dict()
+    with pytest.raises(ValueError):
+        check_user_mods(usermods)
+
+
 @pytest.mark.parametrize("rjson", [(True), (False)])
 def test_run_model_with_usermods_from_code(puf_1991_path, rjson):
     fyr = 2016
@@ -127,7 +142,7 @@ def test_run_model_with_usermods_from_files(puf_1991_path,
                                             reform_file, assump_file):
     usermods = Calculator.read_json_param_files(reform_file.name,
                                                 assump_file.name)
-    usermods['gdp_elasticity'] = {'value': 0.0}
+    usermods['gdp_elasticity'] = dict()
     # for this usermods the computed seed = 4109528928
     fyr = 2016
     tax_data = pd.read_csv(puf_1991_path)
@@ -146,6 +161,7 @@ def test_calculate_baseline_and_reform_error(puf_1991_path,
                                                 assump_file.name)
     usermods['behavior'] = {2016: {'_BE_sub': [0.20]}}
     usermods['growdiff_response'] = {2020: {'_ABOOK': [0.01]}}
+    usermods['gdp_elasticity'] = dict()
     tax_data = pd.read_csv(puf_1991_path)
     with pytest.raises(ValueError):
         calculate_baseline_and_reform(2, 2015, tax_data, usermods)
@@ -154,7 +170,7 @@ def test_calculate_baseline_and_reform_error(puf_1991_path,
 def test_run_nth_year_model(puf_1991_path, reform_file, assump_file):
     usermods = Calculator.read_json_param_files(reform_file.name,
                                                 assump_file.name)
-    usermods['gdp_elasticity'] = {'value': 0.0}
+    usermods['gdp_elasticity'] = dict()
     tax_data = pd.read_csv(puf_1991_path)
     year_n = 2
     start_year = 2016
@@ -195,7 +211,7 @@ def test_dropq_with_full_puf(puf_path):
     usermods['behavior'] = {}
     usermods['growdiff_baseline'] = {}
     usermods['growdiff_response'] = {}
-    usermods['gdp_elasticity'] = {'value': 0.0}
+    usermods['gdp_elasticity'] = {}
     # create a Policy object (clp) containing current-law policy parameters
     clp = Policy()
     clp.implement_reform(usermods['policy'])
@@ -369,6 +385,7 @@ def test_create_dropq_dist_table_groupby_options(groupby, result_type,
     usermods['behavior'] = dict()
     usermods['growdiff_baseline'] = dict()
     usermods['growdiff_response'] = dict()
+    usermods['gdp_elasticity'] = dict()
     tax_data = pd.read_csv(puf_1991_path)
     (soit_baseline, soit_reform,
      mask) = calculate_baseline_and_reform(year_n, start_year,
@@ -405,6 +422,7 @@ def test_create_dropq_diff_table_groupby_options(groupby, res_col,
     usermods['behavior'] = dict()
     usermods['growdiff_baseline'] = dict()
     usermods['growdiff_response'] = dict()
+    usermods['gdp_elasticity'] = dict()
     tax_data = pd.read_csv(puf_1991_path)
     (soit_baseline, soit_reform,
      mask) = calculate_baseline_and_reform(year_n, start_year,
