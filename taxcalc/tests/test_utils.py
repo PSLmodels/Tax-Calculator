@@ -1,7 +1,9 @@
 import os
 import sys
+import json
 import math
 import filecmp
+import re
 import tempfile
 import numpy as np
 import pandas as pd
@@ -114,10 +116,7 @@ def test_expand_2D_variable_rates():
 
 def test_validity_of_name_lists():
     assert len(TABLE_COLUMNS) == len(TABLE_LABELS)
-    calc_vars = Records.CALCULATED_VARS
-    calc_vars.add('s006')
-    stat_vars = set(STATS_COLUMNS)
-    assert stat_vars.issubset(calc_vars)
+    assert set(STATS_COLUMNS).issubset(Records.CALCULATED_VARS | {'s006'})
 
 
 def test_create_tables(puf_1991, weights_1991):
@@ -724,12 +723,84 @@ def test_json_read_write():
     os.remove(test_file.name)
 
 
+def test_json_read_write_sorted():
+    test_file = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    test_dict = {1: '', '10': '', 100: '', 90: '', 9: ''}
+    write_json_to_file(test_dict, test_file.name, sort_keys=True)
+    read = read_json_from_file(test_file.name, sort=True)
+    assert list(read.keys()) == ['1', '9', '10', '90', '100']
+    test_file.close()
+    os.remove(test_file.name)
+
+
+def test_pad_nums_in_string():
+    assert pad_nums_in_str('a1b', 5) == 'a00001b'
+    assert pad_nums_in_str('1a2abc333ab_cd/\4', 2) == '01a02abc333ab_cd/\04'
+
+
+def test_sort_dict_deep():
+    _dict = {1: {1: {1: 1, 2: 2, 3: 3}, 2: '2'}, 2: []}
+    result = sort_dict_deep(_dict, sorter=lambda kvp: kvp[0] * -1)
+    assert result == OrderedDict([
+        (2, []),
+        (1, OrderedDict([
+            (2, '2'),
+            (1, OrderedDict([(3, 3), (2, 2), (1, 1)]))
+        ])),
+    ])
+
+
+def test_pad_nums_in_string():
+    assert pad_nums_in_str('a1b', 5) == 'a00001b'
+    assert pad_nums_in_str('1a2abc333ab_cd/\4', 2) == '01a02abc333ab_cd/\04'
+
+
 def test_string_to_number():
     assert string_to_number(None) == 0
     assert string_to_number('') == 0
     assert string_to_number('1') == 1
     assert string_to_number('1.') == 1.
     assert string_to_number('1.23') == 1.23
+
+
+def test_get_tc_version():
+    assert re.compile("^\d\.\d\.\d\-\d+").match(get_tc_version())
+
+
+def test_resolve_path_with_cwd():
+    assert resolve_path_with_cwd(None) is None
+    assert resolve_path_with_cwd(1) is None
+    assert os.path.isabs(resolve_path_with_cwd('1'))
+    assert os.path.isabs(resolve_path_with_cwd('./'))
+    assert os.path.isabs(resolve_path_with_cwd('../'))
+
+
+def test_resolve_paths_with_cwd():
+    assert resolve_paths_with_cwd([None, 1]) == [None, None]
+    for result in resolve_paths_with_cwd(['1', './', '../']):
+        assert os.path.isabs(result)
+
+
+def test_update_dict_ex():
+    _dict = {}
+    update_dict_ex(_dict, 1, 1)
+    assert _dict == {1: 1}
+    update_dict_ex(_dict, '47', '47')
+    assert _dict == {1: 1, '47': '47'}
+    with pytest.raises(ValueError):
+        update_dict_ex(_dict, '47', '47', matching_ok=False)
+    update_dict_ex(_dict, '47', '47')
+    with pytest.raises(ValueError):
+        update_dict_ex(_dict, '47', 47)
+
+
+def test_merge_dicts_ex():
+    assert merge_dicts_ex({1: 1}, {'a': 'b'}) == {1: 1, 'a': 'b'}
+    assert merge_dicts_ex({1: 1}, {1: 1}) == {1: 1}
+    with pytest.raises(ValueError):
+        merge_dicts_ex({1: 1}, {1: 1}, matching_ok=False)
+    with pytest.raises(ValueError):
+        merge_dicts_ex({1: 1}, {1: '1'})
 
 
 def test_ce_aftertax_income(puf_1991, weights_1991):

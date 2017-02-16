@@ -1,0 +1,1 @@
+WRITE_FUNCS_BY_FORM = {}

@@ -1,0 +1,92 @@
+{
+  "us1040": {
+    "title": "Form 1040",
+    "description": "U.S. Individual Income Tax Return",
+    "filer_id_field": "your_ssn"
+  },
+  "us1040sa": {
+    "title": "Form 1040 Schedule A",
+    "description": "Itemized Deductions",
+    "filer_id_field": "your_ssn"
+  },
+  "us1040sb": {
+    "title": "Form 1040/1040A Schedule B",
+    "description": "Interest and Ordinary Dividends",
+    "filer_id_field": "your_ssn"
+  },
+  "us1040sc": {
+    "title": "Form 1040 Schedule C",
+    "description": "Profit or Loss From Business",
+    "filer_id_field": "ssn"
+  },
+  "us1040sd": {
+    "title": "Form 1040 Schedule D",
+    "description": "Capital Gains and Losses",
+    "filer_id_field": "your_ssn"
+  },
+  "us1040se": {
+    "title": "Form 1040 Schedule E",
+    "description": "Supplemental Income and Loss",
+    "filer_id_field": "your_ssn_1"
+  },
+  "us1040seic": {
+    "title": "Form 1040/1040A Schedule EIC",
+    "description": "Earned Income Credit",
+    "filer_id_field": "your_ssn"
+  },
+  "us1040sr": {
+    "title": "Form 1040/1040A Schedule R",
+    "description": "Credit for the Elderly or the Disabled",
+    "filer_id_field": "your_ssn"
+  },
+  "us1040sse": {
+    "title": "Form 1040 Schedule SE",
+    "description": "Self-Employment Tax",
+    "filer_id_field": "ssn_of_person_with_sei_1"
+  },
+  "us2441": {
+    "title": "Form 2441",
+    "description": "Child and Dependent Care Expenses",
+    "filer_id_field": "your_ssn"
+  },
+  "us3800": {
+    "title": "Form 3800",
+    "description": "General Business Credit",
+    "filer_id_field": "identifying_number_1"
+  },
+  "us4137": {
+    "title": "Form 4137",
+    "description": "Social Security and Medicare Tax on Unreported Tip Income",
+    "filer_id_field": "ssn"
+  },
+  "us4255": {
+    "title": "Form 4255",
+    "description": "Recapture of Investment Credit",
+    "filer_id_field": "identifying_number"
+  },
+  "us4952": {
+    "title": "Form 4952",
+    "description": "Investment Interest Expense Deduction",
+    "filer_id_field": "identifying_number"
+  },
+  "us5695": {
+    "title": "Form 5695",
+    "description": "Residential Energy Credits",
+    "filer_id_field": "your_ssn"
+  },
+  "us6251": {
+    "title": "Form 6251",
+    "description": "Alternative Minimum Tax - Individuals",
+    "filer_id_field": "your_ssn"
+  },
+  "us8801": {
+    "title": "Form 8801",
+    "description": "Credit for Prior Year Minimum Tax",
+    "filer_id_field": "identifying_number"
+  },
+  "us8863": {
+    "title": "Form 8863",
+    "description": "Education Credits",
+    "filer_id_field": "your_ssn_1"
+  }
+}
