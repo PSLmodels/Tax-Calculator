@@ -51,15 +51,12 @@ class IncomeTaxIO(object):
         a static analysis of reform is conducted, or
         string is name of optional ASSUMP file.
 
+    aging_input_data: boolean
+        whether or not to age record data from data year to tax_year.
+
     exact_calculations: boolean
         specifies whether or not exact tax calculations are done without
         any smoothing of "stair-step" provisions in income tax law.
-
-    blowup_input_data: boolean
-        whether or not to age record data from data year to tax_year.
-
-    output_weights: boolean
-        whether or will be including sample weights in output.
 
     output_records: boolean
         whether or not to write CSV-formatted file containing the values
@@ -86,8 +83,7 @@ class IncomeTaxIO(object):
     """
 
     def __init__(self, input_data, tax_year, reform, assump,
-                 exact_calculations,
-                 blowup_input_data, output_weights,
+                 aging_input_data, exact_calculations,
                  output_records, csv_dump):
         """
         IncomeTaxIO class constructor.
@@ -98,9 +94,11 @@ class IncomeTaxIO(object):
         # pylint: disable=too-many-locals
         if isinstance(input_data, six.string_types):
             self._using_input_file = True
-            # check that input_data string ends with ".csv"
-            if input_data.endswith('.csv'):
-                inp = '{}-{}'.format(input_data[:-4], str(tax_year)[2:])
+            # remove any leading directory path from INPUT filename
+            fname = os.path.basename(input_data)
+            # check if fname ends with ".csv"
+            if fname.endswith('.csv'):
+                inp = '{}-{}'.format(fname[:-4], str(tax_year)[2:])
             else:
                 msg = 'INPUT file named {} does not end in .csv'
                 raise ValueError(msg.format(input_data))
@@ -111,27 +109,33 @@ class IncomeTaxIO(object):
             msg = 'INPUT is neither string nor Pandas DataFrame'
             raise ValueError(msg)
         # construct output_filename and delete old output file if it exists
-        if assump is None:
-            asm = ''
-        elif isinstance(assump, six.string_types):
-            if assump.endswith('.json'):
-                asm = '-{}'.format(assump[:-5])
-            else:
-                asm = '-{}'.format(assump)
-        else:
-            msg = 'IncomeTaxIO.ctor assump is neither None nor str'
-            raise ValueError(msg)
         if reform is None:
             self._reform = False
             ref = ''
         elif isinstance(reform, six.string_types):
             self._reform = True
-            if reform.endswith('.json'):
-                ref = '-{}'.format(reform[:-5])
+            # remove any leading directory path from REFORM filename
+            fname = os.path.basename(reform)
+            # check if fname ends with ".json"
+            if fname.endswith('.json'):
+                ref = '-{}'.format(fname[:-5])
             else:
-                ref = '-{}'.format(reform)
+                ref = '-{}'.format(fname)
         else:
             msg = 'IncomeTaxIO.ctor reform is neither None nor str'
+            raise ValueError(msg)
+        if assump is None:
+            asm = ''
+        elif isinstance(assump, six.string_types):
+            # remove any leading directory path from ASSUMP filename
+            fname = os.path.basename(assump)
+            # check if fname ends with ".json"
+            if fname.endswith('.json'):
+                asm = '-{}'.format(fname[:-5])
+            else:
+                asm = '-{}'.format(fname)
+        else:
+            msg = 'IncomeTaxIO.ctor assump is neither None nor str'
             raise ValueError(msg)
         if output_records:
             self._output_filename = '{}.records{}{}'.format(inp, ref, asm)
@@ -162,26 +166,16 @@ class IncomeTaxIO(object):
         # set tax policy parameters to specified tax_year
         pol.set_year(tax_year)
         # read input file contents into Records object
-        if blowup_input_data:
-            if output_weights:
-                recs = Records(data=input_data,
-                               exact_calculations=exact_calculations)
-            else:
-                recs = Records(data=input_data,
-                               exact_calculations=exact_calculations,
-                               weights=None)
-        else:
-            if output_weights:
-                recs = Records(data=input_data,
-                               exact_calculations=exact_calculations,
-                               blowup_factors=None,
-                               start_year=tax_year)
-            else:
-                recs = Records(data=input_data,
-                               exact_calculations=exact_calculations,
-                               blowup_factors=None,
-                               weights=None,
-                               start_year=tax_year)
+        if aging_input_data:
+            recs = Records(data=input_data,
+                           exact_calculations=exact_calculations)
+        else:  # input_data are raw data
+            recs = Records(data=input_data,
+                           exact_calculations=exact_calculations,
+                           blowup_factors=None,
+                           adjust_ratios=None,
+                           weights=None,
+                           start_year=tax_year)
         # create Calculator object
         con = Consumption()
         con.update_consumption(con_d)
@@ -195,7 +189,7 @@ class IncomeTaxIO(object):
                                         verbose=False,
                                         consumption=con,
                                         growth=gro,
-                                        sync_years=blowup_input_data)
+                                        sync_years=aging_input_data)
             beh = Behavior()
             beh.update_behavior(beh_d)
             self._calc = Calculator(policy=pol, records=recs,
@@ -203,13 +197,13 @@ class IncomeTaxIO(object):
                                     behavior=beh,
                                     consumption=con,
                                     growth=gro,
-                                    sync_years=blowup_input_data)
+                                    sync_years=aging_input_data)
         else:
             self._calc = Calculator(policy=pol, records=recs,
                                     verbose=True,
                                     consumption=con,
                                     growth=gro,
-                                    sync_years=blowup_input_data)
+                                    sync_years=aging_input_data)
 
     def tax_year(self):
         """

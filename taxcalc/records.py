@@ -42,6 +42,12 @@ class Records(object):
         None creates empty blowup-factors DataFrame;
         default value is filename of the default blowup factors.
 
+    adjust_ratios: string or Pandas DataFrame or None
+        string describes CSV file in which adjustment ratios reside;
+        DataFrame already contains adjustment ratios;
+        None creates empty adjustment-ratios DataFrame;
+        default value is filename of the default adjustment ratios.
+
     weights: string or Pandas DataFrame or None
         string describes CSV file in which weights reside;
         DataFrame already contains weights;
@@ -91,6 +97,8 @@ class Records(object):
     WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
     BLOWUP_FACTORS_FILENAME = 'growfactors.csv'
     BLOWUP_FACTORS_PATH = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
+    ADJUST_RATIOS_FILENAME = 'puf_ratios.csv'
+    ADJUST_RATIOS_PATH = os.path.join(CUR_PATH, ADJUST_RATIOS_FILENAME)
 
     # specify set of input variables used in Tax-Calculator calculations:
     USABLE_READ_VARS = set([
@@ -121,7 +129,7 @@ class Records(object):
         'MARS', 'MIDR', 'RECID', 'filer', 'cmbtp',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
         'nu13', 'elderly_dependent',
-        's006', 'nu05'])
+        's006', 'nu05', 'agi_bin'])
 
     # specify set of input variables that MUST be read by Tax-Calculator:
     MUST_READ_VARS = set(['RECID', 'MARS'])
@@ -133,7 +141,7 @@ class Records(object):
         'n24', 'XTOT',
         'MARS', 'MIDR', 'RECID', 'filer',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
-        'nu13', 'elderly_dependent'])
+        'nu13', 'elderly_dependent', 'agi_bin'])
 
     # specify set of Record variables that are calculated by Tax-Calculator:
     CALCULATED_VARS = set([
@@ -176,6 +184,7 @@ class Records(object):
                  data='puf.csv',
                  exact_calculations=False,
                  blowup_factors=BLOWUP_FACTORS_PATH,
+                 adjust_ratios=ADJUST_RATIOS_PATH,
                  weights=WEIGHTS_PATH,
                  start_year=PUFCSV_YEAR):
         """
@@ -201,11 +210,14 @@ class Records(object):
                            rtol=0.0, atol=0.001):
             msg = 'expression "e00600 >= e00650" is not true for every record'
             raise ValueError(msg)
-        # read extrapolation blowup factors and sample weights
+        # read extrapolation blowup factors, adjustment ratios, and
+        # sample weights
         self.BF = None
         self._read_blowup(blowup_factors)
         self.WT = None
         self._read_weights(weights)
+        self.ADJ = None
+        self._read_adjust(adjust_ratios)
         # weights must be same size as tax record data
         if not self.WT.empty and self.dim != len(self.WT):
             frac = float(self.dim) / len(self.WT)
@@ -241,6 +253,8 @@ class Records(object):
         self._current_year += 1
         # apply Stage 1 Extrapolation blowup factors
         self._blowup(self.current_year)
+        # apply Stage 3 adjustment ratios
+        self._adjust(self.current_year)
         # specify Stage 2 Extrapolation sample weights
         wt_colname = 'WT{}'.format(self.current_year)
         if wt_colname in self.WT.columns:
@@ -356,6 +370,14 @@ class Records(object):
         self.p87521 *= ATXPY
         self.cmbtp *= ATXPY
 
+    def _adjust(self, year):
+        """
+        Adjust value of income variables to match SOI distributions
+        """
+        if len(self.ADJ) != 0:
+            # Interest income
+            self.e00300 *= self.ADJ['INT{}'.format(year)][self.agi_bin]
+
     def _read_data(self, data, exact_calcs):
         """
         Read Records data from file or use specified DataFrame as data.
@@ -468,3 +490,27 @@ class Records(object):
                    'or a Pandas DataFrame')
             raise ValueError(msg)
         setattr(self, 'BF', BF)
+
+    def _read_adjust(self, adjust_ratios):
+        """
+        Read Records adjustment ratios from file or uses specified DataFrame
+        as data or creates empty DataFrame if None
+        """
+        if adjust_ratios is None:
+            ADJ = pd.DataFrame({'nothing': []})
+            setattr(self, 'ADJ', ADJ)
+            return
+        if isinstance(adjust_ratios, pd.DataFrame):
+            ADJ = adjust_ratios
+        elif isinstance(adjust_ratios, six.string_types):
+            if os.path.isfile(adjust_ratios):
+                ADJ = pd.read_csv(adjust_ratios, index_col=0)
+            else:
+                ADJ = Records._read_egg_csv('adjust_ratios',
+                                            Records.ADJUST_RATIOS_FILENAME)
+            ADJ = ADJ.transpose()
+        else:
+            msg = ('adjust_ratios is not None or a string'
+                   'or a Pandas DataFrame')
+            raise ValueError(msg)
+        setattr(self, 'ADJ', ADJ)
