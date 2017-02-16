@@ -223,9 +223,8 @@ def test_1(reformfile1):
                          tax_year=2015,
                          reform=reformfile1.name,
                          assump=None,
+                         aging_input_data=False,
                          exact_calculations=False,
-                         blowup_input_data=False,
-                         output_weights=False,
                          output_records=False,
                          csv_dump=False)
     output = inctax.calculate()
@@ -285,9 +284,8 @@ def test_2(reformfile2):
                          tax_year=2015,
                          reform=reformfile2.name,
                          assump=None,
+                         aging_input_data=False,
                          exact_calculations=False,
-                         blowup_input_data=False,
-                         output_weights=False,
                          output_records=False,
                          csv_dump=False)
     output = inctax.calculate()
