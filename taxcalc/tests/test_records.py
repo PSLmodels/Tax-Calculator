@@ -17,6 +17,9 @@ def test_incorrect_Records_instantiation(puf_1991):
     with pytest.raises(ValueError):
         recs = Records(data=puf_1991, blowup_factors=None, weights=None,
                        start_year=list())
+    with pytest.raises(ValueError):
+        recs = Records(data=puf_1991, blowup_factors=None, weights=None,
+                       adjust_ratios=list())
 
 
 def test_correct_Records_instantiation(puf_1991, puf_1991_path, weights_1991):
@@ -34,6 +37,12 @@ def test_correct_Records_instantiation(puf_1991, puf_1991_path, weights_1991):
     assert rec2
     assert np.all(rec2.MARS != 0)
     assert rec2.current_year == Records.PUF_YEAR
+    adj_df = pd.read_csv(Records.ADJUST_RATIOS_PATH)
+    adj_df = adj_df.transpose()
+    rec3 = Records(data=puf_1991, weights=None, adjust_ratios=adj_df)
+    assert rec3
+    assert np.all(rec3.MARS != 0)
+    assert rec3.current_year == Records.PUF_YEAR
 
 
 def test_correct_Records_instantiation_sample(puf_1991, weights_1991):
