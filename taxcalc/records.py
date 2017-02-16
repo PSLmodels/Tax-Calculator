@@ -373,6 +373,7 @@ class Records(object):
         """
         Adjust value of income variables to match SOI distributions
         """
+        # pylint: disable=unsubscriptable-object
         if len(self.ADJ) != 0:
             # Interest income
             self.e00300 *= self.ADJ['INT{}'.format(year)][self.agi_bin]
