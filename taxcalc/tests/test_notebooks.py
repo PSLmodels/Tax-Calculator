@@ -46,4 +46,3 @@ def test_10_Minutes_to_Tax_Calculator():
 @pytest.mark.requires_pufcsv
 def test_Behavioral_example():
     assert notebook_run(NB1) == 0
-
