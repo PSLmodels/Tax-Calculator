@@ -38,6 +38,12 @@ class Records(object):
     gfactors: Growfactors class instance or None
         containing record data extrapolation (or "blowup") factors
 
+    adjust_ratios: string or Pandas DataFrame or None
+        string describes CSV file in which adjustment ratios reside;
+        DataFrame already contains adjustment ratios;
+        None creates empty adjustment-ratios DataFrame;
+        default value is filename of the default adjustment ratios.
+
     weights: string or Pandas DataFrame or None
         string describes CSV file in which weights reside;
         DataFrame already contains weights;
@@ -89,6 +95,8 @@ class Records(object):
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
     WEIGHTS_FILENAME = 'puf_weights.csv'
     WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
+    ADJUST_RATIOS_FILENAME = 'puf_ratios.csv'
+    ADJUST_RATIOS_PATH = os.path.join(CUR_PATH, ADJUST_RATIOS_FILENAME)
 
     # specify set of input variables used in Tax-Calculator calculations:
     USABLE_READ_VARS = set([
@@ -119,7 +127,7 @@ class Records(object):
         'MARS', 'MIDR', 'RECID', 'filer', 'cmbtp',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
         'nu13', 'elderly_dependent',
-        's006', 'nu05'])
+        's006', 'nu05', 'agi_bin'])
 
     # specify set of input variables that MUST be read by Tax-Calculator:
     MUST_READ_VARS = set(['RECID', 'MARS'])
@@ -131,7 +139,7 @@ class Records(object):
         'n24', 'XTOT',
         'MARS', 'MIDR', 'RECID', 'filer',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
-        'nu13', 'elderly_dependent'])
+        'nu13', 'elderly_dependent', 'agi_bin'])
 
     # specify set of Record variables that are calculated by Tax-Calculator:
     CALCULATED_VARS = set([
@@ -175,6 +183,7 @@ class Records(object):
                  exact_calculations=False,
                  gfactors=Growfactors(),
                  weights=WEIGHTS_PATH,
+                 adjust_ratios=ADJUST_RATIOS_PATH,
                  start_year=PUFCSV_YEAR):
         """
         Records class constructor
@@ -208,6 +217,8 @@ class Records(object):
         # read sample weights
         self.WT = None
         self._read_weights(weights)
+        self.ADJ = None
+        self._read_adjust(adjust_ratios)
         # weights must be same size as tax record data
         if not self.WT.empty and self.dim != len(self.WT):
             frac = float(self.dim) / len(self.WT)
@@ -241,9 +252,11 @@ class Records(object):
         Also, does blowup and reweighting for the new current year.
         """
         self._current_year += 1
-        # apply variable extrapolation factors
+        # apply variable extrapolation growfactors
         if self.gfactors is not None:
             self._blowup(self.current_year)
+        # apply variable adjustment ratios
+        self._adjust(self.current_year)
         # specify current-year sample weights
         if self.WT is not None:
             wt_colname = 'WT{}'.format(self.current_year)
@@ -360,6 +373,14 @@ class Records(object):
         self.p87521 *= ATXPY
         self.cmbtp *= ATXPY
 
+    def _adjust(self, year):
+        """
+        Adjust value of income variables to match SOI distributions
+        """
+        if len(self.ADJ) != 0:
+            # Interest income
+            self.e00300 *= self.ADJ['INT{}'.format(year)][self.agi_bin]
+
     def _read_data(self, data, exact_calcs):
         """
         Read Records data from file or use specified DataFrame as data.
@@ -449,3 +470,27 @@ class Records(object):
             msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
         setattr(self, 'WT', WT)
+
+    def _read_adjust(self, adjust_ratios):
+        """
+        Read Records adjustment ratios from file or uses specified DataFrame
+        as data or creates empty DataFrame if None
+        """
+        if adjust_ratios is None:
+            ADJ = pd.DataFrame({'nothing': []})
+            setattr(self, 'ADJ', ADJ)
+            return
+        if isinstance(adjust_ratios, pd.DataFrame):
+            ADJ = adjust_ratios
+        elif isinstance(adjust_ratios, six.string_types):
+            if os.path.isfile(adjust_ratios):
+                ADJ = pd.read_csv(adjust_ratios, index_col=0)
+            else:
+                ADJ = Records._read_egg_csv('adjust_ratios',
+                                            Records.ADJUST_RATIOS_FILENAME)
+            ADJ = ADJ.transpose()
+        else:
+            msg = ('adjust_ratios is not None or a string'
+                   'or a Pandas DataFrame')
+            raise ValueError(msg)
+        setattr(self, 'ADJ', ADJ)
