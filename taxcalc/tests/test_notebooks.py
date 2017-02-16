@@ -36,8 +36,14 @@ def notebook_run(path):
             os.remove(f)
 
 
+@pytest.mark.notebook
+@pytest.mark.requires_pufcsv
 def test_10_Minutes_to_Tax_Calculator():
     assert notebook_run(NB0) == 0
 
+
+@pytest.mark.notebook
+@pytest.mark.requires_pufcsv
 def test_Behavioral_example():
     assert notebook_run(NB1) == 0
+
