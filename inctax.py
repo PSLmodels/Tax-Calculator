@@ -17,33 +17,33 @@ def main():
     # parse command-line arguments:
     parser = argparse.ArgumentParser(
         prog='python inctax.py',
-        description=('Writes to a file the federal income tax OUTPUT for the '
-                     'tax filing units specified in the INPUT file with the '
-                     'OUTPUT computed from the INPUT for the TAXYEAR using '
-                     'the Tax-Calculator. '
+        description=('Writes to a file the federal income and payroll tax '
+                     'OUTPUT for each filing unit specified in the INPUT '
+                     'file, with the OUTPUT computed from the INPUT for '
+                     'the TAXYEAR using the Tax-Calculator. '
                      'The INPUT file is a CSV-formatted file that contains '
                      'variable names that include the Records.MUST_READ_VARS '
                      'set plus other variables.  The OUTPUT file is in '
-                     'Internet-TAXSIM format.  The OUTPUT filename is the '
-                     'INPUT filename (excluding the .csv suffix or '
-                     '.gz suffix, or both) followed by '
-                     'a string equal to "-YY" (where the YY is the last two '
-                     'digits in the TAXYEAR) and all that is followed by a '
-                     'trailing string.  The trailing string is ".out-inctax" '
-                     'if no --reform option is specified; otherwise the '
-                     'trailing string is ".out-inctax-REFORM" (excluding any '
-                     '".json" ending to the REFORM filename) if no --assump '
-                     'option is specified or ".out-inctax-REFORM-ASSUMP" '
-                     '(excluding any .json ending to the ASSUMP filename) '
-                     'if an --assump option is specified.  The OUTPUT '
-                     'file contains the first 28 Internet-TAXSIM output '
+                     'Internet-TAXSIM format.  The OUTPUT file name is the '
+                     'INPUT file name (excluding directory path prefix and '
+                     '.csv suffix) followed by a string equal to "-YY" '
+                     '(where the YY is the last two digits in the TAXYEAR) '
+                     'and all that is followed by a trailing string.  The '
+                     'trailing string is ".out-inctax" if no --reform '
+                     'option is specified; otherwise the trailing string is '
+                     '".out-inctax-REFORM" (excluding any ".json" ending to '
+                     'the REFORM file name) if no --assump option is '
+                     'specified or ".out-inctax-REFORM-ASSUMP" (excluding '
+                     'any .json ending to the ASSUMP file name) if an '
+                     '--assump option is specified.  The OUTPUT file '
+                     'contains the first 28 Internet-TAXSIM output '
                      'variables.  Use --iohelp flag for more information. '
                      'For details on the Internet-TAXSIM version 9.3 '
                      'OUTPUT format, go to '
-                     'http://users.nber.org/~taxsim/taxsim-calc9/'))
+                     '<http://users.nber.org/~taxsim/taxsim-calc9/>.'))
     parser.add_argument('--iohelp',
                         help=('optional flag to show INPUT and OUTPUT '
-                              'variable definitions and exit'),
+                              'variable definitions and exit.'),
                         default=False,
                         action="store_true")
     parser.add_argument('--reform',
@@ -55,16 +55,32 @@ def main():
                         default=None)
     parser.add_argument('--assump',
                         help=('ASSUMP is name of optional file that contains '
-                              'economic assumption parameters ("behavior", '
-                              '"consumption" and "growth" parameters); the '
-                              'ASSUMP file is specified using JSON that may '
-                              'include //-comments. No --assump implies use '
+                              'economic assumption parameters ("consumption" '
+                              'and "behavior" and "growdiff_baseline" and '
+                              '"growdiff_response"); the ASSUMP file is '
+                              'specified using JSON that may include '
+                              '//-comments. No --assump implies use '
                               'of static analysis assumptions.  Note that '
                               'use of the --assump option requires use of '
                               'the --reform option (although the specified '
                               'reform could be empty, meaning it could be '
                               'current-law policy).'),
                         default=None)
+    parser.add_argument('--aging',
+                        help=('optional flag that triggers three things: '
+                              'the default extrapolation (or blowup) logic, '
+                              'the default income ajustment logic, and the '
+                              'default reweighting logic that will age the '
+                              'INPUT data from Records.PUF_YEAR to '
+                              'TAXYEAR.  The --aging flag also adds the '
+                              'sampling weight for each unit as OUTPUT '
+                              'variable 29.  It makes sense to use this flag '
+                              'only if the restricted "puf.csv" file is used '
+                              'as INPUT.  No --aging flag implies INPUT data '
+                              'are considered raw data that are not aged in '
+                              'any way.'),
+                        default=False,
+                        action="store_true")
     parser.add_argument('--exact',
                         help=('optional flag to suppress smoothing in income '
                               'tax calculations that eliminate marginal-tax-'
@@ -74,32 +90,15 @@ def main():
                               'law.'),
                         default=False,
                         action="store_true")
-    parser.add_argument('--blowup',
-                        help=('optional flag that triggers the default '
-                              'blowup (or aging) logic built '
-                              'into the Tax-Calculator that will age the '
-                              'INPUT data from Records.PUF_YEAR to TAXYEAR. '
-                              'No --blowup option implies INPUT data are '
-                              'considered raw data that are not aged or '
-                              'adjusted in any way.'),
-                        default=False,
-                        action="store_true")
-    parser.add_argument('--weights',
-                        help=('optional flag that causes OUTPUT to have an '
-                              'additional variable [29] containing the s006 '
-                              'sample weight, which will be aged if the '
-                              '--blowup option is used'),
-                        default=False,
-                        action="store_true")
     parser.add_argument('--fullcomp',
                         help=('optional flag that causes OUTPUT to have '
                               'marginal tax rates (MTRs) calculated with '
                               'respect to full compensation (but any '
                               'behavioral-response calculations always use '
                               'MTRs that are calculated with respect to full '
-                              'compensation).  No --fullcomp option implies '
+                              'compensation).  No --fullcomp flag implies '
                               'MTRs reported in OUTPUT are not calculated '
-                              'with respect to full compensation'),
+                              'with respect to full compensation.'),
                         default=False,
                         action="store_true")
     parser.add_argument('--ceeu',
@@ -108,35 +107,37 @@ def main():
                               'expected-utility of after-tax income values '
                               'for different constant-relative-risk-aversion '
                               'parameter values, to be written to stdout.  '
-                              'No --ceeu option implies nothing is written '
-                              'to stdout.  Note that --reform  option must '
+                              'No --ceeu flag implies nothing is written '
+                              'to stdout.  Note that --reform option must '
                               'be specified and aggregate combined taxes '
                               'under that reform must be same as under '
-                              'current-law policy for this option to work'),
+                              'current-law policy for this option to work.'),
                         default=False,
                         action="store_true")
     output = parser.add_mutually_exclusive_group(required=False)
     output.add_argument('--records',
-                        help=('optional flag that causes the output file to '
+                        help=('optional flag that causes the OUTPUT file to '
                               'be a CSV-formatted file containing for each '
                               'INPUT filing unit the TAXYEAR values of each '
                               'variable in the Records.USABLE_READ_VARS set. '
                               'If the --records option is specified, the '
-                              'output file name will be the same as if the '
+                              'OUTPUT file name will be the same as if the '
                               'option was not specified, except that the '
-                              '".out-inctax" part is replaced by ".records"'),
+                              '".out-inctax" part is replaced by '
+                              '".records".'),
                         default=False,
                         action="store_true")
     output.add_argument('--csvdump',
-                        help=('optional flag that causes the output file to '
+                        help=('optional flag that causes the OUTPUT file to '
                               'be a CSV-formatted file containing for each '
                               'INPUT filing unit the TAXYEAR values of each '
                               'variable in the Records.USABLE_READ_VARS set '
                               'and in the Records.CALCULATED_VARS set. '
                               'If the --csvdump option is specified, the '
-                              'output file name will be the same as if the '
+                              'OUTPUT file name will be the same as if the '
                               'option was not specified, except that the '
-                              '".out-inctax" part is replaced by ".csvdump"'),
+                              '".out-inctax" part is replaced by '
+                              '".csvdump".'),
                         default=False,
                         action="store_true")
     parser.add_argument('INPUT', nargs='?', default='',
@@ -153,7 +154,7 @@ def main():
     if args.iohelp:
         IncomeTaxIO.show_iovar_definitions()
         return 0
-    # check INPUT filename
+    # check INPUT file name
     if args.INPUT == '':
         sys.stderr.write('ERROR: must specify INPUT file name;\n')
         sys.stderr.write('USAGE: python inctax.py --help\n')
@@ -165,17 +166,16 @@ def main():
         return 1
     # check consistency of REFORM and ASSUMP options
     if args.assump and not args.reform:
-        sys.stderr.write('ERROR: cannot specify ASSUMP without a REFORM\n')
+        sys.stderr.write('ERROR: cannot specify ASSUMP without REFORM\n')
         sys.stderr.write('USAGE: python inctax.py --help\n')
         return 1
-    # instantiate IncometaxIO object and do federal income tax calculations
+    # instantiate IncometaxIO object and do federal inc/pay tax calculations
     inctax = IncomeTaxIO(input_data=args.INPUT,
                          tax_year=args.TAXYEAR,
                          reform=args.reform,
                          assump=args.assump,
+                         aging_input_data=args.aging,
                          exact_calculations=args.exact,
-                         blowup_input_data=args.blowup,
-                         output_weights=args.weights,
                          output_records=args.records,
                          csv_dump=args.csvdump)
     if args.records:
@@ -183,14 +183,14 @@ def main():
     elif args.csvdump:
         inctax.calculate(writing_output_file=False,
                          exact_output=args.exact,
-                         output_weights=args.weights,
+                         output_weights=args.aging,
                          output_mtr_wrt_fullcomp=args.fullcomp,
                          output_ceeu=args.ceeu)
         inctax.csv_dump(writing_output_file=True)
     else:
         inctax.calculate(writing_output_file=True,
                          exact_output=args.exact,
-                         output_weights=args.weights,
+                         output_weights=args.aging,
                          output_mtr_wrt_fullcomp=args.fullcomp,
                          output_ceeu=args.ceeu)
     # return no-error exit code
