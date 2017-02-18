@@ -5,7 +5,6 @@ Tests all the example JSON parameter files located in taxcalc/reforms directory
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 test_reforms.py
 # pylint --disable=locally-disabled test_reforms.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import os
 import glob

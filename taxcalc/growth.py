@@ -4,7 +4,6 @@ Tax-Calculator economic Growth adjustment class.
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 growth.py
 # pylint --disable=locally-disabled growth.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 from .policy import Policy
 from .parameters import ParametersBase

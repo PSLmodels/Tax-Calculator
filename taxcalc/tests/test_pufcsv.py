@@ -13,9 +13,7 @@ Read tax-calculator/TESTING.md for details.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 test_pufcsv.py
-# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy \
-#        test_pufcsv.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
+# pylint --disable=locally-disabled test_pufcsv.py
 
 import os
 import difflib

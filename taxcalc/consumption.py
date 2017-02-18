@@ -4,7 +4,6 @@ Tax-Calculator marginal Consumption class.
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 consumption.py
 # pylint --disable=locally-disabled consumption.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 from .parameters import ParametersBase
 from .policy import Policy

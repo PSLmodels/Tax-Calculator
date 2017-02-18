@@ -489,14 +489,16 @@ def test_expand_2D_accept_None():
                               num_years=4)
     npt.assert_array_equal(res, exp)
 
-    user_mods = {2016: {u'_II_brk2': _II_brk2}}
-    pol = Policy(start_year=2013)
-    pol.implement_reform(user_mods)
+    syr = 2013
+    pol = Policy(start_year=syr)
+    irates = pol.inflation_rates()
+    reform = {2016: {u'_II_brk2': _II_brk2}}
+    pol.implement_reform(reform)
     pol.set_year(2019)
-    irates = Policy.default_inflation_rates()
     # The 2019 policy should be the combination of the user-defined
     # value and CPI-inflated values from 2018
-    exp_2019 = [41000.] + [(1 + irates[2018]) * i for i in _II_brk2[2][1:]]
+    exp_2019 = [41000.] + [(1.0 + irates[2018 - syr]) * i
+                           for i in _II_brk2[2][1:]]
     exp_2019 = np.array(exp_2019)
     npt.assert_array_equal(pol.II_brk2, exp_2019)
 
@@ -528,13 +530,16 @@ def test_expand_2D_accept_None_additional_row():
     npt.assert_array_equal(res, exp)
 
     user_mods = {2016: {u'_II_brk2': _II_brk2}}
-    pol = Policy(start_year=2013)
+    syr = 2013
+    pol = Policy(start_year=syr)
+    irates = pol.inflation_rates()
     pol.implement_reform(user_mods)
     pol.set_year(2020)
-    irates = Policy.default_inflation_rates()
+    irates = pol.inflation_rates()
     # The 2020 policy should be the combination of the user-defined
     # value and CPI-inflated values from 2018
-    exp_2020 = [43000.] + [(1 + irates[2019]) * (1 + irates[2018]) * i
+    exp_2020 = [43000.] + [(1 + irates[2019 - syr]) *
+                           (1 + irates[2018 - syr]) * i
                            for i in _II_brk2[2][1:]]
     exp_2020 = np.array(exp_2020)
     npt.assert_allclose(pol.II_brk2, exp_2020)

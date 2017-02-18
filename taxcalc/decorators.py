@@ -4,7 +4,6 @@ Implement Numba JIT decorators used to speed-up tax-calculating functions.
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 decorators.py
 # pylint --disable=locally-disabled decorators.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import ast
 import inspect

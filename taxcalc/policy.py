@@ -3,12 +3,11 @@ Tax-Calculator federal tax policy Policy class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 policy.py
-# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy policy.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
-
+# pylint --disable=locally-disabled policy.py
 
 import re
 from .parameters import ParametersBase
+from .growfactors import Growfactors
 
 
 class Policy(ParametersBase):
@@ -18,6 +17,9 @@ class Policy(ParametersBase):
 
     Parameters
     ----------
+    gfactors: Growfactors class instance
+        containing price inflation rates and wage growth rates
+
     parameter_dict: dictionary of PARAM:DESCRIPTION pairs
         dictionary of policy parameters; if None, default policy
         parameters are read from the current_law_policy.json file.
@@ -29,25 +31,12 @@ class Policy(ParametersBase):
         number of calendar years for which to specify policy parameter
         values beginning with start_year.
 
-    inflation_rates: dictionary of YEAR:RATE pairs
-        variable inflation rates used to project future policy parameter
-        values; if None, default inflation rates (specified below) are used.
-
-    wage_growth_rates: dictionary of YEAR:RATE pairs
-        variable wage growth rates used to project future policy parameter
-        values; if None, default wage growth rates (specified below) are used.
-
     Raises
     ------
     ValueError:
+        if gfactors is not a Growfactors class instance.
         if parameter_dict is neither None nor a dictionary.
         if num_years is less than one.
-        if inflation_rates is neither None nor a dictionary.
-        if len(inflation_rates) is not equal to num_years.
-        if min(inflation_rates.keys()) is not equal to start_year.
-        if wage_growth_rates is neither None nor a dictionary.
-        if len(wage_growth_rates) is not equal to num_years.
-        if min(wage_growth_rates.keys()) is not equal to start_year.
 
     Returns
     -------
@@ -59,66 +48,27 @@ class Policy(ParametersBase):
     LAST_BUDGET_YEAR = 2026  # increases by one every calendar year
     DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
-    # default price inflation rates by year
-    __pirates = {2013: 0.0148, 2014: 0.0211, 2015: 0.0183, 2016: 0.0228,
-                 2017: 0.0222, 2018: 0.0229, 2019: 0.0233, 2020: 0.0233,
-                 2021: 0.0232, 2022: 0.0233, 2023: 0.0233, 2024: 0.0234,
-                 2025: 0.0235, 2026: 0.0235}
-
-    # default wage growth rates by year
-    __wgrates = {2013: 0.0199, 2014: 0.0401, 2015: 0.0395, 2016: 0.0388,
-                 2017: 0.0352, 2018: 0.0324, 2019: 0.0281, 2020: 0.0281,
-                 2021: 0.0306, 2022: 0.0315, 2023: 0.0317, 2024: 0.0317,
-                 2025: 0.0319, 2026: 0.0319}
-
     VALID_PARAM_CODE_NAMES = set(['ALD_InvInc_ec_base_code',
                                   'CTC_new_code'])
 
     PROHIBIT_PARAM_CODE = False
 
-    @staticmethod
-    def default_inflation_rates():
-        """
-        Return complete default price inflation rate dictionary.
-
-        Parameters
-        ----------
-        none
-
-        Returns
-        -------
-        default inflation rates: dict
-            decimal (not percentage) annual inflation rate by calendar year.
-        """
-        return Policy.__pirates
-
-    @staticmethod
-    def default_wage_growth_rates():
-        """
-        Return complete default wage growth rate dictionary.
-
-        Parameters
-        ----------
-        none
-
-        Returns
-        -------
-        default growth rates: dict
-            decimal (not percentage) annual growth rate by calyear.
-        """
-        return Policy.__wgrates
-
-    def __init__(self, parameter_dict=None,
+    def __init__(self,
+                 gfactors=Growfactors(),
+                 parameter_dict=None,
                  start_year=JSON_START_YEAR,
-                 num_years=DEFAULT_NUM_YEARS,
-                 inflation_rates=None,
-                 wage_growth_rates=None):
+                 num_years=DEFAULT_NUM_YEARS):
         """
         Policy class constructor.
         """
         # pylint: disable=too-many-arguments
         # pylint: disable=too-many-branches
         super(Policy, self).__init__()
+
+        if not isinstance(gfactors, Growfactors):
+            raise ValueError('gfactors is not a Growfactors instance')
+        self._gfactors = gfactors
+
         if parameter_dict is None:  # read default parameters
             self._vals = self._params_dict_from_json_file()
         elif isinstance(parameter_dict, dict):
@@ -129,39 +79,16 @@ class Policy(ParametersBase):
         if num_years < 1:
             raise ValueError('num_years cannot be less than one')
 
-        if inflation_rates is None:  # read default rates
-            self._inflation_rates = [Policy.__pirates[start_year + i]
-                                     for i in range(0, num_years)]
-        elif isinstance(inflation_rates, dict):
-            if len(inflation_rates) != num_years:
-                raise ValueError('len(inflation_rates) != num_years')
-            if min(list(inflation_rates.keys())) != start_year:
-                msg = 'min(inflation_rates.keys()) != start_year'
-                raise ValueError(msg)
-            self._inflation_rates = [inflation_rates[start_year + i]
-                                     for i in range(0, num_years)]
-        else:
-            raise ValueError('inflation_rates is not None or a dictionary')
+        syr = start_year
+        lyr = start_year + num_years - 1
+        self._inflation_rates = gfactors.price_inflation_rates(syr, lyr)
+        self._wage_growth_rates = gfactors.wage_growth_rates(syr, lyr)
 
         cpi = 1.0
         self._inflation_index = [cpi]
         for idx in range(0, num_years):
             cpi *= (1.0 + self._inflation_rates[idx])
             self._inflation_index.append(cpi)
-
-        if wage_growth_rates is None:  # read default rates
-            self._wage_growth_rates = [Policy.__wgrates[start_year + i]
-                                       for i in range(0, num_years)]
-        elif isinstance(wage_growth_rates, dict):
-            if len(wage_growth_rates) != num_years:
-                raise ValueError('len(wage_growth_rates) != num_years')
-            if min(list(wage_growth_rates.keys())) != start_year:
-                msg = 'min(wage_growth_rates.keys()) != start_year'
-                raise ValueError(msg)
-            self._wage_growth_rates = [wage_growth_rates[start_year + i]
-                                       for i in range(0, num_years)]
-        else:
-            raise ValueError('wage_growth_rates is not None or a dictionary')
 
         self.param_code = dict()
         for param in Policy.VALID_PARAM_CODE_NAMES:
@@ -348,13 +275,9 @@ class Policy(ParametersBase):
         """
         startyear = self.start_year
         numyears = self.num_years
-        year_list = [startyear + i for i in range(0, numyears)]
-        irate_dict = dict(zip(year_list, self._inflation_rates))
-        wrate_dict = dict(zip(year_list, self._wage_growth_rates))
-        clv = Policy(parameter_dict=None,
+        clv = Policy(self._gfactors,
+                     parameter_dict=None,
                      start_year=startyear,
-                     num_years=numyears,
-                     inflation_rates=irate_dict,
-                     wage_growth_rates=wrate_dict)
+                     num_years=numyears)
         clv.set_year(self.current_year)
         return clv

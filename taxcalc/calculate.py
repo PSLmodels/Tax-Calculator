@@ -3,13 +3,12 @@ Tax-Calculator federal tax Calculator class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 calculate.py
-# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy calculat.py
+# pylint --disable=locally-disabled calculate.py
 #
 # pylint: disable=wildcard-import,unused-wildcard-import
 # pylint: disable=wildcard-import,missing-docstring,invalid-name
 # pylint: disable=too-many-arguments,too-many-branches,too-many-locals
 # pylint: disable=no-value-for-parameter,protected-access
-
 
 import os
 import json
