@@ -493,4 +493,6 @@ class Records(object):
             msg = ('adjust_ratios is not None or a string'
                    'or a Pandas DataFrame')
             raise ValueError(msg)
-        setattr(self, 'ADJ', ADJ)
+        if ADJ.index.name != 'agi_bin':
+            ADJ.index.name = 'agi_bin'
+        self.ADJ = ADJ
