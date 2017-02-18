@@ -11,7 +11,7 @@ import os
 import six
 import numpy as np
 import pandas as pd
-from pkg_resources import resource_stream, Requirement, DistributionNotFound
+from .utils import read_egg_csv
 
 
 PUFCSV_YEAR = 2009
@@ -276,6 +276,7 @@ class Records(object):
         """
         # pylint: disable=too-many-statements
         # pylint: disable=too-many-locals
+        # pylint: disable=unsubscriptable-object
         AWAGE = self.BF['AWAGE'][year]
         AINTS = self.BF['AINTS'][year]
         ADIVS = self.BF['ADIVS'][year]
@@ -437,23 +438,6 @@ class Records(object):
         self.ID_Casualty_frt_in_pufcsv_year[:] = np.where(PUFCSV_YEAR < ryear,
                                                           0.10, rvalue)
 
-    @staticmethod
-    def _read_egg_csv(vname, fpath, **kwargs):
-        """
-        Read csv file with fpath containing vname data from EGG;
-        return dict of vname data.
-        """
-        try:
-            # grab vname data from EGG distribution
-            path_in_egg = os.path.join('taxcalc', fpath)
-            vname_fname = resource_stream(
-                Requirement.parse('taxcalc'), path_in_egg)
-            vname_dict = pd.read_csv(vname_fname, **kwargs)
-        except (DistributionNotFound, IOError):
-            msg = 'could not read {} file from EGG'
-            raise ValueError(msg.format(vname))
-        return vname_dict
-
     def zero_out_changing_calculated_vars(self):
         """
         Set all CHANGING_CALCULATED_VARS to zero.
@@ -478,8 +462,7 @@ class Records(object):
             if os.path.isfile(weights):
                 WT = pd.read_csv(weights)
             else:
-                WT = Records._read_egg_csv('weights',
-                                           Records.WEIGHTS_FILENAME)
+                WT = read_egg_csv('weights', Records.WEIGHTS_FILENAME)
         else:
             msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
@@ -499,9 +482,9 @@ class Records(object):
             if os.path.isfile(blowup_factors):
                 BF = pd.read_csv(blowup_factors, index_col='YEAR')
             else:
-                BF = Records._read_egg_csv('blowup_factors',
-                                           Records.BLOWUP_FACTORS_FILENAME,
-                                           index_col='YEAR')
+                BF = read_egg_csv('blowup_factors',
+                                  Records.BLOWUP_FACTORS_FILENAME,
+                                  index_col='YEAR')
         else:
             msg = ('blowup_factors is not None or a string '
                    'or a Pandas DataFrame')
