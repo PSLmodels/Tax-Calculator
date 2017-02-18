@@ -8,7 +8,6 @@ dropq functions used by TaxBrain to call Tax-Calculator.
 from __future__ import print_function
 import time
 import hashlib
-import collections
 import numpy as np
 from pandas import DataFrame
 import pandas as pd
@@ -21,217 +20,82 @@ from .dropq_utils import (WEBAPP_INCOME_BINS,
                           create_json_table)
 from .. import (Calculator, Growfactors, Records,
                 Policy, Consumption, Behavior, Growdiff,
-                TABLE_LABELS, TABLE_COLUMNS, STATS_COLUMNS, DIFF_TABLE_LABELS)
+                proportional_change_gdp,
+                TABLE_LABELS, TABLE_COLUMNS, STATS_COLUMNS)
 
 
-# specify several constants
-# pylint: disable=invalid-name
-planY_column_types = [float] * len(TABLE_LABELS)
+# specify constants
+PLAN_COLUMN_TYPES = [float] * len(TABLE_LABELS)
 
-diff_column_names = DIFF_TABLE_LABELS
+DIFF_COLUMN_TYPES = [int, int, int, float, float, str, str, str]
 
-diff_column_types = [int, int, int, float, float, str, str, str]
+DECILE_ROW_NAMES = ['perc0-10', 'perc10-20', 'perc20-30', 'perc30-40',
+                    'perc40-50', 'perc50-60', 'perc60-70', 'perc70-80',
+                    'perc80-90', 'perc90-100', 'all']
 
-decile_row_names = ["perc0-10", "perc10-20", "perc20-30", "perc30-40",
-                    "perc40-50", "perc50-60", "perc60-70", "perc70-80",
-                    "perc80-90", "perc90-100", "all"]
+BIN_ROW_NAMES = ['less_than_10', 'ten_twenty', 'twenty_thirty', 'thirty_forty',
+                 'forty_fifty', 'fifty_seventyfive', 'seventyfive_hundred',
+                 'hundred_twohundred', 'twohundred_fivehundred',
+                 'fivehundred_thousand', 'thousand_up', 'all']
 
-bin_row_names = ["less_than_10", "ten_twenty", "twenty_thirty", "thirty_forty",
-                 "forty_fifty", "fifty_seventyfive", "seventyfive_hundred",
-                 "hundred_twohundred", "twohundred_fivehundred",
-                 "fivehundred_thousand", "thousand_up", "all"]
+TOTAL_ROW_NAMES = ['ind_tax', 'payroll_tax', 'combined_tax']
 
-total_row_names = ["ind_tax", "payroll_tax", "combined_tax"]
+GDP_ELAST_ROW_NAMES = ['gdp_elasticity']
 
-GDP_elast_row_names = ["gdp_elasticity"]
-
-ogusa_row_names = ["GDP", "Consumption", "Investment", "Hours Worked", "Wages",
-                   "Interest Rates", "Total Taxes"]
+OGUSA_ROW_NAMES = ['GDP', 'Consumption', 'Investment', 'Hours Worked',
+                   'Wages', 'Interest Rates', 'Total Taxes']
 
 NUM_YEARS_DEFAULT = 1
 
 
-def call_over_iterable(func):
+def check_user_mods(user_mods):
     """
-    A modifier for the only_* functions in this module. The idea is that
-    these functions may be passed a tuple of reform dictionaries, instead
-    of just a dictionary (since file-based reforms can result in a tuple
-    of reform dictionaries. In that case, this decorator will call its
-    wrapped function for each dictionary in the tuple, then collect
-    and return the results
+    Ensure specified user_mods is properly structured.
     """
-    def wrapper(user_mods, start_year, **kwargs):
-        """
-        embedded wrapper function for call_over_iterable function
-        """
-        if isinstance(user_mods, tuple):
-            ans = [func(mod, start_year, **kwargs) for mod in user_mods]
-            params = ans[0]
-            for a in ans:
-                params.update(a)
-            return params
-        else:
-            return func(user_mods, start_year, **kwargs)
-    return wrapper
+    if not isinstance(user_mods, dict):
+        raise ValueError('user_mods is not a dictionary')
+    actual_keys = set(list(user_mods.keys()))
+    expected_keys = set(['policy', 'consumption', 'behavior',
+                         'growdiff_baseline', 'growdiff_response',
+                         'gdp_elasticity'])
+    missing_keys = expected_keys - actual_keys
+    if len(missing_keys) > 0:
+        raise ValueError('user_mods has missing keys: {}'.format(missing_keys))
+    extra_keys = actual_keys - expected_keys
+    if len(extra_keys) > 0:
+        raise ValueError('user_mods has extra keys: {}'.format(extra_keys))
 
 
-@call_over_iterable
-def only_growdiff_assumptions(user_mods, start_year):
+def random_seed(user_mods):
     """
-    Extract any user_mods parameters pertinent to growdiff assumptions
+    Compute random seed based on specified user_mods, which is a
+    dictionary returned by the Calculator.read_json_parameter_files()
+    function with an extra key:value pair that is specified as
+    'gdp_elasticity': {'value': <float_value>}.
     """
-    growdiff_dd = Growdiff.default_data(start_year=start_year)
-    ga = dict()
-    for year, mods in user_mods.items():
-        overlap = set(growdiff_dd.keys()) & set(mods.keys())
-        if overlap:
-            ga[year] = {param: mods[param] for param in overlap}
-    return ga
+    ans = 0
+    for subdict_name in user_mods:
+        if subdict_name != 'gdp_elasticity':
+            ans += random_seed_from_subdict(user_mods[subdict_name])
+    return ans % np.iinfo(np.uint32).max  # pylint: disable=no-member
 
 
-@call_over_iterable
-def only_behavior_assumptions(user_mods, start_year):
+def random_seed_from_subdict(subdict):
     """
-    Extract any user_mods parameters pertinent to behavior assumptions
-    """
-    beh_dd = Behavior.default_data(start_year=start_year)
-    ba = dict()
-    for year, mods in user_mods.items():
-        overlap = set(beh_dd.keys()) & set(mods.keys())
-        if overlap:
-            ba[year] = {param: mods[param] for param in overlap}
-    return ba
-
-
-@call_over_iterable
-def only_consumption_assumptions(user_mods, start_year):
-    """
-    Extract any user_mods parameters pertinent to consumption assumptions
-    """
-    con_dd = Consumption.default_data(start_year=start_year)
-    ca = dict()
-    for year, mods in user_mods.items():
-        overlap = set(con_dd.keys()) & set(mods.keys())
-        if overlap:
-            ca[year] = {param: mods[param] for param in overlap}
-    return ca
-
-
-@call_over_iterable
-def only_reform_mods(user_mods, start_year):
-    """
-    Extract any user_mods parameters pertinent to policy reforms
-    """
-    pol_refs = dict()
-    con_dd = Consumption.default_data(start_year=start_year)
-    beh_dd = Behavior.default_data(start_year=start_year)
-    growdiff_dd = Growdiff.default_data(start_year=start_year)
-    policy_dd = Policy.default_data(start_year=start_year)
-    param_code_names = Policy.VALID_PARAM_CODE_NAMES
-    for year, mods in user_mods.items():
-        all_cpis = {p for p in mods.keys() if p.endswith("_cpi") and
-                    p[:-4] in policy_dd.keys()}
-        pols = (set(mods.keys()) -
-                set(con_dd.keys()) -
-                set(beh_dd.keys()) -
-                set(growdiff_dd.keys()))
-        pols &= set(policy_dd.keys()) | param_code_names
-        pols ^= all_cpis
-        if pols:
-            pol_refs[year] = {param: mods[param] for param in pols}
-    return pol_refs
-
-
-@call_over_iterable
-def get_unknown_parameters(user_mods, start_year, additional=None):
-    """
-    Returns any parameters that are not known to Tax-Calculator.
-    Subtract out any behavior, growth, policy, or consumptions parameters,
-    plus any additional parameters passed by the user. The results are
-    considered unknown and returned
-    """
-    # pylint: disable=too-many-locals
-    consump_dd = Consumption.default_data(start_year=start_year)
-    beh_dd = Behavior.default_data(start_year=start_year)
-    growdiff_dd = Growdiff.default_data(start_year=start_year)
-    policy_dd = Policy.default_data(start_year=start_year)
-    param_code_names = Policy.VALID_PARAM_CODE_NAMES
-    unknown_params = collections.defaultdict(list)
-    if additional is None:
-        additional = set()
-    for _, mods in user_mods.items():
-        everything = set(mods.keys())
-        all_cpis = {p for p in mods.keys() if p.endswith("_cpi")}
-        all_good_cpis = {p for p in mods.keys() if p.endswith("_cpi") and
-                         p[:-4] in policy_dd.keys()}
-        bad_cpis = all_cpis - all_good_cpis
-        remaining = everything - all_cpis
-        if bad_cpis:
-            unknown_params['bad_cpis'] += list(bad_cpis)
-        pols = (remaining - set(beh_dd.keys()) - set(growdiff_dd.keys()) -
-                set(policy_dd.keys()) - set(consump_dd.keys()) -
-                param_code_names - additional)
-        if pols:
-            unknown_params['policy'] += list(pols)
-    return unknown_params
-
-
-def elasticity_of_gdp_year_n(user_mods, year_n):
-    """
-    Extract elasticity of GDP parameter for the proper year
-    """
-    if isinstance(user_mods, tuple):
-        # file-based reforms have policy parameters in first item of tuple
-        user_mods = user_mods[0]
-    # Sorted list of all years (0 is used for parameter code expressions)
-    allyears = sorted(filter(lambda x: x != 0, user_mods.keys()))
-    elasticity_list = []
-    elasticity_specified = False
-    for year in allyears:
-        reforms = user_mods[year]
-        if 'elastic_gdp' in reforms:
-            elasticity_list += reforms['elastic_gdp']
-            elasticity_specified = True
-        else:
-            elasticity_list += [0.0]
-    if not elasticity_specified:
-        raise ValueError("user_mods should specify elastic_gdp")
-    if year_n >= len(elasticity_list):
-        return elasticity_list[-1]
-    else:
-        return elasticity_list[year_n]
-
-
-def random_seed_from_plan(user_mods):
-    """
-    Handles the case of getting a tuple of reform mods
-    """
-    if isinstance(user_mods, tuple):
-        ans = 0
-        for mod in user_mods:
-            ans += _random_seed_from_plan(mod)
-        return ans % np.iinfo(np.uint32).max  # pylint: disable=no-member
-    else:
-        return _random_seed_from_plan(user_mods)
-
-
-def _random_seed_from_plan(user_mods):
-    """
-    Handles the case of getting a single reform mod dictionary
+    Compute random seed from one user_mods subdictionary
     """
     all_vals = []
-    for year in sorted(user_mods.keys()):
+    for year in sorted(subdict.keys()):
         all_vals.append(str(year))
-        reform = user_mods[year]
-        for param in sorted(reform.keys()):
+        params = subdict[year]
+        for param in sorted(params.keys()):
             try:
-                tple = tuple(reform[param])
+                tple = tuple(params[param])
             except TypeError:
-                # Not iterable value
-                tple = tuple((reform[param],))
+                # params[param] is not an iterable value; make it so
+                tple = tuple((params[param],))
             all_vals.append(str((param, tple)))
-
-    txt = u"".join(all_vals).encode("utf-8")
+    txt = u''.join(all_vals).encode('utf-8')
     hsh = hashlib.sha512(txt)
     seed = int(hsh.hexdigest(), 16)
     return seed % np.iinfo(np.uint32).max  # pylint: disable=no-member
@@ -241,22 +105,22 @@ def chooser(agg):
     """
     This is a transformation function that should be called on each group.
     It is assumed that the chunk 'agg' is a chunk of the 'mask' column.
-    This chooser selects three of those mask indices. the output at that
-    index is zero. all other outputs for each index is 1.
+    This chooser selects three of those mask indices with the output for
+    those three indices being zero and the output for all the other indices
+    being one.
     """
     indices = np.where(agg)
-
-    if len(indices[0]) > 2:
+    three = 3
+    if len(indices[0]) >= three:
         choices = np.random.choice(indices[0],  # pylint: disable=no-member
-                                   size=3, replace=False)
+                                   size=three, replace=False)
     else:
-        msg = ("Not enough difference in taxable income when adding 1 dollar"
-               "for chunk with name: " + agg.name)
-        raise ValueError(msg)
-
+        msg = ('Not enough differences in taxable income when adding '
+               'one dollar for chunk with name: {}')
+        raise ValueError(msg.format(agg.name))
     ans = [1] * len(agg)
-    for ix in choices:
-        ans[ix] = 0
+    for idx in choices:
+        ans[idx] = 0
     return ans
 
 
@@ -300,12 +164,12 @@ def drop_records(df1, df2, mask):
     df2['flag_bin'] = gp2_bin['mask'].transform(chooser)
 
     # first calculate all of X'
-    COLUMNS_TO_MAKE_NOISY = set(TABLE_COLUMNS) | set(STATS_COLUMNS)
+    columns_to_make_noisy = set(TABLE_COLUMNS) | set(STATS_COLUMNS)
     # these don't exist yet
-    COLUMNS_TO_MAKE_NOISY.remove('num_returns_ItemDed')
-    COLUMNS_TO_MAKE_NOISY.remove('num_returns_StandardDed')
-    COLUMNS_TO_MAKE_NOISY.remove('num_returns_AMT')
-    for col in COLUMNS_TO_MAKE_NOISY:
+    columns_to_make_noisy.remove('num_returns_ItemDed')
+    columns_to_make_noisy.remove('num_returns_StandardDed')
+    columns_to_make_noisy.remove('num_returns_AMT')
+    for col in columns_to_make_noisy:
         df2[col + '_dec'] = (df2[col] * df2['flag_dec'] -
                              df1[col] * df2['flag_dec'] + df1[col])
         df2[col + '_bin'] = (df2[col] * df2['flag_bin'] -
@@ -330,7 +194,7 @@ def groupby_means_and_comparisons(df1, df2, mask):
     df2 is the user-specified plan (Plan Y)
     mask is the boolean mask where X and X' match
     """
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-locals,invalid-name
 
     df1, df2 = drop_records(df1, df2, mask)
 
@@ -356,40 +220,40 @@ def groupby_means_and_comparisons(df1, df2, mask):
 
     # Create Difference tables, grouped by deciles and bins
     diffs_dec = dropq_diff_table(df1, df2,
-                                 groupby="weighted_deciles",
+                                 groupby='weighted_deciles',
                                  res_col='tax_diff',
                                  diff_col='_iitax',
-                                 suffix="_dec", wsum=dec_sum)
+                                 suffix='_dec', wsum=dec_sum)
 
     diffs_bin = dropq_diff_table(df1, df2,
-                                 groupby="webapp_income_bins",
+                                 groupby='webapp_income_bins',
                                  res_col='tax_diff',
                                  diff_col='_iitax',
-                                 suffix="_bin", wsum=bin_sum)
+                                 suffix='_bin', wsum=bin_sum)
 
     pr_diffs_dec = dropq_diff_table(df1, df2,
-                                    groupby="weighted_deciles",
+                                    groupby='weighted_deciles',
                                     res_col='payrolltax_diff',
                                     diff_col='_payrolltax',
-                                    suffix="_dec", wsum=pr_dec_sum)
+                                    suffix='_dec', wsum=pr_dec_sum)
 
     pr_diffs_bin = dropq_diff_table(df1, df2,
-                                    groupby="webapp_income_bins",
+                                    groupby='webapp_income_bins',
                                     res_col='payrolltax_diff',
                                     diff_col='_payrolltax',
-                                    suffix="_bin", wsum=pr_bin_sum)
+                                    suffix='_bin', wsum=pr_bin_sum)
 
     comb_diffs_dec = dropq_diff_table(df1, df2,
-                                      groupby="weighted_deciles",
+                                      groupby='weighted_deciles',
                                       res_col='combined_diff',
                                       diff_col='_combined',
-                                      suffix="_dec", wsum=combined_dec_sum)
+                                      suffix='_dec', wsum=combined_dec_sum)
 
     comb_diffs_bin = dropq_diff_table(df1, df2,
-                                      groupby="webapp_income_bins",
+                                      groupby='webapp_income_bins',
                                       res_col='combined_diff',
                                       diff_col='_combined',
-                                      suffix="_bin", wsum=combined_bin_sum)
+                                      suffix='_bin', wsum=combined_bin_sum)
 
     mX_dec = create_distribution_table(df1, groupby='weighted_deciles',
                                        result_type='weighted_sum')
@@ -420,37 +284,34 @@ def results(calc):
     return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
 
 
-def run_nth_year_mtr_calc(year_n, start_year, is_strict, taxrec_df,
-                          user_mods="", return_json=True):
+def run_nth_year_gdp_elast_model(year_n, start_year, taxrec_df, user_mods,
+                                 return_json=True):
     """
-    run_nth_year_mtr_calc function.
+    The run_nth_year_gdp_elast_model function assumes user_mods is a
+    dictionary returned by the Calculator.read_json_parameter_files()
+    function with an extra key:value pair that is specified as
+    'gdp_elasticity': {'value': <float_value>}.
     """
     # pylint: disable=too-many-arguments,too-many-locals,too-many-statements
+
+    check_user_mods(user_mods)
 
     # Only makes sense to run for budget years 1 through n-1 (not for year 0)
     assert year_n > 0
 
-    # Specify elasticity_gdp and check for unknown parameters in user_mods
-    elasticity_gdp = elasticity_of_gdp_year_n(user_mods, year_n)
-    if is_strict:
-        unknown_params = get_unknown_parameters(user_mods, start_year,
-                                                additional={'elastic_gdp'})
-        if unknown_params:
-            raise ValueError('Unknown parameters: {}'.format(unknown_params))
+    # Specify value of gdp_elasticity
+    gdp_elasticity = user_mods['gdp_elasticity']['value']
 
     # Specify Consumption instance
     consump = Consumption()
-    consump_assumps = only_consumption_assumptions(user_mods, start_year)
+    consump_assumps = user_mods['consumption']
     consump.update_consumption(consump_assumps)
 
     # Specify growdiff_baseline and growdiff_response
     growdiff_baseline = Growdiff()
     growdiff_response = Growdiff()
-    # PROBLEM: dropq makes no distinction between the two Growdiff instances
-    # PROBLEM: code here is using growdiff_baseline assumptions
-    # PROBLEM: code here is missing growdiff_response assumptions
-    growdiff_base_assumps = only_growdiff_assumptions(user_mods, start_year)
-    growdiff_resp_assumps = dict()  # PROBLEM: this is temporary "fix"
+    growdiff_base_assumps = user_mods['growdiff_baseline']
+    growdiff_resp_assumps = user_mods['growdiff_response']
     growdiff_baseline.update_growdiff(growdiff_base_assumps)
     growdiff_response.update_growdiff(growdiff_resp_assumps)
 
@@ -474,15 +335,15 @@ def run_nth_year_mtr_calc(year_n, start_year, is_strict, taxrec_df,
     records2 = Records(data=taxrec_df.copy(deep=True),
                        gfactors=growfactors_post)
     policy2 = Policy(gfactors=growfactors_post)
-    policy_reform = only_reform_mods(user_mods, start_year)
+    policy_reform = user_mods['policy']
     policy2.implement_reform(policy_reform)
     calc2 = Calculator(policy=policy2, records=records2, consumption=consump)
     while calc2.current_year < start_year:
         calc2.increment_year()
     assert calc2.current_year == start_year
 
-    # Get a random seed based on user specified plan
-    seed = random_seed_from_plan(user_mods)
+    # Seed random number generator with a seed value based on user_mods
+    seed = random_seed(user_mods)
     np.random.seed(seed)  # pylint: disable=no-member
     for _ in range(0, year_n - 1):
         calc1.increment_year()
@@ -490,68 +351,48 @@ def run_nth_year_mtr_calc(year_n, start_year, is_strict, taxrec_df,
     calc1.calc_all()
     calc2.calc_all()
 
-    _, _, mtr_combined_x = calc1.mtr()
-    _, _, mtr_combined_y = calc2.mtr()
-
     # Assert that the current year is one behind the year we are calculating
     assert (calc1.current_year + 1) == (start_year + year_n)
     assert (calc2.current_year + 1) == (start_year + year_n)
 
-    after_tax_mtr_x = 1 - ((mtr_combined_x * calc1.records.c00100 *
-                            calc1.records.s006).sum() /
-                           (calc1.records.c00100 * calc1.records.s006).sum())
+    # Compute gdp effect
+    gdp_effect = proportional_change_gdp(calc1, calc2, gdp_elasticity)
 
-    after_tax_mtr_y = 1 - ((mtr_combined_y * calc2.records.c00100 *
-                            calc2.records.s006).sum() /
-                           (calc2.records.c00100 * calc2.records.s006).sum())
-
-    diff_avg_mtr_combined_y = after_tax_mtr_y - after_tax_mtr_x
-    percent_diff_mtr = diff_avg_mtr_combined_y / after_tax_mtr_x
-
-    gdp_effect_y = percent_diff_mtr * elasticity_gdp
-
-    gdp_df = pd.DataFrame(data=[gdp_effect_y], columns=["col0"])
-
-    if not return_json:
-        return gdp_effect_y
-
-    gdp_elast_names_i = [x + '_' + str(year_n) for x in GDP_elast_row_names]
-
-    gdp_elast_total = create_json_table(gdp_df, row_names=gdp_elast_names_i,
-                                        num_decimals=5)
-
-    # Make the one-item lists of strings just strings
-    gdp_elast_total = dict((k, v[0]) for k, v in gdp_elast_total.items())
-
-    return gdp_elast_total
+    # Return gdp_effect results
+    if return_json:
+        gdp_df = pd.DataFrame(data=[gdp_effect], columns=['col0'])
+        gdp_elast_names_i = [x + '_' + str(year_n)
+                             for x in GDP_ELAST_ROW_NAMES]
+        gdp_elast_total = create_json_table(gdp_df,
+                                            row_names=gdp_elast_names_i,
+                                            num_decimals=5)
+        gdp_elast_total = dict((k, v[0]) for k, v in gdp_elast_total.items())
+        return gdp_elast_total
+    else:
+        return gdp_effect
 
 
-def calculate_baseline_and_reform(year_n, start_year, is_strict,
-                                  taxrec_df, user_mods):
+def calculate_baseline_and_reform(year_n, start_year, taxrec_df, user_mods):
     """
-    calculate_baseline_and_reform function.
+    calculate_baseline_and_reform function assumes specified user_mods is
+    a dictionary returned by the Calculator.read_json_parameter_files()
+    function with an extra key:value pair that is specified as
+    'gdp_elasticity': {'value': <float_value>}.
     """
     # pylint: disable=too-many-locals,too-many-branches,too-many-statements
 
-    # Check user_mods for unknown parameters
-    if is_strict:
-        unknown_params = get_unknown_parameters(user_mods, start_year)
-        if unknown_params:
-            raise ValueError("Unknown parameters: {}".format(unknown_params))
+    check_user_mods(user_mods)
 
     # Specify Consumption instance
     consump = Consumption()
-    consump_assumptions = only_consumption_assumptions(user_mods, start_year)
+    consump_assumptions = user_mods['consumption']
     consump.update_consumption(consump_assumptions)
 
     # Specify growdiff_baseline and growdiff_response
     growdiff_baseline = Growdiff()
     growdiff_response = Growdiff()
-    # PROBLEM: dropq makes no distinction between the two Growdiff instances
-    # PROBLEM: code here is using growdiff_baseline assumptions
-    # PROBLEM: code here is missing growdiff_response assumptions
-    growdiff_base_assumps = only_growdiff_assumptions(user_mods, start_year)
-    growdiff_resp_assumps = dict()  # PROBLEM: this is temporary "fix"
+    growdiff_base_assumps = user_mods['growdiff_baseline']
+    growdiff_resp_assumps = user_mods['growdiff_response']
     growdiff_baseline.update_growdiff(growdiff_base_assumps)
     growdiff_response.update_growdiff(growdiff_resp_assumps)
 
@@ -591,7 +432,7 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
 
     # Specify Behavior instance
     behv = Behavior()
-    behavior_assumps = only_behavior_assumptions(user_mods, start_year)
+    behavior_assumps = user_mods['behavior']
     behv.update_behavior(behavior_assumps)
 
     # Prevent both behavioral response and growdiff response
@@ -603,7 +444,7 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
     recs2 = Records(data=taxrec_df.copy(deep=True),
                     gfactors=growfactors_post)
     policy2 = Policy(gfactors=growfactors_post)
-    policy_reform = only_reform_mods(user_mods, start_year)
+    policy_reform = user_mods['policy']
     policy2.implement_reform(policy_reform)
     calc2 = Calculator(policy=policy2, records=recs2, consumption=consump,
                        behavior=behv)
@@ -612,9 +453,12 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
     calc2.calc_all()
     assert calc2.current_year == start_year
 
-    # Get a random seed based on user_mods and calc_all() for nth year
-    seed = random_seed_from_plan(user_mods)
+    # Seed random number generator with a seed value based on user_mods
+    seed = random_seed(user_mods)
+    print('seed={}'.format(seed))
     np.random.seed(seed)  # pylint: disable=no-member
+
+    # Increment Calculator objects for year_n years and calculate
     for _ in range(0, year_n):
         calc1.increment_year()
         calc2.increment_year()
@@ -624,22 +468,27 @@ def calculate_baseline_and_reform(year_n, start_year, is_strict,
     else:
         calc2.calc_all()
 
-    # Return results and mask
+    # Return calculated results and mask
     soit1 = results(calc1)
     soit2 = results(calc2)
     return soit1, soit2, mask
 
 
-def run_nth_year(year_n, start_year, is_strict, taxrec_df, user_mods,
-                 return_json=True):
+def run_nth_year_model(year_n, start_year, taxrec_df, user_mods,
+                       return_json=True):
     """
-    run_nth_year function.
+    run_nth_year_model function assumes specified specified user_mods is
+    a dictionary returned by the Calculator.read_json_parameter_files()
+    function with an extra key:value pair that is specified as
+    'gdp_elasticity': {'value': <float_value>}.
     """
-    # pylint: disable=too-many-arguments, too-many-locals
+    # pylint: disable=too-many-arguments,too-many-locals,invalid-name
+
+    check_user_mods(user_mods)
 
     start_time = time.time()
     (soit_baseline, soit_reform,
-     mask) = calculate_baseline_and_reform(year_n, start_year, is_strict,
+     mask) = calculate_baseline_and_reform(year_n, start_year,
                                            taxrec_df, user_mods)
 
     # Means of plan Y by decile
@@ -652,21 +501,19 @@ def run_nth_year(year_n, start_year, is_strict, taxrec_df, user_mods,
      pr_sum_reform,
      combined_sum_reform) = groupby_means_and_comparisons(soit_baseline,
                                                           soit_reform, mask)
-
     elapsed_time = time.time() - start_time
-    print("elapsed time for this run: ", elapsed_time)
-    start_year += 1
+    print('elapsed time for this run: ', elapsed_time)
 
     tots = [diff_sum, payrolltax_diff_sum, combined_diff_sum]
-    fiscal_tots_diff = pd.DataFrame(data=tots, index=total_row_names)
+    fiscal_tots_diff = pd.DataFrame(data=tots, index=TOTAL_ROW_NAMES)
 
     tots_baseline = [sum_baseline, pr_sum_baseline, combined_sum_baseline]
     fiscal_tots_baseline = pd.DataFrame(data=tots_baseline,
-                                        index=total_row_names)
+                                        index=TOTAL_ROW_NAMES)
 
     tots_reform = [sum_reform, pr_sum_reform, combined_sum_reform]
     fiscal_tots_reform = pd.DataFrame(data=tots_reform,
-                                      index=total_row_names)
+                                      index=TOTAL_ROW_NAMES)
 
     # Get rid of negative incomes
     df_bin.drop(df_bin.index[0], inplace=True)
@@ -679,7 +526,7 @@ def run_nth_year(year_n, start_year, is_strict, taxrec_df, user_mods,
         """
         append_year embedded function
         """
-        x.columns = [str(col) + "_{}".format(year_n) for col in x.columns]
+        x.columns = [str(col) + '_{}'.format(year_n) for col in x.columns]
         return x
 
     if not return_json:
@@ -691,51 +538,51 @@ def run_nth_year(year_n, start_year, is_strict, taxrec_df, user_mods,
                 append_year(fiscal_tots_baseline),
                 append_year(fiscal_tots_reform))
 
-    decile_row_names_i = [x + '_' + str(year_n) for x in decile_row_names]
+    decile_row_names_i = [x + '_' + str(year_n) for x in DECILE_ROW_NAMES]
 
-    bin_row_names_i = [x + '_' + str(year_n) for x in bin_row_names]
+    bin_row_names_i = [x + '_' + str(year_n) for x in BIN_ROW_NAMES]
 
-    total_row_names_i = [x + '_' + str(year_n) for x in total_row_names]
+    total_row_names_i = [x + '_' + str(year_n) for x in TOTAL_ROW_NAMES]
 
     mY_dec_table_i = create_json_table(mY_dec,
                                        row_names=decile_row_names_i,
-                                       column_types=planY_column_types)
+                                       column_types=PLAN_COLUMN_TYPES)
 
     mX_dec_table_i = create_json_table(mX_dec,
                                        row_names=decile_row_names_i,
-                                       column_types=planY_column_types)
+                                       column_types=PLAN_COLUMN_TYPES)
 
     df_dec_table_i = create_json_table(df_dec,
                                        row_names=decile_row_names_i,
-                                       column_types=diff_column_types)
+                                       column_types=DIFF_COLUMN_TYPES)
 
     pdf_dec_table_i = create_json_table(pdf_dec,
                                         row_names=decile_row_names_i,
-                                        column_types=diff_column_types)
+                                        column_types=DIFF_COLUMN_TYPES)
 
     cdf_dec_table_i = create_json_table(cdf_dec,
                                         row_names=decile_row_names_i,
-                                        column_types=diff_column_types)
+                                        column_types=DIFF_COLUMN_TYPES)
 
     mY_bin_table_i = create_json_table(mY_bin,
                                        row_names=bin_row_names_i,
-                                       column_types=planY_column_types)
+                                       column_types=PLAN_COLUMN_TYPES)
 
     mX_bin_table_i = create_json_table(mX_bin,
                                        row_names=bin_row_names_i,
-                                       column_types=planY_column_types)
+                                       column_types=PLAN_COLUMN_TYPES)
 
     df_bin_table_i = create_json_table(df_bin,
                                        row_names=bin_row_names_i,
-                                       column_types=diff_column_types)
+                                       column_types=DIFF_COLUMN_TYPES)
 
     pdf_bin_table_i = create_json_table(pdf_bin,
                                         row_names=bin_row_names_i,
-                                        column_types=diff_column_types)
+                                        column_types=DIFF_COLUMN_TYPES)
 
     cdf_bin_table_i = create_json_table(cdf_bin,
                                         row_names=bin_row_names_i,
-                                        column_types=diff_column_types)
+                                        column_types=DIFF_COLUMN_TYPES)
 
     fiscal_yr_total_df = create_json_table(fiscal_tots_diff,
                                            row_names=total_row_names_i)
@@ -757,12 +604,17 @@ def run_nth_year(year_n, start_year, is_strict, taxrec_df, user_mods,
             fiscal_yr_total_bl, fiscal_yr_total_rf)
 
 
-def run_models(taxrec_df, start_year, is_strict=False, user_mods="",
-               return_json=True, num_years=NUM_YEARS_DEFAULT):
+def run_model(taxrec_df, start_year, user_mods,
+              return_json=True, num_years=NUM_YEARS_DEFAULT):
     """
-    run_models function.
+    run_model function assumes specified user_mods is a
+    dictionary returned by the Calculator.read_json_parameter_files()
+    function with an extra key:value pair that is specified as
+    'gdp_elasticity': {'value': <float_value>}.
     """
-    # pylint: disable=too-many-arguments,too-many-locals
+    # pylint: disable=too-many-arguments,too-many-locals,invalid-name
+
+    check_user_mods(user_mods)
 
     num_fiscal_year_totals = list()
     mY_dec_table = dict()
@@ -776,11 +628,10 @@ def run_models(taxrec_df, start_year, is_strict=False, user_mods="",
     pdf_bin_table = dict()
     cdf_bin_table = dict()
     for year_n in range(0, num_years):
-        json_tables = run_nth_year(year_n, start_year=start_year,
-                                   is_strict=is_strict,
-                                   taxrec_df=taxrec_df,
-                                   user_mods=user_mods,
-                                   return_json=return_json)
+        json_tables = run_nth_year_model(year_n, start_year=start_year,
+                                         taxrec_df=taxrec_df,
+                                         user_mods=user_mods,
+                                         return_json=return_json)
         # map json_tables to named tables
         (mY_dec_table_i, mX_dec_table_i, df_dec_table_i, pdf_dec_table_i,
          cdf_dec_table_i, mY_bin_table_i, mX_bin_table_i, df_bin_table_i,
@@ -803,20 +654,23 @@ def run_models(taxrec_df, start_year, is_strict=False, user_mods="",
             pdf_bin_table, cdf_bin_table, num_fiscal_year_totals)
 
 
-def run_gdp_elast_models(taxrec_df, start_year, is_strict=False, user_mods="",
-                         return_json=True, num_years=NUM_YEARS_DEFAULT):
+def run_gdp_elast_model(taxrec_df, start_year, user_mods,
+                        return_json=True, num_years=NUM_YEARS_DEFAULT):
     """
-    run_gdp_elast_models function.
+    run_gdp_elast_model function assumes specified user_mods is a
+    dictionary returned by the Calculator.read_json_parameter_files()
+    function with an extra key:value pair that is specified as
+    'gdp_elasticity': {'value': <float_value>}.
     """
     # pylint: disable=too-many-arguments
-
+    check_user_mods(user_mods)
     gdp_elasticity_totals = []
     for year_n in range(1, num_years):
-        gdp_elast_i = run_nth_year_mtr_calc(year_n, start_year=start_year,
-                                            is_strict=is_strict,
-                                            taxrec_df=taxrec_df,
-                                            user_mods=user_mods,
-                                            return_json=return_json)
+        gdp_elast_i = run_nth_year_gdp_elast_model(year_n,
+                                                   start_year=start_year,
+                                                   taxrec_df=taxrec_df,
+                                                   user_mods=user_mods,
+                                                   return_json=return_json)
         gdp_elasticity_totals.append(gdp_elast_i)
     return gdp_elasticity_totals
 
@@ -830,7 +684,7 @@ def format_macro_results(diff_data, return_json=True):
         return ogusadf
     column_types = [float] * diff_data.shape[1]
     df_ogusa_table = create_json_table(ogusadf,
-                                       row_names=ogusa_row_names,
+                                       row_names=OGUSA_ROW_NAMES,
                                        column_types=column_types,
                                        num_decimals=3)
     return df_ogusa_table
