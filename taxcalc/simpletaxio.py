@@ -603,7 +603,7 @@ class SimpleTaxIO(object):
         # use dict_list to create a Pandas DataFrame and Records object
         recsdf = pd.DataFrame(dict_list, dtype='int64')
         recs = Records(data=recsdf, exact_calculations=exact_calcs,
-                       blowup_factors=None, weights=None,
+                       gfactors=None, weights=None,
                        start_year=self._policy.start_year)
         assert recs.dim == len(self._input)
         # specify input for each tax filing unit in Records object

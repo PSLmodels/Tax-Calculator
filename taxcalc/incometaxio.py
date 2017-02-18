@@ -170,7 +170,7 @@ class IncomeTaxIO(object):
         else:  # input_data are raw data
             recs = Records(data=input_data,
                            exact_calculations=exact_calculations,
-                           blowup_factors=None,
+                           gfactors=None,
                            adjust_ratios=None,
                            weights=None,
                            start_year=tax_year)

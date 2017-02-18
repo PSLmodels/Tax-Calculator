@@ -4,27 +4,26 @@ from numpy.testing import assert_array_equal
 import pandas as pd
 import pytest
 from io import StringIO
-from taxcalc import Policy, Records, Calculator, Growth
+from taxcalc import Growfactors, Policy, Records, Calculator, Growth
 
 
 def test_incorrect_Records_instantiation(puf_1991):
     with pytest.raises(ValueError):
         recs = Records(data=list())
     with pytest.raises(ValueError):
-        recs = Records(data=puf_1991, blowup_factors=list())
+        recs = Records(data=puf_1991, gfactors=list())
     with pytest.raises(ValueError):
-        recs = Records(data=puf_1991, blowup_factors=None, weights=list())
+        recs = Records(data=puf_1991, gfactors=None, weights=list())
     with pytest.raises(ValueError):
-        recs = Records(data=puf_1991, blowup_factors=None, weights=None,
+        recs = Records(data=puf_1991, gfactors=None, weights=None,
                        start_year=list())
     with pytest.raises(ValueError):
-        recs = Records(data=puf_1991, blowup_factors=None, weights=None,
+        recs = Records(data=puf_1991, gfactors=None, weights=None,
                        adjust_ratios=list())
 
 
 def test_correct_Records_instantiation(puf_1991, puf_1991_path, weights_1991):
-    rec1 = Records(data=puf_1991_path, blowup_factors=None,
-                   weights=weights_1991)
+    rec1 = Records(data=puf_1991_path, gfactors=None, weights=weights_1991)
     assert rec1
     assert np.all(rec1.MARS != 0)
     assert rec1.current_year == Records.PUF_YEAR
@@ -32,8 +31,7 @@ def test_correct_Records_instantiation(puf_1991, puf_1991_path, weights_1991):
     rec1.set_current_year(Records.PUF_YEAR + 1)
     sum_e00200_in_puf_year_plus_one = rec1.e00200.sum()
     assert sum_e00200_in_puf_year_plus_one == sum_e00200_in_puf_year
-    bf_df = pd.read_csv(Records.BLOWUP_FACTORS_PATH, index_col='YEAR')
-    rec2 = Records(data=puf_1991, blowup_factors=bf_df, weights=None)
+    rec2 = Records(data=puf_1991, gfactors=Growfactors(), weights=None)
     assert rec2
     assert np.all(rec2.MARS != 0)
     assert rec2.current_year == Records.PUF_YEAR
@@ -47,7 +45,7 @@ def test_correct_Records_instantiation(puf_1991, puf_1991_path, weights_1991):
 
 def test_correct_Records_instantiation_sample(puf_1991, weights_1991):
     sample = puf_1991.sample(frac=0.10)
-    rec1 = Records(data=sample, blowup_factors=None, weights=weights_1991)
+    rec1 = Records(data=sample, gfactors=None, weights=weights_1991)
     assert rec1
     assert np.all(rec1.MARS != 0)
     assert rec1.current_year == Records.PUF_YEAR
@@ -55,8 +53,7 @@ def test_correct_Records_instantiation_sample(puf_1991, weights_1991):
     rec1.set_current_year(Records.PUF_YEAR + 1)
     sum_e00200_in_puf_year_plus_one = rec1.e00200.sum()
     assert sum_e00200_in_puf_year_plus_one == sum_e00200_in_puf_year
-    bf_df = pd.read_csv(Records.BLOWUP_FACTORS_PATH, index_col='YEAR')
-    rec2 = Records(data=sample, blowup_factors=bf_df, weights=None)
+    rec2 = Records(data=sample, gfactors=Growfactors(), weights=None)
     assert rec2
     assert np.all(rec2.MARS != 0)
     assert rec2.current_year == Records.PUF_YEAR
@@ -94,7 +91,7 @@ def test_read_data(csv):
         Records(data=df)
 
 
-def test_blowup(puf_1991, weights_1991):
+def test_extrapolation_timing(puf_1991, weights_1991):
     pol1 = Policy()
     assert pol1.current_year == Policy.JSON_START_YEAR
     rec1 = Records(data=puf_1991, weights=weights_1991)
