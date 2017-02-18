@@ -237,6 +237,7 @@ class Records(object):
         wt_colname = 'WT{}'.format(self.current_year)
         if wt_colname in self.WT.columns:
             self.s006 = self.WT[wt_colname] * 0.01
+            self.s006.round(2)
 
     @property
     def current_year(self):
@@ -259,6 +260,7 @@ class Records(object):
         wt_colname = 'WT{}'.format(self.current_year)
         if wt_colname in self.WT.columns:
             self.s006 = self.WT[wt_colname] * 0.01
+            self.s006.round(2)
 
     def set_current_year(self, new_current_year):
         """
