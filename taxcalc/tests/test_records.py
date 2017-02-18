@@ -4,7 +4,7 @@ from numpy.testing import assert_array_equal
 import pandas as pd
 import pytest
 from io import StringIO
-from taxcalc import Growfactors, Policy, Records, Calculator, Growth
+from taxcalc import Growfactors, Policy, Records, Calculator
 
 
 def test_incorrect_Records_instantiation(puf_1991):

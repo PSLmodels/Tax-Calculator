@@ -89,6 +89,19 @@ class Behavior(ParametersBase):
         else:
             return True
 
+    def has_any_response(self):
+        """
+        Returns true if any behavioral-response elasticity is non-zero in
+        any year; returns false if all elasticities are zero in all years.
+        """
+        for elast in self._vals:
+            values = getattr(self, elast)
+            for year in np.ndindex(values.shape):
+                val = values[year]
+                if val != 0.0:
+                    return True
+        return False
+
     @staticmethod
     def response(calc_x, calc_y):
         """

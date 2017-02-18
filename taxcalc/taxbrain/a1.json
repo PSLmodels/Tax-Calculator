@@ -9,12 +9,14 @@
 //   http://www.ospc.org/taxbrain/[????]/  ?????????????????????????????
 {
     "title": "",
-    "behavior": {
-        "_BE_sub": {"2018": [0.25]}
-    },
     "consumption": {
         "_MPC_e18400": {"2018": [0.05]}
     },
-    "growth": {
+    "behavior": {
+        "_BE_sub": {"2018": [0.25]}
+    },
+    "growdiff_baseline": {
+    },
+    "growdiff_response": {
     }
 }

@@ -1,21 +1,31 @@
+"""
+dropq functions used by TaxBrain to call Tax-Calculator.
+"""
+# CODING-STYLE CHECKS:
+# pep8 --ignore=E402 behavior.py
+# pylint --disable=locally-disabled behavior.py
+
 from __future__ import print_function
-from .. import (Calculator, Records, Policy, Behavior, Consumption,
-                TABLE_LABELS, TABLE_COLUMNS, STATS_COLUMNS,
-                DIFF_TABLE_LABELS)
-
-from .. import growth, policy
-
+import time
+import hashlib
+import collections
 import numpy as np
 from pandas import DataFrame
 import pandas as pd
-import hashlib
-import copy
-import time
-import collections
 from .dropq_utils import create_dropq_difference_table as dropq_diff_table
 from .dropq_utils import create_dropq_distribution_table as dropq_dist_table
-from .dropq_utils import *
+from .dropq_utils import (WEBAPP_INCOME_BINS,
+                          add_income_bins,
+                          add_weighted_income_bins,
+                          create_distribution_table,
+                          create_json_table)
+from .. import (Calculator, Growfactors, Records,
+                Policy, Consumption, Behavior, Growdiff,
+                TABLE_LABELS, TABLE_COLUMNS, STATS_COLUMNS, DIFF_TABLE_LABELS)
 
+
+# specify several constants
+# pylint: disable=invalid-name
 planY_column_types = [float] * len(TABLE_LABELS)
 
 diff_column_names = DIFF_TABLE_LABELS
@@ -33,7 +43,6 @@ bin_row_names = ["less_than_10", "ten_twenty", "twenty_thirty", "thirty_forty",
 
 total_row_names = ["ind_tax", "payroll_tax", "combined_tax"]
 
-
 GDP_elast_row_names = ["gdp_elasticity"]
 
 ogusa_row_names = ["GDP", "Consumption", "Investment", "Hours Worked", "Wages",
@@ -42,7 +51,7 @@ ogusa_row_names = ["GDP", "Consumption", "Investment", "Hours Worked", "Wages",
 NUM_YEARS_DEFAULT = 1
 
 
-def call_over_iterable(fn):
+def call_over_iterable(func):
     """
     A modifier for the only_* functions in this module. The idea is that
     these functions may be passed a tuple of reform dictionaries, instead
@@ -52,81 +61,84 @@ def call_over_iterable(fn):
     and return the results
     """
     def wrapper(user_mods, start_year, **kwargs):
+        """
+        embedded wrapper function for call_over_iterable function
+        """
         if isinstance(user_mods, tuple):
-            ans = [fn(mod, start_year, **kwargs) for mod in user_mods]
+            ans = [func(mod, start_year, **kwargs) for mod in user_mods]
             params = ans[0]
             for a in ans:
                 params.update(a)
             return params
         else:
-            return fn(user_mods, start_year, **kwargs)
-
+            return func(user_mods, start_year, **kwargs)
     return wrapper
 
 
 @call_over_iterable
-def only_growth_assumptions(user_mods, start_year):
+def only_growdiff_assumptions(user_mods, start_year):
     """
-    Extract any reform parameters that are pertinent to growth
-    assumptions
+    Extract any user_mods parameters pertinent to growdiff assumptions
     """
-    growth_dd = growth.Growth.default_data(start_year=start_year)
-    ga = {}
-    for year, reforms in user_mods.items():
-        overlap = set(growth_dd.keys()) & set(reforms.keys())
+    growdiff_dd = Growdiff.default_data(start_year=start_year)
+    ga = dict()
+    for year, mods in user_mods.items():
+        overlap = set(growdiff_dd.keys()) & set(mods.keys())
         if overlap:
-            ga[year] = {param: reforms[param] for param in overlap}
+            ga[year] = {param: mods[param] for param in overlap}
     return ga
 
 
 @call_over_iterable
 def only_behavior_assumptions(user_mods, start_year):
     """
-    Extract any reform parameters that are pertinent to behavior
-    assumptions
+    Extract any user_mods parameters pertinent to behavior assumptions
     """
     beh_dd = Behavior.default_data(start_year=start_year)
-    ba = {}
-    for year, reforms in user_mods.items():
-        overlap = set(beh_dd.keys()) & set(reforms.keys())
+    ba = dict()
+    for year, mods in user_mods.items():
+        overlap = set(beh_dd.keys()) & set(mods.keys())
         if overlap:
-            ba[year] = {param: reforms[param] for param in overlap}
+            ba[year] = {param: mods[param] for param in overlap}
     return ba
 
 
 @call_over_iterable
 def only_consumption_assumptions(user_mods, start_year):
     """
-    Extract any reform parameters that are pertinent to behavior
-    assumptions
+    Extract any user_mods parameters pertinent to consumption assumptions
     """
     con_dd = Consumption.default_data(start_year=start_year)
-    ca = {}
-    for year, reforms in user_mods.items():
-        overlap = set(con_dd.keys()) & set(reforms.keys())
+    ca = dict()
+    for year, mods in user_mods.items():
+        overlap = set(con_dd.keys()) & set(mods.keys())
         if overlap:
-            ca[year] = {param: reforms[param] for param in overlap}
+            ca[year] = {param: mods[param] for param in overlap}
     return ca
 
 
 @call_over_iterable
 def only_reform_mods(user_mods, start_year):
     """
-    Extract parameters that are just for policy reforms
+    Extract any user_mods parameters pertinent to policy reforms
     """
-    pol_refs = {}
+    pol_refs = dict()
+    con_dd = Consumption.default_data(start_year=start_year)
     beh_dd = Behavior.default_data(start_year=start_year)
-    growth_dd = growth.Growth.default_data(start_year=start_year)
-    policy_dd = policy.Policy.default_data(start_year=start_year)
-    param_code_names = policy.Policy.VALID_PARAM_CODE_NAMES
-    for year, reforms in user_mods.items():
-        all_cpis = {p for p in reforms.keys() if p.endswith("_cpi") and
+    growdiff_dd = Growdiff.default_data(start_year=start_year)
+    policy_dd = Policy.default_data(start_year=start_year)
+    param_code_names = Policy.VALID_PARAM_CODE_NAMES
+    for year, mods in user_mods.items():
+        all_cpis = {p for p in mods.keys() if p.endswith("_cpi") and
                     p[:-4] in policy_dd.keys()}
-        pols = set(reforms.keys()) - set(beh_dd.keys()) - set(growth_dd.keys())
+        pols = (set(mods.keys()) -
+                set(con_dd.keys()) -
+                set(beh_dd.keys()) -
+                set(growdiff_dd.keys()))
         pols &= set(policy_dd.keys()) | param_code_names
         pols ^= all_cpis
         if pols:
-            pol_refs[year] = {param: reforms[param] for param in pols}
+            pol_refs[year] = {param: mods[param] for param in pols}
     return pol_refs
 
 
@@ -138,33 +150,33 @@ def get_unknown_parameters(user_mods, start_year, additional=None):
     plus any additional parameters passed by the user. The results are
     considered unknown and returned
     """
-    beh_dd = Behavior.default_data(start_year=start_year)
-    growth_dd = growth.Growth.default_data(start_year=start_year)
-    policy_dd = policy.Policy.default_data(start_year=start_year)
+    # pylint: disable=too-many-locals
     consump_dd = Consumption.default_data(start_year=start_year)
-    param_code_names = policy.Policy.VALID_PARAM_CODE_NAMES
+    beh_dd = Behavior.default_data(start_year=start_year)
+    growdiff_dd = Growdiff.default_data(start_year=start_year)
+    policy_dd = Policy.default_data(start_year=start_year)
+    param_code_names = Policy.VALID_PARAM_CODE_NAMES
     unknown_params = collections.defaultdict(list)
     if additional is None:
         additional = set()
-    for year, reforms in user_mods.items():
-        everything = set(reforms.keys())
-        all_cpis = {p for p in reforms.keys() if p.endswith("_cpi")}
-        all_good_cpis = {p for p in reforms.keys() if p.endswith("_cpi") and
+    for _, mods in user_mods.items():
+        everything = set(mods.keys())
+        all_cpis = {p for p in mods.keys() if p.endswith("_cpi")}
+        all_good_cpis = {p for p in mods.keys() if p.endswith("_cpi") and
                          p[:-4] in policy_dd.keys()}
         bad_cpis = all_cpis - all_good_cpis
         remaining = everything - all_cpis
         if bad_cpis:
             unknown_params['bad_cpis'] += list(bad_cpis)
-        pols = (remaining - set(beh_dd.keys()) - set(growth_dd.keys()) -
+        pols = (remaining - set(beh_dd.keys()) - set(growdiff_dd.keys()) -
                 set(policy_dd.keys()) - set(consump_dd.keys()) -
                 param_code_names - additional)
         if pols:
             unknown_params['policy'] += list(pols)
-
     return unknown_params
 
 
-def elasticity_of_gdp_year_n(user_mods, start_year, year_n):
+def elasticity_of_gdp_year_n(user_mods, year_n):
     """
     Extract elasticity of GDP parameter for the proper year
     """
@@ -182,7 +194,6 @@ def elasticity_of_gdp_year_n(user_mods, start_year, year_n):
             elasticity_specified = True
         else:
             elasticity_list += [0.0]
-
     if not elasticity_specified:
         raise ValueError("user_mods should specify elastic_gdp")
     if year_n >= len(elasticity_list):
@@ -195,12 +206,11 @@ def random_seed_from_plan(user_mods):
     """
     Handles the case of getting a tuple of reform mods
     """
-
     if isinstance(user_mods, tuple):
         ans = 0
         for mod in user_mods:
             ans += _random_seed_from_plan(mod)
-        return ans % np.iinfo(np.uint32).max
+        return ans % np.iinfo(np.uint32).max  # pylint: disable=no-member
     else:
         return _random_seed_from_plan(user_mods)
 
@@ -224,7 +234,7 @@ def _random_seed_from_plan(user_mods):
     txt = u"".join(all_vals).encode("utf-8")
     hsh = hashlib.sha512(txt)
     seed = int(hsh.hexdigest(), 16)
-    return seed % np.iinfo(np.uint32).max
+    return seed % np.iinfo(np.uint32).max  # pylint: disable=no-member
 
 
 def chooser(agg):
@@ -237,7 +247,8 @@ def chooser(agg):
     indices = np.where(agg)
 
     if len(indices[0]) > 2:
-        choices = np.random.choice(indices[0], size=3, replace=False)
+        choices = np.random.choice(indices[0],  # pylint: disable=no-member
+                                   size=3, replace=False)
     else:
         msg = ("Not enough difference in taxable income when adding 1 dollar"
                "for chunk with name: " + agg.name)
@@ -313,12 +324,13 @@ def drop_records(df1, df2, mask):
     return df1, df2
 
 
-def groupby_means_and_comparisons(df1, df2, mask, debug=False):
+def groupby_means_and_comparisons(df1, df2, mask):
     """
     df1 is the standard plan X and X'
     df2 is the user-specified plan (Plan Y)
     mask is the boolean mask where X and X' match
     """
+    # pylint: disable=too-many-locals
 
     df1, df2 = drop_records(df1, df2, mask)
 
@@ -398,86 +410,100 @@ def groupby_means_and_comparisons(df1, df2, mask, debug=False):
             pr_sum_reform, combined_sum_reform)
 
 
-def results(c):
+def results(calc):
+    """
+    Return DataFrame containing results for STATS_COLUMNS Records variables.
+    """
     outputs = []
     for col in STATS_COLUMNS:
-        outputs.append(getattr(c.records, col))
-
+        outputs.append(getattr(calc.records, col))
     return DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
 
 
-def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta, user_mods="",
-                          return_json=True):
+def run_nth_year_mtr_calc(year_n, start_year, is_strict, taxrec_df,
+                          user_mods="", return_json=True):
+    """
+    run_nth_year_mtr_calc function.
+    """
+    # pylint: disable=too-many-arguments,too-many-locals,too-many-statements
+
     # Only makes sense to run for budget years 1 through n-1 (not for year 0)
     assert year_n > 0
 
-    elasticity_gdp = elasticity_of_gdp_year_n(user_mods, start_year, year_n)
-
-    #########################################################################
-    #   Create Calculators and Masks
-    #########################################################################
-    records = Records(tax_dta.copy(deep=True))
-    records3 = Records(tax_dta.copy(deep=True))
-
-    # Default Plans
-    # Create a default Policy object
-    params = Policy(start_year=2013)
-    # Create a Calculator
-    calc1 = Calculator(policy=params, records=records)
-
+    # Specify elasticity_gdp and check for unknown parameters in user_mods
+    elasticity_gdp = elasticity_of_gdp_year_n(user_mods, year_n)
     if is_strict:
         unknown_params = get_unknown_parameters(user_mods, start_year,
                                                 additional={'elastic_gdp'})
         if unknown_params:
-            raise ValueError("Unknown parameters: {}".format(unknown_params))
+            raise ValueError('Unknown parameters: {}'.format(unknown_params))
 
-    growth_assumptions = only_growth_assumptions(user_mods, start_year)
-    if growth_assumptions:
-        calc1.growth.update_growth(growth_assumptions)
+    # Specify Consumption instance
+    consump = Consumption()
+    consump_assumps = only_consumption_assumptions(user_mods, start_year)
+    consump.update_consumption(consump_assumps)
 
+    # Specify growdiff_baseline and growdiff_response
+    growdiff_baseline = Growdiff()
+    growdiff_response = Growdiff()
+    # PROBLEM: dropq makes no distinction between the two Growdiff instances
+    # PROBLEM: code here is using growdiff_baseline assumptions
+    # PROBLEM: code here is missing growdiff_response assumptions
+    growdiff_base_assumps = only_growdiff_assumptions(user_mods, start_year)
+    growdiff_resp_assumps = dict()  # PROBLEM: this is temporary "fix"
+    growdiff_baseline.update_growdiff(growdiff_base_assumps)
+    growdiff_response.update_growdiff(growdiff_resp_assumps)
+
+    # Create pre-reform and post-reform Growfactors instances
+    growfactors_pre = Growfactors()
+    growdiff_baseline.apply_to(growfactors_pre)
+    growfactors_post = Growfactors()
+    growdiff_baseline.apply_to(growfactors_post)
+    growdiff_response.apply_to(growfactors_post)
+
+    # Create pre-reform Calculator instance
+    records1 = Records(data=taxrec_df.copy(deep=True),
+                       gfactors=growfactors_pre)
+    policy1 = Policy(gfactors=growfactors_pre)
+    calc1 = Calculator(policy=policy1, records=records1, consumption=consump)
     while calc1.current_year < start_year:
         calc1.increment_year()
     assert calc1.current_year == start_year
 
-    # User specified Plans
-    reform_mods = only_reform_mods(user_mods, start_year)
-    params3 = Policy(start_year=2013)
-    params3.implement_reform(reform_mods)
+    # Create post-reform Calculator instance
+    records2 = Records(data=taxrec_df.copy(deep=True),
+                       gfactors=growfactors_post)
+    policy2 = Policy(gfactors=growfactors_post)
+    policy_reform = only_reform_mods(user_mods, start_year)
+    policy2.implement_reform(policy_reform)
+    calc2 = Calculator(policy=policy2, records=records2, consumption=consump)
+    while calc2.current_year < start_year:
+        calc2.increment_year()
+    assert calc2.current_year == start_year
 
-    behavior3 = Behavior(start_year=2013)
-    # Create a Calculator for the user specified plan
-    calc3 = Calculator(policy=params3, records=records3, behavior=behavior3)
-    if growth_assumptions:
-        calc3.growth.update_growth(growth_assumptions)
-
-    while calc3.current_year < start_year:
-        calc3.increment_year()
-    assert calc3.current_year == start_year
     # Get a random seed based on user specified plan
     seed = random_seed_from_plan(user_mods)
-    np.random.seed(seed)
-
-    for i in range(0, year_n - 1):
+    np.random.seed(seed)  # pylint: disable=no-member
+    for _ in range(0, year_n - 1):
         calc1.increment_year()
-        calc3.increment_year()
-
+        calc2.increment_year()
     calc1.calc_all()
-    calc3.calc_all()
+    calc2.calc_all()
 
-    mtr_fica_x, mtr_iit_x, mtr_combined_x = calc1.mtr()
-    mtr_fica_y, mtr_iit_y, mtr_combined_y = calc3.mtr()
+    _, _, mtr_combined_x = calc1.mtr()
+    _, _, mtr_combined_y = calc2.mtr()
 
     # Assert that the current year is one behind the year we are calculating
     assert (calc1.current_year + 1) == (start_year + year_n)
-    assert (calc3.current_year + 1) == (start_year + year_n)
+    assert (calc2.current_year + 1) == (start_year + year_n)
 
     after_tax_mtr_x = 1 - ((mtr_combined_x * calc1.records.c00100 *
                             calc1.records.s006).sum() /
                            (calc1.records.c00100 * calc1.records.s006).sum())
 
-    after_tax_mtr_y = 1 - ((mtr_combined_y * calc3.records.c00100 *
-                            calc3.records.s006).sum() /
-                           (calc3.records.c00100 * calc3.records.s006).sum())
+    after_tax_mtr_y = 1 - ((mtr_combined_y * calc2.records.c00100 *
+                            calc2.records.s006).sum() /
+                           (calc2.records.c00100 * calc2.records.s006).sum())
 
     diff_avg_mtr_combined_y = after_tax_mtr_y - after_tax_mtr_x
     percent_diff_mtr = diff_avg_mtr_combined_y / after_tax_mtr_x
@@ -501,121 +527,131 @@ def run_nth_year_mtr_calc(year_n, start_year, is_strict, tax_dta, user_mods="",
 
 
 def calculate_baseline_and_reform(year_n, start_year, is_strict,
-                                  tax_dta="", user_mods=""):
+                                  taxrec_df, user_mods):
+    """
+    calculate_baseline_and_reform function.
+    """
+    # pylint: disable=too-many-locals,too-many-branches,too-many-statements
 
-    #########################################################################
-    # Create Calculators and Masks
-    #########################################################################
-    records = Records(tax_dta.copy(deep=True))
-    records2 = copy.deepcopy(records)
-    records3 = copy.deepcopy(records)
-    # add 1 dollar to gross income
-    records2.e00200 += 1
-    # Default Plans
-    # Create a default Policy object
-    params = Policy(start_year=2013)
-    # Create a Calculator
-    calc1 = Calculator(policy=params, records=records)
-
+    # Check user_mods for unknown parameters
     if is_strict:
         unknown_params = get_unknown_parameters(user_mods, start_year)
         if unknown_params:
             raise ValueError("Unknown parameters: {}".format(unknown_params))
 
-    growth_assumptions = only_growth_assumptions(user_mods, start_year)
-    if growth_assumptions:
-        calc1.growth.update_growth(growth_assumptions)
-
+    # Specify Consumption instance
+    consump = Consumption()
     consump_assumptions = only_consumption_assumptions(user_mods, start_year)
-    if consump_assumptions:
-        calc1.consumption.update_consumption(consump_assumptions)
+    consump.update_consumption(consump_assumptions)
 
+    # Specify growdiff_baseline and growdiff_response
+    growdiff_baseline = Growdiff()
+    growdiff_response = Growdiff()
+    # PROBLEM: dropq makes no distinction between the two Growdiff instances
+    # PROBLEM: code here is using growdiff_baseline assumptions
+    # PROBLEM: code here is missing growdiff_response assumptions
+    growdiff_base_assumps = only_growdiff_assumptions(user_mods, start_year)
+    growdiff_resp_assumps = dict()  # PROBLEM: this is temporary "fix"
+    growdiff_baseline.update_growdiff(growdiff_base_assumps)
+    growdiff_response.update_growdiff(growdiff_resp_assumps)
+
+    # Create pre-reform and post-reform Growfactors instances
+    growfactors_pre = Growfactors()
+    growdiff_baseline.apply_to(growfactors_pre)
+    growfactors_post = Growfactors()
+    growdiff_baseline.apply_to(growfactors_post)
+    growdiff_response.apply_to(growfactors_post)
+
+    # Create pre-reform Calculator instance
+    recs1 = Records(data=taxrec_df.copy(deep=True),
+                    gfactors=growfactors_pre)
+    policy1 = Policy(gfactors=growfactors_pre)
+    calc1 = Calculator(policy=policy1, records=recs1, consumption=consump)
     while calc1.current_year < start_year:
         calc1.increment_year()
     calc1.calc_all()
     assert calc1.current_year == start_year
 
-    params2 = Policy(start_year=2013)
-    # Create a Calculator with one extra dollar of income
-    calc2 = Calculator(policy=params2, records=records2)
-    if growth_assumptions:
-        calc2.growth.update_growth(growth_assumptions)
+    # Create pre-reform Calculator instance with extra income
+    recs1p = Records(data=taxrec_df.copy(deep=True),
+                     gfactors=growfactors_pre)
+    # add one dollar to total wages and salaries of each filing unit
+    recs1p.e00200 += 1.0  # pylint: disable=no-member
+    policy1p = Policy(gfactors=growfactors_pre)
+    calc1p = Calculator(policy=policy1p, records=recs1p, consumption=consump)
+    while calc1p.current_year < start_year:
+        calc1p.increment_year()
+    calc1p.calc_all()
+    assert calc1p.current_year == start_year
 
-    consump_assumptions = only_consumption_assumptions(user_mods, start_year)
-    if consump_assumptions:
-        calc2.consumption.update_consumption(consump_assumptions)
+    # Construct mask to show which of the calc1 and calc1p results differ
+    soit1 = results(calc1)
+    soit1p = results(calc1p)
+    mask = (soit1._iitax != soit1p._iitax)  # pylint: disable=protected-access
 
+    # Specify Behavior instance
+    behv = Behavior()
+    behavior_assumps = only_behavior_assumptions(user_mods, start_year)
+    behv.update_behavior(behavior_assumps)
+
+    # Prevent both behavioral response and growdiff response
+    if behv.has_any_response() and growdiff_response.has_any_response():
+        msg = 'BOTH behavior AND growdiff_response HAVE RESPONSE'
+        raise ValueError(msg)
+
+    # Create post-reform Calculator instance with behavior
+    recs2 = Records(data=taxrec_df.copy(deep=True),
+                    gfactors=growfactors_post)
+    policy2 = Policy(gfactors=growfactors_post)
+    policy_reform = only_reform_mods(user_mods, start_year)
+    policy2.implement_reform(policy_reform)
+    calc2 = Calculator(policy=policy2, records=recs2, consumption=consump,
+                       behavior=behv)
     while calc2.current_year < start_year:
         calc2.increment_year()
     calc2.calc_all()
     assert calc2.current_year == start_year
 
-    # where do the results differ..
+    # Get a random seed based on user_mods and calc_all() for nth year
+    seed = random_seed_from_plan(user_mods)
+    np.random.seed(seed)  # pylint: disable=no-member
+    for _ in range(0, year_n):
+        calc1.increment_year()
+        calc2.increment_year()
+    calc1.calc_all()
+    if calc2.behavior.has_response():
+        calc2 = Behavior.response(calc1, calc2)
+    else:
+        calc2.calc_all()
+
+    # Return results and mask
     soit1 = results(calc1)
     soit2 = results(calc2)
-    mask = (soit1._iitax != soit2._iitax)
-
-    # User specified Plans
-    behavior_assumptions = only_behavior_assumptions(user_mods, start_year)
-
-    reform_mods = only_reform_mods(user_mods, start_year)
-
-    params3 = Policy(start_year=2013)
-    params3.implement_reform(reform_mods)
-
-    behavior3 = Behavior(start_year=2013)
-    # Create a Calculator for the user specified plan
-    calc3 = Calculator(policy=params3, records=records3, behavior=behavior3)
-    if growth_assumptions:
-        calc3.growth.update_growth(growth_assumptions)
-
-    if consump_assumptions:
-        calc3.consumption.update_consumption(consump_assumptions)
-
-    if behavior_assumptions:
-        calc3.behavior.update_behavior(behavior_assumptions)
-
-    while calc3.current_year < start_year:
-        calc3.increment_year()
-    assert calc3.current_year == start_year
-
-    calc3.calc_all()
-    # Get a random seed based on user specified plan
-    seed = random_seed_from_plan(user_mods)
-    np.random.seed(seed)
-
-    for i in range(0, year_n):
-        calc1.increment_year()
-        calc3.increment_year()
-
-    calc1.calc_all()
-    if calc3.behavior.has_response():
-        calc3 = Behavior.response(calc1, calc3)
-    else:
-        calc3.calc_all()
-    soit1 = results(calc1)
-    soit3 = results(calc3)
-
-    return soit1, soit3, mask
+    return soit1, soit2, mask
 
 
-def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
+def run_nth_year(year_n, start_year, is_strict, taxrec_df, user_mods,
                  return_json=True):
+    """
+    run_nth_year function.
+    """
+    # pylint: disable=too-many-arguments, too-many-locals
 
     start_time = time.time()
-    soit_baseline, soit_reform, mask = calculate_baseline_and_reform(
-        year_n, start_year, is_strict, tax_dta, user_mods)
+    (soit_baseline, soit_reform,
+     mask) = calculate_baseline_and_reform(year_n, start_year, is_strict,
+                                           taxrec_df, user_mods)
 
     # Means of plan Y by decile
     # diffs of plan Y by decile
     # Means of plan Y by income bin
     # diffs of plan Y by income bin
     (mY_dec, mX_dec, df_dec, pdf_dec, cdf_dec, mY_bin, mX_bin, df_bin,
-        pdf_bin, cdf_bin, diff_sum, payrolltax_diff_sum, combined_diff_sum,
-        sum_baseline, pr_sum_baseline, combined_sum_baseline, sum_reform,
-        pr_sum_reform,
-        combined_sum_reform) = groupby_means_and_comparisons(soit_baseline,
-                                                             soit_reform, mask)
+     pdf_bin, cdf_bin, diff_sum, payrolltax_diff_sum, combined_diff_sum,
+     sum_baseline, pr_sum_baseline, combined_sum_baseline, sum_reform,
+     pr_sum_reform,
+     combined_sum_reform) = groupby_means_and_comparisons(soit_baseline,
+                                                          soit_reform, mask)
 
     elapsed_time = time.time() - start_time
     print("elapsed time for this run: ", elapsed_time)
@@ -640,6 +676,9 @@ def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
     mX_bin.drop(mX_bin.index[0], inplace=True)
 
     def append_year(x):
+        """
+        append_year embedded function
+        """
         x.columns = [str(col) + "_{}".format(year_n) for col in x.columns]
         return x
 
@@ -718,36 +757,36 @@ def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="",
             fiscal_yr_total_bl, fiscal_yr_total_rf)
 
 
-def run_models(tax_dta, start_year, is_strict=False, user_mods="",
+def run_models(taxrec_df, start_year, is_strict=False, user_mods="",
                return_json=True, num_years=NUM_YEARS_DEFAULT):
+    """
+    run_models function.
+    """
+    # pylint: disable=too-many-arguments,too-many-locals
 
-    mY_dec_table = {}
-    mX_dec_table = {}
-    df_dec_table = {}
-    pdf_dec_table = {}
-    cdf_dec_table = {}
-    mY_bin_table = {}
-    mX_bin_table = {}
-    df_bin_table = {}
-    pdf_bin_table = {}
-    cdf_bin_table = {}
-    num_fiscal_year_totals = []
-
-    #########################################################################
-    #   Create Calculators and Masks
-    #########################################################################
+    num_fiscal_year_totals = list()
+    mY_dec_table = dict()
+    mX_dec_table = dict()
+    df_dec_table = dict()
+    pdf_dec_table = dict()
+    cdf_dec_table = dict()
+    mY_bin_table = dict()
+    mX_bin_table = dict()
+    df_bin_table = dict()
+    pdf_bin_table = dict()
+    cdf_bin_table = dict()
     for year_n in range(0, num_years):
         json_tables = run_nth_year(year_n, start_year=start_year,
                                    is_strict=is_strict,
-                                   tax_dta=tax_dta,
+                                   taxrec_df=taxrec_df,
                                    user_mods=user_mods,
                                    return_json=return_json)
-
+        # map json_tables to named tables
         (mY_dec_table_i, mX_dec_table_i, df_dec_table_i, pdf_dec_table_i,
          cdf_dec_table_i, mY_bin_table_i, mX_bin_table_i, df_bin_table_i,
-         pdf_bin_table_i, cdf_bin_table_i, num_fiscal_year_total,
+         _, _, num_fiscal_year_total,
          num_fiscal_year_total_bl, num_fiscal_year_total_rf) = json_tables
-
+        # update list and dictionaries
         num_fiscal_year_totals.append(num_fiscal_year_total)
         num_fiscal_year_totals.append(num_fiscal_year_total_bl)
         num_fiscal_year_totals.append(num_fiscal_year_total_rf)
@@ -759,44 +798,39 @@ def run_models(tax_dta, start_year, is_strict=False, user_mods="",
         mY_bin_table.update(mY_bin_table_i)
         mX_bin_table.update(mX_bin_table_i)
         df_bin_table.update(df_bin_table_i)
-
     return (mY_dec_table, mX_dec_table, df_dec_table, pdf_dec_table,
             cdf_dec_table, mY_bin_table, mX_bin_table, df_bin_table,
             pdf_bin_table, cdf_bin_table, num_fiscal_year_totals)
 
 
-def run_gdp_elast_models(tax_dta, start_year, is_strict=False, user_mods="",
+def run_gdp_elast_models(taxrec_df, start_year, is_strict=False, user_mods="",
                          return_json=True, num_years=NUM_YEARS_DEFAULT):
+    """
+    run_gdp_elast_models function.
+    """
+    # pylint: disable=too-many-arguments
 
     gdp_elasticity_totals = []
-
-    #########################################################################
-    #   Create Calculators and Masks
-    #########################################################################
     for year_n in range(1, num_years):
         gdp_elast_i = run_nth_year_mtr_calc(year_n, start_year=start_year,
                                             is_strict=is_strict,
-                                            tax_dta=tax_dta,
+                                            taxrec_df=taxrec_df,
                                             user_mods=user_mods,
                                             return_json=return_json)
-
         gdp_elasticity_totals.append(gdp_elast_i)
-
     return gdp_elasticity_totals
 
 
 def format_macro_results(diff_data, return_json=True):
-
+    """
+    format_macro_results function.
+    """
     ogusadf = pd.DataFrame(diff_data)
-
     if not return_json:
         return ogusadf
-
     column_types = [float] * diff_data.shape[1]
-
     df_ogusa_table = create_json_table(ogusadf,
                                        row_names=ogusa_row_names,
                                        column_types=column_types,
                                        num_decimals=3)
-
     return df_ogusa_table

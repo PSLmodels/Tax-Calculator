@@ -557,7 +557,7 @@ def test_read_json_param_files_and_implement_reform(reform_file, set_year):
     that is then used to call implement_reform method.
     NOTE: implement_reform called when policy.current_year == policy.start_year
     """
-    ref, _, _, _ = Calculator.read_json_param_files(reform_file.name, None)
+    ref, _, _, _, _ = Calculator.read_json_param_files(reform_file.name, None)
     policy = Policy()
     if set_year:
         policy.set_year(2015)

@@ -71,8 +71,6 @@ def test_make_Calculator(records_2009):
     with pytest.raises(ValueError):
         calc = Calculator(policy=parm, records=recs, behavior=list())
     with pytest.raises(ValueError):
-        calc = Calculator(policy=parm, records=recs, growth=list())
-    with pytest.raises(ValueError):
         calc = Calculator(policy=parm, records=recs, consumption=list())
 
 
@@ -444,9 +442,10 @@ ASSUMP_CONTENTS = """
   "title": "",
   "author": "",
   "date": "",
-  "behavior": {},
   "consumption": { "_MPC_e18400": {"2018": [0.05]} },
-  "growth": {}
+  "behavior": {},
+  "growdiff_baseline": {},
+  "growdiff_response": {}
 }
 """
 
@@ -477,8 +476,8 @@ def test_read_json_reform_file_and_implement_reform(reform_file,
     that is then used to call implement_reform method and Calculate.calc_all()
     NOTE: implement_reform called when policy.current_year == policy.start_year
     """
-    reform, _, _, _ = Calculator.read_json_param_files(reform_file.name,
-                                                       assump_file.name)
+    reform, _, _, _, _ = Calculator.read_json_param_files(reform_file.name,
+                                                          assump_file.name)
     policy = Policy()
     if set_year:
         policy.set_year(2015)
@@ -584,11 +583,12 @@ def bad1assumpfile():
     # specify JSON text for assumptions
     txt = """
     {
+      "consumption": {},
       "behavior": { // example of incorrect JSON because 'x' must be "x"
         'x': {"2014": [0.25]}
       },
-      "consumption": {},
-      "growth": {}
+      "growdiff_baseline": {},
+      "growdiff_response": {}
     }
     """
     f = tempfile.NamedTemporaryFile(mode='a', delete=False)
@@ -607,9 +607,10 @@ def bad2assumpfile():
       "title": "",
       "author": "",
       "date": "",
-      "behaviorx": {}, // example of assump file not containing "behavior" key
       "consumption": {},
-      "growth": {}
+      "behaviorx": {}, // example of assump file not containing "behavior" key
+      "growdiff_baseline": {},
+      "growdiff_response": {}
     }
     """
     f = tempfile.NamedTemporaryFile(mode='a', delete=False)
@@ -626,9 +627,10 @@ def bad3assumpfile():
     txt = """
     {
       "title": "",
-      "behavior": {},
       "consumption": {},
-      "growth": {},
+      "behavior": {},
+      "growdiff_baseline": {},
+      "growdiff_response": {},
       "policy": { // example of misplaced policy key
         "_SS_Earnings_c": {"2018": [9e99]}
       }
@@ -667,7 +669,7 @@ def test_convert_parameter_dict():
 
 def test_param_code_calc_all(reform_file, rawinputfile):
     cyr = 2016
-    (ref, _, _, _) = Calculator.read_json_param_files(reform_file.name, None)
+    ref, _, _, _, _ = Calculator.read_json_param_files(reform_file.name, None)
     policy = Policy()
     policy.implement_reform(ref)
     policy.set_year(cyr)

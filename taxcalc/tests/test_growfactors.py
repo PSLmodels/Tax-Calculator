@@ -42,6 +42,13 @@ def test_incorrect_Growfactors_usage(bad_gf_file):
         val = gf.factor_value('AWAGE', 2099)
 
 
+def test_update_after_use():
+    gf = Growfactors()
+    pir = gf.price_inflation_rates(gf.first_year, gf.last_year)
+    with pytest.raises(ValueError):
+        gf.update('AWAGE', 2013, 0.01)
+
+
 def test_correct_Growfactors_usage():
     gf = Growfactors()
     pir = gf.price_inflation_rates(2013, 2020)
