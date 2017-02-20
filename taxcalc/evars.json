@@ -38,6 +38,10 @@
       "format": "int",
       "description": ""
     },
+    "agi_bin": {
+      "format": "int",
+      "description": ""
+    },
     "blind_head": {
       "format": "int",
       "description": ""
