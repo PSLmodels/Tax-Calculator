@@ -104,27 +104,21 @@ class Records(object):
     VAR_INFO = read_json_from_file(VAR_INFO_PATH)
 
     # Read variables
-    INTEGER_READ_VARS = set(
-        k for k, v in VAR_INFO['in'].items() if v['format'] == 'int'
-    )
-    FLOAT_READ_VARS = set(
-        k for k, v in VAR_INFO['in'].items() if v['format'] == 'float'
-    )
-    MUST_READ_VARS = set(
-        k for k, v in VAR_INFO['in'].items() if v.get('required')
-    )
+    INTEGER_READ_VARS = \
+        set(k for k, v in VAR_INFO['in'].items() if v['format'] == 'int')
+    FLOAT_READ_VARS = \
+        set(k for k, v in VAR_INFO['in'].items() if v['format'] == 'float')
+    MUST_READ_VARS = \
+        set(k for k, v in VAR_INFO['in'].items() if v.get('required'))
     USABLE_READ_VARS = INTEGER_READ_VARS | FLOAT_READ_VARS
 
     # Calculated variables
-    BINARY_CALCULATED_VARS = set(
-        k for k, v in VAR_INFO['out'].items() if v['format'] == 'binary'
-    )
-    INTEGER_CALCULATED_VARS = set(
-        k for k, v in VAR_INFO['out'].items() if v['format'] == 'int'
-    )
-    FLOAT_CALCULATED_VARS = set(
-        k for k, v in VAR_INFO['out'].items() if v['format'] == 'float'
-    )
+    BINARY_CALCULATED_VARS = \
+        set(k for k, v in VAR_INFO['out'].items() if v['format'] == 'binary')
+    INTEGER_CALCULATED_VARS = \
+        set(k for k, v in VAR_INFO['out'].items() if v['format'] == 'int')
+    FLOAT_CALCULATED_VARS = \
+        set(k for k, v in VAR_INFO['out'].items() if v['format'] == 'float')
     CALCULATED_VARS = \
         BINARY_CALCULATED_VARS | \
         INTEGER_CALCULATED_VARS | \
