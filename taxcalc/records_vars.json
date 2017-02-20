@@ -2,29 +2,29 @@
   "in": {
     "DSI": {
       "format": "int",
-      "description": ""
+      "description": "1 if claimed as dependent on another return; otherwise 0"
     },
     "EIC": {
       "format": "int",
-      "description": ""
+      "description": "number of EIC qualifying children (range: 0 to 3)"
     },
     "FLPDYR": {
       "format": "int",
-      "description": "Tax year"
+      "description": "Tax filing year"
     },
     "MARS": {
       "format": "int",
       "required": true,
-      "description": ""
+      "description": "Filing (marital) status: number of the checked box"
     },
     "MIDR": {
       "format": "int",
-      "description": ""
+      "description": "1 if separately filing spouse itemizes; otherwise 0"
     },
     "RECID": {
       "format": "int",
       "required": true,
-      "description": "Record ID for tax filing unit"
+      "description": "Unique identifier for filing unit"
     },
     "XTOT": {
       "format": "int",
@@ -32,11 +32,11 @@
     },
     "age_head": {
       "format": "int",
-      "description": ""
+      "description": "Age in years of taxpayer (i.e. primary filer)"
     },
     "age_spouse": {
       "format": "int",
-      "description": ""
+      "description": "Age in years of spouse (i.e. secondary filer if present)"
     },
     "agi_bin": {
       "format": "int",
@@ -44,11 +44,11 @@
     },
     "blind_head": {
       "format": "int",
-      "description": ""
+      "description": "1 if taxpayer is blind; otherwise 0"
     },
     "blind_spouse": {
       "format": "int",
-      "description": ""
+      "description": "1 if spouse is blind; otherwise 0"
     },
     "cmbtp": {
       "format": "float",
@@ -56,19 +56,19 @@
     },
     "e00200": {
       "format": "float",
-      "description": "Wages, salaries, tips, etc. "
+      "description": "Wages, salaries, and tips for filing unit"
     },
     "e00200p": {
       "format": "float",
-      "description": ""
+      "description": "Wages, salaries, and tips for taxpayer"
     },
     "e00200s": {
       "format": "float",
-      "description": ""
+      "description": "Wages, salaries, and tips for spouse"
     },
     "e00300": {
       "format": "float",
-      "description": "Taxable interest"
+      "description": "Taxable interest income"
     },
     "e00400": {
       "format": "float",
@@ -76,11 +76,11 @@
     },
     "e00600": {
       "format": "float",
-      "description": "Ordinary dividends"
+      "description": "Ordinary dividends included in AGI"
     },
     "e00650": {
       "format": "float",
-      "description": "Qualified dividends"
+      "description": "Qualified dividends included in ordinary dividends"
     },
     "e00700": {
       "format": "float",
@@ -92,27 +92,27 @@
     },
     "e00900": {
       "format": "float",
-      "description": "Business income or loss (Sch C)"
+      "description": "Sch C business net profit/loss for filing unit"
     },
     "e00900p": {
       "format": "float",
-      "description": ""
+      "description": "Sch C business net profit/loss for taxpayer"
     },
     "e00900s": {
       "format": "float",
-      "description": ""
+      "description": "Sch C business net profit/loss for spouse"
     },
     "e01100": {
       "format": "float",
-      "description": "Capital gain Distrib. (not reported on Sch D)"
+      "description": "Capital gain distributions not reported on Sch D"
     },
     "e01200": {
       "format": "float",
-      "description": "Other gain or loss (Form 4797)"
+      "description": "Other net gain/loss (Form 4797)"
     },
     "e01400": {
       "format": "float",
-      "description": "IRA distributions, taxable"
+      "description": "Taxable IRA distributions"
     },
     "e01500": {
       "format": "float",
@@ -128,27 +128,27 @@
     },
     "e02100": {
       "format": "float",
-      "description": "Farm income or loss"
+      "description": "Farm net income/loss for filing unit (Sch F)"
     },
     "e02100p": {
       "format": "float",
-      "description": ""
+      "description": "Farm net income/loss for taxpayer"
     },
     "e02100s": {
       "format": "float",
-      "description": ""
+      "description": "Farm net income/loss for spouse"
     },
     "e02300": {
       "format": "float",
-      "description": "Unemployment compensation"
+      "description": "Unemployment compensation benefits"
     },
     "e02400": {
       "format": "float",
-      "description": "Social security benefits, total"
+      "description": "Gross social security benefits"
     },
     "e03150": {
       "format": "float",
-      "description": "IRA deduction"
+      "description": "Total deductible IRA contributions"
     },
     "e03210": {
       "format": "float",
@@ -176,7 +176,7 @@
     },
     "e03300": {
       "format": "float",
-      "description": "Self-employed SEP, SIMPLE, and qualified plans"
+      "description": "Contributions to SEP, SIMPLE, etc, qualified plans"
     },
     "e03400": {
       "format": "float",
@@ -188,23 +188,23 @@
     },
     "e07240": {
       "format": "float",
-      "description": "Retirement Savings contrib. Credit New 2002"
+      "description": "Retirement savings contributions credit (Form 8880)"
     },
     "e07260": {
       "format": "float",
-      "description": "Residential Energy Credit New 2006"
+      "description": "Residential energy credit (Form 5695)"
     },
     "e07300": {
       "format": "float",
-      "description": "Foreign tax credit - Form 1116"
+      "description": "Foreign tax credit (Form 1116)"
     },
     "e07400": {
       "format": "float",
-      "description": "General business credit"
+      "description": "General business credit (Form 3800)"
     },
     "e07600": {
       "format": "float",
-      "description": "Prior year minimum tax credit - Form 8801"
+      "description": "Prior year minimum tax credit (Form 8801)"
     },
     "e09700": {
       "format": "float",
@@ -224,15 +224,15 @@
     },
     "e17500": {
       "format": "float",
-      "description": "Sch A: Total medical Exp.s"
+      "description": "Sch A: Medical and dental expenses"
     },
     "e18400": {
       "format": "float",
-      "description": "Sch A: State and local income taxes"
+      "description": "Sch A: State and local income/sales taxes"
     },
     "e18500": {
       "format": "float",
-      "description": "Sch A: Real estate tax"
+      "description": "Sch A: Real estate taxes"
     },
     "e19200": {
       "format": "float",
@@ -240,15 +240,15 @@
     },
     "e19800": {
       "format": "float",
-      "description": "Sch A: Cash contrib."
+      "description": "Sch A: Gifts to charity: cash/check contributions"
     },
     "e20100": {
       "format": "float",
-      "description": "Sch A: Other than cash"
+      "description": "Sch A: Gifts to charity: other than cash/check contributions"
     },
     "e20400": {
       "format": "float",
-      "description": "Sch A: Total Miscellaneous deductions subject to 2% AGI limitation"
+      "description": "Sch A: Miscellaneous deductions subject to 2% AGI limitation"
     },
     "e20500": {
       "format": "float",
@@ -260,7 +260,7 @@
     },
     "e24518": {
       "format": "float",
-      "description": "Sch D: 28% Rate Gain or Loss New 2003"
+      "description": "Sch D: 28% Rate Gain or Loss"
     },
     "e26270": {
       "format": "float",
@@ -272,15 +272,15 @@
     },
     "e32800": {
       "format": "float",
-      "description": "Form 2441 child/dep care exp: Qualifying Individual Exp.s"
+      "description": "Child/dependent-care expenses for qualifying persons (Form 2441)"
     },
     "e58990": {
       "format": "float",
-      "description": "Form 4952:Investment Income Amt."
+      "description": "Investment income elected amount (Form 4952)"
     },
     "e62900": {
       "format": "float",
-      "description": "Form 6251:Form 6251 foreign tax credit"
+      "description": "Alternative Minimum Tax foreign tax credit (Form 6251)"
     },
     "e87530": {
       "format": "float",
@@ -292,11 +292,11 @@
     },
     "f2441": {
       "format": "int",
-      "description": ""
+      "description": "number of child/dependent-care qualifying persons"
     },
     "f6251": {
       "format": "int",
-      "description": ""
+      "description": "1 if Form 6251 (AMT) attached to return; otherwise 0"
     },
     "filer": {
       "format": "int",
@@ -304,7 +304,7 @@
     },
     "n24": {
       "format": "int",
-      "description": ""
+      "description": "Number of children eligible for Child Tax Credit"
     },
     "nu05": {
       "format": "float",
@@ -320,19 +320,19 @@
     },
     "p22250": {
       "format": "float",
-      "description": "Sch D: Net short-term gain or loss"
+      "description": "Sch D: Net short-term gain/loss"
     },
     "p23250": {
       "format": "float",
-      "description": "Sch D: Net Long Term Gain or Loss"
+      "description": "Sch D: Net long-term gain/loss"
     },
     "p25470": {
       "format": "float",
-      "description": "Sch E: Royalty depletion"
+      "description": "Sch E: Royalty depletion and/or rental depreciation"
     },
     "p87521": {
       "format": "float",
-      "description": "Tentative American Opportunity Credit"
+      "description": "Total tentative AmOppCredit amount for all students"
     },
     "s006": {
       "format": "float",
