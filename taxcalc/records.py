@@ -98,32 +98,32 @@ class Records(object):
     WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
     ADJUST_RATIOS_FILENAME = 'puf_ratios.csv'
     ADJUST_RATIOS_PATH = os.path.join(CUR_PATH, ADJUST_RATIOS_FILENAME)
-    EVARS_PATH = os.path.join(CUR_PATH, 'evars.json')
+    VAR_INFO_PATH = os.path.join(CUR_PATH, 'records_vars.json')
 
     # Load metadata about all Records variables
-    EVAR_INFO = read_json_from_file(EVARS_PATH)
+    VAR_INFO = read_json_from_file(VAR_INFO_PATH)
 
     # Read variables
     INTEGER_READ_VARS = set(
-        k for k, v in EVAR_INFO['in'].items() if v['format'] == 'int'
+        k for k, v in VAR_INFO['in'].items() if v['format'] == 'int'
     )
     FLOAT_READ_VARS = set(
-        k for k, v in EVAR_INFO['in'].items() if v['format'] == 'float'
+        k for k, v in VAR_INFO['in'].items() if v['format'] == 'float'
     )
     MUST_READ_VARS = set(
-        k for k, v in EVAR_INFO['in'].items() if v.get('required')
+        k for k, v in VAR_INFO['in'].items() if v.get('required')
     )
     USABLE_READ_VARS = INTEGER_READ_VARS | FLOAT_READ_VARS
 
     # Calculated variables
     BINARY_CALCULATED_VARS = set(
-        k for k, v in EVAR_INFO['out'].items() if v['format'] == 'binary'
+        k for k, v in VAR_INFO['out'].items() if v['format'] == 'binary'
     )
     INTEGER_CALCULATED_VARS = set(
-        k for k, v in EVAR_INFO['out'].items() if v['format'] == 'int'
+        k for k, v in VAR_INFO['out'].items() if v['format'] == 'int'
     )
     FLOAT_CALCULATED_VARS = set(
-        k for k, v in EVAR_INFO['out'].items() if v['format'] == 'float'
+        k for k, v in VAR_INFO['out'].items() if v['format'] == 'float'
     )
     CALCULATED_VARS = \
         BINARY_CALCULATED_VARS | \
