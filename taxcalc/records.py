@@ -3,15 +3,14 @@ Tax-Calculator tax-filing-unit Records class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 records.py
-# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy records.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
-
+# pylint --disable=locally-disabled records.py
 
 import os
 import six
 import numpy as np
 import pandas as pd
-from pkg_resources import resource_stream, Requirement, DistributionNotFound
+from .growfactors import Growfactors
+from .utils import read_egg_csv
 
 
 PUFCSV_YEAR = 2009
@@ -36,11 +35,8 @@ class Records(object):
         any smoothing of "stair-step" provisions in income tax law;
         default value is false.
 
-    blowup_factors: string or Pandas DataFrame or None
-        string describes CSV file in which blowup factors reside;
-        DataFrame already contains blowup factors;
-        None creates empty blowup-factors DataFrame;
-        default value is filename of the default blowup factors.
+    gfactors: Growfactors class instance or None
+        containing record data extrapolation (or "blowup") factors
 
     adjust_ratios: string or Pandas DataFrame or None
         string describes CSV file in which adjustment ratios reside;
@@ -68,7 +64,11 @@ class Records(object):
     Raises
     ------
     ValueError:
-        if parameters are not the appropriate type.
+        if data is not the appropriate type.
+        if taxpayer and spouse variables do not add up to filing-unit total.
+        if dividends is less than qualified dividends.
+        if gfactors is not None or a Growfactors class instance.
+        if start_year is not an integer.
         if files cannot be found.
 
     Returns
@@ -79,7 +79,7 @@ class Records(object):
     -----
     Typical usage is "recs = Records()", which uses all the default
     parameters of the constructor, and therefore, imputed variables
-    are generated to augment the data and initial-year blowup factors
+    are generated to augment the data and initial-year grow factors
     are applied to the data.  There are situations in which you need
     to specify the values of the Record constructor's arguments, but
     be sure you know exactly what you are doing when attempting this.
@@ -95,8 +95,6 @@ class Records(object):
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
     WEIGHTS_FILENAME = 'puf_weights.csv'
     WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
-    BLOWUP_FACTORS_FILENAME = 'growfactors.csv'
-    BLOWUP_FACTORS_PATH = os.path.join(CUR_PATH, BLOWUP_FACTORS_FILENAME)
     ADJUST_RATIOS_FILENAME = 'puf_ratios.csv'
     ADJUST_RATIOS_PATH = os.path.join(CUR_PATH, ADJUST_RATIOS_FILENAME)
 
@@ -183,9 +181,9 @@ class Records(object):
     def __init__(self,
                  data='puf.csv',
                  exact_calculations=False,
-                 blowup_factors=BLOWUP_FACTORS_PATH,
-                 adjust_ratios=ADJUST_RATIOS_PATH,
+                 gfactors=Growfactors(),
                  weights=WEIGHTS_PATH,
+                 adjust_ratios=ADJUST_RATIOS_PATH,
                  start_year=PUFCSV_YEAR):
         """
         Records class constructor
@@ -210,10 +208,13 @@ class Records(object):
                            rtol=0.0, atol=0.001):
             msg = 'expression "e00600 >= e00650" is not true for every record'
             raise ValueError(msg)
-        # read extrapolation blowup factors, adjustment ratios, and
-        # sample weights
-        self.BF = None
-        self._read_blowup(blowup_factors)
+        # handle grow factors
+        is_correct_type = isinstance(gfactors, Growfactors)
+        if gfactors is not None and not is_correct_type:
+            msg = 'gfactors is neither None nor a Growfactors instance'
+            raise ValueError(msg)
+        self.gfactors = gfactors
+        # read sample weights
         self.WT = None
         self._read_weights(weights)
         self.ADJ = None
@@ -230,9 +231,9 @@ class Records(object):
         else:
             msg = 'start_year is not an integer'
             raise ValueError(msg)
-        # consider applying initial-year blowup factors
-        if not self.BF.empty and self.current_year == Records.PUF_YEAR:
-            self._blowup(Records.PUF_YEAR)
+        # consider applying initial-year grow factors
+        if gfactors is not None and start_year == Records.PUF_YEAR:
+            self._blowup(start_year)
         # construct sample weights for current_year
         wt_colname = 'WT{}'.format(self.current_year)
         if wt_colname in self.WT.columns:
@@ -248,22 +249,24 @@ class Records(object):
     def increment_year(self):
         """
         Adds one to current year.
-        Also, does variable blowup and reweighting for the new current year.
+        Also, does blowup and reweighting for the new current year.
         """
         self._current_year += 1
-        # apply Stage 1 Extrapolation blowup factors
-        self._blowup(self.current_year)
-        # apply Stage 3 adjustment ratios
+        # apply variable extrapolation growfactors
+        if self.gfactors is not None:
+            self._blowup(self.current_year)
+        # apply variable adjustment ratios
         self._adjust(self.current_year)
-        # specify Stage 2 Extrapolation sample weights
-        wt_colname = 'WT{}'.format(self.current_year)
-        if wt_colname in self.WT.columns:
-            self.s006 = self.WT[wt_colname] * 0.01
+        # specify current-year sample weights
+        if self.WT is not None:
+            wt_colname = 'WT{}'.format(self.current_year)
+            if wt_colname in self.WT.columns:
+                self.s006 = self.WT[wt_colname] * 0.01
 
     def set_current_year(self, new_current_year):
         """
         Sets current year to specified value and updates FLPDYR variable.
-        Unlike increment_year method, blowup and reweighting are skipped.
+        Unlike increment_year method, extrapolation & reweighting are skipped.
         """
         self._current_year = new_current_year
         self.FLPDYR.fill(new_current_year)
@@ -272,26 +275,27 @@ class Records(object):
 
     def _blowup(self, year):
         """
-        Applies blowup factors (BF) to variables for specified calendar year.
+        Applies to variables the grow factors for specified calendar year.
         """
         # pylint: disable=too-many-statements
         # pylint: disable=too-many-locals
-        AWAGE = self.BF['AWAGE'][year]
-        AINTS = self.BF['AINTS'][year]
-        ADIVS = self.BF['ADIVS'][year]
-        ATXPY = self.BF['ATXPY'][year]
-        ASCHCI = self.BF['ASCHCI'][year]
-        ASCHCL = self.BF['ASCHCL'][year]
-        ACGNS = self.BF['ACGNS'][year]
-        ASCHEI = self.BF['ASCHEI'][year]
-        ASCHEL = self.BF['ASCHEL'][year]
-        ASCHF = self.BF['ASCHF'][year]
-        AUCOMP = self.BF['AUCOMP'][year]
-        ASOCSEC = self.BF['ASOCSEC'][year]
-        ACPIM = self.BF['ACPIM'][year]
-        AGDPN = self.BF['AGDPN'][year]
-        ABOOK = self.BF['ABOOK'][year]
-        AIPD = self.BF['AIPD'][year]
+        # pylint: disable=unsubscriptable-object
+        AWAGE = self.gfactors.factor_value('AWAGE', year)
+        AINTS = self.gfactors.factor_value('AINTS', year)
+        ADIVS = self.gfactors.factor_value('ADIVS', year)
+        ATXPY = self.gfactors.factor_value('ATXPY', year)
+        ASCHCI = self.gfactors.factor_value('ASCHCI', year)
+        ASCHCL = self.gfactors.factor_value('ASCHCL', year)
+        ACGNS = self.gfactors.factor_value('ACGNS', year)
+        ASCHEI = self.gfactors.factor_value('ASCHEI', year)
+        ASCHEL = self.gfactors.factor_value('ASCHEL', year)
+        ASCHF = self.gfactors.factor_value('ASCHF', year)
+        AUCOMP = self.gfactors.factor_value('AUCOMP', year)
+        ASOCSEC = self.gfactors.factor_value('ASOCSEC', year)
+        ACPIM = self.gfactors.factor_value('ACPIM', year)
+        AGDPN = self.gfactors.factor_value('AGDPN', year)
+        ABOOK = self.gfactors.factor_value('ABOOK', year)
+        AIPD = self.gfactors.factor_value('AIPD', year)
         self.e00200 *= AWAGE
         self.e00200p *= AWAGE
         self.e00200s *= AWAGE
@@ -437,23 +441,6 @@ class Records(object):
         self.ID_Casualty_frt_in_pufcsv_year[:] = np.where(PUFCSV_YEAR < ryear,
                                                           0.10, rvalue)
 
-    @staticmethod
-    def _read_egg_csv(vname, fpath, **kwargs):
-        """
-        Read csv file with fpath containing vname data from EGG;
-        return dict of vname data.
-        """
-        try:
-            # grab vname data from EGG distribution
-            path_in_egg = os.path.join('taxcalc', fpath)
-            vname_fname = resource_stream(
-                Requirement.parse('taxcalc'), path_in_egg)
-            vname_dict = pd.read_csv(vname_fname, **kwargs)
-        except (DistributionNotFound, IOError):
-            msg = 'could not read {} file from EGG'
-            raise ValueError(msg.format(vname))
-        return vname_dict
-
     def zero_out_changing_calculated_vars(self):
         """
         Set all CHANGING_CALCULATED_VARS to zero.
@@ -478,35 +465,11 @@ class Records(object):
             if os.path.isfile(weights):
                 WT = pd.read_csv(weights)
             else:
-                WT = Records._read_egg_csv('weights',
-                                           Records.WEIGHTS_FILENAME)
+                WT = read_egg_csv('weights', Records.WEIGHTS_FILENAME)
         else:
             msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
         setattr(self, 'WT', WT)
-
-    def _read_blowup(self, blowup_factors):
-        """
-        Read Records blowup factors from file or
-        use specified DataFrame as data or
-        creates empty DataFrame if None.
-        """
-        if blowup_factors is None:
-            BF = pd.DataFrame({'nothing': []})
-        elif isinstance(blowup_factors, pd.DataFrame):
-            BF = blowup_factors
-        elif isinstance(blowup_factors, six.string_types):
-            if os.path.isfile(blowup_factors):
-                BF = pd.read_csv(blowup_factors, index_col='YEAR')
-            else:
-                BF = Records._read_egg_csv('blowup_factors',
-                                           Records.BLOWUP_FACTORS_FILENAME,
-                                           index_col='YEAR')
-        else:
-            msg = ('blowup_factors is not None or a string '
-                   'or a Pandas DataFrame')
-            raise ValueError(msg)
-        setattr(self, 'BF', BF)
 
     def _read_adjust(self, adjust_ratios):
         """
@@ -530,4 +493,6 @@ class Records(object):
             msg = ('adjust_ratios is not None or a string'
                    'or a Pandas DataFrame')
             raise ValueError(msg)
-        setattr(self, 'ADJ', ADJ)
+        if ADJ.index.name != 'agi_bin':
+            ADJ.index.name = 'agi_bin'
+        self.ADJ = ADJ

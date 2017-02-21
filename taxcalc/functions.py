@@ -3,14 +3,12 @@ Tax-Calculator functions that calculate payroll and individual income taxes.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 functions.py
-# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy function.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
+# pylint --disable=locally-disabled function.py
 #
 # pylint: disable=too-many-lines
 # pylint: disable=invalid-name
 # pylint: disable=too-many-arguments
 # pylint: disable=too-many-locals
-
 
 import math
 import copy
@@ -179,10 +177,10 @@ def Adj(e03150, e03210, c03260,
     c02900 = c02900_in_ei + ((1. - ALD_SelfEmp_HealthIns_hc) * e03270 +
                              e03150 +  # deductible IRA contributions
                              (1. - ALD_KEOGH_SEP_hc) * e03300)
-    # TODO: move e03270 term into c02900_in_ei after health-insurance-premium
-    #       imputations are available
-    # TODO: move e03150 and e03300 term into c02900_in_ei after pension-
-    #       contribution imputations are available
+    # FUTURE: move e03270 term into c02900_in_ei after
+    #         health-insurance-premium imputations are available
+    # FUTURE: move e03150 and e03300 term into c02900_in_ei after
+    #         pension-contribution imputations are available
     return (c02900, c02900_in_ei)
 
 
@@ -205,6 +203,8 @@ def ALD_InvInc_ec_base_code(calc):
     Compute invinc_ec_base from code
     """
     code = calc.policy.param_code['ALD_InvInc_ec_base_code']
+    # pylint: disable=no-member
+    # (above pylint comment eliminates several bogus np warnings)
     visible = {'min': np.minimum, 'max': np.maximum,
                'where': np.where, 'equal': np.equal}
     variables = ['e00300', 'e00600', 'e00650', 'e01100', 'e01200',
@@ -1264,6 +1264,8 @@ def CTC_new_code(calc):
     Compute new refundable child tax credit using parameter code
     """
     code = calc.policy.param_code['CTC_new_code']
+    # pylint: disable=no-member
+    # (above pylint comment eliminates several bogus np warnings)
     visible = {'min': np.minimum, 'max': np.maximum,
                'where': np.where, 'equal': np.equal}
     variables = ['n24', 'c00100', 'nu05', 'MARS', 'ptax_oasdi', 'c09200']
@@ -1378,8 +1380,10 @@ def BenefitLimitation(calc):
     deductions to a fraction of deductible expenses.
     """
     if calc.policy.ID_BenefitCap_rt != 1.:
+        # pylint: disable=no-member
+        # (above pylint comment eliminates bogus np.maximum warnings)
         benefit = ComputeBenefit(calc, calc.policy.ID_BenefitCap_Switch)
-    # Calculate total deductible expenses under the cap.
+        # Calculate total deductible expenses under the cap.
         deductible_expenses = 0.
         if calc.policy.ID_BenefitCap_Switch[0]:  # Medical
             deductible_expenses += calc.records.c17000
@@ -1393,7 +1397,7 @@ def BenefitLimitation(calc):
             deductible_expenses += calc.records.c20500
         if calc.policy.ID_BenefitCap_Switch[4]:  # Miscellaneous
             deductible_expenses += calc.records.c20800
-        if calc.policy.ID_BenefitCap_Switch[5]:   # Mortgage and interest paid
+        if calc.policy.ID_BenefitCap_Switch[5]:  # Mortgage and interest paid
             deductible_expenses += calc.records.c19200
         if calc.policy.ID_BenefitCap_Switch[6]:  # Charity
             deductible_expenses += calc.records.c19700

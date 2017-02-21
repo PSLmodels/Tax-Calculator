@@ -4,7 +4,6 @@ Tests for Tax-Calculator functions.py logic.
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 test_functions.py
 # pylint --disable=locally-disabled test_functions.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import os
 import re
@@ -224,10 +223,8 @@ def test_1(reformfile1):
                          tax_year=2015,
                          reform=reformfile1.name,
                          assump=None,
+                         aging_input_data=False,
                          exact_calculations=False,
-                         blowup_input_data=False,
-                         adjust_input_data=False,
-                         output_weights=False,
                          output_records=False,
                          csv_dump=False)
     output = inctax.calculate()
@@ -287,10 +284,8 @@ def test_2(reformfile2):
                          tax_year=2015,
                          reform=reformfile2.name,
                          assump=None,
+                         aging_input_data=False,
                          exact_calculations=False,
-                         blowup_input_data=False,
-                         adjust_input_data=False,
-                         output_weights=False,
                          output_records=False,
                          csv_dump=False)
     output = inctax.calculate()

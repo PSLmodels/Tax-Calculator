@@ -5,13 +5,12 @@ Tests all the example JSON parameter files located in taxcalc/reforms directory
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 test_reforms.py
 # pylint --disable=locally-disabled test_reforms.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import os
 import glob
 import pytest
 # pylint: disable=import-error
-from taxcalc import Calculator, Policy, Behavior, Consumption, Growth
+from taxcalc import Calculator, Policy, Consumption, Behavior, Growdiff
 
 
 @pytest.fixture(scope='session')
@@ -32,8 +31,8 @@ def test_reforms(reforms_path):  # pylint: disable=redefined-outer-name
     params_set = set()
     for jrf in glob.glob(reforms_path):
         # read contents of jrf (JSON reform filename)
-        with open(jrf) as jrfile:
-            jrf_text = jrfile.read()
+        jfile = open(jrf, 'r')
+        jrf_text = jfile.read()
         # check that jrf_text has "policy" that can be implemented as a reform
         policy_dict = Calculator.read_json_policy_reform_text(jrf_text)
         policy = Policy()
@@ -47,7 +46,7 @@ def test_reforms(reforms_path):  # pylint: disable=redefined-outer-name
                 if param.endswith('_cpi'):
                     continue  # skip "policy" parameters ending in _cpi
                 params_set.add(param)
-    # TODO: compare params_set to set of parameters in current_law_policy.json
+    # FUTURE: compare params_set to parameters in current_law_policy.json
     assert len(params_set) > 0
 
 
@@ -66,22 +65,28 @@ def test_taxbrain_json(taxbrain_path):  # pylint: disable=redefined-outer-name
     """
     for jpf in glob.glob(taxbrain_path):
         # read contents of jpf (JSON parameter filename)
-        with open(jpf) as jpfile:
-            jpf_text = jpfile.read()
-        # check that jpf_text can be used to instantiate Calculator object
+        jfile = open(jpf, 'r')
+        jpf_text = jfile.read()
+        # check that jpf_text can be used to construct objects
         if '"policy"' in jpf_text:
             pol = Calculator.read_json_policy_reform_text(jpf_text)
             policy = Policy()
             policy.implement_reform(pol)
-        elif ('"behavior"' in jpf_text and
-              '"consumption"' in jpf_text and
-              '"growth"' in jpf_text):
-            beh, con, gro = Calculator.read_json_econ_assump_text(jpf_text)
-            behv = Behavior()
-            behv.update_behavior(beh)
+        elif ('"consumption"' in jpf_text and
+              '"behavior"' in jpf_text and
+              '"growdiff_baseline"' in jpf_text and
+              '"growdiff_response"' in jpf_text):
+            (con, beh, gdiff_base,
+             gdiff_resp) = Calculator.read_json_econ_assump_text(jpf_text)
             cons = Consumption()
             cons.update_consumption(con)
-            grow = Growth()
-            grow.update_growth(gro)
+            behv = Behavior()
+            behv.update_behavior(beh)
+            growdiff_baseline = Growdiff()
+            growdiff_baseline.update_growdiff(gdiff_base)
+            growdiff_response = Growdiff()
+            growdiff_response.update_growdiff(gdiff_resp)
         else:  # jpf_text is not a valid JSON parameter file
+            print('test-failing-filename: ' +
+                  jpf)
             assert False

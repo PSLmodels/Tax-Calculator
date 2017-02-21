@@ -3,15 +3,16 @@ Tax-Calculator utility functions.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 utils.py
-# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy utils.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
+# pylint --disable=locally-disabled utils.py
 #
 # pylint: disable=too-many-lines
 
+import os
 import math
 import copy
-from collections import defaultdict, OrderedDict
 import json
+from collections import defaultdict, OrderedDict
+from pkg_resources import resource_stream, Requirement, DistributionNotFound
 import six
 import numpy as np
 import pandas as pd
@@ -973,6 +974,8 @@ def atr_graph_data(calc1, calc2,
     avgtax1_series = gdfx.apply(weighted_mean, 'tax1')
     avgtax2_series = gdfx.apply(weighted_mean, 'tax2')
     # compute average tax rates by income percentile
+    # pylint: disable=no-member
+    # (above pylint comment eliminates bogus np.divide warnings)
     atr1_series = np.divide(avgtax1_series, avginc_series)
     atr2_series = np.divide(avgtax2_series, avginc_series)
     # construct DataFrame containing the two atr?_series
@@ -1299,6 +1302,8 @@ def ce_aftertax_income(calc1, calc2,
     cedict['inc1'] = weighted_sum(df1, '_expanded_income') * billion
     cedict['inc2'] = weighted_sum(df2, '_expanded_income') * billion
     # ... calculate sample-weighted probability of each filing unit
+    # pylint: disable=no-member
+    # (above pylint comment eliminates bogus np.divide warnings)
     prob_raw = np.divide(df1['s006'], df1['s006'].sum())
     prob = np.divide(prob_raw, prob_raw.sum())  # handle any rounding error
     # ... calculate after-tax income of each filing unit in calc1 and calc2
@@ -1317,3 +1322,20 @@ def ce_aftertax_income(calc1, calc2,
     cedict['ceeu2'] = ce2
     # ... return cedict
     return cedict
+
+
+def read_egg_csv(vname, fpath, **kwargs):
+    """
+    Read csv file with fpath containing vname data from EGG and
+    return dict of vname data.
+    """
+    try:
+        # grab vname data from EGG distribution
+        path_in_egg = os.path.join('taxcalc', fpath)
+        vname_fname = resource_stream(
+            Requirement.parse('taxcalc'), path_in_egg)
+        vname_dict = pd.read_csv(vname_fname, **kwargs)
+    except (DistributionNotFound, IOError):
+        msg = 'could not read {} file from EGG'
+        raise ValueError(msg.format(vname))
+    return vname_dict

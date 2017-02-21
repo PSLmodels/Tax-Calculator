@@ -3,7 +3,8 @@ from .policy import *
 from .behavior import *
 from .consumption import *
 from .filings import *
-from .growth import *
+from .growfactors import *
+from .growdiff import *
 from .records import *
 from .simpletaxio import *
 from .incometaxio import *

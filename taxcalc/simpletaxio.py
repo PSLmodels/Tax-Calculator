@@ -4,7 +4,6 @@ Tax-Calculator simple tax input-output class.
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 simpletaxio.py
 # pylint --disable=locally-disabled simpletaxio.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
 
 import os
 import sys
@@ -105,7 +104,8 @@ class SimpleTaxIO(object):
         # implement reform if reform is specified
         if reform:
             if self._using_reform_file:
-                r_pol, _, _, _ = Calculator.read_json_param_files(reform, None)
+                param_dict = Calculator.read_json_param_files(reform, None)
+                r_pol = param_dict['policy']
             else:
                 r_pol = reform
             self._policy.implement_reform(r_pol)
@@ -604,7 +604,7 @@ class SimpleTaxIO(object):
         # use dict_list to create a Pandas DataFrame and Records object
         recsdf = pd.DataFrame(dict_list, dtype='int64')
         recs = Records(data=recsdf, exact_calculations=exact_calcs,
-                       blowup_factors=None, weights=None,
+                       gfactors=None, weights=None,
                        start_year=self._policy.start_year)
         assert recs.dim == len(self._input)
         # specify input for each tax filing unit in Records object

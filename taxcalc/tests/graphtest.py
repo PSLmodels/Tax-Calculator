@@ -4,8 +4,10 @@
 
 
 class TaxCalcErrorChecker(object):
-    """Class used for checking labels for errors with use of a directed graph.
-    TODO: set np.allclose as local."""
+    """
+    Class used for checking labels for errors with use of a directed graph.
+    Some thing to do in future: set np.allclose as local.
+    """
 
     def __init__(self, exp_results, totaldf, graph_file):
         # set up the DFs for comparison

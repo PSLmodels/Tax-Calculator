@@ -42,13 +42,15 @@ ASSUMP_CONTENTS = """
   "title": "",
   "author": "",
   "date": "",
-  "behavior": {
-    "_BE_sub": {"2016": [0.25]}
-  },
   "consumption": {
     "_MPC_e20400": {"2016": [0.01]}
   },
-  "growth": {
+  "behavior": {
+    "_BE_sub": {"2016": [0.25]}
+  },
+  "growdiff_baseline": {
+  },
+  "growdiff_response": {
   }
 }
 """
@@ -96,133 +98,151 @@ def puf_path(tests_path):
     return os.path.join(tests_path, '..', '..', 'puf.csv')
 
 
-@pytest.mark.parametrize("is_strict, rjson, growth_params, behavior_params",
-                         [(True, False, False, False),
-                          (False, False, False, False),
-                          (True, True, False, True),
-                          (False, True, True, True)])
-def test_run_dropq_nth_year(is_strict, rjson, growth_params,
-                            behavior_params, puf_1991_path):
-    myvars = {}
-    myvars['_II_em_cpi'] = False
-    myvars['_II_rt4'] = [0.39, 0.40, 0.41]
-    myvars['_II_rt3'] = [0.31, 0.32, 0.33]
-    if growth_params:
-        myvars['_factor_adjustment'] = [0.01]
-    if behavior_params:
-        myvars['_BE_inc'] = [-0.8]
-    if is_strict:
-        myvars['unknown_param'] = [0.01]
-    first = 2016
-    user_mods = {first: myvars}
+def test_check_user_mods(puf_1991_path, reform_file, assump_file):
+    usermods = list()
+    with pytest.raises(ValueError):
+        check_user_mods(usermods)
+    usermods = Calculator.read_json_param_files(reform_file.name,
+                                                assump_file.name)
+    with pytest.raises(ValueError):
+        check_user_mods(usermods)
+    usermods['gdp_elasticity'] = dict()
+    check_user_mods(usermods)
+    usermods['unknown_key'] = dict()
+    with pytest.raises(ValueError):
+        check_user_mods(usermods)
 
-    # Create a Public Use File object
+
+@pytest.mark.parametrize("rjson", [(True), (False)])
+def test_run_model_with_usermods_from_code(puf_1991_path, rjson):
+    fyr = 2016
+    usermods = dict()
+    reform = dict()
+    reform['_II_em_cpi'] = False
+    reform['_II_rt4'] = [0.39, 0.40, 0.41]
+    reform['_II_rt3'] = [0.31, 0.32, 0.33]
+    usermods['policy'] = {fyr: reform}
+    usermods['consumption'] = {fyr: {'_MPC_e18400': [0.05]}}
+    usermods['behavior'] = {}
+    usermods['growdiff_baseline'] = {fyr: {'_ABOOK': [0.01]}}
+    usermods['growdiff_response'] = {fyr: {'_AINTS': [0.02]}}
+    usermods['gdp_elasticity'] = {'value': 0.0}
+    # for this usermods the computed seed = 3195176465
     tax_data = pd.read_csv(puf_1991_path)
-
-    if is_strict:
-        with pytest.raises(ValueError):
-            dropq.run_models(tax_data, start_year=first,
-                             is_strict=is_strict, user_mods=user_mods,
-                             return_json=rjson, num_years=3)
-    else:
-        (_, _, _, _, _, _, _, _,
-         _, _, fiscal_tots) = dropq.run_models(tax_data,
-                                               start_year=first,
-                                               is_strict=is_strict,
-                                               user_mods=user_mods,
-                                               return_json=rjson,
-                                               num_years=3)
-        assert fiscal_tots is not None
-
-
-@pytest.mark.parametrize("is_strict", [True, False])
-def test_run_dropq_nth_year_from_file(is_strict, puf_1991_path,
-                                      reform_file, assump_file):
-
-    user_reform = Calculator.read_json_param_files(reform_file.name,
-                                                   assump_file.name)
-    user_mods = user_reform
-
-    # Create a Public Use File object
-    tax_data = pd.read_csv(puf_1991_path)
-    first = 2016
-    rjson = True
-
     (_, _, _, _, _, _, _, _,
-     _, _, fiscal_tots) = dropq.run_models(tax_data,
-                                           start_year=first,
-                                           is_strict=is_strict,
-                                           user_mods=user_mods,
-                                           return_json=rjson,
-                                           num_years=3)
-
+     _, _, fiscal_tots) = dropq.run_model(tax_data,
+                                          start_year=fyr,
+                                          user_mods=usermods,
+                                          return_json=rjson,
+                                          num_years=3)
     assert fiscal_tots is not None
 
 
-def test_run_dropq_nth_year_mtr_from_file(puf_1991_path, reform_file):
-
-    user_reform = Calculator.read_json_param_files(reform_file.name, None)
-    first_year = 2016
-    elast_params = {'elastic_gdp': [.54, .56, .58]}
-    user_reform[0][first_year].update(elast_params)
-
-    # Create a Public Use File object
+def test_run_model_with_usermods_from_files(puf_1991_path,
+                                            reform_file, assump_file):
+    usermods = Calculator.read_json_param_files(reform_file.name,
+                                                assump_file.name)
+    usermods['gdp_elasticity'] = dict()
+    # for this usermods the computed seed = 4109528928
+    fyr = 2016
     tax_data = pd.read_csv(puf_1991_path)
+    (_, _, _, _, _, _, _, _,
+     _, _, fiscal_tots) = dropq.run_model(tax_data,
+                                          start_year=fyr,
+                                          user_mods=usermods,
+                                          return_json=True,
+                                          num_years=3)
+    assert fiscal_tots is not None
 
-    # Create a Public Use File object
+
+def test_calculate_baseline_and_reform_error(puf_1991_path,
+                                             reform_file, assump_file):
+    usermods = Calculator.read_json_param_files(reform_file.name,
+                                                assump_file.name)
+    usermods['behavior'] = {2016: {'_BE_sub': [0.20]}}
+    usermods['growdiff_response'] = {2020: {'_ABOOK': [0.01]}}
+    usermods['gdp_elasticity'] = dict()
     tax_data = pd.read_csv(puf_1991_path)
+    with pytest.raises(ValueError):
+        calculate_baseline_and_reform(2, 2015, tax_data, usermods)
 
-    ans = dropq.run_gdp_elast_models(tax_data, start_year=first_year,
-                                     is_strict=True,
-                                     user_mods=user_reform,
-                                     return_json=True,
-                                     num_years=3)
 
-    assert len(ans) == 2  # num_years-1 calculations done
+def test_run_nth_year_model(puf_1991_path, reform_file, assump_file):
+    usermods = Calculator.read_json_param_files(reform_file.name,
+                                                assump_file.name)
+    usermods['gdp_elasticity'] = dict()
+    tax_data = pd.read_csv(puf_1991_path)
+    year_n = 2
+    start_year = 2016
+    non_json_results = dropq.run_nth_year_model(year_n, start_year,
+                                                tax_data, usermods,
+                                                return_json=False)
+    assert len(non_json_results) == 13
+
+
+@pytest.mark.parametrize("rjson", [True, False])
+def test_run_gdp_elast_model(puf_1991_path, rjson,
+                             reform_file, assump_file):
+    usermods = Calculator.read_json_param_files(reform_file.name,
+                                                assump_file.name)
+    usermods['gdp_elasticity'] = {'value': 0.36}
+    fyr = 2016
+    nyrs = 3
+    tax_data = pd.read_csv(puf_1991_path)
+    ans = dropq.run_gdp_elast_model(tax_data, start_year=fyr,
+                                    user_mods=usermods,
+                                    return_json=rjson,
+                                    num_years=nyrs)
+    assert len(ans) == (nyrs - 1)  # number of annual calculations done
 
 
 @pytest.mark.requires_pufcsv
-def test_full_dropq_puf(puf_path):
-
-    myvars = {}
-    myvars['_II_rt4'] = [0.39, 0.40, 0.41]
-    myvars['_PT_rt4'] = [0.39, 0.40, 0.41]
-    myvars['_II_rt3'] = [0.31, 0.32, 0.33]
-    myvars['_PT_rt3'] = [0.31, 0.32, 0.33]
-    first = 2016
-    user_mods = {first: myvars}
-
-    nyrs = 2
-
-    # Create a Policy object (clp) containing current-law policy parameters
+def test_dropq_with_full_puf(puf_path):
+    # specify usermods dictionary in code
+    fyr = 2016
+    reforms = dict()
+    reforms['_II_rt4'] = [0.39, 0.40, 0.41]
+    reforms['_PT_rt4'] = [0.39, 0.40, 0.41]
+    reforms['_II_rt3'] = [0.31, 0.32, 0.33]
+    reforms['_PT_rt3'] = [0.31, 0.32, 0.33]
+    usermods = dict()
+    usermods['policy'] = {fyr: reforms}
+    usermods['consumption'] = {}
+    usermods['behavior'] = {}
+    usermods['growdiff_baseline'] = {}
+    usermods['growdiff_response'] = {}
+    usermods['gdp_elasticity'] = {}
+    # create a Policy object (clp) containing current-law policy parameters
     clp = Policy()
-    clp.implement_reform(user_mods)
-    # Create a Records object (rec) containing all puf.csv input records
+    clp.implement_reform(usermods['policy'])
+    # create a Records object (rec) containing all puf.csv input records
     rec = Records(data=puf_path)
-    # Create a Calculator object using clp policy and puf records
+    # create a Calculator object using clp policy and puf records
     calc = Calculator(policy=clp, records=rec)
     calc.increment_year()
     calc.increment_year()
     calc.increment_year()
-    # Create aggregate diagnostic table (adt) as a Pandas DataFrame object
+    # create aggregate diagnostic table (adt) as a Pandas DataFrame object
+    nyrs = 2
     adt = multiyear_diagnostic_table(calc, nyrs)
     taxes_fullsample = adt.loc["Combined Liability ($b)"]
     assert taxes_fullsample is not None
-    # Create a Public Use File object
+    # create a Public Use File object
     tax_data = pd.read_csv(puf_path)
+    # call dropq.run_model
     (mY_dec, _, _, _, _, _, _, _,
-     _, _, fiscal_tots) = dropq.run_models(tax_data,
-                                           start_year=first,
-                                           user_mods=user_mods,
-                                           return_json=False,
-                                           num_years=nyrs)
-    pure_reform_revenue = taxes_fullsample.loc[first]
+     _, _, fiscal_tots) = dropq.run_model(tax_data,
+                                          start_year=fyr,
+                                          user_mods=usermods,
+                                          return_json=False,
+                                          num_years=nyrs)
+    fulls_reform_revenue = taxes_fullsample.loc[fyr]
     dropq_reform_revenue = mY_dec['_combined_dec_0'].loc['sums']
     dropq_reform_revenue *= 1e-9  # convert to billions of dollars
-    diff = abs(pure_reform_revenue - dropq_reform_revenue)
-    # Assert that dropq revenue is similar to the "pure" calculation
-    assert diff / pure_reform_revenue < 0.01
-    # Assert that Reform - Baseline = Reported Delta
+    diff = abs(fulls_reform_revenue - dropq_reform_revenue)
+    # assert that dropq revenue is similar to the fullsample calculation
+    assert diff / fulls_reform_revenue < 0.01
+    # assert that Reform - Baseline = Reported Delta
     delta_yr0 = fiscal_tots[0]
     baseline_yr0 = fiscal_tots[1]
     reform_yr0 = fiscal_tots[2]
@@ -232,143 +252,7 @@ def test_full_dropq_puf(puf_path):
     npt.assert_allclose(diff_yr0, delta_yr0)
 
 
-@pytest.mark.parametrize("is_strict, rjson, growth_params, no_elast",
-                         [(True, True, False, False), (True, True, True, True),
-                          (False, False, False, False),
-                          (False, True, True, False)])
-def test_run_dropq_nth_year_mtr(is_strict, rjson, growth_params, no_elast,
-                                puf_1991_path):
-    myvars = {}
-    myvars['_STD'] = [[12600, 25200, 12600, 18600, 25300, 12600]]
-    myvars['_AMT_rt1'] = [.0]
-    myvars['_AMT_rt2'] = [.0]
-    myvars['elastic_gdp'] = [.54, .56]
-    if growth_params:
-        myvars['_factor_adjustment'] = [0.01]
-    if is_strict:
-        myvars['unknown_param'] = [0.01]
-    if no_elast:
-        del myvars['elastic_gdp']
-    first_year = 2016
-    user_mods = {first_year: myvars}
-
-    # Create a Public Use File object
-    tax_data = pd.read_csv(puf_1991_path)
-
-    if is_strict or no_elast:
-        with pytest.raises(ValueError):
-            dropq.run_gdp_elast_models(tax_data, start_year=first_year,
-                                       is_strict=is_strict,
-                                       user_mods=user_mods,
-                                       return_json=rjson,
-                                       num_years=3)
-    else:
-        dropq.run_gdp_elast_models(tax_data, start_year=first_year,
-                                   is_strict=is_strict,
-                                   user_mods=user_mods,
-                                   return_json=rjson,
-                                   num_years=3)
-
-
-def test_only_growth_assumptions():
-    myvars = {}
-    myvars['_FICA_ss_trt'] = [0.15]
-    myvars['_factor_target'] = [0.02]
-    myvars['_II_em'] = [4700.0]
-    myvars['_BE_inc'] = [0.8]
-    first_year = 2013
-    user_mods = {first_year: myvars}
-    ans = only_growth_assumptions(user_mods, 2015)
-    exp = {first_year: {'_factor_target': [0.02]}}
-    assert ans == exp
-
-
-def test_only_behavior_assumptions():
-    myvars = {}
-    myvars['_FICA_ss_trt'] = [0.15]
-    myvars['_factor_target'] = [0.02]
-    myvars['_II_em'] = [4700.0]
-    myvars['_BE_inc'] = [0.8]
-    first_year = 2013
-    user_mods = {first_year: myvars}
-    ans = only_behavior_assumptions(user_mods, 2015)
-    exp = {first_year: {'_BE_inc': [0.8]}}
-    assert ans == exp
-
-
-def test_only_reform_mods():
-    myvars = {}
-    myvars['_FICA_ss_trt'] = [0.15]
-    myvars['_factor_target'] = [0.02]
-    myvars['_II_em'] = [4700.0]
-    myvars['_BE_inc'] = [0.8]
-    first_year = 2013
-    user_mods = {first_year: myvars}
-    ans = only_reform_mods(user_mods, 2015)
-    exp = {first_year: {'_FICA_ss_trt': [0.15], '_II_em': [4700.0]}}
-    assert ans == exp
-
-
-def test_only_reform_mods2():
-    myvars = {}
-    myvars['_FICA_ss_trt'] = [0.15]
-    myvars['_factor_target'] = [0.02]
-    myvars['_II_em'] = [4700.0]
-    myvars['_BE_inc'] = [0.8]
-    myvars['ELASTICITY_GDP_WRT_AMTR'] = [.54]
-    first_year = 2013
-    user_mods = {first_year: myvars}
-    ans = only_reform_mods(user_mods, 2015)
-    exp = {first_year: {'_FICA_ss_trt': [0.15], '_II_em': [4700.0]}}
-    assert ans == exp
-
-
-def test_only_reform_mods_with_cpi():
-    myvars = {}
-    myvars['_FICA_ss_trt'] = [0.15]
-    myvars['_factor_target'] = [0.02]
-    myvars['_II_em'] = [4700.0]
-    # A known CPI flag
-    myvars['_II_em_cpi'] = False
-    # A unknown CPI flag
-    myvars['NOGOOD_cpi'] = False
-    # A small parameter name
-    myvars['NO'] = [0.42]
-    myvars['_BE_inc'] = [0.8]
-    myvars['ELASTICITY_GDP_WRT_AMTR'] = [.54]
-    first_year = 2013
-    user_mods = {first_year: myvars}
-    ans = only_reform_mods(user_mods, 2015)
-    exp = {first_year: {'_FICA_ss_trt': [0.15], '_II_em': [4700.0],
-                        '_II_em_cpi': False}}
-    assert ans == exp
-
-
-def test_unknown_parameters_with_cpi():
-    myvars = {}
-    myvars['_FICA_ss_trt'] = [0.15]
-    myvars['_factor_target'] = [0.02]
-    myvars['_II_em'] = [4700.0]
-    # A known CPI flag
-    myvars['_II_em_cpi'] = False
-    # A unknown CPI flag
-    myvars['NOGOOD_cpi'] = False
-    # A small parameter name
-    myvars['NO'] = [0.42]
-    myvars['_BE_inc'] = [0.8]
-    myvars['ELASTICITY_GDP_WRT_AMTR'] = [.54]
-    first_year = 2013
-    user_mods = {first_year: myvars}
-    ans = get_unknown_parameters(user_mods, 2015)
-    final_ans = []
-    for a in ans.values():
-        final_ans += a
-    exp = set(["NOGOOD_cpi", "NO", "ELASTICITY_GDP_WRT_AMTR"])
-    assert set(final_ans) == exp
-
-
 def test_format_macro_results():
-
     data = [[1.875e-03, 1.960e-03, 2.069e-03, 2.131e-03, 2.179e-03, 2.226e-03,
              2.277e-03, 2.324e-03, 2.375e-03, 2.426e-03, 2.184e-03, 2.806e-03],
             [2.538e-04, 4.452e-04, 6.253e-04, 7.886e-04, 9.343e-04, 1.064e-03,
@@ -386,10 +270,8 @@ def test_format_macro_results():
             [-2.577e-02, -2.517e-02, -2.507e-02, -2.464e-02, -2.419e-02,
              -2.388e-02, -2.368e-02, -2.350e-02, -2.342e-02, -2.341e-02,
              -2.427e-02, -2.275e-02]]
-
     data = np.array(data)
     diff_table = format_macro_results(data)
-
     x = {'GDP': ['0.002', '0.002', '0.002', '0.002', '0.002', '0.002',
                  '0.002', '0.002', '0.002', '0.002', '0.002', '0.003'],
          'Consumption': ['0.000', '0.000', '0.001', '0.001', '0.001',
@@ -409,11 +291,8 @@ def test_format_macro_results():
          'Hours Worked': ['0.003', '0.003', '0.003', '0.003', '0.003', '0.002',
                           '0.002', '0.002', '0.002', '0.002', '0.003',
                           '0.002']}
-
     assert diff_table == x
-
     diff_df = format_macro_results(data, return_json=False)
-
     assert diff_df.equals(DataFrame(data))
 
 
@@ -476,7 +355,6 @@ def test_chooser():
     sr = Series(data=[False] * 100, name="name")
     with pytest.raises(ValueError):
         chooser(sr)
-
     sr[0:3] = True
     chooser(sr)
 
@@ -495,32 +373,33 @@ def test_format_print_not_implemented():
                           ("large_income_bins", "other_avg")])
 def test_create_dropq_dist_table_groupby_options(groupby, result_type,
                                                  puf_1991_path):
-    year_n = 0
     start_year = 2016
-    is_strict = False
-    # Create a Public Use File object
+    year_n = 0
+    reforms = dict()
+    reforms['_II_em_cpi'] = False
+    reforms['_II_rt4'] = [0.39, 0.40, 0.41]
+    reforms['_II_rt3'] = [0.31, 0.32, 0.33]
+    usermods = dict()
+    usermods['policy'] = {start_year: reforms}
+    usermods['consumption'] = dict()
+    usermods['behavior'] = dict()
+    usermods['growdiff_baseline'] = dict()
+    usermods['growdiff_response'] = dict()
+    usermods['gdp_elasticity'] = dict()
     tax_data = pd.read_csv(puf_1991_path)
-    suffix = '_bin'
-    myvars = {}
-    myvars['_II_em_cpi'] = False
-    myvars['_II_rt4'] = [0.39, 0.40, 0.41]
-    myvars['_II_rt3'] = [0.31, 0.32, 0.33]
-    first_year = start_year
-    user_mods = {first_year: myvars}
-
-    soit_baseline, soit_reform, mask = calculate_baseline_and_reform(
-        year_n, start_year, is_strict, tax_data, user_mods)
-
+    (soit_baseline, soit_reform,
+     mask) = calculate_baseline_and_reform(year_n, start_year,
+                                           tax_data, usermods)
     _, df2 = drop_records(soit_baseline, soit_reform, mask)
-
     if groupby == "other_income_bins" or result_type == "other_avg":
         with pytest.raises(ValueError):
             create_dropq_distribution_table(df2, groupby=groupby,
                                             result_type=result_type,
-                                            suffix=suffix)
+                                            suffix='_bin')
     else:
         create_dropq_distribution_table(df2, groupby=groupby,
-                                        result_type=result_type, suffix=suffix)
+                                        result_type=result_type,
+                                        suffix='_bin')
 
 
 @pytest.mark.parametrize("groupby, res_col",
@@ -531,24 +410,25 @@ def test_create_dropq_dist_table_groupby_options(groupby, result_type,
                           ("other_deciles", "tax_diff")])
 def test_create_dropq_diff_table_groupby_options(groupby, res_col,
                                                  puf_1991_path):
-    year_n = 0
     start_year = 2016
-    is_strict = False
-    # Create a Public Use File object
+    year_n = 0
+    reforms = dict()
+    reforms['_II_em_cpi'] = False
+    reforms['_II_rt4'] = [0.39, 0.40, 0.41]
+    reforms['_II_rt3'] = [0.31, 0.32, 0.33]
+    usermods = dict()
+    usermods['policy'] = {start_year: reforms}
+    usermods['consumption'] = dict()
+    usermods['behavior'] = dict()
+    usermods['growdiff_baseline'] = dict()
+    usermods['growdiff_response'] = dict()
+    usermods['gdp_elasticity'] = dict()
     tax_data = pd.read_csv(puf_1991_path)
-    myvars = {}
-    myvars['_II_em_cpi'] = False
-    myvars['_II_rt4'] = [0.39, 0.40, 0.41]
-    myvars['_II_rt3'] = [0.31, 0.32, 0.33]
-    first_year = start_year
-    user_mods = {first_year: myvars}
-
-    soit_baseline, soit_reform, mask = calculate_baseline_and_reform(
-        year_n, start_year, is_strict, tax_data, user_mods)
-
+    (soit_baseline, soit_reform,
+     mask) = calculate_baseline_and_reform(year_n, start_year,
+                                           tax_data, usermods)
     df1, df2 = drop_records(soit_baseline, soit_reform, mask)
     dec_sum = (df2['tax_diff_dec'] * df2['s006']).sum()
-
     if groupby == "other_deciles":
         with pytest.raises(ValueError):
             create_dropq_difference_table(df1, df2, groupby=groupby,

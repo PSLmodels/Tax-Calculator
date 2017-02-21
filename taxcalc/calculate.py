@@ -3,13 +3,12 @@ Tax-Calculator federal tax Calculator class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 calculate.py
-# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy calculat.py
+# pylint --disable=locally-disabled calculate.py
 #
 # pylint: disable=wildcard-import,unused-wildcard-import
 # pylint: disable=wildcard-import,missing-docstring,invalid-name
 # pylint: disable=too-many-arguments,too-many-branches,too-many-locals
 # pylint: disable=no-value-for-parameter,protected-access
-
 
 import os
 import json
@@ -21,7 +20,6 @@ from .functions import *
 from .policy import Policy
 from .records import Records
 from .behavior import Behavior
-from .growth import Growth
 from .consumption import Consumption
 # import pdb
 
@@ -64,18 +62,14 @@ class Calculator(object):
         specifies whether or not to syncronize policy year and records year;
         default value is true.
 
-    behavior: Behavior class object
-        specifies behaviorial responses used by Calculator; default is None,
-        which implies no behavioral responses.
-
-    growth: Growth class object
-        specifies economic growth assumptions used by Calculator; default is
-        None, which implies use of standard economic growth assumptions.
-
     consumption: Consumption class object
         specifies consumption response assumptions used to calculate
         "effective" marginal tax rates; default is None, which implies
-        no consumption responses.
+        no consumption responses assumed in marginal tax rate calculations.
+
+    behavior: Behavior class object
+        specifies behaviorial responses used by Calculator; default is None,
+        which implies no behavioral responses to policy reform.
 
     Raises
     ------
@@ -88,8 +82,7 @@ class Calculator(object):
     """
 
     def __init__(self, policy=None, records=None, verbose=True,
-                 sync_years=True, behavior=None, growth=None,
-                 consumption=None):
+                 sync_years=True, consumption=None, behavior=None):
         if isinstance(policy, Policy):
             self.policy = policy
         else:
@@ -98,24 +91,6 @@ class Calculator(object):
             self.records = records
         else:
             raise ValueError('must specify records as a Records object')
-        if behavior is None:
-            self.behavior = Behavior(start_year=policy.start_year)
-        elif isinstance(behavior, Behavior):
-            self.behavior = behavior
-            while self.behavior.current_year < self.policy.current_year:
-                next_year = self.behavior.current_year + 1
-                self.behavior.set_year(next_year)
-        else:
-            raise ValueError('behavior must be None or Behavior object')
-        if growth is None:
-            self.growth = Growth(start_year=policy.start_year)
-        elif isinstance(growth, Growth):
-            self.growth = growth
-            while self.growth.current_year < self.policy.current_year:
-                next_year = self.growth.current_year + 1
-                self.growth.set_year(next_year)
-        else:
-            raise ValueError('growth must be None or Growth object')
         if consumption is None:
             self.consumption = Consumption(start_year=policy.start_year)
         elif isinstance(consumption, Consumption):
@@ -125,6 +100,15 @@ class Calculator(object):
                 self.consumption.set_year(next_year)
         else:
             raise ValueError('consumption must be None or Consumption object')
+        if behavior is None:
+            self.behavior = Behavior(start_year=policy.start_year)
+        elif isinstance(behavior, Behavior):
+            self.behavior = behavior
+            while self.behavior.current_year < self.policy.current_year:
+                next_year = self.behavior.current_year + 1
+                self.behavior.set_year(next_year)
+        else:
+            raise ValueError('behavior must be None or Behavior object')
         if sync_years and self.records.current_year == Records.PUF_YEAR:
             if verbose:
                 print('You loaded data for ' +
@@ -136,13 +120,9 @@ class Calculator(object):
                         print('  ' +
                               var)
             while self.records.current_year < self.policy.current_year:
-                next_year = self.records.current_year + 1
-                if next_year >= self.growth.start_year:
-                    self.growth.set_year(next_year)
-                    self.growth.apply_change(self.records)
                 self.records.increment_year()
             if verbose:
-                print('Instantiation of the calculator automatically ' +
+                print('Calculator instantiation automatically ' +
                       'extrapolated your data to ' +
                       str(self.records.current_year) + '.')
         assert self.policy.current_year == self.records.current_year
@@ -225,12 +205,10 @@ class Calculator(object):
 
     def increment_year(self):
         next_year = self.policy.current_year + 1
-        self.growth.set_year(next_year)
-        self.growth.apply_change(self.records)
         self.records.increment_year()
         self.policy.set_year(next_year)
-        self.behavior.set_year(next_year)
         self.consumption.set_year(next_year)
+        self.behavior.set_year(next_year)
 
     def advance_to_year(self, year):
         '''
@@ -391,17 +369,19 @@ class Calculator(object):
         """
         clp = self.policy.current_law_version()
         recs = copy.deepcopy(self.records)
-        behv = copy.deepcopy(self.behavior)
-        grow = copy.deepcopy(self.growth)
         cons = copy.deepcopy(self.consumption)
+        behv = copy.deepcopy(self.behavior)
         calc = Calculator(policy=clp, records=recs, sync_years=False,
-                          behavior=behv, growth=grow, consumption=cons)
+                          consumption=cons, behavior=behv)
         return calc
 
     @staticmethod
     def read_json_param_files(reform_filename, assump_filename):
         """
-        Read JSON files and call Calculator.read_json_*_text methods.
+        Read JSON files and call Calculator.read_json_*_text methods
+        returning a single dictionary containing five key:dict pairs:
+        'policy':dict, 'consumption':dict, 'behavior':dict,
+        'growdiff_baseline':dict and 'growdiff_response':dict.
         """
         if reform_filename is None:
             rpol_dict = dict()
@@ -412,21 +392,30 @@ class Calculator(object):
             msg = 'policy reform file {} could not be found'
             raise ValueError(msg.format(reform_filename))
         if assump_filename is None:
-            behv_dict = dict()
             cons_dict = dict()
-            grow_dict = dict()
+            behv_dict = dict()
+            gdiff_base_dict = dict()
+            gdiff_resp_dict = dict()
         elif os.path.isfile(assump_filename):
             txt = open(assump_filename, 'r').read()
-            (behv_dict,
-             cons_dict,
-             grow_dict) = Calculator.read_json_econ_assump_text(txt)
+            (cons_dict,
+             behv_dict,
+             gdiff_base_dict,
+             gdiff_resp_dict) = Calculator.read_json_econ_assump_text(txt)
         else:
             msg = 'economic assumption file {} could not be found'
             raise ValueError(msg.format(assump_filename))
-        return (rpol_dict, behv_dict, cons_dict, grow_dict)
+        param_dict = dict()
+        param_dict['policy'] = rpol_dict
+        param_dict['consumption'] = cons_dict
+        param_dict['behavior'] = behv_dict
+        param_dict['growdiff_baseline'] = gdiff_base_dict
+        param_dict['growdiff_response'] = gdiff_resp_dict
+        return param_dict
 
     REQUIRED_REFORM_KEYS = set(['policy'])
-    REQUIRED_ASSUMP_KEYS = set(['behavior', 'consumption', 'growth'])
+    REQUIRED_ASSUMP_KEYS = set(['consumption', 'behavior',
+                                'growdiff_baseline', 'growdiff_response'])
 
     @staticmethod
     def read_json_policy_reform_text(text_string):
@@ -434,8 +423,9 @@ class Calculator(object):
         Strip //-comments from text_string and return 1 dict based on the JSON.
         Specified text is JSON with at least 1 high-level string:object pair:
           a "policy": {...} pair.
-          Other high-level pairs will be ignored by this method, except that
-          a "behavior", "consumption" or "growth" key will raise a ValueError.
+          Other high-level pairs will be ignored by this method, except
+          that a "consumption", "behavior", "growdiff_baseline" or
+          "growdiff_response" key will raise a ValueError.
           The {...}  object may be empty (that is, be {}), or
           may contain one or more pairs with parameter string primary keys
           and string years as secondary keys.  See tests/test_calculate.py for
@@ -501,11 +491,12 @@ class Calculator(object):
     @staticmethod
     def read_json_econ_assump_text(text_string):
         """
-        Strip //-comments from text_string and return 3 dict based on the JSON.
-        Specified text is JSON with at least 3 high-level string:object pairs:
+        Strip //-comments from text_string and return 4 dict based on the JSON.
+        Specified text is JSON with at least 4 high-level string:object pairs:
+          a "consumption": {...} pair,
           a "behavior": {...} pair,
-          a "consumption": {...} pair, and
-          a "growth": {...} pair.
+          a "growdiff_baseline": {...} pair, and
+          a "growdiff_response": {...} pair.
           Other high-level pairs will be ignored by this method, except that
           a "policy" key will raise a ValueError.
           The {...}  object may be empty (that is, be {}), or
@@ -515,13 +506,16 @@ class Calculator(object):
           that can be read by this method.
         Note that an example is shown in the ASSUMP_CONTENTS string in
           tests/test_calculate.py file.
-        Returned dictionaries (behv_dict, cons_dict, grow_dict)
+        Returned dictionaries (cons_dict,
+                               behv_dict,
+                               gdiff_baseline_dict,
+                               gdiff_respose_dict)
            have integer years as primary keys
            and string parameters as secondary keys.
         The returned dictionaries are suitable as the arguments to
-           the Behavior update_behavior(behv_dict) method, or
-           the Consumption update_consumption(cons_dict) method, or
-           the Growth update_growth(grow_dict) method.
+           the Consumption.update_consumption(cons_dict) method, or
+           the Behavior.update_behavior(behv_dict) method, or
+           the Growdiff.update_growdiff(gdiff_dict) method.
         """
         # strip out //-comments without changing line numbers
         json_str = re.sub('//.*', ' ', text_string)
@@ -553,20 +547,25 @@ class Calculator(object):
                 msg = 'key "{}" should be in policy reform file'
                 raise ValueError(msg.format(rkey))
         # convert the assumption dictionaries in raw_dict
-        behv_dict = Calculator.convert_parameter_dict(raw_dict['behavior'])
-        cons_dict = Calculator.convert_parameter_dict(raw_dict['consumption'])
-        grow_dict = Calculator.convert_parameter_dict(raw_dict['growth'])
-        return (behv_dict, cons_dict, grow_dict)
+        key = 'consumption'
+        cons_dict = Calculator.convert_parameter_dict(raw_dict[key])
+        key = 'behavior'
+        behv_dict = Calculator.convert_parameter_dict(raw_dict[key])
+        key = 'growdiff_baseline'
+        gdiff_base_dict = Calculator.convert_parameter_dict(raw_dict[key])
+        key = 'growdiff_response'
+        gdiff_resp_dict = Calculator.convert_parameter_dict(raw_dict[key])
+        return (cons_dict, behv_dict, gdiff_base_dict, gdiff_resp_dict)
 
     @staticmethod
     def convert_parameter_dict(param_key_dict):
         """
         Converts specified param_key_dict into a dictionary whose primary
           keys are calendary years, and hence, is suitable as the argument to
-          the Policy implement_reform(reform_policy) method, or
-          the Behavior update_behavior(reform_behavior) method, or
-          the Consumption update_consumption(reform_consumption) method, or
-          the Growth update_growth(reform_growth) method.
+          the Policy.implement_reform() method, or
+          the Consumption.update_consumption() method, or
+          the Behavior.update_behavior() method, or
+          the Growdiff.update_growdiff() method.
         Specified input dictionary has string parameter primary keys and
            string years as secondary keys.
         Returned dictionary has integer years as primary keys and

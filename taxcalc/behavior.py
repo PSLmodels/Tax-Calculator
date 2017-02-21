@@ -3,8 +3,7 @@ Tax-Calculator elasticity-based behavioral-response Behavior class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 behavior.py
-# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy behavior.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
+# pylint --disable=locally-disabled behavior.py
 
 import copy
 import numpy as np
@@ -89,6 +88,19 @@ class Behavior(ParametersBase):
             return False
         else:
             return True
+
+    def has_any_response(self):
+        """
+        Returns true if any behavioral-response elasticity is non-zero in
+        any year; returns false if all elasticities are zero in all years.
+        """
+        for elast in self._vals:
+            values = getattr(self, elast)
+            for year in np.ndindex(values.shape):
+                val = values[year]
+                if val != 0.0:
+                    return True
+        return False
 
     @staticmethod
     def response(calc_x, calc_y):

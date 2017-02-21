@@ -3,9 +3,7 @@ Tests for Tax-Calculator SimpleTaxIO class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 test_simpletaxio.py
-# pylint --disable=locally-disabled --extension-pkg-whitelist=numpy \
-#        test_simpletaxio.py
-# (when importing numpy, add "--extension-pkg-whitelist=numpy" pylint option)
+# pylint --disable=locally-disabled test_simpletaxio.py
 
 import os
 import tempfile

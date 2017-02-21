@@ -29,28 +29,16 @@ def policyfile():
 
 def test_incorrect_Policy_instantiation():
     with pytest.raises(ValueError):
+        p = Policy(gfactors=dict())
+    with pytest.raises(ValueError):
         p = Policy(parameter_dict=list())
     with pytest.raises(ValueError):
         p = Policy(num_years=0)
-    with pytest.raises(ValueError):
-        p = Policy(inflation_rates=list())
-    with pytest.raises(ValueError):
-        p = Policy(num_years=2, inflation_rates={2013: 0.02})
-    with pytest.raises(ValueError):
-        p = Policy(num_years=1, inflation_rates={2012: 0.02})
-    with pytest.raises(ValueError):
-        p = Policy(wage_growth_rates=list())
-    with pytest.raises(ValueError):
-        p = Policy(num_years=2, wage_growth_rates={2013: 0.02})
-    with pytest.raises(ValueError):
-        p = Policy(num_years=1, wage_growth_rates={2012: 0.02})
 
 
 def test_correct_Policy_instantiation():
     pol = Policy()
     assert pol
-    wrates = Policy.default_wage_growth_rates()
-    assert len(wrates) == Policy.DEFAULT_NUM_YEARS
     pol.implement_reform({})
     with pytest.raises(ValueError):
         pol.implement_reform(list())
@@ -75,71 +63,64 @@ def test_policy_json_content():
         assert row_label == expected_row_label
 
 
-def test_constant_inflation_rate_without_reform():
-    syr = 2013
-    nyrs = 10
-    irate = 0.08
-    irates = {(syr + i): irate for i in range(0, nyrs)}
-    ppo = Policy(start_year=syr, num_years=nyrs, inflation_rates=irates)
-    assert ppo._II_em[2013 - syr] == 3900
-    # no reform
-    # check implied inflation rate at end of years
-    grate = float(ppo._II_em[2022 - syr]) / float(ppo._II_em[2021 - syr]) - 1.0
-    assert round(grate, 3) == round(irate, 3)
-
-
 def test_constant_inflation_rate_with_reform():
     syr = 2013
-    nyrs = 10
-    irate = 0.08
-    irates = {(syr + i): irate for i in range(0, nyrs)}
-    ppo = Policy(start_year=syr, num_years=nyrs, inflation_rates=irates)
+    pol = Policy(start_year=syr, num_years=10)
     # implement reform in 2021 which is the year before the last year = 2022
     reform = {2021: {'_II_em': [20000]}}
-    ppo.implement_reform(reform)
+    pol.implement_reform(reform)
+    # extract price inflation rates
+    pirates = pol.inflation_rates()
+    irate2019 = pirates[2019 - syr]
+    irate2021 = pirates[2021 - syr]
     # check implied inflation rate just before reform
-    grate = float(ppo._II_em[2020 - syr]) / float(ppo._II_em[2019 - syr]) - 1.0
-    assert round(grate, 3) == round(irate, 3)
+    grate = float(pol._II_em[2020 - syr]) / float(pol._II_em[2019 - syr])
+    assert round(grate - 1.0, 6) == round(irate2019, 6)
     # check implied inflation rate just after reform
-    grate = float(ppo._II_em[2022 - syr]) / float(ppo._II_em[2021 - syr]) - 1.0
-    assert round(grate, 3) == round(irate, 3)
+    grate = float(pol._II_em[2022 - syr]) / float(pol._II_em[2021 - syr])
+    assert round(grate - 1.0, 6) == round(irate2021, 6)
 
 
 def test_variable_inflation_rate_without_reform():
     syr = 2013
-    irates = {2013: 0.04, 2014: 0.04, 2015: 0.04, 2016: 0.04, 2017: 0.04,
-              2018: 0.04, 2019: 0.04, 2020: 0.04, 2021: 0.08, 2022: 0.08}
-    ppo = Policy(start_year=syr, num_years=10, inflation_rates=irates)
-    assert ppo._II_em[2013 - syr] == 3900
+    pol = Policy(start_year=syr, num_years=10)
+    assert pol._II_em[2013 - syr] == 3900
     # no reform
+    # extract price inflation rates
+    pirates = pol.inflation_rates()
+    irate2020 = pirates[2020 - syr]
+    irate2021 = pirates[2021 - syr]
     # check implied inflation rate between 2020 and 2021
-    grate = float(ppo._II_em[2021 - syr]) / float(ppo._II_em[2020 - syr]) - 1.0
-    assert round(grate, 3) == round(0.04, 3)
+    grate = float(pol._II_em[2021 - syr]) / float(pol._II_em[2020 - syr])
+    assert round(grate - 1.0, 6) == round(irate2020, 6)
     # check implied inflation rate between 2021 and 2022
-    grate = float(ppo._II_em[2022 - syr]) / float(ppo._II_em[2021 - syr]) - 1.0
-    assert round(grate, 3) == round(0.08, 3)
+    grate = float(pol._II_em[2022 - syr]) / float(pol._II_em[2021 - syr])
+    assert round(grate - 1.0, 6) == round(irate2021, 6)
 
 
 def test_variable_inflation_rate_with_reform():
     syr = 2013
-    irates = {2013: 0.04, 2014: 0.04, 2015: 0.04, 2016: 0.04, 2017: 0.04,
-              2018: 0.04, 2019: 0.04, 2020: 0.04, 2021: 0.08, 2022: 0.08}
-    ppo = Policy(start_year=syr, num_years=10, inflation_rates=irates)
-    assert ppo._II_em[2013 - syr] == 3900
+    pol = Policy(start_year=syr, num_years=10)
+    assert pol._II_em[2013 - syr] == 3900
     # implement reform in 2020 which is two years before the last year, 2022
     reform = {2020: {'_II_em': [20000]}}
-    ppo.implement_reform(reform)
-    ppo.set_year(2020)
-    assert ppo.current_year == 2020
+    pol.implement_reform(reform)
+    pol.set_year(2020)
+    assert pol.current_year == 2020
+    # extract price inflation rates
+    pirates = pol.inflation_rates()
+    irate2018 = pirates[2018 - syr]
+    irate2020 = pirates[2020 - syr]
+    irate2021 = pirates[2021 - syr]
     # check implied inflation rate between 2018 and 2019 (before the reform)
-    grate = float(ppo._II_em[2019 - syr]) / float(ppo._II_em[2018 - syr]) - 1.0
-    assert round(grate, 3) == round(0.04, 3)
+    grate = float(pol._II_em[2019 - syr]) / float(pol._II_em[2018 - syr])
+    assert round(grate - 1.0, 6) == round(irate2018, 6)
     # check implied inflation rate between 2020 and 2021 (after the reform)
-    grate = float(ppo._II_em[2021 - syr]) / float(ppo._II_em[2020 - syr]) - 1.0
-    assert round(grate, 3) == round(0.04, 3)
+    grate = float(pol._II_em[2021 - syr]) / float(pol._II_em[2020 - syr])
+    assert round(grate - 1.0, 6) == round(irate2020, 6)
     # check implied inflation rate between 2021 and 2022 (after the reform)
-    grate = float(ppo._II_em[2022 - syr]) / float(ppo._II_em[2021 - syr]) - 1.0
-    assert round(grate, 3) == round(0.08, 3)
+    grate = float(pol._II_em[2022 - syr]) / float(pol._II_em[2021 - syr])
+    assert round(grate - 1.0, 6) == round(irate2021, 6)
 
 
 def test_multi_year_reform():
@@ -149,32 +130,23 @@ def test_multi_year_reform():
     # specify dimensions of policy Policy object
     syr = 2013
     nyrs = 10
-    # specify assumed inflation rates
-    irates = {2013: 0.02, 2014: 0.02, 2015: 0.02, 2016: 0.03, 2017: 0.03,
-              2018: 0.04, 2019: 0.04, 2020: 0.04, 2021: 0.04, 2022: 0.04}
+    pol = Policy(start_year=syr, num_years=nyrs)
+    iratelist = pol.inflation_rates()
     ifactor = {}
     for i in range(0, nyrs):
-        ifactor[syr + i] = 1.0 + irates[syr + i]
-    iratelist = [irates[syr + i] for i in range(0, nyrs)]
-    # specify assumed inflation rates
-    wrates = {2013: 0.0276, 2014: 0.0419, 2015: 0.0465, 2016: 0.0498,
-              2017: 0.0507, 2018: 0.0481, 2019: 0.0451, 2020: 0.0441,
-              2021: 0.0437, 2022: 0.0435}
+        ifactor[syr + i] = 1.0 + iratelist[i]
+    wratelist = pol.wage_growth_rates()
     wfactor = {}
     for i in range(0, nyrs):
-        wfactor[syr + i] = 1.0 + wrates[syr + i]
-    wratelist = [wrates[syr + i] for i in range(0, nyrs)]
-    # instantiate policy Policy object
-    ppo = Policy(start_year=syr, num_years=nyrs, inflation_rates=irates,
-                 wage_growth_rates=wrates)
+        wfactor[syr + i] = 1.0 + wratelist[i]
     # confirm that parameters have current-law values
-    assert_allclose(getattr(ppo, '_AMT_thd_MarriedS'),
+    assert_allclose(getattr(pol, '_AMT_thd_MarriedS'),
                     Policy.expand_array(np.array([40400, 41050]),
                                         inflate=True,
                                         inflation_rates=iratelist,
                                         num_years=nyrs),
                     atol=0.01, rtol=0.0)
-    assert_allclose(getattr(ppo, '_EITC_c'),
+    assert_allclose(getattr(pol, '_EITC_c'),
                     Policy.expand_array(np.array([[487, 3250, 5372, 6044],
                                                   [496, 3305, 5460, 6143],
                                                   [503, 3359, 5548, 6242],
@@ -184,21 +156,21 @@ def test_multi_year_reform():
                                         inflation_rates=iratelist,
                                         num_years=nyrs),
                     atol=0.01, rtol=0.0)
-    assert_allclose(getattr(ppo, '_II_em'),
+    assert_allclose(getattr(pol, '_II_em'),
                     Policy.expand_array(np.array([3900, 3950, 4000, 4050,
                                                   4050]),
                                         inflate=True,
                                         inflation_rates=iratelist,
                                         num_years=nyrs),
                     atol=0.01, rtol=0.0)
-    assert_allclose(getattr(ppo, '_CTC_c'),
+    assert_allclose(getattr(pol, '_CTC_c'),
                     Policy.expand_array(np.array([1000]),
                                         inflate=False,
                                         inflation_rates=iratelist,
                                         num_years=nyrs),
                     atol=0.01, rtol=0.0)
-    # this parameter uses a different inflating rate
-    assert_allclose(getattr(ppo, '_SS_Earnings_c'),
+    # this parameter uses a different indexing rate
+    assert_allclose(getattr(pol, '_SS_Earnings_c'),
                     Policy.expand_array(np.array([113700, 117000,
                                                   118500, 118500, 127200]),
                                         inflate=True,
@@ -227,19 +199,19 @@ def test_multi_year_reform():
         }
     }
     # implement multi-year reform
-    ppo.implement_reform(reform)
-    assert ppo.current_year == syr
+    pol.implement_reform(reform)
+    assert pol.current_year == syr
     # move policy Policy object forward in time so current_year is syr+2
     #   Note: this would be typical usage because the first budget year
     #         is greater than Policy start_year.
-    ppo.set_year(ppo.start_year + 2)
-    assert ppo.current_year == syr + 2
+    pol.set_year(pol.start_year + 2)
+    assert pol.current_year == syr + 2
     # confirm that actual parameters have expected post-reform values
-    check_amt_thd_marrieds(ppo, reform, ifactor)
-    check_eitc_c(ppo, reform, ifactor)
-    check_ii_em(ppo, reform, ifactor)
-    check_ss_earnings_c(ppo, reform, wfactor)
-    check_ctc_c(ppo, reform)
+    check_amt_thd_marrieds(pol, reform, ifactor)
+    check_eitc_c(pol, reform, ifactor)
+    check_ii_em(pol, reform, ifactor)
+    check_ss_earnings_c(pol, reform, wfactor)
+    check_ctc_c(pol, reform)
     # end of test_multi_year_reform with the check_* functions below:
 
 
@@ -389,8 +361,7 @@ def test_create_parameters_from_file(policyfile):
     with open(policyfile.name) as pfile:
         policy = json.load(pfile)
     ppo = Policy(parameter_dict=policy)
-    irates = Policy.default_inflation_rates()
-    inf_rates = [irates[ppo.start_year + i] for i in range(0, ppo.num_years)]
+    inf_rates = ppo.inflation_rates()
     assert_allclose(ppo._almdep,
                     Policy.expand_array(np.array([7150, 7250, 7400]),
                                         inflate=True,
@@ -494,7 +465,8 @@ def test_parameters_get_default_start_year():
     assert meta_amt_thd_marrieds['start_year'] == 2015
     assert meta_amt_thd_marrieds['row_label'] == ['2015']
     # Take the 2014 parameter value and multiply by inflation for that year
-    should_be = 41050 * (1.0 + Policy.default_inflation_rates()[2014])
+    ir2014 = Policy().inflation_rates()[2014 - Policy.JSON_START_YEAR]
+    should_be = 41050 * (1.0 + ir2014)
     meta_amt_thd_marrieds['value'] == should_be
     # 1D data, doesn't have 2015 values, is not CPI inflated
     meta_kt_c_age = paramdata['_AMT_KT_c_Age']
@@ -585,11 +557,11 @@ def test_read_json_param_files_and_implement_reform(reform_file, set_year):
     that is then used to call implement_reform method.
     NOTE: implement_reform called when policy.current_year == policy.start_year
     """
-    ref, _, _, _ = Calculator.read_json_param_files(reform_file.name, None)
     policy = Policy()
     if set_year:
         policy.set_year(2015)
-    policy.implement_reform(ref)
+    param_dict = Calculator.read_json_param_files(reform_file.name, None)
+    policy.implement_reform(param_dict['policy'])
     syr = policy.start_year
     amt_brk1 = policy._AMT_brk1
     assert amt_brk1[2015 - syr] == 200000
@@ -652,7 +624,7 @@ def test_order_of_cpi_and_level_reforms():
     # specify two Policy objects
     syr = 2013
     ppo = [Policy(start_year=syr), Policy(start_year=syr)]
-    # apply reforms to corresponding Policy object and check post-reform values
+    # apply reforms to corresponding Policy object & check post-reform values
     for ref in range(len(reform)):
         # confirm pre-reform MTE values in 2014-17
         mte = ppo[ref]._SS_Earnings_c
@@ -689,12 +661,7 @@ def test_misspecified_reforms():
 def test_current_law_version():
     syr = 2013
     nyrs = 8
-    irate = 0.08
-    irates = {(syr + i): irate for i in range(0, nyrs)}
-    wrate = 0.10
-    wrates = {(syr + i): wrate for i in range(0, nyrs)}
-    pol = Policy(start_year=syr, num_years=nyrs,
-                 inflation_rates=irates, wage_growth_rates=wrates)
+    pol = Policy(start_year=syr, num_years=nyrs)
     mte = pol._SS_Earnings_c
     clp_mte_2015 = mte[2015 - syr]
     clp_mte_2016 = mte[2016 - syr]

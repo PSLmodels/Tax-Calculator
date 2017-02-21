@@ -8,9 +8,11 @@ def test_ParametersBase_instantiation_and_usage():
     assert pbase
     assert pbase.inflation_rates() is None
     assert pbase.wage_growth_rates() is None
-    pbase.initialize(start_year=2000, num_years=10)
+    syr = 2010
+    nyrs = 10
+    pbase.initialize(start_year=syr, num_years=nyrs)
     with pytest.raises(ValueError):
-        pbase.set_year(1999)
+        pbase.set_year(syr - 1)
     with pytest.raises(NotImplementedError):
         pbase._params_dict_from_json_file()
     with pytest.raises(ValueError):
@@ -18,9 +20,9 @@ def test_ParametersBase_instantiation_and_usage():
     with pytest.raises(ValueError):
         pbase._update({})
     with pytest.raises(ValueError):
-        pbase._update({2099: {}})
+        pbase._update({(syr + nyrs): {}})
     with pytest.raises(ValueError):
-        pbase._update({2013: []})
+        pbase._update({syr: []})
     with pytest.raises(ValueError):
         ParametersBase.expand_array({}, True, [0.02], 1)
     threedarray = np.array([[[1, 1]], [[1, 1]], [[1, 1]]])
