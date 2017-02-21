@@ -273,6 +273,20 @@
         "value": [false]
     },
 
+    "_ALD_InvInc_ec_base_ryanbrady": {
+        "long_name": "Investment income base for Ryan-Brady tax blueprint",
+        "description": "Exclusion is applied to long-term gains before loss limitation, taxable interest and qualified dividends.",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
     "_ALD_Dependents_hc": {
         "long_name": "Deduction for childcare costs",
         "description": "This decimal fraction, if greater than zero, reduces the portion of childcare costs that can be deducted from AGI",
