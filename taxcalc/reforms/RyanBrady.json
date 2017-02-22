@@ -4,7 +4,8 @@
 // Reform_Description:
 // -  New personal income tax schedule (regular/non-AMT/non-pass-through) (1) 
 // -  New pass-through income tax schedule (2) 
-// -  Tax long-term capital gains and qualified dividends as ordinary income, exclude half (3) 
+// -  Tax long-term capital gains and qualified dividends as ordinary income,
+//    - exclude half of interest, qualified dividends, and long-term gain (before loss limitation)(3) 
 // -  Repeal Alternative Minimum Tax (4) 
 // -  Repeal Net Investment Income Tax (5) 
 // -  Raise the Standard Deduction (6) 
@@ -57,15 +58,8 @@
             {"2017": [true]},
         "_ALD_InvInc_ec_rt":
             {"2017": [0.5]},
-        "_ALD_InvInc_ec_base_code_active":
+        "_ALD_InvInc_ec_base_RyanBrady":
             {"2017": [true]},
-        "param_code":
-            {"ALD_InvInc_ec_base_code":
-             ||returned_value = (e00300 + e00650 +
-                                 max(-3000. / _sep, p22250 + p23250) -
-                                 max(-3000. / _sep, p22250))
-             ||
-            },
         "_AMT_rt1":
             {"2017": [0]},
         "_AMT_rt2":
