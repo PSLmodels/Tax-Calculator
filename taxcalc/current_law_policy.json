@@ -273,7 +273,7 @@
         "value": [false]
     },
 
-    "_ALD_InvInc_ec_base_ryanbrady": {
+    "_ALD_InvInc_ec_base_RyanBrady": {
         "long_name": "Investment income base for Ryan-Brady tax blueprint",
         "description": "Exclusion is applied to long-term gains before loss limitation, taxable interest and qualified dividends.",
         "irs_ref": "",
@@ -284,7 +284,7 @@
         "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
-        "value": [0.0]
+        "value": [false]
     },
 
     "_ALD_Dependents_hc": {
