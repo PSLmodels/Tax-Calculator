@@ -239,6 +239,13 @@ def CapGains(p23250, p22250, _sep, ALD_StudentLoan_hc,
     invinc_agi_ec = ALD_InvInc_ec_rt * max(0., invinc_ec_base)
     # compute exclusion of investment income for Ryan-Brady plan
     if ALD_InvInc_ec_base_RyanBrady:
+        # This RyanBrady code interprets the Blueprint reform as providing
+        # an investment income AGI exclusion for each of three investment
+        # income types (e00300, e00650, p23250) separately.  The alternative
+        # interpretation (that is not adopted here) is that the investment
+        # income AGI exclusion is calculated using a base that is the sum
+        # of those three investment income types, with the base being zero
+        # if the sum of the three is negative.
         CG_ec_RyanBrady = (c01000 - max(-3000. / _sep,
                                         p22250 + ALD_InvInc_ec_rt * p23250))
         invinc_agi_ec = ALD_InvInc_ec_rt * (e00300 + e00650) + CG_ec_RyanBrady
