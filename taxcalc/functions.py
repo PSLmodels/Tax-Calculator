@@ -220,7 +220,7 @@ def ALD_InvInc_ec_base_code(calc):
 
 @iterate_jit(nopython=True)
 def CapGains(p23250, p22250, _sep, ALD_StudentLoan_hc,
-             ALD_InvInc_ec_rt, invinc_ec_base,
+             ALD_InvInc_ec_rt, invinc_ec_base, ALD_InvInc_ec_base_RyanBrady,
              e00200, e00300, e00600, e00650, e00700, e00800,
              CG_nodiff, CG_ec, CG_reinvest_ec_rt,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
@@ -237,6 +237,18 @@ def CapGains(p23250, p22250, _sep, ALD_StudentLoan_hc,
     invinc = e00300 + e00600 + c01000 + e01100 + e01200
     # compute exclusion of investment income from AGI
     invinc_agi_ec = ALD_InvInc_ec_rt * max(0., invinc_ec_base)
+    # compute exclusion of investment income for Ryan-Brady plan
+    if ALD_InvInc_ec_base_RyanBrady:
+        # This RyanBrady code interprets the Blueprint reform as providing
+        # an investment income AGI exclusion for each of three investment
+        # income types (e00300, e00650, p23250) separately.  The alternative
+        # interpretation (that is not adopted here) is that the investment
+        # income AGI exclusion is calculated using a base that is the sum
+        # of those three investment income types, with the base being zero
+        # if the sum of the three is negative.
+        CG_ec_RyanBrady = (c01000 - max(-3000. / _sep,
+                                        p22250 + ALD_InvInc_ec_rt * p23250))
+        invinc_agi_ec = ALD_InvInc_ec_rt * (e00300 + e00650) + CG_ec_RyanBrady
     # compute ymod1 variable that is included in AGI
     ymod1 = (e00200 + e00700 + e00800 + e00900 + e01400 + e01700 +
              invinc - invinc_agi_ec +
