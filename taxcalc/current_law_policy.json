@@ -274,15 +274,10 @@
     },
 
     "_ALD_InvInc_ec_base_RyanBrady": {
-<<<<<<< HEAD
-        "long_name": "Investment income base for Ryan-Brady tax blueprint",
-        "description": "Exclusion is applied to long-term gains before loss limitation, taxable interest and qualified dividends.",
-=======
         "long_name": "Investment income exclusion base for Ryan-Brady tax blueprint",
         "description": "Exclusion is applied to long-term gains before loss limitation, taxable interest and qualified dividends. Interpretation of the sparsely-detailed Ryan-Brady provision.",
         "section_1": "Above the line deductions",
         "section_2": "Misc. exclusions",
->>>>>>> open-source-economics/master
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
