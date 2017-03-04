@@ -44,7 +44,6 @@ class Growfactors(object):
 
     VALID_NAMES = set(['ABOOK', 'ACGNS', 'ACPIM', 'ACPIU',
                        'ADIVS', 'AINTS',
-                       'AGDPN', 'APOPN',  # TODO: drop these names eventually
                        'AIPD', 'ASCHCI', 'ASCHCL',
                        'ASCHEI', 'ASCHEL', 'ASCHF',
                        'ASOCSEC', 'ATXPY', 'AUCOMP', 'AWAGE'])
