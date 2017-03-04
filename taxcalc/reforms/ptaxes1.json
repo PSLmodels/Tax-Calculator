@@ -1,9 +1,21 @@
-// Raise OASDI maximum taxable earnings, the "social security tax cap"
+// Raise OASDI maximum taxable earnings (MTE), the "social security tax cap"
+// : current law MTE is indexed by the SSA average wage index (AWI)
+// Reform_Description:
+// -  raise MTE to 200,000 in 2018 and wage index after that and then
+//    raise MTE to 250,000 in 2020 and wage index after that (1)
+// Reform_Parameter_Map:
+// - 1: _SS_Earnings_c
+// NOTE: this reform produces the following MTE by year:
+//       2017:  127200
+//       2018:  200000
+//       2019:  wage-indexed 200000
+//       2020:  250000
+//       2021:  wage-indexed 250000
 {
   "policy": {
-    "_SS_Earnings_c": {   // at $118,500 in 2016; wage indexed after that
-        "2018": [200000], // raise to $200,000 and wage index after that
-        "2020": [250000]  // raise to $250,000 and wage index after that
+    "_SS_Earnings_c": {
+        "2018": [200000],
+        "2020": [250000]
     }
   }
 }
