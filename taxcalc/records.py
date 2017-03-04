@@ -332,7 +332,7 @@ class Records(object):
         self.e03220 *= ATXPY
         self.e03230 *= ATXPY
         self.e03270 *= ACPIM
-        self.e03240 *= AGDPN
+        self.e03240 *= ATXPY
         self.e03290 *= ACPIM
         self.e03300 *= ATXPY
         self.e03400 *= ATXPY
