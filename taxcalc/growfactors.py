@@ -43,8 +43,8 @@ class Growfactors(object):
     FILE_PATH = os.path.join(CUR_PATH, FILENAME)
 
     VALID_NAMES = set(['ABOOK', 'ACGNS', 'ACPIM', 'ACPIU',
-                       'ADIVS', 'AGDPN', 'AINTS',
-                       'APOPN',  # TODO: drop this name eventually
+                       'ADIVS', 'AINTS',
+                       'AGDPN', 'APOPN',  # TODO: drop these names eventually
                        'AIPD', 'ASCHCI', 'ASCHCL',
                        'ASCHEI', 'ASCHEL', 'ASCHF',
                        'ASOCSEC', 'ATXPY', 'AUCOMP', 'AWAGE'])
