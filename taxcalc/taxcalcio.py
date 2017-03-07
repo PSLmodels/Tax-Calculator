@@ -1,13 +1,9 @@
 """
-Tax-Calculator income tax input-output class that
-either
-reads CSV-formatted file input and writes Internet-TAXSIM-formatted output,
-or
-takes DataFrame input and returns Internet-TAXSIM-formatted output as string.
+Tax-Calculator Input-Output class.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 incometaxio.py
-# pylint --disable=locally-disabled incometaxio.py
+# pep8 --ignore=E402 taxcalcio.py
+# pylint --disable=locally-disabled taxcalcio.py
 
 import os
 import sys
@@ -21,13 +17,12 @@ from .behavior import Behavior
 from .growdiff import Growdiff
 from .growfactors import Growfactors
 from .calculate import Calculator
-from .simpletaxio import SimpleTaxIO
 from .utils import ce_aftertax_income
 
 
-class IncomeTaxIO(object):
+class TaxCalcIO(object):
     """
-    Constructor for the income tax input-output class.
+    Constructor for the Tax-Calculator Input-Output class.
 
     Parameters
     ----------
@@ -39,7 +34,7 @@ class IncomeTaxIO(object):
         Records.USABLE_READ_VARS set can be present but are ignored.
 
     tax_year: integer
-        calendar year for which income taxes will be computed for INPUT.
+        calendar year for which taxes will be computed for INPUT.
 
     reform: None or string
         None implies no policy reform (current-law policy), or
@@ -55,7 +50,7 @@ class IncomeTaxIO(object):
 
     exact_calculations: boolean
         specifies whether or not exact tax calculations are done without
-        any smoothing of "stair-step" provisions in income tax law.
+        any smoothing of "stair-step" provisions in the tax law.
 
     output_records: boolean
         whether or not to write CSV-formatted file containing the values
@@ -78,14 +73,14 @@ class IncomeTaxIO(object):
 
     Returns
     -------
-    class instance: IncomeTaxIO
+    class instance: TaxCalcIO
     """
 
     def __init__(self, input_data, tax_year, reform, assump,
                  aging_input_data, exact_calculations,
                  output_records, csv_dump):
         """
-        IncomeTaxIO class constructor.
+        TaxCalcIO class constructor.
         """
         # pylint: disable=too-many-arguments
         # pylint: disable=too-many-statements
@@ -121,7 +116,7 @@ class IncomeTaxIO(object):
             else:
                 ref = '-{}'.format(fname)
         else:
-            msg = 'IncomeTaxIO.ctor reform is neither None nor str'
+            msg = 'TaxCalcIO.ctor reform is neither None nor str'
             raise ValueError(msg)
         if assump is None:
             asm = ''
@@ -134,7 +129,7 @@ class IncomeTaxIO(object):
             else:
                 asm = '-{}'.format(fname)
         else:
-            msg = 'IncomeTaxIO.ctor assump is neither None nor str'
+            msg = 'TaxCalcIO.ctor assump is neither None nor str'
             raise ValueError(msg)
         if output_records:
             self._output_filename = '{}.records{}{}'.format(inp, ref, asm)
@@ -218,16 +213,23 @@ class IncomeTaxIO(object):
 
     def tax_year(self):
         """
-        Returns year for which IncomeTaxIO calculations are being done.
+        Returns year for which TaxCalcIO calculations are being done.
         """
         return self._calc.policy.current_year
+
+    def output_filepath(self):
+        """
+        Return full path to output file named in TaxCalcIO constructor.
+        """
+        dirpath = os.path.abspath(os.path.dirname(__file__))
+        return os.path.join(dirpath, self._output_filename)
 
     def output_records(self, writing_output_file=False):
         """
         Write CSV-formatted file containing the values of the
         Records.USABLE_READ_VARS in the tax_year.  The order of the
         columns in this output file might not be the same as in the
-        input_data passed to IncomeTaxIO constructor.
+        input_data passed to TaxCalcIO constructor.
 
         Parameters
         ----------
@@ -275,7 +277,7 @@ class IncomeTaxIO(object):
         """
         Calculate taxes for all INPUT lines and write or return OUTPUT lines.
 
-        Output lines will be written to file if IncomeTaxIO constructor
+        Output lines will be written to file if TaxCalcIO constructor
         was passed an input_filename string and a reform string or None,
         and if writing_output_file is True.
 
@@ -346,9 +348,9 @@ class IncomeTaxIO(object):
                             'sensibly compared\n')
                     txt += 'because alltax difference is essentially zero'
         for idx in range(0, self._calc.records.dim):
-            ovar = SimpleTaxIO.extract_output(self._calc.records, idx,
-                                              exact=exact_output,
-                                              extract_weight=output_weights)
+            ovar = TaxCalcIO.extract_output(self._calc.records, idx,
+                                            exact=exact_output,
+                                            extract_weight=output_weights)
             ovar[7] = 100 * mtr_itax[idx]
             ovar[9] = 100 * mtr_ptax[idx]
             output[idx] = ovar
@@ -356,10 +358,10 @@ class IncomeTaxIO(object):
         # handle disposition of calculated output
         olines = ''
         if self._using_input_file and writing_output_file:
-            SimpleTaxIO.write_output_file(output, self._output_filename)
+            TaxCalcIO.write_output_file(output, self._output_filename)
         else:
             for idx in range(0, len(output)):
-                olines += SimpleTaxIO.construct_output_line(output[idx])
+                olines += TaxCalcIO.construct_output_line(output[idx])
         if txt:
             print(txt)  # pylint: disable=superfluous-parens
         return olines
@@ -377,11 +379,11 @@ class IncomeTaxIO(object):
         -------
         nothing: void
         """
-        ivd = ('**** IncomeTaxIO INPUT variables determined by INPUT file,\n'
+        ivd = ('**** TaxCalcIO INPUT variables determined by INPUT file,\n'
                'which is a CSV-formatted text file whose name ends in .csv\n'
                'and whose column names include the Records.MUST_READ_VARS.\n')
         sys.stdout.write(ivd)
-        ovd = ('**** IncomeTaxIO OUTPUT variables in Internet-TAXSIM format:\n'
+        ovd = ('**** TaxCalcIO OUTPUT variables in Internet-TAXSIM format:\n'
                '[ 1] arbitrary id of income tax filing unit\n'
                '[ 2] calendar year of income tax filing\n'
                '[ 3] state code [ALWAYS ZERO]\n'
@@ -414,3 +416,170 @@ class IncomeTaxIO(object):
                '[27] federal AMT liability\n'
                '[28] federal income tax (excluding AMT) before credits\n')
         sys.stdout.write(ovd)
+
+    @staticmethod
+    def construct_output_line(output_dict):
+        """
+        Construct line of OUTPUT from a filing unit output_dict.
+
+        Parameters
+        ----------
+        output_dict: dictionary
+            calculated output values indexed from 1 to len(output_dict).
+
+        Returns
+        -------
+        output_line: string
+        """
+        outline = ''
+        for vnum in range(1, len(output_dict) + 1):
+            fnum = min(vnum, TaxCalcIO.OVAR_NUM)
+            outline += TaxCalcIO.OVAR_FMT[fnum].format(output_dict[vnum])
+        outline += '\n'
+        return outline
+
+    @staticmethod
+    def write_output_file(output, output_filename):
+        """
+        Write all output to file with output_filename.
+
+        Parameters
+        ----------
+        output: dictionary of OUTPUT variables for each INPUT tax filing unit
+
+        output_filename: string
+
+        Returns
+        -------
+        nothing: void
+        """
+        with open(output_filename, 'w') as output_file:
+            for idx in range(0, len(output)):
+                outline = TaxCalcIO.construct_output_line(output[idx])
+                output_file.write(outline)
+
+    OVAR_NUM = 28
+    DVAR_NAMES = [  # OPTIONAL DEBUGGING OUTPUT VARIABLE NAMES
+        # '...',  # first debugging variable
+        # '...',  # second debugging variable
+        # etc.
+        # '...'   # last debugging variable
+    ]
+    OVAR_FMT = {1: '{:d}.',  # add decimal point as in Internet-TAXSIM output
+                2: ' {:.0f}',
+                3: ' {:d}',
+                4: ' {:.2f}',
+                5: ' {:.2f}',
+                6: ' {:.2f}',
+                7: ' {:.2f}',
+                8: ' {:.2f}',
+                9: ' {:.2f}',
+                10: ' {:.2f}',
+                11: ' {:.2f}',
+                12: ' {:.2f}',
+                13: ' {:.2f}',
+                14: ' {:.2f}',
+                15: ' {:.2f}',
+                16: ' {:.2f}',
+                17: ' {:.2f}',
+                18: ' {:.2f}',
+                19: ' {:.2f}',
+                20: ' {:.2f}',
+                21: ' {:.2f}',
+                22: ' {:.2f}',
+                23: ' {:.2f}',
+                24: ' {:.2f}',
+                25: ' {:.2f}',
+                26: ' {:.2f}',
+                27: ' {:.2f}',
+                28: ' {:.2f}'}
+
+    @staticmethod
+    def extract_output(crecs, idx, exact=False, extract_weight=False):
+        """
+        Extracts tax output from crecs object for one tax filing unit.
+
+        Parameters
+        ----------
+        crecs: Records
+            Records object embedded in Calculator object.
+
+        idx: integer
+            crecs object index of the one tax filing unit.
+
+        exact: boolean
+            whether or not ovar[19] is exact regular tax on regular income.
+
+        extract_weight: boolean
+            whether or not to extract s006 sample weight into ovar[29].
+
+        Returns
+        -------
+        ovar: dictionary of output variables indexed from 1 to OVAR_NUM,
+            or from 1 to OVAR_NUM+1 if extract_weight is True,
+            of from 1 to OVAR_NUM+? if debugging variables are included.
+
+        Notes
+        -----
+        The value of each output variable is stored in the ovar dictionary,
+        which is indexed as Internet-TAXSIM output variables are (where the
+        index begins with one).
+        """
+        ovar = {}
+        ovar[1] = crecs.RECID[idx]  # id for tax filing unit
+        ovar[2] = crecs.FLPDYR[idx]  # year for which taxes are calculated
+        ovar[3] = 0  # state code is always zero
+        # pylint: disable=protected-access
+        ovar[4] = crecs._iitax[idx]  # federal income tax liability
+        ovar[5] = 0.0  # no state income tax calculation
+        ovar[6] = crecs._payrolltax[idx]  # payroll taxes (ee+er) for OASDI+HI
+        ovar[7] = 0.0  # marginal federal income tax rate as percent
+        ovar[8] = 0.0  # no state income tax calculation
+        ovar[9] = 0.0  # marginal payroll tax rate as percent
+        ovar[10] = crecs.c00100[idx]  # federal AGI
+        ovar[11] = crecs.e02300[idx]  # UI benefits in AGI
+        ovar[12] = crecs.c02500[idx]  # OASDI benefits in AGI
+        ovar[13] = 0.0  # always set zero-bracket amount to zero
+        pre_phase_out_pe = crecs.pre_c04600[idx]
+        post_phase_out_pe = crecs.c04600[idx]
+        phased_out_pe = pre_phase_out_pe - post_phase_out_pe
+        ovar[14] = post_phase_out_pe  # post-phase-out personal exemption
+        ovar[15] = phased_out_pe  # personal exemption that is phased out
+        # ovar[16] can be positive for non-itemizer:
+        ovar[16] = crecs.c21040[idx]  # itemized deduction that is phased out
+        # ovar[17] is zero for non-itemizer:
+        ovar[17] = crecs.c04470[idx]  # post-phase-out itemized deduction
+        ovar[18] = crecs.c04800[idx]  # federal regular taxable income
+        if exact:
+            ovar[19] = crecs._taxbc[idx]  # regular tax on taxable income
+        else:  # Internet-TAXSIM ovar[19] that ignores special qdiv+ltcg rates
+            ovar[19] = crecs.c05200[idx]  # regular tax on taxable income
+        ovar[20] = 0.0  # always set exemption surtax to zero
+        ovar[21] = 0.0  # always set general tax credit to zero
+        ovar[22] = crecs.c07220[idx]  # child tax credit (adjusted)
+        ovar[23] = crecs.c11070[idx]  # extra child tax credit (refunded)
+        ovar[24] = crecs.c07180[idx]  # child care credit
+        ovar[25] = crecs._eitc[idx]  # federal EITC
+        ovar[26] = crecs.c62100[idx]  # federal AMT taxable income
+        amt_liability = crecs.c09600[idx]  # federal AMT liability
+        ovar[27] = amt_liability
+        # ovar[28] is federal income tax before credits; the Tax-Calculator
+        # crecs.c05800[idx] is this concept but includes AMT liability
+        # while Internet-TAXSIM ovar[28] explicitly excludes AMT liability, so
+        # we have the following:
+        ovar[28] = crecs.c05800[idx] - amt_liability
+        # add optional weight and debugging output to ovar dictionary
+        if extract_weight:
+            ovar[29] = crecs.s006[idx]  # sample weight
+            num = TaxCalcIO.OVAR_NUM + 1
+        else:
+            num = TaxCalcIO.OVAR_NUM
+        for dvar_name in TaxCalcIO.DVAR_NAMES:
+            num += 1
+            dvar = getattr(crecs, dvar_name, None)
+            if dvar is None:
+                msg = 'debugging variable name "{}" not in calc.records object'
+                raise ValueError(msg.format(dvar_name))
+            else:
+                ovar[num] = dvar[idx]
+        return ovar
