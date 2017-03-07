@@ -185,37 +185,17 @@ def Adj(e03150, e03210, c03260,
 
 
 @iterate_jit(nopython=True)
-def ALD_InvInc_ec_base_nocode(p22250, p23250, _sep,
-                              e00300, e00600, e01100, e01200,
-                              invinc_ec_base):
+def ALD_InvInc_ec_base(p22250, p23250, _sep,
+                       e00300, e00600, e01100, e01200,
+                       invinc_ec_base):
     """
-    Compute invinc_ec_base without code
+    Compute invinc_ec_base
     """
     # limitation on net short-term and long-term capital losses
     cgain = max((-3000. / _sep), p22250 + p23250)
     # compute exclusion of investment income from AGI
     invinc_ec_base = e00300 + e00600 + cgain + e01100 + e01200
     return invinc_ec_base
-
-
-def ALD_InvInc_ec_base_code(calc):
-    """
-    Compute invinc_ec_base from code
-    """
-    code = calc.policy.param_code['ALD_InvInc_ec_base_code']
-    # pylint: disable=no-member
-    # (above pylint comment eliminates several bogus np warnings)
-    visible = {'min': np.minimum, 'max': np.maximum,
-               'where': np.where, 'equal': np.equal}
-    variables = ['e00300', 'e00600', 'e00650', 'e01100', 'e01200',
-                 'p22250', 'p23250', '_sep']
-    for var in variables:
-        visible[var] = getattr(calc.records, var)
-    visible['cpi'] = calc.policy.cpi_for_param_code('ALD_InvInc_ec_base_code')
-    visible['returned_value'] = calc.records.invinc_ec_base
-    # pylint: disable=exec-used
-    exec(compile(code, '<str>', 'exec'), {'__builtins__': {}}, visible)
-    calc.records.invinc_ec_base = visible['returned_value']
 
 
 @iterate_jit(nopython=True)
@@ -1270,11 +1250,11 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
 
 
 @iterate_jit(nopython=True)
-def CTC_new_nocode(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
-                   CTC_new_ps, CTC_new_prt,
-                   CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
-                   n24, nu05, c00100, MARS, ptax_oasdi, c09200,
-                   ctc_new):
+def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
+            CTC_new_ps, CTC_new_prt,
+            CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
+            n24, nu05, c00100, MARS, ptax_oasdi, c09200,
+            ctc_new):
     """
     Compute new refundable child tax credit with numeric parameters
     """
@@ -1295,25 +1275,6 @@ def CTC_new_nocode(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
     else:
         ctc_new = 0.
     return ctc_new
-
-
-def CTC_new_code(calc):
-    """
-    Compute new refundable child tax credit using parameter code
-    """
-    code = calc.policy.param_code['CTC_new_code']
-    # pylint: disable=no-member
-    # (above pylint comment eliminates several bogus np warnings)
-    visible = {'min': np.minimum, 'max': np.maximum,
-               'where': np.where, 'equal': np.equal}
-    variables = ['n24', 'c00100', 'nu05', 'MARS', 'ptax_oasdi', 'c09200']
-    for var in variables:
-        visible[var] = getattr(calc.records, var)
-    visible['cpi'] = calc.policy.cpi_for_param_code('CTC_new_code')
-    visible['returned_value'] = calc.records.ctc_new
-    # pylint: disable=exec-used
-    exec(compile(code, '<str>', 'exec'), {'__builtins__': {}}, visible)
-    calc.records.ctc_new = visible['returned_value']
 
 
 @iterate_jit(nopython=True)

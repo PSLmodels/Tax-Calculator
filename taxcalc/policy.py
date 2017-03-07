@@ -5,7 +5,6 @@ Tax-Calculator federal tax policy Policy class.
 # pep8 --ignore=E402 policy.py
 # pylint --disable=locally-disabled policy.py
 
-import re
 from .parameters import ParametersBase
 from .growfactors import Growfactors
 
@@ -48,11 +47,6 @@ class Policy(ParametersBase):
     LAST_BUDGET_YEAR = 2026  # increases by one every calendar year
     DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
-    VALID_PARAM_CODE_NAMES = set(['ALD_InvInc_ec_base_code',
-                                  'CTC_new_code'])
-
-    PROHIBIT_PARAM_CODE = False
-
     def __init__(self,
                  gfactors=Growfactors(),
                  parameter_dict=None,
@@ -83,16 +77,6 @@ class Policy(ParametersBase):
         lyr = start_year + num_years - 1
         self._inflation_rates = gfactors.price_inflation_rates(syr, lyr)
         self._wage_growth_rates = gfactors.wage_growth_rates(syr, lyr)
-
-        cpi = 1.0
-        self._inflation_index = [cpi]
-        for idx in range(0, num_years):
-            cpi *= (1.0 + self._inflation_rates[idx])
-            self._inflation_index.append(cpi)
-
-        self.param_code = dict()
-        for param in Policy.VALID_PARAM_CODE_NAMES:
-            self.param_code[param] = ''
 
         self.initialize(start_year, num_years)
 
@@ -190,14 +174,6 @@ class Policy(ParametersBase):
             if not isinstance(year, int):
                 msg = 'key={} in reform is not an integer calendar year'
                 raise ValueError(msg.format(year))
-        # remove and process param_code information
-        zero = 0  # param_code information is marked with year equal to 0
-        param_code_dict = reform.pop(zero, None)
-        if param_code_dict:
-            reform_years.remove(zero)
-            for param, code in param_code_dict.items():
-                Policy.scan_param_code(code)
-                self.param_code[param] = code
         # check range of remaining reform_years
         first_reform_year = min(reform_years)
         if first_reform_year < self.start_year:
@@ -216,58 +192,6 @@ class Policy(ParametersBase):
             self.set_year(year)
             self._update({year: reform[year]})
         self.set_year(precall_current_year)
-
-    @staticmethod
-    def scan_param_code(code):
-        """
-        Raise ValueError if certain character strings found in specified code.
-        """
-        if re.search(r'__', code) is not None:
-            msg = 'Following param_code includes illegal "__":\n'
-            msg += code
-            raise ValueError(msg)
-        if re.search(r'lambda', code) is not None:
-            msg = 'Following param_code includes illegal "lambda":\n'
-            msg += code
-            raise ValueError(msg)
-        if re.search(r'\[', code) is not None:
-            msg = 'Following param_code includes illegal "[":\n'
-            msg += code
-            raise ValueError(msg)
-        if re.search(r'\*\*', code) is not None:
-            msg = 'Following param_code includes illegal "**":\n'
-            msg += code
-            raise ValueError(msg)
-
-    def cpi_for_param_code(self, param_code_name):
-        """
-        Return inflation index for current_year that has a base value
-        of one in the first year the named param_code is active.
-
-        Note that a ValueError is raised if the specified
-        param_code_name is not a valid parameter code name or
-        if the specified parameter code is not active in the range of
-        years from Policy.JSON_START_YEAR through Policy.LAST_BUDGET_YEAR.
-        """
-        if param_code_name not in Policy.VALID_PARAM_CODE_NAMES:
-            msg = '{} is not in Policy.VALID_PARAM_CODE_NAMES'
-            raise ValueError(msg.format(param_code_name))
-        active_name = '_{}_active'.format(param_code_name)
-        active_param = getattr(self, active_name, None)
-        zero_year = Policy.JSON_START_YEAR
-        first_active_year = 9999
-        for idx in range(0, len(active_param)):
-            if active_param[idx]:
-                first_active_year = idx + zero_year
-                break
-        if self.current_year < first_active_year:
-            msg = 'current_year={} < {} first active year {}'
-            raise ValueError(msg.format(self.current_year,
-                                        param_code_name, first_active_year))
-        cpi_current_year = self._inflation_index[self.current_year - zero_year]
-        cpi_active_year = self._inflation_index[first_active_year - zero_year]
-        cpi_rebased = cpi_current_year / cpi_active_year
-        return cpi_rebased
 
     def current_law_version(self):
         """

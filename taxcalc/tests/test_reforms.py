@@ -39,8 +39,6 @@ def test_reforms(reforms_path):  # pylint: disable=redefined-outer-name
         policy.implement_reform(policy_dict)
         # identify "policy" parameters included in jrf
         for year in policy_dict.keys():
-            if year == 0:
-                continue  # skip param_code info which is marked with year zero
             policy_year_dict = policy_dict[year]
             for param in policy_year_dict.keys():
                 if param.endswith('_cpi'):

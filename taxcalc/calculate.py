@@ -143,10 +143,7 @@ class Calculator(object):
         EI_PayrollTax(self.policy, self.records)
         DependentCare(self.policy, self.records)
         Adj(self.policy, self.records)
-        if self.policy.ALD_InvInc_ec_base_code_active:
-            ALD_InvInc_ec_base_code(self)
-        else:
-            ALD_InvInc_ec_base_nocode(self.policy, self.records)
+        ALD_InvInc_ec_base(self.policy, self.records)
         CapGains(self.policy, self.records)
         UBI(self.policy, self.records)
         SSBenefits(self.policy, self.records)
@@ -189,10 +186,7 @@ class Calculator(object):
         NonrefundableCredits(self.policy, self.records)
         AdditionalCTC(self.policy, self.records)
         C1040(self.policy, self.records)
-        if self.policy.CTC_new_code_active:
-            CTC_new_code(self)
-        else:
-            CTC_new_nocode(self.policy, self.records)
+        CTC_new(self.policy, self.records)
         IITAX(self.policy, self.records)
 
     def calc_all(self, zero_out_calc_vars=False):
@@ -441,15 +435,8 @@ class Calculator(object):
         The returned dictionary is suitable as the argument to
            the Policy implement_reform(rpol_dict) method.
         """
-        # define function used by re.sub to process parameter code
-        def repl_func(mat):
-            code = mat.group(2).replace('\r', '\\r').replace('\n', '\\n')
-            return '"' + code + '"'
         # strip out //-comments without changing line numbers
-        json_without_comments = re.sub('//.*', ' ', text_string)
-        # convert multi-line string between pairs of || into a simple string
-        json_str = re.sub('(\|\|)(.*?)(\|\|)',  # pylint: disable=W1401
-                          repl_func, json_without_comments, flags=re.DOTALL)
+        json_str = re.sub('//.*', ' ', text_string)
         # convert JSON text into a Python dictionary
         try:
             raw_dict = json.loads(json_str)
@@ -477,14 +464,6 @@ class Calculator(object):
             if rkey in Calculator.REQUIRED_ASSUMP_KEYS:
                 msg = 'key "{}" should be in economic assumption file'
                 raise ValueError(msg.format(rkey))
-        # handle special param_code key in raw_dict policy component dictionary
-        paramcode = raw_dict['policy'].pop('param_code', None)
-        if paramcode:
-            if Policy.PROHIBIT_PARAM_CODE:
-                msg = 'JSON reform file containing "param_code" is not allowed'
-                raise ValueError(msg)
-            for param, code in paramcode.items():
-                raw_dict['policy'][param] = {'0': code}
         # convert the policy dictionary in raw_dict
         rpol_dict = Calculator.convert_parameter_dict(raw_dict['policy'])
         return rpol_dict
