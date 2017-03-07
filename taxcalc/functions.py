@@ -302,7 +302,7 @@ def UBI(nu18, n1821, n21, UBI1, UBI2, UBI3, UBI_hc,
 
     Returns
     -------
-    ubi: total UBI for the tax unit
+    ubi: total UBI received by the tax unit
     taxable_ubi: amount of UBI that is taxable
 
     """
