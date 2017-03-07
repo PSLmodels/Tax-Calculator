@@ -1,6 +1,5 @@
 """
-Tests for SimpleTaxIO class invoked with "py.test" in this directory.
-
+Tests for SimpleTaxIO class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 test_simpletaxio.py
