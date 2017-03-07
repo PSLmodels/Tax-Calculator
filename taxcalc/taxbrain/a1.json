@@ -1,12 +1,12 @@
-// 2022 RESULTS from taxcalc-inctax (3/4/17) and taxbrain-upload version 0.7.7
-// INCOME TAX ($B)   1822.21                     1822.2
-// PAYROLL TAX ($B)  1464.16                     1464.2
+// 2022 RESULTS from taxcalc-inctax (3/7/17) and taxbrain-upload version 0.7.7
+// INCOME TAX ($B)   1797.12                     1797.3  <--- small difference
+// PAYROLL TAX ($B)  1464.21                     1464.1  <--- small difference
 // taxcalc-inctax results are generated as follows:
-//   python ../../inctax.py puf.csv 2022 --aging --reform r0.json --assump a1.json
+//   python ../../inctax.py puf.csv 2022 --reform r0.json --assump a1.json
 //   awk '{r+=$4*$29}END{print r*1e-9}' puf-22.out-inctax-r0-a1
 //   awk '{r+=$6*$29}END{print r*1e-9}' puf-22.out-inctax-r0-a1
 // taxbrain-upload results from:
-//   http://www.ospc.org/taxbrain/10230/
+//   http://www.ospc.org/taxbrain/10295/
 {
     "consumption": {
         "_MPC_e18400": {"2018": [0.05]}
