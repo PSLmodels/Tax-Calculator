@@ -289,7 +289,7 @@ def assumpfile2():
         except OSError:
             pass  # sometimes we can't remove a generated temporary file
 
-@pytest.mark.one
+
 def test_3(rawinputfile, reformfile1, assumpfile1):
     """
     Test TaxCalcIO calculate method with output writing but no aging,
@@ -365,43 +365,6 @@ def test_4(reformfile2, assumpfile2):
 
 # old test_5 and test_6 have been replaced by expanded test_3
 
-
-"""
-def test_5(rawinputfile, reformfile1):
-
-    Test TaxCalcIO calculate method with no output writing and no aging and
-    no reform, using the output_records option.
-
-    taxyear = 2020
-    tcio = TaxCalcIO(input_data=rawinputfile.name,
-                     tax_year=taxyear,
-                     reform=reformfile1.name,
-                     assump=None,
-                     aging_input_data=False,
-                     exact_calculations=False,
-                     output_records=True,
-                     csv_dump=False)
-    tcio.output_records(writing_output_file=False)
-    assert tcio.tax_year() == taxyear
-"""
-"""
-def test_6(rawinputfile):
-
-    Test TaxCalcIO calculate method with no output writing and no aging and
-    no reform, using the csv_dump option.
-
-    taxyear = 2021
-    tcio = TaxCalcIO(input_data=rawinputfile.name,
-                     tax_year=taxyear,
-                     reform=None,
-                     assump=None,
-                     aging_input_data=False,
-                     exact_calculations=False,
-                     output_records=False,
-                     csv_dump=True)
-    tcio.csv_dump(writing_output_file=False)
-    assert tcio.tax_year() == taxyear
-"""
 
 LUMPSUM_REFORM_CONTENTS = """
 {
