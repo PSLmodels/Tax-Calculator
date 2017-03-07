@@ -286,7 +286,7 @@ def assumpfile2():
             pass  # sometimes we can't remove a generated temporary file
 
 
-def test_3(rawinputfile, reformfile1, assumpfile1, tmpdir):
+def test_3(rawinputfile, reformfile1, assumpfile1):
     """
     Test TaxCalcIO calculate method with output writing but no aging,
     using file name for TaxCalcIO constructor input_data.
@@ -300,13 +300,27 @@ def test_3(rawinputfile, reformfile1, assumpfile1, tmpdir):
                      exact_calculations=False,
                      output_records=False,
                      csv_dump=False)
-    outfilename = tcio.output_filename()
-    outfile = tmpdir.join(outfilename)  # pylint: disable=unused-variable
-    output = tcio.calculate(writing_output_file=True)
+    outfilepath = tcio.output_filepath()
+    try:
+        tcio.output_records(writing_output_file=True)
+    except:
+        if os.path.isfile(outfilepath):
+            os.remove(outfilepath)
+        assert 'TaxCalcIO.output_records()_ok' == 'no'
+    try:
+        tcio.csv_dump(writing_output_file=True)
+    except:
+        if os.path.isfile(outfilepath):
+            os.remove(outfilepath)
+        assert 'TaxCalcIO.csv_dump()_ok' == 'no'
+    try:
+        output = tcio.calculate(writing_output_file=True)
+    except:
+        if os.path.isfile(outfilepath):
+            os.remove(outfilepath)
+        assert 'TaxCalcIO.calculate()_ok' == 'no'
+    os.remove(outfilepath)
     assert output == ""  # because output was written to file
-    # also call output_records() and csv_dump() methods
-    tcio.output_records(writing_output_file=True)
-    tcio.csv_dump(writing_output_file=True)
 
 
 def test_4(reformfile2, assumpfile2):

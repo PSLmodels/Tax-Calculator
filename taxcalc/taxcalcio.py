@@ -217,11 +217,12 @@ class TaxCalcIO(object):
         """
         return self._calc.policy.current_year
 
-    def output_filename(self):
+    def output_filepath(self):
         """
-        Return self._output_filename created in TaxCalcIO constructor.
+        Return full path to output file named in TaxCalcIO constructor.
         """
-        return self._output_filename
+        dirpath = os.path.abspath(os.path.dirname(__file__))
+        return os.path.join(dirpath, self._output_filename)
 
     def output_records(self, writing_output_file=False):
         """
