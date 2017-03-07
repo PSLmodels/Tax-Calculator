@@ -2812,7 +2812,8 @@
         "notes": "",
         "start_year": 2013,
         "col_var": "",
-        "row_var": ["2013"],
+        "row_var": "",
+        "row_label": ["2013"],
         "cpi_inflated": false,
         "col_label": "",
         "value": [1.0]
