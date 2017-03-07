@@ -136,7 +136,11 @@ def reformfile0():
     rfile.close()
     # Must close and then yield for Windows platform
     yield rfile
-    os.remove(rfile.name)
+    if os.path.isfile(rfile.name):
+        try:
+            os.remove(rfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
 
 
 def test_2(rawinputfile, reformfile0):
@@ -301,26 +305,42 @@ def test_3(rawinputfile, reformfile1, assumpfile1):
                      output_records=False,
                      csv_dump=False)
     outfilepath = tcio.output_filepath()
+    # try file writing
     try:
         tcio.output_records(writing_output_file=True)
-    except:
+    except:  # pylint: disable=bare-except
         if os.path.isfile(outfilepath):
-            os.remove(outfilepath)
+            try:
+                os.remove(outfilepath)
+            except OSError:
+                pass  # sometimes we can't remove a generated temporary file
         assert 'TaxCalcIO.output_records()_ok' == 'no'
     try:
         tcio.csv_dump(writing_output_file=True)
-    except:
+    except:  # pylint: disable=bare-except
         if os.path.isfile(outfilepath):
-            os.remove(outfilepath)
+            try:
+                os.remove(outfilepath)
+            except OSError:
+                pass  # sometimes we can't remove a generated temporary file
         assert 'TaxCalcIO.csv_dump()_ok' == 'no'
     try:
         output = tcio.calculate(writing_output_file=True)
-    except:
+    except:  # pylint: disable=bare-except
         if os.path.isfile(outfilepath):
-            os.remove(outfilepath)
+            try:
+                os.remove(outfilepath)
+            except OSError:
+                pass  # sometimes we can't remove a generated temporary file
         assert 'TaxCalcIO.calculate()_ok' == 'no'
-    os.remove(outfilepath)
-    assert output == ""  # because output was written to file
+    # if all tries were successful, try to remove the output file
+    if os.path.isfile(outfilepath):
+        try:
+            os.remove(outfilepath)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+    # check that output is empty string (because output was written to file)
+    assert output == ""
 
 
 def test_4(reformfile2, assumpfile2):
