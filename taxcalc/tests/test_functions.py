@@ -13,7 +13,7 @@ import tempfile
 import six
 import pytest
 import pandas as pd
-from taxcalc import IncomeTaxIO, Records  # pylint: disable=import-error
+from taxcalc import TaxCalcIO, Records  # pylint: disable=import-error
 
 
 # for fixture args, pylint: disable=redefined-outer-name
@@ -219,15 +219,15 @@ def test_1(reformfile1):
     # is $2,678.15, which implies the AGI is $297,321.85.
     expected_agi_2 = '297321.85'
     input_dataframe = pd.read_csv(StringIO(funit))
-    inctax = IncomeTaxIO(input_data=input_dataframe,
-                         tax_year=2015,
-                         reform=reformfile1.name,
-                         assump=None,
-                         aging_input_data=False,
-                         exact_calculations=False,
-                         output_records=False,
-                         csv_dump=False)
-    output = inctax.calculate()
+    tcio = TaxCalcIO(input_data=input_dataframe,
+                     tax_year=2015,
+                     reform=reformfile1.name,
+                     assump=None,
+                     aging_input_data=False,
+                     exact_calculations=False,
+                     output_records=False,
+                     csv_dump=False)
+    output = tcio.calculate()
     output_lines_list = output.split('\n')
     output_vars_list = output_lines_list[0].split()
     agi = output_vars_list[agi_ovar_num - 1]
@@ -280,15 +280,15 @@ def test_2(reformfile2):
     expected_ctc = '1140.00'
     expected_actc = '4156.00'
     input_dataframe = pd.read_csv(StringIO(funit))
-    inctax = IncomeTaxIO(input_data=input_dataframe,
-                         tax_year=2015,
-                         reform=reformfile2.name,
-                         assump=None,
-                         aging_input_data=False,
-                         exact_calculations=False,
-                         output_records=False,
-                         csv_dump=False)
-    output = inctax.calculate()
+    tcio = TaxCalcIO(input_data=input_dataframe,
+                     tax_year=2015,
+                     reform=reformfile2.name,
+                     assump=None,
+                     aging_input_data=False,
+                     exact_calculations=False,
+                     output_records=False,
+                     csv_dump=False)
+    output = tcio.calculate()
     output_vars_list = output.split()
     ctc = output_vars_list[ctc_ovar_num - 1]
     actc = output_vars_list[actc_ovar_num - 1]

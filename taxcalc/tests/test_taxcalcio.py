@@ -1,16 +1,16 @@
 """
-Tests for Tax-Calculator IncomeTaxIO class.
+Tests for Tax-Calculator TaxCalcIO class.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 test_incometaxio.py
-# pylint --disable=locally-disabled test_incometaxio.py
+# pep8 --ignore=E402 test_taxcalcio.py
+# pylint --disable=locally-disabled test_taxcalcio.py
 
 import os
 import tempfile
 from io import StringIO
 import pytest
 import pandas as pd
-from taxcalc import IncomeTaxIO  # pylint: disable=import-error
+from taxcalc import TaxCalcIO  # pylint: disable=import-error
 
 
 RAWINPUTFILE_FUNITS = 4
@@ -62,7 +62,7 @@ def test_incorrect_creation_1(input_data, exact):
     Ensure a ValueError is raised when created with invalid data pointers
     """
     with pytest.raises(ValueError):
-        IncomeTaxIO(
+        TaxCalcIO(
             input_data=input_data,
             tax_year=2013,
             reform=None,
@@ -88,7 +88,7 @@ def test_incorrect_creation_2(rawinputfile, year, reform, assump):
     Ensure a ValueError is raised when created with invalid parameters
     """
     with pytest.raises(ValueError):
-        IncomeTaxIO(
+        TaxCalcIO(
             input_data=rawinputfile.name,
             tax_year=year,
             reform=reform,
@@ -102,19 +102,19 @@ def test_incorrect_creation_2(rawinputfile, year, reform, assump):
 
 def test_creation_with_aging(rawinputfile):
     """
-    Test IncomeTaxIO instantiation with no policy reform and with aging.
+    Test TaxCalcIO instantiation with no policy reform and with aging.
     """
-    IncomeTaxIO.show_iovar_definitions()
+    TaxCalcIO.show_iovar_definitions()
     taxyear = 2021
-    inctax = IncomeTaxIO(input_data=rawinputfile.name,
-                         tax_year=taxyear,
-                         reform=None,
-                         assump=None,
-                         aging_input_data=True,
-                         exact_calculations=False,
-                         output_records=False,
-                         csv_dump=False)
-    assert inctax.tax_year() == taxyear
+    tcio = TaxCalcIO(input_data=rawinputfile.name,
+                     tax_year=taxyear,
+                     reform=None,
+                     assump=None,
+                     aging_input_data=True,
+                     exact_calculations=False,
+                     output_records=False,
+                     csv_dump=False)
+    assert tcio.tax_year() == taxyear
 
 
 @pytest.yield_fixture
@@ -141,18 +141,18 @@ def reformfile0():
 
 def test_2(rawinputfile, reformfile0):
     """
-    Test IncomeTaxIO calculate method with no output writing and no aging.
+    Test TaxCalcIO calculate method with no output writing and no aging.
     """
     taxyear = 2021
-    inctax = IncomeTaxIO(input_data=rawinputfile.name,
-                         tax_year=taxyear,
-                         reform=reformfile0.name,
-                         assump=None,
-                         aging_input_data=False,
-                         exact_calculations=False,
-                         output_records=False,
-                         csv_dump=False)
-    output = inctax.calculate()
+    tcio = TaxCalcIO(input_data=rawinputfile.name,
+                     tax_year=taxyear,
+                     reform=reformfile0.name,
+                     assump=None,
+                     aging_input_data=False,
+                     exact_calculations=False,
+                     output_records=False,
+                     csv_dump=False)
+    output = tcio.calculate()
     assert output == EXPECTED_OUTPUT
 
 
@@ -286,78 +286,83 @@ def assumpfile2():
             pass  # sometimes we can't remove a generated temporary file
 
 
-def test_3(rawinputfile, reformfile1, assumpfile1):
+def test_3(rawinputfile, reformfile1, assumpfile1, tmpdir):
     """
-    Test IncomeTaxIO calculate method with no output writing and no aging,
-    using file name for IncomeTaxIO constructor input_data.
+    Test TaxCalcIO calculate method with output writing but no aging,
+    using file name for TaxCalcIO constructor input_data.
     """
     taxyear = 2021
-    inctax = IncomeTaxIO(input_data=rawinputfile.name,
-                         tax_year=taxyear,
-                         reform=reformfile1.name,
-                         assump=assumpfile1.name,
-                         aging_input_data=False,
-                         exact_calculations=False,
-                         output_records=False,
-                         csv_dump=False)
-    output = inctax.calculate()
-    assert output == EXPECTED_OUTPUT
+    tcio = TaxCalcIO(input_data=rawinputfile.name,
+                     tax_year=taxyear,
+                     reform=reformfile1.name,
+                     assump=assumpfile1.name,
+                     aging_input_data=False,
+                     exact_calculations=False,
+                     output_records=False,
+                     csv_dump=False)
+    outfilename = tcio.output_filename()
+    outfile = tmpdir.join(outfilename)  # pylint: disable=unused-variable
+    output = tcio.calculate(writing_output_file=True)
+    assert output == ""  # because output was written to file
+    # also call output_records() and csv_dump() methods
+    tcio.output_records(writing_output_file=True)
+    tcio.csv_dump(writing_output_file=True)
 
 
 def test_4(reformfile2, assumpfile2):
     """
-    Test IncomeTaxIO calculate method with no output writing and no aging,
-    using DataFrame for IncomeTaxIO constructor input_data.
+    Test TaxCalcIO calculate method with no output writing and no aging,
+    using DataFrame for TaxCalcIO constructor input_data.
     """
     input_stream = StringIO(RAWINPUTFILE_CONTENTS)
     input_dataframe = pd.read_csv(input_stream)
     taxyear = 2021
-    inctax = IncomeTaxIO(input_data=input_dataframe,
-                         tax_year=taxyear,
-                         reform=reformfile2.name,
-                         assump=assumpfile2.name,
-                         aging_input_data=False,
-                         exact_calculations=False,
-                         output_records=False,
-                         csv_dump=False)
-    output = inctax.calculate()
+    tcio = TaxCalcIO(input_data=input_dataframe,
+                     tax_year=taxyear,
+                     reform=reformfile2.name,
+                     assump=assumpfile2.name,
+                     aging_input_data=False,
+                     exact_calculations=False,
+                     output_records=False,
+                     csv_dump=False)
+    output = tcio.calculate()
     assert output == EXPECTED_OUTPUT
 
 
 def test_5(rawinputfile, reformfile1):
     """
-    Test IncomeTaxIO calculate method with no output writing and no aging and
+    Test TaxCalcIO calculate method with no output writing and no aging and
     no reform, using the output_records option.
     """
     taxyear = 2020
-    inctax = IncomeTaxIO(input_data=rawinputfile.name,
-                         tax_year=taxyear,
-                         reform=reformfile1.name,
-                         assump=None,
-                         aging_input_data=False,
-                         exact_calculations=False,
-                         output_records=True,
-                         csv_dump=False)
-    inctax.output_records(writing_output_file=False)
-    assert inctax.tax_year() == taxyear
+    tcio = TaxCalcIO(input_data=rawinputfile.name,
+                     tax_year=taxyear,
+                     reform=reformfile1.name,
+                     assump=None,
+                     aging_input_data=False,
+                     exact_calculations=False,
+                     output_records=True,
+                     csv_dump=False)
+    tcio.output_records(writing_output_file=False)
+    assert tcio.tax_year() == taxyear
 
 
 def test_6(rawinputfile):
     """
-    Test IncomeTaxIO calculate method with no output writing and no aging and
+    Test TaxCalcIO calculate method with no output writing and no aging and
     no reform, using the csv_dump option.
     """
     taxyear = 2021
-    inctax = IncomeTaxIO(input_data=rawinputfile.name,
-                         tax_year=taxyear,
-                         reform=None,
-                         assump=None,
-                         aging_input_data=False,
-                         exact_calculations=False,
-                         output_records=False,
-                         csv_dump=True)
-    inctax.csv_dump(writing_output_file=False)
-    assert inctax.tax_year() == taxyear
+    tcio = TaxCalcIO(input_data=rawinputfile.name,
+                     tax_year=taxyear,
+                     reform=None,
+                     assump=None,
+                     aging_input_data=False,
+                     exact_calculations=False,
+                     output_records=False,
+                     csv_dump=True)
+    tcio.csv_dump(writing_output_file=False)
+    assert tcio.tax_year() == taxyear
 
 
 LUMPSUM_REFORM_CONTENTS = """
@@ -388,34 +393,34 @@ def lumpsumreformfile():
 
 def test_7(reformfile1, lumpsumreformfile):
     """
-    Test IncomeTaxIO calculate method with no output writing using ceeu option.
+    Test TaxCalcIO calculate method with no output writing using ceeu option.
     """
     taxyear = 2020
     recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
     recdf = pd.DataFrame(data=recdict, index=[0])
 
-    inctax = IncomeTaxIO(input_data=recdf,
-                         tax_year=taxyear,
-                         reform=reformfile1.name,
-                         assump=None,
-                         aging_input_data=False,
-                         exact_calculations=False,
-                         output_records=False,
-                         csv_dump=False)
-    output = inctax.calculate(writing_output_file=False, output_ceeu=True)
-    assert inctax.tax_year() == taxyear
+    tcio = TaxCalcIO(input_data=recdf,
+                     tax_year=taxyear,
+                     reform=reformfile1.name,
+                     assump=None,
+                     aging_input_data=False,
+                     exact_calculations=False,
+                     output_records=False,
+                     csv_dump=False)
+    output = tcio.calculate(writing_output_file=False, output_ceeu=True)
+    assert tcio.tax_year() == taxyear
     assert len(output) > 0
 
-    inctax = IncomeTaxIO(input_data=recdf,
-                         tax_year=taxyear,
-                         reform=lumpsumreformfile.name,
-                         assump=None,
-                         aging_input_data=False,
-                         exact_calculations=False,
-                         output_records=False,
-                         csv_dump=False)
-    output = inctax.calculate(writing_output_file=False, output_ceeu=True)
-    assert inctax.tax_year() == taxyear
+    tcio = TaxCalcIO(input_data=recdf,
+                     tax_year=taxyear,
+                     reform=lumpsumreformfile.name,
+                     assump=None,
+                     aging_input_data=False,
+                     exact_calculations=False,
+                     output_records=False,
+                     csv_dump=False)
+    output = tcio.calculate(writing_output_file=False, output_ceeu=True)
+    assert tcio.tax_year() == taxyear
     assert len(output) > 0
 
 
@@ -454,17 +459,53 @@ def assumpfile3():
 
 def test_9(reformfile2, assumpfile3):
     """
-    Test IncomeTaxIO constructor with illegal assumptions.
+    Test TaxCalcIO constructor with illegal assumptions.
     """
     input_stream = StringIO(RAWINPUTFILE_CONTENTS)
     input_dataframe = pd.read_csv(input_stream)
     taxyear = 2022
     with pytest.raises(ValueError):
-        IncomeTaxIO(input_data=input_dataframe,
-                    tax_year=taxyear,
-                    reform=reformfile2.name,
-                    assump=assumpfile3.name,
-                    aging_input_data=False,
-                    exact_calculations=False,
-                    output_records=False,
-                    csv_dump=False)
+        TaxCalcIO(input_data=input_dataframe,
+                  tax_year=taxyear,
+                  reform=reformfile2.name,
+                  assump=assumpfile3.name,
+                  aging_input_data=False,
+                  exact_calculations=False,
+                  output_records=False,
+                  csv_dump=False)
+
+
+INPUT_CONTENTS = (
+    u'RECID,MARS,e00600 \n'
+    u'1,    1,   95000  \n'
+    u'2,    2,   15000  \n'
+    u'3,    3,   40000  \n'
+    u'4,    2,   15000  \n'
+)
+
+
+def test_10():
+    """
+    Test SimpleTaxIO instantiation with no policy reform.
+    """
+    TaxCalcIO.show_iovar_definitions()
+    input_stream = StringIO(INPUT_CONTENTS)
+    input_dataframe = pd.read_csv(input_stream)
+    taxyear = 2022
+    tcio = TaxCalcIO(input_data=input_dataframe,
+                     tax_year=taxyear,
+                     reform=None,
+                     assump=None,
+                     aging_input_data=False,
+                     exact_calculations=False,
+                     output_records=False,
+                     csv_dump=False)
+    # test extracting of weight and debugging variables
+    crecs = tcio._calc.records  # pylint: disable=protected-access
+    TaxCalcIO.DVAR_NAMES = ['f2441']
+    ovar = TaxCalcIO.extract_output(crecs,  # pylint: disable=unused-variable
+                                    0, exact=True, extract_weight=True)
+    TaxCalcIO.DVAR_NAMES = ['badvar']
+    with pytest.raises(ValueError):
+        ovar = TaxCalcIO.extract_output(crecs, 0)
+    TaxCalcIO.DVAR_NAMES = []
