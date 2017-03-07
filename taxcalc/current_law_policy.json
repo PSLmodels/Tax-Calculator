@@ -2805,7 +2805,7 @@
 
     "_UBI_hc": {
         "long_name": "Portion of UBI taxable",
-        "description": "This portion of UBI is taxable",
+        "description": "This portion of UBI is taxable and will be added to AGI",
         "section_1": "UBI",
         "section_2": "Universal Basic Income haircut",
         "irs_ref": "",
