@@ -6,7 +6,6 @@ from .filings import *
 from .growfactors import *
 from .growdiff import *
 from .records import *
-from .simpletaxio import *
 from .taxcalcio import *
 from .utils import *
 from .decorators import *

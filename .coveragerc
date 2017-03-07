@@ -5,3 +5,4 @@ omit =
     taxcalc/_version.py
     taxcalc/functions.py
     taxcalc/*.json
+    taxcalc/validation/taxsim/*
