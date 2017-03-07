@@ -95,7 +95,6 @@ class Growdiff(ParametersBase):
             growfactors.update('ACPIM', cyr, self._ACPIM[i])
             growfactors.update('ACPIU', cyr, self._ACPIU[i])
             growfactors.update('ADIVS', cyr, self._ADIVS[i])
-            growfactors.update('AGDPN', cyr, self._AGDPN[i])
             growfactors.update('AINTS', cyr, self._AINTS[i])
             growfactors.update('AIPD', cyr, self._AIPD[i])
             growfactors.update('ASCHCI', cyr, self._ASCHCI[i])

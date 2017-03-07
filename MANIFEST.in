@@ -1,6 +1,7 @@
 include versioneer.py
 include taxcalc/_version.py
 include taxcalc/growfactors.csv
+include taxcalc/growdiff.json
 include taxcalc/puf_weights.csv
 include taxcalc/puf_ratios.csv
 include taxcalc/current_law_policy.json

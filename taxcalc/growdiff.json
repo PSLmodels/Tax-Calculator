@@ -59,18 +59,6 @@
         "value": [0.0]
     },
 
-    "_AGDPN": {
-        "long_name": "AGDPN additive difference from default projection",
-        "description": "Default projection is in growfactors.csv file.  AGDPN extrapolates Records variable: e03240.",
-        "irs_ref": "",
-        "start_year": 2013,
-        "col_var": "",
-        "row_var": "",
-        "row_label": ["2013"],
-        "col_label": "",
-        "value": [0.0]
-    },
-
     "_AINTS": {
         "long_name": "AINTS additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  AINTS extrapolates Records variables: e00300 and e00400.",

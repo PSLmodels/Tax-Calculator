@@ -294,7 +294,6 @@ class Records(object):
         AUCOMP = self.gfactors.factor_value('AUCOMP', year)
         ASOCSEC = self.gfactors.factor_value('ASOCSEC', year)
         ACPIM = self.gfactors.factor_value('ACPIM', year)
-        AGDPN = self.gfactors.factor_value('AGDPN', year)
         ABOOK = self.gfactors.factor_value('ABOOK', year)
         AIPD = self.gfactors.factor_value('AIPD', year)
         self.e00200 *= AWAGE
@@ -333,7 +332,7 @@ class Records(object):
         self.e03220 *= ATXPY
         self.e03230 *= ATXPY
         self.e03270 *= ACPIM
-        self.e03240 *= AGDPN
+        self.e03240 *= ATXPY
         self.e03290 *= ACPIM
         self.e03300 *= ATXPY
         self.e03400 *= ATXPY

@@ -66,19 +66,15 @@ def main():
                               'reform could be empty, meaning it could be '
                               'current-law policy).'),
                         default=None)
-    parser.add_argument('--aging',
-                        help=('optional flag that triggers three things: '
-                              'the default extrapolation (or blowup) logic, '
-                              'the default income ajustment logic, and the '
-                              'default reweighting logic that will age the '
-                              'INPUT data from Records.PUF_YEAR to '
-                              'TAXYEAR.  The --aging flag also adds the '
-                              'sampling weight for each unit as OUTPUT '
-                              'variable 29.  It makes sense to use this flag '
-                              'only if the restricted "puf.csv" file is used '
-                              'as INPUT.  No --aging flag implies INPUT data '
-                              'are considered raw data that are not aged in '
-                              'any way.'),
+    parser.add_argument('--noaging',
+                        help=('optional flag implies INPUT data are '
+                              'considered raw data that are not aged in '
+                              'any way.  No --noaging flag implies that the '
+                              'PUF-related or CPS-related extrapolation (or '
+                              'blowup) logic, sample reweighting logic and '
+                              'income ajustment logic, will be used to age '
+                              'the INPUT data from the INPUT data year to '
+                              'TAXYEAR.'),
                         default=False,
                         action="store_true")
     parser.add_argument('--exact',
@@ -170,11 +166,12 @@ def main():
         sys.stderr.write('USAGE: python inctax.py --help\n')
         return 1
     # instantiate IncometaxIO object and do federal inc/pay tax calculations
+    aging_and_weights = args.noaging is False
     inctax = IncomeTaxIO(input_data=args.INPUT,
                          tax_year=args.TAXYEAR,
                          reform=args.reform,
                          assump=args.assump,
-                         aging_input_data=args.aging,
+                         aging_input_data=aging_and_weights,
                          exact_calculations=args.exact,
                          output_records=args.records,
                          csv_dump=args.csvdump)
@@ -183,14 +180,14 @@ def main():
     elif args.csvdump:
         inctax.calculate(writing_output_file=False,
                          exact_output=args.exact,
-                         output_weights=args.aging,
+                         output_weights=aging_and_weights,
                          output_mtr_wrt_fullcomp=args.fullcomp,
                          output_ceeu=args.ceeu)
         inctax.csv_dump(writing_output_file=True)
     else:
         inctax.calculate(writing_output_file=True,
                          exact_output=args.exact,
-                         output_weights=args.aging,
+                         output_weights=aging_and_weights,
                          output_mtr_wrt_fullcomp=args.fullcomp,
                          output_ceeu=args.ceeu)
     # return no-error exit code

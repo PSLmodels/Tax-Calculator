@@ -124,7 +124,7 @@ Budget Options,5,5,5,6
 REGULAR TAXES
 ""
 Increase each bracket rate by 1%
-Tax-Calculator,58.8,61.3,64.1,66.6
+Tax-Calculator,58.8,61.3,64.1,66.5
 Budget Options,56,60,65,69
 ""
 Increase top 4 rates by 1%
