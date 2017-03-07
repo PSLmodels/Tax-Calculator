@@ -247,15 +247,7 @@ def test_Calculator_create_difference_table(puf_1991, weights_1991):
     calc1.calc_all()
     # create policy-reform Policy object and use to create Calculator calc2
     policy2 = Policy()
-    reform = {
-        2013: {'_II_rt7': [0.45]},
-        2013: {'_ALD_InvInc_ec_base_code_active': [True]},
-        2013: {'_CTC_new_code_active': [True]},
-        0: {'ALD_InvInc_ec_base_code':
-            'returned_value = e00300 + e00650 + p23250',
-            'CTC_new_code':
-            'returned_value = where(n24>0, 100, 0)'}
-    }
+    reform = {2013: {'_II_rt7': [0.45]}}
     policy2.implement_reform(reform)
     puf2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc2 = Calculator(policy=policy2, records=puf2)
@@ -373,15 +365,6 @@ REFORM_CONTENTS = """
   "author": "",
   "date": "",
   "policy": {
-    "param_code": { // all the parameter code must go in one place
-"ALD_InvInc_ec_base_code":
-||
-// base is sum of taxable interest, qualified dividends and long-term cap gains
-returned_value = e00300 + e00650 + p23250
-||},
-    "_ALD_InvInc_ec_base_code_active":
-    {"2016": [true]
-    },
     "_AMT_brk1": // top of first AMT tax bracket
     {"2015": [200000],
      "2017": [300000]
@@ -667,7 +650,7 @@ def test_convert_parameter_dict():
         rdict = Calculator.convert_parameter_dict({'_II_em': 40000})
 
 
-def test_param_code_calc_all(reform_file, rawinputfile):
+def test_calc_all(reform_file, rawinputfile):
     cyr = 2016
     policy = Policy()
     param_dict = Calculator.read_json_param_files(reform_file.name, None)

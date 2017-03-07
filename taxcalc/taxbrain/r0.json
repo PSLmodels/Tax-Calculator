@@ -1,12 +1,12 @@
-// 2022 RESULTS from taxcalc-inctax (3/4/17) and taxbrain-upload version 0.7.7
-// INCOME TAX ($B)   1842.92                     1842.9
+// 2022 RESULTS from taxcalc-inctax (3/7/17) and taxbrain-upload version 0.7.7
+// INCOME TAX ($B)   1817.32                     1817.5  <--- small difference
 // PAYROLL TAX ($B)  1474.76                     1474.8
 // taxcalc-inctax results generated as follows:
-//   python ../../inctax.py puf.csv 2022 --aging --reform r0.json
+//   python ../../inctax.py puf.csv 2022 --reform r0.json
 //   awk '{r+=$4*$29}END{print r*1e-9}' puf-22.out-inctax-r0
 //   awk '{r+=$6*$29}END{print r*1e-9}' puf-22.out-inctax-r0
 // taxbrain-upload results from:
-//   http://www.ospc.org/taxbrain/10227/
+//   http://www.ospc.org/taxbrain/10293/
 {
     "policy": {
         "_SS_Earnings_c": // social security (OASDI) maximum taxable earnings
@@ -23,16 +23,6 @@
         },
         "_ALD_InvInc_ec_rt": // investment income AGI exclusion rate
         {"2019": [0.20]
-        },
-        // investment income AGI exclusion base is not all investment income
-        // but rather the sum of taxable interest, qualified dividends, and
-        // long-term capital gains
-        "_ALD_InvInc_ec_base_code_active":
-        {"2019": [true]
-        },
-        "param_code":
-        {"ALD_InvInc_ec_base_code":
-         "returned_value = e00300 + e00650 + p23250"
         }
     }
 }

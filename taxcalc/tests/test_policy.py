@@ -486,15 +486,6 @@ REFORM_CONTENTS = """
 // pipe characters (||).
 {
 "policy": {
-    "param_code": {
-"ALD_InvInc_ec_base_code":
-||
-returned_value = e00300 + e00650 + p23250
-||
-},
-    "_ALD_InvInc_ec_base_code_active": {
-        "2016": [true]
-    },
     "_AMT_brk1": // top of first AMT tax bracket
     {"2015": [200000],
      "2017": [300000]
@@ -541,13 +532,6 @@ def reform_file():
             os.remove(rfile.name)
         except OSError:
             pass  # sometimes we can't remove a generated temporary file
-
-
-def test_prohibit_param_code(reform_file):
-    Policy.PROHIBIT_PARAM_CODE = True
-    with pytest.raises(ValueError):
-        Calculator.read_json_param_files(reform_file.name, None)
-    Policy.PROHIBIT_PARAM_CODE = False
 
 
 @pytest.mark.parametrize("set_year", [False, True])
@@ -677,38 +661,3 @@ def test_current_law_version():
     assert clp_mte_2015 == ref_mte_2015 == clv_mte_2015
     assert clp_mte_2016 != ref_mte_2016
     assert clp_mte_2016 == clv_mte_2016
-
-
-def test_scan_param_code():
-    """
-    Test scan_param_code function.
-    """
-    with pytest.raises(ValueError):
-        Policy.scan_param_code('__builtins__')
-    with pytest.raises(ValueError):
-        Policy.scan_param_code('lambda x: x**2')
-    with pytest.raises(ValueError):
-        Policy.scan_param_code('[x*x for x in range(9)]')
-    with pytest.raises(ValueError):
-        Policy.scan_param_code('9999**99999999')
-
-
-def test_cpi_for_param_code():
-    """
-    Test cpi_for_param_code function.
-    """
-    reform2020 = {
-        0: {"ALD_InvInc_ec_base_code":
-            "returned_value = e00300 + e00650 + p23250"},
-        2020: {"_ALD_InvInc_ec_base_code_active": [True]}
-    }
-    pol = Policy()
-    pol.implement_reform(reform2020)
-    assert pol.current_year == 2013
-    with pytest.raises(ValueError):
-        cpi = pol.cpi_for_param_code('badname')
-    with pytest.raises(ValueError):
-        cpi = pol.cpi_for_param_code('ALD_InvInc_ec_base_code')
-    pol.set_year(2020)
-    cpi = pol.cpi_for_param_code('ALD_InvInc_ec_base_code')
-    assert cpi == 1.0

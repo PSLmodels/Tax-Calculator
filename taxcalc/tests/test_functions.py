@@ -107,8 +107,7 @@ def test_calc_and_used_vars(tests_path):
             msg1 += 'VAR NOT CALCULATED: {}\n'.format(var)
     # Test (2):
     faux_functions = ['EITCamount', 'ComputeBenefit',
-                      'BenefitSurtax', 'BenefitLimitation',
-                      'ALD_InvInc_ec_base_code', 'CTC_new_code']
+                      'BenefitSurtax', 'BenefitLimitation']
     found_error2 = False
     msg2 = 'calculated & returned variables are not function arguments\n'
     for fname in fnames:
