@@ -11,13 +11,15 @@ import hashlib
 import numpy as np
 from pandas import DataFrame
 import pandas as pd
-from dropq_utils import create_dropq_difference_table as dropq_diff_table
-from dropq_utils import create_dropq_distribution_table as dropq_dist_table
-from dropq_utils import (WEBAPP_INCOME_BINS,
-                         add_income_bins,
-                         add_weighted_income_bins,
-                         create_distribution_table,
-                         create_json_table)
+from taxcalc.dropq.dropq_utils import (create_dropq_difference_table as
+                                       dropq_diff_table)
+from taxcalc.dropq.dropq_utils import (create_dropq_distribution_table as
+                                       dropq_dist_table)
+from taxcalc.dropq.dropq_utils import (WEBAPP_INCOME_BINS,
+                                       add_income_bins,
+                                       add_weighted_income_bins,
+                                       create_distribution_table,
+                                       create_json_table)
 from taxcalc import (Calculator, Growfactors, Records,
                      Policy, Consumption, Behavior, Growdiff,
                      proportional_change_gdp,
