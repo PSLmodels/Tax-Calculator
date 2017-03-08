@@ -133,7 +133,7 @@ situations, in which case other contributors are here to help.
 
 1. Before you edit the calculator on your machine, make sure you have
    the latest version of the central Tax-Calculator by executing the
-   following **four** Git commands:
+   following **three** Git commands:
 
    a. Download all of the content from the central Tax-Calculator repo.
       Navigate to your local tax-calculator directory and enter the
@@ -156,13 +156,6 @@ situations, in which case other contributors are here to help.
       .. code-block:: python
 
          tax-calculator$ git merge upstream/master
-
-   d. Push the updated master branch in your local repo to your GitHub
-      repo.
-
-      .. code-block:: python
-
-         tax-calculator$ git push
 
 2. Create a new `branch`_ on your local machine. Think of your
    branches as a way to organize your projects. If you want to work on
