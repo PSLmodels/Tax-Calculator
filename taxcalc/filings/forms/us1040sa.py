@@ -1,4 +1,4 @@
-from tax_form import TaxForm
+from taxcalc.filings.forms.tax_form import TaxForm
 from taxcalc.utils import string_to_number
 
 
