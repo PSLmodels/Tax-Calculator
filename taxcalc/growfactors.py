@@ -8,7 +8,7 @@ Tax-Calculator Growfactors class.
 import os
 import six
 import pandas as pd
-from .utils import read_egg_csv
+from taxcalc.utils import read_egg_csv
 
 
 class Growfactors(object):

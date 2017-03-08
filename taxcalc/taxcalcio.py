@@ -10,14 +10,14 @@ import sys
 import copy
 import six
 import pandas as pd
-from .policy import Policy
-from .records import Records
-from .consumption import Consumption
-from .behavior import Behavior
-from .growdiff import Growdiff
-from .growfactors import Growfactors
-from .calculate import Calculator
-from .utils import ce_aftertax_income
+from taxcalc.policy import Policy
+from taxcalc.records import Records
+from taxcalc.consumption import Consumption
+from taxcalc.behavior import Behavior
+from taxcalc.growdiff import Growdiff
+from taxcalc.growfactors import Growfactors
+from taxcalc.calculate import Calculator
+from taxcalc.utils import ce_aftertax_income
 
 
 class TaxCalcIO(object):

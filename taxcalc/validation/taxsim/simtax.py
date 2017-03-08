@@ -7,7 +7,7 @@ SIMple input-output capabilities for TAX-calculator.
 
 import argparse
 import sys
-from taxcalc import SimpleTaxIO
+from simpletaxio import SimpleTaxIO
 
 
 def main():
