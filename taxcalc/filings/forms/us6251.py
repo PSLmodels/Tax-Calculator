@@ -1,4 +1,4 @@
-from .tax_form import TaxForm
+from tax_form import TaxForm
 
 
 class US6251(TaxForm):

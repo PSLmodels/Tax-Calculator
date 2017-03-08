@@ -7,8 +7,8 @@ Tax-Calculator elasticity-based behavioral-response Behavior class.
 
 import copy
 import numpy as np
-from .policy import Policy
-from .parameters import ParametersBase
+from taxcalc.policy import Policy
+from taxcalc.parameters import ParametersBase
 
 
 class Behavior(ParametersBase):

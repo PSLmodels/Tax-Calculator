@@ -15,12 +15,12 @@ import json
 import re
 import copy
 import numpy as np
-from .utils import *
-from .functions import *
-from .policy import Policy
-from .records import Records
-from .behavior import Behavior
-from .consumption import Consumption
+from taxcalc.utils import *
+from taxcalc.functions import *
+from taxcalc.policy import Policy
+from taxcalc.records import Records
+from taxcalc.behavior import Behavior
+from taxcalc.consumption import Consumption
 # import pdb
 
 
