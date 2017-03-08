@@ -1,1 +1,1 @@
-from .forms import *
+from taxcalc.filings.forms import *

@@ -1,5 +1,5 @@
 """
-Tests for Tax-Calculator SimpleTaxIO class.
+Tests for SimpleTaxIO class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 test_simpletaxio.py
@@ -8,7 +8,7 @@ Tests for Tax-Calculator SimpleTaxIO class.
 import os
 import tempfile
 import pytest
-from taxcalc import SimpleTaxIO  # pylint: disable=import-error
+from simpletaxio import SimpleTaxIO
 
 
 NUM_INPUT_LINES = 4

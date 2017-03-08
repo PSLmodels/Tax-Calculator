@@ -6,8 +6,8 @@ Tax-Calculator Growdiff class.
 # pylint --disable=locally-disabled growdiff.py
 
 import numpy as np
-from .policy import Policy
-from .parameters import ParametersBase
+from taxcalc.policy import Policy
+from taxcalc.parameters import ParametersBase
 
 
 class Growdiff(ParametersBase):

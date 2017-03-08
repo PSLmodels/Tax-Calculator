@@ -5,8 +5,8 @@ Tax-Calculator federal tax policy Policy class.
 # pep8 --ignore=E402 policy.py
 # pylint --disable=locally-disabled policy.py
 
-from .parameters import ParametersBase
-from .growfactors import Growfactors
+from taxcalc.parameters import ParametersBase
+from taxcalc.growfactors import Growfactors
 
 
 class Policy(ParametersBase):

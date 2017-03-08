@@ -13,7 +13,7 @@ Tax-Calculator functions that calculate payroll and individual income taxes.
 import math
 import copy
 import numpy as np
-from .decorators import iterate_jit, jit
+from taxcalc.decorators import iterate_jit, jit
 
 
 @iterate_jit(nopython=True)

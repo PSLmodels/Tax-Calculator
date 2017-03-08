@@ -1,22 +1,22 @@
 """
-INCome TAX input-output capabilities for Tax-Calculator.
+Command-line interface to Tax-Calculator.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 inctax.py
-# pylint --disable=locally-disabled inctax.py
+# pep8 --ignore=E402 tc.py
+# pylint --disable=locally-disabled tc.py
 
 import argparse
 import sys
-from taxcalc import IncomeTaxIO
+from taxcalc import TaxCalcIO
 
 
 def main():
     """
-    Contains command-line interface to the Tax-Calculator IncomeTaxIO class.
+    Contains command-line interface to the Tax-Calculator TaxCalcIO class.
     """
     # parse command-line arguments:
     parser = argparse.ArgumentParser(
-        prog='python inctax.py',
+        prog='python tc.py',
         description=('Writes to a file the federal income and payroll tax '
                      'OUTPUT for each filing unit specified in the INPUT '
                      'file, with the OUTPUT computed from the INPUT for '
@@ -148,7 +148,7 @@ def main():
     args = parser.parse_args()
     # optionally show INPUT and OUTPUT variable definitions and exit
     if args.iohelp:
-        IncomeTaxIO.show_iovar_definitions()
+        TaxCalcIO.show_iovar_definitions()
         return 0
     # check INPUT file name
     if args.INPUT == '':
@@ -167,14 +167,14 @@ def main():
         return 1
     # instantiate IncometaxIO object and do federal inc/pay tax calculations
     aging_and_weights = args.noaging is False
-    inctax = IncomeTaxIO(input_data=args.INPUT,
-                         tax_year=args.TAXYEAR,
-                         reform=args.reform,
-                         assump=args.assump,
-                         aging_input_data=aging_and_weights,
-                         exact_calculations=args.exact,
-                         output_records=args.records,
-                         csv_dump=args.csvdump)
+    inctax = TaxCalcIO(input_data=args.INPUT,
+                       tax_year=args.TAXYEAR,
+                       reform=args.reform,
+                       assump=args.assump,
+                       aging_input_data=aging_and_weights,
+                       exact_calculations=args.exact,
+                       output_records=args.records,
+                       csv_dump=args.csvdump)
     if args.records:
         inctax.output_records(writing_output_file=True)
     elif args.csvdump:

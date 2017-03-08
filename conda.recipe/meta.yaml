@@ -18,7 +18,7 @@ requirements:
     - setuptools
     - python
     - mock
-    - numpy ==1.10.4
+    - numpy ==1.11.2
     - pandas <=0.18.0
     - numba
     - toolz
