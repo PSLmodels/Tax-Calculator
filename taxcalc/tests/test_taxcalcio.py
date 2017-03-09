@@ -70,44 +70,6 @@ def test_incorrect_creation_1(input_data, exact):
                   exact_calculations=exact)
 
 
-# for fixture args, pylint: disable=redefined-outer-name
-
-
-@pytest.mark.parametrize("year, reform, assump", [
-    (2013, list(), None),
-    (2013, None, list()),
-    (2001, None, None),
-    (2099, None, None),
-])
-def test_incorrect_creation_2(rawinputfile, year, reform, assump):
-    """
-    Ensure a ValueError is raised when created with invalid parameters
-    """
-    with pytest.raises(ValueError):
-        TaxCalcIO(
-            input_data=rawinputfile.name,
-            tax_year=year,
-            reform=reform,
-            assump=assump,
-            aging_input_data=False,
-            exact_calculations=False)
-
-
-def test_creation_with_aging(rawinputfile):
-    """
-    Test TaxCalcIO instantiation with no policy reform and with aging.
-    """
-    TaxCalcIO.show_iovar_definitions()
-    taxyear = 2021
-    tcio = TaxCalcIO(input_data=rawinputfile.name,
-                     tax_year=taxyear,
-                     reform=None,
-                     assump=None,
-                     aging_input_data=True,
-                     exact_calculations=False)
-    assert tcio.tax_year() == taxyear
-
-
 @pytest.yield_fixture
 def reformfile0():
     """
@@ -132,6 +94,50 @@ def reformfile0():
             os.remove(rfile.name)
         except OSError:
             pass  # sometimes we can't remove a generated temporary file
+
+
+# for fixture args, pylint: disable=redefined-outer-name
+
+
+@pytest.mark.parametrize("year, ref, asm", [
+    (2013, list(), None),
+    (2013, None, list()),
+    (2001, None, None),
+    (2099, None, None),
+    (2020, 'no-dot-json-reformfile', None),
+    (2020, 'reformfile0', 'no-dot-json-assumpfile'),
+])
+def test_incorrect_creation_2(rawinputfile, reformfile0, year, ref, asm):
+    """
+    Ensure a ValueError is raised when created with invalid parameters
+    """
+    if ref == 'reformfile0':
+        reform = reformfile0.name
+    else:
+        reform = ref
+    with pytest.raises(ValueError):
+        TaxCalcIO(
+            input_data=rawinputfile.name,
+            tax_year=year,
+            reform=reform,
+            assump=asm,
+            aging_input_data=False,
+            exact_calculations=False)
+
+
+def test_creation_with_aging(rawinputfile):
+    """
+    Test TaxCalcIO instantiation with no policy reform and with aging.
+    """
+    TaxCalcIO.show_iovar_definitions()
+    taxyear = 2021
+    tcio = TaxCalcIO(input_data=rawinputfile.name,
+                     tax_year=taxyear,
+                     reform=None,
+                     assump=None,
+                     aging_input_data=True,
+                     exact_calculations=False)
+    assert tcio.tax_year() == taxyear
 
 
 def test_2(rawinputfile, reformfile0):
