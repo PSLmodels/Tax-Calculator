@@ -178,7 +178,7 @@ def reformfile1():
         }
     }
     """
-    rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     rfile.write(txt + '\n')
     rfile.close()
     # Must close and then yield for Windows platform
@@ -223,9 +223,7 @@ def test_1(reformfile1):
                      reform=reformfile1.name,
                      assump=None,
                      aging_input_data=False,
-                     exact_calculations=False,
-                     output_records=False,
-                     csv_dump=False)
+                     exact_calculations=False)
     output = tcio.calculate()
     output_lines_list = output.split('\n')
     output_vars_list = output_lines_list[0].split()
@@ -249,7 +247,7 @@ def reformfile2():
         }
     }
     """
-    rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     rfile.write(txt + '\n')
     rfile.close()
     # Must close and then yield for Windows platform
@@ -284,9 +282,7 @@ def test_2(reformfile2):
                      reform=reformfile2.name,
                      assump=None,
                      aging_input_data=False,
-                     exact_calculations=False,
-                     output_records=False,
-                     csv_dump=False)
+                     exact_calculations=False)
     output = tcio.calculate()
     output_vars_list = output.split()
     ctc = output_vars_list[ctc_ovar_num - 1]

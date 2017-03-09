@@ -77,7 +77,6 @@ class TaxCalcIO(object):
         # pylint: disable=too-many-locals
         # check for existence of INPUT file
         if isinstance(input_data, six.string_types):
-            self._using_input_file = True
             # remove any leading directory path from INPUT filename
             fname = os.path.basename(input_data)
             # check if fname ends with ".csv"
@@ -91,7 +90,6 @@ class TaxCalcIO(object):
                 msg = 'INPUT file named {} could not be found'
                 raise ValueError(msg.format(input_data))
         elif isinstance(input_data, pd.DataFrame):
-            self._using_input_file = False
             inp = 'df-{}'.format(str(tax_year)[2:])
         else:
             msg = 'INPUT is neither string nor Pandas DataFrame'
@@ -218,10 +216,6 @@ class TaxCalcIO(object):
         """
         Calculate taxes for all INPUT lines and write or return OUTPUT lines.
 
-        Output lines will be written to file if TaxCalcIO constructor
-        was passed an input_filename string and a reform string or None,
-        and if writing_output_file is True.
-
         Parameters
         ----------
         writing_output_file: boolean
@@ -298,7 +292,7 @@ class TaxCalcIO(object):
         assert len(output) == self._calc.records.dim
         # handle disposition of calculated output
         olines = ''
-        if self._using_input_file and writing_output_file:
+        if writing_output_file:
             TaxCalcIO.write_output_file(output, self._output_filename)
         else:
             for idx in range(0, len(output)):
@@ -544,7 +538,7 @@ class TaxCalcIO(object):
         for varname in Records.USABLE_READ_VARS:
             vardata = getattr(self._calc.records, varname)
             recdf[varname] = vardata
-        if self._using_input_file and writing_output_file:
+        if writing_output_file:
             recdf.to_csv(self._output_filename,
                          float_format='%.4f', index=False)
 
@@ -566,6 +560,6 @@ class TaxCalcIO(object):
         for varname in Records.USABLE_READ_VARS | Records.CALCULATED_VARS:
             vardata = getattr(self._calc.records, varname)
             recdf[varname] = vardata
-        if self._using_input_file and writing_output_file:
+        if writing_output_file:
             recdf.to_csv(self._output_filename,
                          float_format='%.2f', index=False)

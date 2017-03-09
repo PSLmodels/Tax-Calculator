@@ -62,16 +62,12 @@ def test_incorrect_creation_1(input_data, exact):
     Ensure a ValueError is raised when created with invalid data pointers
     """
     with pytest.raises(ValueError):
-        TaxCalcIO(
-            input_data=input_data,
-            tax_year=2013,
-            reform=None,
-            assump=None,
-            aging_input_data=False,
-            exact_calculations=exact,
-            output_records=False,
-            csv_dump=False
-        )
+        TaxCalcIO(input_data=input_data,
+                  tax_year=2013,
+                  reform=None,
+                  assump=None,
+                  aging_input_data=False,
+                  exact_calculations=exact)
 
 
 # for fixture args, pylint: disable=redefined-outer-name
@@ -94,10 +90,7 @@ def test_incorrect_creation_2(rawinputfile, year, reform, assump):
             reform=reform,
             assump=assump,
             aging_input_data=False,
-            exact_calculations=False,
-            output_records=False,
-            csv_dump=False
-        )
+            exact_calculations=False)
 
 
 def test_creation_with_aging(rawinputfile):
@@ -111,9 +104,7 @@ def test_creation_with_aging(rawinputfile):
                      reform=None,
                      assump=None,
                      aging_input_data=True,
-                     exact_calculations=False,
-                     output_records=False,
-                     csv_dump=False)
+                     exact_calculations=False)
     assert tcio.tax_year() == taxyear
 
 
@@ -131,7 +122,7 @@ def reformfile0():
         }
     }
     """
-    rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     rfile.write(txt + '\n')
     rfile.close()
     # Must close and then yield for Windows platform
@@ -153,9 +144,7 @@ def test_2(rawinputfile, reformfile0):
                      reform=reformfile0.name,
                      assump=None,
                      aging_input_data=False,
-                     exact_calculations=False,
-                     output_records=False,
-                     csv_dump=False)
+                     exact_calculations=False)
     output = tcio.calculate()
     assert output == EXPECTED_OUTPUT
 
@@ -223,7 +212,7 @@ def reformfile2():
     """
     Temporary reform file without .json extension.
     """
-    rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     rfile.write(REFORM_CONTENTS)
     rfile.close()
     # must close and then yield for Windows platform
@@ -273,23 +262,6 @@ def assumpfile1():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.yield_fixture
-def assumpfile2():
-    """
-    Temporary assumption file without .json extension.
-    """
-    afile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    afile.write(ASSUMP_CONTENTS)
-    afile.close()
-    # must close and then yield for Windows platform
-    yield afile
-    if os.path.isfile(afile.name):
-        try:
-            os.remove(afile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
 def test_3(rawinputfile, reformfile1, assumpfile1):
     """
     Test TaxCalcIO calculate method with output writing but no aging,
@@ -301,9 +273,7 @@ def test_3(rawinputfile, reformfile1, assumpfile1):
                      reform=reformfile1.name,
                      assump=assumpfile1.name,
                      aging_input_data=False,
-                     exact_calculations=False,
-                     output_records=False,
-                     csv_dump=False)
+                     exact_calculations=False)
     outfilepath = tcio.output_filepath()
     # try file writing
     try:
@@ -343,7 +313,7 @@ def test_3(rawinputfile, reformfile1, assumpfile1):
     assert output == ""
 
 
-def test_4(reformfile2, assumpfile2):
+def test_4(reformfile2, assumpfile1):
     """
     Test TaxCalcIO calculate method with no output writing and no aging,
     using DataFrame for TaxCalcIO constructor input_data.
@@ -354,11 +324,9 @@ def test_4(reformfile2, assumpfile2):
     tcio = TaxCalcIO(input_data=input_dataframe,
                      tax_year=taxyear,
                      reform=reformfile2.name,
-                     assump=assumpfile2.name,
+                     assump=assumpfile1.name,
                      aging_input_data=False,
-                     exact_calculations=False,
-                     output_records=False,
-                     csv_dump=False)
+                     exact_calculations=False)
     output = tcio.calculate()
     assert output == EXPECTED_OUTPUT
 
@@ -374,9 +342,7 @@ def test_5(rawinputfile, reformfile1):
                      reform=reformfile1.name,
                      assump=None,
                      aging_input_data=False,
-                     exact_calculations=False,
-                     output_records=True,
-                     csv_dump=False)
+                     exact_calculations=False)
     tcio.output_records(writing_output_file=False)
     assert tcio.tax_year() == taxyear
 
@@ -392,9 +358,7 @@ def test_6(rawinputfile):
                      reform=None,
                      assump=None,
                      aging_input_data=False,
-                     exact_calculations=False,
-                     output_records=False,
-                     csv_dump=True)
+                     exact_calculations=False)
     tcio.csv_dump(writing_output_file=False)
     assert tcio.tax_year() == taxyear
 
@@ -413,7 +377,7 @@ def lumpsumreformfile():
     """
     Temporary reform file without .json extension.
     """
-    rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     rfile.write(LUMPSUM_REFORM_CONTENTS)
     rfile.close()
     # must close and then yield for Windows platform
@@ -438,9 +402,7 @@ def test_7(reformfile1, lumpsumreformfile):
                      reform=reformfile1.name,
                      assump=None,
                      aging_input_data=False,
-                     exact_calculations=False,
-                     output_records=False,
-                     csv_dump=False)
+                     exact_calculations=False)
     output = tcio.calculate(writing_output_file=False, output_ceeu=True)
     assert tcio.tax_year() == taxyear
     assert len(output) > 0
@@ -450,9 +412,7 @@ def test_7(reformfile1, lumpsumreformfile):
                      reform=lumpsumreformfile.name,
                      assump=None,
                      aging_input_data=False,
-                     exact_calculations=False,
-                     output_records=False,
-                     csv_dump=False)
+                     exact_calculations=False)
     output = tcio.calculate(writing_output_file=False, output_ceeu=True)
     assert tcio.tax_year() == taxyear
     assert len(output) > 0
@@ -504,9 +464,7 @@ def test_9(reformfile2, assumpfile3):
                   reform=reformfile2.name,
                   assump=assumpfile3.name,
                   aging_input_data=False,
-                  exact_calculations=False,
-                  output_records=False,
-                  csv_dump=False)
+                  exact_calculations=False)
 
 
 INPUT_CONTENTS = (
@@ -531,9 +489,7 @@ def test_10():
                      reform=None,
                      assump=None,
                      aging_input_data=False,
-                     exact_calculations=False,
-                     output_records=False,
-                     csv_dump=False)
+                     exact_calculations=False)
     # test extracting of weight and debugging variables
     crecs = tcio._calc.records  # pylint: disable=protected-access
     TaxCalcIO.DVAR_NAMES = ['f2441']
