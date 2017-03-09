@@ -322,7 +322,7 @@ class TaxCalcIO(object):
         odict['INCTAX'] = crecs._iitax  # federal income taxes
         odict['LSTAX'] = crecs.lumpsum_tax  # lump-sum tax
         odict['PAYTAX'] = crecs._payrolltax  # payroll taxes (ee+er)
-        odf = pd.DataFrame(data=odict, columns=column_list)
+        odf = pd.DataFrame(data=odict, columns=varlist)
         return odf
 
     @staticmethod

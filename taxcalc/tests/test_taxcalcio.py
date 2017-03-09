@@ -279,24 +279,6 @@ def test_3(rawinputfile, reformfile1, assumpfile1):
     outfilepath = tcio.output_filepath()
     # try file writing
     try:
-        tcio.output_records(writing_output_file=True)
-    except:  # pylint: disable=bare-except
-        if os.path.isfile(outfilepath):
-            try:
-                os.remove(outfilepath)
-            except OSError:
-                pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.output_records()_ok' == 'no'
-    try:
-        tcio.csv_dump(writing_output_file=True)
-    except:  # pylint: disable=bare-except
-        if os.path.isfile(outfilepath):
-            try:
-                os.remove(outfilepath)
-            except OSError:
-                pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.csv_dump()_ok' == 'no'
-    try:
         output = tcio.calculate(writing_output_file=True)
     except:  # pylint: disable=bare-except
         if os.path.isfile(outfilepath):
@@ -305,14 +287,14 @@ def test_3(rawinputfile, reformfile1, assumpfile1):
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
         assert 'TaxCalcIO.calculate()_ok' == 'no'
-    # if all tries were successful, try to remove the output file
+    # if the try was successful, try to remove the output file
     if os.path.isfile(outfilepath):
         try:
             os.remove(outfilepath)
         except OSError:
             pass  # sometimes we can't remove a generated temporary file
     # check that output is empty string (because output was written to file)
-    assert output == ""
+    assert output == ''
 
 
 def test_4(reformfile2, assumpfile1):
@@ -333,26 +315,13 @@ def test_4(reformfile2, assumpfile1):
     assert output == EXPECTED_TO_STRING_OUTPUT
 
 
-def test_5(rawinputfile, reformfile1):
-    """
-    Test TaxCalcIO calculate method with no output writing and no aging and
-    no reform, using the output_records option.
-    """
-    taxyear = 2020
-    tcio = TaxCalcIO(input_data=rawinputfile.name,
-                     tax_year=taxyear,
-                     reform=reformfile1.name,
-                     assump=None,
-                     aging_input_data=False,
-                     exact_calculations=False)
-    tcio.output_records(writing_output_file=False)
-    assert tcio.tax_year() == taxyear
+# remove test_5 because there is no longer a TaxCalcIO.output_records() method
 
 
 def test_6(rawinputfile):
     """
     Test TaxCalcIO calculate method with no output writing and no aging and
-    no reform, using the csv_dump option.
+    no reform, using the --dump option.
     """
     taxyear = 2021
     tcio = TaxCalcIO(input_data=rawinputfile.name,
@@ -361,7 +330,8 @@ def test_6(rawinputfile):
                      assump=None,
                      aging_input_data=False,
                      exact_calculations=False)
-    tcio.csv_dump(writing_output_file=False)
+    output = tcio.calculate(writing_output_file=False, output_dump=True)
+    assert len(output) > 5000
     assert tcio.tax_year() == taxyear
 
 
