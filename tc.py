@@ -94,6 +94,12 @@ def main():
         sys.stderr.write('ERROR: cannot specify --ceeu without --reform\n')
         sys.stderr.write('USAGE: python tc.py --help\n')
         return 1
+
+    if args.graph:
+        sys.stderr.write('ERROR: --graph option not yet implemented\n')
+        sys.stderr.write('USAGE: python tc.py --help\n')
+        return 1
+
     # instantiate TaxCalcIO object and do federal tax calculations
     if args.INPUT.endswith('puf.csv') or args.INPUT.endswith('cps.csv'):
         aging_input = True

@@ -312,9 +312,9 @@ class TaxCalcIO(object):
         """
         Extract standard output and return as pandas DataFrame.
         """
-        crecs = self._calc.records
-        column_list = ['RECID', 'YEAR', 'WEIGHT', 'INCTAX', 'LSTAX', 'PAYTAX']
+        varlist = ['RECID', 'YEAR', 'WEIGHT', 'INCTAX', 'LSTAX', 'PAYTAX']
         odict = dict()
+        crecs = self._calc.records
         odict['RECID'] = crecs.RECID  # id for tax filing unit
         odict['YEAR'] = crecs.FLPDYR  # tax calculation year
         odict['WEIGHT'] = crecs.s006  # sample weight
@@ -369,49 +369,11 @@ class TaxCalcIO(object):
         """
         Extract --dump output and return as pandas DataFrame.
         """
-        return None
-
-    def output_records(self, writing_output_file=False):
-        """
-        Write CSV-formatted file containing the values of the
-        Records.USABLE_READ_VARS in the tax_year.  The order of the
-        columns in this output file might not be the same as in the
-        input_data passed to TaxCalcIO constructor.
-
-        Parameters
-        ----------
-        writing_output_file: boolean
-
-        Returns
-        -------
-        Nothing
-        """
-        recdf = pd.DataFrame()
-        for varname in Records.USABLE_READ_VARS:
+        odf = pd.DataFrame()
+        varset = Records.USABLE_READ_VARS | Records.CALCULATED_VARS
+        for varname in varset:
             vardata = getattr(self._calc.records, varname)
-            recdf[varname] = vardata
-        if writing_output_file:
-            recdf.to_csv(self._output_filename,
-                         float_format='%.4f', index=False)
-
-    def csv_dump(self, writing_output_file=False):
-        """
-        Write CSV-formatted file containing the values of all the
-        Records.USABLE_READ_VARS variables and all the Records.CALCULATED_VARS
-        variables in the tax_year.
-
-        Parameters
-        ----------
-        writing_output_file: boolean
-
-        Returns
-        -------
-        Nothing
-        """
-        recdf = pd.DataFrame()
-        for varname in Records.USABLE_READ_VARS | Records.CALCULATED_VARS:
-            vardata = getattr(self._calc.records, varname)
-            recdf[varname] = vardata
-        if writing_output_file:
-            recdf.to_csv(self._output_filename,
-                         float_format='%.2f', index=False)
+            odf[varname] = vardata
+        odf['mtr_inctax'] = mtr_inctax
+        odf['mtr_paytax'] = mtr_paytax
+        return odf
