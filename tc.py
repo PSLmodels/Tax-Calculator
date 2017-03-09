@@ -42,11 +42,9 @@ def main():
                               'static analysis assumptions.'),
                         default=None)
     parser.add_argument('--exact',
-                        help=('optional flag to suppress smoothing in income '
-                              'tax calculations that eliminate marginal-tax-'
-                              'rate-complicating "stair-steps".  The default '
-                              'is to smooth, and therefore, not to do the '
-                              'exact calculations called for on tax forms.'),
+                        help=('optional flag that suppresses the smoothing of '
+                              '"stair-step" provisions in the tax law that '
+                              'complicate marginal-tax-rate calculations.'),
                         default=False,
                         action="store_true")
     parser.add_argument('--graph',
@@ -106,9 +104,7 @@ def main():
                      reform=args.reform,
                      assump=args.assump,
                      aging_input_data=aging_input,
-                     exact_calculations=args.exact,
-                     output_records=False,
-                     csv_dump=False)
+                     exact_calculations=args.exact)
     tcio.calculate(writing_output_file=True,
                    exact_output=args.exact,
                    output_weights=True,  # TODO: remove this argument

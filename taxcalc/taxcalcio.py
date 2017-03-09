@@ -52,16 +52,6 @@ class TaxCalcIO(object):
         specifies whether or not exact tax calculations are done without
         any smoothing of "stair-step" provisions in the tax law.
 
-    output_records: boolean
-        whether or not to write CSV-formatted file containing the values
-        of the Records.USABLE_READ_VARS variables in the tax_year.
-
-    csv_dump: boolean
-        whether or not to write CSV-formatted output file containing the
-        values of the Records.USABLE_READ_VARS and Records.CALCULATED_VARS
-        variables.  If true, the CSV-formatted output file replaces the
-        usual space-separated-values Internet-TAXSIM output file.
-
     Raises
     ------
     ValueError:
@@ -77,8 +67,7 @@ class TaxCalcIO(object):
     """
 
     def __init__(self, input_data, tax_year, reform, assump,
-                 aging_input_data, exact_calculations,
-                 output_records, csv_dump):
+                 aging_input_data, exact_calculations):
         """
         TaxCalcIO class constructor.
         """
@@ -86,6 +75,7 @@ class TaxCalcIO(object):
         # pylint: disable=too-many-statements
         # pylint: disable=too-many-branches
         # pylint: disable=too-many-locals
+        # check for existence of INPUT file
         if isinstance(input_data, six.string_types):
             self._using_input_file = True
             # remove any leading directory path from INPUT filename
@@ -95,6 +85,10 @@ class TaxCalcIO(object):
                 inp = '{}-{}'.format(fname[:-4], str(tax_year)[2:])
             else:
                 msg = 'INPUT file named {} does not end in .csv'
+                raise ValueError(msg.format(fname))
+            # check existence of INPUT file
+            if not os.path.isfile(input_data):
+                msg = 'INPUT file named {} could not be found'
                 raise ValueError(msg.format(input_data))
         elif isinstance(input_data, pd.DataFrame):
             self._using_input_file = False
@@ -114,7 +108,8 @@ class TaxCalcIO(object):
             if fname.endswith('.json'):
                 ref = '-{}'.format(fname[:-5])
             else:
-                ref = '-{}'.format(fname)
+                msg = 'REFORM file named {} does not end in .json'
+                raise ValueError(msg.format(fname))
         else:
             msg = 'TaxCalcIO.ctor reform is neither None nor str'
             raise ValueError(msg)
@@ -127,23 +122,14 @@ class TaxCalcIO(object):
             if fname.endswith('.json'):
                 asm = '-{}'.format(fname[:-5])
             else:
-                asm = '-{}'.format(fname)
+                msg = 'ASSUMP file named {} does not end in .json'
+                raise ValueError(msg.format(fname))
         else:
             msg = 'TaxCalcIO.ctor assump is neither None nor str'
             raise ValueError(msg)
-        if output_records:
-            self._output_filename = '{}.records{}{}'.format(inp, ref, asm)
-        elif csv_dump:
-            self._output_filename = '{}.csvdump{}{}'.format(inp, ref, asm)
-        else:
-            self._output_filename = '{}.out-inctax{}{}'.format(inp, ref, asm)
+        self._output_filename = '{}{}{}.csv'.format(inp, ref, asm)
         if os.path.isfile(self._output_filename):
             os.remove(self._output_filename)
-        # check for existence of INPUT file
-        if self._using_input_file:
-            if not os.path.isfile(input_data):
-                msg = 'INPUT file named {} could not be found'
-                raise ValueError(msg.format(input_data))
         # get parameter dictionaries
         param_dict = Calculator.read_json_param_files(reform, assump)
         # create growdiff_baseline and growdiff_response objects
@@ -176,7 +162,7 @@ class TaxCalcIO(object):
         if aging_input_data:
             recs = Records(data=input_data,
                            exact_calculations=exact_calculations)
-        else:  # input_data are raw data
+        else:  # input_data are raw data that are not being aged
             recs = Records(data=input_data,
                            exact_calculations=exact_calculations,
                            gfactors=None,
@@ -223,51 +209,6 @@ class TaxCalcIO(object):
         """
         dirpath = os.path.abspath(os.path.dirname(__file__))
         return os.path.join(dirpath, self._output_filename)
-
-    def output_records(self, writing_output_file=False):
-        """
-        Write CSV-formatted file containing the values of the
-        Records.USABLE_READ_VARS in the tax_year.  The order of the
-        columns in this output file might not be the same as in the
-        input_data passed to TaxCalcIO constructor.
-
-        Parameters
-        ----------
-        writing_output_file: boolean
-
-        Returns
-        -------
-        Nothing
-        """
-        recdf = pd.DataFrame()
-        for varname in Records.USABLE_READ_VARS:
-            vardata = getattr(self._calc.records, varname)
-            recdf[varname] = vardata
-        if self._using_input_file and writing_output_file:
-            recdf.to_csv(self._output_filename,
-                         float_format='%.4f', index=False)
-
-    def csv_dump(self, writing_output_file=False):
-        """
-        Write CSV-formatted file containing the values of all the
-        Records.USABLE_READ_VARS variables and all the Records.CALCULATED_VARS
-        variables in the tax_year.
-
-        Parameters
-        ----------
-        writing_output_file: boolean
-
-        Returns
-        -------
-        Nothing
-        """
-        recdf = pd.DataFrame()
-        for varname in Records.USABLE_READ_VARS | Records.CALCULATED_VARS:
-            vardata = getattr(self._calc.records, varname)
-            recdf[varname] = vardata
-        if self._using_input_file and writing_output_file:
-            recdf.to_csv(self._output_filename,
-                         float_format='%.2f', index=False)
 
     def calculate(self, writing_output_file=False,
                   exact_output=False,
@@ -583,3 +524,48 @@ class TaxCalcIO(object):
             else:
                 ovar[num] = dvar[idx]
         return ovar
+
+    def output_records(self, writing_output_file=False):
+        """
+        Write CSV-formatted file containing the values of the
+        Records.USABLE_READ_VARS in the tax_year.  The order of the
+        columns in this output file might not be the same as in the
+        input_data passed to TaxCalcIO constructor.
+
+        Parameters
+        ----------
+        writing_output_file: boolean
+
+        Returns
+        -------
+        Nothing
+        """
+        recdf = pd.DataFrame()
+        for varname in Records.USABLE_READ_VARS:
+            vardata = getattr(self._calc.records, varname)
+            recdf[varname] = vardata
+        if self._using_input_file and writing_output_file:
+            recdf.to_csv(self._output_filename,
+                         float_format='%.4f', index=False)
+
+    def csv_dump(self, writing_output_file=False):
+        """
+        Write CSV-formatted file containing the values of all the
+        Records.USABLE_READ_VARS variables and all the Records.CALCULATED_VARS
+        variables in the tax_year.
+
+        Parameters
+        ----------
+        writing_output_file: boolean
+
+        Returns
+        -------
+        Nothing
+        """
+        recdf = pd.DataFrame()
+        for varname in Records.USABLE_READ_VARS | Records.CALCULATED_VARS:
+            vardata = getattr(self._calc.records, varname)
+            recdf[varname] = vardata
+        if self._using_input_file and writing_output_file:
+            recdf.to_csv(self._output_filename,
+                         float_format='%.2f', index=False)
