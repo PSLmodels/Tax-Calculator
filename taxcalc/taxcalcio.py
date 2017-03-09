@@ -6,7 +6,6 @@ Tax-Calculator Input-Output class.
 # pylint --disable=locally-disabled taxcalcio.py
 
 import os
-import sys
 import copy
 import six
 import pandas as pd
@@ -180,7 +179,7 @@ class TaxCalcIO(object):
                                         sync_years=aging_input_data)
             beh = Behavior()
             beh.update_behavior(param_dict['behavior'])
-            # Prevent both behavioral response and growdiff response
+            # prevent both behavioral response and growdiff response
             if beh.has_any_response() and growdiff_response.has_any_response():
                 msg = 'BOTH behavior AND growdiff_response HAVE RESPONSE'
                 raise ValueError(msg)
@@ -209,10 +208,8 @@ class TaxCalcIO(object):
         return os.path.join(dirpath, self._output_filename)
 
     def calculate(self, writing_output_file=False,
-                  exact_output=False,
-                  output_weights=False,
-                  output_mtr_wrt_fullcomp=False,
-                  output_ceeu=False):
+                  output_ceeu=False,
+                  output_dump=False):
         """
         Calculate taxes for all INPUT lines and write or return OUTPUT lines.
 
@@ -220,16 +217,13 @@ class TaxCalcIO(object):
         ----------
         writing_output_file: boolean
 
-        output_weights: boolean
-            whether or not to use s006 as an additional output variable.
-
-        output_mtr_wrt_fullcomp: boolean
-           whether or not to calculate marginal tax rates in OUTPUT file with
-           respect to full compensation.
-
         output_ceeu: boolean
            whether or not to calculate and write to stdout standard
            certainty-equivalent expected-utility statistics
+
+        output_dump: boolean
+           whether or not to include all input and calculated variables in
+           output
 
         Returns
         -------
@@ -238,10 +232,11 @@ class TaxCalcIO(object):
             otherwise output_lines contain all OUTPUT lines
         """
         # pylint: disable=too-many-arguments,too-many-locals
-        output = {}  # dictionary indexed by Records index for filing unit
-        (mtr_ptax, mtr_itax,
-         _) = self._calc.mtr(wrt_full_compensation=output_mtr_wrt_fullcomp)
-        txt = None
+        # compute mtr wrt taxpayer earnings even if not needed for dump
+        # <note that last mtr() step is calc_all()>
+        (mtr_paytax, mtr_inctax,
+         _) = self._calc.mtr(wrt_full_compensation=False)
+        ceeu_results = None
         if self._reform:
             self._calc = Behavior.response(self._calc_clp, self._calc)
             if output_ceeu:
@@ -249,112 +244,29 @@ class TaxCalcIO(object):
                     self._calc_clp.calc_all()
                 cedict = ce_aftertax_income(self._calc_clp, self._calc,
                                             require_no_agg_tax_change=False)
-                text = ('Aggregate {} Pre-Tax Expanded Income and '
-                        'Tax Revenue ($billion)\n')
-                txt = text.format(cedict['year'])
-                txt += '           baseline     reform   difference\n'
-                fmt = '{} {:12.3f} {:10.3f} {:12.3f}\n'
-                txt += fmt.format('income', cedict['inc1'], cedict['inc2'],
-                                  cedict['inc2'] - cedict['inc1'])
-                alltaxdiff = cedict['tax2'] - cedict['tax1']
-                txt += fmt.format('alltax', cedict['tax1'], cedict['tax2'],
-                                  alltaxdiff)
-                txt += ('Certainty Equivalent of Expected Utility of '
-                        'After-Tax Expanded Income ($)\n')
-                txt += ('(assuming consumption equals '
-                        'after-tax expanded income)\n')
-                txt += 'crra       baseline     reform     pctdiff\n'
-                fmt = '{} {:17.2f} {:10.2f} {:11.2f}\n'
-                for crra, ceeu1, ceeu2 in zip(cedict['crra'],
-                                              cedict['ceeu1'],
-                                              cedict['ceeu2']):
-                    txt += fmt.format(crra, ceeu1, ceeu2,
-                                      100.0 * (ceeu2 - ceeu1) / ceeu1)
-                if abs(alltaxdiff) >= 0.0005:
-                    txt += ('WARN: baseline and reform cannot be '
-                            'sensibly compared\n')
-                    text = ('because alltax difference is '
-                            '{:.3f} which is not zero\n')
-                    txt += text.format(alltaxdiff)
-                    txt += 'FIX: adjust _LST or other parameter to bracket\n'
-                    txt += 'alltax difference equals zero and then interpolate'
-                else:
-                    txt += ('NOTE: baseline and reform can be '
-                            'sensibly compared\n')
-                    txt += 'because alltax difference is essentially zero'
-        for idx in range(0, self._calc.records.dim):
-            ovar = TaxCalcIO.extract_output(self._calc.records, idx,
-                                            exact=exact_output,
-                                            extract_weight=output_weights)
-            ovar[7] = 100 * mtr_itax[idx]
-            ovar[9] = 100 * mtr_ptax[idx]
-            output[idx] = ovar
-        assert len(output) == self._calc.records.dim
-        # handle disposition of calculated output
-        olines = ''
-        if writing_output_file:
-            TaxCalcIO.write_output_file(output, self._output_filename)
+                ceeu_results = TaxCalcIO.ceeu_output(cedict)
+        # extract output
+        if output_dump:
+            outdf = self.dump_output(mtr_inctax, mtr_paytax)
         else:
-            for idx in range(0, len(output)):
-                olines += TaxCalcIO.construct_output_line(output[idx])
-        if txt:
-            print(txt)  # pylint: disable=superfluous-parens
-        return olines
+            outdf = self.standard_output()
+        assert len(outdf.index) == self._calc.records.dim
+        # handle disposition of output
+        output_lines = ''
+        if writing_output_file:
+            outdf.to_csv(self._output_filename, index=False,
+                         float_format='%.2f')
+        else:
+            output_lines = outdf.to_string(index=False,
+                                           float_format='%.2f')
+        if ceeu_results:
+            print(ceeu_results)  # pylint: disable=superfluous-parens
+        return output_lines
 
-    @staticmethod
-    def show_iovar_definitions():
-        """
-        Write definitions of INPUT and OUTPUT variables to stdout.
-
-        Parameters
-        ----------
-        none: void
-
-        Returns
-        -------
-        nothing: void
-        """
-        ivd = ('**** TaxCalcIO INPUT variables determined by INPUT file,\n'
-               'which is a CSV-formatted text file whose name ends in .csv\n'
-               'and whose column names include the Records.MUST_READ_VARS.\n')
-        sys.stdout.write(ivd)
-        ovd = ('**** TaxCalcIO OUTPUT variables in Internet-TAXSIM format:\n'
-               '[ 1] arbitrary id of income tax filing unit\n'
-               '[ 2] calendar year of income tax filing\n'
-               '[ 3] state code [ALWAYS ZERO]\n'
-               '[ 4] federal income tax liability\n'
-               '[ 5] state income tax liability [ALWAYS ZERO]\n'
-               '[ 6] OASDI+HI payroll tax liability (sum of ee and er share)\n'
-               '[ 7] marginal federal income tax rate\n'
-               '[ 8] marginal state income tax rate [ALWAYS ZERO]\n'
-               '[ 9] marginal payroll tax rate\n'
-               '[10] federal adjusted gross income, AGI\n'
-               '[11] unemployment (UI) benefits included in AGI\n'
-               '[12] social security (OASDI) benefits included in AGI\n'
-               '[13] [ALWAYS ZERO]\n'
-               '[14] personal exemption after phase-out\n'
-               '[15] phased-out (i.e., disallowed) personal exemption\n'
-               '[16] phased-out (i.e., disallowed) itemized deduction\n'
-               '[17] itemized deduction after phase-out '
-               '(zero for non-itemizer)\n'
-               '[18] federal regular taxable income\n'
-               '[19] regular tax on regular taxable income '
-               '(no special capital gains rates)\n'
-               '     EXCEPT use special rates WHEN --exact OPTION SPECIFIED\n'
-               '[20] [ALWAYS ZERO]\n'
-               '[21] [ALWAYS ZERO]\n'
-               '[22] child tax credit (adjusted)\n'
-               '[23] child tax credit (refunded)\n'
-               '[24] credit for child care expenses\n'
-               '[25] federal earned income tax credit, EITC\n'
-               '[26] federal AMT taxable income\n'
-               '[27] federal AMT liability\n'
-               '[28] federal income tax (excluding AMT) before credits\n')
-        sys.stdout.write(ovd)
-
+    """
     @staticmethod
     def construct_output_line(output_dict):
-        """
+
         Construct line of OUTPUT from a filing unit output_dict.
 
         Parameters
@@ -365,7 +277,7 @@ class TaxCalcIO(object):
         Returns
         -------
         output_line: string
-        """
+
         outline = ''
         for vnum in range(1, len(output_dict) + 1):
             fnum = min(vnum, TaxCalcIO.OVAR_NUM)
@@ -373,9 +285,11 @@ class TaxCalcIO(object):
         outline += '\n'
         return outline
 
+
+
     @staticmethod
     def write_output_file(output, output_filename):
-        """
+
         Write all output to file with output_filename.
 
         Parameters
@@ -387,137 +301,75 @@ class TaxCalcIO(object):
         Returns
         -------
         nothing: void
-        """
+
         with open(output_filename, 'w') as output_file:
             for idx in range(0, len(output)):
                 outline = TaxCalcIO.construct_output_line(output[idx])
                 output_file.write(outline)
+    """
 
-    OVAR_NUM = 28
-    DVAR_NAMES = [  # OPTIONAL DEBUGGING OUTPUT VARIABLE NAMES
-        # '...',  # first debugging variable
-        # '...',  # second debugging variable
-        # etc.
-        # '...'   # last debugging variable
-    ]
-    OVAR_FMT = {1: '{:d}.',  # add decimal point as in Internet-TAXSIM output
-                2: ' {:.0f}',
-                3: ' {:d}',
-                4: ' {:.2f}',
-                5: ' {:.2f}',
-                6: ' {:.2f}',
-                7: ' {:.2f}',
-                8: ' {:.2f}',
-                9: ' {:.2f}',
-                10: ' {:.2f}',
-                11: ' {:.2f}',
-                12: ' {:.2f}',
-                13: ' {:.2f}',
-                14: ' {:.2f}',
-                15: ' {:.2f}',
-                16: ' {:.2f}',
-                17: ' {:.2f}',
-                18: ' {:.2f}',
-                19: ' {:.2f}',
-                20: ' {:.2f}',
-                21: ' {:.2f}',
-                22: ' {:.2f}',
-                23: ' {:.2f}',
-                24: ' {:.2f}',
-                25: ' {:.2f}',
-                26: ' {:.2f}',
-                27: ' {:.2f}',
-                28: ' {:.2f}'}
+    def standard_output(self):
+        """
+        Extract standard output and return as pandas DataFrame.
+        """
+        crecs = self._calc.records
+        column_list = ['RECID', 'YEAR', 'WEIGHT', 'INCTAX', 'LSTAX', 'PAYTAX']
+        odict = dict()
+        odict['RECID'] = crecs.RECID  # id for tax filing unit
+        odict['YEAR'] = crecs.FLPDYR  # tax calculation year
+        odict['WEIGHT'] = crecs.s006  # sample weight
+        # pylint: disable=protected-access
+        odict['INCTAX'] = crecs._iitax  # federal income taxes
+        odict['LSTAX'] = crecs.lumpsum_tax  # lump-sum tax
+        odict['PAYTAX'] = crecs._payrolltax  # payroll taxes (ee+er)
+        odf = pd.DataFrame(data=odict, columns=column_list)
+        return odf
 
     @staticmethod
-    def extract_output(crecs, idx, exact=False, extract_weight=False):
+    def ceeu_output(cedict):
         """
-        Extracts tax output from crecs object for one tax filing unit.
-
-        Parameters
-        ----------
-        crecs: Records
-            Records object embedded in Calculator object.
-
-        idx: integer
-            crecs object index of the one tax filing unit.
-
-        exact: boolean
-            whether or not ovar[19] is exact regular tax on regular income.
-
-        extract_weight: boolean
-            whether or not to extract s006 sample weight into ovar[29].
-
-        Returns
-        -------
-        ovar: dictionary of output variables indexed from 1 to OVAR_NUM,
-            or from 1 to OVAR_NUM+1 if extract_weight is True,
-            of from 1 to OVAR_NUM+? if debugging variables are included.
-
-        Notes
-        -----
-        The value of each output variable is stored in the ovar dictionary,
-        which is indexed as Internet-TAXSIM output variables are (where the
-        index begins with one).
+        Extract --ceeu output and return as text string.
         """
-        ovar = {}
-        ovar[1] = crecs.RECID[idx]  # id for tax filing unit
-        ovar[2] = crecs.FLPDYR[idx]  # year for which taxes are calculated
-        ovar[3] = 0  # state code is always zero
-        # pylint: disable=protected-access
-        ovar[4] = crecs._iitax[idx]  # federal income tax liability
-        ovar[5] = 0.0  # no state income tax calculation
-        ovar[6] = crecs._payrolltax[idx]  # payroll taxes (ee+er) for OASDI+HI
-        ovar[7] = 0.0  # marginal federal income tax rate as percent
-        ovar[8] = 0.0  # no state income tax calculation
-        ovar[9] = 0.0  # marginal payroll tax rate as percent
-        ovar[10] = crecs.c00100[idx]  # federal AGI
-        ovar[11] = crecs.e02300[idx]  # UI benefits in AGI
-        ovar[12] = crecs.c02500[idx]  # OASDI benefits in AGI
-        ovar[13] = 0.0  # always set zero-bracket amount to zero
-        pre_phase_out_pe = crecs.pre_c04600[idx]
-        post_phase_out_pe = crecs.c04600[idx]
-        phased_out_pe = pre_phase_out_pe - post_phase_out_pe
-        ovar[14] = post_phase_out_pe  # post-phase-out personal exemption
-        ovar[15] = phased_out_pe  # personal exemption that is phased out
-        # ovar[16] can be positive for non-itemizer:
-        ovar[16] = crecs.c21040[idx]  # itemized deduction that is phased out
-        # ovar[17] is zero for non-itemizer:
-        ovar[17] = crecs.c04470[idx]  # post-phase-out itemized deduction
-        ovar[18] = crecs.c04800[idx]  # federal regular taxable income
-        if exact:
-            ovar[19] = crecs._taxbc[idx]  # regular tax on taxable income
-        else:  # Internet-TAXSIM ovar[19] that ignores special qdiv+ltcg rates
-            ovar[19] = crecs.c05200[idx]  # regular tax on taxable income
-        ovar[20] = 0.0  # always set exemption surtax to zero
-        ovar[21] = 0.0  # always set general tax credit to zero
-        ovar[22] = crecs.c07220[idx]  # child tax credit (adjusted)
-        ovar[23] = crecs.c11070[idx]  # extra child tax credit (refunded)
-        ovar[24] = crecs.c07180[idx]  # child care credit
-        ovar[25] = crecs._eitc[idx]  # federal EITC
-        ovar[26] = crecs.c62100[idx]  # federal AMT taxable income
-        amt_liability = crecs.c09600[idx]  # federal AMT liability
-        ovar[27] = amt_liability
-        # ovar[28] is federal income tax before credits; the Tax-Calculator
-        # crecs.c05800[idx] is this concept but includes AMT liability
-        # while Internet-TAXSIM ovar[28] explicitly excludes AMT liability, so
-        # we have the following:
-        ovar[28] = crecs.c05800[idx] - amt_liability
-        # add optional weight and debugging output to ovar dictionary
-        if extract_weight:
-            ovar[29] = crecs.s006[idx]  # sample weight
-            num = TaxCalcIO.OVAR_NUM + 1
-        else:
-            num = TaxCalcIO.OVAR_NUM
-        for dvar_name in TaxCalcIO.DVAR_NAMES:
-            num += 1
-            dvar = getattr(crecs, dvar_name, None)
-            if dvar is None:
-                msg = 'debugging variable name "{}" not in calc.records object'
-                raise ValueError(msg.format(dvar_name))
+        text = ('Aggregate {} Pre-Tax Expanded Income and '
+                'Tax Revenue ($billion)\n')
+        txt = text.format(cedict['year'])
+        txt += '           baseline     reform   difference\n'
+        fmt = '{} {:12.3f} {:10.3f} {:12.3f}\n'
+        txt += fmt.format('income', cedict['inc1'], cedict['inc2'],
+                          cedict['inc2'] - cedict['inc1'])
+        alltaxdiff = cedict['tax2'] - cedict['tax1']
+        txt += fmt.format('alltax', cedict['tax1'], cedict['tax2'],
+                          alltaxdiff)
+        txt += ('Certainty Equivalent of Expected Utility of '
+                'After-Tax Expanded Income ($)\n')
+        txt += ('(assuming consumption equals '
+                'after-tax expanded income)\n')
+        txt += 'crra       baseline     reform     pctdiff\n'
+        fmt = '{} {:17.2f} {:10.2f} {:11.2f}\n'
+        for crra, ceeu1, ceeu2 in zip(cedict['crra'],
+                                      cedict['ceeu1'],
+                                      cedict['ceeu2']):
+            txt += fmt.format(crra, ceeu1, ceeu2,
+                              100.0 * (ceeu2 - ceeu1) / ceeu1)
+            if abs(alltaxdiff) >= 0.0005:
+                txt += ('WARN: baseline and reform cannot be '
+                        'sensibly compared\n')
+                text = ('because alltax difference is '
+                        '{:.3f} which is not zero\n')
+                txt += text.format(alltaxdiff)
+                txt += 'FIX: adjust _LST or other parameter to bracket\n'
+                txt += 'alltax difference equals zero and then interpolate'
             else:
-                ovar[num] = dvar[idx]
-        return ovar
+                txt += ('NOTE: baseline and reform can be '
+                        'sensibly compared\n')
+                txt += 'because alltax difference is essentially zero'
+        return txt
+
+    def dump_output(self, mtr_inctax, mtr_paytax):
+        """
+        Extract --dump output and return as pandas DataFrame.
+        """
+        return None
 
     def output_records(self, writing_output_file=False):
         """

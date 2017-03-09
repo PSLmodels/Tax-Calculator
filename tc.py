@@ -95,7 +95,7 @@ def main():
         sys.stderr.write('USAGE: python tc.py --help\n')
         return 1
     # instantiate TaxCalcIO object and do federal tax calculations
-    if args.INPUT == 'puf.csv' or args.INPUT == 'cps.csv':
+    if args.INPUT.endswith('puf.csv') or args.INPUT.endswith('cps.csv'):
         aging_input = True
     else:
         aging_input = False
@@ -106,10 +106,8 @@ def main():
                      aging_input_data=aging_input,
                      exact_calculations=args.exact)
     tcio.calculate(writing_output_file=True,
-                   exact_output=args.exact,
-                   output_weights=True,  # TODO: remove this argument
-                   output_mtr_wrt_fullcomp=False,  # TODO: remove this argument
-                   output_ceeu=args.ceeu)
+                   output_ceeu=args.ceeu,
+                   output_dump=args.dump)
     # return no-error exit code
     return 0
 # end of main function code

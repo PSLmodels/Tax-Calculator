@@ -23,15 +23,12 @@ RAWINPUTFILE_CONTENTS = (
 )
 
 
-EXPECTED_OUTPUT = (  # from using RAWINPUTFILE_CONTENTS as input
-    '1. 2021 0 0.00 0.00 0.00 -7.65 0.00 15.30 0.00 0.00 0.00 0.00 0.00 '
-    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
-    '2. 2021 0 0.00 0.00 0.00 -7.65 0.00 15.30 0.00 0.00 0.00 0.00 0.00 '
-    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
-    '3. 2021 0 0.00 0.00 0.00 -7.65 0.00 15.30 0.00 0.00 0.00 0.00 0.00 '
-    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
-    '4. 2021 0 0.00 0.00 0.00 0.00 0.00 15.30 0.00 0.00 0.00 0.00 0.00 '
-    '0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00\n'
+EXPECTED_TO_STRING_OUTPUT = (  # from using RAWINPUTFILE_CONTENTS as input
+    'RECID  YEAR  WEIGHT  INCTAX  LSTAX  PAYTAX\n'
+    '    1  2021     0.0     0.0    0.0     0.0\n'
+    '    2  2021     0.0     0.0    0.0     0.0\n'
+    '    3  2021     0.0     0.0    0.0     0.0\n'
+    '    4  2021     0.0     0.0    0.0     0.0'  # no trailing EOL character
 )
 
 
@@ -129,7 +126,6 @@ def test_creation_with_aging(rawinputfile):
     """
     Test TaxCalcIO instantiation with no policy reform and with aging.
     """
-    TaxCalcIO.show_iovar_definitions()
     taxyear = 2021
     tcio = TaxCalcIO(input_data=rawinputfile.name,
                      tax_year=taxyear,
@@ -152,7 +148,7 @@ def test_2(rawinputfile, reformfile0):
                      aging_input_data=False,
                      exact_calculations=False)
     output = tcio.calculate()
-    assert output == EXPECTED_OUTPUT
+    assert output == EXPECTED_TO_STRING_OUTPUT
 
 
 REFORM_CONTENTS = """
@@ -334,7 +330,7 @@ def test_4(reformfile2, assumpfile1):
                      aging_input_data=False,
                      exact_calculations=False)
     output = tcio.calculate()
-    assert output == EXPECTED_OUTPUT
+    assert output == EXPECTED_TO_STRING_OUTPUT
 
 
 def test_5(rawinputfile, reformfile1):
@@ -471,37 +467,3 @@ def test_9(reformfile2, assumpfile3):
                   assump=assumpfile3.name,
                   aging_input_data=False,
                   exact_calculations=False)
-
-
-INPUT_CONTENTS = (
-    u'RECID,MARS,e00600 \n'
-    u'1,    1,   95000  \n'
-    u'2,    2,   15000  \n'
-    u'3,    3,   40000  \n'
-    u'4,    2,   15000  \n'
-)
-
-
-def test_10():
-    """
-    Test SimpleTaxIO instantiation with no policy reform.
-    """
-    TaxCalcIO.show_iovar_definitions()
-    input_stream = StringIO(INPUT_CONTENTS)
-    input_dataframe = pd.read_csv(input_stream)
-    taxyear = 2022
-    tcio = TaxCalcIO(input_data=input_dataframe,
-                     tax_year=taxyear,
-                     reform=None,
-                     assump=None,
-                     aging_input_data=False,
-                     exact_calculations=False)
-    # test extracting of weight and debugging variables
-    crecs = tcio._calc.records  # pylint: disable=protected-access
-    TaxCalcIO.DVAR_NAMES = ['f2441']
-    ovar = TaxCalcIO.extract_output(crecs,  # pylint: disable=unused-variable
-                                    0, exact=True, extract_weight=True)
-    TaxCalcIO.DVAR_NAMES = ['badvar']
-    with pytest.raises(ValueError):
-        ovar = TaxCalcIO.extract_output(crecs, 0)
-    TaxCalcIO.DVAR_NAMES = []
