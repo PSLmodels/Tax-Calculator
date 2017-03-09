@@ -13,7 +13,9 @@ import pandas as pd
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..', '..'))
 # pylint: disable=wrong-import-position,import-error
-from taxcalc import Policy, Records, Calculator
+from taxcalc.policy import Policy
+from taxcalc.records import Records
+from taxcalc.calculate import Calculator
 
 
 class SimpleTaxIO(object):
