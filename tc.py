@@ -19,82 +19,37 @@ def main():
         prog='python tc.py',
         description=('Writes to a file the federal income and payroll tax '
                      'OUTPUT for each filing unit specified in the INPUT '
-                     'file, with the OUTPUT computed from the INPUT for '
-                     'the TAXYEAR using the Tax-Calculator. '
-                     'The INPUT file is a CSV-formatted file that contains '
-                     'variable names that include the Records.MUST_READ_VARS '
-                     'set plus other variables.  The OUTPUT file is in '
-                     'Internet-TAXSIM format.  The OUTPUT file name is the '
-                     'INPUT file name (excluding directory path prefix and '
-                     '.csv suffix) followed by a string equal to "-YY" '
-                     '(where the YY is the last two digits in the TAXYEAR) '
-                     'and all that is followed by a trailing string.  The '
-                     'trailing string is ".out-inctax" if no --reform '
-                     'option is specified; otherwise the trailing string is '
-                     '".out-inctax-REFORM" (excluding any ".json" ending to '
-                     'the REFORM file name) if no --assump option is '
-                     'specified or ".out-inctax-REFORM-ASSUMP" (excluding '
-                     'any .json ending to the ASSUMP file name) if an '
-                     '--assump option is specified.  The OUTPUT file '
-                     'contains the first 28 Internet-TAXSIM output '
-                     'variables.  Use --iohelp flag for more information. '
-                     'For details on the Internet-TAXSIM version 9.3 '
-                     'OUTPUT format, go to '
-                     '<http://users.nber.org/~taxsim/taxsim-calc9/>.'))
-    parser.add_argument('--iohelp',
-                        help=('optional flag to show INPUT and OUTPUT '
-                              'variable definitions and exit.'),
-                        default=False,
-                        action="store_true")
+                     'file, with the OUTPUT computed from the INPUT for the '
+                     'TAXYEAR using Tax-Calculator. The OUTPUT file is a '
+                     'CSV-formatted file that contains tax information for '
+                     'each INPUT filing unit.'))
+    parser.add_argument('INPUT', nargs='?', default='',
+                        help=('INPUT is name of CSV-formatted file that '
+                              'contains for each filing unit variables used '
+                              'to compute taxes for TAXYEAR.'))
+    parser.add_argument('TAXYEAR', nargs='?', default=0,
+                        help=('TAXYEAR is calendar year for which taxes '
+                              'are computed.'),
+                        type=int)
     parser.add_argument('--reform',
-                        help=('REFORM is name of optional file that contains '
-                              'reform "policy" parameters; the REFORM file '
-                              'is specified using JSON that may include '
-                              '//-comments. No --reform implies use of '
-                              'current-law policy.'),
+                        help=('REFORM is name of optional JSON reform file. '
+                              'No --reform implies use of current-law '
+                              'policy.'),
                         default=None)
     parser.add_argument('--assump',
-                        help=('ASSUMP is name of optional file that contains '
-                              'economic assumption parameters ("consumption" '
-                              'and "behavior" and "growdiff_baseline" and '
-                              '"growdiff_response"); the ASSUMP file is '
-                              'specified using JSON that may include '
-                              '//-comments. No --assump implies use '
-                              'of static analysis assumptions.  Note that '
-                              'use of the --assump option requires use of '
-                              'the --reform option (although the specified '
-                              'reform could be empty, meaning it could be '
-                              'current-law policy).'),
+                        help=('ASSUMP is name of optional JSON economic '
+                              'assumption file.  No --assump implies use of '
+                              'static analysis assumptions.'),
                         default=None)
-    parser.add_argument('--noaging',
-                        help=('optional flag implies INPUT data are '
-                              'considered raw data that are not aged in '
-                              'any way.  No --noaging flag implies that the '
-                              'PUF-related or CPS-related extrapolation (or '
-                              'blowup) logic, sample reweighting logic and '
-                              'income ajustment logic, will be used to age '
-                              'the INPUT data from the INPUT data year to '
-                              'TAXYEAR.'),
-                        default=False,
-                        action="store_true")
     parser.add_argument('--exact',
-                        help=('optional flag to suppress smoothing in income '
-                              'tax calculations that eliminate marginal-tax-'
-                              'rate-complicating "stair-steps".  The default '
-                              'is to smooth, and therefore, not to do the '
-                              ' exact calculations called for in the tax '
-                              'law.'),
+                        help=('optional flag that suppresses the smoothing of '
+                              '"stair-step" provisions in the tax law that '
+                              'complicate marginal-tax-rate calculations.'),
                         default=False,
                         action="store_true")
-    parser.add_argument('--fullcomp',
-                        help=('optional flag that causes OUTPUT to have '
-                              'marginal tax rates (MTRs) calculated with '
-                              'respect to full compensation (but any '
-                              'behavioral-response calculations always use '
-                              'MTRs that are calculated with respect to full '
-                              'compensation).  No --fullcomp flag implies '
-                              'MTRs reported in OUTPUT are not calculated '
-                              'with respect to full compensation.'),
+    parser.add_argument('--graph',
+                        help=('optional flag that causes HTML graphs to be '
+                              'generated.'),
                         default=False,
                         action="store_true")
     parser.add_argument('--ceeu',
@@ -102,94 +57,63 @@ def main():
                               'statistics, including certainty-equivalent '
                               'expected-utility of after-tax income values '
                               'for different constant-relative-risk-aversion '
-                              'parameter values, to be written to stdout.  '
-                              'No --ceeu flag implies nothing is written '
-                              'to stdout.  Note that --reform option must '
-                              'be specified and aggregate combined taxes '
-                              'under that reform must be same as under '
-                              'current-law policy for this option to work.'),
+                              'parameter values, to be written to screen.'),
                         default=False,
                         action="store_true")
-    output = parser.add_mutually_exclusive_group(required=False)
-    output.add_argument('--records',
-                        help=('optional flag that causes the OUTPUT file to '
-                              'be a CSV-formatted file containing for each '
-                              'INPUT filing unit the TAXYEAR values of each '
-                              'variable in the Records.USABLE_READ_VARS set. '
-                              'If the --records option is specified, the '
-                              'OUTPUT file name will be the same as if the '
-                              'option was not specified, except that the '
-                              '".out-inctax" part is replaced by '
-                              '".records".'),
+    parser.add_argument('--dump',
+                        help=('optional flag that causes OUTPUT to contain '
+                              'all INPUT variables (possibly aged to TAXYEAR) '
+                              'and all calculated tax variables, where the '
+                              'variables are named using their internal '
+                              'Tax-Calculator names.'),
                         default=False,
                         action="store_true")
-    output.add_argument('--csvdump',
-                        help=('optional flag that causes the OUTPUT file to '
-                              'be a CSV-formatted file containing for each '
-                              'INPUT filing unit the TAXYEAR values of each '
-                              'variable in the Records.USABLE_READ_VARS set '
-                              'and in the Records.CALCULATED_VARS set. '
-                              'If the --csvdump option is specified, the '
-                              'OUTPUT file name will be the same as if the '
-                              'option was not specified, except that the '
-                              '".out-inctax" part is replaced by '
-                              '".csvdump".'),
-                        default=False,
-                        action="store_true")
-    parser.add_argument('INPUT', nargs='?', default='',
-                        help=('INPUT is name of required CSV file that '
-                              'contains a subset of variables included in '
-                              'the Records.USABLE_READ_VARS set. '
-                              'INPUT must end in ".csv".'))
-    parser.add_argument('TAXYEAR', nargs='?', default=0,
-                        help=('TAXYEAR is calendar year for which federal '
-                              'income taxes are computed (e.g., 2013).'),
-                        type=int)
     args = parser.parse_args()
-    # optionally show INPUT and OUTPUT variable definitions and exit
-    if args.iohelp:
-        TaxCalcIO.show_iovar_definitions()
-        return 0
     # check INPUT file name
     if args.INPUT == '':
         sys.stderr.write('ERROR: must specify INPUT file name;\n')
-        sys.stderr.write('USAGE: python inctax.py --help\n')
+        sys.stderr.write('USAGE: python tc.py --help\n')
         return 1
     # check TAXYEAR value
     if args.TAXYEAR == 0:
         sys.stderr.write('ERROR: must specify TAXYEAR >= 2013;\n')
-        sys.stderr.write('USAGE: python inctax.py --help\n')
+        sys.stderr.write('USAGE: python tc.py --help\n')
         return 1
-    # check consistency of REFORM and ASSUMP options
+    # check consistency of --reform and --assump options
     if args.assump and not args.reform:
-        sys.stderr.write('ERROR: cannot specify ASSUMP without REFORM\n')
-        sys.stderr.write('USAGE: python inctax.py --help\n')
+        sys.stderr.write('ERROR: cannot use --assump without --reform\n')
+        sys.stderr.write('USAGE: python tc.py --help\n')
         return 1
-    # instantiate IncometaxIO object and do federal inc/pay tax calculations
-    aging_and_weights = args.noaging is False
-    inctax = TaxCalcIO(input_data=args.INPUT,
-                       tax_year=args.TAXYEAR,
-                       reform=args.reform,
-                       assump=args.assump,
-                       aging_input_data=aging_and_weights,
-                       exact_calculations=args.exact,
-                       output_records=args.records,
-                       csv_dump=args.csvdump)
-    if args.records:
-        inctax.output_records(writing_output_file=True)
-    elif args.csvdump:
-        inctax.calculate(writing_output_file=False,
-                         exact_output=args.exact,
-                         output_weights=aging_and_weights,
-                         output_mtr_wrt_fullcomp=args.fullcomp,
-                         output_ceeu=args.ceeu)
-        inctax.csv_dump(writing_output_file=True)
+    # check consistency of --reform and --graph options
+    if args.graph and not args.reform:
+        sys.stderr.write('ERROR: cannot specify --graph without --reform\n')
+        sys.stderr.write('USAGE: python tc.py --help\n')
+        return 1
+    # check consistency of --reform and --ceeu options
+    if args.ceeu and not args.reform:
+        sys.stderr.write('ERROR: cannot specify --ceeu without --reform\n')
+        sys.stderr.write('USAGE: python tc.py --help\n')
+        return 1
+
+    if args.graph:
+        sys.stderr.write('ERROR: --graph option not yet implemented\n')
+        sys.stderr.write('USAGE: python tc.py --help\n')
+        return 1
+
+    # instantiate TaxCalcIO object and do federal tax calculations
+    if args.INPUT.endswith('puf.csv') or args.INPUT.endswith('cps.csv'):
+        aging_input = True
     else:
-        inctax.calculate(writing_output_file=True,
-                         exact_output=args.exact,
-                         output_weights=aging_and_weights,
-                         output_mtr_wrt_fullcomp=args.fullcomp,
-                         output_ceeu=args.ceeu)
+        aging_input = False
+    tcio = TaxCalcIO(input_data=args.INPUT,
+                     tax_year=args.TAXYEAR,
+                     reform=args.reform,
+                     assump=args.assump,
+                     aging_input_data=aging_input,
+                     exact_calculations=args.exact)
+    tcio.calculate(writing_output_file=True,
+                   output_ceeu=args.ceeu,
+                   output_dump=args.dump)
     # return no-error exit code
     return 0
 # end of main function code
