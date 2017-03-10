@@ -127,7 +127,8 @@ class Records(object):
         'MARS', 'MIDR', 'RECID', 'filer', 'cmbtp',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
         'nu13', 'elderly_dependent',
-        's006', 'nu05', 'agi_bin'])
+        's006', 'nu05', 'agi_bin',
+        'nu18', 'n1821', 'n21'])
 
     # specify set of input variables that MUST be read by Tax-Calculator:
     MUST_READ_VARS = set(['RECID', 'MARS'])
@@ -139,7 +140,8 @@ class Records(object):
         'n24', 'XTOT',
         'MARS', 'MIDR', 'RECID', 'filer',
         'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
-        'nu13', 'elderly_dependent', 'agi_bin'])
+        'nu13', 'elderly_dependent', 'agi_bin',
+        'nu18', 'n1821', 'n21'])
 
     # specify set of Record variables that are calculated by Tax-Calculator:
     CALCULATED_VARS = set([
@@ -171,7 +173,7 @@ class Records(object):
         '_expanded_income', 'c07300', 'c07400',
         'c07600', 'c07240', 'c07260', 'c08000',
         '_surtax', '_combined', 'personal_credit', 'fstax', 'care_deduction',
-        'dep_credit'])
+        'dep_credit', 'ubi', 'taxable_ubi', 'nontaxable_ubi'])
 
     INTEGER_CALCULATED_VARS = set(['_num', '_sep', '_exact'])
 

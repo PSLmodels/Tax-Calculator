@@ -2753,5 +2753,69 @@
         "cpi_inflated": false,
         "col_label": "",
         "value": [0.0]
+    },
+
+    "_UBI1": {
+        "long_name": "UBI for those under 18",
+        "description": "Lump sum of money given to people under 18",
+        "section_1": "UBI",
+        "section_2": "Universal Basic Income",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": true,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_UBI2": {
+        "long_name": "UBI for those between 18 and 21",
+        "description": "Lump sum of money given to people between 18 and 21",
+        "section_1": "UBI",
+        "section_2": "Universal Basic Income",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": true,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_UBI3": {
+        "long_name": "UBI for those 21 and over",
+        "description": "Lump sum of money given to people 21 and over",
+        "section_1": "UBI",
+        "section_2": "Universal Basic Income",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": true,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_UBI_hc": {
+        "long_name": "Portion of UBI taxable",
+        "description": "This portion of UBI is taxable and will be added to AGI",
+        "section_1": "UBI",
+        "section_2": "Universal Basic Income haircut",
+        "irs_ref": "",
+        "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [1.0]
     }
 }
