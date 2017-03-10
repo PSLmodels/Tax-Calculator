@@ -277,26 +277,29 @@ def test_3(rawinputfile, reformfile1, assumpfile1):
                      aging_input_data=False,
                      exact_calculations=False)
     outfilepath = tcio.output_filepath()
-    # try output file writing
+    # --ceeu output and standard output
     try:
-        output = tcio.calculate(writing_output_file=True, output_ceeu=True)
+        output = tcio.calculate(writing_output_file=True,
+                                output_ceeu=True)
     except:  # pylint: disable=bare-except
         if os.path.isfile(outfilepath):
             try:
                 os.remove(outfilepath)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.calculate()_ok(1)' == 'no'
+        assert 'TaxCalcIO.calculate(ceeu)_ok' == 'no'
+    # --dump output
     try:
-        output = tcio.calculate(writing_output_file=True, output_dump=True)
+        output = tcio.calculate(writing_output_file=True,
+                                output_dump=True)
     except:  # pylint: disable=bare-except
         if os.path.isfile(outfilepath):
             try:
                 os.remove(outfilepath)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.calculate()_ok(2)' == 'no'
-    # if tries were successful, try to remove the output file
+        assert 'TaxCalcIO.calculate(dump)_ok' == 'no'
+    # if tries were successful, try to remove the output files
     if os.path.isfile(outfilepath):
         try:
             os.remove(outfilepath)
@@ -324,7 +327,23 @@ def test_4(reformfile2, assumpfile1):
     assert output == EXPECTED_TO_STRING_OUTPUT
 
 
-# remove test_5 because there is no longer a TaxCalcIO.output_records() method
+# skip test_5 until have a more realistic sample to replace puf_1991
+# def test_5(puf_1991, reformfile1):
+#     #
+#     Test TaxCalcIO calculate method with output writing but no aging,
+#     using file name for TaxCalcIO constructor input_data and writing
+#     --graph output.
+#     #
+#     taxyear = 2021
+#     tcio = TaxCalcIO(input_data=puf_1991,
+#                      tax_year=taxyear,
+#                      reform=reformfile1.name,
+#                      assump=None,
+#                      aging_input_data=False,
+#                      exact_calculations=False)
+#     output = tcio.calculate(writing_output_file=True, output_graph=True)
+#     # cleanup output and html files
+#     assert output == ''
 
 
 def test_6(rawinputfile):

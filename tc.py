@@ -48,8 +48,8 @@ def main():
                         default=False,
                         action="store_true")
     parser.add_argument('--graph',
-                        help=('optional flag that causes HTML graphs to be '
-                              'generated.'),
+                        help=('optional flag that causes graphs to be written '
+                              'to HTML files for viewing in browser.'),
                         default=False,
                         action="store_true")
     parser.add_argument('--ceeu',
@@ -94,12 +94,6 @@ def main():
         sys.stderr.write('ERROR: cannot specify --ceeu without --reform\n')
         sys.stderr.write('USAGE: python tc.py --help\n')
         return 1
-
-    if args.graph:
-        sys.stderr.write('ERROR: --graph option not yet implemented\n')
-        sys.stderr.write('USAGE: python tc.py --help\n')
-        return 1
-
     # instantiate TaxCalcIO object and do federal tax calculations
     if args.INPUT.endswith('puf.csv') or args.INPUT.endswith('cps.csv'):
         aging_input = True
@@ -112,6 +106,7 @@ def main():
                      aging_input_data=aging_input,
                      exact_calculations=args.exact)
     tcio.calculate(writing_output_file=True,
+                   output_graph=args.graph,
                    output_ceeu=args.ceeu,
                    output_dump=args.dump)
     # return no-error exit code

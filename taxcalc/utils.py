@@ -18,6 +18,7 @@ import numpy as np
 import pandas as pd
 try:
     BOKEH_AVAILABLE = True
+    import bokeh.io as bio
     import bokeh.plotting as bp
 except ImportError:
     BOKEH_AVAILABLE = False
@@ -1070,9 +1071,9 @@ def xtr_graph_plot(data,
     THEN  # when working interactively in a Python notebook
       bp.show(gplot)
     OR    # when executing script using Python command-line interpreter
-      bp.output_file('anyname.html')  # file to write to when invoking bp.show
-      bp.show(gplot, title='MTR by Income Percentile')
-    WILL VISUALIZE GRAPH IN BROWSER
+      bio.output_file('graph-name.html', title='?TR by Income Percentile')
+      bio.show(gplot)
+    WILL VISUALIZE GRAPH IN BROWSER AND WRITE GRAPH TO SPECIFIED HTML FILE
 
     To convert the visualized graph into a PNG-formatted file, click on
     the "Save" icon on the Toolbar (located in the top-right corner of
@@ -1114,6 +1115,30 @@ def xtr_graph_plot(data,
     fig.legend.spacing = 5
     fig.legend.padding = 5
     return fig
+
+
+@requires_bokeh
+def write_graph_file(figure, filename, title):
+    """
+    Write HTML file named filename containing figure.
+    The title is the text displayed in the browser tab.
+
+    Parameters
+    ----------
+    figure : bokeh.plotting figure object
+
+    filename : string
+        name of HTML file to which figure is written; should end in .html
+
+    title : string
+        text displayed in browser tab when HTML file is displayed in browser
+
+    Returns
+    -------
+    Nothing
+    """
+    bio.output_file(filename=filename, title=title)
+    bio.save(figure)
 
 
 def read_json_from_file(path):

@@ -17,6 +17,8 @@ from taxcalc.growdiff import Growdiff
 from taxcalc.growfactors import Growfactors
 from taxcalc.calculate import Calculator
 from taxcalc.utils import ce_aftertax_income
+from taxcalc.utils import atr_graph_data, mtr_graph_data
+from taxcalc.utils import xtr_graph_plot, write_graph_file
 
 
 class TaxCalcIO(object):
@@ -208,6 +210,7 @@ class TaxCalcIO(object):
         return os.path.join(dirpath, self._output_filename)
 
     def calculate(self, writing_output_file=False,
+                  output_graph=False,
                   output_ceeu=False,
                   output_dump=False):
         """
@@ -217,13 +220,17 @@ class TaxCalcIO(object):
         ----------
         writing_output_file: boolean
 
+        output_graph: boolean
+           whether or not to generate and show HTML graphs of average
+           and marginal tax rates by income percentile
+
         output_ceeu: boolean
            whether or not to calculate and write to stdout standard
            certainty-equivalent expected-utility statistics
 
         output_dump: boolean
-           whether or not to include all input and calculated variables in
-           output
+           whether or not to replace standard output with all input and
+           calculated variables using their Tax-Calculator names
 
         Returns
         -------
@@ -231,7 +238,7 @@ class TaxCalcIO(object):
             empty string if OUTPUT lines are written to a file;
             otherwise output_lines contain all OUTPUT lines
         """
-        # pylint: disable=too-many-arguments,too-many-locals
+        # pylint: disable=too-many-arguments,too-many-locals,too-many-branches
         # compute mtr wrt taxpayer earnings even if not needed for dump
         # <note that last mtr() step is calc_all()>
         (mtr_paytax, mtr_inctax,
@@ -259,8 +266,22 @@ class TaxCalcIO(object):
         else:
             output_lines = outdf.to_string(index=False,
                                            float_format='%.2f')
+        # optionally write --graph output to HTML file
+        atr_fname = self._output_filename.replace('.csv', '-atr.html')
+        atr_title = 'ATR by Income Percentile'
+        mtr_fname = self._output_filename.replace('.csv', '-mtr.html')
+        mtr_title = 'MTR by Income Percentile'
+        if output_graph:
+            atr_data = atr_graph_data(self._calc_clp, self._calc)
+            atr_plot = xtr_graph_plot(atr_data)
+            write_graph_file(atr_plot, atr_fname, atr_title)
+            mtr_data = mtr_graph_data(self._calc_clp, self._calc)
+            mtr_plot = xtr_graph_plot(mtr_data)
+            write_graph_file(mtr_plot, mtr_fname, mtr_title)
+        # optionally write --ceeu output to stdout
         if ceeu_results:
             print(ceeu_results)  # pylint: disable=superfluous-parens
+        # return output_lines, which is empty if writing_output_file=True
         return output_lines
 
     def standard_output(self):
@@ -306,18 +327,19 @@ class TaxCalcIO(object):
                                       cedict['ceeu2']):
             txt += fmt.format(crra, ceeu1, ceeu2,
                               100.0 * (ceeu2 - ceeu1) / ceeu1)
-            if abs(alltaxdiff) >= 0.0005:
-                txt += ('WARN: baseline and reform cannot be '
-                        'sensibly compared\n')
-                text = ('because alltax difference is '
-                        '{:.3f} which is not zero\n')
-                txt += text.format(alltaxdiff)
-                txt += 'FIX: adjust _LST or other parameter to bracket\n'
-                txt += 'alltax difference equals zero and then interpolate'
-            else:
-                txt += ('NOTE: baseline and reform can be '
-                        'sensibly compared\n')
-                txt += 'because alltax difference is essentially zero'
+        if abs(alltaxdiff) >= 0.0005:
+            txt += ('WARN: baseline and reform cannot be '
+                    'sensibly compared\n')
+            text = ('      because "alltax difference" is '
+                    '{:.3f} which is not zero\n')
+            txt += text.format(alltaxdiff)
+            txt += ('FIX: adjust _LST or another policy parameter '
+                    'to bracket\n')
+            txt += ('     "alltax difference" equals zero and '
+                    'then interpolate')
+        else:
+            txt += 'NOTE: baseline and reform can be sensibly compared\n'
+            txt += '      because "alltax difference" is essentially zero'
         return txt
 
     def dump_output(self, mtr_inctax, mtr_paytax):
