@@ -698,6 +698,7 @@ def mtr_graph_data(calc1, calc2,
                    mars='ALL',
                    mtr_measure='combined',
                    mtr_variable='e00200p',
+                   alt_e00200p_text='',
                    mtr_wrt_full_compen=False,
                    income_measure='expanded_income',
                    dollar_weighting=False):
@@ -729,6 +730,10 @@ def mtr_graph_data(calc1, calc2,
     mtr_variable : string
         any string in the Calculator.VALID_MTR_VARS set
         specifies variable to change in order to compute marginal tax rates
+
+    alt_e00200p_text : string
+        text to use in place of mtr_variable when mtr_variable is 'e00200p';
+        if empty string then use 'e00200p'
 
     mtr_wrt_full_compen : boolean
         see documentation of Calculator.mtr() argument wrt_full_compensation
@@ -862,6 +867,8 @@ def mtr_graph_data(calc1, calc2,
         xlabel_str = '{} for MARS={}'.format(xlabel_str, mars)
     data['xlabel'] = xlabel_str
     var_str = '{}'.format(mtr_variable)
+    if mtr_variable == 'e00200p' and alt_e00200p_text != '':
+        var_str = '{}'.format(alt_e00200p_text)
     if mtr_variable == 'e00200p' and mtr_wrt_full_compen:
         var_str = '{} wrt full compensation'.format(var_str)
     title_str = 'Mean Marginal Tax Rate for {} by Income Percentile'
@@ -1072,7 +1079,7 @@ def xtr_graph_plot(data,
       bp.show(gplot)
     OR    # when executing script using Python command-line interpreter
       bio.output_file('graph-name.html', title='?TR by Income Percentile')
-      bio.show(gplot)
+      bio.show(gplot)  [OR bio.save(gplot) WILL JUST WRITE FILE TO DISK]
     WILL VISUALIZE GRAPH IN BROWSER AND WRITE GRAPH TO SPECIFIED HTML FILE
 
     To convert the visualized graph into a PNG-formatted file, click on
@@ -1137,6 +1144,8 @@ def write_graph_file(figure, filename, title):
     -------
     Nothing
     """
+    if os.path.isfile(filename):
+        os.remove(filename)  # work around annoying 'already exists' bokeh msg
     bio.output_file(filename=filename, title=title)
     bio.save(figure)
 

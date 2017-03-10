@@ -275,7 +275,8 @@ class TaxCalcIO(object):
             atr_data = atr_graph_data(self._calc_clp, self._calc)
             atr_plot = xtr_graph_plot(atr_data)
             write_graph_file(atr_plot, atr_fname, atr_title)
-            mtr_data = mtr_graph_data(self._calc_clp, self._calc)
+            mtr_data = mtr_graph_data(self._calc_clp, self._calc,
+                                      alt_e00200p_text='Taxpayer Earnings')
             mtr_plot = xtr_graph_plot(mtr_data)
             write_graph_file(mtr_plot, mtr_fname, mtr_title)
         # optionally write --ceeu output to stdout
