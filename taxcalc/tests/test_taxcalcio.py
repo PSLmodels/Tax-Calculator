@@ -277,17 +277,26 @@ def test_3(rawinputfile, reformfile1, assumpfile1):
                      aging_input_data=False,
                      exact_calculations=False)
     outfilepath = tcio.output_filepath()
-    # try file writing
+    # try output file writing
     try:
-        output = tcio.calculate(writing_output_file=True)
+        output = tcio.calculate(writing_output_file=True, output_ceeu=True)
     except:  # pylint: disable=bare-except
         if os.path.isfile(outfilepath):
             try:
                 os.remove(outfilepath)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.calculate()_ok' == 'no'
-    # if the try was successful, try to remove the output file
+        assert 'TaxCalcIO.calculate()_ok(1)' == 'no'
+    try:
+        output = tcio.calculate(writing_output_file=True, output_dump=True)
+    except:  # pylint: disable=bare-except
+        if os.path.isfile(outfilepath):
+            try:
+                os.remove(outfilepath)
+            except OSError:
+                pass  # sometimes we can't remove a generated temporary file
+        assert 'TaxCalcIO.calculate()_ok(2)' == 'no'
+    # if tries were successful, try to remove the output file
     if os.path.isfile(outfilepath):
         try:
             os.remove(outfilepath)

@@ -263,51 +263,6 @@ class TaxCalcIO(object):
             print(ceeu_results)  # pylint: disable=superfluous-parens
         return output_lines
 
-    """
-    @staticmethod
-    def construct_output_line(output_dict):
-
-        Construct line of OUTPUT from a filing unit output_dict.
-
-        Parameters
-        ----------
-        output_dict: dictionary
-            calculated output values indexed from 1 to len(output_dict).
-
-        Returns
-        -------
-        output_line: string
-
-        outline = ''
-        for vnum in range(1, len(output_dict) + 1):
-            fnum = min(vnum, TaxCalcIO.OVAR_NUM)
-            outline += TaxCalcIO.OVAR_FMT[fnum].format(output_dict[vnum])
-        outline += '\n'
-        return outline
-
-
-
-    @staticmethod
-    def write_output_file(output, output_filename):
-
-        Write all output to file with output_filename.
-
-        Parameters
-        ----------
-        output: dictionary of OUTPUT variables for each INPUT tax filing unit
-
-        output_filename: string
-
-        Returns
-        -------
-        nothing: void
-
-        with open(output_filename, 'w') as output_file:
-            for idx in range(0, len(output)):
-                outline = TaxCalcIO.construct_output_line(output[idx])
-                output_file.write(outline)
-    """
-
     def standard_output(self):
         """
         Extract standard output and return as pandas DataFrame.
