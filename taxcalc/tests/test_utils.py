@@ -627,9 +627,7 @@ def test_write_graph_file(records_2009):
     assert gplot
     # generate random filename
     import random
-    hex = "%064x" % random.randrange(10**20)
-    htmlfname = '{}.html'.format(hex[:16])
-    print(htmlfname)  # TODO: temporary code
+    htmlfname = '{}.html'.format(random.randint(1000000000, 9999999999))
     try:
         write_graph_file(gplot, htmlfname, 'title')
     except:  # pylint: disable=bare-except
