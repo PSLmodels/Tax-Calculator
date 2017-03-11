@@ -334,16 +334,15 @@ def test_4(reformfile2, assumpfile1):
 #     using file name for TaxCalcIO constructor input_data and writing
 #     --graph output.
 #     #
-#     taxyear = 2021
 #     tcio = TaxCalcIO(input_data=puf_1991,
-#                      tax_year=taxyear,
+#                      tax_year=2016,
 #                      reform=reformfile1.name,
 #                      assump=None,
 #                      aging_input_data=False,
 #                      exact_calculations=False)
-#     output = tcio.calculate(writing_output_file=True, output_graph=True)
-#     # cleanup output and html files
-#     assert output == ''
+#     output = tcio.calculate(writing_output_file=False, output_graph=True)
+#     # cleanup html files
+#     assert output != ''
 
 
 def test_6(rawinputfile):

@@ -599,6 +599,7 @@ def test_xtr_graph_plot(records_2009):
     gplot = xtr_graph_plot(gdata)
     assert gplot
     gdata = mtr_graph_data(calc, calc, mtr_measure='itax',
+                           alt_e00200p_text='Taxpayer Earnings',
                            income_measure='expanded_income',
                            dollar_weighting=False)
     assert type(gdata) == dict
@@ -614,6 +615,18 @@ def test_xtr_graph_plot_no_bokeh(records_2009):
     with pytest.raises(RuntimeError):
         gplot = xtr_graph_plot(gdata)
     taxcalc.utils.BOKEH_AVAILABLE = True
+
+
+def test_write_graph_file(records_2009):
+    calc = Calculator(policy=Policy(), records=records_2009)
+    gdata = mtr_graph_data(calc, calc, mtr_measure='ptax',
+                           alt_e00200p_text='Taxpayer Earnings',
+                           income_measure='agi',
+                           dollar_weighting=False)
+    gplot = xtr_graph_plot(gdata)
+    assert gplot
+    htmlfile = tempfile.NamedTemporaryFile(mode='w', suffix='.html')
+    write_graph_file(gplot, htmlfile.name, 'title')
 
 
 def test_multiyear_diagnostic_table(records_2009):
