@@ -625,9 +625,26 @@ def test_write_graph_file(records_2009):
                            dollar_weighting=False)
     gplot = xtr_graph_plot(gdata)
     assert gplot
-    htmlfile = tempfile.NamedTemporaryFile(mode='w', suffix='.html',
-                                           delete=False)
-    write_graph_file(gplot, htmlfile.name, 'title')
+    # generate random filename
+    import random
+    hex = "%064x" % random.randrange(10**20)
+    htmlfname = '{}.html'.format(hex[:16])
+    print htmlfname
+    try:
+        write_graph_file(gplot, htmlfname, 'title')
+    except:  # pylint: disable=bare-except
+        if os.path.isfile(htmlfname):
+            try:
+                os.remove(htmlfname)
+            except OSError:
+                pass  # sometimes we can't remove a generated temporary file
+        assert 'write_graph_file()_ok' == 'no'
+    # if try was successful, try to remove the file
+    if os.path.isfile(htmlfname):
+        try:
+            os.remove(htmlfname)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
 
 
 def test_multiyear_diagnostic_table(records_2009):
