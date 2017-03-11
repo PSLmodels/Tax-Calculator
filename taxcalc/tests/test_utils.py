@@ -616,7 +616,7 @@ def test_xtr_graph_plot_no_bokeh(records_2009):
         gplot = xtr_graph_plot(gdata)
     taxcalc.utils.BOKEH_AVAILABLE = True
 
-
+@pytest.mark.one
 def test_write_graph_file(records_2009):
     calc = Calculator(policy=Policy(), records=records_2009)
     gdata = mtr_graph_data(calc, calc, mtr_measure='ptax',
@@ -625,7 +625,8 @@ def test_write_graph_file(records_2009):
                            dollar_weighting=False)
     gplot = xtr_graph_plot(gdata)
     assert gplot
-    htmlfile = tempfile.NamedTemporaryFile(mode='w', suffix='.html')
+    htmlfile = tempfile.NamedTemporaryFile(mode='w', suffix='.html',
+                                           delete=False)
     write_graph_file(gplot, htmlfile.name, 'title')
 
 
