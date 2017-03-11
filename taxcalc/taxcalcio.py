@@ -56,11 +56,19 @@ class TaxCalcIO(object):
     Raises
     ------
     ValueError:
+        if input_data is neither string nor pandas DataFrame.
+        if input_data string does not have .csv extension.
         if file specified by input_data string does not exist.
         if reform is neither None nor string.
+        if reform string does not have .json extension.
+        if file specified by reform string does not exist.
         if assump is neither None nor string.
+        if assump string does not have .json extension.
+        if file specified by assump string does not exist.
         if tax_year before Policy start_year.
         if tax_year after Policy end_year.
+        if behavior in --assump ASSUMP has any response.
+        if growdiff_response in --assump ASSUMP has any response.
 
     Returns
     -------
@@ -131,23 +139,28 @@ class TaxCalcIO(object):
             os.remove(self._output_filename)
         # get parameter dictionaries
         param_dict = Calculator.read_json_param_files(reform, assump)
-        # create growdiff_baseline and growdiff_response objects
-        growdiff_baseline = Growdiff()
-        growdiff_baseline.update_growdiff(param_dict['growdiff_baseline'])
+        # make sure no behavioral response is specified
+        beh = Behavior()
+        beh.update_behavior(param_dict['behavior'])
+        if beh.has_any_response():
+            msg = '--assump ASSUMP cannot assume any "behavior"'
+            raise ValueError(msg)
+        # make sure no growdiff_response is specified
         growdiff_response = Growdiff()
         growdiff_response.update_growdiff(param_dict['growdiff_response'])
-        # create pre-reform and post-reform Growfactors objects
-        growfactors_pre = Growfactors()
-        growdiff_baseline.apply_to(growfactors_pre)
-        growfactors_post = Growfactors()
-        growdiff_baseline.apply_to(growfactors_post)
-        growdiff_response.apply_to(growfactors_post)
+        if growdiff_response.has_any_response():
+            msg = '--assump ASSUMP cannot assume any "growdiff_response"'
+            raise ValueError(msg)
+        # create growdiff_baseline object
+        growdiff_baseline = Growdiff()
+        growdiff_baseline.update_growdiff(param_dict['growdiff_baseline'])
+        # create Growfactors object that incorporates growdiff_baseline
+        growfactors = Growfactors()
+        growdiff_baseline.apply_to(growfactors)
         # create Policy object and implement reform
+        pol = Policy(gfactors=growfactors)
         if self._reform:
-            pol = Policy(gfactors=growfactors_post)
             pol.implement_reform(param_dict['policy'])
-        else:
-            pol = Policy(gfactors=growfactors_pre)
         # check for valid tax_year value
         if tax_year < pol.start_year:
             msg = 'tax_year {} less than policy.start_year {}'
@@ -171,30 +184,18 @@ class TaxCalcIO(object):
         # create Calculator object
         con = Consumption()
         con.update_consumption(param_dict['consumption'])
+        self._calc = Calculator(policy=pol, records=recs,
+                                verbose=True,
+                                consumption=con,
+                                sync_years=aging_input_data)
         if self._reform:
-            clp = Policy()
+            clp = Policy(gfactors=growfactors)
             clp.set_year(tax_year)
             recs_clp = copy.deepcopy(recs)
             self._calc_clp = Calculator(policy=clp, records=recs_clp,
                                         verbose=False,
                                         consumption=con,
                                         sync_years=aging_input_data)
-            beh = Behavior()
-            beh.update_behavior(param_dict['behavior'])
-            # prevent both behavioral response and growdiff response
-            if beh.has_any_response() and growdiff_response.has_any_response():
-                msg = 'BOTH behavior AND growdiff_response HAVE RESPONSE'
-                raise ValueError(msg)
-            self._calc = Calculator(policy=pol, records=recs,
-                                    verbose=True,
-                                    consumption=con,
-                                    behavior=beh,
-                                    sync_years=aging_input_data)
-        else:
-            self._calc = Calculator(policy=pol, records=recs,
-                                    verbose=True,
-                                    consumption=con,
-                                    sync_years=aging_input_data)
 
     def tax_year(self):
         """
@@ -209,12 +210,12 @@ class TaxCalcIO(object):
         dirpath = os.path.abspath(os.path.dirname(__file__))
         return os.path.join(dirpath, self._output_filename)
 
-    def calculate(self, writing_output_file=False,
-                  output_graph=False,
-                  output_ceeu=False,
-                  output_dump=False):
+    def static_analysis(self, writing_output_file=False,
+                        output_graph=False,
+                        output_ceeu=False,
+                        output_dump=False):
         """
-        Calculate taxes for all INPUT lines and write or return OUTPUT lines.
+        Conduct STATIC tax analysis for INPUT and write or return OUTPUT.
 
         Parameters
         ----------
@@ -239,19 +240,20 @@ class TaxCalcIO(object):
             otherwise output_lines contain all OUTPUT lines
         """
         # pylint: disable=too-many-arguments,too-many-locals,too-many-branches
-        # compute mtr wrt taxpayer earnings even if not needed for dump
-        # <note that last mtr() step is calc_all()>
-        (mtr_paytax, mtr_inctax,
-         _) = self._calc.mtr(wrt_full_compensation=False)
-        ceeu_results = None
-        if self._reform:
-            self._calc = Behavior.response(self._calc_clp, self._calc)
-            if output_ceeu:
-                if not self._calc.behavior.has_response():
-                    self._calc_clp.calc_all()
-                cedict = ce_aftertax_income(self._calc_clp, self._calc,
-                                            require_no_agg_tax_change=False)
-                ceeu_results = TaxCalcIO.ceeu_output(cedict)
+        # conduct STATIC tax analysis
+        if output_dump:
+            (mtr_paytax, mtr_inctax,
+             _) = self._calc.mtr(wrt_full_compensation=False)
+        else:  # do not need marginal tax rates
+            self._calc.calc_all()
+        # optionally conduct normative welfare analysis
+        if output_ceeu:
+            self._calc_clp.calc_all()
+            cedict = ce_aftertax_income(self._calc_clp, self._calc,
+                                        require_no_agg_tax_change=False)
+            ceeu_results = TaxCalcIO.ceeu_output(cedict)
+        else:
+            ceeu_results = None
         # extract output
         if output_dump:
             outdf = self.dump_output(mtr_inctax, mtr_paytax)
@@ -259,14 +261,14 @@ class TaxCalcIO(object):
             outdf = self.standard_output()
         assert len(outdf.index) == self._calc.records.dim
         # handle disposition of output
-        output_lines = ''
         if writing_output_file:
             outdf.to_csv(self._output_filename, index=False,
                          float_format='%.2f')
+            output_lines = ''
         else:
             output_lines = outdf.to_string(index=False,
                                            float_format='%.2f')
-        # optionally write --graph output to HTML file
+        # optionally write --graph output to HTML files
         atr_fname = self._output_filename.replace('.csv', '-atr.html')
         atr_title = 'ATR by Income Percentile'
         mtr_fname = self._output_filename.replace('.csv', '-mtr.html')

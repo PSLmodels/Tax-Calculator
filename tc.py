@@ -1,5 +1,5 @@
 """
-Command-line interface to Tax-Calculator.
+Command-line interface to Tax-Calculator for STATIC tax analysis.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 tc.py
@@ -12,7 +12,7 @@ from taxcalc import TaxCalcIO
 
 def main():
     """
-    Contains command-line interface to the Tax-Calculator TaxCalcIO class.
+    Contains STATIC command-line interface to Tax-Calculator TaxCalcIO class.
     """
     # parse command-line arguments:
     parser = argparse.ArgumentParser(
@@ -20,17 +20,20 @@ def main():
         description=('Writes to a file the federal income and payroll tax '
                      'OUTPUT for each filing unit specified in the INPUT '
                      'file, with the OUTPUT computed from the INPUT for the '
-                     'TAXYEAR using Tax-Calculator. The OUTPUT file is a '
+                     'TAXYEAR using Tax-Calculator operating under STATIC '
+                     'analysis assumptions. The OUTPUT file is a '
                      'CSV-formatted file that contains tax information for '
                      'each INPUT filing unit.'))
-    parser.add_argument('INPUT', nargs='?', default='',
+    parser.add_argument('INPUT', nargs='?',
                         help=('INPUT is name of CSV-formatted file that '
                               'contains for each filing unit variables used '
-                              'to compute taxes for TAXYEAR.'))
-    parser.add_argument('TAXYEAR', nargs='?', default=0,
+                              'to compute taxes for TAXYEAR.'),
+                        default='')
+    parser.add_argument('TAXYEAR', nargs='?',
                         help=('TAXYEAR is calendar year for which taxes '
                               'are computed.'),
-                        type=int)
+                        type=int,
+                        default=0)
     parser.add_argument('--reform',
                         help=('REFORM is name of optional JSON reform file. '
                               'No --reform implies use of current-law '
@@ -55,16 +58,17 @@ def main():
     parser.add_argument('--ceeu',
                         help=('optional flag that causes normative welfare '
                               'statistics, including certainty-equivalent '
-                              'expected-utility of after-tax income values '
-                              'for different constant-relative-risk-aversion '
-                              'parameter values, to be written to screen.'),
+                              'expected-utility (ceeu) of after-tax income '
+                              'values for different '
+                              'constant-relative-risk-aversion parameter '
+                              'values, to be written to screen.'),
                         default=False,
                         action="store_true")
     parser.add_argument('--dump',
                         help=('optional flag that causes OUTPUT to contain '
                               'all INPUT variables (possibly aged to TAXYEAR) '
-                              'and all calculated tax variables, where the '
-                              'variables are named using their internal '
+                              'and all calculated tax variables, where all '
+                              'the variables are named using their internal '
                               'Tax-Calculator names.'),
                         default=False,
                         action="store_true")
@@ -94,7 +98,12 @@ def main():
         sys.stderr.write('ERROR: cannot specify --ceeu without --reform\n')
         sys.stderr.write('USAGE: python tc.py --help\n')
         return 1
-    # instantiate TaxCalcIO object and do federal tax calculations
+    # check consistency of --exact and --graph options
+    if args.exact and args.graph:
+        sys.stderr.write('ERROR: cannot specify both --exact and --graph\n')
+        sys.stderr.write('USAGE: python tc.py --help\n')
+        return 1
+    # instantiate TaxCalcIO object and do STATIC tax analysis
     if args.INPUT.endswith('puf.csv') or args.INPUT.endswith('cps.csv'):
         aging_input = True
     else:
@@ -105,10 +114,10 @@ def main():
                      assump=args.assump,
                      aging_input_data=aging_input,
                      exact_calculations=args.exact)
-    tcio.calculate(writing_output_file=True,
-                   output_graph=args.graph,
-                   output_ceeu=args.ceeu,
-                   output_dump=args.dump)
+    tcio.static_analysis(writing_output_file=True,
+                         output_graph=args.graph,
+                         output_ceeu=args.ceeu,
+                         output_dump=args.dump)
     # return no-error exit code
     return 0
 # end of main function code

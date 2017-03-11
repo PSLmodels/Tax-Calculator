@@ -147,7 +147,7 @@ def test_2(rawinputfile, reformfile0):
                      assump=None,
                      aging_input_data=False,
                      exact_calculations=False)
-    output = tcio.calculate()
+    output = tcio.static_analysis()
     assert output == EXPECTED_TO_STRING_OUTPUT
 
 
@@ -279,8 +279,8 @@ def test_3(rawinputfile, reformfile1, assumpfile1):
     outfilepath = tcio.output_filepath()
     # --ceeu output and standard output
     try:
-        output = tcio.calculate(writing_output_file=True,
-                                output_ceeu=True)
+        output = tcio.static_analysis(writing_output_file=True,
+                                      output_ceeu=True)
     except:  # pylint: disable=bare-except
         if os.path.isfile(outfilepath):
             try:
@@ -290,8 +290,8 @@ def test_3(rawinputfile, reformfile1, assumpfile1):
         assert 'TaxCalcIO.calculate(ceeu)_ok' == 'no'
     # --dump output
     try:
-        output = tcio.calculate(writing_output_file=True,
-                                output_dump=True)
+        output = tcio.static_analysis(writing_output_file=True,
+                                      output_dump=True)
     except:  # pylint: disable=bare-except
         if os.path.isfile(outfilepath):
             try:
@@ -323,7 +323,7 @@ def test_4(reformfile2, assumpfile1):
                      assump=assumpfile1.name,
                      aging_input_data=False,
                      exact_calculations=False)
-    output = tcio.calculate()
+    output = tcio.static_analysis()
     assert output == EXPECTED_TO_STRING_OUTPUT
 
 
@@ -340,7 +340,8 @@ def test_4(reformfile2, assumpfile1):
 #                      assump=None,
 #                      aging_input_data=False,
 #                      exact_calculations=False)
-#     output = tcio.calculate(writing_output_file=False, output_graph=True)
+#     output = tcio.static_analysis(writing_output_file=False,
+#                                   output_graph=True)
 #     # cleanup html files
 #     assert output != ''
 
@@ -357,7 +358,7 @@ def test_6(rawinputfile):
                      assump=None,
                      aging_input_data=False,
                      exact_calculations=False)
-    output = tcio.calculate(writing_output_file=False, output_dump=True)
+    output = tcio.static_analysis(writing_output_file=False, output_dump=True)
     assert len(output) > 5000
     assert tcio.tax_year() == taxyear
 
@@ -402,7 +403,7 @@ def test_7(reformfile1, lumpsumreformfile):
                      assump=None,
                      aging_input_data=False,
                      exact_calculations=False)
-    output = tcio.calculate(writing_output_file=False, output_ceeu=True)
+    output = tcio.static_analysis(writing_output_file=False, output_ceeu=True)
     assert tcio.tax_year() == taxyear
     assert len(output) > 0
 
@@ -412,7 +413,7 @@ def test_7(reformfile1, lumpsumreformfile):
                      assump=None,
                      aging_input_data=False,
                      exact_calculations=False)
-    output = tcio.calculate(writing_output_file=False, output_ceeu=True)
+    output = tcio.static_analysis(writing_output_file=False, output_ceeu=True)
     assert tcio.tax_year() == taxyear
     assert len(output) > 0
 
