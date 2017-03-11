@@ -629,7 +629,7 @@ def test_write_graph_file(records_2009):
     import random
     hex = "%064x" % random.randrange(10**20)
     htmlfname = '{}.html'.format(hex[:16])
-    print htmlfname
+    print(htmlfname)  # TODO: temporary code
     try:
         write_graph_file(gplot, htmlfname, 'title')
     except:  # pylint: disable=bare-except
