@@ -266,7 +266,7 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
 
 
 @iterate_jit(nopython=True)
-def UBI(nu18, n1821, n21, UBI1, UBI2, UBI3, UBI_hc,
+def UBI(nu18, n1821, n21, UBI1, UBI2, UBI3, UBI_ecrt,
         ubi, taxable_ubi, nontaxable_ubi):
     """
 
@@ -289,7 +289,7 @@ def UBI(nu18, n1821, n21, UBI1, UBI2, UBI3, UBI_hc,
 
     """
     ubi = nu18 * UBI1 + n1821 * UBI2 + n21 * UBI3
-    taxable_ubi = ubi * UBI_hc
+    taxable_ubi = ubi * (1. - UBI_ecrt)
     nontaxable_ubi = ubi - taxable_ubi
     return ubi, taxable_ubi, nontaxable_ubi
 
