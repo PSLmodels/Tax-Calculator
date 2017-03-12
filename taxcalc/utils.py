@@ -11,6 +11,7 @@ import os
 import math
 import copy
 import json
+import random
 from collections import defaultdict, OrderedDict
 from pkg_resources import resource_stream, Requirement, DistributionNotFound
 import six
@@ -1144,8 +1145,7 @@ def write_graph_file(figure, filename, title):
     -------
     Nothing
     """
-    if os.path.isfile(filename):
-        os.remove(filename)  # work around annoying 'already exists' bokeh msg
+    delete_file(filename)    # work around annoying 'already exists' bokeh msg
     bio.output_file(filename=filename, title=title)
     bio.save(figure)
 
@@ -1373,3 +1373,18 @@ def read_egg_csv(vname, fpath, **kwargs):
         msg = 'could not read {} file from EGG'
         raise ValueError(msg.format(vname))
     return vname_dict
+
+
+def temporary_filename(suffix=''):
+    """
+    Return string containing filename.
+    """
+    return 'tmp{}{}'.format(random.randint(10000000, 99999999), suffix)
+
+
+def delete_file(filename):
+    """
+    Remove specified file if it exists.
+    """
+    if os.path.isfile(filename):
+        os.remove(filename)

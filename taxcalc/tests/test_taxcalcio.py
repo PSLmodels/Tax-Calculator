@@ -418,12 +418,26 @@ def test_7(reformfile1, lumpsumreformfile):
     assert len(output) > 0
 
 
-BAD_ASSUMP_CONTENTS = """
+BAD1_ASSUMP_CONTENTS = """
 {
   "consumption": {
   },
   "behavior": {
       "_BE_sub": {"2020": [0.05]}
+  },
+  "growdiff_baseline": {
+  },
+  "growdiff_response": {
+  }
+}
+"""
+
+
+BAD2_ASSUMP_CONTENTS = """
+{
+  "consumption": {
+  },
+  "behavior": {
   },
   "growdiff_baseline": {
   },
@@ -435,12 +449,12 @@ BAD_ASSUMP_CONTENTS = """
 
 
 @pytest.yield_fixture
-def assumpfile3():
+def assumpfile_bad1():
     """
     Temporary assumption file with .json extension.
     """
     afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
-    afile.write(BAD_ASSUMP_CONTENTS)
+    afile.write(BAD1_ASSUMP_CONTENTS)
     afile.close()
     # must close and then yield for Windows platform
     yield afile
@@ -451,7 +465,24 @@ def assumpfile3():
             pass  # sometimes we can't remove a generated temporary file
 
 
-def test_9(reformfile2, assumpfile3):
+@pytest.yield_fixture
+def assumpfile_bad2():
+    """
+    Temporary assumption file with .json extension.
+    """
+    afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    afile.write(BAD2_ASSUMP_CONTENTS)
+    afile.close()
+    # must close and then yield for Windows platform
+    yield afile
+    if os.path.isfile(afile.name):
+        try:
+            os.remove(afile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+def test_9(reformfile2, assumpfile_bad1, assumpfile_bad2):
     """
     Test TaxCalcIO constructor with illegal assumptions.
     """
@@ -462,6 +493,13 @@ def test_9(reformfile2, assumpfile3):
         TaxCalcIO(input_data=input_dataframe,
                   tax_year=taxyear,
                   reform=reformfile2.name,
-                  assump=assumpfile3.name,
+                  assump=assumpfile_bad1.name,
+                  aging_input_data=False,
+                  exact_calculations=False)
+    with pytest.raises(ValueError):
+        TaxCalcIO(input_data=input_dataframe,
+                  tax_year=taxyear,
+                  reform=reformfile2.name,
+                  assump=assumpfile_bad2.name,
                   aging_input_data=False,
                   exact_calculations=False)

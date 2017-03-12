@@ -625,9 +625,7 @@ def test_write_graph_file(records_2009):
                            dollar_weighting=False)
     gplot = xtr_graph_plot(gdata)
     assert gplot
-    # generate random filename
-    import random
-    htmlfname = '{}.html'.format(random.randint(1000000000, 9999999999))
+    htmlfname = temporary_filename(suffix='.html')
     try:
         write_graph_file(gplot, htmlfname, 'title')
     except:  # pylint: disable=bare-except
@@ -796,3 +794,13 @@ def test_ce_aftertax_income(puf_1991, weights_1991):
     with pytest.raises(ValueError):
         ce_aftertax_income(calc1, calc2, require_no_agg_tax_change=True,
                            custom_params=params)
+
+
+def test_create_and_delete_temporary_file():
+    # test temporary_filename() and delete_file() functions
+    fname = temporary_filename()
+    with open(fname, 'w') as tmpfile:
+        tmpfile.write('any content will do')
+    assert os.path.isfile(fname) is True
+    delete_file(fname)
+    assert os.path.isfile(fname) is False

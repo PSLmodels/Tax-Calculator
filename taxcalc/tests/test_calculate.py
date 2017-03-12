@@ -61,7 +61,8 @@ def test_make_Calculator(records_2009):
     consump = Consumption()
     consump.update_consumption({2014: {'_MPC_e20400': [0.05]}})
     assert consump.current_year == 2013
-    calc = Calculator(policy=parm, records=recs, consumption=consump)
+    calc = Calculator(policy=parm, records=recs, consumption=consump,
+                      behavior=Behavior())
     assert calc.current_year == 2014
     # test incorrect Calculator instantiation:
     with pytest.raises(ValueError):

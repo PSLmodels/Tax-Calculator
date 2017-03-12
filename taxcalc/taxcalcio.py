@@ -16,6 +16,7 @@ from taxcalc.behavior import Behavior
 from taxcalc.growdiff import Growdiff
 from taxcalc.growfactors import Growfactors
 from taxcalc.calculate import Calculator
+from taxcalc.utils import delete_file
 from taxcalc.utils import ce_aftertax_income
 from taxcalc.utils import atr_graph_data, mtr_graph_data
 from taxcalc.utils import xtr_graph_plot, write_graph_file
@@ -135,8 +136,7 @@ class TaxCalcIO(object):
             msg = 'TaxCalcIO.ctor assump is neither None nor str'
             raise ValueError(msg)
         self._output_filename = '{}{}{}.csv'.format(inp, ref, asm)
-        if os.path.isfile(self._output_filename):
-            os.remove(self._output_filename)
+        delete_file(self._output_filename)
         # get parameter dictionaries
         param_dict = Calculator.read_json_param_files(reform, assump)
         # make sure no behavioral response is specified
@@ -336,7 +336,7 @@ class TaxCalcIO(object):
             text = ('      because "alltax difference" is '
                     '{:.3f} which is not zero\n')
             txt += text.format(alltaxdiff)
-            txt += ('FIX: adjust _LST or another policy parameter '
+            txt += ('FIX: adjust _LST or another reform policy parameter '
                     'to bracket\n')
             txt += ('     "alltax difference" equals zero and '
                     'then interpolate')
