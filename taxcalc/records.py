@@ -193,19 +193,20 @@ class Records(object):
         self._read_data(data, exact_calculations)
         # check that three sets of split-earnings variables have valid values
         msg = 'expression "{0} == {0}p + {0}s" is not true for every record'
+        tol = 0.010001  # handles "%.2f" rounding error
         if not np.allclose(self.e00200, (self.e00200p + self.e00200s),
-                           rtol=0.0, atol=0.001):
+                           rtol=0.0, atol=tol):
             raise ValueError(msg.format('e00200'))
         if not np.allclose(self.e00900, (self.e00900p + self.e00900s),
-                           rtol=0.0, atol=0.001):
+                           rtol=0.0, atol=tol):
             raise ValueError(msg.format('e00900'))
         if not np.allclose(self.e02100, (self.e02100p + self.e02100s),
-                           rtol=0.0, atol=0.001):
+                           rtol=0.0, atol=tol):
             raise ValueError(msg.format('e02100'))
         # check that ordinary dividends are no less than qualified dividends
         other_dividends = np.maximum(0., self.e00600 - self.e00650)
         if not np.allclose(self.e00600, self.e00650 + other_dividends,
-                           rtol=0.0, atol=0.001):
+                           rtol=0.0, atol=tol):
             msg = 'expression "e00600 >= e00650" is not true for every record'
             raise ValueError(msg)
         # handle grow factors

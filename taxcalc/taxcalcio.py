@@ -43,9 +43,12 @@ class TaxCalcIO(object):
         string is name of optional REFORM file.
 
     assump: None or string
-        None implies economic assumptions are baseline assumptions and
-        a static analysis of reform is conducted, or
-        string is name of optional ASSUMP file.
+        None implies economic assumptions are standard assumptions,
+        or string is name of optional ASSUMP file.
+
+    growdiff_response: Growdiff object or None
+        growdiff_response Growdiff object used in dynamic analysis;
+        must be None when conducting static analysis.
 
     aging_input_data: boolean
         whether or not to age record data from data year to tax_year.
@@ -53,10 +56,6 @@ class TaxCalcIO(object):
     exact_calculations: boolean
         specifies whether or not exact tax calculations are done without
         any smoothing of "stair-step" provisions in the tax law.
-
-    growdiff_response: Growdiff object or None
-        growdiff_response Growdiff object used in dynamic analysis;
-        must be None when conducting static analysis.
 
     Raises
     ------
@@ -82,7 +81,7 @@ class TaxCalcIO(object):
     """
 
     def __init__(self, input_data, tax_year, reform, assump,
-                 growdiff_response,  # should be Growdiff() in static analysis
+                 growdiff_response,  # =None in static analysis
                  aging_input_data, exact_calculations):
         """
         TaxCalcIO class constructor.
@@ -388,3 +387,63 @@ class TaxCalcIO(object):
         odf['mtr_inctax'] = mtr_inctax
         odf['mtr_paytax'] = mtr_paytax
         return odf
+
+    @staticmethod
+    def dynamic_analysis(input_data, tax_year, reform, assump,
+                         aging_input_data, exact_calculations,
+                         writing_output_file=False,
+                         output_graph=False,
+                         output_ceeu=False,
+                         output_dump=False):
+        """
+        High-level logic for dyanamic tax analysis.
+
+        Parameters
+        ----------
+        First six parameters are same as the first six parameters of
+        the TaxCalcIO constructor.
+
+        Last four parameters are same as the first four parameters of
+        the TaxCalcIO static_analysis method.
+
+        Returns
+        -------
+        output_lines: string
+            empty string if OUTPUT lines are written to a file;
+            otherwise output_lines contain all OUTPUT lines
+        """
+        # pylint: disable=too-many-arguments
+        # pylint: disable=superfluous-parens
+        progress = 'STARTING ANALYSIS FOR YEAR {}'
+        gdiff_dict = {Policy.JSON_START_YEAR: {}}
+        for year in range(Policy.JSON_START_YEAR, tax_year + 1):
+            print(progress.format(year))
+            # specify growdiff_response using gdiff_dict
+            growdiff_response = Growdiff()
+            growdiff_response.update_growdiff(gdiff_dict)
+            # instantiate TaxCalcIO object analysis through year
+            tcio = TaxCalcIO(input_data=input_data,
+                             tax_year=year,
+                             reform=reform,
+                             assump=assump,
+                             growdiff_response=growdiff_response,
+                             aging_input_data=aging_input_data,
+                             exact_calculations=exact_calculations)
+            if year == tax_year:
+                # conduct final tax analysis for year equal to tax_year
+                tcio.static_analysis(writing_output_file=writing_output_file,
+                                     output_graph=output_graph,
+                                     output_ceeu=output_ceeu,
+                                     output_dump=output_dump)
+            else:
+                # conduct intermediate tax analysis for year before tax_year
+                tcio.static_analysis()  # throw away returned output
+                # construct gdiff_dict key:value pair for next year
+                # extract tcio results for year needed by GrowModel class
+                pass  # TODO: add logic here
+                # use extracted results to advance GrowModel to next year 
+                pass  # TODO: add logic here
+                # extract next year GrowModel results for next year gdiff_dict
+                pass  # TODO: add logic here
+                # construct gdiff_dict entry for next year
+                gdiff_dict[year + 1] = {}

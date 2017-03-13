@@ -110,6 +110,7 @@ def test_incorrect_creation_2(rawinputfile, reformfile0, year, ref, asm, gdr):
     """
     Ensure a ValueError is raised when created with invalid parameters
     """
+    # pylint: disable=too-many-arguments
     if ref == 'reformfile0':
         reform = reformfile0.name
     else:
