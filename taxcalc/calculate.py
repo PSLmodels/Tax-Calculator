@@ -122,7 +122,7 @@ class Calculator(object):
             while self.records.current_year < self.policy.current_year:
                 self.records.increment_year()
             if verbose:
-                print('Calculator instantiation automatically ' +
+                print('Tax-Calculator startup automatically ' +
                       'extrapolated your data to ' +
                       str(self.records.current_year) + '.')
         assert self.policy.current_year == self.records.current_year

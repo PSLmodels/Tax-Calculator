@@ -599,6 +599,7 @@ def test_xtr_graph_plot(records_2009):
     gplot = xtr_graph_plot(gdata)
     assert gplot
     gdata = mtr_graph_data(calc, calc, mtr_measure='itax',
+                           alt_e00200p_text='Taxpayer Earnings',
                            income_measure='expanded_income',
                            dollar_weighting=False)
     assert type(gdata) == dict
@@ -614,6 +615,32 @@ def test_xtr_graph_plot_no_bokeh(records_2009):
     with pytest.raises(RuntimeError):
         gplot = xtr_graph_plot(gdata)
     taxcalc.utils.BOKEH_AVAILABLE = True
+
+
+def test_write_graph_file(records_2009):
+    calc = Calculator(policy=Policy(), records=records_2009)
+    gdata = mtr_graph_data(calc, calc, mtr_measure='ptax',
+                           alt_e00200p_text='Taxpayer Earnings',
+                           income_measure='agi',
+                           dollar_weighting=False)
+    gplot = xtr_graph_plot(gdata)
+    assert gplot
+    htmlfname = temporary_filename(suffix='.html')
+    try:
+        write_graph_file(gplot, htmlfname, 'title')
+    except:  # pylint: disable=bare-except
+        if os.path.isfile(htmlfname):
+            try:
+                os.remove(htmlfname)
+            except OSError:
+                pass  # sometimes we can't remove a generated temporary file
+        assert 'write_graph_file()_ok' == 'no'
+    # if try was successful, try to remove the file
+    if os.path.isfile(htmlfname):
+        try:
+            os.remove(htmlfname)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
 
 
 def test_multiyear_diagnostic_table(records_2009):
@@ -767,3 +794,13 @@ def test_ce_aftertax_income(puf_1991, weights_1991):
     with pytest.raises(ValueError):
         ce_aftertax_income(calc1, calc2, require_no_agg_tax_change=True,
                            custom_params=params)
+
+
+def test_create_and_delete_temporary_file():
+    # test temporary_filename() and delete_file() functions
+    fname = temporary_filename()
+    with open(fname, 'w') as tmpfile:
+        tmpfile.write('any content will do')
+    assert os.path.isfile(fname) is True
+    delete_file(fname)
+    assert os.path.isfile(fname) is False

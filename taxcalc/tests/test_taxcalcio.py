@@ -10,7 +10,7 @@ import tempfile
 from io import StringIO
 import pytest
 import pandas as pd
-from taxcalc import TaxCalcIO  # pylint: disable=import-error
+from taxcalc import TaxCalcIO, Growdiff  # pylint: disable=import-error
 
 
 RAWINPUTFILE_FUNITS = 4
@@ -63,6 +63,7 @@ def test_incorrect_creation_1(input_data, exact):
                   tax_year=2013,
                   reform=None,
                   assump=None,
+                  growdiff_response=None,
                   aging_input_data=False,
                   exact_calculations=exact)
 
@@ -96,15 +97,16 @@ def reformfile0():
 # for fixture args, pylint: disable=redefined-outer-name
 
 
-@pytest.mark.parametrize("year, ref, asm", [
-    (2013, list(), None),
-    (2013, None, list()),
-    (2001, None, None),
-    (2099, None, None),
-    (2020, 'no-dot-json-reformfile', None),
-    (2020, 'reformfile0', 'no-dot-json-assumpfile'),
+@pytest.mark.parametrize("year, ref, asm, gdr", [
+    (2013, list(), None, None),
+    (2013, None, list(), None),
+    (2001, None, None, None),
+    (2099, None, None, None),
+    (2020, 'no-dot-json-reformfile', None, None),
+    (2020, 'reformfile0', 'no-dot-json-assumpfile', None),
+    (2020, 'reformfile0', None, dict()),
 ])
-def test_incorrect_creation_2(rawinputfile, reformfile0, year, ref, asm):
+def test_incorrect_creation_2(rawinputfile, reformfile0, year, ref, asm, gdr):
     """
     Ensure a ValueError is raised when created with invalid parameters
     """
@@ -118,19 +120,30 @@ def test_incorrect_creation_2(rawinputfile, reformfile0, year, ref, asm):
             tax_year=year,
             reform=reform,
             assump=asm,
+            growdiff_response=gdr,
             aging_input_data=False,
             exact_calculations=False)
 
 
-def test_creation_with_aging(rawinputfile):
+def test_creation_with_aging(rawinputfile, reformfile0):
     """
     Test TaxCalcIO instantiation with no policy reform and with aging.
     """
     taxyear = 2021
     tcio = TaxCalcIO(input_data=rawinputfile.name,
                      tax_year=taxyear,
+                     reform=reformfile0.name,
+                     assump=None,
+                     growdiff_response=Growdiff(),
+                     aging_input_data=True,
+                     exact_calculations=False)
+    assert tcio.tax_year() == taxyear
+    taxyear = 2016
+    tcio = TaxCalcIO(input_data=rawinputfile.name,
+                     tax_year=taxyear,
                      reform=None,
                      assump=None,
+                     growdiff_response=None,
                      aging_input_data=True,
                      exact_calculations=False)
     assert tcio.tax_year() == taxyear
@@ -145,9 +158,10 @@ def test_2(rawinputfile, reformfile0):
                      tax_year=taxyear,
                      reform=reformfile0.name,
                      assump=None,
+                     growdiff_response=None,
                      aging_input_data=False,
                      exact_calculations=False)
-    output = tcio.calculate()
+    output = tcio.static_analysis()
     assert output == EXPECTED_TO_STRING_OUTPUT
 
 
@@ -274,29 +288,33 @@ def test_3(rawinputfile, reformfile1, assumpfile1):
                      tax_year=taxyear,
                      reform=reformfile1.name,
                      assump=assumpfile1.name,
+                     growdiff_response=None,
                      aging_input_data=False,
                      exact_calculations=False)
     outfilepath = tcio.output_filepath()
-    # try output file writing
+    # --ceeu output and standard output
     try:
-        output = tcio.calculate(writing_output_file=True, output_ceeu=True)
+        output = tcio.static_analysis(writing_output_file=True,
+                                      output_ceeu=True)
     except:  # pylint: disable=bare-except
         if os.path.isfile(outfilepath):
             try:
                 os.remove(outfilepath)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.calculate()_ok(1)' == 'no'
+        assert 'TaxCalcIO.calculate(ceeu)_ok' == 'no'
+    # --dump output
     try:
-        output = tcio.calculate(writing_output_file=True, output_dump=True)
+        output = tcio.static_analysis(writing_output_file=True,
+                                      output_dump=True)
     except:  # pylint: disable=bare-except
         if os.path.isfile(outfilepath):
             try:
                 os.remove(outfilepath)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.calculate()_ok(2)' == 'no'
-    # if tries were successful, try to remove the output file
+        assert 'TaxCalcIO.calculate(dump)_ok' == 'no'
+    # if tries were successful, try to remove the output files
     if os.path.isfile(outfilepath):
         try:
             os.remove(outfilepath)
@@ -318,13 +336,31 @@ def test_4(reformfile2, assumpfile1):
                      tax_year=taxyear,
                      reform=reformfile2.name,
                      assump=assumpfile1.name,
+                     growdiff_response=None,
                      aging_input_data=False,
                      exact_calculations=False)
-    output = tcio.calculate()
+    output = tcio.static_analysis()
     assert output == EXPECTED_TO_STRING_OUTPUT
 
 
-# remove test_5 because there is no longer a TaxCalcIO.output_records() method
+# skip test_5 until have a more realistic sample to replace puf_1991
+# def test_5(puf_1991, reformfile1):
+#     #
+#     Test TaxCalcIO calculate method with output writing but no aging,
+#     using file name for TaxCalcIO constructor input_data and writing
+#     --graph output.
+#     #
+#     tcio = TaxCalcIO(input_data=puf_1991,
+#                      tax_year=2016,
+#                      reform=reformfile1.name,
+#                      assump=None,
+#                      growdiff_response=None,
+#                      aging_input_data=False,
+#                      exact_calculations=False)
+#     output = tcio.static_analysis(writing_output_file=False,
+#                                   output_graph=True)
+#     # cleanup html files
+#     assert output != ''
 
 
 def test_6(rawinputfile):
@@ -337,9 +373,10 @@ def test_6(rawinputfile):
                      tax_year=taxyear,
                      reform=None,
                      assump=None,
+                     growdiff_response=None,
                      aging_input_data=False,
                      exact_calculations=False)
-    output = tcio.calculate(writing_output_file=False, output_dump=True)
+    output = tcio.static_analysis(writing_output_file=False, output_dump=True)
     assert len(output) > 5000
     assert tcio.tax_year() == taxyear
 
@@ -382,9 +419,10 @@ def test_7(reformfile1, lumpsumreformfile):
                      tax_year=taxyear,
                      reform=reformfile1.name,
                      assump=None,
+                     growdiff_response=None,
                      aging_input_data=False,
                      exact_calculations=False)
-    output = tcio.calculate(writing_output_file=False, output_ceeu=True)
+    output = tcio.static_analysis(writing_output_file=False, output_ceeu=True)
     assert tcio.tax_year() == taxyear
     assert len(output) > 0
 
@@ -392,19 +430,34 @@ def test_7(reformfile1, lumpsumreformfile):
                      tax_year=taxyear,
                      reform=lumpsumreformfile.name,
                      assump=None,
+                     growdiff_response=None,
                      aging_input_data=False,
                      exact_calculations=False)
-    output = tcio.calculate(writing_output_file=False, output_ceeu=True)
+    output = tcio.static_analysis(writing_output_file=False, output_ceeu=True)
     assert tcio.tax_year() == taxyear
     assert len(output) > 0
 
 
-BAD_ASSUMP_CONTENTS = """
+BAD1_ASSUMP_CONTENTS = """
 {
   "consumption": {
   },
   "behavior": {
       "_BE_sub": {"2020": [0.05]}
+  },
+  "growdiff_baseline": {
+  },
+  "growdiff_response": {
+  }
+}
+"""
+
+
+BAD2_ASSUMP_CONTENTS = """
+{
+  "consumption": {
+  },
+  "behavior": {
   },
   "growdiff_baseline": {
   },
@@ -416,12 +469,12 @@ BAD_ASSUMP_CONTENTS = """
 
 
 @pytest.yield_fixture
-def assumpfile3():
+def assumpfile_bad1():
     """
     Temporary assumption file with .json extension.
     """
     afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
-    afile.write(BAD_ASSUMP_CONTENTS)
+    afile.write(BAD1_ASSUMP_CONTENTS)
     afile.close()
     # must close and then yield for Windows platform
     yield afile
@@ -432,7 +485,24 @@ def assumpfile3():
             pass  # sometimes we can't remove a generated temporary file
 
 
-def test_9(reformfile2, assumpfile3):
+@pytest.yield_fixture
+def assumpfile_bad2():
+    """
+    Temporary assumption file with .json extension.
+    """
+    afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    afile.write(BAD2_ASSUMP_CONTENTS)
+    afile.close()
+    # must close and then yield for Windows platform
+    yield afile
+    if os.path.isfile(afile.name):
+        try:
+            os.remove(afile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+def test_9(reformfile2, assumpfile_bad1, assumpfile_bad2):
     """
     Test TaxCalcIO constructor with illegal assumptions.
     """
@@ -443,6 +513,15 @@ def test_9(reformfile2, assumpfile3):
         TaxCalcIO(input_data=input_dataframe,
                   tax_year=taxyear,
                   reform=reformfile2.name,
-                  assump=assumpfile3.name,
+                  assump=assumpfile_bad1.name,
+                  growdiff_response=None,
+                  aging_input_data=False,
+                  exact_calculations=False)
+    with pytest.raises(ValueError):
+        TaxCalcIO(input_data=input_dataframe,
+                  tax_year=taxyear,
+                  reform=reformfile2.name,
+                  assump=assumpfile_bad2.name,
+                  growdiff_response=None,
                   aging_input_data=False,
                   exact_calculations=False)
