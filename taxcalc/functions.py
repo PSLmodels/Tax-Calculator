@@ -266,9 +266,35 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
 
 
 @iterate_jit(nopython=True)
+def UBI(nu18, n1821, n21, UBI1, UBI2, UBI3, UBI_hc,
+        ubi, taxable_ubi):
+    """
+
+    Parameters
+    ----------
+    nu18: Number of people in the tax unit under 18
+    n1821: Number of people in the tax unit between 18 and 21
+    n21: Number of people in the tax unit over 21
+    UBI1: UBI for those under 18
+    UBI2: UBI for those between 18 and 21
+    UBI3: UBI for those over 21
+    UBI_hc: Portion of UBI that is taxable
+
+    Returns
+    -------
+    ubi: total UBI received by the tax unit
+    taxable_ubi: amount of UBI that is taxable
+
+    """
+    ubi = nu18 * UBI1 + n1821 * UBI2 + n21 * UBI3
+    taxable_ubi = ubi * UBI_hc
+    return ubi, taxable_ubi
+
+
+@iterate_jit(nopython=True)
 def AGI(ymod1, c02500, c02900, XTOT, MARS, _sep, DSI, _exact,
         II_em, II_em_ps, II_prt,
-        II_credit, II_credit_ps, II_credit_prt,
+        II_credit, II_credit_ps, II_credit_prt, taxable_ubi,
         c00100, pre_c04600, c04600, personal_credit):
     """
     AGI function: compute Adjusted Gross Income, c00100,
@@ -276,7 +302,7 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, _sep, DSI, _exact,
                   compute personal_credit amount
     """
     # calculate AGI assuming no foreign earned income exclusion
-    c00100 = ymod1 + c02500 - c02900
+    c00100 = ymod1 + c02500 - c02900 + taxable_ubi
     # calculate personal exemption amount
     pre_c04600 = XTOT * II_em
     if DSI:
@@ -1446,7 +1472,7 @@ def LumpSumTax(DSI, _num, XTOT,
 
 @iterate_jit(nopython=True)
 def ExpandIncome(c00100, ptax_was, e02400, c02500,
-                 c02900_in_ei, e00400, invinc_agi_ec, cmbtp,
+                 c02900_in_ei, e00400, invinc_agi_ec, cmbtp, ubi,
                  _expanded_income):
     """
     ExpandIncome function calculates and returns _expanded_income.
@@ -1462,5 +1488,6 @@ def ExpandIncome(c00100, ptax_was, e02400, c02500,
                         invinc_agi_ec +  # AGI-excluded taxable invest income
                         cmbtp +  # AMT taxable income items from Form 6251
                         non_taxable_ss_benefits +
-                        employer_fica_share)
+                        employer_fica_share +
+                        ubi)  # universal basic income
     return _expanded_income
