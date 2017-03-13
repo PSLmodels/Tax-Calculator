@@ -14,6 +14,7 @@ def main():
     """
     Contains STATIC command-line interface to Tax-Calculator TaxCalcIO class.
     """
+    # pylint: disable=too-many-return-statements
     # parse command-line arguments:
     parser = argparse.ArgumentParser(
         prog='python tc.py',
@@ -104,15 +105,13 @@ def main():
         sys.stderr.write('USAGE: python tc.py --help\n')
         return 1
     # instantiate TaxCalcIO object and do STATIC tax analysis
-    if args.INPUT.endswith('puf.csv') or args.INPUT.endswith('cps.csv'):
-        aging_input = True
-    else:
-        aging_input = False
+    aging = args.INPUT.endswith('puf.csv') or args.INPUT.endswith('cps.csv')
     tcio = TaxCalcIO(input_data=args.INPUT,
                      tax_year=args.TAXYEAR,
                      reform=args.reform,
                      assump=args.assump,
-                     aging_input_data=aging_input,
+                     growdiff_response=None,
+                     aging_input_data=aging,
                      exact_calculations=args.exact)
     tcio.static_analysis(writing_output_file=True,
                          output_graph=args.graph,

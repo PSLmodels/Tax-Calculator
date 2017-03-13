@@ -54,6 +54,10 @@ class TaxCalcIO(object):
         specifies whether or not exact tax calculations are done without
         any smoothing of "stair-step" provisions in the tax law.
 
+    growdiff_response: Growdiff object or None
+        growdiff_response Growdiff object used in dynamic analysis;
+        must be None when conducting static analysis.
+
     Raises
     ------
     ValueError:
@@ -65,6 +69,7 @@ class TaxCalcIO(object):
         if file specified by reform string does not exist.
         if assump is neither None nor string.
         if assump string does not have .json extension.
+        if growdiff_response is not a Growdiff object or None
         if file specified by assump string does not exist.
         if tax_year before Policy start_year.
         if tax_year after Policy end_year.
@@ -77,14 +82,15 @@ class TaxCalcIO(object):
     """
 
     def __init__(self, input_data, tax_year, reform, assump,
+                 growdiff_response,  # should be Growdiff() in static analysis
                  aging_input_data, exact_calculations):
         """
         TaxCalcIO class constructor.
         """
         # pylint: disable=too-many-arguments
-        # pylint: disable=too-many-statements
-        # pylint: disable=too-many-branches
         # pylint: disable=too-many-locals
+        # pylint: disable=too-many-branches
+        # pylint: disable=too-many-statements
         # check for existence of INPUT file
         if isinstance(input_data, six.string_types):
             # remove any leading directory path from INPUT filename
@@ -137,30 +143,45 @@ class TaxCalcIO(object):
             raise ValueError(msg)
         self._output_filename = '{}{}{}.csv'.format(inp, ref, asm)
         delete_file(self._output_filename)
-        # get parameter dictionaries
+        # get parameter dictionaries from --reform and --assump files
         param_dict = Calculator.read_json_param_files(reform, assump)
-        # make sure no behavioral response is specified
+        # make sure no behavioral response is specified in --assump
         beh = Behavior()
         beh.update_behavior(param_dict['behavior'])
         if beh.has_any_response():
             msg = '--assump ASSUMP cannot assume any "behavior"'
             raise ValueError(msg)
-        # make sure no growdiff_response is specified
-        growdiff_response = Growdiff()
-        growdiff_response.update_growdiff(param_dict['growdiff_response'])
-        if growdiff_response.has_any_response():
+        # make sure no growdiff_response is specified in --assump
+        gdiff_response = Growdiff()
+        gdiff_response.update_growdiff(param_dict['growdiff_response'])
+        if gdiff_response.has_any_response():
             msg = '--assump ASSUMP cannot assume any "growdiff_response"'
             raise ValueError(msg)
-        # create growdiff_baseline object
-        growdiff_baseline = Growdiff()
-        growdiff_baseline.update_growdiff(param_dict['growdiff_baseline'])
-        # create Growfactors object that incorporates growdiff_baseline
-        growfactors = Growfactors()
-        growdiff_baseline.apply_to(growfactors)
-        # create Policy object and implement reform
-        pol = Policy(gfactors=growfactors)
+        # create gdiff_baseline object
+        gdiff_baseline = Growdiff()
+        gdiff_baseline.update_growdiff(param_dict['growdiff_baseline'])
+        # create Growfactors clp object that incorporates gdiff_baseline
+        gfactors_clp = Growfactors()
+        gdiff_baseline.apply_to(gfactors_clp)
+        # specify gdiff_response object
+        if growdiff_response is None:
+            gdiff_response = Growdiff()
+        elif isinstance(growdiff_response, Growdiff):
+            gdiff_response = growdiff_response
+        else:
+            msg = 'TaxCalcIO.ctor growdiff_response is neither None nor {}'
+            raise ValueError(msg.format('a Growdiff object'))
+        # create Growfactors ref object that has both gdiff objects applied
+        gfactors_ref = Growfactors()
+        gdiff_baseline.apply_to(gfactors_ref)
+        gdiff_response.apply_to(gfactors_ref)
+        # create Policy object and implement reform if specified
         if self._reform:
+            pol = Policy(gfactors=gfactors_ref)
             pol.implement_reform(param_dict['policy'])
+            clp = Policy(gfactors=gfactors_clp)
+        else:
+            pol = Policy(gfactors=gfactors_clp)
         # check for valid tax_year value
         if tax_year < pol.start_year:
             msg = 'tax_year {} less than policy.start_year {}'
@@ -168,12 +189,23 @@ class TaxCalcIO(object):
         if tax_year > pol.end_year:
             msg = 'tax_year {} greater than policy.end_year {}'
             raise ValueError(msg.format(tax_year, pol.end_year))
-        # set tax policy parameters to specified tax_year
+        # set policy to tax_year
         pol.set_year(tax_year)
-        # read input file contents into Records object
+        if self._reform:
+            clp.set_year(tax_year)
+        # read input file contents into Records object(s)
         if aging_input_data:
-            recs = Records(data=input_data,
-                           exact_calculations=exact_calculations)
+            if self._reform:
+                recs = Records(data=input_data,
+                               gfactors=gfactors_ref,
+                               exact_calculations=exact_calculations)
+                recs_clp = Records(data=input_data,
+                                   gfactors=gfactors_clp,
+                                   exact_calculations=exact_calculations)
+            else:
+                recs = Records(data=input_data,
+                               gfactors=gfactors_clp,
+                               exact_calculations=exact_calculations)
         else:  # input_data are raw data that are not being aged
             recs = Records(data=input_data,
                            exact_calculations=exact_calculations,
@@ -181,7 +213,9 @@ class TaxCalcIO(object):
                            adjust_ratios=None,
                            weights=None,
                            start_year=tax_year)
-        # create Calculator object
+            if self._reform:
+                recs_clp = copy.deepcopy(recs)
+        # create Calculator object(s)
         con = Consumption()
         con.update_consumption(param_dict['consumption'])
         self._calc = Calculator(policy=pol, records=recs,
@@ -189,9 +223,6 @@ class TaxCalcIO(object):
                                 consumption=con,
                                 sync_years=aging_input_data)
         if self._reform:
-            clp = Policy(gfactors=growfactors)
-            clp.set_year(tax_year)
-            recs_clp = copy.deepcopy(recs)
             self._calc_clp = Calculator(policy=clp, records=recs_clp,
                                         verbose=False,
                                         consumption=con,

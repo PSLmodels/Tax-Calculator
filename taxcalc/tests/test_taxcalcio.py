@@ -10,7 +10,7 @@ import tempfile
 from io import StringIO
 import pytest
 import pandas as pd
-from taxcalc import TaxCalcIO  # pylint: disable=import-error
+from taxcalc import TaxCalcIO, Growdiff  # pylint: disable=import-error
 
 
 RAWINPUTFILE_FUNITS = 4
@@ -63,6 +63,7 @@ def test_incorrect_creation_1(input_data, exact):
                   tax_year=2013,
                   reform=None,
                   assump=None,
+                  growdiff_response=None,
                   aging_input_data=False,
                   exact_calculations=exact)
 
@@ -96,15 +97,16 @@ def reformfile0():
 # for fixture args, pylint: disable=redefined-outer-name
 
 
-@pytest.mark.parametrize("year, ref, asm", [
-    (2013, list(), None),
-    (2013, None, list()),
-    (2001, None, None),
-    (2099, None, None),
-    (2020, 'no-dot-json-reformfile', None),
-    (2020, 'reformfile0', 'no-dot-json-assumpfile'),
+@pytest.mark.parametrize("year, ref, asm, gdr", [
+    (2013, list(), None, None),
+    (2013, None, list(), None),
+    (2001, None, None, None),
+    (2099, None, None, None),
+    (2020, 'no-dot-json-reformfile', None, None),
+    (2020, 'reformfile0', 'no-dot-json-assumpfile', None),
+    (2020, 'reformfile0', None, dict()),
 ])
-def test_incorrect_creation_2(rawinputfile, reformfile0, year, ref, asm):
+def test_incorrect_creation_2(rawinputfile, reformfile0, year, ref, asm, gdr):
     """
     Ensure a ValueError is raised when created with invalid parameters
     """
@@ -118,19 +120,30 @@ def test_incorrect_creation_2(rawinputfile, reformfile0, year, ref, asm):
             tax_year=year,
             reform=reform,
             assump=asm,
+            growdiff_response=gdr,
             aging_input_data=False,
             exact_calculations=False)
 
 
-def test_creation_with_aging(rawinputfile):
+def test_creation_with_aging(rawinputfile, reformfile0):
     """
     Test TaxCalcIO instantiation with no policy reform and with aging.
     """
     taxyear = 2021
     tcio = TaxCalcIO(input_data=rawinputfile.name,
                      tax_year=taxyear,
+                     reform=reformfile0.name,
+                     assump=None,
+                     growdiff_response=Growdiff(),
+                     aging_input_data=True,
+                     exact_calculations=False)
+    assert tcio.tax_year() == taxyear
+    taxyear = 2016
+    tcio = TaxCalcIO(input_data=rawinputfile.name,
+                     tax_year=taxyear,
                      reform=None,
                      assump=None,
+                     growdiff_response=None,
                      aging_input_data=True,
                      exact_calculations=False)
     assert tcio.tax_year() == taxyear
@@ -145,6 +158,7 @@ def test_2(rawinputfile, reformfile0):
                      tax_year=taxyear,
                      reform=reformfile0.name,
                      assump=None,
+                     growdiff_response=None,
                      aging_input_data=False,
                      exact_calculations=False)
     output = tcio.static_analysis()
@@ -274,6 +288,7 @@ def test_3(rawinputfile, reformfile1, assumpfile1):
                      tax_year=taxyear,
                      reform=reformfile1.name,
                      assump=assumpfile1.name,
+                     growdiff_response=None,
                      aging_input_data=False,
                      exact_calculations=False)
     outfilepath = tcio.output_filepath()
@@ -321,6 +336,7 @@ def test_4(reformfile2, assumpfile1):
                      tax_year=taxyear,
                      reform=reformfile2.name,
                      assump=assumpfile1.name,
+                     growdiff_response=None,
                      aging_input_data=False,
                      exact_calculations=False)
     output = tcio.static_analysis()
@@ -338,6 +354,7 @@ def test_4(reformfile2, assumpfile1):
 #                      tax_year=2016,
 #                      reform=reformfile1.name,
 #                      assump=None,
+#                      growdiff_response=None,
 #                      aging_input_data=False,
 #                      exact_calculations=False)
 #     output = tcio.static_analysis(writing_output_file=False,
@@ -356,6 +373,7 @@ def test_6(rawinputfile):
                      tax_year=taxyear,
                      reform=None,
                      assump=None,
+                     growdiff_response=None,
                      aging_input_data=False,
                      exact_calculations=False)
     output = tcio.static_analysis(writing_output_file=False, output_dump=True)
@@ -401,6 +419,7 @@ def test_7(reformfile1, lumpsumreformfile):
                      tax_year=taxyear,
                      reform=reformfile1.name,
                      assump=None,
+                     growdiff_response=None,
                      aging_input_data=False,
                      exact_calculations=False)
     output = tcio.static_analysis(writing_output_file=False, output_ceeu=True)
@@ -411,6 +430,7 @@ def test_7(reformfile1, lumpsumreformfile):
                      tax_year=taxyear,
                      reform=lumpsumreformfile.name,
                      assump=None,
+                     growdiff_response=None,
                      aging_input_data=False,
                      exact_calculations=False)
     output = tcio.static_analysis(writing_output_file=False, output_ceeu=True)
@@ -494,6 +514,7 @@ def test_9(reformfile2, assumpfile_bad1, assumpfile_bad2):
                   tax_year=taxyear,
                   reform=reformfile2.name,
                   assump=assumpfile_bad1.name,
+                  growdiff_response=None,
                   aging_input_data=False,
                   exact_calculations=False)
     with pytest.raises(ValueError):
@@ -501,5 +522,6 @@ def test_9(reformfile2, assumpfile_bad1, assumpfile_bad2):
                   tax_year=taxyear,
                   reform=reformfile2.name,
                   assump=assumpfile_bad2.name,
+                  growdiff_response=None,
                   aging_input_data=False,
                   exact_calculations=False)
