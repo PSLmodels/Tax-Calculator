@@ -104,7 +104,7 @@ def main():
         sys.stderr.write('ERROR: cannot specify both --exact and --graph\n')
         sys.stderr.write('USAGE: python tcdyn.py --help\n')
         return 1
-    # do DYNANIC tax analysis
+    # do DYNAMIC tax analysis
     aging = args.INPUT.endswith('puf.csv') or args.INPUT.endswith('cps.csv')
     TaxCalcIO.dynamic_analysis(input_data=args.INPUT,
                                tax_year=args.TAXYEAR,

@@ -265,9 +265,7 @@ class TaxCalcIO(object):
 
         Returns
         -------
-        output_lines: string
-            empty string if OUTPUT lines are written to a file;
-            otherwise output_lines contain all OUTPUT lines
+        Nothing
         """
         # pylint: disable=too-many-arguments,too-many-locals,too-many-branches
         # conduct STATIC tax analysis
@@ -284,20 +282,15 @@ class TaxCalcIO(object):
             ceeu_results = TaxCalcIO.ceeu_output(cedict)
         else:
             ceeu_results = None
-        # extract output
-        if output_dump:
-            outdf = self.dump_output(mtr_inctax, mtr_paytax)
-        else:
-            outdf = self.standard_output()
-        assert len(outdf.index) == self._calc.records.dim
-        # handle disposition of output
+        # extract output if writing_output_file
         if writing_output_file:
+            if output_dump:
+                outdf = self.dump_output(mtr_inctax, mtr_paytax)
+            else:
+                outdf = self.standard_output()
+            assert len(outdf.index) == self._calc.records.dim
             outdf.to_csv(self._output_filename, index=False,
                          float_format='%.2f')
-            output_lines = ''
-        else:
-            output_lines = outdf.to_string(index=False,
-                                           float_format='%.2f')
         # optionally write --graph output to HTML files
         atr_fname = self._output_filename.replace('.csv', '-atr.html')
         atr_title = 'ATR by Income Percentile'
@@ -314,8 +307,6 @@ class TaxCalcIO(object):
         # optionally write --ceeu output to stdout
         if ceeu_results:
             print(ceeu_results)  # pylint: disable=superfluous-parens
-        # return output_lines, which is empty if writing_output_file=True
-        return output_lines
 
     def standard_output(self):
         """
@@ -325,7 +316,7 @@ class TaxCalcIO(object):
         odict = dict()
         crecs = self._calc.records
         odict['RECID'] = crecs.RECID  # id for tax filing unit
-        odict['YEAR'] = crecs.FLPDYR  # tax calculation year
+        odict['YEAR'] = self.tax_year()  # tax calculation year
         odict['WEIGHT'] = crecs.s006  # sample weight
         # pylint: disable=protected-access
         odict['INCTAX'] = crecs._iitax  # federal income taxes
@@ -408,9 +399,7 @@ class TaxCalcIO(object):
 
         Returns
         -------
-        output_lines: string
-            empty string if OUTPUT lines are written to a file;
-            otherwise output_lines contain all OUTPUT lines
+        Nothing
         """
         # pylint: disable=too-many-arguments
         # pylint: disable=superfluous-parens
@@ -421,29 +410,65 @@ class TaxCalcIO(object):
             # specify growdiff_response using gdiff_dict
             growdiff_response = Growdiff()
             growdiff_response.update_growdiff(gdiff_dict)
-            # instantiate TaxCalcIO object analysis through year
-            tcio = TaxCalcIO(input_data=input_data,
-                             tax_year=year,
-                             reform=reform,
-                             assump=assump,
-                             growdiff_response=growdiff_response,
-                             aging_input_data=aging_input_data,
-                             exact_calculations=exact_calculations)
-            if year == tax_year:
-                # conduct final tax analysis for year equal to tax_year
-                tcio.static_analysis(writing_output_file=writing_output_file,
-                                     output_graph=output_graph,
-                                     output_ceeu=output_ceeu,
-                                     output_dump=output_dump)
-            else:
-                # conduct intermediate tax analysis for year before tax_year
-                tcio.static_analysis()  # throw away returned output
-                # construct gdiff_dict key:value pair for next year
-                # extract tcio results for year needed by GrowModel class
-                pass  # TODO: add logic here
-                # use extracted results to advance GrowModel to next year 
-                pass  # TODO: add logic here
-                # extract next year GrowModel results for next year gdiff_dict
-                pass  # TODO: add logic here
-                # construct gdiff_dict entry for next year
-                gdiff_dict[year + 1] = {}
+            gd_dict = TaxCalcIO.annual_analysis(input_data, tax_year,
+                                                reform, assump,
+                                                aging_input_data,
+                                                exact_calculations,
+                                                growdiff_response, year,
+                                                writing_output_file,
+                                                output_graph,
+                                                output_ceeu,
+                                                output_dump)
+            gdiff_dict[year + 1] = gd_dict
+
+    @staticmethod
+    def annual_analysis(input_data, tax_year, reform, assump,
+                        aging_input_data, exact_calculations,
+                        growdiff_response, year,
+                        writing_output_file,
+                        output_graph,
+                        output_ceeu,
+                        output_dump):
+        """
+        Conduct static analysis for specifed year and growdiff_response.
+
+        Parameters
+        ----------
+        First six parameters are same as the first six parameters of
+        the TaxCalcIO constructor.
+
+        Last four parameters are same as the first four parameters of
+        the TaxCalcIO static_analysis method.
+
+        Returns
+        -------
+        gd_dict: Growdiff sub-dictionary for year+1
+        """
+        # pylint: disable=too-many-arguments
+        # instantiate TaxCalcIO object for specified year and growdiff_response
+        tcio = TaxCalcIO(input_data=input_data,
+                         tax_year=year,
+                         reform=reform,
+                         assump=assump,
+                         growdiff_response=growdiff_response,
+                         aging_input_data=aging_input_data,
+                         exact_calculations=exact_calculations)
+        if year == tax_year:
+            # conduct final tax analysis for year equal to tax_year
+            tcio.static_analysis(writing_output_file=writing_output_file,
+                                 output_graph=output_graph,
+                                 output_ceeu=output_ceeu,
+                                 output_dump=output_dump)
+            gd_dict = {}
+        else:
+            # conduct intermediate tax analysis for year less than tax_year
+            tcio.static_analysis()
+            # build dict in gdiff_dict key:dict pair for key equal to next year
+            # ... extract tcio results for year needed by GrowModel class
+            # >>>>> add logic here <<<<<
+            # ... use extracted results to advance GrowModel to next year
+            # >>>>> add logic here <<<<<
+            # ... extract next year GrowModel results for next year gdiff_dict
+            # >>>>> add logic here <<<<<
+            gd_dict = {}  # TEMPORARY CODE
+        return gd_dict
