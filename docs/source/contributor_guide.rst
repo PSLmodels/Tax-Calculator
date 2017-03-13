@@ -85,6 +85,10 @@ Setup Git
     .. code-block:: python
    
        tax-calculator$ activate taxcalc-dev
+
+    Note: never conda install the taxcalc package in the taxcalc-dev
+    environment because the taxcalc source code and the installed package
+    will conflict. 
    
 11. To check that everything is working properly, run the following at
     the command line from the tax-calculator directory, but skip the
