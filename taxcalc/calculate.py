@@ -146,6 +146,7 @@ class Calculator(object):
         ALD_InvInc_ec_base(self.policy, self.records)
         CapGains(self.policy, self.records)
         SSBenefits(self.policy, self.records)
+        UBI(self.policy, self.records)
         AGI(self.policy, self.records)
         ItemDed(self.policy, self.records)
         AdditionalMedicareTax(self.policy, self.records)
