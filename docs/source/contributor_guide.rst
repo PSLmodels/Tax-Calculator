@@ -204,21 +204,31 @@ situations, in which case other contributors are here to help.
       tax-calculator$ git add [filename]
       tax-calculator$ git commit -m "[description-of-your-commit]"
 
-6. When you're ready for other team members to review your code, make
-   your final commit and push your local branch to your remote repo
-   (this repo is also called the origin).
+6. Periodically, make sure that the branch you created in step 2
+   is in sync with the changes other contributors are making to 
+   the central master branch by fetching upstream and merging
+   upstream/master into your branch. 
+
+   .. code-block:: python
+
+       tax-calculator$ git fetch upstream
+       tax-calculator$ git merge upstream/master
+
+    You may need to resolve conflicts that arise when another
+    contributor changed the same section of code that you are 
+    changing. Feel free to ask other contributors for guidance 
+    if this happens to you. If you do need to fix a merge
+    conflict, re-run the test suite afterwards (step 4.)
+
+6. When you are ready for other team members to review your code, make
+   your final commit and push your local branch to your remote repo.
 
    .. code-block:: python
 
       tax-calculator$ git push origin [new-branch-name]
 
-7. Ask other team members to review your changes by directing them to:
-   **github.com/[github-username]/Tax-Calculator/[new-branch-name]**.
-
-8. If this is your first time, wait for feedback and instructions on
-   how to proceed. Most likely, the other contributors will ask you to
-   `fetch`_ and merge new changes from `upstream`_/master and then
-   open a `pull request`_.
+7. From the GitHub.com user interface, select "open pull request." 
+   
 
 Simple Usage
 ------------
