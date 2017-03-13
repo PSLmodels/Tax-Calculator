@@ -227,8 +227,8 @@ situations, in which case other contributors are here to help.
 
       tax-calculator$ git push origin [new-branch-name]
 
-7. From the GitHub.com user interface, select "open pull request." 
-   
+7. From the GitHub.com user interface, `open a pull request`_.  
+
 
 Simple Usage
 ------------
@@ -316,3 +316,6 @@ sample notebook: `10 Minutes To Tax-Calculator`_.
 
 .. _`pull request`:
    https://help.github.com/articles/github-glossary/#pull-request
+
+.. _`open a pull request`:
+   https://help.github.com/articles/creating-a-pull-request/#creating-the-pull-request
