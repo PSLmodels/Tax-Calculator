@@ -1,0 +1,25 @@
+// 2022 RESULTS from taxcalc-tc and taxbrain-file using version 0.7.9
+// INCOME TAX ($B)   1770.31        ????.?  <--- TaxBrain is broken
+// PAYROLL TAX ($B)  1447.90        ????.?  <--- TaxBrain is broken
+// taxcalc-tc results generated as follows:
+// $ cd taxbrain-file-tests
+// $ cp ../tc.py .
+// $ conda install -c ospc taxcalc=<version>
+// $ python tc.py puf.csv 2022 --reform r1.json --assump a1.json
+// $ awk -F, 'NR>1{i+=$4*$3;p+=$6*$3}END{print i*1e-9,p*1e-9}' puf-22-r1-a1.csv
+// $ conda uninstall taxcalc
+// taxbrain-file results from:
+//   http://www.ospc.org/taxbrain/10???/
+{
+    "consumption": {
+        "_MPC_e18400": {"2018": [0.05]}
+    },
+    "behavior": {
+    },
+    "growdiff_baseline": {
+        "_ATXPY": {"2019": [-0.005]},
+        "_AWAGE": {"2019": [-0.005]}
+    },
+    "growdiff_response": {
+    }
+}
