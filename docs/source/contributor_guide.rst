@@ -224,14 +224,14 @@ situations, in which case other contributors are here to help.
     if this happens to you. If you do need to fix a merge
     conflict, re-run the test suite afterwards (step 4.)
 
-6. When you are ready for other team members to review your code, make
+7. When you are ready for other team members to review your code, make
    your final commit and push your local branch to your remote repo.
 
    .. code-block:: python
 
       tax-calculator$ git push origin [new-branch-name]
 
-7. From the GitHub.com user interface, `open a pull request`_.  
+8. From the GitHub.com user interface, `open a pull request`_.  
 
 
 Simple Usage
