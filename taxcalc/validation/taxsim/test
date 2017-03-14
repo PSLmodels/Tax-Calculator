@@ -32,7 +32,7 @@ fi
 # Generate specified INPUT file
 L=${LYY:0:1}    
 YY=${LYY:1:2}
-tclsh ../taxsim_in.tcl 20$YY $L > $LYY.in
+tclsh taxsim_in.tcl 20$YY $L > $LYY.in
 # Generate simtax.py OUTPUT for specified INPUT and REFORM
 if [[ "$REFORM" == "." ]] ; then
     python simtax.py --taxsim2441 $LYY.in
@@ -47,8 +47,8 @@ fi
 # Unzip Internet-TAXSIM output for specified INPUT and REFORM
 unzip -oq output-taxsim.zip $LYY.in.out-taxsim$SUFFIX
 # Compare simtax and Internet-TAXSIM OUTPUT
-tclsh ../taxdiffs.tcl $OVAR4 $LYY.in.out-simtax$SUFFIX \
-                             $LYY.in.out-taxsim$SUFFIX > $LYY$SUFFIX.taxdiffs
+tclsh taxdiffs.tcl $OVAR4 $LYY.in.out-simtax$SUFFIX \
+                          $LYY.in.out-taxsim$SUFFIX > $LYY$SUFFIX.taxdiffs
 RC=$?
 if [ $RC -ne 0 ]; then
    exit $RC
