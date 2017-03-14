@@ -77,7 +77,8 @@ def compare_var(varname, array1, array2, rounding_error, idarray):
     """
     Summarize differences between array1 and array2.
     """
-    diff = array1 - array2
+    rawdiff = array1 - array2
+    diff = rawdiff.round(2)
     absdiff = np.abs(diff)
     max_absdiff = np.amax(absdiff)
     if max_absdiff <= rounding_error:
