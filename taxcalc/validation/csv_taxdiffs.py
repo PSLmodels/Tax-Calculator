@@ -67,7 +67,7 @@ def main(file1name, file2name):
     for var in tax_vars:
         if var in df1_vars and var in df2_vars:
             compare_var(var, df1[var], df2[var], rounding_error, df1['RECID'])
-            
+
     # normal return code
     return 0
 # end of main function code
