@@ -801,6 +801,11 @@ def test_read_egg_csv():
         vdf = read_egg_csv('bad_filename')
 
 
+def test_read_egg_json():
+    with pytest.raises(ValueError):
+        pdict = read_egg_json('bad_filename')
+
+
 def test_create_and_delete_temporary_file():
     # test temporary_filename() and delete_file() functions
     fname = temporary_filename()

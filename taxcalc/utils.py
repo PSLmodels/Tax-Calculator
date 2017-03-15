@@ -1360,7 +1360,7 @@ def ce_aftertax_income(calc1, calc2,
 
 def read_egg_csv(fname, **kwargs):
     """
-    Read from egg the csv file named fname that contains csv data and
+    Read from egg the file named fname that contains CSV data and
     return pandas DataFrame containing the data.
     """
     try:
@@ -1370,6 +1370,21 @@ def read_egg_csv(fname, **kwargs):
     except:  # pylint: disable=bare-except
         raise ValueError('could not read {} data from egg'.format(fname))
     return vdf
+
+
+def read_egg_json(fname):
+    """
+    Read from egg the file named fname that contains JSON data and
+    return dictionary containing the data.
+    """
+    try:
+        path_in_egg = os.path.join('taxcalc', fname)
+        pdict = json.loads(resource_stream(Requirement.parse('taxcalc'),
+                                           path_in_egg).read().decode('utf-8'),
+                           object_pairs_hook=OrderedDict)
+    except:  # pylint: disable=bare-except
+        raise ValueError('could not read {} data from egg'.format(fname))
+    return pdict
 
 
 def temporary_filename(suffix=''):
