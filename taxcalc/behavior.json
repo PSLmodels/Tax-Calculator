@@ -27,5 +27,25 @@
         "col_label": "",
         "value": [0.0],
         "validations": {"max": 0.0}
+    },
+
+    "_BE_charity_itemizers": {
+        "start_year": 2013,
+        "long_name": "Elasticity of charitable contributions for itemizers",
+        "description": "Defined as proportional change in charitable giving divided by proportional change in marginal net-of-tax-rate (1-MTR) on charitable giving caused by the reform. Must be zero or positive.",
+        "row_label": ["2013"],
+        "col_label": "",
+        "value": [0.0],
+        "validations": {"min": 0.0}
+    },
+
+    "_BE_charity_non_itemizers": {
+        "start_year": 2013,
+        "long_name": "Elasticity of charitable contributions for non-itemizers",
+        "description": "Defined as proportional change in charitable giving divided by proportional change in marginal net-of-tax-rate (1-MTR) on charitable giving caused by the reform. Must be zero or positive.",
+        "row_label": ["2013"],
+        "col_label": "",
+        "value": [0.0],
+        "validations": {"min":0.0}
     }
 }
