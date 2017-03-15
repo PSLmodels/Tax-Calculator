@@ -3,9 +3,10 @@ Tax-Calculator abstract base parameters class.
 """
 import os
 import json
-import numpy as np
 from abc import ABCMeta
 from collections import OrderedDict
+import numpy as np
+from taxcalc.utils import read_egg_json
 
 
 class ParametersBase(object):
@@ -213,7 +214,7 @@ class ParametersBase(object):
             containing complete contents of DEFAULTS_FILENAME file.
         """
         if cls.DEFAULTS_FILENAME is None:
-            msg = 'DEFAULTS_FILENAME must be overrriden by inheriting class'
+            msg = 'DEFAULTS_FILENAME must be overridden by inheriting class'
             raise NotImplementedError(msg)
         path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                             cls.DEFAULTS_FILENAME)
@@ -221,12 +222,7 @@ class ParametersBase(object):
             with open(path) as pfile:
                 params_dict = json.load(pfile, object_pairs_hook=OrderedDict)
         else:
-            from pkg_resources import resource_stream, Requirement
-            path_in_egg = os.path.join('taxcalc', cls.DEFAULTS_FILENAME)
-            buf = resource_stream(Requirement.parse('taxcalc'), path_in_egg)
-            as_bytes = buf.read()
-            as_string = as_bytes.decode("utf-8")
-            params_dict = json.loads(as_string, object_pairs_hook=OrderedDict)
+            params_dict = read_egg_json(cls.DEFAULTS_FILENAME)
         return params_dict
 
     def _update(self, year_mods):
