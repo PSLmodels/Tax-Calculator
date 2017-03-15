@@ -796,6 +796,11 @@ def test_ce_aftertax_income(puf_1991, weights_1991):
                            custom_params=params)
 
 
+def test_read_egg_csv():
+    with pytest.raises(ValueError):
+        vdf = read_egg_csv('bad_filename')
+
+
 def test_create_and_delete_temporary_file():
     # test temporary_filename() and delete_file() functions
     fname = temporary_filename()

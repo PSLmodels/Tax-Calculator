@@ -467,7 +467,7 @@ class Records(object):
             if os.path.isfile(weights):
                 WT = pd.read_csv(weights)
             else:
-                WT = read_egg_csv('weights', Records.WEIGHTS_FILENAME)
+                WT = read_egg_csv(Records.WEIGHTS_FILENAME)
         else:
             msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
@@ -488,8 +488,7 @@ class Records(object):
             if os.path.isfile(adjust_ratios):
                 ADJ = pd.read_csv(adjust_ratios, index_col=0)
             else:
-                ADJ = Records._read_egg_csv('adjust_ratios',
-                                            Records.ADJUST_RATIOS_FILENAME)
+                ADJ = read_egg_csv(Records.ADJUST_RATIOS_FILENAME, index_col=0)
             ADJ = ADJ.transpose()
         else:
             msg = ('adjust_ratios is not None or a string'
