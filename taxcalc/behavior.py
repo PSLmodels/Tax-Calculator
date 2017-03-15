@@ -196,8 +196,8 @@ class Behavior(ParametersBase):
                                (1. - charity_mtr_x)) -
                                1.)
             # identify itemizers under calc_y
-            itemizer = np.where(calc_y.records._standard >
-                                calc_y.records.c04470,
+            itemizer = np.where(calc_y.records.c04470 >
+                                calc_y.records._standard,
                                 True,
                                 False)
             charity_chg = (
