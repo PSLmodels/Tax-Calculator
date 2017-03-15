@@ -9,7 +9,7 @@ import pytest
 import numpy.testing as npt
 from pandas import DataFrame, Series
 from pandas.util.testing import assert_series_equal
-from taxcalc import Policy, Records, Behavior, Calculator
+from taxcalc import Policy, Records, Behavior, Calculator, Growfactors
 from taxcalc.utils import *
 
 data = [[1.0, 2, 'a'],
@@ -794,6 +794,11 @@ def test_ce_aftertax_income(puf_1991, weights_1991):
     with pytest.raises(ValueError):
         ce_aftertax_income(calc1, calc2, require_no_agg_tax_change=True,
                            custom_params=params)
+
+
+def test_read_egg_csv():
+    with pytest.raises(ValueError):
+        vdf = read_egg_csv('bad_filename')
 
 
 def test_create_and_delete_temporary_file():

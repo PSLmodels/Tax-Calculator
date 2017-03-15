@@ -13,7 +13,7 @@ import copy
 import json
 import random
 from collections import defaultdict, OrderedDict
-from pkg_resources import resource_stream, Requirement, DistributionNotFound
+from pkg_resources import resource_stream, Requirement
 import six
 import numpy as np
 import pandas as pd
@@ -1358,21 +1358,18 @@ def ce_aftertax_income(calc1, calc2,
     return cedict
 
 
-def read_egg_csv(vname, fpath, **kwargs):
+def read_egg_csv(fname, **kwargs):
     """
-    Read csv file with fpath containing vname data from EGG and
-    return dict of vname data.
+    Read from egg the csv file named fname that contains csv data and
+    return pandas DataFrame containing the data.
     """
     try:
-        # grab vname data from EGG distribution
-        path_in_egg = os.path.join('taxcalc', fpath)
-        vname_fname = resource_stream(
-            Requirement.parse('taxcalc'), path_in_egg)
-        vname_dict = pd.read_csv(vname_fname, **kwargs)
-    except (DistributionNotFound, IOError):
-        msg = 'could not read {} file from EGG'
-        raise ValueError(msg.format(vname))
-    return vname_dict
+        path_in_egg = os.path.join('taxcalc', fname)
+        vdf = pd.read_csv(resource_stream(Requirement.parse('taxcalc'),
+                                          path_in_egg), **kwargs)
+    except:  # pylint: disable=bare-except
+        raise ValueError('could not read {} data from egg'.format(fname))
+    return vdf
 
 
 def temporary_filename(suffix=''):
