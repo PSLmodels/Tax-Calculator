@@ -3,9 +3,10 @@ Tax-Calculator abstract base parameters class.
 """
 import os
 import json
-import numpy as np
 from abc import ABCMeta
 from collections import OrderedDict
+import numpy as np
+from taxcalc.utils import read_egg_json
 
 
 class ParametersBase(object):
