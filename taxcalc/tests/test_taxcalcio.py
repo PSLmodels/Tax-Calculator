@@ -301,14 +301,14 @@ def test_graph(reformfile1):
                      exact_calculations=False)
     tcio.static_analysis(writing_output_file=False,
                          output_graph=True)
-    # confirm existence of graph files and then delete
+    # delete graph files
     output_filename = tcio.output_filepath()
-    atr_fname = output_filename.replace('.csv', '-atr.html')
-    mtr_fname = output_filename.replace('.csv', '-mtr.html')
-    assert os.path.isfile(atr_fname)
-    assert os.path.isfile(mtr_fname)
-    os.remove(atr_fname)
-    os.remove(mtr_fname)
+    fname = output_filename.replace('.csv', '-atr.html')
+    if os.path.isfile(fname):
+        os.remove(fname)
+    fname = output_filename.replace('.csv', '-mtr.html')
+    if os.path.isfile(fname):
+        os.remove(fname)
 
 
 @pytest.yield_fixture
