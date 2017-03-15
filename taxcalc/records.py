@@ -488,7 +488,7 @@ class Records(object):
             if os.path.isfile(adjust_ratios):
                 ADJ = pd.read_csv(adjust_ratios, index_col=0)
             else:
-                ADJ = read_egg_csv(Records.ADJUST_RATIOS_FILENAME)
+                ADJ = read_egg_csv(Records.ADJUST_RATIOS_FILENAME, index_col=0)
             ADJ = ADJ.transpose()
         else:
             msg = ('adjust_ratios is not None or a string'
