@@ -18,8 +18,6 @@ def puf_1991_path(tests_path):
 
 @pytest.fixture(scope='session')
 def weights_1991_path(tests_path):
-    # Not yet used, but can be used in test_correct_Records_instantiation
-    # to provide test coverage for records.py#458 ` ..._read_egg_csv...'
     return os.path.join(tests_path, '..', 'altdata', 'puf91weights.csv.gz')
 
 
