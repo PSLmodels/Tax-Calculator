@@ -278,23 +278,37 @@ def test_output_otions(rawinputfile, reformfile1, assumpfile1):
             pass  # sometimes we can't remove a generated temporary file
 
 
-# skip test_graph until have a more realistic sample to replace puf_1991
-# def test_graph(puf_1991, reformfile1):
-#     #
-#     Test TaxCalcIO with output_graph
-#     using file name for TaxCalcIO constructor input_data and writing
-#     --graph output.
-#     #
-#     tcio = TaxCalcIO(input_data=puf_1991,
-#                      tax_year=2016,
-#                      reform=reformfile1.name,
-#                      assump=None,
-#                      growdiff_response=None,
-#                      aging_input_data=False,
-#                      exact_calculations=False)
-#     tcio.static_analysis(writing_output_file=False,
-#                          output_graph=True)
-#     # cleanup html files
+def test_graph(reformfile1):
+    """
+    Test TaxCalcIO with output_graph=True.
+    """
+    # create graphable input
+    nobs = 100
+    idict = dict()
+    idict['RECID'] = [i for i in range(1, nobs + 1)]
+    idict['MARS'] = [2 for i in range(1, nobs + 1)]
+    idict['s006'] = [10.0 for i in range(1, nobs + 1)]
+    idict['e00300'] = [10000 * i for i in range(1, nobs + 1)]
+    idict['_expanded_income'] = idict['e00300']
+    idf = pd.DataFrame(idict, columns=list(idict))
+    # create TaxCalcIO graph files
+    tcio = TaxCalcIO(input_data=idf,
+                     tax_year=2020,
+                     reform=reformfile1.name,
+                     assump=None,
+                     growdiff_response=None,
+                     aging_input_data=False,
+                     exact_calculations=False)
+    tcio.static_analysis(writing_output_file=False,
+                         output_graph=True)
+    # delete graph files
+    output_filename = tcio.output_filepath()
+    fname = output_filename.replace('.csv', '-atr.html')
+    if os.path.isfile(fname):
+        os.remove(fname)
+    fname = output_filename.replace('.csv', '-mtr.html')
+    if os.path.isfile(fname):
+        os.remove(fname)
 
 
 @pytest.yield_fixture
