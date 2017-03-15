@@ -192,8 +192,8 @@ class Behavior(ParametersBase):
             # e19800 is filing units' charity cash contributions
             charity_mtr_x, charity_mtr_y = Behavior._mtr_xy(
                 calc_x, calc_y, mtr_of='e19800', tax_type='combined')
-            charity_mtr_pch = (((1. - charity_mtr_y) /
-                               (1. - charity_mtr_x)) -
+            charity_mtr_pch = (((1. + charity_mtr_y) /
+                               (1. + charity_mtr_x)) -
                                1.)
             # identify itemizers under calc_y
             itemizer = np.where(calc_y.records.c04470 >
@@ -238,10 +238,10 @@ class Behavior(ParametersBase):
                     if val > 0.0:
                         raise ValueError(msg.format(elast, pos, year, val))
                 elif elast == '_BE_charity_itemizers':
-                    if val < 0.0:
+                    if val > 0.0:
                         raise ValueError(msg.format(elast, neg, year, val))
                 elif elast == '_BE_charity_non_itemizers':
-                    if val < 0.0:
+                    if val > 0.0:
                         raise ValueError(msg.format(elast, neg, year, val))
                 else:
                     raise ValueError('illegal elasticity {}'.format(elast))
