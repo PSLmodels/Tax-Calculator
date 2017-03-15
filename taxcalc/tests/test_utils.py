@@ -9,7 +9,7 @@ import pytest
 import numpy.testing as npt
 from pandas import DataFrame, Series
 from pandas.util.testing import assert_series_equal
-from taxcalc import Policy, Records, Behavior, Calculator, Growfactors
+from taxcalc import Policy, Records, Behavior, Calculator
 from taxcalc.utils import *
 
 data = [[1.0, 2, 'a'],
