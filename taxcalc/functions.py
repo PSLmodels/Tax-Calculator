@@ -162,6 +162,16 @@ def Adj(e03150, e03210, c03260,
 
         ALD_Alimony_hc : Alimony paid deduction haircut
 
+        ALD_EducatorExpenses_hc: Eductor expenses haircut
+
+        ALD_HSADeduction_hc: HSA Deduction haircut
+
+        ALD_IRAContributions_hc: IRA Contribution haircut
+
+        ALD_DomesticProduction_hc: Domestic production haircut
+
+        ALD_Tuition_hc: Tuition and fees haircut
+
     Returns
     -------
     c02900 : total Form 1040 adjustments, which are not included in AGI
@@ -1057,6 +1067,9 @@ def SchR(age_head, age_spouse, MARS, c00100,
 
     Note that all Schedule R policy parameters are hard-coded, and therefore,
     are not able to be changed using Policy class parameters.
+
+    CR_SchR_hc allows the user to eliminate or reduce total schedule R credits
+    applied
     """
     if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
         # calculate credit assuming nobody is disabled (so line12 = line10)
@@ -1164,6 +1177,16 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
                          c07260, c07300, c07400, c07600, c08000):
     """
     NonRefundableCredits function sequentially limits credits to tax liability
+
+    Parameters
+    ----------
+
+    CR_RetirementSavings_hc: Retirement savings credit haircut
+    CR_ForeignTax_hc: Foreign tax credit haircut
+    CR_ResidentialEnergy_hc: Residential energy credit haircut
+    CR_GeneralBusiness_hc: General business credit haircut
+    CR_MinimumTax_hc: Minimum tax credit haircut
+    CR_OtherCredits_hc: Other credits haircut
     """
     # limit tax credits to tax liability in order they are on 2015 1040 form
     avail = c05800
