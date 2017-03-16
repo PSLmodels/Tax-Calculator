@@ -195,15 +195,15 @@ class Behavior(ParametersBase):
             # cash:
             c_charity_mtr_x, c_charity_mtr_y = Behavior._mtr_xy(
                 calc_x, calc_y, mtr_of='e19800', tax_type='combined')
-            c_charity_mtr_pch = (((1. + c_charity_mtr_y) /
-                                 (1. + c_charity_mtr_x)) -
-                                 1.)
+            c_charity_price_pch = (((1. + c_charity_mtr_y) /
+                                   (1. + c_charity_mtr_x)) -
+                                   1.)
             # non-cash:
             nc_charity_mtr_x, nc_charity_mtr_y = Behavior._mtr_xy(
                 calc_x, calc_y, mtr_of='e20100', tax_type='combined')
-            nc_charity_mtr_pch = (((1. + nc_charity_mtr_y) /
-                                  (1. + nc_charity_mtr_x)) -
-                                  1.)
+            nc_charity_price_pch = (((1. + nc_charity_mtr_y) /
+                                    (1. + nc_charity_mtr_x)) -
+                                    1.)
             # identify itemizers under calc_y
             itemizer = np.where(calc_y.records.c04470 >
                                 calc_y.records._standard,
@@ -213,16 +213,16 @@ class Behavior(ParametersBase):
             c_charity_chg = (
                 np.where(itemizer,
                          (calc_y.behavior.BE_charity_itemizers *
-                          c_charity_mtr_pch * calc_x.records.e19800),
+                          c_charity_price_pch * calc_x.records.e19800),
                          (calc_y.behavior.BE_charity_non_itemizers *
-                          c_charity_mtr_pch * calc_x.records.e19800)))
+                          c_charity_price_pch * calc_x.records.e19800)))
             # calculate change in non-cash contributions
             nc_charity_chg = (
                 np.where(itemizer,
                          (calc_y.behavior.BE_charity_itemizers *
-                          nc_charity_mtr_pch * calc_x.records.e20100),
+                          nc_charity_price_pch * calc_x.records.e20100),
                          (calc_y.behavior.BE_charity_non_itemizers *
-                          nc_charity_mtr_pch * calc_x.records.e20100)))
+                          nc_charity_price_pch * calc_x.records.e20100)))
         # Add behavioral-response changes to income sources
         calc_y_behv = copy.deepcopy(calc_y)
         calc_y_behv = Behavior._update_ordinary_income(taxinc_chg, calc_y_behv)
