@@ -1,0 +1,11 @@
+{
+    "consumption": {
+    },
+    "behavior": {
+        "_BE_sub": {"2013": [0.3]}
+    },
+    "growdiff_baseline": {
+    },
+    "growdiff_response": {
+    }
+}
