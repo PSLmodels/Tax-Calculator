@@ -115,7 +115,9 @@ def Adj(e03150, e03210, c03260,
         e03270, e03300, e03400, e03500,
         e03220, e03230, e03240, e03290, care_deduction,
         ALD_StudentLoan_hc, ALD_SelfEmp_HealthIns_hc, ALD_KEOGH_SEP_hc,
-        ALD_EarlyWithdraw_hc, ALD_Alimony_hc,
+        ALD_EarlyWithdraw_hc, ALD_Alimony_hc, ALD_EducatorExpenses_hc,
+        ALD_HSADeduction_hc, ALD_IRAContributions_hc,
+        ALD_DomesticProduction_hc, ALD_Tuition_hc,
         c02900, c02900_in_ei):
     """
     Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions)
@@ -160,6 +162,16 @@ def Adj(e03150, e03210, c03260,
 
         ALD_Alimony_hc : Alimony paid deduction haircut
 
+        ALD_EducatorExpenses_hc: Eductor expenses haircut
+
+        ALD_HSADeduction_hc: HSA Deduction haircut
+
+        ALD_IRAContributions_hc: IRA Contribution haircut
+
+        ALD_DomesticProduction_hc: Domestic production haircut
+
+        ALD_Tuition_hc: Tuition and fees haircut
+
     Returns
     -------
     c02900 : total Form 1040 adjustments, which are not included in AGI
@@ -172,10 +184,15 @@ def Adj(e03150, e03210, c03260,
                     c03260 +
                     (1. - ALD_EarlyWithdraw_hc) * e03400 +
                     (1. - ALD_Alimony_hc) * e03500 +
-                    e03220 + e03230 + e03240 + e03290 + care_deduction)
+                    (1. - ALD_EducatorExpenses_hc) * e03220 +
+                    (1. - ALD_Tuition_hc) * e03230 +
+                    (1. - ALD_DomesticProduction_hc) * e03240 +
+                    (1. - ALD_HSADeduction_hc) * e03290 +
+                    care_deduction)
     # add in Form 1040 adjustments that are not included in expanded income:
     c02900 = c02900_in_ei + ((1. - ALD_SelfEmp_HealthIns_hc) * e03270 +
-                             e03150 +  # deductible IRA contributions
+                             # deductible IRA contributions
+                             (1. - ALD_IRAContributions_hc) * e03150 +
                              (1. - ALD_KEOGH_SEP_hc) * e03300)
     # FUTURE: move e03270 term into c02900_in_ei after
     #         health-insurance-premium imputations are available
@@ -278,7 +295,7 @@ def UBI(nu18, n1821, n21, UBI1, UBI2, UBI3, UBI_ecrt,
     UBI1: UBI for those under 18
     UBI2: UBI for those between 18 and 21
     UBI3: UBI for those over 21
-    UBI_hc: Portion of UBI that is taxable
+    UBI_ecrt: Fraction of UBI benefits that are not included in AGI
 
     Returns
     -------
@@ -983,7 +1000,8 @@ def ChildTaxCredit(n24, MARS, c00100, _exact,
 
 
 @iterate_jit(nopython=True)
-def AmOppCreditParts(p87521, _num, c00100, c10960, c87668):
+def AmOppCreditParts(p87521, _num, c00100, CR_AmOppRefundable_hc,
+                     CR_AmOppNonRefundable_hc, c10960, c87668):
     """
     American Opportunity Credit (Form 8863) nonrefundable (c87668) and
                                             refundable (c10960) parts
@@ -1014,6 +1032,11 @@ def AmOppCreditParts(p87521, _num, c00100, c10960, c87668):
 
         c00100 : AGI
 
+        CR_AmOppRefundable_hc: haircut for the refundable portion of the
+                               American Opportunity Credit
+        CR_AmOppNonRefundable_hc: haircut for the nonrefundable portion of the
+                                  American Opportunity Credit
+
     Returns
     -------
         c10960 : Refundable part of American Opportunity Credit
@@ -1025,8 +1048,8 @@ def AmOppCreditParts(p87521, _num, c00100, c10960, c87668):
         c87660 = 10000. * _num
         c87662 = 1000. * min(1., c87658 / c87660)
         c87664 = c87662 * p87521 / 1000.
-        c10960 = 0.4 * c87664
-        c87668 = c87664 - c10960
+        c10960 = 0.4 * c87664 * (1. - CR_AmOppRefundable_hc)
+        c87668 = c87664 - c10960 * (1. - CR_AmOppNonRefundable_hc)
     else:
         c10960 = 0.
         c87668 = 0.
@@ -1035,7 +1058,7 @@ def AmOppCreditParts(p87521, _num, c00100, c10960, c87668):
 
 @iterate_jit(nopython=True)
 def SchR(age_head, age_spouse, MARS, c00100,
-         c05800, e07300, c07180, e02400, c02500, e01500, e01700,
+         c05800, e07300, c07180, e02400, c02500, e01500, e01700, CR_SchR_hc,
          c07200):
     """
     Calculate Schedule R credit for the elderly and the disabled, c07200
@@ -1044,6 +1067,9 @@ def SchR(age_head, age_spouse, MARS, c00100,
 
     Note that all Schedule R policy parameters are hard-coded, and therefore,
     are not able to be changed using Policy class parameters.
+
+    CR_SchR_hc allows the user to eliminate or reduce total schedule R credits
+    applied
     """
     if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
         # calculate credit assuming nobody is disabled (so line12 = line10)
@@ -1079,7 +1105,7 @@ def SchR(age_head, age_spouse, MARS, c00100,
         schr19 = max(0., schr12 - schr18)
         schr20 = 0.15 * schr19
         schr21 = max(0., (c05800 - e07300 - c07180))
-        c07200 = min(schr20, schr21)
+        c07200 = min(schr20, schr21) * (1. - CR_SchR_hc)
     else:  # if not calculating Schedule R credit
         c07200 = 0.
     return c07200
@@ -1144,34 +1170,52 @@ def EducationTaxCredit(e87530, MARS, c00100, _num, c05800,
 @iterate_jit(nopython=True)
 def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
                          e07600, p08000, prectc, dep_credit,
+                         CR_RetirementSavings_hc, CR_ForeignTax_hc,
+                         CR_ResidentialEnergy_hc, CR_GeneralBusiness_hc,
+                         CR_MinimumTax_hc, CR_OtherCredits_hc,
                          c07180, c07200, c07220, c07230, c07240,
                          c07260, c07300, c07400, c07600, c08000):
     """
     NonRefundableCredits function sequentially limits credits to tax liability
+
+    Parameters
+    ----------
+
+    CR_RetirementSavings_hc: Retirement savings credit haircut
+    CR_ForeignTax_hc: Foreign tax credit haircut
+    CR_ResidentialEnergy_hc: Residential energy credit haircut
+    CR_GeneralBusiness_hc: General business credit haircut
+    CR_MinimumTax_hc: Minimum tax credit haircut
+    CR_OtherCredits_hc: Other credits haircut
     """
     # limit tax credits to tax liability in order they are on 2015 1040 form
     avail = c05800
-    c07300 = min(e07300, avail)  # Foreign tax credit - Form 1116
+    # Foreign tax credit - Form 1116
+    c07300 = min(e07300 * (1. - CR_ForeignTax_hc), avail)
     avail = avail - c07300
     c07180 = min(c07180, avail)  # Child & dependent care expense credit
     avail = avail - c07180
     c07230 = min(c07230, avail)  # Education tax credit
     avail = avail - c07230
-    c07240 = min(e07240, avail)  # Retirement savings credit - Form 8880
+    # Retirement savings credit - Form 8880
+    c07240 = min(e07240 * (1. - CR_RetirementSavings_hc), avail)
     avail = avail - c07240
     c07220 = min(prectc, avail)  # Child tax credit
     avail = avail - c07220
-    c07260 = min(e07260, avail)  # Residential energy credit - Form 5695
+    # Residential energy credit - Form 5695
+    c07260 = min(e07260 * (1. - CR_ResidentialEnergy_hc), avail)
     avail = avail - c07260
-    c07400 = min(e07400, avail)  # General business credit - Form 3800
+    # General business credit - Form 3800
+    c07400 = min(e07400 * (1. - CR_GeneralBusiness_hc), avail)
     avail = avail - c07400
-    c07600 = min(e07600, avail)  # Prior year minimum tax credit - Form 8801
+    # Prior year minimum tax credit - Form 8801
+    c07600 = min(e07600 * (1. - CR_MinimumTax_hc), avail)
     avail = avail - c07600
     c07200 = min(c07200, avail)  # Schedule R credit
     avail = avail - c07200
     dep_credit = min(avail, dep_credit)  # Dependent credit
     avail = avail - dep_credit
-    c08000 = min(p08000, avail)  # Other credits
+    c08000 = min(p08000 * (1. - CR_OtherCredits_hc), avail)  # Other credits
     avail = avail - c08000
     return (c07180, c07200, c07220, c07230, c07240, dep_credit,
             c07260, c07300, c07400, c07600, c08000)

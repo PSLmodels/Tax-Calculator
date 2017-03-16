@@ -243,6 +243,86 @@
         "value": [0.0]
     },
 
+    "_ALD_EducatorExpenses_hc": {
+        "long_name": "Deduction for educator expenses",
+        "description": "If greater than zero, this decimal fraction reduces the portion of educator expenses that can be deducted from AGI",
+        "section_1": "Above the line deduction",
+        "section_2": "Misc. adjustment haircuts",
+        "irs_ref": "",
+        "notes": "The final adjustment amount would be (1 - Haircut) * Educator Expenses",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ALD_HSADeduction_hc": {
+        "long_name": "Deduction for HSA deduction",
+        "description": "If greater than zero, this decimal fraction reduces the portion of a taxpayer's HSA deduction that can be deducted from AGI",
+        "section_1": "Above the line deduction",
+        "section_2": "Misc. adjustment haircuts",
+        "irs_ref": "",
+        "notes": "The final adjustment amount would be (1 - Haircut) * HSA Deduction",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ALD_IRAContributions_hc": {
+        "long_name": "Deduction for IRA contributions",
+        "description": "If greater than zero, this decimal fraction reduces the portion of IRA contributions that can be deducted from AGI",
+        "section_1": "Above the line deduction",
+        "section_2": "Misc. adjustment haircuts",
+        "irs_ref": "",
+        "notes": "The final adjustment amount would be (1 - Haircut) * IRA Contribution",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ALD_DomesticProduction_hc": {
+        "long_name": "Deduction for domestic production activity",
+        "description": "If greater than zero, this decimal fraction reduces the portion of domestic production activity that can be deducted from AGI",
+        "section_1": "Above the line deduction",
+        "section_2": "Misc. adjustment haircuts",
+        "irs_ref": "",
+        "notes": "The final adjustment amount would be (1 - Haircut) * Domestic Production Activity",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_ALD_Tuition_hc": {
+        "long_name": "Deduction for tuition and fees",
+        "description": "If greater than zero, this decimal fraction reduces the portion of tuition and fees that can be deducted from AGI",
+        "section_1": "Above the line deduction",
+        "section_2": "Misc. adjustment haircuts",
+        "irs_ref": "",
+        "notes": "The final adjustment amount would be (1 - Haircut) * Tuition and Fees",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
     "_ALD_InvInc_ec_rt": {
         "long_name": "Investment income exclusion rate",
         "description": "Decimal fraction of investment income base that can be excluded from AGI.",
@@ -2810,6 +2890,150 @@
         "section_2": "Universal Basic Income haircut",
         "irs_ref": "",
         "notes": "",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_CR_RetirementSavings_hc": {
+        "long_name": "Credit for retirement savings",
+        "description": "If greater than zero, this decimal fraction reduces the portion of the retirement savings credit that can be claimed",
+        "section_1": "Nonrefundable credits",
+        "section_2": "Misc. credit limits",
+        "irs_ref": "",
+        "notes": "Credit claimed will be (1. - Haircut) * Retirement Savings Credit",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_CR_ForeignTax_hc": {
+        "long_name": "Credit for foreign tax",
+        "description": "If greater than zero, this decimal fraction reduces the portion of the foreign tax credit that can be claimed",
+        "section_1": "Nonrefundable credits",
+        "section_2": "Misc. credit limits",
+        "irs_ref": "",
+        "notes": "Credit claimed will be (1. - Haircut) * Foreign Tax Credit",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_CR_ResidentialEnergy_hc": {
+        "long_name": "Credit for residential energy",
+        "description": "If greater than zero, this decimal fraction reduces the portion of the residential energy credit that can be claimed",
+        "section_1": "Nonrefundable credits",
+        "section_2": "Misc. credit limits",
+        "irs_ref": "",
+        "notes": "Credit claimed will be (1. - Haircut) * Residential Energy Credit",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_CR_GeneralBusiness_hc": {
+        "long_name": "Credit for general business",
+        "description": "If greater than zero, this decimal fraction reduces the portion of the general business credit that can be claimed",
+        "section_1": "Nonrefundable credits",
+        "section_2": "Misc. credit limits",
+        "irs_ref": "",
+        "notes": "Credit claimed will be (1. - Haircut) * General Business Credit",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_CR_MinimumTax_hc": {
+        "long_name": "Credit for previous year minimum tax credit",
+        "description": "If greater than zero, this decimal fraction reduces the portion of the previous year minimum tax credit that can be claimed",
+        "section_1": "Nonrefundable credits",
+        "section_2": "Misc. credit limits",
+        "irs_ref": "",
+        "notes": "Credit claimed will be (1. - Haircut) * Previous Year Minimum Tax Credit",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_CR_AmOppRefundable_hc": {
+        "long_name": "Refundable portion of the American Opportunity Credit",
+        "description": "If greater than zero, this decimal fraction reduces the portion of the refundable American Opportunity credit that can be claimed",
+        "section_1": "Nonrefundable credits",
+        "section_2": "Misc. credit limits",
+        "irs_ref": "",
+        "notes": "Credit claimed will be (1. - Haircut) * Refundable Portion of the American Opportunity Credit",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_CR_AmOppNonRefundable_hc": {
+        "long_name": "Nonrefundable portion of the American Opportunity Credit",
+        "description": "If greater than zero, this decimal fraction reduces the portion of the nonrefundable American Opportunity credit that can be claimed",
+        "section_1": "Nonrefundable credits",
+        "section_2": "Misc. credit limits",
+        "irs_ref": "",
+        "notes": "Credit claimed will be (1. - Haircut) * NonRefundable Portion of the American Opportunity Credit",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_CR_SchR_hc": {
+        "long_name": "Schedule R Credit",
+        "description": "If greater than zero, this decimal fraction reduces the portion of Schedule R credit that can be claimed",
+        "section_1": "Nonrefundable credits",
+        "section_2": "Misc. credit limits",
+        "irs_ref": "",
+        "notes": "Credit claimed will be (1. - Haircut) * Schedule R Credit",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
+    },
+
+    "_CR_OtherCredits_hc": {
+        "long_name": "Other Credits",
+        "description": "If greater than zero, this decimal fraction reduces the portion of other credit that can be claimed",
+        "section_1": "Nonrefundable credits",
+        "section_2": "Misc. credit limits",
+        "irs_ref": "",
+        "notes": "Credit claimed will be (1. - Haircut) * Other Credits",
         "start_year": 2013,
         "col_var": "",
         "row_var": "",
