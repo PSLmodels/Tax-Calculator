@@ -109,6 +109,7 @@ def main():
                      tax_year=args.TAXYEAR,
                      reform=args.reform,
                      assump=args.assump,
+                     behavior_response=False,
                      growdiff_response=None,
                      aging_input_data=aging,
                      exact_calculations=args.exact)

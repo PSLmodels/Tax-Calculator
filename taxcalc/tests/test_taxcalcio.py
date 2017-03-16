@@ -54,6 +54,7 @@ def test_incorrect_creation_1(input_data, exact):
                   tax_year=2013,
                   reform=None,
                   assump=None,
+                  behavior_response=False,
                   growdiff_response=None,
                   aging_input_data=False,
                   exact_calculations=exact)
@@ -112,6 +113,7 @@ def test_incorrect_creation_2(rawinputfile, reformfile0, year, ref, asm, gdr):
             tax_year=year,
             reform=reform,
             assump=asm,
+            behavior_response=False,
             growdiff_response=gdr,
             aging_input_data=False,
             exact_calculations=False)
@@ -126,6 +128,7 @@ def test_creation_with_aging(rawinputfile, reformfile0):
                      tax_year=taxyear,
                      reform=reformfile0.name,
                      assump=None,
+                     behavior_response=False,
                      growdiff_response=Growdiff(),
                      aging_input_data=True,
                      exact_calculations=False)
@@ -135,6 +138,7 @@ def test_creation_with_aging(rawinputfile, reformfile0):
                      tax_year=taxyear,
                      reform=None,
                      assump=None,
+                     behavior_response=False,
                      growdiff_response=None,
                      aging_input_data=True,
                      exact_calculations=False)
@@ -246,6 +250,7 @@ def test_output_otions(rawinputfile, reformfile1, assumpfile1):
                      tax_year=taxyear,
                      reform=reformfile1.name,
                      assump=assumpfile1.name,
+                     behavior_response=False,
                      growdiff_response=None,
                      aging_input_data=False,
                      exact_calculations=False)
@@ -296,6 +301,7 @@ def test_graph(reformfile1):
                      tax_year=2020,
                      reform=reformfile1.name,
                      assump=None,
+                     behavior_response=False,
                      growdiff_response=None,
                      aging_input_data=False,
                      exact_calculations=False)
@@ -344,6 +350,7 @@ def test_ceeu_output(lumpsumreformfile):
                      tax_year=taxyear,
                      reform=lumpsumreformfile.name,
                      assump=None,
+                     behavior_response=False,
                      growdiff_response=None,
                      aging_input_data=False,
                      exact_calculations=False)
@@ -413,6 +420,7 @@ def test_bad_assumption_file(reformfile1, assumpfile_bad1, assumpfile_bad2):
                   tax_year=taxyear,
                   reform=reformfile1.name,
                   assump=assumpfile_bad1.name,
+                  behavior_response=False,
                   growdiff_response=None,
                   aging_input_data=False,
                   exact_calculations=False)
@@ -421,9 +429,41 @@ def test_bad_assumption_file(reformfile1, assumpfile_bad1, assumpfile_bad2):
                   tax_year=taxyear,
                   reform=reformfile1.name,
                   assump=assumpfile_bad2.name,
+                  behavior_response=False,
                   growdiff_response=None,
                   aging_input_data=False,
                   exact_calculations=False)
+
+
+def test_behavior_analysis(reformfile1, assumpfile1):
+    """
+    Test TaxCalcIO.behavior_analysis method with dump output and graphs.
+    """
+    taxyear = 2015
+    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
+    recdf = pd.DataFrame(data=recdict, index=[0])
+    tcio = TaxCalcIO(input_data=recdf,
+                     tax_year=taxyear,
+                     reform=reformfile1.name,
+                     assump=assumpfile1.name,
+                     behavior_response=True,
+                     growdiff_response=None,
+                     aging_input_data=False,
+                     exact_calculations=False)
+    tcio.behavior_analysis(writing_output_file=True,
+                           output_graph=True,
+                           output_dump=True)
+    # delete output file
+    outfilepath = tcio.output_filepath()
+    if os.path.isfile(outfilepath):
+        os.remove(outfilepath)
+    # delete graph files
+    fname = outfilepath.replace('.csv', '-atr.html')
+    if os.path.isfile(fname):
+        os.remove(fname)
+    fname = outfilepath.replace('.csv', '-mtr.html')
+    if os.path.isfile(fname):
+        os.remove(fname)
 
 
 def test_dynamic_analysis(reformfile1, assumpfile1):
@@ -433,6 +473,14 @@ def test_dynamic_analysis(reformfile1, assumpfile1):
     taxyear = 2015
     recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
     recdf = pd.DataFrame(data=recdict, index=[0])
+    with pytest.raises(ValueError):
+        TaxCalcIO.dynamic_analysis(input_data=recdf,
+                                   tax_year=taxyear,
+                                   reform=reformfile1.name,
+                                   assump=assumpfile1.name,
+                                   aging_input_data=False,
+                                   exact_calculations=False,
+                                   output_ceeu=True)
     try:
         TaxCalcIO.dynamic_analysis(input_data=recdf,
                                    tax_year=taxyear,
