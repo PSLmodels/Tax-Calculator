@@ -12,7 +12,7 @@ from taxcalc import TaxCalcIO
 
 def main():
     """
-    Contains DYNAMIC command-line interface to Tax-Calculator TaxCalcIO class.
+    Contains DYNAMIC command-line interface (CLI) to TaxCalcIO class.
     """
     # pylint: disable=too-many-return-statements
     # parse command-line arguments:
@@ -56,15 +56,6 @@ def main():
                               'to HTML files for viewing in browser.'),
                         default=False,
                         action="store_true")
-    parser.add_argument('--ceeu',
-                        help=('optional flag that causes normative welfare '
-                              'statistics, including certainty-equivalent '
-                              'expected-utility (ceeu) of after-tax income '
-                              'values for different '
-                              'constant-relative-risk-aversion parameter '
-                              'values, to be written to screen.'),
-                        default=False,
-                        action="store_true")
     parser.add_argument('--dump',
                         help=('optional flag that causes OUTPUT to contain '
                               'all INPUT variables (possibly aged to TAXYEAR) '
@@ -74,34 +65,28 @@ def main():
                         default=False,
                         action="store_true")
     args = parser.parse_args()
+    arg_errors = False
     # check INPUT file name
     if args.INPUT == '':
         sys.stderr.write('ERROR: must specify INPUT file name;\n')
-        sys.stderr.write('USAGE: python tcdyn.py --help\n')
-        return 1
+        arg_errors = True
     # check TAXYEAR value
     if args.TAXYEAR == 0:
         sys.stderr.write('ERROR: must specify TAXYEAR >= 2013;\n')
-        sys.stderr.write('USAGE: python tcdyn.py --help\n')
-        return 1
+        arg_errors = True
     # check that --reform option used
     if not args.reform:
         sys.stderr.write('ERROR: must use --reform\n')
-        sys.stderr.write('USAGE: python tcdyn.py --help\n')
-        return 1
+        arg_errors = True
     # check consistency of --reform and --graph options
     if args.graph and not args.reform:
         sys.stderr.write('ERROR: cannot specify --graph without --reform\n')
-        sys.stderr.write('USAGE: python tcdyn.py --help\n')
-        return 1
-    # check consistency of --reform and --ceeu options
-    if args.ceeu and not args.reform:
-        sys.stderr.write('ERROR: cannot specify --ceeu without --reform\n')
-        sys.stderr.write('USAGE: python tcdyn.py --help\n')
-        return 1
+        arg_errors = True
     # check consistency of --exact and --graph options
     if args.exact and args.graph:
         sys.stderr.write('ERROR: cannot specify both --exact and --graph\n')
+        arg_errors = True
+    if arg_errors:
         sys.stderr.write('USAGE: python tcdyn.py --help\n')
         return 1
     # do DYNAMIC tax analysis
@@ -115,7 +100,6 @@ def main():
                                # extra parameters go here
                                writing_output_file=True,
                                output_graph=args.graph,
-                               output_ceeu=args.ceeu,
                                output_dump=args.dump)
     # return no-error exit code
     return 0

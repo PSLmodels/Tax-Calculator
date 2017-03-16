@@ -1,9 +1,9 @@
 """
-Command-line interface to Tax-Calculator for STATIC tax analysis.
+Command-line interface to Tax-Calculator for STATIC+BEHAVIOR tax analysis.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 tc.py
-# pylint --disable=locally-disabled tc.py
+# pep8 --ignore=E402 tcbeh.py
+# pylint --disable=locally-disabled tcbeh.py
 
 import argparse
 import sys
@@ -12,19 +12,19 @@ from taxcalc import TaxCalcIO
 
 def main():
     """
-    Contains STATIC command-line interface (CLI) to TaxCalcIO class.
+    Contains STATIC+BEHAVIOR command-line interface (CLI) to TaxCalcIO class.
     """
     # pylint: disable=too-many-return-statements
     # parse command-line arguments:
     parser = argparse.ArgumentParser(
-        prog='python tc.py',
+        prog='python tcbeh.py',
         description=('Writes to a file the federal income and payroll tax '
                      'OUTPUT for each filing unit specified in the INPUT '
                      'file, with the OUTPUT computed from the INPUT for the '
-                     'TAXYEAR using Tax-Calculator operating under STATIC '
-                     'analysis assumptions. The OUTPUT file is a '
-                     'CSV-formatted file that contains tax information for '
-                     'each INPUT filing unit.'))
+                     'TAXYEAR using Tax-Calculator operating under '
+                     'STATIC+BEHAVIOR analysis assumptions. The OUTPUT file '
+                     'is a CSV-formatted file that contains tax information '
+                     'for each INPUT filing unit.'))
     parser.add_argument('INPUT', nargs='?',
                         help=('INPUT is name of CSV-formatted file that '
                               'contains for each filing unit variables used '
@@ -56,15 +56,6 @@ def main():
                               'to HTML files for viewing in browser.'),
                         default=False,
                         action="store_true")
-    parser.add_argument('--ceeu',
-                        help=('optional flag that causes normative welfare '
-                              'statistics, including certainty-equivalent '
-                              'expected-utility (ceeu) of after-tax income '
-                              'values for different '
-                              'constant-relative-risk-aversion parameter '
-                              'values, to be written to screen.'),
-                        default=False,
-                        action="store_true")
     parser.add_argument('--dump',
                         help=('optional flag that causes OUTPUT to contain '
                               'all INPUT variables (possibly aged to TAXYEAR) '
@@ -83,17 +74,9 @@ def main():
     if args.TAXYEAR == 0:
         sys.stderr.write('ERROR: must specify TAXYEAR >= 2013;\n')
         arg_errors = True
-    # check consistency of --reform and --assump options
-    if args.assump and not args.reform:
-        sys.stderr.write('ERROR: cannot use --assump without --reform\n')
-        arg_errors = True
-    # check consistency of --reform and --graph options
-    if args.graph and not args.reform:
-        sys.stderr.write('ERROR: cannot specify --graph without --reform\n')
-        arg_errors = True
-    # check consistency of --reform and --ceeu options
-    if args.ceeu and not args.reform:
-        sys.stderr.write('ERROR: cannot specify --ceeu without --reform\n')
+    # check usage of both --reform and --assump options
+    if not args.reform or not args.assump:
+        sys.stderr.write('ERROR: must specify both --reform and --assump\n')
         arg_errors = True
     # check consistency of --exact and --graph options
     if args.exact and args.graph:
@@ -101,9 +84,9 @@ def main():
         arg_errors = True
     # exit if any argument errors
     if arg_errors:
-        sys.stderr.write('USAGE: python tc.py --help\n')
+        sys.stderr.write('USAGE: python tcbeh.py --help\n')
         return 1
-    # instantiate TaxCalcIO object and do STATIC tax analysis
+    # instantiate TaxCalcIO object and do STATIC+BEHAVIOR tax analysis
     aging = args.INPUT.endswith('puf.csv') or args.INPUT.endswith('cps.csv')
     tcio = TaxCalcIO(input_data=args.INPUT,
                      tax_year=args.TAXYEAR,
@@ -112,10 +95,9 @@ def main():
                      growdiff_response=None,
                      aging_input_data=aging,
                      exact_calculations=args.exact)
-    tcio.static_analysis(writing_output_file=True,
-                         output_graph=args.graph,
-                         output_ceeu=args.ceeu,
-                         output_dump=args.dump)
+    tcio.behavior_analysis(writing_output_file=True,
+                           output_graph=args.graph,
+                           output_dump=args.dump)
     # return no-error exit code
     return 0
 # end of main function code
