@@ -426,6 +426,9 @@ class TaxCalcIO(object):
         if output_dump:
             (mtr_paytax, mtr_inctax,
              _) = self._calc.mtr(wrt_full_compensation=False)
+        else:  # do not need marginal tax rates
+            mtr_paytax = None
+            mtr_inctax = None
         self._calc = Behavior.response(self._calc_clp, self._calc)
         # extract output if writing_output_file
         if writing_output_file:
