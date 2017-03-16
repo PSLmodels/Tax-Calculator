@@ -17,7 +17,7 @@ import numpy as np
 import pandas as pd
 
 
-def main(file1name, file2name):
+def main(file1name, file2name, rounding_error):
     """
     Contains high-level logic of the script.
     """
@@ -63,7 +63,6 @@ def main(file1name, file2name):
                 'c62100',       # AMT taxable income
                 'c09600',       # AMT liability
                 'c05800']       # total income tax before credits
-    rounding_error = 0.01
     for var in tax_vars:
         if var in df1_vars and var in df2_vars:
             compare_var(var, df1[var], df2[var], rounding_error, df1['RECID'])
@@ -99,9 +98,15 @@ if __name__ == '__main__':
         description=('Identifies differences in tax output between two '
                      'CSV-formatted files.'))
     PARSER.add_argument('FILE1', nargs='?', default='',
-                        help=('Name of first file; must end with ".csv".'))
+                        help=('Name of first file, which must end '
+                              'with ".csv".'))
     PARSER.add_argument('FILE2', nargs='?', default='',
-                        help=('Name of second file; must end with ".csv".'))
+                        help=('Name of second file, which must end '
+                              'with ".csv".'))
+    PARSER.add_argument('--tol', type=float, default=0.01,
+                        help=('TOL is largest difference that is considered '
+                              'to be zero.  No --tol implies at most one-cent '
+                              '(0.01) differences are considered to be zero.'))
     ARGS = PARSER.parse_args()
     # check for invalid command-line argument values
     ARGS_ERROR = False
@@ -127,9 +132,13 @@ if __name__ == '__main__':
         MSG = 'ERROR: FILE2 [{}] does not end with ".csv"\n'
         sys.stderr.write(MSG.format(ARGS.FILE2))
         ARGS_ERROR = True
+    if ARGS.tol < 0.0:
+        MSG = 'ERROR: TOL [{}] cannot be negative\n'
+        sys.stderr.write(MSG.format(ARGS.tol))
+        ARGS_ERROR = True
     if ARGS_ERROR:
         sys.stderr.write('USAGE: python csv_taxdiffs.py --help\n')
         RCODE = 1
     else:
-        RCODE = main(ARGS.FILE1, ARGS.FILE2)
+        RCODE = main(ARGS.FILE1, ARGS.FILE2, rounding_error=ARGS.tol)
     sys.exit(RCODE)
