@@ -450,6 +450,9 @@ def test_behavior_analysis(reformfile1, assumpfile1):
                      growdiff_response=None,
                      aging_input_data=False,
                      exact_calculations=False)
+    tcio.behavior_analysis(writing_output_file=False,
+                           output_graph=False,
+                           output_dump=False)
     tcio.behavior_analysis(writing_output_file=True,
                            output_graph=True,
                            output_dump=True)
