@@ -26,7 +26,7 @@ write_results puf-22-r1-a1.csv
 python ../tcbeh.py puf.csv 2022 --reform r1.json --assump a2.json > /dev/null
 write_results puf-22-r1-a2.csv
 
-if [ $1 = "save" ]; then
+if [ "$1" == "save" ]; then
     echo "Saving output files"
 else
     rm -f puf-??-r?-a?.csv
