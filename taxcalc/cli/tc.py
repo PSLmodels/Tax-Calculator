@@ -5,8 +5,12 @@ Command-line interface to Tax-Calculator for STATIC tax analysis.
 # pep8 --ignore=E402 tc.py
 # pylint --disable=locally-disabled tc.py
 
-import argparse
+import os
 import sys
+import argparse
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(CUR_PATH, '..', '..'))
+# pylint: disable=wrong-import-position,import-error
 from taxcalc import TaxCalcIO
 
 
