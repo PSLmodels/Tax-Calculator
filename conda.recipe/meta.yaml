@@ -1,6 +1,10 @@
 package:
   name: taxcalc
-  version: 0.4
+  version: 0.9.9
+
+build:
+  entry_points:
+    - tc = taxcalc.cli.tc:main
 
 requirements:
   build:
