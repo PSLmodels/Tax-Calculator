@@ -10,6 +10,7 @@ import tempfile
 from io import StringIO
 import pytest
 import pandas as pd
+# pylint: disable=import-error
 from taxcalc import TaxCalcIO, Growdiff
 
 

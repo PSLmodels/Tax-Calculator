@@ -9,6 +9,7 @@ import os
 import re
 import ast
 import six
+# pylint: disable=import-error
 from taxcalc import Records
 
 

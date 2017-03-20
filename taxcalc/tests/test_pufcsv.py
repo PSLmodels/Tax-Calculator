@@ -20,6 +20,7 @@ import difflib
 import pytest
 import numpy as np
 import pandas as pd
+# pylint: disable=import-error
 from taxcalc import Policy, Records, Calculator, multiyear_diagnostic_table
 
 
