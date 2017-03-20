@@ -17,7 +17,7 @@ cd ~/code/
 tar xvf tc.tar
 echo "FINISHED tar extract"
 cd Tax-Calculator/conda.recipe
-sed -i '' 's/version: 0.4/version: '${1}'/g' meta.yaml
+sed -i '' 's/version: 0.0.0/version: '${1}'/g' meta.yaml
 echo "FINISHED changing meta.yaml"
 conda build --python 2.7 .
 echo "FINISHED CONDA BUILD"
