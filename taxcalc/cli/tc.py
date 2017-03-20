@@ -77,7 +77,9 @@ def main():
                               'all INPUT variables (possibly extrapolated '
                               'to TAXYEAR) and all calculated tax variables, '
                               'where all the variables are named using their '
-                              'internal Tax-Calculator names.'),
+                              'internal Tax-Calculator names.  No --dump '
+                              'option implies OUTPUT contains minimal tax '
+                              'output.'),
                         default=False,
                         action="store_true")
     args = parser.parse_args()
