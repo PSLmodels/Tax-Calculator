@@ -5,12 +5,8 @@ Command-line interface (CLI) to Tax-Calculator.
 # pep8 --ignore=E402 tc.py
 # pylint --disable=locally-disabled tc.py
 
-import os
 import sys
 import argparse
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, '..', '..'))
-# pylint: disable=wrong-import-position,import-error
 from taxcalc import TaxCalcIO
 
 
@@ -45,12 +41,12 @@ def main():
     parser.add_argument('--reform',
                         help=('REFORM is name of optional JSON reform file. '
                               'No --reform implies use of current-law '
-                              'policy.'),
+                              'policy (clp).'),
                         default=None)
     parser.add_argument('--assump',
                         help=('ASSUMP is name of optional JSON economic '
                               'assumptions file.  No --assump implies use of '
-                              'static tax analysis assumptions.'),
+                              'standard (std) analysis assumptions.'),
                         default=None)
     parser.add_argument('--exact',
                         help=('optional flag that suppresses the smoothing of '
@@ -113,10 +109,10 @@ def main():
                      growdiff_response=None,
                      aging_input_data=aging,
                      exact_calculations=args.exact)
-    tcio.static_analysis(writing_output_file=True,
-                         output_graph=args.graph,
-                         output_ceeu=args.ceeu,
-                         output_dump=args.dump)
+    tcio.analyze(writing_output_file=True,
+                 output_graph=args.graph,
+                 output_ceeu=args.ceeu,
+                 output_dump=args.dump)
     # return no-error exit code
     return 0
 # end of main function code

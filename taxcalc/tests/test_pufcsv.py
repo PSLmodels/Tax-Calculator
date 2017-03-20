@@ -20,8 +20,7 @@ import difflib
 import pytest
 import numpy as np
 import pandas as pd
-from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
-from taxcalc import multiyear_diagnostic_table  # pylint: disable=import-error
+from taxcalc import Policy, Records, Calculator, multiyear_diagnostic_table
 
 
 @pytest.fixture(scope='session')

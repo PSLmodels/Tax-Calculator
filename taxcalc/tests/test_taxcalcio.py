@@ -10,7 +10,7 @@ import tempfile
 from io import StringIO
 import pytest
 import pandas as pd
-from taxcalc import TaxCalcIO, Growdiff  # pylint: disable=import-error
+from taxcalc import TaxCalcIO, Growdiff
 
 
 RAWINPUTFILE_FUNITS = 4
@@ -252,7 +252,7 @@ def test_output_otions(rawinputfile, reformfile1, assumpfile1):
     outfilepath = tcio.output_filepath()
     # --ceeu output and standard output
     try:
-        tcio.static_analysis(writing_output_file=True, output_ceeu=True)
+        tcio.analyze(writing_output_file=True, output_ceeu=True)
     except:  # pylint: disable=bare-except
         if os.path.isfile(outfilepath):
             try:
@@ -262,7 +262,7 @@ def test_output_otions(rawinputfile, reformfile1, assumpfile1):
         assert 'TaxCalcIO.calculate(ceeu)_ok' == 'no'
     # --dump output
     try:
-        tcio.static_analysis(writing_output_file=True, output_dump=True)
+        tcio.analyze(writing_output_file=True, output_dump=True)
     except:  # pylint: disable=bare-except
         if os.path.isfile(outfilepath):
             try:
@@ -299,8 +299,7 @@ def test_graph(reformfile1):
                      growdiff_response=None,
                      aging_input_data=False,
                      exact_calculations=False)
-    tcio.static_analysis(writing_output_file=False,
-                         output_graph=True)
+    tcio.analyze(writing_output_file=False, output_graph=True)
     # delete graph files
     output_filename = tcio.output_filepath()
     fname = output_filename.replace('.csv', '-atr.html')
@@ -347,8 +346,33 @@ def test_ceeu_output(lumpsumreformfile):
                      growdiff_response=None,
                      aging_input_data=False,
                      exact_calculations=False)
-    tcio.static_analysis(writing_output_file=False, output_ceeu=True)
+    tcio.analyze(writing_output_file=False, output_ceeu=True)
     assert tcio.tax_year() == taxyear
+
+
+@pytest.yield_fixture
+def assumpfile2():
+    """
+    Temporary assumption file with .json extension.
+    """
+    afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    assump2_contents = """
+    {
+    "consumption": {},
+    "behavior": {"_BE_sub": {"2020": [0.05]}},
+    "growdiff_baseline": {},
+    "growdiff_response": {}
+    }
+    """
+    afile.write(assump2_contents)
+    afile.close()
+    # must close and then yield for Windows platform
+    yield afile
+    if os.path.isfile(afile.name):
+        try:
+            os.remove(afile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
 
 
 @pytest.yield_fixture
@@ -360,9 +384,9 @@ def assumpfile_bad1():
     bad1_assump_contents = """
     {
     "consumption": {},
-    "behavior": {"_BE_sub": {"2020": [0.05]}},
+    "behavior": {},
     "growdiff_baseline": {},
-    "growdiff_response": {}
+    "growdiff_response": {"_ABOOK": {"2015": [-0.01]}}
     }
     """
     afile.write(bad1_assump_contents)
@@ -376,32 +400,7 @@ def assumpfile_bad1():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.yield_fixture
-def assumpfile_bad2():
-    """
-    Temporary assumption file with .json extension.
-    """
-    afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
-    bad2_assump_contents = """
-    {
-    "consumption": {},
-    "behavior": {},
-    "growdiff_baseline": {},
-    "growdiff_response": {"_ABOOK": {"2015": [-0.01]}}
-    }
-    """
-    afile.write(bad2_assump_contents)
-    afile.close()
-    # must close and then yield for Windows platform
-    yield afile
-    if os.path.isfile(afile.name):
-        try:
-            os.remove(afile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
-def test_bad_assumption_file(reformfile1, assumpfile_bad1, assumpfile_bad2):
+def test_bad_assumption_file(reformfile1, assumpfile_bad1):
     """
     Test TaxCalcIO constructor with illegal assumptions.
     """
@@ -413,14 +412,6 @@ def test_bad_assumption_file(reformfile1, assumpfile_bad1, assumpfile_bad2):
                   tax_year=taxyear,
                   reform=reformfile1.name,
                   assump=assumpfile_bad1.name,
-                  growdiff_response=None,
-                  aging_input_data=False,
-                  exact_calculations=False)
-    with pytest.raises(ValueError):
-        TaxCalcIO(input_data=input_dataframe,
-                  tax_year=taxyear,
-                  reform=reformfile1.name,
-                  assump=assumpfile_bad2.name,
                   growdiff_response=None,
                   aging_input_data=False,
                   exact_calculations=False)

@@ -47,11 +47,11 @@ class TaxCalcIO(object):
         or string is name of optional ASSUMP file.
 
     growdiff_response: Growdiff object or None
-        growdiff_response Growdiff object used in dynamic analysis;
-        must be None when conducting static analysis.
+        growdiff_response Growdiff object used only in dynamic analysis;
+        must be None when not conducting dynamic analysis.
 
     aging_input_data: boolean
-        whether or not to age record data from data year to tax_year.
+        whether or not to extrapolate Records data from data year to tax_year.
 
     exact_calculations: boolean
         specifies whether or not exact tax calculations are done without
@@ -72,7 +72,6 @@ class TaxCalcIO(object):
         if file specified by assump string does not exist.
         if tax_year before Policy start_year.
         if tax_year after Policy end_year.
-        if behavior in --assump ASSUMP has any response.
         if growdiff_response in --assump ASSUMP has any response.
 
     Returns
@@ -81,7 +80,7 @@ class TaxCalcIO(object):
     """
 
     def __init__(self, input_data, tax_year, reform, assump,
-                 growdiff_response,  # =None in static analysis
+                 growdiff_response,  # =None except in dynamic analysis
                  aging_input_data, exact_calculations):
         """
         TaxCalcIO class constructor.
@@ -109,10 +108,10 @@ class TaxCalcIO(object):
         else:
             msg = 'INPUT is neither string nor Pandas DataFrame'
             raise ValueError(msg)
-        # construct output_filename and delete old output file if it exists
+        # construct output_filename and delete old output files if they exist
         if reform is None:
             self._reform = False
-            ref = ''
+            ref = '-clp'
         elif isinstance(reform, six.string_types):
             self._reform = True
             # remove any leading directory path from REFORM filename
@@ -127,7 +126,7 @@ class TaxCalcIO(object):
             msg = 'TaxCalcIO.ctor reform is neither None nor str'
             raise ValueError(msg)
         if assump is None:
-            asm = ''
+            asm = '-std'
         elif isinstance(assump, six.string_types):
             # remove any leading directory path from ASSUMP filename
             fname = os.path.basename(assump)
@@ -142,14 +141,10 @@ class TaxCalcIO(object):
             raise ValueError(msg)
         self._output_filename = '{}{}{}.csv'.format(inp, ref, asm)
         delete_file(self._output_filename)
+        delete_file(self._output_filename.replace('.csv', '-atr.html'))
+        delete_file(self._output_filename.replace('.csv', '-mtr.html'))
         # get parameter dictionaries from --reform and --assump files
         param_dict = Calculator.read_json_param_files(reform, assump)
-        # make sure no behavioral response is specified in --assump
-        beh = Behavior()
-        beh.update_behavior(param_dict['behavior'])
-        if beh.has_any_response():
-            msg = '--assump ASSUMP cannot assume any "behavior"'
-            raise ValueError(msg)
         # make sure no growdiff_response is specified in --assump
         gdiff_response = Growdiff()
         gdiff_response.update_growdiff(param_dict['growdiff_response'])
@@ -217,9 +212,12 @@ class TaxCalcIO(object):
         # create Calculator object(s)
         con = Consumption()
         con.update_consumption(param_dict['consumption'])
+        beh = Behavior()
+        beh.update_behavior(param_dict['behavior'])
         self._calc = Calculator(policy=pol, records=recs,
                                 verbose=True,
                                 consumption=con,
+                                behavior=beh,
                                 sync_years=aging_input_data)
         if self._reform:
             self._calc_clp = Calculator(policy=clp, records=recs_clp,
@@ -240,12 +238,12 @@ class TaxCalcIO(object):
         dirpath = os.path.abspath(os.path.dirname(__file__))
         return os.path.join(dirpath, self._output_filename)
 
-    def static_analysis(self, writing_output_file=False,
-                        output_graph=False,
-                        output_ceeu=False,
-                        output_dump=False):
+    def analyze(self, writing_output_file=False,
+                output_graph=False,
+                output_ceeu=False,
+                output_dump=False):
         """
-        Conduct STATIC tax analysis for INPUT and write or return OUTPUT.
+        Conduct non-dynamic tax analysis.
 
         Parameters
         ----------
@@ -268,11 +266,13 @@ class TaxCalcIO(object):
         Nothing
         """
         # pylint: disable=too-many-arguments,too-many-locals,too-many-branches
-        # conduct STATIC tax analysis
+        # conduct non-dynamic tax analysis
         if output_dump:
             (mtr_paytax, mtr_inctax,
              _) = self._calc.mtr(wrt_full_compensation=False)
         else:  # do not need marginal tax rates
+            mtr_paytax = None
+            mtr_inctax = None
             self._calc.calc_all()
         # optionally conduct normative welfare analysis
         if output_ceeu:
@@ -284,33 +284,44 @@ class TaxCalcIO(object):
             ceeu_results = None
         # extract output if writing_output_file
         if writing_output_file:
-            if output_dump:
-                outdf = self.dump_output(mtr_inctax, mtr_paytax)
-            else:
-                outdf = self.standard_output()
-            assert len(outdf.index) == self._calc.records.dim
-            outdf.to_csv(self._output_filename, index=False,
-                         float_format='%.2f')
+            self.write_output_file(output_dump, mtr_paytax, mtr_inctax)
         # optionally write --graph output to HTML files
         if output_graph:
-            atr_data = atr_graph_data(self._calc_clp, self._calc)
-            atr_plot = xtr_graph_plot(atr_data)
-            atr_fname = self._output_filename.replace('.csv', '-atr.html')
-            atr_title = 'ATR by Income Percentile'
-            write_graph_file(atr_plot, atr_fname, atr_title)
-            mtr_data = mtr_graph_data(self._calc_clp, self._calc,
-                                      alt_e00200p_text='Taxpayer Earnings')
-            mtr_plot = xtr_graph_plot(mtr_data)
-            mtr_fname = self._output_filename.replace('.csv', '-mtr.html')
-            mtr_title = 'MTR by Income Percentile'
-            write_graph_file(mtr_plot, mtr_fname, mtr_title)
+            self.write_graph_files()
         # optionally write --ceeu output to stdout
         if ceeu_results:
             print(ceeu_results)  # pylint: disable=superfluous-parens
 
-    def standard_output(self):
+    def write_output_file(self, output_dump, mtr_paytax, mtr_inctax):
         """
-        Extract standard output and return as pandas DataFrame.
+        Write output to CSV-formatted file.
+        """
+        if output_dump:
+            outdf = self.dump_output(mtr_inctax, mtr_paytax)
+        else:
+            outdf = self.minimal_output()
+        assert len(outdf.index) == self._calc.records.dim
+        outdf.to_csv(self._output_filename, index=False, float_format='%.2f')
+
+    def write_graph_files(self):
+        """
+        Write graphs to HTML files.
+        """
+        atr_data = atr_graph_data(self._calc_clp, self._calc)
+        atr_plot = xtr_graph_plot(atr_data)
+        atr_fname = self._output_filename.replace('.csv', '-atr.html')
+        atr_title = 'ATR by Income Percentile'
+        write_graph_file(atr_plot, atr_fname, atr_title)
+        mtr_data = mtr_graph_data(self._calc_clp, self._calc,
+                                  alt_e00200p_text='Taxpayer Earnings')
+        mtr_plot = xtr_graph_plot(mtr_data)
+        mtr_fname = self._output_filename.replace('.csv', '-mtr.html')
+        mtr_title = 'MTR by Income Percentile'
+        write_graph_file(mtr_plot, mtr_fname, mtr_title)
+
+    def minimal_output(self):
+        """
+        Extract minimal output and return as pandas DataFrame.
         """
         varlist = ['RECID', 'YEAR', 'WEIGHT', 'INCTAX', 'LSTAX', 'PAYTAX']
         odict = dict()
@@ -395,7 +406,7 @@ class TaxCalcIO(object):
         the TaxCalcIO constructor.
 
         Last four parameters are same as the first four parameters of
-        the TaxCalcIO static_analysis method.
+        the TaxCalcIO analyze method.
 
         Returns
         -------
@@ -455,14 +466,14 @@ class TaxCalcIO(object):
                          exact_calculations=exact_calculations)
         if year == tax_year:
             # conduct final tax analysis for year equal to tax_year
-            tcio.static_analysis(writing_output_file=writing_output_file,
-                                 output_graph=output_graph,
-                                 output_ceeu=output_ceeu,
-                                 output_dump=output_dump)
+            tcio.analyze(writing_output_file=writing_output_file,
+                         output_graph=output_graph,
+                         output_ceeu=output_ceeu,
+                         output_dump=output_dump)
             gd_dict = {}
         else:
             # conduct intermediate tax analysis for year less than tax_year
-            tcio.static_analysis()
+            tcio.analyze()
             # build dict in gdiff_dict key:dict pair for key equal to next year
             # ... extract tcio results for year needed by GrowModel class
             # >>>>> add logic here <<<<<
