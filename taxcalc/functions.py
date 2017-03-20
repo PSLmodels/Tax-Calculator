@@ -1115,6 +1115,7 @@ def SchR(age_head, age_spouse, MARS, c00100,
 def EducationTaxCredit(e87530, MARS, c00100, _num, c05800,
                        e07300, c07180, c07200, c87668,
                        LLC_Expense_c, ETC_pe_Single, ETC_pe_Married,
+                       CR_Education_hc,
                        c07230):
     """
     Education Tax Credit (Form 8863) nonrefundable amount, c07230
@@ -1163,7 +1164,7 @@ def EducationTaxCredit(e87530, MARS, c00100, _num, c05800,
     xline9 = max(0., c05800 - (e07300 + c07180 + c07200 + xline5))
     xline10 = min(c87668, xline9)
     c87680 = xline5 + xline10
-    c07230 = c87680
+    c07230 = c87680 * (1. - CR_Education_hc)
     return c07230
 
 
