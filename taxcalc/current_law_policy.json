@@ -3041,5 +3041,21 @@
         "cpi_inflated": false,
         "col_label": "",
         "value": [0.0]
+    },
+
+    "_CR_Education_hc": {
+        "long_name": "Education Credits",
+        "description": "If greater than zero, this decimal fraction reduces the portion of education credits that can be claimed",
+        "section_1": "Nonrefundable credits",
+        "section_2": "Misc. credit limits",
+        "irs_ref": "",
+        "notes": "Credit claimed will be (1. - Haircut) * Education Credits",
+        "start_year": 2013,
+        "col_var": "",
+        "row_var": "",
+        "row_label": ["2013"],
+        "cpi_inflated": false,
+        "col_label": "",
+        "value": [0.0]
     }
 }
