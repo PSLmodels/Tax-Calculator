@@ -376,6 +376,24 @@ def assumpfile2():
             pass  # sometimes we can't remove a generated temporary file
 
 
+def test_ceeu_with_behavior(lumpsumreformfile, assumpfile2):
+    """
+    Test TaxCalcIO.analyze method when assuming behavior & doing ceeu calcs.
+    """
+    taxyear = 2020
+    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
+    recdf = pd.DataFrame(data=recdict, index=[0])
+    tcio = TaxCalcIO(input_data=recdf,
+                     tax_year=taxyear,
+                     reform=lumpsumreformfile.name,
+                     assump=assumpfile2.name,
+                     growdiff_response=None,
+                     aging_input_data=False,
+                     exact_calculations=False)
+    tcio.analyze(writing_output_file=False, output_ceeu=True)
+    assert tcio.tax_year() == taxyear
+
+
 @pytest.yield_fixture
 def assumpfile_bad1():
     """

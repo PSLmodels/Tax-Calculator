@@ -219,7 +219,7 @@ class TaxCalcIO(object):
                                 consumption=con,
                                 behavior=beh,
                                 sync_years=aging_input_data)
-        if self._reform:
+        if self._reform or beh.has_any_response():
             self._calc_clp = Calculator(policy=clp, records=recs_clp,
                                         verbose=False,
                                         consumption=con,
@@ -273,13 +273,22 @@ class TaxCalcIO(object):
         else:  # do not need marginal tax rates
             mtr_paytax = None
             mtr_inctax = None
+        behavior_response = self._calc.behavior.has_response()
+        if behavior_response:
+            self._calc = Behavior.response(self._calc_clp, self._calc)
+        else:
             self._calc.calc_all()
         # optionally conduct normative welfare analysis
         if output_ceeu:
-            self._calc_clp.calc_all()
-            cedict = ce_aftertax_income(self._calc_clp, self._calc,
-                                        require_no_agg_tax_change=False)
-            ceeu_results = TaxCalcIO.ceeu_output(cedict)
+            if behavior_response:
+                ceeu_results = 'SKIP --ceeu output because baseline and '
+                ceeu_results += 'reform cannot be sensibly compared when '
+                ceeu_results += 'specifying "behavior" with --assump option.'
+            else:
+                self._calc_clp.calc_all()
+                cedict = ce_aftertax_income(self._calc_clp, self._calc,
+                                            require_no_agg_tax_change=False)
+                ceeu_results = TaxCalcIO.ceeu_output(cedict)
         else:
             ceeu_results = None
         # extract output if writing_output_file
