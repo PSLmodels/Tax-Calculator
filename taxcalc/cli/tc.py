@@ -1,5 +1,5 @@
 """
-Command-line interface to Tax-Calculator for STATIC tax analysis.
+Command-line interface (CLI) to Tax-Calculator.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 tc.py
@@ -16,9 +16,9 @@ from taxcalc import TaxCalcIO
 
 def main():
     """
-    Contains STATIC command-line interface to Tax-Calculator TaxCalcIO class.
+    Contains command-line interface (CLI) to Tax-Calculator TaxCalcIO class.
     """
-    # pylint: disable=too-many-return-statements
+    # pylintx: disable=too-many-return-statements
     # parse command-line arguments:
     usage_str = 'tc INPUT TAXYEAR {} {}'.format(
         '[--reform REFORM] [--assump  ASSUMP]',
@@ -74,44 +74,35 @@ def main():
                         action="store_true")
     parser.add_argument('--dump',
                         help=('optional flag that causes OUTPUT to contain '
-                              'all INPUT variables (possibly aged to TAXYEAR) '
-                              'and all calculated tax variables, where all '
-                              'the variables are named using their internal '
-                              'Tax-Calculator names.'),
+                              'all INPUT variables (possibly extrapolated '
+                              'to TAXYEAR) and all calculated tax variables, '
+                              'where all the variables are named using their '
+                              'internal Tax-Calculator names.'),
                         default=False,
                         action="store_true")
     args = parser.parse_args()
+    arg_errors = False
     # check INPUT file name
     if args.INPUT == '':
-        sys.stderr.write('ERROR: must specify INPUT file name;\n')
-        sys.stderr.write('USAGE: python tc.py --help\n')
-        return 1
+        sys.stderr.write('ERROR: must specify INPUT file name\n')
+        arg_errors = True
     # check TAXYEAR value
     if args.TAXYEAR == 0:
-        sys.stderr.write('ERROR: must specify TAXYEAR >= 2013;\n')
-        sys.stderr.write('USAGE: python tc.py --help\n')
-        return 1
-    # check consistency of --reform and --assump options
-    if args.assump and not args.reform:
-        sys.stderr.write('ERROR: cannot use --assump without --reform\n')
-        sys.stderr.write('USAGE: python tc.py --help\n')
-        return 1
+        sys.stderr.write('ERROR: must specify TAXYEAR >= 2013\n')
+        arg_errors = True
     # check consistency of --reform and --graph options
     if args.graph and not args.reform:
         sys.stderr.write('ERROR: cannot specify --graph without --reform\n')
-        sys.stderr.write('USAGE: python tc.py --help\n')
-        return 1
+        arg_errors = True
     # check consistency of --reform and --ceeu options
     if args.ceeu and not args.reform:
         sys.stderr.write('ERROR: cannot specify --ceeu without --reform\n')
-        sys.stderr.write('USAGE: python tc.py --help\n')
+        arg_errors = True
+    # exit if any argument errors
+    if arg_errors:
+        sys.stderr.write('USAGE: tc --help\n')
         return 1
-    # check consistency of --exact and --graph options
-    if args.exact and args.graph:
-        sys.stderr.write('ERROR: cannot specify both --exact and --graph\n')
-        sys.stderr.write('USAGE: python tc.py --help\n')
-        return 1
-    # instantiate TaxCalcIO object and do STATIC tax analysis
+    # instantiate TaxCalcIO object and do tax analysis
     aging = args.INPUT.endswith('puf.csv') or args.INPUT.endswith('cps.csv')
     tcio = TaxCalcIO(input_data=args.INPUT,
                      tax_year=args.TAXYEAR,
