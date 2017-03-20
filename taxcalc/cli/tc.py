@@ -20,13 +20,16 @@ def main():
     """
     # pylint: disable=too-many-return-statements
     # parse command-line arguments:
+    usage_str = 'tc INPUT TAXYEAR {} {}'.format(
+        '[--reform REFORM] [--assump  ASSUMP]',
+        '[--exact] [--graph] [--ceeu] [--dump]')
     parser = argparse.ArgumentParser(
-        prog='python tc.py',
+        prog='',
+        usage=usage_str,
         description=('Writes to a file the federal income and payroll tax '
                      'OUTPUT for each filing unit specified in the INPUT '
                      'file, with the OUTPUT computed from the INPUT for the '
-                     'TAXYEAR using Tax-Calculator operating under STATIC '
-                     'analysis assumptions. The OUTPUT file is a '
+                     'TAXYEAR using Tax-Calculator. The OUTPUT file is a '
                      'CSV-formatted file that contains tax information for '
                      'each INPUT filing unit.'))
     parser.add_argument('INPUT', nargs='?',
@@ -46,8 +49,8 @@ def main():
                         default=None)
     parser.add_argument('--assump',
                         help=('ASSUMP is name of optional JSON economic '
-                              'assumption file.  No --assump implies use of '
-                              'static analysis assumptions.'),
+                              'assumptions file.  No --assump implies use of '
+                              'static tax analysis assumptions.'),
                         default=None)
     parser.add_argument('--exact',
                         help=('optional flag that suppresses the smoothing of '
