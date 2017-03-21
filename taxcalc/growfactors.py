@@ -35,8 +35,6 @@ class Growfactors(object):
     Typical usage is "gfactor = Growfactors()", which produces an object
     containing the default grow factors in the Growfactors.FILENAME file.
     """
-    # suppress pylint warnings about unrecognized Records variables:
-    # pylintx: disable=...
 
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
     FILENAME = 'growfactors.csv'
