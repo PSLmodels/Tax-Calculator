@@ -907,7 +907,9 @@ def atr_graph_data(calc1, calc2,
         options:
             'itax': average individual income tax rate;
             'ptax': average payroll tax rate; and
-            'combined': sum of average income and payroll tax rates.
+            'combined': average combined tax rate, which includes
+                        individual income tax and payroll tax as
+                        well as lumpsum tax.
         specifies which average tax rate to show on graph's y axis
 
     min_avginc : float
