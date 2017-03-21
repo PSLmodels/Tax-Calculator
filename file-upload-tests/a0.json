@@ -1,0 +1,14 @@
+{
+    "consumption": {
+        // no consumption response when computing marginal tax rates
+    },
+    "behavior": {
+        // no behaviorial responses to reform
+    },
+    "growdiff_baseline": {
+        // no differences in baseline growth assumptions
+    },
+    "growdiff_response": {
+        // no growth response to reform
+    }
+}
