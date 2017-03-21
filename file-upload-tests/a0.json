@@ -1,14 +1,15 @@
+// Assume no customized analysis assumptions, which means:
+// - no consumption response when computing marginal tax rates
+// - no behaviorial responses to reform
+// - no differences in baseline growth assumptions
+// - no growth response to reform
 {
     "consumption": {
-        // no consumption response when computing marginal tax rates
     },
     "behavior": {
-        // no behaviorial responses to reform
     },
     "growdiff_baseline": {
-        // no differences in baseline growth assumptions
     },
     "growdiff_response": {
-        // no growth response to reform
     }
 }

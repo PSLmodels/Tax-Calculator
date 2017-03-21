@@ -44,12 +44,12 @@ def main():
     parser.add_argument('--reform',
                         help=('REFORM is name of optional JSON reform file. '
                               'No --reform implies use of current-law '
-                              'policy (clp).'),
+                              'policy.'),
                         default=None)
     parser.add_argument('--assump',
                         help=('ASSUMP is name of optional JSON economic '
                               'assumptions file.  No --assump implies use of '
-                              'standard (std) analysis assumptions.'),
+                              'no customized analysis assumptions.'),
                         default=None)
     parser.add_argument('--exact',
                         help=('optional flag that suppresses the smoothing of '

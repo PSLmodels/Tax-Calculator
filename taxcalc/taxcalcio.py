@@ -111,7 +111,7 @@ class TaxCalcIO(object):
         # construct output_filename and delete old output files if they exist
         if reform is None:
             specified_reform = False
-            ref = '-clp'
+            ref = '-cl'
         elif isinstance(reform, six.string_types):
             specified_reform = True
             # remove any leading directory path from REFORM filename
@@ -126,7 +126,7 @@ class TaxCalcIO(object):
             msg = 'TaxCalcIO.ctor: reform is neither None nor str'
             raise ValueError(msg)
         if assump is None:
-            asm = '-std'
+            asm = '-no'
         elif isinstance(assump, six.string_types):
             # remove any leading directory path from ASSUMP filename
             fname = os.path.basename(assump)
