@@ -2670,10 +2670,10 @@
         "irs_ref": "",
         "notes": "",
         "start_year": 2013,
-        "col_var": ["single", "joint", "separate", "head of household", "widow", "separate"],
+        "col_label": ["single", "joint", "separate", "head of household", "widow", "separate"],
         "row_label": ["2013"],
         "cpi_inflated": true,
-        "col_label": "",
+        "col_var": "",
         "value": [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
     },
 
