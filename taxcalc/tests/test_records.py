@@ -31,19 +31,19 @@ def test_correct_Records_instantiation(puf_1991, puf_1991_path, weights_1991):
     rec1.set_current_year(Records.PUF_YEAR + 1)
     sum_e00200_in_puf_year_plus_one = rec1.e00200.sum()
     assert sum_e00200_in_puf_year_plus_one == sum_e00200_in_puf_year
-    assert rec1.positive_weights() == True
+    assert rec1.positive_weights()
     rec2 = Records(data=puf_1991, gfactors=Growfactors(), weights=None)
     assert rec2
     assert np.all(rec2.MARS != 0)
     assert rec2.current_year == Records.PUF_YEAR
-    assert rec2.positive_weights() == False
+    assert not rec2.positive_weights()
     adj_df = pd.read_csv(Records.ADJUST_RATIOS_PATH)
     adj_df = adj_df.transpose()
     rec3 = Records(data=puf_1991, weights=None, adjust_ratios=adj_df)
     assert rec3
     assert np.all(rec3.MARS != 0)
     assert rec3.current_year == Records.PUF_YEAR
-    assert rec3.positive_weights() == False
+    assert not rec3.positive_weights()
 
 
 def test_correct_Records_instantiation_sample(puf_1991, weights_1991):
