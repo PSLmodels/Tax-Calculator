@@ -244,7 +244,7 @@
     },
 
     "_ALD_EducatorExpenses_hc": {
-        "long_name": "Deduction for educator expenses",
+        "long_name": "Deduction for educator expenses haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of educator expenses that can be deducted from AGI",
         "section_1": "Above the line deduction",
         "section_2": "Misc. adjustment haircuts",
@@ -260,7 +260,7 @@
     },
 
     "_ALD_HSADeduction_hc": {
-        "long_name": "Deduction for HSA deduction",
+        "long_name": "Deduction for HSA deduction haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of a taxpayer's HSA deduction that can be deducted from AGI",
         "section_1": "Above the line deduction",
         "section_2": "Misc. adjustment haircuts",
@@ -276,7 +276,7 @@
     },
 
     "_ALD_IRAContributions_hc": {
-        "long_name": "Deduction for IRA contributions",
+        "long_name": "Deduction for IRA contributions haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of IRA contributions that can be deducted from AGI",
         "section_1": "Above the line deduction",
         "section_2": "Misc. adjustment haircuts",
@@ -292,7 +292,7 @@
     },
 
     "_ALD_DomesticProduction_hc": {
-        "long_name": "Deduction for domestic production activity",
+        "long_name": "Deduction for domestic production activity haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of domestic production activity that can be deducted from AGI",
         "section_1": "Above the line deduction",
         "section_2": "Misc. adjustment haircuts",
@@ -308,7 +308,7 @@
     },
 
     "_ALD_Tuition_hc": {
-        "long_name": "Deduction for tuition and fees",
+        "long_name": "Deduction for tuition and fees haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of tuition and fees that can be deducted from AGI",
         "section_1": "Above the line deduction",
         "section_2": "Misc. adjustment haircuts",
@@ -324,7 +324,7 @@
     },
 
     "_ALD_InvInc_ec_rt": {
-        "long_name": "Investment income exclusion rate",
+        "long_name": "Investment income exclusion rate haircut",
         "description": "Decimal fraction of investment income base that can be excluded from AGI.",
         "section_1": "Above the line deductions",
         "section_2": "Misc. exclusions",
@@ -370,7 +370,7 @@
     },
 
     "_ALD_Dependents_hc": {
-        "long_name": "Deduction for childcare costs",
+        "long_name": "Deduction for childcare costs haircut",
         "description": "This decimal fraction, if greater than zero, reduces the portion of childcare costs that can be deducted from AGI",
         "section_1": "Above the line deductions",
         "section_2": "Child and elderly care",
@@ -2900,7 +2900,7 @@
     },
 
     "_CR_RetirementSavings_hc": {
-        "long_name": "Credit for retirement savings",
+        "long_name": "Credit for retirement savings haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of the retirement savings credit that can be claimed",
         "section_1": "Nonrefundable credits",
         "section_2": "Misc. credit limits",
@@ -2916,7 +2916,7 @@
     },
 
     "_CR_ForeignTax_hc": {
-        "long_name": "Credit for foreign tax",
+        "long_name": "Credit for foreign tax haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of the foreign tax credit that can be claimed",
         "section_1": "Nonrefundable credits",
         "section_2": "Misc. credit limits",
@@ -2932,7 +2932,7 @@
     },
 
     "_CR_ResidentialEnergy_hc": {
-        "long_name": "Credit for residential energy",
+        "long_name": "Credit for residential energy haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of the residential energy credit that can be claimed",
         "section_1": "Nonrefundable credits",
         "section_2": "Misc. credit limits",
@@ -2948,7 +2948,7 @@
     },
 
     "_CR_GeneralBusiness_hc": {
-        "long_name": "Credit for general business",
+        "long_name": "Credit for general business haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of the general business credit that can be claimed",
         "section_1": "Nonrefundable credits",
         "section_2": "Misc. credit limits",
@@ -2964,7 +2964,7 @@
     },
 
     "_CR_MinimumTax_hc": {
-        "long_name": "Credit for previous year minimum tax credit",
+        "long_name": "Credit for previous year minimum tax credit haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of the previous year minimum tax credit that can be claimed",
         "section_1": "Nonrefundable credits",
         "section_2": "Misc. credit limits",
@@ -2980,7 +2980,7 @@
     },
 
     "_CR_AmOppRefundable_hc": {
-        "long_name": "Refundable portion of the American Opportunity Credit",
+        "long_name": "Refundable portion of the American Opportunity Credit haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of the refundable American Opportunity credit that can be claimed",
         "section_1": "Nonrefundable credits",
         "section_2": "Misc. credit limits",
@@ -2996,7 +2996,7 @@
     },
 
     "_CR_AmOppNonRefundable_hc": {
-        "long_name": "Nonrefundable portion of the American Opportunity Credit",
+        "long_name": "Nonrefundable portion of the American Opportunity Credit haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of the nonrefundable American Opportunity credit that can be claimed",
         "section_1": "Nonrefundable credits",
         "section_2": "Misc. credit limits",
@@ -3012,7 +3012,7 @@
     },
 
     "_CR_SchR_hc": {
-        "long_name": "Schedule R Credit",
+        "long_name": "Schedule R Credit haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of Schedule R credit that can be claimed",
         "section_1": "Nonrefundable credits",
         "section_2": "Misc. credit limits",
@@ -3028,7 +3028,7 @@
     },
 
     "_CR_OtherCredits_hc": {
-        "long_name": "Other Credits",
+        "long_name": "Other Credits haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of other credit that can be claimed",
         "section_1": "Nonrefundable credits",
         "section_2": "Misc. credit limits",
@@ -3044,7 +3044,7 @@
     },
 
     "_CR_Education_hc": {
-        "long_name": "Education Credits",
+        "long_name": "Education Credits haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of education credits that can be claimed",
         "section_1": "Nonrefundable credits",
         "section_2": "Misc. credit limits",
