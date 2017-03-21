@@ -394,6 +394,31 @@ def test_ceeu_with_behavior(lumpsumreformfile, assumpfile2):
     assert tcio.tax_year() == taxyear
 
 
+def test_bad_ctor_when_using_growmodel(lumpsumreformfile, assumpfile2):
+    """
+    Test improper TaxCalcIO constructor calls when using GrowModel analysis.
+    """
+    taxyear = 2020
+    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
+    recdf = pd.DataFrame(data=recdict, index=[0])
+    with pytest.raises(ValueError):
+        TaxCalcIO(input_data=recdf,
+                  tax_year=taxyear,
+                  reform=None,
+                  assump=None,
+                  growdiff_response=Growdiff(),
+                  aging_input_data=False,
+                  exact_calculations=False)
+    with pytest.raises(ValueError):
+        TaxCalcIO(input_data=recdf,
+                  tax_year=taxyear,
+                  reform=lumpsumreformfile.name,
+                  assump=assumpfile2.name,
+                  growdiff_response=Growdiff(),
+                  aging_input_data=False,
+                  exact_calculations=False)
+
+
 @pytest.yield_fixture
 def assumpfile_bad1():
     """
@@ -436,19 +461,19 @@ def test_bad_assumption_file(reformfile1, assumpfile_bad1):
                   exact_calculations=False)
 
 
-def test_dynamic_analysis(reformfile1, assumpfile1):
+def test_growmodel_analysis(reformfile1, assumpfile1):
     """
-    Test TaxCalcIO.dynamic_analysis method with no output.
+    Test TaxCalcIO.growmodel_analysis method with no output.
     """
     taxyear = 2015
     recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
     recdf = pd.DataFrame(data=recdict, index=[0])
     try:
-        TaxCalcIO.dynamic_analysis(input_data=recdf,
-                                   tax_year=taxyear,
-                                   reform=reformfile1.name,
-                                   assump=assumpfile1.name,
-                                   aging_input_data=False,
-                                   exact_calculations=False)
+        TaxCalcIO.growmodel_analysis(input_data=recdf,
+                                     tax_year=taxyear,
+                                     reform=reformfile1.name,
+                                     assump=assumpfile1.name,
+                                     aging_input_data=False,
+                                     exact_calculations=False)
     except:  # pylint: disable=bare-except
-        assert 'TaxCalcIO.dynamic_analysis_ok' == 'no'
+        assert 'TaxCalcIO.growmodel_analysis_ok' == 'no'

@@ -47,8 +47,8 @@ class TaxCalcIO(object):
         or string is name of optional ASSUMP file.
 
     growdiff_response: Growdiff object or None
-        growdiff_response Growdiff object used only in dynamic analysis;
-        must be None when not conducting dynamic analysis.
+        growdiff_response Growdiff object is used only by the
+        TaxCalcIO.growmodel_analysis method; must be None in all other cases.
 
     aging_input_data: boolean
         whether or not to extrapolate Records data from data year to tax_year.
@@ -80,7 +80,7 @@ class TaxCalcIO(object):
     """
 
     def __init__(self, input_data, tax_year, reform, assump,
-                 growdiff_response,  # =None except in dynamic analysis
+                 growdiff_response,
                  aging_input_data, exact_calculations):
         """
         TaxCalcIO class constructor.
@@ -110,10 +110,10 @@ class TaxCalcIO(object):
             raise ValueError(msg)
         # construct output_filename and delete old output files if they exist
         if reform is None:
-            self._reform = False
+            specified_reform = False
             ref = '-clp'
         elif isinstance(reform, six.string_types):
-            self._reform = True
+            specified_reform = True
             # remove any leading directory path from REFORM filename
             fname = os.path.basename(reform)
             # check if fname ends with ".json"
@@ -123,7 +123,7 @@ class TaxCalcIO(object):
                 msg = 'REFORM file named {} does not end in .json'
                 raise ValueError(msg.format(fname))
         else:
-            msg = 'TaxCalcIO.ctor reform is neither None nor str'
+            msg = 'TaxCalcIO.ctor: reform is neither None nor str'
             raise ValueError(msg)
         if assump is None:
             asm = '-std'
@@ -137,7 +137,7 @@ class TaxCalcIO(object):
                 msg = 'ASSUMP file named {} does not end in .json'
                 raise ValueError(msg.format(fname))
         else:
-            msg = 'TaxCalcIO.ctor assump is neither None nor str'
+            msg = 'TaxCalcIO.ctor: assump is neither None nor str'
             raise ValueError(msg)
         self._output_filename = '{}{}{}.csv'.format(inp, ref, asm)
         delete_file(self._output_filename)
@@ -145,6 +145,10 @@ class TaxCalcIO(object):
         delete_file(self._output_filename.replace('.csv', '-mtr.html'))
         # get parameter dictionaries from --reform and --assump files
         param_dict = Calculator.read_json_param_files(reform, assump)
+        # create Behavior object
+        beh = Behavior()
+        beh.update_behavior(param_dict['behavior'])
+        self._behavior_has_any_response = beh.has_any_response()
         # make sure no growdiff_response is specified in --assump
         gdiff_response = Growdiff()
         gdiff_response.update_growdiff(param_dict['growdiff_response'])
@@ -160,21 +164,29 @@ class TaxCalcIO(object):
         # specify gdiff_response object
         if growdiff_response is None:
             gdiff_response = Growdiff()
+            using_growmodel = False
         elif isinstance(growdiff_response, Growdiff):
             gdiff_response = growdiff_response
+            using_growmodel = True
+            if self._behavior_has_any_response:
+                msg = 'cannot assume any "behavior" when using GrowModel'
+                raise ValueError(msg)
         else:
-            msg = 'TaxCalcIO.ctor growdiff_response is neither None nor {}'
+            msg = 'TaxCalcIO.ctor: growdiff_response is neither None nor {}'
             raise ValueError(msg.format('a Growdiff object'))
         # create Growfactors ref object that has both gdiff objects applied
         gfactors_ref = Growfactors()
         gdiff_baseline.apply_to(gfactors_ref)
         gdiff_response.apply_to(gfactors_ref)
         # create Policy objects
-        if self._reform:
+        if specified_reform:
             pol = Policy(gfactors=gfactors_ref)
             pol.implement_reform(param_dict['policy'])
         else:
             pol = Policy(gfactors=gfactors_clp)
+            if using_growmodel:
+                msg = 'TaxCalcIO.ctor: no --reform when using GrowModel'
+                raise ValueError(msg)
         clp = Policy(gfactors=gfactors_clp)
         # check for valid tax_year value
         if tax_year < pol.start_year:
@@ -205,9 +217,6 @@ class TaxCalcIO(object):
         # create Calculator objects
         con = Consumption()
         con.update_consumption(param_dict['consumption'])
-        beh = Behavior()
-        beh.update_behavior(param_dict['behavior'])
-        self._behavior_has_any_response = beh.has_any_response()
         self._calc = Calculator(policy=pol, records=recs,
                                 verbose=True,
                                 consumption=con,
@@ -236,7 +245,7 @@ class TaxCalcIO(object):
                 output_ceeu=False,
                 output_dump=False):
         """
-        Conduct non-dynamic tax analysis.
+        Conduct tax analysis.
 
         Parameters
         ----------
@@ -259,7 +268,6 @@ class TaxCalcIO(object):
         Nothing
         """
         # pylint: disable=too-many-arguments,too-many-locals,too-many-branches
-        # conduct non-dynamic tax analysis
         if output_dump:
             (mtr_paytax, mtr_inctax,
              _) = self._calc.mtr(wrt_full_compensation=False)
@@ -394,14 +402,14 @@ class TaxCalcIO(object):
         return odf
 
     @staticmethod
-    def dynamic_analysis(input_data, tax_year, reform, assump,
-                         aging_input_data, exact_calculations,
-                         writing_output_file=False,
-                         output_graph=False,
-                         output_ceeu=False,
-                         output_dump=False):
+    def growmodel_analysis(input_data, tax_year, reform, assump,
+                           aging_input_data, exact_calculations,
+                           writing_output_file=False,
+                           output_graph=False,
+                           output_ceeu=False,
+                           output_dump=False):
         """
-        High-level logic for dyanamic tax analysis.
+        High-level logic for dynamic analysis using GrowModel class.
 
         Parameters
         ----------
@@ -452,7 +460,7 @@ class TaxCalcIO(object):
         the TaxCalcIO constructor.
 
         Last four parameters are same as the first four parameters of
-        the TaxCalcIO static_analysis method.
+        the TaxCalcIO analyze method.
 
         Returns
         -------

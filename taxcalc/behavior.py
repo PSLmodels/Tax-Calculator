@@ -105,6 +105,8 @@ class Behavior(ParametersBase):
     @staticmethod
     def response(calc_x, calc_y):
         """
+        Implements TaxBrain "Partial Equilibrium Simulation" dynamic analysis.
+
         Modify calc_y records to account for behavioral responses that arise
           from the policy reform that involves moving from calc_x.policy to
           calc_y.policy.  Neither calc_x nor calc_y need to have had calc_all()
