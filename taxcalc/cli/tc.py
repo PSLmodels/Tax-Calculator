@@ -48,8 +48,8 @@ def main():
                         default=None)
     parser.add_argument('--assump',
                         help=('ASSUMP is name of optional JSON economic '
-                              'assumptions file.  No --assump implies use of '
-                              'no customized analysis assumptions.'),
+                              'assumptions file.  No --assump implies use '
+                              'of no customized assumptions.'),
                         default=None)
     parser.add_argument('--exact',
                         help=('optional flag that suppresses the smoothing of '
