@@ -169,13 +169,13 @@ class TaxCalcIO(object):
         gfactors_ref = Growfactors()
         gdiff_baseline.apply_to(gfactors_ref)
         gdiff_response.apply_to(gfactors_ref)
-        # create Policy object and implement reform if specified
+        # create Policy objects
         if self._reform:
             pol = Policy(gfactors=gfactors_ref)
             pol.implement_reform(param_dict['policy'])
-            clp = Policy(gfactors=gfactors_clp)
         else:
             pol = Policy(gfactors=gfactors_clp)
+        clp = Policy(gfactors=gfactors_clp)
         # check for valid tax_year value
         if tax_year < pol.start_year:
             msg = 'tax_year {} less than policy.start_year {}'
@@ -185,19 +185,13 @@ class TaxCalcIO(object):
             raise ValueError(msg.format(tax_year, pol.end_year))
         # set policy to tax_year
         pol.set_year(tax_year)
-        if self._reform:
-            clp.set_year(tax_year)
-        # read input file contents into Records object(s)
+        clp.set_year(tax_year)
+        # read input file contents into Records objects
         if aging_input_data:
-            if self._reform:
-                recs = Records(data=input_data,
-                               gfactors=gfactors_ref,
-                               exact_calculations=exact_calculations)
-                recs_clp = Records(data=input_data,
-                                   gfactors=gfactors_clp,
-                                   exact_calculations=exact_calculations)
-            else:
-                recs = Records(data=input_data,
+            recs = Records(data=input_data,
+                           gfactors=gfactors_ref,
+                           exact_calculations=exact_calculations)
+            recs_clp = Records(data=input_data,
                                gfactors=gfactors_clp,
                                exact_calculations=exact_calculations)
         else:  # input_data are raw data that are not being aged
@@ -207,23 +201,22 @@ class TaxCalcIO(object):
                            adjust_ratios=None,
                            weights=None,
                            start_year=tax_year)
-            if self._reform:
-                recs_clp = copy.deepcopy(recs)
-        # create Calculator object(s)
+            recs_clp = copy.deepcopy(recs)
+        # create Calculator objects
         con = Consumption()
         con.update_consumption(param_dict['consumption'])
         beh = Behavior()
         beh.update_behavior(param_dict['behavior'])
+        self._behavior_has_any_response = beh.has_any_response()
         self._calc = Calculator(policy=pol, records=recs,
                                 verbose=True,
                                 consumption=con,
                                 behavior=beh,
                                 sync_years=aging_input_data)
-        if self._reform or beh.has_any_response():
-            self._calc_clp = Calculator(policy=clp, records=recs_clp,
-                                        verbose=False,
-                                        consumption=con,
-                                        sync_years=aging_input_data)
+        self._calc_clp = Calculator(policy=clp, records=recs_clp,
+                                    verbose=False,
+                                    consumption=con,
+                                    sync_years=aging_input_data)
 
     def tax_year(self):
         """
@@ -273,17 +266,18 @@ class TaxCalcIO(object):
         else:  # do not need marginal tax rates
             mtr_paytax = None
             mtr_inctax = None
-        behavior_response = self._calc.behavior.has_response()
-        if behavior_response:
+        if self._behavior_has_any_response:
             self._calc = Behavior.response(self._calc_clp, self._calc)
         else:
             self._calc.calc_all()
         # optionally conduct normative welfare analysis
         if output_ceeu:
-            if behavior_response:
+            if self._behavior_has_any_response:
                 ceeu_results = 'SKIP --ceeu output because baseline and '
-                ceeu_results += 'reform cannot be sensibly compared when '
-                ceeu_results += 'specifying "behavior" with --assump option.'
+                ceeu_results += 'reform cannot be sensibly compared\n '
+                ceeu_results += '                  '
+                ceeu_results += 'when specifying "behavior" with --assump '
+                ceeu_results += 'option.'
             else:
                 self._calc_clp.calc_all()
                 cedict = ce_aftertax_income(self._calc_clp, self._calc,

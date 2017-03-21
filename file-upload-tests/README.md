@@ -17,7 +17,7 @@ The TaxBrain results are located at `http://www.ospc.org/taxbrain/RUN`
 where `RUN` is the number of the TaxBrain run.
 
 The latest cross-checking results are shown below.  These results were
-generated using Tax-Calculator PR#1253 (2017-03-20) and TaxBrain
+generated using Tax-Calculator PR#1253 (2017-03-21) and TaxBrain
 version 0.7.9.  In the future these results will be generated with
 both `tc` and TaxBrain using the same version of Tax-Calculator.
 

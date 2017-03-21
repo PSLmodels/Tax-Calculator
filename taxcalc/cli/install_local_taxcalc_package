@@ -3,6 +3,8 @@
 # ACTION: (1) uninstalls any installed taxcalc package (conda uninstall)
 #         (2) builds local taxcalc=0.0.0 package (conda build)
 #         (3) installs local taxcalc=0.0.0 package (conda install)
+# NOTE: for those with experience working with compiled languages,
+#       building a local conda package is analogous to compiling an executable
 
 echo "STARTING : `date`"
 

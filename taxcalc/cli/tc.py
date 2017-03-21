@@ -1,5 +1,6 @@
 """
-Command-line interface (CLI) to Tax-Calculator.
+Command-line interface (CLI) to Tax-Calculator,
+which can be accessed as 'tc' from an installed taxcalc package.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 tc.py
@@ -88,14 +89,6 @@ def main():
     # check TAXYEAR value
     if args.TAXYEAR == 0:
         sys.stderr.write('ERROR: must specify TAXYEAR >= 2013\n')
-        arg_errors = True
-    # check consistency of --reform and --graph options
-    if args.graph and not args.reform:
-        sys.stderr.write('ERROR: cannot specify --graph without --reform\n')
-        arg_errors = True
-    # check consistency of --reform and --ceeu options
-    if args.ceeu and not args.reform:
-        sys.stderr.write('ERROR: cannot specify --ceeu without --reform\n')
         arg_errors = True
     # exit if any argument errors
     if arg_errors:
