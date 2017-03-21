@@ -16,8 +16,9 @@ def main():
     """
     # pylintx: disable=too-many-return-statements
     # parse command-line arguments:
-    usage_str = 'tc INPUT TAXYEAR {} {}'.format(
-        '[--reform REFORM] [--assump  ASSUMP]',
+    usage_str = 'tc INPUT TAXYEAR {}{}{}'.format(
+        '[--reform REFORM] [--assump  ASSUMP]\n',
+        '                        ',
         '[--exact] [--graph] [--ceeu] [--dump]')
     parser = argparse.ArgumentParser(
         prog='',
