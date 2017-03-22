@@ -223,15 +223,15 @@ class Calculator(object):
     def current_year(self):
         return self.policy.current_year
 
-    MTR_VALID_VARIABLES = ['e00200p', 'e00900p',
-                           'e00300', 'e00400',
-                           'e00600', 'e00650',
-                           'e01400', 'e01700',
-                           'e02000', 'e02400',
-                           'p22250', 'p23250',
-                           'e18500', 'e19200',
-                           'e26270', 'e19800',
-                           'e20100']
+    MTR_VALID_VARIABLES = ['e00200p', 'e00200s',
+                           'e00900p', 'e00300',
+                           'e00400', 'e00600',
+                           'e00650', 'e01400',
+                           'e01700', 'e02000',
+                           'e02400', 'p22250',
+                           'p23250', 'e18500',
+                           'e19200', 'e26270',
+                           'e19800', 'e20100']
 
     def mtr(self, variable_str='e00200p',
             negative_finite_diff=False,
@@ -282,6 +282,8 @@ class Calculator(object):
         -----
         Valid variable_str values are:
         'e00200p', taxpayer wage/salary earnings (also included in e00200);
+        'e00200s', secondary earner wage/salary earnings (also included in
+                   e00200);
         'e00900p', taxpayer Schedule C self-employment income (also in e00900);
         'e00300',  taxable interest income;
         'e00400',  federally-tax-exempt interest income;
@@ -313,6 +315,8 @@ class Calculator(object):
         variable = getattr(self.records, variable_str)
         if variable_str == 'e00200p':
             earnings_var = self.records.e00200
+        elif variable_str == 'e00200s':
+            earnings_var = self.records.e00200
         elif variable_str == 'e00900p':
             seincome_var = self.records.e00900
         elif variable_str == 'e00650':
@@ -322,6 +326,8 @@ class Calculator(object):
         # calculate level of taxes after a marginal increase in income
         setattr(self.records, variable_str, variable + finite_diff)
         if variable_str == 'e00200p':
+            self.records.e00200 = earnings_var + finite_diff
+        elif variable_str == 'e00200s':
             self.records.e00200 = earnings_var + finite_diff
         elif variable_str == 'e00900p':
             self.records.e00900 = seincome_var + finite_diff
