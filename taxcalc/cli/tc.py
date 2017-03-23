@@ -20,7 +20,7 @@ def main():
     usage_str = 'tc INPUT TAXYEAR {}{}{}'.format(
         '[--reform REFORM] [--assump  ASSUMP]\n',
         '                        ',
-        '[--exact] [--graph] [--ceeu] [--dump]')
+        '[--exact] [--graphs] [--ceeu] [--dump]')
     parser = argparse.ArgumentParser(
         prog='',
         usage=usage_str,
@@ -56,7 +56,7 @@ def main():
                               'complicate marginal-tax-rate calculations.'),
                         default=False,
                         action="store_true")
-    parser.add_argument('--graph',
+    parser.add_argument('--graphs',
                         help=('optional flag that causes graphs to be written '
                               'to HTML files for viewing in browser.'),
                         default=False,
@@ -132,7 +132,7 @@ def main():
                      aging_input_data=aging,
                      exact_calculations=args.exact)
     tcio.analyze(writing_output_file=True,
-                 output_graph=args.graph,
+                 output_graphs=args.graphs,
                  output_ceeu=args.ceeu,
                  output_dump=args.dump)
     # return no-error exit code

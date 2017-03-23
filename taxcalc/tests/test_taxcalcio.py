@@ -279,9 +279,9 @@ def test_output_otions(rawinputfile, reformfile1, assumpfile1):
             pass  # sometimes we can't remove a generated temporary file
 
 
-def test_graph(reformfile1):
+def test_graphs(reformfile1):
     """
-    Test TaxCalcIO with output_graph=True.
+    Test TaxCalcIO with output_graphs=True.
     """
     # create graphable input
     nobs = 100
@@ -300,7 +300,7 @@ def test_graph(reformfile1):
                      growdiff_response=None,
                      aging_input_data=False,
                      exact_calculations=False)
-    tcio.analyze(writing_output_file=False, output_graph=True)
+    tcio.analyze(writing_output_file=False, output_graphs=True)
     # delete graph files
     output_filename = tcio.output_filepath()
     fname = output_filename.replace('.csv', '-atr.html')

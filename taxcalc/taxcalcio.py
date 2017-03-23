@@ -241,7 +241,7 @@ class TaxCalcIO(object):
         return os.path.join(dirpath, self._output_filename)
 
     def analyze(self, writing_output_file=False,
-                output_graph=False,
+                output_graphs=False,
                 output_ceeu=False,
                 output_dump=False):
         """
@@ -251,7 +251,7 @@ class TaxCalcIO(object):
         ----------
         writing_output_file: boolean
 
-        output_graph: boolean
+        output_graphs: boolean
            whether or not to generate and show HTML graphs of average
            and marginal tax rates by income percentile
 
@@ -296,8 +296,8 @@ class TaxCalcIO(object):
         # extract output if writing_output_file
         if writing_output_file:
             self.write_output_file(output_dump, mtr_paytax, mtr_inctax)
-        # optionally write --graph output to HTML files
-        if output_graph:
+        # optionally write --graphs output to HTML files
+        if output_graphs:
             self.write_graph_files()
         # optionally write --ceeu output to stdout
         if ceeu_results:
@@ -397,6 +397,7 @@ class TaxCalcIO(object):
         for varname in varset:
             vardata = getattr(self._calc.records, varname)
             odf[varname] = vardata
+        odf['FLPDYR'] = self.tax_year()  # tax calculation year
         odf['mtr_inctax'] = mtr_inctax
         odf['mtr_paytax'] = mtr_paytax
         return odf
@@ -405,7 +406,7 @@ class TaxCalcIO(object):
     def growmodel_analysis(input_data, tax_year, reform, assump,
                            aging_input_data, exact_calculations,
                            writing_output_file=False,
-                           output_graph=False,
+                           output_graphs=False,
                            output_ceeu=False,
                            output_dump=False):
         """
@@ -438,7 +439,7 @@ class TaxCalcIO(object):
                                                 exact_calculations,
                                                 growdiff_response, year,
                                                 writing_output_file,
-                                                output_graph,
+                                                output_graphs,
                                                 output_ceeu,
                                                 output_dump)
             gdiff_dict[year + 1] = gd_dict
@@ -448,7 +449,7 @@ class TaxCalcIO(object):
                         aging_input_data, exact_calculations,
                         growdiff_response, year,
                         writing_output_file,
-                        output_graph,
+                        output_graphs,
                         output_ceeu,
                         output_dump):
         """
@@ -478,7 +479,7 @@ class TaxCalcIO(object):
         if year == tax_year:
             # conduct final tax analysis for year equal to tax_year
             tcio.analyze(writing_output_file=writing_output_file,
-                         output_graph=output_graph,
+                         output_graphs=output_graphs,
                          output_ceeu=output_ceeu,
                          output_dump=output_dump)
             gd_dict = {}
