@@ -454,7 +454,7 @@ def test_ceeu_with_behavior(lumpsumreformfile, assumpfile2):
     assert tcio.tax_year() == taxyear
 
 
-def test_bad_ctor_when_using_growmodel(lumpsumreformfile, assumpfile2):
+def test_bad_ctor_with_growmodel(lumpsumreformfile, assumpfile2):
     """
     Test improper TaxCalcIO constructor calls when using GrowModel analysis.
     """
@@ -513,7 +513,7 @@ def test_bad_assumption_file(reformfile1, assumpfile_bad1):
                   exact_calculations=False)
 
 
-def test_growmodel_analysis(reformfile1, assumpfile1, assumpfile2):
+def test_growmodel_analysis(reformfile1, assumpfile1):
     """
     Test TaxCalcIO.growmodel_analysis method with no output.
     """

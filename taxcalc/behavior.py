@@ -84,12 +84,12 @@ class Behavior(ParametersBase):
         the current_year; returns false if all elasticities are zero.
         """
         # pylint: disable=no-member
-        if (self.BE_sub == 0.0 and self.BE_inc == 0.0 and self.BE_cg == 0.0 and
-           self.BE_charity_itemizers == 0.0 and
-           self.BE_charity_non_itemizers == 0.0):
-            return False
-        else:
-            return True
+        all_zero = (self.BE_sub == 0.0 and
+                    self.BE_inc == 0.0 and
+                    self.BE_cg == 0.0 and
+                    self.BE_charity_itemizers == 0.0 and
+                    self.BE_charity_non_itemizers == 0.0)
+        return not all_zero
 
     def has_any_response(self):
         """
@@ -184,10 +184,9 @@ class Behavior(ParametersBase):
             new_ltcg = calc_x.records.p23250 * exp_term
             ltcg_chg = new_ltcg - calc_x.records.p23250
         # calculate charitable giving effect
-        if (calc_y.behavior.BE_charity_itemizers == 0.0 and
-           calc_y.behavior.BE_charity_non_itemizers == 0.0):
-            charity_itemizers = np.zeros(calc_x.records.dim)
-            charity_non_itemizers = np.zeros(calc_x.records.dim)
+        no_charity_response = (calc_y.behavior.BE_charity_itemizers == 0.0 and
+                               calc_y.behavior.BE_charity_non_itemizers == 0.0)
+        if no_charity_response:
             c_charity_chg = np.zeros(calc_x.records.dim)
             nc_charity_chg = np.zeros(calc_x.records.dim)
         else:
@@ -198,14 +197,12 @@ class Behavior(ParametersBase):
             c_charity_mtr_x, c_charity_mtr_y = Behavior._mtr_xy(
                 calc_x, calc_y, mtr_of='e19800', tax_type='combined')
             c_charity_price_pch = (((1. + c_charity_mtr_y) /
-                                   (1. + c_charity_mtr_x)) -
-                                   1.)
+                                    (1. + c_charity_mtr_x)) - 1.)
             # non-cash:
             nc_charity_mtr_x, nc_charity_mtr_y = Behavior._mtr_xy(
                 calc_x, calc_y, mtr_of='e20100', tax_type='combined')
             nc_charity_price_pch = (((1. + nc_charity_mtr_y) /
-                                    (1. + nc_charity_mtr_x)) -
-                                    1.)
+                                     (1. + nc_charity_mtr_x)) - 1.)
             # identify itemizers under calc_y
             itemizer = np.where(calc_y.records.c04470 >
                                 calc_y.records._standard,
@@ -241,6 +238,7 @@ class Behavior(ParametersBase):
         """
         Check that behavioral-response elasticities have valid values.
         """
+        # pylint: disable=too-many-branches
         msg = '{} elasticity cannot be {} in year {}; value is {}'
         pos = 'positive'
         neg = 'negative'

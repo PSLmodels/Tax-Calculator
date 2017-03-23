@@ -46,6 +46,6 @@
         "row_label": ["2013"],
         "col_label": "",
         "value": [0.0],
-        "validations": {"max":0.0}
+        "validations": {"max": 0.0}
     }
 }
