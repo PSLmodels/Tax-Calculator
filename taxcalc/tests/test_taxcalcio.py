@@ -278,13 +278,13 @@ def test_output_otions(rawinputfile, reformfile1, assumpfile1):
         except OSError:
             pass  # sometimes we can't remove a generated temporary file
 
-@pytest.mark.one
-def test_tables(reformfile1):
+
+def test_no_tables(reformfile1):
     """
-    Test TaxCalcIO with output_tables=True.
+    Test TaxCalcIO with output_tables=True but with zero weights.
     """
-    # create tabable input
-    nobs = 100
+    # create input sample that cannot have distributional tables tabulated
+    nobs = 10
     idict = dict()
     idict['RECID'] = [i for i in range(1, nobs + 1)]
     idict['MARS'] = [2 for i in range(1, nobs + 1)]
@@ -305,8 +305,38 @@ def test_tables(reformfile1):
     # delete tables file
     output_filename = tcio.output_filepath()
     fname = output_filename.replace('.csv', '-tab.text')
-    #if os.path.isfile(fname):
-    #    os.remove(fname)
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
+def test_tables(reformfile1):
+    """
+    Test TaxCalcIO with output_tables=True and with positive weights.
+    """
+    # create tabable input
+    nobs = 100
+    idict = dict()
+    idict['RECID'] = [i for i in range(1, nobs + 1)]
+    idict['MARS'] = [2 for i in range(1, nobs + 1)]
+    idict['s006'] = [10.0 for i in range(1, nobs + 1)]
+    idict['e00300'] = [10000 * i for i in range(1, nobs + 1)]
+    idict['_expanded_income'] = idict['e00300']
+    idf = pd.DataFrame(idict, columns=list(idict))
+    # create TaxCalcIO tables file
+    tcio = TaxCalcIO(input_data=idf,
+                     tax_year=2020,
+                     reform=reformfile1.name,
+                     assump=None,
+                     growdiff_response=None,
+                     aging_input_data=False,
+                     exact_calculations=False)
+    # create TaxCalcIO tables file
+    tcio.analyze(writing_output_file=False, output_tables=True)
+    # delete tables file
+    output_filename = tcio.output_filepath()
+    fname = output_filename.replace('.csv', '-tab.text')
+    if os.path.isfile(fname):
+        os.remove(fname)
 
 
 def test_graphs(reformfile1):

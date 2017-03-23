@@ -8,6 +8,7 @@ Tax-Calculator Input-Output class.
 import os
 import copy
 import six
+import numpy as np
 import pandas as pd
 from taxcalc.policy import Policy
 from taxcalc.records import Records
@@ -20,6 +21,8 @@ from taxcalc.utils import delete_file
 from taxcalc.utils import ce_aftertax_income
 from taxcalc.utils import atr_graph_data, mtr_graph_data
 from taxcalc.utils import xtr_graph_plot, write_graph_file
+from taxcalc.utils import add_weighted_income_bins
+from taxcalc.utils import unweighted_sum, weighted_sum
 
 
 class TaxCalcIO(object):
@@ -322,16 +325,53 @@ class TaxCalcIO(object):
         """
         Write tables to text file.
         """
+        # pylint: disable=too-many-locals
         tab_fname = self._output_filename.replace('.csv', '-tab.text')
-        # skip tables if there are not positive weights
-        if not self._calc.records.positive_weights():
-            with open(path, 'w') as tfile:
-                msg = 'No tables because sample weights are not all positive'
-                tfile.write(msg)
         # create expanded-income decile table containing weighted total levels
-
+        record_cols = ['s006', '_payrolltax', '_iitax', 'lumpsum_tax',
+                       '_combined', '_expanded_income']
+        out = [getattr(self._calc.records, col) for col in record_cols]
+        dfx = pd.DataFrame(data=np.column_stack(out), columns=record_cols)
+        # skip tables if there are not some positive weights
+        if dfx['s006'].sum() <= 0:
+            with open(tab_fname, 'w') as tfile:
+                msg = 'No tables because sum of weights is not positive\n'
+                tfile.write(msg)
+            return
+        # construct distributional table elements
+        dfx = add_weighted_income_bins(dfx, num_bins=10,
+                                       income_measure='_expanded_income',
+                                       weight_by_income_measure=False)
+        gdfx = dfx.groupby('bins', as_index=False)
+        rtns_series = gdfx.apply(unweighted_sum, 's006')
+        itax_series = gdfx.apply(weighted_sum, '_iitax')
+        ptax_series = gdfx.apply(weighted_sum, '_payrolltax')
+        htax_series = gdfx.apply(weighted_sum, 'lumpsum_tax')
+        ctax_series = gdfx.apply(weighted_sum, '_combined')
         # write total levels decile table to text file
-
+        with open(tab_fname, 'w') as tfile:
+            row = 'Weighted Totals by Expanded-Income Decile\n'
+            tfile.write(row)
+            row = '    Returns    IncTax    PayTax     LSTax    AllTax\n'
+            tfile.write(row)
+            row = '       (#m)      ($b)      ($b)      ($b)      ($b)\n'
+            tfile.write(row)
+            rowfmt = '{:9.1f}{:10.1f}{:10.1f}{:10.1f}{:10.1f}\n'
+            for decile in range(0, 10):
+                row = '{:2d}'.format(decile)
+                row += rowfmt.format(rtns_series[decile] * 1e-6,
+                                     itax_series[decile] * 1e-9,
+                                     ptax_series[decile] * 1e-9,
+                                     htax_series[decile] * 1e-9,
+                                     ctax_series[decile] * 1e-9)
+                tfile.write(row)
+            row = ' A'
+            row += rowfmt.format(rtns_series.sum() * 1e-6,
+                                 itax_series.sum() * 1e-9,
+                                 ptax_series.sum() * 1e-9,
+                                 htax_series.sum() * 1e-9,
+                                 ctax_series.sum() * 1e-9)
+            tfile.write(row)
 
     def write_graph_files(self):
         """
