@@ -141,6 +141,7 @@ class TaxCalcIO(object):
             raise ValueError(msg)
         self._output_filename = '{}{}{}.csv'.format(inp, ref, asm)
         delete_file(self._output_filename)
+        delete_file(self._output_filename.replace('.csv', '-tab.text'))
         delete_file(self._output_filename.replace('.csv', '-atr.html'))
         delete_file(self._output_filename.replace('.csv', '-mtr.html'))
         # get parameter dictionaries from --reform and --assump files
@@ -321,7 +322,16 @@ class TaxCalcIO(object):
         """
         Write tables to text file.
         """
-        pass
+        tab_fname = self._output_filename.replace('.csv', '-tab.text')
+        # skip tables if there are not positive weights
+        if not self._calc.records.positive_weights():
+            with open(path, 'w') as tfile:
+                msg = 'No tables because sample weights are not all positive'
+                tfile.write(msg)
+        # create expanded-income decile table containing weighted total levels
+
+        # write total levels decile table to text file
+
 
     def write_graph_files(self):
         """
