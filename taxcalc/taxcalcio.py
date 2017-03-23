@@ -8,6 +8,7 @@ Tax-Calculator Input-Output class.
 import os
 import copy
 import six
+import numpy as np
 import pandas as pd
 from taxcalc.policy import Policy
 from taxcalc.records import Records
@@ -20,6 +21,8 @@ from taxcalc.utils import delete_file
 from taxcalc.utils import ce_aftertax_income
 from taxcalc.utils import atr_graph_data, mtr_graph_data
 from taxcalc.utils import xtr_graph_plot, write_graph_file
+from taxcalc.utils import add_weighted_income_bins
+from taxcalc.utils import unweighted_sum, weighted_sum
 
 
 class TaxCalcIO(object):
@@ -141,6 +144,7 @@ class TaxCalcIO(object):
             raise ValueError(msg)
         self._output_filename = '{}{}{}.csv'.format(inp, ref, asm)
         delete_file(self._output_filename)
+        delete_file(self._output_filename.replace('.csv', '-tab.text'))
         delete_file(self._output_filename.replace('.csv', '-atr.html'))
         delete_file(self._output_filename.replace('.csv', '-mtr.html'))
         # get parameter dictionaries from --reform and --assump files
@@ -164,10 +168,8 @@ class TaxCalcIO(object):
         # specify gdiff_response object
         if growdiff_response is None:
             gdiff_response = Growdiff()
-            using_growmodel = False
         elif isinstance(growdiff_response, Growdiff):
             gdiff_response = growdiff_response
-            using_growmodel = True
             if self._behavior_has_any_response:
                 msg = 'cannot assume any "behavior" when using GrowModel'
                 raise ValueError(msg)
@@ -184,9 +186,6 @@ class TaxCalcIO(object):
             pol.implement_reform(param_dict['policy'])
         else:
             pol = Policy(gfactors=gfactors_clp)
-            if using_growmodel:
-                msg = 'TaxCalcIO.ctor: no --reform when using GrowModel'
-                raise ValueError(msg)
         clp = Policy(gfactors=gfactors_clp)
         # check for valid tax_year value
         if tax_year < pol.start_year:
@@ -241,7 +240,8 @@ class TaxCalcIO(object):
         return os.path.join(dirpath, self._output_filename)
 
     def analyze(self, writing_output_file=False,
-                output_graph=False,
+                output_tables=False,
+                output_graphs=False,
                 output_ceeu=False,
                 output_dump=False):
         """
@@ -251,8 +251,12 @@ class TaxCalcIO(object):
         ----------
         writing_output_file: boolean
 
-        output_graph: boolean
-           whether or not to generate and show HTML graphs of average
+        output_tables: boolean
+           whether or not to generate and write distributional tables
+           to a text file
+
+        output_graphs: boolean
+           whether or not to generate and write HTML graphs of average
            and marginal tax rates by income percentile
 
         output_ceeu: boolean
@@ -296,8 +300,11 @@ class TaxCalcIO(object):
         # extract output if writing_output_file
         if writing_output_file:
             self.write_output_file(output_dump, mtr_paytax, mtr_inctax)
-        # optionally write --graph output to HTML files
-        if output_graph:
+        # optionally write --tables output to text file
+        if output_tables:
+            self.write_tables_file()
+        # optionally write --graphs output to HTML files
+        if output_graphs:
             self.write_graph_files()
         # optionally write --ceeu output to stdout
         if ceeu_results:
@@ -313,6 +320,58 @@ class TaxCalcIO(object):
             outdf = self.minimal_output()
         assert len(outdf.index) == self._calc.records.dim
         outdf.to_csv(self._output_filename, index=False, float_format='%.2f')
+
+    def write_tables_file(self):
+        """
+        Write tables to text file.
+        """
+        # pylint: disable=too-many-locals
+        tab_fname = self._output_filename.replace('.csv', '-tab.text')
+        # create expanded-income decile table containing weighted total levels
+        record_cols = ['s006', '_payrolltax', '_iitax', 'lumpsum_tax',
+                       '_combined', '_expanded_income']
+        out = [getattr(self._calc.records, col) for col in record_cols]
+        dfx = pd.DataFrame(data=np.column_stack(out), columns=record_cols)
+        # skip tables if there are not some positive weights
+        if dfx['s006'].sum() <= 0:
+            with open(tab_fname, 'w') as tfile:
+                msg = 'No tables because sum of weights is not positive\n'
+                tfile.write(msg)
+            return
+        # construct distributional table elements
+        dfx = add_weighted_income_bins(dfx, num_bins=10,
+                                       income_measure='_expanded_income',
+                                       weight_by_income_measure=False)
+        gdfx = dfx.groupby('bins', as_index=False)
+        rtns_series = gdfx.apply(unweighted_sum, 's006')
+        itax_series = gdfx.apply(weighted_sum, '_iitax')
+        ptax_series = gdfx.apply(weighted_sum, '_payrolltax')
+        htax_series = gdfx.apply(weighted_sum, 'lumpsum_tax')
+        ctax_series = gdfx.apply(weighted_sum, '_combined')
+        # write total levels decile table to text file
+        with open(tab_fname, 'w') as tfile:
+            row = 'Weighted Totals by Expanded-Income Decile\n'
+            tfile.write(row)
+            row = '    Returns    IncTax    PayTax     LSTax    AllTax\n'
+            tfile.write(row)
+            row = '       (#m)      ($b)      ($b)      ($b)      ($b)\n'
+            tfile.write(row)
+            rowfmt = '{:9.1f}{:10.1f}{:10.1f}{:10.1f}{:10.1f}\n'
+            for decile in range(0, 10):
+                row = '{:2d}'.format(decile)
+                row += rowfmt.format(rtns_series[decile] * 1e-6,
+                                     itax_series[decile] * 1e-9,
+                                     ptax_series[decile] * 1e-9,
+                                     htax_series[decile] * 1e-9,
+                                     ctax_series[decile] * 1e-9)
+                tfile.write(row)
+            row = ' A'
+            row += rowfmt.format(rtns_series.sum() * 1e-6,
+                                 itax_series.sum() * 1e-9,
+                                 ptax_series.sum() * 1e-9,
+                                 htax_series.sum() * 1e-9,
+                                 ctax_series.sum() * 1e-9)
+            tfile.write(row)
 
     def write_graph_files(self):
         """
@@ -397,6 +456,7 @@ class TaxCalcIO(object):
         for varname in varset:
             vardata = getattr(self._calc.records, varname)
             odf[varname] = vardata
+        odf['FLPDYR'] = self.tax_year()  # tax calculation year
         odf['mtr_inctax'] = mtr_inctax
         odf['mtr_paytax'] = mtr_paytax
         return odf
@@ -405,7 +465,8 @@ class TaxCalcIO(object):
     def growmodel_analysis(input_data, tax_year, reform, assump,
                            aging_input_data, exact_calculations,
                            writing_output_file=False,
-                           output_graph=False,
+                           output_tables=False,
+                           output_graphs=False,
                            output_ceeu=False,
                            output_dump=False):
         """
@@ -416,14 +477,14 @@ class TaxCalcIO(object):
         First six parameters are same as the first six parameters of
         the TaxCalcIO constructor.
 
-        Last four parameters are same as the first four parameters of
+        Last five parameters are same as the first five parameters of
         the TaxCalcIO analyze method.
 
         Returns
         -------
         Nothing
         """
-        # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments,too-many-locals
         # pylint: disable=superfluous-parens
         progress = 'STARTING ANALYSIS FOR YEAR {}'
         gdiff_dict = {Policy.JSON_START_YEAR: {}}
@@ -438,7 +499,8 @@ class TaxCalcIO(object):
                                                 exact_calculations,
                                                 growdiff_response, year,
                                                 writing_output_file,
-                                                output_graph,
+                                                output_tables,
+                                                output_graphs,
                                                 output_ceeu,
                                                 output_dump)
             gdiff_dict[year + 1] = gd_dict
@@ -448,7 +510,8 @@ class TaxCalcIO(object):
                         aging_input_data, exact_calculations,
                         growdiff_response, year,
                         writing_output_file,
-                        output_graph,
+                        output_tables,
+                        output_graphs,
                         output_ceeu,
                         output_dump):
         """
@@ -459,7 +522,7 @@ class TaxCalcIO(object):
         First six parameters are same as the first six parameters of
         the TaxCalcIO constructor.
 
-        Last four parameters are same as the first four parameters of
+        Last five parameters are same as the first five parameters of
         the TaxCalcIO analyze method.
 
         Returns
@@ -478,7 +541,8 @@ class TaxCalcIO(object):
         if year == tax_year:
             # conduct final tax analysis for year equal to tax_year
             tcio.analyze(writing_output_file=writing_output_file,
-                         output_graph=output_graph,
+                         output_tables=output_tables,
+                         output_graphs=output_graphs,
                          output_ceeu=output_ceeu,
                          output_dump=output_dump)
             gd_dict = {}

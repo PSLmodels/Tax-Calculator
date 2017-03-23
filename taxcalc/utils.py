@@ -139,6 +139,13 @@ def expanded_income_weighted(pdf, col_name):
             float((pdf[swght] * pdf[expinc]).sum() + EPSILON))
 
 
+def unweighted_sum(pdf, col_name):
+    """
+    Return unweighted sum of Pandas DataFrame col_name items.
+    """
+    return pdf[col_name].sum()
+
+
 def weighted_sum(pdf, col_name):
     """
     Return weighted sum of Pandas DataFrame col_name items.
