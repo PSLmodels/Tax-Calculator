@@ -279,6 +279,36 @@ def test_output_otions(rawinputfile, reformfile1, assumpfile1):
             pass  # sometimes we can't remove a generated temporary file
 
 
+def test_tables(reformfile1):
+    """
+    Test TaxCalcIO with output_tables=True.
+    """
+    # create tabable input
+    nobs = 100
+    idict = dict()
+    idict['RECID'] = [i for i in range(1, nobs + 1)]
+    idict['MARS'] = [2 for i in range(1, nobs + 1)]
+    idict['s006'] = [10.0 for i in range(1, nobs + 1)]
+    idict['e00300'] = [10000 * i for i in range(1, nobs + 1)]
+    idict['_expanded_income'] = idict['e00300']
+    idf = pd.DataFrame(idict, columns=list(idict))
+    # create TaxCalcIO tables file
+    tcio = TaxCalcIO(input_data=idf,
+                     tax_year=2020,
+                     reform=reformfile1.name,
+                     assump=None,
+                     growdiff_response=None,
+                     aging_input_data=False,
+                     exact_calculations=False)
+    # create TaxCalcIO tables file
+    tcio.analyze(writing_output_file=False, output_tables=True)
+    # delete tables file
+    output_filename = tcio.output_filepath()
+    fname = output_filename.replace('.csv', '-tab.txt')
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+
 def test_graphs(reformfile1):
     """
     Test TaxCalcIO with output_graphs=True.
@@ -404,14 +434,6 @@ def test_bad_ctor_when_using_growmodel(lumpsumreformfile, assumpfile2):
     with pytest.raises(ValueError):
         TaxCalcIO(input_data=recdf,
                   tax_year=taxyear,
-                  reform=None,
-                  assump=None,
-                  growdiff_response=Growdiff(),
-                  aging_input_data=False,
-                  exact_calculations=False)
-    with pytest.raises(ValueError):
-        TaxCalcIO(input_data=recdf,
-                  tax_year=taxyear,
                   reform=lumpsumreformfile.name,
                   assump=assumpfile2.name,
                   growdiff_response=Growdiff(),
@@ -461,13 +483,14 @@ def test_bad_assumption_file(reformfile1, assumpfile_bad1):
                   exact_calculations=False)
 
 
-def test_growmodel_analysis(reformfile1, assumpfile1):
+def test_growmodel_analysis(reformfile1, assumpfile1, assumpfile2):
     """
     Test TaxCalcIO.growmodel_analysis method with no output.
     """
     taxyear = 2015
     recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
     recdf = pd.DataFrame(data=recdict, index=[0])
+    # test growmodel_analysis with legal assumptions
     try:
         TaxCalcIO.growmodel_analysis(input_data=recdf,
                                      tax_year=taxyear,

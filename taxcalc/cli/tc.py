@@ -20,7 +20,7 @@ def main():
     usage_str = 'tc INPUT TAXYEAR {}{}{}'.format(
         '[--reform REFORM] [--assump  ASSUMP]\n',
         '                        ',
-        '[--exact] [--graphs] [--ceeu] [--dump]')
+        '[--exact] [--tables] [--graphs] [--ceeu] [--dump]')
     parser = argparse.ArgumentParser(
         prog='',
         usage=usage_str,
@@ -54,6 +54,11 @@ def main():
                         help=('optional flag that suppresses the smoothing of '
                               '"stair-step" provisions in the tax law that '
                               'complicate marginal-tax-rate calculations.'),
+                        default=False,
+                        action="store_true")
+    parser.add_argument('--tables',
+                        help=('optional flag that causes distributional '
+                              'tables to be written to a text file.'),
                         default=False,
                         action="store_true")
     parser.add_argument('--graphs',
@@ -132,6 +137,7 @@ def main():
                      aging_input_data=aging,
                      exact_calculations=args.exact)
     tcio.analyze(writing_output_file=True,
+                 output_tables=args.tables,
                  output_graphs=args.graphs,
                  output_ceeu=args.ceeu,
                  output_dump=args.dump)

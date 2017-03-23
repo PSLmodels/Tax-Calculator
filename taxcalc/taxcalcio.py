@@ -164,10 +164,8 @@ class TaxCalcIO(object):
         # specify gdiff_response object
         if growdiff_response is None:
             gdiff_response = Growdiff()
-            using_growmodel = False
         elif isinstance(growdiff_response, Growdiff):
             gdiff_response = growdiff_response
-            using_growmodel = True
             if self._behavior_has_any_response:
                 msg = 'cannot assume any "behavior" when using GrowModel'
                 raise ValueError(msg)
@@ -184,9 +182,6 @@ class TaxCalcIO(object):
             pol.implement_reform(param_dict['policy'])
         else:
             pol = Policy(gfactors=gfactors_clp)
-            if using_growmodel:
-                msg = 'TaxCalcIO.ctor: no --reform when using GrowModel'
-                raise ValueError(msg)
         clp = Policy(gfactors=gfactors_clp)
         # check for valid tax_year value
         if tax_year < pol.start_year:
@@ -241,6 +236,7 @@ class TaxCalcIO(object):
         return os.path.join(dirpath, self._output_filename)
 
     def analyze(self, writing_output_file=False,
+                output_tables=False,
                 output_graphs=False,
                 output_ceeu=False,
                 output_dump=False):
@@ -251,8 +247,12 @@ class TaxCalcIO(object):
         ----------
         writing_output_file: boolean
 
+        output_tables: boolean
+           whether or not to generate and write distributional tables
+           to a text file
+
         output_graphs: boolean
-           whether or not to generate and show HTML graphs of average
+           whether or not to generate and write HTML graphs of average
            and marginal tax rates by income percentile
 
         output_ceeu: boolean
@@ -296,6 +296,9 @@ class TaxCalcIO(object):
         # extract output if writing_output_file
         if writing_output_file:
             self.write_output_file(output_dump, mtr_paytax, mtr_inctax)
+        # optionally write --tables output to text file
+        if output_tables:
+            self.write_tables_file()
         # optionally write --graphs output to HTML files
         if output_graphs:
             self.write_graph_files()
@@ -313,6 +316,12 @@ class TaxCalcIO(object):
             outdf = self.minimal_output()
         assert len(outdf.index) == self._calc.records.dim
         outdf.to_csv(self._output_filename, index=False, float_format='%.2f')
+
+    def write_tables_file(self):
+        """
+        Write tables to text file.
+        """
+        pass
 
     def write_graph_files(self):
         """
@@ -406,6 +415,7 @@ class TaxCalcIO(object):
     def growmodel_analysis(input_data, tax_year, reform, assump,
                            aging_input_data, exact_calculations,
                            writing_output_file=False,
+                           output_tables=False,
                            output_graphs=False,
                            output_ceeu=False,
                            output_dump=False):
@@ -417,14 +427,14 @@ class TaxCalcIO(object):
         First six parameters are same as the first six parameters of
         the TaxCalcIO constructor.
 
-        Last four parameters are same as the first four parameters of
+        Last five parameters are same as the first five parameters of
         the TaxCalcIO analyze method.
 
         Returns
         -------
         Nothing
         """
-        # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments,too-many-locals
         # pylint: disable=superfluous-parens
         progress = 'STARTING ANALYSIS FOR YEAR {}'
         gdiff_dict = {Policy.JSON_START_YEAR: {}}
@@ -439,6 +449,7 @@ class TaxCalcIO(object):
                                                 exact_calculations,
                                                 growdiff_response, year,
                                                 writing_output_file,
+                                                output_tables,
                                                 output_graphs,
                                                 output_ceeu,
                                                 output_dump)
@@ -449,6 +460,7 @@ class TaxCalcIO(object):
                         aging_input_data, exact_calculations,
                         growdiff_response, year,
                         writing_output_file,
+                        output_tables,
                         output_graphs,
                         output_ceeu,
                         output_dump):
@@ -460,7 +472,7 @@ class TaxCalcIO(object):
         First six parameters are same as the first six parameters of
         the TaxCalcIO constructor.
 
-        Last four parameters are same as the first four parameters of
+        Last five parameters are same as the first five parameters of
         the TaxCalcIO analyze method.
 
         Returns
@@ -479,6 +491,7 @@ class TaxCalcIO(object):
         if year == tax_year:
             # conduct final tax analysis for year equal to tax_year
             tcio.analyze(writing_output_file=writing_output_file,
+                         output_tables=output_tables,
                          output_graphs=output_graphs,
                          output_ceeu=output_ceeu,
                          output_dump=output_dump)
