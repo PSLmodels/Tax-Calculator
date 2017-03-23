@@ -363,6 +363,13 @@ class Calculator(object):
         mtr_payrolltax = payrolltax_diff / (finite_diff * (1.0 + adj))
         mtr_incometax = incometax_diff / (finite_diff * (1.0 + adj))
         mtr_combined = combined_diff / (finite_diff * (1.0 + adj))
+        # If using e00200s, set MTR to zero for households with no spouse
+        if variable_str == 'e00200s':
+            mtr_payrolltax = np.where(self.records.MARS != 2, 0.0,
+                                      mtr_payrolltax)
+            mtr_incometax = np.where(self.records.MARS != 2, 0.0,
+                                     mtr_incometax)
+            mtr_combined = np.where(self.records.MARS != 2, 0.0, mtr_combined)
         # return the three marginal tax rate arrays
         return (mtr_payrolltax, mtr_incometax, mtr_combined)
 
