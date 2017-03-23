@@ -1,6 +1,10 @@
 package:
   name: taxcalc
-  version: 0.4
+  version: 0.0.0
+
+build:
+  entry_points:
+    - tc = taxcalc.cli.tc:main
 
 requirements:
   build:
@@ -23,6 +27,12 @@ requirements:
     - numba
     - toolz
     - six
+
+test:
+  commands:
+    - which tc  # [unix]
+    - where tc  # [win]
+    - tc --help
 
 about:
   home: http://www.github.com/OpenSourcePolicyCenter

@@ -163,19 +163,20 @@ def test_2(input_file,  # pylint: disable=redefined-outer-name
     assert simtax.number_input_lines() == NUM_INPUT_LINES
     # check that reform was implemented as specified above in REFORM_CONTENTS
     syr = simtax.start_year()
-    amt_brk1 = simtax._policy._AMT_brk1  # pylint: disable=protected-access
+    # pylint: disable=protected-access,no-member
+    amt_brk1 = simtax._policy._AMT_brk1
     assert amt_brk1[2015 - syr] == 200000
     assert amt_brk1[2016 - syr] > 200000
     assert amt_brk1[2017 - syr] == 300000
     assert amt_brk1[2018 - syr] > 300000
-    ii_em = simtax._policy._II_em  # pylint: disable=protected-access
+    ii_em = simtax._policy._II_em
     assert ii_em[2016 - syr] == 6000
     assert ii_em[2017 - syr] == 6000
     assert ii_em[2018 - syr] == 7500
     assert ii_em[2019 - syr] > 7500
     assert ii_em[2020 - syr] == 9000
     assert ii_em[2021 - syr] > 9000
-    amt_em = simtax._policy._AMT_em  # pylint: disable=protected-access
+    amt_em = simtax._policy._AMT_em
     assert amt_em[2016 - syr, 0] > amt_em[2015 - syr, 0]
     assert amt_em[2017 - syr, 0] > amt_em[2016 - syr, 0]
     assert amt_em[2018 - syr, 0] == amt_em[2017 - syr, 0]

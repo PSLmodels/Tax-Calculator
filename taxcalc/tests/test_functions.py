@@ -9,7 +9,8 @@ import os
 import re
 import ast
 import six
-from taxcalc import Records  # pylint: disable=import-error
+# pylint: disable=import-error
+from taxcalc import Records
 
 
 class GetFuncDefs(ast.NodeVisitor):

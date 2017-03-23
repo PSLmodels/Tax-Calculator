@@ -1,31 +1,17 @@
-// 2022 RESULTS from taxcalc-tc and taxbrain-file using version 0.7.9
-// INCOME TAX ($B)   1817.32        ????.?  <--- TaxBrain is broken
-// PAYROLL TAX ($B)  1474.76        ????.?  <--- TaxBrain is broken
-// taxcalc-tc results generated as follows:
-//   $ cd taxbrain-file-tests
-//   $ cp ../tc.py .
-//   $ conda install -c ospc taxcalc=<version>
-//   $ python tc.py puf.csv 2022 --reform r1.json
-//   $ awk -F, 'NR>1{i+=$4*$3;p+=$6*$3}END{print i*1e-9,p*1e-9}' puf-22-r1.csv
-//   $ conda uninstall taxcalc
-// taxbrain-file results from:
-//   http://www.ospc.org/taxbrain/10???/
+// Assume reform with the following provisions:
+// - adhoc raises in OASDI maximum taxable earnings in 2018, 2019 and 2020,
+//     with _SS_Earnings_c wage indexed in subsequent years
+// - raise personal exemption amount _II_em in 2018, keep it unchanged for
+//     two years and then resume its price indexing in subsequent years
+// - implement a 20% investment income AGI exclusion beginning in 2019
 {
     "policy": {
-        "_SS_Earnings_c": // social security (OASDI) maximum taxable earnings
-        {"2018": [400000],
-         "2019": [500000],
-         "2020": [600000]
-        },
-        "_II_em": // personal exemption amount
-        {"2018": [8000]
-        },
-        "_II_em_cpi": // personal exemption amount indexing status
-        {"2018": false, // values in future years are same as this year value
-         "2020": true // values in future years indexed with this year as base
-        },
-        "_ALD_InvInc_ec_rt": // investment income AGI exclusion rate
-        {"2019": [0.20]
-        }
+        "_SS_Earnings_c": {"2018": [400000],
+                           "2019": [500000],
+                           "2020": [600000]},
+        "_II_em": {"2018": [8000]},
+        "_II_em_cpi": {"2018": false,
+                       "2020": true},
+        "_ALD_InvInc_ec_rt": {"2019": [0.20]}
     }
 }

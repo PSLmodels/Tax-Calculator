@@ -1025,9 +1025,7 @@ def requires_bokeh(func):
         if BOKEH_AVAILABLE:
             return func(*args, **kwargs)
         else:
-            msg = ("`bokeh` is not installed. Please install "
-                   "`bokeh` to use this package (`conda install "
-                   "bokeh`)")
+            msg = "install graphing package using `conda install bokeh`"
             raise RuntimeError(msg)
     return wrapped_f
 
