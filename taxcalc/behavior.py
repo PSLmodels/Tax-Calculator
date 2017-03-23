@@ -84,7 +84,9 @@ class Behavior(ParametersBase):
         the current_year; returns false if all elasticities are zero.
         """
         # pylint: disable=no-member
-        if self.BE_sub == 0.0 and self.BE_inc == 0.0 and self.BE_cg == 0.0:
+        if (self.BE_sub == 0.0 and self.BE_inc == 0.0 and self.BE_cg == 0.0 and
+           self.BE_charity_itemizers == 0.0 and
+           self.BE_charity_non_itemizers == 0.0):
             return False
         else:
             return True
@@ -173,7 +175,7 @@ class Behavior(ParametersBase):
             ltcg_chg = np.zeros(calc_x.records.dim)
         else:
             # calculate marginal tax rates on long-term capital gains
-            # (p23250 is filing unit's long-term capital gains)
+            # (p23250 is filing units' long-term capital gains)
             ltcg_mtr_x, ltcg_mtr_y = Behavior._mtr_xy(calc_x, calc_y,
                                                       mtr_of='p23250',
                                                       tax_type='iitax')
@@ -181,10 +183,54 @@ class Behavior(ParametersBase):
             exp_term = np.exp(calc_y.behavior.BE_cg * rch)
             new_ltcg = calc_x.records.p23250 * exp_term
             ltcg_chg = new_ltcg - calc_x.records.p23250
+        # calculate charitable giving effect
+        if (calc_y.behavior.BE_charity_itemizers == 0.0 and
+           calc_y.behavior.BE_charity_non_itemizers == 0.0):
+            charity_itemizers = np.zeros(calc_x.records.dim)
+            charity_non_itemizers = np.zeros(calc_x.records.dim)
+            c_charity_chg = np.zeros(calc_x.records.dim)
+            nc_charity_chg = np.zeros(calc_x.records.dim)
+        else:
+            # calculate marginal tax rate on charitable contributions
+            # e19800 is filing units' cash charitable contributions
+            # e20100 is filing units' non-cash charitable contributions
+            # cash:
+            c_charity_mtr_x, c_charity_mtr_y = Behavior._mtr_xy(
+                calc_x, calc_y, mtr_of='e19800', tax_type='combined')
+            c_charity_price_pch = (((1. + c_charity_mtr_y) /
+                                   (1. + c_charity_mtr_x)) -
+                                   1.)
+            # non-cash:
+            nc_charity_mtr_x, nc_charity_mtr_y = Behavior._mtr_xy(
+                calc_x, calc_y, mtr_of='e20100', tax_type='combined')
+            nc_charity_price_pch = (((1. + nc_charity_mtr_y) /
+                                    (1. + nc_charity_mtr_x)) -
+                                    1.)
+            # identify itemizers under calc_y
+            itemizer = np.where(calc_y.records.c04470 >
+                                calc_y.records._standard,
+                                True,
+                                False)
+            # calculate change in cash contributions
+            c_charity_chg = (
+                np.where(itemizer,
+                         (calc_y.behavior.BE_charity_itemizers *
+                          c_charity_price_pch * calc_x.records.e19800),
+                         (calc_y.behavior.BE_charity_non_itemizers *
+                          c_charity_price_pch * calc_x.records.e19800)))
+            # calculate change in non-cash contributions
+            nc_charity_chg = (
+                np.where(itemizer,
+                         (calc_y.behavior.BE_charity_itemizers *
+                          nc_charity_price_pch * calc_x.records.e20100),
+                         (calc_y.behavior.BE_charity_non_itemizers *
+                          nc_charity_price_pch * calc_x.records.e20100)))
         # Add behavioral-response changes to income sources
         calc_y_behv = copy.deepcopy(calc_y)
         calc_y_behv = Behavior._update_ordinary_income(taxinc_chg, calc_y_behv)
         calc_y_behv = Behavior._update_cap_gain_income(ltcg_chg, calc_y_behv)
+        calc_y_behv = Behavior._update_charity(c_charity_chg, nc_charity_chg,
+                                               calc_y_behv)
         # Recalculate post-reform taxes incorporating behavioral responses
         calc_y_behv.calc_all()
         return calc_y_behv
@@ -211,6 +257,12 @@ class Behavior(ParametersBase):
                 elif elast == '_BE_cg':
                     if val > 0.0:
                         raise ValueError(msg.format(elast, pos, year, val))
+                elif elast == '_BE_charity_itemizers':
+                    if val > 0.0:
+                        raise ValueError(msg.format(elast, neg, year, val))
+                elif elast == '_BE_charity_non_itemizers':
+                    if val > 0.0:
+                        raise ValueError(msg.format(elast, neg, year, val))
                 else:
                     raise ValueError('illegal elasticity {}'.format(elast))
 
@@ -254,6 +306,16 @@ class Behavior(ParametersBase):
         Implement capital gain change induced by behavioral responses.
         """
         calc.records.p23250 = calc.records.p23250 + cap_gain_change
+        return calc
+
+    @staticmethod
+    def _update_charity(cash_charity_change, non_cash_charity_change, calc):
+        """
+        Implement cash charitable contribution change induced
+        by behavioral responses.
+        """
+        calc.records.e19800 = calc.records.e19800 + cash_charity_change
+        calc.records.e20100 = calc.records.e20100 + non_cash_charity_change
         return calc
 
     @staticmethod

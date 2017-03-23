@@ -27,5 +27,25 @@
         "col_label": "",
         "value": [0.0],
         "validations": {"max": 0.0}
+    },
+
+    "_BE_charity_itemizers": {
+        "start_year": 2013,
+        "long_name": "Elasticity of charitable contributions for itemizers",
+        "description": "Defined as proportional change in cash and non-cash charitable contributions divided by proportional change in the after-tax price of charitable contributions caused by the reform. Must be zero or negative.",
+        "row_label": ["2013"],
+        "col_label": "",
+        "value": [0.0],
+        "validations": {"max": 0.0}
+    },
+
+    "_BE_charity_non_itemizers": {
+        "start_year": 2013,
+        "long_name": "Elasticity of charitable contributions for non-itemizers",
+        "description": "Defined as proportional change in cash and non-cash charitable contributions divided by proportional change in the after-tax price of charitable contributions caused by the reform. Must be zero or negative.",
+        "row_label": ["2013"],
+        "col_label": "",
+        "value": [0.0],
+        "validations": {"max":0.0}
     }
 }
