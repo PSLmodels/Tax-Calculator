@@ -6,10 +6,9 @@ which can be accessed as 'tc' from an installed taxcalc package.
 # pep8 --ignore=E402 tc.py
 # pylint --disable=locally-disabled tc.py
 
-import os
 import sys
 import argparse
-from taxcalc import TaxCalcIO, Policy
+from taxcalc import TaxCalcIO
 
 
 def main():
@@ -86,56 +85,27 @@ def main():
                         default=False,
                         action="store_true")
     args = parser.parse_args()
-    arg_errors = False
-    # check INPUT file name
-    if args.INPUT == '':
-        sys.stderr.write('ERROR: must specify INPUT file name\n')
-        arg_errors = True
-    else:
-        if not args.INPUT.endswith('.csv'):
-            sys.stderr.write('ERROR: INPUT file name does not end in .csv\n')
-            arg_errors = True
-        elif not os.path.isfile(args.INPUT):
-            sys.stderr.write('ERROR: INPUT file could not be found\n')
-            arg_errors = True
-    # check TAXYEAR value
-    first_taxyear = Policy.JSON_START_YEAR
-    last_taxyear = Policy.LAST_BUDGET_YEAR
-    if args.TAXYEAR < first_taxyear:
-        sys.stderr.write('ERROR: TAXYEAR < {}\n'.format(first_taxyear))
-        arg_errors = True
-    elif args.TAXYEAR > last_taxyear:
-        sys.stderr.write('ERROR: TAXYEAR > {}\n'.format(last_taxyear))
-        arg_errors = True
-    # check REFORM value
-    if args.reform is not None:
-        if not args.reform.endswith('.json'):
-            sys.stderr.write('ERROR: REFORM file name does not end in .json\n')
-            arg_errors = True
-        elif not os.path.isfile(args.reform):
-            sys.stderr.write('ERROR: REFORM file could not be found\n')
-            arg_errors = True
-    # check ASSUMP value
-    if args.assump is not None:
-        if not args.assump.endswith('.json'):
-            sys.stderr.write('ERROR: ASSUMP file name does not end in .json\n')
-            arg_errors = True
-        elif not os.path.isfile(args.assump):
-            sys.stderr.write('ERROR: ASSUMP file could not be found\n')
-            arg_errors = True
-    # exit if any argument errors
-    if arg_errors:
-        sys.stderr.write('USAGE: tc --help\n')
-        return 1
     # instantiate TaxCalcIO object and do tax analysis
-    aging = args.INPUT.endswith('puf.csv') or args.INPUT.endswith('cps.csv')
     tcio = TaxCalcIO(input_data=args.INPUT,
                      tax_year=args.TAXYEAR,
                      reform=args.reform,
-                     assump=args.assump,
-                     growdiff_response=None,
-                     aging_input_data=aging,
-                     exact_calculations=args.exact)
+                     assump=args.assump)
+    if len(tcio.errmsg) > 0:
+        sys.stderr.write(tcio.errmsg)
+        sys.stderr.write('USAGE: tc --help\n')
+        return 1
+    aging = args.INPUT.endswith('puf.csv') or args.INPUT.endswith('cps.csv')
+    tcio.init(input_data=args.INPUT,
+              tax_year=args.TAXYEAR,
+              reform=args.reform,
+              assump=args.assump,
+              growdiff_response=None,
+              aging_input_data=aging,
+              exact_calculations=args.exact)
+    if len(tcio.errmsg) > 0:
+        sys.stderr.write(tcio.errmsg)
+        sys.stderr.write('USAGE: tc --help\n')
+        return 1
     tcio.analyze(writing_output_file=True,
                  output_tables=args.tables,
                  output_graphs=args.graphs,
