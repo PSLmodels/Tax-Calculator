@@ -250,6 +250,9 @@ class Calculator(object):
         (where the change in total compensation is the sum of the small
         increase in the variable and any increase in the employer share of
         payroll taxes caused by the small increase in the variable).
+          If using 'e00200s' as variable_str, MTR for all records where
+        MARS != 2 will be missing. If you want to perform a function such as
+        np.mean(), you will need to account for this.
 
         Parameters
         ----------
@@ -365,11 +368,12 @@ class Calculator(object):
         mtr_combined = combined_diff / (finite_diff * (1.0 + adj))
         # If using e00200s, set MTR to zero for households with no spouse
         if variable_str == 'e00200s':
-            mtr_payrolltax = np.where(self.records.MARS != 2, 0.0,
+            mtr_payrolltax = np.where(self.records.MARS != 2, np.nan,
                                       mtr_payrolltax)
-            mtr_incometax = np.where(self.records.MARS != 2, 0.0,
+            mtr_incometax = np.where(self.records.MARS != 2, np.nan,
                                      mtr_incometax)
-            mtr_combined = np.where(self.records.MARS != 2, 0.0, mtr_combined)
+            mtr_combined = np.where(self.records.MARS != 2, np.nan,
+                                    mtr_combined)
         # return the three marginal tax rate arrays
         return (mtr_payrolltax, mtr_incometax, mtr_combined)
 
