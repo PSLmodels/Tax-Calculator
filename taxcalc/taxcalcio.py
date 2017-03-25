@@ -58,8 +58,6 @@ class TaxCalcIO(object):
         """
         TaxCalcIO class constructor, which must be followed by init() call.
         """
-        # pylint: disable=too-many-arguments
-        # pylint: disable=too-many-locals
         # pylint: disable=too-many-branches
         # pylint: disable=too-many-statements
         self.errmsg = ''
@@ -162,7 +160,6 @@ class TaxCalcIO(object):
         """
         # pylint: disable=too-many-arguments
         # pylint: disable=too-many-locals
-        # pylint: disable=too-many-branches
         # pylint: disable=too-many-statements
         self.errmsg = ''
         # get parameter dictionaries from --reform and --assump files
@@ -295,7 +292,7 @@ class TaxCalcIO(object):
         -------
         Nothing
         """
-        # pylint: disable=too-many-arguments,too-many-locals,too-many-branches
+        # pylint: disable=too-many-arguments
         if output_dump:
             (mtr_paytax, mtr_inctax,
              _) = self.calc.mtr(wrt_full_compensation=False)
@@ -508,12 +505,12 @@ class TaxCalcIO(object):
         -------
         Nothing
         """
-        # pylint: disable=too-many-arguments,too-many-locals
-        # pylint: disable=superfluous-parens
+        # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-locals
         progress = 'STARTING ANALYSIS FOR YEAR {}'
         gdiff_dict = {Policy.JSON_START_YEAR: {}}
         for year in range(Policy.JSON_START_YEAR, tax_year + 1):
-            print(progress.format(year))
+            print(progress.format(year))  # pylint: disable=superfluous-parens
             # specify growdiff_response using gdiff_dict
             growdiff_response = Growdiff()
             growdiff_response.update_growdiff(gdiff_dict)
