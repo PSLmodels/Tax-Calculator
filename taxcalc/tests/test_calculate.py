@@ -197,6 +197,8 @@ def test_Calculator_mtr(records_2009):
     assert np.array_equal(mtr_ptx, mtr_itx) is False
     with pytest.raises(ValueError):
         (_, _, mtr_combined) = calc.mtr(variable_str='bad_income_type')
+    (_, _, mtr_combined) = calc.mtr(variable_str='e00200s')
+    assert type(mtr_combined) == np.ndarray
     (_, _, mtr_combined) = calc.mtr(variable_str='e00650',
                                     negative_finite_diff=True)
     assert type(mtr_combined) == np.ndarray

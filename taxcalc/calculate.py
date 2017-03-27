@@ -223,15 +223,15 @@ class Calculator(object):
     def current_year(self):
         return self.policy.current_year
 
-    MTR_VALID_VARIABLES = ['e00200p', 'e00900p',
-                           'e00300', 'e00400',
-                           'e00600', 'e00650',
-                           'e01400', 'e01700',
-                           'e02000', 'e02400',
-                           'p22250', 'p23250',
-                           'e18500', 'e19200',
-                           'e26270', 'e19800',
-                           'e20100']
+    MTR_VALID_VARIABLES = ['e00200p', 'e00200s',
+                           'e00900p', 'e00300',
+                           'e00400', 'e00600',
+                           'e00650', 'e01400',
+                           'e01700', 'e02000',
+                           'e02400', 'p22250',
+                           'p23250', 'e18500',
+                           'e19200', 'e26270',
+                           'e19800', 'e20100']
 
     def mtr(self, variable_str='e00200p',
             negative_finite_diff=False,
@@ -250,6 +250,9 @@ class Calculator(object):
         (where the change in total compensation is the sum of the small
         increase in the variable and any increase in the employer share of
         payroll taxes caused by the small increase in the variable).
+          If using 'e00200s' as variable_str, MTR for all records where
+        MARS != 2 will be missing. If you want to perform a function such as
+        np.mean(), you will need to account for this.
 
         Parameters
         ----------
@@ -282,6 +285,8 @@ class Calculator(object):
         -----
         Valid variable_str values are:
         'e00200p', taxpayer wage/salary earnings (also included in e00200);
+        'e00200s', secondary earner wage/salary earnings (also included in
+                   e00200);
         'e00900p', taxpayer Schedule C self-employment income (also in e00900);
         'e00300',  taxable interest income;
         'e00400',  federally-tax-exempt interest income;
@@ -313,6 +318,8 @@ class Calculator(object):
         variable = getattr(self.records, variable_str)
         if variable_str == 'e00200p':
             earnings_var = self.records.e00200
+        elif variable_str == 'e00200s':
+            earnings_var = self.records.e00200
         elif variable_str == 'e00900p':
             seincome_var = self.records.e00900
         elif variable_str == 'e00650':
@@ -322,6 +329,8 @@ class Calculator(object):
         # calculate level of taxes after a marginal increase in income
         setattr(self.records, variable_str, variable + finite_diff)
         if variable_str == 'e00200p':
+            self.records.e00200 = earnings_var + finite_diff
+        elif variable_str == 'e00200s':
             self.records.e00200 = earnings_var + finite_diff
         elif variable_str == 'e00900p':
             self.records.e00900 = seincome_var + finite_diff
@@ -357,6 +366,14 @@ class Calculator(object):
         mtr_payrolltax = payrolltax_diff / (finite_diff * (1.0 + adj))
         mtr_incometax = incometax_diff / (finite_diff * (1.0 + adj))
         mtr_combined = combined_diff / (finite_diff * (1.0 + adj))
+        # If using e00200s, set MTR to zero for households with no spouse
+        if variable_str == 'e00200s':
+            mtr_payrolltax = np.where(self.records.MARS != 2, np.nan,
+                                      mtr_payrolltax)
+            mtr_incometax = np.where(self.records.MARS != 2, np.nan,
+                                     mtr_incometax)
+            mtr_combined = np.where(self.records.MARS != 2, np.nan,
+                                    mtr_combined)
         # return the three marginal tax rate arrays
         return (mtr_payrolltax, mtr_incometax, mtr_combined)
 

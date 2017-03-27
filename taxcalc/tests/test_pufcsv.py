@@ -123,18 +123,19 @@ ITAX_MTR_BIN_EDGES = [-1.0, -0.30, -0.20, -0.10, 0.0,
 #        may want to experiment with alternative boundaries
 
 
-def mtr_bin_counts(mtr_data, bin_edges, recid):
+def mtr_bin_counts(mtr_data, bin_edges, recid, var_str):
     """
     Compute mtr histogram bin counts and return results as a string.
     """
     res = ''
-    (bincount, _) = np.histogram(mtr_data.round(decimals=4), bins=bin_edges)
+    (bincount, _) = np.histogram(mtr_data[np.isfinite(mtr_data)].round(4),
+                                 bins=bin_edges)
     sum_bincount = np.sum(bincount)
     res += '{} :'.format(sum_bincount)
     for idx in range(len(bin_edges) - 1):
         res += ' {:6d}'.format(bincount[idx])
     res += '\n'
-    if sum_bincount < mtr_data.size:
+    if sum_bincount < mtr_data.size and var_str != 'e00200s':
         res += 'WARNING: sum of bin counts is too low\n'
         recinfo = '         mtr={:.2f} for recid={}\n'
         mtr_min = mtr_data.min()
@@ -195,8 +196,8 @@ def test_mtr(tests_path, puf_path):
                                            zero_out_calculated_vars=zero_out,
                                            wrt_full_compensation=False)
         res += '{} {}:\n'.format(variable_header, var_str)
-        res += mtr_bin_counts(mtr_ptax, PTAX_MTR_BIN_EDGES, recid)
-        res += mtr_bin_counts(mtr_itax, ITAX_MTR_BIN_EDGES, recid)
+        res += mtr_bin_counts(mtr_ptax, PTAX_MTR_BIN_EDGES, recid, var_str)
+        res += mtr_bin_counts(mtr_itax, ITAX_MTR_BIN_EDGES, recid, var_str)
     # generate differences between actual and expected results
     actual = res.splitlines(True)
     mtrres_path = os.path.join(tests_path, 'pufcsv_mtr_expect.txt')

@@ -7,6 +7,9 @@ ITAX mtr histogram bin edges:
 PTAX and ITAX mtr histogram bin counts for e00200p:
 219814 :      0  31904      0      0      0      0      0 183736   4174      0
 219814 :   4596     96   1870   8916  39413  68097  45921  28055  22179    671
+PTAX and ITAX mtr histogram bin counts for e00200s:
+109265 :      0  21254      0      0      0      0      0  81799   6212      0
+109265 :    978     32    688   2658  13747  28265  23933  20165  18344    455
 PTAX and ITAX mtr histogram bin counts for e00900p:
 219814 :  14116  29198      0      0      0      0      0 176500      0      0
 219814 :   4596     96   1866   8792  52734  57292  52397  25825  15916    300
