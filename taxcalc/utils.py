@@ -812,6 +812,10 @@ def mtr_graph_data(calc1, calc2,
     else:
         msg = 'mars="{}" is neither a string nor an integer'
         raise ValueError(msg.format(mars))
+    # . . check mars value if mtr_variable is e00200s
+    if mtr_variable == 'e00200s' and mars != 2:
+        msg = 'mtr_variable == "e00200s" but mars != 2'
+        raise ValueError(msg)
     # . . check mtr_measure value
     if mtr_measure == 'itax':
         mtr_str = 'Income-Tax'

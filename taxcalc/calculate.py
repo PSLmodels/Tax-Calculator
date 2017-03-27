@@ -285,8 +285,7 @@ class Calculator(object):
         -----
         Valid variable_str values are:
         'e00200p', taxpayer wage/salary earnings (also included in e00200);
-        'e00200s', secondary earner wage/salary earnings (also included in
-                   e00200);
+        'e00200s', spouse wage/salary earnings (also included in e00200);
         'e00900p', taxpayer Schedule C self-employment income (also in e00900);
         'e00300',  taxable interest income;
         'e00400',  federally-tax-exempt interest income;
@@ -304,6 +303,7 @@ class Calculator(object):
         'e19800',  Charity cash contributions.
         'e20100',  Charity non-cash contributions.
         """
+        # pylint: disable=too-many-statements
         # check validity of variable_str parameter
         if variable_str not in Calculator.MTR_VALID_VARIABLES:
             msg = 'mtr variable_str="{}" is not valid'
@@ -366,14 +366,14 @@ class Calculator(object):
         mtr_payrolltax = payrolltax_diff / (finite_diff * (1.0 + adj))
         mtr_incometax = incometax_diff / (finite_diff * (1.0 + adj))
         mtr_combined = combined_diff / (finite_diff * (1.0 + adj))
-        # If using e00200s, set MTR to zero for households with no spouse
+        # if variable_str is e00200s, set MTR to NaN for units without a spouse
         if variable_str == 'e00200s':
-            mtr_payrolltax = np.where(self.records.MARS != 2, np.nan,
-                                      mtr_payrolltax)
-            mtr_incometax = np.where(self.records.MARS != 2, np.nan,
-                                     mtr_incometax)
-            mtr_combined = np.where(self.records.MARS != 2, np.nan,
-                                    mtr_combined)
+            mtr_payrolltax = np.where(self.records.MARS == 2,
+                                      mtr_payrolltax, np.nan)
+            mtr_incometax = np.where(self.records.MARS == 2,
+                                     mtr_incometax, np.nan)
+            mtr_combined = np.where(self.records.MARS == 2,
+                                    mtr_combined, np.nan)
         # return the three marginal tax rate arrays
         return (mtr_payrolltax, mtr_incometax, mtr_combined)
 

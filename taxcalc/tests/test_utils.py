@@ -555,6 +555,8 @@ def test_mtr_graph_data(records_2009):
     with pytest.raises(ValueError):
         gdata = mtr_graph_data(calc, calc, mars=list())
     with pytest.raises(ValueError):
+        gdata = mtr_graph_data(calc, calc, mars='ALL', mtr_variable='e00200s')
+    with pytest.raises(ValueError):
         gdata = mtr_graph_data(calc, calc, mtr_measure='badtax')
     with pytest.raises(ValueError):
         gdata = mtr_graph_data(calc, calc, income_measure='badincome')
