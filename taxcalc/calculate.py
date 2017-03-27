@@ -250,9 +250,10 @@ class Calculator(object):
         (where the change in total compensation is the sum of the small
         increase in the variable and any increase in the employer share of
         payroll taxes caused by the small increase in the variable).
-          If using 'e00200s' as variable_str, MTR for all records where
-        MARS != 2 will be missing. If you want to perform a function such as
-        np.mean(), you will need to account for this.
+          If using 'e00200s' as variable_str, the marginal tax rate for all
+        records where MARS != 2 will be missing.  If you want to perform a
+        function such as np.mean() on the returned arrays, you will need to
+        account for this.
 
         Parameters
         ----------
@@ -355,7 +356,9 @@ class Calculator(object):
         incometax_diff = incometax_chng - incometax_base
         combined_diff = combined_taxes_chng - combined_taxes_base
         # specify optional adjustment for employer (er) OASDI+HI payroll taxes
-        if wrt_full_compensation and variable_str == 'e00200p':
+        mtr_on_earnings = (variable_str == 'e00200p' or
+                           variable_str == 'e00200s')
+        if wrt_full_compensation and mtr_on_earnings:
             adj = np.where(variable < self.policy.SS_Earnings_c,
                            0.5 * (self.policy.FICA_ss_trt +
                                   self.policy.FICA_mc_trt),
