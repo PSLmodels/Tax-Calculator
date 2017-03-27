@@ -365,22 +365,35 @@ class TaxCalcIO(object):
                                        weight_by_income_measure=False)
         gdfx = dfx.groupby('bins', as_index=False)
         rtns_series = gdfx.apply(unweighted_sum, 's006')
+        xinc_series = gdfx.apply(weighted_sum, '_expanded_income')
         itax_series = gdfx.apply(weighted_sum, '_iitax')
         ptax_series = gdfx.apply(weighted_sum, '_payrolltax')
         htax_series = gdfx.apply(weighted_sum, 'lumpsum_tax')
         ctax_series = gdfx.apply(weighted_sum, '_combined')
         # write total levels decile table to text file
         with open(tab_fname, 'w') as tfile:
-            row = 'Weighted Totals by Expanded-Income Decile\n'
+            row = 'Weighted Tax Totals by Expanded-Income Decile\n'
             tfile.write(row)
-            row = '    Returns    IncTax    PayTax     LSTax    AllTax\n'
+            rowfmt = '{}{}{}{}{}{}\n'
+            row = rowfmt.format('    Returns',
+                                '    ExpInc',
+                                '    IncTax',
+                                '    PayTax',
+                                '     LSTax',
+                                '    AllTax')
             tfile.write(row)
-            row = '       (#m)      ($b)      ($b)      ($b)      ($b)\n'
+            row = rowfmt.format('       (#m)',
+                                '      ($b)',
+                                '      ($b)',
+                                '      ($b)',
+                                '      ($b)',
+                                '      ($b)')
             tfile.write(row)
-            rowfmt = '{:9.1f}{:10.1f}{:10.1f}{:10.1f}{:10.1f}\n'
+            rowfmt = '{:9.1f}{:10.1f}{:10.1f}{:10.1f}{:10.1f}{:10.1f}\n'
             for decile in range(0, 10):
                 row = '{:2d}'.format(decile)
                 row += rowfmt.format(rtns_series[decile] * 1e-6,
+                                     xinc_series[decile] * 1e-9,
                                      itax_series[decile] * 1e-9,
                                      ptax_series[decile] * 1e-9,
                                      htax_series[decile] * 1e-9,
@@ -388,6 +401,7 @@ class TaxCalcIO(object):
                 tfile.write(row)
             row = ' A'
             row += rowfmt.format(rtns_series.sum() * 1e-6,
+                                 xinc_series.sum() * 1e-9,
                                  itax_series.sum() * 1e-9,
                                  ptax_series.sum() * 1e-9,
                                  htax_series.sum() * 1e-9,
