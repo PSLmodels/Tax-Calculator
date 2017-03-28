@@ -362,31 +362,30 @@ class TaxCalcIO(object):
         tax_cols = ['_iitax', '_payrolltax', 'lumpsum_tax', '_combined']
         all_cols = nontax_cols + tax_cols
         non = [getattr(self.calc.records, col) for col in nontax_cols]
-        lvl = [getattr(self.calc.records, col) for col in tax_cols]
-        tot = non + lvl
-        tdf = pd.DataFrame(data=np.column_stack(tot), columns=all_cols)
+        ref = [getattr(self.calc.records, col) for col in tax_cols]
+        tot = non + ref
+        totdf = pd.DataFrame(data=np.column_stack(tot), columns=all_cols)
         # skip tables if there are not some positive weights
-        if tdf['s006'].sum() <= 0:
+        if totdf['s006'].sum() <= 0:
             with open(tab_fname, 'w') as tfile:
                 msg = 'No tables because sum of weights is not positive\n'
                 tfile.write(msg)
             return
         # create DataFrame with weighted tax differences
         clp = [getattr(self.calc_clp.records, col) for col in tax_cols]
-        chg = [(lvl[idx] - clp[idx]) for idx in range(0, len(tax_cols))]
+        chg = [(ref[idx] - clp[idx]) for idx in range(0, len(tax_cols))]
         dif = non + chg
-        ddf = pd.DataFrame(data=np.column_stack(dif), columns=all_cols)
+        difdf = pd.DataFrame(data=np.column_stack(dif), columns=all_cols)
         # write each kind of distributional table
-        tfile = open(tab_fname, 'w')
-        TaxCalcIO.write_table(tdf, tfile, 'Totals')
-        tfile.write('\n')
-        TaxCalcIO.write_table(ddf, tfile, 'Differences')
-        tfile.close()
+        with open(tab_fname, 'w') as tfile:
+            TaxCalcIO.write_decile_table(totdf, tfile, tkind='Totals')
+            tfile.write('\n')
+            TaxCalcIO.write_decile_table(difdf, tfile, tkind='Differences')
 
     @staticmethod
-    def write_table(dfx, tfile, tkind='Totals'):
+    def write_decile_table(dfx, tfile, tkind='Totals'):
         """
-        Write to tfile the tkind distributional table using dfx data.
+        Write to tfile the tkind decile table using dfx DataFrame.
         """
         dfx = add_weighted_income_bins(dfx, num_bins=10,
                                        income_measure='_expanded_income',
