@@ -559,7 +559,7 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
     extra_stded = num_extra_stded * STD_Aged[MARS - 1]
     # calculate the total standard deduction
     _standard = basic_stded + extra_stded
-    if (MARS == 3 or MARS == 6) and (MIDR == 1):
+    if MARS == 3 and MIDR == 1:
         _standard = 0.
     return _standard
 
@@ -786,7 +786,7 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
     if _standard > 0.0:
         c62100 = c00100 - e00700
     c62100 += cmbtp  # add income not in AGI but considered income for AMT
-    if MARS == 3 or MARS == 6:
+    if MARS == 3:
         amtsepadd = max(0.,
                         min(AMT_thd_MarriedS, 0.25 * (c62100 - AMT_em_pe)))
     else:
@@ -923,7 +923,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
         # filing-unit and number-of-kids based EITC (rather than indiv EITC)
         invinc = (e00400 + e00300 + e00600 +
                   max(0., c01000) + max(0., (0. - p25470)) + max(0., e27200))
-        if MARS == 3 or MARS == 6 or DSI == 1 or invinc > EITC_InvestIncome_c:
+        if MARS == 3 or DSI == 1 or invinc > EITC_InvestIncome_c:
             c59660 = 0.
         else:
             po_start = EITC_ps[EIC]

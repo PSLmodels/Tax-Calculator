@@ -86,7 +86,7 @@ def test_make_Calculator_with_policy_reform(records_2009):
     # create a Policy object and apply a policy reform
     policy2 = Policy()
     reform2 = {2013: {'_II_em': np.array([4000]), '_II_em_cpi': False,
-                      '_STD_Aged': [[1600, 1300, 1300, 1600, 1600, 1300]],
+                      '_STD_Aged': [[1600, 1300, 1300, 1600, 1600]],
                       "_STD_Aged_cpi": False}}
     policy2.implement_reform(reform2)
     # create a Calculator object using this policy-reform
@@ -97,18 +97,18 @@ def test_make_Calculator_with_policy_reform(records_2009):
     assert np.allclose(calc2.policy._II_em,
                        np.array([4000] * Policy.DEFAULT_NUM_YEARS))
     exp_STD_Aged = [[1600, 1300, 1300,
-                     1600, 1600, 1300]] * Policy.DEFAULT_NUM_YEARS
+                     1600, 1600]] * Policy.DEFAULT_NUM_YEARS
     assert np.allclose(calc2.policy._STD_Aged,
                        np.array(exp_STD_Aged))
     assert np.allclose(calc2.policy.STD_Aged,
-                       np.array([1600, 1300, 1300, 1600, 1600, 1300]))
+                       np.array([1600, 1300, 1300, 1600, 1600]))
 
 
 def test_make_Calculator_with_multiyear_reform(records_2009):
     # create a Policy object and apply a policy reform
     policy3 = Policy()
     reform3 = {2015: {}}
-    reform3[2015]['_STD_Aged'] = [[1600, 1300, 1600, 1300, 1600, 1300]]
+    reform3[2015]['_STD_Aged'] = [[1600, 1300, 1600, 1300, 1600]]
     reform3[2015]['_II_em'] = [5000, 6000]  # reform values for 2015 and 2016
     reform3[2015]['_II_em_cpi'] = False
     policy3.implement_reform(reform3)
@@ -125,7 +125,7 @@ def test_make_Calculator_with_multiyear_reform(records_2009):
     calc3.increment_year()
     assert calc3.current_year == 2015
     assert np.allclose(calc3.policy.STD_Aged,
-                       np.array([1600, 1300, 1600, 1300, 1600, 1300]))
+                       np.array([1600, 1300, 1600, 1300, 1600]))
 
 
 def test_Calculator_advance_to_year(records_2009):
@@ -275,7 +275,7 @@ def test_make_Calculator_increment_years_first(records_2009):
     pol = Policy(start_year=syr, num_years=5)
     reform = {2015: {}, 2016: {}}
     std5 = 2000
-    reform[2015]['_STD_Aged'] = [[std5, std5, std5, std5, std5, std5]]
+    reform[2015]['_STD_Aged'] = [[std5, std5, std5, std5, std5]]
     reform[2015]['_II_em'] = [5000]
     reform[2016]['_II_em'] = [6000]
     reform[2016]['_II_em_cpi'] = False
@@ -288,11 +288,11 @@ def test_make_Calculator_increment_years_first(records_2009):
     irate2016 = irates[2016 - syr]
     std6 = std5 * (1.0 + irate2015)
     std7 = std6 * (1.0 + irate2016)
-    exp_STD_Aged = np.array([[1500, 1200, 1200, 1500, 1500, 1200],
-                             [1550, 1200, 1200, 1550, 1550, 1200],
-                             [std5, std5, std5, std5, std5, std5],
-                             [std6, std6, std6, std6, std6, std6],
-                             [std7, std7, std7, std7, std7, std7]])
+    exp_STD_Aged = np.array([[1500, 1200, 1200, 1500, 1500],
+                             [1550, 1200, 1200, 1550, 1550],
+                             [std5, std5, std5, std5, std5],
+                             [std6, std6, std6, std6, std6],
+                             [std7, std7, std7, std7, std7]])
     assert np.allclose(calc.policy._STD_Aged, exp_STD_Aged)
     exp_II_em = np.array([3900, 3950, 5000, 6000, 6000])
     assert np.allclose(calc.policy._II_em, exp_II_em)

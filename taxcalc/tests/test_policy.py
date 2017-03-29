@@ -364,16 +364,16 @@ def test_implement_reform_Policy_raises_on_no_year():
 
 def test_Policy_reform_in_start_year():
     ppo = Policy(start_year=2013)
-    reform = {2013: {'_STD_Aged': [[1400, 1100, 1100, 1400, 1400, 1199]]}}
+    reform = {2013: {'_STD_Aged': [[1400, 1100, 1100, 1400, 1400]]}}
     ppo.implement_reform(reform)
     assert_allclose(ppo.STD_Aged,
-                    np.array([1400, 1100, 1100, 1400, 1400, 1199]),
+                    np.array([1400, 1100, 1100, 1400, 1400]),
                     atol=0.01, rtol=0.0)
 
 
 def test_implement_reform_Policy_raises_on_future_year():
     ppo = Policy(start_year=2013)
-    reform = {2010: {'_STD_Aged': [[1400, 1100, 1100, 1400, 1400, 1199]]}}
+    reform = {2010: {'_STD_Aged': [[1400, 1100, 1100, 1400, 1400]]}}
     with pytest.raises(ValueError):
         ppo.implement_reform(reform)
 
@@ -390,11 +390,11 @@ def test_Policy_reform_with_default_cpi_flags():
 
 def test_Policy_reform_after_start_year():
     ppo = Policy(start_year=2013)
-    reform = {2015: {'_STD_Aged': [[1400, 1100, 1100, 1400, 1400, 1199]]}}
+    reform = {2015: {'_STD_Aged': [[1400, 1100, 1100, 1400, 1400]]}}
     ppo.implement_reform(reform)
     ppo.set_year(2015)
     assert_allclose(ppo.STD_Aged,
-                    np.array([1400, 1100, 1100, 1400, 1400, 1199]),
+                    np.array([1400, 1100, 1100, 1400, 1400]),
                     atol=0.01, rtol=0.0)
 
 
@@ -419,9 +419,9 @@ def test_parameters_get_default_start_year():
     meta_std_aged = paramdata['_STD_Aged']
     assert meta_std_aged['start_year'] == 2015
     assert meta_std_aged['row_label'] == ['2015', '2016', '2017']
-    assert meta_std_aged['value'] == [[1550, 1250, 1250, 1550, 1550, 1250],
-                                      [1550, 1250, 1250, 1550, 1550, 1250],
-                                      [1550, 1250, 1250, 1550, 1550, 1250]]
+    assert meta_std_aged['value'] == [[1550, 1250, 1250, 1550, 1550],
+                                      [1550, 1250, 1250, 1550, 1550],
+                                      [1550, 1250, 1250, 1550, 1550]]
     # 1D data, doesn't have 2015 values, is not CPI inflated
     meta_kt_c_age = paramdata['_AMT_KT_c_Age']
     assert meta_kt_c_age['start_year'] == 2015
