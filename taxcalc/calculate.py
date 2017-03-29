@@ -250,9 +250,10 @@ class Calculator(object):
         (where the change in total compensation is the sum of the small
         increase in the variable and any increase in the employer share of
         payroll taxes caused by the small increase in the variable).
-          If using 'e00200s' as variable_str, MTR for all records where
-        MARS != 2 will be missing. If you want to perform a function such as
-        np.mean(), you will need to account for this.
+          If using 'e00200s' as variable_str, the marginal tax rate for all
+        records where MARS != 2 will be missing.  If you want to perform a
+        function such as np.mean() on the returned arrays, you will need to
+        account for this.
 
         Parameters
         ----------
@@ -285,8 +286,7 @@ class Calculator(object):
         -----
         Valid variable_str values are:
         'e00200p', taxpayer wage/salary earnings (also included in e00200);
-        'e00200s', secondary earner wage/salary earnings (also included in
-                   e00200);
+        'e00200s', spouse wage/salary earnings (also included in e00200);
         'e00900p', taxpayer Schedule C self-employment income (also in e00900);
         'e00300',  taxable interest income;
         'e00400',  federally-tax-exempt interest income;
@@ -304,6 +304,7 @@ class Calculator(object):
         'e19800',  Charity cash contributions.
         'e20100',  Charity non-cash contributions.
         """
+        # pylint: disable=too-many-statements
         # check validity of variable_str parameter
         if variable_str not in Calculator.MTR_VALID_VARIABLES:
             msg = 'mtr variable_str="{}" is not valid'
@@ -355,7 +356,9 @@ class Calculator(object):
         incometax_diff = incometax_chng - incometax_base
         combined_diff = combined_taxes_chng - combined_taxes_base
         # specify optional adjustment for employer (er) OASDI+HI payroll taxes
-        if wrt_full_compensation and variable_str == 'e00200p':
+        mtr_on_earnings = (variable_str == 'e00200p' or
+                           variable_str == 'e00200s')
+        if wrt_full_compensation and mtr_on_earnings:
             adj = np.where(variable < self.policy.SS_Earnings_c,
                            0.5 * (self.policy.FICA_ss_trt +
                                   self.policy.FICA_mc_trt),
@@ -366,14 +369,14 @@ class Calculator(object):
         mtr_payrolltax = payrolltax_diff / (finite_diff * (1.0 + adj))
         mtr_incometax = incometax_diff / (finite_diff * (1.0 + adj))
         mtr_combined = combined_diff / (finite_diff * (1.0 + adj))
-        # If using e00200s, set MTR to zero for households with no spouse
+        # if variable_str is e00200s, set MTR to NaN for units without a spouse
         if variable_str == 'e00200s':
-            mtr_payrolltax = np.where(self.records.MARS != 2, np.nan,
-                                      mtr_payrolltax)
-            mtr_incometax = np.where(self.records.MARS != 2, np.nan,
-                                     mtr_incometax)
-            mtr_combined = np.where(self.records.MARS != 2, np.nan,
-                                    mtr_combined)
+            mtr_payrolltax = np.where(self.records.MARS == 2,
+                                      mtr_payrolltax, np.nan)
+            mtr_incometax = np.where(self.records.MARS == 2,
+                                     mtr_incometax, np.nan)
+            mtr_combined = np.where(self.records.MARS == 2,
+                                    mtr_combined, np.nan)
         # return the three marginal tax rate arrays
         return (mtr_payrolltax, mtr_incometax, mtr_combined)
 
