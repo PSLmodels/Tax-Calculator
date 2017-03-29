@@ -38,7 +38,7 @@ def rawinputfile():
         u'    1,   2\n'
         u'    2,   1\n'
         u'    3,   4\n'
-        u'    4,   6\n'
+        u'    4,   3\n'
     )
     ifile.write(contents)
     ifile.close()

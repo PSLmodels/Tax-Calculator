@@ -19,7 +19,7 @@ RAWINPUTFILE_CONTENTS = (
     '1,2\n'
     '2,1\n'
     '3,4\n'
-    '4,6\n'
+    '4,3\n'
 )
 
 
