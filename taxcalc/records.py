@@ -274,12 +274,6 @@ class Records(object):
         self._current_year = new_current_year
         self.FLPDYR.fill(new_current_year)
 
-    def positive_weights(self):
-        """
-        Returns True if all weights are positive; otherwise returns False.
-        """
-        return np.all(self.s006 > 0)
-
     # --- begin private methods of Records class --- #
 
     def _blowup(self, year):
