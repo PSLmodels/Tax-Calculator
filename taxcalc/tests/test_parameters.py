@@ -108,14 +108,14 @@ def test_json_file_contents(tests_path, fname):
                 assert len(clab) == 7
             else:
                 assert cvar == 'UNKNOWN col_var VALUE'
+            # check length of each value row
             for valuerow in value:
                 assert len(valuerow) == len(clab)
         # check that indexed parameters have all known years in rowlabel list
         known_problems = ['_AMT_thd_MarriedS',  # TODO: fix these problems!
-                          '_ETC_pe_Single',
-                          '_ETC_pe_Married',
                           '_AMT_em_pe',
                           '_ETC_pe_Single',
+                          '_ETC_pe_Married',
                           '_ID_Medical_frt_add4aged']
         if pname in known_problems:
             continue  # skip final check
