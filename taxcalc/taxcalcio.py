@@ -292,7 +292,8 @@ class TaxCalcIO(object):
         -------
         Nothing
         """
-        # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments,too-many-branches
+        calc_clp_calculated = False
         if output_dump:
             (mtr_paytax, mtr_inctax,
              _) = self.calc.mtr(wrt_full_compensation=False)
@@ -301,6 +302,7 @@ class TaxCalcIO(object):
             mtr_inctax = None
         if self.behavior_has_any_response:
             self.calc = Behavior.response(self.calc_clp, self.calc)
+            calc_clp_calculated = True
         else:
             self.calc.calc_all()
         # optionally conduct normative welfare analysis
@@ -313,6 +315,7 @@ class TaxCalcIO(object):
                 ceeu_results += 'option.'
             else:
                 self.calc_clp.calc_all()
+                calc_clp_calculated = True
                 cedict = ce_aftertax_income(self.calc_clp, self.calc,
                                             require_no_agg_tax_change=False)
                 ceeu_results = TaxCalcIO.ceeu_output(cedict)
@@ -323,9 +326,15 @@ class TaxCalcIO(object):
             self.write_output_file(output_dump, mtr_paytax, mtr_inctax)
         # optionally write --tables output to text file
         if output_tables:
+            if not calc_clp_calculated:
+                self.calc_clp.calc_all()
+                calc_clp_calculated = True
             self.write_tables_file()
         # optionally write --graphs output to HTML files
         if output_graphs:
+            if not calc_clp_calculated:
+                self.calc_clp.calc_all()
+                calc_clp_calculated = True
             self.write_graph_files()
         # optionally write --ceeu output to stdout
         if ceeu_results:
@@ -348,18 +357,36 @@ class TaxCalcIO(object):
         """
         # pylint: disable=too-many-locals
         tab_fname = self._output_filename.replace('.csv', '-tab.text')
-        # create expanded-income decile table containing weighted total levels
-        record_cols = ['s006', '_payrolltax', '_iitax', 'lumpsum_tax',
-                       '_combined', '_expanded_income']
-        out = [getattr(self.calc.records, col) for col in record_cols]
-        dfx = pd.DataFrame(data=np.column_stack(out), columns=record_cols)
+        # create DataFrame with weighted tax totals
+        nontax_cols = ['s006', '_expanded_income']
+        tax_cols = ['_iitax', '_payrolltax', 'lumpsum_tax', '_combined']
+        all_cols = nontax_cols + tax_cols
+        non = [getattr(self.calc.records, col) for col in nontax_cols]
+        ref = [getattr(self.calc.records, col) for col in tax_cols]
+        tot = non + ref
+        totdf = pd.DataFrame(data=np.column_stack(tot), columns=all_cols)
         # skip tables if there are not some positive weights
-        if dfx['s006'].sum() <= 0:
+        if totdf['s006'].sum() <= 0:
             with open(tab_fname, 'w') as tfile:
                 msg = 'No tables because sum of weights is not positive\n'
                 tfile.write(msg)
             return
-        # construct distributional table elements
+        # create DataFrame with weighted tax differences
+        clp = [getattr(self.calc_clp.records, col) for col in tax_cols]
+        chg = [(ref[idx] - clp[idx]) for idx in range(0, len(tax_cols))]
+        dif = non + chg
+        difdf = pd.DataFrame(data=np.column_stack(dif), columns=all_cols)
+        # write each kind of distributional table
+        with open(tab_fname, 'w') as tfile:
+            TaxCalcIO.write_decile_table(totdf, tfile, tkind='Totals')
+            tfile.write('\n')
+            TaxCalcIO.write_decile_table(difdf, tfile, tkind='Differences')
+
+    @staticmethod
+    def write_decile_table(dfx, tfile, tkind='Totals'):
+        """
+        Write to tfile the tkind decile table using dfx DataFrame.
+        """
         dfx = add_weighted_income_bins(dfx, num_bins=10,
                                        income_measure='_expanded_income',
                                        weight_by_income_measure=False)
@@ -370,43 +397,42 @@ class TaxCalcIO(object):
         ptax_series = gdfx.apply(weighted_sum, '_payrolltax')
         htax_series = gdfx.apply(weighted_sum, 'lumpsum_tax')
         ctax_series = gdfx.apply(weighted_sum, '_combined')
-        # write total levels decile table to text file
-        with open(tab_fname, 'w') as tfile:
-            row = 'Weighted Tax Totals by Expanded-Income Decile\n'
+        # write decile table to text file
+        row = 'Weighted Tax {} by Expanded-Income Decile\n'
+        tfile.write(row.format(tkind))
+        rowfmt = '{}{}{}{}{}{}\n'
+        row = rowfmt.format('    Returns',
+                            '    ExpInc',
+                            '    IncTax',
+                            '    PayTax',
+                            '     LSTax',
+                            '    AllTax')
+        tfile.write(row)
+        row = rowfmt.format('       (#m)',
+                            '      ($b)',
+                            '      ($b)',
+                            '      ($b)',
+                            '      ($b)',
+                            '      ($b)')
+        tfile.write(row)
+        rowfmt = '{:9.1f}{:10.1f}{:10.1f}{:10.1f}{:10.1f}{:10.1f}\n'
+        for decile in range(0, 10):
+            row = '{:2d}'.format(decile)
+            row += rowfmt.format(rtns_series[decile] * 1e-6,
+                                 xinc_series[decile] * 1e-9,
+                                 itax_series[decile] * 1e-9,
+                                 ptax_series[decile] * 1e-9,
+                                 htax_series[decile] * 1e-9,
+                                 ctax_series[decile] * 1e-9)
             tfile.write(row)
-            rowfmt = '{}{}{}{}{}{}\n'
-            row = rowfmt.format('    Returns',
-                                '    ExpInc',
-                                '    IncTax',
-                                '    PayTax',
-                                '     LSTax',
-                                '    AllTax')
-            tfile.write(row)
-            row = rowfmt.format('       (#m)',
-                                '      ($b)',
-                                '      ($b)',
-                                '      ($b)',
-                                '      ($b)',
-                                '      ($b)')
-            tfile.write(row)
-            rowfmt = '{:9.1f}{:10.1f}{:10.1f}{:10.1f}{:10.1f}{:10.1f}\n'
-            for decile in range(0, 10):
-                row = '{:2d}'.format(decile)
-                row += rowfmt.format(rtns_series[decile] * 1e-6,
-                                     xinc_series[decile] * 1e-9,
-                                     itax_series[decile] * 1e-9,
-                                     ptax_series[decile] * 1e-9,
-                                     htax_series[decile] * 1e-9,
-                                     ctax_series[decile] * 1e-9)
-                tfile.write(row)
-            row = ' A'
-            row += rowfmt.format(rtns_series.sum() * 1e-6,
-                                 xinc_series.sum() * 1e-9,
-                                 itax_series.sum() * 1e-9,
-                                 ptax_series.sum() * 1e-9,
-                                 htax_series.sum() * 1e-9,
-                                 ctax_series.sum() * 1e-9)
-            tfile.write(row)
+        row = ' A'
+        row += rowfmt.format(rtns_series.sum() * 1e-6,
+                             xinc_series.sum() * 1e-9,
+                             itax_series.sum() * 1e-9,
+                             ptax_series.sum() * 1e-9,
+                             htax_series.sum() * 1e-9,
+                             ctax_series.sum() * 1e-9)
+        tfile.write(row)
 
     def write_graph_files(self):
         """
