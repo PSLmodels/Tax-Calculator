@@ -60,7 +60,6 @@ def test_policy_json_content():
         assert isinstance(row_label, list)
         value = data.get('value')
         expected_row_label = [str(start_year + i) for i in range(len(value))]
-        print name, value
         assert row_label == expected_row_label
 
 
