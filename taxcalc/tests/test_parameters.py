@@ -44,7 +44,6 @@ def test_instantiation_and_usage():
         ParametersBase.expand_array(threedarray, True, [0.02, 0.02], 2)
 
 
-@pytest.mark.one
 @pytest.mark.parametrize("fname",
                          [("behavior.json"),
                           ("consumption.json"),
@@ -112,12 +111,12 @@ def test_json_file_contents(tests_path, fname):
             for valuerow in value:
                 assert len(valuerow) == len(clab)
         # check that indexed parameters have all known years in rowlabel list
-        known_problems = ['_AMT_thd_MarriedS',  # TODO: fix these problems!
-                          '_AMT_em_pe',
-                          '_ETC_pe_Single',
-                          '_ETC_pe_Married',
-                          '_ID_Medical_frt_add4aged']
-        if pname in known_problems:
-            continue  # skip final check
+        form_parameters = ['_AMT_em_pe',
+                           '_AMT_thd_MarriedS',  # TODO: remove this parameter
+                           '_ETC_pe_Single',
+                           '_ETC_pe_Married']
         if param['cpi_inflated']:
-            assert len(rowlabel) == num_known_years
+            if pname in form_parameters:
+                assert len(rowlabel) == num_known_years - 1
+            else:
+                assert len(rowlabel) == num_known_years

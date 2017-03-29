@@ -666,7 +666,7 @@
 
     "_ID_Medical_frt_add4aged": {
         "long_name": "Addon to the deduction for medical expenses floor rate for elderly filing units; addon as a decimal fraction of AGI",
-        "description": "Elderly taxpayers have this fraction added to the value of the deduction for medical expenses floor rate.",
+        "description": "Elderly taxpayers have this fraction added to the value of the deduction for medical expenses floor rate.  This fraction was -0.025 from 2013 to 2016, but that was temporary and it changed to zero beginning in 2017.",
         "section_1": "Itemized deductions",
         "section_2": "Medical expenses",
         "irs_ref": "Form 1040 Schedule A, line 3, in-line. ",
@@ -2187,30 +2187,38 @@
         "notes": "",
         "row_var": "FLPDYR",
         "row_label": ["2013",
-                      "2014"],
+                      "2014",
+                      "2015",
+                      "2016"],
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "",
         "col_label": "",
         "value": [40400,
-                  41050]
+                  41050,
+                  41700,
+                  41900]
     },
 
 
     "_AMT_em_pe": {
-        "long_name": "AMT exemption phaseout ending AMT taxable income (Married filling Separately)",
+        "long_name": "AMT exemption phaseout ending AMT taxable income for Married Filling Separately",
         "description": "The AMT exemption is entirely disallowed beyond this AMT taxable income level for individuals who are married but filing separately.",
         "irs_ref": "Form 6251, line 28, instruction.",
         "notes": "",
         "row_var": "FLPDYR",
         "row_label": ["2013",
-                      "2014"],
+                      "2014",
+                      "2015",
+                      "2016"],
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "",
         "col_label": "",
         "value": [238550,
-                  242450]
+                  242450,
+                  246250,
+                  247450]
     },
 
     "_CDCC_c": {
@@ -2588,13 +2596,15 @@
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
-                      "2015"],
+                      "2015",
+                      "2016"],
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "",
         "col_label": "",
         "value": [63,
                   64,
+                  65,
                   65]
     },
 
@@ -2606,14 +2616,16 @@
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
-                      "2015"],
+                      "2015",
+                      "2016"],
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "",
         "col_label": "",
         "value": [127,
                   128,
-                  130]
+                  130,
+                  131]
     },
 
     "_ACTC_rt": {
