@@ -2180,27 +2180,6 @@
         "value": [0.02]
     },
 
-    "_AMT_thd_MarriedS": {
-        "long_name": "Extra alminc for married sep",
-        "description": "",
-        "irs_ref": "Form 6251, line 28, instruction.",
-        "notes": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013",
-                      "2014",
-                      "2015",
-                      "2016"],
-        "start_year": 2013,
-        "cpi_inflated": true,
-        "col_var": "",
-        "col_label": "",
-        "value": [40400,
-                  41050,
-                  41700,
-                  41900]
-    },
-
-
     "_AMT_em_pe": {
         "long_name": "AMT exemption phaseout ending AMT taxable income for Married filling Separately",
         "description": "The AMT exemption is entirely disallowed beyond this AMT taxable income level for individuals who are married but filing separately.",
