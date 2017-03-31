@@ -341,20 +341,6 @@
         "value": [0.0]
     },
 
-    "_ALD_InvInc_ec_base_code_active": {
-        "long_name": "Use parameter code to compute investment income exclusion base",
-        "description": "False implies base includes all investment income; otherwise code defines base.",
-        "irs_ref": "",
-        "notes": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "start_year": 2013,
-        "cpi_inflated": false,
-        "col_var": "",
-        "col_label": "",
-        "value": [false]
-    },
-
     "_ALD_InvInc_ec_base_RyanBrady": {
         "long_name": "Investment income exclusion base for Ryan-Brady tax blueprint",
         "description": "Exclusion is applied to long-term gains before loss limitation, taxable interest and qualified dividends. Interpretation of the sparsely-detailed Ryan-Brady provision.",
@@ -2669,20 +2655,6 @@
         "col_var": "",
         "col_label": "",
         "value": [3]
-    },
-
-    "_CTC_new_code_active": {
-        "long_name": "Use parameter code to compute new refundable child tax credit",
-        "description": "False implies additional refundable child tax credit computed using numeric parameters; otherwise code defines credit.",
-        "irs_ref": "",
-        "notes": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "start_year": 2013,
-        "cpi_inflated": false,
-        "col_var": "",
-        "col_label": "",
-        "value": [false]
     },
 
     "_CTC_new_c": {
