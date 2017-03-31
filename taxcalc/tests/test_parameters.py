@@ -124,3 +124,23 @@ def test_json_file_contents(tests_path, fname):
                 assert len(rowlabel) == num_known_years - 1
             else:
                 assert len(rowlabel) == num_known_years
+
+
+def test_policy_parameter_usage(tests_path):
+    """
+    Make sure each policy parameter is mentioned in functions.py text.
+    """
+    # read policy parameter file into a dictionary
+    path = os.path.join(tests_path, '..', 'current_law_policy.json')
+    pfile = open(path, 'r')
+    allparams = json.load(pfile)
+    pfile.close()
+    assert isinstance(allparams, dict)
+    # read functions.py text
+    path = os.path.join(tests_path, '..', 'functions.py')
+    ffile = open(path, 'r')
+    functions_text = ffile.read()
+    ffile.close()
+    # check that each param (without leading _) is mentioned in functions.py
+    for pname in allparams:
+        assert pname[1:] in functions_text
