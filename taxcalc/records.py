@@ -436,11 +436,13 @@ class Records(object):
             else:
                 setattr(self, varname,
                         np.zeros(self.dim, dtype=np.float64))
+        # check for valid MARS values
+        if not np.all(np.logical_and(np.greater_equal(self.MARS, 1),
+                                     np.less_equal(self.MARS, 5))):
+            raise ValueError('not all MARS values in [1,5] range')
         # create variables derived from MARS, which is in MUST_READ_VARS
-        self._num[:] = np.where(self.MARS == 2,
-                                2, 1)
-        self._sep[:] = np.where(np.logical_or(self.MARS == 3, self.MARS == 6),
-                                2, 1)
+        self._num[:] = np.where(self.MARS == 2, 2, 1)
+        self._sep[:] = np.where(self.MARS == 3, 2, 1)
         # specify value of _exact array
         self._exact[:] = np.where(exact_calcs is True, 1, 0)
         # specify value of ID_Casualty_frt_in_pufcsv_year array

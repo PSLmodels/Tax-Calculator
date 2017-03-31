@@ -604,6 +604,7 @@ class SimpleTaxIO(object):
         dict_list = [zero_dict for _ in range(0, len(self._input))]
         # use dict_list to create a Pandas DataFrame and Records object
         recsdf = pd.DataFrame(dict_list, dtype='int64')
+        recsdf['MARS'] = recsdf['MARS'].add(1)  # because MARS==0 is illegal
         recs = Records(data=recsdf, exact_calculations=exact_calcs,
                        gfactors=None, weights=None,
                        start_year=self._policy.start_year)

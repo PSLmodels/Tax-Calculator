@@ -100,7 +100,7 @@ def test_json_file_contents(tests_path, fname):
             assert isinstance(clab, list)
             # check different possible col_var values
             if cvar == 'MARS':
-                assert len(clab) == 6
+                assert len(clab) == 5
             elif cvar == 'EIC':
                 assert len(clab) == 4
             elif cvar == 'idedtype':
