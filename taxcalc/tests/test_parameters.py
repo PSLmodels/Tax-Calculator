@@ -53,7 +53,7 @@ def test_json_file_contents(tests_path, fname):
     """
     Check contents of JSON parameter files.
     """
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-locals,too-many-branches
     # specify test information
     reqkeys = ['long_name', 'description', 'notes',
                'row_var', 'row_label',
@@ -83,9 +83,13 @@ def test_json_file_contents(tests_path, fname):
         assert isinstance(syr, int) and syr == first_year
         # check that cpi_inflated is boolean
         assert isinstance(param['cpi_inflated'], bool)
-        # check that row_label is list starting with first_year
+        # check that row_label is list
         rowlabel = param['row_label']
-        assert isinstance(rowlabel, list) and int(rowlabel[0]) == first_year
+        assert isinstance(rowlabel, list)
+        # check all row_label values
+        for idx in range(0, len(rowlabel)):
+            cyr = first_year + idx
+            assert int(rowlabel[idx]) == cyr
         # check type and dimension of value
         value = param['value']
         assert isinstance(value, list)
@@ -111,6 +115,7 @@ def test_json_file_contents(tests_path, fname):
             for valuerow in value:
                 assert len(valuerow) == len(clab)
         # check that indexed parameters have all known years in rowlabel list
+        # form_parameters are those whose value is available only on IRS form
         form_parameters = ['_AMT_em_pe',
                            '_ETC_pe_Single',
                            '_ETC_pe_Married']
