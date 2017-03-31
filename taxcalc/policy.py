@@ -132,16 +132,12 @@ class Policy(ParametersBase):
         An example of a multi-year, multi-parameter reform is as follows::
 
             reform = {
-                2015: {
-                    '_AMT_thd_MarriedS': [60000]
-                },
                 2016: {
                     '_EITC_c': [[900, 5000, 8000, 9000]],
                     '_II_em': [7000],
                     '_SS_Earnings_c': [300000]
                 },
                 2017: {
-                    '_AMT_thd_MarriedS': [80000],
                     '_SS_Earnings_c': [500000], '_SS_Earnings_c_cpi': False
                 },
                 2019: {

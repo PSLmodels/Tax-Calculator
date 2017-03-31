@@ -112,7 +112,6 @@ def test_json_file_contents(tests_path, fname):
                 assert len(valuerow) == len(clab)
         # check that indexed parameters have all known years in rowlabel list
         form_parameters = ['_AMT_em_pe',
-                           '_AMT_thd_MarriedS',  # TODO: remove this parameter
                            '_ETC_pe_Single',
                            '_ETC_pe_Married']
         if param['cpi_inflated']:

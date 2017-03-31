@@ -764,7 +764,7 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, _taxbc, _surtax):
 def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         c04470, c17000, c20800, c21040, e24515, MARS, _sep, dwks19,
         dwks14, c05700, e62900, e00700, dwks10, age_head, _earned, cmbtp,
-        AMT_KT_c_Age, AMT_brk1, AMT_thd_MarriedS,
+        AMT_KT_c_Age, AMT_brk1,
         AMT_em, AMT_prt, AMT_rt1, AMT_rt2,
         AMT_Child_em, AMT_em_ps, AMT_em_pe,
         AMT_CG_brk1, AMT_CG_brk2, AMT_CG_brk3, AMT_CG_rt1, AMT_CG_rt2,
@@ -788,7 +788,7 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
     c62100 += cmbtp  # add income not in AGI but considered income for AMT
     if MARS == 3:
         amtsepadd = max(0.,
-                        min(AMT_thd_MarriedS, 0.25 * (c62100 - AMT_em_pe)))
+                        min(AMT_em[MARS - 1], AMT_prt * (c62100 - AMT_em_pe)))
     else:
         amtsepadd = 0.
     c62100 = c62100 + amtsepadd  # AMT taxable income, which is line28
