@@ -366,7 +366,7 @@ class TaxCalcIO(object):
         tot = non + ref
         totdf = pd.DataFrame(data=np.column_stack(tot), columns=all_cols)
         # skip tables if there are not some positive weights
-        if totdf['s006'].sum() <= 0:
+        if totdf['s006'].sum() <= 0.:
             with open(tab_fname, 'w') as tfile:
                 msg = 'No tables because sum of weights is not positive\n'
                 tfile.write(msg)
@@ -438,17 +438,38 @@ class TaxCalcIO(object):
         """
         Write graphs to HTML files.
         """
-        atr_data = atr_graph_data(self.calc_clp, self.calc)
-        atr_plot = xtr_graph_plot(atr_data)
+        pos_wght_sum = self.calc.records.s006.sum() > 0.
         atr_fname = self._output_filename.replace('.csv', '-atr.html')
         atr_title = 'ATR by Income Percentile'
-        write_graph_file(atr_plot, atr_fname, atr_title)
-        mtr_data = mtr_graph_data(self.calc_clp, self.calc,
-                                  alt_e00200p_text='Taxpayer Earnings')
-        mtr_plot = xtr_graph_plot(mtr_data)
+        if pos_wght_sum:
+            atr_data = atr_graph_data(self.calc_clp, self.calc)
+            atr_plot = xtr_graph_plot(atr_data)
+            write_graph_file(atr_plot, atr_fname, atr_title)
+        else:
+            reason = 'No graph because sum of weights is not positive'
+            TaxCalcIO.write_empty_graph_file(atr_fname, atr_title, reason)
         mtr_fname = self._output_filename.replace('.csv', '-mtr.html')
         mtr_title = 'MTR by Income Percentile'
-        write_graph_file(mtr_plot, mtr_fname, mtr_title)
+        if pos_wght_sum:
+            mtr_data = mtr_graph_data(self.calc_clp, self.calc,
+                                      alt_e00200p_text='Taxpayer Earnings')
+            mtr_plot = xtr_graph_plot(mtr_data)
+            write_graph_file(mtr_plot, mtr_fname, mtr_title)
+        else:
+            reason = 'No graph because sum of weights is not positive'
+            TaxCalcIO.write_empty_graph_file(mtr_fname, mtr_title, reason)
+
+    @staticmethod
+    def write_empty_graph_file(fname, title, reason):
+        """
+        Write HTML graph file with title but no graph for specified reason.
+        """
+        txt = ('<html>\n'
+               '<head><title>{}</title></head>\n'
+               '<body><center<h1>{}</h1></center></body>\n'
+               '</html>\n').format(title, reason)
+        with open(fname, 'w') as gfile:
+            gfile.write(txt)
 
     def minimal_output(self):
         """
