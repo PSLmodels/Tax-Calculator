@@ -285,11 +285,12 @@ def test_output_otions(rawinputfile, reformfile1, assumpfile1):
             pass  # sometimes we can't remove a generated temporary file
 
 
-def test_no_tables(reformfile1):
+def test_no_tables_or_graphs(reformfile1):
     """
-    Test TaxCalcIO with output_tables=True but with zero weights.
+    Test TaxCalcIO with output_tables=True and output_graphs=True but
+    INPUT has zero weights.
     """
-    # create input sample that cannot have distributional tables tabulated
+    # create input sample that cannot output tables or graphs
     nobs = 10
     idict = dict()
     idict['RECID'] = [i for i in range(1, nobs + 1)]
@@ -313,10 +314,18 @@ def test_no_tables(reformfile1):
               exact_calculations=False)
     assert len(tcio.errmsg) == 0
     # create TaxCalcIO tables file
-    tcio.analyze(writing_output_file=False, output_tables=True)
-    # delete tables file
+    tcio.analyze(writing_output_file=False,
+                 output_tables=True,
+                 output_graphs=True)
+    # delete tables and graph files
     output_filename = tcio.output_filepath()
     fname = output_filename.replace('.csv', '-tab.text')
+    if os.path.isfile(fname):
+        os.remove(fname)
+    fname = output_filename.replace('.csv', '-atr.html')
+    if os.path.isfile(fname):
+        os.remove(fname)
+    fname = output_filename.replace('.csv', '-mtr.html')
     if os.path.isfile(fname):
         os.remove(fname)
 
