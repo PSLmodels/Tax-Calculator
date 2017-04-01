@@ -10,7 +10,8 @@ import json
 import six
 import numpy as np
 import pytest
-from taxcalc import ParametersBase, Policy  # pylint: disable=import-error
+from taxcalc import ParametersBase  # pylint: disable=import-error
+from taxcalc import Policy, Consumption  # pylint: disable=import-error
 
 
 def test_instantiation_and_usage():
@@ -126,21 +127,33 @@ def test_json_file_contents(tests_path, fname):
                 assert len(rowlabel) == num_known_years
 
 
-def test_policy_parameter_usage(tests_path):
+@pytest.mark.parametrize("jfname, pfname",
+                         [("behavior.json", "behavior.py"),
+                          ("consumption.json", "consumption.py"),
+                          ("current_law_policy.json", "functions.py"),
+                          ("growdiff.json", "growdiff.py")])
+def test_parameters_mentioned(tests_path, jfname, pfname):
     """
-    Make sure each policy parameter is mentioned in functions.py text.
+    Make sure each JSON parameter is mentioned in PYTHON code file.
     """
-    # read policy parameter file into a dictionary
-    path = os.path.join(tests_path, '..', 'current_law_policy.json')
+    # read JSON parameter file into a dictionary
+    path = os.path.join(tests_path, '..', jfname)
     pfile = open(path, 'r')
     allparams = json.load(pfile)
     pfile.close()
     assert isinstance(allparams, dict)
-    # read functions.py text
-    path = os.path.join(tests_path, '..', 'functions.py')
-    ffile = open(path, 'r')
-    functions_text = ffile.read()
-    ffile.close()
-    # check that each param (without leading _) is mentioned in functions.py
+    # read PYTHON code file text
+    if pfname == 'consumption.py':
+        # consumption.py does not explicitly name the parameters
+        code_text = ''
+        for var in Consumption.RESPONSE_VARS:
+            code_text += 'MPC_{}\n'.format(var)
+    else:
+        # parameters are explicitly named in PYTHON file
+        path = os.path.join(tests_path, '..', pfname)
+        pfile = open(path, 'r')
+        code_text = pfile.read()
+        pfile.close()
+    # check that each param (without leading _) is mentioned in code text
     for pname in allparams:
-        assert pname[1:] in functions_text
+        assert pname[1:] in code_text
