@@ -248,7 +248,7 @@
     "_ALD_EducatorExpenses_hc": {
         "long_name": "Deduction for educator expenses haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of educator expenses that can be deducted from AGI",
-        "section_1": "Above the line deduction",
+        "section_1": "Above the line deductions",
         "section_2": "Misc. adjustment haircuts",
         "irs_ref": "",
         "notes": "The final adjustment amount would be (1 - Haircut) * Educator Expenses",
@@ -264,7 +264,7 @@
     "_ALD_HSADeduction_hc": {
         "long_name": "Deduction for HSA deduction haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of a taxpayer's HSA deduction that can be deducted from AGI",
-        "section_1": "Above the line deduction",
+        "section_1": "Above the line deductions",
         "section_2": "Misc. adjustment haircuts",
         "irs_ref": "",
         "notes": "The final adjustment amount would be (1 - Haircut) * HSA Deduction",
@@ -280,7 +280,7 @@
     "_ALD_IRAContributions_hc": {
         "long_name": "Deduction for IRA contributions haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of IRA contributions that can be deducted from AGI",
-        "section_1": "Above the line deduction",
+        "section_1": "Above the line deductions",
         "section_2": "Misc. adjustment haircuts",
         "irs_ref": "",
         "notes": "The final adjustment amount would be (1 - Haircut) * IRA Contribution",
@@ -296,7 +296,7 @@
     "_ALD_DomesticProduction_hc": {
         "long_name": "Deduction for domestic production activity haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of domestic production activity that can be deducted from AGI",
-        "section_1": "Above the line deduction",
+        "section_1": "Above the line deductions",
         "section_2": "Misc. adjustment haircuts",
         "irs_ref": "",
         "notes": "The final adjustment amount would be (1 - Haircut) * Domestic Production Activity",
@@ -312,7 +312,7 @@
     "_ALD_Tuition_hc": {
         "long_name": "Deduction for tuition and fees haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of tuition and fees that can be deducted from AGI",
-        "section_1": "Above the line deduction",
+        "section_1": "Above the line deductions",
         "section_2": "Misc. adjustment haircuts",
         "irs_ref": "",
         "notes": "The final adjustment amount would be (1 - Haircut) * Tuition and Fees",
