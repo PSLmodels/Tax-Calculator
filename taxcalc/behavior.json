@@ -41,8 +41,8 @@
         "validations": {"max": 0.0}
     },
 
-    "_BE_charity_itemizers": {
-        "long_name": "Elasticity of charitable contributions for itemizers",
+    "_BE_charity": {
+        "long_name": "Elasticity of charitable contributions ",
         "description": "Defined as proportional change in cash and non-cash charitable contributions divided by proportional change in the after-tax price of charitable contributions caused by the reform. Must be zero or negative.",
         "notes": "",
         "row_var": "FLPDYR",
@@ -53,20 +53,5 @@
         "col_label": "AGI < 50k, 50k <= AGI < 100k, 100k <= AGI",
         "value": [[0.0, 0.0, 0.0]],
         "validations": {"max": 0.0}
-    },
-
-    "_BE_charity_non_itemizers": {
-        "long_name": "Elasticity of charitable contributions for non-itemizers",
-        "description": "Defined as proportional change in cash and non-cash charitable contributions divided by proportional change in the after-tax price of charitable contributions caused by the reform. Must be zero or negative.",
-        "notes": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "start_year": 2013,
-        "cpi_inflated": false,
-        "col_var": "",
-        "col_label": "c00100",
-        "col_label": "AGI < 50k, 50k <= AGI < 100k, 100k <= AGI",
-        "value": [[0.0, 0.0, 0.0]],
-        "validations": {"max":0.0}
     }
 }
