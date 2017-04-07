@@ -84,11 +84,19 @@ class Behavior(ParametersBase):
         the current_year; returns false if all elasticities are zero.
         """
         # pylint: disable=no-member
+
+        if (self.BE_sub == 0.0 and self.BE_inc == 0.0 and self.BE_cg == 0.0 and
+           self.BE_charity_itemizers.tolist() == [0.0, 0.0, 0.0] and
+           self.BE_charity_non_itemizers.tolist() == [0.0, 0.0, 0.0]):
+            return False
+        else:
+            return True
+
         all_zero = (self.BE_sub == 0.0 and
                     self.BE_inc == 0.0 and
                     self.BE_cg == 0.0 and
-                    self.BE_charity_itemizers == 0.0 and
-                    self.BE_charity_non_itemizers == 0.0)
+                    self.BE_charity_itemizers == [0.0, 0.0, 0.0] and
+                    self.BE_charity_non_itemizers == [0.0, 0.0, 0.0])
         return not all_zero
 
     def has_any_response(self):
@@ -184,8 +192,11 @@ class Behavior(ParametersBase):
             new_ltcg = calc_x.records.p23250 * exp_term
             ltcg_chg = new_ltcg - calc_x.records.p23250
         # calculate charitable giving effect
-        no_charity_response = (calc_y.behavior.BE_charity_itemizers == 0.0 and
-                               calc_y.behavior.BE_charity_non_itemizers == 0.0)
+        no_charity_response = \
+            calc_y.behavior.BE_charity_itemizers.tolist() == \
+            [0.0, 0.0, 0.0] and \
+            calc_y.behavior.BE_charity_non_itemizers.tolist() == \
+            [0.0, 0.0, 0.0]
         if no_charity_response:
             c_charity_chg = np.zeros(calc_x.records.dim)
             nc_charity_chg = np.zeros(calc_x.records.dim)
@@ -211,16 +222,16 @@ class Behavior(ParametersBase):
             # calculate change in cash contributions
             c_charity_chg = (
                 np.where(itemizer,
-                         (calc_y.behavior.BE_charity_itemizers *
+                         (calc_y.behavior.BE_charity_itemizers[0] *
                           c_charity_price_pch * calc_x.records.e19800),
-                         (calc_y.behavior.BE_charity_non_itemizers *
+                         (calc_y.behavior.BE_charity_non_itemizers[0] *
                           c_charity_price_pch * calc_x.records.e19800)))
             # calculate change in non-cash contributions
             nc_charity_chg = (
                 np.where(itemizer,
-                         (calc_y.behavior.BE_charity_itemizers *
+                         (calc_y.behavior.BE_charity_itemizers[0] *
                           nc_charity_price_pch * calc_x.records.e20100),
-                         (calc_y.behavior.BE_charity_non_itemizers *
+                         (calc_y.behavior.BE_charity_non_itemizers[0] *
                           nc_charity_price_pch * calc_x.records.e20100)))
         # Add behavioral-response changes to income sources
         calc_y_behv = copy.deepcopy(calc_y)
