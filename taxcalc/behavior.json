@@ -50,7 +50,7 @@
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "c00100",
-        "col_label": "AGI < 50k, 50k <= AGI < 100k, 100k <= AGI",
+        "col_label": ["AGI < 50k", "50k <= AGI < 100k", "100k <= AGI"],
         "value": [[0.0, 0.0, 0.0]],
         "validations": {"max": 0.0}
     }

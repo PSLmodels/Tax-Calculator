@@ -110,6 +110,8 @@ def test_json_file_contents(tests_path, fname):
                 assert len(clab) == 4
             elif cvar == 'idedtype':
                 assert len(clab) == 7
+            elif cvar == 'c00100':
+                pass
             else:
                 assert cvar == 'UNKNOWN col_var VALUE'
             # check length of each value row

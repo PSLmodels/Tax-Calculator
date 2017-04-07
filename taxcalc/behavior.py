@@ -210,14 +210,51 @@ class Behavior(ParametersBase):
                 calc_x, calc_y, mtr_of='e20100', tax_type='combined')
             nc_charity_price_pch = (((1. + nc_charity_mtr_y) /
                                      (1. + nc_charity_mtr_x)) - 1.)
+            # identify income bin based on baseline income
+            low_income = (calc_x.records.c00100 < 50000)
+            mid_income = ((calc_x.records.c00100 >= 50000) &
+                          (calc_x.records.c00100 < 100000))
+            high_income = (calc_x.records.c00100 >= 100000)
             # calculate change in cash contributions
-            c_charity_chg = (calc_y.behavior.BE_charity[0] *
-                             c_charity_price_pch *
-                             calc_x.records.e19800)
+            c_charity_chg = np.zeros(calc_x.records.dim)
+            # AGI < 50000
+            c_charity_chg = np.where(low_income,
+                                     (calc_y.behavior.BE_charity[0] *
+                                      c_charity_price_pch *
+                                      calc_x.records.e19800),
+                                     c_charity_chg)
+            # 50000 <= AGI < 1000000
+            c_charity_chg = np.where(mid_income,
+                                     (calc_y.behavior.BE_charity[1] *
+                                      c_charity_price_pch *
+                                      calc_x.records.e19800),
+                                     c_charity_chg)
+            # 1000000 < AGI
+            c_charity_chg = np.where(high_income,
+                                     (calc_y.behavior.BE_charity[2] *
+                                      c_charity_price_pch *
+                                      calc_x.records.e19800),
+                                     c_charity_chg)
             # calculate change in non-cash contributions
-            nc_charity_chg = (calc_y.behavior.BE_charity[0] *
-                              nc_charity_price_pch *
-                              calc_x.records.e20100)
+            nc_charity_chg = np.zeros(calc_x.records.dim)
+            # AGI < 50000
+            nc_charity_chg = np.where(low_income,
+                                      (calc_y.behavior.BE_charity[0] *
+                                       c_charity_price_pch *
+                                       calc_x.records.e20100),
+                                      nc_charity_chg)
+            # 50000 <= AGI < 1000000
+            nc_charity_chg = np.where(mid_income,
+                                      (calc_y.behavior.BE_charity[1] *
+                                       c_charity_price_pch *
+                                       calc_x.records.e20100),
+                                      nc_charity_chg)
+            # 1000000 < AGI
+            nc_charity_chg = np.where(high_income,
+                                      (calc_y.behavior.BE_charity[2] *
+                                       c_charity_price_pch *
+                                       calc_x.records.e20100),
+                                      nc_charity_chg)
         # Add behavioral-response changes to income sources
         calc_y_behv = copy.deepcopy(calc_y)
         calc_y_behv = Behavior._update_ordinary_income(taxinc_chg, calc_y_behv)
