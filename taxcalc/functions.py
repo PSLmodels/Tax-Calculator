@@ -502,7 +502,8 @@ def AdditionalMedicareTax(e00200, MARS,
 
 @iterate_jit(nopython=True)
 def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
-           MARS, MIDR, blind_head, blind_spouse, _standard):
+           MARS, MIDR, blind_head, blind_spouse, _standard, c19700,
+           STD_allow_charity_ded_nonitemizers):
     """
     StdDed function:
 
@@ -561,6 +562,8 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
     _standard = basic_stded + extra_stded
     if MARS == 3 and MIDR == 1:
         _standard = 0.
+    if STD_allow_charity_ded_nonitemizers:
+        _standard += c19700
     return _standard
 
 
