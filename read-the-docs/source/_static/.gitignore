@@ -1,0 +1,4 @@
+# The read-the-docs/source/_static directory must be present to avoid Sphinx
+#     warning when executing 'make html' in the read-the-docs directory.
+# Note: usually .png files would be placed here, but an earlier OSPC
+#       decision has placed them in the read-the-docs/source/images directory.
