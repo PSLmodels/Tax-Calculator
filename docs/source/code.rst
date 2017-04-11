@@ -15,6 +15,24 @@ it may be more convenient to access this list interactively via the
 **alphabetical** :ref:`genindex` **of taxcalc modules and module
 members** or the alphabetical :ref:`modindex`.
 
+
+iMac2:tax-calculator mrh$ ls -l taxcalc/*py
+-rw-r--r--  1 mrh  staff  16866 Apr 11 09:34 taxcalc/behavior.py
+-rw-r--r--  1 mrh  staff  28032 Mar 29 14:08 taxcalc/calculate.py
+-rw-r--r--  1 mrh  staff   3549 Apr  1 06:35 taxcalc/consumption.py
+-rw-r--r--  1 mrh  staff  10772 Mar  8 09:44 taxcalc/decorators.py
+-rw-r--r--  1 mrh  staff  59074 Mar 30 20:16 taxcalc/functions.py
+-rw-r--r--  1 mrh  staff   3923 Mar  8 09:44 taxcalc/growdiff.py
+-rw-r--r--  1 mrh  staff   5453 Mar 23 18:12 taxcalc/growfactors.py
+-rw-r--r--  1 mrh  staff   2388 Mar 23 18:12 taxcalc/macro_elasticity.py
+-rw-r--r--  1 mrh  staff  21610 Mar 28 10:51 taxcalc/parameters.py
+-rw-r--r--  1 mrh  staff   7510 Mar 30 20:16 taxcalc/policy.py
+-rw-r--r--  1 mrh  staff  19867 Mar 30 20:16 taxcalc/records.py
+-rw-r--r--  1 mrh  staff  27744 Mar 31 18:03 taxcalc/taxcalcio.py
+-rw-r--r--  1 mrh  staff    712 Sep 21  2016 taxcalc/unused.py
+-rw-r--r--  1 mrh  staff  53655 Mar 29 14:08 taxcalc/utils.py
+
+
 Module taxcalc.behavior
 -----------------------
 
@@ -25,6 +43,12 @@ Module taxcalc.calculate
 ------------------------
 
 .. automodule:: taxcalc.calculate
+    :members:
+
+Module taxcalc.consumption
+--------------------------
+
+.. automodule:: taxcalc.consumption
     :members:
 
 Module taxcalc.decorators
@@ -39,16 +63,28 @@ Module taxcalc.functions
 .. automodule:: taxcalc.functions
     :members:
 
-Module taxcalc.growth
----------------------
+Module taxcalc.growdiff
+-----------------------
 
-.. automodule:: taxcalc.growth
+.. automodule:: taxcalc.growdiff
     :members:
 
-Module taxcalc.parameters_base
-------------------------------
+Module taxcalc.growfactors
+--------------------------
 
-.. automodule:: taxcalc.parameters_base
+.. automodule:: taxcalc.growfactors
+    :members:
+
+Module taxcalc.macro_elasticity
+-------------------------------
+
+.. automodule:: taxcalc.macro_elasticity
+    :members:
+
+Module taxcalc.parameters
+-------------------------
+
+.. automodule:: taxcalc.parameters
     :members:
 
 Module taxcalc.policy
@@ -63,10 +99,10 @@ Module taxcalc.records
 .. automodule:: taxcalc.records
     :members:
 
-Module taxcalc.simpletaxio
-----------------------
+Module taxcalc.taxcalcio
+------------------------
 
-.. automodule:: taxcalc.simpletaxio
+.. automodule:: taxcalc.taxcalcio
     :members:
 
 Module taxcalc.utils
