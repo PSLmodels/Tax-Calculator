@@ -92,3 +92,9 @@ taxcalc.utils
 
 .. automodule:: taxcalc.utils
     :members:
+
+taxcalc.cli.tc
+--------------
+
+.. automodule:: taxcalc.cli.tc
+    :members:
