@@ -15,80 +15,80 @@ it may be more convenient to access this list interactively via the
 **alphabetical** :ref:`genindex` **of taxcalc modules and module
 members** or the alphabetical :ref:`modindex`.
 
-Module taxcalc.behavior
------------------------
+taxcalc.behavior
+----------------
 
 .. automodule:: taxcalc.behavior
     :members:
 
-Module taxcalc.calculate
-------------------------
+taxcalc.calculate
+-----------------
 
 .. automodule:: taxcalc.calculate
     :members:
 
-Module taxcalc.consumption
---------------------------
+taxcalc.consumption
+-------------------
 
 .. automodule:: taxcalc.consumption
     :members:
 
-Module taxcalc.decorators
--------------------------
+taxcalc.decorators
+------------------
 
 .. automodule:: taxcalc.decorators
     :members:
 
-Module taxcalc.functions
-------------------------
+taxcalc.functions
+-----------------
 
 .. automodule:: taxcalc.functions
     :members:
 
-Module taxcalc.growdiff
------------------------
+taxcalc.growdiff
+----------------
 
 .. automodule:: taxcalc.growdiff
     :members:
 
-Module taxcalc.growfactors
---------------------------
+taxcalc.growfactors
+-------------------
 
 .. automodule:: taxcalc.growfactors
     :members:
 
-Module taxcalc.macro_elasticity
--------------------------------
+taxcalc.macro_elasticity
+------------------------
 
 .. automodule:: taxcalc.macro_elasticity
     :members:
 
-Module taxcalc.parameters
--------------------------
+taxcalc.parameters
+------------------
 
 .. automodule:: taxcalc.parameters
     :members:
 
-Module taxcalc.policy
----------------------
+taxcalc.policy
+--------------
 
 .. automodule:: taxcalc.policy
     :members:
 
-Module taxcalc.records
-----------------------
+taxcalc.records
+---------------
 
 .. automodule:: taxcalc.records
     :members:
 
-Module taxcalc.taxcalcio
-------------------------
+taxcalc.taxcalcio
+-----------------
 
 .. automodule:: taxcalc.taxcalcio
     :members:
 
-Module taxcalc.utils
---------------------
+taxcalc.utils
+-------------
 
 .. automodule:: taxcalc.utils
     :members:
