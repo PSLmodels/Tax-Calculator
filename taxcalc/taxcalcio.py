@@ -271,7 +271,7 @@ class TaxCalcIO(object):
         Parameters
         ----------
         writing_output_file: boolean
-           whether or not to generate and write output file EXTRA
+           whether or not to generate and write output file
 
         output_tables: boolean
            whether or not to generate and write distributional tables
