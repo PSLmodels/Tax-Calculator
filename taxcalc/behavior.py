@@ -84,13 +84,6 @@ class Behavior(ParametersBase):
         the current_year; returns false if all elasticities are zero.
         """
         # pylint: disable=no-member
-
-        if (self.BE_sub == 0.0 and self.BE_inc == 0.0 and self.BE_cg == 0.0 and
-           self.BE_charity.tolist() == [0.0, 0.0, 0.0]):
-            return False
-        else:
-            return True
-
         all_zero = (self.BE_sub == 0.0 and
                     self.BE_inc == 0.0 and
                     self.BE_cg == 0.0 and
@@ -147,7 +140,7 @@ class Behavior(ParametersBase):
           Using this method, a semi-elasticity of -3.45 corresponds to a tax
           rate elasticity of -0.792.
         """
-        # pylint: disable=too-many-locals,protected-access
+        # pylint: disable=too-many-statements,too-many-locals,protected-access
         assert calc_x.records.dim == calc_y.records.dim
         assert calc_x.records.current_year == calc_y.records.current_year
         # calculate sum of substitution and income effects
@@ -240,19 +233,19 @@ class Behavior(ParametersBase):
             # AGI < 50000
             nc_charity_chg = np.where(low_income,
                                       (calc_y.behavior.BE_charity[0] *
-                                       c_charity_price_pch *
+                                       nc_charity_price_pch *
                                        calc_x.records.e20100),
                                       nc_charity_chg)
             # 50000 <= AGI < 1000000
             nc_charity_chg = np.where(mid_income,
                                       (calc_y.behavior.BE_charity[1] *
-                                       c_charity_price_pch *
+                                       nc_charity_price_pch *
                                        calc_x.records.e20100),
                                       nc_charity_chg)
             # 1000000 < AGI
             nc_charity_chg = np.where(high_income,
                                       (calc_y.behavior.BE_charity[2] *
-                                       c_charity_price_pch *
+                                       nc_charity_price_pch *
                                        calc_x.records.e20100),
                                       nc_charity_chg)
         # Add behavioral-response changes to income sources
