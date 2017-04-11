@@ -8,3 +8,4 @@ include taxcalc/current_law_policy.json
 include taxcalc/behavior.json
 include taxcalc/growth.json
 include taxcalc/consumption.json
+include taxcalc/records_variables.json
