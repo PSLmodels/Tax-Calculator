@@ -314,6 +314,18 @@
       "format": "int",
       "description": "Number of dependents under 13 years old"
     },
+    "nu18": {
+      "format": "int",
+      "description": "Number of dependents under 18 years old"
+    },
+    "n1821": {
+      "format": "int",
+      "description": "Number of dependents over 18 and under 21 years old"
+    },
+    "n21": {
+      "format": "int",
+      "description": "Number of dependents 21 years old or older"
+    },
     "p08000": {
       "format": "float",
       "description": "Other statutory credit (computer)"
@@ -647,6 +659,18 @@
       "description": ""
     },
     "ymod1": {
+      "format": "float",
+      "description": ""
+    },
+    "ubi": {
+      "format": "float",
+      "description": ""
+    },
+    "taxable_ubi": {
+      "format": "float",
+      "description": ""
+    },
+    "nontaxable_ubi": {
       "format": "float",
       "description": ""
     }

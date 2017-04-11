@@ -290,11 +290,11 @@ def UBI(nu18, n1821, n21, UBI1, UBI2, UBI3, UBI_ecrt,
     Parameters
     ----------
     nu18: Number of people in the tax unit under 18
-    n1821: Number of people in the tax unit between 18 and 21
-    n21: Number of people in the tax unit over 21
+    n1821: Number of people in the tax unit age 18-20
+    n21: Number of people in the tax unit age 21+
     UBI1: UBI for those under 18
-    UBI2: UBI for those between 18 and 21
-    UBI3: UBI for those over 21
+    UBI2: UBI for those between 18 to 20
+    UBI3: UBI for those 21 or more
     UBI_ecrt: Fraction of UBI benefits that are not included in AGI
 
     Returns
