@@ -27,6 +27,12 @@ Module taxcalc.calculate
 .. automodule:: taxcalc.calculate
     :members:
 
+Module taxcalc.consumption
+--------------------------
+
+.. automodule:: taxcalc.consumption
+    :members:
+
 Module taxcalc.decorators
 -------------------------
 
@@ -39,16 +45,28 @@ Module taxcalc.functions
 .. automodule:: taxcalc.functions
     :members:
 
-Module taxcalc.growth
----------------------
+Module taxcalc.growdiff
+-----------------------
 
-.. automodule:: taxcalc.growth
+.. automodule:: taxcalc.growdiff
     :members:
 
-Module taxcalc.parameters_base
-------------------------------
+Module taxcalc.growfactors
+--------------------------
 
-.. automodule:: taxcalc.parameters_base
+.. automodule:: taxcalc.growfactors
+    :members:
+
+Module taxcalc.macro_elasticity
+-------------------------------
+
+.. automodule:: taxcalc.macro_elasticity
+    :members:
+
+Module taxcalc.parameters
+-------------------------
+
+.. automodule:: taxcalc.parameters
     :members:
 
 Module taxcalc.policy
@@ -63,10 +81,10 @@ Module taxcalc.records
 .. automodule:: taxcalc.records
     :members:
 
-Module taxcalc.simpletaxio
-----------------------
+Module taxcalc.taxcalcio
+------------------------
 
-.. automodule:: taxcalc.simpletaxio
+.. automodule:: taxcalc.taxcalcio
     :members:
 
 Module taxcalc.utils

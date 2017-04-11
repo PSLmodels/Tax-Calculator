@@ -1,0 +1,99 @@
+// Title: 2016 Better Way Tax Reform Blueprint (Ryan-Brady)
+// Reform_File_Author: Cody Kallen
+// Reform_Reference: http://abetterway.speaker.gov/_assets/pdf/ABetterWay-Tax-PolicyPaper.pdf  
+// Reform_Description:
+// -  New personal income tax schedule (regular/non-AMT/non-pass-through) (1) 
+// -  New pass-through income tax schedule (2) 
+// -  Tax long-term capital gains and qualified dividends as ordinary income,
+//    - exclude half of interest, qualified dividends, and long-term gain (before loss limitation)(3) 
+// -  Repeal Alternative Minimum Tax (4) 
+// -  Repeal Net Investment Income Tax (5) 
+// -  Raise the Standard Deduction (6) 
+// -  Repeal the Personal Exemption (7) 
+// -  New $500 nonrefundable credit, based on Child Tax Credit (8)
+// -  Eliminate marriage penalty in Child Tax Credit phase-out (9)
+// -  Repeal itemized deductions except mortgage interest and charitable contribution (10) 
+// Reform_Parameter_Map:
+// - 1: _II_rt*
+// - 2: _PT_rt*
+// - 3: _CG_nodiff, _ALD_InvInc_ec*
+// - 4: _AMT_*
+// - 5: _NIIT_rt
+// - 6: _STD
+// - 7: _II_em
+// - 8: _DependentCredit_c
+// - 9: _CTC_ps
+// - 10: _ID*
+{
+  "policy": {
+        "_II_rt1":
+            {"2017": [0.12]},
+        "_II_rt2":
+            {"2017": [0.12]},
+        "_II_rt3":
+            {"2017":  [0.25]},
+        "_II_rt4":
+            {"2017":  [0.25]},
+        "_II_rt5":
+            {"2017": [0.33]},
+        "_II_rt6":
+            {"2017": [0.33]},
+        "_II_rt7":
+            {"2017": [0.33]},
+        "_PT_rt1":
+            {"2017": [0.12]},
+        "_PT_rt2":
+            {"2017": [0.12]},
+        "_PT_rt3":
+            {"2017": [0.25]},
+        "_PT_rt4":
+            {"2017": [0.25]},
+        "_PT_rt5":
+            {"2017": [0.25]},
+        "_PT_rt6":
+            {"2017": [0.25]},
+        "_PT_rt7":
+            {"2017": [0.25]},
+        "_CG_nodiff":
+            {"2017": [true]},
+        "_ALD_InvInc_ec_rt":
+            {"2017": [0.5]},
+        "_ALD_InvInc_ec_base_RyanBrady":
+            {"2017": [true]},
+        "_AMT_rt1":
+            {"2017": [0]},
+        "_AMT_rt2":
+            {"2017": [0]},
+        "_NIIT_rt":
+            {"2017": [0]},
+        "_STD":
+            {"2017": [[12000, 24000, 12000, 18000, 24000]]},
+        "_II_em":
+            {"2017": [0]},
+        "_DependentCredit_c":
+            {"2017": [500]},
+        "_CTC_ps":
+            {"2017": [[75000, 150000, 75000, 75000, 75000]]},
+        "_ID_StateLocalTax_hc":
+            {"2017": [1.0]},
+        "_ID_Medical_hc":
+            {"2017": [1.0]},
+        "_ID_Casualty_hc":
+            {"2017": [1.0]},
+        "_ID_Miscellaneous_hc":
+            {"2017": [1.0]},
+        "_ID_RealEstate_hc":
+            {"2017": [1.0]}
+  }
+}
+
+// Note: This reform file does not include several important reforms in the plan.
+// The omitted reforms include:
+// -  Repeal the estate tax and generation-skipping transfer tax
+// -  Reduce the corporate tax rate to 20%
+// -  Repeal the Corporate AMT
+// -  Immediate expensing of corporate investment except for land and inventories
+// -  Eliminate net interest deduction
+// -  Limitation on current NOL use, expansion of NOL carry-forward
+// -  Eliminate Section 199 - Domestic production deduction
+// -  Border adjustment of business taxes

@@ -8,7 +8,7 @@ Tax-Calculator Growfactors class.
 import os
 import six
 import pandas as pd
-from .utils import read_egg_csv
+from taxcalc.utils import read_egg_csv
 
 
 class Growfactors(object):
@@ -35,16 +35,13 @@ class Growfactors(object):
     Typical usage is "gfactor = Growfactors()", which produces an object
     containing the default grow factors in the Growfactors.FILENAME file.
     """
-    # suppress pylint warnings about unrecognized Records variables:
-    # pylintx: disable=...
 
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
     FILENAME = 'growfactors.csv'
     FILE_PATH = os.path.join(CUR_PATH, FILENAME)
 
     VALID_NAMES = set(['ABOOK', 'ACGNS', 'ACPIM', 'ACPIU',
-                       'ADIVS', 'AGDPN', 'AINTS',
-                       'APOPN',  # TODO: drop this name eventually
+                       'ADIVS', 'AINTS',
                        'AIPD', 'ASCHCI', 'ASCHCL',
                        'ASCHEI', 'ASCHEL', 'ASCHF',
                        'ASOCSEC', 'ATXPY', 'AUCOMP', 'AWAGE'])
@@ -58,8 +55,7 @@ class Growfactors(object):
             if os.path.isfile(growfactors_filename):
                 gfdf = pd.read_csv(growfactors_filename, index_col='YEAR')
             else:
-                gfdf = read_egg_csv('blowup_factors',
-                                    Growfactors.FILENAME, index_col='YEAR')
+                gfdf = read_egg_csv(Growfactors.FILENAME, index_col='YEAR')
         else:
             raise ValueError('growfactors_filename is not a string')
         # check validity of gfdf column names

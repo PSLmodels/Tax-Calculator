@@ -1,5 +1,5 @@
 """
-Tax-Calculator simple tax input-output class.
+Tax-Calculator simple tax input-output class used in TAXSIM validation work.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 simpletaxio.py
@@ -10,9 +10,10 @@ import sys
 import re
 import six
 import pandas as pd
-from .policy import Policy
-from .records import Records
-from .calculate import Calculator
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(CUR_PATH, '..', '..', '..'))
+# pylint: disable=wrong-import-position,import-error
+from taxcalc import Policy, Records, Calculator
 
 
 class SimpleTaxIO(object):
@@ -603,6 +604,7 @@ class SimpleTaxIO(object):
         dict_list = [zero_dict for _ in range(0, len(self._input))]
         # use dict_list to create a Pandas DataFrame and Records object
         recsdf = pd.DataFrame(dict_list, dtype='int64')
+        recsdf['MARS'] = recsdf['MARS'].add(1)  # because MARS==0 is illegal
         recs = Records(data=recsdf, exact_calculations=exact_calcs,
                        gfactors=None, weights=None,
                        start_year=self._policy.start_year)

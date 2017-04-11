@@ -20,8 +20,8 @@ import difflib
 import pytest
 import numpy as np
 import pandas as pd
-from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
-from taxcalc import multiyear_diagnostic_table  # pylint: disable=import-error
+# pylint: disable=import-error
+from taxcalc import Policy, Records, Calculator, multiyear_diagnostic_table
 
 
 @pytest.fixture(scope='session')
@@ -194,6 +194,10 @@ def test_mtr(tests_path, puf_path):
                                            negative_finite_diff=MTR_NEG_DIFF,
                                            zero_out_calculated_vars=zero_out,
                                            wrt_full_compensation=False)
+        if var_str == 'e00200s':
+            # only MARS==2 filing units have valid MTR values
+            mtr_ptax = mtr_ptax[calc.records.MARS == 2]
+            mtr_itax = mtr_itax[calc.records.MARS == 2]
         res += '{} {}:\n'.format(variable_header, var_str)
         res += mtr_bin_counts(mtr_ptax, PTAX_MTR_BIN_EDGES, recid)
         res += mtr_bin_counts(mtr_itax, ITAX_MTR_BIN_EDGES, recid)

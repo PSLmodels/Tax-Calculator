@@ -19,7 +19,7 @@ RAWINPUTFILE_CONTENTS = (
     '1,2\n'
     '2,1\n'
     '3,4\n'
-    '4,6\n'
+    '4,3\n'
 )
 
 
@@ -61,7 +61,8 @@ def test_make_Calculator(records_2009):
     consump = Consumption()
     consump.update_consumption({2014: {'_MPC_e20400': [0.05]}})
     assert consump.current_year == 2013
-    calc = Calculator(policy=parm, records=recs, consumption=consump)
+    calc = Calculator(policy=parm, records=recs, consumption=consump,
+                      behavior=Behavior())
     assert calc.current_year == 2014
     # test incorrect Calculator instantiation:
     with pytest.raises(ValueError):
@@ -85,7 +86,7 @@ def test_make_Calculator_with_policy_reform(records_2009):
     # create a Policy object and apply a policy reform
     policy2 = Policy()
     reform2 = {2013: {'_II_em': np.array([4000]), '_II_em_cpi': False,
-                      '_STD_Aged': [[1600, 1300, 1300, 1600, 1600, 1300]],
+                      '_STD_Aged': [[1600, 1300, 1300, 1600, 1600]],
                       "_STD_Aged_cpi": False}}
     policy2.implement_reform(reform2)
     # create a Calculator object using this policy-reform
@@ -96,18 +97,18 @@ def test_make_Calculator_with_policy_reform(records_2009):
     assert np.allclose(calc2.policy._II_em,
                        np.array([4000] * Policy.DEFAULT_NUM_YEARS))
     exp_STD_Aged = [[1600, 1300, 1300,
-                     1600, 1600, 1300]] * Policy.DEFAULT_NUM_YEARS
+                     1600, 1600]] * Policy.DEFAULT_NUM_YEARS
     assert np.allclose(calc2.policy._STD_Aged,
                        np.array(exp_STD_Aged))
     assert np.allclose(calc2.policy.STD_Aged,
-                       np.array([1600, 1300, 1300, 1600, 1600, 1300]))
+                       np.array([1600, 1300, 1300, 1600, 1600]))
 
 
 def test_make_Calculator_with_multiyear_reform(records_2009):
     # create a Policy object and apply a policy reform
     policy3 = Policy()
     reform3 = {2015: {}}
-    reform3[2015]['_STD_Aged'] = [[1600, 1300, 1600, 1300, 1600, 1300]]
+    reform3[2015]['_STD_Aged'] = [[1600, 1300, 1600, 1300, 1600]]
     reform3[2015]['_II_em'] = [5000, 6000]  # reform values for 2015 and 2016
     reform3[2015]['_II_em_cpi'] = False
     policy3.implement_reform(reform3)
@@ -124,7 +125,7 @@ def test_make_Calculator_with_multiyear_reform(records_2009):
     calc3.increment_year()
     assert calc3.current_year == 2015
     assert np.allclose(calc3.policy.STD_Aged,
-                       np.array([1600, 1300, 1600, 1300, 1600, 1300]))
+                       np.array([1600, 1300, 1600, 1300, 1600]))
 
 
 def test_Calculator_advance_to_year(records_2009):
@@ -196,6 +197,8 @@ def test_Calculator_mtr(records_2009):
     assert np.array_equal(mtr_ptx, mtr_itx) is False
     with pytest.raises(ValueError):
         (_, _, mtr_combined) = calc.mtr(variable_str='bad_income_type')
+    (_, _, mtr_combined) = calc.mtr(variable_str='e00200s')
+    assert type(mtr_combined) == np.ndarray
     (_, _, mtr_combined) = calc.mtr(variable_str='e00650',
                                     negative_finite_diff=True)
     assert type(mtr_combined) == np.ndarray
@@ -247,15 +250,7 @@ def test_Calculator_create_difference_table(puf_1991, weights_1991):
     calc1.calc_all()
     # create policy-reform Policy object and use to create Calculator calc2
     policy2 = Policy()
-    reform = {
-        2013: {'_II_rt7': [0.45]},
-        2013: {'_ALD_InvInc_ec_base_code_active': [True]},
-        2013: {'_CTC_new_code_active': [True]},
-        0: {'ALD_InvInc_ec_base_code':
-            'returned_value = e00300 + e00650 + p23250',
-            'CTC_new_code':
-            'returned_value = where(n24>0, 100, 0)'}
-    }
+    reform = {2013: {'_II_rt7': [0.45]}}
     policy2.implement_reform(reform)
     puf2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
     calc2 = Calculator(policy=policy2, records=puf2)
@@ -280,7 +275,7 @@ def test_make_Calculator_increment_years_first(records_2009):
     pol = Policy(start_year=syr, num_years=5)
     reform = {2015: {}, 2016: {}}
     std5 = 2000
-    reform[2015]['_STD_Aged'] = [[std5, std5, std5, std5, std5, std5]]
+    reform[2015]['_STD_Aged'] = [[std5, std5, std5, std5, std5]]
     reform[2015]['_II_em'] = [5000]
     reform[2016]['_II_em'] = [6000]
     reform[2016]['_II_em_cpi'] = False
@@ -293,11 +288,11 @@ def test_make_Calculator_increment_years_first(records_2009):
     irate2016 = irates[2016 - syr]
     std6 = std5 * (1.0 + irate2015)
     std7 = std6 * (1.0 + irate2016)
-    exp_STD_Aged = np.array([[1500, 1200, 1200, 1500, 1500, 1200],
-                             [1550, 1200, 1200, 1550, 1550, 1200],
-                             [std5, std5, std5, std5, std5, std5],
-                             [std6, std6, std6, std6, std6, std6],
-                             [std7, std7, std7, std7, std7, std7]])
+    exp_STD_Aged = np.array([[1500, 1200, 1200, 1500, 1500],
+                             [1550, 1200, 1200, 1550, 1550],
+                             [std5, std5, std5, std5, std5],
+                             [std6, std6, std6, std6, std6],
+                             [std7, std7, std7, std7, std7]])
     assert np.allclose(calc.policy._STD_Aged, exp_STD_Aged)
     exp_II_em = np.array([3900, 3950, 5000, 6000, 6000])
     assert np.allclose(calc.policy._II_em, exp_II_em)
@@ -373,15 +368,6 @@ REFORM_CONTENTS = """
   "author": "",
   "date": "",
   "policy": {
-    "param_code": { // all the parameter code must go in one place
-"ALD_InvInc_ec_base_code":
-||
-// base is sum of taxable interest, qualified dividends and long-term cap gains
-returned_value = e00300 + e00650 + p23250
-||},
-    "_ALD_InvInc_ec_base_code_active":
-    {"2016": [true]
-    },
     "_AMT_brk1": // top of first AMT tax bracket
     {"2015": [200000],
      "2017": [300000]
@@ -667,7 +653,7 @@ def test_convert_parameter_dict():
         rdict = Calculator.convert_parameter_dict({'_II_em': 40000})
 
 
-def test_param_code_calc_all(reform_file, rawinputfile):
+def test_calc_all(reform_file, rawinputfile):
     cyr = 2016
     policy = Policy()
     param_dict = Calculator.read_json_param_files(reform_file.name, None)

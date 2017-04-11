@@ -6,12 +6,12 @@ Tax-Calculator tax-filing-unit Records class.
 # pylint --disable=locally-disabled records.py
 
 import os
+import json
 import six
 import numpy as np
 import pandas as pd
-
-from .growfactors import Growfactors
-from .utils import read_egg_csv, read_json_from_file
+from taxcalc.growfactors import Growfactors
+from taxcalc.utils import read_egg_csv, read_egg_json
 
 
 PUFCSV_YEAR = 2009
@@ -98,10 +98,15 @@ class Records(object):
     WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
     ADJUST_RATIOS_FILENAME = 'puf_ratios.csv'
     ADJUST_RATIOS_PATH = os.path.join(CUR_PATH, ADJUST_RATIOS_FILENAME)
-    VAR_INFO_PATH = os.path.join(CUR_PATH, 'records_vars.json')
+    RECORDS_VARIABLES_FILENAME = 'records_variables.json'
+    RECORDS_VARIABLES_PATH = os.path.join(CUR_PATH, RECORDS_VARIABLES_FILENAME)
 
     # Load metadata about all Records variables
-    VAR_INFO = read_json_from_file(VAR_INFO_PATH)
+    if os.path.exists(RECORDS_VARIABLES_PATH):
+        with open(RECORDS_VARIABLES_PATH) as vfile:
+            VAR_INFO = json.load(vfile)
+    else:
+        VAR_INFO = read_egg_json(RECORDS_VARIABLES_FILENAME)
 
     # Read variables
     INTEGER_READ_VARS = \
@@ -141,19 +146,20 @@ class Records(object):
         self._read_data(data, exact_calculations)
         # check that three sets of split-earnings variables have valid values
         msg = 'expression "{0} == {0}p + {0}s" is not true for every record'
+        tol = 0.010001  # handles "%.2f" rounding error
         if not np.allclose(self.e00200, (self.e00200p + self.e00200s),
-                           rtol=0.0, atol=0.001):
+                           rtol=0.0, atol=tol):
             raise ValueError(msg.format('e00200'))
         if not np.allclose(self.e00900, (self.e00900p + self.e00900s),
-                           rtol=0.0, atol=0.001):
+                           rtol=0.0, atol=tol):
             raise ValueError(msg.format('e00900'))
         if not np.allclose(self.e02100, (self.e02100p + self.e02100s),
-                           rtol=0.0, atol=0.001):
+                           rtol=0.0, atol=tol):
             raise ValueError(msg.format('e02100'))
         # check that ordinary dividends are no less than qualified dividends
         other_dividends = np.maximum(0., self.e00600 - self.e00650)
         if not np.allclose(self.e00600, self.e00650 + other_dividends,
-                           rtol=0.0, atol=0.001):
+                           rtol=0.0, atol=tol):
             msg = 'expression "e00600 >= e00650" is not true for every record'
             raise ValueError(msg)
         # handle grow factors
@@ -241,7 +247,6 @@ class Records(object):
         AUCOMP = self.gfactors.factor_value('AUCOMP', year)
         ASOCSEC = self.gfactors.factor_value('ASOCSEC', year)
         ACPIM = self.gfactors.factor_value('ACPIM', year)
-        AGDPN = self.gfactors.factor_value('AGDPN', year)
         ABOOK = self.gfactors.factor_value('ABOOK', year)
         AIPD = self.gfactors.factor_value('AIPD', year)
         self.e00200 *= AWAGE
@@ -280,7 +285,7 @@ class Records(object):
         self.e03220 *= ATXPY
         self.e03230 *= ATXPY
         self.e03270 *= ACPIM
-        self.e03240 *= AGDPN
+        self.e03240 *= ATXPY
         self.e03290 *= ACPIM
         self.e03300 *= ATXPY
         self.e03400 *= ATXPY
@@ -376,11 +381,13 @@ class Records(object):
             else:
                 setattr(self, varname,
                         np.zeros(self.dim, dtype=np.float64))
+        # check for valid MARS values
+        if not np.all(np.logical_and(np.greater_equal(self.MARS, 1),
+                                     np.less_equal(self.MARS, 5))):
+            raise ValueError('not all MARS values in [1,5] range')
         # create variables derived from MARS, which is in MUST_READ_VARS
-        self._num[:] = np.where(self.MARS == 2,
-                                2, 1)
-        self._sep[:] = np.where(np.logical_or(self.MARS == 3, self.MARS == 6),
-                                2, 1)
+        self._num[:] = np.where(self.MARS == 2, 2, 1)
+        self._sep[:] = np.where(self.MARS == 3, 2, 1)
         # specify value of _exact array
         self._exact[:] = np.where(exact_calcs is True, 1, 0)
         # specify value of ID_Casualty_frt_in_pufcsv_year array
@@ -413,7 +420,7 @@ class Records(object):
             if os.path.isfile(weights):
                 WT = pd.read_csv(weights)
             else:
-                WT = read_egg_csv('weights', Records.WEIGHTS_FILENAME)
+                WT = read_egg_csv(Records.WEIGHTS_FILENAME)
         else:
             msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
@@ -434,8 +441,7 @@ class Records(object):
             if os.path.isfile(adjust_ratios):
                 ADJ = pd.read_csv(adjust_ratios, index_col=0)
             else:
-                ADJ = Records._read_egg_csv('adjust_ratios',
-                                            Records.ADJUST_RATIOS_FILENAME)
+                ADJ = read_egg_csv(Records.ADJUST_RATIOS_FILENAME, index_col=0)
             ADJ = ADJ.transpose()
         else:
             msg = ('adjust_ratios is not None or a string'

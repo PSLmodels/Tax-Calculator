@@ -1,18 +1,18 @@
-from .calculate import *
-from .policy import *
-from .behavior import *
-from .consumption import *
-from .filings import *
-from .growfactors import *
-from .growdiff import *
-from .records import *
-from .simpletaxio import *
-from .incometaxio import *
-from .utils import *
-from .decorators import *
-from .macro_elasticity import *
-from .dropq import *
+from taxcalc.calculate import *
+from taxcalc.policy import *
+from taxcalc.behavior import *
+from taxcalc.consumption import *
+from taxcalc.filings import *
+from taxcalc.growfactors import *
+from taxcalc.growdiff import *
+from taxcalc.records import *
+from taxcalc.taxcalcio import *
+from taxcalc.utils import *
+from taxcalc.decorators import *
+from taxcalc.macro_elasticity import *
+from taxcalc.dropq import *
+from taxcalc.cli import *
 
-from ._version import get_versions
+from taxcalc._version import get_versions
 __version__ = get_versions()['version']
 del get_versions

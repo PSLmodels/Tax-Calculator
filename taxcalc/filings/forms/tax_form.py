@@ -1,6 +1,6 @@
 import six
 
-from .errors import UnsupportedFormYearError
+from taxcalc.filings.forms.errors import UnsupportedFormYearError
 from taxcalc.utils import string_to_number
 
 

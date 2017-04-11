@@ -45,6 +45,7 @@ def test_correct_Records_instantiation(puf_1991, puf_1991_path, weights_1991):
 
 def test_correct_Records_instantiation_sample(puf_1991, weights_1991):
     sample = puf_1991.sample(frac=0.10)
+    # instantiate Records object with no extrapolation
     rec1 = Records(data=sample, gfactors=None, weights=weights_1991)
     assert rec1
     assert np.all(rec1.MARS != 0)
@@ -53,6 +54,7 @@ def test_correct_Records_instantiation_sample(puf_1991, weights_1991):
     rec1.set_current_year(Records.PUF_YEAR + 1)
     sum_e00200_in_puf_year_plus_one = rec1.e00200.sum()
     assert sum_e00200_in_puf_year_plus_one == sum_e00200_in_puf_year
+    # instantiate Records object with default extrapolation
     rec2 = Records(data=sample, gfactors=Growfactors(), weights=None)
     assert rec2
     assert np.all(rec2.MARS != 0)
@@ -62,15 +64,15 @@ def test_correct_Records_instantiation_sample(puf_1991, weights_1991):
 @pytest.mark.parametrize("csv", [
     (
         u'RECID,MARS,e00200,e00200p,e00200s\n'
-        u'1,    2,   200000, 200000,   0.01\n'
+        u'1,    2,   200000, 200000,   0.02\n'
     ),
     (
         u'RECID,MARS,e00900,e00900p,e00900s\n'
-        u'1,    2,   200000, 200000,   0.01\n'
+        u'1,    2,   200000, 200000,   0.02\n'
     ),
     (
         u'RECID,MARS,e02100,e02100p,e02100s\n'
-        u'1,    2,   200000, 200000,   0.01\n'
+        u'1,    2,   200000, 200000,   0.02\n'
     ),
     (
         u'RxCID,MARS\n'
@@ -79,6 +81,10 @@ def test_correct_Records_instantiation_sample(puf_1991, weights_1991):
     (
         u'RECID,e00300\n'
         u'1,    456789\n'
+    ),
+    (
+        u'RECID,MARS\n'
+        u'1,    6\n'
     ),
     (
         u'RECID,MARS,e00600,e00650\n'

@@ -11,13 +11,15 @@ import os
 import math
 import copy
 import json
+import random
 from collections import defaultdict, OrderedDict
-from pkg_resources import resource_stream, Requirement, DistributionNotFound
+from pkg_resources import resource_stream, Requirement
 import six
 import numpy as np
 import pandas as pd
 try:
     BOKEH_AVAILABLE = True
+    import bokeh.io as bio
     import bokeh.plotting as bp
 except ImportError:
     BOKEH_AVAILABLE = False
@@ -135,6 +137,13 @@ def expanded_income_weighted(pdf, col_name):
     expinc = '_expanded_income'
     return (float((pdf[col_name] * pdf[swght] * pdf[expinc]).sum()) /
             float((pdf[swght] * pdf[expinc]).sum() + EPSILON))
+
+
+def unweighted_sum(pdf, col_name):
+    """
+    Return unweighted sum of Pandas DataFrame col_name items.
+    """
+    return pdf[col_name].sum()
 
 
 def weighted_sum(pdf, col_name):
@@ -697,6 +706,7 @@ def mtr_graph_data(calc1, calc2,
                    mars='ALL',
                    mtr_measure='combined',
                    mtr_variable='e00200p',
+                   alt_e00200p_text='',
                    mtr_wrt_full_compen=False,
                    income_measure='expanded_income',
                    dollar_weighting=False):
@@ -728,6 +738,10 @@ def mtr_graph_data(calc1, calc2,
     mtr_variable : string
         any string in the Calculator.VALID_MTR_VARS set
         specifies variable to change in order to compute marginal tax rates
+
+    alt_e00200p_text : string
+        text to use in place of mtr_variable when mtr_variable is 'e00200p';
+        if empty string then use 'e00200p'
 
     mtr_wrt_full_compen : boolean
         see documentation of Calculator.mtr() argument wrt_full_compensation
@@ -798,6 +812,10 @@ def mtr_graph_data(calc1, calc2,
     else:
         msg = 'mars="{}" is neither a string nor an integer'
         raise ValueError(msg.format(mars))
+    # . . check mars value if mtr_variable is e00200s
+    if mtr_variable == 'e00200s' and mars != 2:
+        msg = 'mtr_variable == "e00200s" but mars != 2'
+        raise ValueError(msg)
     # . . check mtr_measure value
     if mtr_measure == 'itax':
         mtr_str = 'Income-Tax'
@@ -861,6 +879,8 @@ def mtr_graph_data(calc1, calc2,
         xlabel_str = '{} for MARS={}'.format(xlabel_str, mars)
     data['xlabel'] = xlabel_str
     var_str = '{}'.format(mtr_variable)
+    if mtr_variable == 'e00200p' and alt_e00200p_text != '':
+        var_str = '{}'.format(alt_e00200p_text)
     if mtr_variable == 'e00200p' and mtr_wrt_full_compen:
         var_str = '{} wrt full compensation'.format(var_str)
     title_str = 'Mean Marginal Tax Rate for {} by Income Percentile'
@@ -1016,9 +1036,7 @@ def requires_bokeh(func):
         if BOKEH_AVAILABLE:
             return func(*args, **kwargs)
         else:
-            msg = ("`bokeh` is not installed. Please install "
-                   "`bokeh` to use this package (`conda install "
-                   "bokeh`)")
+            msg = "install graphing package using `conda install bokeh`"
             raise RuntimeError(msg)
     return wrapped_f
 
@@ -1070,9 +1088,9 @@ def xtr_graph_plot(data,
     THEN  # when working interactively in a Python notebook
       bp.show(gplot)
     OR    # when executing script using Python command-line interpreter
-      bp.output_file('anyname.html')  # file to write to when invoking bp.show
-      bp.show(gplot, title='MTR by Income Percentile')
-    WILL VISUALIZE GRAPH IN BROWSER
+      bio.output_file('graph-name.html', title='?TR by Income Percentile')
+      bio.show(gplot)  [OR bio.save(gplot) WILL JUST WRITE FILE TO DISK]
+    WILL VISUALIZE GRAPH IN BROWSER AND WRITE GRAPH TO SPECIFIED HTML FILE
 
     To convert the visualized graph into a PNG-formatted file, click on
     the "Save" icon on the Toolbar (located in the top-right corner of
@@ -1114,6 +1132,31 @@ def xtr_graph_plot(data,
     fig.legend.spacing = 5
     fig.legend.padding = 5
     return fig
+
+
+@requires_bokeh
+def write_graph_file(figure, filename, title):
+    """
+    Write HTML file named filename containing figure.
+    The title is the text displayed in the browser tab.
+
+    Parameters
+    ----------
+    figure : bokeh.plotting figure object
+
+    filename : string
+        name of HTML file to which figure is written; should end in .html
+
+    title : string
+        text displayed in browser tab when HTML file is displayed in browser
+
+    Returns
+    -------
+    Nothing
+    """
+    delete_file(filename)    # work around annoying 'already exists' bokeh msg
+    bio.output_file(filename=filename, title=title)
+    bio.save(figure)
 
 
 def read_json_from_file(path):
@@ -1324,18 +1367,45 @@ def ce_aftertax_income(calc1, calc2,
     return cedict
 
 
-def read_egg_csv(vname, fpath, **kwargs):
+def read_egg_csv(fname, **kwargs):
     """
-    Read csv file with fpath containing vname data from EGG and
-    return dict of vname data.
+    Read from egg the file named fname that contains CSV data and
+    return pandas DataFrame containing the data.
     """
     try:
-        # grab vname data from EGG distribution
-        path_in_egg = os.path.join('taxcalc', fpath)
-        vname_fname = resource_stream(
-            Requirement.parse('taxcalc'), path_in_egg)
-        vname_dict = pd.read_csv(vname_fname, **kwargs)
-    except (DistributionNotFound, IOError):
-        msg = 'could not read {} file from EGG'
-        raise ValueError(msg.format(vname))
-    return vname_dict
+        path_in_egg = os.path.join('taxcalc', fname)
+        vdf = pd.read_csv(resource_stream(Requirement.parse('taxcalc'),
+                                          path_in_egg), **kwargs)
+    except:  # pylint: disable=bare-except
+        raise ValueError('could not read {} data from egg'.format(fname))
+    return vdf
+
+
+def read_egg_json(fname):
+    """
+    Read from egg the file named fname that contains JSON data and
+    return dictionary containing the data.
+    """
+    try:
+        path_in_egg = os.path.join('taxcalc', fname)
+        pdict = json.loads(resource_stream(Requirement.parse('taxcalc'),
+                                           path_in_egg).read().decode('utf-8'),
+                           object_pairs_hook=OrderedDict)
+    except:  # pylint: disable=bare-except
+        raise ValueError('could not read {} data from egg'.format(fname))
+    return pdict
+
+
+def temporary_filename(suffix=''):
+    """
+    Return string containing filename.
+    """
+    return 'tmp{}{}'.format(random.randint(10000000, 99999999), suffix)
+
+
+def delete_file(filename):
+    """
+    Remove specified file if it exists.
+    """
+    if os.path.isfile(filename):
+        os.remove(filename)

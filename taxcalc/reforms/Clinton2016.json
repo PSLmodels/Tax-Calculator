@@ -1,0 +1,63 @@
+// Title: Select Provisions from the Clinton Tax Plan
+// Reform_File_Author: Cody Kallen
+// Reform Reference: https://www.hillaryclinton.com/briefing/factsheets/2016/01/12/investing-in-america-by-restoring-basic-fairness-to-our-tax-code/
+// Reform Description:
+// -  4% surcharge on AGI above $5 million ($2.5 million for married filing separately) (1)
+// -  Establishment of the "Fair Share Tax" at a 30% rate (aka the Buffett rule) (2)
+// -  Limit the tax value of itemized deductions to 28% (3)
+// -  Expansion of the Child Tax Credit and Additional CHild Tax Credit for children under 5 (4)
+// -  Including more business income in the base for the Net Investment Income Tax (5)
+// Reform_Parameter_Map:
+// -  1: _AGI_surtax*
+// -  2: _FST_AGI_trt
+// -  3: _ID_BenefitCap*
+// -  4: CTC_c_under5_bonus, ACTC_rt_bonus_under5family
+// -  5: NIIT_PT_taxed
+{
+  "policy": {
+        "_AGI_surtax_trt":
+            {"2017": [0.04]},
+        "_AGI_surtax_thd":
+            {"2017": [[5.0e6, 5.0e6, 2.5e6, 5.0e6, 5.0e6]]},
+        "_FST_AGI_trt":
+            {"2017": [0.3]},
+        "_ID_BenefitCap_Switch":
+            {"2017": [[true, true, true, true, true, true, false]]},
+        "_ID_BenefitCap_rt":
+            {"2017": [0.28]},
+        "_CTC_c_under5_bonus":
+            {"2017": [1000]},
+        "_ACTC_rt_bonus_under5family":
+            {"2017": [0.3]},
+        "_NIIT_PT_taxed":
+            {"2017": [true]}
+  }
+}
+// Note: Due to ack of detail, data or modeling capability, many of Clinton's proposed tax changes cannot be scored.
+// These omitted provisions include:
+// -  New structure on capital gains taxes:
+//    -  39.6% if held less than 2 years
+//    -  36% if held 2-3 years
+//    -  32% if held 3-4 years
+//    -  28% if held 4-5 years
+//    -  24% if held 5-6 years
+//    -  20% if held 6 years or longer
+// -  Limit contributions to tax-deferred and tax-free retirement accounts
+// -  Limit tax benefits of like-kind exchanges
+// -  Reduce estate tax exemption to $3.5 million ($7 million for couples)
+// -  Progressive estate tax rates, with top rate of 65 percent
+// -  Tax unrealized gains at death for high-income taxpayers
+// -  Tax carried interest at ordinary tax rates
+// -  A 20% credit for caregiver expenses
+// -  Up to $5000 in tax relief for excessive health care costs
+// -  Financial risk fee on large banks
+// -  Tax on high-frequency trading
+// -  Expand small business expensing (Section 179)
+// -  Expand cash expensing for small businesses
+// -  Expand start-up deduction, create a small business deduction
+// -  Expand ACA credit for small businesses
+// -  Create business tax credits for profit-sharing and apprenticeships
+// -  Repeal the Cadillac Tax on high-cost health plans
+// -  New rules to prevent corporate inversions
+// -  Limit net interest deduction to share in consolidated financial statements
+// -  "Exit tax" on US multinationals that become foreign residents

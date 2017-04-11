@@ -1,13 +1,18 @@
 package:
   name: taxcalc
-  version: 0.4
+  version: 0.0.0
+
+build:
+  entry_points:
+    - tc = taxcalc.cli.tc:main
 
 requirements:
   build:
     - pytest
     - setuptools
     - python
-    - numpy ==1.10.4
+    - mock
+    - numpy ==1.11.2
     - pandas <=0.18.0
     - numba
     - toolz
@@ -16,11 +21,18 @@ requirements:
     - pytest
     - setuptools
     - python
-    - numpy ==1.10.4
+    - mock
+    - numpy ==1.11.2
     - pandas <=0.18.0
     - numba
     - toolz
     - six
+
+test:
+  commands:
+    - which tc  # [unix]
+    - where tc  # [win]
+    - tc --help
 
 about:
   home: http://www.github.com/OpenSourcePolicyCenter

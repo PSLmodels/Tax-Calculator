@@ -114,10 +114,7 @@ def test_expand_2D_variable_rates():
 
 def test_validity_of_name_lists():
     assert len(TABLE_COLUMNS) == len(TABLE_LABELS)
-    calc_vars = Records.CALCULATED_VARS
-    calc_vars.add('s006')
-    stat_vars = set(STATS_COLUMNS)
-    assert stat_vars.issubset(calc_vars)
+    assert set(STATS_COLUMNS).issubset(Records.CALCULATED_VARS | {'s006'})
 
 
 def test_create_tables(puf_1991, weights_1991):
@@ -470,19 +467,18 @@ def test_strip_Nones():
 
 
 def test_expand_2D_accept_None():
-    _II_brk2 = [[36000, 72250, 36500, 48600, 72500, 36250],
-                [38000, 74000, 36900, 49400, 73800, 36900],
-                [40000, 74900, 37450, 50200, 74900, 37450],
-                [41000, None, None, None, None, None]]
+    _II_brk2 = [[36000, 72250, 36500, 48600, 72500],
+                [38000, 74000, 36900, 49400, 73800],
+                [40000, 74900, 37450, 50200, 74900],
+                [41000, None, None, None, None]]
     exp1 = 74900 * 1.02
     exp2 = 37450 * 1.02
     exp3 = 50200 * 1.02
     exp4 = 74900 * 1.02
-    exp5 = 37450 * 1.02
-    exp = [[36000, 72250, 36500, 48600, 72500, 36250],
-           [38000, 74000, 36900, 49400, 73800, 36900],
-           [40000, 74900, 37450, 50200, 74900, 37450],
-           [41000, exp1, exp2, exp3, exp4, exp5]]
+    exp = [[36000, 72250, 36500, 48600, 72500],
+           [38000, 74000, 36900, 49400, 73800],
+           [40000, 74900, 37450, 50200, 74900],
+           [41000, exp1, exp2, exp3, exp4]]
     exp = np.array(exp).astype('i4', casting='unsafe')
     res = Policy.expand_array(_II_brk2, inflate=True,
                               inflation_rates=[0.02] * 5,
@@ -504,26 +500,24 @@ def test_expand_2D_accept_None():
 
 
 def test_expand_2D_accept_None_additional_row():
-    _II_brk2 = [[36000, 72250, 36500, 48600, 72500, 36250],
-                [38000, 74000, 36900, 49400, 73800, 36900],
-                [40000, 74900, 37450, 50200, 74900, 37450],
-                [41000, None, None, None, None, None],
-                [43000, None, None, None, None, None]]
+    _II_brk2 = [[36000, 72250, 36500, 48600, 72500],
+                [38000, 74000, 36900, 49400, 73800],
+                [40000, 74900, 37450, 50200, 74900],
+                [41000, None, None, None, None],
+                [43000, None, None, None, None]]
     exp1 = 74900 * 1.02
     exp2 = 37450 * 1.02
     exp3 = 50200 * 1.02
     exp4 = 74900 * 1.02
-    exp5 = 37450 * 1.02
     exp6 = exp1 * 1.03
     exp7 = exp2 * 1.03
     exp8 = exp3 * 1.03
     exp9 = exp4 * 1.03
-    exp10 = exp5 * 1.03
-    exp = [[36000, 72250, 36500, 48600, 72500, 36250],
-           [38000, 74000, 36900, 49400, 73800, 36900],
-           [40000, 74900, 37450, 50200, 74900, 37450],
-           [41000, exp1, exp2, exp3, exp4, exp5],
-           [43000, exp6, exp7, exp8, exp9, exp10]]
+    exp = [[36000, 72250, 36500, 48600, 72500],
+           [38000, 74000, 36900, 49400, 73800],
+           [40000, 74900, 37450, 50200, 74900],
+           [41000, exp1, exp2, exp3, exp4],
+           [43000, exp6, exp7, exp8, exp9]]
     inflation_rates = [0.015, 0.02, 0.02, 0.03]
     res = Policy.expand_array(_II_brk2, inflate=True,
                               inflation_rates=inflation_rates, num_years=5)
@@ -557,6 +551,8 @@ def test_mtr_graph_data(records_2009):
                                dollar_weighting=True)
     with pytest.raises(ValueError):
         gdata = mtr_graph_data(calc, calc, mars=list())
+    with pytest.raises(ValueError):
+        gdata = mtr_graph_data(calc, calc, mars='ALL', mtr_variable='e00200s')
     with pytest.raises(ValueError):
         gdata = mtr_graph_data(calc, calc, mtr_measure='badtax')
     with pytest.raises(ValueError):
@@ -602,6 +598,7 @@ def test_xtr_graph_plot(records_2009):
     gplot = xtr_graph_plot(gdata)
     assert gplot
     gdata = mtr_graph_data(calc, calc, mtr_measure='itax',
+                           alt_e00200p_text='Taxpayer Earnings',
                            income_measure='expanded_income',
                            dollar_weighting=False)
     assert type(gdata) == dict
@@ -617,6 +614,32 @@ def test_xtr_graph_plot_no_bokeh(records_2009):
     with pytest.raises(RuntimeError):
         gplot = xtr_graph_plot(gdata)
     taxcalc.utils.BOKEH_AVAILABLE = True
+
+
+def test_write_graph_file(records_2009):
+    calc = Calculator(policy=Policy(), records=records_2009)
+    gdata = mtr_graph_data(calc, calc, mtr_measure='ptax',
+                           alt_e00200p_text='Taxpayer Earnings',
+                           income_measure='agi',
+                           dollar_weighting=False)
+    gplot = xtr_graph_plot(gdata)
+    assert gplot
+    htmlfname = temporary_filename(suffix='.html')
+    try:
+        write_graph_file(gplot, htmlfname, 'title')
+    except:  # pylint: disable=bare-except
+        if os.path.isfile(htmlfname):
+            try:
+                os.remove(htmlfname)
+            except OSError:
+                pass  # sometimes we can't remove a generated temporary file
+        assert 'write_graph_file()_ok' == 'no'
+    # if try was successful, try to remove the file
+    if os.path.isfile(htmlfname):
+        try:
+            os.remove(htmlfname)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
 
 
 def test_multiyear_diagnostic_table(records_2009):
@@ -770,3 +793,23 @@ def test_ce_aftertax_income(puf_1991, weights_1991):
     with pytest.raises(ValueError):
         ce_aftertax_income(calc1, calc2, require_no_agg_tax_change=True,
                            custom_params=params)
+
+
+def test_read_egg_csv():
+    with pytest.raises(ValueError):
+        vdf = read_egg_csv('bad_filename')
+
+
+def test_read_egg_json():
+    with pytest.raises(ValueError):
+        pdict = read_egg_json('bad_filename')
+
+
+def test_create_and_delete_temporary_file():
+    # test temporary_filename() and delete_file() functions
+    fname = temporary_filename()
+    with open(fname, 'w') as tmpfile:
+        tmpfile.write('any content will do')
+    assert os.path.isfile(fname) is True
+    delete_file(fname)
+    assert os.path.isfile(fname) is False

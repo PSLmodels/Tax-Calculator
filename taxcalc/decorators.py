@@ -9,7 +9,7 @@ import ast
 import inspect
 import toolz
 from six import StringIO
-from .policy import Policy
+from taxcalc.policy import Policy
 
 
 def id_wrapper(*dec_args, **dec_kwargs):  # pylint: disable=unused-argument

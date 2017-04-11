@@ -1,0 +1,13 @@
+{
+    "consumption": {
+        "_MPC_e18400": {"2018": [0.05]}
+    },
+    "behavior": {
+    },
+    "growdiff_baseline": {
+        "_ATXPY": {"2019": [-0.005]},
+        "_AWAGE": {"2019": [-0.005]}
+    },
+    "growdiff_response": {
+    }
+}

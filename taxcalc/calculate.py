@@ -15,12 +15,12 @@ import json
 import re
 import copy
 import numpy as np
-from .utils import *
-from .functions import *
-from .policy import Policy
-from .records import Records
-from .behavior import Behavior
-from .consumption import Consumption
+from taxcalc.utils import *
+from taxcalc.functions import *
+from taxcalc.policy import Policy
+from taxcalc.records import Records
+from taxcalc.behavior import Behavior
+from taxcalc.consumption import Consumption
 # import pdb
 
 
@@ -122,7 +122,7 @@ class Calculator(object):
             while self.records.current_year < self.policy.current_year:
                 self.records.increment_year()
             if verbose:
-                print('Calculator instantiation automatically ' +
+                print('Tax-Calculator startup automatically ' +
                       'extrapolated your data to ' +
                       str(self.records.current_year) + '.')
         assert self.policy.current_year == self.records.current_year
@@ -143,12 +143,10 @@ class Calculator(object):
         EI_PayrollTax(self.policy, self.records)
         DependentCare(self.policy, self.records)
         Adj(self.policy, self.records)
-        if self.policy.ALD_InvInc_ec_base_code_active:
-            ALD_InvInc_ec_base_code(self)
-        else:
-            ALD_InvInc_ec_base_nocode(self.policy, self.records)
+        ALD_InvInc_ec_base(self.policy, self.records)
         CapGains(self.policy, self.records)
         SSBenefits(self.policy, self.records)
+        UBI(self.policy, self.records)
         AGI(self.policy, self.records)
         ItemDed(self.policy, self.records)
         AdditionalMedicareTax(self.policy, self.records)
@@ -188,10 +186,7 @@ class Calculator(object):
         NonrefundableCredits(self.policy, self.records)
         AdditionalCTC(self.policy, self.records)
         C1040(self.policy, self.records)
-        if self.policy.CTC_new_code_active:
-            CTC_new_code(self)
-        else:
-            CTC_new_nocode(self.policy, self.records)
+        CTC_new(self.policy, self.records)
         IITAX(self.policy, self.records)
 
     def calc_all(self, zero_out_calc_vars=False):
@@ -228,14 +223,15 @@ class Calculator(object):
     def current_year(self):
         return self.policy.current_year
 
-    MTR_VALID_VARIABLES = ['e00200p', 'e00900p',
-                           'e00300', 'e00400',
-                           'e00600', 'e00650',
-                           'e01400', 'e01700',
-                           'e02000', 'e02400',
-                           'p22250', 'p23250',
-                           'e18500', 'e19200',
-                           'e26270', 'e19800']
+    MTR_VALID_VARIABLES = ['e00200p', 'e00200s',
+                           'e00900p', 'e00300',
+                           'e00400', 'e00600',
+                           'e00650', 'e01400',
+                           'e01700', 'e02000',
+                           'e02400', 'p22250',
+                           'p23250', 'e18500',
+                           'e19200', 'e26270',
+                           'e19800', 'e20100']
 
     def mtr(self, variable_str='e00200p',
             negative_finite_diff=False,
@@ -254,6 +250,10 @@ class Calculator(object):
         (where the change in total compensation is the sum of the small
         increase in the variable and any increase in the employer share of
         payroll taxes caused by the small increase in the variable).
+          If using 'e00200s' as variable_str, the marginal tax rate for all
+        records where MARS != 2 will be missing.  If you want to perform a
+        function such as np.mean() on the returned arrays, you will need to
+        account for this.
 
         Parameters
         ----------
@@ -286,6 +286,7 @@ class Calculator(object):
         -----
         Valid variable_str values are:
         'e00200p', taxpayer wage/salary earnings (also included in e00200);
+        'e00200s', spouse wage/salary earnings (also included in e00200);
         'e00900p', taxpayer Schedule C self-employment income (also in e00900);
         'e00300',  taxable interest income;
         'e00400',  federally-tax-exempt interest income;
@@ -301,7 +302,9 @@ class Calculator(object):
         'e19200',  Schedule A total-interest deduction;
         'e26270',  S-corporation/partnership income (also included in e02000);
         'e19800',  Charity cash contributions.
+        'e20100',  Charity non-cash contributions.
         """
+        # pylint: disable=too-many-statements
         # check validity of variable_str parameter
         if variable_str not in Calculator.MTR_VALID_VARIABLES:
             msg = 'mtr variable_str="{}" is not valid'
@@ -316,6 +319,8 @@ class Calculator(object):
         variable = getattr(self.records, variable_str)
         if variable_str == 'e00200p':
             earnings_var = self.records.e00200
+        elif variable_str == 'e00200s':
+            earnings_var = self.records.e00200
         elif variable_str == 'e00900p':
             seincome_var = self.records.e00900
         elif variable_str == 'e00650':
@@ -325,6 +330,8 @@ class Calculator(object):
         # calculate level of taxes after a marginal increase in income
         setattr(self.records, variable_str, variable + finite_diff)
         if variable_str == 'e00200p':
+            self.records.e00200 = earnings_var + finite_diff
+        elif variable_str == 'e00200s':
             self.records.e00200 = earnings_var + finite_diff
         elif variable_str == 'e00900p':
             self.records.e00900 = seincome_var + finite_diff
@@ -349,7 +356,9 @@ class Calculator(object):
         incometax_diff = incometax_chng - incometax_base
         combined_diff = combined_taxes_chng - combined_taxes_base
         # specify optional adjustment for employer (er) OASDI+HI payroll taxes
-        if wrt_full_compensation and variable_str == 'e00200p':
+        mtr_on_earnings = (variable_str == 'e00200p' or
+                           variable_str == 'e00200s')
+        if wrt_full_compensation and mtr_on_earnings:
             adj = np.where(variable < self.policy.SS_Earnings_c,
                            0.5 * (self.policy.FICA_ss_trt +
                                   self.policy.FICA_mc_trt),
@@ -360,6 +369,14 @@ class Calculator(object):
         mtr_payrolltax = payrolltax_diff / (finite_diff * (1.0 + adj))
         mtr_incometax = incometax_diff / (finite_diff * (1.0 + adj))
         mtr_combined = combined_diff / (finite_diff * (1.0 + adj))
+        # if variable_str is e00200s, set MTR to NaN for units without a spouse
+        if variable_str == 'e00200s':
+            mtr_payrolltax = np.where(self.records.MARS == 2,
+                                      mtr_payrolltax, np.nan)
+            mtr_incometax = np.where(self.records.MARS == 2,
+                                     mtr_incometax, np.nan)
+            mtr_combined = np.where(self.records.MARS == 2,
+                                    mtr_combined, np.nan)
         # return the three marginal tax rate arrays
         return (mtr_payrolltax, mtr_incometax, mtr_combined)
 
@@ -440,15 +457,8 @@ class Calculator(object):
         The returned dictionary is suitable as the argument to
            the Policy implement_reform(rpol_dict) method.
         """
-        # define function used by re.sub to process parameter code
-        def repl_func(mat):
-            code = mat.group(2).replace('\r', '\\r').replace('\n', '\\n')
-            return '"' + code + '"'
         # strip out //-comments without changing line numbers
-        json_without_comments = re.sub('//.*', ' ', text_string)
-        # convert multi-line string between pairs of || into a simple string
-        json_str = re.sub('(\|\|)(.*?)(\|\|)',  # pylint: disable=W1401
-                          repl_func, json_without_comments, flags=re.DOTALL)
+        json_str = re.sub('//.*', ' ', text_string)
         # convert JSON text into a Python dictionary
         try:
             raw_dict = json.loads(json_str)
@@ -476,14 +486,6 @@ class Calculator(object):
             if rkey in Calculator.REQUIRED_ASSUMP_KEYS:
                 msg = 'key "{}" should be in economic assumption file'
                 raise ValueError(msg.format(rkey))
-        # handle special param_code key in raw_dict policy component dictionary
-        paramcode = raw_dict['policy'].pop('param_code', None)
-        if paramcode:
-            if Policy.PROHIBIT_PARAM_CODE:
-                msg = 'JSON reform file containing "param_code" is not allowed'
-                raise ValueError(msg)
-            for param, code in paramcode.items():
-                raw_dict['policy'][param] = {'0': code}
         # convert the policy dictionary in raw_dict
         rpol_dict = Calculator.convert_parameter_dict(raw_dict['policy'])
         return rpol_dict

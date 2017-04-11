@@ -5,9 +5,9 @@ Tax-Calculator marginal Consumption class.
 # pep8 --ignore=E402 consumption.py
 # pylint --disable=locally-disabled consumption.py
 
-from .parameters import ParametersBase
-from .policy import Policy
-from .records import Records
+from taxcalc.parameters import ParametersBase
+from taxcalc.policy import Policy
+from taxcalc.records import Records
 
 
 class Consumption(ParametersBase):

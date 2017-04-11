@@ -1,5 +1,5 @@
 """
-Implementation of TaxBrain "Macroeconomic Elasticities" dynamic analysis.
+Implements TaxBrain "Macroeconomic Elasticities Simulation" dynamic analysis.
 """
 
 

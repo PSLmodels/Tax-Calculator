@@ -1,0 +1,17 @@
+// Assume reform with the following provisions:
+// - adhoc raises in OASDI maximum taxable earnings in 2018, 2019 and 2020,
+//     with _SS_Earnings_c wage indexed in subsequent years
+// - raise personal exemption amount _II_em in 2018, keep it unchanged for
+//     two years and then resume its price indexing in subsequent years
+// - implement a 20% investment income AGI exclusion beginning in 2019
+{
+    "policy": {
+        "_SS_Earnings_c": {"2018": [400000],
+                           "2019": [500000],
+                           "2020": [600000]},
+        "_II_em": {"2018": [8000]},
+        "_II_em_cpi": {"2018": false,
+                       "2020": true},
+        "_ALD_InvInc_ec_rt": {"2019": [0.20]}
+    }
+}

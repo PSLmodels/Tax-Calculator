@@ -13,7 +13,7 @@ Tax-Calculator functions that calculate payroll and individual income taxes.
 import math
 import copy
 import numpy as np
-from .decorators import iterate_jit, jit
+from taxcalc.decorators import iterate_jit, jit
 
 
 @iterate_jit(nopython=True)
@@ -115,7 +115,9 @@ def Adj(e03150, e03210, c03260,
         e03270, e03300, e03400, e03500,
         e03220, e03230, e03240, e03290, care_deduction,
         ALD_StudentLoan_hc, ALD_SelfEmp_HealthIns_hc, ALD_KEOGH_SEP_hc,
-        ALD_EarlyWithdraw_hc, ALD_Alimony_hc,
+        ALD_EarlyWithdraw_hc, ALD_Alimony_hc, ALD_EducatorExpenses_hc,
+        ALD_HSADeduction_hc, ALD_IRAContributions_hc,
+        ALD_DomesticProduction_hc, ALD_Tuition_hc,
         c02900, c02900_in_ei):
     """
     Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions)
@@ -160,6 +162,16 @@ def Adj(e03150, e03210, c03260,
 
         ALD_Alimony_hc : Alimony paid deduction haircut
 
+        ALD_EducatorExpenses_hc: Eductor expenses haircut
+
+        ALD_HSADeduction_hc: HSA Deduction haircut
+
+        ALD_IRAContributions_hc: IRA Contribution haircut
+
+        ALD_DomesticProduction_hc: Domestic production haircut
+
+        ALD_Tuition_hc: Tuition and fees haircut
+
     Returns
     -------
     c02900 : total Form 1040 adjustments, which are not included in AGI
@@ -172,10 +184,15 @@ def Adj(e03150, e03210, c03260,
                     c03260 +
                     (1. - ALD_EarlyWithdraw_hc) * e03400 +
                     (1. - ALD_Alimony_hc) * e03500 +
-                    e03220 + e03230 + e03240 + e03290 + care_deduction)
+                    (1. - ALD_EducatorExpenses_hc) * e03220 +
+                    (1. - ALD_Tuition_hc) * e03230 +
+                    (1. - ALD_DomesticProduction_hc) * e03240 +
+                    (1. - ALD_HSADeduction_hc) * e03290 +
+                    care_deduction)
     # add in Form 1040 adjustments that are not included in expanded income:
     c02900 = c02900_in_ei + ((1. - ALD_SelfEmp_HealthIns_hc) * e03270 +
-                             e03150 +  # deductible IRA contributions
+                             # deductible IRA contributions
+                             (1. - ALD_IRAContributions_hc) * e03150 +
                              (1. - ALD_KEOGH_SEP_hc) * e03300)
     # FUTURE: move e03270 term into c02900_in_ei after
     #         health-insurance-premium imputations are available
@@ -185,11 +202,11 @@ def Adj(e03150, e03210, c03260,
 
 
 @iterate_jit(nopython=True)
-def ALD_InvInc_ec_base_nocode(p22250, p23250, _sep,
-                              e00300, e00600, e01100, e01200,
-                              invinc_ec_base):
+def ALD_InvInc_ec_base(p22250, p23250, _sep,
+                       e00300, e00600, e01100, e01200,
+                       invinc_ec_base):
     """
-    Compute invinc_ec_base without code
+    Compute invinc_ec_base
     """
     # limitation on net short-term and long-term capital losses
     cgain = max((-3000. / _sep), p22250 + p23250)
@@ -198,29 +215,9 @@ def ALD_InvInc_ec_base_nocode(p22250, p23250, _sep,
     return invinc_ec_base
 
 
-def ALD_InvInc_ec_base_code(calc):
-    """
-    Compute invinc_ec_base from code
-    """
-    code = calc.policy.param_code['ALD_InvInc_ec_base_code']
-    # pylint: disable=no-member
-    # (above pylint comment eliminates several bogus np warnings)
-    visible = {'min': np.minimum, 'max': np.maximum,
-               'where': np.where, 'equal': np.equal}
-    variables = ['e00300', 'e00600', 'e00650', 'e01100', 'e01200',
-                 'p22250', 'p23250', '_sep']
-    for var in variables:
-        visible[var] = getattr(calc.records, var)
-    visible['cpi'] = calc.policy.cpi_for_param_code('ALD_InvInc_ec_base_code')
-    visible['returned_value'] = calc.records.invinc_ec_base
-    # pylint: disable=exec-used
-    exec(compile(code, '<str>', 'exec'), {'__builtins__': {}}, visible)
-    calc.records.invinc_ec_base = visible['returned_value']
-
-
 @iterate_jit(nopython=True)
 def CapGains(p23250, p22250, _sep, ALD_StudentLoan_hc,
-             ALD_InvInc_ec_rt, invinc_ec_base,
+             ALD_InvInc_ec_rt, invinc_ec_base, ALD_InvInc_ec_base_RyanBrady,
              e00200, e00300, e00600, e00650, e00700, e00800,
              CG_nodiff, CG_ec, CG_reinvest_ec_rt,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
@@ -237,6 +234,18 @@ def CapGains(p23250, p22250, _sep, ALD_StudentLoan_hc,
     invinc = e00300 + e00600 + c01000 + e01100 + e01200
     # compute exclusion of investment income from AGI
     invinc_agi_ec = ALD_InvInc_ec_rt * max(0., invinc_ec_base)
+    # compute exclusion of investment income for Ryan-Brady plan
+    if ALD_InvInc_ec_base_RyanBrady:
+        # This RyanBrady code interprets the Blueprint reform as providing
+        # an investment income AGI exclusion for each of three investment
+        # income types (e00300, e00650, p23250) separately.  The alternative
+        # interpretation (that is not adopted here) is that the investment
+        # income AGI exclusion is calculated using a base that is the sum
+        # of those three investment income types, with the base being zero
+        # if the sum of the three is negative.
+        CG_ec_RyanBrady = (c01000 - max(-3000. / _sep,
+                                        p22250 + ALD_InvInc_ec_rt * p23250))
+        invinc_agi_ec = ALD_InvInc_ec_rt * (e00300 + e00650) + CG_ec_RyanBrady
     # compute ymod1 variable that is included in AGI
     ymod1 = (e00200 + e00700 + e00800 + e00900 + e01400 + e01700 +
              invinc - invinc_agi_ec +
@@ -274,9 +283,38 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
 
 
 @iterate_jit(nopython=True)
+def UBI(nu18, n1821, n21, UBI1, UBI2, UBI3, UBI_ecrt,
+        ubi, taxable_ubi, nontaxable_ubi):
+    """
+
+    Parameters
+    ----------
+    nu18: Number of people in the tax unit under 18
+    n1821: Number of people in the tax unit between 18 and 21
+    n21: Number of people in the tax unit over 21
+    UBI1: UBI for those under 18
+    UBI2: UBI for those between 18 and 21
+    UBI3: UBI for those over 21
+    UBI_ecrt: Fraction of UBI benefits that are not included in AGI
+
+    Returns
+    -------
+    ubi: total UBI received by the tax unit
+    taxable_ubi: amount of UBI that is taxable. This is added to AGI
+    nontaxable_ubi: amount of UBI that is nontaxable.
+                    This is added to expanded income
+
+    """
+    ubi = nu18 * UBI1 + n1821 * UBI2 + n21 * UBI3
+    taxable_ubi = ubi * (1. - UBI_ecrt)
+    nontaxable_ubi = ubi - taxable_ubi
+    return ubi, taxable_ubi, nontaxable_ubi
+
+
+@iterate_jit(nopython=True)
 def AGI(ymod1, c02500, c02900, XTOT, MARS, _sep, DSI, _exact,
         II_em, II_em_ps, II_prt,
-        II_credit, II_credit_ps, II_credit_prt,
+        II_credit, II_credit_ps, II_credit_prt, taxable_ubi,
         c00100, pre_c04600, c04600, personal_credit):
     """
     AGI function: compute Adjusted Gross Income, c00100,
@@ -284,7 +322,7 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, _sep, DSI, _exact,
                   compute personal_credit amount
     """
     # calculate AGI assuming no foreign earned income exclusion
-    c00100 = ymod1 + c02500 - c02900
+    c00100 = ymod1 + c02500 - c02900 + taxable_ubi
     # calculate personal exemption amount
     pre_c04600 = XTOT * II_em
     if DSI:
@@ -521,7 +559,7 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
     extra_stded = num_extra_stded * STD_Aged[MARS - 1]
     # calculate the total standard deduction
     _standard = basic_stded + extra_stded
-    if (MARS == 3 or MARS == 6) and (MIDR == 1):
+    if MARS == 3 and MIDR == 1:
         _standard = 0.
     return _standard
 
@@ -726,7 +764,7 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, _taxbc, _surtax):
 def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         c04470, c17000, c20800, c21040, e24515, MARS, _sep, dwks19,
         dwks14, c05700, e62900, e00700, dwks10, age_head, _earned, cmbtp,
-        AMT_KT_c_Age, AMT_brk1, AMT_thd_MarriedS,
+        AMT_KT_c_Age, AMT_brk1,
         AMT_em, AMT_prt, AMT_rt1, AMT_rt2,
         AMT_Child_em, AMT_em_ps, AMT_em_pe,
         AMT_CG_brk1, AMT_CG_brk2, AMT_CG_brk3, AMT_CG_rt1, AMT_CG_rt2,
@@ -748,9 +786,9 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
     if _standard > 0.0:
         c62100 = c00100 - e00700
     c62100 += cmbtp  # add income not in AGI but considered income for AMT
-    if MARS == 3 or MARS == 6:
+    if MARS == 3:
         amtsepadd = max(0.,
-                        min(AMT_thd_MarriedS, 0.25 * (c62100 - AMT_em_pe)))
+                        min(AMT_em[MARS - 1], AMT_prt * (c62100 - AMT_em_pe)))
     else:
         amtsepadd = 0.
     c62100 = c62100 + amtsepadd  # AMT taxable income, which is line28
@@ -885,7 +923,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
         # filing-unit and number-of-kids based EITC (rather than indiv EITC)
         invinc = (e00400 + e00300 + e00600 +
                   max(0., c01000) + max(0., (0. - p25470)) + max(0., e27200))
-        if MARS == 3 or MARS == 6 or DSI == 1 or invinc > EITC_InvestIncome_c:
+        if MARS == 3 or DSI == 1 or invinc > EITC_InvestIncome_c:
             c59660 = 0.
         else:
             po_start = EITC_ps[EIC]
@@ -962,7 +1000,8 @@ def ChildTaxCredit(n24, MARS, c00100, _exact,
 
 
 @iterate_jit(nopython=True)
-def AmOppCreditParts(p87521, _num, c00100, c10960, c87668):
+def AmOppCreditParts(p87521, _num, c00100, CR_AmOppRefundable_hc,
+                     CR_AmOppNonRefundable_hc, c10960, c87668):
     """
     American Opportunity Credit (Form 8863) nonrefundable (c87668) and
                                             refundable (c10960) parts
@@ -993,6 +1032,11 @@ def AmOppCreditParts(p87521, _num, c00100, c10960, c87668):
 
         c00100 : AGI
 
+        CR_AmOppRefundable_hc: haircut for the refundable portion of the
+                               American Opportunity Credit
+        CR_AmOppNonRefundable_hc: haircut for the nonrefundable portion of the
+                                  American Opportunity Credit
+
     Returns
     -------
         c10960 : Refundable part of American Opportunity Credit
@@ -1004,8 +1048,8 @@ def AmOppCreditParts(p87521, _num, c00100, c10960, c87668):
         c87660 = 10000. * _num
         c87662 = 1000. * min(1., c87658 / c87660)
         c87664 = c87662 * p87521 / 1000.
-        c10960 = 0.4 * c87664
-        c87668 = c87664 - c10960
+        c10960 = 0.4 * c87664 * (1. - CR_AmOppRefundable_hc)
+        c87668 = c87664 - c10960 * (1. - CR_AmOppNonRefundable_hc)
     else:
         c10960 = 0.
         c87668 = 0.
@@ -1014,7 +1058,7 @@ def AmOppCreditParts(p87521, _num, c00100, c10960, c87668):
 
 @iterate_jit(nopython=True)
 def SchR(age_head, age_spouse, MARS, c00100,
-         c05800, e07300, c07180, e02400, c02500, e01500, e01700,
+         c05800, e07300, c07180, e02400, c02500, e01500, e01700, CR_SchR_hc,
          c07200):
     """
     Calculate Schedule R credit for the elderly and the disabled, c07200
@@ -1023,6 +1067,9 @@ def SchR(age_head, age_spouse, MARS, c00100,
 
     Note that all Schedule R policy parameters are hard-coded, and therefore,
     are not able to be changed using Policy class parameters.
+
+    CR_SchR_hc allows the user to eliminate or reduce total schedule R credits
+    applied
     """
     if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
         # calculate credit assuming nobody is disabled (so line12 = line10)
@@ -1058,7 +1105,7 @@ def SchR(age_head, age_spouse, MARS, c00100,
         schr19 = max(0., schr12 - schr18)
         schr20 = 0.15 * schr19
         schr21 = max(0., (c05800 - e07300 - c07180))
-        c07200 = min(schr20, schr21)
+        c07200 = min(schr20, schr21) * (1. - CR_SchR_hc)
     else:  # if not calculating Schedule R credit
         c07200 = 0.
     return c07200
@@ -1068,6 +1115,7 @@ def SchR(age_head, age_spouse, MARS, c00100,
 def EducationTaxCredit(e87530, MARS, c00100, _num, c05800,
                        e07300, c07180, c07200, c87668,
                        LLC_Expense_c, ETC_pe_Single, ETC_pe_Married,
+                       CR_Education_hc,
                        c07230):
     """
     Education Tax Credit (Form 8863) nonrefundable amount, c07230
@@ -1116,41 +1164,59 @@ def EducationTaxCredit(e87530, MARS, c00100, _num, c05800,
     xline9 = max(0., c05800 - (e07300 + c07180 + c07200 + xline5))
     xline10 = min(c87668, xline9)
     c87680 = xline5 + xline10
-    c07230 = c87680
+    c07230 = c87680 * (1. - CR_Education_hc)
     return c07230
 
 
 @iterate_jit(nopython=True)
 def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
                          e07600, p08000, prectc, dep_credit,
+                         CR_RetirementSavings_hc, CR_ForeignTax_hc,
+                         CR_ResidentialEnergy_hc, CR_GeneralBusiness_hc,
+                         CR_MinimumTax_hc, CR_OtherCredits_hc,
                          c07180, c07200, c07220, c07230, c07240,
                          c07260, c07300, c07400, c07600, c08000):
     """
     NonRefundableCredits function sequentially limits credits to tax liability
+
+    Parameters
+    ----------
+
+    CR_RetirementSavings_hc: Retirement savings credit haircut
+    CR_ForeignTax_hc: Foreign tax credit haircut
+    CR_ResidentialEnergy_hc: Residential energy credit haircut
+    CR_GeneralBusiness_hc: General business credit haircut
+    CR_MinimumTax_hc: Minimum tax credit haircut
+    CR_OtherCredits_hc: Other credits haircut
     """
     # limit tax credits to tax liability in order they are on 2015 1040 form
     avail = c05800
-    c07300 = min(e07300, avail)  # Foreign tax credit - Form 1116
+    # Foreign tax credit - Form 1116
+    c07300 = min(e07300 * (1. - CR_ForeignTax_hc), avail)
     avail = avail - c07300
     c07180 = min(c07180, avail)  # Child & dependent care expense credit
     avail = avail - c07180
     c07230 = min(c07230, avail)  # Education tax credit
     avail = avail - c07230
-    c07240 = min(e07240, avail)  # Retirement savings credit - Form 8880
+    # Retirement savings credit - Form 8880
+    c07240 = min(e07240 * (1. - CR_RetirementSavings_hc), avail)
     avail = avail - c07240
     c07220 = min(prectc, avail)  # Child tax credit
     avail = avail - c07220
-    c07260 = min(e07260, avail)  # Residential energy credit - Form 5695
+    # Residential energy credit - Form 5695
+    c07260 = min(e07260 * (1. - CR_ResidentialEnergy_hc), avail)
     avail = avail - c07260
-    c07400 = min(e07400, avail)  # General business credit - Form 3800
+    # General business credit - Form 3800
+    c07400 = min(e07400 * (1. - CR_GeneralBusiness_hc), avail)
     avail = avail - c07400
-    c07600 = min(e07600, avail)  # Prior year minimum tax credit - Form 8801
+    # Prior year minimum tax credit - Form 8801
+    c07600 = min(e07600 * (1. - CR_MinimumTax_hc), avail)
     avail = avail - c07600
     c07200 = min(c07200, avail)  # Schedule R credit
     avail = avail - c07200
     dep_credit = min(avail, dep_credit)  # Dependent credit
     avail = avail - dep_credit
-    c08000 = min(p08000, avail)  # Other credits
+    c08000 = min(p08000 * (1. - CR_OtherCredits_hc), avail)  # Other credits
     avail = avail - c08000
     return (c07180, c07200, c07220, c07230, c07240, dep_credit,
             c07260, c07300, c07400, c07600, c08000)
@@ -1232,11 +1298,11 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
 
 
 @iterate_jit(nopython=True)
-def CTC_new_nocode(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
-                   CTC_new_ps, CTC_new_prt,
-                   CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
-                   n24, nu05, c00100, MARS, ptax_oasdi, c09200,
-                   ctc_new):
+def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
+            CTC_new_ps, CTC_new_prt,
+            CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
+            n24, nu05, c00100, MARS, ptax_oasdi, c09200,
+            ctc_new):
     """
     Compute new refundable child tax credit with numeric parameters
     """
@@ -1257,25 +1323,6 @@ def CTC_new_nocode(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
     else:
         ctc_new = 0.
     return ctc_new
-
-
-def CTC_new_code(calc):
-    """
-    Compute new refundable child tax credit using parameter code
-    """
-    code = calc.policy.param_code['CTC_new_code']
-    # pylint: disable=no-member
-    # (above pylint comment eliminates several bogus np warnings)
-    visible = {'min': np.minimum, 'max': np.maximum,
-               'where': np.where, 'equal': np.equal}
-    variables = ['n24', 'c00100', 'nu05', 'MARS', 'ptax_oasdi', 'c09200']
-    for var in variables:
-        visible[var] = getattr(calc.records, var)
-    visible['cpi'] = calc.policy.cpi_for_param_code('CTC_new_code')
-    visible['returned_value'] = calc.records.ctc_new
-    # pylint: disable=exec-used
-    exec(compile(code, '<str>', 'exec'), {'__builtins__': {}}, visible)
-    calc.records.ctc_new = visible['returned_value']
 
 
 @iterate_jit(nopython=True)
@@ -1473,7 +1520,7 @@ def LumpSumTax(DSI, _num, XTOT,
 
 @iterate_jit(nopython=True)
 def ExpandIncome(c00100, ptax_was, e02400, c02500,
-                 c02900_in_ei, e00400, invinc_agi_ec, cmbtp,
+                 c02900_in_ei, e00400, invinc_agi_ec, cmbtp, nontaxable_ubi,
                  _expanded_income):
     """
     ExpandIncome function calculates and returns _expanded_income.
@@ -1489,5 +1536,6 @@ def ExpandIncome(c00100, ptax_was, e02400, c02500,
                         invinc_agi_ec +  # AGI-excluded taxable invest income
                         cmbtp +  # AMT taxable income items from Form 6251
                         non_taxable_ss_benefits +
-                        employer_fica_share)
+                        employer_fica_share +
+                        nontaxable_ubi)  # universal basic income
     return _expanded_income

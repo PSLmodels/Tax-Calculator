@@ -1,7 +1,9 @@
 [run]
 omit =
-    taxcalc/tests/*
     conda.recipe/*
     taxcalc/_version.py
     taxcalc/functions.py
     taxcalc/*.json
+    taxcalc/tests/*
+    taxcalc/cli/*
+    taxcalc/validation/*
