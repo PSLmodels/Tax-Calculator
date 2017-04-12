@@ -1,5 +1,5 @@
 {
-  "in": {
+  "read": {
     "DSI": {
       "format": "int",
       "description": "1 if claimed as dependent on another return; otherwise 0"
@@ -351,9 +351,9 @@
       "description": ""
     }
   },
-  "out": {
+  "calc": {
     "ID_Casualty_frt_in_pufcsv_year": {
-      "format": "binary",
+      "format": "float",
       "description": ""
     },
     "NIIT": {

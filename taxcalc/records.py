@@ -98,38 +98,8 @@ class Records(object):
     WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
     ADJUST_RATIOS_FILENAME = 'puf_ratios.csv'
     ADJUST_RATIOS_PATH = os.path.join(CUR_PATH, ADJUST_RATIOS_FILENAME)
-    RECORDS_VARIABLES_FILENAME = 'records_variables.json'
-    RECORDS_VARIABLES_PATH = os.path.join(CUR_PATH, RECORDS_VARIABLES_FILENAME)
-
-    # Load metadata about all Records variables
-    if os.path.exists(RECORDS_VARIABLES_PATH):
-        with open(RECORDS_VARIABLES_PATH) as vfile:
-            VAR_INFO = json.load(vfile)
-    else:
-        VAR_INFO = read_egg_json(RECORDS_VARIABLES_FILENAME)
-
-    # Read variables
-    INTEGER_READ_VARS = \
-        set(k for k, v in VAR_INFO['in'].items() if v['format'] == 'int')
-    FLOAT_READ_VARS = \
-        set(k for k, v in VAR_INFO['in'].items() if v['format'] == 'float')
-    MUST_READ_VARS = \
-        set(k for k, v in VAR_INFO['in'].items() if v.get('required'))
-    USABLE_READ_VARS = INTEGER_READ_VARS | FLOAT_READ_VARS
-
-    # Calculated variables
-    BINARY_CALCULATED_VARS = \
-        set(k for k, v in VAR_INFO['out'].items() if v['format'] == 'binary')
-    INTEGER_CALCULATED_VARS = \
-        set(k for k, v in VAR_INFO['out'].items() if v['format'] == 'int')
-    FLOAT_CALCULATED_VARS = \
-        set(k for k, v in VAR_INFO['out'].items() if v['format'] == 'float')
-    CALCULATED_VARS = \
-        BINARY_CALCULATED_VARS | \
-        INTEGER_CALCULATED_VARS | \
-        FLOAT_CALCULATED_VARS
-
-    CHANGING_CALCULATED_VARS = FLOAT_CALCULATED_VARS
+    VAR_INFO_FILENAME = 'records_variables.json'
+    VAR_INFO_PATH = os.path.join(CUR_PATH, VAR_INFO_FILENAME)
 
     def __init__(self,
                  data='puf.csv',
@@ -224,6 +194,40 @@ class Records(object):
         """
         self._current_year = new_current_year
         self.FLPDYR.fill(new_current_year)
+
+    @staticmethod
+    def read_var_info():
+        """
+        Reads Records variables metadata from JSON file;
+        returns dictionary and specifies the static variable sets listed below.
+        """
+        if os.path.exists(Records.VAR_INFO_PATH):
+            with open(Records.VAR_INFO_PATH) as vfile:
+                vardict = json.load(vfile)
+        else:
+            vardict = read_egg_json(Records.VAR_INFO_FILENAME)
+        Records.INTEGER_READ_VARS = set(k for k, v in vardict['read'].items()
+                                        if v['format'] == 'int')
+        FLOAT_READ_VARS = set(k for k, v in vardict['read'].items()
+                              if v['format'] == 'float')
+        Records.MUST_READ_VARS = set(k for k, v in vardict['read'].items()
+                                     if v.get('required'))
+        Records.USABLE_READ_VARS = Records.INTEGER_READ_VARS | FLOAT_READ_VARS
+        INT_CALCULATED_VARS = set(k for k, v in vardict['calc'].items()
+                                  if v['format'] == 'int')
+        FLOAT_CALCULATED_VARS = set(k for k, v in vardict['calc'].items()
+                                    if v['format'] == 'float')
+        Records.CALCULATED_VARS = INT_CALCULATED_VARS | FLOAT_CALCULATED_VARS
+        Records.CHANGING_CALCULATED_VARS = FLOAT_CALCULATED_VARS
+        Records.INTEGER_VARS = Records.INTEGER_READ_VARS | INT_CALCULATED_VARS
+        return vardict
+
+    INTEGER_READ_VARS = None
+    MUST_READ_VARS = None
+    USABLE_READ_VARS = None
+    CALCULATED_VARS = None
+    CHANGING_CALCULATED_VARS = None
+    INTEGER_VARS = None
 
     # --- begin private methods of Records class --- #
 
@@ -340,6 +344,9 @@ class Records(object):
         Specifies _exact array depending on boolean value of exact_calcs.
         """
         # pylint: disable=too-many-branches
+        if Records.INTEGER_VARS is None:
+            Records.read_var_info()
+        # read specified data
         if isinstance(data, pd.DataFrame):
             taxdf = data
         elif isinstance(data, six.string_types):
@@ -373,9 +380,8 @@ class Records(object):
         # create other class variables that are set to all zeros
         UNREAD_VARS = Records.USABLE_READ_VARS - READ_VARS
         ZEROED_VARS = Records.CALCULATED_VARS | UNREAD_VARS
-        INT_VARS = Records.INTEGER_READ_VARS | Records.INTEGER_CALCULATED_VARS
         for varname in ZEROED_VARS:
-            if varname in INT_VARS:
+            if varname in Records.INTEGER_VARS:
                 setattr(self, varname,
                         np.zeros(self.dim, dtype=np.int64))
             else:
@@ -398,7 +404,7 @@ class Records(object):
 
     def zero_out_changing_calculated_vars(self):
         """
-        Set all CHANGING_CALCULATED_VARS to zero.
+        Set all Records.CHANGING_CALCULATED_VARS to zero.
         """
         for varname in Records.CHANGING_CALCULATED_VARS:
             var = getattr(self, varname)

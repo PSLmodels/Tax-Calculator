@@ -598,6 +598,7 @@ class SimpleTaxIO(object):
         calc: Calculator
         """
         # create all-zeros dictionary and then list of all-zero dictionaries
+        Records.read_var_info()
         zero_dict = {}
         for varname in Records.USABLE_READ_VARS:
             zero_dict[varname] = 0
