@@ -1,0 +1,678 @@
+{
+  "in": {
+    "DSI": {
+      "format": "int",
+      "description": "1 if claimed as dependent on another return; otherwise 0"
+    },
+    "EIC": {
+      "format": "int",
+      "description": "number of EIC qualifying children (range: 0 to 3)"
+    },
+    "FLPDYR": {
+      "format": "int",
+      "description": "Tax filing year"
+    },
+    "MARS": {
+      "format": "int",
+      "required": true,
+      "description": "Filing (marital) status: number of the checked box"
+    },
+    "MIDR": {
+      "format": "int",
+      "description": "1 if separately filing spouse itemizes; otherwise 0"
+    },
+    "RECID": {
+      "format": "int",
+      "required": true,
+      "description": "Unique identifier for filing unit"
+    },
+    "XTOT": {
+      "format": "int",
+      "description": "Total number of exemptions for filing unit"
+    },
+    "age_head": {
+      "format": "int",
+      "description": "Age in years of taxpayer (i.e. primary filer)"
+    },
+    "age_spouse": {
+      "format": "int",
+      "description": "Age in years of spouse (i.e. secondary filer if present)"
+    },
+    "agi_bin": {
+      "format": "int",
+      "description": ""
+    },
+    "blind_head": {
+      "format": "int",
+      "description": "1 if taxpayer is blind; otherwise 0"
+    },
+    "blind_spouse": {
+      "format": "int",
+      "description": "1 if spouse is blind; otherwise 0"
+    },
+    "cmbtp": {
+      "format": "float",
+      "description": ""
+    },
+    "e00200": {
+      "format": "float",
+      "description": "Wages, salaries, and tips for filing unit"
+    },
+    "e00200p": {
+      "format": "float",
+      "description": "Wages, salaries, and tips for taxpayer"
+    },
+    "e00200s": {
+      "format": "float",
+      "description": "Wages, salaries, and tips for spouse"
+    },
+    "e00300": {
+      "format": "float",
+      "description": "Taxable interest income"
+    },
+    "e00400": {
+      "format": "float",
+      "description": "Tax-exempt interest income"
+    },
+    "e00600": {
+      "format": "float",
+      "description": "Ordinary dividends included in AGI"
+    },
+    "e00650": {
+      "format": "float",
+      "description": "Qualified dividends included in ordinary dividends"
+    },
+    "e00700": {
+      "format": "float",
+      "description": "Taxable refunds, credits, or offsets of state and local income taxes"
+    },
+    "e00800": {
+      "format": "float",
+      "description": "Alimony received"
+    },
+    "e00900": {
+      "format": "float",
+      "description": "Sch C business net profit/loss for filing unit"
+    },
+    "e00900p": {
+      "format": "float",
+      "description": "Sch C business net profit/loss for taxpayer"
+    },
+    "e00900s": {
+      "format": "float",
+      "description": "Sch C business net profit/loss for spouse"
+    },
+    "e01100": {
+      "format": "float",
+      "description": "Capital gain distributions not reported on Sch D"
+    },
+    "e01200": {
+      "format": "float",
+      "description": "Other net gain/loss (Form 4797)"
+    },
+    "e01400": {
+      "format": "float",
+      "description": "Taxable IRA distributions"
+    },
+    "e01500": {
+      "format": "float",
+      "description": "Pensions and annuities in income"
+    },
+    "e01700": {
+      "format": "float",
+      "description": "Pensions and annuities in AGI"
+    },
+    "e02000": {
+      "format": "float",
+      "description": "Rental real estate, royalties, partnerships, S corporations, trusts, etc. (Sch E)"
+    },
+    "e02100": {
+      "format": "float",
+      "description": "Farm net income/loss for filing unit (Sch F)"
+    },
+    "e02100p": {
+      "format": "float",
+      "description": "Farm net income/loss for taxpayer"
+    },
+    "e02100s": {
+      "format": "float",
+      "description": "Farm net income/loss for spouse"
+    },
+    "e02300": {
+      "format": "float",
+      "description": "Unemployment compensation benefits"
+    },
+    "e02400": {
+      "format": "float",
+      "description": "Gross social security benefits"
+    },
+    "e03150": {
+      "format": "float",
+      "description": "Total deductible IRA contributions"
+    },
+    "e03210": {
+      "format": "float",
+      "description": "Student loan interest deduction"
+    },
+    "e03220": {
+      "format": "float",
+      "description": "Educator expenses"
+    },
+    "e03230": {
+      "format": "float",
+      "description": "Tuition and fees (Form 8917)"
+    },
+    "e03240": {
+      "format": "float",
+      "description": "Domestic production activities (Form 8903)"
+    },
+    "e03270": {
+      "format": "float",
+      "description": "Self-employed health insurance deduction"
+    },
+    "e03290": {
+      "format": "float",
+      "description": "Health savings account deduction (Form 8889)"
+    },
+    "e03300": {
+      "format": "float",
+      "description": "Contributions to SEP, SIMPLE, etc, qualified plans"
+    },
+    "e03400": {
+      "format": "float",
+      "description": "Penalty on early withdrawal of savings"
+    },
+    "e03500": {
+      "format": "float",
+      "description": "Adjustments: Alimony paid"
+    },
+    "e07240": {
+      "format": "float",
+      "description": "Retirement savings contributions credit (Form 8880)"
+    },
+    "e07260": {
+      "format": "float",
+      "description": "Residential energy credit (Form 5695)"
+    },
+    "e07300": {
+      "format": "float",
+      "description": "Foreign tax credit (Form 1116)"
+    },
+    "e07400": {
+      "format": "float",
+      "description": "General business credit (Form 3800)"
+    },
+    "e07600": {
+      "format": "float",
+      "description": "Prior year minimum tax credit (Form 8801)"
+    },
+    "e09700": {
+      "format": "float",
+      "description": "Taxes: Recapture tax - Form 4255"
+    },
+    "e09800": {
+      "format": "float",
+      "description": "Taxes: Social security tax on tip income"
+    },
+    "e09900": {
+      "format": "float",
+      "description": "Taxes: Penalty tax on qualified retirement plans"
+    },
+    "e11200": {
+      "format": "float",
+      "description": "Tax Payment: Excess FICA/RRTA"
+    },
+    "e17500": {
+      "format": "float",
+      "description": "Sch A: Medical and dental expenses"
+    },
+    "e18400": {
+      "format": "float",
+      "description": "Sch A: State and local income/sales taxes"
+    },
+    "e18500": {
+      "format": "float",
+      "description": "Sch A: Real estate taxes"
+    },
+    "e19200": {
+      "format": "float",
+      "description": "Sch A: Total interest deduction"
+    },
+    "e19800": {
+      "format": "float",
+      "description": "Sch A: Gifts to charity: cash/check contributions"
+    },
+    "e20100": {
+      "format": "float",
+      "description": "Sch A: Gifts to charity: other than cash/check contributions"
+    },
+    "e20400": {
+      "format": "float",
+      "description": "Sch A: Miscellaneous deductions subject to 2% AGI limitation"
+    },
+    "e20500": {
+      "format": "float",
+      "description": "Sch A: Net casualty or theft loss"
+    },
+    "e24515": {
+      "format": "float",
+      "description": "Sch D: Un-Recaptured Section 1250 Gain"
+    },
+    "e24518": {
+      "format": "float",
+      "description": "Sch D: 28% Rate Gain or Loss"
+    },
+    "e26270": {
+      "format": "float",
+      "description": "Combined partnership and S corporation net income/loss"
+    },
+    "e27200": {
+      "format": "float",
+      "description": "Sch E: Farm rent net income or loss"
+    },
+    "e32800": {
+      "format": "float",
+      "description": "Child/dependent-care expenses for qualifying persons (Form 2441)"
+    },
+    "e58990": {
+      "format": "float",
+      "description": "Investment income elected amount (Form 4952)"
+    },
+    "e62900": {
+      "format": "float",
+      "description": "Alternative Minimum Tax foreign tax credit (Form 6251)"
+    },
+    "e87530": {
+      "format": "float",
+      "description": "Form 8863: Lifetime Learning Total Qualified Exp.s"
+    },
+    "elderly_dependent": {
+      "format": "int",
+      "description": "Has an elderly dependent?"
+    },
+    "f2441": {
+      "format": "int",
+      "description": "number of child/dependent-care qualifying persons"
+    },
+    "f6251": {
+      "format": "int",
+      "description": "1 if Form 6251 (AMT) attached to return; otherwise 0"
+    },
+    "filer": {
+      "format": "int",
+      "description": ""
+    },
+    "n24": {
+      "format": "int",
+      "description": "Number of children eligible for Child Tax Credit"
+    },
+    "nu05": {
+      "format": "float",
+      "description": "Eligible for ACTC rate bonus for families with less than 5 children?"
+    },
+    "nu13": {
+      "format": "int",
+      "description": "Number of dependents under 13 years old"
+    },
+    "nu18": {
+      "format": "int",
+      "description": "Number of dependents under 18 years old"
+    },
+    "n1821": {
+      "format": "int",
+      "description": "Number of dependents over 18 and under 21 years old"
+    },
+    "n21": {
+      "format": "int",
+      "description": "Number of dependents 21 years old or older"
+    },
+    "p08000": {
+      "format": "float",
+      "description": "Other statutory credit (computer)"
+    },
+    "p22250": {
+      "format": "float",
+      "description": "Sch D: Net short-term gain/loss"
+    },
+    "p23250": {
+      "format": "float",
+      "description": "Sch D: Net long-term gain/loss"
+    },
+    "p25470": {
+      "format": "float",
+      "description": "Sch E: Royalty depletion and/or rental depreciation"
+    },
+    "p87521": {
+      "format": "float",
+      "description": "Total tentative AmOppCredit amount for all students"
+    },
+    "s006": {
+      "format": "float",
+      "description": ""
+    }
+  },
+  "out": {
+    "ID_Casualty_frt_in_pufcsv_year": {
+      "format": "binary",
+      "description": ""
+    },
+    "NIIT": {
+      "format": "float",
+      "description": ""
+    },
+    "_combined": {
+      "format": "float",
+      "description": ""
+    },
+    "_earned": {
+      "format": "float",
+      "description": ""
+    },
+    "_earned_p": {
+      "format": "float",
+      "description": ""
+    },
+    "_earned_s": {
+      "format": "float",
+      "description": ""
+    },
+    "_eitc": {
+      "format": "float",
+      "description": ""
+    },
+    "_exact": {
+      "format": "int",
+      "description": ""
+    },
+    "_expanded_income": {
+      "format": "float",
+      "description": ""
+    },
+    "_iitax": {
+      "format": "float",
+      "description": "Federal income tax liability"
+    },
+    "_num": {
+      "format": "int",
+      "description": ""
+    },
+    "_payrolltax": {
+      "format": "float",
+      "description": ""
+    },
+    "_refund": {
+      "format": "float",
+      "description": ""
+    },
+    "_sep": {
+      "format": "int",
+      "description": ""
+    },
+    "_sey": {
+      "format": "float",
+      "description": ""
+    },
+    "_standard": {
+      "format": "float",
+      "description": ""
+    },
+    "_surtax": {
+      "format": "float",
+      "description": ""
+    },
+    "_taxbc": {
+      "format": "float",
+      "description": ""
+    },
+    "c00100": {
+      "format": "float",
+      "description": "Adjusted Gross Income (Deficit)"
+    },
+    "c01000": {
+      "format": "float",
+      "description": ""
+    },
+    "c02500": {
+      "format": "float",
+      "description": "Social security benefits, taxable"
+    },
+    "c02900": {
+      "format": "float",
+      "description": "Adjustments: Total"
+    },
+    "c02900_in_ei": {
+      "format": "float",
+      "description": ""
+    },
+    "c03260": {
+      "format": "float",
+      "description": ""
+    },
+    "c04470": {
+      "format": "float",
+      "description": ""
+    },
+    "c04600": {
+      "format": "float",
+      "description": ""
+    },
+    "c04800": {
+      "format": "float",
+      "description": ""
+    },
+    "c05200": {
+      "format": "float",
+      "description": ""
+    },
+    "c05700": {
+      "format": "float",
+      "description": ""
+    },
+    "c05800": {
+      "format": "float",
+      "description": ""
+    },
+    "c07100": {
+      "format": "float",
+      "description": ""
+    },
+    "c07180": {
+      "format": "float",
+      "description": ""
+    },
+    "c07200": {
+      "format": "float",
+      "description": ""
+    },
+    "c07220": {
+      "format": "float",
+      "description": ""
+    },
+    "c07230": {
+      "format": "float",
+      "description": ""
+    },
+    "c07240": {
+      "format": "float",
+      "description": ""
+    },
+    "c07260": {
+      "format": "float",
+      "description": ""
+    },
+    "c07300": {
+      "format": "float",
+      "description": ""
+    },
+    "c07400": {
+      "format": "float",
+      "description": ""
+    },
+    "c07600": {
+      "format": "float",
+      "description": ""
+    },
+    "c08000": {
+      "format": "float",
+      "description": ""
+    },
+    "c09200": {
+      "format": "float",
+      "description": ""
+    },
+    "c09600": {
+      "format": "float",
+      "description": ""
+    },
+    "c10960": {
+      "format": "float",
+      "description": ""
+    },
+    "c11070": {
+      "format": "float",
+      "description": ""
+    },
+    "c17000": {
+      "format": "float",
+      "description": "Sch A: Total deduction"
+    },
+    "c18300": {
+      "format": "float",
+      "description": "Sch A: Total taxes deducted"
+    },
+    "c19200": {
+      "format": "float",
+      "description": "Sch A: Total interest deduction",
+      "in": "e19200"
+    },
+    "c19700": {
+      "format": "float",
+      "description": ""
+    },
+    "c20500": {
+      "format": "float",
+      "description": "Sch A: Net casualty or theft loss",
+      "in": "e20500"
+    },
+    "c20800": {
+      "format": "float",
+      "description": "Sch A: Net limited miscellaneous deductions"
+    },
+    "c21040": {
+      "format": "float",
+      "description": ""
+    },
+    "c21060": {
+      "format": "float",
+      "description": ""
+    },
+    "c23650": {
+      "format": "float",
+      "description": ""
+    },
+    "c59660": {
+      "format": "float",
+      "description": ""
+    },
+    "c62100": {
+      "format": "float",
+      "description": ""
+    },
+    "c87668": {
+      "format": "float",
+      "description": ""
+    },
+    "care_deduction": {
+      "format": "float",
+      "description": ""
+    },
+    "ctc_new": {
+      "format": "float",
+      "description": ""
+    },
+    "dep_credit": {
+      "format": "float",
+      "description": ""
+    },
+    "dwks10": {
+      "format": "float",
+      "description": ""
+    },
+    "dwks13": {
+      "format": "float",
+      "description": ""
+    },
+    "dwks14": {
+      "format": "float",
+      "description": ""
+    },
+    "dwks19": {
+      "format": "float",
+      "description": ""
+    },
+    "fstax": {
+      "format": "float",
+      "description": ""
+    },
+    "invinc_agi_ec": {
+      "format": "float",
+      "description": ""
+    },
+    "invinc_ec_base": {
+      "format": "float",
+      "description": ""
+    },
+    "lumpsum_tax": {
+      "format": "float",
+      "description": ""
+    },
+    "personal_credit": {
+      "format": "float",
+      "description": ""
+    },
+    "pre_c04600": {
+      "format": "float",
+      "description": ""
+    },
+    "prectc": {
+      "format": "float",
+      "description": ""
+    },
+    "ptax_amc": {
+      "format": "float",
+      "description": ""
+    },
+    "ptax_oasdi": {
+      "format": "float",
+      "description": ""
+    },
+    "ptax_was": {
+      "format": "float",
+      "description": ""
+    },
+    "setax": {
+      "format": "float",
+      "description": ""
+    },
+    "ymod": {
+      "format": "float",
+      "description": ""
+    },
+    "ymod1": {
+      "format": "float",
+      "description": ""
+    },
+    "ubi": {
+      "format": "float",
+      "description": ""
+    },
+    "taxable_ubi": {
+      "format": "float",
+      "description": ""
+    },
+    "nontaxable_ubi": {
+      "format": "float",
+      "description": ""
+    }
+  }
+}

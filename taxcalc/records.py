@@ -6,11 +6,12 @@ Tax-Calculator tax-filing-unit Records class.
 # pylint --disable=locally-disabled records.py
 
 import os
+import json
 import six
 import numpy as np
 import pandas as pd
 from taxcalc.growfactors import Growfactors
-from taxcalc.utils import read_egg_csv
+from taxcalc.utils import read_egg_csv, read_egg_json
 
 
 PUFCSV_YEAR = 2009
@@ -97,88 +98,38 @@ class Records(object):
     WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
     ADJUST_RATIOS_FILENAME = 'puf_ratios.csv'
     ADJUST_RATIOS_PATH = os.path.join(CUR_PATH, ADJUST_RATIOS_FILENAME)
+    RECORDS_VARIABLES_FILENAME = 'records_variables.json'
+    RECORDS_VARIABLES_PATH = os.path.join(CUR_PATH, RECORDS_VARIABLES_FILENAME)
 
-    # specify set of input variables used in Tax-Calculator calculations:
-    USABLE_READ_VARS = set([
-        'DSI', 'EIC', 'FLPDYR',
-        'f2441', 'f6251', 'n24', 'XTOT',
-        'e00200', 'e00300', 'e00400', 'e00600', 'e00650', 'e00700', 'e00800',
-        'e00200p', 'e00200s',
-        'e00900', 'e01100', 'e01200', 'e01400', 'e01500', 'e01700',
-        'e00900p', 'e00900s',
-        'e02000', 'e02100', 'e02300', 'e02400', 'e03150', 'e03210',
-        'e02100p', 'e02100s',
-        'e03220', 'e03230', 'e03270', 'e03240', 'e03290',
-        'e03400', 'e03500',
-        'e07240', 'e07260', 'e07300',
-        'e07400', 'e07600', 'p08000',
-        'e09700', 'e09800', 'e09900',
-        'e11200',
-        'e17500', 'e18400', 'e18500',
-        'e19200', 'e19800', 'e20100',
-        'e20400', 'e20500', 'p22250',
-        'p23250', 'e24515', 'e24518',
-        'p25470',
-        'e26270',
-        'e27200', 'e32800', 'e03300',
-        'e58990',
-        'e62900',
-        'p87521', 'e87530',
-        'MARS', 'MIDR', 'RECID', 'filer', 'cmbtp',
-        'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
-        'nu13', 'elderly_dependent',
-        's006', 'nu05', 'agi_bin',
-        'nu18', 'n1821', 'n21'])
+    # Load metadata about all Records variables
+    if os.path.exists(RECORDS_VARIABLES_PATH):
+        with open(RECORDS_VARIABLES_PATH) as vfile:
+            VAR_INFO = json.load(vfile)
+    else:
+        VAR_INFO = read_egg_json(RECORDS_VARIABLES_FILENAME)
 
-    # specify set of input variables that MUST be read by Tax-Calculator:
-    MUST_READ_VARS = set(['RECID', 'MARS'])
+    # Read variables
+    INTEGER_READ_VARS = \
+        set(k for k, v in VAR_INFO['in'].items() if v['format'] == 'int')
+    FLOAT_READ_VARS = \
+        set(k for k, v in VAR_INFO['in'].items() if v['format'] == 'float')
+    MUST_READ_VARS = \
+        set(k for k, v in VAR_INFO['in'].items() if v.get('required'))
+    USABLE_READ_VARS = INTEGER_READ_VARS | FLOAT_READ_VARS
 
-    # specify which USABLE_READ_VARS should be int64 (rather than float64):
-    INTEGER_READ_VARS = set([
-        'DSI', 'EIC', 'FLPDYR',
-        'f2441', 'f6251',
-        'n24', 'XTOT',
-        'MARS', 'MIDR', 'RECID', 'filer',
-        'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
-        'nu13', 'elderly_dependent', 'agi_bin',
-        'nu18', 'n1821', 'n21'])
+    # Calculated variables
+    BINARY_CALCULATED_VARS = \
+        set(k for k, v in VAR_INFO['out'].items() if v['format'] == 'binary')
+    INTEGER_CALCULATED_VARS = \
+        set(k for k, v in VAR_INFO['out'].items() if v['format'] == 'int')
+    FLOAT_CALCULATED_VARS = \
+        set(k for k, v in VAR_INFO['out'].items() if v['format'] == 'float')
+    CALCULATED_VARS = \
+        BINARY_CALCULATED_VARS | \
+        INTEGER_CALCULATED_VARS | \
+        FLOAT_CALCULATED_VARS
 
-    # specify set of Record variables that are calculated by Tax-Calculator:
-    CALCULATED_VARS = set([
-        '_exact',
-        'c07200',
-        'c00100', 'pre_c04600', 'c04600',
-        'c04470', 'c21060', 'c21040', 'c17000',
-        'c18300', 'c20800', 'c02900', 'c02900_in_ei', 'c23650',
-        'c01000', 'c02500', 'c19700', 'invinc_ec_base', 'invinc_agi_ec',
-        '_sey', '_earned', '_earned_p', '_earned_s',
-        'ymod', 'ymod1',
-        'c04800', 'c19200', 'c20500',
-        '_taxbc', '_standard', 'dwks10', 'dwks13', 'dwks14', 'dwks19',
-        'c05700',
-        'c05800',
-        'c07180',
-        'c07230', 'prectc', 'c07220', 'c59660',
-        'c09200', 'c07100', '_eitc',
-        '_payrolltax', 'ptax_was', 'setax', 'c03260', 'ptax_amc', 'ptax_oasdi',
-        '_sep', '_num',
-        'c05200',
-        'c62100',
-        'c09600',
-        'ID_Casualty_frt_in_pufcsv_year',
-        'c11070',
-        'c10960', 'c87668',
-        'NIIT',
-        '_iitax', '_refund', 'ctc_new', 'lumpsum_tax',
-        '_expanded_income', 'c07300', 'c07400',
-        'c07600', 'c07240', 'c07260', 'c08000',
-        '_surtax', '_combined', 'personal_credit', 'fstax', 'care_deduction',
-        'dep_credit', 'ubi', 'taxable_ubi', 'nontaxable_ubi'])
-
-    INTEGER_CALCULATED_VARS = set(['_num', '_sep', '_exact'])
-
-    CHANGING_CALCULATED_VARS = (CALCULATED_VARS - INTEGER_CALCULATED_VARS -
-                                set(['ID_Casualty_frt_in_pufcsv_year']))
+    CHANGING_CALCULATED_VARS = FLOAT_CALCULATED_VARS
 
     def __init__(self,
                  data='puf.csv',
