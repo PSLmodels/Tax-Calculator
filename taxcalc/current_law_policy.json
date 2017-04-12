@@ -570,6 +570,20 @@
         "validations": {"min": "default"}
     },
 
+    "_STD_allow_charity_ded_nonitemizers": {
+        "long_name": "Allow standard deduction filers to take the charitable contributions deduction",
+        "description": "Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here.",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "value": [false]
+    },
+
     "_II_credit": {
         "long_name": "Personal refundable credit maximum amount",
         "description": "This credit amount is fully refundable and phased out based on AGI. It is available to tax units who would otherwise not file.",
