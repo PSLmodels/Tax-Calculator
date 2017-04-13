@@ -199,7 +199,7 @@ class Records(object):
     def read_var_info():
         """
         Reads Records variables metadata from JSON file;
-        returns dictionary and specifies the static variable sets listed below.
+        returns dictionary and specifies static varname sets listed below.
         """
         if os.path.exists(Records.VAR_INFO_PATH):
             with open(Records.VAR_INFO_PATH) as vfile:
@@ -207,21 +207,22 @@ class Records(object):
         else:
             vardict = read_egg_json(Records.VAR_INFO_FILENAME)
         Records.INTEGER_READ_VARS = set(k for k, v in vardict['read'].items()
-                                        if v['format'] == 'int')
+                                        if v['type'] == 'int')
         FLOAT_READ_VARS = set(k for k, v in vardict['read'].items()
-                              if v['format'] == 'float')
+                              if v['type'] == 'float')
         Records.MUST_READ_VARS = set(k for k, v in vardict['read'].items()
                                      if v.get('required'))
         Records.USABLE_READ_VARS = Records.INTEGER_READ_VARS | FLOAT_READ_VARS
         INT_CALCULATED_VARS = set(k for k, v in vardict['calc'].items()
-                                  if v['format'] == 'int')
+                                  if v['type'] == 'int')
         FLOAT_CALCULATED_VARS = set(k for k, v in vardict['calc'].items()
-                                    if v['format'] == 'float')
+                                    if v['type'] == 'float')
         Records.CALCULATED_VARS = INT_CALCULATED_VARS | FLOAT_CALCULATED_VARS
         Records.CHANGING_CALCULATED_VARS = FLOAT_CALCULATED_VARS
         Records.INTEGER_VARS = Records.INTEGER_READ_VARS | INT_CALCULATED_VARS
         return vardict
 
+    # various sets of variable names
     INTEGER_READ_VARS = None
     MUST_READ_VARS = None
     USABLE_READ_VARS = None

@@ -1,678 +1,857 @@
 {
   "read": {
     "DSI": {
-      "format": "int",
-      "description": "1 if claimed as dependent on another return; otherwise 0"
+      "type": "int",
+      "desc": "1 if claimed as dependent on another return; otherwise 0",
+      "form": {"2013-2016": "1040, line 6a"}
     },
     "EIC": {
-      "format": "int",
-      "description": "number of EIC qualifying children (range: 0 to 3)"
+      "type": "int",
+      "desc": "number of EIC qualifying children (range: 0 to 3)",
+      "form": {"2013-2016": "1040 Sch EIC"}
     },
     "FLPDYR": {
-      "format": "int",
-      "description": "Tax filing year"
+      "type": "int",
+      "desc": "Tax filing year",
+      "form": {"2013-2016": "1040"}
     },
     "MARS": {
       "required": true,
-      "format": "int",
-      "description": "Filing (marital) status: number of the checked box"
+      "type": "int",
+      "desc": "Filing (marital) status: line number of the checked box",
+      "form": {"2013-2016": "1040, lines 1-5"}
     },
     "MIDR": {
-      "format": "int",
-      "description": "1 if separately filing spouse itemizes; otherwise 0"
+      "type": "int",
+      "desc": "1 if separately filing spouse itemizes; otherwise 0",
+      "form": {"2013-2016": "1040, line 39b"}
     },
     "RECID": {
       "required": true,
-      "format": "int",
-      "description": "Unique identifier for filing unit"
+      "type": "int",
+      "desc": "Unique identifier for filing unit",
+      "form": {"2013-2016": "private info"}
     },
     "XTOT": {
-      "format": "int",
-      "description": "Total number of exemptions for filing unit"
+      "type": "int",
+      "desc": "Total number of exemptions for filing unit",
+      "form": {"2013-2016": "1040, line 6d"}
     },
     "age_head": {
-      "format": "int",
-      "description": "Age in years of taxpayer (i.e. primary filer)"
+      "type": "int",
+      "desc": "Age in years of taxpayer (i.e. primary filer)",
+      "form": {"2013-2016": "imputed from CPS data"}
     },
     "age_spouse": {
-      "format": "int",
-      "description": "Age in years of spouse (i.e. secondary filer if present)"
+      "type": "int",
+      "desc": "Age in years of spouse (i.e. secondary filer if present)",
+      "form": {"2013-2016": "imputed from CPS data"}
     },
     "agi_bin": {
-      "format": "int",
-      "description": ""
+      "type": "int",
+      "desc": "Historical AGI category used in data extrapolation",
+      "form": {"2013-2016": "not used in tax calculations"}
     },
     "blind_head": {
-      "format": "int",
-      "description": "1 if taxpayer is blind; otherwise 0"
+      "type": "int",
+      "desc": "1 if taxpayer is blind; otherwise 0",
+      "form": {"2013-2016": "1040, line 39a"}
     },
     "blind_spouse": {
-      "format": "int",
-      "description": "1 if spouse is blind; otherwise 0"
+      "type": "int",
+      "desc": "1 if spouse is blind; otherwise 0",
+      "form": {"2013-2016": "1040, line 39a"}
     },
     "cmbtp": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "Estimate of income on (AMT) Form 6251 but not in AGI",
+      "form": {"2013-2016": "6251 and 1040"}
     },
     "e00200": {
-      "format": "float",
-      "description": "Wages, salaries, and tips for filing unit"
+      "type": "float",
+      "desc": "Wages, salaries, and tips for filing unit",
+      "form": {"2013-2016": "1040, line 7"}
     },
     "e00200p": {
-      "format": "float",
-      "description": "Wages, salaries, and tips for taxpayer"
+      "type": "float",
+      "desc": "Wages, salaries, and tips for taxpayer",
+      "form": {"2013-2016": "1040, line 7 component"}
     },
     "e00200s": {
-      "format": "float",
-      "description": "Wages, salaries, and tips for spouse"
+      "type": "float",
+      "desc": "Wages, salaries, and tips for spouse",
+      "form": {"2013-2016": "1040, line 7 component"}
     },
     "e00300": {
-      "format": "float",
-      "description": "Taxable interest income"
+      "type": "float",
+      "desc": "Taxable interest income",
+      "form": {"2013-2016": "1040, line 8a"}
     },
     "e00400": {
-      "format": "float",
-      "description": "Tax-exempt interest income"
+      "type": "float",
+      "desc": "Tax-exempt interest income",
+      "form": {"2013-2016": "1040, line 8b"}
     },
     "e00600": {
-      "format": "float",
-      "description": "Ordinary dividends included in AGI"
+      "type": "float",
+      "desc": "Ordinary dividends included in AGI",
+      "form": {"2013-2016": "1040, line 9a"}
     },
     "e00650": {
-      "format": "float",
-      "description": "Qualified dividends included in ordinary dividends"
+      "type": "float",
+      "desc": "Qualified dividends included in ordinary dividends",
+      "form": {"2013-2016": "1040, line 9b"}
     },
     "e00700": {
-      "format": "float",
-      "description": "Taxable refunds, credits, or offsets of state and local income taxes"
+      "type": "float",
+      "desc": "Taxable refunds of state and local income taxes",
+      "form": {"2013-2016": "1040, line 10"}
     },
     "e00800": {
-      "format": "float",
-      "description": "Alimony received"
+      "type": "float",
+      "desc": "Alimony received",
+      "form": {"2013-2016": "1040, line 11"}
     },
     "e00900": {
-      "format": "float",
-      "description": "Sch C business net profit/loss for filing unit"
+      "type": "float",
+      "desc": "Sch C business net profit/loss for filing unit",
+      "form": {"2013-2016": "1040, line 12"}
     },
     "e00900p": {
-      "format": "float",
-      "description": "Sch C business net profit/loss for taxpayer"
+      "type": "float",
+      "desc": "Sch C business net profit/loss for taxpayer",
+      "form": {"2013-2016": "1040, line 12 component"}
     },
     "e00900s": {
-      "format": "float",
-      "description": "Sch C business net profit/loss for spouse"
+      "type": "float",
+      "desc": "Sch C business net profit/loss for spouse",
+      "form": {"2013-2016": "1040, line 12 component"}
     },
     "e01100": {
-      "format": "float",
-      "description": "Capital gain distributions not reported on Sch D"
+      "type": "float",
+      "desc": "Capital gain distributions not reported on Sch D",
+      "form": {"2013-2016": "1040, line 13"}
     },
     "e01200": {
-      "format": "float",
-      "description": "Other net gain/loss (Form 4797)"
+      "type": "float",
+      "desc": "Other net gain/loss from Form 4797",
+      "form": {"2013-2016": "1040, line 14"}
     },
     "e01400": {
-      "format": "float",
-      "description": "Taxable IRA distributions"
+      "type": "float",
+      "desc": "Taxable IRA distributions",
+      "form": {"2013-2016": "1040, line 15b"}
     },
     "e01500": {
-      "format": "float",
-      "description": "Pensions and annuities"
+      "type": "float",
+      "desc": "Pensions and annuities",
+      "form": {"2013-2016": "1040, line 16a"}
     },
     "e01700": {
-      "format": "float",
-      "description": "Taxable pensions and annuities"
+      "type": "float",
+      "desc": "Taxable pensions and annuities",
+      "form": {"2013-2016": "1040, line 16b"}
     },
     "e02000": {
-      "format": "float",
-      "description": "Sch E rental, royalty, S-corp, etc, income/loss"
+      "type": "float",
+      "desc": "Sch E rental, royalty, S-corp, etc, income/loss",
+      "form": {"2013-2016": "1040, line 17"}
     },
     "e02100": {
-      "format": "float",
-      "description": "Farm net income/loss for filing unit (Sch F)"
+      "type": "float",
+      "desc": "Farm net income/loss for filing unit from Sch F",
+      "form": {"2013-2016": "1040, line 18"}
     },
     "e02100p": {
-      "format": "float",
-      "description": "Farm net income/loss for taxpayer"
+      "type": "float",
+      "desc": "Farm net income/loss for taxpayer",
+      "form": {"2013-2016": "1040, line 18 component"}
     },
     "e02100s": {
-      "format": "float",
-      "description": "Farm net income/loss for spouse"
+      "type": "float",
+      "desc": "Farm net income/loss for spouse",
+      "form": {"2013-2016": "1040, line 18 component"}
     },
     "e02300": {
-      "format": "float",
-      "description": "Unemployment compensation benefits"
+      "type": "float",
+      "desc": "Unemployment compensation benefits",
+      "form": {"2013-2016": "1040, line 19"}
     },
     "e02400": {
-      "format": "float",
-      "description": "Gross social security benefits"
+      "type": "float",
+      "desc": "Total social security benefits",
+      "form": {"2013-2016": "1040, line 20a"}
     },
     "e03150": {
-      "format": "float",
-      "description": "Total deductible IRA contributions"
+      "type": "float",
+      "desc": "Total deductible IRA contributions",
+      "form": {"2013-2016": "1040, line 32"}
     },
     "e03210": {
-      "format": "float",
-      "description": "Student loan interest deduction"
+      "type": "float",
+      "desc": "Student loan interest",
+      "form": {"2013-2016": "1040, line 33"}
     },
     "e03220": {
-      "format": "float",
-      "description": "Educator expenses"
+      "type": "float",
+      "desc": "Educator expenses",
+      "form": {"2013-2016": "1040, line 23"}
     },
     "e03230": {
-      "format": "float",
-      "description": "Tuition and fees (Form 8917)"
+      "type": "float",
+      "desc": "Tuition and fees from Form 8917",
+      "form": {"2013-2016": "1040, line 34"}
     },
     "e03240": {
-      "format": "float",
-      "description": "Domestic production activities (Form 8903)"
+      "type": "float",
+      "desc": "Domestic production activities from Form 8903",
+      "form": {"2013-2016": "1040, line 35"}
     },
     "e03270": {
-      "format": "float",
-      "description": "Self-employed health insurance deduction"
+      "type": "float",
+      "desc": "Self-employed health insurance deduction",
+      "form": {"2013-2016": "1040, line 29"}
     },
     "e03290": {
-      "format": "float",
-      "description": "Health savings account deduction (Form 8889)"
+      "type": "float",
+      "desc": "Health savings account deduction from Form 8889",
+      "form": {"2013-2016": "1040, line 25"}
     },
     "e03300": {
-      "format": "float",
-      "description": "Contributions to SEP, SIMPLE, etc, qualified plans"
+      "type": "float",
+      "desc": "Contributions to SEP, SIMPLE and qualified plans",
+      "form": {"2013-2016": "1040, line 28"}
     },
     "e03400": {
-      "format": "float",
-      "description": "Penalty on early withdrawal of savings"
+      "type": "float",
+      "desc": "Penalty on early withdrawal of savings",
+      "form": {"2013-2016": "1040, line 30"}
     },
     "e03500": {
-      "format": "float",
-      "description": "Alimony paid"
+      "type": "float",
+      "desc": "Alimony paid",
+      "form": {"2013-2016": "1040, line 31a"}
     },
     "e07240": {
-      "format": "float",
-      "description": "Retirement savings contributions credit (Form 8880)"
+      "type": "float",
+      "desc": "Retirement savings contributions credit from Form 8880",
+      "form": {"2013-2013": "1040, line 50",
+               "2014-2016": "1040, line 51"}
     },
     "e07260": {
-      "format": "float",
-      "description": "Residential energy credit (Form 5695)"
+      "type": "float",
+      "desc": "Residential energy credit from Form 5695",
+      "form": {"2013-2013": "1040, line 52",
+               "2014-2016": "1040, line 53"}
     },
     "e07300": {
-      "format": "float",
-      "description": "Foreign tax credit (Form 1116)"
+      "type": "float",
+      "desc": "Foreign tax credit from Form 1116",
+      "form": {"2013-2013": "1040, line 47",
+               "2014-2016": "1040, line 48"}
     },
     "e07400": {
-      "format": "float",
-      "description": "General business credit (Form 3800)"
+      "type": "float",
+      "desc": "General business credit from Form 3800",
+      "form": {"2013-2013": "1040, line 53a",
+               "2014-2016": "1040, line 54a"}
     },
     "e07600": {
-      "format": "float",
-      "description": "Prior year minimum tax credit (Form 8801)"
+      "type": "float",
+      "desc": "Prior year minimum tax credit from Form 8801",
+      "form": {"2013-2013": "1040, line 53b",
+               "2014-2016": "1040, line 54b"}
     },
     "e09700": {
-      "format": "float",
-      "description": "Taxes: Recapture tax - Form 4255"
+      "type": "float",
+      "desc": "Recapture of Investment Credit",
+      "form": {"2013-2015": "4255, line 15",
+               "2016-2016": "4255, line 20"}
     },
     "e09800": {
-      "format": "float",
-      "description": "Taxes: Social security tax on tip income"
+      "type": "float",
+      "desc": "Unreported payroll taxes from Form 4137 or 8919",
+      "form": {"2013-2013": "1040, line 57",
+               "2014-2016": "1040, line 58"}
     },
     "e09900": {
-      "format": "float",
-      "description": "Taxes: Penalty tax on qualified retirement plans"
+      "type": "float",
+      "desc": "Penalty tax on qualified retirement plans",
+      "form": {"2013-2013": "1040, line 58",
+               "2014-2016": "1040, line 59"}
     },
     "e11200": {
-      "format": "float",
-      "description": "Tax Payment: Excess FICA/RRTA"
+      "type": "float",
+      "desc": "Excess payroll (FICA/RRTA) tax withheld",
+      "form": {"2013-2013": "1040, line 69",
+               "2014-2016": "1040, line 71"}
     },
     "e17500": {
-      "format": "float",
-      "description": "Sch A: Medical and dental expenses"
+      "type": "float",
+      "desc": "Sch A: Medical and dental expenses",
+      "form": {"2013-2016": "1040 Sch A, line 1"}
     },
     "e18400": {
-      "format": "float",
-      "description": "Sch A: State and local income/sales taxes"
+      "type": "float",
+      "desc": "Sch A: State and local income/sales taxes",
+      "form": {"2013-2016": "1040 Sch A, line 5"}
     },
     "e18500": {
-      "format": "float",
-      "description": "Sch A: Real estate taxes"
+      "type": "float",
+      "desc": "Sch A: Real-estate taxes paid",
+      "form": {"2013-2016": "1040 Sch A, line 6"}
     },
     "e19200": {
-      "format": "float",
-      "description": "Sch A: Total interest deduction"
+      "type": "float",
+      "desc": "Sch A: Interest paid",
+      "form": {"2013-2016": "1040 Sch A, line 15"}
     },
     "e19800": {
-      "format": "float",
-      "description": "Sch A: Gifts to charity: cash/check contributions"
+      "type": "float",
+      "desc": "Sch A: Gifts to charity: cash/check contributions",
+      "form": {"2013-2016": "1040 Sch A, line 16"}
     },
     "e20100": {
-      "format": "float",
-      "description": "Sch A: Gifts to charity: other than cash/check contributions"
+      "type": "float",
+      "desc": "Sch A: Gifts to charity: other than cash/check contributions",
+      "form": {"2013-2016": "1040 Sch A, line 17"}
     },
     "e20400": {
-      "format": "float",
-      "description": "Sch A: Miscellaneous deductions subject to 2% AGI limitation"
+      "type": "float",
+      "desc": "Sch A: Miscellaneous deductions subject to 2% AGI limitation",
+      "form": {"2013-2016": "1040 Sch A, line 24"}
     },
     "e20500": {
-      "format": "float",
-      "description": "Sch A: Net casualty or theft loss"
+      "type": "float",
+      "desc": "Sch A: Net casualty or theft loss",
+      "form": {"2013-2016": "1040 Sch A, line 20"}
     },
     "e24515": {
-      "format": "float",
-      "description": "Sch D: Un-Recaptured Section 1250 Gain"
+      "type": "float",
+      "desc": "Sch D: Un-Recaptured Section 1250 Gain",
+      "form": {"2013-2016": "1040 Sch D, line 19"}
     },
     "e24518": {
-      "format": "float",
-      "description": "Sch D: 28% Rate Gain or Loss"
+      "type": "float",
+      "desc": "Sch D: 28% Rate Gain or Loss",
+      "form": {"2013-2016": "1040 Sch D, line 18"}
     },
     "e26270": {
-      "format": "float",
-      "description": "Combined partnership and S-corporation net income/loss"
+      "type": "float",
+      "desc": "Sch E: Combined partnership and S-corporation net income/loss",
+      "form": {"2013-2016": "1040 Sch E, line 32"}
     },
     "e27200": {
-      "format": "float",
-      "description": "Sch E: Farm rent net income or loss"
+      "type": "float",
+      "desc": "Sch E: Farm rent net income or loss",
+      "form": {"2013-2016": "1040 Sch E, line 40"}
     },
     "e32800": {
-      "format": "float",
-      "description": "Child/dependent-care expenses for qualifying persons (Form 2441)"
+      "type": "float",
+      "desc": "Child/dependent-care expenses for qualifying persons from Form 2441",
+      "form": {"2013-2016": "2441, line 3"}
     },
     "e58990": {
-      "format": "float",
-      "description": "Investment income elected amount (Form 4952)"
+      "type": "float",
+      "desc": "Investment income elected amount from Form 4952",
+      "form": {"2013-2016": "4952, line 4g"}
     },
     "e62900": {
-      "format": "float",
-      "description": "Alternative Minimum Tax foreign tax credit (Form 6251)"
+      "type": "float",
+      "desc": "Alternative Minimum Tax foreign tax credit from Form 6251",
+      "form": {"2013-2016": "6251, line 32"}
     },
     "e87530": {
-      "format": "float",
-      "description": "Lifetime learning qualified expenses for all students"
+      "type": "float",
+      "desc": "Lifetime learning qualified expenses for all students",
+      "form": {"2013-2016": "8863, line 4"}
     },
     "elderly_dependent": {
-      "format": "int",
-      "description": "1 if has an elderly dependent; otherwise 0"
+      "type": "int",
+      "desc": "1 if filing unit has an elderly dependent; otherwise 0",
+      "form": {"2013-2016": "imputed from CPS data; not used in tax law"}
     },
     "f2441": {
-      "format": "int",
-      "description": "number of child/dependent-care qualifying persons"
+      "type": "int",
+      "desc": "number of child/dependent-care qualifying persons",
+      "form": {"2013-2016": "2441, line 2b"}
     },
     "f6251": {
-      "format": "int",
-      "description": "1 if Form 6251 (AMT) attached to return; otherwise 0"
+      "type": "int",
+      "desc": "1 if Form 6251 (AMT) attached to return; otherwise 0",
+      "form": {"2013-2016": "6251"}
     },
     "filer": {
-      "format": "int",
-      "description": "1 if unit in IRS-SOI PUF sample; 0 if from CPS sample"
+      "type": "int",
+      "desc": "1 if filing unit in IRS-SOI PUF sample; 0 if from CPS sample",
+      "form": {"2013-2016": "sample construction info"}
     },
     "n24": {
-      "format": "int",
-      "description": "Number of children eligible for Child Tax Credit"
+      "type": "int",
+      "desc": "Number of children eligible for Child Tax Credit",
+      "form": {"2013-2016": "imputed from CPS data"}
     },
     "nu05": {
-      "format": "float",
-      "description": "Number of dependents under 5 years old"
+      "type": "float",
+      "desc": "Number of dependents under 5 years old",
+      "form": {"2013-2016": "imputed from CPS data"}
     },
     "nu13": {
-      "format": "int",
-      "description": "Number of dependents under 13 years old"
+      "type": "int",
+      "desc": "Number of dependents under 13 years old",
+      "form": {"2013-2016": "imputed from CPS data"}
     },
     "nu18": {
-      "format": "int",
-      "description": "Number of dependents under 18 years old"
+      "type": "int",
+      "desc": "Number of dependents under 18 years old",
+      "form": {"2013-2016": "imputed from CPS data"}
     },
     "n1821": {
-      "format": "int",
-      "description": "Number of dependents over 18 and under 21 years old"
+      "type": "int",
+      "desc": "Number of dependents over 18 and under 21 years old",
+      "form": {"2013-2016": "imputed from CPS data"}
     },
     "n21": {
-      "format": "int",
-      "description": "Number of dependents 21 years old or older"
+      "type": "int",
+      "desc": "Number of dependents 21 years old or older",
+      "form": {"2013-2016": "imputed from CPS data"}
     },
     "p08000": {
-      "format": "float",
-      "description": "Other tax credits (but not including Sch R credit)"
+      "type": "float",
+      "desc": "Other tax credits (but not including Sch R credit)",
+      "form": {"2013-2013": "1040, line 53",
+               "2014-2016": "1040, line 54"}
     },
     "p22250": {
-      "format": "float",
-      "description": "Sch D: Net short-term gain/loss"
+      "type": "float",
+      "desc": "Sch D: Net short-term gain/loss",
+      "form": {"2013-2016": "1040 Sch D, line 7"}
     },
     "p23250": {
-      "format": "float",
-      "description": "Sch D: Net long-term gain/loss"
+      "type": "float",
+      "desc": "Sch D: Net long-term gain/loss",
+      "form": {"2013-2016": "1040 Sch D, line 15"}
     },
     "p25470": {
-      "format": "float",
-      "description": "Sch E: Royalty depletion and/or rental depreciation"
+      "type": "float",
+      "desc": "Sch E: Royalty depletion and/or rental depreciation",
+      "form": {"2013-2016": "1040 Sch E, line 18"}
     },
     "p87521": {
-      "format": "float",
-      "description": "Total tentative AmOppCredit amount for all students"
+      "type": "float",
+      "desc": "Total tentative AmOppCredit amount for all students",
+      "form": {"2013-2016": "8863, line 7"}
     },
     "s006": {
-      "format": "float",
-      "description": "Filing unit sampling weight"
+      "type": "float",
+      "desc": "Filing unit sampling weight",
+      "form": {"2013-2016": "not used in filing unit tax calculations"}
     }
   },
   "calc": {
     "ID_Casualty_frt_in_pufcsv_year": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "NIIT": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "Net Investment Income Tax from Form 8960",
+      "form": {"2013-2013": "1040, line 60b",
+               "2014-2016": "1040, line 62b"}
     },
     "_combined": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "Sum of _iitax and _payrolltax and lumpsum_tax",
+      "form": {}
     },
     "_earned": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "_earned_p": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "_earned_s": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "_eitc": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "Earned Income Credit",
+      "form": {"2013-2013": "1040, line 64a",
+               "2014-2016": "1040, line 66a"}
     },
     "_exact": {
-      "format": "int",
-      "description": ""
+      "type": "int",
+      "desc": "",
+      "form": {}
     },
     "_expanded_income": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "_iitax": {
-      "format": "float",
-      "description": "Federal income tax liability"
+      "type": "float",
+      "desc": "Total federal individual income tax liability",
+      "form": {"2013-2013": "1040, line 61 minus line 56 minus line 60a",
+               "2014-2016": "1040, line 63 minus line 57 minus line 62a"}
     },
     "_num": {
-      "format": "int",
-      "description": ""
+      "type": "int",
+      "desc": "",
+      "form": {}
     },
     "_payrolltax": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "Total (employee + employer) payroll tax liability",
+      "form": {"2013-2013": "OASDHI FICA plus 1040 lines 56 and 60a",
+               "2014-2016": "OASDHI FICA plus 1040 lines 57 and 62a"}
     },
     "_refund": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "_sep": {
-      "format": "int",
-      "description": ""
+      "type": "int",
+      "desc": "",
+      "form": {}
     },
     "_sey": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "_standard": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "Standard deduction (zero for itemizers)",
+      "form": {"2013-2016": "1040, line 40"}
     },
     "_surtax": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "_taxbc": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "Regular tax on regular taxable income",
+      "form": {"2013-2016": "1040, line 44"}
     },
     "c00100": {
-      "format": "float",
-      "description": "Adjusted Gross Income (Deficit)"
+      "type": "float",
+      "desc": "Adjusted Gross Income (AGI)",
+      "form": {"2013-2016": "1040, line 37"}
     },
     "c01000": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c02500": {
-      "format": "float",
-      "description": "Social security benefits, taxable"
+      "type": "float",
+      "desc": "Social security benefits included in AGI",
+      "form": {"2013-2016": "1040, line 20b"}
     },
     "c02900": {
-      "format": "float",
-      "description": "Adjustments: Total"
+      "type": "float",
+      "desc": "Total of all income adjustments to get AGI",
+      "form": {"2013-2016": "1040, line 36"}
     },
     "c02900_in_ei": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c03260": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c04470": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "Itemized deductions after phase-out (zero for non-itemizers)",
+      "form": {"2013-2016": "1040, line 40"}
     },
     "c04600": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "Personal exemptions after phase-out",
+      "form": {"2013-2016": "1040, line 42"}
     },
     "c04800": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "Regular taxable income",
+      "form": {"2013-2016": "1040, line 43"}
     },
     "c05200": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c05700": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c05800": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c07100": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c07180": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c07200": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c07220": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c07230": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c07240": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c07260": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c07300": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c07400": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c07600": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c08000": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c09200": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c09600": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c10960": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c11070": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c17000": {
-      "format": "float",
-      "description": "Sch A: Total deduction"
+      "type": "float",
+      "desc": "Sch A: Medical expenses deducted",
+      "form": {}
     },
     "c18300": {
-      "format": "float",
-      "description": "Sch A: Total taxes deducted"
+      "type": "float",
+      "desc": "Sch A: State and local taxes deducted",
+      "form": {}
     },
     "c19200": {
-      "format": "float",
-      "description": "Sch A: Total interest deduction",
-      "in": "e19200"
+      "type": "float",
+      "desc": "Sch A: Interest deducted",
+      "form": {}
     },
     "c19700": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "Sch A: Charity contributions deducted",
+      "form": {}
     },
     "c20500": {
-      "format": "float",
-      "description": "Sch A: Net casualty or theft loss",
-      "in": "e20500"
+      "type": "float",
+      "desc": "Sch A: Net casualty or theft loss deducted",
+      "form": {}
     },
     "c20800": {
-      "format": "float",
-      "description": "Sch A: Net limited miscellaneous deductions"
+      "type": "float",
+      "desc": "Sch A: Net limited miscellaneous deductions deducted",
+      "form": {}
     },
     "c21040": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c21060": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c23650": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c59660": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c62100": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "c87668": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "care_deduction": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "ctc_new": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "dep_credit": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "dwks10": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "dwks13": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "dwks14": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "dwks19": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "fstax": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "invinc_agi_ec": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "invinc_ec_base": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "lumpsum_tax": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "Lumpsum (or head) tax",
+      "form": {}
     },
     "personal_credit": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "pre_c04600": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "Personal exemption before phase-out",
+      "form": {}
     },
     "prectc": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "ptax_amc": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "ptax_oasdi": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "ptax_was": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "setax": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "Self-employment tax",
+      "form": {}
     },
     "ymod": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "ymod1": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "ubi": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "taxable_ubi": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     },
     "nontaxable_ubi": {
-      "format": "float",
-      "description": ""
+      "type": "float",
+      "desc": "",
+      "form": {}
     }
   }
 }
