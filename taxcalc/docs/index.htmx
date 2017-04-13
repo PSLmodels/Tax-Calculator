@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+                      "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Using Tax-Calculator</title>
+<link rel="stylesheet" type="text/css" href="docs.css" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+</head>
+<body>
+<h1>Using Tax-Calculator</h1>
+
+<p>Introductory text goes here.</p>
+
+<h2 id="toc">Table of Contents</h2>
+
+<p><a href="#gui">TaxBrain GUI</a> to use Tax-Calculator via an
+interactive web application</p>
+
+<p><a href="#cli">tc CLI</a> to use Tax-Calculator on your computer
+via the command line</p>
+
+<p><a href="#policy">Policy Parameters</a> that specify tax reforms</p>
+
+<p><a href="#input">Input Variables</a> that specify tax filing units</p>
+
+<p><a href="#output">Output Variables</a> that describe tax results</p>
+
+<p><a href="#params">Response Parameters</a> that specify reform responses</p>
+
+<h2 id="gui">TaxBrain GUI</h2>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<h2 id="cli">tc CLI</h2>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<h2 id="policy">Policy Parameters</h2>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<h2 id="input">Input Variables</h2>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<h2 id="output">Output Variables</h2>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<h2 id="params">Response Parameters</h2>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+</body>
+</html>
