@@ -450,8 +450,8 @@
   },
   "calc": {
     "ID_Casualty_frt_in_pufcsv_year": {
-      "type": "float",
-      "desc": "",
+      "format": "unchanging_float",
+      "description": "",
       "form": {}
     },
     "NIIT": {

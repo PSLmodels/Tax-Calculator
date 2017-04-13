@@ -216,8 +216,12 @@ class Records(object):
         INT_CALCULATED_VARS = set(k for k, v in vardict['calc'].items()
                                   if v['type'] == 'int')
         FLOAT_CALCULATED_VARS = set(k for k, v in vardict['calc'].items()
-                                    if v['type'] == 'float')
-        Records.CALCULATED_VARS = INT_CALCULATED_VARS | FLOAT_CALCULATED_VARS
+                                    if v['format'] == 'float')
+        FIXED_CALCULATED_VARS = set(k for k, v in vardict['calc'].items()
+                                    if v['format'] == 'unchanging_float')
+        Records.CALCULATED_VARS = (INT_CALCULATED_VARS |
+                                   FLOAT_CALCULATED_VARS |
+                                   FIXED_CALCULATED_VARS)
         Records.CHANGING_CALCULATED_VARS = FLOAT_CALCULATED_VARS
         Records.INTEGER_VARS = Records.INTEGER_READ_VARS | INT_CALCULATED_VARS
         return vardict
