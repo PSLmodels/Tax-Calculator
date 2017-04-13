@@ -99,3 +99,11 @@
             {"2017": [[100000, 200000, 100000, 100000, 200000]]}
     }
 }
+
+// Note: Due to lack of detail, data, or modeling capability, many provisions cannot be scored.
+// These omitted provisions include:
+// -  Allow expenssing for pass-through firms
+// -  Tax carried interest as ordinary business income
+// -  Repeal pass-through business tax expenditures
+// -  Corporate tax provisions
+// -  Estate tax provisions
