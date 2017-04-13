@@ -610,8 +610,9 @@
     },
     "c07180": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "Credit for child and dependent care expenses from Form 2441",
+      "form": {"2013-2013": "1040, line 48",
+               "2014-2016": "1040, line 49"}
     },
     "c07200": {
       "type": "float",
@@ -620,8 +621,9 @@
     },
     "c07220": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "Child tax credit (adjusted) from Form 8812",
+      "form": {"2013-2013": "1040, line 51",
+               "2014-2016": "1040, line 52"}
     },
     "c07230": {
       "type": "float",
@@ -665,8 +667,8 @@
     },
     "c09600": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "Alternative Minimum Tax (AMT) liability",
+      "form": {"2013-2016": "1040, line 45"}
     },
     "c10960": {
       "type": "float",
@@ -675,8 +677,9 @@
     },
     "c11070": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "Child tax credit (refunded) from Form 8812",
+      "form": {"2013-2013": "1040, line 65",
+               "2014-2016": "1040, line 67"}
     },
     "c17000": {
       "type": "float",
@@ -730,8 +733,8 @@
     },
     "c62100": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "Alternative Minimum Tax (AMT) taxable income",
+      "form": {"2013-2016": "6251, line 28"}
     },
     "c87668": {
       "type": "float",
@@ -810,23 +813,27 @@
     },
     "ptax_amc": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "Additional Medicare Tax from Form 8959",
+      "form": {"2013-2013": "1040, line 60a",
+               "2014-2016": "1040, line 62a"}
     },
     "ptax_oasdi": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "Employee + employer OASDHI FICA tax plus self-employment tax",
+      "form": {"2013-2013": "OASDHI FICA plus 1040 line 56",
+               "2014-2016": "OASDHI FICA plus 1040 line 57"}
     },
     "ptax_was": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "Employee + employer OASDHI FICA tax plus self-employment tax",
+      "form": {"2013-2013": "OASDHI FICA plus 1040 line 56",
+               "2014-2016": "OASDHI FICA plus 1040 line 57"}
     },
     "setax": {
       "type": "float",
       "desc": "Self-employment tax",
-      "form": {}
+      "form": {"2013-2013": "OASDHI FICA plus 1040 line 56",
+               "2014-2016": "OASDHI FICA plus 1040 line 57"}
     },
     "ymod": {
       "type": "float",
