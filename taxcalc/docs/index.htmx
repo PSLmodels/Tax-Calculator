@@ -40,33 +40,61 @@ via the command line</p>
 <!-------------------------------------------------------------------------->
 <h2 id="gui">TaxBrain GUI</h2>
 
-<p>Introductory text goes here.</p>
+<p>You can use Tax-Calculator via a graphical user interface (GUI)
+provided by the <a href="http://www.ospc.org/taxbrain/">TaxBrain web
+application</a>.  This approach requires only an Internet connection
+and web browser on your computer.  TaxBrain uses a micro dataset to
+produce for a tax reform you specify both aggregate and distributional
+reform estimates for each of ten years.  The calculations take just a
+couple of minutes and there is flexibility to show different kinds
+of distributional results.</p>
 
 <!-------------------------------------------->
 <h3>Section Contents</h3>
 
-<p><a href="#gui-xxx">xxx</a> ... </p>
+<p><a href="#gui-spec-reform">Specify Tax Reform</a></p>
 
-<p><a href="#gui-yyy">yyy</a> ... </p>
+<p><a href="#gui-init-static">Initiate Static Analysis</a></p>
+
+<p><a href="#gui-view-static">View/Download Static Results</a></p>
+
+<p><a href="#gui-init-dynamic">Initiate Dynamic Analysis</a></p>
 
 <!-------------------------------------------->
-<h3 id="gui-xxx">XXX</h3>
+<h3 id="gui-spec-reform">Specify Tax Reform</h3>
 
 <p>Text goes here.</p>
 
 <p>More text goes here.</p>
 
-<p>
-<a href="#gui">Back to Section Contents</a>
-</p>
+<p><a href="#gui">Back to Section Contents</a></p>
 
 <!-------------------------------------------->
-<h3 id="gui-yyy">YYY</h3>
+<h3 id="gui-init-static">Initiate Static Analysis</h3>
 
 <p>Text goes here.</p>
 
 <p>More text goes here.</p>
 
+<p><a href="#gui">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="gui-view-static">View/Download Static Results</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<p><a href="#gui">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="gui-init-dynamic">Initiate Dynamic Analysis</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<!-------------------------------------------->
 <p>
 <a href="#gui">Back to Section Contents</a>
 &nbsp;&nbsp;
@@ -91,6 +119,7 @@ via the command line</p>
 
 <p>More text goes here.</p>
 
+<!-------------------------------------------->
 <p><a href="#cli">Back to Section Contents</a></p>
 
 <!-------------------------------------------->
@@ -100,6 +129,7 @@ via the command line</p>
 
 <p>More text goes here.</p>
 
+<!-------------------------------------------->
 <p>
 <a href="#cli">Back to Section Contents</a>
 &nbsp;&nbsp;
@@ -133,6 +163,7 @@ via the command line</p>
 
 <p>More text goes here.</p>
 
+<!-------------------------------------------->
 <p>
 <a href="#policy">Back to Section Contents</a>
 &nbsp;&nbsp;
@@ -166,6 +197,7 @@ via the command line</p>
 
 <p>More text goes here.</p>
 
+<!-------------------------------------------->
 <p>
 <a href="#input">Back to Section Contents</a>
 &nbsp;&nbsp;
@@ -199,6 +231,7 @@ via the command line</p>
 
 <p>More text goes here.</p>
 
+<!-------------------------------------------->
 <p>
 <a href="#output">Back to Section Contents</a>
 &nbsp;&nbsp;
@@ -232,6 +265,7 @@ via the command line</p>
 
 <p>More text goes here.</p>
 
+<!-------------------------------------------->
 <p>
 <a href="#params">Back to Section Contents</a>
 &nbsp;&nbsp;

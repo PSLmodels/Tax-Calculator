@@ -2903,7 +2903,7 @@
 
     "_LST": {
         "long_name": "Dollar amount of lump-sum tax",
-        "description": "The lump-sum tax is available to every member of a tax filing unit. The lump-sum tax is included only in combined taxes; it is not included in income or payroll taxes.",
+        "description": "The lump-sum tax is levied on every member of a tax filing unit. The lump-sum tax is included only in combined taxes; it is not included in income or payroll taxes.",
         "section_1": "Surtaxes",
         "section_2": "Lump-sum tax",
         "irs_ref": "",
