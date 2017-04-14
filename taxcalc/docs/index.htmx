@@ -25,16 +25,11 @@ development website</a>.</p>
 
 <p><a href="#gui">TaxBrain GUI</a> to use Tax-Calculator via an
 interactive web application</p>
-
 <p><a href="#cli">tc CLI</a> to use Tax-Calculator on your computer
 via the command line</p>
-
-<p><a href="#policy">Policy Parameters</a> that specify tax reforms</p>
-
+<p><a href="#pol">Policy Parameters</a> that specify tax reforms</p>
 <p><a href="#input">Input Variables</a> that specify tax filing units</p>
-
 <p><a href="#output">Output Variables</a> that describe tax results</p>
-
 <p><a href="#params">Response Parameters</a> that specify reform responses</p>
 
 <!-------------------------------------------------------------------------->
@@ -53,11 +48,8 @@ of distributional results.</p>
 <h3>Section Contents</h3>
 
 <p><a href="#gui-spec-reform">Specify Tax Reform</a></p>
-
 <p><a href="#gui-init-static">Initiate Static Analysis</a></p>
-
 <p><a href="#gui-view-static">View/Download Static Results</a></p>
-
 <p><a href="#gui-init-dynamic">Initiate Dynamic Analysis</a></p>
 
 <!-------------------------------------------->
@@ -119,15 +111,10 @@ installation and file preparation work may be worth it to you.</p>
 <h3>Section Contents</h3>
 
 <p><a href="#cli-install-test">Install/Test tc CLI</a></p>
-
 <p><a href="#cli-spec-reform">Specify Tax Reform</a></p>
-
 <p><a href="#cli-spec-assump">Specify Analysis Assumptions</a></p>
-
 <p><a href="#cli-spec-output">Specify Output Options</a></p>
-
 <p><a href="#cli-init-analysis">Initiate Reform Analysis</a></p>
-
 <p><a href="#cli-tab-results">Tabulate Reform Results</a></p>
 
 <!-------------------------------------------->
@@ -190,35 +177,126 @@ installation and file preparation work may be worth it to you.</p>
 </p>
 
 <!-------------------------------------------------------------------------->
-<h2 id="policy">Policy Parameters</h2>
+<h2 id="pol">Policy Parameters</h2>
 
-<p>Introductory text goes here.</p>
+<p>The policy parameters are grouped here as they are are on TaxBrain.
+Parameters understood by Tax-Calculator and the tc CLI, but not
+available on TaxBrain, are placed in an Other Parameters group.</p>
 
 <h3>Section Contents</h3>
 
-<p><a href="#policy-xxx">xxx</a> ... </p>
-
-<p><a href="#policy-yyy">yyy</a> ... </p>
+<p><a href="#pol-payroll-taxes">Payroll Taxes</a></p>
+<p><a href="#pol-social-security-taxability">Social Security Taxability</a></p>
+<p><a href="#pol-above-the-line-deductions">Above The Line Deductions</a></p>
+<p><a href="#pol-personal-exemptions">Personal Exemptions</a></p>
+<p><a href="#pol-standard-deduction">Standard Deduction</a></p>
+<p><a href="#pol-personal-refundable-credit">Personal Refundable Credit</a></p>
+<p><a href="#pol-itemized-deductions">Itemized Deductions</a></p>
+<p><a href="#pol-capital-gains-dividends">Capital Gains And Dividends</a></p>
+<p><a href="#pol-personal-income">Personal Income</a></p>
+<p><a href="#pol-nonrefundable-credits">Nonrefundable Credits</a></p>
+<p><a href="#pol-other-taxes">Other Taxes</a></p>
+<p><a href="#pol-refundable-credits">Refundable Credits</a></p>
+<p><a href="#pol-surtaxes">Surtaxes</a></p>
+<p><a href="#pol-other-parameters">Other Parameters</a></p>
 
 <!-------------------------------------------->
-<h3 id="policy-xxx">XXX</h3>
+<h3 id="pol-payroll-taxes"></a>Payroll Taxes</h3>
 
-<p>Text goes here.</p>
+<p>Parameter listing begins here.</p>
 
-<p>More text goes here.</p>
-
-<p><a href="#policy">Back to Section Contents</a></p>
+<p><a href="#pol">Back to Section Contents</a></p>
 
 <!-------------------------------------------->
-<h3 id="policy-yyy">YYY</h3>
+<h3 id="pol-social-security-taxability">Social Security Taxability</h3>
 
-<p>Text goes here.</p>
+<p>Parameter listing begins here.</p>
 
-<p>More text goes here.</p>
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-above-the-line-deductions">Above The Line Deductions</h3>
+
+<p>Parameter listing begins here.</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-personal-exemptions">Personal Exemptions</h3>
+
+<p>Parameter listing begins here.</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-standard-deduction">Standard Deduction</h3>
+
+<p>Parameter listing begins here.</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-personal-refundable-credit">Personal Refundable Credit</h3>
+
+<p>Parameter listing begins here.</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-itemized-deductions">Itemized Deductions</h3>
+
+<p>Parameter listing begins here.</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-capital-gains-dividends">Capital Gains And Dividends</h3>
+
+<p>Parameter listing begins here.</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-personal-income">Personal Income</h3>
+
+<p>Parameter listing begins here.</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-nonrefundable-credits">Nonrefundable Credits</h3>
+
+<p>Parameter listing begins here.</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-other-taxes">Other Taxes</h3>
+
+<p>Parameter listing begins here.</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-refundable-credits">Refundable Credits</h3>
+
+<p>Parameter listing begins here.</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-surtaxes">Surtaxes</h3>
+
+<p>Parameter listing begins here.</p>
+
+<!-------------------------------------------->
+<h3 id="pol-other-parameters">Other Parameters</h3>
+
+<p>Parameter listing begins here.</p>
 
 <!-------------------------------------------->
 <p>
-<a href="#policy">Back to Section Contents</a>
+<a href="#pol">Back to Section Contents</a>
 &nbsp;&nbsp;
 <a href="#doc">Back to Document Contents</a>
 </p>
