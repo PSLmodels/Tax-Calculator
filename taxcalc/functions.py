@@ -126,9 +126,9 @@ def Adj(e03150, e03210, c03260,
     -----
     Taxpayer characteristics:
 
-        e03210 : Student loan interest deduction
+        e03210 : Student loan interest paid
 
-        e03220 : Educator expense deduction
+        e03220 : Educator expenses
 
         e03150 : Total deductible IRA plan contributions
 
@@ -138,7 +138,7 @@ def Adj(e03150, e03210, c03260,
 
         c03260 : Self-employment tax deduction (after haircut)
 
-        e03270 : Self-employed health insurance deduction
+        e03270 : Self-employed health insurance premiums
 
         e03290 : HSA deduction (Form 8889)
 
@@ -1261,7 +1261,7 @@ def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
         else:
             ACTC_rate = ACTC_rt + ACTC_rt_bonus_under5family
         c82890 = ACTC_rate * c82885
-    # Part II of 2005 Foreignorm 8812
+    # Part II of 2005 Form 8812
     if n24 >= ACTC_ChildNum and c82890 < c82935:
         c82900 = 0.5 * ptax_was
         c82905 = c03260 + e09800

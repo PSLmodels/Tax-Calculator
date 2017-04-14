@@ -298,10 +298,10 @@ class Calculator(object):
         'e02400',  all social security (OASDI) benefits;
         'p22250',  short-term capital gains;
         'p23250',  long-term capital gains;
-        'e18500',  Schedule A real-estate-tax deduction;
-        'e19200',  Schedule A total-interest deduction;
+        'e18500',  Schedule A real-estate-tax paid;
+        'e19200',  Schedule A interest paid;
         'e26270',  S-corporation/partnership income (also included in e02000);
-        'e19800',  Charity cash contributions.
+        'e19800',  Charity cash contributions;
         'e20100',  Charity non-cash contributions.
         """
         # pylint: disable=too-many-statements
