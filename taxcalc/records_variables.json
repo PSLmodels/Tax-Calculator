@@ -13,8 +13,8 @@
       "description": "Tax filing year"
     },
     "MARS": {
-      "format": "int",
       "required": true,
+      "format": "int",
       "description": "Filing (marital) status: number of the checked box"
     },
     "MIDR": {
@@ -22,8 +22,8 @@
       "description": "1 if separately filing spouse itemizes; otherwise 0"
     },
     "RECID": {
-      "format": "int",
       "required": true,
+      "format": "int",
       "description": "Unique identifier for filing unit"
     },
     "XTOT": {
@@ -116,15 +116,15 @@
     },
     "e01500": {
       "format": "float",
-      "description": "Pensions and annuities in income"
+      "description": "Pensions and annuities"
     },
     "e01700": {
       "format": "float",
-      "description": "Pensions and annuities in AGI"
+      "description": "Taxable pensions and annuities"
     },
     "e02000": {
       "format": "float",
-      "description": "Rental real estate, royalties, partnerships, S corporations, trusts, etc. (Sch E)"
+      "description": "Sch E rental, royalty, S-corp, etc, income/loss"
     },
     "e02100": {
       "format": "float",
@@ -184,7 +184,7 @@
     },
     "e03500": {
       "format": "float",
-      "description": "Adjustments: Alimony paid"
+      "description": "Alimony paid"
     },
     "e07240": {
       "format": "float",
@@ -264,7 +264,7 @@
     },
     "e26270": {
       "format": "float",
-      "description": "Combined partnership and S corporation net income/loss"
+      "description": "Combined partnership and S-corporation net income/loss"
     },
     "e27200": {
       "format": "float",
@@ -284,11 +284,11 @@
     },
     "e87530": {
       "format": "float",
-      "description": "Form 8863: Lifetime Learning Total Qualified Exp.s"
+      "description": "Lifetime learning qualified expenses for all students"
     },
     "elderly_dependent": {
       "format": "int",
-      "description": "Has an elderly dependent?"
+      "description": "1 if has an elderly dependent; otherwise 0"
     },
     "f2441": {
       "format": "int",
@@ -300,7 +300,7 @@
     },
     "filer": {
       "format": "int",
-      "description": ""
+      "description": "1 if unit in IRS-SOI PUF sample; 0 if from CPS sample"
     },
     "n24": {
       "format": "int",
@@ -308,7 +308,7 @@
     },
     "nu05": {
       "format": "float",
-      "description": "Eligible for ACTC rate bonus for families with less than 5 children?"
+      "description": "Number of dependents under 5 years old"
     },
     "nu13": {
       "format": "int",
@@ -328,7 +328,7 @@
     },
     "p08000": {
       "format": "float",
-      "description": "Other statutory credit (computer)"
+      "description": "Other tax credits (but not including Sch R credit)"
     },
     "p22250": {
       "format": "float",
@@ -348,7 +348,7 @@
     },
     "s006": {
       "format": "float",
-      "description": ""
+      "description": "Filing unit sampling weight"
     }
   },
   "calc": {
