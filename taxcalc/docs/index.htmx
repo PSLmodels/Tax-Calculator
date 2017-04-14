@@ -2,14 +2,25 @@
 <html>
 <head>
 <title>Using Tax-Calculator</title>
+<style>
+div { max-width: 19cm }
+</style>
 </head>
 <body>
+<div>
 
 <h1 id="doc">Using Tax-Calculator</h1>
 
-<p>Introductory text goes here.</p>
+<p>This document tells you how to use Tax-Calculator, an open-source
+federal income and payroll tax simulation model.  The two ways of
+using Tax-Calculator described here require no computer programming.
+If you want to participate in the development of Tax-Calculator
+&mdash; by reporting a bug, improving the documentation or making an
+enhancement to the Python source code &mdash; you should go to
+the <a href="https://github.com/open-source-economics/Tax-Calculator">
+development website</a>.</p>
 
-<!------------------------------------------------------------------------->
+<!-------------------------------------------------------------------------->
 <h2>Document Contents</h2>
 
 <p><a href="#gui">TaxBrain GUI</a> to use Tax-Calculator via an
@@ -26,19 +37,19 @@ via the command line</p>
 
 <p><a href="#params">Response Parameters</a> that specify reform responses</p>
 
-<!------------------------------------------------------------------------->
+<!-------------------------------------------------------------------------->
 <h2 id="gui">TaxBrain GUI</h2>
 
 <p>Introductory text goes here.</p>
 
-<!------------------------------------------->
+<!-------------------------------------------->
 <h3>Section Contents</h3>
 
 <p><a href="#gui-xxx">xxx</a> ... </p>
 
 <p><a href="#gui-yyy">yyy</a> ... </p>
 
-<!------------------------------------------->
+<!-------------------------------------------->
 <h3 id="gui-xxx">XXX</h3>
 
 <p>Text goes here.</p>
@@ -49,7 +60,7 @@ via the command line</p>
 <a href="#gui">Back to Section Contents</a>
 </p>
 
-<!------------------------------------------->
+<!-------------------------------------------->
 <h3 id="gui-yyy">YYY</h3>
 
 <p>Text goes here.</p>
@@ -62,7 +73,7 @@ via the command line</p>
 <a href="#doc">Back to Document Contents</a>
 </p>
 
-<!------------------------------------------------------------------------->
+<!-------------------------------------------------------------------------->
 <h2 id="cli">tc CLI</h2>
 
 <p>Introductory text goes here.</p>
@@ -73,7 +84,7 @@ via the command line</p>
 
 <p><a href="#cli-yyy">yyy</a> ... </p>
 
-<!------------------------------------------->
+<!-------------------------------------------->
 <h3 id="cli-xxx">XXX</h3>
 
 <p>Text goes here.</p>
@@ -82,7 +93,7 @@ via the command line</p>
 
 <p><a href="#cli">Back to Section Contents</a></p>
 
-<!------------------------------------------->
+<!-------------------------------------------->
 <h3 id="cli-yyy">YYY</h3>
 
 <p>Text goes here.</p>
@@ -95,7 +106,7 @@ via the command line</p>
 <a href="#doc">Back to Document Contents</a>
 </p>
 
-<!------------------------------------------------------------------------->
+<!-------------------------------------------------------------------------->
 <h2 id="policy">Policy Parameters</h2>
 
 <p>Introductory text goes here.</p>
@@ -106,7 +117,7 @@ via the command line</p>
 
 <p><a href="#policy-yyy">yyy</a> ... </p>
 
-<!------------------------------------------->
+<!-------------------------------------------->
 <h3 id="policy-xxx">XXX</h3>
 
 <p>Text goes here.</p>
@@ -115,7 +126,7 @@ via the command line</p>
 
 <p><a href="#policy">Back to Section Contents</a></p>
 
-<!------------------------------------------->
+<!-------------------------------------------->
 <h3 id="policy-yyy">YYY</h3>
 
 <p>Text goes here.</p>
@@ -128,7 +139,7 @@ via the command line</p>
 <a href="#doc">Back to Document Contents</a>
 </p>
 
-<!------------------------------------------------------------------------->
+<!-------------------------------------------------------------------------->
 <h2 id="input">Input Variables</h2>
 
 <p>Introductory text goes here.</p>
@@ -139,7 +150,7 @@ via the command line</p>
 
 <p><a href="#input-yyy">yyy</a> ... </p>
 
-<!------------------------------------------->
+<!-------------------------------------------->
 <h3 id="input-xxx">XXX</h3>
 
 <p>Text goes here.</p>
@@ -148,7 +159,7 @@ via the command line</p>
 
 <p><a href="#input">Back to Section Contents</a></p>
 
-<!------------------------------------------->
+<!-------------------------------------------->
 <h3 id="input-yyy">YYY</h3>
 
 <p>Text goes here.</p>
@@ -161,7 +172,7 @@ via the command line</p>
 <a href="#doc">Back to Document Contents</a>
 </p>
 
-<!------------------------------------------------------------------------->
+<!-------------------------------------------------------------------------->
 <h2 id="output">Output Variables</h2>
 
 <p>Introductory text goes here.</p>
@@ -172,7 +183,7 @@ via the command line</p>
 
 <p><a href="#output-yyy">yyy</a> ... </p>
 
-<!------------------------------------------->
+<!-------------------------------------------->
 <h3 id="output-xxx">XXX</h3>
 
 <p>Text goes here.</p>
@@ -181,7 +192,7 @@ via the command line</p>
 
 <p><a href="#output">Back to Section Contents</a></p>
 
-<!------------------------------------------->
+<!-------------------------------------------->
 <h3 id="output-yyy">YYY</h3>
 
 <p>Text goes here.</p>
@@ -194,7 +205,7 @@ via the command line</p>
 <a href="#doc">Back to Document Contents</a>
 </p>
 
-<!------------------------------------------------------------------------->
+<!-------------------------------------------------------------------------->
 <h2 id="params">Response Parameters</h2>
 
 <p>Introductory text goes here.</p>
@@ -205,7 +216,7 @@ via the command line</p>
 
 <p><a href="#params-yyy">yyy</a> ... </p>
 
-<!------------------------------------------->
+<!-------------------------------------------->
 <h3 id="params-xxx">XXX</h3>
 
 <p>Text goes here.</p>
@@ -214,7 +225,7 @@ via the command line</p>
 
 <p><a href="#params">Back to Section Contents</a></p>
 
-<!------------------------------------------->
+<!-------------------------------------------->
 <h3 id="params-yyy">YYY</h3>
 
 <p>Text goes here.</p>
@@ -227,6 +238,7 @@ via the command line</p>
 <a href="#doc">Back to Document Contents</a>
 </p>
 
-<!------------------------------------------------------------------------->
+<!-------------------------------------------------------------------------->
+</div>
 </body>
 </html>
