@@ -104,26 +104,79 @@ of distributional results.</p>
 <!-------------------------------------------------------------------------->
 <h2 id="cli">tc CLI</h2>
 
-<p>Introductory text goes here.</p>
+<p>You can use Tax-Calculator on your own computer via a command line
+interface (CLI) called tc.  This approach requires the installation of
+Anaconda Python and the taxcalc package on your computer as well as
+the use of a text editor to prepare simple files that are read by tc.
+Computer programming knowledge is not required, but if you are
+prevented from doing the easy installation or you are not willing to
+work at the command line (Terminal on Mac or Command Prompt on
+Windows) and use an editor (for example, TextEdit on Mac or Notepad on
+Windows), then you should probably use the TaxBrain GUI.  However,
+there are some advantages (as described below) so the extra
+installation and file preparation work may be worth it to you.</p>
 
 <h3>Section Contents</h3>
 
-<p><a href="#cli-xxx">xxx</a> ... </p>
+<p><a href="#cli-install-test">Install/Test tc CLI</a></p>
 
-<p><a href="#cli-yyy">yyy</a> ... </p>
+<p><a href="#cli-spec-reform">Specify Tax Reform</a></p>
+
+<p><a href="#cli-spec-assump">Specify Analysis Assumptions</a></p>
+
+<p><a href="#cli-spec-output">Specify Output Options</a></p>
+
+<p><a href="#cli-init-analysis">Initiate Reform Analysis</a></p>
+
+<p><a href="#cli-tab-results">Tabulate Reform Results</a></p>
 
 <!-------------------------------------------->
-<h3 id="cli-xxx">XXX</h3>
+<h3 id="cli-install-test">Install/Test tc CLI</h3>
 
 <p>Text goes here.</p>
 
 <p>More text goes here.</p>
 
-<!-------------------------------------------->
 <p><a href="#cli">Back to Section Contents</a></p>
 
 <!-------------------------------------------->
-<h3 id="cli-yyy">YYY</h3>
+<h3 id="cli-spec-reform">Specify Tax Reform</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<p><a href="#cli">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="cli-spec-assump">Specify Analysis Assumptions</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<p><a href="#cli">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="cli-spec-output">Specify Output Options</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<p><a href="#cli">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="cli-init-analysis">Initiate Reform Analysis</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<p><a href="#cli">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="cli-tab-results">Tabulate Reform Results</h3>
 
 <p>Text goes here.</p>
 
