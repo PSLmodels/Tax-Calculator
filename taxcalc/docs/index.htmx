@@ -1,17 +1,16 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
-                      "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 <title>Using Tax-Calculator</title>
-<link rel="stylesheet" type="text/css" href="docs.css" />
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 </head>
 <body>
-<h1>Using Tax-Calculator</h1>
+
+<h1 id="doc">Using Tax-Calculator</h1>
 
 <p>Introductory text goes here.</p>
 
-<h2 id="toc">Table of Contents</h2>
+<!------------------------------------------------------------------------->
+<h2>Document Contents</h2>
 
 <p><a href="#gui">TaxBrain GUI</a> to use Tax-Calculator via an
 interactive web application</p>
@@ -27,41 +26,207 @@ via the command line</p>
 
 <p><a href="#params">Response Parameters</a> that specify reform responses</p>
 
+<!------------------------------------------------------------------------->
 <h2 id="gui">TaxBrain GUI</h2>
 
+<p>Introductory text goes here.</p>
+
+<!------------------------------------------->
+<h3>Section Contents</h3>
+
+<p><a href="#gui-xxx">xxx</a> ... </p>
+
+<p><a href="#gui-yyy">yyy</a> ... </p>
+
+<!------------------------------------------->
+<h3 id="gui-xxx">XXX</h3>
+
 <p>Text goes here.</p>
 
 <p>More text goes here.</p>
 
+<p>
+<a href="#gui">Back to Section Contents</a>
+</p>
+
+<!------------------------------------------->
+<h3 id="gui-yyy">YYY</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<p>
+<a href="#gui">Back to Section Contents</a>
+&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a>
+</p>
+
+<!------------------------------------------------------------------------->
 <h2 id="cli">tc CLI</h2>
 
+<p>Introductory text goes here.</p>
+
+<h3>Section Contents</h3>
+
+<p><a href="#cli-xxx">xxx</a> ... </p>
+
+<p><a href="#cli-yyy">yyy</a> ... </p>
+
+<!------------------------------------------->
+<h3 id="cli-xxx">XXX</h3>
+
 <p>Text goes here.</p>
 
 <p>More text goes here.</p>
 
+<p><a href="#cli">Back to Section Contents</a></p>
+
+<!------------------------------------------->
+<h3 id="cli-yyy">YYY</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<p>
+<a href="#cli">Back to Section Contents</a>
+&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a>
+</p>
+
+<!------------------------------------------------------------------------->
 <h2 id="policy">Policy Parameters</h2>
 
+<p>Introductory text goes here.</p>
+
+<h3>Section Contents</h3>
+
+<p><a href="#policy-xxx">xxx</a> ... </p>
+
+<p><a href="#policy-yyy">yyy</a> ... </p>
+
+<!------------------------------------------->
+<h3 id="policy-xxx">XXX</h3>
+
 <p>Text goes here.</p>
 
 <p>More text goes here.</p>
 
+<p><a href="#policy">Back to Section Contents</a></p>
+
+<!------------------------------------------->
+<h3 id="policy-yyy">YYY</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<p>
+<a href="#policy">Back to Section Contents</a>
+&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a>
+</p>
+
+<!------------------------------------------------------------------------->
 <h2 id="input">Input Variables</h2>
 
+<p>Introductory text goes here.</p>
+
+<h3>Section Contents</h3>
+
+<p><a href="#input-xxx">xxx</a> ... </p>
+
+<p><a href="#input-yyy">yyy</a> ... </p>
+
+<!------------------------------------------->
+<h3 id="input-xxx">XXX</h3>
+
 <p>Text goes here.</p>
 
 <p>More text goes here.</p>
 
+<p><a href="#input">Back to Section Contents</a></p>
+
+<!------------------------------------------->
+<h3 id="input-yyy">YYY</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<p>
+<a href="#input">Back to Section Contents</a>
+&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a>
+</p>
+
+<!------------------------------------------------------------------------->
 <h2 id="output">Output Variables</h2>
 
+<p>Introductory text goes here.</p>
+
+<h3>Section Contents</h3>
+
+<p><a href="#output-xxx">xxx</a> ... </p>
+
+<p><a href="#output-yyy">yyy</a> ... </p>
+
+<!------------------------------------------->
+<h3 id="output-xxx">XXX</h3>
+
 <p>Text goes here.</p>
 
 <p>More text goes here.</p>
 
+<p><a href="#output">Back to Section Contents</a></p>
+
+<!------------------------------------------->
+<h3 id="output-yyy">YYY</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<p>
+<a href="#output">Back to Section Contents</a>
+&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a>
+</p>
+
+<!------------------------------------------------------------------------->
 <h2 id="params">Response Parameters</h2>
 
+<p>Introductory text goes here.</p>
+
+<h3>Section Contents</h3>
+
+<p><a href="#params-xxx">xxx</a> ... </p>
+
+<p><a href="#params-yyy">yyy</a> ... </p>
+
+<!------------------------------------------->
+<h3 id="params-xxx">XXX</h3>
+
 <p>Text goes here.</p>
 
 <p>More text goes here.</p>
 
+<p><a href="#params">Back to Section Contents</a></p>
+
+<!------------------------------------------->
+<h3 id="params-yyy">YYY</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<p>
+<a href="#params">Back to Section Contents</a>
+&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a>
+</p>
+
+<!------------------------------------------------------------------------->
 </body>
 </html>
