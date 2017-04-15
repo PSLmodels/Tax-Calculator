@@ -183,7 +183,8 @@ installation and file preparation work may be worth it to you.</p>
 format that is easy to search.  The policy parameters are grouped here
 as they are are on TaxBrain.  Parameters understood by Tax-Calculator
 and the tc CLI, but not available on TaxBrain, are placed in an Other
-Parameters group.</p>
+Parameters group.  Note that parameters within each group are ordered
+alphabetically, which is not how they are presented on TaxBrain.</p>
 
 <h3>Section Contents</h3>
 
@@ -205,91 +206,149 @@ Parameters group.</p>
 
 <h3 id="pol-payroll-taxes"></a>Payroll Taxes</h3>
 
-<!-- Payroll Taxes -->
+<!-- Payroll Taxes : Social Security FICA -->
+
+<!-- Payroll Taxes : Medicare FICA' -->
+
+<!-- Payroll Taxes : Additional Medicare FICA -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
 
 <h3 id="pol-social-security-taxability">Social Security Taxability</h3>
 
-<!-- Social Security Taxability -->
+<!-- Social Security Taxability : Threshold For Social Security Benefit Taxability 1 -->
+
+<!-- Social Security Taxability : Threshold For Social Security Benefit Taxability 2 -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
 
 <h3 id="pol-above-the-line-deductions">Above The Line Deductions</h3>
 
-<!-- Above The Line Deductions -->
+<!-- Above The Line Deductions : Misc. Adjustment Haircuts -->
+
+<!-- Above The Line Deductions : Misc. Exclusions -->
+
+<!-- Above The Line Deductions : Child And Elderly Care -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
 
 <h3 id="pol-personal-exemptions">Personal Exemptions</h3>
 
-<!-- Personal Exemptions -->
+<!-- Personal Exemptions : Personal And Dependent Exemption Amount -->
+
+<!-- Personal Exemptions : Personal Exemption Phaseout Rate -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
 
 <h3 id="pol-standard-deduction">Standard Deduction</h3>
 
-<!-- Standard Deduction -->
+<!-- Standard Deduction : Standard Deduction Amount -->
+
+<!-- Standard Deduction : Additional Standard Deduction For Blind And Aged -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
 
 <h3 id="pol-personal-refundable-credit">Personal Refundable Credit</h3>
 
-<!-- Personal Refundable Credit -->
+<!-- Personal Refundable Credit : Personal Refundable Credit Maximum Amount -->
+
+<!-- Personal Refundable Credit : Personal Refundable Credit Phaseout Rate -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
 
 <h3 id="pol-itemized-deductions">Itemized Deductions</h3>
 
-<!-- Itemized Deductions -->
+<!-- Itemized Deductions : Medical Expenses -->
+
+<!-- Itemized Deductions : State And Local Income And Sales Taxes -->
+
+<!-- Itemized Deductions : Real Estate Taxes -->
+
+<!-- Itemized Deductions : Interest Paid -->
+
+<!-- Itemized Deductions : Charity -->
+
+<!-- Itemized Deductions : Casualty -->
+
+<!-- Itemized Deductions : Miscellaneous -->
+
+<!-- Itemized Deductions : Itemized Deduction Limitation -->
+
+<!-- Itemized Deductions : Surtax On Itemized Deduction Benefits Above An AGI Threshold -->
+
+<!-- Itemized Deductions : Ceiling On The Benefit Of Itemized Deductions As A Percent Of Deductible Expenses -->
+
+<!-- Itemized Deductions : Ceiling On The Amount Of Itemized Deductions Allowed -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
 
 <h3 id="pol-capital-gains-dividends">Capital Gains And Dividends</h3>
 
-<!-- Capital Gains And Dividends -->
+<!-- Capital Gains And Dividends : Regular - Long Term Capital Gains And Qualified Dividends -->
+
+<!-- Capital Gains And Dividends : AMT - Long Term Capital Gains And Qualified Dividends -->
+
+<!-- Capital Gains And Dividends : Tax All Capital Gains And Dividends The Same As Regular Taxable Income -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
 
 <h3 id="pol-personal-income">Personal Income</h3>
 
-<!-- Personal Income -->
+<!-- Personal Income : Regular: Non-AMT, Non-Pass-Through -->
+
+<!-- Personal Income : Pass-Through -->
+
+<!-- Personal Income : Alternative Minimum Tax -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
 
 <h3 id="pol-nonrefundable-credits">Nonrefundable Credits</h3>
 
-<!-- Nonrefundable Credits -->
+<!-- Nonrefundable Credits : Child And Dependent Care -->
+
+<!-- Nonrefundable Credits : Child Tax Credit -->
+
+<!-- Nonrefundable Credits : Misc. Credit Limits -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
 
 <h3 id="pol-other-taxes">Other Taxes</h3>
 
-<!-- Other Taxes -->
+<!-- Other Taxes : Net Investment Income Tax -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
 
 <h3 id="pol-refundable-credits">Refundable Credits</h3>
 
-<!-- Refundable Credits -->
+<!-- Refundable Credits : Earned Income Tax Credit -->
+
+<!-- Refundable Credits : Additional Child Tax Credit -->
+
+<!-- Refundable Credits : New Refundable Child Tax Credit -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
 
 <h3 id="pol-surtaxes">Surtaxes</h3>
 
-<!-- Surtaxes -->
+<!-- Surtaxes : New Minimum Tax -->
+
+<!-- Surtaxes : New AGI Surtax -->
+
+<!-- Surtaxes : Lump-Sum Tax -->
+
+<p><a href="#pol">Back to Section Contents</a></p>
 
 
 <h3 id="pol-other-parameters">Other Parameters</h3>
