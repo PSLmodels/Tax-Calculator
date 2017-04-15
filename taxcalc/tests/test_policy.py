@@ -622,8 +622,8 @@ def test_clp_section_titles(tests_path):
     Check section titles in current_law_policy.json file.
     """
     # specify expected section titles
-    ided_ceiling = ('Ceiling On The Benefit Of Itemized Deductions '
-                    'As A Percent Of Deductible Expenses')
+    ided_ceiling_pct = ('Ceiling On The Benefit Of Itemized Deductions '
+                        'As A Percent Of Deductible Expenses')
     cgqd_tax_same = ('Tax All Capital Gains And Dividends The Same '
                      'As Regular Taxable Income')
     VALID_SECTION = {
@@ -634,28 +634,28 @@ def test_clp_section_titles(tests_path):
         },
         'Social Security Taxability': {
             'Threshold For Social Security Benefit Taxability 1': 0,
-            'Social Security Taxable Income Decimal Fraction 1': 0,
-            'Threshold For Social Security Benefit Taxability 2': 0,
-            'Social Security Taxable Income Decimal Fraction 2': 0
+            # 'Social Security Taxable Income Decimal Fraction 1': 0,
+            'Threshold For Social Security Benefit Taxability 2': 0
+            # 'Social Security Taxable Income Decimal Fraction 2': 0
         },
         'Above The Line Deductions': {
-            'Child And Elderly Care': 0,
             'Misc. Adjustment Haircuts': 0,
-            'Misc. Exclusions': 0
+            'Misc. Exclusions': 0,
+            'Child And Elderly Care': 0
         },
         'Personal Exemptions': {
             'Personal And Dependent Exemption Amount': 0,
-            'Personal Exemption Phaseout Starting Income': 0,
+            # 'Personal Exemption Phaseout Starting Income': 0,
             'Personal Exemption Phaseout Rate': 0
         },
         'Standard Deduction': {
             'Standard Deduction Amount': 0,
-            'Additional Standard Deduction For Blind And Aged': 0,
-            'Standard Deduction For Dependents': 0
+            'Additional Standard Deduction For Blind And Aged': 0
+            # 'Standard Deduction For Dependents': 0
         },
         'Personal Refundable Credit': {
             'Personal Refundable Credit Maximum Amount': 0,
-            'Personal Refundable Credit Phaseout Start': 0,
+            # 'Personal Refundable Credit Phaseout Start': 0,
             'Personal Refundable Credit Phaseout Rate': 0
         },
         'Itemized Deductions': {
@@ -666,10 +666,10 @@ def test_clp_section_titles(tests_path):
             'Charity': 0,
             'Casualty': 0,
             'Miscellaneous': 0,
-            'Ceiling On The Amount Of Itemized Deductions Allowed': 0,
-            ided_ceiling: 0,
             'Itemized Deduction Limitation': 0,
-            'Surtax On Itemized Deduction Benefits Above An AGI Threshold': 0
+            'Surtax On Itemized Deduction Benefits Above An AGI Threshold': 0,
+            ided_ceiling_pct: 0,
+            'Ceiling On The Amount Of Itemized Deductions Allowed': 0
         },
         'Capital Gains And Dividends': {
             'Regular - Long Term Capital Gains And Qualified Dividends': 0,
@@ -682,8 +682,8 @@ def test_clp_section_titles(tests_path):
             'Alternative Minimum Tax': 0
         },
         'Nonrefundable Credits': {
-            'Child Tax Credit': 0,
             'Child And Dependent Care': 0,
+            'Child Tax Credit': 0,
             'Misc. Credit Limits': 0
         },
         'Other Taxes': {
@@ -691,19 +691,19 @@ def test_clp_section_titles(tests_path):
             '': 0
         },
         'Refundable Credits': {
-            'Additional Child Tax Credit': 0,
             'Earned Income Tax Credit': 0,
+            'Additional Child Tax Credit': 0,
             'New Refundable Child Tax Credit': 0
         },
         'Surtaxes': {
-            'New AGI Surtax': 0,
             'New Minimum Tax': 0,
+            'New AGI Surtax': 0,
             'Lump-Sum Tax': 0
         },
-        'Universal Basic Income': {
-            'UBI Benefit By Age': 0,
-            'UBI Benefit Taxability': 0
-        },
+        # 'Universal Basic Income': {
+        #     'UBI Benefit By Age': 0,
+        #     'UBI Benefit Taxability': 0
+        # },
         '': {  # empty section_1 implies parameter is not displayed in TaxBrain
             '': 0
         }
