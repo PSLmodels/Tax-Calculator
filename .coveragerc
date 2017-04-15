@@ -6,4 +6,5 @@ omit =
     taxcalc/*.json
     taxcalc/tests/*
     taxcalc/cli/*
+    taxcalc/docs/*
     taxcalc/validation/*
