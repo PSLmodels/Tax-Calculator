@@ -20,7 +20,7 @@ enhancement to the Python source code &mdash; you should go to
 the <a href="https://github.com/open-source-economics/Tax-Calculator">
 development website</a>.</p>
 
-<!-------------------------------------------------------------------------->
+<!-- ---------------------------------------------------------------------- -->
 <h2>Document Contents</h2>
 
 <p><a href="#gui">TaxBrain GUI</a> to use Tax-Calculator via an
@@ -32,7 +32,7 @@ via the command line</p>
 <p><a href="#output">Output Variables</a> that describe tax results</p>
 <p><a href="#params">Response Parameters</a> that specify reform responses</p>
 
-<!-------------------------------------------------------------------------->
+<!-- ---------------------------------------------------------------------- -->
 <h2 id="gui">TaxBrain GUI</h2>
 
 <p>You can use Tax-Calculator via a graphical user interface (GUI)
@@ -44,7 +44,7 @@ reform estimates for each of ten years.  The calculations take just a
 couple of minutes and there is flexibility to show different kinds
 of distributional results.</p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3>Section Contents</h3>
 
 <p><a href="#gui-spec-reform">Specify Tax Reform</a></p>
@@ -52,7 +52,7 @@ of distributional results.</p>
 <p><a href="#gui-view-static">View/Download Static Results</a></p>
 <p><a href="#gui-init-dynamic">Initiate Dynamic Analysis</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="gui-spec-reform">Specify Tax Reform</h3>
 
 <p>Text goes here.</p>
@@ -61,7 +61,7 @@ of distributional results.</p>
 
 <p><a href="#gui">Back to Section Contents</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="gui-init-static">Initiate Static Analysis</h3>
 
 <p>Text goes here.</p>
@@ -70,7 +70,7 @@ of distributional results.</p>
 
 <p><a href="#gui">Back to Section Contents</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="gui-view-static">View/Download Static Results</h3>
 
 <p>Text goes here.</p>
@@ -79,21 +79,21 @@ of distributional results.</p>
 
 <p><a href="#gui">Back to Section Contents</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="gui-init-dynamic">Initiate Dynamic Analysis</h3>
 
 <p>Text goes here.</p>
 
 <p>More text goes here.</p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <p>
 <a href="#gui">Back to Section Contents</a>
 &nbsp;&nbsp;
 <a href="#doc">Back to Document Contents</a>
 </p>
 
-<!-------------------------------------------------------------------------->
+<!-- ---------------------------------------------------------------------- -->
 <h2 id="cli">tc CLI</h2>
 
 <p>You can use Tax-Calculator on your own computer via a command line
@@ -117,7 +117,7 @@ installation and file preparation work may be worth it to you.</p>
 <p><a href="#cli-init-analysis">Initiate Reform Analysis</a></p>
 <p><a href="#cli-tab-results">Tabulate Reform Results</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="cli-install-test">Install/Test tc CLI</h3>
 
 <p>Text goes here.</p>
@@ -126,7 +126,7 @@ installation and file preparation work may be worth it to you.</p>
 
 <p><a href="#cli">Back to Section Contents</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="cli-spec-reform">Specify Tax Reform</h3>
 
 <p>Text goes here.</p>
@@ -135,7 +135,7 @@ installation and file preparation work may be worth it to you.</p>
 
 <p><a href="#cli">Back to Section Contents</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="cli-spec-assump">Specify Analysis Assumptions</h3>
 
 <p>Text goes here.</p>
@@ -144,7 +144,7 @@ installation and file preparation work may be worth it to you.</p>
 
 <p><a href="#cli">Back to Section Contents</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="cli-spec-output">Specify Output Options</h3>
 
 <p>Text goes here.</p>
@@ -153,7 +153,7 @@ installation and file preparation work may be worth it to you.</p>
 
 <p><a href="#cli">Back to Section Contents</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="cli-init-analysis">Initiate Reform Analysis</h3>
 
 <p>Text goes here.</p>
@@ -162,21 +162,21 @@ installation and file preparation work may be worth it to you.</p>
 
 <p><a href="#cli">Back to Section Contents</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="cli-tab-results">Tabulate Reform Results</h3>
 
 <p>Text goes here.</p>
 
 <p>More text goes here.</p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <p>
 <a href="#cli">Back to Section Contents</a>
 &nbsp;&nbsp;
 <a href="#doc">Back to Document Contents</a>
 </p>
 
-<!-------------------------------------------------------------------------->
+<!-- ---------------------------------------------------------------------- -->
 <h2 id="pol">Policy Parameters</h2>
 
 <p>This section contains documentation of policy parameters in a
@@ -202,108 +202,108 @@ Parameters group.</p>
 <p><a href="#pol-surtaxes">Surtaxes</a></p>
 <p><a href="#pol-other-parameters">Other Parameters</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="pol-payroll-taxes"></a>Payroll Taxes</h3>
 
 <!-- Payroll Taxes -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="pol-social-security-taxability">Social Security Taxability</h3>
 
 <!-- Social Security Taxability -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="pol-above-the-line-deductions">Above The Line Deductions</h3>
 
 <!-- Above The Line Deductions -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="pol-personal-exemptions">Personal Exemptions</h3>
 
 <!-- Personal Exemptions -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="pol-standard-deduction">Standard Deduction</h3>
 
 <!-- Standard Deduction -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="pol-personal-refundable-credit">Personal Refundable Credit</h3>
 
 <!-- Personal Refundable Credit -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="pol-itemized-deductions">Itemized Deductions</h3>
 
 <!-- Itemized Deductions -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="pol-capital-gains-dividends">Capital Gains And Dividends</h3>
 
 <!-- Capital Gains And Dividends -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="pol-personal-income">Personal Income</h3>
 
 <!-- Personal Income -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="pol-nonrefundable-credits">Nonrefundable Credits</h3>
 
 <!-- Nonrefundable Credits -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="pol-other-taxes">Other Taxes</h3>
 
 <!-- Other Taxes -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="pol-refundable-credits">Refundable Credits</h3>
 
 <!-- Refundable Credits -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="pol-surtaxes">Surtaxes</h3>
 
 <!-- Surtaxes -->
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="pol-other-parameters">Other Parameters</h3>
 
 <!-- Other Parameters -->
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <p>
 <a href="#pol">Back to Section Contents</a>
 &nbsp;&nbsp;
 <a href="#doc">Back to Document Contents</a>
 </p>
 
-<!-------------------------------------------------------------------------->
+<!-- ---------------------------------------------------------------------- -->
 <h2 id="input">Input Variables</h2>
 
 <p>Introductory text goes here.</p>
@@ -312,21 +312,21 @@ Parameters group.</p>
 
 <p><a href="#input-subsection">Subsection</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="input-subsection">Subsection</h3>
 
 <p>Text goes here.</p>
 
 <p>More text goes here.</p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <p>
 <a href="#input">Back to Section Contents</a>
 &nbsp;&nbsp;
 <a href="#doc">Back to Document Contents</a>
 </p>
 
-<!-------------------------------------------------------------------------->
+<!-- ---------------------------------------------------------------------- -->
 <h2 id="output">Output Variables</h2>
 
 <p>Introductory text goes here.</p>
@@ -335,21 +335,21 @@ Parameters group.</p>
 
 <p><a href="#output-subsection">Subsection</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="output-subsection">Subsection</h3>
 
 <p>Text goes here.</p>
 
 <p>More text goes here.</p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <p>
 <a href="#output">Back to Section Contents</a>
 &nbsp;&nbsp;
 <a href="#doc">Back to Document Contents</a>
 </p>
 
-<!-------------------------------------------------------------------------->
+<!-- ---------------------------------------------------------------------- -->
 <h2 id="params">Response Parameters</h2>
 
 <p>Introductory text goes here.</p>
@@ -358,21 +358,21 @@ Parameters group.</p>
 
 <p><a href="#params-subsection">Subsection</a></p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <h3 id="params-subsection">Subsection</h3>
 
 <p>Text goes here.</p>
 
 <p>More text goes here.</p>
 
-<!-------------------------------------------->
+<!-- ---------------------------------------- -->
 <p>
 <a href="#params">Back to Section Contents</a>
 &nbsp;&nbsp;
 <a href="#doc">Back to Document Contents</a>
 </p>
 
-<!-------------------------------------------------------------------------->
+<!-- ---------------------------------------------------------------------- -->
 </div>
 </body>
 </html>
