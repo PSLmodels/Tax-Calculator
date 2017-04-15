@@ -1,78 +1,378 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
-                      "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-<title>Tax-Calculator Documentation</title>
-<link rel="stylesheet" type="text/css" href="docs.css" />
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>Using Tax-Calculator</title>
+<style>
+div { max-width: 19cm }
+</style>
 </head>
 <body>
-<h2>Introduction to Using Tax-Calculator</h2>
-<p>&nbsp;</p>
+<div>
 
-Introductory text goes here.
+<h1 id="doc">Using Tax-Calculator</h1>
 
-<p>This document provides an introduction.  ...  It contains the
-following sections:
-<ul>
-<li><a href="#sec1">Section One</a> provides ... </li>
-<p></p>
-<li><a href="#sec2">Section Two</a> provides ... </li>
-<p></p>
-<li><a href="#sec3">Section Three</a> provides ... </li>
-</ul>
+<p>This document tells you how to use Tax-Calculator, an open-source
+federal income and payroll tax simulation model.  The two ways of
+using Tax-Calculator described here require no computer programming.
+If you want to participate in the development of Tax-Calculator
+&mdash; by reporting a bug, improving the documentation or making an
+enhancement to the Python source code &mdash; you should go to
+the <a href="https://github.com/open-source-economics/Tax-Calculator">
+development website</a>.</p>
+
+<!-------------------------------------------------------------------------->
+<h2>Document Contents</h2>
+
+<p><a href="#gui">TaxBrain GUI</a> to use Tax-Calculator via an
+interactive web application</p>
+<p><a href="#cli">tc CLI</a> to use Tax-Calculator on your computer
+via the command line</p>
+<p><a href="#pol">Policy Parameters</a> that specify tax reforms</p>
+<p><a href="#input">Input Variables</a> that specify tax filing units</p>
+<p><a href="#output">Output Variables</a> that describe tax results</p>
+<p><a href="#params">Response Parameters</a> that specify reform responses</p>
+
+<!-------------------------------------------------------------------------->
+<h2 id="gui">TaxBrain GUI</h2>
+
+<p>You can use Tax-Calculator via a graphical user interface (GUI)
+provided by the <a href="http://www.ospc.org/taxbrain/">TaxBrain web
+application</a>.  This approach requires only an Internet connection
+and web browser on your computer.  TaxBrain uses a micro dataset to
+produce for a tax reform you specify both aggregate and distributional
+reform estimates for each of ten years.  The calculations take just a
+couple of minutes and there is flexibility to show different kinds
+of distributional results.</p>
+
+<!-------------------------------------------->
+<h3>Section Contents</h3>
+
+<p><a href="#gui-spec-reform">Specify Tax Reform</a></p>
+<p><a href="#gui-init-static">Initiate Static Analysis</a></p>
+<p><a href="#gui-view-static">View/Download Static Results</a></p>
+<p><a href="#gui-init-dynamic">Initiate Dynamic Analysis</a></p>
+
+<!-------------------------------------------->
+<h3 id="gui-spec-reform">Specify Tax Reform</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<p><a href="#gui">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="gui-init-static">Initiate Static Analysis</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<p><a href="#gui">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="gui-view-static">View/Download Static Results</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<p><a href="#gui">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="gui-init-dynamic">Initiate Dynamic Analysis</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<!-------------------------------------------->
+<p>
+<a href="#gui">Back to Section Contents</a>
+&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a>
 </p>
 
-<h1 id="sec1">Section One</h1>
+<!-------------------------------------------------------------------------->
+<h2 id="cli">tc CLI</h2>
 
-<p><b>UUU</b> is ... </p>
+<p>You can use Tax-Calculator on your own computer via a command line
+interface (CLI) called tc.  This approach requires the installation of
+Anaconda Python and the taxcalc package on your computer as well as
+the use of a text editor to prepare simple files that are read by tc.
+Computer programming knowledge is not required, but if you are
+prevented from doing the easy installation or you are not willing to
+work at the command line (Terminal on Mac or Command Prompt on
+Windows) and use an editor (for example, TextEdit on Mac or Notepad on
+Windows), then you should probably use the TaxBrain GUI.  However,
+there are some advantages (as described below) so the extra
+installation and file preparation work may be worth it to you.</p>
 
-<p><b>VVV</b> is ... </p>
+<h3>Section Contents</h3>
 
-<p><b>WWW</b> is ... </p>
+<p><a href="#cli-install-test">Install/Test tc CLI</a></p>
+<p><a href="#cli-spec-reform">Specify Tax Reform</a></p>
+<p><a href="#cli-spec-assump">Specify Analysis Assumptions</a></p>
+<p><a href="#cli-spec-output">Specify Output Options</a></p>
+<p><a href="#cli-init-analysis">Initiate Reform Analysis</a></p>
+<p><a href="#cli-tab-results">Tabulate Reform Results</a></p>
 
-<p><b>XXX</b> is related to the <kbd>xxx/file.db</kbd> file, which
-contains the following:</p>
-<pre>
-## ...
-## ...
-create ... same as NNN except:
-table ... field ... is 2013
-</pre>
+<!-------------------------------------------->
+<h3 id="cli-install-test">Install/Test tc CLI</h3>
 
-<p><b>YYY</b> is ... </p>
+<p>Text goes here.</p>
 
-<p><b>ZZZ</b> is ... </p>
+<p>More text goes here.</p>
 
-<p>Working together, they ...</p>
+<p><a href="#cli">Back to Section Contents</a></p>
 
-<h1 id="sec2">Section Two</h1>
+<!-------------------------------------------->
+<h3 id="cli-spec-reform">Specify Tax Reform</h3>
 
-<p><b>AAA</b> is ... </p>
+<p>Text goes here.</p>
 
-<p><b>BBB</b> is ... </p>
+<p>More text goes here.</p>
 
-<p><b>CCC</b> is ... </p>
+<p><a href="#cli">Back to Section Contents</a></p>
 
-<p><b>DDD</b> is ... </p>
+<!-------------------------------------------->
+<h3 id="cli-spec-assump">Specify Analysis Assumptions</h3>
 
-<p><b>EEE</b> is ... </p>
+<p>Text goes here.</p>
 
-<p><b>FFF</b> is ... </p>
+<p>More text goes here.</p>
 
-<p><b>GGG</b> is ... </p>
+<p><a href="#cli">Back to Section Contents</a></p>
 
-<p><b>HHH</b> is ... </p>
+<!-------------------------------------------->
+<h3 id="cli-spec-output">Specify Output Options</h3>
 
-<p>More text here ...</p>
+<p>Text goes here.</p>
 
-<h1 id="sec3">Section Three</h1>
+<p>More text goes here.</p>
 
-<p><b>PPP</b> is ... </p>
+<p><a href="#cli">Back to Section Contents</a></p>
 
-<p><b>QQQ</b> is ... </p>
+<!-------------------------------------------->
+<h3 id="cli-init-analysis">Initiate Reform Analysis</h3>
 
-<p>More text here ...</p>
+<p>Text goes here.</p>
 
+<p>More text goes here.</p>
+
+<p><a href="#cli">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="cli-tab-results">Tabulate Reform Results</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<!-------------------------------------------->
+<p>
+<a href="#cli">Back to Section Contents</a>
+&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a>
+</p>
+
+<!-------------------------------------------------------------------------->
+<h2 id="pol">Policy Parameters</h2>
+
+<p>This section contains documentation of policy parameters in a
+format that is easy to search.  The policy parameters are grouped here
+as they are are on TaxBrain.  Parameters understood by Tax-Calculator
+and the tc CLI, but not available on TaxBrain, are placed in an Other
+Parameters group.</p>
+
+<h3>Section Contents</h3>
+
+<p><a href="#pol-payroll-taxes">Payroll Taxes</a></p>
+<p><a href="#pol-social-security-taxability">Social Security Taxability</a></p>
+<p><a href="#pol-above-the-line-deductions">Above The Line Deductions</a></p>
+<p><a href="#pol-personal-exemptions">Personal Exemptions</a></p>
+<p><a href="#pol-standard-deduction">Standard Deduction</a></p>
+<p><a href="#pol-personal-refundable-credit">Personal Refundable Credit</a></p>
+<p><a href="#pol-itemized-deductions">Itemized Deductions</a></p>
+<p><a href="#pol-capital-gains-dividends">Capital Gains And Dividends</a></p>
+<p><a href="#pol-personal-income">Personal Income</a></p>
+<p><a href="#pol-nonrefundable-credits">Nonrefundable Credits</a></p>
+<p><a href="#pol-other-taxes">Other Taxes</a></p>
+<p><a href="#pol-refundable-credits">Refundable Credits</a></p>
+<p><a href="#pol-surtaxes">Surtaxes</a></p>
+<p><a href="#pol-other-parameters">Other Parameters</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-payroll-taxes"></a>Payroll Taxes</h3>
+
+<!-- Payroll Taxes -->
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-social-security-taxability">Social Security Taxability</h3>
+
+<!-- Social Security Taxability -->
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-above-the-line-deductions">Above The Line Deductions</h3>
+
+<!-- Above The Line Deductions -->
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-personal-exemptions">Personal Exemptions</h3>
+
+<!-- Personal Exemptions -->
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-standard-deduction">Standard Deduction</h3>
+
+<!-- Standard Deduction -->
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-personal-refundable-credit">Personal Refundable Credit</h3>
+
+<!-- Personal Refundable Credit -->
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-itemized-deductions">Itemized Deductions</h3>
+
+<!-- Itemized Deductions -->
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-capital-gains-dividends">Capital Gains And Dividends</h3>
+
+<!-- Capital Gains And Dividends -->
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-personal-income">Personal Income</h3>
+
+<!-- Personal Income -->
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-nonrefundable-credits">Nonrefundable Credits</h3>
+
+<!-- Nonrefundable Credits -->
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-other-taxes">Other Taxes</h3>
+
+<!-- Other Taxes -->
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-refundable-credits">Refundable Credits</h3>
+
+<!-- Refundable Credits -->
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+<!-------------------------------------------->
+<h3 id="pol-surtaxes">Surtaxes</h3>
+
+<!-- Surtaxes -->
+
+<!-------------------------------------------->
+<h3 id="pol-other-parameters">Other Parameters</h3>
+
+<!-- Other Parameters -->
+
+<!-------------------------------------------->
+<p>
+<a href="#pol">Back to Section Contents</a>
+&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a>
+</p>
+
+<!-------------------------------------------------------------------------->
+<h2 id="input">Input Variables</h2>
+
+<p>Introductory text goes here.</p>
+
+<h3>Section Contents</h3>
+
+<p><a href="#input-subsection">Subsection</a></p>
+
+<!-------------------------------------------->
+<h3 id="input-subsection">Subsection</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<!-------------------------------------------->
+<p>
+<a href="#input">Back to Section Contents</a>
+&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a>
+</p>
+
+<!-------------------------------------------------------------------------->
+<h2 id="output">Output Variables</h2>
+
+<p>Introductory text goes here.</p>
+
+<h3>Section Contents</h3>
+
+<p><a href="#output-subsection">Subsection</a></p>
+
+<!-------------------------------------------->
+<h3 id="output-subsection">Subsection</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<!-------------------------------------------->
+<p>
+<a href="#output">Back to Section Contents</a>
+&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a>
+</p>
+
+<!-------------------------------------------------------------------------->
+<h2 id="params">Response Parameters</h2>
+
+<p>Introductory text goes here.</p>
+
+<h3>Section Contents</h3>
+
+<p><a href="#params-subsection">Subsection</a></p>
+
+<!-------------------------------------------->
+<h3 id="params-subsection">Subsection</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+<!-------------------------------------------->
+<p>
+<a href="#params">Back to Section Contents</a>
+&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a>
+</p>
+
+<!-------------------------------------------------------------------------->
+</div>
 </body>
 </html>
