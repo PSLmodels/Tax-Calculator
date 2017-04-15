@@ -617,16 +617,15 @@ def test_current_law_version():
     assert clp_mte_2016 == clv_mte_2016
 
 
-def test_clp_section_info(tests_path):
+def test_clp_section_titles(tests_path):
     """
-    Check section info in current_law_policy.json file.
+    Check section titles in current_law_policy.json file.
     """
-    # specify very long section names
+    # specify expected section titles
     ided_ceiling = ('Ceiling On The Benefit Of Itemized Deductions '
                     'As A Percent Of Deductible Expenses')
     cgqd_tax_same = ('Tax All Capital Gains And Dividends The Same '
                      'As Regular Taxable Income')
-    # specify expected section info
     VALID_SECTION = {
         'Payroll Taxes': {
             'Social Security FICA': 0,
@@ -705,7 +704,7 @@ def test_clp_section_info(tests_path):
             'UBI Benefit By Age': 0,
             'UBI Benefit Taxability': 0
         },
-        '': { # empty section_1 implies parameter is not used in TaxBrain
+        '': {  # empty section_1 implies parameter is not displayed in TaxBrain
             '': 0
         }
     }
@@ -714,10 +713,11 @@ def test_clp_section_info(tests_path):
     clpfile = open(path, 'r')
     clpdict = json.load(clpfile)
     clpfile.close()
+    # check validity of parameter section titles
     for pname in clpdict:
         param = clpdict[pname]
         assert isinstance(param, dict)
-        sec1 = param['section_1']
-        assert sec1 in VALID_SECTION
-        sec2 = param['section_2']
-        assert sec2 in VALID_SECTION[sec1]
+        sec1title = param['section_1']
+        assert sec1title in VALID_SECTION
+        sec2title = param['section_2']
+        assert sec2title in VALID_SECTION[sec1title]
