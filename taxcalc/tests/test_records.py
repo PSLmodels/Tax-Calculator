@@ -1,4 +1,5 @@
 import os
+import json
 import numpy as np
 from numpy.testing import assert_array_equal
 import pandas as pd
@@ -131,6 +132,46 @@ def test_for_duplicate_names():
         assert varname not in varnames
         varnames.add(varname)
         assert varname in Records.USABLE_READ_VARS
+
+
+def test_records_variables_content(tests_path):
+    """
+    Check completeness and consistency of records_variables.json content.
+    """
+    # specify test information
+    reqkeys = ['type', 'desc', 'form']
+    first_year = Policy.JSON_START_YEAR
+    last_form_year = 2016
+    # read JSON variable file into a dictionary
+    path = os.path.join(tests_path, '..', 'records_variables.json')
+    vfile = open(path, 'r')
+    allvars = json.load(vfile)
+    vfile.close()
+    assert isinstance(allvars, dict)
+    # check elements in each variable dictionary
+    for iotype in ['read', 'calc']:
+        for vname in allvars[iotype]:
+            variable = allvars[iotype][vname]
+            assert isinstance(variable, dict)
+            # check that variable contains required keys
+            for key in reqkeys:
+                assert key in variable
+            # check that required is true if it is present
+            assert getattr(variable, 'required', True)
+            # check that forminfo is dictionary with sensible year ranges
+            forminfo = variable['form']
+            assert isinstance(forminfo, dict)
+            yranges = sorted(forminfo.keys())
+            prior_eyr = first_year - 1
+            for yrange in yranges:
+                yrlist = yrange.split('-')
+                fyr = int(yrlist[0])
+                eyr = int(yrlist[1])
+                assert fyr == prior_eyr + 1
+                assert eyr <= last_form_year
+                prior_eyr = eyr
+            if len(yranges) > 0:
+                assert prior_eyr == last_form_year
 
 
 def test_csv_input_vars_md_contents(tests_path):

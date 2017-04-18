@@ -451,7 +451,7 @@
   "calc": {
     "ID_Casualty_frt_in_pufcsv_year": {
       "type": "unchanging_float",
-      "description": "",
+      "desc": "",
       "form": {}
     },
     "NIIT": {
@@ -825,15 +825,15 @@
     },
     "ptax_was": {
       "type": "float",
-      "desc": "Employee + employer OASDHI FICA tax plus self-employment tax",
-      "form": {"2013-2013": "OASDHI FICA plus 1040 line 56",
-               "2014-2016": "OASDHI FICA plus 1040 line 57"}
+      "desc": "Employee + employer OASDHI FICA tax",
+      "form": {"2013-2013": "OASDHI FICA",
+               "2014-2016": "OASDHI FICA"}
     },
     "setax": {
       "type": "float",
       "desc": "Self-employment tax",
-      "form": {"2013-2013": "OASDHI FICA plus 1040 line 56",
-               "2014-2016": "OASDHI FICA plus 1040 line 57"}
+      "form": {"2013-2013": "1040 line 56",
+               "2014-2016": "1040 line 57"}
     },
     "ymod": {
       "type": "float",
@@ -852,12 +852,12 @@
     },
     "taxable_ubi": {
       "type": "float",
-      "desc": "",
+      "desc": "Amount of UBI benefit included in AGI",
       "form": {}
     },
     "nontaxable_ubi": {
       "type": "float",
-      "desc": "",
+      "desc": "Amount of UBI benefit excluded from AGI",
       "form": {}
     }
   }
