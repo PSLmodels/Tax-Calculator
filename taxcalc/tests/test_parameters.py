@@ -54,7 +54,7 @@ def test_json_file_contents(tests_path, fname):
     """
     Check contents of JSON parameter files.
     """
-    # pylint: disable=too-many-locals,too-many-branches
+    # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     # specify test information
     reqkeys = ['long_name', 'description', 'notes',
                'row_var', 'row_label',
