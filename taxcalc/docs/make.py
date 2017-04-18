@@ -43,10 +43,17 @@ def param_text(pname, param):
     """
     Extract attributes from param for pname and return as HTML string.
     """
-    txt = '<p><b>{} &mdash; {}</b>'.format(param['section_1'],
-                                           param['section_2'])
+    sec1 = param['section_1']
+    if len(sec1) > 0:
+        txt = '<p><b>{} &mdash; {}</b>'.format(sec1, param['section_2'])
+    else:
+        txt = '<p><b>{} &mdash; {}</b>'.format('Other Parameters',
+                                               'Not in TaxBrain GUI')
     txt += '<br><i>CLI Name:</i> {}'.format(pname)
-    txt += '<br><i>GUI Name:</i> {}'.format(param['long_name'])
+    if len(sec1) > 0:
+        txt += '<br><i>GUI Name:</i> {}'.format(param['long_name'])
+    else:
+        txt += '<br><i>Long Name:</i> {}'.format(param['long_name'])
     txt += '<br><i>Description:</i> {}'.format(param['description'])
     if param['notes'] != '':
         txt += '<br><i>Notes:</i> {}'.format(param['notes'])
