@@ -21,7 +21,7 @@
         "section_1": "Payroll Taxes",
         "section_2": "Social Security FICA",
         "irs_ref": "W-2, Box 4, instructions",
-        "notes": "This parameter is indexed by the rate of growth in average wages, not by the inflation rate.",
+        "notes": "This parameter is indexed by the rate of growth in average wages, not by the price inflation rate.",
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",

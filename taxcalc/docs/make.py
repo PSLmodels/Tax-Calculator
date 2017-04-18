@@ -15,6 +15,9 @@ INPUT_FILENAME = 'index.htmx'
 INPUT_PATH = os.path.join(CUR_PATH, INPUT_FILENAME)
 POLICY_PATH = os.path.join(CUR_PATH, '..', 'current_law_policy.json')
 IOVARS_PATH = os.path.join(CUR_PATH, '..', 'records_variables.json')
+CONSUMPTION_PATH = os.path.join(CUR_PATH, '..', 'consumption.json')
+BEHAVIOR_PATH = os.path.join(CUR_PATH, '..', 'behavior.json')
+GROWDIFF_PATH = os.path.join(CUR_PATH, '..', 'growdiff.json')
 OUTPUT_FILENAME = 'index.html'
 OUTPUT_PATH = os.path.join(CUR_PATH, OUTPUT_FILENAME)
 
@@ -31,6 +34,9 @@ def main():
     text = policy_params(POLICY_PATH, text)
     text = io_variables('read', IOVARS_PATH, text)
     text = io_variables('calc', IOVARS_PATH, text)
+    text = response_params('consumption', CONSUMPTION_PATH, text)
+    text = response_params('behavior', BEHAVIOR_PATH, text)
+    text = response_params('growdiff', GROWDIFF_PATH, text)
 
     # write text variable to OUTPUT file
     with open(OUTPUT_PATH, 'w') as ofile:
@@ -41,9 +47,9 @@ def main():
 # end of main function code
 
 
-def param_text(pname, param):
+def policy_param_text(pname, param):
     """
-    Extract attributes from param for pname and return as HTML string.
+    Extract info from param for pname and return as HTML string.
     """
     sec1 = param['section_1']
     if len(sec1) > 0:
@@ -57,7 +63,7 @@ def param_text(pname, param):
     else:
         txt += '<br><i>Long Name:</i> {}'.format(param['long_name'])
     txt += '<br><i>Description:</i> {}'.format(param['description'])
-    if param['notes'] != '':
+    if len(param['notes']) > 0:
         txt += '<br><i>Notes:</i> {}'.format(param['notes'])
     if param['cpi_inflated']:
         txt += '<br><i>Inflation Indexed:</i> True'
@@ -105,7 +111,7 @@ def policy_params(path, text):
         for pname in params:
             param = params[pname]
             if sec1 == param['section_1'] and sec2 == param['section_2']:
-                ptext += param_text(pname, param)
+                ptext += policy_param_text(pname, param)
         # integrate parameter text into text
         old = '<!-- {} -->'.format(sec1_sec2)
         text = text.replace(old, ptext)
@@ -114,8 +120,8 @@ def policy_params(path, text):
 
 def var_text(vname, iotype, variable):
     """
-    Extract attributes from variable for vname of iotype and
-    return attributes as HTML string.
+    Extract info from variable for vname of iotype
+    and return info as HTML string.
     """
     if iotype == 'read':
         txt = '<p><i>Input Variable Name:</i> <b>{}</b>'.format(vname)
@@ -148,6 +154,53 @@ def io_variables(iotype, path, text):
     # integrate variable text into text
     old = '<!-- {}@variables -->'.format(iotype)
     text = text.replace(old, vtext)
+    return text
+
+
+def response_param_text(pname, ptype, param):
+    """
+    Extract info from param for pname of ptype and return as HTML string.
+    """
+    sec1 = param['section_1']
+    if len(sec1) > 0:
+        txt = '<p><b>{} &mdash; {}</b>'.format(sec1, param['section_2'])
+    else:
+        txt = '<p><b>{} &mdash; {}</b>'.format('Response Parameter',
+                                               ptype.capitalize())
+    txt += '<br><i>CLI Name:</i> {}'.format(pname)
+    if len(sec1) > 0:
+        txt += '<br><i>GUI Name:</i> {}'.format(param['long_name'])
+    else:
+        txt += '<br><i>Long Name:</i> {}'.format(param['long_name'])
+    txt += '<br><i>Description:</i> {}'.format(param['description'])
+    if len(param['notes']) > 0:
+        txt += '<br><i>Notes:</i> {}'.format(param['notes'])
+    txt += '<br><i>Default Values:</i>'
+    if len(param['col_label']) > 0:
+        cols = ', '.join(param['col_label'])
+        txt += '<br>&nbsp;&nbsp; for: [{}]'.format(cols)
+    for cyr, val in zip(param['row_label'], param['value']):
+        txt += '<br>{}: {}'.format(cyr, val)
+    txt += '</p>'
+    return txt
+
+
+def response_params(ptype, path, text):
+    """
+    Read response parameters of ptype from path, integrate them into text,
+    and return the integrated text.
+    """
+    with open(path) as pfile:
+        params = json.load(pfile, object_pairs_hook=OrderedDict)
+    assert isinstance(params, OrderedDict)
+    # construct parameter text for each param
+    ptext = ''
+    for pname in params:
+        param = params[pname]
+        ptext += response_param_text(pname, ptype, param)
+    # integrate parameter text into text
+    old = '<!-- {}@parameters -->'.format(ptype)
+    text = text.replace(old, ptext)
     return text
 
 
