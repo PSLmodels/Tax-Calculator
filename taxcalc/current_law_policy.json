@@ -507,7 +507,7 @@
 
     "_STD": {
         "long_name": "Standard deduction amount",
-        "description": "",
+        "description": "Amount filing unit can use as a standard deduction.",
         "section_1": "Standard Deduction",
         "section_2": "Standard Deduction Amount",
         "irs_ref": "form 1040, line 40, instruction (Formside notes).",

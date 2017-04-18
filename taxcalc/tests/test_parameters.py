@@ -77,6 +77,13 @@ def test_json_file_contents(tests_path, fname):
         # check that param contains required keys
         for key in reqkeys:
             assert key in param
+        # check for non-empty long_name and description strings
+        assert isinstance(param['long_name'], six.string_types)
+        if len(param['long_name']) == 0:
+            assert '{} long_name'.format(pname) == 'empty string'
+        assert isinstance(param['description'], six.string_types)
+        if len(param['description']) == 0:
+            assert '{} description'.format(pname) == 'empty string'
         # check that row_var is FLPDYR
         assert param['row_var'] == 'FLPDYR'
         # check that start_year equals first_year
