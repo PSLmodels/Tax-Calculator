@@ -104,6 +104,7 @@ Windows), then you should probably use the TaxBrain GUI.  However,
 there are some advantages (as described below) so the extra
 installation and file preparation work may be worth it to you.</p>
 
+
 <h3>Section Contents</h3>
 
 <p><a href="#cli-install-test">Install/Test tc CLI</a></p>
@@ -177,6 +178,7 @@ grouped here as they are are on TaxBrain.  Parameters understood by
 Tax-Calculator and the tc CLI, but not available in the TaxBrain GUI,
 are placed in an Other Parameters group at the end of the section.</p>
 
+
 <h3>Section Contents</h3>
 
 <p><a href="#pol-payroll-taxes">Payroll Taxes</a></p>
@@ -197,7 +199,7 @@ are placed in an Other Parameters group at the end of the section.</p>
 
 <h3 id="pol-payroll-taxes"></a>Payroll Taxes</h3>
 
-<p><b>Payroll Taxes &mdash; Social Security FICA</b><br><i>CLI Name:</i> _FICA_ss_trt<br><i>GUI Name:</i> Social Security payroll tax rate<br><i>Description:</i> Social Security FICA rate, including both employer and employee.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.124</p><p><b>Payroll Taxes &mdash; Social Security FICA</b><br><i>CLI Name:</i> _SS_Earnings_c<br><i>GUI Name:</i> Maximum taxable earnings for Social Security<br><i>Description:</i> Only individual earnings below this maximum amount are subjected to Social Security (OASDI) payroll tax.<br><i>Notes:</i> This parameter is indexed by the rate of growth in average wages, not by the inflation rate.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>2013: 113700<br>2014: 117000<br>2015: 118500<br>2016: 118500<br>2017: 127200</p>
+<p><b>Payroll Taxes &mdash; Social Security FICA</b><br><i>CLI Name:</i> _FICA_ss_trt<br><i>GUI Name:</i> Social Security payroll tax rate<br><i>Description:</i> Social Security FICA rate, including both employer and employee.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.124</p><p><b>Payroll Taxes &mdash; Social Security FICA</b><br><i>CLI Name:</i> _SS_Earnings_c<br><i>GUI Name:</i> Maximum taxable earnings for Social Security<br><i>Description:</i> Only individual earnings below this maximum amount are subjected to Social Security (OASDI) payroll tax.<br><i>Notes:</i> This parameter is indexed by the rate of growth in average wages, not by the price inflation rate.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>2013: 113700<br>2014: 117000<br>2015: 118500<br>2016: 118500<br>2017: 127200</p>
 
 <!-- Payroll Taxes @ Medicare FICA' -->
 
@@ -379,18 +381,46 @@ output variables that Tax-Calculator is programmed to calculate.</p>
 
 <h2 id="params">Response Parameters</h2>
 
-<p>Introductory text goes here.</p>
+<p>This section contains documentation of several sets of parameters
+that characterize responses to a tax reform.  Consumption
+parameters are used to compute marginal tax rates.  Behavior
+parameters are used to compute changes in input variables caused by a
+tax reform in a partial-equilibrium setting.  Growdiff parameters are
+used to specify baseline differences and/or reform responses in the
+annual rate of growth in economic variables.</p>
+
+<p>All the response parameters can be used by the tc CLI, but only
+those with a <i>GUI Name</i> appear in the TaxBrain GUI.  All these
+dynamic response parameters control advanced features of
+Tax-Calculator, so understanding the
+<a href="https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc">source
+code</a> that uses them is essential.</p>
+
 
 <h3>Section Contents</h3>
 
-<p><a href="#params-subsection">Subsection</a></p>
+<p><a href="#params-consump">Consumption Parameters</a></p>
+<p><a href="#params-behavior">Behavior Parameters</a></p>
+<p><a href="#params-growdiff">Growdiff Parameters</a></p>
 
 
-<h3 id="params-subsection">Subsection</h3>
+<h3 id="params-consump">Consumption Parameters</h3>
 
-<p>Text goes here.</p>
+<p><b>Response Parameter &mdash; Consumption</b><br><i>CLI Name:</i> _MPC_e17500<br><i>Long Name:</i> Marginal propensity to consume medical expenses<br><i>Description:</i> Defined as dollar change in medical-expense consumption divided by dollar change in income.  Typical value is in [0,1] range.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Consumption</b><br><i>CLI Name:</i> _MPC_e18400<br><i>Long Name:</i> Marginal propensity to consume state-and-local taxes<br><i>Description:</i> Defined as dollar change in state-and-local-taxes consumption divided by dollar change in income.  Typical value is in [0,1] range.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Consumption</b><br><i>CLI Name:</i> _MPC_e19800<br><i>Long Name:</i> Marginal propensity to consume charity cash contributions<br><i>Description:</i> Defined as dollar change in charity-cash-contribution consumption divided by dollar change in income.  Typical value is in [0,1] range.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Consumption</b><br><i>CLI Name:</i> _MPC_e20400<br><i>Long Name:</i> Marginal propensity to consume miscellaneous deduction expenses<br><i>Description:</i> Defined as dollar change in miscellaneous-deduction-expense consumption divided by dollar change in income.  Typical value is in [0,1] range.<br><i>Default Values:</i><br>2013: 0.0</p>
 
-<p>More text goes here.</p>
+<p><a href="#params">Back to Section Contents</a></p>
+
+
+<h3 id="params-behavior">Behavior Parameters</h3>
+
+<p><b>Behavior &mdash; Taxable Income</b><br><i>CLI Name:</i> _BE_inc<br><i>GUI Name:</i> Income elasticity of taxable income<br><i>Description:</i> Defined as dollar change in taxable income divided by dollar change in after-tax income caused by the reform.  Must be zero or negative.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Behavior &mdash; Taxable Income</b><br><i>CLI Name:</i> _BE_sub<br><i>GUI Name:</i> Substitution elasticity of taxable income<br><i>Description:</i> Defined as proportional change in taxable income divided by proportional change in marginal net-of-tax rate (1-MTR) on taxpayer earnings caused by the reform.  Must be zero or positive.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Behavior &mdash; Capital Gains</b><br><i>CLI Name:</i> _BE_cg<br><i>GUI Name:</i> Elasticity of long-term capital gains<br><i>Description:</i> Defined as change in logarithm of long-term capital gains divided by change in marginal tax rate (MTR) on long-term capital gains caused by the reform.  Must be zero or negative.  Read Behavior.response documentation for discussion of appropriate values.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Behavior</b><br><i>CLI Name:</i> _BE_charity<br><i>Long Name:</i> Elasticity of charitable contributions<br><i>Description:</i> Defined as proportional change in cash and non-cash charitable contributions divided by proportional change in the after-tax price of charitable contributions caused by the reform. Must be zero or negative.<br><i>Default Values:</i><br>&nbsp;&nbsp; for: [AGI < 50k, 50k <= AGI < 100k, 100k <= AGI]<br>2013: [0.0, 0.0, 0.0]</p>
+
+<p><a href="#params">Back to Section Contents</a></p>
+
+
+<h3 id="params-growdiff">Growdiff Parameters</h3>
+
+<p><b>Response Parameter &mdash; Growdiff</b><br><i>CLI Name:</i> _ABOOK<br><i>Long Name:</i> ABOOK additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ABOOK extrapolates input variables: e07300 and e07400.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>CLI Name:</i> _ACGNS<br><i>Long Name:</i> ACGNS additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ACGNS extrapolates input variables: e01200, p22250, p23250, e24515 and e24518.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>CLI Name:</i> _ACPIM<br><i>Long Name:</i> ACPIM additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ACPIM extrapolates input variables: e03270, e03290 and e17500.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>CLI Name:</i> _ACPIU<br><i>Long Name:</i> ACPIU additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ACPIU is the price inflation rate used to inflate many policy parameters.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>CLI Name:</i> _ADIVS<br><i>Long Name:</i> ADIVS additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ADIVS extrapolates input variables: e00600 and e00650.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>CLI Name:</i> _AINTS<br><i>Long Name:</i> AINTS additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  AINTS extrapolates input variables: e00300 and e00400.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>CLI Name:</i> _AIPD<br><i>Long Name:</i> AIPD additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  AIPD extrapolates input variables: e19200.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>CLI Name:</i> _ASCHCI<br><i>Long Name:</i> ASCHCI additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ASCHCI extrapolates input variables: e00900, e00900p and e00900s when they are positive.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>CLI Name:</i> _ASCHCL<br><i>Long Name:</i> ASCHCL additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ASCHCL extrapolates input variables: e00900, e00900p and e00900s when they are negative.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>CLI Name:</i> _ASCHEI<br><i>Long Name:</i> ASCHEI additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ASCHEI extrapolates input variables: p25470, e26270 and e27200 when they are positive.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>CLI Name:</i> _ASCHEL<br><i>Long Name:</i> ASCHEL additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ASCHEI extrapolates input variables: p25470, e26270 and e27200 when they are negative.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>CLI Name:</i> _ASCHF<br><i>Long Name:</i> ASCHF additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ASCHF extrapolates input variables: e02100, e02100p and e02100s.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>CLI Name:</i> _ASOCSEC<br><i>Long Name:</i> ASOCSEC additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ASOCSEC extrapolates input variable: e02400.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>CLI Name:</i> _ATXPY<br><i>Long Name:</i> ATXPY additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ATXPY extrapolates input variables: e00700, e00800, e01400, e01500, e01700, e03150, e03210, e03220, e03230, e03300, e03400, e03500, e07240, e07260, p08000, e09700, e09800, e09900, e11200, e18400, e18500, e19800, e20100, e20400, e20500, e07600, e32800, e58990, e62900, e87530, p87521 and cmbtp.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>CLI Name:</i> _AUCOMP<br><i>Long Name:</i> AUCOMP additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  AUCOMP extrapolates input variable: e02300.<br><i>Default Values:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>CLI Name:</i> _AWAGE<br><i>Long Name:</i> AWAGE additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  AWAGE extrapolates input variables: e00200, e00200p and e00200s.  Also, AWAGE is the wage growth rate used to inflate the OASDI maximum taxable earnings policy parameter, _SS_Earnings_c.<br><i>Default Values:</i><br>2013: 0.0</p>
 
 <p><a href="#params">Back to Section Contents</a>&nbsp;&nbsp;
 <a href="#doc">Back to Document Contents</a></p>
