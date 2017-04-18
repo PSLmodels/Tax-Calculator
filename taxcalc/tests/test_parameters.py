@@ -56,7 +56,8 @@ def test_json_file_contents(tests_path, fname):
     """
     # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     # specify test information
-    reqkeys = ['long_name', 'description', 'notes',
+    reqkeys = ['long_name', 'description',
+               'section_1', 'section_2', 'notes',
                'row_var', 'row_label',
                'start_year', 'cpi_inflated',
                'col_var', 'col_label',
@@ -91,6 +92,8 @@ def test_json_file_contents(tests_path, fname):
         assert isinstance(syr, int) and syr == first_year
         # check that cpi_inflated is boolean
         assert isinstance(param['cpi_inflated'], bool)
+        if fname != 'current_law_policy.json':
+            assert param['cpi_inflated'] is False
         # check that row_label is list
         rowlabel = param['row_label']
         assert isinstance(rowlabel, list)
