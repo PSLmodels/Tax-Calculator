@@ -14,7 +14,7 @@ CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 INPUT_FILENAME = 'index.htmx'
 INPUT_PATH = os.path.join(CUR_PATH, INPUT_FILENAME)
 POLICY_PATH = os.path.join(CUR_PATH, '..', 'current_law_policy.json')
-# --- JSON PATHS GO HERE --- #
+IOVARS_PATH = os.path.join(CUR_PATH, '..', 'records_variables.json')
 OUTPUT_FILENAME = 'index.html'
 OUTPUT_PATH = os.path.join(CUR_PATH, OUTPUT_FILENAME)
 
@@ -28,7 +28,9 @@ def main():
         text = ifile.read()
 
     # augment text variable with information from JSON files
-    text = policy_params(text, POLICY_PATH)
+    text = policy_params(POLICY_PATH, text)
+    text = io_variables('read', IOVARS_PATH, text)
+    text = io_variables('calc', IOVARS_PATH, text)
 
     # write text variable to OUTPUT file
     with open(OUTPUT_PATH, 'w') as ofile:
@@ -71,7 +73,7 @@ def param_text(pname, param):
     return txt
 
 
-def policy_params(text, path):
+def policy_params(path, text):
     """
     Read policy parameters from path, integrate them into text, and
     return the integrated text.
@@ -107,6 +109,45 @@ def policy_params(text, path):
         # integrate parameter text into text
         old = '<!-- {} -->'.format(sec1_sec2)
         text = text.replace(old, ptext)
+    return text
+
+
+def var_text(vname, iotype, variable):
+    """
+    Extract attributes from variable for vname of iotype and
+    return attributes as HTML string.
+    """
+    if iotype == 'read':
+        txt = '<p><i>Input Variable Name:</i> <b>{}</b>'.format(vname)
+        if 'required' in variable:
+            txt += '<br><b><i>Required Input Variable</i></b>'
+    else:
+        txt = '<p><i>Output Variable Name:</i> <b>{}</b>'.format(vname)
+    txt += '<br><i>Description:</i> {}'.format(variable['desc'])
+    txt += '<br><i>Datatype:</i> {}'.format(variable['type'])
+    txt += '<br><i>IRS Form Location:</i>'
+    formdict = variable['form']
+    for yrange in sorted(formdict.keys()):
+        txt += '<br>{}: {}'.format(yrange, formdict[yrange])
+    txt += '</p>'
+    return txt
+
+
+def io_variables(iotype, path, text):
+    """
+    Read variables for iotype ('read' for input or 'calc' for output)
+    from path, integrate them into text, and return the integrated text.
+    """
+    with open(path) as vfile:
+        variables = json.load(vfile)
+    assert isinstance(variables, dict)
+    # construct variable text
+    vtext = ''
+    for vname in sorted(variables[iotype].keys()):
+        vtext += var_text(vname, iotype, variables[iotype][vname])
+    # integrate variable text into text
+    old = '<!-- {}@variables -->'.format(iotype)
+    text = text.replace(old, vtext)
     return text
 
 

@@ -86,12 +86,8 @@ of distributional results.</p>
 
 <p>More text goes here.</p>
 
-
-<p>
-<a href="#gui">Back to Section Contents</a>
-&nbsp;&nbsp;
-<a href="#doc">Back to Document Contents</a>
-</p>
+<p><a href="#gui">Back to Section Contents</a>&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a></p>
 
 
 <h2 id="cli">tc CLI</h2>
@@ -169,12 +165,8 @@ installation and file preparation work may be worth it to you.</p>
 
 <p>More text goes here.</p>
 
-
-<p>
-<a href="#cli">Back to Section Contents</a>
-&nbsp;&nbsp;
-<a href="#doc">Back to Document Contents</a>
-</p>
+<p><a href="#cli">Back to Section Contents</a>&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a></p>
 
 
 <h2 id="pol">Policy Parameters</h2>
@@ -354,58 +346,35 @@ are placed in an Other Parameters group at the end of the section.</p>
 
 <!--  @  -->
 
-
-<p>
-<a href="#pol">Back to Section Contents</a>
-&nbsp;&nbsp;
-<a href="#doc">Back to Document Contents</a>
-</p>
+<p><a href="#pol">Back to Section Contents</a>&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a></p>
 
 
 <h2 id="input">Input Variables</h2>
 
-<p>Introductory text goes here.</p>
+<p>This section contains documentation of input variables in a format
+that is easy to search and print. The input variables are ordered
+alphabetically by name.  There are no subsections, just a long list
+of input variables that Tax-Calculator is programmed to use in its
+calculations.</p>
 
-<h3>Section Contents</h3>
+<!-- read@variables -->
 
-<p><a href="#input-subsection">Subsection</a></p>
-
-
-<h3 id="input-subsection">Subsection</h3>
-
-<p>Text goes here.</p>
-
-<p>More text goes here.</p>
-
-
-<p>
-<a href="#input">Back to Section Contents</a>
-&nbsp;&nbsp;
-<a href="#doc">Back to Document Contents</a>
-</p>
+<p><a href="#input">Back to Section Contents</a>&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a></p>
 
 
 <h2 id="output">Output Variables</h2>
 
-<p>Introductory text goes here.</p>
+<p>This section contains documentation of output variables in a format
+that is easy to search and print. The output variables are ordered
+alphabetically by name.  There are no subsections, just a long list of
+output variables that Tax-Calculator is programmed to calculate.</p>
 
-<h3>Section Contents</h3>
+<!-- calc@variables -->
 
-<p><a href="#output-subsection">Subsection</a></p>
-
-
-<h3 id="output-subsection">Subsection</h3>
-
-<p>Text goes here.</p>
-
-<p>More text goes here.</p>
-
-
-<p>
-<a href="#output">Back to Section Contents</a>
-&nbsp;&nbsp;
-<a href="#doc">Back to Document Contents</a>
-</p>
+<p><a href="#output">Back to Section Contents</a>&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a></p>
 
 
 <h2 id="params">Response Parameters</h2>
@@ -423,12 +392,8 @@ are placed in an Other Parameters group at the end of the section.</p>
 
 <p>More text goes here.</p>
 
-
-<p>
-<a href="#params">Back to Section Contents</a>
-&nbsp;&nbsp;
-<a href="#doc">Back to Document Contents</a>
-</p>
+<p><a href="#params">Back to Section Contents</a>&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a></p>
 
 
 </div>
