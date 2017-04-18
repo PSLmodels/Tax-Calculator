@@ -157,7 +157,8 @@ def test_records_variables_content(tests_path):
             for key in reqkeys:
                 assert key in variable
             # check that required is true if it is present
-            assert getattr(variable, 'required', True)
+            if 'required' in variable:
+                assert variable['required'] is True
             # check that forminfo is dictionary with sensible year ranges
             forminfo = variable['form']
             assert isinstance(forminfo, dict)
