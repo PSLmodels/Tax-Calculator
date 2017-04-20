@@ -5,10 +5,14 @@ Adds JSON information to input HTML and writes augmented HTML file.
 # pep8 --ignore=E402 make.py
 # pylint --disable=locally-disabled make.py
 
-import sys
 import os
+import sys
 import json
 from collections import OrderedDict
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(CUR_PATH, '..', '..'))
+# pylint: disable=wrong-import-position,import-error
+from taxcalc import Policy
 
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 INPUT_FILENAME = 'index.htmx'
@@ -57,9 +61,9 @@ def policy_param_text(pname, param):
     else:
         txt = '<p><b>{} &mdash; {}</b>'.format('Other Parameters',
                                                'Not in TaxBrain GUI')
-    txt += '<br><i>CLI Name:</i> {}'.format(pname)
+    txt += '<br><i>tc Name:</i> {}'.format(pname)
     if len(sec1) > 0:
-        txt += '<br><i>GUI Name:</i> {}'.format(param['long_name'])
+        txt += '<br><i>TB Name:</i> {}'.format(param['long_name'])
     else:
         txt += '<br><i>Long Name:</i> {}'.format(param['long_name'])
     txt += '<br><i>Description:</i> {}'.format(param['description'])
@@ -74,7 +78,15 @@ def policy_param_text(pname, param):
         cols = ', '.join(param['col_label'])
         txt += '<br>&nbsp;&nbsp; for: [{}]'.format(cols)
     for cyr, val in zip(param['row_label'], param['value']):
+        final_cyr = cyr
+        final_val = val
         txt += '<br>{}: {}'.format(cyr, val)
+    if not param['cpi_inflated']:
+        fcyr = int(final_cyr)
+        if fcyr < Policy.LAST_KNOWN_YEAR:
+            # extrapolate final_val thru Policy.LAST_KNOWN_YEAR if not indexed
+            for cyr in range(fcyr + 1, Policy.LAST_KNOWN_YEAR + 1):
+                txt += '<br>{}: {}'.format(cyr, final_val)
     txt += '</p>'
     return txt
 
@@ -167,15 +179,15 @@ def response_param_text(pname, ptype, param):
     else:
         txt = '<p><b>{} &mdash; {}</b>'.format('Response Parameter',
                                                ptype.capitalize())
-    txt += '<br><i>CLI Name:</i> {}'.format(pname)
+    txt += '<br><i>tc Name:</i> {}'.format(pname)
     if len(sec1) > 0:
-        txt += '<br><i>GUI Name:</i> {}'.format(param['long_name'])
+        txt += '<br><i>TB Name:</i> {}'.format(param['long_name'])
     else:
         txt += '<br><i>Long Name:</i> {}'.format(param['long_name'])
     txt += '<br><i>Description:</i> {}'.format(param['description'])
     if len(param['notes']) > 0:
         txt += '<br><i>Notes:</i> {}'.format(param['notes'])
-    txt += '<br><i>Default Values:</i>'
+    txt += '<br><i>Default Value:</i>'
     if len(param['col_label']) > 0:
         cols = ', '.join(param['col_label'])
         txt += '<br>&nbsp;&nbsp; for: [{}]'.format(cols)
