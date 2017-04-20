@@ -8,7 +8,7 @@ Tax-Calculator federal tax Calculator class.
 # pylint: disable=wildcard-import,unused-wildcard-import
 # pylint: disable=wildcard-import,missing-docstring,invalid-name
 # pylint: disable=too-many-arguments,too-many-branches,too-many-locals
-# pylint: disable=no-value-for-parameter,protected-access
+# pylint: disable=no-value-for-parameter
 
 import os
 import json

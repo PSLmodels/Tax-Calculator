@@ -482,7 +482,6 @@ class TaxCalcIO(object):
         odict['RECID'] = crecs.RECID  # id for tax filing unit
         odict['YEAR'] = self.tax_year()  # tax calculation year
         odict['WEIGHT'] = crecs.s006  # sample weight
-        # pylint: disable=protected-access
         odict['INCTAX'] = crecs.iitax  # federal income taxes
         odict['LSTAX'] = crecs.lumpsum_tax  # lump-sum tax
         odict['PAYTAX'] = crecs.payrolltax  # payroll taxes (ee+er)

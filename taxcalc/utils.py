@@ -547,7 +547,6 @@ def diagnostic_table_odict(recs):
     -------
     ordered dictionary of variable names and aggregate weighted values
     """
-    # pylint: disable=protected-access
     # aggregate weighted values expressed in millions or billions
     in_millions = 1.0e-6
     in_billions = 1.0e-9
@@ -971,7 +970,6 @@ def atr_graph_data(calc1, calc2,
     output = [getattr(calc1.records, col) for col in record_columns]
     dfx = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
     # create 'tax1' and 'tax2' columns given specified atr_measure
-    # pylint: disable=protected-access
     if atr_measure == 'itax':
         dfx['tax1'] = calc1.records.iitax
         dfx['tax2'] = calc2.records.iitax

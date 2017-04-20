@@ -101,7 +101,7 @@ class SimpleTaxIO(object):
             raise ValueError(msg.format(input_filename))
         # read input file contents into self._input dictionary
         self._read_input(input_filename)
-        self._policy = Policy()
+        self.policy = Policy()
         # implement reform if reform is specified
         if reform:
             if self._using_reform_file:
@@ -109,7 +109,7 @@ class SimpleTaxIO(object):
                 r_pol = param_dict['policy']
             else:
                 r_pol = reform
-            self._policy.implement_reform(r_pol)
+            self.policy.implement_reform(r_pol)
         # validate input variable values
         self._validate_input()
         self.calc = self._calc_object(exact_calculations,
@@ -120,13 +120,13 @@ class SimpleTaxIO(object):
         """
         Returns starting year for SimpleTaxIO calculations
         """
-        return self._policy.start_year
+        return self.policy.start_year
 
     def end_year(self):
         """
         Returns ending year for SimpleTaxIO calculations
         """
-        return self._policy.end_year
+        return self.policy.end_year
 
     def calculate(self, writing_output_file=False,
                   exact_output=False):
@@ -294,7 +294,6 @@ class SimpleTaxIO(object):
         ovar[1] = crecs.RECID[idx]  # id for tax filing unit
         ovar[2] = crecs.FLPDYR[idx]  # year for which taxes are calculated
         ovar[3] = 0  # state code is always zero
-        # pylint: disable=protected-access
         ovar[4] = crecs.iitax[idx]  # federal income tax liability
         ovar[5] = 0.0  # no state income tax calculation
         ovar[6] = crecs.payrolltax[idx]  # payroll taxes (ee+er) for OASDI+HI
@@ -608,7 +607,7 @@ class SimpleTaxIO(object):
         recsdf['MARS'] = recsdf['MARS'].add(1)  # because MARS==0 is illegal
         recs = Records(data=recsdf, exact_calculations=exact_calcs,
                        gfactors=None, weights=None,
-                       start_year=self._policy.start_year)
+                       start_year=self.policy.start_year)
         assert recs.dim == len(self._input)
         # specify input for each tax filing unit in Records object
         lnum = 0
@@ -626,7 +625,7 @@ class SimpleTaxIO(object):
                                 self._output_filename),
                          float_format='%.2f', index=False)
         # create Calculator object containing all tax filing units
-        return Calculator(policy=self._policy, records=recs, sync_years=False)
+        return Calculator(policy=self.policy, records=recs, sync_years=False)
 
     @staticmethod
     def _specify_input(recs, idx, ivar, emulate_taxsim_2441_logic):
