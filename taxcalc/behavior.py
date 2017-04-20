@@ -295,7 +295,7 @@ class Behavior(ParametersBase):
         # compute AGI minus itemized deductions, agi_m_ided
         agi = calc.records.c00100
         # pylint: disable=protected-access
-        ided = np.where(calc.records.c04470 < calc.records._standard,
+        ided = np.where(calc.records.c04470 < calc.records.standard,
                         0.,
                         calc.records.c04470)
         agi_m_ided = agi - ided

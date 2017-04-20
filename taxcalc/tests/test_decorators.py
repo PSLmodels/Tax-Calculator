@@ -100,12 +100,12 @@ class Foo(object):
 
 
 @iterate_jit(nopython=True)
-def bar(MARS):
-    if MARS == 1 or MARS == 6:
-        _sep = 2
+def faux_function(MARS):
+    if MARS == 1:
+        var = 2
     else:
-        _sep = 1
-    return _sep
+        var = 1
+    return var
 
 
 @iterate_jit(nopython=True)
@@ -159,13 +159,13 @@ def test_magic_iterate_jit():
     assert_frame_equal(xx, exp)
 
 
-def test_bar_iterate_jit():
+def test_faux_function_iterate_jit():
     pm = Foo()
     pf = Foo()
     pf.MARS = np.ones((5,))
-    pf._sep = np.ones((5,))
-    ans = bar(pm, pf)
-    exp = DataFrame(data=[2.0] * 5, columns=["_sep"])
+    pf.var = np.ones((5,))
+    ans = faux_function(pm, pf)
+    exp = DataFrame(data=[2.0] * 5, columns=['var'])
     assert_frame_equal(ans, exp)
 
 

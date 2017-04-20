@@ -295,9 +295,9 @@ class SimpleTaxIO(object):
         ovar[2] = crecs.FLPDYR[idx]  # year for which taxes are calculated
         ovar[3] = 0  # state code is always zero
         # pylint: disable=protected-access
-        ovar[4] = crecs._iitax[idx]  # federal income tax liability
+        ovar[4] = crecs.iitax[idx]  # federal income tax liability
         ovar[5] = 0.0  # no state income tax calculation
-        ovar[6] = crecs._payrolltax[idx]  # payroll taxes (ee+er) for OASDI+HI
+        ovar[6] = crecs.payrolltax[idx]  # payroll taxes (ee+er) for OASDI+HI
         ovar[7] = 0.0  # marginal federal income tax rate as percent
         ovar[8] = 0.0  # no state income tax calculation
         ovar[9] = 0.0  # marginal payroll tax rate as percent
@@ -316,7 +316,7 @@ class SimpleTaxIO(object):
         ovar[17] = crecs.c04470[idx]  # post-phase-out itemized deduction
         ovar[18] = crecs.c04800[idx]  # federal regular taxable income
         if exact:
-            ovar[19] = crecs._taxbc[idx]  # regular tax on taxable income
+            ovar[19] = crecs.taxbc[idx]  # regular tax on taxable income
         else:  # Internet-TAXSIM ovar[19] that ignores special qdiv+ltcg rates
             ovar[19] = crecs.c05200[idx]  # regular tax on taxable income
         ovar[20] = 0.0  # always set exemption surtax to zero

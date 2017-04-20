@@ -462,7 +462,7 @@
     },
     "combined": {
       "type": "float",
-      "desc": "Sum of _iitax and _payrolltax and lumpsum_tax",
+      "desc": "Sum of iitax and payrolltax and lumpsum_tax",
       "form": {}
     },
     "earned": {
@@ -496,49 +496,50 @@
       "desc": "",
       "form": {}
     },
-    "_iitax": {
+    "iitax": {
       "type": "float",
       "desc": "Total federal individual income tax liability",
       "form": {"2013-2013": "1040, line 61 minus line 56 minus line 60a",
                "2014-2016": "1040, line 63 minus line 57 minus line 62a"}
     },
-    "_num": {
+    "num": {
       "type": "int",
-      "desc": "",
-      "form": {}
+      "desc": "2 when MARS is 2 (married filing jointly); otherwise 1",
+      "form": {"2013-2016": "1040, lines 1-5"}
     },
-    "_payrolltax": {
+
+    "payrolltax": {
       "type": "float",
       "desc": "Total (employee + employer) payroll tax liability",
       "form": {"2013-2013": "OASDHI FICA plus 1040 lines 56 and 60a",
                "2014-2016": "OASDHI FICA plus 1040 lines 57 and 62a"}
     },
-    "_refund": {
+    "refund": {
       "type": "float",
       "desc": "",
       "form": {}
     },
-    "_sep": {
+    "sep": {
       "type": "int",
-      "desc": "",
-      "form": {}
+      "desc": "2 when MARS is 3 (married filing separately); otherwise 1",
+      "form": {"2013-2016": "1040, lines 1-5"}
     },
-    "_sey": {
+    "sey": {
       "type": "float",
       "desc": "",
       "form": {}
     },
-    "_standard": {
+    "standard": {
       "type": "float",
       "desc": "Standard deduction (zero for itemizers)",
       "form": {"2013-2016": "1040, line 40"}
     },
-    "_surtax": {
+    "surtax": {
       "type": "float",
       "desc": "",
       "form": {}
     },
-    "_taxbc": {
+    "taxbc": {
       "type": "float",
       "desc": "Regular tax on regular taxable income",
       "form": {"2013-2016": "1040, line 44"}

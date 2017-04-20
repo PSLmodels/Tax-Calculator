@@ -153,7 +153,7 @@ class Calculator(object):
         StdDed(self.policy, self.records)
         # Store calculated standard deduction, calculate
         # taxes with standard deduction, store AMT + Regular Tax
-        std = copy.deepcopy(self.records._standard)
+        std = copy.deepcopy(self.records.standard)
         item = copy.deepcopy(self.records.c04470)
         item_no_limit = copy.deepcopy(self.records.c21060)
         self.records.c04470 = np.zeros(self.records.dim)
@@ -162,15 +162,15 @@ class Calculator(object):
         std_taxes = copy.deepcopy(self.records.c05800)
         # Set standard deduction to zero, calculate taxes w/o
         # standard deduction, and store AMT + Regular Tax
-        self.records._standard = np.zeros(self.records.dim)
+        self.records.standard = np.zeros(self.records.dim)
         self.records.c21060 = item_no_limit
         self.records.c04470 = item
         self.TaxInc_to_AMT()
         item_taxes = copy.deepcopy(self.records.c05800)
         # Replace standard deduction with zero where the taxpayer
         # would be better off itemizing
-        self.records._standard[:] = np.where(item_taxes < std_taxes,
-                                             0., std)
+        self.records.standard[:] = np.where(item_taxes < std_taxes,
+                                            0., std)
         self.records.c04470[:] = np.where(item_taxes < std_taxes,
                                           item, 0.)
         self.records.c21060[:] = np.where(item_taxes < std_taxes,
@@ -342,14 +342,14 @@ class Calculator(object):
         if self.consumption.has_response():
             self.consumption.response(self.records, finite_diff)
         self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
-        payrolltax_chng = copy.deepcopy(self.records._payrolltax)
-        incometax_chng = copy.deepcopy(self.records._iitax)
+        payrolltax_chng = copy.deepcopy(self.records.payrolltax)
+        incometax_chng = copy.deepcopy(self.records.iitax)
         combined_taxes_chng = incometax_chng + payrolltax_chng
         # calculate base level of taxes after restoring records object
         setattr(self, 'records', recs0)
         self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
-        payrolltax_base = copy.deepcopy(self.records._payrolltax)
-        incometax_base = copy.deepcopy(self.records._iitax)
+        payrolltax_base = copy.deepcopy(self.records.payrolltax)
+        incometax_base = copy.deepcopy(self.records.iitax)
         combined_taxes_base = incometax_base + payrolltax_base
         # compute marginal changes in combined tax liability
         payrolltax_diff = payrolltax_chng - payrolltax_base

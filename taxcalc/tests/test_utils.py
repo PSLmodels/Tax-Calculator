@@ -349,7 +349,7 @@ def test_add_columns():
             [100, 8, 9, 100, 20],
             [-1000, 38, 90, 800, 30]]
     df = DataFrame(data=cols,
-                   columns=['c00100', 'c04470', '_standard', 'c09600', 's006'])
+                   columns=['c00100', 'c04470', 'standard', 'c09600', 's006'])
     add_columns(df)
     npt.assert_array_equal(df.c04470, np.array([40, 0, 0]))
     npt.assert_array_equal(df.num_returns_ItemDed, np.array([10, 0, 0]))

@@ -421,11 +421,11 @@ def test_create_dropq_diff_table_groupby_options(groupby, res_col,
     if groupby == "other_deciles":
         with pytest.raises(ValueError):
             create_dropq_difference_table(df1, df2, groupby=groupby,
-                                          res_col=res_col, diff_col='_iitax',
+                                          res_col=res_col, diff_col='iitax',
                                           suffix='_dec',
                                           wsum=dec_sum)
     else:
         create_dropq_difference_table(df1, df2, groupby=groupby,
-                                      res_col=res_col, diff_col='_iitax',
+                                      res_col=res_col, diff_col='iitax',
                                       suffix='_dec',
                                       wsum=dec_sum)

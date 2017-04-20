@@ -25,18 +25,18 @@ except ImportError:
     BOKEH_AVAILABLE = False
 
 
-STATS_COLUMNS = ['expanded_income', 'c00100', '_standard',
+STATS_COLUMNS = ['expanded_income', 'c00100', 'standard',
                  'c04470', 'c04600', 'c04800', 'c05200', 'c62100', 'c09600',
-                 'c05800', 'c09200', '_refund', 'c07100', '_iitax',
-                 '_payrolltax', 'combined', 's006']
+                 'c05800', 'c09200', 'refund', 'c07100', 'iitax',
+                 'payrolltax', 'combined', 's006']
 
 # Items in the TABLE_COLUMNS list below correspond to the items in the
 # TABLE_LABELS list below; this correspondence allows us to use TABLE_LABELS
 # to map a label to the correct column in our distribution tables.
-TABLE_COLUMNS = ['s006', 'c00100', 'num_returns_StandardDed', '_standard',
+TABLE_COLUMNS = ['s006', 'c00100', 'num_returns_StandardDed', 'standard',
                  'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'c05200',
                  'c62100', 'num_returns_AMT', 'c09600', 'c05800', 'c07100',
-                 'c09200', '_refund', '_iitax', '_payrolltax', 'combined']
+                 'c09200', 'refund', 'iitax', 'payrolltax', 'combined']
 
 TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Standard Deduction', 'Itemizers',
@@ -344,13 +344,13 @@ def add_columns(pdf):
     # weight of returns with positive AGI and
     # itemized deduction greater than standard deduction
     pdf['c04470'] = pdf['c04470'].where(
-        ((pdf['c00100'] > 0.) & (pdf['c04470'] > pdf['_standard'])), 0.)
+        ((pdf['c00100'] > 0.) & (pdf['c04470'] > pdf['standard'])), 0.)
     # weight of returns with positive AGI and itemized deduction
     pdf['num_returns_ItemDed'] = pdf['s006'].where(
         ((pdf['c00100'] > 0.) & (pdf['c04470'] > 0.)), 0.)
     # weight of returns with positive AGI and standard deduction
     pdf['num_returns_StandardDed'] = pdf['s006'].where(
-        ((pdf['c00100'] > 0.) & (pdf['_standard'] > 0.)), 0.)
+        ((pdf['c00100'] > 0.) & (pdf['standard'] > 0.)), 0.)
     # weight of returns with positive Alternative Minimum Tax (AMT)
     pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
     return pdf
@@ -455,7 +455,7 @@ def create_distribution_table(obj, groupby, result_type,
 
 def create_difference_table(recs1, recs2, groupby,
                             income_measure='expanded_income',
-                            income_to_present='_iitax'):
+                            income_to_present='iitax'):
     """
     Get results from two different Records objects for the same year, compare
     the two results, and return the differences as a Pandas DataFrame that is
@@ -473,11 +473,11 @@ def create_difference_table(recs1, recs2, groupby,
         determines how the columns in the resulting Pandas DataFrame are sorted
 
     income_measure : String object
-        options for input: 'expanded_income', '_iitax'
+        options for input: 'expanded_income', 'iitax'
         classifier of income bins/deciles
 
     income_to_present : String object
-        options for input: '_iitax', '_payrolltax', 'combined'
+        options for input: 'iitax', 'payrolltax', 'combined'
 
     Returns
     -------
@@ -564,11 +564,11 @@ def diagnostic_table_odict(recs):
     val = ided1[recs.c04470 > 0.].sum()
     odict['Itemized Deduction ($b)'] = val * in_billions
     # number of standard deductions
-    num = recs.s006[(recs._standard > 0.) * (recs.c00100 > 0.)].sum()
+    num = recs.s006[(recs.standard > 0.) * (recs.c00100 > 0.)].sum()
     odict['Standard Deduction Filers (#m)'] = num * in_millions
     # standard deduction
-    sded1 = recs._standard * recs.s006
-    val = sded1[(recs._standard > 0.) * (recs.c00100 > 0.)].sum()
+    sded1 = recs.standard * recs.s006
+    val = sded1[(recs.standard > 0.) * (recs.c00100 > 0.)].sum()
     odict['Standard Deduction ($b)'] = val * in_billions
     # personal exemption
     val = (recs.c04600 * recs.s006)[recs.c00100 > 0.].sum()
@@ -589,25 +589,25 @@ def diagnostic_table_odict(recs):
     val = (recs.c05800 * recs.s006).sum()
     odict['Tax before Credits ($b)'] = val * in_billions
     # refundable credits
-    val = (recs._refund * recs.s006).sum()
+    val = (recs.refund * recs.s006).sum()
     odict['Refundable Credits ($b)'] = val * in_billions
     # nonrefuncable credits
     val = (recs.c07100 * recs.s006).sum()
     odict['Nonrefundable Credits ($b)'] = val * in_billions
     # reform surtaxes (part of federal individual income tax liability)
-    val = (recs._surtax * recs.s006).sum()
+    val = (recs.surtax * recs.s006).sum()
     odict['Reform Surtaxes ($b)'] = val * in_billions
     # federal individual income tax liability
-    val = (recs._iitax * recs.s006).sum()
+    val = (recs.iitax * recs.s006).sum()
     odict['Ind Income Tax ($b)'] = val * in_billions
     # OASDI+HI payroll tax liability (including employer share)
-    val = (recs._payrolltax * recs.s006).sum()
+    val = (recs.payrolltax * recs.s006).sum()
     odict['Payroll Taxes ($b)'] = val * in_billions
     # combined income and payroll tax liability
     val = (recs.combined * recs.s006).sum()
     odict['Combined Liability ($b)'] = val * in_billions
     # number of tax units with non-positive income tax liability
-    num = (recs.s006[recs._iitax <= 0]).sum()
+    num = (recs.s006[recs.iitax <= 0]).sum()
     odict['With Income Tax <= 0 (#m)'] = num * in_millions
     # number of tax units with non-positive payroll tax liability
     num = (recs.s006[recs.combined <= 0]).sum()
@@ -973,11 +973,11 @@ def atr_graph_data(calc1, calc2,
     # create 'tax1' and 'tax2' columns given specified atr_measure
     # pylint: disable=protected-access
     if atr_measure == 'itax':
-        dfx['tax1'] = calc1.records._iitax
-        dfx['tax2'] = calc2.records._iitax
+        dfx['tax1'] = calc1.records.iitax
+        dfx['tax2'] = calc2.records.iitax
     elif atr_measure == 'ptax':
-        dfx['tax1'] = calc1.records._payrolltax
-        dfx['tax2'] = calc2.records._payrolltax
+        dfx['tax1'] = calc1.records.payrolltax
+        dfx['tax2'] = calc2.records.payrolltax
     elif atr_measure == 'combined':
         dfx['tax1'] = calc1.records.combined
         dfx['tax2'] = calc2.records.combined
@@ -1320,7 +1320,7 @@ def ce_aftertax_income(calc1, calc2,
     # with very low or even negative after-tax income in the expected-utility
     # and certainty-equivalent calculations.
     # ... extract calc_all() data from calc1 and calc2
-    record_columns = ['s006', '_payrolltax', '_iitax',
+    record_columns = ['s006', 'payrolltax', 'iitax',
                       'combined', 'expanded_income']
     out = [getattr(calc1.records, col) for col in record_columns]
     df1 = pd.DataFrame(data=np.column_stack(out), columns=record_columns)

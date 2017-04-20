@@ -397,8 +397,8 @@ class Records(object):
                                      np.less_equal(self.MARS, 5))):
             raise ValueError('not all MARS values in [1,5] range')
         # create variables derived from MARS, which is in MUST_READ_VARS
-        self._num[:] = np.where(self.MARS == 2, 2, 1)
-        self._sep[:] = np.where(self.MARS == 3, 2, 1)
+        self.num[:] = np.where(self.MARS == 2, 2, 1)
+        self.sep[:] = np.where(self.MARS == 3, 2, 1)
         # specify value of exact array
         self.exact[:] = np.where(exact_calcs is True, 1, 0)
         # specify value of ID_Casualty_frt_in_pufcsv_year array

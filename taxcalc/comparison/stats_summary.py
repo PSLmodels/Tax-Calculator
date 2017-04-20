@@ -48,8 +48,8 @@ def main():
 def creat_table_base():
     # saved caculated variable names and descriptions in json format
     # currently only includes 16 most used variables
-    calculated_vars = {"_iitax": "Federal income tax liability",
-                       "_payrolltax": "Payroll taxes (ee+er) for OASDI+HI",
+    calculated_vars = {"iitax": "Federal income tax liability",
+                       "payrolltax": "Payroll taxes (ee+er) for OASDI+HI",
                        "c00100": "Federal AGI",
                        "c02500": "OASDI benefits in AGI",
                        "c04600": "Post-phase-out personal exemption",
