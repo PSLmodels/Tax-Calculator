@@ -4,7 +4,7 @@
         "value": {"_FICA_ss_trt": [0.134]},
         "section_name": "PAYROLL TAXES",
         "name": "Increase the Social Security payroll tax rate by 1pts",
-        "output_type": "_payrolltax",
+        "output_type": "payrolltax",
         "compare_with": {}
     },
 
@@ -12,7 +12,7 @@
         "start_year": 2015,
         "value": {"_SS_Earnings_c": [177500]},
         "name": "Increase the maximum taxable earnings (177500) for the social security payroll tax",
-        "output_type": "_payrolltax",
+        "output_type": "payrolltax",
         "compare_with": {"Budget Options": [40, 46, 49, 51]}
     },
 
@@ -20,7 +20,7 @@
         "start_year": 2015,
         "value": {"_FICA_mc_trt": [0.039]},
         "name": "Increase the payroll tax rate for Medicare (HI) by 1pts",
-        "output_type": "_payrolltax",
+        "output_type": "payrolltax",
         "compare_with": {"Budget Options": [73, 77, 82, 87]}
     },
 
@@ -28,7 +28,7 @@
         "start_year": 2015,
         "value": {"_AMEDT_ec": [[210000, 260000, 135000, 210000, 210000]]},
         "name": "Increase the Additional Medicare Tax exclusion by 10,000",
-        "output_type": "_payrolltax",
+        "output_type": "payrolltax",
         "compare_with": {}
     },
 
@@ -36,7 +36,7 @@
         "start_year": 2015,
         "value": {"_AMEDT_rt": [0.01]},
         "name": "Increase the Additional Medicare Tax rate by 0.1 pts",
-        "output_type": "_payrolltax",
+        "output_type": "payrolltax",
         "compare_with": {}
     },
 
@@ -48,7 +48,7 @@
                   "_SS_percentage2": [1]},
         "section_name": "SOCIAL SECURITY TAXABILITY",
         "name": "Exclusion of untaxed social security and railroad retirement",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {"Tax Expenditure": [39.3, 41.5, 44.1, 46.8],
                          "Budget Options": [35, 37, 38, 40]}
     },
@@ -58,7 +58,7 @@
         "value": {"_ALD_KEOGH_SEP_hc": [1]},
         "section_name": "ADJUSTMENTS",
         "name": "Net exclusion of KEOGH plan",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {"Tax Expenditure": [8.7, 10.0, 11.4, 16.2]}
     },
 
@@ -66,7 +66,7 @@
         "start_year": 2015,
         "value": {"_ALD_StudentLoan_hc": [1]},
         "name": "Deduction for student loans",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {"Tax Expenditure": [1.8, 1.9, 1.9, 2.1]}
     },
 
@@ -74,7 +74,7 @@
         "start_year": 2015,
         "value": {"_ALD_SelfEmploymentTax_hc": [1]},
         "name": "Eliminate adjustment for self-employment tax",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -82,7 +82,7 @@
         "start_year": 2015,
         "value": {"_ALD_SelfEmp_HealthIns_hc": [1]},
         "name": "Eliminate adjustment for self-employed health insurance",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -90,7 +90,7 @@
         "start_year": 2015,
         "value": {"_ALD_Alimony_hc": [1]},
         "name": "Eliminate adjustment for alimony payments",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -98,7 +98,7 @@
         "start_year": 2015,
         "value": {"_ALD_EarlyWithdraw_hc": [1]},
         "name": "Eliminate adjustment for forfeited interest penalty",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -107,7 +107,7 @@
         "value": {"_II_em": [5000]},
         "section_name": "EXEMPTION",
         "name": "Increase personal and dependent exemption amount by 1000",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -115,7 +115,7 @@
         "start_year": 2015,
         "value": {"_II_em_ps": [[268250, 319900, 164950, 294040, 319900]]},
         "name": "Increase personal exemption phaseout starting AGI by 10,000",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -123,7 +123,7 @@
         "start_year": 2015,
         "value": {"_II_prt": [0.03]},
         "name": "Increase personal exemption phaseout rate by 1 pts",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -132,7 +132,7 @@
         "value": {"_STD": [[6400, 12700, 6400, 9350, 12700]]},
         "section_name": "STANDARD DEDUCTION",
         "name": "Increase standard deduction by 100",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -140,7 +140,7 @@
         "start_year": 2015,
         "value": {"_STD_Aged": [[1650, 1350, 1350, 1650, 1650]]},
         "name": "Increase additional standard deduction for aged and blind by 100",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -149,7 +149,7 @@
         "value": {"_ID_RealEstate_hc": [1]},
         "section_name": "ITEMIZED DEDUCTION",
         "name": "Real Estate",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {"Tax Expenditure": [34.0, 36.4, 38.8, 41.0]}
     },
 
@@ -157,7 +157,7 @@
         "start_year": 2015,
         "value": {"_ID_InterestPaid_hc": [1]},
         "name": "Home Mortgage",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {"Tax Expenditure": [74.8, 81.6, 87.8, 93.2]}
     },
 
@@ -166,7 +166,7 @@
         "value": {"_ID_StateLocalTax_hc": [1],
                   "_ID_RealEstate_hc": [1]},
         "name": "Both real estate and state and local",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {"Tax Expenditure": [74.8, 81.6, 87.8, 93.2]}
     },
 
@@ -174,7 +174,7 @@
         "start_year": 2015,
         "value": {"_ID_StateLocalTax_hc": [1]},
         "name": "State & Local",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {"Tax Expenditure": [59.2, 63.0, 66.9, 70.7]}
     },
 
@@ -182,7 +182,7 @@
         "start_year": 2015,
         "value": {"_ID_Medical_hc": [1]},
         "name": "Medical",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {"Tax Expenditure": [11.0, 12.4, 12.7, 13.9]}
     },
 
@@ -190,7 +190,7 @@
         "start_year": 2015,
         "value": {"_ID_Casualty_hc": [1]},
         "name": "Casualty",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {"Tax Expenditure": [0.4, 0.5, 0.5, 0.5]}
     },
 
@@ -198,7 +198,7 @@
         "start_year": 2015,
         "value": {"_ID_Charity_hc": [1]},
         "name": "Charitable",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {"Tax Expenditure": [45.6, 47.0, 48.5, 50.1]}
     },
 
@@ -206,7 +206,7 @@
         "start_year": 2015,
         "value": {"_ID_Miscellaneous_frt": [0.01]},
         "name": "Decrease AGI floor for miscellaneous expenses by 1 pts",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -214,7 +214,7 @@
         "start_year": 2015,
         "value": {"_ID_crt": [0.9]},
         "name": "Increase Itemized deduction maximum phaseout by 10%",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -222,7 +222,7 @@
         "start_year": 2015,
         "value": {"_ID_ps": [[248250, 299900, 144950, 274050, 299900]]},
         "name": "Increase Itemized Deduction phaseout starting AGI by 10,000",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -230,7 +230,7 @@
         "start_year": 2015,
         "value": {"_ID_prt": [0.04]},
         "name": "Increase Itemized Deduction phaseout rate by 1 pts",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -239,7 +239,7 @@
         "value": {"_ID_BenefitSurtax_crt": [0.06],
                   "_ID_BenefitSurtax_trt": [1]},
         "name": "limit the tax value of ID to 6% of AGI",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {"Budget Options": [11, 9, 8, 7]}
     },
 
@@ -253,7 +253,7 @@
                   "_AMT_CG_rt3": [0.22]},
         "section_name": "CAPITAL GAIN",
         "name": "Increase long term cap gain and dividends tax rates by 2 percentage, no behavioral response",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -267,7 +267,7 @@
                   "_AMT_CG_rt3": [0.22],
                   "_BE_cg": [-3.67]},
         "name": "Increase long term cap gain and dividends tax rates by 2 percentage, BE_cg elasticity assumed to be -3.67",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {"Budget Options": [4.6, 5, 5.3, 5.6]}
     },
 
@@ -289,7 +289,7 @@
                   "_PT_rt7": [0.406]},
         "section_name": "REGULAR TAXES",
         "name": "Increase each bracket rate by 1%",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {"Budget Options": [56, 60, 65, 69]}
     },
 
@@ -310,7 +310,7 @@
                   "_PT_rt6": [0.36],
                   "_PT_rt7": [0.406]},
         "name": "Increase top 4 rates by 1%",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {"Budget Options": [11, 12, 14, 15]}
     },
 
@@ -331,7 +331,7 @@
                   "_PT_rt6": [0.36],
                   "_PT_rt7": [0.406]},
         "name": "Increase top 2 rates by 1%",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {"Budget Options": [7, 8, 9, 10]}
     },
 
@@ -340,7 +340,7 @@
         "value": {"_AMT_em": [[54600, 84400, 42700, 54600, 84400]]},
         "section_name": "Alternative Minimum Tax",
         "name": "Increase exemption amount by 1000",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -349,7 +349,7 @@
         "value": {"_AMT_em_ps": [[129200, 168900, 89450, 129200, 168900]]},
         "section_name": "Alternative Minimum Tax",
         "name": "Increase exemption phaseout starting AMTI by 10,000",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -358,7 +358,7 @@
         "value": {"_AMT_prt": [0.27]},
         "section_name": "Alternative Minimum Tax",
         "name": "Increase exemption phaseout rate by 2 pts",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -367,7 +367,7 @@
         "value": {"_AMT_rt1": [0.28]},
         "section_name": "Alternative Minimum Tax",
         "name": "Increase AMT rate under the surtax threshold by 2 pts",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -376,7 +376,7 @@
         "value": {"_AMT_rt2": [0.04]},
         "section_name": "Alternative Minimum Tax",
         "name": "Increase AMT rate above the surtax threshold by 2 pts",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -384,7 +384,7 @@
         "start_year": 2015,
         "value": {"_AMT_brk1": [195400]},
         "name": "Increase AMT surtax threshold by 10,000",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -393,7 +393,7 @@
         "value": {"_CTC_c": [0, 0, 0, 0, 0, 0, 0, 0, 0]},
         "section_name": "NONREFUNDABLE CREDIT",
         "name": "Total expenditure from child tax credit",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {"Tax Expenditure": [57.3, 57.0, 57.1, 56.8]}
     },
 
@@ -401,7 +401,7 @@
         "start_year": 2015,
         "value": {"_CTC_prt": [0.06]},
         "name": "Increase Child Tax Credit phaseout rate by 1 pts",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -409,7 +409,7 @@
         "start_year": 2015,
         "value": {"_CTC_ps": [[76000, 111000, 56000, 76000, 76000]]},
         "name": "Increase Child Tax Credit phaseout starting MAGI by 1000",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -418,7 +418,7 @@
         "value": {"_EITC_rt": [[0, 0, 0, 0]]},
         "section_name": "REFUNDABLE CREDIT",
         "name": "Earned income tax credit, total",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {"Tax Expenditure": [70.4, 71.1, 72.2, 69.9]}
     },
 
@@ -426,7 +426,7 @@
         "start_year": 2015,
         "value": {"_EITC_prt": [[0.0865, 0.1698, 0.2206, 0.2206]]},
         "name": "Increase EITC phaseout rate by 1 pts",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -434,7 +434,7 @@
         "start_year": 2015,
         "value": {"_EITC_ps": [[9240, 19110, 19110, 19110]]},
         "name": "Increase EITC phaseout starting AGI by 1000",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -442,7 +442,7 @@
         "start_year": 2015,
         "value": {"_EITC_c": [[603, 3459, 5648, 6342]]},
         "name": "Increase Maximum EITC allowed by 100",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -450,7 +450,7 @@
         "start_year": 2015,
         "value": {"_ACTC_rt": [0.17]},
         "name": "Increase additional child tax credit rate by 2 pts",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -458,7 +458,7 @@
         "start_year": 2015,
         "value": {"_ACTC_ChildNum": [2]},
         "name": "Decrease additional child tax credit minimum number of child to two",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -467,7 +467,7 @@
         "value": {"_NIIT_rt": [0]},
         "section_name": "OTHER TAXES",
         "name": "Eliminate Net Investment Income Tax",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {"Tax Expenditure": [-32.6, -34.7, -36.6, -38.9]}
     },
 
@@ -475,7 +475,7 @@
         "start_year": 2015,
         "value": {"_NIIT_thd": [[210000, 260000, 135000, 210000, 260000]]},
         "name": "Increase Net Investment Income Tax threshold by 10,000",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -484,7 +484,7 @@
         "value": {"_II_credit": [[1000, 1000, 1000, 1000, 1000]]},
         "section_name": "PERSONAL REFUNDABLE CREDIT",
         "name": "Increase Personal Refundable credit amount to 1000",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -494,7 +494,7 @@
                   "_II_credit_ps": [[10000, 10000, 10000, 10000, 10000]],
                   "_II_credit_prt": [0.01]},
         "name": "Increase Personal Refundable credit amount to 1000 with phaseout starting at AGI 10,000 and phaseout rate at 0.01",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {}
     },
 
@@ -505,7 +505,7 @@
                   "_FST_AGI_thd_hi": [[2.0e6, 2.0e6, 1.0e6, 2.0e6, 2.0e6]]},
         "section_name": "FAIR SHARE TAX",
         "name": "Increase FST rate from zero to 0.30 beginning in 2017",
-        "output_type": "_iitax",
+        "output_type": "iitax",
         "compare_with": {"Tax Foundation": [321, "ten-year(2016-25)", "static", "estimate"]}
     }
 }
