@@ -10,10 +10,10 @@ TEST_DIR = d(os.path.abspath(__file__))
 TOP_DIR = os.path.join(d(d(TEST_DIR)))
 
 FILES = ('10_Minutes_to_Tax-Calculator.ipynb', 'Behavioral_example.ipynb',)
-NB0 = os.path.join(TOP_DIR, 'docs',
+NB0 = os.path.join(TOP_DIR, 'read-the-docs',
                    'notebooks',
                    FILES[0])
-NB1 = os.path.join(TOP_DIR, 'docs',
+NB1 = os.path.join(TOP_DIR, 'read-the-docs',
                    'notebooks',
                    FILES[1])
 
