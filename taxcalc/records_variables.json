@@ -465,17 +465,17 @@
       "desc": "Sum of _iitax and _payrolltax and lumpsum_tax",
       "form": {}
     },
-    "_earned": {
+    "earned": {
       "type": "float",
       "desc": "",
       "form": {}
     },
-    "_earned_p": {
+    "earned_p": {
       "type": "float",
       "desc": "",
       "form": {}
     },
-    "_earned_s": {
+    "earned_s": {
       "type": "float",
       "desc": "",
       "form": {}

@@ -21,7 +21,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
                   FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_hc,
                   e00900p, e00900s, e02100p, e02100s,
                   _payrolltax, ptax_was, setax, c03260, ptax_oasdi,
-                  _sey, _earned, _earned_p, _earned_s):
+                  _sey, earned, earned_p, earned_s):
     """
     Compute part of total OASDI+HI payroll taxes and earned income variables.
     """
@@ -63,21 +63,21 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     setax_ss_p = FICA_ss_trt * txearn_sey_p
     setax_ss_s = FICA_ss_trt * txearn_sey_s
 
-    # compute _earned* variables and AGI deduction for
+    # compute earned* variables and AGI deduction for
     # "employer share" of self-employment tax, c03260
     # Note: c03260 is the amount on 2015 Form 1040, line 27
     c03260 = (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax
-    _earned = max(0., e00200 + _sey - c03260)
-    _earned_p = max(0., (e00200p + sey_p -
-                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_p))
-    _earned_s = max(0., (e00200s + sey_s -
-                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_s))
+    earned = max(0., e00200 + _sey - c03260)
+    earned_p = max(0., (e00200p + sey_p -
+                        (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_p))
+    earned_s = max(0., (e00200s + sey_s -
+                        (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_s))
     return (_sey, _payrolltax, ptax_was, setax, c03260, ptax_oasdi,
-            _earned, _earned_p, _earned_s)
+            earned, earned_p, earned_s)
 
 
 @iterate_jit(nopython=True)
-def DependentCare(nu13, elderly_dependent, _earned,
+def DependentCare(nu13, elderly_dependent, earned,
                   MARS, ALD_Dependents_thd, ALD_Dependents_hc,
                   ALD_Dependents_Child_c, ALD_Dependents_Elder_c,
                   care_deduction):
@@ -87,7 +87,7 @@ def DependentCare(nu13, elderly_dependent, _earned,
     ----------
     nu13: Number of dependents under 13 years old
     elderly_dependent: 1 if unit has an elderly dependent; 0 otherwise
-    _earned: Form 2441 earned income amount
+    earned: Form 2441 earned income amount
     MARS: Marital Status
     ALD_Dependents_thd: Maximum income to qualify for deduction
     ALD_Dependents_hc: Deduction for dependent care haircut
@@ -100,7 +100,7 @@ def DependentCare(nu13, elderly_dependent, _earned,
 
     """
 
-    if _earned <= ALD_Dependents_thd[MARS - 1]:
+    if earned <= ALD_Dependents_thd[MARS - 1]:
         care_deduction = (((1. - ALD_Dependents_hc) * nu13 *
                            ALD_Dependents_Child_c) +
                           ((1. - ALD_Dependents_hc) * elderly_dependent *
@@ -501,7 +501,7 @@ def AdditionalMedicareTax(e00200, MARS,
 
 
 @iterate_jit(nopython=True)
-def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
+def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
            MARS, MIDR, blind_head, blind_spouse, _standard, c19700,
            STD_allow_charity_ded_nonitemizers):
     """
@@ -522,7 +522,7 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
         STD_Aged : Additional standard deduction for blind and aged
 
     Taxpayer Characteristics:
-        _earned : Form 2441 earned income amount
+        earned : Form 2441 earned income amount
 
         e02400 : Gross Social Security Benefit
 
@@ -543,7 +543,7 @@ def StdDed(DSI, _earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
     """
     # calculate deduction for dependents
     if DSI == 1:
-        c15100 = max(350. + _earned, STD_Dep)
+        c15100 = max(350. + earned, STD_Dep)
         basic_stded = min(STD[MARS - 1], c15100)
     else:
         c15100 = 0.
@@ -766,7 +766,7 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, _taxbc, _surtax):
 @iterate_jit(nopython=True)
 def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
         c04470, c17000, c20800, c21040, e24515, MARS, _sep, dwks19,
-        dwks14, c05700, e62900, e00700, dwks10, age_head, _earned, cmbtp,
+        dwks14, c05700, e62900, e00700, dwks10, age_head, earned, cmbtp,
         AMT_KT_c_Age, AMT_brk1,
         AMT_em, AMT_prt, AMT_rt1, AMT_rt2,
         AMT_Child_em, AMT_em_ps, AMT_em_pe,
@@ -799,7 +799,7 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
     line29 = max(0., AMT_em[MARS - 1] - AMT_prt *
                  max(0., c62100 - AMT_em_ps[MARS - 1]))
     if age_head != 0 and age_head < AMT_KT_c_Age:
-        line29 = min(line29, _earned + AMT_Child_em)
+        line29 = min(line29, earned + AMT_Child_em)
     line30 = max(0., c62100 - line29)
     line3163 = (AMT_rt1 * line30 +
                 AMT_rt2 * max(0., (line30 - (AMT_brk1 / _sep))))
@@ -871,16 +871,16 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
 
 
 @iterate_jit(nopython=True)
-def F2441(MARS, _earned_p, _earned_s, f2441, CDCC_c, e32800,
+def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
           _exact, c00100, CDCC_ps, CDCC_crt, c05800, e07300, c07180):
     """
     Form 2441 calculation of child and dependent care expense credit, c07180
     """
-    c32880 = _earned_p  # earned income of taxpayer
+    c32880 = earned_p  # earned income of taxpayer
     if MARS == 2:
-        c32890 = _earned_s  # earned income of spouse, if present
+        c32890 = earned_s  # earned income of spouse, if present
     else:
-        c32890 = _earned_p
+        c32890 = earned_p
     dclim = min(f2441, 2) * CDCC_c
     # care expenses are limited by policy
     c32800 = max(0., min(e32800, dclim))
@@ -914,7 +914,7 @@ def EITCamount(phasein_rate, earnings, max_amount,
 
 @iterate_jit(nopython=True)
 def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
-         p25470, e27200, age_head, age_spouse, _earned, _earned_p, _earned_s,
+         p25470, e27200, age_head, age_spouse, earned, earned_p, earned_s,
          EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_MarriedJ,
          EITC_rt, EITC_c, EITC_prt, EITC_InvestIncome_c, EITC_indiv,
          c59660):
@@ -933,7 +933,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
             if MARS == 2:
                 po_start += EITC_ps_MarriedJ[EIC]
             eitc_agi = c00100 + e00400
-            eitc = EITCamount(EITC_rt[EIC], _earned, EITC_c[EIC],
+            eitc = EITCamount(EITC_rt[EIC], earned, EITC_c[EIC],
                               po_start, eitc_agi, EITC_prt[EIC])
             if EIC == 0:
                 # enforce age eligibility rule for those with no EITC-eligible
@@ -961,12 +961,12 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
     else:
         # individual EITC rather than a filing-unit EITC
         # .. calculate eitc amount for taxpayer
-        eitc_p = EITCamount(EITC_rt[EIC], _earned_p, EITC_c[EIC],
-                            EITC_ps[EIC], _earned_p, EITC_prt[EIC])
+        eitc_p = EITCamount(EITC_rt[EIC], earned_p, EITC_c[EIC],
+                            EITC_ps[EIC], earned_p, EITC_prt[EIC])
         # .. calculate eitc amount for spouse
         if MARS == 2:
-            eitc_s = EITCamount(EITC_rt[EIC], _earned_s, EITC_c[EIC],
-                                EITC_ps[EIC], _earned_s, EITC_prt[EIC])
+            eitc_s = EITCamount(EITC_rt[EIC], earned_s, EITC_c[EIC],
+                                EITC_ps[EIC], earned_s, EITC_prt[EIC])
         else:
             eitc_s = 0.
         # .. combine taxpayer and spouse individual EITC amounts
@@ -1226,7 +1226,7 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
 
 
 @iterate_jit(nopython=True)
-def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
+def AdditionalCTC(n24, prectc, earned, c07220, ptax_was,
                   ACTC_Income_thd, ACTC_rt, ACTC_ChildNum,
                   c03260, e09800, c59660, e11200, c11070, nu05,
                   ACTC_rt_bonus_under5family):
@@ -1253,7 +1253,7 @@ def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
         c82930 = c07220
         c82935 = c82925 - c82930
         # CTC not applied to tax
-        c82880 = max(0., _earned)
+        c82880 = max(0., earned)
         c82885 = max(0., c82880 - ACTC_Income_thd)
         # Accomodate ACTC rate bonus for families with children under 5
         if nu05 == 0:
