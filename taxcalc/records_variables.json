@@ -449,18 +449,18 @@
     }
   },
   "calc": {
-    "ID_Casualty_frt_in_pufcsv_year": {
+    "id_casualty_frt_in_pufcsv_year": {
       "type": "unchanging_float",
       "desc": "",
       "form": {}
     },
-    "NIIT": {
+    "niit": {
       "type": "float",
       "desc": "Net Investment Income Tax from Form 8960",
       "form": {"2013-2013": "1040, line 60b",
                "2014-2016": "1040, line 62b"}
     },
-    "_combined": {
+    "combined": {
       "type": "float",
       "desc": "Sum of _iitax and _payrolltax and lumpsum_tax",
       "form": {}

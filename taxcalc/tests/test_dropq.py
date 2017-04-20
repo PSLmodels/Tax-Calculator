@@ -226,7 +226,7 @@ def test_dropq_with_full_puf(puf_path):
                                           return_json=False,
                                           num_years=nyrs)
     fulls_reform_revenue = taxes_fullsample.loc[fyr]
-    dropq_reform_revenue = mY_dec['_combined_dec_0'].loc['sums']
+    dropq_reform_revenue = mY_dec['combined_dec_0'].loc['sums']
     dropq_reform_revenue *= 1e-9  # convert to billions of dollars
     diff = abs(fulls_reform_revenue - dropq_reform_revenue)
     # assert that dropq revenue is similar to the fullsample calculation

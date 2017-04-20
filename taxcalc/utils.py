@@ -28,7 +28,7 @@ except ImportError:
 STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard',
                  'c04470', 'c04600', 'c04800', 'c05200', 'c62100', 'c09600',
                  'c05800', 'c09200', '_refund', 'c07100', '_iitax',
-                 '_payrolltax', '_combined', 's006']
+                 '_payrolltax', 'combined', 's006']
 
 # Items in the TABLE_COLUMNS list below correspond to the items in the
 # TABLE_LABELS list below; this correspondence allows us to use TABLE_LABELS
@@ -36,7 +36,7 @@ STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard',
 TABLE_COLUMNS = ['s006', 'c00100', 'num_returns_StandardDed', '_standard',
                  'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'c05200',
                  'c62100', 'num_returns_AMT', 'c09600', 'c05800', 'c07100',
-                 'c09200', '_refund', '_iitax', '_payrolltax', '_combined']
+                 'c09200', '_refund', '_iitax', '_payrolltax', 'combined']
 
 TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Standard Deduction', 'Itemizers',
@@ -477,7 +477,7 @@ def create_difference_table(recs1, recs2, groupby,
         classifier of income bins/deciles
 
     income_to_present : String object
-        options for input: '_iitax', '_payrolltax', '_combined'
+        options for input: '_iitax', '_payrolltax', 'combined'
 
     Returns
     -------
@@ -604,13 +604,13 @@ def diagnostic_table_odict(recs):
     val = (recs._payrolltax * recs.s006).sum()
     odict['Payroll Taxes ($b)'] = val * in_billions
     # combined income and payroll tax liability
-    val = (recs._combined * recs.s006).sum()
+    val = (recs.combined * recs.s006).sum()
     odict['Combined Liability ($b)'] = val * in_billions
     # number of tax units with non-positive income tax liability
     num = (recs.s006[recs._iitax <= 0]).sum()
     odict['With Income Tax <= 0 (#m)'] = num * in_millions
     # number of tax units with non-positive payroll tax liability
-    num = (recs.s006[recs._combined <= 0]).sum()
+    num = (recs.s006[recs.combined <= 0]).sum()
     odict['With Combined Tax <= 0 (#m)'] = num * in_millions
     return odict
 
@@ -979,8 +979,8 @@ def atr_graph_data(calc1, calc2,
         dfx['tax1'] = calc1.records._payrolltax
         dfx['tax2'] = calc2.records._payrolltax
     elif atr_measure == 'combined':
-        dfx['tax1'] = calc1.records._combined
-        dfx['tax2'] = calc2.records._combined
+        dfx['tax1'] = calc1.records.combined
+        dfx['tax2'] = calc2.records.combined
     # select filing-status subgroup, if any
     if mars != 'ALL':
         dfx = dfx[dfx['MARS'] == mars]
@@ -1321,7 +1321,7 @@ def ce_aftertax_income(calc1, calc2,
     # and certainty-equivalent calculations.
     # ... extract calc_all() data from calc1 and calc2
     record_columns = ['s006', '_payrolltax', '_iitax',
-                      '_combined', '_expanded_income']
+                      'combined', '_expanded_income']
     out = [getattr(calc1.records, col) for col in record_columns]
     df1 = pd.DataFrame(data=np.column_stack(out), columns=record_columns)
     out = [getattr(calc2.records, col) for col in record_columns]
@@ -1330,8 +1330,8 @@ def ce_aftertax_income(calc1, calc2,
     billion = 1.0e-9
     cedict = dict()
     cedict['year'] = calc1.current_year
-    cedict['tax1'] = weighted_sum(df1, '_combined') * billion
-    cedict['tax2'] = weighted_sum(df2, '_combined') * billion
+    cedict['tax1'] = weighted_sum(df1, 'combined') * billion
+    cedict['tax2'] = weighted_sum(df2, 'combined') * billion
     if require_no_agg_tax_change:
         diff = cedict['tax2'] - cedict['tax1']
         if abs(diff) >= 0.0005:
@@ -1350,8 +1350,8 @@ def ce_aftertax_income(calc1, calc2,
     prob_raw = np.divide(df1['s006'], df1['s006'].sum())
     prob = np.divide(prob_raw, prob_raw.sum())  # handle any rounding error
     # ... calculate after-tax income of each filing unit in calc1 and calc2
-    ati1 = df1['_expanded_income'] - df1['_combined']
-    ati2 = df2['_expanded_income'] - df2['_combined']
+    ati1 = df1['_expanded_income'] - df1['combined']
+    ati2 = df2['_expanded_income'] - df2['combined']
     # ... calculate certainty-equivaluent after-tax income in calc1 and calc2
     cedict['crra'] = crras
     ce1 = list()

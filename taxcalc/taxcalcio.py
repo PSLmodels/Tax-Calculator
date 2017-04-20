@@ -360,7 +360,7 @@ class TaxCalcIO(object):
         tab_fname = self._output_filename.replace('.csv', '-tab.text')
         # create DataFrame with weighted tax totals
         nontax_cols = ['s006', '_expanded_income']
-        tax_cols = ['_iitax', '_payrolltax', 'lumpsum_tax', '_combined']
+        tax_cols = ['_iitax', '_payrolltax', 'lumpsum_tax', 'combined']
         all_cols = nontax_cols + tax_cols
         non = [getattr(self.calc.records, col) for col in nontax_cols]
         ref = [getattr(self.calc.records, col) for col in tax_cols]
@@ -397,7 +397,7 @@ class TaxCalcIO(object):
         itax_series = gdfx.apply(weighted_sum, '_iitax')
         ptax_series = gdfx.apply(weighted_sum, '_payrolltax')
         htax_series = gdfx.apply(weighted_sum, 'lumpsum_tax')
-        ctax_series = gdfx.apply(weighted_sum, '_combined')
+        ctax_series = gdfx.apply(weighted_sum, 'combined')
         # write decile table to text file
         row = 'Weighted Tax {} by Expanded-Income Decile\n'
         tfile.write(row.format(tkind))

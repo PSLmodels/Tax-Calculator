@@ -354,7 +354,7 @@ def ItemDed(e17500, e18400, e18500,
             c00100, c04470, c17000, c18300, c20500, c19200,
             c20800, c21040, c21060, c19700,
             ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_hc,
-            ID_Casualty_frt_in_pufcsv_year,
+            id_casualty_frt_in_pufcsv_year,
             ID_Casualty_frt, ID_Casualty_hc, ID_Miscellaneous_frt,
             ID_Miscellaneous_hc, ID_Charity_crt_all, ID_Charity_crt_noncash,
             ID_prt, ID_crt, ID_c, ID_StateLocalTax_hc, ID_Charity_frt,
@@ -435,7 +435,7 @@ def ItemDed(e17500, e18400, e18500,
     c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_hc)
     # Casualty
     if e20500 > 0.0:  # add back to e20500 the PUFCSV_YEAR disregard amount
-        c37703 = e20500 + ID_Casualty_frt_in_pufcsv_year * posagi
+        c37703 = e20500 + id_casualty_frt_in_pufcsv_year * posagi
     else:  # small pre-disregard e20500 values are assumed to be zero
         c37703 = 0.
     c20500 = (max(0., c37703 - ID_Casualty_frt * posagi) *
@@ -856,7 +856,7 @@ def AMT(e07300, dwks13, _standard, f6251, c00100, c18300, _taxbc,
 
 @iterate_jit(nopython=True)
 def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
-                 c00100, NIIT_thd, MARS, NIIT_PT_taxed, NIIT_rt, NIIT):
+                 c00100, NIIT_thd, MARS, NIIT_PT_taxed, NIIT_rt, niit):
     """
     NetInvIncTax function computes Net Investment Income Tax amount
     (assume all annuity income is excluded from net investment income)
@@ -866,8 +866,8 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
         NII = max(0., e00300 + e00600 + c01000 + e02000 - e26270)
     else:  # do not subtract e26270 from e02000
         NII = max(0., e00300 + e00600 + c01000 + e02000)
-    NIIT = NIIT_rt * min(NII, max(0., modAGI - NIIT_thd[MARS - 1]))
-    return NIIT
+    niit = NIIT_rt * min(NII, max(0., modAGI - NIIT_thd[MARS - 1]))
+    return niit
 
 
 @iterate_jit(nopython=True)
@@ -1283,7 +1283,7 @@ def AdditionalCTC(n24, prectc, _earned, c07220, ptax_was,
 
 @iterate_jit(nopython=True)
 def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
-          c07400, c07600, c08000, e09700, e09800, e09900, NIIT,
+          c07400, c07600, c08000, e09700, e09800, e09900, niit,
           c07100, c09200, dep_credit):
     """
     C1040 function computes total nonrefundable credits, c07100, and
@@ -1295,7 +1295,7 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
     # tax after credits (2015 Form 1040, line 56)
     tax_net_nonrefundable_credits = max(0., c05800 - c07100)
     # tax before refundable credits
-    othertaxes = e09700 + e09800 + e09900 + NIIT
+    othertaxes = e09700 + e09800 + e09900 + niit
     c09200 = othertaxes + tax_net_nonrefundable_credits
     return (c07100, c09200)
 
@@ -1331,15 +1331,15 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
 @iterate_jit(nopython=True)
 def IITAX(c59660, c11070, c10960, personal_credit, ctc_new,
           c09200, _payrolltax,
-          _eitc, _refund, _iitax, _combined):
+          _eitc, _refund, _iitax, combined):
     """
     Compute final taxes
     """
     _eitc = c59660
     _refund = _eitc + c11070 + c10960 + personal_credit + ctc_new
     _iitax = c09200 - _refund
-    _combined = _iitax + _payrolltax
-    return (_eitc, _refund, _iitax, _combined)
+    combined = _iitax + _payrolltax
+    return (_eitc, _refund, _iitax, combined)
 
 
 @jit(nopython=True)
@@ -1420,7 +1420,7 @@ def BenefitSurtax(calc):
             ben - (ben_deduct + ben_exempt), 0.)
         # add ben_surtax to income & combined taxes and to surtax subtotal
         calc.records._iitax += ben_surtax
-        calc.records._combined += ben_surtax
+        calc.records.combined += ben_surtax
         calc.records._surtax += ben_surtax
 
 
@@ -1458,13 +1458,13 @@ def BenefitLimitation(calc):
         excess_benefit = np.maximum(benefit - benefit_limit, 0)
         calc.records._iitax += excess_benefit
         calc.records._surtax += excess_benefit
-        calc.records._combined += excess_benefit
+        calc.records.combined += excess_benefit
 
 
 @iterate_jit(nopython=True)
 def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
                  FST_AGI_trt, FST_AGI_thd_lo, FST_AGI_thd_hi,
-                 fstax, _iitax, _combined, _surtax):
+                 fstax, _iitax, combined, _surtax):
     """
     Computes Fair Share Tax, or "Buffet Rule", types of reforms
 
@@ -1488,7 +1488,7 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
 
     _iitax : individual income tax augmented by fstax
 
-    _combined : individual income tax plus payroll taxes augmented by fstax
+    combined : individual income tax plus payroll taxes augmented by fstax
 
     _surtax : individual income tax subtotal augmented by fstax
     """
@@ -1499,17 +1499,17 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
         if thd_gap > 0. and c00100 < FST_AGI_thd_hi[MARS - 1]:
             fstax *= (c00100 - FST_AGI_thd_lo[MARS - 1]) / thd_gap
         _iitax += fstax
-        _combined += fstax
+        combined += fstax
         _surtax += fstax
     else:
         fstax = 0.
-    return (fstax, _iitax, _combined, _surtax)
+    return (fstax, _iitax, combined, _surtax)
 
 
 @iterate_jit(nopython=True)
 def LumpSumTax(DSI, _num, XTOT,
                LST,
-               lumpsum_tax, _combined):
+               lumpsum_tax, combined):
     """
     Compute lump-sum tax and add it to combined taxes.
     """
@@ -1517,8 +1517,8 @@ def LumpSumTax(DSI, _num, XTOT,
         lumpsum_tax = 0.
     else:
         lumpsum_tax = LST * max(_num, XTOT)
-    _combined += lumpsum_tax
-    return (lumpsum_tax, _combined)
+    combined += lumpsum_tax
+    return (lumpsum_tax, combined)
 
 
 @iterate_jit(nopython=True)

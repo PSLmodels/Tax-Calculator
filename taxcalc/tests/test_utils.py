@@ -667,7 +667,7 @@ def test_multiyear_diagnostic_table_wo_behv(records_2009):
     pol.implement_reform(reform)
     calc = Calculator(policy=pol, records=records_2009)
     calc.calc_all()
-    liabilities_x = (calc.records._combined *
+    liabilities_x = (calc.records.combined *
                      calc.records.s006).sum()
     adt = multiyear_diagnostic_table(calc, 1)
     # extract combined liabilities as a float and
@@ -693,7 +693,7 @@ def test_multiyear_diagnostic_table_w_behv(records_2009):
     calc_clp = calc.current_law_version()
     calc_behv = Behavior.response(calc_clp, calc)
     calc_behv.calc_all()
-    liabilities_x = (calc_behv.records._combined *
+    liabilities_x = (calc_behv.records.combined *
                      calc_behv.records.s006).sum()
     adt = multiyear_diagnostic_table(calc_behv, 1)
     # extract combined liabilities as a float and

@@ -165,8 +165,8 @@ class Behavior(ParametersBase):
                 inc = np.zeros(calc_x.records.dim)
             else:
                 # dollar change in after-tax income
-                # (_combined is filing unit's income+payroll tax liability)
-                dch = calc_x.records._combined - calc_y.records._combined
+                # (combined is filing unit's income+payroll tax liability)
+                dch = calc_x.records.combined - calc_y.records.combined
                 inc = calc_y.behavior.BE_inc * dch
         taxinc_chg = sub + inc
         # calculate long-term capital-gains effect

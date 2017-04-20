@@ -184,8 +184,8 @@ def drop_records(df1, df2, mask):
     df2['tax_diff_bin'] = df2['_iitax_bin'] - df1['_iitax']
     df2['payrolltax_diff_dec'] = df2['_payrolltax_dec'] - df1['_payrolltax']
     df2['payrolltax_diff_bin'] = df2['_payrolltax_bin'] - df1['_payrolltax']
-    df2['combined_diff_dec'] = df2['_combined_dec'] - df1['_combined']
-    df2['combined_diff_bin'] = df2['_combined_bin'] - df1['_combined']
+    df2['combined_diff_dec'] = df2['combined_dec'] - df1['combined']
+    df2['combined_diff_bin'] = df2['combined_bin'] - df1['combined']
 
     return df1, df2
 
@@ -211,12 +211,12 @@ def groupby_means_and_comparisons(df1, df2, mask):
     # Totals for baseline
     sum_baseline = (df1['_iitax'] * df1['s006']).sum()
     pr_sum_baseline = (df1['_payrolltax'] * df1['s006']).sum()
-    combined_sum_baseline = (df1['_combined'] * df1['s006']).sum()
+    combined_sum_baseline = (df1['combined'] * df1['s006']).sum()
 
     # Totals for reform
     sum_reform = (df2['_iitax_dec'] * df2['s006']).sum()
     pr_sum_reform = (df2['_payrolltax_dec'] * df2['s006']).sum()
-    combined_sum_reform = (df2['_combined_dec'] * df2['s006']).sum()
+    combined_sum_reform = (df2['combined_dec'] * df2['s006']).sum()
 
     # Totals for reform
 
@@ -248,13 +248,13 @@ def groupby_means_and_comparisons(df1, df2, mask):
     comb_diffs_dec = dropq_diff_table(df1, df2,
                                       groupby='weighted_deciles',
                                       res_col='combined_diff',
-                                      diff_col='_combined',
+                                      diff_col='combined',
                                       suffix='_dec', wsum=combined_dec_sum)
 
     comb_diffs_bin = dropq_diff_table(df1, df2,
                                       groupby='webapp_income_bins',
                                       res_col='combined_diff',
-                                      diff_col='_combined',
+                                      diff_col='combined',
                                       suffix='_bin', wsum=combined_bin_sum)
 
     mX_dec = create_distribution_table(df1, groupby='weighted_deciles',
