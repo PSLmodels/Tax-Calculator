@@ -449,10 +449,10 @@
     }
   },
   "calc": {
-    "id_casualty_frt_in_pufcsv_year": {
+    "ID_Casualty_frt_in_pufcsv_year": {
       "type": "unchanging_float",
-      "desc": "",
-      "form": {}
+      "desc": "Itemized deduction casualty loss disregard as a fraction of AGI",
+      "form": {"2013-2016": "1040 Sch A"}
     },
     "niit": {
       "type": "float",

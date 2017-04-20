@@ -354,7 +354,7 @@ def ItemDed(e17500, e18400, e18500,
             c00100, c04470, c17000, c18300, c20500, c19200,
             c20800, c21040, c21060, c19700,
             ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_hc,
-            id_casualty_frt_in_pufcsv_year,
+            ID_Casualty_frt_in_pufcsv_year,
             ID_Casualty_frt, ID_Casualty_hc, ID_Miscellaneous_frt,
             ID_Miscellaneous_hc, ID_Charity_crt_all, ID_Charity_crt_noncash,
             ID_prt, ID_crt, ID_c, ID_StateLocalTax_hc, ID_Charity_frt,
@@ -435,7 +435,7 @@ def ItemDed(e17500, e18400, e18500,
     c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_hc)
     # Casualty
     if e20500 > 0.0:  # add back to e20500 the PUFCSV_YEAR disregard amount
-        c37703 = e20500 + id_casualty_frt_in_pufcsv_year * posagi
+        c37703 = e20500 + ID_Casualty_frt_in_pufcsv_year * posagi
     else:  # small pre-disregard e20500 values are assumed to be zero
         c37703 = 0.
     c20500 = (max(0., c37703 - ID_Casualty_frt * posagi) *

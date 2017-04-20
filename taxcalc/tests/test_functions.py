@@ -88,7 +88,7 @@ def test_calc_and_used_vars(tests_path):
             continue  # because BenefitSurtax is not really a function
         all_cvars.update(set(cvars[fname]))
     # .. add to all_cvars set some variables calculated in Records class
-    all_cvars.update(set(['id_casualty_frt_in_pufcsv_year',
+    all_cvars.update(set(['ID_Casualty_frt_in_pufcsv_year',
                           '_num', '_sep', '_exact']))
     # .. add to all_cvars set variables calculated only in *_code functions
     all_cvars.update(set([]))

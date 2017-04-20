@@ -401,11 +401,12 @@ class Records(object):
         self._sep[:] = np.where(self.MARS == 3, 2, 1)
         # specify value of _exact array
         self._exact[:] = np.where(exact_calcs is True, 1, 0)
-        # specify value of id_casualty_frt_in_pufcsv_year array
-        ryear = 9999  # specify reform year if ID_Casualty_frt changes
-        rvalue = 0.0  # specify value of ID_Casualty_frt beginning in ryear
-        self.id_casualty_frt_in_pufcsv_year[:] = np.where(PUFCSV_YEAR < ryear,
-                                                          0.10, rvalue)
+        # specify value of ID_Casualty_frt_in_pufcsv_year array
+        ryr = 9999  # specify reform year when ID_Casualty_frt changes to rval
+        rval = 0.0  # post-reform value could be any non-negative value
+        #             pre-reform value is 0.10, which is current law policy
+        self.ID_Casualty_frt_in_pufcsv_year[:] = np.where(PUFCSV_YEAR < ryr,
+                                                          0.10, rval)
 
     def zero_out_changing_calculated_vars(self):
         """
