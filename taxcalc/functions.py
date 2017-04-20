@@ -312,7 +312,7 @@ def UBI(nu18, n1821, n21, UBI1, UBI2, UBI3, UBI_ecrt,
 
 
 @iterate_jit(nopython=True)
-def AGI(ymod1, c02500, c02900, XTOT, MARS, _sep, DSI, _exact,
+def AGI(ymod1, c02500, c02900, XTOT, MARS, _sep, DSI, exact,
         II_em, II_em_ps, II_prt,
         II_credit, II_credit_ps, II_credit_prt, taxable_ubi,
         c00100, pre_c04600, c04600, personal_credit):
@@ -328,7 +328,7 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, _sep, DSI, _exact,
     if DSI:
         pre_c04600 = 0.
     # phase-out personal exemption amount
-    if _exact == 1:  # exact calculation as on tax forms
+    if exact == 1:  # exact calculation as on tax forms
         line5 = max(0., c00100 - II_em_ps[MARS - 1])
         line6 = math.ceil(line5 / (2500. / _sep))
         line7 = II_prt * line6
@@ -872,7 +872,7 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
 
 @iterate_jit(nopython=True)
 def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
-          _exact, c00100, CDCC_ps, CDCC_crt, c05800, e07300, c07180):
+          exact, c00100, CDCC_ps, CDCC_crt, c05800, e07300, c07180):
     """
     Form 2441 calculation of child and dependent care expense credit, c07180
     """
@@ -887,7 +887,7 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
     # credit is limited to minimum of individuals' earned income
     c33000 = max(0., min(c32800, min(c32880, c32890)))
     # credit is limited by AGI-related fraction
-    if _exact == 1:
+    if exact == 1:
         tratio = math.ceil(max(((c00100 - CDCC_ps) / 2000.), 0.))
         c33200 = c33000 * 0.01 * max(20., CDCC_crt - min(15., tratio))
     else:
@@ -975,7 +975,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
 
 
 @iterate_jit(nopython=True)
-def ChildTaxCredit(n24, MARS, c00100, _exact,
+def ChildTaxCredit(n24, MARS, c00100, exact,
                    CTC_c, CTC_ps, CTC_prt, prectc, nu05,
                    CTC_c_under5_bonus, XTOT, _num,
                    DependentCredit_c, dep_credit):
@@ -987,7 +987,7 @@ def ChildTaxCredit(n24, MARS, c00100, _exact,
     modAGI = c00100  # no deducted foreign earned income to add
     if modAGI > CTC_ps[MARS - 1]:
         excess = modAGI - CTC_ps[MARS - 1]
-        if _exact == 1:
+        if exact == 1:
             excess = 1000. * math.ceil(excess / 1000.)
         prectc = max(0., prectc - CTC_prt * excess)
     # calculate and phase-out dependent credit
@@ -995,7 +995,7 @@ def ChildTaxCredit(n24, MARS, c00100, _exact,
     if CTC_prt > 0. and c00100 > CTC_ps[MARS - 1]:
         thresh = CTC_ps[MARS - 1] + n24 * CTC_c / CTC_prt
         excess = c00100 - thresh
-        if _exact == 1:
+        if exact == 1:
             excess = 1000. * math.ceil(excess / 1000.)
         dep_phaseout = CTC_prt * (c00100 - excess)
         dep_credit = max(0., dep_credit - dep_phaseout)
@@ -1331,15 +1331,15 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
 @iterate_jit(nopython=True)
 def IITAX(c59660, c11070, c10960, personal_credit, ctc_new,
           c09200, _payrolltax,
-          _eitc, _refund, _iitax, combined):
+          eitc, _refund, _iitax, combined):
     """
     Compute final taxes
     """
-    _eitc = c59660
-    _refund = _eitc + c11070 + c10960 + personal_credit + ctc_new
+    eitc = c59660
+    _refund = eitc + c11070 + c10960 + personal_credit + ctc_new
     _iitax = c09200 - _refund
     combined = _iitax + _payrolltax
-    return (_eitc, _refund, _iitax, combined)
+    return (eitc, _refund, _iitax, combined)
 
 
 @jit(nopython=True)
@@ -1524,21 +1524,21 @@ def LumpSumTax(DSI, _num, XTOT,
 @iterate_jit(nopython=True)
 def ExpandIncome(c00100, ptax_was, e02400, c02500,
                  c02900_in_ei, e00400, invinc_agi_ec, cmbtp, nontaxable_ubi,
-                 _expanded_income):
+                 expanded_income):
     """
-    ExpandIncome function calculates and returns _expanded_income.
+    ExpandIncome function calculates and returns expanded_income.
     """
     # compute employer share of OASDI+HI payroll tax on wages and salaries
     employer_fica_share = 0.5 * ptax_was
     # compute OASDI benefits not included in AGI
     non_taxable_ss_benefits = e02400 - c02500
     # compute expanded income as AGI plus several additional amounts
-    _expanded_income = (c00100 +  # adjusted gross income
-                        c02900_in_ei +  # ajustments to AGI
-                        e00400 +  # non-taxable interest income
-                        invinc_agi_ec +  # AGI-excluded taxable invest income
-                        cmbtp +  # AMT taxable income items from Form 6251
-                        non_taxable_ss_benefits +
-                        employer_fica_share +
-                        nontaxable_ubi)  # universal basic income
-    return _expanded_income
+    expanded_income = (c00100 +  # adjusted gross income
+                       c02900_in_ei +  # ajustments to AGI
+                       e00400 +  # non-taxable interest income
+                       invinc_agi_ec +  # AGI-excluded taxable invest income
+                       cmbtp +  # AMT taxable income items from Form 6251
+                       non_taxable_ss_benefits +
+                       employer_fica_share +
+                       nontaxable_ubi)  # universal basic income
+    return expanded_income

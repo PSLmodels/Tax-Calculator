@@ -297,7 +297,7 @@ def test_no_tables_or_graphs(reformfile1):
     idict['MARS'] = [2 for i in range(1, nobs + 1)]
     idict['s006'] = [0.0 for i in range(1, nobs + 1)]
     idict['e00300'] = [10000 * i for i in range(1, nobs + 1)]
-    idict['_expanded_income'] = idict['e00300']
+    idict['expanded_income'] = idict['e00300']
     idf = pd.DataFrame(idict, columns=list(idict))
     # create and initialize TaxCalcIO object
     tcio = TaxCalcIO(input_data=idf,
@@ -341,7 +341,7 @@ def test_tables(reformfile1):
     idict['MARS'] = [2 for i in range(1, nobs + 1)]
     idict['s006'] = [10.0 for i in range(1, nobs + 1)]
     idict['e00300'] = [10000 * i for i in range(1, nobs + 1)]
-    idict['_expanded_income'] = idict['e00300']
+    idict['expanded_income'] = idict['e00300']
     idf = pd.DataFrame(idict, columns=list(idict))
     # create and initialize TaxCalcIO object
     tcio = TaxCalcIO(input_data=idf,
@@ -377,7 +377,7 @@ def test_graphs(reformfile1):
     idict['MARS'] = [2 for i in range(1, nobs + 1)]
     idict['s006'] = [10.0 for i in range(1, nobs + 1)]
     idict['e00300'] = [10000 * i for i in range(1, nobs + 1)]
-    idict['_expanded_income'] = idict['e00300']
+    idict['expanded_income'] = idict['e00300']
     idf = pd.DataFrame(idict, columns=list(idict))
     # create and initialize TaxCalcIO object
     tcio = TaxCalcIO(input_data=idf,

@@ -225,7 +225,7 @@ def test_agi_weighted():
 
 def test_expanded_income_weighted():
     df = DataFrame(data=weight_data,
-                   columns=['var', 's006', '_expanded_income'])
+                   columns=['var', 's006', 'expanded_income'])
     wvar = expanded_income_weighted(df, 'var')
     assert round(wvar, 4) == 2.5714
 
@@ -269,7 +269,7 @@ def test_weighted_share_of_total():
 
 def test_add_income_bins():
     data = np.arange(1, 1e6, 5000)
-    df = DataFrame(data=data, columns=['_expanded_income'])
+    df = DataFrame(data=data, columns=['expanded_income'])
     bins = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
             200000, 1e14]
     df = add_income_bins(df, compare_with='tpc', bins=None)
@@ -286,7 +286,7 @@ def test_add_income_bins():
 
 def test_add_income_bins_soi():
     data = np.arange(1, 1e6, 5000)
-    df = DataFrame(data=data, columns=['_expanded_income'])
+    df = DataFrame(data=data, columns=['expanded_income'])
     bins = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
             49999, 74999, 99999, 199999, 499999, 999999, 1499999,
             1999999, 4999999, 9999999, 1e14]
@@ -304,7 +304,7 @@ def test_add_income_bins_soi():
 
 def test_add_income_bins_specify_bins():
     data = np.arange(1, 1e6, 5000)
-    df = DataFrame(data=data, columns=['_expanded_income'])
+    df = DataFrame(data=data, columns=['expanded_income'])
     bins = [-1e14, 0, 4999, 9999, 14999, 19999, 29999, 32999, 43999,
             1e14]
     df = add_income_bins(df, bins=bins)
@@ -321,13 +321,13 @@ def test_add_income_bins_specify_bins():
 
 def test_add_income_bins_raises():
     data = np.arange(1, 1e6, 5000)
-    df = DataFrame(data=data, columns=['_expanded_income'])
+    df = DataFrame(data=data, columns=['expanded_income'])
     with pytest.raises(ValueError):
         df = add_income_bins(df, compare_with='stuff')
 
 
 def test_add_weighted_income_bins():
-    df = DataFrame(data=data, columns=['_expanded_income', 's006', 'label'])
+    df = DataFrame(data=data, columns=['expanded_income', 's006', 'label'])
     df = add_weighted_income_bins(df, num_bins=100)
     bin_labels = df['bins'].unique()
     default_labels = set(range(1, 101))

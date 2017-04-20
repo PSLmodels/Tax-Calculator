@@ -25,7 +25,7 @@ except ImportError:
     BOKEH_AVAILABLE = False
 
 
-STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard',
+STATS_COLUMNS = ['expanded_income', 'c00100', '_standard',
                  'c04470', 'c04600', 'c04800', 'c05200', 'c62100', 'c09600',
                  'c05800', 'c09200', '_refund', 'c07100', '_iitax',
                  '_payrolltax', 'combined', 's006']
@@ -134,7 +134,7 @@ def expanded_income_weighted(pdf, col_name):
     Return expanded-income-weighted mean of Pandas DataFrame col_name items.
     """
     swght = 's006'
-    expinc = '_expanded_income'
+    expinc = 'expanded_income'
     return (float((pdf[col_name] * pdf[swght] * pdf[expinc]).sum()) /
             float((pdf[swght] * pdf[expinc]).sum() + EPSILON))
 
@@ -179,7 +179,7 @@ def weighted_share_of_total(pdf, col_name, total):
 
 
 def add_weighted_income_bins(pdf, num_bins=10, labels=None,
-                             income_measure='_expanded_income',
+                             income_measure='expanded_income',
                              weight_by_income_measure=False):
     """
     Add a column of income bins to specified Pandas DataFrame, pdf, with
@@ -203,7 +203,7 @@ def add_weighted_income_bins(pdf, num_bins=10, labels=None,
 
 
 def add_income_bins(pdf, compare_with='soi', bins=None, right=True,
-                    income_measure='_expanded_income'):
+                    income_measure='expanded_income'):
     """
     Add a column of income bins of income_measure using pandas 'cut'.
     This will serve as a 'grouper' later on.
@@ -316,7 +316,7 @@ def results(obj):
     return pd.DataFrame(data=np.column_stack(arrays), columns=STATS_COLUMNS)
 
 
-def weighted_avg_allcols(pdf, col_list, income_measure='_expanded_income'):
+def weighted_avg_allcols(pdf, col_list, income_measure='expanded_income'):
     """
     Return Pandas DataFrame in which variables in col_list of pdf have
     their weighted_mean computed using the specifed income_measure, except
@@ -357,7 +357,7 @@ def add_columns(pdf):
 
 
 def create_distribution_table(obj, groupby, result_type,
-                              income_measure='_expanded_income',
+                              income_measure='expanded_income',
                               baseline_obj=None, diffs=False):
     """
     Get results from object, sort them based on groupby, manipulate them
@@ -454,7 +454,7 @@ def create_distribution_table(obj, groupby, result_type,
 
 
 def create_difference_table(recs1, recs2, groupby,
-                            income_measure='_expanded_income',
+                            income_measure='expanded_income',
                             income_to_present='_iitax'):
     """
     Get results from two different Records objects for the same year, compare
@@ -473,7 +473,7 @@ def create_difference_table(recs1, recs2, groupby,
         determines how the columns in the resulting Pandas DataFrame are sorted
 
     income_measure : String object
-        options for input: '_expanded_income', '_iitax'
+        options for input: 'expanded_income', '_iitax'
         classifier of income bins/deciles
 
     income_to_present : String object
@@ -792,7 +792,7 @@ def mtr_graph_data(calc1, calc2,
         if dollar_weighting:
             weighting_function = agi_weighted
     elif income_measure == 'expanded_income':
-        income_var = '_expanded_income'
+        income_var = 'expanded_income'
         income_str = 'Expanded Income'
         if dollar_weighting:
             weighting_function = expanded_income_weighted
@@ -967,7 +967,7 @@ def atr_graph_data(calc1, calc2,
     record_columns = ['s006']
     if mars != 'ALL':
         record_columns.append('MARS')
-    record_columns.append('_expanded_income')
+    record_columns.append('expanded_income')
     output = [getattr(calc1.records, col) for col in record_columns]
     dfx = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
     # create 'tax1' and 'tax2' columns given specified atr_measure
@@ -986,11 +986,11 @@ def atr_graph_data(calc1, calc2,
         dfx = dfx[dfx['MARS'] == mars]
     # create 'bins' column
     dfx = add_weighted_income_bins(dfx, num_bins=100,
-                                   income_measure='_expanded_income')
+                                   income_measure='expanded_income')
     # split dfx into groups specified by 'bins' column
     gdfx = dfx.groupby('bins', as_index=False)
     # apply weighted_mean function to percentile-grouped income/tax values
-    avginc_series = gdfx.apply(weighted_mean, '_expanded_income')
+    avginc_series = gdfx.apply(weighted_mean, 'expanded_income')
     avgtax1_series = gdfx.apply(weighted_mean, 'tax1')
     avgtax2_series = gdfx.apply(weighted_mean, 'tax2')
     # compute average tax rates by income percentile
@@ -1321,7 +1321,7 @@ def ce_aftertax_income(calc1, calc2,
     # and certainty-equivalent calculations.
     # ... extract calc_all() data from calc1 and calc2
     record_columns = ['s006', '_payrolltax', '_iitax',
-                      'combined', '_expanded_income']
+                      'combined', 'expanded_income']
     out = [getattr(calc1.records, col) for col in record_columns]
     df1 = pd.DataFrame(data=np.column_stack(out), columns=record_columns)
     out = [getattr(calc2.records, col) for col in record_columns]
@@ -1342,16 +1342,16 @@ def ce_aftertax_income(calc1, calc2,
             msg += ('\n(adjust _LST or other parameter to bracket txdiff=0 '
                     'and then interpolate)')
             raise ValueError(msg.format(cedict['tax1'], cedict['tax2'], diff))
-    cedict['inc1'] = weighted_sum(df1, '_expanded_income') * billion
-    cedict['inc2'] = weighted_sum(df2, '_expanded_income') * billion
+    cedict['inc1'] = weighted_sum(df1, 'expanded_income') * billion
+    cedict['inc2'] = weighted_sum(df2, 'expanded_income') * billion
     # ... calculate sample-weighted probability of each filing unit
     # pylint: disable=no-member
     # (above pylint comment eliminates bogus np.divide warnings)
     prob_raw = np.divide(df1['s006'], df1['s006'].sum())
     prob = np.divide(prob_raw, prob_raw.sum())  # handle any rounding error
     # ... calculate after-tax income of each filing unit in calc1 and calc2
-    ati1 = df1['_expanded_income'] - df1['combined']
-    ati2 = df2['_expanded_income'] - df2['combined']
+    ati1 = df1['expanded_income'] - df1['combined']
+    ati2 = df2['expanded_income'] - df2['combined']
     # ... calculate certainty-equivaluent after-tax income in calc1 and calc2
     cedict['crra'] = crras
     ce1 = list()

@@ -59,7 +59,7 @@ def main(file1name, file2name, rounding_error):
                 'c07220',       # child tax credit (adjusted)
                 'c11070',       # extra child tax credit (refunded)
                 'c07180',       # child care credit
-                '_eitc',        # EITC
+                'eitc',         # EITC
                 'c62100',       # AMT taxable income
                 'c09600',       # AMT liability
                 'c05800']       # total income tax before credits

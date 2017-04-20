@@ -480,18 +480,18 @@
       "desc": "",
       "form": {}
     },
-    "_eitc": {
+    "eitc": {
       "type": "float",
       "desc": "Earned Income Credit",
       "form": {"2013-2013": "1040, line 64a",
                "2014-2016": "1040, line 66a"}
     },
-    "_exact": {
+    "exact": {
       "type": "int",
       "desc": "",
       "form": {}
     },
-    "_expanded_income": {
+    "expanded_income": {
       "type": "float",
       "desc": "",
       "form": {}

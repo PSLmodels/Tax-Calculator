@@ -346,7 +346,7 @@ class Records(object):
     def _read_data(self, data, exact_calcs):
         """
         Read Records data from file or use specified DataFrame as data.
-        Specifies _exact array depending on boolean value of exact_calcs.
+        Specifies exact array depending on boolean value of exact_calcs.
         """
         # pylint: disable=too-many-branches
         if Records.INTEGER_VARS is None:
@@ -399,8 +399,8 @@ class Records(object):
         # create variables derived from MARS, which is in MUST_READ_VARS
         self._num[:] = np.where(self.MARS == 2, 2, 1)
         self._sep[:] = np.where(self.MARS == 3, 2, 1)
-        # specify value of _exact array
-        self._exact[:] = np.where(exact_calcs is True, 1, 0)
+        # specify value of exact array
+        self.exact[:] = np.where(exact_calcs is True, 1, 0)
         # specify value of ID_Casualty_frt_in_pufcsv_year array
         ryr = 9999  # specify reform year when ID_Casualty_frt changes to rval
         rval = 0.0  # post-reform value could be any non-negative value

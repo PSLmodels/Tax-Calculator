@@ -139,7 +139,7 @@ def test_1(input_file):  # pylint: disable=redefined-outer-name
                          output_records=False)
     assert simtax.number_input_lines() == NUM_INPUT_LINES
     # test extracting of weight and debugging variables
-    crecs = simtax._calc.records  # pylint: disable=protected-access
+    crecs = simtax.calc.records
     SimpleTaxIO.DVAR_NAMES = ['f2441']
     # pylint: disable=unused-variable
     ovar = SimpleTaxIO.extract_output(crecs, 0,

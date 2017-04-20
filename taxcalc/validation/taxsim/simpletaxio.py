@@ -112,9 +112,9 @@ class SimpleTaxIO(object):
             self._policy.implement_reform(r_pol)
         # validate input variable values
         self._validate_input()
-        self._calc = self._calc_object(exact_calculations,
-                                       emulate_taxsim_2441_logic,
-                                       output_records)
+        self.calc = self._calc_object(exact_calculations,
+                                      emulate_taxsim_2441_logic,
+                                      output_records)
 
     def start_year(self):
         """
@@ -152,16 +152,16 @@ class SimpleTaxIO(object):
         # loop through self._year_set doing tax calculations and saving output
         output = {}  # dictionary indexed by Records index for filing unit
         for calcyr in self._year_set:
-            if calcyr != self._calc.policy.current_year:
-                self._calc.policy.set_year(calcyr)
-            self._calc.calc_all()
+            if calcyr != self.calc.policy.current_year:
+                self.calc.policy.set_year(calcyr)
+            self.calc.calc_all()
             (mtr_ptax, mtr_itax,
-             _) = self._calc.mtr(wrt_full_compensation=False)
-            cr_taxyr = self._calc.records.FLPDYR  # pylint: disable=no-member
-            for idx in range(0, self._calc.records.dim):
+             _) = self.calc.mtr(wrt_full_compensation=False)
+            cr_taxyr = self.calc.records.FLPDYR  # pylint: disable=no-member
+            for idx in range(0, self.calc.records.dim):
                 indyr = cr_taxyr[idx]
                 if indyr == calcyr:
-                    ovar = SimpleTaxIO.extract_output(self._calc.records, idx,
+                    ovar = SimpleTaxIO.extract_output(self.calc.records, idx,
                                                       exact=exact_output)
                     ovar[7] = 100 * mtr_itax[idx]
                     ovar[9] = 100 * mtr_ptax[idx]
@@ -324,7 +324,7 @@ class SimpleTaxIO(object):
         ovar[22] = crecs.c07220[idx]  # child tax credit (adjusted)
         ovar[23] = crecs.c11070[idx]  # extra child tax credit (refunded)
         ovar[24] = crecs.c07180[idx]  # child care credit
-        ovar[25] = crecs._eitc[idx]  # federal EITC
+        ovar[25] = crecs.eitc[idx]  # federal EITC
         ovar[26] = crecs.c62100[idx]  # federal AMT taxable income
         amt_liability = crecs.c09600[idx]  # federal AMT liability
         ovar[27] = amt_liability

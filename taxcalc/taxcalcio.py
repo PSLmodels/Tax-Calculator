@@ -359,7 +359,7 @@ class TaxCalcIO(object):
         # pylint: disable=too-many-locals
         tab_fname = self._output_filename.replace('.csv', '-tab.text')
         # create DataFrame with weighted tax totals
-        nontax_cols = ['s006', '_expanded_income']
+        nontax_cols = ['s006', 'expanded_income']
         tax_cols = ['_iitax', '_payrolltax', 'lumpsum_tax', 'combined']
         all_cols = nontax_cols + tax_cols
         non = [getattr(self.calc.records, col) for col in nontax_cols]
@@ -389,11 +389,11 @@ class TaxCalcIO(object):
         Write to tfile the tkind decile table using dfx DataFrame.
         """
         dfx = add_weighted_income_bins(dfx, num_bins=10,
-                                       income_measure='_expanded_income',
+                                       income_measure='expanded_income',
                                        weight_by_income_measure=False)
         gdfx = dfx.groupby('bins', as_index=False)
         rtns_series = gdfx.apply(unweighted_sum, 's006')
-        xinc_series = gdfx.apply(weighted_sum, '_expanded_income')
+        xinc_series = gdfx.apply(weighted_sum, 'expanded_income')
         itax_series = gdfx.apply(weighted_sum, '_iitax')
         ptax_series = gdfx.apply(weighted_sum, '_payrolltax')
         htax_series = gdfx.apply(weighted_sum, 'lumpsum_tax')
