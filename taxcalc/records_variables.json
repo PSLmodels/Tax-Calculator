@@ -719,7 +719,7 @@
     },
     "c21060": {
       "type": "float",
-      "desc": "",
+      "desc": "Itemized deductions before phase-out (zero for non-itemizers)",
       "form": {}
     },
     "c23650": {
