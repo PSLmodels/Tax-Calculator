@@ -424,12 +424,12 @@
     },
     "p22250": {
       "type": "float",
-      "desc": "Sch D: Net short-term gain/loss",
+      "desc": "Sch D: Net short-term capital gains/losses",
       "form": {"2013-2016": "1040 Sch D, line 7"}
     },
     "p23250": {
       "type": "float",
-      "desc": "Sch D: Net long-term gain/loss",
+      "desc": "Sch D: Net long-term capital gains/losses",
       "form": {"2013-2016": "1040 Sch D, line 15"}
     },
     "p25470": {
