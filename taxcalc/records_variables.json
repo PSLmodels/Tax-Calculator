@@ -29,7 +29,7 @@
     "RECID": {
       "required": true,
       "type": "int",
-      "desc": "Unique identifier for filing unit; appears as RECID variable in tc CLI minimal output",
+      "desc": "Unique numeric identifier for filing unit; appears as RECID variable in tc CLI minimal output",
       "form": {"2013-2016": "private info"}
     },
     "XTOT": {
@@ -714,7 +714,7 @@
     },
     "c21040": {
       "type": "float",
-      "desc": "",
+      "desc": "Itemized deductions that are phased out",
       "form": {}
     },
     "c21060": {
