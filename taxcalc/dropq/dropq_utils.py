@@ -124,7 +124,7 @@ def create_dropq_distribution_table(calc, groupby, result_type, suffix):
     c04470suf = 'c04470' + suffix
     c00100suf = 'c00100' + suffix
     c09600suf = 'c09600' + suffix
-    standardsuf = '_standard' + suffix
+    standardsuf = 'standard' + suffix
     s006suf = 's006' + suffix
     returnsItemDedsuf = 'num_returns_ItemDed' + suffix
     returnsStandDedsuf = 'num_returns_StandardDed' + suffix

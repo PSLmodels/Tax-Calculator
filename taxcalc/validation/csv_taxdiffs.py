@@ -28,8 +28,8 @@ def main(file1name, file2name, rounding_error):
     df2_vars = set(list(df2))
 
     # check that both files contain required tax variables
-    required_tax_vars = set(['RECID', '_iitax', '_payrolltax'])
-    required_vars_str = '"RECID" "_iitax" "_payrolltax"'
+    required_tax_vars = set(['RECID', 'iitax', 'payrolltax'])
+    required_vars_str = '"RECID" "iitax" "payrolltax"'
     if not required_tax_vars.issubset(df1_vars):
         msg = 'ERROR: FILE1 does not include required variables: {}\n'
         sys.stderr.write(msg.format(required_vars_str))
@@ -46,8 +46,8 @@ def main(file1name, file2name, rounding_error):
         return 1
 
     # compare variable values when variable is in both files
-    tax_vars = ['_iitax',       # income tax
-                '_payrolltax',  # payroll tax
+    tax_vars = ['iitax',        # income tax
+                'payrolltax',   # payroll tax
                 'c00100',       # AGI
                 'e02300',       # UI benefits in AGI
                 'c02500',       # OASDI benefits in AGI
@@ -55,11 +55,11 @@ def main(file1name, file2name, rounding_error):
                 'c04600',       # post-phase-out personal exemption
                 'c04470',       # post-phase-out itemized deduction
                 'c04800',       # regular taxable income
-                '_taxbc',       # regular tax on regular taxable income
+                'taxbc',        # regular tax on regular taxable income
                 'c07220',       # child tax credit (adjusted)
                 'c11070',       # extra child tax credit (refunded)
                 'c07180',       # child care credit
-                '_eitc',        # EITC
+                'eitc',         # EITC
                 'c62100',       # AMT taxable income
                 'c09600',       # AMT liability
                 'c05800']       # total income tax before credits

@@ -226,7 +226,7 @@ def test_dropq_with_full_puf(puf_path):
                                           return_json=False,
                                           num_years=nyrs)
     fulls_reform_revenue = taxes_fullsample.loc[fyr]
-    dropq_reform_revenue = mY_dec['_combined_dec_0'].loc['sums']
+    dropq_reform_revenue = mY_dec['combined_dec_0'].loc['sums']
     dropq_reform_revenue *= 1e-9  # convert to billions of dollars
     diff = abs(fulls_reform_revenue - dropq_reform_revenue)
     # assert that dropq revenue is similar to the fullsample calculation
@@ -421,11 +421,11 @@ def test_create_dropq_diff_table_groupby_options(groupby, res_col,
     if groupby == "other_deciles":
         with pytest.raises(ValueError):
             create_dropq_difference_table(df1, df2, groupby=groupby,
-                                          res_col=res_col, diff_col='_iitax',
+                                          res_col=res_col, diff_col='iitax',
                                           suffix='_dec',
                                           wsum=dec_sum)
     else:
         create_dropq_difference_table(df1, df2, groupby=groupby,
-                                      res_col=res_col, diff_col='_iitax',
+                                      res_col=res_col, diff_col='iitax',
                                       suffix='_dec',
                                       wsum=dec_sum)

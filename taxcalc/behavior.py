@@ -140,7 +140,7 @@ class Behavior(ParametersBase):
           Using this method, a semi-elasticity of -3.45 corresponds to a tax
           rate elasticity of -0.792.
         """
-        # pylint: disable=too-many-statements,too-many-locals,protected-access
+        # pylint: disable=too-many-statements,too-many-locals
         assert calc_x.records.dim == calc_y.records.dim
         assert calc_x.records.current_year == calc_y.records.current_year
         # calculate sum of substitution and income effects
@@ -165,8 +165,8 @@ class Behavior(ParametersBase):
                 inc = np.zeros(calc_x.records.dim)
             else:
                 # dollar change in after-tax income
-                # (_combined is filing unit's income+payroll tax liability)
-                dch = calc_x.records._combined - calc_y.records._combined
+                # (combined is filing unit's income+payroll tax liability)
+                dch = calc_x.records.combined - calc_y.records.combined
                 inc = calc_y.behavior.BE_inc * dch
         taxinc_chg = sub + inc
         # calculate long-term capital-gains effect
@@ -294,8 +294,7 @@ class Behavior(ParametersBase):
         """
         # compute AGI minus itemized deductions, agi_m_ided
         agi = calc.records.c00100
-        # pylint: disable=protected-access
-        ided = np.where(calc.records.c04470 < calc.records._standard,
+        ided = np.where(calc.records.c04470 < calc.records.standard,
                         0.,
                         calc.records.c04470)
         agi_m_ided = agi - ided

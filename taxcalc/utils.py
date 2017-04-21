@@ -25,18 +25,18 @@ except ImportError:
     BOKEH_AVAILABLE = False
 
 
-STATS_COLUMNS = ['_expanded_income', 'c00100', '_standard',
+STATS_COLUMNS = ['expanded_income', 'c00100', 'standard',
                  'c04470', 'c04600', 'c04800', 'c05200', 'c62100', 'c09600',
-                 'c05800', 'c09200', '_refund', 'c07100', '_iitax',
-                 '_payrolltax', '_combined', 's006']
+                 'c05800', 'c09200', 'refund', 'c07100', 'iitax',
+                 'payrolltax', 'combined', 's006']
 
 # Items in the TABLE_COLUMNS list below correspond to the items in the
 # TABLE_LABELS list below; this correspondence allows us to use TABLE_LABELS
 # to map a label to the correct column in our distribution tables.
-TABLE_COLUMNS = ['s006', 'c00100', 'num_returns_StandardDed', '_standard',
+TABLE_COLUMNS = ['s006', 'c00100', 'num_returns_StandardDed', 'standard',
                  'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'c05200',
                  'c62100', 'num_returns_AMT', 'c09600', 'c05800', 'c07100',
-                 'c09200', '_refund', '_iitax', '_payrolltax', '_combined']
+                 'c09200', 'refund', 'iitax', 'payrolltax', 'combined']
 
 TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Standard Deduction', 'Itemizers',
@@ -134,7 +134,7 @@ def expanded_income_weighted(pdf, col_name):
     Return expanded-income-weighted mean of Pandas DataFrame col_name items.
     """
     swght = 's006'
-    expinc = '_expanded_income'
+    expinc = 'expanded_income'
     return (float((pdf[col_name] * pdf[swght] * pdf[expinc]).sum()) /
             float((pdf[swght] * pdf[expinc]).sum() + EPSILON))
 
@@ -179,7 +179,7 @@ def weighted_share_of_total(pdf, col_name, total):
 
 
 def add_weighted_income_bins(pdf, num_bins=10, labels=None,
-                             income_measure='_expanded_income',
+                             income_measure='expanded_income',
                              weight_by_income_measure=False):
     """
     Add a column of income bins to specified Pandas DataFrame, pdf, with
@@ -203,7 +203,7 @@ def add_weighted_income_bins(pdf, num_bins=10, labels=None,
 
 
 def add_income_bins(pdf, compare_with='soi', bins=None, right=True,
-                    income_measure='_expanded_income'):
+                    income_measure='expanded_income'):
     """
     Add a column of income bins of income_measure using pandas 'cut'.
     This will serve as a 'grouper' later on.
@@ -316,7 +316,7 @@ def results(obj):
     return pd.DataFrame(data=np.column_stack(arrays), columns=STATS_COLUMNS)
 
 
-def weighted_avg_allcols(pdf, col_list, income_measure='_expanded_income'):
+def weighted_avg_allcols(pdf, col_list, income_measure='expanded_income'):
     """
     Return Pandas DataFrame in which variables in col_list of pdf have
     their weighted_mean computed using the specifed income_measure, except
@@ -344,20 +344,20 @@ def add_columns(pdf):
     # weight of returns with positive AGI and
     # itemized deduction greater than standard deduction
     pdf['c04470'] = pdf['c04470'].where(
-        ((pdf['c00100'] > 0.) & (pdf['c04470'] > pdf['_standard'])), 0.)
+        ((pdf['c00100'] > 0.) & (pdf['c04470'] > pdf['standard'])), 0.)
     # weight of returns with positive AGI and itemized deduction
     pdf['num_returns_ItemDed'] = pdf['s006'].where(
         ((pdf['c00100'] > 0.) & (pdf['c04470'] > 0.)), 0.)
     # weight of returns with positive AGI and standard deduction
     pdf['num_returns_StandardDed'] = pdf['s006'].where(
-        ((pdf['c00100'] > 0.) & (pdf['_standard'] > 0.)), 0.)
+        ((pdf['c00100'] > 0.) & (pdf['standard'] > 0.)), 0.)
     # weight of returns with positive Alternative Minimum Tax (AMT)
     pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
     return pdf
 
 
 def create_distribution_table(obj, groupby, result_type,
-                              income_measure='_expanded_income',
+                              income_measure='expanded_income',
                               baseline_obj=None, diffs=False):
     """
     Get results from object, sort them based on groupby, manipulate them
@@ -454,8 +454,8 @@ def create_distribution_table(obj, groupby, result_type,
 
 
 def create_difference_table(recs1, recs2, groupby,
-                            income_measure='_expanded_income',
-                            income_to_present='_iitax'):
+                            income_measure='expanded_income',
+                            income_to_present='iitax'):
     """
     Get results from two different Records objects for the same year, compare
     the two results, and return the differences as a Pandas DataFrame that is
@@ -473,11 +473,11 @@ def create_difference_table(recs1, recs2, groupby,
         determines how the columns in the resulting Pandas DataFrame are sorted
 
     income_measure : String object
-        options for input: '_expanded_income', '_iitax'
+        options for input: 'expanded_income', 'iitax'
         classifier of income bins/deciles
 
     income_to_present : String object
-        options for input: '_iitax', '_payrolltax', '_combined'
+        options for input: 'iitax', 'payrolltax', 'combined'
 
     Returns
     -------
@@ -547,7 +547,6 @@ def diagnostic_table_odict(recs):
     -------
     ordered dictionary of variable names and aggregate weighted values
     """
-    # pylint: disable=protected-access
     # aggregate weighted values expressed in millions or billions
     in_millions = 1.0e-6
     in_billions = 1.0e-9
@@ -564,11 +563,11 @@ def diagnostic_table_odict(recs):
     val = ided1[recs.c04470 > 0.].sum()
     odict['Itemized Deduction ($b)'] = val * in_billions
     # number of standard deductions
-    num = recs.s006[(recs._standard > 0.) * (recs.c00100 > 0.)].sum()
+    num = recs.s006[(recs.standard > 0.) * (recs.c00100 > 0.)].sum()
     odict['Standard Deduction Filers (#m)'] = num * in_millions
     # standard deduction
-    sded1 = recs._standard * recs.s006
-    val = sded1[(recs._standard > 0.) * (recs.c00100 > 0.)].sum()
+    sded1 = recs.standard * recs.s006
+    val = sded1[(recs.standard > 0.) * (recs.c00100 > 0.)].sum()
     odict['Standard Deduction ($b)'] = val * in_billions
     # personal exemption
     val = (recs.c04600 * recs.s006)[recs.c00100 > 0.].sum()
@@ -589,28 +588,28 @@ def diagnostic_table_odict(recs):
     val = (recs.c05800 * recs.s006).sum()
     odict['Tax before Credits ($b)'] = val * in_billions
     # refundable credits
-    val = (recs._refund * recs.s006).sum()
+    val = (recs.refund * recs.s006).sum()
     odict['Refundable Credits ($b)'] = val * in_billions
     # nonrefuncable credits
     val = (recs.c07100 * recs.s006).sum()
     odict['Nonrefundable Credits ($b)'] = val * in_billions
     # reform surtaxes (part of federal individual income tax liability)
-    val = (recs._surtax * recs.s006).sum()
+    val = (recs.surtax * recs.s006).sum()
     odict['Reform Surtaxes ($b)'] = val * in_billions
     # federal individual income tax liability
-    val = (recs._iitax * recs.s006).sum()
+    val = (recs.iitax * recs.s006).sum()
     odict['Ind Income Tax ($b)'] = val * in_billions
     # OASDI+HI payroll tax liability (including employer share)
-    val = (recs._payrolltax * recs.s006).sum()
+    val = (recs.payrolltax * recs.s006).sum()
     odict['Payroll Taxes ($b)'] = val * in_billions
     # combined income and payroll tax liability
-    val = (recs._combined * recs.s006).sum()
+    val = (recs.combined * recs.s006).sum()
     odict['Combined Liability ($b)'] = val * in_billions
     # number of tax units with non-positive income tax liability
-    num = (recs.s006[recs._iitax <= 0]).sum()
+    num = (recs.s006[recs.iitax <= 0]).sum()
     odict['With Income Tax <= 0 (#m)'] = num * in_millions
     # number of tax units with non-positive payroll tax liability
-    num = (recs.s006[recs._combined <= 0]).sum()
+    num = (recs.s006[recs.combined <= 0]).sum()
     odict['With Combined Tax <= 0 (#m)'] = num * in_millions
     return odict
 
@@ -792,7 +791,7 @@ def mtr_graph_data(calc1, calc2,
         if dollar_weighting:
             weighting_function = agi_weighted
     elif income_measure == 'expanded_income':
-        income_var = '_expanded_income'
+        income_var = 'expanded_income'
         income_str = 'Expanded Income'
         if dollar_weighting:
             weighting_function = expanded_income_weighted
@@ -967,30 +966,29 @@ def atr_graph_data(calc1, calc2,
     record_columns = ['s006']
     if mars != 'ALL':
         record_columns.append('MARS')
-    record_columns.append('_expanded_income')
+    record_columns.append('expanded_income')
     output = [getattr(calc1.records, col) for col in record_columns]
     dfx = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
     # create 'tax1' and 'tax2' columns given specified atr_measure
-    # pylint: disable=protected-access
     if atr_measure == 'itax':
-        dfx['tax1'] = calc1.records._iitax
-        dfx['tax2'] = calc2.records._iitax
+        dfx['tax1'] = calc1.records.iitax
+        dfx['tax2'] = calc2.records.iitax
     elif atr_measure == 'ptax':
-        dfx['tax1'] = calc1.records._payrolltax
-        dfx['tax2'] = calc2.records._payrolltax
+        dfx['tax1'] = calc1.records.payrolltax
+        dfx['tax2'] = calc2.records.payrolltax
     elif atr_measure == 'combined':
-        dfx['tax1'] = calc1.records._combined
-        dfx['tax2'] = calc2.records._combined
+        dfx['tax1'] = calc1.records.combined
+        dfx['tax2'] = calc2.records.combined
     # select filing-status subgroup, if any
     if mars != 'ALL':
         dfx = dfx[dfx['MARS'] == mars]
     # create 'bins' column
     dfx = add_weighted_income_bins(dfx, num_bins=100,
-                                   income_measure='_expanded_income')
+                                   income_measure='expanded_income')
     # split dfx into groups specified by 'bins' column
     gdfx = dfx.groupby('bins', as_index=False)
     # apply weighted_mean function to percentile-grouped income/tax values
-    avginc_series = gdfx.apply(weighted_mean, '_expanded_income')
+    avginc_series = gdfx.apply(weighted_mean, 'expanded_income')
     avgtax1_series = gdfx.apply(weighted_mean, 'tax1')
     avgtax2_series = gdfx.apply(weighted_mean, 'tax2')
     # compute average tax rates by income percentile
@@ -1320,8 +1318,8 @@ def ce_aftertax_income(calc1, calc2,
     # with very low or even negative after-tax income in the expected-utility
     # and certainty-equivalent calculations.
     # ... extract calc_all() data from calc1 and calc2
-    record_columns = ['s006', '_payrolltax', '_iitax',
-                      '_combined', '_expanded_income']
+    record_columns = ['s006', 'payrolltax', 'iitax',
+                      'combined', 'expanded_income']
     out = [getattr(calc1.records, col) for col in record_columns]
     df1 = pd.DataFrame(data=np.column_stack(out), columns=record_columns)
     out = [getattr(calc2.records, col) for col in record_columns]
@@ -1330,8 +1328,8 @@ def ce_aftertax_income(calc1, calc2,
     billion = 1.0e-9
     cedict = dict()
     cedict['year'] = calc1.current_year
-    cedict['tax1'] = weighted_sum(df1, '_combined') * billion
-    cedict['tax2'] = weighted_sum(df2, '_combined') * billion
+    cedict['tax1'] = weighted_sum(df1, 'combined') * billion
+    cedict['tax2'] = weighted_sum(df2, 'combined') * billion
     if require_no_agg_tax_change:
         diff = cedict['tax2'] - cedict['tax1']
         if abs(diff) >= 0.0005:
@@ -1342,16 +1340,16 @@ def ce_aftertax_income(calc1, calc2,
             msg += ('\n(adjust _LST or other parameter to bracket txdiff=0 '
                     'and then interpolate)')
             raise ValueError(msg.format(cedict['tax1'], cedict['tax2'], diff))
-    cedict['inc1'] = weighted_sum(df1, '_expanded_income') * billion
-    cedict['inc2'] = weighted_sum(df2, '_expanded_income') * billion
+    cedict['inc1'] = weighted_sum(df1, 'expanded_income') * billion
+    cedict['inc2'] = weighted_sum(df2, 'expanded_income') * billion
     # ... calculate sample-weighted probability of each filing unit
     # pylint: disable=no-member
     # (above pylint comment eliminates bogus np.divide warnings)
     prob_raw = np.divide(df1['s006'], df1['s006'].sum())
     prob = np.divide(prob_raw, prob_raw.sum())  # handle any rounding error
     # ... calculate after-tax income of each filing unit in calc1 and calc2
-    ati1 = df1['_expanded_income'] - df1['_combined']
-    ati2 = df2['_expanded_income'] - df2['_combined']
+    ati1 = df1['expanded_income'] - df1['combined']
+    ati2 = df2['expanded_income'] - df2['combined']
     # ... calculate certainty-equivaluent after-tax income in calc1 and calc2
     cedict['crra'] = crras
     ce1 = list()

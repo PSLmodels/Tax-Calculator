@@ -66,12 +66,12 @@ def test_behavioral_response_Calculator(puf_1991, weights_1991):
     calc_y_behavior5 = Behavior.response(calc_x, calc_y)
     # check that total income tax liability differs across the
     # six sets of behavioral-response elasticities
-    assert (calc_y_behavior0.records._iitax.sum() !=
-            calc_y_behavior1.records._iitax.sum() !=
-            calc_y_behavior2.records._iitax.sum() !=
-            calc_y_behavior3.records._iitax.sum() !=
-            calc_y_behavior4.records._iitax.sum() !=
-            calc_y_behavior5.records._iitax.sum())
+    assert (calc_y_behavior0.records.iitax.sum() !=
+            calc_y_behavior1.records.iitax.sum() !=
+            calc_y_behavior2.records.iitax.sum() !=
+            calc_y_behavior3.records.iitax.sum() !=
+            calc_y_behavior4.records.iitax.sum() !=
+            calc_y_behavior5.records.iitax.sum())
     # test incorrect _mtr_xy() usage
     with pytest.raises(ValueError):
         Behavior._mtr_xy(calc_x, calc_y, mtr_of='e00200p', tax_type='?')

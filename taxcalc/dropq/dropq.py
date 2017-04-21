@@ -180,12 +180,12 @@ def drop_records(df1, df2, mask):
     # Difference in plans
     # Positive values are the magnitude of the tax increase
     # Negative values are the magnitude of the tax decrease
-    df2['tax_diff_dec'] = df2['_iitax_dec'] - df1['_iitax']
-    df2['tax_diff_bin'] = df2['_iitax_bin'] - df1['_iitax']
-    df2['payrolltax_diff_dec'] = df2['_payrolltax_dec'] - df1['_payrolltax']
-    df2['payrolltax_diff_bin'] = df2['_payrolltax_bin'] - df1['_payrolltax']
-    df2['combined_diff_dec'] = df2['_combined_dec'] - df1['_combined']
-    df2['combined_diff_bin'] = df2['_combined_bin'] - df1['_combined']
+    df2['tax_diff_dec'] = df2['iitax_dec'] - df1['iitax']
+    df2['tax_diff_bin'] = df2['iitax_bin'] - df1['iitax']
+    df2['payrolltax_diff_dec'] = df2['payrolltax_dec'] - df1['payrolltax']
+    df2['payrolltax_diff_bin'] = df2['payrolltax_bin'] - df1['payrolltax']
+    df2['combined_diff_dec'] = df2['combined_dec'] - df1['combined']
+    df2['combined_diff_bin'] = df2['combined_bin'] - df1['combined']
 
     return df1, df2
 
@@ -209,14 +209,14 @@ def groupby_means_and_comparisons(df1, df2, mask):
     combined_bin_sum = (df2['combined_diff_bin'] * df2['s006']).sum()
 
     # Totals for baseline
-    sum_baseline = (df1['_iitax'] * df1['s006']).sum()
-    pr_sum_baseline = (df1['_payrolltax'] * df1['s006']).sum()
-    combined_sum_baseline = (df1['_combined'] * df1['s006']).sum()
+    sum_baseline = (df1['iitax'] * df1['s006']).sum()
+    pr_sum_baseline = (df1['payrolltax'] * df1['s006']).sum()
+    combined_sum_baseline = (df1['combined'] * df1['s006']).sum()
 
     # Totals for reform
-    sum_reform = (df2['_iitax_dec'] * df2['s006']).sum()
-    pr_sum_reform = (df2['_payrolltax_dec'] * df2['s006']).sum()
-    combined_sum_reform = (df2['_combined_dec'] * df2['s006']).sum()
+    sum_reform = (df2['iitax_dec'] * df2['s006']).sum()
+    pr_sum_reform = (df2['payrolltax_dec'] * df2['s006']).sum()
+    combined_sum_reform = (df2['combined_dec'] * df2['s006']).sum()
 
     # Totals for reform
 
@@ -224,37 +224,37 @@ def groupby_means_and_comparisons(df1, df2, mask):
     diffs_dec = dropq_diff_table(df1, df2,
                                  groupby='weighted_deciles',
                                  res_col='tax_diff',
-                                 diff_col='_iitax',
+                                 diff_col='iitax',
                                  suffix='_dec', wsum=dec_sum)
 
     diffs_bin = dropq_diff_table(df1, df2,
                                  groupby='webapp_income_bins',
                                  res_col='tax_diff',
-                                 diff_col='_iitax',
+                                 diff_col='iitax',
                                  suffix='_bin', wsum=bin_sum)
 
     pr_diffs_dec = dropq_diff_table(df1, df2,
                                     groupby='weighted_deciles',
                                     res_col='payrolltax_diff',
-                                    diff_col='_payrolltax',
+                                    diff_col='payrolltax',
                                     suffix='_dec', wsum=pr_dec_sum)
 
     pr_diffs_bin = dropq_diff_table(df1, df2,
                                     groupby='webapp_income_bins',
                                     res_col='payrolltax_diff',
-                                    diff_col='_payrolltax',
+                                    diff_col='payrolltax',
                                     suffix='_bin', wsum=pr_bin_sum)
 
     comb_diffs_dec = dropq_diff_table(df1, df2,
                                       groupby='weighted_deciles',
                                       res_col='combined_diff',
-                                      diff_col='_combined',
+                                      diff_col='combined',
                                       suffix='_dec', wsum=combined_dec_sum)
 
     comb_diffs_bin = dropq_diff_table(df1, df2,
                                       groupby='webapp_income_bins',
                                       res_col='combined_diff',
-                                      diff_col='_combined',
+                                      diff_col='combined',
                                       suffix='_bin', wsum=combined_bin_sum)
 
     mX_dec = create_distribution_table(df1, groupby='weighted_deciles',
@@ -430,7 +430,7 @@ def calculate_baseline_and_reform(year_n, start_year, taxrec_df, user_mods):
     # Construct mask to show which of the calc1 and calc1p results differ
     soit1 = results(calc1)
     soit1p = results(calc1p)
-    mask = (soit1._iitax != soit1p._iitax)  # pylint: disable=protected-access
+    mask = (soit1.iitax != soit1p.iitax)
 
     # Specify Behavior instance
     behv = Behavior()

@@ -48,8 +48,8 @@ def main():
 def creat_table_base():
     # saved caculated variable names and descriptions in json format
     # currently only includes 16 most used variables
-    calculated_vars = {"_iitax": "Federal income tax liability",
-                       "_payrolltax": "Payroll taxes (ee+er) for OASDI+HI",
+    calculated_vars = {"iitax": "Federal income tax liability",
+                       "payrolltax": "Payroll taxes (ee+er) for OASDI+HI",
                        "c00100": "Federal AGI",
                        "c02500": "OASDI benefits in AGI",
                        "c04600": "Post-phase-out personal exemption",
@@ -61,7 +61,7 @@ def creat_table_base():
                        "c07220": "Child tax credit (adjusted)",
                        "c11070": "Extra child tax credit (refunded)",
                        "c07180": "Child care credit",
-                       "_eitc": "Federal EITC",
+                       "eitc": "Federal EITC",
                        "c62100_everyone": "federal AMT taxable income",
                        "c09600": "federal AMT liability"}
     cal = DataFrame.from_dict(calculated_vars, orient='index')

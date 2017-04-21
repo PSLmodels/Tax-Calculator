@@ -359,8 +359,8 @@ class TaxCalcIO(object):
         # pylint: disable=too-many-locals
         tab_fname = self._output_filename.replace('.csv', '-tab.text')
         # create DataFrame with weighted tax totals
-        nontax_cols = ['s006', '_expanded_income']
-        tax_cols = ['_iitax', '_payrolltax', 'lumpsum_tax', '_combined']
+        nontax_cols = ['s006', 'expanded_income']
+        tax_cols = ['iitax', 'payrolltax', 'lumpsum_tax', 'combined']
         all_cols = nontax_cols + tax_cols
         non = [getattr(self.calc.records, col) for col in nontax_cols]
         ref = [getattr(self.calc.records, col) for col in tax_cols]
@@ -389,15 +389,15 @@ class TaxCalcIO(object):
         Write to tfile the tkind decile table using dfx DataFrame.
         """
         dfx = add_weighted_income_bins(dfx, num_bins=10,
-                                       income_measure='_expanded_income',
+                                       income_measure='expanded_income',
                                        weight_by_income_measure=False)
         gdfx = dfx.groupby('bins', as_index=False)
         rtns_series = gdfx.apply(unweighted_sum, 's006')
-        xinc_series = gdfx.apply(weighted_sum, '_expanded_income')
-        itax_series = gdfx.apply(weighted_sum, '_iitax')
-        ptax_series = gdfx.apply(weighted_sum, '_payrolltax')
+        xinc_series = gdfx.apply(weighted_sum, 'expanded_income')
+        itax_series = gdfx.apply(weighted_sum, 'iitax')
+        ptax_series = gdfx.apply(weighted_sum, 'payrolltax')
         htax_series = gdfx.apply(weighted_sum, 'lumpsum_tax')
-        ctax_series = gdfx.apply(weighted_sum, '_combined')
+        ctax_series = gdfx.apply(weighted_sum, 'combined')
         # write decile table to text file
         row = 'Weighted Tax {} by Expanded-Income Decile\n'
         tfile.write(row.format(tkind))
@@ -482,10 +482,9 @@ class TaxCalcIO(object):
         odict['RECID'] = crecs.RECID  # id for tax filing unit
         odict['YEAR'] = self.tax_year()  # tax calculation year
         odict['WEIGHT'] = crecs.s006  # sample weight
-        # pylint: disable=protected-access
-        odict['INCTAX'] = crecs._iitax  # federal income taxes
+        odict['INCTAX'] = crecs.iitax  # federal income taxes
         odict['LSTAX'] = crecs.lumpsum_tax  # lump-sum tax
-        odict['PAYTAX'] = crecs._payrolltax  # payroll taxes (ee+er)
+        odict['PAYTAX'] = crecs.payrolltax  # payroll taxes (ee+er)
         odf = pd.DataFrame(data=odict, columns=varlist)
         return odf
 
