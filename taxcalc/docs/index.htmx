@@ -18,7 +18,7 @@ If you want to participate in the development of Tax-Calculator
 &mdash; by reporting a bug, improving the documentation or making an
 enhancement to the Python source code &mdash; you should go to
 the <a href="https://github.com/open-source-economics/Tax-Calculator">
-development website</a>.</p>
+developer website</a>.</p>
 
 
 <h2>Document Contents</h2>
@@ -38,10 +38,10 @@ via the command line</p>
 <p>You can use Tax-Calculator via a graphical user interface (GUI)
 provided by the <a href="http://www.ospc.org/taxbrain/">TaxBrain web
 application</a>.  This approach requires only an Internet connection
-and web browser on your computer.  TaxBrain uses a micro dataset to
-produce for a tax reform you specify both aggregate and distributional
-reform estimates for each of ten years.  The calculations take just a
-couple of minutes and there is flexibility to show different kinds
+and web browser on your computer.  TaxBrain (TB) uses a micro dataset
+to produce both aggregate and distributional reform estimates for each
+of ten years for a tax reform you specify.  The calculations take just
+a couple of minutes and there is flexibility to show different kinds
 of distributional results.</p>
 
 
@@ -174,9 +174,10 @@ installation and file preparation work may be worth it to you.</p>
 
 <p>This section contains documentation of policy parameters in a
 format that is easy to search and print.  The policy parameters are
-grouped here as they are are on TaxBrain.  Parameters understood by
-Tax-Calculator and the tc CLI, but not available in the TaxBrain GUI,
-are placed in an Other Parameters group at the end of the section.</p>
+grouped here as they are are on TaxBrain (TB).  Parameters understood
+by Tax-Calculator and the tc CLI, but not available in the TaxBrain
+GUI, are placed in an Other Parameters group at the end of the
+section.</p>
 
 
 <h3>Section Contents</h3>
@@ -390,11 +391,15 @@ used to specify baseline differences and/or reform responses in the
 annual rate of growth in economic variables.</p>
 
 <p>All the response parameters can be used by the tc CLI, but only
-those with a <i>GUI Name</i> appear in the TaxBrain GUI.  All these
+those with a <i>TB Name</i> appear in the TaxBrain GUI.  All these
 dynamic response parameters control advanced features of
 Tax-Calculator, so understanding the
 <a href="https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc">source
-code</a> that uses them is essential.</p>
+code</a> that uses them is essential.  Each default parameter value is
+zero and is projected into the future at that value, which implies no
+response to the reform.  Using the default no-reform-response
+assumption for all the response parameters generates a static analysis
+of the tax reform.</p>
 
 
 <h3>Section Contents</h3>

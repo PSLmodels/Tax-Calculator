@@ -29,7 +29,7 @@
     "RECID": {
       "required": true,
       "type": "int",
-      "desc": "Unique identifier for filing unit",
+      "desc": "Unique identifier for filing unit; appears as RECID variable in tc CLI minimal output",
       "form": {"2013-2016": "private info"}
     },
     "XTOT": {
@@ -444,7 +444,7 @@
     },
     "s006": {
       "type": "float",
-      "desc": "Filing unit sampling weight",
+      "desc": "Filing unit sampling weight; appears as WEIGHT variable in tc CLI minimal output",
       "form": {"2013-2016": "not used in filing unit tax calculations"}
     }
   },
@@ -498,7 +498,7 @@
     },
     "iitax": {
       "type": "float",
-      "desc": "Total federal individual income tax liability",
+      "desc": "Total federal individual income tax liability; appears as INCTAX variable in tc CLI minimal output",
       "form": {"2013-2013": "1040, line 61 minus line 56 minus line 60a",
                "2014-2016": "1040, line 63 minus line 57 minus line 62a"}
     },
@@ -510,7 +510,7 @@
 
     "payrolltax": {
       "type": "float",
-      "desc": "Total (employee + employer) payroll tax liability",
+      "desc": "Total (employee + employer) payroll tax liability; appears as PAYTAX variable in tc CLI minimal output",
       "form": {"2013-2013": "OASDHI FICA plus 1040 lines 56 and 60a",
                "2014-2016": "OASDHI FICA plus 1040 lines 57 and 62a"}
     },
@@ -794,7 +794,7 @@
     },
     "lumpsum_tax": {
       "type": "float",
-      "desc": "Lumpsum (or head) tax",
+      "desc": "Lumpsum (or head) tax; appears as LSTAX variable in tc CLI minimal output",
       "form": {}
     },
     "personal_credit": {

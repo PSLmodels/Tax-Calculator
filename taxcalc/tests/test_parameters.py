@@ -63,7 +63,7 @@ def test_json_file_contents(tests_path, fname):
                'col_var', 'col_label',
                'value']
     first_year = Policy.JSON_START_YEAR
-    last_known_year = 2017  # for indexed parameters
+    last_known_year = Policy.LAST_KNOWN_YEAR  # for indexed parameter values
     num_known_years = last_known_year - first_year + 1
     # read JSON parameter file into a dictionary
     path = os.path.join(tests_path, '..', fname)
