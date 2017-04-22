@@ -91,8 +91,7 @@ def main():
                         action="store_true")
     parser.add_argument('--test',
                         help=('optional flag that conducts installation '
-                              'test.  No screen output implies passed test; '
-                              'differences on screen show failed test.'),
+                              'test.'),
                         default=False,
                         action="store_true")
     args = parser.parse_args()
@@ -164,10 +163,14 @@ def compare_test_output_files():
     """
     explines = open(EXPECTED_TEST_OUTPUT_FILENAME, 'U').readlines()
     actlines = open(ACTUAL_TEST_OUTPUT_FILENAME, 'U').readlines()
-    diff = difflib.unified_diff(explines, actlines,
-                                fromfile=EXPECTED_TEST_OUTPUT_FILENAME,
-                                tofile=ACTUAL_TEST_OUTPUT_FILENAME, n=0)
-    sys.stdout.writelines(diff)
+    if ''.join(explines) == ''.join(actlines):
+        sys.stdout.write('PASSED TEST\n')
+    else:
+        sys.stdout.write('FAILED TEST\n')
+        diff = difflib.unified_diff(explines, actlines,
+                                    fromfile=EXPECTED_TEST_OUTPUT_FILENAME,
+                                    tofile=ACTUAL_TEST_OUTPUT_FILENAME, n=0)
+        sys.stdout.writelines(diff)
 
 
 if __name__ == '__main__':
