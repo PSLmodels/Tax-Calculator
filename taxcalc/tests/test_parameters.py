@@ -10,8 +10,8 @@ import json
 import six
 import numpy as np
 import pytest
-from taxcalc import ParametersBase  # pylint: disable=import-error
-from taxcalc import Policy, Consumption  # pylint: disable=import-error
+# pylint: disable=import-error
+from taxcalc import ParametersBase, Policy, Consumption
 
 
 def test_instantiation_and_usage():
