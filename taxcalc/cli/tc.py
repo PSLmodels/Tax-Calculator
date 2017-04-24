@@ -24,7 +24,7 @@ def main():
     usage_str = 'tc INPUT TAXYEAR {}{}{}'.format(
         '[--reform REFORM] [--assump  ASSUMP]\n',
         '          ',
-        '[--exact] [--tables] [--graphs] [--ceeu] [--dump] [--test]')
+        '[--exact] [--tables] [--graphs] [--ceeu] [--dump] [-sqldb] [--test]')
     parser = argparse.ArgumentParser(
         prog='',
         usage=usage_str,
@@ -89,6 +89,11 @@ def main():
                               'output.'),
                         default=False,
                         action="store_true")
+    parser.add_argument('--sqldb',
+                        help=('optional flag that writes SQLite database with '
+                              'dump table containing same output as --dump.'),
+                        default=False,
+                        action="store_true")
     parser.add_argument('--test',
                         help=('optional flag that conducts installation '
                               'test.'),
@@ -124,7 +129,8 @@ def main():
                  output_tables=args.tables,
                  output_graphs=args.graphs,
                  output_ceeu=args.ceeu,
-                 output_dump=args.dump)
+                 output_dump=args.dump,
+                 output_sqldb=args.sqldb)
     # compare test output with expected test output if --test option specified
     if args.test:
         compare_test_output_files()
