@@ -551,16 +551,20 @@ class TaxCalcIO(object):
 
     def dump_output(self, mtr_inctax, mtr_paytax):
         """
-        Extract --dump output and return it as pandas DataFrame.
+        Extract dump output and return it as pandas DataFrame.
         """
         odf = pd.DataFrame()
         varset = Records.USABLE_READ_VARS | Records.CALCULATED_VARS
         for varname in varset:
             vardata = getattr(self.calc.records, varname)
-            odf[varname] = vardata
+            if varname in Records.INTEGER_VARS:
+                odf[varname] = vardata
+            else:
+                odf[varname] = vardata.round(2)  # rounded to nearest cent
         odf['FLPDYR'] = self.tax_year()  # tax calculation year
-        odf['mtr_inctax'] = mtr_inctax
-        odf['mtr_paytax'] = mtr_paytax
+        # mtr values expressed in rounded percentage terms
+        odf['mtr_inctax'] = (mtr_inctax * 100.0).round(2)
+        odf['mtr_paytax'] = (mtr_paytax * 100.0).round(2)
         return odf
 
     @staticmethod
