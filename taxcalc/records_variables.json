@@ -601,7 +601,7 @@
     },
     "c05800": {
       "type": "float",
-      "desc": "",
+      "desc": "Total (regular + AMT) income tax liability before credits",
       "form": {}
     },
     "c07100": {

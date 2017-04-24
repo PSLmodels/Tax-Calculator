@@ -776,7 +776,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     AMT function computes Alternative Minimum Tax taxable income and liability:
     c62100 is AMT taxable income
     c09600 is AMT tax liability
-    c05800 is total (reg + AMT) income tax liability before credits
+    c05800 is total (regular + AMT) income tax liability before credits
 
     Note that line-number variable names refer to (2015) Form 6251.
     """
