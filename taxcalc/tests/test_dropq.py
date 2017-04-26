@@ -79,12 +79,53 @@ def assump_file():
             pass  # sometimes we can't remove a generated temporary file
 
 
+USER_MODS = {
+    'policy': {
+        2016: {'_II_rt3': [0.33],
+               '_PT_rt3': [0.33],
+               '_II_rt4': [0.33],
+               '_PT_rt4': [0.33]}
+    },
+    'consumption': {
+        2016: {'_MPC_e20400': [0.01]}
+    },
+    'behavior': {
+        2016: {'_BE_sub': [0.25]}
+    },
+    'growdiff_baseline': {
+    },
+    'growdiff_response': {
+    },
+    'gdp_elasticity': {
+    }
+}
+
+
 @pytest.fixture(scope='session')
 def puf_path(tests_path):
     """
     The path to the puf.csv taxpayer data file at repo root
     """
     return os.path.join(tests_path, '..', '..', 'puf.csv')
+
+
+@pytest.mark.one
+def test_check_user_mods_errors():
+    check_user_mods(USER_MODS)
+    seed1 = random_seed(USER_MODS)
+    with pytest.raises(ValueError):
+        check_user_mods(list())
+    usermods = USER_MODS
+    behavior_subdict = usermods.pop('behavior')
+    with pytest.raises(ValueError):
+        check_user_mods(usermods)
+    usermods['behavior'] = behavior_subdict
+    usermods['unknown_key'] = dict()
+    with pytest.raises(ValueError):
+        check_user_mods(usermods)
+    usermods.pop('unknown_key')
+    seed2 = random_seed(usermods)
+    assert seed1 == seed2
 
 
 def test_check_user_mods(puf_1991_path, reform_file, assump_file):
@@ -429,3 +470,58 @@ def test_create_dropq_diff_table_groupby_options(groupby, res_col,
                                       res_col=res_col, diff_col='iitax',
                                       suffix='_dec',
                                       wsum=dec_sum)
+
+
+@pytest.mark.one
+@pytest.mark.requires_pufcsv
+def test_with_pufcsv(puf_path):  # pylint: disable=redefined-outer-name
+    # pylint: disable=too-many-locals
+    # specify usermods dictionary in code
+    start_year = 2016
+    reform_year = start_year + 1
+    reforms = dict()
+    reforms['_II_rt3'] = [0.33]
+    reforms['_PT_rt3'] = [0.33]
+    reforms['_II_rt4'] = [0.33]
+    reforms['_PT_rt4'] = [0.33]
+    usermods = dict()
+    usermods['policy'] = {reform_year: reforms}
+    usermods['consumption'] = {}
+    usermods['behavior'] = {}
+    usermods['growdiff_baseline'] = {}
+    usermods['growdiff_response'] = {}
+    usermods['gdp_elasticity'] = {}
+    seed = random_seed(usermods)
+    assert seed == 3047708076
+    # create a Policy object (pol) containing reform policy parameters
+    pol = Policy()
+    pol.implement_reform(usermods['policy'])
+    # create a Records object (rec) containing all puf.csv input records
+    rec = Records(data=puf_path)
+    # create a Calculator object using clp policy and puf records
+    calc = Calculator(policy=pol, records=rec)
+    while calc.current_year < reform_year:
+        calc.increment_year()
+    # create aggregate diagnostic table (adt) as a Pandas DataFrame object
+    years = reform_year - Policy.JSON_START_YEAR + 1
+    adt = multiyear_diagnostic_table(calc, years)
+    taxes_fullsample = adt.loc["Combined Liability ($b)"]
+    assert taxes_fullsample is not None
+    fulls_reform_revenue = taxes_fullsample.loc[reform_year]
+    # create a Public Use File object
+    tax_data = pd.read_csv(puf_path)
+    # call run_nth_year_tax_calc_model function
+    restuple = run_nth_year_model(1, start_year,
+                                  tax_data, usermods,
+                                  return_json=True)
+    total = restuple[len(restuple) - 1]  # the last of element of the tuple
+    dropq_reform_revenue = float(total['combined_tax_1'])
+    dropq_reform_revenue *= 1e-9  # convert to billions of dollars
+    diff = abs(fulls_reform_revenue - dropq_reform_revenue)
+    # assert that dropq revenue is similar to the fullsample calculation
+    proportional_diff = diff / fulls_reform_revenue
+    frmt = 'f,d,adiff,pdiff=  {:.4f}  {:.4f}  {:.4f}  {}'
+    print(frmt.format(fulls_reform_revenue, dropq_reform_revenue,
+                      diff, proportional_diff))
+    assert proportional_diff < 0.0001  # one-hundredth of one percent
+    # assert 1 == 2
