@@ -29,6 +29,28 @@ USER_MODS = {
 }
 
 
+USER_MODS = {
+    'policy': {
+        2016: {'_II_rt3': [0.33],
+               '_PT_rt3': [0.33],
+               '_II_rt4': [0.33],
+               '_PT_rt4': [0.33]}
+    },
+    'consumption': {
+        2016: {'_MPC_e20400': [0.01]}
+    },
+    'behavior': {
+        2016: {'_BE_sub': [0.25]}
+    },
+    'growdiff_baseline': {
+    },
+    'growdiff_response': {
+    },
+    'gdp_elasticity': {
+    }
+}
+
+
 @pytest.fixture(scope='session')
 def puf_path(tests_path):
     """
@@ -36,7 +58,7 @@ def puf_path(tests_path):
     """
     return os.path.join(tests_path, '..', '..', 'puf.csv')
 
-@pytest.mark.one
+
 def test_check_user_mods_errors():
     check_user_mods(USER_MODS)
     seed1 = random_seed(USER_MODS)
@@ -54,7 +76,7 @@ def test_check_user_mods_errors():
     seed2 = random_seed(usermods)
     assert seed1 == seed2
 
-@pytest.mark.one
+
 def test_run_nth_year_value_errors(puf_1991_path):
     recs = pd.read_csv(puf_1991_path)
     usermods = USER_MODS
@@ -65,7 +87,7 @@ def test_run_nth_year_value_errors(puf_1991_path):
     with pytest.raises(ValueError):
         run_nth_year_gdp_elast_model(1, 2013, recs, usermods, False)
 
-@pytest.mark.one
+
 @pytest.mark.parametrize('resjson', [True, False])
 def test_run_tax_calc_model(puf_1991_path, resjson):
     recs = pd.read_csv(puf_1991_path)
@@ -79,7 +101,7 @@ def test_run_tax_calc_model(puf_1991_path, resjson):
         else:
             assert isinstance(res[idx], pd.DataFrame)
 
-@pytest.mark.one
+
 @pytest.mark.parametrize('resjson', [True, False])
 def test_run_gdp_elast_model(puf_1991_path, resjson):
     usermods = USER_MODS
@@ -93,7 +115,7 @@ def test_run_gdp_elast_model(puf_1991_path, resjson):
     else:
         assert isinstance(res, float)
 
-@pytest.mark.one
+
 def test_format_macro_results():
     data = [[1.875e-03, 1.960e-03, 2.069e-03, 2.131e-03, 2.179e-03, 2.226e-03,
              2.277e-03, 2.324e-03, 2.375e-03, 2.426e-03, 2.184e-03, 2.806e-03],
@@ -139,7 +161,7 @@ def test_format_macro_results():
     res_df = format_macro_results(data, return_json=False)
     assert res_df.equals(pd.DataFrame(data))
 
-@pytest.mark.one
+
 def test_random_seed_from_subdict():
     """
     Test except logic in try statement in random_seed_from_subdict function.
@@ -153,7 +175,7 @@ def test_random_seed_from_subdict():
     seed2 = random_seed_from_subdict(dct)
     assert seed1 == seed2
 
-@pytest.mark.one
+
 def test_chooser_error():
     dframe = pd.DataFrame(data=[[0, 1], [0, 2], [0, 3],
                                 [0, 4], [0, 5], [0, 6],
@@ -166,13 +188,13 @@ def test_chooser_error():
     with pytest.raises(ValueError):
         chooser(dframe['zeros'])
 
-@pytest.mark.one
+
 def test_format_print_error():
     arr = np.array([1], dtype='i2')
     with pytest.raises(NotImplementedError):
         format_print(arr[0], arr.dtype, 2)
 
-@pytest.mark.one
+
 def test_create_json_table():
     dframe = pd.DataFrame(data=[[1., 2, 3], [4, 5, 6], [7, 8, 9]],
                           columns=['a', 'b', 'c'])
@@ -182,7 +204,7 @@ def test_create_json_table():
            '2': ['7.00', '8', '9']}
     assert ans == exp
 
-@pytest.mark.one
+
 @pytest.mark.parametrize('groupby, result_type',
                          [('small_income_bins', 'weighted_sum'),
                           ('large_income_bins', 'weighted_sum'),
@@ -204,7 +226,7 @@ def test_dropq_dist_table(groupby, result_type, puf_1991_path):
         dropq_dist_table(res, groupby=groupby,
                          result_type=result_type, suffix='_bin')
 
-@pytest.mark.one
+
 @pytest.mark.parametrize('groupby, res_column',
                          [('weighted_deciles', 'tax_diff'),
                           ('webapp_income_bins', 'tax_diff'),
@@ -236,7 +258,7 @@ def test_dropq_diff_table(groupby, res_column, puf_1991_path):
                          res_col=res_column, diff_col='iitax',
                          suffix='_dec', wsum=dec_sum)
 
-@pytest.mark.one
+
 @pytest.mark.requires_pufcsv
 def test_with_pufcsv(puf_path):  # pylint: disable=redefined-outer-name
     # pylint: disable=too-many-locals
@@ -255,6 +277,8 @@ def test_with_pufcsv(puf_path):  # pylint: disable=redefined-outer-name
     usermods['growdiff_baseline'] = {}
     usermods['growdiff_response'] = {}
     usermods['gdp_elasticity'] = {}
+    seed = random_seed(usermods)
+    assert seed == 3047708076
     # create a Policy object (pol) containing reform policy parameters
     pol = Policy()
     pol.implement_reform(usermods['policy'])
@@ -285,5 +309,5 @@ def test_with_pufcsv(puf_path):  # pylint: disable=redefined-outer-name
     frmt = 'f,d,adiff,pdiff=  {:.4f}  {:.4f}  {:.4f}  {}'
     print(frmt.format(fulls_reform_revenue, dropq_reform_revenue,
                       diff, proportional_diff))
-    assert proportional_diff < 0.001  # one-tenth of one percent
-    # assert 1 == 2
+    assert proportional_diff < 0.0001  # one-hundredth of one percent
+    # assert 1 == 2  # uncomment to force test failure with above print out
