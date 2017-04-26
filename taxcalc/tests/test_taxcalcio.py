@@ -266,7 +266,7 @@ def test_output_otions(rawinputfile, reformfile1, assumpfile1):
                 os.remove(outfilepath)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.calculate(ceeu)_ok' == 'no'
+        assert 'TaxCalcIO.analyze(ceeu)_ok' == 'no'
     # --dump output
     try:
         tcio.analyze(writing_output_file=True, output_dump=True)
@@ -276,13 +276,45 @@ def test_output_otions(rawinputfile, reformfile1, assumpfile1):
                 os.remove(outfilepath)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.calculate(dump)_ok' == 'no'
-    # if tries were successful, try to remove the output file
+        assert 'TaxCalcIO.analyze(dump)_ok' == 'no'
+    # if tries were successful, remove the output file
     if os.path.isfile(outfilepath):
-        try:
-            os.remove(outfilepath)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
+        os.remove(outfilepath)
+
+
+def test_sqldb_option(rawinputfile, reformfile1, assumpfile1):
+    """
+    Test TaxCalcIO output_sqldb option when not writing_output_file.
+    """
+    taxyear = 2021
+    tcio = TaxCalcIO(input_data=rawinputfile.name,
+                     tax_year=taxyear,
+                     reform=reformfile1.name,
+                     assump=assumpfile1.name)
+    assert len(tcio.errmsg) == 0
+    tcio.init(input_data=rawinputfile.name,
+              tax_year=taxyear,
+              reform=reformfile1.name,
+              assump=assumpfile1.name,
+              growdiff_response=None,
+              aging_input_data=False,
+              exact_calculations=False)
+    assert len(tcio.errmsg) == 0
+    outfilepath = tcio.output_filepath()
+    dbfilepath = outfilepath.replace('.csv', '.db')
+    # --sqldb output
+    try:
+        tcio.analyze(writing_output_file=False, output_sqldb=True)
+    except:  # pylint: disable=bare-except
+        if os.path.isfile(dbfilepath):
+            try:
+                os.remove(dbfilepath)
+            except OSError:
+                pass  # sometimes we can't remove a generated temporary file
+        assert 'TaxCalcIO.analyze(sqldb)_ok' == 'no'
+    # if try was successful, remove the db file
+    if os.path.isfile(dbfilepath):
+        os.remove(dbfilepath)
 
 
 def test_no_tables_or_graphs(reformfile1):
