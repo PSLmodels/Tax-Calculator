@@ -471,6 +471,7 @@ def test_create_dropq_diff_table_groupby_options(groupby, res_col,
                                       suffix='_dec',
                                       wsum=dec_sum)
 
+
 @pytest.mark.one
 @pytest.mark.requires_pufcsv
 def test_with_pufcsv(puf_path):  # pylint: disable=redefined-outer-name
