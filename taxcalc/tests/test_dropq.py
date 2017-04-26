@@ -182,7 +182,6 @@ def test_chooser_error():
                                 [0, 7], [0, 8], [0, 9]],
                           columns=['zeros', 'positives'])
     choices = chooser(dframe['positives'])
-    print choices
     assert isinstance(choices, list)
     assert len(choices) == dframe['positives'].size
     with pytest.raises(ValueError):
