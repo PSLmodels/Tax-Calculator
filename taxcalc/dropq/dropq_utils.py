@@ -12,7 +12,7 @@ from taxcalc.utils import (add_income_bins, add_weighted_income_bins,
                            means_and_comparisons, get_sums,
                            weighted, weighted_avg_allcols,
                            STATS_COLUMNS, TABLE_COLUMNS, WEBAPP_INCOME_BINS)
-# pylint: disable=missing-docstring,invalid-name
+# pylint: disable=invalid-name
 # TODO: remove above line
 
 
@@ -157,6 +157,9 @@ def drop_records(df1, df2, mask):
 
 
 def format_print(x, _type, num_decimals):
+    """
+    Formatted conversion of number into a string.
+    """
     float_types = [float, np.dtype('f8')]
     int_types = [int, np.dtype('i8')]
     frmat_str = "0:.{num}f".format(num=num_decimals)
@@ -176,6 +179,9 @@ def format_print(x, _type, num_decimals):
 
 
 def create_json_table(df, row_names=None, column_types=None, num_decimals=2):
+    """
+    Create dictionary with JSON-like contents.
+    """
     out = {}
     if row_names is None:
         row_names = [str(x) for x in list(df.index)]
@@ -196,6 +202,9 @@ def create_json_table(df, row_names=None, column_types=None, num_decimals=2):
 def create_dropq_difference_table(df1, df2, groupby,
                                   res_col, diff_col,
                                   suffix, wsum):
+    """
+    Create difference table.
+    """
     # pylint: disable=too-many-arguments,too-many-locals
     if groupby == "weighted_deciles":
         gdf = add_weighted_income_bins(df2, num_bins=10)
@@ -219,8 +228,7 @@ def create_dropq_difference_table(df1, df2, groupby,
     diffs = means_and_comparisons(res_col + suffix,
                                   gdf.groupby('bins', as_index=False),
                                   wsum + EPSILON)
-
-    sum_row = get_sums(diffs)[diffs.columns.tolist()]
+    sum_row = get_sums(diffs)[diffs.columns]
     diffs = diffs.append(sum_row)
 
     pd.options.display.float_format = '{:8,.0f}'.format
@@ -235,8 +243,7 @@ def create_dropq_difference_table(df1, df2, groupby,
     diffs['share_of_change'] = pd.Series(srs_change, index=diffs.index)
 
     # columns containing weighted values relative to the binning mechanism
-    non_sum_cols = [x for x in diffs.columns.tolist()
-                    if 'mean' in x or 'perc' in x]
+    non_sum_cols = [x for x in diffs.columns if 'mean' in x or 'perc' in x]
     for col in non_sum_cols:
         diffs.loc['sums', col] = 'n/a'
 
@@ -244,6 +251,9 @@ def create_dropq_difference_table(df1, df2, groupby,
 
 
 def create_dropq_distribution_table(resdf, groupby, result_type, suffix):
+    """
+    Create distribution table.
+    """
     # pylint: disable=too-many-locals
     res = resdf
     c04470suf = 'c04470' + suffix

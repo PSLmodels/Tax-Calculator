@@ -205,7 +205,7 @@ def test_dropq_dist_table(groupby, result_type, puf_1991_path):
                                         result_type=result_type,
                                         suffix='_bin')
 
-
+@pytest.mark.one
 @pytest.mark.parametrize('groupby, res_column',
                          [('weighted_deciles', 'tax_diff'),
                           ('webapp_income_bins', 'tax_diff'),
@@ -237,7 +237,7 @@ def test_dropq_diff_table(groupby, res_column, puf_1991_path):
                                       res_col=res_column, diff_col='iitax',
                                       suffix='_dec', wsum=dec_sum)
 
-@pytest.mark.one
+
 @pytest.mark.requires_pufcsv
 def test_with_pufcsv(puf_path):  # pylint: disable=redefined-outer-name
     # pylint: disable=too-many-locals
