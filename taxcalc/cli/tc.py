@@ -24,7 +24,7 @@ def main():
     usage_str = 'tc INPUT TAXYEAR {}{}{}'.format(
         '[--reform REFORM] [--assump  ASSUMP]\n',
         '          ',
-        '[--exact] [--tables] [--graphs] [--ceeu] [--dump] [--test]')
+        '[--exact] [--tables] [--graphs] [--ceeu] [--dump] [-sqldb] [--test]')
     parser = argparse.ArgumentParser(
         prog='',
         usage=usage_str,
@@ -89,6 +89,11 @@ def main():
                               'output.'),
                         default=False,
                         action="store_true")
+    parser.add_argument('--sqldb',
+                        help=('optional flag that writes SQLite database with '
+                              'dump table containing same output as --dump.'),
+                        default=False,
+                        action="store_true")
     parser.add_argument('--test',
                         help=('optional flag that conducts installation '
                               'test.'),
@@ -124,12 +129,15 @@ def main():
                  output_tables=args.tables,
                  output_graphs=args.graphs,
                  output_ceeu=args.ceeu,
-                 output_dump=args.dump)
+                 output_dump=args.dump,
+                 output_sqldb=args.sqldb)
     # compare test output with expected test output if --test option specified
     if args.test:
-        compare_test_output_files()
-    # return no-error exit code
-    return 0
+        retcode = compare_test_output_files()
+    else:
+        retcode = 0
+    # return exit code
+    return retcode
 # end of main function code
 
 
@@ -159,18 +167,22 @@ def write_test_input_output_files():
 
 def compare_test_output_files():
     """
-    Compare expected and actual test output files.
+    Compare expected and actual test output files;
+    returns 0 if pass test, otherwise returns 1.
     """
     explines = open(EXPECTED_TEST_OUTPUT_FILENAME, 'U').readlines()
     actlines = open(ACTUAL_TEST_OUTPUT_FILENAME, 'U').readlines()
     if ''.join(explines) == ''.join(actlines):
         sys.stdout.write('PASSED TEST\n')
+        retcode = 0
     else:
+        retcode = 1
         sys.stdout.write('FAILED TEST\n')
         diff = difflib.unified_diff(explines, actlines,
                                     fromfile=EXPECTED_TEST_OUTPUT_FILENAME,
                                     tofile=ACTUAL_TEST_OUTPUT_FILENAME, n=0)
         sys.stdout.writelines(diff)
+    return retcode
 
 
 if __name__ == '__main__':

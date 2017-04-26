@@ -7,6 +7,7 @@ Tax-Calculator Input-Output class.
 
 import os
 import copy
+import sqlite3
 import six
 import numpy as np
 import pandas as pd
@@ -264,7 +265,8 @@ class TaxCalcIO(object):
                 output_tables=False,
                 output_graphs=False,
                 output_ceeu=False,
-                output_dump=False):
+                output_dump=False,
+                output_sqldb=False):
         """
         Conduct tax analysis.
 
@@ -289,13 +291,17 @@ class TaxCalcIO(object):
            whether or not to replace standard output with all input and
            calculated variables using their Tax-Calculator names
 
+        output_sqldb: boolean
+           whether or not to write SQLite3 database with dump table
+           containing same output as written by output_dump to a csv file
+
         Returns
         -------
         Nothing
         """
         # pylint: disable=too-many-arguments,too-many-branches
         calc_clp_calculated = False
-        if output_dump:
+        if output_dump or output_sqldb:
             (mtr_paytax, mtr_inctax,
              _) = self.calc.mtr(wrt_full_compensation=False)
         else:  # do not need marginal tax rates
@@ -325,6 +331,9 @@ class TaxCalcIO(object):
         # extract output if writing_output_file
         if writing_output_file:
             self.write_output_file(output_dump, mtr_paytax, mtr_inctax)
+        # optionally write --sqldb output to SQLite3 database
+        if output_sqldb:
+            self.write_sqldb_file(mtr_paytax, mtr_inctax)
         # optionally write --tables output to text file
         if output_tables:
             if not calc_clp_calculated:
@@ -351,6 +360,17 @@ class TaxCalcIO(object):
             outdf = self.minimal_output()
         assert len(outdf.index) == self.calc.records.dim
         outdf.to_csv(self._output_filename, index=False, float_format='%.2f')
+
+    def write_sqldb_file(self, mtr_paytax, mtr_inctax):
+        """
+        Write dump output to SQLite3 database table dump.
+        """
+        outdf = self.dump_output(mtr_inctax, mtr_paytax)
+        assert len(outdf.index) == self.calc.records.dim
+        dbfilename = '{}.db'.format(self._output_filename[:-4])
+        dbcon = sqlite3.connect(dbfilename)
+        outdf.to_sql('dump', dbcon, if_exists='replace', index=False)
+        dbcon.close()
 
     def write_tables_file(self):
         """
@@ -531,16 +551,20 @@ class TaxCalcIO(object):
 
     def dump_output(self, mtr_inctax, mtr_paytax):
         """
-        Extract --dump output and return as pandas DataFrame.
+        Extract dump output and return it as pandas DataFrame.
         """
         odf = pd.DataFrame()
         varset = Records.USABLE_READ_VARS | Records.CALCULATED_VARS
         for varname in varset:
             vardata = getattr(self.calc.records, varname)
-            odf[varname] = vardata
+            if varname in Records.INTEGER_VARS:
+                odf[varname] = vardata
+            else:
+                odf[varname] = vardata.round(2)  # rounded to nearest cent
         odf['FLPDYR'] = self.tax_year()  # tax calculation year
-        odf['mtr_inctax'] = mtr_inctax
-        odf['mtr_paytax'] = mtr_paytax
+        # mtr values expressed in rounded percentage terms
+        odf['mtr_inctax'] = (mtr_inctax * 100.0).round(2)
+        odf['mtr_paytax'] = (mtr_paytax * 100.0).round(2)
         return odf
 
     @staticmethod
