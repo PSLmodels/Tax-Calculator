@@ -8,12 +8,13 @@ Utility functions used by functions in dropq.py file.
 import hashlib
 import numpy as np
 import pandas as pd
+from taxcalc import (Policy, Records, Calculator,
+                     Consumption, Behavior, Growfactors, Growdiff)
 from taxcalc.utils import (add_income_bins, add_weighted_income_bins,
                            means_and_comparisons, get_sums,
                            weighted, weighted_avg_allcols,
+                           create_distribution_table,
                            STATS_COLUMNS, TABLE_COLUMNS, WEBAPP_INCOME_BINS)
-# pylint: disable=invalid-name
-# TODO: remove above line
 
 
 EPSILON = 1e-3
@@ -35,6 +36,141 @@ def check_user_mods(user_mods):
     extra_keys = actual_keys - expected_keys
     if len(extra_keys) > 0:
         raise ValueError('user_mods has extra keys: {}'.format(extra_keys))
+
+
+def results(calc):
+    """
+    Return DataFrame containing results for STATS_COLUMNS Records variables.
+    """
+    outputs = []
+    for col in STATS_COLUMNS:
+        outputs.append(getattr(calc.records, col))
+    return pd.DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
+
+
+def dropq_calculate(year_n, start_year,
+                    taxrec_df, user_mods,
+                    behavior_allowed, mask_computed):
+    """
+    The dropq_calculate function assumes specified user_mods is
+      a dictionary returned by the Calculator.read_json_parameter_files()
+      function with an extra key:value pair that is specified as
+      'gdp_elasticity': {'value': <float_value>}.
+    The function returns (calc1, calc2, mask) where
+      calc1 is pre-reform Calculator object calculated for year_n,
+      calc2 is post-reform Calculator object calculated for year_n, and
+      mask is boolean array if compute_mask=True or None otherwise
+    """
+    # pylint: disable=too-many-arguments,too-many-locals,too-many-statements
+
+    check_user_mods(user_mods)
+
+    # specify Consumption instance
+    consump = Consumption()
+    consump_assumptions = user_mods['consumption']
+    consump.update_consumption(consump_assumptions)
+
+    # specify growdiff_baseline and growdiff_response
+    growdiff_baseline = Growdiff()
+    growdiff_response = Growdiff()
+    growdiff_base_assumps = user_mods['growdiff_baseline']
+    growdiff_resp_assumps = user_mods['growdiff_response']
+    growdiff_baseline.update_growdiff(growdiff_base_assumps)
+    growdiff_response.update_growdiff(growdiff_resp_assumps)
+
+    # create pre-reform and post-reform Growfactors instances
+    growfactors_pre = Growfactors()
+    growdiff_baseline.apply_to(growfactors_pre)
+    growfactors_post = Growfactors()
+    growdiff_baseline.apply_to(growfactors_post)
+    growdiff_response.apply_to(growfactors_post)
+
+    # create pre-reform Calculator instance
+    recs1 = Records(data=taxrec_df.copy(deep=True),
+                    gfactors=growfactors_pre)
+    policy1 = Policy(gfactors=growfactors_pre)
+    calc1 = Calculator(policy=policy1, records=recs1, consumption=consump)
+    while calc1.current_year < start_year:
+        calc1.increment_year()
+    calc1.calc_all()
+    assert calc1.current_year == start_year
+
+    # optionally compute mask
+    if mask_computed:
+        # create pre-reform Calculator instance with extra income
+        recs1p = Records(data=taxrec_df.copy(deep=True),
+                         gfactors=growfactors_pre)
+        # add one dollar to total wages and salaries of each filing unit
+        recs1p.e00200 += 1.0  # pylint: disable=no-member
+        policy1p = Policy(gfactors=growfactors_pre)
+        # create Calculator with recs1p and calculate for start_year
+        calc1p = Calculator(policy=policy1p, records=recs1p,
+                            consumption=consump)
+        while calc1p.current_year < start_year:
+            calc1p.increment_year()
+        calc1p.calc_all()
+        assert calc1p.current_year == start_year
+        # compute mask that shows which of the calc1 and calc1p results differ
+        res1 = results(calc1)
+        res1p = results(calc1p)
+        mask = (res1.iitax != res1p.iitax)
+    else:
+        mask = None
+
+    # specify Behavior instance
+    behv = Behavior()
+    behavior_assumps = user_mods['behavior']
+    behv.update_behavior(behavior_assumps)
+
+    # always prevent both behavioral response and growdiff response
+    if behv.has_any_response() and growdiff_response.has_any_response():
+        msg = 'BOTH behavior AND growdiff_response HAVE RESPONSE'
+        raise ValueError(msg)
+
+    # optionally prevent behavioral response
+    if behv.has_any_response() and not behavior_allowed:
+        msg = 'A behavior RESPONSE IS NOT ALLOWED'
+        raise ValueError(msg)
+
+    # create post-reform Calculator instance
+    recs2 = Records(data=taxrec_df.copy(deep=True),
+                    gfactors=growfactors_post)
+    policy2 = Policy(gfactors=growfactors_post)
+    policy_reform = user_mods['policy']
+    policy2.implement_reform(policy_reform)
+    calc2 = Calculator(policy=policy2, records=recs2,
+                       consumption=consump, behavior=behv)
+    while calc2.current_year < start_year:
+        calc2.increment_year()
+    calc2.calc_all()
+    assert calc2.current_year == start_year
+
+    # increment Calculator objects for year_n years and calculate
+    for _ in range(0, year_n):
+        calc1.increment_year()
+        calc2.increment_year()
+    calc1.calc_all()
+    if calc2.behavior.has_response():
+        calc2 = Behavior.response(calc1, calc2)
+    else:
+        calc2.calc_all()
+
+    # return calculated Calculator objects and mask
+    return (calc1, calc2, mask)
+
+
+def random_seed(user_mods):
+    """
+    Compute random seed based on specified user_mods, which is a
+    dictionary returned by the Calculator.read_json_parameter_files()
+    function with an extra key:value pair that is specified as
+    'gdp_elasticity': {'value': <float_value>}.
+    """
+    ans = 0
+    for subdict_name in user_mods:
+        if subdict_name != 'gdp_elasticity':
+            ans += random_seed_from_subdict(user_mods[subdict_name])
+    return ans % np.iinfo(np.uint32).max  # pylint: disable=no-member
 
 
 def random_seed_from_subdict(subdict):
@@ -82,22 +218,12 @@ def chooser(agg):
     return ans
 
 
-def results(calc):
-    """
-    Return DataFrame containing results for STATS_COLUMNS Records variables.
-    """
-    outputs = []
-    for col in STATS_COLUMNS:
-        outputs.append(getattr(calc.records, col))
-    return pd.DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
-
-
 def drop_records(df1, df2, mask):
     """
     Modify DataFrame df1 and DataFrame df2 by adding statistical 'fuzz'.
-    df1 contains results for the standard plan X and X'
-    df2 contains results for the user-specified plan (Plan Y)
-    mask is the boolean mask where X and X' match
+      df1 contains results for the standard plan X and X'
+      df2 contains results for the user-specified plan (Plan Y)
+      mask is the boolean mask where X and X' match
     This function groups both DataFrames based on the web application's
     income groupings (both weighted decile and income bins), and then
     pseudo-randomly picks three records to 'drop' within each bin.
@@ -156,9 +282,93 @@ def drop_records(df1, df2, mask):
     return df1, df2
 
 
-def format_print(x, _type, num_decimals):
+def dropq_summary(df1, df2, mask):
     """
-    Formatted conversion of number into a string.
+    df1 contains raw results for the standard plan X and X'
+    df2 contains raw results the user-specified plan (Plan Y)
+    mask is the boolean mask where X and X' match
+    """
+    # pylint: disable=too-many-locals
+
+    df1, df2 = drop_records(df1, df2, mask)
+
+    # Totals for diff between baseline and reform
+    dec_sum = (df2['tax_diff_dec'] * df2['s006']).sum()
+    bin_sum = (df2['tax_diff_bin'] * df2['s006']).sum()
+    pr_dec_sum = (df2['payrolltax_diff_dec'] * df2['s006']).sum()
+    pr_bin_sum = (df2['payrolltax_diff_bin'] * df2['s006']).sum()
+    combined_dec_sum = (df2['combined_diff_dec'] * df2['s006']).sum()
+    combined_bin_sum = (df2['combined_diff_bin'] * df2['s006']).sum()
+
+    # Totals for baseline
+    sum_baseline = (df1['iitax'] * df1['s006']).sum()
+    pr_sum_baseline = (df1['payrolltax'] * df1['s006']).sum()
+    combined_sum_baseline = (df1['combined'] * df1['s006']).sum()
+
+    # Totals for reform
+    sum_reform = (df2['iitax_dec'] * df2['s006']).sum()
+    pr_sum_reform = (df2['payrolltax_dec'] * df2['s006']).sum()
+    combined_sum_reform = (df2['combined_dec'] * df2['s006']).sum()
+
+    # Create difference tables, grouped by deciles and bins
+    diffs_dec = dropq_diff_table(df1, df2,
+                                 groupby='weighted_deciles',
+                                 res_col='tax_diff',
+                                 diff_col='iitax',
+                                 suffix='_dec', wsum=dec_sum)
+
+    diffs_bin = dropq_diff_table(df1, df2,
+                                 groupby='webapp_income_bins',
+                                 res_col='tax_diff',
+                                 diff_col='iitax',
+                                 suffix='_bin', wsum=bin_sum)
+
+    pr_diffs_dec = dropq_diff_table(df1, df2,
+                                    groupby='weighted_deciles',
+                                    res_col='payrolltax_diff',
+                                    diff_col='payrolltax',
+                                    suffix='_dec', wsum=pr_dec_sum)
+
+    pr_diffs_bin = dropq_diff_table(df1, df2,
+                                    groupby='webapp_income_bins',
+                                    res_col='payrolltax_diff',
+                                    diff_col='payrolltax',
+                                    suffix='_bin', wsum=pr_bin_sum)
+
+    comb_diffs_dec = dropq_diff_table(df1, df2,
+                                      groupby='weighted_deciles',
+                                      res_col='combined_diff',
+                                      diff_col='combined',
+                                      suffix='_dec', wsum=combined_dec_sum)
+
+    comb_diffs_bin = dropq_diff_table(df1, df2,
+                                      groupby='webapp_income_bins',
+                                      res_col='combined_diff',
+                                      diff_col='combined',
+                                      suffix='_bin', wsum=combined_bin_sum)
+
+    mX_dec = create_distribution_table(df1, groupby='weighted_deciles',
+                                       result_type='weighted_sum')
+
+    mY_dec = dropq_dist_table(df2, groupby='weighted_deciles',
+                              result_type='weighted_sum', suffix='_dec')
+
+    mX_bin = create_distribution_table(df1, groupby='webapp_income_bins',
+                                       result_type='weighted_sum')
+
+    mY_bin = dropq_dist_table(df2, groupby='webapp_income_bins',
+                              result_type='weighted_sum', suffix='_bin')
+
+    return (mY_dec, mX_dec, diffs_dec, pr_diffs_dec, comb_diffs_dec,
+            mY_bin, mX_bin, diffs_bin, pr_diffs_bin, comb_diffs_bin,
+            dec_sum, pr_dec_sum, combined_dec_sum,
+            sum_baseline, pr_sum_baseline, combined_sum_baseline,
+            sum_reform, pr_sum_reform, combined_sum_reform)
+
+
+def format_print(val, _type, num_decimals):
+    """
+    Return formatted conversion of number val into a string.
     """
     float_types = [float, np.dtype('f8')]
     int_types = [int, np.dtype('i8')]
@@ -166,44 +376,44 @@ def format_print(x, _type, num_decimals):
     frmat_str = "{" + frmat_str + "}"
     try:
         if _type in float_types or _type is None:
-            return frmat_str.format(x)
+            return frmat_str.format(val)
         elif _type in int_types:
-            return str(int(x))
+            return str(int(val))
         elif _type == str:
-            return str(x)
+            return str(val)
         else:
             raise NotImplementedError()
     except ValueError:
         # try making it a string - good luck!
-        return str(x)
+        return str(val)
 
 
-def create_json_table(df, row_names=None, column_types=None, num_decimals=2):
+def create_json_table(dframe, row_names=None, column_types=None,
+                      num_decimals=2):
     """
-    Create dictionary with JSON-like contents.
+    Create and return dictionary with JSON-like contents from specified dframe.
     """
     out = {}
     if row_names is None:
-        row_names = [str(x) for x in list(df.index)]
+        row_names = [str(x) for x in list(dframe.index)]
     else:
-        assert len(row_names) == len(df.index)
+        assert len(row_names) == len(dframe.index)
     if column_types is None:
-        column_types = [df[col].dtype for col in df.columns]
+        column_types = [dframe[col].dtype for col in dframe.columns]
     else:
-        assert len(column_types) == len(df.columns)
-    for idx, row_name in zip(df.index, row_names):
+        assert len(column_types) == len(dframe.columns)
+    for idx, row_name in zip(dframe.index, row_names):
         row_out = out.get(row_name, [])
-        for col, _type in zip(df.columns, column_types):
-            row_out.append(format_print(df.loc[idx, col], _type, num_decimals))
+        for col, dtype in zip(dframe.columns, column_types):
+            row_out.append(format_print(dframe.loc[idx, col],
+                                        dtype, num_decimals))
         out[row_name] = row_out
     return out
 
 
-def create_dropq_difference_table(df1, df2, groupby,
-                                  res_col, diff_col,
-                                  suffix, wsum):
+def dropq_diff_table(df1, df2, groupby, res_col, diff_col, suffix, wsum):
     """
-    Create difference table.
+    Create and return dropq difference table.
     """
     # pylint: disable=too-many-arguments,too-many-locals
     if groupby == "weighted_deciles":
@@ -219,91 +429,78 @@ def create_dropq_difference_table(df1, df2, groupby,
                "'small_income_bins' or 'large_income_bins' or "
                "'webapp_income_bins'")
         raise ValueError(err)
-
     # Difference in plans
     # Positive values are the magnitude of the tax increase
     # Negative values are the magnitude of the tax decrease
     df2[res_col + suffix] = df2[diff_col + suffix] - df1[diff_col]
-
     diffs = means_and_comparisons(res_col + suffix,
                                   gdf.groupby('bins', as_index=False),
                                   wsum + EPSILON)
     sum_row = get_sums(diffs)[diffs.columns]
     diffs = diffs.append(sum_row)
-
     pd.options.display.float_format = '{:8,.0f}'.format
     srs_inc = ["{0:.2f}%".format(val * 100) for val in diffs['perc_inc']]
     diffs['perc_inc'] = pd.Series(srs_inc, index=diffs.index)
-
     srs_cut = ["{0:.2f}%".format(val * 100) for val in diffs['perc_cut']]
     diffs['perc_cut'] = pd.Series(srs_cut, index=diffs.index)
-
     srs_change = ["{0:.2f}%".format(val * 100) for val in
                   diffs['share_of_change']]
     diffs['share_of_change'] = pd.Series(srs_change, index=diffs.index)
-
     # columns containing weighted values relative to the binning mechanism
     non_sum_cols = [x for x in diffs.columns if 'mean' in x or 'perc' in x]
     for col in non_sum_cols:
         diffs.loc['sums', col] = 'n/a'
-
     return diffs
 
 
-def create_dropq_distribution_table(resdf, groupby, result_type, suffix):
+def dropq_dist_table(resdf, groupby, result_type, suffix):
     """
-    Create distribution table.
+    Create and return dropq distribution table.
     """
     # pylint: disable=too-many-locals
     res = resdf
-    c04470suf = 'c04470' + suffix
-    c00100suf = 'c00100' + suffix
-    c09600suf = 'c09600' + suffix
-    standardsuf = 'standard' + suffix
-    s006suf = 's006' + suffix
-    returnsItemDedsuf = 'num_returns_ItemDed' + suffix
-    returnsStandDedsuf = 'num_returns_StandardDed' + suffix
-    returnsAMTsuf = 'num_returns_AMT' + suffix
-    res[c04470suf] = res[c04470suf].where(((res[c00100suf] > 0) &
-                                           (res[c04470suf] > res[standardsuf])),
-                                          0)
-    res[returnsItemDedsuf] = res[s006suf].where(((res[c00100suf] > 0) &
-                                                 (res[c04470suf] > 0)),
-                                                0)
-    res[returnsStandDedsuf] = res[s006suf].where(((res[c00100suf] > 0) &
-                                                  (res[standardsuf] > 0)),
-                                                 0)
-    res[returnsAMTsuf] = res[s006suf].where(res[c09600suf] > 0, 0)
-
+    c04470_s = 'c04470' + suffix
+    c00100_s = 'c00100' + suffix
+    c09600_s = 'c09600' + suffix
+    standard_s = 'standard' + suffix
+    s006_s = 's006' + suffix
+    returns_ided_s = 'num_returns_ItemDed' + suffix
+    returns_sded_s = 'num_returns_StandardDed' + suffix
+    returns_amt_s = 'num_returns_AMT' + suffix
+    res[c04470_s] = res[c04470_s].where(((res[c00100_s] > 0) &
+                                         (res[c04470_s] > res[standard_s])), 0)
+    res[returns_ided_s] = res[s006_s].where(((res[c00100_s] > 0) &
+                                             (res[c04470_s] > 0)), 0)
+    res[returns_sded_s] = res[s006_s].where(((res[c00100_s] > 0) &
+                                             (res[standard_s] > 0)), 0)
+    res[returns_amt_s] = res[s006_s].where(res[c09600_s] > 0, 0)
     if groupby == "weighted_deciles":
-        df = add_weighted_income_bins(res, num_bins=10)
+        dframe = add_weighted_income_bins(res, num_bins=10)
     elif groupby == "small_income_bins":
-        df = add_income_bins(res, compare_with="soi")
+        dframe = add_income_bins(res, compare_with="soi")
     elif groupby == "large_income_bins":
-        df = add_income_bins(res, compare_with="tpc")
+        dframe = add_income_bins(res, compare_with="tpc")
     elif groupby == "webapp_income_bins":
-        df = add_income_bins(res, compare_with="webapp")
+        dframe = add_income_bins(res, compare_with="webapp")
     else:
         err = ("groupby must be either 'weighted_deciles' or "
                "'small_income_bins' or 'large_income_bins' or "
                "'webapp_income_bins'")
         raise ValueError(err)
-
     pd.options.display.float_format = '{:8,.0f}'.format
     if result_type == "weighted_sum":
-        df = weighted(df, [col + suffix for col in STATS_COLUMNS])
-        gby_bins = df.groupby('bins', as_index=False)
+        dframe = weighted(dframe, [col + suffix for col in STATS_COLUMNS])
+        gby_bins = dframe.groupby('bins', as_index=False)
         gp_mean = gby_bins[[col + suffix for col in TABLE_COLUMNS]].sum()
         gp_mean.drop('bins', axis=1, inplace=True)
-        sum_row = get_sums(df)[[col + suffix for col in TABLE_COLUMNS]]
+        sum_row = get_sums(dframe)[[col + suffix for col in TABLE_COLUMNS]]
     elif result_type == "weighted_avg":
-        gp_mean = weighted_avg_allcols(df,
+        gp_mean = weighted_avg_allcols(dframe,
                                        [col + suffix for col in TABLE_COLUMNS])
-        all_sums = get_sums(df, not_available=True)
+        all_sums = get_sums(dframe, not_available=True)
         sum_row = all_sums[[col + suffix for col in TABLE_COLUMNS]]
     else:
         err = ("result_type must be either 'weighted_sum' or "
                "'weighted_avg'")
         raise ValueError(err)
-
     return gp_mean.append(sum_row)
