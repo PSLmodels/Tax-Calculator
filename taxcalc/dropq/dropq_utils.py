@@ -347,20 +347,20 @@ def dropq_summary(df1, df2, mask):
                                       diff_col='combined',
                                       suffix='_bin', wsum=combined_bin_sum)
 
-    mX_dec = create_distribution_table(df1, groupby='weighted_deciles',
+    m1_dec = create_distribution_table(df1, groupby='weighted_deciles',
                                        result_type='weighted_sum')
 
-    mY_dec = dropq_dist_table(df2, groupby='weighted_deciles',
+    m2_dec = dropq_dist_table(df2, groupby='weighted_deciles',
                               result_type='weighted_sum', suffix='_dec')
 
-    mX_bin = create_distribution_table(df1, groupby='webapp_income_bins',
+    m1_bin = create_distribution_table(df1, groupby='webapp_income_bins',
                                        result_type='weighted_sum')
 
-    mY_bin = dropq_dist_table(df2, groupby='webapp_income_bins',
+    m2_bin = dropq_dist_table(df2, groupby='webapp_income_bins',
                               result_type='weighted_sum', suffix='_bin')
 
-    return (mY_dec, mX_dec, diffs_dec, pr_diffs_dec, comb_diffs_dec,
-            mY_bin, mX_bin, diffs_bin, pr_diffs_bin, comb_diffs_bin,
+    return (m2_dec, m1_dec, diffs_dec, pr_diffs_dec, comb_diffs_dec,
+            m2_bin, m1_bin, diffs_bin, pr_diffs_bin, comb_diffs_bin,
             dec_sum, pr_dec_sum, combined_dec_sum,
             sum_baseline, pr_sum_baseline, combined_sum_baseline,
             sum_reform, pr_sum_reform, combined_sum_reform)
@@ -437,7 +437,7 @@ def dropq_diff_table(df1, df2, groupby, res_col, diff_col, suffix, wsum):
                                   gdf.groupby('bins', as_index=False),
                                   wsum + EPSILON)
     sum_row = get_sums(diffs)[diffs.columns]
-    diffs = diffs.append(sum_row)
+    diffs = diffs.append(sum_row)  # pylint: disable=redefined-variable-type
     pd.options.display.float_format = '{:8,.0f}'.format
     srs_inc = ["{0:.2f}%".format(val * 100) for val in diffs['perc_inc']]
     diffs['perc_inc'] = pd.Series(srs_inc, index=diffs.index)

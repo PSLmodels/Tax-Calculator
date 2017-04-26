@@ -1,13 +1,10 @@
-# pylint: disable=missing-docstring,undefined-variable
-# pylint: disable=wildcard-import,unused-wildcard-import,import-error
 import os
 import numpy as np
 import pandas as pd
 import pytest
 from taxcalc.dropq.dropq_utils import *
 from taxcalc.dropq import *
-from taxcalc import Policy, Records, Calculator
-from taxcalc import multiyear_diagnostic_table
+from taxcalc import Policy, Records, Calculator, multiyear_diagnostic_table
 
 
 USER_MODS = {
@@ -287,6 +284,6 @@ def test_with_pufcsv(puf_path):  # pylint: disable=redefined-outer-name
     proportional_diff = diff / fulls_reform_revenue
     frmt = 'f,d,adiff,pdiff=  {:.4f}  {:.4f}  {:.4f}  {}'
     print(frmt.format(fulls_reform_revenue, dropq_reform_revenue,
-                      diff, proportional_diff)) 
+                      diff, proportional_diff))
     assert proportional_diff < 0.001  # one-tenth of one percent
-    assert 1 == 2
+    # assert 1 == 2

@@ -67,47 +67,44 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     np.random.seed(seed)  # pylint: disable=no-member
 
     # construct dropq summary results from raw results
-    (mY_dec, mX_dec, df_dec, pdf_dec, cdf_dec,
-     mY_bin, mX_bin, df_bin, pdf_bin, cdf_bin,
-     diff_sum, payrolltax_diff_sum, combined_diff_sum,
-     sum_baseline, pr_sum_baseline, combined_sum_baseline,
-     sum_reform, pr_sum_reform,
-     combined_sum_reform) = dropq_summary(rawres1, rawres2, mask)
-
-    elapsed_time = time.time() - start_time
-    print('elapsed time for this run: ', elapsed_time)
+    (m2_dec, m1_dec, df_dec, pdf_dec, cdf_dec,
+     m2_bin, m1_bin, df_bin, pdf_bin, cdf_bin,
+     itax_sumd, ptax_sumd, comb_sumd,
+     itax_sum1, ptax_sum1, comb_sum1,
+     itax_sum2, ptax_sum2, comb_sum2) = dropq_summary(rawres1, rawres2, mask)
 
     # construct DataFrames containing selected summary results
-    tots = [diff_sum, payrolltax_diff_sum, combined_diff_sum]
-    fiscal_tots_diff = pd.DataFrame(data=tots, index=TOTAL_ROW_NAMES)
+    totsd = [itax_sumd, ptax_sumd, comb_sumd]
+    fiscal_tots_diff = pd.DataFrame(data=totsd, index=TOTAL_ROW_NAMES)
 
-    tots_baseline = [sum_baseline, pr_sum_baseline, combined_sum_baseline]
-    fiscal_tots_baseline = pd.DataFrame(data=tots_baseline,
-                                        index=TOTAL_ROW_NAMES)
+    tots1 = [itax_sum1, ptax_sum1, comb_sum1]
+    fiscal_tots_baseline = pd.DataFrame(data=tots1, index=TOTAL_ROW_NAMES)
 
-    tots_reform = [sum_reform, pr_sum_reform, combined_sum_reform]
-    fiscal_tots_reform = pd.DataFrame(data=tots_reform,
-                                      index=TOTAL_ROW_NAMES)
+    tots2 = [itax_sum2, ptax_sum2, comb_sum2]
+    fiscal_tots_reform = pd.DataFrame(data=tots2, index=TOTAL_ROW_NAMES)
 
     # remove negative incomes from selected summary results
     df_bin.drop(df_bin.index[0], inplace=True)
     pdf_bin.drop(pdf_bin.index[0], inplace=True)
     cdf_bin.drop(cdf_bin.index[0], inplace=True)
-    mY_bin.drop(mY_bin.index[0], inplace=True)
-    mX_bin.drop(mX_bin.index[0], inplace=True)
+    m2_bin.drop(m2_bin.index[0], inplace=True)
+    m1_bin.drop(m1_bin.index[0], inplace=True)
 
-    def append_year(x):
+    elapsed_time = time.time() - start_time
+    print('elapsed time for this run: ', elapsed_time)
+
+    def append_year(tdf):
         """
         append_year embedded function
         """
-        x.columns = [str(col) + '_{}'.format(year_n) for col in x.columns]
-        return x
+        tdf.columns = [str(col) + '_{}'.format(year_n) for col in tdf.columns]
+        return tdf
 
     # optionally return non-JSON results
     if not return_json:
-        return (append_year(mY_dec), append_year(mX_dec), append_year(df_dec),
+        return (append_year(m2_dec), append_year(m1_dec), append_year(df_dec),
                 append_year(pdf_dec), append_year(cdf_dec),
-                append_year(mY_bin), append_year(mX_bin), append_year(df_bin),
+                append_year(m2_bin), append_year(m1_bin), append_year(df_bin),
                 append_year(pdf_bin), append_year(cdf_bin),
                 append_year(fiscal_tots_diff),
                 append_year(fiscal_tots_baseline),
@@ -115,10 +112,10 @@ def run_nth_year_tax_calc_model(year_n, start_year,
 
     # optionally construct JSON results
     decile_row_names_i = [x + '_' + str(year_n) for x in DECILE_ROW_NAMES]
-    mY_dec_table_i = create_json_table(mY_dec,
+    m2_dec_table_i = create_json_table(m2_dec,
                                        row_names=decile_row_names_i,
                                        column_types=PLAN_COLUMN_TYPES)
-    mX_dec_table_i = create_json_table(mX_dec,
+    m1_dec_table_i = create_json_table(m1_dec,
                                        row_names=decile_row_names_i,
                                        column_types=PLAN_COLUMN_TYPES)
     df_dec_table_i = create_json_table(df_dec,
@@ -131,10 +128,10 @@ def run_nth_year_tax_calc_model(year_n, start_year,
                                         row_names=decile_row_names_i,
                                         column_types=DIFF_COLUMN_TYPES)
     bin_row_names_i = [x + '_' + str(year_n) for x in BIN_ROW_NAMES]
-    mY_bin_table_i = create_json_table(mY_bin,
+    m2_bin_table_i = create_json_table(m2_bin,
                                        row_names=bin_row_names_i,
                                        column_types=PLAN_COLUMN_TYPES)
-    mX_bin_table_i = create_json_table(mX_bin,
+    m1_bin_table_i = create_json_table(m1_bin,
                                        row_names=bin_row_names_i,
                                        column_types=PLAN_COLUMN_TYPES)
     df_bin_table_i = create_json_table(df_bin,
@@ -158,8 +155,8 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     fiscal_yr_total_rf = dict((k, v[0]) for k, v in fiscal_yr_total_rf.items())
 
     # return JSON results
-    return (mY_dec_table_i, mX_dec_table_i, df_dec_table_i, pdf_dec_table_i,
-            cdf_dec_table_i, mY_bin_table_i, mX_bin_table_i, df_bin_table_i,
+    return (m2_dec_table_i, m1_dec_table_i, df_dec_table_i, pdf_dec_table_i,
+            cdf_dec_table_i, m2_bin_table_i, m1_bin_table_i, df_bin_table_i,
             pdf_bin_table_i, cdf_bin_table_i, fiscal_yr_total_df,
             fiscal_yr_total_bl, fiscal_yr_total_rf)
 
