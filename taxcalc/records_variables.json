@@ -493,7 +493,7 @@
     },
     "expanded_income": {
       "type": "float",
-      "desc": "",
+      "desc": "Broad income measure",
       "form": {}
     },
     "iitax": {
@@ -516,7 +516,7 @@
     },
     "refund": {
       "type": "float",
-      "desc": "",
+      "desc": "Total refundable credits",
       "form": {}
     },
     "sep": {
@@ -541,7 +541,7 @@
     },
     "taxbc": {
       "type": "float",
-      "desc": "Regular tax on regular taxable income",
+      "desc": "Regular tax on regular taxable income before credits",
       "form": {"2013-2016": "1040, line 44"}
     },
     "c00100": {
@@ -591,7 +591,7 @@
     },
     "c05200": {
       "type": "float",
-      "desc": "",
+      "desc": "Regular income tax liability before credits",
       "form": {}
     },
     "c05700": {
@@ -606,7 +606,7 @@
     },
     "c07100": {
       "type": "float",
-      "desc": "",
+      "desc": "Total non-refundable credits",
       "form": {}
     },
     "c07180": {
@@ -628,7 +628,7 @@
     },
     "c07230": {
       "type": "float",
-      "desc": "",
+      "desc": "Education tax credit non-refundable amount from Form 8863",
       "form": {}
     },
     "c07240": {
@@ -663,7 +663,7 @@
     },
     "c09200": {
       "type": "float",
-      "desc": "",
+      "desc": "Income tax liability after non-refundable credits, but before refundable credits",
       "form": {}
     },
     "c09600": {
@@ -673,7 +673,7 @@
     },
     "c10960": {
       "type": "float",
-      "desc": "",
+      "desc": "American Opportunity Credit refundable amount from Form 8863",
       "form": {}
     },
     "c11070": {
@@ -739,7 +739,7 @@
     },
     "c87668": {
       "type": "float",
-      "desc": "",
+      "desc": "American Opportunity Credit non-refundable amount from Form 8863",
       "form": {}
     },
     "care_deduction": {
