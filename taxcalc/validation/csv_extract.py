@@ -9,7 +9,6 @@ the filing unit with specified RECID in specified CSV-formated file.
 import argparse
 import sys
 import os
-import numpy as np
 import pandas as pd
 from taxcalc import Records
 
@@ -20,7 +19,7 @@ def main(filename, recid, input_vars_only):
     """
     # read all file content into Pandas DataFrame
     adf = pd.read_csv(filename)
-    adf_vars = set(adf.columns)
+    adf_vars = set(adf.columns)  # pylint: disable=no-member
 
     # check that both files contain required tax variables
     required_input_vars = set(['RECID', 'MARS'])
@@ -31,7 +30,7 @@ def main(filename, recid, input_vars_only):
         return 1
 
     # check that RECID actually identifies a filing unit in FILE
-    if not recid in adf['RECID'].values:
+    if recid not in adf['RECID'].values:
         msg = 'ERROR: RECID={} not in FILE\n'
         sys.stderr.write(msg.format(recid))
         return 1
@@ -54,8 +53,8 @@ def main(filename, recid, input_vars_only):
 
     # write edf to stdout in CSV format with column names in sorted order
     ofilename = '{}-{}.csv'.format(filename[:-4], recid)
-    out = edf.to_csv(path_or_buf=ofilename, columns=sorted(edf.columns),
-                     index=False, float_format='%.2f')
+    edf.to_csv(path_or_buf=ofilename, columns=sorted(edf.columns),
+               index=False, float_format='%.2f')
     sys.stdout.write('EXTRACT IN {}\n'.format(ofilename))
 
     # normal return code
