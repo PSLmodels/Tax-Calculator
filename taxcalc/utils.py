@@ -590,7 +590,7 @@ def diagnostic_table_odict(recs):
     # refundable credits
     val = (recs.refund * recs.s006).sum()
     odict['Refundable Credits ($b)'] = val * in_billions
-    # nonrefuncable credits
+    # nonrefundable credits
     val = (recs.c07100 * recs.s006).sum()
     odict['Nonrefundable Credits ($b)'] = val * in_billions
     # reform surtaxes (part of federal individual income tax liability)
