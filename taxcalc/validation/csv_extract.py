@@ -56,7 +56,7 @@ def main(filename, recid, input_vars_only):
     ofilename = '{}-{}.csv'.format(filename[:-4], recid)
     out = edf.to_csv(path_or_buf=ofilename, columns=sorted(edf.columns),
                      index=False, float_format='%.2f')
-    sys.stdout.write('EXTRACT in {}\n'.format(ofilename))
+    sys.stdout.write('EXTRACT IN {}\n'.format(ofilename))
 
     # normal return code
     return 0
@@ -74,8 +74,8 @@ if __name__ == '__main__':
     PARSER.add_argument('RECID', type=int, default=0,
                         help=('RECID value of filing unit row to extract.'))
     PARSER.add_argument('--inputonly', default=False, action='store_true',
-                        help=('optional flag that excludes variables that '
-                              'are not Tax-Calculator usable input.'))
+                        help=('optional flag that includes only variables '
+                              'that are Tax-Calculator usable input.'))
     ARGS = PARSER.parse_args()
     # check for invalid command-line argument values
     ARGS_ERROR = False
