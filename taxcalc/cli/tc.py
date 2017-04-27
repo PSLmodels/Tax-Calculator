@@ -24,7 +24,7 @@ def main():
     usage_str = 'tc INPUT TAXYEAR {}{}{}'.format(
         '[--reform REFORM] [--assump  ASSUMP]\n',
         '          ',
-        '[--exact] [--tables] [--graphs] [--ceeu] [--dump] [-sqldb] [--test]')
+        '[--exact] [--tables] [--graphs] [--ceeu] [--dump] [--sqldb] [--test]')
     parser = argparse.ArgumentParser(
         prog='',
         usage=usage_str,
