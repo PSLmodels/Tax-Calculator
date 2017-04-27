@@ -356,10 +356,13 @@ class TaxCalcIO(object):
         """
         if output_dump:
             outdf = self.dump_output(mtr_inctax, mtr_paytax)
+            column_order = sorted(outdf.columns)
         else:
             outdf = self.minimal_output()
+            column_order = outdf.columns
         assert len(outdf.index) == self.calc.records.dim
-        outdf.to_csv(self._output_filename, index=False, float_format='%.2f')
+        outdf.to_csv(self._output_filename, columns=column_order,
+                     index=False, float_format='%.2f')
 
     def write_sqldb_file(self, mtr_paytax, mtr_inctax):
         """
