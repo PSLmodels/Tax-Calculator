@@ -13,7 +13,7 @@ import pandas as pd
 from taxcalc import Records
 
 
-def main(filename, recid, input_vars_only):
+def main(filename, recid, input_vars_only, transpose):
     """
     Contains high-level logic of the script.
     """
@@ -51,10 +51,15 @@ def main(filename, recid, input_vars_only):
         if edf[colname].iloc[0] == 0:
             edf.drop(colname, axis=1, inplace=True)
 
-    # write edf to stdout in CSV format with column names in sorted order
+    # write edf to CSV-formatted output file
     ofilename = '{}-{}.csv'.format(filename[:-4], recid)
-    edf.to_csv(path_or_buf=ofilename, columns=sorted(edf.columns),
-               index=False, float_format='%.2f')
+    if transpose:
+        tdf = edf.transpose()
+        tdf.to_csv(path_or_buf=ofilename,
+                   index=True, float_format='%.2f')
+    else:
+        edf.to_csv(path_or_buf=ofilename, columns=sorted(edf.columns),
+                   index=False, float_format='%.2f')
     sys.stdout.write('EXTRACT IN {}\n'.format(ofilename))
 
     # normal return code
@@ -75,6 +80,8 @@ if __name__ == '__main__':
     PARSER.add_argument('--inputonly', default=False, action='store_true',
                         help=('optional flag that includes only variables '
                               'that are Tax-Calculator usable input.'))
+    PARSER.add_argument('--transpose', default=False, action='store_true',
+                        help=('optional flag that transposes extract.'))
     ARGS = PARSER.parse_args()
     # check for invalid command-line argument values
     ARGS_ERROR = False
@@ -97,5 +104,5 @@ if __name__ == '__main__':
         sys.stderr.write('USAGE: python csv_extract.py --help\n')
         RCODE = 1
     else:
-        RCODE = main(ARGS.FILE, ARGS.RECID, ARGS.inputonly)
+        RCODE = main(ARGS.FILE, ARGS.RECID, ARGS.inputonly, ARGS.transpose)
     sys.exit(RCODE)
