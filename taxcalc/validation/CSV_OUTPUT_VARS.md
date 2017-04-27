@@ -13,15 +13,16 @@ Output Variables Documentation
 A list of all the output variables Tax-Calculator can calculate is
 available in the [Output Variables section of the user
 documentation](http://open-source-economics.github.io/Tax-Calculator/#output).
-All these variables are included in the tc CLI output file when the
-`--dump` option is used.
+All these variables are included in the tc CLI output file when either the
+`--dump` or the `--sqldb` option is used.
 
 Validation Output Variables
 ---------------------------
 
-Only a few of the `--dump` output variables are useful in validation
-work.  Here is a list of those most useful and some notes on what the
-tax calculations assume about jobs held during the tax year.
+Only a few of the `--dump`/`--sqldb` output variables are useful in
+validation work.  Here is a list of those most useful and some notes
+on what the tax calculations assume about jobs held during the tax
+year.
 
 | Var-name   | Var-description
 | :-------   | :-------
@@ -44,7 +45,7 @@ tax calculations assume about jobs held during the tax year.
 | c07180     | credit for child and dependent care expenses
 | eitc       | earned income credit (EIC)
 
-**NOTES** refer to 2014-2016 IRS form line numbers
+The following **NOTES** refer to 2014-2016 IRS form line numbers:
 
 The **payrolltax** output variable is assumed to include the following
 components: (a) employee plus employer share of OASDI FICA taxes; (b)
