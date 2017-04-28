@@ -887,7 +887,7 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
     # credit is limited to minimum of individuals' earned income
     c33000 = max(0., min(c32800, min(c32880, c32890)))
     # credit is limited by AGI-related fraction
-    if exact == 1:
+    if exact == 1:  # exact calculation as on tax forms
         tratio = math.ceil(max(((c00100 - CDCC_ps) / 2000.), 0.))
         c33200 = c33000 * 0.01 * max(20., CDCC_crt - min(15., tratio))
     else:
@@ -987,7 +987,7 @@ def ChildTaxCredit(n24, MARS, c00100, exact,
     modAGI = c00100  # no deducted foreign earned income to add
     if modAGI > CTC_ps[MARS - 1]:
         excess = modAGI - CTC_ps[MARS - 1]
-        if exact == 1:
+        if exact == 1:  # exact calculation as on tax forms
             excess = 1000. * math.ceil(excess / 1000.)
         prectc = max(0., prectc - CTC_prt * excess)
     # calculate and phase-out dependent credit
@@ -995,7 +995,7 @@ def ChildTaxCredit(n24, MARS, c00100, exact,
     if CTC_prt > 0. and c00100 > CTC_ps[MARS - 1]:
         thresh = CTC_ps[MARS - 1] + n24 * CTC_c / CTC_prt
         excess = c00100 - thresh
-        if exact == 1:
+        if exact == 1:  # exact calculation as on tax forms
             excess = 1000. * math.ceil(excess / 1000.)
         dep_phaseout = CTC_prt * (c00100 - excess)
         dep_credit = max(0., dep_credit - dep_phaseout)
@@ -1003,7 +1003,7 @@ def ChildTaxCredit(n24, MARS, c00100, exact,
 
 
 @iterate_jit(nopython=True)
-def AmOppCreditParts(p87521, num, c00100, CR_AmOppRefundable_hc,
+def AmOppCreditParts(exact, p87521, num, c00100, CR_AmOppRefundable_hc,
                      CR_AmOppNonRefundable_hc, c10960, c87668):
     """
     American Opportunity Credit (Form 8863) nonrefundable (c87668) and
@@ -1028,6 +1028,8 @@ def AmOppCreditParts(p87521, num, c00100, CR_AmOppRefundable_hc,
 
     Parameters
     ----------
+        exact : whether or not to do rounding of phaseout fraction
+
         p87521 : total tentative American Opportunity Credit for all students,
                  Form 8863, line 1
 
@@ -1037,6 +1039,7 @@ def AmOppCreditParts(p87521, num, c00100, CR_AmOppRefundable_hc,
 
         CR_AmOppRefundable_hc: haircut for the refundable portion of the
                                American Opportunity Credit
+
         CR_AmOppNonRefundable_hc: haircut for the nonrefundable portion of the
                                   American Opportunity Credit
 
@@ -1049,7 +1052,10 @@ def AmOppCreditParts(p87521, num, c00100, CR_AmOppRefundable_hc,
     if p87521 > 0.:
         c87658 = max(0., 90000. * num - c00100)
         c87660 = 10000. * num
-        c87662 = 1000. * min(1., c87658 / c87660)
+        if exact == 1:  # exact calculation as on tax forms
+            c87662 = 1000. * min(1., round(c87658 / c87660, 3))
+        else:
+            c87662 = 1000. * min(1., c87658 / c87660)
         c87664 = c87662 * p87521 / 1000.
         c10960 = 0.4 * c87664 * (1. - CR_AmOppRefundable_hc)
         c87668 = c87664 - c10960 * (1. - CR_AmOppNonRefundable_hc)
@@ -1115,13 +1121,13 @@ def SchR(age_head, age_spouse, MARS, c00100,
 
 
 @iterate_jit(nopython=True)
-def EducationTaxCredit(e87530, MARS, c00100, num, c05800,
+def EducationTaxCredit(exact, e87530, MARS, c00100, num, c05800,
                        e07300, c07180, c07200, c87668,
                        LLC_Expense_c, ETC_pe_Single, ETC_pe_Married,
                        CR_Education_hc,
                        c07230):
     """
-    Education Tax Credit (Form 8863) nonrefundable amount, c07230
+    Education Tax Credits (Form 8863) nonrefundable amount, c07230
     Logic corresponds to Form 8863, Part II
 
     Notes
@@ -1140,6 +1146,8 @@ def EducationTaxCredit(e87530, MARS, c00100, num, c05800,
 
     Taxpayer Charateristics:
 
+        exact : whether or not to do rounding of phaseout fraction
+
         e87530 : Lifetime Learning Credit total qualified expenses,
                  Form 8863, line 10
 
@@ -1151,7 +1159,7 @@ def EducationTaxCredit(e87530, MARS, c00100, num, c05800,
 
     Returns
     -------
-    c07230 : Education Tax Credit (Form 8863) nonrefundable amount
+    c07230 : Education Tax Credits (Form 8863) nonrefundable amount
     """
     c87560 = 0.2 * min(e87530, LLC_Expense_c)
     if MARS == 2:
@@ -1160,7 +1168,10 @@ def EducationTaxCredit(e87530, MARS, c00100, num, c05800,
         c87570 = ETC_pe_Single * 1000.
     c87590 = max(0., c87570 - c00100)
     c87600 = 10000. * num
-    c87610 = min(1., c87590 / c87600)
+    if exact == 1:  # exact calculation as on tax forms
+        c87610 = min(1., round(c87590 / c87600, 3))
+    else:
+        c87610 = min(1., c87590 / c87600)
     c87620 = c87560 * c87610
     xline4 = max(0., c05800 - (e07300 + c07180 + c07200))
     xline5 = min(c87620, xline4)
