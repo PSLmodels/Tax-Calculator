@@ -1,0 +1,75 @@
+// Title: 2017 Trump Administration Tax Reform Proposal (potential)
+// Reform_File_Author: Cody Kallen
+// Reform_Reference: 1-page hand-out from the White House briefing
+// Reform_Description:
+// -  New personal income tax schedule (regular/non-AMT/non-pass-through) (1) 
+// -  New pass-through income tax schedule (2) 
+// -  Repeal Alternative Minimum Tax (3) 
+// -  Repeal Net Investment Income Tax (4) 
+// -  Double the Standard Deduction (5)
+// -  Eliminate all itemized deductions except mortgage interest and charitable contributions (6)
+// Reform_Parameter_Map:
+// - 1: _II_rt*
+// - 2: _PT_*
+// - 3: _AMT_*
+// - 4: _NIIT_rt
+// - 5: _STD
+// - 6: _ID_*
+{
+  "policy": {
+        "_II_rt1":
+            {"2017": [0.10]},
+        "_II_rt2":
+            {"2017": [0.10]},
+        "_II_rt3":
+            {"2017":  [0.25]},
+        "_II_rt4":
+            {"2017":  [0.25]},
+        "_II_rt5":
+            {"2017": [0.25]},
+        "_II_rt6":
+            {"2017": [0.35]},
+        "_II_rt7":
+            {"2017": [0.35]},
+        "_PT_rt1":
+            {"2017": [0.15]},
+        "_PT_rt2":
+            {"2017": [0.15]},
+        "_PT_rt3":
+            {"2017": [0.15]},
+        "_PT_rt4":
+            {"2017": [0.15]},
+        "_PT_rt5":
+            {"2017": [0.15]},
+        "_PT_rt6":
+            {"2017": [0.15]},
+        "_PT_rt7":
+            {"2017": [0.15]},
+        "_AMT_rt1":
+            {"2017": [0]},
+        "_AMT_rt2":
+            {"2017": [0]},
+        "_NIIT_rt":
+            {"2017": [0]},
+        "_STD":
+            {"2017": [[12700, 25400, 12700, 18700, 25400]]},
+        "_ID_StateLocalTax_hc":
+            {"2017": [1.0]},
+        "_ID_Medical_hc":
+            {"2017": [1.0]},
+        "_ID_Casualty_hc":
+            {"2017": [1.0]},
+        "_ID_Miscellaneous_hc":
+            {"2017": [1.0]},
+        "_ID_RealEstate_hc":
+            {"2017": [1.0]}
+    }
+}
+
+//Note: This reform file does not include several important reforms in the proposal.
+// -  Providing tax relief for families with child and dependent care expenses
+// -  15% corporate income tax rate
+// -  Switch to a territorial tax system
+// -  One-time tax on repatriated profits held overseas
+// -  Eliminate tax breaks for special interests
+// -  Repeal of the estate tax
