@@ -10,6 +10,9 @@ import argparse
 import sys
 import os
 import pandas as pd
+CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(CUR_PATH, '..', '..'))
+# pylint: disable=wrong-import-position,import-error
 from taxcalc import Records
 
 
@@ -52,12 +55,13 @@ def main(filename, recid, input_vars_only, transpose):
             edf.drop(colname, axis=1, inplace=True)
 
     # write edf to CSV-formatted output file
-    ofilename = '{}-{}.csv'.format(filename[:-4], recid)
     if transpose:
-        tdf = edf.transpose()
-        tdf.to_csv(path_or_buf=ofilename,
-                   index=True, float_format='%.2f')
+        ofilename = '{}-{}T.csv'.format(filename[:-4], recid)
+        tstr = transposed(edf)
+        with open(ofilename, 'w') as ofile:
+            ofile.write(tstr)
     else:
+        ofilename = '{}-{}.csv'.format(filename[:-4], recid)
         edf.to_csv(path_or_buf=ofilename, columns=sorted(edf.columns),
                    index=False, float_format='%.2f')
     sys.stdout.write('EXTRACT IN {}\n'.format(ofilename))
@@ -65,6 +69,19 @@ def main(filename, recid, input_vars_only, transpose):
     # normal return code
     return 0
 # end of main function code
+
+
+def transposed(dframe):
+    """
+    Returns transpose of dframe that contains only one row as a string.
+    """
+    # confirm that dframe has only one row
+    assert dframe.shape[0] == 1
+    # construct alphabetical list of variable,value rows
+    tstr = 'variable,value\n'
+    for col in sorted(dframe.columns):
+        tstr += '{},{}\n'.format(col, dframe[col].iloc[0])
+    return tstr
 
 
 if __name__ == '__main__':
