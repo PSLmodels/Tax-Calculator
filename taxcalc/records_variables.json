@@ -510,13 +510,13 @@
 
     "payrolltax": {
       "type": "float",
-      "desc": "Total (employee + employer) payroll tax liability; appears as PAYTAX variable in tc CLI minimal output",
-      "form": {"2013-2013": "OASDHI FICA plus 1040 lines 56 and 60a",
-               "2014-2016": "OASDHI FICA plus 1040 lines 57 and 62a"}
+      "desc": "Total (employee + employer) payroll tax liability; appears as PAYTAX variable in tc CLI minimal output (payrolltax = ptax_was + setax + ptax_amc)",
+      "form": {"2013-2013": "OASDI+HI FICA plus 1040 lines 56 and 60a",
+               "2014-2016": "OASDI+HI FICA plus 1040 lines 57 and 62a"}
     },
     "refund": {
       "type": "float",
-      "desc": "Total refundable credits",
+      "desc": "Total refundable income tax credits",
       "form": {}
     },
     "sep": {
@@ -591,7 +591,7 @@
     },
     "c05200": {
       "type": "float",
-      "desc": "Regular income tax liability before credits",
+      "desc": "Tax amount from Sch X,Y,X tables",
       "form": {}
     },
     "c05700": {
@@ -601,13 +601,13 @@
     },
     "c05800": {
       "type": "float",
-      "desc": "Total (regular + AMT) income tax liability before credits",
+      "desc": "Total (regular + AMT) income tax liability before credits (equals taxbc plus c09600)",
       "form": {"2013-2013": "1040 line 46",
                "2014-2016": "1040 line 47"}
     },
     "c07100": {
       "type": "float",
-      "desc": "Total non-refundable credits",
+      "desc": "Total potential non-refundable credits whose use is limited by tax liability; non-refundable credits actually used equals c05800 minus c09200",
       "form": {}
     },
     "c07180": {
@@ -666,7 +666,7 @@
     },
     "c09200": {
       "type": "float",
-      "desc": "Income tax liability after non-refundable credits, but before refundable credits",
+      "desc": "Income tax liability after non-refundable credits are used, but before refundable credits are applied",
       "form": {}
     },
     "c09600": {
@@ -818,19 +818,19 @@
     },
     "ptax_amc": {
       "type": "float",
-      "desc": "Additional Medicare Tax from Form 8959",
+      "desc": "Additional Medicare Tax from Form 8959 (included in payrolltax)",
       "form": {"2013-2013": "1040 line 60a",
                "2014-2016": "1040 line 62a"}
     },
     "ptax_oasdi": {
       "type": "float",
-      "desc": "Employee + employer OASDHI FICA tax plus self-employment tax",
-      "form": {"2013-2013": "OASDHI FICA plus 1040 line 56",
-               "2014-2016": "OASDHI FICA plus 1040 line 57"}
+      "desc": "Employee + employer OASDI FICA tax plus self-employment tax (excludes HI FICA so positive ptax_oasdi is less than ptax_was plus setax)",
+      "form": {"2013-2013": "OASDI FICA plus 1040 line 56",
+               "2014-2016": "OASDI FICA plus 1040 line 57"}
     },
     "ptax_was": {
       "type": "float",
-      "desc": "Employee + employer OASDHI FICA tax",
+      "desc": "Employee + employer OASDI + HI FICA tax",
       "form": {"2013-2013": "OASDHI FICA",
                "2014-2016": "OASDHI FICA"}
     },

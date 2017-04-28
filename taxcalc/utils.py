@@ -608,7 +608,7 @@ def diagnostic_table_odict(recs):
     # number of tax units with non-positive income tax liability
     num = (recs.s006[recs.iitax <= 0]).sum()
     odict['With Income Tax <= 0 (#m)'] = num * in_millions
-    # number of tax units with non-positive payroll tax liability
+    # number of tax units with non-positive combined tax liability
     num = (recs.s006[recs.combined <= 0]).sum()
     odict['With Combined Tax <= 0 (#m)'] = num * in_millions
     return odict

@@ -1,27 +1,27 @@
-Tax Records
-==============
+Odd Tax Records
+===============
 
-The Tax-Calculator is capable of dealing with large amounts of input
+Tax-Calculator is capable of dealing with large amounts of input
 data, so long as each filing unit has variable names that are in the
 `USABLE_READ_VARS` set in the [records.py
 file](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/records.py).
-More details about the data input requirement can be found here in the
+More details about data input requirements can be found here in the
 [DATAPREP.md
 file](https://github.com/open-source-economics/Tax-Calculator/blob/master/DATAPREP.md).
 
 Thanks to such capability, we are able to test the current tax logic
-with as many "extreme" units as we want, and thus are able to find a
-couple tax units that are considered counter-intuitive against common
-sense. For instance, if allowed by the tax law, some unit should get
-better-off in terms of individual income tax liability when that
-person choose to have no deduction, or zero deduction amount.
+with as many "extreme" units as we want, and thus are able to find
+several tax units that are considered counter-intuitive relative to
+common sense. For instance, if allowed by the tax law, some units are
+better-off in terms of individual income tax liability when they
+choose to have a zero deduction amount.
 
-This document stores units that would yield counter-intuitive results
-we have found, where all units listed are artificially made-up. During
-make-up process, we try to use as few variables as possible so that
-our units will end up being rather simple.  Adding more (valid)
-variables to those units, however, usually will not affect the
-counter-intuitive case we are trying to explain.
+This document catalogs filing units that yield counter-intuitive
+results we have found in our work.  All units described here are
+made-up.  During make-up process, we try to use as few variables as
+possible so that our units will end up being rather simple.  Adding
+more (valid) variables to those units, however, will not usually
+affect the counter-intuitive case we are trying to explain.
 
 
 Optimization Puzzle
@@ -29,14 +29,14 @@ Optimization Puzzle
 
 Generally speaking, we take it for granted that filing units will end
 up being better-off when they choose the higher deduction amount among
-either standard deduction or itemized deduction. The unit we described
-in this section, however, should yield a lower tax liability when
-he/she choose to have a lower deduction amount.
+either standard deduction or itemized deduction. The unit we describe
+in this section, however, will have a lower tax liability when choosing
+to have a lower deduction amount.
 
-The reason that accounts for this phenomenon is that: when choosing to
-have no deduction, although this unit will pay higher regular tax, or
-'_taxbc', comparing to regular scenario that has deduction amount,
-his/her alternative minimum tax (AMT) liability will end up being much
+The reason for this phenomenon is that: when choosing to have no
+deduction, although this unit will pay higher regular tax, or `taxbc`,
+comparing to regular scenario that has deduction amount, his/her
+alternative minimum tax (AMT) liability will end up being much
 lower. And thus this yields a comparatively lower individual income
 tax liability. To be more specific, choosing no deduction amount will
 result in higher taxable income, this higher income will come into
