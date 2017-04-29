@@ -22,6 +22,8 @@ The following reform proposals have been specified in reforms files:
 
 - [2016 Ryan-Brady "Better Way" Tax Plan](RyanBrady.json)
 
+- [2017 Trump Administration Tax Plan](Trump2017.json)
+
 ## Structure and Syntax of Reform Files
 
 The reform files are JSON files.  JSON, which stands for JavaScript
