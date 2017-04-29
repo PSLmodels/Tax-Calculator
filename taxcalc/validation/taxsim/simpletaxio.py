@@ -317,7 +317,7 @@ class SimpleTaxIO(object):
         if exact:
             ovar[19] = crecs.taxbc[idx]  # regular tax on taxable income
         else:  # Internet-TAXSIM ovar[19] that ignores special qdiv+ltcg rates
-            ovar[19] = crecs.c05200[idx]  # regular tax on taxable income
+            ovar[19] = crecs.c05200[idx]  # tax from Sch X,Y,Z tables
         ovar[20] = 0.0  # always set exemption surtax to zero
         ovar[21] = 0.0  # always set general tax credit to zero
         ovar[22] = crecs.c07220[idx]  # child tax credit (adjusted)
