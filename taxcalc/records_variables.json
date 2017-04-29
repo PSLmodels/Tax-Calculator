@@ -667,7 +667,8 @@
     "c09200": {
       "type": "float",
       "desc": "Income tax liability after non-refundable credits are used, but before refundable credits are applied",
-      "form": {}
+      "form": {"2013-2013": "1040 line 55",
+               "2014-2016": "1040 line 56"}
     },
     "c09600": {
       "type": "float",

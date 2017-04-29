@@ -53,17 +53,17 @@ def creat_table_base():
                        "c00100": "Federal AGI",
                        "c02500": "OASDI benefits in AGI",
                        "c04600": "Post-phase-out personal exemption",
-                       "_prexmp": "Pre-phase-out personal exemption",
+                       "pre_c04600": "Pre-phase-out personal exemption",
                        "c21040": "Itemized deduction that is phased out",
                        "c04470": "Post-phase-out itemized deduction",
                        "c04800": "Federal regular taxable income",
-                       "c05200": "Regular tax on taxable income",
+                       "c05200": "Tax from Sch X,Y,Z tables",
                        "c07220": "Child tax credit (adjusted)",
                        "c11070": "Extra child tax credit (refunded)",
                        "c07180": "Child care credit",
                        "eitc": "Federal EITC",
-                       "c62100_everyone": "federal AMT taxable income",
-                       "c09600": "federal AMT liability"}
+                       "c62100": "Federal AMT taxable income",
+                       "c09600": "Federal AMT liability"}
     cal = DataFrame.from_dict(calculated_vars, orient='index')
     cal.columns = ['description']
     puf_ecodes_info = pd.read_csv(EVAR_PATH)

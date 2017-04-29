@@ -27,7 +27,7 @@ year.
 | Var-name   | Var-description
 | :-------   | :-------
 | RECID      | unique numeric identifer for filing unit (from input)
-| FLPDYR     | calendar year for which taxes are calculated (from input)
+| FLPDYR     | calendar year for which taxes are calculated
 | iitax      | total federal individual income taxes (see NOTE below)
 | payrolltax | total payroll taxes (see NOTE below for details)
 | c00100     | adjusted gross income (AGI)
