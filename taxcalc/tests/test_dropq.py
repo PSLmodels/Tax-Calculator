@@ -109,7 +109,6 @@ def puf_path(tests_path):
     return os.path.join(tests_path, '..', '..', 'puf.csv')
 
 
-@pytest.mark.one
 def test_check_user_mods_errors():
     check_user_mods(USER_MODS)
     seed1 = random_seed(USER_MODS)
@@ -472,7 +471,6 @@ def test_create_dropq_diff_table_groupby_options(groupby, res_col,
                                       wsum=dec_sum)
 
 
-@pytest.mark.one
 @pytest.mark.requires_pufcsv
 def test_with_pufcsv(puf_path):  # pylint: disable=redefined-outer-name
     # pylint: disable=too-many-locals

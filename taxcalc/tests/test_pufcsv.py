@@ -163,7 +163,7 @@ def test_mtr(tests_path, puf_path):
     sample input from the puf.csv file and writing output to a string,
     which is then compared for differences with EXPECTED_MTR_RESULTS.
     """
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-locals,too-many-statements
     # for fixture args, pylint: disable=redefined-outer-name
     assert len(PTAX_MTR_BIN_EDGES) == len(ITAX_MTR_BIN_EDGES)
     # construct actual results string, res
@@ -194,6 +194,14 @@ def test_mtr(tests_path, puf_path):
                                            negative_finite_diff=MTR_NEG_DIFF,
                                            zero_out_calculated_vars=zero_out,
                                            wrt_full_compensation=False)
+        if zero_out:
+            # check that calculated variables are consistent
+            crs = calc.records
+            assert np.allclose(crs.iitax + crs.payrolltax, crs.combined)
+            assert np.allclose(crs.ptax_was + crs.setax + crs.ptax_amc,
+                               crs.payrolltax)
+            assert np.allclose(crs.c21060 - crs.c21040, crs.c04470)
+            assert np.allclose(crs.taxbc + crs.c09600, crs.c05800)
         if var_str == 'e00200s':
             # only MARS==2 filing units have valid MTR values
             mtr_ptax = mtr_ptax[calc.records.MARS == 2]

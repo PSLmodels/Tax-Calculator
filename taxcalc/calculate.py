@@ -156,14 +156,17 @@ class Calculator(object):
         std = copy.deepcopy(self.records.standard)
         item = copy.deepcopy(self.records.c04470)
         item_no_limit = copy.deepcopy(self.records.c21060)
+        item_phaseout = copy.deepcopy(self.records.c21040)
         self.records.c04470 = np.zeros(self.records.dim)
         self.records.c21060 = np.zeros(self.records.dim)
+        self.records.c21040 = np.zeros(self.records.dim)
         self.TaxInc_to_AMT()
         std_taxes = copy.deepcopy(self.records.c05800)
         # Set standard deduction to zero, calculate taxes w/o
         # standard deduction, and store AMT + Regular Tax
         self.records.standard = np.zeros(self.records.dim)
         self.records.c21060 = item_no_limit
+        self.records.c21040 = item_phaseout
         self.records.c04470 = item
         self.TaxInc_to_AMT()
         item_taxes = copy.deepcopy(self.records.c05800)
@@ -175,6 +178,8 @@ class Calculator(object):
                                           item, 0.)
         self.records.c21060[:] = np.where(item_taxes < std_taxes,
                                           item_no_limit, 0.)
+        self.records.c21040[:] = np.where(item_taxes < std_taxes,
+                                          item_phaseout, 0.)
         # Calculate taxes with optimal itemized deduction
         self.TaxInc_to_AMT()
         F2441(self.policy, self.records)
