@@ -26,7 +26,7 @@ except ImportError:
 
 
 STATS_COLUMNS = ['expanded_income', 'c00100', 'standard',
-                 'c04470', 'c04600', 'c04800', 'c05200', 'c62100', 'c09600',
+                 'c04470', 'c04600', 'c04800', 'taxbc', 'c62100', 'c09600',
                  'c05800', 'c09200', 'refund', 'c07100', 'iitax',
                  'payrolltax', 'combined', 's006']
 
@@ -34,7 +34,7 @@ STATS_COLUMNS = ['expanded_income', 'c00100', 'standard',
 # TABLE_LABELS list below; this correspondence allows us to use TABLE_LABELS
 # to map a label to the correct column in our distribution tables.
 TABLE_COLUMNS = ['s006', 'c00100', 'num_returns_StandardDed', 'standard',
-                 'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'c05200',
+                 'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'taxbc',
                  'c62100', 'num_returns_AMT', 'c09600', 'c05800', 'c07100',
                  'c09200', 'refund', 'iitax', 'payrolltax', 'combined']
 
@@ -576,7 +576,7 @@ def diagnostic_table_odict(recs):
     val = (recs.c04800 * recs.s006).sum()
     odict['Taxable Income ($b)'] = val * in_billions
     # regular tax liability
-    val = (recs.c05200 * recs.s006).sum()
+    val = (recs.taxbc * recs.s006).sum()
     odict['Regular Tax ($b)'] = val * in_billions
     # AMT taxable income
     odict['AMT Income ($b)'] = (recs.c62100 * recs.s006).sum() * in_billions
@@ -596,6 +596,9 @@ def diagnostic_table_odict(recs):
     # reform surtaxes (part of federal individual income tax liability)
     val = (recs.surtax * recs.s006).sum()
     odict['Reform Surtaxes ($b)'] = val * in_billions
+    # other taxes on Form 1040
+    val = (recs.othertaxes * recs.s006).sum()
+    odict['Other Taxes ($b)'] = val * in_billions
     # federal individual income tax liability
     val = (recs.iitax * recs.s006).sum()
     odict['Ind Income Tax ($b)'] = val * in_billions

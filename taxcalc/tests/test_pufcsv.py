@@ -202,6 +202,9 @@ def test_mtr(tests_path, puf_path):
                                crs.payrolltax)
             assert np.allclose(crs.c21060 - crs.c21040, crs.c04470)
             assert np.allclose(crs.taxbc + crs.c09600, crs.c05800)
+            assert np.allclose(crs.c05800 + crs.othertaxes - crs.c07100,
+                               crs.c09200)
+            assert np.allclose(crs.c09200 - crs.refund, crs.iitax)
         if var_str == 'e00200s':
             # only MARS==2 filing units have valid MTR values
             mtr_ptax = mtr_ptax[calc.records.MARS == 2]
