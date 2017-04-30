@@ -163,7 +163,7 @@ def test_mtr(tests_path, puf_path):
     sample input from the puf.csv file and writing output to a string,
     which is then compared for differences with EXPECTED_MTR_RESULTS.
     """
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-locals,too-many-statements
     # for fixture args, pylint: disable=redefined-outer-name
     assert len(PTAX_MTR_BIN_EDGES) == len(ITAX_MTR_BIN_EDGES)
     # construct actual results string, res
