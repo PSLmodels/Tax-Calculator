@@ -116,52 +116,6 @@ def test_run_gdp_elast_model(puf_1991_path, resjson):
         assert isinstance(res, float)
 
 
-def test_format_macro_results():
-    data = [[1.875e-03, 1.960e-03, 2.069e-03, 2.131e-03, 2.179e-03, 2.226e-03,
-             2.277e-03, 2.324e-03, 2.375e-03, 2.426e-03, 2.184e-03, 2.806e-03],
-            [2.538e-04, 4.452e-04, 6.253e-04, 7.886e-04, 9.343e-04, 1.064e-03,
-             1.180e-03, 1.284e-03, 1.378e-03, 1.463e-03, 9.419e-04, 2.224e-03],
-            [5.740e-03, 5.580e-03, 5.524e-03, 5.347e-03, 5.161e-03, 5.011e-03,
-             4.907e-03, 4.818e-03, 4.768e-03, 4.739e-03, 5.160e-03, 4.211e-03],
-            [2.883e-03, 2.771e-03, 2.721e-03, 2.620e-03, 2.520e-03, 2.440e-03,
-             2.384e-03, 2.337e-03, 2.309e-03, 2.292e-03, 2.528e-03, 2.051e-03],
-            [-1.012e-03, -8.141e-04, -6.552e-04, -4.912e-04, -3.424e-04,
-             -2.150e-04, -1.081e-04, -1.372e-05, 6.513e-05, 1.336e-04,
-             -3.450e-04, 7.538e-04],
-            [3.900e-03, 3.143e-03, 2.532e-03, 1.900e-03, 1.325e-03, 8.325e-04,
-             4.189e-04, 5.315e-05, -2.525e-04, -5.180e-04, 1.337e-03,
-             -2.917e-03],
-            [-2.577e-02, -2.517e-02, -2.507e-02, -2.464e-02, -2.419e-02,
-             -2.388e-02, -2.368e-02, -2.350e-02, -2.342e-02, -2.341e-02,
-             -2.427e-02, -2.275e-02]]
-    data = np.array(data)
-    res_dict = format_macro_results(data, return_json=True)
-    exp = {'GDP': ['0.002', '0.002',
-                   '0.002', '0.002', '0.002', '0.002', '0.002',
-                   '0.002', '0.002', '0.002', '0.002', '0.003'],
-           'Consumption': ['0.000', '0.000',
-                           '0.001', '0.001', '0.001', '0.001', '0.001',
-                           '0.001', '0.001', '0.001', '0.001', '0.002'],
-           'Interest Rates': ['0.004', '0.003',
-                              '0.003', '0.002', '0.001', '0.001', '0.000',
-                              '0.000', '-0.000', '-0.001', '0.001', '-0.003'],
-           'Total Taxes': ['-0.026', '-0.025',
-                           '-0.025', '-0.025', '-0.024', '-0.024', '-0.024',
-                           '-0.024', '-0.023', '-0.023', '-0.024', '-0.023'],
-           'Wages': ['-0.001', '-0.001',
-                     '-0.001', '-0.000', '-0.000', '-0.000', '-0.000',
-                     '-0.000', '0.000', '0.000', '-0.000', '0.001'],
-           'Investment': ['0.006', '0.006',
-                          '0.006', '0.005', '0.005', '0.005', '0.005',
-                          '0.005', '0.005', '0.005', '0.005', '0.004'],
-           'Hours Worked': ['0.003', '0.003',
-                            '0.003', '0.003', '0.003', '0.002', '0.002',
-                            '0.002', '0.002', '0.002', '0.003', '0.002']}
-    assert res_dict == exp
-    res_df = format_macro_results(data, return_json=False)
-    assert res_df.equals(pd.DataFrame(data))
-
-
 def test_random_seed_from_subdict():
     """
     Test except logic in try statement in random_seed_from_subdict function.
@@ -188,13 +142,8 @@ def test_chooser_error():
         chooser(dframe['zeros'])
 
 
-def test_format_print_error():
-    arr = np.array([1], dtype='i2')
-    with pytest.raises(NotImplementedError):
-        format_print(arr[0], arr.dtype, 2)
-
-
 def test_create_json_table():
+    # test correct usage
     dframe = pd.DataFrame(data=[[1., 2, 3], [4, 5, 6], [7, 8, 9]],
                           columns=['a', 'b', 'c'])
     ans = create_json_table(dframe)
@@ -202,6 +151,11 @@ def test_create_json_table():
            '1': ['4.00', '5', '6'],
            '2': ['7.00', '8', '9']}
     assert ans == exp
+    # test incorrect usage
+    dframe = pd.DataFrame(data=[[1, 2, 3], [4, 5, 6], [7, 8, 9]],
+                          columns=['a', 'b', 'c'], dtype='i2')
+    with pytest.raises(NotImplementedError):
+        create_json_table(dframe)
 
 
 @pytest.mark.parametrize('groupby, result_type',

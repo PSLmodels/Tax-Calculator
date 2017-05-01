@@ -366,51 +366,6 @@ def dropq_summary(df1, df2, mask):
             sum_reform, pr_sum_reform, combined_sum_reform)
 
 
-def format_print(val, _type, num_decimals):
-    """
-    Return formatted conversion of number val into a string.
-    """
-    float_types = [float, np.dtype('f8')]
-    int_types = [int, np.dtype('i8')]
-    frmat_str = "0:.{num}f".format(num=num_decimals)
-    frmat_str = "{" + frmat_str + "}"
-    try:
-        if _type in float_types or _type is None:
-            return frmat_str.format(val)
-        elif _type in int_types:
-            return str(int(val))
-        elif _type == str:
-            return str(val)
-        else:
-            raise NotImplementedError()
-    except ValueError:
-        # try making it a string - good luck!
-        return str(val)
-
-
-def create_json_table(dframe, row_names=None, column_types=None,
-                      num_decimals=2):
-    """
-    Create and return dictionary with JSON-like contents from specified dframe.
-    """
-    out = {}
-    if row_names is None:
-        row_names = [str(x) for x in list(dframe.index)]
-    else:
-        assert len(row_names) == len(dframe.index)
-    if column_types is None:
-        column_types = [dframe[col].dtype for col in dframe.columns]
-    else:
-        assert len(column_types) == len(dframe.columns)
-    for idx, row_name in zip(dframe.index, row_names):
-        row_out = out.get(row_name, [])
-        for col, dtype in zip(dframe.columns, column_types):
-            row_out.append(format_print(dframe.loc[idx, col],
-                                        dtype, num_decimals))
-        out[row_name] = row_out
-    return out
-
-
 def dropq_diff_table(df1, df2, groupby, res_col, diff_col, suffix, wsum):
     """
     Create and return dropq difference table.
