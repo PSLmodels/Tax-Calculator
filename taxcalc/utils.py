@@ -27,7 +27,7 @@ except ImportError:
 
 STATS_COLUMNS = ['expanded_income', 'c00100', 'standard',
                  'c04470', 'c04600', 'c04800', 'taxbc', 'c62100', 'c09600',
-                 'c05800', 'c09200', 'refund', 'c07100', 'iitax',
+                 'c05800', 'othertaxes', 'refund', 'c07100', 'iitax',
                  'payrolltax', 'combined', 's006']
 
 # Items in the TABLE_COLUMNS list below correspond to the items in the
@@ -36,14 +36,14 @@ STATS_COLUMNS = ['expanded_income', 'c00100', 'standard',
 TABLE_COLUMNS = ['s006', 'c00100', 'num_returns_StandardDed', 'standard',
                  'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'taxbc',
                  'c62100', 'num_returns_AMT', 'c09600', 'c05800', 'c07100',
-                 'c09200', 'refund', 'iitax', 'payrolltax', 'combined']
+                 'othertaxes', 'refund', 'iitax', 'payrolltax', 'combined']
 
 TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Standard Deduction', 'Itemizers',
                 'Itemized Deduction', 'Personal Exemption',
                 'Taxable Income', 'Regular Tax', 'AMTI', 'AMT Filers', 'AMT',
                 'Tax before Credits', 'Non-refundable Credits',
-                'Tax before Refundable Credits', 'Refundable Credits',
+                'Other Taxes', 'Refundable Credits',
                 'Individual Income Tax Liabilities', 'Payroll Tax Liablities',
                 'Combined Payroll and Individual Income Tax Liabilities']
 
