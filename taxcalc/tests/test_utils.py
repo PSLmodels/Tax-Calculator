@@ -672,7 +672,7 @@ def test_multiyear_diagnostic_table_wo_behv(records_2009):
     adt = multiyear_diagnostic_table(calc, 1)
     # extract combined liabilities as a float and
     # adopt units of the raw calculator data in liabilities_x
-    liabilities_y = adt.iloc[18].tolist()[0] * 1000000000
+    liabilities_y = adt.iloc[19].tolist()[0] * 1000000000
     npt.assert_almost_equal(liabilities_x, liabilities_y, 2)
 
 
@@ -698,7 +698,7 @@ def test_multiyear_diagnostic_table_w_behv(records_2009):
     adt = multiyear_diagnostic_table(calc_behv, 1)
     # extract combined liabilities as a float and
     # adopt units of the raw calculator data in liabilities_x
-    liabilities_y = adt.iloc[18].tolist()[0] * 1000000000
+    liabilities_y = adt.iloc[19].tolist()[0] * 1000000000
     npt.assert_almost_equal(liabilities_x, liabilities_y, 2)
 
 

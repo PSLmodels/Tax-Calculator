@@ -1294,21 +1294,22 @@ def AdditionalCTC(n24, prectc, earned, c07220, ptax_was,
 
 @iterate_jit(nopython=True)
 def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
-          c07400, c07600, c08000, e09700, e09800, e09900, niit,
+          c07400, c07600, c08000, e09700, e09800, e09900, niit, othertaxes,
           c07100, c09200, dep_credit):
     """
-    C1040 function computes total nonrefundable credits, c07100, and
+    C1040 function computes total used nonrefundable credits, c07100,
+                            othertaxes, and
                             income tax before refundable credits, c09200
     """
-    # total nonrefundable credits (2015 Form 1040, line 55)
+    # total used nonrefundable credits (as computed in NonrefundableCredits)
     c07100 = (c07180 + c07200 + c07600 + c07300 + c07400 + c07220 + c08000 +
               c07230 + c07240 + c07260 + dep_credit)
-    # tax after credits (2015 Form 1040, line 56)
+    # tax after credits (2016 Form 1040, line 56)
     tax_net_nonrefundable_credits = max(0., c05800 - c07100)
-    # tax before refundable credits
+    # tax (including othertaxes) before refundable credits
     othertaxes = e09700 + e09800 + e09900 + niit
     c09200 = othertaxes + tax_net_nonrefundable_credits
-    return (c07100, c09200)
+    return (c07100, othertaxes, c09200)
 
 
 @iterate_jit(nopython=True)

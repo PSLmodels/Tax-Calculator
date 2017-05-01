@@ -507,7 +507,12 @@
       "desc": "2 when MARS is 2 (married filing jointly); otherwise 1",
       "form": {"2013-2016": "1040 lines 1-5"}
     },
-
+    "othertaxes": {
+      "type": "float",
+      "desc": "Other taxes: sum of niit, e09700, e09800 and e09900 (included in c09200)",
+      "form": {"2013-2013": "sum of 1040 lines 57 through 60",
+               "2014-2016": "sum of 1040 lines 58 through 62"}
+    },
     "payrolltax": {
       "type": "float",
       "desc": "Total (employee + employer) payroll tax liability; appears as PAYTAX variable in tc CLI minimal output (payrolltax = ptax_was + setax + ptax_amc)",
@@ -607,8 +612,9 @@
     },
     "c07100": {
       "type": "float",
-      "desc": "Total potential non-refundable credits whose use is limited by tax liability; non-refundable credits actually used equals c05800 minus c09200",
-      "form": {}
+      "desc": "Total non-refundable credits used to reduce positive tax liability",
+      "form": {"2013-2013": "1040 line 46 minus 1040 line 55",
+               "2014-2016": "1040 line 47 minus 1040 line 56"}
     },
     "c07180": {
       "type": "float",
@@ -666,9 +672,9 @@
     },
     "c09200": {
       "type": "float",
-      "desc": "Income tax liability after non-refundable credits are used, but before refundable credits are applied",
-      "form": {"2013-2013": "1040 line 55",
-               "2014-2016": "1040 line 56"}
+      "desc": "Income tax liability (including othertaxes) after non-refundable credits are used, but before refundable credits are applied",
+      "form": {"2013-2013": "1040 line 61",
+               "2014-2016": "1040 line 63"}
     },
     "c09600": {
       "type": "float",
