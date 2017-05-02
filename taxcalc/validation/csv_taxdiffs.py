@@ -23,8 +23,18 @@ def main(file1name, file2name, rounding_error):
     """
     # read file contents into Pandas DataFrames
     df1 = pd.read_csv(file1name)
+    if 'INCTAX' in list(df1):
+        # rename minimal tc OUTPUT variables to --dump OUTPUT variable names
+        df1.rename(index=str,
+                   columns={'INCTAX': 'iitax', 'PAYTAX': 'payrolltax'},
+                   inplace=True)
     df1_vars = set(list(df1))
     df2 = pd.read_csv(file2name)
+    if 'INCTAX' in list(df2):
+        # rename minimal tc OUTPUT variables to --dump OUTPUT variable names
+        df2.rename(index=str,
+                   columns={'INCTAX': 'iitax', 'PAYTAX': 'payrolltax'},
+                   inplace=True)
     df2_vars = set(list(df2))
 
     # check that both files contain required tax variables
