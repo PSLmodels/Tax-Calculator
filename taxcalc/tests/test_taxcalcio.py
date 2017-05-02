@@ -10,7 +10,7 @@ import tempfile
 import pytest
 import pandas as pd
 # pylint: disable=import-error
-from taxcalc import TaxCalcIO, Growdiff
+from taxcalc import TaxCalcIO, Growdiff, Calculator
 
 
 @pytest.mark.parametrize("input_data, reform, assump", [
@@ -108,6 +108,7 @@ def assumpfile0():
     (2000, 'assumpfile0', Growdiff()),
     (2099, None, None),
     (2020, None, dict()),
+    (2020, 'assumpfile0', 'has_gdiff_response'),
 ])
 def test_init_errors(reformfile0, assumpfile0, year, asm, gdr):
     """
@@ -119,6 +120,11 @@ def test_init_errors(reformfile0, assumpfile0, year, asm, gdr):
         assump = assumpfile0.name
     else:
         assump = asm
+    if gdr == 'has_gdiff_response':
+        gdiff_response = Growdiff()
+        gdiff_response.update_growdiff({2015: {"_ABOOK": [-0.01]}})
+    else:
+        gdiff_response = gdr
     tcio = TaxCalcIO(input_data=recdf,
                      tax_year=year,
                      reform=reformfile0.name,
@@ -128,7 +134,7 @@ def test_init_errors(reformfile0, assumpfile0, year, asm, gdr):
               tax_year=year,
               reform=reformfile0.name,
               assump=assump,
-              growdiff_response=gdr,
+              growdiff_response=gdiff_response,
               aging_input_data=False,
               exact_calculations=False)
     assert len(tcio.errmsg) > 0

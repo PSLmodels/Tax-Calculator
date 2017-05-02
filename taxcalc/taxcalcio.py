@@ -169,12 +169,6 @@ class TaxCalcIO(object):
         beh = Behavior()
         beh.update_behavior(param_dict['behavior'])
         self.behavior_has_any_response = beh.has_any_response()
-        # make sure no growdiff_response is specified in --assump
-        gdiff_response = Growdiff()
-        gdiff_response.update_growdiff(param_dict['growdiff_response'])
-        if gdiff_response.has_any_response():
-            msg = 'ASSUMP file cannot specify any "growdiff_response"'
-            self.errmsg += 'ERROR: {}\n'.format(msg)
         # create gdiff_baseline object
         gdiff_baseline = Growdiff()
         gdiff_baseline.update_growdiff(param_dict['growdiff_baseline'])
@@ -184,20 +178,25 @@ class TaxCalcIO(object):
         # specify gdiff_response object
         if growdiff_response is None:
             gdiff_response = Growdiff()
+            gdiff_response.update_growdiff(param_dict['growdiff_response'])
         elif isinstance(growdiff_response, Growdiff):
             gdiff_response = growdiff_response
-            if self.behavior_has_any_response:
-                msg = 'ASSUMP file cannot specify any "behavior" '
-                msg += 'when using GrowModel'
-                self.errmsg += 'ERROR: {}\n'.format(msg)
         else:
+            gdiff_response = None
             msg = 'TaxCalcIO.more_init: growdiff_response is neither None '
             msg += 'nor a Growdiff object'
             self.errmsg += 'ERROR: {}\n'.format(msg)
+        if gdiff_response is not None:
+            some_gdiff_response = gdiff_response.has_any_response()
+            if self.behavior_has_any_response and some_gdiff_response:
+                msg = 'ASSUMP file cannot specify any "behavior" when using '
+                msg += 'GrowModel or when ASSUMP file has "growdiff_response"'
+                self.errmsg += 'ERROR: {}\n'.format(msg)
         # create Growfactors ref object that has both gdiff objects applied
         gfactors_ref = Growfactors()
         gdiff_baseline.apply_to(gfactors_ref)
-        gdiff_response.apply_to(gfactors_ref)
+        if gdiff_response is not None:
+            gdiff_response.apply_to(gfactors_ref)
         # create Policy objects
         if self.specified_reform:
             pol = Policy(gfactors=gfactors_ref)
