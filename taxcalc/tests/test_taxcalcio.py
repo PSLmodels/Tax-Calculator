@@ -10,7 +10,7 @@ import tempfile
 import pytest
 import pandas as pd
 # pylint: disable=import-error
-from taxcalc import TaxCalcIO, Growdiff, Calculator
+from taxcalc import TaxCalcIO, Growdiff
 
 
 @pytest.mark.parametrize("input_data, reform, assump", [
