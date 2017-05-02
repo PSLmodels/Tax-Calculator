@@ -1,5 +1,6 @@
 //Parameters for Partial-equilibrium dynamic analysis
 //This json serves as a baseline for the implementation of the economic responses of individuals to tax reforms.
+//More specific details can be found at http://open-source-economics.github.io/Tax-Calculator/#params-growdiff
 //  consumption
 //    Description: The marginal propensity to consume tax-deductible goods.
 //    Source file: taxcalc/consumption.json
@@ -9,7 +10,7 @@
 //      - e19800, Sch A: Gifts to charity: cash/check contributions
 //      - e20400, Sch A: Miscellaneous deductions subject to 2% AGI limitation
 //  behavior
-//    Description: The behavioral response to taxes
+//    Description: The behavioral response to tax rates
 //    Source file: taxcalc/behavior.json
 //    Applies to:
 //      - _BE_inc, Income elasticity of taxable income (the response to changes in average tax rates)
