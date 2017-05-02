@@ -136,7 +136,7 @@
 
     "_ASCHEI": {
         "long_name": "ASCHEI additive difference from default projection",
-        "description": "Default projection is in growfactors.csv file.  ASCHEI extrapolates input variables: p25470, e26270 and e27200 when they are positive.",
+        "description": "Default projection is in growfactors.csv file.  ASCHEI extrapolates input variables: p02000 when positive, and p25470, e26270 and e27200 for all values.",
         "section_1": "",
         "section_2": "",
         "notes": "",
@@ -151,7 +151,7 @@
 
     "_ASCHEL": {
         "long_name": "ASCHEL additive difference from default projection",
-        "description": "Default projection is in growfactors.csv file.  ASCHEI extrapolates input variables: p25470, e26270 and e27200 when they are negative.",
+        "description": "Default projection is in growfactors.csv file.  ASCHEL extrapolates input variable: p02000 when negative.",
         "section_1": "",
         "section_2": "",
         "notes": "",

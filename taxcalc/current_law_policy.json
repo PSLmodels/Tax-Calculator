@@ -2366,7 +2366,7 @@
 
     "_NIIT_PT_taxed": {
         "long_name": "Whether or not partnership and S-corp income is in NIIT base",
-        "description": "false ==> partnership and S-corp income excluded from NIIT base; true ==> partnership and s-corp income is in NIIT base",
+        "description": "false ==> partnership and S-corp income excluded from NIIT base; true ==> partnership and S-corp income is in NIIT base",
         "section_1": "Other Taxes",
         "section_2": "Net Investment Income Tax",
         "irs_ref": "",
