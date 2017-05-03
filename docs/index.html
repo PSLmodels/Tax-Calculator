@@ -55,36 +55,104 @@ of distributional results.</p>
 
 <h3 id="gui-spec-reform">Specify Tax Reform</h3>
 
-<p>Text goes here.</p>
+<p>The first step in using TaxBrain is to set the Start Year for the
+tax calculations.  Then specify the values of policy parameters that
+you want to change in your reform.</p>
 
-<p>More text goes here.</p>
+<p>By default the policy parameter boxes contain Start Year values.
+Simply replace the current-law value with the Start Year reform value.
+If some or all of your reform provisions are going to begin after the
+Start Year, simply fill in the pre-reform years with asterisks.  So,
+for example, if Start Year is 2017 and your reform calls for raising
+the social security payroll tax rate to 13 percent in 2018 and then
+to 14 percent in 2020, you would enter in that box the following:
+<pre>*,0.13,*,0.14</pre>
+This parameter is not indexed, so the 0.13 value for 2018 will be
+extrapolated to 2019, and the 0.14 value for 2020 will be in force
+in all subsequent years.</p>
 
 <p><a href="#gui">Back to Section Contents</a></p>
 
 
 <h3 id="gui-init-static">Initiate Static Analysis</h3>
 
-<p>Text goes here.</p>
+<p>Simply click on the Show me the results! button to start the tax
+calculations.  That button will use the full sample and take a couple
+of minutes to compute revenue and distributional results for each of
+ten years beginning with the Start Year you specified.</p>
 
-<p>More text goes here.</p>
+<p>There is also a Quick Calculation! button that produces results
+only for the Start Year using a sub-sample of the full sample.</p>
 
 <p><a href="#gui">Back to Section Contents</a></p>
 
 
 <h3 id="gui-view-static">View/Download Static Results</h3>
 
-<p>Text goes here.</p>
+<p>After the tax calculations are completed, you are shown a results
+page that presents various options: you can specify, view and download
+a total liabilities table, your can specify, view and download a
+distribution table, you can use your reform to conduct different types
+of dynamic analysis (via the button labeled Link to Dynamic
+Simulations), and finally, you can go back to the policy parameters
+page to modify your reform (via the button labeled Edit Parameters).</p>
 
-<p>More text goes here.</p>
+<p>There are three variants of the <b>total liabilities table</b>.
+The variant shown initially is Change, meaning the amounts are the
+difference between liabilities under your reform and the liabilities
+projected for current-law policy.  You can also elect to see the
+reform and current-law levels.</p>
+
+<p>There are many variants of the <b>distribution table</b>.  Try
+clicking on the options to the left to define the nature of the table
+and the year for which it is constructed.  Try clicking on the options
+to the right to specify which columns are included in the table.  An
+easy way to uncheck all the column boxes is to double click on the
+Select All box.</p>
+
+<p>There are four download options for each of these two tables:</p>
+
+<p><b>Print</b> creates a new page in your browser that is suitable
+for printing.</p>
+
+<p><b>Copy</b> puts the table on the clipboard of your local computer
+so that you can paste it anywhere on your computer.  The copy on the
+clipboard uses invisible tab characters to separate the table's
+columns.</p>
+
+<p><b>CSV</b> downloads to your computer a CSV-formatted file
+containing the information in the table.</p>
+
+<p><b>Excel</b> downloads a file suitable for using with an Excel
+spreadsheet.</p>
 
 <p><a href="#gui">Back to Section Contents</a></p>
 
 
 <h3 id="gui-init-dynamic">Initiate Dynamic Analysis</h3>
 
-<p>Text goes here.</p>
+<p>After clicking on the Link to Dynamic Simulation on the static
+results page, you are presented with a page that allows you to choose
+three different types of dynamic simulations to conduct on your tax
+reform:</p>
 
-<p>More text goes here.</p>
+<p><b>Partial Equilibrium Simulation</b> is described this way:
+<i>This approach answers the question, <q>how would taxpayer behavior
+(income and deductions) affect revenue if all other prices in the
+economy could stay the same?</q></i></p>
+
+<p><b>Overlapping Generations Simulation</b> is described this way:
+<i>This approach answers the question, <q>how does tax policy affect
+macroeconomic aggregates and prices?</q></i></p>
+
+<p><b>Macro Elasticities Simulation</b> is described this way:
+<i>This approach harnesses econometric estimates of the historical
+relationship between tax policy and the macroeconomy to predict the
+effect of tax reforms on growth.</i></p>
+
+Clicking on one of these choices will allow you to specify some
+addition economic response parameters and initiate the dynamic
+analysis using your response parameter assumptions.
 
 <p><a href="#gui">Back to Section Contents</a>&nbsp;&nbsp;
 <a href="#doc">Back to Document Contents</a></p>
@@ -202,7 +270,7 @@ section.</p>
 
 <p><b>Payroll Taxes &mdash; Social Security FICA</b><br><i>tc Name:</i> _FICA_ss_trt<br><i>TB Name:</i> Social Security payroll tax rate<br><i>Description:</i> Social Security FICA rate, including both employer and employee.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.124<br>2014: 0.124<br>2015: 0.124<br>2016: 0.124<br>2017: 0.124</p><p><b>Payroll Taxes &mdash; Social Security FICA</b><br><i>tc Name:</i> _SS_Earnings_c<br><i>TB Name:</i> Maximum taxable earnings for Social Security<br><i>Description:</i> Only individual earnings below this maximum amount are subjected to Social Security (OASDI) payroll tax.<br><i>Notes:</i> This parameter is indexed by the rate of growth in average wages, not by the price inflation rate.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>2013: 113700<br>2014: 117000<br>2015: 118500<br>2016: 118500<br>2017: 127200</p>
 
-<!-- Payroll Taxes @ Medicare FICA' -->
+<p><b>Payroll Taxes &mdash; Medicare FICA</b><br><i>tc Name:</i> _FICA_mc_trt<br><i>TB Name:</i> Medicare payroll tax rate<br><i>Description:</i> Medicare FICA rate, including both employer and employee.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.029<br>2014: 0.029<br>2015: 0.029<br>2016: 0.029<br>2017: 0.029</p>
 
 <p><b>Payroll Taxes &mdash; Additional Medicare FICA</b><br><i>tc Name:</i> _AMEDT_ec<br><i>TB Name:</i> Additional Medicare tax earnings exclusion<br><i>Description:</i> The Additional Medicare Tax rate, _AMEDT_rt, applies to all earnings in excess of this excluded amount.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [200000, 250000, 125000, 200000, 200000]<br>2014: [200000, 250000, 125000, 200000, 200000]<br>2015: [200000, 250000, 125000, 200000, 200000]<br>2016: [200000, 250000, 125000, 200000, 200000]<br>2017: [200000, 250000, 125000, 200000, 200000]</p><p><b>Payroll Taxes &mdash; Additional Medicare FICA</b><br><i>tc Name:</i> _AMEDT_rt<br><i>TB Name:</i> Additional Medicare tax rate<br><i>Description:</i> This is the rate applied to the portion of Medicare wages, RRTA compensation and self-employment income exceeding the Additional Medicare Tax earning exclusion.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.009<br>2014: 0.009<br>2015: 0.009<br>2016: 0.009<br>2017: 0.009</p>
 
