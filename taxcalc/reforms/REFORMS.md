@@ -1,4 +1,4 @@
-# HOW TO SPECIFY A TAX REFORM IN A REFORM FILE
+# HOW TO SPECIFY A TAX REFORM IN A POLICY REFORM FILE
 
 A tax reform consists of a series of reform provisions.  There is a
 way to specify in a text file the collection of reform provisions that
