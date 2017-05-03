@@ -91,7 +91,8 @@ def main():
                         action="store_true")
     parser.add_argument('--sqldb',
                         help=('optional flag that writes SQLite database with '
-                              'dump table containing same output as --dump.'),
+                              'dump table containing same output as '
+                              'produced by --dump option.'),
                         default=False,
                         action="store_true")
     parser.add_argument('--test',

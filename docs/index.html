@@ -181,14 +181,65 @@ installation and file preparation work may be worth it to you.</p>
 <p><a href="#cli-spec-output">Specify Output Options</a></p>
 <p><a href="#cli-init-analysis">Initiate Reform Analysis</a></p>
 <p><a href="#cli-tab-results">Tabulate Reform Results</a></p>
+<p><a href="#cli-taxbrain-upload">Upload Files to TaxBrain</a></p>
 
 
 <h3 id="cli-install-test">Install/Test tc CLI</h3>
 
-<p>Text goes here.</p>
+<p>Installation of tc CLI involves steps:</p>
 
-<p>More text goes here.</p>
+<p><b>Install the free Anaconda Python distribution</b> by going to
+the <a href="https://www.continuum.io/downloads">Continuum Analytics
+download page</a> and selecting a version of Python suitable for your
+computer.  You should install Python 2.7, which is the older and more
+stable version.  You must do this installation even if you already
+have Python installed on your computer because the Anaconda
+distribution contains all the additional Python packages that
+Tax-Calculator uses to conduct tax calculations (many of which are not
+included in other Python installations). You can install the Anaconda
+distribution without having administrative privileges on your computer
+and the Anaconda distribution will not interfere with any Python
+installation that came as part of your computer’s operating
+system.</p>
 
+<p><b>Check your Anaconda Python installation </b> by entering the
+following two commands at the operating system command prompt (which
+is shown as <kbd>$</kbd> here, but would be <kbd>></kbd> on Windows)
+in any directory:
+<pre>$ conda --version</pre>
+Expected output is something like <kbd>conda 4.3.17</kbd>
+<pre>$ python --version</pre>
+Expected output should contain the <kbd>Python 2.7.</kbd> and
+<kbd>Anaconda</kbd> phrases, the presence of which confirm that the
+installation went smoothly.  The full output could look something
+like this <kbd>Python 2.7.12 :: Anaconda 2.3.0 (x86_64)</kbd>.</p>
+
+<p><b>Install the free taxcalc package</b> by entering the following:
+<pre>$ conda install -c ospc taxcalc</pre>
+Expected output should contain information about all the additional
+packages that Tax-Calculator needs.  After all that information has
+been shown on the screen, press the <kbd>y</kbd> key to proceed with
+the package installations.</p>
+
+<p><b>Check your installation of tc</b> (the CLI to Tax-Calculator) by
+entering the following:
+<pre>$ tc --test</pre>
+Expected output (after about twenty seconds) should be <kbd>PASSED
+TEST</kbd>.  If you get <kbd>FAILED TEST</kbd>, something when wrong
+in the installation process.  If the installation test fails, please
+report your experience on
+the <a href="http://list.ospc.org/mailman/listinfo/users_list.ospc.org">Tax-Calculator
+users mailing list</a> or in an email to one of the core maintainers
+of Tax-Calculator listed at the bottom of the <i>What is TaxBrain?</i>
+page at <a href="http://www.ospc.org/taxbrain/">this website</a>.
+
+<p>If your installation passes the test, you are ready to begin using
+tc to analyze your tax reforms.  Continue reading this section for
+information about how to do that.  But if you want a quick hint about
+the range of tc capabilities, enter the following:
+<pre>$ tc --help</pre>
+</p>
+ 
 <p><a href="#cli">Back to Section Contents</a></p>
 
 
@@ -229,6 +280,13 @@ installation and file preparation work may be worth it to you.</p>
 
 
 <h3 id="cli-tab-results">Tabulate Reform Results</h3>
+
+<p>Text goes here.</p>
+
+<p>More text goes here.</p>
+
+
+<h3 id="cli-taxbrain-upload">Upload Files to TaxBrain</h3>
 
 <p>Text goes here.</p>
 
