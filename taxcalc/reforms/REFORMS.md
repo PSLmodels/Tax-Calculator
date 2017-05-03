@@ -5,8 +5,9 @@ way to specify in a text file the collection of reform provisions that
 make up a reform proposal.  When stored on your local computer, such
 reform files can be used to estimate reform effects either by
 uploading to the [TaxBrain webapp](http://www.ospc.org/taxbrain/file/)
-or by using the `--reform` option to the `tc.py` command-line
-interface to Tax-Calculator.
+or by using the `--reform` option of the [tc
+CLI](http://open-source-economics.github.io/Tax-Calculator/#cli)
+(command-line interface) to Tax-Calculator.
 
 Here we provide links to several reform files that specify historical
 reform proposals, and then provide a more general explanation of the
@@ -62,8 +63,9 @@ separate, head of household, widow, separate.
 
 The following hypothetical payroll tax reforms illustrate the
 flexibility that reform files provide in expressing complex tax
-reforms.  Note that the current-law values of each tax parameter
-are shown in [this JSON file](../current_law_policy.json).
+reforms.  Note that the current-law values of each tax parameter are
+shown in the [user
+documentation](http://open-source-economics.github.io/Tax-Calculator/#pol).
 
 [Raise OASDI and HI payroll tax rates](ptaxes0.json)
 
