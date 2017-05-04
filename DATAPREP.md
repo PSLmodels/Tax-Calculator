@@ -1,18 +1,17 @@
 # Tax-Calculator Input-File-Preparation Guidelines
 
-The CLI to Tax-Calculator is flexible enough to read almost any kind
-of CSV-formatted input data on filing units as long as the variable
-names correspond to those expected by Tax-Calculator.  The only
-required input variables are `RECID` (a unique filing-unit record
+The Tax-Calculator Records class is flexible enough to read almost any
+kind of CSV-formatted input data on filing units as long as the
+variable names correspond to those expected by Tax-Calculator.  The
+only required input variables are `RECID` (a unique filing-unit record
 identifier) and `MARS` (a positive-valued filing-status indicator).
 Other variables in the input file must have variable names that are
-included in the [Input Variables
-section](http://open-source-economics.github.io/Tax-Calculator/#input)
-of the user documentation in order for them to affect tax
-calculations.  Any variable listed in Input Variables that is not in
-an input file is automatically set to a value of zero for every filing
-unit.  Variables in the input file that are not listed in Input
-Variables are ignored by Tax-Calculator.
+included in the [Input Variables section](docs/index.html#input) of
+the user documentation in order for them to affect tax calculations.
+Any variable listed in Input Variables that is not in an input file is
+automatically set to a value of zero for every filing unit.  Variables
+in the input file that are not listed in Input Variables are ignored
+by Tax-Calculator.
 
 However, there are important data-preparation issues related to the
 fact that the payroll tax is a tax on individuals, not on income-tax
