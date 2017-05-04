@@ -46,8 +46,8 @@ filing-unit amount between taxpayer and spouse so that the above equations
 hold for each filing unit in the input file.
 
 In addition to this earnings-splitting data-preparation issue,
-Tax-Calculator expects that the value of ordinary dividends (e00600)
-will be no less than the value of qualified dividends (e00650) for
+Tax-Calculator expects that the value of ordinary dividends (`e00600`)
+will be no less than the value of qualified dividends (`e00650`) for
 each filing unit.  Again, it is your responsibility to prepare input
 data for Tax-Calculator in a way that ensures this relationship is
 true for each filing unit.
