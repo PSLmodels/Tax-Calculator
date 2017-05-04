@@ -186,7 +186,6 @@ files to TaxBrain.</p>
 <p><a href="#cli-spec-reform">Specify Tax Reform</a></p>
 <p><a href="#cli-spec-assump">Specify Analysis Assumptions</a></p>
 <p><a href="#cli-spec-funits">Specify Filing Units</a></p>
-<p><a href="#cli-spec-output">Specify Output Options</a></p>
 <p><a href="#cli-init-analysis">Initiate Reform Analysis</a></p>
 <p><a href="#cli-tab-results">Tabulate Reform Results</a></p>
 <p><a href="#cli-taxbrain-upload">Upload Files to TaxBrain</a></p>
@@ -404,20 +403,103 @@ relationship is true for each filing unit.</p>
 <p><a href="#cli">Back to Section Contents</a></p>
 
 
-<h3 id="cli-spec-output">Specify Output Options</h3>
-
-<p>Text goes here.</p>
-
-<p>More text goes here.</p>
-
-<p><a href="#cli">Back to Section Contents</a></p>
-
-
 <h3 id="cli-init-analysis">Initiate Reform Analysis</h3>
 
-<p>Text goes here.</p>
+<p>The tc CLI to Tax-Calculator requires only an input file containing
+one or more filing units.  A policy reform file is optional; no reform
+file implies you want to analyze current-law policy.  A response
+assumption file is also optional; no assumption file implies you want
+to conduct static analysis.</p>
 
-<p>More text goes here.</p>
+<p>Here we explain how to conduct tax analysis with the tc CLI by
+presenting a series of examples and explaining what output is produced
+in each example.  There are several types of output that tc can
+generate so there will be more than a few examples.  The examples are
+numbered in order to make it easier to refer to different examples.
+All the examples assume that the input file is <kbd>test.csv</kbd>,
+which was mentioned in previous part of this section.</p>
+
+<p><pre>(1)$ tc test.csv 2020</pre></p>
+
+<p>Example (1) produces a minimal output file containing 2020 tax
+liabilities for each filing unit assuming the income amounts in the
+input file are amounts for 2020 and assuming current-law tax policy
+projected to 2020.  The name of the CSV-formatted output file is
+<kbd>test-20-#-#.csv</kbd>.  No other output is produced by example
+(1).  The first <kbd>#</kbd> symbol indicates we did not specify a
+policy reform file and the second <kbd>#</kbd> symbol indicates we did
+not specify a response assumption file.  No other output is produced
+by example.</p>
+
+<p><pre>(2)$ tc test.csv 2020 --dump</pre></p>
+
+<p>Example (2) produces a much more complete output file with the same
+name <kbd>test-20-#-#.csv</kbd> as the minimal output file produced in
+example (1).  No other output is produced by example (2).  The
+<kbd>--dump</kbd> option causes all the input variables (including the
+one's understood by Tax-Calculator but not included
+in <kbd>test.csv</kbd>, which are all zero) and all the output
+variables calculated by Tax-Calculator to be included in the output
+file.  For a complete list of input variables, see
+the <a href="#input">Input Variables</a> section.  For a complete list
+of output variables, see the <a href="#output">Output Variables</a>
+section.  Since Tax-Calculator ignores variables in the input file
+that are not in the Input Variables section, the dump output file in
+example (2) can be used as an input file and it will produce exactly
+the same tax liabilities (apart from rounding errors of one or two
+cents) as in the original dump output.</p>
+
+<p><pre>(3)$ tc test.csv 2020 --sqldb</pre></p>
+
+<p>Example (3) produces the same dump output as example (2) except
+that the dump output is written not to a CSV-formatted file, but to
+the dump table in an SQLite3 database file, which is
+called <kbd>test-20-#-#.db</kbd> in this example.  Because
+the <kbd>--dump</kbd> option is not used in example (3), minimal
+output will be written to the <kbd>test-20-#-#.csv</kbd> file.  No
+other output is produced by example (3).</p>
+
+<p> Pros and cons of putting dump output in a CSV file or an SQLite3
+database table.  The CSV file is almost twice as large as the
+database, but it can be easily imported into a wide range of
+statistical packages and spreadsheets.  The main advantage of the
+SQLite3 database is that the Anaconda Python distribution includes
+<a href="http://www.sqlite.org/cli.html">sqlite3</a> (or sqlite3.exe
+on Windows), a command-line tool that can be used to tabulate dump
+output using structured query language (SQL).  SQL is a language that
+you use to specify the tabulation you want and the SQL database
+figures out the procedure for generating your tabulation and then
+executes that procedure; there is no computer programming involved.
+We will give an example of SQL tabulation of dump output in the next
+part of this section.</p>
+
+<p><pre>(4)$ tc test.csv 2020 --dump --sqldb</pre></p>
+
+<p>Example (4) shows that you can get dump output in the two different
+formats from a single tc run.</p>
+
+<p>The remaining examples use neither the <kbd>--dump</kbd> nor the
+<kbd>--sqldb</kbd> option, and thus, produce minimal output.  But
+either or both of those options could be used in all the subsequent
+examples.</p>
+
+<p><pre>(5)$ tc test.csv 2021 --reform ref3.json</pre></p>
+
+<p>Example (5) produces 2021 output for the filing units in the 
+<kbd>test.csv</kbd> file using the policy reform specified in
+the <kbd>ref3.json</kbd> file.  Because no <kbd>--assump</kbd>
+option is used, the output results are produced using static analysis.
+The name of the output file in this example is
+<kbd>test-21-ref3-#.csv</kbd>.</p>
+
+<p><pre>(6)$ tc test.csv 2021 --reform ref3.json --assump res1.json</pre></p>
+
+<p>Example (6) produces 2021 output for the filing units in the 
+<kbd>test.csv</kbd> file using the policy reform specified in
+the <kbd>ref3.json</kbd> file and the response assumptions
+specified in the <kbd>res1.json</kbd> file.  The output results
+produced by this non-static analysis are written to the 
+<kbd>test-21-ref3-res1.csv</kbd> file.</p>
 
 <p><a href="#cli">Back to Section Contents</a></p>
 
