@@ -5,14 +5,14 @@ This document describes CSV-formatted files that can be used as input
 in the validation of Tax-Calculator.  These input files are used with
 the tc CLI to Tax-Calculator to produce output files as described in
 the [tc CLI section of the user
-documentation](http://open-source-economics.github.io/Tax-Calculator/#cli).
+documentation](http://open-source-economics.github.io/Tax-Calculator/index.html#cli).
 
 Input Variables Documentation
 -----------------------------
 
 A list of all the input variables Tax-Calculator can use in its
 calculations is available in the [Input Variables section of the user
-documentation](http://open-source-economics.github.io/Tax-Calculator/#input).
+documentation](http://open-source-economics.github.io/Tax-Calculator/index.html#input).
 
 Sample Input File
 -----------------

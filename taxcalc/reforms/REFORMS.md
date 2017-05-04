@@ -6,7 +6,7 @@ make up a reform proposal.  When stored on your local computer, such
 reform files can be used to estimate reform effects either by
 uploading to the [TaxBrain webapp](http://www.ospc.org/taxbrain/file/)
 or by using the `--reform` option of the [tc
-CLI](http://open-source-economics.github.io/Tax-Calculator/#cli)
+CLI](http://open-source-economics.github.io/Tax-Calculator/index.html#cli)
 (command-line interface) to Tax-Calculator.
 
 Here we provide links to several reform files that specify historical
@@ -64,8 +64,8 @@ separate, head of household, widow, separate.
 The following hypothetical payroll tax reforms illustrate the
 flexibility that reform files provide in expressing complex tax
 reforms.  Note that the current-law values of each tax parameter are
-shown in the [user
-documentation](http://open-source-economics.github.io/Tax-Calculator/#pol).
+shown in the Policy Parameters section of the [user
+documentation](http://open-source-economics.github.io/Tax-Calculator/index.html#pol).
 
 [Raise OASDI and HI payroll tax rates](ptaxes0.json)
 
