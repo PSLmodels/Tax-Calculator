@@ -6,7 +6,7 @@ Such reform proposals can then be uploaded to the [TaxBrain
 webapp](http://www.ospc.org/taxbrain/file/) for analysis, or be
 analyzed on your local computer using the tc CLI (command-line
 interface) to Tax-Calculator, as described in the [user
-documentation](../../docs/index.html#cli).
+documentation](http://open-source-economics.github.io/Tax-Calculator/index.html#cli).
 
 [This document](REFORMS.md) provides access to several reform files
 that represent recent tax reform proposals.
