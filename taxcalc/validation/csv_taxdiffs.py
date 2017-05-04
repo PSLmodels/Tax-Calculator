@@ -23,19 +23,31 @@ def main(file1name, file2name, rounding_error):
     """
     # read file contents into Pandas DataFrames
     df1 = pd.read_csv(file1name)
+    assert isinstance(df1, pd.DataFrame)
     if 'INCTAX' in list(df1):
         # rename minimal tc OUTPUT variables to --dump OUTPUT variable names
-        df1.rename(index=str,
+        minimalout1 = True
+        df1.rename(index=str,  # pylint: disable=no-member
                    columns={'INCTAX': 'iitax', 'PAYTAX': 'payrolltax'},
                    inplace=True)
+    else:
+        minimalout1 = False
     df1_vars = set(list(df1))
     df2 = pd.read_csv(file2name)
+    assert isinstance(df2, pd.DataFrame)
     if 'INCTAX' in list(df2):
         # rename minimal tc OUTPUT variables to --dump OUTPUT variable names
-        df2.rename(index=str,
+        minimalout2 = True
+        df2.rename(index=str,  # pylint: disable=no-member
                    columns={'INCTAX': 'iitax', 'PAYTAX': 'payrolltax'},
                    inplace=True)
+    else:
+        minimalout2 = False
     df2_vars = set(list(df2))
+    if minimalout1 != minimalout2:
+        msg = 'ERROR: FILE1 and FILE2 do not have same type of output\n'
+        sys.stderr.write(msg)
+        return 1
 
     # check that both files contain required tax variables
     required_tax_vars = set(['RECID', 'iitax', 'payrolltax'])

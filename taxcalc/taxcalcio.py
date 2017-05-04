@@ -317,7 +317,10 @@ class TaxCalcIO(object):
                 ceeu_results += 'reform cannot be sensibly compared\n '
                 ceeu_results += '                  '
                 ceeu_results += 'when specifying "behavior" with --assump '
-                ceeu_results += 'option.'
+                ceeu_results += 'option'
+            elif self.calc.records.s006.sum() <= 0.:
+                ceeu_results = 'SKIP --ceeu output because '
+                ceeu_results += 'sum of weights is not positive'
             else:
                 self.calc_clp.calc_all()
                 calc_clp_calculated = True
