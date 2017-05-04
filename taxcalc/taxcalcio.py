@@ -159,9 +159,8 @@ class TaxCalcIO(object):
             specifies whether or not exact tax calculations are done without
             any smoothing of "stair-step" provisions in the tax law.
         """
-        # pylint: disable=too-many-arguments
-        # pylint: disable=too-many-locals
-        # pylint: disable=too-many-statements
+        # pylint: disable=too-many-arguments,too-many-locals
+        # pylint: disable=too-many-statements,too-many-branches
         self.errmsg = ''
         # get parameter dictionaries from --reform and --assump files
         param_dict = Calculator.read_json_param_files(reform, assump)
@@ -555,6 +554,10 @@ class TaxCalcIO(object):
         """
         Extract dump output and return it as pandas DataFrame.
         """
+        # specify mtr values in percentage terms
+        self.calc.records.mtr_inctax = mtr_inctax * 100.
+        self.calc.records.mtr_paytax = mtr_paytax * 100.
+        # create and return dump output DataFrame
         odf = pd.DataFrame()
         varset = Records.USABLE_READ_VARS | Records.CALCULATED_VARS
         for varname in varset:
@@ -564,9 +567,6 @@ class TaxCalcIO(object):
             else:
                 odf[varname] = vardata.round(2)  # rounded to nearest cent
         odf['FLPDYR'] = self.tax_year()  # tax calculation year
-        # mtr values expressed in rounded percentage terms
-        odf['mtr_inctax'] = (mtr_inctax * 100.0).round(2)
-        odf['mtr_paytax'] = (mtr_paytax * 100.0).round(2)
         return odf
 
     @staticmethod

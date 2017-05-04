@@ -871,6 +871,16 @@
       "type": "float",
       "desc": "Amount of UBI benefit excluded from AGI",
       "form": {}
+    },
+    "mtr_paytax": {
+      "type": "float",
+      "desc": "Marginal payroll tax rate (in percentage terms) on extra taxpayer earnings (e00200p)",
+      "form": {}
+    },
+    "mtr_inctax": {
+      "type": "float",
+      "desc": "Marginal income tax rate (in percentage terms) on extra taxpayer earnings (e00200p)",
+      "form": {}
     }
   }
 }

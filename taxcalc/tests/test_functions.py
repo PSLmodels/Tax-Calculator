@@ -87,11 +87,11 @@ def test_calc_and_used_vars(tests_path):
         if fname == 'BenefitSurtax':
             continue  # because BenefitSurtax is not really a function
         all_cvars.update(set(cvars[fname]))
-    # .. add to all_cvars set some variables calculated in Records class
+    # .. add to all_cvars set variables calculated in Records class
     all_cvars.update(set(['ID_Casualty_frt_in_pufcsv_year',
                           'num', 'sep', 'exact']))
-    # .. add to all_cvars set variables calculated only in *_code functions
-    all_cvars.update(set([]))
+    # .. add to all_cvars set variables calculated elsewhere
+    all_cvars.update(set(['mtr_paytax', 'mtr_inctax']))
     # .. check that each var in Records.CALCULATED_VARS is in the all_cvars set
     found_error1 = False
     if not Records.CALCULATED_VARS <= all_cvars:
