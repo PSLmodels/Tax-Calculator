@@ -55,3 +55,7 @@ estimates using a nationally representative sample of tax filing units
 that is not part of the Tax-Calculator repository.
 
 And, of course, you can get started with Tax-Calculator both ways.
+
+Citing Tax-Calculator
+======================
+Tax-Calculator (Version #.#.#)[Source code], https://github.com/open-source-economics/tax-calculator
