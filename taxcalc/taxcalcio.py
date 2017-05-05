@@ -558,8 +558,8 @@ class TaxCalcIO(object):
         Extract dump output and return it as pandas DataFrame.
         """
         # specify mtr values in percentage terms
-        self.calc.records.mtr_inctax = mtr_inctax * 100.
-        self.calc.records.mtr_paytax = mtr_paytax * 100.
+        self.calc.records.mtr_inctax[:] = mtr_inctax * 100.
+        self.calc.records.mtr_paytax[:] = mtr_paytax * 100.
         # create and return dump output DataFrame
         odf = pd.DataFrame()
         varset = Records.USABLE_READ_VARS | Records.CALCULATED_VARS
