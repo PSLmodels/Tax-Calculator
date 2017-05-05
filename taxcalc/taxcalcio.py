@@ -317,7 +317,10 @@ class TaxCalcIO(object):
                 ceeu_results += 'reform cannot be sensibly compared\n '
                 ceeu_results += '                  '
                 ceeu_results += 'when specifying "behavior" with --assump '
-                ceeu_results += 'option.'
+                ceeu_results += 'option'
+            elif self.calc.records.s006.sum() <= 0.:
+                ceeu_results = 'SKIP --ceeu output because '
+                ceeu_results += 'sum of weights is not positive'
             else:
                 self.calc_clp.calc_all()
                 calc_clp_calculated = True
@@ -555,8 +558,8 @@ class TaxCalcIO(object):
         Extract dump output and return it as pandas DataFrame.
         """
         # specify mtr values in percentage terms
-        self.calc.records.mtr_inctax = mtr_inctax * 100.
-        self.calc.records.mtr_paytax = mtr_paytax * 100.
+        self.calc.records.mtr_inctax[:] = mtr_inctax * 100.
+        self.calc.records.mtr_paytax[:] = mtr_paytax * 100.
         # create and return dump output DataFrame
         odf = pd.DataFrame()
         varset = Records.USABLE_READ_VARS | Records.CALCULATED_VARS

@@ -419,7 +419,9 @@ numbered in order to make it easier to refer to different examples.
 All the examples assume that the input file is <kbd>test.csv</kbd>,
 which was mentioned in previous part of this section.</p>
 
-<p><pre>(1)$ tc test.csv 2020</pre></p>
+<p><pre>
+(1)$ tc test.csv 2020
+</pre></p>
 
 <p>Example (1) produces a minimal output file containing 2020 tax
 liabilities for each filing unit assuming the income amounts in the
@@ -428,10 +430,19 @@ projected to 2020.  The name of the CSV-formatted output file is
 <kbd>test-20-#-#.csv</kbd>.  No other output is produced by example
 (1).  The first <kbd>#</kbd> symbol indicates we did not specify a
 policy reform file and the second <kbd>#</kbd> symbol indicates we did
-not specify a response assumption file.  No other output is produced
-by example.</p>
+not specify a response assumption file.  The variables included
+in the minimal output file include:
+<kbd>RECID</kbd> (of filing unit in the input file),
+<kbd>YEAR</kbd> (specified when executing tc CLI),
+<kbd>WEIGHT</kbd> (which is same as <kbd>s006</kbd>),
+<kbd>INCTAX</kbd> (which is same as <kbd>iitax</kbd>),
+<kbd>LSTAX</kbd> (which is same as <kbd>lumpsum_tax</kbd>) and
+<kbd>PAYTAX</kbd> (which is same as <kbd>payroll_tax</kbd>).
+</p>
 
-<p><pre>(2)$ tc test.csv 2020 --dump</pre></p>
+<p><pre>
+(2)$ tc test.csv 2020 --dump
+</pre></p>
 
 <p>Example (2) produces a much more complete output file with the same
 name <kbd>test-20-#-#.csv</kbd> as the minimal output file produced in
@@ -449,7 +460,9 @@ example (2) can be used as an input file and it will produce exactly
 the same tax liabilities (apart from rounding errors of one or two
 cents) as in the original dump output.</p>
 
-<p><pre>(3)$ tc test.csv 2020 --sqldb</pre></p>
+<p><pre>
+(3)$ tc test.csv 2020 --sqldb
+</pre></p>
 
 <p>Example (3) produces the same dump output as example (2) except
 that the dump output is written not to a CSV-formatted file, but to
@@ -473,7 +486,9 @@ executes that procedure; there is no computer programming involved.
 We will give an example of SQL tabulation of dump output in the next
 part of this section.</p>
 
-<p><pre>(4)$ tc test.csv 2020 --dump --sqldb</pre></p>
+<p><pre>
+(4)$ tc test.csv 2020 --dump --sqldb
+</pre></p>
 
 <p>Example (4) shows that you can get dump output in the two different
 formats from a single tc run.</p>
@@ -483,7 +498,9 @@ formats from a single tc run.</p>
 either or both of those options could be used in all the subsequent
 examples.</p>
 
-<p><pre>(5)$ tc test.csv 2021 --reform ref3.json</pre></p>
+<p><pre>
+(5)$ tc test.csv 2021 --reform ref3.json
+</pre></p>
 
 <p>Example (5) produces 2021 output for the filing units in the 
 <kbd>test.csv</kbd> file using the policy reform specified in
@@ -492,7 +509,9 @@ option is used, the output results are produced using static analysis.
 The name of the output file in this example is
 <kbd>test-21-ref3-#.csv</kbd>.</p>
 
-<p><pre>(6)$ tc test.csv 2021 --reform ref3.json --assump res1.json</pre></p>
+<p><pre>
+(6)$ tc test.csv 2021 --reform ref3.json --assump res1.json
+</pre></p>
 
 <p>Example (6) produces 2021 output for the filing units in the 
 <kbd>test.csv</kbd> file using the policy reform specified in
@@ -500,6 +519,112 @@ the <kbd>ref3.json</kbd> file and the response assumptions
 specified in the <kbd>res1.json</kbd> file.  The output results
 produced by this non-static analysis are written to the 
 <kbd>test-21-ref3-res1.csv</kbd> file.</p>
+
+<p>The following examples illustrate output options that work only if
+each filing unit in the input file has a positive sampling weight
+(<kbd>s006</kbd>).  So, we are going to use the <kbd>puf.csv</kbd>
+file in these examples along with the policy reform specified in
+the <kbd>ref3.json</kbd> file, the content of which is:
+<pre>
+// ref3.json raises personal exemption amount to 8000 in 2022,
+// after which it continues to be indexed to price inflation.
+{
+    "policy": {
+        "_II_em": {"2022": [8000]}
+    }
+}
+</pre>
+The output options illustrated in the following examples generate
+tables of the post-reform level and the reform-induced change in tax
+liability by income deciles as well as graphs of marginal and average
+tax rates by income percentile.
+
+<p><pre>
+(7)$ tc puf.csv 2022 --reform ref3.json --tables
+You loaded data for 2009.
+Tax-Calculator startup automatically extrapolated your data to 2022.
+
+(7)$ ls puf-22*
+puf-22-ref3-#-tab.text	puf-22-ref3-#.csv
+
+(7)$ cat puf-22-ref3-#-tab.text
+Weighted Tax Totals by Expanded-Income Decile
+    Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
+       (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
+ 0     18.2    -125.5      -2.7       7.2       0.0       4.4
+ 1     18.2     189.4     -14.8      17.5       0.0       2.7
+ 2     18.2     339.8     -30.1      29.7       0.0      -0.4
+ 3     18.2     494.8     -21.3      42.6       0.0      21.4
+ 4     18.2     689.7      -4.4      62.1       0.0      57.7
+ 5     18.2     927.7      25.0      84.9       0.0     110.0
+ 6     18.2    1237.0      61.4     114.7       0.0     176.1
+ 7     18.2    1689.2     126.3     170.4       0.0     296.7
+ 8     18.2    2521.0     240.3     282.0       0.0     522.3
+ 9     18.2    7436.3    1549.6     510.0       0.0    2059.5
+ A    182.4   15399.4    1929.3    1321.1       0.0    3250.4
+
+Weighted Tax Differences by Expanded-Income Decile
+    Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
+       (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
+ 0     18.2    -125.5      -0.0       0.0       0.0      -0.0
+ 1     18.2     189.4      -0.1       0.0       0.0      -0.1
+ 2     18.2     339.8      -1.4       0.0       0.0      -1.4
+ 3     18.2     494.8      -3.4       0.0       0.0      -3.4
+ 4     18.2     689.7      -7.2       0.0       0.0      -7.2
+ 5     18.2     927.7     -10.8       0.0       0.0     -10.8
+ 6     18.2    1237.0     -16.6       0.0       0.0     -16.6
+ 7     18.2    1689.2     -21.6       0.0       0.0     -21.6
+ 8     18.2    2521.0     -31.3       0.0       0.0     -31.3
+ 9     18.2    7436.3     -23.8       0.0       0.0     -23.8
+ A    182.4   15399.4    -116.2       0.0       0.0    -116.2
+</pre></p>
+
+<p>Example (7) produces 2022 static output for the filing units in the
+<kbd>puf.csv</kbd> file using the policy reform specified in
+the <kbd>ref3.json</kbd> file.  Notice that Tax-Calculator knows to
+extrapolate (or <q>age</q>) filing unit data in the <kbd>puf.csv</kbd>
+file to the specified tax year.  It knows to do that because of the
+special input file name <kbd>puf.csv</kbd>.  The tables produced by
+this static analysis are written to the
+<kbd>puf-22-ref3-#-tab.text</kbd> file.  Note that on Windows
+you would use <kbd>dir</kbd> instead of <kbd>ls</kbd> and 
+<kbd>type</kbd> instead of <kbd>cat</kbd>.</p>
+
+<p><pre>
+(8)$ tc puf.csv 2024 --reform ref3.json --graphs
+You loaded data for 2009.
+Tax-Calculator startup automatically extrapolated your data to 2024.
+
+(8)$ ls puf-24*
+puf-24-ref3-#-atr.html	puf-24-ref3-#-mtr.html	puf-24-ref3-#.csv
+</pre></p>
+
+<p>Example (8) is like example (7) except we ask for 2024 static
+output and for graphs instead of tables, although we could ask for
+both.  The HTML files containing the graphs can be viewed in your
+browser.</p>
+
+<p>Here is what the average tax rate graph
+in <kbd>puf-24-ref3-#-atr.html</kbd> looks like.</p>
+
+<p><img src="atr.png" alt="atr graph"></p>
+
+<p>Here is what the marginal tax rate graph
+in <kbd>puf-24-ref3-#-mtr.html</kbd> looks like:</p>
+
+<p><img src="mtr.png" alt="mtr graph"></p>
+
+<p>There is yet another tc CLI output option that writes to the screen
+results from a normative welfare analysis of the specified policy
+reform.  This <kbd>--ceeu</kbd> option produces experimental results
+that make sense only with input files that contain representative
+samples of the population such as the <kbd>puf.csv</kbd> file.  The
+name of this option stands for certainty-equivalent expected utility.
+If you want to use this output option, you should read the commented
+Python source code for the <kbd>ce_aftertax_income</kbd> function in
+the <kbd>taxcalc/utils.py</kbd> file at the
+<a href="https://github.com/open-source-economics/Tax-Calculator">
+developer website</a>.</p>
 
 <p><a href="#cli">Back to Section Contents</a></p>
 
