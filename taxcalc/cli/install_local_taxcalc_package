@@ -18,9 +18,9 @@ fi
 # install conda-build package if not present
 conda list build | awk '$1~/conda-build/{rc=1}END{exit(rc)}'
 if [ $? -eq 0 ]; then
-    echo "==> Installing needed conda-build package"
-    conda install conda-build
-    echo "==> Continuing with build of taxcalc package"
+    echo "==> Installing conda-build package"
+    conda install conda-build --yes 2>&1 > /dev/null
+    echo "==> Continue building taxcalc package"
 fi
 
 # build taxcalc conda package
