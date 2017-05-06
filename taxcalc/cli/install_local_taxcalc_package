@@ -1,8 +1,9 @@
 #!/bin/bash
 # USAGE: ./install_local_taxcalc_package
 # ACTION: (1) uninstalls any installed taxcalc package (conda uninstall)
-#         (2) builds local taxcalc=0.0.0 package (conda build)
-#         (3) installs local taxcalc=0.0.0 package (conda install)
+#         (2) executes "conda install conda-build" (if necessary)
+#         (3) builds local taxcalc=0.0.0 package (conda build)
+#         (4) installs local taxcalc=0.0.0 package (conda install)
 # NOTE: for those with experience working with compiled languages,
 #       building a local conda package is analogous to compiling an executable
 
@@ -12,6 +13,14 @@ echo "STARTING : `date`"
 conda list taxcalc | awk '$1~/taxcalc/{rc=1}END{exit(rc)}'
 if [ $? -eq 1 ]; then
     ./uninstall_taxcalc_package
+fi
+
+# install conda-build package if not present
+conda list build | awk '$1~/conda-build/{rc=1}END{exit(rc)}'
+if [ $? -eq 0 ]; then
+    echo "==> Installing needed conda-build package"
+    conda install conda-build
+    echo "==> Continuing with build of taxcalc package"
 fi
 
 # build taxcalc conda package
