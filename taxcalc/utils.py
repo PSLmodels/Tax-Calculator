@@ -693,7 +693,7 @@ def ascii_output(csv_filename, ascii_filename):
         def pdf_recid(recid):
             """ Return Pandas DataFrame recid value for specified recid """
             return recid - 1
-        recids = map(pdf_recid, recids)  # pylint: disable=bad-builtin
+        recids = map(pdf_recid, recids)
         pdf = pdf.ix[recids]  # pylint: disable=no-member
     # do transposition
     out = pdf.T.reset_index()  # pylint: disable=no-member
@@ -995,10 +995,12 @@ def atr_graph_data(calc1, calc2,
     avgtax1_series = gdfx.apply(weighted_mean, 'tax1')
     avgtax2_series = gdfx.apply(weighted_mean, 'tax2')
     # compute average tax rates by income percentile
-    # pylint: disable=no-member
-    # (above pylint comment eliminates bogus np.divide warnings)
-    atr1_series = np.divide(avgtax1_series, avginc_series)
-    atr2_series = np.divide(avgtax2_series, avginc_series)
+    old_settings = np.seterr(divide='ignore')  # ignore divide by zero
+    atr1_series = np.divide(avgtax1_series,  # pylint: disable=no-member
+                            avginc_series)
+    atr2_series = np.divide(avgtax2_series,  # pylint: disable=no-member
+                            avginc_series)
+    np.seterr(**old_settings)  # reset warnings to old_settings
     # construct DataFrame containing the two atr?_series
     lines = pd.DataFrame()
     lines['avginc'] = avginc_series

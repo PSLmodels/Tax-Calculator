@@ -11,5 +11,6 @@ dependencies:
 - bokeh >=0.12.3
 - pep8
 - pylint
+- coverage
 - pip:
   - pytest-pep8
