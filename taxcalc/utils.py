@@ -995,7 +995,7 @@ def atr_graph_data(calc1, calc2,
     avgtax1_series = gdfx.apply(weighted_mean, 'tax1')
     avgtax2_series = gdfx.apply(weighted_mean, 'tax2')
     # compute average tax rates by income percentile
-    old_settings = np.seterr(divide='ignore')  # ignore divide by zero
+    old_settings = np.seterr(divide='ignore')  # ignore runtime warnings
     atr1_series = np.divide(avgtax1_series,  # pylint: disable=no-member
                             avginc_series)
     atr2_series = np.divide(avgtax2_series,  # pylint: disable=no-member

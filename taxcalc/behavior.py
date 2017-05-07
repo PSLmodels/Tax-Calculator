@@ -183,9 +183,8 @@ class Behavior(ParametersBase):
             new_ltcg = calc_x.records.p23250 * exp_term
             ltcg_chg = new_ltcg - calc_x.records.p23250
         # calculate charitable giving effect
-        no_charity_response = \
-            calc_y.behavior.BE_charity.tolist() == \
-            [0.0, 0.0, 0.0]
+        no_charity_response = (calc_y.behavior.BE_charity.tolist() ==
+                               [0.0, 0.0, 0.0])
         if no_charity_response:
             c_charity_chg = np.zeros(calc_x.records.dim)
             nc_charity_chg = np.zeros(calc_x.records.dim)
@@ -301,6 +300,7 @@ class Behavior(ParametersBase):
         # assume behv response only for filing units with positive agi_m_ided
         delta_income = np.where(agi_m_ided > 0., taxinc_change, 0.)
         # allocate delta_income into three parts
+        old_settings = np.seterr(invalid='ignore')  # ignore runtime warnings
         delta_wage = np.where(agi_m_ided > 0.,
                               delta_income * calc.records.e00200 / agi_m_ided,
                               0.)
@@ -311,6 +311,7 @@ class Behavior(ParametersBase):
         delta_ided = np.where(agi_m_ided > 0.,
                               delta_income * ided / agi_m_ided,
                               0.)
+        np.seterr(**old_settings)  # reset warnings to old_settings
         # confirm that the three parts are consistent with delta_income
         assert np.allclose(delta_income, delta_wage + delta_oinc - delta_ided)
         # add the three parts to different calc.records variables
