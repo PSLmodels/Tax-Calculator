@@ -925,7 +925,7 @@ def atr_graph_data(calc1, calc2,
 
     min_avginc : float
         specifies the minimum average expanded income for a percentile to
-        be included in the graph data
+        be included in the graph data; value must be positive
 
     Returns
     -------
@@ -962,6 +962,8 @@ def atr_graph_data(calc1, calc2,
         msg = ('atr_measure="{}" is neither '
                '"itax" nor "ptax" nor "combined"')
         raise ValueError(msg.format(atr_measure))
+    # . . check min_avginc value
+    assert min_avginc > 0.
     # calculate taxes and expanded income
     calc1.calc_all()
     calc2.calc_all()
@@ -995,12 +997,10 @@ def atr_graph_data(calc1, calc2,
     avgtax1_series = gdfx.apply(weighted_mean, 'tax1')
     avgtax2_series = gdfx.apply(weighted_mean, 'tax2')
     # compute average tax rates by income percentile
-    old_settings = np.seterr(divide='ignore')  # ignore runtime warnings
-    atr1_series = np.divide(avgtax1_series,  # pylint: disable=no-member
-                            avginc_series)
-    atr2_series = np.divide(avgtax2_series,  # pylint: disable=no-member
-                            avginc_series)
-    np.seterr(**old_settings)  # reset warnings to old_settings
+    atr1_series = np.where(avginc_series >= min_avginc,
+                           avgtax1_series / avginc_series, 0.)
+    atr2_series = np.where(avginc_series >= min_avginc,
+                           avgtax2_series / avginc_series, 0.)
     # construct DataFrame containing the two atr?_series
     lines = pd.DataFrame()
     lines['avginc'] = avginc_series
