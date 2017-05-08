@@ -693,7 +693,7 @@ def ascii_output(csv_filename, ascii_filename):
         def pdf_recid(recid):
             """ Return Pandas DataFrame recid value for specified recid """
             return recid - 1
-        recids = map(pdf_recid, recids)
+        recids = map(pdf_recid, recids)  # pylint: disable=bad-builtin
         pdf = pdf.ix[recids]  # pylint: disable=no-member
     # do transposition
     out = pdf.T.reset_index()  # pylint: disable=no-member
@@ -1004,12 +1004,10 @@ def atr_graph_data(calc1, calc2,
     atr2_series[included] = avgtax2_series[included] / avginc_series[included]
     # construct DataFrame containing the two atr?_series
     lines = pd.DataFrame()
-    lines['avginc'] = avginc_series
     lines['base'] = atr1_series
     lines['reform'] = atr2_series
-    # drop percentiles with average income below the specified minimum
+    # include only percentiles with average income no less than min_avginc
     lines = lines[included]
-    lines.drop('avginc', axis=1, inplace=True)
     # construct dictionary containing plot lines and auto-generated labels
     data = dict()
     data['lines'] = lines
