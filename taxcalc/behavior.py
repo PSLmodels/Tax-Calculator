@@ -298,25 +298,22 @@ class Behavior(ParametersBase):
                         calc.records.c04470)
         agi_m_ided = agi - ided
         # assume behv response only for filing units with positive agi_m_ided
-        delta_income = np.where(agi_m_ided > 0., taxinc_change, 0.)
+        pos = agi_m_ided > 0.
+        delta_income = np.where(pos, taxinc_change, 0.)
         # allocate delta_income into three parts
-        old_settings = np.seterr(invalid='ignore')  # ignore runtime warnings
-        delta_wage = np.where(agi_m_ided > 0.,
-                              delta_income * calc.records.e00200 / agi_m_ided,
-                              0.)
-        other_income = agi - calc.records.e00200
-        delta_oinc = np.where(agi_m_ided > 0.,
-                              delta_income * other_income / agi_m_ided,
-                              0.)
-        delta_ided = np.where(agi_m_ided > 0.,
-                              delta_income * ided / agi_m_ided,
-                              0.)
-        np.seterr(**old_settings)  # reset warnings to old_settings
+        winc = calc.records.e00200
+        delta_winc = np.zeros_like(agi)
+        delta_winc[pos] = delta_income[pos] * winc[pos] / agi_m_ided[pos]
+        oinc = agi - winc
+        delta_oinc = np.zeros_like(agi)
+        delta_oinc[pos] = delta_income[pos] * oinc[pos] / agi_m_ided[pos]
+        delta_ided = np.zeros_like(agi)
+        delta_ided[pos] = delta_income[pos] * ided[pos] / agi_m_ided[pos]
         # confirm that the three parts are consistent with delta_income
-        assert np.allclose(delta_income, delta_wage + delta_oinc - delta_ided)
+        assert np.allclose(delta_income, delta_winc + delta_oinc - delta_ided)
         # add the three parts to different calc.records variables
-        calc.records.e00200 = calc.records.e00200 + delta_wage
-        calc.records.e00200p = calc.records.e00200p + delta_wage
+        calc.records.e00200 = calc.records.e00200 + delta_winc
+        calc.records.e00200p = calc.records.e00200p + delta_winc
         calc.records.e00300 = calc.records.e00300 + delta_oinc
         calc.records.e19200 = calc.records.e19200 + delta_ided
         return calc
