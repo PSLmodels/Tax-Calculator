@@ -996,18 +996,19 @@ def atr_graph_data(calc1, calc2,
     avginc_series = gdfx.apply(weighted_mean, 'expanded_income')
     avgtax1_series = gdfx.apply(weighted_mean, 'tax1')
     avgtax2_series = gdfx.apply(weighted_mean, 'tax2')
-    # compute average tax rates by income percentile
-    atr1_series = np.where(avginc_series >= min_avginc,
-                           avgtax1_series / avginc_series, 0.)
-    atr2_series = np.where(avginc_series >= min_avginc,
-                           avgtax2_series / avginc_series, 0.)
+    # compute average tax rates for each included income percentile
+    included = np.array(avginc_series >= min_avginc, dtype=bool)
+    atr1_series = np.zeros_like(avginc_series)
+    atr1_series[included] = avgtax1_series[included] / avginc_series[included]
+    atr2_series = np.zeros_like(avginc_series)
+    atr2_series[included] = avgtax2_series[included] / avginc_series[included]
     # construct DataFrame containing the two atr?_series
     lines = pd.DataFrame()
     lines['avginc'] = avginc_series
     lines['base'] = atr1_series
     lines['reform'] = atr2_series
     # drop percentiles with average income below the specified minimum
-    lines = lines[lines['avginc'] >= min_avginc]
+    lines = lines[included]
     lines.drop('avginc', axis=1, inplace=True)
     # construct dictionary containing plot lines and auto-generated labels
     data = dict()

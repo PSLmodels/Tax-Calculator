@@ -298,7 +298,7 @@ class Behavior(ParametersBase):
                         calc.records.c04470)
         agi_m_ided = agi - ided
         # assume behv response only for filing units with positive agi_m_ided
-        pos = agi_m_ided > 0.
+        pos = np.array(agi_m_ided > 0., dtype=bool)
         delta_income = np.where(pos, taxinc_change, 0.)
         # allocate delta_income into three parts
         winc = calc.records.e00200
