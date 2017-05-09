@@ -11,6 +11,8 @@ def test_incorrect_Behavior_instantiation():
         behv = Behavior(behavior_dict=bad_behv_dict)
     with pytest.raises(ValueError):
         behv = Behavior(num_years=0)
+    with pytest.raises(FloatingPointError):
+        np.divide(1., 0.)
 
 
 def test_correct_but_not_recommended_Behavior_instantiation():

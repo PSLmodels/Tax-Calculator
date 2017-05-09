@@ -925,7 +925,7 @@ def atr_graph_data(calc1, calc2,
 
     min_avginc : float
         specifies the minimum average expanded income for a percentile to
-        be included in the graph data
+        be included in the graph data; value must be positive
 
     Returns
     -------
@@ -962,6 +962,8 @@ def atr_graph_data(calc1, calc2,
         msg = ('atr_measure="{}" is neither '
                '"itax" nor "ptax" nor "combined"')
         raise ValueError(msg.format(atr_measure))
+    # . . check min_avginc value
+    assert min_avginc > 0.
     # calculate taxes and expanded income
     calc1.calc_all()
     calc2.calc_all()
@@ -994,19 +996,18 @@ def atr_graph_data(calc1, calc2,
     avginc_series = gdfx.apply(weighted_mean, 'expanded_income')
     avgtax1_series = gdfx.apply(weighted_mean, 'tax1')
     avgtax2_series = gdfx.apply(weighted_mean, 'tax2')
-    # compute average tax rates by income percentile
-    # pylint: disable=no-member
-    # (above pylint comment eliminates bogus np.divide warnings)
-    atr1_series = np.divide(avgtax1_series, avginc_series)
-    atr2_series = np.divide(avgtax2_series, avginc_series)
+    # compute average tax rates for each included income percentile
+    included = np.array(avginc_series >= min_avginc, dtype=bool)
+    atr1_series = np.zeros_like(avginc_series)
+    atr1_series[included] = avgtax1_series[included] / avginc_series[included]
+    atr2_series = np.zeros_like(avginc_series)
+    atr2_series[included] = avgtax2_series[included] / avginc_series[included]
     # construct DataFrame containing the two atr?_series
     lines = pd.DataFrame()
-    lines['avginc'] = avginc_series
     lines['base'] = atr1_series
     lines['reform'] = atr2_series
-    # drop percentiles with average income below the specified minimum
-    lines = lines[lines['avginc'] >= min_avginc]
-    lines.drop('avginc', axis=1, inplace=True)
+    # include only percentiles with average income no less than min_avginc
+    lines = lines[included]
     # construct dictionary containing plot lines and auto-generated labels
     data = dict()
     data['lines'] = lines

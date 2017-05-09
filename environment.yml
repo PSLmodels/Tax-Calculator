@@ -2,16 +2,15 @@ name: taxcalc-dev
 dependencies:
 - pytest
 - setuptools
-- numpy =1.11.2
-- pandas =0.18.0
+- numpy >=1.11.2
+- pandas >=0.18.0
 - numba
-- bokeh =0.12.3
 - toolz
 - six
-- ipython
-- ipython-notebook
+- bokeh >=0.12.3
+- mock
 - pep8
 - pylint
-- mock
+- coverage
 - pip:
   - pytest-pep8

@@ -11,9 +11,8 @@ requirements:
     - pytest
     - setuptools
     - python
-    - mock
-    - numpy ==1.11.2
-    - pandas <=0.18.0
+    - numpy >=1.11.2
+    - pandas >=0.18.0
     - numba
     - toolz
     - six
@@ -21,9 +20,8 @@ requirements:
     - pytest
     - setuptools
     - python
-    - mock
-    - numpy ==1.11.2
-    - pandas <=0.18.0
+    - numpy >=1.11.2
+    - pandas >=0.18.0
     - numba
     - toolz
     - six
