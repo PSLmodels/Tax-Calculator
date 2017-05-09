@@ -631,9 +631,124 @@ developer website</a>.</p>
 
 <h3 id="cli-tab-results">Tabulate Reform Results</h3>
 
-<p>Text goes here.</p>
+<p>Given that tc CLI output can be written to either CSV-formatted
+files or SQLite3 database files, there is an enormous range of
+software tools that can be used to tabulate the output.  You can use
+SAS or R, Stata or MATLAB, or even import output into a spreadsheet
+(but this would seem to be the least useful option).  The main point
+is to use a software tool that is available to you and that you have
+experience using.</p>
 
-<p>More text goes here.</p>
+<p>Here we give some examples of using the <kbd>sqlite3</kbd>
+command-line tool that is part of the Anaconda distribution (so it is
+always available when using Tax-Calculator).  The first step, of
+course, is to use the <kbd>--sqldb</kbd> option when running tc.  Then
+you can use the <kbd>sqlite3</kbd> tool interactively or use it to
+execute SQL scripts you have saved in a text file.  We'll provide
+examples of both those approaches.  There are many online tutorials on
+the SQL select command; if you want to learn more, search the
+Internet.</p>
+
+<p>First, we provide a simple example of using <kbd>sqlite3</kbd>
+interactively.  This approach is ideal for exploratory data analysis.
+Our example uses the <kbd>puf.csv</kbd> file as input, but you can do
+the following with the output from any input file that has weights
+(<kbd>s006</kbd>).  Also, we specify no policy reform file, so the
+output is for current-law policy.  What you cannot see from the
+following record of the analysis is that the <kbd>sqlite3</kbd> tool
+keeps a command history, so pressing the up-arrow key will bring up
+the prior command for editing.  This feature reduces substantially the
+amount of typing required to conduct exploratory data analysis.
+<pre>
+$ tc puf.csv 2016 --sqldb
+You loaded data for 2009.
+Tax-Calculator startup automatically extrapolated your data to 2016.
+$ sqlite3 puf-16-#-#.db
+SQLite version 3.13.0 2016-05-18 10:57:30
+Enter ".help" for usage hints.
+sqlite> select count(*) from dump;
+219814
+sqlite> select count(*),sum(s006) from dump;
+219814|167570630.439945
+sqlite> select count(*),round(sum(s006)*1e-6,3) from dump;
+219814|167.571
+sqlite> select round(sum(s006)*1e-6,3) from dump where MARS=2;
+59.183
+sqlite> select MARS,round(sum(s006)*1e-6,3) from dump group by MARS;
+1|82.417
+2|59.183
+3|2.455
+4|23.516
+sqlite> .quit
+$
+</pre>
+</p>
+
+<p>Second, we provide a simple example of using <kbd>sqlite3</kbd>
+with SQL commands stored in a text file.  This approach is useful
+if you want to tabulate many different output files in the same way.
+In this second example assumes that the first example has already
+been done.  Note that on Windows you should replace <kbd>cat</kbd>
+with <kbd>type</kbd>.
+</p>
+<pre>
+$ cat tab.sql
+-- tabulate weight of those with negative marginal income tax rates
+select "weighted count of those with negative MTR",
+        round(sum(s006)*1e-6,3)
+from dump
+where mtr_inctax < 0;
+
+-- construct marginal income tax rate histogram with bin width 10
+select "bin number|weighted count|average MTR in bin";
+select round((mtr_inctax-5)/10) as mtr_bin, -- histogram bin number
+       round(sum(s006)*1e-6,3), -- weight of those in bin (m#)
+       -- weighted average marginal income tax rate on taxpayer earnings in bin:
+       round(sum(mtr_inctax*s006)/sum(s006),2)
+from dump
+where mtr_inctax >= 0  -- include only those with positive MTR
+group by mtr_bin
+order by mtr_bin;
+
+-- tabulate weight of all filing units
+select "weighted count of all filing units",
+        round(sum(s006)*1e-6,3)
+from dump;
+
+$ cat tab.sql | sqlite3 puf-16-#-#.db
+weighted count of those with negative MTR|19.424
+bin number|weighted count|average MTR in bin
+-1.0|37.752|0.0
+0.0|2.458|6.99
+1.0|54.549|14.15
+2.0|37.325|25.54
+3.0|14.402|32.6
+4.0|1.408|42.18
+5.0|0.22|54.72
+6.0|0.024|62.32
+7.0|0.005|76.53
+8.0|0.002|87.66
+weighted count of all filing units|167.571
+</pre>
+The <kbd>cat</kbd> command writes the contents of
+the <kbd>tab.sql</kbd> file to stdout.  We do nothing but that in the
+first command in order to show you the file contents.  The second
+command pipes the contents of the <kbd>tab.sql</kbd> file into
+the <kbd>sqlite3</kbd> tool, which executes the SQL statements and
+writes the tabulation results to stdout.  (If you're wondering about
+the validity of those high marginal tax rates, rest assured that all
+nine filing units with marginal income tax rates greater than seventy
+percent have been checked by hand and are valid: six of the nine are
+caught in the rapid phase-out of non-refundable education credits and
+the other three have non-refundable foreign tax credits.  The negative
+marginal tax rates are caused by refundable credits, primarily the
+earned income credit.)</p>
+
+<p>If you want to use the <kbd>sqlite3</kbd> tool to tabulate the
+changes caused by a reform, use the tc CLI to generate two database
+dump files (one for current-law policy and the other for your reform)
+and then use the SQLite3 ATTACH command to make both database files
+available in your SQLite tabulation session.</p>
 
 
 <h3 id="cli-taxbrain-upload">Upload Files to TaxBrain</h3>
