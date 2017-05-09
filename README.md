@@ -44,11 +44,10 @@ providing details on what you think should be added to Tax-Calculator.
 If you want to **propose code changes**, follow the directions in the
 [Contributor
 Guide](http://taxcalc.readthedocs.io/en/latest/contributor_guide.html)
-on how to clone the Tax-Calculator git repository.
-
-Before developing any code changes be sure to read completely the
-Contributor Guide and then read about our [coding style](CODING.md)
-and [testing procedures](TESTING.md).
+on how to clone the Tax-Calculator git repository.  Before developing
+any code changes be sure to read completely the Contributor Guide and
+then read about our [coding style](CODING.md) and [testing
+procedures](TESTING.md).
 
 Citing Tax-Calculator
 ---------------------
