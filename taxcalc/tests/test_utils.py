@@ -627,7 +627,7 @@ def test_write_graph_file(records_2009):
     htmlfname = temporary_filename(suffix='.html')
     try:
         write_graph_file(gplot, htmlfname, 'title')
-    except:  # pylint: disable=bare-except
+    except:
         if os.path.isfile(htmlfname):
             try:
                 os.remove(htmlfname)

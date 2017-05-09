@@ -263,7 +263,6 @@ class Behavior(ParametersBase):
         """
         Check that behavioral-response elasticities have valid values.
         """
-        # pylint: disable=too-many-branches
         msg = '{} elasticity cannot be {} in year {}; value is {}'
         pos = 'positive'
         neg = 'negative'
