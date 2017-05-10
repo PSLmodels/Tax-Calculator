@@ -268,7 +268,7 @@ def test_weighted_share_of_total():
 EPSILON = 1e-5
 
 
-@pytest.mark.skipif(sys.version_info == (3,4),
+@pytest.mark.skipif(sys.version_info == (3, 4),
                     reason="name is string (not interval) in Python 3.4")
 def test_add_income_bins():
     dta = np.arange(1, 1e6, 5000)
@@ -291,7 +291,7 @@ def test_add_income_bins():
         idx += 1
 
 
-@pytest.mark.skipif(sys.version_info == (3,4),
+@pytest.mark.skipif(sys.version_info == (3, 4),
                     reason="name is string (not interval) in Python 3.4")
 def test_add_income_bins_soi():
     dta = np.arange(1, 1e6, 5000)
@@ -315,7 +315,7 @@ def test_add_income_bins_soi():
         idx += 1
 
 
-@pytest.mark.skipif(sys.version_info == (3,4),
+@pytest.mark.skipif(sys.version_info == (3, 4),
                     reason="name is string (not interval) in Python 3.4")
 def test_add_income_bins_specify_bins():
     dta = np.arange(1, 1e6, 5000)
