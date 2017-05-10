@@ -267,23 +267,28 @@ def test_weighted_share_of_total():
     assert_series_equal(exp, diffs)
 
 
+EPSILON = 1e-2
+
+
 def test_add_income_bins():
     data = np.arange(1, 1e6, 5000)
     df = DataFrame(data=data, columns=['expanded_income'])
     bins = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
             200000, 1e14]
-    df = add_income_bins(df, compare_with='tpc', bins=None)
-    grpd = df.groupby('bins')
-    grps = [grp for grp in grpd]
-    for g, num in zip(grps, bins[1:-1]):
-        range = '{}'.format(g[0])
-        assert range.endswith(str(num) + '.0]')
-    grpdl = add_income_bins(df, compare_with='tpc', bins=None, right=False)
-    grpdl = grpdl.groupby('bins')
-    grps = [grp for grp in grpdl]
-    for g, num in zip(grps, bins[1:-1]):
-        range = '{}'.format(g[0])
-        assert range.endswith(str(num) + '.0)')
+    dfr = add_income_bins(df, compare_with='tpc', bins=None)
+    groupedr = dfr.groupby('bins')
+    idx = 1
+    for name, group in groupedr:
+        assert name.closed == 'right'
+        assert abs(name.right - bins[idx]) < EPSILON
+        idx += 1
+    dfl = add_income_bins(df, compare_with='tpc', bins=None, right=False)
+    groupedl = dfl.groupby('bins')
+    idx = 1
+    for name, group in groupedl:
+        assert name.closed == 'left'
+        assert abs(name.right - bins[idx]) < EPSILON
+        idx += 1
 
 
 def test_add_income_bins_soi():
@@ -292,18 +297,20 @@ def test_add_income_bins_soi():
     bins = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
             49999, 74999, 99999, 199999, 499999, 999999, 1499999,
             1999999, 4999999, 9999999, 1e14]
-    df = add_income_bins(df, compare_with='soi', bins=None)
-    grpd = df.groupby('bins')
-    grps = [grp for grp in grpd]
-    for g, num in zip(grps, bins[1:-1]):
-        range = '{}'.format(g[0])
-        assert range.endswith(str(num) + '.0]')
-    grpdl = add_income_bins(df, compare_with='soi', bins=None, right=False)
-    grpdl = grpdl.groupby('bins')
-    grps = [grp for grp in grpdl]
-    for g, num in zip(grps, bins[1:-1]):
-        range = '{}'.format(g[0])
-        assert range.endswith(str(num) + '.0)')
+    dfr = add_income_bins(df, compare_with='soi', bins=None)
+    groupedr = dfr.groupby('bins')
+    idx = 1
+    for name, group in groupedr:
+        assert name.closed == 'right'
+        assert abs(name.right - bins[idx]) < EPSILON
+        idx += 1
+    dfl = add_income_bins(df, compare_with='soi', bins=None, right=False)
+    groupedl = dfl.groupby('bins')
+    idx = 1
+    for name, group in groupedl:
+        assert name.closed == 'left'
+        assert abs(name.right - bins[idx]) < EPSILON
+        idx += 1
 
 
 def test_add_income_bins_specify_bins():
@@ -311,18 +318,20 @@ def test_add_income_bins_specify_bins():
     df = DataFrame(data=data, columns=['expanded_income'])
     bins = [-1e14, 0, 4999, 9999, 14999, 19999, 29999, 32999, 43999,
             1e14]
-    df = add_income_bins(df, bins=bins)
-    grpd = df.groupby('bins')
-    grps = [grp for grp in grpd]
-    for g, num in zip(grps, bins[1:-1]):
-        range = '{}'.format(g[0])
-        assert range.endswith(str(num) + '.0]')
-    grpdl = add_income_bins(df, bins=bins, right=False)
-    grpdl = grpdl.groupby('bins')
-    grps = [grp for grp in grpdl]
-    for g, num in zip(grps, bins[1:-1]):
-        range = '{}'.format(g[0])
-        assert range.endswith(str(num) + '.0)')
+    dfr = add_income_bins(df, bins=bins)
+    groupedr = dfr.groupby('bins')
+    idx = 1
+    for name, group in groupedr:
+        assert name.closed == 'right'
+        assert abs(name.right - bins[idx]) < EPSILON
+        idx += 1
+    dfl = add_income_bins(df, bins=bins, right=False)
+    groupedl = dfl.groupby('bins')
+    idx = 1
+    for name, group in groupedl:
+        assert name.closed == 'left'
+        assert abs(name.right - bins[idx]) < EPSILON
+        idx += 1
 
 
 def test_add_income_bins_raises():
