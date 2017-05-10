@@ -693,7 +693,7 @@ def ascii_output(csv_filename, ascii_filename):
         def pdf_recid(recid):
             """ Return Pandas DataFrame recid value for specified recid """
             return recid - 1
-        recids = map(pdf_recid, recids)  # pylint: disable=bad-builtin
+        recids = map(pdf_recid, recids)
         pdf = pdf.ix[recids]  # pylint: disable=no-member
     # do transposition
     out = pdf.T.reset_index()  # pylint: disable=no-member
@@ -1378,7 +1378,7 @@ def read_egg_csv(fname, **kwargs):
         path_in_egg = os.path.join('taxcalc', fname)
         vdf = pd.read_csv(resource_stream(Requirement.parse('taxcalc'),
                                           path_in_egg), **kwargs)
-    except:  # pylint: disable=bare-except
+    except:
         raise ValueError('could not read {} data from egg'.format(fname))
     return vdf
 
@@ -1393,7 +1393,7 @@ def read_egg_json(fname):
         pdict = json.loads(resource_stream(Requirement.parse('taxcalc'),
                                            path_in_egg).read().decode('utf-8'),
                            object_pairs_hook=OrderedDict)
-    except:  # pylint: disable=bare-except
+    except:
         raise ValueError('could not read {} data from egg'.format(fname))
     return pdict
 

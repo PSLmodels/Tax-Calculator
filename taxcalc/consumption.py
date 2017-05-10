@@ -82,7 +82,6 @@ class Consumption(ParametersBase):
         Return true if any MPC parameters are positive for current_year;
         return false if all MPC parameters are zero.
         """
-        # pylint: disable=no-member
         for var in Consumption.RESPONSE_VARS:
             if getattr(self, 'MPC_{}'.format(var)) > 0.0:
                 return True
@@ -94,7 +93,6 @@ class Consumption(ParametersBase):
         """
         if not isinstance(records, Records):
             raise ValueError('records is not a Records object')
-        # pylint: disable=no-member
         for var in Consumption.RESPONSE_VARS:
             records_var = getattr(records, var)
             mpc_var = getattr(self, 'MPC_{}'.format(var))

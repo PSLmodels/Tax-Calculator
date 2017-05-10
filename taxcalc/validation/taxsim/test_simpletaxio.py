@@ -111,12 +111,14 @@ def test_incorrect_creation(filename, exact):
         )
 
 
+# for fixture args, pylint: disable=redefined-outer-name
+
+
 @pytest.mark.parametrize("reform", ['badname.json', list()])
 def test_invalid_creation_w_file(input_file, reform):
     """
     Test incorrect SimpleTaxIO instantiation with input_file
     """
-    # for fixture args, pylint: disable=redefined-outer-name
     with pytest.raises(ValueError):
         SimpleTaxIO(
             input_filename=input_file.name,
@@ -127,7 +129,7 @@ def test_invalid_creation_w_file(input_file, reform):
         )
 
 
-def test_1(input_file):  # pylint: disable=redefined-outer-name
+def test_1(input_file):
     """
     Test SimpleTaxIO instantiation with no policy reform.
     """
@@ -141,17 +143,16 @@ def test_1(input_file):  # pylint: disable=redefined-outer-name
     # test extracting of weight and debugging variables
     crecs = simtax.calc.records
     SimpleTaxIO.DVAR_NAMES = ['f2441']
-    # pylint: disable=unused-variable
     ovar = SimpleTaxIO.extract_output(crecs, 0,
                                       exact=True, extract_weight=True)
+    assert ovar
     SimpleTaxIO.DVAR_NAMES = ['badvar']
     with pytest.raises(ValueError):
         ovar = SimpleTaxIO.extract_output(crecs, 0)
     SimpleTaxIO.DVAR_NAMES = []
 
 
-def test_2(input_file,  # pylint: disable=redefined-outer-name
-           reform_file):  # pylint: disable=redefined-outer-name
+def test_2(input_file, reform_file):
     """
     Test SimpleTaxIO instantiation with a policy reform from JSON file.
     """
@@ -163,7 +164,7 @@ def test_2(input_file,  # pylint: disable=redefined-outer-name
     assert simtax.number_input_lines() == NUM_INPUT_LINES
     # check that reform was implemented as specified above in REFORM_CONTENTS
     syr = simtax.start_year()
-    # pylint: disable=protected-access,no-member
+    # pylint: disable=protected-access
     amt_brk1 = simtax.policy._AMT_brk1
     assert amt_brk1[2015 - syr] == 200000
     assert amt_brk1[2016 - syr] > 200000
@@ -186,7 +187,7 @@ def test_2(input_file,  # pylint: disable=redefined-outer-name
     assert amt_em[2022 - syr, 0] > amt_em[2021 - syr, 0]
 
 
-def test_3(input_file):  # pylint: disable=redefined-outer-name
+def test_3(input_file):
     """
     Test SimpleTaxIO calculate method with a policy reform from dictionary.
     """

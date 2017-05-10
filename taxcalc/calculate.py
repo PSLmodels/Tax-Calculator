@@ -5,18 +5,24 @@ Tax-Calculator federal tax Calculator class.
 # pep8 --ignore=E402 calculate.py
 # pylint --disable=locally-disabled calculate.py
 #
-# pylint: disable=wildcard-import,unused-wildcard-import
-# pylint: disable=wildcard-import,missing-docstring,invalid-name
-# pylint: disable=too-many-arguments,too-many-branches,too-many-locals
-# pylint: disable=no-value-for-parameter
+# pylint: disable=invalid-name,no-value-for-parameter
 
 import os
 import json
 import re
 import copy
+import six
 import numpy as np
-from taxcalc.utils import *
-from taxcalc.functions import *
+from taxcalc.functions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
+                               NetInvIncTax, AMT, EI_PayrollTax, Adj,
+                               DependentCare, ALD_InvInc_ec_base, CapGains,
+                               SSBenefits, UBI, AGI, ItemDed, StdDed,
+                               AdditionalMedicareTax, F2441, EITC, SchR,
+                               ChildTaxCredit, AdditionalCTC, CTC_new,
+                               AmOppCreditParts, EducationTaxCredit,
+                               NonrefundableCredits, C1040, IITAX,
+                               BenefitSurtax, BenefitLimitation,
+                               FairShareTax, LumpSumTax, ExpandIncome)
 from taxcalc.policy import Policy
 from taxcalc.records import Records
 from taxcalc.behavior import Behavior
@@ -83,6 +89,7 @@ class Calculator(object):
 
     def __init__(self, policy=None, records=None, verbose=True,
                  sync_years=True, consumption=None, behavior=None):
+        # pylint: disable=too-many-arguments,too-many-branches
         if isinstance(policy, Policy):
             self.policy = policy
         else:
@@ -128,6 +135,9 @@ class Calculator(object):
         assert self.policy.current_year == self.records.current_year
 
     def TaxInc_to_AMT(self):
+        """
+        Call TaxInc through AMT functions
+        """
         TaxInc(self.policy, self.records)
         SchXYZTax(self.policy, self.records)
         GainsTax(self.policy, self.records)
@@ -136,7 +146,9 @@ class Calculator(object):
         AMT(self.policy, self.records)
 
     def calc_one_year(self, zero_out_calc_vars=False):
-        # calls all the functions except those in calc_all() function
+        """
+        Call all the functions except those in calc_all() function
+        """
         if zero_out_calc_vars:
             self.records.zero_out_changing_calculated_vars()
         # pdb.set_trace()
@@ -195,6 +207,9 @@ class Calculator(object):
         IITAX(self.policy, self.records)
 
     def calc_all(self, zero_out_calc_vars=False):
+        """
+        Call all tax-calculation functions
+        """
         # conducts static analysis of Calculator object for current_year
         self.calc_one_year(zero_out_calc_vars)
         BenefitSurtax(self)
@@ -204,6 +219,9 @@ class Calculator(object):
         ExpandIncome(self.policy, self.records)
 
     def increment_year(self):
+        """
+        Advance all objects to next year
+        """
         next_year = self.policy.current_year + 1
         self.records.increment_year()
         self.policy.set_year(next_year)
@@ -211,11 +229,11 @@ class Calculator(object):
         self.behavior.set_year(next_year)
 
     def advance_to_year(self, year):
-        '''
+        """
         The advance_to_year function gives an optional way of implementing
         increment year functionality by immediately specifying the year
         as input. New year must be at least the current year.
-        '''
+        """
         iteration = year - self.records.current_year
         if iteration < 0:
             raise ValueError('New current year must be ' +
@@ -226,6 +244,9 @@ class Calculator(object):
 
     @property
     def current_year(self):
+        """
+        Return policy.current_year
+        """
         return self.policy.current_year
 
     MTR_VALID_VARIABLES = ['e00200p', 'e00200s',
@@ -309,7 +330,7 @@ class Calculator(object):
         'e19800',  Charity cash contributions;
         'e20100',  Charity non-cash contributions.
         """
-        # pylint: disable=too-many-statements
+        # pylint: disable=too-many-locals,too-many-statements,too-many-branches
         # check validity of variable_str parameter
         if variable_str not in Calculator.MTR_VALID_VARIABLES:
             msg = 'mtr variable_str="{}" is not valid'

@@ -59,8 +59,7 @@ class TaxCalcIO(object):
         """
         TaxCalcIO class constructor, which must be followed by init() call.
         """
-        # pylint: disable=too-many-branches
-        # pylint: disable=too-many-statements
+        # pylint: disable=too-many-branches,too-many-statements
         self.errmsg = ''
         # check name and existence of INPUT file
         inp = 'x'
@@ -595,8 +594,7 @@ class TaxCalcIO(object):
         -------
         Nothing
         """
-        # pylint: disable=too-many-arguments
-        # pylint: disable=too-many-locals
+        # pylint: disable=too-many-arguments,too-many-locals
         progress = 'STARTING ANALYSIS FOR YEAR {}'
         gdiff_dict = {Policy.JSON_START_YEAR: {}}
         for year in range(Policy.JSON_START_YEAR, tax_year + 1):

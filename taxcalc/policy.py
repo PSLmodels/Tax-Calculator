@@ -56,8 +56,6 @@ class Policy(ParametersBase):
         """
         Policy class constructor.
         """
-        # pylint: disable=too-many-arguments
-        # pylint: disable=too-many-branches
         super(Policy, self).__init__()
 
         if not isinstance(gfactors, Growfactors):

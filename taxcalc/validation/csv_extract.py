@@ -12,7 +12,7 @@ import os
 import pandas as pd
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..'))
-# pylint: disable=wrong-import-position,import-error
+# pylint: disable=import-error,wrong-import-position
 from taxcalc import Records
 
 

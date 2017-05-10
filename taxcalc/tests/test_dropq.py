@@ -213,8 +213,7 @@ def test_dropq_diff_table(groupby, res_column, puf_1991_path):
 
 
 @pytest.mark.requires_pufcsv
-def test_with_pufcsv(puf_path):  # pylint: disable=redefined-outer-name
-    # pylint: disable=too-many-locals
+def test_with_pufcsv(puf_path):
     # specify usermods dictionary in code
     start_year = 2016
     reform_year = start_year + 1

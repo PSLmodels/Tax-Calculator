@@ -33,13 +33,12 @@ def puf_path(tests_path):
 
 
 @pytest.mark.requires_pufcsv
-def test_agg(tests_path, puf_path):
+def test_agg(tests_path, puf_path):  # pylint: disable=redefined-outer-name
     """
     Test Tax-Calculator aggregate taxes with no policy reform using
     the full-sample puf.csv and a two-percent sub-sample of puf.csv
     """
     # pylint: disable=too-many-locals,too-many-statements
-    # for fixture args, pylint: disable=redefined-outer-name
     nyrs = 10
     # create a Policy object (clp) containing current-law policy parameters
     clp = Policy()
@@ -155,7 +154,7 @@ def mtr_bin_counts(mtr_data, bin_edges, recid):
 
 
 @pytest.mark.requires_pufcsv
-def test_mtr(tests_path, puf_path):
+def test_mtr(tests_path, puf_path):  # pylint: disable=redefined-outer-name
     """
     Test Tax-Calculator marginal tax rates with no policy reform using puf.csv
 
@@ -164,7 +163,6 @@ def test_mtr(tests_path, puf_path):
     which is then compared for differences with EXPECTED_MTR_RESULTS.
     """
     # pylint: disable=too-many-locals,too-many-statements
-    # for fixture args, pylint: disable=redefined-outer-name
     assert len(PTAX_MTR_BIN_EDGES) == len(ITAX_MTR_BIN_EDGES)
     # construct actual results string, res
     res = ''
@@ -178,7 +176,7 @@ def test_mtr(tests_path, puf_path):
     clp.set_year(MTR_TAX_YEAR)
     # create a Records object (puf) containing puf.csv input records
     puf = Records(data=puf_path)
-    recid = puf.RECID  # pylint: disable=no-member
+    recid = puf.RECID
     # create a Calculator object using clp policy and puf records
     calc = Calculator(policy=clp, records=puf)
     res += '{} = {}\n'.format('Total number of data records', puf.dim)
