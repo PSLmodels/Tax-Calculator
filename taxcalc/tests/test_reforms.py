@@ -8,8 +8,7 @@ Test example JSON policy reform files in taxcalc/reforms directory
 import os
 import glob
 import pytest
-# pylint: disable=import-error
-from taxcalc import Calculator, Policy
+from taxcalc import Calculator, Policy  # pylint: disable=import-error
 
 
 @pytest.fixture(scope='session')

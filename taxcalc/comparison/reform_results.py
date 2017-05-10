@@ -13,13 +13,13 @@ USAGE: python reform_results.py
 # pep8 --ignore=E402 reform_results.py
 # pylint --disable=locally-disabled reform_results.py
 
-import json
-import pandas as pd
 import os
 import sys
+import json
+import pandas as pd
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, "..", ".."))
-# pylint: disable=import-error
+# pylint: disable=import-error,wrong-import-position
 from taxcalc import Policy, Records, Calculator, Behavior
 PUF_PATH = os.path.join(CUR_PATH, "..", "..", "puf.csv")
 PUF_DATA = pd.read_csv(PUF_PATH)

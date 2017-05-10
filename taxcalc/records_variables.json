@@ -403,17 +403,17 @@
     },
     "nu18": {
       "type": "int",
-      "desc": "Number of people under 18 years old in the tax unit",
+      "desc": "Number of people under 18 years old in the filing unit",
       "form": {"2013-2016": "imputed from CPS data"}
     },
     "n1821": {
       "type": "int",
-      "desc": "Number of people over 18 and under 21 years old in the tax unit",
+      "desc": "Number of people over 18 and under 21 years old in the filing unit",
       "form": {"2013-2016": "imputed from CPS data"}
     },
     "n21": {
       "type": "int",
-      "desc": "Number of people 21 years old or older in the tax unit",
+      "desc": "Number of people 21 years old or older in the filing unit",
       "form": {"2013-2016": "imputed from CPS data"}
     },
     "p08000": {

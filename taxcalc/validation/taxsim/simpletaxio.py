@@ -12,7 +12,7 @@ import six
 import pandas as pd
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..', '..', '..'))
-# pylint: disable=wrong-import-position,import-error
+# pylint: disable=import-error,wrong-import-position
 from taxcalc import Policy, Records, Calculator
 
 
@@ -67,7 +67,6 @@ class SimpleTaxIO(object):
         SimpleTaxIO class constructor.
         """
         # pylint: disable=too-many-arguments
-        # pylint: disable=too-many-branches
         # check that input_filename is a string
         if not isinstance(input_filename, six.string_types):
             msg = 'SimpleTaxIO.ctor input_filename is not a string'
@@ -157,7 +156,7 @@ class SimpleTaxIO(object):
             self.calc.calc_all()
             (mtr_ptax, mtr_itax,
              _) = self.calc.mtr(wrt_full_compensation=False)
-            cr_taxyr = self.calc.records.FLPDYR  # pylint: disable=no-member
+            cr_taxyr = self.calc.records.FLPDYR
             for idx in range(0, self.calc.records.dim):
                 indyr = cr_taxyr[idx]
                 if indyr == calcyr:

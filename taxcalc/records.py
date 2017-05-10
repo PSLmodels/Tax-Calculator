@@ -240,9 +240,7 @@ class Records(object):
         """
         Applies to variables the grow factors for specified calendar year.
         """
-        # pylint: disable=too-many-statements
-        # pylint: disable=too-many-locals
-        # pylint: disable=unsubscriptable-object
+        # pylint: disable=too-many-locals,too-many-statements
         AWAGE = self.gfactors.factor_value('AWAGE', year)
         AINTS = self.gfactors.factor_value('AINTS', year)
         ADIVS = self.gfactors.factor_value('ADIVS', year)

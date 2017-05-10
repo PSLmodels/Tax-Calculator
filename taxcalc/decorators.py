@@ -30,7 +30,7 @@ def id_wrapper(*dec_args, **dec_kwargs):  # pylint: disable=unused-argument
 
 
 try:
-    import numba  # pylint: disable=wrong-import-order,wrong-import-position
+    import numba
     jit = numba.jit  # pylint: disable=invalid-name
     DO_JIT = True
 except (ImportError, AttributeError):

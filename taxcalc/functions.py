@@ -658,7 +658,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
     the special taxation of long-term capital gains and qualified dividends
     if CG_nodiff is false
     """
-    # pylint: disable=too-many-statements,too-many-branches
+    # pylint: disable=too-many-statements
     if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
         hasqdivltcg = 1  # has qualified dividends or long-term capital gains
     else:
@@ -939,20 +939,21 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
                 # enforce age eligibility rule for those with no EITC-eligible
                 # kids assuming that an unknown age_* value implies EITC age
                 # eligibility
-                # pylint: disable=bad-continuation,too-many-boolean-expressions
+                # pylint: disable=too-many-boolean-expressions
                 if MARS == 2:
-                    if (age_head == 0 or age_spouse == 0 or
-                        (age_head >= EITC_MinEligAge and
-                         age_head <= EITC_MaxEligAge) or
-                        (age_spouse >= EITC_MinEligAge and
-                         age_spouse <= EITC_MaxEligAge)):
+                    if (age_head == 0 or
+                            age_spouse == 0 or
+                            (age_head >= EITC_MinEligAge and
+                             age_head <= EITC_MaxEligAge) or
+                            (age_spouse >= EITC_MinEligAge and
+                             age_spouse <= EITC_MaxEligAge)):
                         c59660 = eitc
                     else:
                         c59660 = 0.
                 else:  # if MARS != 2
                     if (age_head == 0 or
-                        (age_head >= EITC_MinEligAge and
-                         age_head <= EITC_MaxEligAge)):
+                            (age_head >= EITC_MinEligAge and
+                             age_head <= EITC_MaxEligAge)):
                         c59660 = eitc
                     else:
                         c59660 = 0.
