@@ -1,16 +1,15 @@
 import os
-import sys
 import math
 import filecmp
 import tempfile
 import numpy as np
+from numpy.testing import assert_equal, assert_almost_equal, assert_array_equal
 import pandas as pd
-import pytest
-import numpy.testing as npt
-from pandas import DataFrame, Series
 from pandas.util.testing import assert_series_equal
+import pytest
 from taxcalc import Policy, Records, Behavior, Calculator
 from taxcalc.utils import *
+
 
 data = [[1.0, 2, 'a'],
         [-1.0, 4, 'a'],
@@ -42,18 +41,16 @@ def test_expand_1D_short_array():
     exp[3:] = exp2
     res = Policy.expand_1D(x, inflate=True, inflation_rates=[0.02] * 10,
                            num_years=10)
-    npt.assert_allclose(exp, res, atol=0.0, rtol=1.0E-7)
+    assert np.allclose(exp, res, atol=0.0, rtol=1.0E-7)
 
 
 def test_expand_1D_variable_rates():
     x = np.array([4, 5, 9], dtype='f4')
     irates = [0.02, 0.02, 0.03, 0.035]
-    exp2 = []
-    cur = 9.0
     exp = np.array([4, 5, 9, 9 * 1.03, 9 * 1.03 * 1.035])
     res = Policy.expand_1D(x, inflate=True, inflation_rates=irates,
                            num_years=5)
-    npt.assert_allclose(exp.astype('f4', casting='unsafe'), res)
+    assert np.allclose(exp.astype('f4', casting='unsafe'), res)
 
 
 def test_expand_1D_scalar():
@@ -61,7 +58,7 @@ def test_expand_1D_scalar():
     exp = np.array([10.0 * math.pow(1.02, i) for i in range(0, 10)])
     res = Policy.expand_1D(x, inflate=True, inflation_rates=[0.02] * 10,
                            num_years=10)
-    npt.assert_allclose(exp, res)
+    assert np.allclose(exp, res)
 
 
 def test_expand_1D_accept_None():
@@ -77,7 +74,7 @@ def test_expand_1D_accept_None():
     exp = np.array(exp)
     res = Policy.expand_array(x, inflate=True, inflation_rates=irates,
                               num_years=5)
-    npt.assert_allclose(exp.astype('f4', casting='unsafe'), res)
+    assert np.allclose(exp.astype('f4', casting='unsafe'), res)
 
 
 def test_expand_2D_short_array():
@@ -90,7 +87,7 @@ def test_expand_2D_short_array():
     exp[1:] = exp2
     res = Policy.expand_2D(x, inflate=True, inflation_rates=[0.02] * 5,
                            num_years=5)
-    npt.assert_allclose(exp, res)
+    assert np.allclose(exp, res)
 
 
 def test_expand_2D_variable_rates():
@@ -109,7 +106,7 @@ def test_expand_2D_variable_rates():
     exp[1:] = exp2
     res = Policy.expand_2D(x, inflate=True, inflation_rates=irates,
                            num_years=5)
-    npt.assert_allclose(exp, res)
+    assert np.allclose(exp, res)
 
 
 def test_validity_of_name_lists():
@@ -136,153 +133,153 @@ def test_create_tables(puf_1991, weights_1991):
     dt2 = create_difference_table(calc1.records, calc2.records,
                                   groupby='webapp_income_bins')
     with pytest.raises(ValueError):
-        dt = create_difference_table(calc1.records, calc2.records,
-                                     groupby='bad_bins')
+        create_difference_table(calc1.records, calc2.records,
+                                groupby='bad_bins')
     with pytest.raises(ValueError):
-        dt = create_distribution_table(calc2.records,
-                                       groupby='small_income_bins',
-                                       result_type='bad_result_type')
+        create_distribution_table(calc2.records,
+                                  groupby='small_income_bins',
+                                  result_type='bad_result_type')
     with pytest.raises(ValueError):
-        dt = create_distribution_table(calc2.records,
-                                       groupby='bad_bins',
-                                       result_type='weighted_sum')
+        create_distribution_table(calc2.records,
+                                  groupby='bad_bins',
+                                  result_type='weighted_sum')
     dt3 = create_distribution_table(calc2.records,
                                     groupby='small_income_bins',
                                     result_type='weighted_sum',
                                     baseline_obj=calc1.records, diffs=True)
     calc1.increment_year()
     with pytest.raises(ValueError):
-        dt = create_difference_table(calc1.records, calc2.records,
-                                     groupby='large_income_bins')
+        create_difference_table(calc1.records, calc2.records,
+                                groupby='large_income_bins')
     with pytest.raises(ValueError):
-        dt = create_distribution_table(calc2.records,
-                                       groupby='small_income_bins',
-                                       result_type='weighted_sum',
-                                       baseline_obj=calc1.records, diffs=True)
+        create_distribution_table(calc2.records,
+                                  groupby='small_income_bins',
+                                  result_type='weighted_sum',
+                                  baseline_obj=calc1.records, diffs=True)
 
 
 def test_weighted_count_lt_zero():
     assert count_lt_zero([0.0, 1, -1, 0, -2.2, 1.1]) == 2
-    df1 = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    df1 = pd.DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df1.groupby('label')
     diffs = grped.apply(weighted_count_lt_zero, 'tax_diff')
-    exp = Series(data=[4, 0], index=['a', 'b'])
+    exp = pd.Series(data=[4, 0], index=['a', 'b'])
     exp.index.name = 'label'
     assert_series_equal(exp, diffs)
-    df2 = DataFrame(data=data_float, columns=['tax_diff', 's006', 'label'])
+    df2 = pd.DataFrame(data=data_float, columns=['tax_diff', 's006', 'label'])
     grped = df2.groupby('label')
     diffs = grped.apply(weighted_count_lt_zero, 'tax_diff')
-    exp = Series(data=[4, 0], index=['a', 'b'])
+    exp = pd.Series(data=[4, 0], index=['a', 'b'])
     exp.index.name = 'label'
     assert_series_equal(exp, diffs)
 
 
 def test_weighted_count_gt_zero():
     assert count_gt_zero([0.0, 1, -1, 0, -2.2, 1.1]) == 2
-    df1 = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    df1 = pd.DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df1.groupby('label')
     diffs = grped.apply(weighted_count_gt_zero, 'tax_diff')
-    exp = Series(data=[8, 10], index=['a', 'b'])
+    exp = pd.Series(data=[8, 10], index=['a', 'b'])
     exp.index.name = 'label'
     assert_series_equal(exp, diffs)
-    df2 = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    df2 = pd.DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df2.groupby('label')
     diffs = grped.apply(weighted_count_gt_zero, 'tax_diff')
-    exp = Series(data=[8, 10], index=['a', 'b'])
+    exp = pd.Series(data=[8, 10], index=['a', 'b'])
     exp.index.name = 'label'
     assert_series_equal(exp, diffs)
 
 
 def test_weighted_count():
-    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    df = pd.DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
     diffs = grped.apply(weighted_count)
-    exp = Series(data=[12, 10], index=['a', 'b'])
+    exp = pd.Series(data=[12, 10], index=['a', 'b'])
     exp.index.name = 'label'
     assert_series_equal(exp, diffs)
 
 
 def test_weighted_mean():
-    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    df = pd.DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
     diffs = grped.apply(weighted_mean, 'tax_diff')
-    exp = Series(data=[16.0 / 12.0, 26.0 / 10.0], index=['a', 'b'])
+    exp = pd.Series(data=[16.0 / 12.0, 26.0 / 10.0], index=['a', 'b'])
     exp.index.name = 'label'
     assert_series_equal(exp, diffs)
 
 
 def test_wage_weighted():
-    df = DataFrame(data=weight_data, columns=['var', 's006', 'e00200'])
+    df = pd.DataFrame(data=weight_data, columns=['var', 's006', 'e00200'])
     wvar = wage_weighted(df, 'var')
     assert round(wvar, 4) == 2.5714
 
 
 def test_agi_weighted():
-    df = DataFrame(data=weight_data, columns=['var', 's006', 'c00100'])
+    df = pd.DataFrame(data=weight_data, columns=['var', 's006', 'c00100'])
     wvar = agi_weighted(df, 'var')
     assert round(wvar, 4) == 2.5714
 
 
 def test_expanded_income_weighted():
-    df = DataFrame(data=weight_data,
-                   columns=['var', 's006', 'expanded_income'])
+    df = pd.DataFrame(data=weight_data,
+                      columns=['var', 's006', 'expanded_income'])
     wvar = expanded_income_weighted(df, 'var')
     assert round(wvar, 4) == 2.5714
 
 
 def test_weighted_sum():
-    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    df = pd.DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
     diffs = grped.apply(weighted_sum, 'tax_diff')
-    exp = Series(data=[16.0, 26.0], index=['a', 'b'])
+    exp = pd.Series(data=[16.0, 26.0], index=['a', 'b'])
     exp.index.name = 'label'
     assert_series_equal(exp, diffs)
 
 
 def test_weighted_perc_inc():
-    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    df = pd.DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
     diffs = grped.apply(weighted_perc_inc, 'tax_diff')
-    exp = Series(data=[8. / 12., 1.0], index=['a', 'b'])
+    exp = pd.Series(data=[8. / 12., 1.0], index=['a', 'b'])
     exp.index.name = 'label'
     assert_series_equal(exp, diffs)
 
 
 def test_weighted_perc_dec():
-    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    df = pd.DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
     diffs = grped.apply(weighted_perc_dec, 'tax_diff')
-    exp = Series(data=[4. / 12., 0.0], index=['a', 'b'])
+    exp = pd.Series(data=[4. / 12., 0.0], index=['a', 'b'])
     exp.index.name = 'label'
     assert_series_equal(exp, diffs)
 
 
 def test_weighted_share_of_total():
-    df = DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
+    df = pd.DataFrame(data=data, columns=['tax_diff', 's006', 'label'])
     grped = df.groupby('label')
     diffs = grped.apply(weighted_share_of_total, 'tax_diff', 42.0)
-    exp = Series(data=[16.0 / (42. + EPSILON), 26.0 / (42.0 + EPSILON)],
-                 index=['a', 'b'])
+    exp = pd.Series(data=[16.0 / 42.001, 26.0 / 42.001],
+                    index=['a', 'b'])
     exp.index.name = 'label'
-    assert_series_equal(exp, diffs)
+    assert np.allclose(exp, diffs, rtol=0.0, atol=0.001)
 
 
-EPSILON = 1e-2
+EPSILON = 1e-5
 
 
 def test_add_income_bins():
-    data = np.arange(1, 1e6, 5000)
-    df = DataFrame(data=data, columns=['expanded_income'])
+    dta = np.arange(1, 1e6, 5000)
+    dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
     bins = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
             200000, 1e14]
-    dfr = add_income_bins(df, compare_with='tpc', bins=None)
+    dfr = add_income_bins(dfx, compare_with='tpc', bins=None)
     groupedr = dfr.groupby('bins')
     idx = 1
     for name, group in groupedr:
         assert name.closed == 'right'
         assert abs(name.right - bins[idx]) < EPSILON
         idx += 1
-    dfl = add_income_bins(df, compare_with='tpc', bins=None, right=False)
+    dfl = add_income_bins(dfx, compare_with='tpc', bins=None, right=False)
     groupedl = dfl.groupby('bins')
     idx = 1
     for name, group in groupedl:
@@ -292,19 +289,19 @@ def test_add_income_bins():
 
 
 def test_add_income_bins_soi():
-    data = np.arange(1, 1e6, 5000)
-    df = DataFrame(data=data, columns=['expanded_income'])
+    dta = np.arange(1, 1e6, 5000)
+    dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
     bins = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
             49999, 74999, 99999, 199999, 499999, 999999, 1499999,
             1999999, 4999999, 9999999, 1e14]
-    dfr = add_income_bins(df, compare_with='soi', bins=None)
+    dfr = add_income_bins(dfx, compare_with='soi', bins=None)
     groupedr = dfr.groupby('bins')
     idx = 1
     for name, group in groupedr:
         assert name.closed == 'right'
         assert abs(name.right - bins[idx]) < EPSILON
         idx += 1
-    dfl = add_income_bins(df, compare_with='soi', bins=None, right=False)
+    dfl = add_income_bins(dfx, compare_with='soi', bins=None, right=False)
     groupedl = dfl.groupby('bins')
     idx = 1
     for name, group in groupedl:
@@ -314,18 +311,17 @@ def test_add_income_bins_soi():
 
 
 def test_add_income_bins_specify_bins():
-    data = np.arange(1, 1e6, 5000)
-    df = DataFrame(data=data, columns=['expanded_income'])
-    bins = [-1e14, 0, 4999, 9999, 14999, 19999, 29999, 32999, 43999,
-            1e14]
-    dfr = add_income_bins(df, bins=bins)
+    dta = np.arange(1, 1e6, 5000)
+    dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
+    bins = [-1e14, 0, 4999, 9999, 14999, 19999, 29999, 32999, 43999, 1e14]
+    dfr = add_income_bins(dfx, bins=bins)
     groupedr = dfr.groupby('bins')
     idx = 1
     for name, group in groupedr:
         assert name.closed == 'right'
         assert abs(name.right - bins[idx]) < EPSILON
         idx += 1
-    dfl = add_income_bins(df, bins=bins, right=False)
+    dfl = add_income_bins(dfx, bins=bins, right=False)
     groupedl = dfl.groupby('bins')
     idx = 1
     for name, group in groupedl:
@@ -335,14 +331,14 @@ def test_add_income_bins_specify_bins():
 
 
 def test_add_income_bins_raises():
-    data = np.arange(1, 1e6, 5000)
-    df = DataFrame(data=data, columns=['expanded_income'])
+    dta = np.arange(1, 1e6, 5000)
+    dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
     with pytest.raises(ValueError):
-        df = add_income_bins(df, compare_with='stuff')
+        dfx = add_income_bins(dfx, compare_with='stuff')
 
 
 def test_add_weighted_income_bins():
-    df = DataFrame(data=data, columns=['expanded_income', 's006', 'label'])
+    df = pd.DataFrame(data=data, columns=['expanded_income', 's006', 'label'])
     df = add_weighted_income_bins(df, num_bins=100)
     bin_labels = df['bins'].unique()
     default_labels = set(range(1, 101))
@@ -363,13 +359,14 @@ def test_add_columns():
     cols = [[1000, 40, -10, 0, 10],
             [100, 8, 9, 100, 20],
             [-1000, 38, 90, 800, 30]]
-    df = DataFrame(data=cols,
-                   columns=['c00100', 'c04470', 'standard', 'c09600', 's006'])
+    df = pd.DataFrame(data=cols,
+                      columns=['c00100', 'c04470', 'standard',
+                               'c09600', 's006'])
     add_columns(df)
-    npt.assert_array_equal(df.c04470, np.array([40, 0, 0]))
-    npt.assert_array_equal(df.num_returns_ItemDed, np.array([10, 0, 0]))
-    npt.assert_array_equal(df.num_returns_StandardDed, np.array([0, 20, 0]))
-    npt.assert_array_equal(df.num_returns_AMT, np.array([0, 20, 30]))
+    assert_equal(df.c04470, np.array([40, 0, 0]))
+    assert_equal(df.num_returns_ItemDed, np.array([10, 0, 0]))
+    assert_equal(df.num_returns_StandardDed, np.array([0, 20, 0]))
+    assert_equal(df.num_returns_AMT, np.array([0, 20, 30]))
 
 
 def test_dist_table_sum_row(records_2009):
@@ -384,7 +381,7 @@ def test_dist_table_sum_row(records_2009):
     t2 = create_distribution_table(calc1.records,
                                    groupby='large_income_bins',
                                    result_type='weighted_sum')
-    npt.assert_allclose(t1[-1:], t2[-1:])
+    assert np.allclose(t1[-1:], t2[-1:])
     t3 = create_distribution_table(calc1.records,
                                    groupby='small_income_bins',
                                    result_type='weighted_avg')
@@ -411,9 +408,9 @@ def test_diff_table_sum_row(puf_1991, weights_1991):
     non_digit_cols = ['mean', 'perc_inc', 'perc_cut', 'share_of_change']
     digit_cols = [x for x in tdiff1.columns.tolist() if
                   x not in non_digit_cols]
-    npt.assert_allclose(tdiff1[digit_cols][-1:], tdiff2[digit_cols][-1:])
-    assert np.array_equal(tdiff1[non_digit_cols][-1:],
-                          tdiff2[non_digit_cols][-1:])
+    assert np.allclose(tdiff1[digit_cols][-1:], tdiff2[digit_cols][-1:])
+    assert_array_equal(tdiff1[non_digit_cols][-1:],
+                       tdiff2[non_digit_cols][-1:])
 
 
 def test_row_classifier(puf_1991, weights_1991):
@@ -437,7 +434,7 @@ def test_row_classifier(puf_1991, weights_1991):
                                            result_type='weighted_sum',
                                            baseline_obj=calc1.records).s006
     # use weighted sum of weights in each cell to check classifer
-    npt.assert_array_equal(calc1_s006, calc2_s006)
+    assert_array_equal(calc1_s006, calc2_s006)
 
 
 def test_expand_2D_already_filled():
@@ -446,7 +443,7 @@ def test_expand_2D_already_filled():
                 [40000, 74900, 37450, 50200, 74900, 37450]]
     res = Policy.expand_2D(_II_brk2, inflate=True, inflation_rates=[0.02] * 5,
                            num_years=3)
-    npt.assert_array_equal(res, np.array(_II_brk2))
+    assert_equal(res, np.array(_II_brk2))
 
 
 def test_expand_2D_partial_expand():
@@ -469,7 +466,7 @@ def test_expand_2D_partial_expand():
            [exp1, exp2, exp3, exp4, exp5, exp6]]
     res = Policy.expand_2D(_II_brk2, inflate=True, inflation_rates=inf_rates,
                            num_years=4)
-    npt.assert_array_equal(res, exp)
+    assert_equal(res, exp)
 
 
 def test_strip_Nones():
@@ -498,7 +495,7 @@ def test_expand_2D_accept_None():
     res = Policy.expand_array(_II_brk2, inflate=True,
                               inflation_rates=[0.02] * 5,
                               num_years=4)
-    npt.assert_array_equal(res, exp)
+    assert_equal(res, exp)
 
     syr = 2013
     pol = Policy(start_year=syr)
@@ -511,7 +508,7 @@ def test_expand_2D_accept_None():
     exp_2019 = [41000.] + [(1.0 + irates[2018 - syr]) * i
                            for i in _II_brk2[2][1:]]
     exp_2019 = np.array(exp_2019)
-    npt.assert_array_equal(pol.II_brk2, exp_2019)
+    assert_equal(pol.II_brk2, exp_2019)
 
 
 def test_expand_2D_accept_None_additional_row():
@@ -536,7 +533,7 @@ def test_expand_2D_accept_None_additional_row():
     inflation_rates = [0.015, 0.02, 0.02, 0.03]
     res = Policy.expand_array(_II_brk2, inflate=True,
                               inflation_rates=inflation_rates, num_years=5)
-    npt.assert_array_equal(res, exp)
+    assert_equal(res, exp)
 
     user_mods = {2016: {u'_II_brk2': _II_brk2}}
     syr = 2013
@@ -551,7 +548,7 @@ def test_expand_2D_accept_None_additional_row():
                            (1 + irates[2018 - syr]) * i
                            for i in _II_brk2[2][1:]]
     exp_2020 = np.array(exp_2020)
-    npt.assert_allclose(pol.II_brk2, exp_2020)
+    assert np.allclose(pol.II_brk2, exp_2020)
 
 
 def test_mtr_graph_data(records_2009):
@@ -665,11 +662,11 @@ def test_multiyear_diagnostic_table(records_2009):
     with pytest.raises(ValueError):
         adt = multiyear_diagnostic_table(calc, 20)
     adt = multiyear_diagnostic_table(calc, 3)
-    assert isinstance(adt, DataFrame)
+    assert isinstance(adt, pd.DataFrame)
     behv.update_behavior({2013: {'_BE_sub': [0.3]}})
     assert calc.behavior.has_response()
     adt = multiyear_diagnostic_table(calc, 3)
-    assert isinstance(adt, DataFrame)
+    assert isinstance(adt, pd.DataFrame)
 
 
 def test_multiyear_diagnostic_table_wo_behv(records_2009):
@@ -688,7 +685,7 @@ def test_multiyear_diagnostic_table_wo_behv(records_2009):
     # extract combined liabilities as a float and
     # adopt units of the raw calculator data in liabilities_x
     liabilities_y = adt.iloc[19].tolist()[0] * 1000000000
-    npt.assert_almost_equal(liabilities_x, liabilities_y, 2)
+    assert_almost_equal(liabilities_x, liabilities_y, 2)
 
 
 def test_multiyear_diagnostic_table_w_behv(records_2009):
@@ -714,7 +711,7 @@ def test_multiyear_diagnostic_table_w_behv(records_2009):
     # extract combined liabilities as a float and
     # adopt units of the raw calculator data in liabilities_x
     liabilities_y = adt.iloc[19].tolist()[0] * 1000000000
-    npt.assert_almost_equal(liabilities_x, liabilities_y, 2)
+    assert_almost_equal(liabilities_x, liabilities_y, 2)
 
 
 @pytest.yield_fixture
@@ -783,7 +780,6 @@ def test_ce_aftertax_income(puf_1991, weights_1991):
     assert con > round(certainty_equivalent((math.log(con) - 0.1), 1, cmin), 6)
     # test with require_no_agg_tax_change equal to False
     cyr = 2020
-    crra = 1
     # specify calc1 and calc_all() for cyr
     pol1 = Policy()
     rec1 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
@@ -812,12 +808,12 @@ def test_ce_aftertax_income(puf_1991, weights_1991):
 
 def test_read_egg_csv():
     with pytest.raises(ValueError):
-        vdf = read_egg_csv('bad_filename')
+        read_egg_csv('bad_filename')
 
 
 def test_read_egg_json():
     with pytest.raises(ValueError):
-        pdict = read_egg_json('bad_filename')
+        read_egg_json('bad_filename')
 
 
 def test_create_and_delete_temporary_file():
