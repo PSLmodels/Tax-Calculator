@@ -276,12 +276,14 @@ def test_add_income_bins():
     grpd = df.groupby('bins')
     grps = [grp for grp in grpd]
     for g, num in zip(grps, bins[1:-1]):
-        assert g[0].endswith(str(num) + ']')
+        range = '{}'.format(g[0])
+        assert range.endswith(str(num) + '.0]')
     grpdl = add_income_bins(df, compare_with='tpc', bins=None, right=False)
     grpdl = grpdl.groupby('bins')
     grps = [grp for grp in grpdl]
     for g, num in zip(grps, bins[1:-1]):
-        assert g[0].endswith(str(num) + ')')
+        range = '{}'.format(g[0])
+        assert range.endswith(str(num) + '.0)')
 
 
 def test_add_income_bins_soi():
@@ -294,12 +296,14 @@ def test_add_income_bins_soi():
     grpd = df.groupby('bins')
     grps = [grp for grp in grpd]
     for g, num in zip(grps, bins[1:-1]):
-        assert g[0].endswith(str(num) + ']')
+        range = '{}'.format(g[0])
+        assert range.endswith(str(num) + '.0]')
     grpdl = add_income_bins(df, compare_with='soi', bins=None, right=False)
     grpdl = grpdl.groupby('bins')
     grps = [grp for grp in grpdl]
     for g, num in zip(grps, bins[1:-1]):
-        assert g[0].endswith(str(num) + ')')
+        range = '{}'.format(g[0])
+        assert range.endswith(str(num) + '.0)')
 
 
 def test_add_income_bins_specify_bins():
@@ -311,12 +315,14 @@ def test_add_income_bins_specify_bins():
     grpd = df.groupby('bins')
     grps = [grp for grp in grpd]
     for g, num in zip(grps, bins[1:-1]):
-        assert g[0].endswith(str(num) + ']')
+        range = '{}'.format(g[0])
+        assert range.endswith(str(num) + '.0]')
     grpdl = add_income_bins(df, bins=bins, right=False)
     grpdl = grpdl.groupby('bins')
     grps = [grp for grp in grpdl]
     for g, num in zip(grps, bins[1:-1]):
-        assert g[0].endswith(str(num) + ')')
+        range = '{}'.format(g[0])
+        assert range.endswith(str(num) + '.0)')
 
 
 def test_add_income_bins_raises():
