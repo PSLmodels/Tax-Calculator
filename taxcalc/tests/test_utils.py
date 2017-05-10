@@ -1,3 +1,4 @@
+# pylint: disable=missing-docstring,invalid-name
 import os
 import sys
 import math
@@ -8,8 +9,25 @@ from numpy.testing import assert_equal, assert_almost_equal, assert_array_equal
 import pandas as pd
 from pandas.util.testing import assert_series_equal
 import pytest
+# pylint: disable=import-error
 from taxcalc import Policy, Records, Behavior, Calculator
-from taxcalc.utils import *
+from taxcalc.utils import (TABLE_COLUMNS, TABLE_LABELS, STATS_COLUMNS,
+                           create_distribution_table, add_columns,
+                           create_difference_table, delete_file,
+                           count_lt_zero, weighted_count_lt_zero,
+                           count_gt_zero, weighted_count_gt_zero,
+                           weighted_count, weighted_sum, weighted_mean,
+                           wage_weighted, agi_weighted,
+                           expanded_income_weighted, weighted_share_of_total,
+                           weighted_perc_inc, weighted_perc_dec,
+                           add_income_bins, add_weighted_income_bins,
+                           multiyear_diagnostic_table,
+                           mtr_graph_data, atr_graph_data,
+                           xtr_graph_plot, write_graph_file,
+                           temporary_filename, ascii_output, string_to_number,
+                           write_json_to_file, read_json_from_file,
+                           read_egg_csv, read_egg_json,
+                           certainty_equivalent, ce_aftertax_income)
 
 
 data = [[1.0, 2, 'a'],
@@ -131,8 +149,10 @@ def test_create_tables(puf_1991, weights_1991):
     # test creating various distribution tables
     dt1 = create_difference_table(calc1.records, calc2.records,
                                   groupby='large_income_bins')
+    assert isinstance(dt1, pd.DataFrame)
     dt2 = create_difference_table(calc1.records, calc2.records,
                                   groupby='webapp_income_bins')
+    assert isinstance(dt2, pd.DataFrame)
     with pytest.raises(ValueError):
         create_difference_table(calc1.records, calc2.records,
                                 groupby='bad_bins')
@@ -148,6 +168,7 @@ def test_create_tables(puf_1991, weights_1991):
                                     groupby='small_income_bins',
                                     result_type='weighted_sum',
                                     baseline_obj=calc1.records, diffs=True)
+    assert isinstance(dt3, pd.DataFrame)
     calc1.increment_year()
     with pytest.raises(ValueError):
         create_difference_table(calc1.records, calc2.records,
@@ -268,7 +289,9 @@ def test_weighted_share_of_total():
 EPSILON = 1e-5
 
 
-@pytest.mark.skipif(sys.version_info == (3, 4),
+@pytest.mark.one
+@pytest.mark.skipif((sys.version_info.major == 3 and
+                     sys.version_info.minor == 4),
                     reason="name is string (not interval) in Python 3.4")
 def test_add_income_bins():
     dta = np.arange(1, 1e6, 5000)
@@ -291,7 +314,8 @@ def test_add_income_bins():
         idx += 1
 
 
-@pytest.mark.skipif(sys.version_info == (3, 4),
+@pytest.mark.skipif((sys.version_info.major == 3 and
+                     sys.version_info.minor == 4),
                     reason="name is string (not interval) in Python 3.4")
 def test_add_income_bins_soi():
     dta = np.arange(1, 1e6, 5000)
@@ -315,7 +339,8 @@ def test_add_income_bins_soi():
         idx += 1
 
 
-@pytest.mark.skipif(sys.version_info == (3, 4),
+@pytest.mark.skipif((sys.version_info.major == 3 and
+                     sys.version_info.minor == 4),
                     reason="name is string (not interval) in Python 3.4")
 def test_add_income_bins_specify_bins():
     dta = np.arange(1, 1e6, 5000)
@@ -392,6 +417,7 @@ def test_dist_table_sum_row(records_2009):
     t3 = create_distribution_table(calc1.records,
                                    groupby='small_income_bins',
                                    result_type='weighted_avg')
+    assert isinstance(t3, pd.DataFrame)
 
 
 def test_diff_table_sum_row(puf_1991, weights_1991):
@@ -519,6 +545,7 @@ def test_expand_2D_accept_None():
 
 
 def test_expand_2D_accept_None_additional_row():
+    # pylint: disable=too-many-locals
     _II_brk2 = [[36000, 72250, 36500, 48600, 72500],
                 [38000, 74000, 36900, 49400, 73800],
                 [40000, 74900, 37450, 50200, 74900],
@@ -584,7 +611,7 @@ def test_mtr_graph_data(records_2009):
                            mtr_wrt_full_compen=True,
                            income_measure='wages',
                            dollar_weighting=True)
-    assert type(gdata) == dict
+    assert isinstance(gdata, dict)
 
 
 def test_atr_graph_data(records_2009):
@@ -604,7 +631,7 @@ def test_atr_graph_data(records_2009):
     gdata = atr_graph_data(calc, calc, mars=1, atr_measure='combined')
     gdata = atr_graph_data(calc, calc, atr_measure='itax')
     gdata = atr_graph_data(calc, calc, atr_measure='ptax')
-    assert type(gdata) == dict
+    assert isinstance(gdata, dict)
 
 
 def test_xtr_graph_plot(records_2009):
@@ -620,7 +647,7 @@ def test_xtr_graph_plot(records_2009):
                            alt_e00200p_text='Taxpayer Earnings',
                            income_measure='expanded_income',
                            dollar_weighting=False)
-    assert type(gdata) == dict
+    assert isinstance(gdata, dict)
 
 
 def test_xtr_graph_plot_no_bokeh(records_2009):
@@ -631,7 +658,7 @@ def test_xtr_graph_plot_no_bokeh(records_2009):
                       behavior=Behavior())
     gdata = mtr_graph_data(calc, calc)
     with pytest.raises(RuntimeError):
-        gplot = xtr_graph_plot(gdata)
+        xtr_graph_plot(gdata)
     taxcalc.utils.BOKEH_AVAILABLE = True
 
 
@@ -646,7 +673,7 @@ def test_write_graph_file(records_2009):
     htmlfname = temporary_filename(suffix='.html')
     try:
         write_graph_file(gplot, htmlfname, 'title')
-    except:
+    except:  # pylint: disable=bare-except
         if os.path.isfile(htmlfname):
             try:
                 os.remove(htmlfname)
