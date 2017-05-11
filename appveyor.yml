@@ -10,10 +10,10 @@ environment:
 
   matrix:
     # Since appveyor is quite slow, we only use a single configuration
-    - PYTHON: "3.5"
+    - PYTHON: "3.6"
       ARCH: "64"
-      NUMPY: "1.10"
-      PANDAS: "0.18"
+      NUMPY: "1.12"
+      PANDAS: "0.20"
       CONDA_ENV: taxcalc-dev
 
 init:
