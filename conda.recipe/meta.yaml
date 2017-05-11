@@ -9,12 +9,14 @@ build:
 requirements:
   build:
     - python
+    - numpy >=0.12.1
     - pandas >=0.20.1
     - numba
     - toolz
     - six
   run:
     - python
+    - numpy >=0.12.1
     - pandas >=0.20.1
     - numba
     - toolz
