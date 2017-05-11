@@ -8,20 +8,14 @@ build:
 
 requirements:
   build:
-    - pytest
-    - setuptools
     - python
-    - numpy >=1.11.2
-    - pandas >=0.18.0
+    - pandas >=0.20.1
     - numba
     - toolz
     - six
   run:
-    - pytest
-    - setuptools
     - python
-    - numpy >=1.11.2
-    - pandas >=0.18.0
+    - pandas >=0.20.1
     - numba
     - toolz
     - six
