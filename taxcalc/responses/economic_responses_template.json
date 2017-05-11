@@ -1,26 +1,30 @@
-//Parameters for Partial-equilibrium dynamic analysis
-//This json serves as a baseline for the implementation of the economic responses of individuals to tax reforms.
-//More specific details can be found at http://open-source-economics.github.io/Tax-Calculator/#params-growdiff
+//Parameters for economic responses to tax policy
+//This json serves as a baseline for the implementation of the economic responses of individuals and the overall economy to tax reforms.
+//User documentation can be found at http://open-source-economics.github.io/Tax-Calculator/#params
+//More specific definitions and details on implementations can be found in *.json and *.py files.
 //  consumption
 //    Description: The marginal propensity to consume tax-deductible goods.
-//    Source file: taxcalc/consumption.json
+//    Source file: consumption.json
+//    Implemented in Consumption.response()
 //    Applies to:
 //      - e17500, Sch A: Medical and dental expenses
 //      - e18400, Sch A: State and local income/sales taxes
 //      - e19800, Sch A: Gifts to charity: cash/check contributions
 //      - e20400, Sch A: Miscellaneous deductions subject to 2% AGI limitation
 //  behavior
-//    Description: The behavioral response to tax rates
-//    Source file: taxcalc/behavior.json
+//    Description: The behavioral response to tax rates. Used in partial equilibrium dynamic analysis.
+//    Source file: behavior.json
+//    Implemented in Behavior.response()
 //    Applies to:
-//      - _BE_inc, Income elasticity of taxable income (the response to changes in average tax rates)
-//      - _BE_sub, Substitution elasticity of taxable income (the response to changes in marginal tax rates)
-//      - _BE_cg, Elasticity of long-term capital gains (the response to changes in marginal tax rates on capital gains)
-//      - _BE_charity, Elasticity of charitable contributions (the response by AGI level to the marginal subsidy on charitable giving)
+//      - _BE_inc, Income elasticity of taxable income (response of taxable income to changes in after-tax income)
+//      - _BE_sub, Substitution elasticity of taxable income (response of taxable income to changes in marginal tax rates)
+//      - _BE_cg, Elasticity of long-term capital gains (response of long-term gains to changes in marginal tax rates on capital gains)
+//      - _BE_charity, Elasticity of charitable contributions (response by AGI level to the marginal subsidy on charitable giving)
 //  growdiff
 //    Description: Additive difference from growth rate projection to each parameter type.
-//        Can be applied to baseline and reform (growdiff_baseline) or just to the reform (growdiff_reform)
+//        Can be applied to both baseline and reform (growdiff_baseline) or just to the reform (growdiff_reform)
 //    Source file: growdiff.json
+//    Implemented in Growdiff.apply_to()
 //    Applies to:
 //      - ABOOK, foreign tax credit and general business credit
 //      - ACGNS, capital gains and losses
