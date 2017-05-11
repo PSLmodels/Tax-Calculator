@@ -1,9 +1,6 @@
 name: taxcalc-dev
 dependencies:
-- pytest
-- setuptools
-- numpy >=1.11.2
-- pandas >=0.18.0
+- pandas >=0.20.1
 - numba
 - toolz
 - six
@@ -12,5 +9,5 @@ dependencies:
 - pep8
 - pylint
 - coverage
-- pip:
-  - pytest-pep8
+- pytest-pep8
+
