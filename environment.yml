@@ -1,11 +1,7 @@
 name: taxcalc-dev
 dependencies:
-- numpy >=1.12.1  =py27
-- pandas >=0.20.1 =py27
-- numpy >=1.11.2  =py34
-- pandas >=0.19.2 =py34
-- numpy >=1.12.1  =py35
-- pandas >=0.20.1 =py35
+- numpy >=1.12.1
+- pandas >=0.20.1
 - numba
 - toolz
 - six
