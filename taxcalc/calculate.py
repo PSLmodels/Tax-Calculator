@@ -443,7 +443,7 @@ class Calculator(object):
         """
         # check validity of parameter inputs
         assert income_type in Calculator.MTR_VALID_VARIABLES
-        assert mtr_meaure in ['itax', 'ptax', 'combined']
+        assert mtr_measure in ['itax', 'ptax', 'combined']
         assert weight_type in ['none', 'income', 'abs']
         assert pos_control in ['none', 'posti', 'posinc']
         # collect mtr array
