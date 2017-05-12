@@ -216,7 +216,7 @@ def test_Calculator_wmtr(records_2009):
     # test calling Calculator.wmtr on several income types
     assert type(calc.wmtr(income_type='e00200p')) == np.float64
     assert type(calc.wmtr(income_type='p23250')) == np.float64
-    assert type(calc.wmtr(income_type='e00650')) == np.float64
+    assert type(calc.wmtr(income_type='e00900p')) == np.float64
     # Since e00200p is non-negative, test that different methods
     #    to control for that produce the same result
     wmtr1 = calc.wmtr(income_type='e00200p', weight_type='income')
