@@ -197,9 +197,9 @@ files to TaxBrain.</p>
 
 <p><b>Install the free Anaconda Python distribution</b> by going to
 the <a href="https://www.continuum.io/downloads">Continuum Analytics
-download page</a> and selecting a version of Python suitable for your
-computer.  You should install Python 2.7, which is the older and more
-stable version.  You must do this installation even if you already
+download page</a> and selecting a version of Python.  You can install
+either Python 2.7 or Python 3.6 because we test Tax-Calculator with
+both.  You must do this installation even if you already
 have Python installed on your computer because the Anaconda
 distribution contains all the additional Python packages that
 Tax-Calculator uses to conduct tax calculations (many of which are not
@@ -216,10 +216,10 @@ in any directory:
 <pre>$ conda --version</pre>
 Expected output is something like <kbd>conda 4.3.17</kbd>
 <pre>$ python --version</pre>
-Expected output should contain the <kbd>Python 2.7.</kbd> and
-<kbd>Anaconda</kbd> phrases, the presence of which confirm that the
-installation went smoothly.  The full output could look something
-like this <kbd>Python 2.7.12 :: Anaconda 2.3.0 (x86_64)</kbd>.</p>
+Expected output should contain either the <kbd>Python 2.7</kbd> or
+the <kbd>Python 3.6</kbd> phrase as well as the
+<kbd>Anaconda</kbd> phrase, the presence of which confirm that the
+installation went smoothly.
 
 <p><b>Install the free taxcalc package</b> by entering the following:
 <pre>$ conda install -c ospc taxcalc</pre>
