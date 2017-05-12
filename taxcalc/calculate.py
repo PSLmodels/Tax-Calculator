@@ -408,7 +408,7 @@ class Calculator(object):
 
     def wmtr(self, income_type='e00200p', mtr_measure='combined',
              weight_type='income', pos_control='none'):
-    	"""
+        """
         Calculates the weighted average marginal tax rate on an income type.
 
         Parameters
@@ -473,8 +473,7 @@ class Calculator(object):
         elif weight_type == 'income':
             wgt = self.records.s006 * income
         elif weight_type == 'abs':
-            wgt = (self.records.s006 *
-                   np.abs(income))
+            wgt = (self.records.s006 * np.abs(income))
         # select units to exclude (or not)
         if pos_control == 'posti':
             wgt = np.where(self.records.c04800 > 0, wgt, 0.)

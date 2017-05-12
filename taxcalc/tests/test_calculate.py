@@ -214,9 +214,9 @@ def test_Calculator_wmtr(records_2009):
     calc = Calculator(policy=Policy(), records=records_2009)
     recs_pre_e00200p = copy.deepcopy(calc.records.e00200p)
     # test calling Calculator.wmtr on several income types
-    assert type(calc.wmtr(income_type='e00200p')) == numpy.float64
-    assert type(calc.wmtr(income_type='p23250')) == numpy.float64
-    assert type(calc.wmtr(income_type='e00650')) == numpy.float64
+    assert type(calc.wmtr(income_type='e00200p')) == np.float64
+    assert type(calc.wmtr(income_type='p23250')) == np.float64
+    assert type(calc.wmtr(income_type='e00650')) == np.float64
     # Since e00200p is non-negative, test that different methods
     #    to control for that produce the same result
     wmtr1 = calc.wmtr(income_type='e00200p', weight_type='income')
