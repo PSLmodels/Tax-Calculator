@@ -8,7 +8,6 @@ Tests of Tax-Calculator utility functions.
 # pylint: disable=missing-docstring
 
 import os
-import sys
 import math
 import filecmp
 import tempfile
@@ -303,9 +302,6 @@ def test_weighted_share_of_total():
 EPSILON = 1e-5
 
 
-@pytest.mark.skipif((sys.version_info.major == 3 and
-                     sys.version_info.minor == 4),
-                    reason="name is string (not interval) in Python 3.4")
 def test_add_income_bins():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
@@ -327,9 +323,6 @@ def test_add_income_bins():
         idx += 1
 
 
-@pytest.mark.skipif((sys.version_info.major == 3 and
-                     sys.version_info.minor == 4),
-                    reason="name is string (not interval) in Python 3.4")
 def test_add_income_bins_soi():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
@@ -352,9 +345,6 @@ def test_add_income_bins_soi():
         idx += 1
 
 
-@pytest.mark.skipif((sys.version_info.major == 3 and
-                     sys.version_info.minor == 4),
-                    reason="name is string (not interval) in Python 3.4")
 def test_add_exp_income_bins():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])

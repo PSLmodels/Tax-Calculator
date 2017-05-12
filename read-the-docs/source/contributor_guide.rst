@@ -109,7 +109,6 @@ Setup Git
    .. code-block:: python
 
       tax-calculator$ conda update conda
-      tax-calculator$ conda update anaconda
       tax-calculator$ conda env update
 
 If you've made it this far, you've successfully made a remote copy (a
