@@ -428,12 +428,15 @@ class Records(object):
             WT = weights
         elif isinstance(weights, six.string_types):
             if os.path.isfile(weights):
+                # pylint: disable=redefined-variable-type
+                # (above because pylint mistakenly thinks WT not a DataFrame)
                 WT = pd.read_csv(weights)
             else:
                 WT = read_egg_csv(Records.WEIGHTS_FILENAME)
         else:
             msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
+        assert isinstance(WT, pd.DataFrame)
         setattr(self, 'WT', WT)
 
     def _read_adjust(self, adjust_ratios):
@@ -449,6 +452,8 @@ class Records(object):
             ADJ = adjust_ratios
         elif isinstance(adjust_ratios, six.string_types):
             if os.path.isfile(adjust_ratios):
+                # pylint: disable=redefined-variable-type
+                # (above because pylint mistakenly thinks ADJ not a DataFrame)
                 ADJ = pd.read_csv(adjust_ratios, index_col=0)
             else:
                 ADJ = read_egg_csv(Records.ADJUST_RATIOS_FILENAME, index_col=0)
@@ -457,6 +462,7 @@ class Records(object):
             msg = ('adjust_ratios is not None or a string'
                    'or a Pandas DataFrame')
             raise ValueError(msg)
+        assert isinstance(ADJ, pd.DataFrame)
         if ADJ.index.name != 'agi_bin':
             ADJ.index.name = 'agi_bin'
         self.ADJ = ADJ

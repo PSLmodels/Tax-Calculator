@@ -72,11 +72,13 @@ def test_expand_1d_short_array():
 
 
 def test_expand_1d_variable_rates():
-    ary = np.array([4, 5, 9], dtype='f4')
     irates = [0.02, 0.02, 0.03, 0.035]
-    exp = np.array([4, 5, 9, 9 * 1.03, 9 * 1.03 * 1.035])
+    ary = np.array([4, 5, 9], dtype='f4')
     res = Policy.expand_1D(ary, inflate=True, inflation_rates=irates,
                            num_years=5)
+    exp = np.array([4, 5, 9, 9 * 1.03, 9 * 1.03 * 1.035])
+    # pylint: disable=no-member
+    # (above because pylint mistakenly thinks exp is not a numpy array)
     assert np.allclose(exp.astype('f4', casting='unsafe'), res)
 
 
@@ -101,6 +103,8 @@ def test_expand_1d_accept_none():
     exp = np.array(exp)
     res = Policy.expand_array(lst, inflate=True, inflation_rates=irates,
                               num_years=5)
+    # pylint: disable=no-member
+    # (above because pylint mistakenly thinks exp is not a numpy array)
     assert np.allclose(exp.astype('f4', casting='unsafe'), res)
 
 
@@ -480,7 +484,7 @@ def test_row_classifier(puf_1991, weights_1991):
 
 
 def test_expand_2d_already_filled():
-    # pylint: disable=invalid-name
+    # pylint doesn't like caps in var name, so  pylint: disable=invalid-name
     _II_brk2 = [[36000, 72250, 36500, 48600, 72500, 36250],
                 [38000, 74000, 36900, 49400, 73800, 36900],
                 [40000, 74900, 37450, 50200, 74900, 37450]]
@@ -490,7 +494,7 @@ def test_expand_2d_already_filled():
 
 
 def test_expand_2d_partial_expand():
-    # pylint: disable=invalid-name
+    # pylint doesn't like caps in var name, so  pylint: disable=invalid-name
     _II_brk2 = [[36000, 72250, 36500, 48600, 72500, 36250],
                 [38000, 74000, 36900, 49400, 73800, 36900],
                 [40000, 74900, 37450, 50200, 74900, 37450]]
@@ -523,7 +527,7 @@ def test_strip_nones():
 
 
 def test_expand_2d_accept_none():
-    # pylint: disable=invalid-name
+    # pylint doesn't like caps in var name, so  pylint: disable=invalid-name
     _II_brk2 = [[36000, 72250, 36500, 48600, 72500],
                 [38000, 74000, 36900, 49400, 73800],
                 [40000, 74900, 37450, 50200, 74900],
@@ -536,6 +540,8 @@ def test_expand_2d_accept_none():
            [38000, 74000, 36900, 49400, 73800],
            [40000, 74900, 37450, 50200, 74900],
            [41000, exp1, exp2, exp3, exp4]]
+    # pylint: disable=no-member
+    # (above because pylint mistakenly thinks exp is not a numpy array)
     exp = np.array(exp).astype('i4', casting='unsafe')
     res = Policy.expand_array(_II_brk2, inflate=True,
                               inflation_rates=[0.02] * 5,
@@ -557,30 +563,31 @@ def test_expand_2d_accept_none():
 
 
 def test_expand_2d_accept_none_add_row():
-    # pylint: disable=invalid-name,too-many-locals
+    # pylint doesn't like caps in var name, so  pylint: disable=invalid-name
     _II_brk2 = [[36000, 72250, 36500, 48600, 72500],
                 [38000, 74000, 36900, 49400, 73800],
                 [40000, 74900, 37450, 50200, 74900],
                 [41000, None, None, None, None],
                 [43000, None, None, None, None]]
-    exp1 = 74900 * 1.02
-    exp2 = 37450 * 1.02
-    exp3 = 50200 * 1.02
-    exp4 = 74900 * 1.02
-    exp6 = exp1 * 1.03
-    exp7 = exp2 * 1.03
-    exp8 = exp3 * 1.03
-    exp9 = exp4 * 1.03
+    exx = [0.0]
+    exx.append(74900 * 1.02)  # exx[1]
+    exx.append(37450 * 1.02)  # exx[2]
+    exx.append(50200 * 1.02)  # exx[3]
+    exx.append(74900 * 1.02)  # exx[4]
+    exx.append(0.0)
+    exx.append(exx[1] * 1.03)  # exx[6]
+    exx.append(exx[2] * 1.03)  # exx[7]
+    exx.append(exx[3] * 1.03)  # exx[8]
+    exx.append(exx[4] * 1.03)  # exx[9]
     exp = [[36000, 72250, 36500, 48600, 72500],
            [38000, 74000, 36900, 49400, 73800],
            [40000, 74900, 37450, 50200, 74900],
-           [41000, exp1, exp2, exp3, exp4],
-           [43000, exp6, exp7, exp8, exp9]]
+           [41000, exx[1], exx[2], exx[3], exx[4]],
+           [43000, exx[6], exx[7], exx[8], exx[9]]]
     inflation_rates = [0.015, 0.02, 0.02, 0.03]
     res = Policy.expand_array(_II_brk2, inflate=True,
                               inflation_rates=inflation_rates, num_years=5)
     assert_equal(res, exp)
-
     user_mods = {2016: {'_II_brk2': _II_brk2}}
     syr = 2013
     pol = Policy(start_year=syr)
