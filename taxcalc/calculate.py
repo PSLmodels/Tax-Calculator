@@ -455,7 +455,7 @@ class Calculator(object):
             raise ValueError(msg)
         # check validity of pos_control
         if pos_control not in ['none', 'posti', 'posinc']:
-            msg = 'pos_control is not "none", "posti", or "abs"'
+            msg = 'pos_control is not "none", "posti", or "posinc"'
             raise ValueError(msg)
         # collect mtr array
         (mtr_ptax, mtr_itax,
