@@ -18,7 +18,7 @@ assumption files.
 
 The following examples have been specified in response assumption files:
 
-- [Response Template]()
+- [Response Template](economic_responses_template.json)
 
 ## Structure and Syntax of Assumption Files
 
