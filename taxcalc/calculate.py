@@ -441,22 +441,11 @@ class Calculator(object):
         Returns
             wmtr: overall weighted average marginal tax rate
         """
-        # check validity of income_type parameter
-        if income_type not in Calculator.MTR_VALID_VARIABLES:
-            msg = 'mtr income_type="{}" is not valid'
-            raise ValueError(msg.format(income_type))
-        # check validity of mtr_measure
-        if mtr_measure not in ['itax', 'ptax', 'combined']:
-            msg = 'mtr_measure is not "itax", "ptax" or "combined"'
-            raise ValueError(msg)
-        # check validity of weight_type
-        if weight_type not in ['none', 'income', 'abs']:
-            msg = 'weight_type is not "none", "income", or "abs"'
-            raise ValueError(msg)
-        # check validity of pos_control
-        if pos_control not in ['none', 'posti', 'posinc']:
-            msg = 'pos_control is not "none", "posti", or "posinc"'
-            raise ValueError(msg)
+        # check validity of parameter inputs
+        assert income_type in Calculator.MTR_VALID_VARIABLES
+        assert mtr_meaure in ['itax', 'ptax', 'combined']
+        assert weight_type in ['none', 'income', 'abs']
+        assert pos_control in ['none', 'posti', 'posinc']
         # collect mtr array
         (mtr_ptax, mtr_itax,
          mtr_combined) = self.mtr(variable_str=income_type)
