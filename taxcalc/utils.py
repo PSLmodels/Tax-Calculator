@@ -25,7 +25,7 @@ except ImportError:
     BOKEH_AVAILABLE = False
 
 
-STATS_COLUMNS = ['expanded_income', 'c00100', 'standard',
+STATS_COLUMNS = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
                  'c04470', 'c04600', 'c04800', 'taxbc', 'c62100', 'c09600',
                  'c05800', 'othertaxes', 'refund', 'c07100', 'iitax',
                  'payrolltax', 'combined', 's006']
@@ -491,6 +491,7 @@ def create_difference_table(recs1, recs2, groupby,
     res2 = results(recs2)
     baseline_income_measure = income_measure + '_baseline'
     res2[baseline_income_measure] = res1[income_measure]
+    res2['aftertax_baseline'] = res1['aftertax_income']
     income_measure = baseline_income_measure
     if groupby == 'weighted_deciles':
         pdf = add_weighted_income_bins(res2, num_bins=10,
@@ -513,9 +514,13 @@ def create_difference_table(recs1, recs2, groupby,
     # Positive values are the magnitude of the tax increase
     # Negative values are the magnitude of the tax decrease
     res2['tax_diff'] = res2[income_to_present] - res1[income_to_present]
+    res2['aftertax_perc'] = res2['tax_diff'] / res2['aftertax_baseline']
     diffs = means_and_comparisons('tax_diff',
                                   pdf.groupby('bins', as_index=False),
                                   (res2['tax_diff'] * res2['s006']).sum())
+    aftertax_perc = pdf.groupby('bins', as_index=False).apply(weighted_mean,
+                                                              'aftertax_perc')
+    diffs['aftertax_perc'] = aftertax_perc
     sum_row = get_sums(diffs)[diffs.columns.values.tolist()]
     diffs = diffs.append(sum_row)  # pylint: disable=redefined-variable-type
     pd.options.display.float_format = '{:8,.0f}'.format
@@ -527,6 +532,9 @@ def create_difference_table(recs1, recs2, groupby,
     srs_change = ['{0:.2f}%'.format(val * 100)
                   for val in diffs['share_of_change']]
     diffs['share_of_change'] = pd.Series(srs_change, index=diffs.index)
+    srs_aftertax_perc = ['{0:.2f}%'.format(val * 100)
+                         for val in diffs['aftertax_perc']]
+    diffs['aftertax_perc'] = pd.Series(srs_aftertax_perc, index=diffs.index)
     # columns containing weighted values relative to the binning mechanism
     non_sum_cols = [col for col in diffs.columns
                     if 'mean' in col or 'perc' in col]

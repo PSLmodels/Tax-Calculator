@@ -1554,3 +1554,21 @@ def ExpandIncome(c00100, ptax_was, e02400, c02500,
                        employer_fica_share +
                        nontaxable_ubi)  # universal basic income
     return expanded_income
+
+
+@iterate_jit(nopython=True)
+def AfterTaxIncome(combined, expanded_income, aftertax_income):
+    """
+    Calculate after tax income
+
+    Parameters
+    ----------
+    combined: combined tax liability
+    expanded_income: expanded income
+
+    Returns
+    -------
+    aftertax_income: expanded_income - combined
+    """
+    aftertax_income = expanded_income - combined
+    return aftertax_income
