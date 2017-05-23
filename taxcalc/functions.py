@@ -21,7 +21,9 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
                   FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_hc,
                   e00900p, e00900s, e02100p, e02100s,
                   _payrolltax, ptax_was, setax, c03260, ptax_oasdi,
-                  _sey, _earned, _earned_p, _earned_s):
+                  _sey, _earned, _earned_p, _earned_s, 
+                  _SS_em, _SS_em_ps, _SS_prt, _SS_credit, 
+                  _FICA_em, _FICA_em_ps, _FICA_prt, _FICA_credit):
     """
     Compute part of total OASDI+HI payroll taxes and earned income variables.
     """
@@ -36,19 +38,23 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     txearn_was_s = min(SS_Earnings_c, e00200s)
     txearn_sey_p = min(max(0., sey_p * sey_frac), SS_Earnings_c - txearn_was_p)
     txearn_sey_s = min(max(0., sey_s * sey_frac), SS_Earnings_c - txearn_was_s)
-
+    
+    # compute OASDI and HI payroll tax exemption amounts
+    ss_exemption = _SS_em * (1 - (_SS_prt * max(c00100 - _SS_em_ps, 0)))
+    fica_exemption = _FICA_em * (1 - (_FICA_prt * max(c00100 - _FICA_em_ps, 0)))
+    
     # compute OASDI and HI payroll taxes on wage-and-salary income
-    ptax_ss_was_p = FICA_ss_trt * txearn_was_p
-    ptax_ss_was_s = FICA_ss_trt * txearn_was_s
-    ptax_mc_was_p = FICA_mc_trt * e00200p
-    ptax_mc_was_s = FICA_mc_trt * e00200s
+    ptax_ss_was_p = max((FICA_ss_trt * txearn_was_p) - ss_exemption, _SS_credit)
+    ptax_ss_was_s = max((FICA_ss_trt * txearn_was_s) - ss_exemption, _SS_credit)
+    ptax_mc_was_p = max((FICA_mc_trt * e00200p) - fica_exemption, _FICA_credit)
+    ptax_mc_was_s = max((FICA_mc_trt * e00200s) - fica_exemption, _FICA_credit)
     ptax_was = ptax_ss_was_p + ptax_ss_was_s + ptax_mc_was_p + ptax_mc_was_s
 
     # compute self-employment tax on taxable self-employment income
-    setax_ss_p = FICA_ss_trt * txearn_sey_p
-    setax_ss_s = FICA_ss_trt * txearn_sey_s
-    setax_mc_p = FICA_mc_trt * max(0., sey_p * sey_frac)
-    setax_mc_s = FICA_mc_trt * max(0., sey_s * sey_frac)
+    setax_ss_p = max((FICA_ss_trt * txearn_sey_p) - ss_exemption, _SS_credit)
+    setax_ss_s = max((FICA_ss_trt * txearn_sey_s) - ss_exemption, _SS_credit)
+    setax_mc_p = max((FICA_mc_trt * max(0., sey_p * sey_frac)) - fica_exemption, _FICA_credit)
+    setax_mc_s = max((FICA_mc_trt * max(0., sey_s * sey_frac)) - fica_exemption, _FICA_credit)
     setax_p = setax_ss_p + setax_mc_p
     setax_s = setax_ss_s + setax_mc_s
     setax = setax_p + setax_s
