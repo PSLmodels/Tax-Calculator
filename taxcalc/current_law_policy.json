@@ -3211,6 +3211,30 @@
         "col_label": "",
         "value": [0.02]
     },
+    
+        "_SS_credit": {
+        "long_name": "Social Security payroll tax refundable credit maximum amount",
+        "description": "This credit amount is fully refundable. Currently, there is no phaseout built in",
+        "section_1": "Personal refundable credit",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016",
+                      "2017"],
+        "start_year": 2013,
+        "cpi_inflated": true,
+        "col_var": "MARS",
+        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "value": [[0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0]]
+
+    },
 
     "_FICA_em": {
         "long_name": "Medicare payroll tax personal and dependent exemption amount",
@@ -3270,6 +3294,30 @@
         "col_var": "",
         "col_label": "",
         "value": [0.02]
+    },
+
+        "_FICA_credit": {
+        "long_name": "Medicare payroll tax refundable credit maximum amount",
+        "description": "This credit amount is fully refundable. Currently, there is no phaseout built in",
+        "section_1": "Personal refundable credit",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016",
+                      "2017"],
+        "start_year": 2013,
+        "cpi_inflated": true,
+        "col_var": "MARS",
+        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "value": [[0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0]]
+
     }
 }
 
