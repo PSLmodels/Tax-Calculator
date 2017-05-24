@@ -7,6 +7,7 @@ Tax-Calculator Input-Output class.
 
 import os
 import copy
+import sqlite3
 import six
 import numpy as np
 import pandas as pd
@@ -58,8 +59,7 @@ class TaxCalcIO(object):
         """
         TaxCalcIO class constructor, which must be followed by init() call.
         """
-        # pylint: disable=too-many-branches
-        # pylint: disable=too-many-statements
+        # pylint: disable=too-many-branches,too-many-statements
         self.errmsg = ''
         # check name and existence of INPUT file
         inp = 'x'
@@ -158,9 +158,8 @@ class TaxCalcIO(object):
             specifies whether or not exact tax calculations are done without
             any smoothing of "stair-step" provisions in the tax law.
         """
-        # pylint: disable=too-many-arguments
-        # pylint: disable=too-many-locals
-        # pylint: disable=too-many-statements
+        # pylint: disable=too-many-arguments,too-many-locals
+        # pylint: disable=too-many-statements,too-many-branches
         self.errmsg = ''
         # get parameter dictionaries from --reform and --assump files
         param_dict = Calculator.read_json_param_files(reform, assump)
@@ -168,12 +167,6 @@ class TaxCalcIO(object):
         beh = Behavior()
         beh.update_behavior(param_dict['behavior'])
         self.behavior_has_any_response = beh.has_any_response()
-        # make sure no growdiff_response is specified in --assump
-        gdiff_response = Growdiff()
-        gdiff_response.update_growdiff(param_dict['growdiff_response'])
-        if gdiff_response.has_any_response():
-            msg = 'ASSUMP file cannot specify any "growdiff_response"'
-            self.errmsg += 'ERROR: {}\n'.format(msg)
         # create gdiff_baseline object
         gdiff_baseline = Growdiff()
         gdiff_baseline.update_growdiff(param_dict['growdiff_baseline'])
@@ -183,20 +176,25 @@ class TaxCalcIO(object):
         # specify gdiff_response object
         if growdiff_response is None:
             gdiff_response = Growdiff()
+            gdiff_response.update_growdiff(param_dict['growdiff_response'])
         elif isinstance(growdiff_response, Growdiff):
             gdiff_response = growdiff_response
-            if self.behavior_has_any_response:
-                msg = 'ASSUMP file cannot specify any "behavior" '
-                msg += 'when using GrowModel'
-                self.errmsg += 'ERROR: {}\n'.format(msg)
         else:
+            gdiff_response = None
             msg = 'TaxCalcIO.more_init: growdiff_response is neither None '
             msg += 'nor a Growdiff object'
             self.errmsg += 'ERROR: {}\n'.format(msg)
+        if gdiff_response is not None:
+            some_gdiff_response = gdiff_response.has_any_response()
+            if self.behavior_has_any_response and some_gdiff_response:
+                msg = 'ASSUMP file cannot specify any "behavior" when using '
+                msg += 'GrowModel or when ASSUMP file has "growdiff_response"'
+                self.errmsg += 'ERROR: {}\n'.format(msg)
         # create Growfactors ref object that has both gdiff objects applied
         gfactors_ref = Growfactors()
         gdiff_baseline.apply_to(gfactors_ref)
-        gdiff_response.apply_to(gfactors_ref)
+        if gdiff_response is not None:
+            gdiff_response.apply_to(gfactors_ref)
         # create Policy objects
         if self.specified_reform:
             pol = Policy(gfactors=gfactors_ref)
@@ -264,13 +262,15 @@ class TaxCalcIO(object):
                 output_tables=False,
                 output_graphs=False,
                 output_ceeu=False,
-                output_dump=False):
+                output_dump=False,
+                output_sqldb=False):
         """
         Conduct tax analysis.
 
         Parameters
         ----------
         writing_output_file: boolean
+           whether or not to generate and write output file
 
         output_tables: boolean
            whether or not to generate and write distributional tables
@@ -288,13 +288,17 @@ class TaxCalcIO(object):
            whether or not to replace standard output with all input and
            calculated variables using their Tax-Calculator names
 
+        output_sqldb: boolean
+           whether or not to write SQLite3 database with dump table
+           containing same output as written by output_dump to a csv file
+
         Returns
         -------
         Nothing
         """
         # pylint: disable=too-many-arguments,too-many-branches
         calc_clp_calculated = False
-        if output_dump:
+        if output_dump or output_sqldb:
             (mtr_paytax, mtr_inctax,
              _) = self.calc.mtr(wrt_full_compensation=False)
         else:  # do not need marginal tax rates
@@ -312,7 +316,10 @@ class TaxCalcIO(object):
                 ceeu_results += 'reform cannot be sensibly compared\n '
                 ceeu_results += '                  '
                 ceeu_results += 'when specifying "behavior" with --assump '
-                ceeu_results += 'option.'
+                ceeu_results += 'option'
+            elif self.calc.records.s006.sum() <= 0.:
+                ceeu_results = 'SKIP --ceeu output because '
+                ceeu_results += 'sum of weights is not positive'
             else:
                 self.calc_clp.calc_all()
                 calc_clp_calculated = True
@@ -324,6 +331,9 @@ class TaxCalcIO(object):
         # extract output if writing_output_file
         if writing_output_file:
             self.write_output_file(output_dump, mtr_paytax, mtr_inctax)
+        # optionally write --sqldb output to SQLite3 database
+        if output_sqldb:
+            self.write_sqldb_file(mtr_paytax, mtr_inctax)
         # optionally write --tables output to text file
         if output_tables:
             if not calc_clp_calculated:
@@ -346,10 +356,24 @@ class TaxCalcIO(object):
         """
         if output_dump:
             outdf = self.dump_output(mtr_inctax, mtr_paytax)
+            column_order = sorted(outdf.columns)
         else:
             outdf = self.minimal_output()
+            column_order = outdf.columns
         assert len(outdf.index) == self.calc.records.dim
-        outdf.to_csv(self._output_filename, index=False, float_format='%.2f')
+        outdf.to_csv(self._output_filename, columns=column_order,
+                     index=False, float_format='%.2f')
+
+    def write_sqldb_file(self, mtr_paytax, mtr_inctax):
+        """
+        Write dump output to SQLite3 database table dump.
+        """
+        outdf = self.dump_output(mtr_inctax, mtr_paytax)
+        assert len(outdf.index) == self.calc.records.dim
+        dbfilename = '{}.db'.format(self._output_filename[:-4])
+        dbcon = sqlite3.connect(dbfilename)
+        outdf.to_sql('dump', dbcon, if_exists='replace', index=False)
+        dbcon.close()
 
     def write_tables_file(self):
         """
@@ -358,8 +382,8 @@ class TaxCalcIO(object):
         # pylint: disable=too-many-locals
         tab_fname = self._output_filename.replace('.csv', '-tab.text')
         # create DataFrame with weighted tax totals
-        nontax_cols = ['s006', '_expanded_income']
-        tax_cols = ['_iitax', '_payrolltax', 'lumpsum_tax', '_combined']
+        nontax_cols = ['s006', 'expanded_income']
+        tax_cols = ['iitax', 'payrolltax', 'lumpsum_tax', 'combined']
         all_cols = nontax_cols + tax_cols
         non = [getattr(self.calc.records, col) for col in nontax_cols]
         ref = [getattr(self.calc.records, col) for col in tax_cols]
@@ -388,15 +412,15 @@ class TaxCalcIO(object):
         Write to tfile the tkind decile table using dfx DataFrame.
         """
         dfx = add_weighted_income_bins(dfx, num_bins=10,
-                                       income_measure='_expanded_income',
+                                       income_measure='expanded_income',
                                        weight_by_income_measure=False)
         gdfx = dfx.groupby('bins', as_index=False)
         rtns_series = gdfx.apply(unweighted_sum, 's006')
-        xinc_series = gdfx.apply(weighted_sum, '_expanded_income')
-        itax_series = gdfx.apply(weighted_sum, '_iitax')
-        ptax_series = gdfx.apply(weighted_sum, '_payrolltax')
+        xinc_series = gdfx.apply(weighted_sum, 'expanded_income')
+        itax_series = gdfx.apply(weighted_sum, 'iitax')
+        ptax_series = gdfx.apply(weighted_sum, 'payrolltax')
         htax_series = gdfx.apply(weighted_sum, 'lumpsum_tax')
-        ctax_series = gdfx.apply(weighted_sum, '_combined')
+        ctax_series = gdfx.apply(weighted_sum, 'combined')
         # write decile table to text file
         row = 'Weighted Tax {} by Expanded-Income Decile\n'
         tfile.write(row.format(tkind))
@@ -481,10 +505,9 @@ class TaxCalcIO(object):
         odict['RECID'] = crecs.RECID  # id for tax filing unit
         odict['YEAR'] = self.tax_year()  # tax calculation year
         odict['WEIGHT'] = crecs.s006  # sample weight
-        # pylint: disable=protected-access
-        odict['INCTAX'] = crecs._iitax  # federal income taxes
+        odict['INCTAX'] = crecs.iitax  # federal income taxes
         odict['LSTAX'] = crecs.lumpsum_tax  # lump-sum tax
-        odict['PAYTAX'] = crecs._payrolltax  # payroll taxes (ee+er)
+        odict['PAYTAX'] = crecs.payrolltax  # payroll taxes (ee+er)
         odf = pd.DataFrame(data=odict, columns=varlist)
         return odf
 
@@ -531,16 +554,21 @@ class TaxCalcIO(object):
 
     def dump_output(self, mtr_inctax, mtr_paytax):
         """
-        Extract --dump output and return as pandas DataFrame.
+        Extract dump output and return it as pandas DataFrame.
         """
+        # specify mtr values in percentage terms
+        self.calc.records.mtr_inctax[:] = mtr_inctax * 100.
+        self.calc.records.mtr_paytax[:] = mtr_paytax * 100.
+        # create and return dump output DataFrame
         odf = pd.DataFrame()
         varset = Records.USABLE_READ_VARS | Records.CALCULATED_VARS
         for varname in varset:
             vardata = getattr(self.calc.records, varname)
-            odf[varname] = vardata
+            if varname in Records.INTEGER_VARS:
+                odf[varname] = vardata
+            else:
+                odf[varname] = vardata.round(2)  # rounded to nearest cent
         odf['FLPDYR'] = self.tax_year()  # tax calculation year
-        odf['mtr_inctax'] = mtr_inctax
-        odf['mtr_paytax'] = mtr_paytax
         return odf
 
     @staticmethod
@@ -566,8 +594,7 @@ class TaxCalcIO(object):
         -------
         Nothing
         """
-        # pylint: disable=too-many-arguments
-        # pylint: disable=too-many-locals
+        # pylint: disable=too-many-arguments,too-many-locals
         progress = 'STARTING ANALYSIS FOR YEAR {}'
         gdiff_dict = {Policy.JSON_START_YEAR: {}}
         for year in range(Policy.JSON_START_YEAR, tax_year + 1):

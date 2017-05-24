@@ -1,0 +1,95 @@
+//Parameters for economic responses to tax policy
+//This json serves as a baseline for the implementation of the economic responses of individuals and the overall economy to tax reforms.
+//User documentation can be found at http://open-source-economics.github.io/Tax-Calculator/#params
+//More specific definitions and details on implementations can be found in *.json and *.py files.
+//  consumption
+//    Description: The marginal propensity to consume tax-deductible goods.
+//    Source file: consumption.json
+//    Implemented in Consumption.response()
+//    Applies to:
+//      - e17500, Sch A: Medical and dental expenses
+//      - e18400, Sch A: State and local income/sales taxes
+//      - e19800, Sch A: Gifts to charity: cash/check contributions
+//      - e20400, Sch A: Miscellaneous deductions subject to 2% AGI limitation
+//  behavior
+//    Description: The behavioral response to tax rates. Used in partial equilibrium dynamic analysis.
+//    Source file: behavior.json
+//    Implemented in Behavior.response()
+//    Applies to:
+//      - _BE_inc, Income elasticity of taxable income (response of taxable income to changes in after-tax income)
+//      - _BE_sub, Substitution elasticity of taxable income (response of taxable income to changes in marginal tax rates)
+//      - _BE_cg, Elasticity of long-term capital gains (response of long-term gains to changes in marginal tax rates on capital gains)
+//      - _BE_charity, Elasticity of charitable contributions (response by AGI level to the marginal subsidy on charitable giving)
+//  growdiff
+//    Description: Additive difference from growth rate projection to each parameter type.
+//        Can be applied to both baseline and reform (growdiff_baseline) or just to the reform (growdiff_reform)
+//    Source file: growdiff.json
+//    Implemented in Growdiff.apply_to()
+//    Applies to:
+//      - ABOOK, foreign tax credit and general business credit
+//      - ACGNS, capital gains and losses
+//      - ACPIM, medical expenses and contributions
+//      - ACPIU, consumer price index
+//      - ADIVS, dividends
+//      - AINTS, interest income
+//      - AIPD, interest paid
+//      - ASCHCI, profit from sole proprietorship
+//      - ASCHCL, loss from sole proprietorship
+//      - ASCHEI, Sch. E profit
+//      - ASCHEL, Sch. E loss
+//      - ASCHF, farm net income/loss
+//      - ASOCSEC, Social Security benefits
+//      - ATXPY, all miscellaneous categories
+//      - AUCOMP, Unemployment compensation
+//      - AWAGE, wage and salary income
+
+{
+    "consumption": {
+        "_MPC_e17500": {"2017": [0.0]},
+        "_MPC_e18400": {"2017": [0.0]},
+        "_MPC_e19800": {"2017": [0.0]},
+        "_MPC_e20400": {"2017": [0.0]}
+    },
+    "behavior": {
+        "_BE_inc": {"2017": [0.0]},
+        "_BE_sub": {"2017": [0.0]},
+        "_BE_cg": {"2017": [0.0]},
+        "_BE_charity": {"2017": [[0.0, 0.0, 0.0]]}
+    },
+    "growdiff_baseline": {
+        "_ABOOK": {"2017": [0.0]},
+        "_ACGNS": {"2017": [0.0]},
+        "_ACPIM": {"2017": [0.0]},
+        "_ACPIU": {"2017": [0.0]},
+        "_ADIVS": {"2017": [0.0]},
+        "_AINTS": {"2017": [0.0]},
+        "_AIPD": {"2017": [0.0]},
+        "_ASCHCI": {"2017": [0.0]},
+        "_ASCHCL": {"2017": [0.0]},
+        "_ASCHEI": {"2017": [0.0]},
+        "_ASCHEL": {"2017": [0.0]},
+        "_ASCHF": {"2017": [0.0]},
+        "_ASOCSEC": {"2017": [0.0]},
+        "_ATXPY": {"2017": [0.0]},
+        "_AUCOMP": {"2017": [0.0]},
+        "_AWAGE": {"2017": [0.0]}
+    },
+    "growdiff_response": {
+        "_ABOOK": {"2017": [0.0]},
+        "_ACGNS": {"2017": [0.0]},
+        "_ACPIM": {"2017": [0.0]},
+        "_ACPIU": {"2017": [0.0]},
+        "_ADIVS": {"2017": [0.0]},
+        "_AINTS": {"2017": [0.0]},
+        "_AIPD": {"2017": [0.0]},
+        "_ASCHCI": {"2017": [0.0]},
+        "_ASCHCL": {"2017": [0.0]},
+        "_ASCHEI": {"2017": [0.0]},
+        "_ASCHEL": {"2017": [0.0]},
+        "_ASCHF": {"2017": [0.0]},
+        "_ASOCSEC": {"2017": [0.0]},
+        "_ATXPY": {"2017": [0.0]},
+        "_AUCOMP": {"2017": [0.0]},
+        "_AWAGE": {"2017": [0.0]}
+    }
+}

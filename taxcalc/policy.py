@@ -44,6 +44,7 @@ class Policy(ParametersBase):
 
     DEFAULTS_FILENAME = 'current_law_policy.json'
     JSON_START_YEAR = 2013  # remains the same unless earlier data added
+    LAST_KNOWN_YEAR = 2017  # last year for which indexed param vals are known
     LAST_BUDGET_YEAR = 2026  # increases by one every calendar year
     DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
@@ -55,8 +56,6 @@ class Policy(ParametersBase):
         """
         Policy class constructor.
         """
-        # pylint: disable=too-many-arguments
-        # pylint: disable=too-many-branches
         super(Policy, self).__init__()
 
         if not isinstance(gfactors, Growfactors):

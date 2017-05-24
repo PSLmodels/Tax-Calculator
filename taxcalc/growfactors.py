@@ -51,13 +51,17 @@ class Growfactors(object):
         Growfactors class constructor
         """
         # read grow factors from specified growfactors_filename
+        gfdf = pd.DataFrame()
         if isinstance(growfactors_filename, six.string_types):
+            # pylint: disable=redefined-variable-type
+            # (above because pylint mistakenly thinks gfdf is not a DataFrame)
             if os.path.isfile(growfactors_filename):
                 gfdf = pd.read_csv(growfactors_filename, index_col='YEAR')
             else:
                 gfdf = read_egg_csv(Growfactors.FILENAME, index_col='YEAR')
         else:
             raise ValueError('growfactors_filename is not a string')
+        assert isinstance(gfdf, pd.DataFrame)
         # check validity of gfdf column names
         gfdf_names = set(list(gfdf))
         if gfdf_names != Growfactors.VALID_NAMES:
@@ -69,6 +73,7 @@ class Growfactors(object):
         self._first_year = min(gfdf.index)
         self._last_year = max(gfdf.index)
         # set gfdf as attribute of class
+        self.gfdf = pd.DataFrame()
         setattr(self, 'gfdf', gfdf)
         # specify factors as being unused (that is, not yet accessed)
         self.used = False
@@ -91,7 +96,6 @@ class Growfactors(object):
         """
         Return list of price inflation rates rounded to four decimal digits
         """
-        # pylint: disable=no-member
         self.used = True
         if firstyear > lastyear:
             msg = 'first_year={} > last_year={}'
@@ -102,6 +106,7 @@ class Growfactors(object):
         if lastyear > self.last_year:
             msg = 'last_year={} > Growfactors.last_year={}'
             raise ValueError(msg.format(lastyear, self.last_year))
+        # pylint: disable=no-member
         rates = [round((self.gfdf['ACPIU'][cyr] - 1.0), 4)
                  for cyr in range(firstyear, lastyear + 1)]
         return rates
@@ -110,7 +115,6 @@ class Growfactors(object):
         """
         Return list of wage growth rates rounded to four decimal digits
         """
-        # pylint: disable=no-member
         self.used = True
         if firstyear > lastyear:
             msg = 'firstyear={} > lastyear={}'
@@ -121,6 +125,7 @@ class Growfactors(object):
         if lastyear > self.last_year:
             msg = 'lastyear={} > Growfactors.last_year={}'
             raise ValueError(msg.format(lastyear, self.last_year))
+        # pylint: disable=no-member
         rates = [round((self.gfdf['AWAGE'][cyr] - 1.0), 4)
                  for cyr in range(firstyear, lastyear + 1)]
         return rates
@@ -139,7 +144,7 @@ class Growfactors(object):
         if year > self.last_year:
             msg = 'year={} > Growfactors.last_year={}'
             raise ValueError(msg.format(year, self.last_year))
-        return self.gfdf[name][year]  # pylint: disable=no-member
+        return self.gfdf[name][year]
 
     def update(self, name, year, diff):
         """
@@ -148,4 +153,4 @@ class Growfactors(object):
         if self.used:
             msg = 'cannot update growfactors after they have been used'
             raise ValueError(msg)
-        self.gfdf[name][year] += diff  # pylint: disable=no-member
+        self.gfdf[name][year] += diff

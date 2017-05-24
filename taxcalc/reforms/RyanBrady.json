@@ -1,18 +1,18 @@
 // Title: 2016 Better Way Tax Reform Blueprint (Ryan-Brady)
 // Reform_File_Author: Cody Kallen
-// Reform_Reference: http://abetterway.speaker.gov/_assets/pdf/ABetterWay-Tax-PolicyPaper.pdf  
+// Reform_Reference: http://abetterway.speaker.gov/_assets/pdf/ABetterWay-Tax-PolicyPaper.pdf
 // Reform_Description:
-// -  New personal income tax schedule (regular/non-AMT/non-pass-through) (1) 
-// -  New pass-through income tax schedule (2) 
+// -  New personal income tax schedule (regular/non-AMT/non-pass-through) (1)
+// -  New pass-through income tax schedule (2)
 // -  Tax long-term capital gains and qualified dividends as ordinary income,
-//    - exclude half of interest, qualified dividends, and long-term gain (before loss limitation)(3) 
-// -  Repeal Alternative Minimum Tax (4) 
-// -  Repeal Net Investment Income Tax (5) 
-// -  Raise the Standard Deduction (6) 
-// -  Repeal the Personal Exemption (7) 
+//    - exclude half of interest, qualified dividends, and long-term gain (before loss limitation)(3)
+// -  Repeal Alternative Minimum Tax (4)
+// -  Repeal Net Investment Income Tax (5)
+// -  Raise the Standard Deduction and repeal the Additional Standard Deduction (6)
+// -  Repeal the Personal Exemption (7)
 // -  New $500 nonrefundable credit, based on Child Tax Credit (8)
 // -  Eliminate marriage penalty in Child Tax Credit phase-out (9)
-// -  Repeal itemized deductions except mortgage interest and charitable contribution (10) 
+// -  Repeal itemized deductions except mortgage interest and charitable contribution (10)
 // Reform_Parameter_Map:
 // - 1: _II_rt*
 // - 2: _PT_rt*
@@ -68,6 +68,8 @@
             {"2017": [0]},
         "_STD":
             {"2017": [[12000, 24000, 12000, 18000, 24000]]},
+        "_STD_Aged":
+            {"2017": [[0, 0, 0, 0, 0]]},
         "_II_em":
             {"2017": [0]},
         "_DependentCredit_c":

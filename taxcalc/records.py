@@ -6,11 +6,12 @@ Tax-Calculator tax-filing-unit Records class.
 # pylint --disable=locally-disabled records.py
 
 import os
+import json
 import six
 import numpy as np
 import pandas as pd
 from taxcalc.growfactors import Growfactors
-from taxcalc.utils import read_egg_csv
+from taxcalc.utils import read_egg_csv, read_egg_json
 
 
 PUFCSV_YEAR = 2009
@@ -97,89 +98,8 @@ class Records(object):
     WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
     ADJUST_RATIOS_FILENAME = 'puf_ratios.csv'
     ADJUST_RATIOS_PATH = os.path.join(CUR_PATH, ADJUST_RATIOS_FILENAME)
-
-    # specify set of input variables used in Tax-Calculator calculations:
-    USABLE_READ_VARS = set([
-        'DSI', 'EIC', 'FLPDYR',
-        'f2441', 'f6251', 'n24', 'XTOT',
-        'e00200', 'e00300', 'e00400', 'e00600', 'e00650', 'e00700', 'e00800',
-        'e00200p', 'e00200s',
-        'e00900', 'e01100', 'e01200', 'e01400', 'e01500', 'e01700',
-        'e00900p', 'e00900s',
-        'e02000', 'e02100', 'e02300', 'e02400', 'e03150', 'e03210',
-        'e02100p', 'e02100s',
-        'e03220', 'e03230', 'e03270', 'e03240', 'e03290',
-        'e03400', 'e03500',
-        'e07240', 'e07260', 'e07300',
-        'e07400', 'e07600', 'p08000',
-        'e09700', 'e09800', 'e09900',
-        'e11200',
-        'e17500', 'e18400', 'e18500',
-        'e19200', 'e19800', 'e20100',
-        'e20400', 'e20500', 'p22250',
-        'p23250', 'e24515', 'e24518',
-        'p25470',
-        'e26270',
-        'e27200', 'e32800', 'e03300',
-        'e58990',
-        'e62900',
-        'p87521', 'e87530',
-        'MARS', 'MIDR', 'RECID', 'filer', 'cmbtp',
-        'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
-        'nu13', 'elderly_dependent',
-        's006', 'nu05', 'agi_bin',
-        'nu18', 'n1821', 'n21'])
-
-    # specify set of input variables that MUST be read by Tax-Calculator:
-    MUST_READ_VARS = set(['RECID', 'MARS'])
-
-    # specify which USABLE_READ_VARS should be int64 (rather than float64):
-    INTEGER_READ_VARS = set([
-        'DSI', 'EIC', 'FLPDYR',
-        'f2441', 'f6251',
-        'n24', 'XTOT',
-        'MARS', 'MIDR', 'RECID', 'filer',
-        'age_head', 'age_spouse', 'blind_head', 'blind_spouse',
-        'nu13', 'elderly_dependent', 'agi_bin',
-        'nu18', 'n1821', 'n21'])
-
-    # specify set of Record variables that are calculated by Tax-Calculator:
-    CALCULATED_VARS = set([
-        '_exact',
-        'c07200',
-        'c00100', 'pre_c04600', 'c04600',
-        'c04470', 'c21060', 'c21040', 'c17000',
-        'c18300', 'c20800', 'c02900', 'c02900_in_ei', 'c23650',
-        'c01000', 'c02500', 'c19700', 'invinc_ec_base', 'invinc_agi_ec',
-        '_sey', '_earned', '_earned_p', '_earned_s',
-        'ymod', 'ymod1',
-        'c04800', 'c19200', 'c20500',
-        '_taxbc', '_standard', 'dwks10', 'dwks13', 'dwks14', 'dwks19',
-        'c05700',
-        'c05800',
-        'c07180',
-        'c07230', 'prectc', 'c07220', 'c59660',
-        'c09200', 'c07100', '_eitc',
-        '_payrolltax', 'ptax_was', 'setax', 'c03260', 'ptax_amc', 'ptax_oasdi',
-        '_sep', '_num',
-        'c05200',
-        'c62100',
-        'c09600',
-        'ID_Casualty_frt_in_pufcsv_year',
-        'c11070',
-        'c10960', 'c87668',
-        'NIIT',
-        '_iitax', '_refund', 'ctc_new', 'lumpsum_tax',
-        '_expanded_income', 'c07300', 'c07400',
-        'c07600', 'c07240', 'c07260', 'c08000',
-        '_surtax', '_combined', 'personal_credit', 'fstax', 'care_deduction',
-        'dep_credit', 'ubi', 'taxable_ubi', 'nontaxable_ubi', 
-        '_payrolltax_exemption', 'ss_exemption', 'mc_exemption'])
-
-    INTEGER_CALCULATED_VARS = set(['_num', '_sep', '_exact'])
-
-    CHANGING_CALCULATED_VARS = (CALCULATED_VARS - INTEGER_CALCULATED_VARS -
-                                set(['ID_Casualty_frt_in_pufcsv_year']))
+    VAR_INFO_FILENAME = 'records_variables.json'
+    VAR_INFO_PATH = os.path.join(CUR_PATH, VAR_INFO_FILENAME)
 
     def __init__(self,
                  data='puf.csv',
@@ -275,15 +195,52 @@ class Records(object):
         self._current_year = new_current_year
         self.FLPDYR.fill(new_current_year)
 
+    @staticmethod
+    def read_var_info():
+        """
+        Reads Records variables metadata from JSON file;
+        returns dictionary and specifies static varname sets listed below.
+        """
+        if os.path.exists(Records.VAR_INFO_PATH):
+            with open(Records.VAR_INFO_PATH) as vfile:
+                vardict = json.load(vfile)
+        else:
+            vardict = read_egg_json(Records.VAR_INFO_FILENAME)
+        Records.INTEGER_READ_VARS = set(k for k, v in vardict['read'].items()
+                                        if v['type'] == 'int')
+        FLOAT_READ_VARS = set(k for k, v in vardict['read'].items()
+                              if v['type'] == 'float')
+        Records.MUST_READ_VARS = set(k for k, v in vardict['read'].items()
+                                     if v.get('required'))
+        Records.USABLE_READ_VARS = Records.INTEGER_READ_VARS | FLOAT_READ_VARS
+        INT_CALCULATED_VARS = set(k for k, v in vardict['calc'].items()
+                                  if v['type'] == 'int')
+        FLOAT_CALCULATED_VARS = set(k for k, v in vardict['calc'].items()
+                                    if v['type'] == 'float')
+        FIXED_CALCULATED_VARS = set(k for k, v in vardict['calc'].items()
+                                    if v['type'] == 'unchanging_float')
+        Records.CALCULATED_VARS = (INT_CALCULATED_VARS |
+                                   FLOAT_CALCULATED_VARS |
+                                   FIXED_CALCULATED_VARS)
+        Records.CHANGING_CALCULATED_VARS = FLOAT_CALCULATED_VARS
+        Records.INTEGER_VARS = Records.INTEGER_READ_VARS | INT_CALCULATED_VARS
+        return vardict
+
+    # various sets of variable names
+    INTEGER_READ_VARS = None
+    MUST_READ_VARS = None
+    USABLE_READ_VARS = None
+    CALCULATED_VARS = None
+    CHANGING_CALCULATED_VARS = None
+    INTEGER_VARS = None
+
     # --- begin private methods of Records class --- #
 
     def _blowup(self, year):
         """
         Applies to variables the grow factors for specified calendar year.
         """
-        # pylint: disable=too-many-statements
-        # pylint: disable=too-many-locals
-        # pylint: disable=unsubscriptable-object
+        # pylint: disable=too-many-locals,too-many-statements
         AWAGE = self.gfactors.factor_value('AWAGE', year)
         AINTS = self.gfactors.factor_value('AINTS', year)
         ADIVS = self.gfactors.factor_value('ADIVS', year)
@@ -387,9 +344,12 @@ class Records(object):
     def _read_data(self, data, exact_calcs):
         """
         Read Records data from file or use specified DataFrame as data.
-        Specifies _exact array depending on boolean value of exact_calcs.
+        Specifies exact array depending on boolean value of exact_calcs.
         """
         # pylint: disable=too-many-branches
+        if Records.INTEGER_VARS is None:
+            Records.read_var_info()
+        # read specified data
         if isinstance(data, pd.DataFrame):
             taxdf = data
         elif isinstance(data, six.string_types):
@@ -423,9 +383,8 @@ class Records(object):
         # create other class variables that are set to all zeros
         UNREAD_VARS = Records.USABLE_READ_VARS - READ_VARS
         ZEROED_VARS = Records.CALCULATED_VARS | UNREAD_VARS
-        INT_VARS = Records.INTEGER_READ_VARS | Records.INTEGER_CALCULATED_VARS
         for varname in ZEROED_VARS:
-            if varname in INT_VARS:
+            if varname in Records.INTEGER_VARS:
                 setattr(self, varname,
                         np.zeros(self.dim, dtype=np.int64))
             else:
@@ -436,19 +395,20 @@ class Records(object):
                                      np.less_equal(self.MARS, 5))):
             raise ValueError('not all MARS values in [1,5] range')
         # create variables derived from MARS, which is in MUST_READ_VARS
-        self._num[:] = np.where(self.MARS == 2, 2, 1)
-        self._sep[:] = np.where(self.MARS == 3, 2, 1)
-        # specify value of _exact array
-        self._exact[:] = np.where(exact_calcs is True, 1, 0)
+        self.num[:] = np.where(self.MARS == 2, 2, 1)
+        self.sep[:] = np.where(self.MARS == 3, 2, 1)
+        # specify value of exact array
+        self.exact[:] = np.where(exact_calcs is True, 1, 0)
         # specify value of ID_Casualty_frt_in_pufcsv_year array
-        ryear = 9999  # specify reform year if ID_Casualty_frt changes
-        rvalue = 0.0  # specify value of ID_Casualty_frt beginning in ryear
-        self.ID_Casualty_frt_in_pufcsv_year[:] = np.where(PUFCSV_YEAR < ryear,
-                                                          0.10, rvalue)
+        ryr = 9999  # specify reform year when ID_Casualty_frt changes to rval
+        rval = 0.0  # post-reform value could be any non-negative value
+        #             pre-reform value is 0.10, which is current law policy
+        self.ID_Casualty_frt_in_pufcsv_year[:] = np.where(PUFCSV_YEAR < ryr,
+                                                          0.10, rval)
 
     def zero_out_changing_calculated_vars(self):
         """
-        Set all CHANGING_CALCULATED_VARS to zero.
+        Set all Records.CHANGING_CALCULATED_VARS to zero.
         """
         for varname in Records.CHANGING_CALCULATED_VARS:
             var = getattr(self, varname)
@@ -468,12 +428,15 @@ class Records(object):
             WT = weights
         elif isinstance(weights, six.string_types):
             if os.path.isfile(weights):
+                # pylint: disable=redefined-variable-type
+                # (above because pylint mistakenly thinks WT not a DataFrame)
                 WT = pd.read_csv(weights)
             else:
                 WT = read_egg_csv(Records.WEIGHTS_FILENAME)
         else:
             msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
+        assert isinstance(WT, pd.DataFrame)
         setattr(self, 'WT', WT)
 
     def _read_adjust(self, adjust_ratios):
@@ -489,6 +452,8 @@ class Records(object):
             ADJ = adjust_ratios
         elif isinstance(adjust_ratios, six.string_types):
             if os.path.isfile(adjust_ratios):
+                # pylint: disable=redefined-variable-type
+                # (above because pylint mistakenly thinks ADJ not a DataFrame)
                 ADJ = pd.read_csv(adjust_ratios, index_col=0)
             else:
                 ADJ = read_egg_csv(Records.ADJUST_RATIOS_FILENAME, index_col=0)
@@ -497,6 +462,7 @@ class Records(object):
             msg = ('adjust_ratios is not None or a string'
                    'or a Pandas DataFrame')
             raise ValueError(msg)
+        assert isinstance(ADJ, pd.DataFrame)
         if ADJ.index.name != 'agi_bin':
             ADJ.index.name = 'agi_bin'
         self.ADJ = ADJ

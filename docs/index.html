@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Using Tax-Calculator</title>
+<style>
+div { max-width: 19cm }
+</style>
+</head>
+<body>
+<div>
+
+<h1 id="doc">Using Tax-Calculator</h1>
+
+<p>This document tells you how to use Tax-Calculator, an open-source
+federal income and payroll tax simulation model.  The two ways of
+using Tax-Calculator described here require no computer programming.
+If you want to participate in the development of Tax-Calculator
+&mdash; by reporting a bug, improving the documentation or making an
+enhancement to the Python source code &mdash; you should go to
+the <a href="https://github.com/open-source-economics/Tax-Calculator">
+developer website</a>.</p>
+
+
+<h2>Document Contents</h2>
+
+<p><a href="#gui">TaxBrain GUI</a> to use Tax-Calculator via an
+interactive web application</p>
+<p><a href="#cli">tc CLI</a> to use Tax-Calculator on your computer
+via the command line</p>
+<p><a href="#pol">Policy Parameters</a> that specify tax reforms</p>
+<p><a href="#input">Input Variables</a> that specify tax filing units</p>
+<p><a href="#output">Output Variables</a> that describe tax results</p>
+<p><a href="#params">Response Parameters</a> that specify reform responses</p>
+
+
+<h2 id="gui">TaxBrain GUI</h2>
+
+<p>You can use Tax-Calculator via a graphical user interface (GUI)
+provided by the <a href="http://www.ospc.org/taxbrain/">TaxBrain web
+application</a>.  This approach requires only an Internet connection
+and web browser on your computer.  TaxBrain (TB) uses a micro dataset
+to produce both aggregate and distributional reform estimates for each
+of ten years for a tax reform you specify.  The calculations take just
+a couple of minutes and there is flexibility to show different kinds
+of distributional results.</p>
+
+
+<h3>Section Contents</h3>
+
+<p><a href="#gui-spec-reform">Specify Tax Reform</a></p>
+<p><a href="#gui-init-static">Initiate Static Analysis</a></p>
+<p><a href="#gui-view-static">View/Download Static Results</a></p>
+<p><a href="#gui-init-dynamic">Initiate Dynamic Analysis</a></p>
+
+
+<h3 id="gui-spec-reform">Specify Tax Reform</h3>
+
+<p>The first step in using TaxBrain is to set the Start Year for the
+tax calculations.  Then specify the values of policy parameters that
+you want to change in your reform.</p>
+
+<p>By default the policy parameter boxes contain Start Year values.
+Simply replace the current-law value with the Start Year reform value.
+If some or all of your reform provisions are going to begin after the
+Start Year, simply fill in the pre-reform years with asterisks.  So,
+for example, if Start Year is 2017 and your reform calls for raising
+the social security payroll tax rate to 13 percent in 2018 and then
+to 14 percent in 2020, you would enter in that box the following:
+<pre>*,0.13,*,0.14</pre>
+This parameter is not indexed, so the 0.13 value for 2018 will be
+extrapolated to 2019, and the 0.14 value for 2020 will be in force
+in all subsequent years.</p>
+
+<p><a href="#gui">Back to Section Contents</a></p>
+
+
+<h3 id="gui-init-static">Initiate Static Analysis</h3>
+
+<p>Simply click on the Show me the results! button to start the tax
+calculations.  That button will use the full sample and take a couple
+of minutes to compute revenue and distributional results for each of
+ten years beginning with the Start Year you specified.</p>
+
+<p>There is also a Quick Calculation! button that produces results
+only for the Start Year using a sub-sample of the full sample.</p>
+
+<p><a href="#gui">Back to Section Contents</a></p>
+
+
+<h3 id="gui-view-static">View/Download Static Results</h3>
+
+<p>After the tax calculations are completed, you are shown a results
+page that presents various options: you can specify, view and download
+a total liabilities table, your can specify, view and download a
+distribution table, you can use your reform to conduct different types
+of dynamic analysis (via the button labeled Link to Dynamic
+Simulations), and finally, you can go back to the policy parameters
+page to modify your reform (via the button labeled Edit Parameters).</p>
+
+<p>There are three variants of the <b>total liabilities table</b>.
+The variant shown initially is Change, meaning the amounts are the
+difference between liabilities under your reform and the liabilities
+projected for current-law policy.  You can also elect to see the
+reform and current-law levels.</p>
+
+<p>There are many variants of the <b>distribution table</b>.  Try
+clicking on the options to the left to define the nature of the table
+and the year for which it is constructed.  Try clicking on the options
+to the right to specify which columns are included in the table.  An
+easy way to uncheck all the column boxes is to double click on the
+Select All box.</p>
+
+<p>There are four download options for each of these two tables:</p>
+
+<p><b>Print</b> creates a new page in your browser that is suitable
+for printing.</p>
+
+<p><b>Copy</b> puts the table on the clipboard of your local computer
+so that you can paste it anywhere on your computer.  The copy on the
+clipboard uses invisible tab characters to separate the table's
+columns.</p>
+
+<p><b>CSV</b> downloads to your computer a CSV-formatted file
+containing the information in the table.</p>
+
+<p><b>Excel</b> downloads a file suitable for using with an Excel
+spreadsheet.</p>
+
+<p><a href="#gui">Back to Section Contents</a></p>
+
+
+<h3 id="gui-init-dynamic">Initiate Dynamic Analysis</h3>
+
+<p>After clicking on the Link to Dynamic Simulation on the static
+results page, you are presented with a page that allows you to choose
+three different types of dynamic simulations to conduct on your tax
+reform:</p>
+
+<p><b>Partial Equilibrium Simulation</b> is described this way:
+<i>This approach answers the question, <q>how would taxpayer behavior
+(income and deductions) affect revenue if all other prices in the
+economy could stay the same?</q></i></p>
+
+<p><b>Overlapping Generations Simulation</b> is described this way:
+<i>This approach answers the question, <q>how does tax policy affect
+macroeconomic aggregates and prices?</q></i></p>
+
+<p><b>Macro Elasticities Simulation</b> is described this way:
+<i>This approach harnesses econometric estimates of the historical
+relationship between tax policy and the macroeconomy to predict the
+effect of tax reforms on growth.</i></p>
+
+Clicking on one of these choices will allow you to specify some
+addition economic response parameters and initiate the dynamic
+analysis using your response parameter assumptions.
+
+<p><a href="#gui">Back to Section Contents</a>&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a></p>
+
+
+<h2 id="cli">tc CLI</h2>
+
+<p>You can use Tax-Calculator on your own computer via a command line
+interface (CLI) called tc.  This approach requires the installation of
+Anaconda Python and the taxcalc package on your computer as well as
+the use of a text editor to prepare simple files that are read by tc.
+Computer programming knowledge is not required, but if you are
+prevented from doing the easy installation or you are not willing to
+work at the command line (Terminal on Mac or Command Prompt on
+Windows) and use an editor (for example, TextEdit on Mac or Notepad on
+Windows), then you should probably use the TaxBrain GUI.</p>
+
+<p>If you are comfortable using an editor to prepare text files that
+describe your tax reforms, but don't want to install Python and tc on
+your computer, you can upload reform files to TaxBrain where all the
+analysis is conducted (as described in the previous section).  If you
+are interested in this file-upload approach, skip the first part of
+this section, read the next part on how to specify policy reform
+files, and then skip to the last part of this section on how to upload
+files to TaxBrain.</p>
+
+
+<h3>Section Contents</h3>
+
+<p><a href="#cli-install-test">Install/Test tc CLI</a></p>
+<p><a href="#cli-spec-reform">Specify Tax Reform</a></p>
+<p><a href="#cli-spec-assump">Specify Analysis Assumptions</a></p>
+<p><a href="#cli-spec-funits">Specify Filing Units</a></p>
+<p><a href="#cli-init-analysis">Initiate Reform Analysis</a></p>
+<p><a href="#cli-tab-results">Tabulate Reform Results</a></p>
+<p><a href="#cli-taxbrain-upload">Upload Files to TaxBrain</a></p>
+
+
+<h3 id="cli-install-test">Install/Test tc CLI</h3>
+
+<p>Installation of tc CLI involves several steps:</p>
+
+<p><b>Install the free Anaconda Python distribution</b> by going to
+the <a href="https://www.continuum.io/downloads">Continuum Analytics
+download page</a> and selecting a version of Python.  You can install
+either Python 2.7 or Python 3.6 because we test Tax-Calculator with
+both.  You must do this installation even if you already
+have Python installed on your computer because the Anaconda
+distribution contains all the additional Python packages that
+Tax-Calculator uses to conduct tax calculations (many of which are not
+included in other Python installations). You can install the Anaconda
+distribution without having administrative privileges on your computer
+and the Anaconda distribution will not interfere with any Python
+installation that came as part of your computer’s operating
+system.</p>
+
+<p><b>Check your Anaconda Python installation</b> by entering the
+following two commands at the operating system command prompt (which
+is shown as <kbd>$</kbd> here, but would be <kbd>></kbd> on Windows)
+in any directory:
+<pre>$ conda --version</pre>
+Expected output is something like <kbd>conda 4.3.17</kbd>
+<pre>$ python --version</pre>
+Expected output should contain either the <kbd>Python 2.7</kbd> or
+the <kbd>Python 3.6</kbd> phrase as well as the
+<kbd>Anaconda</kbd> phrase, the presence of which confirm that the
+installation went smoothly.
+
+<p><b>Install the free taxcalc package</b> by entering the following:
+<pre>$ conda install -c ospc taxcalc</pre>
+Expected output should contain information about all the additional
+packages that Tax-Calculator needs.  After all that information has
+been shown on the screen, press the <kbd>y</kbd> key to proceed with
+the package installations.</p>
+
+<p><b>Check your installation of tc</b> (the CLI to Tax-Calculator) by
+entering the following:
+<pre>$ tc --test</pre>
+Expected output (after about twenty seconds) is <kbd>PASSED
+TEST</kbd>.  If you get <kbd>FAILED TEST</kbd>, something went wrong
+in the installation process.  If the installation test fails, please
+report your experience on
+the <a href="http://list.ospc.org/mailman/listinfo/users_list.ospc.org">Tax-Calculator
+users mailing list</a> or in an email to one of the core maintainers
+of Tax-Calculator listed at the bottom of the <i>What is TaxBrain?</i>
+page at <a href="http://www.ospc.org/taxbrain/">this website</a>.
+
+<p>If your installation passes the test, you are ready to begin using
+tc to analyze your tax reforms.  Continue reading this section for
+information about how to do that.  But if you want a quick hint about
+the range of tc capabilities, enter the following:
+<pre>$ tc --help</pre>
+</p>
+
+<p>The basic idea of tc tax analysis is that each tax reform is
+specified in a text file using a simple method to describe the details
+of the reform.  Read the next part of this section to see how policy
+reform files are formatted.</p>
+
+<p><a href="#cli">Back to Section Contents</a></p>
+
+
+<h3 id="cli-spec-reform">Specify Tax Reform</h3>
+
+<p>The details of a tax reform are contained in a text file that you
+write with a text editor.  The reform is expressed by specifying which
+tax policy parameters are changed from their current-law values by the
+reform.  The timing and magnitude of these policy parameter changes
+are written in JSON, a simple and widely-used data-specification
+language.</p>
+
+<p>For several examples of reform files and the general rules for
+writing JSON reform files, go
+to <a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/reforms/REFORMS.md">this
+page</a>.</p>
+
+<p>If you want to upload reform files to TaxBrain for static analysis
+(rather than use the tc CLI on your computer for analysis), go to this
+section's <a href="#cli-taxbrain-upload">last part</a>, which
+discusses uploading files to TaxBrain.  If you want to assume any
+responses to your tax reform (that is, if you want to conduct
+non-static analysis), read the next part before going to the last
+part.</p>
+
+<p><a href="#cli">Back to Section Contents</a></p>
+
+
+<h3 id="cli-spec-assump">Specify Analysis Assumptions</h3>
+
+<p>This part explains how to specify response assumption files used in
+non-static tax analysis.  If you want to start out doing static
+analysis, you can skip this part now and come back to read it whenever
+you want to go beyond static analysis.
+The <a href="#cli-spec-funits">next part</a> of this section discusses
+filing-unit input files.</p>
+
+<p>The details of economic response assumptions are contained in a
+text file that you write with a text editor.  The assumptions are
+expressed by specifying which response parameters are changed from
+their default values, which are all zero.  The timing and magnitude of
+these response parameter changes are written in JSON, a simple and
+widely-used data-specification language.</p>
+
+<p>For examples of response assumption files and the general rules for
+writing JSON assumption files, go
+to <a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/responses/ASSUMPTIONS.md">this
+page</a>.</p>
+
+<p>If you want to upload policy reform and response assumption files
+to TaxBrain, you can go directly to this
+section's <a href="#cli-taxbrain-upload">last part</a>, which
+discusses uploading files to TaxBrain.  If you want to analyze your
+tax reforms on your local computer, go to the next part on how to
+specify tax filing units used in the analysis.</p>
+
+<p><a href="#cli">Back to Section Contents</a></p>
+
+
+<h3 id="cli-spec-funits">Specify Filing Units</h3>
+
+<p>The taxcalc package containing the tc CLI to Tax-Calculator does
+not include the microsimulation sample used by TaxBrain.  This is
+because, unlike Census survey public-use files, the IRS-SOI Public Use
+File (PUF) is proprietary.  If you or your organization has paid IRS
+to use the PUF version being used by TaxBrain, then it may be possible
+for us to share with you our TaxBrain sample, which we
+call <kbd>puf.csv</kbd> even though it contains CPS records that
+represent non-filers.  Otherwise, you have three choices.</p>
+
+<p><b>First</b>, you can easily create with an editor a CSV-formatted
+file containing several filing units whose experience under your tax
+reform is of interest to you.  Much of the public discussion of tax
+reforms is of this type: how is this family or that family affected by
+a reform; how do they fare under different reforms; etc.  Notice that
+this kind of analysis of a few exemplary families is something you
+cannot do on TaxBrain.  The test conducted to check the tc
+installation has left one such file.  It is called <kbd>test.csv</kbd>
+and contains two filing units with only wage and salary income: a
+lower income family and a higher income family.  You can use the
+<kbd>test.csv</kbd> file as tc input to analyze your tax reforms.
+Before creating your own input files be sure to read the short set of
+guidelines that appear after this list of three choices.</p>
+
+<p><b>Second</b>, sometime in the future we hope to make freely
+available a public-use file containing only filing units derived from
+a recent March CPS survey.  It is difficult to know when this file
+will be available and how close the results generated by it will be to
+the results generated by the <kbd>puf.csv</kbd> file.</p>
+
+<p><b>Third</b>, when you want to estimate how your reform affects
+total tax liabilities and/or the distribution of tax liabilities, you
+can always upload your policy reform and response assumption files
+to TaxBrain.  Combining this option with the first option provides a
+complete tax analysis capability.
+The <a href="#cli-taxbrain-upload">last part</a> of this section
+describes how to upload files to TaxBrain.</p>
+
+<p><b>Input-File-Preparation Guidelines</b></p>
+
+<p>The tc CLI to Tax-Calculator is flexible enough to read almost any
+kind of CSV-formatted input data on filing units as long as the
+variable names correspond to those expected by Tax-Calculator.  The
+only required input variables are <kbd>RECID</kbd> (a unique
+filing-unit record identifier) and <kbd>MARS</kbd> (a positive-valued
+filing-status indicator).  Other variables in the input file must have
+variable names that are listed in the <a href="#input">Input
+Variables</a> section for them to affect the tax calculations.  Any
+variable listed in Input Variables that is not in an input file is
+automatically set to a value of zero for every filing unit.  Variables
+in the input file that are not listed in Input Variables are ignored
+by Tax-Calculator.</p>
+
+<p>However, there are important data-preparation issues related to the
+fact that the payroll tax is a tax on individuals, not on income-tax
+filing units.  Tax-Calculator expects that the filing-unit total for
+each of several earnings-related variables is split between the
+taxpayer and the spouse.  It is the responsibility of anyone preparing
+data for Tax-Calculator input to do this earnings splitting.  Here are
+the relationships between the filing-unit variable and the taxpayer
+(<kbd>p</kbd>) and spouse (<kbd>s</kbd>) variables expected by
+Tax-Calculator:
+<pre>
+e00200 = e00200p + e00200s
+e00900 = e00900p + e00900s
+e02100 = e02100p + e02100s
+</pre>
+Obviously, when <kbd>MARS</kbd> is not equal to 2 (married filing
+jointly), the values of the three <kbd>s</kbd> variables are zero and
+the value of each <kbd>p</kbd> variable is equal to the value of its
+corresponding filing-unit variable.  Note that the input file can
+omit any one, or all, of these three sets variables.  If the three
+variables in one of these sets are omitted, the required relationship
+will be satisfied because zero equals zero plus zero.</p>
+
+<p>But when including one of these three sets of variables, it is up
+to you to specify the taxpayer-spouse split.  You will get an error
+message from Tax-Calculator, and it will stop running, if you do not
+split the filing-unit amount between taxpayer and spouse so that the
+above equations hold for each filing unit in the input file.</p>
+
+<p>In addition to this earnings-splitting data-preparation issue,
+Tax-Calculator expects that the value of ordinary dividends
+(<kbd>e00600</kbd>) will be no less than the value of qualified
+dividends (<kbd>e00650</kbd>) for each filing unit.  Again, it is your
+responsibility to prepare input data in a way that ensures this
+relationship is true for each filing unit.</p>
+
+<p><a href="#cli">Back to Section Contents</a></p>
+
+
+<h3 id="cli-init-analysis">Initiate Reform Analysis</h3>
+
+<p>The tc CLI to Tax-Calculator requires only an input file containing
+one or more filing units.  A policy reform file is optional; no reform
+file implies you want to analyze current-law policy.  A response
+assumption file is also optional; no assumption file implies you want
+to conduct static analysis.</p>
+
+<p>Here we explain how to conduct tax analysis with the tc CLI by
+presenting a series of examples and explaining what output is produced
+in each example.  There are several types of output that tc can
+generate so there will be more than a few examples.  The examples are
+numbered in order to make it easier to refer to different examples.
+All the examples assume that the input file is <kbd>test.csv</kbd>,
+which was mentioned in previous part of this section.</p>
+
+<p><pre>
+(1)$ tc test.csv 2020
+</pre></p>
+
+<p>Example (1) produces a minimal output file containing 2020 tax
+liabilities for each filing unit assuming the income amounts in the
+input file are amounts for 2020 and assuming current-law tax policy
+projected to 2020.  The name of the CSV-formatted output file is
+<kbd>test-20-#-#.csv</kbd>.  No other output is produced by example
+(1).  The first <kbd>#</kbd> symbol indicates we did not specify a
+policy reform file and the second <kbd>#</kbd> symbol indicates we did
+not specify a response assumption file.  The variables included
+in the minimal output file include:
+<kbd>RECID</kbd> (of filing unit in the input file),
+<kbd>YEAR</kbd> (specified when executing tc CLI),
+<kbd>WEIGHT</kbd> (which is same as <kbd>s006</kbd>),
+<kbd>INCTAX</kbd> (which is same as <kbd>iitax</kbd>),
+<kbd>LSTAX</kbd> (which is same as <kbd>lumpsum_tax</kbd>) and
+<kbd>PAYTAX</kbd> (which is same as <kbd>payroll_tax</kbd>).
+</p>
+
+<p><pre>
+(2)$ tc test.csv 2020 --dump
+</pre></p>
+
+<p>Example (2) produces a much more complete output file with the same
+name <kbd>test-20-#-#.csv</kbd> as the minimal output file produced in
+example (1).  No other output is produced by example (2).  The
+<kbd>--dump</kbd> option causes all the input variables (including the
+one's understood by Tax-Calculator but not included
+in <kbd>test.csv</kbd>, which are all zero) and all the output
+variables calculated by Tax-Calculator to be included in the output
+file.  For a complete list of input variables, see
+the <a href="#input">Input Variables</a> section.  For a complete list
+of output variables, see the <a href="#output">Output Variables</a>
+section.  Since Tax-Calculator ignores variables in the input file
+that are not in the Input Variables section, the dump output file in
+example (2) can be used as an input file and it will produce exactly
+the same tax liabilities (apart from rounding errors of one or two
+cents) as in the original dump output.</p>
+
+<p><pre>
+(3)$ tc test.csv 2020 --sqldb
+</pre></p>
+
+<p>Example (3) produces the same dump output as example (2) except
+that the dump output is written not to a CSV-formatted file, but to
+the dump table in an SQLite3 database file, which is
+called <kbd>test-20-#-#.db</kbd> in this example.  Because
+the <kbd>--dump</kbd> option is not used in example (3), minimal
+output will be written to the <kbd>test-20-#-#.csv</kbd> file.  No
+other output is produced by example (3).</p>
+
+<p> Pros and cons of putting dump output in a CSV file or an SQLite3
+database table.  The CSV file is almost twice as large as the
+database, but it can be easily imported into a wide range of
+statistical packages and spreadsheets.  The main advantage of the
+SQLite3 database is that the Anaconda Python distribution includes
+<a href="http://www.sqlite.org/cli.html">sqlite3</a> (or sqlite3.exe
+on Windows), a command-line tool that can be used to tabulate dump
+output using structured query language (SQL).  SQL is a language that
+you use to specify the tabulation you want and the SQL database
+figures out the procedure for generating your tabulation and then
+executes that procedure; there is no computer programming involved.
+We will give an example of SQL tabulation of dump output in the next
+part of this section.</p>
+
+<p><pre>
+(4)$ tc test.csv 2020 --dump --sqldb
+</pre></p>
+
+<p>Example (4) shows that you can get dump output in the two different
+formats from a single tc run.</p>
+
+<p>The remaining examples use neither the <kbd>--dump</kbd> nor the
+<kbd>--sqldb</kbd> option, and thus, produce minimal output.  But
+either or both of those options could be used in all the subsequent
+examples.</p>
+
+<p><pre>
+(5)$ tc test.csv 2021 --reform ref3.json
+</pre></p>
+
+<p>Example (5) produces 2021 output for the filing units in the 
+<kbd>test.csv</kbd> file using the policy reform specified in
+the <kbd>ref3.json</kbd> file.  Because no <kbd>--assump</kbd>
+option is used, the output results are produced using static analysis.
+The name of the output file in this example is
+<kbd>test-21-ref3-#.csv</kbd>.</p>
+
+<p><pre>
+(6)$ tc test.csv 2021 --reform ref3.json --assump res1.json
+</pre></p>
+
+<p>Example (6) produces 2021 output for the filing units in the 
+<kbd>test.csv</kbd> file using the policy reform specified in
+the <kbd>ref3.json</kbd> file and the response assumptions
+specified in the <kbd>res1.json</kbd> file.  The output results
+produced by this non-static analysis are written to the 
+<kbd>test-21-ref3-res1.csv</kbd> file.</p>
+
+<p>The following examples illustrate output options that work only if
+each filing unit in the input file has a positive sampling weight
+(<kbd>s006</kbd>).  So, we are going to use the <kbd>puf.csv</kbd>
+file in these examples along with the policy reform specified in
+the <kbd>ref3.json</kbd> file, the content of which is:
+<pre>
+// ref3.json raises personal exemption amount to 8000 in 2022,
+// after which it continues to be indexed to price inflation.
+{
+    "policy": {
+        "_II_em": {"2022": [8000]}
+    }
+}
+</pre>
+The output options illustrated in the following examples generate
+tables of the post-reform level and the reform-induced change in tax
+liability by income deciles as well as graphs of marginal and average
+tax rates by income percentile.
+
+<p><pre>
+(7)$ tc puf.csv 2022 --reform ref3.json --tables
+You loaded data for 2009.
+Tax-Calculator startup automatically extrapolated your data to 2022.
+
+(7)$ ls puf-22*
+puf-22-ref3-#-tab.text	puf-22-ref3-#.csv
+
+(7)$ cat puf-22-ref3-#-tab.text
+Weighted Tax Totals by Expanded-Income Decile
+    Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
+       (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
+ 0     18.2    -125.5      -2.7       7.2       0.0       4.4
+ 1     18.2     189.4     -14.8      17.5       0.0       2.7
+ 2     18.2     339.8     -30.1      29.7       0.0      -0.4
+ 3     18.2     494.8     -21.3      42.6       0.0      21.4
+ 4     18.2     689.7      -4.4      62.1       0.0      57.7
+ 5     18.2     927.7      25.0      84.9       0.0     110.0
+ 6     18.2    1237.0      61.4     114.7       0.0     176.1
+ 7     18.2    1689.2     126.3     170.4       0.0     296.7
+ 8     18.2    2521.0     240.3     282.0       0.0     522.3
+ 9     18.2    7436.3    1549.6     510.0       0.0    2059.5
+ A    182.4   15399.4    1929.3    1321.1       0.0    3250.4
+
+Weighted Tax Differences by Expanded-Income Decile
+    Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
+       (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
+ 0     18.2    -125.5      -0.0       0.0       0.0      -0.0
+ 1     18.2     189.4      -0.1       0.0       0.0      -0.1
+ 2     18.2     339.8      -1.4       0.0       0.0      -1.4
+ 3     18.2     494.8      -3.4       0.0       0.0      -3.4
+ 4     18.2     689.7      -7.2       0.0       0.0      -7.2
+ 5     18.2     927.7     -10.8       0.0       0.0     -10.8
+ 6     18.2    1237.0     -16.6       0.0       0.0     -16.6
+ 7     18.2    1689.2     -21.6       0.0       0.0     -21.6
+ 8     18.2    2521.0     -31.3       0.0       0.0     -31.3
+ 9     18.2    7436.3     -23.8       0.0       0.0     -23.8
+ A    182.4   15399.4    -116.2       0.0       0.0    -116.2
+</pre></p>
+
+<p>Example (7) produces 2022 static output for the filing units in the
+<kbd>puf.csv</kbd> file using the policy reform specified in
+the <kbd>ref3.json</kbd> file.  Notice that Tax-Calculator knows to
+extrapolate (or <q>age</q>) filing unit data in the <kbd>puf.csv</kbd>
+file to the specified tax year.  It knows to do that because of the
+special input file name <kbd>puf.csv</kbd>.  The tables produced by
+this static analysis are written to the
+<kbd>puf-22-ref3-#-tab.text</kbd> file.  Note that on Windows
+you would use <kbd>dir</kbd> instead of <kbd>ls</kbd> and 
+<kbd>type</kbd> instead of <kbd>cat</kbd>.</p>
+
+<p><pre>
+(8)$ tc puf.csv 2024 --reform ref3.json --graphs
+You loaded data for 2009.
+Tax-Calculator startup automatically extrapolated your data to 2024.
+
+(8)$ ls puf-24*
+puf-24-ref3-#-atr.html	puf-24-ref3-#-mtr.html	puf-24-ref3-#.csv
+</pre></p>
+
+<p>Example (8) is like example (7) except we ask for 2024 static
+output and for graphs instead of tables, although we could ask for
+both.  The HTML files containing the graphs can be viewed in your
+browser.</p>
+
+<p>Here is what the average tax rate graph
+in <kbd>puf-24-ref3-#-atr.html</kbd> looks like.</p>
+
+<p><img src="atr.png" alt="atr graph"></p>
+
+<p>Here is what the marginal tax rate graph
+in <kbd>puf-24-ref3-#-mtr.html</kbd> looks like:</p>
+
+<p><img src="mtr.png" alt="mtr graph"></p>
+
+<p>There is yet another tc CLI output option that writes to the screen
+results from a normative welfare analysis of the specified policy
+reform.  This <kbd>--ceeu</kbd> option produces experimental results
+that make sense only with input files that contain representative
+samples of the population such as the <kbd>puf.csv</kbd> file.  The
+name of this option stands for certainty-equivalent expected utility.
+If you want to use this output option, you should read the commented
+Python source code for the <kbd>ce_aftertax_income</kbd> function in
+the <kbd>taxcalc/utils.py</kbd> file at the
+<a href="https://github.com/open-source-economics/Tax-Calculator">
+developer website</a>.</p>
+
+<p><a href="#cli">Back to Section Contents</a></p>
+
+
+<h3 id="cli-tab-results">Tabulate Reform Results</h3>
+
+<p>Given that tc CLI output can be written to either CSV-formatted
+files or SQLite3 database files, there is an enormous range of
+software tools that can be used to tabulate the output.  You can use
+SAS or R, Stata or MATLAB, or even import output into a spreadsheet
+(but this would seem to be the least useful option).  The main point
+is to use a software tool that is available to you and that you have
+experience using.</p>
+
+<p>Here we give some examples of using the <kbd>sqlite3</kbd>
+command-line tool that is part of the Anaconda distribution (so it is
+always available when using Tax-Calculator).  The first step, of
+course, is to use the <kbd>--sqldb</kbd> option when running tc.  Then
+you can use the <kbd>sqlite3</kbd> tool interactively or use it to
+execute SQL scripts you have saved in a text file.  We'll provide
+examples of both those approaches.  There are many online tutorials on
+the SQL select command; if you want to learn more, search the
+Internet.</p>
+
+<p>First, we provide a simple example of using <kbd>sqlite3</kbd>
+interactively.  This approach is ideal for exploratory data analysis.
+Our example uses the <kbd>puf.csv</kbd> file as input, but you can do
+the following with the output from any input file that has weights
+(<kbd>s006</kbd>).  Also, we specify no policy reform file, so the
+output is for current-law policy.  What you cannot see from the
+following record of the analysis is that the <kbd>sqlite3</kbd> tool
+keeps a command history, so pressing the up-arrow key will bring up
+the prior command for editing.  This feature reduces substantially the
+amount of typing required to conduct exploratory data analysis.
+<pre>
+$ tc puf.csv 2016 --sqldb
+You loaded data for 2009.
+Tax-Calculator startup automatically extrapolated your data to 2016.
+$ sqlite3 puf-16-#-#.db
+SQLite version 3.13.0 2016-05-18 10:57:30
+Enter ".help" for usage hints.
+sqlite> select count(*) from dump;
+219814
+sqlite> select count(*),sum(s006) from dump;
+219814|167570630.439945
+sqlite> select count(*),round(sum(s006)*1e-6,3) from dump;
+219814|167.571
+sqlite> select round(sum(s006)*1e-6,3) from dump where MARS=2;
+59.183
+sqlite> select MARS,round(sum(s006)*1e-6,3) from dump group by MARS;
+1|82.417
+2|59.183
+3|2.455
+4|23.516
+sqlite> .quit
+$
+</pre>
+</p>
+
+<p>Second, we provide a simple example of using <kbd>sqlite3</kbd>
+with SQL commands stored in a text file.  This approach is useful
+if you want to tabulate many different output files in the same way.
+In this second example assumes that the first example has already
+been done.  Note that on Windows you should replace <kbd>cat</kbd>
+with <kbd>type</kbd>.
+</p>
+<pre>
+$ cat tab.sql
+-- tabulate weight of those with negative marginal income tax rates
+select "weighted count of those with negative MTR",
+        round(sum(s006)*1e-6,3)
+from dump
+where mtr_inctax < 0;
+
+-- construct marginal income tax rate histogram with bin width 10
+select "bin number|weighted count|average MTR in bin";
+select round((mtr_inctax-5)/10) as mtr_bin, -- histogram bin number
+       round(sum(s006)*1e-6,3), -- weight of those in bin (m#)
+       -- weighted average marginal income tax rate on taxpayer earnings in bin:
+       round(sum(mtr_inctax*s006)/sum(s006),2)
+from dump
+where mtr_inctax >= 0  -- include only those with positive MTR
+group by mtr_bin
+order by mtr_bin;
+
+-- tabulate weight of all filing units
+select "weighted count of all filing units",
+        round(sum(s006)*1e-6,3)
+from dump;
+
+$ cat tab.sql | sqlite3 puf-16-#-#.db
+weighted count of those with negative MTR|19.424
+bin number|weighted count|average MTR in bin
+-1.0|37.752|0.0
+0.0|2.458|6.99
+1.0|54.549|14.15
+2.0|37.325|25.54
+3.0|14.402|32.6
+4.0|1.408|42.18
+5.0|0.22|54.72
+6.0|0.024|62.32
+7.0|0.005|76.53
+8.0|0.002|87.66
+weighted count of all filing units|167.571
+</pre>
+The <kbd>cat</kbd> command writes the contents of
+the <kbd>tab.sql</kbd> file to stdout.  We do nothing but that in the
+first command in order to show you the file contents.  The second
+command pipes the contents of the <kbd>tab.sql</kbd> file into
+the <kbd>sqlite3</kbd> tool, which executes the SQL statements and
+writes the tabulation results to stdout.  (If you're wondering about
+the validity of those high marginal tax rates, rest assured that all
+nine filing units with marginal income tax rates greater than seventy
+percent have been checked by hand and are valid: six of the nine are
+caught in the rapid phase-out of non-refundable education credits and
+the other three have non-refundable foreign tax credits.  The negative
+marginal tax rates are caused by refundable credits, primarily the
+earned income credit.)</p>
+
+<p>If you want to use the <kbd>sqlite3</kbd> tool to tabulate the
+changes caused by a reform, use the tc CLI to generate two database
+dump files (one for current-law policy and the other for your reform)
+and then use the SQLite3 ATTACH command to make both database files
+available in your SQLite tabulation session.</p>
+
+
+<h3 id="cli-taxbrain-upload">Upload Files to TaxBrain</h3>
+
+<p>Any policy reform or response assumption files you can use with tc
+can be uploaded to trigger a TaxBrain run.  As mentioned above the
+main advantages of doing this is getting fast execution of both reform
+and current-law policy runs for ten years and getting the flexibility
+to specify a variety of distributional tables.  All the results can be
+downloaded to your computer for storage or for additional
+analysis.</p>
+
+<p>The files on your computer can be uploaded
+at <a href="http://www.ospc.org/taxbrain/file/">the TaxBrain
+file-upload page</a>.</p>
+
+<p>An extended example of how preliminary tax analysis on your
+computer can be combined with TaxBrain file-uploading is
+<a href="https://github.com/open-source-economics/Tax-Calculator/issues/1335">here</a>.</p>
+
+<p><a href="#cli">Back to Section Contents</a>&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a></p>
+
+
+<h2 id="pol">Policy Parameters</h2>
+
+<p>This section contains documentation of policy parameters in a
+format that is easy to search and print.  The policy parameters are
+grouped here as they are are on TaxBrain (TB).  Parameters understood
+by Tax-Calculator and the tc CLI, but not available in the TaxBrain
+GUI, are placed in an Other Parameters group at the end of the
+section.</p>
+
+
+<h3>Section Contents</h3>
+
+<p><a href="#pol-payroll-taxes">Payroll Taxes</a></p>
+<p><a href="#pol-social-security-taxability">Social Security Taxability</a></p>
+<p><a href="#pol-above-the-line-deductions">Above The Line Deductions</a></p>
+<p><a href="#pol-personal-exemptions">Personal Exemptions</a></p>
+<p><a href="#pol-standard-deduction">Standard Deduction</a></p>
+<p><a href="#pol-personal-refundable-credit">Personal Refundable Credit</a></p>
+<p><a href="#pol-itemized-deductions">Itemized Deductions</a></p>
+<p><a href="#pol-capital-gains-dividends">Capital Gains And Dividends</a></p>
+<p><a href="#pol-personal-income">Personal Income</a></p>
+<p><a href="#pol-nonrefundable-credits">Nonrefundable Credits</a></p>
+<p><a href="#pol-other-taxes">Other Taxes</a></p>
+<p><a href="#pol-refundable-credits">Refundable Credits</a></p>
+<p><a href="#pol-surtaxes">Surtaxes</a></p>
+<p><a href="#pol-other-parameters">Other Parameters</a></p>
+
+
+<h3 id="pol-payroll-taxes"></a>Payroll Taxes</h3>
+
+<p><b>Payroll Taxes &mdash; Social Security FICA</b><br><i>tc Name:</i> _FICA_ss_trt<br><i>TB Name:</i> Social Security payroll tax rate<br><i>Description:</i> Social Security FICA rate, including both employer and employee.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.124<br>2014: 0.124<br>2015: 0.124<br>2016: 0.124<br>2017: 0.124</p><p><b>Payroll Taxes &mdash; Social Security FICA</b><br><i>tc Name:</i> _SS_Earnings_c<br><i>TB Name:</i> Maximum taxable earnings for Social Security<br><i>Description:</i> Only individual earnings below this maximum amount are subjected to Social Security (OASDI) payroll tax.<br><i>Notes:</i> This parameter is indexed by the rate of growth in average wages, not by the price inflation rate.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>2013: 113700<br>2014: 117000<br>2015: 118500<br>2016: 118500<br>2017: 127200</p>
+
+<p><b>Payroll Taxes &mdash; Medicare FICA</b><br><i>tc Name:</i> _FICA_mc_trt<br><i>TB Name:</i> Medicare payroll tax rate<br><i>Description:</i> Medicare FICA rate, including both employer and employee.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.029<br>2014: 0.029<br>2015: 0.029<br>2016: 0.029<br>2017: 0.029</p>
+
+<p><b>Payroll Taxes &mdash; Additional Medicare FICA</b><br><i>tc Name:</i> _AMEDT_ec<br><i>TB Name:</i> Additional Medicare tax earnings exclusion<br><i>Description:</i> The Additional Medicare Tax rate, _AMEDT_rt, applies to all earnings in excess of this excluded amount.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [200000, 250000, 125000, 200000, 200000]<br>2014: [200000, 250000, 125000, 200000, 200000]<br>2015: [200000, 250000, 125000, 200000, 200000]<br>2016: [200000, 250000, 125000, 200000, 200000]<br>2017: [200000, 250000, 125000, 200000, 200000]</p><p><b>Payroll Taxes &mdash; Additional Medicare FICA</b><br><i>tc Name:</i> _AMEDT_rt<br><i>TB Name:</i> Additional Medicare tax rate<br><i>Description:</i> This is the rate applied to the portion of Medicare wages, RRTA compensation and self-employment income exceeding the Additional Medicare Tax earning exclusion.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.009<br>2014: 0.009<br>2015: 0.009<br>2016: 0.009<br>2017: 0.009</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+
+<h3 id="pol-social-security-taxability">Social Security Taxability</h3>
+
+<p><b>Social Security Taxability &mdash; Threshold For Social Security Benefit Taxability 1</b><br><i>tc Name:</i> _SS_thd50<br><i>TB Name:</i> Threshold for Social Security benefit taxability 1<br><i>Description:</i> The first threshold for Social Security benefit taxability: if taxpayers have provisional income greater than this threshold, up to 50% of their Social Security benefit will be subject to tax under current law.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [25000, 32000, 25000, 25000, 25000]<br>2014: [25000, 32000, 25000, 25000, 25000]<br>2015: [25000, 32000, 25000, 25000, 25000]<br>2016: [25000, 32000, 25000, 25000, 25000]<br>2017: [25000, 32000, 25000, 25000, 25000]</p>
+
+<p><b>Social Security Taxability &mdash; Threshold For Social Security Benefit Taxability 2</b><br><i>tc Name:</i> _SS_thd85<br><i>TB Name:</i> Threshold for Social Security benefit taxability 2<br><i>Description:</i> The second threshold for Social Security taxability: if taxpayers have provisional income greater than this threshold, up to 85% of their Social Security benefit will be subject to tax under current law.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [34000, 44000, 34000, 34000, 34000]<br>2014: [34000, 44000, 34000, 34000, 34000]<br>2015: [34000, 44000, 34000, 34000, 34000]<br>2016: [34000, 44000, 34000, 34000, 34000]<br>2017: [34000, 44000, 34000, 34000, 34000]</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+
+<h3 id="pol-above-the-line-deductions">Above The Line Deductions</h3>
+
+<p><b>Above The Line Deductions &mdash; Misc. Adjustment Haircuts</b><br><i>tc Name:</i> _ALD_StudentLoan_hc<br><i>TB Name:</i> Adjustment for student loan interest haircut<br><i>Description:</i> This decimal fraction can be applied to limit the student loan interest adjustment allowed. <br><i>Notes:</i> The final adjustment amount will be (1- Haircut) * Student Loan Interest. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Above The Line Deductions &mdash; Misc. Adjustment Haircuts</b><br><i>tc Name:</i> _ALD_SelfEmploymentTax_hc<br><i>TB Name:</i> Adjustment for self-employment tax haircut<br><i>Description:</i> This decimal fraction, if greater than zero, reduces the employer equivalent portion of self-employment adjustment. <br><i>Notes:</i> The final adjustment amount would be (1 - Haircut) * Self Employment Tax Adjustment. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Above The Line Deductions &mdash; Misc. Adjustment Haircuts</b><br><i>tc Name:</i> _ALD_SelfEmp_HealthIns_hc<br><i>TB Name:</i> Adjustment for self employed health insurance haircut<br><i>Description:</i> This decimal fraction, if greater than zero, reduces the health insurance adjustment for self-employed taxpayers. <br><i>Notes:</i> The final adjustment amount would be (1 - Haircut) * self-employed health insurance adjustment. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Above The Line Deductions &mdash; Misc. Adjustment Haircuts</b><br><i>tc Name:</i> _ALD_KEOGH_SEP_hc<br><i>TB Name:</i> Adjustment for payment to either KEOGH or SEP plan haircut<br><i>Description:</i> Under current law, payments to Keogh or SEP plans can be fully deducted from gross income. Taxpayers can use this haircut to limit the adjustment allowed. <br><i>Notes:</i> The final adjustment amount is (1 - Haircut) * KEOGH/SEP plan payments<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Above The Line Deductions &mdash; Misc. Adjustment Haircuts</b><br><i>tc Name:</i> _ALD_EarlyWithdraw_hc<br><i>TB Name:</i> Adjustment for forfeited interest penalty haircut<br><i>Description:</i> Under current law, early withdraw penalty can be fully deducted from gross income. Taxpayers can use this haircut to limit the adjustment allowed.<br><i>Notes:</i> The final adjustment amount is (1 - Haircut) * Early withdraw penalty<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Above The Line Deductions &mdash; Misc. Adjustment Haircuts</b><br><i>tc Name:</i> _ALD_Alimony_hc<br><i>TB Name:</i> Adjustment for alimony payment haircut<br><i>Description:</i> Under current law, the full amount of alimony payment is taken as an adjustment from gross income in arriving at AGI. Taxpayers can use this haircut to limit the deduction allowed.<br><i>Notes:</i> The final adjustment amount would be (1 - Haircut) * Alimony Payments<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Above The Line Deductions &mdash; Misc. Adjustment Haircuts</b><br><i>tc Name:</i> _ALD_EducatorExpenses_hc<br><i>TB Name:</i> Deduction for educator expenses haircut<br><i>Description:</i> If greater than zero, this decimal fraction reduces the portion of educator expenses that can be deducted from AGI<br><i>Notes:</i> The final adjustment amount would be (1 - Haircut) * Educator Expenses<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Above The Line Deductions &mdash; Misc. Adjustment Haircuts</b><br><i>tc Name:</i> _ALD_HSADeduction_hc<br><i>TB Name:</i> Deduction for HSA deduction haircut<br><i>Description:</i> If greater than zero, this decimal fraction reduces the portion of a taxpayer's HSA deduction that can be deducted from AGI<br><i>Notes:</i> The final adjustment amount would be (1 - Haircut) * HSA Deduction<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Above The Line Deductions &mdash; Misc. Adjustment Haircuts</b><br><i>tc Name:</i> _ALD_IRAContributions_hc<br><i>TB Name:</i> Deduction for IRA contributions haircut<br><i>Description:</i> If greater than zero, this decimal fraction reduces the portion of IRA contributions that can be deducted from AGI<br><i>Notes:</i> The final adjustment amount would be (1 - Haircut) * IRA Contribution<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Above The Line Deductions &mdash; Misc. Adjustment Haircuts</b><br><i>tc Name:</i> _ALD_DomesticProduction_hc<br><i>TB Name:</i> Deduction for domestic production activity haircut<br><i>Description:</i> If greater than zero, this decimal fraction reduces the portion of domestic production activity that can be deducted from AGI<br><i>Notes:</i> The final adjustment amount would be (1 - Haircut) * Domestic Production Activity<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Above The Line Deductions &mdash; Misc. Adjustment Haircuts</b><br><i>tc Name:</i> _ALD_Tuition_hc<br><i>TB Name:</i> Deduction for tuition and fees haircut<br><i>Description:</i> If greater than zero, this decimal fraction reduces the portion of tuition and fees that can be deducted from AGI<br><i>Notes:</i> The final adjustment amount would be (1 - Haircut) * Tuition and Fees<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p>
+
+<p><b>Above The Line Deductions &mdash; Misc. Exclusions</b><br><i>tc Name:</i> _ALD_InvInc_ec_rt<br><i>TB Name:</i> Investment income exclusion rate haircut<br><i>Description:</i> Decimal fraction of investment income base that can be excluded from AGI.<br><i>Notes:</i> The final taxable investment income will be (1-_ALD_InvInc_ec_rt)*investment_income_base. Even though the excluded portion of investment income is not included in AGI, it still is included in investment income used to calculate the Net Investment Income Tax and Earned Income Tax Credit.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Above The Line Deductions &mdash; Misc. Exclusions</b><br><i>tc Name:</i> _ALD_InvInc_ec_base_RyanBrady<br><i>TB Name:</i> Investment income exclusion base for Ryan-Brady tax blueprint<br><i>Description:</i> Exclusion is applied to long-term gains before loss limitation, taxable interest and qualified dividends. Interpretation of the sparsely-detailed Ryan-Brady provision.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: False<br>2014: False<br>2015: False<br>2016: False<br>2017: False</p>
+
+<p><b>Above The Line Deductions &mdash; Child And Elderly Care</b><br><i>tc Name:</i> _ALD_Dependents_hc<br><i>TB Name:</i> Deduction for childcare costs haircut<br><i>Description:</i> This decimal fraction, if greater than zero, reduces the portion of childcare costs that can be deducted from AGI<br><i>Notes:</i> The final adjustment would be (1 - Haircut) * Average childcare costs<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Above The Line Deductions &mdash; Child And Elderly Care</b><br><i>tc Name:</i> _ALD_Dependents_Child_c<br><i>TB Name:</i> National average childcare costs: ceiling for available childcare deduction.<br><i>Description:</i> The weighted average of childcare costs in the US. 7165 is the weighted average from the 'Child Care in America: 2016 State Fact Sheets'<br><i>Notes:</i> This is a weighted average of childcare costs in each state<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Above The Line Deductions &mdash; Child And Elderly Care</b><br><i>tc Name:</i> _ALD_Dependents_Elder_c<br><i>TB Name:</i> Ceiling for elderly care deduction proposed in Trump's tax plan<br><i>Description:</i> A tax payer can take an above the line deduction up to this amount if they have an elderly dependent. The Trump 2016 campaign proposal was for $5000.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Above The Line Deductions &mdash; Child And Elderly Care</b><br><i>tc Name:</i> _ALD_Dependents_thd<br><i>TB Name:</i> Maximum level of income to qualify for the dependent care deduction<br><i>Description:</i> A taxpayer can only claim the dependent care deduction if their total income is below this level. The Trump 2016 campaign proposal was for 250000 single, 500000 joint, 250000 separate, 500000 head of household].<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [0.0, 0.0, 0.0, 0.0, 0.0]<br>2014: [0.0, 0.0, 0.0, 0.0, 0.0]<br>2015: [0.0, 0.0, 0.0, 0.0, 0.0]<br>2016: [0.0, 0.0, 0.0, 0.0, 0.0]<br>2017: [0.0, 0.0, 0.0, 0.0, 0.0]</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+
+<h3 id="pol-personal-exemptions">Personal Exemptions</h3>
+
+<p><b>Personal Exemptions &mdash; Personal And Dependent Exemption Amount</b><br><i>tc Name:</i> _II_em<br><i>TB Name:</i> Personal and dependent exemption amount<br><i>Description:</i> Subtracted from AGI in the calculation of taxable income, per taxpayer and dependent.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>2013: 3900<br>2014: 3950<br>2015: 4000<br>2016: 4050<br>2017: 4050</p>
+
+<p><b>Personal Exemptions &mdash; Personal Exemption Phaseout Rate</b><br><i>tc Name:</i> _II_prt<br><i>TB Name:</i> Personal exemption phaseout rate<br><i>Description:</i> Personal exemption amount will decrease by this rate for each dollar of AGI exceeding exemption phaseout start.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.02<br>2014: 0.02<br>2015: 0.02<br>2016: 0.02<br>2017: 0.02</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+
+<h3 id="pol-standard-deduction">Standard Deduction</h3>
+
+<p><b>Standard Deduction &mdash; Standard Deduction Amount</b><br><i>tc Name:</i> _STD<br><i>TB Name:</i> Standard deduction amount<br><i>Description:</i> Amount filing unit can use as a standard deduction.<br><i>Notes:</i> This parameter cannot be decreased due to lack of data.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [6100, 12200, 6100, 8950, 12200]<br>2014: [6200, 12400, 6200, 9100, 12400]<br>2015: [6300, 12600, 6300, 9250, 12600]<br>2016: [6300, 12600, 6300, 9300, 12600]<br>2017: [6350, 12700, 6350, 9350, 12700]</p>
+
+<p><b>Standard Deduction &mdash; Additional Standard Deduction For Blind And Aged</b><br><i>tc Name:</i> _STD_Aged<br><i>TB Name:</i> Additional standard deduction for blind and aged<br><i>Description:</i> To get the standard deduction for aged or blind individuals, taxpayers need to add this value to regular standard deduction<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [1500, 1200, 1200, 1500, 1500]<br>2014: [1550, 1200, 1200, 1550, 1550]<br>2015: [1550, 1250, 1250, 1550, 1550]<br>2016: [1550, 1250, 1250, 1550, 1550]<br>2017: [1550, 1250, 1250, 1550, 1550]</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+
+<h3 id="pol-personal-refundable-credit">Personal Refundable Credit</h3>
+
+<p><b>Personal Refundable Credit &mdash; Personal Refundable Credit Maximum Amount</b><br><i>tc Name:</i> _II_credit<br><i>TB Name:</i> Personal refundable credit maximum amount<br><i>Description:</i> This credit amount is fully refundable and phased out based on AGI. It is available to tax units who would otherwise not file.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [0, 0, 0, 0, 0]<br>2014: [0, 0, 0, 0, 0]<br>2015: [0, 0, 0, 0, 0]<br>2016: [0, 0, 0, 0, 0]<br>2017: [0, 0, 0, 0, 0]</p>
+
+<p><b>Personal Refundable Credit &mdash; Personal Refundable Credit Phaseout Rate</b><br><i>tc Name:</i> _II_credit_prt<br><i>TB Name:</i> Personal refundable credit phaseout rate<br><i>Description:</i> The Personal Refundable credit amount will be reduced at this rate for each dollar of AGI exceeding the _II_credit_ps threshold.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+
+<h3 id="pol-itemized-deductions">Itemized Deductions</h3>
+
+<p><b>Itemized Deductions &mdash; Medical Expenses</b><br><i>tc Name:</i> _ID_Medical_frt<br><i>TB Name:</i> Deduction for medical expenses; floor as a decimal fraction of AGI<br><i>Description:</i> Taxpayers are eligible to deduct the portion of their medical expense exceeding this fraction of AGI.<br><i>Notes:</i> This rate cannot be decreased to lower than 0.1 due to limited data on non-itemizers.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.1<br>2014: 0.1<br>2015: 0.1<br>2016: 0.1<br>2017: 0.1</p><p><b>Itemized Deductions &mdash; Medical Expenses</b><br><i>tc Name:</i> _ID_Medical_frt_add4aged<br><i>TB Name:</i> Addon to the deduction for medical expenses floor rate for elderly filing units; addon as a decimal fraction of AGI<br><i>Description:</i> Elderly taxpayers have this fraction added to the value of the deduction for medical expenses floor rate.  This fraction was -0.025 from 2013 to 2016, but that was temporary and it changed to zero beginning in 2017.<br><i>Notes:</i> This addon cannot be decreased to lower than -0.025 due to limited data on elderly non-itemizers.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: -0.025<br>2014: -0.025<br>2015: -0.025<br>2016: -0.025<br>2017: 0.0</p><p><b>Itemized Deductions &mdash; Medical Expenses</b><br><i>tc Name:</i> _ID_Medical_hc<br><i>TB Name:</i> Medical expense deduction haircut<br><i>Description:</i> This decimal fraction can be applied to limit the amount of medical expense deduction allowed.<br><i>Notes:</i> This parameter is currently used to eliminate this part of itemized deduction. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p>
+
+<p><b>Itemized Deductions &mdash; State And Local Income And Sales Taxes</b><br><i>tc Name:</i> _ID_StateLocalTax_hc<br><i>TB Name:</i> State and local taxes (Income and Sales) deduction haircut.<br><i>Description:</i> This decimal fraction reduces the state and local tax deduction.<br><i>Notes:</i> This parameter allows for the implementation of Option 51 from https://www.cbo.gov/sites/default/files/cbofiles/attachments/49638-BudgetOptions.pdf.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p>
+
+<p><b>Itemized Deductions &mdash; Real Estate Taxes</b><br><i>tc Name:</i> _ID_RealEstate_hc<br><i>TB Name:</i> Real estate taxes deduction haircut.<br><i>Description:</i> This decimal fraction reduces real estate taxes paid eligible to deduct in itemized deduction.<br><i>Notes:</i> This parameter is currently used to eliminate real estate taxes paid itemized deduction.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p>
+
+<p><b>Itemized Deductions &mdash; Interest Paid</b><br><i>tc Name:</i> _ID_InterestPaid_hc<br><i>TB Name:</i> Interest deduction haircut<br><i>Description:</i> This decimal fraction can be applied to limit the amount of interest deduction allowed.<br><i>Notes:</i> This parameter is currently used to eliminate this part of itemized deduction. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p>
+
+<p><b>Itemized Deductions &mdash; Charity</b><br><i>tc Name:</i> _ID_Charity_crt_all<br><i>TB Name:</i> Ceiling (as a decimal fraction of AGI) for all charitable contribution deductions<br><i>Description:</i> The total deduction for charity is capped at this fraction of AGI. <br><i>Notes:</i> This rate cannot be increased to higher 0.5 due to lack of data. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.5<br>2014: 0.5<br>2015: 0.5<br>2016: 0.5<br>2017: 0.5</p><p><b>Itemized Deductions &mdash; Charity</b><br><i>tc Name:</i> _ID_Charity_crt_noncash<br><i>TB Name:</i> Ceiling (as a decimal fraction of AGI) for noncash charitable contribution deductions<br><i>Description:</i> The deduction for noncash charity contributions is capped at this fraction of AGI. <br><i>Notes:</i> This rate cannot be increased to higher than 0.3 due to lack of data. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.3<br>2014: 0.3<br>2015: 0.3<br>2016: 0.3<br>2017: 0.3</p><p><b>Itemized Deductions &mdash; Charity</b><br><i>tc Name:</i> _ID_Charity_frt<br><i>TB Name:</i> Deduction for charitable contributions; floor as a decimal fraction of AGI<br><i>Description:</i> Taxpayers are eligible to deduct the portion of their charitable expense exceeding this fraction of AGI.<br><i>Notes:</i> This parameter allows for implementation of Option 52 from https://www.cbo.gov/sites/default/files/cbofiles/attachments/49638-BudgetOptions.pdf.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Itemized Deductions &mdash; Charity</b><br><i>tc Name:</i> _ID_Charity_hc<br><i>TB Name:</i> Charity expense deduction haircut<br><i>Description:</i> This decimal fraction can be applied to limit the amount of charity expense deduction allowed.<br><i>Notes:</i> This parameter is currently used to eliminate this part of itemized deduction. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p>
+
+<p><b>Itemized Deductions &mdash; Casualty</b><br><i>tc Name:</i> _ID_Casualty_frt<br><i>TB Name:</i> Deduction for casualty loss; floor as a decimal fraction of AGI<br><i>Description:</i> Taxpayers are eligible to deduct the portion of their casualty loss exceeding this fraction of AGI.<br><i>Notes:</i> This rate cannot be decreased to lower than 0.1 due to lack of data. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.1<br>2014: 0.1<br>2015: 0.1<br>2016: 0.1<br>2017: 0.1</p><p><b>Itemized Deductions &mdash; Casualty</b><br><i>tc Name:</i> _ID_Casualty_hc<br><i>TB Name:</i> Casualty expense deduction haircut<br><i>Description:</i> This decimal fraction can be applied to limit the amount of casualty expense deduction allowed.<br><i>Notes:</i> This parameter is currently used to eliminate this part of itemized deduction. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p>
+
+<p><b>Itemized Deductions &mdash; Miscellaneous</b><br><i>tc Name:</i> _ID_Miscellaneous_frt<br><i>TB Name:</i> Deduction for miscellaneous expenses; floor as a decimal fraction of AGI<br><i>Description:</i> Taxpayers are eligible to deduct the portion of their miscellaneous expense exceeding this fraction of AGI.<br><i>Notes:</i> This rate cannot be decreased to lower than 0.02 due to lack of data. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.02<br>2014: 0.02<br>2015: 0.02<br>2016: 0.02<br>2017: 0.02</p><p><b>Itemized Deductions &mdash; Miscellaneous</b><br><i>tc Name:</i> _ID_Miscellaneous_hc<br><i>TB Name:</i> Miscellaneous expense deduction haircut<br><i>Description:</i> This decimal fraction can be applied to limit the amount of miscellaneous expense deduction allowed.<br><i>Notes:</i> This parameter is currently used to eliminate this part of itemized deduction. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p>
+
+<p><b>Itemized Deductions &mdash; Itemized Deduction Limitation</b><br><i>tc Name:</i> _ID_ps<br><i>TB Name:</i> Itemized deduction phaseout AGI start (Pease provision)<br><i>Description:</i> The itemized deductions will be reduced for taxpayers with AGI higher than this level.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [250000, 300000, 150000, 275000, 300000]<br>2014: [254200, 305050, 152525, 279650, 305050]<br>2015: [258250, 309900, 154950, 284050, 309900]<br>2016: [259400, 311300, 155650, 285350, 311300]<br>2017: [261500, 313800, 156900, 287650, 313800]</p><p><b>Itemized Deductions &mdash; Itemized Deduction Limitation</b><br><i>tc Name:</i> _ID_prt<br><i>TB Name:</i> Itemized deduction phaseout rate (Pease)<br><i>Description:</i> Taxpayers will not be eligible to deduct the full amount of itemized deduction if their AGI is above the phaseout start. The deductible portion would be decreased at this rate for each dollar exceeding the start.<br><i>Notes:</i> This phaseout rate cannot be lower than 0.03 for each dollar, due to limited data on non-itemizers.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.03<br>2014: 0.03<br>2015: 0.03<br>2016: 0.03<br>2017: 0.03</p><p><b>Itemized Deductions &mdash; Itemized Deduction Limitation</b><br><i>tc Name:</i> _ID_crt<br><i>TB Name:</i> Itemized deduction maximum phaseout as a decimal fraction of total itemized deductions (Pease)<br><i>Description:</i> The phaseout amount is capped at this fraction of the original total deduction. <br><i>Notes:</i> The ceiling rate cannot be increased above 0.8 due to limited data on non-itemizers.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.8<br>2014: 0.8<br>2015: 0.8<br>2016: 0.8<br>2017: 0.8</p>
+
+<p><b>Itemized Deductions &mdash; Surtax On Itemized Deduction Benefits Above An AGI Threshold</b><br><i>tc Name:</i> _ID_BenefitSurtax_trt<br><i>TB Name:</i> Surtax rate on the benefits from specified itemized deductions<br><i>Description:</i> The benefit from specified itemized deductions exceeding the credit is taxed at this rate. A surtax rate of 1 strictly limits the benefit from specified itemized deductions to the specified credit. In http://www.nber.org/papers/w16921, Feldstein, Feenberg, and MacGuineas propose a credit of 2% of AGI against a 100% tax rate; in their proposal, however, a broader set of tax benefits, including the employer provided health exclusion, would be taxed.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Itemized Deductions &mdash; Surtax On Itemized Deduction Benefits Above An AGI Threshold</b><br><i>tc Name:</i> _ID_BenefitSurtax_crt<br><i>TB Name:</i> Credit on itemized deduction benefit surtax (decimal fraction of AGI)<br><i>Description:</i> The surtax on specified itemized deductions applies to benefits in excess of this fraction of AGI. In http://www.nber.org/papers/w16921, Feldstein, Feenberg, and MacGuineas propose a credit of 2% of AGI against a 100% tax rate; in their proposal, however, a broader set of tax benefits, including the employer provided health exclusion, would be taxed.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 1.0<br>2014: 1.0<br>2015: 1.0<br>2016: 1.0<br>2017: 1.0</p><p><b>Itemized Deductions &mdash; Surtax On Itemized Deduction Benefits Above An AGI Threshold</b><br><i>tc Name:</i> _ID_BenefitSurtax_em<br><i>TB Name:</i> Exemption for itemized deduction benefit surtax (dollar AGI threshold)<br><i>Description:</i> This amount is subtracted from itemized deduction benefits in the calculation of the itemized deduction benefit surtax. With _ID_BenefitSurtax_crt set to 0.0 and _ID_BenefitSurtax_trt set to 1.0, this amount serves as a dollar limit on the value of itemized deductions.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [0, 0, 0, 0, 0]<br>2014: [0, 0, 0, 0, 0]<br>2015: [0, 0, 0, 0, 0]<br>2016: [0, 0, 0, 0, 0]<br>2017: [0, 0, 0, 0, 0]</p><p><b>Itemized Deductions &mdash; Surtax On Itemized Deduction Benefits Above An AGI Threshold</b><br><i>tc Name:</i> _ID_BenefitSurtax_Switch<br><i>TB Name:</i> Deductions subject to the surtax on itemized deduction benefits<br><i>Description:</i> The surtax on itemized deduction benefits applies to the benefits derived from the itemized deductions specified with this parameter. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [Medical, State & Local, Real Estate, Casualty, Miscellaneous, Interest, Charity]<br>2013: [True, True, True, True, True, True, True]<br>2014: [True, True, True, True, True, True, True]<br>2015: [True, True, True, True, True, True, True]<br>2016: [True, True, True, True, True, True, True]<br>2017: [True, True, True, True, True, True, True]</p>
+
+<p><b>Itemized Deductions &mdash; Ceiling On The Benefit Of Itemized Deductions As A Percent Of Deductible Expenses</b><br><i>tc Name:</i> _ID_BenefitCap_rt<br><i>TB Name:</i> Ceiling on the benefits from itemized deductions; decimal fraction of total deductible expenses<br><i>Description:</i> The benefit from specified itemized deductions is capped at this percent of the total deductible expenses.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 1.0<br>2014: 1.0<br>2015: 1.0<br>2016: 1.0<br>2017: 1.0</p><p><b>Itemized Deductions &mdash; Ceiling On The Benefit Of Itemized Deductions As A Percent Of Deductible Expenses</b><br><i>tc Name:</i> _ID_BenefitCap_Switch<br><i>TB Name:</i> Deductions subject to the cap on itemized deduction benefits<br><i>Description:</i> The cap on itemized deduction benefits applies to the benefits derived from the itemized deductions specified with this parameter. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [Medical, State & Local, Real Estate, Casualty, Miscellaneous, Interest, Charity]<br>2013: [True, True, True, True, True, True, True]<br>2014: [True, True, True, True, True, True, True]<br>2015: [True, True, True, True, True, True, True]<br>2016: [True, True, True, True, True, True, True]<br>2017: [True, True, True, True, True, True, True]</p>
+
+<p><b>Itemized Deductions &mdash; Ceiling On The Amount Of Itemized Deductions Allowed</b><br><i>tc Name:</i> _ID_c<br><i>TB Name:</i> Ceiling on the amount of itemized deductions allowed (dollars)<br><i>Description:</i> The amount of itemized deductions is limited to this dollar amount. <br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2014: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2015: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2016: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2017: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+
+<h3 id="pol-capital-gains-dividends">Capital Gains And Dividends</h3>
+
+<p><b>Capital Gains And Dividends &mdash; Regular - Long Term Capital Gains And Qualified Dividends</b><br><i>tc Name:</i> _CG_rt1<br><i>TB Name:</i> Long term capital gain and qualified dividends (regular/non-AMT) rate 1<br><i>Description:</i> The capital gain and dividends (stacked on top of regular income) that are below threshold 1 are taxed at this rate. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Capital Gains And Dividends &mdash; Regular - Long Term Capital Gains And Qualified Dividends</b><br><i>tc Name:</i> _CG_brk1<br><i>TB Name:</i> Top of long-term capital gains and qualified dividends (regular/non-AMT) tax bracket 1<br><i>Description:</i> The gains and dividends (stacked on top of regular income) below this are taxed at capital gain rate 1. <br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [36250, 72500, 36250, 48600, 72500]<br>2014: [36900, 73800, 36900, 49400, 73800]<br>2015: [37450, 74900, 37450, 50200, 74900]<br>2016: [37650, 75300, 37650, 50400, 75300]<br>2017: [37950, 75900, 37950, 50800, 75900]</p><p><b>Capital Gains And Dividends &mdash; Regular - Long Term Capital Gains And Qualified Dividends</b><br><i>tc Name:</i> _CG_rt2<br><i>TB Name:</i> Long term capital gain and qualified dividends (regular/non-AMT) rate 2<br><i>Description:</i> The capital gain and dividends (stacked on top of regular income) that are below threshold 2 and above threshold 1 are taxed at this rate. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.15<br>2014: 0.15<br>2015: 0.15<br>2016: 0.15<br>2017: 0.15</p><p><b>Capital Gains And Dividends &mdash; Regular - Long Term Capital Gains And Qualified Dividends</b><br><i>tc Name:</i> _CG_brk2<br><i>TB Name:</i> Top of long-term capital gains and qualified dividends (regular/non-AMT) tax bracket 2<br><i>Description:</i> The gains and dividends (stacked on top of regular income) below this and above top of bracket 1 are taxed at capital gain rate 2.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [400000, 450000, 225000, 425000, 450000]<br>2014: [406750, 457600, 228800, 432200, 457600]<br>2015: [413200, 464850, 232425, 439000, 464850]<br>2016: [415050, 466950, 233475, 441000, 466950]<br>2017: [418400, 470700, 235350, 444550, 470700]</p><p><b>Capital Gains And Dividends &mdash; Regular - Long Term Capital Gains And Qualified Dividends</b><br><i>tc Name:</i> _CG_rt3<br><i>TB Name:</i> Long term capital gain and qualified dividends (regular/non-AMT) rate 3<br><i>Description:</i> The capital gain and dividends (stacked on top of regular income) that are above threshold 2 and below threshold 3 are taxed at this rate. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.2<br>2014: 0.2<br>2015: 0.2<br>2016: 0.2<br>2017: 0.2</p><p><b>Capital Gains And Dividends &mdash; Regular - Long Term Capital Gains And Qualified Dividends</b><br><i>tc Name:</i> _CG_brk3<br><i>TB Name:</i> Top of long-term capital gains and qualified dividend tax (regular/non-AMT) bracket 3<br><i>Description:</i> The gains and dividends (stacked on top of regular income) below this and above top of bracket 2 are taxed at the capital gain rate 3; above this they are taxed at capital gain rate 4.  Default value is essentially infinity.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2014: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2015: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2016: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2017: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]</p><p><b>Capital Gains And Dividends &mdash; Regular - Long Term Capital Gains And Qualified Dividends</b><br><i>tc Name:</i> _CG_rt4<br><i>TB Name:</i> Long term capital gain and qualified dividends (regular/non-AMT) rate 4<br><i>Description:</i> The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 1.0<br>2014: 1.0<br>2015: 1.0<br>2016: 1.0<br>2017: 1.0</p>
+
+<p><b>Capital Gains And Dividends &mdash; AMT - Long Term Capital Gains And Qualified Dividends</b><br><i>tc Name:</i> _AMT_CG_rt1<br><i>TB Name:</i> Long term capital gain and qualified dividends (AMT) rate 1<br><i>Description:</i> Capital gain and qualified dividends (stacked on top of regular income) below threshold 1 are taxed at this rate. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Capital Gains And Dividends &mdash; AMT - Long Term Capital Gains And Qualified Dividends</b><br><i>tc Name:</i> _AMT_CG_brk1<br><i>TB Name:</i> Top of long-term capital gains and qualified dividends (AMT) tax bracket 1<br><i>Description:</i> The gains and dividends, stacked last, of AMT taxable income below this are taxed at AMT capital gain rate 1.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [36250, 72500, 36250, 48600, 72500]<br>2014: [36900, 73800, 36900, 49400, 73800]<br>2015: [37450, 74900, 37450, 50200, 74900]<br>2016: [37650, 75300, 37650, 50400, 75300]<br>2017: [37950, 75900, 37950, 50800, 75900]</p><p><b>Capital Gains And Dividends &mdash; AMT - Long Term Capital Gains And Qualified Dividends</b><br><i>tc Name:</i> _AMT_CG_rt2<br><i>TB Name:</i> Long term capital gain and qualified dividends (AMT) rate 2<br><i>Description:</i> Capital gain and qualified dividend (stacked on top of regular income) below threshold 2 and above threshold 1 are taxed at this rate.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.15<br>2014: 0.15<br>2015: 0.15<br>2016: 0.15<br>2017: 0.15</p><p><b>Capital Gains And Dividends &mdash; AMT - Long Term Capital Gains And Qualified Dividends</b><br><i>tc Name:</i> _AMT_CG_brk2<br><i>TB Name:</i> Top of long-term capital gains and qualified dividends (AMT) tax bracket 2<br><i>Description:</i> The gains and dividends, stacked last, of AMT taxable income below this threshold and above bracket 1 are taxed at AMT capital gain rate 2.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [400000, 450000, 225000, 425000, 450000]<br>2014: [406750, 457600, 228800, 432200, 457600]<br>2015: [413200, 464850, 232425, 439000, 464850]<br>2016: [415050, 466950, 233475, 441000, 466950]<br>2017: [418400, 470700, 235350, 444550, 470700]</p><p><b>Capital Gains And Dividends &mdash; AMT - Long Term Capital Gains And Qualified Dividends</b><br><i>tc Name:</i> _AMT_CG_rt3<br><i>TB Name:</i> Long term capital gain and qualified dividends (AMT) rate 3<br><i>Description:</i> The capital gain and qualified dividend (stacked on top of regular income) above threshold 2 and below threshold 3 are taxed at this rate.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.2<br>2014: 0.2<br>2015: 0.2<br>2016: 0.2<br>2017: 0.2</p><p><b>Capital Gains And Dividends &mdash; AMT - Long Term Capital Gains And Qualified Dividends</b><br><i>tc Name:</i> _AMT_CG_brk3<br><i>TB Name:</i> Long term capital gain and qualified dividends (AMT) threshold 3<br><i>Description:</i> The gains and dividends, stacked last, of AMT taxable income below this and above bracket 2 are taxed at capital gain rate 3; above thisthey are taxed at AMT capital gain rate 4.  Default value is essentially infinity.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2014: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2015: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2016: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2017: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]</p><p><b>Capital Gains And Dividends &mdash; AMT - Long Term Capital Gains And Qualified Dividends</b><br><i>tc Name:</i> _AMT_CG_rt4<br><i>TB Name:</i> Long term capital gain and qualified dividends (AMT) rate 4<br><i>Description:</i> The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 1.0<br>2014: 1.0<br>2015: 1.0<br>2016: 1.0<br>2017: 1.0</p>
+
+<p><b>Capital Gains And Dividends &mdash; Tax All Capital Gains And Dividends The Same As Regular Taxable Income</b><br><i>tc Name:</i> _CG_nodiff<br><i>TB Name:</i> Long term capital gains and qualified dividends taxed no differently than regular taxable income<br><i>Description:</i> Specifies whether or not long term capital gains and qualified dividends are taxed like regular taxable income.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: False<br>2014: False<br>2015: False<br>2016: False<br>2017: False</p><p><b>Capital Gains And Dividends &mdash; Tax All Capital Gains And Dividends The Same As Regular Taxable Income</b><br><i>tc Name:</i> _CG_ec<br><i>TB Name:</i> Dollar amount of all capital gains and qualified dividends that are excluded from AGI.<br><i>Description:</i> Positive value used only if long term capital gains and qualified dividends taxed no differently than regular taxable income.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Capital Gains And Dividends &mdash; Tax All Capital Gains And Dividends The Same As Regular Taxable Income</b><br><i>tc Name:</i> _CG_reinvest_ec_rt<br><i>TB Name:</i> Fraction of all capital gains and qualified dividends in excess of the dollar exclusion that are excluded from AGI.<br><i>Description:</i> Positive value used only if long term capital gains and qualified dividends taxed no differently than regular taxable income.  To limit the exclusion to capital gains and dividends invested within 1 year, set to statutory exclusion rate times the fraction of capital gains and qualified dividends in excess of the exclusion that are assumed to be reinvested within the year.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+
+<h3 id="pol-personal-income">Personal Income</h3>
+
+<p><b>Personal Income &mdash; Regular: Non-AMT, Non-Pass-Through</b><br><i>tc Name:</i> _II_rt1<br><i>TB Name:</i> Personal income (regular/non-AMT/non-pass-through) tax rate 1<br><i>Description:</i> The lowest tax rate, applied to the portion of taxable income below tax bracket 1. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.1<br>2014: 0.1<br>2015: 0.1<br>2016: 0.1<br>2017: 0.1</p><p><b>Personal Income &mdash; Regular: Non-AMT, Non-Pass-Through</b><br><i>tc Name:</i> _II_brk1<br><i>TB Name:</i> Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 1<br><i>Description:</i> Taxable income below this threshold is taxed at tax rate 1. <br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [8925, 17850, 8925, 12750, 17850]<br>2014: [9075, 18150, 9075, 12950, 18150]<br>2015: [9225, 18450, 9225, 13150, 18450]<br>2016: [9275, 18550, 9275, 13250, 18550]<br>2017: [9325, 18650, 9325, 13350, 18650]</p><p><b>Personal Income &mdash; Regular: Non-AMT, Non-Pass-Through</b><br><i>tc Name:</i> _II_rt2<br><i>TB Name:</i> Personal income (regular/non-AMT/non-pass-through) tax rate 2<br><i>Description:</i> The second lowest tax rate, applied to the portion of taxable income below tax bracket 2 and above tax bracket 1. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.15<br>2014: 0.15<br>2015: 0.15<br>2016: 0.15<br>2017: 0.15</p><p><b>Personal Income &mdash; Regular: Non-AMT, Non-Pass-Through</b><br><i>tc Name:</i> _II_brk2<br><i>TB Name:</i> Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 2<br><i>Description:</i> Income below this threshold and above tax bracket 1 is taxed at tax rate 2. <br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [36250, 72500, 36250, 48600, 72500]<br>2014: [36900, 73800, 36900, 49400, 73800]<br>2015: [37450, 74900, 37450, 50200, 74900]<br>2016: [37650, 75300, 37650, 50400, 75300]<br>2017: [37950, 75900, 37950, 50800, 75900]</p><p><b>Personal Income &mdash; Regular: Non-AMT, Non-Pass-Through</b><br><i>tc Name:</i> _II_rt3<br><i>TB Name:</i> Personal income (regular/non-AMT/non-pass-through) tax rate 3<br><i>Description:</i> The third lowest tax rate, applied to the portion of taxable income below tax bracket 3 and above tax bracket 2. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.25<br>2014: 0.25<br>2015: 0.25<br>2016: 0.25<br>2017: 0.25</p><p><b>Personal Income &mdash; Regular: Non-AMT, Non-Pass-Through</b><br><i>tc Name:</i> _II_brk3<br><i>TB Name:</i> Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 3<br><i>Description:</i> Income below this threshold and above tax bracket 2 is taxed at tax rate 3.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [87850, 146400, 73200, 125450, 146400]<br>2014: [89350, 148850, 74425, 127550, 148850]<br>2015: [90750, 151200, 75600, 129600, 151200]<br>2016: [91150, 151900, 75950, 130150, 151900]<br>2017: [91900, 153100, 76550, 131200, 153100]</p><p><b>Personal Income &mdash; Regular: Non-AMT, Non-Pass-Through</b><br><i>tc Name:</i> _II_rt4<br><i>TB Name:</i> Personal income (regular/non-AMT/non-pass-through) tax rate 4<br><i>Description:</i> The tax rate applied to the portion of taxable income below tax bracket 4 and above tax bracket 3. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.28<br>2014: 0.28<br>2015: 0.28<br>2016: 0.28<br>2017: 0.28</p><p><b>Personal Income &mdash; Regular: Non-AMT, Non-Pass-Through</b><br><i>tc Name:</i> _II_brk4<br><i>TB Name:</i> Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 4<br><i>Description:</i> Income below this threshold and above tax bracket 3 is taxed at tax rate 4.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [183250, 223050, 111525, 203150, 223050]<br>2014: [186350, 226850, 113425, 206600, 226850]<br>2015: [189300, 230450, 115225, 209850, 230450]<br>2016: [190150, 231450, 115725, 210800, 231450]<br>2017: [191650, 233350, 116675, 212500, 233350]</p><p><b>Personal Income &mdash; Regular: Non-AMT, Non-Pass-Through</b><br><i>tc Name:</i> _II_rt5<br><i>TB Name:</i> Personal income (regular/non-AMT/non-pass-through) tax rate 5<br><i>Description:</i> The third highest tax rate, applied to the portion of taxable income below tax bracket 5 and above tax bracket 4. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.33<br>2014: 0.33<br>2015: 0.33<br>2016: 0.33<br>2017: 0.33</p><p><b>Personal Income &mdash; Regular: Non-AMT, Non-Pass-Through</b><br><i>tc Name:</i> _II_brk5<br><i>TB Name:</i> Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 5<br><i>Description:</i> Income below this threshold and above tax bracket 4 is taxed at tax rate 5.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [398350, 398350, 199175, 398350, 398350]<br>2014: [405100, 405100, 202550, 405100, 405100]<br>2015: [411500, 411500, 205750, 411500, 411500]<br>2016: [413350, 413350, 206675, 413350, 413350]<br>2017: [416700, 416700, 208350, 416700, 416700]</p><p><b>Personal Income &mdash; Regular: Non-AMT, Non-Pass-Through</b><br><i>tc Name:</i> _II_rt6<br><i>TB Name:</i> Personal income (regular/non-AMT/non-pass-through) tax rate 6<br><i>Description:</i> The second higher tax rate, applied to the portion of taxable income below tax bracket 6 and above tax bracket 5. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.35<br>2014: 0.35<br>2015: 0.35<br>2016: 0.35<br>2017: 0.35</p><p><b>Personal Income &mdash; Regular: Non-AMT, Non-Pass-Through</b><br><i>tc Name:</i> _II_brk6<br><i>TB Name:</i> Personal income (regular/non-AMT/non-pass-through) tax bracket 6<br><i>Description:</i> Income below this threshold and above tax bracket 5 is taxed at tax rate 6.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [400000, 450000, 225000, 425000, 450000]<br>2014: [406750, 457600, 228800, 432200, 457600]<br>2015: [413200, 464850, 232425, 439000, 464850]<br>2016: [415050, 466950, 233475, 441000, 466950]<br>2017: [418400, 470700, 235350, 444550, 470700]</p><p><b>Personal Income &mdash; Regular: Non-AMT, Non-Pass-Through</b><br><i>tc Name:</i> _II_rt7<br><i>TB Name:</i> Personal income (regular/non-AMT/non-pass-through) tax rate 7<br><i>Description:</i> The tax rate applied to the portion of taxable income below tax bracket 7 and above tax bracket 6. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.396<br>2014: 0.396<br>2015: 0.396<br>2016: 0.396<br>2017: 0.396</p><p><b>Personal Income &mdash; Regular: Non-AMT, Non-Pass-Through</b><br><i>tc Name:</i> _II_brk7<br><i>TB Name:</i> Personal income (regular/non-AMT/non-pass-through) tax bracket 7<br><i>Description:</i> Income below this threshold and above tax bracket 6 is taxed at tax rate 7; income above this threshold is taxed at tax rate 8.  Default value is essentially infinity<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2014: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2015: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2016: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2017: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]</p><p><b>Personal Income &mdash; Regular: Non-AMT, Non-Pass-Through</b><br><i>tc Name:</i> _II_rt8<br><i>TB Name:</i> Personal income (regular/non-AMT/non-pass-through) tax rate 8<br><i>Description:</i> The tax rate applied to the portion of taxable income above tax bracket 7.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 1.0<br>2014: 1.0<br>2015: 1.0<br>2016: 1.0<br>2017: 1.0</p>
+
+<p><b>Personal Income &mdash; Pass-Through</b><br><i>tc Name:</i> _PT_rt1<br><i>TB Name:</i> Pass-through income tax rate 1<br><i>Description:</i> The lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 1. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.1<br>2014: 0.1<br>2015: 0.1<br>2016: 0.1<br>2017: 0.1</p><p><b>Personal Income &mdash; Pass-Through</b><br><i>tc Name:</i> _PT_brk1<br><i>TB Name:</i> Pass-through income tax bracket (upper threshold) 1<br><i>Description:</i> Income from sole proprietorships, partnerships and S corporations below this threshold is taxed at tax rate 1. <br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [8925, 17850, 8925, 12750, 17850]<br>2014: [9075, 18150, 9075, 12950, 18150]<br>2015: [9225, 18450, 9225, 13150, 18450]<br>2016: [9275, 18550, 9275, 13250, 18550]<br>2017: [9325, 18650, 9325, 13350, 18650]</p><p><b>Personal Income &mdash; Pass-Through</b><br><i>tc Name:</i> _PT_rt2<br><i>TB Name:</i> Pass-through income tax rate 2<br><i>Description:</i> The second lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 2 and above tax bracket 1. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.15<br>2014: 0.15<br>2015: 0.15<br>2016: 0.15<br>2017: 0.15</p><p><b>Personal Income &mdash; Pass-Through</b><br><i>tc Name:</i> _PT_brk2<br><i>TB Name:</i> Pass-through income tax bracket (upper threshold) 2<br><i>Description:</i> Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 1 is taxed at tax rate 2. <br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [36250, 72500, 36250, 48600, 72500]<br>2014: [36900, 73800, 36900, 49400, 73800]<br>2015: [37450, 74900, 37450, 50200, 74900]<br>2016: [37650, 75300, 37650, 50400, 75300]<br>2017: [37950, 75900, 37950, 50800, 75900]</p><p><b>Personal Income &mdash; Pass-Through</b><br><i>tc Name:</i> _PT_rt3<br><i>TB Name:</i> Pass-through income tax rate 3<br><i>Description:</i> The third lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 3 and above tax bracket 2. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.25<br>2014: 0.25<br>2015: 0.25<br>2016: 0.25<br>2017: 0.25</p><p><b>Personal Income &mdash; Pass-Through</b><br><i>tc Name:</i> _PT_brk3<br><i>TB Name:</i> Pass-through income tax bracket (upper threshold) 3<br><i>Description:</i> Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 2 is taxed at tax rate 3.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [87850, 146400, 73200, 125450, 146400]<br>2014: [89350, 148850, 74425, 127550, 148850]<br>2015: [90750, 151200, 75600, 129600, 151200]<br>2016: [91150, 151900, 75950, 130150, 151900]<br>2017: [91900, 153100, 76550, 131200, 153100]</p><p><b>Personal Income &mdash; Pass-Through</b><br><i>tc Name:</i> _PT_rt4<br><i>TB Name:</i> Pass-through income tax rate 4<br><i>Description:</i> The tax rate applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 4 and above tax bracket 3. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.28<br>2014: 0.28<br>2015: 0.28<br>2016: 0.28<br>2017: 0.28</p><p><b>Personal Income &mdash; Pass-Through</b><br><i>tc Name:</i> _PT_brk4<br><i>TB Name:</i> Pass-through income tax bracket (upper threshold) 4<br><i>Description:</i> Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 3 is taxed at tax rate 4.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [183250, 223050, 111525, 203150, 223050]<br>2014: [186350, 226850, 113425, 206600, 226850]<br>2015: [189300, 230450, 115225, 209850, 230450]<br>2016: [190150, 231450, 115725, 210800, 231450]<br>2017: [191650, 233350, 116675, 212500, 233350]</p><p><b>Personal Income &mdash; Pass-Through</b><br><i>tc Name:</i> _PT_rt5<br><i>TB Name:</i> Pass-through income tax rate 5<br><i>Description:</i> The third highest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 5 and above tax bracket 4. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.33<br>2014: 0.33<br>2015: 0.33<br>2016: 0.33<br>2017: 0.33</p><p><b>Personal Income &mdash; Pass-Through</b><br><i>tc Name:</i> _PT_brk5<br><i>TB Name:</i> Pass-through income tax bracket (upper threshold) 5<br><i>Description:</i> Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 4 is taxed at tax rate 5.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [398350, 398350, 199175, 398350, 398350]<br>2014: [405100, 405100, 202550, 405100, 405100]<br>2015: [411500, 411500, 205750, 411500, 411500]<br>2016: [413350, 413350, 206675, 413350, 413350]<br>2017: [416700, 416700, 208350, 416700, 416700]</p><p><b>Personal Income &mdash; Pass-Through</b><br><i>tc Name:</i> _PT_rt6<br><i>TB Name:</i> Pass-through income tax rate 6<br><i>Description:</i> The second higher tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 6 and above tax bracket 5. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.35<br>2014: 0.35<br>2015: 0.35<br>2016: 0.35<br>2017: 0.35</p><p><b>Personal Income &mdash; Pass-Through</b><br><i>tc Name:</i> _PT_brk6<br><i>TB Name:</i> Pass-through income tax bracket (upper threshold) 6<br><i>Description:</i> Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 5 is taxed at tax rate 6.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [400000, 450000, 225000, 425000, 450000]<br>2014: [406750, 457600, 228800, 432200, 457600]<br>2015: [413200, 464850, 232425, 439000, 464850]<br>2016: [415050, 466950, 233475, 441000, 466950]<br>2017: [418400, 470700, 235350, 444550, 470700]</p><p><b>Personal Income &mdash; Pass-Through</b><br><i>tc Name:</i> _PT_rt7<br><i>TB Name:</i> Pass-through income tax rate 7<br><i>Description:</i> The highest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 7 and above tax bracket 6. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.396<br>2014: 0.396<br>2015: 0.396<br>2016: 0.396<br>2017: 0.396</p><p><b>Personal Income &mdash; Pass-Through</b><br><i>tc Name:</i> _PT_brk7<br><i>TB Name:</i> Extra pass-through income tax bracket<br><i>Description:</i> Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 6 is taxed at tax rate 7. Default value is essentially infinity<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2014: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2015: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2016: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2017: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]</p><p><b>Personal Income &mdash; Pass-Through</b><br><i>tc Name:</i> _PT_rt8<br><i>TB Name:</i> Extra pass-through income tax rate<br><i>Description:</i> The extra tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations above the tax bracket 7.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 1.0<br>2014: 1.0<br>2015: 1.0<br>2016: 1.0<br>2017: 1.0</p>
+
+<p><b>Personal Income &mdash; Alternative Minimum Tax</b><br><i>tc Name:</i> _AMT_em<br><i>TB Name:</i> AMT exemption amount<br><i>Description:</i> The amount of AMT taxable income exempted from AMT.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [51900, 80800, 40400, 51900, 80800]<br>2014: [52800, 82100, 41050, 52800, 82100]<br>2015: [53600, 83400, 41700, 53600, 83400]<br>2016: [53900, 83800, 41900, 53900, 83800]<br>2017: [54300, 84500, 42250, 54300, 84500]</p><p><b>Personal Income &mdash; Alternative Minimum Tax</b><br><i>tc Name:</i> _AMT_prt<br><i>TB Name:</i> AMT exemption phaseout rate<br><i>Description:</i> AMT exemption will decrease at this rate for each dollar of AMT taxable income exceeding AMT phaseout start. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.25<br>2014: 0.25<br>2015: 0.25<br>2016: 0.25<br>2017: 0.25</p><p><b>Personal Income &mdash; Alternative Minimum Tax</b><br><i>tc Name:</i> _AMT_em_ps<br><i>TB Name:</i> AMT exemption phaseout start<br><i>Description:</i> AMT exemption starts to decrease when AMT taxable income goes beyond this threshold.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [115400, 153900, 76950, 115400, 153900]<br>2014: [117300, 156500, 78250, 117300, 156500]<br>2015: [119200, 158900, 79450, 119200, 158900]<br>2016: [119700, 159700, 79850, 119700, 159700]<br>2017: [120700, 160900, 80450, 120700, 160900]</p><p><b>Personal Income &mdash; Alternative Minimum Tax</b><br><i>tc Name:</i> _AMT_rt1<br><i>TB Name:</i> AMT rate 1<br><i>Description:</i> The tax rate applied to the portion of AMT taxable income below the surtax threshold, AMT bracket 1.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.26<br>2014: 0.26<br>2015: 0.26<br>2016: 0.26<br>2017: 0.26</p><p><b>Personal Income &mdash; Alternative Minimum Tax</b><br><i>tc Name:</i> _AMT_brk1<br><i>TB Name:</i> AMT bracket 1 (upper threshold)<br><i>Description:</i> AMT taxable income below this is subject to AMT rate 1 and above it is subject to AMT rate 1 + the additional AMT rate.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>2013: 179500<br>2014: 182500<br>2015: 185400<br>2016: 186300<br>2017: 187800</p><p><b>Personal Income &mdash; Alternative Minimum Tax</b><br><i>tc Name:</i> _AMT_rt2<br><i>TB Name:</i> Additional AMT rate for AMT taxable income above AMT bracket 1<br><i>Description:</i> The additional tax rate applied to the portion of AMT income above the AMT bracket 1.<br><i>Notes:</i> This is the additional tax rate (on top of AMT rate 1) for AMT income above AMT bracket 1.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.02<br>2014: 0.02<br>2015: 0.02<br>2016: 0.02<br>2017: 0.02</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+
+<h3 id="pol-nonrefundable-credits">Nonrefundable Credits</h3>
+
+<p><b>Nonrefundable Credits &mdash; Child And Dependent Care</b><br><i>tc Name:</i> _CDCC_c<br><i>TB Name:</i> Maximum child & dependent care credit per dependent<br><i>Description:</i> The maximum amount of credit allowed for each qualifying dependent.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 3000<br>2014: 3000<br>2015: 3000<br>2016: 3000<br>2017: 3000</p><p><b>Nonrefundable Credits &mdash; Child And Dependent Care</b><br><i>tc Name:</i> _CDCC_ps<br><i>TB Name:</i> Child & dependent care credit phaseout start<br><i>Description:</i> For taxpayers with AGI over this amount, the credit is reduced by one percentage point each $2000 of AGI over this amount. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 15000<br>2014: 15000<br>2015: 15000<br>2016: 15000<br>2017: 15000</p><p><b>Nonrefundable Credits &mdash; Child And Dependent Care</b><br><i>tc Name:</i> _CDCC_crt<br><i>TB Name:</i> Child & dependent care credit phaseout percentage rate ceiling<br><i>Description:</i> The maximum percentage rate in the AGI phaseout; this percentage rate decreases as AGI rises above the _CDCC_ps level.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 35<br>2014: 35<br>2015: 35<br>2016: 35<br>2017: 35</p>
+
+<p><b>Nonrefundable Credits &mdash; Child Tax Credit</b><br><i>tc Name:</i> _CTC_c<br><i>TB Name:</i> Maximum child tax credit per child<br><i>Description:</i> The maximum amount of credit allowed for each child. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 1000<br>2014: 1000<br>2015: 1000<br>2016: 1000<br>2017: 1000</p><p><b>Nonrefundable Credits &mdash; Child Tax Credit</b><br><i>tc Name:</i> _CTC_c_under5_bonus<br><i>TB Name:</i> Bonus child tax credit maximum for qualifying children under five<br><i>Description:</i> The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Nonrefundable Credits &mdash; Child Tax Credit</b><br><i>tc Name:</i> _CTC_ps<br><i>TB Name:</i> Child tax credit phaseout MAGI start<br><i>Description:</i> Child tax credit begins to decrease when MAGI is above this level.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [75000, 110000, 55000, 75000, 75000]<br>2014: [75000, 110000, 55000, 75000, 75000]<br>2015: [75000, 110000, 55000, 75000, 75000]<br>2016: [75000, 110000, 55000, 75000, 75000]<br>2017: [75000, 110000, 55000, 75000, 75000]</p><p><b>Nonrefundable Credits &mdash; Child Tax Credit</b><br><i>tc Name:</i> _CTC_prt<br><i>TB Name:</i> Child tax credit phaseout rate<br><i>Description:</i> The amount of credit starts to decrease at this rate if MAGI is higher than child tax credit phaseout start. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.05<br>2014: 0.05<br>2015: 0.05<br>2016: 0.05<br>2017: 0.05</p><p><b>Nonrefundable Credits &mdash; Child Tax Credit</b><br><i>tc Name:</i> _DependentCredit_c<br><i>TB Name:</i> Nonrefundable credit for dependents<br><i>Description:</i> This nonrefundable credit is applied to dependents and phases out with the Child Tax Credit. The dependent credit's phaseout begins when the CTC's phaseout ends.<br><i>Notes:</i> The Ryan-Brady tax plan sets this at $500<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0<br>2014: 0<br>2015: 0<br>2016: 0<br>2017: 0</p>
+
+<p><b>Nonrefundable Credits &mdash; Misc. Credit Limits</b><br><i>tc Name:</i> _CR_RetirementSavings_hc<br><i>TB Name:</i> Credit for retirement savings haircut<br><i>Description:</i> If greater than zero, this decimal fraction reduces the portion of the retirement savings credit that can be claimed<br><i>Notes:</i> Credit claimed will be (1. - Haircut) * Retirement Savings Credit<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Nonrefundable Credits &mdash; Misc. Credit Limits</b><br><i>tc Name:</i> _CR_ForeignTax_hc<br><i>TB Name:</i> Credit for foreign tax haircut<br><i>Description:</i> If greater than zero, this decimal fraction reduces the portion of the foreign tax credit that can be claimed<br><i>Notes:</i> Credit claimed will be (1. - Haircut) * Foreign Tax Credit<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Nonrefundable Credits &mdash; Misc. Credit Limits</b><br><i>tc Name:</i> _CR_ResidentialEnergy_hc<br><i>TB Name:</i> Credit for residential energy haircut<br><i>Description:</i> If greater than zero, this decimal fraction reduces the portion of the residential energy credit that can be claimed<br><i>Notes:</i> Credit claimed will be (1. - Haircut) * Residential Energy Credit<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Nonrefundable Credits &mdash; Misc. Credit Limits</b><br><i>tc Name:</i> _CR_GeneralBusiness_hc<br><i>TB Name:</i> Credit for general business haircut<br><i>Description:</i> If greater than zero, this decimal fraction reduces the portion of the general business credit that can be claimed<br><i>Notes:</i> Credit claimed will be (1. - Haircut) * General Business Credit<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Nonrefundable Credits &mdash; Misc. Credit Limits</b><br><i>tc Name:</i> _CR_MinimumTax_hc<br><i>TB Name:</i> Credit for previous year minimum tax credit haircut<br><i>Description:</i> If greater than zero, this decimal fraction reduces the portion of the previous year minimum tax credit that can be claimed<br><i>Notes:</i> Credit claimed will be (1. - Haircut) * Previous Year Minimum Tax Credit<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Nonrefundable Credits &mdash; Misc. Credit Limits</b><br><i>tc Name:</i> _CR_AmOppRefundable_hc<br><i>TB Name:</i> Refundable portion of the American Opportunity Credit haircut<br><i>Description:</i> If greater than zero, this decimal fraction reduces the portion of the refundable American Opportunity credit that can be claimed<br><i>Notes:</i> Credit claimed will be (1. - Haircut) * Refundable Portion of the American Opportunity Credit<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Nonrefundable Credits &mdash; Misc. Credit Limits</b><br><i>tc Name:</i> _CR_AmOppNonRefundable_hc<br><i>TB Name:</i> Nonrefundable portion of the American Opportunity Credit haircut<br><i>Description:</i> If greater than zero, this decimal fraction reduces the portion of the nonrefundable American Opportunity credit that can be claimed<br><i>Notes:</i> Credit claimed will be (1. - Haircut) * NonRefundable Portion of the American Opportunity Credit<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Nonrefundable Credits &mdash; Misc. Credit Limits</b><br><i>tc Name:</i> _CR_SchR_hc<br><i>TB Name:</i> Schedule R Credit haircut<br><i>Description:</i> If greater than zero, this decimal fraction reduces the portion of Schedule R credit that can be claimed<br><i>Notes:</i> Credit claimed will be (1. - Haircut) * Schedule R Credit<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Nonrefundable Credits &mdash; Misc. Credit Limits</b><br><i>tc Name:</i> _CR_OtherCredits_hc<br><i>TB Name:</i> Other Credits haircut<br><i>Description:</i> If greater than zero, this decimal fraction reduces the portion of other credit that can be claimed<br><i>Notes:</i> Credit claimed will be (1. - Haircut) * Other Credits<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Nonrefundable Credits &mdash; Misc. Credit Limits</b><br><i>tc Name:</i> _CR_Education_hc<br><i>TB Name:</i> Education Credits haircut<br><i>Description:</i> If greater than zero, this decimal fraction reduces the portion of education credits that can be claimed<br><i>Notes:</i> Credit claimed will be (1. - Haircut) * Education Credits<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+
+<h3 id="pol-other-taxes">Other Taxes</h3>
+
+<p><b>Other Taxes &mdash; Net Investment Income Tax</b><br><i>tc Name:</i> _NIIT_thd<br><i>TB Name:</i> Net Investment Income Tax modified AGI threshold<br><i>Description:</i> If modified AGI is more than this threshold, filing unit is subject to the Net Investment Income Tax.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [200000, 250000, 125000, 200000, 250000]<br>2014: [200000, 250000, 125000, 200000, 250000]<br>2015: [200000, 250000, 125000, 200000, 250000]<br>2016: [200000, 250000, 125000, 200000, 250000]<br>2017: [200000, 250000, 125000, 200000, 250000]</p><p><b>Other Taxes &mdash; Net Investment Income Tax</b><br><i>tc Name:</i> _NIIT_PT_taxed<br><i>TB Name:</i> Whether or not partnership and S-corp income is in NIIT base<br><i>Description:</i> false ==> partnership and S-corp income excluded from NIIT base; true ==> partnership and S-corp income is in NIIT base<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: False<br>2014: False<br>2015: False<br>2016: False<br>2017: False</p><p><b>Other Taxes &mdash; Net Investment Income Tax</b><br><i>tc Name:</i> _NIIT_rt<br><i>TB Name:</i> Net Investment Income Tax rate<br><i>Description:</i> If modified AGI exceeds _NIIT_thd, all net investment income is taxed at this rate.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.038<br>2014: 0.038<br>2015: 0.038<br>2016: 0.038<br>2017: 0.038</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+
+<h3 id="pol-refundable-credits">Refundable Credits</h3>
+
+<p><b>Refundable Credits &mdash; Earned Income Tax Credit</b><br><i>tc Name:</i> _EITC_c<br><i>TB Name:</i> Maximum earned income credit<br><i>Description:</i> This is the maximum amount of earned income credit taxpayers are eligible for; it depends on how many kids they have. <br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [0kids, 1kid, 2kids, 3+kids]<br>2013: [487, 3250, 5372, 6044]<br>2014: [496, 3305, 5460, 6143]<br>2015: [503, 3359, 5548, 6242]<br>2016: [506, 3373, 5572, 6269]<br>2017: [510, 3400, 5616, 6318]</p><p><b>Refundable Credits &mdash; Earned Income Tax Credit</b><br><i>tc Name:</i> _EITC_rt<br><i>TB Name:</i> Earned income credit rate<br><i>Description:</i> If one taxpayer's AGI is below AGI phaseout start, he can apply this rate to his earned income to calculate the credit amount eligible. <br><i>Notes:</i> Range of this parameter is between zero and one. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [0kids, 1kid, 2kids, 3+kids]<br>2013: [0.0765, 0.34, 0.4, 0.45]<br>2014: [0.0765, 0.34, 0.4, 0.45]<br>2015: [0.0765, 0.34, 0.4, 0.45]<br>2016: [0.0765, 0.34, 0.4, 0.45]<br>2017: [0.0765, 0.34, 0.4, 0.45]</p><p><b>Refundable Credits &mdash; Earned Income Tax Credit</b><br><i>tc Name:</i> _EITC_prt<br><i>TB Name:</i> Earned income credit phaseout rate<br><i>Description:</i> Earned income credit will decrease at the this rate when AGI is higher than EITC phaseout start. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [0kids, 1kid, 2kids, 3+kids]<br>2013: [0.0765, 0.1598, 0.2106, 0.2106]<br>2014: [0.0765, 0.1598, 0.2106, 0.2106]<br>2015: [0.0765, 0.1598, 0.2106, 0.2106]<br>2016: [0.0765, 0.1598, 0.2106, 0.2106]<br>2017: [0.0765, 0.1598, 0.2106, 0.2106]</p><p><b>Refundable Credits &mdash; Earned Income Tax Credit</b><br><i>tc Name:</i> _EITC_ps<br><i>TB Name:</i> Earned income credit phaseout AGI start<br><i>Description:</i> If AGI is higher than this threshold, the amount of EITC will start to decrease. <br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [0kids, 1kid, 2kids, 3+kids]<br>2013: [7970, 17530, 17530, 17530]<br>2014: [8110, 17830, 17830, 17830]<br>2015: [8250, 18150, 18150, 18150]<br>2016: [8270, 18190, 18190, 18190]<br>2017: [8340, 18340, 18340, 18340]</p><p><b>Refundable Credits &mdash; Earned Income Tax Credit</b><br><i>tc Name:</i> _EITC_ps_MarriedJ<br><i>TB Name:</i> EITC Phaseout Starting AGI (Married filling Jointly)<br><i>Description:</i> This is the additional amount added on the regular EITC phaseout start, only for taxpayers with filling status of married filling jointly. <br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [0kids, 1kid, 2kids, 3+kids]<br>2013: [5340, 5340, 5340, 5340]<br>2014: [5430, 5430, 5430, 5430]<br>2015: [5500, 5500, 5500, 5500]<br>2016: [5550, 5550, 5550, 5550]<br>2017: [5590, 5590, 5590, 5590]</p><p><b>Refundable Credits &mdash; Earned Income Tax Credit</b><br><i>tc Name:</i> _EITC_MinEligAge<br><i>TB Name:</i> Minimum Age for Childless EITC Eligibility<br><i>Description:</i> For a childless filling unit, at least one individual's age needs to be no less than this age (but no greater than the EITC_MaxEligAge) in order to be eligible for an earned income tax credit.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 25<br>2014: 25<br>2015: 25<br>2016: 25<br>2017: 25</p><p><b>Refundable Credits &mdash; Earned Income Tax Credit</b><br><i>tc Name:</i> _EITC_MaxEligAge<br><i>TB Name:</i> Maximum Age for Childless EITC Eligibility<br><i>Description:</i> For a childless filling unit, at least one individual's age needs to be no greater than this age (but no less than the EITC_MinEligAge) in order to be eligible for an earned income tax credit.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 64<br>2014: 64<br>2015: 64<br>2016: 64<br>2017: 64</p><p><b>Refundable Credits &mdash; Earned Income Tax Credit</b><br><i>tc Name:</i> _EITC_InvestIncome_c<br><i>TB Name:</i> Max disqualifying income for EITC<br><i>Description:</i> The earned income credit may not be claimed by taxpayers whose investment income exceeds this limit.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>2013: 3300<br>2014: 3350<br>2015: 3400<br>2016: 3400<br>2017: 3450</p><p><b>Refundable Credits &mdash; Earned Income Tax Credit</b><br><i>tc Name:</i> _EITC_indiv<br><i>TB Name:</i> EITC is individual-based rather than filing-unit based<br><i>Description:</i> Current-law value is false implying EITC is filing-unit based; a value of true implies EITC is computed for each individual wage earner.  The phase-out of the credit works slightly differently between the two.  Individual-based calculation ignore investment income and age eligibilty rules used in filing-unit-based calculations.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: False<br>2014: False<br>2015: False<br>2016: False<br>2017: False</p>
+
+<p><b>Refundable Credits &mdash; Additional Child Tax Credit</b><br><i>tc Name:</i> _ACTC_rt<br><i>TB Name:</i> Additional Child Tax Credit rate<br><i>Description:</i> This is the fraction of earnings used in calculating the ACTC, which is a partially refundable credit that supplements the CTC for some taxpayers. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.15<br>2014: 0.15<br>2015: 0.15<br>2016: 0.15<br>2017: 0.15</p><p><b>Refundable Credits &mdash; Additional Child Tax Credit</b><br><i>tc Name:</i> _ACTC_rt_bonus_under5family<br><i>TB Name:</i> Bonus additional child tax credit rate for families with qualifying children under 5<br><i>Description:</i> For families with qualifying children under 5 years old, this bonus rate is added to the fraction of earnings (additional child tax credit rate) used in calculating the ACTC.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Refundable Credits &mdash; Additional Child Tax Credit</b><br><i>tc Name:</i> _ACTC_Income_thd<br><i>TB Name:</i> Additional Child Tax Credit income threshold<br><i>Description:</i> The portion of earned income below this threshold does not count as base for the Additional Child Tax Credit.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 3000<br>2014: 3000<br>2015: 3000<br>2016: 3000<br>2017: 3000</p><p><b>Refundable Credits &mdash; Additional Child Tax Credit</b><br><i>tc Name:</i> _ACTC_ChildNum<br><i>TB Name:</i> Additional Child Tax Credit minimum number of qualified children<br><i>Description:</i> Families with this number of qualified children or more may qualify for the Additional Child Tax Credit, which is a partially refundable credit that supplements the Child Tax Credit for some taxpayers.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 3<br>2014: 3<br>2015: 3<br>2016: 3<br>2017: 3</p>
+
+<p><b>Refundable Credits &mdash; New Refundable Child Tax Credit</b><br><i>tc Name:</i> _CTC_new_c<br><i>TB Name:</i> New refundable child tax credit maximum amount per child<br><i>Description:</i> In addition to all credits currently available for dependents, this parameter gives each qualifying child a new refundable credit with this maximum amount.<br><i>Notes:</i> Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Refundable Credits &mdash; New Refundable Child Tax Credit</b><br><i>tc Name:</i> _CTC_new_c_under5_bonus<br><i>TB Name:</i> Bonus new refundable child tax credit maximum for qualifying children under five<br><i>Description:</i> The maximum amount of the new refundable child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old. <br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Refundable Credits &mdash; New Refundable Child Tax Credit</b><br><i>tc Name:</i> _CTC_new_rt<br><i>TB Name:</i> New refundable child tax credit amount phasein rate<br><i>Description:</i> The total amount of the new child tax credit is increased at this rate per dollar of AGI until _CTC_new_c times the number of qualified children is reached.<br><i>Notes:</i> Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Refundable Credits &mdash; New Refundable Child Tax Credit</b><br><i>tc Name:</i> _CTC_new_ps<br><i>TB Name:</i> New refundable child tax credit phaseout starting AGI<br><i>Description:</i> The total amount of new child tax credit is reduced for taxpayers with AGI higher than this level.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [0.0, 0.0, 0.0, 0.0, 0.0]<br>2014: [0.0, 0.0, 0.0, 0.0, 0.0]<br>2015: [0.0, 0.0, 0.0, 0.0, 0.0]<br>2016: [0.0, 0.0, 0.0, 0.0, 0.0]<br>2017: [0.0, 0.0, 0.0, 0.0, 0.0]</p><p><b>Refundable Credits &mdash; New Refundable Child Tax Credit</b><br><i>tc Name:</i> _CTC_new_prt<br><i>TB Name:</i> New refundable child tax credit amount phaseout rate<br><i>Description:</i> The total amount of the new child tax credit is reduced at this rate per dollar exceeding the phaseout starting AGI, _CTC_new_ps.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Refundable Credits &mdash; New Refundable Child Tax Credit</b><br><i>tc Name:</i> _CTC_new_refund_limited<br><i>TB Name:</i> New child tax credit refund limited to a decimal fraction of payroll taxes<br><i>Description:</i> Specifies whether the new child tax credit refund is limited by the new child tax credit refund limit rate (_CTC_new_refund_limit_payroll_rt)<br><i>Notes:</i> Set this parameter to true to limit the refundability or false to allow full refundability for all taxpayers.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: False<br>2014: False<br>2015: False<br>2016: False<br>2017: False</p><p><b>Refundable Credits &mdash; New Refundable Child Tax Credit</b><br><i>tc Name:</i> _CTC_new_refund_limit_payroll_rt<br><i>TB Name:</i> New child tax credit refund limit rate (decimal fraction of payroll taxes)<br><i>Description:</i> The fraction of payroll taxes (employee plus employer shares, but excluding all Medicare payroll taxes) that serves as a limit to the amount of new child tax credit that can be refunded.<br><i>Notes:</i> Set this parameter to zero for no refundability; set it to 9e99 for unlimited refundability for taxpayers with payroll tax liabilities.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+
+<h3 id="pol-surtaxes">Surtaxes</h3>
+
+<p><b>Surtaxes &mdash; New Minimum Tax</b><br><i>tc Name:</i> _FST_AGI_trt<br><i>TB Name:</i> New minimum tax; rate as a decimal fraction of AGI<br><i>Description:</i> Individual income taxes and the employee share of payroll taxes are credited against this minimum tax, so the surtax is the difference between the tax rate times AGI and the credited taxes. The new minimum tax is similar to the Fair Share Tax, except that no credits are exempted from the base.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Surtaxes &mdash; New Minimum Tax</b><br><i>tc Name:</i> _FST_AGI_thd_lo<br><i>TB Name:</i> Minimum AGI needed to be subject to the new minimum tax<br><i>Description:</i> A taxpayer is only subject to the new minimum tax if they exceed this level of AGI<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [1000000.0, 1000000.0, 500000.0, 1000000.0, 1000000.0]<br>2014: [1000000.0, 1000000.0, 500000.0, 1000000.0, 1000000.0]<br>2015: [1000000.0, 1000000.0, 500000.0, 1000000.0, 1000000.0]<br>2016: [1000000.0, 1000000.0, 500000.0, 1000000.0, 1000000.0]<br>2017: [1000000.0, 1000000.0, 500000.0, 1000000.0, 1000000.0]</p><p><b>Surtaxes &mdash; New Minimum Tax</b><br><i>tc Name:</i> _FST_AGI_thd_hi<br><i>TB Name:</i> AGI level at which the New Minimum Tax is fully phased in<br><i>Description:</i> The new minimum tax will be fully phased in at this level of AGI. If there is no phase-in, this upper threshold should be set equal to the lower AGI threshold<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [2000000.0, 2000000.0, 1000000.0, 2000000.0, 2000000.0]<br>2014: [2000000.0, 2000000.0, 1000000.0, 2000000.0, 2000000.0]<br>2015: [2000000.0, 2000000.0, 1000000.0, 2000000.0, 2000000.0]<br>2016: [2000000.0, 2000000.0, 1000000.0, 2000000.0, 2000000.0]<br>2017: [2000000.0, 2000000.0, 1000000.0, 2000000.0, 2000000.0]</p>
+
+<p><b>Surtaxes &mdash; New AGI Surtax</b><br><i>tc Name:</i> _AGI_surtax_trt<br><i>TB Name:</i> New AGI surtax rate<br><i>Description:</i> The surtax rate is applied to the portion of Adjusted Gross Income above the AGI surtax threshold.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Surtaxes &mdash; New AGI Surtax</b><br><i>tc Name:</i> _AGI_surtax_thd<br><i>TB Name:</i> Threshold for the new AGI surtax<br><i>Description:</i> The aggregate gross income above this AGI surtax threshold is taxed at surtax rate on AGI.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2014: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2015: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2016: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br>2017: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]</p>
+
+<p><b>Surtaxes &mdash; Lump-Sum Tax</b><br><i>tc Name:</i> _LST<br><i>TB Name:</i> Dollar amount of lump-sum tax<br><i>Description:</i> The lump-sum tax is levied on every member of a tax filing unit. The lump-sum tax is included only in combined taxes; it is not included in income or payroll taxes.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p>
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+
+<h3 id="pol-other-parameters">Other Parameters</h3>
+
+<p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> _SS_percentage1<br><i>Long Name:</i> Social Security taxable income decimal fraction 1<br><i>Description:</i> Under current law if their provisional income is above the first threshold for Social Security taxability but below the second threshold, taxpayers need to apply this fraction to both the excess of their provisional income over the first threshold and their Social Security benefits, and then include the smaller one in their AGI.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.5<br>2014: 0.5<br>2015: 0.5<br>2016: 0.5<br>2017: 0.5</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> _SS_percentage2<br><i>Long Name:</i> Social Security taxable income decimal fraction 2<br><i>Description:</i> Under current law if their provisional income is above the second threshold for Social Security taxability, taxpayers need to apply this fraction to both the excess of their provisional income over the second threshold and their social security benefits, and then include the smaller one in their AGI.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.85<br>2014: 0.85<br>2015: 0.85<br>2016: 0.85<br>2017: 0.85</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> _II_em_ps<br><i>Long Name:</i> Personal exemption phaseout starting income<br><i>Description:</i> If taxpayers' AGI is above this level, their personal exemption will start to decrease at the personal exemption phaseout rate (PEP provision). <br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [250000, 300000, 150000, 275000, 300000]<br>2014: [254200, 305050, 152525, 279650, 305050]<br>2015: [258250, 309900, 154950, 284040, 309900]<br>2016: [259400, 311300, 155650, 285350, 311300]<br>2017: [261500, 313800, 156900, 287650, 313800]</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> _STD_Dep<br><i>Long Name:</i> Standard deduction for dependents<br><i>Description:</i> This is the maximum standard deduction for dependents.<br><i>Notes:</i> This parameter cannot be decreased due to lack of data.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>2013: 1000<br>2014: 1000<br>2015: 1050<br>2016: 1050<br>2017: 1050</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> _STD_allow_charity_ded_nonitemizers<br><i>Long Name:</i> Allow standard deduction filers to take the charitable contributions deduction<br><i>Description:</i> Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: False<br>2014: False<br>2015: False<br>2016: False<br>2017: False</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> _II_credit_ps<br><i>Long Name:</i> Personal refundable credit phaseout start<br><i>Description:</i> The Personal Refundable credit amount will be reduced for taxpayers with AGI higher than this level.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, joint, separate, head of household, widow]<br>2013: [0, 0, 0, 0, 0]<br>2014: [0, 0, 0, 0, 0]<br>2015: [0, 0, 0, 0, 0]<br>2016: [0, 0, 0, 0, 0]<br>2017: [0, 0, 0, 0, 0]</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> _AMT_Child_em<br><i>Long Name:</i> Child AMT exemption additional income base<br><i>Description:</i> The child's AMT exemption is capped by this amount plus the child's earned income.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>2013: 7150<br>2014: 7250<br>2015: 7400<br>2016: 7400<br>2017: 7500</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> _AMT_KT_c_Age<br><i>Long Name:</i> Maximum age subject to Kiddie Tax<br><i>Description:</i> At or under this age, the individual is subject to Kiddie Tax.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 24<br>2014: 24<br>2015: 24<br>2016: 24<br>2017: 24</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> _AMT_em_pe<br><i>Long Name:</i> AMT exemption phaseout ending AMT taxable income for Married filling Separately<br><i>Description:</i> The AMT exemption is entirely disallowed beyond this AMT taxable income level for individuals who are married but filing separately.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>2013: 238550<br>2014: 242450<br>2015: 246250<br>2016: 247450</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> _LLC_Expense_c<br><i>Long Name:</i> Lifetime learning credit expense limit<br><i>Description:</i> The maximum expense eligible for lifetime learning credit, per child.<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 10000<br>2014: 10000<br>2015: 10000<br>2016: 10000<br>2017: 10000</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> _ETC_pe_Single<br><i>Long Name:</i> Education tax credit phaseout ends (Single)<br><i>Description:</i> The education tax credit will be zero for those taxpayers of single filing status with modified AGI (in thousands) higher than this level.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>2013: 63<br>2014: 64<br>2015: 65<br>2016: 65</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> _ETC_pe_Married<br><i>Long Name:</i> Education tax credit phaseout ends (Married)<br><i>Description:</i> The education tax credit will be zero for those taxpayers of married filing status with modified AGI level (in thousands) higher than this level.<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>2013: 127<br>2014: 128<br>2015: 130<br>2016: 131</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> _UBI1<br><i>Long Name:</i> UBI benefit for those under 18<br><i>Description:</i> UBI benefit provided to people under 18<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> _UBI2<br><i>Long Name:</i> UBI benefit for those 18 through 20<br><i>Description:</i> UBI benefit provided to people 18-20 years of age<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> _UBI3<br><i>Long Name:</i> UBI benefit for those 21 and over<br><i>Description:</i> UBI benefit provided to people 21 and over<br><i>Inflation Indexed:</i> True<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> _UBI_ecrt<br><i>Long Name:</i> Fraction of UBI benefits excluded from AGI<br><i>Description:</i> One minus this fraction of UBI benefits are taxable and will be added to AGI<br><i>Inflation Indexed:</i> False<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0</p>
+
+<p><a href="#pol">Back to Section Contents</a>&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a></p>
+
+
+<h2 id="input">Input Variables</h2>
+
+<p>This section contains documentation of input variables in a format
+that is easy to search and print. The input variables are ordered
+alphabetically by name.  There are no subsections, just a long list
+of input variables that Tax-Calculator is programmed to use in its
+calculations.</p>
+
+<p><i>Input Variable Name:</i> <b>DSI</b><br><i>Description:</i> 1 if claimed as dependent on another return; otherwise 0<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 6a</p><p><i>Input Variable Name:</i> <b>EIC</b><br><i>Description:</i> number of EIC qualifying children (range: 0 to 3)<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: 1040 Sch EIC</p><p><i>Input Variable Name:</i> <b>FLPDYR</b><br><i>Description:</i> Tax filing year<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: 1040</p><p><i>Input Variable Name:</i> <b>MARS</b><br><b><i>Required Input Variable</i></b><br><i>Description:</i> Filing (marital) status: line number of the checked box<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: 1040 lines 1-5</p><p><i>Input Variable Name:</i> <b>MIDR</b><br><i>Description:</i> 1 if separately filing spouse itemizes; otherwise 0<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 39b</p><p><i>Input Variable Name:</i> <b>RECID</b><br><b><i>Required Input Variable</i></b><br><i>Description:</i> Unique numeric identifier for filing unit; appears as RECID variable in tc CLI minimal output<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: private info</p><p><i>Input Variable Name:</i> <b>XTOT</b><br><i>Description:</i> Total number of exemptions for filing unit<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 6d</p><p><i>Input Variable Name:</i> <b>age_head</b><br><i>Description:</i> Age in years of taxpayer (i.e. primary filer)<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: imputed from CPS data</p><p><i>Input Variable Name:</i> <b>age_spouse</b><br><i>Description:</i> Age in years of spouse (i.e. secondary filer if present)<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: imputed from CPS data</p><p><i>Input Variable Name:</i> <b>agi_bin</b><br><i>Description:</i> Historical AGI category used in data extrapolation<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: not used in tax calculations</p><p><i>Input Variable Name:</i> <b>blind_head</b><br><i>Description:</i> 1 if taxpayer is blind; otherwise 0<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 39a</p><p><i>Input Variable Name:</i> <b>blind_spouse</b><br><i>Description:</i> 1 if spouse is blind; otherwise 0<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 39a</p><p><i>Input Variable Name:</i> <b>cmbtp</b><br><i>Description:</i> Estimate of income on (AMT) Form 6251 but not in AGI<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 6251 and 1040</p><p><i>Input Variable Name:</i> <b>e00200</b><br><i>Description:</i> Wages, salaries, and tips for filing unit<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 7</p><p><i>Input Variable Name:</i> <b>e00200p</b><br><i>Description:</i> Wages, salaries, and tips for taxpayer<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 7 component</p><p><i>Input Variable Name:</i> <b>e00200s</b><br><i>Description:</i> Wages, salaries, and tips for spouse<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 7 component</p><p><i>Input Variable Name:</i> <b>e00300</b><br><i>Description:</i> Taxable interest income<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 8a</p><p><i>Input Variable Name:</i> <b>e00400</b><br><i>Description:</i> Tax-exempt interest income<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 8b</p><p><i>Input Variable Name:</i> <b>e00600</b><br><i>Description:</i> Ordinary dividends included in AGI<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 9a</p><p><i>Input Variable Name:</i> <b>e00650</b><br><i>Description:</i> Qualified dividends included in ordinary dividends<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 9b</p><p><i>Input Variable Name:</i> <b>e00700</b><br><i>Description:</i> Taxable refunds of state and local income taxes<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 10</p><p><i>Input Variable Name:</i> <b>e00800</b><br><i>Description:</i> Alimony received<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 11</p><p><i>Input Variable Name:</i> <b>e00900</b><br><i>Description:</i> Sch C business net profit/loss for filing unit<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 12</p><p><i>Input Variable Name:</i> <b>e00900p</b><br><i>Description:</i> Sch C business net profit/loss for taxpayer<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 12 component</p><p><i>Input Variable Name:</i> <b>e00900s</b><br><i>Description:</i> Sch C business net profit/loss for spouse<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 12 component</p><p><i>Input Variable Name:</i> <b>e01100</b><br><i>Description:</i> Capital gain distributions not reported on Sch D<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 13</p><p><i>Input Variable Name:</i> <b>e01200</b><br><i>Description:</i> Other net gain/loss from Form 4797<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 14</p><p><i>Input Variable Name:</i> <b>e01400</b><br><i>Description:</i> Taxable IRA distributions<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 15b</p><p><i>Input Variable Name:</i> <b>e01500</b><br><i>Description:</i> Pensions and annuities<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 16a</p><p><i>Input Variable Name:</i> <b>e01700</b><br><i>Description:</i> Taxable pensions and annuities<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 16b</p><p><i>Input Variable Name:</i> <b>e02000</b><br><i>Description:</i> Sch E rental, royalty, S-corp, etc, income/loss<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 17</p><p><i>Input Variable Name:</i> <b>e02100</b><br><i>Description:</i> Farm net income/loss for filing unit from Sch F<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 18</p><p><i>Input Variable Name:</i> <b>e02100p</b><br><i>Description:</i> Farm net income/loss for taxpayer<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 18 component</p><p><i>Input Variable Name:</i> <b>e02100s</b><br><i>Description:</i> Farm net income/loss for spouse<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 18 component</p><p><i>Input Variable Name:</i> <b>e02300</b><br><i>Description:</i> Unemployment compensation benefits<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 19</p><p><i>Input Variable Name:</i> <b>e02400</b><br><i>Description:</i> Total social security benefits<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 20a</p><p><i>Input Variable Name:</i> <b>e03150</b><br><i>Description:</i> Total deductible IRA contributions<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 32</p><p><i>Input Variable Name:</i> <b>e03210</b><br><i>Description:</i> Student loan interest<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 33</p><p><i>Input Variable Name:</i> <b>e03220</b><br><i>Description:</i> Educator expenses<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 23</p><p><i>Input Variable Name:</i> <b>e03230</b><br><i>Description:</i> Tuition and fees from Form 8917<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 34</p><p><i>Input Variable Name:</i> <b>e03240</b><br><i>Description:</i> Domestic production activities from Form 8903<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 35</p><p><i>Input Variable Name:</i> <b>e03270</b><br><i>Description:</i> Self-employed health insurance deduction<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 29</p><p><i>Input Variable Name:</i> <b>e03290</b><br><i>Description:</i> Health savings account deduction from Form 8889<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 25</p><p><i>Input Variable Name:</i> <b>e03300</b><br><i>Description:</i> Contributions to SEP, SIMPLE and qualified plans<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 28</p><p><i>Input Variable Name:</i> <b>e03400</b><br><i>Description:</i> Penalty on early withdrawal of savings<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 30</p><p><i>Input Variable Name:</i> <b>e03500</b><br><i>Description:</i> Alimony paid<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 31a</p><p><i>Input Variable Name:</i> <b>e07240</b><br><i>Description:</i> Retirement savings contributions credit from Form 8880<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 1040 line 50<br>2014-2016: 1040 line 51</p><p><i>Input Variable Name:</i> <b>e07260</b><br><i>Description:</i> Residential energy credit from Form 5695<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 1040 line 52<br>2014-2016: 1040 line 53</p><p><i>Input Variable Name:</i> <b>e07300</b><br><i>Description:</i> Foreign tax credit from Form 1116<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 1040 line 47<br>2014-2016: 1040 line 48</p><p><i>Input Variable Name:</i> <b>e07400</b><br><i>Description:</i> General business credit from Form 3800<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 1040 line 53a<br>2014-2016: 1040 line 54a</p><p><i>Input Variable Name:</i> <b>e07600</b><br><i>Description:</i> Prior year minimum tax credit from Form 8801<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 1040 line 53b<br>2014-2016: 1040 line 54b</p><p><i>Input Variable Name:</i> <b>e09700</b><br><i>Description:</i> Recapture of Investment Credit<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2015: 4255 line 15<br>2016-2016: 4255 line 20</p><p><i>Input Variable Name:</i> <b>e09800</b><br><i>Description:</i> Unreported payroll taxes from Form 4137 or 8919<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 1040 line 57<br>2014-2016: 1040 line 58</p><p><i>Input Variable Name:</i> <b>e09900</b><br><i>Description:</i> Penalty tax on qualified retirement plans<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 1040 line 58<br>2014-2016: 1040 line 59</p><p><i>Input Variable Name:</i> <b>e11200</b><br><i>Description:</i> Excess payroll (FICA/RRTA) tax withheld<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 1040 line 69<br>2014-2016: 1040 line 71</p><p><i>Input Variable Name:</i> <b>e17500</b><br><i>Description:</i> Sch A: Medical and dental expenses<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 Sch A line 1</p><p><i>Input Variable Name:</i> <b>e18400</b><br><i>Description:</i> Sch A: State and local income/sales taxes<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 Sch A line 5</p><p><i>Input Variable Name:</i> <b>e18500</b><br><i>Description:</i> Sch A: Real-estate taxes paid<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 Sch A line 6</p><p><i>Input Variable Name:</i> <b>e19200</b><br><i>Description:</i> Sch A: Interest paid<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 Sch A line 15</p><p><i>Input Variable Name:</i> <b>e19800</b><br><i>Description:</i> Sch A: Gifts to charity: cash/check contributions<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 Sch A line 16</p><p><i>Input Variable Name:</i> <b>e20100</b><br><i>Description:</i> Sch A: Gifts to charity: other than cash/check contributions<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 Sch A line 17</p><p><i>Input Variable Name:</i> <b>e20400</b><br><i>Description:</i> Sch A: Miscellaneous deductions subject to 2% AGI limitation<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 Sch A line 24</p><p><i>Input Variable Name:</i> <b>e20500</b><br><i>Description:</i> Sch A: Net casualty or theft loss<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 Sch A line 20</p><p><i>Input Variable Name:</i> <b>e24515</b><br><i>Description:</i> Sch D: Un-Recaptured Section 1250 Gain<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 Sch D line 19</p><p><i>Input Variable Name:</i> <b>e24518</b><br><i>Description:</i> Sch D: 28% Rate Gain or Loss<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 Sch D line 18</p><p><i>Input Variable Name:</i> <b>e26270</b><br><i>Description:</i> Sch E: Combined partnership and S-corporation net income/loss<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 Sch E line 32</p><p><i>Input Variable Name:</i> <b>e27200</b><br><i>Description:</i> Sch E: Farm rent net income or loss<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 Sch E line 40</p><p><i>Input Variable Name:</i> <b>e32800</b><br><i>Description:</i> Child/dependent-care expenses for qualifying persons from Form 2441<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 2441 line 3</p><p><i>Input Variable Name:</i> <b>e58990</b><br><i>Description:</i> Investment income elected amount from Form 4952<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 4952 line 4g</p><p><i>Input Variable Name:</i> <b>e62900</b><br><i>Description:</i> Alternative Minimum Tax foreign tax credit from Form 6251<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 6251 line 32</p><p><i>Input Variable Name:</i> <b>e87530</b><br><i>Description:</i> Adjusted qualified lifetime learning expenses for all students<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 8863 Part I line 10 and 8863 Part III line 31</p><p><i>Input Variable Name:</i> <b>elderly_dependent</b><br><i>Description:</i> 1 if filing unit has an elderly dependent; otherwise 0<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: imputed from CPS data; not used in tax law</p><p><i>Input Variable Name:</i> <b>f2441</b><br><i>Description:</i> number of child/dependent-care qualifying persons<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: 2441 line 2b</p><p><i>Input Variable Name:</i> <b>f6251</b><br><i>Description:</i> 1 if Form 6251 (AMT) attached to return; otherwise 0<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: 6251</p><p><i>Input Variable Name:</i> <b>filer</b><br><i>Description:</i> 1 if filing unit in IRS-SOI PUF sample; 0 if from CPS sample<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: sample construction info</p><p><i>Input Variable Name:</i> <b>n1821</b><br><i>Description:</i> Number of people over 18 and under 21 years old in the filing unit<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: imputed from CPS data</p><p><i>Input Variable Name:</i> <b>n21</b><br><i>Description:</i> Number of people 21 years old or older in the filing unit<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: imputed from CPS data</p><p><i>Input Variable Name:</i> <b>n24</b><br><i>Description:</i> Number of children eligible for Child Tax Credit<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: imputed from CPS data</p><p><i>Input Variable Name:</i> <b>nu05</b><br><i>Description:</i> Number of dependents under 5 years old<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: imputed from CPS data</p><p><i>Input Variable Name:</i> <b>nu13</b><br><i>Description:</i> Number of dependents under 13 years old<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: imputed from CPS data</p><p><i>Input Variable Name:</i> <b>nu18</b><br><i>Description:</i> Number of people under 18 years old in the filing unit<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: imputed from CPS data</p><p><i>Input Variable Name:</i> <b>p08000</b><br><i>Description:</i> Other tax credits (but not including Sch R credit)<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 1040 line 53<br>2014-2016: 1040 line 54</p><p><i>Input Variable Name:</i> <b>p22250</b><br><i>Description:</i> Sch D: Net short-term capital gains/losses<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 Sch D line 7</p><p><i>Input Variable Name:</i> <b>p23250</b><br><i>Description:</i> Sch D: Net long-term capital gains/losses<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 Sch D line 15</p><p><i>Input Variable Name:</i> <b>p25470</b><br><i>Description:</i> Sch E: Royalty depletion and/or rental depreciation<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 Sch E line 18</p><p><i>Input Variable Name:</i> <b>p87521</b><br><i>Description:</i> Total tentative AmOppCredit amount for all students<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 8863 Part I line 1 and 8863 Part III line 30</p><p><i>Input Variable Name:</i> <b>s006</b><br><i>Description:</i> Filing unit sampling weight; appears as WEIGHT variable in tc CLI minimal output<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: not used in filing unit tax calculations</p>
+
+<p><a href="#input">Back to Section Contents</a>&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a></p>
+
+
+<h2 id="output">Output Variables</h2>
+
+<p>This section contains documentation of output variables in a format
+that is easy to search and print. The output variables are ordered
+alphabetically by name.  There are no subsections, just a long list of
+output variables that Tax-Calculator is programmed to calculate.</p>
+
+<p><i>Output Variable Name:</i> <b>ID_Casualty_frt_in_pufcsv_year</b><br><i>Description:</i> Itemized deduction casualty loss disregard as a fraction of AGI<br><i>Datatype:</i> unchanging_float<br><i>IRS Form Location:</i><br>2013-2016: 1040 Sch A</p><p><i>Output Variable Name:</i> <b>c00100</b><br><i>Description:</i> Adjusted Gross Income (AGI)<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 37</p><p><i>Output Variable Name:</i> <b>c01000</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c02500</b><br><i>Description:</i> Social security benefits included in AGI<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 20b</p><p><i>Output Variable Name:</i> <b>c02900</b><br><i>Description:</i> Total of all income adjustments to get AGI<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 36</p><p><i>Output Variable Name:</i> <b>c02900_in_ei</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c03260</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c04470</b><br><i>Description:</i> Itemized deductions after phase-out (zero for non-itemizers)<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 40</p><p><i>Output Variable Name:</i> <b>c04600</b><br><i>Description:</i> Personal exemptions after phase-out<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 42</p><p><i>Output Variable Name:</i> <b>c04800</b><br><i>Description:</i> Regular taxable income<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 43</p><p><i>Output Variable Name:</i> <b>c05200</b><br><i>Description:</i> Tax amount from Sch X,Y,X tables<br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c05700</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c05800</b><br><i>Description:</i> Total (regular + AMT) income tax liability before credits (equals taxbc plus c09600)<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 1040 line 46<br>2014-2016: 1040 line 47</p><p><i>Output Variable Name:</i> <b>c07100</b><br><i>Description:</i> Total non-refundable credits used to reduce positive tax liability<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 1040 line 46 minus 1040 line 55<br>2014-2016: 1040 line 47 minus 1040 line 56</p><p><i>Output Variable Name:</i> <b>c07180</b><br><i>Description:</i> Credit for child and dependent care expenses from Form 2441<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 1040 line 48<br>2014-2016: 1040 line 49</p><p><i>Output Variable Name:</i> <b>c07200</b><br><i>Description:</i> Schedule R credit for the elderly and the disabled<br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c07220</b><br><i>Description:</i> Child tax credit (adjusted) from Form 8812<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 1040 line 51<br>2014-2016: 1040 line 52</p><p><i>Output Variable Name:</i> <b>c07230</b><br><i>Description:</i> Education tax credits non-refundable amount from Form 8863 (includes c87668)<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 8863 line 19 and 1040 line 49<br>2014-2016: 8863 line 19 and 1040 line 50</p><p><i>Output Variable Name:</i> <b>c07240</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c07260</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c07300</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c07400</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c07600</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c08000</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c09200</b><br><i>Description:</i> Income tax liability (including othertaxes) after non-refundable credits are used, but before refundable credits are applied<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 1040 line 61<br>2014-2016: 1040 line 63</p><p><i>Output Variable Name:</i> <b>c09600</b><br><i>Description:</i> Alternative Minimum Tax (AMT) liability<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 45</p><p><i>Output Variable Name:</i> <b>c10960</b><br><i>Description:</i> American Opportunity Credit refundable amount from Form 8863<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 8863 line 8 and 1040 line 66<br>2014-2016: 8863 line 8 and 1040 line 68</p><p><i>Output Variable Name:</i> <b>c11070</b><br><i>Description:</i> Child tax credit (refunded) from Form 8812<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 1040 line 65<br>2014-2016: 1040 line 67</p><p><i>Output Variable Name:</i> <b>c17000</b><br><i>Description:</i> Sch A: Medical expenses deducted<br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c18300</b><br><i>Description:</i> Sch A: State and local taxes deducted<br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c19200</b><br><i>Description:</i> Sch A: Interest deducted<br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c19700</b><br><i>Description:</i> Sch A: Charity contributions deducted<br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c20500</b><br><i>Description:</i> Sch A: Net casualty or theft loss deducted<br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c20800</b><br><i>Description:</i> Sch A: Net limited miscellaneous deductions deducted<br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c21040</b><br><i>Description:</i> Itemized deductions that are phased out<br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c21060</b><br><i>Description:</i> Itemized deductions before phase-out (zero for non-itemizers)<br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c23650</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c59660</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>c62100</b><br><i>Description:</i> Alternative Minimum Tax (AMT) taxable income<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 6251 line 28</p><p><i>Output Variable Name:</i> <b>c87668</b><br><i>Description:</i> American Opportunity Credit non-refundable amount from Form 8863 (included in c07230)<br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>care_deduction</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>combined</b><br><i>Description:</i> Sum of iitax and payrolltax and lumpsum_tax<br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>ctc_new</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>dep_credit</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>dwks10</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>dwks13</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>dwks14</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>dwks19</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>earned</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>earned_p</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>earned_s</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>eitc</b><br><i>Description:</i> Earned Income Credit<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 1040 line 64a<br>2014-2016: 1040 line 66a</p><p><i>Output Variable Name:</i> <b>exact</b><br><i>Description:</i> <br><i>Datatype:</i> int<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>expanded_income</b><br><i>Description:</i> Broad income measure<br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>fstax</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>iitax</b><br><i>Description:</i> Total federal individual income tax liability; appears as INCTAX variable in tc CLI minimal output<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 1040 line 61 minus line 56 minus line 60a<br>2014-2016: 1040 line 63 minus line 57 minus line 62a</p><p><i>Output Variable Name:</i> <b>invinc_agi_ec</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>invinc_ec_base</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>lumpsum_tax</b><br><i>Description:</i> Lumpsum (or head) tax; appears as LSTAX variable in tc CLI minimal output<br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>mtr_inctax</b><br><i>Description:</i> Marginal income tax rate (in percentage terms) on extra taxpayer earnings (e00200p)<br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>mtr_paytax</b><br><i>Description:</i> Marginal payroll tax rate (in percentage terms) on extra taxpayer earnings (e00200p)<br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>niit</b><br><i>Description:</i> Net Investment Income Tax from Form 8960<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 1040 line 60b<br>2014-2016: 1040 line 62b</p><p><i>Output Variable Name:</i> <b>nontaxable_ubi</b><br><i>Description:</i> Amount of UBI benefit excluded from AGI<br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>num</b><br><i>Description:</i> 2 when MARS is 2 (married filing jointly); otherwise 1<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: 1040 lines 1-5</p><p><i>Output Variable Name:</i> <b>othertaxes</b><br><i>Description:</i> Other taxes: sum of niit, e09700, e09800 and e09900 (included in c09200)<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: sum of 1040 lines 57 through 60<br>2014-2016: sum of 1040 lines 58 through 62</p><p><i>Output Variable Name:</i> <b>payrolltax</b><br><i>Description:</i> Total (employee + employer) payroll tax liability; appears as PAYTAX variable in tc CLI minimal output (payrolltax = ptax_was + setax + ptax_amc)<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: OASDI+HI FICA plus 1040 lines 56 and 60a<br>2014-2016: OASDI+HI FICA plus 1040 lines 57 and 62a</p><p><i>Output Variable Name:</i> <b>personal_credit</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>pre_c04600</b><br><i>Description:</i> Personal exemption before phase-out<br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>prectc</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>ptax_amc</b><br><i>Description:</i> Additional Medicare Tax from Form 8959 (included in payrolltax)<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 1040 line 60a<br>2014-2016: 1040 line 62a</p><p><i>Output Variable Name:</i> <b>ptax_oasdi</b><br><i>Description:</i> Employee + employer OASDI FICA tax plus self-employment tax (excludes HI FICA so positive ptax_oasdi is less than ptax_was plus setax)<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: OASDI FICA plus 1040 line 56<br>2014-2016: OASDI FICA plus 1040 line 57</p><p><i>Output Variable Name:</i> <b>ptax_was</b><br><i>Description:</i> Employee + employer OASDI + HI FICA tax<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: OASDHI FICA<br>2014-2016: OASDHI FICA</p><p><i>Output Variable Name:</i> <b>refund</b><br><i>Description:</i> Total refundable income tax credits<br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>sep</b><br><i>Description:</i> 2 when MARS is 3 (married filing separately); otherwise 1<br><i>Datatype:</i> int<br><i>IRS Form Location:</i><br>2013-2016: 1040 lines 1-5</p><p><i>Output Variable Name:</i> <b>setax</b><br><i>Description:</i> Self-employment tax<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2013: 1040 line 56<br>2014-2016: 1040 line 57</p><p><i>Output Variable Name:</i> <b>sey</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>standard</b><br><i>Description:</i> Standard deduction (zero for itemizers)<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 40</p><p><i>Output Variable Name:</i> <b>surtax</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>taxable_ubi</b><br><i>Description:</i> Amount of UBI benefit included in AGI<br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>taxbc</b><br><i>Description:</i> Regular tax on regular taxable income before credits<br><i>Datatype:</i> float<br><i>IRS Form Location:</i><br>2013-2016: 1040 line 44</p><p><i>Output Variable Name:</i> <b>ubi</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>ymod</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p><p><i>Output Variable Name:</i> <b>ymod1</b><br><i>Description:</i> <br><i>Datatype:</i> float<br><i>IRS Form Location:</i></p>
+
+<p><a href="#output">Back to Section Contents</a>&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a></p>
+
+
+<h2 id="params">Response Parameters</h2>
+
+<p>This section contains documentation of several sets of parameters
+that characterize responses to a tax reform.  Consumption
+parameters are used to compute marginal tax rates.  Behavior
+parameters are used to compute changes in input variables caused by a
+tax reform in a partial-equilibrium setting.  Growdiff parameters are
+used to specify baseline differences and/or reform responses in the
+annual rate of growth in economic variables.</p>
+
+<p>All the response parameters can be used by the tc CLI, but only
+those with a <i>TB Name</i> appear in the TaxBrain GUI.  All these
+dynamic response parameters control advanced features of
+Tax-Calculator, so understanding the
+<a href="https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc">source
+code</a> that uses them is essential.  Each default parameter value is
+zero and is projected into the future at that value, which implies no
+response to the reform.  Using the default no-reform-response
+assumption for all the response parameters generates a static analysis
+of the tax reform.</p>
+
+
+<h3>Section Contents</h3>
+
+<p><a href="#params-consump">Consumption Parameters</a></p>
+<p><a href="#params-behavior">Behavior Parameters</a></p>
+<p><a href="#params-growdiff">Growdiff Parameters</a></p>
+
+
+<h3 id="params-consump">Consumption Parameters</h3>
+
+<p><b>Response Parameter &mdash; Consumption</b><br><i>tc Name:</i> _MPC_e17500<br><i>Long Name:</i> Marginal propensity to consume medical expenses<br><i>Description:</i> Defined as dollar change in medical-expense consumption divided by dollar change in income.  Typical value is in [0,1] range.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Consumption</b><br><i>tc Name:</i> _MPC_e18400<br><i>Long Name:</i> Marginal propensity to consume state-and-local taxes<br><i>Description:</i> Defined as dollar change in state-and-local-taxes consumption divided by dollar change in income.  Typical value is in [0,1] range.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Consumption</b><br><i>tc Name:</i> _MPC_e19800<br><i>Long Name:</i> Marginal propensity to consume charity cash contributions<br><i>Description:</i> Defined as dollar change in charity-cash-contribution consumption divided by dollar change in income.  Typical value is in [0,1] range.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Consumption</b><br><i>tc Name:</i> _MPC_e20400<br><i>Long Name:</i> Marginal propensity to consume miscellaneous deduction expenses<br><i>Description:</i> Defined as dollar change in miscellaneous-deduction-expense consumption divided by dollar change in income.  Typical value is in [0,1] range.<br><i>Default Value:</i><br>2013: 0.0</p>
+
+<p><a href="#params">Back to Section Contents</a></p>
+
+
+<h3 id="params-behavior">Behavior Parameters</h3>
+
+<p><b>Behavior &mdash; Taxable Income</b><br><i>tc Name:</i> _BE_inc<br><i>TB Name:</i> Income elasticity of taxable income<br><i>Description:</i> Defined as dollar change in taxable income divided by dollar change in after-tax income caused by the reform.  Must be zero or negative.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Behavior &mdash; Taxable Income</b><br><i>tc Name:</i> _BE_sub<br><i>TB Name:</i> Substitution elasticity of taxable income<br><i>Description:</i> Defined as proportional change in taxable income divided by proportional change in marginal net-of-tax rate (1-MTR) on taxpayer earnings caused by the reform.  Must be zero or positive.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Behavior &mdash; Capital Gains</b><br><i>tc Name:</i> _BE_cg<br><i>TB Name:</i> Elasticity of long-term capital gains<br><i>Description:</i> Defined as change in logarithm of long-term capital gains divided by change in marginal tax rate (MTR) on long-term capital gains caused by the reform.  Must be zero or negative.  Read Behavior.response documentation for discussion of appropriate values.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Behavior</b><br><i>tc Name:</i> _BE_charity<br><i>Long Name:</i> Elasticity of charitable contributions<br><i>Description:</i> Defined as proportional change in cash and non-cash charitable contributions divided by proportional change in the after-tax price of charitable contributions caused by the reform. Must be zero or negative.<br><i>Default Value:</i><br>&nbsp;&nbsp; for: [AGI < 50k, 50k <= AGI < 100k, 100k <= AGI]<br>2013: [0.0, 0.0, 0.0]</p>
+
+<p><a href="#params">Back to Section Contents</a></p>
+
+
+<h3 id="params-growdiff">Growdiff Parameters</h3>
+
+<p><b>Response Parameter &mdash; Growdiff</b><br><i>tc Name:</i> _ABOOK<br><i>Long Name:</i> ABOOK additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ABOOK extrapolates input variables: e07300 and e07400.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>tc Name:</i> _ACGNS<br><i>Long Name:</i> ACGNS additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ACGNS extrapolates input variables: e01200, p22250, p23250, e24515 and e24518.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>tc Name:</i> _ACPIM<br><i>Long Name:</i> ACPIM additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ACPIM extrapolates input variables: e03270, e03290 and e17500.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>tc Name:</i> _ACPIU<br><i>Long Name:</i> ACPIU additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ACPIU is the price inflation rate used to inflate many policy parameters.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>tc Name:</i> _ADIVS<br><i>Long Name:</i> ADIVS additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ADIVS extrapolates input variables: e00600 and e00650.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>tc Name:</i> _AINTS<br><i>Long Name:</i> AINTS additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  AINTS extrapolates input variables: e00300 and e00400.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>tc Name:</i> _AIPD<br><i>Long Name:</i> AIPD additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  AIPD extrapolates input variables: e19200.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>tc Name:</i> _ASCHCI<br><i>Long Name:</i> ASCHCI additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ASCHCI extrapolates input variables: e00900, e00900p and e00900s when they are positive.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>tc Name:</i> _ASCHCL<br><i>Long Name:</i> ASCHCL additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ASCHCL extrapolates input variables: e00900, e00900p and e00900s when they are negative.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>tc Name:</i> _ASCHEI<br><i>Long Name:</i> ASCHEI additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ASCHEI extrapolates input variables: e02000 when positive, and p25470, e26270 and e27200 for all values.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>tc Name:</i> _ASCHEL<br><i>Long Name:</i> ASCHEL additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ASCHEL extrapolates input variable: e02000 when negative.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>tc Name:</i> _ASCHF<br><i>Long Name:</i> ASCHF additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ASCHF extrapolates input variables: e02100, e02100p and e02100s.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>tc Name:</i> _ASOCSEC<br><i>Long Name:</i> ASOCSEC additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ASOCSEC extrapolates input variable: e02400.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>tc Name:</i> _ATXPY<br><i>Long Name:</i> ATXPY additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  ATXPY extrapolates input variables: e00700, e00800, e01400, e01500, e01700, e03150, e03210, e03220, e03230, e03300, e03400, e03500, e07240, e07260, p08000, e09700, e09800, e09900, e11200, e18400, e18500, e19800, e20100, e20400, e20500, e07600, e32800, e58990, e62900, e87530, p87521 and cmbtp.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>tc Name:</i> _AUCOMP<br><i>Long Name:</i> AUCOMP additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  AUCOMP extrapolates input variable: e02300.<br><i>Default Value:</i><br>2013: 0.0</p><p><b>Response Parameter &mdash; Growdiff</b><br><i>tc Name:</i> _AWAGE<br><i>Long Name:</i> AWAGE additive difference from default projection<br><i>Description:</i> Default projection is in growfactors.csv file.  AWAGE extrapolates input variables: e00200, e00200p and e00200s.  Also, AWAGE is the wage growth rate used to inflate the OASDI maximum taxable earnings policy parameter, _SS_Earnings_c.<br><i>Default Value:</i><br>2013: 0.0</p>
+
+<p><a href="#params">Back to Section Contents</a>&nbsp;&nbsp;
+<a href="#doc">Back to Document Contents</a></p>
+
+
+</div>
+</body>
+</html>

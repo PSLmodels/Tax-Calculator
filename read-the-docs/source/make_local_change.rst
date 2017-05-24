@@ -146,19 +146,19 @@ is:
 tax parameter.**
 
 Find the function that works with the charitable deduction in
-functions.py by using `this spreadsheet`_ which documents the core
-data variables. First, search for the word charity and identify the
-core variables that handle charity data: E19700, E19800, E20100, and
-E20200. Second, search for the *numerical* portions of those variable
-names in functions.py and identify the function where they appear:
-ItemDed() (if you're unfamiliar with Python, identify a function by
-the syntax "def FunctionName()"). The function ItemDed() calculates
-the total itemized deduction amount.
+functions.py by using the `Tax-Calculator user documentation`_ which
+contains complete information on input variables. First, search for
+the word charity and identify the input variables that contain charity
+data: e19800 and e20100.  Second, search for the *numerical* portions
+of those variable names in functions.py and identify the function
+where they appear: ItemDed() (if you're unfamiliar with Python,
+identify a function by the syntax "def FunctionName()"). The function
+ItemDed() calculates the total itemized deduction amount.
 
-We add the parameter name that we defined in current_law_policy.json to *both* the
-ItemDed() function and the @iterate_jit() decorator that is located
-above that function. There are several things to note when you do
-this:
+We add the parameter name that we defined in current_law_policy.json
+to *both* the ItemDed() function and the @iterate_jit() decorator that
+is located above that function. There are several things to note when
+you do this:
 
    * Surround the parameter name with quotes in @iterate_jit(). Do not
      surround the parameter name with quotes in def ItemDed().
@@ -166,9 +166,10 @@ this:
    * If the word "puf" appears the argument list of def ItemDed() make
      sure it comes last.
 
-   * Parameter names in current_law_policy.json begin with an underscore. Do not
-     include that underscore in functions.py; _ID_Charity_frt in
-     current_law_policy.json becomes ID_Charity_frt in functions.py.
+   * Parameter names in current_law_policy.json begin with an
+     underscore. Do not include that underscore in functions.py;
+     _ID_Charity_frt in current_law_policy.json becomes ID_Charity_frt
+     in functions.py.
 
 .. image:: images/make_local_change_eg2_1.png
 
@@ -186,10 +187,10 @@ We add the following code under the "Charity" subheading inside ItemDed():
 The first line of the highlighted code calculates the amount of
 charitable expense that an individual must exceed to claim the
 charitable deduction by multiplying the floor rate that we defined in
-current_law_policy.json with positive Adjusted Gross Income. The second line sets
-the total charitable deduction amount to zero or, if greater than
-zero, to the individual's total charitable expenses minus the
-charity_floor variable.
+current_law_policy.json with positive Adjusted Gross Income. The
+second line sets the total charitable deduction amount to zero or, if
+greater than zero, to the individual's total charitable expenses minus
+the charity_floor variable.
 
 **6. Test and save your code changes.**
 
@@ -204,6 +205,5 @@ section.
        the future as we move to organize the file.
 
 
-.. _`this spreadsheet`:
-   https://docs.google.com/spreadsheets/d/
-   1WlgbgEAMwhjMI8s9eG117bBEKFioXUY0aUTfKwHwXdA/edit
+.. _`Tax-Calculator user documentation`:
+   http://open-source-economics.github.io/Tax-Calculator/

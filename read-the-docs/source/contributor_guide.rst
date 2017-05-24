@@ -109,7 +109,6 @@ Setup Git
    .. code-block:: python
 
       tax-calculator$ conda update conda
-      tax-calculator$ conda update anaconda
       tax-calculator$ conda env update
 
 If you've made it this far, you've successfully made a remote copy (a
@@ -285,11 +284,11 @@ sample notebook: `10 Minutes To Tax-Calculator`_.
 
 .. _`10 Minutes To Tax-Calculator`:
    http://nbviewer.ipython.org/github/open-source-economics/Tax-Calculator/
-   blob/master/docs/notebooks/10_Minutes_to_Tax-Calculator.ipynb
+   blob/master/read-the-docs/notebooks/10_Minutes_to_Tax-Calculator.ipynb
 
 .. _`Behavior Example`:
    http://nbviewer.ipython.org/github/open-source-economics/Tax-Calculator/
-   blob/master/docs/notebooks/Behavioral_example.ipynb
+   blob/master/read-the-docs/notebooks/Behavioral_example.ipynb
 
 .. _`Continuum Analytics`:
    http://www.continuum.io/downloads

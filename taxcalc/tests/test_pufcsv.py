@@ -33,13 +33,12 @@ def puf_path(tests_path):
 
 
 @pytest.mark.requires_pufcsv
-def test_agg(tests_path, puf_path):
+def test_agg(tests_path, puf_path):  # pylint: disable=redefined-outer-name
     """
     Test Tax-Calculator aggregate taxes with no policy reform using
     the full-sample puf.csv and a two-percent sub-sample of puf.csv
     """
     # pylint: disable=too-many-locals,too-many-statements
-    # for fixture args, pylint: disable=redefined-outer-name
     nyrs = 10
     # create a Policy object (clp) containing current-law policy parameters
     clp = Policy()
@@ -155,7 +154,7 @@ def mtr_bin_counts(mtr_data, bin_edges, recid):
 
 
 @pytest.mark.requires_pufcsv
-def test_mtr(tests_path, puf_path):
+def test_mtr(tests_path, puf_path):  # pylint: disable=redefined-outer-name
     """
     Test Tax-Calculator marginal tax rates with no policy reform using puf.csv
 
@@ -163,8 +162,7 @@ def test_mtr(tests_path, puf_path):
     sample input from the puf.csv file and writing output to a string,
     which is then compared for differences with EXPECTED_MTR_RESULTS.
     """
-    # pylint: disable=too-many-locals
-    # for fixture args, pylint: disable=redefined-outer-name
+    # pylint: disable=too-many-locals,too-many-statements
     assert len(PTAX_MTR_BIN_EDGES) == len(ITAX_MTR_BIN_EDGES)
     # construct actual results string, res
     res = ''
@@ -178,7 +176,7 @@ def test_mtr(tests_path, puf_path):
     clp.set_year(MTR_TAX_YEAR)
     # create a Records object (puf) containing puf.csv input records
     puf = Records(data=puf_path)
-    recid = puf.RECID  # pylint: disable=no-member
+    recid = puf.RECID
     # create a Calculator object using clp policy and puf records
     calc = Calculator(policy=clp, records=puf)
     res += '{} = {}\n'.format('Total number of data records', puf.dim)
@@ -194,6 +192,17 @@ def test_mtr(tests_path, puf_path):
                                            negative_finite_diff=MTR_NEG_DIFF,
                                            zero_out_calculated_vars=zero_out,
                                            wrt_full_compensation=False)
+        if zero_out:
+            # check that calculated variables are consistent
+            crs = calc.records
+            assert np.allclose(crs.iitax + crs.payrolltax, crs.combined)
+            assert np.allclose(crs.ptax_was + crs.setax + crs.ptax_amc,
+                               crs.payrolltax)
+            assert np.allclose(crs.c21060 - crs.c21040, crs.c04470)
+            assert np.allclose(crs.taxbc + crs.c09600, crs.c05800)
+            assert np.allclose(crs.c05800 + crs.othertaxes - crs.c07100,
+                               crs.c09200)
+            assert np.allclose(crs.c09200 - crs.refund, crs.iitax)
         if var_str == 'e00200s':
             # only MARS==2 filing units have valid MTR values
             mtr_ptax = mtr_ptax[calc.records.MARS == 2]

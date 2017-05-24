@@ -10,15 +10,14 @@ import json
 import six
 import numpy as np
 import pytest
-from taxcalc import ParametersBase  # pylint: disable=import-error
-from taxcalc import Policy, Consumption  # pylint: disable=import-error
+# pylint: disable=import-error
+from taxcalc import ParametersBase, Policy, Consumption
 
 
 def test_instantiation_and_usage():
     """
     Test ParametersBase instantiation and usage.
     """
-    # pylint: disable=protected-access
     pbase = ParametersBase()
     assert pbase
     assert pbase.inflation_rates() is None
@@ -26,6 +25,7 @@ def test_instantiation_and_usage():
     syr = 2010
     nyrs = 10
     pbase.initialize(start_year=syr, num_years=nyrs)
+    # pylint: disable=protected-access
     with pytest.raises(ValueError):
         pbase.set_year(syr - 1)
     with pytest.raises(NotImplementedError):
@@ -54,15 +54,16 @@ def test_json_file_contents(tests_path, fname):
     """
     Check contents of JSON parameter files.
     """
-    # pylint: disable=too-many-locals,too-many-branches
+    # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     # specify test information
-    reqkeys = ['long_name', 'description', 'notes',
+    reqkeys = ['long_name', 'description',
+               'section_1', 'section_2', 'notes',
                'row_var', 'row_label',
                'start_year', 'cpi_inflated',
                'col_var', 'col_label',
                'value']
     first_year = Policy.JSON_START_YEAR
-    last_known_year = 2017  # for indexed parameters
+    last_known_year = Policy.LAST_KNOWN_YEAR  # for indexed parameter values
     num_known_years = last_known_year - first_year + 1
     # read JSON parameter file into a dictionary
     path = os.path.join(tests_path, '..', fname)
@@ -77,6 +78,13 @@ def test_json_file_contents(tests_path, fname):
         # check that param contains required keys
         for key in reqkeys:
             assert key in param
+        # check for non-empty long_name and description strings
+        assert isinstance(param['long_name'], six.string_types)
+        if len(param['long_name']) == 0:
+            assert '{} long_name'.format(pname) == 'empty string'
+        assert isinstance(param['description'], six.string_types)
+        if len(param['description']) == 0:
+            assert '{} description'.format(pname) == 'empty string'
         # check that row_var is FLPDYR
         assert param['row_var'] == 'FLPDYR'
         # check that start_year equals first_year
@@ -84,6 +92,8 @@ def test_json_file_contents(tests_path, fname):
         assert isinstance(syr, int) and syr == first_year
         # check that cpi_inflated is boolean
         assert isinstance(param['cpi_inflated'], bool)
+        if fname != 'current_law_policy.json':
+            assert param['cpi_inflated'] is False
         # check that row_label is list
         rowlabel = param['row_label']
         assert isinstance(rowlabel, list)
@@ -110,6 +120,8 @@ def test_json_file_contents(tests_path, fname):
                 assert len(clab) == 4
             elif cvar == 'idedtype':
                 assert len(clab) == 7
+            elif cvar == 'c00100':
+                pass
             else:
                 assert cvar == 'UNKNOWN col_var VALUE'
             # check length of each value row

@@ -15,62 +15,86 @@ it may be more convenient to access this list interactively via the
 **alphabetical** :ref:`genindex` **of taxcalc modules and module
 members** or the alphabetical :ref:`modindex`.
 
-Module taxcalc.behavior
------------------------
+taxcalc.behavior
+----------------
 
 .. automodule:: taxcalc.behavior
     :members:
 
-Module taxcalc.calculate
-------------------------
+taxcalc.calculate
+-----------------
 
 .. automodule:: taxcalc.calculate
     :members:
 
-Module taxcalc.decorators
--------------------------
+taxcalc.consumption
+-------------------
+
+.. automodule:: taxcalc.consumption
+    :members:
+
+taxcalc.decorators
+------------------
 
 .. automodule:: taxcalc.decorators
     :members:
 
-Module taxcalc.functions
-------------------------
+taxcalc.functions
+-----------------
 
 .. automodule:: taxcalc.functions
     :members:
 
-Module taxcalc.growth
----------------------
+taxcalc.growdiff
+----------------
 
-.. automodule:: taxcalc.growth
+.. automodule:: taxcalc.growdiff
     :members:
 
-Module taxcalc.parameters_base
-------------------------------
+taxcalc.growfactors
+-------------------
 
-.. automodule:: taxcalc.parameters_base
+.. automodule:: taxcalc.growfactors
     :members:
 
-Module taxcalc.policy
----------------------
+taxcalc.macro_elasticity
+------------------------
+
+.. automodule:: taxcalc.macro_elasticity
+    :members:
+
+taxcalc.parameters
+------------------
+
+.. automodule:: taxcalc.parameters
+    :members:
+
+taxcalc.policy
+--------------
 
 .. automodule:: taxcalc.policy
     :members:
 
-Module taxcalc.records
-----------------------
+taxcalc.records
+---------------
 
 .. automodule:: taxcalc.records
     :members:
 
-Module taxcalc.simpletaxio
-----------------------
+taxcalc.taxcalcio
+-----------------
 
-.. automodule:: taxcalc.simpletaxio
+.. automodule:: taxcalc.taxcalcio
     :members:
 
-Module taxcalc.utils
---------------------
+taxcalc.utils
+-------------
 
 .. automodule:: taxcalc.utils
+    :members:
+
+taxcalc.cli.tc
+--------------
+
+.. automodule:: taxcalc.cli.tc
     :members:

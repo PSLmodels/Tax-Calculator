@@ -23,13 +23,35 @@ def main(file1name, file2name, rounding_error):
     """
     # read file contents into Pandas DataFrames
     df1 = pd.read_csv(file1name)
+    assert isinstance(df1, pd.DataFrame)
+    if 'INCTAX' in list(df1):
+        # rename minimal tc OUTPUT variables to --dump OUTPUT variable names
+        minimalout1 = True
+        df1.rename(index=str,  # pylint: disable=no-member
+                   columns={'INCTAX': 'iitax', 'PAYTAX': 'payrolltax'},
+                   inplace=True)
+    else:
+        minimalout1 = False
     df1_vars = set(list(df1))
     df2 = pd.read_csv(file2name)
+    assert isinstance(df2, pd.DataFrame)
+    if 'INCTAX' in list(df2):
+        # rename minimal tc OUTPUT variables to --dump OUTPUT variable names
+        minimalout2 = True
+        df2.rename(index=str,  # pylint: disable=no-member
+                   columns={'INCTAX': 'iitax', 'PAYTAX': 'payrolltax'},
+                   inplace=True)
+    else:
+        minimalout2 = False
     df2_vars = set(list(df2))
+    if minimalout1 != minimalout2:
+        msg = 'ERROR: FILE1 and FILE2 do not have same type of output\n'
+        sys.stderr.write(msg)
+        return 1
 
     # check that both files contain required tax variables
-    required_tax_vars = set(['RECID', '_iitax', '_payrolltax'])
-    required_vars_str = '"RECID" "_iitax" "_payrolltax"'
+    required_tax_vars = set(['RECID', 'iitax', 'payrolltax'])
+    required_vars_str = '"RECID" "iitax" "payrolltax"'
     if not required_tax_vars.issubset(df1_vars):
         msg = 'ERROR: FILE1 does not include required variables: {}\n'
         sys.stderr.write(msg.format(required_vars_str))
@@ -46,8 +68,8 @@ def main(file1name, file2name, rounding_error):
         return 1
 
     # compare variable values when variable is in both files
-    tax_vars = ['_iitax',       # income tax
-                '_payrolltax',  # payroll tax
+    tax_vars = ['iitax',        # income tax
+                'payrolltax',   # payroll tax
                 'c00100',       # AGI
                 'e02300',       # UI benefits in AGI
                 'c02500',       # OASDI benefits in AGI
@@ -55,11 +77,11 @@ def main(file1name, file2name, rounding_error):
                 'c04600',       # post-phase-out personal exemption
                 'c04470',       # post-phase-out itemized deduction
                 'c04800',       # regular taxable income
-                '_taxbc',       # regular tax on regular taxable income
+                'taxbc',        # regular tax on regular taxable income
                 'c07220',       # child tax credit (adjusted)
                 'c11070',       # extra child tax credit (refunded)
                 'c07180',       # child care credit
-                '_eitc',        # EITC
+                'eitc',         # EITC
                 'c62100',       # AMT taxable income
                 'c09600',       # AMT liability
                 'c05800']       # total income tax before credits

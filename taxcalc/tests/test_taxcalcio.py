@@ -9,8 +9,7 @@ import os
 import tempfile
 import pytest
 import pandas as pd
-# pylint: disable=import-error
-from taxcalc import TaxCalcIO, Growdiff
+from taxcalc import TaxCalcIO, Growdiff  # pylint: disable=import-error
 
 
 @pytest.mark.parametrize("input_data, reform, assump", [
@@ -108,6 +107,7 @@ def assumpfile0():
     (2000, 'assumpfile0', Growdiff()),
     (2099, None, None),
     (2020, None, dict()),
+    (2020, 'assumpfile0', 'has_gdiff_response'),
 ])
 def test_init_errors(reformfile0, assumpfile0, year, asm, gdr):
     """
@@ -119,6 +119,11 @@ def test_init_errors(reformfile0, assumpfile0, year, asm, gdr):
         assump = assumpfile0.name
     else:
         assump = asm
+    if gdr == 'has_gdiff_response':
+        gdiff_response = Growdiff()
+        gdiff_response.update_growdiff({2015: {"_ABOOK": [-0.01]}})
+    else:
+        gdiff_response = gdr
     tcio = TaxCalcIO(input_data=recdf,
                      tax_year=year,
                      reform=reformfile0.name,
@@ -128,7 +133,7 @@ def test_init_errors(reformfile0, assumpfile0, year, asm, gdr):
               tax_year=year,
               reform=reformfile0.name,
               assump=assump,
-              growdiff_response=gdr,
+              growdiff_response=gdiff_response,
               aging_input_data=False,
               exact_calculations=False)
     assert len(tcio.errmsg) > 0
@@ -266,7 +271,7 @@ def test_output_otions(rawinputfile, reformfile1, assumpfile1):
                 os.remove(outfilepath)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.calculate(ceeu)_ok' == 'no'
+        assert 'TaxCalcIO.analyze(ceeu)_ok' == 'no'
     # --dump output
     try:
         tcio.analyze(writing_output_file=True, output_dump=True)
@@ -276,13 +281,45 @@ def test_output_otions(rawinputfile, reformfile1, assumpfile1):
                 os.remove(outfilepath)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.calculate(dump)_ok' == 'no'
-    # if tries were successful, try to remove the output file
+        assert 'TaxCalcIO.analyze(dump)_ok' == 'no'
+    # if tries were successful, remove the output file
     if os.path.isfile(outfilepath):
-        try:
-            os.remove(outfilepath)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
+        os.remove(outfilepath)
+
+
+def test_sqldb_option(rawinputfile, reformfile1, assumpfile1):
+    """
+    Test TaxCalcIO output_sqldb option when not writing_output_file.
+    """
+    taxyear = 2021
+    tcio = TaxCalcIO(input_data=rawinputfile.name,
+                     tax_year=taxyear,
+                     reform=reformfile1.name,
+                     assump=assumpfile1.name)
+    assert len(tcio.errmsg) == 0
+    tcio.init(input_data=rawinputfile.name,
+              tax_year=taxyear,
+              reform=reformfile1.name,
+              assump=assumpfile1.name,
+              growdiff_response=None,
+              aging_input_data=False,
+              exact_calculations=False)
+    assert len(tcio.errmsg) == 0
+    outfilepath = tcio.output_filepath()
+    dbfilepath = outfilepath.replace('.csv', '.db')
+    # --sqldb output
+    try:
+        tcio.analyze(writing_output_file=False, output_sqldb=True)
+    except:  # pylint: disable=bare-except
+        if os.path.isfile(dbfilepath):
+            try:
+                os.remove(dbfilepath)
+            except OSError:
+                pass  # sometimes we can't remove a generated temporary file
+        assert 'TaxCalcIO.analyze(sqldb)_ok' == 'no'
+    # if try was successful, remove the db file
+    if os.path.isfile(dbfilepath):
+        os.remove(dbfilepath)
 
 
 def test_no_tables_or_graphs(reformfile1):
@@ -297,7 +334,7 @@ def test_no_tables_or_graphs(reformfile1):
     idict['MARS'] = [2 for i in range(1, nobs + 1)]
     idict['s006'] = [0.0 for i in range(1, nobs + 1)]
     idict['e00300'] = [10000 * i for i in range(1, nobs + 1)]
-    idict['_expanded_income'] = idict['e00300']
+    idict['expanded_income'] = idict['e00300']
     idf = pd.DataFrame(idict, columns=list(idict))
     # create and initialize TaxCalcIO object
     tcio = TaxCalcIO(input_data=idf,
@@ -341,7 +378,7 @@ def test_tables(reformfile1):
     idict['MARS'] = [2 for i in range(1, nobs + 1)]
     idict['s006'] = [10.0 for i in range(1, nobs + 1)]
     idict['e00300'] = [10000 * i for i in range(1, nobs + 1)]
-    idict['_expanded_income'] = idict['e00300']
+    idict['expanded_income'] = idict['e00300']
     idf = pd.DataFrame(idict, columns=list(idict))
     # create and initialize TaxCalcIO object
     tcio = TaxCalcIO(input_data=idf,
@@ -377,7 +414,7 @@ def test_graphs(reformfile1):
     idict['MARS'] = [2 for i in range(1, nobs + 1)]
     idict['s006'] = [10.0 for i in range(1, nobs + 1)]
     idict['e00300'] = [10000 * i for i in range(1, nobs + 1)]
-    idict['_expanded_income'] = idict['e00300']
+    idict['expanded_income'] = idict['e00300']
     idf = pd.DataFrame(idict, columns=list(idict))
     # create and initialize TaxCalcIO object
     tcio = TaxCalcIO(input_data=idf,
@@ -426,7 +463,7 @@ def lumpsumreformfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
-def test_ceeu_output(lumpsumreformfile):
+def test_ceeu_output1(lumpsumreformfile):
     """
     Test TaxCalcIO calculate method with no output writing using ceeu option.
     """
@@ -441,6 +478,30 @@ def test_ceeu_output(lumpsumreformfile):
     tcio.init(input_data=recdf,
               tax_year=taxyear,
               reform=lumpsumreformfile.name,
+              assump=None,
+              growdiff_response=None,
+              aging_input_data=False,
+              exact_calculations=False)
+    assert len(tcio.errmsg) == 0
+    tcio.analyze(writing_output_file=False, output_ceeu=True)
+    assert tcio.tax_year() == taxyear
+
+
+def test_ceeu_output2():
+    """
+    Test TaxCalcIO calculate method with no output writing using ceeu option.
+    """
+    taxyear = 2020
+    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
+    recdf = pd.DataFrame(data=recdict, index=[0])
+    tcio = TaxCalcIO(input_data=recdf,
+                     tax_year=taxyear,
+                     reform=None,
+                     assump=None)
+    assert len(tcio.errmsg) == 0
+    tcio.init(input_data=recdf,
+              tax_year=taxyear,
+              reform=None,
               assump=None,
               growdiff_response=None,
               aging_input_data=False,
