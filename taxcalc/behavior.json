@@ -32,7 +32,7 @@
     },
 
     "_BE_cg": {
-        "long_name": "Elasticity of long-term capital gains",
+        "long_name": "Semi-elasticity of long-term capital gains",
         "description": "Defined as change in logarithm of long-term capital gains divided by change in marginal tax rate (MTR) on long-term capital gains caused by the reform.  Must be zero or negative.  Read Behavior.response documentation for discussion of appropriate values.",
         "section_1": "Behavior",
         "section_2": "Capital Gains",
