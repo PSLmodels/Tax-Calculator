@@ -3199,7 +3199,7 @@
     },
     
     "_FICA_em_k": {
-        "long_name": "Social Security Payroll Tax Exemption by Number of Kids",
+        "long_name": "Medicaid Payroll Tax Exemption by Number of Kids",
         "description": "This is the Medicaid payroll tax exemption amount for the number of kids.",
         "section_1": "Personal exemptions",
         "irs_ref": "",
@@ -3222,7 +3222,7 @@
     },
 
     "_FICA_em_f": {
-        "long_name": "Social Security Payroll Tax Exemption by Filing Status",
+        "long_name": "Medicaid Payroll Tax Exemption by Filing Status",
         "description": "This is the Medicaid payroll tax exemption amount depending on the filing status.",
         "section_1": "Personal exemptions",
         "irs_ref": "",
