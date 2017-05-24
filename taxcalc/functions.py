@@ -41,9 +41,8 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     # compute exemption amount for OASDI and HI payroll taxes  
     # ss_deduction = _SS_em_f[MARS - 1] + _SS_em_k[EIC]
     # mc_deduction = _FICA_em_f[MARS - 1] + _FICA_em_k[EIC]
-    ss_deduction = _SS_em_f[MARS - 1]
-    mc_deduction = _FICA_em_f[MARS - 1]
-    
+    ss_deduction = 1000
+    mc_deduction = 1000    
     # compute OASDI and HI payroll taxes on wage-and-salary income
     ptax_ss_was_p = FICA_ss_trt * max(0., txearn_was_p - ss_deduction)
     ptax_ss_was_s = FICA_ss_trt * max(0., txearn_was_s - ss_deduction) 
