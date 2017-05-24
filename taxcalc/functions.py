@@ -90,8 +90,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     _earned_s = max(0., (e00200s + sey_s -
                          (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_s))
     return (_sey, _payrolltax, ptax_was, setax, c03260, ptax_oasdi,
-            _earned, _earned_p, _earned_s,
-            ss_deduction, mc_deduction)
+            _earned, _earned_p, _earned_s)
 
 
 @iterate_jit(nopython=True)
