@@ -21,7 +21,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
                   e00900p, e00900s, e02100p, e02100s,
                   _payrolltax, ptax_was, setax, c03260, ptax_oasdi,
                   _sey, _earned, _earned_p, _earned_s, 
-                  _SS_em_f, _SS_em_k, _FICA_em_f, _FICA_em_k, 
+                  SS_em_f, SS_em_k, FICA_em_f, FICA_em_k, 
                   EIC, MARS):
     """
     Compute part of total OASDI+HI payroll taxes and earned income variables.
