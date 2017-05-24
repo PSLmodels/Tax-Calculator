@@ -16,33 +16,6 @@ import numpy as np
 from taxcalc.decorators import iterate_jit, jit
 
 @iterate_jit(nopython=True)
-def ChildTaxCredit(n24, MARS, c00100, _exact,
-                   CTC_c, CTC_ps, CTC_prt, prectc, nu05,
-                   CTC_c_under5_bonus, XTOT, _num,
-                   DependentCredit_c, dep_credit):
-    """
-    ChildTaxCredit function computes prectc amount and dependent credit
-    """
-    # calculate prectc amount
-    prectc = CTC_c * n24 + CTC_c_under5_bonus * nu05
-    modAGI = c00100  # no deducted foreign earned income to add
-    if modAGI > CTC_ps[MARS - 1]:
-        excess = modAGI - CTC_ps[MARS - 1]
-        if _exact == 1:
-            excess = 1000. * math.ceil(excess / 1000.)
-        prectc = max(0., prectc - CTC_prt * excess)
-    # calculate and phase-out dependent credit
-    dep_credit = DependentCredit_c * max(0, XTOT - _num)
-    if CTC_prt > 0. and c00100 > CTC_ps[MARS - 1]:
-        thresh = CTC_ps[MARS - 1] + n24 * CTC_c / CTC_prt
-        excess = c00100 - thresh
-        if _exact == 1:
-            excess = 1000. * math.ceil(excess / 1000.)
-        dep_phaseout = CTC_prt * (c00100 - excess)
-        dep_credit = max(0., dep_credit - dep_phaseout)
-    return (prectc, dep_credit)
-
-@iterate_jit(nopython=True)
 def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
                   FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_hc,
                   e00900p, e00900s, e02100p, e02100s,
