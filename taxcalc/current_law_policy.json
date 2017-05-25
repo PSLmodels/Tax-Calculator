@@ -3217,8 +3217,8 @@
     },
 
     "_FICA_mc_k": {
-        "long_name": "FICA payroll tax exemption by number of kids.",
-        "description": "This is the FICA payroll tax exemption amount for number of kids. ",
+        "long_name": "Medicaid payroll tax exemption by number of kids.",
+        "description": "This is the Medicaid payroll tax exemption amount for number of kids. ",
         "section_1": "Personal Exemptions",
         "section_2": "",
         "irs_ref": "",
