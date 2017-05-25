@@ -74,7 +74,6 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
            (max(0., sey_s * sey_frac) -
             max(0., max(0., sey_s * sey_frac) - mc_exemption)))
 
-
     # compute part of total regular payroll taxes for filing unit
     payrolltax = ptax_was + setax
 
@@ -98,6 +97,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
             earned, earned_p, earned_s,
             pte, ss_exemption, mc_exemption)
 
+  
 @iterate_jit(nopython=True)
 def DependentCare(nu13, elderly_dependent, earned,
                   MARS, ALD_Dependents_thd, ALD_Dependents_hc,
