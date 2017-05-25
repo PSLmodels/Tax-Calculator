@@ -892,7 +892,7 @@
       "desc": "Medicaid payroll tax exemption. Equal to _FICA_em_f + _FICA_em_k",
       "form": {}
     },
-    "payrolltax_exemption": {
+    "pte": {
       "type": "float",
       "desc": "Total income not subject to payroll taxes"
     }
