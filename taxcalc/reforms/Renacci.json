@@ -7,6 +7,7 @@
 //	- Personal exemption increased (3)
 //	- Eliminate all deductions except charitable and mortgage interest (4)
 //		- Cap mortgage interest deduction (4)
+//			- This limit was calculated by multiplying $500,000 by the current APR (%3.946 as of 5/24/2017)
 //	- Repeal Alternative Minimum Tax (5)
 //	- Capital gains and dividends are treated the same as ordinary income (6)
 //	- Increase in EITC (7)
