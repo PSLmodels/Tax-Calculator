@@ -889,7 +889,7 @@
     },
     "mc_exemption": {
       "type": "float",
-      "desc": "Medicaid payroll tax exemption. Equal to _FICA_em_f + _FICA_em_k",
+      "desc": "Medicare payroll tax exemption. Equal to _FICA_em_f + _FICA_em_k",
       "form": {}
     },
     "pte": {
