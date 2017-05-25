@@ -3192,7 +3192,7 @@
         "value": [0.0]
     },
 
-    "_SS_em_k": {
+    "_FICA_ss_k": {
         "long_name": "Social Security payroll tax exemption by number of kids.",
         "description": "This is the Social Security payroll tax exemption amount for number of kids. ",
         "section_1": "Personal Exemptions",
@@ -3216,7 +3216,7 @@
                   [0, 0, 0, 0]]
     },
 
-    "_FICA_em_k": {
+    "_FICA_mc_k": {
         "long_name": "FICA payroll tax exemption by number of kids.",
         "description": "This is the FICA payroll tax exemption amount for number of kids. ",
         "section_1": "Personal Exemptions",
@@ -3240,7 +3240,7 @@
                   [0, 0, 0, 0]]
     },
 
-    "_SS_em_f": {
+    "_FICA_ss_f": {
         "long_name": "Social Security payroll tax exemption by filing status.",
         "description": "This is the Social Security payroll tax exemption amount for a given filing status.",
         "section_1": "Personal Exemptions",
@@ -3264,7 +3264,7 @@
                   [0, 0, 0, 0, 0]]
     },
 
-    "_FICA_em_f": {
+    "_FICA_mc_f": {
         "long_name": "Medicaid payroll tax exemption by filing status.",
         "description": "This is the Medicaid payroll tax exemption amount for a given filing status.",
         "section_1": "Personal Exemptions",
