@@ -22,8 +22,8 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
                   e00900p, e00900s, e02100p, e02100s,
                   payrolltax, ptax_was, setax, c03260, ptax_oasdi,
                   sey, earned, earned_p, earned_s,
-                  SS_em_f, SS_em_k, FICA_em_f, FICA_em_k,
-                  payrolltax_exemption, ss_exemption, mc_exemption,
+                  FICA_ss_f, FICA_ss_k, FICA_mc_f, FICA_mc_k,
+                  pte, ss_exemption, mc_exemption,
                   EIC, MARS):
     """
     Compute part of total OASDI+HI payroll taxes and earned income variables.
@@ -41,8 +41,8 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     txearn_sey_s = min(max(0., sey_s * sey_frac), SS_Earnings_c - txearn_was_s)
 
     # compute exemption amount for OASDI and HI payroll taxes
-    ss_exemption = SS_em_f[MARS - 1] + SS_em_k[EIC]
-    mc_exemption = FICA_em_f[MARS - 1] + SS_em_k[EIC]
+    ss_exemption = FICA_ss_f[MARS - 1] + FICA_ss_k[EIC]
+    mc_exemption = FICA_mc_f[MARS - 1] + FICA_mc_k[EIC]
 
     # compute OASDI and HI payroll taxes on wage-and-salary income
     ptax_ss_was_p = FICA_ss_trt * max(0., txearn_was_p - ss_exemption)
@@ -63,22 +63,17 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     setax = setax_p + setax_s
 
     # compute total earnings exempt from payroll
-    payrolltax_exemption = (txearn_was_p -
-                            max(0., txearn_was_p - ss_exemption) +
-                            (txearn_was_s -
-                                max(0., txearn_was_s - ss_exemption)) +
-                            (e00200p - max(0., e00200p - mc_exemption)) +
-                            (e00200s - max(0., e00200s - mc_exemption)) +
-                            (txearn_sey_p -
-                                max(0., txearn_sey_p - ss_exemption)) +
-                            (txearn_sey_s -
-                                max(0., txearn_sey_s - ss_exemption)) +
-                            (max(0., sey_p * sey_frac) -
-                                max(0., max(0., sey_p * sey_frac) -
-                                    mc_exemption)) +
-                            (max(0., sey_s * sey_frac) -
-                                max(0., max(0., sey_s * sey_frac) -
-                                    mc_exemption)))
+    pte = ((txearn_was_p - max(0., txearn_was_p - ss_exemption)) +
+           (txearn_was_s - max(0., txearn_was_s - ss_exemption)) +
+           (e00200p - max(0., e00200p - mc_exemption)) +
+           (e00200s - max(0., e00200s - mc_exemption)) +
+           (txearn_sey_p - max(0., txearn_sey_p - ss_exemption)) +
+           (txearn_sey_s - max(0., txearn_sey_s - ss_exemption)) +
+           (max(0., sey_p * sey_frac) -
+            max(0., max(0., sey_p * sey_frac) - mc_exemption)) +
+           (max(0., sey_s * sey_frac) -
+            max(0., max(0., sey_s * sey_frac) - mc_exemption)))
+
 
     # compute part of total regular payroll taxes for filing unit
     payrolltax = ptax_was + setax
@@ -101,7 +96,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_s))
     return (sey, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
             earned, earned_p, earned_s,
-            payrolltax_exemption, ss_exemption, mc_exemption)
+            pte, ss_exemption, mc_exemption)
 
 @iterate_jit(nopython=True)
 def DependentCare(nu13, elderly_dependent, earned,
