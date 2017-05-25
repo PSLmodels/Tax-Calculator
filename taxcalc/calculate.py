@@ -22,7 +22,8 @@ from taxcalc.functions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                AmOppCreditParts, EducationTaxCredit,
                                NonrefundableCredits, C1040, IITAX,
                                BenefitSurtax, BenefitLimitation,
-                               FairShareTax, LumpSumTax, ExpandIncome)
+                               FairShareTax, LumpSumTax, ExpandIncome,
+                               AfterTaxIncome)
 from taxcalc.policy import Policy
 from taxcalc.records import Records
 from taxcalc.behavior import Behavior
@@ -217,6 +218,7 @@ class Calculator(object):
         FairShareTax(self.policy, self.records)
         LumpSumTax(self.policy, self.records)
         ExpandIncome(self.policy, self.records)
+        AfterTaxIncome(self.policy, self.records)
 
     def increment_year(self):
         """
