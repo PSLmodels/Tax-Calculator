@@ -1,0 +1,114 @@
+// Title: Simplifying America's Tax System (Renacci)
+// Reform_File_Author: Hank Doupe
+// Reform_Reference: http://renacci.house.gov/_cache/files/7eeb81fe-f245-42c0-8de4-055ebf4c12e9/sats-white-paper.pdf
+// Reform_Description:
+//	- Number of brackets reduced to 3 (1)
+// 	- Standard deduction increased (2)
+//	- Personal exemption increased (3)
+//	- Eliminate all deductions except charitable and mortgage interest (4)
+//		- Cap mortgage interest deduction (4)
+//			- This limit was calculated by multiplying $500,000 by the current APR (%3.946 as of 5/24/2017)
+//	- Repeal Alternative Minimum Tax (5)
+//	- Capital gains and dividends are treated the same as ordinary income (6)
+//	- Increase in EITC (7)
+// Reform_Parameter_Map:
+//	-1: _II_rt*,_II_brk*
+//	-2: _STD
+//	-3: _II_em
+//	-4: _ID*
+//	-5: _AMT_rt*
+//	-6: _CG_nodiff
+//	-7: _EITC_c
+{
+	"policy":{
+		"_II_rt1": {
+			"2017": [0.1]
+		},
+		"_II_brk1": {
+			"2017": [[50000,100000,50000,50000,50000]]
+		},
+		"_II_rt2": {
+			"2017": [0.25]
+		},
+		"_II_brk2": {
+			"2017": [[750000,1500000,750000,750000,750000]]
+		},
+		"_II_rt3": {
+			"2017": [0.35]
+		},
+		"_II_brk3": {
+			"2017": [[9e99,9e99,9e99,9e99,9e99]]
+		},
+		"_II_rt4": {
+			"2017": [0.35]
+		},
+		"_II_brk4": {
+			"2017": [[9e99,9e99,9e99,9e99,9e99]]
+		},
+		"_II_rt5": {
+			"2017": [0.35]
+		},
+		"_II_brk5": {
+			"2017": [[9e99,9e99,9e99,9e99,9e99]]
+		},
+		"_II_rt6": {
+			"2017": [0.35]
+		},
+		"_II_brk6": {
+			"2017": [[9e99,9e99,9e99,9e99,9e99]]
+		},
+		"_II_rt7": {
+			"2017": [0.35]
+		},
+		"_II_brk7": {
+			"2017": [[9e99,9e99,9e99,9e99,9e99]]
+		},
+		"_STD": {
+			"2017": [[15000,30000,15000,15000,15000]]
+		},
+		"_II_em": {
+			"2017": [5000]
+		},		
+		"_ID_StateLocalTax_hc": {
+			"2017": [1]
+		},
+		"_ID_Medical_hc": {
+			"2017": [1]
+		},
+		"_ID_Casualty_hc": {
+			"2017": [1]
+		},
+		"_ID_Miscellaneous_hc": {
+			"2017": [1]
+		},
+		"_ID_RealEstate_hc": {
+			"2017": [1]
+		},
+		"_ID_BenefitCap_Switch": {
+			"2017": [[false, false, true, false, false, false, false]]
+		},
+		"_ID_c": {
+			"2017": [[19730.0, 19730.0, 19730.0, 19730.0, 19730.0]]
+		},
+		"_AMT_rt1": {
+			"2017": [0]
+		},
+		"_AMT_rt2": {
+			"2017": [0]
+		},
+		"_CG_nodiff": {
+			"2017": [true]
+		},
+		"_EITC_c": {
+			"2017": [[1020, 4760, 7862, 8845]]
+		}
+	}
+}
+
+// Note: Due to lack of detail, data, or modeling capability, many provisions cannot be scored.
+// These omitted provisions include:
+//	- Repeal of the corporate income tax
+// 	- 7% tax on business activities (credit-invoice value-added tax)
+//	- One time tax on accumulated foreign earnings abroad
+//	- This was included in the feedback section. 
+//		- 9. Considers a border-adjustable-goods-and-services tax
