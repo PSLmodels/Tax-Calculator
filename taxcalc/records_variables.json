@@ -896,6 +896,11 @@
     "type": "float",
     "desc": "Medicare payroll tax exemption. Equal to _FICA_mc_emf + _FICA_mc_emk",
     "form": {}
+  },
+  "pte": {
+    "type": "float",
+    "desc": "Earnings not subject to Social Secuirty or Medicare payroll taxes",
+    "form": {}
   }
   }
 }
