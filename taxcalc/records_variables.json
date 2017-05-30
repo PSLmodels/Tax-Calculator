@@ -886,6 +886,21 @@
       "type": "float",
       "desc": "After tax income. Equal to expanded_income - combined",
       "form": {}
+  },
+  "ss_exemption": {
+      "type": "float",
+      "desc": "Social Security payroll tax exemption. Equal to _SS_em_f + _SS_em_k",
+      "form": {}
+  },
+  "mc_exemption": {
+      "type": "float",
+      "desc": "Medicaid payroll tax exemption. Equal to _FICA_em_f + _FICA_em_k",
+      "form": {}
+  },
+  "_payrolltax_exemption": {
+      "type": "float",
+      "desc": "Total income not subject to payroll taxes. Equal to the summed differences between income and non-exempted income.",
+      "form": {}
   }
   }
 }

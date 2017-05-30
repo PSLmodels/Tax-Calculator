@@ -15,13 +15,16 @@ import copy
 import numpy as np
 from taxcalc.decorators import iterate_jit, jit
 
-
 @iterate_jit(nopython=True)
 def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
                   FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_hc,
                   e00900p, e00900s, e02100p, e02100s,
-                  payrolltax, ptax_was, setax, c03260, ptax_oasdi,
-                  sey, earned, earned_p, earned_s):
+                  _payrolltax, ptax_was, setax, c03260, ptax_oasdi,
+                  _sey, _earned, _earned_p, _earned_s, 
+                  SS_em_f, SS_em_k, FICA_em_f, FICA_em_k, 
+                  _payrolltax_exemption, ss_exemption, mc_exemption, 
+                  EIC, MARS):
+
     """
     Compute part of total OASDI+HI payroll taxes and earned income variables.
     """
@@ -36,23 +39,39 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     txearn_was_s = min(SS_Earnings_c, e00200s)
     txearn_sey_p = min(max(0., sey_p * sey_frac), SS_Earnings_c - txearn_was_p)
     txearn_sey_s = min(max(0., sey_s * sey_frac), SS_Earnings_c - txearn_was_s)
-
+    
+    # compute exemption amount for OASDI and HI payroll taxes  
+    ss_exemption = SS_em_f[MARS - 1] + SS_em_k[EIC]
+    mc_exemption = FICA_em_f[MARS - 1] + FICA_em_k[EIC]
+    
     # compute OASDI and HI payroll taxes on wage-and-salary income
-    ptax_ss_was_p = FICA_ss_trt * txearn_was_p
-    ptax_ss_was_s = FICA_ss_trt * txearn_was_s
-    ptax_mc_was_p = FICA_mc_trt * e00200p
-    ptax_mc_was_s = FICA_mc_trt * e00200s
+    ptax_ss_was_p = FICA_ss_trt * max(0., txearn_was_p - ss_exemption)
+    ptax_ss_was_s = FICA_ss_trt * max(0., txearn_was_s - ss_exemption) 
+    ptax_mc_was_p = FICA_mc_trt * max(0., e00200p - mc_exemption)
+    ptax_mc_was_s = FICA_mc_trt * max(0., e00200s - mc_exemption)
     ptax_was = ptax_ss_was_p + ptax_ss_was_s + ptax_mc_was_p + ptax_mc_was_s
 
     # compute self-employment tax on taxable self-employment income
-    setax_ss_p = FICA_ss_trt * txearn_sey_p
-    setax_ss_s = FICA_ss_trt * txearn_sey_s
-    setax_mc_p = FICA_mc_trt * max(0., sey_p * sey_frac)
-    setax_mc_s = FICA_mc_trt * max(0., sey_s * sey_frac)
+    setax_ss_p = FICA_ss_trt * max(0., txearn_sey_p - ss_exemption)
+    setax_ss_s = FICA_ss_trt * max(0., txearn_sey_s - ss_exemption)
+    setax_mc_p = FICA_mc_trt * max(0., max(0., sey_p * sey_frac) - mc_exemption)
+    setax_mc_s = FICA_mc_trt * max(0., max(0., sey_s * sey_frac) - mc_exemption)
     setax_p = setax_ss_p + setax_mc_p
     setax_s = setax_ss_s + setax_mc_s
     setax = setax_p + setax_s
-
+    
+    # compute total payroll tax exemption
+    _payrolltax_exemption = (txearn_was_p - max(0., txearn_was_p - ss_exemption) 
+                             + (txearn_was_s - max(0., txearn_was_s - ss_exemption))
+                             + (e00200p - max(0., e00200p - mc_exemption))
+                             + (e00200s - max(0., e00200s - mc_exemption))
+                             + (txearn_sey_p - max(0., txearn_sey_p - ss_exemption))
+                             + (txearn_sey_s - max(0., txearn_sey_s - ss_exemption))
+                             + (max(0., sey_p * sey_frac) 
+                                - max(0., max(0., sey_p * sey_frac) - mc_exemption))
+                             + (max(0., sey_s * sey_frac)
+                                - max(0., max(0., sey_s * sey_frac) - mc_exemption)))
+    
     # compute part of total regular payroll taxes for filing unit
     payrolltax = ptax_was + setax
 
@@ -67,13 +86,15 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     # "employer share" of self-employment tax, c03260
     # Note: c03260 is the amount on 2015 Form 1040, line 27
     c03260 = (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax
-    earned = max(0., e00200 + sey - c03260)
-    earned_p = max(0., (e00200p + sey_p -
-                        (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_p))
-    earned_s = max(0., (e00200s + sey_s -
-                        (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_s))
-    return (sey, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
-            earned, earned_p, earned_s)
+
+    _earned = max(0., e00200 + _sey - c03260)
+    _earned_p = max(0., (e00200p + sey_p -
+                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_p))
+    _earned_s = max(0., (e00200s + sey_s -
+                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_s))
+    return (_sey, _payrolltax, ptax_was, setax, c03260, ptax_oasdi,
+            _earned, _earned_p, _earned_s, 
+            _payrolltax_exemption, ss_exemption, mc_exemption)
 
 
 @iterate_jit(nopython=True)
