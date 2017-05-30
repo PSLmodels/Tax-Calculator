@@ -51,10 +51,22 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     ptax_was = ptax_ss_was_p + ptax_ss_was_s + ptax_mc_was_p + ptax_mc_was_s
 
     # compute self-employment tax on taxable self-employment income
-    setax_ss_p = FICA_ss_trt * max(0., (txearn_sey_p - ss_em))
-    setax_ss_s = FICA_ss_trt * max(0., (txearn_sey_s - ss_em))
-    setax_mc_p = FICA_mc_trt * max(0., (max(0., sey_p * sey_frac) - mc_em))
-    setax_mc_s = FICA_mc_trt * max(0., (max(0., sey_s * sey_frac) - mc_em))
+    setax_ss_p = FICA_ss_trt * max(0., (txearn_sey_p -
+                                        (ss_em -
+                                         (txearn_was_p -
+                                          max(0., txearn_was_p - ss_em)))))
+    setax_ss_s = FICA_ss_trt * max(0., (txearn_sey_s -
+                                        (ss_em -
+                                         (txearn_was_s -
+                                          max(0., txearn_was_s - ss_em)))))
+    setax_mc_p = FICA_mc_trt * max(0., (max(0., sey_p * sey_frac) -
+                                        (mc_em -
+                                         (e00200p -
+                                          max(0., e00200p - mc_em)))))
+    setax_mc_s = FICA_mc_trt * max(0., (max(0., sey_s * sey_frac) -
+                                        (mc_em -
+                                         (e00200s -
+                                          max(0., e00200s - mc_em)))))
     setax_p = setax_ss_p + setax_mc_p
     setax_s = setax_ss_s + setax_mc_s
     setax = setax_p + setax_s
@@ -64,12 +76,20 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
            (txearn_was_s - max(0., txearn_was_s - ss_em)) +
            (e00200p - max(0., e00200p - mc_em)) +
            (e00200s - max(0., e00200s - mc_em)) +
-           (txearn_sey_p - max(0., txearn_sey_p - ss_em)) +
-           (txearn_sey_s - max(0., txearn_sey_s - ss_em)) +
+           (txearn_sey_p - max(0., (txearn_sey_p -
+                                    (ss_em -
+                                     (txearn_was_p -
+                                      max(0., txearn_was_p - ss_em)))))) +
+           (txearn_sey_s - max(0., (txearn_sey_s -
+                                    (ss_em -
+                                     (txearn_was_s -
+                                      max(0., txearn_was_s - ss_em)))))) +
            (max(0., sey_p * sey_frac) -
-            max(0., max(0., sey_p * sey_frac) - mc_em)) +
+            max(0., (max(0., sey_p * sey_frac) -
+                     (mc_em - (e00200p - max(0., e00200p - mc_em)))))) +
            (max(0., sey_s * sey_frac) -
-            max(0., max(0., sey_s * sey_frac) - mc_em)))
+            max(0., (max(0., sey_s * sey_frac) -
+                     (mc_em - (e00200s - max(0., e00200s - mc_em)))))))
 
     # compute part of total regular payroll taxes for filing unit
     payrolltax = ptax_was + setax
