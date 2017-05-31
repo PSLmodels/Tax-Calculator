@@ -75,11 +75,10 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
            (txearn_was_s - max(0., txearn_was_s - FICA_em[MARS - 1])) +
            (e00200p - max(0., e00200p - FICA_em[MARS - 1])) +
            (e00200s - max(0., e00200s - FICA_em[MARS - 1])) +
-           (txearn_sey_p -
-            max(0., (txearn_sey_p -
-                (FICA_em[MARS - 1] -
-                 (txearn_was_p -
-                  max(0., txearn_was_p - FICA_em[MARS - 1])))))) +
+           (txearn_sey_p - max(0., (txearn_sey_p -
+            (FICA_em[MARS - 1] -
+             (txearn_was_p -
+              max(0., txearn_was_p - FICA_em[MARS - 1])))))) +
            (txearn_sey_s - max(0., (txearn_sey_s -
             (FICA_em[MARS - 1] -
              (txearn_was_s -
