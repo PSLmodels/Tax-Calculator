@@ -84,9 +84,6 @@
 		"_ID_RealEstate_hc": {
 			"2017": [1]
 		},
-		"_ID_BenefitCap_Switch": {
-			"2017": [[false, false, true, false, false, false, false]]
-		},
 		"_ID_c": {
 			"2017": [[19730.0, 19730.0, 19730.0, 19730.0, 19730.0]]
 		},
