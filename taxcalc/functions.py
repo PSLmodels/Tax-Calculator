@@ -22,8 +22,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
                   e00900p, e00900s, e02100p, e02100s,
                   payrolltax, ptax_was, setax, c03260, ptax_oasdi,
                   sey, earned, earned_p, earned_s,
-                  FICA_ss_emf, FICA_ss_emk, FICA_mc_emf, FICA_mc_emk,
-                  pte, ss_em, mc_em, EIC, MARS):
+                  pte, FICA_em, MARS):
     """
     Compute part of total OASDI+HI payroll taxes and earned income variables.
     """
@@ -39,57 +38,60 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     txearn_sey_p = min(max(0., sey_p * sey_frac), SS_Earnings_c - txearn_was_p)
     txearn_sey_s = min(max(0., sey_s * sey_frac), SS_Earnings_c - txearn_was_s)
 
-    # compute exemption amount for FICA payroll taxes
-    ss_em = FICA_ss_emf[MARS - 1] + FICA_ss_emk[EIC]
-    mc_em = FICA_mc_emf[MARS - 1] + FICA_mc_emk[EIC]
-
     # compute OASDI and HI payroll taxes on wage-and-salary income
-    ptax_ss_was_p = FICA_ss_trt * max(0., (txearn_was_p - ss_em))
-    ptax_ss_was_s = FICA_ss_trt * max(0., (txearn_was_s - ss_em))
-    ptax_mc_was_p = FICA_mc_trt * max(0., (e00200p - mc_em))
-    ptax_mc_was_s = FICA_mc_trt * max(0., (e00200s - mc_em))
+    ptax_ss_was_p = FICA_ss_trt * max(0., (txearn_was_p - FICA_em[MARS - 1]))
+    ptax_ss_was_s = FICA_ss_trt * max(0., (txearn_was_s - FICA_em[MARS - 1]))
+    ptax_mc_was_p = FICA_mc_trt * max(0., (e00200p - FICA_em[MARS - 1]))
+    ptax_mc_was_s = FICA_mc_trt * max(0., (e00200s - FICA_em[MARS - 1]))
     ptax_was = ptax_ss_was_p + ptax_ss_was_s + ptax_mc_was_p + ptax_mc_was_s
 
     # compute self-employment tax on taxable self-employment income
     setax_ss_p = FICA_ss_trt * max(0., (txearn_sey_p -
-                                        (ss_em -
+                                        (FICA_em[MARS - 1] -
                                          (txearn_was_p -
-                                          max(0., txearn_was_p - ss_em)))))
+                                          max(0., txearn_was_p -
+                                              FICA_em[MARS - 1])))))
     setax_ss_s = FICA_ss_trt * max(0., (txearn_sey_s -
-                                        (ss_em -
+                                        (FICA_em[MARS - 1] -
                                          (txearn_was_s -
-                                          max(0., txearn_was_s - ss_em)))))
+                                          max(0., txearn_was_s -
+                                              FICA_em[MARS - 1])))))
     setax_mc_p = FICA_mc_trt * max(0., (max(0., sey_p * sey_frac) -
-                                        (mc_em -
+                                        (FICA_em[MARS - 1] -
                                          (e00200p -
-                                          max(0., e00200p - mc_em)))))
+                                          max(0., e00200p -
+                                              FICA_em[MARS - 1])))))
     setax_mc_s = FICA_mc_trt * max(0., (max(0., sey_s * sey_frac) -
-                                        (mc_em -
+                                        (FICA_em[MARS - 1] -
                                          (e00200s -
-                                          max(0., e00200s - mc_em)))))
+                                          max(0., e00200s -
+                                              FICA_em[MARS - 1])))))
     setax_p = setax_ss_p + setax_mc_p
     setax_s = setax_ss_s + setax_mc_s
     setax = setax_p + setax_s
 
     # compute total earnings exempt from FICA taxes
-    pte = ((txearn_was_p - max(0., txearn_was_p - ss_em)) +
-           (txearn_was_s - max(0., txearn_was_s - ss_em)) +
-           (e00200p - max(0., e00200p - mc_em)) +
-           (e00200s - max(0., e00200s - mc_em)) +
-           (txearn_sey_p - max(0., (txearn_sey_p -
-                                    (ss_em -
-                                     (txearn_was_p -
-                                      max(0., txearn_was_p - ss_em)))))) +
+    pte = ((txearn_was_p - max(0., txearn_was_p - FICA_em[MARS - 1])) +
+           (txearn_was_s - max(0., txearn_was_s - FICA_em[MARS - 1])) +
+           (e00200p - max(0., e00200p - FICA_em[MARS - 1])) +
+           (e00200s - max(0., e00200s - FICA_em[MARS - 1])) +
+           (txearn_sey_p -
+            max(0., (txearn_sey_p -
+                (FICA_em[MARS - 1] -
+                 (txearn_was_p -
+                  max(0., txearn_was_p - FICA_em[MARS - 1])))))) +
            (txearn_sey_s - max(0., (txearn_sey_s -
-                                    (ss_em -
-                                     (txearn_was_s -
-                                      max(0., txearn_was_s - ss_em)))))) +
+            (FICA_em[MARS - 1] -
+             (txearn_was_s -
+              max(0., txearn_was_s - FICA_em[MARS - 1])))))) +
            (max(0., sey_p * sey_frac) -
             max(0., (max(0., sey_p * sey_frac) -
-                     (mc_em - (e00200p - max(0., e00200p - mc_em)))))) +
+                (FICA_em[MARS - 1] -
+                 (e00200p - max(0., e00200p - FICA_em[MARS - 1])))))) +
            (max(0., sey_s * sey_frac) -
             max(0., (max(0., sey_s * sey_frac) -
-                     (mc_em - (e00200s - max(0., e00200s - mc_em)))))))
+                (FICA_em[MARS - 1] -
+                 (e00200s - max(0., e00200s - FICA_em[MARS - 1])))))))
 
     # compute part of total regular payroll taxes for filing unit
     payrolltax = ptax_was + setax
@@ -111,8 +113,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     earned_s = max(0., (e00200s + sey_s -
                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_s))
     return (sey, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
-            earned, earned_p, earned_s,
-            pte, ss_em, mc_em)
+            earned, earned_p, earned_s, pte)
 
 
 @iterate_jit(nopython=True)
