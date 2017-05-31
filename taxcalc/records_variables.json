@@ -888,9 +888,9 @@
       "form": {}
   },
   "pte": {
-    "type": "float",
-    "desc": "Earnings not subject to Social Secuirty or Medicare payroll taxes",
-    "form": {}
+      "type": "float",
+      "desc": "Earnings not subject to Social Secuirty or Medicare payroll taxes",
+      "form": {}
   }
   }
 }
