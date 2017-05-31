@@ -887,16 +887,6 @@
       "desc": "After tax income. Equal to expanded_income - combined",
       "form": {}
   },
-  "ss_em": {
-    "type": "float",
-    "desc": "Social Security payroll tax exemption. Equal to _FICA_ss_emf + _FICA_ss_emk",
-    "form": {}
-  },
-  "mc_em": {
-    "type": "float",
-    "desc": "Medicare payroll tax exemption. Equal to _FICA_mc_emf + _FICA_mc_emk",
-    "form": {}
-  },
   "pte": {
     "type": "float",
     "desc": "Earnings not subject to Social Secuirty or Medicare payroll taxes",
