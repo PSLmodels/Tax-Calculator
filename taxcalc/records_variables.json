@@ -887,10 +887,10 @@
       "desc": "After tax income. Equal to expanded_income - combined",
       "form": {}
   },
-  "pte": {
-    "type": "float",
-    "desc": "Earnings not subject to Social Secuirty or Medicare payroll taxes",
-    "form": {}
+  "was_em": {
+      "type": "float",
+      "desc": "The payroll tax exemption amount.",
+      "form": {}
   }
   }
 }
