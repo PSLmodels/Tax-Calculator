@@ -881,11 +881,11 @@
       "type": "float",
       "desc": "Marginal income tax rate (in percentage terms) on extra taxpayer earnings (e00200p)",
       "form": {}
-  },
-  "aftertax_income": {
+    },
+    "aftertax_income": {
       "type": "float",
-      "desc": "After tax income. Equal to expanded_income - combined",
+      "desc": "After tax income is equal to expanded_income minus combined",
       "form": {}
-  }
+    }
   }
 }

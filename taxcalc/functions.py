@@ -1568,7 +1568,7 @@ def AfterTaxIncome(combined, expanded_income, aftertax_income):
 
     Returns
     -------
-    aftertax_income: expanded_income - combined
+    aftertax_income: expanded_income minus combined
     """
     aftertax_income = expanded_income - combined
     return aftertax_income
