@@ -102,6 +102,7 @@ def dropq_calculate(year_n, start_year,
                          gfactors=growfactors_pre)
         # add one dollar to total wages and salaries of each filing unit
         recs1p.e00200 += 1.0  # pylint: disable=no-member
+        recs1p.e00200p += 1.0  # pylint: disable=no-member
         policy1p = Policy(gfactors=growfactors_pre)
         # create Calculator with recs1p and calculate for start_year
         calc1p = Calculator(policy=policy1p, records=recs1p,
@@ -113,7 +114,7 @@ def dropq_calculate(year_n, start_year,
         # compute mask that shows which of the calc1 and calc1p results differ
         res1 = results(calc1)
         res1p = results(calc1p)
-        mask = (res1.iitax != res1p.iitax)
+        mask = (res1.combined != res1p.combined)
     else:
         mask = None
 
