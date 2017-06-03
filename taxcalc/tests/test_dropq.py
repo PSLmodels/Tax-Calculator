@@ -215,13 +215,19 @@ def test_dropq_diff_table(groupby, res_column, puf_1991_path):
 @pytest.mark.requires_pufcsv
 def test_with_pufcsv(puf_path):
     # specify usermods dictionary in code
-    start_year = 2016
-    reform_year = start_year + 1
-    reforms = dict()
-    reforms['_II_rt3'] = [0.33]
-    reforms['_PT_rt3'] = [0.33]
-    reforms['_II_rt4'] = [0.33]
-    reforms['_PT_rt4'] = [0.33]
+    start_year = 2017
+    reform_year = start_year
+    analysis_year = 2026
+    year_n = analysis_year - start_year
+    reforms = {
+        '_FICA_ss_trt': [0.2]
+    }
+    # '_FICA_ss_trt': [0.22000]  # no error
+    # '_FICA_ss_trt': [0.21000]  # generates error
+    # '_FICA_ss_trt': [0.20000]  # generates error
+    # '_FICA_ss_trt': [0.19999]  # no error
+    # '_FICA_ss_trt': [0.19000]  # no error
+
     usermods = dict()
     usermods['policy'] = {reform_year: reforms}
     usermods['consumption'] = {}
@@ -229,8 +235,7 @@ def test_with_pufcsv(puf_path):
     usermods['growdiff_baseline'] = {}
     usermods['growdiff_response'] = {}
     usermods['gdp_elasticity'] = {}
-    seed = random_seed(usermods)
-    assert seed == 3047708076
+    random_seed(usermods)
     # create a Policy object (pol) containing reform policy parameters
     pol = Policy()
     pol.implement_reform(usermods['policy'])
@@ -238,22 +243,21 @@ def test_with_pufcsv(puf_path):
     rec = Records(data=puf_path)
     # create a Calculator object using clp policy and puf records
     calc = Calculator(policy=pol, records=rec)
-    while calc.current_year < reform_year:
+    while calc.current_year < analysis_year:
         calc.increment_year()
     # create aggregate diagnostic table (adt) as a Pandas DataFrame object
-    years = reform_year - Policy.JSON_START_YEAR + 1
-    adt = multiyear_diagnostic_table(calc, years)
+    adt = multiyear_diagnostic_table(calc, 1)
     taxes_fullsample = adt.loc["Combined Liability ($b)"]
     assert taxes_fullsample is not None
-    fulls_reform_revenue = taxes_fullsample.loc[reform_year]
+    fulls_reform_revenue = taxes_fullsample.loc[analysis_year]
     # create a Public Use File object
     tax_data = pd.read_csv(puf_path)
     # call run_nth_year_tax_calc_model function
-    restuple = run_nth_year_tax_calc_model(1, start_year,
+    restuple = run_nth_year_tax_calc_model(year_n, start_year,
                                            tax_data, usermods,
                                            return_json=True)
     total = restuple[len(restuple) - 1]  # the last of element of the tuple
-    dropq_reform_revenue = float(total['combined_tax_1'])
+    dropq_reform_revenue = float(total['combined_tax_9'])
     dropq_reform_revenue *= 1e-9  # convert to billions of dollars
     diff = abs(fulls_reform_revenue - dropq_reform_revenue)
     # assert that dropq revenue is similar to the fullsample calculation
