@@ -219,23 +219,18 @@ def test_with_pufcsv(puf_path):
     reform_year = start_year
     analysis_year = 2026
     year_n = analysis_year - start_year
-    reforms = {
+    reform = {
         '_FICA_ss_trt': [0.2]
     }
-    # '_FICA_ss_trt': [0.22000]  # no error
-    # '_FICA_ss_trt': [0.21000]  # generates error
-    # '_FICA_ss_trt': [0.20000]  # generates error
-    # '_FICA_ss_trt': [0.19999]  # no error
-    # '_FICA_ss_trt': [0.19000]  # no error
-
     usermods = dict()
-    usermods['policy'] = {reform_year: reforms}
+    usermods['policy'] = {reform_year: reform}
     usermods['consumption'] = {}
     usermods['behavior'] = {}
     usermods['growdiff_baseline'] = {}
     usermods['growdiff_response'] = {}
     usermods['gdp_elasticity'] = {}
-    random_seed(usermods)
+    seed = random_seed(usermods)
+    assert seed == 1574318062
     # create a Policy object (pol) containing reform policy parameters
     pol = Policy()
     pol.implement_reform(usermods['policy'])
