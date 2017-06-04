@@ -230,10 +230,9 @@ def drop_records(df1, df2, mask):
     pseudo-randomly picks three records to 'drop' within each bin.
     We keep track of the three dropped records in both group-by
     strategies and then use these 'flag' columns to modify all
-    columns of interest, creating new '*_dec' columns for later
-    statistics based on weighted deciles and '*_bin' columns
-    for statitistics based on grouping by income bins.
-    in each bin in two group-by actions. Lastly we calculate
+    columns of interest, creating new '*_dec' columns for
+    statistics based on weighted deciles and '*_bin' columns for
+    statitistics based on income bins.  Lastly we calculate
     individual income tax differences, payroll tax differences, and
     combined tax differences between the baseline and reform
     for the two groupings.
