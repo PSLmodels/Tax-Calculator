@@ -4,7 +4,8 @@ import pandas as pd
 import pytest
 from taxcalc.dropq.dropq_utils import *
 from taxcalc.dropq import *
-from taxcalc import Policy, Records, Calculator, multiyear_diagnostic_table
+from taxcalc import (Policy, Records, Calculator,
+                     multiyear_diagnostic_table, results)
 
 
 USER_MODS = {
@@ -168,7 +169,7 @@ def test_dropq_dist_table(groupby, result_type, puf_1991_path):
     calc = Calculator(policy=Policy(),
                       records=Records(data=pd.read_csv(puf_1991_path)))
     calc.calc_all()
-    res = results(calc)
+    res = results(calc.records)
     mask = np.ones(len(res.index))
     (res, _) = drop_records(res, res, mask)
     if groupby == 'other_income_bins' or result_type == 'other_avg':
@@ -195,8 +196,8 @@ def test_dropq_diff_table(groupby, res_column, puf_1991_path):
     calc2 = Calculator(policy=pol2, records=recs2)
     calc1.calc_all()
     calc2.calc_all()
-    res1 = results(calc1)
-    res2 = results(calc2)
+    res1 = results(calc1.records)
+    res2 = results(calc2.records)
     assert len(res1.index) == len(res2.index)
     mask = np.ones(len(res1.index))
     (res1, res2) = drop_records(res1, res2, mask)
