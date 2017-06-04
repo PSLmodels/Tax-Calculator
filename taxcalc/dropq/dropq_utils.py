@@ -114,7 +114,7 @@ def dropq_calculate(year_n, start_year,
         # compute mask that shows which of the calc1 and calc1p results differ
         res1 = results(calc1)
         res1p = results(calc1p)
-        mask = (res1.combined != res1p.combined)
+        mask = (res1.iitax != res1p.iitax)
     else:
         mask = None
 
