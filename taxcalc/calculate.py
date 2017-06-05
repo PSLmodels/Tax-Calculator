@@ -467,7 +467,7 @@ class Calculator(object):
                                 'growdiff_baseline', 'growdiff_response'])
 
     @staticmethod
-    def _read_json_policy_reform_text(text_string, arrays_not_lists=True):
+    def _read_json_policy_reform_text(text_string, arrays_not_lists):
         """
         Strip //-comments from text_string and return 1 dict based on the JSON.
         Specified text is JSON with at least 1 high-level string:object pair:
@@ -522,7 +522,7 @@ class Calculator(object):
         return rpol_dict
 
     @staticmethod
-    def _read_json_econ_assump_text(text_string, arrays_not_lists=True):
+    def _read_json_econ_assump_text(text_string, arrays_not_lists):
         """
         Strip //-comments from text_string and return 4 dict based on the JSON.
         Specified text is JSON with at least 4 high-level string:object pairs:
@@ -597,7 +597,7 @@ class Calculator(object):
         return (cons_dict, behv_dict, gdiff_base_dict, gdiff_resp_dict)
 
     @staticmethod
-    def _convert_parameter_dict(param_key_dict, arrays_not_lists=True):
+    def _convert_parameter_dict(param_key_dict, arrays_not_lists):
         """
         Converts specified param_key_dict into a dictionary whose primary
         keys are calendary years, and hence, is suitable as the argument to

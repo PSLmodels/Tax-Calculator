@@ -644,13 +644,17 @@ def test_read_bad_json_assump_file(bad1assumpfile, bad2assumpfile,
 
 def test_convert_parameter_dict():
     with pytest.raises(ValueError):
-        rdict = Calculator._convert_parameter_dict({2013: {'2013': [40000]}})
+        rdict = Calculator._convert_parameter_dict({2013: {'2013': [40000]}},
+                                                   arrays_not_lists=True)
     with pytest.raises(ValueError):
-        rdict = Calculator._convert_parameter_dict({'_II_em': {2013: [40000]}})
+        rdict = Calculator._convert_parameter_dict({'_II_em': {2013: [40000]}},
+                                                   arrays_not_lists=True)
     with pytest.raises(ValueError):
-        rdict = Calculator._convert_parameter_dict({4567: {2013: [40000]}})
+        rdict = Calculator._convert_parameter_dict({4567: {2013: [40000]}},
+                                                   arrays_not_lists=True)
     with pytest.raises(ValueError):
-        rdict = Calculator._convert_parameter_dict({'_II_em': 40000})
+        rdict = Calculator._convert_parameter_dict({'_II_em': 40000},
+                                                   arrays_not_lists=True)
     rdict = Calculator._convert_parameter_dict({'_II_em': {'2013': [40000]}},
                                                arrays_not_lists=False)
     assert isinstance(rdict, dict)

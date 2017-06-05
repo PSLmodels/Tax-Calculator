@@ -31,7 +31,10 @@ def test_reform_json(reforms_path):  # pylint: disable=redefined-outer-name
         # check that jpf_text has "policy" that can be implemented as a reform
         if '"policy"' in jpf_text:
             # pylint: disable=protected-access
-            policy_dict = Calculator._read_json_policy_reform_text(jpf_text)
+            policy_dict = (
+                Calculator._read_json_policy_reform_text(jpf_text,
+                                                         arrays_not_lists=True)
+            )
             policy = Policy()
             policy.implement_reform(policy_dict)
         else:  # jpf_text is not a valid JSON policy reform file
