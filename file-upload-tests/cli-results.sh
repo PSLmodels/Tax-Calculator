@@ -1,5 +1,5 @@
 #!/bin/bash
-# USAGE: ./cli-results [save]
+# USAGE: ./cli-results.sh [save]
 
 if [ -f "puf.csv" ]; then
     echo "STARTING WITH CLI-RESULTS : `date`"

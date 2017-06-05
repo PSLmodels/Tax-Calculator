@@ -3,7 +3,7 @@
 # .... check number of command-line arguments
 if [[ "$#" -gt 1 ]]; then
     echo "ERROR: can specify at most one command-line argument"
-    echo "USAGE: ./tests [all]"
+    echo "USAGE: ./tests.sh [all]"
     echo "       (using the 'all' option may execute four tests at a time)"
     exit 1
 fi
@@ -14,7 +14,7 @@ if [[ "$#" -eq 1 ]]; then
         ALLTESTS=true
     else
         echo "ERROR: optional command-line argument must be all"
-        echo "USAGE: ./tests [all]"
+        echo "USAGE: ./tests.sh [all]"
         exit 1
     fi
 fi
@@ -22,18 +22,18 @@ echo "STARTING WITH VALIDATION TESTS : `date`"
 if [[ $ALLTESTS == true ]] ; then
     # execute all tests sequentially
     cd taxsim
-    bash tests all
+    bash tests.sh all
     cd ..
     # cd drake
-    # bash tests all
+    # bash tests.sh all
     # cd ..
 else
     # execute basic tests simultaneously
     cd taxsim
-    bash tests &
+    bash tests.sh &
     cd ..
     # cd drake
-    # bash tests &
+    # bash tests.sh &
     # cd ..
     wait
 fi
