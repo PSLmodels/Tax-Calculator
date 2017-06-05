@@ -190,14 +190,16 @@ def add_weighted_income_bins(pdf, num_bins=10, labels=None,
     if weight_by_income_measure:
         pdf['cumsum_temp'] = np.cumsum(np.multiply(pdf[income_measure].values,
                                                    pdf['s006'].values))
+        min_cumsum = pdf['cumsum_temp'].values[0]
     else:
         pdf['cumsum_temp'] = np.cumsum(pdf['s006'].values)
-    min_cumsum = pdf['cumsum_temp'].values[0]
+        min_cumsum = 0.  # because s006 values are non-negative
     max_cumsum = pdf['cumsum_temp'].values[-1]
     cumsum_range = max_cumsum - min_cumsum
     bin_width = cumsum_range / float(num_bins)
-    bin_edges = [-9e99] + list(np.arange(1, (num_bins + 1)) * bin_width)
+    bin_edges = list(min_cumsum + np.arange(0, (num_bins + 1)) * bin_width)
     bin_edges[-1] = 9e99  # raise top of last bin to include all observations
+    bin_edges[0] = -9e99  # lower bottom of 1st bin to include all observations
     if not labels:
         labels = range(1, (num_bins + 1))
     pdf['bins'] = pd.cut(pdf['cumsum_temp'], bins=bin_edges, labels=labels)
