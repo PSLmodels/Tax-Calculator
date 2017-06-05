@@ -15,7 +15,7 @@ it to the Internet-TAXSIM website using the `56 1` option (in order to
 do the EITC property-income eligibility test exactly without any
 smoothing of property income) and requesting detailed intermediate
 calculations.  These two OUTPUT files are compared using the
-`taxdiffs.tcl` script.  See the `tests` and `test` scripts in this
+`taxdiffs.tcl` script.  See the `tests.sh` and `test.sh` scripts in this
 directory for more details.
 
 Validation Results

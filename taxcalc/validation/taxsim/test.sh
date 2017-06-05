@@ -6,7 +6,7 @@
 # Check command-line arguments
 if [[ "$#" -lt 2 || "$#" -gt 3 ]]; then
     echo "ERROR: number of command-line arguments not in 2-to-3 range"
-    echo "USAGE: bash test LYY REFORM [save]"
+    echo "USAGE: bash test.sh LYY REFORM [save]"
     echo "       WHERE L is a letter that is valid taxsim_in.tcl L input and"
     echo "             YY is valid taxsim_in.tcl CALENDAR YEAR (20YY) input.;"
     echo "       WHERE REFORM is Internet-TAXSIM option (e.g., '50_1') or"
@@ -24,7 +24,7 @@ if [[ "$#" -eq 3 ]]; then
         SAVE=true
     else
         echo "ERROR: optional third command-line argument must be 'save'"
-        echo "USAGE: bash test LYY REFORM [save]"
+        echo "USAGE: bash test.sh LYY REFORM [save]"
         touch testerror
         exit 1
     fi

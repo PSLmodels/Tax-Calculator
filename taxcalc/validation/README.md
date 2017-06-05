@@ -61,7 +61,7 @@ The current version of the validation tools in this directory should
 work on Linux or Mac OS X without any changes and without adding any
 extra software.  Those who want to use these validation tools on Windows
 will have to do three things: (a) install an AWK interpreter,
-(b) install a Tcl interpreter, and (c) translate each `tests` bash script
+(b) install a Tcl interpreter, and (c) translate each `tests.sh` bash script
 into a Windows batch file (tests.bat).  The Free Software Foundation
 provides a free AWK interpreter for Windows (gawk.exe) and ActiveState
 provides a free Tcl interpreter for Windows (tclsh.exe).

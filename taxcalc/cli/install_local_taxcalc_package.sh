@@ -1,5 +1,5 @@
 #!/bin/bash
-# USAGE: ./install_local_taxcalc_package
+# USAGE: ./install_local_taxcalc_package.sh
 # ACTION: (1) uninstalls any installed taxcalc package (conda uninstall)
 #         (2) executes "conda install conda-build" (if necessary)
 #         (3) builds local taxcalc=0.0.0 package (conda build)
@@ -12,7 +12,7 @@ echo "STARTING : `date`"
 # uninstall any existing taxcalc conda package
 conda list taxcalc | awk '$1~/taxcalc/{rc=1}END{exit(rc)}'
 if [ $? -eq 1 ]; then
-    ./uninstall_taxcalc_package
+    ./uninstall_taxcalc_package.sh
 fi
 
 # install conda-build package if not present
@@ -39,7 +39,7 @@ rmdir dist/
 rm -fr taxcalc.egg-info/*
 rmdir taxcalc.egg-info/
 
-echo "Execute './uninstall_taxcalc_package' after testing CLI"
+echo "Execute './uninstall_taxcalc_package.sh' after testing CLI"
 
 echo "FINISHED : `date`"
 exit 0

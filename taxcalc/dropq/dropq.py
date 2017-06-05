@@ -10,10 +10,9 @@ import time
 import numpy as np
 import pandas as pd
 from taxcalc.dropq.dropq_utils import (dropq_calculate,
-                                       results,
                                        random_seed,
                                        dropq_summary)
-from taxcalc import TABLE_LABELS, proportional_change_gdp
+from taxcalc import results, TABLE_LABELS, proportional_change_gdp
 
 
 # specify constants
@@ -54,8 +53,8 @@ def run_nth_year_tax_calc_model(year_n, start_year,
                                            mask_computed=True)
 
     # extract raw results from calc1 and calc2
-    rawres1 = results(calc1)
-    rawres2 = results(calc2)
+    rawres1 = results(calc1.records)
+    rawres2 = results(calc2.records)
 
     # seed random number generator with a seed value based on user_mods
     seed = random_seed(user_mods)

@@ -13,7 +13,7 @@ from taxcalc import (Policy, Records, Calculator,
 from taxcalc.utils import (add_income_bins, add_weighted_income_bins,
                            means_and_comparisons, get_sums,
                            weighted, weighted_avg_allcols,
-                           create_distribution_table,
+                           create_distribution_table, results,
                            STATS_COLUMNS, TABLE_COLUMNS, WEBAPP_INCOME_BINS)
 
 
@@ -36,16 +36,6 @@ def check_user_mods(user_mods):
     extra_keys = actual_keys - expected_keys
     if len(extra_keys) > 0:
         raise ValueError('user_mods has extra keys: {}'.format(extra_keys))
-
-
-def results(calc):
-    """
-    Return DataFrame containing results for STATS_COLUMNS Records variables.
-    """
-    outputs = []
-    for col in STATS_COLUMNS:
-        outputs.append(getattr(calc.records, col))
-    return pd.DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
 
 
 def dropq_calculate(year_n, start_year,
@@ -112,8 +102,8 @@ def dropq_calculate(year_n, start_year,
         calc1p.calc_all()
         assert calc1p.current_year == start_year
         # compute mask that shows which of the calc1 and calc1p results differ
-        res1 = results(calc1)
-        res1p = results(calc1p)
+        res1 = results(calc1.records)
+        res1p = results(calc1p.records)
         mask = (res1.iitax != res1p.iitax)
     else:
         mask = None
