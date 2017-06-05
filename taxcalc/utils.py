@@ -197,7 +197,7 @@ def add_weighted_income_bins(pdf, num_bins=10, labels=None,
     cumsum_range = max_cumsum - min_cumsum
     bin_width = cumsum_range / float(num_bins)
     bin_edges = [-9e99] + list(np.arange(1, (num_bins + 1)) * bin_width)
-    bin_edges[-1] += 9e9  # add to top of last bin to include all observations
+    bin_edges[-1] = 9e99  # raise top of last bin to include all observations
     if not labels:
         labels = range(1, (num_bins + 1))
     pdf['bins'] = pd.cut(pdf['cumsum_temp'], bins=bin_edges, labels=labels)
