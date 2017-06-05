@@ -1,5 +1,5 @@
 #!/bin/bash
-# USAGE: ./uninstall_local_taxcalc_package
+# USAGE: ./uninstall_local_taxcalc_package.sh
 # NOTE: for those with experience working with compiled languages,
 #       uninstalling a conda package is analogous to 'make clean'
 conda uninstall taxcalc --yes 2>&1 > /dev/null
