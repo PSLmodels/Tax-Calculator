@@ -61,10 +61,11 @@ class Consumption(ParametersBase):
         Update consumption for given revisions, a dictionary consisting
         of one or more year:modification dictionaries.
         For example: {2014: {'_MPC_xxx': [0.2, 0.1]}}
-        NOTE: this method uses the specified revisions to update the
-              DEFAULT MPC parameter values, so use this method just once
-              rather than calling it sequentially in an attempt to update
-              MPC parameters in several steps.
+
+        Note that this method uses the specified revisions to update the
+        default MPC parameter values, so use this method just once
+        rather than calling it sequentially in an attempt to update
+        MPC parameters in several steps.
         """
         precall_current_year = self.current_year
         self.set_default_vals()

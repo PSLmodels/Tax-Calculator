@@ -18,8 +18,7 @@ PUFCSV_YEAR = 2009
 
 
 class Records(object):
-    """
-    Constructor for the tax-filing-unit records class.
+    """Constructor for the tax-filing-unit records class.
 
     Parameters
     ----------
@@ -54,13 +53,13 @@ class Records(object):
     start_year: integer
         specifies calendar year of the data;
         default value is PUFCSV_YEAR.
-        NOTE: if specifying your own data (see above) as being a custom
-              data set, be sure to explicitly set start_year to the
-              custom data's calendar year.  For details on how to
-              use your own data with the Tax-Calculator, read the
-              DATAPREP.md file in the top-level directory and then
-              look at the test_Calculator_using_nonstd_input()
-              function in the taxcalc/tests/test_calculate.py file.
+        Note that if specifying your own data (see above) as being a custom
+        data set, be sure to explicitly set start_year to the
+        custom data's calendar year.  For details on how to
+        use your own data with the Tax-Calculator, read the
+        DATAPREP.md file in the top-level directory and then
+        look at the test_Calculator_using_nonstd_input()
+        function in the taxcalc/tests/test_calculate.py file.
 
     Raises
     ------
@@ -78,12 +77,16 @@ class Records(object):
 
     Notes
     -----
-    Typical usage is "recs = Records()", which uses all the default
-    parameters of the constructor, and therefore, imputed variables
-    are generated to augment the data and initial-year grow factors
-    are applied to the data.  There are situations in which you need
-    to specify the values of the Record constructor's arguments, but
-    be sure you know exactly what you are doing when attempting this.
+    Typical usage is as follows::
+
+        recs = Records()
+
+    which uses all the default parameters of the constructor, and
+    therefore, imputed variables are generated to augment the data and
+    initial-year grow factors are applied to the data.  There are
+    situations in which you need to specify the values of the Record
+    constructor's arguments, but be sure you know exactly what you are
+    doing when attempting this.
     """
     # suppress pylint warnings about unrecognized Records variables:
     # pylint: disable=no-member

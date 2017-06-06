@@ -1,5 +1,5 @@
-Source Code
-===========
+Source Code Documentation
+=========================
 
 The Tax-Calculator's core capabilities are in the Python package
 called taxcalc, the source code for which is located in the

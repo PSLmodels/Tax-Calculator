@@ -1,5 +1,6 @@
 """
-Implement Numba JIT decorators used to speed-up tax-calculating functions.
+Implement numba JIT decorators used to speed-up Tax-Calculator functions in
+the functions.py module.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 decorators.py
@@ -59,12 +60,12 @@ class GetReturnNode(ast.NodeVisitor):
 
 def create_apply_function_string(sigout, sigin, parameters):
     """
-    Create a string for a function of the form:
+    Create a string for a function of the form::
 
-        def ap_fuc(x_0, x_1, x_2, ...):
-            for i in range(len(x_0)):
-                x_0[i], ... = jitted_f(x_j[i], ...)
-            return x_0[i], ...
+       def ap_fuc(x_0, x_1, x_2, ...):
+           for i in range(len(x_0)):
+               x_0[i], ... = jitted_f(x_j[i], ...)
+           return x_0[i], ...
 
     where the specific args to jitted_f and the number of
     values to return is determined by sigout and sigin.
