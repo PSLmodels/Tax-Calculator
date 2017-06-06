@@ -47,7 +47,9 @@ Guide](http://taxcalc.readthedocs.io/en/latest/contributor_guide.html)
 on how to clone the Tax-Calculator git repository.  Before developing
 any code changes be sure to read completely the Contributor Guide and
 then read about our [coding style](CODING.md) and [testing
-procedures](TESTING.md).
+procedures](TESTING.md).  The Tax-Calculator [release
+history](RELEASES.md) provides a summary of past and current
+development work.
 
 Citing Tax-Calculator
 ---------------------
