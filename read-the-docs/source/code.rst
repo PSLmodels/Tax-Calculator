@@ -3,7 +3,7 @@ Source Code
 
 The Tax-Calculator's core capabilities are in the Python package
 called taxcalc, the source code for which is located in the
-tax-calculator/taxcalc directory.
+tax-calculator/taxcalc directory tree.
 
 Here we provide a high-level view of the taxcalc package with
 links to the source code.  This high-level view is organized around
@@ -27,6 +27,12 @@ taxcalc.calculate
 .. automodule:: taxcalc.calculate
     :members:
 
+taxcalc.cli.tc
+--------------
+
+.. automodule:: taxcalc.cli.tc
+    :members:
+
 taxcalc.consumption
 -------------------
 
@@ -37,6 +43,18 @@ taxcalc.decorators
 ------------------
 
 .. automodule:: taxcalc.decorators
+    :members:
+
+taxcalc.dropq.dropq
+-------------------
+
+.. automodule:: taxcalc.dropq.dropq
+    :members:
+
+taxcalc.dropq.dropq_utils
+-------------------------
+
+.. automodule:: taxcalc.dropq.dropq_utils
     :members:
 
 taxcalc.functions
@@ -91,10 +109,4 @@ taxcalc.utils
 -------------
 
 .. automodule:: taxcalc.utils
-    :members:
-
-taxcalc.cli.tc
---------------
-
-.. automodule:: taxcalc.cli.tc
     :members:
