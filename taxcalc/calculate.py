@@ -408,6 +408,72 @@ class Calculator(object):
         # return the three marginal tax rate arrays
         return (mtr_payrolltax, mtr_incometax, mtr_combined)
 
+    def wmtr(self, income_type='e00200p', mtr_measure='combined',
+             weight_type='income', pos_control='none'):
+        """
+        Calculates the weighted average marginal tax rate on an income type.
+
+        Parameters
+        ----------
+        income_type: string
+            specifies type of income or expense that is increased to compute
+            the marginal tax rates. Valid values are the same as for
+            variable_str in the Calculator.mtr function.
+
+        mtr_measure: string
+            options:
+                'itax': marginal individual income tax rate;
+                'ptax': marginal payroll tax rate; and
+                'combined': sum of marginal income and payroll tax rates.
+            specifies which type of marginal tax rate to use
+
+        weight_type: string
+            options:
+                'none': simple average of MTRs
+                'income': average of MTRs, weighted by income_type
+                'abs': average of MTRs, weighted by abs(income_type)
+            specifies the weighting formula to use
+        pos_control: string
+            options:
+                'none': include all filing units
+                'posti': exclude filing units with negative taxable income
+                'posinc': exclude filing units with negative of income type
+            excludes filing units with negative income
+
+        Returns
+            wmtr: overall weighted average marginal tax rate
+        """
+        # check validity of parameter inputs
+        assert income_type in Calculator.MTR_VALID_VARIABLES
+        assert mtr_measure in ['itax', 'ptax', 'combined']
+        assert weight_type in ['none', 'income', 'abs']
+        assert pos_control in ['none', 'posti', 'posinc']
+        # collect mtr array
+        (mtr_ptax, mtr_itax,
+         mtr_combined) = self.mtr(variable_str=income_type)
+        income = getattr(self.records, income_type)
+        if mtr_measure == 'itax':
+            mtr1 = mtr_itax
+        elif mtr_measure == 'ptax':
+            mtr1 = mtr_ptax
+        elif mtr_measure == 'combined':
+            mtr1 = mtr_combined
+        # select weights
+        if weight_type == 'none':
+            wgt = self.records.s006
+        elif weight_type == 'income':
+            wgt = self.records.s006 * income
+        elif weight_type == 'abs':
+            wgt = (self.records.s006 * np.abs(income))
+        # select units to exclude (or not)
+        if pos_control == 'posti':
+            wgt = np.where(self.records.c04800 > 0, wgt, 0.)
+        elif pos_control == 'posinc':
+            wgt = np.where(income > 0, wgt, 0)
+        # calculate weighted average marginal tax rate
+        wmtr = sum(mtr1 * wgt) / sum(wgt)
+        return wmtr
+
     def current_law_version(self):
         """
         Return Calculator object same as self except with current-law policy.
