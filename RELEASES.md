@@ -29,7 +29,7 @@ Release 0.8.5 on 2017-06-??
   by Martin Holmer]
 
 
-Release 0.8.4 on 2017-05-12?
+Release 0.8.4 on 2017-05-12
 ---------------------------
 **API Changes**
 - None
