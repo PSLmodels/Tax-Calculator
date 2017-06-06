@@ -359,8 +359,9 @@ def ItemDed(e17500, e18400, e18500,
             ID_Miscellaneous_hc, ID_Charity_crt_all, ID_Charity_crt_noncash,
             ID_prt, ID_crt, ID_c, ID_StateLocalTax_hc, ID_Charity_frt,
             ID_Charity_hc, ID_InterestPaid_hc, ID_RealEstate_hc,
-            ID_Medical_c, ID_StateLocalTax_c, ID_InterestPaid_c, ID_Charity_c,
-            ID_Casualty_c, ID_Miscellaneous_c):
+            ID_Medical_c, ID_StateLocalTax_c, ID_RealEstate_c,
+            ID_InterestPaid_c, ID_Charity_c,ID_Casualty_c,
+            ID_Miscellaneous_c):
     """
     ItemDed function: itemized deductions, Form 1040, Schedule A
 
@@ -401,6 +402,8 @@ def ItemDed(e17500, e18400, e18500,
 
         ID_StateLocalTax_c : Ceiling on state and local tax deduction
 
+        ID_RealEstate_c : Ceiling on real estate deduction
+
         ID_InterestPaid_c : Ceiling on interest paid deduction
 
         ID_Charity_c : Ceiling on charity expense deduction
@@ -439,9 +442,11 @@ def ItemDed(e17500, e18400, e18500,
     c17000 = max(0., e17500 - c17750) * (1. - ID_Medical_hc)
     c17000 = min(c17000, ID_Medical_c[MARS - 1])
     # State and local taxes
-    c18300 = ((1. - ID_StateLocalTax_hc) * max(e18400, 0.) +
-              (1. - ID_RealEstate_hc) * e18500)
-    c18300 = min(c18300, ID_StateLocalTax_c[MARS - 1])
+    c18300_StateLocal = min((1. - ID_StateLocalTax_hc) * max(e18400, 0.),
+                   ID_StateLocalTax_c[MARS-1])
+    c18300_RealEstate = min((1. - ID_RealEstate_hc) * e18500,
+                   ID_RealEstate_c[MARS-1])
+    c18300 = c18300_StateLocal + c18300_RealEstate
     # Interest paid
     c19200 = e19200 * (1. - ID_InterestPaid_hc)
     c19200 = min(c19200, ID_InterestPaid_c[MARS - 1])
