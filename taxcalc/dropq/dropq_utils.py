@@ -92,6 +92,7 @@ def dropq_calculate(year_n, start_year,
                          gfactors=growfactors_pre)
         # add one dollar to total wages and salaries of each filing unit
         recs1p.e00200 += 1.0  # pylint: disable=no-member
+        recs1p.e00200p += 1.0  # pylint: disable=no-member
         policy1p = Policy(gfactors=growfactors_pre)
         # create Calculator with recs1p and calculate for start_year
         calc1p = Calculator(policy=policy1p, records=recs1p,
@@ -219,10 +220,9 @@ def drop_records(df1, df2, mask):
     pseudo-randomly picks three records to 'drop' within each bin.
     We keep track of the three dropped records in both group-by
     strategies and then use these 'flag' columns to modify all
-    columns of interest, creating new '*_dec' columns for later
-    statistics based on weighted deciles and '*_bin' columns
-    for statitistics based on grouping by income bins.
-    in each bin in two group-by actions. Lastly we calculate
+    columns of interest, creating new '*_dec' columns for
+    statistics based on weighted deciles and '*_bin' columns for
+    statitistics based on income bins.  Lastly we calculate
     individual income tax differences, payroll tax differences, and
     combined tax differences between the baseline and reform
     for the two groupings.
