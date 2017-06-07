@@ -54,19 +54,40 @@ class ParametersBase(object):
         pass
 
     def initialize(self, start_year, num_years):
+        """
+        Called from subclass __init__ function.
+        """
         self._current_year = start_year
         self._start_year = start_year
         self._num_years = num_years
         self._end_year = start_year + num_years - 1
         self.set_default_vals()
 
+    def inflation_rates(self):
+        """
+        Override this method in subclass when appropriate.
+        """
+        return None
+
+    def wage_growth_rates(self):
+        """
+        Override this method in subclass when appropriate.
+        """
+        return None
+
     def indexing_rates(self, param_name):
+        """
+        Return appropriate indexing rates for specified param_name.
+        """
         if param_name == '_SS_Earnings_c':
             return self.wage_growth_rates()
         else:
             return self.inflation_rates()
 
     def set_default_vals(self):
+        """
+        Called by initialize method and from some subclass methods.
+        """
         if hasattr(self, '_vals'):
             for name, data in self._vals.items():
                 cpi_inflated = data.get('cpi_inflated', False)
@@ -80,27 +101,31 @@ class ParametersBase(object):
 
     @property
     def num_years(self):
+        """
+        Return number of parameter years.
+        """
         return self._num_years
 
     @property
     def current_year(self):
+        """
+        Return current calendar year.
+        """
         return self._current_year
 
     @property
-    def end_year(self):
-        return self._end_year
-
-    @property
     def start_year(self):
+        """
+        Return first parameter year.
+        """
         return self._start_year
 
-    def inflation_rates(self):
-        # Override this method in subclass when appropriate.
-        return None
-
-    def wage_growth_rates(self):
-        # Override this method in subclass when appropriate.
-        return None
+    @property
+    def end_year(self):
+        """
+        Return last parameter year.
+        """
+        return self._end_year
 
     def set_year(self, year):
         """
@@ -468,7 +493,7 @@ class ParametersBase(object):
     @staticmethod
     def _strip_nones(x):
         """
-        Private method called only within the _expand_array method.
+        Private method called only in the _expand_array method.
         Method accepts a 1D or 2D list, or a 1D or 2D numpy array.
         If x is 1D, when None is encountered, we return everything
         encountered before None.
@@ -535,6 +560,9 @@ class ParametersBase(object):
 
     def _indexing_rates_for_update(self, param_name,
                                    calyear, num_years_to_expand):
+        """
+        Private method called only in the _update method.
+        """
         if param_name == '_SS_Earnings_c':
             rates = self.wage_growth_rates()
         else:

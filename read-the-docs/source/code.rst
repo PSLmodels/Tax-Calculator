@@ -80,7 +80,7 @@ taxcalc.ParametersBase
 
 .. autoclass:: taxcalc.ParametersBase
    :members:
-   :exclude-members: _update
+   :exclude-members: _update, _indexing_rates_for_update
 
 taxcalc.Policy
 --------------
