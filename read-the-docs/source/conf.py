@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Tax Calculator documentation build configuration file, created by
+# Tax-Calculator documentation build configuration file, created by
 # sphinx-quickstart on Mon Mar  9 17:06:10 2015.
 #
 # This file is execfile()d with the current directory set to its
@@ -25,7 +25,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
-# needs_sphinx = '1.0'
+needs_sphinx = '1.5.6'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -33,7 +33,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
-    'sphinx.ext.pngmath',
+    'sphinx.ext.imgmath',
     'sphinx.ext.viewcode',
 ]
 
@@ -56,8 +56,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Tax Calculator'
-copyright = u'2015, Open Source Policy Center'
+project = u'Tax-Calculator'
+copyright = u'2017, Open Source Policy Center'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -227,7 +227,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    ('index', 'TaxCalculator.tex', u'Tax Calculator Documentation',
+    ('index', 'TaxCalculator.tex', u'Tax-Calculator Developer Documentation',
      u'Open Source Policy Center', 'manual'),
 ]
 
@@ -257,7 +257,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'taxcalculator', u'Tax Calculator Documentation',
+    ('index', 'taxcalculator', u'Tax-Calculator Developer Documentation',
      [u'Open Source Policy Center'], 1)
 ]
 
@@ -271,7 +271,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'TaxCalculator', u'Tax Calculator Documentation',
+    ('index', 'TaxCalculator', u'Tax-Calculator Developer Documentation',
      u'Open Source Policy Center', 'TaxCalculator',
      'One line description of project.',
      'Miscellaneous'),
@@ -293,13 +293,13 @@ texinfo_documents = [
 # -- Options for Epub output ----------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'Tax Calculator'
+epub_title = u'Tax-Calculator'
 epub_author = u'Open Source Policy Center'
 epub_publisher = u'Open Source Policy Center'
-epub_copyright = u'2015, Open Source Policy Center'
+epub_copyright = u'2017, Open Source Policy Center'
 
 # The basename for the epub file. It defaults to the project name.
-# epub_basename = u'Tax Calculator'
+# epub_basename = u'Tax-Calculator'
 
 # The HTML theme for the epub output.
 # Since the default themes are not optimized
