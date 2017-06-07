@@ -176,7 +176,7 @@ def test_mtr(tests_path, puf_path):  # pylint: disable=redefined-outer-name
     clp.set_year(MTR_TAX_YEAR)
     # create a Records object (puf) containing puf.csv input records
     puf = Records(data=puf_path)
-    recid = puf.RECID
+    recid = puf.RECID  # pylint: disable=no-member
     # create a Calculator object using clp policy and puf records
     calc = Calculator(policy=clp, records=puf)
     res += '{} = {}\n'.format('Total number of data records', puf.dim)

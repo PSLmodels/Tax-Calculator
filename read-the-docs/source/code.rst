@@ -19,6 +19,7 @@ taxcalc.Behavior
 
 .. autoclass:: taxcalc.Behavior
    :members:
+   :exclude-members: _validate_elasticity_values
 
 taxcalc.Calculator
 ------------------
@@ -79,6 +80,7 @@ taxcalc.ParametersBase
 
 .. autoclass:: taxcalc.ParametersBase
    :members:
+   :exclude-members: _update
 
 taxcalc.Policy
 --------------
@@ -91,6 +93,7 @@ taxcalc.Records
 
 .. autoclass:: taxcalc.Records
    :members:
+   :exclude-members: _adjust, _blowup, _read_adjust, _read_data, _read_weights
 
 taxcalc.TaxCalcIO
 -----------------
