@@ -1,6 +1,6 @@
 """
 Command-line interface (CLI) to Tax-Calculator,
-which can be accessed as 'tc' from an installed taxcalc package.
+which can be accessed as 'tc' from an installed taxcalc conda package.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 tc.py
@@ -103,7 +103,7 @@ def main():
     args = parser.parse_args()
     # write test input and expected output files if --test option specified
     if args.test:
-        write_test_input_output_files()
+        _write_test_input_output_files()
         inputfn = TEST_INPUT_FILENAME
         taxyear = TEST_TAXYEAR
     else:
@@ -134,7 +134,7 @@ def main():
                  output_sqldb=args.sqldb)
     # compare test output with expected test output if --test option specified
     if args.test:
-        retcode = compare_test_output_files()
+        retcode = _compare_test_output_files()
     else:
         retcode = 0
     # return exit code
@@ -146,9 +146,9 @@ EXPECTED_TEST_OUTPUT_FILENAME = 'test-{}-out.csv'.format(str(TEST_TAXYEAR)[2:])
 ACTUAL_TEST_OUTPUT_FILENAME = 'test-{}-#-#.csv'.format(str(TEST_TAXYEAR)[2:])
 
 
-def write_test_input_output_files():
+def _write_test_input_output_files():
     """
-    Write test input and expected output files.
+    Private function that writes tc --test input and expected output files.
     """
     input_data = (
         'RECID,MARS,XTOT,EIC,e00200,e00200p,e00200s,p23250,e18400,e19800\n'
@@ -166,9 +166,9 @@ def write_test_input_output_files():
         ofile.write(expected_output_data)
 
 
-def compare_test_output_files():
+def _compare_test_output_files():
     """
-    Compare expected and actual test output files;
+    Private function that compares expected and actual tc --test output files;
     returns 0 if pass test, otherwise returns 1.
     """
     explines = open(EXPECTED_TEST_OUTPUT_FILENAME, 'U').readlines()
