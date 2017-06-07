@@ -40,26 +40,28 @@ class Calculator(object):
     policy: Policy class object
         this argument must be specified
         IMPORTANT NOTE: never pass the same Policy object to more than one
-                        Calculator.  In other words, when specifying more
-                        than one Calculator object, do this:
-                        pol1 = Policy()
-                        rec1 = Records()
-                        calc1 = Calculator(policy=pol1, records=rec1)
-                        pol2 = Policy()
-                        rec2 = Records()
-                        calc2 = Calculator(policy=pol2, records=rec2)
+        Calculator.  In other words, when specifying more
+        than one Calculator object, do this::
+
+            pol1 = Policy()
+            rec1 = Records()
+            calc1 = Calculator(policy=pol1, records=rec1)
+            pol2 = Policy()
+            rec2 = Records()
+            calc2 = Calculator(policy=pol2, records=rec2)
 
     records: Records class object
         this argument must be specified
         IMPORTANT NOTE: never pass the same Records object to more than one
-                        Calculator.  In other words, when specifying more
-                        than one Calculator object, do this:
-                        pol1 = Policy()
-                        rec1 = Records()
-                        calc1 = Calculator(policy=pol1, records=rec1)
-                        pol2 = Policy()
-                        rec2 = Records()
-                        calc2 = Calculator(policy=pol2, records=rec2)
+        Calculator.  In other words, when specifying more
+        than one Calculator object, do this::
+
+            pol1 = Policy()
+            rec1 = Records()
+            calc1 = Calculator(policy=pol1, records=rec1)
+            pol2 = Policy()
+            rec2 = Records()
+            calc2 = Calculator(policy=pol2, records=rec2)
 
     verbose: boolean
         specifies whether or not to write to stdout data-loaded and
@@ -268,17 +270,20 @@ class Calculator(object):
         """
         Calculates the marginal payroll, individual income, and combined
         tax rates for every tax filing unit.
-          The marginal tax rates are approximated as the change in tax
+
+        The marginal tax rates are approximated as the change in tax
         liability caused by a small increase (the finite_diff) in the variable
         specified by the variable_str divided by that small increase in the
         variable, when wrt_full_compensation is false.
-          If wrt_full_compensation is true, then the marginal tax rates
+
+        If wrt_full_compensation is true, then the marginal tax rates
         are computed as the change in tax liability divided by the change
         in total compensation caused by the small increase in the variable
         (where the change in total compensation is the sum of the small
         increase in the variable and any increase in the employer share of
         payroll taxes caused by the small increase in the variable).
-          If using 'e00200s' as variable_str, the marginal tax rate for all
+
+        If using 'e00200s' as variable_str, the marginal tax rate for all
         records where MARS != 2 will be missing.  If you want to perform a
         function such as np.mean() on the returned arrays, you will need to
         account for this.

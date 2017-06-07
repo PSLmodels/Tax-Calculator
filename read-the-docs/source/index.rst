@@ -8,6 +8,10 @@ be used to conduct revenue scoring and distributional analyses of tax
 policies.  The Tax-Calculator is written in Python, an interpreted
 language that can execute on Windows, Mac, or Linux.
 
+This documentation is about **developing** Tax-Calculator.  If you
+just want to **use** Tax-Calculator, read this `user documentation`_.
+
+
 Contents
 --------
 
@@ -16,9 +20,14 @@ Contents
    
    about_ospc.rst
    contributor_guide.rst
+   make_local_change.rst
+   parameter_naming.rst
    code.rst
    data.rst
    disclaimer.rst
    license.rst
    contributors.rst
 
+
+.. _`user documentation`:
+   http://open-source-economics.github.io/Tax-Calculator/

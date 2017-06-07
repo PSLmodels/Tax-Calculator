@@ -211,17 +211,34 @@ def chooser(agg):
 
 def drop_records(df1, df2, mask):
     """
-    Modify DataFrame df1 and DataFrame df2 by adding statistical 'fuzz'.
-      df1 contains results for the standard plan X and X'
-      df2 contains results for the user-specified plan (Plan Y)
-      mask is the boolean mask where X and X' match
+    Modify df1 and df2 by adding statistical fuzz for data privacy.
+
+    Parameters
+    ----------
+    df1: Pandas DataFrame
+        contains results for the standard plan X and X'.
+
+    df2: Pandas DataFrame
+        contains results for the user-specified plan (Plan Y).
+
+    mask: boolean numpy array
+        contains info about whether or not each element of X and X' are same
+
+    Returns
+    -------
+    fuzzed_df1: Pandas DataFrame
+
+    fuzzed_df2: Pandas DataFrame
+
+    Notes
+    -----
     This function groups both DataFrames based on the web application's
     income groupings (both weighted decile and income bins), and then
     pseudo-randomly picks three records to 'drop' within each bin.
     We keep track of the three dropped records in both group-by
     strategies and then use these 'flag' columns to modify all
-    columns of interest, creating new '*_dec' columns for
-    statistics based on weighted deciles and '*_bin' columns for
+    columns of interest, creating new '_dec' columns for
+    statistics based on weighted deciles and '_bin' columns for
     statitistics based on income bins.  Lastly we calculate
     individual income tax differences, payroll tax differences, and
     combined tax differences between the baseline and reform
