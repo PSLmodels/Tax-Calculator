@@ -5,108 +5,101 @@ The Tax-Calculator's core capabilities are in the Python package
 called taxcalc, the source code for which is located in the
 tax-calculator/taxcalc directory tree.
 
-Here we provide a high-level view of the taxcalc package with
-links to the source code.  This high-level view is organized around
-the modules that compose the taxcalc package.  Below is a full list of
-the taxcalc package modules (in alphabetical order) with documentation
-about how to call each member of the module.  There is also a link to
-the complete source code for each module member in the list.  However,
-it may be more convenient to access this list interactively via the
-**alphabetical** :ref:`genindex` **of taxcalc modules and module
-members** or the alphabetical :ref:`modindex`.
+Here we provide a high-level view of the **public API** of the taxcalc
+package with links to the source code.  This high-level view is
+organized around the modules in the taxcalc package.  Below is a list
+of the taxcalc package members (in alphabetical order) with
+documentation about how to call each class method and function.  There
+is also a link to the source code for each documented member.
+However, it may be more convenient to access this list interactively
+via the **alphabetical** :ref:`genindex` **of taxcalc members**.
 
-taxcalc.behavior
+taxcalc.Behavior
 ----------------
 
-.. automodule:: taxcalc.behavior
-    :members:
+.. autoclass:: taxcalc.Behavior
+   :members:
 
-taxcalc.calculate
------------------
+taxcalc.Calculator
+------------------
 
-.. automodule:: taxcalc.calculate
-    :members:
+.. autoclass:: taxcalc.Calculator
+   :members:
 
 taxcalc.cli.tc
 --------------
 
 .. automodule:: taxcalc.cli.tc
-    :members:
+   :members:
 
-taxcalc.consumption
+taxcalc.Consumption
 -------------------
 
-.. automodule:: taxcalc.consumption
-    :members:
+.. autoclass:: taxcalc.Consumption
+   :members:
 
 taxcalc.decorators
 ------------------
 
 .. automodule:: taxcalc.decorators
-    :members:
+   :members:
 
 taxcalc.dropq.dropq
 -------------------
 
 .. automodule:: taxcalc.dropq.dropq
-    :members:
-
-taxcalc.dropq.dropq_utils
--------------------------
-
-.. automodule:: taxcalc.dropq.dropq_utils
-    :members:
+   :members:
 
 taxcalc.functions
 -----------------
 
 .. automodule:: taxcalc.functions
-    :members:
+   :members:
 
-taxcalc.growdiff
+taxcalc.Growdiff
 ----------------
 
-.. automodule:: taxcalc.growdiff
-    :members:
+.. autoclass:: taxcalc.Growdiff
+   :members:
 
-taxcalc.growfactors
+taxcalc.Growfactors
 -------------------
 
-.. automodule:: taxcalc.growfactors
-    :members:
+.. autoclass:: taxcalc.Growfactors
+   :members:
 
 taxcalc.macro_elasticity
 ------------------------
 
 .. automodule:: taxcalc.macro_elasticity
-    :members:
+   :members:
 
-taxcalc.parameters
-------------------
+taxcalc.ParametersBase
+----------------------
 
-.. automodule:: taxcalc.parameters
-    :members:
+.. autoclass:: taxcalc.ParametersBase
+   :members:
 
-taxcalc.policy
+taxcalc.Policy
 --------------
 
-.. automodule:: taxcalc.policy
-    :members:
+.. autoclass:: taxcalc.Policy
+   :members:
 
-taxcalc.records
+taxcalc.Records
 ---------------
 
-.. automodule:: taxcalc.records
-    :members:
+.. autoclass:: taxcalc.Records
+   :members:
 
-taxcalc.taxcalcio
+taxcalc.TaxCalcIO
 -----------------
 
-.. automodule:: taxcalc.taxcalcio
-    :members:
+.. autoclass:: taxcalc.TaxCalcIO
+   :members:
 
 taxcalc.utils
 -------------
 
 .. automodule:: taxcalc.utils
-    :members:
+   :members:

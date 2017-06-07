@@ -1,5 +1,5 @@
 """
-Utility functions used by functions in dropq.py file.
+Private utility functions used only by public functions in the dropq.py file.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 dropq_utils.py
