@@ -249,7 +249,7 @@ class Calculator(object):
     @property
     def current_year(self):
         """
-        Return policy.current_year
+        Return current_year of the embedded Policy object.
         """
         return self.policy.current_year
 
@@ -547,7 +547,7 @@ class Calculator(object):
         and string years as secondary keys.  See tests/test_calculate.py for
         an extended example of a commented JSON economic assumption text
         that can be read by this method.
- 
+
         Note that an example is shown in the ASSUMP_CONTENTS string in
           tests/test_calculate.py file.
 

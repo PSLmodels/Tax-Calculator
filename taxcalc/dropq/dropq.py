@@ -1,5 +1,6 @@
 """
-dropq functions used by TaxBrain to call Tax-Calculator.
+The dropq functions are used by TaxBrain to call Tax-Calculator in order
+to maintain the privacy of the micro data being used by TaxBrain.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 dropq.py
