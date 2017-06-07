@@ -32,6 +32,7 @@ taxcalc.cli.tc
 
 .. automodule:: taxcalc.cli.tc
    :members:
+   :exclude-members: _compare_test_output_files, _write_test_input_output_files
 
 taxcalc.Consumption
 -------------------
