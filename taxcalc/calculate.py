@@ -475,22 +475,24 @@ class Calculator(object):
     def _read_json_policy_reform_text(text_string, arrays_not_lists):
         """
         Strip //-comments from text_string and return 1 dict based on the JSON.
+
         Specified text is JSON with at least 1 high-level string:object pair:
-          a "policy": {...} pair.
-          Other high-level pairs will be ignored by this method, except
-          that a "consumption", "behavior", "growdiff_baseline" or
-          "growdiff_response" key will raise a ValueError.
-          The {...}  object may be empty (that is, be {}), or
-          may contain one or more pairs with parameter string primary keys
-          and string years as secondary keys.  See tests/test_calculate.py for
-          an extended example of a commented JSON policy reform text
-          that can be read by this method.
-        Returned dictionary rpol_dict
-           has integer years as primary keys
-           and string parameters as secondary keys.
-        The returned dictionary is suitable as the argument to
-           the Policy implement_reform(rpol_dict) method ONLY if
-           the function argument arrays_not_lists is True.
+        a "policy": {...} pair.
+
+        Other high-level pairs will be ignored by this method, except
+        that a "consumption", "behavior", "growdiff_baseline" or
+        "growdiff_response" key will raise a ValueError.
+
+        The {...}  object may be empty (that is, be {}), or
+        may contain one or more pairs with parameter string primary keys
+        and string years as secondary keys.  See tests/test_calculate.py for
+        an extended example of a commented JSON policy reform text
+        that can be read by this method.
+
+        Returned dictionary rpol_dict has integer years as primary keys and
+        string parameters as secondary keys.  This returned dictionary is
+        suitable as the argument to the Policy implement_reform(rpol_dict)
+        method ONLY if the function argument arrays_not_lists is True.
         """
         # strip out //-comments without changing line numbers
         json_str = re.sub('//.*', ' ', text_string)
@@ -530,30 +532,33 @@ class Calculator(object):
     def _read_json_econ_assump_text(text_string, arrays_not_lists):
         """
         Strip //-comments from text_string and return 4 dict based on the JSON.
+
         Specified text is JSON with at least 4 high-level string:object pairs:
-          a "consumption": {...} pair,
-          a "behavior": {...} pair,
-          a "growdiff_baseline": {...} pair, and
-          a "growdiff_response": {...} pair.
-          Other high-level pairs will be ignored by this method, except that
-          a "policy" key will raise a ValueError.
-          The {...}  object may be empty (that is, be {}), or
-          may contain one or more pairs with parameter string primary keys
-          and string years as secondary keys.  See tests/test_calculate.py for
-          an extended example of a commented JSON economic assumption text
-          that can be read by this method.
+        a "consumption": {...} pair,
+        a "behavior": {...} pair,
+        a "growdiff_baseline": {...} pair, and
+        a "growdiff_response": {...} pair.
+
+        Other high-level pairs will be ignored by this method, except that
+        a "policy" key will raise a ValueError.
+
+        The {...}  object may be empty (that is, be {}), or
+        may contain one or more pairs with parameter string primary keys
+        and string years as secondary keys.  See tests/test_calculate.py for
+        an extended example of a commented JSON economic assumption text
+        that can be read by this method.
+ 
         Note that an example is shown in the ASSUMP_CONTENTS string in
           tests/test_calculate.py file.
-        Returned dictionaries (cons_dict,
-                               behv_dict,
-                               gdiff_baseline_dict,
-                               gdiff_respose_dict)
-           have integer years as primary keys
-           and string parameters as secondary keys.
-        The returned dictionaries are suitable as the arguments to
-           the Consumption.update_consumption(cons_dict) method, or
-           the Behavior.update_behavior(behv_dict) method, or
-           the Growdiff.update_growdiff(gdiff_dict) method,
+
+        Returned dictionaries (cons_dict, behv_dict, gdiff_baseline_dict,
+        gdiff_respose_dict) have integer years as primary keys and
+        string parameters as secondary keys.
+
+        These returned dictionaries are suitable as the arguments to
+        the Consumption.update_consumption(cons_dict) method, or
+        the Behavior.update_behavior(behv_dict) method, or
+        the Growdiff.update_growdiff(gdiff_dict) method,
         but ONLY if the function argument arrays_not_lists is True.
         """
         # pylint: disable=too-many-locals
@@ -606,15 +611,17 @@ class Calculator(object):
         """
         Converts specified param_key_dict into a dictionary whose primary
         keys are calendary years, and hence, is suitable as the argument to
-          the Policy.implement_reform() method, or
-          the Consumption.update_consumption() method, or
-          the Behavior.update_behavior() method, or
-          the Growdiff.update_growdiff() method,
+        the Policy.implement_reform() method, or
+        the Consumption.update_consumption() method, or
+        the Behavior.update_behavior() method, or
+        the Growdiff.update_growdiff() method,
         but only if function argument is arrays_not_lists=True.
+
         Specified input dictionary has string parameter primary keys and
-           string years as secondary keys.
+        string years as secondary keys.
+
         Returned dictionary has integer years as primary keys and
-           string parameters as secondary keys.
+        string parameters as secondary keys.
         """
         # convert year skey strings into integers and
         # optionally convert lists into np.arrays

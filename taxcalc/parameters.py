@@ -300,7 +300,9 @@ class ParametersBase(object):
         of single square brackets.
 
         To model a change in behavior substitution effect, a year_mods dict
-        example would be {2014: {'_BE_inc': [0.2, 0.3]}}
+        example would be::
+
+            {2014: {'_BE_inc': [0.2, 0.3]}}
         """
         # check YEAR value in the single YEAR:MODS dictionary parameter
         if not isinstance(year_mods, dict):
