@@ -18,7 +18,7 @@ Release 0.8.5 on 2017-06-??
   [[#1375](https://github.com/open-source-economics/Tax-Calculator/pull/1375)
   by Anderson Frailey]
 - Add policy reform file for the Renacci reform
-  [[#1376](https://github.com/open-source-economics/Tax-Calculator/pull/1376)
+  [#1376](https://github.com/open-source-economics/Tax-Calculator/pull/1376)
   ,[#1383](https://github.com/open-source-economics/Tax-Calculator/pull/1383)
   , and
   [#1385](https://github.com/open-source-economics/Tax-Calculator/pull/1385)
@@ -29,7 +29,7 @@ Release 0.8.5 on 2017-06-??
 
 **Bug Fixes**
 - Fix bug in add_weighted_income_bins utility function
-  [[#1387](https://github.com/open-source-economics/Tax-Calculator/pull/1387)
+  [#1387](https://github.com/open-source-economics/Tax-Calculator/pull/1387)
   by Martin Holmer]
 
 
