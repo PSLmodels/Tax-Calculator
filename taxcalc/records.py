@@ -169,7 +169,7 @@ class Records(object):
     @property
     def current_year(self):
         """
-        Return current calendar year of Records.
+        Records class current calendar year property.
         """
         return self._current_year
 
