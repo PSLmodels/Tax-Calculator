@@ -31,6 +31,7 @@ taxcalc.Calculator
 
 .. autoclass:: taxcalc.Calculator
    :members:
+   :exclude-members: _calc_one_year, _taxinc_to_amt
 
 taxcalc.cli.tc
 --------------
