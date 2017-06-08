@@ -5,7 +5,7 @@ rm -f testerror
 # .... check number of command-line arguments
 if [[ "$#" -gt 1 ]]; then
     echo "ERROR: can specify at most one command-line argument"
-    echo "USAGE: ./tests [all]"
+    echo "USAGE: ./tests.sh [all]"
     echo "       (using the 'all' option may execute many tests at a time)"
     exit 1
 fi
@@ -16,18 +16,18 @@ if [[ "$#" -eq 1 ]]; then
         ALLTESTS=true
     else
         echo "ERROR: optional command-line argument must be all"
-        echo "USAGE: ./tests [all]"
+        echo "USAGE: ./tests.sh [all]"
         exit 1
     fi
 fi
 # .... execute validation tests
 rm -f testerror
 if [[ "$ALLTESTS" == true ]] ; then
-    bash test a15 . &
-    bash test d15 . &
+    bash test.sh a15 . &
+    bash test.sh d15 . &
     wait
 else
-    bash test d15 .
+    bash test.sh d15 .
 fi
 if [[ -f "testerror" ]]; then
     ERROR=1

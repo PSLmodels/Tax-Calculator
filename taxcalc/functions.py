@@ -59,10 +59,6 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     # compute OASDI part of payroll taxes
     ptax_oasdi = ptax_ss_was_p + ptax_ss_was_s + setax_ss_p + setax_ss_s
 
-    # compute self-employment tax on taxable self-employment income
-    setax_ss_p = FICA_ss_trt * txearn_sey_p
-    setax_ss_s = FICA_ss_trt * txearn_sey_s
-
     # compute earned* variables and AGI deduction for
     # "employer share" of self-employment tax, c03260
     # Note: c03260 is the amount on 2015 Form 1040, line 27
@@ -1593,7 +1589,7 @@ def AfterTaxIncome(combined, expanded_income, aftertax_income):
 
     Returns
     -------
-    aftertax_income: expanded_income - combined
+    aftertax_income: expanded_income minus combined
     """
     aftertax_income = expanded_income - combined
     return aftertax_income

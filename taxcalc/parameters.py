@@ -11,7 +11,7 @@ from taxcalc.utils import read_egg_json
 
 class ParametersBase(object):
     """
-    Inherit from this class for Behavior, Consumption, Growdiff, and
+    Inherit from this class for Policy, Behavior, Consumption, Growdiff, and
     other groups of parameters that need to have a set_year method.
     Override this __init__ method and DEFAULTS_FILENAME.
     """
@@ -54,66 +54,78 @@ class ParametersBase(object):
         pass
 
     def initialize(self, start_year, num_years):
+        """
+        Called from subclass __init__ function.
+        """
         self._current_year = start_year
         self._start_year = start_year
         self._num_years = num_years
         self._end_year = start_year + num_years - 1
         self.set_default_vals()
 
+    def inflation_rates(self):
+        """
+        Override this method in subclass when appropriate.
+        """
+        return None
+
+    def wage_growth_rates(self):
+        """
+        Override this method in subclass when appropriate.
+        """
+        return None
+
+    def indexing_rates(self, param_name):
+        """
+        Return appropriate indexing rates for specified param_name.
+        """
+        if param_name == '_SS_Earnings_c':
+            return self.wage_growth_rates()
+        else:
+            return self.inflation_rates()
+
     def set_default_vals(self):
+        """
+        Called by initialize method and from some subclass methods.
+        """
         if hasattr(self, '_vals'):
             for name, data in self._vals.items():
                 cpi_inflated = data.get('cpi_inflated', False)
                 values = data['value']
                 index_rates = self.indexing_rates(name)
                 setattr(self, name,
-                        self.expand_array(values, inflate=cpi_inflated,
-                                          inflation_rates=index_rates,
-                                          num_years=self._num_years))
+                        self._expand_array(values, inflate=cpi_inflated,
+                                           inflation_rates=index_rates,
+                                           num_years=self._num_years))
         self.set_year(self._start_year)
 
     @property
     def num_years(self):
+        """
+        Return number of parameter years.
+        """
         return self._num_years
 
     @property
     def current_year(self):
+        """
+        Return current calendar year.
+        """
         return self._current_year
 
     @property
-    def end_year(self):
-        return self._end_year
-
-    @property
     def start_year(self):
+        """
+        Return first parameter year.
+        """
         return self._start_year
 
-    def inflation_rates(self):
-        # Override this method in subclass when appropriate.
-        return None
-
-    def wage_growth_rates(self):
-        # Override this method in subclass when appropriate.
-        return None
-
-    def indexing_rates(self, param_name):
-        if param_name == '_SS_Earnings_c':
-            return self.wage_growth_rates()
-        else:
-            return self.inflation_rates()
-
-    def indexing_rates_for_update(self, param_name,
-                                  calyear, num_years_to_expand):
-        if param_name == '_SS_Earnings_c':
-            rates = self.wage_growth_rates()
-        else:
-            rates = self.inflation_rates()
-        if rates:
-            expand_rates = [rates[(calyear - self.start_year) + i]
-                            for i in range(0, num_years_to_expand)]
-            return expand_rates
-        else:
-            return None
+    @property
+    def end_year(self):
+        """
+        Return last parameter year.
+        """
+        return self._end_year
 
     def set_year(self, year):
         """
@@ -135,8 +147,10 @@ class ParametersBase(object):
 
         Notes
         -----
-        To increment the current year, use the following statement:
+        To increment the current year, use the following statement::
+
             behavior.set_year(behavior.current_year + 1)
+
         where, in this example, behavior is a Behavior object.
         """
         if year < self.start_year or year > self.end_year:
@@ -298,7 +312,9 @@ class ParametersBase(object):
         of single square brackets.
 
         To model a change in behavior substitution effect, a year_mods dict
-        example would be {2014: {'_BE_inc': [0.2, 0.3]}}
+        example would be::
+
+            {2014: {'_BE_inc': [0.2, 0.3]}}
         """
         # check YEAR value in the single YEAR:MODS dictionary parameter
         if not isinstance(year_mods, dict):
@@ -338,12 +354,12 @@ class ParametersBase(object):
             # set post-reform values of parameter with name
             used_names.add(name)
             cval = getattr(self, name, None)
-            index_rates = self.indexing_rates_for_update(name, year,
-                                                         num_years_to_expand)
-            nval = self.expand_array(values,
-                                     inflate=indexed,
-                                     inflation_rates=index_rates,
-                                     num_years=num_years_to_expand)
+            index_rates = self._indexing_rates_for_update(name, year,
+                                                          num_years_to_expand)
+            nval = self._expand_array(values,
+                                      inflate=indexed,
+                                      inflation_rates=index_rates,
+                                      num_years=num_years_to_expand)
             cval[(year - self.start_year):] = nval
         # handle unused parameter names, all of which end in _cpi, but some
         # parameter names ending in _cpi were handled above
@@ -358,12 +374,12 @@ class ParametersBase(object):
             self._vals[pname]['cpi_inflated'] = pindexed  # remember status
             cval = getattr(self, pname, None)
             pvalues = [cval[year - self.start_year]]
-            index_rates = self.indexing_rates_for_update(name, year,
-                                                         num_years_to_expand)
-            nval = self.expand_array(pvalues,
-                                     inflate=pindexed,
-                                     inflation_rates=index_rates,
-                                     num_years=num_years_to_expand)
+            index_rates = self._indexing_rates_for_update(name, year,
+                                                          num_years_to_expand)
+            nval = self._expand_array(pvalues,
+                                      inflate=pindexed,
+                                      inflation_rates=index_rates,
+                                      num_years=num_years_to_expand)
             cval[(year - self.start_year):] = nval
         # confirm that all names have been used
         assert len(used_names) == len(all_names)
@@ -371,8 +387,9 @@ class ParametersBase(object):
         self.set_year(year)
 
     @staticmethod
-    def expand_1D(x, inflate, inflation_rates, num_years):
+    def _expand_1D(x, inflate, inflation_rates, num_years):
         """
+        Private method called only from _expand_array method.
         Expand the given data to account for the given number of budget years.
         If necessary, pad out additional years by increasing the last given
         year using the given inflation_rates list.
@@ -395,12 +412,13 @@ class ParametersBase(object):
                              range(1, num_years - len(x) + 1)]
                 ans[len(x):] = extra
                 return ans
-        return ParametersBase.expand_1D(np.array([x], dtype=np.float64),
-                                        inflate, inflation_rates, num_years)
+        return ParametersBase._expand_1D(np.array([x], dtype=np.float64),
+                                         inflate, inflation_rates, num_years)
 
     @staticmethod
-    def expand_2D(x, inflate, inflation_rates, num_years):
+    def _expand_2D(x, inflate, inflation_rates, num_years):
         """
+        Private method called only from _expand_array method.
         Expand the given data to account for the given number of budget years.
         For 2D arrays, we expand out the number of rows until we have num_years
         number of rows. For each expanded row, we inflate using the given
@@ -469,13 +487,14 @@ class ParametersBase(object):
                         user_vals = x * keep_user_data_mask
                         ans = ans + user_vals
                 return ans
-        return ParametersBase.expand_2D(np.array(x, dtype=np.float64),
-                                        inflate, inflation_rates, num_years)
+        return ParametersBase._expand_2D(np.array(x, dtype=np.float64),
+                                         inflate, inflation_rates, num_years)
 
     @staticmethod
-    def strip_Nones(x):
+    def _strip_nones(x):
         """
-        Takes a 1D or 2D list, or a 1D or 2D numpy array.
+        Private method called only in the _expand_array method.
+        Method accepts a 1D or 2D list, or a 1D or 2D numpy array.
         If x is 1D, when None is encountered, we return everything
         encountered before None.
         If x is 2D, we replace None with -1 and return.
@@ -502,10 +521,10 @@ class ParametersBase(object):
         return accum
 
     @staticmethod
-    def expand_array(x, inflate, inflation_rates, num_years):
+    def _expand_array(x, inflate, inflation_rates, num_years):
         """
-        Dispatch to either expand_1D or expand_2D
-        depending on the dimension of x.
+        Private method called only within this abstract base class.
+        Dispatch to either _expand_1D or _expand_2D given dimension of x.
 
         Parameters
         ----------
@@ -527,14 +546,30 @@ class ParametersBase(object):
         expanded numpy array with dtype=np.float64
         """
         if not isinstance(x, list) and not isinstance(x, np.ndarray):
-            msg = 'expand_array expects x to be a list or numpy array'
+            msg = '_expand_array expects x to be a list or numpy array'
             raise ValueError(msg)
         if isinstance(x, np.ndarray) and len(x.shape) > 2:
-            raise ValueError('expand_array expects a 1D or 2D array')
-        x = np.array(ParametersBase.strip_Nones(x), np.float64)
+            raise ValueError('_expand_array expects a 1D or 2D array')
+        x = np.array(ParametersBase._strip_nones(x), np.float64)
         if len(x.shape) == 1:
-            return ParametersBase.expand_1D(x, inflate, inflation_rates,
-                                            num_years)
+            return ParametersBase._expand_1D(x, inflate, inflation_rates,
+                                             num_years)
         elif len(x.shape) == 2:
-            return ParametersBase.expand_2D(x, inflate, inflation_rates,
-                                            num_years)
+            return ParametersBase._expand_2D(x, inflate, inflation_rates,
+                                             num_years)
+
+    def _indexing_rates_for_update(self, param_name,
+                                   calyear, num_years_to_expand):
+        """
+        Private method called only in the _update method.
+        """
+        if param_name == '_SS_Earnings_c':
+            rates = self.wage_growth_rates()
+        else:
+            rates = self.inflation_rates()
+        if rates:
+            expand_rates = [rates[(calyear - self.start_year) + i]
+                            for i in range(0, num_years_to_expand)]
+            return expand_rates
+        else:
+            return None

@@ -40,26 +40,28 @@ class Calculator(object):
     policy: Policy class object
         this argument must be specified
         IMPORTANT NOTE: never pass the same Policy object to more than one
-                        Calculator.  In other words, when specifying more
-                        than one Calculator object, do this:
-                        pol1 = Policy()
-                        rec1 = Records()
-                        calc1 = Calculator(policy=pol1, records=rec1)
-                        pol2 = Policy()
-                        rec2 = Records()
-                        calc2 = Calculator(policy=pol2, records=rec2)
+        Calculator.  In other words, when specifying more
+        than one Calculator object, do this::
+
+            pol1 = Policy()
+            rec1 = Records()
+            calc1 = Calculator(policy=pol1, records=rec1)
+            pol2 = Policy()
+            rec2 = Records()
+            calc2 = Calculator(policy=pol2, records=rec2)
 
     records: Records class object
         this argument must be specified
         IMPORTANT NOTE: never pass the same Records object to more than one
-                        Calculator.  In other words, when specifying more
-                        than one Calculator object, do this:
-                        pol1 = Policy()
-                        rec1 = Records()
-                        calc1 = Calculator(policy=pol1, records=rec1)
-                        pol2 = Policy()
-                        rec2 = Records()
-                        calc2 = Calculator(policy=pol2, records=rec2)
+        Calculator.  In other words, when specifying more
+        than one Calculator object, do this::
+
+            pol1 = Policy()
+            rec1 = Records()
+            calc1 = Calculator(policy=pol1, records=rec1)
+            pol2 = Policy()
+            rec2 = Records()
+            calc2 = Calculator(policy=pol2, records=rec2)
 
     verbose: boolean
         specifies whether or not to write to stdout data-loaded and
@@ -247,7 +249,7 @@ class Calculator(object):
     @property
     def current_year(self):
         """
-        Return policy.current_year
+        Return current_year of the embedded Policy object.
         """
         return self.policy.current_year
 
@@ -268,17 +270,20 @@ class Calculator(object):
         """
         Calculates the marginal payroll, individual income, and combined
         tax rates for every tax filing unit.
-          The marginal tax rates are approximated as the change in tax
+
+        The marginal tax rates are approximated as the change in tax
         liability caused by a small increase (the finite_diff) in the variable
         specified by the variable_str divided by that small increase in the
         variable, when wrt_full_compensation is false.
-          If wrt_full_compensation is true, then the marginal tax rates
+
+        If wrt_full_compensation is true, then the marginal tax rates
         are computed as the change in tax liability divided by the change
         in total compensation caused by the small increase in the variable
         (where the change in total compensation is the sum of the small
         increase in the variable and any increase in the employer share of
         payroll taxes caused by the small increase in the variable).
-          If using 'e00200s' as variable_str, the marginal tax rate for all
+
+        If using 'e00200s' as variable_str, the marginal tax rate for all
         records where MARS != 2 will be missing.  If you want to perform a
         function such as np.mean() on the returned arrays, you will need to
         account for this.
@@ -421,7 +426,8 @@ class Calculator(object):
         return calc
 
     @staticmethod
-    def read_json_param_files(reform_filename, assump_filename):
+    def read_json_param_files(reform_filename, assump_filename,
+                              arrays_not_lists=True):
         """
         Read JSON files and call Calculator.read_json_*_text methods
         returning a single dictionary containing five key:dict pairs:
@@ -432,7 +438,9 @@ class Calculator(object):
             rpol_dict = dict()
         elif os.path.isfile(reform_filename):
             txt = open(reform_filename, 'r').read()
-            rpol_dict = Calculator.read_json_policy_reform_text(txt)
+            rpol_dict = (
+                Calculator._read_json_policy_reform_text(txt, arrays_not_lists)
+            )
         else:
             msg = 'policy reform file {} could not be found'
             raise ValueError(msg.format(reform_filename))
@@ -446,7 +454,8 @@ class Calculator(object):
             (cons_dict,
              behv_dict,
              gdiff_base_dict,
-             gdiff_resp_dict) = Calculator.read_json_econ_assump_text(txt)
+             gdiff_resp_dict) = (
+                 Calculator._read_json_econ_assump_text(txt, arrays_not_lists))
         else:
             msg = 'economic assumption file {} could not be found'
             raise ValueError(msg.format(assump_filename))
@@ -463,27 +472,27 @@ class Calculator(object):
                                 'growdiff_baseline', 'growdiff_response'])
 
     @staticmethod
-    def read_json_policy_reform_text(text_string):
+    def _read_json_policy_reform_text(text_string, arrays_not_lists):
         """
         Strip //-comments from text_string and return 1 dict based on the JSON.
+
         Specified text is JSON with at least 1 high-level string:object pair:
-          a "policy": {...} pair.
-          Other high-level pairs will be ignored by this method, except
-          that a "consumption", "behavior", "growdiff_baseline" or
-          "growdiff_response" key will raise a ValueError.
-          The {...}  object may be empty (that is, be {}), or
-          may contain one or more pairs with parameter string primary keys
-          and string years as secondary keys.  See tests/test_calculate.py for
-          an extended example of a commented JSON policy reform text
-          that can be read by this method.
-        Note that parameter code in the policy object is enclosed inside a
-          pair of double pipe characters (||) as shown in the REFORM_CONTENTS
-          string in the tests/test_calculate.py file.
-        Returned dictionary rpol_dict
-           has integer years as primary keys
-           and string parameters as secondary keys.
-        The returned dictionary is suitable as the argument to
-           the Policy implement_reform(rpol_dict) method.
+        a "policy": {...} pair.
+
+        Other high-level pairs will be ignored by this method, except
+        that a "consumption", "behavior", "growdiff_baseline" or
+        "growdiff_response" key will raise a ValueError.
+
+        The {...}  object may be empty (that is, be {}), or
+        may contain one or more pairs with parameter string primary keys
+        and string years as secondary keys.  See tests/test_calculate.py for
+        an extended example of a commented JSON policy reform text
+        that can be read by this method.
+
+        Returned dictionary rpol_dict has integer years as primary keys and
+        string parameters as secondary keys.  This returned dictionary is
+        suitable as the argument to the Policy implement_reform(rpol_dict)
+        method ONLY if the function argument arrays_not_lists is True.
         """
         # strip out //-comments without changing line numbers
         json_str = re.sub('//.*', ' ', text_string)
@@ -515,38 +524,44 @@ class Calculator(object):
                 msg = 'key "{}" should be in economic assumption file'
                 raise ValueError(msg.format(rkey))
         # convert the policy dictionary in raw_dict
-        rpol_dict = Calculator.convert_parameter_dict(raw_dict['policy'])
+        rpol_dict = Calculator._convert_parameter_dict(raw_dict['policy'],
+                                                       arrays_not_lists)
         return rpol_dict
 
     @staticmethod
-    def read_json_econ_assump_text(text_string):
+    def _read_json_econ_assump_text(text_string, arrays_not_lists):
         """
         Strip //-comments from text_string and return 4 dict based on the JSON.
+
         Specified text is JSON with at least 4 high-level string:object pairs:
-          a "consumption": {...} pair,
-          a "behavior": {...} pair,
-          a "growdiff_baseline": {...} pair, and
-          a "growdiff_response": {...} pair.
-          Other high-level pairs will be ignored by this method, except that
-          a "policy" key will raise a ValueError.
-          The {...}  object may be empty (that is, be {}), or
-          may contain one or more pairs with parameter string primary keys
-          and string years as secondary keys.  See tests/test_calculate.py for
-          an extended example of a commented JSON economic assumption text
-          that can be read by this method.
+        a "consumption": {...} pair,
+        a "behavior": {...} pair,
+        a "growdiff_baseline": {...} pair, and
+        a "growdiff_response": {...} pair.
+
+        Other high-level pairs will be ignored by this method, except that
+        a "policy" key will raise a ValueError.
+
+        The {...}  object may be empty (that is, be {}), or
+        may contain one or more pairs with parameter string primary keys
+        and string years as secondary keys.  See tests/test_calculate.py for
+        an extended example of a commented JSON economic assumption text
+        that can be read by this method.
+
         Note that an example is shown in the ASSUMP_CONTENTS string in
           tests/test_calculate.py file.
-        Returned dictionaries (cons_dict,
-                               behv_dict,
-                               gdiff_baseline_dict,
-                               gdiff_respose_dict)
-           have integer years as primary keys
-           and string parameters as secondary keys.
-        The returned dictionaries are suitable as the arguments to
-           the Consumption.update_consumption(cons_dict) method, or
-           the Behavior.update_behavior(behv_dict) method, or
-           the Growdiff.update_growdiff(gdiff_dict) method.
+
+        Returned dictionaries (cons_dict, behv_dict, gdiff_baseline_dict,
+        gdiff_respose_dict) have integer years as primary keys and
+        string parameters as secondary keys.
+
+        These returned dictionaries are suitable as the arguments to
+        the Consumption.update_consumption(cons_dict) method, or
+        the Behavior.update_behavior(behv_dict) method, or
+        the Growdiff.update_growdiff(gdiff_dict) method,
+        but ONLY if the function argument arrays_not_lists is True.
         """
+        # pylint: disable=too-many-locals
         # strip out //-comments without changing line numbers
         json_str = re.sub('//.*', ' ', text_string)
         # convert JSON text into a Python dictionary
@@ -578,30 +593,38 @@ class Calculator(object):
                 raise ValueError(msg.format(rkey))
         # convert the assumption dictionaries in raw_dict
         key = 'consumption'
-        cons_dict = Calculator.convert_parameter_dict(raw_dict[key])
+        cons_dict = Calculator._convert_parameter_dict(raw_dict[key],
+                                                       arrays_not_lists)
         key = 'behavior'
-        behv_dict = Calculator.convert_parameter_dict(raw_dict[key])
+        behv_dict = Calculator._convert_parameter_dict(raw_dict[key],
+                                                       arrays_not_lists)
         key = 'growdiff_baseline'
-        gdiff_base_dict = Calculator.convert_parameter_dict(raw_dict[key])
+        gdiff_base_dict = Calculator._convert_parameter_dict(raw_dict[key],
+                                                             arrays_not_lists)
         key = 'growdiff_response'
-        gdiff_resp_dict = Calculator.convert_parameter_dict(raw_dict[key])
+        gdiff_resp_dict = Calculator._convert_parameter_dict(raw_dict[key],
+                                                             arrays_not_lists)
         return (cons_dict, behv_dict, gdiff_base_dict, gdiff_resp_dict)
 
     @staticmethod
-    def convert_parameter_dict(param_key_dict):
+    def _convert_parameter_dict(param_key_dict, arrays_not_lists):
         """
         Converts specified param_key_dict into a dictionary whose primary
-          keys are calendary years, and hence, is suitable as the argument to
-          the Policy.implement_reform() method, or
-          the Consumption.update_consumption() method, or
-          the Behavior.update_behavior() method, or
-          the Growdiff.update_growdiff() method.
+        keys are calendary years, and hence, is suitable as the argument to
+        the Policy.implement_reform() method, or
+        the Consumption.update_consumption() method, or
+        the Behavior.update_behavior() method, or
+        the Growdiff.update_growdiff() method,
+        but only if function argument is arrays_not_lists=True.
+
         Specified input dictionary has string parameter primary keys and
-           string years as secondary keys.
+        string years as secondary keys.
+
         Returned dictionary has integer years as primary keys and
-           string parameters as secondary keys.
+        string parameters as secondary keys.
         """
-        # convert year skey strings to integers and lists into np.arrays
+        # convert year skey strings into integers and
+        # optionally convert lists into np.arrays
         year_param = dict()
         for pkey, sdict in param_key_dict.items():
             if not isinstance(pkey, six.string_types):
@@ -617,8 +640,10 @@ class Calculator(object):
                     raise ValueError(msg.format(skey))
                 else:
                     year = int(skey)
-                rdict[year] = (np.array(val)
-                               if isinstance(val, list) else val)
+                if isinstance(val, list) and arrays_not_lists:
+                    rdict[year] = np.array(val)
+                else:
+                    rdict[year] = val
             year_param[pkey] = rdict
         # convert year_param dictionary to year_key_dict dictionary
         year_key_dict = dict()

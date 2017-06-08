@@ -5,7 +5,7 @@ Tests of Tax-Calculator utility functions.
 # pep8 --ignore=E402 test_utils.py
 # pylint --disable=locally-disabled test_utils.py
 #
-# pylint: disable=missing-docstring
+# pylint: disable=missing-docstring,no-member,protected-access
 
 import os
 import math
@@ -17,7 +17,7 @@ import pandas as pd
 from pandas.util.testing import assert_series_equal
 import pytest
 # pylint: disable=import-error
-from taxcalc import Policy, Records, Behavior, Calculator
+from taxcalc import Policy, Records, Behavior, Calculator, ParametersBase
 from taxcalc.utils import (TABLE_COLUMNS, TABLE_LABELS, STATS_COLUMNS,
                            create_distribution_table, add_columns,
                            create_difference_table, delete_file,
@@ -65,27 +65,25 @@ def test_expand_1d_short_array():
     exp = np.zeros(10)
     exp[:3] = exp1
     exp[3:] = exp2
-    res = Policy.expand_1D(ary, inflate=True, inflation_rates=[0.02] * 10,
-                           num_years=10)
+    res = ParametersBase._expand_1D(ary, inflate=True,
+                                    inflation_rates=[0.02] * 10, num_years=10)
     assert np.allclose(exp, res, atol=0.0, rtol=1.0E-7)
 
 
 def test_expand_1d_variable_rates():
     irates = [0.02, 0.02, 0.03, 0.035]
     ary = np.array([4, 5, 9], dtype='f4')
-    res = Policy.expand_1D(ary, inflate=True, inflation_rates=irates,
-                           num_years=5)
+    res = ParametersBase._expand_1D(ary, inflate=True,
+                                    inflation_rates=irates, num_years=5)
     exp = np.array([4, 5, 9, 9 * 1.03, 9 * 1.03 * 1.035])
-    # pylint: disable=no-member
-    # (above because pylint mistakenly thinks exp is not a numpy array)
     assert np.allclose(exp.astype('f4', casting='unsafe'), res)
 
 
 def test_expand_1d_scalar():
     val = 10.0
     exp = np.array([val * math.pow(1.02, i) for i in range(0, 10)])
-    res = Policy.expand_1D(val, inflate=True, inflation_rates=[0.02] * 10,
-                           num_years=10)
+    res = ParametersBase._expand_1D(val, inflate=True,
+                                    inflation_rates=[0.02] * 10, num_years=10)
     assert np.allclose(exp, res)
 
 
@@ -100,15 +98,12 @@ def test_expand_1d_accept_none():
     cur *= 1.035
     exp.append(cur)
     exp = np.array(exp)
-    res = Policy.expand_array(lst, inflate=True, inflation_rates=irates,
-                              num_years=5)
-    # pylint: disable=no-member
-    # (above because pylint mistakenly thinks exp is not a numpy array)
+    res = ParametersBase._expand_array(lst, inflate=True,
+                                       inflation_rates=irates, num_years=5)
     assert np.allclose(exp.astype('f4', casting='unsafe'), res)
 
 
 def test_expand_2d_short_array():
-    # does not recognize np.float64 as datatype, so pylint: disable=no-member
     ary = np.array([[1, 2, 3]], dtype=np.float64)
     val = np.array([1, 2, 3], dtype=np.float64)
     exp2 = np.array([val * math.pow(1.02, i) for i in range(1, 5)])
@@ -116,13 +111,12 @@ def test_expand_2d_short_array():
     exp = np.zeros((5, 3))
     exp[:1] = exp1
     exp[1:] = exp2
-    res = Policy.expand_2D(ary, inflate=True, inflation_rates=[0.02] * 5,
-                           num_years=5)
+    res = ParametersBase._expand_2D(ary, inflate=True,
+                                    inflation_rates=[0.02] * 5, num_years=5)
     assert np.allclose(exp, res)
 
 
 def test_expand_2d_variable_rates():
-    # does not recognize np.float64 as datatype, so pylint: disable=no-member
     ary = np.array([[1, 2, 3]], dtype=np.float64)
     cur = np.array([1, 2, 3], dtype=np.float64)
     irates = [0.02, 0.02, 0.02, 0.03, 0.035]
@@ -136,8 +130,8 @@ def test_expand_2d_variable_rates():
     exp = np.zeros((5, 3), dtype=np.float64)
     exp[:1] = exp1
     exp[1:] = exp2
-    res = Policy.expand_2D(ary, inflate=True, inflation_rates=irates,
-                           num_years=5)
+    res = ParametersBase._expand_2D(ary, inflate=True,
+                                    inflation_rates=irates, num_years=5)
     assert np.allclose(exp, res)
 
 
@@ -479,8 +473,8 @@ def test_expand_2d_already_filled():
     _II_brk2 = [[36000, 72250, 36500, 48600, 72500, 36250],
                 [38000, 74000, 36900, 49400, 73800, 36900],
                 [40000, 74900, 37450, 50200, 74900, 37450]]
-    res = Policy.expand_2D(_II_brk2, inflate=True, inflation_rates=[0.02] * 5,
-                           num_years=3)
+    res = ParametersBase._expand_2D(_II_brk2, inflate=True,
+                                    inflation_rates=[0.02] * 5, num_years=3)
     assert_equal(res, np.array(_II_brk2))
 
 
@@ -503,18 +497,18 @@ def test_expand_2d_partial_expand():
            [38000, 74000, 36900, 49400, 73800, 36900],
            [40000, 74900, 37450, 50200, 74900, 37450],
            [exp1, exp2, exp3, exp4, exp5, exp6]]
-    res = Policy.expand_2D(_II_brk2, inflate=True, inflation_rates=inf_rates,
-                           num_years=4)
+    res = ParametersBase._expand_2D(_II_brk2, inflate=True,
+                                    inflation_rates=inf_rates, num_years=4)
     assert_equal(res, exp)
 
 
 def test_strip_nones():
     lst = [None, None]
-    assert Policy.strip_Nones(lst) == []
+    assert Policy._strip_nones(lst) == []
     lst = [1, 2, None]
-    assert Policy.strip_Nones(lst) == [1, 2]
+    assert Policy._strip_nones(lst) == [1, 2]
     lst = [[1, 2, 3], [4, None, None]]
-    assert Policy.strip_Nones(lst) == [[1, 2, 3], [4, -1, -1]]
+    assert Policy._strip_nones(lst) == [[1, 2, 3], [4, -1, -1]]
 
 
 def test_expand_2d_accept_none():
@@ -531,12 +525,9 @@ def test_expand_2d_accept_none():
            [38000, 74000, 36900, 49400, 73800],
            [40000, 74900, 37450, 50200, 74900],
            [41000, exp1, exp2, exp3, exp4]]
-    # pylint: disable=no-member
-    # (above because pylint mistakenly thinks exp is not a numpy array)
     exp = np.array(exp).astype('i4', casting='unsafe')
-    res = Policy.expand_array(_II_brk2, inflate=True,
-                              inflation_rates=[0.02] * 5,
-                              num_years=4)
+    res = ParametersBase._expand_array(_II_brk2, inflate=True,
+                                       inflation_rates=[0.02] * 5, num_years=4)
     assert_equal(res, exp)
 
     syr = 2013
@@ -576,8 +567,9 @@ def test_expand_2d_accept_none_add_row():
            [41000, exx[1], exx[2], exx[3], exx[4]],
            [43000, exx[6], exx[7], exx[8], exx[9]]]
     inflation_rates = [0.015, 0.02, 0.02, 0.03]
-    res = Policy.expand_array(_II_brk2, inflate=True,
-                              inflation_rates=inflation_rates, num_years=5)
+    res = ParametersBase._expand_array(_II_brk2, inflate=True,
+                                       inflation_rates=inflation_rates,
+                                       num_years=5)
     assert_equal(res, exp)
     user_mods = {2016: {'_II_brk2': _II_brk2}}
     syr = 2013

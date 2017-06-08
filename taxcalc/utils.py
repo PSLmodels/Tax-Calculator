@@ -190,11 +190,16 @@ def add_weighted_income_bins(pdf, num_bins=10, labels=None,
     if weight_by_income_measure:
         pdf['cumsum_temp'] = np.cumsum(np.multiply(pdf[income_measure].values,
                                                    pdf['s006'].values))
+        min_cumsum = pdf['cumsum_temp'].values[0]
     else:
         pdf['cumsum_temp'] = np.cumsum(pdf['s006'].values)
+        min_cumsum = 0.  # because s006 values are non-negative
     max_cumsum = pdf['cumsum_temp'].values[-1]
-    bin_edges = [0] + list(np.arange(1, (num_bins + 1)) *
-                           (max_cumsum / float(num_bins)))
+    cumsum_range = max_cumsum - min_cumsum
+    bin_width = cumsum_range / float(num_bins)
+    bin_edges = list(min_cumsum + np.arange(0, (num_bins + 1)) * bin_width)
+    bin_edges[-1] = 9e99  # raise top of last bin to include all observations
+    bin_edges[0] = -9e99  # lower bottom of 1st bin to include all observations
     if not labels:
         labels = range(1, (num_bins + 1))
     pdf['bins'] = pd.cut(pdf['cumsum_temp'], bins=bin_edges, labels=labels)
@@ -720,8 +725,7 @@ def mtr_graph_data(calc1, calc2,
                    mtr_wrt_full_compen=False,
                    income_measure='expanded_income',
                    dollar_weighting=False):
-    """
-    Prepare marginal tax rate data needed by xtr_graph_plot utility function.
+    """Prepare marginal tax rate data needed by xtr_graph_plot utility function.
 
     Parameters
     ----------
@@ -730,20 +734,26 @@ def mtr_graph_data(calc1, calc2,
     calc2 : a Calculator object that refers to reform policy
 
     mars : integer or string
-        options:
-            'ALL': include all filing units in sample;
-            1: include only single filing units;
-            2: include only married-filing-jointly filing units;
-            3: include only married-filing-separately filing units; and
-            4: include only head-of-household filing units.
         specifies which filing status subgroup to show in the graph
 
+        - 'ALL': include all filing units in sample
+
+        - 1: include only single filing units
+
+        - 2: include only married-filing-jointly filing units
+
+        - 3: include only married-filing-separately filing units
+
+        - 4: include only head-of-household filing units
+
     mtr_measure : string
-        options:
-            'itax': marginal individual income tax rate;
-            'ptax': marginal payroll tax rate; and
-            'combined': sum of marginal income and payroll tax rates.
         specifies which marginal tax rate to show on graph's y axis
+
+        - 'itax': marginal individual income tax rate
+
+        - 'ptax': marginal payroll tax rate
+
+        - 'combined': sum of marginal income and payroll tax rates
 
     mtr_variable : string
         any string in the Calculator.VALID_MTR_VARS set
@@ -758,13 +768,15 @@ def mtr_graph_data(calc1, calc2,
         (value has an effect only if mtr_variable is 'e00200p')
 
     income_measure : string
-        options:
-            'wages': wage and salary income (e00200);
-            'agi': adjusted gross income, AGI (c00100); and
-            'expanded_income': sum of AGI, non-taxable interest income,
-                               non-taxable social security benefits, and
-                               employer share of FICA taxes.
         specifies which income variable to show on the graph's x axis
+
+        - 'wages': wage and salary income (e00200)
+
+        - 'agi': adjusted gross income, AGI (c00100)
+
+        - 'expanded_income': sum of AGI, non-taxable interest income,
+          non-taxable social security benefits, and employer share of
+          FICA taxes.
 
     dollar_weighting : boolean
         False implies both income_measure percentiles on x axis and
@@ -779,6 +791,7 @@ def mtr_graph_data(calc1, calc2,
     Returns
     -------
     dictionary object suitable for passing to xtr_graph_plot utility function
+
     """
     # pylint: disable=too-many-arguments,too-many-statements,
     # pylint: disable=too-many-locals,too-many-branches
@@ -916,20 +929,26 @@ def atr_graph_data(calc1, calc2,
     calc2 : a Calculator object that refers to reform policy
 
     mars : integer or string
-        options:
-            'ALL': include all filing units in sample;
-            1: include only single filing units;
-            2: include only married-filing-jointly filing units;
-            3: include only married-filing-separately filing units; and
-            4: include only head-of-household filing units.
         specifies which filing status subgroup to show in the graph
 
+        - 'ALL': include all filing units in sample
+
+        - 1: include only single filing units
+
+        - 2: include only married-filing-jointly filing units
+
+        - 3: include only married-filing-separately filing units
+
+        - 4: include only head-of-household filing units
+
     atr_measure : string
-        options:
-            'itax': average individual income tax rate;
-            'ptax': average payroll tax rate; and
-            'combined': sum of average income and payroll tax rates.
         specifies which average tax rate to show on graph's y axis
+
+        - 'itax': average individual income tax rate
+
+        - 'ptax': average payroll tax rate
+
+        - 'combined': sum of average income and payroll tax rates
 
     min_avginc : float
         specifies the minimum average expanded income for a percentile to

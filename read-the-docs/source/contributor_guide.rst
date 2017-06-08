@@ -49,9 +49,7 @@ Setup Git
 
 6. Create a local repo by entering at the command line the text after
    the $. [1]_ This step creates a directory called tax-calculator in
-   the directory that you specified in the prior step.
-
-   .. code-block:: python
+   the directory that you specified in the prior step::
 
       $ git clone https://github.com/[github-username]/tax-calculator.git
 
@@ -59,32 +57,24 @@ Setup Git
    tax-calculator directory.
 
 8. Make it easier to `push`_ your local work to others and `pull`_
-   others' work to your local machine by entering at the command line:
-
-   .. code-block:: python
+   others' work to your local machine by entering at the command line::
 
       $ cd tax-calculator
       tax-calculator$ git remote add upstream https://github.com/open-source-economics/tax-calculator.git
 
 9. Create a conda environment with all of the necessary packages to
-   execute the source code:
-
-   .. code-block:: python
+   execute the source code::
 
       tax-calculator$ conda env create
 
 10. The prior command will create a conda environment called "taxcalc-dev".
-    Activate this environment as follows:
+    Activate this environment as follows::
 
-    .. code-block:: python
+      tax-calculator$ source activate taxcalc-dev
 
-       tax-calculator$ source activate taxcalc-dev
-
-    If you are working on Windows, use the following from the command line:
-
-    .. code-block:: python
+    If you are working on Windows, use the following from the command line::
    
-       tax-calculator$ activate taxcalc-dev
+      tax-calculator$ activate taxcalc-dev
 
     Note: never conda install the taxcalc package in the taxcalc-dev
     environment because the taxcalc source code and the installed package
@@ -92,24 +82,23 @@ Setup Git
    
 11. To check that everything is working properly, run the following at
     the command line from the tax-calculator directory, but skip the
-    validation tests if you are working on Windows.  For more detail on
-    Tax-Calculator testing procedures, read the `testing documentation`_.
-
-   .. code-block:: python
+    validation tests if you are working on Windows::
 
       tax-calculator$ cd taxcalc
       tax-calculator/taxcalc$ py.test -m "not requires_pufcsv"
       tax-calculator/taxcalc$ cd validation
       tax-calculator/taxcalc/validation$ ./tests
 
-   If all the tests pass, you're good to go. If they don't pass, enter
-   the following updates at the command line and then try running the
-   tests again. If the tests still don't pass, please contact us.
-
-   .. code-block:: python
-
+    If all the tests pass, you're good to go. If they don't pass, enter
+    the following updates at the command line and then try running the
+    tests again::
+ 
       tax-calculator$ conda update conda
       tax-calculator$ conda env update
+
+    For more detail on Tax-Calculator testing procedures, read the
+    `testing documentation`_.  If the tests still don't pass, please
+    contact us.
 
 If you've made it this far, you've successfully made a remote copy (a
 fork) of central Tax-Calculator repo. That remote repo is hosted on
@@ -140,35 +129,27 @@ situations, in which case other contributors are here to help.
 
    a. Download all of the content from the central Tax-Calculator repo.
       Navigate to your local tax-calculator directory and enter the
-      following text at the command line.
+      following text at the command line::
 
-      .. code-block:: python
+        tax-calculator$ git fetch upstream
 
-         tax-calculator$ git fetch upstream
+   b. Tell Git to switch to the master branch in your local repo::
 
-   b. Tell Git to switch to the master branch in your local repo.
-
-      .. code-block:: python
-
-         tax-calculator$ git checkout master
+        tax-calculator$ git checkout master
 
    c. Update your local master branch to contain the latest content of
       the central master branch using `merge`_. This step ensures that
-      you are working with the latest version of the Tax-Calculator.
+      you are working with the latest version of the Tax-Calculator::
 
-      .. code-block:: python
-
-         tax-calculator$ git merge upstream/master
+        tax-calculator$ git merge upstream/master
 
 2. Create a new `branch`_ on your local machine. Think of your
    branches as a way to organize your projects. If you want to work on
    this documentation, for example, create a separate branch for that
    work. If you want to change the maximum child care tax credit in
-   the Tax-Calculator, create a different branch for that project.
+   the Tax-Calculator, create a different branch for that project::
 
-   .. code-block:: python
-
-      tax-calculator$ git checkout -b [new-branch-name]
+     tax-calculator$ git checkout -b [new-branch-name]
 
 3. See :doc:`Making changes to your local copy of the Tax-Calculator
    </make_local_change>` for examples showing you how to do just that.
@@ -177,16 +158,15 @@ situations, in which case other contributors are here to help.
    introduce bugs or degrade the accuracy of the Tax-Calculator. To do
    this, run the following commands from the command line from inside
    the tax-calculator/taxcalc directory (but skip the validation tests
-   if you are working on Windows). If the tests do not pass, try to
-   fix the issue by using the information provided by the error
-   message. If this isn't possible or doesn't work, we are here to
-   help.
+   if you are working on Windows)::
 
-   .. code-block:: python
+     tax-calculator/taxcalc$ py.test -m "not requires_pufcsv"
+     tax-calculator/taxcalc$ cd validation
+     tax-calculator/taxcalc/validation$ ./tests
 
-      tax-calculator/taxcalc$ py.test -m "not requires_pufcsv"
-      tax-calculator/taxcalc$ cd validation
-      tax-calculator/taxcalc/validation$ ./tests
+   If the tests do not pass, try to fix the issue by using the
+   information provided by the error message. If this isn't possible
+   or doesn't work, we are here to help.
 
 5. Now you're ready to `commit`_ your changes to your local repo using
    the code below. The first line of code tells Git to track a
@@ -200,35 +180,29 @@ situations, in which case other contributors are here to help.
 
    *Tip*: Committing often is a good idea as Git keeps a record of
    your changes. This means that you can always revert to a previous
-   version of your work if you need to.
+   version of your work if you need to.  Do this to commit::
 
-   .. code-block:: python
-
-      tax-calculator$ git add [filename]
-      tax-calculator$ git commit -m "[description-of-your-commit]"
+     tax-calculator$ git add [filename]
+     tax-calculator$ git commit -m "[description-of-your-commit]"
 
 6. Periodically, make sure that the branch you created in step 2
    is in sync with the changes other contributors are making to 
    the central master branch by fetching upstream and merging
-   upstream/master into your branch. 
+   upstream/master into your branch::
 
-   .. code-block:: python
+      tax-calculator$ git fetch upstream
+      tax-calculator$ git merge upstream/master
 
-       tax-calculator$ git fetch upstream
-       tax-calculator$ git merge upstream/master
-
-    You may need to resolve conflicts that arise when another
-    contributor changed the same section of code that you are 
-    changing. Feel free to ask other contributors for guidance 
-    if this happens to you. If you do need to fix a merge
-    conflict, re-run the test suite afterwards (step 4.)
+   You may need to resolve conflicts that arise when another
+   contributor changed the same section of code that you are 
+   changing. Feel free to ask other contributors for guidance 
+   if this happens to you. If you do need to fix a merge
+   conflict, re-run the test suite afterwards (step 4.)
 
 7. When you are ready for other team members to review your code, make
-   your final commit and push your local branch to your remote repo.
+   your final commit and push your local branch to your remote repo::
 
-   .. code-block:: python
-
-      tax-calculator$ git push origin [new-branch-name]
+     tax-calculator$ git push origin [new-branch-name]
 
 8. From the GitHub.com user interface, `open a pull request`_.  
 

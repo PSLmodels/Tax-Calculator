@@ -1,5 +1,5 @@
-Making changes to your local copy of the Tax-Calculator
-=======================================================
+Making changes to your local copy of Tax-Calculator
+===================================================
 
 This document provides examples of two different kinds of changes to
 your local copy of the Tax-Calculator.  The first example illustrates

@@ -1,5 +1,5 @@
 """
-Utility functions used by functions in dropq.py file.
+Private utility functions used only by public functions in the dropq.py file.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 dropq_utils.py
@@ -13,7 +13,7 @@ from taxcalc import (Policy, Records, Calculator,
 from taxcalc.utils import (add_income_bins, add_weighted_income_bins,
                            means_and_comparisons, get_sums,
                            weighted, weighted_avg_allcols,
-                           create_distribution_table,
+                           create_distribution_table, results,
                            STATS_COLUMNS, TABLE_COLUMNS, WEBAPP_INCOME_BINS)
 
 
@@ -36,16 +36,6 @@ def check_user_mods(user_mods):
     extra_keys = actual_keys - expected_keys
     if len(extra_keys) > 0:
         raise ValueError('user_mods has extra keys: {}'.format(extra_keys))
-
-
-def results(calc):
-    """
-    Return DataFrame containing results for STATS_COLUMNS Records variables.
-    """
-    outputs = []
-    for col in STATS_COLUMNS:
-        outputs.append(getattr(calc.records, col))
-    return pd.DataFrame(data=np.column_stack(outputs), columns=STATS_COLUMNS)
 
 
 def dropq_calculate(year_n, start_year,
@@ -102,6 +92,7 @@ def dropq_calculate(year_n, start_year,
                          gfactors=growfactors_pre)
         # add one dollar to total wages and salaries of each filing unit
         recs1p.e00200 += 1.0  # pylint: disable=no-member
+        recs1p.e00200p += 1.0  # pylint: disable=no-member
         policy1p = Policy(gfactors=growfactors_pre)
         # create Calculator with recs1p and calculate for start_year
         calc1p = Calculator(policy=policy1p, records=recs1p,
@@ -111,8 +102,8 @@ def dropq_calculate(year_n, start_year,
         calc1p.calc_all()
         assert calc1p.current_year == start_year
         # compute mask that shows which of the calc1 and calc1p results differ
-        res1 = results(calc1)
-        res1p = results(calc1p)
+        res1 = results(calc1.records)
+        res1p = results(calc1p.records)
         mask = (res1.iitax != res1p.iitax)
     else:
         mask = None
@@ -220,19 +211,35 @@ def chooser(agg):
 
 def drop_records(df1, df2, mask):
     """
-    Modify DataFrame df1 and DataFrame df2 by adding statistical 'fuzz'.
-      df1 contains results for the standard plan X and X'
-      df2 contains results for the user-specified plan (Plan Y)
-      mask is the boolean mask where X and X' match
+    Modify df1 and df2 by adding statistical fuzz for data privacy.
+
+    Parameters
+    ----------
+    df1: Pandas DataFrame
+        contains results for the standard plan X and X'.
+
+    df2: Pandas DataFrame
+        contains results for the user-specified plan (Plan Y).
+
+    mask: boolean numpy array
+        contains info about whether or not each element of X and X' are same
+
+    Returns
+    -------
+    fuzzed_df1: Pandas DataFrame
+
+    fuzzed_df2: Pandas DataFrame
+
+    Notes
+    -----
     This function groups both DataFrames based on the web application's
     income groupings (both weighted decile and income bins), and then
     pseudo-randomly picks three records to 'drop' within each bin.
     We keep track of the three dropped records in both group-by
     strategies and then use these 'flag' columns to modify all
-    columns of interest, creating new '*_dec' columns for later
-    statistics based on weighted deciles and '*_bin' columns
-    for statitistics based on grouping by income bins.
-    in each bin in two group-by actions. Lastly we calculate
+    columns of interest, creating new '_dec' columns for
+    statistics based on weighted deciles and '_bin' columns for
+    statitistics based on income bins.  Lastly we calculate
     individual income tax differences, payroll tax differences, and
     combined tax differences between the baseline and reform
     for the two groupings.

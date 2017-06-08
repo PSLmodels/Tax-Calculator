@@ -38,11 +38,12 @@ def test_instantiation_and_usage():
         pbase._update({(syr + nyrs): {}})
     with pytest.raises(ValueError):
         pbase._update({syr: []})
+    # pylint: disable=no-member
     with pytest.raises(ValueError):
-        ParametersBase.expand_array({}, True, [0.02], 1)
+        ParametersBase._expand_array({}, True, [0.02], 1)
     threedarray = np.array([[[1, 1]], [[1, 1]], [[1, 1]]])
     with pytest.raises(ValueError):
-        ParametersBase.expand_array(threedarray, True, [0.02, 0.02], 2)
+        ParametersBase._expand_array(threedarray, True, [0.02, 0.02], 2)
 
 
 @pytest.mark.parametrize("fname",
