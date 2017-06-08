@@ -249,7 +249,7 @@ class Calculator(object):
     @property
     def current_year(self):
         """
-        Return current_year of the embedded Policy object.
+        Calculator class current calendar year property.
         """
         return self.policy.current_year
 

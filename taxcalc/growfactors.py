@@ -81,20 +81,20 @@ class Growfactors(object):
     @property
     def first_year(self):
         """
-        Growfactors class start_year property
+        Growfactors class start_year property.
         """
         return self._first_year
 
     @property
     def last_year(self):
         """
-        Growfactors class last_year property
+        Growfactors class last_year property.
         """
         return self._last_year
 
     def price_inflation_rates(self, firstyear, lastyear):
         """
-        Return list of price inflation rates rounded to four decimal digits
+        Return list of price inflation rates rounded to four decimal digits.
         """
         self.used = True
         if firstyear > lastyear:
@@ -113,7 +113,7 @@ class Growfactors(object):
 
     def wage_growth_rates(self, firstyear, lastyear):
         """
-        Return list of wage growth rates rounded to four decimal digits
+        Return list of wage growth rates rounded to four decimal digits.
         """
         self.used = True
         if firstyear > lastyear:
@@ -132,7 +132,7 @@ class Growfactors(object):
 
     def factor_value(self, name, year):
         """
-        Return value of factor with specified name for specified year
+        Return value of factor with specified name for specified year.
         """
         self.used = True
         if name not in Growfactors.VALID_NAMES:
@@ -148,7 +148,7 @@ class Growfactors(object):
 
     def update(self, name, year, diff):
         """
-        Add to self.gfdf[name][year] the specified diff amount
+        Add to self.gfdf[name][year] the specified diff amount.
         """
         if self.used:
             msg = 'cannot update growfactors after they have been used'
