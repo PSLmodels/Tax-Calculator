@@ -30,6 +30,7 @@ Release 0.8.5 on 2017-06-??
   [[#1385](https://github.com/open-source-economics/Tax-Calculator/pull/1385)
   by Hank Doupe]
 
+
 **Bug Fixes**
 - Fix bug in add_weighted_income_bins utility function
   [#1387](https://github.com/open-source-economics/Tax-Calculator/pull/1387)
