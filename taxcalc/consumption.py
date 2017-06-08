@@ -12,6 +12,9 @@ from taxcalc.records import Records
 
 class Consumption(ParametersBase):
     """
+    Consumption is a subclass of the abstract ParametersBase class, and
+    therefore, inherits its methods (none of which are shown here).
+
     Constructor for marginal Consumption class.
 
     Parameters

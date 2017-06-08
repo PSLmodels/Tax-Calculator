@@ -12,6 +12,9 @@ from taxcalc.parameters import ParametersBase
 
 class Growdiff(ParametersBase):
     """
+    Growdiff is a subclass of the abstract ParametersBase class, and
+    therefore, inherits its methods (none of which are shown here).
+
     Constructor for growth difference class.
 
     Parameters

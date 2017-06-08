@@ -22,7 +22,7 @@ Contents
    contributor_guide.rst
    make_local_change.rst
    parameter_naming.rst
-   code.rst
+   public_api.rst
    data.rst
    disclaimer.rst
    license.rst
