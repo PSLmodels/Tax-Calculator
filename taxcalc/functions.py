@@ -439,9 +439,9 @@ def ItemDed(e17500, e18400, e18500,
     c17000 = min(c17000, ID_Medical_c[MARS - 1])
     # State and local taxes
     c18400 = min((1. - ID_StateLocalTax_hc) * max(e18400, 0.),
-                 ID_StateLocalTax_c[MARS-1])
+                 ID_StateLocalTax_c[MARS - 1])
     c18500 = min((1. - ID_RealEstate_hc) * e18500,
-                 ID_RealEstate_c[MARS-1])
+                 ID_RealEstate_c[MARS - 1])
     c18300 = c18400 + c18500
     # Interest paid
     c19200 = e19200 * (1. - ID_InterestPaid_hc)
