@@ -19,9 +19,13 @@ Release 0.8.5 on 2017-06-??
   by Anderson Frailey]
 - Add policy reform file for the Renacci reform
   [[#1376](https://github.com/open-source-economics/Tax-Calculator/pull/1376)
-  and
-  [#1383](https://github.com/open-source-economics/Tax-Calculator/pull/1383)
-  by Hank Doupe]
+  ,[#1383](https://github.com/open-source-economics/Tax-Calculator/pull/1383)
+  , and
+  [#1407](https://github.com/open-source-economics/Tax-Calculator/pull/1407)
+  by Hank Doupe
+- Add separate ceiling for each itemized deduction parameter
+  [#1407](https://github.com/open-source-economics/Tax-Calculator/pull/1407)
+  by Hank Doupe
 
 **Bug Fixes**
 - Fix bug in add_weighted_income_bins utility function
@@ -463,7 +467,7 @@ Release 0.6.6 on 2016-08-13
 **API Changes**
 - None
 
-**New Features** 
+**New Features**
 - Revise code to use smaller puf.csv input file and make changes to
   create that input file
 - Remove debugging variables from functions.py reducing execution time
@@ -538,7 +542,7 @@ Release 0.6.3 on 2016-05-09
 - Update files in taxcalc/comparison
 
 **Bug Fixes**
-- Fix Child Care Expense logic 
+- Fix Child Care Expense logic
 - Exclude dependents from EITC eligibility
 
 
@@ -546,4 +550,3 @@ Release 0.6.2 and before
 ------------------------
 See commit history for pull requests before
 [#650](https://github.com/open-source-economics/Tax-Calculator/pull/650)
-
