@@ -1407,7 +1407,7 @@ def ComputeBenefit(calc, ID_switch):
         no_ID_calc.policy.ID_InterestPaid_hc = 1.
     if ID_switch[6]:
         no_ID_calc.policy.ID_Charity_hc = 1.
-    no_ID_calc.calc_one_year()
+    no_ID_calc._calc_one_year()  # pylint: disable=protected-access
     benefit = np.where(
         no_ID_calc.records.iitax - calc.records.iitax > 0.,
         no_ID_calc.records.iitax - calc.records.iitax, 0.)
