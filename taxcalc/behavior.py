@@ -13,6 +13,9 @@ from taxcalc.parameters import ParametersBase
 
 class Behavior(ParametersBase):
     """
+    Behavior is a subclass of the abstract ParametersBase class, and
+    therefore, inherits its methods (none of which are shown here).
+
     Constructor for elasticity-based behavioral-response class.
 
     Parameters
