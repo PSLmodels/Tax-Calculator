@@ -56,9 +56,6 @@ class Policy(ParametersBase):
                  parameter_dict=None,
                  start_year=JSON_START_YEAR,
                  num_years=DEFAULT_NUM_YEARS):
-        """
-        Policy class constructor.
-        """
         super(Policy, self).__init__()
 
         if not isinstance(gfactors, Growfactors):

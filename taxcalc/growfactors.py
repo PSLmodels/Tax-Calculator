@@ -47,9 +47,6 @@ class Growfactors(object):
                        'ASOCSEC', 'ATXPY', 'AUCOMP', 'AWAGE'])
 
     def __init__(self, growfactors_filename=FILE_PATH):
-        """
-        Growfactors class constructor
-        """
         # read grow factors from specified growfactors_filename
         gfdf = pd.DataFrame()
         if isinstance(growfactors_filename, six.string_types):

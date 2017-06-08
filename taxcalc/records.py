@@ -111,9 +111,6 @@ class Records(object):
                  weights=WEIGHTS_PATH,
                  adjust_ratios=ADJUST_RATIOS_PATH,
                  start_year=PUFCSV_YEAR):
-        """
-        Records class constructor
-        """
         # pylint: disable=too-many-arguments
         # read specified data
         self._read_data(data, exact_calculations)
@@ -229,7 +226,7 @@ class Records(object):
         Records.INTEGER_VARS = Records.INTEGER_READ_VARS | INT_CALCULATED_VARS
         return vardict
 
-    # various sets of variable names
+    # specify various sets of variable names
     INTEGER_READ_VARS = None
     MUST_READ_VARS = None
     USABLE_READ_VARS = None
@@ -237,7 +234,7 @@ class Records(object):
     CHANGING_CALCULATED_VARS = None
     INTEGER_VARS = None
 
-    # --- begin private methods of Records class --- #
+    # ----- begin private methods of Records class -----
 
     def _blowup(self, year):
         """
