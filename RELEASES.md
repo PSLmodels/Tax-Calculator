@@ -21,10 +21,10 @@ Release 0.8.5 on 2017-06-??
   [[#1376](https://github.com/open-source-economics/Tax-Calculator/pull/1376)
   ,[#1383](https://github.com/open-source-economics/Tax-Calculator/pull/1383)
   , and
-  [#1407](https://github.com/open-source-economics/Tax-Calculator/pull/1407)
+  [#1408](https://github.com/open-source-economics/Tax-Calculator/pull/1408)
   by Hank Doupe
 - Add separate ceiling for each itemized deduction parameter
-  [#1407](https://github.com/open-source-economics/Tax-Calculator/pull/1407)
+  [#1408](https://github.com/open-source-economics/Tax-Calculator/pull/1408)
   by Hank Doupe
 
 **Bug Fixes**
