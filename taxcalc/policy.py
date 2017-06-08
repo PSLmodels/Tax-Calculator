@@ -12,6 +12,9 @@ from taxcalc.growfactors import Growfactors
 class Policy(ParametersBase):
 
     """
+    Policy is a subclass of the abstract ParametersBase class, and
+    therefore, inherits its methods (none of which are shown here).
+
     Constructor for the federal tax policy class.
 
     Parameters
@@ -53,9 +56,6 @@ class Policy(ParametersBase):
                  parameter_dict=None,
                  start_year=JSON_START_YEAR,
                  num_years=DEFAULT_NUM_YEARS):
-        """
-        Policy class constructor.
-        """
         super(Policy, self).__init__()
 
         if not isinstance(gfactors, Growfactors):

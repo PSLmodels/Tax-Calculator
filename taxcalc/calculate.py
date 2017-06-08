@@ -137,84 +137,12 @@ class Calculator(object):
                       str(self.records.current_year) + '.')
         assert self.policy.current_year == self.records.current_year
 
-    def TaxInc_to_AMT(self):
-        """
-        Call TaxInc through AMT functions
-        """
-        TaxInc(self.policy, self.records)
-        SchXYZTax(self.policy, self.records)
-        GainsTax(self.policy, self.records)
-        AGIsurtax(self.policy, self.records)
-        NetInvIncTax(self.policy, self.records)
-        AMT(self.policy, self.records)
-
-    def calc_one_year(self, zero_out_calc_vars=False):
-        """
-        Call all the functions except those in calc_all() function
-        """
-        if zero_out_calc_vars:
-            self.records.zero_out_changing_calculated_vars()
-        # pdb.set_trace()
-        EI_PayrollTax(self.policy, self.records)
-        DependentCare(self.policy, self.records)
-        Adj(self.policy, self.records)
-        ALD_InvInc_ec_base(self.policy, self.records)
-        CapGains(self.policy, self.records)
-        SSBenefits(self.policy, self.records)
-        UBI(self.policy, self.records)
-        AGI(self.policy, self.records)
-        ItemDed(self.policy, self.records)
-        AdditionalMedicareTax(self.policy, self.records)
-        StdDed(self.policy, self.records)
-        # Store calculated standard deduction, calculate
-        # taxes with standard deduction, store AMT + Regular Tax
-        std = copy.deepcopy(self.records.standard)
-        item = copy.deepcopy(self.records.c04470)
-        item_no_limit = copy.deepcopy(self.records.c21060)
-        item_phaseout = copy.deepcopy(self.records.c21040)
-        self.records.c04470 = np.zeros(self.records.dim)
-        self.records.c21060 = np.zeros(self.records.dim)
-        self.records.c21040 = np.zeros(self.records.dim)
-        self.TaxInc_to_AMT()
-        std_taxes = copy.deepcopy(self.records.c05800)
-        # Set standard deduction to zero, calculate taxes w/o
-        # standard deduction, and store AMT + Regular Tax
-        self.records.standard = np.zeros(self.records.dim)
-        self.records.c21060 = item_no_limit
-        self.records.c21040 = item_phaseout
-        self.records.c04470 = item
-        self.TaxInc_to_AMT()
-        item_taxes = copy.deepcopy(self.records.c05800)
-        # Replace standard deduction with zero where the taxpayer
-        # would be better off itemizing
-        self.records.standard[:] = np.where(item_taxes < std_taxes,
-                                            0., std)
-        self.records.c04470[:] = np.where(item_taxes < std_taxes,
-                                          item, 0.)
-        self.records.c21060[:] = np.where(item_taxes < std_taxes,
-                                          item_no_limit, 0.)
-        self.records.c21040[:] = np.where(item_taxes < std_taxes,
-                                          item_phaseout, 0.)
-        # Calculate taxes with optimal itemized deduction
-        self.TaxInc_to_AMT()
-        F2441(self.policy, self.records)
-        EITC(self.policy, self.records)
-        ChildTaxCredit(self.policy, self.records)
-        AmOppCreditParts(self.policy, self.records)
-        SchR(self.policy, self.records)
-        EducationTaxCredit(self.policy, self.records)
-        NonrefundableCredits(self.policy, self.records)
-        AdditionalCTC(self.policy, self.records)
-        C1040(self.policy, self.records)
-        CTC_new(self.policy, self.records)
-        IITAX(self.policy, self.records)
-
     def calc_all(self, zero_out_calc_vars=False):
         """
-        Call all tax-calculation functions
+        Call all tax-calculation functions.
         """
         # conducts static analysis of Calculator object for current_year
-        self.calc_one_year(zero_out_calc_vars)
+        self._calc_one_year(zero_out_calc_vars)
         BenefitSurtax(self)
         BenefitLimitation(self)
         FairShareTax(self.policy, self.records)
@@ -224,7 +152,7 @@ class Calculator(object):
 
     def increment_year(self):
         """
-        Advance all objects to next year
+        Advance all objects to next year.
         """
         next_year = self.policy.current_year + 1
         self.records.increment_year()
@@ -236,7 +164,7 @@ class Calculator(object):
         """
         The advance_to_year function gives an optional way of implementing
         increment year functionality by immediately specifying the year
-        as input. New year must be at least the current year.
+        as input.  New year must be at least the current year.
         """
         iteration = year - self.records.current_year
         if iteration < 0:
@@ -249,7 +177,7 @@ class Calculator(object):
     @property
     def current_year(self):
         """
-        Return current_year of the embedded Policy object.
+        Calculator class current calendar year property.
         """
         return self.policy.current_year
 
@@ -470,6 +398,80 @@ class Calculator(object):
     REQUIRED_REFORM_KEYS = set(['policy'])
     REQUIRED_ASSUMP_KEYS = set(['consumption', 'behavior',
                                 'growdiff_baseline', 'growdiff_response'])
+
+    # ----- begin private methods of Calculator class -----
+
+    def _taxinc_to_amt(self):
+        """
+        Call TaxInc through AMT functions.
+        """
+        TaxInc(self.policy, self.records)
+        SchXYZTax(self.policy, self.records)
+        GainsTax(self.policy, self.records)
+        AGIsurtax(self.policy, self.records)
+        NetInvIncTax(self.policy, self.records)
+        AMT(self.policy, self.records)
+
+    def _calc_one_year(self, zero_out_calc_vars=False):
+        """
+        Call all the functions except those in the calc_all() method.
+        """
+        if zero_out_calc_vars:
+            self.records.zero_out_changing_calculated_vars()
+        # pdb.set_trace()
+        EI_PayrollTax(self.policy, self.records)
+        DependentCare(self.policy, self.records)
+        Adj(self.policy, self.records)
+        ALD_InvInc_ec_base(self.policy, self.records)
+        CapGains(self.policy, self.records)
+        SSBenefits(self.policy, self.records)
+        UBI(self.policy, self.records)
+        AGI(self.policy, self.records)
+        ItemDed(self.policy, self.records)
+        AdditionalMedicareTax(self.policy, self.records)
+        StdDed(self.policy, self.records)
+        # Store calculated standard deduction, calculate
+        # taxes with standard deduction, store AMT + Regular Tax
+        std = copy.deepcopy(self.records.standard)
+        item = copy.deepcopy(self.records.c04470)
+        item_no_limit = copy.deepcopy(self.records.c21060)
+        item_phaseout = copy.deepcopy(self.records.c21040)
+        self.records.c04470 = np.zeros(self.records.dim)
+        self.records.c21060 = np.zeros(self.records.dim)
+        self.records.c21040 = np.zeros(self.records.dim)
+        self._taxinc_to_amt()
+        std_taxes = copy.deepcopy(self.records.c05800)
+        # Set standard deduction to zero, calculate taxes w/o
+        # standard deduction, and store AMT + Regular Tax
+        self.records.standard = np.zeros(self.records.dim)
+        self.records.c21060 = item_no_limit
+        self.records.c21040 = item_phaseout
+        self.records.c04470 = item
+        self._taxinc_to_amt()
+        item_taxes = copy.deepcopy(self.records.c05800)
+        # Replace standard deduction with zero where the taxpayer
+        # would be better off itemizing
+        self.records.standard[:] = np.where(item_taxes < std_taxes,
+                                            0., std)
+        self.records.c04470[:] = np.where(item_taxes < std_taxes,
+                                          item, 0.)
+        self.records.c21060[:] = np.where(item_taxes < std_taxes,
+                                          item_no_limit, 0.)
+        self.records.c21040[:] = np.where(item_taxes < std_taxes,
+                                          item_phaseout, 0.)
+        # Calculate taxes with optimal itemized deduction
+        self._taxinc_to_amt()
+        F2441(self.policy, self.records)
+        EITC(self.policy, self.records)
+        ChildTaxCredit(self.policy, self.records)
+        AmOppCreditParts(self.policy, self.records)
+        SchR(self.policy, self.records)
+        EducationTaxCredit(self.policy, self.records)
+        NonrefundableCredits(self.policy, self.records)
+        AdditionalCTC(self.policy, self.records)
+        C1040(self.policy, self.records)
+        CTC_new(self.policy, self.records)
+        IITAX(self.policy, self.records)
 
     @staticmethod
     def _read_json_policy_reform_text(text_string, arrays_not_lists):

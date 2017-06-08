@@ -8,6 +8,9 @@ for a complete commit history.
 
 Release 0.8.5 on 2017-06-??
 ---------------------------
+(last merged pull request is
+[#????](https://github.com/open-source-economics/Tax-Calculator/pull/????))
+
 **API Changes**
 - None
 
@@ -35,6 +38,9 @@ Release 0.8.5 on 2017-06-??
 
 Release 0.8.4 on 2017-05-12
 ---------------------------
+(last merged pull request is
+[#1363](https://github.com/open-source-economics/Tax-Calculator/pull/1363))
+
 **API Changes**
 - None
 
@@ -56,6 +62,9 @@ Release 0.8.4 on 2017-05-12
 
 Release 0.8.3 on 2017-05-01
 ---------------------------
+(last merged pull request is
+[#1328](https://github.com/open-source-economics/Tax-Calculator/pull/1328))
+
 **API Changes**
 - None
 
@@ -79,6 +88,9 @@ Release 0.8.3 on 2017-05-01
 
 Release 0.8.2 on 2017-04-13
 ---------------------------
+(last merged pull request is
+[#1295](https://github.com/open-source-economics/Tax-Calculator/pull/1295))
+
 **API Changes**
 - None
 
@@ -93,6 +105,9 @@ Release 0.8.2 on 2017-04-13
 
 Release 0.8.1 on 2017-04-13
 ---------------------------
+(last merged pull request is
+[#1293](https://github.com/open-source-economics/Tax-Calculator/pull/1293))
+
 **API Changes**
 - None
 
@@ -126,6 +141,9 @@ Release 0.8.1 on 2017-04-13
 
 Release 0.8.0 on 2017-03-24
 ---------------------------
+(last merged pull request is
+[#1260](https://github.com/open-source-economics/Tax-Calculator/pull/1260))
+
 **API Changes**
 - None
 
@@ -155,6 +173,9 @@ Release 0.8.0 on 2017-03-24
 
 Release 0.7.9 on 2017-03-08
 ---------------------------
+(last merged pull request is
+[#1228](https://github.com/open-source-economics/Tax-Calculator/pull/1228))
+
 **API Changes**
 - Move simtax.py to taxcalc/validation/taxsim directory
   [[#1288](https://github.com/open-source-economics/Tax-Calculator/pull/1288)
@@ -175,6 +196,9 @@ Release 0.7.9 on 2017-03-08
 
 Release 0.7.8 on 2017-03-01
 ---------------------------
+(last merged pull request is
+[#1206](https://github.com/open-source-economics/Tax-Calculator/pull/1206))
+
 **API Changes**
 - Redesign Growth class to support more realistic growth responses
   [[#1199](https://github.com/open-source-economics/Tax-Calculator/pull/1199)
@@ -196,6 +220,9 @@ Release 0.7.8 on 2017-03-01
 
 Release 0.7.7 on 2017-02-16
 ---------------------------
+(last merged pull request is
+[#1197](https://github.com/open-source-economics/Tax-Calculator/pull/1197))
+
 **API Changes**
 - None
 
@@ -210,6 +237,9 @@ Release 0.7.7 on 2017-02-16
 
 Release 0.7.6 on 2017-02-15
 ---------------------------
+(last merged pull request is
+[#1192](https://github.com/open-source-economics/Tax-Calculator/pull/1192))
+
 **API Changes**
 - Add Stage3 adjustment ratios to target IRS-SOI data on the
   distribution of interest income
@@ -230,6 +260,9 @@ Release 0.7.6 on 2017-02-15
 
 Release 0.7.5 on 2017-01-31
 ---------------------------
+(last merged pull request is
+[#1169](https://github.com/open-source-economics/Tax-Calculator/pull/1169))
+
 **API Changes**
 - None
 
@@ -252,6 +285,9 @@ Release 0.7.5 on 2017-01-31
 
 Release 0.7.4 on 2017-01-24
 ---------------------------
+(last merged pull request is
+[#1152](https://github.com/open-source-economics/Tax-Calculator/pull/1152))
+
 **API Changes**
 - Separate policy reforms and response assumptions into two separate
   JSON files
@@ -271,6 +307,9 @@ Release 0.7.4 on 2017-01-24
 
 Release 0.7.3 on 2017-01-24
 ---------------------------
+(last merged pull request is
+[#1113](https://github.com/open-source-economics/Tax-Calculator/pull/1113))
+
 **API Changes**
 - None
 
@@ -313,6 +352,9 @@ Release 0.7.3 on 2017-01-24
 
 Release 0.7.2 on 2016-12-05
 ---------------------------
+(last merged pull request is
+[#1082](https://github.com/open-source-economics/Tax-Calculator/pull/1082))
+
 **API Changes**
 - None
 
@@ -330,6 +372,9 @@ Release 0.7.2 on 2016-12-05
 
 Release 0.7.1 on 2016-11-15
 ---------------------------
+(last merged pull request is
+[#1060](https://github.com/open-source-economics/Tax-Calculator/pull/1060))
+
 **API Changes**
 - Rename policy parameters for consistency
   [[#1051](https://github.com/open-source-economics/Tax-Calculator/pull/1051)
@@ -349,6 +394,9 @@ Release 0.7.1 on 2016-11-15
 
 Release 0.7.0 on 2016-11-09
 ---------------------------
+(last merged pull request is
+[#1044](https://github.com/open-source-economics/Tax-Calculator/pull/1044))
+
 **API Changes**
 - Rename and refactor old add_weighted_decile_bins utility function
   [[#1043](https://github.com/open-source-economics/Tax-Calculator/pull/1043)
@@ -365,6 +413,9 @@ Release 0.7.0 on 2016-11-09
 
 Release 0.6.9 on 2016-11-09
 ---------------------------
+(last merged pull request is
+[#1039](https://github.com/open-source-economics/Tax-Calculator/pull/1039))
+
 **API Changes**
 - None
 
@@ -408,6 +459,9 @@ Release 0.6.9 on 2016-11-09
 
 Release 0.6.8 on 2016-10-07
 ---------------------------
+(last merged pull request is
+[#970](https://github.com/open-source-economics/Tax-Calculator/pull/970))
+
 **API Changes**
 - None
 
@@ -430,6 +484,9 @@ Release 0.6.8 on 2016-10-07
 
 Release 0.6.7 on 2016-09-29
 ---------------------------
+(last merged pull request is
+[#945](https://github.com/open-source-economics/Tax-Calculator/pull/945))
+
 **API Changes**
 - None
 
@@ -464,6 +521,9 @@ Release 0.6.7 on 2016-09-29
 
 Release 0.6.6 on 2016-08-13
 ---------------------------
+(last merged pull request is
+[#844](https://github.com/open-source-economics/Tax-Calculator/pull/844))
+
 **API Changes**
 - None
 
@@ -496,6 +556,9 @@ Release 0.6.6 on 2016-08-13
 
 Release 0.6.5 on 2016-07-12
 ---------------------------
+(last merged pull request is
+[#820](https://github.com/open-source-economics/Tax-Calculator/pull/820))
+
 **API Changes**
 - None
 
@@ -511,6 +574,9 @@ Release 0.6.5 on 2016-07-12
 
 Release 0.6.4 on 2016-06-17
 ---------------------------
+(last merged pull request is
+[#794](https://github.com/open-source-economics/Tax-Calculator/pull/794))
+
 **API Changes**
 - Create Consumption class used to compute "effective" marginal tax rates
 
@@ -529,6 +595,9 @@ Release 0.6.4 on 2016-06-17
 
 Release 0.6.3 on 2016-05-09
 ---------------------------
+(last merged pull request is
+[#727](https://github.com/open-source-economics/Tax-Calculator/pull/727))
+
 **API Changes**
 - None
 

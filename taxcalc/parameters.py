@@ -102,34 +102,34 @@ class ParametersBase(object):
     @property
     def num_years(self):
         """
-        Return number of parameter years.
+        ParametersBase class number of parameter years property.
         """
         return self._num_years
 
     @property
     def current_year(self):
         """
-        Return current calendar year.
+        ParametersBase class current calendar year property.
         """
         return self._current_year
 
     @property
     def start_year(self):
         """
-        Return first parameter year.
+        ParametersBase class first parameter year property.
         """
         return self._start_year
 
     @property
     def end_year(self):
         """
-        Return last parameter year.
+        ParametersBase class lasst parameter year property.
         """
         return self._end_year
 
     def set_year(self, year):
         """
-        Set parameters to values for specified calendar year.
+        Set parameters to their values for the specified calendar year.
 
         Parameters
         ----------

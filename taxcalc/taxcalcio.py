@@ -30,6 +30,8 @@ class TaxCalcIO(object):
     """
     Constructor for the Tax-Calculator Input-Output class.
 
+    TaxCalcIO class constructor call must be followed by init() call.
+
     Parameters
     ----------
     input_data: string or Pandas DataFrame
@@ -56,9 +58,6 @@ class TaxCalcIO(object):
     """
 
     def __init__(self, input_data, tax_year, reform, assump):
-        """
-        TaxCalcIO class constructor, which must be followed by init() call.
-        """
         # pylint: disable=too-many-branches,too-many-statements
         self.errmsg = ''
         # check name and existence of INPUT file

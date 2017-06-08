@@ -1,4 +1,4 @@
-Source Code Documentation
+Tax-Calculator Public API
 =========================
 
 The Tax-Calculator's core capabilities are in the Python package
@@ -6,13 +6,18 @@ called taxcalc, the source code for which is located in the
 tax-calculator/taxcalc directory tree.
 
 Here we provide a high-level view of the **public API** of the taxcalc
-package with links to the source code.  This high-level view is
+conda package with links to the source code.  This high-level view is
 organized around the modules in the taxcalc package.  Below is a list
-of the taxcalc package members (in alphabetical order) with
-documentation about how to call each class method and function.  There
-is also a link to the source code for each documented member.
+of the taxcalc package modules (in alphabetical order) with
+documentation about how to call each public class method and function.
+There is also a link to the source code for each documented member.
 However, it may be more convenient to access this list interactively
 via the **alphabetical** :ref:`genindex` **of taxcalc members**.
+
+**Developers who want to use Tax-Calculator capabilities in their own
+projects should restrict themselves to using this public API.  All
+other Tax-Calculator members are private and subject to change without
+advance notice.**
 
 taxcalc.Behavior
 ----------------
@@ -26,6 +31,7 @@ taxcalc.Calculator
 
 .. autoclass:: taxcalc.Calculator
    :members:
+   :exclude-members: _calc_one_year, _taxinc_to_amt
 
 taxcalc.cli.tc
 --------------

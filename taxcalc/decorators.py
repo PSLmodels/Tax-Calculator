@@ -230,11 +230,9 @@ def apply_jit(dtype_sig_out, dtype_sig_in, parameters=None, **kwargs):
 
 def iterate_jit(parameters=None, **kwargs):
     """
-    Make a decorator that takes in a calc-style function, create a
-    function that handles the "high-level" function and the apply-style
-    function.
-
-    Note: perhaps a better "bigger picture" description of what this does?
+    Public decorator for a calc-style function (see functions.py) that
+    transforms the calc-style function into an apply-style function that
+    can be called by Calculator class methods (see calculate.py).
     """
     if not parameters:
         parameters = []
