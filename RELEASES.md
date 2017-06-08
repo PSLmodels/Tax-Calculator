@@ -9,7 +9,7 @@ for a complete commit history.
 Release 0.8.5 on 2017-06-??
 ---------------------------
 (last merged pull request is
-[#????](https://github.com/open-source-economics/Tax-Calculator/pull/????))
+[#1385](https://github.com/open-source-economics/Tax-Calculator/pull/1385))
 
 **API Changes**
 - None
