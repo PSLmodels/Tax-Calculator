@@ -471,6 +471,8 @@ class Calculator(object):
     REQUIRED_ASSUMP_KEYS = set(['consumption', 'behavior',
                                 'growdiff_baseline', 'growdiff_response'])
 
+    # ----- begin private methods of Calculator class -----
+
     @staticmethod
     def _read_json_policy_reform_text(text_string, arrays_not_lists):
         """
