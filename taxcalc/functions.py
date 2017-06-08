@@ -354,7 +354,10 @@ def ItemDed(e17500, e18400, e18500,
             ID_Casualty_frt, ID_Casualty_hc, ID_Miscellaneous_frt,
             ID_Miscellaneous_hc, ID_Charity_crt_all, ID_Charity_crt_noncash,
             ID_prt, ID_crt, ID_c, ID_StateLocalTax_hc, ID_Charity_frt,
-            ID_Charity_hc, ID_InterestPaid_hc, ID_RealEstate_hc):
+            ID_Charity_hc, ID_InterestPaid_hc, ID_RealEstate_hc,
+            ID_Medical_c, ID_StateLocalTax_c, ID_RealEstate_c,
+            ID_InterestPaid_c, ID_Charity_c, ID_Casualty_c,
+            ID_Miscellaneous_c):
     """
     ItemDed function: itemized deductions, Form 1040, Schedule A
 
@@ -391,6 +394,20 @@ def ItemDed(e17500, e18400, e18500,
         ID_Charity_frt : Disregard for charitable contributions;
         floor as a decimal fraction of AGI
 
+        ID_Medical_c : Ceiling on medical expense deduction
+
+        ID_StateLocalTax_c : Ceiling on state and local tax deduction
+
+        ID_RealEstate_c : Ceiling on real estate tax deduction
+
+        ID_InterestPaid_c : Ceiling on interest paid deduction
+
+        ID_Charity_c : Ceiling on charity expense deduction
+
+        ID_Casualty_c : Ceiling on casuality expense deduction
+
+        ID_Miscellaneous_c : Ceiling on miscellaneous expense deduction
+
     Taxpayer Characteristics:
         e17500 : Medical expenses
 
@@ -419,16 +436,22 @@ def ItemDed(e17500, e18400, e18500,
         medical_frt += ID_Medical_frt_add4aged
     c17750 = medical_frt * posagi
     c17000 = max(0., e17500 - c17750) * (1. - ID_Medical_hc)
+    c17000 = min(c17000, ID_Medical_c[MARS - 1])
     # State and local taxes
-    c18300 = ((1. - ID_StateLocalTax_hc) * max(e18400, 0.) +
-              (1. - ID_RealEstate_hc) * e18500)
+    c18400 = min((1. - ID_StateLocalTax_hc) * max(e18400, 0.),
+                 ID_StateLocalTax_c[MARS - 1])
+    c18500 = min((1. - ID_RealEstate_hc) * e18500,
+                 ID_RealEstate_c[MARS - 1])
+    c18300 = c18400 + c18500
     # Interest paid
     c19200 = e19200 * (1. - ID_InterestPaid_hc)
+    c19200 = min(c19200, ID_InterestPaid_c[MARS - 1])
     # Charity
     lim30 = min(ID_Charity_crt_noncash * posagi, e20100)
     c19700 = min(ID_Charity_crt_all * posagi, lim30 + e19800)
     charity_floor = ID_Charity_frt * posagi  # floor is zero in present law
     c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_hc)
+    c19700 = min(c19700, ID_Charity_c[MARS - 1])
     # Casualty
     if e20500 > 0.0:  # add back to e20500 the PUFCSV_YEAR disregard amount
         c37703 = e20500 + ID_Casualty_frt_in_pufcsv_year * posagi
@@ -436,10 +459,12 @@ def ItemDed(e17500, e18400, e18500,
         c37703 = 0.
     c20500 = (max(0., c37703 - ID_Casualty_frt * posagi) *
               (1. - ID_Casualty_hc))
+    c20500 = min(c20500, ID_Casualty_c[MARS - 1])
     # Miscellaneous
     c20400 = e20400
     c20750 = ID_Miscellaneous_frt * posagi
     c20800 = max(0., c20400 - c20750) * (1. - ID_Miscellaneous_hc)
+    c20800 = min(c20800, ID_Miscellaneous_c[MARS - 1])
     # Gross Itemized Deductions
     c21060 = c17000 + c18300 + c19200 + c19700 + c20500 + c20800
     # Limitation on total itemized deductions

@@ -68,7 +68,7 @@
 		},
 		"_II_em": {
 			"2017": [5000]
-		},		
+		},
 		"_ID_StateLocalTax_hc": {
 			"2017": [1]
 		},
@@ -84,7 +84,7 @@
 		"_ID_RealEstate_hc": {
 			"2017": [1]
 		},
-		"_ID_c": {
+		"_ID_InterestPaid_c": {
 			"2017": [[19730.0, 19730.0, 19730.0, 19730.0, 19730.0]]
 		},
 		"_AMT_rt1": {
@@ -107,5 +107,5 @@
 //	- Repeal of the corporate income tax
 // 	- 7% tax on business activities (credit-invoice value-added tax)
 //	- One time tax on accumulated foreign earnings abroad
-//	- This was included in the feedback section. 
+//	- This was included in the feedback section.
 //		- 9. Considers a border-adjustable-goods-and-services tax

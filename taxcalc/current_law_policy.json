@@ -720,6 +720,30 @@
         "value": [0.0]
     },
 
+    "_ID_Medical_c": {
+        "long_name": "Ceiling on the amount of medical expense deduction allowed (dollars)",
+        "description": "The amount of medical expense deduction is limited to this dollar amount. ",
+        "section_1": "Itemized Deductions",
+        "section_2": "Medical Expenses",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016",
+                      "2017"],
+        "start_year": 2013,
+        "cpi_inflated": true,
+        "col_var": "MARS",
+        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99]]
+    },
+
     "_ID_StateLocalTax_hc": {
         "long_name": "State and local taxes (Income and Sales) deduction haircut.",
         "description": "This decimal fraction reduces the state and local tax deduction.",
@@ -734,6 +758,30 @@
         "col_var": "",
         "col_label": "",
         "value": [0.0]
+    },
+
+    "_ID_StateLocalTax_c": {
+        "long_name": "Ceiling on the amount of state and local taxes (Income and Sales) deduction allowed (dollars)",
+        "description": "The amount of state and local taxes deduction is limited to this dollar amount. ",
+        "section_1": "Itemized Deductions",
+        "section_2": "State And Local Income And Sales Taxes",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016",
+                      "2017"],
+        "start_year": 2013,
+        "cpi_inflated": true,
+        "col_var": "MARS",
+        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99]]
     },
 
     "_ID_RealEstate_hc": {
@@ -752,6 +800,30 @@
         "value": [0.0]
     },
 
+    "_ID_RealEstate_c": {
+        "long_name": "Ceiling on the amount of real estate taxes deduction allowed (dollars)",
+        "description": "The amount of real estate taxes deduction is limited to this dollar amount. ",
+        "section_1": "Itemized Deductions",
+        "section_2": "Real Estate Taxes",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016",
+                      "2017"],
+        "start_year": 2013,
+        "cpi_inflated": true,
+        "col_var": "MARS",
+        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99]]
+    },
+
     "_ID_InterestPaid_hc": {
         "long_name": "Interest deduction haircut",
         "description": "This decimal fraction can be applied to limit the amount of interest deduction allowed.",
@@ -768,6 +840,29 @@
         "value": [0.0]
     },
 
+    "_ID_InterestPaid_c": {
+        "long_name": "Ceiling on the amount of interest deduction allowed (dollars)",
+        "description": "The amount of interest deduction is limited to this dollar amount. ",
+        "section_1": "Itemized Deductions",
+        "section_2": "Interest Paid",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016",
+                      "2017"],
+        "start_year": 2013,
+        "cpi_inflated": true,
+        "col_var": "MARS",
+        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99]]
+    },
 
     "_ID_Charity_crt_all": {
         "long_name": "Ceiling (as a decimal fraction of AGI) for all charitable contribution deductions",
@@ -837,6 +932,30 @@
         "value": [0.0]
     },
 
+    "_ID_Charity_c": {
+        "long_name": "Ceiling on the amount of charity expense deduction allowed (dollars)",
+        "description": "The amount of charity expense deduction is limited to this dollar amount. ",
+        "section_1": "Itemized Deductions",
+        "section_2": "Charity",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016",
+                      "2017"],
+        "start_year": 2013,
+        "cpi_inflated": true,
+        "col_var": "MARS",
+        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99]]
+    },
+
     "_ID_Casualty_frt": {
         "long_name": "Deduction for casualty loss; floor as a decimal fraction of AGI",
         "description": "Taxpayers are eligible to deduct the portion of their casualty loss exceeding this fraction of AGI.",
@@ -870,6 +989,30 @@
         "value": [0.0]
     },
 
+    "_ID_Casualty_c": {
+        "long_name": "Ceiling on the amount of casualty expense deduction allowed (dollars)",
+        "description": "The amount of casualty expense deduction is limited to this dollar amount. ",
+        "section_1": "Itemized Deductions",
+        "section_2": "Casualty",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016",
+                      "2017"],
+        "start_year": 2013,
+        "cpi_inflated": true,
+        "col_var": "MARS",
+        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99]]
+    },
+
     "_ID_Miscellaneous_frt": {
         "long_name": "Deduction for miscellaneous expenses; floor as a decimal fraction of AGI",
         "description": "Taxpayers are eligible to deduct the portion of their miscellaneous expense exceeding this fraction of AGI.",
@@ -901,6 +1044,30 @@
         "col_var": "",
         "col_label": "",
         "value": [0.0]
+    },
+
+    "_ID_Miscellaneous_c": {
+        "long_name": "Ceiling on the amount of miscellaneous expense deduction allowed (dollars)",
+        "description": "The amount of miscellaneous expense deduction is limited to this dollar amount. ",
+        "section_1": "Itemized Deductions",
+        "section_2": "Miscellaneous",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016",
+                      "2017"],
+        "start_year": 2013,
+        "cpi_inflated": true,
+        "col_var": "MARS",
+        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99]]
     },
 
     "_ID_ps": {
