@@ -4,18 +4,27 @@ Go
 [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
+Release 0.8.6 on 2017-06-???
+---------------------------
+(last merged pull request is
+[???](www.))
+
+**API Changes**
+
+**New Features**
+
+**Bug Fixes**
 
 
 Release 0.8.5 on 2017-06-08
 ---------------------------
 (last merged pull request is
-[#1385](https://github.com/open-source-economics/Tax-Calculator/pull/1385))
+[#1416](https://github.com/open-source-economics/Tax-Calculator/pull/1416))
 
 **API Changes**
 - None
 
 **New Features**
-
 - Add column to differences table to show the change in tax liability
   as percentage of pre-reform after tax income
   [[#1375](https://github.com/open-source-economics/Tax-Calculator/pull/1375)
