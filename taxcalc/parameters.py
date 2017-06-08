@@ -102,28 +102,28 @@ class ParametersBase(object):
     @property
     def num_years(self):
         """
-        Return number of parameter years.
+        Number of parameter years.
         """
         return self._num_years
 
     @property
     def current_year(self):
         """
-        Return current calendar year.
+        Current calendar year.
         """
         return self._current_year
 
     @property
     def start_year(self):
         """
-        Return first parameter year.
+        First parameter year.
         """
         return self._start_year
 
     @property
     def end_year(self):
         """
-        Return last parameter year.
+        Last parameter year.
         """
         return self._end_year
 
