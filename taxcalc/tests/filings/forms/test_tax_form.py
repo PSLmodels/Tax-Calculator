@@ -2,7 +2,15 @@ import pytest
 
 from taxcalc.filings.forms import TaxForm
 from taxcalc.filings.forms import UnsupportedFormYearError
-from taxcalc.utils import string_to_number
+from taxcalc.filings.forms.utils import string_to_number
+
+
+def test_string_to_number():
+    assert string_to_number(None) == 0
+    assert string_to_number('') == 0
+    assert string_to_number('1') == 1
+    assert string_to_number('1.') == 1.
+    assert string_to_number('1.23') == 1.23
 
 
 def test_tax_form_creation_valid():

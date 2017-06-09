@@ -1,5 +1,5 @@
 """
-Tax-Calculator utility functions.
+PUBLIC utility functions for Tax-Calculator.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 utils.py
@@ -11,18 +11,14 @@ import os
 import math
 import copy
 import json
-import random
 from collections import defaultdict, OrderedDict
 from pkg_resources import resource_stream, Requirement
 import six
 import numpy as np
 import pandas as pd
-try:
-    BOKEH_AVAILABLE = True
-    import bokeh.io as bio
-    import bokeh.plotting as bp
-except ImportError:
-    BOKEH_AVAILABLE = False
+import bokeh.io as bio
+import bokeh.plotting as bp
+from taxcalc._utils import *
 
 
 STATS_COLUMNS = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
@@ -53,90 +49,15 @@ DIFF_TABLE_LABELS = ['Tax Units with Tax Cut', 'Tax Units with Tax Increase',
                      'Percent with Tax Increase', 'Percent with Tax Decrease',
                      'Share of Overall Change']
 
-LARGE_INCOME_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
-                     200000, 1e14]
+LARGE_INCOME_BINS = [-1e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+                     200000, 1e99]
 
-SMALL_INCOME_BINS = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
+SMALL_INCOME_BINS = [-1e99, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
                      49999, 74999, 99999, 199999, 499999, 999999, 1499999,
-                     1999999, 4999999, 9999999, 1e14]
+                     1999999, 4999999, 9999999, 1e99]
 
-WEBAPP_INCOME_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
-                      199999, 499999, 1000000, 1e14]
-
-EPSILON = 0.000000001
-
-
-def count_gt_zero(data):
-    """
-    Return unweighted count of positive data items.
-    """
-    return sum([1 for item in data if item > 0])
-
-
-def count_lt_zero(data):
-    """
-    Return unweighted count of negative data items.
-    """
-    return sum([1 for item in data if item < 0])
-
-
-def weighted_count_lt_zero(pdf, col_name, tolerance=-0.001):
-    """
-    Return weighted count of negative Pandas DateFrame col_name items.
-    """
-    return pdf[pdf[col_name] < tolerance]['s006'].sum()
-
-
-def weighted_count_gt_zero(pdf, col_name, tolerance=0.001):
-    """
-    Return weighted count of positive Pandas DateFrame col_name items.
-    """
-    return pdf[pdf[col_name] > tolerance]['s006'].sum()
-
-
-def weighted_count(pdf):
-    """
-    Return weighted count of items in Pandas DataFrame.
-    """
-    return pdf['s006'].sum()
-
-
-def weighted_mean(pdf, col_name):
-    """
-    Return weighted mean of Pandas DataFrame col_name items.
-    """
-    return (float((pdf[col_name] * pdf['s006']).sum()) /
-            float(pdf['s006'].sum() + EPSILON))
-
-
-def wage_weighted(pdf, col_name):
-    """
-    Return wage-weighted mean of Pandas DataFrame col_name items.
-    """
-    swght = 's006'
-    wage = 'e00200'
-    return (float((pdf[col_name] * pdf[swght] * pdf[wage]).sum()) /
-            float((pdf[swght] * pdf[wage]).sum() + EPSILON))
-
-
-def agi_weighted(pdf, col_name):
-    """
-    Return AGI-weighted mean of Pandas DataFrame col_name items.
-    """
-    swght = 's006'
-    agi = 'c00100'
-    return (float((pdf[col_name] * pdf[swght] * pdf[agi]).sum()) /
-            float((pdf[swght] * pdf[agi]).sum() + EPSILON))
-
-
-def expanded_income_weighted(pdf, col_name):
-    """
-    Return expanded-income-weighted mean of Pandas DataFrame col_name items.
-    """
-    swght = 's006'
-    expinc = 'expanded_income'
-    return (float((pdf[col_name] * pdf[swght] * pdf[expinc]).sum()) /
-            float((pdf[swght] * pdf[expinc]).sum() + EPSILON))
+WEBAPP_INCOME_BINS = [-1e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+                      199999, 499999, 1000000, 1e99]
 
 
 def unweighted_sum(pdf, col_name):
@@ -151,31 +72,6 @@ def weighted_sum(pdf, col_name):
     Return weighted sum of Pandas DataFrame col_name items.
     """
     return (pdf[col_name] * pdf['s006']).sum()
-
-
-def weighted_perc_inc(pdf, col_name):
-    """
-    Return weighted fraction (not percent) of positive values for the
-    variable with col_name in the specified Pandas DataFrame.
-    """
-    return (float(weighted_count_gt_zero(pdf, col_name)) /
-            float(weighted_count(pdf) + EPSILON))
-
-
-def weighted_perc_dec(pdf, col_name):
-    """
-    Return weighted fraction (not percent) of negative values for the
-    variable with col_name in the specified Pandas DataFrame.
-    """
-    return (float(weighted_count_lt_zero(pdf, col_name)) /
-            float(weighted_count(pdf) + EPSILON))
-
-
-def weighted_share_of_total(pdf, col_name, total):
-    """
-    Return ratio of weighted_sum(pdf, col_name) and specified total.
-    """
-    return float(weighted_sum(pdf, col_name)) / (float(total) + EPSILON)
 
 
 def add_weighted_income_bins(pdf, num_bins=10, labels=None,
@@ -259,7 +155,13 @@ def means_and_comparisons(col_name, gpdf, weighted_total):
     col_name: the column name to calculate against
     gpdf: grouped Pandas DataFrame
     """
-    # Who has a tax cut, and who has a tax increase
+    def weighted_share_of_total(pdf, col_name, total):
+        """
+        Nested function that returns the ratio of
+        weighted_sum(pdf, col_name) and the specified total.
+        """
+        return float(weighted_sum(pdf, col_name)) / (float(total) + EPSILON)
+    # tabulate who has a tax cut and who has a tax increase
     diffs = gpdf.apply(weighted_count_lt_zero, col_name)
     diffs = pd.DataFrame(data=diffs, columns=['tax_cut'])
     diffs['tax_inc'] = gpdf.apply(weighted_count_gt_zero, col_name)
@@ -342,25 +244,6 @@ def weighted_avg_allcols(pdf, col_list, income_measure='expanded_income'):
     return wadf
 
 
-def add_columns(pdf):
-    """
-    Add several columns to specified Pandas DataFrame.
-    """
-    # weight of returns with positive AGI and
-    # itemized deduction greater than standard deduction
-    pdf['c04470'] = pdf['c04470'].where(
-        ((pdf['c00100'] > 0.) & (pdf['c04470'] > pdf['standard'])), 0.)
-    # weight of returns with positive AGI and itemized deduction
-    pdf['num_returns_ItemDed'] = pdf['s006'].where(
-        ((pdf['c00100'] > 0.) & (pdf['c04470'] > 0.)), 0.)
-    # weight of returns with positive AGI and standard deduction
-    pdf['num_returns_StandardDed'] = pdf['s006'].where(
-        ((pdf['c00100'] > 0.) & (pdf['standard'] > 0.)), 0.)
-    # weight of returns with positive Alternative Minimum Tax (AMT)
-    pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
-    return pdf
-
-
 def create_distribution_table(obj, groupby, result_type,
                               income_measure='expanded_income',
                               baseline_obj=None, diffs=False):
@@ -409,6 +292,25 @@ def create_distribution_table(obj, groupby, result_type,
     Pandas DataFrame object
     """
     # pylint: disable=too-many-arguments
+    def add_columns(pdf):
+        """
+        Nested function that adds several columns to
+        the specified Pandas DataFrame, pdf.
+        """
+        # weight of returns with positive AGI and
+        # itemized deduction greater than standard deduction
+        pdf['c04470'] = pdf['c04470'].where(
+            ((pdf['c00100'] > 0.) & (pdf['c04470'] > pdf['standard'])), 0.)
+        # weight of returns with positive AGI and itemized deduction
+        pdf['num_returns_ItemDed'] = pdf['s006'].where(
+            ((pdf['c00100'] > 0.) & (pdf['c04470'] > 0.)), 0.)
+        # weight of returns with positive AGI and standard deduction
+        pdf['num_returns_StandardDed'] = pdf['s006'].where(
+            ((pdf['c00100'] > 0.) & (pdf['standard'] > 0.)), 0.)
+        # weight of returns with positive Alternative Minimum Tax (AMT)
+        pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
+        return pdf
+    # create distribution table
     res = results(obj)
     res = add_columns(res)
     if baseline_obj is not None:
@@ -423,7 +325,7 @@ def create_distribution_table(obj, groupby, result_type,
             res_base = add_columns(res_base)
             res = res.subtract(res_base)
             res['s006'] = res_base['s006']
-    # sorts the data
+    # sort the data
     if groupby == 'weighted_deciles':
         pdf = add_weighted_income_bins(res, num_bins=10,
                                        income_measure=income_measure)
@@ -441,7 +343,7 @@ def create_distribution_table(obj, groupby, result_type,
                "'small_income_bins' or 'large_income_bins' or "
                "'webapp_income_bins'")
         raise ValueError(msg)
-    # manipulates the data
+    # manipulate the data
     pd.options.display.float_format = '{:8,.0f}'.format
     if result_type == 'weighted_sum':
         pdf = weighted(pdf, STATS_COLUMNS)
@@ -548,88 +450,6 @@ def create_difference_table(recs1, recs2, groupby,
     return diffs
 
 
-def diagnostic_table_odict(recs):
-    """
-    Extract diagnostic table dictionary from specified Records object.
-
-    Parameters
-    ----------
-    recs : Records class object
-
-    Returns
-    -------
-    ordered dictionary of variable names and aggregate weighted values
-    """
-    # aggregate weighted values expressed in millions or billions
-    in_millions = 1.0e-6
-    in_billions = 1.0e-9
-    odict = OrderedDict()
-    # total number of filing units
-    odict['Returns (#m)'] = recs.s006.sum() * in_millions
-    # adjusted gross income
-    odict['AGI ($b)'] = (recs.c00100 * recs.s006).sum() * in_billions
-    # number of itemizers
-    num = (recs.s006[(recs.c04470 > 0.) * (recs.c00100 > 0.)].sum())
-    odict['Itemizers (#m)'] = num * in_millions
-    # itemized deduction
-    ided1 = recs.c04470 * recs.s006
-    val = ided1[recs.c04470 > 0.].sum()
-    odict['Itemized Deduction ($b)'] = val * in_billions
-    # number of standard deductions
-    num = recs.s006[(recs.standard > 0.) * (recs.c00100 > 0.)].sum()
-    odict['Standard Deduction Filers (#m)'] = num * in_millions
-    # standard deduction
-    sded1 = recs.standard * recs.s006
-    val = sded1[(recs.standard > 0.) * (recs.c00100 > 0.)].sum()
-    odict['Standard Deduction ($b)'] = val * in_billions
-    # personal exemption
-    val = (recs.c04600 * recs.s006)[recs.c00100 > 0.].sum()
-    odict['Personal Exemption ($b)'] = val * in_billions
-    # taxable income
-    val = (recs.c04800 * recs.s006).sum()
-    odict['Taxable Income ($b)'] = val * in_billions
-    # regular tax liability
-    val = (recs.taxbc * recs.s006).sum()
-    odict['Regular Tax ($b)'] = val * in_billions
-    # AMT taxable income
-    odict['AMT Income ($b)'] = (recs.c62100 * recs.s006).sum() * in_billions
-    # total AMT liability
-    odict['AMT Liability ($b)'] = (recs.c09600 * recs.s006).sum() * in_billions
-    # number of people paying AMT
-    odict['AMT Filers (#m)'] = recs.s006[recs.c09600 > 0.].sum() * in_millions
-    # tax before credits
-    val = (recs.c05800 * recs.s006).sum()
-    odict['Tax before Credits ($b)'] = val * in_billions
-    # refundable credits
-    val = (recs.refund * recs.s006).sum()
-    odict['Refundable Credits ($b)'] = val * in_billions
-    # nonrefundable credits
-    val = (recs.c07100 * recs.s006).sum()
-    odict['Nonrefundable Credits ($b)'] = val * in_billions
-    # reform surtaxes (part of federal individual income tax liability)
-    val = (recs.surtax * recs.s006).sum()
-    odict['Reform Surtaxes ($b)'] = val * in_billions
-    # other taxes on Form 1040
-    val = (recs.othertaxes * recs.s006).sum()
-    odict['Other Taxes ($b)'] = val * in_billions
-    # federal individual income tax liability
-    val = (recs.iitax * recs.s006).sum()
-    odict['Ind Income Tax ($b)'] = val * in_billions
-    # OASDI+HI payroll tax liability (including employer share)
-    val = (recs.payrolltax * recs.s006).sum()
-    odict['Payroll Taxes ($b)'] = val * in_billions
-    # combined income and payroll tax liability
-    val = (recs.combined * recs.s006).sum()
-    odict['Combined Liability ($b)'] = val * in_billions
-    # number of tax units with non-positive income tax liability
-    num = (recs.s006[recs.iitax <= 0]).sum()
-    odict['With Income Tax <= 0 (#m)'] = num * in_millions
-    # number of tax units with non-positive combined tax liability
-    num = (recs.s006[recs.combined <= 0]).sum()
-    odict['With Combined Tax <= 0 (#m)'] = num * in_millions
-    return odict
-
-
 def create_diagnostic_table(calc):
     """
     Extract diagnostic table from specified Calculator object.
@@ -643,6 +463,91 @@ def create_diagnostic_table(calc):
     -------
     Pandas DataFrame object containing the table for calc.current_year
     """
+    def diagnostic_table_odict(recs):
+        """
+        Nested function that extracts diagnostic table dictionary from
+        the specified Records object, recs.
+
+        Parameters
+        ----------
+        recs : Records class object
+
+        Returns
+        -------
+        ordered dictionary of variable names and aggregate weighted values
+        """
+        # aggregate weighted values expressed in millions or billions
+        in_millions = 1.0e-6
+        in_billions = 1.0e-9
+        odict = OrderedDict()
+        # total number of filing units
+        odict['Returns (#m)'] = recs.s006.sum() * in_millions
+        # adjusted gross income
+        odict['AGI ($b)'] = (recs.c00100 * recs.s006).sum() * in_billions
+        # number of itemizers
+        num = (recs.s006[(recs.c04470 > 0.) * (recs.c00100 > 0.)].sum())
+        odict['Itemizers (#m)'] = num * in_millions
+        # itemized deduction
+        ided1 = recs.c04470 * recs.s006
+        val = ided1[recs.c04470 > 0.].sum()
+        odict['Itemized Deduction ($b)'] = val * in_billions
+        # number of standard deductions
+        num = recs.s006[(recs.standard > 0.) * (recs.c00100 > 0.)].sum()
+        odict['Standard Deduction Filers (#m)'] = num * in_millions
+        # standard deduction
+        sded1 = recs.standard * recs.s006
+        val = sded1[(recs.standard > 0.) * (recs.c00100 > 0.)].sum()
+        odict['Standard Deduction ($b)'] = val * in_billions
+        # personal exemption
+        val = (recs.c04600 * recs.s006)[recs.c00100 > 0.].sum()
+        odict['Personal Exemption ($b)'] = val * in_billions
+        # taxable income
+        val = (recs.c04800 * recs.s006).sum()
+        odict['Taxable Income ($b)'] = val * in_billions
+        # regular tax liability
+        val = (recs.taxbc * recs.s006).sum()
+        odict['Regular Tax ($b)'] = val * in_billions
+        # AMT taxable income
+        odict['AMT Income ($b)'] = ((recs.c62100 * recs.s006).sum() *
+                                    in_billions)
+        # total AMT liability
+        odict['AMT Liability ($b)'] = ((recs.c09600 * recs.s006).sum() *
+                                       in_billions)
+        # number of people paying AMT
+        odict['AMT Filers (#m)'] = (recs.s006[recs.c09600 > 0.].sum() *
+                                    in_millions)
+        # tax before credits
+        val = (recs.c05800 * recs.s006).sum()
+        odict['Tax before Credits ($b)'] = val * in_billions
+        # refundable credits
+        val = (recs.refund * recs.s006).sum()
+        odict['Refundable Credits ($b)'] = val * in_billions
+        # nonrefundable credits
+        val = (recs.c07100 * recs.s006).sum()
+        odict['Nonrefundable Credits ($b)'] = val * in_billions
+        # reform surtaxes (part of federal individual income tax liability)
+        val = (recs.surtax * recs.s006).sum()
+        odict['Reform Surtaxes ($b)'] = val * in_billions
+        # other taxes on Form 1040
+        val = (recs.othertaxes * recs.s006).sum()
+        odict['Other Taxes ($b)'] = val * in_billions
+        # federal individual income tax liability
+        val = (recs.iitax * recs.s006).sum()
+        odict['Ind Income Tax ($b)'] = val * in_billions
+        # OASDI+HI payroll tax liability (including employer share)
+        val = (recs.payrolltax * recs.s006).sum()
+        odict['Payroll Taxes ($b)'] = val * in_billions
+        # combined income and payroll tax liability
+        val = (recs.combined * recs.s006).sum()
+        odict['Combined Liability ($b)'] = val * in_billions
+        # number of tax units with non-positive income tax liability
+        num = (recs.s006[recs.iitax <= 0]).sum()
+        odict['With Income Tax <= 0 (#m)'] = num * in_millions
+        # number of tax units with non-positive combined tax liability
+        num = (recs.s006[recs.combined <= 0]).sum()
+        odict['With Combined Tax <= 0 (#m)'] = num * in_millions
+        return odict
+    # tabulate diagnostic table
     odict = diagnostic_table_odict(calc.records)
     pdf = pd.DataFrame(data=odict,
                        index=[calc.current_year],
@@ -685,38 +590,6 @@ def multiyear_diagnostic_table(calc, num_years=0):
     return pd.concat(dtlist, axis=1)
 
 
-def ascii_output(csv_filename, ascii_filename):
-    """
-    Converts csv output from Calculator into ascii output with uniform
-    columns and transposes data so columns are rows and rows are columns.
-    In an ipython notebook, you can import this function from the utils module.
-    """
-    # ** List of integers corresponding to the numbers of the rows in the
-    #    csv file, only rows in list will be recorded in final output.
-    #    If left as [], results in entire file are being converted to ascii.
-    #    Put in order from smallest to largest, for example:
-    #    recids = [33180, 64023, 68020, 74700, 84723, 98001, 107039, 108820]
-    recids = [1, 4, 5]
-    # ** Number of characters in each column, must be a nonnegative integer.
-    col_size = 15
-    # read csv_filename into a Pandas DataFrame
-    pdf = pd.read_csv(csv_filename, dtype=object)
-    # keep only listed recids if recids list is not empty
-    if recids != []:
-        def pdf_recid(recid):
-            """ Return Pandas DataFrame recid value for specified recid """
-            return recid - 1
-        recids = map(pdf_recid, recids)
-        pdf = pdf.ix[recids]  # pylint: disable=no-member
-    # do transposition
-    out = pdf.T.reset_index()  # pylint: disable=no-member
-    # format data into uniform columns
-    fstring = '{:' + str(col_size) + '}'
-    out = out.applymap(fstring.format)
-    # write ascii output to specified ascii_filename
-    out.to_csv(ascii_filename, header=False, index=False, sep='\t')
-
-
 def mtr_graph_data(calc1, calc2,
                    mars='ALL',
                    mtr_measure='combined',
@@ -725,7 +598,8 @@ def mtr_graph_data(calc1, calc2,
                    mtr_wrt_full_compen=False,
                    income_measure='expanded_income',
                    dollar_weighting=False):
-    """Prepare marginal tax rate data needed by xtr_graph_plot utility function.
+    """
+    Prepare marginal tax rate data needed by xtr_graph_plot utility function.
 
     Parameters
     ----------
@@ -791,7 +665,6 @@ def mtr_graph_data(calc1, calc2,
     Returns
     -------
     dictionary object suitable for passing to xtr_graph_plot utility function
-
     """
     # pylint: disable=too-many-arguments,too-many-statements,
     # pylint: disable=too-many-locals,too-many-branches
@@ -1051,26 +924,6 @@ def atr_graph_data(calc1, calc2,
     return data
 
 
-def requires_bokeh(func):
-    """
-    Decorator for functions that require the bokeh package.
-    If BOKEH_AVAILABLE=True, this does nothing.
-    IF BOKEH_AVAILABLE=False, we raise an exception and tell the caller
-    that they must install the bokeh package in order to use the function.
-    """
-    def wrapped_f(*args, **kwargs):
-        """
-        Raise error if bokeh package is not available.
-        """
-        if BOKEH_AVAILABLE:
-            return func(*args, **kwargs)
-        else:
-            msg = "install graphing package using `conda install bokeh`"
-            raise RuntimeError(msg)
-    return wrapped_f
-
-
-@requires_bokeh
 def xtr_graph_plot(data,
                    width=850,
                    height=500,
@@ -1111,14 +964,20 @@ def xtr_graph_plot(data,
 
     Notes
     -----
-    USAGE EXAMPLE:
+    USAGE EXAMPLE::
+
       gdata = mtr_graph_data(calc1, calc2)
       gplot = xtr_graph_plot(gdata)
-    THEN  # when working interactively in a Python notebook
+
+    THEN when working interactively in a Python notebook::
+
       bp.show(gplot)
-    OR    # when executing script using Python command-line interpreter
+
+    OR when executing script using Python command-line interpreter::
+
       bio.output_file('graph-name.html', title='?TR by Income Percentile')
       bio.show(gplot)  [OR bio.save(gplot) WILL JUST WRITE FILE TO DISK]
+
     WILL VISUALIZE GRAPH IN BROWSER AND WRITE GRAPH TO SPECIFIED HTML FILE
 
     To convert the visualized graph into a PNG-formatted file, click on
@@ -1163,7 +1022,6 @@ def xtr_graph_plot(data,
     return fig
 
 
-@requires_bokeh
 def write_graph_file(figure, filename, title):
     """
     Write HTML file named filename containing figure.
@@ -1186,35 +1044,6 @@ def write_graph_file(figure, filename, title):
     delete_file(filename)    # work around annoying 'already exists' bokeh msg
     bio.output_file(filename=filename, title=title)
     bio.save(figure)
-
-
-def read_json_from_file(path):
-    """
-    Return a dict of data loaded from the json file stored at path.
-    """
-    with open(path, 'r') as rfile:
-        data = json.load(rfile)
-    return data
-
-
-def write_json_to_file(data, path, indent=4, sort_keys=False):
-    """
-    Write data to a file at path in json format.
-    """
-    with open(path, 'w') as wfile:
-        json.dump(data, wfile, indent=indent, sort_keys=sort_keys)
-
-
-def string_to_number(string):
-    """
-    Return either integer or float conversion of specified string.
-    """
-    if not string:
-        return 0
-    try:
-        return int(string)
-    except ValueError:
-        return float(string)
 
 
 def isoelastic_utility_function(consumption, crra, cmin):
@@ -1423,13 +1252,6 @@ def read_egg_json(fname):
     except:
         raise ValueError('could not read {} data from egg'.format(fname))
     return pdict
-
-
-def temporary_filename(suffix=''):
-    """
-    Return string containing filename.
-    """
-    return 'tmp{}{}'.format(random.randint(10000000, 99999999), suffix)
 
 
 def delete_file(filename):
