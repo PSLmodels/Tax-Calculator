@@ -1,5 +1,5 @@
 from taxcalc.filings.forms.tax_form import TaxForm
-from taxcalc.utils import string_to_number
+from taxcalc.filings.forms.utils import string_to_number
 
 
 class US1040(TaxForm):

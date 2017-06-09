@@ -1,5 +1,5 @@
 """
-Tax-Calculator utility functions.
+PUBLIC utility functions for Tax-Calculator.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 utils.py
@@ -11,18 +11,14 @@ import os
 import math
 import copy
 import json
-import random
 from collections import defaultdict, OrderedDict
 from pkg_resources import resource_stream, Requirement
 import six
 import numpy as np
 import pandas as pd
-try:
-    BOKEH_AVAILABLE = True
-    import bokeh.io as bio
-    import bokeh.plotting as bp
-except ImportError:
-    BOKEH_AVAILABLE = False
+import bokeh.io as bio
+import bokeh.plotting as bp
+from taxcalc._utils import *
 
 
 STATS_COLUMNS = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
@@ -53,90 +49,15 @@ DIFF_TABLE_LABELS = ['Tax Units with Tax Cut', 'Tax Units with Tax Increase',
                      'Percent with Tax Increase', 'Percent with Tax Decrease',
                      'Share of Overall Change']
 
-LARGE_INCOME_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
-                     200000, 1e14]
+LARGE_INCOME_BINS = [-1e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+                     200000, 1e99]
 
-SMALL_INCOME_BINS = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
+SMALL_INCOME_BINS = [-1e99, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
                      49999, 74999, 99999, 199999, 499999, 999999, 1499999,
-                     1999999, 4999999, 9999999, 1e14]
+                     1999999, 4999999, 9999999, 1e99]
 
-WEBAPP_INCOME_BINS = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
-                      199999, 499999, 1000000, 1e14]
-
-EPSILON = 0.000000001
-
-
-def count_gt_zero(data):
-    """
-    Return unweighted count of positive data items.
-    """
-    return sum([1 for item in data if item > 0])
-
-
-def count_lt_zero(data):
-    """
-    Return unweighted count of negative data items.
-    """
-    return sum([1 for item in data if item < 0])
-
-
-def weighted_count_lt_zero(pdf, col_name, tolerance=-0.001):
-    """
-    Return weighted count of negative Pandas DateFrame col_name items.
-    """
-    return pdf[pdf[col_name] < tolerance]['s006'].sum()
-
-
-def weighted_count_gt_zero(pdf, col_name, tolerance=0.001):
-    """
-    Return weighted count of positive Pandas DateFrame col_name items.
-    """
-    return pdf[pdf[col_name] > tolerance]['s006'].sum()
-
-
-def weighted_count(pdf):
-    """
-    Return weighted count of items in Pandas DataFrame.
-    """
-    return pdf['s006'].sum()
-
-
-def weighted_mean(pdf, col_name):
-    """
-    Return weighted mean of Pandas DataFrame col_name items.
-    """
-    return (float((pdf[col_name] * pdf['s006']).sum()) /
-            float(pdf['s006'].sum() + EPSILON))
-
-
-def wage_weighted(pdf, col_name):
-    """
-    Return wage-weighted mean of Pandas DataFrame col_name items.
-    """
-    swght = 's006'
-    wage = 'e00200'
-    return (float((pdf[col_name] * pdf[swght] * pdf[wage]).sum()) /
-            float((pdf[swght] * pdf[wage]).sum() + EPSILON))
-
-
-def agi_weighted(pdf, col_name):
-    """
-    Return AGI-weighted mean of Pandas DataFrame col_name items.
-    """
-    swght = 's006'
-    agi = 'c00100'
-    return (float((pdf[col_name] * pdf[swght] * pdf[agi]).sum()) /
-            float((pdf[swght] * pdf[agi]).sum() + EPSILON))
-
-
-def expanded_income_weighted(pdf, col_name):
-    """
-    Return expanded-income-weighted mean of Pandas DataFrame col_name items.
-    """
-    swght = 's006'
-    expinc = 'expanded_income'
-    return (float((pdf[col_name] * pdf[swght] * pdf[expinc]).sum()) /
-            float((pdf[swght] * pdf[expinc]).sum() + EPSILON))
+WEBAPP_INCOME_BINS = [-1e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+                      199999, 499999, 1000000, 1e99]
 
 
 def unweighted_sum(pdf, col_name):
@@ -151,31 +72,6 @@ def weighted_sum(pdf, col_name):
     Return weighted sum of Pandas DataFrame col_name items.
     """
     return (pdf[col_name] * pdf['s006']).sum()
-
-
-def weighted_perc_inc(pdf, col_name):
-    """
-    Return weighted fraction (not percent) of positive values for the
-    variable with col_name in the specified Pandas DataFrame.
-    """
-    return (float(weighted_count_gt_zero(pdf, col_name)) /
-            float(weighted_count(pdf) + EPSILON))
-
-
-def weighted_perc_dec(pdf, col_name):
-    """
-    Return weighted fraction (not percent) of negative values for the
-    variable with col_name in the specified Pandas DataFrame.
-    """
-    return (float(weighted_count_lt_zero(pdf, col_name)) /
-            float(weighted_count(pdf) + EPSILON))
-
-
-def weighted_share_of_total(pdf, col_name, total):
-    """
-    Return ratio of weighted_sum(pdf, col_name) and specified total.
-    """
-    return float(weighted_sum(pdf, col_name)) / (float(total) + EPSILON)
 
 
 def add_weighted_income_bins(pdf, num_bins=10, labels=None,
@@ -252,6 +148,14 @@ def add_income_bins(pdf, compare_with='soi', bins=None, right=True,
     return pdf
 
 
+def _weighted_share_of_total(pdf, col_name, total):
+    """
+    Private utility function that returns the ratio of
+    weighted_sum(pdf, col_name) and the specified total.
+    """
+    return float(weighted_sum(pdf, col_name)) / (float(total) + EPSILON)
+
+
 def means_and_comparisons(col_name, gpdf, weighted_total):
     """
     Return new Pandas DataFrame based on grouped values of specified
@@ -268,7 +172,7 @@ def means_and_comparisons(col_name, gpdf, weighted_total):
     diffs['tot_change'] = gpdf.apply(weighted_sum, col_name)
     diffs['perc_inc'] = gpdf.apply(weighted_perc_inc, col_name)
     diffs['perc_cut'] = gpdf.apply(weighted_perc_dec, col_name)
-    diffs['share_of_change'] = gpdf.apply(weighted_share_of_total,
+    diffs['share_of_change'] = gpdf.apply(_weighted_share_of_total,
                                           col_name, weighted_total)
     return diffs
 
@@ -342,9 +246,10 @@ def weighted_avg_allcols(pdf, col_list, income_measure='expanded_income'):
     return wadf
 
 
-def add_columns(pdf):
+def _add_columns(pdf):
     """
-    Add several columns to specified Pandas DataFrame.
+    Private utility function that adds several columns to
+    the specified Pandas DataFrame, pdf.
     """
     # weight of returns with positive AGI and
     # itemized deduction greater than standard deduction
@@ -410,7 +315,7 @@ def create_distribution_table(obj, groupby, result_type,
     """
     # pylint: disable=too-many-arguments
     res = results(obj)
-    res = add_columns(res)
+    res = _add_columns(res)
     if baseline_obj is not None:
         res_base = results(baseline_obj)
         if obj.current_year != baseline_obj.current_year:
@@ -420,7 +325,7 @@ def create_distribution_table(obj, groupby, result_type,
         res[baseline_income_measure] = res_base[income_measure]
         income_measure = baseline_income_measure
         if diffs:
-            res_base = add_columns(res_base)
+            res_base = _add_columns(res_base)
             res = res.subtract(res_base)
             res['s006'] = res_base['s006']
     # sorts the data
@@ -548,9 +453,10 @@ def create_difference_table(recs1, recs2, groupby,
     return diffs
 
 
-def diagnostic_table_odict(recs):
+def _diagnostic_table_odict(recs):
     """
-    Extract diagnostic table dictionary from specified Records object.
+    Private utility function that extracts diagnostic table dictionary from
+    the specified Records object, recs.
 
     Parameters
     ----------
@@ -643,7 +549,7 @@ def create_diagnostic_table(calc):
     -------
     Pandas DataFrame object containing the table for calc.current_year
     """
-    odict = diagnostic_table_odict(calc.records)
+    odict = _diagnostic_table_odict(calc.records)
     pdf = pd.DataFrame(data=odict,
                        index=[calc.current_year],
                        columns=odict.keys())
@@ -683,38 +589,6 @@ def multiyear_diagnostic_table(calc, num_years=0):
         if iyr < num_years:
             cal.increment_year()
     return pd.concat(dtlist, axis=1)
-
-
-def ascii_output(csv_filename, ascii_filename):
-    """
-    Converts csv output from Calculator into ascii output with uniform
-    columns and transposes data so columns are rows and rows are columns.
-    In an ipython notebook, you can import this function from the utils module.
-    """
-    # ** List of integers corresponding to the numbers of the rows in the
-    #    csv file, only rows in list will be recorded in final output.
-    #    If left as [], results in entire file are being converted to ascii.
-    #    Put in order from smallest to largest, for example:
-    #    recids = [33180, 64023, 68020, 74700, 84723, 98001, 107039, 108820]
-    recids = [1, 4, 5]
-    # ** Number of characters in each column, must be a nonnegative integer.
-    col_size = 15
-    # read csv_filename into a Pandas DataFrame
-    pdf = pd.read_csv(csv_filename, dtype=object)
-    # keep only listed recids if recids list is not empty
-    if recids != []:
-        def pdf_recid(recid):
-            """ Return Pandas DataFrame recid value for specified recid """
-            return recid - 1
-        recids = map(pdf_recid, recids)
-        pdf = pdf.ix[recids]  # pylint: disable=no-member
-    # do transposition
-    out = pdf.T.reset_index()  # pylint: disable=no-member
-    # format data into uniform columns
-    fstring = '{:' + str(col_size) + '}'
-    out = out.applymap(fstring.format)
-    # write ascii output to specified ascii_filename
-    out.to_csv(ascii_filename, header=False, index=False, sep='\t')
 
 
 def mtr_graph_data(calc1, calc2,
@@ -1051,26 +925,6 @@ def atr_graph_data(calc1, calc2,
     return data
 
 
-def requires_bokeh(func):
-    """
-    Decorator for functions that require the bokeh package.
-    If BOKEH_AVAILABLE=True, this does nothing.
-    IF BOKEH_AVAILABLE=False, we raise an exception and tell the caller
-    that they must install the bokeh package in order to use the function.
-    """
-    def wrapped_f(*args, **kwargs):
-        """
-        Raise error if bokeh package is not available.
-        """
-        if BOKEH_AVAILABLE:
-            return func(*args, **kwargs)
-        else:
-            msg = "install graphing package using `conda install bokeh`"
-            raise RuntimeError(msg)
-    return wrapped_f
-
-
-@requires_bokeh
 def xtr_graph_plot(data,
                    width=850,
                    height=500,
@@ -1163,7 +1017,6 @@ def xtr_graph_plot(data,
     return fig
 
 
-@requires_bokeh
 def write_graph_file(figure, filename, title):
     """
     Write HTML file named filename containing figure.
@@ -1186,35 +1039,6 @@ def write_graph_file(figure, filename, title):
     delete_file(filename)    # work around annoying 'already exists' bokeh msg
     bio.output_file(filename=filename, title=title)
     bio.save(figure)
-
-
-def read_json_from_file(path):
-    """
-    Return a dict of data loaded from the json file stored at path.
-    """
-    with open(path, 'r') as rfile:
-        data = json.load(rfile)
-    return data
-
-
-def write_json_to_file(data, path, indent=4, sort_keys=False):
-    """
-    Write data to a file at path in json format.
-    """
-    with open(path, 'w') as wfile:
-        json.dump(data, wfile, indent=indent, sort_keys=sort_keys)
-
-
-def string_to_number(string):
-    """
-    Return either integer or float conversion of specified string.
-    """
-    if not string:
-        return 0
-    try:
-        return int(string)
-    except ValueError:
-        return float(string)
 
 
 def isoelastic_utility_function(consumption, crra, cmin):
@@ -1423,13 +1247,6 @@ def read_egg_json(fname):
     except:
         raise ValueError('could not read {} data from egg'.format(fname))
     return pdict
-
-
-def temporary_filename(suffix=''):
-    """
-    Return string containing filename.
-    """
-    return 'tmp{}{}'.format(random.randint(10000000, 99999999), suffix)
 
 
 def delete_file(filename):

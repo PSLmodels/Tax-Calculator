@@ -113,3 +113,4 @@ taxcalc.utils
 
 .. automodule:: taxcalc.utils
    :members:
+   :exclude-members: _add_columns, _diagnostic_table_odict, _weighted_share_of_total

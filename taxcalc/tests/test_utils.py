@@ -19,19 +19,19 @@ import pytest
 # pylint: disable=import-error
 from taxcalc import Policy, Records, Behavior, Calculator, ParametersBase
 from taxcalc.utils import (TABLE_COLUMNS, TABLE_LABELS, STATS_COLUMNS,
-                           create_distribution_table, add_columns,
+                           create_distribution_table, _add_columns,
                            create_difference_table, delete_file,
                            count_lt_zero, weighted_count_lt_zero,
                            count_gt_zero, weighted_count_gt_zero,
                            weighted_count, weighted_sum, weighted_mean,
                            wage_weighted, agi_weighted,
-                           expanded_income_weighted, weighted_share_of_total,
+                           expanded_income_weighted, _weighted_share_of_total,
                            weighted_perc_inc, weighted_perc_dec,
                            add_income_bins, add_weighted_income_bins,
                            multiyear_diagnostic_table,
                            mtr_graph_data, atr_graph_data,
                            xtr_graph_plot, write_graph_file,
-                           temporary_filename, ascii_output, string_to_number,
+                           temporary_filename, ascii_output,
                            write_json_to_file, read_json_from_file,
                            read_egg_csv, read_egg_json,
                            certainty_equivalent, ce_aftertax_income)
@@ -286,7 +286,7 @@ def test_weighted_perc_dec():
 def test_weighted_share_of_total():
     dfx = pd.DataFrame(data=DATA, columns=['tax_diff', 's006', 'label'])
     grouped = dfx.groupby('label')
-    diffs = grouped.apply(weighted_share_of_total, 'tax_diff', 42.0)
+    diffs = grouped.apply(_weighted_share_of_total, 'tax_diff', 42.0)
     exp = pd.Series(data=[16.0 / 42.001, 26.0 / 42.001],
                     index=['a', 'b'])
     exp.index.name = 'label'
@@ -299,8 +299,8 @@ EPSILON = 1e-5
 def test_add_income_bins():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
-    bins = [-1e14, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
-            200000, 1e14]
+    bins = [-1e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+            200000, 1e99]
     dfr = add_income_bins(dfx, compare_with='tpc', bins=None)
     groupedr = dfr.groupby('bins')
     idx = 1
@@ -320,9 +320,9 @@ def test_add_income_bins():
 def test_add_income_bins_soi():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
-    bins = [-1e14, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
+    bins = [-1e99, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
             49999, 74999, 99999, 199999, 499999, 999999, 1499999,
-            1999999, 4999999, 9999999, 1e14]
+            1999999, 4999999, 9999999, 1e99]
     dfr = add_income_bins(dfx, compare_with='soi', bins=None)
     groupedr = dfr.groupby('bins')
     idx = 1
@@ -342,7 +342,7 @@ def test_add_income_bins_soi():
 def test_add_exp_income_bins():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
-    bins = [-1e14, 0, 4999, 9999, 14999, 19999, 29999, 32999, 43999, 1e14]
+    bins = [-1e99, 0, 4999, 9999, 14999, 19999, 29999, 32999, 43999, 1e99]
     dfr = add_income_bins(dfx, bins=bins)
     groupedr = dfr.groupby('bins')
     idx = 1
@@ -391,7 +391,7 @@ def test_add_columns():
     dfx = pd.DataFrame(data=cols,
                        columns=['c00100', 'c04470', 'standard',
                                 'c09600', 's006'])
-    add_columns(dfx)
+    dfx = _add_columns(dfx)
     assert_equal(dfx.c04470, np.array([40, 0, 0]))
     assert_equal(dfx.num_returns_ItemDed, np.array([10, 0, 0]))
     assert_equal(dfx.num_returns_StandardDed, np.array([0, 20, 0]))
@@ -652,18 +652,6 @@ def test_xtr_graph_plot(records_2009):
     assert isinstance(gdata, dict)
 
 
-def test_xtr_graph_plot_no_bokeh(records_2009):
-    import taxcalc
-    taxcalc.utils.BOKEH_AVAILABLE = False
-    calc = Calculator(policy=Policy(),
-                      records=records_2009,
-                      behavior=Behavior())
-    gdata = mtr_graph_data(calc, calc)
-    with pytest.raises(RuntimeError):
-        xtr_graph_plot(gdata)
-    taxcalc.utils.BOKEH_AVAILABLE = True
-
-
 def test_write_graph_file(records_2009):
     calc = Calculator(policy=Policy(), records=records_2009)
     gdata = mtr_graph_data(calc, calc, mtr_measure='ptax',
@@ -799,14 +787,6 @@ def test_json_read_write():
     assert read_json_from_file(test_file.name) == {'1': 1, 'b': 'b', '3': '3'}
     test_file.close()
     os.remove(test_file.name)
-
-
-def test_string_to_number():
-    assert string_to_number(None) == 0
-    assert string_to_number('') == 0
-    assert string_to_number('1') == 1
-    assert string_to_number('1.') == 1.
-    assert string_to_number('1.23') == 1.23
 
 
 def test_ce_aftertax_income(puf_1991, weights_1991):
