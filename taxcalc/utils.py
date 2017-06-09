@@ -16,8 +16,11 @@ from pkg_resources import resource_stream, Requirement
 import six
 import numpy as np
 import pandas as pd
-import bokeh.io as bio
-import bokeh.plotting as bp
+try:
+    import bokeh.io as bio
+    import bokeh.plotting as bp
+except ImportError:
+    pass
 from taxcalc._utils import *
 
 

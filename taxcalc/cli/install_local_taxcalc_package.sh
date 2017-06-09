@@ -26,6 +26,7 @@ fi
 # build taxcalc conda package
 cd ../../conda.recipe/
 conda build --python 2.7 . 2>&1 | awk '$1~/BUILD/||$1~/TEST/'
+conda build purge
 
 # install taxcalc conda package
 conda install taxcalc=0.0.0 --use-local --yes 2>&1 > /dev/null
