@@ -18,12 +18,11 @@ from taxcalc.behavior import Behavior
 from taxcalc.growdiff import Growdiff
 from taxcalc.growfactors import Growfactors
 from taxcalc.calculate import Calculator
-from taxcalc.utils import delete_file
-from taxcalc.utils import ce_aftertax_income
-from taxcalc.utils import atr_graph_data, mtr_graph_data
-from taxcalc.utils import xtr_graph_plot, write_graph_file
-from taxcalc.utils import add_weighted_income_bins
-from taxcalc.utils import unweighted_sum, weighted_sum
+from taxcalc.utils import (delete_file, ce_aftertax_income,
+                           atr_graph_data, mtr_graph_data,
+                           xtr_graph_plot, write_graph_file,
+                           add_weighted_income_bins,
+                           unweighted_sum, weighted_sum)
 
 
 class TaxCalcIO(object):
@@ -246,7 +245,7 @@ class TaxCalcIO(object):
 
     def tax_year(self):
         """
-        Returns year for which TaxCalcIO calculations are being done.
+        Return calendar year for which TaxCalcIO calculations are being done.
         """
         return self.calc.policy.current_year
 
@@ -496,7 +495,7 @@ class TaxCalcIO(object):
 
     def minimal_output(self):
         """
-        Extract minimal output and return as pandas DataFrame.
+        Extract minimal output and return it as Pandas DataFrame.
         """
         varlist = ['RECID', 'YEAR', 'WEIGHT', 'INCTAX', 'LSTAX', 'PAYTAX']
         odict = dict()
@@ -553,7 +552,7 @@ class TaxCalcIO(object):
 
     def dump_output(self, mtr_inctax, mtr_paytax):
         """
-        Extract dump output and return it as pandas DataFrame.
+        Extract dump output and return it as Pandas DataFrame.
         """
         # specify mtr values in percentage terms
         self.calc.records.mtr_inctax[:] = mtr_inctax * 100.
