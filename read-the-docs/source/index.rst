@@ -9,7 +9,11 @@ policies.  The Tax-Calculator is written in Python, an interpreted
 language that can execute on Windows, Mac, or Linux.
 
 This documentation is about **developing** Tax-Calculator.  If you
-just want to **use** Tax-Calculator, read this `user documentation`_.
+just want to **use** Tax-Calculator to conduct tax analysis, read this
+`user documentation`_.
+
+If you are relying on Tax-Calculator capabilities in your own project,
+be sure to read the definition of the `Tax-Calculator Public API`_.
 
 
 Contents
@@ -20,7 +24,6 @@ Contents
    
    about_ospc.rst
    contributor_guide.rst
-   make_local_change.rst
    parameter_naming.rst
    public_api.rst
    data.rst
@@ -31,3 +34,6 @@ Contents
 
 .. _`user documentation`:
    http://open-source-economics.github.io/Tax-Calculator/
+
+.. _`Tax-Calculator Public API`:
+   http://taxcalc.readthedocs.io/en/latest/public_api.html
