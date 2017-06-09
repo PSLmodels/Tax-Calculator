@@ -18,7 +18,8 @@ PUFCSV_YEAR = 2009
 
 
 class Records(object):
-    """Constructor for the tax-filing-unit records class.
+    """
+    Constructor for the tax-filing-unit Records class.
 
     Parameters
     ----------
@@ -172,8 +173,8 @@ class Records(object):
 
     def increment_year(self):
         """
-        Adds one to current year.
-        Also, does blowup and reweighting for the new current year.
+        Add one to current year.
+        Also, does extrapolation, reweighting, adjusting for new current year.
         """
         self._current_year += 1
         # apply variable extrapolation growfactors
@@ -189,8 +190,9 @@ class Records(object):
 
     def set_current_year(self, new_current_year):
         """
-        Sets current year to specified value and updates FLPDYR variable.
-        Unlike increment_year method, extrapolation & reweighting are skipped.
+        Set current year to specified value and updates FLPDYR variable.
+        Unlike increment_year method, extrapolation, reweighting, adjusting
+        are skipped.
         """
         self._current_year = new_current_year
         self.FLPDYR.fill(new_current_year)
@@ -198,7 +200,7 @@ class Records(object):
     @staticmethod
     def read_var_info():
         """
-        Reads Records variables metadata from JSON file;
+        Read Records variables metadata from JSON file;
         returns dictionary and specifies static varname sets listed below.
         """
         if os.path.exists(Records.VAR_INFO_PATH):
@@ -238,7 +240,7 @@ class Records(object):
 
     def _blowup(self, year):
         """
-        Applies to variables the grow factors for specified calendar year.
+        Apply to variables the grow factors for specified calendar year.
         """
         # pylint: disable=too-many-locals,too-many-statements
         AWAGE = self.gfactors.factor_value('AWAGE', year)
@@ -408,7 +410,7 @@ class Records(object):
 
     def zero_out_changing_calculated_vars(self):
         """
-        Set all Records.CHANGING_CALCULATED_VARS to zero.
+        Set to zero all variables in the Records.CHANGING_CALCULATED_VARS set.
         """
         for varname in Records.CHANGING_CALCULATED_VARS:
             var = getattr(self, varname)
