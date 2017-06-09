@@ -148,14 +148,6 @@ def add_income_bins(pdf, compare_with='soi', bins=None, right=True,
     return pdf
 
 
-def _weighted_share_of_total(pdf, col_name, total):
-    """
-    Private utility function that returns the ratio of
-    weighted_sum(pdf, col_name) and the specified total.
-    """
-    return float(weighted_sum(pdf, col_name)) / (float(total) + EPSILON)
-
-
 def means_and_comparisons(col_name, gpdf, weighted_total):
     """
     Return new Pandas DataFrame based on grouped values of specified
@@ -163,7 +155,13 @@ def means_and_comparisons(col_name, gpdf, weighted_total):
     col_name: the column name to calculate against
     gpdf: grouped Pandas DataFrame
     """
-    # Who has a tax cut, and who has a tax increase
+    def weighted_share_of_total(pdf, col_name, total):
+        """
+        Nested function that returns the ratio of
+        weighted_sum(pdf, col_name) and the specified total.
+        """
+        return float(weighted_sum(pdf, col_name)) / (float(total) + EPSILON)
+    # tabulate who has a tax cut and who has a tax increase
     diffs = gpdf.apply(weighted_count_lt_zero, col_name)
     diffs = pd.DataFrame(data=diffs, columns=['tax_cut'])
     diffs['tax_inc'] = gpdf.apply(weighted_count_gt_zero, col_name)
@@ -172,7 +170,7 @@ def means_and_comparisons(col_name, gpdf, weighted_total):
     diffs['tot_change'] = gpdf.apply(weighted_sum, col_name)
     diffs['perc_inc'] = gpdf.apply(weighted_perc_inc, col_name)
     diffs['perc_cut'] = gpdf.apply(weighted_perc_dec, col_name)
-    diffs['share_of_change'] = gpdf.apply(_weighted_share_of_total,
+    diffs['share_of_change'] = gpdf.apply(weighted_share_of_total,
                                           col_name, weighted_total)
     return diffs
 
@@ -246,26 +244,6 @@ def weighted_avg_allcols(pdf, col_list, income_measure='expanded_income'):
     return wadf
 
 
-def _add_columns(pdf):
-    """
-    Private utility function that adds several columns to
-    the specified Pandas DataFrame, pdf.
-    """
-    # weight of returns with positive AGI and
-    # itemized deduction greater than standard deduction
-    pdf['c04470'] = pdf['c04470'].where(
-        ((pdf['c00100'] > 0.) & (pdf['c04470'] > pdf['standard'])), 0.)
-    # weight of returns with positive AGI and itemized deduction
-    pdf['num_returns_ItemDed'] = pdf['s006'].where(
-        ((pdf['c00100'] > 0.) & (pdf['c04470'] > 0.)), 0.)
-    # weight of returns with positive AGI and standard deduction
-    pdf['num_returns_StandardDed'] = pdf['s006'].where(
-        ((pdf['c00100'] > 0.) & (pdf['standard'] > 0.)), 0.)
-    # weight of returns with positive Alternative Minimum Tax (AMT)
-    pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
-    return pdf
-
-
 def create_distribution_table(obj, groupby, result_type,
                               income_measure='expanded_income',
                               baseline_obj=None, diffs=False):
@@ -314,8 +292,27 @@ def create_distribution_table(obj, groupby, result_type,
     Pandas DataFrame object
     """
     # pylint: disable=too-many-arguments
+    def add_columns(pdf):
+        """
+        Nested function that adds several columns to
+        the specified Pandas DataFrame, pdf.
+        """
+        # weight of returns with positive AGI and
+        # itemized deduction greater than standard deduction
+        pdf['c04470'] = pdf['c04470'].where(
+            ((pdf['c00100'] > 0.) & (pdf['c04470'] > pdf['standard'])), 0.)
+        # weight of returns with positive AGI and itemized deduction
+        pdf['num_returns_ItemDed'] = pdf['s006'].where(
+            ((pdf['c00100'] > 0.) & (pdf['c04470'] > 0.)), 0.)
+        # weight of returns with positive AGI and standard deduction
+        pdf['num_returns_StandardDed'] = pdf['s006'].where(
+            ((pdf['c00100'] > 0.) & (pdf['standard'] > 0.)), 0.)
+        # weight of returns with positive Alternative Minimum Tax (AMT)
+        pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
+        return pdf
+    # create distribution table
     res = results(obj)
-    res = _add_columns(res)
+    res = add_columns(res)
     if baseline_obj is not None:
         res_base = results(baseline_obj)
         if obj.current_year != baseline_obj.current_year:
@@ -325,10 +322,10 @@ def create_distribution_table(obj, groupby, result_type,
         res[baseline_income_measure] = res_base[income_measure]
         income_measure = baseline_income_measure
         if diffs:
-            res_base = _add_columns(res_base)
+            res_base = add_columns(res_base)
             res = res.subtract(res_base)
             res['s006'] = res_base['s006']
-    # sorts the data
+    # sort the data
     if groupby == 'weighted_deciles':
         pdf = add_weighted_income_bins(res, num_bins=10,
                                        income_measure=income_measure)
@@ -346,7 +343,7 @@ def create_distribution_table(obj, groupby, result_type,
                "'small_income_bins' or 'large_income_bins' or "
                "'webapp_income_bins'")
         raise ValueError(msg)
-    # manipulates the data
+    # manipulate the data
     pd.options.display.float_format = '{:8,.0f}'.format
     if result_type == 'weighted_sum':
         pdf = weighted(pdf, STATS_COLUMNS)
@@ -453,89 +450,6 @@ def create_difference_table(recs1, recs2, groupby,
     return diffs
 
 
-def _diagnostic_table_odict(recs):
-    """
-    Private utility function that extracts diagnostic table dictionary from
-    the specified Records object, recs.
-
-    Parameters
-    ----------
-    recs : Records class object
-
-    Returns
-    -------
-    ordered dictionary of variable names and aggregate weighted values
-    """
-    # aggregate weighted values expressed in millions or billions
-    in_millions = 1.0e-6
-    in_billions = 1.0e-9
-    odict = OrderedDict()
-    # total number of filing units
-    odict['Returns (#m)'] = recs.s006.sum() * in_millions
-    # adjusted gross income
-    odict['AGI ($b)'] = (recs.c00100 * recs.s006).sum() * in_billions
-    # number of itemizers
-    num = (recs.s006[(recs.c04470 > 0.) * (recs.c00100 > 0.)].sum())
-    odict['Itemizers (#m)'] = num * in_millions
-    # itemized deduction
-    ided1 = recs.c04470 * recs.s006
-    val = ided1[recs.c04470 > 0.].sum()
-    odict['Itemized Deduction ($b)'] = val * in_billions
-    # number of standard deductions
-    num = recs.s006[(recs.standard > 0.) * (recs.c00100 > 0.)].sum()
-    odict['Standard Deduction Filers (#m)'] = num * in_millions
-    # standard deduction
-    sded1 = recs.standard * recs.s006
-    val = sded1[(recs.standard > 0.) * (recs.c00100 > 0.)].sum()
-    odict['Standard Deduction ($b)'] = val * in_billions
-    # personal exemption
-    val = (recs.c04600 * recs.s006)[recs.c00100 > 0.].sum()
-    odict['Personal Exemption ($b)'] = val * in_billions
-    # taxable income
-    val = (recs.c04800 * recs.s006).sum()
-    odict['Taxable Income ($b)'] = val * in_billions
-    # regular tax liability
-    val = (recs.taxbc * recs.s006).sum()
-    odict['Regular Tax ($b)'] = val * in_billions
-    # AMT taxable income
-    odict['AMT Income ($b)'] = (recs.c62100 * recs.s006).sum() * in_billions
-    # total AMT liability
-    odict['AMT Liability ($b)'] = (recs.c09600 * recs.s006).sum() * in_billions
-    # number of people paying AMT
-    odict['AMT Filers (#m)'] = recs.s006[recs.c09600 > 0.].sum() * in_millions
-    # tax before credits
-    val = (recs.c05800 * recs.s006).sum()
-    odict['Tax before Credits ($b)'] = val * in_billions
-    # refundable credits
-    val = (recs.refund * recs.s006).sum()
-    odict['Refundable Credits ($b)'] = val * in_billions
-    # nonrefundable credits
-    val = (recs.c07100 * recs.s006).sum()
-    odict['Nonrefundable Credits ($b)'] = val * in_billions
-    # reform surtaxes (part of federal individual income tax liability)
-    val = (recs.surtax * recs.s006).sum()
-    odict['Reform Surtaxes ($b)'] = val * in_billions
-    # other taxes on Form 1040
-    val = (recs.othertaxes * recs.s006).sum()
-    odict['Other Taxes ($b)'] = val * in_billions
-    # federal individual income tax liability
-    val = (recs.iitax * recs.s006).sum()
-    odict['Ind Income Tax ($b)'] = val * in_billions
-    # OASDI+HI payroll tax liability (including employer share)
-    val = (recs.payrolltax * recs.s006).sum()
-    odict['Payroll Taxes ($b)'] = val * in_billions
-    # combined income and payroll tax liability
-    val = (recs.combined * recs.s006).sum()
-    odict['Combined Liability ($b)'] = val * in_billions
-    # number of tax units with non-positive income tax liability
-    num = (recs.s006[recs.iitax <= 0]).sum()
-    odict['With Income Tax <= 0 (#m)'] = num * in_millions
-    # number of tax units with non-positive combined tax liability
-    num = (recs.s006[recs.combined <= 0]).sum()
-    odict['With Combined Tax <= 0 (#m)'] = num * in_millions
-    return odict
-
-
 def create_diagnostic_table(calc):
     """
     Extract diagnostic table from specified Calculator object.
@@ -549,7 +463,92 @@ def create_diagnostic_table(calc):
     -------
     Pandas DataFrame object containing the table for calc.current_year
     """
-    odict = _diagnostic_table_odict(calc.records)
+    def diagnostic_table_odict(recs):
+        """
+        Nested function that extracts diagnostic table dictionary from
+        the specified Records object, recs.
+
+        Parameters
+        ----------
+        recs : Records class object
+
+        Returns
+        -------
+        ordered dictionary of variable names and aggregate weighted values
+        """
+        # aggregate weighted values expressed in millions or billions
+        in_millions = 1.0e-6
+        in_billions = 1.0e-9
+        odict = OrderedDict()
+        # total number of filing units
+        odict['Returns (#m)'] = recs.s006.sum() * in_millions
+        # adjusted gross income
+        odict['AGI ($b)'] = (recs.c00100 * recs.s006).sum() * in_billions
+        # number of itemizers
+        num = (recs.s006[(recs.c04470 > 0.) * (recs.c00100 > 0.)].sum())
+        odict['Itemizers (#m)'] = num * in_millions
+        # itemized deduction
+        ided1 = recs.c04470 * recs.s006
+        val = ided1[recs.c04470 > 0.].sum()
+        odict['Itemized Deduction ($b)'] = val * in_billions
+        # number of standard deductions
+        num = recs.s006[(recs.standard > 0.) * (recs.c00100 > 0.)].sum()
+        odict['Standard Deduction Filers (#m)'] = num * in_millions
+        # standard deduction
+        sded1 = recs.standard * recs.s006
+        val = sded1[(recs.standard > 0.) * (recs.c00100 > 0.)].sum()
+        odict['Standard Deduction ($b)'] = val * in_billions
+        # personal exemption
+        val = (recs.c04600 * recs.s006)[recs.c00100 > 0.].sum()
+        odict['Personal Exemption ($b)'] = val * in_billions
+        # taxable income
+        val = (recs.c04800 * recs.s006).sum()
+        odict['Taxable Income ($b)'] = val * in_billions
+        # regular tax liability
+        val = (recs.taxbc * recs.s006).sum()
+        odict['Regular Tax ($b)'] = val * in_billions
+        # AMT taxable income
+        odict['AMT Income ($b)'] = ((recs.c62100 * recs.s006).sum() *
+                                    in_billions)
+        # total AMT liability
+        odict['AMT Liability ($b)'] = ((recs.c09600 * recs.s006).sum() *
+                                       in_billions)
+        # number of people paying AMT
+        odict['AMT Filers (#m)'] = (recs.s006[recs.c09600 > 0.].sum() *
+                                    in_millions)
+        # tax before credits
+        val = (recs.c05800 * recs.s006).sum()
+        odict['Tax before Credits ($b)'] = val * in_billions
+        # refundable credits
+        val = (recs.refund * recs.s006).sum()
+        odict['Refundable Credits ($b)'] = val * in_billions
+        # nonrefundable credits
+        val = (recs.c07100 * recs.s006).sum()
+        odict['Nonrefundable Credits ($b)'] = val * in_billions
+        # reform surtaxes (part of federal individual income tax liability)
+        val = (recs.surtax * recs.s006).sum()
+        odict['Reform Surtaxes ($b)'] = val * in_billions
+        # other taxes on Form 1040
+        val = (recs.othertaxes * recs.s006).sum()
+        odict['Other Taxes ($b)'] = val * in_billions
+        # federal individual income tax liability
+        val = (recs.iitax * recs.s006).sum()
+        odict['Ind Income Tax ($b)'] = val * in_billions
+        # OASDI+HI payroll tax liability (including employer share)
+        val = (recs.payrolltax * recs.s006).sum()
+        odict['Payroll Taxes ($b)'] = val * in_billions
+        # combined income and payroll tax liability
+        val = (recs.combined * recs.s006).sum()
+        odict['Combined Liability ($b)'] = val * in_billions
+        # number of tax units with non-positive income tax liability
+        num = (recs.s006[recs.iitax <= 0]).sum()
+        odict['With Income Tax <= 0 (#m)'] = num * in_millions
+        # number of tax units with non-positive combined tax liability
+        num = (recs.s006[recs.combined <= 0]).sum()
+        odict['With Combined Tax <= 0 (#m)'] = num * in_millions
+        return odict
+    # tabulate diagnostic table
+    odict = diagnostic_table_odict(calc.records)
     pdf = pd.DataFrame(data=odict,
                        index=[calc.current_year],
                        columns=odict.keys())
@@ -599,7 +598,8 @@ def mtr_graph_data(calc1, calc2,
                    mtr_wrt_full_compen=False,
                    income_measure='expanded_income',
                    dollar_weighting=False):
-    """Prepare marginal tax rate data needed by xtr_graph_plot utility function.
+    """
+    Prepare marginal tax rate data needed by xtr_graph_plot utility function.
 
     Parameters
     ----------
@@ -665,7 +665,6 @@ def mtr_graph_data(calc1, calc2,
     Returns
     -------
     dictionary object suitable for passing to xtr_graph_plot utility function
-
     """
     # pylint: disable=too-many-arguments,too-many-statements,
     # pylint: disable=too-many-locals,too-many-branches
@@ -965,14 +964,20 @@ def xtr_graph_plot(data,
 
     Notes
     -----
-    USAGE EXAMPLE:
+    USAGE EXAMPLE::
+
       gdata = mtr_graph_data(calc1, calc2)
       gplot = xtr_graph_plot(gdata)
-    THEN  # when working interactively in a Python notebook
+
+    THEN when working interactively in a Python notebook::
+
       bp.show(gplot)
-    OR    # when executing script using Python command-line interpreter
+
+    OR when executing script using Python command-line interpreter::
+
       bio.output_file('graph-name.html', title='?TR by Income Percentile')
       bio.show(gplot)  [OR bio.save(gplot) WILL JUST WRITE FILE TO DISK]
+
     WILL VISUALIZE GRAPH IN BROWSER AND WRITE GRAPH TO SPECIFIED HTML FILE
 
     To convert the visualized graph into a PNG-formatted file, click on

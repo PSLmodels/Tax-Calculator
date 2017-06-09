@@ -19,19 +19,19 @@ import pytest
 # pylint: disable=import-error
 from taxcalc import Policy, Records, Behavior, Calculator, ParametersBase
 from taxcalc.utils import (TABLE_COLUMNS, TABLE_LABELS, STATS_COLUMNS,
-                           create_distribution_table, _add_columns,
-                           create_difference_table, delete_file,
+                           create_distribution_table,
+                           create_difference_table,
                            count_lt_zero, weighted_count_lt_zero,
                            count_gt_zero, weighted_count_gt_zero,
                            weighted_count, weighted_sum, weighted_mean,
                            wage_weighted, agi_weighted,
-                           expanded_income_weighted, _weighted_share_of_total,
+                           expanded_income_weighted,
                            weighted_perc_inc, weighted_perc_dec,
                            add_income_bins, add_weighted_income_bins,
                            multiyear_diagnostic_table,
                            mtr_graph_data, atr_graph_data,
                            xtr_graph_plot, write_graph_file,
-                           temporary_filename, ascii_output,
+                           temporary_filename, ascii_output, delete_file,
                            write_json_to_file, read_json_from_file,
                            read_egg_csv, read_egg_json,
                            certainty_equivalent, ce_aftertax_income)
@@ -283,16 +283,6 @@ def test_weighted_perc_dec():
     assert_series_equal(exp, diffs)
 
 
-def test_weighted_share_of_total():
-    dfx = pd.DataFrame(data=DATA, columns=['tax_diff', 's006', 'label'])
-    grouped = dfx.groupby('label')
-    diffs = grouped.apply(_weighted_share_of_total, 'tax_diff', 42.0)
-    exp = pd.Series(data=[16.0 / 42.001, 26.0 / 42.001],
-                    index=['a', 'b'])
-    exp.index.name = 'label'
-    assert np.allclose(exp, diffs, rtol=0.0, atol=0.001)
-
-
 EPSILON = 1e-5
 
 
@@ -382,20 +372,6 @@ def test_add_weighted_income_bins():
     bin_labels = dfb['bins'].unique()
     for lab in bin_labels:
         assert lab in custom_labels
-
-
-def test_add_columns():
-    cols = [[1000, 40, -10, 0, 10],
-            [100, 8, 9, 100, 20],
-            [-1000, 38, 90, 800, 30]]
-    dfx = pd.DataFrame(data=cols,
-                       columns=['c00100', 'c04470', 'standard',
-                                'c09600', 's006'])
-    dfx = _add_columns(dfx)
-    assert_equal(dfx.c04470, np.array([40, 0, 0]))
-    assert_equal(dfx.num_returns_ItemDed, np.array([10, 0, 0]))
-    assert_equal(dfx.num_returns_StandardDed, np.array([0, 20, 0]))
-    assert_equal(dfx.num_returns_AMT, np.array([0, 20, 30]))
 
 
 def test_dist_table_sum_row(records_2009):
