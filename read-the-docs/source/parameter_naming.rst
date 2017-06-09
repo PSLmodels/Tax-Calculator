@@ -1,7 +1,7 @@
-Parameter Naming and Placing Conventions
-========================================
+Policy Parameter Naming and Placing Conventions
+===============================================
 
-Parameter names have two components; the first component is an
+Policy parameter names have two components; the first component is an
 abbreviation for the parameter's tax category and the second component
 is an abbreviation for the role the parameter plays in those tax
 category rules. In some cases, parameter names have a subcategory that
@@ -101,7 +101,10 @@ Examples
 Placing New Parameters in ``current_law_policy.json``
 -----------------------------------------------------
 
-All new parameters should be added to the ``current_law_policy.json``
-file in a location that maintains the convention that the policy
-parameters appear in that file in the order they are first used in the
-``functions.py`` file.
+All new policy parameters should be added to the
+``current_law_policy.json`` file in a location that is near
+conceptually similar parameters.  Be sure to specify the ``section_1``
+and ``section_2`` values of each new parameter so that it appears in
+an appropriate place on the TaxBrain input page.  If the new parameter
+is not supposed to appear on the TaxBrain input page, set the value of
+``section_1`` and ``section_2`` to an empty string.

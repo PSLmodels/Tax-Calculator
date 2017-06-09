@@ -151,8 +151,9 @@ situations, in which case other contributors are here to help.
 
      tax-calculator$ git checkout -b [new-branch-name]
 
-3. See :doc:`Making changes to your local copy of the Tax-Calculator
-   </make_local_change>` for examples showing you how to do just that.
+3. If your changes involve creating a new tax policy parameter, be
+   sure to read about Tax-Calculator :doc:`parameter naming
+   conventions </parameter_naming>`.
 
 4. As you make changes, frequently check that your changes do not
    introduce bugs or degrade the accuracy of the Tax-Calculator. To do
