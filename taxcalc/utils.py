@@ -21,7 +21,13 @@ try:
     import bokeh.plotting as bp
 except ImportError:
     pass
-from taxcalc._utils import *
+from taxcalc._utils import (weighted_count_lt_zero,
+                            weighted_count_gt_zero,
+                            weighted_count, weighted_mean,
+                            wage_weighted, agi_weighted,
+                            expanded_income_weighted,
+                            weighted_perc_inc, weighted_perc_dec,
+                            EPSILON)
 
 
 STATS_COLUMNS = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
@@ -163,7 +169,7 @@ def means_and_comparisons(col_name, gpdf, weighted_total):
         Nested function that returns the ratio of
         weighted_sum(pdf, col_name) and the specified total.
         """
-        return float(weighted_sum(pdf, col_name)) / (float(total) + EPSILON)
+        return weighted_sum(pdf, col_name) / (float(total) + EPSILON)
     # tabulate who has a tax cut and who has a tax increase
     diffs = gpdf.apply(weighted_count_lt_zero, col_name)
     diffs = pd.DataFrame(data=diffs, columns=['tax_cut'])
