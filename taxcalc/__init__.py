@@ -8,7 +8,6 @@ from taxcalc.growdiff import *
 from taxcalc.records import *
 from taxcalc.taxcalcio import *
 from taxcalc.utils import *
-from taxcalc.decorators import *
 from taxcalc.macro_elasticity import *
 from taxcalc.dropq import *
 from taxcalc.cli import *
