@@ -3,8 +3,8 @@ Tax-Calculator abstract base parameters class.
 """
 import os
 import json
-from abc import ABCMeta
-from collections import OrderedDict
+import abc
+import collections as collect
 import numpy as np
 from taxcalc.utils import read_egg_json
 
@@ -15,7 +15,7 @@ class ParametersBase(object):
     other groups of parameters that need to have a set_year method.
     Override this __init__ method and DEFAULTS_FILENAME.
     """
-    __metaclass__ = ABCMeta
+    __metaclass__ = abc.ABCMeta
 
     DEFAULTS_FILENAME = None
 
@@ -234,7 +234,8 @@ class ParametersBase(object):
                             cls.DEFAULTS_FILENAME)
         if os.path.exists(path):
             with open(path) as pfile:
-                params_dict = json.load(pfile, object_pairs_hook=OrderedDict)
+                params_dict = json.load(pfile,
+                                        object_pairs_hook=collect.OrderedDict)
         else:
             params_dict = read_egg_json(cls.DEFAULTS_FILENAME)
         return params_dict
