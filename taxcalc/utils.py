@@ -21,13 +21,13 @@ try:
     import bokeh.plotting as bp
 except ImportError:
     pass
-from taxcalc._utils import (weighted_count_lt_zero,
-                            weighted_count_gt_zero,
-                            weighted_count, weighted_mean,
-                            wage_weighted, agi_weighted,
-                            expanded_income_weighted,
-                            weighted_perc_inc, weighted_perc_dec,
-                            EPSILON)
+from taxcalc.utilsprvt import (weighted_count_lt_zero,
+                               weighted_count_gt_zero,
+                               weighted_count, weighted_mean,
+                               wage_weighted, agi_weighted,
+                               expanded_income_weighted,
+                               weighted_perc_inc, weighted_perc_dec,
+                               EPSILON)
 
 
 STATS_COLUMNS = ['expanded_income', 'c00100', 'aftertax_income', 'standard',

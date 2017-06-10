@@ -51,8 +51,9 @@ procedures](TESTING.md).  The Tax-Calculator [release
 history](RELEASES.md) provides a summary of past and current
 development work.
 
-If you are relying on Tax-Calculator capabilities in your own project,
-be sure to read the definition of the [Tax-Calculator Public
+If you are relying on Tax-Calculator capabilities in your own software
+development project, be sure to read the definition of the
+[Tax-Calculator Public
 API](http://taxcalc.readthedocs.io/en/latest/public_api.html).
 
 Citing Tax-Calculator
