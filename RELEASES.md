@@ -13,7 +13,8 @@ Release 0.9.0 on 2017-??-??
 - Initial specification of public API removes several unused utility
   functions and makes private several Tax-Calculator members whose
   only role is to support public members
-  [[#1424](https://github.com/open-source-economics/Tax-Calculator/pull/1424)]
+  [[#1424](https://github.com/open-source-economics/Tax-Calculator/pull/1424)
+  by Martin Holmer]
 
 **New Features**
 - ...
