@@ -4,17 +4,22 @@ Go
 [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
-Release 0.8.6 on 2017-06-???
+Release 0.9.0 on 2017-??-??
 ---------------------------
 (last merged pull request is
-[???](www.))
+[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
 
 **API Changes**
+- Initial specification of public API removes several unused utility
+  functions and makes private several Tax-Calculator members whose
+  only role is to support public members
+  [[#1424](https://github.com/open-source-economics/Tax-Calculator/pull/1424)]
 
 **New Features**
+- ...
 
 **Bug Fixes**
-
+- None
 
 Release 0.8.5 on 2017-06-08
 ---------------------------
