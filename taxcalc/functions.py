@@ -311,7 +311,8 @@ def UBI(nu18, n1821, n21, UBI1, UBI2, UBI3, UBI_ecrt,
 def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact,
         II_em, II_em_ps, II_prt,
         II_credit, II_credit_ps, II_credit_prt, taxable_ubi,
-        c00100, pre_c04600, c04600, personal_credit):
+        c00100, pre_c04600, c04600, personal_credit,
+        II_no_em_nu18, nu18):
     """
     AGI function: compute Adjusted Gross Income, c00100,
                   compute personal exemption amount, c04600, and
@@ -320,7 +321,10 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact,
     # calculate AGI assuming no foreign earned income exclusion
     c00100 = ymod1 + c02500 - c02900 + taxable_ubi
     # calculate personal exemption amount
-    pre_c04600 = XTOT * II_em
+    if II_no_em_nu18:  # repeal of personal exemptions for deps. under 18
+        pre_c04600 = max(0, XTOT - nu18) * II_em
+    else:
+        pre_c04600 = XTOT * II_em
     if DSI:
         pre_c04600 = 0.
     # phase-out personal exemption amount
