@@ -345,12 +345,11 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact,
 
 @iterate_jit(nopython=True)
 def ItemDed(e17500, e18400, e18500,
-            e20500, e20400, e19200, e19800, e20100,
+            g20500, e20400, e19200, e19800, e20100,
             MARS, age_head, age_spouse,
             c00100, c04470, c17000, c18300, c20500, c19200,
             c20800, c21040, c21060, c19700,
             ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_hc,
-            ID_Casualty_frt_in_pufcsv_year,
             ID_Casualty_frt, ID_Casualty_hc, ID_Miscellaneous_frt,
             ID_Miscellaneous_hc, ID_Charity_crt_all, ID_Charity_crt_noncash,
             ID_prt, ID_crt, ID_c, ID_StateLocalTax_hc, ID_Charity_frt,
@@ -423,7 +422,7 @@ def ItemDed(e17500, e18400, e18500,
 
         e20400 : Total miscellaneous expenses
 
-        e20500 : Net [of disregard] casualty or theft loss
+        g20500 : Gross casualty or theft loss (before disregard)
 
     Returns
     -------
@@ -453,12 +452,7 @@ def ItemDed(e17500, e18400, e18500,
     c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_hc)
     c19700 = min(c19700, ID_Charity_c[MARS - 1])
     # Casualty
-    if e20500 > 0.0:  # add back to e20500 the PUFCSV_YEAR disregard amount
-        c37703 = e20500 + ID_Casualty_frt_in_pufcsv_year * posagi
-    else:  # small pre-disregard e20500 values are assumed to be zero
-        c37703 = 0.
-    c20500 = (max(0., c37703 - ID_Casualty_frt * posagi) *
-              (1. - ID_Casualty_hc))
+    c20500 = max(0., g20500 - ID_Casualty_frt * posagi) * (1. - ID_Casualty_hc)
     c20500 = min(c20500, ID_Casualty_c[MARS - 1])
     # Miscellaneous
     c20400 = e20400

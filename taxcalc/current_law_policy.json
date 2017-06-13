@@ -1023,11 +1023,11 @@
 
     "_ID_Casualty_frt": {
         "long_name": "Deduction for casualty loss; floor as a decimal fraction of AGI",
-        "description": "Taxpayers are eligible to deduct the portion of their casualty loss exceeding this fraction of AGI.",
+        "description": "Taxpayers are eligible to deduct the portion of their gross casualty losses exceeding this fraction of AGI.",
         "section_1": "Itemized Deductions",
         "section_2": "Casualty",
         "irs_ref": "Form 4684, line 17, in-line.",
-        "notes": "This rate cannot be decreased to lower than 0.1 due to lack of data. ",
+        "notes": "This rate cannot be decreased to lower than 0.10 due to lack of data. ",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
