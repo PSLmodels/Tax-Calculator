@@ -1032,7 +1032,7 @@ def PersonalTaxCredit(MARS, c00100, exact,
                       II_credit_nr_prt,
                       II_credit_nr):
     """
-    PersonalTaxCredit function computes maximum and actual personal_credit amount
+    PersonalTaxCredit function computes maximum & actual personal_credit amount
     """
     # calculate personal_credit amount
     max_personal_credit = II_credit_nr[MARS - 1]
