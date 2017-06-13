@@ -11,8 +11,8 @@ import os
 import math
 import copy
 import json
-from collections import defaultdict, OrderedDict
-from pkg_resources import resource_stream, Requirement
+import collections
+import pkg_resources
 import six
 import numpy as np
 import pandas as pd
@@ -21,7 +21,13 @@ try:
     import bokeh.plotting as bp
 except ImportError:
     pass
-from taxcalc._utils import *
+from taxcalc.utilsprvt import (weighted_count_lt_zero,
+                               weighted_count_gt_zero,
+                               weighted_count, weighted_mean,
+                               wage_weighted, agi_weighted,
+                               expanded_income_weighted,
+                               weighted_perc_inc, weighted_perc_dec,
+                               EPSILON)
 
 
 STATS_COLUMNS = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
@@ -163,7 +169,7 @@ def means_and_comparisons(col_name, gpdf, weighted_total):
         Nested function that returns the ratio of
         weighted_sum(pdf, col_name) and the specified total.
         """
-        return float(weighted_sum(pdf, col_name)) / (float(total) + EPSILON)
+        return weighted_sum(pdf, col_name) / (float(total) + EPSILON)
     # tabulate who has a tax cut and who has a tax increase
     diffs = gpdf.apply(weighted_count_lt_zero, col_name)
     diffs = pd.DataFrame(data=diffs, columns=['tax_cut'])
@@ -198,7 +204,7 @@ def get_sums(pdf, not_available=False):
     -------
     Pandas Series object containing column sums indexed by pdf colum names.
     """
-    sums = defaultdict(lambda: 0)
+    sums = collections.defaultdict(lambda: 0)
     for col in pdf.columns.values.tolist():
         if col != 'bins':
             if not_available:
@@ -482,7 +488,7 @@ def create_diagnostic_table(calc):
         # aggregate weighted values expressed in millions or billions
         in_millions = 1.0e-6
         in_billions = 1.0e-9
-        odict = OrderedDict()
+        odict = collections.OrderedDict()
         # total number of filing units
         odict['Returns (#m)'] = recs.s006.sum() * in_millions
         # adjusted gross income
@@ -1235,8 +1241,12 @@ def read_egg_csv(fname, **kwargs):
     """
     try:
         path_in_egg = os.path.join('taxcalc', fname)
-        vdf = pd.read_csv(resource_stream(Requirement.parse('taxcalc'),
-                                          path_in_egg), **kwargs)
+        vdf = pd.read_csv(
+            pkg_resources.resource_stream(
+                pkg_resources.Requirement.parse('taxcalc'),
+                path_in_egg),
+            **kwargs
+        )
     except:
         raise ValueError('could not read {} data from egg'.format(fname))
     return vdf
@@ -1249,9 +1259,12 @@ def read_egg_json(fname):
     """
     try:
         path_in_egg = os.path.join('taxcalc', fname)
-        pdict = json.loads(resource_stream(Requirement.parse('taxcalc'),
-                                           path_in_egg).read().decode('utf-8'),
-                           object_pairs_hook=OrderedDict)
+        pdict = json.loads(
+            pkg_resources.resource_stream(
+                pkg_resources.Requirement.parse('taxcalc'),
+                path_in_egg).read().decode('utf-8'),
+            object_pairs_hook=collections.OrderedDict
+        )
     except:
         raise ValueError('could not read {} data from egg'.format(fname))
     return pdict

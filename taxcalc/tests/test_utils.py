@@ -9,8 +9,7 @@ Tests of Tax-Calculator utility functions.
 
 import os
 import math
-import filecmp
-import tempfile
+import random
 import numpy as np
 from numpy.testing import assert_equal, assert_almost_equal, assert_array_equal
 import pandas as pd
@@ -19,10 +18,8 @@ import pytest
 # pylint: disable=import-error
 from taxcalc import Policy, Records, Behavior, Calculator, ParametersBase
 from taxcalc.utils import (TABLE_COLUMNS, TABLE_LABELS, STATS_COLUMNS,
-                           create_distribution_table,
-                           create_difference_table,
-                           count_lt_zero, weighted_count_lt_zero,
-                           count_gt_zero, weighted_count_gt_zero,
+                           create_distribution_table, create_difference_table,
+                           weighted_count_lt_zero, weighted_count_gt_zero,
                            weighted_count, weighted_sum, weighted_mean,
                            wage_weighted, agi_weighted,
                            expanded_income_weighted,
@@ -31,9 +28,7 @@ from taxcalc.utils import (TABLE_COLUMNS, TABLE_LABELS, STATS_COLUMNS,
                            multiyear_diagnostic_table,
                            mtr_graph_data, atr_graph_data,
                            xtr_graph_plot, write_graph_file,
-                           temporary_filename, ascii_output, delete_file,
-                           write_json_to_file, read_json_from_file,
-                           read_egg_csv, read_egg_json,
+                           read_egg_csv, read_egg_json, delete_file,
                            certainty_equivalent, ce_aftertax_income)
 
 
@@ -188,7 +183,6 @@ def test_create_tables(puf_1991, weights_1991):
 
 
 def test_weighted_count_lt_zero():
-    assert count_lt_zero([0.0, 1, -1, 0, -2.2, 1.1]) == 2
     df1 = pd.DataFrame(data=DATA, columns=['tax_diff', 's006', 'label'])
     grped = df1.groupby('label')
     diffs = grped.apply(weighted_count_lt_zero, 'tax_diff')
@@ -204,7 +198,6 @@ def test_weighted_count_lt_zero():
 
 
 def test_weighted_count_gt_zero():
-    assert count_gt_zero([0.0, 1, -1, 0, -2.2, 1.1]) == 2
     df1 = pd.DataFrame(data=DATA, columns=['tax_diff', 's006', 'label'])
     grped = df1.groupby('label')
     diffs = grped.apply(weighted_count_gt_zero, 'tax_diff')
@@ -628,6 +621,11 @@ def test_xtr_graph_plot(records_2009):
     assert isinstance(gdata, dict)
 
 
+def temporary_filename(suffix=''):
+    # Return string containing the temporary filename.
+    return 'tmp{}{}'.format(random.randint(10000000, 99999999), suffix)
+
+
 def test_write_graph_file(records_2009):
     calc = Calculator(policy=Policy(), records=records_2009)
     gdata = mtr_graph_data(calc, calc, mtr_measure='ptax',
@@ -712,57 +710,6 @@ def test_myr_diag_table_w_behv(records_2009):
     # adopt units of the raw calculator data in liabilities_x
     liabilities_y = adt.iloc[19].tolist()[0] * 1000000000
     assert_almost_equal(liabilities_x, liabilities_y, 2)
-
-
-@pytest.yield_fixture
-def csvfile():
-    txt = ('A,B,C,D,EFGH\n'
-           '1,2,3,4,0\n'
-           '5,6,7,8,0\n'
-           '9,10,11,12,0\n'
-           '100,200,300,400,500\n'
-           '123.45,678.912,000.000,87,92')
-    csvf = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    csvf.write(txt + '\n')
-    csvf.close()
-    # Must close and then yield for Windows platform
-    yield csvf
-    os.remove(csvf.name)
-
-
-@pytest.yield_fixture
-def asciifile():
-    txt = (
-        'A              \t1              \t100            \t123.45         \n'
-        'B              \t2              \t200            \t678.912        \n'
-        'C              \t3              \t300            \t000.000        \n'
-        'D              \t4              \t400            \t87             \n'
-        'EFGH           \t0              \t500            \t92             '
-    )
-    ascf = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    ascf.write(txt + '\n')
-    ascf.close()
-    # Must close and then yield for Windows platform
-    yield ascf
-    os.remove(ascf.name)
-
-
-def test_ascii_output(csvfile,  # pylint: disable=redefined-outer-name
-                      asciifile):  # pylint: disable=redefined-outer-name
-    output_test = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    ascii_output(csv_filename=csvfile.name, ascii_filename=output_test.name)
-    assert filecmp.cmp(output_test.name, asciifile.name)
-    output_test.close()
-    os.remove(output_test.name)
-
-
-def test_json_read_write():
-    test_file = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    test_dict = {1: 1, 'b': 'b', 3: '3'}
-    write_json_to_file(test_dict, test_file.name)
-    assert read_json_from_file(test_file.name) == {'1': 1, 'b': 'b', '3': '3'}
-    test_file.close()
-    os.remove(test_file.name)
 
 
 def test_ce_aftertax_income(puf_1991, weights_1991):
