@@ -505,6 +505,22 @@
         "value": [0.02]
     },
 
+    "_II_no_em_nu18": {
+        "long_name": "Repeal personal exemptions for dependents under age 18",
+        "description": "Total personal exemptions will be decreased by the number of dependents under the age of 18",
+        "section_1": "Personal Exemptions",
+        "section_2": "Repeal Personal Exemptions for Dependents Under Age 18",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "value": [false]
+    },
+
     "_STD": {
         "long_name": "Standard deduction amount",
         "description": "Amount filing unit can use as a standard deduction.",
