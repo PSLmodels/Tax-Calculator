@@ -17,7 +17,9 @@ Release 0.9.0 on 2017-??-??
   by Martin Holmer]
 
 **New Features**
-- ...
+- Add nonrefundable personal credit reform options
+  [[#1427](https://github.com/open-source-economics/Tax-Calculator/pull/1427)
+  by William Ensor]
 
 **Bug Fixes**
 - None
