@@ -768,6 +768,11 @@
       "desc": "",
       "form": {}
     },
+    "personal_credit": {
+      "type": "float",
+      "desc": "Personl nonrefundable credit",
+      "form": {}
+    },
     "dwks10": {
       "type": "float",
       "desc": "",
@@ -819,6 +824,11 @@
       "form": {}
     },
     "prectc": {
+      "type": "float",
+      "desc": "",
+      "form": {}
+    },
+    "max_personal_credit": {
       "type": "float",
       "desc": "",
       "form": {}

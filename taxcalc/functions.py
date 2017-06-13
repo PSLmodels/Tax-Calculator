@@ -1025,6 +1025,38 @@ def ChildTaxCredit(n24, MARS, c00100, exact,
 
 
 @iterate_jit(nopython=True)
+def PersonalTaxCredit(MARS, c00100, exact,
+                      max_personal_credit,
+                      personal_credit,
+                      II_credit_nr_ps,
+                      II_credit_nr_prt,
+                      II_credit_nr):
+    """
+    PersonalTaxCredit function computes maximum & actual personal_credit amount
+    """
+    # calculate personal_credit amount
+    max_personal_credit = II_credit_nr[MARS - 1]
+    modAGI = c00100  # no deducted foreign earned income to add
+    if modAGI > II_credit_nr_ps[MARS - 1]:
+        excess = modAGI - II_credit_nr_ps[MARS - 1]
+        if exact == 1:  # exact calculation as on tax forms
+            excess = 1000. * math.ceil(excess / 1000.)
+        max_personal_credit = max(0., max_personal_credit -
+                                  II_credit_nr_prt * excess)
+    # calculate and phase-out personal credit
+    personal_credit = II_credit_nr[MARS - 1]
+    if II_credit_nr_prt > 0. and c00100 > II_credit_nr_ps[MARS - 1]:
+        thresh = (II_credit_nr_ps[MARS - 1] +
+                  (II_credit_nr[MARS - 1] / II_credit_nr_prt))
+        excess = c00100 - thresh
+        if exact == 1:  # exact calculation as on tax forms
+            excess = 1000. * math.ceil(excess / 1000.)
+        per_phaseout = II_credit_nr_prt * (c00100 - excess)
+        personal_credit = max(0., personal_credit - per_phaseout)
+    return (max_personal_credit, personal_credit)
+
+
+@iterate_jit(nopython=True)
 def AmOppCreditParts(exact, p87521, num, c00100, CR_AmOppRefundable_hc,
                      CR_AmOppNonRefundable_hc, c10960, c87668):
     """
@@ -1207,6 +1239,7 @@ def EducationTaxCredit(exact, e87530, MARS, c00100, num, c05800,
 @iterate_jit(nopython=True)
 def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
                          e07600, p08000, prectc, dep_credit,
+                         max_personal_credit, personal_credit,
                          CR_RetirementSavings_hc, CR_ForeignTax_hc,
                          CR_ResidentialEnergy_hc, CR_GeneralBusiness_hc,
                          CR_MinimumTax_hc, CR_OtherCredits_hc,
@@ -1230,14 +1263,17 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     # Foreign tax credit - Form 1116
     c07300 = min(e07300 * (1. - CR_ForeignTax_hc), avail)
     avail = avail - c07300
-    c07180 = min(c07180, avail)  # Child & dependent care expense credit
+    # Child & dependent care expense credit
+    c07180 = min(c07180, avail)
     avail = avail - c07180
-    c07230 = min(c07230, avail)  # Education tax credit
+    # Education tax credit
+    c07230 = min(c07230, avail)
     avail = avail - c07230
     # Retirement savings credit - Form 8880
     c07240 = min(e07240 * (1. - CR_RetirementSavings_hc), avail)
     avail = avail - c07240
-    c07220 = min(prectc, avail)  # Child tax credit
+    # Child tax credit
+    c07220 = min(prectc, avail)
     avail = avail - c07220
     # Residential energy credit - Form 5695
     c07260 = min(e07260 * (1. - CR_ResidentialEnergy_hc), avail)
@@ -1248,14 +1284,20 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     # Prior year minimum tax credit - Form 8801
     c07600 = min(e07600 * (1. - CR_MinimumTax_hc), avail)
     avail = avail - c07600
-    c07200 = min(c07200, avail)  # Schedule R credit
+    # Schedule R credit
+    c07200 = min(c07200, avail)
     avail = avail - c07200
-    dep_credit = min(avail, dep_credit)  # Dependent credit
+    # Dependent credit
+    dep_credit = min(avail, dep_credit)
     avail = avail - dep_credit
-    c08000 = min(p08000 * (1. - CR_OtherCredits_hc), avail)  # Other credits
+    # Other credits
+    c08000 = min(p08000 * (1. - CR_OtherCredits_hc), avail)
     avail = avail - c08000
+    # Personal credit
+    avail = avail - personal_credit
+    personal_credit = min(avail, max_personal_credit)
     return (c07180, c07200, c07220, c07230, c07240, dep_credit,
-            c07260, c07300, c07400, c07600, c08000)
+            c07260, c07300, c07400, c07600, c08000, personal_credit)
 
 
 @iterate_jit(nopython=True)
@@ -1317,7 +1359,7 @@ def AdditionalCTC(n24, prectc, earned, c07220, ptax_was,
 @iterate_jit(nopython=True)
 def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
           c07400, c07600, c08000, e09700, e09800, e09900, niit, othertaxes,
-          c07100, c09200, dep_credit):
+          c07100, c09200, dep_credit, personal_credit):
     """
     C1040 function computes total used nonrefundable credits, c07100,
                             othertaxes, and
@@ -1325,7 +1367,7 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
     """
     # total used nonrefundable credits (as computed in NonrefundableCredits)
     c07100 = (c07180 + c07200 + c07600 + c07300 + c07400 + c07220 + c08000 +
-              c07230 + c07240 + c07260 + dep_credit)
+              c07230 + c07240 + c07260 + dep_credit + personal_credit)
     # tax after credits (2016 Form 1040, line 56)
     tax_net_nonrefundable_credits = max(0., c05800 - c07100)
     # tax (including othertaxes) before refundable credits
