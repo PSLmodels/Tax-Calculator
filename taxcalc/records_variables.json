@@ -768,6 +768,11 @@
       "desc": "",
       "form": {}
     },
+    "per_credit": {
+      "type": "float",
+      "desc": "Personl nonrefundable credit",
+      "form": {}
+    },
     "dwks10": {
       "type": "float",
       "desc": "",
@@ -821,6 +826,11 @@
     "prectc": {
       "type": "float",
       "desc": "",
+      "form": {}
+    },
+    "preper": {
+      "type": "float",
+      "desc": "Pre value for personal credit",
       "form": {}
     },
     "ptax_amc": {
