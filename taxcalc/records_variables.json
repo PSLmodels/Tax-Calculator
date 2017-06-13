@@ -768,7 +768,7 @@
       "desc": "",
       "form": {}
     },
-    "per_credit": {
+    "personal_credit": {
       "type": "float",
       "desc": "Personl nonrefundable credit",
       "form": {}
@@ -828,9 +828,9 @@
       "desc": "",
       "form": {}
     },
-    "preper": {
+    "max_personal_credit": {
       "type": "float",
-      "desc": "Pre value for personal credit",
+      "desc": "",
       "form": {}
     },
     "ptax_amc": {
