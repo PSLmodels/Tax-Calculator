@@ -21,8 +21,21 @@ Release 0.9.0 on 2017-??-??
   [[#1427](https://github.com/open-source-economics/Tax-Calculator/pull/1427)
   by William Ensor]
 
+- Add repeal personal exemptions for dependents under age 18 reform option
+  [[#1428](https://github.com/open-source-economics/Tax-Calculator/pull/1428)
+  by Hank Doupe]
+
+- Switch to use of new improved puf.csv input file, which causes small
+  changes in tax results
+  [[#1429](https://github.com/open-source-economics/Tax-Calculator/pull/1429)
+  by Martin Holmer]
+
 **Bug Fixes**
-- None
+
+- Fix logic of gross casualty loss calculation by moving it out of
+  Tax-Calculator and into the taxdata repository
+  [[#1426](https://github.com/open-source-economics/Tax-Calculator/pull/1426)
+  by Martin Holmer]
 
 Release 0.8.5 on 2017-06-08
 ---------------------------
@@ -38,9 +51,9 @@ Release 0.8.5 on 2017-06-08
   [[#1375](https://github.com/open-source-economics/Tax-Calculator/pull/1375)
   by Anderson Frailey]
 - Add policy reform file for the Renacci reform
-  [[#1376](https://github.com/open-source-economics/Tax-Calculator/pull/1376)
-  , [#1383](https://github.com/open-source-economics/Tax-Calculator/pull/1383)
-  , and
+  [[#1376](https://github.com/open-source-economics/Tax-Calculator/pull/1376),
+  [#1383](https://github.com/open-source-economics/Tax-Calculator/pull/1383)
+  and
   [#1385](https://github.com/open-source-economics/Tax-Calculator/pull/1385)
   by Hank Doupe]
 - Add separate ceiling for each itemized deduction parameter
