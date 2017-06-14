@@ -31,7 +31,7 @@ def puf_path(tests_path):
     """
     return os.path.join(tests_path, '..', '..', 'puf.csv')
 
-
+@pytest.mark.one
 @pytest.mark.requires_pufcsv
 def test_agg(tests_path, puf_path):  # pylint: disable=redefined-outer-name
     """
@@ -80,19 +80,21 @@ def test_agg(tests_path, puf_path):  # pylint: disable=redefined-outer-name
         raise ValueError(msg)
     # create aggregate diagnostic table using sub sample of records
     fullsample = pd.read_csv(puf_path)
-    rn_seed = 80  # to ensure two-percent sub-sample is always the same
-    subsample = fullsample.sample(frac=0.02,  # pylint: disable=no-member
+    rn_seed = 80  # to ensure sub-sample is always the same
+    subfrac = 0.02  # sub-sample fraction
+    subsample = fullsample.sample(frac=subfrac,  # pylint: disable=no-member
                                   random_state=rn_seed)
     rec_subsample = Records(data=subsample)
     calc_subsample = Calculator(policy=Policy(), records=rec_subsample)
     adt_subsample = multiyear_diagnostic_table(calc_subsample, num_years=nyrs)
     # compare combined tax liability from full and sub samples for each year
     taxes_subsample = adt_subsample.loc["Combined Liability ($b)"]
-    reltol = 0.01  # maximum allowed relative difference in tax liability
+    reltol = 0.04  # maximum allowed relative difference in tax liability
     if not np.allclose(taxes_subsample, taxes_fullsample,
                        atol=0.0, rtol=reltol):
         msg = 'PUFCSV AGG RESULTS DIFFER IN SUB-SAMPLE AND FULL-SAMPLE\n'
-        msg += 'WHEN reltol = {:.4f}\n'.format(reltol)
+        msg += 'WHEN subfrac = {:.3f} and reltol = {:.4f}\n'.format(subfrac,
+                                                                    reltol)
         it_sub = np.nditer(taxes_subsample, flags=['f_index'])
         it_all = np.nditer(taxes_fullsample, flags=['f_index'])
         while not it_sub.finished:
