@@ -31,7 +31,7 @@ def puf_path(tests_path):
     """
     return os.path.join(tests_path, '..', '..', 'puf.csv')
 
-@pytest.mark.one
+
 @pytest.mark.requires_pufcsv
 def test_agg(tests_path, puf_path):  # pylint: disable=redefined-outer-name
     """
