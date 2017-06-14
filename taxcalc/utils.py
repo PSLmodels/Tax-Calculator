@@ -16,11 +16,8 @@ import pkg_resources
 import six
 import numpy as np
 import pandas as pd
-try:
-    import bokeh.io as bio
-    import bokeh.plotting as bp
-except ImportError:
-    pass
+import bokeh.io as bio
+import bokeh.plotting as bp
 from taxcalc.utilsprvt import (weighted_count_lt_zero,
                                weighted_count_gt_zero,
                                weighted_count, weighted_mean,
