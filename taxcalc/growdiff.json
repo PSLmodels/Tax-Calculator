@@ -196,7 +196,7 @@
 
     "_ATXPY": {
         "long_name": "ATXPY additive difference from default projection",
-        "description": "Default projection is in growfactors.csv file.  ATXPY extrapolates input variables: e00700, e00800, e01400, e01500, e01700, e03150, e03210, e03220, e03230, e03300, e03400, e03500, e07240, e07260, p08000, e09700, e09800, e09900, e11200, e18400, e18500, e19800, e20100, e20400, e20500, e07600, e32800, e58990, e62900, e87530, p87521 and cmbtp.",
+        "description": "Default projection is in growfactors.csv file.  ATXPY extrapolates input variables: e00700, e00800, e01400, e01500, e01700, e03150, e03210, e03220, e03230, e03300, e03400, e03500, e07240, e07260, p08000, e09700, e09800, e09900, e11200, e18400, e18500, e19800, e20100, e20400, g20500, e07600, e32800, e58990, e62900, e87530, p87521 and cmbtp.",
         "section_1": "",
         "section_2": "",
         "notes": "",

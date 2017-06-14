@@ -321,10 +321,10 @@
       "desc": "Sch A: Miscellaneous deductions subject to 2% AGI limitation",
       "form": {"2013-2016": "1040 Sch A line 24"}
     },
-    "e20500": {
+    "g20500": {
       "type": "float",
-      "desc": "Sch A: Net casualty or theft loss",
-      "form": {"2013-2016": "1040 Sch A line 20"}
+      "desc": "Sch A: Gross (before 10% AGI disregard) casualty or theft loss",
+      "form": {"2013-2016": "1040 Sch A line 20 before disregard subtracted"}
     },
     "e24515": {
       "type": "float",
@@ -449,11 +449,6 @@
     }
   },
   "calc": {
-    "ID_Casualty_frt_in_pufcsv_year": {
-      "type": "unchanging_float",
-      "desc": "Itemized deduction casualty loss disregard as a fraction of AGI",
-      "form": {"2013-2016": "1040 Sch A"}
-    },
     "niit": {
       "type": "float",
       "desc": "Net Investment Income Tax from Form 8960",
