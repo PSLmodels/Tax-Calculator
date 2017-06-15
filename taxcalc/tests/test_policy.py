@@ -647,7 +647,7 @@ def test_clp_section_titles(tests_path):
             'Personal And Dependent Exemption Amount': 0,
             # 'Personal Exemption Phaseout Starting Income': 0,
             'Personal Exemption Phaseout Rate': 0,
-            'Repeal Personal Exemptions for Dependents Under Age 18': 0,
+            'Repeal for Dependents Under Age 18': 0
         },
         'Standard Deduction': {
             'Standard Deduction Amount': 0,
