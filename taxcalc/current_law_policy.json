@@ -509,7 +509,7 @@
         "long_name": "Repeal personal exemptions for dependents under age 18",
         "description": "Total personal exemptions will be decreased by the number of dependents under the age of 18",
         "section_1": "Personal Exemptions",
-        "section_2": "Repeal Personal Exemptions for Dependents Under Age 18",
+        "section_2": "Repeal for Dependents Under Age 18",
         "irs_ref": "",
         "notes": "",
         "row_var": "FLPDYR",
