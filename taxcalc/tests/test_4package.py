@@ -2,7 +2,7 @@ import re
 import subprocess
 import pytest
 
-@pytest.mark.one
+
 def test_for_package_existence():
     """
     Ensure that no conda taxcalc package is installed when running pytest

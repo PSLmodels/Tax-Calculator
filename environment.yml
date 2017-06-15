@@ -11,4 +11,5 @@ dependencies:
 - pylint
 - coverage
 - pytest-pep8
+- conda
 
