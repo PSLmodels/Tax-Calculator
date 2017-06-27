@@ -81,7 +81,7 @@ def test_agg(tests_path, puf_path):  # pylint: disable=redefined-outer-name
     # create aggregate diagnostic table using unweighted sub-sample of records
     fullsample = pd.read_csv(puf_path)
     rn_seed = 180  # to ensure sub-sample is always the same
-    subfrac = 0.03  # sub-sample fraction
+    subfrac = 0.05  # sub-sample fraction
     subsample = fullsample.sample(frac=subfrac,  # pylint: disable=no-member
                                   random_state=rn_seed)
     rec_subsample = Records(data=subsample)

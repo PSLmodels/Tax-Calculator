@@ -15,7 +15,7 @@ Release 0.9.1 on 2017-??-??
 **New Features**
 - Improve calculation of sub-sample weights
   [[#1441](https://github.com/open-source-economics/Tax-Calculator/pull/1441)
-  by Hank Doupe and Martin Holmer]
+  by Hank Doupe]
 
 **Bug Fixes**
 - None
