@@ -78,10 +78,10 @@ def test_agg(tests_path, puf_path):  # pylint: disable=redefined-outer-name
         msg += '---            and rerun test.                ---\n'
         msg += '-------------------------------------------------\n'
         raise ValueError(msg)
-    # create aggregate diagnostic table using sub sample of records
+    # create aggregate diagnostic table using unweighted sub-sample of records
     fullsample = pd.read_csv(puf_path)
-    rn_seed = 80  # to ensure sub-sample is always the same
-    subfrac = 0.02  # sub-sample fraction
+    rn_seed = 180  # to ensure sub-sample is always the same
+    subfrac = 0.03  # sub-sample fraction
     subsample = fullsample.sample(frac=subfrac,  # pylint: disable=no-member
                                   random_state=rn_seed)
     rec_subsample = Records(data=subsample)
@@ -89,12 +89,13 @@ def test_agg(tests_path, puf_path):  # pylint: disable=redefined-outer-name
     adt_subsample = multiyear_diagnostic_table(calc_subsample, num_years=nyrs)
     # compare combined tax liability from full and sub samples for each year
     taxes_subsample = adt_subsample.loc["Combined Liability ($b)"]
-    reltol = 0.04  # maximum allowed relative difference in tax liability
+    reltol = 0.01  # maximum allowed relative difference in tax liability
     if not np.allclose(taxes_subsample, taxes_fullsample,
                        atol=0.0, rtol=reltol):
         msg = 'PUFCSV AGG RESULTS DIFFER IN SUB-SAMPLE AND FULL-SAMPLE\n'
-        msg += 'WHEN subfrac = {:.3f} and reltol = {:.4f}\n'.format(subfrac,
-                                                                    reltol)
+        msg += 'WHEN subfrac={:.3f}, rtol={:.4f}, seed={}\n'.format(subfrac,
+                                                                    reltol,
+                                                                    rn_seed)
         it_sub = np.nditer(taxes_subsample, flags=['f_index'])
         it_all = np.nditer(taxes_fullsample, flags=['f_index'])
         while not it_sub.finished:
@@ -103,7 +104,7 @@ def test_agg(tests_path, puf_path):  # pylint: disable=redefined-outer-name
             tax_all = float(it_all[0])
             reldiff = abs(tax_sub - tax_all) / abs(tax_all)
             if reldiff > reltol:
-                msgstr = ' year,sub,full,reldif= {}\t{:.2f}\t{:.2f}\t{:.4f}\n'
+                msgstr = ' year,sub,full,reldiff= {}\t{:.2f}\t{:.2f}\t{:.4f}\n'
                 msg += msgstr.format(cyr, tax_sub, tax_all, reldiff)
             it_sub.iternext()
             it_all.iternext()

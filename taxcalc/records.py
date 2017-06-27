@@ -146,9 +146,16 @@ class Records(object):
         self._read_adjust(adjust_ratios)
         # weights must be same size as tax record data
         if not self.WT.empty and self.dim != len(self.WT):
-            frac = float(self.dim) / len(self.WT)
+            # .. compute sum of full-sample weights for each year
+            sum_full_weights = dict()
+            for colname in list(self.WT):
+                sum_full_weights[colname] = self.WT[colname].sum()
+            # .. make WT index correspond to specified Records sub-sample index
             self.WT = self.WT.iloc[self.index]
-            self.WT = self.WT / frac
+            # .. scale up WT using a differenct factor for each year
+            for colname in list(self.WT):
+                sum_sub_weights = self.WT[colname].sum()
+                self.WT[colname] *= sum_full_weights[colname] / sum_sub_weights
         # specify current_year and FLPDYR values
         if isinstance(start_year, int):
             self._current_year = start_year
