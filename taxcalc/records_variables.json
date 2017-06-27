@@ -338,7 +338,7 @@
     },
     "e26270": {
       "type": "float",
-      "desc": "Sch E: Combined partnership and S-corporation net income/loss",
+      "desc": "Sch E: Combined partnership and S-corporation net income/loss (includes k1bx14p and k1bx14s amounts)",
       "form": {"2013-2016": "1040 Sch E line 32"}
     },
     "e27200": {
@@ -386,13 +386,23 @@
       "desc": "1 if filing unit in IRS-SOI PUF sample; 0 if from CPS sample",
       "form": {"2013-2016": "sample construction info"}
     },
+    "k1bx14p": {
+      "type": "float",
+      "desc": "Partner self-employment earnings/loss for taxpayer (included in e26270 total)",
+      "form": {"2013-2016": "1065 (Schedule K-1) box 14"}
+    },
+    "k1bx14s": {
+      "type": "float",
+      "desc": "Partner self-employment earnings/loss for spouse (included in e26270 total)",
+      "form": {"2013-2016": "1065 (Schedule K-1) box 14"}
+    },
     "n24": {
       "type": "int",
       "desc": "Number of children eligible for Child Tax Credit",
       "form": {"2013-2016": "imputed from CPS data"}
     },
     "nu05": {
-      "type": "float",
+      "type": "int",
       "desc": "Number of dependents under 5 years old",
       "form": {"2013-2016": "imputed from CPS data"}
     },
