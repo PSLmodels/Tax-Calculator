@@ -36,7 +36,7 @@ def puf_path(tests_path):
 def test_agg(tests_path, puf_path):  # pylint: disable=redefined-outer-name
     """
     Test Tax-Calculator aggregate taxes with no policy reform using
-    the full-sample puf.csv and a two-percent sub-sample of puf.csv
+    the full-sample puf.csv and a small sub-sample of puf.csv
     """
     # pylint: disable=too-many-locals,too-many-statements
     nyrs = 10
