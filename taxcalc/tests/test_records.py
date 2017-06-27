@@ -65,15 +65,15 @@ def test_correct_Records_instantiation_sample(puf_1991, weights_1991):
 @pytest.mark.parametrize("csv", [
     (
         u'RECID,MARS,e00200,e00200p,e00200s\n'
-        u'1,    2,   200000, 200000,   0.02\n'
+        u'1,    2,   200000, 200000,   0.03\n'
     ),
     (
         u'RECID,MARS,e00900,e00900p,e00900s\n'
-        u'1,    2,   200000, 200000,   0.02\n'
+        u'1,    2,   200000, 200000,   0.03\n'
     ),
     (
         u'RECID,MARS,e02100,e02100p,e02100s\n'
-        u'1,    2,   200000, 200000,   0.02\n'
+        u'1,    2,   200000, 200000,   0.03\n'
     ),
     (
         u'RxCID,MARS\n'
