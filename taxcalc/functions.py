@@ -19,15 +19,15 @@ from taxcalc.decorators import iterate_jit, jit
 @iterate_jit(nopython=True)
 def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
                   FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_hc,
-                  e00900p, e00900s, e02100p, e02100s,
+                  e00900p, e00900s, e02100p, e02100s, k1bx14p, k1bx14s,
                   payrolltax, ptax_was, setax, c03260, ptax_oasdi,
                   sey, earned, earned_p, earned_s):
     """
     Compute part of total OASDI+HI payroll taxes and earned income variables.
     """
     # compute sey and its individual components
-    sey_p = e00900p + e02100p
-    sey_s = e00900s + e02100s
+    sey_p = e00900p + e02100p + k1bx14p
+    sey_s = e00900s + e02100s + k1bx14s
     sey = sey_p + sey_s  # total self-employment income for filing unit
 
     # compute taxable earnings for OASDI FICA ('was' denotes 'wage and salary')
