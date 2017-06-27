@@ -16,6 +16,9 @@ Release 0.9.1 on 2017-??-??
 - Add Schedule K-1 self-employment earnings to calculation of self-employment payroll taxes
   [[#1438](https://github.com/open-source-economics/Tax-Calculator/pull/1438)
   by Martin Holmer]
+- Improve calculation of sub-sample weights
+  [[#1441](https://github.com/open-source-economics/Tax-Calculator/pull/1441)
+  by Hank Doupe]
 
 **Bug Fixes**
 - None

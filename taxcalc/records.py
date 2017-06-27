@@ -5,6 +5,7 @@ Tax-Calculator tax-filing-unit Records class.
 # pep8 --ignore=E402 records.py
 # pylint --disable=locally-disabled records.py
 
+from __future__ import division
 import os
 import json
 import six
@@ -146,9 +147,12 @@ class Records(object):
         self._read_adjust(adjust_ratios)
         # weights must be same size as tax record data
         if not self.WT.empty and self.dim != len(self.WT):
-            frac = float(self.dim) / len(self.WT)
+            # scale-up sub-sample weights by year-specific factor
+            sum_full_weights = self.WT.sum()
             self.WT = self.WT.iloc[self.index]
-            self.WT = self.WT / frac
+            sum_sub_weights = self.WT.sum()
+            factor = sum_full_weights / sum_sub_weights
+            self.WT = self.WT * factor
         # specify current_year and FLPDYR values
         if isinstance(start_year, int):
             self._current_year = start_year
