@@ -117,7 +117,7 @@ class Records(object):
         self._read_data(data, exact_calculations)
         # check that three sets of split-earnings variables have valid values
         msg = 'expression "{0} == {0}p + {0}s" is not true for every record'
-        tol = 0.010001  # handles "%.2f" rounding error
+        tol = 0.020001  # handles "%.2f" rounding errors
         if not np.allclose(self.e00200, (self.e00200p + self.e00200s),
                            rtol=0.0, atol=tol):
             raise ValueError(msg.format('e00200'))
