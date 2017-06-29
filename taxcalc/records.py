@@ -5,7 +5,6 @@ Tax-Calculator tax-filing-unit Records class.
 # pep8 --ignore=E402 records.py
 # pylint --disable=locally-disabled records.py
 
-from __future__ import division
 import os
 import json
 import six
