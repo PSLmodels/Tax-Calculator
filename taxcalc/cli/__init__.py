@@ -1,1 +1,1 @@
-from taxcalc.cli.tc import main
+from taxcalc.cli.tc import cli_tc_main
