@@ -562,6 +562,8 @@ def test_read_bad_json_reform_file(bad1reformfile, bad2reformfile,
         Calculator.read_json_param_files(bad2reformfile.name, None)
     with pytest.raises(ValueError):
         Calculator.read_json_param_files(bad3reformfile.name, None)
+    with pytest.raises(ValueError):
+        Calculator.read_json_param_files(list(), None)
 
 
 @pytest.yield_fixture
@@ -640,6 +642,8 @@ def test_read_bad_json_assump_file(bad1assumpfile, bad2assumpfile,
         Calculator.read_json_param_files(None, bad3assumpfile.name)
     with pytest.raises(ValueError):
         Calculator.read_json_param_files(None, 'unknown_file_name')
+    with pytest.raises(ValueError):
+        Calculator.read_json_param_files(None, list())
 
 
 def test_convert_parameter_dict():

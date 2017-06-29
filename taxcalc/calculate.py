@@ -361,32 +361,48 @@ class Calculator(object):
         returning a single dictionary containing five key:dict pairs:
         'policy':dict, 'consumption':dict, 'behavior':dict,
         'growdiff_baseline':dict and 'growdiff_response':dict.
+
+        Note that either of the first two parameters may be None, in which
+        case an empty dictionary or empty dictionaries will be returned.
+
+        Also note that either of the first two parameters can be strings
+        containing the JSON parameter file contents (rather than filename),
+        in which case the file reading is skipped and the read_json_*_text
+        method is called.
         """
+        # process first reform parameter
         if reform_filename is None:
             rpol_dict = dict()
-        elif os.path.isfile(reform_filename):
-            txt = open(reform_filename, 'r').read()
+        elif isinstance(reform_filename, str):
+            if os.path.isfile(reform_filename):
+                txt = open(reform_filename, 'r').read()
+            else:
+                txt = reform_filename
             rpol_dict = (
-                Calculator._read_json_policy_reform_text(txt, arrays_not_lists)
-            )
+                Calculator._read_json_policy_reform_text(txt,
+                                                         arrays_not_lists))
         else:
-            msg = 'policy reform file {} could not be found'
-            raise ValueError(msg.format(reform_filename))
+            raise ValueError('reform_filename is neither None nor str')
+        # process second assump parameter
         if assump_filename is None:
             cons_dict = dict()
             behv_dict = dict()
             gdiff_base_dict = dict()
             gdiff_resp_dict = dict()
-        elif os.path.isfile(assump_filename):
-            txt = open(assump_filename, 'r').read()
+        elif isinstance(assump_filename, str):
+            if os.path.isfile(assump_filename):
+                txt = open(assump_filename, 'r').read()
+            else:
+                txt = assump_filename
             (cons_dict,
              behv_dict,
              gdiff_base_dict,
              gdiff_resp_dict) = (
-                 Calculator._read_json_econ_assump_text(txt, arrays_not_lists))
+                 Calculator._read_json_econ_assump_text(txt,
+                                                        arrays_not_lists))
         else:
-            msg = 'economic assumption file {} could not be found'
-            raise ValueError(msg.format(assump_filename))
+            raise ValueError('assump_filename is neither None nor str')
+        # construct and return single composite dictionary
         param_dict = dict()
         param_dict['policy'] = rpol_dict
         param_dict['consumption'] = cons_dict
