@@ -16,7 +16,7 @@ TEST_INPUT_FILENAME = 'test.csv'
 TEST_TAXYEAR = 2017
 
 
-def main():
+def cli_tc_main():
     """
     Contains command-line interface (CLI) to Tax-Calculator TaxCalcIO class.
     """
@@ -139,7 +139,7 @@ def main():
         retcode = 0
     # return exit code
     return retcode
-# end of main function code
+# end of cli_tc_main function code
 
 
 EXPECTED_TEST_OUTPUT_FILENAME = 'test-{}-out.csv'.format(str(TEST_TAXYEAR)[2:])
@@ -187,4 +187,4 @@ def _compare_test_output_files():
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(cli_tc_main())

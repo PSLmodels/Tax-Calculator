@@ -4,7 +4,7 @@ package:
 
 build:
   entry_points:
-    - tc = taxcalc.cli.tc:main
+    - tc = taxcalc.cli.tc:cli_tc_main
 
 requirements:
   build:
