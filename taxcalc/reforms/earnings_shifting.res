@@ -1,7 +1,3 @@
-You loaded data for 2009.
-Tax-Calculator startup automatically extrapolated your data to 2013.
-You loaded data for 2009.
-Tax-Calculator startup automatically extrapolated your data to 2013.
 ==> CALC1 in 2017:
 Weighted Tax Totals by Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax    AllTax
@@ -47,3 +43,33 @@ Weighted Tax Differences by Expanded-Income Decile
  8     17.0    2054.4     -52.1       0.0     -52.1
  9     17.0    6272.4    -271.6       0.0    -271.6
  A    170.1   12734.6    -420.6       0.0    -420.6
+
+==> CALC3 vs CALC2 in 2017:
+Weighted Tax Totals by Expanded-Income Decile
+    Returns    ExpInc    IncTax    PayTax    AllTax
+       (#m)      ($b)      ($b)      ($b)      ($b)
+ 0     17.0    -248.9     -12.1     166.6     154.5
+ 1     17.0       0.0     -13.9     132.2     118.3
+ 2     17.0       0.0     -25.7      69.4      43.7
+ 3     17.0       0.2     -13.0      94.3      81.3
+ 4     17.0      11.1     -13.9     197.1     183.2
+ 5     17.0      61.2     -15.6     171.4     155.8
+ 6     17.0     197.0     -15.2      87.0      71.8
+ 7     17.0     378.1     -12.8      71.7      58.8
+ 8     17.0     693.8       4.7      70.7      75.4
+ 9     17.0    3317.3     387.3     130.3     517.5
+ A    170.1    4409.9     269.7    1190.6    1460.3
+Weighted Tax Differences by Expanded-Income Decile
+    Returns    ExpInc    IncTax    PayTax    AllTax
+       (#m)      ($b)      ($b)      ($b)      ($b)
+ 0     17.0    -248.9    -127.4      11.1    -116.4
+ 1     17.0       0.0     -52.9      13.9     -39.0
+ 2     17.0       0.0     -14.0       7.7      -6.2
+ 3     17.0       0.2     -40.8       9.6     -31.1
+ 4     17.0      11.1    -128.8      18.3    -110.6
+ 5     17.0      61.2    -138.3      14.4    -123.9
+ 6     17.0     197.0     -75.3       6.7     -68.6
+ 7     17.0     378.1     -65.0       5.3     -59.7
+ 8     17.0     693.8     -80.5       5.1     -75.4
+ 9     17.0    3317.3    -286.8       7.9    -278.9
+ A    170.1    4409.9   -1009.9     100.1    -909.8

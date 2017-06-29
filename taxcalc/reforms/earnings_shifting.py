@@ -26,36 +26,54 @@ REFORM = 'Trump2017.json'
 TAXYEAR = 2017
 
 
-def earnings_shifting_main():
+def main():
     """
     Contains high-level logic of the script.
     """
     # create calc1, current-law Calculator object
-    calc1 = Calculator(policy=Policy(), records=Records())
+    calc1 = Calculator(policy=Policy(), records=Records(), verbose=False)
 
     # create calc2, reform Calculator object with
     #               static response assumptions and
     #               no earnings-shifting
+    records2 = Records()
     policy2 = Policy()
     pdict = Calculator.read_json_param_files(reform_filename=REFORM,
                                              assump_filename=None)
     policy2.implement_reform(pdict['policy'])
-    calc2 = Calculator(policy=policy2, records=Records())
+    calc2 = Calculator(policy=policy2, records=records2, verbose=False)
 
-    # advance all Calculator objects to TAXYEAR
+    # advance calc1 and calc2 to TAXYEAR and conduct tax calculations
     while calc1.current_year < TAXYEAR:
         calc1.increment_year()
         calc2.increment_year()
-
-    # conduct tax calculations for TAXYEAR
     calc1.calc_all()
     calc2.calc_all()
 
-    # write results
+    # write calc1 and calc2 results
     sys.stdout.write('==> CALC1 in {}:\n'.format(TAXYEAR))
     write_tables(calc1, None)
     sys.stdout.write('\n==> CALC2 vs CALC1 in {}:\n'.format(TAXYEAR))
     write_tables(calc2, calc1)
+
+    # create calc3, reform Calculator object with
+    #               static response assumptions and
+    #               full earnings-shifting
+    records3 = full_earnings_shift(Records())
+    policy3 = Policy()
+    pdict = Calculator.read_json_param_files(reform_filename=REFORM,
+                                             assump_filename=None)
+    policy3.implement_reform(pdict['policy'])
+    calc3 = Calculator(policy=policy3, records=records3, verbose=False)
+
+    # advance calc3 to TAXYEAR and conduct tax calculations
+    while calc3.current_year < TAXYEAR:
+        calc3.increment_year()
+    calc3.calc_all()
+
+    # write calc3 vs calc2 results
+    sys.stdout.write('\n==> CALC3 vs CALC2 in {}:\n'.format(TAXYEAR))
+    write_tables(calc3, calc2)
 
     # normal return code
     return 0
@@ -137,5 +155,32 @@ def write_decile_table(dfx):
     sys.stdout.write(row)
 
 
+def full_earnings_shift(recs):
+    """
+    Return Records object with all wages and salaries in recs shifted to
+    corporate pass-through income.
+    """
+    dump = False
+    cols = ['s006', 'e00200', 'e00200p', 'e00200s', 'e26270',
+            'e02100p', 'e02100s']  # TODO: replace with k1bx14? variables
+    if dump:
+        data = [getattr(recs, col) for col in cols]
+        pdf = pd.DataFrame(data=np.column_stack(data), columns=cols)
+        for col in cols:
+            print 'DUMP-BEFORE-SHIFT', col, weighted_sum(pdf, col)
+    recs.e26270 = recs.e26270 + recs.e00200
+    recs.e00200.fill(0)
+    recs.e02100p = recs.e02100p + recs.e00200p  # TODO: e02100p --> k1bx14p
+    recs.e00200p.fill(0)
+    recs.e02100s = recs.e02100s + recs.e00200s  # TODO: e02100s --> k1bx14s
+    recs.e00200s.fill(0)
+    if dump:
+        data = [getattr(recs, col) for col in cols]
+        pdf = pd.DataFrame(data=np.column_stack(data), columns=cols)
+        for col in cols:
+            print 'DUMP--AFTER-SHIFT', col, weighted_sum(pdf, col)
+    return recs
+
+
 if __name__ == '__main__':
-    sys.exit(earnings_shifting_main())
+    sys.exit(main())
