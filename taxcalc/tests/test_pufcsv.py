@@ -240,6 +240,7 @@ def test_mtr(tests_path, puf_path):  # pylint: disable=redefined-outer-name
         msg += '-------------------------------------------------\n'
         raise ValueError(msg)
 
+
 @pytest.mark.one
 @pytest.mark.requires_pufcsv
 def test_credit(puf_path):  # pylint: disable=redefined-outer-name
