@@ -9,13 +9,14 @@ Neil Irwin, "Under the Trump Tax Plan, We Might All Want to Become
 Corporations," New York Times, April 28, 2017.
 
 Script requirements:
-(1) taxcalc conda package version 0.9.1 or higher installed on computer
+(1) conda package for taxcalc version 0.9.1 or higher installed on computer
 (2) proprietary puf.csv file used by TaxBrain located in current directory
 (3) Trump2017.json reform file located in current directory
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 earnings_shifting.py
 # pylint --disable=locally-disabled earnings_shifting.py
+
 
 import sys
 
@@ -50,7 +51,7 @@ def main():
     calc1.calc_all()
     calc2.calc_all()
 
-    # write calc1 and calc2 results
+    # write calc1 results and write calc2 vs calc1 results
     sys.stdout.write('==> CALC1 in {}:\n'.format(TAXYEAR))
     write_tables(calc1, None)
     sys.stdout.write('\n==> CALC2 vs CALC1 in {}:\n'.format(TAXYEAR))
@@ -74,6 +75,35 @@ def main():
     # write calc3 vs calc2 results
     sys.stdout.write('\n==> CALC3 vs CALC2 in {}:\n'.format(TAXYEAR))
     write_tables(calc3, calc2)
+
+    # create calc4, reform Calculator object with
+    #               static response assumptions and
+    #               partial earnings-shifting based on the
+    #               shifting probabilities generated in the
+    #               probability function below
+    records4 = partial_earnings_shift(Records(), calc3.records, calc2.records)
+    policy4 = Policy()
+    pdict = Calculator.read_json_param_files(reform_filename=REFORM,
+                                             assump_filename=None)
+    policy4.implement_reform(pdict['policy'])
+    calc4 = Calculator(policy=policy4, records=records4, verbose=False)
+
+    # advance calc4 to TAXYEAR and conduct tax calculations
+    while calc4.current_year < TAXYEAR:
+        calc4.increment_year()
+    calc4.calc_all()
+
+    # write calc4 vs calc3 results
+    sys.stdout.write('\n==> CALC4 vs CALC3 in {}:\n'.format(TAXYEAR))
+    write_tables(calc4, calc3)
+
+    # write calc4 vs calc2 results
+    sys.stdout.write('\n==> CALC4 vs CALC2 in {}:\n'.format(TAXYEAR))
+    write_tables(calc4, calc2)
+
+    # write calc4 vs calc1 results
+    sys.stdout.write('\n==> CALC4 vs CALC1 in {}:\n'.format(TAXYEAR))
+    write_tables(calc4, calc1)
 
     # normal return code
     return 0
@@ -180,6 +210,36 @@ def full_earnings_shift(recs):
         for col in cols:
             print 'DUMP--AFTER-SHIFT', col, weighted_sum(pdf, col)
     return recs
+
+
+def partial_earnings_shift(recs, recs_full, recs_noes):
+    """
+    Return Records object with some wages and salaries in recs shifted to
+    corporate pass-through income depending on tax savings of full shifting
+    (recs_full) relative to no earnings shifting (recs_noes).
+    """
+    potential_savings = recs_noes.combined - recs_full.combined
+    prob = probability(recs.MARS, recs.e00200, potential_savings)
+    urn_seed = 123456
+    np.random.seed(urn_seed)  # pylint: disable=no-member
+    urn = np.random.random(recs.MARS.shape)
+    does = urn < prob
+    recs.e26270 = np.where(does, recs.e26270 + recs.e00200, recs.e26270)
+    recs.e00200 = np.where(does, 0., recs.e00200)
+    recs.e02100p = np.where(does, recs.e02100p + recs.e00200p, recs.e00200p)
+    recs.e00200p = np.where(does, 0., recs.e00200p)
+    recs.e02100s = np.where(does, recs.e02100s + recs.e00200s, recs.e00200s)
+    recs.e00200s = np.where(does, 0., recs.e00200s)
+    return recs
+
+
+def probability(mars, earnings, savings):
+    """
+    Return probability array containing earnings-shifting probability
+    for each filing unit.
+    """
+    prob = np.where(mars > 0, 1.0, 0.0)
+    return prob
 
 
 if __name__ == '__main__':
