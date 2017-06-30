@@ -239,3 +239,29 @@ def test_mtr(tests_path, puf_path):  # pylint: disable=redefined-outer-name
         msg += '---            and rerun test.                ---\n'
         msg += '-------------------------------------------------\n'
         raise ValueError(msg)
+
+@pytest.mark.one
+@pytest.mark.requires_pufcsv
+def test_credit(puf_path):  # pylint: disable=redefined-outer-name
+    """
+    Test that adding personal refundable credit, which is not part of
+    current-law tax policy, lowers income tax revenue
+    """
+    reform_year = 2017
+    fullsample = pd.read_csv(puf_path)
+    subsample = fullsample.sample(frac=0.05,  # pylint: disable=no-member
+                                  random_state=180)
+    recs1 = Records(data=subsample)
+    calc1 = Calculator(policy=Policy(), records=recs1)
+    calc1.advance_to_year(reform_year)
+    calc1.calc_all()
+    itax1 = (calc1.records.iitax * calc1.records.s006).sum()
+    recs2 = Records(data=subsample)
+    policy2 = Policy()
+    reform = {reform_year: {'_II_credit': [[1000, 1000, 1000, 1000, 1000]]}}
+    policy2.implement_reform(reform)
+    calc2 = Calculator(policy=policy2, records=recs2)
+    calc2.advance_to_year(reform_year)
+    calc2.calc_all()
+    itax2 = (calc2.records.iitax * calc2.records.s006).sum()
+    assert itax2 < itax1
