@@ -19,6 +19,7 @@ from taxcalc.functions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                SSBenefits, UBI, AGI, ItemDed, StdDed,
                                AdditionalMedicareTax, F2441, EITC, SchR,
                                ChildTaxCredit, AdditionalCTC, CTC_new,
+                               PersonalTaxCredit,
                                AmOppCreditParts, EducationTaxCredit,
                                NonrefundableCredits, C1040, IITAX,
                                BenefitSurtax, BenefitLimitation,
@@ -480,6 +481,7 @@ class Calculator(object):
         F2441(self.policy, self.records)
         EITC(self.policy, self.records)
         ChildTaxCredit(self.policy, self.records)
+        PersonalTaxCredit(self.policy, self.records)
         AmOppCreditParts(self.policy, self.records)
         SchR(self.policy, self.records)
         EducationTaxCredit(self.policy, self.records)

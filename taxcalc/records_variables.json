@@ -763,9 +763,14 @@
       "desc": "",
       "form": {}
     },
-    "personal_credit": {
+    "personal_refundable_credit": {
       "type": "float",
-      "desc": "Personl nonrefundable credit",
+      "desc": "Personal refundable credit",
+      "form": {}
+    },
+    "personal_nonrefundable_credit": {
+      "type": "float",
+      "desc": "Personal nonrefundable credit",
       "form": {}
     },
     "dwks10": {
@@ -808,22 +813,12 @@
       "desc": "Lumpsum (or head) tax; appears as LSTAX variable in tc CLI minimal output",
       "form": {}
     },
-    "personal_credit": {
-      "type": "float",
-      "desc": "",
-      "form": {}
-    },
     "pre_c04600": {
       "type": "float",
       "desc": "Personal exemption before phase-out",
       "form": {}
     },
     "prectc": {
-      "type": "float",
-      "desc": "",
-      "form": {}
-    },
-    "max_personal_credit": {
       "type": "float",
       "desc": "",
       "form": {}
