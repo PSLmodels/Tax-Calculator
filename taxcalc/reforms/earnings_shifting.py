@@ -235,8 +235,7 @@ def partial_earnings_shift(recs, recs_full, recs_noes):
 
 def probability(mars, earnings, savings):
     """
-    Return probability array containing earnings-shifting probability
-    for each filing unit.
+    Return array containing earnings-shifting probability for each filing unit.
     """
     prob = np.where(mars > 0, 1.0, 0.0)
     return prob
