@@ -154,7 +154,7 @@
     },
     "e02000": {
       "type": "float",
-      "desc": "Sch E total rental, royalty, partnership, S-corporation, etc, income/loss (includes e26270 and e27200)",
+      "desc": "Sch E total rental, royalty, partnership, S-corporation, etc, income/loss (includes e26270 and e27200 and p25470)",
       "form": {"2013-2016": "1040 line 17"}
     },
     "e02100": {
