@@ -154,7 +154,7 @@
     },
     "e02000": {
       "type": "float",
-      "desc": "Sch E rental, royalty, S-corp, etc, income/loss",
+      "desc": "Sch E total rental, royalty, partnership, S-corporation, etc, income/loss (includes e26270 and e27200)",
       "form": {"2013-2016": "1040 line 17"}
     },
     "e02100": {
@@ -338,12 +338,12 @@
     },
     "e26270": {
       "type": "float",
-      "desc": "Sch E: Combined partnership and S-corporation net income/loss (includes k1bx14p and k1bx14s amounts)",
+      "desc": "Sch E: Combined partnership and S-corporation net income/loss (includes k1bx14p and k1bx14s amounts and is included in e02000)",
       "form": {"2013-2016": "1040 Sch E line 32"}
     },
     "e27200": {
       "type": "float",
-      "desc": "Sch E: Farm rent net income or loss",
+      "desc": "Sch E: Farm rent net income or loss (included in e02000)",
       "form": {"2013-2016": "1040 Sch E line 40"}
     },
     "e32800": {
@@ -444,7 +444,7 @@
     },
     "p25470": {
       "type": "float",
-      "desc": "Sch E: Royalty depletion and/or rental depreciation",
+      "desc": "Sch E: Royalty depletion and/or rental depreciation (included in e02000)",
       "form": {"2013-2016": "1040 Sch E line 18"}
     },
     "p87521": {
