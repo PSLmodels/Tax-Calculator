@@ -242,9 +242,9 @@ def test_mtr(tests_path, puf_path):  # pylint: disable=redefined-outer-name
 
 
 @pytest.mark.requires_pufcsv
-def test_credit(puf_path):  # pylint: disable=redefined-outer-name
+def test_credit_reforms(puf_path):  # pylint: disable=redefined-outer-name
     """
-    Tests of reforms using small puf.csv sub-sample
+    Test personal credit reforms using small puf.csv sub-sample
     """
     reform_year = 2017
     fullsample = pd.read_csv(puf_path)
