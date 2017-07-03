@@ -3,10 +3,10 @@ Python script that uses Tax-Calculator to analyze the tax revenue implications
 of various earnings-shifting assumptions under the Trump2017.json tax reform.
 
 The concept of earnings-shifting is the transformation of wage and
-salary income into pass-through income from a newly-created limited-
-liability company (LLC) as described in several articles, including
-Neil Irwin, "Under the Trump Tax Plan, We Might All Want to Become
-Corporations," New York Times, April 28, 2017.
+salary income into pass-through self-employment earnings from a
+newly-created personal limited-liability company (LLC) as described in
+several articles, including Neil Irwin, "Under the Trump Tax Plan, We
+Might All Want to Become Corporations," New York Times, April 28, 2017.
 
 Script requirements:
 (1) conda package for taxcalc version 0.9.1 or higher installed on computer
@@ -16,7 +16,6 @@ Script requirements:
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 earnings_shifting.py
 # pylint --disable=locally-disabled earnings_shifting.py
-
 
 import sys
 
@@ -191,16 +190,19 @@ def write_decile_table(dfx):
 def full_earnings_shift(recs):
     """
     Return Records object with all wages and salaries in recs shifted to
-    corporate pass-through income.
+    corporate pass-through self-employment earnings.
+    Note that the k1bx14 amounts are included in the e26270 amount, which is,
+    in turn, included in the e02000 amount.
     """
     dump = False
-    cols = ['s006', 'e00200', 'e00200p', 'e00200s', 'e26270',
+    cols = ['s006', 'e00200', 'e00200p', 'e00200s', 'e02000', 'e26270',
             'e02100p', 'e02100s']  # TODO: replace with k1bx14? variables
     if dump:
         data = [getattr(recs, col) for col in cols]
         pdf = pd.DataFrame(data=np.column_stack(data), columns=cols)
         for col in cols:
             print 'DUMP-BEFORE-SHIFT', col, weighted_sum(pdf, col)
+    recs.e02000 = recs.e02000 + recs.e00200
     recs.e26270 = recs.e26270 + recs.e00200
     recs.e00200.fill(0)
     recs.e02100p = recs.e02100p + recs.e00200p  # TODO: e02100p --> k1bx14p
@@ -218,8 +220,10 @@ def full_earnings_shift(recs):
 def partial_earnings_shift(recs, recs_full, recs_noes):
     """
     Return Records object with some wages and salaries in recs shifted to
-    corporate pass-through income depending on tax savings of full shifting
-    (recs_full) relative to no earnings shifting (recs_noes).
+    corporate pass-through self-employment earnings depending on tax savings
+    of full shifting (recs_full) relative to no earnings shifting (recs_noes).
+    Note that the k1bx14 amounts are included in the e26270 amount, which is,
+    in turn, included in the e02000 amount.
     """
     potential_savings = recs_noes.combined - recs_full.combined
     prob = probability(recs.MARS, recs.e00200, potential_savings)
@@ -227,6 +231,7 @@ def partial_earnings_shift(recs, recs_full, recs_noes):
     np.random.seed(urn_seed)  # pylint: disable=no-member
     urn = np.random.random(recs.MARS.shape)
     does = urn < prob
+    recs.e02000 = np.where(does, recs.e02000 + recs.e00200, recs.e02000)
     recs.e26270 = np.where(does, recs.e26270 + recs.e00200, recs.e26270)
     recs.e00200 = np.where(does, 0., recs.e00200)
     recs.e02100p = np.where(does, recs.e02100p + recs.e00200p, recs.e00200p)
