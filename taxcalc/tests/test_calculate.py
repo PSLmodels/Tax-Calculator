@@ -453,6 +453,17 @@ def assump_file():
             pass  # sometimes we can't remove a generated temporary file
 
 
+def test_read_json_reform_file_two_ways(reform_file, assump_file):
+    """
+    Test when using file name and file contents in read_json_param_files
+    """
+    pd1 = Calculator.read_json_param_files(reform_file.name, assump_file.name,
+                                           arrays_not_lists=False)
+    pd2 = Calculator.read_json_param_files(REFORM_CONTENTS, ASSUMP_CONTENTS,
+                                           arrays_not_lists=False)
+    assert pd1 == pd2
+
+
 @pytest.mark.parametrize("set_year", [False, True])
 def test_read_json_reform_file_and_implement_reform(reform_file,
                                                     assump_file,
@@ -562,6 +573,8 @@ def test_read_bad_json_reform_file(bad1reformfile, bad2reformfile,
         Calculator.read_json_param_files(bad2reformfile.name, None)
     with pytest.raises(ValueError):
         Calculator.read_json_param_files(bad3reformfile.name, None)
+    with pytest.raises(ValueError):
+        Calculator.read_json_param_files(list(), None)
 
 
 @pytest.yield_fixture
@@ -640,6 +653,8 @@ def test_read_bad_json_assump_file(bad1assumpfile, bad2assumpfile,
         Calculator.read_json_param_files(None, bad3assumpfile.name)
     with pytest.raises(ValueError):
         Calculator.read_json_param_files(None, 'unknown_file_name')
+    with pytest.raises(ValueError):
+        Calculator.read_json_param_files(None, list())
 
 
 def test_convert_parameter_dict():
