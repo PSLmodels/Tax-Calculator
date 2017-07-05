@@ -18,7 +18,9 @@ Release 0.9.1 on 2017-??-??
   by Hank Doupe]
 
 **Bug Fixes**
-- None
+- Fix personal refundable credit bug and personal nonrefundable credit bug
+  [[#1450](https://github.com/open-source-economics/Tax-Calculator/pull/1450)
+  by Martin Holmer]
 
 Release 0.9.0 on 2017-06-14
 ---------------------------
