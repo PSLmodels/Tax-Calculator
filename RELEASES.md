@@ -4,7 +4,7 @@ Go
 [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
-Release 0.9.1 on 2017-??-??
+Release 0.9.2 on 2017-??-??
 ---------------------------
 (last merged pull request is
 [#XXXX](https://github.com/open-source-economics/Tax-Calculator/pull/XXXX))
@@ -13,9 +13,26 @@ Release 0.9.1 on 2017-??-??
 - None
 
 **New Features**
+- None
+
+**Bug Fixes**
+- None
+
+Release 0.9.1 on 2017-07-06
+---------------------------
+(last merged pull request is
+[#1438](https://github.com/open-source-economics/Tax-Calculator/pull/1438))
+
+**API Changes**
+- None
+
+**New Features**
 - Add Form 1065 Schedule K-1 self-employment earnings to calculation of self-employment payroll taxes
   [[#1438](https://github.com/open-source-economics/Tax-Calculator/pull/1438)
-  by Martin Holmer]
+  by Martin Holmer],
+  which requires new `puf.csv` input file with this info:
+  * Byte size: 53743252
+  * MD5 checksum: ca0ad8bbb05ee15b1cbefc7f1fa1f965
 - Improve calculation of sub-sample weights
   [[#1441](https://github.com/open-source-economics/Tax-Calculator/pull/1441)
   by Hank Doupe]
