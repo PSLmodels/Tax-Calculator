@@ -23,9 +23,12 @@ if [ $? -eq 0 ]; then
     echo "==> Continue building taxcalc package"
 fi
 
-# build taxcalc conda package
+# determine this version of Python: 2.x or 3.x
+pversion=$(conda list python | awk '$1=="python"{print substr($2,1,3)}')
+
+# build taxcalc conda package for this version of Python
 cd ../../conda.recipe/
-conda build --python 2.7 . 2>&1 | awk '$1~/BUILD/||$1~/TEST/'
+conda build --python $pversion . 2>&1 | awk '$1~/BUILD/||$1~/TEST/'
 conda build purge
 
 # install taxcalc conda package
@@ -40,7 +43,7 @@ rmdir dist/
 rm -fr taxcalc.egg-info/*
 rmdir taxcalc.egg-info/
 
-echo "Execute './uninstall_taxcalc_package.sh' after testing CLI"
+echo "Execute 'conda uninstall taxcalc' after testing CLI"
 
 echo "FINISHED : `date`"
 exit 0

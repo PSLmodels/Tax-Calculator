@@ -254,10 +254,8 @@ def drop_records(df1, df2, mask):
     df1 = add_weighted_income_bins(df1)
     gp2_dec = df2.groupby('bins')
 
-    income_bins = WEBAPP_INCOME_BINS
-
-    df2 = add_income_bins(df2, bins=income_bins)
-    df1 = add_income_bins(df1, bins=income_bins)
+    df2 = add_income_bins(df2, bins=WEBAPP_INCOME_BINS)
+    df1 = add_income_bins(df1, bins=WEBAPP_INCOME_BINS)
     gp2_bin = df2.groupby('bins')
 
     # Transform to get the 'flag' column (3 choices to drop in each bin)

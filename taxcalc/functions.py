@@ -3,7 +3,7 @@ Tax-Calculator functions that calculate payroll and individual income taxes.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 functions.py
-# pylint --disable=locally-disabled function.py
+# pylint --disable=locally-disabled functions.py
 #
 # pylint: disable=too-many-lines
 # pylint: disable=invalid-name
@@ -19,15 +19,15 @@ from taxcalc.decorators import iterate_jit, jit
 @iterate_jit(nopython=True)
 def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
                   FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_hc,
-                  e00900p, e00900s, e02100p, e02100s,
+                  e00900p, e00900s, e02100p, e02100s, k1bx14p, k1bx14s,
                   payrolltax, ptax_was, setax, c03260, ptax_oasdi,
                   sey, earned, earned_p, earned_s):
     """
     Compute part of total OASDI+HI payroll taxes and earned income variables.
     """
     # compute sey and its individual components
-    sey_p = e00900p + e02100p
-    sey_s = e00900s + e02100s
+    sey_p = e00900p + e02100p + k1bx14p
+    sey_s = e00900s + e02100s + k1bx14s
     sey = sey_p + sey_s  # total self-employment income for filing unit
 
     # compute taxable earnings for OASDI FICA ('was' denotes 'wage and salary')
@@ -308,15 +308,12 @@ def UBI(nu18, n1821, n21, UBI1, UBI2, UBI3, UBI_ecrt,
 
 
 @iterate_jit(nopython=True)
-def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact,
-        II_em, II_em_ps, II_prt,
-        II_credit, II_credit_ps, II_credit_prt, taxable_ubi,
-        c00100, pre_c04600, c04600, personal_credit,
-        II_no_em_nu18, nu18):
+def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
+        II_em, II_em_ps, II_prt, II_no_em_nu18,
+        c00100, pre_c04600, c04600):
     """
-    AGI function: compute Adjusted Gross Income, c00100,
-                  compute personal exemption amount, c04600, and
-                  compute personal_credit amount
+    AGI function: compute Adjusted Gross Income, c00100 and
+                  compute personal exemption amount, c04600
     """
     # calculate AGI assuming no foreign earned income exclusion
     c00100 = ymod1 + c02500 - c02900 + taxable_ubi
@@ -338,13 +335,7 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact,
         dispc_denom = 2500. / sep
         dispc = min(1., max(0., dispc_numer / dispc_denom))
         c04600 = pre_c04600 * (1. - dispc)
-    # calculate personal credit amount
-    personal_credit = II_credit[MARS - 1]
-    # phase-out personal credit amount
-    if II_credit_prt > 0. and c00100 > II_credit_ps[MARS - 1]:
-        credit_phaseout = II_credit_prt * (c00100 - II_credit_ps[MARS - 1])
-        personal_credit = max(0., personal_credit - credit_phaseout)
-    return (c00100, pre_c04600, c04600, personal_credit)
+    return (c00100, pre_c04600, c04600)
 
 
 @iterate_jit(nopython=True)
@@ -1023,35 +1014,28 @@ def ChildTaxCredit(n24, MARS, c00100, exact,
 
 
 @iterate_jit(nopython=True)
-def PersonalTaxCredit(MARS, c00100, exact,
-                      max_personal_credit,
-                      personal_credit,
-                      II_credit_nr_ps,
-                      II_credit_nr_prt,
-                      II_credit_nr):
+def PersonalTaxCredit(MARS, c00100,
+                      II_credit, II_credit_ps, II_credit_prt,
+                      II_credit_nr, II_credit_nr_ps, II_credit_nr_prt,
+                      personal_refundable_credit,
+                      personal_nonrefundable_credit):
     """
-    PersonalTaxCredit function computes maximum & actual personal_credit amount
+    Compute personal_refundable_credit and personal_nonrefundable_credit,
+    neither of which are part of current-law policy
     """
-    # calculate personal_credit amount
-    max_personal_credit = II_credit_nr[MARS - 1]
-    modAGI = c00100  # no deducted foreign earned income to add
-    if modAGI > II_credit_nr_ps[MARS - 1]:
-        excess = modAGI - II_credit_nr_ps[MARS - 1]
-        if exact == 1:  # exact calculation as on tax forms
-            excess = 1000. * math.ceil(excess / 1000.)
-        max_personal_credit = max(0., max_personal_credit -
-                                  II_credit_nr_prt * excess)
-    # calculate and phase-out personal credit
-    personal_credit = II_credit_nr[MARS - 1]
+    # calculate personal refundable credit amount with phase-out
+    personal_refundable_credit = II_credit[MARS - 1]
+    if II_credit_prt > 0. and c00100 > II_credit_ps[MARS - 1]:
+        pout = II_credit_prt * (c00100 - II_credit_ps[MARS - 1])
+        fully_phasedout = personal_refundable_credit - pout
+        personal_refundable_credit = max(0., fully_phasedout)
+    # calculate personal nonrefundable credit amount with phase-out
+    personal_nonrefundable_credit = II_credit_nr[MARS - 1]
     if II_credit_nr_prt > 0. and c00100 > II_credit_nr_ps[MARS - 1]:
-        thresh = (II_credit_nr_ps[MARS - 1] +
-                  (II_credit_nr[MARS - 1] / II_credit_nr_prt))
-        excess = c00100 - thresh
-        if exact == 1:  # exact calculation as on tax forms
-            excess = 1000. * math.ceil(excess / 1000.)
-        per_phaseout = II_credit_nr_prt * (c00100 - excess)
-        personal_credit = max(0., personal_credit - per_phaseout)
-    return (max_personal_credit, personal_credit)
+        pout = II_credit_nr_prt * (c00100 - II_credit_nr_ps[MARS - 1])
+        fully_phasedout = personal_nonrefundable_credit - pout
+        personal_nonrefundable_credit = max(0., fully_phasedout)
+    return (personal_refundable_credit, personal_nonrefundable_credit)
 
 
 @iterate_jit(nopython=True)
@@ -1237,7 +1221,7 @@ def EducationTaxCredit(exact, e87530, MARS, c00100, num, c05800,
 @iterate_jit(nopython=True)
 def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
                          e07600, p08000, prectc, dep_credit,
-                         max_personal_credit, personal_credit,
+                         personal_nonrefundable_credit,
                          CR_RetirementSavings_hc, CR_ForeignTax_hc,
                          CR_ResidentialEnergy_hc, CR_GeneralBusiness_hc,
                          CR_MinimumTax_hc, CR_OtherCredits_hc,
@@ -1248,7 +1232,6 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
 
     Parameters
     ----------
-
     CR_RetirementSavings_hc: Retirement savings credit haircut
     CR_ForeignTax_hc: Foreign tax credit haircut
     CR_ResidentialEnergy_hc: Residential energy credit haircut
@@ -1286,16 +1269,17 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     c07200 = min(c07200, avail)
     avail = avail - c07200
     # Dependent credit
-    dep_credit = min(avail, dep_credit)
+    dep_credit = min(dep_credit, avail)
     avail = avail - dep_credit
     # Other credits
     c08000 = min(p08000 * (1. - CR_OtherCredits_hc), avail)
     avail = avail - c08000
-    # Personal credit
-    avail = avail - personal_credit
-    personal_credit = min(avail, max_personal_credit)
+    # Personal nonrefundable credit
+    personal_nonrefundable_credit = min(personal_nonrefundable_credit, avail)
+    avail = avail - personal_nonrefundable_credit
     return (c07180, c07200, c07220, c07230, c07240, dep_credit,
-            c07260, c07300, c07400, c07600, c08000, personal_credit)
+            c07260, c07300, c07400, c07600, c08000,
+            personal_nonrefundable_credit)
 
 
 @iterate_jit(nopython=True)
@@ -1357,7 +1341,7 @@ def AdditionalCTC(n24, prectc, earned, c07220, ptax_was,
 @iterate_jit(nopython=True)
 def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
           c07400, c07600, c08000, e09700, e09800, e09900, niit, othertaxes,
-          c07100, c09200, dep_credit, personal_credit):
+          c07100, c09200, dep_credit, personal_nonrefundable_credit):
     """
     C1040 function computes total used nonrefundable credits, c07100,
                             othertaxes, and
@@ -1365,7 +1349,8 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
     """
     # total used nonrefundable credits (as computed in NonrefundableCredits)
     c07100 = (c07180 + c07200 + c07600 + c07300 + c07400 + c07220 + c08000 +
-              c07230 + c07240 + c07260 + dep_credit + personal_credit)
+              c07230 + c07240 + c07260 + dep_credit +
+              personal_nonrefundable_credit)
     # tax after credits (2016 Form 1040, line 56)
     tax_net_nonrefundable_credits = max(0., c05800 - c07100)
     # tax (including othertaxes) before refundable credits
@@ -1403,14 +1388,14 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
 
 
 @iterate_jit(nopython=True)
-def IITAX(c59660, c11070, c10960, personal_credit, ctc_new,
+def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new,
           c09200, payrolltax,
           eitc, refund, iitax, combined):
     """
     Compute final taxes
     """
     eitc = c59660
-    refund = eitc + c11070 + c10960 + personal_credit + ctc_new
+    refund = eitc + c11070 + c10960 + personal_refundable_credit + ctc_new
     iitax = c09200 - refund
     combined = iitax + payrolltax
     return (eitc, refund, iitax, combined)

@@ -154,7 +154,7 @@
     },
     "e02000": {
       "type": "float",
-      "desc": "Sch E rental, royalty, S-corp, etc, income/loss",
+      "desc": "Sch E total rental, royalty, partnership, S-corporation, etc, income/loss (includes e26270 and e27200 and p25470)",
       "form": {"2013-2016": "1040 line 17"}
     },
     "e02100": {
@@ -338,12 +338,12 @@
     },
     "e26270": {
       "type": "float",
-      "desc": "Sch E: Combined partnership and S-corporation net income/loss",
+      "desc": "Sch E: Combined partnership and S-corporation net income/loss (includes k1bx14p and k1bx14s amounts and is included in e02000)",
       "form": {"2013-2016": "1040 Sch E line 32"}
     },
     "e27200": {
       "type": "float",
-      "desc": "Sch E: Farm rent net income or loss",
+      "desc": "Sch E: Farm rent net income or loss (included in e02000)",
       "form": {"2013-2016": "1040 Sch E line 40"}
     },
     "e32800": {
@@ -386,13 +386,23 @@
       "desc": "1 if filing unit in IRS-SOI PUF sample; 0 if from CPS sample",
       "form": {"2013-2016": "sample construction info"}
     },
+    "k1bx14p": {
+      "type": "float",
+      "desc": "Partner self-employment earnings/loss for taxpayer (included in e26270 total)",
+      "form": {"2013-2016": "1065 (Schedule K-1) box 14"}
+    },
+    "k1bx14s": {
+      "type": "float",
+      "desc": "Partner self-employment earnings/loss for spouse (included in e26270 total)",
+      "form": {"2013-2016": "1065 (Schedule K-1) box 14"}
+    },
     "n24": {
       "type": "int",
       "desc": "Number of children eligible for Child Tax Credit",
       "form": {"2013-2016": "imputed from CPS data"}
     },
     "nu05": {
-      "type": "float",
+      "type": "int",
       "desc": "Number of dependents under 5 years old",
       "form": {"2013-2016": "imputed from CPS data"}
     },
@@ -434,7 +444,7 @@
     },
     "p25470": {
       "type": "float",
-      "desc": "Sch E: Royalty depletion and/or rental depreciation",
+      "desc": "Sch E: Royalty depletion and/or rental depreciation (included in e02000)",
       "form": {"2013-2016": "1040 Sch E line 18"}
     },
     "p87521": {
@@ -763,9 +773,14 @@
       "desc": "",
       "form": {}
     },
-    "personal_credit": {
+    "personal_refundable_credit": {
       "type": "float",
-      "desc": "Personl nonrefundable credit",
+      "desc": "Personal refundable credit",
+      "form": {}
+    },
+    "personal_nonrefundable_credit": {
+      "type": "float",
+      "desc": "Personal nonrefundable credit",
       "form": {}
     },
     "dwks10": {
@@ -808,22 +823,12 @@
       "desc": "Lumpsum (or head) tax; appears as LSTAX variable in tc CLI minimal output",
       "form": {}
     },
-    "personal_credit": {
-      "type": "float",
-      "desc": "",
-      "form": {}
-    },
     "pre_c04600": {
       "type": "float",
       "desc": "Personal exemption before phase-out",
       "form": {}
     },
     "prectc": {
-      "type": "float",
-      "desc": "",
-      "form": {}
-    },
-    "max_personal_credit": {
       "type": "float",
       "desc": "",
       "form": {}
