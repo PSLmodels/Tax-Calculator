@@ -13,6 +13,9 @@ Release 0.9.1 on 2017-??-??
 - None
 
 **New Features**
+- Add Form 1065 Schedule K-1 self-employment earnings to calculation of self-employment payroll taxes
+  [[#1438](https://github.com/open-source-economics/Tax-Calculator/pull/1438)
+  by Martin Holmer]
 - Improve calculation of sub-sample weights
   [[#1441](https://github.com/open-source-economics/Tax-Calculator/pull/1441)
   by Hank Doupe]
@@ -49,7 +52,6 @@ Release 0.9.0 on 2017-06-14
   by Martin Holmer]
 
 **Bug Fixes**
-
 - Fix logic of gross casualty loss calculation by moving it out of
   Tax-Calculator and into the taxdata repository
   [[#1426](https://github.com/open-source-economics/Tax-Calculator/pull/1426)

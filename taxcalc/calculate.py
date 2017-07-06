@@ -256,7 +256,7 @@ class Calculator(object):
         'e00650',  qualified dividends (also included in e00600)
         'e01400',  federally-taxable IRA distribution;
         'e01700',  federally-taxable pension benefits;
-        'e02000',  Schedule E net income/loss
+        'e02000',  Schedule E total net income/loss
         'e02400',  all social security (OASDI) benefits;
         'p22250',  short-term capital gains;
         'p23250',  long-term capital gains;
