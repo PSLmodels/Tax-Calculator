@@ -69,7 +69,10 @@ def main():
     # advance calc3 to TAXYEAR, do shifting, and conduct tax calculations
     while calc3.current_year < TAXYEAR:
         calc3.increment_year()
-    calc3.records = full_earnings_shift(calc3.records)
+    calc3.records = full_earnings_shift(calc3.records, taxpayer_only=True)
+    calc3.calc_all()
+    calc3p_records = copy.deepcopy(calc3.records)
+    calc3.records = full_earnings_shift(calc3p_records, taxpayer_only=False)
     calc3.calc_all()
 
     # write calc3 vs calc2 results
@@ -91,7 +94,7 @@ def main():
     # advance calc4 to TAXYEAR, do shifting, and conduct tax calculations
     while calc4.current_year < TAXYEAR:
         calc4.increment_year()
-    calc4.records = partial_earnings_shift(calc4.records,
+    calc4.records = partial_earnings_shift(calc4.records, calc3p_records,
                                            calc3.records, calc2.records)
     calc4.calc_all()
 
@@ -187,12 +190,14 @@ def write_decile_table(dfx):
     sys.stdout.write(row)
 
 
-def full_earnings_shift(recs):
+def full_earnings_shift(recs, taxpayer_only):
     """
-    Return Records object with all wages and salaries in recs shifted to
+    Return Records object with wages and salaries in recs shifted to
     corporate pass-through self-employment earnings.
     Note that the k1bx14 amounts are included in the e26270 amount, which is,
     in turn, included in the e02000 amount.
+    Earnings shift is done for taxpayers only when taxpayer_only=True and
+    earnings shift is done for spouses only when taxpayer_only=False.
     """
     dump = False
     cols = ['s006', 'e00200', 'e00200p', 'e00200s', 'e02000', 'e26270',
@@ -202,13 +207,18 @@ def full_earnings_shift(recs):
         pdf = pd.DataFrame(data=np.column_stack(data), columns=cols)
         for col in cols:
             print 'DUMP-BEFORE-SHIFT', col, weighted_sum(pdf, col)
-    recs.e02000 = recs.e02000 + recs.e00200
-    recs.e26270 = recs.e26270 + recs.e00200
-    recs.e00200.fill(0)
-    recs.e02100p = recs.e02100p + recs.e00200p  # TODO: e02100p --> k1bx14p
-    recs.e00200p.fill(0)
-    recs.e02100s = recs.e02100s + recs.e00200s  # TODO: e02100s --> k1bx14s
-    recs.e00200s.fill(0)
+    if taxpayer_only:
+        recs.e02000 = recs.e02000 + recs.e00200p
+        recs.e26270 = recs.e26270 + recs.e00200p
+        recs.e02100p = recs.e02100p + recs.e00200p  # TODO: e02100p --> k1bx14p
+        recs.e00200 = recs.e00200 - recs.e00200p
+        recs.e00200p.fill(0)
+    else:
+        recs.e02000 = recs.e02000 + recs.e00200s
+        recs.e26270 = recs.e26270 + recs.e00200s
+        recs.e02100s = recs.e02100s + recs.e00200s  # TODO: e02100s --> k1bx14s
+        recs.e00200 = recs.e00200 - recs.e00200s
+        recs.e00200s.fill(0)
     if dump:
         data = [getattr(recs, col) for col in cols]
         pdf = pd.DataFrame(data=np.column_stack(data), columns=cols)
@@ -217,35 +227,50 @@ def full_earnings_shift(recs):
     return recs
 
 
-def partial_earnings_shift(recs, recs_full, recs_noes):
+def partial_earnings_shift(recs, recs_full_p, recs_full_a, recs_noes):
     """
     Return Records object with some wages and salaries in recs shifted to
     corporate pass-through self-employment earnings depending on tax savings
-    of full shifting (recs_full) relative to no earnings shifting (recs_noes).
+    of full shifting (recs_full_p and recs_full_a) relative to no earnings
+    shifting (recs_noes).  The recs_full_p records object contains results
+    when all taxpayers, but not spouses in MARS==2 filing units, do full
+    earnings-shifting; the recs_full_a records object contains results
+    when all taxpayers, and all spouses in MARS==2 filing units, do full
+    earnings-shifting.
     Note that the k1bx14 amounts are included in the e26270 amount, which is,
     in turn, included in the e02000 amount.
     """
-    potential_savings = recs_noes.combined - recs_full.combined
-    prob = probability(recs.MARS, recs.e00200, potential_savings)
     urn_seed = 123456
     np.random.seed(urn_seed)  # pylint: disable=no-member
+    # first handle taxpayer decision to shift earnings
+    potential_savings = recs_noes.combined - recs_full_p.combined
+    prob = probability(recs.e00200p, potential_savings)
     urn = np.random.random(recs.MARS.shape)
     does = urn < prob
-    recs.e02000 = np.where(does, recs.e02000 + recs.e00200, recs.e02000)
-    recs.e26270 = np.where(does, recs.e26270 + recs.e00200, recs.e26270)
-    recs.e00200 = np.where(does, 0., recs.e00200)
-    recs.e02100p = np.where(does, recs.e02100p + recs.e00200p, recs.e00200p)
+    recs.e02000 = np.where(does, recs.e02000 + recs.e00200p, recs.e02000)
+    recs.e26270 = np.where(does, recs.e26270 + recs.e00200p, recs.e26270)
+    recs.e00200 = np.where(does, recs.e00200 - recs.e00200p, recs.e00200)
+    recs.e02100p = np.where(does, recs.e02100p + recs.e00200p, recs.e02100p)
     recs.e00200p = np.where(does, 0., recs.e00200p)
-    recs.e02100s = np.where(does, recs.e02100s + recs.e00200s, recs.e00200s)
+    # then handle spouse (in MARS==2 filing units) decision to shift earnings
+    potential_savings = recs_full_p.combined - recs_full_a.combined
+    prob = probability(recs.e00200s, potential_savings)
+    urn = np.random.random(recs.MARS.shape)
+    does = urn < prob
+    recs.e02000 = np.where(does, recs.e02000 + recs.e00200s, recs.e02000)
+    recs.e26270 = np.where(does, recs.e26270 + recs.e00200s, recs.e26270)
+    recs.e00200 = np.where(does, recs.e00200 - recs.e00200s, recs.e00200)
+    recs.e02100s = np.where(does, recs.e02100s + recs.e00200s, recs.e02100s)
     recs.e00200s = np.where(does, 0., recs.e00200s)
+    # finally return modified Records object, recs
     return recs
 
 
-def probability(mars, earnings, savings):
+def probability(indiv_earnings, tax_savings):
     """
-    Return array containing earnings-shifting probability for each filing unit.
+    Return array containing earnings-shifting probability for each individual.
     """
-    prob = np.where(mars > 0, 1.0, 0.0)
+    prob = np.where(tax_savings > -9e99, 1.0, 0.0)
     return prob
 
 
