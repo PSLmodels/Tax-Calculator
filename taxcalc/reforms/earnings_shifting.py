@@ -270,7 +270,13 @@ def probability(indiv_earnings, tax_savings):
     """
     Return array containing earnings-shifting probability for each individual.
     """
-    prob = np.where(tax_savings > -9e99, 1.0, 0.0)
+    min_savings = 1e4  # $10,000 tax savings per annum
+    min_earnings = 3e5  # $300,000 individual earnings per annum
+    shift_prob = 1.0
+    # pylint: disable=no-member
+    prob = np.where(np.logical_and(indiv_earnings >= min_earnings,
+                                   tax_savings >= min_savings),
+                    shift_prob, 0.0)
     return prob
 
 
