@@ -201,7 +201,7 @@ def full_earnings_shift(recs, taxpayer_only):
     """
     dump = False
     cols = ['s006', 'e00200', 'e00200p', 'e00200s', 'e02000', 'e26270',
-            'e02100p', 'e02100s']  # TODO: replace with k1bx14? variables
+            'k1bx14p', 'k1bx14s']
     if dump:
         data = [getattr(recs, col) for col in cols]
         pdf = pd.DataFrame(data=np.column_stack(data), columns=cols)
@@ -210,13 +210,13 @@ def full_earnings_shift(recs, taxpayer_only):
     if taxpayer_only:
         recs.e02000 = recs.e02000 + recs.e00200p
         recs.e26270 = recs.e26270 + recs.e00200p
-        recs.e02100p = recs.e02100p + recs.e00200p  # TODO: e02100p --> k1bx14p
+        recs.k1bx14p = recs.k1bx14p + recs.e00200p
         recs.e00200 = recs.e00200 - recs.e00200p
         recs.e00200p.fill(0)
     else:
         recs.e02000 = recs.e02000 + recs.e00200s
         recs.e26270 = recs.e26270 + recs.e00200s
-        recs.e02100s = recs.e02100s + recs.e00200s  # TODO: e02100s --> k1bx14s
+        recs.k1bx14s = recs.k1bx14s + recs.e00200s
         recs.e00200 = recs.e00200 - recs.e00200s
         recs.e00200s.fill(0)
     if dump:
@@ -250,7 +250,7 @@ def partial_earnings_shift(recs, recs_full_p, recs_full_a, recs_noes):
     recs.e02000 = np.where(does, recs.e02000 + recs.e00200p, recs.e02000)
     recs.e26270 = np.where(does, recs.e26270 + recs.e00200p, recs.e26270)
     recs.e00200 = np.where(does, recs.e00200 - recs.e00200p, recs.e00200)
-    recs.e02100p = np.where(does, recs.e02100p + recs.e00200p, recs.e02100p)
+    recs.k1bx14p = np.where(does, recs.k1bx14p + recs.e00200p, recs.k1bx14p)
     recs.e00200p = np.where(does, 0., recs.e00200p)
     # then handle spouse (in MARS==2 filing units) decision to shift earnings
     potential_savings = recs_full_p.combined - recs_full_a.combined
@@ -260,7 +260,7 @@ def partial_earnings_shift(recs, recs_full_p, recs_full_a, recs_noes):
     recs.e02000 = np.where(does, recs.e02000 + recs.e00200s, recs.e02000)
     recs.e26270 = np.where(does, recs.e26270 + recs.e00200s, recs.e26270)
     recs.e00200 = np.where(does, recs.e00200 - recs.e00200s, recs.e00200)
-    recs.e02100s = np.where(does, recs.e02100s + recs.e00200s, recs.e02100s)
+    recs.k1bx14s = np.where(does, recs.k1bx14s + recs.e00200s, recs.k1bx14s)
     recs.e00200s = np.where(does, 0., recs.e00200s)
     # finally return modified Records object, recs
     return recs
