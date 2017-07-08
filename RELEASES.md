@@ -63,10 +63,10 @@ Release 0.9.0 on 2017-06-14
   [[#1428](https://github.com/open-source-economics/Tax-Calculator/pull/1428)
   by Hank Doupe]
 
-- Switch to use of new improved puf.csv input file, which causes small
+- Switch to use of new improved `puf.csv` input file, which causes small
   changes in tax results
   [[#1429](https://github.com/open-source-economics/Tax-Calculator/pull/1429)
-  by Martin Holmer],
+  by Martin Holmer], and
   which requires new `puf.csv` input file with this info:
   * Byte size: 52486351
   * MD5 checksum: d56b649c92049e32501b2d2fc5c36c92
@@ -601,7 +601,7 @@ Release 0.6.6 on 2016-08-13
 - None
 
 **New Features**
-- Revise code to use smaller puf.csv input file and make changes to
+- Revise code to use smaller `puf.csv` input file and make changes to
   create that input file
 - Remove debugging variables from functions.py reducing execution time
   by 42 percent
@@ -661,7 +661,7 @@ Release 0.6.4 on 2016-06-17
 **Bug Fixes**
 - Test TaxBrain handling of delayed reforms
 - Move cmbtp calculation and earnings splitting logic from Records
-  class to puf.csv file preparation
+  class to `puf.csv` file preparation
 - Update Numpy and Pandas dependencies to latest versions to avoid a
   bug in the Windows conda package for Pandas 0.16.2
 
