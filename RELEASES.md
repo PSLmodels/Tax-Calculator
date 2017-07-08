@@ -66,7 +66,10 @@ Release 0.9.0 on 2017-06-14
 - Switch to use of new improved puf.csv input file, which causes small
   changes in tax results
   [[#1429](https://github.com/open-source-economics/Tax-Calculator/pull/1429)
-  by Martin Holmer]
+  by Martin Holmer],
+  which requires new `puf.csv` input file with this info:
+  * Byte size: 52486351
+  * MD5 checksum: d56b649c92049e32501b2d2fc5c36c92
 
 **Bug Fixes**
 - Fix logic of gross casualty loss calculation by moving it out of
@@ -311,7 +314,10 @@ Release 0.7.6 on 2017-02-15
 - Add Stage3 adjustment ratios to target IRS-SOI data on the
   distribution of interest income
   [[#1193](https://github.com/open-source-economics/Tax-Calculator/pull/1193)
-  by Anderson Frailey]
+  by Anderson Frailey],
+  which requires new `puf.csv` input file with this info:
+  * Byte size: 51470450
+  * MD5 checksum: 3a02e9909399ba85d0a7cf5e98149b90
 
 **New Features**
 - Add to diagnostic table the number of tax units with non-positive

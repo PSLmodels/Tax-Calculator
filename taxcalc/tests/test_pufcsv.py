@@ -246,6 +246,7 @@ def test_credit_reforms(puf_path):  # pylint: disable=redefined-outer-name
     """
     Test personal credit reforms using small puf.csv sub-sample
     """
+    # pylint: disable=too-many-locals
     reform_year = 2017
     fullsample = pd.read_csv(puf_path)
     subsample = fullsample.sample(frac=0.05,  # pylint: disable=no-member
