@@ -314,7 +314,10 @@ Release 0.7.6 on 2017-02-15
 - Add Stage3 adjustment ratios to target IRS-SOI data on the
   distribution of interest income
   [[#1193](https://github.com/open-source-economics/Tax-Calculator/pull/1193)
-  by Anderson Frailey]
+  by Anderson Frailey],
+  which requires new `puf.csv` input file with this info:
+  * Byte size: 51470450
+  * MD5 checksum: 3a02e9909399ba85d0a7cf5e98149b90
 
 **New Features**
 - Add to diagnostic table the number of tax units with non-positive
