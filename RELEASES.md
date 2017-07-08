@@ -30,7 +30,7 @@ Release 0.9.1 on 2017-07-06
 - Add Form 1065 Schedule K-1 self-employment earnings to calculation of self-employment payroll taxes
   [[#1438](https://github.com/open-source-economics/Tax-Calculator/pull/1438)
   by Martin Holmer],
-  which requires new `puf.csv` input file with this info:
+  which requires new `puf.csv` input file with this information:
   * Byte size: 53743252
   * MD5 checksum: ca0ad8bbb05ee15b1cbefc7f1fa1f965
 - Improve calculation of sub-sample weights
@@ -63,11 +63,11 @@ Release 0.9.0 on 2017-06-14
   [[#1428](https://github.com/open-source-economics/Tax-Calculator/pull/1428)
   by Hank Doupe]
 
-- Switch to use of new improved `puf.csv` input file, which causes small
+- Switch to use of new improved `puf.csv` input file that causes small
   changes in tax results
   [[#1429](https://github.com/open-source-economics/Tax-Calculator/pull/1429)
-  by Martin Holmer], and
-  which requires new `puf.csv` input file with this info:
+  by Martin Holmer],
+  which requires new `puf.csv` input file with this information:
   * Byte size: 52486351
   * MD5 checksum: d56b649c92049e32501b2d2fc5c36c92
 
@@ -315,7 +315,7 @@ Release 0.7.6 on 2017-02-15
   distribution of interest income
   [[#1193](https://github.com/open-source-economics/Tax-Calculator/pull/1193)
   by Anderson Frailey],
-  which requires new `puf.csv` input file with this info:
+  which requires new `puf.csv` input file with this information:
   * Byte size: 51470450
   * MD5 checksum: 3a02e9909399ba85d0a7cf5e98149b90
 
@@ -438,6 +438,12 @@ Release 0.7.2 on 2016-12-05
 - Add ability to narrow investment income exclusion base
   [[#1072](https://github.com/open-source-economics/Tax-Calculator/pull/1072)
   by Martin Holmer]
+- Replace use of two cmbtp_* variables with a single cmbtp variable
+  [[#1077](https://github.com/open-source-economics/Tax-Calculator/pull/1077)
+  by Martin Holmer],
+  which requires new `puf.csv` input file with this information:
+  * Byte size: 50953138
+  * MD5 checksum: acbf905c8b7d29fd4b06b13e1cc8a60c
 
 **Bug Fixes**
 - None
