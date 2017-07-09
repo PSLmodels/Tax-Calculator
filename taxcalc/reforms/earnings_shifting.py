@@ -12,6 +12,9 @@ Script requirements:
 (1) conda package for taxcalc version 0.9.1 or higher installed on computer
 (2) proprietary puf.csv file used by TaxBrain located in current directory
 (3) Trump2017.json reform file located in current directory
+
+Note: taxcalc package is installed from command line as follows:
+$ conda install -c ospc taxcalc
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 earnings_shifting.py
@@ -30,6 +33,12 @@ def main():
     """
     Contains high-level logic of the script.
     """
+    # read CLI arguments to get probability parameter values dictionary
+    param = dict()
+    param['min_earnings'] = 3e5  # $300,000 individual earnings per annum
+    param['min_savings'] = 1e4  # $10,000 tax savings per annum
+    param['shift_prob'] = 1.0
+
     # create calc1, current-law Calculator object
     calc1 = Calculator(policy=Policy(), records=Records(), verbose=False)
 
@@ -95,7 +104,8 @@ def main():
     while calc4.current_year < TAXYEAR:
         calc4.increment_year()
     calc4.records = partial_earnings_shift(calc4.records, calc3p_records,
-                                           calc3.records, calc2.records)
+                                           calc3.records, calc2.records,
+                                           param)
     calc4.calc_all()
 
     # write calc4 vs calc3 results
@@ -109,6 +119,12 @@ def main():
     # write calc4 vs calc1 results
     sys.stdout.write('\n==> CALC4 vs CALC1 in {}:\n'.format(TAXYEAR))
     write_tables(calc4, calc1)
+
+    # write out probability parameter values
+    msg = 'MIN_EARNINGS,MIN_SAVINGS,SHIFT_PROB= {} {} {}\n'
+    sys.stdout.write(msg.format(param['min_earnings'],
+                                param['min_savings'],
+                                param['shift_prob']))
 
     # normal return code
     return 0
@@ -227,7 +243,7 @@ def full_earnings_shift(recs, taxpayer_only):
     return recs
 
 
-def partial_earnings_shift(recs, recs_full_p, recs_full_a, recs_noes):
+def partial_earnings_shift(recs, recs_full_p, recs_full_a, recs_noes, param):
     """
     Return Records object with some wages and salaries in recs shifted to
     corporate pass-through self-employment earnings depending on tax savings
@@ -244,7 +260,7 @@ def partial_earnings_shift(recs, recs_full_p, recs_full_a, recs_noes):
     np.random.seed(urn_seed)  # pylint: disable=no-member
     # first handle taxpayer decision to shift earnings
     potential_savings = recs_noes.combined - recs_full_p.combined
-    prob = probability(recs.e00200p, potential_savings)
+    prob = probability(param, recs.e00200p, potential_savings)
     urn = np.random.random(recs.MARS.shape)
     does = urn < prob
     recs.e02000 = np.where(does, recs.e02000 + recs.e00200p, recs.e02000)
@@ -254,7 +270,7 @@ def partial_earnings_shift(recs, recs_full_p, recs_full_a, recs_noes):
     recs.e00200p = np.where(does, 0., recs.e00200p)
     # then handle spouse (in MARS==2 filing units) decision to shift earnings
     potential_savings = recs_full_p.combined - recs_full_a.combined
-    prob = probability(recs.e00200s, potential_savings)
+    prob = probability(param, recs.e00200s, potential_savings)
     urn = np.random.random(recs.MARS.shape)
     does = urn < prob
     recs.e02000 = np.where(does, recs.e02000 + recs.e00200s, recs.e02000)
@@ -266,17 +282,14 @@ def partial_earnings_shift(recs, recs_full_p, recs_full_a, recs_noes):
     return recs
 
 
-def probability(indiv_earnings, tax_savings):
+def probability(param, indiv_earnings, tax_savings):
     """
     Return array containing earnings-shifting probability for each individual.
     """
-    min_savings = 1e4  # $10,000 tax savings per annum
-    min_earnings = 3e5  # $300,000 individual earnings per annum
-    shift_prob = 1.0
     # pylint: disable=no-member
-    prob = np.where(np.logical_and(indiv_earnings >= min_earnings,
-                                   tax_savings >= min_savings),
-                    shift_prob, 0.0)
+    prob = np.where(np.logical_and(indiv_earnings >= param['min_earnings'],
+                                   tax_savings >= param['min_savings']),
+                    param['shift_prob'], 0.0)
     return prob
 
 
