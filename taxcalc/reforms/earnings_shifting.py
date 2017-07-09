@@ -1,6 +1,6 @@
 """
 Python script that uses Tax-Calculator to analyze the tax revenue implications
-of various earnings-shifting assumptions under the Trump2017.json tax reform.
+of specified earnings-shifting assumptions under the Trump2017.json tax reform.
 
 The concept of earnings-shifting is the transformation of wage and
 salary income into pass-through self-employment earnings from a
@@ -15,29 +15,39 @@ Script requirements:
 
 Note: taxcalc package is installed from command line as follows:
 $ conda install -c ospc taxcalc
+With puf.csv and Trump2017.json in current directory, proceed as follows:
+$ python earnings_shifting.py --help
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 earnings_shifting.py
 # pylint --disable=locally-disabled earnings_shifting.py
 
 import sys
+import argparse
 
 # pylint: disable=wildcard-import,unused-wildcard-import
 from taxcalc import *
 
 REFORM = 'Trump2017.json'
-TAXYEAR = 2017
 
 
 def main():
     """
     Contains high-level logic of the script.
     """
+    # pylint: disable=too-many-statements
+
     # read CLI arguments to get probability parameter values dictionary
-    param = dict()
-    param['min_earnings'] = 3e5  # $300,000 individual earnings per annum
-    param['min_savings'] = 1e4  # $10,000 tax savings per annum
-    param['shift_prob'] = 1.0
+    param = get_cli_parameters()
+    taxyear = param['taxyear']
+    if taxyear < 2017:
+        msg = 'TAXYEAR={} before first reform year 2017\n'
+        sys.stderr.write(msg.format(taxyear))
+        return 1
+    if param['shift_prob'] < 0.0 or param['shift_prob'] > 1.0:
+        msg = 'SHIFT_PROB={} not in [0,1] range\n'
+        sys.stderr.write(msg.format(param['shift_prob']))
+        return 1
 
     # create calc1, current-law Calculator object
     calc1 = Calculator(policy=Policy(), records=Records(), verbose=False)
@@ -53,16 +63,16 @@ def main():
     calc2 = Calculator(policy=policy2, records=records2, verbose=False)
 
     # advance calc1 and calc2 to TAXYEAR and conduct tax calculations
-    while calc1.current_year < TAXYEAR:
+    while calc1.current_year < taxyear:
         calc1.increment_year()
         calc2.increment_year()
     calc1.calc_all()
     calc2.calc_all()
 
     # write calc1 results and write calc2 vs calc1 results
-    sys.stdout.write('==> CALC1 in {}:\n'.format(TAXYEAR))
+    sys.stdout.write('==> CALC1 in {}:\n'.format(taxyear))
     write_tables(calc1, None)
-    sys.stdout.write('\n==> CALC2 vs CALC1 in {}:\n'.format(TAXYEAR))
+    sys.stdout.write('\n==> CALC2 vs CALC1 in {}:\n'.format(taxyear))
     write_tables(calc2, calc1)
 
     # create calc3, reform Calculator object with
@@ -76,7 +86,7 @@ def main():
     calc3 = Calculator(policy=policy3, records=records3, verbose=False)
 
     # advance calc3 to TAXYEAR, do shifting, and conduct tax calculations
-    while calc3.current_year < TAXYEAR:
+    while calc3.current_year < taxyear:
         calc3.increment_year()
     calc3.records = full_earnings_shift(calc3.records, taxpayer_only=True)
     calc3.calc_all()
@@ -85,7 +95,7 @@ def main():
     calc3.calc_all()
 
     # write calc3 vs calc2 results
-    sys.stdout.write('\n==> CALC3 vs CALC2 in {}:\n'.format(TAXYEAR))
+    sys.stdout.write('\n==> CALC3 vs CALC2 in {}:\n'.format(taxyear))
     write_tables(calc3, calc2)
 
     # create calc4, reform Calculator object with
@@ -101,7 +111,7 @@ def main():
     calc4 = Calculator(policy=policy4, records=records4, verbose=False)
 
     # advance calc4 to TAXYEAR, do shifting, and conduct tax calculations
-    while calc4.current_year < TAXYEAR:
+    while calc4.current_year < taxyear:
         calc4.increment_year()
     calc4.records = partial_earnings_shift(calc4.records, calc3p_records,
                                            calc3.records, calc2.records,
@@ -109,26 +119,77 @@ def main():
     calc4.calc_all()
 
     # write calc4 vs calc3 results
-    sys.stdout.write('\n==> CALC4 vs CALC3 in {}:\n'.format(TAXYEAR))
+    sys.stdout.write('\n==> CALC4 vs CALC3 in {}:\n'.format(taxyear))
     write_tables(calc4, calc3)
 
     # write calc4 vs calc2 results
-    sys.stdout.write('\n==> CALC4 vs CALC2 in {}:\n'.format(TAXYEAR))
+    sys.stdout.write('\n==> CALC4 vs CALC2 in {}:\n'.format(taxyear))
     write_tables(calc4, calc2)
 
     # write calc4 vs calc1 results
-    sys.stdout.write('\n==> CALC4 vs CALC1 in {}:\n'.format(TAXYEAR))
+    sys.stdout.write('\n==> CALC4 vs CALC1 in {}:\n'.format(taxyear))
     write_tables(calc4, calc1)
 
     # write out probability parameter values
-    msg = 'MIN_EARNINGS,MIN_SAVINGS,SHIFT_PROB= {} {} {}\n'
-    sys.stdout.write(msg.format(param['min_earnings'],
+    msg = 'TAXYEAR,MIN_EARNINGS,MIN_SAVINGS,SHIFT_PROB= {} {} {} {}\n'
+    sys.stdout.write(msg.format(param['taxyear'],
+                                param['min_earnings'],
                                 param['min_savings'],
                                 param['shift_prob']))
 
     # normal return code
     return 0
 # end of main function
+
+
+def get_cli_parameters():
+    """
+    Return CLI arguments in parameter dictionary.
+    """
+    # parse command-line arguments
+    usage_str = ('python earnings_shifting {}'.format(
+        'TAXYEAR MIN_EARNINGS MIN_SAVINGS SHIFT_PROB'))
+    parser = argparse.ArgumentParser(
+        prog='',
+        usage=usage_str,
+        description=('Analyzes the tax revenue implications of specified '
+                     'set of earnings-shifting assumptions under the '
+                     'Trump2017.json tax reform.'))
+    parser.add_argument('TAXYEAR', nargs='?',
+                        help=('TAXYEAR is calendar year for which taxes '
+                              'are computed.'),
+                        type=int,
+                        default=0)
+    parser.add_argument('MIN_EARNINGS', nargs='?',
+                        help=('MIN_EARNINGS is minimum individual annual '
+                              'earnings for earnings-shifting to occur with '
+                              'probability SHIFT_PROB.'),
+                        type=float,
+                        default=9e99)
+    parser.add_argument('MIN_SAVINGS', nargs='?',
+                        help=('MIN_SAVINGS is minimum individual annual '
+                              'income+payroll tax savings from '
+                              'earnings-shifting for earnings-shifting to '
+                              'occur with probability SHIFT_PROB.'),
+                        type=float,
+                        default=9e99)
+    parser.add_argument('SHIFT_PROB', nargs='?',
+                        help=('SHIFT_PROB is probability of '
+                              'earnings-shifting for individuals that '
+                              'have at least MIN_EARNINGS and at least '
+                              'MIN_SAVINGS from shifting earnings; '
+                              'probability is zero for individuals '
+                              'below MIN_EARNINGS or below MIN_SAVINGS.'),
+                        type=float,
+                        default=0.0)
+    args = parser.parse_args()
+    # store args in returned dictionary
+    param = dict()
+    param['taxyear'] = args.TAXYEAR
+    param['min_earnings'] = args.MIN_EARNINGS
+    param['min_savings'] = args.MIN_SAVINGS
+    param['shift_prob'] = args.SHIFT_PROB
+    return param
 
 
 def write_tables(calc, calc_base=None):
