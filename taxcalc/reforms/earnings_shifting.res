@@ -1,3 +1,5 @@
+TAXYEAR,MIN_EARNINGS,MIN_SAVINGS,SHIFT_PROB= 2017 300000.0 10000.0 1.0
+
 ==> CALC1 in 2017:
 Weighted Tax Totals by Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax    AllTax

@@ -48,6 +48,8 @@ def main():
         msg = 'SHIFT_PROB={} not in [0,1] range\n'
         sys.stderr.write(msg.format(param['shift_prob']))
         return 1
+    write_parameters(param)
+    sys.stdout.write('\n')
 
     # create calc1, current-law Calculator object
     calc1 = Calculator(policy=Policy(), records=Records(), verbose=False)
@@ -132,11 +134,8 @@ def main():
     write_tables(calc4, calc1)
 
     # write out probability parameter values
-    msg = '\nTAXYEAR,MIN_EARNINGS,MIN_SAVINGS,SHIFT_PROB= {} {} {} {}\n'
-    sys.stdout.write(msg.format(param['taxyear'],
-                                param['min_earnings'],
-                                param['min_savings'],
-                                param['shift_prob']))
+    sys.stdout.write('\n')
+    write_parameters(param)
 
     # normal return code
     return 0
@@ -191,6 +190,17 @@ def get_cli_parameters():
     param['min_savings'] = args.MIN_SAVINGS
     param['shift_prob'] = args.SHIFT_PROB
     return param
+
+
+def write_parameters(param):
+    """
+    Write parameter values to stdout.
+    """
+    msg = 'TAXYEAR,MIN_EARNINGS,MIN_SAVINGS,SHIFT_PROB= {} {} {} {}\n'
+    sys.stdout.write(msg.format(param['taxyear'],
+                                param['min_earnings'],
+                                param['min_savings'],
+                                param['shift_prob']))
 
 
 def write_tables(calc, calc_base=None):
