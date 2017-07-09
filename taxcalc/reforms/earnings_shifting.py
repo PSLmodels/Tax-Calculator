@@ -321,9 +321,11 @@ def partial_earnings_shift(recs, recs_full_p, recs_full_a, recs_noes, param):
     np.random.seed(urn_seed)  # pylint: disable=no-member
     # first handle taxpayer decision to shift earnings
     potential_savings = recs_noes.combined - recs_full_p.combined
+    print 'max savings for taxpayers', np.amax(potential_savings)
     prob = probability(param, recs.e00200p, potential_savings)
     urn = np.random.random(recs.MARS.shape)
     does = urn < prob
+    nump_shifters = recs.s006[does].sum()
     recs.e02000 = np.where(does, recs.e02000 + recs.e00200p, recs.e02000)
     recs.e26270 = np.where(does, recs.e26270 + recs.e00200p, recs.e26270)
     recs.e00200 = np.where(does, recs.e00200 - recs.e00200p, recs.e00200)
@@ -331,14 +333,20 @@ def partial_earnings_shift(recs, recs_full_p, recs_full_a, recs_noes, param):
     recs.e00200p = np.where(does, 0., recs.e00200p)
     # then handle spouse (in MARS==2 filing units) decision to shift earnings
     potential_savings = recs_full_p.combined - recs_full_a.combined
+    print 'max savings for spouses', np.amax(potential_savings)
     prob = probability(param, recs.e00200s, potential_savings)
     urn = np.random.random(recs.MARS.shape)
     does = urn < prob
+    nums_shifters = recs.s006[does].sum()
     recs.e02000 = np.where(does, recs.e02000 + recs.e00200s, recs.e02000)
     recs.e26270 = np.where(does, recs.e26270 + recs.e00200s, recs.e26270)
     recs.e00200 = np.where(does, recs.e00200 - recs.e00200s, recs.e00200)
     recs.k1bx14s = np.where(does, recs.k1bx14s + recs.e00200s, recs.k1bx14s)
     recs.e00200s = np.where(does, 0., recs.e00200s)
+    # write number of taxpayer and spouse earnings shifters
+    msg = 'Number of shifters (#m): taxpayers={:.3f} and spouses={:.3f}\n'
+    sys.stdout.write(msg.format(nump_shifters * 1e-6,
+                                nums_shifters * 1e-6))
     # finally return modified Records object, recs
     return recs
 
