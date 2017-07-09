@@ -74,35 +74,10 @@ Weighted Tax Differences by Expanded-Income Decile
  9     17.0    6079.1    -299.4     -21.1    -320.5
  A    170.1   12220.0    -370.5     -73.9    -444.4
 
-==> CALC4 vs CALC3 in 2017:
-Weighted Tax Totals by Expanded-Income Decile
-    Returns    ExpInc    IncTax    PayTax    AllTax
-       (#m)      ($b)      ($b)      ($b)      ($b)
- 0     17.0    -119.5      -2.5       6.4       3.9
- 1     17.0     152.4     -12.6      14.4       1.8
- 2     17.0     273.9     -27.2      24.5      -2.7
- 3     17.0     400.6     -21.8      35.8      14.0
- 4     17.0     558.3     -10.8      52.6      41.9
- 5     17.0     754.0       9.4      72.0      81.4
- 6     17.0    1008.7      33.8      97.0     130.8
- 7     17.0    1379.3      80.4     143.2     223.6
- 8     17.0    2054.4     163.0     233.3     396.3
- 9     17.0    6252.9     959.1     410.9    1370.0
- A    170.1   12715.1    1170.7    1090.2    2260.9
-Weighted Tax Differences by Expanded-Income Decile
-    Returns    ExpInc    IncTax    PayTax    AllTax
-       (#m)      ($b)      ($b)      ($b)      ($b)
- 0     17.0    -119.5      -0.1       0.6       0.5
- 1     17.0     152.4      -0.5       1.0       0.5
- 2     17.0     273.9      -0.1       1.6       1.5
- 3     17.0     400.6       1.2       2.7       4.0
- 4     17.0     558.3       2.7       4.1       6.8
- 5     17.0     754.0       4.1       5.7       9.8
- 6     17.0    1008.7       6.0       7.7      13.7
- 7     17.0    1379.3      17.2      11.4      28.5
- 8     17.0    2054.4      39.4      17.6      57.0
- 9     17.0    6252.9     191.9      19.0     211.0
- A    170.1   12715.1     261.8      71.5     333.2
+==> CALC4 in 2017 number of taxpayer shifters (#m): 1.071
+==> CALC4 in 2017 taxpayer earnings shifted ($b): 758.641
+==> CALC4 in 2017 number of   spouse shifters (#m): 0.515
+==> CALC4 in 2017   spouse earnings shifted ($b): 338.367
 
 ==> CALC4 vs CALC2 in 2017:
 Weighted Tax Totals by Expanded-Income Decile
@@ -117,8 +92,8 @@ Weighted Tax Totals by Expanded-Income Decile
  6     17.0    1008.7      33.8      97.0     130.8
  7     17.0    1379.3      80.4     143.2     223.6
  8     17.0    2054.4     163.0     233.3     396.3
- 9     17.0    6252.9     959.1     410.9    1370.0
- A    170.1   12715.1    1170.7    1090.2    2260.9
+ 9     17.0    6244.0     912.0     410.0    1321.9
+ A    170.1   12706.2    1123.6    1089.3    2212.9
 Weighted Tax Differences by Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)
@@ -131,8 +106,8 @@ Weighted Tax Differences by Expanded-Income Decile
  6     17.0    1008.7      -0.0      -0.0      -0.0
  7     17.0    1379.3      -0.0      -0.0      -0.0
  8     17.0    2054.4      -0.0      -0.0      -0.0
- 9     17.0    6252.9    -108.8      -2.4    -111.2
- A    170.1   12715.1    -108.8      -2.4    -111.2
+ 9     17.0    6244.0    -155.9      -3.4    -159.2
+ A    170.1   12706.2    -155.9      -3.4    -159.2
 
 ==> CALC4 vs CALC1 in 2017:
 Weighted Tax Totals by Expanded-Income Decile
@@ -147,8 +122,8 @@ Weighted Tax Totals by Expanded-Income Decile
  6     17.0    1008.7      33.8      97.0     130.8
  7     17.0    1379.3      80.4     143.2     223.6
  8     17.0    2054.4     163.0     233.3     396.3
- 9     17.0    6252.9     959.1     410.9    1370.0
- A    170.1   12715.1    1170.7    1090.2    2260.9
+ 9     17.0    6244.0     912.0     410.0    1321.9
+ A    170.1   12706.2    1123.6    1089.3    2212.9
 Weighted Tax Differences by Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)
@@ -161,6 +136,7 @@ Weighted Tax Differences by Expanded-Income Decile
  6     17.0    1008.7     -27.2      -0.0     -27.2
  7     17.0    1379.3     -35.7      -0.0     -35.7
  8     17.0    2054.4     -52.0      -0.0     -52.0
- 9     17.0    6252.9    -380.3      -2.4    -382.7
- A    170.1   12715.1    -529.3      -2.4    -531.7
+ 9     17.0    6244.0    -427.4      -3.4    -430.7
+ A    170.1   12706.2    -576.4      -3.4    -579.8
+
 TAXYEAR,MIN_EARNINGS,MIN_SAVINGS,SHIFT_PROB= 2017 300000.0 10000.0 1.0

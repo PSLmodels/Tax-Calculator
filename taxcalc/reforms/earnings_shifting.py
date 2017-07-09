@@ -35,7 +35,7 @@ def main():
     """
     Contains high-level logic of the script.
     """
-    # pylint: disable=too-many-statements
+    # pylint: disable=too-many-statements,too-many-locals
 
     # read CLI arguments to get probability parameter values dictionary
     param = get_cli_parameters()
@@ -78,25 +78,30 @@ def main():
     # create calc3, reform Calculator object with
     #               static response assumptions and
     #               full earnings-shifting in TAXYEAR
-    records3 = Records()
-    policy3 = Policy()
+    # create calc3p for taxpayer earnings shifting and
+    # create calc3b for both taxpayer and spouse earnings shifting
     pdict = Calculator.read_json_param_files(reform_filename=REFORM,
                                              assump_filename=None)
-    policy3.implement_reform(pdict['policy'])
-    calc3 = Calculator(policy=policy3, records=records3, verbose=False)
-
-    # advance calc3 to TAXYEAR, do shifting, and conduct tax calculations
-    while calc3.current_year < taxyear:
-        calc3.increment_year()
-    calc3.records = full_earnings_shift(calc3.records, taxpayer_only=True)
-    calc3.calc_all()
-    calc3p_records = copy.deepcopy(calc3.records)
-    calc3.records = full_earnings_shift(calc3p_records, taxpayer_only=False)
-    calc3.calc_all()
+    records3p = Records()
+    policy3p = Policy()
+    policy3p.implement_reform(pdict['policy'])
+    calc3p = Calculator(policy=policy3p, records=records3p, verbose=False)
+    while calc3p.current_year < taxyear:
+        calc3p.increment_year()
+    calc3p.records = full_earnings_shift(calc3p.records, taxpayer_only=True)
+    calc3p.calc_all()
+    records3b = Records()
+    policy3b = Policy()
+    policy3b.implement_reform(pdict['policy'])
+    calc3b = Calculator(policy=policy3b, records=records3b, verbose=False)
+    while calc3b.current_year < taxyear:
+        calc3b.increment_year()
+    calc3b.records = full_earnings_shift(calc3b.records, taxpayer_only=False)
+    calc3b.calc_all()
 
     # write calc3 vs calc2 results
     sys.stdout.write('\n==> CALC3 vs CALC2 in {}:\n'.format(taxyear))
-    write_tables(calc3, calc2)
+    write_tables(calc3b, calc2)
 
     # create calc4, reform Calculator object with
     #               static response assumptions and
@@ -113,14 +118,10 @@ def main():
     # advance calc4 to TAXYEAR, do shifting, and conduct tax calculations
     while calc4.current_year < taxyear:
         calc4.increment_year()
-    calc4.records = partial_earnings_shift(calc4.records, calc3p_records,
-                                           calc3.records, calc2.records,
+    calc4.records = partial_earnings_shift(calc4.records, calc3p.records,
+                                           calc3b.records, calc2.records,
                                            param)
     calc4.calc_all()
-
-    # write calc4 vs calc3 results
-    sys.stdout.write('\n==> CALC4 vs CALC3 in {}:\n'.format(taxyear))
-    write_tables(calc4, calc3)
 
     # write calc4 vs calc2 results
     sys.stdout.write('\n==> CALC4 vs CALC2 in {}:\n'.format(taxyear))
@@ -131,7 +132,7 @@ def main():
     write_tables(calc4, calc1)
 
     # write out probability parameter values
-    msg = 'TAXYEAR,MIN_EARNINGS,MIN_SAVINGS,SHIFT_PROB= {} {} {} {}\n'
+    msg = '\nTAXYEAR,MIN_EARNINGS,MIN_SAVINGS,SHIFT_PROB= {} {} {} {}\n'
     sys.stdout.write(msg.format(param['taxyear'],
                                 param['min_earnings'],
                                 param['min_savings'],
@@ -274,7 +275,7 @@ def full_earnings_shift(recs, taxpayer_only):
     Note that the k1bx14 amounts are included in the e26270 amount, which is,
     in turn, included in the e02000 amount.
     Earnings shift is done for taxpayers only when taxpayer_only=True and
-    earnings shift is done for spouses only when taxpayer_only=False.
+    done for BOTH taxpayers and spouses when taxpayer_only=False.
     """
     dump = False
     cols = ['s006', 'e00200', 'e00200p', 'e00200s', 'e02000', 'e26270',
@@ -282,15 +283,17 @@ def full_earnings_shift(recs, taxpayer_only):
     if dump:
         data = [getattr(recs, col) for col in cols]
         pdf = pd.DataFrame(data=np.column_stack(data), columns=cols)
+        msg = 'DUMP-BEFORE-SHIFT {} {}\n'
         for col in cols:
-            print 'DUMP-BEFORE-SHIFT', col, weighted_sum(pdf, col)
-    if taxpayer_only:
-        recs.e02000 = recs.e02000 + recs.e00200p
-        recs.e26270 = recs.e26270 + recs.e00200p
-        recs.k1bx14p = recs.k1bx14p + recs.e00200p
-        recs.e00200 = recs.e00200 - recs.e00200p
-        recs.e00200p.fill(0)
-    else:
+            sys.stdout.write(msg.format(col, weighted_sum(pdf, col)))
+    # do full earnnigs shift for taxpayers
+    recs.e02000 = recs.e02000 + recs.e00200p
+    recs.e26270 = recs.e26270 + recs.e00200p
+    recs.k1bx14p = recs.k1bx14p + recs.e00200p
+    recs.e00200 = recs.e00200 - recs.e00200p
+    recs.e00200p.fill(0)
+    if taxpayer_only is False:
+        # also do full earnnigs shift for spouses
         recs.e02000 = recs.e02000 + recs.e00200s
         recs.e26270 = recs.e26270 + recs.e00200s
         recs.k1bx14s = recs.k1bx14s + recs.e00200s
@@ -299,19 +302,20 @@ def full_earnings_shift(recs, taxpayer_only):
     if dump:
         data = [getattr(recs, col) for col in cols]
         pdf = pd.DataFrame(data=np.column_stack(data), columns=cols)
+        msg = 'DUMP--AFTER-SHIFT {} {}\n'
         for col in cols:
-            print 'DUMP--AFTER-SHIFT', col, weighted_sum(pdf, col)
+            sys.stdout.write(msg.format(col, weighted_sum(pdf, col)))
     return recs
 
 
-def partial_earnings_shift(recs, recs_full_p, recs_full_a, recs_noes, param):
+def partial_earnings_shift(recs, recs_full_p, recs_full_b, recs_noes, param):
     """
     Return Records object with some wages and salaries in recs shifted to
     corporate pass-through self-employment earnings depending on tax savings
-    of full shifting (recs_full_p and recs_full_a) relative to no earnings
+    of full shifting (recs_full_p and recs_full_b) relative to no earnings
     shifting (recs_noes).  The recs_full_p records object contains results
     when all taxpayers, but not spouses in MARS==2 filing units, do full
-    earnings-shifting; the recs_full_a records object contains results
+    earnings-shifting; the recs_full_b records object contains results
     when all taxpayers, and all spouses in MARS==2 filing units, do full
     earnings-shifting.
     Note that the k1bx14 amounts are included in the e26270 amount, which is,
@@ -321,32 +325,38 @@ def partial_earnings_shift(recs, recs_full_p, recs_full_a, recs_noes, param):
     np.random.seed(urn_seed)  # pylint: disable=no-member
     # first handle taxpayer decision to shift earnings
     potential_savings = recs_noes.combined - recs_full_p.combined
-    print 'max savings for taxpayers', np.amax(potential_savings)
     prob = probability(param, recs.e00200p, potential_savings)
     urn = np.random.random(recs.MARS.shape)
     does = urn < prob
-    nump_shifters = recs.s006[does].sum()
+    numshifters_p = recs_noes.s006[does].sum()
+    earnshifted_p = (recs_noes.s006[does] * recs_noes.e00200p[does]).sum()
     recs.e02000 = np.where(does, recs.e02000 + recs.e00200p, recs.e02000)
     recs.e26270 = np.where(does, recs.e26270 + recs.e00200p, recs.e26270)
     recs.e00200 = np.where(does, recs.e00200 - recs.e00200p, recs.e00200)
     recs.k1bx14p = np.where(does, recs.k1bx14p + recs.e00200p, recs.k1bx14p)
     recs.e00200p = np.where(does, 0., recs.e00200p)
     # then handle spouse (in MARS==2 filing units) decision to shift earnings
-    potential_savings = recs_full_p.combined - recs_full_a.combined
-    print 'max savings for spouses', np.amax(potential_savings)
+    potential_savings = recs_full_p.combined - recs_full_b.combined
     prob = probability(param, recs.e00200s, potential_savings)
     urn = np.random.random(recs.MARS.shape)
     does = urn < prob
-    nums_shifters = recs.s006[does].sum()
+    numshifters_s = recs.s006[does].sum()
+    earnshifted_s = (recs_noes.s006[does] * recs_noes.e00200s[does]).sum()
     recs.e02000 = np.where(does, recs.e02000 + recs.e00200s, recs.e02000)
     recs.e26270 = np.where(does, recs.e26270 + recs.e00200s, recs.e26270)
     recs.e00200 = np.where(does, recs.e00200 - recs.e00200s, recs.e00200)
     recs.k1bx14s = np.where(does, recs.k1bx14s + recs.e00200s, recs.k1bx14s)
     recs.e00200s = np.where(does, 0., recs.e00200s)
-    # write number of taxpayer and spouse earnings shifters
-    msg = 'Number of shifters (#m): taxpayers={:.3f} and spouses={:.3f}\n'
-    sys.stdout.write(msg.format(nump_shifters * 1e-6,
-                                nums_shifters * 1e-6))
+    # write number of shifters and earnings shifted for taxpayers and spouses
+    sys.stdout.write('\n')
+    msg = '==> CALC4 in {} number of taxpayer shifters (#m): {:.3f}\n'
+    sys.stdout.write(msg.format(param['taxyear'], numshifters_p * 1e-6))
+    msg = '==> CALC4 in {} taxpayer earnings shifted ($b): {:.3f}\n'
+    sys.stdout.write(msg.format(param['taxyear'], earnshifted_p * 1e-9))
+    msg = '==> CALC4 in {} number of   spouse shifters (#m): {:.3f}\n'
+    sys.stdout.write(msg.format(param['taxyear'], numshifters_s * 1e-6))
+    msg = '==> CALC4 in {}   spouse earnings shifted ($b): {:.3f}\n'
+    sys.stdout.write(msg.format(param['taxyear'], earnshifted_s * 1e-9))
     # finally return modified Records object, recs
     return recs
 
