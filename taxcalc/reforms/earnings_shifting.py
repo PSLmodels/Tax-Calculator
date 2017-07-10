@@ -17,6 +17,7 @@ Note: taxcalc package is installed from command line as follows:
 $ conda install -c ospc taxcalc
 With puf.csv and Trump2017.json in current directory, proceed as follows:
 $ python earnings_shifting.py --help
+for details on the required command-line arguments used by the script.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 earnings_shifting.py
@@ -39,17 +40,21 @@ def main():
 
     # read CLI arguments to get probability parameter values dictionary
     param = get_cli_parameters()
-    taxyear = param['taxyear']
-    if taxyear < 2017:
-        msg = 'TAXYEAR={} before first reform year 2017\n'
-        sys.stderr.write(msg.format(taxyear))
-        return 1
-    if param['shift_prob'] < 0.0 or param['shift_prob'] > 1.0:
-        msg = 'SHIFT_PROB={} not in [0,1] range\n'
-        sys.stderr.write(msg.format(param['shift_prob']))
-        return 1
     write_parameters(param)
-    sys.stdout.write('\n')
+    taxyear = param['taxyear']
+    fatal_error = False
+    if taxyear < 2017:
+        msg = 'ERROR: TAXYEAR={} before first reform year 2017\n'
+        sys.stdout.write(msg.format(taxyear))
+        fatal_error = True
+    if param['shift_prob'] < 0.0 or param['shift_prob'] > 1.0:
+        msg = 'ERROR: SHIFT_PROB={} not in [0.0,1.0] range\n'
+        sys.stdout.write(msg.format(param['shift_prob']))
+        fatal_error = True
+    if fatal_error:
+        return 1
+    else:
+        sys.stdout.write('\n')
 
     # create calc1, current-law Calculator object
     calc1 = Calculator(policy=Policy(), records=Records(), verbose=False)
@@ -133,10 +138,6 @@ def main():
     sys.stdout.write('\n==> CALC4 vs CALC1 in {}:\n'.format(taxyear))
     write_tables(calc4, calc1)
 
-    # write out probability parameter values
-    sys.stdout.write('\n')
-    write_parameters(param)
-
     # normal return code
     return 0
 # end of main function
@@ -147,14 +148,14 @@ def get_cli_parameters():
     Return CLI arguments in parameter dictionary.
     """
     # parse command-line arguments
-    usage_str = ('python earnings_shifting {}'.format(
+    usage_str = ('python earnings_shifting.py {}'.format(
         'TAXYEAR MIN_EARNINGS MIN_SAVINGS SHIFT_PROB'))
     parser = argparse.ArgumentParser(
         prog='',
         usage=usage_str,
-        description=('Analyzes the tax revenue implications of specified '
-                     'set of earnings-shifting assumptions under the '
-                     'Trump2017.json tax reform.'))
+        description=('Writes to stdout the tax revenue implications of '
+                     'the specified earnings-shifting assumptions under '
+                     'the Trump2017.json tax reform.'))
     parser.add_argument('TAXYEAR', nargs='?',
                         help=('TAXYEAR is calendar year for which taxes '
                               'are computed.'),
@@ -181,7 +182,7 @@ def get_cli_parameters():
                               'probability is zero for individuals '
                               'below MIN_EARNINGS or below MIN_SAVINGS.'),
                         type=float,
-                        default=0.0)
+                        default=9.9)
     args = parser.parse_args()
     # store args in returned dictionary
     param = dict()

@@ -140,5 +140,3 @@ Weighted Tax Differences by Expanded-Income Decile
  8     17.0    2054.4     -52.0      -0.0     -52.0
  9     17.0    6244.0    -427.4      -3.4    -430.7
  A    170.1   12706.2    -576.4      -3.4    -579.8
-
-TAXYEAR,MIN_EARNINGS,MIN_SAVINGS,SHIFT_PROB= 2017 300000.0 10000.0 1.0
