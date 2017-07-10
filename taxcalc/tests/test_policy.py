@@ -662,7 +662,7 @@ def test_clp_section_titles(tests_path):
         'Itemized Deductions': {
             'Medical Expenses': 0,
             'State And Local Income And Sales Taxes': 0,
-            'Real Estate Taxes': 0,
+            'State, Local, And Foreign Real Estate Taxes': 0,
             'Interest Paid': 0,
             'Charity': 0,
             'Casualty': 0,

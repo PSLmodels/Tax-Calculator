@@ -826,8 +826,8 @@
     },
 
     "_ID_StateLocalTax_hc": {
-        "long_name": "State and local taxes (Income and Sales) deduction haircut.",
-        "description": "This decimal fraction reduces the state and local tax deduction.",
+        "long_name": "State and local income and sales taxes deduction haircut.",
+        "description": "This decimal fraction reduces the state and local income and sales tax deduction.",
         "section_1": "Itemized Deductions",
         "section_2": "State And Local Income And Sales Taxes",
         "irs_ref": "",
@@ -842,8 +842,8 @@
     },
 
     "_ID_StateLocalTax_c": {
-        "long_name": "Ceiling on the amount of state and local taxes (Income and Sales) deduction allowed (dollars)",
-        "description": "The amount of state and local taxes deduction is limited to this dollar amount. ",
+        "long_name": "Ceiling on the amount of state and local income and sales taxes deduction allowed (dollars)",
+        "description": "The amount of state and local income and sales taxes deduction is limited to this dollar amount. ",
         "section_1": "Itemized Deductions",
         "section_2": "State And Local Income And Sales Taxes",
         "irs_ref": "",
@@ -866,10 +866,10 @@
     },
 
     "_ID_RealEstate_hc": {
-        "long_name": "Real estate taxes deduction haircut.",
+        "long_name": "State, local, and foreign real estate taxes deduction haircut.",
         "description": "This decimal fraction reduces real estate taxes paid eligible to deduct in itemized deduction.",
         "section_1": "Itemized Deductions",
-        "section_2": "Real Estate Taxes",
+        "section_2": "State, Local, And Foreign Real Estate Taxes",
         "irs_ref": "",
         "notes": "This parameter is currently used to eliminate real estate taxes paid itemized deduction.",
         "row_var": "FLPDYR",
@@ -882,10 +882,10 @@
     },
 
     "_ID_RealEstate_c": {
-        "long_name": "Ceiling on the amount of real estate taxes deduction allowed (dollars)",
+        "long_name": "Ceiling on the amount of state, local, and foreign real estate taxes deduction allowed (dollars)",
         "description": "The amount of real estate taxes deduction is limited to this dollar amount. ",
         "section_1": "Itemized Deductions",
-        "section_2": "Real Estate Taxes",
+        "section_2": "State, Local, And Foreign Real Estate Taxes",
         "irs_ref": "",
         "notes": "",
         "row_var": "FLPDYR",
@@ -906,8 +906,8 @@
     },
 
     "_ID_InterestPaid_hc": {
-        "long_name": "Interest deduction haircut",
-        "description": "This decimal fraction can be applied to limit the amount of interest deduction allowed.",
+        "long_name": "Interest paid deduction haircut",
+        "description": "This decimal fraction can be applied to limit the amount of interest paid deduction allowed.",
         "section_1": "Itemized Deductions",
         "section_2": "Interest Paid",
         "irs_ref": "",
@@ -922,8 +922,8 @@
     },
 
     "_ID_InterestPaid_c": {
-        "long_name": "Ceiling on the amount of interest deduction allowed (dollars)",
-        "description": "The amount of interest deduction is limited to this dollar amount. ",
+        "long_name": "Ceiling on the amount of interest paid deduction allowed (dollars)",
+        "description": "The amount of interest paid deduction is limited to this dollar amount.",
         "section_1": "Itemized Deductions",
         "section_2": "Interest Paid",
         "irs_ref": "",
