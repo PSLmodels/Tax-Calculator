@@ -2,11 +2,12 @@
 # USAGE: python earnings_shifting.py ... | awk -f earnings_shifting.awk 
 
 # extract CLI args used to execute earnings_shifting.py script
-NR==1 {
+NR==2 {
     taxyear = $2
-    min_earnings = $3
-    min_savings = $4
-    shift_prob = $5
+    wage_amt = $3
+    min_earnings = $4
+    min_savings = $5
+    shift_prob = $6
 }
 
 # extract total number of individuals who shift earnings
@@ -15,7 +16,7 @@ $0~/==> CALC4/ && $0~/number of/ {
 }
 
 # extract total number of dollars in shifted earnings
-$0~/==> CALC4/ && $0~/earnings shifted/ {
+$0~/==> CALC4/ && $0~/earnings of/ {
     des += $NF
 }
 
@@ -31,7 +32,7 @@ in_4vs1_diff_block==1 && $1~/A/ {
 }
 
 END {
-    frmt = "%4d %10.2f %9.2f %6.3f : %7.3f %9.3f %12.1f\n"
-    printf(frmt, taxyear, min_earnings, min_savings, shift_prob,
+    frmt = "%4d %9.2f %10.2f %9.2f %6.3f : %7.3f %9.3f %12.1f\n"
+    printf(frmt, taxyear, wage_amt, min_earnings, min_savings, shift_prob,
            nes, des, taxdiff)
 }
