@@ -27,7 +27,6 @@ fi
 pversion=$(conda list python | awk '$1=="python"{print substr($2,1,3)}')
 
 # build taxcalc conda package for this version of Python
-cd ../../conda.recipe/
 conda build --python $pversion . 2>&1 | awk '$1~/BUILD/||$1~/TEST/'
 conda build purge
 
@@ -43,7 +42,7 @@ rmdir dist/
 rm -fr taxcalc.egg-info/*
 rmdir taxcalc.egg-info/
 
-echo "Execute 'conda uninstall taxcalc' after testing CLI"
+echo "Execute 'conda uninstall taxcalc' after using taxcalc package"
 
 echo "FINISHED : `date`"
 exit 0
