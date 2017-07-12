@@ -64,11 +64,11 @@ def test_create_toplevel_function_string():
            "            return x\n"
            "    outputs = \\\n"
            "        (pm.a) = \\\n"
-           "        applied_f(get_values(pm.a), get_values(pf.d), get_values(pm.e), )\n"
+           "        applied_f(get_values(pm.a), get_values(pf.d), "
+           "get_values(pm.e), )\n"
            "    header = ['a']\n"
            "    return DataFrame(data=outputs,"
            "columns=header)")
-
     assert ans == exp
 
 

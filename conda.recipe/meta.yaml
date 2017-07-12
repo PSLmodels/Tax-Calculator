@@ -9,7 +9,7 @@ build:
 requirements:
   build:
     - python
-    - numpy ==1.12.1
+    - numpy >=1.12.1
     - pandas >=0.20.1
     - numba
     - toolz
@@ -17,7 +17,7 @@ requirements:
     - bokeh >=0.12.3
   run:
     - python
-    - numpy ==1.12.1
+    - numpy >=1.12.1
     - pandas >=0.20.1
     - numba
     - toolz
