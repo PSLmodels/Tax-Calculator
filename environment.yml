@@ -1,4 +1,4 @@
-name: taxcalc-dev
+name: taxcalc-dev2
 dependencies:
 - numpy ==1.12.1
 - pandas >=0.20.1
