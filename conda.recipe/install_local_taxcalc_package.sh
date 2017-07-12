@@ -12,7 +12,7 @@ echo "STARTING : `date`"
 # uninstall any existing taxcalc conda package
 conda list taxcalc | awk '$1~/taxcalc/{rc=1}END{exit(rc)}'
 if [ $? -eq 1 ]; then
-    ./uninstall_taxcalc_package.sh
+    conda uninstall taxcalc 2>&1 > /dev/null
 fi
 
 # install conda-build package if not present
