@@ -127,7 +127,14 @@ def create_toplevel_function_string(args_out, args_in, pm_or_pf):
     fstr.write("):\n")
     fstr.write("    from pandas import DataFrame\n")
     fstr.write("    import numpy as np\n")
+    fstr.write("    import pandas as pd\n")
+    fstr.write("    def get_values(x):\n")
+    fstr.write("        if isinstance(x, pd.Series):\n")
+    fstr.write("            return x.values\n")
+    fstr.write("        else:\n")
+    fstr.write("            return x\n")
     fstr.write("    outputs = \\\n")
+
     outs = []
     for ppp, attr in zip(pm_or_pf, args_out + args_in):
         outs.append(ppp + "." + attr + ", ")
@@ -135,7 +142,7 @@ def create_toplevel_function_string(args_out, args_in, pm_or_pf):
     fstr.write("        (" + ", ".join(outs) + ") = \\\n")
     fstr.write("        " + "applied_f(")
     for ppp, attr in zip(pm_or_pf, args_out + args_in):
-        fstr.write(ppp + "." + attr + ", ")
+        fstr.write("get_values(" + ppp + "." + attr + ")" + ", ")
     fstr.write(")\n")
     fstr.write("    header = [")
     col_headers = ["'" + out + "'" for out in args_out]

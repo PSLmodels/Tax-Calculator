@@ -32,9 +32,16 @@ def test_create_toplevel_function_string_mult_outputs():
     exp = ("def hl_func(pm, pf):\n"
            "    from pandas import DataFrame\n"
            "    import numpy as np\n"
+           "    import pandas as pd\n"
+           "    def get_values(x):\n"
+           "        if isinstance(x, pd.Series):\n"
+           "            return x.values\n"
+           "        else:\n"
+           "            return x\n"
            "    outputs = \\\n"
            "        (pm.a, pm.b) = \\\n"
-           "        applied_f(pm.a, pm.b, pf.d, pm.e, )\n"
+           "        applied_f(get_values(pm.a), get_values(pm.b), "
+           "get_values(pf.d), get_values(pm.e), )\n"
            "    header = ['a', 'b']\n"
            "    return DataFrame(data=np.column_stack(outputs),"
            "columns=header)")
@@ -49,13 +56,19 @@ def test_create_toplevel_function_string():
     exp = ("def hl_func(pm, pf):\n"
            "    from pandas import DataFrame\n"
            "    import numpy as np\n"
+           "    import pandas as pd\n"
+           "    def get_values(x):\n"
+           "        if isinstance(x, pd.Series):\n"
+           "            return x.values\n"
+           "        else:\n"
+           "            return x\n"
            "    outputs = \\\n"
            "        (pm.a) = \\\n"
-           "        applied_f(pm.a, pf.d, pm.e, )\n"
+           "        applied_f(get_values(pm.a), get_values(pf.d), "
+           "get_values(pm.e), )\n"
            "    header = ['a']\n"
            "    return DataFrame(data=outputs,"
            "columns=header)")
-
     assert ans == exp
 
 
