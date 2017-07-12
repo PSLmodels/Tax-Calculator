@@ -77,10 +77,10 @@ Weighted Tax Differences by Expanded-Income Decile
  9     17.0    6079.1    -299.4     -21.1    -320.5
  A    170.1   12220.0    -370.5     -73.9    -444.4
 
-==> CALC4 in 2017 number of taxpayer shifters (#m): 1.071
-==> CALC4 in 2017 taxpayer earnings shifted ($b): 758.641
-==> CALC4 in 2017 number of   spouse shifters (#m): 0.515
-==> CALC4 in 2017   spouse earnings shifted ($b): 338.367
+==> CALC4 in 2017   number of taxpayer shifters (#m): 1.071
+==> CALC4 in 2017 earnings of taxpayer shifters ($b): 758.641
+==> CALC4 in 2017   number of   spouse shifters (#m): 0.515
+==> CALC4 in 2017 earnings of   spouse shifters ($b): 338.367
 
 ==> CALC4 vs CALC2 in 2017:
 Weighted Tax Totals by Expanded-Income Decile
