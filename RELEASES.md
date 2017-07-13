@@ -16,7 +16,12 @@ Release 0.9.2 on 2017-??-??
 - None
 
 **Bug Fixes**
-- None
+- Fix decorator bug that appeared when numpy 1.13.1, and pandas 0.20.2 that uses numpy 1.13, recently became available
+  [[#1470](https://github.com/open-source-economics/Tax-Calculator/pull/1470)
+  by T.J. Alumbaugh]
+- Fix taxcalcio bug that appeared when numpy 1.13.1, and pandas 0.20.2 that uses numpy 1.13, recently became available
+  [[#1473](https://github.com/open-source-economics/Tax-Calculator/pull/1473)
+  by Martin Holmer]
 
 Release 0.9.1 on 2017-07-06
 ---------------------------
