@@ -343,10 +343,12 @@ class Records(object):
     def _adjust(self, year):
         """
         Adjust value of income variables to match SOI distributions
+        Note: adjustment must leave variables as numpy.ndarray type
         """
         if len(self.ADJ) != 0:
             # Interest income
-            self.e00300 *= self.ADJ['INT{}'.format(year)][self.agi_bin]
+            adj_array = self.ADJ['INT{}'.format(year)][self.agi_bin].values
+            self.e00300 *= adj_array
 
     def _read_data(self, data, exact_calcs):
         """
