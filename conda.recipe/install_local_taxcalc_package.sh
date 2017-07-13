@@ -14,7 +14,9 @@ echo "BUILD-PREP..."
 # uninstall any existing taxcalc conda package
 conda list taxcalc | awk '$1~/taxcalc/{rc=1}END{exit(rc)}'
 if [ $? -eq 1 ]; then
-    conda uninstall taxcalc 2>&1 > /dev/null
+    echo "==> Uninstalling existing taxcalc package"
+    conda uninstall --yes taxcalc 2>&1 > /dev/null
+    echo "==> Continuing to build new taxcalc package"
 fi
 
 # install conda-build package if not present
@@ -22,7 +24,7 @@ conda list build | awk '$1~/conda-build/{rc=1}END{exit(rc)}'
 if [ $? -eq 0 ]; then
     echo "==> Installing conda-build package"
     conda install conda-build --yes 2>&1 > /dev/null
-    echo "==> Continue building taxcalc package"
+    echo "==> Continuing to build new taxcalc package"
 fi
 
 # determine this version of Python: 2.x or 3.x
