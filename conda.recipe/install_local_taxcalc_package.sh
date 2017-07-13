@@ -9,10 +9,14 @@
 
 echo "STARTING : `date`"
 
+echo "BUILD-PREP..."
+
 # uninstall any existing taxcalc conda package
 conda list taxcalc | awk '$1~/taxcalc/{rc=1}END{exit(rc)}'
 if [ $? -eq 1 ]; then
-    conda uninstall taxcalc 2>&1 > /dev/null
+    echo "==> Uninstalling existing taxcalc package"
+    conda uninstall --yes taxcalc 2>&1 > /dev/null
+    echo "==> Continuing to build new taxcalc package"
 fi
 
 # install conda-build package if not present
@@ -20,7 +24,7 @@ conda list build | awk '$1~/conda-build/{rc=1}END{exit(rc)}'
 if [ $? -eq 0 ]; then
     echo "==> Installing conda-build package"
     conda install conda-build --yes 2>&1 > /dev/null
-    echo "==> Continue building taxcalc package"
+    echo "==> Continuing to build new taxcalc package"
 fi
 
 # determine this version of Python: 2.x or 3.x
@@ -28,12 +32,14 @@ pversion=$(conda list python | awk '$1=="python"{print substr($2,1,3)}')
 
 # build taxcalc conda package for this version of Python
 conda build --python $pversion . 2>&1 | awk '$1~/BUILD/||$1~/TEST/'
-conda build purge
 
 # install taxcalc conda package
+echo "INSTALLATION..."
 conda install taxcalc=0.0.0 --use-local --yes 2>&1 > /dev/null
 
 # clean-up after package build
+echo "CLEAN-UP..."
+conda build purge
 cd ..
 rm -fr build/*
 rmdir build/
