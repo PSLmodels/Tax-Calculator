@@ -30,7 +30,7 @@ from taxcalc.utilsprvt import (weighted_count_lt_zero,
 STATS_COLUMNS = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
                  'c04470', 'c04600', 'c04800', 'taxbc', 'c62100', 'c09600',
                  'c05800', 'othertaxes', 'refund', 'c07100', 'iitax',
-                 'payrolltax', 'combined', 's006']
+                 'payrolltax', 'combined', 's006', 'share_corptax_burden']
 
 # Items in the TABLE_COLUMNS list below correspond to the items in the
 # TABLE_LABELS list below; this correspondence allows us to use TABLE_LABELS
@@ -48,6 +48,10 @@ TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Other Taxes', 'Refundable Credits',
                 'Individual Income Tax Liabilities', 'Payroll Tax Liablities',
                 'Combined Payroll and Individual Income Tax Liabilities']
+
+# Items in the CORP_TABLE are used in the table fro the corporate income tax
+
+CORP_TABLE = ['s006', 'expanded_income', 'c00100', 'share_corptax_burden']
 
 # Following list is used in our difference table to label its columns.
 DIFF_TABLE_LABELS = ['Tax Units with Tax Cut', 'Tax Units with Tax Increase',
@@ -1273,3 +1277,55 @@ def delete_file(filename):
     """
     if os.path.isfile(filename):
         os.remove(filename)
+        
+def create_corpinctax_table(calc, groupby, result_type, income_measure='expanded_income'):
+    res = results(calc.records)
+    # weight of returns with positive AGI and
+    # itemized deduction greater than standard deduction
+    res['c04470'] = res['c04470'].where(((res['c00100'] > 0) &
+                                        (res['c04470'] > res['standard'])), 0)
+
+    # weight of returns with positive AGI and itemized deduction
+    res['num_returns_ItemDed'] = res['s006'].where(((res['c00100'] > 0) &
+                                                   (res['c04470'] > 0)), 0)
+
+    # weight of returns with positive AGI and standard deduction
+    res['num_returns_StandardDed'] = res['s006'].where(((res['c00100'] > 0) &
+                                                    (res['standard'] > 0)),0)
+
+    # weight of returns with positive Alternative Minimum Tax (AMT)
+    res['num_returns_AMT'] = res['s006'].where(res['c09600'] > 0, 0)
+
+    # sorts the data
+    if groupby == "weighted_deciles":
+        df = add_weighted_income_bins(res, income_measure=income_measure)
+    elif groupby == "small_income_bins":
+        df = add_income_bins(res, compare_with="soi",
+                             income_measure=income_measure)
+    elif groupby == "large_income_bins":
+        df = add_income_bins(res, compare_with="tpc",
+                             income_measure=income_measure)
+    elif groupby == "webapp_income_bins":
+        df = add_income_bins(res, compare_with="webapp",
+                             income_measure=income_measure)
+    else:
+        err = ("groupby must be either 'weighted_deciles' or 'small_income_bins'"
+               "or 'large_income_bins' or 'webapp_income_bins'")
+        raise ValueError(err)
+        
+    # manipulates the data
+    pd.options.display.float_format = '{:8,.0f}'.format
+    if result_type == "weighted_sum":
+        df = weighted(df, STATS_COLUMNS)
+        gp_mean = df.groupby('bins', as_index=False)[CORP_TABLE].sum()
+        gp_mean.drop('bins', axis=1, inplace=True)
+        sum_row = get_sums(df)[CORP_TABLE]
+    elif result_type == "weighted_avg":
+        gp_mean = weighted_avg_allcols(df, CORP_TABLE,
+                                       income_measure=income_measure)
+        sum_row = get_sums(df, not_available=True)[CORP_TABLE]
+    else:
+        err = ("result_type must be either 'weighted_sum' or 'weighted_avg")
+        raise ValueError(err)
+
+    return gp_mean.append(sum_row)
