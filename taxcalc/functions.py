@@ -1618,3 +1618,109 @@ def AfterTaxIncome(combined, expanded_income, aftertax_income):
     """
     aftertax_income = expanded_income - combined
     return aftertax_income
+
+
+def AggCorpIncTax(calc):
+    """
+    Computes the aggregated amounts of labor, normal and supernormal income
+    Prepares the parameters for DistCorpIncTax function
+    """
+    length = len(calc.records.s006)
+    # positive p23250 and p22250
+    # positivep23250 = np.where(calc.records.p23250<0, 0, calc.records.p23250)
+    # positivep22250 = np.where(calc.records.p22250<0, 0, calc.records.p22250)
+    # labor = ((calc.records.e00200 + calc.records.e07240 +
+    #           calc.records.e03150 + calc.records.e01400 +
+    #           calc.records.e01700 + calc.records.e02400 +
+    #           calc.records.e02100 + calc.records.e00900 +
+    #           calc.records.e02000) * calc.records.s006).sum()
+    # normal = 0.4 * ((calc.records.e00650 + positivep23250 +
+    #                  positivep22250 + calc.records.e02100 +
+    #                  calc.records.e00900 + calc.records.e02000) *
+    #                 calc.records.s006).sum() +
+    #    ((calc.records.e00300 + calc.records.e00400 + calc.records.e00600) *
+    #     calc.records.s006).sum()
+    # supernormal = 0.6 * ((calc.records.e00650 + positivep23250 +
+    #                       positivep22250) * calc.records.s006).sum()
+    # original p23250 and p22250
+    labor = ((calc.records.e00200 + calc.records.e07240 +
+              calc.records.e03150 + calc.records.e01400 + calc.records.e01700 +
+              calc.records.e02400 + calc.records.e02100 + calc.records.e00900 +
+              calc.records.e02000) * calc.records.s006).sum()
+    normal = 0.4 * ((calc.records.e00650 + calc.records.p23250 +
+                     calc.records.p22250 + calc.records.e02100 +
+                     calc.records.e00900 + calc.records.e02000) *
+                    calc.records.s006).sum() + ((calc.records.e00300 +
+                                                 calc.records.e00400 +
+                                                 calc.records.e00600) *
+                                                calc.records.s006).sum()
+    supernormal = 0.6 * ((calc.records.e00650 + calc.records.p23250 +
+                          calc.records.p22250) * calc.records.s006).sum()
+    # Create arrays with same aggregated amounts for each tax-payer
+    calc.records.agg_labor = np.ones(length) * labor + 0.0000000001
+    calc.records.agg_normal = np.ones(length) * normal + 0.0000000001
+    calc.records.agg_supernormal = np.ones(length) * supernormal + 0.0000000001
+
+
+@iterate_jit(nopython=True)
+def DistCorpIncTax(e00200, e07240, e03150, e01400, e01700, e02400, e02100,
+                   e00900, e02000, e00650, p23250, p22250, e00300, e00400,
+                   e00600, share_corptax_burden, agg_labor, agg_normal,
+                   agg_supernormal, CIT_Distribution):
+    """
+    Compute Corporate Income Tax Distribution
+    According to TPC,
+    20% distributed by labor income
+    20% distributed by normal income
+    60% distributed by supernormal income
+
+    Parameters:
+    e00200: salaries and wages
+    e00250: other earned income(DNE)
+    e07240: retirement savings contribution
+    e03150: IRA deduction
+    e01400: taxable IRA distribution
+    e01700: taxable pensions and annuities included in AGI
+    e02400: social security benefits
+    e02100: farm income or loss
+    e00900: business income or loss
+    e02000: schedule E net income or loss
+    e00650: qualified dividends
+    p23250: long-term gains / losses
+    p22250: short-term gains / losses
+    e00300: interest received
+    e00400: tax-exempt interest income
+    e00600: dividends included in AGI
+    CIT_Distribution: [0.2, 0.2, 0.6]
+    """
+    # Do not have this variable in current Puf: e00250
+    # positive p23250 and p22250
+    # if p23250<0:
+    #     positivep23250 = 0
+    # else:
+    #     positivep23250 = p23250
+    # if p22250<0:
+    #     positivep22250 = 0
+    # else:
+    #     positivep22250 = p22250
+    # labor = e00200 + e07240 + e03150 + e01400 + e01700 +
+    #    e02400 + e02100 + e00900 + e02000
+    # normal = 0.4 * (e00650 + positivep23250 + positivep22250 + e02100 +
+    #                 e00900 + e02000) + (e00300 + e00400 + e00600)
+    # supernormal = 0.6 * (e00650 + positivep23250 + positivep22250)
+    # original p23250 and p22250
+    labor = (e00200 + e07240 + e03150 + e01400 + e01700 +
+             e02400 + e02100 + e00900 + e02000)
+    normal = 0.4 * (e00650 + p23250 + p22250 + e02100 + e00900 +
+                    e02000) + (e00300 + e00400 + e00600)
+    supernormal = 0.6 * (e00650 + p23250 + p22250)
+    revenue_collected = 100000000000
+    share_from_labor = (CIT_Distribution[0] * revenue_collected *
+                        labor / agg_labor)
+    share_from_normal = (CIT_Distribution[1] * revenue_collected *
+                         normal / agg_normal)
+    share_from_supernormal = (CIT_Distribution[2] * revenue_collected *
+                              supernormal / agg_supernormal)
+    share_corptax_burden = (share_from_labor + share_from_normal +
+                            share_from_supernormal)
+    return share_corptax_burden
