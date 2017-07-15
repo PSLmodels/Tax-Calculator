@@ -205,7 +205,15 @@ situations, in which case other contributors are here to help.
 
      tax-calculator$ git push origin [new-branch-name]
 
-8. From the GitHub.com user interface, `open a pull request`_.  
+8. From the GitHub.com user interface, `open a pull request`_.
+
+9. When you open a GitHub pull request, a code coverage report will be
+   automatically generated.  If your branch adds new code that is not
+   tested, the code coverage percent will decline and the number of
+   untested statements ("misses" in the report) will increase.  If
+   this happens, you need to add to your branch one or more tests of
+   your newly added code.  Add tests so that the number of untested
+   statements is the same as it is on the master branch.
 
 
 Simple Usage
