@@ -51,8 +51,20 @@ def main():
         msg = 'ERROR: WAGE_AMT={} not in [0.0, 100000.0) range\n'
         sys.stdout.write(msg.format(param['wage_amt']))
         fatal_error = True
+    if param['min_wage_frac'] < 0.0 or param['min_wage_frac'] > 1.0:
+        msg = 'ERROR: MIN_WAGE_FRAC={} not in [0.0, 1.0] range\n'
+        sys.stdout.write(msg.format(param['min_wage_frac']))
+        fatal_error = True
+    if param['min_earnings'] < 0.0:
+        msg = 'ERROR: MIN_EARNINGS={} < 0.0\n'
+        sys.stdout.write(msg.format(param['min_earnings']))
+        fatal_error = True
+    if param['min_savings'] < 0.0:
+        msg = 'ERROR: MIN_SAVINGS={} < 0.0\n'
+        sys.stdout.write(msg.format(param['min_savings']))
+        fatal_error = True
     if param['shift_prob'] < 0.0 or param['shift_prob'] > 1.0:
-        msg = 'ERROR: SHIFT_PROB={} not in [0.0,1.0] range\n'
+        msg = 'ERROR: SHIFT_PROB={} not in [0.0, 1.0] range\n'
         sys.stdout.write(msg.format(param['shift_prob']))
         fatal_error = True
     if fatal_error:
@@ -155,13 +167,14 @@ def get_cli_parameters():
     """
     # parse command-line arguments
     usage_str = ('python earnings_shifting.py {}'.format(
-        'YEAR WAGE_AMT MIN_EARNINGS MIN_SAVINGS SHIFT_PROB'))
+        'YEAR WAGE_AMT MIN_WAGE_FRAC MIN_EARNINGS MIN_SAVINGS SHIFT_PROB'))
     parser = argparse.ArgumentParser(
         prog='',
         usage=usage_str,
         description=('Writes to stdout the tax revenue implications of '
-                     'the specified earnings-shifting assumptions under '
-                     'the Trump2017.json tax reform.'))
+                     'the creation of personal LLCs (to shift earnings '
+                     'into pass-through income) under the '
+                     'Trump2017.json tax reform.'))
     parser.add_argument('YEAR', nargs='?',
                         help=('YEAR is calendar year for which taxes '
                               'are computed.'),
@@ -170,23 +183,31 @@ def get_cli_parameters():
     parser.add_argument('WAGE_AMT', nargs='?',
                         help=('WAGE_AMT is amount of individual annual '
                               'earnings voluntarily not converted into '
-                              'pass-through income (in order to take '
-                              'advantage of low regular tax rates).'),
+                              'pass-through income in order to take '
+                              'advantage of low regular tax rates.'),
                         type=float,
                         default=-9.9)
+    parser.add_argument('MIN_WAGE_FRAC', nargs='?',
+                        help=('MIN_WAGE_FRAC is the minimum fraction of '
+                              'shifted earnings that are paid as wages '
+                              'rather than pass-through income by each '
+                              'new personal LLC; zero specifies no '
+                              'regulatory constraint.'),
+                        type=float,
+                        default=9.9)
     parser.add_argument('MIN_EARNINGS', nargs='?',
                         help=('MIN_EARNINGS is minimum individual annual '
                               'earnings for earnings-shifting to occur with '
                               'probability SHIFT_PROB.'),
                         type=float,
-                        default=9e99)
+                        default=-9.9)
     parser.add_argument('MIN_SAVINGS', nargs='?',
                         help=('MIN_SAVINGS is minimum individual annual '
                               'income+payroll tax savings from '
                               'earnings-shifting for earnings-shifting to '
                               'occur with probability SHIFT_PROB.'),
                         type=float,
-                        default=9e99)
+                        default=-9.9)
     parser.add_argument('SHIFT_PROB', nargs='?',
                         help=('SHIFT_PROB is probability of '
                               'earnings-shifting for individuals that '
@@ -201,6 +222,7 @@ def get_cli_parameters():
     param = dict()
     param['year'] = args.YEAR
     param['wage_amt'] = args.WAGE_AMT
+    param['min_wage_frac'] = args.MIN_WAGE_FRAC
     param['min_earnings'] = args.MIN_EARNINGS
     param['min_savings'] = args.MIN_SAVINGS
     param['shift_prob'] = args.SHIFT_PROB
@@ -211,11 +233,13 @@ def write_parameters(param):
     """
     Write parameter values to stdout.
     """
-    pnames = 'PARAMS: YEAR WAGE_AMT MIN_EARNINGS MIN_SAVINGS SHIFT_PROB\n'
+    pnames = ('PARAMS: YEAR WAGE_AMT MIN_WAGE_FRAC '
+              'MIN_EARNINGS MIN_SAVINGS SHIFT_PROB\n')
     sys.stdout.write(pnames)
-    frmt = 'PARAMS: {:4d} {:8.2f} {:12.2f} {:11.2f} {:10.3f}\n'
+    frmt = 'PARAMS: {:4d} {:8.2f} {:12.3f} {:12.2f} {:11.2f} {:10.3f}\n'
     sys.stdout.write(frmt.format(param['year'],
                                  param['wage_amt'],
+                                 param['min_wage_frac'],
                                  param['min_earnings'],
                                  param['min_savings'],
                                  param['shift_prob']))
@@ -305,7 +329,9 @@ def shift_earnings(recs, does_p, does_s, param):
     """
     wage_amt = param['wage_amt']
     # shift earnings of taxpayers
-    residual = np.where(recs.e00200p < wage_amt, recs.e00200p, wage_amt)
+    vol_residual = np.where(recs.e00200p < wage_amt, recs.e00200p, wage_amt)
+    required = recs.e00200p * param['min_wage_frac']
+    residual = np.where(vol_residual < required, required, vol_residual)
     shifted = recs.e00200p - residual
     recs.e02000 = np.where(does_p, recs.e02000 + shifted, recs.e02000)
     recs.e26270 = np.where(does_p, recs.e26270 + shifted, recs.e26270)
@@ -313,7 +339,9 @@ def shift_earnings(recs, does_p, does_s, param):
     recs.e00200 = np.where(does_p, recs.e00200 - shifted, recs.e00200)
     recs.e00200p = np.where(does_p, recs.e00200p - shifted, recs.e00200p)
     # shift earnings of spouses
-    residual = np.where(recs.e00200s < wage_amt, recs.e00200s, wage_amt)
+    vol_residual = np.where(recs.e00200s < wage_amt, recs.e00200s, wage_amt)
+    required = recs.e00200s * param['min_wage_frac']
+    residual = np.where(vol_residual < required, required, vol_residual)
     shifted = recs.e00200s - residual
     recs.e02000 = np.where(does_s, recs.e02000 + shifted, recs.e02000)
     recs.e26270 = np.where(does_s, recs.e26270 + shifted, recs.e26270)

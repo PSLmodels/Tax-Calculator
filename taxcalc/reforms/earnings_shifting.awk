@@ -5,9 +5,10 @@
 NR==2 {
     taxyear = $2
     wage_amt = $3
-    min_earnings = $4
-    min_savings = $5
-    shift_prob = $6
+    min_wage_frac = $4
+    min_earnings = $5
+    min_savings = $6
+    shift_prob = $7
 }
 
 # extract total number of individuals who shift earnings
@@ -32,7 +33,8 @@ in_4vs1_diff_block==1 && $1~/A/ {
 }
 
 END {
-    frmt = "%4d %9.2f %10.2f %9.2f %6.3f : %7.3f %9.3f %12.1f\n"
-    printf(frmt, taxyear, wage_amt, min_earnings, min_savings, shift_prob,
+    frmt = "%4d %5.0f %6.3f %8.0f %8.0f %6.3f : %7.3f %9.3f %12.1f\n"
+    printf(frmt, taxyear, wage_amt, min_wage_frac,
+           min_earnings, min_savings, shift_prob,
            nes, des, taxdiff)
 }
