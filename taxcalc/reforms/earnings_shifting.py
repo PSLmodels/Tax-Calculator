@@ -18,6 +18,13 @@ $ conda install -c ospc taxcalc
 With puf.csv and Trump2017.json in current directory, proceed as follows:
 $ python earnings_shifting.py --help
 for details on the required command-line arguments used by the script.
+
+Also, read the earnings_shifting.sh bash script (and its results in the
+earnings_shifting.sum text file) for examples of how to use the
+earnings_shifting.py Python script.  Some of the results in the
+earnings_shifting.sum file are discussed at this URL:
+<https://github.com/open-source-economics/Tax-Calculator/pull/1464
+#issuecomment-315616386>.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 earnings_shifting.py
