@@ -1231,7 +1231,7 @@ def ce_aftertax_income(calc1, calc2,
     return cedict
 
 
-def read_egg_csv(fname, **kwargs):
+def read_egg_csv(fname, index_col=None):
     """
     Read from egg the file named fname that contains CSV data and
     return pandas DataFrame containing the data.
@@ -1242,7 +1242,7 @@ def read_egg_csv(fname, **kwargs):
             pkg_resources.resource_stream(
                 pkg_resources.Requirement.parse('taxcalc'),
                 path_in_egg),
-            **kwargs
+            index_col=index_col
         )
     except:
         raise ValueError('could not read {} data from egg'.format(fname))

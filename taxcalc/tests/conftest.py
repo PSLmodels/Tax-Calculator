@@ -26,12 +26,12 @@ def weights_1991_path(tests_path):
 
 @pytest.fixture(scope='session')
 def puf_1991(puf_1991_path):
-    return pandas.read_csv(puf_1991_path, compression='gzip')
+    return pandas.read_csv(puf_1991_path)
 
 
 @pytest.fixture(scope='session')
 def weights_1991(weights_1991_path):
-    return pandas.read_csv(weights_1991_path, compression='gzip')
+    return pandas.read_csv(weights_1991_path)
 
 
 @pytest.fixture()

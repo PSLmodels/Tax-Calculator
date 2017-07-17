@@ -64,11 +64,13 @@ class TaxCalcIO(object):
         if isinstance(input_data, six.string_types):
             # remove any leading directory path from INPUT filename
             fname = os.path.basename(input_data)
-            # check if fname ends with ".csv"
+            # check if fname ends with ".csv" or ".csv.gz"
             if fname.endswith('.csv'):
                 inp = '{}-{}'.format(fname[:-4], str(tax_year)[2:])
+            elif fname.endswith('.csv.gz'):
+                inp = '{}-{}'.format(fname[:-7], str(tax_year)[2:])
             else:
-                msg = 'INPUT file name does not end in .csv'
+                msg = 'INPUT file name does not end in .csv or .csv.gz'
                 self.errmsg += 'ERROR: {}\n'.format(msg)
             # check existence of INPUT file
             if not os.path.isfile(input_data):

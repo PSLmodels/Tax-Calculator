@@ -15,6 +15,7 @@ from taxcalc.utils import read_egg_csv, read_egg_json
 
 
 PUFCSV_YEAR = 2009
+CPSCSV_YEAR = 2014
 
 
 class Records(object):
@@ -362,10 +363,7 @@ class Records(object):
         if isinstance(data, pd.DataFrame):
             taxdf = data
         elif isinstance(data, six.string_types):
-            if data.endswith('gz'):
-                taxdf = pd.read_csv(data, compression='gzip')
-            else:
-                taxdf = pd.read_csv(data)
+            taxdf = pd.read_csv(data)
         else:
             msg = 'data is neither a string nor a Pandas DataFrame'
             raise ValueError(msg)
