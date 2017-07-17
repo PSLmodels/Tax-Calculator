@@ -1246,7 +1246,8 @@ def read_egg_csv(fname, index_col=None):
         )
     except:
         raise ValueError('could not read {} data from egg'.format(fname))
-    return vdf
+    # cannot call read_egg_ function in unit tests
+    return vdf  # pragma: no cover
 
 
 def read_egg_json(fname):
@@ -1264,7 +1265,8 @@ def read_egg_json(fname):
         )
     except:
         raise ValueError('could not read {} data from egg'.format(fname))
-    return pdict
+    # cannot call read_egg_ function in unit tests
+    return pdict  # pragma: no cover
 
 
 def delete_file(filename):

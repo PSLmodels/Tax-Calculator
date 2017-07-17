@@ -236,7 +236,9 @@ class Records(object):
             with open(var_info_path) as vfile:
                 vardict = json.load(vfile)
         else:
-            vardict = read_egg_json(Records.VAR_INFO_FILENAME)
+            # cannot call read_egg_ function in unit tests
+            vardict = read_egg_json(
+                Records.VAR_INFO_FILENAME)  # pragma: no cover
         Records.INTEGER_READ_VARS = set(k for k, v in vardict['read'].items()
                                         if v['type'] == 'int')
         FLOAT_READ_VARS = set(k for k, v in vardict['read'].items()
@@ -391,7 +393,8 @@ class Records(object):
             if os.path.isfile(data):
                 taxdf = pd.read_csv(data)
             else:
-                taxdf = read_egg_csv(data)
+                # cannot call read_egg_ function in unit tests
+                taxdf = read_egg_csv(data)  # pragma: no cover
         else:
             msg = 'data is neither a string nor a Pandas DataFrame'
             raise ValueError(msg)
@@ -462,7 +465,9 @@ class Records(object):
                 # (above because pylint mistakenly thinks WT not a DataFrame)
                 WT = pd.read_csv(weights_path)
             else:
-                WT = read_egg_csv(os.path.basename(weights_path))
+                # cannot call read_egg_ function in unit tests
+                WT = read_egg_csv(
+                    os.path.basename(weights_path))  # pragma: no cover
             if weights.endswith('cps_weights.csv.gz'):
                 WT = WT * 100.0  # TODO: temporary CPS weight scaling
         else:
@@ -487,10 +492,12 @@ class Records(object):
             if os.path.isfile(ratios_path):
                 # pylint: disable=redefined-variable-type
                 # (above because pylint mistakenly thinks ADJ not a DataFrame)
-                ADJ = pd.read_csv(ratios_path, index_col=0)
+                ADJ = pd.read_csv(ratios_path,
+                                  index_col=0)
             else:
-
-                ADJ = read_egg_csv(os.path.basename(ratios_path), index_col=0)
+                # cannot call read_egg_ function in unit tests
+                ADJ = read_egg_csv(os.path.basename(ratios_path),
+                                   index_col=0)  # pragma: no cover
             ADJ = ADJ.transpose()
         else:
             msg = ('adjust_ratios is not None or a string'
