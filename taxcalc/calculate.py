@@ -120,7 +120,7 @@ class Calculator(object):
                 self.behavior.set_year(next_year)
         else:
             raise ValueError('behavior must be None or Behavior object')
-        if sync_years and self.records.current_year == Records.PUF_YEAR:
+        if sync_years and self.records.current_year == Records.DATA_YEAR:
             if verbose:
                 print('You loaded data for ' +
                       str(self.records.current_year) + '.')

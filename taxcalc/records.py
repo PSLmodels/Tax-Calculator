@@ -97,7 +97,6 @@ class Records(object):
     # suppress pylint warnings about too many class instance attributes:
     # pylint: disable=too-many-instance-attributes
 
-    PUF_YEAR = PUFCSV_YEAR
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
     WEIGHTS_FILENAME = 'puf_weights.csv'
     WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
@@ -114,6 +113,7 @@ class Records(object):
                  adjust_ratios=ADJUST_RATIOS_PATH,
                  start_year=PUFCSV_YEAR):
         # pylint: disable=too-many-arguments
+        Records.DATA_YEAR = start_year
         # read specified data
         self._read_data(data, exact_calculations)
         # check that three sets of split-earnings variables have valid values
@@ -161,7 +161,7 @@ class Records(object):
             msg = 'start_year is not an integer'
             raise ValueError(msg)
         # consider applying initial-year grow factors
-        if gfactors is not None and start_year == Records.PUF_YEAR:
+        if gfactors is not None and start_year == Records.DATA_YEAR:
             self._blowup(start_year)
         # construct sample weights for current_year
         wt_colname = 'WT{}'.format(self.current_year)
