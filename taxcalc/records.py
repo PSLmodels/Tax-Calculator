@@ -459,6 +459,8 @@ class Records(object):
                 WT = pd.read_csv(weights_path)
             else:
                 WT = read_egg_csv(os.path.basename(weights_path))
+            if weights.endswith('cps_weights.csv.gz'):
+                WT = WT * 100.0  # TODO: temporary CPS weight scaling
         else:
             msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
