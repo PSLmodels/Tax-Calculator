@@ -12,7 +12,7 @@
     },
     "FLPDYR": {
       "type": "int",
-      "desc": "Tax filing year",
+      "desc": "Calendar year for which taxes are calculated",
       "form": {"2013-2016": "1040"}
     },
     "MARS": {

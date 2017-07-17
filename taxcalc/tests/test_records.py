@@ -36,7 +36,8 @@ def test_correct_Records_instantiation(puf_1991, puf_1991_path, weights_1991):
     assert rec2
     assert np.all(rec2.MARS != 0)
     assert rec2.current_year == Records.DATA_YEAR
-    adj_df = pd.read_csv(Records.ADJUST_RATIOS_PATH)
+    ratios_path = os.path.join(Records.CUR_PATH, Records.PUF_RATIOS_FILENAME)
+    adj_df = pd.read_csv(ratios_path)
     adj_df = adj_df.transpose()
     rec3 = Records(data=puf_1991, weights=None, adjust_ratios=adj_df)
     assert rec3

@@ -226,10 +226,10 @@ class TaxCalcIO(object):
                                exact_calculations=exact_calculations)
         else:  # input_data are raw data that are not being aged
             recs = Records(data=input_data,
-                           exact_calculations=exact_calculations,
                            gfactors=None,
-                           adjust_ratios=None,
+                           exact_calculations=exact_calculations,
                            weights=None,
+                           adjust_ratios=None,
                            start_year=tax_year)
             recs_clp = copy.deepcopy(recs)
         # create Calculator objects
