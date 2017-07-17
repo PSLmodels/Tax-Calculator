@@ -37,7 +37,9 @@ def cli_tc_main():
     parser.add_argument('INPUT', nargs='?',
                         help=('INPUT is name of CSV-formatted file that '
                               'contains for each filing unit variables used '
-                              'to compute taxes for TAXYEAR.'),
+                              'to compute taxes for TAXYEAR. Specifying '
+                              '"cps.csv" uses CPS input files included in '
+                              'the taxcalc package.'),
                         default='')
     parser.add_argument('TAXYEAR', nargs='?',
                         help=('TAXYEAR is calendar year for which taxes '
@@ -116,7 +118,7 @@ def cli_tc_main():
         sys.stderr.write(tcio.errmsg)
         sys.stderr.write('USAGE: tc --help\n')
         return 1
-    aging = inputfn.endswith('puf.csv') or inputfn.endswith('cps.csv.gz')
+    aging = inputfn.endswith('puf.csv') or inputfn.endswith('cps.csv')
     tcio.init(input_data=inputfn, tax_year=taxyear,
               reform=args.reform, assump=args.assump,
               growdiff_response=None,

@@ -64,16 +64,15 @@ class TaxCalcIO(object):
         if isinstance(input_data, six.string_types):
             # remove any leading directory path from INPUT filename
             fname = os.path.basename(input_data)
-            # check if fname ends with ".csv" or ".csv.gz"
+            # check if fname ends with ".csv"
             if fname.endswith('.csv'):
                 inp = '{}-{}'.format(fname[:-4], str(tax_year)[2:])
-            elif fname.endswith('.csv.gz'):
-                inp = '{}-{}'.format(fname[:-7], str(tax_year)[2:])
             else:
-                msg = 'INPUT file name does not end in .csv or .csv.gz'
+                msg = 'INPUT file name does not end in .csv'
                 self.errmsg += 'ERROR: {}\n'.format(msg)
             # check existence of INPUT file
-            if not os.path.isfile(input_data):
+            self.cps_input_data = input_data.endswith('cps.csv')
+            if not self.cps_input_data and not os.path.isfile(input_data):
                 msg = 'INPUT file could not be found'
                 self.errmsg += 'ERROR: {}\n'.format(msg)
         elif isinstance(input_data, pd.DataFrame):
@@ -218,12 +217,26 @@ class TaxCalcIO(object):
         clp.set_year(tax_year)
         # read input file contents into Records objects
         if aging_input_data:
-            recs = Records(data=input_data,
-                           gfactors=gfactors_ref,
-                           exact_calculations=exact_calculations)
-            recs_clp = Records(data=input_data,
-                               gfactors=gfactors_clp,
-                               exact_calculations=exact_calculations)
+            if self.cps_input_data:
+                recs = Records.cps_constructor(
+                    growfactors=gfactors_ref,
+                    exact_calculations=exact_calculations
+                )
+                recs_clp = Records.cps_constructor(
+                    growfactors=gfactors_clp,
+                    exact_calculations=exact_calculations
+                )
+            else:  # if not cps_input_data
+                recs = Records(
+                    data=input_data,
+                    gfactors=gfactors_ref,
+                    exact_calculations=exact_calculations
+                )
+                recs_clp = Records(
+                    data=input_data,
+                    gfactors=gfactors_clp,
+                    exact_calculations=exact_calculations
+                )
         else:  # input_data are raw data that are not being aged
             recs = Records(data=input_data,
                            gfactors=None,

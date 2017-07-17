@@ -172,7 +172,8 @@ class Records(object):
             self.s006 = self.WT[wt_colname] * 0.01
 
     @staticmethod
-    def cps_constructor(exact_calculations=False):
+    def cps_constructor(exact_calculations=False,
+                        growfactors=Growfactors()):
         """
         Static method returns a Records object instantiated with CPS
         input data.  This works in a analogous way to Records(), which
@@ -185,7 +186,7 @@ class Records(object):
         """
         return Records(data=os.path.join(Records.CUR_PATH, 'cps.csv.gz'),
                        exact_calculations=exact_calculations,
-                       gfactors=Growfactors(),
+                       gfactors=growfactors,
                        weights=Records.CPS_WEIGHTS_FILENAME,
                        adjust_ratios=Records.CPS_RATIOS_FILENAME,
                        start_year=CPSCSV_YEAR)
@@ -387,7 +388,10 @@ class Records(object):
         if isinstance(data, pd.DataFrame):
             taxdf = data
         elif isinstance(data, six.string_types):
-            taxdf = pd.read_csv(data)
+            if os.path.isfile(data):
+                taxdf = pd.read_csv(data)
+            else:
+                taxdf = read_egg_csv(data)
         else:
             msg = 'data is neither a string nor a Pandas DataFrame'
             raise ValueError(msg)
