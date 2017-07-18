@@ -29,7 +29,8 @@ from taxcalc.utils import (TABLE_COLUMNS, TABLE_LABELS, STATS_COLUMNS,
                            mtr_graph_data, atr_graph_data,
                            xtr_graph_plot, write_graph_file,
                            read_egg_csv, read_egg_json, delete_file,
-                           certainty_equivalent, ce_aftertax_income)
+                           certainty_equivalent, ce_aftertax_income,
+                           create_corpinctax_table)
 
 
 DATA = [[1.0, 2, 'a'],
@@ -764,3 +765,22 @@ def test_create_delete_temp_file():
     assert os.path.isfile(fname) is True
     delete_file(fname)
     assert os.path.isfile(fname) is False
+
+
+def test_create_corpinctax_table(records_2009):
+    # test corporate income tax tables
+    calc = Calculator(policy=Policy(), records=records_2009)
+    calc.calc_all()
+    tb1 = create_corpinctax_table(calc, "small_income_bins", "weighted_sum")
+    tb2 = create_corpinctax_table(calc, "large_income_bins", "weighted_sum")
+    assert np.allclose(tb1[-1:], tb2[-1:])
+    tb3 = create_corpinctax_table(calc, "small_income_bins", "weighted_avg")
+    assert isinstance(tb3, pd.DataFrame)
+    tb4 = create_corpinctax_table(calc, "weighted_deciles", "weighted_sum")
+    assert isinstance(tb4, pd.DataFrame)
+    tb5 = create_corpinctax_table(calc, "webapp_income_bins", "weighted_sum")
+    assert isinstance(tb5, pd.DataFrame)
+    with pytest.raises(ValueError):
+        create_corpinctax_table(calc, "bad_bins", "weighted_sum")
+    with pytest.raises(ValueError):
+        create_corpinctax_table(calc, "small_income_bins", "bad_result_type")
