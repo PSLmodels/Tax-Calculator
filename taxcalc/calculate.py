@@ -102,6 +102,8 @@ class Calculator(object):
             self.records = records
         else:
             raise ValueError('must specify records as a Records object')
+        if self.policy.current_year < self.records.data_year:
+            self.policy.set_year(self.records.data_year)
         if consumption is None:
             self.consumption = Consumption(start_year=policy.start_year)
         elif isinstance(consumption, Consumption):
@@ -120,10 +122,10 @@ class Calculator(object):
                 self.behavior.set_year(next_year)
         else:
             raise ValueError('behavior must be None or Behavior object')
-        if sync_years and self.records.current_year == Records.DATA_YEAR:
+        if sync_years and self.records.current_year == self.records.data_year:
             if verbose:
                 print('You loaded data for ' +
-                      str(self.records.current_year) + '.')
+                      str(self.records.data_year) + '.')
                 if len(self.records.IGNORED_VARS) > 0:
                     print('Your data include the following unused ' +
                           'variables that will be ignored:')

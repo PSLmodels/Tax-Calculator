@@ -53,7 +53,7 @@ class Records(object):
         default value is filename of the PUF adjustment ratios.
 
     start_year: integer
-        specifies calendar year of the data;
+        specifies calendar year of the input data;
         default value is PUFCSV_YEAR.
         Note that if specifying your own data (see above) as being a custom
         data set, be sure to explicitly set start_year to the
@@ -115,7 +115,7 @@ class Records(object):
                  adjust_ratios=PUF_RATIOS_FILENAME,
                  start_year=PUFCSV_YEAR):
         # pylint: disable=too-many-arguments
-        Records.DATA_YEAR = start_year
+        self._data_year = start_year
         # read specified data
         self._read_data(data, exact_calculations)
         # check that three sets of split-earnings variables have valid values
@@ -164,7 +164,7 @@ class Records(object):
             msg = 'start_year is not an integer'
             raise ValueError(msg)
         # consider applying initial-year grow factors
-        if gfactors is not None and start_year == Records.DATA_YEAR:
+        if gfactors is not None and start_year == self._data_year:
             self._blowup(start_year)
         # construct sample weights for current_year
         wt_colname = 'WT{}'.format(self.current_year)
@@ -190,6 +190,13 @@ class Records(object):
                        weights=Records.CPS_WEIGHTS_FILENAME,
                        adjust_ratios=Records.CPS_RATIOS_FILENAME,
                        start_year=CPSCSV_YEAR)
+
+    @property
+    def data_year(self):
+        """
+        Records class original data year property.
+        """
+        return self._data_year
 
     @property
     def current_year(self):
