@@ -145,6 +145,7 @@ class Calculator(object):
         Call all tax-calculation functions.
         """
         # conducts static analysis of Calculator object for current_year
+        assert self.records.current_year == self.policy.current_year
         self._calc_one_year(zero_out_calc_vars)
         BenefitSurtax(self)
         BenefitLimitation(self)
