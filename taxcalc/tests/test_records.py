@@ -209,3 +209,11 @@ def test_csv_input_vars_md_contents(tests_path):
         for var in valid_less_civ:
             msg += 'VARIABLE= {}\n'.format(var)
         raise ValueError(msg)
+
+
+def test_cps_constructor():
+    """
+    Check CSV_INPUT_VARS.md contents against Records.USABLE_READ_VARS
+    """
+    recs = Records.cps_constructor()
+    assert isinstance(recs, Records)
