@@ -245,6 +245,10 @@ class TaxCalcIO(object):
                            adjust_ratios=None,
                            start_year=tax_year)
             recs_clp = copy.deepcopy(recs)
+        if tax_year < recs.data_year:
+            msg = 'tax_year {} less than records.data_year {}'
+            msg = msg.format(tax_year, recs.data_year)
+            self.errmsg += 'ERROR: {}\n'.format(msg)
         # create Calculator objects
         con = Consumption()
         con.update_consumption(param_dict['consumption'])

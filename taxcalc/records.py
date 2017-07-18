@@ -149,7 +149,6 @@ class Records(object):
         self._read_ratios(adjust_ratios)
         # weights must be same size as tax record data
         if not self.WT.empty and self.dim != len(self.WT):
-            print 'scaling weights'
             # scale-up sub-sample weights by year-specific factor
             sum_full_weights = self.WT.sum()
             self.WT = self.WT.iloc[self.index]
