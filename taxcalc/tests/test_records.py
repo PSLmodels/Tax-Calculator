@@ -211,6 +211,7 @@ def test_csv_input_vars_md_contents(tests_path):
         raise ValueError(msg)
 
 
+@pytest.mark.requires_pufcsv  # TODO: remove when CPS data files are available
 def test_cps_constructor():
     """
     Call Records.cps_constructor() and create Calculator object
