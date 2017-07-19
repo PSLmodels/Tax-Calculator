@@ -2669,12 +2669,12 @@
     },
 
     "_EITC_rt": {
-        "long_name": "Earned income credit rate",
-        "description": "If one taxpayer's AGI is below AGI phaseout start, he can apply this rate to his earned income to calculate the credit amount eligible. ",
+        "long_name": "Earned income credit phasein rate",
+        "description": "Pre-phaseout credit is minimum of this rate times earnings and the maximum earned income credit.",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "irs_ref": "Form 1040, line 66a&b, calculation (table: Max_EIC/Max_EIC_base_income).",
-        "notes": "Range of this parameter is between zero and one. ",
+        "notes": "",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
@@ -2687,7 +2687,7 @@
 
     "_EITC_prt": {
         "long_name": "Earned income credit phaseout rate",
-        "description": "Earned income credit will decrease at the this rate when AGI is higher than EITC phaseout start. ",
+        "description": "Earned income credit begins to decrease at the this rate when AGI is higher than earned income credit phaseout start AGI.",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "irs_ref": "Form 1040, line 66a&b, calculation (table: Max_EIC_base_income/Phaseout_Base).",
@@ -2702,8 +2702,8 @@
     },
 
     "_EITC_ps": {
-        "long_name": "Earned income credit phaseout AGI start",
-        "description": "If AGI is higher than this threshold, the amount of EITC will start to decrease. ",
+        "long_name": "Earned income credit phaseout start AGI",
+        "description": "If AGI is higher than this threshold, the amount of EITC will start to decrease at the phaseout rate. ",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "irs_ref": "Form 1040, line 66a&b, instructions.",
@@ -2726,8 +2726,8 @@
     },
 
     "_EITC_ps_MarriedJ": {
-        "long_name": "EITC Phaseout Starting AGI (Married filling Jointly)",
-        "description": "This is the additional amount added on the regular EITC phaseout start, only for taxpayers with filling status of married filling jointly. ",
+        "long_name": "Extra earned income credit phaseout start AGI for married filling jointly",
+        "description": "This is the additional amount added on the regular phaseout start amount for taxpayers with filling status of married filling jointly.",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "irs_ref": "Form 1040, line 66a&b, calculation (the difference between EIC phaseout bases of married jointly fillers and other fillers).",
