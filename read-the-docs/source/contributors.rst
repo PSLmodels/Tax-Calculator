@@ -7,13 +7,15 @@ list continues to grow.
 Origins of Tax-Calculator
 -------------------------
 
-The Tax-Calculator is derived from TAXCALC, a SAS program written by
+Tax-Calculator is a descendant of TAXCALC and TAXSIM, programs written by
 Dan Feenberg (`NBER`_) and Inna Shapiro (`NBER`_).
 
 Contributors to Tax-Calculator
 ------------------------------
 
-Contributors include the following individuals:
+Contributors include the following individuals who have made direct technical
+contributions to Tax-Calculator as well as many others have provided
+valuable feedback and review. 
 
 * `Dan Feenberg`_
 * `Sameer Sarkar`_
@@ -28,6 +30,14 @@ Contributors include the following individuals:
 * `Martin Holmer`_
 * `Peter Steinberg`_
 * `Sean Wang`_
+* `Anderson Frailey`_
+* `Cody Kallen`_
+* `Xiyu Wang`_ 
+* `Hank Doupe`_
+* `Zach Risher`_
+* `Adele Hunter`_
+* `Salim Furth`_
+* `Richard Evans`_
 
 
 .. _`NBER`: http://www.nber.org/
@@ -44,3 +54,12 @@ Contributors include the following individuals:
 .. _`Martin Holmer`: http://www.polsim.com/MRH_vita.pdf
 .. _`Peter Steinberg`: https://github.com/peterdsteinberg
 .. _`Sean Wang`: https://github.com/gofroggyrun
+.. _`Anderson Frailey`: https://github.com/andersonfrailey
+.. _`Cody Kallen`: https://github.com/codykallen
+.. _`Xiyu Wang`: https://github.com/xiyuw123
+.. _`Hank Doupe`: https://github.com/hdoupe
+.. _`Zach Risher`: https://github.com/zrisher
+.. _`Adele Hunter`: https://github.com/ahunter1
+.. _`Salim Furth`: https://github.com/salimfurth
+.. _`Richard Evans`: https://github.com/rickecon
+

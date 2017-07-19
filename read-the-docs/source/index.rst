@@ -22,7 +22,6 @@ Contents
 .. toctree::
    :maxdepth: 2
    
-   about_ospc.rst
    contributor_guide.rst
    parameter_naming.rst
    public_api.rst
