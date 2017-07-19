@@ -897,24 +897,24 @@
       "desc": "After tax income is equal to expanded_income minus combined",
       "form": {}
     },
-    "share_corptax_burden": {
+    "citax": {
       "type": "float",
       "desc": "Amount of corporate income tax distribution",
       "form": {}
     },
     "agg_labor": {
       "type": "float",
-      "desc": "Amount of corporate income tax distribution",
+      "desc": "Aggregated labor income for corporate income tax calculation",
       "form": {}
     },
     "agg_normal": {
       "type": "float",
-      "desc": "Amount of corporate income tax distribution",
+      "desc": "Aggregated normal income for corporate income tax calculation",
       "form": {}
     },
     "agg_supernormal": {
       "type": "float",
-      "desc": "Amount of corporate income tax distribution",
+      "desc": "Aggregated supernormal income for corporate income tax calculation",
       "form": {}
     }
   }

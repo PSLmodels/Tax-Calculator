@@ -3439,7 +3439,7 @@
         "col_label": "",
         "value": [0.0]
     },
-    
+
     "_CIT_Distribution": {
         "long_name": "Corporate Income Tax distribution among labor income, normal income and supernormal income",
         "description": "Set to 0.2, 0.2 and 0.6, according to TPC",
@@ -3453,6 +3453,6 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [[0.2,0.2,0.6]]
+        "value": [[0.2, 0.2, 0.6]]
     }
 }

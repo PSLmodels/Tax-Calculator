@@ -1665,7 +1665,7 @@ def AggCorpIncTax(calc):
 @iterate_jit(nopython=True)
 def DistCorpIncTax(e00200, e07240, e03150, e01400, e01700, e02400, e02100,
                    e00900, e02000, e00650, p23250, p22250, e00300, e00400,
-                   e00600, share_corptax_burden, agg_labor, agg_normal,
+                   e00600, citax, agg_labor, agg_normal,
                    agg_supernormal, CIT_Distribution):
     """
     Compute Corporate Income Tax Distribution
@@ -1721,6 +1721,5 @@ def DistCorpIncTax(e00200, e07240, e03150, e01400, e01700, e02400, e02100,
                          normal / agg_normal)
     share_from_supernormal = (CIT_Distribution[2] * revenue_collected *
                               supernormal / agg_supernormal)
-    share_corptax_burden = (share_from_labor + share_from_normal +
-                            share_from_supernormal)
-    return share_corptax_burden
+    citax = (share_from_labor + share_from_normal + share_from_supernormal)
+    return citax
