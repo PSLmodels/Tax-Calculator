@@ -474,8 +474,6 @@ class Records(object):
                 # cannot call read_egg_ function in unit tests
                 WT = read_egg_csv(
                     os.path.basename(weights_path))  # pragma: no cover
-            if weights.endswith('cps_weights.csv.gz'):
-                WT = WT * 100.0  # TODO: temporary CPS weight scaling
         else:
             msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)

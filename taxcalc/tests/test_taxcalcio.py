@@ -175,7 +175,6 @@ def test_creation_with_aging(rawinputfile, reformfile0):
     assert tcio.tax_year() == taxyear
 
 
-@pytest.mark.requires_pufcsv  # TODO: remove when CPS data files are available
 def test_ctor_init_with_cps_files():
     """
     Test use of CPS input files.

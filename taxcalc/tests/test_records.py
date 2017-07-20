@@ -211,7 +211,6 @@ def test_csv_input_vars_md_contents(tests_path):
         raise ValueError(msg)
 
 
-@pytest.mark.requires_pufcsv  # TODO: remove when CPS data files are available
 def test_cps_constructor():
     """
     Call Records.cps_constructor() and create Calculator object
@@ -222,7 +221,6 @@ def test_cps_constructor():
     assert isinstance(calc, Calculator)
 
 
-@pytest.mark.requires_pufcsv  # TODO: remove when CPS data files are available
 def test_cps_availability(tests_path):  # pylint: disable=redefined-outer-name
     """
     Cross-check records_variables.json data with variables in cps.csv file
