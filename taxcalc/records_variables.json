@@ -363,7 +363,7 @@
       "type": "float",
       "desc": "Sch A: Interest paid",
       "form": {"2013-2016": "1040 Sch A line 15"},
-      "availability": "taxdata_puf"
+      "availability": "taxdata_puf,taxdata_cps"
     },
     "e19800": {
       "type": "float",
