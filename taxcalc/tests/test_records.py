@@ -27,21 +27,22 @@ def test_correct_Records_instantiation(puf_1991, puf_1991_path, weights_1991):
     rec1 = Records(data=puf_1991_path, gfactors=None, weights=weights_1991)
     assert rec1
     assert np.all(rec1.MARS != 0)
-    assert rec1.current_year == Records.PUF_YEAR
+    assert rec1.current_year == rec1.data_year
     sum_e00200_in_puf_year = rec1.e00200.sum()
-    rec1.set_current_year(Records.PUF_YEAR + 1)
+    rec1.set_current_year(rec1.data_year + 1)
     sum_e00200_in_puf_year_plus_one = rec1.e00200.sum()
     assert sum_e00200_in_puf_year_plus_one == sum_e00200_in_puf_year
     rec2 = Records(data=puf_1991, gfactors=Growfactors(), weights=None)
     assert rec2
     assert np.all(rec2.MARS != 0)
-    assert rec2.current_year == Records.PUF_YEAR
-    adj_df = pd.read_csv(Records.ADJUST_RATIOS_PATH)
+    assert rec2.current_year == rec2.data_year
+    ratios_path = os.path.join(Records.CUR_PATH, Records.PUF_RATIOS_FILENAME)
+    adj_df = pd.read_csv(ratios_path)
     adj_df = adj_df.transpose()
     rec3 = Records(data=puf_1991, weights=None, adjust_ratios=adj_df)
     assert rec3
     assert np.all(rec3.MARS != 0)
-    assert rec3.current_year == Records.PUF_YEAR
+    assert rec3.current_year == rec3.data_year
 
 
 def test_correct_Records_instantiation_sample(puf_1991, weights_1991):
@@ -50,16 +51,16 @@ def test_correct_Records_instantiation_sample(puf_1991, weights_1991):
     rec1 = Records(data=sample, gfactors=None, weights=weights_1991)
     assert rec1
     assert np.all(rec1.MARS != 0)
-    assert rec1.current_year == Records.PUF_YEAR
+    assert rec1.current_year == rec1.data_year
     sum_e00200_in_puf_year = rec1.e00200.sum()
-    rec1.set_current_year(Records.PUF_YEAR + 1)
+    rec1.set_current_year(rec1.data_year + 1)
     sum_e00200_in_puf_year_plus_one = rec1.e00200.sum()
     assert sum_e00200_in_puf_year_plus_one == sum_e00200_in_puf_year
     # instantiate Records object with default extrapolation
     rec2 = Records(data=sample, gfactors=Growfactors(), weights=None)
     assert rec2
     assert np.all(rec2.MARS != 0)
-    assert rec2.current_year == Records.PUF_YEAR
+    assert rec2.current_year == rec2.data_year
 
 
 @pytest.mark.parametrize("csv", [
@@ -102,13 +103,13 @@ def test_extrapolation_timing(puf_1991, weights_1991):
     pol1 = Policy()
     assert pol1.current_year == Policy.JSON_START_YEAR
     rec1 = Records(data=puf_1991, weights=weights_1991)
-    assert rec1.current_year == Records.PUF_YEAR
+    assert rec1.current_year == rec1.data_year
     calc1 = Calculator(policy=pol1, records=rec1, sync_years=True)
     assert calc1.records.current_year == Policy.JSON_START_YEAR
     pol2 = Policy()
     assert pol2.current_year == Policy.JSON_START_YEAR
     rec2 = Records(data=puf_1991, weights=weights_1991)
-    assert rec2.current_year == Records.PUF_YEAR
+    assert rec2.current_year == rec2.data_year
     rec2.set_current_year(Policy.JSON_START_YEAR)
     assert rec2.current_year == Policy.JSON_START_YEAR
     calc2 = Calculator(policy=pol2, records=rec2, sync_years=False)
@@ -208,3 +209,34 @@ def test_csv_input_vars_md_contents(tests_path):
         for var in valid_less_civ:
             msg += 'VARIABLE= {}\n'.format(var)
         raise ValueError(msg)
+
+
+def test_cps_constructor():
+    """
+    Call Records.cps_constructor() and create Calculator object
+    """
+    recs = Records.cps_constructor()
+    assert isinstance(recs, Records)
+    calc = Calculator(policy=Policy(), records=recs)
+    assert isinstance(calc, Calculator)
+
+
+def test_cps_availability(tests_path):  # pylint: disable=redefined-outer-name
+    """
+    Cross-check records_variables.json data with variables in cps.csv file
+    """
+    # make set of variable names in cps.csv file
+    cps_path = os.path.join(tests_path, '..', 'cps.csv.gz')
+    cpsdf = pd.read_csv(cps_path)
+    cpsvars = set(list(cpsdf))
+    # make set of variable names that are marked as cps.csv available
+    rvpath = os.path.join(tests_path, '..', 'records_variables.json')
+    with open(rvpath, 'r') as rvfile:
+        rvdict = json.load(rvfile)
+    recvars = set()
+    for vname, vdict in rvdict['read'].items():
+        if 'taxdata_cps' in vdict.get('availability', ''):
+            recvars.add(vname)
+    # check that cpsvars and recvars sets are the same
+    assert (cpsvars - recvars) == set()
+    assert (recvars - cpsvars) == set()

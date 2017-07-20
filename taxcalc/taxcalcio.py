@@ -71,7 +71,8 @@ class TaxCalcIO(object):
                 msg = 'INPUT file name does not end in .csv'
                 self.errmsg += 'ERROR: {}\n'.format(msg)
             # check existence of INPUT file
-            if not os.path.isfile(input_data):
+            self.cps_input_data = input_data.endswith('cps.csv')
+            if not self.cps_input_data and not os.path.isfile(input_data):
                 msg = 'INPUT file could not be found'
                 self.errmsg += 'ERROR: {}\n'.format(msg)
         elif isinstance(input_data, pd.DataFrame):
@@ -216,20 +217,38 @@ class TaxCalcIO(object):
         clp.set_year(tax_year)
         # read input file contents into Records objects
         if aging_input_data:
-            recs = Records(data=input_data,
-                           gfactors=gfactors_ref,
-                           exact_calculations=exact_calculations)
-            recs_clp = Records(data=input_data,
-                               gfactors=gfactors_clp,
-                               exact_calculations=exact_calculations)
+            if self.cps_input_data:
+                recs = Records.cps_constructor(
+                    growfactors=gfactors_ref,
+                    exact_calculations=exact_calculations
+                )
+                recs_clp = Records.cps_constructor(
+                    growfactors=gfactors_clp,
+                    exact_calculations=exact_calculations
+                )
+            else:  # if not cps_input_data
+                recs = Records(
+                    data=input_data,
+                    gfactors=gfactors_ref,
+                    exact_calculations=exact_calculations
+                )
+                recs_clp = Records(
+                    data=input_data,
+                    gfactors=gfactors_clp,
+                    exact_calculations=exact_calculations
+                )
         else:  # input_data are raw data that are not being aged
             recs = Records(data=input_data,
-                           exact_calculations=exact_calculations,
                            gfactors=None,
-                           adjust_ratios=None,
+                           exact_calculations=exact_calculations,
                            weights=None,
+                           adjust_ratios=None,
                            start_year=tax_year)
             recs_clp = copy.deepcopy(recs)
+        if tax_year < recs.data_year:
+            msg = 'tax_year {} less than records.data_year {}'
+            msg = msg.format(tax_year, recs.data_year)
+            self.errmsg += 'ERROR: {}\n'.format(msg)
         # create Calculator objects
         con = Consumption()
         con.update_consumption(param_dict['consumption'])

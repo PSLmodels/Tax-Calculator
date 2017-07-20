@@ -574,15 +574,15 @@ def test_mtr_graph_data(records_2009):
         gdata = mtr_graph_data(calc, calc, mtr_measure='badtax')
     with pytest.raises(ValueError):
         gdata = mtr_graph_data(calc, calc, income_measure='badincome')
-    with pytest.raises(ValueError):
-        calcx = Calculator(policy=Policy(), records=records_2009)
-        calcx.advance_to_year(2020)
-        gdata = mtr_graph_data(calcx, calc)
     gdata = mtr_graph_data(calc, calc, mars=1,
                            mtr_wrt_full_compen=True,
                            income_measure='wages',
                            dollar_weighting=True)
     assert isinstance(gdata, dict)
+    with pytest.raises(ValueError):
+        calcx = Calculator(policy=Policy(), records=records_2009)
+        calcx.advance_to_year(2020)
+        gdata = mtr_graph_data(calcx, calc)
 
 
 def test_atr_graph_data(records_2009):
@@ -595,14 +595,14 @@ def test_atr_graph_data(records_2009):
         gdata = atr_graph_data(calc, calc, mars=list())
     with pytest.raises(ValueError):
         gdata = atr_graph_data(calc, calc, atr_measure='badtax')
-    with pytest.raises(ValueError):
-        calcx = Calculator(policy=Policy(), records=records_2009)
-        calcx.advance_to_year(2020)
-        gdata = atr_graph_data(calcx, calc)
     gdata = atr_graph_data(calc, calc, mars=1, atr_measure='combined')
     gdata = atr_graph_data(calc, calc, atr_measure='itax')
     gdata = atr_graph_data(calc, calc, atr_measure='ptax')
     assert isinstance(gdata, dict)
+    with pytest.raises(ValueError):
+        calcx = Calculator(policy=Policy(), records=records_2009)
+        calcx.advance_to_year(2020)
+        gdata = atr_graph_data(calcx, calc)
 
 
 def test_xtr_graph_plot(records_2009):

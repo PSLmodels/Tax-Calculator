@@ -175,6 +175,29 @@ def test_creation_with_aging(rawinputfile, reformfile0):
     assert tcio.tax_year() == taxyear
 
 
+def test_ctor_init_with_cps_files():
+    """
+    Test use of CPS input files.
+    """
+    # specify valid tax_year for cps.csv input data
+    txyr = 2020
+    tcio = TaxCalcIO('cps.csv', txyr, None, None)
+    tcio.init('cps.csv', txyr, None, None,
+              growdiff_response=None,
+              aging_input_data=True,
+              exact_calculations=False)
+    assert len(tcio.errmsg) == 0
+    assert tcio.tax_year() == txyr
+    # specify invalid tax_year for cps.csv input data
+    txyr = 2013
+    tcio = TaxCalcIO('cps.csv', txyr, None, None)
+    tcio.init('cps.csv', txyr, None, None,
+              growdiff_response=None,
+              aging_input_data=True,
+              exact_calculations=False)
+    assert len(tcio.errmsg) > 0
+
+
 @pytest.yield_fixture
 def reformfile1():
     """

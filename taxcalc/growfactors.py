@@ -53,9 +53,12 @@ class Growfactors(object):
             # pylint: disable=redefined-variable-type
             # (above because pylint mistakenly thinks gfdf is not a DataFrame)
             if os.path.isfile(growfactors_filename):
-                gfdf = pd.read_csv(growfactors_filename, index_col='YEAR')
+                gfdf = pd.read_csv(growfactors_filename,
+                                   index_col='YEAR')
             else:
-                gfdf = read_egg_csv(Growfactors.FILENAME, index_col='YEAR')
+                # cannot call read_egg_ function in unit tests
+                gfdf = read_egg_csv(Growfactors.FILENAME,
+                                    index_col='YEAR')  # pragma: no cover
         else:
             raise ValueError('growfactors_filename is not a string')
         assert isinstance(gfdf, pd.DataFrame)

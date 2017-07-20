@@ -16,6 +16,7 @@ Read tax-calculator/TESTING.md for details.
 # pylint --disable=locally-disabled test_pufcsv.py
 
 import os
+import json
 import difflib
 import pytest
 import numpy as np
@@ -279,3 +280,25 @@ def test_credit_reforms(puf_path):  # pylint: disable=redefined-outer-name
     assert itax2 < itax1  # because refundable credits lower revenues
     assert itax3 > itax2  # because nonrefundable credits lower revenues less
     assert itax3 < itax1  # because nonrefundable credits lower revenues some
+
+
+@pytest.mark.requires_pufcsv
+def test_puf_availability(tests_path,
+                          puf_path):  # pylint: disable=redefined-outer-name
+    """
+    Cross-check records_variables.json data with variables in puf.csv file
+    """
+    # make set of variable names in puf.csv file
+    pufdf = pd.read_csv(puf_path)
+    pufvars = set(list(pufdf))
+    # make set of variable names that are marked as puf.csv available
+    rvpath = os.path.join(tests_path, '..', 'records_variables.json')
+    with open(rvpath, 'r') as rvfile:
+        rvdict = json.load(rvfile)
+    recvars = set()
+    for vname, vdict in rvdict['read'].items():
+        if 'taxdata_puf' in vdict.get('availability', ''):
+            recvars.add(vname)
+    # check that pufvars and recvars sets are the same
+    assert (pufvars - recvars) == set()
+    assert (recvars - pufvars) == set()

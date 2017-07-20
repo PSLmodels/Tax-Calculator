@@ -13,7 +13,12 @@ Release 0.9.2 on 2017-??-??
 - None
 
 **New Features**
-- None
+- Add several taxcalc/reforms/earnings_shifting.* files that analyze the revenue implications of high-paid workers forming personal LLCs to contract with their former employers under the Trump2017.json reform
+  [[#1464](https://github.com/open-source-economics/Tax-Calculator/pull/1464)
+  by Martin Holmer]
+- Add ability to read and calculate taxes with new CPS input data for 2014 and subsequent years
+  [[#1484](https://github.com/open-source-economics/Tax-Calculator/pull/1484)
+  by Martin Holmer]
 
 **Bug Fixes**
 - Fix decorators bug that appeared when numpy 1.13.1, and pandas 0.20.2 that uses numpy 1.13, recently became available

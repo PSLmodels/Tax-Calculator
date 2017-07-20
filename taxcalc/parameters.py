@@ -237,7 +237,9 @@ class ParametersBase(object):
                 params_dict = json.load(pfile,
                                         object_pairs_hook=collect.OrderedDict)
         else:
-            params_dict = read_egg_json(cls.DEFAULTS_FILENAME)
+            # cannot call read_egg_ function in unit tests
+            params_dict = read_egg_json(
+                cls.DEFAULTS_FILENAME)  # pragma: no cover
         return params_dict
 
     def _update(self, year_mods):
