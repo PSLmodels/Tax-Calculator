@@ -219,24 +219,3 @@ def test_cps_constructor():
     assert isinstance(recs, Records)
     calc = Calculator(policy=Policy(), records=recs)
     assert isinstance(calc, Calculator)
-
-
-def test_cps_availability(tests_path):  # pylint: disable=redefined-outer-name
-    """
-    Cross-check records_variables.json data with variables in cps.csv file
-    """
-    # make set of variable names in cps.csv file
-    cps_path = os.path.join(tests_path, '..', 'cps.csv.gz')
-    cpsdf = pd.read_csv(cps_path)
-    cpsvars = set(list(cpsdf))
-    # make set of variable names that are marked as cps.csv available
-    rvpath = os.path.join(tests_path, '..', 'records_variables.json')
-    with open(rvpath, 'r') as rvfile:
-        rvdict = json.load(rvfile)
-    recvars = set()
-    for vname, vdict in rvdict['read'].items():
-        if 'taxdata_cps' in vdict.get('availability', ''):
-            recvars.add(vname)
-    # check that cpsvars and recvars sets are the same
-    assert (cpsvars - recvars) == set()
-    assert (recvars - cpsvars) == set()
