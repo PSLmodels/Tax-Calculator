@@ -4,26 +4,26 @@
       "type": "int",
       "desc": "1 if claimed as dependent on another return; otherwise 0",
       "form": {"2013-2016": "1040 line 6a"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "EIC": {
       "type": "int",
       "desc": "number of EIC qualifying children (range: 0 to 3)",
       "form": {"2013-2016": "1040 Sch EIC"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "FLPDYR": {
       "type": "int",
       "desc": "Calendar year for which taxes are calculated",
       "form": {"2013-2016": "1040"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "MARS": {
       "required": true,
       "type": "int",
       "desc": "Filing (marital) status: line number of the checked box",
       "form": {"2013-2016": "1040 lines 1-5"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "MIDR": {
       "type": "int",
@@ -36,31 +36,31 @@
       "type": "int",
       "desc": "Unique numeric identifier for filing unit; appears as RECID variable in tc CLI minimal output",
       "form": {"2013-2016": "private info"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "XTOT": {
       "type": "int",
       "desc": "Total number of exemptions for filing unit",
       "form": {"2013-2016": "1040 line 6d"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "age_head": {
       "type": "int",
       "desc": "Age in years of taxpayer (i.e. primary filer)",
       "form": {"2013-2016": "imputed from CPS data"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "age_spouse": {
       "type": "int",
       "desc": "Age in years of spouse (i.e. secondary filer if present)",
       "form": {"2013-2016": "imputed from CPS data"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "agi_bin": {
       "type": "int",
       "desc": "Historical AGI category used in data extrapolation",
       "form": {"2013-2016": "not used in tax calculations"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "blind_head": {
       "type": "int",
@@ -84,43 +84,43 @@
       "type": "float",
       "desc": "Wages, salaries, and tips for filing unit",
       "form": {"2013-2016": "1040 line 7"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e00200p": {
       "type": "float",
       "desc": "Wages, salaries, and tips for taxpayer",
       "form": {"2013-2016": "1040 line 7 component"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e00200s": {
       "type": "float",
       "desc": "Wages, salaries, and tips for spouse",
       "form": {"2013-2016": "1040 line 7 component"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e00300": {
       "type": "float",
       "desc": "Taxable interest income",
       "form": {"2013-2016": "1040 line 8a"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e00400": {
       "type": "float",
       "desc": "Tax-exempt interest income",
       "form": {"2013-2016": "1040 line 8b"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e00600": {
       "type": "float",
       "desc": "Ordinary dividends included in AGI",
       "form": {"2013-2016": "1040 line 9a"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e00650": {
       "type": "float",
       "desc": "Qualified dividends included in ordinary dividends",
       "form": {"2013-2016": "1040 line 9b"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e00700": {
       "type": "float",
@@ -132,31 +132,31 @@
       "type": "float",
       "desc": "Alimony received",
       "form": {"2013-2016": "1040 line 11"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e00900": {
       "type": "float",
       "desc": "Sch C business net profit/loss for filing unit",
       "form": {"2013-2016": "1040 line 12"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e00900p": {
       "type": "float",
       "desc": "Sch C business net profit/loss for taxpayer",
       "form": {"2013-2016": "1040 line 12 component"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e00900s": {
       "type": "float",
       "desc": "Sch C business net profit/loss for spouse",
       "form": {"2013-2016": "1040 line 12 component"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e01100": {
       "type": "float",
       "desc": "Capital gain distributions not reported on Sch D",
       "form": {"2013-2016": "1040 line 13"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e01200": {
       "type": "float",
@@ -168,19 +168,19 @@
       "type": "float",
       "desc": "Taxable IRA distributions",
       "form": {"2013-2016": "1040 line 15b"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e01500": {
       "type": "float",
       "desc": "Pensions and annuities",
       "form": {"2013-2016": "1040 line 16a"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e01700": {
       "type": "float",
       "desc": "Taxable pensions and annuities",
       "form": {"2013-2016": "1040 line 16b"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e02000": {
       "type": "float",
@@ -192,43 +192,43 @@
       "type": "float",
       "desc": "Farm net income/loss for filing unit from Sch F",
       "form": {"2013-2016": "1040 line 18"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e02100p": {
       "type": "float",
       "desc": "Farm net income/loss for taxpayer",
       "form": {"2013-2016": "1040 line 18 component"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e02100s": {
       "type": "float",
       "desc": "Farm net income/loss for spouse",
       "form": {"2013-2016": "1040 line 18 component"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e02300": {
       "type": "float",
       "desc": "Unemployment compensation benefits",
       "form": {"2013-2016": "1040 line 19"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e02400": {
       "type": "float",
       "desc": "Total social security benefits",
       "form": {"2013-2016": "1040 line 20a"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e03150": {
       "type": "float",
       "desc": "Total deductible IRA contributions",
       "form": {"2013-2016": "1040 line 32"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e03210": {
       "type": "float",
       "desc": "Student loan interest",
       "form": {"2013-2016": "1040 line 33"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e03220": {
       "type": "float",
@@ -246,13 +246,13 @@
       "type": "float",
       "desc": "Domestic production activities from Form 8903",
       "form": {"2013-2016": "1040 line 35"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e03270": {
       "type": "float",
       "desc": "Self-employed health insurance deduction",
       "form": {"2013-2016": "1040 line 29"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e03290": {
       "type": "float",
@@ -264,7 +264,7 @@
       "type": "float",
       "desc": "Contributions to SEP, SIMPLE and qualified plans",
       "form": {"2013-2016": "1040 line 28"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e03400": {
       "type": "float",
@@ -345,43 +345,43 @@
       "type": "float",
       "desc": "Sch A: Medical and dental expenses",
       "form": {"2013-2016": "1040 Sch A line 1"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e18400": {
       "type": "float",
       "desc": "Sch A: State and local income/sales taxes",
       "form": {"2013-2016": "1040 Sch A line 5"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e18500": {
       "type": "float",
       "desc": "Sch A: Real-estate taxes paid",
       "form": {"2013-2016": "1040 Sch A line 6"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e19200": {
       "type": "float",
       "desc": "Sch A: Interest paid",
       "form": {"2013-2016": "1040 Sch A line 15"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e19800": {
       "type": "float",
       "desc": "Sch A: Gifts to charity: cash/check contributions",
       "form": {"2013-2016": "1040 Sch A line 16"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e20100": {
       "type": "float",
       "desc": "Sch A: Gifts to charity: other than cash/check contributions",
       "form": {"2013-2016": "1040 Sch A line 17"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e20400": {
       "type": "float",
       "desc": "Sch A: Miscellaneous deductions subject to 2% AGI limitation",
       "form": {"2013-2016": "1040 Sch A line 24"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "g20500": {
       "type": "float",
@@ -417,7 +417,7 @@
       "type": "float",
       "desc": "Child/dependent-care expenses for qualifying persons from Form 2441",
       "form": {"2013-2016": "2441 line 3"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e58990": {
       "type": "float",
@@ -441,13 +441,13 @@
       "type": "int",
       "desc": "1 if filing unit has an elderly dependent; otherwise 0",
       "form": {"2013-2016": "imputed from CPS data; not used in tax law"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "f2441": {
       "type": "int",
       "desc": "number of child/dependent-care qualifying persons",
       "form": {"2013-2016": "2441 line 2b"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "f6251": {
       "type": "int",
@@ -459,7 +459,7 @@
       "type": "int",
       "desc": "1 if unit files an income tax return; 0 if not (not used in tax-calculation logic)",
       "form": {"2013-2016": "sample construction info"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "k1bx14p": {
       "type": "float",
@@ -477,37 +477,37 @@
       "type": "int",
       "desc": "Number of children eligible for Child Tax Credit",
       "form": {"2013-2016": "imputed from CPS data"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "nu05": {
       "type": "int",
       "desc": "Number of dependents under 5 years old",
       "form": {"2013-2016": "imputed from CPS data"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "nu13": {
       "type": "int",
       "desc": "Number of dependents under 13 years old",
       "form": {"2013-2016": "imputed from CPS data"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "nu18": {
       "type": "int",
       "desc": "Number of people under 18 years old in the filing unit",
       "form": {"2013-2016": "imputed from CPS data"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "n1821": {
       "type": "int",
       "desc": "Number of people over 18 and under 21 years old in the filing unit",
       "form": {"2013-2016": "imputed from CPS data"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "n21": {
       "type": "int",
       "desc": "Number of people 21 years old or older in the filing unit",
       "form": {"2013-2016": "imputed from CPS data"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "p08000": {
       "type": "float",
@@ -544,7 +544,7 @@
       "type": "float",
       "desc": "Filing unit sampling weight; appears as WEIGHT variable in tc CLI minimal output",
       "form": {"2013-2016": "not used in filing unit tax calculations"},
-      "availability": "taxdata_puf,taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     }
   },
   "calc": {
