@@ -4,10 +4,10 @@ Go
 [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
-Release 0.9.2 on 2017-??-??
+Release 0.9.2 on 2017-07-26
 ---------------------------
 (last merged pull request is
-[#XXXX](https://github.com/open-source-economics/Tax-Calculator/pull/XXXX))
+[#1490](https://github.com/open-source-economics/Tax-Calculator/pull/1490))
 
 **API Changes**
 - None
@@ -18,6 +18,9 @@ Release 0.9.2 on 2017-??-??
   by Martin Holmer]
 - Add ability to read and calculate taxes with new CPS input data for 2014 and subsequent years
   [[#1484](https://github.com/open-source-economics/Tax-Calculator/pull/1484)
+  by Martin Holmer]
+- Add tests of ability to calculate taxes with new CPS input data
+  [[#1490](https://github.com/open-source-economics/Tax-Calculator/pull/1490)
   by Martin Holmer]
 
 **Bug Fixes**
