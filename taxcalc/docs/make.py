@@ -144,6 +144,8 @@ def var_text(vname, iotype, variable):
         txt = '<p><i>Output Variable Name:</i> <b>{}</b>'.format(vname)
     txt += '<br><i>Description:</i> {}'.format(variable['desc'])
     txt += '<br><i>Datatype:</i> {}'.format(variable['type'])
+    if iotype == 'read':
+        txt += '<br><i>Availability:</i> {}'.format(variable['availability'])
     txt += '<br><i>IRS Form Location:</i>'
     formdict = variable['form']
     for yrange in sorted(formdict.keys()):
