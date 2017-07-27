@@ -20,6 +20,22 @@ from taxcalc.utils import (add_income_bins, add_weighted_income_bins,
 EPSILON = 1e-3
 
 
+def check_years(start_year, year_n):
+    """
+    Ensure start_year and year_n values are consistent with Policy constants.
+    """
+    if start_year < Policy.JSON_START_YEAR:
+        msg = 'start_year={} < Policy.JSON_START_YEAR={}'
+        raise ValueError(msg.format(start_year, Policy.JSON_START_YEAR))
+    if year_n < 0:
+        msg = 'year_n={} < 0'
+        raise ValueError(msg.format(year_n))
+    if (start_year + year_n) > Policy.LAST_BUDGET_YEAR:
+        msg = '(start_year={} + year_n={}) > Policy.LAST_BUDGET_YEAR={}'
+        raise ValueError(msg.format(start_year, year_n,
+                                    Policy.LAST_BUDGET_YEAR))
+
+
 def check_user_mods(user_mods):
     """
     Ensure specified user_mods is properly structured.
@@ -52,7 +68,7 @@ def dropq_calculate(year_n, start_year,
       mask is boolean array if compute_mask=True or None otherwise
     """
     # pylint: disable=too-many-arguments,too-many-locals,too-many-statements
-
+    check_years(start_year, year_n)
     check_user_mods(user_mods)
 
     # specify Consumption instance

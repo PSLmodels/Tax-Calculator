@@ -15,6 +15,11 @@ def tests_path():
 
 
 @pytest.fixture(scope='session')
+def cps_path(tests_path):
+    return os.path.join(tests_path, '..', 'cps.csv.gz')
+
+
+@pytest.fixture(scope='session')
 def puf_1991_path(tests_path):
     return os.path.join(tests_path, '..', 'altdata', 'puf91taxdata.csv.gz')
 
