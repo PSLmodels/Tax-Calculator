@@ -60,6 +60,15 @@ def puf_path(tests_path):
     return os.path.join(tests_path, '..', '..', 'puf.csv')
 
 
+@pytest.mark.parametrize('start_year, year_n',
+                         [(2000, 0),
+                          (2013, -1),
+                          (2017, 10)])
+def test_check_years_errors(start_year, year_n):
+    with pytest.raises(ValueError):
+        check_years(start_year, year_n)
+
+
 def test_check_user_mods_errors():
     check_user_mods(USER_MODS)
     seed1 = random_seed(USER_MODS)
