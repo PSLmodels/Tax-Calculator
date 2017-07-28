@@ -23,8 +23,8 @@ RAWINPUTFILE_CONTENTS = (
 )
 
 
-@pytest.yield_fixture
-def rawinputfile():
+@pytest.fixture(scope='module', name='rawinputfile')
+def fixture_rawinputfile():
     """
     Temporary input file that contains the minimum required input varaibles.
     """
@@ -40,8 +40,8 @@ def rawinputfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.yield_fixture
-def policyfile():
+@pytest.fixture(scope='module', name='policyfile')
+def fixture_policyfile():
     txt = """{"_almdep": {"value": [7150, 7250, 7400]},
              "_almsep": {"value": [40400, 41050]},
              "_rt5": {"value": [0.33 ]},
@@ -405,8 +405,8 @@ REFORM_CONTENTS = """
 """
 
 
-@pytest.yield_fixture
-def reform_file():
+@pytest.fixture(scope='module', name='reform_file')
+def fixture_reform_file():
     """
     Temporary reform file for read_json_param_files() function.
     """
@@ -439,8 +439,8 @@ ASSUMP_CONTENTS = """
 """
 
 
-@pytest.yield_fixture
-def assump_file():
+@pytest.fixture(scope='module', name='assump_file')
+def fixture_assump_file():
     """
     Temporary assumption file for read_json_params_files() function.
     """
@@ -510,8 +510,8 @@ def test_read_json_reform_file_and_implement_reform(reform_file,
     assert add4aged[2022 - syr] == 0.0
 
 
-@pytest.yield_fixture
-def bad1reformfile():
+@pytest.fixture(scope='module', name='bad1reformfile')
+def fixture_bad1reformfile():
     # specify JSON text for reform
     txt = """
     {
@@ -528,8 +528,8 @@ def bad1reformfile():
     os.remove(f.name)
 
 
-@pytest.yield_fixture
-def bad2reformfile():
+@pytest.fixture(scope='module', name='bad2reformfile')
+def fixture_bad2reformfile():
     # specify JSON text for reform
     txt = """
     {
@@ -547,8 +547,8 @@ def bad2reformfile():
     os.remove(f.name)
 
 
-@pytest.yield_fixture
-def bad3reformfile():
+@pytest.fixture(scope='module', name='bad3reformfile')
+def fixture_bad3reformfile():
     # specify JSON text for reform
     txt = """
     {
@@ -580,8 +580,8 @@ def test_read_bad_json_reform_file(bad1reformfile, bad2reformfile,
         Calculator.read_json_param_files(list(), None)
 
 
-@pytest.yield_fixture
-def bad1assumpfile():
+@pytest.fixture(scope='module', name='bad1assumpfile')
+def fixture_bad1assumpfile():
     # specify JSON text for assumptions
     txt = """
     {
@@ -601,8 +601,8 @@ def bad1assumpfile():
     os.remove(f.name)
 
 
-@pytest.yield_fixture
-def bad2assumpfile():
+@pytest.fixture(scope='module', name='bad2assumpfile')
+def fixture_bad2assumpfile():
     # specify JSON text for assumptions
     txt = """
     {
@@ -620,8 +620,8 @@ def bad2assumpfile():
     os.remove(f.name)
 
 
-@pytest.yield_fixture
-def bad3assumpfile():
+@pytest.fixture(scope='module', name='bad3assumpfile')
+def fixture_bad3assumpfile():
     # specify JSON text for assump
     txt = """
     {
