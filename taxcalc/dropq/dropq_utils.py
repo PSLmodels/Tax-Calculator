@@ -106,8 +106,8 @@ def dropq_calculate(year_n, start_year,
         # create pre-reform Calculator instance with extra income
         recs1p = Records(data=taxrec_df.copy(deep=True),
                          gfactors=growfactors_pre)
-        # add one dollar to total wages and salaries of each filing unit
-        # to determine which records are taxpayers
+        # add one dollar to the income of each filing unit to determine
+        # which filing units undergo a resulting change in tax liability
         recs1p.e00200 += 1.0  # pylint: disable=no-member
         recs1p.e00200p += 1.0  # pylint: disable=no-member
         policy1p = Policy(gfactors=growfactors_pre)
@@ -119,8 +119,8 @@ def dropq_calculate(year_n, start_year,
         calc1p.calc_all()
         assert calc1p.current_year == start_year
         # compute mask that shows which of the calc1 and calc1p results differ
-        # mask is true if record pays taxes; if it does not change after adding
-        # a dollar then this record does not pay taxes
+        # mask is true if a filing unit's tax liability changed after a dollar
+        # was added to the filing unit's income
         res1 = results(calc1.records)
         res1p = results(calc1p.records)
         mask = (res1.iitax != res1p.iitax)
