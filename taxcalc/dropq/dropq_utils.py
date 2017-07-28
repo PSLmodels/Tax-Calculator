@@ -213,7 +213,8 @@ def chooser(agg):
     those three indices being zero and the output for all the other indices
     being one.
     """
-    # select indices of recs that are taxpaying records
+    # select indices of recs with change in tax liability after
+    # $1 increase in income
     indices = np.where(agg)
     three = 3
     if len(indices[0]) >= three:
