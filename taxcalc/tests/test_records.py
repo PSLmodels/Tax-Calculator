@@ -5,59 +5,44 @@ from numpy.testing import assert_array_equal
 import pandas as pd
 import pytest
 from io import StringIO
-from taxcalc import Growfactors, Policy, Records, Calculator
+from taxcalc import Growfactors, Policy, Records, Calculator, CPSCSV_YEAR
 
 
-def test_incorrect_Records_instantiation(puf_1991):
+def test_incorrect_Records_instantiation(cps_subsample):
     with pytest.raises(ValueError):
         recs = Records(data=list())
     with pytest.raises(ValueError):
-        recs = Records(data=puf_1991, gfactors=list())
+        recs = Records(data=cps_subsample, gfactors=list())
     with pytest.raises(ValueError):
-        recs = Records(data=puf_1991, gfactors=None, weights=list())
+        recs = Records(data=cps_subsample, gfactors=None, weights=list())
     with pytest.raises(ValueError):
-        recs = Records(data=puf_1991, gfactors=None, weights=None,
+        recs = Records(data=cps_subsample, gfactors=None, weights=None,
                        start_year=list())
     with pytest.raises(ValueError):
-        recs = Records(data=puf_1991, gfactors=None, weights=None,
+        recs = Records(data=cps_subsample, gfactors=None, weights=None,
                        adjust_ratios=list())
 
 
-def test_correct_Records_instantiation(puf_1991, puf_1991_path, weights_1991):
-    rec1 = Records(data=puf_1991_path, gfactors=None, weights=weights_1991)
+def test_correct_Records_instantiation(cps_subsample):
+    rec1 = Records.cps_constructor(data=cps_subsample)
     assert rec1
     assert np.all(rec1.MARS != 0)
     assert rec1.current_year == rec1.data_year
-    sum_e00200_in_puf_year = rec1.e00200.sum()
+    sum_e00200_in_cps_year = rec1.e00200.sum()
     rec1.set_current_year(rec1.data_year + 1)
-    sum_e00200_in_puf_year_plus_one = rec1.e00200.sum()
-    assert sum_e00200_in_puf_year_plus_one == sum_e00200_in_puf_year
-    rec2 = Records(data=puf_1991, gfactors=Growfactors(), weights=None)
-    assert rec2
-    assert np.all(rec2.MARS != 0)
-    assert rec2.current_year == rec2.data_year
-    ratios_path = os.path.join(Records.CUR_PATH, Records.PUF_RATIOS_FILENAME)
-    adj_df = pd.read_csv(ratios_path)
-    adj_df = adj_df.transpose()
-    rec3 = Records(data=puf_1991, weights=None, adjust_ratios=adj_df)
-    assert rec3
-    assert np.all(rec3.MARS != 0)
-    assert rec3.current_year == rec3.data_year
-
-
-def test_correct_Records_instantiation_sample(puf_1991, weights_1991):
-    sample = puf_1991.sample(frac=0.10)
-    # instantiate Records object with no extrapolation
-    rec1 = Records(data=sample, gfactors=None, weights=weights_1991)
-    assert rec1
-    assert np.all(rec1.MARS != 0)
-    assert rec1.current_year == rec1.data_year
-    sum_e00200_in_puf_year = rec1.e00200.sum()
-    rec1.set_current_year(rec1.data_year + 1)
-    sum_e00200_in_puf_year_plus_one = rec1.e00200.sum()
-    assert sum_e00200_in_puf_year_plus_one == sum_e00200_in_puf_year
-    # instantiate Records object with default extrapolation
-    rec2 = Records(data=sample, gfactors=Growfactors(), weights=None)
+    sum_e00200_in_cps_year_plus_one = rec1.e00200.sum()
+    assert sum_e00200_in_cps_year_plus_one == sum_e00200_in_cps_year
+    wghts_path = os.path.join(Records.CUR_PATH, Records.CPS_WEIGHTS_FILENAME)
+    wghts_df = pd.read_csv(wghts_path)
+    ratio_path = os.path.join(Records.CUR_PATH, Records.PUF_RATIOS_FILENAME)
+    ratio_df = pd.read_csv(ratio_path)
+    ratio_df = ratio_df.transpose()
+    rec2 = Records(data=cps_subsample,
+                   exact_calculations=False,
+                   gfactors=Growfactors(),
+                   weights=wghts_df,
+                   adjust_ratios=ratio_df,
+                   start_year=CPSCSV_YEAR)
     assert rec2
     assert np.all(rec2.MARS != 0)
     assert rec2.current_year == rec2.data_year
@@ -97,24 +82,6 @@ def test_read_data(csv):
     df = pd.read_csv(StringIO(csv))
     with pytest.raises(ValueError):
         Records(data=df)
-
-
-def test_extrapolation_timing(puf_1991, weights_1991):
-    pol1 = Policy()
-    assert pol1.current_year == Policy.JSON_START_YEAR
-    rec1 = Records(data=puf_1991, weights=weights_1991)
-    assert rec1.current_year == rec1.data_year
-    calc1 = Calculator(policy=pol1, records=rec1, sync_years=True)
-    assert calc1.records.current_year == Policy.JSON_START_YEAR
-    pol2 = Policy()
-    assert pol2.current_year == Policy.JSON_START_YEAR
-    rec2 = Records(data=puf_1991, weights=weights_1991)
-    assert rec2.current_year == rec2.data_year
-    rec2.set_current_year(Policy.JSON_START_YEAR)
-    assert rec2.current_year == Policy.JSON_START_YEAR
-    calc2 = Calculator(policy=pol2, records=rec2, sync_years=False)
-    assert calc2.policy.current_year == Policy.JSON_START_YEAR
-    assert calc2.records.current_year == Policy.JSON_START_YEAR
 
 
 def test_for_duplicate_names():
@@ -209,13 +176,3 @@ def test_csv_input_vars_md_contents(tests_path):
         for var in valid_less_civ:
             msg += 'VARIABLE= {}\n'.format(var)
         raise ValueError(msg)
-
-
-def test_cps_constructor():
-    """
-    Call Records.cps_constructor() and create Calculator object
-    """
-    recs = Records.cps_constructor()
-    assert isinstance(recs, Records)
-    calc = Calculator(policy=Policy(), records=recs)
-    assert isinstance(calc, Calculator)

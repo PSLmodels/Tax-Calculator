@@ -171,7 +171,8 @@ class Records(object):
             self.s006 = self.WT[wt_colname] * 0.01
 
     @staticmethod
-    def cps_constructor(exact_calculations=False,
+    def cps_constructor(data=None,
+                        exact_calculations=False,
                         growfactors=Growfactors()):
         """
         Static method returns a Records object instantiated with CPS
@@ -183,7 +184,9 @@ class Records(object):
         eliminate the need to specify all the details of the PUF input
         data.
         """
-        return Records(data=os.path.join(Records.CUR_PATH, 'cps.csv.gz'),
+        if data is None:
+            data = os.path.join(Records.CUR_PATH, 'cps.csv.gz')
+        return Records(data=data,
                        exact_calculations=exact_calculations,
                        gfactors=growfactors,
                        weights=Records.CPS_WEIGHTS_FILENAME,

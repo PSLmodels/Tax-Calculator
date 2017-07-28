@@ -7,24 +7,16 @@ Test example JSON response assumption files in taxcalc/responses directory
 
 import os
 import glob
-import pytest
 # pylint: disable=import-error
 from taxcalc import Calculator, Consumption, Behavior, Growdiff
 
 
-@pytest.fixture(scope='session')
-def responses_path(tests_path):
-    """
-    Return path to taxcalc/responses/*.json files
-    """
-    return os.path.join(tests_path, '..', 'responses', '*.json')
-
-
-def test_response_json(responses_path):  # pylint: disable=redefined-outer-name
+def test_response_json(tests_path):
     """
     Check that each JSON file can be converted into dictionaries that
     can be used to construct objects needed for a Calculator object.
     """
+    responses_path = os.path.join(tests_path, '..', 'responses', '*.json')
     for jpf in glob.glob(responses_path):
         # read contents of jpf (JSON parameter filename)
         jfile = open(jpf, 'r')

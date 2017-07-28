@@ -20,7 +20,7 @@ import pandas as pd
 from taxcalc import Policy, Records, Calculator, multiyear_diagnostic_table
 
 
-def test_agg(tests_path):  # pylint: disable=redefined-outer-name
+def test_agg(tests_path):
     """
     Test Tax-Calculator aggregate taxes with no policy reform using cps.csv
     """
@@ -64,8 +64,7 @@ def test_agg(tests_path):  # pylint: disable=redefined-outer-name
         raise ValueError(msg)
 
 
-def test_cps_availability(tests_path,
-                          cps_path):  # pylint: disable=redefined-outer-name
+def test_cps_availability(tests_path, cps_path):
     """
     Cross-check records_variables.json data with variables in cps.csv file
     """

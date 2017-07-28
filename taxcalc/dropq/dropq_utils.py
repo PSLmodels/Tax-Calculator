@@ -5,6 +5,7 @@ Private utility functions used only by public functions in the dropq.py file.
 # pep8 --ignore=E402 dropq_utils.py
 # pylint --disable=locally-disabled dropq_utils.py
 
+import copy
 import hashlib
 import numpy as np
 import pandas as pd
@@ -68,6 +69,7 @@ def dropq_calculate(year_n, start_year,
       mask is boolean array if compute_mask=True or None otherwise
     """
     # pylint: disable=too-many-arguments,too-many-locals,too-many-statements
+
     check_years(start_year, year_n)
     check_user_mods(user_mods)
 
@@ -91,8 +93,8 @@ def dropq_calculate(year_n, start_year,
     growdiff_baseline.apply_to(growfactors_post)
     growdiff_response.apply_to(growfactors_post)
 
-    # create pre-reform Calculator instance
-    recs1 = Records(data=taxrec_df.copy(deep=True),
+    # create pre-reform Calculator instance using PUF input data & weights
+    recs1 = Records(data=copy.deepcopy(taxrec_df),
                     gfactors=growfactors_pre)
     policy1 = Policy(gfactors=growfactors_pre)
     calc1 = Calculator(policy=policy1, records=recs1, consumption=consump)
@@ -103,8 +105,9 @@ def dropq_calculate(year_n, start_year,
 
     # optionally compute mask
     if mask_computed:
-        # create pre-reform Calculator instance with extra income
-        recs1p = Records(data=taxrec_df.copy(deep=True),
+        # create pre-reform Calculator instance with extra income using
+        # PUF input data & weights
+        recs1p = Records(data=copy.deepcopy(taxrec_df),
                          gfactors=growfactors_pre)
         # add one dollar to total wages and salaries of each filing unit
         recs1p.e00200 += 1.0  # pylint: disable=no-member
@@ -139,8 +142,8 @@ def dropq_calculate(year_n, start_year,
         msg = 'A behavior RESPONSE IS NOT ALLOWED'
         raise ValueError(msg)
 
-    # create post-reform Calculator instance
-    recs2 = Records(data=taxrec_df.copy(deep=True),
+    # create post-reform Calculator instance using PUF input data & weights
+    recs2 = Records(data=copy.deepcopy(taxrec_df),
                     gfactors=growfactors_post)
     policy2 = Policy(gfactors=growfactors_post)
     policy_reform = user_mods['policy']
