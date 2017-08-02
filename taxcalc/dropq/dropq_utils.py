@@ -216,10 +216,9 @@ def chooser(agg):
     # select indices of recs with change in tax liability after
     # $1 increase in income
     indices = np.where(agg)
-    three = 3
-    if len(indices[0]) >= three:
+    if len(indices[0]) >= 3:
         choices = np.random.choice(indices[0],  # pylint: disable=no-member
-                                   size=three, replace=False)
+                                   size=3, replace=False)
     else:
         msg = ('Not enough differences in income tax when adding '
                'one dollar for chunk with name: {}')
