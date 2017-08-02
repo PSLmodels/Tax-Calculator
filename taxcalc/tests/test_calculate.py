@@ -23,8 +23,8 @@ RAWINPUTFILE_CONTENTS = (
 )
 
 
-@pytest.yield_fixture
-def rawinputfile():
+@pytest.fixture(scope='module', name='rawinputfile')
+def fixture_rawinputfile():
     """
     Temporary input file that contains the minimum required input varaibles.
     """
@@ -40,8 +40,8 @@ def rawinputfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.yield_fixture
-def policyfile():
+@pytest.fixture(scope='module', name='policyfile')
+def fixture_policyfile():
     txt = """{"_almdep": {"value": [7150, 7250, 7400]},
              "_almsep": {"value": [40400, 41050]},
              "_rt5": {"value": [0.33 ]},
@@ -54,10 +54,10 @@ def policyfile():
     os.remove(f.name)
 
 
-def test_make_Calculator(records_2009):
+def test_make_Calculator(cps_subsample):
     parm = Policy(start_year=2014, num_years=9)
     assert parm.current_year == 2014
-    recs = records_2009
+    recs = Records.cps_constructor(data=cps_subsample)
     consump = Consumption()
     consump.update_consumption({2014: {'_MPC_e20400': [0.05]}})
     assert consump.current_year == 2013
@@ -75,95 +75,103 @@ def test_make_Calculator(records_2009):
         calc = Calculator(policy=parm, records=recs, consumption=list())
 
 
-def test_make_Calculator_deepcopy(records_2009):
+def test_make_Calculator_deepcopy(cps_subsample):
     parm = Policy()
-    calc1 = Calculator(policy=parm, records=records_2009)
+    recs = Records.cps_constructor(data=cps_subsample)
+    calc1 = Calculator(policy=parm, records=recs)
     calc2 = copy.deepcopy(calc1)
     assert isinstance(calc2, Calculator)
 
 
-def test_make_Calculator_with_policy_reform(records_2009):
+def test_make_Calculator_with_policy_reform(cps_subsample):
+    recs = Records.cps_constructor(data=cps_subsample)
+    year = recs.current_year
     # create a Policy object and apply a policy reform
-    policy2 = Policy()
-    reform2 = {2013: {'_II_em': np.array([4000]), '_II_em_cpi': False,
-                      '_STD_Aged': [[1600, 1300, 1300, 1600, 1600]],
-                      "_STD_Aged_cpi": False}}
-    policy2.implement_reform(reform2)
-    # create a Calculator object using this policy-reform
-    calc2 = Calculator(policy=policy2, records=records_2009)
+    pol = Policy()
+    reform = {2013: {'_II_em': np.array([4000]), '_II_em_cpi': False,
+                     '_STD_Aged': [[1600, 1300, 1300, 1600, 1600]],
+                     "_STD_Aged_cpi": False}}
+    pol.implement_reform(reform)
+    # create a Calculator object using this policy reform
+    calc = Calculator(policy=pol, records=recs)
     # check that Policy object embedded in Calculator object is correct
-    assert calc2.current_year == 2013
-    assert calc2.policy.II_em == 4000
-    assert np.allclose(calc2.policy._II_em,
+    assert calc.current_year == year
+    assert calc.policy.II_em == 4000
+    assert np.allclose(calc.policy._II_em,
                        np.array([4000] * Policy.DEFAULT_NUM_YEARS))
     exp_STD_Aged = [[1600, 1300, 1300,
                      1600, 1600]] * Policy.DEFAULT_NUM_YEARS
-    assert np.allclose(calc2.policy._STD_Aged,
+    assert np.allclose(calc.policy._STD_Aged,
                        np.array(exp_STD_Aged))
-    assert np.allclose(calc2.policy.STD_Aged,
+    assert np.allclose(calc.policy.STD_Aged,
                        np.array([1600, 1300, 1300, 1600, 1600]))
 
 
-def test_make_Calculator_with_multiyear_reform(records_2009):
+def test_make_Calculator_with_multiyear_reform(cps_subsample):
+    recs = Records.cps_constructor(data=cps_subsample)
+    year = recs.current_year
     # create a Policy object and apply a policy reform
-    policy3 = Policy()
-    reform3 = {2015: {}}
-    reform3[2015]['_STD_Aged'] = [[1600, 1300, 1600, 1300, 1600]]
-    reform3[2015]['_II_em'] = [5000, 6000]  # reform values for 2015 and 2016
-    reform3[2015]['_II_em_cpi'] = False
-    policy3.implement_reform(reform3)
+    pol = Policy()
+    reform = {2015: {}, 2016: {}}
+    reform[2015]['_II_em'] = [5000, 6000]  # reform values for 2015 and 2016
+    reform[2015]['_II_em_cpi'] = False
+    reform[2016]['_STD_Aged'] = [[1600, 1300, 1600, 1300, 1600]]
+    pol.implement_reform(reform)
     # create a Calculator object using this policy-reform
-    calc3 = Calculator(policy=policy3, records=records_2009)
+    calc = Calculator(policy=pol, records=recs)
     # check that Policy object embedded in Calculator object is correct
-    assert calc3.current_year == 2013
-    assert calc3.policy.II_em == 3900
-    assert calc3.policy.num_years == Policy.DEFAULT_NUM_YEARS
+    assert calc.current_year == year
+    assert calc.policy.II_em == 3950
+    assert calc.policy.num_years == Policy.DEFAULT_NUM_YEARS
     exp_II_em = [3900, 3950, 5000] + [6000] * (Policy.DEFAULT_NUM_YEARS - 3)
-    assert np.allclose(calc3.policy._II_em,
+    assert np.allclose(calc.policy._II_em,
                        np.array(exp_II_em))
-    calc3.increment_year()
-    calc3.increment_year()
-    assert calc3.current_year == 2015
-    assert np.allclose(calc3.policy.STD_Aged,
+    calc.increment_year()
+    calc.increment_year()
+    assert calc.current_year == 2016
+    assert np.allclose(calc.policy.STD_Aged,
                        np.array([1600, 1300, 1600, 1300, 1600]))
 
 
-def test_Calculator_advance_to_year(records_2009):
-    policy = Policy()
-    calc = Calculator(policy=policy, records=records_2009)
+def test_Calculator_advance_to_year(cps_subsample):
+    rec = Records.cps_constructor(data=cps_subsample)
+    pol = Policy()
+    calc = Calculator(policy=pol, records=rec)
     calc.advance_to_year(2016)
     assert calc.current_year == 2016
     with pytest.raises(ValueError):
         calc.advance_to_year(2015)
 
 
-def test_make_Calculator_raises_on_no_policy(records_2009):
+def test_make_Calculator_raises_on_no_policy(cps_subsample):
+    rec = Records.cps_constructor(data=cps_subsample)
     with pytest.raises(ValueError):
-        calc = Calculator(records=records_2009)
+        calc = Calculator(records=rec)
 
 
-def test_Calculator_attr_access_to_policy(records_2009):
-    policy = Policy()
-    calc = Calculator(policy=policy, records=records_2009)
+def test_Calculator_attr_access_to_policy(cps_subsample):
+    recs = Records.cps_constructor(data=cps_subsample)
+    calc = Calculator(policy=Policy(), records=recs)
     assert hasattr(calc.records, 'c01000')
     assert hasattr(calc.policy, '_AMT_Child_em')
     assert hasattr(calc, 'policy')
 
 
-def test_Calculator_current_law_version(records_2009):
-    policy = Policy()
+def test_Calculator_current_law_version(cps_subsample):
+    rec = Records.cps_constructor(data=cps_subsample)
+    pol = Policy()
     reform = {2013: {'_II_rt7': [0.45]}}
-    policy.implement_reform(reform)
-    calc = Calculator(policy=policy, records=records_2009)
+    pol.implement_reform(reform)
+    calc = Calculator(policy=pol, records=rec)
     calc_clp = calc.current_law_version()
     assert isinstance(calc_clp, Calculator)
     assert calc.policy.II_rt6 == calc_clp.policy.II_rt6
     assert calc.policy.II_rt7 != calc_clp.policy.II_rt7
 
 
-def test_Calculator_create_distribution_table(records_2009):
-    policy = Policy()
-    calc = Calculator(policy=policy, records=records_2009)
+def test_Calculator_create_distribution_table(cps_subsample):
+    recs = Records.cps_constructor(data=cps_subsample)
+    calc = Calculator(policy=Policy(), records=recs)
     calc.calc_all()
     dist_labels = ['Returns', 'AGI', 'Standard Deduction Filers',
                    'Standard Deduction', 'Itemizers',
@@ -185,8 +193,9 @@ def test_Calculator_create_distribution_table(records_2009):
     assert isinstance(dt2, pd.DataFrame)
 
 
-def test_Calculator_mtr(records_2009):
-    calc = Calculator(policy=Policy(), records=records_2009)
+def test_Calculator_mtr(cps_subsample):
+    recs = Records.cps_constructor(data=cps_subsample)
+    calc = Calculator(policy=Policy(), records=recs)
     recs_pre_e00200p = copy.deepcopy(calc.records.e00200p)
     (mtr_ptx, mtr_itx, mtr_combined) = calc.mtr(variable_str='e00200p',
                                                 zero_out_calculated_vars=True)
@@ -241,20 +250,18 @@ def test_Calculator_mtr_when_PT_rates_differ():
     assert np.allclose(mtr1, mtr2, rtol=0.0, atol=1e-06)
 
 
-def test_Calculator_create_difference_table(puf_1991, weights_1991):
+def test_Calculator_create_difference_table(cps_subsample):
     # create current-law Policy object and use to create Calculator calc1
-    policy1 = Policy()
-    puf1 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
-    calc1 = Calculator(policy=policy1, records=puf1)
-    calc1.advance_to_year(2013)
+    cps1 = Records.cps_constructor(data=cps_subsample)
+    year = cps1.current_year
+    calc1 = Calculator(policy=Policy(), records=cps1)
     calc1.calc_all()
     # create policy-reform Policy object and use to create Calculator calc2
     policy2 = Policy()
-    reform = {2013: {'_II_rt7': [0.45]}}
+    reform = {year: {'_II_rt7': [0.45]}}
     policy2.implement_reform(reform)
-    puf2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
-    calc2 = Calculator(policy=policy2, records=puf2)
-    calc2.advance_to_year(2013)
+    cps2 = Records.cps_constructor(data=cps_subsample)
+    calc2 = Calculator(policy=policy2, records=cps2)
     calc2.calc_all()
     # create difference table and check that it is a Pandas DataFrame
     dtable = create_difference_table(calc1.records, calc2.records,
@@ -262,14 +269,15 @@ def test_Calculator_create_difference_table(puf_1991, weights_1991):
     assert isinstance(dtable, pd.DataFrame)
 
 
-def test_Calculator_create_diagnostic_table(records_2009):
-    calc = Calculator(policy=Policy(), records=records_2009)
+def test_Calculator_create_diagnostic_table(cps_subsample):
+    recs = Records.cps_constructor(data=cps_subsample)
+    calc = Calculator(policy=Policy(), records=recs)
     calc.calc_all()
     adt = create_diagnostic_table(calc)
     assert isinstance(adt, pd.DataFrame)
 
 
-def test_make_Calculator_increment_years_first(records_2009):
+def test_make_Calculator_increment_years_first(cps_subsample):
     # create Policy object with policy reform
     syr = 2013
     pol = Policy(start_year=syr, num_years=5)
@@ -281,7 +289,8 @@ def test_make_Calculator_increment_years_first(records_2009):
     reform[2016]['_II_em_cpi'] = False
     pol.implement_reform(reform)
     # create Calculator object with Policy object as modified by reform
-    calc = Calculator(policy=pol, records=records_2009)
+    recs = Records.cps_constructor(data=cps_subsample)
+    calc = Calculator(policy=pol, records=recs)
     # compare expected policy parameter values with those embedded in calc
     irates = pol.inflation_rates()
     irate2015 = irates[2015 - syr]
@@ -298,7 +307,7 @@ def test_make_Calculator_increment_years_first(records_2009):
     assert np.allclose(calc.policy._II_em, exp_II_em)
 
 
-def test_ID_HC_vs_BS(puf_1991, weights_1991):
+def test_ID_HC_vs_BS(cps_subsample):
     """
     Test that complete haircut of itemized deductions produces same
     results as a 100% benefit surtax with no benefit deduction.
@@ -313,15 +322,15 @@ def test_ID_HC_vs_BS(puf_1991, weights_1991):
                         '_ID_Charity_hc': [1.0]}}
     hc_policy = Policy()
     hc_policy.implement_reform(hc_reform)
-    hc_records = Records(data=puf_1991, weights=weights_1991, start_year=2009)
-    hc_calc = Calculator(policy=hc_policy, records=hc_records)
+    hc_recs = Records.cps_constructor(data=cps_subsample)
+    hc_calc = Calculator(policy=hc_policy, records=hc_recs)
     # specify benefit-surtax reform policy and Calculator object
     bs_reform = {2013: {'_ID_BenefitSurtax_crt': [0.0],
                         '_ID_BenefitSurtax_trt': [1.0]}}
     bs_policy = Policy()
     bs_policy.implement_reform(bs_reform)
-    bs_records = Records(data=puf_1991, weights=weights_1991, start_year=2009)
-    bs_calc = Calculator(policy=bs_policy, records=bs_records)
+    bs_recs = Records.cps_constructor(data=cps_subsample)
+    bs_calc = Calculator(policy=bs_policy, records=bs_recs)
     # compare calculated tax results generated by the two reforms
     hc_calc.calc_all()
     bs_calc.calc_all()
@@ -364,9 +373,6 @@ REFORM_CONTENTS = """
 // Parameter code in the policy object is enclosed inside a pair of double
 // pipe characters (||).
 {
-  "title": "",
-  "author": "",
-  "date": "",
   "policy": {
     "_AMT_brk1": // top of first AMT tax bracket
     {"2015": [200000],
@@ -399,8 +405,8 @@ REFORM_CONTENTS = """
 """
 
 
-@pytest.yield_fixture
-def reform_file():
+@pytest.fixture(scope='module', name='reform_file')
+def fixture_reform_file():
     """
     Temporary reform file for read_json_param_files() function.
     """
@@ -425,9 +431,6 @@ ASSUMP_CONTENTS = """
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
 {
-  "title": "",
-  "author": "",
-  "date": "",
   "consumption": { "_MPC_e18400": {"2018": [0.05]} },
   "behavior": {},
   "growdiff_baseline": {},
@@ -436,8 +439,8 @@ ASSUMP_CONTENTS = """
 """
 
 
-@pytest.yield_fixture
-def assump_file():
+@pytest.fixture(scope='module', name='assump_file')
+def fixture_assump_file():
     """
     Temporary assumption file for read_json_params_files() function.
     """
@@ -507,8 +510,8 @@ def test_read_json_reform_file_and_implement_reform(reform_file,
     assert add4aged[2022 - syr] == 0.0
 
 
-@pytest.yield_fixture
-def bad1reformfile():
+@pytest.fixture(scope='module', name='bad1reformfile')
+def fixture_bad1reformfile():
     # specify JSON text for reform
     txt = """
     {
@@ -525,8 +528,8 @@ def bad1reformfile():
     os.remove(f.name)
 
 
-@pytest.yield_fixture
-def bad2reformfile():
+@pytest.fixture(scope='module', name='bad2reformfile')
+def fixture_bad2reformfile():
     # specify JSON text for reform
     txt = """
     {
@@ -544,8 +547,8 @@ def bad2reformfile():
     os.remove(f.name)
 
 
-@pytest.yield_fixture
-def bad3reformfile():
+@pytest.fixture(scope='module', name='bad3reformfile')
+def fixture_bad3reformfile():
     # specify JSON text for reform
     txt = """
     {
@@ -577,8 +580,8 @@ def test_read_bad_json_reform_file(bad1reformfile, bad2reformfile,
         Calculator.read_json_param_files(list(), None)
 
 
-@pytest.yield_fixture
-def bad1assumpfile():
+@pytest.fixture(scope='module', name='bad1assumpfile')
+def fixture_bad1assumpfile():
     # specify JSON text for assumptions
     txt = """
     {
@@ -598,14 +601,11 @@ def bad1assumpfile():
     os.remove(f.name)
 
 
-@pytest.yield_fixture
-def bad2assumpfile():
+@pytest.fixture(scope='module', name='bad2assumpfile')
+def fixture_bad2assumpfile():
     # specify JSON text for assumptions
     txt = """
     {
-      "title": "",
-      "author": "",
-      "date": "",
       "consumption": {},
       "behaviorx": {}, // example of assump file not containing "behavior" key
       "growdiff_baseline": {},
@@ -620,12 +620,11 @@ def bad2assumpfile():
     os.remove(f.name)
 
 
-@pytest.yield_fixture
-def bad3assumpfile():
+@pytest.fixture(scope='module', name='bad3assumpfile')
+def fixture_bad3assumpfile():
     # specify JSON text for assump
     txt = """
     {
-      "title": "",
       "consumption": {},
       "behavior": {},
       "growdiff_baseline": {},

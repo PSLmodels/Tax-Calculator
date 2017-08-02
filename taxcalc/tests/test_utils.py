@@ -136,17 +136,17 @@ def test_validity_of_name_lists():
     assert set(STATS_COLUMNS).issubset(Records.CALCULATED_VARS | {'s006'})
 
 
-def test_create_tables(puf_1991, weights_1991):
+def test_create_tables(cps_subsample):
     # create a current-law Policy object and Calculator object calc1
     policy1 = Policy()
-    records1 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
+    records1 = Records.cps_constructor(data=cps_subsample)
     calc1 = Calculator(policy=policy1, records=records1)
     calc1.calc_all()
     # create a policy-reform Policy object and Calculator object calc2
     reform = {2013: {'_II_rt4': [0.56]}}
     policy2 = Policy()
     policy2.implement_reform(reform)
-    records2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
+    records2 = Records.cps_constructor(data=cps_subsample)
     calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
     # test creating various distribution tables
@@ -368,36 +368,34 @@ def test_add_weighted_income_bins():
         assert lab in custom_labels
 
 
-def test_dist_table_sum_row(records_2009):
-    # Create a default Policy object
-    policy1 = Policy()
-    # Create a Calculator
-    calc1 = Calculator(policy=policy1, records=records_2009)
-    calc1.calc_all()
-    tb1 = create_distribution_table(calc1.records,
+def test_dist_table_sum_row(cps_subsample):
+    recs = Records.cps_constructor(data=cps_subsample)
+    calc = Calculator(policy=Policy(), records=recs)
+    calc.calc_all()
+    tb1 = create_distribution_table(calc.records,
                                     groupby='small_income_bins',
                                     result_type='weighted_sum')
-    tb2 = create_distribution_table(calc1.records,
+    tb2 = create_distribution_table(calc.records,
                                     groupby='large_income_bins',
                                     result_type='weighted_sum')
     assert np.allclose(tb1[-1:], tb2[-1:])
-    tb3 = create_distribution_table(calc1.records,
+    tb3 = create_distribution_table(calc.records,
                                     groupby='small_income_bins',
                                     result_type='weighted_avg')
     assert isinstance(tb3, pd.DataFrame)
 
 
-def test_diff_table_sum_row(puf_1991, weights_1991):
+def test_diff_table_sum_row(cps_subsample):
     # create a current-law Policy object and Calculator calc1
     policy1 = Policy()
-    records1 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
+    records1 = Records.cps_constructor(data=cps_subsample)
     calc1 = Calculator(policy=policy1, records=records1)
     calc1.calc_all()
     # create a policy-reform Policy object and Calculator calc2
     reform = {2013: {'_II_rt4': [0.56]}}
     policy2 = Policy()
     policy2.implement_reform(reform)
-    records2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
+    records2 = Records.cps_constructor(data=cps_subsample)
     calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
     # create two difference tables and compare their content
@@ -414,10 +412,10 @@ def test_diff_table_sum_row(puf_1991, weights_1991):
                        tdiff2[non_digit_cols][-1:])
 
 
-def test_row_classifier(puf_1991, weights_1991):
+def test_row_classifier(cps_subsample):
     # create a current-law Policy object and Calculator calc1
     policy1 = Policy()
-    records1 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
+    records1 = Records.cps_constructor(data=cps_subsample)
     calc1 = Calculator(policy=policy1, records=records1)
     calc1.calc_all()
     calc1_s006 = create_distribution_table(calc1.records,
@@ -427,7 +425,7 @@ def test_row_classifier(puf_1991, weights_1991):
     reform = {2013: {'_ALD_StudentLoan_hc': [1]}}
     policy2 = Policy()
     policy2.implement_reform(reform)
-    records2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
+    records2 = Records.cps_constructor(data=cps_subsample)
     calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
     calc2_s006 = create_distribution_table(calc2.records,
@@ -557,8 +555,9 @@ def test_expand_2d_accept_none_add_row():
     assert np.allclose(pol.II_brk2, exp_2020)
 
 
-def test_mtr_graph_data(records_2009):
-    calc = Calculator(policy=Policy(), records=records_2009)
+def test_mtr_graph_data(cps_subsample):
+    calc = Calculator(policy=Policy(),
+                      records=Records.cps_constructor(data=cps_subsample))
     with pytest.raises(ValueError):
         gdata = mtr_graph_data(calc, calc, mars='bad',
                                income_measure='agi',
@@ -575,19 +574,21 @@ def test_mtr_graph_data(records_2009):
         gdata = mtr_graph_data(calc, calc, mtr_measure='badtax')
     with pytest.raises(ValueError):
         gdata = mtr_graph_data(calc, calc, income_measure='badincome')
-    with pytest.raises(ValueError):
-        calcx = Calculator(policy=Policy(), records=records_2009)
-        calcx.advance_to_year(2020)
-        gdata = mtr_graph_data(calcx, calc)
     gdata = mtr_graph_data(calc, calc, mars=1,
                            mtr_wrt_full_compen=True,
                            income_measure='wages',
                            dollar_weighting=True)
     assert isinstance(gdata, dict)
+    with pytest.raises(ValueError):
+        calcx = Calculator(policy=Policy(),
+                           records=Records.cps_constructor(data=cps_subsample))
+        calcx.advance_to_year(2020)
+        gdata = mtr_graph_data(calcx, calc)
 
 
-def test_atr_graph_data(records_2009):
-    calc = Calculator(policy=Policy(), records=records_2009)
+def test_atr_graph_data(cps_subsample):
+    calc = Calculator(policy=Policy(),
+                      records=Records.cps_constructor(data=cps_subsample))
     with pytest.raises(ValueError):
         gdata = atr_graph_data(calc, calc, mars='bad')
     with pytest.raises(ValueError):
@@ -596,19 +597,20 @@ def test_atr_graph_data(records_2009):
         gdata = atr_graph_data(calc, calc, mars=list())
     with pytest.raises(ValueError):
         gdata = atr_graph_data(calc, calc, atr_measure='badtax')
-    with pytest.raises(ValueError):
-        calcx = Calculator(policy=Policy(), records=records_2009)
-        calcx.advance_to_year(2020)
-        gdata = atr_graph_data(calcx, calc)
     gdata = atr_graph_data(calc, calc, mars=1, atr_measure='combined')
     gdata = atr_graph_data(calc, calc, atr_measure='itax')
     gdata = atr_graph_data(calc, calc, atr_measure='ptax')
     assert isinstance(gdata, dict)
+    with pytest.raises(ValueError):
+        calcx = Calculator(policy=Policy(),
+                           records=Records.cps_constructor(data=cps_subsample))
+        calcx.advance_to_year(2020)
+        gdata = atr_graph_data(calcx, calc)
 
 
-def test_xtr_graph_plot(records_2009):
+def test_xtr_graph_plot(cps_subsample):
     calc = Calculator(policy=Policy(),
-                      records=records_2009,
+                      records=Records.cps_constructor(data=cps_subsample),
                       behavior=Behavior())
     gdata = mtr_graph_data(calc, calc, mtr_measure='ptax',
                            income_measure='agi',
@@ -627,8 +629,9 @@ def temporary_filename(suffix=''):
     return 'tmp{}{}'.format(random.randint(10000000, 99999999), suffix)
 
 
-def test_write_graph_file(records_2009):
-    calc = Calculator(policy=Policy(), records=records_2009)
+def test_write_graph_file(cps_subsample):
+    calc = Calculator(policy=Policy(),
+                      records=Records.cps_constructor(data=cps_subsample))
     gdata = mtr_graph_data(calc, calc, mtr_measure='ptax',
                            alt_e00200p_text='Taxpayer Earnings',
                            income_measure='agi',
@@ -653,9 +656,11 @@ def test_write_graph_file(records_2009):
             pass  # sometimes we can't remove a generated temporary file
 
 
-def test_multiyear_diagnostic_table(records_2009):
+def test_multiyear_diagnostic_table(cps_subsample):
     behv = Behavior()
-    calc = Calculator(policy=Policy(), records=records_2009, behavior=behv)
+    calc = Calculator(policy=Policy(),
+                      records=Records.cps_constructor(data=cps_subsample),
+                      behavior=behv)
     with pytest.raises(ValueError):
         adt = multiyear_diagnostic_table(calc, 0)
     with pytest.raises(ValueError):
@@ -668,7 +673,7 @@ def test_multiyear_diagnostic_table(records_2009):
     assert isinstance(adt, pd.DataFrame)
 
 
-def test_myr_diag_table_wo_behv(records_2009):
+def test_myr_diag_table_wo_behv(cps_subsample):
     pol = Policy()
     reform = {
         2013: {
@@ -676,7 +681,8 @@ def test_myr_diag_table_wo_behv(records_2009):
             '_PT_rt7': [0.33],
         }}
     pol.implement_reform(reform)
-    calc = Calculator(policy=pol, records=records_2009)
+    calc = Calculator(policy=pol,
+                      records=Records.cps_constructor(data=cps_subsample))
     calc.calc_all()
     liabilities_x = (calc.records.combined *
                      calc.records.s006).sum()
@@ -687,43 +693,44 @@ def test_myr_diag_table_wo_behv(records_2009):
     assert_almost_equal(liabilities_x, liabilities_y, 2)
 
 
-def test_myr_diag_table_w_behv(records_2009):
+def test_myr_diag_table_w_behv(cps_subsample):
     pol = Policy()
-    behv = Behavior()
-    calc = Calculator(policy=pol, records=records_2009, behavior=behv)
-    assert calc.current_year == 2013
-    reform = {
-        2013: {
-            '_II_rt7': [0.33],
-            '_PT_rt7': [0.33],
-        }}
+    rec = Records.cps_constructor(data=cps_subsample)
+    year = rec.current_year
+    beh = Behavior()
+    calc = Calculator(policy=pol, records=rec, behavior=beh)
+    assert calc.current_year == year
+    reform = {year: {'_II_rt7': [0.33], '_PT_rt7': [0.33]}}
     pol.implement_reform(reform)
-    reform_be = {2013: {'_BE_sub': [0.4],
-                        '_BE_cg': [-3.67]}}
-    behv.update_behavior(reform_be)
+    reform_behav = {year: {'_BE_sub': [0.4], '_BE_cg': [-3.67]}}
+    beh.update_behavior(reform_behav)
     calc_clp = calc.current_law_version()
-    calc_behv = Behavior.response(calc_clp, calc)
-    calc_behv.calc_all()
-    liabilities_x = (calc_behv.records.combined *
-                     calc_behv.records.s006).sum()
-    adt = multiyear_diagnostic_table(calc_behv, 1)
+    calc_beh = Behavior.response(calc_clp, calc)
+    calc_beh.calc_all()
+    liabilities_x = (calc_beh.records.combined *
+                     calc_beh.records.s006).sum()
+    adt = multiyear_diagnostic_table(calc_beh, 1)
     # extract combined liabilities as a float and
     # adopt units of the raw calculator data in liabilities_x
-    liabilities_y = adt.iloc[19].tolist()[0] * 1000000000
+    liabilities_y = adt.iloc[19].tolist()[0] * 1e9
     assert_almost_equal(liabilities_x, liabilities_y, 2)
 
 
-def test_ce_aftertax_income(puf_1991, weights_1991):
-    # test certainty_equivalent() function
-    con = 10000
+def test_ce_aftertax_income(cps_subsample):
+    # test certainty_equivalent() function with con>cmin
+    con = 5000
     cmin = 1000
     assert con == round(certainty_equivalent(con, 0, cmin), 6)
     assert con > round(certainty_equivalent((math.log(con) - 0.1), 1, cmin), 6)
+    # test certainty_equivalent() function with con<cmin
+    con = 500
+    cmin = 1000
+    assert con == round(certainty_equivalent(con, 0, cmin), 6)
     # test with require_no_agg_tax_change equal to False
     cyr = 2020
     # specify calc1 and calc_all() for cyr
     pol1 = Policy()
-    rec1 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
+    rec1 = Records.cps_constructor(data=cps_subsample)
     calc1 = Calculator(policy=pol1, records=rec1)
     calc1.advance_to_year(cyr)
     calc1.calc_all()
@@ -731,7 +738,7 @@ def test_ce_aftertax_income(puf_1991, weights_1991):
     pol2 = Policy()
     reform = {2018: {'_II_em': [0.0]}}
     pol2.implement_reform(reform)
-    rec2 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
+    rec2 = Records.cps_constructor(data=cps_subsample)
     calc2 = Calculator(policy=pol2, records=rec2)
     calc2.advance_to_year(cyr)
     calc2.calc_all()
@@ -767,9 +774,10 @@ def test_create_delete_temp_file():
     assert os.path.isfile(fname) is False
 
 
-def test_create_citax_table(records_2009):
+def test_create_citax_table(cps_subsample):
     # test corporate income tax tables
-    calc = Calculator(policy=Policy(), records=records_2009)
+    rec = Records.cps_constructor(data=cps_subsample)
+    calc = Calculator(policy=Policy(), records=rec)
     calc.calc_all()
     tb1 = create_citax_table(calc, "small_income_bins", "weighted_sum")
     tb2 = create_citax_table(calc, "large_income_bins", "weighted_sum")

@@ -20,15 +20,16 @@ def test_correct_but_not_recommended_Behavior_instantiation():
     assert behv
 
 
-def test_behavioral_response_Calculator(puf_1991, weights_1991):
+def test_behavioral_response_Calculator(cps_subsample):
     # create Records objects
-    records_x = Records(data=puf_1991, weights=weights_1991, start_year=2009)
-    records_y = Records(data=puf_1991, weights=weights_1991, start_year=2009)
+    records_x = Records.cps_constructor(data=cps_subsample)
+    records_y = Records.cps_constructor(data=cps_subsample)
+    year = records_x.current_year
     # create Policy objects
     policy_x = Policy()
     policy_y = Policy()
     # implement policy_y reform
-    reform = {2013: {'_II_rt7': [0.496],
+    reform = {year: {'_II_rt7': [0.496],
                      '_PT_rt7': [0.496]}}
     policy_y.implement_reform(reform)
     # create two Calculator objects
@@ -42,28 +43,28 @@ def test_behavioral_response_Calculator(puf_1991, weights_1991):
                                 mtr_of='e00200p',
                                 tax_type='nonsense')
     # vary substitution and income effects in calc_y
-    behavior0 = {2013: {'_BE_sub': [0.0],
+    behavior0 = {year: {'_BE_sub': [0.0],
                         '_BE_cg': [0.0],
                         '_BE_charity': [[0.0, 0.0, 0.0]]}}
     behavior_y.update_behavior(behavior0)
     calc_y_behavior0 = Behavior.response(calc_x, calc_y)
-    behavior1 = {2013: {'_BE_sub': [0.3], '_BE_cg': [0.0]}}
+    behavior1 = {year: {'_BE_sub': [0.3], '_BE_cg': [0.0]}}
     behavior_y.update_behavior(behavior1)
     assert behavior_y.has_response() is True
     assert behavior_y.BE_sub == 0.3
     assert behavior_y.BE_inc == 0.0
     assert behavior_y.BE_cg == 0.0
     calc_y_behavior1 = Behavior.response(calc_x, calc_y)
-    behavior2 = {2013: {'_BE_sub': [0.5], '_BE_cg': [-0.8]}}
+    behavior2 = {year: {'_BE_sub': [0.5], '_BE_cg': [-0.8]}}
     behavior_y.update_behavior(behavior2)
     calc_y_behavior2 = Behavior.response(calc_x, calc_y)
-    behavior3 = {2013: {'_BE_inc': [-0.2], '_BE_cg': [-0.8]}}
+    behavior3 = {year: {'_BE_inc': [-0.2], '_BE_cg': [-0.8]}}
     behavior_y.update_behavior(behavior3)
     calc_y_behavior3 = Behavior.response(calc_x, calc_y)
-    behavior4 = {2013: {'_BE_cg': [-0.8]}}
+    behavior4 = {year: {'_BE_cg': [-0.8]}}
     behavior_y.update_behavior(behavior4)
     calc_y_behavior4 = Behavior.response(calc_x, calc_y)
-    behavior5 = {2013: {'_BE_charity': [[-0.5, -0.5, -0.5]]}}
+    behavior5 = {year: {'_BE_charity': [[-0.5, -0.5, -0.5]]}}
     behavior_y.update_behavior(behavior5)
     calc_y_behavior5 = Behavior.response(calc_x, calc_y)
     # check that total income tax liability differs across the

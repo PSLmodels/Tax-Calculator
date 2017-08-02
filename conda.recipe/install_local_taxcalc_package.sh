@@ -48,7 +48,7 @@ rmdir dist/
 rm -fr taxcalc.egg-info/*
 rmdir taxcalc.egg-info/
 
-echo "Execute 'conda uninstall taxcalc' after using taxcalc package"
+echo "Execute 'conda uninstall taxcalc --yes' after using taxcalc package"
 
 echo "FINISHED : `date`"
 exit 0

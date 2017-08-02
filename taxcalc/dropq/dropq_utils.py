@@ -5,6 +5,7 @@ Private utility functions used only by public functions in the dropq.py file.
 # pep8 --ignore=E402 dropq_utils.py
 # pylint --disable=locally-disabled dropq_utils.py
 
+import copy
 import hashlib
 import numpy as np
 import pandas as pd
@@ -18,6 +19,22 @@ from taxcalc.utils import (add_income_bins, add_weighted_income_bins,
 
 
 EPSILON = 1e-3
+
+
+def check_years(start_year, year_n):
+    """
+    Ensure start_year and year_n values are consistent with Policy constants.
+    """
+    if start_year < Policy.JSON_START_YEAR:
+        msg = 'start_year={} < Policy.JSON_START_YEAR={}'
+        raise ValueError(msg.format(start_year, Policy.JSON_START_YEAR))
+    if year_n < 0:
+        msg = 'year_n={} < 0'
+        raise ValueError(msg.format(year_n))
+    if (start_year + year_n) > Policy.LAST_BUDGET_YEAR:
+        msg = '(start_year={} + year_n={}) > Policy.LAST_BUDGET_YEAR={}'
+        raise ValueError(msg.format(start_year, year_n,
+                                    Policy.LAST_BUDGET_YEAR))
 
 
 def check_user_mods(user_mods):
@@ -53,6 +70,7 @@ def dropq_calculate(year_n, start_year,
     """
     # pylint: disable=too-many-arguments,too-many-locals,too-many-statements
 
+    check_years(start_year, year_n)
     check_user_mods(user_mods)
 
     # specify Consumption instance
@@ -75,8 +93,8 @@ def dropq_calculate(year_n, start_year,
     growdiff_baseline.apply_to(growfactors_post)
     growdiff_response.apply_to(growfactors_post)
 
-    # create pre-reform Calculator instance
-    recs1 = Records(data=taxrec_df.copy(deep=True),
+    # create pre-reform Calculator instance using PUF input data & weights
+    recs1 = Records(data=copy.deepcopy(taxrec_df),
                     gfactors=growfactors_pre)
     policy1 = Policy(gfactors=growfactors_pre)
     calc1 = Calculator(policy=policy1, records=recs1, consumption=consump)
@@ -87,10 +105,12 @@ def dropq_calculate(year_n, start_year,
 
     # optionally compute mask
     if mask_computed:
-        # create pre-reform Calculator instance with extra income
-        recs1p = Records(data=taxrec_df.copy(deep=True),
+        # create pre-reform Calculator instance with extra income using
+        # PUF input data & weights
+        recs1p = Records(data=copy.deepcopy(taxrec_df),
                          gfactors=growfactors_pre)
-        # add one dollar to total wages and salaries of each filing unit
+        # add one dollar to the income of each filing unit to determine
+        # which filing units undergo a resulting change in tax liability
         recs1p.e00200 += 1.0  # pylint: disable=no-member
         recs1p.e00200p += 1.0  # pylint: disable=no-member
         policy1p = Policy(gfactors=growfactors_pre)
@@ -102,6 +122,8 @@ def dropq_calculate(year_n, start_year,
         calc1p.calc_all()
         assert calc1p.current_year == start_year
         # compute mask that shows which of the calc1 and calc1p results differ
+        # mask is true if a filing unit's tax liability changed after a dollar
+        # was added to the filing unit's income
         res1 = results(calc1.records)
         res1p = results(calc1p.records)
         mask = (res1.iitax != res1p.iitax)
@@ -123,8 +145,8 @@ def dropq_calculate(year_n, start_year,
         msg = 'A behavior RESPONSE IS NOT ALLOWED'
         raise ValueError(msg)
 
-    # create post-reform Calculator instance
-    recs2 = Records(data=taxrec_df.copy(deep=True),
+    # create post-reform Calculator instance using PUF input data & weights
+    recs2 = Records(data=copy.deepcopy(taxrec_df),
                     gfactors=growfactors_post)
     policy2 = Policy(gfactors=growfactors_post)
     policy_reform = user_mods['policy']
@@ -194,15 +216,17 @@ def chooser(agg):
     those three indices being zero and the output for all the other indices
     being one.
     """
+    # select indices of recs with change in tax liability after
+    # $1 increase in income
     indices = np.where(agg)
-    three = 3
-    if len(indices[0]) >= three:
+    if len(indices[0]) >= 3:
         choices = np.random.choice(indices[0],  # pylint: disable=no-member
-                                   size=three, replace=False)
+                                   size=3, replace=False)
     else:
         msg = ('Not enough differences in income tax when adding '
                'one dollar for chunk with name: {}')
         raise ValueError(msg.format(agg.name))
+    # drop chosen records
     ans = [1] * len(agg)
     for idx in choices:
         ans[idx] = 0

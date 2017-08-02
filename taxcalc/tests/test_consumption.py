@@ -58,7 +58,7 @@ def test_consumption_default_data():
         assert paramdata[param] == [0.0]
 
 
-def test_consumption_response(puf_1991, weights_1991):
+def test_consumption_response(cps_subsample):
     consump = Consumption()
     mpc = 0.5
     consumption_response = {2013: {'_MPC_e20400': [mpc]}}
@@ -67,7 +67,7 @@ def test_consumption_response(puf_1991, weights_1991):
     with pytest.raises(ValueError):
         consump.response(list(), 1)
     # test correct call to response method
-    recs = Records(data=puf_1991, weights=weights_1991, start_year=2009)
+    recs = Records.cps_constructor(data=cps_subsample)
     pre = copy.deepcopy(recs.e20400)
     consump.response(recs, 1.0)
     post = recs.e20400
@@ -75,14 +75,14 @@ def test_consumption_response(puf_1991, weights_1991):
     expected_diff = np.ones(recs.dim) * mpc
     assert np.allclose(actual_diff, expected_diff)
     # compute earnings mtr with no consumption response
-    recs0 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
+    recs0 = Records.cps_constructor(data=cps_subsample)
     calc0 = Calculator(policy=Policy(), records=recs0, consumption=None)
     ided0 = copy.deepcopy(recs0.e20400)
     (mtr0_ptax, mtr0_itax, _) = calc0.mtr(variable_str='e00200p',
                                           wrt_full_compensation=False)
     assert np.allclose(calc0.records.e20400, ided0)
     # compute earnings mtr with consumption response
-    recs1 = Records(data=puf_1991, weights=weights_1991, start_year=2009)
+    recs1 = Records.cps_constructor(data=cps_subsample)
     calc1 = Calculator(policy=Policy(), records=recs1, consumption=None)
     assert np.allclose(calc1.records.e20400, ided0)
     calc1.consumption.update_consumption(consumption_response)
@@ -92,6 +92,7 @@ def test_consumption_response(puf_1991, weights_1991):
     # confirm that payroll mtr values are no different
     assert np.allclose(mtr1_ptax, mtr0_ptax)
     # confirm that all mtr with cons-resp are no greater than without cons-resp
-    assert np.all(np.less_equal(mtr1_itax, mtr0_itax))
+    assert np.all(np.less_equal(np.around(mtr1_itax, decimals=5),
+                                np.around(mtr0_itax, decimals=5)))
     # confirm that some mtr with cons-resp are less than without cons-resp
     assert np.any(np.less(mtr1_itax, mtr0_itax))

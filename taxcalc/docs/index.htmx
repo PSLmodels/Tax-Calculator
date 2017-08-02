@@ -964,7 +964,8 @@ section.</p>
 that is easy to search and print. The input variables are ordered
 alphabetically by name.  There are no subsections, just a long list
 of input variables that Tax-Calculator is programmed to use in its
-calculations.</p>
+calculations.  The Availability information indicates which input
+data files contain the variable.</p>
 
 <!-- read@variables -->
 

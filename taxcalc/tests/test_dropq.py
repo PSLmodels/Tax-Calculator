@@ -1,3 +1,7 @@
+"""
+test_dropq.py uses only PUF input data because the dropq algorithm
+is designed to work exclusively with private IRS-SOI PUF input data.
+"""
 import os
 import numpy as np
 import pandas as pd
@@ -52,12 +56,13 @@ USER_MODS = {
 }
 
 
-@pytest.fixture(scope='session')
-def puf_path(tests_path):
-    """
-    The path to the puf.csv taxpayer data file at repo root
-    """
-    return os.path.join(tests_path, '..', '..', 'puf.csv')
+@pytest.mark.parametrize('start_year, year_n',
+                         [(2000, 0),
+                          (2013, -1),
+                          (2017, 10)])
+def test_check_years_errors(start_year, year_n):
+    with pytest.raises(ValueError):
+        check_years(start_year, year_n)
 
 
 def test_check_user_mods_errors():
@@ -78,22 +83,22 @@ def test_check_user_mods_errors():
     assert seed1 == seed2
 
 
-def test_run_nth_year_value_errors(puf_1991_path):
-    recs = pd.read_csv(puf_1991_path)
+@pytest.mark.requires_pufcsv
+def test_run_nth_year_value_errors(puf_subsample):
     usermods = USER_MODS
     usermods['growdiff_response'] = {2018: {'_AINTS': [0.02]}}
     with pytest.raises(ValueError):
-        run_nth_year_gdp_elast_model(1, 2013, recs, usermods, False)
+        run_nth_year_gdp_elast_model(1, 2013, puf_subsample, usermods, False)
     usermods['growdiff_response'] = dict()
     with pytest.raises(ValueError):
-        run_nth_year_gdp_elast_model(1, 2013, recs, usermods, False)
+        run_nth_year_gdp_elast_model(1, 2013, puf_subsample, usermods, False)
 
 
+@pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('resjson', [True, False])
-def test_run_tax_calc_model(puf_1991_path, resjson):
-    recs = pd.read_csv(puf_1991_path)
+def test_run_tax_calc_model(puf_subsample, resjson):
     usermods = USER_MODS
-    res = run_nth_year_tax_calc_model(2, 2016, recs, usermods,
+    res = run_nth_year_tax_calc_model(2, 2016, puf_subsample, usermods,
                                       return_json=resjson)
     assert len(res) == 13
     for idx in range(0, len(res)):
@@ -103,13 +108,13 @@ def test_run_tax_calc_model(puf_1991_path, resjson):
             assert isinstance(res[idx], pd.DataFrame)
 
 
+@pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('resjson', [True, False])
-def test_run_gdp_elast_model(puf_1991_path, resjson):
+def test_run_gdp_elast_model(puf_subsample, resjson):
     usermods = USER_MODS
     usermods['behavior'] = dict()
     usermods['gdp_elasticity'] = {'value': 0.36}
-    recs = pd.read_csv(puf_1991_path)
-    res = run_nth_year_gdp_elast_model(2, 2016, recs, usermods,
+    res = run_nth_year_gdp_elast_model(2, 2016, puf_subsample, usermods,
                                        return_json=resjson)
     if resjson:
         assert isinstance(res, dict)
@@ -159,15 +164,15 @@ def test_create_json_table():
         create_json_table(dframe)
 
 
+@pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('groupby, result_type',
                          [('small_income_bins', 'weighted_sum'),
                           ('large_income_bins', 'weighted_sum'),
                           ('large_income_bins', 'weighted_avg'),
                           ('other_income_bins', 'weighted_avg'),
                           ('large_income_bins', 'other_avg')])
-def test_dropq_dist_table(groupby, result_type, puf_1991_path):
-    calc = Calculator(policy=Policy(),
-                      records=Records(data=pd.read_csv(puf_1991_path)))
+def test_dropq_dist_table(groupby, result_type, puf_subsample):
+    calc = Calculator(policy=Policy(), records=Records(data=puf_subsample))
     calc.calc_all()
     res = results(calc.records)
     mask = np.ones(len(res.index))
@@ -181,16 +186,17 @@ def test_dropq_dist_table(groupby, result_type, puf_1991_path):
                          result_type=result_type, suffix='_bin')
 
 
+@pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('groupby, res_column',
                          [('weighted_deciles', 'tax_diff'),
                           ('webapp_income_bins', 'tax_diff'),
                           ('small_income_bins', 'tax_diff'),
                           ('large_income_bins', 'tax_diff'),
                           ('other_deciles', 'tax_diff')])
-def test_dropq_diff_table(groupby, res_column, puf_1991_path):
-    recs1 = Records(data=pd.read_csv(puf_1991_path))
+def test_dropq_diff_table(groupby, res_column, puf_subsample):
+    recs1 = Records(data=puf_subsample)
     calc1 = Calculator(policy=Policy(), records=recs1)
-    recs2 = Records(data=pd.read_csv(puf_1991_path))
+    recs2 = Records(data=puf_subsample)
     pol2 = Policy()
     pol2.implement_reform(USER_MODS['policy'])
     calc2 = Calculator(policy=pol2, records=recs2)
@@ -214,7 +220,7 @@ def test_dropq_diff_table(groupby, res_column, puf_1991_path):
 
 
 @pytest.mark.requires_pufcsv
-def test_with_pufcsv(puf_path):
+def test_with_pufcsv(puf_fullsample):
     # specify usermods dictionary in code
     start_year = 2017
     reform_year = start_year
@@ -236,7 +242,7 @@ def test_with_pufcsv(puf_path):
     pol = Policy()
     pol.implement_reform(usermods['policy'])
     # create a Records object (rec) containing all puf.csv input records
-    rec = Records(data=puf_path)
+    rec = Records(data=puf_fullsample)
     # create a Calculator object using clp policy and puf records
     calc = Calculator(policy=pol, records=rec)
     while calc.current_year < analysis_year:
@@ -247,7 +253,7 @@ def test_with_pufcsv(puf_path):
     assert taxes_fullsample is not None
     fulls_reform_revenue = taxes_fullsample.loc[analysis_year]
     # create a Public Use File object
-    tax_data = pd.read_csv(puf_path)
+    tax_data = puf_fullsample
     # call run_nth_year_tax_calc_model function
     restuple = run_nth_year_tax_calc_model(year_n, start_year,
                                            tax_data, usermods,

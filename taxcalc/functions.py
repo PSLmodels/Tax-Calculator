@@ -1714,7 +1714,7 @@ def DistCorpIncTax(e00200, e07240, e03150, e01400, e01700, e02400, e02100,
     normal = 0.4 * (e00650 + p23250 + p22250 + e02100 + e00900 +
                     e02000) + (e00300 + e00400 + e00600)
     supernormal = 0.6 * (e00650 + p23250 + p22250)
-    revenue_collected = 100000000000
+    revenue_collected = 1e11
     share_from_labor = (CIT_Distribution[0] * revenue_collected *
                         labor / agg_labor)
     share_from_normal = (CIT_Distribution[1] * revenue_collected *

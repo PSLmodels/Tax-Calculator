@@ -15,6 +15,7 @@ from taxcalc.utils import read_egg_csv, read_egg_json
 
 
 PUFCSV_YEAR = 2009
+CPSCSV_YEAR = 2014
 
 
 class Records(object):
@@ -39,20 +40,20 @@ class Records(object):
     gfactors: Growfactors class instance or None
         containing record data extrapolation (or "blowup") factors
 
-    adjust_ratios: string or Pandas DataFrame or None
-        string describes CSV file in which adjustment ratios reside;
-        DataFrame already contains adjustment ratios;
-        None creates empty adjustment-ratios DataFrame;
-        default value is filename of the default adjustment ratios.
-
     weights: string or Pandas DataFrame or None
         string describes CSV file in which weights reside;
         DataFrame already contains weights;
         None creates empty sample-weights DataFrame;
-        default value is filename of the default weights.
+        default value is filename of the PUF weights.
+
+    adjust_ratios: string or Pandas DataFrame or None
+        string describes CSV file in which adjustment ratios reside;
+        DataFrame already contains adjustment ratios;
+        None creates empty adjustment-ratios DataFrame;
+        default value is filename of the PUF adjustment ratios.
 
     start_year: integer
-        specifies calendar year of the data;
+        specifies calendar year of the input data;
         default value is PUFCSV_YEAR.
         Note that if specifying your own data (see above) as being a custom
         data set, be sure to explicitly set start_year to the
@@ -78,7 +79,7 @@ class Records(object):
 
     Notes
     -----
-    Typical usage is as follows::
+    Typical usage when using PUF input data is as follows::
 
         recs = Records()
 
@@ -88,6 +89,9 @@ class Records(object):
     situations in which you need to specify the values of the Record
     constructor's arguments, but be sure you know exactly what you are
     doing when attempting this.
+
+    Use Records.cps_constructor() to get a Records object instantiated
+    with CPS input data.
     """
     # suppress pylint warnings about unrecognized Records variables:
     # pylint: disable=no-member
@@ -96,23 +100,22 @@ class Records(object):
     # suppress pylint warnings about too many class instance attributes:
     # pylint: disable=too-many-instance-attributes
 
-    PUF_YEAR = PUFCSV_YEAR
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-    WEIGHTS_FILENAME = 'puf_weights.csv'
-    WEIGHTS_PATH = os.path.join(CUR_PATH, WEIGHTS_FILENAME)
-    ADJUST_RATIOS_FILENAME = 'puf_ratios.csv'
-    ADJUST_RATIOS_PATH = os.path.join(CUR_PATH, ADJUST_RATIOS_FILENAME)
+    PUF_WEIGHTS_FILENAME = 'puf_weights.csv'
+    PUF_RATIOS_FILENAME = 'puf_ratios.csv'
+    CPS_WEIGHTS_FILENAME = 'cps_weights.csv.gz'
+    CPS_RATIOS_FILENAME = None
     VAR_INFO_FILENAME = 'records_variables.json'
-    VAR_INFO_PATH = os.path.join(CUR_PATH, VAR_INFO_FILENAME)
 
     def __init__(self,
                  data='puf.csv',
                  exact_calculations=False,
                  gfactors=Growfactors(),
-                 weights=WEIGHTS_PATH,
-                 adjust_ratios=ADJUST_RATIOS_PATH,
+                 weights=PUF_WEIGHTS_FILENAME,
+                 adjust_ratios=PUF_RATIOS_FILENAME,
                  start_year=PUFCSV_YEAR):
         # pylint: disable=too-many-arguments
+        self._data_year = start_year
         # read specified data
         self._read_data(data, exact_calculations)
         # check that three sets of split-earnings variables have valid values
@@ -143,7 +146,7 @@ class Records(object):
         self.WT = None
         self._read_weights(weights)
         self.ADJ = None
-        self._read_adjust(adjust_ratios)
+        self._read_ratios(adjust_ratios)
         # weights must be same size as tax record data
         if not self.WT.empty and self.dim != len(self.WT):
             # scale-up sub-sample weights by year-specific factor
@@ -160,12 +163,42 @@ class Records(object):
             msg = 'start_year is not an integer'
             raise ValueError(msg)
         # consider applying initial-year grow factors
-        if gfactors is not None and start_year == Records.PUF_YEAR:
+        if gfactors is not None and start_year == self._data_year:
             self._blowup(start_year)
         # construct sample weights for current_year
         wt_colname = 'WT{}'.format(self.current_year)
         if wt_colname in self.WT.columns:
             self.s006 = self.WT[wt_colname] * 0.01
+
+    @staticmethod
+    def cps_constructor(data=None,
+                        exact_calculations=False,
+                        growfactors=Growfactors()):
+        """
+        Static method returns a Records object instantiated with CPS
+        input data.  This works in a analogous way to Records(), which
+        returns a Records object instantiated with PUF input data.
+        This is a convenience method that eliminates the need to
+        specify all the details of the CPS input data just as the
+        default values of the arguments of the Records class constructor
+        eliminate the need to specify all the details of the PUF input
+        data.
+        """
+        if data is None:
+            data = os.path.join(Records.CUR_PATH, 'cps.csv.gz')
+        return Records(data=data,
+                       exact_calculations=exact_calculations,
+                       gfactors=growfactors,
+                       weights=Records.CPS_WEIGHTS_FILENAME,
+                       adjust_ratios=Records.CPS_RATIOS_FILENAME,
+                       start_year=CPSCSV_YEAR)
+
+    @property
+    def data_year(self):
+        """
+        Records class original data year property.
+        """
+        return self._data_year
 
     @property
     def current_year(self):
@@ -206,11 +239,15 @@ class Records(object):
         Read Records variables metadata from JSON file;
         returns dictionary and specifies static varname sets listed below.
         """
-        if os.path.exists(Records.VAR_INFO_PATH):
-            with open(Records.VAR_INFO_PATH) as vfile:
+        var_info_path = os.path.join(Records.CUR_PATH,
+                                     Records.VAR_INFO_FILENAME)
+        if os.path.exists(var_info_path):
+            with open(var_info_path) as vfile:
                 vardict = json.load(vfile)
         else:
-            vardict = read_egg_json(Records.VAR_INFO_FILENAME)
+            # cannot call read_egg_ function in unit tests
+            vardict = read_egg_json(
+                Records.VAR_INFO_FILENAME)  # pragma: no cover
         Records.INTEGER_READ_VARS = set(k for k, v in vardict['read'].items()
                                         if v['type'] == 'int')
         FLOAT_READ_VARS = set(k for k, v in vardict['read'].items()
@@ -362,10 +399,11 @@ class Records(object):
         if isinstance(data, pd.DataFrame):
             taxdf = data
         elif isinstance(data, six.string_types):
-            if data.endswith('gz'):
-                taxdf = pd.read_csv(data, compression='gzip')
-            else:
+            if os.path.isfile(data):
                 taxdf = pd.read_csv(data)
+            else:
+                # cannot call read_egg_ function in unit tests
+                taxdf = read_egg_csv(data)  # pragma: no cover
         else:
             msg = 'data is neither a string nor a Pandas DataFrame'
             raise ValueError(msg)
@@ -430,36 +468,43 @@ class Records(object):
         if isinstance(weights, pd.DataFrame):
             WT = weights
         elif isinstance(weights, six.string_types):
-            if os.path.isfile(weights):
+            weights_path = os.path.join(Records.CUR_PATH, weights)
+            if os.path.isfile(weights_path):
                 # pylint: disable=redefined-variable-type
                 # (above because pylint mistakenly thinks WT not a DataFrame)
-                WT = pd.read_csv(weights)
+                WT = pd.read_csv(weights_path)
             else:
-                WT = read_egg_csv(Records.WEIGHTS_FILENAME)
+                # cannot call read_egg_ function in unit tests
+                WT = read_egg_csv(
+                    os.path.basename(weights_path))  # pragma: no cover
         else:
             msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
         assert isinstance(WT, pd.DataFrame)
         setattr(self, 'WT', WT)
 
-    def _read_adjust(self, adjust_ratios):
+    def _read_ratios(self, ratios):
         """
         Read Records adjustment ratios from file or uses specified DataFrame
         as data or creates empty DataFrame if None
         """
-        if adjust_ratios is None:
+        if ratios is None:
             ADJ = pd.DataFrame({'nothing': []})
             setattr(self, 'ADJ', ADJ)
             return
-        if isinstance(adjust_ratios, pd.DataFrame):
-            ADJ = adjust_ratios
-        elif isinstance(adjust_ratios, six.string_types):
-            if os.path.isfile(adjust_ratios):
+        if isinstance(ratios, pd.DataFrame):
+            ADJ = ratios
+        elif isinstance(ratios, six.string_types):
+            ratios_path = os.path.join(Records.CUR_PATH, ratios)
+            if os.path.isfile(ratios_path):
                 # pylint: disable=redefined-variable-type
                 # (above because pylint mistakenly thinks ADJ not a DataFrame)
-                ADJ = pd.read_csv(adjust_ratios, index_col=0)
+                ADJ = pd.read_csv(ratios_path,
+                                  index_col=0)
             else:
-                ADJ = read_egg_csv(Records.ADJUST_RATIOS_FILENAME, index_col=0)
+                # cannot call read_egg_ function in unit tests
+                ADJ = read_egg_csv(os.path.basename(ratios_path),
+                                   index_col=0)  # pragma: no cover
             ADJ = ADJ.transpose()
         else:
             msg = ('adjust_ratios is not None or a string'

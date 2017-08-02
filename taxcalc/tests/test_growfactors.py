@@ -4,8 +4,8 @@ import pytest
 from taxcalc import Growfactors
 
 
-@pytest.yield_fixture
-def bad_gf_file():
+@pytest.fixture(scope='module', name='bad_gf_file')
+def fixture_bad_gf_file():
     txt = (u'YEAR,AWAGE,ACPIU,ABADNAME,ASOCSEC\n'
            u'2015,1.000,1.000,1.000000,1.00000\n')
     f = tempfile.NamedTemporaryFile(mode='a', delete=False)

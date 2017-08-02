@@ -7,23 +7,15 @@ Test example JSON policy reform files in taxcalc/reforms directory
 
 import os
 import glob
-import pytest
 from taxcalc import Calculator, Policy  # pylint: disable=import-error
 
 
-@pytest.fixture(scope='session')
-def reforms_path(tests_path):
-    """
-    Return path to taxcalc/reforms/*.json files
-    """
-    return os.path.join(tests_path, '..', 'reforms', '*.json')
-
-
-def test_reform_json(reforms_path):  # pylint: disable=redefined-outer-name
+def test_reform_json(tests_path):
     """
     Check that each JSON reform file can be converted into a reform dictionary
     that can then be passed to the Policy class implement_reform() method.
     """
+    reforms_path = os.path.join(tests_path, '..', 'reforms', '*.json')
     for jpf in glob.glob(reforms_path):
         # read contents of jpf (JSON parameter filename)
         jfile = open(jpf, 'r')
