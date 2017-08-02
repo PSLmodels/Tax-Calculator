@@ -25,16 +25,8 @@ import pandas as pd
 from taxcalc import Policy, Records, Calculator, multiyear_diagnostic_table
 
 
-@pytest.fixture(scope='session')
-def puf_path(tests_path):
-    """
-    The path to the puf.csv taxpayer data file at repo root
-    """
-    return os.path.join(tests_path, '..', '..', 'puf.csv')
-
-
 @pytest.mark.requires_pufcsv
-def test_agg(tests_path, puf_path):  # pylint: disable=redefined-outer-name
+def test_agg(tests_path, puf_fullsample):
     """
     Test Tax-Calculator aggregate taxes with no policy reform using
     the full-sample puf.csv and a small sub-sample of puf.csv
@@ -44,7 +36,7 @@ def test_agg(tests_path, puf_path):  # pylint: disable=redefined-outer-name
     # create a Policy object (clp) containing current-law policy parameters
     clp = Policy()
     # create a Records object (rec) containing all puf.csv input records
-    rec = Records(data=puf_path)
+    rec = Records(data=puf_fullsample)
     # create a Calculator object using clp policy and puf records
     calc = Calculator(policy=clp, records=rec)
     calc_start_year = calc.current_year
@@ -80,7 +72,7 @@ def test_agg(tests_path, puf_path):  # pylint: disable=redefined-outer-name
         msg += '-------------------------------------------------\n'
         raise ValueError(msg)
     # create aggregate diagnostic table using unweighted sub-sample of records
-    fullsample = pd.read_csv(puf_path)
+    fullsample = puf_fullsample
     rn_seed = 180  # to ensure sub-sample is always the same
     subfrac = 0.05  # sub-sample fraction
     subsample = fullsample.sample(frac=subfrac,  # pylint: disable=no-member
@@ -158,7 +150,7 @@ def mtr_bin_counts(mtr_data, bin_edges, recid):
 
 
 @pytest.mark.requires_pufcsv
-def test_mtr(tests_path, puf_path):  # pylint: disable=redefined-outer-name
+def test_mtr(tests_path, puf_path):
     """
     Test Tax-Calculator marginal tax rates with no policy reform using puf.csv
 
@@ -243,7 +235,7 @@ def test_mtr(tests_path, puf_path):  # pylint: disable=redefined-outer-name
 
 
 @pytest.mark.requires_pufcsv
-def test_credit_reforms(puf_path):  # pylint: disable=redefined-outer-name
+def test_credit_reforms(puf_path):
     """
     Test personal credit reforms using small puf.csv sub-sample
     """
@@ -283,8 +275,7 @@ def test_credit_reforms(puf_path):  # pylint: disable=redefined-outer-name
 
 
 @pytest.mark.requires_pufcsv
-def test_puf_availability(tests_path,
-                          puf_path):  # pylint: disable=redefined-outer-name
+def test_puf_availability(tests_path, puf_path):
     """
     Cross-check records_variables.json data with variables in puf.csv file
     """

@@ -2,7 +2,6 @@ import os
 import numpy
 import pandas
 import pytest
-from taxcalc import Records
 
 
 # convert all numpy warnings into errors so they can be detected in tests
@@ -20,29 +19,21 @@ def cps_path(tests_path):
 
 
 @pytest.fixture(scope='session')
-def puf_1991_path(tests_path):
-    return os.path.join(tests_path, '..', 'altdata', 'puf91taxdata.csv.gz')
+def cps_subsample(cps_path):
+    fullsample = pandas.read_csv(cps_path)
+    return fullsample.sample(frac=0.01, random_state=123456789)
 
 
 @pytest.fixture(scope='session')
-def weights_1991_path(tests_path):
-    return os.path.join(tests_path, '..', 'altdata', 'puf91weights.csv.gz')
+def puf_path(tests_path):
+    return os.path.join(tests_path, '..', '..', 'puf.csv')
 
 
 @pytest.fixture(scope='session')
-def puf_1991(puf_1991_path):
-    return pandas.read_csv(puf_1991_path)
+def puf_fullsample(puf_path):
+    return pandas.read_csv(puf_path)
 
 
 @pytest.fixture(scope='session')
-def weights_1991(weights_1991_path):
-    return pandas.read_csv(weights_1991_path)
-
-
-@pytest.fixture()
-def records_2009(puf_1991, weights_1991):
-    """
-    Provides a new Records object starting in 2009.
-    Uses 1991 PUF-like data to emulate taxpayer data, which is private.
-    """
-    return Records(data=puf_1991, weights=weights_1991, start_year=2009)
+def puf_subsample(puf_fullsample):
+    return puf_fullsample.sample(frac=0.01, random_state=123456789)

@@ -16,14 +16,14 @@ install:
   - conda create -n taxcalc-dev python=$TRAVIS_PYTHON_VERSION;
   - source activate taxcalc-dev
   - conda env update -f environment.yml
-  - if [ $TRAVIS_EVENT_TYPE == 'cron' ]; then conda remove  numba; fi
+  - if [ $TRAVIS_EVENT_TYPE == 'cron' ]; then conda remove numba; fi
   - pip install pytest-pep8
   - pip install coverage
   - pip install codecov
   - python setup.py install
 
 
-# command to run tests, e.g. python setup.py test
+# command to run tests
 script:
   - python -c "import taxcalc"; coverage run -m py.test -v -m "not requires_pufcsv" --pep8
 

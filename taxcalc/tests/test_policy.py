@@ -8,8 +8,8 @@ import pytest
 from taxcalc import Policy, Calculator
 
 
-@pytest.yield_fixture
-def policyfile():
+@pytest.fixture(scope='module', name='policyfile')
+def fixture_policyfile():
     # specify JSON text for policy reform
     txt = """{"_almdep": {"value": [7150, 7250, 7400],
                           "cpi_inflated": true},
@@ -471,8 +471,8 @@ REFORM_CONTENTS = """
 """
 
 
-@pytest.yield_fixture
-def reform_file():
+@pytest.fixture(scope='module', name='reform_file')
+def fixture_reform_file():
     """
     Temporary reform file for Calculator read_json_param_files function.
     """
