@@ -85,7 +85,7 @@ Setup Git
     validation tests if you are working on Windows::
 
       tax-calculator$ cd taxcalc
-      tax-calculator/taxcalc$ py.test -m "not requires_pufcsv" -n 4
+      tax-calculator/taxcalc$ py.test -m "not requires_pufcsv" -n4
       tax-calculator/taxcalc$ cd validation
       tax-calculator/taxcalc/validation$ ./tests
 
@@ -161,7 +161,7 @@ situations, in which case other contributors are here to help.
    the tax-calculator/taxcalc directory (but skip the validation tests
    if you are working on Windows)::
 
-     tax-calculator/taxcalc$ py.test -m "not requires_pufcsv" -n 4
+     tax-calculator/taxcalc$ py.test -m "not requires_pufcsv" -n4
      tax-calculator/taxcalc$ cd validation
      tax-calculator/taxcalc/validation$ ./tests
 

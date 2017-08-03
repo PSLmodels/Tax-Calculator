@@ -52,16 +52,16 @@ top of the repository directory tree:
 
 ```
 cd taxcalc
-py.test -m "not requires_pufcsv" -n 4
+py.test -m "not requires_pufcsv" -n4
 ```
 
 This will start executing a pytest suite containing hundreds of tests,
 but will skip the tests that require the `puf.csv` file as input.
 Depending on your computer, the execution time for this incomplete
-suite of tests is a little over one minute.  The `-n 4` option calls
+suite of tests is a little over one minute.  The `-n4` option calls
 for using as many as four CPU cores for parallel execution of the
 tests.  If you want sequential execution of the tests (which will
-take roughly twice as long to execute), simply omit the `-n 4` option.
+take roughly twice as long to execute), simply omit the `-n4` option.
 
 **HAVE PUF.CSV**: If you do have access to the `puf.csv` file, copy it
 into the tax-calculator directory at the top of the repository
@@ -71,16 +71,16 @@ tax-calculator directory at the top of the repository directory tree:
 
 ```
 cd taxcalc
-py.test -n 4
+py.test -n4
 ```
 
 This will start executing a pytest suite containing hundreds of tests,
 including the tests that require the `puf.csv` file as input.
 Depending on your computer, the execution time for this complete suite
-of unit tests is roughly four minutes.  The `-n 4` option calls for
+of unit tests is roughly four minutes.  The `-n4` option calls for
 using as many as four CPU cores for parallel execution of the tests.
 If you want sequential execution of the tests (which will take at
-least twice as long to execute), simply omit the `-n 4` option.
+least twice as long to execute), simply omit the `-n4` option.
 
 Testing with validation/tests
 -----------------------------
