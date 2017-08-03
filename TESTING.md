@@ -16,7 +16,7 @@ should follow on your local computer before submitting a development
 branch as a pull request to the central Tax-Calculator repository at
 GitHub.
 
-Currently there are three phases of testing.
+Currently there are two phases of testing.
 
 Testing with py.test
 --------------------
@@ -45,22 +45,23 @@ execute a `conda update ... taxpuf` command (as described in the
 `taxpuf` repository's README file) before executing the tests
 described below.
 
-**NO PUF.CSV**: If you do not have access to the `puf.csv` file, run
-the first-phase of testing as follows at the command prompt in the
-tax-calculator directory at the top of the repository directory tree:
+**NO PUF.CSV**: If you do not have access to the `puf.csv` file (or if
+you want to do just a quick test), run the first-phase of testing as
+follows at the command prompt in the tax-calculator directory at the
+top of the repository directory tree:
 
 ```
 cd taxcalc
-py.test -m "not requires_pufcsv" -n 4
+py.test -m "not requires_pufcsv" -n4
 ```
 
 This will start executing a pytest suite containing hundreds of tests,
-but will skip the few tests that require the `puf.csv` file as input.
+but will skip the tests that require the `puf.csv` file as input.
 Depending on your computer, the execution time for this incomplete
-suite of tests is roughly two minutes.  The `-n 4` option calls for
-using as many as four CPU cores for parallel execution of the tests.
-If you want slower, sequential execution of the tests, simply omit
-the `-n 4` option.
+suite of tests is a little over one minute.  The `-n4` option calls
+for using as many as four CPU cores for parallel execution of the
+tests.  If you want sequential execution of the tests (which will
+take roughly twice as long to execute), simply omit the `-n4` option.
 
 **HAVE PUF.CSV**: If you do have access to the `puf.csv` file, copy it
 into the tax-calculator directory at the top of the repository
@@ -70,16 +71,16 @@ tax-calculator directory at the top of the repository directory tree:
 
 ```
 cd taxcalc
-py.test -n 4
+py.test -n4
 ```
 
 This will start executing a pytest suite containing hundreds of tests,
-including the few tests that require the `puf.csv` file as input.
+including the tests that require the `puf.csv` file as input.
 Depending on your computer, the execution time for this complete suite
-of unit tests is roughly three minutes.  The `-n 4` option calls for
+of unit tests is roughly four minutes.  The `-n4` option calls for
 using as many as four CPU cores for parallel execution of the tests.
-If you want slower, sequential execution of the tests, simply omit
-the `-n 4` option.
+If you want sequential execution of the tests (which will take at
+least twice as long to execute), simply omit the `-n4` option.
 
 Testing with validation/tests
 -----------------------------
@@ -101,29 +102,6 @@ cd taxcalc/validation
 This will start executing the validation/tests.  Depending on your
 computer, the execution time for this suite of validation/tests is
 roughly one minute.
-
-Testing with comparison/reform_results.py
------------------------------------------
-
-This is the longest running test, which takes roughly eleven minutes.
-It generates aggregate revenue estimates for over fifty reform
-proposals writing those results to the `reform_results.txt` file.
-This test requires access to the `puf.csv` file.  So, if you do not
-have access to this file, skip this test.  If you do have access to
-the `puf.csv` file, copy it into the tax-calculator directory at the
-top of the repository directory tree (but **never** add it to your
-repository) and run the third-phase of testing as follows at the
-command prompt in the tax-calculator directory at the top of the
-repository directory tree:
-
-```
-cd taxcalc/comparison
-python reform_results.py
-```
-
-The output from this command, the `reform_results.txt` file, is under
-version control, so difference can been seen by using the `git diff`
-command.
 
 Interpreting the Test Results
 -----------------------------
@@ -150,8 +128,8 @@ different first-phase test results are, in fact, correct.  How do you
 eliminate the test failures?  For all but the few tests that require
 the `puf.csv` file as input, simply edit the appropriate
 `taxcalc/tests/test_*.py` file so that the test passes when you rerun
-py.test.  If there are failures for the tests that require the
-`puf.csv` file as input, the new test results will be written to a
+py.test.  If there are failures for the `test_pufcsv.py` tests,
+the new test results will be written to a
 file named `pufcsv_*_actual.txt` (where the value of `*` depends on
 the test).  Use any diff utility to see the differences between this
 new `pufcsv_*_actual.txt` file and the old `pufcsv_*_expect.txt` file.
