@@ -13,6 +13,7 @@ import pandas as pd
 from taxcalc.growfactors import Growfactors
 from taxcalc.utils import read_egg_csv, read_egg_json
 
+
 PUFCSV_YEAR = 2009
 CPSCSV_YEAR = 2014
 
