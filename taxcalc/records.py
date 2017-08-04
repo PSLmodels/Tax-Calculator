@@ -238,8 +238,8 @@ class Records(object):
             year = max(2014, self.current_year)
             part_col_name = "Participation_{}".format(year)
             self.ssi_participation = self.welfare.loc[:, part_col_name]
-            benefit_col_name = "Benefit_{}".format(year)
-            self.ssi_benefits = self.welfare.loc[:, benefit_col_name]
+            ben_col_name = "Benefit_{}".format(year)
+            self.ssi_benefits = self.welfare.loc[:, ben_col_name]
 
 
     def set_current_year(self, new_current_year):
