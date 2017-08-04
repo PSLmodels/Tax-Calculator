@@ -172,6 +172,8 @@ class Records(object):
             self.s006 = self.WT[wt_colname] * 0.01
 
         # read in welfare data
+        # we would need to assert cps is being used and assert that the
+        # indices line up
         self.welfare = welfare
         self._read_welfare(welfare)
 
