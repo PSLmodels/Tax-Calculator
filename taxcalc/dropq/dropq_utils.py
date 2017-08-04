@@ -126,7 +126,9 @@ def dropq_calculate(year_n, start_year,
         # was added to the filing unit's income
         res1 = results(calc1.records)
         res1p = results(calc1p.records)
-        mask = (res1.iitax != res1p.iitax)
+        mask = np.logical_not(  # pylint: disable=no-member
+            np.isclose(res1.iitax, res1p.iitax, atol=EPSILON, rtol=0.0)
+        )
     else:
         mask = None
 
@@ -208,20 +210,23 @@ def random_seed_from_subdict(subdict):
     return seed % np.iinfo(np.uint32).max  # pylint: disable=no-member
 
 
+NUM_TO_DROP = 3
+
+
 def chooser(agg):
     """
     This is a transformation function that should be called on each group.
     It is assumed that the chunk 'agg' is a chunk of the 'mask' column.
-    This chooser selects three of those mask indices with the output for
-    those three indices being zero and the output for all the other indices
-    being one.
+    This chooser selects NUM_TO_DROP of those mask indices with the output for
+    those NUM_TO_DROP indices being zero and the output for all the other
+    indices being one.
     """
-    # select indices of recs with change in tax liability after
-    # $1 increase in income
+    # select indices of records with change in tax liability after
+    # a one dollar increase in income
     indices = np.where(agg)
-    if len(indices[0]) >= 3:
+    if len(indices[0]) >= NUM_TO_DROP:
         choices = np.random.choice(indices[0],  # pylint: disable=no-member
-                                   size=3, replace=False)
+                                   size=NUM_TO_DROP, replace=False)
     else:
         msg = ('Not enough differences in income tax when adding '
                'one dollar for chunk with name: {}')
@@ -258,8 +263,8 @@ def drop_records(df1, df2, mask):
     -----
     This function groups both DataFrames based on the web application's
     income groupings (both weighted decile and income bins), and then
-    pseudo-randomly picks three records to 'drop' within each bin.
-    We keep track of the three dropped records in both group-by
+    pseudo-randomly picks NUM_TO_DROP records to 'drop' within each bin.
+    We keep track of the NUM_TO_DROP dropped records in both group-by
     strategies and then use these 'flag' columns to modify all
     columns of interest, creating new '_dec' columns for
     statistics based on weighted deciles and '_bin' columns for
@@ -282,7 +287,7 @@ def drop_records(df1, df2, mask):
     df1 = add_income_bins(df1, bins=WEBAPP_INCOME_BINS)
     gp2_bin = df2.groupby('bins')
 
-    # Transform to get the 'flag' column (3 choices to drop in each bin)
+    # Transform to get the 'flag' column that marks dropped records in each bin
     df2['flag_dec'] = gp2_dec['mask'].transform(chooser)
     df2['flag_bin'] = gp2_bin['mask'].transform(chooser)
 
