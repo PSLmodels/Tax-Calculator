@@ -178,29 +178,29 @@ def test_csv_input_vars_md_contents(tests_path):
         raise ValueError(msg)
 
 
-def test_welfare():
+def test_benefits():
     """
-    Ensure that welfare data is updated as expected
+    Ensure that benefits data is updated as expected
     """
-    welfare_path = os.path.join(os.path.join(Records.CUR_PATH,
-                                "benefit_extrapolation.csv.gz"))
-    welfare = pd.read_csv(welfare_path, compression="gzip")
+    benefits_path = os.path.join(os.path.join(Records.CUR_PATH,
+                                 "benefits.csv.gz"))
+    benefits = pd.read_csv(benefits_path, compression="gzip")
     rec = Records.cps_constructor(data=None,
                                   exact_calculations=False,
                                   growfactors=Growfactors(),
-                                  welfare=welfare.copy(deep=True))
+                                  benefits=benefits.copy(deep=True))
 
     assert rec.current_year == 2014
     part_col_name = "Participation_{}".format(2014)
     ben_col_name = "Benefit_{}".format(2014)
-    assert (np.allclose(rec.ssi_participation, welfare[part_col_name])
-            and np.allclose(rec.ssi_benefits, welfare[ben_col_name]))
+    assert (np.allclose(rec.ssi_participation, benefits[part_col_name]) and
+            np.allclose(rec.ssi_benefits, benefits[ben_col_name]))
 
     for i in range(1, 13):
         rec.increment_year()
         part_col_name = "Participation_{}".format(2014 + i)
         ben_col_name = "Benefit_{}".format(2014 + i)
-        assert (np.allclose(rec.ssi_participation, welfare[part_col_name])
-                and np.allclose(rec.ssi_benefits, welfare[ben_col_name]))
+        assert (np.allclose(rec.ssi_participation, benefits[part_col_name]) and
+                np.allclose(rec.ssi_benefits, benefits[ben_col_name]))
 
     assert rec.current_year == 2026
