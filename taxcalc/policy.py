@@ -5,6 +5,8 @@ Tax-Calculator federal tax policy Policy class.
 # pep8 --ignore=E402 policy.py
 # pylint --disable=locally-disabled policy.py
 
+import six
+import numpy as np
 from taxcalc.parameters import ParametersBase
 from taxcalc.growfactors import Growfactors
 
@@ -187,6 +189,7 @@ class Policy(ParametersBase):
             self.set_year(year)
             self._update({year: reform[year]})
         self.set_year(precall_current_year)
+        self._validate_parameter_values()
 
     def current_law_version(self):
         """
@@ -200,3 +203,65 @@ class Policy(ParametersBase):
                      num_years=numyears)
         clv.set_year(self.current_year)
         return clv
+
+    # ----- begin private methods of Policy class -----
+
+    VALIDATED_PARAMETERS = set([
+        '_II_credit_prt',
+        '_II_credit_nr_prt',
+        '_ID_Medical_frt_add4aged',
+        '_II_brk1',
+        '_II_brk2',
+        '_II_brk3',
+        '_II_brk4',
+        '_II_brk5',
+        '_II_brk6',
+        '_II_brk7',
+        '_PT_brk1',
+        '_PT_brk2',
+        '_PT_brk3',
+        '_PT_brk4',
+        '_PT_brk5',
+        '_PT_brk6',
+        '_PT_brk7',
+        '_CTC_new_refund_limit_payroll_rt',
+        '_FST_AGI_trt',
+        '_FST_AGI_thd_lo',
+        '_FST_AGI_thd_hi',
+        '_AGI_surtax_trt',
+        '_STD',
+        '_ID_Casualty_frt',
+        '_ID_Charity_crt_all',
+        '_ID_Charity_crt_noncash',
+        '_ID_Charity_frt',
+        '_ID_Medical_frt',
+        '_ID_Miscellaneous_frt'
+    ])
+
+    def _validate_parameter_values(self):
+        """
+        Check policy parameter values using validations information from
+        the current_law_policy.json file.
+        """
+        clp = self.current_law_version()
+        syr = Policy.JSON_START_YEAR
+        for pname in Policy.VALIDATED_PARAMETERS:
+            pvalue = getattr(self, pname)
+            for vop, vval in self._vals[pname]['validations'].items():
+                if isinstance(vval, six.string_types):
+                    if vval == 'default':
+                        vvalue = getattr(clp, pname)
+                    else:
+                        vvalue = getattr(self, vval)
+                else:
+                    vvalue = np.full(pvalue.shape, vval)
+                assert pvalue.shape == vvalue.shape
+                for idx in np.ndindex(pvalue.shape):
+                    if vop == 'min' and pvalue[idx] < vvalue[idx]:
+                        msg = '{} {} value {} < min value {}'
+                        raise ValueError(msg.format(idx[0] + syr, pname,
+                                                    pvalue[idx], vvalue[idx]))
+                    if vop == 'max' and pvalue[idx] > vvalue[idx]:
+                        msg = '{} {} value {} > max value {}'
+                        raise ValueError(msg.format(idx[0] + syr, pname,
+                                                    pvalue[idx], vvalue[idx]))

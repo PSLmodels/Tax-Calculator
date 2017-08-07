@@ -612,15 +612,15 @@ def test_r25(puf_subsample):
     reform_json = """
     {
         "start_year": 2015,
-        "value": {"_ID_Miscellaneous_frt": [0.01]},
-        "name": "Lower AGI floor for miscellaneous itemded by 1 pts",
+        "value": {"_ID_Miscellaneous_frt": [0.03]},
+        "name": "Increase AGI floor for miscellaneous itemded by 1 pts",
         "output_type": "iitax",
         "compare_with": {}
     }
     """
-    expected_res = ('Lower AGI floor for miscellaneous itemded by 1 pts'
+    expected_res = ('Increase AGI floor for miscellaneous itemded by 1 pts'
                     '\n'
-                    'Tax-Calculator,-2.9,-3.0,-3.1,-3.3')
+                    'Tax-Calculator,2.1,2.2,2.3,2.4')
     actual_res = reform_results(json.loads(reform_json), puf_subsample)
     assert actual_res == expected_res
 
