@@ -13,7 +13,9 @@ Release 0.9.3 on 2017-??-??
 - None
 
 **New Features**
-- None
+- Add validation checking of policy parameters involved in a reform
+  [[#1502](https://github.com/open-source-economics/Tax-Calculator/pull/1502)
+  by Martin Holmer]
 
 **Bug Fixes**
 - None
