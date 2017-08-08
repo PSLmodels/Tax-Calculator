@@ -722,3 +722,30 @@ def test_clp_section_titles(tests_path):
         assert sec1title in VALID_SECTION
         sec2title = param['section_2']
         assert sec2title in VALID_SECTION[sec1title]
+
+@pytest.mark.one
+def test_json_reform_suffixes(tests_path):
+    """
+    Check "var_label" values versus Policy.JSON_REFORM_SUFFIXES set
+    """
+    # read current_law_policy.json file into a dictionary
+    path = os.path.join(tests_path, '..', 'current_law_policy.json')
+    clpfile = open(path, 'r')
+    clpdict = json.load(clpfile)
+    clpfile.close()
+    # create set of suffixes in the clpdict "col_label" lists
+    suffixes = set()
+    for param in clpdict:
+        col_var = clpdict[param]['col_var']
+        col_label = clpdict[param]['col_label']
+        if col_var == '':
+            assert col_label == ''
+            continue
+        assert isinstance(col_label, list)
+        suffixes.update(col_label)
+    # check that suffixes set is same as Policy.JSON_REFORM_SUFFIXES set
+    unmatched = suffixes ^ Policy.JSON_REFORM_SUFFIXES
+    if len(unmatched) != 0:
+        assert unmatched == 'UNMATCHED SUFFIXES'
+
+
