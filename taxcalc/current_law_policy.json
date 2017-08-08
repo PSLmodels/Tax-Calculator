@@ -567,8 +567,7 @@
                   1000,
                   1050,
                   1050,
-                  1050],
-        "validations": {"min": "default"}
+                  1050]
     },
 
     "_STD_Aged": {
@@ -592,8 +591,7 @@
                   [1550, 1200, 1200, 1550, 1550],
                   [1550, 1250, 1250, 1550, 1550],
                   [1550, 1250, 1250, 1550, 1550],
-                  [1550, 1250, 1250, 1550, 1550]],
-        "validations": {"min": "default"}
+                  [1550, 1250, 1250, 1550, 1550]]
     },
 
     "_STD_allow_charity_ded_nonitemizers": {
@@ -757,7 +755,7 @@
         "col_var": "",
         "col_label": "",
         "value": [0.1],
-        "validations": {"min": "default"}
+        "validations": {"min": 0.1}
     },
 
     "_ID_Medical_frt_add4aged": {
@@ -959,7 +957,7 @@
         "col_var": "",
         "col_label": "",
         "value": [0.5],
-        "validations": {"max": "default"}
+        "validations": {"max": 0.5}
     },
 
     "_ID_Charity_crt_noncash": {
@@ -976,7 +974,7 @@
         "col_var": "",
         "col_label": "",
         "value": [0.3],
-        "validations": {"max": "default"}
+        "validations": {"max": 0.3}
     },
 
     "_ID_Charity_frt": {
@@ -993,7 +991,7 @@
         "col_var": "",
         "col_label": "",
         "value": [0.0],
-        "validations": {"min": "default"}
+        "validations": {"min": 0.0}
     },
 
 
@@ -1051,7 +1049,7 @@
         "col_var": "",
         "col_label": "",
         "value": [0.1],
-        "validations": {"min": "default"}
+        "validations": {"min": 0.1}
     },
 
     "_ID_Casualty_hc": {
@@ -1108,7 +1106,7 @@
         "col_var": "",
         "col_label": "",
         "value": [0.02],
-        "validations": {"min": "default"}
+        "validations": {"min": 0.02}
     },
 
     "_ID_Miscellaneous_hc": {

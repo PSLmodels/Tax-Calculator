@@ -1,5 +1,6 @@
 import os
 import sys
+import six
 import json
 import tempfile
 import numpy as np
@@ -52,7 +53,7 @@ def test_correct_Policy_instantiation():
 def test_policy_json_content():
     ppo = Policy()
     policy = getattr(ppo, '_vals')
-    for name, data in policy.items():
+    for _, data in policy.items():
         start_year = data.get('start_year')
         assert isinstance(start_year, int)
         assert start_year == Policy.JSON_START_YEAR
@@ -364,10 +365,10 @@ def test_implement_reform_Policy_raises_on_no_year():
 
 def test_Policy_reform_in_start_year():
     ppo = Policy(start_year=2013)
-    reform = {2013: {'_STD_Aged': [[1400, 1100, 1100, 1400, 1400]]}}
+    reform = {2013: {'_STD': [[16000, 13000, 13000, 16000, 16000]]}}
     ppo.implement_reform(reform)
-    assert_allclose(ppo.STD_Aged,
-                    np.array([1400, 1100, 1100, 1400, 1400]),
+    assert_allclose(ppo.STD,
+                    np.array([16000, 13000, 13000, 16000, 16000]),
                     atol=0.01, rtol=0.0)
 
 
@@ -747,3 +748,56 @@ def test_json_reform_suffixes(tests_path):
     unmatched = suffixes ^ Policy.JSON_REFORM_SUFFIXES
     if len(unmatched) != 0:
         assert unmatched == 'UNMATCHED SUFFIXES'
+
+
+def test_validated_parameters_set(tests_path):
+    """
+    Check Policy.VALIDATED_PARAMETERS against current_law_policy.json info.
+    """
+    # read current_law_policy.json file into a dictionary
+    path = os.path.join(tests_path, '..', 'current_law_policy.json')
+    clpfile = open(path, 'r')
+    clpdict = json.load(clpfile)
+    clpfile.close()
+    # construct set of parameter names with "validations" field in clpdict
+    json_validated_params = set()
+    for pname in clpdict:
+        param = clpdict[pname]
+        assert isinstance(param, dict)
+        valid = param.get('validations', None)
+        if valid:
+            json_validated_params.add(pname)
+            for vop, vval in valid.items():
+                assert vop in ['min', 'max']
+                if isinstance(vval, six.string_types):
+                    if vval == 'default':
+                        continue
+                    elif vval in clpdict:
+                        continue
+                    else:
+                        assert vval == 'ILLEGAL VALIDATION STRING VALUE'
+                else:
+                    if isinstance(vval, int):
+                        continue
+                    elif isinstance(vval, float):
+                        continue
+                    else:
+                        assert vval == 'ILLEGAL VALIDATION NUMERIC VALUE'
+    # compare contents of Policy.VALIDATED_PARAMETERS and json_validated_params
+    unmatched = Policy.VALIDATED_PARAMETERS ^ json_validated_params
+    if len(unmatched) != 0:
+        assert unmatched == 'UNMATCHED VALIDATED PARAMETERS'
+
+
+def test_validate_param_values_errors():
+    """
+    Check detection of failures of min and max validations.
+    """
+    pol1 = Policy()
+    ref1 = {2020: {'_ID_Medical_frt': [0.05]}}
+    with pytest.raises(ValueError):
+        pol1.implement_reform(ref1)
+    pol2 = Policy()
+    ref2 = {2021: {'_ID_Charity_crt_all': [0.60]}}
+    with pytest.raises(ValueError):
+        pol2.implement_reform(ref2)
