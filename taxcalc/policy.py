@@ -204,6 +204,21 @@ class Policy(ParametersBase):
         clv.set_year(self.current_year)
         return clv
 
+    JSON_REFORM_SUFFIXES = set([
+        'single', 'joint', 'separate', 'headhousehold', 'widow',  # MARS
+        '0kids', '1kid', '2kids', '3+kids',  # EIC
+        'medical', 'statelocal', 'realestate', 'casualty',  # idedtype
+        'misc', 'interest', 'charity'  # idedtype
+    ])
+
+    @staticmethod
+    def translate_json_reform_suffixes(jsonstr):
+        """
+        Replace any parameters with suffixes with array parameters
+        and return the consolidated JSON string
+        """
+        return jsonstr  # TODO temporary code
+
     # ----- begin private methods of Policy class -----
 
     VALIDATED_PARAMETERS = set([
