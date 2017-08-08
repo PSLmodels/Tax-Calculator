@@ -723,7 +723,7 @@ def test_clp_section_titles(tests_path):
         sec2title = param['section_2']
         assert sec2title in VALID_SECTION[sec1title]
 
-@pytest.mark.one
+
 def test_json_reform_suffixes(tests_path):
     """
     Check "var_label" values versus Policy.JSON_REFORM_SUFFIXES set
@@ -747,5 +747,3 @@ def test_json_reform_suffixes(tests_path):
     unmatched = suffixes ^ Policy.JSON_REFORM_SUFFIXES
     if len(unmatched) != 0:
         assert unmatched == 'UNMATCHED SUFFIXES'
-
-

@@ -214,4 +214,4 @@ class Policy(ParametersBase):
         Replace any parameters with suffixes with array parameters
         and return the consolidated JSON string
         """
-        return jsonstr  # TODO temp code
+        return jsonstr  # TODO temporary code
