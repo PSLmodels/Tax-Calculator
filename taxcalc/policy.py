@@ -288,7 +288,6 @@ class Policy(ParametersBase):
                         idx = Policy.JSON_REFORM_SUFFIXES[suffix]
                         odict[param][year][0][idx] = gdict[param][year][suffix]
                     udict = {int(year): {param: odict[param][year]}}
-                    print udict
                     pol.implement_reform(udict)
             return odict
 
