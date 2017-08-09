@@ -512,9 +512,9 @@ class Calculator(object):
         an extended example of a commented JSON policy reform text
         that can be read by this method.
 
-        Returned dictionary rpol_dict has integer years as primary keys and
+        Returned dictionary prdict has integer years as primary keys and
         string parameters as secondary keys.  This returned dictionary is
-        suitable as the argument to the Policy implement_reform(rpol_dict)
+        suitable as the argument to the Policy implement_reform(prdict)
         method ONLY if the function argument arrays_not_lists is True.
         """
         # strip out //-comments without changing line numbers
@@ -546,10 +546,10 @@ class Calculator(object):
             if rkey in Calculator.REQUIRED_ASSUMP_KEYS:
                 msg = 'key "{}" should be in economic assumption file'
                 raise ValueError(msg.format(rkey))
-        # convert the policy dictionary in raw_dict
-        rpol_dict = Calculator._convert_parameter_dict(raw_dict['policy'],
-                                                       arrays_not_lists)
-        return rpol_dict
+        # convert raw_dict['policy'] dictionary into prdict
+        tdict = Policy.translate_json_reform_suffixes(raw_dict['policy'])
+        prdict = Calculator._convert_parameter_dict(tdict, arrays_not_lists)
+        return prdict
 
     @staticmethod
     def _read_json_econ_assump_text(text_string, arrays_not_lists):

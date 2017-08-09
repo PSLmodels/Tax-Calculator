@@ -5,7 +5,6 @@ Tax-Calculator federal tax policy Policy class.
 # pep8 --ignore=E402 policy.py
 # pylint --disable=locally-disabled policy.py
 
-import json
 import six
 import numpy as np
 from taxcalc.parameters import ParametersBase
@@ -228,16 +227,30 @@ class Policy(ParametersBase):
     }
 
     @staticmethod
-    def translate_json_reform_suffixes(jsonstr):
+    def translate_json_reform_suffixes(indict):
         """
         Replace any array parameters with suffixes in the specified
-        JSON string, jsonstr, and
-        return a JSON string containing constructed array parameters
-        without containing any parameters with suffixes.
+        JSON-derived "policy" dictionary, indict, and
+        return a JSON-equivalent dictionary containing constructed array
+        parameters and containing no parameters with suffixes, odict.
         """
 
+        # define no_suffix function used only in this method
+        def no_suffix(idict):
+            """
+            Return param_base:year dictionary having only no-suffix parameters.
+            """
+            odict = dict()
+            suffixes = Policy.JSON_REFORM_SUFFIXES.keys()
+            for param in idict.keys():
+                param_pieces = param.split('_')
+                suffix = param_pieces[-1]
+                if suffix not in suffixes:
+                    odict[param] = idict[param]
+            return odict
+
         # define group_dict function used only in this method
-        def group_dict(idict):
+        def suffix_group_dict(idict):
             """
             Return param_base:year:suffix dictionary with each idict value.
             """
@@ -256,20 +269,6 @@ class Policy(ParametersBase):
                             gdict[param_base][year] = dict()
                         gdict[param_base][year][suffix] = idict[param][year][0]
             return gdict
-
-        # define no_suffix function used only in this method
-        def no_suffix(idict):
-            """
-            Return param_base:year dictionary having only no-suffix parameters.
-            """
-            odict = dict()
-            suffixes = Policy.JSON_REFORM_SUFFIXES.keys()
-            for param in idict.keys():
-                param_pieces = param.split('_')
-                suffix = param_pieces[-1]
-                if suffix not in suffixes:
-                    odict[param] = idict[param]
-            return odict
 
         # define with_suffix function used only in this method
         def with_suffix(gdict):
@@ -293,20 +292,16 @@ class Policy(ParametersBase):
                     pol.implement_reform(udict)
             return odict
 
-        # begin high-level logic of translate_json_reform_suffixes method
-        # ... Strategy is to build a dictionary containing constructed
-        # ... array parameters, and then converting that dictionary into
-        # ... a JSON string, which is returned by this method.
-        # group params with suffix into param_base:year:suffix dictionary
-        idict = json.loads(jsonstr)['policy']
-        gdict = group_dict(idict)
-        # construct odict containing just parameters without a suffix
-        odict = no_suffix(idict)
-        # add to odict consolidated values for parameters with a suffix
+        # high-level logic of translate_json_reform_suffixes method:
+        # - construct odict containing just parameters without a suffix
+        odict = no_suffix(indict)
+        # - group params with suffix into param_base:year:suffix dictionary
+        gdict = suffix_group_dict(indict)
+        # - add to odict the consolidated values for parameters with a suffix
         if len(gdict) > 0:
             odict.update(with_suffix(gdict))
-        # convert odict into a JSON string and return the string
-        return json.dumps({'policy': odict})
+        # - return policy dictionary containing constructed parameter arrays
+        return odict
 
     # ----- begin private methods of Policy class -----
 
