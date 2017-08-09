@@ -204,12 +204,27 @@ class Policy(ParametersBase):
         clv.set_year(self.current_year)
         return clv
 
-    JSON_REFORM_SUFFIXES = set([
-        'single', 'joint', 'separate', 'headhousehold', 'widow',  # MARS
-        '0kids', '1kid', '2kids', '3+kids',  # EIC
-        'medical', 'statelocal', 'realestate', 'casualty',  # idedtype
-        'misc', 'interest', 'charity'  # idedtype
-    ])
+    JSON_REFORM_SUFFIXES = {
+        # MARS-indexed suffixes and list index numbers
+        'single': 0,
+        'joint': 1,
+        'separate': 2,
+        'headhousehold': 3,
+        'widow': 4,
+        # EIC-indexed suffixes and list index numbers
+        '0kids': 0,
+        '1kid': 1,
+        '2kids': 2,
+        '3+kids': 3,
+        # idedtype-indexed suffixes and list index numbers
+        'medical': 0,
+        'statelocal': 1,
+        'realestate': 2,
+        'casualty': 3,
+        'misc': 4,
+        'interest': 5,
+        'charity': 6
+    }
 
     @staticmethod
     def translate_json_reform_suffixes(jsonstr):
