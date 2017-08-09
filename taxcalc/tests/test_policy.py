@@ -752,6 +752,21 @@ def test_json_reform_suffixes(tests_path):
     if len(unmatched) != 0:
         assert unmatched == 'UNMATCHED SUFFIXES'
 
+@pytest.mark.one
+def test_translate_json_reform_suffixes():
+    """
+    Test Policy.translate_json_reform_suffixes method.
+    """
+    rawjson = """{"policy": {
+      "_II_em": {"2017": [12000], "2020": [14000]},
+      "_STD_single": {"2016": [18000]},
+      "_STD_widow": {"2018": [22000]}
+    }}"""
+    rawdict = json.loads(rawjson)
+    refjson = Policy.translate_json_reform_suffixes(rawjson)
+    refdict = json.loads(refjson)
+    # assert refdict == rawdict
+
 
 def test_validated_parameters_set(tests_path):
     """
