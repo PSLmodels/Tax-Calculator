@@ -12,7 +12,6 @@ import math
 import random
 import numpy as np
 import pandas as pd
-from pandas.util.testing import assert_series_equal
 import pytest
 # pylint: disable=import-error
 from taxcalc import Policy, Records, Behavior, Calculator, ParametersBase
@@ -189,13 +188,13 @@ def test_weighted_count_lt_zero():
     diffs = grped.apply(weighted_count_lt_zero, 'tax_diff')
     exp = pd.Series(data=[4, 0], index=['a', 'b'])
     exp.index.name = 'label'
-    assert_series_equal(exp, diffs)
+    pd.util.testing.assert_series_equal(exp, diffs)
     df2 = pd.DataFrame(data=DATA_FLOAT, columns=['tax_diff', 's006', 'label'])
     grped = df2.groupby('label')
     diffs = grped.apply(weighted_count_lt_zero, 'tax_diff')
     exp = pd.Series(data=[4, 0], index=['a', 'b'])
     exp.index.name = 'label'
-    assert_series_equal(exp, diffs)
+    pd.util.testing.assert_series_equal(exp, diffs)
 
 
 def test_weighted_count_gt_zero():
@@ -204,13 +203,13 @@ def test_weighted_count_gt_zero():
     diffs = grped.apply(weighted_count_gt_zero, 'tax_diff')
     exp = pd.Series(data=[8, 10], index=['a', 'b'])
     exp.index.name = 'label'
-    assert_series_equal(exp, diffs)
+    pd.util.testing.assert_series_equal(exp, diffs)
     df2 = pd.DataFrame(data=DATA, columns=['tax_diff', 's006', 'label'])
     grped = df2.groupby('label')
     diffs = grped.apply(weighted_count_gt_zero, 'tax_diff')
     exp = pd.Series(data=[8, 10], index=['a', 'b'])
     exp.index.name = 'label'
-    assert_series_equal(exp, diffs)
+    pd.util.testing.assert_series_equal(exp, diffs)
 
 
 def test_weighted_count():
@@ -219,7 +218,7 @@ def test_weighted_count():
     diffs = grouped.apply(weighted_count)
     exp = pd.Series(data=[12, 10], index=['a', 'b'])
     exp.index.name = 'label'
-    assert_series_equal(exp, diffs)
+    pd.util.testing.assert_series_equal(exp, diffs)
 
 
 def test_weighted_mean():
@@ -228,7 +227,7 @@ def test_weighted_mean():
     diffs = grouped.apply(weighted_mean, 'tax_diff')
     exp = pd.Series(data=[16.0 / 12.0, 26.0 / 10.0], index=['a', 'b'])
     exp.index.name = 'label'
-    assert_series_equal(exp, diffs)
+    pd.util.testing.assert_series_equal(exp, diffs)
 
 
 def test_wage_weighted():
@@ -256,7 +255,7 @@ def test_weighted_sum():
     diffs = grouped.apply(weighted_sum, 'tax_diff')
     exp = pd.Series(data=[16.0, 26.0], index=['a', 'b'])
     exp.index.name = 'label'
-    assert_series_equal(exp, diffs)
+    pd.util.testing.assert_series_equal(exp, diffs)
 
 
 def test_weighted_perc_inc():
@@ -265,7 +264,7 @@ def test_weighted_perc_inc():
     diffs = grouped.apply(weighted_perc_inc, 'tax_diff')
     exp = pd.Series(data=[8. / 12., 1.0], index=['a', 'b'])
     exp.index.name = 'label'
-    assert_series_equal(exp, diffs)
+    pd.util.testing.assert_series_equal(exp, diffs)
 
 
 def test_weighted_perc_dec():
@@ -274,7 +273,7 @@ def test_weighted_perc_dec():
     diffs = grouped.apply(weighted_perc_dec, 'tax_diff')
     exp = pd.Series(data=[4. / 12., 0.0], index=['a', 'b'])
     exp.index.name = 'label'
-    assert_series_equal(exp, diffs)
+    pd.util.testing.assert_series_equal(exp, diffs)
 
 
 EPSILON = 1e-5
