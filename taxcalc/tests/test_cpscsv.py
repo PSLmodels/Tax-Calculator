@@ -13,11 +13,51 @@ Read tax-calculator/TESTING.md for details.
 # pylint --disable=locally-disabled test_cpscsv.py
 
 import os
+import sys
 import json
-import difflib
 import pandas as pd
 # pylint: disable=import-error
 from taxcalc import Policy, Records, Calculator, multiyear_diagnostic_table
+
+
+def line_diff_list(actline, expline, small):
+    """
+    Return a list containing the pair of lines when they differ significantly;
+    otherwise return an empty list.
+    """
+    # embedded function used only in line_diff_list function
+    def isfloat(value):
+        """
+        Return True if value can be cast to float; otherwise return False.
+        """
+        try:
+            float(value)
+            return True
+        except ValueError:
+            return False
+
+    # begin line_diff_list logic
+    act_line = '<A>' + actline
+    exp_line = '<E>' + expline
+    diffs = list()
+    act_tokens = actline.replace(',', '').split()
+    exp_tokens = expline.replace(',', '').split()
+    for atok, etok in zip(act_tokens, exp_tokens):
+        atok_isfloat = isfloat(atok)
+        etok_isfloat = isfloat(etok)
+        if not atok_isfloat and not etok_isfloat:
+            if atok == etok:
+                continue
+            else:
+                diffs.extend([act_line, exp_line])
+        elif atok_isfloat and etok_isfloat:
+            if abs(float(atok) - float(etok)) < small:
+                continue
+            else:
+                diffs.extend([act_line, exp_line])
+        else:
+            diffs.extend([act_line, exp_line])
+    return diffs
 
 
 def test_agg(tests_path):
@@ -32,28 +72,36 @@ def test_agg(tests_path):
     rec = Records.cps_constructor()
     # create a Calculator object using clp policy and cps records
     calc = Calculator(policy=clp, records=rec)
-    # create aggregate diagnostic table (adt) as a Pandas DataFrame object
+    # create aggregate diagnostic table as a Pandas DataFrame object
     adt = multiyear_diagnostic_table(calc, nyrs)
     # convert adt results to a string with a trailing EOL character
-    adtstr = adt.to_string() + '\n'
-    # generate differences between actual and expected results
-    actual = adtstr.splitlines(True)
+    actual_results = adt.to_string() + '\n'
+    act = actual_results.splitlines(True)
+    # read expected results from file
     aggres_path = os.path.join(tests_path, 'cpscsv_agg_expect.txt')
     with open(aggres_path, 'r') as expected_file:
         txt = expected_file.read()
     expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
-    expected = expected_results.splitlines(True)
-    diff = difflib.unified_diff(expected, actual,
-                                fromfile='expected', tofile='actual', n=0)
-    # convert diff generator into a list of lines:
+    exp = expected_results.splitlines(True)
+    # compare act and exp line lists for more-than-rounding-error differences
+    assert len(act) == len(exp)
+    epsilon = 1e-6
+    if sys.version_info.major == 2:
+        small = epsilon  # tighter test for Python 2.7
+    else:
+        small = 0.1 + epsilon  # looser test for Python 3.x
     diff_lines = list()
-    for line in diff:
-        diff_lines.append(line)
+    for actline, expline in zip(act, exp):
+        if actline == expline:
+            continue
+        diffs = line_diff_list(actline, expline, small)
+        if len(diffs) > 0:
+            diff_lines.extend(diffs)
     # test failure if there are any diff_lines
     if len(diff_lines) > 0:
         new_filename = '{}{}'.format(aggres_path[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
-            new_file.write(adtstr)
+            new_file.write(actual_results)
         msg = 'CPSCSV AGG RESULTS DIFFER\n'
         msg += '-------------------------------------------------\n'
         msg += '--- NEW RESULTS IN cpscsv_agg_actual.txt FILE ---\n'
