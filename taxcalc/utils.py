@@ -1038,7 +1038,8 @@ def write_graph_file(figure, filename, title):
     figure : bokeh.plotting figure object
 
     filename : string
-        name of HTML file to which figure is written; should end in .html
+        name of file to which figure is written;
+        should end in .html or .png
 
     title : string
         text displayed in browser tab when HTML file is displayed in browser
@@ -1048,8 +1049,12 @@ def write_graph_file(figure, filename, title):
     Nothing
     """
     delete_file(filename)    # work around annoying 'already exists' bokeh msg
-    bio.output_file(filename=filename, title=title)
-    bio.save(figure)
+    # Save file as either PNG or HTML file
+    if filename[-4:].lower() == '.png':
+        bio.export_png(figure, filename)
+    else:
+        bio.output_file(filename=filename, title=title)
+        bio.save(figure)
 
 
 def isoelastic_utility_function(consumption, crra, cmin):

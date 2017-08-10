@@ -5,10 +5,13 @@ dependencies:
 - numba
 - toolz
 - six
-- bokeh >=0.12.3
+- bokeh >=0.12.6
 - mock
 - pep8
 - pylint
 - coverage
 - pytest-pep8
 - pytest-xdist
+- phantomjs
+- pillow
+- selenium
