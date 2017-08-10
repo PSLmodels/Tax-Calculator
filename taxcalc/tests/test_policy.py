@@ -735,17 +735,20 @@ def test_json_reform_suffixes(tests_path):
     clpdict = json.load(clpfile)
     clpfile.close()
     # create set of suffixes in the clpdict "col_label" lists
-    suffixes = set()
+    json_suffixes = Policy.JSON_REFORM_SUFFIXES.keys()
+    clp_suffixes = set()
     for param in clpdict:
+        suffix = param.split('_')[-1]
+        assert suffix not in json_suffixes
         col_var = clpdict[param]['col_var']
         col_label = clpdict[param]['col_label']
         if col_var == '':
             assert col_label == ''
             continue
         assert isinstance(col_label, list)
-        suffixes.update(col_label)
+        clp_suffixes.update(col_label)
     # check that suffixes set is same as Policy.JSON_REFORM_SUFFIXES set
-    unmatched = suffixes ^ Policy.JSON_REFORM_SUFFIXES
+    unmatched = clp_suffixes ^ set(json_suffixes)
     if len(unmatched) != 0:
         assert unmatched == 'UNMATCHED SUFFIXES'
 

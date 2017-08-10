@@ -688,3 +688,113 @@ def test_calc_all(reform_file, rawinputfile):
                       sync_years=False)  # keeps raw data unchanged
     assert calc.current_year == cyr
     calc.calc_all()
+
+
+def test_translate_json_reform_suffixes_mars():
+    # test read_json_param_files(...) using MARS-indexed parameter suffixes
+    json1 = """{"policy": {
+      "_II_em": {"2020": [20000], "2015": [15000]},
+      "_STD_single": {"2018": [18000], "2016": [16000]},
+      "_STD_widow": {"2017": [17000], "2019": [19000]}
+    }}"""
+    pdict1 = Calculator.read_json_param_files(reform_filename=json1,
+                                              assump_filename=None,
+                                              arrays_not_lists=True)
+    rdict1 = pdict1['policy']
+    json2 = """{"policy": {
+      "_STD": {"2016": [[16000.00, 12600.00, 6300.00, 9300.00, 12600.00]],
+               "2017": [[16364.80, 12887.28, 6443.64, 9512.04, 17000.00]],
+               "2018": [[18000.00, 13173.38, 6586.69, 9723.21, 17377.40]],
+               "2019": [[18412.20, 13475.05, 6737.52, 9945.87, 19000.00]]},
+      "_II_em": {"2020": [20000], "2015": [15000]}
+    }}"""
+    pdict2 = Calculator.read_json_param_files(reform_filename=json2,
+                                              assump_filename=None,
+                                              arrays_not_lists=True)
+    rdict2 = pdict2['policy']
+    assert len(rdict2) == len(rdict1)
+    for year in rdict2.keys():
+        if '_II_em' in rdict2[year].keys():
+            assert np.allclose(rdict1[year]['_II_em'],
+                               rdict2[year]['_II_em'],
+                               atol=0.01, rtol=0.0)
+        if '_STD' in rdict2[year].keys():
+            assert np.allclose(rdict1[year]['_STD'],
+                               rdict2[year]['_STD'],
+                               atol=0.01, rtol=0.0)
+
+
+def test_translate_json_reform_suffixes_eic():
+    # test read_json_param_files(...) using EIC-indexed parameter suffixes
+    json1 = """{"policy": {
+      "_II_em": {"2020": [20000], "2015": [15000]},
+      "_EITC_c_0kids": {"2018": [510], "2019": [510]},
+      "_EITC_c_1kid": {"2019": [3400], "2018": [3400]},
+      "_EITC_c_2kids": {"2018": [5616], "2019": [5616]},
+      "_EITC_c_3+kids": {"2019": [6318], "2018": [6318]}
+    }}"""
+    pdict1 = Calculator.read_json_param_files(reform_filename=json1,
+                                              assump_filename=None,
+                                              arrays_not_lists=True)
+    rdict1 = pdict1['policy']
+    json2 = """{"policy": {
+      "_EITC_c": {"2019": [[510, 3400, 5616, 6318]],
+                  "2018": [[510, 3400, 5616, 6318]]},
+      "_II_em": {"2020": [20000], "2015": [15000]}
+    }}"""
+    pdict2 = Calculator.read_json_param_files(reform_filename=json2,
+                                              assump_filename=None,
+                                              arrays_not_lists=True)
+    rdict2 = pdict2['policy']
+    assert len(rdict2) == len(rdict1)
+    for year in rdict2.keys():
+        if '_II_em' in rdict2[year].keys():
+            assert np.allclose(rdict1[year]['_II_em'],
+                               rdict2[year]['_II_em'],
+                               atol=0.01, rtol=0.0)
+        if '_EITC_c' in rdict2[year].keys():
+            assert np.allclose(rdict1[year]['_EITC_c'],
+                               rdict2[year]['_EITC_c'],
+                               atol=0.01, rtol=0.0)
+
+
+def test_translate_json_reform_suffixes_idedtype():
+    # test read_json_param_files(...) using idedtype-indexed parameter suffixes
+    json1 = """{"policy": {
+      "_ID_BenefitCap_rt": {"2019": [0.2]},
+      "_ID_BenefitCap_Switch_medical": {"2019": [false]},
+      "_ID_BenefitCap_Switch_casualty": {"2019": [false]},
+      "_ID_BenefitCap_Switch_misc": {"2019": [false]},
+      "_ID_BenefitCap_Switch_interest": {"2019": [false]},
+      "_ID_BenefitCap_Switch_charity": {"2019": [false]},
+      "_II_em": {"2020": [20000], "2015": [15000]}
+    }}"""
+    pdict1 = Calculator.read_json_param_files(reform_filename=json1,
+                                              assump_filename=None,
+                                              arrays_not_lists=True)
+    rdict1 = pdict1['policy']
+    json2 = """{"policy": {
+      "_II_em": {"2020": [20000], "2015": [15000]},
+      "_ID_BenefitCap_Switch": {
+        "2019": [[false, true, true, false, false, false, false]]
+      },
+      "_ID_BenefitCap_rt": {"2019": [0.2]}
+    }}"""
+    pdict2 = Calculator.read_json_param_files(reform_filename=json2,
+                                              assump_filename=None,
+                                              arrays_not_lists=True)
+    rdict2 = pdict2['policy']
+    assert len(rdict2) == len(rdict1)
+    for year in rdict2.keys():
+        if '_II_em' in rdict2[year].keys():
+            assert np.allclose(rdict1[year]['_II_em'],
+                               rdict2[year]['_II_em'],
+                               atol=0.01, rtol=0.0)
+        if '_ID_BenefitCap_rt' in rdict2[year].keys():
+            assert np.allclose(rdict1[year]['_ID_BenefitCap_rt'],
+                               rdict2[year]['_ID_BenefitCap_rt'],
+                               atol=0.01, rtol=0.0)
+        if '_ID_BenefitCap_Switch' in rdict2[year].keys():
+            assert np.allclose(rdict1[year]['_ID_BenefitCap_Switch'],
+                               rdict2[year]['_ID_BenefitCap_Switch'],
+                               atol=0.01, rtol=0.0)
