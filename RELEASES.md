@@ -16,6 +16,9 @@ Release 0.9.3 on 2017-??-??
 - Add validation checking of policy parameters involved in a reform
   [[#1502](https://github.com/open-source-economics/Tax-Calculator/pull/1502)
   by Martin Holmer]
+- Add capability to save XTR graphs as .PNG files
+  [[#1504](https://github.com/open-source-economics/Tax-Calculator/pull/1504)
+  by Anderson Frailey]
 
 **Bug Fixes**
 - None

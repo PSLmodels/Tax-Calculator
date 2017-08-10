@@ -1038,7 +1038,7 @@ def write_graph_file(figure, filename, title):
     figure : bokeh.plotting figure object
 
     filename : string
-        name of HTML file to which figure is written;
+        name of file to which figure is written;
         should end in .html or .png
 
     title : string

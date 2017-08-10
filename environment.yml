@@ -13,3 +13,5 @@ dependencies:
 - pytest-pep8
 - pytest-xdist
 - phantomjs
+- pillow
+- selenium
