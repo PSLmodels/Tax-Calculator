@@ -23,7 +23,8 @@ from taxcalc import Policy, Records, Calculator, multiyear_diagnostic_table
 def line_diff_list(actline, expline, small):
     """
     Return a list containing the pair of lines when they differ significantly;
-    otherwise return an empty list.
+    otherwise return an empty list.  Significant difference means one or more
+    numbers differ (between actline and expline) by the "small" amount or more.
     """
     # embedded function used only in line_diff_list function
     def isfloat(value):
@@ -62,7 +63,7 @@ def line_diff_list(actline, expline, small):
 
 def test_agg(tests_path):
     """
-    Test Tax-Calculator aggregate taxes with no policy reform using cps.csv
+    Test current-law aggregate taxes using cps.csv file.
     """
     # pylint: disable=too-many-locals
     nyrs = 10
@@ -72,9 +73,9 @@ def test_agg(tests_path):
     rec = Records.cps_constructor()
     # create a Calculator object using clp policy and cps records
     calc = Calculator(policy=clp, records=rec)
-    # create aggregate diagnostic table as a Pandas DataFrame object
+    # create aggregate diagnostic table (adt) as a Pandas DataFrame object
     adt = multiyear_diagnostic_table(calc, nyrs)
-    # convert adt results to a string with a trailing EOL character
+    # convert adt to a string with a trailing EOL character
     actual_results = adt.to_string() + '\n'
     act = actual_results.splitlines(True)
     # read expected results from file
@@ -83,14 +84,14 @@ def test_agg(tests_path):
         txt = expected_file.read()
     expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
     exp = expected_results.splitlines(True)
-    # compare act and exp line lists for more-than-rounding-error differences
-    assert len(act) == len(exp)
+    # ensure act and exp line lists have differences less than "small" value
     epsilon = 1e-6
     if sys.version_info.major == 2:
         small = epsilon  # tighter test for Python 2.7
     else:
         small = 0.1 + epsilon  # looser test for Python 3.x
     diff_lines = list()
+    assert len(act) == len(exp)
     for actline, expline in zip(act, exp):
         if actline == expline:
             continue
@@ -117,7 +118,7 @@ def test_agg(tests_path):
 
 def test_cps_availability(tests_path, cps_path):
     """
-    Cross-check records_variables.json data with variables in cps.csv file
+    Cross-check records_variables.json data with variables in cps.csv file.
     """
     cpsdf = pd.read_csv(cps_path)
     cpsvars = set(list(cpsdf))
