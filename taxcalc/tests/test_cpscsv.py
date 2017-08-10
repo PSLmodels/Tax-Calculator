@@ -21,7 +21,7 @@ import pytest
 # pylint: disable=import-error
 from taxcalc import Policy, Records, Calculator, multiyear_diagnostic_table
 
-
+@pytest.mark.one
 @pytest.mark.xfail(sys.version_info >= (3, 5),
                    reason="test fails under python3.5+ for unknown reason")
 def test_agg(tests_path):
@@ -64,6 +64,9 @@ def test_agg(tests_path):
         msg += '--- if new OK, copy cpscsv_agg_actual.txt to  ---\n'
         msg += '---                 cpscsv_agg_expect.txt     ---\n'
         msg += '---            and rerun test.                ---\n'
+        msg += '-------------------------------------------------\n'
+        for line in diff_lines:
+            msg += line
         msg += '-------------------------------------------------\n'
         raise ValueError(msg)
 
