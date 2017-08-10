@@ -757,7 +757,7 @@ def test_translate_json_reform_suffixes_eic():
                                rdict2[year]['_EITC_c'],
                                atol=0.01, rtol=0.0)
 
-@pytest.mark.one
+
 def test_translate_json_reform_suffixes_idedtype():
     # test read_json_param_files(...) using idedtype-indexed parameter suffixes
     json1 = """{"policy": {
