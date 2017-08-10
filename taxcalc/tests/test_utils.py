@@ -11,7 +11,6 @@ import os
 import math
 import random
 import numpy as np
-from numpy.testing import assert_equal, assert_almost_equal, assert_array_equal
 import pandas as pd
 from pandas.util.testing import assert_series_equal
 import pytest
@@ -62,7 +61,7 @@ def test_expand_1d_short_array():
     exp[3:] = exp2
     res = ParametersBase._expand_1D(ary, inflate=True,
                                     inflation_rates=[0.02] * 10, num_years=10)
-    assert np.allclose(exp, res, atol=0.0, rtol=1.0E-7)
+    assert np.allclose(exp, res, atol=0.01, rtol=0.0)
 
 
 def test_expand_1d_variable_rates():
@@ -71,7 +70,8 @@ def test_expand_1d_variable_rates():
     res = ParametersBase._expand_1D(ary, inflate=True,
                                     inflation_rates=irates, num_years=5)
     exp = np.array([4, 5, 9, 9 * 1.03, 9 * 1.03 * 1.035])
-    assert np.allclose(exp.astype('f4', casting='unsafe'), res)
+    assert np.allclose(exp.astype('f4', casting='unsafe'), res,
+                       atol=0.01, rtol=0.0)
 
 
 def test_expand_1d_scalar():
@@ -79,7 +79,7 @@ def test_expand_1d_scalar():
     exp = np.array([val * math.pow(1.02, i) for i in range(0, 10)])
     res = ParametersBase._expand_1D(val, inflate=True,
                                     inflation_rates=[0.02] * 10, num_years=10)
-    assert np.allclose(exp, res)
+    assert np.allclose(exp, res, atol=0.01, rtol=0.0)
 
 
 def test_expand_1d_accept_none():
@@ -95,7 +95,8 @@ def test_expand_1d_accept_none():
     exp = np.array(exp)
     res = ParametersBase._expand_array(lst, inflate=True,
                                        inflation_rates=irates, num_years=5)
-    assert np.allclose(exp.astype('f4', casting='unsafe'), res)
+    assert np.allclose(exp.astype('f4', casting='unsafe'), res,
+                       atol=0.01, rtol=0.0)
 
 
 def test_expand_2d_short_array():
@@ -108,7 +109,7 @@ def test_expand_2d_short_array():
     exp[1:] = exp2
     res = ParametersBase._expand_2D(ary, inflate=True,
                                     inflation_rates=[0.02] * 5, num_years=5)
-    assert np.allclose(exp, res)
+    assert np.allclose(exp, res, atol=0.01, rtol=0.0)
 
 
 def test_expand_2d_variable_rates():
@@ -127,7 +128,7 @@ def test_expand_2d_variable_rates():
     exp[1:] = exp2
     res = ParametersBase._expand_2D(ary, inflate=True,
                                     inflation_rates=irates, num_years=5)
-    assert np.allclose(exp, res)
+    assert np.allclose(exp, res, atol=0.01, rtol=0.0)
 
 
 def test_validity_of_name_lists():
@@ -406,9 +407,10 @@ def test_diff_table_sum_row(cps_subsample):
                       'aftertax_perc']
     digit_cols = [x for x in tdiff1.columns.tolist() if
                   x not in non_digit_cols]
-    assert np.allclose(tdiff1[digit_cols][-1:], tdiff2[digit_cols][-1:])
-    assert_array_equal(tdiff1[non_digit_cols][-1:],
-                       tdiff2[non_digit_cols][-1:])
+    assert np.allclose(tdiff1[digit_cols][-1:],
+                       tdiff2[digit_cols][-1:])
+    np.testing.assert_array_equal(tdiff1[non_digit_cols][-1:],
+                                  tdiff2[non_digit_cols][-1:])
 
 
 def test_row_classifier(cps_subsample):
@@ -432,7 +434,7 @@ def test_row_classifier(cps_subsample):
                                            result_type='weighted_sum',
                                            baseline_obj=calc1.records).s006
     # use weighted sum of weights in each cell to check classifer
-    assert_array_equal(calc1_s006, calc2_s006)
+    assert np.allclose(calc1_s006, calc2_s006, atol=0.00, rtol=0.0)
 
 
 def test_expand_2d_already_filled():
@@ -442,7 +444,7 @@ def test_expand_2d_already_filled():
                 [40000, 74900, 37450, 50200, 74900, 37450]]
     res = ParametersBase._expand_2D(_II_brk2, inflate=True,
                                     inflation_rates=[0.02] * 5, num_years=3)
-    assert_equal(res, np.array(_II_brk2))
+    np.allclose(res, np.array(_II_brk2), atol=0.01, rtol=0.0)
 
 
 def test_expand_2d_partial_expand():
@@ -466,7 +468,7 @@ def test_expand_2d_partial_expand():
            [exp1, exp2, exp3, exp4, exp5, exp6]]
     res = ParametersBase._expand_2D(_II_brk2, inflate=True,
                                     inflation_rates=inf_rates, num_years=4)
-    assert_equal(res, exp)
+    assert np.allclose(res, exp, atol=0.01, rtol=0.0)
 
 
 def test_strip_nones():
@@ -495,7 +497,7 @@ def test_expand_2d_accept_none():
     exp = np.array(exp).astype('i4', casting='unsafe')
     res = ParametersBase._expand_array(_II_brk2, inflate=True,
                                        inflation_rates=[0.02] * 5, num_years=4)
-    assert_equal(res, exp)
+    assert np.allclose(res, exp, atol=0.01, rtol=0.0)
 
     syr = 2013
     pol = Policy(start_year=syr)
@@ -508,7 +510,7 @@ def test_expand_2d_accept_none():
     exp_2019 = [41000.] + [(1.0 + irates[2018 - syr]) * i
                            for i in _II_brk2[2][1:]]
     exp_2019 = np.array(exp_2019)
-    assert_equal(pol.II_brk2, exp_2019)
+    assert np.allclose(pol.II_brk2, exp_2019, atol=0.01, rtol=0.0)
 
 
 def test_expand_2d_accept_none_add_row():
@@ -537,7 +539,7 @@ def test_expand_2d_accept_none_add_row():
     res = ParametersBase._expand_array(_II_brk2, inflate=True,
                                        inflation_rates=inflation_rates,
                                        num_years=5)
-    assert_equal(res, exp)
+    assert np.allclose(res, exp, atol=0.01, rtol=0.0)
     user_mods = {2016: {'_II_brk2': _II_brk2}}
     syr = 2013
     pol = Policy(start_year=syr)
@@ -551,7 +553,7 @@ def test_expand_2d_accept_none_add_row():
                            (1 + irates[2018 - syr]) * i
                            for i in _II_brk2[2][1:]]
     exp_2020 = np.array(exp_2020)
-    assert np.allclose(pol.II_brk2, exp_2020)
+    assert np.allclose(pol.II_brk2, exp_2020, atol=0.01, rtol=0.0)
 
 
 def test_mtr_graph_data(cps_subsample):
@@ -688,8 +690,8 @@ def test_myr_diag_table_wo_behv(cps_subsample):
     adt = multiyear_diagnostic_table(calc, 1)
     # extract combined liabilities as a float and
     # adopt units of the raw calculator data in liabilities_x
-    liabilities_y = adt.iloc[19].tolist()[0] * 1000000000
-    assert_almost_equal(liabilities_x, liabilities_y, 2)
+    liabilities_y = adt.iloc[19].tolist()[0] * 1e9
+    assert np.allclose(liabilities_x, liabilities_y, atol=0.01, rtol=0.0)
 
 
 def test_myr_diag_table_w_behv(cps_subsample):
@@ -712,7 +714,7 @@ def test_myr_diag_table_w_behv(cps_subsample):
     # extract combined liabilities as a float and
     # adopt units of the raw calculator data in liabilities_x
     liabilities_y = adt.iloc[19].tolist()[0] * 1e9
-    assert_almost_equal(liabilities_x, liabilities_y, 2)
+    assert np.allclose(liabilities_x, liabilities_y, atol=0.01, rtol=0.0)
 
 
 def test_ce_aftertax_income(cps_subsample):
