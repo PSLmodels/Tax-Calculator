@@ -67,7 +67,7 @@
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[200000, 250000, 125000, 200000, 200000]]
     },
 
@@ -100,7 +100,7 @@
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[25000, 32000, 25000, 25000, 25000]]
     },
 
@@ -132,7 +132,7 @@
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[34000, 44000, 34000, 34000, 34000]]
     },
 
@@ -427,7 +427,7 @@
 
     "_ALD_Dependents_thd": {
         "long_name": "Maximum level of income to qualify for the dependent care deduction",
-        "description": "A taxpayer can only claim the dependent care deduction if their total income is below this level. The Trump 2016 campaign proposal was for 250000 single, 500000 joint, 250000 separate, 500000 head of household].",
+        "description": "A taxpayer can only claim the dependent care deduction if their total income is below this level. The Trump 2016 campaign proposal was for 250000 single, 500000 joint, 250000 separate, 500000 headhousehold].",
         "section_1": "Above The Line Deductions",
         "section_2": "Child And Elderly Care",
         "irs_ref": "",
@@ -437,7 +437,7 @@
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[0.0, 0.0, 0.0, 0.0, 0.0]]
     },
 
@@ -481,7 +481,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[250000, 300000, 150000, 275000, 300000],
                   [254200, 305050, 152525, 279650, 305050],
                   [258250, 309900, 154950, 284040, 309900],
@@ -537,7 +537,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[6100, 12200, 6100, 8950, 12200],
                   [6200, 12400, 6200, 9100, 12400],
                   [6300, 12600, 6300, 9250, 12600],
@@ -567,8 +567,7 @@
                   1000,
                   1050,
                   1050,
-                  1050],
-        "validations": {"min": "default"}
+                  1050]
     },
 
     "_STD_Aged": {
@@ -587,13 +586,12 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[1500, 1200, 1200, 1500, 1500],
                   [1550, 1200, 1200, 1550, 1550],
                   [1550, 1250, 1250, 1550, 1550],
                   [1550, 1250, 1250, 1550, 1550],
-                  [1550, 1250, 1250, 1550, 1550]],
-        "validations": {"min": "default"}
+                  [1550, 1250, 1250, 1550, 1550]]
     },
 
     "_STD_allow_charity_ded_nonitemizers": {
@@ -628,7 +626,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0],
@@ -653,7 +651,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0],
@@ -694,7 +692,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0],
@@ -718,7 +716,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0],
@@ -757,7 +755,7 @@
         "col_var": "",
         "col_label": "",
         "value": [0.1],
-        "validations": {"min": "default"}
+        "validations": {"min": 0.1}
     },
 
     "_ID_Medical_frt_add4aged": {
@@ -817,7 +815,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
@@ -857,7 +855,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
@@ -897,7 +895,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
@@ -937,7 +935,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
@@ -959,7 +957,7 @@
         "col_var": "",
         "col_label": "",
         "value": [0.5],
-        "validations": {"max": "default"}
+        "validations": {"max": 0.5}
     },
 
     "_ID_Charity_crt_noncash": {
@@ -976,7 +974,7 @@
         "col_var": "",
         "col_label": "",
         "value": [0.3],
-        "validations": {"max": "default"}
+        "validations": {"max": 0.3}
     },
 
     "_ID_Charity_frt": {
@@ -993,7 +991,7 @@
         "col_var": "",
         "col_label": "",
         "value": [0.0],
-        "validations": {"min": "default"}
+        "validations": {"min": 0.0}
     },
 
 
@@ -1029,7 +1027,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
@@ -1051,7 +1049,7 @@
         "col_var": "",
         "col_label": "",
         "value": [0.1],
-        "validations": {"min": "default"}
+        "validations": {"min": 0.1}
     },
 
     "_ID_Casualty_hc": {
@@ -1086,7 +1084,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
@@ -1108,7 +1106,7 @@
         "col_var": "",
         "col_label": "",
         "value": [0.02],
-        "validations": {"min": "default"}
+        "validations": {"min": 0.02}
     },
 
     "_ID_Miscellaneous_hc": {
@@ -1143,7 +1141,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
@@ -1167,7 +1165,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[250000, 300000, 150000, 275000, 300000],
                   [254200, 305050, 152525, 279650, 305050],
                   [258250, 309900, 154950, 284050, 309900],
@@ -1256,7 +1254,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0],
@@ -1276,7 +1274,7 @@
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "idedtype",
-        "col_label": ["Medical", "State & Local", "Real Estate", "Casualty", "Miscellaneous", "Interest", "Charity"],
+        "col_label": ["medical", "statelocal", "realestate", "casualty", "misc", "interest", "charity"],
         "value": [[true, true, true, true, true, true, true]]
     },
 
@@ -1309,7 +1307,7 @@
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "idedtype",
-        "col_label": ["Medical", "State & Local", "Real Estate", "Casualty", "Miscellaneous", "Interest", "Charity"],
+        "col_label": ["medical", "statelocal", "realestate", "casualty", "misc", "interest", "charity"],
         "value": [[true, true, true, true, true, true, true]]
     },
 
@@ -1329,7 +1327,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
@@ -1369,7 +1367,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[36250, 72500, 36250, 48600, 72500],
                   [36900, 73800, 36900, 49400, 73800],
                   [37450, 74900, 37450, 50200, 74900],
@@ -1409,7 +1407,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[400000, 450000, 225000, 425000, 450000],
                   [406750, 457600, 228800, 432200, 457600],
                   [413200, 464850, 232425, 439000, 464850],
@@ -1449,7 +1447,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
@@ -1506,7 +1504,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[36250, 72500, 36250, 48600, 72500],
                   [36900, 73800, 36900, 49400, 73800],
                   [37450, 74900, 37450, 50200, 74900],
@@ -1547,7 +1545,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[400000, 450000, 225000, 425000, 450000],
                   [406750, 457600, 228800, 432200, 457600],
                   [413200, 464850, 232425, 439000, 464850],
@@ -1587,7 +1585,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
@@ -1700,7 +1698,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[8925, 17850, 8925, 12750, 17850],
                   [9075, 18150, 9075, 12950, 18150],
                   [9225, 18450, 9225, 13150, 18450],
@@ -1742,7 +1740,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[36250, 72500, 36250, 48600, 72500],
                   [36900, 73800, 36900, 49400, 73800],
                   [37450, 74900, 37450, 50200, 74900],
@@ -1783,7 +1781,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[87850, 146400, 73200, 125450, 146400],
                   [89350, 148850, 74425, 127550, 148850],
                   [90750, 151200, 75600, 129600, 151200],
@@ -1824,7 +1822,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[183250, 223050, 111525, 203150, 223050],
                   [186350, 226850, 113425, 206600, 226850],
                   [189300, 230450, 115225, 209850, 230450],
@@ -1865,7 +1863,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[398350, 398350, 199175, 398350, 398350],
                   [405100, 405100, 202550, 405100, 405100],
                   [411500, 411500, 205750, 411500, 411500],
@@ -1907,7 +1905,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[400000, 450000, 225000, 425000, 450000],
                   [406750, 457600, 228800, 432200, 457600],
                   [413200, 464850, 232425, 439000, 464850],
@@ -1948,7 +1946,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
@@ -2007,7 +2005,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[8925, 17850, 8925, 12750, 17850],
                   [9075, 18150, 9075, 12950, 18150],
                   [9225, 18450, 9225, 13150, 18450],
@@ -2049,7 +2047,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[36250, 72500, 36250, 48600, 72500],
                   [36900, 73800, 36900, 49400, 73800],
                   [37450, 74900, 37450, 50200, 74900],
@@ -2090,7 +2088,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[87850, 146400, 73200, 125450, 146400],
                   [89350, 148850, 74425, 127550, 148850],
                   [90750, 151200, 75600, 129600, 151200],
@@ -2131,7 +2129,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[183250, 223050, 111525, 203150, 223050],
                   [186350, 226850, 113425, 206600, 226850],
                   [189300, 230450, 115225, 209850, 230450],
@@ -2172,7 +2170,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[398350, 398350, 199175, 398350, 398350],
                   [405100, 405100, 202550, 405100, 405100],
                   [411500, 411500, 205750, 411500, 411500],
@@ -2213,7 +2211,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[400000, 450000, 225000, 425000, 450000],
                   [406750, 457600, 228800, 432200, 457600],
                   [413200, 464850, 232425, 439000, 464850],
@@ -2254,7 +2252,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
@@ -2298,7 +2296,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[51900, 80800, 40400, 51900, 80800],
                   [52800, 82100, 41050, 52800, 82100],
                   [53600, 83400, 41700, 53600, 83400],
@@ -2340,7 +2338,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[115400, 153900, 76950, 115400, 153900],
                   [117300, 156500, 78250, 117300, 156500],
                   [119200, 158900, 79450, 119200, 158900],
@@ -2560,7 +2558,7 @@
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[75000, 110000, 55000, 75000, 75000]]
     },
 
@@ -2608,7 +2606,7 @@
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[200000, 250000, 125000, 200000, 250000]]
     },
 
@@ -3010,7 +3008,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[0.0, 0.0, 0.0, 0.0, 0.0],
                   [0.0, 0.0, 0.0, 0.0, 0.0],
                   [0.0, 0.0, 0.0, 0.0, 0.0],
@@ -3100,7 +3098,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[1.0e6, 1.0e6, 0.5e6, 1.0e6, 1.0e6],
                   [1.0e6, 1.0e6, 0.5e6, 1.0e6, 1.0e6],
                   [1.0e6, 1.0e6, 0.5e6, 1.0e6, 1.0e6],
@@ -3125,7 +3123,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[2.0e6, 2.0e6, 1.0e6, 2.0e6, 2.0e6],
                   [2.0e6, 2.0e6, 1.0e6, 2.0e6, 2.0e6],
                   [2.0e6, 2.0e6, 1.0e6, 2.0e6, 2.0e6],
@@ -3168,7 +3166,7 @@
         "start_year": 2013,
         "cpi_inflated": true,
         "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "head of household", "widow"],
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],

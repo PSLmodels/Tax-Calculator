@@ -5,6 +5,8 @@ Tax-Calculator federal tax policy Policy class.
 # pep8 --ignore=E402 policy.py
 # pylint --disable=locally-disabled policy.py
 
+import six
+import numpy as np
 from taxcalc.parameters import ParametersBase
 from taxcalc.growfactors import Growfactors
 
@@ -187,6 +189,7 @@ class Policy(ParametersBase):
             self.set_year(year)
             self._update({year: reform[year]})
         self.set_year(precall_current_year)
+        self._validate_parameter_values()
 
     def current_law_version(self):
         """
@@ -200,3 +203,163 @@ class Policy(ParametersBase):
                      num_years=numyears)
         clv.set_year(self.current_year)
         return clv
+
+    JSON_REFORM_SUFFIXES = {
+        # MARS-indexed suffixes and list index numbers
+        'single': 0,
+        'joint': 1,
+        'separate': 2,
+        'headhousehold': 3,
+        'widow': 4,
+        # EIC-indexed suffixes and list index numbers
+        '0kids': 0,
+        '1kid': 1,
+        '2kids': 2,
+        '3+kids': 3,
+        # idedtype-indexed suffixes and list index numbers
+        'medical': 0,
+        'statelocal': 1,
+        'realestate': 2,
+        'casualty': 3,
+        'misc': 4,
+        'interest': 5,
+        'charity': 6
+    }
+
+    @staticmethod
+    def translate_json_reform_suffixes(indict):
+        """
+        Replace any array parameters with suffixes in the specified
+        JSON-derived "policy" dictionary, indict, and
+        return a JSON-equivalent dictionary containing constructed array
+        parameters and containing no parameters with suffixes, odict.
+        """
+
+        # define no_suffix function used only in this method
+        def no_suffix(idict):
+            """
+            Return param_base:year dictionary having only no-suffix parameters.
+            """
+            odict = dict()
+            suffixes = Policy.JSON_REFORM_SUFFIXES.keys()
+            for param in idict.keys():
+                param_pieces = param.split('_')
+                suffix = param_pieces[-1]
+                if suffix not in suffixes:
+                    odict[param] = idict[param]
+            return odict
+
+        # define group_dict function used only in this method
+        def suffix_group_dict(idict):
+            """
+            Return param_base:year:suffix dictionary with each idict value.
+            """
+            gdict = dict()
+            suffixes = Policy.JSON_REFORM_SUFFIXES.keys()
+            for param in idict.keys():
+                param_pieces = param.split('_')
+                suffix = param_pieces[-1]
+                if suffix in suffixes:
+                    del param_pieces[-1]
+                    param_base = '_'.join(param_pieces)
+                    if param_base not in gdict:
+                        gdict[param_base] = dict()
+                    for year in sorted(idict[param].keys()):
+                        if year not in gdict[param_base]:
+                            gdict[param_base][year] = dict()
+                        gdict[param_base][year][suffix] = idict[param][year][0]
+            return gdict
+
+        # define with_suffix function used only in this method
+        def with_suffix(gdict):
+            """
+            Return param_base:year dictionary having only suffix parameters.
+            """
+            pol = Policy()
+            odict = dict()
+            for param in gdict.keys():
+                odict[param] = dict()
+                for year in sorted(gdict[param].keys()):
+                    odict[param][year] = dict()
+                    for suffix in gdict[param][year].keys():
+                        plist = getattr(pol, param).tolist()
+                        dvals = plist[int(year) - Policy.JSON_START_YEAR]
+                        odict[param][year] = [dvals]
+                        idx = Policy.JSON_REFORM_SUFFIXES[suffix]
+                        odict[param][year][0][idx] = gdict[param][year][suffix]
+                        udict = {int(year): {param: odict[param][year]}}
+                        pol.implement_reform(udict)
+            return odict
+
+        # high-level logic of translate_json_reform_suffixes method:
+        # - construct odict containing just parameters without a suffix
+        odict = no_suffix(indict)
+        # - group params with suffix into param_base:year:suffix dictionary
+        gdict = suffix_group_dict(indict)
+        # - add to odict the consolidated values for parameters with a suffix
+        if len(gdict) > 0:
+            odict.update(with_suffix(gdict))
+        # - return policy dictionary containing constructed parameter arrays
+        return odict
+
+    # ----- begin private methods of Policy class -----
+
+    VALIDATED_PARAMETERS = set([
+        '_II_credit_prt',
+        '_II_credit_nr_prt',
+        '_ID_Medical_frt_add4aged',
+        '_II_brk1',
+        '_II_brk2',
+        '_II_brk3',
+        '_II_brk4',
+        '_II_brk5',
+        '_II_brk6',
+        '_II_brk7',
+        '_PT_brk1',
+        '_PT_brk2',
+        '_PT_brk3',
+        '_PT_brk4',
+        '_PT_brk5',
+        '_PT_brk6',
+        '_PT_brk7',
+        '_CTC_new_refund_limit_payroll_rt',
+        '_FST_AGI_trt',
+        '_FST_AGI_thd_lo',
+        '_FST_AGI_thd_hi',
+        '_AGI_surtax_trt',
+        '_STD',
+        '_ID_Casualty_frt',
+        '_ID_Charity_crt_all',
+        '_ID_Charity_crt_noncash',
+        '_ID_Charity_frt',
+        '_ID_Medical_frt',
+        '_ID_Miscellaneous_frt'
+    ])
+
+    def _validate_parameter_values(self):
+        """
+        Check policy parameter values using validations information from
+        the current_law_policy.json file.
+        """
+        clp = self.current_law_version()
+        syr = Policy.JSON_START_YEAR
+        for pname in Policy.VALIDATED_PARAMETERS:
+            pvalue = getattr(self, pname)
+            for vop, vval in self._vals[pname]['validations'].items():
+                if isinstance(vval, six.string_types):
+                    if vval == 'default':
+                        vvalue = getattr(clp, pname)
+                    else:
+                        vvalue = getattr(self, vval)
+                else:
+                    vvalue = np.full(pvalue.shape, vval)
+                assert pvalue.shape == vvalue.shape
+                for idx in np.ndindex(pvalue.shape):
+                    if vop == 'min' and pvalue[idx] < vvalue[idx]:
+                        msg = '{} {} value {} < min value {}'
+                        raise ValueError(msg.format(idx[0] + syr, pname,
+                                                    pvalue[idx], vvalue[idx]))
+                    if vop == 'max' and pvalue[idx] > vvalue[idx]:
+                        msg = '{} {} value {} > max value {}'
+                        raise ValueError(msg.format(idx[0] + syr, pname,
+                                                    pvalue[idx], vvalue[idx]))

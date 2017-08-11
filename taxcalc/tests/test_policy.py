@@ -1,5 +1,6 @@
 import os
 import sys
+import six
 import json
 import tempfile
 import numpy as np
@@ -52,7 +53,7 @@ def test_correct_Policy_instantiation():
 def test_policy_json_content():
     ppo = Policy()
     policy = getattr(ppo, '_vals')
-    for name, data in policy.items():
+    for _, data in policy.items():
         start_year = data.get('start_year')
         assert isinstance(start_year, int)
         assert start_year == Policy.JSON_START_YEAR
@@ -92,10 +93,10 @@ def test_variable_inflation_rate_without_reform():
     irate2021 = pirates[2021 - syr]
     # check implied inflation rate between 2020 and 2021
     grate = float(pol._II_em[2021 - syr]) / float(pol._II_em[2020 - syr])
-    assert round(grate - 1.0, 6) == round(irate2020, 6)
+    assert round(grate - 1.0, 5) == round(irate2020, 5)
     # check implied inflation rate between 2021 and 2022
     grate = float(pol._II_em[2022 - syr]) / float(pol._II_em[2021 - syr])
-    assert round(grate - 1.0, 6) == round(irate2021, 6)
+    assert round(grate - 1.0, 5) == round(irate2021, 5)
 
 
 def test_variable_inflation_rate_with_reform():
@@ -114,13 +115,13 @@ def test_variable_inflation_rate_with_reform():
     irate2021 = pirates[2021 - syr]
     # check implied inflation rate between 2018 and 2019 (before the reform)
     grate = float(pol._II_em[2019 - syr]) / float(pol._II_em[2018 - syr])
-    assert round(grate - 1.0, 6) == round(irate2018, 6)
+    assert round(grate - 1.0, 5) == round(irate2018, 5)
     # check implied inflation rate between 2020 and 2021 (after the reform)
     grate = float(pol._II_em[2021 - syr]) / float(pol._II_em[2020 - syr])
-    assert round(grate - 1.0, 6) == round(irate2020, 6)
+    assert round(grate - 1.0, 5) == round(irate2020, 5)
     # check implied inflation rate between 2021 and 2022 (after the reform)
     grate = float(pol._II_em[2022 - syr]) / float(pol._II_em[2021 - syr])
-    assert round(grate - 1.0, 6) == round(irate2021, 6)
+    assert round(grate - 1.0, 5) == round(irate2021, 5)
 
 
 def test_multi_year_reform():
@@ -278,17 +279,17 @@ def check_ii_em(ppo, reform, ifactor):
     e2016 = reform[2016]['_II_em'][0]
     assert actual[2016] == e2016
     e2017 = ifactor[2016] * actual[2016]
-    assert actual[2017] == e2017
+    assert np.allclose([actual[2017]], [e2017], atol=0.01, rtol=0.0)
     e2018 = ifactor[2017] * actual[2017]
-    assert actual[2018] == e2018
+    assert np.allclose([actual[2018]], [e2018], atol=0.01, rtol=0.0)
     e2019 = reform[2019]['_II_em'][0]
     assert actual[2019] == e2019
     e2020 = ifactor[2019] * actual[2019]
-    assert actual[2020] == e2020
+    assert np.allclose([actual[2020]], [e2020], atol=0.01, rtol=0.0)
     e2021 = ifactor[2020] * actual[2020]
-    assert actual[2021] == e2021
+    assert np.allclose([actual[2021]], [e2021], atol=0.01, rtol=0.0)
     e2022 = ifactor[2021] * actual[2021]
-    assert actual[2022] == e2022
+    assert np.allclose([actual[2022]], [e2022], atol=0.01, rtol=0.0)
 
 
 def check_ss_earnings_c(ppo, reform, wfactor):
@@ -314,9 +315,9 @@ def check_ss_earnings_c(ppo, reform, wfactor):
     e2020 = wfactor[2019] * actual[2019]  # indexing after 2019
     assert actual[2020] == e2020
     e2021 = wfactor[2020] * actual[2020]
-    assert actual[2021] == e2021
+    assert np.allclose([actual[2021]], [e2021], atol=0.01, rtol=0.0)
     e2022 = wfactor[2021] * actual[2021]
-    assert actual[2022] == e2022
+    assert np.allclose([actual[2022]], [e2022], atol=0.01, rtol=0.0)
 
 
 def test_create_parameters_from_file(policyfile):
@@ -364,10 +365,10 @@ def test_implement_reform_Policy_raises_on_no_year():
 
 def test_Policy_reform_in_start_year():
     ppo = Policy(start_year=2013)
-    reform = {2013: {'_STD_Aged': [[1400, 1100, 1100, 1400, 1400]]}}
+    reform = {2013: {'_STD': [[16000, 13000, 13000, 16000, 16000]]}}
     ppo.implement_reform(reform)
-    assert_allclose(ppo.STD_Aged,
-                    np.array([1400, 1100, 1100, 1400, 1400]),
+    assert_allclose(ppo.STD,
+                    np.array([16000, 13000, 13000, 16000, 16000]),
                     atol=0.01, rtol=0.0)
 
 
@@ -541,11 +542,11 @@ def test_pop_the_cap_reform():
     assert mte[2015 - syr] == 118500
     assert mte[2016 - syr] == 118500
     # specify a "pop the cap" reform that eliminates MTE cap in 2016
-    reform = {2016: {'_SS_Earnings_c': [float('inf')]}}
+    reform = {2016: {'_SS_Earnings_c': [9e99]}}
     ppo.implement_reform(reform)
     assert mte[2015 - syr] == 118500
-    assert mte[2016 - syr] == float('inf')
-    assert mte[ppo.end_year - syr] == float('inf')
+    assert mte[2016 - syr] == 9e99
+    assert mte[ppo.end_year - syr] == 9e99
 
 
 def test_order_of_cpi_and_level_reforms():
@@ -722,3 +723,84 @@ def test_clp_section_titles(tests_path):
         assert sec1title in VALID_SECTION
         sec2title = param['section_2']
         assert sec2title in VALID_SECTION[sec1title]
+
+
+def test_json_reform_suffixes(tests_path):
+    """
+    Check "var_label" values versus Policy.JSON_REFORM_SUFFIXES set
+    """
+    # read current_law_policy.json file into a dictionary
+    path = os.path.join(tests_path, '..', 'current_law_policy.json')
+    clpfile = open(path, 'r')
+    clpdict = json.load(clpfile)
+    clpfile.close()
+    # create set of suffixes in the clpdict "col_label" lists
+    json_suffixes = Policy.JSON_REFORM_SUFFIXES.keys()
+    clp_suffixes = set()
+    for param in clpdict:
+        suffix = param.split('_')[-1]
+        assert suffix not in json_suffixes
+        col_var = clpdict[param]['col_var']
+        col_label = clpdict[param]['col_label']
+        if col_var == '':
+            assert col_label == ''
+            continue
+        assert isinstance(col_label, list)
+        clp_suffixes.update(col_label)
+    # check that suffixes set is same as Policy.JSON_REFORM_SUFFIXES set
+    unmatched = clp_suffixes ^ set(json_suffixes)
+    if len(unmatched) != 0:
+        assert unmatched == 'UNMATCHED SUFFIXES'
+
+
+def test_validated_parameters_set(tests_path):
+    """
+    Check Policy.VALIDATED_PARAMETERS against current_law_policy.json info.
+    """
+    # read current_law_policy.json file into a dictionary
+    path = os.path.join(tests_path, '..', 'current_law_policy.json')
+    clpfile = open(path, 'r')
+    clpdict = json.load(clpfile)
+    clpfile.close()
+    # construct set of parameter names with "validations" field in clpdict
+    json_validated_params = set()
+    for pname in clpdict:
+        param = clpdict[pname]
+        assert isinstance(param, dict)
+        valid = param.get('validations', None)
+        if valid:
+            json_validated_params.add(pname)
+            for vop, vval in valid.items():
+                assert vop in ['min', 'max']
+                if isinstance(vval, six.string_types):
+                    if vval == 'default':
+                        continue
+                    elif vval in clpdict:
+                        continue
+                    else:
+                        assert vval == 'ILLEGAL VALIDATION STRING VALUE'
+                else:
+                    if isinstance(vval, int):
+                        continue
+                    elif isinstance(vval, float):
+                        continue
+                    else:
+                        assert vval == 'ILLEGAL VALIDATION NUMERIC VALUE'
+    # compare contents of Policy.VALIDATED_PARAMETERS and json_validated_params
+    unmatched = Policy.VALIDATED_PARAMETERS ^ json_validated_params
+    if len(unmatched) != 0:
+        assert unmatched == 'UNMATCHED VALIDATED PARAMETERS'
+
+
+def test_validate_param_values_errors():
+    """
+    Check detection of failures of min and max validations.
+    """
+    pol1 = Policy()
+    ref1 = {2020: {'_ID_Medical_frt': [0.05]}}
+    with pytest.raises(ValueError):
+        pol1.implement_reform(ref1)
+    pol2 = Policy()
+    ref2 = {2021: {'_ID_Charity_crt_all': [0.60]}}
+    with pytest.raises(ValueError):
+        pol2.implement_reform(ref2)

@@ -407,8 +407,8 @@ class ParametersBase(object):
                     extra = []
                     cur = x[-1]
                     for i in range(0, num_years - len(x)):
-                        inf_idx = i + len(x) - 1
-                        cur *= (1. + inflation_rates[inf_idx])
+                        cur *= (1. + inflation_rates[i + len(x) - 1])
+                        cur = round(cur, 2) if cur < 9e99 else 9e99
                         extra.append(cur)
                 else:
                     extra = [float(x[-1]) for i in
@@ -456,16 +456,20 @@ class ParametersBase(object):
                     for j in range(ans.shape[1]):
                         if ans[i, j] == -1.:
                             if inflate:
-                                ans[i, j] = (ans[i - 1, j] *
-                                             (1. + inflation_rates[i - 1]))
+                                cur = (ans[i - 1, j] *
+                                       (1. + inflation_rates[i - 1]))
+                                cur = round(cur, 2) if cur < 9e99 else 9e99
+                                ans[i, j] = cur
                             else:
                                 ans[i, j] = ans[i - 1, j]
                 # Now, fill based on inflate flag:
                 for i in range(last_good_row + 1, ans.shape[0]):
                     for j in range(ans.shape[1]):
                         if inflate:
-                            ans[i, j] = (ans[i - 1, j] *
-                                         (1. + inflation_rates[i - 1]))
+                            cur = (ans[i - 1, j] *
+                                   (1. + inflation_rates[i - 1]))
+                            cur = round(cur, 2) if cur < 9e99 else 9e99
+                            ans[i, j] = cur
                         else:
                             ans[i, j] = ans[i - 1, j]
                 if has_nones:
