@@ -93,10 +93,10 @@ def test_variable_inflation_rate_without_reform():
     irate2021 = pirates[2021 - syr]
     # check implied inflation rate between 2020 and 2021
     grate = float(pol._II_em[2021 - syr]) / float(pol._II_em[2020 - syr])
-    assert round(grate - 1.0, 6) == round(irate2020, 6)
+    assert round(grate - 1.0, 5) == round(irate2020, 5)
     # check implied inflation rate between 2021 and 2022
     grate = float(pol._II_em[2022 - syr]) / float(pol._II_em[2021 - syr])
-    assert round(grate - 1.0, 6) == round(irate2021, 6)
+    assert round(grate - 1.0, 5) == round(irate2021, 5)
 
 
 def test_variable_inflation_rate_with_reform():
@@ -115,13 +115,13 @@ def test_variable_inflation_rate_with_reform():
     irate2021 = pirates[2021 - syr]
     # check implied inflation rate between 2018 and 2019 (before the reform)
     grate = float(pol._II_em[2019 - syr]) / float(pol._II_em[2018 - syr])
-    assert round(grate - 1.0, 6) == round(irate2018, 6)
+    assert round(grate - 1.0, 5) == round(irate2018, 5)
     # check implied inflation rate between 2020 and 2021 (after the reform)
     grate = float(pol._II_em[2021 - syr]) / float(pol._II_em[2020 - syr])
-    assert round(grate - 1.0, 6) == round(irate2020, 6)
+    assert round(grate - 1.0, 5) == round(irate2020, 5)
     # check implied inflation rate between 2021 and 2022 (after the reform)
     grate = float(pol._II_em[2022 - syr]) / float(pol._II_em[2021 - syr])
-    assert round(grate - 1.0, 6) == round(irate2021, 6)
+    assert round(grate - 1.0, 5) == round(irate2021, 5)
 
 
 def test_multi_year_reform():
@@ -279,17 +279,17 @@ def check_ii_em(ppo, reform, ifactor):
     e2016 = reform[2016]['_II_em'][0]
     assert actual[2016] == e2016
     e2017 = ifactor[2016] * actual[2016]
-    assert actual[2017] == e2017
+    assert np.allclose([actual[2017]], [e2017], atol=0.01, rtol=0.0)
     e2018 = ifactor[2017] * actual[2017]
-    assert actual[2018] == e2018
+    assert np.allclose([actual[2018]], [e2018], atol=0.01, rtol=0.0)
     e2019 = reform[2019]['_II_em'][0]
     assert actual[2019] == e2019
     e2020 = ifactor[2019] * actual[2019]
-    assert actual[2020] == e2020
+    assert np.allclose([actual[2020]], [e2020], atol=0.01, rtol=0.0)
     e2021 = ifactor[2020] * actual[2020]
-    assert actual[2021] == e2021
+    assert np.allclose([actual[2021]], [e2021], atol=0.01, rtol=0.0)
     e2022 = ifactor[2021] * actual[2021]
-    assert actual[2022] == e2022
+    assert np.allclose([actual[2022]], [e2022], atol=0.01, rtol=0.0)
 
 
 def check_ss_earnings_c(ppo, reform, wfactor):
@@ -315,9 +315,9 @@ def check_ss_earnings_c(ppo, reform, wfactor):
     e2020 = wfactor[2019] * actual[2019]  # indexing after 2019
     assert actual[2020] == e2020
     e2021 = wfactor[2020] * actual[2020]
-    assert actual[2021] == e2021
+    assert np.allclose([actual[2021]], [e2021], atol=0.01, rtol=0.0)
     e2022 = wfactor[2021] * actual[2021]
-    assert actual[2022] == e2022
+    assert np.allclose([actual[2022]], [e2022], atol=0.01, rtol=0.0)
 
 
 def test_create_parameters_from_file(policyfile):
@@ -542,11 +542,11 @@ def test_pop_the_cap_reform():
     assert mte[2015 - syr] == 118500
     assert mte[2016 - syr] == 118500
     # specify a "pop the cap" reform that eliminates MTE cap in 2016
-    reform = {2016: {'_SS_Earnings_c': [float('inf')]}}
+    reform = {2016: {'_SS_Earnings_c': [9e99]}}
     ppo.implement_reform(reform)
     assert mte[2015 - syr] == 118500
-    assert mte[2016 - syr] == float('inf')
-    assert mte[ppo.end_year - syr] == float('inf')
+    assert mte[2016 - syr] == 9e99
+    assert mte[ppo.end_year - syr] == 9e99
 
 
 def test_order_of_cpi_and_level_reforms():
