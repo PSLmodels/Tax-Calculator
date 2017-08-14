@@ -481,7 +481,7 @@ class Records(object):
             msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
         assert isinstance(WT, pd.DataFrame)
-        setattr(self, 'WT', WT)
+        setattr(self, 'WT', WT.astype(np.float64))
 
     def _read_ratios(self, ratios):
         """
