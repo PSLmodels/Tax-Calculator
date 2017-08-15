@@ -185,22 +185,25 @@ def test_benefits():
     benefits_path = os.path.join(os.path.join(Records.CUR_PATH,
                                  "benefits.csv.gz"))
     benefits = pd.read_csv(benefits_path, compression="gzip")
+    print(benefits.columns.tolist())
     rec = Records.cps_constructor(data=None,
                                   exact_calculations=False,
                                   growfactors=Growfactors(),
                                   benefits=benefits.copy(deep=True))
 
     assert rec.current_year == 2014
-    part_col_name = "Participation_{}".format(2014)
-    ben_col_name = "Benefit_{}".format(2014)
-    assert (np.allclose(rec.ssi_participation, benefits[part_col_name]) and
-            np.allclose(rec.ssi_benefits, benefits[ben_col_name]))
+    recip_col_name = "ssi_recipients_{}".format(2014)
+    ben_col_name = "ssi_benefits_{}".format(2014)
+    assert (np.allclose(rec.ssi_recipients,
+                        benefits[recip_col_name].values) and
+            np.allclose(rec.ssi_benefits, benefits[ben_col_name].values))
 
     for i in range(1, 13):
         rec.increment_year()
-        part_col_name = "Participation_{}".format(2014 + i)
-        ben_col_name = "Benefit_{}".format(2014 + i)
-        assert (np.allclose(rec.ssi_participation, benefits[part_col_name]) and
-                np.allclose(rec.ssi_benefits, benefits[ben_col_name]))
+        recip_col_name = "ssi_recipients_{}".format(2014 + i)
+        ben_col_name = "ssi_benefits_{}".format(2014 + i)
+        assert (np.allclose(rec.ssi_recipients,
+                            benefits[recip_col_name].values) and
+                np.allclose(rec.ssi_benefits, benefits[ben_col_name].values))
 
     assert rec.current_year == 2026

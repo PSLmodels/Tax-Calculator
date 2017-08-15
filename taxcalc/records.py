@@ -239,10 +239,12 @@ class Records(object):
         # minimum year allowed is 2014
         if self.benefits is not None:
             year = max(2014, self.current_year)
-            part_col_name = "Participation_{}".format(year)
-            self.ssi_participation = self.benefits.loc[:, part_col_name]
-            ben_col_name = "Benefit_{}".format(year)
-            self.ssi_benefits = self.benefits.loc[:, ben_col_name]
+            recip_col_name = "ssi_recipients_{}".format(year)
+            self.ssi_recipients = (self.benefits.loc[:, recip_col_name]
+                                   .astype(np.float64).values)
+            ben_col_name = "ssi_benefits_{}".format(year)
+            self.ssi_benefits = (self.benefits.loc[:, ben_col_name]
+                                 .astype(np.float64).values)
 
 
     def set_current_year(self, new_current_year):
@@ -567,7 +569,9 @@ class Records(object):
         # SNAP, SS, Medicare, and Medicaid
         # minimum year allowed is 2014
         year = max(2014, self.current_year)
-        part_col_name = "Participation_{}".format(year)
-        self.ssi_participation = self.benefits.loc[:, part_col_name]
-        benefit_col_name = "Benefit_{}".format(year)
-        self.ssi_benefits = self.benefits.loc[:, benefit_col_name]
+        recip_col_name = "ssi_recipients_{}".format(year)
+        self.ssi_recipients = (self.benefits.loc[:, recip_col_name]
+                               .astype(np.float64).values)
+        benefit_col_name = "ssi_benefits_{}".format(year)
+        self.ssi_benefits = (self.benefits.loc[:, benefit_col_name]
+                             .astype(np.float64).values)
