@@ -251,7 +251,7 @@ def test_with_pufcsv(puf_fullsample):
     adt = multiyear_diagnostic_table(calc, 1)
     taxes_fullsample = adt.loc["Combined Liability ($b)"]
     assert taxes_fullsample is not None
-    fulls_reform_revenue = taxes_fullsample.loc[analysis_year]
+    fulls_reform_revenue = float(taxes_fullsample.loc[analysis_year])
     # create a Public Use File object
     tax_data = puf_fullsample
     # call run_nth_year_tax_calc_model function
@@ -261,8 +261,8 @@ def test_with_pufcsv(puf_fullsample):
     total = restuple[len(restuple) - 1]  # the last of element of the tuple
     dropq_reform_revenue = float(total['combined_tax_9'])
     dropq_reform_revenue *= 1e-9  # convert to billions of dollars
-    diff = abs(fulls_reform_revenue - dropq_reform_revenue)
     # assert that dropq revenue is similar to the fullsample calculation
+    diff = abs(fulls_reform_revenue - dropq_reform_revenue)
     proportional_diff = diff / fulls_reform_revenue
     frmt = 'f,d,adiff,pdiff=  {:.4f}  {:.4f}  {:.4f}  {}'
     print(frmt.format(fulls_reform_revenue, dropq_reform_revenue,
