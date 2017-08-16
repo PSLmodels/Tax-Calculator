@@ -397,7 +397,11 @@ class ParametersBase(object):
         If necessary, pad out additional years by increasing the last given
         year using the given inflation_rates list.
         """
-        if isinstance(x, np.ndarray):
+        if not isinstance(x, np.ndarray):
+            return ParametersBase._expand_1D(np.array([x], dtype=np.float64),
+                                             inflate, inflation_rates,
+                                             num_years)
+        else:
             if len(x) >= num_years:
                 return x
             else:
@@ -415,8 +419,6 @@ class ParametersBase(object):
                              range(1, num_years - len(x) + 1)]
                 ans[len(x):] = extra
                 return ans
-        return ParametersBase._expand_1D(np.array([x], dtype=np.float64),
-                                         inflate, inflation_rates, num_years)
 
     @staticmethod
     def _expand_2D(x, inflate, inflation_rates, num_years):
@@ -427,7 +429,11 @@ class ParametersBase(object):
         number of rows. For each expanded row, we inflate using the given
         inflation rates list.
         """
-        if isinstance(x, np.ndarray):
+        if not isinstance(x, np.ndarray):
+            return ParametersBase._expand_2D(np.array(x, dtype=np.float64),
+                                             inflate, inflation_rates,
+                                             num_years)
+        else:
             # Look for -1s and create masks if present
             last_good_row = -1
             keep_user_data_mask = []
@@ -494,8 +500,6 @@ class ParametersBase(object):
                         user_vals = x * keep_user_data_mask
                         ans = ans + user_vals
                 return ans
-        return ParametersBase._expand_2D(np.array(x, dtype=np.float64),
-                                         inflate, inflation_rates, num_years)
 
     @staticmethod
     def _strip_nones(x):

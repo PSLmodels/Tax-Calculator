@@ -485,6 +485,7 @@ def test_expand_2d_accept_none():
                 [38000, 74000, 36900, 49400, 73800],
                 [40000, 74900, 37450, 50200, 74900],
                 [41000, None, None, None, None]]
+    # assume parameter is inflation indexed
     exp1 = 74900 * 1.02
     exp2 = 37450 * 1.02
     exp3 = 50200 * 1.02
@@ -493,15 +494,24 @@ def test_expand_2d_accept_none():
            [38000, 74000, 36900, 49400, 73800],
            [40000, 74900, 37450, 50200, 74900],
            [41000, exp1, exp2, exp3, exp4]]
-    exp = np.array(exp).astype('i4', casting='unsafe')
+    exp = np.array(exp)
     res = ParametersBase._expand_array(_II_brk2, inflate=True,
                                        inflation_rates=[0.02] * 5, num_years=4)
     assert np.allclose(res, exp, atol=0.01, rtol=0.0)
-
+    # assume parameter is not inflation indexed
+    exp = [[36000, 72250, 36500, 48600, 72500],
+           [38000, 74000, 36900, 49400, 73800],
+           [40000, 74900, 37450, 50200, 74900],
+           [41000, 74900, 37450, 50200, 74900]]
+    exp = np.array(exp, dtype='float64')
+    res = ParametersBase._expand_array(_II_brk2, inflate=False,
+                                       inflation_rates=[0.02] * 5, num_years=4)
+    assert np.allclose(res, exp, atol=0.01, rtol=0.0)
+    # assume parameter reform is done via implement_reform Policy method
     syr = 2013
     pol = Policy(start_year=syr)
     irates = pol.inflation_rates()
-    reform = {2016: {u'_II_brk2': _II_brk2}}
+    reform = {2016: {'_II_brk2': _II_brk2}}
     pol.implement_reform(reform)
     pol.set_year(2019)
     # The 2019 policy should be the combination of the user-defined
