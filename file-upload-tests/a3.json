@@ -1,6 +1,6 @@
 // a3.json assumes some customized analysis assumptions, which means:
 // - no consumption response when computing marginal tax rates
-// - some behavioral substitution response
+// - some behavioral substitution and income response
 // - no differences in baseline growth assumptions
 // - no growth response to reform
 {
