@@ -101,7 +101,8 @@
         "cpi_inflated": false,
         "col_var": "MARS",
         "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
-        "value": [[25000, 32000, 25000, 25000, 25000]]
+        "value": [[25000, 32000, 25000, 25000, 25000]],
+        "validations": {"min": 0, "max": "_SS_thd85"}
     },
 
     "_SS_percentage1": {
@@ -133,7 +134,8 @@
         "cpi_inflated": false,
         "col_var": "MARS",
         "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
-        "value": [[34000, 44000, 34000, 34000, 34000]]
+        "value": [[34000, 44000, 34000, 34000, 34000]],
+        "validations": {"min": "_SS_thd50"}
     },
 
     "_SS_percentage2": {
