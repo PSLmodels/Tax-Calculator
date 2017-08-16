@@ -69,8 +69,7 @@ def test_expand_1d_variable_rates():
     res = ParametersBase._expand_1D(ary, inflate=True,
                                     inflation_rates=irates, num_years=5)
     exp = np.array([4, 5, 9, 9 * 1.03, 9 * 1.03 * 1.035])
-    assert np.allclose(exp.astype('f4', casting='unsafe'), res,
-                       atol=0.01, rtol=0.0)
+    assert np.allclose(exp, res, atol=0.01, rtol=0.0)
 
 
 def test_expand_1d_scalar():
@@ -94,8 +93,7 @@ def test_expand_1d_accept_none():
     exp = np.array(exp)
     res = ParametersBase._expand_array(lst, inflate=True,
                                        inflation_rates=irates, num_years=5)
-    assert np.allclose(exp.astype('f4', casting='unsafe'), res,
-                       atol=0.01, rtol=0.0)
+    assert np.allclose(exp, res, atol=0.01, rtol=0.0)
 
 
 def test_expand_2d_short_array():
