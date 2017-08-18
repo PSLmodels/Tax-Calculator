@@ -690,7 +690,7 @@ def test_calc_all(reform_file, rawinputfile):
     calc.calc_all()
 
 
-def test_translate_json_reform_suffixes_mars():
+def test_translate_json_reform_suffixes_mars_indexed():
     # test read_json_param_files(...) using MARS-indexed parameter suffixes
     json1 = """{"policy": {
       "_II_em": {"2020": [20000], "2015": [15000]},
@@ -721,6 +721,40 @@ def test_translate_json_reform_suffixes_mars():
         if '_STD' in rdict2[year].keys():
             assert np.allclose(rdict1[year]['_STD'],
                                rdict2[year]['_STD'],
+                               atol=0.01, rtol=0.0)
+
+
+def test_translate_json_reform_suffixes_mars_non_indexed():
+    # test read_json_param_files(...) using MARS-indexed parameter suffixes
+    json1 = """{"policy": {
+      "_II_em": {"2020": [20000], "2015": [15000]},
+      "_AMEDT_ec_joint": {"2018": [400000], "2016": [300000]},
+      "_AMEDT_ec_separate": {"2017": [150000], "2019": [200000]}
+    }}"""
+    pdict1 = Calculator.read_json_param_files(reform_filename=json1,
+                                              assump_filename=None,
+                                              arrays_not_lists=True)
+    rdict1 = pdict1['policy']
+    json2 = """{"policy": {
+      "_AMEDT_ec": {"2016": [[200000, 300000, 125000, 200000, 200000]],
+                    "2017": [[200000, 300000, 150000, 200000, 200000]],
+                    "2018": [[200000, 400000, 150000, 200000, 200000]],
+                    "2019": [[200000, 400000, 200000, 200000, 200000]]},
+      "_II_em": {"2015": [15000], "2020": [20000]}
+    }}"""
+    pdict2 = Calculator.read_json_param_files(reform_filename=json2,
+                                              assump_filename=None,
+                                              arrays_not_lists=True)
+    rdict2 = pdict2['policy']
+    assert len(rdict2) == len(rdict1)
+    for year in rdict2.keys():
+        if '_II_em' in rdict2[year].keys():
+            assert np.allclose(rdict1[year]['_II_em'],
+                               rdict2[year]['_II_em'],
+                               atol=0.01, rtol=0.0)
+        if '_AMEDT_ec' in rdict2[year].keys():
+            assert np.allclose(rdict1[year]['_AMEDT_ec'],
+                               rdict2[year]['_AMEDT_ec'],
                                atol=0.01, rtol=0.0)
 
 
