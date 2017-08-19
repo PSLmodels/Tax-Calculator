@@ -804,3 +804,13 @@ def test_validate_param_values_errors():
     ref2 = {2021: {'_ID_Charity_crt_all': [0.60]}}
     with pytest.raises(ValueError):
         pol2.implement_reform(ref2)
+
+
+def test_indexing_rates_for_update():
+    """
+    Check private _indexing_rates_for_update method.
+    """
+    pol = Policy()
+    wgrates = pol._indexing_rates_for_update('_SS_Earnings_c', 2017, 10)
+    pirates = pol._indexing_rates_for_update('_II_em', 2017, 10)
+    assert len(wgrates) == len(pirates)
