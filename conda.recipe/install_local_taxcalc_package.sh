@@ -31,7 +31,8 @@ fi
 pversion=$(conda list python | awk '$1=="python"{print substr($2,1,3)}')
 
 # build taxcalc conda package for this version of Python
-conda build --python $pversion . 2>&1 | awk '$1~/BUILD/||$1~/TEST/'
+NOHASH=--old-build-string
+conda build $NOHASH --python $pversion . 2>&1 | awk '$1~/BUILD/||$1~/TEST/'
 
 # install taxcalc conda package
 echo "INSTALLATION..."
