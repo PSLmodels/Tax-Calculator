@@ -26,6 +26,10 @@ write_results puf-22-r1-a1.csv
 tc puf.csv 2022 --reform r1.json --assump a2.json > /dev/null
 write_results puf-22-r1-a2.csv
 
+# r1-a3 : reform r1.json and assumptions a3.json
+tc puf.csv 2022 --reform r1.json --assump a3.json > /dev/null
+write_results puf-22-r1-a3.csv
+
 if [ "$1" == "save" ]; then
     echo "Saving output files"
 else

@@ -305,6 +305,8 @@ class Policy(ParametersBase):
     # ----- begin private methods of Policy class -----
 
     VALIDATED_PARAMETERS = set([
+        '_SS_thd50',
+        '_SS_thd85',
         '_II_credit_prt',
         '_II_credit_nr_prt',
         '_ID_Medical_frt_add4aged',
