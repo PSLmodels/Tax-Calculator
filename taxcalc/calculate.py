@@ -374,20 +374,7 @@ class Calculator(object):
         in which case the file reading is skipped and the read_json_*_text
         method is called.
         """
-        # process first reform parameter
-        if reform_filename is None:
-            rpol_dict = dict()
-        elif isinstance(reform_filename, str):
-            if os.path.isfile(reform_filename):
-                txt = open(reform_filename, 'r').read()
-            else:
-                txt = reform_filename
-            rpol_dict = (
-                Calculator._read_json_policy_reform_text(txt,
-                                                         arrays_not_lists))
-        else:
-            raise ValueError('reform_filename is neither None nor str')
-        # process second assump parameter
+        # first process second assump parameter
         if assump_filename is None:
             cons_dict = dict()
             behv_dict = dict()
@@ -406,7 +393,21 @@ class Calculator(object):
                                                         arrays_not_lists))
         else:
             raise ValueError('assump_filename is neither None nor str')
-        # construct and return single composite dictionary
+        # next process first reform parameter
+        if reform_filename is None:
+            rpol_dict = dict()
+        elif isinstance(reform_filename, str):
+            if os.path.isfile(reform_filename):
+                txt = open(reform_filename, 'r').read()
+            else:
+                txt = reform_filename
+            rpol_dict = (
+                Calculator._read_json_policy_reform_text(txt,
+                                                         arrays_not_lists,
+                                                         gdiff_base_dict))
+        else:
+            raise ValueError('reform_filename is neither None nor str')
+        # finally construct and return single composite dictionary
         param_dict = dict()
         param_dict['policy'] = rpol_dict
         param_dict['consumption'] = cons_dict
@@ -495,7 +496,8 @@ class Calculator(object):
         IITAX(self.policy, self.records)
 
     @staticmethod
-    def _read_json_policy_reform_text(text_string, arrays_not_lists):
+    def _read_json_policy_reform_text(text_string, arrays_not_lists,
+                                      growdiff_baseline_dict):
         """
         Strip //-comments from text_string and return 1 dict based on the JSON.
 
@@ -547,7 +549,8 @@ class Calculator(object):
                 msg = 'key "{}" should be in economic assumption file'
                 raise ValueError(msg.format(rkey))
         # convert raw_dict['policy'] dictionary into prdict
-        tdict = Policy.translate_json_reform_suffixes(raw_dict['policy'])
+        tdict = Policy.translate_json_reform_suffixes(raw_dict['policy'],
+                                                      growdiff_baseline_dict)
         prdict = Calculator._convert_parameter_dict(tdict, arrays_not_lists)
         return prdict
 
