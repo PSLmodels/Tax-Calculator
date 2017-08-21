@@ -12,7 +12,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.124]
+        "value": [0.124],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_SS_Earnings_c": {
@@ -36,7 +40,11 @@
                   117000,
                   118500,
                   118500,
-                  127200]
+                  127200],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_FICA_mc_trt": {
@@ -52,7 +60,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.029]
+        "value": [0.029],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_AMEDT_ec": {
@@ -68,7 +80,11 @@
         "cpi_inflated": false,
         "col_var": "MARS",
         "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
-        "value": [[200000, 250000, 125000, 200000, 200000]]
+        "value": [[200000, 250000, 125000, 200000, 200000]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_AMEDT_rt": {
@@ -84,7 +100,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.009]
+        "value": [0.009],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
 
@@ -102,7 +122,10 @@
         "col_var": "MARS",
         "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[25000, 32000, 25000, 25000, 25000]],
-        "validations": {"min": 0, "max": "_SS_thd85"}
+        "range": {"min": 0, "max": "_SS_thd85"},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "for _SS_thd85",
+        "out_of_range_action": "stop"
     },
 
     "_SS_percentage1": {
@@ -118,7 +141,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.5]
+        "value": [0.5],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_SS_thd85": {
@@ -135,7 +162,10 @@
         "col_var": "MARS",
         "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "value": [[34000, 44000, 34000, 34000, 34000]],
-        "validations": {"min": "_SS_thd50"}
+        "range": {"min": "_SS_thd50", "max": 9e99},
+        "out_of_range_minmsg": "for _SS_thd50",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_SS_percentage2": {
@@ -151,7 +181,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.85]
+        "value": [0.85],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
 
@@ -161,14 +195,18 @@
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "irs_ref": "Form 1040, line 33",
-        "notes": "The final adjustment amount will be (1- Haircut) * Student Loan Interest. ",
+        "notes": "The final adjustment amount will be (1-Haircut)*StudentLoanInterest.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ALD_SelfEmploymentTax_hc": {
@@ -177,14 +215,18 @@
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "irs_ref": "Form 1040, line 27",
-        "notes": "The final adjustment amount would be (1 - Haircut) * Self Employment Tax Adjustment. ",
+        "notes": "The final adjustment amount would be (1-Haircut)*SelfEmploymentTaxAdjustment.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ALD_SelfEmp_HealthIns_hc": {
@@ -193,62 +235,78 @@
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "irs_ref": "Form 1040, line 29",
-        "notes": "The final adjustment amount would be (1 - Haircut) * self-employed health insurance adjustment. ",
+        "notes": "The final adjustment amount would be (1-Haircut)*SelfEmployedHealthInsuranceAdjustment.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ALD_KEOGH_SEP_hc": {
-        "long_name": "Adjustment for payment to either KEOGH or SEP plan haircut",
-        "description": "Under current law, payments to Keogh or SEP plans can be fully deducted from gross income. Taxpayers can use this haircut to limit the adjustment allowed. ",
+        "long_name": "Adjustment for contributions to either KEOGH or SEP plan haircut",
+        "description": "Under current law, contributions to Keogh or SEP plans can be fully deducted from gross income.  This haircut can be used to limit the adjustment allowed.",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "irs_ref": "Form 1040, line 28",
-        "notes": "The final adjustment amount is (1 - Haircut) * KEOGH/SEP plan payments",
+        "notes": "The final adjustment amount is (1-Haircut)*KEOGH_SEP_Contributinos.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ALD_EarlyWithdraw_hc": {
-        "long_name": "Adjustment for forfeited interest penalty haircut",
-        "description": "Under current law, early withdraw penalty can be fully deducted from gross income. Taxpayers can use this haircut to limit the adjustment allowed.",
+        "long_name": "Adjustment for early withdrawal penalty haircut",
+        "description": "Under current law, early withdraw penalty can be fully deducted from gross income. This haircut can be used to limit the adjustment allowed.",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "irs_ref": "Form 1040, line 30",
-        "notes": "The final adjustment amount is (1 - Haircut) * Early withdraw penalty",
+        "notes": "The final adjustment amount is (1-Haircut)*EarlyWithdrawPenalty.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ALD_Alimony_hc": {
         "long_name": "Adjustment for alimony payment haircut",
-        "description": "Under current law, the full amount of alimony payment is taken as an adjustment from gross income in arriving at AGI. Taxpayers can use this haircut to limit the deduction allowed.",
+        "description": "Under current law, the full amount of alimony payment is taken as an adjustment from gross income in arriving at AGI. This haircut can be used to limit the deduction allowed.",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "irs_ref": "Form 1040, line 31",
-        "notes": "The final adjustment amount would be (1 - Haircut) * Alimony Payments",
+        "notes": "The final adjustment amount would be (1-Haircut)*AlimonyPayments.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ALD_EducatorExpenses_hc": {
@@ -257,14 +315,18 @@
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "irs_ref": "",
-        "notes": "The final adjustment amount would be (1 - Haircut) * Educator Expenses",
+        "notes": "The final adjustment amount would be (1-Haircut)*EducatorExpenses.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ALD_HSADeduction_hc": {
@@ -273,14 +335,18 @@
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "irs_ref": "",
-        "notes": "The final adjustment amount would be (1 - Haircut) * HSA Deduction",
+        "notes": "The final adjustment amount would be (1-Haircut)*HSA_Deduction.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ALD_IRAContributions_hc": {
@@ -289,14 +355,18 @@
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "irs_ref": "",
-        "notes": "The final adjustment amount would be (1 - Haircut) * IRA Contribution",
+        "notes": "The final adjustment amount would be (1-Haircut)*IRA_Contribution.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ALD_DomesticProduction_hc": {
@@ -305,14 +375,18 @@
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "irs_ref": "",
-        "notes": "The final adjustment amount would be (1 - Haircut) * Domestic Production Activity",
+        "notes": "The final adjustment amount would be (1-Haircut)*DomesticProductionActivity.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ALD_Tuition_hc": {
@@ -321,14 +395,18 @@
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "irs_ref": "",
-        "notes": "The final adjustment amount would be (1 - Haircut) * Tuition and Fees",
+        "notes": "The final adjustment amount would be (1-Haircut)*TuitionFees.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ALD_InvInc_ec_rt": {
@@ -344,7 +422,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ALD_InvInc_ec_base_RyanBrady": {
@@ -360,7 +442,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [false]
+        "value": [false],
+        "range": {"min": false, "max": true},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ALD_Dependents_hc": {
@@ -369,14 +455,18 @@
         "section_1": "Above The Line Deductions",
         "section_2": "Child And Elderly Care",
         "irs_ref": "",
-        "notes": "The final adjustment would be (1 - Haircut) * Average childcare costs",
+        "notes": "The final adjustment would be (1-Haircut)*AverageChildcareCosts.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ALD_Dependents_Child_c": {
@@ -400,12 +490,16 @@
                   0.0,
                   0.0,
                   0.0,
-                  0.0]
+                  0.0],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ALD_Dependents_Elder_c": {
         "long_name": "Ceiling for elderly care deduction proposed in Trump's tax plan",
-        "description": "A tax payer can take an above the line deduction up to this amount if they have an elderly dependent. The Trump 2016 campaign proposal was for $5000.",
+        "description": "A taxpayer can take an above the line deduction up to this amount if they have an elderly dependent. The Trump 2016 campaign proposal was for $5000.",
         "section_1": "Above The Line Deductions",
         "section_2": "Child And Elderly Care",
         "irs_ref": "",
@@ -424,7 +518,11 @@
                   0.0,
                   0.0,
                   0.0,
-                  0.0]
+                  0.0],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ALD_Dependents_thd": {
@@ -440,7 +538,11 @@
         "cpi_inflated": false,
         "col_var": "MARS",
         "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
-        "value": [[0.0, 0.0, 0.0, 0.0, 0.0]]
+        "value": [[0.0, 0.0, 0.0, 0.0, 0.0]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_II_em": {
@@ -464,7 +566,11 @@
                   3950,
                   4000,
                   4050,
-                  4050]
+                  4050],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_II_em_ps": {
@@ -488,7 +594,11 @@
                   [254200, 305050, 152525, 279650, 305050],
                   [258250, 309900, 154950, 284040, 309900],
                   [259400, 311300, 155650, 285350, 311300],
-                  [261500, 313800, 156900, 287650, 313800]]
+                  [261500, 313800, 156900, 287650, 313800]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_II_prt": {
@@ -504,7 +614,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.02]
+        "value": [0.02],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_II_no_em_nu18": {
@@ -520,7 +634,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [false]
+        "value": [false],
+        "range": {"min": false, "max": true},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_STD": {
@@ -529,7 +647,7 @@
         "section_1": "Standard Deduction",
         "section_2": "Standard Deduction Amount",
         "irs_ref": "form 1040, line 40, instruction (Formside notes).",
-        "notes": "This parameter cannot be decreased due to lack of data.",
+        "notes": "This parameter should not be decreased because current data have no itemized expenses for non-itemizers.",
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
@@ -545,7 +663,10 @@
                   [6300, 12600, 6300, 9250, 12600],
                   [6300, 12600, 6300, 9300, 12600],
                   [6350, 12700, 6350, 9350, 12700]],
-        "validations": {"min": "default"}
+        "range": {"min": "default", "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "warn"
     },
 
     "_STD_Dep": {
@@ -554,7 +675,7 @@
         "section_1": "",
         "section_2": "",
         "irs_ref": "form 1040, line 40, instructions.",
-        "notes": "This parameter cannot be decreased due to lack of data.",
+        "notes": "This parameter should not be decreased because current data have no itemized expenses for non-itemizers.",
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
@@ -569,7 +690,11 @@
                   1000,
                   1050,
                   1050,
-                  1050]
+                  1050],
+        "range": {"min": "default", "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "warn"
     },
 
     "_STD_Aged": {
@@ -593,7 +718,11 @@
                   [1550, 1200, 1200, 1550, 1550],
                   [1550, 1250, 1250, 1550, 1550],
                   [1550, 1250, 1250, 1550, 1550],
-                  [1550, 1250, 1250, 1550, 1550]]
+                  [1550, 1250, 1250, 1550, 1550]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_STD_allow_charity_ded_nonitemizers": {
@@ -609,7 +738,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [false]
+        "value": [false],
+        "range": {"min": false, "max": true},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_II_credit": {
@@ -633,8 +766,11 @@
                   [0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0],
-                  [0, 0, 0, 0, 0]]
-
+                  [0, 0, 0, 0, 0]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_II_credit_ps": {
@@ -658,7 +794,11 @@
                   [0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0],
-                  [0, 0, 0, 0, 0]]
+                  [0, 0, 0, 0, 0]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_II_credit_prt": {
@@ -675,7 +815,10 @@
         "col_var": "",
         "col_label": "",
         "value": [0.0],
-        "validations": {"min": 0}
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_II_credit_nr": {
@@ -699,7 +842,11 @@
                   [0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0],
-                  [0, 0, 0, 0, 0]]
+                  [0, 0, 0, 0, 0]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_II_credit_nr_ps": {
@@ -723,7 +870,11 @@
                   [0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0],
-                  [0, 0, 0, 0, 0]]
+                  [0, 0, 0, 0, 0]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_II_credit_nr_prt": {
@@ -740,7 +891,10 @@
         "col_var": "",
         "col_label": "",
         "value": [0.0],
-        "validations": {"min": 0}
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_Medical_frt": {
@@ -749,7 +903,7 @@
         "section_1": "Itemized Deductions",
         "section_2": "Medical Expenses",
         "irs_ref": "Form 1040 Schedule A, line 3, in-line. ",
-        "notes": "This rate cannot be decreased to lower than 0.1 due to limited data on non-itemizers.",
+        "notes": "This rate should not be decreased below 0.1 due to limited data on non-itemizers.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
@@ -757,7 +911,10 @@
         "col_var": "",
         "col_label": "",
         "value": [0.1],
-        "validations": {"min": 0.1}
+        "range": {"min": 0.1, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "warn"
     },
 
     "_ID_Medical_frt_add4aged": {
@@ -766,7 +923,7 @@
         "section_1": "Itemized Deductions",
         "section_2": "Medical Expenses",
         "irs_ref": "Form 1040 Schedule A, line 3, in-line. ",
-        "notes": "This addon cannot be decreased to lower than -0.025 due to limited data on elderly non-itemizers.",
+        "notes": "This addon should not be decreased below -0.025 because of limited data on elderly non-itemizers.",
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
@@ -782,7 +939,10 @@
                   -0.025,
                   -0.025,
                   0.0],
-        "validations": {"min": -0.025, "max": 0.0}
+        "range": {"min": -0.025, "max": 0.0},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "warn"
     },
 
     "_ID_Medical_hc": {
@@ -798,7 +958,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_Medical_c": {
@@ -822,7 +986,11 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
-                  [9e99, 9e99, 9e99, 9e99, 9e99]]
+                  [9e99, 9e99, 9e99, 9e99, 9e99]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_StateLocalTax_hc": {
@@ -838,7 +1006,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_StateLocalTax_c": {
@@ -862,7 +1034,11 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
-                  [9e99, 9e99, 9e99, 9e99, 9e99]]
+                  [9e99, 9e99, 9e99, 9e99, 9e99]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_RealEstate_hc": {
@@ -878,7 +1054,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_RealEstate_c": {
@@ -902,7 +1082,11 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
-                  [9e99, 9e99, 9e99, 9e99, 9e99]]
+                  [9e99, 9e99, 9e99, 9e99, 9e99]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_InterestPaid_hc": {
@@ -918,7 +1102,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_InterestPaid_c": {
@@ -942,7 +1130,11 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
-                  [9e99, 9e99, 9e99, 9e99, 9e99]]
+                  [9e99, 9e99, 9e99, 9e99, 9e99]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_Charity_crt_all": {
@@ -951,7 +1143,7 @@
         "section_1": "Itemized Deductions",
         "section_2": "Charity",
         "irs_ref": "Pub. 526, Limits on Deductions: 50% Limit Organizations. ",
-        "notes": "This rate cannot be increased to higher 0.5 due to lack of data. ",
+        "notes": "This rate should not be increased beyond 0.5 because lack of data on charitable deductions not itemized. ",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
@@ -959,7 +1151,10 @@
         "col_var": "",
         "col_label": "",
         "value": [0.5],
-        "validations": {"max": 0.5}
+        "range": {"min": 0.0, "max": 0.5},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "warn"
     },
 
     "_ID_Charity_crt_noncash": {
@@ -968,7 +1163,7 @@
         "section_1": "Itemized Deductions",
         "section_2": "Charity",
         "irs_ref": "Pub 526, Limits on Deductions: Special 30% Limit for Capital Gain Property.",
-        "notes": "This rate cannot be increased to higher than 0.3 due to lack of data. ",
+        "notes": "This rate should not be increased beyond 0.3 due to lack of data on charitable cash contributions not itemized.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
@@ -976,7 +1171,10 @@
         "col_var": "",
         "col_label": "",
         "value": [0.3],
-        "validations": {"max": 0.3}
+        "range": {"min": 0.0, "max": 0.3},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "warn"
     },
 
     "_ID_Charity_frt": {
@@ -993,7 +1191,10 @@
         "col_var": "",
         "col_label": "",
         "value": [0.0],
-        "validations": {"min": 0.0}
+        "range": {"min": 0.0, "max": 1.0},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
 
@@ -1010,7 +1211,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_Charity_c": {
@@ -1034,7 +1239,11 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
-                  [9e99, 9e99, 9e99, 9e99, 9e99]]
+                  [9e99, 9e99, 9e99, 9e99, 9e99]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_Casualty_frt": {
@@ -1043,7 +1252,7 @@
         "section_1": "Itemized Deductions",
         "section_2": "Casualty",
         "irs_ref": "Form 4684, line 17, in-line.",
-        "notes": "This rate cannot be decreased to lower than 0.10 due to lack of data. ",
+        "notes": "This rate should not be decreased below 0.10 because lack of data.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
@@ -1051,7 +1260,10 @@
         "col_var": "",
         "col_label": "",
         "value": [0.1],
-        "validations": {"min": 0.1}
+        "range": {"min": 0.1, "max": 1.0},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "warn"
     },
 
     "_ID_Casualty_hc": {
@@ -1067,7 +1279,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_Casualty_c": {
@@ -1091,7 +1307,11 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
-                  [9e99, 9e99, 9e99, 9e99, 9e99]]
+                  [9e99, 9e99, 9e99, 9e99, 9e99]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_Miscellaneous_frt": {
@@ -1100,7 +1320,7 @@
         "section_1": "Itemized Deductions",
         "section_2": "Miscellaneous",
         "irs_ref": "Form 1040 Schedule A, line 28, instructions. ",
-        "notes": "This rate cannot be decreased to lower than 0.02 due to lack of data. ",
+        "notes": "This rate should not be decreased below 0.02 because of lack of data.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
@@ -1108,7 +1328,10 @@
         "col_var": "",
         "col_label": "",
         "value": [0.02],
-        "validations": {"min": 0.02}
+        "range": {"min": 0.02, "max": 1.00},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "warn"
     },
 
     "_ID_Miscellaneous_hc": {
@@ -1124,7 +1347,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_Miscellaneous_c": {
@@ -1148,7 +1375,11 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
-                  [9e99, 9e99, 9e99, 9e99, 9e99]]
+                  [9e99, 9e99, 9e99, 9e99, 9e99]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_ps": {
@@ -1172,7 +1403,11 @@
                   [254200, 305050, 152525, 279650, 305050],
                   [258250, 309900, 154950, 284050, 309900],
                   [259400, 311300, 155650, 285350, 311300],
-                  [261500, 313800, 156900, 287650, 313800]]
+                  [261500, 313800, 156900, 287650, 313800]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_prt": {
@@ -1188,7 +1423,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.03]
+        "value": [0.03],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_crt": {
@@ -1197,14 +1436,18 @@
         "section_1": "Itemized Deductions",
         "section_2": "Itemized Deduction Limitation",
         "irs_ref": "Form 1040 Schedule A, line 29, instructions. ",
-        "notes": "The ceiling rate cannot be increased above 0.8 due to limited data on non-itemizers.",
+        "notes": "The ceiling rate should not be increased beyond 0.8 due to limited data on non-itemizers.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.8]
+        "value": [0.8],
+        "range": {"min": 0.0, "max": 0.8},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "warn"
     },
 
     "_ID_BenefitSurtax_trt": {
@@ -1220,7 +1463,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
 
@@ -1237,7 +1484,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [1.0]
+        "value": [1.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_BenefitSurtax_em": {
@@ -1261,7 +1512,11 @@
                   [0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0],
-                  [0, 0, 0, 0, 0]]
+                  [0, 0, 0, 0, 0]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_BenefitSurtax_Switch": {
@@ -1277,7 +1532,11 @@
         "cpi_inflated": false,
         "col_var": "idedtype",
         "col_label": ["medical", "statelocal", "realestate", "casualty", "misc", "interest", "charity"],
-        "value": [[true, true, true, true, true, true, true]]
+        "value": [[true, true, true, true, true, true, true]],
+        "range": {"min": false, "max": true},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_BenefitCap_rt": {
@@ -1293,7 +1552,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [1.0]
+        "value": [1.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
 
@@ -1310,7 +1573,11 @@
         "cpi_inflated": false,
         "col_var": "idedtype",
         "col_label": ["medical", "statelocal", "realestate", "casualty", "misc", "interest", "charity"],
-        "value": [[true, true, true, true, true, true, true]]
+        "value": [[true, true, true, true, true, true, true]],
+        "range": {"min": false, "max": true},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ID_c": {
@@ -1334,7 +1601,11 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
-                  [9e99, 9e99, 9e99, 9e99, 9e99]]
+                  [9e99, 9e99, 9e99, 9e99, 9e99]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CG_rt1": {
@@ -1350,7 +1621,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CG_brk1": {
@@ -1374,7 +1649,11 @@
                   [36900, 73800, 36900, 49400, 73800],
                   [37450, 74900, 37450, 50200, 74900],
                   [37650, 75300, 37650, 50400, 75300],
-                  [37950, 75900, 37950, 50800, 75900]]
+                  [37950, 75900, 37950, 50800, 75900]],
+        "range": {"min": 0, "max": "_CG_brk2"},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "for _CG_brk2",
+        "out_of_range_action": "stop"
     },
 
     "_CG_rt2": {
@@ -1390,7 +1669,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.15]
+        "value": [0.15],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CG_brk2": {
@@ -1414,7 +1697,11 @@
                   [406750, 457600, 228800, 432200, 457600],
                   [413200, 464850, 232425, 439000, 464850],
                   [415050, 466950, 233475, 441000, 466950],
-                  [418400, 470700, 235350, 444550, 470700]]
+                  [418400, 470700, 235350, 444550, 470700]],
+        "range": {"min": "_CG_brk1", "max": "_CG_brk3"},
+        "out_of_range_minmsg": "for _CG_brk1",
+        "out_of_range_maxmsg": "for _CG_brk3",
+        "out_of_range_action": "stop"
     },
 
     "_CG_rt3": {
@@ -1430,7 +1717,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.20]
+        "value": [0.20],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CG_brk3": {
@@ -1454,7 +1745,11 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
-                  [9e99, 9e99, 9e99, 9e99, 9e99]]
+                  [9e99, 9e99, 9e99, 9e99, 9e99]],
+        "range": {"min": "_CG_brk2", "max": 9e99},
+        "out_of_range_minmsg": "for _CG_brk2",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CG_rt4": {
@@ -1470,7 +1765,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [1.0]
+        "value": [1.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
 
@@ -1487,7 +1786,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_AMT_CG_brk1": {
@@ -1511,7 +1814,11 @@
                   [36900, 73800, 36900, 49400, 73800],
                   [37450, 74900, 37450, 50200, 74900],
                   [37650, 75300, 37650, 50400, 75300],
-                  [37950, 75900, 37950, 50800, 75900]]
+                  [37950, 75900, 37950, 50800, 75900]],
+        "range": {"min": 0, "max": "_AMT_CG_brk2"},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "for _AMT_CG_brk2",
+        "out_of_range_action": "stop"
     },
 
 
@@ -1528,7 +1835,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.15]
+        "value": [0.15],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_AMT_CG_brk2": {
@@ -1552,7 +1863,11 @@
                   [406750, 457600, 228800, 432200, 457600],
                   [413200, 464850, 232425, 439000, 464850],
                   [415050, 466950, 233475, 441000, 466950],
-                  [418400, 470700, 235350, 444550, 470700]]
+                  [418400, 470700, 235350, 444550, 470700]],
+        "range": {"min": "_AMT_CG_brk1", "max": "_AMT_CG_brk3"},
+        "out_of_range_minmsg": "for _AMT_CG_brk1",
+        "out_of_range_maxmsg": "for _AMT_CG_brk3",
+        "out_of_range_action": "stop"
     },
 
     "_AMT_CG_rt3": {
@@ -1568,7 +1883,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.20]
+        "value": [0.20],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_AMT_CG_brk3": {
@@ -1592,7 +1911,11 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
-                  [9e99, 9e99, 9e99, 9e99, 9e99]]
+                  [9e99, 9e99, 9e99, 9e99, 9e99]],
+        "range": {"min": "_AMT_CG_brk2", "max": 9e99},
+        "out_of_range_minmsg": "for _AMT_CG_brk2",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_AMT_CG_rt4": {
@@ -1608,7 +1931,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [1.0]
+        "value": [1.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
 
@@ -1625,7 +1952,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [false]
+        "value": [false],
+        "range": {"min": false, "max": true},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CG_ec": {
@@ -1649,12 +1980,16 @@
                   0.0,
                   0.0,
                   0.0,
-                  0.0]
+                  0.0],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CG_reinvest_ec_rt": {
         "long_name": "Fraction of all capital gains and qualified dividends in excess of the dollar exclusion that are excluded from AGI.",
-        "description": "Positive value used only if long term capital gains and qualified dividends taxed no differently than regular taxable income.  To limit the exclusion to capital gains and dividends invested within 1 year, set to statutory exclusion rate times the fraction of capital gains and qualified dividends in excess of the exclusion that are assumed to be reinvested within the year.",
+        "description": "Positive value used only if long term capital gains and qualified dividends taxed no differently than regular taxable income.  To limit the exclusion to capital gains and dividends invested within one year, set to statutory exclusion rate times the fraction of capital gains and qualified dividends in excess of the exclusion that are assumed to be reinvested within the year.",
         "section_1": "Capital Gains And Dividends",
         "section_2": "Tax All Capital Gains And Dividends The Same As Regular Taxable Income",
         "irs_ref": "",
@@ -1665,7 +2000,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_II_rt1": {
@@ -1681,7 +2020,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.1]
+        "value": [0.1],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_II_brk1": {
@@ -1706,7 +2049,10 @@
                   [9225, 18450, 9225, 13150, 18450],
                   [9275, 18550, 9275, 13250, 18550],
                   [9325, 18650, 9325, 13350, 18650]],
-        "validations": {"min": 0, "max": "_II_brk2"}
+        "range": {"min": 0, "max": "_II_brk2"},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "for _II_brk2",
+        "out_of_range_action": "stop"
     },
 
     "_II_rt2": {
@@ -1722,7 +2068,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.15]
+        "value": [0.15],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
 
@@ -1748,7 +2098,10 @@
                   [37450, 74900, 37450, 50200, 74900],
                   [37650, 75300, 37650, 50400, 75300],
                   [37950, 75900, 37950, 50800, 75900]],
-        "validations": {"min": "_II_brk1", "max": "_II_brk3"}
+        "range": {"min": "_II_brk1", "max": "_II_brk3"},
+        "out_of_range_minmsg": "for _II_brk1",
+        "out_of_range_maxmsg": "for _II_brk3",
+        "out_of_range_action": "stop"
     },
 
     "_II_rt3": {
@@ -1764,7 +2117,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.25]
+        "value": [0.25],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_II_brk3": {
@@ -1789,7 +2146,10 @@
                   [90750, 151200, 75600, 129600, 151200],
                   [91150, 151900, 75950, 130150, 151900],
                   [91900, 153100, 76550, 131200, 153100]],
-        "validations": {"min": "_II_brk2", "max": "_II_brk4"}
+        "range": {"min": "_II_brk2", "max": "_II_brk4"},
+        "out_of_range_minmsg": "for _II_brk2",
+        "out_of_range_maxmsg": "for _II_brk4",
+        "out_of_range_action": "stop"
     },
 
     "_II_rt4": {
@@ -1805,7 +2165,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.28]
+        "value": [0.28],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_II_brk4": {
@@ -1830,7 +2194,10 @@
                   [189300, 230450, 115225, 209850, 230450],
                   [190150, 231450, 115725, 210800, 231450],
                   [191650, 233350, 116675, 212500, 233350]],
-        "validations": {"min": "_II_brk3", "max": "_II_brk5"}
+        "range": {"min": "_II_brk3", "max": "_II_brk5"},
+        "out_of_range_minmsg": "for _II_brk3",
+        "out_of_range_maxmsg": "for _II_brk5",
+        "out_of_range_action": "stop"
     },
 
     "_II_rt5": {
@@ -1846,7 +2213,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.33]
+        "value": [0.33],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_II_brk5": {
@@ -1871,7 +2242,10 @@
                   [411500, 411500, 205750, 411500, 411500],
                   [413350, 413350, 206675, 413350, 413350],
                   [416700, 416700, 208350, 416700, 416700]],
-        "validations": {"min": "_II_brk4", "max": "_II_brk6"}
+        "range": {"min": "_II_brk4", "max": "_II_brk6"},
+        "out_of_range_minmsg": "for _II_brk4",
+        "out_of_range_maxmsg": "for _II_brk6",
+        "out_of_range_action": "stop"
     },
 
 
@@ -1888,7 +2262,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.35]
+        "value": [0.35],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_II_brk6": {
@@ -1913,7 +2291,10 @@
                   [413200, 464850, 232425, 439000, 464850],
                   [415050, 466950, 233475, 441000, 466950],
                   [418400, 470700, 235350, 444550, 470700]],
-        "validations": {"min": "_II_brk5", "max": "_II_brk7"}
+        "range": {"min": "_II_brk5", "max": "_II_brk7"},
+        "out_of_range_minmsg": "for _II_brk5",
+        "out_of_range_maxmsg": "for _II_brk7",
+        "out_of_range_action": "stop"
     },
 
     "_II_rt7": {
@@ -1929,7 +2310,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.396]
+        "value": [0.396],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_II_brk7": {
@@ -1954,7 +2339,10 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99]],
-        "validations": {"min": "_II_brk6"}
+        "range": {"min": "_II_brk6", "max": 9e99},
+        "out_of_range_minmsg": "for _II_brk6",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_II_rt8": {
@@ -1970,7 +2358,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [1.0]
+        "value": [1.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
 
@@ -1988,7 +2380,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.1]
+        "value": [0.1],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_PT_brk1": {
@@ -2013,7 +2409,10 @@
                   [9225, 18450, 9225, 13150, 18450],
                   [9275, 18550, 9275, 13250, 18550],
                   [9325, 18650, 9325, 13350, 18650]],
-        "validations": {"min": 0, "max": "_PT_brk2"}
+        "range": {"min": 0, "max": "_PT_brk2"},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "for _PT_brk2",
+        "out_of_range_action": "stop"
     },
 
     "_PT_rt2": {
@@ -2029,7 +2428,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.15]
+        "value": [0.15],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
 
@@ -2055,7 +2458,10 @@
                   [37450, 74900, 37450, 50200, 74900],
                   [37650, 75300, 37650, 50400, 75300],
                   [37950, 75900, 37950, 50800, 75900]],
-        "validations": {"min": "_PT_brk1", "max": "_PT_brk3"}
+        "range": {"min": "_PT_brk1", "max": "_PT_brk3"},
+        "out_of_range_minmsg": "for _PT_brk1",
+        "out_of_range_maxmsg": "for _PT_brk3",
+        "out_of_range_action": "stop"
     },
 
     "_PT_rt3": {
@@ -2071,7 +2477,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.25]
+        "value": [0.25],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_PT_brk3": {
@@ -2096,7 +2506,10 @@
                   [90750, 151200, 75600, 129600, 151200],
                   [91150, 151900, 75950, 130150, 151900],
                   [91900, 153100, 76550, 131200, 153100]],
-        "validations": {"min": "_PT_brk2", "max": "_PT_brk4"}
+        "range": {"min": "_PT_brk2", "max": "_PT_brk4"},
+        "out_of_range_minmsg": "for _PT_brk2",
+        "out_of_range_maxmsg": "for _PT_brk4",
+        "out_of_range_action": "stop"
     },
 
     "_PT_rt4": {
@@ -2112,7 +2525,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.28]
+        "value": [0.28],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_PT_brk4": {
@@ -2137,7 +2554,10 @@
                   [189300, 230450, 115225, 209850, 230450],
                   [190150, 231450, 115725, 210800, 231450],
                   [191650, 233350, 116675, 212500, 233350]],
-        "validations": {"min": "_PT_brk3", "max": "_PT_brk5"}
+        "range": {"min": "_PT_brk3", "max": "_PT_brk5"},
+        "out_of_range_minmsg": "for _PT_brk3",
+        "out_of_range_maxmsg": "for _PT_brk5",
+        "out_of_range_action": "stop"
     },
 
     "_PT_rt5": {
@@ -2153,7 +2573,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.33]
+        "value": [0.33],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_PT_brk5": {
@@ -2178,7 +2602,10 @@
                   [411500, 411500, 205750, 411500, 411500],
                   [413350, 413350, 206675, 413350, 413350],
                   [416700, 416700, 208350, 416700, 416700]],
-        "validations": {"min": "_PT_brk4", "max": "_PT_brk6"}
+        "range": {"min": "_PT_brk4", "max": "_PT_brk6"},
+        "out_of_range_minmsg": "for _PT_brk4",
+        "out_of_range_maxmsg": "for _PT_brk6",
+        "out_of_range_action": "stop"
     },
 
     "_PT_rt6": {
@@ -2194,7 +2621,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.35]
+        "value": [0.35],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_PT_brk6": {
@@ -2219,7 +2650,10 @@
                   [413200, 464850, 232425, 439000, 464850],
                   [415050, 466950, 233475, 441000, 466950],
                   [418400, 470700, 235350, 444550, 470700]],
-        "validations": {"min": "_PT_brk5", "max": "_PT_brk7"}
+        "range": {"min": "_PT_brk5", "max": "_PT_brk7"},
+        "out_of_range_minmsg": "for _PT_brk5",
+        "out_of_range_maxmsg": "for _PT_brk7",
+        "out_of_range_action": "stop"
     },
 
     "_PT_rt7": {
@@ -2235,7 +2669,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.396]
+        "value": [0.396],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_PT_brk7": {
@@ -2260,7 +2698,10 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99]],
-        "validations": {"min": "_PT_brk6"}
+        "range": {"min": "_PT_brk6", "max": 9e99},
+        "out_of_range_minmsg": "for _PT_brk6",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_PT_rt8": {
@@ -2276,8 +2717,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [1.0]
-
+        "value": [1.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
 
@@ -2303,7 +2747,11 @@
                   [52800, 82100, 41050, 52800, 82100],
                   [53600, 83400, 41700, 53600, 83400],
                   [53900, 83800, 41900, 53900, 83800],
-                  [54300, 84500, 42250, 54300, 84500]]
+                  [54300, 84500, 42250, 54300, 84500]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_AMT_prt": {
@@ -2320,7 +2768,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.25]
+        "value": [0.25],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_AMT_em_ps": {
@@ -2345,7 +2797,11 @@
                   [117300, 156500, 78250, 117300, 156500],
                   [119200, 158900, 79450, 119200, 158900],
                   [119700, 159700, 79850, 119700, 159700],
-                  [120700, 160900, 80450, 120700, 160900]]
+                  [120700, 160900, 80450, 120700, 160900]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_AMT_Child_em": {
@@ -2369,7 +2825,11 @@
                   7250,
                   7400,
                   7400,
-                  7500]
+                  7500],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_AMT_KT_c_Age": {
@@ -2385,7 +2845,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [24]
+        "value": [24],
+        "range": {"min": 0, "max": 30},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_AMT_rt1": {
@@ -2402,7 +2866,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.26]
+        "value": [0.26],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_AMT_brk1": {
@@ -2427,7 +2895,11 @@
                   182500,
                   185400,
                   186300,
-                  187800]
+                  187800],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_AMT_rt2": {
@@ -2444,7 +2916,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.02]
+        "value": [0.02],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_AMT_em_pe": {
@@ -2466,7 +2942,11 @@
         "value": [238550,
                   242450,
                   246250,
-                  247450]
+                  247450],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CDCC_c": {
@@ -2482,7 +2962,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [3000]
+        "value": [3000],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CDCC_ps": {
@@ -2497,7 +2981,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [15000]
+        "value": [15000],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CDCC_crt": {
@@ -2513,7 +3001,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [35]
+        "value": [35],
+        "range": {"min": 0, "max": 100},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CTC_c": {
@@ -2529,12 +3021,16 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [1000]
+        "value": [1000],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CTC_c_under5_bonus": {
         "long_name": "Bonus child tax credit maximum for qualifying children under five",
-        "description": "The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old. ",
+        "description": "The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child Tax Credit",
         "irs_ref": "",
@@ -2545,7 +3041,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CTC_ps": {
@@ -2561,7 +3061,11 @@
         "cpi_inflated": false,
         "col_var": "MARS",
         "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
-        "value": [[75000, 110000, 55000, 75000, 75000]]
+        "value": [[75000, 110000, 55000, 75000, 75000]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CTC_prt": {
@@ -2577,7 +3081,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.05]
+        "value": [0.05],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_DependentCredit_c": {
@@ -2593,7 +3101,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0]
+        "value": [0],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_NIIT_thd": {
@@ -2609,7 +3121,11 @@
         "cpi_inflated": false,
         "col_var": "MARS",
         "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
-        "value": [[200000, 250000, 125000, 200000, 250000]]
+        "value": [[200000, 250000, 125000, 200000, 250000]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_NIIT_PT_taxed": {
@@ -2625,7 +3141,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [false]
+        "value": [false],
+        "range": {"min": false, "max": true},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_NIIT_rt": {
@@ -2641,7 +3161,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.038]
+        "value": [0.038],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_EITC_c": {
@@ -2665,7 +3189,11 @@
                   [496, 3305, 5460, 6143],
                   [503, 3359, 5548, 6242],
                   [506, 3373, 5572, 6269],
-                  [510, 3400, 5616, 6318]]
+                  [510, 3400, 5616, 6318]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_EITC_rt": {
@@ -2681,7 +3209,11 @@
         "cpi_inflated": false,
         "col_var": "EIC",
         "col_label": ["0kids", "1kid", "2kids", "3+kids"],
-        "value": [[0.0765, 0.3400, 0.4000, 0.4500]]
+        "value": [[0.0765, 0.3400, 0.4000, 0.4500]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
 
@@ -2698,7 +3230,11 @@
         "cpi_inflated": false,
         "col_var": "EIC",
         "col_label": ["0kids", "1kid", "2kids", "3+kids"],
-        "value": [[0.0765, 0.1598, 0.2106, 0.2106]]
+        "value": [[0.0765, 0.1598, 0.2106, 0.2106]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_EITC_ps": {
@@ -2722,7 +3258,11 @@
                   [8110, 17830, 17830, 17830],
                   [8250, 18150, 18150, 18150],
                   [8270, 18190, 18190, 18190],
-                  [8340, 18340, 18340, 18340]]
+                  [8340, 18340, 18340, 18340]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_EITC_ps_MarriedJ": {
@@ -2746,7 +3286,11 @@
                   [5430, 5430, 5430, 5430],
                   [5500, 5500, 5500, 5500],
                   [5550, 5550, 5550, 5550],
-                  [5590, 5590, 5590, 5590]]
+                  [5590, 5590, 5590, 5590]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_EITC_MinEligAge": {
@@ -2762,7 +3306,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [25]
+        "value": [25],
+        "range": {"min": 0, "max": 999},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_EITC_MaxEligAge": {
@@ -2778,7 +3326,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [64]
+        "value": [64],
+        "range": {"min": 0, "max": 999},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
 
@@ -2803,7 +3355,11 @@
                   3350,
                   3400,
                   3400,
-                  3450]
+                  3450],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_EITC_indiv": {
@@ -2819,7 +3375,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [false]
+        "value": [false],
+        "range": {"min": false, "max": true},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_LLC_Expense_c": {
@@ -2835,7 +3395,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [10000]
+        "value": [10000],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ETC_pe_Single": {
@@ -2857,7 +3421,11 @@
         "value": [63,
                   64,
                   65,
-                  65]
+                  65],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ETC_pe_Married": {
@@ -2879,7 +3447,11 @@
         "value": [127,
                   128,
                   130,
-                  131]
+                  131],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ACTC_rt": {
@@ -2895,7 +3467,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.15]
+        "value": [0.15],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ACTC_rt_bonus_under5family": {
@@ -2911,7 +3487,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ACTC_Income_thd": {
@@ -2927,7 +3507,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [3000]
+        "value": [3000],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_ACTC_ChildNum": {
@@ -2943,7 +3527,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [3]
+        "value": [3],
+        "range": {"min": 0, "max": 99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CTC_new_c": {
@@ -2959,7 +3547,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CTC_new_c_under5_bonus": {
@@ -2975,7 +3567,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CTC_new_rt": {
@@ -2991,7 +3587,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CTC_new_ps": {
@@ -3015,7 +3615,11 @@
                   [0.0, 0.0, 0.0, 0.0, 0.0],
                   [0.0, 0.0, 0.0, 0.0, 0.0],
                   [0.0, 0.0, 0.0, 0.0, 0.0],
-                  [0.0, 0.0, 0.0, 0.0, 0.0]]
+                  [0.0, 0.0, 0.0, 0.0, 0.0]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CTC_new_prt": {
@@ -3031,7 +3635,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CTC_new_refund_limited": {
@@ -3047,7 +3655,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [false]
+        "value": [false],
+        "range": {"min": false, "max": true},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CTC_new_refund_limit_payroll_rt": {
@@ -3064,7 +3676,10 @@
         "col_var": "",
         "col_label": "",
         "value": [0.0],
-        "validations": {"min": 0}
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_FST_AGI_trt": {
@@ -3081,7 +3696,10 @@
         "col_var": "",
         "col_label": "",
         "value": [0.0],
-        "validations": {"min": 0.0}
+        "range": {"min": 0.0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_FST_AGI_thd_lo": {
@@ -3106,7 +3724,10 @@
                   [1.0e6, 1.0e6, 0.5e6, 1.0e6, 1.0e6],
                   [1.0e6, 1.0e6, 0.5e6, 1.0e6, 1.0e6],
                   [1.0e6, 1.0e6, 0.5e6, 1.0e6, 1.0e6]],
-        "validations": {"min": 0.0, "max": "_FST_AGI_thd_hi"}
+        "range": {"min": 0.0, "max": "_FST_AGI_thd_hi"},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "for _FST_AGI_thd_hi",
+        "out_of_range_action": "stop"
     },
 
     "_FST_AGI_thd_hi": {
@@ -3131,7 +3752,10 @@
                   [2.0e6, 2.0e6, 1.0e6, 2.0e6, 2.0e6],
                   [2.0e6, 2.0e6, 1.0e6, 2.0e6, 2.0e6],
                   [2.0e6, 2.0e6, 1.0e6, 2.0e6, 2.0e6]],
-        "validations": {"min": "_FST_AGI_thd_lo"}
+        "range": {"min": "_FST_AGI_thd_lo", "max": 9e99},
+        "out_of_range_minmsg": "for _FST_AGI_thd_lo",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
 
@@ -3149,7 +3773,10 @@
         "col_var": "",
         "col_label": "",
         "value": [0.0],
-        "validations": {"min": 0.0}
+        "range": {"min": 0.0, "max": 1.0},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_AGI_surtax_thd": {
@@ -3173,7 +3800,11 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99],
-                  [9e99, 9e99, 9e99, 9e99, 9e99]]
+                  [9e99, 9e99, 9e99, 9e99, 9e99]],
+        "range": {"min": 0.0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_LST": {
@@ -3189,7 +3820,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_UBI1": {
@@ -3213,7 +3848,11 @@
                   0.0,
                   0.0,
                   0.0,
-                  0.0]
+                  0.0],
+        "range": {"min": 0.0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_UBI2": {
@@ -3237,7 +3876,11 @@
                   0.0,
                   0.0,
                   0.0,
-                  0.0]
+                  0.0],
+        "range": {"min": 0.0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_UBI3": {
@@ -3261,7 +3904,11 @@
                   0.0,
                   0.0,
                   0.0,
-                  0.0]
+                  0.0],
+        "range": {"min": 0.0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_UBI_ecrt": {
@@ -3277,7 +3924,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CR_RetirementSavings_hc": {
@@ -3286,14 +3937,18 @@
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "irs_ref": "",
-        "notes": "Credit claimed will be (1. - Haircut) * Retirement Savings Credit",
+        "notes": "Credit claimed will be (1-Haircut)*RetirementSavingsCredit.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CR_ForeignTax_hc": {
@@ -3302,14 +3957,18 @@
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "irs_ref": "",
-        "notes": "Credit claimed will be (1. - Haircut) * Foreign Tax Credit",
+        "notes": "Credit claimed will be (1-Haircut)*ForeignTaxCredit.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CR_ResidentialEnergy_hc": {
@@ -3318,14 +3977,18 @@
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "irs_ref": "",
-        "notes": "Credit claimed will be (1. - Haircut) * Residential Energy Credit",
+        "notes": "Credit claimed will be (1-Haircut)*ResidentialEnergyCredit.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CR_GeneralBusiness_hc": {
@@ -3334,14 +3997,18 @@
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "irs_ref": "",
-        "notes": "Credit claimed will be (1. - Haircut) * General Business Credit",
+        "notes": "Credit claimed will be (1-Haircut)*GeneralBusinessCredit.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CR_MinimumTax_hc": {
@@ -3350,14 +4017,18 @@
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "irs_ref": "",
-        "notes": "Credit claimed will be (1. - Haircut) * Previous Year Minimum Tax Credit",
+        "notes": "Credit claimed will be (1-Haircut)*PreviousYearMinimumTaxCredit.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CR_AmOppRefundable_hc": {
@@ -3366,14 +4037,18 @@
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "irs_ref": "",
-        "notes": "Credit claimed will be (1. - Haircut) * Refundable Portion of the American Opportunity Credit",
+        "notes": "Credit claimed will be (1-Haircut)*RefundablePortionOfAmericanOpportunityCredit.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CR_AmOppNonRefundable_hc": {
@@ -3382,14 +4057,18 @@
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "irs_ref": "",
-        "notes": "Credit claimed will be (1. - Haircut) * NonRefundable Portion of the American Opportunity Credit",
+        "notes": "Credit claimed will be (1-Haircut)*NonRefundablePortionOfAmericanOpportunityCredit.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CR_SchR_hc": {
@@ -3398,14 +4077,18 @@
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "irs_ref": "",
-        "notes": "Credit claimed will be (1. - Haircut) * Schedule R Credit",
+        "notes": "Credit claimed will be (1-Haircut)*ScheduleRCredit",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CR_OtherCredits_hc": {
@@ -3414,14 +4097,18 @@
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "irs_ref": "",
-        "notes": "Credit claimed will be (1. - Haircut) * Other Credits",
+        "notes": "Credit claimed will be (1-Haircut)*OtherCredits.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_CR_Education_hc": {
@@ -3430,13 +4117,17 @@
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "irs_ref": "",
-        "notes": "Credit claimed will be (1. - Haircut) * Education Credits",
+        "notes": "Credit claimed will be (1-Haircut)*EducationCredits.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     }
 }

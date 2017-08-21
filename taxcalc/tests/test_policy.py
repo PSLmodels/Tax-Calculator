@@ -477,9 +477,8 @@ def fixture_reform_file():
     """
     Temporary reform file for Calculator read_json_param_files function.
     """
-    rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    rfile.write(REFORM_CONTENTS)
-    rfile.close()
+    with tempfile.NamedTemporaryFile(mode='a', delete=False) as rfile:
+        rfile.write(REFORM_CONTENTS)
     # must close and then yield for Windows platform
     yield rfile
     if os.path.isfile(rfile.name):
@@ -712,9 +711,8 @@ def test_clp_section_titles(tests_path):
     }
     # read current_law_policy.json file into a dictionary
     path = os.path.join(tests_path, '..', 'current_law_policy.json')
-    clpfile = open(path, 'r')
-    clpdict = json.load(clpfile)
-    clpfile.close()
+    with open(path, 'r') as clpfile:
+        clpdict = json.load(clpfile)
     # check validity of parameter section titles
     for pname in clpdict:
         param = clpdict[pname]
@@ -731,9 +729,8 @@ def test_json_reform_suffixes(tests_path):
     """
     # read current_law_policy.json file into a dictionary
     path = os.path.join(tests_path, '..', 'current_law_policy.json')
-    clpfile = open(path, 'r')
-    clpdict = json.load(clpfile)
-    clpfile.close()
+    with open(path, 'r') as clpfile:
+        clpdict = json.load(clpfile)
     # create set of suffixes in the clpdict "col_label" lists
     json_suffixes = Policy.JSON_REFORM_SUFFIXES.keys()
     clp_suffixes = set()
@@ -753,30 +750,37 @@ def test_json_reform_suffixes(tests_path):
         assert unmatched == 'UNMATCHED SUFFIXES'
 
 
-def test_validated_parameters_set(tests_path):
+def test_range_infomation(tests_path):
     """
-    Check Policy.VALIDATED_PARAMETERS against current_law_policy.json info.
+    Check Policy.RANGE_PARAMETERS against current_law_policy.json info.
     """
     # read current_law_policy.json file into a dictionary
     path = os.path.join(tests_path, '..', 'current_law_policy.json')
-    clpfile = open(path, 'r')
-    clpdict = json.load(clpfile)
-    clpfile.close()
-    # construct set of parameter names with "validations" field in clpdict
-    json_validated_params = set()
-    for pname in clpdict:
+    with open(path, 'r') as clpfile:
+        clpdict = json.load(clpfile)
+    parameters = set(clpdict.keys())
+    # construct set of parameter names with "range" field in clpdict
+    min_max_list = ['min', 'max']
+    warn_stop_list = ['warn', 'stop']
+    json_range_params = set()
+    for pname in parameters:
         param = clpdict[pname]
         assert isinstance(param, dict)
-        valid = param.get('validations', None)
-        if valid:
-            json_validated_params.add(pname)
-            for vop, vval in valid.items():
-                assert vop in ['min', 'max']
+        range = param.get('range', None)
+        if range:
+            json_range_params.add(pname)
+            assert param['out_of_range_action'] in warn_stop_list
+            for vop, vval in range.items():
+                assert vop in min_max_list
                 if isinstance(vval, six.string_types):
                     if vval == 'default':
                         continue
                     elif vval in clpdict:
-                        continue
+                        if vop == 'min':
+                            extra_msg = param['out_of_range_minmsg']
+                        if vop == 'max':
+                            extra_msg = param['out_of_range_maxmsg']
+                        assert vval in extra_msg
                     else:
                         assert vval == 'ILLEGAL VALIDATION STRING VALUE'
                 else:
@@ -786,21 +790,33 @@ def test_validated_parameters_set(tests_path):
                         continue
                     else:
                         assert vval == 'ILLEGAL VALIDATION NUMERIC VALUE'
-    # compare contents of Policy.VALIDATED_PARAMETERS and json_validated_params
-    unmatched = Policy.VALIDATED_PARAMETERS ^ json_validated_params
+    # compare contents of Policy.RANGE_PARAMETERS and json_range_params
+    unmatched = parameters ^ json_range_params
     if len(unmatched) != 0:
-        assert unmatched == 'UNMATCHED VALIDATED PARAMETERS'
+        assert unmatched == 'UNMATCHED RANGE PARAMETERS'
 
 
-def test_validate_param_values_errors():
+def test_validate_param_values_warnings_errors():
     """
-    Check detection of failures of min and max validations.
+    Check detection of out_of_range policy parameters in reforms.
     """
     pol1 = Policy()
     ref1 = {2020: {'_ID_Medical_frt': [0.05]}}
-    with pytest.raises(ValueError):
-        pol1.implement_reform(ref1)
+    pol1.implement_reform(ref1)
+    assert len(pol1.reform_range_warnings) > 0
     pol2 = Policy()
     ref2 = {2021: {'_ID_Charity_crt_all': [0.60]}}
-    with pytest.raises(ValueError):
-        pol2.implement_reform(ref2)
+    pol2.implement_reform(ref2)
+    assert len(pol2.reform_range_warnings) > 0
+    pol3 = Policy()
+    ref3 = {2024: {'_II_brk4': [[0, 0, 0, 0, 0]]}}
+    pol3.implement_reform(ref3)
+    assert len(pol3.reform_range_errors) > 0
+    pol4 = Policy()
+    ref4 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 1, 0, 1, 0]]}}
+    pol4.implement_reform(ref4)
+    assert len(pol4.reform_range_errors) == 0
+    pol5 = Policy()
+    ref5 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 2, 0, 1, 0]]}}
+    pol5.implement_reform(ref5)
+    assert len(pol5.reform_range_errors) > 0
