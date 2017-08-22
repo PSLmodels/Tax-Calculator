@@ -793,7 +793,7 @@ def test_range_infomation(tests_path):
                         continue
                     else:
                         assert vval == 'ILLEGAL VALIDATION NUMERIC VALUE'
-    # compare contents of Policy.RANGE_PARAMETERS and json_range_params
+    # compare contents of c_l_p.json parameters and json_range_params
     unmatched = parameters ^ json_range_params
     if len(unmatched) != 0:
         assert unmatched == 'UNMATCHED RANGE PARAMETERS'
