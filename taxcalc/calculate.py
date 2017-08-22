@@ -404,7 +404,8 @@ class Calculator(object):
             rpol_dict = (
                 Calculator._read_json_policy_reform_text(txt,
                                                          arrays_not_lists,
-                                                         gdiff_base_dict))
+                                                         gdiff_base_dict,
+                                                         gdiff_resp_dict))
         else:
             raise ValueError('reform_filename is neither None nor str')
         # finally construct and return single composite dictionary
@@ -497,7 +498,8 @@ class Calculator(object):
 
     @staticmethod
     def _read_json_policy_reform_text(text_string, arrays_not_lists,
-                                      growdiff_baseline_dict):
+                                      growdiff_baseline_dict,
+                                      growdiff_response_dict):
         """
         Strip //-comments from text_string and return 1 dict based on the JSON.
 
@@ -550,7 +552,8 @@ class Calculator(object):
                 raise ValueError(msg.format(rkey))
         # convert raw_dict['policy'] dictionary into prdict
         tdict = Policy.translate_json_reform_suffixes(raw_dict['policy'],
-                                                      growdiff_baseline_dict)
+                                                      growdiff_baseline_dict,
+                                                      growdiff_response_dict)
         prdict = Calculator._convert_parameter_dict(tdict, arrays_not_lists)
         return prdict
 
