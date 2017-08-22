@@ -198,6 +198,9 @@ class TaxCalcIO(object):
         if self.specified_reform:
             pol = Policy(gfactors=gfactors_ref)
             pol.implement_reform(param_dict['policy'])
+            if len(pol.reform_errors) > 0:
+                msg = 'INVALID PARAMETER VALUE(S):\n{}'
+                self.errmsg += msg.format(pol.reform_errors)
         else:
             pol = Policy(gfactors=gfactors_clp)
         clp = Policy(gfactors=gfactors_clp)
@@ -314,6 +317,11 @@ class TaxCalcIO(object):
         Nothing
         """
         # pylint: disable=too-many-arguments,too-many-branches
+        # in order to use print(), pylint: disable=superfluous-parens
+        if len(self.calc.policy.reform_warnings) > 0:
+            warn = 'PARAMETER VALUE WARNING(S):   (read documentation)\n{}{}'
+            print(warn.format(self.calc.policy.reform_warnings,
+                              'CONTINUING WITH CALCULATIONS...'))
         calc_clp_calculated = False
         if output_dump or output_sqldb:
             (mtr_paytax, mtr_inctax,
@@ -365,7 +373,7 @@ class TaxCalcIO(object):
             self.write_graph_files()
         # optionally write --ceeu output to stdout
         if ceeu_results:
-            print(ceeu_results)  # pylint: disable=superfluous-parens
+            print(ceeu_results)
 
     def write_output_file(self, output_dump, mtr_paytax, mtr_inctax):
         """

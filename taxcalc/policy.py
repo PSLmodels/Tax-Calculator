@@ -189,8 +189,8 @@ class Policy(ParametersBase):
         # validate reform parameter names
         self._validate_parameter_names(reform)
         if len(self.reform_errors) > 0:
-            msg = 'INVALID PARAMETER NAME(S):\n{}'.format(self.reform_errors)
-            raise ValueError(msg)
+            msg = 'UNKNOWN PARAMETER NAME(S):\n{}'
+            raise ValueError(msg.format(self.reform_errors))
         # implement the reform year by year
         precall_current_year = self.current_year
         reform_parameters = set()
