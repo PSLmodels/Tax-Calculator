@@ -21,7 +21,8 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
                   FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_hc,
                   e00900p, e00900s, e02100p, e02100s, k1bx14p, k1bx14s,
                   payrolltax, ptax_was, setax, c03260, ptax_oasdi,
-                  sey, earned, earned_p, earned_s):
+                  sey, earned, earned_p, earned_s,
+                  FICA_em, was_em, XTOT):
     """
     Compute part of total OASDI+HI payroll taxes and earned income variables.
     """
@@ -30,18 +31,43 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     sey_s = e00900s + e02100s + k1bx14s
     sey = sey_p + sey_s  # total self-employment income for filing unit
 
+    # compute  OASDI FICA tax exemption amount
+    was_em = FICA_em * XTOT
+
     # compute taxable earnings for OASDI FICA ('was' denotes 'wage and salary')
     sey_frac = 1.0 - 0.5 * (FICA_ss_trt + FICA_mc_trt)
-    txearn_was_p = min(SS_Earnings_c, e00200p)
-    txearn_was_s = min(SS_Earnings_c, e00200s)
-    txearn_sey_p = min(max(0., sey_p * sey_frac), SS_Earnings_c - txearn_was_p)
-    txearn_sey_s = min(max(0., sey_s * sey_frac), SS_Earnings_c - txearn_was_s)
+    txearn_was_p = max(0., min(SS_Earnings_c, e00200p) - was_em)
+    e00200p_was_p = max(0., e00200p - was_em)
+
+    # compute the residual exemption for primary self-employment income
+    was_em_resid1 = max(0., min((min(SS_Earnings_c, e00200p) - txearn_was_p),
+                                (e00200p - e00200p_was_p)))
+
+    # compute taxable earnings for primary earner's self-employment income
+    txearn_sey_p = max(0., (min(max(0., sey_p * sey_frac),
+                            SS_Earnings_c - txearn_was_p) - was_em_resid1))
+
+    # compute the residual exemption amount for secondary was income
+    was_em_resid2 = max(0., (min(max(0., sey_p * sey_frac),
+                                 SS_Earnings_c - txearn_was_p) - txearn_sey_p))
+
+    # compute taxable earnings for OASDI FICA secondary was income
+    txearn_was_s = max(0., min(SS_Earnings_c, e00200s) - was_em_resid2)
+    e00200s_was_s = max(0., e00200s - was_em_resid2)
+
+    # compute the residual exemption for secondary self-employment income
+    was_em_resid3 = max(0., min((min(SS_Earnings_c, e00200s) - txearn_was_s),
+                                (e00200s - e00200s_was_s)))
+
+    # compute taxable earnings for secondary earner's self-employment income
+    txearn_sey_s = max(0., (min(max(0., sey_s * sey_frac),
+                            SS_Earnings_c - txearn_was_s) - was_em_resid3))
 
     # compute OASDI and HI payroll taxes on wage-and-salary income
     ptax_ss_was_p = FICA_ss_trt * txearn_was_p
     ptax_ss_was_s = FICA_ss_trt * txearn_was_s
-    ptax_mc_was_p = FICA_mc_trt * e00200p
-    ptax_mc_was_s = FICA_mc_trt * e00200s
+    ptax_mc_was_p = FICA_mc_trt * e00200p_was_p
+    ptax_mc_was_s = FICA_mc_trt * e00200s_was_s
     ptax_was = ptax_ss_was_p + ptax_ss_was_s + ptax_mc_was_p + ptax_mc_was_s
 
     # compute self-employment tax on taxable self-employment income
@@ -69,7 +95,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     earned_s = max(0., (e00200s + sey_s -
                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_s))
     return (sey, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
-            earned, earned_p, earned_s)
+            earned, earned_p, earned_s, was_em)
 
 
 @iterate_jit(nopython=True)

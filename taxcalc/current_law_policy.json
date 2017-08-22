@@ -3438,5 +3438,21 @@
         "col_var": "",
         "col_label": "",
         "value": [0.0]
+    },
+
+    "_FICA_em": {
+      "long_name": "FICA payroll tax exemption",
+      "description": "Subtracted from income in the calculation of FICA payroll taxes, per taxpayer and dependent.",
+      "section_1": "Personal Exemptions",
+      "section_2": "Personal And Dependent Exemption Amount",
+      "irs_ref": "",
+      "notes": "",
+      "row_var": "FLPDYR",
+      "row_label": ["2013"],
+      "start_year": 2013,
+      "cpi_inflated": false,
+      "col_var": "",
+      "col_label": "",
+      "value": [0.0]
     }
 }
