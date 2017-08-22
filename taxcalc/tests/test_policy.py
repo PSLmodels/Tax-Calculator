@@ -850,3 +850,13 @@ def test_validate_param_values_warnings_errors():
     ref6 = {2026: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 2, 0, 1, 0]]}}
     pol6.implement_reform(ref6)
     assert len(pol6.reform_errors) > 0
+
+
+def test_indexing_rates_for_update():
+    """
+    Check private _indexing_rates_for_update method.
+    """
+    pol = Policy()
+    wgrates = pol._indexing_rates_for_update('_SS_Earnings_c', 2017, 10)
+    pirates = pol._indexing_rates_for_update('_II_em', 2017, 10)
+    assert len(wgrates) == len(pirates)

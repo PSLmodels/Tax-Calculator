@@ -1,6 +1,11 @@
 from numpy.testing import assert_allclose
 import pytest
-from taxcalc import Growdiff, Growfactors
+from taxcalc import Growdiff, Growfactors, Policy
+
+
+def test_year_consistency():
+    assert Growdiff.JSON_START_YEAR == Policy.JSON_START_YEAR
+    assert Growdiff.DEFAULT_NUM_YEARS == Policy.DEFAULT_NUM_YEARS
 
 
 def test_incorrect_growdiff_ctor():

@@ -9,6 +9,7 @@ import six
 import numpy as np
 from taxcalc.parameters import ParametersBase
 from taxcalc.growfactors import Growfactors
+from taxcalc.growdiff import Growdiff
 
 
 class Policy(ParametersBase):
@@ -54,15 +55,18 @@ class Policy(ParametersBase):
     DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
     def __init__(self,
-                 gfactors=Growfactors(),
+                 gfactors=None,
                  parameter_dict=None,
                  start_year=JSON_START_YEAR,
                  num_years=DEFAULT_NUM_YEARS):
         super(Policy, self).__init__()
 
-        if not isinstance(gfactors, Growfactors):
-            raise ValueError('gfactors is not a Growfactors instance')
-        self._gfactors = gfactors
+        if gfactors is None:
+            self._gfactors = Growfactors()
+        elif isinstance(gfactors, Growfactors):
+            self._gfactors = gfactors
+        else:
+            raise ValueError('gfactors is not None or a Growfactors instance')
 
         if parameter_dict is None:  # read default parameters
             self._vals = self._params_dict_from_json_file()
@@ -76,8 +80,8 @@ class Policy(ParametersBase):
 
         syr = start_year
         lyr = start_year + num_years - 1
-        self._inflation_rates = gfactors.price_inflation_rates(syr, lyr)
-        self._wage_growth_rates = gfactors.wage_growth_rates(syr, lyr)
+        self._inflation_rates = self._gfactors.price_inflation_rates(syr, lyr)
+        self._wage_growth_rates = self._gfactors.wage_growth_rates(syr, lyr)
 
         self.initialize(start_year, num_years)
 
@@ -238,7 +242,9 @@ class Policy(ParametersBase):
     }
 
     @staticmethod
-    def translate_json_reform_suffixes(indict):
+    def translate_json_reform_suffixes(indict,
+                                       growdiff_baseline_dict,
+                                       growdiff_response_dict):
         """
         Replace any array parameters with suffixes in the specified
         JSON-derived "policy" dictionary, indict, and
@@ -282,11 +288,21 @@ class Policy(ParametersBase):
             return gdict
 
         # define with_suffix function used only in this method
-        def with_suffix(gdict):
+        def with_suffix(gdict, growdiff_baseline_dict, growdiff_response_dict):
             """
             Return param_base:year dictionary having only suffix parameters.
             """
-            pol = Policy()
+            if bool(growdiff_baseline_dict) or bool(growdiff_response_dict):
+                gdiff_baseline = Growdiff()
+                gdiff_baseline.update_growdiff(growdiff_baseline_dict)
+                gdiff_response = Growdiff()
+                gdiff_response.update_growdiff(growdiff_response_dict)
+                growfactors = Growfactors()
+                gdiff_baseline.apply_to(growfactors)
+                gdiff_response.apply_to(growfactors)
+            else:
+                growfactors = None
+            pol = Policy(gfactors=growfactors)
             odict = dict()
             for param in gdict.keys():
                 odict[param] = dict()
@@ -309,7 +325,9 @@ class Policy(ParametersBase):
         gdict = suffix_group_dict(indict)
         # - add to odict the consolidated values for parameters with a suffix
         if len(gdict) > 0:
-            odict.update(with_suffix(gdict))
+            odict.update(with_suffix(gdict,
+                                     growdiff_baseline_dict,
+                                     growdiff_response_dict))
         # - return policy dictionary containing constructed parameter arrays
         return odict
 

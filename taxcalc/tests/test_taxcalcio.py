@@ -607,6 +607,48 @@ def test_ceeu_with_behavior(lumpsumreformfile, assumpfile2):
     assert tcio.tax_year() == taxyear
 
 
+@pytest.fixture(scope='module', name='warnreformfile')
+def fixture_warnreformfile():
+    """
+    Temporary reform file with .json extension.
+    """
+    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    contents = '{ "policy": {"_STD_Dep": {"2015": [0]}}}'
+    rfile.write(contents)
+    rfile.close()
+    # must close and then yield for Windows platform
+    yield rfile
+    if os.path.isfile(rfile.name):
+        try:
+            os.remove(rfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+def test_analyze_warnings_print(warnreformfile):
+    """
+    Test TaxCalcIO.analyze method when there is a reform warning.
+    """
+    taxyear = 2020
+    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
+    recdf = pd.DataFrame(data=recdict, index=[0])
+    tcio = TaxCalcIO(input_data=recdf,
+                     tax_year=taxyear,
+                     reform=warnreformfile.name,
+                     assump=None)
+    assert len(tcio.errmsg) == 0
+    tcio.init(input_data=recdf,
+              tax_year=taxyear,
+              reform=warnreformfile.name,
+              assump=None,
+              growdiff_response=None,
+              aging_input_data=False,
+              exact_calculations=False)
+    assert len(tcio.errmsg) == 0
+    tcio.analyze(writing_output_file=False, output_ceeu=False)
+    assert tcio.tax_year() == taxyear
+
+
 def test_growmodel_analysis(reformfile1, assumpfile1):
     """
     Test TaxCalcIO.growmodel_analysis method with no output.

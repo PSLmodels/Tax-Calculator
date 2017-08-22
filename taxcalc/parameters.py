@@ -390,148 +390,6 @@ class ParametersBase(object):
         self.set_year(year)
 
     @staticmethod
-    def _expand_1D(x, inflate, inflation_rates, num_years):
-        """
-        Private method called only from _expand_array method.
-        Expand the given data to account for the given number of budget years.
-        If necessary, pad out additional years by increasing the last given
-        year using the given inflation_rates list.
-        """
-        if not isinstance(x, np.ndarray):
-            return ParametersBase._expand_1D(np.array([x], dtype=np.float64),
-                                             inflate, inflation_rates,
-                                             num_years)
-        else:
-            if len(x) >= num_years:
-                return x
-            else:
-                ans = np.zeros(num_years, dtype=np.float64)
-                ans[:len(x)] = x
-                if inflate:
-                    extra = []
-                    cur = x[-1]
-                    for i in range(0, num_years - len(x)):
-                        cur *= (1. + inflation_rates[i + len(x) - 1])
-                        cur = round(cur, 2) if cur < 9e99 else 9e99
-                        extra.append(cur)
-                else:
-                    extra = [float(x[-1]) for i in
-                             range(1, num_years - len(x) + 1)]
-                ans[len(x):] = extra
-                return ans
-
-    @staticmethod
-    def _expand_2D(x, inflate, inflation_rates, num_years):
-        """
-        Private method called only from _expand_array method.
-        Expand the given data to account for the given number of budget years.
-        For 2D arrays, we expand out the number of rows until we have num_years
-        number of rows. For each expanded row, we inflate using the given
-        inflation rates list.
-        """
-        if not isinstance(x, np.ndarray):
-            return ParametersBase._expand_2D(np.array(x, dtype=np.float64),
-                                             inflate, inflation_rates,
-                                             num_years)
-        else:
-            # Look for -1s and create masks if present
-            last_good_row = -1
-            keep_user_data_mask = []
-            keep_calc_data_mask = []
-            has_nones = False
-            for row in x:
-                keep_user_data_mask.append([1 if i != -1 else 0 for i in row])
-                keep_calc_data_mask.append([0 if i != -1 else 1 for i in row])
-                if not np.all(row == -1):
-                    last_good_row += 1
-                if np.any(row == -1):
-                    has_nones = True
-            if x.shape[0] >= num_years and not has_nones:
-                return x
-            else:
-                if has_nones:
-                    c = x[:last_good_row + 1]
-                    keep_user_data_mask = np.array(keep_user_data_mask)
-                    keep_calc_data_mask = np.array(keep_calc_data_mask)
-                else:
-                    c = x
-                ans = np.zeros((num_years, c.shape[1]), dtype=np.float64)
-                ans[:len(c), :] = c
-                # First, fill in any 'None's with appropriate values
-                for i in range(last_good_row + 1):
-                    for j in range(ans.shape[1]):
-                        if ans[i, j] == -1.:
-                            if inflate:
-                                cur = (ans[i - 1, j] *
-                                       (1. + inflation_rates[i - 1]))
-                                cur = round(cur, 2) if cur < 9e99 else 9e99
-                                ans[i, j] = cur
-                            else:
-                                ans[i, j] = ans[i - 1, j]
-                # Now, fill based on inflate flag:
-                for i in range(last_good_row + 1, ans.shape[0]):
-                    for j in range(ans.shape[1]):
-                        if inflate:
-                            cur = (ans[i - 1, j] *
-                                   (1. + inflation_rates[i - 1]))
-                            cur = round(cur, 2) if cur < 9e99 else 9e99
-                            ans[i, j] = cur
-                        else:
-                            ans[i, j] = ans[i - 1, j]
-                if has_nones:
-                    # Use masks to "mask in" provided data and "mask out"
-                    # data we don't need (produced in rows with a None value)
-                    if not ans.shape == keep_calc_data_mask.shape:
-                        # repeat the last row of each mask
-                        num_repeats = (ans.shape[0] -
-                                       keep_calc_data_mask.shape[0] + 1)
-                        repeats = [1 for i in
-                                   range(keep_calc_data_mask.shape[0])]
-                        repeats[-1] = num_repeats
-                        keep_calc_data_mask = np.repeat(keep_calc_data_mask,
-                                                        repeats, axis=0)
-                        keep_user_data_mask = np.repeat(keep_user_data_mask,
-                                                        repeats, axis=0)
-                        final_ans = ans * keep_calc_data_mask
-                        final_user_vals = ans * keep_user_data_mask
-                        ans = final_ans + final_user_vals
-                    else:
-                        ans = ans * keep_calc_data_mask
-                        user_vals = x * keep_user_data_mask
-                        ans = ans + user_vals
-                return ans
-
-    @staticmethod
-    def _strip_nones(x):
-        """
-        Private method called only in the _expand_array method.
-        Method accepts a 1D or 2D list, or a 1D or 2D numpy array.
-        If x is 1D, when None is encountered, we return everything
-        encountered before None.
-        If x is 2D, we replace None with -1 and return.
-
-        Parameters
-        ----------
-        x: list or numpy array
-
-        Returns
-        -------
-        list
-        """
-        accum = []
-        for val in x:
-            if val is None:
-                return accum
-            if not isinstance(val, list):
-                accum.append(val)
-            else:
-                for i, v in enumerate(val):
-                    if v is None:
-                        val[i] = -1
-                accum.append(val)
-        return accum
-
-    @staticmethod
     def _expand_array(x, inflate, inflation_rates, num_years):
         """
         Private method called only within this abstract base class.
@@ -541,7 +399,7 @@ class ParametersBase(object):
         ----------
         x : value to expand
             x must be either a scalar list or a 1D numpy array, or
-            be either a list of scalar lists or a 2D numpy array.
+            x must be either a list of scalar lists or a 2D numpy array.
 
         inflate: boolean
             As we expand, inflate values if this is True, otherwise, just copy
@@ -559,15 +417,73 @@ class ParametersBase(object):
         if not isinstance(x, list) and not isinstance(x, np.ndarray):
             msg = '_expand_array expects x to be a list or numpy array'
             raise ValueError(msg)
-        if isinstance(x, np.ndarray) and len(x.shape) > 2:
-            raise ValueError('_expand_array expects a 1D or 2D array')
-        x = np.array(ParametersBase._strip_nones(x), np.float64)
+        if isinstance(x, list):
+            x = np.array(x, np.float64)
+        if np.any(np.isnan(x)):
+            raise ValueError('_expand_array expects array with no NaN values')
         if len(x.shape) == 1:
             return ParametersBase._expand_1D(x, inflate, inflation_rates,
                                              num_years)
         elif len(x.shape) == 2:
             return ParametersBase._expand_2D(x, inflate, inflation_rates,
                                              num_years)
+        else:
+            raise ValueError('_expand_array expects a 1D or 2D array')
+
+    @staticmethod
+    def _expand_1D(x, inflate, inflation_rates, num_years):
+        """
+        Private method called only from _expand_array method.
+        Expand the given data x to account for given number of budget years.
+        If necessary, pad out additional years by increasing the last given
+        year using the given inflation_rates list.
+        """
+        if not isinstance(x, np.ndarray):
+            raise ValueError('_expand_1D expects x to be a numpy array')
+        if len(x) >= num_years:
+            return x
+        else:
+            ans = np.zeros(num_years, dtype=np.float64)
+            ans[:len(x)] = x
+            if inflate:
+                extra = []
+                cur = x[-1]
+                for i in range(0, num_years - len(x)):
+                    cur *= (1. + inflation_rates[i + len(x) - 1])
+                    cur = round(cur, 2) if cur < 9e99 else 9e99
+                    extra.append(cur)
+            else:
+                extra = [float(x[-1]) for i in
+                         range(1, num_years - len(x) + 1)]
+            ans[len(x):] = extra
+            return ans
+
+    @staticmethod
+    def _expand_2D(x, inflate, inflation_rates, num_years):
+        """
+        Private method called only from _expand_array method.
+        Expand the given data to account for the given number of budget years.
+        For 2D arrays, we expand out the number of rows until we have num_years
+        number of rows. For each expanded row, we inflate using the given
+        inflation rates list.
+        """
+        if not isinstance(x, np.ndarray):
+            raise ValueError('_expand_2D expects x to be a numpy array')
+        if x.shape[0] >= num_years:
+            return x
+        else:
+            ans = np.zeros((num_years, x.shape[1]), dtype=np.float64)
+            ans[:len(x), :] = x
+            for i in range(x.shape[0], ans.shape[0]):
+                for j in range(ans.shape[1]):
+                    if inflate:
+                        cur = (ans[i - 1, j] *
+                               (1. + inflation_rates[i - 1]))
+                        cur = round(cur, 2) if cur < 9e99 else 9e99
+                        ans[i, j] = cur
+                    else:
+                        ans[i, j] = ans[i - 1, j]
+            return ans
 
     def _indexing_rates_for_update(self, param_name,
                                    calyear, num_years_to_expand):
@@ -579,8 +495,8 @@ class ParametersBase(object):
         else:
             rates = self.inflation_rates()
         if rates:
-            expand_rates = [rates[(calyear - self.start_year) + i]
-                            for i in range(0, num_years_to_expand)]
-            return expand_rates
+            expanded_rates = [rates[(calyear - self.start_year) + i]
+                              for i in range(0, num_years_to_expand)]
+            return expanded_rates
         else:
             return None
