@@ -18,6 +18,8 @@ Release 0.9.3 on 2017-??-??
   by Martin Holmer]
 - Add option to use policy parameter suffixes in JSON reform files
   [[#1505](https://github.com/open-source-economics/Tax-Calculator/pull/1505)
+  by Martin Holmer] and
+  [[#1520](https://github.com/open-source-economics/Tax-Calculator/pull/1520)
   by Martin Holmer]
 - Add rounding of wage-inflated or price-inflated parameter values to nearest cent
   [[#1506](https://github.com/open-source-economics/Tax-Calculator/pull/1506)

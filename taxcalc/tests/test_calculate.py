@@ -697,19 +697,27 @@ def test_translate_json_reform_suffixes_mars_indexed():
       "_STD_single": {"2018": [18000], "2016": [16000]},
       "_STD_widow": {"2017": [17000], "2019": [19000]}
     }}"""
+    assump_json = """{
+      "consumption": {},
+      "behavior": {},
+      "growdiff_baseline": {
+        "_ACPIU": {"2013": [0.01]},
+        "_AWAGE": {"2013": [0.01]}},
+      "growdiff_response": {}
+    }"""
     pdict1 = Calculator.read_json_param_files(reform_filename=json1,
-                                              assump_filename=None,
+                                              assump_filename=assump_json,
                                               arrays_not_lists=True)
     rdict1 = pdict1['policy']
     json2 = """{"policy": {
-      "_STD": {"2016": [[16000.00, 12600.00, 6300.00, 9300.00, 12600.00]],
-               "2017": [[16364.80, 12887.28, 6443.64, 9512.04, 17000.00]],
-               "2018": [[18000.00, 13173.38, 6586.69, 9723.21, 17377.40]],
-               "2019": [[18412.20, 13475.05, 6737.52, 9945.87, 19000.00]]},
+      "_STD": {"2016": [[16000.00, 12600.00, 6300.00,  9300.00, 12600.00]],
+               "2017": [[16524.80, 13013.28, 6506.64,  9605.04, 17000.00]],
+               "2018": [[18000.00, 13432.31, 6716.15,  9914.32, 17547.40]],
+               "2019": [[18592.20, 13874.23, 6937.11, 10240.50, 19000.00]]},
       "_II_em": {"2020": [20000], "2015": [15000]}
     }}"""
     pdict2 = Calculator.read_json_param_files(reform_filename=json2,
-                                              assump_filename=None,
+                                              assump_filename=assump_json,
                                               arrays_not_lists=True)
     rdict2 = pdict2['policy']
     assert len(rdict2) == len(rdict1)
