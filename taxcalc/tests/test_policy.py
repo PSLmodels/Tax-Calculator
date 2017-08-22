@@ -20,9 +20,8 @@ def fixture_policyfile():
                        "cpi_inflated": false},
               "_rt7": {"value": [0.396],
                        "cpi_inflated": false}}"""
-    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    f.write(txt + '\n')
-    f.close()
+    with tempfile.NamedTemporaryFile(mode='a', delete=False) as f:
+        f.write(txt + '\n')
     # Must close and then yield for Windows platform
     yield f
     os.remove(f.name)
@@ -752,7 +751,7 @@ def test_json_reform_suffixes(tests_path):
 
 def test_range_infomation(tests_path):
     """
-    Check Policy.RANGE_PARAMETERS against current_law_policy.json info.
+    Check consistency of range-related info in current_law_policy.json file.
     """
     # read current_law_policy.json file into a dictionary
     path = os.path.join(tests_path, '..', 'current_law_policy.json')
@@ -770,7 +769,9 @@ def test_range_infomation(tests_path):
         if range:
             json_range_params.add(pname)
             assert param['out_of_range_action'] in warn_stop_list
-            for vop, vval in range.items():
+            range_items = range.items()
+            assert len(range_items) == 2
+            for vop, vval in range_items:
                 assert vop in min_max_list
                 if isinstance(vval, six.string_types):
                     if vval == 'default':
@@ -783,10 +784,12 @@ def test_range_infomation(tests_path):
                         assert vval in extra_msg
                     else:
                         assert vval == 'ILLEGAL VALIDATION STRING VALUE'
-                else:
+                else:  # if vval is not a str
                     if isinstance(vval, int):
                         continue
                     elif isinstance(vval, float):
+                        continue
+                    elif isinstance(vval, bool):
                         continue
                     else:
                         assert vval == 'ILLEGAL VALIDATION NUMERIC VALUE'
@@ -794,6 +797,29 @@ def test_range_infomation(tests_path):
     unmatched = parameters ^ json_range_params
     if len(unmatched) != 0:
         assert unmatched == 'UNMATCHED RANGE PARAMETERS'
+    # check all current-law-policy parameters for range validity
+    clp = Policy()
+    clp._validate_parameter_values(parameters)
+    assert len(clp.reform_warnings) == 0
+    assert len(clp.reform_errors) == 0
+
+
+def test_validate_param_names_errors():
+    """
+    Check detection of invalid policy parameters in reforms.
+    """
+    pol1 = Policy()
+    ref1 = {2020: {'_badname_cpi': True}}
+    with pytest.raises(ValueError):
+        pol1.implement_reform(ref1)
+    pol2 = Policy()
+    ref2 = {2020: {'_II_em_cpi': 5}}
+    with pytest.raises(ValueError):
+        pol2.implement_reform(ref2)
+    pol3 = Policy()
+    ref3 = {2020: {'_badname': [0.4]}}
+    with pytest.raises(ValueError):
+        pol3.implement_reform(ref3)
 
 
 def test_validate_param_values_warnings_errors():
@@ -803,20 +829,24 @@ def test_validate_param_values_warnings_errors():
     pol1 = Policy()
     ref1 = {2020: {'_ID_Medical_frt': [0.05]}}
     pol1.implement_reform(ref1)
-    assert len(pol1.reform_range_warnings) > 0
+    assert len(pol1.reform_warnings) > 0
     pol2 = Policy()
     ref2 = {2021: {'_ID_Charity_crt_all': [0.60]}}
     pol2.implement_reform(ref2)
-    assert len(pol2.reform_range_warnings) > 0
+    assert len(pol2.reform_warnings) > 0
     pol3 = Policy()
     ref3 = {2024: {'_II_brk4': [[0, 0, 0, 0, 0]]}}
     pol3.implement_reform(ref3)
-    assert len(pol3.reform_range_errors) > 0
+    assert len(pol3.reform_errors) > 0
     pol4 = Policy()
-    ref4 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 1, 0, 1, 0]]}}
+    ref4 = {2024: {'_II_brk4': [[0, 9e9, 0, 0, 0]]}}
     pol4.implement_reform(ref4)
-    assert len(pol4.reform_range_errors) == 0
+    assert len(pol4.reform_errors) > 0
     pol5 = Policy()
-    ref5 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 2, 0, 1, 0]]}}
+    ref5 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 1, 0, 1, 0]]}}
     pol5.implement_reform(ref5)
-    assert len(pol5.reform_range_errors) > 0
+    assert len(pol5.reform_errors) == 0
+    pol6 = Policy()
+    ref6 = {2026: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 2, 0, 1, 0]]}}
+    pol6.implement_reform(ref6)
+    assert len(pol6.reform_errors) > 0

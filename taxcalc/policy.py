@@ -81,8 +81,8 @@ class Policy(ParametersBase):
 
         self.initialize(start_year, num_years)
 
-        self.reform_range_warnings = ''
-        self.reform_range_errors = ''
+        self.reform_warnings = ''
+        self.reform_errors = ''
 
     def inflation_rates(self):
         """
@@ -186,13 +186,21 @@ class Policy(ParametersBase):
         if last_reform_year > self.end_year:
             msg = 'reform provision in year={} > end_year={}'
             raise ValueError(msg.format(last_reform_year, self.end_year))
+        # validate reform parameter names
+        self._validate_parameter_names(reform)
+        if len(self.reform_errors) > 0:
+            msg = 'INVALID PARAMETER NAME(S):\n{}'.format(self.reform_errors)
+            raise ValueError(msg)
         # implement the reform year by year
         precall_current_year = self.current_year
+        reform_parameters = set()
         for year in reform_years:
             self.set_year(year)
+            reform_parameters.update(reform[year].keys())
             self._update({year: reform[year]})
         self.set_year(precall_current_year)
-        self._validate_parameter_values()
+        # validate reform parameter values
+        self._validate_parameter_values(reform_parameters)
 
     def current_law_version(self):
         """
@@ -307,16 +315,45 @@ class Policy(ParametersBase):
 
     # ----- begin private methods of Policy class -----
 
-    def _validate_parameter_values(self):
+    def _validate_parameter_names(self, reform):
         """
-        Check policy parameter values using range information from
-        the current_law_policy.json file.
+        Check validity of parameter names used in specified reform dictionary.
+        """
+        clp_names = set(self.default_data().keys())
+        for year in sorted(list(reform.keys())):
+            for name in reform[year]:
+                if name.endswith('_cpi'):
+                    if isinstance(reform[year][name], bool):
+                        pname = name[:-4]  # root parameter name
+                        if pname not in clp_names:
+                            msg = 'invalid parameter name {} in {}'
+                            self.reform_errors += (
+                                'ERROR: ' + msg.format(name, year) + '\n'
+                            )
+                    else:
+                        msg = 'parameter {} in {} is not true or false'
+                        self.reform_errors += (
+                            'ERROR: ' + msg.format(name, year) + '\n'
+                        )
+                else:
+                    if name not in clp_names:
+                        msg = 'invalid parameter name {} in {}'
+                        self.reform_errors += (
+                            'ERROR: ' + msg.format(name, year) + '\n'
+                        )
+
+    def _validate_parameter_values(self, parameters_set):
+        """
+        Check values of parameters in specified parameter_set using
+        range information from the current_law_policy.json file.
         """
         # pylint: disable=too-many-branches
         clp = self.current_law_version()
-        parameters = sorted(self._vals.keys())
+        parameters = sorted(parameters_set)
         syr = Policy.JSON_START_YEAR
         for pname in parameters:
+            if pname.endswith('_cpi'):
+                continue  # *_cpi parameter values validated elsewhere
             pvalue = getattr(self, pname)
             for vop, vval in self._vals[pname]['range'].items():
                 if isinstance(vval, six.string_types):
@@ -344,13 +381,13 @@ class Policy(ParametersBase):
                     if out_of_range:
                         action = self._vals[pname]['out_of_range_action']
                         if action == 'warn':
-                            self.reform_range_warnings += (
+                            self.reform_warnings += (
                                 'WARNING: ' + msg.format(idx[0] + syr, pname,
                                                          pvalue[idx],
                                                          vvalue[idx]) + '\n'
                             )
                         if action == 'stop':
-                            self.reform_range_errors += (
+                            self.reform_errors += (
                                 'ERROR: ' + msg.format(idx[0] + syr, pname,
                                                        pvalue[idx],
                                                        vvalue[idx]) + '\n'
