@@ -28,12 +28,13 @@ def test_reform_json(tests_path):
         # check that jpf_text has "policy" that can be implemented as a reform
         if '"policy"' in jpf_text:
             arrays_not_lists = True
-            growdiff_dict = {}
+            gdiffbase = {}
+            gdiffresp = {}
             # pylint: disable=protected-access
             policy_dict = (
                 Calculator._read_json_policy_reform_text(jpf_text,
                                                          arrays_not_lists,
-                                                         growdiff_dict)
+                                                         gdiffbase, gdiffresp)
             )
             policy = Policy()
             policy.implement_reform(policy_dict)
