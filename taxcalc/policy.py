@@ -117,6 +117,7 @@ class Policy(ParametersBase):
             if minimum YEAR in the YEAR:MODS pairs is less than start_year.
             if minimum YEAR in the YEAR:MODS pairs is less than current_year.
             if maximum YEAR in the YEAR:MODS pairs is greater than end_year.
+            if Policy._validate_parameter_names generates any error messages.
 
         Returns
         -------
@@ -170,31 +171,30 @@ class Policy(ParametersBase):
         """
         # check that all reform dictionary keys are integers
         if not isinstance(reform, dict):
-            raise ValueError('reform is not a dictionary')
+            raise ValueError('ERROR: reform is not a dictionary')
         if len(reform) == 0:
             return  # no reform to implement
         reform_years = sorted(list(reform.keys()))
         for year in reform_years:
             if not isinstance(year, int):
-                msg = 'key={} in reform is not an integer calendar year'
+                msg = 'ERROR: key={} in reform is not an integer calendar year'
                 raise ValueError(msg.format(year))
         # check range of remaining reform_years
         first_reform_year = min(reform_years)
         if first_reform_year < self.start_year:
-            msg = 'reform provision in year={} < start_year={}'
+            msg = 'ERROR: reform provision in year={} < start_year={}'
             raise ValueError(msg.format(first_reform_year, self.start_year))
         if first_reform_year < self.current_year:
-            msg = 'reform provision in year={} < current_year={}'
+            msg = 'ERROR: reform provision in year={} < current_year={}'
             raise ValueError(msg.format(first_reform_year, self.current_year))
         last_reform_year = max(reform_years)
         if last_reform_year > self.end_year:
-            msg = 'reform provision in year={} > end_year={}'
+            msg = 'ERROR: reform provision in year={} > end_year={}'
             raise ValueError(msg.format(last_reform_year, self.end_year))
         # validate reform parameter names
         self._validate_parameter_names(reform)
         if len(self.reform_errors) > 0:
-            msg = 'UNKNOWN PARAMETER NAME(S):\n{}'
-            raise ValueError(msg.format(self.reform_errors))
+            raise ValueError(self.reform_errors)
         # implement the reform year by year
         precall_current_year = self.current_year
         reform_parameters = set()

@@ -197,10 +197,11 @@ class TaxCalcIO(object):
         # create Policy objects
         if self.specified_reform:
             pol = Policy(gfactors=gfactors_ref)
-            pol.implement_reform(param_dict['policy'])
-            if len(pol.reform_errors) > 0:
-                msg = 'INVALID PARAMETER VALUE(S):\n{}'
-                self.errmsg += msg.format(pol.reform_errors)
+            try:
+                pol.implement_reform(param_dict['policy'])
+                self.errmsg += pol.reform_errors
+            except ValueError as valerr_msg:
+                self.errmsg += valerr_msg.__str__()
         else:
             pol = Policy(gfactors=gfactors_clp)
         clp = Policy(gfactors=gfactors_clp)
@@ -213,8 +214,9 @@ class TaxCalcIO(object):
             msg = 'tax_year {} greater than policy.end_year {}'
             msg = msg.format(tax_year, pol.end_year)
             self.errmsg += 'ERROR: {}\n'.format(msg)
+        # any errors imply cannot proceed with calculations
         if len(self.errmsg) > 0:
-            return  # invalid tax_year value would cause Policy.set_year error
+            return
         # set policy to tax_year
         pol.set_year(tax_year)
         clp.set_year(tax_year)
