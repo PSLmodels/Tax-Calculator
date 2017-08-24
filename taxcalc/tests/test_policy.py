@@ -783,7 +783,7 @@ def test_range_infomation(tests_path):
                             extra_msg = param['out_of_range_maxmsg']
                         assert vval in extra_msg
                     else:
-                        assert vval == 'ILLEGAL VALIDATION STRING VALUE'
+                        assert vval == 'ILLEGAL RANGE STRING VALUE'
                 else:  # if vval is not a str
                     if isinstance(vval, int):
                         continue
@@ -792,7 +792,7 @@ def test_range_infomation(tests_path):
                     elif isinstance(vval, bool):
                         continue
                     else:
-                        assert vval == 'ILLEGAL VALIDATION NUMERIC VALUE'
+                        assert vval == 'ILLEGAL RANGE NUMERIC VALUE'
     # compare contents of c_l_p.json parameters and json_range_params
     unmatched = parameters ^ json_range_params
     if len(unmatched) != 0:
