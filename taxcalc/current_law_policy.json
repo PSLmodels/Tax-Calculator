@@ -16,7 +16,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_SS_Earnings_c": {
@@ -44,7 +44,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_FICA_mc_trt": {
@@ -64,7 +64,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_AMEDT_ec": {
@@ -84,7 +84,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_AMEDT_rt": {
@@ -104,7 +104,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
 
@@ -145,7 +145,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_SS_thd85": {
@@ -185,7 +185,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
 
@@ -206,7 +206,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ALD_SelfEmploymentTax_hc": {
@@ -226,7 +226,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ALD_SelfEmp_HealthIns_hc": {
@@ -246,7 +246,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ALD_KEOGH_SEP_hc": {
@@ -266,7 +266,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ALD_EarlyWithdraw_hc": {
@@ -286,7 +286,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ALD_Alimony_hc": {
@@ -306,7 +306,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ALD_EducatorExpenses_hc": {
@@ -326,7 +326,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ALD_HSADeduction_hc": {
@@ -346,7 +346,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ALD_IRAContributions_hc": {
@@ -366,7 +366,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ALD_DomesticProduction_hc": {
@@ -386,7 +386,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ALD_Tuition_hc": {
@@ -406,7 +406,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ALD_InvInc_ec_rt": {
@@ -426,7 +426,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ALD_InvInc_ec_base_RyanBrady": {
@@ -446,7 +446,7 @@
         "range": {"min": false, "max": true},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ALD_Dependents_hc": {
@@ -466,7 +466,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ALD_Dependents_Child_c": {
@@ -494,7 +494,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ALD_Dependents_Elder_c": {
@@ -522,7 +522,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ALD_Dependents_thd": {
@@ -542,7 +542,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_II_em": {
@@ -570,7 +570,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_II_em_ps": {
@@ -598,7 +598,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_II_prt": {
@@ -618,7 +618,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_II_no_em_nu18": {
@@ -722,7 +722,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_STD_allow_charity_ded_nonitemizers": {
@@ -770,7 +770,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_II_credit_ps": {
@@ -798,7 +798,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_II_credit_prt": {
@@ -818,7 +818,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_II_credit_nr": {
@@ -846,7 +846,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_II_credit_nr_ps": {
@@ -874,7 +874,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_II_credit_nr_prt": {
@@ -894,7 +894,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ID_Medical_frt": {
@@ -962,7 +962,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ID_Medical_c": {
@@ -990,7 +990,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ID_StateLocalTax_hc": {
@@ -1010,7 +1010,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ID_StateLocalTax_c": {
@@ -1038,7 +1038,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ID_RealEstate_hc": {
@@ -1058,7 +1058,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ID_RealEstate_c": {
@@ -1086,7 +1086,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ID_InterestPaid_hc": {
@@ -1106,7 +1106,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ID_InterestPaid_c": {
@@ -1134,7 +1134,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ID_Charity_crt_all": {
@@ -1194,7 +1194,7 @@
         "range": {"min": 0.0, "max": 1.0},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
 
@@ -1215,7 +1215,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ID_Charity_c": {
@@ -1243,7 +1243,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ID_Casualty_frt": {
@@ -1283,7 +1283,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ID_Casualty_c": {
@@ -1311,7 +1311,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ID_Miscellaneous_frt": {
@@ -1351,7 +1351,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ID_Miscellaneous_c": {
@@ -1379,7 +1379,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ID_ps": {
@@ -1407,7 +1407,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ID_prt": {
@@ -1427,7 +1427,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ID_crt": {
@@ -1467,7 +1467,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
 
@@ -1488,7 +1488,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ID_BenefitSurtax_em": {
@@ -1516,7 +1516,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ID_BenefitSurtax_Switch": {
@@ -1556,7 +1556,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
 
@@ -1605,7 +1605,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CG_rt1": {
@@ -1625,7 +1625,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CG_brk1": {
@@ -1673,7 +1673,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CG_brk2": {
@@ -1721,7 +1721,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CG_brk3": {
@@ -1769,7 +1769,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
 
@@ -1790,7 +1790,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_AMT_CG_brk1": {
@@ -1839,7 +1839,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_AMT_CG_brk2": {
@@ -1887,7 +1887,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_AMT_CG_brk3": {
@@ -1935,7 +1935,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
 
@@ -1984,7 +1984,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CG_reinvest_ec_rt": {
@@ -2004,7 +2004,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_II_rt1": {
@@ -2024,7 +2024,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_II_brk1": {
@@ -2072,7 +2072,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
 
@@ -2121,7 +2121,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_II_brk3": {
@@ -2149,7 +2149,7 @@
         "range": {"min": "_II_brk2", "max": "_II_brk4"},
         "out_of_range_minmsg": "for _II_brk2",
         "out_of_range_maxmsg": "for _II_brk4",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_II_rt4": {
@@ -2169,7 +2169,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_II_brk4": {
@@ -2217,7 +2217,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_II_brk5": {
@@ -2266,7 +2266,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_II_brk6": {
@@ -2314,7 +2314,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_II_brk7": {
@@ -2362,7 +2362,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
 
@@ -2384,7 +2384,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_PT_brk1": {
@@ -2432,7 +2432,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
 
@@ -2481,7 +2481,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_PT_brk3": {
@@ -2529,7 +2529,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_PT_brk4": {
@@ -2577,7 +2577,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_PT_brk5": {
@@ -2625,7 +2625,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_PT_brk6": {
@@ -2673,7 +2673,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_PT_brk7": {
@@ -2721,7 +2721,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
 
@@ -2751,7 +2751,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_AMT_prt": {
@@ -2772,7 +2772,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_AMT_em_ps": {
@@ -2801,7 +2801,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_AMT_Child_em": {
@@ -2829,7 +2829,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_AMT_KT_c_Age": {
@@ -2849,7 +2849,7 @@
         "range": {"min": 0, "max": 30},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_AMT_rt1": {
@@ -2870,7 +2870,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_AMT_brk1": {
@@ -2899,7 +2899,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_AMT_rt2": {
@@ -2920,7 +2920,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_AMT_em_pe": {
@@ -2946,7 +2946,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CDCC_c": {
@@ -2966,7 +2966,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CDCC_ps": {
@@ -2985,7 +2985,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CDCC_crt": {
@@ -3005,7 +3005,7 @@
         "range": {"min": 0, "max": 100},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CTC_c": {
@@ -3025,7 +3025,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CTC_c_under5_bonus": {
@@ -3045,7 +3045,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CTC_ps": {
@@ -3065,7 +3065,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CTC_prt": {
@@ -3085,7 +3085,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_DependentCredit_c": {
@@ -3105,7 +3105,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_NIIT_thd": {
@@ -3125,7 +3125,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_NIIT_PT_taxed": {
@@ -3165,7 +3165,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_EITC_c": {
@@ -3193,7 +3193,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_EITC_rt": {
@@ -3213,7 +3213,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
 
@@ -3234,7 +3234,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_EITC_ps": {
@@ -3262,7 +3262,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_EITC_ps_MarriedJ": {
@@ -3290,7 +3290,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_EITC_MinEligAge": {
@@ -3310,7 +3310,7 @@
         "range": {"min": 0, "max": 999},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_EITC_MaxEligAge": {
@@ -3330,7 +3330,7 @@
         "range": {"min": 0, "max": 999},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
 
@@ -3359,7 +3359,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_EITC_indiv": {
@@ -3399,7 +3399,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ETC_pe_Single": {
@@ -3425,7 +3425,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ETC_pe_Married": {
@@ -3451,7 +3451,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ACTC_rt": {
@@ -3471,7 +3471,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ACTC_rt_bonus_under5family": {
@@ -3491,7 +3491,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ACTC_Income_thd": {
@@ -3511,7 +3511,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_ACTC_ChildNum": {
@@ -3531,7 +3531,7 @@
         "range": {"min": 0, "max": 99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CTC_new_c": {
@@ -3551,7 +3551,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CTC_new_c_under5_bonus": {
@@ -3571,7 +3571,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CTC_new_rt": {
@@ -3591,7 +3591,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CTC_new_ps": {
@@ -3619,7 +3619,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CTC_new_prt": {
@@ -3639,7 +3639,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CTC_new_refund_limited": {
@@ -3679,7 +3679,7 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_FST_AGI_trt": {
@@ -3699,7 +3699,7 @@
         "range": {"min": 0.0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_FST_AGI_thd_lo": {
@@ -3776,7 +3776,7 @@
         "range": {"min": 0.0, "max": 1.0},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_AGI_surtax_thd": {
@@ -3804,7 +3804,7 @@
         "range": {"min": 0.0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_LST": {
@@ -3824,7 +3824,7 @@
         "range": {"min": -9e99, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_UBI1": {
@@ -3852,7 +3852,7 @@
         "range": {"min": 0.0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_UBI2": {
@@ -3880,7 +3880,7 @@
         "range": {"min": 0.0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_UBI3": {
@@ -3908,7 +3908,7 @@
         "range": {"min": 0.0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_UBI_ecrt": {
@@ -3928,7 +3928,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CR_RetirementSavings_hc": {
@@ -3948,7 +3948,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CR_ForeignTax_hc": {
@@ -3968,7 +3968,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CR_ResidentialEnergy_hc": {
@@ -3988,7 +3988,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CR_GeneralBusiness_hc": {
@@ -4008,7 +4008,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CR_MinimumTax_hc": {
@@ -4028,7 +4028,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CR_AmOppRefundable_hc": {
@@ -4048,7 +4048,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CR_AmOppNonRefundable_hc": {
@@ -4068,7 +4068,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CR_SchR_hc": {
@@ -4088,7 +4088,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CR_OtherCredits_hc": {
@@ -4108,7 +4108,7 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     },
 
     "_CR_Education_hc": {
@@ -4128,6 +4128,6 @@
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "warn"
     }
 }
