@@ -183,7 +183,7 @@ def test_benefits():
     Ensure that benefits data is updated as expected
     """
     benefits_path = os.path.join(os.path.join(Records.CUR_PATH,
-                                 "benefits.csv.gz"))
+                                 "cps_benefits.csv.gz"))
     benefits = pd.read_csv(benefits_path, compression="gzip")
     print(benefits.columns.tolist())
     rec = Records.cps_constructor(data=None,
