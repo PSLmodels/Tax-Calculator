@@ -368,7 +368,7 @@ def create_distribution_table(obj, groupby, result_type,
 
 def create_difference_table(recs1, recs2, groupby,
                             income_measure='expanded_income',
-                            income_to_present='iitax'):
+                            tax_to_present='iitax'):
     """
     Get results from two different Records objects for the same year, compare
     the two results, and return the differences as a Pandas DataFrame that is
@@ -389,7 +389,7 @@ def create_difference_table(recs1, recs2, groupby,
         options for input: 'expanded_income', 'iitax'
         classifier of income bins/deciles
 
-    income_to_present : String object
+    tax_to_present : String object
         options for input: 'iitax', 'payrolltax', 'combined'
 
     Returns
@@ -426,7 +426,7 @@ def create_difference_table(recs1, recs2, groupby,
     # compute difference in results
     # Positive values are the magnitude of the tax increase
     # Negative values are the magnitude of the tax decrease
-    res2['tax_diff'] = res2[income_to_present] - res1[income_to_present]
+    res2['tax_diff'] = res2[tax_to_present] - res1[tax_to_present]
     res2['aftertax_perc'] = res2['tax_diff'] / res2['aftertax_baseline']
     diffs = means_and_comparisons('tax_diff',
                                   pdf.groupby('bins', as_index=False),
