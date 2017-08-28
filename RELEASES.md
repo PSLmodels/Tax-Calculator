@@ -4,10 +4,10 @@ Go
 [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
-Release 0.10.0 on 2017-??-??
+Release 0.10.0 on 2017-08-28
 ----------------------------
 (last merged pull request is
-[#XXXX](https://github.com/open-source-economics/Tax-Calculator/pull/XXXX))
+[#1531](https://github.com/open-source-economics/Tax-Calculator/pull/1531))
 
 **API Changes**
 - Add dropq function that returns reform warnings and errors
