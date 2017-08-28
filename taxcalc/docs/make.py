@@ -56,6 +56,7 @@ def policy_param_text(pname, param):
     """
     Extract info from param for pname and return as HTML string.
     """
+    # pylint: disable=too-many-branches
     sec1 = param['section_1']
     if len(sec1) > 0:
         txt = '<p><b>{} &mdash; {}</b>'.format(sec1, param['section_2'])
@@ -88,6 +89,18 @@ def policy_param_text(pname, param):
             # extrapolate final_val thru Policy.LAST_KNOWN_YEAR if not indexed
             for cyr in range(fcyr + 1, Policy.LAST_KNOWN_YEAR + 1):
                 txt += '<br>{}: {}'.format(cyr, final_val)
+    txt += '<br><i>Valid Range:</i>'
+    if param['range']['min'] == 'default':
+        minval = 'known_value'
+    else:
+        minval = param['range']['min']
+    if param['range']['max'] == 'default':
+        maxval = 'known_value'
+    else:
+        maxval = param['range']['max']
+    txt += ' min = {} and max = {}'.format(minval, maxval)
+    txt += '<br><i>Out-of-Range Action:</i> {}'.format(
+        param['out_of_range_action'])
     txt += '</p>'
     return txt
 

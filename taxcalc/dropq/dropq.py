@@ -13,7 +13,8 @@ import pandas as pd
 from taxcalc.dropq.dropq_utils import (dropq_calculate,
                                        random_seed,
                                        dropq_summary)
-from taxcalc import results, TABLE_LABELS, proportional_change_gdp
+from taxcalc import (results, TABLE_LABELS, proportional_change_gdp,
+                     Growdiff, Growfactors, Policy)
 
 
 # specify constants
@@ -33,6 +34,44 @@ BIN_ROW_NAMES = ['less_than_10', 'ten_twenty', 'twenty_thirty', 'thirty_forty',
 TOTAL_ROW_NAMES = ['ind_tax', 'payroll_tax', 'combined_tax']
 
 GDP_ELAST_ROW_NAMES = ['gdp_elasticity']
+
+
+def reform_warnings_errors(user_mods):
+    """
+    The reform_warnings_errors function assumes user_mods is a dictionary
+    returned by the Calculator.read_json_parameter_files() function.
+
+    This function returns a dictionary containing two STR:STR pairs:
+    {'warnings': '<empty-or-message(s)>', 'errors': '<empty-or-message(s)>'}
+    In each pair the second string is empty if there are no messages.
+    Any returned messages are generated using current_law_policy.json
+    information on known policy parameter names and parameter value ranges.
+
+    Note that this function will return one or more error messages if
+    the user_mods['policy'] dictionary contains any unknown policy
+    parameter names or if any *_cpi parameters have values other than
+    True or False.  These situations prevent implementing the policy
+    reform specified in user_mods, and therefore, no range-related
+    warnings or errors will be returned in this case.
+    """
+    rtn_dict = {'warnings': '', 'errors': ''}
+    # create Growfactors object
+    gdiff_baseline = Growdiff()
+    gdiff_baseline.update_growdiff(user_mods['growdiff_baseline'])
+    gdiff_response = Growdiff()
+    gdiff_response.update_growdiff(user_mods['growdiff_response'])
+    growfactors = Growfactors()
+    gdiff_baseline.apply_to(growfactors)
+    gdiff_response.apply_to(growfactors)
+    # create Policy object and implement reform
+    pol = Policy(gfactors=growfactors)
+    try:
+        pol.implement_reform(user_mods['policy'])
+        rtn_dict['warnings'] = pol.reform_warnings
+        rtn_dict['errors'] = pol.reform_errors
+    except ValueError as valerr_msg:
+        rtn_dict['errors'] = valerr_msg.__str__()
+    return rtn_dict
 
 
 def run_nth_year_tax_calc_model(year_n, start_year,

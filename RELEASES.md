@@ -4,24 +4,29 @@ Go
 [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
-Release 0.9.3 on 2017-??-??
----------------------------
+Release 0.10.0 on 2017-??-??
+----------------------------
 (last merged pull request is
 [#XXXX](https://github.com/open-source-economics/Tax-Calculator/pull/XXXX))
 
 **API Changes**
-- None
+- Add dropq function that returns reform warnings and errors
+  [[#1524](https://github.com/open-source-economics/Tax-Calculator/pull/1524)
+  by Martin Holmer]
 
 **New Features**
-- Add validation checking of policy parameters involved in a reform
-  [[#1502](https://github.com/open-source-economics/Tax-Calculator/pull/1502)
-  by Martin Holmer]
 - Add option to use policy parameter suffixes in JSON reform files
   [[#1505](https://github.com/open-source-economics/Tax-Calculator/pull/1505)
+  by Martin Holmer] and
+  [[#1520](https://github.com/open-source-economics/Tax-Calculator/pull/1520)
   by Martin Holmer]
 - Add rounding of wage-inflated or price-inflated parameter values to nearest cent
   [[#1506](https://github.com/open-source-economics/Tax-Calculator/pull/1506)
   by Martin Holmer]
+- Add extensive checking of reform policy parameter names and values
+  [[#1524](https://github.com/open-source-economics/Tax-Calculator/pull/1524)
+  by Martin Holmer]
+
 
 **Bug Fixes**
 - None

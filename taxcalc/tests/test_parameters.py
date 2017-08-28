@@ -41,6 +41,8 @@ def test_instantiation_and_usage():
         pbase._update({syr: []})
     # pylint: disable=no-member
     with pytest.raises(ValueError):
+        ParametersBase._expand_array([1, 2, None], False, [], 3)
+    with pytest.raises(ValueError):
         ParametersBase._expand_array({}, True, [0.02], 1)
     threedarray = np.array([[[1, 1]], [[1, 1]], [[1, 1]]])
     with pytest.raises(ValueError):
@@ -176,6 +178,19 @@ def test_parameters_mentioned(tests_path, jfname, pfname):
 # following tests access private methods, so pylint: disable=protected-access
 
 
+def test_expand_xd_errors():
+    """
+    One of several _expand_?D tests.
+    """
+    dct = dict()
+    with pytest.raises(ValueError):
+        ParametersBase._expand_1D(dct, inflate=False, inflation_rates=[],
+                                  num_years=10)
+    with pytest.raises(ValueError):
+        ParametersBase._expand_2D(dct, inflate=False, inflation_rates=[],
+                                  num_years=10)
+
+
 def test_expand_1d_short_array():
     """
     One of several _expand_?D tests.
@@ -209,27 +224,9 @@ def test_expand_1d_scalar():
     """
     val = 10.0
     exp = np.array([val * math.pow(1.02, i) for i in range(0, 10)])
-    res = ParametersBase._expand_1D(val, inflate=True,
-                                    inflation_rates=[0.02] * 10, num_years=10)
-    assert np.allclose(exp, res, atol=0.01, rtol=0.0)
-
-
-def test_expand_1d_accept_none():
-    """
-    One of several _expand_?D tests.
-    """
-    lst = [4., 5., None]
-    irates = [0.02, 0.02, 0.03, 0.035]
-    exp = []
-    cur = 5.0 * 1.02
-    exp = [4., 5., cur]
-    cur *= 1.03
-    exp.append(cur)
-    cur *= 1.035
-    exp.append(cur)
-    exp = np.array(exp)
-    res = ParametersBase._expand_array(lst, inflate=True,
-                                       inflation_rates=irates, num_years=5)
+    res = ParametersBase._expand_1D(np.array([val]),
+                                    inflate=True, inflation_rates=[0.02] * 10,
+                                    num_years=10)
     assert np.allclose(exp, res, atol=0.01, rtol=0.0)
 
 
@@ -276,11 +273,12 @@ def test_expand_2d_already_filled():
     One of several _expand_?D tests.
     """
     # pylint doesn't like caps in var name, so  pylint: disable=invalid-name
-    _II_brk2 = [[36000, 72250, 36500, 48600, 72500, 36250],
-                [38000, 74000, 36900, 49400, 73800, 36900],
-                [40000, 74900, 37450, 50200, 74900, 37450]]
-    res = ParametersBase._expand_2D(_II_brk2, inflate=True,
-                                    inflation_rates=[0.02] * 5, num_years=3)
+    _II_brk2 = [[36000., 72250., 36500., 48600., 72500., 36250.],
+                [38000., 74000., 36900., 49400., 73800., 36900.],
+                [40000., 74900., 37450., 50200., 74900., 37450.]]
+    res = ParametersBase._expand_2D(np.array(_II_brk2),
+                                    inflate=True, inflation_rates=[0.02] * 5,
+                                    num_years=3)
     np.allclose(res, np.array(_II_brk2), atol=0.01, rtol=0.0)
 
 
@@ -296,120 +294,17 @@ def test_expand_2d_partial_expand():
     # but we only need the inflation rate for year 3 to go
     # from year 3 -> year 4
     inf_rates = [0.02, 0.02, 0.03]
-    exp1 = 40000 * 1.03
-    exp2 = 74900 * 1.03
-    exp3 = 37450 * 1.03
-    exp4 = 50200 * 1.03
-    exp5 = 74900 * 1.03
-    exp6 = 37450 * 1.03
-    exp = [[36000, 72250, 36500, 48600, 72500, 36250],
-           [38000, 74000, 36900, 49400, 73800, 36900],
-           [40000, 74900, 37450, 50200, 74900, 37450],
+    exp1 = 40000. * 1.03
+    exp2 = 74900. * 1.03
+    exp3 = 37450. * 1.03
+    exp4 = 50200. * 1.03
+    exp5 = 74900. * 1.03
+    exp6 = 37450. * 1.03
+    exp = [[36000., 72250., 36500., 48600., 72500., 36250.],
+           [38000., 74000., 36900., 49400., 73800., 36900.],
+           [40000., 74900., 37450., 50200., 74900., 37450.],
            [exp1, exp2, exp3, exp4, exp5, exp6]]
-    res = ParametersBase._expand_2D(_II_brk2, inflate=True,
-                                    inflation_rates=inf_rates, num_years=4)
+    res = ParametersBase._expand_2D(np.array(_II_brk2),
+                                    inflate=True, inflation_rates=inf_rates,
+                                    num_years=4)
     assert np.allclose(res, exp, atol=0.01, rtol=0.0)
-
-
-def test_expand_2d_accept_none():
-    """
-    One of several _expand_?D tests.
-    """
-    # pylint doesn't like caps in var name, so  pylint: disable=invalid-name
-    _II_brk2 = [[36000, 72250, 36500, 48600, 72500],
-                [38000, 74000, 36900, 49400, 73800],
-                [40000, 74900, 37450, 50200, 74900],
-                [41000, None, None, None, None]]
-    # assume parameter is inflation indexed
-    exp1 = 74900 * 1.02
-    exp2 = 37450 * 1.02
-    exp3 = 50200 * 1.02
-    exp4 = 74900 * 1.02
-    exp = [[36000, 72250, 36500, 48600, 72500],
-           [38000, 74000, 36900, 49400, 73800],
-           [40000, 74900, 37450, 50200, 74900],
-           [41000, exp1, exp2, exp3, exp4]]
-    exp = np.array(exp)
-    res = ParametersBase._expand_array(_II_brk2, inflate=True,
-                                       inflation_rates=[0.02] * 5, num_years=4)
-    assert np.allclose(res, exp, atol=0.01, rtol=0.0)
-    # assume parameter is not inflation indexed
-    exp = [[36000, 72250, 36500, 48600, 72500],
-           [38000, 74000, 36900, 49400, 73800],
-           [40000, 74900, 37450, 50200, 74900],
-           [41000, 74900, 37450, 50200, 74900]]
-    exp = np.array(exp, dtype='float64')
-    res = ParametersBase._expand_array(_II_brk2, inflate=False,
-                                       inflation_rates=[0.02] * 5, num_years=4)
-    assert np.allclose(res, exp, atol=0.01, rtol=0.0)
-    # assume parameter reform is done via implement_reform Policy method
-    syr = 2013
-    pol = Policy(start_year=syr)
-    irates = pol.inflation_rates()
-    reform = {2016: {'_II_brk2': _II_brk2}}
-    pol.implement_reform(reform)
-    pol.set_year(2019)
-    # The 2019 policy should be the combination of the user-defined
-    # value and CPI-inflated values from 2018
-    exp_2019 = [41000.] + [(1.0 + irates[2018 - syr]) * i
-                           for i in _II_brk2[2][1:]]
-    exp_2019 = np.array(exp_2019)
-    assert np.allclose(pol.II_brk2, exp_2019, atol=0.01, rtol=0.0)
-
-
-def test_expand_2d_accept_none_add_row():
-    """
-    One of several _expand_?D tests.
-    """
-    # pylint doesn't like caps in var name, so  pylint: disable=invalid-name
-    _II_brk2 = [[36000, 72250, 36500, 48600, 72500],
-                [38000, 74000, 36900, 49400, 73800],
-                [40000, 74900, 37450, 50200, 74900],
-                [41000, None, None, None, None],
-                [43000, None, None, None, None]]
-    exx = [0.0]
-    exx.append(74900 * 1.02)  # exx[1]
-    exx.append(37450 * 1.02)  # exx[2]
-    exx.append(50200 * 1.02)  # exx[3]
-    exx.append(74900 * 1.02)  # exx[4]
-    exx.append(0.0)
-    exx.append(exx[1] * 1.03)  # exx[6]
-    exx.append(exx[2] * 1.03)  # exx[7]
-    exx.append(exx[3] * 1.03)  # exx[8]
-    exx.append(exx[4] * 1.03)  # exx[9]
-    exp = [[36000, 72250, 36500, 48600, 72500],
-           [38000, 74000, 36900, 49400, 73800],
-           [40000, 74900, 37450, 50200, 74900],
-           [41000, exx[1], exx[2], exx[3], exx[4]],
-           [43000, exx[6], exx[7], exx[8], exx[9]]]
-    inflation_rates = [0.015, 0.02, 0.02, 0.03]
-    res = ParametersBase._expand_array(_II_brk2, inflate=True,
-                                       inflation_rates=inflation_rates,
-                                       num_years=5)
-    assert np.allclose(res, exp, atol=0.01, rtol=0.0)
-    user_mods = {2016: {'_II_brk2': _II_brk2}}
-    syr = 2013
-    pol = Policy(start_year=syr)
-    irates = pol.inflation_rates()
-    pol.implement_reform(user_mods)
-    pol.set_year(2020)
-    irates = pol.inflation_rates()
-    # The 2020 policy should be the combination of the user-defined
-    # value and CPI-inflated values from 2018
-    exp_2020 = [43000.] + [(1 + irates[2019 - syr]) *
-                           (1 + irates[2018 - syr]) * i
-                           for i in _II_brk2[2][1:]]
-    exp_2020 = np.array(exp_2020)
-    assert np.allclose(pol.II_brk2, exp_2020, atol=0.01, rtol=0.0)
-
-
-def test_strip_nones():
-    """
-    Test _strip_nones method, which is called by _expand_array method.
-    """
-    lst = [None, None]
-    assert ParametersBase._strip_nones(lst) == []
-    lst = [1, 2, None]
-    assert ParametersBase._strip_nones(lst) == [1, 2]
-    lst = [[1, 2, 3], [4, None, None]]
-    assert Policy._strip_nones(lst) == [[1, 2, 3], [4, -1, -1]]

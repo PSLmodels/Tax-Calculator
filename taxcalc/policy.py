@@ -9,6 +9,7 @@ import six
 import numpy as np
 from taxcalc.parameters import ParametersBase
 from taxcalc.growfactors import Growfactors
+from taxcalc.growdiff import Growdiff
 
 
 class Policy(ParametersBase):
@@ -54,15 +55,18 @@ class Policy(ParametersBase):
     DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
     def __init__(self,
-                 gfactors=Growfactors(),
+                 gfactors=None,
                  parameter_dict=None,
                  start_year=JSON_START_YEAR,
                  num_years=DEFAULT_NUM_YEARS):
         super(Policy, self).__init__()
 
-        if not isinstance(gfactors, Growfactors):
-            raise ValueError('gfactors is not a Growfactors instance')
-        self._gfactors = gfactors
+        if gfactors is None:
+            self._gfactors = Growfactors()
+        elif isinstance(gfactors, Growfactors):
+            self._gfactors = gfactors
+        else:
+            raise ValueError('gfactors is not None or a Growfactors instance')
 
         if parameter_dict is None:  # read default parameters
             self._vals = self._params_dict_from_json_file()
@@ -76,10 +80,13 @@ class Policy(ParametersBase):
 
         syr = start_year
         lyr = start_year + num_years - 1
-        self._inflation_rates = gfactors.price_inflation_rates(syr, lyr)
-        self._wage_growth_rates = gfactors.wage_growth_rates(syr, lyr)
+        self._inflation_rates = self._gfactors.price_inflation_rates(syr, lyr)
+        self._wage_growth_rates = self._gfactors.wage_growth_rates(syr, lyr)
 
         self.initialize(start_year, num_years)
+
+        self.reform_warnings = ''
+        self.reform_errors = ''
 
     def inflation_rates(self):
         """
@@ -110,6 +117,7 @@ class Policy(ParametersBase):
             if minimum YEAR in the YEAR:MODS pairs is less than start_year.
             if minimum YEAR in the YEAR:MODS pairs is less than current_year.
             if maximum YEAR in the YEAR:MODS pairs is greater than end_year.
+            if Policy._validate_parameter_names generates any error messages.
 
         Returns
         -------
@@ -163,33 +171,40 @@ class Policy(ParametersBase):
         """
         # check that all reform dictionary keys are integers
         if not isinstance(reform, dict):
-            raise ValueError('reform is not a dictionary')
+            raise ValueError('ERROR: reform is not a dictionary')
         if len(reform) == 0:
             return  # no reform to implement
         reform_years = sorted(list(reform.keys()))
         for year in reform_years:
             if not isinstance(year, int):
-                msg = 'key={} in reform is not an integer calendar year'
+                msg = 'ERROR: key={} in reform is not an integer calendar year'
                 raise ValueError(msg.format(year))
         # check range of remaining reform_years
         first_reform_year = min(reform_years)
         if first_reform_year < self.start_year:
-            msg = 'reform provision in year={} < start_year={}'
+            msg = 'ERROR: reform provision in year={} < start_year={}'
             raise ValueError(msg.format(first_reform_year, self.start_year))
         if first_reform_year < self.current_year:
-            msg = 'reform provision in year={} < current_year={}'
+            msg = 'ERROR: reform provision in year={} < current_year={}'
             raise ValueError(msg.format(first_reform_year, self.current_year))
         last_reform_year = max(reform_years)
         if last_reform_year > self.end_year:
-            msg = 'reform provision in year={} > end_year={}'
+            msg = 'ERROR: reform provision in year={} > end_year={}'
             raise ValueError(msg.format(last_reform_year, self.end_year))
+        # validate reform parameter names
+        self._validate_parameter_names(reform)
+        if len(self.reform_errors) > 0:
+            raise ValueError(self.reform_errors)
         # implement the reform year by year
         precall_current_year = self.current_year
+        reform_parameters = set()
         for year in reform_years:
             self.set_year(year)
+            reform_parameters.update(reform[year].keys())
             self._update({year: reform[year]})
         self.set_year(precall_current_year)
-        self._validate_parameter_values()
+        # validate reform parameter values
+        self._validate_parameter_values(reform_parameters)
 
     def current_law_version(self):
         """
@@ -227,7 +242,9 @@ class Policy(ParametersBase):
     }
 
     @staticmethod
-    def translate_json_reform_suffixes(indict):
+    def translate_json_reform_suffixes(indict,
+                                       growdiff_baseline_dict,
+                                       growdiff_response_dict):
         """
         Replace any array parameters with suffixes in the specified
         JSON-derived "policy" dictionary, indict, and
@@ -271,11 +288,21 @@ class Policy(ParametersBase):
             return gdict
 
         # define with_suffix function used only in this method
-        def with_suffix(gdict):
+        def with_suffix(gdict, growdiff_baseline_dict, growdiff_response_dict):
             """
             Return param_base:year dictionary having only suffix parameters.
             """
-            pol = Policy()
+            if bool(growdiff_baseline_dict) or bool(growdiff_response_dict):
+                gdiff_baseline = Growdiff()
+                gdiff_baseline.update_growdiff(growdiff_baseline_dict)
+                gdiff_response = Growdiff()
+                gdiff_response.update_growdiff(growdiff_response_dict)
+                growfactors = Growfactors()
+                gdiff_baseline.apply_to(growfactors)
+                gdiff_response.apply_to(growfactors)
+            else:
+                growfactors = None
+            pol = Policy(gfactors=growfactors)
             odict = dict()
             for param in gdict.keys():
                 odict[param] = dict()
@@ -298,56 +325,55 @@ class Policy(ParametersBase):
         gdict = suffix_group_dict(indict)
         # - add to odict the consolidated values for parameters with a suffix
         if len(gdict) > 0:
-            odict.update(with_suffix(gdict))
+            odict.update(with_suffix(gdict,
+                                     growdiff_baseline_dict,
+                                     growdiff_response_dict))
         # - return policy dictionary containing constructed parameter arrays
         return odict
 
     # ----- begin private methods of Policy class -----
 
-    VALIDATED_PARAMETERS = set([
-        '_SS_thd50',
-        '_SS_thd85',
-        '_II_credit_prt',
-        '_II_credit_nr_prt',
-        '_ID_Medical_frt_add4aged',
-        '_II_brk1',
-        '_II_brk2',
-        '_II_brk3',
-        '_II_brk4',
-        '_II_brk5',
-        '_II_brk6',
-        '_II_brk7',
-        '_PT_brk1',
-        '_PT_brk2',
-        '_PT_brk3',
-        '_PT_brk4',
-        '_PT_brk5',
-        '_PT_brk6',
-        '_PT_brk7',
-        '_CTC_new_refund_limit_payroll_rt',
-        '_FST_AGI_trt',
-        '_FST_AGI_thd_lo',
-        '_FST_AGI_thd_hi',
-        '_AGI_surtax_trt',
-        '_STD',
-        '_ID_Casualty_frt',
-        '_ID_Charity_crt_all',
-        '_ID_Charity_crt_noncash',
-        '_ID_Charity_frt',
-        '_ID_Medical_frt',
-        '_ID_Miscellaneous_frt'
-    ])
+    def _validate_parameter_names(self, reform):
+        """
+        Check validity of parameter names used in specified reform dictionary.
+        """
+        clp_names = set(self.default_data().keys())
+        for year in sorted(list(reform.keys())):
+            for name in reform[year]:
+                if name.endswith('_cpi'):
+                    if isinstance(reform[year][name], bool):
+                        pname = name[:-4]  # root parameter name
+                        if pname not in clp_names:
+                            msg = 'invalid parameter name {} in {}'
+                            self.reform_errors += (
+                                'ERROR: ' + msg.format(name, year) + '\n'
+                            )
+                    else:
+                        msg = 'parameter {} in {} is not true or false'
+                        self.reform_errors += (
+                            'ERROR: ' + msg.format(name, year) + '\n'
+                        )
+                else:
+                    if name not in clp_names:
+                        msg = 'invalid parameter name {} in {}'
+                        self.reform_errors += (
+                            'ERROR: ' + msg.format(name, year) + '\n'
+                        )
 
-    def _validate_parameter_values(self):
+    def _validate_parameter_values(self, parameters_set):
         """
-        Check policy parameter values using validations information from
-        the current_law_policy.json file.
+        Check values of parameters in specified parameter_set using
+        range information from the current_law_policy.json file.
         """
+        # pylint: disable=too-many-branches
         clp = self.current_law_version()
+        parameters = sorted(parameters_set)
         syr = Policy.JSON_START_YEAR
-        for pname in Policy.VALIDATED_PARAMETERS:
+        for pname in parameters:
+            if pname.endswith('_cpi'):
+                continue  # *_cpi parameter values validated elsewhere
             pvalue = getattr(self, pname)
-            for vop, vval in self._vals[pname]['validations'].items():
+            for vop, vval in self._vals[pname]['range'].items():
                 if isinstance(vval, six.string_types):
                     if vval == 'default':
                         vvalue = getattr(clp, pname)
@@ -357,11 +383,30 @@ class Policy(ParametersBase):
                     vvalue = np.full(pvalue.shape, vval)
                 assert pvalue.shape == vvalue.shape
                 for idx in np.ndindex(pvalue.shape):
+                    out_of_range = False
                     if vop == 'min' and pvalue[idx] < vvalue[idx]:
+                        out_of_range = True
                         msg = '{} {} value {} < min value {}'
-                        raise ValueError(msg.format(idx[0] + syr, pname,
-                                                    pvalue[idx], vvalue[idx]))
+                        extra = self._vals[pname]['out_of_range_minmsg']
+                        if len(extra) > 0:
+                            msg += ' {}'.format(extra)
                     if vop == 'max' and pvalue[idx] > vvalue[idx]:
+                        out_of_range = True
                         msg = '{} {} value {} > max value {}'
-                        raise ValueError(msg.format(idx[0] + syr, pname,
-                                                    pvalue[idx], vvalue[idx]))
+                        extra = self._vals[pname]['out_of_range_maxmsg']
+                        if len(extra) > 0:
+                            msg += ' {}'.format(extra)
+                    if out_of_range:
+                        action = self._vals[pname]['out_of_range_action']
+                        if action == 'warn':
+                            self.reform_warnings += (
+                                'WARNING: ' + msg.format(idx[0] + syr, pname,
+                                                         pvalue[idx],
+                                                         vvalue[idx]) + '\n'
+                            )
+                        if action == 'stop':
+                            self.reform_errors += (
+                                'ERROR: ' + msg.format(idx[0] + syr, pname,
+                                                       pvalue[idx],
+                                                       vvalue[idx]) + '\n'
+                            )

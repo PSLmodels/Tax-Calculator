@@ -34,28 +34,6 @@ USER_MODS = {
 }
 
 
-USER_MODS = {
-    'policy': {
-        2016: {'_II_rt3': [0.33],
-               '_PT_rt3': [0.33],
-               '_II_rt4': [0.33],
-               '_PT_rt4': [0.33]}
-    },
-    'consumption': {
-        2016: {'_MPC_e20400': [0.01]}
-    },
-    'behavior': {
-        2016: {'_BE_sub': [0.25]}
-    },
-    'growdiff_baseline': {
-    },
-    'growdiff_response': {
-    },
-    'gdp_elasticity': {
-    }
-}
-
-
 @pytest.mark.parametrize('start_year, year_n',
                          [(2000, 0),
                           (2013, -1),
@@ -269,3 +247,29 @@ def test_with_pufcsv(puf_fullsample):
                       diff, proportional_diff))
     assert proportional_diff < 0.0001  # one-hundredth of one percent
     # assert 1 == 2  # uncomment to force test failure with above print out
+
+
+def test_reform_warnings_errors():
+    msg_dict = reform_warnings_errors(USER_MODS)
+    assert len(msg_dict['warnings']) == 0
+    assert len(msg_dict['errors']) == 0
+    bad1_mods = {
+        'policy': {2020: {'_II_rt3': [1.4]}, 2021: {'_STD_Dep': [0]}},
+        'consumption': {},
+        'behavior': {},
+        'growdiff_baseline': {},
+        'growdiff_response': {}
+    }
+    msg_dict = reform_warnings_errors(bad1_mods)
+    assert len(msg_dict['warnings']) > 0
+    assert len(msg_dict['errors']) > 0
+    bad2_mods = {
+        'policy': {2020: {'_II_rt33': [0.4]}, 2021: {'_STD_Dep': [0]}},
+        'consumption': {},
+        'behavior': {},
+        'growdiff_baseline': {},
+        'growdiff_response': {}
+    }
+    msg_dict = reform_warnings_errors(bad2_mods)
+    assert len(msg_dict['warnings']) == 0
+    assert len(msg_dict['errors']) > 0
