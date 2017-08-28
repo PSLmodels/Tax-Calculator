@@ -3,6 +3,7 @@ test_dropq.py uses only PUF input data because the dropq algorithm
 is designed to work exclusively with private IRS-SOI PUF input data.
 """
 import os
+import six
 import numpy as np
 import pandas as pd
 import pytest
@@ -308,23 +309,37 @@ def test_dropq_diff_vs_util_diff(puf_subsample):
     assert isinstance(qdf, pd.DataFrame)
     # check that each element in the two DataFrames are the same
     if 'aftertax_perc' not in list(qdf):
-        qdf = qdf.assign(aftertax_perc = ['-0.00%',
-                                          '0.00%',
-                                          '0.00%',
-                                          '0.00%',
-                                          '0.00%',
-                                          '0.00%',
-                                          '0.34%',
-                                          '0.90%',
-                                          '1.51%',
-                                          '2.69%',
-                                          'n/a'])
+        qdf = qdf.assign(aftertax_perc=['-0.00%',
+                                        '0.00%',
+                                        '0.00%',
+                                        '0.00%',
+                                        '0.00%',
+                                        '0.00%',
+                                        '0.34%',
+                                        '0.90%',
+                                        '1.51%',
+                                        '2.69%',
+                                        'n/a'])
     assert udf.shape[0] == qdf.shape[0]  # same number of rows
     assert udf.shape[1] == qdf.shape[1]  # same number of cols
     for col in list(qdf):
         for row in range(0, qdf.shape[0]):
-            assert type(qdf[col][row]) == type(udf[col][row])
-            if qdf[col][row] != udf[col][row]:
-                msg = '{} {} {} {}'.format(col, row,
-                                           qdf[col][row], udf[col][row])
+            same = False
+            qel_str_type = isinstance(qdf[col][row], six.string_types)
+            uel_str_type = isinstance(udf[col][row], six.string_types)
+            assert qel_str_type == uel_str_type
+            if qel_str_type:
+                same = qdf[col][row] == udf[col][row]
+            else:
+                qel_flt_type = isinstance(qdf[col][row], float)
+                uel_flt_type = isinstance(udf[col][row], float)
+                assert qel_flt_type == uel_flt_type
+                if qel_flt_type:
+                    same = np.allclose([qdf[col][row]], [udf[col][row]])
+            if not same:
+                msg = '{} {} : [{}] {} [{}] {}'.format(col, row,
+                                                       qdf[col][row],
+                                                       type(qdf[col][row]),
+                                                       udf[col][row],
+                                                       type(udf[col][row]))
                 assert msg == 'qdf element not equal to udf element'
