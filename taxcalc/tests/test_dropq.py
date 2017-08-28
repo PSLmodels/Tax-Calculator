@@ -9,6 +9,7 @@ import pytest
 from taxcalc.dropq.dropq_utils import *
 from taxcalc.dropq import *
 from taxcalc import (Policy, Records, Calculator,
+                     create_difference_table,
                      multiyear_diagnostic_table, results)
 
 
@@ -273,3 +274,57 @@ def test_reform_warnings_errors():
     msg_dict = reform_warnings_errors(bad2_mods)
     assert len(msg_dict['warnings']) == 0
     assert len(msg_dict['errors']) > 0
+
+
+@pytest.mark.requires_pufcsv
+def test_dropq_diff_vs_util_diff(puf_subsample):
+    recs1 = Records(data=puf_subsample)
+    calc1 = Calculator(policy=Policy(), records=recs1)
+    recs2 = Records(data=puf_subsample)
+    pol2 = Policy()
+    pol2.implement_reform(USER_MODS['policy'])
+    calc2 = Calculator(policy=pol2, records=recs2)
+    calc1.advance_to_year(2016)
+    calc2.advance_to_year(2016)
+    calc1.calc_all()
+    calc2.calc_all()
+    # generate diff table using utility function
+    udf = create_difference_table(calc1.records, calc2.records,
+                                  groupby='weighted_deciles',
+                                  income_measure='expanded_income',
+                                  tax_to_present='iitax')
+    assert isinstance(udf, pd.DataFrame)
+    # generate diff table using dropq functions without dropping any records
+    res1 = results(calc1.records)
+    res2 = results(calc2.records)
+    res2['iitax_dec'] = res2['iitax']  # TODO: ??? drop ???
+    res2['tax_diff_dec'] = res2['iitax'] - res1['iitax']  # TODO: ??? drop ???
+    qdf = dropq_diff_table(res1, res2,
+                           groupby='weighted_deciles',
+                           res_col='tax_diff',
+                           diff_col='iitax',
+                           suffix='_dec',
+                           wsum=(res2['tax_diff_dec'] * res2['s006']).sum())
+    assert isinstance(qdf, pd.DataFrame)
+    # check that each element in the two DataFrames are the same
+    if 'aftertax_perc' not in list(qdf):
+        qdf = qdf.assign(aftertax_perc = ['-0.00%',
+                                          '0.00%',
+                                          '0.00%',
+                                          '0.00%',
+                                          '0.00%',
+                                          '0.00%',
+                                          '0.34%',
+                                          '0.90%',
+                                          '1.51%',
+                                          '2.69%',
+                                          'n/a'])
+    assert udf.shape[0] == qdf.shape[0]  # same number of rows
+    assert udf.shape[1] == qdf.shape[1]  # same number of cols
+    for col in list(qdf):
+        for row in range(0, qdf.shape[0]):
+            assert type(qdf[col][row]) == type(udf[col][row])
+            if qdf[col][row] != udf[col][row]:
+                msg = '{} {} {} {}'.format(col, row,
+                                           qdf[col][row], udf[col][row])
+                assert msg == 'qdf element not equal to udf element'
