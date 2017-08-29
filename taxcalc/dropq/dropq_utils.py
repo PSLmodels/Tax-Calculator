@@ -325,11 +325,8 @@ def dropq_summary(df1, df2, mask):
 
     # Totals for difference between reform and baseline
     dec_sum = (df2['tax_diff_dec'] * df2['s006']).sum()
-    bin_sum = (df2['tax_diff_bin'] * df2['s006']).sum()
     pr_dec_sum = (df2['payrolltax_diff_dec'] * df2['s006']).sum()
-    pr_bin_sum = (df2['payrolltax_diff_bin'] * df2['s006']).sum()
     comb_dec_sum = (df2['combined_diff_dec'] * df2['s006']).sum()
-    comb_bin_sum = (df2['combined_diff_bin'] * df2['s006']).sum()
 
     # Totals for baseline
     sum_baseline = (df1['iitax'] * df1['s006']).sum()
@@ -344,45 +341,33 @@ def dropq_summary(df1, df2, mask):
     # Create difference tables, grouped by deciles and bins
     diffs_dec = dropq_diff_table(df1, df2,
                                  groupby='weighted_deciles',
-                                 res_col='tax_diff',
-                                 diff_col='iitax',
-                                 suffix='_dec',
-                                 wtotal=dec_sum)
+                                 income_measure='expanded_income',
+                                 tax_to_diff='iitax')
 
     diffs_bin = dropq_diff_table(df1, df2,
                                  groupby='webapp_income_bins',
-                                 res_col='tax_diff',
-                                 diff_col='iitax',
-                                 suffix='_bin',
-                                 wtotal=bin_sum)
+                                 income_measure='expanded_income',
+                                 tax_to_diff='iitax')
 
     pr_diffs_dec = dropq_diff_table(df1, df2,
                                     groupby='weighted_deciles',
-                                    res_col='payrolltax_diff',
-                                    diff_col='payrolltax',
-                                    suffix='_dec',
-                                    wtotal=pr_dec_sum)
+                                    income_measure='expanded_income',
+                                    tax_to_diff='payrolltax')
 
     pr_diffs_bin = dropq_diff_table(df1, df2,
                                     groupby='webapp_income_bins',
-                                    res_col='payrolltax_diff',
-                                    diff_col='payrolltax',
-                                    suffix='_bin',
-                                    wtotal=pr_bin_sum)
+                                    income_measure='expanded_income',
+                                    tax_to_diff='payrolltax')
 
     comb_diffs_dec = dropq_diff_table(df1, df2,
                                       groupby='weighted_deciles',
-                                      res_col='combined_diff',
-                                      diff_col='combined',
-                                      suffix='_dec',
-                                      wtotal=comb_dec_sum)
+                                      income_measure='expanded_income',
+                                      tax_to_diff='combined')
 
     comb_diffs_bin = dropq_diff_table(df1, df2,
                                       groupby='webapp_income_bins',
-                                      res_col='combined_diff',
-                                      diff_col='combined',
-                                      suffix='_bin',
-                                      wtotal=comb_bin_sum)
+                                      income_measure='expanded_income',
+                                      tax_to_diff='combined')
 
     m1_dec = create_distribution_table(df1, groupby='weighted_deciles',
                                        result_type='weighted_sum')
@@ -403,23 +388,15 @@ def dropq_summary(df1, df2, mask):
             sum_reform, pr_sum_reform, combined_sum_reform)
 
 
-def dropq_diff_table(df1, df2, groupby, res_col, diff_col, suffix, wtotal):
+def dropq_diff_table(df1, df2, groupby, income_measure, tax_to_diff):
     """
     Create and return dropq difference table.
     """
-    # pylint: disable=too-many-arguments,too-many-locals
-    if groupby == 'weighted_deciles':
-        pdf = add_weighted_income_bins(df2, num_bins=10)
-    elif groupby == 'webapp_income_bins':
-        pdf = add_income_bins(df2, compare_with='webapp')
-    else:
-        err = ("groupby must be either "
-               "'weighted_deciles' or 'webapp_income_bins'")
-        raise ValueError(err)
-    df2[res_col + suffix] = df2[diff_col + suffix] - df1[diff_col]
-    diffs = diff_table_stats(res_col + suffix,
-                             pdf.groupby('bins', as_index=False),
-                             wtotal, skip_perc_aftertax=True)
+    baseline_income_measure = income_measure + '_baseline'
+    df2[baseline_income_measure] = df1[income_measure]
+    df2['tax_diff'] = df2[tax_to_diff] - df1[tax_to_diff]
+    diffs = diff_table_stats(df2, groupby, income_measure,
+                             skip_perc_aftertax=True)
     return diffs
 
 

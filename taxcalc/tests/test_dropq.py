@@ -2,7 +2,6 @@
 test_dropq.py uses only PUF input data because the dropq algorithm
 is designed to work exclusively with private IRS-SOI PUF input data.
 """
-import os
 import six
 import numpy as np
 import pandas as pd
@@ -167,11 +166,11 @@ def test_dropq_dist_table(groupby, result_type, puf_subsample):
 
 
 @pytest.mark.requires_pufcsv
-@pytest.mark.parametrize('groupby, res_column',
-                         [('weighted_deciles', 'tax_diff'),
-                          ('webapp_income_bins', 'tax_diff'),
-                          ('other_deciles', 'tax_diff')])
-def test_dropq_diff_table(groupby, res_column, puf_subsample):
+@pytest.mark.parametrize('groupby, tax_to_diff',
+                         [('weighted_deciles', 'iitax'),
+                          ('webapp_income_bins', 'payrolltax'),
+                          ('other_deciles', 'combined')])
+def test_dropq_diff_table(groupby, tax_to_diff, puf_subsample):
     recs1 = Records(data=puf_subsample)
     calc1 = Calculator(policy=Policy(), records=recs1)
     recs2 = Records(data=puf_subsample)
@@ -185,20 +184,16 @@ def test_dropq_diff_table(groupby, res_column, puf_subsample):
     assert len(res1.index) == len(res2.index)
     mask = np.ones(len(res1.index))
     (res1, res2) = drop_records(res1, res2, mask)
-    dec_sum = (res2['tax_diff_dec'] * res2['s006']).sum()
     if groupby == 'other_deciles':
         with pytest.raises(ValueError):
             dropq_diff_table(res1, res2, groupby=groupby,
-                             res_col=res_column,
-                             diff_col='iitax',
-                             suffix='_dec',
-                             wtotal=dec_sum)
+                             income_measure='expanded_income',
+                             tax_to_diff=tax_to_diff)
     else:
-        dropq_diff_table(res1, res2, groupby=groupby,
-                         res_col=res_column,
-                         diff_col='iitax',
-                         suffix='_dec',
-                         wtotal=dec_sum)
+        diffs = dropq_diff_table(res1, res2, groupby=groupby,
+                                 income_measure='expanded_income',
+                                 tax_to_diff=tax_to_diff)
+        assert isinstance(diffs, pd.DataFrame)
 
 
 @pytest.mark.requires_pufcsv
@@ -295,19 +290,19 @@ def test_dropq_diff_vs_util_diff(puf_subsample):
     udf = create_difference_table(calc1.records, calc2.records,
                                   groupby='weighted_deciles',
                                   income_measure='expanded_income',
-                                  tax_to_present='iitax')
+                                  tax_to_diff='iitax')
     assert isinstance(udf, pd.DataFrame)
     # generate diff table using dropq functions without dropping any records
     res1 = results(calc1.records)
     res2 = results(calc2.records)
+    """
     res2['iitax_dec'] = res2['iitax']  # TODO: ??? drop ???
     res2['tax_diff_dec'] = res2['iitax'] - res1['iitax']  # TODO: ??? drop ???
+    """
     qdf = dropq_diff_table(res1, res2,
                            groupby='weighted_deciles',
-                           res_col='tax_diff',
-                           diff_col='iitax',
-                           suffix='_dec',
-                           wtotal=(res2['tax_diff_dec'] * res2['s006']).sum())
+                           income_measure='expanded_income',
+                           tax_to_diff='iitax')
     assert isinstance(qdf, pd.DataFrame)
     # check that each element in the two DataFrames are the same
     if 'perc_aftertax' not in list(qdf):
@@ -345,6 +340,7 @@ def test_dropq_diff_vs_util_diff(puf_subsample):
                                                        udf[col][row],
                                                        type(udf[col][row]))
                 assert msg == 'qdf element not equal to udf element'
+    # TODO: remove the following debugging statements:
     # for col in sorted(list(udf)):
     #     print udf[col]
     # assert 1 == 2

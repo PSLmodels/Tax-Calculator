@@ -147,44 +147,65 @@ def add_income_bins(pdf, compare_with='soi', bins=None, right=True,
         elif compare_with == 'soi':
             bins = SMALL_INCOME_BINS
         else:
-            msg = 'Unknown compare_with arg {0}'.format(compare_with)
+            msg = 'Unknown compare_with argument {}'.format(compare_with)
             raise ValueError(msg)
     # Groupby income_measure bins
     pdf['bins'] = pd.cut(pdf[income_measure], bins, right=right)
     return pdf
 
 
-def diff_table_stats(col_name, gpdf, wtotal, skip_perc_aftertax=False):
+def diff_table_stats(res2, groupby, income_measure, skip_perc_aftertax=False):
     """
     Return new Pandas DataFrame containing difference table statistics
-    based on grouped values of specified col_name in the specified
-    gpdf Pandas DataFrame.
+    based on grouped values of specified col_name in the specified res2.
 
-    col_name: the column name to calculate against
-    gpdf: grouped Pandas DataFrame
-    wtotal: weighted total of col_name statistic
+    res2: reform difference results Pandas DataFrame
+    groupby: string naming type of bins
+    income_measure: string naming column used to create res2 bins
     """
-    def weighted_share_of_total(pdf, col_name, total):
+    # pylint: disable=too-many-locals
+    def weighted_share_of_total(gpdf, colname, total):
         """
         Nested function that returns the ratio of the
-        weighted_sum(pdf, col_name) and specified total.
+        weighted_sum(pdf, colname) and specified total.
         """
-        return weighted_sum(pdf, col_name) / (total + EPSILON)
-    # create difference table statistics in a new DataFrame
-    diffs = gpdf.apply(weighted_count_lt_zero, col_name)
-    diffs = pd.DataFrame(data=diffs, columns=['tax_cut'])
-    diffs['tax_inc'] = gpdf.apply(weighted_count_gt_zero, col_name)
+        return weighted_sum(gpdf, colname) / (total + EPSILON)
+    # add bin column to res2 given specified groupby and income_measure
+    if groupby == 'weighted_deciles':
+        pdf = add_weighted_income_bins(res2, num_bins=10,
+                                       income_measure=income_measure)
+    elif groupby == 'webapp_income_bins':
+        pdf = add_income_bins(res2, compare_with='webapp',
+                              income_measure=income_measure)
+    elif groupby == 'large_income_bins':
+        pdf = add_income_bins(res2, compare_with='tpc',
+                              income_measure=income_measure)
+    elif groupby == 'small_income_bins':
+        pdf = add_income_bins(res2, compare_with='soi',
+                              income_measure=income_measure)
+    else:
+        msg = ("groupby must be either "
+               "'weighted_deciles' or 'webapp_income_bins' "
+               "or 'large_income_bins' or 'small_income_bins'")
+        raise ValueError(msg)
+    # create grouped Pandas DataFrame
+    gpdf = pdf.groupby('bins', as_index=False)
+    # create difference table statistics from gpdf in a new DataFrame
+    tax_cut = gpdf.apply(weighted_count_lt_zero, 'tax_diff')
+    diffs = pd.DataFrame(data=tax_cut, columns=['tax_cut'])
+    diffs['tax_inc'] = gpdf.apply(weighted_count_gt_zero, 'tax_diff')
     diffs['count'] = gpdf.apply(weighted_count)
-    diffs['mean'] = gpdf.apply(weighted_mean, col_name)
-    diffs['tot_change'] = gpdf.apply(weighted_sum, col_name)
-    diffs['perc_inc'] = gpdf.apply(weighted_perc_inc, col_name)
-    diffs['perc_cut'] = gpdf.apply(weighted_perc_dec, col_name)
-    diffs['share_of_change'] = gpdf.apply(weighted_share_of_total,
-                                          col_name, wtotal)
+    diffs['mean'] = gpdf.apply(weighted_mean, 'tax_diff')
+    diffs['tot_change'] = gpdf.apply(weighted_sum, 'tax_diff')
+    diffs['perc_inc'] = gpdf.apply(weighted_perc_inc, 'tax_diff')
+    diffs['perc_cut'] = gpdf.apply(weighted_perc_dec, 'tax_diff')
+    wtotal = (res2['tax_diff'] * res2['s006']).sum()
+    diffs['share_of_change'] = gpdf.apply(weighted_share_of_total, 'tax_diff',
+                                          wtotal)
     if not skip_perc_aftertax:
         diffs['perc_aftertax'] = gpdf.apply(weighted_mean, 'perc_aftertax')
-    # finish difference table contents
-    sum_row = get_sums(diffs)[diffs.columns.values.tolist()]
+    # add sum row at bottom and convert some cols to percentages
+    sum_row = get_sums(diffs)[diffs.columns]
     difs = diffs.append(sum_row)
     if skip_perc_aftertax:
         pct_cols = ['perc_inc', 'perc_cut', 'share_of_change']
@@ -193,9 +214,11 @@ def diff_table_stats(col_name, gpdf, wtotal, skip_perc_aftertax=False):
     for col in pct_cols:
         newvals = ['{:.2f}%'.format(val * 100) for val in difs[col]]
         difs[col] = pd.Series(newvals, index=difs.index)
+    # specify some column sum elements to be 'n/a'
     non_sum_cols = [c for c in difs.columns if 'mean' in c or 'perc' in c]
     for col in non_sum_cols:
         difs.loc['sums', col] = 'n/a'
+    # set print display format for float table elements
     pd.options.display.float_format = '{:8,.0f}'.format
     return difs
 
@@ -387,7 +410,7 @@ def create_distribution_table(obj, groupby, result_type,
 
 def create_difference_table(recs1, recs2, groupby,
                             income_measure='expanded_income',
-                            tax_to_present='iitax'):
+                            tax_to_diff='iitax'):
     """
     Get results from two different Records objects for the same year, compare
     the two results, and return the differences as a Pandas DataFrame that is
@@ -401,21 +424,20 @@ def create_difference_table(recs1, recs2, groupby,
 
     groupby : String object
         options for input: 'weighted_deciles', 'webapp_income_bins',
-                           'small_income_bins', 'large_income_bins'
+                           'large_income_bins', 'small_income_bins'
         determines how the columns in the resulting Pandas DataFrame are sorted
 
     income_measure : String object
-        options for input: 'expanded_income', 'iitax'
-        classifier of income bins/deciles
+        options for input: 'expanded_income', ...
+        used to assign filing units to bins
 
-    tax_to_present : String object
+    tax_to_diff : String object
         options for input: 'iitax', 'payrolltax', 'combined'
 
     Returns
     -------
     Pandas DataFrame object
     """
-    # pylint: disable=too-many-locals
     if recs1.current_year != recs2.current_year:
         msg = 'recs1.current_year not equal to recs2.current_year'
         raise ValueError(msg)
@@ -423,31 +445,9 @@ def create_difference_table(recs1, recs2, groupby,
     res2 = results(recs2)
     baseline_income_measure = income_measure + '_baseline'
     res2[baseline_income_measure] = res1[income_measure]
-    res2['tax_diff'] = res2[tax_to_present] - res1[tax_to_present]
+    res2['tax_diff'] = res2[tax_to_diff] - res1[tax_to_diff]
     res2['perc_aftertax'] = res2['tax_diff'] / res1['aftertax_income']
-    if groupby == 'weighted_deciles':
-        pdf = add_weighted_income_bins(res2, num_bins=10,
-                                       income_measure=baseline_income_measure)
-    elif groupby == 'webapp_income_bins':
-        pdf = add_income_bins(res2, compare_with='webapp',
-                              income_measure=baseline_income_measure)
-    elif groupby == 'small_income_bins':
-        pdf = add_income_bins(res2, compare_with='soi',
-                              income_measure=baseline_income_measure)
-    elif groupby == 'large_income_bins':
-        pdf = add_income_bins(res2, compare_with='tpc',
-                              income_measure=baseline_income_measure)
-    else:
-        msg = ("groupby must be either "
-               "'weighted_deciles' or 'webapp_income_bins' "
-               "or 'small_income_bins' or 'large_income_bins'")
-        raise ValueError(msg)
-    # compute difference in results
-    # Positive values are the magnitude of the tax increase
-    # Negative values are the magnitude of the tax decrease
-    diffs = diff_table_stats('tax_diff',
-                             pdf.groupby('bins', as_index=False),
-                             (res2['tax_diff'] * res2['s006']).sum())
+    diffs = diff_table_stats(res2, groupby, baseline_income_measure)
     return diffs
 
 
