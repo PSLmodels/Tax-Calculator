@@ -412,36 +412,14 @@ def dropq_diff_table(df1, df2, groupby, res_col, diff_col, suffix, wtotal):
         pdf = add_weighted_income_bins(df2, num_bins=10)
     elif groupby == 'webapp_income_bins':
         pdf = add_income_bins(df2, compare_with='webapp')
-    elif groupby == 'small_income_bins':
-        pdf = add_income_bins(df2, compare_with='soi')
-    elif groupby == 'large_income_bins':
-        pdf = add_income_bins(df2, compare_with='tpc')
     else:
         err = ("groupby must be either "
-               "'weighted_deciles' or 'webapp_income_bins' or "
-               "'small_income_bins' or 'large_income_bins'")
+               "'weighted_deciles' or 'webapp_income_bins'")
         raise ValueError(err)
-    # Difference in plans
-    # Positive values are the magnitude of the tax increase
-    # Negative values are the magnitude of the tax decrease
     df2[res_col + suffix] = df2[diff_col + suffix] - df1[diff_col]
     diffs = diff_table_stats(res_col + suffix,
                              pdf.groupby('bins', as_index=False),
                              wtotal, skip_perc_aftertax=True)
-    sum_row = get_sums(diffs)[diffs.columns]
-    diffs = diffs.append(sum_row)  # pylint: disable=redefined-variable-type
-    pd.options.display.float_format = '{:8,.0f}'.format
-    srs_inc = ['{0:.2f}%'.format(val * 100) for val in diffs['perc_inc']]
-    diffs['perc_inc'] = pd.Series(srs_inc, index=diffs.index)
-    srs_cut = ['{0:.2f}%'.format(val * 100) for val in diffs['perc_cut']]
-    diffs['perc_cut'] = pd.Series(srs_cut, index=diffs.index)
-    srs_change = ['{0:.2f}%'.format(val * 100) for val in
-                  diffs['share_of_change']]
-    diffs['share_of_change'] = pd.Series(srs_change, index=diffs.index)
-    # columns containing weighted values relative to the binning mechanism
-    non_sum_cols = [x for x in diffs.columns if 'mean' in x or 'perc' in x]
-    for col in non_sum_cols:
-        diffs.loc['sums', col] = 'n/a'
     return diffs
 
 

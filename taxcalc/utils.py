@@ -55,15 +55,15 @@ DIFF_TABLE_LABELS = ['Tax Units with Tax Cut', 'Tax Units with Tax Increase',
                      'Percent with Tax Increase', 'Percent with Tax Decrease',
                      'Share of Overall Change']
 
+WEBAPP_INCOME_BINS = [-1e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+                      199999, 499999, 1000000, 1e99]
+
 LARGE_INCOME_BINS = [-1e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                      200000, 1e99]
 
 SMALL_INCOME_BINS = [-1e99, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
                      49999, 74999, 99999, 199999, 499999, 999999, 1499999,
                      1999999, 4999999, 9999999, 1e99]
-
-WEBAPP_INCOME_BINS = [-1e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
-                      199999, 499999, 1000000, 1e99]
 
 
 def unweighted_sum(pdf, col_name):
@@ -121,7 +121,7 @@ def add_income_bins(pdf, compare_with='soi', bins=None, right=True,
         the object to which we are adding bins
 
     compare_with: String, optional
-        options for input: 'tpc', 'soi', 'webapp'
+        options for input: 'webapp', 'tpc', 'soi'
         determines which types of bins will be added
         default: 'soi'
 
@@ -140,12 +140,12 @@ def add_income_bins(pdf, compare_with='soi', bins=None, right=True,
         the original input that bins have been added to
     """
     if not bins:
-        if compare_with == 'tpc':
+        if compare_with == 'webapp':
+            bins = WEBAPP_INCOME_BINS
+        elif compare_with == 'tpc':
             bins = LARGE_INCOME_BINS
         elif compare_with == 'soi':
             bins = SMALL_INCOME_BINS
-        elif compare_with == 'webapp':
-            bins = WEBAPP_INCOME_BINS
         else:
             msg = 'Unknown compare_with arg {0}'.format(compare_with)
             raise ValueError(msg)
@@ -170,7 +170,7 @@ def diff_table_stats(col_name, gpdf, wtotal, skip_perc_aftertax=False):
         weighted_sum(pdf, col_name) and specified total.
         """
         return weighted_sum(pdf, col_name) / (total + EPSILON)
-    # tabulate who has a tax cut and who has a tax increase
+    # create difference table statistics in a new DataFrame
     diffs = gpdf.apply(weighted_count_lt_zero, col_name)
     diffs = pd.DataFrame(data=diffs, columns=['tax_cut'])
     diffs['tax_inc'] = gpdf.apply(weighted_count_gt_zero, col_name)
@@ -183,7 +183,21 @@ def diff_table_stats(col_name, gpdf, wtotal, skip_perc_aftertax=False):
                                           col_name, wtotal)
     if not skip_perc_aftertax:
         diffs['perc_aftertax'] = gpdf.apply(weighted_mean, 'perc_aftertax')
-    return diffs
+    # finish difference table contents
+    sum_row = get_sums(diffs)[diffs.columns.values.tolist()]
+    difs = diffs.append(sum_row)
+    if skip_perc_aftertax:
+        pct_cols = ['perc_inc', 'perc_cut', 'share_of_change']
+    else:
+        pct_cols = ['perc_inc', 'perc_cut', 'share_of_change', 'perc_aftertax']
+    for col in pct_cols:
+        newvals = ['{:.2f}%'.format(val * 100) for val in difs[col]]
+        difs[col] = pd.Series(newvals, index=difs.index)
+    non_sum_cols = [c for c in difs.columns if 'mean' in c or 'perc' in c]
+    for col in non_sum_cols:
+        difs.loc['sums', col] = 'n/a'
+    pd.options.display.float_format = '{:8,.0f}'.format
+    return difs
 
 
 def weighted(pdf, col_names):
@@ -270,8 +284,8 @@ def create_distribution_table(obj, groupby, result_type,
         and baseline_obj must have a current_year attribute
 
     groupby : String object
-        options for input: 'weighted_deciles', 'small_income_bins',
-        'large_income_bins', 'webapp_income_bins';
+        options for input: 'weighted_deciles', 'webapp_income_bins',
+                           'large_income_bins', 'small_income_bins';
         determines how the columns in the resulting Pandas DataFrame are sorted
 
     result_type : String object
@@ -340,14 +354,14 @@ def create_distribution_table(obj, groupby, result_type,
     if groupby == 'weighted_deciles':
         pdf = add_weighted_income_bins(res, num_bins=10,
                                        income_measure=income_measure)
-    elif groupby == 'small_income_bins':
-        pdf = add_income_bins(res, compare_with='soi',
+    elif groupby == 'webapp_income_bins':
+        pdf = add_income_bins(res, compare_with='webapp',
                               income_measure=income_measure)
     elif groupby == 'large_income_bins':
         pdf = add_income_bins(res, compare_with='tpc',
                               income_measure=income_measure)
-    elif groupby == 'webapp_income_bins':
-        pdf = add_income_bins(res, compare_with='webapp',
+    elif groupby == 'small_income_bins':
+        pdf = add_income_bins(res, compare_with='soi',
                               income_measure=income_measure)
     else:
         msg = ("groupby must be either 'weighted_deciles' or "
@@ -386,8 +400,8 @@ def create_difference_table(recs1, recs2, groupby,
     recs2 : a Tax-Calculator Records object that refers to the reform
 
     groupby : String object
-        options for input: 'weighted_deciles', 'small_income_bins',
-        'large_income_bins', 'webapp_income_bins'
+        options for input: 'weighted_deciles', 'webapp_income_bins',
+                           'small_income_bins', 'large_income_bins'
         determines how the columns in the resulting Pandas DataFrame are sorted
 
     income_measure : String object
@@ -409,6 +423,8 @@ def create_difference_table(recs1, recs2, groupby,
     res2 = results(recs2)
     baseline_income_measure = income_measure + '_baseline'
     res2[baseline_income_measure] = res1[income_measure]
+    res2['tax_diff'] = res2[tax_to_present] - res1[tax_to_present]
+    res2['perc_aftertax'] = res2['tax_diff'] / res1['aftertax_income']
     if groupby == 'weighted_deciles':
         pdf = add_weighted_income_bins(res2, num_bins=10,
                                        income_measure=baseline_income_measure)
@@ -429,21 +445,9 @@ def create_difference_table(recs1, recs2, groupby,
     # compute difference in results
     # Positive values are the magnitude of the tax increase
     # Negative values are the magnitude of the tax decrease
-    res2['tax_diff'] = res2[tax_to_present] - res1[tax_to_present]
-    res2['perc_aftertax'] = res2['tax_diff'] / res1['aftertax_income']
     diffs = diff_table_stats('tax_diff',
                              pdf.groupby('bins', as_index=False),
                              (res2['tax_diff'] * res2['s006']).sum())
-    sum_row = get_sums(diffs)[diffs.columns.values.tolist()]
-    diffs = diffs.append(sum_row)  # pylint: disable=redefined-variable-type
-    pd.options.display.float_format = '{:8,.0f}'.format
-    pct_cols = ['perc_inc', 'perc_cut', 'share_of_change', 'perc_aftertax']
-    for col in pct_cols:
-        newvals = ['{0:.2f}%'.format(val * 100) for val in diffs[col]]
-        diffs[col] = pd.Series(newvals, index=diffs.index)
-    non_sum_cols = [c for c in diffs.columns if 'mean' in c or 'perc' in c]
-    for col in non_sum_cols:
-        diffs.loc['sums', col] = 'n/a'
     return diffs
 
 

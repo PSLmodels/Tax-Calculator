@@ -170,8 +170,6 @@ def test_dropq_dist_table(groupby, result_type, puf_subsample):
 @pytest.mark.parametrize('groupby, res_column',
                          [('weighted_deciles', 'tax_diff'),
                           ('webapp_income_bins', 'tax_diff'),
-                          ('small_income_bins', 'tax_diff'),
-                          ('large_income_bins', 'tax_diff'),
                           ('other_deciles', 'tax_diff')])
 def test_dropq_diff_table(groupby, res_column, puf_subsample):
     recs1 = Records(data=puf_subsample)
@@ -347,3 +345,6 @@ def test_dropq_diff_vs_util_diff(puf_subsample):
                                                        udf[col][row],
                                                        type(udf[col][row]))
                 assert msg == 'qdf element not equal to udf element'
+    # for col in sorted(list(udf)):
+    #     print udf[col]
+    # assert 1 == 2
