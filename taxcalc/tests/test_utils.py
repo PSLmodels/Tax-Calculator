@@ -324,9 +324,9 @@ def test_diff_table_sum_row(cps_subsample):
     tdiff2 = create_difference_table(calc1.records, calc2.records,
                                      groupby='large_income_bins')
     non_digit_cols = ['mean', 'perc_inc', 'perc_cut', 'share_of_change',
-                      'aftertax_perc']
-    digit_cols = [x for x in tdiff1.columns.tolist() if
-                  x not in non_digit_cols]
+                      'perc_aftertax']
+    digit_cols = [c for c in tdiff1.columns.tolist() if
+                  c not in non_digit_cols]
     assert np.allclose(tdiff1[digit_cols][-1:],
                        tdiff2[digit_cols][-1:])
     np.testing.assert_array_equal(tdiff1[non_digit_cols][-1:],

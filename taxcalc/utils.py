@@ -154,19 +154,22 @@ def add_income_bins(pdf, compare_with='soi', bins=None, right=True,
     return pdf
 
 
-def means_and_comparisons(col_name, gpdf, weighted_total):
+def diff_table_stats(col_name, gpdf, wtotal):
     """
-    Return new Pandas DataFrame based on grouped values of specified
-    col_name in specified gpdf Pandas DataFrame.
+    Return new Pandas DataFrame containing difference table statistics
+    based on grouped values of specified col_name in the specified
+    gpdf Pandas DataFrame.
+
     col_name: the column name to calculate against
     gpdf: grouped Pandas DataFrame
+    wtotal: weighted total of col_name statistic
     """
     def weighted_share_of_total(pdf, col_name, total):
         """
-        Nested function that returns the ratio of
-        weighted_sum(pdf, col_name) and the specified total.
+        Nested function that returns the ratio of the
+        weighted_sum(pdf, col_name) and specified total.
         """
-        return weighted_sum(pdf, col_name) / (float(total) + EPSILON)
+        return weighted_sum(pdf, col_name) / (total + EPSILON)
     # tabulate who has a tax cut and who has a tax increase
     diffs = gpdf.apply(weighted_count_lt_zero, col_name)
     diffs = pd.DataFrame(data=diffs, columns=['tax_cut'])
@@ -177,7 +180,7 @@ def means_and_comparisons(col_name, gpdf, weighted_total):
     diffs['perc_inc'] = gpdf.apply(weighted_perc_inc, col_name)
     diffs['perc_cut'] = gpdf.apply(weighted_perc_dec, col_name)
     diffs['share_of_change'] = gpdf.apply(weighted_share_of_total,
-                                          col_name, weighted_total)
+                                          col_name, wtotal)
     return diffs
 
 
@@ -427,13 +430,13 @@ def create_difference_table(recs1, recs2, groupby,
     # Positive values are the magnitude of the tax increase
     # Negative values are the magnitude of the tax decrease
     res2['tax_diff'] = res2[tax_to_present] - res1[tax_to_present]
-    res2['aftertax_perc'] = res2['tax_diff'] / res2['aftertax_baseline']
-    diffs = means_and_comparisons('tax_diff',
-                                  pdf.groupby('bins', as_index=False),
-                                  (res2['tax_diff'] * res2['s006']).sum())
-    aftertax_perc = pdf.groupby('bins', as_index=False).apply(weighted_mean,
-                                                              'aftertax_perc')
-    diffs['aftertax_perc'] = aftertax_perc
+    res2['perc_aftertax'] = res2['tax_diff'] / res2['aftertax_baseline']
+    diffs = diff_table_stats('tax_diff',
+                             pdf.groupby('bins', as_index=False),
+                             (res2['tax_diff'] * res2['s006']).sum())
+    perc_aftertax = pdf.groupby('bins', as_index=False).apply(weighted_mean,
+                                                              'perc_aftertax')
+    diffs['perc_aftertax'] = perc_aftertax
     sum_row = get_sums(diffs)[diffs.columns.values.tolist()]
     diffs = diffs.append(sum_row)  # pylint: disable=redefined-variable-type
     pd.options.display.float_format = '{:8,.0f}'.format
@@ -445,9 +448,9 @@ def create_difference_table(recs1, recs2, groupby,
     srs_change = ['{0:.2f}%'.format(val * 100)
                   for val in diffs['share_of_change']]
     diffs['share_of_change'] = pd.Series(srs_change, index=diffs.index)
-    srs_aftertax_perc = ['{0:.2f}%'.format(val * 100)
-                         for val in diffs['aftertax_perc']]
-    diffs['aftertax_perc'] = pd.Series(srs_aftertax_perc, index=diffs.index)
+    srs_perc_aftertax = ['{0:.2f}%'.format(val * 100)
+                         for val in diffs['perc_aftertax']]
+    diffs['perc_aftertax'] = pd.Series(srs_perc_aftertax, index=diffs.index)
     # columns containing weighted values relative to the binning mechanism
     non_sum_cols = [col for col in diffs.columns
                     if 'mean' in col or 'perc' in col]

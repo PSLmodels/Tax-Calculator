@@ -191,12 +191,16 @@ def test_dropq_diff_table(groupby, res_column, puf_subsample):
     if groupby == 'other_deciles':
         with pytest.raises(ValueError):
             dropq_diff_table(res1, res2, groupby=groupby,
-                             res_col=res_column, diff_col='iitax',
-                             suffix='_dec', wsum=dec_sum)
+                             res_col=res_column,
+                             diff_col='iitax',
+                             suffix='_dec',
+                             wtotal=dec_sum)
     else:
         dropq_diff_table(res1, res2, groupby=groupby,
-                         res_col=res_column, diff_col='iitax',
-                         suffix='_dec', wsum=dec_sum)
+                         res_col=res_column,
+                         diff_col='iitax',
+                         suffix='_dec',
+                         wtotal=dec_sum)
 
 
 @pytest.mark.requires_pufcsv
@@ -305,11 +309,11 @@ def test_dropq_diff_vs_util_diff(puf_subsample):
                            res_col='tax_diff',
                            diff_col='iitax',
                            suffix='_dec',
-                           wsum=(res2['tax_diff_dec'] * res2['s006']).sum())
+                           wtotal=(res2['tax_diff_dec'] * res2['s006']).sum())
     assert isinstance(qdf, pd.DataFrame)
     # check that each element in the two DataFrames are the same
-    if 'aftertax_perc' not in list(qdf):
-        qdf = qdf.assign(aftertax_perc=['-0.00%',
+    if 'perc_aftertax' not in list(qdf):
+        qdf = qdf.assign(perc_aftertax=['-0.00%',
                                         '0.00%',
                                         '0.00%',
                                         '0.00%',

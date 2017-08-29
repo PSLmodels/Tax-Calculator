@@ -12,13 +12,10 @@ import pandas as pd
 from taxcalc import (Policy, Records, Calculator,
                      Consumption, Behavior, Growfactors, Growdiff)
 from taxcalc.utils import (add_income_bins, add_weighted_income_bins,
-                           means_and_comparisons, get_sums,
+                           diff_table_stats, get_sums,
                            weighted, weighted_avg_allcols,
                            create_distribution_table, results,
                            STATS_COLUMNS, TABLE_COLUMNS, WEBAPP_INCOME_BINS)
-
-
-EPSILON = 1e-3
 
 
 def check_years(start_year, year_n):
@@ -127,7 +124,7 @@ def dropq_calculate(year_n, start_year,
         res1 = results(calc1.records)
         res1p = results(calc1p.records)
         mask = np.logical_not(  # pylint: disable=no-member
-            np.isclose(res1.iitax, res1p.iitax, atol=EPSILON, rtol=0.0)
+            np.isclose(res1.iitax, res1p.iitax, atol=0.001, rtol=0.0)
         )
     else:
         mask = None
@@ -326,13 +323,13 @@ def dropq_summary(df1, df2, mask):
 
     df1, df2 = drop_records(df1, df2, mask)
 
-    # Totals for diff between baseline and reform
+    # Totals for difference between reform and baseline
     dec_sum = (df2['tax_diff_dec'] * df2['s006']).sum()
     bin_sum = (df2['tax_diff_bin'] * df2['s006']).sum()
     pr_dec_sum = (df2['payrolltax_diff_dec'] * df2['s006']).sum()
     pr_bin_sum = (df2['payrolltax_diff_bin'] * df2['s006']).sum()
-    combined_dec_sum = (df2['combined_diff_dec'] * df2['s006']).sum()
-    combined_bin_sum = (df2['combined_diff_bin'] * df2['s006']).sum()
+    comb_dec_sum = (df2['combined_diff_dec'] * df2['s006']).sum()
+    comb_bin_sum = (df2['combined_diff_bin'] * df2['s006']).sum()
 
     # Totals for baseline
     sum_baseline = (df1['iitax'] * df1['s006']).sum()
@@ -349,37 +346,43 @@ def dropq_summary(df1, df2, mask):
                                  groupby='weighted_deciles',
                                  res_col='tax_diff',
                                  diff_col='iitax',
-                                 suffix='_dec', wsum=dec_sum)
+                                 suffix='_dec',
+                                 wtotal=dec_sum)
 
     diffs_bin = dropq_diff_table(df1, df2,
                                  groupby='webapp_income_bins',
                                  res_col='tax_diff',
                                  diff_col='iitax',
-                                 suffix='_bin', wsum=bin_sum)
+                                 suffix='_bin',
+                                 wtotal=bin_sum)
 
     pr_diffs_dec = dropq_diff_table(df1, df2,
                                     groupby='weighted_deciles',
                                     res_col='payrolltax_diff',
                                     diff_col='payrolltax',
-                                    suffix='_dec', wsum=pr_dec_sum)
+                                    suffix='_dec',
+                                    wtotal=pr_dec_sum)
 
     pr_diffs_bin = dropq_diff_table(df1, df2,
                                     groupby='webapp_income_bins',
                                     res_col='payrolltax_diff',
                                     diff_col='payrolltax',
-                                    suffix='_bin', wsum=pr_bin_sum)
+                                    suffix='_bin',
+                                    wtotal=pr_bin_sum)
 
     comb_diffs_dec = dropq_diff_table(df1, df2,
                                       groupby='weighted_deciles',
                                       res_col='combined_diff',
                                       diff_col='combined',
-                                      suffix='_dec', wsum=combined_dec_sum)
+                                      suffix='_dec',
+                                      wtotal=comb_dec_sum)
 
     comb_diffs_bin = dropq_diff_table(df1, df2,
                                       groupby='webapp_income_bins',
                                       res_col='combined_diff',
                                       diff_col='combined',
-                                      suffix='_bin', wsum=combined_bin_sum)
+                                      suffix='_bin',
+                                      wtotal=comb_bin_sum)
 
     m1_dec = create_distribution_table(df1, groupby='weighted_deciles',
                                        result_type='weighted_sum')
@@ -395,24 +398,24 @@ def dropq_summary(df1, df2, mask):
 
     return (m2_dec, m1_dec, diffs_dec, pr_diffs_dec, comb_diffs_dec,
             m2_bin, m1_bin, diffs_bin, pr_diffs_bin, comb_diffs_bin,
-            dec_sum, pr_dec_sum, combined_dec_sum,
+            dec_sum, pr_dec_sum, comb_dec_sum,
             sum_baseline, pr_sum_baseline, combined_sum_baseline,
             sum_reform, pr_sum_reform, combined_sum_reform)
 
 
-def dropq_diff_table(df1, df2, groupby, res_col, diff_col, suffix, wsum):
+def dropq_diff_table(df1, df2, groupby, res_col, diff_col, suffix, wtotal):
     """
     Create and return dropq difference table.
     """
     # pylint: disable=too-many-arguments,too-many-locals
-    if groupby == "weighted_deciles":
+    if groupby == 'weighted_deciles':
         gdf = add_weighted_income_bins(df2, num_bins=10)
-    elif groupby == "small_income_bins":
-        gdf = add_income_bins(df2, compare_with="soi")
-    elif groupby == "large_income_bins":
-        gdf = add_income_bins(df2, compare_with="tpc")
-    elif groupby == "webapp_income_bins":
-        gdf = add_income_bins(df2, compare_with="webapp")
+    elif groupby == 'small_income_bins':
+        gdf = add_income_bins(df2, compare_with='soi')
+    elif groupby == 'large_income_bins':
+        gdf = add_income_bins(df2, compare_with='tpc')
+    elif groupby == 'webapp_income_bins':
+        gdf = add_income_bins(df2, compare_with='webapp')
     else:
         err = ("groupby must be either 'weighted_deciles' or "
                "'small_income_bins' or 'large_income_bins' or "
@@ -422,17 +425,17 @@ def dropq_diff_table(df1, df2, groupby, res_col, diff_col, suffix, wsum):
     # Positive values are the magnitude of the tax increase
     # Negative values are the magnitude of the tax decrease
     df2[res_col + suffix] = df2[diff_col + suffix] - df1[diff_col]
-    diffs = means_and_comparisons(res_col + suffix,
-                                  gdf.groupby('bins', as_index=False),
-                                  wsum + EPSILON)
+    diffs = diff_table_stats(res_col + suffix,
+                             gdf.groupby('bins', as_index=False),
+                             wtotal)
     sum_row = get_sums(diffs)[diffs.columns]
     diffs = diffs.append(sum_row)  # pylint: disable=redefined-variable-type
     pd.options.display.float_format = '{:8,.0f}'.format
-    srs_inc = ["{0:.2f}%".format(val * 100) for val in diffs['perc_inc']]
+    srs_inc = ['{0:.2f}%'.format(val * 100) for val in diffs['perc_inc']]
     diffs['perc_inc'] = pd.Series(srs_inc, index=diffs.index)
-    srs_cut = ["{0:.2f}%".format(val * 100) for val in diffs['perc_cut']]
+    srs_cut = ['{0:.2f}%'.format(val * 100) for val in diffs['perc_cut']]
     diffs['perc_cut'] = pd.Series(srs_cut, index=diffs.index)
-    srs_change = ["{0:.2f}%".format(val * 100) for val in
+    srs_change = ['{0:.2f}%'.format(val * 100) for val in
                   diffs['share_of_change']]
     diffs['share_of_change'] = pd.Series(srs_change, index=diffs.index)
     # columns containing weighted values relative to the binning mechanism
@@ -463,33 +466,32 @@ def dropq_dist_table(resdf, groupby, result_type, suffix):
     res[returns_sded_s] = res[s006_s].where(((res[c00100_s] > 0) &
                                              (res[standard_s] > 0)), 0)
     res[returns_amt_s] = res[s006_s].where(res[c09600_s] > 0, 0)
-    if groupby == "weighted_deciles":
+    if groupby == 'weighted_deciles':
         dframe = add_weighted_income_bins(res, num_bins=10)
-    elif groupby == "small_income_bins":
-        dframe = add_income_bins(res, compare_with="soi")
-    elif groupby == "large_income_bins":
-        dframe = add_income_bins(res, compare_with="tpc")
-    elif groupby == "webapp_income_bins":
-        dframe = add_income_bins(res, compare_with="webapp")
+    elif groupby == 'small_income_bins':
+        dframe = add_income_bins(res, compare_with='soi')
+    elif groupby == 'large_income_bins':
+        dframe = add_income_bins(res, compare_with='tpc')
+    elif groupby == 'webapp_income_bins':
+        dframe = add_income_bins(res, compare_with='webapp')
     else:
         err = ("groupby must be either 'weighted_deciles' or "
                "'small_income_bins' or 'large_income_bins' or "
                "'webapp_income_bins'")
         raise ValueError(err)
     pd.options.display.float_format = '{:8,.0f}'.format
-    if result_type == "weighted_sum":
+    if result_type == 'weighted_sum':
         dframe = weighted(dframe, [col + suffix for col in STATS_COLUMNS])
         gby_bins = dframe.groupby('bins', as_index=False)
         gp_mean = gby_bins[[col + suffix for col in TABLE_COLUMNS]].sum()
         gp_mean.drop('bins', axis=1, inplace=True)
         sum_row = get_sums(dframe)[[col + suffix for col in TABLE_COLUMNS]]
-    elif result_type == "weighted_avg":
+    elif result_type == 'weighted_avg':
         gp_mean = weighted_avg_allcols(dframe,
                                        [col + suffix for col in TABLE_COLUMNS])
         all_sums = get_sums(dframe, not_available=True)
         sum_row = all_sums[[col + suffix for col in TABLE_COLUMNS]]
     else:
-        err = ("result_type must be either 'weighted_sum' or "
-               "'weighted_avg'")
+        err = "result_type must be either 'weighted_sum' or 'weighted_avg'"
         raise ValueError(err)
     return gp_mean.append(sum_row)
