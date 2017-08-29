@@ -409,25 +409,25 @@ def dropq_diff_table(df1, df2, groupby, res_col, diff_col, suffix, wtotal):
     """
     # pylint: disable=too-many-arguments,too-many-locals
     if groupby == 'weighted_deciles':
-        gdf = add_weighted_income_bins(df2, num_bins=10)
-    elif groupby == 'small_income_bins':
-        gdf = add_income_bins(df2, compare_with='soi')
-    elif groupby == 'large_income_bins':
-        gdf = add_income_bins(df2, compare_with='tpc')
+        pdf = add_weighted_income_bins(df2, num_bins=10)
     elif groupby == 'webapp_income_bins':
-        gdf = add_income_bins(df2, compare_with='webapp')
+        pdf = add_income_bins(df2, compare_with='webapp')
+    elif groupby == 'small_income_bins':
+        pdf = add_income_bins(df2, compare_with='soi')
+    elif groupby == 'large_income_bins':
+        pdf = add_income_bins(df2, compare_with='tpc')
     else:
-        err = ("groupby must be either 'weighted_deciles' or "
-               "'small_income_bins' or 'large_income_bins' or "
-               "'webapp_income_bins'")
+        err = ("groupby must be either "
+               "'weighted_deciles' or 'webapp_income_bins' or "
+               "'small_income_bins' or 'large_income_bins'")
         raise ValueError(err)
     # Difference in plans
     # Positive values are the magnitude of the tax increase
     # Negative values are the magnitude of the tax decrease
     df2[res_col + suffix] = df2[diff_col + suffix] - df1[diff_col]
     diffs = diff_table_stats(res_col + suffix,
-                             gdf.groupby('bins', as_index=False),
-                             wtotal)
+                             pdf.groupby('bins', as_index=False),
+                             wtotal, skip_perc_aftertax=True)
     sum_row = get_sums(diffs)[diffs.columns]
     diffs = diffs.append(sum_row)  # pylint: disable=redefined-variable-type
     pd.options.display.float_format = '{:8,.0f}'.format

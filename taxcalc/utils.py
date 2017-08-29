@@ -154,7 +154,7 @@ def add_income_bins(pdf, compare_with='soi', bins=None, right=True,
     return pdf
 
 
-def diff_table_stats(col_name, gpdf, wtotal):
+def diff_table_stats(col_name, gpdf, wtotal, skip_perc_aftertax=False):
     """
     Return new Pandas DataFrame containing difference table statistics
     based on grouped values of specified col_name in the specified
@@ -181,6 +181,8 @@ def diff_table_stats(col_name, gpdf, wtotal):
     diffs['perc_cut'] = gpdf.apply(weighted_perc_dec, col_name)
     diffs['share_of_change'] = gpdf.apply(weighted_share_of_total,
                                           col_name, wtotal)
+    if not skip_perc_aftertax:
+        diffs['perc_aftertax'] = gpdf.apply(weighted_mean, 'perc_aftertax')
     return diffs
 
 
@@ -407,53 +409,39 @@ def create_difference_table(recs1, recs2, groupby,
     res2 = results(recs2)
     baseline_income_measure = income_measure + '_baseline'
     res2[baseline_income_measure] = res1[income_measure]
-    res2['aftertax_baseline'] = res1['aftertax_income']
-    income_measure = baseline_income_measure
     if groupby == 'weighted_deciles':
         pdf = add_weighted_income_bins(res2, num_bins=10,
-                                       income_measure=income_measure)
-    elif groupby == 'small_income_bins':
-        pdf = add_income_bins(res2, compare_with='soi',
-                              income_measure=income_measure)
-    elif groupby == 'large_income_bins':
-        pdf = add_income_bins(res2, compare_with='tpc',
-                              income_measure=income_measure)
+                                       income_measure=baseline_income_measure)
     elif groupby == 'webapp_income_bins':
         pdf = add_income_bins(res2, compare_with='webapp',
-                              income_measure=income_measure)
+                              income_measure=baseline_income_measure)
+    elif groupby == 'small_income_bins':
+        pdf = add_income_bins(res2, compare_with='soi',
+                              income_measure=baseline_income_measure)
+    elif groupby == 'large_income_bins':
+        pdf = add_income_bins(res2, compare_with='tpc',
+                              income_measure=baseline_income_measure)
     else:
         msg = ("groupby must be either "
-               "'weighted_deciles' or 'small_income_bins' "
-               "or 'large_income_bins' or 'webapp_income_bins'")
+               "'weighted_deciles' or 'webapp_income_bins' "
+               "or 'small_income_bins' or 'large_income_bins'")
         raise ValueError(msg)
     # compute difference in results
     # Positive values are the magnitude of the tax increase
     # Negative values are the magnitude of the tax decrease
     res2['tax_diff'] = res2[tax_to_present] - res1[tax_to_present]
-    res2['perc_aftertax'] = res2['tax_diff'] / res2['aftertax_baseline']
+    res2['perc_aftertax'] = res2['tax_diff'] / res1['aftertax_income']
     diffs = diff_table_stats('tax_diff',
                              pdf.groupby('bins', as_index=False),
                              (res2['tax_diff'] * res2['s006']).sum())
-    perc_aftertax = pdf.groupby('bins', as_index=False).apply(weighted_mean,
-                                                              'perc_aftertax')
-    diffs['perc_aftertax'] = perc_aftertax
     sum_row = get_sums(diffs)[diffs.columns.values.tolist()]
     diffs = diffs.append(sum_row)  # pylint: disable=redefined-variable-type
     pd.options.display.float_format = '{:8,.0f}'.format
-    srs_inc = ['{0:.2f}%'.format(val * 100) for val in diffs['perc_inc']]
-    diffs['perc_inc'] = pd.Series(srs_inc, index=diffs.index)
-
-    srs_cut = ['{0:.2f}%'.format(val * 100) for val in diffs['perc_cut']]
-    diffs['perc_cut'] = pd.Series(srs_cut, index=diffs.index)
-    srs_change = ['{0:.2f}%'.format(val * 100)
-                  for val in diffs['share_of_change']]
-    diffs['share_of_change'] = pd.Series(srs_change, index=diffs.index)
-    srs_perc_aftertax = ['{0:.2f}%'.format(val * 100)
-                         for val in diffs['perc_aftertax']]
-    diffs['perc_aftertax'] = pd.Series(srs_perc_aftertax, index=diffs.index)
-    # columns containing weighted values relative to the binning mechanism
-    non_sum_cols = [col for col in diffs.columns
-                    if 'mean' in col or 'perc' in col]
+    pct_cols = ['perc_inc', 'perc_cut', 'share_of_change', 'perc_aftertax']
+    for col in pct_cols:
+        newvals = ['{0:.2f}%'.format(val * 100) for val in diffs[col]]
+        diffs[col] = pd.Series(newvals, index=diffs.index)
+    non_sum_cols = [c for c in diffs.columns if 'mean' in c or 'perc' in c]
     for col in non_sum_cols:
         diffs.loc['sums', col] = 'n/a'
     return diffs
