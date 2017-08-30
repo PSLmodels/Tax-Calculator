@@ -63,41 +63,119 @@ def test_create_tables(cps_subsample):
     calc1 = Calculator(policy=policy1, records=records1)
     calc1.calc_all()
     # create a policy-reform Policy object and Calculator object calc2
-    reform = {2013: {'_II_rt4': [0.56]}}
+    reform = {2013: {'_II_rt1': [0.15]}}
     policy2 = Policy()
     policy2.implement_reform(reform)
     records2 = Records.cps_constructor(data=cps_subsample)
     calc2 = Calculator(policy=policy2, records=records2)
     calc2.calc_all()
-    # test creating various distribution tables
-    dt1 = create_difference_table(calc1.records, calc2.records,
-                                  groupby='large_income_bins',
-                                  income_measure='expanded_income',
-                                  tax_to_diff='combined')
-    assert isinstance(dt1, pd.DataFrame)
-    dt2 = create_difference_table(calc1.records, calc2.records,
-                                  groupby='webapp_income_bins',
-                                  income_measure='expanded_income',
-                                  tax_to_diff='iitax')
-    assert isinstance(dt2, pd.DataFrame)
+
+    # test creating various difference tables
+    diff = create_difference_table(calc1.records, calc2.records,
+                                   groupby='large_income_bins',
+                                   income_measure='expanded_income',
+                                   tax_to_diff='combined')
+    assert isinstance(diff, pd.DataFrame)
+    expected = ['0.00%',
+                '0.01%',
+                '0.41%',
+                '0.84%',
+                '0.92%',
+                '1.10%',
+                '1.15%',
+                '1.04%',
+                '0.78%',
+                '0.27%',
+                'n/a']
+    assert np.array_equal(diff['perc_aftertax'], expected)
+
+    diff = create_difference_table(calc1.records, calc2.records,
+                                   groupby='webapp_income_bins',
+                                   income_measure='expanded_income',
+                                   tax_to_diff='iitax')
+    assert isinstance(diff, pd.DataFrame)
+    expected = ['0.00%',
+                '0.01%',
+                '0.41%',
+                '0.84%',
+                '0.92%',
+                '1.10%',
+                '1.15%',
+                '1.04%',
+                '0.78%',
+                '0.30%',
+                '0.08%',
+                '0.07%',
+                'n/a']
+    assert np.array_equal(diff['perc_aftertax'], expected)
+
+    diff = create_difference_table(calc1.records, calc2.records,
+                                   groupby='small_income_bins',
+                                   income_measure='expanded_income',
+                                   tax_to_diff='iitax')
+    assert isinstance(diff, pd.DataFrame)
+    expected = ['0.00%',
+                '0.01%',
+                '0.02%',
+                '0.16%',
+                '0.64%',
+                '0.82%',
+                '0.87%',
+                '0.92%',
+                '1.10%',
+                '1.15%',
+                '1.04%',
+                '0.78%',
+                '0.30%',
+                '0.08%',
+                '0.09%',
+                '0.07%',
+                '0.05%',
+                '0.02%',
+                '0.00%',
+                'n/a']
+    assert np.array_equal(diff['perc_aftertax'], expected)
+
+    diff = create_difference_table(calc1.records, calc2.records,
+                                   groupby='weighted_deciles',
+                                   income_measure='expanded_income',
+                                   tax_to_diff='combined')
+    assert isinstance(diff, pd.DataFrame)
+    expected = ['0.00%',
+                '0.02%',
+                '0.35%',
+                '0.79%',
+                '0.89%',
+                '0.97%',
+                '1.11%',
+                '1.18%',
+                '0.91%',
+                '0.50%',
+                'n/a']
+    assert np.array_equal(diff['perc_aftertax'], expected)
+
     with pytest.raises(ValueError):
         create_difference_table(calc1.records, calc2.records,
                                 groupby='bad_bins',
                                 income_measure='expanded_income',
-                                tax_to_diff='combined')
+                                tax_to_diff='iitax')
+
+    # test creating various distribution tables
     with pytest.raises(ValueError):
         create_distribution_table(calc2.records,
                                   groupby='small_income_bins',
                                   result_type='bad_result_type')
+
     with pytest.raises(ValueError):
         create_distribution_table(calc2.records,
                                   groupby='bad_bins',
                                   result_type='weighted_sum')
-    dt3 = create_distribution_table(calc2.records,
-                                    groupby='small_income_bins',
-                                    result_type='weighted_sum',
-                                    baseline_obj=calc1.records, diffs=True)
-    assert isinstance(dt3, pd.DataFrame)
+
+    dist = create_distribution_table(calc2.records,
+                                     groupby='small_income_bins',
+                                     result_type='weighted_sum',
+                                     baseline_obj=calc1.records, diffs=True)
+    assert isinstance(dist, pd.DataFrame)
 
 
 def test_weighted_count_lt_zero():
