@@ -102,8 +102,10 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     np.random.seed(seed)  # pylint: disable=no-member
 
     # construct dropq summary results from raw results
-    (m2_dec, m1_dec, df_dec, pdf_dec, cdf_dec,
-     m2_bin, m1_bin, df_bin, pdf_bin, cdf_bin,
+    (dist2_dec, dist1_dec,
+     idf_dec, pdf_dec, cdf_dec,
+     dist2_bin, dist1_bin,
+     idf_bin, pdf_bin, cdf_bin,
      itax_sumd, ptax_sumd, comb_sumd,
      itax_sum1, ptax_sum1, comb_sum1,
      itax_sum2, ptax_sum2, comb_sum2) = dropq_summary(rawres1, rawres2, mask)
@@ -119,11 +121,11 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     fiscal_tots_reform = pd.DataFrame(data=tots2, index=TOTAL_ROW_NAMES)
 
     # remove negative incomes from selected summary results
-    df_bin.drop(df_bin.index[0], inplace=True)
+    idf_bin.drop(idf_bin.index[0], inplace=True)
     pdf_bin.drop(pdf_bin.index[0], inplace=True)
     cdf_bin.drop(cdf_bin.index[0], inplace=True)
-    m2_bin.drop(m2_bin.index[0], inplace=True)
-    m1_bin.drop(m1_bin.index[0], inplace=True)
+    dist2_bin.drop(dist2_bin.index[0], inplace=True)
+    dist1_bin.drop(dist1_bin.index[0], inplace=True)
 
     elapsed_time = time.time() - start_time
     print('elapsed time for this run: ', elapsed_time)
@@ -137,25 +139,29 @@ def run_nth_year_tax_calc_model(year_n, start_year,
 
     # optionally return non-JSON results
     if not return_json:
-        return (append_year(m2_dec), append_year(m1_dec), append_year(df_dec),
-                append_year(pdf_dec), append_year(cdf_dec),
-                append_year(m2_bin), append_year(m1_bin), append_year(df_bin),
-                append_year(pdf_bin), append_year(cdf_bin),
+        return (append_year(dist2_dec), append_year(dist1_dec),
+                append_year(idf_dec),
+                append_year(pdf_dec),
+                append_year(cdf_dec),
+                append_year(dist2_bin), append_year(dist1_bin),
+                append_year(idf_bin),
+                append_year(pdf_bin),
+                append_year(cdf_bin),
                 append_year(fiscal_tots_diff),
                 append_year(fiscal_tots_baseline),
                 append_year(fiscal_tots_reform))
 
     # optionally construct JSON results
     decile_row_names_i = [x + '_' + str(year_n) for x in DECILE_ROW_NAMES]
-    m2_dec_table_i = create_json_table(m2_dec,
-                                       row_names=decile_row_names_i,
-                                       column_types=PLAN_COLUMN_TYPES)
-    m1_dec_table_i = create_json_table(m1_dec,
-                                       row_names=decile_row_names_i,
-                                       column_types=PLAN_COLUMN_TYPES)
-    df_dec_table_i = create_json_table(df_dec,
-                                       row_names=decile_row_names_i,
-                                       column_types=DIFF_COLUMN_TYPES)
+    dist2_dec_table_i = create_json_table(dist2_dec,
+                                          row_names=decile_row_names_i,
+                                          column_types=PLAN_COLUMN_TYPES)
+    dist1_dec_table_i = create_json_table(dist1_dec,
+                                          row_names=decile_row_names_i,
+                                          column_types=PLAN_COLUMN_TYPES)
+    idf_dec_table_i = create_json_table(idf_dec,
+                                        row_names=decile_row_names_i,
+                                        column_types=DIFF_COLUMN_TYPES)
     pdf_dec_table_i = create_json_table(pdf_dec,
                                         row_names=decile_row_names_i,
                                         column_types=DIFF_COLUMN_TYPES)
@@ -163,15 +169,15 @@ def run_nth_year_tax_calc_model(year_n, start_year,
                                         row_names=decile_row_names_i,
                                         column_types=DIFF_COLUMN_TYPES)
     bin_row_names_i = [x + '_' + str(year_n) for x in BIN_ROW_NAMES]
-    m2_bin_table_i = create_json_table(m2_bin,
-                                       row_names=bin_row_names_i,
-                                       column_types=PLAN_COLUMN_TYPES)
-    m1_bin_table_i = create_json_table(m1_bin,
-                                       row_names=bin_row_names_i,
-                                       column_types=PLAN_COLUMN_TYPES)
-    df_bin_table_i = create_json_table(df_bin,
-                                       row_names=bin_row_names_i,
-                                       column_types=DIFF_COLUMN_TYPES)
+    dist2_bin_table_i = create_json_table(dist2_bin,
+                                          row_names=bin_row_names_i,
+                                          column_types=PLAN_COLUMN_TYPES)
+    dist1_bin_table_i = create_json_table(dist1_bin,
+                                          row_names=bin_row_names_i,
+                                          column_types=PLAN_COLUMN_TYPES)
+    idf_bin_table_i = create_json_table(idf_bin,
+                                        row_names=bin_row_names_i,
+                                        column_types=DIFF_COLUMN_TYPES)
     pdf_bin_table_i = create_json_table(pdf_bin,
                                         row_names=bin_row_names_i,
                                         column_types=DIFF_COLUMN_TYPES)
@@ -190,10 +196,11 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     fiscal_yr_total_rf = dict((k, v[0]) for k, v in fiscal_yr_total_rf.items())
 
     # return JSON results
-    return (m2_dec_table_i, m1_dec_table_i, df_dec_table_i, pdf_dec_table_i,
-            cdf_dec_table_i, m2_bin_table_i, m1_bin_table_i, df_bin_table_i,
-            pdf_bin_table_i, cdf_bin_table_i, fiscal_yr_total_df,
-            fiscal_yr_total_bl, fiscal_yr_total_rf)
+    return (dist2_dec_table_i, dist1_dec_table_i,
+            idf_dec_table_i, pdf_dec_table_i, cdf_dec_table_i,
+            dist2_bin_table_i, dist1_bin_table_i,
+            idf_bin_table_i, pdf_bin_table_i, cdf_bin_table_i,
+            fiscal_yr_total_df, fiscal_yr_total_bl, fiscal_yr_total_rf)
 
 
 def run_nth_year_gdp_elast_model(year_n, start_year,

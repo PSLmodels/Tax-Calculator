@@ -142,28 +142,6 @@ def test_create_json_table():
 
 
 @pytest.mark.requires_pufcsv
-@pytest.mark.parametrize('groupby, result_type',
-                         [('small_income_bins', 'weighted_sum'),
-                          ('large_income_bins', 'weighted_sum'),
-                          ('large_income_bins', 'weighted_avg'),
-                          ('other_income_bins', 'weighted_avg'),
-                          ('large_income_bins', 'other_avg')])
-def test_dropq_dist_table(groupby, result_type, puf_subsample):
-    calc = Calculator(policy=Policy(), records=Records(data=puf_subsample))
-    calc.calc_all()
-    res = results(calc.records)
-    mask = np.ones(len(res.index))
-    (res, _) = drop_records(res, res, mask)
-    if groupby == 'other_income_bins' or result_type == 'other_avg':
-        with pytest.raises(ValueError):
-            dropq_dist_table(res, groupby=groupby,
-                             result_type=result_type, suffix='_bin')
-    else:
-        dropq_dist_table(res, groupby=groupby,
-                         result_type=result_type, suffix='_bin')
-
-
-@pytest.mark.requires_pufcsv
 def test_with_pufcsv(puf_fullsample):
     # specify usermods dictionary in code
     start_year = 2017
@@ -239,47 +217,3 @@ def test_reform_warnings_errors():
     msg_dict = reform_warnings_errors(bad2_mods)
     assert len(msg_dict['warnings']) == 0
     assert len(msg_dict['errors']) > 0
-
-
-@pytest.mark.requires_pufcsv
-def test_dropq_dist_vs_util_dist(puf_subsample):
-    recs2 = Records(data=puf_subsample)
-    pol2 = Policy()
-    pol2.implement_reform(USER_MODS['policy'])
-    calc2 = Calculator(policy=pol2, records=recs2)
-    calc2.advance_to_year(2016)
-    calc2.calc_all()
-    # generate distribution table using utility function
-    udf = create_distribution_table(calc2.records,
-                                    groupby='weighted_deciles',
-                                    result_type='weighted_sum')
-    assert isinstance(udf, pd.DataFrame)
-    # generate dist table using dropq approach without dropping any records
-    res2 = results(calc2.records)
-    qdf = dropq_dist_table(res2,
-                           groupby='weighted_deciles',
-                           result_type='weighted_sum',
-                           suffix='')
-    assert isinstance(qdf, pd.DataFrame)
-    # check that each element in the two DataFrames are the same
-    assert udf.shape[0] == qdf.shape[0]  # same number of rows
-    assert udf.shape[1] == qdf.shape[1]  # same number of cols
-    for col in list(qdf):
-        for row in range(0, qdf.shape[0]):
-            same = False
-            qel_flt_type = isinstance(qdf[col][row], float)
-            uel_flt_type = isinstance(udf[col][row], float)
-            assert qel_flt_type == uel_flt_type
-            if qel_flt_type:
-                same = np.allclose([qdf[col][row]], [udf[col][row]])
-                if not same:
-                    msg = '{} {} : {} {}'.format(col, row,
-                                                 qdf[col][row],
-                                                 udf[col][row])
-                    assert msg == 'qdf element not equal to udf element'
-            else:
-                assert msg == '{}.{} element not float'.format(col, row)
-    # uncomment the following three lines to force print of udf contents
-    for col in sorted(list(udf)):
-        print udf[col]
-    # assert 1 == 2

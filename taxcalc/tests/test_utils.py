@@ -471,29 +471,6 @@ def test_diff_table_sum_row(cps_subsample):
                                   tdiff2[non_digit_cols][-1:])
 
 
-def test_row_classifier(cps_subsample):
-    # create a current-law Policy object and Calculator calc1
-    policy1 = Policy()
-    records1 = Records.cps_constructor(data=cps_subsample)
-    calc1 = Calculator(policy=policy1, records=records1)
-    calc1.calc_all()
-    calc1_s006 = create_distribution_table(calc1.records,
-                                           groupby='webapp_income_bins',
-                                           result_type='weighted_sum').s006
-    # create a policy-reform Policy object and Calculator calc2
-    reform = {2013: {'_ALD_StudentLoan_hc': [1]}}
-    policy2 = Policy()
-    policy2.implement_reform(reform)
-    records2 = Records.cps_constructor(data=cps_subsample)
-    calc2 = Calculator(policy=policy2, records=records2)
-    calc2.calc_all()
-    calc2_s006 = create_distribution_table(calc2.records,
-                                           groupby='webapp_income_bins',
-                                           result_type='weighted_sum').s006
-    # use weighted sum of weights in each cell to check classifer
-    assert np.allclose(calc1_s006, calc2_s006, atol=0.00, rtol=0.0)
-
-
 def test_mtr_graph_data(cps_subsample):
     calc = Calculator(policy=Policy(),
                       records=Records.cps_constructor(data=cps_subsample))

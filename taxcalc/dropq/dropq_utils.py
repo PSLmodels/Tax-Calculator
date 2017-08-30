@@ -348,71 +348,19 @@ def dropq_summary(df1, df2, mask):
                                             tax_to_diff='combined')
 
     # create distribution tables
-    m1_dec = create_distribution_table(df1, groupby='weighted_deciles',
-                                       result_type='weighted_sum')
-    m2_dec = dropq_dist_table(df2, groupby='weighted_deciles',
-                              result_type='weighted_sum', suffix='_dec')
-    m1_bin = create_distribution_table(df1, groupby='webapp_income_bins',
-                                       result_type='weighted_sum')
-    m2_bin = dropq_dist_table(df2, groupby='webapp_income_bins',
-                              result_type='weighted_sum', suffix='_bin')
+    dist1_dec = create_distribution_table(df1, groupby='weighted_deciles',
+                                          result_type='weighted_sum')
+    dist2_dec = create_distribution_table(df2, groupby='weighted_deciles',
+                                          result_type='weighted_sum')
+    dist1_bin = create_distribution_table(df1, groupby='webapp_income_bins',
+                                          result_type='weighted_sum')
+    dist2_bin = create_distribution_table(df2, groupby='webapp_income_bins',
+                                          result_type='weighted_sum')
 
-    return (m2_dec, m1_dec,
+    return (dist2_dec, dist1_dec,
             itax_diff_dec, ptax_diff_dec, comb_diff_dec,
-            m2_bin, m1_bin,
+            dist2_bin, dist1_bin,
             itax_diff_bin, ptax_diff_bin, comb_diff_bin,
             itax_diff, ptax_diff, comb_diff,
             itax_base, ptax_base, comb_base,
             itax_reform, ptax_reform, comb_reform)
-
-
-def dropq_dist_table(resdf, groupby, result_type, suffix):
-    """
-    Create and return dropq distribution table.
-    """
-    # pylint: disable=too-many-locals
-    res = resdf
-    c04470_s = 'c04470' + suffix
-    c00100_s = 'c00100' + suffix
-    c09600_s = 'c09600' + suffix
-    standard_s = 'standard' + suffix
-    s006_s = 's006' + suffix
-    returns_ided_s = 'num_returns_ItemDed' + suffix
-    returns_sded_s = 'num_returns_StandardDed' + suffix
-    returns_amt_s = 'num_returns_AMT' + suffix
-    res[c04470_s] = res[c04470_s].where(((res[c00100_s] > 0) &
-                                         (res[c04470_s] > res[standard_s])), 0)
-    res[returns_ided_s] = res[s006_s].where(((res[c00100_s] > 0) &
-                                             (res[c04470_s] > 0)), 0)
-    res[returns_sded_s] = res[s006_s].where(((res[c00100_s] > 0) &
-                                             (res[standard_s] > 0)), 0)
-    res[returns_amt_s] = res[s006_s].where(res[c09600_s] > 0, 0)
-    if groupby == 'weighted_deciles':
-        dframe = add_weighted_income_bins(res, num_bins=10)
-    elif groupby == 'small_income_bins':
-        dframe = add_income_bins(res, compare_with='soi')
-    elif groupby == 'large_income_bins':
-        dframe = add_income_bins(res, compare_with='tpc')
-    elif groupby == 'webapp_income_bins':
-        dframe = add_income_bins(res, compare_with='webapp')
-    else:
-        err = ("groupby must be either 'weighted_deciles' or "
-               "'small_income_bins' or 'large_income_bins' or "
-               "'webapp_income_bins'")
-        raise ValueError(err)
-    pd.options.display.float_format = '{:8,.0f}'.format
-    if result_type == 'weighted_sum':
-        dframe = weighted(dframe, [col + suffix for col in STATS_COLUMNS])
-        gby_bins = dframe.groupby('bins', as_index=False)
-        gp_mean = gby_bins[[col + suffix for col in TABLE_COLUMNS]].sum()
-        gp_mean.drop('bins', axis=1, inplace=True)
-        sum_row = get_sums(dframe)[[col + suffix for col in TABLE_COLUMNS]]
-    elif result_type == 'weighted_avg':
-        gp_mean = weighted_avg_allcols(dframe,
-                                       [col + suffix for col in TABLE_COLUMNS])
-        all_sums = get_sums(dframe, not_available=True)
-        sum_row = all_sums[[col + suffix for col in TABLE_COLUMNS]]
-    else:
-        err = "result_type must be either 'weighted_sum' or 'weighted_avg'"
-        raise ValueError(err)
-    return gp_mean.append(sum_row)
