@@ -161,6 +161,72 @@ def test_create_tables(cps_subsample):
                                 tax_to_diff='iitax')
 
     # test creating various distribution tables
+    dist = create_distribution_table(calc2.records,
+                                     groupby='weighted_deciles',
+                                     result_type='weighted_sum')
+    assert isinstance(dist, pd.DataFrame)
+    expected = [-8851215,
+                -99666120,
+                -123316561,
+                -85895787,
+                -47357458,
+                207462144,
+                443391189,
+                978487989,
+                1709504845,
+                7631268907,
+                10605027933]
+    assert np.allclose(dist['iitax'], expected,
+                       atol=0.5, rtol=0.0)
+    expected = [1202,
+                1688,
+                13506,
+                18019,
+                30130,
+                48244,
+                80994,
+                112788,
+                131260,
+                146001,
+                583832]
+    assert np.allclose(dist['num_returns_ItemDed'].tolist(), expected,
+                       atol=0.5, rtol=0.0)
+
+    dist = create_distribution_table(calc2.records,
+                                     groupby='webapp_income_bins',
+                                     result_type='weighted_sum')
+    assert isinstance(dist, pd.DataFrame)
+    expected = [-103274,
+                -83144506,
+                -152523834,
+                -129881470,
+                85802556,
+                255480678,
+                832529135,
+                1066963515,
+                3023956558,
+                2876331264,
+                1008672459,
+                1820944852,
+                10605027933]
+    assert np.allclose(dist['iitax'], expected,
+                       atol=0.5, rtol=0.0)
+    expected = [0,
+                1202,
+                22654,
+                31665,
+                30547,
+                49851,
+                124786,
+                97349,
+                160147,
+                56806,
+                5803,
+                3023,
+                583832]
+    assert np.allclose(dist['num_returns_ItemDed'].tolist(), expected,
+                       atol=0.5, rtol=0.0)
+
     with pytest.raises(ValueError):
         create_distribution_table(calc2.records,
                                   groupby='small_income_bins',
@@ -170,12 +236,6 @@ def test_create_tables(cps_subsample):
         create_distribution_table(calc2.records,
                                   groupby='bad_bins',
                                   result_type='weighted_sum')
-
-    dist = create_distribution_table(calc2.records,
-                                     groupby='small_income_bins',
-                                     result_type='weighted_sum',
-                                     baseline_obj=calc1.records, diffs=True)
-    assert isinstance(dist, pd.DataFrame)
 
 
 def test_weighted_count_lt_zero():
