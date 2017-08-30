@@ -21,7 +21,7 @@ from taxcalc.utils import (TABLE_COLUMNS, TABLE_LABELS, STATS_COLUMNS,
                            weighted_count, weighted_sum, weighted_mean,
                            wage_weighted, agi_weighted,
                            expanded_income_weighted,
-                           weighted_perc_inc, weighted_perc_dec,
+                           weighted_perc_inc, weighted_perc_cut,
                            add_income_bins, add_weighted_income_bins,
                            multiyear_diagnostic_table,
                            mtr_graph_data, atr_graph_data,
@@ -196,10 +196,10 @@ def test_weighted_perc_inc():
     pd.util.testing.assert_series_equal(exp, diffs)
 
 
-def test_weighted_perc_dec():
+def test_weighted_perc_cut():
     dfx = pd.DataFrame(data=DATA, columns=['tax_diff', 's006', 'label'])
     grouped = dfx.groupby('label')
-    diffs = grouped.apply(weighted_perc_dec, 'tax_diff')
+    diffs = grouped.apply(weighted_perc_cut, 'tax_diff')
     exp = pd.Series(data=[4. / 12., 0.0], index=['a', 'b'])
     exp.index.name = 'label'
     pd.util.testing.assert_series_equal(exp, diffs)
