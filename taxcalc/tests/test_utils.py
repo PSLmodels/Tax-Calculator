@@ -278,8 +278,8 @@ EPSILON = 1e-5
 def test_add_income_bins():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
-    bins = [-1e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
-            200000, 1e99]
+    bins = [-9e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+            200000, 9e99]
     dfr = add_income_bins(dfx, compare_with='tpc', bins=None)
     groupedr = dfr.groupby('bins')
     idx = 1
@@ -299,9 +299,9 @@ def test_add_income_bins():
 def test_add_income_bins_soi():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
-    bins = [-1e99, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
+    bins = [-9e99, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
             49999, 74999, 99999, 199999, 499999, 999999, 1499999,
-            1999999, 4999999, 9999999, 1e99]
+            1999999, 4999999, 9999999, 9e99]
     dfr = add_income_bins(dfx, compare_with='soi', bins=None)
     groupedr = dfr.groupby('bins')
     idx = 1
@@ -321,7 +321,7 @@ def test_add_income_bins_soi():
 def test_add_exp_income_bins():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
-    bins = [-1e99, 0, 4999, 9999, 14999, 19999, 29999, 32999, 43999, 1e99]
+    bins = [-9e99, 0, 4999, 9999, 14999, 19999, 29999, 32999, 43999, 9e99]
     dfr = add_income_bins(dfx, bins=bins)
     groupedr = dfr.groupby('bins')
     idx = 1
