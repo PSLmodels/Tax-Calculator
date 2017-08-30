@@ -265,7 +265,9 @@ def test_Calculator_create_difference_table(cps_subsample):
     calc2.calc_all()
     # create difference table and check that it is a Pandas DataFrame
     dtable = create_difference_table(calc1.records, calc2.records,
-                                     groupby="weighted_deciles")
+                                     groupby='weighted_deciles',
+                                     income_measure='expanded_income',
+                                     tax_to_diff='payrolltax')
     assert isinstance(dtable, pd.DataFrame)
 
 

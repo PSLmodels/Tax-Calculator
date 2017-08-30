@@ -12,7 +12,7 @@ import pandas as pd
 from taxcalc import (Policy, Records, Calculator,
                      Consumption, Behavior, Growfactors, Growdiff)
 from taxcalc.utils import (add_income_bins, add_weighted_income_bins,
-                           diff_table_stats, get_sums,
+                           create_difference_table, get_sums,
                            weighted, weighted_avg_allcols,
                            create_distribution_table, results,
                            STATS_COLUMNS, TABLE_COLUMNS, WEBAPP_INCOME_BINS)
@@ -270,27 +270,21 @@ def drop_records(df1, df2, mask):
     combined tax differences between the baseline and reform
     for the two groupings.
     """
-    # perform all statistics on (Y + X') - X
-
-    # Group first
+    # group first
     df2['mask'] = mask
     df1['mask'] = mask
-
     df2 = add_weighted_income_bins(df2)
     df1 = add_weighted_income_bins(df1)
     gp2_dec = df2.groupby('bins')
-
     df2 = add_income_bins(df2, bins=WEBAPP_INCOME_BINS)
     df1 = add_income_bins(df1, bins=WEBAPP_INCOME_BINS)
     gp2_bin = df2.groupby('bins')
-
-    # Transform to get the 'flag' column that marks dropped records in each bin
+    # transform to get the 'flag' column that marks dropped records in each bin
     df2['flag_dec'] = gp2_dec['mask'].transform(chooser)
     df2['flag_bin'] = gp2_bin['mask'].transform(chooser)
-
-    # first calculate all of X'
+    # ... first calculate all of X'
     columns_to_make_noisy = set(TABLE_COLUMNS) | set(STATS_COLUMNS)
-    # these don't exist yet
+    # ... these don't exist yet
     columns_to_make_noisy.remove('num_returns_ItemDed')
     columns_to_make_noisy.remove('num_returns_StandardDed')
     columns_to_make_noisy.remove('num_returns_AMT')
@@ -299,17 +293,6 @@ def drop_records(df1, df2, mask):
                              df1[col] * df2['flag_dec'] + df1[col])
         df2[col + '_bin'] = (df2[col] * df2['flag_bin'] -
                              df1[col] * df2['flag_bin'] + df1[col])
-
-    # Difference in plans
-    # Positive values are the magnitude of the tax increase
-    # Negative values are the magnitude of the tax decrease
-    df2['tax_diff_dec'] = df2['iitax_dec'] - df1['iitax']
-    df2['tax_diff_bin'] = df2['iitax_bin'] - df1['iitax']
-    df2['payrolltax_diff_dec'] = df2['payrolltax_dec'] - df1['payrolltax']
-    df2['payrolltax_diff_bin'] = df2['payrolltax_bin'] - df1['payrolltax']
-    df2['combined_diff_dec'] = df2['combined_dec'] - df1['combined']
-    df2['combined_diff_bin'] = df2['combined_bin'] - df1['combined']
-
     return df1, df2
 
 
@@ -323,81 +306,64 @@ def dropq_summary(df1, df2, mask):
 
     df1, df2 = drop_records(df1, df2, mask)
 
-    # Totals for difference between reform and baseline
-    dec_sum = (df2['tax_diff_dec'] * df2['s006']).sum()
-    pr_dec_sum = (df2['payrolltax_diff_dec'] * df2['s006']).sum()
-    comb_dec_sum = (df2['combined_diff_dec'] * df2['s006']).sum()
+    # tax difference totals between reform and baseline
+    itax_diff = ((df2['iitax'] - df1['iitax']) * df2['s006']).sum()
+    ptax_diff = ((df2['payrolltax'] - df1['payrolltax']) * df2['s006']).sum()
+    comb_diff = ((df2['combined'] - df1['combined']) * df2['s006']).sum()
 
-    # Totals for baseline
-    sum_baseline = (df1['iitax'] * df1['s006']).sum()
-    pr_sum_baseline = (df1['payrolltax'] * df1['s006']).sum()
-    combined_sum_baseline = (df1['combined'] * df1['s006']).sum()
+    # totals for baseline
+    itax_base = (df1['iitax'] * df1['s006']).sum()
+    ptax_base = (df1['payrolltax'] * df1['s006']).sum()
+    comb_base = (df1['combined'] * df1['s006']).sum()
 
-    # Totals for reform
-    sum_reform = (df2['iitax_dec'] * df2['s006']).sum()
-    pr_sum_reform = (df2['payrolltax_dec'] * df2['s006']).sum()
-    combined_sum_reform = (df2['combined_dec'] * df2['s006']).sum()
+    # totals for reform
+    itax_reform = (df2['iitax'] * df2['s006']).sum()
+    ptax_reform = (df2['payrolltax'] * df2['s006']).sum()
+    comb_reform = (df2['combined'] * df2['s006']).sum()
 
-    # Create difference tables, grouped by deciles and bins
-    diffs_dec = dropq_diff_table(df1, df2,
-                                 groupby='weighted_deciles',
-                                 income_measure='expanded_income',
-                                 tax_to_diff='iitax')
+    # create difference tables, grouped by deciles and bins
+    itax_diff_dec = create_difference_table(df1, df2,
+                                            groupby='weighted_deciles',
+                                            income_measure='expanded_income',
+                                            tax_to_diff='iitax')
+    itax_diff_bin = create_difference_table(df1, df2,
+                                            groupby='webapp_income_bins',
+                                            income_measure='expanded_income',
+                                            tax_to_diff='iitax')
+    ptax_diff_dec = create_difference_table(df1, df2,
+                                            groupby='weighted_deciles',
+                                            income_measure='expanded_income',
+                                            tax_to_diff='payrolltax')
+    ptax_diff_bin = create_difference_table(df1, df2,
+                                            groupby='webapp_income_bins',
+                                            income_measure='expanded_income',
+                                            tax_to_diff='payrolltax')
+    comb_diff_dec = create_difference_table(df1, df2,
+                                            groupby='weighted_deciles',
+                                            income_measure='expanded_income',
+                                            tax_to_diff='combined')
+    comb_diff_bin = create_difference_table(df1, df2,
+                                            groupby='webapp_income_bins',
+                                            income_measure='expanded_income',
+                                            tax_to_diff='combined')
 
-    diffs_bin = dropq_diff_table(df1, df2,
-                                 groupby='webapp_income_bins',
-                                 income_measure='expanded_income',
-                                 tax_to_diff='iitax')
-
-    pr_diffs_dec = dropq_diff_table(df1, df2,
-                                    groupby='weighted_deciles',
-                                    income_measure='expanded_income',
-                                    tax_to_diff='payrolltax')
-
-    pr_diffs_bin = dropq_diff_table(df1, df2,
-                                    groupby='webapp_income_bins',
-                                    income_measure='expanded_income',
-                                    tax_to_diff='payrolltax')
-
-    comb_diffs_dec = dropq_diff_table(df1, df2,
-                                      groupby='weighted_deciles',
-                                      income_measure='expanded_income',
-                                      tax_to_diff='combined')
-
-    comb_diffs_bin = dropq_diff_table(df1, df2,
-                                      groupby='webapp_income_bins',
-                                      income_measure='expanded_income',
-                                      tax_to_diff='combined')
-
+    # create distribution tables
     m1_dec = create_distribution_table(df1, groupby='weighted_deciles',
                                        result_type='weighted_sum')
-
     m2_dec = dropq_dist_table(df2, groupby='weighted_deciles',
                               result_type='weighted_sum', suffix='_dec')
-
     m1_bin = create_distribution_table(df1, groupby='webapp_income_bins',
                                        result_type='weighted_sum')
-
     m2_bin = dropq_dist_table(df2, groupby='webapp_income_bins',
                               result_type='weighted_sum', suffix='_bin')
 
-    return (m2_dec, m1_dec, diffs_dec, pr_diffs_dec, comb_diffs_dec,
-            m2_bin, m1_bin, diffs_bin, pr_diffs_bin, comb_diffs_bin,
-            dec_sum, pr_dec_sum, comb_dec_sum,
-            sum_baseline, pr_sum_baseline, combined_sum_baseline,
-            sum_reform, pr_sum_reform, combined_sum_reform)
-
-
-def dropq_diff_table(df1, df2, groupby, income_measure, tax_to_diff):
-    """
-    Create and return dropq difference table.
-    """
-    baseline_income_measure = income_measure + '_baseline'
-    df2[baseline_income_measure] = df1[income_measure]
-    df2['tax_diff'] = df2[tax_to_diff] - df1[tax_to_diff]
-    diffs = diff_table_stats(df2, groupby, income_measure,
-                             skip_perc_aftertax=True)
-    return diffs
+    return (m2_dec, m1_dec,
+            itax_diff_dec, ptax_diff_dec, comb_diff_dec,
+            m2_bin, m1_bin,
+            itax_diff_bin, ptax_diff_bin, comb_diff_bin,
+            itax_diff, ptax_diff, comb_diff,
+            itax_base, ptax_base, comb_base,
+            itax_reform, ptax_reform, comb_reform)
 
 
 def dropq_dist_table(resdf, groupby, result_type, suffix):

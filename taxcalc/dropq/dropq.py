@@ -20,7 +20,7 @@ from taxcalc import (results, TABLE_LABELS, proportional_change_gdp,
 # specify constants
 PLAN_COLUMN_TYPES = [float] * len(TABLE_LABELS)
 
-DIFF_COLUMN_TYPES = [int, int, int, float, float, str, str, str]
+DIFF_COLUMN_TYPES = [int, int, int, float, float, str, str, str, str]
 
 DECILE_ROW_NAMES = ['perc0-10', 'perc10-20', 'perc20-30', 'perc30-40',
                     'perc40-50', 'perc50-60', 'perc60-70', 'perc70-80',

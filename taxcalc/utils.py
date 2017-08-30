@@ -50,10 +50,16 @@ TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Combined Payroll and Individual Income Tax Liabilities']
 
 # Following list is used in our difference table to label its columns.
-DIFF_TABLE_LABELS = ['Tax Units with Tax Cut', 'Tax Units with Tax Increase',
-                     'Count', 'Average Tax Change', 'Total Tax Difference',
-                     'Percent with Tax Increase', 'Percent with Tax Decrease',
-                     'Share of Overall Change']
+DIFF_TABLE_LABELS = ['Tax Units with Tax Cut',
+                     'Tax Units with Tax Increase',
+                     'Count',
+                     'Average Tax Change',
+                     'Total Tax Difference',
+                     'Percent with Tax Increase',
+                     'Percent with Tax Decrease',
+                     'Share of Overall Change',
+                     'Change relative to Aftertax Income']
+
 
 WEBAPP_INCOME_BINS = [-1e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                       199999, 499999, 1000000, 1e99]
@@ -154,7 +160,7 @@ def add_income_bins(pdf, compare_with='soi', bins=None, right=True,
     return pdf
 
 
-def diff_table_stats(res2, groupby, income_measure, skip_perc_aftertax=False):
+def diff_table_stats(res2, groupby, income_measure):
     """
     Return new Pandas DataFrame containing difference table statistics
     based on grouped values of specified col_name in the specified res2.
@@ -202,15 +208,11 @@ def diff_table_stats(res2, groupby, income_measure, skip_perc_aftertax=False):
     wtotal = (res2['tax_diff'] * res2['s006']).sum()
     diffs['share_of_change'] = gpdf.apply(weighted_share_of_total, 'tax_diff',
                                           wtotal)
-    if not skip_perc_aftertax:
-        diffs['perc_aftertax'] = gpdf.apply(weighted_mean, 'perc_aftertax')
+    diffs['perc_aftertax'] = gpdf.apply(weighted_mean, 'perc_aftertax')
     # add sum row at bottom and convert some cols to percentages
     sum_row = get_sums(diffs)[diffs.columns]
     difs = diffs.append(sum_row)
-    if skip_perc_aftertax:
-        pct_cols = ['perc_inc', 'perc_cut', 'share_of_change']
-    else:
-        pct_cols = ['perc_inc', 'perc_cut', 'share_of_change', 'perc_aftertax']
+    pct_cols = ['perc_inc', 'perc_cut', 'share_of_change', 'perc_aftertax']
     for col in pct_cols:
         newvals = ['{:.2f}%'.format(val * 100) for val in difs[col]]
         difs[col] = pd.Series(newvals, index=difs.index)
@@ -408,41 +410,49 @@ def create_distribution_table(obj, groupby, result_type,
     return gpdf_mean.append(sum_row)
 
 
-def create_difference_table(recs1, recs2, groupby,
-                            income_measure='expanded_income',
-                            tax_to_diff='iitax'):
+def create_difference_table(obj1, obj2, groupby, income_measure, tax_to_diff):
     """
-    Get results from two different Records objects for the same year, compare
-    the two results, and return the differences as a Pandas DataFrame that is
-    sorted according to the variable specified by the groupby argument.
+    Get results from two different objects, compare the two tax-diff results,
+    and return the difference statistics as a Pandas DataFrame that is sorted
+    according to the variable specified by the groupby argument.
 
     Parameters
     ----------
-    recs1 : a Tax-Calculator Records object that refers to the baseline
+    obj1 : baseline object is either a Tax-Calculator Records object or
+           a Pandas DataFrame including columns in STATS_COLUMNS list
 
-    recs2 : a Tax-Calculator Records object that refers to the reform
+    obj2 : reform object is either a Tax-Calculator Records object or
+           a Pandas DataFrame including columns in STATS_COLUMNS list
 
     groupby : String object
         options for input: 'weighted_deciles', 'webapp_income_bins',
                            'large_income_bins', 'small_income_bins'
-        determines how the columns in the resulting Pandas DataFrame are sorted
+        specifies kind of bins used to group filing units
 
     income_measure : String object
         options for input: 'expanded_income', ...
-        used to assign filing units to bins
+        specifies statistic to place filing units in bins
 
     tax_to_diff : String object
         options for input: 'iitax', 'payrolltax', 'combined'
+        specifies which tax to difference
 
     Returns
     -------
-    Pandas DataFrame object
+    difference table as a Pandas DataFrame
     """
-    if recs1.current_year != recs2.current_year:
-        msg = 'recs1.current_year not equal to recs2.current_year'
-        raise ValueError(msg)
-    res1 = results(recs1)
-    res2 = results(recs2)
+    isdf1 = isinstance(obj1, pd.DataFrame)
+    isdf2 = isinstance(obj2, pd.DataFrame)
+    assert isdf1 == isdf2
+    if isdf1:
+        res1 = obj1
+        res2 = obj2
+    else:
+        if obj1.current_year != obj2.current_year:
+            msg = 'obj1.current_year not equal to obj2.current_year'
+            raise ValueError(msg)
+        res1 = results(obj1)
+        res2 = results(obj2)
     baseline_income_measure = income_measure + '_baseline'
     res2[baseline_income_measure] = res1[income_measure]
     res2['tax_diff'] = res2[tax_to_diff] - res1[tax_to_diff]

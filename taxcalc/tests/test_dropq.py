@@ -186,13 +186,13 @@ def test_dropq_diff_table(groupby, tax_to_diff, puf_subsample):
     (res1, res2) = drop_records(res1, res2, mask)
     if groupby == 'other_deciles':
         with pytest.raises(ValueError):
-            dropq_diff_table(res1, res2, groupby=groupby,
-                             income_measure='expanded_income',
-                             tax_to_diff=tax_to_diff)
+            create_difference_table(res1, res2, groupby=groupby,
+                                    income_measure='expanded_income',
+                                    tax_to_diff=tax_to_diff)
     else:
-        diffs = dropq_diff_table(res1, res2, groupby=groupby,
-                                 income_measure='expanded_income',
-                                 tax_to_diff=tax_to_diff)
+        diffs = create_difference_table(res1, res2, groupby=groupby,
+                                        income_measure='expanded_income',
+                                        tax_to_diff=tax_to_diff)
         assert isinstance(diffs, pd.DataFrame)
 
 
@@ -292,31 +292,15 @@ def test_dropq_diff_vs_util_diff(puf_subsample):
                                   income_measure='expanded_income',
                                   tax_to_diff='iitax')
     assert isinstance(udf, pd.DataFrame)
-    # generate diff table using dropq functions without dropping any records
+    # generate diff table using dropq approach without dropping any records
     res1 = results(calc1.records)
     res2 = results(calc2.records)
-    """
-    res2['iitax_dec'] = res2['iitax']  # TODO: ??? drop ???
-    res2['tax_diff_dec'] = res2['iitax'] - res1['iitax']  # TODO: ??? drop ???
-    """
-    qdf = dropq_diff_table(res1, res2,
-                           groupby='weighted_deciles',
-                           income_measure='expanded_income',
-                           tax_to_diff='iitax')
+    qdf = create_difference_table(res1, res2,
+                                  groupby='weighted_deciles',
+                                  income_measure='expanded_income',
+                                  tax_to_diff='iitax')
     assert isinstance(qdf, pd.DataFrame)
     # check that each element in the two DataFrames are the same
-    if 'perc_aftertax' not in list(qdf):
-        qdf = qdf.assign(perc_aftertax=['-0.00%',
-                                        '0.00%',
-                                        '0.00%',
-                                        '0.00%',
-                                        '0.00%',
-                                        '0.00%',
-                                        '0.34%',
-                                        '0.90%',
-                                        '1.51%',
-                                        '2.69%',
-                                        'n/a'])
     assert udf.shape[0] == qdf.shape[0]  # same number of rows
     assert udf.shape[1] == qdf.shape[1]  # same number of cols
     for col in list(qdf):
@@ -340,7 +324,7 @@ def test_dropq_diff_vs_util_diff(puf_subsample):
                                                        udf[col][row],
                                                        type(udf[col][row]))
                 assert msg == 'qdf element not equal to udf element'
-    # TODO: remove the following debugging statements:
+    # uncomment the following three lines to force print of udf contents
     # for col in sorted(list(udf)):
     #     print udf[col]
     # assert 1 == 2

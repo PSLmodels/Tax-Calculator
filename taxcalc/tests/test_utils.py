@@ -71,14 +71,20 @@ def test_create_tables(cps_subsample):
     calc2.calc_all()
     # test creating various distribution tables
     dt1 = create_difference_table(calc1.records, calc2.records,
-                                  groupby='large_income_bins')
+                                  groupby='large_income_bins',
+                                  income_measure='expanded_income',
+                                  tax_to_diff='combined')
     assert isinstance(dt1, pd.DataFrame)
     dt2 = create_difference_table(calc1.records, calc2.records,
-                                  groupby='webapp_income_bins')
+                                  groupby='webapp_income_bins',
+                                  income_measure='expanded_income',
+                                  tax_to_diff='iitax')
     assert isinstance(dt2, pd.DataFrame)
     with pytest.raises(ValueError):
         create_difference_table(calc1.records, calc2.records,
-                                groupby='bad_bins')
+                                groupby='bad_bins',
+                                income_measure='expanded_income',
+                                tax_to_diff='combined')
     with pytest.raises(ValueError):
         create_distribution_table(calc2.records,
                                   groupby='small_income_bins',
@@ -95,7 +101,9 @@ def test_create_tables(cps_subsample):
     calc1.increment_year()
     with pytest.raises(ValueError):
         create_difference_table(calc1.records, calc2.records,
-                                groupby='large_income_bins')
+                                groupby='large_income_bins',
+                                income_measure='expanded_income',
+                                tax_to_diff='iitax')
     with pytest.raises(ValueError):
         create_distribution_table(calc2.records,
                                   groupby='small_income_bins',
@@ -320,13 +328,16 @@ def test_diff_table_sum_row(cps_subsample):
     calc2.calc_all()
     # create two difference tables and compare their content
     tdiff1 = create_difference_table(calc1.records, calc2.records,
-                                     groupby='small_income_bins')
+                                     groupby='small_income_bins',
+                                     income_measure='expanded_income',
+                                     tax_to_diff='iitax')
     tdiff2 = create_difference_table(calc1.records, calc2.records,
-                                     groupby='large_income_bins')
+                                     groupby='large_income_bins',
+                                     income_measure='expanded_income',
+                                     tax_to_diff='iitax')
     non_digit_cols = ['mean', 'perc_inc', 'perc_cut', 'share_of_change',
                       'perc_aftertax']
-    digit_cols = [c for c in tdiff1.columns.tolist() if
-                  c not in non_digit_cols]
+    digit_cols = [c for c in list(tdiff1) if c not in non_digit_cols]
     assert np.allclose(tdiff1[digit_cols][-1:],
                        tdiff2[digit_cols][-1:])
     np.testing.assert_array_equal(tdiff1[non_digit_cols][-1:],
