@@ -366,9 +366,7 @@ def create_distribution_table(obj, groupby, result_type,
     res = add_columns(res)
     if baseline_obj is not None:
         res_base = results(baseline_obj)
-        if obj.current_year != baseline_obj.current_year:
-            msg = 'current_year differs in baseline obj and reform obj'
-            raise ValueError(msg)
+        assert obj.current_year == baseline_obj.current_year
         baseline_income_measure = income_measure + '_baseline'
         res[baseline_income_measure] = res_base[income_measure]
         income_measure = baseline_income_measure
@@ -446,9 +444,7 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
     isdf2 = isinstance(res2, pd.DataFrame)
     assert isdf1 == isdf2
     if not isdf1:
-        if res1.current_year != res2.current_year:
-            msg = 'res1.current_year not equal to res2.current_year'
-            raise ValueError(msg)
+        assert res1.current_year == res2.current_year
         res1 = results(res1)
         res2 = results(res2)
     baseline_income_measure = income_measure + '_baseline'
@@ -678,11 +674,8 @@ def mtr_graph_data(calc1, calc2,
     # pylint: disable=too-many-arguments,too-many-statements,
     # pylint: disable=too-many-locals,too-many-branches
     # check that two calculator objects have the same current_year
-    if calc1.current_year == calc2.current_year:
-        year = calc1.current_year
-    else:
-        msg = 'calc1.current_year={} != calc2.current_year={}'
-        raise ValueError(msg.format(calc1.current_year, calc2.current_year))
+    assert calc1.current_year == calc2.current_year
+    year = calc1.current_year
     # check validity of function arguments
     # . . check income_measure value
     weighting_function = weighted_mean

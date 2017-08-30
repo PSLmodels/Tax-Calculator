@@ -98,17 +98,6 @@ def test_create_tables(cps_subsample):
                                     result_type='weighted_sum',
                                     baseline_obj=calc1.records, diffs=True)
     assert isinstance(dt3, pd.DataFrame)
-    calc1.increment_year()
-    with pytest.raises(ValueError):
-        create_difference_table(calc1.records, calc2.records,
-                                groupby='large_income_bins',
-                                income_measure='expanded_income',
-                                tax_to_diff='iitax')
-    with pytest.raises(ValueError):
-        create_distribution_table(calc2.records,
-                                  groupby='small_income_bins',
-                                  result_type='weighted_sum',
-                                  baseline_obj=calc1.records, diffs=True)
 
 
 def test_weighted_count_lt_zero():
@@ -392,11 +381,6 @@ def test_mtr_graph_data(cps_subsample):
                            income_measure='wages',
                            dollar_weighting=True)
     assert isinstance(gdata, dict)
-    with pytest.raises(ValueError):
-        calcx = Calculator(policy=Policy(),
-                           records=Records.cps_constructor(data=cps_subsample))
-        calcx.advance_to_year(2020)
-        gdata = mtr_graph_data(calcx, calc)
 
 
 def test_atr_graph_data(cps_subsample):
