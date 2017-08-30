@@ -270,7 +270,8 @@ def results(obj):
     Pandas DataFrame object
     """
     arrays = [getattr(obj, name) for name in STATS_COLUMNS]
-    return pd.DataFrame(data=np.column_stack(arrays), columns=STATS_COLUMNS)
+    res = pd.DataFrame(data=np.column_stack(arrays), columns=STATS_COLUMNS)
+    return res
 
 
 def weighted_avg_allcols(pdf, col_list, income_measure='expanded_income'):
@@ -410,18 +411,18 @@ def create_distribution_table(obj, groupby, result_type,
     return gpdf_mean.append(sum_row)
 
 
-def create_difference_table(obj1, obj2, groupby, income_measure, tax_to_diff):
+def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
     """
-    Get results from two different objects, compare the two tax-diff results,
+    Get results from two different res, compare the two tax-diff results,
     and return the difference statistics as a Pandas DataFrame that is sorted
     according to the variable specified by the groupby argument.
 
     Parameters
     ----------
-    obj1 : baseline object is either a Tax-Calculator Records object or
+    res1 : baseline object is either a Tax-Calculator Records object or
            a Pandas DataFrame including columns in STATS_COLUMNS list
 
-    obj2 : reform object is either a Tax-Calculator Records object or
+    res2 : reform object is either a Tax-Calculator Records object or
            a Pandas DataFrame including columns in STATS_COLUMNS list
 
     groupby : String object
@@ -441,18 +442,15 @@ def create_difference_table(obj1, obj2, groupby, income_measure, tax_to_diff):
     -------
     difference table as a Pandas DataFrame
     """
-    isdf1 = isinstance(obj1, pd.DataFrame)
-    isdf2 = isinstance(obj2, pd.DataFrame)
+    isdf1 = isinstance(res1, pd.DataFrame)
+    isdf2 = isinstance(res2, pd.DataFrame)
     assert isdf1 == isdf2
-    if isdf1:
-        res1 = obj1
-        res2 = obj2
-    else:
-        if obj1.current_year != obj2.current_year:
-            msg = 'obj1.current_year not equal to obj2.current_year'
+    if not isdf1:
+        if res1.current_year != res2.current_year:
+            msg = 'res1.current_year not equal to res2.current_year'
             raise ValueError(msg)
-        res1 = results(obj1)
-        res2 = results(obj2)
+        res1 = results(res1)
+        res2 = results(res2)
     baseline_income_measure = income_measure + '_baseline'
     res2[baseline_income_measure] = res1[income_measure]
     res2['tax_diff'] = res2[tax_to_diff] - res1[tax_to_diff]

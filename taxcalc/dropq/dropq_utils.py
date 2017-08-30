@@ -271,13 +271,13 @@ def drop_records(df1, df2, mask):
     for the two groupings.
     """
     # group first
-    df2['mask'] = mask
     df1['mask'] = mask
-    df2 = add_weighted_income_bins(df2)
+    df2['mask'] = mask
     df1 = add_weighted_income_bins(df1)
+    df2 = add_weighted_income_bins(df2)
     gp2_dec = df2.groupby('bins')
-    df2 = add_income_bins(df2, bins=WEBAPP_INCOME_BINS)
     df1 = add_income_bins(df1, bins=WEBAPP_INCOME_BINS)
+    df2 = add_income_bins(df2, bins=WEBAPP_INCOME_BINS)
     gp2_bin = df2.groupby('bins')
     # transform to get the 'flag' column that marks dropped records in each bin
     df2['flag_dec'] = gp2_dec['mask'].transform(chooser)
